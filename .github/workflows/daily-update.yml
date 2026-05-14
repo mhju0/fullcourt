@@ -1,5 +1,8 @@
 # Daily sync: finalize yesterday's scores, refresh today's fatigue + predictions.
 #
+# Schedule: see `on.schedule` below (offseason = weekly). Vercel `/api/cron/update` is
+# configured separately in vercel.json — see CLAUDE.md "Vercel cron (offseason)".
+#
 # Secrets (required):
 #   DATABASE_URL — Supabase Postgres connection string (postgresql://...)
 #   Configure at: GitHub repo → Settings → Secrets and variables → Actions → New repository secret
@@ -8,8 +11,8 @@ name: Daily NBA update
 
 on:
   schedule:
-    # 21:00 UTC — after typical U.S. game nights; aligns with early morning KST.
-    - cron: "0 21 * * *"
+    # Offseason: weekly on Mondays. Change to "0 21 * * *" when the regular season resumes (~October).
+    - cron: "0 21 * * 1"
   workflow_dispatch:
 
 jobs:
