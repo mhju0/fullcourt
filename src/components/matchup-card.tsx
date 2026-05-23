@@ -6,6 +6,7 @@ import { ChevronDown } from "lucide-react"
 import { FatigueBar, type FatigueBarTone } from "@/components/fatigue-bar"
 import { TRAVEL_LOOKBACK_DAYS } from "@/lib/fatigue"
 import { NBA_TEAM_IDS } from "@/lib/nba-team-ids"
+import { formatRestAdvantageDisplay } from "@/lib/rest-advantage-display"
 import { getTeamBranding } from "@/lib/team-history"
 import { cn } from "@/lib/utils"
 import type { FatigueInfo, GameResponse } from "@/types"
@@ -277,34 +278,37 @@ function FatigueBarsBlock({
 function RestAdvPanel({
   restAdvantage,
   confidence,
+  homeAbbr,
+  awayAbbr,
 }: {
   restAdvantage: GameResponse["restAdvantage"]
   confidence: Confidence
+  homeAbbr: string
+  awayAbbr: string
 }) {
-  if (!restAdvantage || restAdvantage.advantageTeam === "neutral") {
+  const display = formatRestAdvantageDisplay(restAdvantage, homeAbbr, awayAbbr)
+
+  if (display.kind === "neutral") {
     return (
       <div className="flex shrink-0 flex-col items-end gap-1.5 pl-4" style={{ borderLeft: "1px solid #E2DFD8" }}>
-        <span className="mono tabular-nums" style={{ fontSize: "22px", fontWeight: 600, color: "#8A8478", lineHeight: 1 }}>
-          0.0
+        <span className="mono tabular-nums" style={{ fontSize: "16px", fontWeight: 600, color: "#8A8478", lineHeight: 1 }}>
+          {display.text}
         </span>
         <span className="mono" style={{ fontSize: "9px", letterSpacing: "0.08em", color: "#8A8478" }}>
-          REST ADV
+          REST EDGE
         </span>
         <ConfidenceBadge confidence={confidence} />
       </div>
     )
   }
 
-  const { differential, advantageTeam } = restAdvantage
-  const isHomeAdv = advantageTeam === "home"
+  const isHomeAdv = restAdvantage?.advantageTeam === "home"
   const color = isHomeAdv ? "#17408B" : "#C9082A"
-  const sign = isHomeAdv ? "+" : "-"
-  const value = Math.abs(differential).toFixed(1)
 
   return (
     <div className="flex shrink-0 flex-col items-end gap-1.5 pl-4" style={{ borderLeft: "1px solid #E2DFD8" }}>
-      <span className="mono tabular-nums" style={{ fontSize: "22px", fontWeight: 700, color, lineHeight: 1 }}>
-        {sign}{value}
+      <span className="mono tabular-nums" style={{ fontSize: "18px", fontWeight: 700, color, lineHeight: 1 }}>
+        {display.text}
       </span>
       <span className="mono" style={{ fontSize: "9px", letterSpacing: "0.08em", color: "#8A8478" }}>
         REST ADV
@@ -494,7 +498,7 @@ export function RaBadge({
         fontWeight: 700,
       }}
     >
-      {abbr} +{diff} RA
+      {abbr} {diff} RA
     </span>
   )
 }
@@ -605,7 +609,12 @@ export function MatchupCard({ game, index = 0, isScoreFlashing = false }: Matchu
             />
           </div>
 
-          <RestAdvPanel restAdvantage={game.restAdvantage} confidence={confidence} />
+          <RestAdvPanel
+            restAdvantage={game.restAdvantage}
+            confidence={confidence}
+            homeAbbr={homeBrand.abbreviation}
+            awayAbbr={awayBrand.abbreviation}
+          />
         </div>
       </div>
 
