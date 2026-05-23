@@ -1,5 +1,5 @@
 import { format, parseISO, subDays } from "date-fns";
-import { and, asc, count, desc, eq, gte, isNotNull, isNull, lt, lte, or, sql } from "drizzle-orm";
+import { and, asc, desc, eq, gte, inArray, isNotNull, isNull, lt, lte, or, sql } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
 import { db } from "./index";
 import { fatigueScores, games, predictions, teams } from "./schema";
@@ -53,28 +53,43 @@ const gameDateWithinRegularSeasonCalendar = sql`
   AND ${games.date} <= to_date((left(${games.season}, 4)::integer + 1)::text || '-04-30', 'YYYY-MM-DD')
 `;
 
-/**
- * Games a team played in the `days` calendar days before `gameDateYmd` (exclusive of game day).
- */
-async function countTeamGamesInDaysBefore(
-  teamId: number,
+async function getTeamGameCountsInDaysBefore(
   gameDateYmd: string,
+  teamIds: number[],
   days: number
-): Promise<number> {
+): Promise<Map<number, number>> {
+  const unique = [...new Set(teamIds)];
+  const out = new Map(unique.map((id) => [id, 0]));
+  if (unique.length === 0) return out;
+
   const tip = parseISO(gameDateYmd);
   const start = format(subDays(tip, days), "yyyy-MM-dd");
-  const agg = await db
-    .select({ c: count() })
+
+  const rows = await db
+    .select({
+      homeTeamId: games.homeTeamId,
+      awayTeamId: games.awayTeamId,
+    })
     .from(games)
     .where(
       and(
-        or(eq(games.homeTeamId, teamId), eq(games.awayTeamId, teamId)),
+        or(inArray(games.homeTeamId, unique), inArray(games.awayTeamId, unique)),
         eq(games.status, "final"),
         gte(games.date, start),
         lt(games.date, gameDateYmd)
       )
     );
-  return Number(agg[0]?.c ?? 0);
+
+  for (const row of rows) {
+    if (out.has(row.homeTeamId)) {
+      out.set(row.homeTeamId, (out.get(row.homeTeamId) ?? 0) + 1);
+    }
+    if (out.has(row.awayTeamId)) {
+      out.set(row.awayTeamId, (out.get(row.awayTeamId) ?? 0) + 1);
+    }
+  }
+
+  return out;
 }
 
 /** True when the team plays its 4th+ game in a rolling 6-day window ending on `gameDate`. */
@@ -82,27 +97,39 @@ async function computeIs4In6Map(
   gameDate: string,
   teamIds: number[]
 ): Promise<Map<number, boolean>> {
-  const start = format(subDays(parseISO(gameDate), 5), "yyyy-MM-dd");
   const unique = [...new Set(teamIds)];
-  const out = new Map<number, boolean>();
-  for (const tid of unique) {
-    const n = await db
-      .select({ c: count() })
-      .from(games)
-      .where(
-        and(
-          or(eq(games.homeTeamId, tid), eq(games.awayTeamId, tid)),
-          gte(games.date, start),
-          lte(games.date, gameDate),
-          or(
-            eq(games.date, gameDate),
-            and(lt(games.date, gameDate), eq(games.status, "final"))
-          )
+  const counts = new Map(unique.map((id) => [id, 0]));
+  if (unique.length === 0) return new Map();
+
+  const start = format(subDays(parseISO(gameDate), 5), "yyyy-MM-dd");
+  const rows = await db
+    .select({
+      homeTeamId: games.homeTeamId,
+      awayTeamId: games.awayTeamId,
+    })
+    .from(games)
+    .where(
+      and(
+        or(inArray(games.homeTeamId, unique), inArray(games.awayTeamId, unique)),
+        gte(games.date, start),
+        lte(games.date, gameDate),
+        or(
+          eq(games.date, gameDate),
+          and(lt(games.date, gameDate), eq(games.status, "final"))
         )
-      );
-    out.set(tid, Number(n[0]?.c ?? 0) >= 4);
+      )
+    );
+
+  for (const row of rows) {
+    if (counts.has(row.homeTeamId)) {
+      counts.set(row.homeTeamId, (counts.get(row.homeTeamId) ?? 0) + 1);
+    }
+    if (counts.has(row.awayTeamId)) {
+      counts.set(row.awayTeamId, (counts.get(row.awayTeamId) ?? 0) + 1);
+    }
   }
-  return out;
+
+  return new Map(unique.map((id) => [id, (counts.get(id) ?? 0) >= 4]));
 }
 
 /**
@@ -171,18 +198,9 @@ export async function getGamesByDate(date: string): Promise<GameResponse[]> {
     .where(and(eq(games.date, date), eq(games.gameType, "regular")));
 
   const teamIds = rows.flatMap((r) => [r.homeTeamId, r.awayTeamId]);
-  const uniqueTeamIds = [...new Set(teamIds)];
   const [is4In6Map, games30Map] = await Promise.all([
     computeIs4In6Map(date, teamIds),
-    (async () => {
-      const m = new Map<number, number>();
-      await Promise.all(
-        uniqueTeamIds.map(async (tid) => {
-          m.set(tid, await countTeamGamesInDaysBefore(tid, date, 30));
-        })
-      );
-      return m;
-    })(),
+    getTeamGameCountsInDaysBefore(date, teamIds, 30),
   ]);
 
   return rows.map((row) =>
@@ -370,15 +388,7 @@ export async function getGameById(id: number): Promise<GameResponse | null> {
   const teamIds = [row.homeTeamId, row.awayTeamId];
   const [is4In6Map, games30Map] = await Promise.all([
     computeIs4In6Map(dateStr, teamIds),
-    (async () => {
-      const m = new Map<number, number>();
-      await Promise.all(
-        teamIds.map(async (tid) => {
-          m.set(tid, await countTeamGamesInDaysBefore(tid, dateStr, 30));
-        })
-      );
-      return m;
-    })(),
+    getTeamGameCountsInDaysBefore(dateStr, teamIds, 30),
   ]);
 
   return mapJoinedRowToGameResponse(row, is4In6Map, games30Map);

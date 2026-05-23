@@ -3,20 +3,47 @@ import postgres from "postgres";
 import * as schema from "./schema";
 
 type DbInstance = ReturnType<typeof drizzle<typeof schema>>;
+type SqlClient = ReturnType<typeof postgres>;
 
-let sqlClient: ReturnType<typeof postgres> | undefined;
-let dbInstance: DbInstance | undefined;
+type DbGlobal = {
+  sqlClient?: SqlClient;
+  dbInstance?: DbInstance;
+};
+
+const dbGlobal = globalThis as typeof globalThis & {
+  __nbaRestAdvantageDb?: DbGlobal;
+};
+
+function getDbGlobal(): DbGlobal {
+  dbGlobal.__nbaRestAdvantageDb ??= {};
+  return dbGlobal.__nbaRestAdvantageDb;
+}
+
+function dbPoolMax(): number {
+  const raw = process.env.DB_POOL_MAX;
+  if (raw) {
+    const parsed = Number.parseInt(raw, 10);
+    if (Number.isFinite(parsed) && parsed > 0) return parsed;
+  }
+  return process.env.VERCEL ? 1 : 5;
+}
 
 function getOrCreateDb(): DbInstance {
   const url = process.env.DATABASE_URL;
   if (!url) {
     throw new Error("DATABASE_URL is not set");
   }
-  if (!dbInstance) {
-    sqlClient = postgres(url, { prepare: false });
-    dbInstance = drizzle(sqlClient, { schema });
+  const state = getDbGlobal();
+  if (!state.dbInstance) {
+    state.sqlClient = postgres(url, {
+      prepare: false,
+      max: dbPoolMax(),
+      idle_timeout: 20,
+      connect_timeout: 10,
+    });
+    state.dbInstance = drizzle(state.sqlClient, { schema });
   }
-  return dbInstance;
+  return state.dbInstance;
 }
 
 /**
