@@ -3,13 +3,7 @@
 import { useCallback, useMemo, useState, type KeyboardEvent } from "react"
 import Image from "next/image"
 import { ChevronDown } from "lucide-react"
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-import { FatigueBar } from "@/components/fatigue-bar"
+import { FatigueBar, type FatigueBarTone } from "@/components/fatigue-bar"
 import { TRAVEL_LOOKBACK_DAYS } from "@/lib/fatigue"
 import { NBA_TEAM_IDS } from "@/lib/nba-team-ids"
 import { getTeamBranding } from "@/lib/team-history"
@@ -18,14 +12,25 @@ import type { FatigueInfo, GameResponse } from "@/types"
 
 // ─── Constants ───────────────────────────────────────────────────
 
-/** Minimum |differential| to show advantage/disadvantage highlight. */
-const HIGHLIGHT_THRESHOLD = 1.0
+const HIGH_CONF_THRESHOLD = 2.0
+const MED_CONF_THRESHOLD = 1.0
 
-const detailGlass = {
-  background: "rgba(255, 255, 255, 0.42)",
-  backdropFilter: "blur(14px)",
-  WebkitBackdropFilter: "blur(14px)",
-} as const
+type Confidence = "high" | "med" | "neutral" | "none"
+
+function getConfidence(diff: number | null | undefined): Confidence {
+  if (diff === null || diff === undefined) return "none"
+  const abs = Math.abs(diff)
+  if (abs >= HIGH_CONF_THRESHOLD) return "high"
+  if (abs >= MED_CONF_THRESHOLD) return "med"
+  return "neutral"
+}
+
+function confidenceAccent(c: Confidence): string {
+  if (c === "high") return "#C9082A"
+  if (c === "med") return "#17408B"
+  if (c === "neutral") return "#C4853C"
+  return "#888888"
+}
 
 // ─── Team logo ───────────────────────────────────────────────────
 
@@ -33,10 +38,12 @@ function TeamLogo({
   abbreviation,
   season,
   fallback,
+  size = 24,
 }: {
   abbreviation: string
   season?: string
   fallback?: { name: string; city: string }
+  size?: number
 }) {
   const [error, setError] = useState(false)
 
@@ -52,7 +59,10 @@ function TeamLogo({
 
   if (!logoUrl || error) {
     return (
-      <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-slate-100 font-heading text-[10px] font-bold text-slate-500">
+      <div
+        className="mono flex shrink-0 items-center justify-center bg-[#F0EEE9] text-[9px] font-bold text-slate-500"
+        style={{ width: size, height: size, borderRadius: "2px" }}
+      >
         {abbreviation}
       </div>
     )
@@ -62,93 +72,63 @@ function TeamLogo({
     <Image
       src={logoUrl}
       alt={`${abbreviation} logo`}
-      width={40}
-      height={40}
+      width={size}
+      height={size}
       unoptimized
-      className="size-10 shrink-0 object-contain"
+      className="shrink-0 object-contain"
+      style={{ width: size, height: size }}
       onError={() => setError(true)}
     />
   )
 }
 
-// ─── Score display ───────────────────────────────────────────────
+// ─── Confidence badge ────────────────────────────────────────────
 
-function LiveIndicator() {
-  return (
-    <span className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-[#C9082A]">
-      <span className="relative flex size-1.5">
-        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#C9082A] opacity-60" />
-        <span className="relative inline-flex size-1.5 rounded-full bg-[#C9082A]" />
+function ConfidenceBadge({ confidence }: { confidence: Confidence }) {
+  if (confidence === "none") return null
+
+  const label = confidence === "high" ? "HIGH CONF" : confidence === "med" ? "MED CONF" : "NEUTRAL"
+
+  const baseStyle: React.CSSProperties = {
+    fontSize: "9px",
+    letterSpacing: "0.06em",
+    padding: "2px 7px",
+    borderRadius: "2px",
+    fontWeight: 700,
+  }
+
+  if (confidence === "high") {
+    return (
+      <span className="mono inline-flex items-center" style={{ ...baseStyle, background: "#C9082A", color: "#fff" }}>
+        {label}
       </span>
-      Live
+    )
+  }
+  if (confidence === "med") {
+    return (
+      <span className="mono inline-flex items-center" style={{ ...baseStyle, background: "#17408B", color: "#fff" }}>
+        {label}
+      </span>
+    )
+  }
+  return (
+    <span
+      className="mono inline-flex items-center"
+      style={{ ...baseStyle, background: "transparent", border: "1px solid #888", color: "#8A8478" }}
+    >
+      {label}
     </span>
   )
 }
 
-function LiveScoreHero({
-  homeScore,
-  awayScore,
-}: {
-  homeScore: number | null
-  awayScore: number | null
-}) {
-  if (awayScore === null || homeScore === null) return null
-  const awayLeading = awayScore > homeScore
-  const homeLeading = homeScore > awayScore
-  return (
-    <div className="mb-2 flex items-baseline justify-center gap-3 font-heading tabular-nums">
-      <span
-        className={cn(
-          awayLeading ? "text-2xl font-bold text-[#17408B]" : "text-lg font-semibold text-slate-500"
-        )}
-      >
-        {awayScore}
-      </span>
-      <span className="text-base font-medium text-slate-300">–</span>
-      <span
-        className={cn(
-          homeLeading ? "text-2xl font-bold text-[#17408B]" : "text-lg font-semibold text-slate-500"
-        )}
-      >
-        {homeScore}
-      </span>
-    </div>
-  )
-}
+// ─── Score display (kept for live/final game status) ─────────────
 
-function FinalScoreHero({
-  homeScore,
-  awayScore,
-}: {
-  homeScore: number
-  awayScore: number
-}) {
-  const awayWon = awayScore > homeScore
-  const homeWon = homeScore > awayScore
-  const tie = awayScore === homeScore
+function LiveIndicator() {
   return (
-    <div className="mb-3 flex flex-col gap-1.5">
-      <span className="text-center text-[10px] font-medium uppercase tracking-wider text-slate-400">
-        Final
-      </span>
-      <div className="flex items-baseline justify-center gap-4 font-heading tabular-nums">
-        <span
-          className={cn(
-            tie ? "text-3xl font-bold text-slate-800" : awayWon ? "text-4xl font-bold text-[#17408B]" : "text-2xl font-semibold text-slate-400"
-          )}
-        >
-          {awayScore}
-        </span>
-        <span className="text-xl font-medium text-slate-300">–</span>
-        <span
-          className={cn(
-            tie ? "text-3xl font-bold text-slate-800" : homeWon ? "text-4xl font-bold text-[#17408B]" : "text-2xl font-semibold text-slate-400"
-          )}
-        >
-          {homeScore}
-        </span>
-      </div>
-    </div>
+    <span className="mono inline-flex items-center gap-1.5" style={{ fontSize: "10px", letterSpacing: "0.06em", color: "#C9082A", fontWeight: 700 }}>
+      <span style={{ display: "inline-block", width: 6, height: 6, borderRadius: "50%", background: "#C9082A" }} />
+      LIVE
+    </span>
   )
 }
 
@@ -163,141 +143,248 @@ export function GameStatusRow({
 }) {
   if (status === "live") {
     return (
-      <div className="flex flex-col items-center gap-1">
+      <div className="mono flex items-center gap-3" style={{ fontSize: "11px" }}>
         <LiveIndicator />
-        <LiveScoreHero homeScore={homeScore} awayScore={awayScore} />
+        {homeScore !== null && awayScore !== null && (
+          <span className="tabular-nums" style={{ color: "#0f172a", fontWeight: 700 }}>
+            {awayScore} – {homeScore}
+          </span>
+        )}
       </div>
     )
   }
 
   if (status === "final" && awayScore !== null && homeScore !== null) {
-    return <FinalScoreHero homeScore={homeScore} awayScore={awayScore} />
+    return (
+      <div className="mono flex items-center gap-3" style={{ fontSize: "11px" }}>
+        <span style={{ color: "#8A8478", letterSpacing: "0.08em" }}>FINAL</span>
+        <span className="tabular-nums" style={{ color: "#0f172a", fontWeight: 700 }}>
+          {awayScore} – {homeScore}
+        </span>
+      </div>
+    )
   }
 
   if (status === "final") {
     return (
-      <span className="text-center text-xs font-medium uppercase tracking-wider text-slate-400">
-        Final
+      <span className="mono" style={{ fontSize: "10px", letterSpacing: "0.08em", color: "#8A8478" }}>
+        FINAL
       </span>
     )
   }
 
   return (
-    <span className="text-center text-xs font-semibold uppercase tracking-wider text-slate-400">
-      Upcoming
+    <span className="mono" style={{ fontSize: "10px", letterSpacing: "0.08em", color: "#8A8478" }}>
+      UPCOMING
     </span>
   )
 }
 
-function B2BBadge() {
-  return (
-    <span className="inline-flex items-center rounded-full bg-[#C9082A] px-1.5 py-px font-heading text-[10px] font-bold uppercase leading-3 tracking-wide text-white">
-      B2B
-    </span>
-  )
-}
+// ─── Team block ──────────────────────────────────────────────────
 
-function ScheduleStressBadge({
-  label,
-  className,
+function TeamBlock({
+  abbreviation,
+  city,
+  season,
+  fallback,
+  align = "left",
 }: {
-  label: string
-  className?: string
+  abbreviation: string
+  city: string
+  season: string
+  fallback: { name: string; city: string }
+  align?: "left" | "right"
 }) {
   return (
-    <span
-      className={cn(
-        "inline-flex items-center rounded-full bg-amber-500/95 px-1.5 py-px font-heading text-[10px] font-bold uppercase leading-3 tracking-wide text-white shadow-sm",
-        className
-      )}
-    >
-      {label}
-    </span>
+    <div className={cn("flex min-w-0 items-center gap-2.5", align === "right" && "flex-row-reverse text-right")}>
+      <TeamLogo abbreviation={abbreviation} season={season} fallback={fallback} size={24} />
+      <div className="flex min-w-0 flex-col">
+        <span className="mono" style={{ fontSize: "9px", letterSpacing: "0.08em", color: "#8A8478", fontWeight: 600 }}>
+          {abbreviation}
+        </span>
+        <span
+          className="truncate"
+          style={{ fontSize: "12px", fontWeight: 500, color: "#0f172a", lineHeight: 1.2 }}
+        >
+          {city}
+        </span>
+      </div>
+    </div>
   )
 }
 
-/** Subtle pill tag for contextual flags (altitude, OT, coast swing). */
-function FatigueTag({
-  children,
-  className,
+// ─── Center fatigue bars ─────────────────────────────────────────
+
+function FatigueBarRow({
+  abbr,
+  score,
+  tone,
 }: {
-  children: React.ReactNode
-  className?: string
+  abbr: string
+  score: number | null
+  tone: FatigueBarTone
 }) {
   return (
-    <span
-      className={cn(
-        "inline-flex items-center rounded-full border px-1.5 py-px font-heading text-[10px] font-semibold leading-3",
-        className
+    <div className="flex items-center gap-2">
+      <span className="mono shrink-0 tabular-nums" style={{ width: 28, fontSize: "10px", color: "#8A8478", fontWeight: 600 }}>
+        {abbr}
+      </span>
+      {score !== null ? (
+        <FatigueBar score={score} tone={tone} className="flex-1" />
+      ) : (
+        <div className="flex-1" style={{ height: 4, background: "#F0EEE9", borderRadius: "1px" }} />
       )}
-    >
-      {children}
-    </span>
+      <span className="mono shrink-0 tabular-nums" style={{ width: 28, fontSize: "10px", color: "#0f172a", fontWeight: 600, textAlign: "right" }}>
+        {score !== null ? score.toFixed(1) : "—"}
+      </span>
+    </div>
   )
 }
 
-function RoadTripBadge({ nights }: { nights: number }) {
-  if (nights < 2) return null
-  return (
-    <ScheduleStressBadge
-      label={`Road ×${nights}`}
-      className="bg-[#17408B]/90"
-    />
-  )
-}
-
-export function RaBadge({
-  restAdvantage,
-  homeAbbr,
+function FatigueBarsBlock({
   awayAbbr,
+  homeAbbr,
+  awayScore,
+  homeScore,
+}: {
+  awayAbbr: string
+  homeAbbr: string
+  awayScore: number | null
+  homeScore: number | null
+}) {
+  let awayTone: FatigueBarTone = "neutral"
+  let homeTone: FatigueBarTone = "neutral"
+  if (awayScore !== null && homeScore !== null) {
+    if (awayScore > homeScore) {
+      awayTone = "higher"
+      homeTone = "lower"
+    } else if (homeScore > awayScore) {
+      homeTone = "higher"
+      awayTone = "lower"
+    }
+  }
+
+  return (
+    <div className="flex flex-col gap-2">
+      <FatigueBarRow abbr={awayAbbr} score={awayScore} tone={awayTone} />
+      <FatigueBarRow abbr={homeAbbr} score={homeScore} tone={homeTone} />
+    </div>
+  )
+}
+
+// ─── Rest-advantage panel (right side) ───────────────────────────
+
+function RestAdvPanel({
+  restAdvantage,
+  confidence,
 }: {
   restAdvantage: GameResponse["restAdvantage"]
-  homeAbbr: string
-  awayAbbr: string
+  confidence: Confidence
 }) {
-  if (!restAdvantage) {
-    return <span className="text-xs text-slate-300">No fatigue data yet</span>
+  if (!restAdvantage || restAdvantage.advantageTeam === "neutral") {
+    return (
+      <div className="flex shrink-0 flex-col items-end gap-1.5 pl-4" style={{ borderLeft: "1px solid #E2DFD8" }}>
+        <span className="mono tabular-nums" style={{ fontSize: "22px", fontWeight: 600, color: "#8A8478", lineHeight: 1 }}>
+          0.0
+        </span>
+        <span className="mono" style={{ fontSize: "9px", letterSpacing: "0.08em", color: "#8A8478" }}>
+          REST ADV
+        </span>
+        <ConfidenceBadge confidence={confidence} />
+      </div>
+    )
   }
 
   const { differential, advantageTeam } = restAdvantage
-
-  if (advantageTeam === "neutral") {
-    return (
-      <span className="inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-3 py-0.5 text-xs font-medium text-slate-400">
-        Even Rest
-      </span>
-    )
-  }
-
-  const abbr = advantageTeam === "home" ? homeAbbr : awayAbbr
-  const diff = Math.abs(differential).toFixed(1)
   const isHomeAdv = advantageTeam === "home"
-  const baseColor = isHomeAdv ? "#17408B" : "#C9082A"
+  const color = isHomeAdv ? "#17408B" : "#C9082A"
+  const sign = isHomeAdv ? "+" : "-"
+  const value = Math.abs(differential).toFixed(1)
 
   return (
-    <span
-      className={cn(
-        "inline-flex items-center rounded-full px-3 py-0.5 font-heading text-xs font-bold text-white",
-        isHomeAdv ? "bg-[#17408B]" : "bg-[#C9082A]"
-      )}
-      style={{ boxShadow: `0 0 14px ${baseColor}40, 0 2px 6px ${baseColor}25` }}
-    >
-      {abbr} +{diff} RA
-    </span>
+    <div className="flex shrink-0 flex-col items-end gap-1.5 pl-4" style={{ borderLeft: "1px solid #E2DFD8" }}>
+      <span className="mono tabular-nums" style={{ fontSize: "22px", fontWeight: 700, color, lineHeight: 1 }}>
+        {sign}{value}
+      </span>
+      <span className="mono" style={{ fontSize: "9px", letterSpacing: "0.08em", color: "#8A8478" }}>
+        REST ADV
+      </span>
+      <ConfidenceBadge confidence={confidence} />
+    </div>
   )
 }
+
+// ─── Metadata strip ──────────────────────────────────────────────
+
+function MetaStrip({ game }: { game: GameResponse }) {
+  const items: string[] = []
+
+  // Game date (no time field on GameResponse — show ISO date in mono).
+  items.push(game.date)
+
+  const flags: string[] = []
+  if (game.awayFatigue?.isBackToBack) flags.push("AWAY B2B")
+  if (game.homeFatigue?.isBackToBack) flags.push("HOME B2B")
+  if (game.awayFatigue?.is3In4) flags.push("AWAY 3IN4")
+  if (game.homeFatigue?.is3In4) flags.push("HOME 3IN4")
+  if (game.awayFatigue?.is4In6) flags.push("AWAY 4IN6")
+  if (game.homeFatigue?.is4In6) flags.push("HOME 4IN6")
+  if (game.awayFatigue?.altitudePenalty) flags.push("ALT")
+  if (game.awayFatigue?.hasCoastToCoastRoadSwing) flags.push("COAST")
+  if (game.awayFatigue?.isOvertimePenalty || game.homeFatigue?.isOvertimePenalty) flags.push("OT")
+
+  return (
+    <div
+      className="mono flex flex-wrap items-center gap-x-2 gap-y-1"
+      style={{
+        background: "#F7F6F3",
+        borderTop: "1px solid #E2DFD8",
+        padding: "4px 14px",
+        fontSize: "10px",
+        color: "#8A8478",
+        letterSpacing: "0.04em",
+      }}
+    >
+      {[...items, ...flags].map((item, i, arr) => (
+        <span key={i} className="inline-flex items-center gap-2">
+          <span>{item}</span>
+          {i < arr.length - 1 && <span style={{ color: "#C9C5BC" }}>·</span>}
+        </span>
+      ))}
+    </div>
+  )
+}
+
+// ─── Expanded detail (kept, restyled) ────────────────────────────
 
 function PenaltyMark({ active }: { active: boolean }) {
   return (
     <span
-      className={cn(
-        "font-heading text-sm font-semibold tabular-nums",
-        active ? "text-red-600" : "text-emerald-600"
-      )}
+      className="mono tabular-nums"
+      style={{ fontSize: 12, fontWeight: 700, color: active ? "#C9082A" : "#17A34A" }}
       aria-label={active ? "Yes" : "No"}
     >
-      {active ? "✓" : "✗"}
+      {active ? "Y" : "N"}
     </span>
+  )
+}
+
+function FatigueDetailRow({
+  k,
+  v,
+  highlight,
+}: {
+  k: string
+  v: React.ReactNode
+  highlight?: boolean
+}) {
+  return (
+    <div className="mono flex justify-between gap-2" style={{ fontSize: 11 }}>
+      <span style={{ color: "#8A8478", letterSpacing: "0.04em" }}>{k}</span>
+      <span className="tabular-nums" style={{ color: highlight ? "#C9082A" : "#0f172a", fontWeight: 600 }}>
+        {v}
+      </span>
+    </div>
   )
 }
 
@@ -310,8 +397,11 @@ export function FatigueDetailColumn({
 }) {
   if (!fatigue) {
     return (
-      <div className="rounded-xl border border-white/40 px-3 py-3 text-center text-xs text-slate-400">
-        No fatigue data
+      <div
+        className="mono px-3 py-3 text-center"
+        style={{ fontSize: 11, color: "#8A8478", background: "#fff", border: "1px solid #E2DFD8", borderRadius: 4 }}
+      >
+        NO FATIGUE DATA
       </div>
     )
   }
@@ -319,147 +409,93 @@ export function FatigueDetailColumn({
   const travelHigh = fatigue.travelDistanceMiles >= 1000
 
   return (
-    <div className="flex flex-col gap-2.5 rounded-xl border border-white/50 px-3 py-3">
-      <p className="border-b border-slate-200/60 pb-1.5 text-center font-heading text-[11px] font-bold uppercase tracking-wider text-slate-500">
-        {label}
+    <div
+      className="flex flex-col gap-2 px-3 py-3"
+      style={{ background: "#fff", border: "1px solid #E2DFD8", borderRadius: 4 }}
+    >
+      <p
+        className="mono pb-1.5"
+        style={{
+          fontSize: 10,
+          letterSpacing: "0.08em",
+          color: "#8A8478",
+          fontWeight: 700,
+          borderBottom: "1px solid #E2DFD8",
+        }}
+      >
+        {label.toUpperCase()}
       </p>
 
-      <div className="flex justify-between gap-2 text-xs">
-        <span className="text-slate-500">GP (30d / 7d)</span>
-        <span className="font-heading font-semibold tabular-nums text-slate-800">
-          {fatigue.gamesInLast30Days} / {fatigue.gamesInLast7Days}
-        </span>
-      </div>
-
-      <div className="flex justify-between gap-2 text-xs">
-        <span className="text-slate-500">Back-to-back</span>
-        <PenaltyMark active={fatigue.isBackToBack} />
-      </div>
-
-      <div className="flex justify-between gap-2 text-xs">
-        <span className="text-slate-500">3 in 4 nights</span>
-        <PenaltyMark active={fatigue.is3In4} />
-      </div>
-
-      <div className="flex justify-between gap-2 text-xs">
-        <span className="text-slate-500">4 in 6 nights</span>
-        <PenaltyMark active={fatigue.is4In6} />
-      </div>
-
-      <div className="flex justify-between gap-2 text-xs">
-        <span className="text-slate-500">Road trip (streak)</span>
-        <span
-          className={cn(
-            "font-heading font-semibold tabular-nums",
-            fatigue.roadTripConsecutiveAway >= 3 ? "text-[#17408B]" : "text-slate-800"
-          )}
-        >
-          {fatigue.roadTripConsecutiveAway === 0 ? "—" : `×${fatigue.roadTripConsecutiveAway}`}
-        </span>
-      </div>
-
-      <div className="flex justify-between gap-2 text-xs">
-        <span
-          className="text-slate-500"
-          title={`Cumulative great-circle miles over the prior ${TRAVEL_LOOKBACK_DAYS} days (scheduled legs)`}
-        >
-          Travel (mi, {TRAVEL_LOOKBACK_DAYS}d)
-        </span>
-        <span
-          className={cn(
-            "font-heading font-semibold tabular-nums",
-            travelHigh ? "text-red-600" : "text-slate-800"
-          )}
-        >
-          {Math.round(fatigue.travelDistanceMiles).toLocaleString()} mi
-        </span>
-      </div>
-
-      <div className="flex justify-between gap-2 text-xs">
-        <span className="text-slate-500">Days since last game</span>
-        <span className="font-heading font-semibold tabular-nums text-slate-800">
-          {fatigue.daysRest === null ? "—" : `${fatigue.daysRest}d`}
-        </span>
-      </div>
+      <FatigueDetailRow k="GP (30D / 7D)" v={`${fatigue.gamesInLast30Days} / ${fatigue.gamesInLast7Days}`} />
+      <FatigueDetailRow k="BACK-TO-BACK" v={<PenaltyMark active={fatigue.isBackToBack} />} />
+      <FatigueDetailRow k="3 IN 4" v={<PenaltyMark active={fatigue.is3In4} />} />
+      <FatigueDetailRow k="4 IN 6" v={<PenaltyMark active={fatigue.is4In6} />} />
+      <FatigueDetailRow
+        k="ROAD STREAK"
+        v={fatigue.roadTripConsecutiveAway === 0 ? "—" : `×${fatigue.roadTripConsecutiveAway}`}
+      />
+      <FatigueDetailRow
+        k={`TRAVEL ${TRAVEL_LOOKBACK_DAYS}D (MI)`}
+        v={Math.round(fatigue.travelDistanceMiles).toLocaleString()}
+        highlight={travelHigh}
+      />
+      <FatigueDetailRow k="DAYS REST" v={fatigue.daysRest === null ? "—" : `${fatigue.daysRest}D`} />
     </div>
   )
 }
 
-export function TeamRow({
-  side,
-  abbreviation,
-  displayAbbreviation,
-  season,
-  teamFallback,
-  fatigue,
-  score,
-  highlight,
+// Kept for compat — some pages import RaBadge directly. Re-render as the new badge.
+export function RaBadge({
+  restAdvantage,
+  homeAbbr,
+  awayAbbr,
 }: {
-  side: "AWAY" | "HOME"
-  abbreviation: string
-  displayAbbreviation: string
-  season: string
-  teamFallback: { name: string; city: string }
-  fatigue: FatigueInfo | null
-  score: number | null
-  highlight: "advantage" | "disadvantage" | "neutral"
+  restAdvantage: GameResponse["restAdvantage"]
+  homeAbbr: string
+  awayAbbr: string
 }) {
+  if (!restAdvantage) {
+    return (
+      <span className="mono" style={{ fontSize: 10, color: "#8A8478", letterSpacing: "0.08em" }}>
+        NO DATA
+      </span>
+    )
+  }
+  if (restAdvantage.advantageTeam === "neutral") {
+    return (
+      <span
+        className="mono inline-flex items-center"
+        style={{
+          fontSize: 9,
+          letterSpacing: "0.06em",
+          padding: "2px 7px",
+          borderRadius: 2,
+          border: "1px solid #888",
+          color: "#8A8478",
+        }}
+      >
+        EVEN
+      </span>
+    )
+  }
+  const isHomeAdv = restAdvantage.advantageTeam === "home"
+  const abbr = isHomeAdv ? homeAbbr : awayAbbr
+  const diff = Math.abs(restAdvantage.differential).toFixed(1)
   return (
-    <div
-      className={cn(
-        "flex flex-col gap-1.5 rounded-lg px-2 py-1.5 -mx-2 transition-colors",
-        highlight === "advantage" &&
-          "border-l-[3px] border-emerald-400/70 bg-emerald-50/50 pl-2.5",
-        highlight === "disadvantage" &&
-          "border-l-[3px] border-red-300/60 bg-red-50/30 pl-2.5"
-      )}
+    <span
+      className="mono inline-flex items-center"
+      style={{
+        fontSize: 9,
+        letterSpacing: "0.06em",
+        padding: "2px 7px",
+        borderRadius: 2,
+        background: isHomeAdv ? "#17408B" : "#C9082A",
+        color: "#fff",
+        fontWeight: 700,
+      }}
     >
-      <div className="flex items-center gap-2">
-        <TeamLogo
-          abbreviation={abbreviation}
-          season={season}
-          fallback={teamFallback}
-        />
-        <div className="flex min-w-0 flex-1 flex-wrap items-center gap-1.5">
-          <span className="text-[10px] font-medium uppercase tracking-wider text-slate-400">
-            {side}
-          </span>
-          <span className="font-heading text-sm font-bold text-slate-800">
-            {displayAbbreviation}
-          </span>
-          {fatigue?.isBackToBack && <B2BBadge />}
-          {fatigue?.is3In4 && <ScheduleStressBadge label="3in4" />}
-          {fatigue?.is4In6 && <ScheduleStressBadge label="4in6" />}
-          {fatigue && (
-            <RoadTripBadge nights={fatigue.roadTripConsecutiveAway} />
-          )}
-          {fatigue?.hasCoastToCoastRoadSwing && (
-            <FatigueTag className="border-violet-200 bg-violet-50 text-violet-700">
-              ✈ Coast
-            </FatigueTag>
-          )}
-          {fatigue?.altitudePenalty && (
-            <FatigueTag className="border-amber-300 bg-amber-50 text-amber-700">
-              ⛰ Alt
-            </FatigueTag>
-          )}
-          {fatigue?.isOvertimePenalty && (
-            <FatigueTag className="border-purple-200 bg-purple-50 text-purple-700">
-              OT
-            </FatigueTag>
-          )}
-        </div>
-        <span className="ml-auto shrink-0 font-heading text-base font-semibold tabular-nums text-slate-700">
-          {score !== null ? score.toFixed(1) : "—"}
-        </span>
-      </div>
-
-      {score !== null ? (
-        <FatigueBar score={score} />
-      ) : (
-        <div className="h-1.5 w-full rounded-full border border-dashed border-slate-200" />
-      )}
-    </div>
+      {abbr} +{diff} RA
+    </span>
   )
 }
 
@@ -486,21 +522,9 @@ export function MatchupCard({ game, index = 0, isScoreFlashing = false }: Matchu
   const homeBrand = getTeamBranding(game.homeTeam.abbreviation, game.season, homeFallback)
   const awayBrand = getTeamBranding(game.awayTeam.abbreviation, game.season, awayFallback)
 
-  const absDiff = Math.abs(game.restAdvantage?.differential ?? 0)
-  const showHighlight = !!game.restAdvantage && absDiff >= HIGHLIGHT_THRESHOLD
-  const advantageTeam = game.restAdvantage?.advantageTeam
-
-  const awayHighlight: "advantage" | "disadvantage" | "neutral" = showHighlight
-    ? advantageTeam === "away"
-      ? "advantage"
-      : "disadvantage"
-    : "neutral"
-
-  const homeHighlight: "advantage" | "disadvantage" | "neutral" = showHighlight
-    ? advantageTeam === "home"
-      ? "advantage"
-      : "disadvantage"
-    : "neutral"
+  const diff = game.restAdvantage?.differential ?? null
+  const confidence = getConfidence(diff)
+  const accent = confidenceAccent(confidence)
 
   const toggle = useCallback(() => {
     setExpanded((e) => !e)
@@ -518,90 +542,76 @@ export function MatchupCard({ game, index = 0, isScoreFlashing = false }: Matchu
 
   return (
     <div
-      className="animate-[fadeInUp_0.4s_ease-out_forwards] overflow-hidden rounded-2xl"
-      style={{ animationDelay: `${index * 55}ms` }}
+      className="animate-[fadeInUp_0.4s_ease-out_forwards] flex flex-col"
+      style={{
+        animationDelay: `${index * 40}ms`,
+        background: "#ffffff",
+        border: "1px solid #E2DFD8",
+        borderLeft: `2px solid ${accent}`,
+        borderRadius: 4,
+        overflow: "hidden",
+      }}
     >
-      <Card
+      <div
+        role="button"
+        tabIndex={0}
+        aria-expanded={expanded}
+        aria-label={expanded ? "Collapse game details" : "Expand game details"}
+        onClick={toggle}
+        onKeyDown={onKeyDown}
         className={cn(
-          "ring-0 rounded-2xl border border-white/50",
-          "transition-all duration-300 ease-in-out hover:scale-[1.02]",
+          "cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-[#17408B]/40",
           isScoreFlashing && "animate-[scoreFlash_0.5s_ease-out]"
         )}
-        style={{
-          background: "rgba(255, 255, 255, 0.6)",
-          backdropFilter: "blur(16px)",
-          WebkitBackdropFilter: "blur(16px)",
-          boxShadow: "0 8px 32px rgba(23, 64, 139, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04)",
-        }}
+        style={{ padding: "10px 14px" }}
       >
-        <CardHeader className="gap-0 pb-2">
-          <div
-            role="button"
-            tabIndex={0}
-            aria-expanded={expanded}
-            aria-label={expanded ? "Collapse game details" : "Expand game details"}
-            onClick={toggle}
-            onKeyDown={onKeyDown}
-            className="cursor-pointer rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-[#17408B]/35"
-          >
-            <GameStatusRow
-              status={game.status}
-              homeScore={game.homeScore}
-              awayScore={game.awayScore}
-            />
-
-            <div className="mt-2 flex items-center justify-between gap-2">
-              <div className="flex items-center gap-2">
-                <CardTitle className="text-lg font-bold leading-tight text-slate-900">
-                  <span className="font-heading font-bold">{awayBrand.abbreviation}</span>
-                  <span className="mx-1.5 font-normal text-slate-300">@</span>
-                  <span className="font-heading font-bold">{homeBrand.abbreviation}</span>
-                </CardTitle>
-              </div>
-              <ChevronDown
-                className={cn(
-                  "size-5 shrink-0 text-slate-400 transition-transform duration-300 ease-out",
-                  expanded && "rotate-180"
-                )}
-                aria-hidden
-              />
-            </div>
-          </div>
-        </CardHeader>
-
-        <CardContent className="flex flex-col gap-3 pt-0">
-          <TeamRow
-            side="AWAY"
-            abbreviation={game.awayTeam.abbreviation}
-            displayAbbreviation={awayBrand.abbreviation}
-            season={game.season}
-            teamFallback={awayFallback}
-            fatigue={game.awayFatigue}
-            score={game.awayFatigue?.score ?? null}
-            highlight={awayHighlight}
+        {/* Status line (live/final/upcoming) */}
+        <div className="mb-2 flex items-center justify-between">
+          <GameStatusRow status={game.status} homeScore={game.homeScore} awayScore={game.awayScore} />
+          <ChevronDown
+            className={cn("size-4 text-[#8A8478] transition-transform duration-200", expanded && "rotate-180")}
+            aria-hidden
           />
+        </div>
 
-          <div className="flex items-center justify-center gap-2 py-0.5">
-            <RaBadge
-              restAdvantage={game.restAdvantage}
-              homeAbbr={homeBrand.abbreviation}
+        {/* Main row: away | bars | home | RA */}
+        <div className="flex items-center gap-4">
+          <div className="w-[110px] shrink-0">
+            <TeamBlock
+              abbreviation={awayBrand.abbreviation}
+              city={awayBrand.city ?? game.awayTeam.city}
+              season={game.season}
+              fallback={awayFallback}
+              align="left"
+            />
+          </div>
+
+          <div className="min-w-0 flex-1">
+            <FatigueBarsBlock
               awayAbbr={awayBrand.abbreviation}
+              homeAbbr={homeBrand.abbreviation}
+              awayScore={game.awayFatigue?.score ?? null}
+              homeScore={game.homeFatigue?.score ?? null}
             />
           </div>
 
-          <TeamRow
-            side="HOME"
-            abbreviation={game.homeTeam.abbreviation}
-            displayAbbreviation={homeBrand.abbreviation}
-            season={game.season}
-            teamFallback={homeFallback}
-            fatigue={game.homeFatigue}
-            score={game.homeFatigue?.score ?? null}
-            highlight={homeHighlight}
-          />
-        </CardContent>
-      </Card>
+          <div className="w-[110px] shrink-0">
+            <TeamBlock
+              abbreviation={homeBrand.abbreviation}
+              city={homeBrand.city ?? game.homeTeam.city}
+              season={game.season}
+              fallback={homeFallback}
+              align="right"
+            />
+          </div>
 
+          <RestAdvPanel restAdvantage={game.restAdvantage} confidence={confidence} />
+        </div>
+      </div>
+
+      <MetaStrip game={game} />
+
+      {/* Expanded detail */}
       <div
         className={cn(
           "grid transition-[grid-template-rows] duration-300 ease-out",
@@ -610,19 +620,37 @@ export function MatchupCard({ game, index = 0, isScoreFlashing = false }: Matchu
       >
         <div className="overflow-hidden">
           <div
-            className="mt-2 rounded-2xl border border-white/45 px-3 py-4 sm:px-4"
-            style={detailGlass}
+            className="grid grid-cols-1 gap-3 px-3 py-3 sm:grid-cols-2"
+            style={{ background: "#F7F6F3", borderTop: "1px solid #E2DFD8" }}
           >
-            <p className="mb-3 text-center font-heading text-[11px] font-semibold uppercase tracking-wider text-slate-500">
-              Fatigue breakdown
-            </p>
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-              <FatigueDetailColumn label={`Away · ${awayBrand.abbreviation}`} fatigue={game.awayFatigue} />
-              <FatigueDetailColumn label={`Home · ${homeBrand.abbreviation}`} fatigue={game.homeFatigue} />
-            </div>
+            <FatigueDetailColumn
+              label={`AWAY · ${awayBrand.abbreviation}`}
+              fatigue={game.awayFatigue}
+            />
+            <FatigueDetailColumn
+              label={`HOME · ${homeBrand.abbreviation}`}
+              fatigue={game.homeFatigue}
+            />
           </div>
         </div>
       </div>
     </div>
   )
+}
+
+// ─── Legacy exports (kept so existing imports don't break) ──────
+
+export function TeamRow(_props: {
+  side: "AWAY" | "HOME"
+  abbreviation: string
+  displayAbbreviation: string
+  season: string
+  teamFallback: { name: string; city: string }
+  fatigue: FatigueInfo | null
+  score: number | null
+  highlight: "advantage" | "disadvantage" | "neutral"
+}) {
+  void _props
+  // Deprecated under the new design — kept as a no-op shim.
+  return null
 }

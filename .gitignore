@@ -9,6 +9,7 @@ CLAUDE.md
 .env.*
 !.env.example
 scripts/.env
+venv/
 
 # dependencies
 node_modules/

@@ -16,7 +16,7 @@ import { and, eq, isNotNull } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
 import type { PostgresJsDatabase } from "drizzle-orm/postgres-js";
 import type * as Schema from "@/lib/db/schema";
-import { fatigueScores, games, predictions, teams } from "@/lib/db/schema";
+import { fatigueScores, games, predictions } from "@/lib/db/schema";
 import { loadEnvLocal } from "@/lib/load-env-local";
 
 type AppDb = PostgresJsDatabase<typeof Schema>;

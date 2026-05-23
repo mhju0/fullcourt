@@ -1,8 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { getSupabaseBrowser } from "@/lib/supabase";
-import type { RealtimeChannel } from "@supabase/supabase-js";
 
 /** Partial game update from the Realtime subscription. */
 export interface LiveGameUpdate {
@@ -11,6 +10,15 @@ export interface LiveGameUpdate {
   status?: string;
 }
 
+type LiveGamesState = {
+  key: string;
+  liveUpdates: Record<number, LiveGameUpdate>;
+  recentlyUpdated: Set<number>;
+};
+
+const EMPTY_LIVE_UPDATES: Record<number, LiveGameUpdate> = {};
+const EMPTY_RECENTLY_UPDATED = new Set<number>();
+
 /**
  * Subscribes to Supabase Realtime changes on the `games` table for a set of
  * game IDs. Returns a map of game ID → changed fields whenever a row is updated.
@@ -18,24 +26,23 @@ export interface LiveGameUpdate {
  * Cleans up the subscription on unmount or when gameIds change.
  */
 export function useLiveGames(gameIds: number[]) {
-  const [liveUpdates, setLiveUpdates] = useState<Record<number, LiveGameUpdate>>({});
-  const [recentlyUpdated, setRecentlyUpdated] = useState<Set<number>>(new Set());
-  const channelRef = useRef<RealtimeChannel | null>(null);
+  const gameIdsKey = gameIds.join(",");
+  const [liveState, setLiveState] = useState<LiveGamesState>({
+    key: gameIdsKey,
+    liveUpdates: EMPTY_LIVE_UPDATES,
+    recentlyUpdated: EMPTY_RECENTLY_UPDATED,
+  });
 
   useEffect(() => {
-    if (gameIds.length === 0) return;
+    if (gameIdsKey.length === 0) return;
 
     const supabase = getSupabaseBrowser();
     if (!supabase) return;
 
-    // Reset updates when game IDs change
-    setLiveUpdates({});
-    setRecentlyUpdated(new Set());
-
-    const idSet = new Set(gameIds);
+    const idSet = new Set(gameIdsKey.split(",").map(Number));
 
     const channel = supabase
-      .channel(`games-live-${gameIds.join(",")}`)
+      .channel(`games-live-${gameIdsKey}`)
       .on(
         "postgres_changes",
         {
@@ -54,24 +61,31 @@ export function useLiveGames(gameIds: number[]) {
           // Only process updates for games we're tracking (O(1) Set lookup)
           if (!idSet.has(row.id)) return;
 
-          setLiveUpdates((prev) => ({
-            ...prev,
-            [row.id]: {
-              homeScore: row.home_score,
-              awayScore: row.away_score,
-              status: row.status,
+          setLiveState((prev) => ({
+            key: gameIdsKey,
+            liveUpdates: {
+              ...(prev.key === gameIdsKey ? prev.liveUpdates : EMPTY_LIVE_UPDATES),
+              [row.id]: {
+                homeScore: row.home_score,
+                awayScore: row.away_score,
+                status: row.status,
+              },
             },
+            recentlyUpdated: new Set(
+              prev.key === gameIdsKey ? prev.recentlyUpdated : EMPTY_RECENTLY_UPDATED
+            ).add(row.id),
           }));
-
-          // Mark game as recently updated for flash animation
-          setRecentlyUpdated((prev) => new Set(prev).add(row.id));
 
           // Clear the flash after 600ms
           setTimeout(() => {
-            setRecentlyUpdated((prev) => {
-              const next = new Set(prev);
-              next.delete(row.id);
-              return next;
+            setLiveState((prev) => {
+              if (prev.key !== gameIdsKey) return prev;
+              const recentlyUpdated = new Set(prev.recentlyUpdated);
+              recentlyUpdated.delete(row.id);
+              return {
+                ...prev,
+                recentlyUpdated,
+              };
             });
           }, 600);
         }
@@ -82,12 +96,20 @@ export function useLiveGames(gameIds: number[]) {
         }
       });
 
-    channelRef.current = channel;
-
     return () => {
       channel.unsubscribe();
     };
-  }, [gameIds.join(",")]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [gameIdsKey]);
 
-  return { liveUpdates, recentlyUpdated };
+  if (liveState.key !== gameIdsKey) {
+    return {
+      liveUpdates: EMPTY_LIVE_UPDATES,
+      recentlyUpdated: EMPTY_RECENTLY_UPDATED,
+    };
+  }
+
+  return {
+    liveUpdates: liveState.liveUpdates,
+    recentlyUpdated: liveState.recentlyUpdated,
+  };
 }

@@ -6,7 +6,7 @@
  * Usage: pnpm exec tsx scripts/run-daily.ts YYYY-MM-DD
  */
 
-import { and, asc, eq, gte, inArray, isNull, lte } from "drizzle-orm";
+import { and, asc, gte, inArray, isNull, lte } from "drizzle-orm";
 import { addDays, format, parseISO } from "date-fns";
 import type { PostgresJsDatabase } from "drizzle-orm/postgres-js";
 import type * as Schema from "@/lib/db/schema";

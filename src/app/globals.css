@@ -110,11 +110,9 @@
 
 /* ── Animations ─────────────────────────────────────────────────── */
 
-@keyframes gradientShift {
-  0%, 100% { background-position: 0% 50%; }
-  25%       { background-position: 50% 0%; }
-  50%       { background-position: 100% 50%; }
-  75%       { background-position: 50% 100%; }
+@keyframes marquee {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
 }
 
 @keyframes fadeInUp {
@@ -163,9 +161,15 @@
     @apply font-bold tracking-tight;
   }
 
-  /* Body is transparent — the fixed gradient div in layout.tsx shows through. */
+  html, body {
+    background: #F7F6F3;
+  }
+
   body {
     @apply text-foreground;
-    background: transparent;
   }
+}
+
+.mono {
+  font-family: 'Courier New', Courier, monospace;
 }
