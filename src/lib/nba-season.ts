@@ -2,12 +2,15 @@ import { endOfMonth, format, startOfMonth } from "date-fns";
 
 /**
  * Seasons the app and ingest pipeline support (2019-20 bubble omitted).
- * 1985-86 … 2025-26 — matches `scripts/fetch_schedule.py` LeagueGameFinder coverage.
+ * 1985-86 … latest supported/current NBA season.
  * Oldest → newest for stable sort; UI often reverses for “latest first” dropdowns.
  */
 export const NBA_SEASONS: readonly string[] = (() => {
+  const now = new Date();
+  const currentSeasonStart = now.getMonth() + 1 >= 10 ? now.getFullYear() : now.getFullYear() - 1;
+  const latestSupportedStart = Math.max(2025, currentSeasonStart);
   const out: string[] = [];
-  for (let y = 1985; y <= 2025; y++) {
+  for (let y = 1985; y <= latestSupportedStart; y++) {
     if (y === 2019) continue;
     out.push(`${y}-${String(y + 1).slice(-2)}`);
   }
@@ -48,6 +51,21 @@ export function regularSeasonDateBounds(season: string): { from: string; to: str
   return { from: `${y}-10-01`, to: `${y + 1}-04-30` };
 }
 
+/** Local calendar date as YYYY-MM-DD. Avoids UTC shifts from Date#toISOString(). */
+export function formatLocalDateKey(date = new Date()): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+export function seasonLabelForDateKey(dateKey: string): string {
+  const year = Number(dateKey.slice(0, 4));
+  const month = Number(dateKey.slice(5, 7));
+  const startYear = month >= 10 ? year : year - 1;
+  return `${startYear}-${String(startYear + 1).slice(-2)}`;
+}
+
 /**
  * Calendar year for a month tab within an NBA season (Oct–Dec → start year; Jan–Apr → start+1).
  */
@@ -86,5 +104,32 @@ export function defaultNbaCalendarMonth(): number {
 }
 
 export function defaultNbaSeason(): NbaSeasonLabel {
+  const localSeason = seasonLabelForDateKey(formatLocalDateKey());
+  if (NBA_SEASONS.includes(localSeason)) return localSeason as NbaSeasonLabel;
   return NBA_SEASONS[NBA_SEASONS.length - 1];
+}
+
+export function pickDefaultGamesDate(
+  todayKey: string,
+  availableDates: readonly { date: string }[]
+): string | null {
+  const dates = Array.from(new Set(availableDates.map((d) => d.date))).sort();
+  if (dates.length === 0) return null;
+
+  if (dates.includes(todayKey)) return todayKey;
+
+  const todayMonth = Number(todayKey.slice(5, 7));
+  if (todayMonth === 10) {
+    const octoberDates = dates.filter((date) => date.slice(5, 7) === "10");
+    if (octoberDates.length > 0) {
+      return octoberDates.find((date) => date >= todayKey) ?? octoberDates[0];
+    }
+  }
+
+  const firstDate = dates[0];
+  const lastDate = dates[dates.length - 1];
+  if (todayKey <= firstDate) return firstDate;
+  if (todayKey >= lastDate) return lastDate;
+
+  return dates.find((date) => date >= todayKey) ?? lastDate;
 }
