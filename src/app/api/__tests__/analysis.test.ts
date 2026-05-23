@@ -130,4 +130,30 @@ describe("GET /api/analysis", () => {
       expect(counts[i - 1]).toBeGreaterThanOrEqual(counts[i]);
     }
   });
+
+  it("uses absolute RA >= 7 and credits away-rested wins consistently", async () => {
+    mockGetCompleted.mockResolvedValueOnce([
+      { ...row("2017-01-01", 1, 9, 110, 100), season: "2016-17" },
+      { ...row("2017-01-02", 10, 2, 100, 108), season: "2016-17" },
+      { ...row("2017-01-03", 10, 2, 108, 100), season: "2016-17" },
+      { ...row("2017-01-04", 4, 10.9, 100, 90), season: "2016-17" },
+    ]);
+
+    const res = await GET(makeReq("?seasonMinRA=7"));
+    const body = (await res.json()) as { data: AnalysisResponse; error: string | null };
+
+    expect(body.error).toBeNull();
+    expect(body.data.thresholds.find((t) => t.threshold === 7)).toMatchObject({
+      games: 3,
+      restedTeamWins: 2,
+    });
+    expect(body.data.seasonWinRates).toEqual([
+      {
+        season: "2016-17",
+        games: 3,
+        restedTeamWins: 2,
+        winPct: 66.7,
+      },
+    ]);
+  });
 });
