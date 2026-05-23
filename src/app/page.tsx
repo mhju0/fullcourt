@@ -10,8 +10,10 @@ import { useLiveGames } from "@/hooks/useLiveGames"
 import {
   defaultNbaCalendarMonth,
   defaultNbaSeason,
+  formatLocalDateKey,
   NBA_REGULAR_MONTHS,
   NBA_SEASONS,
+  pickDefaultGamesDate,
 } from "@/lib/nba-season"
 import { cn } from "@/lib/utils"
 import type { ApiResponse, GameDateCount, GameResponse } from "@/types"
@@ -23,6 +25,11 @@ function pickInitialDate(dates: GameDateCount[]): string | null {
   const todayKey = format(new Date(), "yyyy-MM-dd")
   if (dates.some((d) => d.date === todayKey)) return todayKey
   return dates[dates.length - 1].date
+}
+
+function filterDatesByMonth(dates: GameDateCount[], month: number): GameDateCount[] {
+  const monthKey = String(month).padStart(2, "0")
+  return dates.filter((d) => d.date.slice(5, 7) === monthKey)
 }
 
 type PendingScope = { season: string; month: number }
@@ -206,6 +213,7 @@ export default function HomePage() {
 
   const pendingSelectionResetRef = useRef<PendingScope | null>(null)
   const isFirstDatesFetchRef = useRef(true)
+  const initialTodayKeyRef = useRef(formatLocalDateKey())
 
   const gameIds = useMemo(() => games.map((g) => g.id), [games])
   const { liveUpdates, recentlyUpdated } = useLiveGames(gameIds)
@@ -249,7 +257,10 @@ export default function HomePage() {
       setErrorDates(null)
     })
 
-    const params = new URLSearchParams({ season, month: String(month) })
+    const isInitialFetch =
+      isFirstDatesFetchRef.current && pendingSelectionResetRef.current === null
+    const params = new URLSearchParams({ season })
+    if (!isInitialFetch) params.set("month", String(month))
     fetch(`/api/games/dates?${params.toString()}`, { signal: controller.signal })
       .then((res) => res.json() as Promise<ApiResponse<GameDateCount[]>>)
       .then(({ data, error: apiError }) => {
@@ -270,9 +281,15 @@ export default function HomePage() {
         }
         if (isFirstDatesFetchRef.current) {
           isFirstDatesFetchRef.current = false
-          const nextDate = data.length > 0 ? pickInitialDate(data) : null
-          if (nextDate) setSelectedDateKey(nextDate)
-          else clearSelectedDate()
+          const nextDate = pickDefaultGamesDate(initialTodayKeyRef.current, data)
+          if (nextDate) {
+            const nextMonth = Number(nextDate.slice(5, 7))
+            setAvailableDates(filterDatesByMonth(data, nextMonth))
+            setSelectedDateKey(nextDate)
+            if (nextMonth !== month) setMonth(nextMonth)
+          } else {
+            clearSelectedDate()
+          }
           return
         }
         setSelectedDateKey((prev) => {
