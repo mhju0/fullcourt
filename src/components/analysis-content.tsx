@@ -24,17 +24,90 @@ import { NBA_SEASONS } from "@/lib/nba-season"
 import type {
   AnalysisResponse,
   GameSearchResponse,
-  GameSearchResult,
 } from "@/types"
 
-// ─── Shared styles ────────────────────────────────────────────────
+// ─── Shared styles (terminal) ─────────────────────────────────────
 
-const glass = {
-  background: "rgba(255, 255, 255, 0.6)",
-  backdropFilter: "blur(16px)",
-  WebkitBackdropFilter: "blur(16px)",
-  boxShadow: "0 8px 32px rgba(23, 64, 139, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04)",
-} as const
+const termCard: React.CSSProperties = {
+  background: "#ffffff",
+  border: "1px solid #E2DFD8",
+  borderRadius: 4,
+  padding: 16,
+}
+
+const termTooltip: React.CSSProperties = {
+  background: "#ffffff",
+  border: "1px solid #E2DFD8",
+  borderRadius: 4,
+  padding: "8px 10px",
+  fontFamily: "'Courier New', Courier, monospace",
+  fontSize: 11,
+}
+
+const exploreSelectStyle: React.CSSProperties = {
+  background: "#ffffff",
+  border: "1px solid #E2DFD8",
+  borderRadius: 4,
+  padding: "6px 10px",
+  fontSize: 11,
+  fontFamily: "'Courier New', Courier, monospace",
+  color: "#0f172a",
+  letterSpacing: "0.04em",
+}
+
+const exploreThStyle: React.CSSProperties = {
+  fontFamily: "'Courier New', Courier, monospace",
+  fontSize: 10,
+  letterSpacing: "0.08em",
+  color: "#8A8478",
+  fontWeight: 700,
+  padding: "8px 10px",
+  background: "#F0EEE9",
+  borderBottom: "1px solid #E2DFD8",
+  textTransform: "uppercase",
+}
+
+const exploreTdBaseStyle: React.CSSProperties = {
+  padding: "8px 10px",
+  borderBottom: "1px solid #E2DFD8",
+  fontSize: 11,
+}
+
+// ─── Section divider ──────────────────────────────────────────────
+
+function SectionDivider({ label, descriptor }: { label: string; descriptor?: string }) {
+  return (
+    <div
+      className="mono flex items-center gap-3 py-2"
+      style={{ fontSize: 10, letterSpacing: "0.08em", color: "#8A8478" }}
+    >
+      <span style={{ fontWeight: 700 }}>{label}</span>
+      <span style={{ flex: 1, height: 1, background: "#E2DFD8" }} />
+      {descriptor && <span style={{ fontWeight: 600 }}>{descriptor}</span>}
+    </div>
+  )
+}
+
+// ─── Stat card (matches page.tsx pattern) ─────────────────────────
+
+function StatCard({ label, value, sub }: { label: string; value: string; sub?: string }) {
+  return (
+    <div
+      className="mono flex flex-col gap-1"
+      style={{ background: "#F0EEE9", borderRadius: 4, padding: "10px 12px" }}
+    >
+      <span style={{ fontSize: 10, letterSpacing: "0.08em", color: "#8A8478", fontWeight: 600 }}>
+        {label}
+      </span>
+      <span className="tabular-nums" style={{ fontSize: 20, fontWeight: 500, color: "#0f172a", lineHeight: 1 }}>
+        {value}
+      </span>
+      {sub && (
+        <span style={{ fontSize: 10, color: "#8A8478", letterSpacing: "0.04em" }}>{sub}</span>
+      )}
+    </div>
+  )
+}
 
 // ─── Chart datum shapes ───────────────────────────────────────────
 
@@ -51,20 +124,17 @@ function WinRateTooltip({ active, payload }: TooltipContentProps) {
   if (!active || !payload?.length) return null
   const d = payload[0].payload as WinRateDatum
   return (
-    <div
-      className="rounded-xl border border-white/60 px-3 py-2 text-xs shadow-lg"
-      style={{ background: "rgba(255,255,255,0.95)", backdropFilter: "blur(8px)" }}
-    >
-      <p className="font-semibold text-slate-800">{d.label}</p>
+    <div style={termTooltip}>
+      <p style={{ color: "#0f172a", fontWeight: 700, letterSpacing: "0.04em" }}>{d.label.toUpperCase()}</p>
       {payload.map((p) => (
-        <p key={p.dataKey as string} className="mt-0.5" style={{ color: p.color }}>
-          Win rate:{" "}
-          <span className="font-bold">{typeof p.value === "number" ? p.value : "--"}%</span>
+        <p key={p.dataKey as string} style={{ color: p.color, marginTop: 2 }}>
+          WIN RATE:{" "}
+          <span style={{ fontWeight: 700 }}>{typeof p.value === "number" ? p.value : "--"}%</span>
         </p>
       ))}
-      <p className="text-slate-500">{d.games.toLocaleString()} games</p>
+      <p style={{ color: "#8A8478", marginTop: 2 }}>{d.games.toLocaleString()} GAMES</p>
       {d.threshold !== undefined && (
-        <p className="mt-1 text-[10px] text-[#17408B]/70">Click to explore these games ↓</p>
+        <p style={{ marginTop: 4, fontSize: 10, color: "#17408B" }}>CLICK TO EXPLORE ↓</p>
       )}
     </div>
   )
@@ -81,16 +151,13 @@ function SeasonWinRateTooltip({ active, payload }: TooltipContentProps) {
   if (!active || !payload?.length) return null
   const d = payload[0].payload as SeasonWinRateDatum
   return (
-    <div
-      className="rounded-xl border border-white/60 px-3 py-2 text-xs shadow-lg"
-      style={{ background: "rgba(255,255,255,0.95)", backdropFilter: "blur(8px)" }}
-    >
-      <p className="font-semibold text-slate-800">{d.label}</p>
-      <p className="mt-0.5 text-[#17408B]">
-        Win rate: <span className="font-bold">{d.winPct}%</span>
+    <div style={termTooltip}>
+      <p style={{ color: "#0f172a", fontWeight: 700, letterSpacing: "0.04em" }}>{d.label}</p>
+      <p style={{ marginTop: 2, color: "#17408B" }}>
+        WIN RATE: <span style={{ fontWeight: 700 }}>{d.winPct}%</span>
       </p>
-      <p className="text-slate-500">
-        {d.restedTeamWins.toLocaleString()} / {d.games.toLocaleString()} games (more-rested team won)
+      <p style={{ color: "#8A8478", marginTop: 2 }}>
+        {d.restedTeamWins.toLocaleString()} / {d.games.toLocaleString()} (RESTED TEAM WON)
       </p>
     </div>
   )
@@ -121,30 +188,27 @@ function SeasonWinRateBySeasonChart({
   }))
 
   return (
-    <div className="mt-6 h-72 min-w-0">
+    <div className="mt-4 h-72 min-w-0">
       {loading ? (
-        <Skeleton className="h-full w-full rounded-xl bg-slate-200/80" />
+        <Skeleton className="h-full w-full bg-[#F0EEE9]" style={{ borderRadius: 4 }} />
       ) : chartData.length === 0 ? (
-        <div className="flex h-full items-center justify-center rounded-2xl border border-dashed border-slate-200">
-          <p className="text-xs text-slate-400">No season-level data yet</p>
+        <div
+          className="mono flex h-full items-center justify-center"
+          style={{ border: "1px dashed #E2DFD8", borderRadius: 4, fontSize: 11, color: "#8A8478" }}
+        >
+          NO SEASON-LEVEL DATA YET
         </div>
       ) : (
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={chartData} margin={{ top: 12, right: 12, left: 0, bottom: 8 }}>
-            <defs>
-              <linearGradient id="seasonWinGrad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#17408B" stopOpacity={1} />
-                <stop offset="100%" stopColor="#17408B" stopOpacity={0.65} />
-              </linearGradient>
-            </defs>
             <CartesianGrid
               vertical={false}
               strokeDasharray="3 3"
-              stroke="rgba(0,0,0,0.06)"
+              stroke="#E2DFD8"
             />
             <XAxis
               dataKey="label"
-              tick={{ fontSize: 10, fill: "#64748b" }}
+              tick={{ fontSize: 10, fill: "#8A8478", fontFamily: "'Courier New', Courier, monospace" }}
               tickLine={false}
               axisLine={false}
               interval={0}
@@ -155,7 +219,7 @@ function SeasonWinRateBySeasonChart({
             <YAxis
               domain={[40, 70]}
               tickFormatter={(v: number) => `${v}%`}
-              tick={{ fontSize: 11, fill: "#94a3b8" }}
+              tick={{ fontSize: 11, fill: "#8A8478", fontFamily: "'Courier New', Courier, monospace" }}
               tickLine={false}
               axisLine={false}
               width={40}
@@ -168,19 +232,19 @@ function SeasonWinRateBySeasonChart({
               y={50}
               stroke="#C9082A"
               strokeDasharray="4 4"
-              strokeOpacity={0.45}
+              strokeOpacity={0.55}
               label={{
-                value: "Coin Flip",
+                value: "COIN FLIP",
                 position: "insideTopRight",
                 fontSize: 10,
                 fill: "#C9082A",
-                opacity: 0.7,
+                opacity: 0.8,
               }}
             />
             <Bar
               dataKey="winPct"
-              fill="url(#seasonWinGrad)"
-              radius={[6, 6, 0, 0]}
+              fill="#17408B"
+              radius={[0, 0, 0, 0]}
               maxBarSize={48}
             >
               <LabelList
@@ -189,7 +253,7 @@ function SeasonWinRateBySeasonChart({
                 formatter={(v: string | number | boolean | null | undefined) =>
                   typeof v === "number" ? `n=${v.toLocaleString()}` : ""
                 }
-                style={{ fontSize: "10px", fill: "#94a3b8" }}
+                style={{ fontSize: "10px", fill: "#8A8478", fontFamily: "'Courier New', Courier, monospace" }}
               />
             </Bar>
           </BarChart>
@@ -203,33 +267,22 @@ function SeasonWinRateBySeasonChart({
 
 function AnalysisSkeleton() {
   return (
-    <div className="flex flex-col gap-6">
-      {/* Hero */}
-      <div className="rounded-3xl border border-white/50 px-6 py-10" style={glass}>
-        <div className="flex flex-col items-center gap-3">
-          <Skeleton className="h-16 w-36 rounded-xl bg-slate-200/80" />
-          <Skeleton className="h-4 w-52 rounded-lg bg-slate-200/80" />
-          <Skeleton className="h-3 w-36 rounded-lg bg-slate-200/80" />
-        </div>
+    <div className="flex flex-col gap-4">
+      <div style={termCard}>
+        <Skeleton className="h-12 w-32 bg-[#F0EEE9]" style={{ borderRadius: 4 }} />
+        <Skeleton className="mt-2 h-3 w-52 bg-[#F0EEE9]" style={{ borderRadius: 4 }} />
       </div>
-      {/* Bar chart */}
-      <div className="rounded-3xl border border-white/50 p-6" style={glass}>
-        <Skeleton className="mb-1 h-4 w-64 rounded-lg bg-slate-200/80" />
-        <Skeleton className="mb-6 h-3 w-44 rounded-lg bg-slate-200/80" />
-        <Skeleton className="h-64 w-full rounded-xl bg-slate-200/80" />
+      <div style={termCard}>
+        <Skeleton className="mb-1 h-3 w-48 bg-[#F0EEE9]" style={{ borderRadius: 4 }} />
+        <Skeleton className="h-64 w-full bg-[#F0EEE9]" style={{ borderRadius: 4 }} />
       </div>
-      {/* Breakdown */}
-      <div className="rounded-3xl border border-white/50 p-6" style={glass}>
-        <Skeleton className="mb-3 h-3 w-40 rounded-lg bg-slate-200/80" />
-        <Skeleton className="h-12 w-24 rounded-xl bg-slate-200/80" />
-        <Skeleton className="mt-2 h-3 w-44 rounded-lg bg-slate-200/80" />
-        <Skeleton className="mt-4 h-1.5 w-full rounded-full bg-slate-200/80" />
+      <div style={termCard}>
+        <Skeleton className="mb-2 h-3 w-40 bg-[#F0EEE9]" style={{ borderRadius: 4 }} />
+        <Skeleton className="h-10 w-24 bg-[#F0EEE9]" style={{ borderRadius: 4 }} />
       </div>
-      {/* Line chart */}
-      <div className="rounded-3xl border border-white/50 p-6" style={glass}>
-        <Skeleton className="mb-1 h-4 w-48 rounded-lg bg-slate-200/80" />
-        <Skeleton className="mb-6 h-3 w-64 rounded-lg bg-slate-200/80" />
-        <Skeleton className="h-64 w-full rounded-xl bg-slate-200/80" />
+      <div style={termCard}>
+        <Skeleton className="mb-1 h-3 w-48 bg-[#F0EEE9]" style={{ borderRadius: 4 }} />
+        <Skeleton className="h-64 w-full bg-[#F0EEE9]" style={{ borderRadius: 4 }} />
       </div>
     </div>
   )
@@ -245,7 +298,6 @@ const RA_OPTIONS = [
   { label: "RA ≥ 7", value: 7 },
 ]
 
-/** Season filter options (newest first) — mirrors home page / API allow-list. */
 const EXPLORE_SEASON_OPTIONS = [...NBA_SEASONS].reverse()
 
 const NBA_TEAMS = [
@@ -274,13 +326,11 @@ function ExploreGames({
   const [detailGameId, setDetailGameId] = useState<number | null>(null)
   const [detailOpen, setDetailOpen] = useState(false)
 
-  // Sync when parent changes the RA filter via bar chart click
   if (initialRaFilter !== raFilter && initialRaFilter !== 0) {
     setRaFilter(initialRaFilter)
     setPage(1)
   }
 
-  // Build SWR key from all filter state
   const searchParams = new URLSearchParams()
   if (raFilter > 0) searchParams.set("minRA", String(raFilter))
   if (teamFilter) searchParams.set("team", teamFilter)
@@ -305,17 +355,14 @@ function ExploreGames({
     setRaFilter(v)
     setPage(1)
   }, [])
-
   const handleTeamChange = useCallback((v: string) => {
     setTeamFilter(v)
     setPage(1)
   }, [])
-
   const handleSeasonChange = useCallback((v: string) => {
     setSeasonFilter(v)
     setPage(1)
   }, [])
-
   const handleResultChange = useCallback((v: "all" | "correct" | "incorrect") => {
     setResultFilter(v)
     setPage(1)
@@ -325,16 +372,13 @@ function ExploreGames({
   const start = (page - 1) * PAGE_SIZE + 1
   const end = Math.min(page * PAGE_SIZE, total)
 
-  const selectClass =
-    "rounded-lg border border-white/60 bg-white/70 px-3 py-1.5 text-xs font-medium text-slate-700 shadow-sm backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-[#17408B]/30"
-
   const openDetail = useCallback((id: number) => {
     setDetailGameId(id)
     setDetailOpen(true)
   }, [])
 
   return (
-    <div ref={exploreRef} className="rounded-3xl border border-white/50 p-6" style={glass}>
+    <div ref={exploreRef} style={termCard}>
       <ExploreGameDetailModal
         gameId={detailGameId}
         open={detailOpen}
@@ -343,62 +387,45 @@ function ExploreGames({
           if (!next) setDetailGameId(null)
         }}
       />
-      <p className="text-sm font-semibold text-slate-800">Explore Games</p>
-      <p className="mt-0.5 text-xs text-slate-400">
-        Filter and browse individual matchups — click a row for fatigue details and recent games.
+      <SectionDivider label="EXPLORE GAMES" descriptor={`${total.toLocaleString()} TOTAL`} />
+      <p className="mono mt-1" style={{ fontSize: 10, color: "#8A8478", letterSpacing: "0.04em" }}>
+        FILTER AND BROWSE INDIVIDUAL MATCHUPS — CLICK A ROW FOR DETAILS.
       </p>
 
-      {/* ── Filters ─────────────────────────────────────────────── */}
-      <div className="mt-4 flex flex-wrap gap-2">
-        {/* RA filter */}
+      {/* Filters */}
+      <div className="mt-3 flex flex-wrap gap-2">
         <select
           value={raFilter}
           onChange={(e) => handleRaChange(Number(e.target.value))}
-          className={selectClass}
+          style={exploreSelectStyle}
           aria-label="Rest advantage filter"
         >
           {RA_OPTIONS.map((o) => (
-            <option key={o.value} value={o.value}>
-              {o.label}
-            </option>
+            <option key={o.value} value={o.value}>{o.label}</option>
           ))}
         </select>
-
-        {/* Team filter */}
         <select
           value={teamFilter}
           onChange={(e) => handleTeamChange(e.target.value)}
-          className={selectClass}
+          style={exploreSelectStyle}
           aria-label="Team filter"
         >
           <option value="">All Teams</option>
-          {NBA_TEAMS.map((t) => (
-            <option key={t} value={t}>
-              {t}
-            </option>
-          ))}
+          {NBA_TEAMS.map((t) => <option key={t} value={t}>{t}</option>)}
         </select>
-
-        {/* Season filter */}
         <select
           value={seasonFilter}
           onChange={(e) => handleSeasonChange(e.target.value)}
-          className={selectClass}
+          style={exploreSelectStyle}
           aria-label="Season filter"
         >
           <option value="">All Seasons</option>
-          {EXPLORE_SEASON_OPTIONS.map((s) => (
-            <option key={s} value={s}>
-              {s}
-            </option>
-          ))}
+          {EXPLORE_SEASON_OPTIONS.map((s) => <option key={s} value={s}>{s}</option>)}
         </select>
-
-        {/* Result filter */}
         <select
           value={resultFilter}
           onChange={(e) => handleResultChange(e.target.value as "all" | "correct" | "incorrect")}
-          className={selectClass}
+          style={exploreSelectStyle}
           aria-label="Result filter"
         >
           <option value="all">All Results</option>
@@ -406,7 +433,6 @@ function ExploreGames({
           <option value="incorrect">Rested Team Lost</option>
         </select>
 
-        {/* Active filter indicators */}
         {(raFilter > 0 || teamFilter || seasonFilter || resultFilter !== "all") && (
           <button
             onClick={() => {
@@ -416,71 +442,62 @@ function ExploreGames({
               setResultFilter("all")
               setPage(1)
             }}
-            className="rounded-lg border border-slate-200 bg-white/50 px-3 py-1.5 text-xs font-medium text-slate-500 hover:text-slate-800"
+            className="mono"
+            style={{
+              ...exploreSelectStyle,
+              color: "#C9082A",
+              cursor: "pointer",
+              textTransform: "uppercase",
+              letterSpacing: "0.06em",
+            }}
           >
-            Clear filters
+            CLEAR FILTERS
           </button>
         )}
       </div>
 
-      {/* ── Table ───────────────────────────────────────────────── */}
-      <div className="mt-4 overflow-x-auto">
-        <table className="w-full text-xs">
+      {/* Table */}
+      <div className="mt-3 overflow-x-auto">
+        <table className="mono w-full" style={{ borderCollapse: "collapse" }}>
           <thead>
-            <tr
-              style={{ background: "rgba(23,64,139,0.04)" }}
-              className="rounded-lg"
-            >
-              <th className="rounded-l-lg px-3 py-2.5 text-left font-semibold uppercase tracking-wider text-slate-400">
-                Date
-              </th>
-              <th className="px-3 py-2.5 text-left font-semibold uppercase tracking-wider text-slate-400">
-                Matchup
-              </th>
-              <th className="hidden px-3 py-2.5 text-right font-semibold uppercase tracking-wider text-slate-400 sm:table-cell">
-                Home Fat.
-              </th>
-              <th className="hidden px-3 py-2.5 text-right font-semibold uppercase tracking-wider text-slate-400 sm:table-cell">
-                Away Fat.
-              </th>
-              <th className="px-3 py-2.5 text-center font-semibold uppercase tracking-wider text-slate-400">
-                RA
-              </th>
-              <th className="hidden px-3 py-2.5 text-center font-semibold uppercase tracking-wider text-slate-400 sm:table-cell">
-                Score
-              </th>
-              <th className="rounded-r-lg px-3 py-2.5 text-center font-semibold uppercase tracking-wider text-slate-400">
-                Result
-              </th>
+            <tr>
+              <th style={{ ...exploreThStyle, textAlign: "left" }}>Date</th>
+              <th style={{ ...exploreThStyle, textAlign: "left" }}>Matchup</th>
+              <th style={{ ...exploreThStyle, textAlign: "right" }} className="hidden sm:table-cell">Home Fat.</th>
+              <th style={{ ...exploreThStyle, textAlign: "right" }} className="hidden sm:table-cell">Away Fat.</th>
+              <th style={{ ...exploreThStyle, textAlign: "center" }}>RA</th>
+              <th style={{ ...exploreThStyle, textAlign: "center" }} className="hidden sm:table-cell">Score</th>
+              <th style={{ ...exploreThStyle, textAlign: "center" }}>Result</th>
             </tr>
           </thead>
           <tbody>
             {loading ? (
               Array.from({ length: 5 }).map((_, i) => (
-                <tr key={i} className="border-t border-slate-100/60">
-                  <td colSpan={7} className="px-3 py-3">
-                    <Skeleton className="h-4 w-full rounded bg-slate-100" />
+                <tr key={i}>
+                  <td colSpan={7} style={{ ...exploreTdBaseStyle, padding: "10px" }}>
+                    <Skeleton className="h-4 w-full bg-[#F0EEE9]" style={{ borderRadius: 2 }} />
                   </td>
                 </tr>
               ))
             ) : error ? (
               <tr>
-                <td colSpan={7} className="px-3 py-8 text-center text-xs text-[#C9082A]">
+                <td colSpan={7} style={{ ...exploreTdBaseStyle, textAlign: "center", color: "#C9082A", padding: "20px" }}>
                   {error}
                 </td>
               </tr>
             ) : results.length === 0 ? (
               <tr>
-                <td colSpan={7} className="px-3 py-10 text-center text-slate-400">
-                  No games match the current filters
+                <td colSpan={7} style={{ ...exploreTdBaseStyle, textAlign: "center", color: "#8A8478", padding: "24px" }}>
+                  NO GAMES MATCH THE CURRENT FILTERS
                 </td>
               </tr>
             ) : (
-              results.map((g) => {
+              results.map((g, i) => {
                 const advAbbr =
                   g.advantageTeam === "home"
                     ? g.homeTeamAbbreviation
                     : g.awayTeamAbbreviation
+                const rowBg = i % 2 === 1 ? "#F7F6F3" : "#ffffff"
                 return (
                   <tr
                     key={g.gameId}
@@ -493,40 +510,54 @@ function ExploreGames({
                         openDetail(g.gameId)
                       }
                     }}
-                    className="border-t border-slate-100/60 cursor-pointer transition-colors hover:bg-white/60 focus-visible:bg-white/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#17408B]/30"
+                    style={{ background: rowBg, cursor: "pointer" }}
+                    className="hover:bg-[#F0EEE9] focus-visible:bg-[#F0EEE9] focus-visible:outline-none"
                     aria-label={`Open details: ${g.awayTeamAbbreviation} at ${g.homeTeamAbbreviation}, ${g.date}`}
                   >
-                    <td className="px-3 py-3 text-slate-500">
-                      {format(new Date(g.date + "T00:00:00"), "MMM d, yyyy")}
+                    <td style={{ ...exploreTdBaseStyle, color: "#8A8478" }}>
+                      {format(new Date(g.date + "T00:00:00"), "yyyy-MM-dd")}
                     </td>
-                    <td className="px-3 py-3 font-medium text-slate-800">
+                    <td style={{ ...exploreTdBaseStyle, color: "#0f172a", fontWeight: 600 }}>
                       {g.awayTeamAbbreviation}
-                      <span className="mx-1 font-normal text-slate-300">@</span>
+                      <span style={{ margin: "0 4px", color: "#C9C5BC" }}>@</span>
                       {g.homeTeamAbbreviation}
                     </td>
-                    <td className="hidden px-3 py-3 text-right tabular-nums text-slate-600 sm:table-cell">
+                    <td style={{ ...exploreTdBaseStyle, textAlign: "right", color: "#0f172a" }} className="hidden sm:table-cell tabular-nums">
                       {g.homeFatigueScore.toFixed(1)}
                     </td>
-                    <td className="hidden px-3 py-3 text-right tabular-nums text-slate-600 sm:table-cell">
+                    <td style={{ ...exploreTdBaseStyle, textAlign: "right", color: "#0f172a" }} className="hidden sm:table-cell tabular-nums">
                       {g.awayFatigueScore.toFixed(1)}
                     </td>
-                    <td className="px-3 py-3 text-center">
-                      <span className="inline-flex items-center rounded-full bg-[#17408B]/10 px-2 py-0.5 font-heading text-[11px] font-bold text-[#17408B]">
+                    <td style={{ ...exploreTdBaseStyle, textAlign: "center" }}>
+                      <span
+                        className="mono inline-flex items-center"
+                        style={{
+                          background: "#17408B",
+                          color: "#fff",
+                          fontSize: 10,
+                          fontWeight: 700,
+                          padding: "2px 6px",
+                          borderRadius: 2,
+                          letterSpacing: "0.04em",
+                        }}
+                      >
                         {advAbbr} +{g.restAdvantageDifferential.toFixed(1)}
                       </span>
                     </td>
-                    <td className="hidden px-3 py-3 text-center tabular-nums text-slate-700 sm:table-cell">
+                    <td style={{ ...exploreTdBaseStyle, textAlign: "center", color: "#0f172a" }} className="hidden sm:table-cell tabular-nums">
                       {g.awayScore}–{g.homeScore}
                     </td>
-                    <td className="px-3 py-3 text-center">
+                    <td style={{ ...exploreTdBaseStyle, textAlign: "center" }}>
                       <span
-                        className={
-                          g.restedTeamWon
-                            ? "inline-flex items-center rounded-full bg-emerald-50 px-2 py-0.5 text-[11px] font-bold text-emerald-600"
-                            : "inline-flex items-center rounded-full bg-red-50 px-2 py-0.5 text-[11px] font-bold text-[#C9082A]"
-                        }
+                        className="mono inline-flex items-center"
+                        style={{
+                          color: g.restedTeamWon ? "#17A34A" : "#C9082A",
+                          fontSize: 10,
+                          fontWeight: 700,
+                          letterSpacing: "0.06em",
+                        }}
                       >
-                        {g.restedTeamWon ? "✓ Won" : "✗ Lost"}
+                        {g.restedTeamWon ? "WON" : "LOST"}
                       </span>
                     </td>
                   </tr>
@@ -537,28 +568,32 @@ function ExploreGames({
         </table>
       </div>
 
-      {/* ── Pagination ──────────────────────────────────────────── */}
+      {/* Pagination */}
       {total > 0 && (
-        <div className="mt-4 flex items-center justify-between">
-          <p className="text-xs text-slate-400">
-            {loading ? "Loading…" : `Showing ${start.toLocaleString()}–${end.toLocaleString()} of ${total.toLocaleString()}`}
+        <div className="mono mt-3 flex items-center justify-between" style={{ fontSize: 10, color: "#8A8478", letterSpacing: "0.04em" }}>
+          <p>
+            {loading
+              ? "LOADING…"
+              : `SHOWING ${start.toLocaleString()}–${end.toLocaleString()} OF ${total.toLocaleString()}`}
           </p>
           <div className="flex items-center gap-1">
             <button
               onClick={() => setPage((p) => Math.max(1, p - 1))}
               disabled={page === 1 || loading}
-              className="flex size-7 items-center justify-center rounded-lg border border-white/60 bg-white/60 text-slate-600 transition-colors hover:bg-white disabled:opacity-40"
+              className="flex size-7 items-center justify-center bg-white text-slate-700 transition-colors hover:bg-[#F0EEE9] disabled:opacity-40"
+              style={{ border: "1px solid #E2DFD8", borderRadius: 4 }}
               aria-label="Previous page"
             >
               <ChevronLeft className="size-4" />
             </button>
-            <span className="px-2 text-xs text-slate-500">
+            <span className="mono px-2 tabular-nums" style={{ fontSize: 11, color: "#0f172a", fontWeight: 600 }}>
               {page} / {totalPages || 1}
             </span>
             <button
               onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
               disabled={page >= totalPages || loading}
-              className="flex size-7 items-center justify-center rounded-lg border border-white/60 bg-white/60 text-slate-600 transition-colors hover:bg-white disabled:opacity-40"
+              className="flex size-7 items-center justify-center bg-white text-slate-700 transition-colors hover:bg-[#F0EEE9] disabled:opacity-40"
+              style={{ border: "1px solid #E2DFD8", borderRadius: 4 }}
               aria-label="Next page"
             >
               <ChevronRight className="size-4" />
@@ -574,13 +609,10 @@ function ExploreGames({
 
 export function AnalysisContent() {
   const [drillRaFilter, setDrillRaFilter] = useState(0)
-
-  // Season chart state — separate from main data so toggling doesn't re-fetch everything
   const [seasonRaFilter, setSeasonRaFilter] = useState(0)
 
   const exploreRef = useRef<HTMLDivElement>(null)
 
-  // Main analysis data
   const { data, error: swrError, isLoading: loading } = useSWR<AnalysisResponse>(
     "/api/analysis",
     apiFetcher,
@@ -590,7 +622,6 @@ export function AnalysisContent() {
     ? (swrError instanceof Error ? swrError.message : "Failed to load analysis")
     : null
 
-  // Season win rates at a specific RA threshold (only fetched when threshold > 0)
   const seasonSwrKey = seasonRaFilter > 0
     ? `/api/analysis?seasonMinRA=${seasonRaFilter}`
     : null
@@ -600,7 +631,6 @@ export function AnalysisContent() {
     { revalidateOnFocus: false }
   )
 
-  // Use filtered season data when a threshold is active, otherwise fall back to main data
   const displayedSeasonRates = seasonRaFilter > 0
     ? (seasonData?.seasonWinRates ?? [])
     : (data?.seasonWinRates ?? [])
@@ -629,16 +659,18 @@ export function AnalysisContent() {
   if (error || !data) {
     return (
       <div
-        className="rounded-3xl border border-[#C9082A]/20 px-6 py-12 text-center"
-        style={glass}
+        className="mono px-6 py-12 text-center"
+        style={{ ...termCard, borderLeft: "2px solid #C9082A" }}
       >
-        <p className="text-sm font-semibold text-[#C9082A]">Failed to load analysis</p>
-        <p className="mt-1 text-xs text-[#C9082A]/60">{error ?? "Unknown error"}</p>
+        <p style={{ fontSize: 11, letterSpacing: "0.08em", color: "#C9082A", fontWeight: 700 }}>
+          FAILED TO LOAD ANALYSIS
+        </p>
+        <p className="mt-1" style={{ fontSize: 10, color: "#8A8478" }}>
+          {error ?? "UNKNOWN ERROR"}
+        </p>
       </div>
     )
   }
-
-  // ── Shape data for charts ────────────────────────────────────────
 
   const barData: WinRateDatum[] = data.thresholds.map((t) => ({
     label: `RA ≥ ${t.threshold}`,
@@ -654,67 +686,62 @@ export function AnalysisContent() {
     <WinRateTooltip {...props} />
   )
 
-  const pillBase =
-    "rounded-full px-3 py-1 text-xs font-semibold transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#17408B]/40"
-
   return (
-    <div className="flex flex-col gap-6">
-      <p className="max-w-2xl text-sm leading-relaxed text-slate-500">
-        Historical backtest: among final regular-season games with fatigue data, did the more-rested
-        team win? This does not read stored prediction rows.
-      </p>
-
-      {/* ── 1. Hero stat ──────────────────────────────────────────── */}
-      <div
-        className="rounded-3xl border border-white/50 px-6 py-10 text-center"
-        style={glass}
-      >
-        <p className="text-7xl font-black tracking-tight text-[#17408B]">
-          {data.overallWinRate}%
-        </p>
-        <p className="mt-2 text-base font-semibold text-slate-700">
-          More-rested team win rate
-        </p>
-        <p className="mt-1 text-sm text-slate-400">
-          Across {data.totalGames.toLocaleString()} games analyzed
+    <div className="flex flex-col gap-4">
+      {/* Eyebrow heading */}
+      <div className="flex flex-col gap-1">
+        <span className="mono" style={{ fontSize: 10, letterSpacing: "0.08em", color: "#C9082A", fontWeight: 700 }}>
+          HISTORICAL BACKTEST
+        </span>
+        <h1 className="text-2xl font-bold tracking-tight text-slate-900">Rest Advantage Analysis</h1>
+        <p className="mono max-w-2xl" style={{ fontSize: 11, color: "#8A8478", lineHeight: 1.5 }}>
+          AMONG FINAL REGULAR-SEASON GAMES WITH FATIGUE DATA, DID THE MORE-RESTED TEAM WIN?
+          THIS DOES NOT READ STORED PREDICTION ROWS.
         </p>
       </div>
 
-      {/* ── 2. Bar chart — win rate by threshold ──────────────────── */}
-      <div className="rounded-3xl border border-white/50 p-6" style={glass}>
-        <p className="text-sm font-semibold text-slate-800">
-          Win Rate by Rest Advantage Threshold
-        </p>
-        <p className="mt-0.5 text-xs text-slate-400">
-          Higher rest advantage = stronger signal
-          {" · "}
-          <span className="font-medium text-[#17408B]/80">Click a bar to explore those games ↓</span>
-        </p>
+      {/* Hero stat row (terminal stat cards) */}
+      <div className="grid grid-cols-2 gap-2 md:grid-cols-3">
+        <StatCard
+          label="OVERALL WIN RATE"
+          value={`${data.overallWinRate}%`}
+          sub={`${data.totalGames.toLocaleString()} GAMES`}
+        />
+        <StatCard
+          label="HOME RESTED WIN%"
+          value={`${data.homeAwayBreakdown.homeTeamMoreRested.winPct}%`}
+          sub={`${data.homeAwayBreakdown.homeTeamMoreRested.restedTeamWins.toLocaleString()} / ${data.homeAwayBreakdown.homeTeamMoreRested.games.toLocaleString()}`}
+        />
+        {ra5 && (
+          <StatCard
+            label="WIN RATE · RA ≥ 5"
+            value={`${ra5.winPct}%`}
+            sub={`${ra5.games.toLocaleString()} GAMES`}
+          />
+        )}
+      </div>
 
-        <div className="mt-6 h-72">
+      {/* Bar chart — win rate by threshold */}
+      <div style={termCard}>
+        <SectionDivider label="WIN RATE BY RA THRESHOLD" descriptor="CLICK A BAR TO EXPLORE" />
+        <div className="mt-2 h-72">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={barData} margin={{ top: 24, right: 24, left: 0, bottom: 0 }}>
-              <defs>
-                <linearGradient id="barGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#17408B" stopOpacity={1} />
-                  <stop offset="100%" stopColor="#17408B" stopOpacity={0.6} />
-                </linearGradient>
-              </defs>
               <CartesianGrid
                 vertical={false}
                 strokeDasharray="3 3"
-                stroke="rgba(0,0,0,0.06)"
+                stroke="#E2DFD8"
               />
               <XAxis
                 dataKey="label"
-                tick={{ fontSize: 12, fill: "#64748b" }}
+                tick={{ fontSize: 11, fill: "#8A8478", fontFamily: "'Courier New', Courier, monospace" }}
                 tickLine={false}
                 axisLine={false}
               />
               <YAxis
                 domain={[45, 75]}
                 tickFormatter={(v: number) => `${v}%`}
-                tick={{ fontSize: 11, fill: "#94a3b8" }}
+                tick={{ fontSize: 11, fill: "#8A8478", fontFamily: "'Courier New', Courier, monospace" }}
                 tickLine={false}
                 axisLine={false}
                 width={40}
@@ -727,19 +754,19 @@ export function AnalysisContent() {
                 y={50}
                 stroke="#C9082A"
                 strokeDasharray="4 4"
-                strokeOpacity={0.45}
+                strokeOpacity={0.55}
                 label={{
-                  value: "Coin Flip",
+                  value: "COIN FLIP",
                   position: "insideTopRight",
                   fontSize: 10,
                   fill: "#C9082A",
-                  opacity: 0.7,
+                  opacity: 0.8,
                 }}
               />
               <Bar
                 dataKey="winPct"
-                fill="url(#barGrad)"
-                radius={[6, 6, 0, 0]}
+                fill="#17408B"
+                radius={[0, 0, 0, 0]}
                 maxBarSize={72}
                 style={{ cursor: "pointer" }}
                 onClick={handleBarClick}
@@ -750,7 +777,7 @@ export function AnalysisContent() {
                   formatter={(v: string | number | boolean | null | undefined) =>
                     typeof v === "number" ? `n=${v.toLocaleString()}` : ""
                   }
-                  style={{ fontSize: "10px", fill: "#94a3b8" }}
+                  style={{ fontSize: "10px", fill: "#8A8478", fontFamily: "'Courier New', Courier, monospace" }}
                 />
               </Bar>
             </BarChart>
@@ -758,49 +785,58 @@ export function AnalysisContent() {
         </div>
       </div>
 
-      {/* ── 3. Home team more rested breakdown (away removed per Task 4) ── */}
-      <div className="rounded-3xl border border-white/50 p-6" style={glass}>
-        <p className="text-xs font-semibold uppercase tracking-wider text-[#17408B]">
-          Home Team More Rested
-        </p>
-        <p className="mt-3 text-5xl font-black tracking-tight text-slate-900">
+      {/* Home rested breakdown — terminal bar */}
+      <div style={termCard}>
+        <SectionDivider
+          label="HOME TEAM MORE RESTED"
+          descriptor={`${data.homeAwayBreakdown.homeTeamMoreRested.games.toLocaleString()} GAMES`}
+        />
+        <p className="mono mt-3 tabular-nums" style={{ fontSize: 36, fontWeight: 700, color: "#17408B", lineHeight: 1 }}>
           {data.homeAwayBreakdown.homeTeamMoreRested.winPct}%
         </p>
-        <p className="mt-1.5 text-sm text-slate-500">
-          {data.homeAwayBreakdown.homeTeamMoreRested.restedTeamWins.toLocaleString()} wins /{" "}
-          {data.homeAwayBreakdown.homeTeamMoreRested.games.toLocaleString()} games
+        <p className="mono mt-1" style={{ fontSize: 11, color: "#8A8478", letterSpacing: "0.04em" }}>
+          {data.homeAwayBreakdown.homeTeamMoreRested.restedTeamWins.toLocaleString()} WINS /{" "}
+          {data.homeAwayBreakdown.homeTeamMoreRested.games.toLocaleString()} GAMES
         </p>
-        <div className="mt-4 h-1.5 w-full overflow-hidden rounded-full bg-slate-100">
+        <div className="mt-3 w-full" style={{ height: 4, background: "#F0EEE9", borderRadius: 1 }}>
           <div
-            className="h-full rounded-full bg-[#17408B] transition-all duration-700"
-            style={{ width: `${data.homeAwayBreakdown.homeTeamMoreRested.winPct}%` }}
+            className="h-full transition-all duration-700"
+            style={{
+              width: `${data.homeAwayBreakdown.homeTeamMoreRested.winPct}%`,
+              background: "#17408B",
+              borderRadius: 1,
+            }}
           />
         </div>
       </div>
 
-      {/* ── 4. Win rate by season ─────────────────────────────────── */}
-      <div className="rounded-3xl border border-white/50 p-6" style={glass}>
-        <p className="text-sm font-semibold text-slate-800">Win rate by season</p>
-        <p className="mt-0.5 text-xs text-slate-400">
-          Full regular-season sample (Oct–Apr) where the rest advantage meets the selected threshold.
-        </p>
-
-        {/* RA threshold toggle */}
-        <div className="mt-3 flex flex-wrap gap-1.5">
-          {RA_THRESHOLD_OPTIONS.map((opt) => (
-            <button
-              key={opt.value}
-              onClick={() => handleSeasonFilterChange(opt.value)}
-              className={cn(
-                pillBase,
-                seasonRaFilter === opt.value
-                  ? "bg-[#17408B] text-white shadow-sm"
-                  : "border border-slate-200 bg-white/60 text-slate-500 hover:border-[#17408B]/30 hover:text-[#17408B]"
-              )}
-            >
-              {opt.label}
-            </button>
-          ))}
+      {/* Win rate by season */}
+      <div style={termCard}>
+        <SectionDivider label="WIN RATE BY SEASON" descriptor="REGULAR SEASON (OCT–APR)" />
+        <div className="mt-2 flex flex-wrap gap-1.5">
+          {RA_THRESHOLD_OPTIONS.map((opt) => {
+            const active = seasonRaFilter === opt.value
+            return (
+              <button
+                key={opt.value}
+                onClick={() => handleSeasonFilterChange(opt.value)}
+                className={cn("mono transition-colors")}
+                style={{
+                  background: active ? "#17408B" : "#ffffff",
+                  color: active ? "#ffffff" : "#0f172a",
+                  border: `1px solid ${active ? "#17408B" : "#E2DFD8"}`,
+                  borderRadius: 4,
+                  padding: "4px 10px",
+                  fontSize: 11,
+                  letterSpacing: "0.04em",
+                  fontWeight: 600,
+                  cursor: "pointer",
+                }}
+              >
+                {opt.label.toUpperCase()}
+              </button>
+            )
+          })}
         </div>
 
         <SeasonWinRateBySeasonChart
@@ -809,40 +845,38 @@ export function AnalysisContent() {
         />
       </div>
 
-      {/* ── 5. Key insight callout ────────────────────────────────── */}
+      {/* Key insight callout */}
       {ra5 && (
         <div
-          className="rounded-3xl border border-[#17408B]/15 px-6 py-5"
+          className="px-4 py-4"
           style={{
-            background: "rgba(23, 64, 139, 0.045)",
-            backdropFilter: "blur(16px)",
-            WebkitBackdropFilter: "blur(16px)",
+            background: "#ffffff",
+            border: "1px solid #E2DFD8",
+            borderLeft: "2px solid #17408B",
+            borderRadius: 4,
           }}
         >
-          <p className="text-[11px] font-bold uppercase tracking-widest text-[#17408B]/70">
-            Key Insight
+          <p className="mono" style={{ fontSize: 10, letterSpacing: "0.12em", color: "#17408B", fontWeight: 700 }}>
+            KEY INSIGHT
           </p>
           <p className="mt-2 text-sm leading-relaxed text-slate-700">
             Teams with a Rest Advantage of{" "}
             <span className="font-semibold text-slate-900">+5 or more</span> win{" "}
-            <span className="font-bold text-[#17408B]">{ra5.winPct}%</span> of games — a
+            <span className="mono font-bold" style={{ color: "#17408B" }}>{ra5.winPct}%</span> of games — a
             significant edge over the coin-flip baseline.
             {ra7 && (
               <>
-                {" "}
-                At RA ≥ 7, that rises to{" "}
-                <span className="font-bold text-[#17408B]">{ra7.winPct}%</span> across{" "}
-                {ra7.games.toLocaleString()} games, suggesting the fatigue signal compounds at
-                the extremes.
+                {" "}At RA ≥ 7, that rises to{" "}
+                <span className="mono font-bold" style={{ color: "#17408B" }}>{ra7.winPct}%</span> across{" "}
+                <span className="mono tabular-nums">{ra7.games.toLocaleString()}</span> games, suggesting the fatigue signal compounds at the extremes.
               </>
             )}
           </p>
         </div>
       )}
 
-      {/* ── 6. Explore Games ──────────────────────────────────────── */}
+      {/* Explore Games */}
       <ExploreGames exploreRef={exploreRef} initialRaFilter={drillRaFilter} />
-
     </div>
   )
 }

@@ -216,19 +216,35 @@ export function ExploreGameDetailModal({
 }) {
   const titleId = useId()
 
+  if (!open || typeof document === "undefined") return null
+
+  return createPortal(
+    <ExploreGameDetailModalContent
+      key={gameId ?? "none"}
+      gameId={gameId}
+      onOpenChange={onOpenChange}
+      titleId={titleId}
+    />,
+    document.body
+  )
+}
+
+function ExploreGameDetailModalContent({
+  gameId,
+  onOpenChange,
+  titleId,
+}: {
+  gameId: number | null
+  onOpenChange: (open: boolean) => void
+  titleId: string
+}) {
   // Navigation stack: history of game IDs to go back to
   const [navHistory, setNavHistory] = useState<number[]>([])
   // Currently displayed game ID (may differ from the `gameId` prop when drilling down)
   const [activeGameId, setActiveGameId] = useState<number | null>(gameId)
 
-  // Reset state whenever the modal opens or the root gameId changes
-  useEffect(() => {
-    setNavHistory([])
-    setActiveGameId(gameId)
-  }, [open, gameId])
-
-  // SWR fetches game detail — only when modal is open and we have an ID
-  const swrKey = open && activeGameId !== null ? `/api/game/${activeGameId}` : null
+  // SWR fetches game detail only when this already-open modal has an ID.
+  const swrKey = activeGameId !== null ? `/api/game/${activeGameId}` : null
   const {
     data: detail,
     error: swrError,
@@ -259,20 +275,19 @@ export function ExploreGameDetailModal({
   }, [onOpenChange])
 
   useEffect(() => {
-    if (!open) return
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onOpenChange(false)
     }
     window.addEventListener("keydown", onKey)
     return () => window.removeEventListener("keydown", onKey)
-  }, [open, onOpenChange])
+  }, [onOpenChange])
 
-  if (!open || typeof document === "undefined") return null
+  if (typeof document === "undefined") return null
 
   const game = detail?.game
   const canGoBack = navHistory.length > 0
 
-  return createPortal(
+  return (
     <div
       className="fixed inset-0 z-[100] flex items-center justify-center p-4"
       role="presentation"
@@ -343,7 +358,6 @@ export function ExploreGameDetailModal({
           />
         )}
       </div>
-    </div>,
-    document.body
+    </div>
   )
 }

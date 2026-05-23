@@ -190,8 +190,7 @@ function scheduleStressMultiplier(recentGames: RecentGame[], gameDate: string): 
  */
 function roadTripContext(
   recentGames: RecentGame[],
-  currentGameIsHome: boolean,
-  currentVenueLon: number
+  currentGameIsHome: boolean
 ): { streak: number; awayVenueLons: number[] } {
   const sorted = [...recentGames].sort((a, b) => a.date.localeCompare(b.date));
   const awayVenueLons: number[] = [];
@@ -403,8 +402,7 @@ export function calculateFatigue(
 
   const { streak: roadStreak, awayVenueLons } = roadTripContext(
     recentGames,
-    currentGameIsHome,
-    currentVenueLon
+    currentGameIsHome
   );
   const venueLonsForCoast = currentGameIsHome
     ? awayVenueLons

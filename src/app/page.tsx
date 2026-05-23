@@ -1,9 +1,8 @@
 "use client"
 
-import { useEffect, useMemo, useRef, useState } from "react"
-import Image from "next/image"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { addDays, format, parseISO } from "date-fns"
-import { Activity, ChevronLeft, ChevronRight } from "lucide-react"
+import { ChevronLeft, ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import { MatchupCard } from "@/components/matchup-card"
@@ -28,46 +27,93 @@ function pickInitialDate(dates: GameDateCount[]): string | null {
 
 type PendingScope = { season: string; month: number }
 
-const glassPill =
-  "rounded-full border border-white/50 bg-white/55 px-3 py-1.5 text-sm font-medium text-slate-700 shadow-[0_4px_24px_rgba(23,64,139,0.06)] backdrop-blur-xl transition-colors hover:bg-white/70"
+const HIGH_CONF_THRESHOLD = 2.0
+const SEASON_WIN_RATE = "53.5"
+
+// Terminal-style flat button: white bg, 1px border, mono uppercase, 4px corners.
+const termBtn =
+  "mono inline-flex items-center gap-2 bg-white px-3 py-1.5 text-[11px] uppercase tracking-[0.05em] text-slate-700 transition-colors hover:bg-[#F0EEE9]"
+const termBtnStyle: React.CSSProperties = { border: "1px solid #E2DFD8", borderRadius: 4 }
+
+// ─── Stat summary row ────────────────────────────────────────────
+
+function StatCard({ label, value }: { label: string; value: string }) {
+  return (
+    <div
+      className="mono flex flex-col gap-1"
+      style={{ background: "#F0EEE9", borderRadius: 4, padding: "10px 12px" }}
+    >
+      <span style={{ fontSize: 10, letterSpacing: "0.08em", color: "#8A8478", fontWeight: 600 }}>
+        {label}
+      </span>
+      <span className="tabular-nums" style={{ fontSize: 20, fontWeight: 500, color: "#0f172a", lineHeight: 1 }}>
+        {value}
+      </span>
+    </div>
+  )
+}
+
+function StatSummaryRow({
+  gamesToday,
+  avgRestAdv,
+  highConfPicks,
+}: {
+  gamesToday: number
+  avgRestAdv: string
+  highConfPicks: number
+}) {
+  return (
+    <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
+      <StatCard label="GAMES TODAY" value={String(gamesToday)} />
+      <StatCard label="AVG REST ADV" value={avgRestAdv} />
+      <StatCard label="SEASON WIN RATE" value={`${SEASON_WIN_RATE}%`} />
+      <StatCard label="HIGH CONF PICKS" value={String(highConfPicks)} />
+    </div>
+  )
+}
+
+// ─── Section divider ─────────────────────────────────────────────
+
+function SectionDivider({ label, count }: { label: string; count: number }) {
+  return (
+    <div className="mono flex items-center gap-3 py-2" style={{ fontSize: 10, letterSpacing: "0.08em", color: "#8A8478" }}>
+      <span style={{ fontWeight: 700 }}>{label}</span>
+      <span style={{ flex: 1, height: 1, background: "#E2DFD8" }} />
+      <span style={{ fontWeight: 600 }}>
+        {count} {count === 1 ? "GAME" : "GAMES"}
+      </span>
+    </div>
+  )
+}
 
 // ─── Skeleton ────────────────────────────────────────────────────
 
-function MatchupCardSkeleton() {
+function MatchupRowSkeleton() {
   return (
-    <div className="flex flex-col gap-4 overflow-hidden rounded-2xl border border-white/50 bg-white/60 p-4 shadow-[0_8px_32px_rgba(23,64,139,0.06)] backdrop-blur-2xl">
-      <div className="flex items-start justify-between">
-        <Skeleton className="h-5 w-24 bg-slate-200/80" />
-        <Skeleton className="h-3.5 w-14 bg-slate-200/80" />
-      </div>
-      <div className="flex flex-col gap-3">
-        <div className="flex flex-col gap-1.5">
-          <div className="flex items-center gap-1.5">
-            <Skeleton className="h-3 w-8 bg-slate-200/80" />
-            <Skeleton className="h-4 w-10 bg-slate-200/80" />
-            <Skeleton className="ml-auto h-3 w-6 bg-slate-200/80" />
-          </div>
-          <Skeleton className="h-1.5 w-full rounded-full bg-slate-200/80" />
-        </div>
-        <Skeleton className="h-5 w-28 self-center rounded-full bg-slate-200/80" />
-        <div className="flex flex-col gap-1.5">
-          <div className="flex items-center gap-1.5">
-            <Skeleton className="h-3 w-8 bg-slate-200/80" />
-            <Skeleton className="h-4 w-10 bg-slate-200/80" />
-            <Skeleton className="ml-auto h-3 w-6 bg-slate-200/80" />
-          </div>
-          <Skeleton className="h-1.5 w-full rounded-full bg-slate-200/80" />
-        </div>
+    <div
+      style={{
+        background: "#ffffff",
+        border: "1px solid #E2DFD8",
+        borderLeft: "2px solid #C4853C",
+        borderRadius: 4,
+        padding: "10px 14px",
+      }}
+    >
+      <div className="flex items-center gap-4">
+        <Skeleton className="h-9 w-[110px] bg-[#F0EEE9]" />
+        <Skeleton className="h-9 flex-1 bg-[#F0EEE9]" />
+        <Skeleton className="h-9 w-[110px] bg-[#F0EEE9]" />
+        <Skeleton className="h-9 w-16 bg-[#F0EEE9]" />
       </div>
     </div>
   )
 }
 
-function SkeletonGrid() {
+function SkeletonList() {
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
-      {Array.from({ length: 6 }).map((_, i) => (
-        <MatchupCardSkeleton key={i} />
+    <div className="flex flex-col gap-2">
+      {Array.from({ length: 5 }).map((_, i) => (
+        <MatchupRowSkeleton key={i} />
       ))}
     </div>
   )
@@ -77,29 +123,69 @@ function SkeletonGrid() {
 
 function EmptyState({ label }: { label: string }) {
   return (
-    <div className="flex flex-col items-center gap-4 rounded-3xl border border-white/50 bg-white/60 px-6 py-20 text-center shadow-[0_8px_32px_rgba(23,64,139,0.06)] backdrop-blur-2xl">
-      <Image
-        src="https://cdn.nba.com/logos/leagues/logo-nba.svg"
-        alt="NBA"
-        width={64}
-        height={64}
-        unoptimized
-        className="size-16 object-contain"
-      />
-      <div className="flex flex-col gap-1">
-        <p className="text-sm font-semibold text-slate-700">No games scheduled</p>
-        <p className="text-xs text-slate-400">No NBA games on {label}</p>
-      </div>
+    <div
+      className="mono flex flex-col items-center gap-2 px-6 py-16 text-center"
+      style={{ background: "#ffffff", border: "1px solid #E2DFD8", borderRadius: 4 }}
+    >
+      <p style={{ fontSize: 11, letterSpacing: "0.08em", color: "#0f172a", fontWeight: 700 }}>
+        NO GAMES SCHEDULED
+      </p>
+      <p style={{ fontSize: 10, color: "#8A8478" }}>NO NBA GAMES ON {label.toUpperCase()}</p>
     </div>
   )
 }
 
 function ErrorState({ message }: { message: string }) {
   return (
-    <div className="flex flex-col items-center gap-2 rounded-3xl border border-[#C9082A]/20 bg-[#C9082A]/5 px-6 py-12 text-center backdrop-blur-2xl">
-      <p className="text-sm font-semibold text-[#C9082A]">Failed to load games</p>
-      <p className="text-xs text-[#C9082A]/60">{message}</p>
+    <div
+      className="mono flex flex-col items-center gap-2 px-6 py-12 text-center"
+      style={{ background: "#ffffff", border: "1px solid #E2DFD8", borderLeft: "2px solid #C9082A", borderRadius: 4 }}
+    >
+      <p style={{ fontSize: 11, letterSpacing: "0.08em", color: "#C9082A", fontWeight: 700 }}>
+        FAILED TO LOAD GAMES
+      </p>
+      <p style={{ fontSize: 10, color: "#8A8478" }}>{message}</p>
     </div>
+  )
+}
+
+// ─── Date picker chip ────────────────────────────────────────────
+
+function DateChip({
+  day,
+  count,
+  selected,
+  onClick,
+  ariaLabel,
+}: {
+  day: string
+  count: number
+  selected: boolean
+  onClick: () => void
+  ariaLabel: string
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label={ariaLabel}
+      aria-current={selected ? "date" : undefined}
+      className="mono flex min-w-[3rem] flex-col items-center px-2 py-1.5 transition-colors"
+      style={{
+        background: selected ? "#17408B" : "#ffffff",
+        border: "1px solid #E2DFD8",
+        borderLeft: selected ? "2px solid #17408B" : "1px solid #E2DFD8",
+        borderRadius: 4,
+        color: selected ? "#ffffff" : "#0f172a",
+      }}
+    >
+      <span className="tabular-nums" style={{ fontSize: 14, fontWeight: 700, lineHeight: 1.1 }}>
+        {day}
+      </span>
+      <span className="tabular-nums" style={{ fontSize: 9, color: selected ? "rgba(255,255,255,0.7)" : "#8A8478" }}>
+        {count} {count === 1 ? "GM" : "GMS"}
+      </span>
+    </button>
   )
 }
 
@@ -124,6 +210,13 @@ export default function HomePage() {
   const gameIds = useMemo(() => games.map((g) => g.id), [games])
   const { liveUpdates, recentlyUpdated } = useLiveGames(gameIds)
 
+  const clearSelectedDate = useCallback(() => {
+    setSelectedDateKey(null)
+    setGames([])
+    setLoadingGames(false)
+    setErrorGames(null)
+  }, [])
+
   const mergedGames =
     Object.keys(liveUpdates).length === 0
       ? games
@@ -138,8 +231,7 @@ export default function HomePage() {
           }
         })
 
-  // Sync calendar month tab when the selected day moves (e.g. prev/next across a month boundary).
-  // Derived during render instead of useEffect to avoid an extra re-render cycle.
+  // Sync calendar month tab when the selected day moves across a month boundary.
   if (selectedDateKey) {
     const m = Number(selectedDateKey.slice(5, 7))
     if (NBA_REGULAR_MONTHS.some((x) => x.value === m) && m !== month) {
@@ -149,8 +241,13 @@ export default function HomePage() {
 
   useEffect(() => {
     const controller = new AbortController()
-    setLoadingDates(true)
-    setErrorDates(null)
+    let active = true
+
+    queueMicrotask(() => {
+      if (!active) return
+      setLoadingDates(true)
+      setErrorDates(null)
+    })
 
     const params = new URLSearchParams({ season, month: String(month) })
     fetch(`/api/games/dates?${params.toString()}`, { signal: controller.signal })
@@ -166,12 +263,16 @@ export default function HomePage() {
           pending !== null && pending.season === season && pending.month === month
         if (matchesPending) {
           pendingSelectionResetRef.current = null
-          setSelectedDateKey(data.length > 0 ? pickInitialDate(data) : null)
+          const nextDate = data.length > 0 ? pickInitialDate(data) : null
+          if (nextDate) setSelectedDateKey(nextDate)
+          else clearSelectedDate()
           return
         }
         if (isFirstDatesFetchRef.current) {
           isFirstDatesFetchRef.current = false
-          setSelectedDateKey(data.length > 0 ? pickInitialDate(data) : null)
+          const nextDate = data.length > 0 ? pickInitialDate(data) : null
+          if (nextDate) setSelectedDateKey(nextDate)
+          else clearSelectedDate()
           return
         }
         setSelectedDateKey((prev) => {
@@ -190,20 +291,25 @@ export default function HomePage() {
         if (!controller.signal.aborted) setLoadingDates(false)
       })
 
-    return () => controller.abort()
-  }, [season, month])
+    return () => {
+      active = false
+      controller.abort()
+    }
+  }, [clearSelectedDate, season, month])
 
   useEffect(() => {
     if (!selectedDateKey) {
-      setGames([])
-      setLoadingGames(false)
-      setErrorGames(null)
       return
     }
 
     const controller = new AbortController()
-    setLoadingGames(true)
-    setErrorGames(null)
+    let active = true
+
+    queueMicrotask(() => {
+      if (!active) return
+      setLoadingGames(true)
+      setErrorGames(null)
+    })
 
     fetch(`/api/games/${selectedDateKey}`, { signal: controller.signal })
       .then((res) => res.json() as Promise<ApiResponse<GameResponse[]>>)
@@ -220,16 +326,29 @@ export default function HomePage() {
         if (!controller.signal.aborted) setLoadingGames(false)
       })
 
-    return () => controller.abort()
+    return () => {
+      active = false
+      controller.abort()
+    }
   }, [selectedDateKey])
 
   function onSeasonChange(next: string) {
     pendingSelectionResetRef.current = { season: next, month }
+    setLoadingDates(true)
+    setErrorDates(null)
     setSeason(next)
   }
 
   function onMonthTabClick(nextMonth: number) {
+    // Clear the selected date so the render-time month-sync block (which snaps
+    // `month` to whatever month `selectedDateKey` belongs to, to support arrow
+    // navigation across month boundaries) does not immediately revert this
+    // change. The dates-fetch effect repopulates the selection from the new
+    // month's first available day via pendingSelectionResetRef.
+    clearSelectedDate()
     pendingSelectionResetRef.current = { season, month: nextMonth }
+    setLoadingDates(true)
+    setErrorDates(null)
     setMonth(nextMonth)
   }
 
@@ -253,36 +372,56 @@ export default function HomePage() {
   const showGamesEmpty =
     !showGamesError && !showGamesSkeleton && selectedDateKey !== null && mergedGames.length === 0
 
+  // Summary metrics for the stat row.
+  const gamesToday = mergedGames.length
+  const diffs = mergedGames
+    .map((g) => Math.abs(g.restAdvantage?.differential ?? 0))
+    .filter((d) => d > 0)
+  const avgRestAdv =
+    diffs.length === 0 ? "0.0" : (diffs.reduce((s, d) => s + d, 0) / diffs.length).toFixed(1)
+  const highConfPicks = mergedGames.filter(
+    (g) => Math.abs(g.restAdvantage?.differential ?? 0) >= HIGH_CONF_THRESHOLD
+  ).length
+
   return (
-    <div className="flex flex-col gap-8">
-      <div className="flex flex-col gap-2">
-        <div className="flex items-center gap-2 text-sm font-semibold text-[#17408B]">
-          <Activity className="size-4" />
-          Today&apos;s Matchups
-        </div>
-        <h1 className="text-3xl font-bold tracking-tight text-slate-900">
-          Rest Advantage Dashboard
-        </h1>
-        <p className="max-w-xl text-slate-500">
-          Fatigue scores for every NBA game. Higher differential means one team is carrying
-          significantly more travel and schedule load.
+    <div className="flex flex-col gap-6">
+      {/* Heading */}
+      <div className="flex flex-col gap-1">
+        <span className="mono" style={{ fontSize: 10, letterSpacing: "0.08em", color: "#C9082A", fontWeight: 700 }}>
+          REST ADVANTAGE DASHBOARD
+        </span>
+        <h1 className="text-2xl font-bold tracking-tight text-slate-900">Today&apos;s Matchups</h1>
+        <p className="mono max-w-2xl" style={{ fontSize: 11, color: "#8A8478", lineHeight: 1.5 }}>
+          FATIGUE SCORES FOR EVERY NBA GAME. HIGHER DIFFERENTIAL = ONE TEAM CARRYING MORE TRAVEL AND SCHEDULE LOAD.
         </p>
       </div>
 
-      <div className="flex flex-col gap-4">
+      {/* Stat summary row */}
+      <StatSummaryRow
+        gamesToday={gamesToday}
+        avgRestAdv={avgRestAdv}
+        highConfPicks={highConfPicks}
+      />
+
+      {/* Filters */}
+      <div className="flex flex-col gap-3">
         <div className="flex flex-col gap-1.5">
-          <label htmlFor="nba-season" className="text-xs font-medium text-slate-500">
-            Season
+          <label htmlFor="nba-season" className="mono" style={{ fontSize: 10, letterSpacing: "0.08em", color: "#8A8478", fontWeight: 600 }}>
+            SEASON
           </label>
           <select
             id="nba-season"
             value={season}
             onChange={(e) => onSeasonChange(e.target.value)}
-            className={cn(
-              glassPill,
-              "max-w-xs cursor-pointer appearance-none bg-[length:1rem] bg-[right_0.65rem_center] bg-no-repeat pr-9",
-              "bg-[url('data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20width=%2716%27%20height=%2716%27%20viewBox=%270%200%2024%2024%27%20fill=%27none%27%20stroke=%27%23475569%27%20stroke-width=%272%27%3E%3Cpath%20d=%27M6%209l6%206%206-6%27/%3E%3C/svg%3E')]"
-            )}
+            className={cn(termBtn, "max-w-xs cursor-pointer appearance-none pr-8")}
+            style={{
+              ...termBtnStyle,
+              backgroundImage:
+                "url('data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20width=%2712%27%20height=%2712%27%20viewBox=%270%200%2024%2024%27%20fill=%27none%27%20stroke=%27%238A8478%27%20stroke-width=%272%27%3E%3Cpath%20d=%27M6%209l6%206%206-6%27/%3E%3C/svg%3E')",
+              backgroundRepeat: "no-repeat",
+              backgroundPosition: "right 0.5rem center",
+              backgroundSize: "0.75rem",
+            }}
           >
             {NBA_SEASONS.map((s) => (
               <option key={s} value={s}>
@@ -293,88 +432,87 @@ export default function HomePage() {
         </div>
 
         <div className="flex flex-col gap-1.5">
-          <span className="text-xs font-medium text-slate-500">Month</span>
+          <span className="mono" style={{ fontSize: 10, letterSpacing: "0.08em", color: "#8A8478", fontWeight: 600 }}>
+            MONTH
+          </span>
           <div className="-mx-1 overflow-x-auto overflow-y-hidden pb-1 [scrollbar-width:thin]">
-            <div className="flex min-w-min gap-2 px-1">
-              {NBA_REGULAR_MONTHS.map(({ value: m, label }) => (
-                <button
-                  key={m}
-                  type="button"
-                  onClick={() => onMonthTabClick(m)}
-                  aria-pressed={month === m}
-                  className={cn(
-                    glassPill,
-                    "shrink-0",
-                    month === m &&
-                      "border-[#17408B]/40 bg-[#17408B]/12 text-[#17408B] ring-1 ring-[#17408B]/25"
-                  )}
-                >
-                  {label}
-                </button>
-              ))}
+            <div className="flex min-w-min gap-1.5 px-1">
+              {NBA_REGULAR_MONTHS.map(({ value: m, label }) => {
+                const active = month === m
+                return (
+                  <button
+                    key={m}
+                    type="button"
+                    onClick={() => onMonthTabClick(m)}
+                    aria-pressed={active}
+                    className={cn(termBtn, "shrink-0")}
+                    style={{
+                      ...termBtnStyle,
+                      background: active ? "#17408B" : "#ffffff",
+                      color: active ? "#ffffff" : "#0f172a",
+                      borderColor: active ? "#17408B" : "#E2DFD8",
+                    }}
+                  >
+                    {label.toUpperCase()}
+                  </button>
+                )
+              })}
             </div>
           </div>
         </div>
 
         {errorDates ? (
-          <p className="text-sm text-[#C9082A]" role="alert">
+          <p className="mono" style={{ fontSize: 11, color: "#C9082A" }} role="alert">
             {errorDates}
           </p>
         ) : loadingDates ? (
-          <Skeleton className="h-24 w-full max-w-md rounded-2xl bg-slate-200/80" />
+          <Skeleton className="h-16 w-full max-w-md bg-[#F0EEE9]" style={{ borderRadius: 4 }} />
         ) : availableDates.length === 0 ? (
-          <p className="text-sm text-slate-500">No games in this month.</p>
+          <p className="mono" style={{ fontSize: 11, color: "#8A8478" }}>
+            NO GAMES IN THIS MONTH.
+          </p>
         ) : (
-          <div className="flex flex-col gap-2">
-            <span className="text-xs font-medium text-slate-500">Days with games</span>
-            <div className="flex flex-wrap gap-2">
+          <div className="flex flex-col gap-1.5">
+            <span className="mono" style={{ fontSize: 10, letterSpacing: "0.08em", color: "#8A8478", fontWeight: 600 }}>
+              DAYS WITH GAMES
+            </span>
+            <div className="flex flex-wrap gap-1.5">
               {availableDates.map(({ date: d, gameCount }) => {
                 const dayNum = format(parseISO(`${d}T12:00:00`), "d")
                 const longLabel = format(parseISO(`${d}T12:00:00`), "MMMM d, yyyy")
-                const selected = selectedDateKey === d
                 return (
-                  <button
+                  <DateChip
                     key={d}
-                    type="button"
+                    day={dayNum}
+                    count={gameCount}
+                    selected={selectedDateKey === d}
                     onClick={() => setSelectedDateKey(d)}
-                    aria-current={selected ? "date" : undefined}
-                    aria-label={`${longLabel}, ${gameCount} games`}
-                    className={cn(
-                      "flex min-w-[3.25rem] flex-col items-center rounded-xl border px-2.5 py-2 text-center shadow-[0_4px_24px_rgba(23,64,139,0.06)] backdrop-blur-xl transition-colors",
-                      "border-white/50 bg-white/55 hover:bg-white/70",
-                      selected &&
-                        "border-[#17408B]/45 bg-[#17408B]/12 ring-2 ring-[#17408B]/35"
-                    )}
-                  >
-                    <span className="text-base font-semibold tabular-nums text-slate-800">
-                      {dayNum}
-                    </span>
-                    <span className="text-[0.65rem] font-medium tabular-nums text-slate-500">
-                      {gameCount} gm{gameCount === 1 ? "" : "s"}
-                    </span>
-                  </button>
+                    ariaLabel={`${longLabel}, ${gameCount} games`}
+                  />
                 )
               })}
             </div>
           </div>
         )}
 
-        <div className="flex flex-wrap items-center justify-center gap-3 sm:justify-start">
+        <div className="flex flex-wrap items-center gap-2">
           <Button
             variant="outline"
             size="icon-sm"
             onClick={() => shiftSelectedDay(-1)}
             disabled={!selectedDateKey}
             aria-label="Previous day"
-            className="border-white/50 bg-white/50 backdrop-blur-xl"
+            className="bg-white"
+            style={{ border: "1px solid #E2DFD8", borderRadius: 4 }}
           >
             <ChevronLeft />
           </Button>
           <p
-            className="min-w-[12rem] text-center text-sm font-medium text-slate-700 sm:text-left"
+            className="mono min-w-[12rem] text-center sm:text-left"
+            style={{ fontSize: 11, letterSpacing: "0.04em", color: "#0f172a", fontWeight: 600 }}
             data-testid="selected-date-display"
           >
-            {formattedSelected ?? "Pick a date"}
+            {formattedSelected?.toUpperCase() ?? "PICK A DATE"}
           </p>
           <Button
             variant="outline"
@@ -382,31 +520,37 @@ export default function HomePage() {
             onClick={() => shiftSelectedDay(1)}
             disabled={!selectedDateKey}
             aria-label="Next day"
-            className="border-white/50 bg-white/50 backdrop-blur-xl"
+            className="bg-white"
+            style={{ border: "1px solid #E2DFD8", borderRadius: 4 }}
           >
             <ChevronRight />
           </Button>
         </div>
       </div>
 
-      {showGamesError ? (
-        <ErrorState message={errorGames} />
-      ) : showGamesSkeleton ? (
-        <SkeletonGrid />
-      ) : showGamesEmpty ? (
-        <EmptyState label={shortLabel} />
-      ) : mergedGames.length > 0 ? (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
-          {mergedGames.map((game, i) => (
-            <MatchupCard
-              key={game.id}
-              game={game}
-              index={i}
-              isScoreFlashing={recentlyUpdated.has(game.id)}
-            />
-          ))}
-        </div>
-      ) : null}
+      {/* Matchups section */}
+      <div className="flex flex-col gap-2">
+        <SectionDivider label="MATCHUPS" count={mergedGames.length} />
+
+        {showGamesError ? (
+          <ErrorState message={errorGames} />
+        ) : showGamesSkeleton ? (
+          <SkeletonList />
+        ) : showGamesEmpty ? (
+          <EmptyState label={shortLabel} />
+        ) : mergedGames.length > 0 ? (
+          <div className="flex flex-col gap-2">
+            {mergedGames.map((game, i) => (
+              <MatchupCard
+                key={game.id}
+                game={game}
+                index={i}
+                isScoreFlashing={recentlyUpdated.has(game.id)}
+              />
+            ))}
+          </div>
+        ) : null}
+      </div>
     </div>
   )
 }

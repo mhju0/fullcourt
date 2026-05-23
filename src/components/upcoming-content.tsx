@@ -6,6 +6,7 @@ import useSWR from "swr"
 import { format } from "date-fns"
 import { cn } from "@/lib/utils"
 import { NBA_TEAM_IDS } from "@/lib/nba-team-ids"
+import { parseSeasonStartYear, regularSeasonDateBounds } from "@/lib/nba-season"
 import { apiFetcher } from "@/lib/fetcher"
 import { Skeleton } from "@/components/ui/skeleton"
 import type { UpcomingGameWithRA } from "@/types"
@@ -28,6 +29,25 @@ const RA_OPTIONS = [
   { label: "RA ≥ 5", value: 5 },
   { label: "RA ≥ 7", value: 7 },
 ]
+
+function nextSeasonLabel(season: string): string {
+  const nextStartYear = parseSeasonStartYear(season) + 1
+  return `${nextStartYear}-${String(nextStartYear + 1).slice(-2)}`
+}
+
+function OffSeasonEmptyState({ nextSeason }: { nextSeason: string }) {
+  return (
+    <div className="rounded-[4px] border border-[#E2DFD8] border-l-2 border-l-[#C4853C] bg-white px-6 py-10 text-center">
+      <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.08em] text-[#8A8478]">
+        REGULAR SEASON COMPLETE
+      </p>
+      <p className="mt-2 text-base font-medium text-slate-900">See you next season.</p>
+      <p className="mt-1 text-xs text-[#8A8478]">
+        {nextSeason} season tips off in October.
+      </p>
+    </div>
+  )
+}
 
 // ─── Team logo ─────────────────────────────────────────────────────
 
@@ -61,7 +81,15 @@ function TeamLogo({ abbreviation }: { abbreviation: string }) {
 export function UpcomingContent() {
   const [raFilter, setRaFilter] = useState(0)
 
-  const params = new URLSearchParams({ season: "2025-26" })
+  const season = "2025-26"
+  const seasonBounds = regularSeasonDateBounds(season)
+  const today = format(new Date(), "yyyy-MM-dd")
+  const nextSeason = nextSeasonLabel(season)
+  const nextSeasonBounds = regularSeasonDateBounds(nextSeason)
+  const isOffSeason =
+    today < seasonBounds.from || (today > seasonBounds.to && today < nextSeasonBounds.from)
+
+  const params = new URLSearchParams({ season })
   if (raFilter > 0) params.set("minRA", String(raFilter))
   const swrKey = `/api/games/upcoming?${params}`
 
@@ -114,9 +142,13 @@ export function UpcomingContent() {
           <p className="text-base text-[#C9082A]">{error}</p>
         </div>
       ) : !games || games.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-slate-200 px-6 py-12 text-center">
-          <p className="text-base text-slate-400">No scheduled games match this filter.</p>
-        </div>
+        isOffSeason ? (
+          <OffSeasonEmptyState nextSeason={nextSeason} />
+        ) : (
+          <div className="rounded-2xl border border-dashed border-slate-200 px-6 py-12 text-center">
+            <p className="text-base text-slate-400">No scheduled games match this filter.</p>
+          </div>
+        )
       ) : (
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
