@@ -287,32 +287,88 @@ function RestAdvPanel({
   awayAbbr: string
 }) {
   const display = formatRestAdvantageDisplay(restAdvantage, homeAbbr, awayAbbr)
-
-  if (display.kind === "neutral") {
-    return (
-      <div className="flex w-[104px] shrink-0 flex-col items-end gap-1.5 pl-3 sm:w-[136px] sm:pl-4" style={{ borderLeft: "1px solid #E2DFD8" }}>
-        <span className="mono tabular-nums" style={{ fontSize: "17px", fontWeight: 600, color: "#8A8478", lineHeight: 1 }}>
-          {display.text}
-        </span>
-        <span className="mono" style={{ fontSize: "10px", letterSpacing: "0.08em", color: "#8A8478" }}>
-          REST EDGE
-        </span>
-        <ConfidenceBadge confidence={confidence} />
-      </div>
-    )
-  }
-
-  const isHomeAdv = restAdvantage?.advantageTeam === "home"
-  const color = isHomeAdv ? "#17408B" : "#C9082A"
+  const advantageTeam = restAdvantage?.advantageTeam ?? "neutral"
+  const isHomeAdv = advantageTeam === "home"
+  const isAwayAdv = advantageTeam === "away"
+  const value = Math.abs(restAdvantage?.differential ?? 0).toFixed(1)
+  const fillPercent = Math.min(Math.abs(restAdvantage?.differential ?? 0) / 5, 1) * 50
+  const color = isHomeAdv ? "#17408B" : isAwayAdv ? "#C9082A" : "#8A8478"
 
   return (
-    <div className="flex w-[104px] shrink-0 flex-col items-end gap-1.5 pl-3 sm:w-[136px] sm:pl-4" style={{ borderLeft: "1px solid #E2DFD8" }}>
-      <span className="mono tabular-nums" style={{ fontSize: "20px", fontWeight: 700, color, lineHeight: 1 }}>
-        {display.text}
+    <div className="flex w-[180px] shrink-0 flex-col items-center gap-2 pl-4 sm:w-[200px]" style={{ borderLeft: "1px solid #E2DFD8" }}>
+      <span className="mono" style={{ fontSize: "9px", letterSpacing: "0.08em", color: "#8A8478", fontWeight: 600 }}>
+        REST ADVANTAGE
       </span>
-      <span className="mono" style={{ fontSize: "10px", letterSpacing: "0.08em", color: "#8A8478" }}>
-        REST ADV
-      </span>
+
+      <div className="mono flex items-baseline justify-center gap-1 tabular-nums" style={{ lineHeight: 1 }}>
+        {display.kind === "team" ? (
+          <>
+            <span style={{ fontSize: "20px", fontWeight: 700, color }}>
+              {display.teamAbbreviation}
+            </span>
+            <span style={{ fontSize: "20px", fontWeight: 700, color: "#0f172a" }}>
+              {display.value}
+            </span>
+          </>
+        ) : (
+          <>
+            <span style={{ fontSize: "18px", fontWeight: 700, color: "#8A8478" }}>
+              EVEN
+            </span>
+            <span style={{ fontSize: "18px", fontWeight: 700, color: "#8A8478" }}>
+              {value}
+            </span>
+          </>
+        )}
+      </div>
+
+      <div className="flex w-full flex-col gap-1">
+        <div
+          className="relative w-full overflow-hidden"
+          style={{ height: 14, background: "#E2DFD8", borderRadius: 2 }}
+          aria-hidden
+        >
+          {advantageTeam === "neutral" ? (
+            <span
+              style={{
+                position: "absolute",
+                left: "47.5%",
+                top: 0,
+                bottom: 0,
+                width: "5%",
+                background: "#C9C5BC",
+              }}
+            />
+          ) : (
+            <span
+              style={{
+                position: "absolute",
+                left: isHomeAdv ? "50%" : undefined,
+                right: isAwayAdv ? "50%" : undefined,
+                top: 0,
+                bottom: 0,
+                width: `${fillPercent}%`,
+                background: color,
+              }}
+            />
+          )}
+          <span
+            style={{
+              position: "absolute",
+              left: "50%",
+              top: 0,
+              bottom: 0,
+              width: 1,
+              background: "#C9C5BC",
+            }}
+          />
+        </div>
+        <div className="mono flex items-center justify-between" style={{ fontSize: "9px", color: "#8A8478", fontWeight: 600 }}>
+          <span>{awayAbbr}</span>
+          <span>{homeAbbr}</span>
+        </div>
+      </div>
+
       <ConfidenceBadge confidence={confidence} />
     </div>
   )
@@ -590,7 +646,7 @@ export function MatchupCard({ game, index = 0, isScoreFlashing = false }: Matchu
             />
           </div>
 
-          <div className="min-w-0 flex-1 sm:max-w-[300px] md:max-w-[340px]">
+          <div className="min-w-0 flex-1">
             <FatigueBarsBlock
               awayAbbr={awayBrand.abbreviation}
               homeAbbr={homeBrand.abbreviation}
