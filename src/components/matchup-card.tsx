@@ -91,9 +91,9 @@ function ConfidenceBadge({ confidence }: { confidence: Confidence }) {
   const label = confidence === "high" ? "HIGH CONF" : confidence === "med" ? "MED CONF" : "NEUTRAL"
 
   const baseStyle: React.CSSProperties = {
-    fontSize: "9px",
+    fontSize: "10px",
     letterSpacing: "0.06em",
-    padding: "2px 7px",
+    padding: "2px 8px",
     borderRadius: "2px",
     fontWeight: 700,
   }
@@ -290,11 +290,11 @@ function RestAdvPanel({
 
   if (display.kind === "neutral") {
     return (
-      <div className="flex shrink-0 flex-col items-end gap-1.5 pl-4" style={{ borderLeft: "1px solid #E2DFD8" }}>
-        <span className="mono tabular-nums" style={{ fontSize: "16px", fontWeight: 600, color: "#8A8478", lineHeight: 1 }}>
+      <div className="flex w-[104px] shrink-0 flex-col items-end gap-1.5 pl-3 sm:w-[136px] sm:pl-4" style={{ borderLeft: "1px solid #E2DFD8" }}>
+        <span className="mono tabular-nums" style={{ fontSize: "17px", fontWeight: 600, color: "#8A8478", lineHeight: 1 }}>
           {display.text}
         </span>
-        <span className="mono" style={{ fontSize: "9px", letterSpacing: "0.08em", color: "#8A8478" }}>
+        <span className="mono" style={{ fontSize: "10px", letterSpacing: "0.08em", color: "#8A8478" }}>
           REST EDGE
         </span>
         <ConfidenceBadge confidence={confidence} />
@@ -306,11 +306,11 @@ function RestAdvPanel({
   const color = isHomeAdv ? "#17408B" : "#C9082A"
 
   return (
-    <div className="flex shrink-0 flex-col items-end gap-1.5 pl-4" style={{ borderLeft: "1px solid #E2DFD8" }}>
-      <span className="mono tabular-nums" style={{ fontSize: "18px", fontWeight: 700, color, lineHeight: 1 }}>
+    <div className="flex w-[104px] shrink-0 flex-col items-end gap-1.5 pl-3 sm:w-[136px] sm:pl-4" style={{ borderLeft: "1px solid #E2DFD8" }}>
+      <span className="mono tabular-nums" style={{ fontSize: "20px", fontWeight: 700, color, lineHeight: 1 }}>
         {display.text}
       </span>
-      <span className="mono" style={{ fontSize: "9px", letterSpacing: "0.08em", color: "#8A8478" }}>
+      <span className="mono" style={{ fontSize: "10px", letterSpacing: "0.08em", color: "#8A8478" }}>
         REST ADV
       </span>
       <ConfidenceBadge confidence={confidence} />
@@ -590,7 +590,7 @@ export function MatchupCard({ game, index = 0, isScoreFlashing = false }: Matchu
             />
           </div>
 
-          <div className="min-w-0 flex-1">
+          <div className="min-w-0 flex-1 sm:max-w-[300px] md:max-w-[340px]">
             <FatigueBarsBlock
               awayAbbr={awayBrand.abbreviation}
               homeAbbr={homeBrand.abbreviation}
