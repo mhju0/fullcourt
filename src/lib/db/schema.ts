@@ -6,6 +6,7 @@ import {
   integer,
   pgTable,
   serial,
+  smallint,
   timestamp,
   varchar,
 } from "drizzle-orm/pg-core";
@@ -117,6 +118,53 @@ export const predictions = pgTable(
   (t) => [index("predictions_game_id_idx").on(t.gameId)]
 );
 
+/**
+ * Playoff Predictor — series grain (one row per playoff series). See
+ * docs/PLAYOFF_PREDICTOR_DESIGN.md §6.2. Per-game playoff rows live in `games`
+ * (tagged playoffs/finals); this table is derived from them and is the modeling
+ * unit. It is additive and isolated — no existing table or query is touched, and
+ * the regular-season product never reads it.
+ */
+export const playoffSeries = pgTable(
+  "playoff_series",
+  {
+    id: serial("id").primaryKey(),
+    /** Season label, "YYYY-YY" (e.g. "2024-25"). */
+    season: varchar("season").notNull(),
+    /** Bracket round: 1 = first round … 4 = Finals. */
+    round: smallint("round").notNull(),
+    /** Conference ("East"/"West"); null for the Finals (cross-conference). */
+    conference: varchar("conference"),
+    /** Home-court team (the §1 reference team) and its opponent. */
+    homeCourtTeamId: integer("home_court_team_id")
+      .notNull()
+      .references(() => teams.id),
+    opponentTeamId: integer("opponent_team_id")
+      .notNull()
+      .references(() => teams.id),
+    /** true = best-of-7, false = best-of-5 (first round, season start ≤ 2001). */
+    isBestOf7: boolean("is_best_of_7").notNull(),
+    /** Series winner; null until the series is resolved. */
+    seriesWinnerTeamId: integer("series_winner_team_id").references(
+      () => teams.id
+    ),
+    /** Games won by each side; null until resolved. */
+    homeCourtWins: smallint("home_court_wins"),
+    opponentWins: smallint("opponent_wins"),
+    // Raw feature inputs (stored for reproducibility); null until computed.
+    seedDiff: decimal("seed_diff"),
+    winPctDiff: decimal("win_pct_diff"),
+    entryRestDiff: decimal("entry_rest_diff"),
+    h2hDiff: decimal("h2h_diff"),
+    /** Deterministic "season:round:team:team" key for idempotent upserts. */
+    externalSeriesKey: varchar("external_series_key").notNull().unique(),
+    computedAt: timestamp("computed_at").notNull().defaultNow(),
+  },
+  // externalSeriesKey is indexed via its UNIQUE constraint (mirrors games.externalId);
+  // add an explicit season index for season-scoped reads.
+  (t) => [index("playoff_series_season_idx").on(t.season)]
+);
+
 // ─── Relations ──────────────────────────────────────────────────
 
 export const teamsRelations = relations(teams, ({ many }) => ({
@@ -125,6 +173,13 @@ export const teamsRelations = relations(teams, ({ many }) => ({
   fatigueScores: many(fatigueScores),
   predictedAdvantages: many(predictions, { relationName: "predictedAdvantageTeam" }),
   actualWins: many(predictions, { relationName: "actualWinner" }),
+  playoffSeriesHomeCourt: many(playoffSeries, {
+    relationName: "playoffSeriesHomeCourtTeam",
+  }),
+  playoffSeriesOpponent: many(playoffSeries, {
+    relationName: "playoffSeriesOpponentTeam",
+  }),
+  playoffSeriesWon: many(playoffSeries, { relationName: "playoffSeriesWinner" }),
 }));
 
 export const gamesRelations = relations(games, ({ one, many }) => ({
@@ -167,5 +222,23 @@ export const predictionsRelations = relations(predictions, ({ one }) => ({
     fields: [predictions.actualWinnerId],
     references: [teams.id],
     relationName: "actualWinner",
+  }),
+}));
+
+export const playoffSeriesRelations = relations(playoffSeries, ({ one }) => ({
+  homeCourtTeam: one(teams, {
+    fields: [playoffSeries.homeCourtTeamId],
+    references: [teams.id],
+    relationName: "playoffSeriesHomeCourtTeam",
+  }),
+  opponentTeam: one(teams, {
+    fields: [playoffSeries.opponentTeamId],
+    references: [teams.id],
+    relationName: "playoffSeriesOpponentTeam",
+  }),
+  seriesWinner: one(teams, {
+    fields: [playoffSeries.seriesWinnerTeamId],
+    references: [teams.id],
+    relationName: "playoffSeriesWinner",
   }),
 }));

@@ -18,7 +18,7 @@ export default defineConfig({
   // Only introspect our app tables in the public schema — skip Supabase internal
   // schemas (auth, storage, etc.) whose CHECK constraints crash drizzle-kit@0.31.x.
   schemaFilter: ["public"],
-  tablesFilter: ["teams", "games", "fatigue_scores", "predictions"],
+  tablesFilter: ["teams", "games", "fatigue_scores", "predictions", "playoff_series"],
   extensionsFilters: ["postgis"],
   verbose: true,
   strict: true,
