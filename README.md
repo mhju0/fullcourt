@@ -1,226 +1,140 @@
-# NBA Rest Advantage
+# 🏀 FullCourt
 
-> Full-stack analytics platform that quantifies how travel distance, schedule density, and rest patterns affect NBA game outcomes — backed by 40 years of data.
+**An NBA analytics platform that turns four decades of schedule data into game-level predictions.**
 
-**[Live Demo](https://nba-rest-advantage.vercel.app)**
+[![Daily NBA Update](https://github.com/mhju0/fullcourt/actions/workflows/daily-update.yml/badge.svg)](https://github.com/mhju0/fullcourt/actions/workflows/daily-update.yml)
+![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=next.js)
+![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?logo=typescript&logoColor=white)
+![Supabase](https://img.shields.io/badge/Supabase-PostgreSQL-3FCF8E?logo=supabase&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind-v4-38BDF8?logo=tailwindcss&logoColor=white)
 
----
+FullCourt quantifies how **travel, rest, and schedule density** shape NBA outcomes. Its flagship model assigns every team a multi-factor **fatigue score**, derives a **rest advantage** for each matchup, and backtests it against roughly 40 seasons of regular-season results.
 
-## Key Findings
+> **The finding:** the more-rested team wins **~53.5%** of games overall — and **~61.7%** once the rest-advantage gap reaches **5+ points**.
 
-Analysis of **45,000+ regular-season games** from 1985-86 through 2025-26:
+🔗 **Live demo:** https://fullcourt-nba.vercel.app &nbsp;·&nbsp; **Code:** https://github.com/mhju0/fullcourt
 
-| Metric | Value |
-|---|---|
-| More-rested team win rate | **~53.5%** |
-| Win rate at Rest Advantage >= 5 | **~61.7%** |
-| Away team with rest edge win rate | **~49.8%** |
-
-Rest advantage creates a measurable edge, but does not override home court advantage.
-
----
-
-## What This Project Demonstrates
-
-### Data Engineering & Modeling
-- **Custom fatigue model** with 7 weighted factors: exponential decay load, log-scaled travel distance (haversine), road trip segment detection, multi-window schedule density, back-to-back/altitude multipliers, freshness bonus, and overtime penalties
-- **Automated daily pipeline** — GitHub Actions cron job fetches schedules from the NBA CDN, pulls scores via `nba_api`, detects overtime periods, computes fatigue scores, generates predictions, and fetches live odds
-- **Historical backfill** across 40 seasons (~45K games), with COVID bubble season (2019-20) excluded to preserve model integrity
-- **Python + TypeScript pipeline** — Python scripts for data ingestion (`nba_api`, `pandas`, `psycopg2`), TypeScript scripts for fatigue computation and prediction generation
-
-### Full-Stack Architecture
-- **Next.js 15 App Router** with server component page wrappers and client component content — clean separation of concerns
-- **Drizzle ORM** (schema-first) with PostgreSQL on Supabase — aliased multi-table joins, typed queries, Zod-validated API inputs
-- **RESTful API design** — 7 endpoints with consistent `{ data, error }` response envelope and safe public error messages (`getPublicApiErrorMessage`)
-- **Real-time updates** via Supabase Realtime PostgreSQL subscriptions for live game scores
-- **SWR** for client-side data fetching with automatic deduplication, caching, and stale-while-revalidate
-
-### Frontend & Performance
-- **TypeScript strict mode** — zero `any` types across the entire codebase
-- **Code splitting** — heavy charting library (Recharts, ~200KB) loaded via `next/dynamic` with skeleton fallbacks; page-level dynamic imports for non-critical routes
-- **Glassmorphism design system** — translucent cards with `backdrop-filter`, animated gradient background, NBA brand palette, responsive from mobile to desktop
-- **Historical team branding** — season-accurate logos and names for relocated/renamed franchises (e.g., SEA -> OKC, NJN -> BKN) via NBA CDN and ESPN CDN
-- **Accessible UI** — ARIA labels, keyboard navigation, `role="button"` on interactive elements, `aria-expanded` on collapsibles, `tabular-nums` for score alignment
-
-### Testing & CI/CD
-- **Vitest** unit tests — fatigue model, haversine distance calculation, API route validation, team history mapping
-- **Playwright** E2E tests — page navigation, data loading, component rendering
-- **Automated deployment** — Vercel auto-deploys from `main`; Vercel Cron for live score refresh; GitHub Actions for nightly data pipeline
-
----
-
-## Tech Stack
-
-| Layer | Technology |
-|---|---|
-| Framework | Next.js 15 (App Router), React 19 |
-| Language | TypeScript (strict mode) |
-| Styling | Tailwind CSS v4, shadcn/ui |
-| Data Fetching | SWR, Supabase Realtime |
-| Database | Supabase (PostgreSQL) |
-| ORM | Drizzle ORM |
-| Charts | Recharts |
-| Validation | Zod |
-| Data Pipeline | Python (nba_api, pandas, psycopg2) |
-| CI/CD | Vercel, GitHub Actions |
-| Testing | Vitest, Playwright |
-
----
-
-## Architecture
-
-```
-GitHub Actions (21:00 UTC daily)
-daily_update.py
-  |-- NBA CDN ---------> Fetch schedule (future games)
-  |-- nba_api ----------> Update scores (recent games)
-  |-- BoxScoreSummary --> Detect overtime periods
-  |-- run-daily.ts -----> Compute fatigue + generate predictions
-  |-- fetch_odds.ts ----> Fetch moneyline + spreads (the-odds-api.com)
-  |
-  v
-Supabase PostgreSQL
-  teams (30) | games (~45K) | fatigue_scores (2/game) | predictions (1/game)
-  |
-  v
-Next.js 15 on Vercel
-  API Routes -------> Drizzle ORM queries --> JSON responses
-  Server Components -> Client Components ---> SWR data fetching
-  Supabase Realtime -> useLiveGames hook ---> Live score updates
-```
-
----
-
-## Fatigue Model
-
-The fatigue score is a composite (0-15+) computed from seven weighted factors:
-
-```
-Fatigue Score =
-    Exponential Decay Load (30-day lookback, decay rate 0.52)
-  + Log-Scaled Travel Distance (7-day window, reference 1000mi)
-  + Road Segment Load (consecutive away games + coast-to-coast detection)
-  + Schedule Density Stress (6/7/12/15/30-day windows vs NBA pace anchors)
-  x Back-to-Back Multiplier (1.38x)
-  x Altitude Multiplier (1.15x for DEN/UTA)
-  - Freshness Bonus (up to -2.0, plateaus at 3 days rest)
-  + Overtime Penalty (+0.5 single OT, +1.0 multi-OT)
-
-Rest Advantage = Away Fatigue - Home Fatigue
-  |RA| < 0.5 -> Neutral (no call)
-  |RA| >= 0.5 -> Advantage declared for the more-rested team
-```
+<!-- Add a screenshot or short GIF of the app here — it's one of the highest-impact things on a portfolio README:
+![FullCourt — Today's Matchups](docs/screenshot.png)
+-->
 
 ---
 
 ## Features
 
-| Page | Description |
-|---|---|
-| **Today's Games** | Daily matchups with fatigue bars, rest advantage badges, live score updates via Realtime |
-| **Analysis** | Historical backtest dashboard — win rate by RA threshold, season trend charts, interactive game explorer with pagination |
-| **Future Games** | Upcoming scheduled games filtered by rest advantage threshold, with predicted edge |
-| **Game Detail** | Click-to-expand modal with full fatigue breakdown, recent game history, drill-down navigation |
+- **Today's Games** — live matchup cards with fatigue bars, a rest-advantage gauge, and real-time score/status updates via Supabase Realtime.
+- **Analysis** — a historical backtest: win rate by rest-advantage threshold and by season, home/away splits, and a filterable game explorer.
+- **Picks** — upcoming regular-season games ranked by their predicted rest-advantage edge.
+
+The platform is built to grow module by module. On the roadmap:
+
+- 🧠 **Playoff Predictor** — extends the fatigue model with playoff data and ML training.
+- 🎯 **Shot Quality Model** — expected points by shot location and difficulty.
 
 ---
 
-## Project Structure
+## Architecture
+
+```mermaid
+flowchart TD
+    src["NBA CDN · nba_api"] --> ingest["Python ingest (scripts/)"]
+    ingest --> db[("Supabase PostgreSQL")]
+    model["Fatigue model · src/lib/fatigue.ts"] -. shared .- db
+    db --> api["Next.js route handlers · Zod · { data, error }"]
+    api --> ui["React 19 · SWR · Supabase Realtime"]
+    cron["GitHub Actions — daily, self-gating"] --> ingest
+    vercel["Vercel cron — live scores"] --> api
+```
+
+- **Ingest (Python):** `nba_api` and the NBA CDN feed schedules, scores, and overtime data into Postgres. A daily GitHub Actions job **self-gates by reading the live league schedule**, so it runs only during the regular season and exits cleanly in the offseason — no hardcoded dates.
+- **Model (TypeScript):** a single source-of-truth fatigue engine (`src/lib/fatigue.ts`) is shared by every pipeline writer *and* every API read, so the math is never duplicated.
+- **Store:** Supabase PostgreSQL with Row-Level Security; reads run as type-safe Drizzle queries.
+- **Serve:** Next.js App Router route handlers (Zod-validated, `{ data, error }` envelope) feed a React 19 frontend using SWR and Supabase Realtime.
+- **Ship:** Vercel auto-deploys from `main`; GitHub Actions runs the daily pipeline.
+
+---
+
+## The fatigue model
+
+Each team's score combines:
+
+- **Workload** — exponential decay over the last 30 days (recent games weigh more).
+- **Travel** — log-scaled great-circle miles, with a realistic travel contract: a team only flies home when its *next* game is at home (no phantom round-trips between two road games).
+- **Back-to-backs & altitude** — multipliers for one-day rest and for visiting Denver / Utah.
+- **Schedule density** — a multi-window stress multiplier (3-in-4, 4-in-6).
+- **Road trips** — added load for long road stretches and coast-to-coast swings.
+- **Freshness & overtime** — a rest discount for extended breaks; a penalty when the prior game went to overtime.
+
+Data spans **1985-86 to the present**, excluding the 2019-20 Orlando bubble (no real travel) and all playoff/finals games (the fixed two-team series format breaks the travel assumptions).
+
+---
+
+## Tech stack
+
+| Layer | Tech |
+|-------|------|
+| Frontend | Next.js 16 (App Router), React 19, TypeScript (strict), Tailwind CSS v4, shadcn/ui, Recharts, SWR |
+| API | Next.js route handlers, Zod validation, Drizzle ORM, postgres-js |
+| Database | Supabase PostgreSQL — Row-Level Security + Realtime |
+| Data pipeline | Python (`nba_api`, `pandas`) + TypeScript (`tsx`) |
+| Testing | Vitest (unit + route), Playwright (e2e) |
+| Infra | Vercel, GitHub Actions |
+
+---
+
+## Engineering highlights
+
+- **End-to-end type safety** — Drizzle ORM + Zod + strict TypeScript, from DB column to API response.
+- **Self-gating pipeline** — tracks each season's shifting start and end from the live NBA schedule instead of hardcoded dates.
+- **Security** — Supabase RLS with explicit Data API grants (anon read, service-role writes).
+- **Real-time** — score and status changes push to the browser through Supabase Realtime.
+- **Tested & shipped** — Vitest + Playwright, with CI/CD on Vercel and GitHub Actions.
+
+---
+
+## Getting started
+
+```bash
+pnpm install
+
+# Create .env.local with:
+#   DATABASE_URL=postgresql://...                 (required — Supabase Postgres)
+#   NEXT_PUBLIC_SUPABASE_URL=...                   (optional — enables live scores)
+#   NEXT_PUBLIC_SUPABASE_ANON_KEY=...              (optional)
+
+pnpm drizzle-kit push          # create the tables
+python scripts/seed_teams.py   # seed the 30 teams + arena coordinates
+pnpm dev                       # http://localhost:3000
+```
+
+Full pipeline, schema, and architecture details live in [`docs/`](docs/).
+
+---
+
+## Project structure
 
 ```
 src/
-  app/                      Next.js App Router pages + API routes
-    page.tsx                 Today's Games (home, client component)
-    analysis/                Analysis dashboard (server wrapper + dynamic client import)
-    upcoming/                Future Games (server wrapper + dynamic client import)
-    api/                     7 REST endpoints with Zod validation
-  components/                UI components (matchup cards, charts, modals, nav)
-  hooks/
-    useLiveGames.ts          Supabase Realtime subscription hook
+  app/            # App Router pages + 8 API route handlers
+  components/     # matchup cards, fatigue bars, nav, charts
   lib/
-    fatigue.ts               Core fatigue model (7-factor weighted composite)
-    db/schema.ts             Drizzle ORM schema (4 tables)
-    db/queries.ts            All database queries
-    haversine.ts             Great-circle distance between arenas
-    team-history.ts          Season-accurate team branding (40 years)
-    fetcher.ts               SWR fetcher with API envelope unwrapping
-  types/                     Shared TypeScript interfaces
-scripts/                     Python + TypeScript data pipeline
-  daily_update.py            Main orchestrator (GitHub Actions entry point)
-  run-daily.ts               Fatigue computation + prediction generation
-  backfill_fatigue.ts        Bulk historical fatigue (45K games)
-  fetch_schedule.py          Historical data via nba_api
-  fetch_nba_schedule_cdn.py  Current season from NBA CDN
+    fatigue.ts    # the fatigue model (single source of truth)
+    db/           # Drizzle schema, queries, client
+  hooks/          # Supabase Realtime
+scripts/          # Python ingest + TypeScript modeling
+drizzle/          # SQL migrations (RLS, grants)
+docs/             # architecture, database, pipeline, API, frontend
 ```
 
 ---
 
-## Local Development
+## Roadmap
 
-### Prerequisites
-
-- Node.js 20+
-- pnpm
-- Python 3.10+
-- Supabase project (PostgreSQL)
-
-### Setup
-
-```bash
-git clone https://github.com/mhju0/nba-rest-advantage.git
-cd nba-rest-advantage
-pnpm install
-```
-
-Create `.env.local`:
-
-```env
-DATABASE_URL=postgresql://...
-NEXT_PUBLIC_SUPABASE_URL=https://xxx.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJ...
-CRON_SECRET=your-secret
-```
-
-### Seed Data
-
-```bash
-python scripts/seed_teams.py                   # 30 NBA teams
-python scripts/fetch_schedule.py               # Historical games (slow, hours)
-pnpm exec tsx scripts/backfill_fatigue.ts      # Compute fatigue scores
-pnpm exec tsx scripts/backfill_predictions.ts  # Generate predictions
-python scripts/fetch_nba_schedule_cdn.py       # Current season future games
-```
-
-### Run
-
-```bash
-pnpm dev        # Development server
-pnpm build      # Production build
-pnpm test:run   # Unit tests (Vitest)
-pnpm test:e2e   # E2E tests (Playwright)
-```
+- [x] Rest Advantage model (flagship)
+- [ ] Playoff Predictor (fatigue + ML)
+- [ ] Shot Quality Model
+- [ ] Premier League predictor
 
 ---
 
-## API Endpoints
-
-All endpoints return `{ data: T, error: string | null }`.
-
-| Route | Description |
-|---|---|
-| `GET /api/games/[date]` | Games for a specific date (YYYY-MM-DD) |
-| `GET /api/games/dates` | Available game dates for a season + month |
-| `GET /api/games/search` | Search with filters: team, season, min RA, result |
-| `GET /api/game/[id]` | Single game detail with fatigue breakdown + recent history |
-| `GET /api/analysis` | Historical backtest stats (win rates, thresholds, season trends) |
-| `GET /api/games/upcoming` | Scheduled games with predictions |
-| `GET /api/cron/update` | Live score refresh (Vercel cron, protected) |
-
----
-
-## License
-
-MIT
-
----
-
-<p align="center">Built by MJ</p>
+Built by **Michael Ju** ([@mhju0](https://github.com/mhju0)).

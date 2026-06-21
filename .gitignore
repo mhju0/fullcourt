@@ -1,9 +1,7 @@
 # AI assistant context
 CLAUDE.md
 .claude/
-AGENTS.md
-CHATGPT_PROJECT_OVERVIEW.md
-README.md
+.agents/
 
 # Environment files
 .env

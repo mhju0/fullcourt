@@ -86,7 +86,7 @@ async function main(): Promise<void> {
     })
     .from(fatigueScores);
 
-  console.log("── NBA Rest Advantage — data audit ──\n");
+  console.log("── FullCourt — data audit ──\n");
   console.log(`Total games rows:           ${totalGames[0]?.c ?? 0}`);
   console.log(`Total fatigue_scores rows: ${totalFatigueRows[0]?.c ?? 0}`);
   console.log(

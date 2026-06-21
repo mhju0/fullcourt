@@ -1,3 +1,4 @@
+// Reserved for the upcoming prediction-accuracy view; not yet wired to any page.
 import { format } from "date-fns";
 import { NextResponse } from "next/server";
 import { getPublicApiErrorMessage } from "@/lib/api-errors";

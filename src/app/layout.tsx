@@ -19,11 +19,11 @@ const outfit = Outfit({
 
 export const metadata: Metadata = {
   title: {
-    default: "NBA Rest Advantage",
-    template: "%s · NBA Rest Advantage",
+    default: "FullCourt — NBA Analytics",
+    template: "%s · FullCourt",
   },
   description:
-    "Data-driven NBA fatigue analysis. Track rest advantage scores, travel load, and prediction accuracy across the season.",
+    "FullCourt is an NBA analytics platform. Today it models rest and fatigue to surface each matchup's rest advantage, with more models on the way.",
 };
 
 export default function RootLayout({

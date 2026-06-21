@@ -37,6 +37,9 @@ export const games = pgTable(
       .references(() => teams.id),
     homeScore: integer("home_score"),
     awayScore: integer("away_score"),
+    /** Closing moneyline odds (migration 0003). Nullable; not populated by any tracked script. */
+    homeMoneyline: integer("home_moneyline"),
+    awayMoneyline: integer("away_moneyline"),
     status: varchar("status").notNull().default("scheduled"),
     /**
      * Pipeline classification (regular vs postseason). App queries filter to "regular" for analysis.

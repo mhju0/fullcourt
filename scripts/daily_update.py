@@ -2,6 +2,11 @@
 """
 Daily NBA pipeline for GitHub Actions (and local runs):
 
+0. **Season gate** (see ``season_window.is_in_season``): if today (ET) is in the NBA
+   offseason, log and ``sys.exit(0)`` immediately — before importing DB-coupled
+   modules, resolving DATABASE_URL, or hitting any NBA API. The offseason path needs
+   no secret. A genuine in-season failure still exits non-zero so the job fails loudly.
+
 1. Pull a **rolling window** from nba_api (LeagueGameFinder): last 7 ET calendar days
    through **60 days ahead**, upsert into `games` (scores, status, schedule). This fixes
    stale/wrong scores (not only “yesterday”), inserts missing games, and loads upcoming
@@ -13,7 +18,8 @@ Daily NBA pipeline for GitHub Actions (and local runs):
 3. Run `pnpm exec tsx scripts/run-daily.ts <today ET>` to refresh fatigue for today’s
    slate and regenerate open predictions.
 
-Requires DATABASE_URL in the environment (e.g. GitHub Actions secret).
+Requires DATABASE_URL in the environment (e.g. GitHub Actions secret) for the
+in-season path; the offseason gate runs without it.
 """
 
 from __future__ import annotations
@@ -25,27 +31,15 @@ from datetime import date, datetime, timedelta
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
-import pandas as pd
-import psycopg2
-import requests
-from dotenv import load_dotenv
-
 _SCRIPTS_DIR = str(Path(__file__).resolve().parent)
 if _SCRIPTS_DIR not in sys.path:
     sys.path.insert(0, _SCRIPTS_DIR)
 
-from fetch_nba_schedule_cdn import (
-    build_cdn_records,
-    fetch_cdn_schedule,
-    upsert_game_records as upsert_cdn_records,
-)
-from fetch_schedule import (
-    fetch_league_df_date_range,
-    load_team_id_map,
-    pair_games_from_date_range_df,
-    upsert_game_records as upsert_stats_window_records,
-)
+# NOTE: fetch_nba_schedule_cdn / fetch_schedule read DATABASE_URL at import time
+# (fetch_schedule sys.exits when it is unset), so they are imported lazily inside
+# main() — AFTER the offseason gate — so the offseason path requires no secret.
 from nba_ot_periods import fetch_overtime_periods
+from season_window import is_in_season
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 
@@ -62,6 +56,8 @@ def resolve_database_url() -> str:
     url = (os.environ.get("DATABASE_URL") or "").strip()
     if url:
         return url
+    from dotenv import load_dotenv  # lazy: only the local .env fallback needs it
+
     load_dotenv(REPO_ROOT / ".env.local")
     load_dotenv(REPO_ROOT / "scripts" / ".env")
     url = (os.environ.get("DATABASE_URL") or "").strip()
@@ -112,11 +108,39 @@ def refresh_ot_lookback_finals(conn, today: date, records: list[tuple]) -> int:
 
 
 def main() -> None:
-    database_url = resolve_database_url()
-
     et = ZoneInfo("America/New_York")
     now_et = datetime.now(et)
     today = now_et.date()
+
+    # ── Season gate ──────────────────────────────────────────────────────────
+    # Skip cleanly during the offseason BEFORE resolving DATABASE_URL, importing
+    # DB-coupled modules, or hitting any NBA API. An offseason skip is a success
+    # (exit 0); genuine in-season failures below still exit non-zero.
+    if not is_in_season(today):
+        print(f"[daily_update] Offseason ({today.isoformat()} ET) — skipping daily update.")
+        sys.exit(0)
+
+    database_url = resolve_database_url()
+
+    # Heavy / DB-coupled imports live here (not at module top) so the offseason gate
+    # above stays dependency-light (stdlib only) and never triggers fetch_schedule's
+    # import-time DATABASE_URL requirement.
+    import pandas as pd
+    import psycopg2
+    import requests
+
+    from fetch_nba_schedule_cdn import (
+        build_cdn_records,
+        fetch_cdn_schedule,
+        upsert_game_records as upsert_cdn_records,
+    )
+    from fetch_schedule import (
+        fetch_league_df_date_range,
+        load_team_id_map,
+        pair_games_from_date_range_df,
+        upsert_game_records as upsert_stats_window_records,
+    )
+
     window_start = today - timedelta(days=LOOKBACK_DAYS)
     window_end = today + timedelta(days=LOOKAHEAD_DAYS)
 

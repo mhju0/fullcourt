@@ -1,14 +1,14 @@
 import { expect, test } from "@playwright/test";
 
 test.describe("Home page", () => {
-  test("loads dashboard heading, season control, and month tabs", async ({ page }) => {
+  test("loads matchups heading, season control, and month tabs", async ({ page }) => {
     await page.goto("/");
 
     await expect(
-      page.getByRole("heading", { name: "Rest Advantage Dashboard" })
+      page.getByRole("heading", { name: "Today's Matchups" })
     ).toBeVisible();
 
-    await expect(page.getByLabelText("Season")).toBeVisible();
+    await expect(page.getByLabel("Season")).toBeVisible();
     await expect(page.getByRole("button", { name: /^Oct$/ })).toBeVisible();
     await expect(page.getByRole("button", { name: /^Dec$/ })).toBeVisible();
   });
@@ -17,7 +17,7 @@ test.describe("Home page", () => {
     await page.goto("/");
 
     const display = page.getByTestId("selected-date-display");
-    await expect(display).not.toHaveText("Pick a date", { timeout: 60_000 });
+    await expect(display).not.toHaveText("PICK A DATE", { timeout: 60_000 });
 
     const before = await display.textContent();
     expect(before).toBeTruthy();
@@ -34,7 +34,7 @@ test.describe("Home page", () => {
   }) => {
     await page.goto("/");
 
-    await page.getByLabelText("Season").selectOption("2024-25");
+    await page.getByLabel("Season").selectOption("2024-25");
     await page.getByRole("button", { name: /^Dec$/ }).click();
 
     const dec25 = page.getByRole("button", { name: /December 25, 2024/ });
@@ -55,7 +55,7 @@ test.describe("Home page", () => {
   test("previous day from an early season date can reach a day with no games", async ({ page }) => {
     await page.goto("/");
 
-    await page.getByLabelText("Season").selectOption("2024-25");
+    await page.getByLabel("Season").selectOption("2024-25");
     await page.getByRole("button", { name: /^Oct$/ }).click();
 
     await page.waitForResponse(
@@ -76,7 +76,7 @@ test.describe("Home page", () => {
     const prev = page.getByRole("button", { name: "Previous day" });
     for (let i = 0; i < 45; i++) {
       await prev.click();
-      const empty = page.getByText("No games scheduled");
+      const empty = page.getByText("NO GAMES SCHEDULED");
       if (await empty.isVisible()) {
         await expect(empty).toBeVisible();
         return;

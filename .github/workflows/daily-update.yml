@@ -1,9 +1,12 @@
-# Daily sync: finalize yesterday's scores, refresh today's fatigue + predictions.
+# Daily sync: finalize recent scores, refresh fatigue + predictions, load upcoming slate.
 #
-# Schedule: see `on.schedule` below (offseason = weekly). Vercel `/api/cron/update` is
-# configured separately in vercel.json — see CLAUDE.md "Vercel cron (offseason)".
+# Runs daily year-round. scripts/daily_update.py self-gates on the NBA season:
+# during the offseason it logs a skip and exits 0 (no DB or API work), so there is
+# no cron cadence to switch between offseason and regular season.
 #
-# Secrets (required):
+# Vercel `/api/cron/update` is configured separately in vercel.json.
+#
+# Secrets (required for the in-season path; the offseason skip needs none):
 #   DATABASE_URL — Supabase Postgres connection string (postgresql://...)
 #   Configure at: GitHub repo → Settings → Secrets and variables → Actions → New repository secret
 
@@ -11,8 +14,7 @@ name: Daily NBA update
 
 on:
   schedule:
-    # Offseason: weekly on Mondays. Change to "0 21 * * *" when the regular season resumes (~October).
-    - cron: "0 21 * * 1"
+    - cron: "0 21 * * *"
   workflow_dispatch:
 
 jobs:
@@ -23,16 +25,16 @@ jobs:
         uses: actions/checkout@v5
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v5
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: "22"
           cache: "pnpm"
 
       - name: Set up Python 3.11
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.11"
 

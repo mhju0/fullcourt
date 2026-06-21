@@ -50,8 +50,8 @@ export function NavBar() {
       >
         <div className="mx-auto flex h-full max-w-7xl items-center justify-between px-4 sm:px-6">
           <div className="flex items-center gap-3" style={{ fontSize: "10px", letterSpacing: "0.08em" }}>
-            <span style={{ color: "#C9082A", fontWeight: 700 }}>NBA ANALYTICS</span>
-            <span style={{ color: "#8A8478" }}>REST ADVANTAGE PLATFORM</span>
+            <span style={{ color: "#C9082A", fontWeight: 700 }}>FULLCOURT</span>
+            <span style={{ color: "#8A8478" }}>NBA ANALYTICS PLATFORM</span>
           </div>
           <div className="flex items-center gap-3" style={{ fontSize: "10px", letterSpacing: "0.08em" }}>
             <span style={{ color: "#8A8478" }}>{SEASON_LABEL}</span>
