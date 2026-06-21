@@ -105,6 +105,69 @@ async function main(): Promise<void> {
   console.log(
     `Scheduled regular games missing home fatigue: ${scheduledNoFatigue[0]?.c ?? 0} (run run-daily / backfill_fatigue)`
   );
+  // ── Tag-integrity guard (external_id prefix ↔ game_type) ──────────────
+  // NBA stats GAME_ID prefixes map 1:1 to game_type: 002 → regular, 004 →
+  // playoffs/finals, 005 → play_in. Any mismatch is data pollution — most
+  // dangerously a 004/005 row tagged 'regular', which (for mid-April play-in
+  // dates inside the Oct 1–Apr 30 calendar guard) would leak into the
+  // regular-season product. A non-empty result is a WARNING to investigate.
+  //
+  // NOTE: until the full 004 playoff backfill (scripts/fetch_playoffs.py) has
+  // been run for every season, this will still flag the not-yet-retagged
+  // playoff rows (e.g. 2024-25 004 rows tagged 'regular'). That is expected and
+  // is exactly what this guard is for — not a failure of the guard itself.
+  const tagMismatches = await db
+    .select({
+      season: games.season,
+      prefix: sql<string>`left(${games.externalId}, 3)`,
+      gameType: games.gameType,
+      c: count(),
+    })
+    .from(games)
+    .where(
+      or(
+        and(
+          sql`${games.externalId} LIKE '002%'`,
+          sql`${games.gameType} <> 'regular'`
+        ),
+        and(
+          sql`${games.externalId} LIKE '004%'`,
+          sql`${games.gameType} NOT IN ('playoffs', 'finals')`
+        ),
+        and(
+          sql`${games.externalId} LIKE '005%'`,
+          sql`${games.gameType} <> 'play_in'`
+        )
+      )
+    )
+    .groupBy(games.season, sql`left(${games.externalId}, 3)`, games.gameType)
+    .orderBy(games.season);
+
+  console.log("");
+  console.log("── Tag-integrity guard (external_id prefix ↔ game_type) ──");
+  if (tagMismatches.length === 0) {
+    console.log("OK — every 002/004/005 row carries its expected game_type.");
+  } else {
+    const total = tagMismatches.reduce((sum, r) => sum + Number(r.c), 0);
+    console.log(
+      `⚠️  WARNING: ${total} row(s) have a prefix/game_type mismatch across ${tagMismatches.length} group(s):`
+    );
+    for (const r of tagMismatches) {
+      const expected =
+        r.prefix === "002"
+          ? "regular"
+          : r.prefix === "004"
+            ? "playoffs/finals"
+            : "play_in";
+      console.log(
+        `   ${r.season}  prefix ${r.prefix} → tagged '${r.gameType}' (expected ${expected}): ${r.c} row(s)`
+      );
+    }
+    console.log(
+      "   Fix: re-run scripts/fetch_playoffs.py (004) / scripts/fetch_play_in.py (005) for the offending seasons."
+    );
+  }
+
   console.log("");
   console.log(
     "To refresh all fatigue with the current TypeScript model: pnpm exec tsx scripts/backfill_fatigue.ts --force"

@@ -168,10 +168,28 @@ def _pair_games_dataframe(
     resolve_season,
     *,
     force_skip_ot: bool | None = None,
+    id_filter=None,
+    id_filter_label: str = "002",
+    game_type_override: str | None = None,
 ) -> list[tuple]:
     """
     Pair home/away rows by GAME_ID. resolve_season(home_row) -> season label or None to skip.
+
+    ``id_filter`` decides which GAME_IDs to keep (default: regular-season ``002`` gate via
+    ``is_regular_season_game_id``). The playoff ingest (``fetch_playoffs.py``) passes
+    ``is_playoff_game_id`` to keep only ``004`` IDs. ``id_filter_label`` is only used in the
+    skip-count log line.
+
+    ``game_type_override`` forces every paired row's ``game_type`` to a fixed value. The
+    play-in ingest (``fetch_play_in.py``) passes ``"play_in"`` because play-in GAME_IDs use a
+    ``005`` prefix that ``get_game_type`` does not recognize (it would default to ``regular``).
+    When ``None`` (regular + playoff paths), ``get_game_type`` decides as before.
+
+    The defaults preserve regular-season behavior exactly.
     """
+    if id_filter is None:
+        id_filter = is_regular_season_game_id
+
     if df.empty:
         return []
 
@@ -218,7 +236,7 @@ def _pair_games_dataframe(
             continue
 
         gid_str = normalize_stats_game_id(game_id)
-        if not is_regular_season_game_id(gid_str):
+        if not id_filter(gid_str):
             skipped_non_regular += 1
             continue
 
@@ -232,7 +250,7 @@ def _pair_games_dataframe(
             ot_periods = fetch_overtime_periods(gid_str)
         else:
             ot_periods = 0
-        game_type = get_game_type(gid_str, home["GAME_DATE"])
+        game_type = game_type_override or get_game_type(gid_str, home["GAME_DATE"])
 
         records.append((
             gid_str,
@@ -248,7 +266,7 @@ def _pair_games_dataframe(
         ))
 
     if skipped_non_regular:
-        print(f"    Skipped {skipped_non_regular} non-regular games (game_id prefix is not 002).")
+        print(f"    Skipped {skipped_non_regular} games (game_id prefix is not {id_filter_label}).")
     if skipped_season:
         print(f"    Skipped {skipped_season} games (missing or invalid SEASON_ID).")
     if skipped:
