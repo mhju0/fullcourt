@@ -1,5 +1,5 @@
 /**
- * NBA Rest Advantage — Weighted Decay Fatigue Model
+ * FullCourt — Weighted Decay Fatigue Model
  *
  * 1. DECAY LOAD: Recent games (up to ~30 days) contribute fatigue with exponential decay.
  * 2. TRAVEL LOAD: Cumulative travel (7-day rolling window of legs) with log scaling.

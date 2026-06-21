@@ -79,7 +79,7 @@ export async function GET(request: Request) {
       "https://cdn.nba.com/static/json/liveData/scoreboard/todaysScoreboard_00.json";
 
     const response = await fetch(scoreboardUrl, {
-      headers: { "User-Agent": "nba-rest-advantage/1.0" },
+      headers: { "User-Agent": "fullcourt/1.0" },
       next: { revalidate: 0 },
     });
 
