@@ -3,9 +3,11 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { addDays, format, parseISO } from "date-fns"
 import { ChevronLeft, ChevronRight } from "lucide-react"
+import useSWR from "swr"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import { MatchupCard } from "@/components/matchup-card"
+import { apiFetcher } from "@/lib/fetcher"
 import { useLiveGames } from "@/hooks/useLiveGames"
 import {
   defaultNbaCalendarMonth,
@@ -16,7 +18,7 @@ import {
   pickDefaultGamesDate,
 } from "@/lib/nba-season"
 import { cn } from "@/lib/utils"
-import type { ApiResponse, GameDateCount, GameResponse } from "@/types"
+import type { AnalysisResponse, ApiResponse, GameDateCount, GameResponse } from "@/types"
 
 // ─── Helpers ─────────────────────────────────────────────────────
 
@@ -35,7 +37,6 @@ function filterDatesByMonth(dates: GameDateCount[], month: number): GameDateCoun
 type PendingScope = { season: string; month: number }
 
 const HIGH_CONF_THRESHOLD = 2.0
-const SEASON_WIN_RATE = "53.5"
 
 // Terminal-style flat button: white bg, 1px border, mono uppercase, 4px corners.
 const termBtn =
@@ -63,17 +64,19 @@ function StatCard({ label, value }: { label: string; value: string }) {
 function StatSummaryRow({
   gamesToday,
   avgRestAdv,
+  seasonWinRate,
   highConfPicks,
 }: {
   gamesToday: number
   avgRestAdv: string
+  seasonWinRate: string
   highConfPicks: number
 }) {
   return (
     <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
       <StatCard label="GAMES TODAY" value={String(gamesToday)} />
       <StatCard label="AVG REST ADV" value={avgRestAdv} />
-      <StatCard label="SEASON WIN RATE" value={`${SEASON_WIN_RATE}%`} />
+      <StatCard label="SEASON WIN RATE" value={seasonWinRate} />
       <StatCard label="HIGH CONF PICKS" value={String(highConfPicks)} />
     </div>
   )
@@ -217,6 +220,14 @@ export default function HomePage() {
 
   const gameIds = useMemo(() => games.map((g) => g.id), [games])
   const { liveUpdates, recentlyUpdated } = useLiveGames(gameIds)
+
+  // Live overall win rate for the stat card — same value /analysis renders,
+  // computed from the DB by /api/analysis (0–100, 1 decimal). Isolated from the
+  // date/games state machine; shows "—" while loading or if the request fails.
+  const { data: analysis } = useSWR<AnalysisResponse>("/api/analysis", apiFetcher, {
+    revalidateOnFocus: false,
+  })
+  const seasonWinRate = analysis ? `${analysis.overallWinRate}%` : "—"
 
   const clearSelectedDate = useCallback(() => {
     setSelectedDateKey(null)
@@ -417,6 +428,7 @@ export default function HomePage() {
       <StatSummaryRow
         gamesToday={gamesToday}
         avgRestAdv={avgRestAdv}
+        seasonWinRate={seasonWinRate}
         highConfPicks={highConfPicks}
       />
 

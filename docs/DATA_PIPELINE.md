@@ -11,6 +11,11 @@ GitHub Actions entry point (also runnable locally). Time base is **America/New_Y
 Window: `LOOKBACK_DAYS = 7`, `LOOKAHEAD_DAYS = 60` → operates over `[today−7, today+60]`.
 
 Steps:
+0. **Season gate (runs first, stdlib-only).** `season_window.is_in_season(today ET)` reads the
+   live NBA CDN schedule (regular-season `002` tip dates, ±`SEASON_BUFFER_DAYS = 3`), with a
+   coarse Oct 1–Apr 30 calendar fallback on any fetch/parse failure or empty payload. In the
+   offseason it logs and `sys.exit(0)` **before** resolving `DATABASE_URL` or importing any
+   DB-coupled module — so the offseason run needs no secret and never hits an NBA API.
 1. **Resolve `DATABASE_URL`** from the process env, else `.env.local`, else `scripts/.env`
    (`resolve_database_url`).
 2. **Seed future games from the NBA CDN** — `fetch_cdn_schedule()` → `build_cdn_records(…,
@@ -77,6 +82,57 @@ Steps:
 ### `backfill_game_types.py` — tag playoffs/finals
 - Re-derives `game_type` for rows whose `external_id LIKE '004%'` (finals if month ≥ 6,
   else playoffs); leaves `regular` rows untouched. Prints a `game_type` breakdown.
+
+### `season_window.py` — season gate (used by `daily_update.py`)
+- `is_in_season(today)` returns whether today (ET) is inside the active NBA regular season.
+  Primary signal: the live NBA CDN schedule (`scheduleLeagueV2.json`, `002` gameId dates) parsed
+  with **stdlib only** (no DB import, no secret) so it can run before `daily_update.py` touches
+  `DATABASE_URL`; coarse **Oct 1–Apr 30** fallback on any failure. `SEASON_BUFFER_DAYS = 3`
+  absorbs UTC-vs-ET boundary fuzz. Runnable standalone for a quick in/out-of-season check.
+
+## Playoff Predictor pipeline (in progress)
+
+A **separate, isolated** ingestion + series-build path for the Playoff Predictor module (design:
+[PLAYOFF_PREDICTOR_DESIGN.md](PLAYOFF_PREDICTOR_DESIGN.md); status + remaining phases:
+[ROADMAP.md](ROADMAP.md)). These scripts are **not** part of `daily_update.py` — they are run
+manually. They never modify regular-season (`002`) rows, never touch `fatigue.ts`, and never
+rename the rest-advantage metric. **Verified 2026-06-29** (read-only `SELECT`): 2,827 `playoffs`
++ 318 `finals` (`004`) + 36 `play_in` (`005`) game rows are present; `build_series_dataset.py`
+built **600 series** (all four feature columns NULL); the tag-integrity guard reports **0**
+prefix↔`game_type` mismatches.
+
+### `scripts/fetch_playoffs.py` — ingest playoff/finals games (Phase 1)
+- nba_api `LeagueGameFinder` with `season_type_nullable="Playoffs"` for each in-scope season
+  (1985-86 → current, **2019-20 excluded**; season list imported from `fetch_schedule.SEASONS`).
+- Reuses `fetch_schedule.py`'s `_pair_games_dataframe` / `ABBR_ALIASES` / `get_game_type` /
+  `INSERT … ON CONFLICT (external_id) DO UPDATE`. Keeps **only `004`-prefixed** IDs via
+  `is_playoff_game_id` (the playoff analogue of the `002` gate). `get_game_type` tags `finals`
+  (month ≥ 6) / `playoffs`. Dates use nba_api **ET** `GAME_DATE` (so first-round entry-rest day
+  counts line up with regular-season rows). Flags: `--season YYYY-YY`, `--dry-run`.
+
+### `scripts/fetch_play_in.py` — ingest play-in games (Phase 1b)
+- Mirrors `fetch_playoffs.py` for the play-in tournament: `season_type_nullable="PlayIn"`,
+  **`005`-prefixed** IDs (`is_play_in_game_id`), seasons **2020-21 → current**. Forces
+  `game_type='play_in'` via a `game_type_override` (so play-in rows are not folded under
+  `playoffs`). Play-in games are per-game substrate **only** (they feed first-round entry-rest);
+  they are never series targets. Note: play-in dates fall **inside** the Oct 1–Apr 30 calendar
+  guard, so the `play_in` tag is the only thing keeping them out of the regular-season product —
+  the script audits + re-tags any pre-existing mislabeled `005` rows on upsert.
+
+### `ml/build_series_dataset.py` — series skeleton builder (Phase 2b-i)
+- Reads `games` rows with `game_type IN ('playoffs','finals')` (excludes `005` play-in and the
+  `2019-20` bubble), groups them into series by `(season, unordered team-pair)`, sets the
+  home-court team from the chronological opener's host, and tallies wins from **final** games.
+- Derives `round` (1–4) via a **backward bracket walk** (Finals = latest-starting series; each
+  advancing team's latest unassigned *won* series feeds the prior round — deliberately avoiding
+  the naive "winner ∈ finalists" over-match), validated against `[8,4,2,1]` per season; sets
+  `is_best_of_7` (bo5 only for first round with season start year ≤ 2001), `conference`, and the
+  resolved `series_winner_team_id` (with win-count sanity warnings).
+- Idempotent `ON CONFLICT (external_series_key) DO UPDATE` that refreshes **only** the skeleton
+  columns — the four feature columns (`seed_diff`, `win_pct_diff`, `entry_rest_diff`, `h2h_diff`)
+  are intentionally **left NULL** for a later 2b-ii feature pass (not yet built). `--dry-run`
+  computes + validates without writing; a completed season that fails the 15-series/all-resolved
+  invariant exits non-zero.
 
 ## TypeScript modeling scripts
 
@@ -247,10 +303,10 @@ Logos: **historical** eras use ESPN PNGs
 
 ## Cron cadence
 
-| Scheduler | File | Current (offseason) | Regular season |
-|-----------|------|---------------------|----------------|
-| GitHub Actions | `.github/workflows/daily-update.yml` | `0 21 * * 1` (Mon 21:00 UTC, weekly) | change to `0 21 * * *` (daily) |
-| Vercel cron | `vercel.json` | `0 10 1 * *` (1st of month, 10:00 UTC) | change to `0 10 * * *` (daily) |
+| Scheduler | File | Schedule | Notes |
+|-----------|------|----------|-------|
+| GitHub Actions | `.github/workflows/daily-update.yml` | `0 21 * * *` (daily, 21:00 UTC, **year-round**) | `daily_update.py` self-gates on the season (`season_window.is_in_season`) and exits 0 in the offseason — **no cadence switch needed**. |
+| Vercel cron | `vercel.json` | `0 10 1 * *` (1st of month, 10:00 UTC) | Offseason cadence; the `/api/cron/update` route does **not** season-gate, so switch to `0 10 * * *` (daily) for in-season live scores. |
 
 The GitHub job also supports `workflow_dispatch` (manual run). The Vercel cron calls
 `GET /api/cron/update`, which refreshes live scores and lets Supabase Realtime push changes

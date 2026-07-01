@@ -85,8 +85,10 @@ Recent games for the model are loaded by `src/lib/fatigue-recent-games.ts`
 
 ### 4. Storage (Supabase PostgreSQL)
 
-Four tables — `teams`, `games`, `fatigue_scores`, `predictions` — defined in
-`src/lib/db/schema.ts`. RLS + Data API grants are in migrations `0004`/`0005`. Full schema
+Five tables — `teams`, `games`, `fatigue_scores`, `predictions`, and `playoff_series` (added by
+`0006` for the in-progress Playoff Predictor; additive and isolated — no existing query reads it)
+— defined in `src/lib/db/schema.ts`. RLS + Data API grants are in migrations `0004`/`0005` (and
+`0006` for `playoff_series`). Full schema
 in [DATABASE.md](DATABASE.md). The DB client (`src/lib/db/index.ts`) is a **lazy
 `Proxy`** over a `postgres-js` connection (created on first use so `next build` doesn't
 require `DATABASE_URL`), with `prepare: false` and a pool size of `DB_POOL_MAX` (default
@@ -113,12 +115,16 @@ Design system and component props in [FRONTEND.md](FRONTEND.md).
 
 ### 7. CI/CD
 
-- **GitHub Actions** `daily-update.yml` runs `daily_update.py` on a cron (offseason weekly).
+- **GitHub Actions** `daily-update.yml` runs `daily_update.py` on a **daily, year-round** cron
+  (`0 21 * * *`); the script self-gates on the NBA season (`season_window.is_in_season`) and
+  exits 0 cleanly in the offseason — so there is no cadence to switch.
 - **Vercel cron** (`vercel.json`) hits `GET /api/cron/update` to refresh live scores, which
-  then propagate to clients through Supabase Realtime.
-- **Vercel** auto-deploys from `main`.
+  then propagate to clients through Supabase Realtime (currently monthly in the offseason; the
+  route does not season-gate).
+- **Vercel** auto-deploys from `main`. There is **no test/lint CI workflow** — Vitest +
+  Playwright run locally; the Vercel build runs `next build` (type-check) only.
 
-Details + the stale-test warnings in [TESTING_AND_CICD.md](TESTING_AND_CICD.md).
+Details in [TESTING_AND_CICD.md](TESTING_AND_CICD.md).
 
 ## Request lifecycle examples
 
@@ -140,14 +146,48 @@ Realtime pushes the row change → connected clients update in place.
 - **Regular-season calendar guard** (`gameDateWithinRegularSeasonCalendar` in `queries.ts`)
   re-filters by Oct 1–Apr 30 even though ingest already excludes non-`002` IDs, defending
   against mis-tagged source rows.
-- **Design migration in progress:** Today's Games and Analysis use the new "Bloomberg
-  Terminal" flat style; **Future Games (`upcoming-content.tsx`) and the game-detail modal
-  (`explore-game-detail-modal.tsx`) still use the older glassmorphism style.** The README's
-  "Glassmorphism design system" line reflects the old direction.
-- **Unused endpoint:** `/api/analysis/accuracy` (and the `predictions`-backed accuracy
-  types) is fully implemented but **not fetched by any current page** — it powered a
-  "Prediction Tracker" page that no longer exists (only the stale `e2e/navigation.spec.ts`
-  still references `/tracker`).
-- **Version drift in README:** README says "Next.js 15" / "21:00 UTC daily" / references
-  `fetch_odds.ts`; the code is Next **16.2.1**, the GitHub cron is weekly offseason, and no
-  `fetch_odds.ts` exists.
+- **Design system unified (2026-06-29):** Today's Games, Analysis, Future Games
+  (`upcoming-content.tsx`) and the game-detail modal (`explore-game-detail-modal.tsx`) all use
+  the flat "Bloomberg Terminal" style; the earlier glassmorphism look has been fully migrated out.
+- **Removed (2026-06-29):** the dead `/api/analysis/accuracy` endpoint and its orphaned query fns
+  (`getResolvedPredictions`, `getUpcomingPredictionsForSeason`) + `Accuracy*` types — nothing else
+  imported them, so the route + dead code were deleted rather than rewired.
+- **Versions (verified against code):** Next.js **16.2.1**, React **19.2.4**; the GitHub cron is
+  `0 21 * * *` (daily, year-round, season self-gated); live site
+  https://fullcourt-nba.vercel.app. README is in sync with these, and no `fetch_odds.ts` exists.
+- **Playoff Predictor (in progress):** an additive, isolated module is partway built — see the
+  subsection below and [ROADMAP.md](ROADMAP.md).
+
+## Playoff Predictor (in progress) — data flow
+
+A **separate, isolated** module that predicts the winner of each playoff *series*. Design and
+rationale live in [PLAYOFF_PREDICTOR_DESIGN.md](PLAYOFF_PREDICTOR_DESIGN.md); the remaining phases
+and the current phase are in [ROADMAP.md](ROADMAP.md). It never touches `fatigue.ts`, never
+renames the rest-advantage metric, and the regular-season pages never read its data (every
+existing read pins `game_type = 'regular'` + the Oct 1–Apr 30 calendar guard).
+
+Flow as built **today** (code present; live DB **verified 2026-06-29** — 3,145 `004` + 36 `005`
+game rows, 600 series rows, all four feature columns NULL):
+
+```
+nba_api Playoffs  → scripts/fetch_playoffs.py  → games (004 rows, game_type playoffs/finals)
+nba_api PlayIn    → scripts/fetch_play_in.py   → games (005 rows, game_type='play_in')
+                                                       │
+                              ml/build_series_dataset.py (Phase 2b-i, skeleton)
+                                                       ▼
+                         playoff_series  (round / winner / is_best_of_7 / conference;
+                                          seed_diff / win_pct_diff / entry_rest_diff /
+                                          h2h_diff left NULL until the 2b-ii feature pass)
+```
+
+- **Ingest** reuses `fetch_schedule.py`'s pairing/upsert helpers, gated to `004` (`is_playoff_game_id`)
+  and `005` (`is_play_in_game_id`) stats-ID prefixes, so a regular-season `002` row can never be
+  written or mutated. Play-in rows fall **inside** the Oct 1–Apr 30 calendar window, so their
+  `game_type='play_in'` tag is the sole thing keeping them out of the regular-season product.
+- **Series build** groups `004` games by `(season, unordered team-pair)`, sets the home-court team
+  from the opener's host, tallies wins from final games, and derives `round` via a backward bracket
+  walk validated against `[8,4,2,1]` per season. Feature columns are intentionally left NULL (the
+  upsert never writes them) for a later 2b-ii pass.
+- **Not yet built:** the 2b-ii feature pass, model training/eval (Python/scikit-learn under `ml/`),
+  a `playoff_series_predictions` table, and the serving path (a `/api/playoffs` route + `/playoffs`
+  page + nav link). No playoff data has any frontend surface today.

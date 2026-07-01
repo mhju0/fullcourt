@@ -41,9 +41,12 @@ Config (`playwright.config.ts`): `testDir: ./e2e`, `baseURL: http://localhost:30
 `pnpm dev` (reuses an existing server unless `CI`); in CI `retries: 2`, `workers: 1`,
 `forbidOnly`. Specs: `e2e/home.spec.ts`, `e2e/analysis.spec.ts`, `e2e/navigation.spec.ts`.
 
-> **The e2e specs target the current terminal UI.** They were rewritten to match the live
-> markup, but still need a running server **and** a populated database to pass — the suite
-> drives real `/api/games/*` and `/api/analysis` responses, so it is not a build-time check.
+> **The e2e specs target the current terminal UI** (they are **not** stale — they assert the live
+> markup, including the `Today's Matchups` / `Rest Advantage Analysis` headings and the
+> `TODAY'S GAMES`/`ANALYSIS`/`PICKS` nav; none reference a removed `/tracker` route). They still
+> need a running server **and** a populated database to pass — the suite drives real
+> `/api/games/*` and `/api/analysis` responses, so it is not a build-time check, and it runs only
+> on demand (`pnpm test:e2e`), never in CI.
 >
 > - **`navigation.spec.ts`** — nav links `TODAY'S GAMES` / `ANALYSIS` / `PICKS` →
 >   `/` / `/analysis` / `/upcoming`. The active link is asserted via its inline color
@@ -63,15 +66,22 @@ issue is resolved — the specs now use Playwright's `getByLabel`.
 
 ### GitHub Actions — `.github/workflows/daily-update.yml`
 
-- **Name:** "Daily NBA update". **Triggers:** `schedule` cron **`0 21 * * 1`** (Mondays
-  21:00 UTC — offseason weekly; comment says switch to `0 21 * * *` in-season) and manual
-  `workflow_dispatch`.
-- **Job `update`** (`ubuntu-latest`): checkout → install pnpm (`pnpm/action-setup@v4`) →
-  Node **22** (with pnpm cache) → Python **3.11** → `pnpm install --frozen-lockfile` →
+- **Name:** "Daily NBA update". **Triggers:** `schedule` cron **`0 21 * * *`** (daily, 21:00
+  UTC, **year-round**) and manual `workflow_dispatch`. `daily_update.py` self-gates on the NBA
+  season (`season_window.is_in_season`) and exits 0 in the offseason, so the daily cron needs no
+  seasonal cadence switch.
+- **Job `update`** (`ubuntu-latest`): checkout (`actions/checkout@v5`) → install pnpm
+  (`pnpm/action-setup@v5`) → Node **22** (`actions/setup-node@v5`, with pnpm cache) → Python
+  **3.11** (`actions/setup-python@v6`) → `pnpm install --frozen-lockfile` →
   `pip install -r scripts/requirements.txt` → `python scripts/daily_update.py`.
-- **Secret:** `DATABASE_URL` (the only one the workflow uses). `daily_update.py` itself
-  shells out to `pnpm exec tsx scripts/run-daily.ts`, so both Node and Python toolchains are
-  required in the runner.
+- **Secret:** `DATABASE_URL` (the only one the workflow uses, and only the in-season path needs
+  it). `daily_update.py` shells out to `pnpm exec tsx scripts/run-daily.ts`, so both Node and
+  Python toolchains are required in the runner.
+
+> **This is the only GitHub Actions workflow.** There is **no test/lint CI** — `pnpm test:run`,
+> `pnpm lint`, and Playwright are **not** run in CI; the only automated quality gate is the
+> Vercel build (`next build`, which type-checks). Run the suites locally. (The in-progress
+> Playoff Predictor scripts and the `ml/` directory likewise have no automated tests yet.)
 
 ### Vercel cron — `vercel.json`
 

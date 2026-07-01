@@ -702,20 +702,3 @@ export function MatchupCard({ game, index = 0, isScoreFlashing = false }: Matchu
     </div>
   )
 }
-
-// ─── Legacy exports (kept so existing imports don't break) ──────
-
-export function TeamRow(_props: {
-  side: "AWAY" | "HOME"
-  abbreviation: string
-  displayAbbreviation: string
-  season: string
-  teamFallback: { name: string; city: string }
-  fatigue: FatigueInfo | null
-  score: number | null
-  highlight: "advantage" | "disadvantage" | "neutral"
-}) {
-  void _props
-  // Deprecated under the new design — kept as a no-op shim.
-  return null
-}

@@ -14,8 +14,10 @@ PostgreSQL column** (with the Drizzle field name in parentheses where they diffe
 - `decimal` columns come back from postgres-js as **strings** and are `parseFloat`-ed in
   `queries.ts` (e.g. `score`, `latitude`, multipliers).
 - Base tables are created by `pnpm drizzle-kit push` from `schema.ts`. The `drizzle/`
-  folder contains only **incremental** migrations `0001`–`0005` (there is **no committed
-  `0000` initial migration** and no `meta/` snapshot folder).
+  folder contains only **incremental** migrations `0001`–`0006` (there is **no committed
+  `0000` initial migration** and no `meta/` snapshot folder). `0006` adds `playoff_series`
+  as a complete, standalone SQL file (designed to paste into the Supabase SQL editor; it
+  does not rely on `drizzle-kit push`).
 
 ## ER overview
 
@@ -28,6 +30,10 @@ teams (1) ──────< predictions.actual_winner_id (FK, nullable)
 
 games (1) ──────< fatigue_scores.game_id       (FK)  — 2 rows per game (home + away)
 games (1) ──────< predictions.game_id          (FK)  — 0..n rows per game (latest wins)
+
+teams (1) ──────< playoff_series.home_court_team_id    (FK)   ┐ in-progress Playoff Predictor
+teams (1) ──────< playoff_series.opponent_team_id      (FK)   │ (additive, isolated — no
+teams (1) ──────< playoff_series.series_winner_team_id (FK, nullable) ┘ existing query reads it)
 ```
 
 Drizzle `relations()` are declared for all of the above (`teamsRelations`,
@@ -72,6 +78,11 @@ No secondary indexes beyond the PK and the unique `abbreviation`.
 **Indexes:** `games_date_idx (date)`, `games_status_idx (status)`,
 `games_home_team_idx (home_team_id)`, `games_away_team_idx (away_team_id)`.
 
+**Verified counts (2026-06-29, read-only `SELECT`):** 49,348 rows — **`regular` 46,167**
+(`002`), `playoffs` 2,827 + `finals` 318 (`004`), `play_in` 36 (`005`). The tag-integrity
+guard (`external_id` prefix ↔ `game_type`) reports **0 mismatches** — no `004`/`005` row is
+mislabeled `regular`, so nothing leaks into the regular-season product.
+
 **Discrepancies to know:**
 - Migration `0001_add_game_type.sql` adds `game_type varchar` (no length), while
   `schema.ts` declares `varchar(16)`. Same column, different declared length.
@@ -112,6 +123,11 @@ Two rows per game (one per team). Latest-by-`computed_at` wins in reads
 | `has_coast_to_coast_road_swing` (`hasCoastToCoastRoadSwing`) | boolean | no | `false` | large E–W spread on trip; added in `0002` |
 | `computed_at` (`computedAt`) | timestamp | no | `now()` | used to pick the newest row per (game, team) |
 
+**Verified coverage (2026-06-29, read-only `SELECT`):** of **46,167** final regular-season
+games, only **8** are missing a `fatigue_scores` row on either side (all in 2025-26; ≈0.017%) —
+they simply don't surface in analysis (which inner-joins fatigue). Remediable with
+`pnpm exec tsx scripts/backfill_fatigue.ts`.
+
 **Indexes:** `fatigue_scores_game_id_idx (game_id)`,
 `fatigue_scores_team_id_idx (team_id)`.
 
@@ -137,6 +153,44 @@ scheduled games on the target window and re-inserts them; neutral games (`|RA| <
 **no** prediction row. `backfill_predictions.ts` inserts resolved rows (with
 `actual_winner_id`) for finished games that don't already have one. Reads use the latest
 row per game (`selectDistinctOn` on `game_id`).
+
+## Table: `playoff_series` (in-progress Playoff Predictor)
+
+One row per playoff **series** — the modeling unit for the Playoff Predictor module (design:
+[PLAYOFF_PREDICTOR_DESIGN.md](PLAYOFF_PREDICTOR_DESIGN.md); status: [ROADMAP.md](ROADMAP.md)).
+**Additive and isolated:** no existing query reads it, and the regular-season product is
+unaffected. Per-game playoff rows still live in `games` (tagged `playoffs`/`finals`/`play_in`);
+this table is **derived** from them by `ml/build_series_dataset.py` (Phase 2b-i). Defined in
+`schema.ts` as `playoffSeries`; created by `drizzle/0006_playoff_series.sql`.
+
+| Column | Type | Null | Default | Notes |
+|--------|------|------|---------|-------|
+| `id` | serial | no | auto | **PK** |
+| `season` | varchar | no | — | `"YYYY-YY"` label |
+| `round` | smallint | no | — | 1 = first round … 4 = Finals |
+| `conference` | varchar | yes | — | `East`/`West`; null for the Finals (cross-conference) |
+| `home_court_team_id` (`homeCourtTeamId`) | integer | no | — | **FK → teams.id**; the §1 reference team |
+| `opponent_team_id` (`opponentTeamId`) | integer | no | — | **FK → teams.id** |
+| `is_best_of_7` (`isBestOf7`) | boolean | no | — | false = best-of-5 (first round, season start ≤ 2001) |
+| `series_winner_team_id` (`seriesWinnerTeamId`) | integer | yes | — | **FK → teams.id**; null until resolved |
+| `home_court_wins` (`homeCourtWins`) | smallint | yes | — | games won; null until resolved |
+| `opponent_wins` (`opponentWins`) | smallint | yes | — | games won; null until resolved |
+| `seed_diff` (`seedDiff`) | decimal | yes | — | **feature — currently NULL** (2b-ii pass not built) |
+| `win_pct_diff` (`winPctDiff`) | decimal | yes | — | **feature — currently NULL** |
+| `entry_rest_diff` (`entryRestDiff`) | decimal | yes | — | **feature — currently NULL** (headline rust-vs-rest signal) |
+| `h2h_diff` (`h2hDiff`) | decimal | yes | — | **feature — currently NULL** |
+| `external_series_key` (`externalSeriesKey`) | varchar | no | — | **unique**; deterministic `"{season}_{abbrA}-{abbrB}"` for idempotent upserts |
+| `computed_at` (`computedAt`) | timestamp | no | `now()` | last build time |
+
+**Index:** `playoff_series_season_idx (season)` (plus the unique index on `external_series_key`).
+
+> The four feature columns are **NULL by design today** — the skeleton builder never writes them
+> (its `ON CONFLICT … DO UPDATE` deliberately omits them) so a later feature pass can't be
+> clobbered by a re-run. RLS + Data API grants for this table ship in `0006` (mirroring `0004`/
+> `0005`). **Verified 2026-06-29** (read-only `SELECT`): **600 series** rows — 40 seasons × 15
+> (1985-86…2025-26, 2019-20 excluded; rounds `[8,4,2,1]` = R1 320 with 184 bo7 + 136 bo5, R2 160,
+> R3 80, R4 40); **all 600 have the four feature columns NULL** (2b-i); 599 resolved, 1 unresolved
+> (1986-87 LAL–OKC 3–1, one missing historical `004` game); **0** win-tally inconsistencies.
 
 ## Row-Level Security — `drizzle/0004_enable_rls.sql`
 
@@ -184,6 +238,8 @@ grant select, insert, update, delete on public.predictions    to service_role;
 … to anon` and a `grant select, insert, update, delete … to service_role`) **and** an RLS
 block mirroring `0004`, or the Data API won't expose it after the enforcement dates. Apply
 migrations manually (e.g. Supabase SQL editor) — nothing in the repo auto-applies them.
+`drizzle/0006_playoff_series.sql` is the worked example: it bundles the table, RLS policies,
+and grants for `playoff_series` in one standalone file.
 
 ## Migration history
 
@@ -194,8 +250,9 @@ migrations manually (e.g. Supabase SQL editor) — nothing in the repo auto-appl
 | `0003_games_moneylines.sql` | Add `home_moneyline`, `away_moneyline` to `games` (not modeled in `schema.ts`). |
 | `0004_enable_rls.sql` | Enable RLS + public-read / service-role-all policies on all four tables. |
 | `0005_supabase_grants.sql` | Explicit Data API grants for `anon` (SELECT) and `service_role` (CRUD). |
+| `0006_playoff_series.sql` | Create `playoff_series` (in-progress Playoff Predictor) + its RLS policies and Data API grants (mirrors `0004`/`0005`). Standalone SQL — not generated by `drizzle-kit`. |
 
 `drizzle.config.ts` restricts introspection to `schemaFilter: ["public"]`,
-`tablesFilter: ["teams","games","fatigue_scores","predictions"]`, and
+`tablesFilter: ["teams","games","fatigue_scores","predictions","playoff_series"]`, and
 `extensionsFilters: ["postgis"]` (the last avoids drizzle-kit choking on Supabase-internal
 schemas/constraints).

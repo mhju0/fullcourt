@@ -68,63 +68,6 @@ export interface ApiResponse<T> {
   meta?: Record<string, unknown>;
 }
 
-// ─── Accuracy tracker ────────────────────────────────────────────
-
-export interface AccuracyTier {
-  label: "low" | "medium" | "high";
-  /** Human-readable differential range, e.g. "0–2". */
-  range: string;
-  games: number;
-  correct: number;
-  /** Accuracy percentage (0–100, 1 decimal). */
-  accuracyPct: number;
-}
-
-/** Per-season accuracy of stored predictions (|RA| ≥ 0.5 rule), sorted by season label. */
-export interface SeasonAccuracyPoint {
-  season: string;
-  games: number;
-  correct: number;
-  /** Accuracy percentage (0–100, 1 decimal). */
-  accuracyPct: number;
-}
-
-export interface PredictionDetail {
-  date: string;
-  homeTeam: Pick<TeamInfo, "id" | "name" | "abbreviation">;
-  awayTeam: Pick<TeamInfo, "id" | "name" | "abbreviation">;
-  predictedAdvantageTeam: Pick<TeamInfo, "id" | "name" | "abbreviation">;
-  actualWinner: Pick<TeamInfo, "id" | "name" | "abbreviation">;
-  /** Absolute rest-advantage differential at prediction time. */
-  differential: number;
-  correct: boolean;
-}
-
-export interface UpcomingPick {
-  gameId: number;
-  date: string;
-  homeTeam: Pick<TeamInfo, "abbreviation">;
-  awayTeam: Pick<TeamInfo, "abbreviation">;
-  predictedAdvantageTeam: Pick<TeamInfo, "abbreviation">;
-  differential: number;
-}
-
-export interface AccuracyResponse {
-  totalPredictions: number;
-  correctPredictions: number;
-  /** Overall accuracy percentage (0–100, 1 decimal). */
-  accuracyPct: number;
-  tiers: AccuracyTier[];
-  /** Prediction accuracy by NBA season (chronological). */
-  seasonAccuracyTrend: SeasonAccuracyPoint[];
-  /** Most recent 20 resolved predictions, newest first. */
-  recentPredictions: PredictionDetail[];
-  /** Label of the season used for the upcoming slate (e.g. latest season in app config). */
-  trackerSeason: string;
-  /** Scheduled regular-season games with an open prediction row, from today onward. */
-  upcomingPicks: UpcomingPick[];
-}
-
 // ─── Analysis ────────────────────────────────────────────────────
 
 export interface ThresholdBucket {

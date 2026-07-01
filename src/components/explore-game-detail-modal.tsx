@@ -10,7 +10,6 @@ import {
   FatigueDetailColumn,
   GameStatusRow,
   RaBadge,
-  TeamRow,
 } from "@/components/matchup-card"
 import { getTeamBranding } from "@/lib/team-history"
 import { apiFetcher } from "@/lib/fetcher"
@@ -21,12 +20,10 @@ import type {
   TeamRecentResultGame,
 } from "@/types"
 
-const HIGHLIGHT_THRESHOLD = 1.0
-
-const detailGlass = {
-  background: "rgba(255, 255, 255, 0.42)",
-  backdropFilter: "blur(14px)",
-  WebkitBackdropFilter: "blur(14px)",
+const TERM_INSET = {
+  background: "#F7F6F3",
+  border: "1px solid #E2DFD8",
+  borderRadius: 4,
 } as const
 
 function RecentResultsList({
@@ -39,14 +36,28 @@ function RecentResultsList({
   onGameClick: (gameId: number) => void
 }) {
   return (
-    <div className="rounded-xl border border-white/50 px-3 py-3">
-      <p className="border-b border-slate-200/60 pb-1.5 text-center font-heading text-[11px] font-bold uppercase tracking-wider text-slate-500">
+    <div
+      className="px-3 py-3"
+      style={{ background: "#ffffff", border: "1px solid #E2DFD8", borderRadius: 4 }}
+    >
+      <p
+        className="mono pb-1.5 text-center uppercase"
+        style={{
+          fontSize: 10,
+          letterSpacing: "0.08em",
+          color: "#8A8478",
+          fontWeight: 700,
+          borderBottom: "1px solid #E2DFD8",
+        }}
+      >
         {label}
       </p>
       {items.length === 0 ? (
-        <p className="mt-2 text-center text-[11px] text-slate-400">No recent games</p>
+        <p className="mono mt-2 text-center" style={{ fontSize: 10, color: "#8A8478" }}>
+          NO RECENT GAMES
+        </p>
       ) : (
-        <ul className="mt-2 flex flex-col gap-1.5">
+        <ul className="mt-2 flex flex-col gap-1">
           {items.map((g) => (
             <li
               key={g.gameId}
@@ -59,16 +70,17 @@ function RecentResultsList({
                   onGameClick(g.gameId)
                 }
               }}
-              className="flex cursor-pointer flex-wrap items-center justify-between gap-x-2 rounded-lg px-1.5 py-1 text-[11px] text-slate-700 transition-colors hover:bg-[#17408B]/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#17408B]/30"
+              className="mono flex cursor-pointer flex-wrap items-center justify-between gap-x-2 px-1.5 py-1 transition-colors hover:bg-[#F0EEE9] focus-visible:bg-[#F0EEE9] focus-visible:outline-none"
+              style={{ fontSize: 11, color: "#0f172a", borderRadius: 2 }}
               aria-label={`View game details: ${format(parseISO(g.date), "MMM d")} vs ${g.opponentAbbreviation}`}
             >
-              <span className="text-slate-500">
+              <span style={{ color: "#8A8478" }}>
                 {format(parseISO(g.date), "MMM d")}
                 {g.isHome ? " vs " : " @ "}
-                <span className="font-semibold text-slate-800">{g.opponentAbbreviation}</span>
+                <span style={{ fontWeight: 700, color: "#0f172a" }}>{g.opponentAbbreviation}</span>
               </span>
-              <span className="font-heading tabular-nums text-slate-600">
-                <span className={g.won ? "text-emerald-600" : "text-[#C9082A]"}>
+              <span className="tabular-nums" style={{ color: "#8A8478" }}>
+                <span style={{ color: g.won ? "#17A34A" : "#C9082A", fontWeight: 700 }}>
                   {g.won ? "W" : "L"}
                 </span>{" "}
                 {g.teamScore}–{g.opponentScore}
@@ -99,22 +111,6 @@ function ExploreGameDetailBody({
     city: game.awayTeam.city,
   })
 
-  const absDiff = Math.abs(game.restAdvantage?.differential ?? 0)
-  const showHighlight = !!game.restAdvantage && absDiff >= HIGHLIGHT_THRESHOLD
-  const advantageTeam = game.restAdvantage?.advantageTeam
-
-  const awayHighlight: "advantage" | "disadvantage" | "neutral" = showHighlight
-    ? advantageTeam === "away"
-      ? "advantage"
-      : "disadvantage"
-    : "neutral"
-
-  const homeHighlight: "advantage" | "disadvantage" | "neutral" = showHighlight
-    ? advantageTeam === "home"
-      ? "advantage"
-      : "disadvantage"
-    : "neutral"
-
   return (
     <div className="flex flex-col gap-3">
       <GameStatusRow
@@ -122,28 +118,18 @@ function ExploreGameDetailBody({
         homeScore={game.homeScore}
         awayScore={game.awayScore}
       />
-      <p className="text-center font-heading text-lg font-bold text-slate-900">
+      <p
+        className="mono text-center"
+        style={{ fontSize: 18, fontWeight: 700, color: "#0f172a", letterSpacing: "0.04em" }}
+      >
         {awayBrand.abbreviation}
-        <span className="mx-1.5 font-normal text-slate-300">@</span>
+        <span className="mx-1.5" style={{ fontWeight: 400, color: "#C9C5BC" }}>@</span>
         {homeBrand.abbreviation}
       </p>
-      <p className="text-center text-[11px] text-slate-400">
+      <p className="mono text-center uppercase" style={{ fontSize: 10, color: "#8A8478", letterSpacing: "0.04em" }}>
         {format(parseISO(game.date), "EEEE, MMMM d, yyyy")} · {game.season}
       </p>
 
-      <TeamRow
-        side="AWAY"
-        abbreviation={game.awayTeam.abbreviation}
-        displayAbbreviation={awayBrand.abbreviation}
-        season={game.season}
-        teamFallback={{
-          name: game.awayTeam.name,
-          city: game.awayTeam.city,
-        }}
-        fatigue={game.awayFatigue}
-        score={game.awayFatigue?.score ?? null}
-        highlight={awayHighlight}
-      />
       <div className="flex justify-center py-0.5">
         <RaBadge
           restAdvantage={game.restAdvantage}
@@ -151,25 +137,12 @@ function ExploreGameDetailBody({
           awayAbbr={awayBrand.abbreviation}
         />
       </div>
-      <TeamRow
-        side="HOME"
-        abbreviation={game.homeTeam.abbreviation}
-        displayAbbreviation={homeBrand.abbreviation}
-        season={game.season}
-        teamFallback={{
-          name: game.homeTeam.name,
-          city: game.homeTeam.city,
-        }}
-        fatigue={game.homeFatigue}
-        score={game.homeFatigue?.score ?? null}
-        highlight={homeHighlight}
-      />
 
-      <div
-        className="mt-1 rounded-2xl border border-white/45 px-3 py-4 sm:px-4"
-        style={detailGlass}
-      >
-        <p className="mb-3 text-center font-heading text-[11px] font-semibold uppercase tracking-wider text-slate-500">
+      <div className="mt-1 px-3 py-4 sm:px-4" style={TERM_INSET}>
+        <p
+          className="mono mb-3 text-center uppercase"
+          style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.08em", color: "#8A8478" }}
+        >
           Fatigue breakdown
         </p>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -185,7 +158,10 @@ function ExploreGameDetailBody({
       </div>
 
       <div>
-        <p className="mb-2 text-center font-heading text-[11px] font-semibold uppercase tracking-wider text-slate-500">
+        <p
+          className="mono mb-2 text-center uppercase"
+          style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.08em", color: "#8A8478" }}
+        >
           Recent Games
         </p>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -295,7 +271,7 @@ function ExploreGameDetailModalContent({
       <button
         type="button"
         aria-label="Close"
-        className="absolute inset-0 bg-black/45 backdrop-blur-[2px]"
+        className="absolute inset-0 bg-black/50"
         onClick={onBackdrop}
       />
       <div
@@ -303,13 +279,13 @@ function ExploreGameDetailModalContent({
         aria-modal="true"
         aria-labelledby={titleId}
         className={cn(
-          "relative z-[101] max-h-[min(90vh,720px)] w-full max-w-lg overflow-y-auto rounded-2xl border border-white/50 p-4 shadow-2xl",
+          "relative z-[101] max-h-[min(90vh,720px)] w-full max-w-lg overflow-y-auto p-4 shadow-2xl",
           "sm:p-5"
         )}
         style={{
-          background: "rgba(255, 255, 255, 0.92)",
-          backdropFilter: "blur(16px)",
-          WebkitBackdropFilter: "blur(16px)",
+          background: "#ffffff",
+          border: "1px solid #E2DFD8",
+          borderRadius: 4,
         }}
         onClick={(e) => e.stopPropagation()}
       >
@@ -328,7 +304,11 @@ function ExploreGameDetailModalContent({
                 Back
               </Button>
             )}
-            <h2 id={titleId} className="font-heading text-sm font-bold text-slate-800">
+            <h2
+              id={titleId}
+              className="mono uppercase"
+              style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.08em", color: "#8A8478" }}
+            >
               {canGoBack ? "" : "Game details"}
             </h2>
           </div>
@@ -345,10 +325,14 @@ function ExploreGameDetailModalContent({
         </div>
 
         {loading && (
-          <p className="py-8 text-center text-sm text-slate-500">Loading…</p>
+          <p className="mono py-8 text-center" style={{ fontSize: 11, color: "#8A8478", letterSpacing: "0.06em" }}>
+            LOADING…
+          </p>
         )}
         {error && (
-          <p className="py-6 text-center text-sm text-[#C9082A]">{error}</p>
+          <p className="mono py-6 text-center" style={{ fontSize: 11, color: "#C9082A", letterSpacing: "0.06em" }}>
+            {error}
+          </p>
         )}
         {!loading && !error && game && detail && (
           <ExploreGameDetailBody
