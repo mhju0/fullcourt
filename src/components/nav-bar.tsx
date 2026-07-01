@@ -8,6 +8,7 @@ const NAV_LINKS = [
   { href: "/", label: "TODAY'S GAMES" },
   { href: "/analysis", label: "ANALYSIS" },
   { href: "/upcoming", label: "PICKS" },
+  { href: "/playoffs", label: "PLAYOFFS" },
 ] as const
 
 const TICKER_ITEMS = [
