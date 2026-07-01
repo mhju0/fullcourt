@@ -80,3 +80,5 @@ pnpm-debug.log*
 # lockfiles (pnpm project — only pnpm-lock.yaml is canonical)
 package-lock.json
 yarn.lock
+.serena/
+.serena/

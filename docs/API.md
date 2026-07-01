@@ -1,6 +1,6 @@
 # API reference
 
-Eight route handlers under `src/app/api/`, all **`GET`**. Every app route returns the
+Seven route handlers under `src/app/api/`, all **`GET`**. Every app route returns the
 `{ data, error }` envelope (`/api/cron/update` also adds `meta`). Errors are passed through
 `getPublicApiErrorMessage` (`src/lib/api-errors.ts`): in production it hides internals
 unless the message contains `invalid` / `validation` / `not found`; in dev it returns the
@@ -21,12 +21,15 @@ Response envelope (`ApiResponse<T>` in `src/types/index.ts`):
 | `GET /api/games/upcoming` | `minRA?`,`season?` | `UpcomingGameWithRA[]` | `getUpcomingGamesWithRA` |
 | `GET /api/game/[id]` | path `id` | `GameDetailResponse \| null` | `getGameDetailById` |
 | `GET /api/analysis` | `seasonMinRA?` | `AnalysisResponse` | `getCompletedGamesWithFatigue` |
-| `GET /api/analysis/accuracy` | none | `AccuracyResponse` | `getResolvedPredictions` + `getUpcomingPredictionsForSeason` |
 | `GET /api/cron/update` | (Bearer auth) | `{ gamesUpdated }` | reads/updates `games` |
 
 Routes that touch the DB declare `export const runtime = "nodejs"` and (where applicable)
 `dynamic = "force-dynamic"` so they aren't prerendered at build (no `DATABASE_URL` needed
 during `next build`) and don't run on Edge (postgres-js needs Node).
+
+> **Playoff Predictor:** there is **no playoff API route yet.** The in-progress module
+> ([ROADMAP.md](ROADMAP.md)) plans a `/api/playoffs` handler reading `playoff_series`, but no
+> code for it exists today — these seven routes are the complete current API surface.
 
 ---
 
@@ -137,25 +140,6 @@ the `predictions` table.**
   - `monthlyTrends: MonthlyTrend[]` (`"YYYY-MM"`, ascending)
   - `seasonWinRates` (per season: `season, games, restedTeamWins, winPct`)
 - All `winPct` values are 0–100 with one decimal.
-
----
-
-## `GET /api/analysis/accuracy`
-
-Per-prediction accuracy from the **`predictions`** table plus the upcoming open slate.
-`runtime = "nodejs"`, `dynamic = "force-dynamic"`. No params.
-
-> **Note:** this endpoint is fully implemented but **not consumed by any current page** — it
-> backed a "Prediction Tracker" route that no longer exists. The current nav's "PICKS" links
-> to `/upcoming`, which uses `/api/games/upcoming` instead.
-
-- **Queries:** `getResolvedPredictions()` (latest resolved prediction per game, joined to
-  teams, regular-season calendar) and `getUpcomingPredictionsForSeason(trackerSeason,
-  today)` where `trackerSeason = defaultNbaSeason()`.
-- **Success:** `{ data: AccuracyResponse, error: null }`:
-  `totalPredictions, correctPredictions, accuracyPct`, `tiers` (low `0–2`, medium `2–5`,
-  high `5+` by absolute differential), `seasonAccuracyTrend`, `recentPredictions` (last 20,
-  newest first), `trackerSeason`, `upcomingPicks`.
 
 ---
 

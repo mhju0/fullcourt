@@ -10,7 +10,7 @@
 
 FullCourt quantifies how **travel, rest, and schedule density** shape NBA outcomes. Its flagship model assigns every team a multi-factor **fatigue score**, derives a **rest advantage** for each matchup, and backtests it against roughly 40 seasons of regular-season results.
 
-> **The finding:** the more-rested team wins **~53.5%** of games overall — and **~61.7%** once the rest-advantage gap reaches **5+ points**.
+> **The finding:** the more-rested team wins the majority of games — and the edge widens once the rest-advantage gap reaches **5+ points**. The headline rates are computed live from the DB and surfaced on the site (currently **~54.8%** overall, rising to **~61.1%** at a gap of 5+).
 
 🔗 **Live demo:** https://fullcourt-nba.vercel.app &nbsp;·&nbsp; **Code:** https://github.com/mhju0/fullcourt
 
@@ -88,7 +88,7 @@ Data spans **1985-86 to the present**, excluding the 2019-20 Orlando bubble (no 
 - **Self-gating pipeline** — tracks each season's shifting start and end from the live NBA schedule instead of hardcoded dates.
 - **Security** — Supabase RLS with explicit Data API grants (anon read, service-role writes).
 - **Real-time** — score and status changes push to the browser through Supabase Realtime.
-- **Tested & shipped** — Vitest + Playwright, with CI/CD on Vercel and GitHub Actions.
+- **Tested & shipped** — Vitest unit/route + Playwright e2e (run locally); ships via Vercel (auto-deploy + a live-score cron) and a daily, self-gating GitHub Actions data pipeline.
 
 ---
 
@@ -115,7 +115,7 @@ Full pipeline, schema, and architecture details live in [`docs/`](docs/).
 
 ```
 src/
-  app/            # App Router pages + 8 API route handlers
+  app/            # App Router pages + 7 API route handlers
   components/     # matchup cards, fatigue bars, nav, charts
   lib/
     fatigue.ts    # the fatigue model (single source of truth)
@@ -131,9 +131,11 @@ docs/             # architecture, database, pipeline, API, frontend
 ## Roadmap
 
 - [x] Rest Advantage model (flagship)
-- [ ] Playoff Predictor (fatigue + ML)
-- [ ] Shot Quality Model
+- [ ] Playoff Predictor (fatigue + ML) — **in progress** (ingest + series skeleton built; feature pass next)
+- [ ] Shot Quality Model — later / stretch
 - [ ] Premier League predictor
+
+Full phase-by-phase plan: [docs/ROADMAP.md](docs/ROADMAP.md).
 
 ---
 

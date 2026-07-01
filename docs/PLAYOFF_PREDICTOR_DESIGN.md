@@ -1,9 +1,21 @@
 # Playoff Predictor — Design
 
-> **Status:** design only. No feature code, migrations, scripts, or ML code exist yet.
-> This document is the single source of truth for the next module. Values cited from
-> source are line-referenced; when this doc and the code disagree later, **trust the
-> code and fix this doc** (per `CLAUDE.md`).
+> **Status (updated 2026-06):** design **+ partial implementation** — the earlier "design only,
+> no code exists yet" note is superseded. Built in code: per-game ingest
+> (`scripts/fetch_playoffs.py` for `004` playoff/finals, `scripts/fetch_play_in.py` for `005`
+> tagged `play_in`), the `playoff_series` table (`src/lib/db/schema.ts` +
+> `drizzle/0006_playoff_series.sql`, in `tablesFilter`), and the series **skeleton builder**
+> `ml/build_series_dataset.py` (Phase 2b-i), which derives round/winner/`is_best_of_7`/conference
+> and **leaves the four feature columns NULL**. **Not yet built:** the 2b-ii feature pass,
+> model training/eval, a predictions table, and any `/playoffs` route or page. So the build sits
+> between **Phase 2b-i (done)** and **Phase 2b-ii (not started)** — see [ROADMAP.md](ROADMAP.md)
+> for the numbered remaining phases. Live DB **verified 2026-06-29** (read-only `SELECT`s): 2,827
+> `playoffs` + 318 `finals` (`004`) + 36 `play_in` (`005`) game rows, and **600 series** built with
+> **all four feature columns NULL** (Phase 2b-i) — matching the §4.1 estimate.
+>
+> This document remains the single source of truth for the module's design. Values cited from
+> source are line-referenced; when this doc and the code disagree later, **trust the code and fix
+> this doc** (per `CLAUDE.md`).
 
 ## 0. Scope and locked decisions
 
@@ -438,7 +450,7 @@ specific, and consistent with the code.
 | 1 | Problem framing & target encoding | ✅ | Recommends **home-court-team-wins** binary encoding with justification vs higher-seed; sign convention stated. Grounded in `calculateRestAdvantage` (`fatigue.ts:545`) and the home/away product model. |
 | 2 | Critical fatigue insight (within-series symmetry) | ✅ | Stated explicitly: identical days-rest + near-identical travel ⇒ within-series RA ≈ 0 ⇒ `NEUTRAL_THRESHOLD = 0.5` (`queries.ts:21`) flags all "neutral"; the asymmetric signal is **entry rest** (rust-vs-rest). Verified `fetchRecentGamesForTeam` has **no `game_type` filter** (`fatigue-recent-games.ts:58–65`), enabling Game-1 entry-rest from existing code. |
 | 3 | Feature set with precise definitions | ✅ | `entry_rest_diff` (headline, incl. play-in & bye handling), `seed_diff`, `win_pct_diff`, `has_home_court` (folded into label), `h2h_diff`, `is_best_of_7` — each with formula, orientation, and an availability column (existing vs new ingestion). |
-| 4 | Data gap analysis | ✅ | Confirms **0 playoff rows** today from code (`SEASON_TYPES` `:78`, `002` gate `:135`, `get_game_type` `:148`); estimates **~600 series / ~3,200 games** over **40 in-scope seasons** (2019-20 excluded, `nba-season.ts:8`); specifies source/season-type/`004` prefix/tagging/back-extent and the **hard non-modification** guarantees (002 vs 004 namespace; chronology protects reg-season fatigue). Exact counts marked TBD during ingestion; **no DB query issued.** |
+| 4 | Data gap analysis | ✅ | Confirms **0 playoff rows** today from code (`SEASON_TYPES` `:78`, `002` gate `:135`, `get_game_type` `:148`); estimates **~600 series / ~3,200 games** over **40 in-scope seasons** (2019-20 excluded, `nba-season.ts:8`); specifies source/season-type/`004` prefix/tagging/back-extent and the **hard non-modification** guarantees (002 vs 004 namespace; chronology protects reg-season fatigue). Counts since **verified 2026-06-29** (read-only `SELECT`): **600 series / 3,145 `004` games** (2,827 playoffs + 318 finals) + **36 `005` play-in** — matching the estimate. |
 | 5 | Small-data constraint & bake-off protocol | ✅ | Quantifies ~600 series; lists 5 candidates (2 baselines + plain LR + regularized LR + one tree model); specifies **walk-forward CV**, selection on validation only, **test touched once** on last 3 seasons; explicit anti-test-leakage warning with **interpretability as tiebreaker**; metrics = accuracy, log-loss, **lift over baselines** (must beat "higher seed wins"). |
 | 6 | Architecture & schema | ✅ | New `playoff_series` + `playoff_series_predictions` tables (with RLS + grants mirroring `drizzle/0004`/`0005`); per-game rows in existing `games` (tagged); ML in new **`ml/`** Python/scikit-learn dir; predictions surfaced via new API route + `/playoffs` page (Python writes, app reads); isolation via existing `game_type='regular'` + calendar guards (`queries.ts:198,381,547,744,907,51`); **rest-advantage metric not renamed.** |
 | 7 | Open questions | ✅ | Bulleted: seed source, play-in tagging, format-flag precision, shortened seasons, test-set size, prediction timing/UX, headline-feature variant. |

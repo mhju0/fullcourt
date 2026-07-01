@@ -17,6 +17,9 @@ the actual code (`src/app/`, `src/components/`, `src/app/globals.css`).
 
 ## Pages
 
+Three routes today — `/`, `/analysis`, `/upcoming`. **No `/playoffs` page exists yet**: the
+in-progress Playoff Predictor has no frontend surface (see [ROADMAP.md](ROADMAP.md)).
+
 ### `/` — Today's Games (`src/app/page.tsx`, client component)
 
 State machine over season/month/day:
@@ -30,8 +33,9 @@ State machine over season/month/day:
 - `useLiveGames(gameIds)` merges Realtime score/status updates into the rendered list;
   recently-updated cards flash (`scoreFlash`).
 - Pieces: heading eyebrow `REST ADVANTAGE DASHBOARD` + `<h1>Today's Matchups</h1>`;
-  `StatSummaryRow` (GAMES TODAY, AVG REST ADV, **SEASON WIN RATE = "53.5%"** hardcoded as
-  `SEASON_WIN_RATE`, HIGH CONF PICKS where `HIGH_CONF_THRESHOLD = 2.0`); season `<select>`;
+  `StatSummaryRow` (GAMES TODAY, AVG REST ADV, **SEASON WIN RATE** fetched live via
+  `useSWR("/api/analysis")` — the same `overallWinRate` `/analysis` renders, shown as `—` while
+  loading/on error, HIGH CONF PICKS where `HIGH_CONF_THRESHOLD = 2.0`); season `<select>`;
   month tabs (`NBA_REGULAR_MONTHS`); `DateChip`s ("DAYS WITH GAMES"); prev/next day arrows;
   the `MatchupCard` list with skeleton/empty/error states.
 
@@ -83,8 +87,6 @@ click/keyboard-expandable detail grid (two `FatigueDetailColumn`s). Subcomponent
 - `FatigueDetailColumn` — GP (30D/7D), back-to-back, 3-in-4, 4-in-6, road streak, travel
   miles (7-day; highlighted ≥1000), days rest.
 - Exported helpers reused by the modal: `GameStatusRow`, `FatigueDetailColumn`, `RaBadge`.
-  `TeamRow` is exported but is a **deprecated no-op shim** (returns `null`) kept for import
-  compatibility.
 
 ### `fatigue-bar.tsx`
 
@@ -108,17 +110,18 @@ Loaded via `next/dynamic` with `ssr: false` and a skeleton. Uses SWR:
 
 Loaded via `next/dynamic` (`ssr: false`). SWR `/api/games/upcoming?season=2025-26&minRA=…`.
 RA filter pills, an off-season empty state (`OffSeasonEmptyState`), and a table of upcoming
-games with an "edge" badge (home edge blue, away edge red). **Still uses the older
-glassmorphism style** (`glass` object: `rgba(255,255,255,0.6)` + `backdrop-filter: blur`,
-`rounded-3xl`) rather than the terminal style.
+games with an "edge" badge (home edge blue, away edge red). Rendered in the flat **terminal
+style** (white `termCard` surface, `1px solid #E2DFD8` borders, `border-radius: 4`, `.mono`
+labels) — consistent with Today's Games / Analysis (migrated 2026-06-29).
 
 ### `explore-game-detail-modal.tsx`
 
 Portal-rendered modal (`createPortal` to `document.body`). SWR `/api/game/{id}`, with a
 nav-history stack so clicking a "recent game" drills into that game and Back returns. Escape
 and backdrop close it. Renders `GameStatusRow`, `RaBadge`, two `FatigueDetailColumn`s, and
-`RecentResultsList` (last-5 W/L) per team. **Also still glassmorphism** (`detailGlass`
-blur, `rounded-2xl`).
+`RecentResultsList` (last-5 W/L) per team. Rendered in the flat **terminal style** (white panel,
+`1px solid #E2DFD8`, `border-radius: 4`, `.mono` labels, `TERM_INSET` `#F7F6F3` breakdown
+surface) — migrated off glassmorphism 2026-06-29.
 
 ### `hooks/useLiveGames.ts`
 
@@ -138,10 +141,10 @@ the shadcn `base-nova` style, `neutral` base color, CSS variables, and the `@/co
 
 ## Design system — "Bloomberg Terminal meets NBA stats"
 
-The current direction (Today's Games + Analysis) is flat white surfaces, thin borders,
-monospace data values, and brand-color accents — **no glassmorphism, no dark mode** (the app
-forces `color-scheme: only light`). Future Games + the detail modal are not yet migrated and
-keep the older glass look.
+The direction is flat white surfaces, thin borders, monospace data values, and brand-color
+accents — **no glassmorphism, no dark mode** (the app forces `color-scheme: only light`). As of
+2026-06-29 every page — Today's Games, Analysis, Future Games, and the detail modal — uses this
+style, so the whole app is visually consistent.
 
 ### Color tokens (verified)
 
