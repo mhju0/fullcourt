@@ -1,0 +1,86 @@
+══════════════════════════════════════════════════════════════════════════════
+ Playoff Predictor — Phase 3 (T3) — model training & evaluation report
+══════════════════════════════════════════════════════════════════════════════
+
+── Data contract ──
+  trainable rows            : 599
+  features (fixed order)    : ['seed_diff', 'win_pct_diff', 'entry_rest_diff', 'h2h_diff']
+  label                     : y = 1 if series_winner == home_court_team, else 0
+  base rate (P(y=1))        : 0.746244   (447/599)
+  total seasons             : 40   (1985-86 … 2025-26)
+
+── Walk-forward protocol ──
+  expanding window, min train span = 10 seasons
+  eval seasons (folds)      : 30   (1995-96 … 2025-26)
+  pooled eval predictions   : 450
+  NO random shuffle: no season straddles a split; never train on a future season.
+
+── Model ladder (walk-forward, pooled over all eval seasons) ──
+  model                              pooled_acc  mean_szn_acc   log_loss     brier
+  --------------------------------------------------------------------------------
+  baseline:prior(majority)               0.7444  0.7444±0.098     0.5696    0.1907
+  baseline:sign(seed_diff)               0.7356  0.7356±0.097    n/a    n/a
+  baseline:sign(win_pct_diff)            0.7444  0.7444±0.098    n/a    n/a
+  logistic:unreg                         0.7467  0.7467±0.111     0.4959    0.1638
+  logistic:l2                            0.7422  0.7422±0.105     0.4972    0.1646
+  tree:depth2                            0.6978  0.6978±0.082     0.7716    0.1864
+  tree:depth3                            0.7356  0.7356±0.101     1.0527    0.1848
+
+── Pooled accuracy vs the 74.6% majority baseline (uncertainty) ──
+  pooled n = 450;  majority(prior) pooled acc = 0.7444
+  logistic:unreg                     acc=0.7467  95%CI[0.7065,0.7869]  Δvs-majority(per-season)=+0.0022±0.0141  W/T/L=11/11/8
+  logistic:l2                        acc=0.7422  95%CI[0.7018,0.7826]  Δvs-majority(per-season)=-0.0022±0.0068  W/T/L=4/21/5
+  tree:depth2                        acc=0.6978  95%CI[0.6553,0.7402]  Δvs-majority(per-season)=-0.0467±0.0154  W/T/L=1/18/11
+  tree:depth3                        acc=0.7356  95%CI[0.6948,0.7763]  Δvs-majority(per-season)=-0.0089±0.0171  W/T/L=10/6/14
+
+── L2 logistic: C chosen per fold (inner season-grouped CV, neg-log-loss) ──
+  C=0.1:26x  C=0.3:4x
+  (grid = [0.01, 0.03, 0.1, 0.3, 1.0, 3.0, 10.0]; small C = stronger regularization)
+
+── Interpretation: standardized L2-logistic coefficients (ALL 599 rows, in-sample) ──
+  intercept = +1.3685
+    seed_diff        coef = +0.3830
+    win_pct_diff     coef = +0.7232
+    entry_rest_diff  coef = +0.2307
+    h2h_diff         coef = +0.1204
+  (standardized ⇒ magnitudes comparable; sign = direction of home-court win odds)
+
+── Interpretation: decision-tree (depth 3) feature importances (ALL 599 rows) ──
+    seed_diff        importance = 0.5775
+    win_pct_diff     importance = 0.1754
+    entry_rest_diff  importance = 0.1718
+    h2h_diff         importance = 0.0753
+
+── Per-season accuracy (key rows) ──
+  season      baseline   logistic   logistic       tree
+  1995-96        0.733      0.733      0.733      0.800
+  1996-97        1.000      0.800      0.933      0.800
+  1997-98        0.733      0.667      0.733      0.667
+  1998-99        0.667      0.600      0.667      0.600
+  1999-00        0.800      0.933      0.800      0.800
+  2000-01        0.733      0.867      0.800      0.667
+  2001-02        0.867      0.800      0.867      0.800
+  2002-03        0.800      0.733      0.800      0.733
+  2003-04        0.733      0.800      0.733      0.667
+  2004-05        0.733      0.733      0.733      0.867
+  2005-06        0.800      0.867      0.800      0.800
+  2006-07        0.667      0.667      0.667      0.733
+  2007-08        0.867      0.933      0.867      0.867
+  2008-09        0.733      0.733      0.733      0.733
+  2009-10        0.733      0.733      0.733      0.667
+  2010-11        0.667      0.733      0.600      0.733
+  2011-12        0.667      0.733      0.667      0.800
+  2012-13        0.667      0.667      0.667      0.733
+  2013-14        0.733      0.733      0.733      0.733
+  2014-15        0.867      0.867      0.867      0.800
+  2015-16        0.800      0.667      0.733      0.667
+  2016-17        0.867      0.933      0.933      1.000
+  2017-18        0.667      0.533      0.600      0.733
+  2018-19        0.867      0.867      0.867      0.733
+  2020-21        0.667      0.733      0.733      0.733
+  2021-22        0.800      0.800      0.800      0.733
+  2022-23        0.533      0.467      0.467      0.467
+  2023-24        0.600      0.667      0.600      0.800
+  2024-25        0.667      0.733      0.733      0.667
+  2025-26        0.667      0.667      0.667      0.533
+
