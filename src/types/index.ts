@@ -180,3 +180,69 @@ export interface UpcomingGameWithRA {
   predictedAdvantageAbbreviation: string;
 }
 
+// ─── Playoff Predictor (backend only — GET /api/playoffs; no page yet) ──
+
+export interface PlayoffTeamRef {
+  id: number;
+  abbreviation: string;
+  name: string;
+}
+
+/** One prediction method's result for a series ("full_insample" or "walk_forward_oos"). */
+export interface PlayoffSeriesPredictionMethod {
+  /** P(home-court team wins the series). */
+  predictedHomeCourtWinProb: number;
+  predictedWinnerTeam: PlayoffTeamRef;
+  modelVersion: string;
+  /** null until the series has a known winner. */
+  predictedWinnerCorrect: boolean | null;
+}
+
+export interface PlayoffSeriesWithPredictions {
+  seriesId: number;
+  season: string;
+  /** 1 = first round … 4 = Finals. */
+  round: number;
+  /** null for the Finals (cross-conference). */
+  conference: string | null;
+  isBestOf7: boolean;
+  homeCourtTeam: PlayoffTeamRef;
+  opponentTeam: PlayoffTeamRef;
+  homeCourtWins: number | null;
+  opponentWins: number | null;
+  /** null until the series is resolved. */
+  seriesWinnerTeam: PlayoffTeamRef | null;
+  seedDiff: number | null;
+  winPctDiff: number | null;
+  entryRestDiff: number | null;
+  h2hDiff: number | null;
+  /** Either method may be absent (null) for a given series — never fabricated. */
+  predictions: {
+    fullInsample: PlayoffSeriesPredictionMethod | null;
+    walkForwardOos: PlayoffSeriesPredictionMethod | null;
+  };
+}
+
+export interface PlayoffRoundGroup {
+  round: number;
+  roundLabel: string;
+  series: PlayoffSeriesWithPredictions[];
+}
+
+/** Accuracy computed only over series with a known winner AND a non-null prediction for the method. */
+export interface PlayoffMethodSummary {
+  knownWinnerGames: number;
+  predictedCorrect: number;
+  /** 0-100, 1 decimal. */
+  accuracy: number;
+}
+
+export interface PlayoffsResponse {
+  season: string;
+  rounds: PlayoffRoundGroup[];
+  summary: {
+    fullInsample: PlayoffMethodSummary;
+    walkForwardOos: PlayoffMethodSummary;
+  };
+}
+

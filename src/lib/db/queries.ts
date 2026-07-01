@@ -2,7 +2,14 @@ import { format, parseISO, subDays } from "date-fns";
 import { and, asc, desc, eq, gte, inArray, isNotNull, isNull, lt, lte, or, sql } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
 import { db } from "./index";
-import { fatigueScores, games, predictions, teams } from "./schema";
+import {
+  fatigueScores,
+  games,
+  playoffSeries,
+  playoffSeriesPredictions,
+  predictions,
+  teams,
+} from "./schema";
 import {
   intersectDateBounds,
   monthCalendarBounds,
@@ -13,6 +20,9 @@ import type {
   GameDateCount,
   GameDetailResponse,
   GameResponse,
+  PlayoffSeriesPredictionMethod,
+  PlayoffSeriesWithPredictions,
+  PlayoffTeamRef,
   RestAdvantage,
   TeamRecentResultGame,
   UpcomingGameWithRA,
@@ -816,4 +826,197 @@ export async function getUpcomingGamesWithRA(
     restAdvantageDifferential: parseFloat(String(r.differential)),
     predictedAdvantageAbbreviation: r.predictedTeamAbbreviation,
   }));
+}
+
+// ─── Playoff Predictor: series + predictions ────────────────────
+
+type PlayoffPredictionMethodKey = "full_insample" | "walk_forward_oos";
+
+/** Latest prediction row per series for a given method (future-proofs against multiple model versions). */
+function latestPlayoffPredictionSubquery(subqueryAlias: string, method: PlayoffPredictionMethodKey) {
+  return db
+    .selectDistinctOn([playoffSeriesPredictions.seriesId], {
+      seriesId: playoffSeriesPredictions.seriesId,
+      predictedHomeCourtWinProb: playoffSeriesPredictions.predictedHomeCourtWinProb,
+      predictedWinnerTeamId: playoffSeriesPredictions.predictedWinnerTeamId,
+      modelVersion: playoffSeriesPredictions.modelVersion,
+    })
+    .from(playoffSeriesPredictions)
+    .where(eq(playoffSeriesPredictions.predictionMethod, method))
+    .orderBy(playoffSeriesPredictions.seriesId, desc(playoffSeriesPredictions.createdAt))
+    .as(subqueryAlias);
+}
+
+type PlayoffSeriesJoinRow = {
+  seriesId: number;
+  season: string;
+  round: number;
+  conference: string | null;
+  isBestOf7: boolean;
+  homeCourtTeamId: number;
+  homeCourtTeamAbbr: string;
+  homeCourtTeamName: string;
+  opponentTeamId: number;
+  opponentTeamAbbr: string;
+  opponentTeamName: string;
+  homeCourtWins: number | null;
+  opponentWins: number | null;
+  seriesWinnerTeamId: number | null;
+  seriesWinnerTeamAbbr: string | null;
+  seriesWinnerTeamName: string | null;
+  seedDiff: string | null;
+  winPctDiff: string | null;
+  entryRestDiff: string | null;
+  h2hDiff: string | null;
+  fullInsampleProb: string | null;
+  fullInsampleWinnerTeamId: number | null;
+  fullInsampleWinnerAbbr: string | null;
+  fullInsampleWinnerName: string | null;
+  fullInsampleModelVersion: string | null;
+  walkForwardProb: string | null;
+  walkForwardWinnerTeamId: number | null;
+  walkForwardWinnerAbbr: string | null;
+  walkForwardWinnerName: string | null;
+  walkForwardModelVersion: string | null;
+};
+
+function buildPredictionMethodResult(
+  prob: string | null,
+  winnerTeamId: number | null,
+  winnerAbbr: string | null,
+  winnerName: string | null,
+  modelVersion: string | null,
+  seriesWinnerTeamId: number | null
+): PlayoffSeriesPredictionMethod | null {
+  if (prob === null || winnerTeamId === null || winnerAbbr === null || winnerName === null || modelVersion === null) {
+    return null;
+  }
+
+  return {
+    predictedHomeCourtWinProb: parseFloat(prob),
+    predictedWinnerTeam: { id: winnerTeamId, abbreviation: winnerAbbr, name: winnerName },
+    modelVersion,
+    predictedWinnerCorrect:
+      seriesWinnerTeamId === null ? null : winnerTeamId === seriesWinnerTeamId,
+  };
+}
+
+function mapRowToPlayoffSeriesWithPredictions(row: PlayoffSeriesJoinRow): PlayoffSeriesWithPredictions {
+  const seriesWinnerTeam: PlayoffTeamRef | null =
+    row.seriesWinnerTeamId !== null && row.seriesWinnerTeamAbbr !== null && row.seriesWinnerTeamName !== null
+      ? { id: row.seriesWinnerTeamId, abbreviation: row.seriesWinnerTeamAbbr, name: row.seriesWinnerTeamName }
+      : null;
+
+  return {
+    seriesId: row.seriesId,
+    season: row.season,
+    round: row.round,
+    conference: row.conference,
+    isBestOf7: row.isBestOf7,
+    homeCourtTeam: {
+      id: row.homeCourtTeamId,
+      abbreviation: row.homeCourtTeamAbbr,
+      name: row.homeCourtTeamName,
+    },
+    opponentTeam: {
+      id: row.opponentTeamId,
+      abbreviation: row.opponentTeamAbbr,
+      name: row.opponentTeamName,
+    },
+    homeCourtWins: row.homeCourtWins,
+    opponentWins: row.opponentWins,
+    seriesWinnerTeam,
+    seedDiff: row.seedDiff !== null ? parseFloat(row.seedDiff) : null,
+    winPctDiff: row.winPctDiff !== null ? parseFloat(row.winPctDiff) : null,
+    entryRestDiff: row.entryRestDiff !== null ? parseFloat(row.entryRestDiff) : null,
+    h2hDiff: row.h2hDiff !== null ? parseFloat(row.h2hDiff) : null,
+    predictions: {
+      fullInsample: buildPredictionMethodResult(
+        row.fullInsampleProb,
+        row.fullInsampleWinnerTeamId,
+        row.fullInsampleWinnerAbbr,
+        row.fullInsampleWinnerName,
+        row.fullInsampleModelVersion,
+        row.seriesWinnerTeamId
+      ),
+      walkForwardOos: buildPredictionMethodResult(
+        row.walkForwardProb,
+        row.walkForwardWinnerTeamId,
+        row.walkForwardWinnerAbbr,
+        row.walkForwardWinnerName,
+        row.walkForwardModelVersion,
+        row.seriesWinnerTeamId
+      ),
+    },
+  };
+}
+
+/**
+ * Playoff series for a season, joined to both prediction methods (full_insample,
+ * walk_forward_oos) and to team rows for home-court, opponent, and (resolved) series
+ * winner. Ordered by round then conference for stable bracket rendering.
+ */
+export async function getPlayoffSeriesWithPredictions(
+  season: string
+): Promise<PlayoffSeriesWithPredictions[]> {
+  const homeCourtTeam = alias(teams, "ps_home_court_team");
+  const opponentTeam = alias(teams, "ps_opponent_team");
+  const winnerTeam = alias(teams, "ps_winner_team");
+  const fullInsamplePredictedTeam = alias(teams, "ps_full_insample_pred_team");
+  const walkForwardPredictedTeam = alias(teams, "ps_walk_forward_pred_team");
+
+  const fullInsample = latestPlayoffPredictionSubquery("ps_full_insample_latest", "full_insample");
+  const walkForward = latestPlayoffPredictionSubquery("ps_walk_forward_latest", "walk_forward_oos");
+
+  const rows = await db
+    .select({
+      seriesId: playoffSeries.id,
+      season: playoffSeries.season,
+      round: playoffSeries.round,
+      conference: playoffSeries.conference,
+      isBestOf7: playoffSeries.isBestOf7,
+      homeCourtTeamId: playoffSeries.homeCourtTeamId,
+      homeCourtTeamAbbr: homeCourtTeam.abbreviation,
+      homeCourtTeamName: homeCourtTeam.name,
+      opponentTeamId: playoffSeries.opponentTeamId,
+      opponentTeamAbbr: opponentTeam.abbreviation,
+      opponentTeamName: opponentTeam.name,
+      homeCourtWins: playoffSeries.homeCourtWins,
+      opponentWins: playoffSeries.opponentWins,
+      seriesWinnerTeamId: playoffSeries.seriesWinnerTeamId,
+      seriesWinnerTeamAbbr: winnerTeam.abbreviation,
+      seriesWinnerTeamName: winnerTeam.name,
+      seedDiff: playoffSeries.seedDiff,
+      winPctDiff: playoffSeries.winPctDiff,
+      entryRestDiff: playoffSeries.entryRestDiff,
+      h2hDiff: playoffSeries.h2hDiff,
+      fullInsampleProb: fullInsample.predictedHomeCourtWinProb,
+      fullInsampleWinnerTeamId: fullInsample.predictedWinnerTeamId,
+      fullInsampleWinnerAbbr: fullInsamplePredictedTeam.abbreviation,
+      fullInsampleWinnerName: fullInsamplePredictedTeam.name,
+      fullInsampleModelVersion: fullInsample.modelVersion,
+      walkForwardProb: walkForward.predictedHomeCourtWinProb,
+      walkForwardWinnerTeamId: walkForward.predictedWinnerTeamId,
+      walkForwardWinnerAbbr: walkForwardPredictedTeam.abbreviation,
+      walkForwardWinnerName: walkForwardPredictedTeam.name,
+      walkForwardModelVersion: walkForward.modelVersion,
+    })
+    .from(playoffSeries)
+    .innerJoin(homeCourtTeam, eq(playoffSeries.homeCourtTeamId, homeCourtTeam.id))
+    .innerJoin(opponentTeam, eq(playoffSeries.opponentTeamId, opponentTeam.id))
+    .leftJoin(winnerTeam, eq(playoffSeries.seriesWinnerTeamId, winnerTeam.id))
+    .leftJoin(fullInsample, eq(fullInsample.seriesId, playoffSeries.id))
+    .leftJoin(
+      fullInsamplePredictedTeam,
+      eq(fullInsample.predictedWinnerTeamId, fullInsamplePredictedTeam.id)
+    )
+    .leftJoin(walkForward, eq(walkForward.seriesId, playoffSeries.id))
+    .leftJoin(
+      walkForwardPredictedTeam,
+      eq(walkForward.predictedWinnerTeamId, walkForwardPredictedTeam.id)
+    )
+    .where(eq(playoffSeries.season, season))
+    .orderBy(asc(playoffSeries.round), asc(playoffSeries.conference), asc(playoffSeries.id));
+
+  return rows.map(mapRowToPlayoffSeriesWithPredictions);
 }
