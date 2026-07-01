@@ -1,0 +1,47 @@
+══════════════════════════════════════════════════════════════════════════════
+ Playoff Predictor — Phase 4 (T4) — predict_series.py DRY RUN (no DB writes)
+══════════════════════════════════════════════════════════════════════════════
+
+── Contract ──
+  model_version             : logistic_unreg_v1  (Phase 3 unregularized logistic)
+  features (fixed order)    : ['seed_diff', 'win_pct_diff', 'entry_rest_diff', 'h2h_diff']
+  probability               : P(series_winner == home_court_team) = P(y=1)
+  predicted winner          : home-court team when prob >= 0.5, else opponent
+  trainable rows            : 599
+  base rate P(y=1)          : 0.746244   (447/599)
+  total seasons             : 40   (1985-86 … 2025-26)
+  OOS min-train seasons     : 10  (eval seasons: 30 → 1995-96 … 2025-26)
+
+── Per-method summary ──
+  [full_insample]
+     scored / skipped       : 599 / 0
+     prob min / mean / max  : 0.3084 / 0.7463 / 0.9949
+     rows with prob >= 0.5  : 559
+     sanity: P(y=1 | prob>=0.5) = 0.7728  (precision of home-court calls; should track ~0.74)
+
+  [walk_forward_oos]
+     scored / skipped       : 450 / 149
+     prob min / mean / max  : 0.2937 / 0.7425 / 0.9947
+     rows with prob >= 0.5  : 417
+     sanity: P(y=1 | prob>=0.5) = 0.7650  (precision of home-court calls; should track ~0.74)
+
+── Sample: most recent scored series (newest first) ──
+  season    rnd  home_court  opponent  p_insmpl   p_oos   pred(oos)  actual   oos✓
+  ------------------------------------------------------------------------------------
+  2025-26     4         SAS       NYK    0.5950  0.6035         SAS     NYK     no
+  2025-26     3         OKC       SAS    0.5804  0.5830         OKC     SAS     no
+  2025-26     3         NYK       CLE    0.6836  0.6773         NYK     NYK    yes
+  2025-26     2         NYK       PHI    0.8194  0.8237         NYK     NYK    yes
+  2025-26     2         SAS       MIN    0.8803  0.8848         SAS     SAS    yes
+  2025-26     2         OKC       LAL    0.8925  0.8917         OKC     OKC    yes
+  2025-26     2         DET       CLE    0.7565  0.7619         DET     CLE     no
+  2025-26     1         SAS       POR    0.9589  0.9611         SAS     SAS    yes
+  2025-26     1         OKC       PHX    0.9657  0.9672         OKC     OKC    yes
+  2025-26     1         LAL       HOU    0.5181  0.5175         LAL     LAL    yes
+
+  (home_court = reference team; pred(oos) = walk-forward out-of-sample pick;
+   actual = series_winner; oos✓ = did the OOS pick match the actual winner.)
+
+NOTE: DRY RUN — nothing was written to the database. To persist, apply
+      drizzle/0007_playoff_series_predictions.sql in Supabase, then run with --write.
+

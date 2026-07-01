@@ -165,6 +165,42 @@ export const playoffSeries = pgTable(
   (t) => [index("playoff_series_season_idx").on(t.season)]
 );
 
+/**
+ * Playoff Predictor — model output (one row per series × prediction method × model
+ * version). Mirrors drizzle/0007_playoff_series_predictions.sql. Added to schema.ts
+ * (unlike the 0003 moneyline columns, which nothing reads) because the T5
+ * `/api/playoffs` route will query this table via Drizzle. Still additive and
+ * isolated: the regular-season product never reads it.
+ *
+ * Orientation contract (matches the Phase 3 label, ml/train_series_model.py):
+ * `predictedHomeCourtWinProb` = P(series winner == home-court team) = P(y=1);
+ * `predictedWinnerTeamId` = the series' home-court team when prob ≥ 0.5, else its opponent.
+ */
+export const playoffSeriesPredictions = pgTable(
+  "playoff_series_predictions",
+  {
+    id: serial("id").primaryKey(),
+    /** Canonical FK to the predicted series. */
+    seriesId: integer("series_id")
+      .notNull()
+      .references(() => playoffSeries.id),
+    /** Denormalized stable business key of the series (for join-free display/audit). */
+    externalSeriesKey: varchar("external_series_key").notNull(),
+    /** P(home-court team wins the series) — same orientation as the Phase 3 y=1 label. */
+    predictedHomeCourtWinProb: decimal("predicted_home_court_win_prob").notNull(),
+    /** Home-court team when prob ≥ 0.5, else the opponent. */
+    predictedWinnerTeamId: integer("predicted_winner_team_id")
+      .notNull()
+      .references(() => teams.id),
+    /** e.g. "walk_forward_oos" (out-of-sample) or "full_insample". */
+    predictionMethod: varchar("prediction_method", { length: 32 }).notNull(),
+    /** e.g. "logistic_unreg_v1". */
+    modelVersion: varchar("model_version", { length: 32 }).notNull(),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  },
+  (t) => [index("playoff_series_predictions_series_id_idx").on(t.seriesId)]
+);
+
 // ─── Relations ──────────────────────────────────────────────────
 
 export const teamsRelations = relations(teams, ({ many }) => ({
@@ -180,6 +216,7 @@ export const teamsRelations = relations(teams, ({ many }) => ({
     relationName: "playoffSeriesOpponentTeam",
   }),
   playoffSeriesWon: many(playoffSeries, { relationName: "playoffSeriesWinner" }),
+  playoffSeriesPredicted: many(playoffSeriesPredictions),
 }));
 
 export const gamesRelations = relations(games, ({ one, many }) => ({
@@ -225,20 +262,38 @@ export const predictionsRelations = relations(predictions, ({ one }) => ({
   }),
 }));
 
-export const playoffSeriesRelations = relations(playoffSeries, ({ one }) => ({
-  homeCourtTeam: one(teams, {
-    fields: [playoffSeries.homeCourtTeamId],
-    references: [teams.id],
-    relationName: "playoffSeriesHomeCourtTeam",
-  }),
-  opponentTeam: one(teams, {
-    fields: [playoffSeries.opponentTeamId],
-    references: [teams.id],
-    relationName: "playoffSeriesOpponentTeam",
-  }),
-  seriesWinner: one(teams, {
-    fields: [playoffSeries.seriesWinnerTeamId],
-    references: [teams.id],
-    relationName: "playoffSeriesWinner",
-  }),
-}));
+export const playoffSeriesRelations = relations(
+  playoffSeries,
+  ({ one, many }) => ({
+    homeCourtTeam: one(teams, {
+      fields: [playoffSeries.homeCourtTeamId],
+      references: [teams.id],
+      relationName: "playoffSeriesHomeCourtTeam",
+    }),
+    opponentTeam: one(teams, {
+      fields: [playoffSeries.opponentTeamId],
+      references: [teams.id],
+      relationName: "playoffSeriesOpponentTeam",
+    }),
+    seriesWinner: one(teams, {
+      fields: [playoffSeries.seriesWinnerTeamId],
+      references: [teams.id],
+      relationName: "playoffSeriesWinner",
+    }),
+    predictions: many(playoffSeriesPredictions),
+  })
+);
+
+export const playoffSeriesPredictionsRelations = relations(
+  playoffSeriesPredictions,
+  ({ one }) => ({
+    series: one(playoffSeries, {
+      fields: [playoffSeriesPredictions.seriesId],
+      references: [playoffSeries.id],
+    }),
+    predictedWinnerTeam: one(teams, {
+      fields: [playoffSeriesPredictions.predictedWinnerTeamId],
+      references: [teams.id],
+    }),
+  })
+);
