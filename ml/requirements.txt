@@ -1,0 +1,19 @@
+# ML environment — Playoff Predictor series-grain modeling (Phase 3).
+#
+# ISOLATED from the data-pipeline requirements. This file is NOT the root
+# requirements.txt and NOT scripts/requirements.txt (which CI installs); those
+# stay untouched. Install into the project venv:
+#
+#     ./venv/bin/python -m pip install -r ml/requirements.txt
+#
+# Versions below are the ones actually resolved on 2026-07-01 (python 3.11).
+
+# DB access (read-only SELECT) + env loading — reused from the pipeline venv.
+psycopg2-binary==2.9.12
+python-dotenv==1.2.2
+
+# Modeling stack.
+numpy==2.4.6
+pandas==3.0.3
+scipy==1.17.1
+scikit-learn==1.9.0
