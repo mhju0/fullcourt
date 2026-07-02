@@ -1,0 +1,165 @@
+======================================================================
+Shot Quality Model - Phase SQ-0 feasibility probe
+Read-only. No DB access. Live nba_api calls only.
+======================================================================
+
+## 1. Endpoint reality check
+nba_api module path: /Users/michaelju/Workspace/Projects/fullcourt/venv/lib/python3.11/site-packages/nba_api/__init__.py
+
+ShotChartDetail.__init__ ACTUAL parameters (name = default):
+  team_id = <class 'inspect._empty'>
+  player_id = <class 'inspect._empty'>
+  context_measure_simple = 'PTS'
+  last_n_games = '0'
+  league_id = '00'
+  month = '0'
+  opponent_team_id = 0
+  period = '0'
+  season_type_all_star = 'Regular Season'
+  ahead_behind_nullable = ''
+  clutch_time_nullable = ''
+  context_filter_nullable = ''
+  date_from_nullable = ''
+  date_to_nullable = ''
+  end_period_nullable = ''
+  end_range_nullable = ''
+  game_id_nullable = ''
+  game_segment_nullable = ''
+  location_nullable = ''
+  outcome_nullable = ''
+  player_position_nullable = ''
+  point_diff_nullable = ''
+  position_nullable = ''
+  range_type_nullable = ''
+  rookie_year_nullable = ''
+  season_nullable = ''
+  season_segment_nullable = ''
+  start_period_nullable = ''
+  start_range_nullable = ''
+  vs_conference_nullable = ''
+  vs_division_nullable = ''
+  proxy = None
+  headers = None
+  timeout = 30
+  get_request = True
+
+Other installed nba_api endpoint classes with shot/tracking/defend/hustle in the name:
+  AssistTracker
+  BoxScoreHustleV2
+  BoxScorePlayerTrackV3
+  HustleStatsBoxScore
+  LeagueDashOppPtShot
+  LeagueDashPlayerPtShot
+  LeagueDashPlayerShotLocations
+  LeagueDashPtDefend
+  LeagueDashPtTeamDefend
+  LeagueDashTeamPtShot
+  LeagueDashTeamShotLocations
+  LeagueHustleStatsPlayer
+  LeagueHustleStatsTeam
+  PlayerDashPtShotDefend
+  PlayerDashPtShots
+  ShotChartDetail
+  ShotChartLeagueWide
+  ShotChartLineupDetail
+  TeamDashPtShots
+
+## 2. Small live pulls
+
+Pulling player-season shot chart: LeBron James (2544), season=2023-24, season_type='Regular Season', context_measure_simple='FGA'
+Call duration: 0.38s
+Player-season row count: 1269
+Player-season columns (24): ['GRID_TYPE', 'GAME_ID', 'GAME_EVENT_ID', 'PLAYER_ID', 'PLAYER_NAME', 'TEAM_ID', 'TEAM_NAME', 'PERIOD', 'MINUTES_REMAINING', 'SECONDS_REMAINING', 'EVENT_TYPE', 'ACTION_TYPE', 'SHOT_TYPE', 'SHOT_ZONE_BASIC', 'SHOT_ZONE_AREA', 'SHOT_ZONE_RANGE', 'SHOT_DISTANCE', 'LOC_X', 'LOC_Y', 'SHOT_ATTEMPTED_FLAG', 'SHOT_MADE_FLAG', 'GAME_DATE', 'HTM', 'VTM']
+
+Sleeping 1.5s before next call...
+
+Sampled GAME_ID=0022300015, TEAM_ID=1610612747 from player-season frame
+
+Pulling single-game team shot chart: team_id=1610612747, game_id_nullable=0022300015, player_id=0
+Call duration: 0.84s
+Single-game row count: 84
+Single-game columns (24): ['GRID_TYPE', 'GAME_ID', 'GAME_EVENT_ID', 'PLAYER_ID', 'PLAYER_NAME', 'TEAM_ID', 'TEAM_NAME', 'PERIOD', 'MINUTES_REMAINING', 'SECONDS_REMAINING', 'EVENT_TYPE', 'ACTION_TYPE', 'SHOT_TYPE', 'SHOT_ZONE_BASIC', 'SHOT_ZONE_AREA', 'SHOT_ZONE_RANGE', 'SHOT_DISTANCE', 'LOC_X', 'LOC_Y', 'SHOT_ATTEMPTED_FLAG', 'SHOT_MADE_FLAG', 'GAME_DATE', 'HTM', 'VTM']
+
+Sleeping 1.5s before next call...
+
+## 3. Field inventory (from REAL returned columns, player-season pull)
+  shot location coordinates: PRESENT (['LOC_X', 'LOC_Y'])
+  shot distance: PRESENT (['SHOT_DISTANCE'])
+  shot type / action type / zone: PRESENT (['SHOT_TYPE', 'ACTION_TYPE', 'SHOT_ZONE_BASIC', 'SHOT_ZONE_AREA', 'SHOT_ZONE_RANGE'])
+  made-vs-missed flag: PRESENT (['SHOT_MADE_FLAG', 'EVENT_TYPE'])
+  defender distance (closest-defender): ABSENT
+  shot clock: ABSENT
+
+  LOC_X range in sample: [-235, 239]
+  LOC_Y range in sample: [-34, 503]
+  (nba_api convention: units are 1/10 foot, origin at hoop -- verify against SHOT_DISTANCE arithmetic below if present)
+  Sanity check row0: LOC_X=-47, LOC_Y=172, SHOT_DISTANCE=17, hypot(LOC_X,LOC_Y)/10=17.83
+
+  [Inferred] If defender distance / shot clock are ABSENT above, that data would require a separate tracking endpoint (e.g. PlayerDashPtShotDefend / LeagueDashPtDefend), which was NOT called in this probe.
+
+## 4. Scale sense
+
+Sleeping 1.5s before next call...
+
+Pulling FULL team-season shot chart: team_id=1610612747, season=2023-24, player_id=0 (all players on team)
+Call duration: 1.82s
+Team-season row count (one team, 2023-24, regular season): 7177
+
+Arithmetic:
+  one team, one season = 7177 shots
+  x 30 teams           = 215310 shots/season (league-wide estimate)
+  x ~40 seasons        = 8612400 shots (rough ~40-season total estimate)
+
+## 5. Season availability (backward reach)
+
+Testing season=2023-24 (team_id=1610612747, player_id=0, context_measure_simple='FGA')
+  responded=True, duration=0.26s, row_count=7177, has_LOC_columns=True, has_nonzero_LOC_values=True
+
+Sleeping 1.5s before next call...
+
+Testing season=2013-14 (team_id=1610612747, player_id=0, context_measure_simple='FGA')
+  responded=True, duration=1.71s, row_count=6980, has_LOC_columns=True, has_nonzero_LOC_values=True
+
+Sleeping 1.5s before next call...
+
+Testing season=2005-06 (team_id=1610612747, player_id=0, context_measure_simple='FGA')
+  responded=True, duration=1.71s, row_count=6607, has_LOC_columns=True, has_nonzero_LOC_values=True
+
+Sleeping 1.5s before next call...
+
+Testing season=1996-97 (team_id=1610612747, player_id=0, context_measure_simple='FGA')
+  responded=True, duration=1.66s, row_count=6642, has_LOC_columns=True, has_nonzero_LOC_values=True
+
+Sleeping 1.5s before next call...
+
+Testing season=1990-91 (team_id=1610612747, player_id=0, context_measure_simple='FGA')
+  responded=True, duration=0.63s, row_count=0, has_LOC_columns=False, has_nonzero_LOC_values=False
+
+Season availability summary:
+  2023-24: responded=True non_empty=True has_LOC_X_LOC_Y=True nonzero_coords=True usable=True
+  2013-14: responded=True non_empty=True has_LOC_X_LOC_Y=True nonzero_coords=True usable=True
+  2005-06: responded=True non_empty=True has_LOC_X_LOC_Y=True nonzero_coords=True usable=True
+  1996-97: responded=True non_empty=True has_LOC_X_LOC_Y=True nonzero_coords=True usable=True
+  1990-91: responded=True non_empty=False has_LOC_X_LOC_Y=False nonzero_coords=False usable=False
+
+Earliest season in this test set with usable coordinate data: 1996-97
+
+## 6. Rate-limit / speed sense
+Delay used between calls: 1.5s
+Call 1 (player-season, 2023-24): 0.38s
+Call 2 (single-game): 0.84s
+Call 3 (team-season, 2023-24): 1.82s
+Call (season availability, 2023-24): 0.26s
+Call (season availability, 2013-14): 1.71s
+Call (season availability, 2005-06): 1.71s
+Call (season availability, 1996-97): 1.66s
+Call (season availability, 1990-91): 0.63s
+
+Average call duration across all 8 calls: 1.13s
+No timeout/throttle errors encountered in this probe (all calls above either succeeded or their error is logged inline).
+
+[Inferred] At ~1.1s/call with a >=1s polite delay, pulling one call per team-season across ~30 teams x ~40 seasons = ~1200 calls would take roughly 1200 x (~1.1+1.5)s ~= 0.9 hours of wall-clock time (order of magnitude only; real pulls would need per-player or per-game granularity in earlier eras and retry/backoff handling, which would push this higher).
+
+======================================================================
+Probe complete.
+======================================================================

@@ -35,6 +35,9 @@ venv/
 # Data files (large, not needed in repo)
 scripts/*.csv
 
+# Shot Quality Model local raw-shot cache (never lands in Postgres — see docs/SHOT_QUALITY_DESIGN.md §3)
+ml/data/
+
 # IDE
 .vscode/
 .idea/

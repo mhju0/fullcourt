@@ -1,0 +1,123 @@
+Shot Quality Model — Phase SQ-0b defender/tracking feasibility probe
+Delay between calls: 1.5s
+
+======================================================================
+1. ENDPOINT REALITY CHECK (introspected from installed library)
+======================================================================
+
+PlayerDashPtShotDefend: FOUND in installed nba_api
+  __init__ signature:
+    (self, team_id, player_id, last_n_games='0', league_id='00', month='0', opponent_team_id=0, per_mode_simple='Totals', period='0', season='2025-26', season_type_all_star='Regular Season', date_from_nullable='', date_to_nullable='', game_segment_nullable='', location_nullable='', outcome_nullable='', season_segment_nullable='', vs_conference_nullable='', vs_division_nullable='', proxy=None, headers=None, timeout=30, get_request=True)
+
+LeagueDashPtDefend: FOUND in installed nba_api
+  __init__ signature:
+    (self, defense_category='Overall', league_id='00', per_mode_simple='Totals', season='2025-26', season_type_all_star='Regular Season', college_nullable='', conference_nullable='', country_nullable='', date_from_nullable='', date_to_nullable='', division_nullable='', draft_pick_nullable='', draft_year_nullable='', game_segment_nullable='', height_nullable='', last_n_games_nullable='', location_nullable='', month_nullable='', opponent_team_id_nullable='', outcome_nullable='', po_round_nullable='', period_nullable='', player_experience_nullable='', player_id_nullable='', player_position_nullable='', season_segment_nullable='', starter_bench_nullable='', team_id_nullable='', vs_conference_nullable='', vs_division_nullable='', weight_nullable='', proxy=None, headers=None, timeout=30, get_request=True)
+
+All installed endpoint classes with 'defend' or 'ptshot' in the name:
+  - LeagueDashOppPtShot
+  - LeagueDashPlayerPtShot
+  - LeagueDashPtDefend
+  - LeagueDashPtTeamDefend
+  - LeagueDashTeamPtShot
+  - PlayerDashPtShotDefend
+  - PlayerDashPtShots
+  - TeamDashPtShots
+
+======================================================================
+2. GRANULARITY QUESTION — live pull, PlayerDashPtShotDefend, 2023-24
+======================================================================
+
+--- Calling: PlayerDashPtShotDefend(LeBron James, 2023-24, Regular Season) ---
+  status: OK  elapsed=0.35s
+
+  number of data frames returned: 1
+
+  --- data frame [0] ---
+  row count: 0
+  columns (10):
+    - MATCHUPID
+    - GP
+    - G
+    - DEFENSE_CATEGORY
+    - FREQ
+    - D_FGM
+    - D_FGA
+    - D_FG_PCT
+    - NORMAL_FG_PCT
+    - PCT_PLUSMINUS
+
+  GAME_ID-like column present: False
+  defender-distance dimension/category column present: False
+
+>>> GRANULARITY VERDICT (2023-24): AGGREGATED SPLITS (one row per player per defender-distance bucket; row_count=0, no GAME_ID column)
+>>> DEFENDER-DISTANCE DIMENSION PRESENT (2023-24): False
+
+======================================================================
+3. SEASON REACH — testing LeagueDashPtDefend across seasons
+======================================================================
+
+--- Calling: LeagueDashPtDefend(defense_category=Overall, season=2023-24) ---
+  status: OK  elapsed=0.35s
+  season=2023-24: row_count=569, columns=['CLOSE_DEF_PERSON_ID', 'PLAYER_NAME', 'PLAYER_LAST_TEAM_ID', 'PLAYER_LAST_TEAM_ABBREVIATION', 'PLAYER_POSITION', 'AGE', 'GP', 'G', 'FREQ', 'D_FGM', 'D_FGA', 'D_FG_PCT', 'NORMAL_FG_PCT', 'PCT_PLUSMINUS']
+
+--- Calling: LeagueDashPtDefend(defense_category=Overall, season=2015-16) ---
+  status: OK  elapsed=0.32s
+  season=2015-16: row_count=473, columns=['CLOSE_DEF_PERSON_ID', 'PLAYER_NAME', 'PLAYER_LAST_TEAM_ID', 'PLAYER_LAST_TEAM_ABBREVIATION', 'PLAYER_POSITION', 'AGE', 'GP', 'G', 'FREQ', 'D_FGM', 'D_FGA', 'D_FG_PCT', 'NORMAL_FG_PCT', 'PCT_PLUSMINUS']
+
+--- Calling: LeagueDashPtDefend(defense_category=Overall, season=2013-14) ---
+  status: OK  elapsed=0.33s
+  season=2013-14: row_count=481, columns=['CLOSE_DEF_PERSON_ID', 'PLAYER_NAME', 'PLAYER_LAST_TEAM_ID', 'PLAYER_LAST_TEAM_ABBREVIATION', 'PLAYER_POSITION', 'AGE', 'GP', 'G', 'FREQ', 'D_FGM', 'D_FGA', 'D_FG_PCT', 'NORMAL_FG_PCT', 'PCT_PLUSMINUS']
+
+--- Calling: LeagueDashPtDefend(defense_category=Overall, season=2009-10) ---
+  status: OK  elapsed=0.31s
+  season=2009-10: row_count=0, columns=['CLOSE_DEF_PERSON_ID', 'PLAYER_NAME', 'PLAYER_LAST_TEAM_ID', 'PLAYER_LAST_TEAM_ABBREVIATION', 'PLAYER_POSITION', 'AGE', 'GP', 'G', 'FREQ', 'D_FGM', 'D_FGA', 'D_FG_PCT', 'NORMAL_FG_PCT', 'PCT_PLUSMINUS']
+
+--- Season reach summary ---
+  2023-24: responded=True non_empty=True defender_distance_present=False usable=False elapsed=0.35s
+  2015-16: responded=True non_empty=True defender_distance_present=False usable=False elapsed=0.32s
+  2013-14: responded=True non_empty=True defender_distance_present=False usable=False elapsed=0.33s
+  2009-10: responded=True non_empty=False defender_distance_present=False usable=False elapsed=0.31s
+
+>>> EARLIEST SEASON TESTED THAT RETURNED USABLE DEFENDER DATA: [None of the tested seasons — see detail above]
+
+======================================================================
+3b. CLOSEST-DEFENDER-DISTANCE AS A FILTER (LeagueDashPlayerPtShot)
+======================================================================
+
+--- Calling: LeagueDashPlayerPtShot(season=2023-24, no distance filter) ---
+  status: OK  elapsed=0.33s
+
+  unfiltered row_count=568
+  unfiltered columns: ['PLAYER_ID', 'PLAYER_NAME', 'PLAYER_LAST_TEAM_ID', 'PLAYER_LAST_TEAM_ABBREVIATION', 'AGE', 'GP', 'G', 'FGA_FREQUENCY', 'FGM', 'FGA', 'FG_PCT', 'EFG_PCT', 'FG2A_FREQUENCY', 'FG2M', 'FG2A', 'FG2_PCT', 'FG3A_FREQUENCY', 'FG3M', 'FG3A', 'FG3_PCT']
+
+--- Calling: LeagueDashPlayerPtShot(season=2023-24, close_def_dist_range='0-2 Feet - Very Tight') ---
+  status: OK  elapsed=0.33s
+
+  filtered row_count=531
+  filtered first row: {'PLAYER_ID': 1629627, 'PLAYER_NAME': 'Zion Williamson', 'PLAYER_LAST_TEAM_ID': 1610612740, 'PLAYER_LAST_TEAM_ABBREVIATION': 'NOP', 'AGE': 23.0, 'GP': 69, 'G': 64, 'FGA_FREQUENCY': 0.266, 'FGM': 155, 'FGA': 289, 'FG_PCT': 0.536, 'EFG_PCT': 0.536, 'FG2A_FREQUENCY': 0.266, 'FG2M': 155, 'FG2A': 289, 'FG2_PCT': 0.536, 'FG3A_FREQUENCY': 0.0, 'FG3M': 0, 'FG3A': 0, 'FG3_PCT': nan}
+
+>>> close_def_dist_range_nullable FILTER IS FUNCTIONAL (row count changed vs unfiltered): True
+>>> IMPORTANT: even with this filter applied, the endpoint still returns ONE ROW PER PLAYER
+>>> (season-aggregate FGA/FGM/FG_PCT for that distance bucket), NOT one row per shot.
+>>> No GAME_ID, no shot coordinates, no shot clock value, no per-shot identifier in the response.
+>>> Conclusion: closest-defender-distance EXISTS as a real dimension in nba_api, but only as a
+>>> query-time FILTER producing AGGREGATED per-player splits — never as a per-shot column.
+
+======================================================================
+4. JOIN FEASIBILITY (only meaningful if per-shot in step 2)
+======================================================================
+
+  Step 2 data was NOT per-shot (aggregated splits).
+  Join feasibility to ShotChartDetail (per-shot) is THEREFORE MOOT —
+  there is no per-shot defender row to join on.
+
+======================================================================
+5. SPEED / RATE-LIMIT SUMMARY
+======================================================================
+
+  Delay used between calls: 1.5s
+  Call 1 (PlayerDashPtShotDefend, 2023-24): elapsed=0.31s (see section 2 for its own timing)
+  Call (LeagueDashPtDefend, 2023-24): elapsed=0.35s, responded=True
+  Call (LeagueDashPtDefend, 2015-16): elapsed=0.32s, responded=True
+  Call (LeagueDashPtDefend, 2013-14): elapsed=0.33s, responded=True
+  Call (LeagueDashPtDefend, 2009-10): elapsed=0.31s, responded=True
