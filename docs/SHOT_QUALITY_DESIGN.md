@@ -1,19 +1,21 @@
-# Shot Quality Model — Design (DRAFT)
+# Shot Quality Model — Design & Build Record
 
-> **Status (2026-07-02):** **design draft only — no code, schema, migration, or frontend
-> exists yet.** The two SQ-0 feasibility probes are done (`ml/shot_data_probe.txt`,
-> `ml/shot_defend_probe.txt`); this document turns their findings into a plan and lays out
-> the open decisions for a human to resolve before any build starts. It mirrors the shape and
-> discipline of [PLAYOFF_PREDICTOR_DESIGN.md](PLAYOFF_PREDICTOR_DESIGN.md) — the honest-framing,
+> **Status (2026-07-02): BUILT.** All phases SQ-0…SQ-7 are complete — code, schema (migration
+> `0008`, hand-applied), a live `GET /api/shot-quality` route, and a `/shot-quality` page + nav
+> link all exist. This document was originally written as a pre-build design draft (§1–§8 below
+> are preserved as written, since the human answered every open decision in §8 by simply building
+> it) with the phasing table in §7 now annotated with what each phase actually produced, and a
+> **"Actual build vs. design" note** appended after §8 covering the two places the shipped build
+> diverged from this sketch. It mirrors the shape and discipline of
+> [PLAYOFF_PREDICTOR_DESIGN.md](PLAYOFF_PREDICTOR_DESIGN.md) — the honest-framing,
 > baseline-to-beat, walk-forward, and additive-isolation conventions are deliberately reused.
 >
-> This is the **later / stretch module** on the [ROADMAP.md](ROADMAP.md) ("Shot Quality Model
-> … requires shot-level data not in the schema today"). Nothing here touches `src/lib/fatigue.ts`,
-> renames the rest-advantage metric, or reads/writes the DB. Where a real decision is open, this
-> doc presents options + a recommendation and **defers the final call to the human** (see §8).
+> This was the **later / stretch module** on the [ROADMAP.md](ROADMAP.md); it is now complete
+> there too. Nothing in the shipped build touches `src/lib/fatigue.ts` or renames the
+> rest-advantage metric — see the isolation guarantees in §7.
 >
-> **Evidence tags:** `[Verified <file>]` = read from a probe/source file; `[Inferred]` =
-> reasoned estimate; `[Unknown]` = must be confirmed by the human before it can be decided.
+> **Evidence tags:** `[Verified <file>]` = read from a probe/source/build-output file;
+> `[Inferred]` = reasoned estimate; `[Unknown]` = not re-confirmed in the build-record pass.
 
 ---
 
@@ -305,18 +307,20 @@ This whole section is a **sketch**; the real UI is a later phase (§7).
 
 Mirrors the Playoff Predictor cadence (probe → data → storage → model → outputs → API → page),
 each phase ending in a **commit** and gated by a check the human runs (real DB queries / Read-tool
-inspection). **No phase's code is written here** — this is the plan only.
+inspection). **All phases below are now complete** — the "Human verification gate" column is
+kept as originally written (the plan), with a **Gate result** line under each row recording what
+actually happened, sourced from `ml/shot_value/*.txt` and this session's file reads.
 
 | Phase | Deliverable | Human verification gate |
 |---|---|---|
-| **SQ-0 — Feasibility probe** ✅ *(done)* | `ml/shot_data_probe.txt`, `ml/shot_defend_probe.txt` | Probes confirm per-shot location fields, no tracking join, 1996-97 reach, ~8.6M scale. **[Verified]** |
-| **SQ-1 — Design** *(this doc)* | `docs/SHOT_QUALITY_DESIGN.md` | Human answers the §8 open decisions (esp. Supabase limit + storage option) before any build. |
-| **SQ-2 — Data collection** | New ingest script → **local cache** (per §3), polite ~1.5s delay, retry/backoff | Read the cache; confirm row counts per season match the ~215k/season estimate; spot-check a known game's shots. |
-| **SQ-3 — Storage** | Aggregation pass → `shot_grid` (+ tables per §3/§5 decision); migration `0008` hand-applied | `SELECT` confirms grid row counts + that per-cell `makes ≤ attempts`; RLS/grants present (anon SELECT works). |
-| **SQ-4 — Model & evaluation** | Offline training (`ml/…`), walk-forward CV, baseline vs logistic vs spatial/GBM; metrics report | Read the metrics report; confirm the chosen model **beats the zone-average baseline on log-loss/Brier** on validation, test touched once. |
-| **SQ-5 — Prediction/output surface** | Write `shot_value_surface` (predicted xeFG% per cell + `model_version`) | `SELECT` confirms one surface row per grid cell for the served season(s); values in [0,1]. |
-| **SQ-6 — API** | `GET /api/shot-quality` (`{ data, error }`, Zod, `getPublicApiErrorMessage`) + query fn | `curl`/browser the route for a season; envelope + error paths behave; no regular-season query changed. |
-| **SQ-7 — Page** | `/shot-quality` hexbin page + nav link, terminal aesthetic, loading/empty states | Visual check across seasons/teams incl. sparse cells; confirms it's the only surface reading shot data. |
+| **SQ-0 — Feasibility probe** ✅ | `ml/shot_data_probe.txt`, `ml/shot_defend_probe.txt` | Probes confirm per-shot location fields, no tracking join, 1996-97 reach, ~8.6M scale. **[Verified]** |
+| **SQ-1 — Design** ✅ | `docs/SHOT_QUALITY_DESIGN.md` (this doc) | Human answered the §8 open decisions by proceeding to build — see the resolved §8 below. |
+| **SQ-2 — Data collection** ✅ | `scripts/collect_shot_data.py` → **local cache** `ml/data/shots/{season}/{team}.csv.gz` | *Gate result:* resumable per-team-season collector, `DELAY_SECONDS = 1.5`, 0-row results treated as valid (placeholder file), failures logged separately. Covers all 30 seasons through 2025-26. |
+| **SQ-3 — Storage** ✅ | `scripts/aggregate_shot_grid.py` → `public.shot_grid`; migration `0008_shot_quality_grid.sql` hand-applied | *Gate result:* **55,036** league-wide grid cells across 30 seasons [Verified `ml/shot_value/sq5_surface_summary.txt`]; integrity checks (`fgm≤fga`, `fg3m≤fg3a`, `fg3a≤fga`, `fg3m≤fgm`) enforced pre-commit; RLS + anon-SELECT grants present (`0008`, mirrors `0004`/`0005`). |
+| **SQ-4 — Model & evaluation** ✅ | `scripts/sq4_train_shot_value.py` (baseline vs. logit) + `scripts/sq4b_train_gbm.py` (adds GBM) — walk-forward by season, 29 folds | *Gate result:* [Verified `ml/shot_value/sq4b_metrics.txt`] pooled over 5,922,214 valid shots — baseline log-loss `0.665382`/acc `61.59%`; logit log-loss `0.669353`/acc `60.52%` (**logit did not beat baseline**); GBM log-loss `0.660022`/acc `61.93%` (**GBM beat baseline**, +0.81% log-loss / +1.06% Brier / +0.34pp accuracy — a calibration win, not a big accuracy win, exactly the honest framing this doc set out to preserve). |
+| **SQ-5 — Prediction/output surface** ✅ | `scripts/sq5_write_surface.py` → `public.shot_value_surface` (`p_make`/`expected_efg`/`xpps` per cell × `model_version`) | *Gate result:* [Verified `ml/shot_value/sq5_surface_summary.txt`, `sq5_db_verify.txt`] **110,072** surface rows (55,036 cells × 2 model versions: `gbm-v1`, `baseline-zone-v1`); DB reconciliation **PASS**; all values within `[0,1]`/`[0,3]` bounds. |
+| **SQ-6 — API** ✅ | `GET /api/shot-quality` (`{ data, error }`, Zod, `getPublicApiErrorMessage`) + `getShotQualityGrid()` | *Gate result:* [Verified `src/app/api/shot-quality/route.ts`, `src/lib/db/queries.ts`] `runtime="nodejs"`, `dynamic="force-dynamic"`; `season` required, `model?` display-hint only (both model surfaces are always returned per cell); unknown/future seasons return `cells: []`, not an error. |
+| **SQ-7 — Page** ✅ | `/shot-quality` hexbin page + nav link, terminal aesthetic, loading/empty states | *Gate result:* [Verified `src/app/shot-quality/page.tsx`, `src/components/shot-quality-content.tsx`, `src/components/nav-bar.tsx`] nav link present; court-coordinate transform (`cellX+0.5`, `court_y = RIM_Y + cellY + 0.5`) checked against real zone landmarks; empty-season and error states implemented. |
 
 ### Isolation guarantees (same discipline as the Playoff Predictor)
 - **Does not touch `src/lib/fatigue.ts`** and **does not rename** the rest-advantage metric
@@ -328,25 +332,70 @@ inspection). **No phase's code is written here** — this is the plan only.
 
 ---
 
-## 8. Open decisions summary (answer these in one pass)
+## 8. Open decisions summary — RESOLVED (as actually built)
+
+Each open decision below is followed by **→ Built:**, the value the shipped code actually uses.
 
 - **[Name]** Ship as **"Expected Shot Value (xeFG%)"** (recommended, honest) vs keep the roadmap
   label "Shot Quality Model" vs another? Sets the page route/name too. (§1)
+  **→ Built:** `"Expected Shot Value"` is the page `<title>` [Verified `src/app/shot-quality/page.tsx`];
+  route/nav label is `"SHOT QUALITY"` [Verified `src/components/nav-bar.tsx`]; xeFG% is the
+  metric used throughout the methodology copy.
 - **[Season scope]** **Full coordinate era 1996-97→present** (~30 seasons, recommended) vs
   trimmed 2013-14+ vs a short demo slice? (§2)
+  **→ Built:** full era, 30 seasons 1996-97…2025-26 [Verified `ml/shot_value/sq5_surface_summary.txt`].
 - **[Bubble handling]** **Include 2019-20** for shots (recommended — no travel dependence) vs
   exclude it to keep season-sets identical across FullCourt modules? (§2)
+  **→ Built:** 2019-20 is **included** [Verified `scripts/aggregate_shot_grid.py` — no bubble
+  exclusion logic, unlike `nba-season.ts`/`fetch_schedule.py`'s regular-season `NBA_SEASONS`].
 - **[Storage — critical]** Confirm the **[Unknown] Supabase plan/storage limit first**, then
   choose: **hybrid (c)+(d): grid + model-output only, raw cached locally** (recommended,
   fits any limit) vs (b) trimmed raw-in-Postgres vs (a) full raw-in-Postgres. (§3)
+  **→ Built:** the recommended hybrid. Raw per-shot data lives only in the local gzip-CSV cache
+  (`ml/data/shots/`, gitignored); Postgres holds `shot_grid` (aggregated counts) and
+  `shot_value_surface` (model output) only — see [DATABASE.md](DATABASE.md).
 - **[Model family]** Which to ship after the bake-off: empirical-zone baseline (floor),
   **logistic** (interpretable thesis model), or **spatial-smoothing / GBM** (finer resolution)?
   Selection is on validation log-loss/Brier, interpretability as tiebreaker. (§4)
+  **→ Built:** **GBM** (`HistGradientBoostingClassifier`, `model_version = "gbm-v1"`) shipped as
+  the adopted model — it beat both the baseline and logistic on pooled walk-forward log-loss/
+  Brier. Logistic was evaluated and **rejected** (did not beat the baseline). The **zone-average
+  baseline** (`"baseline-zone-v1"`) ships alongside `gbm-v1` in the same surface as the
+  comparison floor, not just an internal benchmark — both are queryable via the API. See §7 SQ-4.
 - **[Player identity — optional extension]** Keep the model **location-only** (recommended for
   the baseline, and matches the SQ-0 scope) or add player identity as a later variant (bigger
   model, leakage care, larger stored surface)? (§4)
+  **→ Built:** location-only, as recommended. No player-identity variant was built.
 - **[Expected points vs P(make)]** Surface **expected eFG% / xPPS** as the headline metric
   (recommended) — confirm that's the portfolio-facing number, not raw make-probability. (§4)
+  **→ Built:** both `expected_efg` and `xpps` are stored per cell alongside `p_make`; the page's
+  headline/legend numbers are expected-eFG%, matching the recommendation.
+
+---
+
+## Actual build vs. design — where the shipped version diverged
+
+Two places the real build differs from what this doc sketched, found while writing the SQ-7
+gate result above:
+
+1. **Walk-forward is for model *selection*, not for serving.** §4's walk-forward CV
+   (expanding window by season) was used exactly as designed to **choose** the model
+   (GBM beats baseline/logit) and to report honest out-of-sample metrics. But the surface
+   actually written to `shot_value_surface` scores every cell with the model trained on **all**
+   loaded seasons (`ml/shot_value/sq4b_gbm_full.pkl`), not a per-season walk-forward model. This
+   doc's §6 API sketch didn't specify which fit serves production, so this isn't a contradiction
+   of an explicit decision — it's a build-time judgment call worth recording: the served
+   predictions are not literally "what the model would have predicted not having seen that
+   season," the way the evaluation numbers are.
+2. **The diff view renders one court, not two.** The original intent (§6, high-level only) did
+   not pin down the diff-view layout precisely; the shipped `shot-quality-content.tsx` renders a
+   **single** court in `GBM − BASELINE` mode (a divergent-color diff), and only renders two
+   side-by-side courts in the sequential `EXPECTED eFG%` mode (baseline vs. GBM). See
+   [FRONTEND.md](FRONTEND.md) for the component details.
+
+Everything else in §1–§8 above — the honest framing, the hybrid storage split, the model
+comparison being served (not just internally benchmarked), the location-only feature scope, and
+the expected-eFG%/xPPS headline metrics — matches what actually shipped.
 
 ---
 
@@ -356,6 +405,10 @@ Re-read against the probes (`ml/shot_data_probe.txt`, `ml/shot_defend_probe.txt`
 docs (`CLAUDE.md`, `DATABASE.md`, `API.md`, `ROADMAP.md`, `PLAYOFF_PREDICTOR_DESIGN.md`), and the
 `drizzle/` migration listing. Each required section is covered; every open decision is deferred
 to the human, not silently locked.
+
+> **Historical note:** the table below reviews the *original design draft* against the probes —
+> it predates the build and is kept for the record. The build itself is reviewed in "Actual
+> build vs. design" above and cross-referenced against real code/output files throughout §7–§8.
 
 | # | Section | Done | Notes |
 |---|---|---|---|

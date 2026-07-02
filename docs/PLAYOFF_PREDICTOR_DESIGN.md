@@ -1,21 +1,29 @@
 # Playoff Predictor — Design
 
-> **Status (updated 2026-06):** design **+ partial implementation** — the earlier "design only,
-> no code exists yet" note is superseded. Built in code: per-game ingest
-> (`scripts/fetch_playoffs.py` for `004` playoff/finals, `scripts/fetch_play_in.py` for `005`
-> tagged `play_in`), the `playoff_series` table (`src/lib/db/schema.ts` +
-> `drizzle/0006_playoff_series.sql`, in `tablesFilter`), and the series **skeleton builder**
-> `ml/build_series_dataset.py` (Phase 2b-i), which derives round/winner/`is_best_of_7`/conference
-> and **leaves the four feature columns NULL**. **Not yet built:** the 2b-ii feature pass,
-> model training/eval, a predictions table, and any `/playoffs` route or page. So the build sits
-> between **Phase 2b-i (done)** and **Phase 2b-ii (not started)** — see [ROADMAP.md](ROADMAP.md)
-> for the numbered remaining phases. Live DB **verified 2026-06-29** (read-only `SELECT`s): 2,827
-> `playoffs` + 318 `finals` (`004`) + 36 `play_in` (`005`) game rows, and **600 series** built with
-> **all four feature columns NULL** (Phase 2b-i) — matching the §4.1 estimate.
+> **Status (updated 2026-07-02): complete, end to end.** Every phase in this design has shipped:
+> per-game ingest (`scripts/fetch_playoffs.py` for `004` playoff/finals, `scripts/fetch_play_in.py`
+> for `005` tagged `play_in`); the `playoff_series` table (`src/lib/db/schema.ts` +
+> `drizzle/0006_playoff_series.sql`, in `tablesFilter`) with its series-skeleton builder
+> (`ml/build_series_dataset.py`) and feature pass (`ml/compute_series_features.py`, the four
+> `*_diff` columns); walk-forward model training and a bake-off (`ml/train_series_model.py`,
+> written up in [`ml/PHASE3_REPORT.md`](../ml/PHASE3_REPORT.md)); prediction persistence
+> (`ml/predict_series.py --write` → `playoff_series_predictions`, `drizzle/0007`); and serving
+> (`GET /api/playoffs` + the `/playoffs` page with a nav link). See [ROADMAP.md](ROADMAP.md) for
+> the phase-by-phase build record.
 >
-> This document remains the single source of truth for the module's design. Values cited from
-> source are line-referenced; when this doc and the code disagree later, **trust the code and fix
-> this doc** (per `CLAUDE.md`).
+> **Live DB verified 2026-07-02** (read-only `SELECT`s): 3,145 `004` playoff/finals + 36 `005`
+> play-in game rows; **600 `playoff_series` rows**, all four feature columns non-NULL, **599
+> trainable** (one 1986-87 series has no resolved winner); **1,049 `playoff_series_predictions`
+> rows** (599 `full_insample` + 450 `walk_forward_oos`, `model_version = "logistic_unreg_v1"`).
+> **Model of record:** the unregularized logistic — a **calibration** win over the majority
+> baseline (log-loss 0.5696 → 0.4959, Brier 0.1907 → 0.1638), not a distinguishable accuracy win
+> (pooled 0.7467 vs. 0.7444; paired per-season record 11/11/8) — see
+> [`ml/PHASE3_REPORT.md`](../ml/PHASE3_REPORT.md) §5 for the full honest-headline writeup.
+>
+> This document remains the single source of truth for the module's **design rationale** (§1–§3
+> below still describe why each feature and encoding choice was made, and match the shipped code).
+> Values cited from source are line-referenced; when this doc and the code disagree later, **trust
+> the code and fix this doc** (per `CLAUDE.md`).
 
 ## 0. Scope and locked decisions
 

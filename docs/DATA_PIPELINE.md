@@ -134,6 +134,82 @@ prefix↔`game_type` mismatches.
   computes + validates without writing; a completed season that fails the 15-series/all-resolved
   invariant exits non-zero.
 
+## Shot Quality pipeline — Expected Shot Value (xeFG%)
+
+A **separate, isolated** ingestion + modeling + surface-write path for the Shot Quality
+module (design: [SHOT_QUALITY_DESIGN.md](SHOT_QUALITY_DESIGN.md)). These scripts are **not**
+part of `daily_update.py` — they are run manually, once, from the **`ml/.venv`** isolated
+virtualenv (`ml/requirements.txt`, which is the only place `scikit-learn` is pinned — not the
+root/`scripts/` requirements files). Raw per-shot data never reaches Postgres; only aggregated
+counts (`shot_grid`) and model output (`shot_value_surface`) do. They never touch
+`fatigue.ts` and never rename the rest-advantage metric.
+
+### `scripts/collect_shot_data.py` — bulk shot collector (Phase SQ-2)
+- Resumable per-team-season collector for nba_api's `ShotChartDetail`. Writes **local-only**
+  gzip-CSV caches to `ml/data/shots/{season}/{team_abbr}.csv.gz` — never connects to
+  Postgres. `DELAY_SECONDS = 1.5`. A call that succeeds with 0 rows still writes a
+  header-only placeholder file (so resumed runs don't re-query it); only exceptions/timeouts/
+  malformed columns go to `_failures.log`. Flags: `--dry-run` (current season, all 30 teams),
+  `--season YYYY-YY`, `--force` (re-pull and overwrite).
+
+### `scripts/aggregate_shot_grid.py` — spatial grid aggregation (Phase SQ-3)
+- Reads the SQ-2 local cache and folds it into a **1ft × 1ft grid** of atomic counts
+  (`fga`/`fgm`/`fg3a`/`fg3m`) per cell: `cell_x = floor(LOC_X/10)`, `cell_y = floor(LOC_Y/10)`
+  (origin = the rim; grid is unfolded, no left/right mirroring). Half-court clip:
+  `LOC_X ∈ [-250, 250)`, `LOC_Y ∈ [-50, 420)`; out-of-grid shots are dropped and counted.
+  Aggregates at two grains — per `(season, team)` and league-wide (`team_id IS NULL`) per
+  season. Idempotent upsert on `external_cell_key = "{season}:{team_id or 'LG'}:{cell_x}:{cell_y}"`.
+  A **measure → aggregate → integrity-check → upsert-with-reconciliation** pipeline: it probes
+  the cache first (`_grid_probe.txt`), asserts `fgm ≤ fga` / `fg3m ≤ fg3a` / `fg3a ≤ fga` /
+  `fg3m ≤ fgm` per row, and re-reads DB counts post-upsert to compare against the local
+  aggregate before committing — any mismatch rolls back. Flags: `--dry-run`,
+  `--measure-only`. **2019-20 is included** (no travel dependence — see §2 of the design doc).
+
+### `scripts/sq4_train_shot_value.py` — baseline + logistic bake-off (Phase SQ-4)
+- Trains/evaluates on the **local** per-shot cache only — never touches Postgres. Target =
+  `SHOT_MADE_FLAG` → `P(make)`. Features (no tracking, no player identity): distance, angle
+  (folds left/right), `is3`, `period`, `home` (dropped if its HTM/VTM match rate is too low).
+  Two models: an empirical zone-average **baseline** (`SHOT_ZONE_BASIC × SHOT_ZONE_RANGE`) and
+  a **logistic regression** (`sklearn`, `penalty='l2', C=1.0`). **Validation:** expanding-
+  window walk-forward by season, val seasons **1997-98…2025-26 (29 folds)**, train = every
+  earlier season. Metrics: log-loss/Brier (primary) + accuracy (secondary) + a calibration
+  curve + expected-vs-actual eFG% by season/zone. Outputs land in `ml/shot_value/`
+  (`sq4_metrics.txt`, `sq4_folds.csv`, `sq4_calibration.csv`, plus local-only pickles).
+
+### `scripts/sq4b_train_gbm.py` — GBM bake-off (Phase SQ-4b)
+- Adds a third location-only candidate, `sklearn.HistGradientBoostingClassifier`, under the
+  **identical** walk-forward protocol. Imports SQ-4's loader/features/standardization/
+  baseline/logit prediction paths verbatim and **re-derives SQ-4's pooled numbers as a
+  hard-fail reproduction check** before reporting new GBM numbers — the machine-checked proof
+  the three-way comparison is apples-to-apples. Same features as SQ-4 (only the model family
+  changes); one frozen hyperparameter set (no per-fold tuning). Writes
+  `ml/shot_value/sq4b_gbm_full.pkl` — the GBM fit on **all** loaded seasons (not a single
+  walk-forward fold) — for SQ-5 to serve.
+
+### `scripts/sq5_write_surface.py` — write the model-output surface (Phase SQ-5)
+- **First DB-writing step.** Combines the local SQ-4/SQ-4b pickles with the read-only,
+  league-grain `shot_grid` cells to compute a per-cell surface, upserted into
+  `shot_value_surface` for two model versions per cell: **`gbm-v1`** (the adopted model —
+  beat the zone baseline on pooled log-loss/Brier across all 29 folds) from
+  `sq4b_gbm_full.pkl`, and **`baseline-zone-v1`** (the comparison floor — the zone-rate table
+  embedded in `sq4_logit_full.pkl`). A grid cell has no period/home-away, so those two features
+  are neutralized (period → the training mean; home → 0.5) when scoring a cell; only
+  distance/angle carry real cell information. Per-cell 3PT weighting blends `P(make | is3=0)`
+  and `P(make | is3=1)` by the cell's 3PA share. **DB contract:** the only table written is
+  `shot_value_surface` (`shot_grid` is read-only; no TRUNCATE/DROP/ALTER). Idempotent upsert on
+  `external_surface_key = "{model_version}:{season}:{cell_x}:{cell_y}"`. Flags:
+  `--measure-only`, `--dry-run`, then a real run (compute + upsert + reconcile).
+
+**Verified (`ml/shot_value/sq5_surface_summary.txt`, `ml/shot_value/sq5_db_verify.txt`,
+`ml/shot_value/sq4b_metrics.txt`):** 55,036 league-wide `shot_grid` cells across 30 seasons
+(1996-97…2025-26); 110,072 `shot_value_surface` rows (55,036 × 2 model versions), DB
+reconciliation **PASS**. SQ-4b pooled walk-forward metrics (5,922,214 valid shots, 29 folds):
+baseline log-loss `0.665382` / accuracy `61.59%`; logit log-loss `0.669353` / accuracy
+`60.52%` (logit does **not** beat the baseline); GBM log-loss `0.660022` / accuracy `61.93%`
+— GBM beats the baseline by **+0.81% log-loss / +1.06% Brier / +0.34pp accuracy**: a
+calibration win, not a large accuracy win, consistent with the design doc's "coin-flip
+per-shot" framing.
+
 ## TypeScript modeling scripts
 
 ### `scripts/run-daily.ts` — daily refresh

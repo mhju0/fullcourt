@@ -17,8 +17,7 @@ the actual code (`src/app/`, `src/components/`, `src/app/globals.css`).
 
 ## Pages
 
-Three routes today — `/`, `/analysis`, `/upcoming`. **No `/playoffs` page exists yet**: the
-in-progress Playoff Predictor has no frontend surface (see [ROADMAP.md](ROADMAP.md)).
+Five routes today — `/`, `/analysis`, `/upcoming`, `/playoffs`, `/shot-quality`.
 
 ### `/` — Today's Games (`src/app/page.tsx`, client component)
 
@@ -50,6 +49,29 @@ Server wrapper just renders `<AnalysisContentLazy />`. The lazy client component
 Server wrapper: header (`2025–26 Season` + `<h1>Future Games</h1>` + description) then
 `<UpcomingContentLazy />`.
 
+### `/playoffs` — Playoff Predictor (`src/app/playoffs/page.tsx`)
+
+Server wrapper: header (`PLAYOFF PREDICTOR` eyebrow in red + `<h1>Series Predictions</h1>` +
+a descriptor tying it to the same rest-advantage lineage as the regular-season model) then
+`<PlayoffsContentLazy />`. The lazy client component (`playoffs-content.tsx`) owns a season
+`<select>`, a `MethodComparisonHeader` (walk-forward-OOS vs. full-in-sample accuracy cards,
+explicitly framed "OOS is the honest generalization number"), and per-round `SeriesCard` lists
+— each an expandable row (home-court team, opponent, series score, OOS/IN win-probability
+inline, a correctness badge) that reveals a `SeriesFeatureGrid` (seed diff / win% diff / entry
+rest diff / h2h diff) on click.
+
+### `/shot-quality` — Expected Shot Value (`src/app/shot-quality/page.tsx`)
+
+Server component; metadata title `"Expected Shot Value"`; renders `<ShotQualityContentLazy />`
+with no page-level header of its own (the lazy content owns its own controls row). The lazy
+client component (`shot-quality-content.tsx`) fetches `/api/shot-quality?season=…` via SWR and
+renders a season `<select>`, an `EncodingToggle` (`EXPECTED eFG%` sequential view vs.
+`GBM − BASELINE` divergent-diff view — a **single** court in diff mode, not two), and one or
+two `ShotCourt` half-court SVGs depending on the toggle. See "Shot chart / court geometry"
+under Design system below for the rendering details, and a collapsible `MethodologyNote`
+explaining the baseline/GBM framing (small calibration win, not a large accuracy jump; no
+defender distance or shot-clock data).
+
 ## Components
 
 ### `nav-bar.tsx` — two-layer header + ticker (sticky, `z-50`)
@@ -58,8 +80,9 @@ Server wrapper: header (`2025–26 Season` + `<h1>Future Games</h1>` + descripti
    `#C9082A`) + `NBA ANALYTICS PLATFORM` (muted), and on the right `SEASON_LABEL =
    "2025-26 SEASON"` plus a LIVE dot gated by `HAS_LIVE_GAMES` (**hardcoded `false`**).
 2. **Main nav** (44px, white, bottom border `#E2DFD8`): links from `NAV_LINKS` —
-   `TODAY'S GAMES → /`, `ANALYSIS → /analysis`, `PICKS → /upcoming`. Active link is NBA red
-   text with a 2px red bottom border (set via **inline style**, not a Tailwind class).
+   `TODAY'S GAMES → /`, `ANALYSIS → /analysis`, `PICKS → /upcoming`, `PLAYOFFS → /playoffs`,
+   `SHOT QUALITY → /shot-quality`. Active link is NBA red text with a 2px red bottom border
+   (set via **inline style**, not a Tailwind class).
 3. **Navy ticker** (26px, `#17408B`): a `TICKER` label + a CSS `marquee` (40s linear loop)
    of **hardcoded** `TICKER_ITEMS` (BOS/DEN/LAL/MIA/NYK/GSW with up `▲` green / down `▼` red
    / flat `—` arrows and a fake `RA` value). These ticker values are decorative, not live.
@@ -123,6 +146,38 @@ and backdrop close it. Renders `GameStatusRow`, `RaBadge`, two `FatigueDetailCol
 `1px solid #E2DFD8`, `border-radius: 4`, `.mono` labels, `TERM_INSET` `#F7F6F3` breakdown
 surface) — migrated off glassmorphism 2026-06-29.
 
+### `playoffs-content.tsx` (+ `playoffs-lazy.tsx`)
+
+Loaded via `next/dynamic` (`ssr: false`). SWR `/api/playoffs?season=…`. Renders
+`MethodComparisonHeader` (two `MethodMetricCard`s — OOS blue accent, in-sample tan accent —
+each showing accuracy% + `predictedCorrect / knownWinnerGames`), then a `RoundSection` per
+playoff round, each holding expandable `SeriesCard`s: header row = home-court team (`HC`
+chip) vs. opponent, series score, `MethodInline` OOS/IN win-probability reads, and a
+`CorrectnessBadge` (✓ CORRECT blue / ✗ UPSET red / — pending tan, with an "(IN-SAMPLE)" tag
+when OOS wasn't available). Expanding a card reveals `SeriesFeatureGrid` (seed diff, win% diff,
+entry rest diff, h2h diff; sign convention = home-court minus opponent). Same terminal-card /
+`.mono` styling as the rest of the app.
+
+### `shot-quality-content.tsx` (+ `shot-quality-lazy.tsx`)
+
+Loaded via `next/dynamic` (`ssr: false`). SWR `/api/shot-quality?season=…`
+(`keepPreviousData: true` so switching seasons doesn't flash empty). Owns:
+- `SeasonSelector` + `EncodingToggle` (`value` = sequential expected-eFG% / `diff` = divergent
+  GBM−baseline).
+- Per-season color-scale domains derived from the returned cells (5th/95th percentile of
+  expected-eFG% for the sequential ramp; a 90th-percentile-of-well-sampled-cells absolute-diff
+  bound, clamped to `[0.03, 0.15]`, for the divergent ramp — sparse tiny-attempt cells are
+  excluded so they can't flatten the diff scale).
+- `ShotCourt` — an SVG half-court (custom `sx`/`sy` coordinate transform, see below) that
+  renders one square marker per grid cell, sized by `sqrt(fga / p95(fga))` (clamped
+  `[0.3, 1.18]` ft) and colored by the active encoding; larger markers draw first so small ones
+  stay visible on top. `value` mode renders **two** courts side by side (baseline vs. GBM);
+  `diff` mode renders **one** court (GBM − baseline) — a deliberate simplification from the
+  two-court diff view sketched in the original design doc.
+- A collapsible `MethodologyNote` (`<details>`) explaining baseline vs. GBM, the ~1%
+  calibration-not-accuracy framing, what "shots-above-expected" means, and that the surface is
+  trained on prior seasons only (expanding window) with no defender-distance/shot-clock signal.
+
 ### `hooks/useLiveGames.ts`
 
 Subscribes (via `getSupabaseBrowser()`) to Supabase Realtime `postgres_changes` `UPDATE`
@@ -144,7 +199,8 @@ the shadcn `base-nova` style, `neutral` base color, CSS variables, and the `@/co
 The direction is flat white surfaces, thin borders, monospace data values, and brand-color
 accents — **no glassmorphism, no dark mode** (the app forces `color-scheme: only light`). As of
 2026-06-29 every page — Today's Games, Analysis, Future Games, and the detail modal — uses this
-style, so the whole app is visually consistent.
+style; Playoffs and Shot Quality were built directly in this style, so the whole app (all five
+routes) is visually consistent.
 
 ### Color tokens (verified)
 
@@ -184,6 +240,20 @@ style, so the whole app is visually consistent.
 - Uppercase mono labels with wide letter-spacing (`0.04–0.12em`) for "technical" headers.
 - Animations (`globals.css`): `marquee` (ticker), `fadeInUp` (card entrance, staggered by
   `index * 40ms`), `scoreFlash` (live-update glow).
+
+### Shot chart / court geometry (`shot-quality-content.tsx`)
+
+The API returns an **unfolded**, rim-origin grid (`cellX = floor(LOC_X/10)`, `cellY =
+floor(LOC_Y/10)`, 1-ft cells — see `scripts/aggregate_shot_grid.py` in
+[DATA_PIPELINE.md](DATA_PIPELINE.md)). The component derives court-space feet from a cell as
+`x_ft = cellX + 0.5` (center-origin, left negative) and `court_y = RIM_Y + cellY + 0.5` with
+`RIM_Y = 5.25` (rim center, ft from baseline), then maps feet → SVG viewBox units with local
+`sx`/`sy` helpers (`PX = 12` px/ft, half-court `50 × 47` ft + 1ft padding). `CourtLines` draws
+the boundary, paint, free-throw circle, backboard/rim, restricted-area arc, three-point line
+(two straight corner segments + an arc computed from `asin(22 / 23.75)`), and the center-circle
+arc — all derived geometrically, not hardcoded pixel paths. Color ramps: sequential
+tan→blue (`#C4853C` → `#17408B`) for expected-eFG%, divergent blue→neutral→red
+(`#17408B` → `#EFEAE0` → `#C9082A`) for the GBM−baseline diff.
 
 ### Two-layer header + ticker
 

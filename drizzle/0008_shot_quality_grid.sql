@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS public.shot_grid (
   computed_at        timestamp NOT NULL DEFAULT now(),
   external_cell_key  varchar NOT NULL UNIQUE
 );
-CREATE INDEIF NOT EXISTS shot_grid_season_idx      ON public.shot_grid (season);
+CREATE INDEX IF NOT EXISTS shot_grid_season_idx      ON public.shot_grid (season);
 CREATE INDEX IF NOT EXISTS shot_grid_team_id_idx     ON public.shot_grid (team_id);
 CREATE INDEX IF NOT EXISTS shot_grid_season_team_idx ON public.shot_grid (season, team_id);
 

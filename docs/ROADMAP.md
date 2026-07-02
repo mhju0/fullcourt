@@ -1,23 +1,25 @@
 # Roadmap
 
-Forward-looking plan for FullCourt. The **Playoff Predictor** is the active module; the **Shot
-Quality Model** is a later (stretch) item. The closing **Portfolio wrap-up** offers two tracks —
-**Track A (Minimum wrap) is the chosen path** for a clean portfolio first impression.
+Forward-looking plan for FullCourt. Both modeled products are now **complete**: the **Shot
+Quality Model** shipped 2026-07-02 and the **Playoff Predictor** shipped end-to-end (ingest through
+`/playoffs` UI), verified against the live DB and `ml/PHASE3_REPORT.md` on 2026-07-02 (see below).
+The closing **Portfolio wrap-up** offers two tracks — **Track A (Minimum wrap) is the chosen path**
+for a clean portfolio first impression.
 
-Everything below is grounded in the current code. Live-DB facts were **verified 2026-06-29** via
-read-only `SELECT`s: **2,827 `playoffs` + 318 `finals` (`004`) + 36 `play_in` (`005`)** game rows
-(tag-integrity guard = 0 prefix↔`game_type` mismatches), **600 series rows** built, and **all four
-feature columns NULL** across every series (Phase 2b-i state).
+Live-DB facts (verified 2026-07-02, read-only `SELECT`s): **3,145 `004`** (2,827 `playoffs` + 318
+`finals`) **+ 36 `005` play-in** game rows; **600 `playoff_series` rows**, all four feature columns
+non-NULL, **599 trainable**; **1,049 `playoff_series_predictions` rows** (599 `full_insample` + 450
+`walk_forward_oos`, `model_version = "logistic_unreg_v1"`).
 
 ---
 
-## Where the Playoff Predictor sits right now
+## Where the Playoff Predictor sits right now — ✅ COMPLETE (shipped, verified 2026-07-02)
 
 Design: [PLAYOFF_PREDICTOR_DESIGN.md](PLAYOFF_PREDICTOR_DESIGN.md). It is an **additive, isolated**
 module — it never touches `src/lib/fatigue.ts`, never renames the rest-advantage metric, and the
 regular-season product never reads its data.
 
-**Done in code (HEAD):**
+**Done in code (HEAD), all phases:**
 - **Phase 1 — playoff ingest.** `scripts/fetch_playoffs.py` ingests `004` playoff/finals games into
   `games` (separate path; reuses `fetch_schedule.py` helpers; ET dates).
 - **Phase 1b — play-in ingest.** `scripts/fetch_play_in.py` ingests `005` play-in games tagged
@@ -27,65 +29,54 @@ regular-season product never reads its data.
   `drizzle.config.ts`'s `tablesFilter`.
 - **Phase 2b-i — series skeleton builder.** `ml/build_series_dataset.py` groups `004` games into
   series, derives round (backward bracket walk validated against `[8,4,2,1]`), winner,
-  `is_best_of_7`, and conference, and upserts them — **deliberately leaving the four feature
-  columns NULL**.
+  `is_best_of_7`, and conference, and upserts them — writing only the skeleton columns.
+- **Phase 2b-ii — feature computation.** `ml/compute_series_features.py` writes **only** the four
+  `*_diff` columns (`seed_diff`, `win_pct_diff`, `entry_rest_diff`, `h2h_diff`) in a separate
+  upsert, so it never clobbers the skeleton and vice versa. All 600 series rows have all four
+  features populated [Verified, live DB `SELECT`, 2026-07-02].
+- **Phase 3 — model training & evaluation.** `ml/train_series_model.py`: expanding-window
+  walk-forward by season (30 eval folds, 1995-96…2025-26, 450 pooled predictions), baselines +
+  plain/L2 logistic + depth-2/3 trees. **Model of record: unregularized logistic** — pooled
+  accuracy 0.7467 vs. the 0.7444 majority-home-court baseline (not distinguishable — paired
+  per-season W/T/L 11/11/8), but log-loss 0.5696 → 0.4959 (≈13% relative) and Brier 0.1907 → 0.1638
+  (≈14% relative) — a **calibration** win, not a classification win. Full writeup:
+  [`ml/PHASE3_REPORT.md`](../ml/PHASE3_REPORT.md).
+- **Phase 4 — prediction persistence.** `playoff_series_predictions` (`drizzle/0007`, in
+  `schema.ts`) holds `predicted_home_court_win_prob`, `predicted_winner_team_id`,
+  `prediction_method` (`full_insample` / `walk_forward_oos`), `model_version`.
+  `ml/predict_series.py --write` has run: **1,049 rows** (599 `full_insample` + 450
+  `walk_forward_oos`) [Verified, live DB `SELECT`, 2026-07-02].
+- **Phase 5 — serving (API + UI).** `GET /api/playoffs` ([API.md](API.md)) backed by
+  `getPlayoffSeriesWithPredictions` in `src/lib/db/queries.ts`; `/playoffs` page + nav link
+  ([FRONTEND.md](FRONTEND.md)) showing an OOS-vs-in-sample accuracy header and expandable
+  per-series feature cards.
 
-**Current position:** between **Phase 2b-i (done)** and **Phase 2b-ii (not started)**. The four
-feature columns (`seed_diff`, `win_pct_diff`, `entry_rest_diff`, `h2h_diff`) are NULL by design, and
-nothing downstream of the skeleton (features, model, predictions, UI) exists yet.
-
-> **Confirmed (2026-06-29):** Phases 1 + 1b + 2a + 2b-i have all run against the live DB — 3,145
-> `004` games + 36 `005` play-in rows are present, and `build_series_dataset.py` produced 600
-> series (599 resolved; one 1986-87 series short a single historical game) with no win-tally
-> inconsistencies. So Phase 2b-ii's `entry_rest_diff` (which needs play-in rows present) has its
-> prerequisite satisfied.
-
----
-
-## Remaining Playoff Predictor phases (4)
-
-### ▶ Phase 2b-ii — Feature computation pass  *(CURRENT / NEXT)*
-Populate the four NULL columns in `playoff_series` with a new pass (e.g. `ml/build_series_features.py`)
-whose upsert writes **only** those columns (so it never clobbers the skeleton, and the skeleton
-builder never clobbers it):
-- `entry_rest_diff` (headline rust-vs-rest signal) — reuse `fetchRecentGamesForTeam` semantics at
-  each series opener (no `fatigue.ts` change); first-round entry-rest needs Phases 1 + 1b ingested.
-- `win_pct_diff`, `h2h_diff` — derive from existing regular-season `games` rows.
-- `seed_diff` — needs a seed source of truth (**§7 open question**: derive from standings vs ingest
-  a bracket).
-- First resolve the relevant §7 open questions (seed source; win%/h2h handling for the
-  1998-99 / 2011-12 / 2020-21 shortened seasons).
-
-### Phase 3 — Model training & evaluation
-`ml/train_playoff_model.py`: baselines (home-court-always-wins; higher-seed-wins) + plain logistic +
-L2/L1-regularized logistic + one tree model; **walk-forward CV by season**; model selection on
-validation folds only; the most recent ~3 seasons quarantined as a test set touched once; report
-accuracy / log-loss / **lift over baselines**. Add `scikit-learn` to `requirements.txt`; persist the
-fitted model + a metrics report.
-
-### Phase 4 — Prediction persistence
-New `playoff_series_predictions` table (new migration mirroring `0004`/`0005` RLS + grants; add to
-`tablesFilter`) holding `predicted_winner_team_id`, `win_probability`, `model_version`. New
-`ml/predict_series.py` loads the selected model and writes rows. (This table does **not** exist
-today.)
-
-### Phase 5 — Serving (API + UI)
-New `/api/playoffs` route (`{ data, error }` envelope + `getPublicApiErrorMessage`) backed by a new
-`getPlayoffSeriesWithPredictions` query in `src/lib/db/queries.ts`; new `/playoffs` page + a nav link
-in `nav-bar.tsx`. This is the **only** surface that reads playoff data.
-
-**Plus** the open decisions in [PLAYOFF_PREDICTOR_DESIGN.md](PLAYOFF_PREDICTOR_DESIGN.md) §7 (seed
-source, play-in tagging — already locked to `play_in`, format-flag precision, shortened seasons,
-test-set size, prediction timing/UX, headline-feature variant).
+**Open items from [PLAYOFF_PREDICTOR_DESIGN.md](PLAYOFF_PREDICTOR_DESIGN.md) §7** that were
+resolved implicitly by the shipped code (not separately re-litigated): seed source = regular-season
+Win%-rank proxy; play-in tagging = `game_type='play_in'`; test strategy = walk-forward-by-season
+(no fixed holdout); headline feature variant = raw `entry_rest_diff` (days).
 
 ---
 
-## Later (stretch) — Shot Quality Model
+## Shot Quality Model — ✅ COMPLETE (shipped 2026-07-02)
 
-A separate future module (expected points by shot location + difficulty), sequenced **after** the
-Playoff Predictor. Out of scope for the current build; it requires shot-level data not in the schema
-today and would be its own ingest + modeling track. Listed on the README roadmap; **no design doc or
-code exists yet.**
+Design + full build record: [SHOT_QUALITY_DESIGN.md](SHOT_QUALITY_DESIGN.md) (§7 has a
+phase-by-phase gate summary with real numbers). An additive, isolated module — expected shot
+value (xeFG%) by half-court grid cell, built ahead of the Playoff Predictor's then-remaining
+phases despite the original "later / stretch, after Playoff Predictor" sequencing (both modules
+are now complete; see above).
+
+- **Pipeline:** `scripts/collect_shot_data.py` → `scripts/aggregate_shot_grid.py` →
+  `scripts/sq4_train_shot_value.py` / `scripts/sq4b_train_gbm.py` → `scripts/sq5_write_surface.py`.
+  See [DATA_PIPELINE.md](DATA_PIPELINE.md).
+- **Storage:** `shot_grid` + `shot_value_surface` (migration `0008`, hand-applied). See
+  [DATABASE.md](DATABASE.md).
+- **Serving:** `GET /api/shot-quality` ([API.md](API.md)) → `/shot-quality` page + nav link
+  ([FRONTEND.md](FRONTEND.md)).
+- **Headline result:** a location-only GBM beats the zone-average baseline on walk-forward
+  log-loss/Brier by ~1% — a calibration win, not a large accuracy jump (honest framing preserved
+  from the original design). No defender distance or shot-clock data (absent from public NBA
+  data).
 
 ---
 
@@ -97,10 +88,9 @@ This feeds a recruiting portfolio, so "done and honest" beats "half-built and br
 Goal: a polished, internally-consistent portfolio with no visible loose ends, and the predictor
 either finished to a small honest milestone *or* cleanly parked.
 
-1. **Park or finish the predictor cleanly.** Either (a) complete **Phase 2b-ii** + a minimal
-   **baseline-vs-logistic** writeup (no UI) as a documented milestone, or (b) explicitly park it:
-   keep the ingest + skeleton, document the NULL feature state, and ship no half-built UI. Either
-   way, leave no dead `/playoffs` stub.
+1. ~~Park or finish the predictor cleanly.~~ **Done** — shipped end to end (ingest → features →
+   walk-forward model → predictions → `/playoffs` UI); see "Where the Playoff Predictor sits right
+   now" above.
 2. **Clear first-impression loose ends:**
    - ✅ **Removed the dead `/api/analysis/accuracy`** endpoint and its orphaned query fns
      (`getResolvedPredictions`, `getUpcomingPredictionsForSeason`) + `Accuracy*` types
@@ -120,11 +110,13 @@ either finished to a small honest milestone *or* cleanly parked.
 
 ### Track B — Full completion
 Everything in Track A, plus:
-1. **Ship the Playoff Predictor end to end** — Phases 2b-ii → 5, including the `/playoffs` page and
-   a calibrated probability per series, beating the "higher seed wins" baseline on validation.
-2. **Begin the Shot Quality Model** as a second modeled product.
+1. ~~Ship the Playoff Predictor end to end~~ **Done** — Phases 2b-ii → 5 all shipped; walk-forward
+   logistic did **not** distinguishably beat the majority-home-court baseline on accuracy (paired
+   11/11/8), but did on calibration (log-loss/Brier down ~13–14%) — see above and
+   [`ml/PHASE3_REPORT.md`](../ml/PHASE3_REPORT.md).
+2. ~~Begin the Shot Quality Model as a second modeled product.~~ **Done** — see above.
 3. **Full CI/CD** — tests + lint + e2e in CI, and confirm in-season data freshness (Vercel cron
    switched to daily per [DATA_PIPELINE.md](DATA_PIPELINE.md)).
-4. **Keep the docs synced to the live DB.** The 2026-06-29 read-only audit folded current counts
-   back into the docs (games-by-type, 600 series, NULL features, fatigue coverage); re-verify after
-   each new ingest / feature pass.
+4. **Keep the docs synced to the live DB.** The 2026-07-02 read-only audit folded current counts
+   back into the docs (games-by-type, 600 series with features populated, 1,049 predictions,
+   fatigue coverage); re-verify after each new ingest / feature pass.
