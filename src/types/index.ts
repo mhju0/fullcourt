@@ -246,3 +246,45 @@ export interface PlayoffsResponse {
   };
 }
 
+// ─── Shot Quality (Expected Shot Value, xeFG%) ──────────────────
+
+/** Model versions written to `shot_value_surface` (SQ-5). */
+export type ShotQualityModelVersion = "gbm-v1" | "baseline-zone-v1";
+
+/** Per-cell expected-value triplet for one model version; null when that surface has no row. */
+export interface ShotQualityModelValues {
+  pMake: number;
+  expectedEfg: number;
+  xpps: number;
+}
+
+/**
+ * One league-grain grid cell (`shot_grid` team_id IS NULL) with its atomic counts and the
+ * expected-value surface for each model version. `gbm`/`baseline` are null when no
+ * `shot_value_surface` row exists for that (season, cell, model_version).
+ */
+export interface ShotQualityCell {
+  cellX: number;
+  cellY: number;
+  zoneBasic: string | null;
+  zoneRange: string | null;
+  zoneArea: string | null;
+  fga: number;
+  fgm: number;
+  fg3a: number;
+  fg3m: number;
+  gbm: ShotQualityModelValues | null;
+  baseline: ShotQualityModelValues | null;
+}
+
+export interface ShotQualityResponse {
+  season: string;
+  /** The requested `model` (default "gbm-v1"); a display hint — both surfaces are always returned. */
+  activeModel: ShotQualityModelVersion;
+  cells: ShotQualityCell[];
+  meta: {
+    cellCount: number;
+    totalFga: number;
+  };
+}
+
