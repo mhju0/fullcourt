@@ -24,6 +24,8 @@ import type {
   PlayoffSeriesWithPredictions,
   PlayoffTeamRef,
   RestAdvantage,
+  ShotQualityCell,
+  ShotQualityModelValues,
   TeamRecentResultGame,
   UpcomingGameWithRA,
 } from "@/types";
@@ -1019,4 +1021,106 @@ export async function getPlayoffSeriesWithPredictions(
     .orderBy(asc(playoffSeries.round), asc(playoffSeries.conference), asc(playoffSeries.id));
 
   return rows.map(mapRowToPlayoffSeriesWithPredictions);
+}
+
+// ─── Shot Quality: Expected Shot Value (xeFG%) surface ──────────
+//
+// Reads the league-grain shot_grid cells (team_id IS NULL) joined to the two
+// shot_value_surface model versions (SQ-5). These tables are intentionally NOT in
+// schema.ts (it lags the live schema), so this reads via raw SQL through postgres-js.
+// SELECT-only; never mutates either table.
+
+/** Model versions written to shot_value_surface (must match scripts/sq5_write_surface.py). */
+const SHOT_MODEL_GBM = "gbm-v1";
+const SHOT_MODEL_BASELINE = "baseline-zone-v1";
+
+/** Raw row shape returned by the getShotQualityGrid SELECT (numeric columns arrive as strings). */
+type ShotQualityGridRow = {
+  cell_x: number | string;
+  cell_y: number | string;
+  zone_basic: string | null;
+  zone_range: string | null;
+  zone_area: string | null;
+  fga: number | string;
+  fgm: number | string;
+  fg3a: number | string;
+  fg3m: number | string;
+  gbm_p_make: string | null;
+  gbm_expected_efg: string | null;
+  gbm_xpps: string | null;
+  base_p_make: string | null;
+  base_expected_efg: string | null;
+  base_xpps: string | null;
+};
+
+/** Builds a model-values triplet, or null when the surface has no row for this cell/model. */
+function buildShotModelValues(
+  pMake: string | null,
+  expectedEfg: string | null,
+  xpps: string | null
+): ShotQualityModelValues | null {
+  if (pMake === null || expectedEfg === null || xpps === null) return null;
+  return {
+    pMake: parseFloat(pMake),
+    expectedEfg: parseFloat(expectedEfg),
+    xpps: parseFloat(xpps),
+  };
+}
+
+function mapShotQualityRow(row: ShotQualityGridRow): ShotQualityCell {
+  return {
+    cellX: Number(row.cell_x),
+    cellY: Number(row.cell_y),
+    zoneBasic: row.zone_basic,
+    zoneRange: row.zone_range,
+    zoneArea: row.zone_area,
+    fga: Number(row.fga),
+    fgm: Number(row.fgm),
+    fg3a: Number(row.fg3a),
+    fg3m: Number(row.fg3m),
+    gbm: buildShotModelValues(row.gbm_p_make, row.gbm_expected_efg, row.gbm_xpps),
+    baseline: buildShotModelValues(row.base_p_make, row.base_expected_efg, row.base_xpps),
+  };
+}
+
+/**
+ * League-grain expected-shot-value grid for a season: every shot_grid cell with
+ * team_id IS NULL, LEFT JOINed to both model surfaces (gbm-v1, baseline-zone-v1) on
+ * (season, cell_x, cell_y, model_version). A cell whose surface row is absent for a
+ * model gets a null sub-object. Returns [] when the season has no league cells (not an error).
+ */
+export async function getShotQualityGrid(season: string): Promise<ShotQualityCell[]> {
+  const rows = (await db.execute(sql`
+    SELECT
+      g.cell_x          AS cell_x,
+      g.cell_y          AS cell_y,
+      g.zone_basic      AS zone_basic,
+      g.zone_range      AS zone_range,
+      g.zone_area       AS zone_area,
+      g.fga             AS fga,
+      g.fgm             AS fgm,
+      g.fg3a            AS fg3a,
+      g.fg3m            AS fg3m,
+      gbm.p_make        AS gbm_p_make,
+      gbm.expected_efg  AS gbm_expected_efg,
+      gbm.xpps          AS gbm_xpps,
+      base.p_make       AS base_p_make,
+      base.expected_efg AS base_expected_efg,
+      base.xpps         AS base_xpps
+    FROM shot_grid g
+    LEFT JOIN shot_value_surface gbm
+      ON gbm.season = g.season
+      AND gbm.cell_x = g.cell_x
+      AND gbm.cell_y = g.cell_y
+      AND gbm.model_version = ${SHOT_MODEL_GBM}
+    LEFT JOIN shot_value_surface base
+      ON base.season = g.season
+      AND base.cell_x = g.cell_x
+      AND base.cell_y = g.cell_y
+      AND base.model_version = ${SHOT_MODEL_BASELINE}
+    WHERE g.team_id IS NULL AND g.season = ${season}
+    ORDER BY g.cell_x, g.cell_y
+  `)) as unknown as ShotQualityGridRow[];
+
+  return rows.map(mapShotQualityRow);
 }
