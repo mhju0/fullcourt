@@ -1,0 +1,149 @@
+# SQ-5 Expected Shot Value SURFACE — write to shot_value_surface
+mode = upsert
+adopted model      = gbm-v1 (HistGradientBoostingClassifier, from sq4b_gbm_full.pkl)
+baseline model     = baseline-zone-v1 (zone make-rate, from sq4_logit_full.pkl)
+gbm_pickle_had_zone_table = False  (False -> baseline zone table correctly sourced from the logit pickle)
+feature order      = ['distance', 'angle', 'period', 'is3', 'home']
+include_home       = True  (home neutralized to 0.5)
+period neutralized = training mean (standardized 0); scaler_mean[period]=2.478806
+scaler_mean        = [12.294683, 0.729514, 2.478806]
+scaler_std         = [9.842651, 0.582911, 1.137723]
+
+## Target cells (shot_grid league grain: team_id IS NULL AND fga>0)
+  league cells               = 55036
+  seasons                    = 30  (1996-97 .. 2025-26)
+  expected rows per model    = 55036
+  expected total rows (x2)   = 110072
+  baseline unseen-zone cells = 49 (fell back to global_rate=0.456931)
+  pure-2pt cells (r3=0)      = 29644
+  pure-3pt cells (r3=1)      = 23475
+  mixed cells (0<r3<1)       = 1917
+
+## Per-season cell counts (gbm == baseline == shot_grid league cells, by construction)
+  season       cells
+  1996-97       1782
+  1997-98       1807
+  1998-99       1725
+  1999-00       1851
+  2000-01       1833
+  2001-02       1823
+  2002-03       1792
+  2003-04       1811
+  2004-05       1851
+  2005-06       1849
+  2006-07       1866
+  2007-08       1862
+  2008-09       1851
+  2009-10       1848
+  2010-11       1863
+  2011-12       1805
+  2012-13       1841
+  2013-14       1819
+  2014-15       1793
+  2015-16       1832
+  2016-17       1842
+  2017-18       1821
+  2018-19       1829
+  2019-20       1830
+  2020-21       1871
+  2021-22       1880
+  2022-23       1886
+  2023-24       1869
+  2024-25       1896
+  2025-26       1808
+
+## Value ranges by model  (p_make/expected_efg in [0,1]; xpps in [0,3])
+  [gbm-v1]
+    p2           min=0.031508 max=0.693367 mean=0.327669
+    p3           min=0.030454 max=0.635559 mean=0.324366
+    p_make       min=0.030454 max=0.693367 mean=0.329532
+    expected_efg min=0.035697 max=0.751834 mean=0.384777
+    xpps         min=0.071393 max=1.503669 mean=0.769554
+    expected_efg within [0,1] = True  (true algebraic max is 1.5; a value >1 would still be a valid eFG)
+  [baseline-zone-v1]
+    p2           min=0.042284 max=0.613723 mean=0.378360
+    p3           min=0.042284 max=0.613723 mean=0.378360
+    p_make       min=0.042284 max=0.613723 mean=0.378360
+    expected_efg min=0.042284 max=0.685397 mean=0.454528
+    xpps         min=0.084568 max=1.370794 mean=0.909056
+    expected_efg within [0,1] = True  (true algebraic max is 1.5; a value >1 would still be a valid eFG)
+
+## Integrity spot-checks (3pt-weighting algebra)
+  pure-2pt expected_efg == p2 (gbm): cell#87 r3=0.000 expected_efg=0.581936 vs 0.581936 -> OK
+  pure-3pt expected_efg == 1.5*p3 (gbm): cell#0 r3=1.000 expected_efg=0.546915 vs 0.546915 -> OK
+
+## Self-verification
+  [PASS] value_bounds: all within bounds
+  [PASS] rows_per_model_eq_cells: gbm=55036 baseline=55036 cells=55036
+  [PASS] total_rows_eq_2x_cells: total=110072 expected=110072
+  [PASS] surface_keys_unique: unique keys=110072 rows=110072
+
+## DB reconciliation (re-read from shot_value_surface, pre-commit)
+  # DB vs local by model_version  (local / db)
+    gbm-v1 : 55036 / 55036
+    baseline-zone-v1 : 55036 / 55036
+  
+  # DB vs local by (model_version, season)  (local / db)
+    baseline-zone-v1 1996-97 : 1782 / 1782
+    baseline-zone-v1 1997-98 : 1807 / 1807
+    baseline-zone-v1 1998-99 : 1725 / 1725
+    baseline-zone-v1 1999-00 : 1851 / 1851
+    baseline-zone-v1 2000-01 : 1833 / 1833
+    baseline-zone-v1 2001-02 : 1823 / 1823
+    baseline-zone-v1 2002-03 : 1792 / 1792
+    baseline-zone-v1 2003-04 : 1811 / 1811
+    baseline-zone-v1 2004-05 : 1851 / 1851
+    baseline-zone-v1 2005-06 : 1849 / 1849
+    baseline-zone-v1 2006-07 : 1866 / 1866
+    baseline-zone-v1 2007-08 : 1862 / 1862
+    baseline-zone-v1 2008-09 : 1851 / 1851
+    baseline-zone-v1 2009-10 : 1848 / 1848
+    baseline-zone-v1 2010-11 : 1863 / 1863
+    baseline-zone-v1 2011-12 : 1805 / 1805
+    baseline-zone-v1 2012-13 : 1841 / 1841
+    baseline-zone-v1 2013-14 : 1819 / 1819
+    baseline-zone-v1 2014-15 : 1793 / 1793
+    baseline-zone-v1 2015-16 : 1832 / 1832
+    baseline-zone-v1 2016-17 : 1842 / 1842
+    baseline-zone-v1 2017-18 : 1821 / 1821
+    baseline-zone-v1 2018-19 : 1829 / 1829
+    baseline-zone-v1 2019-20 : 1830 / 1830
+    baseline-zone-v1 2020-21 : 1871 / 1871
+    baseline-zone-v1 2021-22 : 1880 / 1880
+    baseline-zone-v1 2022-23 : 1886 / 1886
+    baseline-zone-v1 2023-24 : 1869 / 1869
+    baseline-zone-v1 2024-25 : 1896 / 1896
+    baseline-zone-v1 2025-26 : 1808 / 1808
+    gbm-v1 1996-97 : 1782 / 1782
+    gbm-v1 1997-98 : 1807 / 1807
+    gbm-v1 1998-99 : 1725 / 1725
+    gbm-v1 1999-00 : 1851 / 1851
+    gbm-v1 2000-01 : 1833 / 1833
+    gbm-v1 2001-02 : 1823 / 1823
+    gbm-v1 2002-03 : 1792 / 1792
+    gbm-v1 2003-04 : 1811 / 1811
+    gbm-v1 2004-05 : 1851 / 1851
+    gbm-v1 2005-06 : 1849 / 1849
+    gbm-v1 2006-07 : 1866 / 1866
+    gbm-v1 2007-08 : 1862 / 1862
+    gbm-v1 2008-09 : 1851 / 1851
+    gbm-v1 2009-10 : 1848 / 1848
+    gbm-v1 2010-11 : 1863 / 1863
+    gbm-v1 2011-12 : 1805 / 1805
+    gbm-v1 2012-13 : 1841 / 1841
+    gbm-v1 2013-14 : 1819 / 1819
+    gbm-v1 2014-15 : 1793 / 1793
+    gbm-v1 2015-16 : 1832 / 1832
+    gbm-v1 2016-17 : 1842 / 1842
+    gbm-v1 2017-18 : 1821 / 1821
+    gbm-v1 2018-19 : 1829 / 1829
+    gbm-v1 2019-20 : 1830 / 1830
+    gbm-v1 2020-21 : 1871 / 1871
+    gbm-v1 2021-22 : 1880 / 1880
+    gbm-v1 2022-23 : 1886 / 1886
+    gbm-v1 2023-24 : 1869 / 1869
+    gbm-v1 2024-25 : 1896 / 1896
+    gbm-v1 2025-26 : 1808 / 1808
+  COMMITTED: 110072 rows upserted, reconciliation OK
+
+OVERALL = PASS

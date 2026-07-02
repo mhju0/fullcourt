@@ -1,0 +1,19 @@
+model,zone_basic,zone_range,n_val,expected_efg,actual_efg
+baseline,Restricted Area,Less Than 8 ft.,1796714,0.593428,0.616337
+baseline,Above the Break 3,24+ ft.,1162391,0.522197,0.526843
+baseline,Mid-Range,16-24 ft.,946504,0.401535,0.400359
+baseline,In The Paint (Non-RA),Less Than 8 ft.,554565,0.389145,0.399264
+baseline,Mid-Range,8-16 ft.,536634,0.381874,0.391090
+baseline,In The Paint (Non-RA),8-16 ft.,338089,0.404349,0.418347
+baseline,Left Corner 3,24+ ft.,205962,0.575516,0.578051
+baseline,Right Corner 3,24+ ft.,190768,0.579128,0.580572
+baseline,Above the Break 3,Back Court Shot,2209,0.046035,0.064509
+logit,Restricted Area,Less Than 8 ft.,1796714,0.554564,0.616337
+logit,Above the Break 3,24+ ft.,1162391,0.528021,0.526843
+logit,Mid-Range,16-24 ft.,946504,0.369699,0.400359
+logit,In The Paint (Non-RA),Less Than 8 ft.,554565,0.502536,0.399264
+logit,Mid-Range,8-16 ft.,536634,0.415664,0.391090
+logit,In The Paint (Non-RA),8-16 ft.,338089,0.456612,0.418347
+logit,Left Corner 3,24+ ft.,205962,0.544503,0.578051
+logit,Right Corner 3,24+ ft.,190768,0.543592,0.580572
+logit,Above the Break 3,Back Court Shot,2209,0.345827,0.064509

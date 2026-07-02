@@ -1,0 +1,7 @@
+model_version | count | p_make[min,max] | efg[min,max] | xpps[min,max]
+baseline-zone-v1 | 55036 | [0.042284,0.613723] | [0.042284,0.685397] | [0.084568,1.370794]
+gbm-v1 | 55036 | [0.030454,0.693367] | [0.035697,0.751834] | [0.071393,1.503669]
+total_rows = 110072
+distinct_keys = 110072
+distinct_seasons = 30
+per_season_mismatches(grid vs gbm vs baseline) = 0

@@ -1,0 +1,61 @@
+# SQ-4 Expected Shot Value (xeFG%) — model bake-off metrics
+run_mode = FULL
+seasons loaded = 30  (1996-97 .. 2025-26)
+walk-forward folds (val seasons) = 29  (1997-98 .. 2025-26)
+total valid (in-clip) shots loaded = 5922214
+vocab size (SHOT_ZONE_BASIC x SHOT_ZONE_RANGE combos) = 9
+
+## Configuration
+  target        = SHOT_MADE_FLAG (0/1) -> P(make)
+  features      = ['distance', 'angle', 'period', 'is3', 'home']
+  logit         = LogisticRegression(penalty='l2', C=1.0, solver='lbfgs', max_iter=1000, class_weight=None)
+  baseline      = empirical make% per SHOT_ZONE_BASIC x SHOT_ZONE_RANGE (unseen zone -> overall train make%)
+  standardize   = distance/angle/period, fit on each fold's TRAIN only (is3/home left raw 0/1)
+  validation    = expanding-window walk-forward by season (train = all seasons < t)
+  home feature  = INCLUDED  (match_rate=1.000000, threshold=0.995)
+
+## Overall metrics — POOLED (shot-weighted over all val shots)  [PRIMARY]
+  model          log_loss        brier     accuracy        n_val
+  baseline       0.665382     0.236276     0.615914      5733836
+  logit          0.669353     0.238223     0.605174      5733836
+
+## Overall metrics — MACRO (unweighted mean of per-season folds)  [secondary]
+  model          log_loss        brier     accuracy
+  baseline       0.665422     0.236297     0.615847
+  logit          0.669432     0.238262     0.605211
+
+## logit vs baseline (pooled; positive % = logit better, lower error)
+  log_loss improvement = -0.5968 %   (0.665382 -> 0.669353)
+  brier    improvement = -0.8240 %   (0.236276 -> 0.238223)
+  accuracy delta       = -1.0740 pp
+  VERDICT: logit does NOT beat baseline on the primary metrics.
+  (Honest framing per SHOT_QUALITY_DESIGN.md: the bar is calibration, not accuracy —
+   a single make/miss is near a coin flip within any zone, so log-loss/Brier is the
+   test, and a logit's win is a finer-resolution calibration win, not a big-accuracy one.)
+
+## Distance cross-check (SHOT_DISTANCE vs sqrt(LOC_X^2+LOC_Y^2)/10, over valid shots)
+  n = 5922214
+  mean|diff| = 0.431046 ft   share |diff|>3ft = 0.000000
+  pearson r  = 0.999526
+  assessment = consistent (r>=0.99, mean|diff|<1ft) — SHOT_DISTANCE agrees with LOC
+
+## Self-verification (walk-forward integrity / leakage guards)
+  [PASS] first_fold_train_is_only_earliest_season: fold-1 train = ['1996-97'] (n_train=188378); expected [1996-97]
+  [PASS] val_shot_count_reconciles_with_total_valid: sum(n_val over folds)=5733836 == total_valid(5922214) - n_valid(1996-97)(188378) = 5733836
+  [PASS] train_grows_and_precedes_val_every_fold: n_train strictly increases and every train season < val season
+  [PASS] all_P(make)_within_[0,1]: baseline:[0.011173,0.611750]  logit:[0.155310,0.628994]
+  [PASS] SQ3_loc_drops_reproduced: no_location=547 (SQ-3=547), out_of_grid=11477 (SQ-3=11477)
+  [PASS] SQ3_total_rows_reproduced: n_raw=5934239 (SQ-3=5934239)
+  [PASS] SQ3_inclip_reconciles: valid(5922214) + extra_drop(1) == SQ-3 in-clip(5922215)
+
+## Leakage guards (asserted by construction)
+  - features are strictly per-shot: no outcome-derived and no future information.
+  - NO player-season aggregates (nothing peeks at a shooter's full-season form).
+  - baseline zone rates AND standardization stats come from each fold's TRAIN only.
+  - folds split on season boundaries only; train seasons are always strictly < val.
+
+## Follow-up candidates (out of SQ-4 scope)
+  - SQ-4b: gradient-boosted P(make) on the same features (non-linear dist x angle).
+  - optional: ACTION_TYPE bucket, player identity, rolling-window recency — all deferred.
+
+OVERALL = PASS

@@ -1,0 +1,106 @@
+# SQ-4b Expected Shot Value (xeFG%) — GBM bake-off (baseline vs logit vs GBM)
+run_mode = FULL
+seasons loaded = 30  (1996-97 .. 2025-26)
+walk-forward folds (val seasons) = 29  (1997-98 .. 2025-26)
+total valid (in-clip) shots loaded = 5922214
+vocab size (SHOT_ZONE_BASIC x SHOT_ZONE_RANGE combos) = 9
+
+## Configuration (SQ-4-identical except the added GBM)
+  target        = SHOT_MADE_FLAG (0/1) -> P(make)
+  features      = ['distance', 'angle', 'period', 'is3', 'home']   (IDENTICAL to SQ-4; no new feature -> fair test)
+  baseline      = empirical make% per SHOT_ZONE_BASIC x SHOT_ZONE_RANGE (unseen zone -> overall train make%)   [imported from SQ-4]
+  logit         = LogisticRegression(C=1.0, solver='lbfgs', max_iter=1000, class_weight=None)   [imported from SQ-4]
+  standardize   = distance/angle/period on each fold's TRAIN only (is3/home raw); the
+                  SAME _build_X output is fed to logit AND gbm. GBM is scale-invariant,
+                  so standardization is harmless for it — kept only to make the inputs
+                  byte-identical to the logit's (apples-to-apples).
+  validation    = expanding-window walk-forward by season (train = all seasons < t)
+  home feature  = INCLUDED  (match_rate=1.000000, threshold=0.995)
+
+## GBM hyper-parameters (HistGradientBoostingClassifier; fixed a priori, NO per-fold tuning)
+  learning_rate        = 0.1
+  max_leaf_nodes       = 31
+  max_iter             = 200
+  l2_regularization    = 1.0
+  early_stopping       = True
+  validation_fraction  = 0.1
+  random_state         = 42
+  (raw predict_proba — no post-hoc calibration)
+  defaults kept   = max_bins=255, min_samples_leaf=20, n_iter_no_change=10, tol=1e-7, scoring='loss', max_depth=None
+  RATIONALE: one conservative config chosen up front and frozen across all 29 folds.
+    No fold-wise grid search — that would leak val signal into model selection and
+    over-engineer a portfolio demo. early_stopping's validation_fraction is carved out
+    of the TRAIN fold ONLY, so the walk-forward val season is never touched during fit.
+
+## Overall metrics — POOLED (shot-weighted over all val shots)  [PRIMARY]
+  model          log_loss        brier     accuracy        n_val
+  baseline       0.665382     0.236276     0.615914      5733836
+  logit          0.669353     0.238223     0.605174      5733836
+  gbm            0.660022     0.233780     0.619338      5733836
+
+## Overall metrics — MACRO (unweighted mean of per-season folds)  [secondary]
+  model          log_loss        brier     accuracy
+  baseline       0.665422     0.236297     0.615847
+  logit          0.669432     0.238262     0.605211
+  gbm            0.660056     0.233795     0.619422
+
+## GBM vs baseline (pooled; positive % = GBM better, lower error)  [THE headline]
+  log_loss improvement = 0.8055 %   (0.665382 -> 0.660022)
+  brier    improvement = 1.0566 %   (0.236276 -> 0.233780)
+  accuracy delta       = 0.3424 pp
+  VERDICT: GBM BEATS baseline on both log-loss and Brier.
+
+## GBM vs logit (pooled; positive % = GBM better)  [for context]
+  log_loss improvement = 1.3940 %   (0.669353 -> 0.660022)
+  brier    improvement = 1.8652 %   (0.238223 -> 0.233780)
+  accuracy delta       = 1.4165 pp
+
+## SQ-4 protocol-identity reproduction (baseline+logit run through SQ-4's own functions)
+  These MUST reproduce ml/shot_value/sq4_metrics.txt to the 6th decimal, or the
+  comparison is not apples-to-apples and the run hard-fails.
+  model      metric             sq4b          sq4    match
+  baseline   log_loss       0.665382     0.665382    MATCH
+  baseline   brier          0.236276     0.236276    MATCH
+  baseline   accuracy       0.615914     0.615914    MATCH
+  logit      log_loss       0.669353     0.669353    MATCH
+  logit      brier          0.238223     0.238223    MATCH
+  logit      accuracy       0.605174     0.605174    MATCH
+
+## Zone-overprediction check (does GBM tame the logit blow-ups SQ-4 flagged?)
+  zone                                       actual   baseline      logit        gbm      n_val
+  In The Paint (Non-RA) | Less Than 8 ft.   0.399264   0.389145   0.502536   0.389838     554565
+  Above the Break 3 | Back Court Shot      0.064509   0.046035   0.345827   0.055795       2209
+  (baseline is a step-function fit exactly to zone rates; the question is whether GBM's
+   smooth non-linear distance x angle surface lands closer to actual than the logit did.)
+
+## Self-verification (walk-forward integrity / leakage guards / SQ-4 reproduction)
+  [PASS] first_fold_train_is_only_earliest_season: fold-1 train = ['1996-97'] (n_train=188378); expected [1996-97]
+  [PASS] val_shot_count_reconciles_with_total_valid: sum(n_val over folds)=5733836 == total_valid(5922214) - n_valid(1996-97)(188378) = 5733836
+  [PASS] train_grows_and_precedes_val_every_fold: n_train strictly increases and every train season < val season
+  [PASS] all_P(make)_within_[0,1]: baseline:[0.011173,0.611750]  logit:[0.155310,0.628994]  gbm:[0.010348,0.856995]
+  [PASS] SQ4_first_fold_n_train_reproduced: first-fold n_train=188378 (SQ-4=188378)
+  [PASS] SQ4_baseline_logit_pooled_reproduced: baseline+logit pooled log_loss/brier/accuracy match SQ-4 within 1e-06
+  [PASS] SQ4_total_valid_reproduced: total_valid=5922214 (SQ-4=5922214)
+  [PASS] SQ4_val_shot_sum_reproduced: sum(n_val)=5733836 (SQ-4=5733836)
+  [PASS] SQ3_loc_drops_reproduced: no_location=547 (SQ-3=547), out_of_grid=11477 (SQ-3=11477)
+  [PASS] SQ3_total_rows_reproduced: n_raw=5934239 (SQ-3=5934239)
+  [PASS] SQ3_inclip_reconciles: valid(5922214) + extra_drop(1) == SQ-3 in-clip(5922215)
+
+## Leakage guards (asserted by construction)
+  - features are strictly per-shot: no outcome-derived and no future information.
+  - NO player-season aggregates (nothing peeks at a shooter's full-season form).
+  - baseline zone rates AND standardization stats come from each fold's TRAIN only.
+  - GBM is fit on the TRAIN fold only; early_stopping's holdout is a split OF the train
+    fold, never the walk-forward val season.
+  - folds split on season boundaries only; train seasons are always strictly < val.
+
+## Conclusion — location-only signal
+  GBM beats the zone-average baseline on both primary metrics: a non-linear tree
+  extracts calibration the 9-cell step-function misses. GBM is the location-only
+  ceiling and the candidate SQ-5 should surface. Location signal is NOT yet exhausted
+  at the zone level.
+  Follow-up candidate (OUT of SQ-4b scope): the only way past this ceiling is NEW signal
+  — ACTION_TYPE bucket, shooter identity, or rolling recency — none of which is a
+  location-only feature; defender distance / shot clock are absent from public nba_api.
+
+OVERALL = PASS
