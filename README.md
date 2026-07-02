@@ -25,11 +25,10 @@ FullCourt quantifies how **travel, rest, and schedule density** shape NBA outcom
 - **Today's Games** — live matchup cards with fatigue bars, a rest-advantage gauge, and real-time score/status updates via Supabase Realtime.
 - **Analysis** — a historical backtest: win rate by rest-advantage threshold and by season, home/away splits, and a filterable game explorer.
 - **Picks** — upcoming regular-season games ranked by their predicted rest-advantage edge.
+- **Playoff Predictor** — series-winner predictions from rest/fatigue-derived features, with walk-forward-OOS vs. in-sample accuracy shown side by side.
+- **Shot Quality (Expected Shot Value / xeFG%)** — a half-court hexbin map of expected effective FG% per grid cell, comparing a location-only gradient-boosted model against a zone-average baseline. Honest framing: no defender distance or shot-clock data exists in public NBA data, so this is shot-location value only, and the model's edge over the baseline is a small calibration win (~1% on log-loss/Brier), not a big accuracy jump.
 
-The platform is built to grow module by module. On the roadmap:
-
-- 🧠 **Playoff Predictor** — extends the fatigue model with playoff data and ML training.
-- 🎯 **Shot Quality Model** — expected points by shot location and difficulty.
+The platform is built to grow module by module — see [docs/ROADMAP.md](docs/ROADMAP.md) for what's next.
 
 ---
 
@@ -51,6 +50,11 @@ flowchart TD
 - **Store:** Supabase PostgreSQL with Row-Level Security; reads run as type-safe Drizzle queries.
 - **Serve:** Next.js App Router route handlers (Zod-validated, `{ data, error }` envelope) feed a React 19 frontend using SWR and Supabase Realtime.
 - **Ship:** Vercel auto-deploys from `main`; GitHub Actions runs the daily pipeline.
+
+The diagram above is the flagship rest-advantage flow. Playoff Predictor and Shot Quality are
+**additive, isolated modules** — separate scripts/tables/routes/pages that never touch
+`fatigue.ts` and are never read by the flagship queries; see [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
+for their data flows.
 
 ---
 
@@ -77,6 +81,7 @@ Data spans **1985-86 to the present**, excluding the 2019-20 Orlando bubble (no 
 | API | Next.js route handlers, Zod validation, Drizzle ORM, postgres-js |
 | Database | Supabase PostgreSQL — Row-Level Security + Realtime |
 | Data pipeline | Python (`nba_api`, `pandas`) + TypeScript (`tsx`) |
+| Modeling (Shot Quality) | scikit-learn (`HistGradientBoostingClassifier`, logistic regression) — isolated to `ml/requirements.txt`, not the app's runtime deps |
 | Testing | Vitest (unit + route), Playwright (e2e) |
 | Infra | Vercel, GitHub Actions |
 
@@ -115,13 +120,14 @@ Full pipeline, schema, and architecture details live in [`docs/`](docs/).
 
 ```
 src/
-  app/            # App Router pages + 7 API route handlers
-  components/     # matchup cards, fatigue bars, nav, charts
+  app/            # App Router pages + 9 API route handlers
+  components/     # matchup cards, fatigue bars, nav, charts, shot-quality court
   lib/
     fatigue.ts    # the fatigue model (single source of truth)
     db/           # Drizzle schema, queries, client
   hooks/          # Supabase Realtime
-scripts/          # Python ingest + TypeScript modeling
+scripts/          # Python ingest + TypeScript modeling + Shot Quality pipeline
+ml/               # Shot Quality modeling (isolated venv, scikit-learn) + local shot cache
 drizzle/          # SQL migrations (RLS, grants)
 docs/             # architecture, database, pipeline, API, frontend
 ```
@@ -131,8 +137,8 @@ docs/             # architecture, database, pipeline, API, frontend
 ## Roadmap
 
 - [x] Rest Advantage model (flagship)
-- [ ] Playoff Predictor (fatigue + ML) — **in progress** (ingest + series skeleton built; feature pass next)
-- [ ] Shot Quality Model — later / stretch
+- [x] Playoff Predictor (fatigue + ML) — series-winner model at `/playoffs`
+- [x] Shot Quality Model (Expected Shot Value / xeFG%) — half-court hexbin at `/shot-quality`
 - [ ] Premier League predictor
 
 Full phase-by-phase plan: [docs/ROADMAP.md](docs/ROADMAP.md).

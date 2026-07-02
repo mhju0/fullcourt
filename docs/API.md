@@ -1,6 +1,6 @@
 # API reference
 
-Seven route handlers under `src/app/api/`, all **`GET`**. Every app route returns the
+Nine route handlers under `src/app/api/`, all **`GET`**. Every app route returns the
 `{ data, error }` envelope (`/api/cron/update` also adds `meta`). Errors are passed through
 `getPublicApiErrorMessage` (`src/lib/api-errors.ts`): in production it hides internals
 unless the message contains `invalid` / `validation` / `not found`; in dev it returns the
@@ -21,15 +21,19 @@ Response envelope (`ApiResponse<T>` in `src/types/index.ts`):
 | `GET /api/games/upcoming` | `minRA?`,`season?` | `UpcomingGameWithRA[]` | `getUpcomingGamesWithRA` |
 | `GET /api/game/[id]` | path `id` | `GameDetailResponse \| null` | `getGameDetailById` |
 | `GET /api/analysis` | `seasonMinRA?` | `AnalysisResponse` | `getCompletedGamesWithFatigue` |
+| `GET /api/playoffs` | `season?` | `PlayoffsResponse` | `getPlayoffSeriesWithPredictions` |
+| `GET /api/shot-quality` | `season`, `model?` | `ShotQualityResponse` | `getShotQualityGrid` |
 | `GET /api/cron/update` | (Bearer auth) | `{ gamesUpdated }` | reads/updates `games` |
 
 Routes that touch the DB declare `export const runtime = "nodejs"` and (where applicable)
 `dynamic = "force-dynamic"` so they aren't prerendered at build (no `DATABASE_URL` needed
 during `next build`) and don't run on Edge (postgres-js needs Node).
 
-> **Playoff Predictor:** there is **no playoff API route yet.** The in-progress module
-> ([ROADMAP.md](ROADMAP.md)) plans a `/api/playoffs` handler reading `playoff_series`, but no
-> code for it exists today — these seven routes are the complete current API surface.
+> **Playoff Predictor:** `GET /api/playoffs` is complete and serving live predictions —
+> `playoff_series_predictions` holds **1,049 rows** (599 `full_insample` + 450 `walk_forward_oos`,
+> `model_version = "logistic_unreg_v1"`) [Verified, live DB SELECT, 2026-07-02]. See
+> [ml/PHASE3_REPORT.md](../ml/PHASE3_REPORT.md) for the model's walk-forward accuracy/log-loss/Brier
+> numbers and the honest calibration-vs-accuracy framing.
 
 ---
 
@@ -140,6 +144,55 @@ the `predictions` table.**
   - `monthlyTrends: MonthlyTrend[]` (`"YYYY-MM"`, ascending)
   - `seasonWinRates` (per season: `season, games, restedTeamWins, winPct`)
 - All `winPct` values are 0–100 with one decimal.
+
+---
+
+## `GET /api/playoffs`
+
+Playoff Predictor bracket + predictions for one season. `runtime = "nodejs"`,
+`dynamic = "force-dynamic"`. Backend is complete and live (see caution above for verified
+row counts).
+
+- **Query:** `season` (must be in `NBA_SEASONS`; defaults to `"2025-26"` if omitted). Invalid
+  season → `400`.
+- **Query fn:** `getPlayoffSeriesWithPredictions(season)` — joins `playoff_series` to
+  `playoff_series_predictions` (aliased self-joins for the two prediction methods) and to
+  `teams` for home-court/opponent/winner display names.
+- **Success:** `{ data: PlayoffsResponse, error: null }`:
+  - `season`
+  - `rounds: PlayoffRoundGroup[]` — series grouped by `round` (ascending), each with a
+    `roundLabel` (`"First Round"` / `"Conference Semifinals"` / `"Conference Finals"` /
+    `"Finals"`) and the series list (`PlayoffSeriesWithPredictions[]`: teams, `isBestOf7`,
+    win counts, the four raw features `seedDiff`/`winPctDiff`/`entryRestDiff`/`h2hDiff`, and
+    a `predictions` object with `fullInsample` / `walkForwardOos` — either may be `null` for
+    a given series).
+  - `summary: { fullInsample, walkForwardOos }` — each a `PlayoffMethodSummary`
+    (`knownWinnerGames`, `predictedCorrect`, `accuracy` 0–100) computed only over series that
+    have both a known winner and a non-null prediction for that method.
+- **Errors:** `500` + `getPublicApiErrorMessage` on failure.
+
+## `GET /api/shot-quality`
+
+Expected Shot Value (xeFG%) grid + model surface for one season. `runtime = "nodejs"`,
+`dynamic = "force-dynamic"`.
+
+- **Query (Zod):** `season` (required; must be in `NBA_SEASONS`) — invalid/missing → `400`.
+  `model?` — `"gbm-v1"` or `"baseline-zone-v1"`, default `"gbm-v1"` (`DEFAULT_MODEL`); a
+  **display hint only** — both model surfaces are always returned per cell, not just the
+  requested one.
+- **Query fn:** `getShotQualityGrid(season)` — reads league-wide (`team_id IS NULL`)
+  `shot_grid` rows LEFT JOINed twice to `shot_value_surface` (once per `model_version`) on
+  `(season, cell_x, cell_y, model_version)`. Raw SQL, not Drizzle — `shot_grid` /
+  `shot_value_surface` aren't in `schema.ts` (see [DATABASE.md](DATABASE.md)).
+- **Success:** `{ data: ShotQualityResponse, error: null }`:
+  - `season`, `activeModel` (echoes the requested `model`)
+  - `cells: ShotQualityCell[]` — per cell: `cellX`, `cellY`, `zoneBasic`/`zoneRange`/
+    `zoneArea`, `fga`/`fgm`/`fg3a`/`fg3m` (atomic counts), and `gbm`/`baseline`
+    (`{ pMake, expectedEfg, xpps } | null` — `null` when that model has no surface row for
+    the cell).
+  - `meta: { cellCount, totalFga }` — computed in the handler from `cells`.
+- **Errors:** `500` + `getPublicApiErrorMessage` on failure. An unknown/future season with no
+  grid rows returns `{ cells: [], meta: { cellCount: 0, totalFga: 0 } }`, not an error.
 
 ---
 
