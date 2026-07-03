@@ -39,7 +39,11 @@ function getOrCreateDb(): DbInstance {
       prepare: false,
       max: dbPoolMax(),
       idle_timeout: 20,
-      connect_timeout: 10,
+      // Fast-fail: on Vercel the pool is a single slot (max=1), so a dead DB
+      // would otherwise hold that slot for the full timeout and serialize every
+      // request behind it. 5s leaves headroom for pooler cold-starts while
+      // halving how long a down DB is waited on.
+      connect_timeout: 5,
     });
     state.dbInstance = drizzle(state.sqlClient, { schema });
   }
