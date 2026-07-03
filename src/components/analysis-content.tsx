@@ -29,29 +29,29 @@ import type {
 // ─── Shared styles (terminal) ─────────────────────────────────────
 
 const termCard: React.CSSProperties = {
-  background: "#ffffff",
-  border: "1px solid #E2DFD8",
-  borderRadius: 4,
+  background: "var(--term-surface)",
+  border: "1px solid var(--term-border)",
+  borderRadius: "var(--term-radius)",
   padding: 16,
 }
 
 const termTooltip: React.CSSProperties = {
-  background: "#ffffff",
-  border: "1px solid #E2DFD8",
-  borderRadius: 4,
+  background: "var(--term-surface)",
+  border: "1px solid var(--term-border)",
+  borderRadius: "var(--term-radius)",
   padding: "8px 10px",
   fontFamily: "'Courier New', Courier, monospace",
   fontSize: 11,
 }
 
 const exploreSelectStyle: React.CSSProperties = {
-  background: "#ffffff",
-  border: "1px solid #E2DFD8",
-  borderRadius: 4,
+  background: "var(--term-surface)",
+  border: "1px solid var(--term-border)",
+  borderRadius: "var(--term-radius)",
   padding: "6px 10px",
   fontSize: 11,
   fontFamily: "'Courier New', Courier, monospace",
-  color: "#0f172a",
+  color: "var(--term-text)",
   letterSpacing: "0.04em",
 }
 
@@ -59,17 +59,17 @@ const exploreThStyle: React.CSSProperties = {
   fontFamily: "'Courier New', Courier, monospace",
   fontSize: 10,
   letterSpacing: "0.08em",
-  color: "#8A8478",
+  color: "var(--term-text-muted)",
   fontWeight: 700,
   padding: "8px 10px",
-  background: "#F0EEE9",
-  borderBottom: "1px solid #E2DFD8",
+  background: "var(--term-surface-2)",
+  borderBottom: "1px solid var(--term-border)",
   textTransform: "uppercase",
 }
 
 const exploreTdBaseStyle: React.CSSProperties = {
   padding: "8px 10px",
-  borderBottom: "1px solid #E2DFD8",
+  borderBottom: "1px solid var(--term-border)",
   fontSize: 11,
 }
 
@@ -79,10 +79,10 @@ function SectionDivider({ label, descriptor }: { label: string; descriptor?: str
   return (
     <div
       className="mono flex items-center gap-3 py-2"
-      style={{ fontSize: 10, letterSpacing: "0.08em", color: "#8A8478" }}
+      style={{ fontSize: 10, letterSpacing: "0.08em", color: "var(--term-text-muted)" }}
     >
       <span style={{ fontWeight: 700 }}>{label}</span>
-      <span style={{ flex: 1, height: 1, background: "#E2DFD8" }} />
+      <span style={{ flex: 1, height: 1, background: "var(--term-border)" }} />
       {descriptor && <span style={{ fontWeight: 600 }}>{descriptor}</span>}
     </div>
   )
@@ -94,16 +94,16 @@ function StatCard({ label, value, sub }: { label: string; value: string; sub?: s
   return (
     <div
       className="mono flex flex-col gap-1"
-      style={{ background: "#F0EEE9", borderRadius: 4, padding: "10px 12px" }}
+      style={{ background: "var(--term-surface-2)", borderRadius: "var(--term-radius)", padding: "10px 12px" }}
     >
-      <span style={{ fontSize: 10, letterSpacing: "0.08em", color: "#8A8478", fontWeight: 600 }}>
+      <span style={{ fontSize: 10, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 600 }}>
         {label}
       </span>
-      <span className="tabular-nums" style={{ fontSize: 20, fontWeight: 500, color: "#0f172a", lineHeight: 1 }}>
+      <span className="tabular-nums" style={{ fontSize: 20, fontWeight: 500, color: "var(--term-text)", lineHeight: 1 }}>
         {value}
       </span>
       {sub && (
-        <span style={{ fontSize: 10, color: "#8A8478", letterSpacing: "0.04em" }}>{sub}</span>
+        <span style={{ fontSize: 10, color: "var(--term-text-muted)", letterSpacing: "0.04em" }}>{sub}</span>
       )}
     </div>
   )
@@ -125,16 +125,16 @@ function WinRateTooltip({ active, payload }: TooltipContentProps) {
   const d = payload[0].payload as WinRateDatum
   return (
     <div style={termTooltip}>
-      <p style={{ color: "#0f172a", fontWeight: 700, letterSpacing: "0.04em" }}>{d.label.toUpperCase()}</p>
+      <p style={{ color: "var(--term-text)", fontWeight: 700, letterSpacing: "0.04em" }}>{d.label.toUpperCase()}</p>
       {payload.map((p) => (
         <p key={p.dataKey as string} style={{ color: p.color, marginTop: 2 }}>
           WIN RATE:{" "}
           <span style={{ fontWeight: 700 }}>{typeof p.value === "number" ? p.value : "--"}%</span>
         </p>
       ))}
-      <p style={{ color: "#8A8478", marginTop: 2 }}>{d.games.toLocaleString()} GAMES</p>
+      <p style={{ color: "var(--term-text-muted)", marginTop: 2 }}>{d.games.toLocaleString()} GAMES</p>
       {d.threshold !== undefined && (
-        <p style={{ marginTop: 4, fontSize: 10, color: "#17408B" }}>CLICK TO EXPLORE ↓</p>
+        <p style={{ marginTop: 4, fontSize: 10, color: "var(--term-blue)" }}>CLICK TO EXPLORE ↓</p>
       )}
     </div>
   )
@@ -152,11 +152,11 @@ function SeasonWinRateTooltip({ active, payload }: TooltipContentProps) {
   const d = payload[0].payload as SeasonWinRateDatum
   return (
     <div style={termTooltip}>
-      <p style={{ color: "#0f172a", fontWeight: 700, letterSpacing: "0.04em" }}>{d.label}</p>
-      <p style={{ marginTop: 2, color: "#17408B" }}>
+      <p style={{ color: "var(--term-text)", fontWeight: 700, letterSpacing: "0.04em" }}>{d.label}</p>
+      <p style={{ marginTop: 2, color: "var(--term-blue)" }}>
         WIN RATE: <span style={{ fontWeight: 700 }}>{d.winPct}%</span>
       </p>
-      <p style={{ color: "#8A8478", marginTop: 2 }}>
+      <p style={{ color: "var(--term-text-muted)", marginTop: 2 }}>
         {d.restedTeamWins.toLocaleString()} / {d.games.toLocaleString()} (RESTED TEAM WON)
       </p>
     </div>
@@ -190,11 +190,11 @@ function SeasonWinRateBySeasonChart({
   return (
     <div className="mt-4 h-72 min-w-0">
       {loading ? (
-        <Skeleton className="h-full w-full bg-[#F0EEE9]" style={{ borderRadius: 4 }} />
+        <Skeleton className="h-full w-full bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)" }} />
       ) : chartData.length === 0 ? (
         <div
           className="mono flex h-full items-center justify-center"
-          style={{ border: "1px dashed #E2DFD8", borderRadius: 4, fontSize: 11, color: "#8A8478" }}
+          style={{ border: "1px dashed var(--term-border)", borderRadius: "var(--term-radius)", fontSize: 11, color: "var(--term-text-muted)" }}
         >
           NO SEASON-LEVEL DATA YET
         </div>
@@ -204,11 +204,11 @@ function SeasonWinRateBySeasonChart({
             <CartesianGrid
               vertical={false}
               strokeDasharray="3 3"
-              stroke="#E2DFD8"
+              stroke="var(--term-border)"
             />
             <XAxis
               dataKey="label"
-              tick={{ fontSize: 10, fill: "#8A8478", fontFamily: "'Courier New', Courier, monospace" }}
+              tick={{ fontSize: 10, fill: "var(--term-text-muted)", fontFamily: "'Courier New', Courier, monospace" }}
               tickLine={false}
               axisLine={false}
               interval={0}
@@ -219,7 +219,7 @@ function SeasonWinRateBySeasonChart({
             <YAxis
               domain={[40, 70]}
               tickFormatter={(v: number) => `${v}%`}
-              tick={{ fontSize: 11, fill: "#8A8478", fontFamily: "'Courier New', Courier, monospace" }}
+              tick={{ fontSize: 11, fill: "var(--term-text-muted)", fontFamily: "'Courier New', Courier, monospace" }}
               tickLine={false}
               axisLine={false}
               width={40}
@@ -230,20 +230,20 @@ function SeasonWinRateBySeasonChart({
             />
             <ReferenceLine
               y={50}
-              stroke="#C9082A"
+              stroke="var(--term-red)"
               strokeDasharray="4 4"
               strokeOpacity={0.55}
               label={{
                 value: "COIN FLIP",
                 position: "insideTopRight",
                 fontSize: 10,
-                fill: "#C9082A",
+                fill: "var(--term-red)",
                 opacity: 0.8,
               }}
             />
             <Bar
               dataKey="winPct"
-              fill="#17408B"
+              fill="var(--term-blue)"
               radius={[0, 0, 0, 0]}
               maxBarSize={48}
             >
@@ -253,7 +253,7 @@ function SeasonWinRateBySeasonChart({
                 formatter={(v: string | number | boolean | null | undefined) =>
                   typeof v === "number" ? `n=${v.toLocaleString()}` : ""
                 }
-                style={{ fontSize: "10px", fill: "#8A8478", fontFamily: "'Courier New', Courier, monospace" }}
+                style={{ fontSize: "10px", fill: "var(--term-text-muted)", fontFamily: "'Courier New', Courier, monospace" }}
               />
             </Bar>
           </BarChart>
@@ -269,20 +269,20 @@ function AnalysisSkeleton() {
   return (
     <div className="flex flex-col gap-4">
       <div style={termCard}>
-        <Skeleton className="h-12 w-32 bg-[#F0EEE9]" style={{ borderRadius: 4 }} />
-        <Skeleton className="mt-2 h-3 w-52 bg-[#F0EEE9]" style={{ borderRadius: 4 }} />
+        <Skeleton className="h-12 w-32 bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)" }} />
+        <Skeleton className="mt-2 h-3 w-52 bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)" }} />
       </div>
       <div style={termCard}>
-        <Skeleton className="mb-1 h-3 w-48 bg-[#F0EEE9]" style={{ borderRadius: 4 }} />
-        <Skeleton className="h-64 w-full bg-[#F0EEE9]" style={{ borderRadius: 4 }} />
+        <Skeleton className="mb-1 h-3 w-48 bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)" }} />
+        <Skeleton className="h-64 w-full bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)" }} />
       </div>
       <div style={termCard}>
-        <Skeleton className="mb-2 h-3 w-40 bg-[#F0EEE9]" style={{ borderRadius: 4 }} />
-        <Skeleton className="h-10 w-24 bg-[#F0EEE9]" style={{ borderRadius: 4 }} />
+        <Skeleton className="mb-2 h-3 w-40 bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)" }} />
+        <Skeleton className="h-10 w-24 bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)" }} />
       </div>
       <div style={termCard}>
-        <Skeleton className="mb-1 h-3 w-48 bg-[#F0EEE9]" style={{ borderRadius: 4 }} />
-        <Skeleton className="h-64 w-full bg-[#F0EEE9]" style={{ borderRadius: 4 }} />
+        <Skeleton className="mb-1 h-3 w-48 bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)" }} />
+        <Skeleton className="h-64 w-full bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)" }} />
       </div>
     </div>
   )
@@ -388,7 +388,7 @@ function ExploreGames({
         }}
       />
       <SectionDivider label="EXPLORE GAMES" descriptor={`${total.toLocaleString()} TOTAL`} />
-      <p className="mono mt-1" style={{ fontSize: 10, color: "#8A8478", letterSpacing: "0.04em" }}>
+      <p className="mono mt-1" style={{ fontSize: 10, color: "var(--term-text-muted)", letterSpacing: "0.04em" }}>
         FILTER AND BROWSE INDIVIDUAL MATCHUPS — CLICK A ROW FOR DETAILS.
       </p>
 
@@ -445,7 +445,7 @@ function ExploreGames({
             className="mono"
             style={{
               ...exploreSelectStyle,
-              color: "#C9082A",
+              color: "var(--term-red)",
               cursor: "pointer",
               textTransform: "uppercase",
               letterSpacing: "0.06em",
@@ -475,19 +475,19 @@ function ExploreGames({
               Array.from({ length: 5 }).map((_, i) => (
                 <tr key={i}>
                   <td colSpan={7} style={{ ...exploreTdBaseStyle, padding: "10px" }}>
-                    <Skeleton className="h-4 w-full bg-[#F0EEE9]" style={{ borderRadius: 2 }} />
+                    <Skeleton className="h-4 w-full bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius-sm)" }} />
                   </td>
                 </tr>
               ))
             ) : error ? (
               <tr>
-                <td colSpan={7} style={{ ...exploreTdBaseStyle, textAlign: "center", color: "#C9082A", padding: "20px" }}>
+                <td colSpan={7} style={{ ...exploreTdBaseStyle, textAlign: "center", color: "var(--term-red)", padding: "20px" }}>
                   {error}
                 </td>
               </tr>
             ) : results.length === 0 ? (
               <tr>
-                <td colSpan={7} style={{ ...exploreTdBaseStyle, textAlign: "center", color: "#8A8478", padding: "24px" }}>
+                <td colSpan={7} style={{ ...exploreTdBaseStyle, textAlign: "center", color: "var(--term-text-muted)", padding: "24px" }}>
                   NO GAMES MATCH THE CURRENT FILTERS
                 </td>
               </tr>
@@ -497,7 +497,7 @@ function ExploreGames({
                   g.advantageTeam === "home"
                     ? g.homeTeamAbbreviation
                     : g.awayTeamAbbreviation
-                const rowBg = i % 2 === 1 ? "#F7F6F3" : "#ffffff"
+                const rowBg = i % 2 === 1 ? "var(--term-bg)" : "var(--term-surface)"
                 return (
                   <tr
                     key={g.gameId}
@@ -511,47 +511,47 @@ function ExploreGames({
                       }
                     }}
                     style={{ background: rowBg, cursor: "pointer" }}
-                    className="hover:bg-[#F0EEE9] focus-visible:bg-[#F0EEE9] focus-visible:outline-none"
+                    className="hover:bg-[var(--term-surface-2)] focus-visible:bg-[var(--term-surface-2)] focus-visible:outline-none"
                     aria-label={`Open details: ${g.awayTeamAbbreviation} at ${g.homeTeamAbbreviation}, ${g.date}`}
                   >
-                    <td style={{ ...exploreTdBaseStyle, color: "#8A8478" }}>
+                    <td style={{ ...exploreTdBaseStyle, color: "var(--term-text-muted)" }}>
                       {format(new Date(g.date + "T00:00:00"), "yyyy-MM-dd")}
                     </td>
-                    <td style={{ ...exploreTdBaseStyle, color: "#0f172a", fontWeight: 600 }}>
+                    <td style={{ ...exploreTdBaseStyle, color: "var(--term-text)", fontWeight: 600 }}>
                       {g.awayTeamAbbreviation}
-                      <span style={{ margin: "0 4px", color: "#C9C5BC" }}>@</span>
+                      <span style={{ margin: "0 4px", color: "var(--term-hairline)" }}>@</span>
                       {g.homeTeamAbbreviation}
                     </td>
-                    <td style={{ ...exploreTdBaseStyle, textAlign: "right", color: "#0f172a" }} className="hidden sm:table-cell tabular-nums">
+                    <td style={{ ...exploreTdBaseStyle, textAlign: "right", color: "var(--term-text)" }} className="hidden sm:table-cell tabular-nums">
                       {g.homeFatigueScore.toFixed(1)}
                     </td>
-                    <td style={{ ...exploreTdBaseStyle, textAlign: "right", color: "#0f172a" }} className="hidden sm:table-cell tabular-nums">
+                    <td style={{ ...exploreTdBaseStyle, textAlign: "right", color: "var(--term-text)" }} className="hidden sm:table-cell tabular-nums">
                       {g.awayFatigueScore.toFixed(1)}
                     </td>
                     <td style={{ ...exploreTdBaseStyle, textAlign: "center" }}>
                       <span
                         className="mono inline-flex items-center"
                         style={{
-                          background: "#17408B",
-                          color: "#fff",
+                          background: "var(--term-blue)",
+                          color: "var(--term-surface)",
                           fontSize: 10,
                           fontWeight: 700,
                           padding: "2px 6px",
-                          borderRadius: 2,
+                          borderRadius: "var(--term-radius-sm)",
                           letterSpacing: "0.04em",
                         }}
                       >
                         {advAbbr} +{g.restAdvantageDifferential.toFixed(1)}
                       </span>
                     </td>
-                    <td style={{ ...exploreTdBaseStyle, textAlign: "center", color: "#0f172a" }} className="hidden sm:table-cell tabular-nums">
+                    <td style={{ ...exploreTdBaseStyle, textAlign: "center", color: "var(--term-text)" }} className="hidden sm:table-cell tabular-nums">
                       {g.awayScore}–{g.homeScore}
                     </td>
                     <td style={{ ...exploreTdBaseStyle, textAlign: "center" }}>
                       <span
                         className="mono inline-flex items-center"
                         style={{
-                          color: g.restedTeamWon ? "#17A34A" : "#C9082A",
+                          color: g.restedTeamWon ? "#17A34A" : "var(--term-red)",
                           fontSize: 10,
                           fontWeight: 700,
                           letterSpacing: "0.06em",
@@ -570,7 +570,7 @@ function ExploreGames({
 
       {/* Pagination */}
       {total > 0 && (
-        <div className="mono mt-3 flex items-center justify-between" style={{ fontSize: 10, color: "#8A8478", letterSpacing: "0.04em" }}>
+        <div className="mono mt-3 flex items-center justify-between" style={{ fontSize: 10, color: "var(--term-text-muted)", letterSpacing: "0.04em" }}>
           <p>
             {loading
               ? "LOADING…"
@@ -580,20 +580,20 @@ function ExploreGames({
             <button
               onClick={() => setPage((p) => Math.max(1, p - 1))}
               disabled={page === 1 || loading}
-              className="flex size-7 items-center justify-center bg-white text-slate-700 transition-colors hover:bg-[#F0EEE9] disabled:opacity-40"
-              style={{ border: "1px solid #E2DFD8", borderRadius: 4 }}
+              className="flex size-7 items-center justify-center bg-white text-slate-700 transition-colors hover:bg-[var(--term-surface-2)] disabled:opacity-40"
+              style={{ border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }}
               aria-label="Previous page"
             >
               <ChevronLeft className="size-4" />
             </button>
-            <span className="mono px-2 tabular-nums" style={{ fontSize: 11, color: "#0f172a", fontWeight: 600 }}>
+            <span className="mono px-2 tabular-nums" style={{ fontSize: 11, color: "var(--term-text)", fontWeight: 600 }}>
               {page} / {totalPages || 1}
             </span>
             <button
               onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
               disabled={page >= totalPages || loading}
-              className="flex size-7 items-center justify-center bg-white text-slate-700 transition-colors hover:bg-[#F0EEE9] disabled:opacity-40"
-              style={{ border: "1px solid #E2DFD8", borderRadius: 4 }}
+              className="flex size-7 items-center justify-center bg-white text-slate-700 transition-colors hover:bg-[var(--term-surface-2)] disabled:opacity-40"
+              style={{ border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }}
               aria-label="Next page"
             >
               <ChevronRight className="size-4" />
@@ -660,12 +660,12 @@ export function AnalysisContent() {
     return (
       <div
         className="mono px-6 py-12 text-center"
-        style={{ ...termCard, borderLeft: "2px solid #C9082A" }}
+        style={{ ...termCard, borderLeft: "2px solid var(--term-red)" }}
       >
-        <p style={{ fontSize: 11, letterSpacing: "0.08em", color: "#C9082A", fontWeight: 700 }}>
+        <p style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-red)", fontWeight: 700 }}>
           FAILED TO LOAD ANALYSIS
         </p>
-        <p className="mt-1" style={{ fontSize: 10, color: "#8A8478" }}>
+        <p className="mt-1" style={{ fontSize: 10, color: "var(--term-text-muted)" }}>
           {error ?? "UNKNOWN ERROR"}
         </p>
       </div>
@@ -690,11 +690,11 @@ export function AnalysisContent() {
     <div className="flex flex-col gap-4">
       {/* Eyebrow heading */}
       <div className="flex flex-col gap-1">
-        <span className="mono" style={{ fontSize: 10, letterSpacing: "0.08em", color: "#C9082A", fontWeight: 700 }}>
+        <span className="mono" style={{ fontSize: 10, letterSpacing: "0.08em", color: "var(--term-red)", fontWeight: 700 }}>
           HISTORICAL BACKTEST
         </span>
         <h1 className="text-2xl font-bold tracking-tight text-slate-900">Rest Advantage Analysis</h1>
-        <p className="mono max-w-2xl" style={{ fontSize: 11, color: "#8A8478", lineHeight: 1.5 }}>
+        <p className="mono max-w-2xl" style={{ fontSize: 11, color: "var(--term-text-muted)", lineHeight: 1.5 }}>
           AMONG FINAL REGULAR-SEASON GAMES WITH FATIGUE DATA, DID THE MORE-RESTED TEAM WIN?
           THIS DOES NOT READ STORED PREDICTION ROWS.
         </p>
@@ -730,18 +730,18 @@ export function AnalysisContent() {
               <CartesianGrid
                 vertical={false}
                 strokeDasharray="3 3"
-                stroke="#E2DFD8"
+                stroke="var(--term-border)"
               />
               <XAxis
                 dataKey="label"
-                tick={{ fontSize: 11, fill: "#8A8478", fontFamily: "'Courier New', Courier, monospace" }}
+                tick={{ fontSize: 11, fill: "var(--term-text-muted)", fontFamily: "'Courier New', Courier, monospace" }}
                 tickLine={false}
                 axisLine={false}
               />
               <YAxis
                 domain={[45, 75]}
                 tickFormatter={(v: number) => `${v}%`}
-                tick={{ fontSize: 11, fill: "#8A8478", fontFamily: "'Courier New', Courier, monospace" }}
+                tick={{ fontSize: 11, fill: "var(--term-text-muted)", fontFamily: "'Courier New', Courier, monospace" }}
                 tickLine={false}
                 axisLine={false}
                 width={40}
@@ -752,20 +752,20 @@ export function AnalysisContent() {
               />
               <ReferenceLine
                 y={50}
-                stroke="#C9082A"
+                stroke="var(--term-red)"
                 strokeDasharray="4 4"
                 strokeOpacity={0.55}
                 label={{
                   value: "COIN FLIP",
                   position: "insideTopRight",
                   fontSize: 10,
-                  fill: "#C9082A",
+                  fill: "var(--term-red)",
                   opacity: 0.8,
                 }}
               />
               <Bar
                 dataKey="winPct"
-                fill="#17408B"
+                fill="var(--term-blue)"
                 radius={[0, 0, 0, 0]}
                 maxBarSize={72}
                 style={{ cursor: "pointer" }}
@@ -777,7 +777,7 @@ export function AnalysisContent() {
                   formatter={(v: string | number | boolean | null | undefined) =>
                     typeof v === "number" ? `n=${v.toLocaleString()}` : ""
                   }
-                  style={{ fontSize: "10px", fill: "#8A8478", fontFamily: "'Courier New', Courier, monospace" }}
+                  style={{ fontSize: "10px", fill: "var(--term-text-muted)", fontFamily: "'Courier New', Courier, monospace" }}
                 />
               </Bar>
             </BarChart>
@@ -791,20 +791,20 @@ export function AnalysisContent() {
           label="HOME TEAM MORE RESTED"
           descriptor={`${data.homeAwayBreakdown.homeTeamMoreRested.games.toLocaleString()} GAMES`}
         />
-        <p className="mono mt-3 tabular-nums" style={{ fontSize: 36, fontWeight: 700, color: "#17408B", lineHeight: 1 }}>
+        <p className="mono mt-3 tabular-nums" style={{ fontSize: 36, fontWeight: 700, color: "var(--term-blue)", lineHeight: 1 }}>
           {data.homeAwayBreakdown.homeTeamMoreRested.winPct}%
         </p>
-        <p className="mono mt-1" style={{ fontSize: 11, color: "#8A8478", letterSpacing: "0.04em" }}>
+        <p className="mono mt-1" style={{ fontSize: 11, color: "var(--term-text-muted)", letterSpacing: "0.04em" }}>
           {data.homeAwayBreakdown.homeTeamMoreRested.restedTeamWins.toLocaleString()} WINS /{" "}
           {data.homeAwayBreakdown.homeTeamMoreRested.games.toLocaleString()} GAMES
         </p>
-        <div className="mt-3 w-full" style={{ height: 4, background: "#F0EEE9", borderRadius: 1 }}>
+        <div className="mt-3 w-full" style={{ height: 4, background: "var(--term-surface-2)", borderRadius: "var(--term-radius-bar)" }}>
           <div
             className="h-full transition-all duration-700"
             style={{
               width: `${data.homeAwayBreakdown.homeTeamMoreRested.winPct}%`,
-              background: "#17408B",
-              borderRadius: 1,
+              background: "var(--term-blue)",
+              borderRadius: "var(--term-radius-bar)",
             }}
           />
         </div>
@@ -822,10 +822,10 @@ export function AnalysisContent() {
                 onClick={() => handleSeasonFilterChange(opt.value)}
                 className={cn("mono transition-colors")}
                 style={{
-                  background: active ? "#17408B" : "#ffffff",
-                  color: active ? "#ffffff" : "#0f172a",
-                  border: `1px solid ${active ? "#17408B" : "#E2DFD8"}`,
-                  borderRadius: 4,
+                  background: active ? "var(--term-blue)" : "var(--term-surface)",
+                  color: active ? "var(--term-surface)" : "var(--term-text)",
+                  border: `1px solid ${active ? "var(--term-blue)" : "var(--term-border)"}`,
+                  borderRadius: "var(--term-radius)",
                   padding: "4px 10px",
                   fontSize: 11,
                   letterSpacing: "0.04em",
@@ -850,24 +850,24 @@ export function AnalysisContent() {
         <div
           className="px-4 py-4"
           style={{
-            background: "#ffffff",
-            border: "1px solid #E2DFD8",
-            borderLeft: "2px solid #17408B",
-            borderRadius: 4,
+            background: "var(--term-surface)",
+            border: "1px solid var(--term-border)",
+            borderLeft: "2px solid var(--term-blue)",
+            borderRadius: "var(--term-radius)",
           }}
         >
-          <p className="mono" style={{ fontSize: 10, letterSpacing: "0.12em", color: "#17408B", fontWeight: 700 }}>
+          <p className="mono" style={{ fontSize: 10, letterSpacing: "0.12em", color: "var(--term-blue)", fontWeight: 700 }}>
             KEY INSIGHT
           </p>
           <p className="mt-2 text-sm leading-relaxed text-slate-700">
             Teams with a Rest Advantage of{" "}
             <span className="font-semibold text-slate-900">+5 or more</span> win{" "}
-            <span className="mono font-bold" style={{ color: "#17408B" }}>{ra5.winPct}%</span> of games — a
+            <span className="mono font-bold" style={{ color: "var(--term-blue)" }}>{ra5.winPct}%</span> of games — a
             significant edge over the coin-flip baseline.
             {ra7 && (
               <>
                 {" "}At RA ≥ 7, that rises to{" "}
-                <span className="mono font-bold" style={{ color: "#17408B" }}>{ra7.winPct}%</span> across{" "}
+                <span className="mono font-bold" style={{ color: "var(--term-blue)" }}>{ra7.winPct}%</span> across{" "}
                 <span className="mono tabular-nums">{ra7.games.toLocaleString()}</span> games, suggesting the fatigue signal compounds at the extremes.
               </>
             )}
