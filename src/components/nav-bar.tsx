@@ -46,17 +46,17 @@ export function NavBar() {
         className="mono"
         style={{
           height: "28px",
-          background: "#F0EEE9",
-          borderBottom: "1px solid #E2DFD8",
+          background: "var(--term-surface-2)",
+          borderBottom: "1px solid var(--term-border)",
         }}
       >
         <div className="mx-auto flex h-full max-w-7xl items-center justify-between px-4 sm:px-6">
           <div className="flex items-center gap-3" style={{ fontSize: "10px", letterSpacing: "0.08em" }}>
-            <span style={{ color: "#C9082A", fontWeight: 700 }}>FULLCOURT</span>
-            <span style={{ color: "#8A8478" }}>NBA ANALYTICS PLATFORM</span>
+            <span style={{ color: "var(--term-red)", fontWeight: 700 }}>FULLCOURT</span>
+            <span style={{ color: "var(--term-text-muted)" }}>NBA ANALYTICS PLATFORM</span>
           </div>
           <div className="flex items-center gap-3" style={{ fontSize: "10px", letterSpacing: "0.08em" }}>
-            <span style={{ color: "#8A8478" }}>{SEASON_LABEL}</span>
+            <span style={{ color: "var(--term-text-muted)" }}>{SEASON_LABEL}</span>
             {HAS_LIVE_GAMES && (
               <span className="flex items-center gap-1.5">
                 <span
@@ -80,8 +80,8 @@ export function NavBar() {
         className="mono"
         style={{
           height: "44px",
-          background: "#ffffff",
-          borderBottom: "1px solid #E2DFD8",
+          background: "var(--term-surface)",
+          borderBottom: "1px solid var(--term-border)",
         }}
         aria-label="Main navigation"
       >
@@ -96,8 +96,8 @@ export function NavBar() {
                 style={{
                   fontSize: "11px",
                   letterSpacing: "0.05em",
-                  color: active ? "#C9082A" : "#4A4A4A",
-                  borderBottom: active ? "2px solid #C9082A" : "2px solid transparent",
+                  color: active ? "var(--term-red)" : "var(--term-text-dim)",
+                  borderBottom: active ? "2px solid var(--term-red)" : "2px solid transparent",
                 }}
               >
                 {label}
@@ -112,7 +112,7 @@ export function NavBar() {
         className="mono overflow-hidden"
         style={{
           height: "26px",
-          background: "#17408B",
+          background: "var(--term-blue)",
         }}
       >
         <div className="mx-auto flex h-full max-w-7xl items-center gap-4 px-4 sm:px-6">
@@ -141,7 +141,7 @@ export function NavBar() {
                   className="inline-flex items-center gap-2"
                   style={{ fontSize: "11px", color: "rgba(255,255,255,0.85)", letterSpacing: "0.04em" }}
                 >
-                  <span style={{ color: "#ffffff", fontWeight: 700 }}>{item.team}</span>
+                  <span style={{ color: "var(--term-surface)", fontWeight: 700 }}>{item.team}</span>
                   <TickerArrow dir={item.dir} />
                   <span>{item.value} RA</span>
                 </span>
