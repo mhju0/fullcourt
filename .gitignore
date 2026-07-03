@@ -1,6 +1,6 @@
 # AI assistant context
 CLAUDE.md
-.claude/
+.claude/settings.local.json
 .agents/
 
 # Environment files
