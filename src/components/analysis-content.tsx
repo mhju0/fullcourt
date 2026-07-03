@@ -21,19 +21,13 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { cn } from "@/lib/utils"
 import { apiFetcher } from "@/lib/fetcher"
 import { NBA_SEASONS } from "@/lib/nba-season"
+import { termCardStyle } from "@/lib/terminal-styles"
 import type {
   AnalysisResponse,
   GameSearchResponse,
 } from "@/types"
 
 // ─── Shared styles (terminal) ─────────────────────────────────────
-
-const termCard: React.CSSProperties = {
-  background: "var(--term-surface)",
-  border: "1px solid var(--term-border)",
-  borderRadius: "var(--term-radius)",
-  padding: 16,
-}
 
 const termTooltip: React.CSSProperties = {
   background: "var(--term-surface)",
@@ -268,19 +262,19 @@ function SeasonWinRateBySeasonChart({
 function AnalysisSkeleton() {
   return (
     <div className="flex flex-col gap-4">
-      <div style={termCard}>
+      <div style={termCardStyle}>
         <Skeleton className="h-12 w-32 bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)" }} />
         <Skeleton className="mt-2 h-3 w-52 bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)" }} />
       </div>
-      <div style={termCard}>
+      <div style={termCardStyle}>
         <Skeleton className="mb-1 h-3 w-48 bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)" }} />
         <Skeleton className="h-64 w-full bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)" }} />
       </div>
-      <div style={termCard}>
+      <div style={termCardStyle}>
         <Skeleton className="mb-2 h-3 w-40 bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)" }} />
         <Skeleton className="h-10 w-24 bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)" }} />
       </div>
-      <div style={termCard}>
+      <div style={termCardStyle}>
         <Skeleton className="mb-1 h-3 w-48 bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)" }} />
         <Skeleton className="h-64 w-full bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)" }} />
       </div>
@@ -378,7 +372,7 @@ function ExploreGames({
   }, [])
 
   return (
-    <div ref={exploreRef} style={termCard}>
+    <div ref={exploreRef} style={termCardStyle}>
       <ExploreGameDetailModal
         gameId={detailGameId}
         open={detailOpen}
@@ -660,7 +654,7 @@ export function AnalysisContent() {
     return (
       <div
         className="mono px-6 py-12 text-center"
-        style={{ ...termCard, borderLeft: "2px solid var(--term-red)" }}
+        style={{ ...termCardStyle, borderLeft: "2px solid var(--term-red)" }}
       >
         <p style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-red)", fontWeight: 700 }}>
           FAILED TO LOAD ANALYSIS
@@ -722,7 +716,7 @@ export function AnalysisContent() {
       </div>
 
       {/* Bar chart — win rate by threshold */}
-      <div style={termCard}>
+      <div style={termCardStyle}>
         <SectionDivider label="WIN RATE BY RA THRESHOLD" descriptor="CLICK A BAR TO EXPLORE" />
         <div className="mt-2 h-72">
           <ResponsiveContainer width="100%" height="100%">
@@ -786,7 +780,7 @@ export function AnalysisContent() {
       </div>
 
       {/* Home rested breakdown — terminal bar */}
-      <div style={termCard}>
+      <div style={termCardStyle}>
         <SectionDivider
           label="HOME TEAM MORE RESTED"
           descriptor={`${data.homeAwayBreakdown.homeTeamMoreRested.games.toLocaleString()} GAMES`}
@@ -811,7 +805,7 @@ export function AnalysisContent() {
       </div>
 
       {/* Win rate by season */}
-      <div style={termCard}>
+      <div style={termCardStyle}>
         <SectionDivider label="WIN RATE BY SEASON" descriptor="REGULAR SEASON (OCT–APR)" />
         <div className="mt-2 flex flex-wrap gap-1.5">
           {RA_THRESHOLD_OPTIONS.map((opt) => {

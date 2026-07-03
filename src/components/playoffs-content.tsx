@@ -7,6 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { cn } from "@/lib/utils"
 import { apiFetcher } from "@/lib/fetcher"
 import { NBA_SEASONS, defaultNbaSeason } from "@/lib/nba-season"
+import { termCardStyle } from "@/lib/terminal-styles"
 import type {
   PlayoffMethodSummary,
   PlayoffRoundGroup,
@@ -16,13 +17,6 @@ import type {
 } from "@/types"
 
 // ─── Shared styles (terminal) ─────────────────────────────────────
-
-const termCard: React.CSSProperties = {
-  background: "var(--term-surface)",
-  border: "1px solid var(--term-border)",
-  borderRadius: "var(--term-radius)",
-  padding: 16,
-}
 
 const termSelectClass =
   "mono inline-flex items-center gap-2 bg-white px-3 py-1.5 text-[11px] uppercase tracking-[0.05em] text-slate-700 transition-colors hover:bg-[var(--term-surface-2)] cursor-pointer appearance-none pr-8"
@@ -110,7 +104,7 @@ function MethodMetricCard({
 
 function MethodComparisonHeader({ summary }: { summary: PlayoffsResponse["summary"] }) {
   return (
-    <div style={termCard}>
+    <div style={termCardStyle}>
       <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
         <MethodMetricCard
           label="OUT-OF-SAMPLE"
@@ -376,10 +370,10 @@ function RoundSection({ group }: { group: PlayoffRoundGroup }) {
 function PlayoffsSkeleton() {
   return (
     <div className="flex flex-col gap-4">
-      <div style={termCard}>
+      <div style={termCardStyle}>
         <Skeleton className="h-4 w-32 bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)" }} />
       </div>
-      <div style={termCard}>
+      <div style={termCardStyle}>
         <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
           <Skeleton className="h-24 w-full bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)" }} />
           <Skeleton className="h-24 w-full bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)" }} />
@@ -416,7 +410,7 @@ export function PlayoffsContent() {
         <SeasonSelector season={season} onSeasonChange={setSeason} />
         <div
           className="mono px-6 py-12 text-center"
-          style={{ ...termCard, borderLeft: "2px solid var(--term-red)" }}
+          style={{ ...termCardStyle, borderLeft: "2px solid var(--term-red)" }}
         >
           <p style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-red)", fontWeight: 700 }}>
             FAILED TO LOAD PLAYOFF PREDICTIONS
@@ -436,7 +430,7 @@ export function PlayoffsContent() {
       <MethodComparisonHeader summary={data.summary} />
 
       {data.rounds.length === 0 ? (
-        <div className="mono px-6 py-12 text-center" style={termCard}>
+        <div className="mono px-6 py-12 text-center" style={termCardStyle}>
           <p style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 700 }}>
             NO PLAYOFF PREDICTIONS FOR THIS SEASON
           </p>

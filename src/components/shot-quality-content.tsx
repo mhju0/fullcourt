@@ -7,16 +7,10 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { cn } from "@/lib/utils"
 import { apiFetcher } from "@/lib/fetcher"
 import { NBA_SEASONS, defaultNbaSeason } from "@/lib/nba-season"
+import { termCardStyle } from "@/lib/terminal-styles"
 import type { ShotQualityCell, ShotQualityResponse } from "@/types"
 
 // ─── Shared styles (terminal, mirrors playoffs-content) ────────────
-
-const termCard: React.CSSProperties = {
-  background: "var(--term-surface)",
-  border: "1px solid var(--term-border)",
-  borderRadius: "var(--term-radius)",
-  padding: 16,
-}
 
 const termSelectClass =
   "mono inline-flex items-center gap-2 bg-white px-3 py-1.5 text-[11px] uppercase tracking-[0.05em] text-slate-700 transition-colors hover:bg-[var(--term-surface-2)] cursor-pointer appearance-none pr-8"
@@ -339,7 +333,7 @@ function ShotCourt({
 
 function MethodologyNote() {
   return (
-    <details className="mono group" style={{ ...termCard, padding: 0 }}>
+    <details className="mono group" style={{ ...termCardStyle, padding: 0 }}>
       <summary
         className="flex cursor-pointer items-center justify-between px-4 py-3 outline-none"
         style={{ fontSize: 10, letterSpacing: "0.08em", color: "var(--term-text)", fontWeight: 700 }}
@@ -380,7 +374,7 @@ function MethodologyNote() {
 
 function CourtSkeleton() {
   return (
-    <div style={termCard}>
+    <div style={termCardStyle}>
       <Skeleton className="mb-3 h-3 w-40 bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)" }} />
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <Skeleton className="w-full bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)", aspectRatio: `${VB_W} / ${VB_H}` }} />
@@ -393,7 +387,7 @@ function CourtSkeleton() {
 function MessageCard({ tone, title, body }: { tone: "muted" | "error"; title: string; body?: string }) {
   const accent = tone === "error" ? "var(--term-red)" : "var(--term-text-muted)"
   return (
-    <div className="mono px-6 py-12 text-center" style={{ ...termCard, borderLeft: `2px solid ${accent}` }}>
+    <div className="mono px-6 py-12 text-center" style={{ ...termCardStyle, borderLeft: `2px solid ${accent}` }}>
       <p style={{ fontSize: 11, letterSpacing: "0.08em", color: accent, fontWeight: 700 }}>{title}</p>
       {body ? (
         <p className="mt-1" style={{ fontSize: 10, color: "var(--term-text-muted)" }}>
@@ -495,7 +489,7 @@ export function ShotQualityContent() {
         />
       ) : (
         <>
-          <div style={termCard}>
+          <div style={termCardStyle}>
             <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
               <span className="mono" style={{ fontSize: 10, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 700 }}>
                 {season} · {data.meta.cellCount.toLocaleString()} CELLS · {data.meta.totalFga.toLocaleString()} FGA

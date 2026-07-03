@@ -8,16 +8,10 @@ import { NBA_TEAM_IDS } from "@/lib/nba-team-ids"
 import { parseSeasonStartYear, regularSeasonDateBounds } from "@/lib/nba-season"
 import { apiFetcher } from "@/lib/fetcher"
 import { Skeleton } from "@/components/ui/skeleton"
+import { termCardStyle } from "@/lib/terminal-styles"
 import type { UpcomingGameWithRA } from "@/types"
 
 // ─── Shared styles (terminal) ─────────────────────────────────────
-
-const termCard: React.CSSProperties = {
-  background: "var(--term-surface)",
-  border: "1px solid var(--term-border)",
-  borderRadius: "var(--term-radius)",
-  padding: 16,
-}
 
 const thStyle: React.CSSProperties = {
   fontFamily: "'Courier New', Courier, monospace",
@@ -121,7 +115,7 @@ export function UpcomingContent() {
   const error = swrError ? (swrError instanceof Error ? swrError.message : "Failed to load games") : null
 
   return (
-    <div style={termCard}>
+    <div style={termCardStyle}>
       {/* ── Filter pills ──────────────────────────────────────────── */}
       <div className="mb-4 flex flex-wrap items-center gap-1.5">
         {RA_OPTIONS.map((opt) => {
