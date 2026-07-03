@@ -52,21 +52,21 @@ export default function RootLayout({
         <footer
           className="mono"
           style={{
-            background: "#F0EEE9",
-            borderTop: "1px solid #E2DFD8",
+            background: "var(--term-surface-2)",
+            borderTop: "1px solid var(--term-border)",
           }}
         >
           <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-2 sm:px-6">
-            <span style={{ fontSize: "10px", color: "#8A8478", letterSpacing: "0.04em" }}>
+            <span style={{ fontSize: "10px", color: "var(--term-text-muted)", letterSpacing: "0.04em" }}>
               RENDERED: {renderedAt} ·{" "}
               <a
                 href="/api/health"
-                style={{ color: "#8A8478", textDecoration: "underline" }}
+                style={{ color: "var(--term-text-muted)", textDecoration: "underline" }}
               >
                 SYSTEM STATUS
               </a>
             </span>
-            <span style={{ fontSize: "10px", color: "#8A8478", letterSpacing: "0.04em" }}>
+            <span style={{ fontSize: "10px", color: "var(--term-text-muted)", letterSpacing: "0.04em" }}>
               BUILT BY MJ
             </span>
           </div>

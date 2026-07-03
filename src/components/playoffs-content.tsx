@@ -18,18 +18,18 @@ import type {
 // ─── Shared styles (terminal) ─────────────────────────────────────
 
 const termCard: React.CSSProperties = {
-  background: "#ffffff",
-  border: "1px solid #E2DFD8",
-  borderRadius: 4,
+  background: "var(--term-surface)",
+  border: "1px solid var(--term-border)",
+  borderRadius: "var(--term-radius)",
   padding: 16,
 }
 
 const termSelectClass =
-  "mono inline-flex items-center gap-2 bg-white px-3 py-1.5 text-[11px] uppercase tracking-[0.05em] text-slate-700 transition-colors hover:bg-[#F0EEE9] cursor-pointer appearance-none pr-8"
+  "mono inline-flex items-center gap-2 bg-white px-3 py-1.5 text-[11px] uppercase tracking-[0.05em] text-slate-700 transition-colors hover:bg-[var(--term-surface-2)] cursor-pointer appearance-none pr-8"
 
 const termSelectStyle: React.CSSProperties = {
-  border: "1px solid #E2DFD8",
-  borderRadius: 4,
+  border: "1px solid var(--term-border)",
+  borderRadius: "var(--term-radius)",
   backgroundImage:
     "url('data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20width=%2712%27%20height=%2712%27%20viewBox=%270%200%2024%2024%27%20fill=%27none%27%20stroke=%27%238A8478%27%20stroke-width=%272%27%3E%3Cpath%20d=%27M6%209l6%206%206-6%27/%3E%3C/svg%3E')",
   backgroundRepeat: "no-repeat",
@@ -53,7 +53,7 @@ function SeasonSelector({
       <label
         htmlFor="playoffs-season"
         className="mono"
-        style={{ fontSize: 10, letterSpacing: "0.08em", color: "#8A8478", fontWeight: 600 }}
+        style={{ fontSize: 10, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 600 }}
       >
         SEASON
       </label>
@@ -90,18 +90,18 @@ function MethodMetricCard({
   return (
     <div
       className="flex flex-col gap-1 px-3 py-3"
-      style={{ background: "#F0EEE9", borderRadius: 4, borderLeft: `3px solid ${accent}` }}
+      style={{ background: "var(--term-surface-2)", borderRadius: "var(--term-radius)", borderLeft: `3px solid ${accent}` }}
     >
-      <span className="mono" style={{ fontSize: 10, letterSpacing: "0.08em", color: "#8A8478", fontWeight: 700 }}>
+      <span className="mono" style={{ fontSize: 10, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 700 }}>
         {label}
       </span>
-      <span className="mono tabular-nums" style={{ fontSize: 32, fontWeight: 700, color: "#0f172a", lineHeight: 1.1 }}>
+      <span className="mono tabular-nums" style={{ fontSize: 32, fontWeight: 700, color: "var(--term-text)", lineHeight: 1.1 }}>
         {summary.accuracy}%
       </span>
-      <span className="mono" style={{ fontSize: 10, color: "#8A8478", letterSpacing: "0.04em" }}>
+      <span className="mono" style={{ fontSize: 10, color: "var(--term-text-muted)", letterSpacing: "0.04em" }}>
         {sub}
       </span>
-      <span className="mono tabular-nums" style={{ fontSize: 10, color: "#8A8478" }}>
+      <span className="mono tabular-nums" style={{ fontSize: 10, color: "var(--term-text-muted)" }}>
         {summary.predictedCorrect.toLocaleString()} / {summary.knownWinnerGames.toLocaleString()} CORRECT
       </span>
     </div>
@@ -116,16 +116,16 @@ function MethodComparisonHeader({ summary }: { summary: PlayoffsResponse["summar
           label="OUT-OF-SAMPLE"
           sub="WALK-FORWARD"
           summary={summary.walkForwardOos}
-          accent="#17408B"
+          accent="var(--term-blue)"
         />
         <MethodMetricCard
           label="IN-SAMPLE"
           sub="FULL TRAINING FIT"
           summary={summary.fullInsample}
-          accent="#C4853C"
+          accent="var(--term-hardwood)"
         />
       </div>
-      <p className="mono mt-3" style={{ fontSize: 10, color: "#8A8478", letterSpacing: "0.04em", lineHeight: 1.5 }}>
+      <p className="mono mt-3" style={{ fontSize: 10, color: "var(--term-text-muted)", letterSpacing: "0.04em", lineHeight: 1.5 }}>
         OUT-OF-SAMPLE ACCURACY IS PREDICTED FROM PRIOR SEASONS ONLY — THE HONEST GENERALIZATION NUMBER.
         IN-SAMPLE REFLECTS FIT ON DATA THE MODEL WAS TRAINED ON AND WILL TYPICALLY LOOK BETTER.
       </p>
@@ -153,9 +153,9 @@ function seriesCorrectness(
 }
 
 function correctnessAccent(status: CorrectnessStatus): string {
-  if (status === "correct") return "#17408B"
-  if (status === "incorrect") return "#C9082A"
-  return "#C4853C"
+  if (status === "correct") return "var(--term-blue)"
+  if (status === "incorrect") return "var(--term-red)"
+  return "var(--term-hardwood)"
 }
 
 function CorrectnessBadge({ status, source }: { status: CorrectnessStatus; source: CorrectnessSource }) {
@@ -168,7 +168,7 @@ function CorrectnessBadge({ status, source }: { status: CorrectnessStatus; sourc
     >
       {label}
       {source === "insample" && (
-        <span style={{ fontSize: 9, color: "#8A8478", fontWeight: 600 }}>(IN-SAMPLE)</span>
+        <span style={{ fontSize: 9, color: "var(--term-text-muted)", fontWeight: 600 }}>(IN-SAMPLE)</span>
       )}
     </span>
   )
@@ -196,8 +196,8 @@ function MethodInline({
 }) {
   if (!method) {
     return (
-      <span className="mono inline-flex items-center gap-1" style={{ fontSize: 10, color: "#8A8478", letterSpacing: "0.04em" }}>
-        <span style={{ fontWeight: 700, color: "#0f172a" }}>{label}</span>
+      <span className="mono inline-flex items-center gap-1" style={{ fontSize: 10, color: "var(--term-text-muted)", letterSpacing: "0.04em" }}>
+        <span style={{ fontWeight: 700, color: "var(--term-text)" }}>{label}</span>
         N/A
         <span style={{ fontSize: 9 }}>(insufficient history)</span>
       </span>
@@ -205,8 +205,8 @@ function MethodInline({
   }
   const prob = methodDisplayProb(method, series)
   return (
-    <span className="mono inline-flex items-center gap-1 tabular-nums" style={{ fontSize: 10, color: "#0f172a", letterSpacing: "0.04em" }}>
-      <span style={{ fontWeight: 700, color: "#8A8478" }}>{label}</span>
+    <span className="mono inline-flex items-center gap-1 tabular-nums" style={{ fontSize: 10, color: "var(--term-text)", letterSpacing: "0.04em" }}>
+      <span style={{ fontWeight: 700, color: "var(--term-text-muted)" }}>{label}</span>
       {(prob * 100).toFixed(1)}% {method.predictedWinnerTeam.abbreviation}
     </span>
   )
@@ -217,8 +217,8 @@ function MethodInline({
 function FeatureRow({ k, v }: { k: string; v: string }) {
   return (
     <div className="mono flex justify-between gap-2" style={{ fontSize: 11 }}>
-      <span style={{ color: "#8A8478", letterSpacing: "0.04em" }}>{k}</span>
-      <span className="tabular-nums" style={{ color: "#0f172a", fontWeight: 600 }}>{v}</span>
+      <span style={{ color: "var(--term-text-muted)", letterSpacing: "0.04em" }}>{k}</span>
+      <span className="tabular-nums" style={{ color: "var(--term-text)", fontWeight: 600 }}>{v}</span>
     </div>
   )
 }
@@ -233,11 +233,11 @@ function SeriesFeatureGrid({ series }: { series: PlayoffSeriesWithPredictions })
   return (
     <div
       className="flex flex-col gap-2 px-3 py-3"
-      style={{ background: "#fff", border: "1px solid #E2DFD8", borderRadius: 4 }}
+      style={{ background: "var(--term-surface)", border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }}
     >
       <p
         className="mono pb-1.5"
-        style={{ fontSize: 10, letterSpacing: "0.08em", color: "#8A8478", fontWeight: 700, borderBottom: "1px solid #E2DFD8" }}
+        style={{ fontSize: 10, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 700, borderBottom: "1px solid var(--term-border)" }}
       >
         SERIES FEATURES
       </p>
@@ -245,7 +245,7 @@ function SeriesFeatureGrid({ series }: { series: PlayoffSeriesWithPredictions })
       <FeatureRow k="WIN% DIFF" v={formatFeature(series.winPctDiff)} />
       <FeatureRow k="ENTRY REST DIFF" v={formatFeature(series.entryRestDiff)} />
       <FeatureRow k="H2H DIFF" v={formatFeature(series.h2hDiff)} />
-      <p className="mono mt-1" style={{ fontSize: 9, color: "#8A8478", letterSpacing: "0.04em", lineHeight: 1.4 }}>
+      <p className="mono mt-1" style={{ fontSize: 9, color: "var(--term-text-muted)", letterSpacing: "0.04em", lineHeight: 1.4 }}>
         SIGN CONVENTION: (HOME-COURT − OPPONENT). POSITIVE FAVORS HOME-COURT ({series.homeCourtTeam.abbreviation}).
       </p>
     </div>
@@ -276,7 +276,7 @@ function SeriesCard({ series }: { series: PlayoffSeriesWithPredictions }) {
   return (
     <div
       className="flex flex-col"
-      style={{ background: "#ffffff", border: "1px solid #E2DFD8", borderLeft: `2px solid ${accent}`, borderRadius: 4, overflow: "hidden" }}
+      style={{ background: "var(--term-surface)", border: "1px solid var(--term-border)", borderLeft: `2px solid ${accent}`, borderRadius: "var(--term-radius)", overflow: "hidden" }}
     >
       <div
         role="button"
@@ -290,39 +290,39 @@ function SeriesCard({ series }: { series: PlayoffSeriesWithPredictions }) {
       >
         <div className="flex items-center justify-between gap-3">
           <div className="flex min-w-0 flex-wrap items-center gap-2">
-            <span className="mono inline-flex items-center gap-1" style={{ fontSize: 12, fontWeight: 700, color: "#0f172a" }}>
+            <span className="mono inline-flex items-center gap-1" style={{ fontSize: 12, fontWeight: 700, color: "var(--term-text)" }}>
               {series.homeCourtTeam.abbreviation}
               <span
                 className="mono"
-                style={{ fontSize: 8, fontWeight: 700, color: "#17408B", border: "1px solid #17408B", borderRadius: 2, padding: "0 3px" }}
+                style={{ fontSize: 8, fontWeight: 700, color: "var(--term-blue)", border: "1px solid var(--term-blue)", borderRadius: "var(--term-radius-sm)", padding: "0 3px" }}
                 aria-label="Home court"
               >
                 HC
               </span>
             </span>
-            <span className="mono" style={{ fontSize: 11, color: "#8A8478" }}>vs</span>
-            <span className="mono" style={{ fontSize: 12, fontWeight: 700, color: "#0f172a" }}>
+            <span className="mono" style={{ fontSize: 11, color: "var(--term-text-muted)" }}>vs</span>
+            <span className="mono" style={{ fontSize: 12, fontWeight: 700, color: "var(--term-text)" }}>
               {series.opponentTeam.abbreviation}
             </span>
             {series.conference && (
-              <span className="mono" style={{ fontSize: 9, color: "#8A8478", letterSpacing: "0.06em" }}>
+              <span className="mono" style={{ fontSize: 9, color: "var(--term-text-muted)", letterSpacing: "0.06em" }}>
                 {series.conference.toUpperCase()}
               </span>
             )}
           </div>
 
           <ChevronDown
-            className={cn("size-4 shrink-0 text-[#8A8478] transition-transform duration-200", expanded && "rotate-180")}
+            className={cn("size-4 shrink-0 text-[var(--term-text-muted)] transition-transform duration-200", expanded && "rotate-180")}
             aria-hidden
           />
         </div>
 
         <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
           <div className="mono flex items-center gap-2 tabular-nums" style={{ fontSize: 11 }}>
-            <span style={{ color: "#0f172a", fontWeight: 600 }}>
+            <span style={{ color: "var(--term-text)", fontWeight: 600 }}>
               {homeWins}-{oppWins}
             </span>
-            <span style={{ color: "#8A8478", letterSpacing: "0.04em" }}>
+            <span style={{ color: "var(--term-text-muted)", letterSpacing: "0.04em" }}>
               {series.seriesWinnerTeam ? `${series.seriesWinnerTeam.abbreviation} WON` : "PENDING"}
             </span>
           </div>
@@ -342,7 +342,7 @@ function SeriesCard({ series }: { series: PlayoffSeriesWithPredictions }) {
         )}
       >
         <div className="overflow-hidden">
-          <div className="px-3 py-3" style={{ background: "#F7F6F3", borderTop: "1px solid #E2DFD8" }}>
+          <div className="px-3 py-3" style={{ background: "var(--term-bg)", borderTop: "1px solid var(--term-border)" }}>
             <SeriesFeatureGrid series={series} />
           </div>
         </div>
@@ -356,11 +356,11 @@ function SeriesCard({ series }: { series: PlayoffSeriesWithPredictions }) {
 function RoundSection({ group }: { group: PlayoffRoundGroup }) {
   return (
     <div className="flex flex-col gap-2">
-      <div className="mono flex items-center gap-3 py-1" style={{ fontSize: 10, letterSpacing: "0.08em", color: "#8A8478" }}>
+      <div className="mono flex items-center gap-3 py-1" style={{ fontSize: 10, letterSpacing: "0.08em", color: "var(--term-text-muted)" }}>
         <span style={{ fontWeight: 700 }}>
           {group.roundLabel.toUpperCase()} · {group.series.length} SERIES
         </span>
-        <span style={{ flex: 1, height: 1, background: "#E2DFD8" }} />
+        <span style={{ flex: 1, height: 1, background: "var(--term-border)" }} />
       </div>
       <div className="flex flex-col gap-2">
         {group.series.map((s) => (
@@ -377,18 +377,18 @@ function PlayoffsSkeleton() {
   return (
     <div className="flex flex-col gap-4">
       <div style={termCard}>
-        <Skeleton className="h-4 w-32 bg-[#F0EEE9]" style={{ borderRadius: 4 }} />
+        <Skeleton className="h-4 w-32 bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)" }} />
       </div>
       <div style={termCard}>
         <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-          <Skeleton className="h-24 w-full bg-[#F0EEE9]" style={{ borderRadius: 4 }} />
-          <Skeleton className="h-24 w-full bg-[#F0EEE9]" style={{ borderRadius: 4 }} />
+          <Skeleton className="h-24 w-full bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)" }} />
+          <Skeleton className="h-24 w-full bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)" }} />
         </div>
       </div>
       <div className="flex flex-col gap-2">
-        <Skeleton className="h-16 w-full bg-[#F0EEE9]" style={{ borderRadius: 4 }} />
-        <Skeleton className="h-16 w-full bg-[#F0EEE9]" style={{ borderRadius: 4 }} />
-        <Skeleton className="h-16 w-full bg-[#F0EEE9]" style={{ borderRadius: 4 }} />
+        <Skeleton className="h-16 w-full bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)" }} />
+        <Skeleton className="h-16 w-full bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)" }} />
+        <Skeleton className="h-16 w-full bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)" }} />
       </div>
     </div>
   )
@@ -416,12 +416,12 @@ export function PlayoffsContent() {
         <SeasonSelector season={season} onSeasonChange={setSeason} />
         <div
           className="mono px-6 py-12 text-center"
-          style={{ ...termCard, borderLeft: "2px solid #C9082A" }}
+          style={{ ...termCard, borderLeft: "2px solid var(--term-red)" }}
         >
-          <p style={{ fontSize: 11, letterSpacing: "0.08em", color: "#C9082A", fontWeight: 700 }}>
+          <p style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-red)", fontWeight: 700 }}>
             FAILED TO LOAD PLAYOFF PREDICTIONS
           </p>
-          <p className="mt-1" style={{ fontSize: 10, color: "#8A8478" }}>
+          <p className="mt-1" style={{ fontSize: 10, color: "var(--term-text-muted)" }}>
             {error ?? "UNKNOWN ERROR"}
           </p>
         </div>
@@ -437,7 +437,7 @@ export function PlayoffsContent() {
 
       {data.rounds.length === 0 ? (
         <div className="mono px-6 py-12 text-center" style={termCard}>
-          <p style={{ fontSize: 11, letterSpacing: "0.08em", color: "#8A8478", fontWeight: 700 }}>
+          <p style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 700 }}>
             NO PLAYOFF PREDICTIONS FOR THIS SEASON
           </p>
         </div>

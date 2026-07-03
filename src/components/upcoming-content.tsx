@@ -13,9 +13,9 @@ import type { UpcomingGameWithRA } from "@/types"
 // ─── Shared styles (terminal) ─────────────────────────────────────
 
 const termCard: React.CSSProperties = {
-  background: "#ffffff",
-  border: "1px solid #E2DFD8",
-  borderRadius: 4,
+  background: "var(--term-surface)",
+  border: "1px solid var(--term-border)",
+  borderRadius: "var(--term-radius)",
   padding: 16,
 }
 
@@ -23,17 +23,17 @@ const thStyle: React.CSSProperties = {
   fontFamily: "'Courier New', Courier, monospace",
   fontSize: 10,
   letterSpacing: "0.08em",
-  color: "#8A8478",
+  color: "var(--term-text-muted)",
   fontWeight: 700,
   padding: "8px 10px",
-  background: "#F0EEE9",
-  borderBottom: "1px solid #E2DFD8",
+  background: "var(--term-surface-2)",
+  borderBottom: "1px solid var(--term-border)",
   textTransform: "uppercase",
 }
 
 const tdStyle: React.CSSProperties = {
   padding: "8px 10px",
-  borderBottom: "1px solid #E2DFD8",
+  borderBottom: "1px solid var(--term-border)",
   fontSize: 11,
 }
 
@@ -54,12 +54,12 @@ function nextSeasonLabel(season: string): string {
 
 function OffSeasonEmptyState({ nextSeason }: { nextSeason: string }) {
   return (
-    <div className="rounded-[4px] border border-[#E2DFD8] border-l-2 border-l-[#C4853C] bg-white px-6 py-10 text-center">
-      <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.08em] text-[#8A8478]">
+    <div className="rounded-[4px] border border-[var(--term-border)] border-l-2 border-l-[var(--term-hardwood)] bg-white px-6 py-10 text-center">
+      <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.08em] text-[var(--term-text-muted)]">
         REGULAR SEASON COMPLETE
       </p>
       <p className="mt-2 text-base font-medium text-slate-900">See you next season.</p>
-      <p className="mt-1 text-xs text-[#8A8478]">
+      <p className="mt-1 text-xs text-[var(--term-text-muted)]">
         {nextSeason} season tips off in October.
       </p>
     </div>
@@ -75,8 +75,8 @@ function TeamLogo({ abbreviation }: { abbreviation: string }) {
   if (!nbaId || error) {
     return (
       <span
-        className="mono flex size-6 shrink-0 items-center justify-center bg-[#F0EEE9] text-[9px] font-bold text-slate-500"
-        style={{ borderRadius: 2 }}
+        className="mono flex size-6 shrink-0 items-center justify-center bg-[var(--term-surface-2)] text-[9px] font-bold text-slate-500"
+        style={{ borderRadius: "var(--term-radius-sm)" }}
       >
         {abbreviation}
       </span>
@@ -132,10 +132,10 @@ export function UpcomingContent() {
               onClick={() => setRaFilter(opt.value)}
               className="mono transition-colors"
               style={{
-                background: active ? "#17408B" : "#ffffff",
-                color: active ? "#ffffff" : "#0f172a",
-                border: `1px solid ${active ? "#17408B" : "#E2DFD8"}`,
-                borderRadius: 4,
+                background: active ? "var(--term-blue)" : "var(--term-surface)",
+                color: active ? "var(--term-surface)" : "var(--term-text)",
+                border: `1px solid ${active ? "var(--term-blue)" : "var(--term-border)"}`,
+                borderRadius: "var(--term-radius)",
                 padding: "4px 10px",
                 fontSize: 11,
                 letterSpacing: "0.04em",
@@ -151,7 +151,7 @@ export function UpcomingContent() {
 
       {/* ── Game count ────────────────────────────────────────────── */}
       {!loading && !error && games && (
-        <p className="mono mb-3" style={{ fontSize: 10, color: "#8A8478", letterSpacing: "0.04em" }}>
+        <p className="mono mb-3" style={{ fontSize: 10, color: "var(--term-text-muted)", letterSpacing: "0.04em" }}>
           {games.length.toLocaleString()} GAME{games.length !== 1 ? "S" : ""} FOUND
         </p>
       )}
@@ -160,20 +160,20 @@ export function UpcomingContent() {
       {loading ? (
         <div className="flex flex-col gap-2">
           {Array.from({ length: 8 }).map((_, i) => (
-            <Skeleton key={i} className="h-10 w-full bg-[#F0EEE9]" style={{ borderRadius: 4 }} />
+            <Skeleton key={i} className="h-10 w-full bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)" }} />
           ))}
         </div>
       ) : error ? (
         <div
           className="mono px-6 py-10 text-center"
           style={{
-            background: "#ffffff",
-            border: "1px solid #E2DFD8",
-            borderLeft: "2px solid #C9082A",
-            borderRadius: 4,
+            background: "var(--term-surface)",
+            border: "1px solid var(--term-border)",
+            borderLeft: "2px solid var(--term-red)",
+            borderRadius: "var(--term-radius)",
           }}
         >
-          <p style={{ fontSize: 11, letterSpacing: "0.08em", color: "#C9082A", fontWeight: 700 }}>{error}</p>
+          <p style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-red)", fontWeight: 700 }}>{error}</p>
         </div>
       ) : !games || games.length === 0 ? (
         isOffSeason ? (
@@ -181,7 +181,7 @@ export function UpcomingContent() {
         ) : (
           <div
             className="mono px-6 py-12 text-center"
-            style={{ border: "1px dashed #E2DFD8", borderRadius: 4, fontSize: 11, color: "#8A8478" }}
+            style={{ border: "1px dashed var(--term-border)", borderRadius: "var(--term-radius)", fontSize: 11, color: "var(--term-text-muted)" }}
           >
             NO SCHEDULED GAMES MATCH THIS FILTER.
           </div>
@@ -208,45 +208,45 @@ export function UpcomingContent() {
                 return (
                   <tr
                     key={g.gameId}
-                    className={`transition-colors ${i % 2 === 1 ? "bg-[#F7F6F3]" : "bg-white"} hover:bg-[#F0EEE9]`}
+                    className={`transition-colors ${i % 2 === 1 ? "bg-[var(--term-bg)]" : "bg-white"} hover:bg-[var(--term-surface-2)]`}
                   >
-                    <td style={{ ...tdStyle, color: "#8A8478" }}>
+                    <td style={{ ...tdStyle, color: "var(--term-text-muted)" }}>
                       {format(new Date(g.date + "T00:00:00"), "MMM d")}
                     </td>
-                    <td style={{ ...tdStyle, color: "#0f172a" }}>
+                    <td style={{ ...tdStyle, color: "var(--term-text)" }}>
                       <div className="flex items-center gap-1.5">
                         <TeamLogo abbreviation={g.awayTeam.abbreviation} />
                         <span style={{ fontWeight: 600 }}>{g.awayTeam.abbreviation}</span>
-                        <span style={{ color: "#C9C5BC" }}>@</span>
+                        <span style={{ color: "var(--term-hairline)" }}>@</span>
                         <TeamLogo abbreviation={g.homeTeam.abbreviation} />
                         <span style={{ fontWeight: 600 }}>{g.homeTeam.abbreviation}</span>
                       </div>
                     </td>
                     <td
-                      style={{ ...tdStyle, textAlign: "right", color: "#0f172a" }}
+                      style={{ ...tdStyle, textAlign: "right", color: "var(--term-text)" }}
                       className="hidden tabular-nums sm:table-cell"
                     >
                       {g.homeFatigueScore !== null ? g.homeFatigueScore.toFixed(1) : "—"}
                     </td>
                     <td
-                      style={{ ...tdStyle, textAlign: "right", color: "#0f172a" }}
+                      style={{ ...tdStyle, textAlign: "right", color: "var(--term-text)" }}
                       className="hidden tabular-nums sm:table-cell"
                     >
                       {g.awayFatigueScore !== null ? g.awayFatigueScore.toFixed(1) : "—"}
                     </td>
-                    <td style={{ ...tdStyle, textAlign: "center", color: "#0f172a" }} className="tabular-nums">
+                    <td style={{ ...tdStyle, textAlign: "center", color: "var(--term-text)" }} className="tabular-nums">
                       {absDiff.toFixed(1)}
                     </td>
                     <td style={{ ...tdStyle, textAlign: "center" }}>
                       <span
                         className="mono inline-flex items-center"
                         style={{
-                          background: isHomeAdv ? "#17408B" : "#C9082A",
-                          color: "#fff",
+                          background: isHomeAdv ? "var(--term-blue)" : "var(--term-red)",
+                          color: "var(--term-surface)",
                           fontSize: 10,
                           fontWeight: 700,
                           padding: "2px 6px",
-                          borderRadius: 2,
+                          borderRadius: "var(--term-radius-sm)",
                           letterSpacing: "0.04em",
                         }}
                       >
