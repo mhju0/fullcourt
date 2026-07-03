@@ -31,7 +31,11 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const lastUpdated = new Date().toISOString().replace("T", " ").slice(0, 16) + " UTC";
+  // The time this layout was rendered — NOT data freshness. Labeled "RENDERED"
+  // so it makes no claim about pipeline/DB liveness. Live health lives behind
+  // the SYSTEM STATUS link (/api/health), which this footer never calls.
+  const renderedAt =
+    new Date().toISOString().replace("T", " ").slice(0, 16) + " UTC";
 
   return (
     <html
@@ -54,7 +58,13 @@ export default function RootLayout({
         >
           <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-2 sm:px-6">
             <span style={{ fontSize: "10px", color: "#8A8478", letterSpacing: "0.04em" }}>
-              LAST UPDATED: {lastUpdated} · PIPELINE OK
+              RENDERED: {renderedAt} ·{" "}
+              <a
+                href="/api/health"
+                style={{ color: "#8A8478", textDecoration: "underline" }}
+              >
+                SYSTEM STATUS
+              </a>
             </span>
             <span style={{ fontSize: "10px", color: "#8A8478", letterSpacing: "0.04em" }}>
               BUILT BY MJ
