@@ -551,7 +551,7 @@ function ExploreGames({
                       <span
                         className="mono inline-flex items-center"
                         style={{
-                          color: g.restedTeamWon ? "#17A34A" : "var(--term-red)",
+                          color: g.restedTeamWon ? "var(--term-pos)" : "var(--term-red)",
                           fontSize: 10,
                           fontWeight: 700,
                           letterSpacing: "0.06em",

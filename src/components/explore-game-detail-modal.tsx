@@ -80,7 +80,7 @@ function RecentResultsList({
                 <span style={{ fontWeight: 700, color: "var(--term-text)" }}>{g.opponentAbbreviation}</span>
               </span>
               <span className="tabular-nums" style={{ color: "var(--term-text-muted)" }}>
-                <span style={{ color: g.won ? "#17A34A" : "var(--term-red)", fontWeight: 700 }}>
+                <span style={{ color: g.won ? "var(--term-pos)" : "var(--term-red)", fontWeight: 700 }}>
                   {g.won ? "W" : "L"}
                 </span>{" "}
                 {g.teamScore}–{g.opponentScore}

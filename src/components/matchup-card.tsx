@@ -30,7 +30,7 @@ function confidenceAccent(c: Confidence): string {
   if (c === "high") return "var(--term-red)"
   if (c === "med") return "var(--term-blue)"
   if (c === "neutral") return "var(--term-hardwood)"
-  return "#888888"
+  return "var(--term-neutral)"
 }
 
 // ─── Team logo ───────────────────────────────────────────────────
@@ -115,7 +115,7 @@ function ConfidenceBadge({ confidence }: { confidence: Confidence }) {
   return (
     <span
       className="mono inline-flex items-center"
-      style={{ ...baseStyle, background: "transparent", border: "1px solid #888", color: "var(--term-text-muted)" }}
+      style={{ ...baseStyle, background: "transparent", border: "1px solid var(--term-neutral)", color: "var(--term-text-muted)" }}
     >
       {label}
     </span>
@@ -421,7 +421,7 @@ function PenaltyMark({ active }: { active: boolean }) {
   return (
     <span
       className="mono tabular-nums"
-      style={{ fontSize: 12, fontWeight: 700, color: active ? "var(--term-red)" : "#17A34A" }}
+      style={{ fontSize: 12, fontWeight: 700, color: active ? "var(--term-red)" : "var(--term-pos)" }}
       aria-label={active ? "Yes" : "No"}
     >
       {active ? "Y" : "N"}
@@ -530,7 +530,7 @@ export function RaBadge({
           letterSpacing: "0.06em",
           padding: "2px 7px",
           borderRadius: "var(--term-radius-sm)",
-          border: "1px solid #888",
+          border: "1px solid var(--term-neutral)",
           color: "var(--term-text-muted)",
         }}
       >
