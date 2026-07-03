@@ -49,7 +49,7 @@ function nextSeasonLabel(season: string): string {
 function OffSeasonEmptyState({ nextSeason }: { nextSeason: string }) {
   return (
     <div className="rounded-[4px] border border-[var(--term-border)] border-l-2 border-l-[var(--term-hardwood)] bg-white px-6 py-10 text-center">
-      <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.08em] text-[var(--term-text-muted)]">
+      <p className="mono text-[10px] font-semibold uppercase tracking-[0.08em] text-[var(--term-text-muted)]">
         REGULAR SEASON COMPLETE
       </p>
       <p className="mt-2 text-base font-medium text-slate-900">See you next season.</p>
