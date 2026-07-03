@@ -1,0 +1,39 @@
+=== recharts import sites (source) ===
+src/components/analysis-content.tsx
+
+=== all node_modules heavy client deps referenced in src (import count) ===
+recharts: 1 file(s)
+date-fns: 9 file(s)
+@supabase: 1 file(s)
+lucide-react: 7 file(s)
+swr: 6 file(s)
+
+=== top 25 client chunks by size (.next/static/chunks) ===
+372	.next/static/chunks/0~tb2t.vfsrkg.js
+224	.next/static/chunks/0d0cb_vbqc64e.js
+196	.next/static/chunks/14xq1bhr1r3mj.js
+188	.next/static/chunks/07qj.g.~j7cu9.js
+112	.next/static/chunks/03~yq9q893hmn.js
+56	.next/static/chunks/0mgmzo~oa3mht.js
+52	.next/static/chunks/0z_kscnx6jpgl.js
+52	.next/static/chunks/0k4b4m4ww98ms.js
+36	.next/static/chunks/17.d5t_~8f~ih.js
+36	.next/static/chunks/0zo7nm0mq29ll.js
+36	.next/static/chunks/0l203om6v37vz.js
+32	.next/static/chunks/03cn_-3dp3.~n.js
+28	.next/static/chunks/0qvyejq~t13.3.js
+28	.next/static/chunks/0im6y74fihb-g.js
+28	.next/static/chunks/071uga1osabo_.js
+20	.next/static/chunks/09m2kvz5fv9j~.js
+16	.next/static/chunks/0l4uxhaejgxdr.js
+16	.next/static/chunks/0c2ec0x~pekol.js
+12	.next/static/chunks/turbopack-07bdiw3a1-.e5.js
+12	.next/static/chunks/0f4lv~1tfagfj.js
+8	.next/static/chunks/17qyzjmdhjcvt.js
+8	.next/static/chunks/10krnuv5we2a6.js
+8	.next/static/chunks/0yg00v6e.-xyr.js
+8	.next/static/chunks/0i.5.2xjdaz2_.js
+4	.next/static/chunks/0x-q33xs7xz18.js
+
+=== total .next/static/chunks JS size (KB) ===
+1588 KB across 25 files

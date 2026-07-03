@@ -1,0 +1,207 @@
+############################################################
+INDEX VALIDITY — fatigue_scores
+############################################################
+fatigue_scores_game_id_idx | indisvalid=true | indisready=true
+  CREATE INDEX fatigue_scores_game_id_idx ON public.fatigue_scores USING btree (game_id)
+fatigue_scores_game_team_computed_idx | indisvalid=true | indisready=true
+  CREATE INDEX fatigue_scores_game_team_computed_idx ON public.fatigue_scores USING btree (game_id, team_id, computed_at DESC)
+fatigue_scores_pkey | indisvalid=true | indisready=true
+  CREATE UNIQUE INDEX fatigue_scores_pkey ON public.fatigue_scores USING btree (id)
+fatigue_scores_team_id_idx | indisvalid=true | indisready=true
+  CREATE INDEX fatigue_scores_team_id_idx ON public.fatigue_scores USING btree (team_id)
+
+### getGamesByDate target date (max final regular date) = 2026-04-13
+
+############################################################
+QUERY: getCompletedGamesWithFatigue  [/api/analysis]
+############################################################
+--- Drizzle .toSQL() SQL ---
+select "games"."date", "games"."season", "games"."home_score", "games"."away_score", "home_fatigue_latest"."score", "away_fatigue_latest"."score" from "games" inner join (select distinct on ("fatigue_scores"."game_id", "fatigue_scores"."team_id") "game_id", "team_id", "score", "is_back_to_back", "games_in_last_7_days", "travel_distance_miles", "altitude_multiplier", "days_since_last_game", "is_overtime_penalty", "road_trip_consecutive_away", "has_coast_to_coast_road_swing" from "fatigue_scores" order by "fatigue_scores"."game_id", "fatigue_scores"."team_id", "fatigue_scores"."computed_at" desc) "home_fatigue_latest" on ("home_fatigue_latest"."game_id" = "games"."id" and "home_fatigue_latest"."team_id" = "games"."home_team_id") inner join (select distinct on ("fatigue_scores"."game_id", "fatigue_scores"."team_id") "game_id", "team_id", "score", "is_back_to_back", "games_in_last_7_days", "travel_distance_miles", "altitude_multiplier", "days_since_last_game", "is_overtime_penalty", "road_trip_consecutive_away", "has_coast_to_coast_road_swing" from "fatigue_scores" order by "fatigue_scores"."game_id", "fatigue_scores"."team_id", "fatigue_scores"."computed_at" desc) "away_fatigue_latest" on ("away_fatigue_latest"."game_id" = "games"."id" and "away_fatigue_latest"."team_id" = "games"."away_team_id") where ("games"."status" = $1 and "games"."game_type" = $2 and "games"."home_score" is not null and "games"."away_score" is not null and 
+  "games"."date" >= to_date(left("games"."season", 4) || '-10-01', 'YYYY-MM-DD')
+  AND "games"."date" <= to_date((left("games"."season", 4)::integer + 1)::text || '-04-30', 'YYYY-MM-DD')
+)
+--- params ---
+["final","regular"]
+--- EXPLAIN (ANALYZE, BUFFERS, VERBOSE) [warm, 3rd run] ---
+Merge Join  (cost=8274.66..13217.95 rows=33 width=32) (actual time=204.696..300.505 rows=45988 loops=1)
+  Output: games.date, games.season, games.home_score, games.away_score, fatigue_scores_1.score, fatigue_scores.score
+  Inner Unique: true
+  Merge Cond: ((games.id = fatigue_scores_1.game_id) AND (games.home_team_id = fatigue_scores_1.team_id))
+  Buffers: shared hit=13406, temp read=282 written=283
+  ->  Sort  (cost=8274.24..8274.31 rows=27 width=38) (actual time=204.667..212.992 rows=45988 loops=1)
+        Output: games.date, games.season, games.home_score, games.away_score, games.id, games.home_team_id, fatigue_scores.score, fatigue_scores.game_id
+        Sort Key: games.id, games.home_team_id
+        Sort Method: external merge  Disk: 2256kB
+        Buffers: shared hit=7360, temp read=282 written=283
+        ->  Hash Join  (cost=3318.18..8273.60 rows=27 width=38) (actual time=85.982..187.271 rows=45988 loops=1)
+              Output: games.date, games.season, games.home_score, games.away_score, games.id, games.home_team_id, fatigue_scores.score, fatigue_scores.game_id
+              Inner Unique: true
+              Hash Cond: ((fatigue_scores.game_id = games.id) AND (fatigue_scores.team_id = games.away_team_id))
+              Buffers: shared hit=7360
+              ->  Unique  (cost=0.42..4202.99 rows=49367 width=101) (actual time=0.021..66.547 rows=98695 loops=1)
+                    Output: fatigue_scores.game_id, fatigue_scores.team_id, fatigue_scores.score, NULL::boolean, NULL::integer, NULL::numeric, NULL::numeric, NULL::integer, NULL::boolean, NULL::integer, NULL::boolean, fatigue_scores.computed_at
+                    Buffers: shared hit=6348
+                    ->  Index Scan using fatigue_scores_game_team_computed_idx on public.fatigue_scores  (cost=0.42..3709.52 rows=98695 width=101) (actual time=0.020..39.123 rows=98695 loops=1)
+                          Output: fatigue_scores.game_id, fatigue_scores.team_id, fatigue_scores.score, NULL::boolean, NULL::integer, NULL::numeric, NULL::numeric, NULL::integer, NULL::boolean, NULL::integer, NULL::boolean, fatigue_scores.computed_at
+                          Buffers: shared hit=6348
+              ->  Hash  (cost=3240.61..3240.61 rows=5144 width=32) (actual time=85.939..85.939 rows=45988 loops=1)
+                    Output: games.date, games.season, games.home_score, games.away_score, games.id, games.home_team_id, games.away_team_id
+                    Buckets: 65536 (originally 8192)  Batches: 1 (originally 1)  Memory Usage: 3387kB
+                    Buffers: shared hit=1012
+                    ->  Seq Scan on public.games  (cost=0.00..3240.61 rows=5144 width=32) (actual time=0.035..71.366 rows=45988 loops=1)
+                          Output: games.date, games.season, games.home_score, games.away_score, games.id, games.home_team_id, games.away_team_id
+                          Filter: ((games.home_score IS NOT NULL) AND (games.away_score IS NOT NULL) AND ((games.status)::text = 'final'::text) AND ((games.game_type)::text = 'regular'::text) AND (games.date >= to_date(("left"((games.season)::text, 4) || '-10-01'::text), 'YYYY-MM-DD'::text)) AND (games.date <= to_date((((("left"((games.season)::text, 4))::integer + 1))::text || '-04-30'::text), 'YYYY-MM-DD'::text)))
+                          Rows Removed by Filter: 3360
+                          Buffers: shared hit=1012
+  ->  Unique  (cost=0.42..4202.99 rows=49367 width=101) (actual time=0.023..59.965 rows=93835 loops=1)
+        Output: fatigue_scores_1.game_id, fatigue_scores_1.team_id, fatigue_scores_1.score, NULL::boolean, NULL::integer, NULL::numeric, NULL::numeric, NULL::integer, NULL::boolean, NULL::integer, NULL::boolean, fatigue_scores_1.computed_at
+        Buffers: shared hit=6046
+        ->  Index Scan using fatigue_scores_game_team_computed_idx on public.fatigue_scores fatigue_scores_1  (cost=0.42..3709.52 rows=98695 width=101) (actual time=0.022..34.106 rows=93835 loops=1)
+              Output: fatigue_scores_1.game_id, fatigue_scores_1.team_id, fatigue_scores_1.score, NULL::boolean, NULL::integer, NULL::numeric, NULL::numeric, NULL::integer, NULL::boolean, NULL::integer, NULL::boolean, fatigue_scores_1.computed_at
+              Buffers: shared hit=6046
+Query Identifier: -6024912337231469783
+Planning Time: 0.415 ms
+Execution Time: 303.785 ms
+
+############################################################
+QUERY: searchRegularSeasonGames  [no filters]
+############################################################
+--- Drizzle .toSQL() SQL ---
+select "games"."id", "games"."date", "games"."season", "home_team"."abbreviation", "away_team"."abbreviation", "games"."home_score", "games"."away_score", "home_fatigue_latest"."score", "away_fatigue_latest"."score" from "games" inner join "teams" "home_team" on "games"."home_team_id" = "home_team"."id" inner join "teams" "away_team" on "games"."away_team_id" = "away_team"."id" inner join (select distinct on ("fatigue_scores"."game_id", "fatigue_scores"."team_id") "game_id", "team_id", "score", "is_back_to_back", "games_in_last_7_days", "travel_distance_miles", "altitude_multiplier", "days_since_last_game", "is_overtime_penalty", "road_trip_consecutive_away", "has_coast_to_coast_road_swing" from "fatigue_scores" order by "fatigue_scores"."game_id", "fatigue_scores"."team_id", "fatigue_scores"."computed_at" desc) "home_fatigue_latest" on ("home_fatigue_latest"."game_id" = "games"."id" and "home_fatigue_latest"."team_id" = "games"."home_team_id") inner join (select distinct on ("fatigue_scores"."game_id", "fatigue_scores"."team_id") "game_id", "team_id", "score", "is_back_to_back", "games_in_last_7_days", "travel_distance_miles", "altitude_multiplier", "days_since_last_game", "is_overtime_penalty", "road_trip_consecutive_away", "has_coast_to_coast_road_swing" from "fatigue_scores" order by "fatigue_scores"."game_id", "fatigue_scores"."team_id", "fatigue_scores"."computed_at" desc) "away_fatigue_latest" on ("away_fatigue_latest"."game_id" = "games"."id" and "away_fatigue_latest"."team_id" = "games"."away_team_id") where ("games"."status" = $1 and "games"."game_type" = $2 and "games"."home_score" is not null and "games"."away_score" is not null and 
+  "games"."date" >= to_date(left("games"."season", 4) || '-10-01', 'YYYY-MM-DD')
+  AND "games"."date" <= to_date((left("games"."season", 4)::integer + 1)::text || '-04-30', 'YYYY-MM-DD')
+) order by "games"."date" desc
+--- params ---
+["final","regular"]
+--- EXPLAIN (ANALYZE, BUFFERS, VERBOSE) [warm, 3rd run] ---
+Sort  (cost=13227.83..13227.92 rows=33 width=68) (actual time=447.374..452.124 rows=45988 loops=1)
+  Output: games.id, games.date, games.season, home_team.abbreviation, away_team.abbreviation, games.home_score, games.away_score, fatigue_scores_1.score, fatigue_scores.score
+  Sort Key: games.date DESC
+  Sort Method: external merge  Disk: 2504kB
+  Buffers: shared hit=197358, temp read=662 written=665
+  ->  Merge Join  (cost=8283.71..13227.00 rows=33 width=68) (actual time=331.786..429.567 rows=45988 loops=1)
+        Output: games.id, games.date, games.season, home_team.abbreviation, away_team.abbreviation, games.home_score, games.away_score, fatigue_scores_1.score, fatigue_scores.score
+        Inner Unique: true
+        Merge Cond: ((games.id = fatigue_scores_1.game_id) AND (games.home_team_id = fatigue_scores_1.team_id))
+        Buffers: shared hit=197358, temp read=349 written=351
+        ->  Sort  (cost=8283.29..8283.36 rows=27 width=74) (actual time=331.758..339.437 rows=45988 loops=1)
+              Output: games.id, games.date, games.season, games.home_score, games.away_score, games.home_team_id, home_team.abbreviation, home_team.id, away_team.abbreviation, fatigue_scores.score, fatigue_scores.game_id
+              Sort Key: games.id, games.home_team_id
+              Sort Method: external merge  Disk: 2792kB
+              Buffers: shared hit=191312, temp read=349 written=351
+              ->  Nested Loop  (cost=3318.48..8282.65 rows=27 width=74) (actual time=86.259..312.692 rows=45988 loops=1)
+                    Output: games.id, games.date, games.season, games.home_score, games.away_score, games.home_team_id, home_team.abbreviation, home_team.id, away_team.abbreviation, fatigue_scores.score, fatigue_scores.game_id
+                    Inner Unique: true
+                    Buffers: shared hit=191312
+                    ->  Nested Loop  (cost=3318.33..8278.13 rows=27 width=66) (actual time=86.255..256.112 rows=45988 loops=1)
+                          Output: games.id, games.date, games.season, games.home_score, games.away_score, games.home_team_id, games.away_team_id, home_team.abbreviation, home_team.id, fatigue_scores.score, fatigue_scores.game_id, fatigue_scores.team_id
+                          Inner Unique: true
+                          Buffers: shared hit=99336
+                          ->  Hash Join  (cost=3318.18..8273.60 rows=27 width=46) (actual time=86.234..194.503 rows=45988 loops=1)
+                                Output: games.id, games.date, games.season, games.home_score, games.away_score, games.home_team_id, games.away_team_id, fatigue_scores.score, fatigue_scores.game_id, fatigue_scores.team_id
+                                Inner Unique: true
+                                Hash Cond: ((fatigue_scores.team_id = games.away_team_id) AND (fatigue_scores.game_id = games.id))
+                                Buffers: shared hit=7360
+                                ->  Unique  (cost=0.42..4202.99 rows=49367 width=101) (actual time=0.022..71.327 rows=98695 loops=1)
+                                      Output: fatigue_scores.game_id, fatigue_scores.team_id, fatigue_scores.score, NULL::boolean, NULL::integer, NULL::numeric, NULL::numeric, NULL::integer, NULL::boolean, NULL::integer, NULL::boolean, fatigue_scores.computed_at
+                                      Buffers: shared hit=6348
+                                      ->  Index Scan using fatigue_scores_game_team_computed_idx on public.fatigue_scores  (cost=0.42..3709.52 rows=98695 width=101) (actual time=0.020..43.363 rows=98695 loops=1)
+                                            Output: fatigue_scores.game_id, fatigue_scores.team_id, fatigue_scores.score, NULL::boolean, NULL::integer, NULL::numeric, NULL::numeric, NULL::integer, NULL::boolean, NULL::integer, NULL::boolean, fatigue_scores.computed_at
+                                            Buffers: shared hit=6348
+                                ->  Hash  (cost=3240.61..3240.61 rows=5144 width=32) (actual time=86.193..86.194 rows=45988 loops=1)
+                                      Output: games.id, games.date, games.season, games.home_score, games.away_score, games.home_team_id, games.away_team_id
+                                      Buckets: 65536 (originally 8192)  Batches: 1 (originally 1)  Memory Usage: 3387kB
+                                      Buffers: shared hit=1012
+                                      ->  Seq Scan on public.games  (cost=0.00..3240.61 rows=5144 width=32) (actual time=0.036..71.694 rows=45988 loops=1)
+                                            Output: games.id, games.date, games.season, games.home_score, games.away_score, games.home_team_id, games.away_team_id
+                                            Filter: ((games.home_score IS NOT NULL) AND (games.away_score IS NOT NULL) AND ((games.status)::text = 'final'::text) AND ((games.game_type)::text = 'regular'::text) AND (games.date >= to_date(("left"((games.season)::text, 4) || '-10-01'::text), 'YYYY-MM-DD'::text)) AND (games.date <= to_date((((("left"((games.season)::text, 4))::integer + 1))::text || '-04-30'::text), 'YYYY-MM-DD'::text)))
+                                            Rows Removed by Filter: 3360
+                                            Buffers: shared hit=1012
+                          ->  Index Scan using teams_pkey on public.teams home_team  (cost=0.15..0.17 rows=1 width=20) (actual time=0.001..0.001 rows=1 loops=45988)
+                                Output: home_team.id, home_team.abbreviation, home_team.name, home_team.city, home_team.conference, home_team.latitude, home_team.longitude, home_team.altitude_flag
+                                Index Cond: (home_team.id = games.home_team_id)
+                                Buffers: shared hit=91976
+                    ->  Index Scan using teams_pkey on public.teams away_team  (cost=0.15..0.17 rows=1 width=20) (actual time=0.001..0.001 rows=1 loops=45988)
+                          Output: away_team.id, away_team.abbreviation, away_team.name, away_team.city, away_team.conference, away_team.latitude, away_team.longitude, away_team.altitude_flag
+                          Index Cond: (away_team.id = games.away_team_id)
+                          Buffers: shared hit=91976
+        ->  Unique  (cost=0.42..4202.99 rows=49367 width=101) (actual time=0.022..61.130 rows=93835 loops=1)
+              Output: fatigue_scores_1.game_id, fatigue_scores_1.team_id, fatigue_scores_1.score, NULL::boolean, NULL::integer, NULL::numeric, NULL::numeric, NULL::integer, NULL::boolean, NULL::integer, NULL::boolean, fatigue_scores_1.computed_at
+              Buffers: shared hit=6046
+              ->  Index Scan using fatigue_scores_game_team_computed_idx on public.fatigue_scores fatigue_scores_1  (cost=0.42..3709.52 rows=98695 width=101) (actual time=0.021..35.133 rows=93835 loops=1)
+                    Output: fatigue_scores_1.game_id, fatigue_scores_1.team_id, fatigue_scores_1.score, NULL::boolean, NULL::integer, NULL::numeric, NULL::numeric, NULL::integer, NULL::boolean, NULL::integer, NULL::boolean, fatigue_scores_1.computed_at
+                    Buffers: shared hit=6046
+Query Identifier: -1705146647370177887
+Planning Time: 1.073 ms
+Execution Time: 455.810 ms
+
+############################################################
+QUERY: getGamesByDate  [single date, leftJoin]
+############################################################
+--- Drizzle .toSQL() SQL ---
+select "games"."id", "games"."date", "games"."season", "games"."status", "games"."home_score", "games"."away_score", "games"."home_team_id", "games"."away_team_id", "home_team"."name", "away_team"."name", "home_fatigue_latest"."score", "away_fatigue_latest"."score" from "games" inner join "teams" "home_team" on "games"."home_team_id" = "home_team"."id" inner join "teams" "away_team" on "games"."away_team_id" = "away_team"."id" left join (select distinct on ("fatigue_scores"."game_id", "fatigue_scores"."team_id") "game_id", "team_id", "score", "is_back_to_back", "games_in_last_7_days", "travel_distance_miles", "altitude_multiplier", "days_since_last_game", "is_overtime_penalty", "road_trip_consecutive_away", "has_coast_to_coast_road_swing" from "fatigue_scores" order by "fatigue_scores"."game_id", "fatigue_scores"."team_id", "fatigue_scores"."computed_at" desc) "home_fatigue_latest" on ("home_fatigue_latest"."game_id" = "games"."id" and "home_fatigue_latest"."team_id" = "games"."home_team_id") left join (select distinct on ("fatigue_scores"."game_id", "fatigue_scores"."team_id") "game_id", "team_id", "score", "is_back_to_back", "games_in_last_7_days", "travel_distance_miles", "altitude_multiplier", "days_since_last_game", "is_overtime_penalty", "road_trip_consecutive_away", "has_coast_to_coast_road_swing" from "fatigue_scores" order by "fatigue_scores"."game_id", "fatigue_scores"."team_id", "fatigue_scores"."computed_at" desc) "away_fatigue_latest" on ("away_fatigue_latest"."game_id" = "games"."id" and "away_fatigue_latest"."team_id" = "games"."away_team_id") where ("games"."date" = $1 and "games"."game_type" = $2)
+--- params ---
+["2026-04-13","regular"]
+--- EXPLAIN (ANALYZE, BUFFERS, VERBOSE) [warm, 3rd run] ---
+Nested Loop  (cost=10.16..10006.22 rows=7 width=114) (actual time=153.885..153.931 rows=8 loops=1)
+  Output: games.id, games.date, games.season, games.status, games.home_score, games.away_score, games.home_team_id, games.away_team_id, home_team.name, away_team.name, fatigue_scores.score, fatigue_scores_1.score
+  Join Filter: (games.away_team_id = away_team.id)
+  Rows Removed by Join Filter: 232
+  Buffers: shared hit=12098
+  ->  Seq Scan on public.teams away_team  (cost=0.00..13.90 rows=390 width=36) (actual time=0.011..0.014 rows=30 loops=1)
+        Output: away_team.id, away_team.abbreviation, away_team.name, away_team.city, away_team.conference, away_team.latitude, away_team.longitude, away_team.altitude_flag
+        Buffers: shared hit=1
+  ->  Materialize  (cost=10.16..9951.39 rows=7 width=82) (actual time=5.128..5.129 rows=8 loops=30)
+        Output: games.id, games.date, games.season, games.status, games.home_score, games.away_score, games.home_team_id, games.away_team_id, home_team.name, fatigue_scores.score, fatigue_scores_1.score
+        Buffers: shared hit=12097
+        ->  Nested Loop  (cost=10.16..9951.35 rows=7 width=82) (actual time=153.828..153.858 rows=8 loops=1)
+              Output: games.id, games.date, games.season, games.status, games.home_score, games.away_score, games.home_team_id, games.away_team_id, home_team.name, fatigue_scores.score, fatigue_scores_1.score
+              Join Filter: (games.home_team_id = home_team.id)
+              Rows Removed by Join Filter: 232
+              Buffers: shared hit=12097
+              ->  Seq Scan on public.teams home_team  (cost=0.00..13.90 rows=390 width=36) (actual time=0.003..0.007 rows=30 loops=1)
+                    Output: home_team.id, home_team.abbreviation, home_team.name, home_team.city, home_team.conference, home_team.latitude, home_team.longitude, home_team.altitude_flag
+                    Buffers: shared hit=1
+              ->  Materialize  (cost=10.16..9896.52 rows=7 width=50) (actual time=5.125..5.127 rows=8 loops=30)
+                    Output: games.id, games.date, games.season, games.status, games.home_score, games.away_score, games.home_team_id, games.away_team_id, fatigue_scores.score, fatigue_scores_1.score
+                    Buffers: shared hit=12096
+                    ->  Merge Left Join  (cost=10.16..9896.48 rows=7 width=50) (actual time=153.752..153.790 rows=8 loops=1)
+                          Output: games.id, games.date, games.season, games.status, games.home_score, games.away_score, games.home_team_id, games.away_team_id, fatigue_scores.score, fatigue_scores_1.score
+                          Inner Unique: true
+                          Merge Cond: (games.id = fatigue_scores_1.game_id)
+                          Join Filter: (fatigue_scores_1.team_id = games.away_team_id)
+                          Rows Removed by Join Filter: 4
+                          Buffers: shared hit=12096
+                          ->  Merge Left Join  (cost=9.74..4952.88 rows=7 width=44) (actual time=66.815..66.835 rows=8 loops=1)
+                                Output: games.id, games.date, games.season, games.status, games.home_score, games.away_score, games.home_team_id, games.away_team_id, fatigue_scores.score
+                                Inner Unique: true
+                                Merge Cond: ((games.id = fatigue_scores.game_id) AND (games.home_team_id = fatigue_scores.team_id))
+                                Buffers: shared hit=6050
+                                ->  Sort  (cost=9.33..9.34 rows=7 width=38) (actual time=0.028..0.030 rows=8 loops=1)
+                                      Output: games.id, games.date, games.season, games.status, games.home_score, games.away_score, games.home_team_id, games.away_team_id
+                                      Sort Key: games.id, games.home_team_id
+                                      Sort Method: quicksort  Memory: 25kB
+                                      Buffers: shared hit=4
+                                      ->  Index Scan using games_date_idx on public.games  (cost=0.29..9.23 rows=7 width=38) (actual time=0.015..0.020 rows=8 loops=1)
+                                            Output: games.id, games.date, games.season, games.status, games.home_score, games.away_score, games.home_team_id, games.away_team_id
+                                            Index Cond: (games.date = '2026-04-13'::date)
+                                            Filter: ((games.game_type)::text = 'regular'::text)
+                                            Buffers: shared hit=4
+                                ->  Unique  (cost=0.42..4202.99 rows=49367 width=101) (actual time=0.014..56.126 rows=93835 loops=1)
+                                      Output: fatigue_scores.game_id, fatigue_scores.team_id, fatigue_scores.score, NULL::boolean, NULL::integer, NULL::numeric, NULL::numeric, NULL::integer, NULL::boolean, NULL::integer, NULL::boolean, fatigue_scores.computed_at
+                                      Buffers: shared hit=6046
+                                      ->  Index Scan using fatigue_scores_game_team_computed_idx on public.fatigue_scores  (cost=0.42..3709.52 rows=98695 width=101) (actual time=0.014..31.526 rows=93835 loops=1)
+                                            Output: fatigue_scores.game_id, fatigue_scores.team_id, fatigue_scores.score, NULL::boolean, NULL::integer, NULL::numeric, NULL::numeric, NULL::integer, NULL::boolean, NULL::integer, NULL::boolean, fatigue_scores.computed_at
+                                            Buffers: shared hit=6046
+                          ->  Materialize  (cost=0.42..4820.08 rows=49367 width=14) (actual time=0.025..74.232 rows=93836 loops=1)
+                                Output: fatigue_scores_1.game_id, fatigue_scores_1.team_id, fatigue_scores_1.score, (NULL::boolean), (NULL::integer), (NULL::numeric), (NULL::numeric), (NULL::integer), (NULL::boolean), (NULL::integer), (NULL::boolean), fatigue_scores_1.computed_at
+                                Buffers: shared hit=6046
+                                ->  Unique  (cost=0.42..4202.99 rows=49367 width=101) (actual time=0.021..60.489 rows=93836 loops=1)
+                                      Output: fatigue_scores_1.game_id, fatigue_scores_1.team_id, fatigue_scores_1.score, NULL::boolean, NULL::integer, NULL::numeric, NULL::numeric, NULL::integer, NULL::boolean, NULL::integer, NULL::boolean, fatigue_scores_1.computed_at
+                                      Buffers: shared hit=6046
+                                      ->  Index Scan using fatigue_scores_game_team_computed_idx on public.fatigue_scores fatigue_scores_1  (cost=0.42..3709.52 rows=98695 width=101) (actual time=0.020..33.226 rows=93836 loops=1)
+                                            Output: fatigue_scores_1.game_id, fatigue_scores_1.team_id, fatigue_scores_1.score, NULL::boolean, NULL::integer, NULL::numeric, NULL::numeric, NULL::integer, NULL::boolean, NULL::integer, NULL::boolean, fatigue_scores_1.computed_at
+                                            Buffers: shared hit=6046
+Query Identifier: 7154853584684826885
+Planning Time: 0.634 ms
+Execution Time: 154.011 ms
