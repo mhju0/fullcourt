@@ -104,6 +104,29 @@
   --sidebar-accent-foreground: #17408b;
   --sidebar-border: rgba(0, 0, 0, 0.09);
   --sidebar-ring: rgba(23, 64, 139, 0.3);
+
+  /* FullCourt terminal design tokens (see docs/audit/design-system-audit.md §9) */
+  /* surfaces & text — lossless: same hex the components already use */
+  --term-bg: #F7F6F3;
+  --term-surface: #FFFFFF;
+  --term-surface-2: #F0EEE9;
+  --term-border: #E2DFD8;
+  --term-hairline: #C9C5BC;
+  --term-text: #0f172a;
+  --term-text-muted: #8A8478;
+  --term-text-dim: #4A4A4A;
+  /* brand / bar colors — lossless */
+  --term-red: #C9082A;
+  --term-blue: #17408B;
+  --term-hardwood: #C4853C;
+  /* semantic — unified values (applied in a later step, declared now) */
+  --term-pos: #17A34A;
+  --term-neg: #C9082A;
+  --term-neutral: #8A8478;
+  /* radius */
+  --term-radius: 4px;
+  --term-radius-sm: 2px;
+  --term-radius-bar: 1px;
 }
 
 /* No .dark block — this app is always light mode (color-scheme: only light above). */
