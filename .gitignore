@@ -1,88 +1,72 @@
-# AI assistant context
-CLAUDE.md
-.claude/settings.local.json
-.agents/
-
-# Environment files
-.env
-.env.local
-.env*.local
-.env.*
-!.env.example
-scripts/.env
-venv/
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
-node_modules/
-.pnpm-store/
-
-# next.js build
-.next/
-out/
-dist/
-build/
-
-# Python artifacts
-__pycache__/
-*.pyc
-*.pyo
-scripts/venv/
-.pytest_cache/
-*.egg-info/
-venv/
-.venv/
-
-# Data files (large, not needed in repo)
-scripts/*.csv
-
-# Shot Quality Model local raw-shot cache (never lands in Postgres — see docs/SHOT_QUALITY_DESIGN.md §3)
-ml/data/
-
-# IDE
-.vscode/
-.idea/
-.cursor/
-*.swp
-*.swo
-
-# OS
-.DS_Store
-Thumbs.db
-desktop.ini
-
-# vercel
-.vercel/
-
-# Local databases / SQLite
-*.db
-*.sqlite
-*.sqlite3
-
-# typescript
-*.tsbuildinfo
-
-# Tooling caches
-.eslintcache
-.cache/
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+package-lock.json
 
 # testing
-coverage/
-playwright-report/
-test-results/
+/coverage
 
-# logs
-*.log
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-pnpm-debug.log*
+.pnpm-debug.log*
 
-# turbo
-.turbo/
+# env files (can opt-in for committing if needed)
+.env
+.env*.local
+scripts/.env
 
-# lockfiles (pnpm project — only pnpm-lock.yaml is canonical)
-package-lock.json
-yarn.lock
-.serena/
-.serena/
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# python
+venv/
+scripts/venv/
+ml/.venv/
+__pycache__/
+scripts/__pycache__/
+ml/__pycache__/
+
+# ml artifacts (large binaries / data — keep out of git)
+ml/data/
 ml/shot_value/*.pkl
+
+# playwright
+/playwright-report/
+/test-results/
+
+# local caches
+.pnpm-store/
+.serena/
+
+# agent / local project memory
+# CLAUDE.md is local-only project memory (may contain machine-specific notes) — keep private
+CLAUDE.md
+
+# Claude Code: publish OUR workflow assets, keep local + third-party out
+.claude/settings.local.json
+.claude/skills/react-best-practices/
