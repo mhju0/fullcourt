@@ -1,0 +1,53 @@
+-- 0009_fatigue_scores_distinct_on_index.sql
+-- Composite index backing the "latest fatigue row per (game, team)" DISTINCT ON.
+-- HAND-APPLY in the Supabase SQL editor. Do NOT run drizzle-kit push/generate,
+-- and do NOT sync schema.ts to this index (schema.ts intentionally lags the live DB).
+--
+-- WHY: src/lib/db/queries.ts:latestFatigueSubquery does
+--        SELECT DISTINCT ON (game_id, team_id) ...
+--        FROM fatigue_scores
+--        ORDER BY game_id, team_id, computed_at DESC
+--      With no index matching that ordering, Postgres must materialize + Sort the
+--      whole table before the DISTINCT ON (see docs/audit/tier3-performance.md and
+--      the before-EXPLAIN baseline in docs/audit/tier3-explain.txt). This index
+--      lets the planner walk fatigue_scores in (game_id, team_id, computed_at DESC)
+--      order and pick the first row per group with NO Sort node.
+--
+--      Column order/direction MUST match the query exactly:
+--        game_id ASC, team_id ASC, computed_at DESC.
+--      A plain ASC on computed_at, or a different leading column, would NOT remove
+--      the sort. [Verified queries.ts:38-55]
+--
+-- RLS/GRANTS: none needed. This adds an index to an EXISTING table; it does not
+--      create a new relation and indexes are orthogonal to row-access policies,
+--      so the 0004 (RLS) / 0005 (grants) mirroring does not apply here.
+--
+-- ── APPLY (Supabase SQL editor) ──────────────────────────────────────────────
+--   IMPORTANT: CREATE INDEX CONCURRENTLY cannot run inside a transaction block.
+--   Run the statement below BY ITSELF, and do NOT wrap it in BEGIN/COMMIT.
+--   If the Supabase SQL editor auto-wraps statements in a transaction, this will
+--   error with "CREATE INDEX CONCURRENTLY cannot run inside a transaction block";
+--   in that case use the non-concurrent fallback in the commented block further
+--   down (it takes a brief ACCESS EXCLUSIVE lock on fatigue_scores — fine for this
+--   low-write table, but blocks writes for the build duration).
+--
+--   Steps:
+--     1. before-EXPLAIN baseline: already captured in docs/audit/tier3-explain.txt.
+--     2. Run the CREATE INDEX CONCURRENTLY statement below (alone).
+--     3. Verify:
+--          select indexname, indexdef
+--          from pg_indexes
+--          where schemaname = 'public' and tablename = 'fatigue_scores';
+--        Expect a row: fatigue_scores_game_team_computed_idx.
+--     4. after-EXPLAIN re-measurement is a SEPARATE session (out of scope here) —
+--        the index does not exist in the DB until this file is applied.
+
+CREATE INDEX CONCURRENTLY IF NOT EXISTS fatigue_scores_game_team_computed_idx
+  ON public.fatigue_scores (game_id, team_id, computed_at DESC);
+
+-- ── NON-CONCURRENT FALLBACK (only if the editor forces a transaction) ─────────
+-- CREATE INDEX IF NOT EXISTS fatigue_scores_game_team_computed_idx
+--   ON public.fatigue_scores (game_id, team_id, computed_at DESC);
+
+-- ── ROLLBACK ─────────────────────────────────────────────────────────────────
+-- DROP INDEX CONCURRENTLY IF EXISTS public.fatigue_scores_game_team_computed_idx;
