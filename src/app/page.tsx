@@ -40,8 +40,8 @@ const HIGH_CONF_THRESHOLD = 2.0
 
 // Terminal-style flat button: white bg, 1px border, mono uppercase, 4px corners.
 const termBtn =
-  "mono inline-flex items-center gap-2 bg-white px-3 py-1.5 text-[11px] uppercase tracking-[0.05em] text-slate-700 transition-colors hover:bg-[#F0EEE9]"
-const termBtnStyle: React.CSSProperties = { border: "1px solid #E2DFD8", borderRadius: 4 }
+  "mono inline-flex items-center gap-2 bg-white px-3 py-1.5 text-[11px] uppercase tracking-[0.05em] text-slate-700 transition-colors hover:bg-[var(--term-surface-2)]"
+const termBtnStyle: React.CSSProperties = { border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }
 
 // ─── Stat summary row ────────────────────────────────────────────
 
@@ -49,12 +49,12 @@ function StatCard({ label, value }: { label: string; value: string }) {
   return (
     <div
       className="mono flex flex-col gap-1"
-      style={{ background: "#F0EEE9", borderRadius: 4, padding: "10px 12px" }}
+      style={{ background: "var(--term-surface-2)", borderRadius: "var(--term-radius)", padding: "10px 12px" }}
     >
-      <span style={{ fontSize: 10, letterSpacing: "0.08em", color: "#8A8478", fontWeight: 600 }}>
+      <span style={{ fontSize: 10, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 600 }}>
         {label}
       </span>
-      <span className="tabular-nums" style={{ fontSize: 20, fontWeight: 500, color: "#0f172a", lineHeight: 1 }}>
+      <span className="tabular-nums" style={{ fontSize: 20, fontWeight: 500, color: "var(--term-text)", lineHeight: 1 }}>
         {value}
       </span>
     </div>
@@ -86,9 +86,9 @@ function StatSummaryRow({
 
 function SectionDivider({ label, count }: { label: string; count: number }) {
   return (
-    <div className="mono flex items-center gap-3 py-2" style={{ fontSize: 10, letterSpacing: "0.08em", color: "#8A8478" }}>
+    <div className="mono flex items-center gap-3 py-2" style={{ fontSize: 10, letterSpacing: "0.08em", color: "var(--term-text-muted)" }}>
       <span style={{ fontWeight: 700 }}>{label}</span>
-      <span style={{ flex: 1, height: 1, background: "#E2DFD8" }} />
+      <span style={{ flex: 1, height: 1, background: "var(--term-border)" }} />
       <span style={{ fontWeight: 600 }}>
         {count} {count === 1 ? "GAME" : "GAMES"}
       </span>
@@ -102,18 +102,18 @@ function MatchupRowSkeleton() {
   return (
     <div
       style={{
-        background: "#ffffff",
-        border: "1px solid #E2DFD8",
-        borderLeft: "2px solid #C4853C",
-        borderRadius: 4,
+        background: "var(--term-surface)",
+        border: "1px solid var(--term-border)",
+        borderLeft: "2px solid var(--term-hardwood)",
+        borderRadius: "var(--term-radius)",
         padding: "10px 14px",
       }}
     >
       <div className="flex items-center gap-4">
-        <Skeleton className="h-9 w-[110px] bg-[#F0EEE9]" />
-        <Skeleton className="h-9 flex-1 bg-[#F0EEE9]" />
-        <Skeleton className="h-9 w-[110px] bg-[#F0EEE9]" />
-        <Skeleton className="h-9 w-16 bg-[#F0EEE9]" />
+        <Skeleton className="h-9 w-[110px] bg-[var(--term-surface-2)]" />
+        <Skeleton className="h-9 flex-1 bg-[var(--term-surface-2)]" />
+        <Skeleton className="h-9 w-[110px] bg-[var(--term-surface-2)]" />
+        <Skeleton className="h-9 w-16 bg-[var(--term-surface-2)]" />
       </div>
     </div>
   )
@@ -135,12 +135,12 @@ function EmptyState({ label }: { label: string }) {
   return (
     <div
       className="mono flex flex-col items-center gap-2 px-6 py-16 text-center"
-      style={{ background: "#ffffff", border: "1px solid #E2DFD8", borderRadius: 4 }}
+      style={{ background: "var(--term-surface)", border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }}
     >
-      <p style={{ fontSize: 11, letterSpacing: "0.08em", color: "#0f172a", fontWeight: 700 }}>
+      <p style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-text)", fontWeight: 700 }}>
         NO GAMES SCHEDULED
       </p>
-      <p style={{ fontSize: 10, color: "#8A8478" }}>NO NBA GAMES ON {label.toUpperCase()}</p>
+      <p style={{ fontSize: 10, color: "var(--term-text-muted)" }}>NO NBA GAMES ON {label.toUpperCase()}</p>
     </div>
   )
 }
@@ -149,12 +149,12 @@ function ErrorState({ message }: { message: string }) {
   return (
     <div
       className="mono flex flex-col items-center gap-2 px-6 py-12 text-center"
-      style={{ background: "#ffffff", border: "1px solid #E2DFD8", borderLeft: "2px solid #C9082A", borderRadius: 4 }}
+      style={{ background: "var(--term-surface)", border: "1px solid var(--term-border)", borderLeft: "2px solid var(--term-red)", borderRadius: "var(--term-radius)" }}
     >
-      <p style={{ fontSize: 11, letterSpacing: "0.08em", color: "#C9082A", fontWeight: 700 }}>
+      <p style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-red)", fontWeight: 700 }}>
         FAILED TO LOAD GAMES
       </p>
-      <p style={{ fontSize: 10, color: "#8A8478" }}>{message}</p>
+      <p style={{ fontSize: 10, color: "var(--term-text-muted)" }}>{message}</p>
     </div>
   )
 }
@@ -182,17 +182,17 @@ function DateChip({
       aria-current={selected ? "date" : undefined}
       className="mono flex min-w-[3rem] flex-col items-center px-2 py-1.5 transition-colors"
       style={{
-        background: selected ? "#17408B" : "#ffffff",
-        border: "1px solid #E2DFD8",
-        borderLeft: selected ? "2px solid #17408B" : "1px solid #E2DFD8",
-        borderRadius: 4,
-        color: selected ? "#ffffff" : "#0f172a",
+        background: selected ? "var(--term-blue)" : "var(--term-surface)",
+        border: "1px solid var(--term-border)",
+        borderLeft: selected ? "2px solid var(--term-blue)" : "1px solid var(--term-border)",
+        borderRadius: "var(--term-radius)",
+        color: selected ? "var(--term-surface)" : "var(--term-text)",
       }}
     >
       <span className="tabular-nums" style={{ fontSize: 14, fontWeight: 700, lineHeight: 1.1 }}>
         {day}
       </span>
-      <span className="tabular-nums" style={{ fontSize: 9, color: selected ? "rgba(255,255,255,0.7)" : "#8A8478" }}>
+      <span className="tabular-nums" style={{ fontSize: 9, color: selected ? "rgba(255,255,255,0.7)" : "var(--term-text-muted)" }}>
         {count} {count === 1 ? "GM" : "GMS"}
       </span>
     </button>
@@ -415,11 +415,11 @@ export default function HomePage() {
     <div className="flex flex-col gap-6">
       {/* Heading */}
       <div className="flex flex-col gap-1">
-        <span className="mono" style={{ fontSize: 10, letterSpacing: "0.08em", color: "#C9082A", fontWeight: 700 }}>
+        <span className="mono" style={{ fontSize: 10, letterSpacing: "0.08em", color: "var(--term-red)", fontWeight: 700 }}>
           REST ADVANTAGE DASHBOARD
         </span>
         <h1 className="text-2xl font-bold tracking-tight text-slate-900">Today&apos;s Matchups</h1>
-        <p className="mono max-w-2xl" style={{ fontSize: 11, color: "#8A8478", lineHeight: 1.5 }}>
+        <p className="mono max-w-2xl" style={{ fontSize: 11, color: "var(--term-text-muted)", lineHeight: 1.5 }}>
           FATIGUE SCORES FOR EVERY NBA GAME. HIGHER DIFFERENTIAL = ONE TEAM CARRYING MORE TRAVEL AND SCHEDULE LOAD.
         </p>
       </div>
@@ -435,7 +435,7 @@ export default function HomePage() {
       {/* Filters */}
       <div className="flex flex-col gap-3">
         <div className="flex flex-col gap-1.5">
-          <label htmlFor="nba-season" className="mono" style={{ fontSize: 10, letterSpacing: "0.08em", color: "#8A8478", fontWeight: 600 }}>
+          <label htmlFor="nba-season" className="mono" style={{ fontSize: 10, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 600 }}>
             SEASON
           </label>
           <select
@@ -461,7 +461,7 @@ export default function HomePage() {
         </div>
 
         <div className="flex flex-col gap-1.5">
-          <span className="mono" style={{ fontSize: 10, letterSpacing: "0.08em", color: "#8A8478", fontWeight: 600 }}>
+          <span className="mono" style={{ fontSize: 10, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 600 }}>
             MONTH
           </span>
           <div className="-mx-1 overflow-x-auto overflow-y-hidden pb-1 [scrollbar-width:thin]">
@@ -477,9 +477,9 @@ export default function HomePage() {
                     className={cn(termBtn, "shrink-0")}
                     style={{
                       ...termBtnStyle,
-                      background: active ? "#17408B" : "#ffffff",
-                      color: active ? "#ffffff" : "#0f172a",
-                      borderColor: active ? "#17408B" : "#E2DFD8",
+                      background: active ? "var(--term-blue)" : "var(--term-surface)",
+                      color: active ? "var(--term-surface)" : "var(--term-text)",
+                      borderColor: active ? "var(--term-blue)" : "var(--term-border)",
                     }}
                   >
                     {label.toUpperCase()}
@@ -491,18 +491,18 @@ export default function HomePage() {
         </div>
 
         {errorDates ? (
-          <p className="mono" style={{ fontSize: 11, color: "#C9082A" }} role="alert">
+          <p className="mono" style={{ fontSize: 11, color: "var(--term-red)" }} role="alert">
             {errorDates}
           </p>
         ) : loadingDates ? (
-          <Skeleton className="h-16 w-full max-w-md bg-[#F0EEE9]" style={{ borderRadius: 4 }} />
+          <Skeleton className="h-16 w-full max-w-md bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)" }} />
         ) : availableDates.length === 0 ? (
-          <p className="mono" style={{ fontSize: 11, color: "#8A8478" }}>
+          <p className="mono" style={{ fontSize: 11, color: "var(--term-text-muted)" }}>
             NO GAMES IN THIS MONTH.
           </p>
         ) : (
           <div className="flex flex-col gap-1.5">
-            <span className="mono" style={{ fontSize: 10, letterSpacing: "0.08em", color: "#8A8478", fontWeight: 600 }}>
+            <span className="mono" style={{ fontSize: 10, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 600 }}>
               DAYS WITH GAMES
             </span>
             <div className="flex flex-wrap gap-1.5">
@@ -532,13 +532,13 @@ export default function HomePage() {
             disabled={!selectedDateKey}
             aria-label="Previous day"
             className="bg-white"
-            style={{ border: "1px solid #E2DFD8", borderRadius: 4 }}
+            style={{ border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }}
           >
             <ChevronLeft />
           </Button>
           <p
             className="mono min-w-[12rem] text-center sm:text-left"
-            style={{ fontSize: 11, letterSpacing: "0.04em", color: "#0f172a", fontWeight: 600 }}
+            style={{ fontSize: 11, letterSpacing: "0.04em", color: "var(--term-text)", fontWeight: 600 }}
             data-testid="selected-date-display"
           >
             {formattedSelected?.toUpperCase() ?? "PICK A DATE"}
@@ -550,7 +550,7 @@ export default function HomePage() {
             disabled={!selectedDateKey}
             aria-label="Next day"
             className="bg-white"
-            style={{ border: "1px solid #E2DFD8", borderRadius: 4 }}
+            style={{ border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }}
           >
             <ChevronRight />
           </Button>
