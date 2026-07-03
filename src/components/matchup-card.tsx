@@ -27,9 +27,9 @@ function getConfidence(diff: number | null | undefined): Confidence {
 }
 
 function confidenceAccent(c: Confidence): string {
-  if (c === "high") return "#C9082A"
-  if (c === "med") return "#17408B"
-  if (c === "neutral") return "#C4853C"
+  if (c === "high") return "var(--term-red)"
+  if (c === "med") return "var(--term-blue)"
+  if (c === "neutral") return "var(--term-hardwood)"
   return "#888888"
 }
 
@@ -61,8 +61,8 @@ function TeamLogo({
   if (!logoUrl || error) {
     return (
       <div
-        className="mono flex shrink-0 items-center justify-center bg-[#F0EEE9] text-[9px] font-bold text-slate-500"
-        style={{ width: size, height: size, borderRadius: "2px" }}
+        className="mono flex shrink-0 items-center justify-center bg-[var(--term-surface-2)] text-[9px] font-bold text-slate-500"
+        style={{ width: size, height: size, borderRadius: "var(--term-radius-sm)" }}
       >
         {abbreviation}
       </div>
@@ -94,20 +94,20 @@ function ConfidenceBadge({ confidence }: { confidence: Confidence }) {
     fontSize: "10px",
     letterSpacing: "0.06em",
     padding: "2px 8px",
-    borderRadius: "2px",
+    borderRadius: "var(--term-radius-sm)",
     fontWeight: 700,
   }
 
   if (confidence === "high") {
     return (
-      <span className="mono inline-flex items-center" style={{ ...baseStyle, background: "#C9082A", color: "#fff" }}>
+      <span className="mono inline-flex items-center" style={{ ...baseStyle, background: "var(--term-red)", color: "var(--term-surface)" }}>
         {label}
       </span>
     )
   }
   if (confidence === "med") {
     return (
-      <span className="mono inline-flex items-center" style={{ ...baseStyle, background: "#17408B", color: "#fff" }}>
+      <span className="mono inline-flex items-center" style={{ ...baseStyle, background: "var(--term-blue)", color: "var(--term-surface)" }}>
         {label}
       </span>
     )
@@ -115,7 +115,7 @@ function ConfidenceBadge({ confidence }: { confidence: Confidence }) {
   return (
     <span
       className="mono inline-flex items-center"
-      style={{ ...baseStyle, background: "transparent", border: "1px solid #888", color: "#8A8478" }}
+      style={{ ...baseStyle, background: "transparent", border: "1px solid #888", color: "var(--term-text-muted)" }}
     >
       {label}
     </span>
@@ -126,8 +126,8 @@ function ConfidenceBadge({ confidence }: { confidence: Confidence }) {
 
 function LiveIndicator() {
   return (
-    <span className="mono inline-flex items-center gap-1.5" style={{ fontSize: "10px", letterSpacing: "0.06em", color: "#C9082A", fontWeight: 700 }}>
-      <span style={{ display: "inline-block", width: 6, height: 6, borderRadius: "50%", background: "#C9082A" }} />
+    <span className="mono inline-flex items-center gap-1.5" style={{ fontSize: "10px", letterSpacing: "0.06em", color: "var(--term-red)", fontWeight: 700 }}>
+      <span style={{ display: "inline-block", width: 6, height: 6, borderRadius: "50%", background: "var(--term-red)" }} />
       LIVE
     </span>
   )
@@ -147,7 +147,7 @@ export function GameStatusRow({
       <div className="mono flex items-center gap-3" style={{ fontSize: "11px" }}>
         <LiveIndicator />
         {homeScore !== null && awayScore !== null && (
-          <span className="tabular-nums" style={{ color: "#0f172a", fontWeight: 700 }}>
+          <span className="tabular-nums" style={{ color: "var(--term-text)", fontWeight: 700 }}>
             {awayScore} – {homeScore}
           </span>
         )}
@@ -158,8 +158,8 @@ export function GameStatusRow({
   if (status === "final" && awayScore !== null && homeScore !== null) {
     return (
       <div className="mono flex items-center gap-3" style={{ fontSize: "11px" }}>
-        <span style={{ color: "#8A8478", letterSpacing: "0.08em" }}>FINAL</span>
-        <span className="tabular-nums" style={{ color: "#0f172a", fontWeight: 700 }}>
+        <span style={{ color: "var(--term-text-muted)", letterSpacing: "0.08em" }}>FINAL</span>
+        <span className="tabular-nums" style={{ color: "var(--term-text)", fontWeight: 700 }}>
           {awayScore} – {homeScore}
         </span>
       </div>
@@ -168,14 +168,14 @@ export function GameStatusRow({
 
   if (status === "final") {
     return (
-      <span className="mono" style={{ fontSize: "10px", letterSpacing: "0.08em", color: "#8A8478" }}>
+      <span className="mono" style={{ fontSize: "10px", letterSpacing: "0.08em", color: "var(--term-text-muted)" }}>
         FINAL
       </span>
     )
   }
 
   return (
-    <span className="mono" style={{ fontSize: "10px", letterSpacing: "0.08em", color: "#8A8478" }}>
+    <span className="mono" style={{ fontSize: "10px", letterSpacing: "0.08em", color: "var(--term-text-muted)" }}>
       UPCOMING
     </span>
   )
@@ -200,12 +200,12 @@ function TeamBlock({
     <div className={cn("flex min-w-0 items-center gap-2.5", align === "right" && "flex-row-reverse text-right")}>
       <TeamLogo abbreviation={abbreviation} season={season} fallback={fallback} size={24} />
       <div className="flex min-w-0 flex-col">
-        <span className="mono" style={{ fontSize: "9px", letterSpacing: "0.08em", color: "#8A8478", fontWeight: 600 }}>
+        <span className="mono" style={{ fontSize: "9px", letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 600 }}>
           {abbreviation}
         </span>
         <span
           className="truncate"
-          style={{ fontSize: "12px", fontWeight: 500, color: "#0f172a", lineHeight: 1.2 }}
+          style={{ fontSize: "12px", fontWeight: 500, color: "var(--term-text)", lineHeight: 1.2 }}
         >
           {city}
         </span>
@@ -227,15 +227,15 @@ function FatigueBarRow({
 }) {
   return (
     <div className="flex items-center gap-2">
-      <span className="mono shrink-0 tabular-nums" style={{ width: 28, fontSize: "10px", color: "#8A8478", fontWeight: 600 }}>
+      <span className="mono shrink-0 tabular-nums" style={{ width: 28, fontSize: "10px", color: "var(--term-text-muted)", fontWeight: 600 }}>
         {abbr}
       </span>
       {score !== null ? (
         <FatigueBar score={score} tone={tone} className="flex-1" />
       ) : (
-        <div className="flex-1" style={{ height: 4, background: "#F0EEE9", borderRadius: "1px" }} />
+        <div className="flex-1" style={{ height: 4, background: "var(--term-surface-2)", borderRadius: "var(--term-radius-bar)" }} />
       )}
-      <span className="mono shrink-0 tabular-nums" style={{ width: 28, fontSize: "10px", color: "#0f172a", fontWeight: 600, textAlign: "right" }}>
+      <span className="mono shrink-0 tabular-nums" style={{ width: 28, fontSize: "10px", color: "var(--term-text)", fontWeight: 600, textAlign: "right" }}>
         {score !== null ? score.toFixed(1) : "—"}
       </span>
     </div>
@@ -292,11 +292,11 @@ function RestAdvPanel({
   const isAwayAdv = advantageTeam === "away"
   const value = Math.abs(restAdvantage?.differential ?? 0).toFixed(1)
   const fillPercent = Math.min(Math.abs(restAdvantage?.differential ?? 0) / 5, 1) * 50
-  const color = isHomeAdv ? "#17408B" : isAwayAdv ? "#C9082A" : "#8A8478"
+  const color = isHomeAdv ? "var(--term-blue)" : isAwayAdv ? "var(--term-red)" : "var(--term-text-muted)"
 
   return (
-    <div className="flex w-[180px] shrink-0 flex-col items-center gap-2 pl-4 sm:w-[200px]" style={{ borderLeft: "1px solid #E2DFD8" }}>
-      <span className="mono" style={{ fontSize: "9px", letterSpacing: "0.08em", color: "#8A8478", fontWeight: 600 }}>
+    <div className="flex w-[180px] shrink-0 flex-col items-center gap-2 pl-4 sm:w-[200px]" style={{ borderLeft: "1px solid var(--term-border)" }}>
+      <span className="mono" style={{ fontSize: "9px", letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 600 }}>
         REST ADVANTAGE
       </span>
 
@@ -306,16 +306,16 @@ function RestAdvPanel({
             <span style={{ fontSize: "20px", fontWeight: 700, color }}>
               {display.teamAbbreviation}
             </span>
-            <span style={{ fontSize: "20px", fontWeight: 700, color: "#0f172a" }}>
+            <span style={{ fontSize: "20px", fontWeight: 700, color: "var(--term-text)" }}>
               {display.value}
             </span>
           </>
         ) : (
           <>
-            <span style={{ fontSize: "18px", fontWeight: 700, color: "#8A8478" }}>
+            <span style={{ fontSize: "18px", fontWeight: 700, color: "var(--term-text-muted)" }}>
               EVEN
             </span>
-            <span style={{ fontSize: "18px", fontWeight: 700, color: "#8A8478" }}>
+            <span style={{ fontSize: "18px", fontWeight: 700, color: "var(--term-text-muted)" }}>
               {value}
             </span>
           </>
@@ -325,7 +325,7 @@ function RestAdvPanel({
       <div className="flex w-full flex-col gap-1">
         <div
           className="relative w-full overflow-hidden"
-          style={{ height: 14, background: "#E2DFD8", borderRadius: 2 }}
+          style={{ height: 14, background: "var(--term-border)", borderRadius: "var(--term-radius-sm)" }}
           aria-hidden
         >
           {advantageTeam === "neutral" ? (
@@ -336,7 +336,7 @@ function RestAdvPanel({
                 top: 0,
                 bottom: 0,
                 width: "5%",
-                background: "#C9C5BC",
+                background: "var(--term-hairline)",
               }}
             />
           ) : (
@@ -359,11 +359,11 @@ function RestAdvPanel({
               top: 0,
               bottom: 0,
               width: 1,
-              background: "#C9C5BC",
+              background: "var(--term-hairline)",
             }}
           />
         </div>
-        <div className="mono flex items-center justify-between" style={{ fontSize: "9px", color: "#8A8478", fontWeight: 600 }}>
+        <div className="mono flex items-center justify-between" style={{ fontSize: "9px", color: "var(--term-text-muted)", fontWeight: 600 }}>
           <span>{awayAbbr}</span>
           <span>{homeAbbr}</span>
         </div>
@@ -397,18 +397,18 @@ function MetaStrip({ game }: { game: GameResponse }) {
     <div
       className="mono flex flex-wrap items-center gap-x-2 gap-y-1"
       style={{
-        background: "#F7F6F3",
-        borderTop: "1px solid #E2DFD8",
+        background: "var(--term-bg)",
+        borderTop: "1px solid var(--term-border)",
         padding: "4px 14px",
         fontSize: "10px",
-        color: "#8A8478",
+        color: "var(--term-text-muted)",
         letterSpacing: "0.04em",
       }}
     >
       {[...items, ...flags].map((item, i, arr) => (
         <span key={i} className="inline-flex items-center gap-2">
           <span>{item}</span>
-          {i < arr.length - 1 && <span style={{ color: "#C9C5BC" }}>·</span>}
+          {i < arr.length - 1 && <span style={{ color: "var(--term-hairline)" }}>·</span>}
         </span>
       ))}
     </div>
@@ -421,7 +421,7 @@ function PenaltyMark({ active }: { active: boolean }) {
   return (
     <span
       className="mono tabular-nums"
-      style={{ fontSize: 12, fontWeight: 700, color: active ? "#C9082A" : "#17A34A" }}
+      style={{ fontSize: 12, fontWeight: 700, color: active ? "var(--term-red)" : "#17A34A" }}
       aria-label={active ? "Yes" : "No"}
     >
       {active ? "Y" : "N"}
@@ -440,8 +440,8 @@ function FatigueDetailRow({
 }) {
   return (
     <div className="mono flex justify-between gap-2" style={{ fontSize: 11 }}>
-      <span style={{ color: "#8A8478", letterSpacing: "0.04em" }}>{k}</span>
-      <span className="tabular-nums" style={{ color: highlight ? "#C9082A" : "#0f172a", fontWeight: 600 }}>
+      <span style={{ color: "var(--term-text-muted)", letterSpacing: "0.04em" }}>{k}</span>
+      <span className="tabular-nums" style={{ color: highlight ? "var(--term-red)" : "var(--term-text)", fontWeight: 600 }}>
         {v}
       </span>
     </div>
@@ -459,7 +459,7 @@ export function FatigueDetailColumn({
     return (
       <div
         className="mono px-3 py-3 text-center"
-        style={{ fontSize: 11, color: "#8A8478", background: "#fff", border: "1px solid #E2DFD8", borderRadius: 4 }}
+        style={{ fontSize: 11, color: "var(--term-text-muted)", background: "var(--term-surface)", border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }}
       >
         NO FATIGUE DATA
       </div>
@@ -471,16 +471,16 @@ export function FatigueDetailColumn({
   return (
     <div
       className="flex flex-col gap-2 px-3 py-3"
-      style={{ background: "#fff", border: "1px solid #E2DFD8", borderRadius: 4 }}
+      style={{ background: "var(--term-surface)", border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }}
     >
       <p
         className="mono pb-1.5"
         style={{
           fontSize: 10,
           letterSpacing: "0.08em",
-          color: "#8A8478",
+          color: "var(--term-text-muted)",
           fontWeight: 700,
-          borderBottom: "1px solid #E2DFD8",
+          borderBottom: "1px solid var(--term-border)",
         }}
       >
         {label.toUpperCase()}
@@ -516,7 +516,7 @@ export function RaBadge({
 }) {
   if (!restAdvantage) {
     return (
-      <span className="mono" style={{ fontSize: 10, color: "#8A8478", letterSpacing: "0.08em" }}>
+      <span className="mono" style={{ fontSize: 10, color: "var(--term-text-muted)", letterSpacing: "0.08em" }}>
         NO DATA
       </span>
     )
@@ -529,9 +529,9 @@ export function RaBadge({
           fontSize: 9,
           letterSpacing: "0.06em",
           padding: "2px 7px",
-          borderRadius: 2,
+          borderRadius: "var(--term-radius-sm)",
           border: "1px solid #888",
-          color: "#8A8478",
+          color: "var(--term-text-muted)",
         }}
       >
         EVEN
@@ -548,9 +548,9 @@ export function RaBadge({
         fontSize: 9,
         letterSpacing: "0.06em",
         padding: "2px 7px",
-        borderRadius: 2,
-        background: isHomeAdv ? "#17408B" : "#C9082A",
-        color: "#fff",
+        borderRadius: "var(--term-radius-sm)",
+        background: isHomeAdv ? "var(--term-blue)" : "var(--term-red)",
+        color: "var(--term-surface)",
         fontWeight: 700,
       }}
     >
@@ -605,10 +605,10 @@ export function MatchupCard({ game, index = 0, isScoreFlashing = false }: Matchu
       className="animate-[fadeInUp_0.4s_ease-out_forwards] flex flex-col"
       style={{
         animationDelay: `${index * 40}ms`,
-        background: "#ffffff",
-        border: "1px solid #E2DFD8",
+        background: "var(--term-surface)",
+        border: "1px solid var(--term-border)",
         borderLeft: `2px solid ${accent}`,
-        borderRadius: 4,
+        borderRadius: "var(--term-radius)",
         overflow: "hidden",
       }}
     >
@@ -629,7 +629,7 @@ export function MatchupCard({ game, index = 0, isScoreFlashing = false }: Matchu
         <div className="mb-2 flex items-center justify-between">
           <GameStatusRow status={game.status} homeScore={game.homeScore} awayScore={game.awayScore} />
           <ChevronDown
-            className={cn("size-4 text-[#8A8478] transition-transform duration-200", expanded && "rotate-180")}
+            className={cn("size-4 text-[var(--term-text-muted)] transition-transform duration-200", expanded && "rotate-180")}
             aria-hidden
           />
         </div>
@@ -686,7 +686,7 @@ export function MatchupCard({ game, index = 0, isScoreFlashing = false }: Matchu
         <div className="overflow-hidden">
           <div
             className="grid grid-cols-1 gap-3 px-3 py-3 sm:grid-cols-2"
-            style={{ background: "#F7F6F3", borderTop: "1px solid #E2DFD8" }}
+            style={{ background: "var(--term-bg)", borderTop: "1px solid var(--term-border)" }}
           >
             <FatigueDetailColumn
               label={`AWAY · ${awayBrand.abbreviation}`}
