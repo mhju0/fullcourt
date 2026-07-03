@@ -6,8 +6,8 @@ const SCALE_MAX = 10
 export type FatigueBarTone = "higher" | "lower" | "neutral"
 
 function toneColor(tone: FatigueBarTone): string {
-  if (tone === "higher") return "#C9082A"
-  if (tone === "lower") return "#17408B"
+  if (tone === "higher") return "var(--term-red)"
+  if (tone === "lower") return "var(--term-blue)"
   return "#888888"
 }
 
@@ -26,8 +26,8 @@ export function FatigueBar({ score, tone = "neutral", className }: FatigueBarPro
 
   return (
     <div
-      className={cn("relative w-full overflow-hidden bg-[#E2DFD8]", className)}
-      style={{ height: "4px", borderRadius: "1px" }}
+      className={cn("relative w-full overflow-hidden bg-[var(--term-border)]", className)}
+      style={{ height: "4px", borderRadius: "var(--term-radius-bar)" }}
       role="progressbar"
       aria-valuenow={score}
       aria-valuemin={0}

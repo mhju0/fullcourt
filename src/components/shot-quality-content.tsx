@@ -12,18 +12,18 @@ import type { ShotQualityCell, ShotQualityResponse } from "@/types"
 // ─── Shared styles (terminal, mirrors playoffs-content) ────────────
 
 const termCard: React.CSSProperties = {
-  background: "#ffffff",
-  border: "1px solid #E2DFD8",
-  borderRadius: 4,
+  background: "var(--term-surface)",
+  border: "1px solid var(--term-border)",
+  borderRadius: "var(--term-radius)",
   padding: 16,
 }
 
 const termSelectClass =
-  "mono inline-flex items-center gap-2 bg-white px-3 py-1.5 text-[11px] uppercase tracking-[0.05em] text-slate-700 transition-colors hover:bg-[#F0EEE9] cursor-pointer appearance-none pr-8"
+  "mono inline-flex items-center gap-2 bg-white px-3 py-1.5 text-[11px] uppercase tracking-[0.05em] text-slate-700 transition-colors hover:bg-[var(--term-surface-2)] cursor-pointer appearance-none pr-8"
 
 const termSelectStyle: React.CSSProperties = {
-  border: "1px solid #E2DFD8",
-  borderRadius: 4,
+  border: "1px solid var(--term-border)",
+  borderRadius: "var(--term-radius)",
   backgroundImage:
     "url('data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20width=%2712%27%20height=%2712%27%20viewBox=%270%200%2024%2024%27%20fill=%27none%27%20stroke=%27%238A8478%27%20stroke-width=%272%27%3E%3Cpath%20d=%27M6%209l6%206%206-6%27/%3E%3C/svg%3E')",
   backgroundRepeat: "no-repeat",
@@ -109,7 +109,7 @@ function SeasonSelector({
       <label
         htmlFor="shot-quality-season"
         className="mono"
-        style={{ fontSize: 10, letterSpacing: "0.08em", color: "#8A8478", fontWeight: 600 }}
+        style={{ fontSize: 10, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 600 }}
       >
         SEASON
       </label>
@@ -147,7 +147,7 @@ function EncodingToggle({
   ]
   return (
     <div className="flex flex-col gap-1.5">
-      <span className="mono" style={{ fontSize: 10, letterSpacing: "0.08em", color: "#8A8478", fontWeight: 600 }}>
+      <span className="mono" style={{ fontSize: 10, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 600 }}>
         COLOR ENCODING
       </span>
       <div className="inline-flex" role="group" aria-label="Color encoding">
@@ -163,10 +163,10 @@ function EncodingToggle({
               style={{
                 fontSize: 11,
                 letterSpacing: "0.05em",
-                background: active ? "#17408B" : "#ffffff",
-                color: active ? "#ffffff" : "#4A4A4A",
-                border: "1px solid #E2DFD8",
-                borderLeft: i === 0 ? "1px solid #E2DFD8" : "none",
+                background: active ? "var(--term-blue)" : "var(--term-surface)",
+                color: active ? "var(--term-surface)" : "var(--term-text-dim)",
+                border: "1px solid var(--term-border)",
+                borderLeft: i === 0 ? "1px solid var(--term-border)" : "none",
                 borderTopLeftRadius: i === 0 ? 4 : 0,
                 borderBottomLeftRadius: i === 0 ? 4 : 0,
                 borderTopRightRadius: i === options.length - 1 ? 4 : 0,
@@ -187,8 +187,8 @@ function EncodingToggle({
 function LegendBar({ gradient, left, mid, right }: { gradient: string; left: string; mid?: string; right: string }) {
   return (
     <div className="flex flex-col gap-1" style={{ maxWidth: 320 }}>
-      <div style={{ height: 10, borderRadius: 2, border: "1px solid #E2DFD8", background: gradient }} />
-      <div className="mono flex justify-between" style={{ fontSize: 9, color: "#8A8478", letterSpacing: "0.04em" }}>
+      <div style={{ height: 10, borderRadius: "var(--term-radius-sm)", border: "1px solid var(--term-border)", background: gradient }} />
+      <div className="mono flex justify-between" style={{ fontSize: 9, color: "var(--term-text-muted)", letterSpacing: "0.04em" }}>
         <span>{left}</span>
         {mid ? <span>{mid}</span> : null}
         <span>{right}</span>
@@ -201,7 +201,7 @@ function LegendBar({ gradient, left, mid, right }: { gradient: string; left: str
 
 const LINE = "#C0BAAE"
 const BOUNDARY = "#A8A296"
-const RIM_RED = "#C9082A"
+const RIM_RED = "var(--term-red)"
 
 /** Samples an arc of `radius` (ft) about court-center (cxFt, cyFt), α ∈ [−aMax, aMax] deg. */
 function arcPath(radiusFt: number, cxFt: number, cyFt: number, aMaxDeg: number): string {
@@ -295,10 +295,10 @@ function ShotCourt({
   return (
     <figure className="flex flex-col gap-2">
       <figcaption className="flex flex-col gap-0.5">
-        <span className="mono" style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.05em", color: "#0f172a" }}>
+        <span className="mono" style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.05em", color: "var(--term-text)" }}>
           {title}
         </span>
-        <span className="mono" style={{ fontSize: 9, color: "#8A8478", letterSpacing: "0.04em" }}>
+        <span className="mono" style={{ fontSize: 9, color: "var(--term-text-muted)", letterSpacing: "0.04em" }}>
           {subtitle}
         </span>
       </figcaption>
@@ -307,7 +307,7 @@ function ShotCourt({
         width="100%"
         role="img"
         aria-label={`${title}: half-court expected-shot-value map, ${cells.length} cells`}
-        style={{ display: "block", background: "#FCFBF9", border: "1px solid #E2DFD8", borderRadius: 4 }}
+        style={{ display: "block", background: "#FCFBF9", border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }}
       >
         <g>
           {markers.map((m) => {
@@ -342,29 +342,29 @@ function MethodologyNote() {
     <details className="mono group" style={{ ...termCard, padding: 0 }}>
       <summary
         className="flex cursor-pointer items-center justify-between px-4 py-3 outline-none"
-        style={{ fontSize: 10, letterSpacing: "0.08em", color: "#0f172a", fontWeight: 700 }}
+        style={{ fontSize: 10, letterSpacing: "0.08em", color: "var(--term-text)", fontWeight: 700 }}
       >
         METHODOLOGY
-        <ChevronDown className="size-4 text-[#8A8478] transition-transform duration-200 group-open:rotate-180" aria-hidden />
+        <ChevronDown className="size-4 text-[var(--term-text-muted)] transition-transform duration-200 group-open:rotate-180" aria-hidden />
       </summary>
       <div
         className="flex flex-col gap-2 px-4 pb-4"
-        style={{ fontSize: 10, color: "#8A8478", letterSpacing: "0.03em", lineHeight: 1.55 }}
+        style={{ fontSize: 10, color: "var(--term-text-muted)", letterSpacing: "0.03em", lineHeight: 1.55 }}
       >
         <p>
-          <span style={{ color: "#0f172a", fontWeight: 700 }}>BASELINE</span> = LEAGUE-AVERAGE MAKE
-          RATE PER SHOT ZONE (THE FLOOR — A STEP FUNCTION). <span style={{ color: "#0f172a", fontWeight: 700 }}>GBM</span>{" "}
+          <span style={{ color: "var(--term-text)", fontWeight: 700 }}>BASELINE</span> = LEAGUE-AVERAGE MAKE
+          RATE PER SHOT ZONE (THE FLOOR — A STEP FUNCTION). <span style={{ color: "var(--term-text)", fontWeight: 700 }}>GBM</span>{" "}
           = A LOCATION-BASED GRADIENT-BOOSTING MODEL THAT RESOLVES VALUE AS A SMOOTH SURFACE FINER THAN THE ~6 NATIVE ZONES.
         </p>
         <p>
           THE GBM BEAT THE ZONE BASELINE ON WALK-FORWARD LOG-LOSS / BRIER, BUT THE MARGIN IS SMALL
-          (~1%). THIS IS A CONSISTENT <span style={{ color: "#0f172a", fontWeight: 700 }}>CALIBRATION</span> IMPROVEMENT,
+          (~1%). THIS IS A CONSISTENT <span style={{ color: "var(--term-text)", fontWeight: 700 }}>CALIBRATION</span> IMPROVEMENT,
           NOT A LARGE ACCURACY JUMP — A SINGLE SHOT IS NEAR A COIN FLIP WITHIN ANY ZONE.
         </p>
         <p>
           EXPECTED eFG% IS WHAT AN AVERAGE SHOOTER CONVERTS FROM EACH SPOT. THE GAP BETWEEN A TEAM&apos;S
           ACTUAL AND EXPECTED eFG% READS AS{" "}
-          <span style={{ color: "#0f172a", fontWeight: 700 }}>SHOTS-ABOVE-EXPECTED</span> (SHOT-MAKING RELATIVE TO SHOT SELECTION).
+          <span style={{ color: "var(--term-text)", fontWeight: 700 }}>SHOTS-ABOVE-EXPECTED</span> (SHOT-MAKING RELATIVE TO SHOT SELECTION).
         </p>
         <p>
           THE SURFACE COMES FROM A MODEL TRAINED ON PRIOR SEASONS (EXPANDING WINDOW). BECAUSE SHOT
@@ -381,22 +381,22 @@ function MethodologyNote() {
 function CourtSkeleton() {
   return (
     <div style={termCard}>
-      <Skeleton className="mb-3 h-3 w-40 bg-[#F0EEE9]" style={{ borderRadius: 4 }} />
+      <Skeleton className="mb-3 h-3 w-40 bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)" }} />
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <Skeleton className="w-full bg-[#F0EEE9]" style={{ borderRadius: 4, aspectRatio: `${VB_W} / ${VB_H}` }} />
-        <Skeleton className="w-full bg-[#F0EEE9]" style={{ borderRadius: 4, aspectRatio: `${VB_W} / ${VB_H}` }} />
+        <Skeleton className="w-full bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)", aspectRatio: `${VB_W} / ${VB_H}` }} />
+        <Skeleton className="w-full bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)", aspectRatio: `${VB_W} / ${VB_H}` }} />
       </div>
     </div>
   )
 }
 
 function MessageCard({ tone, title, body }: { tone: "muted" | "error"; title: string; body?: string }) {
-  const accent = tone === "error" ? "#C9082A" : "#8A8478"
+  const accent = tone === "error" ? "var(--term-red)" : "var(--term-text-muted)"
   return (
     <div className="mono px-6 py-12 text-center" style={{ ...termCard, borderLeft: `2px solid ${accent}` }}>
       <p style={{ fontSize: 11, letterSpacing: "0.08em", color: accent, fontWeight: 700 }}>{title}</p>
       {body ? (
-        <p className="mt-1" style={{ fontSize: 10, color: "#8A8478" }}>
+        <p className="mt-1" style={{ fontSize: 10, color: "var(--term-text-muted)" }}>
           {body}
         </p>
       ) : null}
@@ -497,7 +497,7 @@ export function ShotQualityContent() {
         <>
           <div style={termCard}>
             <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
-              <span className="mono" style={{ fontSize: 10, letterSpacing: "0.08em", color: "#8A8478", fontWeight: 700 }}>
+              <span className="mono" style={{ fontSize: 10, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 700 }}>
                 {season} · {data.meta.cellCount.toLocaleString()} CELLS · {data.meta.totalFga.toLocaleString()} FGA
               </span>
               {mode === "value" ? (
@@ -551,7 +551,7 @@ export function ShotQualityContent() {
               </div>
             )}
 
-            <p className="mono mt-3" style={{ fontSize: 9, color: "#8A8478", letterSpacing: "0.04em", lineHeight: 1.5 }}>
+            <p className="mono mt-3" style={{ fontSize: 9, color: "var(--term-text-muted)", letterSpacing: "0.04em", lineHeight: 1.5 }}>
               MARKER SIZE = SHOT ATTEMPTS (FGA) FROM THAT CELL. HOVER A CELL FOR ITS ZONE, VOLUME, AND VALUE.
             </p>
           </div>
