@@ -8,7 +8,7 @@ export type FatigueBarTone = "higher" | "lower" | "neutral"
 function toneColor(tone: FatigueBarTone): string {
   if (tone === "higher") return "var(--term-red)"
   if (tone === "lower") return "var(--term-blue)"
-  return "#888888"
+  return "var(--term-neutral)"
 }
 
 interface FatigueBarProps {

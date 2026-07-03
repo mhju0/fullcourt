@@ -31,8 +31,8 @@ function isActive(pathname: string, href: string): boolean {
 }
 
 function TickerArrow({ dir }: { dir: "up" | "down" | "flat" }) {
-  if (dir === "up")   return <span style={{ color: "#22c55e" }}>▲</span>
-  if (dir === "down") return <span style={{ color: "#ef4444" }}>▼</span>
+  if (dir === "up")   return <span style={{ color: "var(--term-pos)" }}>▲</span>
+  if (dir === "down") return <span style={{ color: "var(--term-neg)" }}>▼</span>
   return <span style={{ color: "rgba(255,255,255,0.4)" }}>—</span>
 }
 
@@ -65,10 +65,10 @@ export function NavBar() {
                     width: "8px",
                     height: "8px",
                     borderRadius: "50%",
-                    background: "#22c55e",
+                    background: "var(--term-pos)",
                   }}
                 />
-                <span style={{ color: "#22c55e", fontWeight: 700 }}>LIVE</span>
+                <span style={{ color: "var(--term-pos)", fontWeight: 700 }}>LIVE</span>
               </span>
             )}
           </div>
