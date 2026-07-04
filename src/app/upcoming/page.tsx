@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Calendar } from "lucide-react";
 import { UpcomingContentLazy } from "@/components/upcoming-lazy";
 
 export const metadata: Metadata = {
@@ -8,18 +7,18 @@ export const metadata: Metadata = {
 
 export default function UpcomingPage() {
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-4">
       {/* Page header */}
-      <div className="flex flex-col gap-2">
-        <div className="flex items-center gap-2 text-base font-semibold text-[#17408B]">
-          <Calendar className="size-4" />
-          2025–26 Season
-        </div>
-        <h1 className="text-4xl font-bold tracking-tight text-slate-900">
-          Future Games
-        </h1>
-        <p className="max-w-xl text-lg text-slate-500">
-          Upcoming scheduled games filtered by Rest Advantage threshold.
+      <div className="flex flex-col gap-1">
+        <span
+          className="mono"
+          style={{ fontSize: 10, letterSpacing: "0.08em", color: "var(--term-red)", fontWeight: 700 }}
+        >
+          2025–26 SEASON
+        </span>
+        <h1 className="text-2xl font-bold tracking-tight text-slate-900">Future Games</h1>
+        <p className="mono max-w-2xl" style={{ fontSize: 11, color: "var(--term-text-muted)", lineHeight: 1.5 }}>
+          UPCOMING SCHEDULED GAMES FILTERED BY REST ADVANTAGE THRESHOLD.
         </p>
       </div>
 
