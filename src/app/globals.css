@@ -165,6 +165,23 @@
   font-family: var(--font-heading), ui-sans-serif, system-ui, sans-serif;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  @keyframes marquee {
+    from, to { transform: translateX(0); }
+  }
+
+  @keyframes fadeInUp {
+    from, to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes scoreFlash {
+    from, to { box-shadow: none; }
+  }
+}
+
 /* ── Base layer ─────────────────────────────────────────────────── */
 
 @layer base {
