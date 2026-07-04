@@ -9,8 +9,8 @@ test.describe("Home page", () => {
     ).toBeVisible();
 
     await expect(page.getByLabel("Season")).toBeVisible();
-    await expect(page.getByRole("button", { name: /^Oct$/ })).toBeVisible();
-    await expect(page.getByRole("button", { name: /^Dec$/ })).toBeVisible();
+    await expect(page.getByRole("button", { name: /^OCT$/ })).toBeVisible();
+    await expect(page.getByRole("button", { name: /^DEC$/ })).toBeVisible();
   });
 
   test("previous-day control moves the selected date display backward", async ({ page }) => {
@@ -35,7 +35,7 @@ test.describe("Home page", () => {
     await page.goto("/");
 
     await page.getByLabel("Season").selectOption("2024-25");
-    await page.getByRole("button", { name: /^Dec$/ }).click();
+    await page.getByRole("button", { name: /^DEC$/ }).click();
 
     const dec25 = page.getByRole("button", { name: /December 25, 2024/ });
     await expect(dec25).toBeVisible({ timeout: 60_000 });
@@ -46,17 +46,26 @@ test.describe("Home page", () => {
         res.url().includes("/api/games/2024-12-25") && res.status() === 200
     );
 
-    const matchupHeading = page.getByText(/\b[A-Z]{3}\s*@\s*[A-Z]{3}\b/).first();
-    await expect(matchupHeading).toBeVisible({ timeout: 60_000 });
+    // MatchupCard's toggle row is role="button" with an "Expand/Collapse game
+    // details" aria-label (src/components/matchup-card.tsx:616-619) — there's
+    // no combined "TEAM @ TEAM" text node in the current markup.
+    const firstCard = page
+      .getByRole("button", { name: /Expand game details|Collapse game details/ })
+      .first();
+    await expect(firstCard).toBeVisible({ timeout: 60_000 });
 
-    await expect(page.locator(".tabular-nums").filter({ hasText: /\d+\.\d/ }).first()).toBeVisible();
+    const abbreviation = firstCard.locator("span").filter({ hasText: /^[A-Z]{3}$/ }).first();
+    await expect(abbreviation).toBeVisible();
+
+    const fatigueDecimal = firstCard.locator(".tabular-nums").filter({ hasText: /\d+\.\d/ }).first();
+    await expect(fatigueDecimal).toBeVisible();
   });
 
   test("previous day from an early season date can reach a day with no games", async ({ page }) => {
     await page.goto("/");
 
     await page.getByLabel("Season").selectOption("2024-25");
-    await page.getByRole("button", { name: /^Oct$/ }).click();
+    await page.getByRole("button", { name: /^OCT$/ }).click();
 
     await page.waitForResponse(
       (res) =>
@@ -74,12 +83,14 @@ test.describe("Home page", () => {
     );
 
     const prev = page.getByRole("button", { name: "Previous day" });
+    const empty = page.getByText("NO GAMES SCHEDULED");
     for (let i = 0; i < 45; i++) {
       await prev.click();
-      const empty = page.getByText("NO GAMES SCHEDULED");
-      if (await empty.isVisible()) {
-        await expect(empty).toBeVisible();
+      try {
+        await expect(empty).toBeVisible({ timeout: 1_000 });
         return;
+      } catch {
+        // still on a day with games — keep stepping back
       }
     }
 
