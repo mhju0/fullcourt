@@ -151,8 +151,38 @@ async function computeIs4In6Map(
 export async function getGamesByDate(date: string): Promise<GameResponse[]> {
   const homeTeam = alias(teams, "home_team");
   const awayTeam = alias(teams, "away_team");
-  const homeFatigue = latestFatigueSubquery("home_fatigue_latest");
-  const awayFatigue = latestFatigueSubquery("away_fatigue_latest");
+  // Correlated LATERAL replacement for latestFatigueSubquery: one index seek per
+  // game/side instead of deduplicating the whole fatigue_scores table. Must stay
+  // result-identical to DISTINCT ON (game_id, team_id) ... ORDER BY computed_at DESC:
+  // same 11 columns, LEFT join (fatigue-less game → null side), and computed_at DESC
+  // as the only tie-break — do not add a secondary sort key.
+  const latestFatigueLateral = (
+    teamIdColumn: typeof games.homeTeamId | typeof games.awayTeamId,
+    subqueryAlias: string
+  ) =>
+    db
+      .select({
+        gameId: fatigueScores.gameId,
+        teamId: fatigueScores.teamId,
+        score: fatigueScores.score,
+        isBackToBack: fatigueScores.isBackToBack,
+        gamesInLast7Days: fatigueScores.gamesInLast7Days,
+        travelDistanceMiles: fatigueScores.travelDistanceMiles,
+        altitudeMultiplier: fatigueScores.altitudeMultiplier,
+        daysSinceLastGame: fatigueScores.daysSinceLastGame,
+        isOvertimePenalty: fatigueScores.isOvertimePenalty,
+        roadTripConsecutiveAway: fatigueScores.roadTripConsecutiveAway,
+        hasCoastToCoastRoadSwing: fatigueScores.hasCoastToCoastRoadSwing,
+      })
+      .from(fatigueScores)
+      .where(
+        and(eq(fatigueScores.gameId, games.id), eq(fatigueScores.teamId, teamIdColumn))
+      )
+      .orderBy(desc(fatigueScores.computedAt))
+      .limit(1)
+      .as(subqueryAlias);
+  const homeFatigue = latestFatigueLateral(games.homeTeamId, "home_fatigue_latest");
+  const awayFatigue = latestFatigueLateral(games.awayTeamId, "away_fatigue_latest");
 
   const rows = await db
     .select({
@@ -199,15 +229,14 @@ export async function getGamesByDate(date: string): Promise<GameResponse[]> {
     .from(games)
     .innerJoin(homeTeam, eq(games.homeTeamId, homeTeam.id))
     .innerJoin(awayTeam, eq(games.awayTeamId, awayTeam.id))
-    .leftJoin(
-      homeFatigue,
-      and(eq(homeFatigue.gameId, games.id), eq(homeFatigue.teamId, games.homeTeamId))
-    )
-    .leftJoin(
-      awayFatigue,
-      and(eq(awayFatigue.gameId, games.id), eq(awayFatigue.teamId, games.awayTeamId))
-    )
-    .where(and(eq(games.date, date), eq(games.gameType, "regular")));
+    .leftJoinLateral(homeFatigue, sql`true`)
+    .leftJoinLateral(awayFatigue, sql`true`)
+    .where(and(eq(games.date, date), eq(games.gameType, "regular")))
+    // The pre-LATERAL query had no ORDER BY, but its plan happened to emit rows in
+    // away-team-id order and the home page renders cards in array order. Pin that
+    // order so the rewrite is response-identical. A team plays at most one game per
+    // date, so away_team_id is a unique sort key here.
+    .orderBy(asc(games.awayTeamId));
 
   const teamIds = rows.flatMap((r) => [r.homeTeamId, r.awayTeamId]);
   const [is4In6Map, games30Map] = await Promise.all([
