@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useEffect, useId, useState } from "react"
+import { useCallback, useEffect, useId, useRef, useState } from "react"
 import { createPortal } from "react-dom"
 import useSWR from "swr"
 import { format, parseISO } from "date-fns"
@@ -25,6 +25,15 @@ const TERM_INSET = {
   border: "1px solid var(--term-border)",
   borderRadius: "var(--term-radius)",
 } as const
+
+const FOCUSABLE_SELECTOR =
+  'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+
+function getFocusableElements(container: HTMLElement): HTMLElement[] {
+  return Array.from(
+    container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)
+  ).filter((el) => el.offsetParent !== null)
+}
 
 function RecentResultsList({
   label,
@@ -219,6 +228,9 @@ function ExploreGameDetailModalContent({
   // Currently displayed game ID (may differ from the `gameId` prop when drilling down)
   const [activeGameId, setActiveGameId] = useState<number | null>(gameId)
 
+  const dialogRef = useRef<HTMLDivElement>(null)
+  const triggerRef = useRef<Element | null>(null)
+
   // SWR fetches game detail only when this already-open modal has an ID.
   const swrKey = activeGameId !== null ? `/api/game/${activeGameId}` : null
   const {
@@ -250,9 +262,40 @@ function ExploreGameDetailModalContent({
     onOpenChange(false)
   }, [onOpenChange])
 
+  // Capture the trigger on mount, move focus into the modal, and restore
+  // focus to the trigger when the modal unmounts.
+  useEffect(() => {
+    triggerRef.current = document.activeElement
+    const first = dialogRef.current
+      ? getFocusableElements(dialogRef.current)[0]
+      : undefined
+    first?.focus()
+    return () => {
+      if (triggerRef.current instanceof HTMLElement) {
+        triggerRef.current.focus()
+      }
+    }
+  }, [])
+
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onOpenChange(false)
+      if (e.key === "Escape") {
+        onOpenChange(false)
+        return
+      }
+      if (e.key === "Tab" && dialogRef.current) {
+        const focusable = getFocusableElements(dialogRef.current)
+        if (focusable.length === 0) return
+        const first = focusable[0]
+        const last = focusable[focusable.length - 1]
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault()
+          last.focus()
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault()
+          first.focus()
+        }
+      }
     }
     window.addEventListener("keydown", onKey)
     return () => window.removeEventListener("keydown", onKey)
@@ -275,6 +318,7 @@ function ExploreGameDetailModalContent({
         onClick={onBackdrop}
       />
       <div
+        ref={dialogRef}
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
@@ -306,10 +350,10 @@ function ExploreGameDetailModalContent({
             )}
             <h2
               id={titleId}
-              className="mono uppercase"
+              className={cn("mono uppercase", canGoBack && "sr-only")}
               style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.08em", color: "var(--term-text-muted)" }}
             >
-              {canGoBack ? "" : "Game details"}
+              Game details
             </h2>
           </div>
           <Button
