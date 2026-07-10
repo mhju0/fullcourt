@@ -6,6 +6,7 @@ import { ChevronDown } from "lucide-react"
 import { FatigueBar, type FatigueBarTone } from "@/components/fatigue-bar"
 import { TRAVEL_LOOKBACK_DAYS } from "@/lib/fatigue"
 import { NBA_TEAM_IDS } from "@/lib/nba-team-ids"
+import { getTeamColors } from "@/lib/nba-team-colors"
 import { formatRestAdvantageDisplay } from "@/lib/rest-advantage-display"
 import { getTeamBranding } from "@/lib/team-history"
 import { TERM_ACCENT } from "@/lib/terminal-styles"
@@ -41,11 +42,13 @@ function TeamLogo({
   season,
   fallback,
   size = 24,
+  color,
 }: {
   abbreviation: string
   season?: string
   fallback?: { name: string; city: string }
   size?: number
+  color?: string
 }) {
   const [error, setError] = useState(false)
 
@@ -60,10 +63,17 @@ function TeamLogo({
         })()
 
   if (!logoUrl || error) {
+    // Team-colored fallback chip (broadcast identity when the CDN logo is missing).
     return (
       <div
-        className="mono flex shrink-0 items-center justify-center bg-[var(--term-surface-2)] text-[9px] font-bold text-slate-500"
-        style={{ width: size, height: size, borderRadius: "var(--term-radius-sm)" }}
+        className="mono flex shrink-0 items-center justify-center text-[9px] font-bold text-white"
+        style={{
+          width: size,
+          height: size,
+          borderRadius: "var(--term-radius-sm)",
+          background: color ?? "var(--term-surface-2)",
+          boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.14)",
+        }}
       >
         {abbreviation}
       </div>
@@ -127,8 +137,11 @@ function ConfidenceBadge({ confidence }: { confidence: Confidence }) {
 
 function LiveIndicator() {
   return (
-    <span className="mono inline-flex items-center gap-1.5" style={{ fontSize: "10px", letterSpacing: "0.06em", color: "var(--term-red)", fontWeight: 700 }}>
-      <span style={{ display: "inline-block", width: 6, height: 6, borderRadius: "50%", background: "var(--term-red)" }} />
+    <span className="mono inline-flex items-center gap-1.5" style={{ fontSize: "10px", letterSpacing: "0.06em", color: "var(--term-amber)", fontWeight: 700 }}>
+      <span
+        className="animate-[pulse_1.7s_ease-in-out_infinite]"
+        style={{ display: "inline-block", width: 6, height: 6, borderRadius: "50%", background: "var(--term-amber)", boxShadow: "0 0 8px var(--term-amber)" }}
+      />
       LIVE
     </span>
   )
@@ -148,7 +161,7 @@ export function GameStatusRow({
       <div className="mono flex items-center gap-3" style={{ fontSize: "11px" }}>
         <LiveIndicator />
         {homeScore !== null && awayScore !== null && (
-          <span className="tabular-nums" style={{ color: "var(--term-text)", fontWeight: 700 }}>
+          <span className="tabular-nums" style={{ fontSize: "15px", letterSpacing: "-0.02em", color: "var(--term-text)", fontWeight: 800 }}>
             {awayScore} – {homeScore}
           </span>
         )}
@@ -160,7 +173,7 @@ export function GameStatusRow({
     return (
       <div className="mono flex items-center gap-3" style={{ fontSize: "11px" }}>
         <span style={{ color: "var(--term-text-muted)", letterSpacing: "0.08em" }}>FINAL</span>
-        <span className="tabular-nums" style={{ color: "var(--term-text)", fontWeight: 700 }}>
+        <span className="tabular-nums" style={{ fontSize: "15px", letterSpacing: "-0.02em", color: "var(--term-text)", fontWeight: 800 }}>
           {awayScore} – {homeScore}
         </span>
       </div>
@@ -197,11 +210,19 @@ function TeamBlock({
   fallback: { name: string; city: string }
   align?: "left" | "right"
 }) {
+  const colors = getTeamColors(abbreviation)
   return (
     <div className={cn("flex min-w-0 items-center gap-2.5", align === "right" && "flex-row-reverse text-right")}>
-      <TeamLogo abbreviation={abbreviation} season={season} fallback={fallback} size={24} />
+      <TeamLogo abbreviation={abbreviation} season={season} fallback={fallback} size={24} color={colors.primary} />
       <div className="flex min-w-0 flex-col">
-        <span className="mono" style={{ fontSize: "9px", letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 600 }}>
+        <span
+          className={cn("mono inline-flex items-center gap-1", align === "right" && "flex-row-reverse")}
+          style={{ fontSize: "9px", letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 600 }}
+        >
+          <span
+            aria-hidden
+            style={{ width: 5, height: 5, borderRadius: "50%", background: colors.primary, boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.28)", flexShrink: 0 }}
+          />
           {abbreviation}
         </span>
         <span
@@ -583,6 +604,9 @@ export function MatchupCard({ game, index = 0, isScoreFlashing = false }: Matchu
   const homeBrand = getTeamBranding(game.homeTeam.abbreviation, game.season, homeFallback)
   const awayBrand = getTeamBranding(game.awayTeam.abbreviation, game.season, awayFallback)
 
+  const awayColors = getTeamColors(awayBrand.abbreviation)
+  const homeColors = getTeamColors(homeBrand.abbreviation)
+
   const diff = game.restAdvantage?.differential ?? null
   const confidence = getConfidence(diff)
   const accent = confidenceAccent(confidence)
@@ -603,7 +627,7 @@ export function MatchupCard({ game, index = 0, isScoreFlashing = false }: Matchu
 
   return (
     <div
-      className="animate-[fadeInUp_0.4s_ease-out_forwards] flex flex-col transition-shadow hover:shadow-[0_2px_10px_rgba(23,64,139,0.08)]"
+      className="animate-[fadeInUp_0.4s_ease-out_forwards] flex flex-col transition-shadow hover:shadow-[0_18px_44px_-26px_rgba(0,0,0,0.9)]"
       style={{
         animationDelay: `${index * 40}ms`,
         background: "var(--term-surface)",
@@ -613,6 +637,13 @@ export function MatchupCard({ game, index = 0, isScoreFlashing = false }: Matchu
         overflow: "hidden",
       }}
     >
+      {/* Team-color band (away | home) — broadcast identity */}
+      <div className="flex" style={{ height: 4 }} aria-hidden>
+        <span style={{ flex: 1, background: awayColors.primary }} />
+        <span style={{ width: 1, background: "rgba(0,0,0,0.35)" }} />
+        <span style={{ flex: 1, background: homeColors.primary }} />
+      </div>
+
       <div
         role="button"
         tabIndex={0}
@@ -621,7 +652,7 @@ export function MatchupCard({ game, index = 0, isScoreFlashing = false }: Matchu
         onClick={toggle}
         onKeyDown={onKeyDown}
         className={cn(
-          "cursor-pointer outline-none transition-colors hover:bg-[var(--term-bg)] focus-visible:ring-2 focus-visible:ring-[var(--term-blue)]/40",
+          "cursor-pointer outline-none transition-colors hover:bg-[var(--term-surface-2)] focus-visible:ring-2 focus-visible:ring-[var(--term-blue)]/40",
           isScoreFlashing && "animate-[scoreFlash_0.5s_ease-out]"
         )}
         style={{ padding: "10px 14px" }}
