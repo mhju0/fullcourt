@@ -194,35 +194,42 @@ maps) when the Supabase env vars are unset (client is `null`).
 the shadcn `base-nova` style, `neutral` base color, CSS variables, and the `@/components`,
 `@/lib`, `@/hooks`, `@/components/ui` aliases.
 
-## Design system — "Bloomberg Terminal meets NBA stats"
+## Design system — "Broadcast" (dark)
 
-The direction is flat white surfaces, thin borders, monospace data values, and brand-color
-accents — **no glassmorphism, no dark mode** (the app forces `color-scheme: only light`). As of
-2026-06-29 every page — Today's Games, Analysis, Future Games, and the detail modal — uses this
-style; Playoffs and Shot Quality were built directly in this style, so the whole app (all five
-routes) is visually consistent.
+The app is **dark-only** — a game-night broadcast graphics language: a near-black ground,
+team colors carrying each matchup, monospace data values, an amber "live" accent, and NBA
+red/blue kept strictly as the **fatigue / rest-advantage data semantics** (red = more fatigued,
+blue = more rested), brightened for legibility on dark. `<html>` carries the `dark` class and
+`globals.css` sets `color-scheme: dark`. Every color flows through the `--term-*` CSS tokens, so
+reskinning the tokens in `globals.css` re-themes the whole app; component code should read tokens,
+never hard-code hexes. (Previous "Bloomberg Terminal" light theme retired in the Broadcast
+redesign.)
 
-### Color tokens (verified)
+### Color tokens (verified — dark values in `globals.css :root`)
 
-| Hex | Role | Where |
-|-----|------|-------|
-| `#F7F6F3` | page background (off-white) | `globals.css` `html, body { background: #F7F6F3 }` |
-| `#F0EEE9` | panel / stat-card / top-bar / footer fill | components |
-| `#E2DFD8` | borders / dividers | components |
-| `#8A8478` | muted / label text | components |
-| `#0f172a` | primary dark text | components / `--foreground` |
-| `#C9082A` | **NBA red** — high confidence, danger, active nav, "higher fatigue" | tokens + components |
-| `#17408B` | **NBA blue** — primary, med confidence, "lower fatigue", charts | tokens + components |
-| `#C4853C` | **hardwood tan** — neutral accent / `--accent` | tokens + components |
-| `#C9C5BC` | subtle divider dots / center marker | components |
-| `#17A34A` / `#22c55e` | win / up-tick green | components / nav ticker |
-| `#ef4444` | down-tick red | nav ticker |
+| Token / Hex | Role |
+|-------------|------|
+| `--term-bg #0A0B0D` | page background (near-black) |
+| `--term-surface #12151A` | card / panel fill |
+| `--term-surface-2 #191D24` | stat tiles, inset panels, hover |
+| `--term-border #23262C` | borders / dividers |
+| `--term-hairline #2E323A` | subtle inner rules / center markers |
+| `--term-text #F2F4F7` | primary text |
+| `--term-text-muted #8A929C` | muted / label text |
+| `--term-text-dim #B7BEC7` | secondary text (brighter than muted) |
+| `--term-red #E5484D` | high confidence · danger · "higher fatigue" |
+| `--term-blue #3B82F6` | primary · med confidence · "lower fatigue" · charts · active data |
+| `--term-hardwood #D2A24C` | neutral accent |
+| `--term-amber #F5A623` | **live** dot + active nav underline (broadcast accent) |
+| `--term-pos #31C46B` / `--term-neg #F0603E` | win / loss, up / down |
 
-> Token vs applied background: the CSS variable `--background` is `#f8f9fc`, but the base
-> layer hard-sets `html, body { background: #F7F6F3 }`, so the actual page background is
-> **`#F7F6F3`**. shadcn semantic tokens in `:root`: `--primary #17408b`, `--destructive
-> #c9082a`, `--accent #c4853c`, `--muted-foreground #64748b`, `--radius 0.75rem`; chart
-> palette `--chart-1..5` = blue / red / hardwood / emerald (`#10b981`) / violet (`#8b5cf6`).
+> Team colors (matchup + upcoming cards) come from `src/lib/nba-team-colors.ts`
+> (`getTeamColors(abbr)` → `{ primary, secondary }`, neutral fallback). They are brand chrome
+> only — the top color band, logo chips, and identity dots — and never override the red/blue
+> fatigue semantics. shadcn semantic tokens in `:root` are set to matching dark values
+> (`--background #0A0B0D`, `--foreground #F2F4F7`, `--card #12151A`, `--primary #3B82F6`,
+> `--destructive #E5484D`, `--accent #D2A24C`); chart palette `--chart-1..5` =
+> blue / red / hardwood / emerald / violet.
 
 ### Typography
 
