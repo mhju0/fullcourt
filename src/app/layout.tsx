@@ -40,7 +40,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${outfit.variable} h-full antialiased`}
+      className={`dark ${inter.variable} ${outfit.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col font-sans text-foreground">
         <NavBar />
