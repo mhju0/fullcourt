@@ -19,6 +19,7 @@ import {
   NBA_SEASONS,
   pickDefaultGamesDate,
 } from "@/lib/nba-season"
+import { termCardStyle } from "@/lib/terminal-styles"
 import { cn } from "@/lib/utils"
 import type { AnalysisResponse, ApiResponse, GameDateCount, GameResponse } from "@/types"
 
@@ -42,21 +43,27 @@ const HIGH_CONF_THRESHOLD = 2.0
 
 // Terminal-style flat button: white bg, 1px border, mono uppercase, 4px corners.
 const termBtn =
-  "mono inline-flex items-center gap-2 bg-white px-3 py-1.5 text-[11px] uppercase tracking-[0.05em] text-slate-700 transition-colors hover:bg-[var(--term-surface-2)]"
+  "mono inline-flex items-center gap-2 bg-white px-3 py-1.5 text-[11px] uppercase tracking-[0.05em] text-slate-700 transition-[background-color,border-color,transform] hover:bg-[var(--term-surface-2)]"
 const termBtnStyle: React.CSSProperties = { border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }
 
 // ─── Stat summary row ────────────────────────────────────────────
 
-function StatCard({ label, value }: { label: string; value: string }) {
+function StatCard({ label, value, accent }: { label: string; value: string; accent: string }) {
   return (
     <div
-      className="mono flex flex-col gap-1"
-      style={{ background: "var(--term-surface-2)", borderRadius: "var(--term-radius)", padding: "10px 12px" }}
+      className="mono flex flex-col gap-2"
+      style={{
+        background: "var(--term-surface)",
+        border: "1px solid var(--term-border)",
+        borderLeft: `2px solid ${accent}`,
+        borderRadius: "var(--term-radius)",
+        padding: "12px 14px",
+      }}
     >
       <span style={{ fontSize: 10, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 600 }}>
         {label}
       </span>
-      <span className="tabular-nums" style={{ fontSize: 20, fontWeight: 500, color: "var(--term-text)", lineHeight: 1 }}>
+      <span className="tabular-nums" style={{ fontSize: 24, fontWeight: 600, color: "var(--term-text)", lineHeight: 1 }}>
         {value}
       </span>
     </div>
@@ -76,10 +83,10 @@ function StatSummaryRow({
 }) {
   return (
     <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
-      <StatCard label="GAMES TODAY" value={String(gamesToday)} />
-      <StatCard label="AVG REST ADV" value={avgRestAdv} />
-      <StatCard label="ALL-TIME WIN RATE" value={seasonWinRate} />
-      <StatCard label="HIGH CONF PICKS" value={String(highConfPicks)} />
+      <StatCard label="GAMES TODAY" value={String(gamesToday)} accent="var(--term-hardwood)" />
+      <StatCard label="AVG REST ADV" value={avgRestAdv} accent="var(--term-hardwood)" />
+      <StatCard label="ALL-TIME WIN RATE" value={seasonWinRate} accent="var(--term-blue)" />
+      <StatCard label="HIGH CONF PICKS" value={String(highConfPicks)} accent="var(--term-red)" />
     </div>
   )
 }
@@ -207,7 +214,10 @@ function DateChip({
       onClick={onClick}
       aria-label={ariaLabel}
       aria-current={selected ? "date" : undefined}
-      className="mono flex min-w-[3rem] flex-col items-center px-2 py-1.5 transition-colors"
+      className={cn(
+        "mono flex min-w-[3rem] flex-col items-center px-2 py-1.5 transition-[transform,background-color,border-color] active:scale-[0.97]",
+        !selected && "hover:border-[var(--term-blue)]"
+      )}
       style={{
         background: selected ? "var(--term-blue)" : "var(--term-surface)",
         border: "1px solid var(--term-border)",
@@ -462,8 +472,8 @@ export default function HomePage() {
         highConfPicks={highConfPicks}
       />
 
-      {/* Filters */}
-      <div className="flex flex-col gap-3">
+      {/* Filters — grouped as one secondary control panel */}
+      <div className="flex flex-col gap-4" style={termCardStyle}>
         <div className="flex flex-col gap-1.5">
           <label htmlFor="nba-season" className="mono" style={{ fontSize: 10, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 600 }}>
             SEASON
@@ -504,7 +514,7 @@ export default function HomePage() {
                     type="button"
                     onClick={() => onMonthTabClick(m)}
                     aria-pressed={active}
-                    className={cn(termBtn, "shrink-0")}
+                    className={cn(termBtn, "shrink-0 active:scale-[0.97]")}
                     style={{
                       ...termBtnStyle,
                       background: active ? "var(--term-blue)" : "var(--term-surface)",
@@ -561,7 +571,7 @@ export default function HomePage() {
             onClick={() => shiftSelectedDay(-1)}
             disabled={!selectedDateKey}
             aria-label="Previous day"
-            className="bg-white"
+            className="bg-white active:scale-95"
             style={{ border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }}
           >
             <ChevronLeft />
@@ -579,7 +589,7 @@ export default function HomePage() {
             onClick={() => shiftSelectedDay(1)}
             disabled={!selectedDateKey}
             aria-label="Next day"
-            className="bg-white"
+            className="bg-white active:scale-95"
             style={{ border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }}
           >
             <ChevronRight />
