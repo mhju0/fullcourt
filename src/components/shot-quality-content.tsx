@@ -101,11 +101,11 @@ function EncodingToggle({
               type="button"
               aria-pressed={active}
               onClick={() => onModeChange(o.key)}
-              className="mono px-3 py-1.5 transition-colors"
+              className={`mono px-3 py-1.5 transition-colors ${active ? "" : "hover:bg-[var(--term-surface-2)]"}`}
               style={{
                 fontSize: 11,
                 letterSpacing: "0.05em",
-                background: active ? "var(--term-blue)" : "var(--term-surface)",
+                background: active ? "var(--term-blue)" : undefined,
                 color: active ? "var(--term-surface)" : "var(--term-text-dim)",
                 border: "1px solid var(--term-border)",
                 borderLeft: i === 0 ? "1px solid var(--term-border)" : "none",
@@ -283,7 +283,7 @@ function MethodologyNote() {
   return (
     <details className="mono group" style={{ ...termCardStyle, padding: 0 }}>
       <summary
-        className="flex cursor-pointer items-center justify-between px-4 py-3 outline-none"
+        className="flex cursor-pointer items-center justify-between rounded-[var(--term-radius)] px-4 py-3 outline-none transition-colors hover:bg-[var(--term-surface-2)]"
         style={{ fontSize: 10, letterSpacing: "0.08em", color: "var(--term-text)", fontWeight: 700 }}
       >
         METHODOLOGY
