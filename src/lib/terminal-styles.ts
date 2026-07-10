@@ -29,13 +29,13 @@ export const termInsetStyle: CSSProperties = {
 }
 
 export const termSelectClass =
-  "mono inline-flex items-center gap-2 bg-white px-3 py-1.5 text-[11px] uppercase tracking-[0.05em] text-slate-700 transition-colors hover:bg-[var(--term-surface-2)] cursor-pointer appearance-none pr-8"
+  "mono inline-flex items-center gap-2 bg-[var(--term-surface)] px-3 py-1.5 text-[11px] uppercase tracking-[0.05em] text-[var(--term-text-dim)] transition-colors hover:bg-[var(--term-surface-2)] cursor-pointer appearance-none pr-8"
 
 export const termSelectStyle: CSSProperties = {
   border: "1px solid var(--term-border)",
   borderRadius: "var(--term-radius)",
   backgroundImage:
-    "url('data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20width=%2712%27%20height=%2712%27%20viewBox=%270%200%2024%2024%27%20fill=%27none%27%20stroke=%27%238A8478%27%20stroke-width=%272%27%3E%3Cpath%20d=%27M6%209l6%206%206-6%27/%3E%3C/svg%3E')",
+    "url('data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20width=%2712%27%20height=%2712%27%20viewBox=%270%200%2024%2024%27%20fill=%27none%27%20stroke=%27%238A929C%27%20stroke-width=%272%27%3E%3Cpath%20d=%27M6%209l6%206%206-6%27/%3E%3C/svg%3E')",
   backgroundRepeat: "no-repeat",
   backgroundPosition: "right 0.5rem center",
   backgroundSize: "0.75rem",
