@@ -255,6 +255,7 @@ function SeasonWinRateBySeasonChart({
               fill="var(--term-blue)"
               radius={[0, 0, 0, 0]}
               maxBarSize={48}
+              isAnimationActive={false}
             >
               <LabelList
                 dataKey="games"
@@ -596,7 +597,7 @@ function ExploreGames({
             <button
               onClick={() => setPage((p) => Math.max(1, p - 1))}
               disabled={page === 1 || loading}
-              className="flex size-7 items-center justify-center bg-white text-slate-700 transition-colors hover:bg-[var(--term-surface-2)] disabled:opacity-40"
+              className="flex size-7 items-center justify-center bg-[var(--term-surface)] text-[var(--term-text-dim)] transition-colors hover:bg-[var(--term-surface-2)] disabled:opacity-40"
               style={{ border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }}
               aria-label="Previous page"
             >
@@ -608,7 +609,7 @@ function ExploreGames({
             <button
               onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
               disabled={page >= totalPages || loading}
-              className="flex size-7 items-center justify-center bg-white text-slate-700 transition-colors hover:bg-[var(--term-surface-2)] disabled:opacity-40"
+              className="flex size-7 items-center justify-center bg-[var(--term-surface)] text-[var(--term-text-dim)] transition-colors hover:bg-[var(--term-surface-2)] disabled:opacity-40"
               style={{ border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }}
               aria-label="Next page"
             >
@@ -711,7 +712,7 @@ export function AnalysisContent() {
         <span className="mono" style={{ fontSize: 10, letterSpacing: "0.08em", color: "var(--term-red)", fontWeight: 700 }}>
           HISTORICAL BACKTEST
         </span>
-        <h1 className="text-2xl font-bold tracking-tight text-slate-900">Rest Advantage Analysis</h1>
+        <h1 className="text-2xl font-bold tracking-tight text-[var(--term-text)]">Rest Advantage Analysis</h1>
         <p className="mono max-w-2xl" style={{ fontSize: 11, color: "var(--term-text-muted)", lineHeight: 1.5 }}>
           AMONG FINAL REGULAR-SEASON GAMES WITH FATIGUE DATA, DID THE MORE-RESTED TEAM WIN?
           THIS DOES NOT READ STORED PREDICTION ROWS.
@@ -791,6 +792,7 @@ export function AnalysisContent() {
                 maxBarSize={72}
                 style={{ cursor: "pointer" }}
                 onClick={handleBarClick}
+                isAnimationActive={false}
               >
                 <LabelList
                   dataKey="games"
@@ -880,9 +882,9 @@ export function AnalysisContent() {
           <p className="mono" style={{ fontSize: 10, letterSpacing: "0.12em", color: "var(--term-blue)", fontWeight: 700 }}>
             KEY INSIGHT
           </p>
-          <p className="mt-2 text-sm leading-relaxed text-slate-700">
+          <p className="mt-2 text-sm leading-relaxed text-[var(--term-text-dim)]">
             Teams with a Rest Advantage of{" "}
-            <span className="font-semibold text-slate-900">+5 or more</span> win{" "}
+            <span className="font-semibold text-[var(--term-text)]">+5 or more</span> win{" "}
             <span className="mono font-bold" style={{ color: "var(--term-blue)" }}>{ra5.winPct}%</span> of games — a
             significant edge over the coin-flip baseline.
             {ra7 && (
