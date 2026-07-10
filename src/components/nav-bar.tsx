@@ -45,15 +45,17 @@ export function NavBar() {
             {HAS_LIVE_GAMES && (
               <span className="flex items-center gap-1.5">
                 <span
+                  className="animate-[pulse_1.7s_ease-in-out_infinite]"
                   style={{
                     display: "inline-block",
                     width: "8px",
                     height: "8px",
                     borderRadius: "50%",
-                    background: "var(--term-pos)",
+                    background: "var(--term-amber)",
+                    boxShadow: "0 0 9px var(--term-amber)",
                   }}
                 />
-                <span style={{ color: "var(--term-pos)", fontWeight: 700 }}>LIVE</span>
+                <span style={{ color: "var(--term-amber)", fontWeight: 700 }}>LIVE</span>
               </span>
             )}
           </div>
@@ -77,16 +79,14 @@ export function NavBar() {
               <Link
                 key={href}
                 href={href}
+                aria-current={active ? "page" : undefined}
                 className={cn(
-                  "flex h-full items-center transition-colors",
-                  !active && "hover:text-[var(--term-text)]"
+                  "flex h-full items-center border-b-2 font-semibold transition-colors",
+                  active
+                    ? "border-[var(--term-amber)] text-[var(--term-text)]"
+                    : "border-transparent text-[var(--term-text-muted)] hover:text-[var(--term-text)]"
                 )}
-                style={{
-                  fontSize: "11px",
-                  letterSpacing: "0.05em",
-                  color: active ? "var(--term-red)" : "var(--term-text-dim)",
-                  borderBottom: active ? "2px solid var(--term-red)" : "2px solid transparent",
-                }}
+                style={{ fontSize: "11px", letterSpacing: "0.05em" }}
               >
                 {label}
               </Link>

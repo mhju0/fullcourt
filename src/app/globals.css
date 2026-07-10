@@ -146,6 +146,12 @@
   }
 }
 
+/* Broadcast "live" pulse — status dot, live game markers */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+
 /* Brief glow flash when a live game's score updates */
 @keyframes scoreFlash {
   0% {
@@ -173,6 +179,10 @@
 
   @keyframes scoreFlash {
     from, to { box-shadow: none; }
+  }
+
+  @keyframes pulse {
+    from, to { opacity: 1; }
   }
 }
 
