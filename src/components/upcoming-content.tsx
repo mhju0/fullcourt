@@ -5,6 +5,7 @@ import Image from "next/image"
 import useSWR from "swr"
 import { format } from "date-fns"
 import { NBA_TEAM_IDS } from "@/lib/nba-team-ids"
+import { getTeamColors } from "@/lib/nba-team-colors"
 import { currentDisplaySeason, isNbaOffSeason, nextSeasonLabel } from "@/lib/nba-season"
 import { apiFetcher } from "@/lib/fetcher"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -23,11 +24,11 @@ const RA_OPTIONS = [
 
 function OffSeasonEmptyState({ nextSeason }: { nextSeason: string }) {
   return (
-    <div className="rounded-[4px] border border-[var(--term-border)] border-l-2 border-l-[var(--term-hardwood)] bg-white px-6 py-10 text-center">
+    <div className="rounded-[4px] border border-[var(--term-border)] border-l-2 border-l-[var(--term-hardwood)] bg-[var(--term-surface)] px-6 py-10 text-center">
       <p className="mono text-[10px] font-semibold uppercase tracking-[0.08em] text-[var(--term-text-muted)]">
         REGULAR SEASON COMPLETE
       </p>
-      <p className="mt-2 text-base font-medium text-slate-900">See you next season.</p>
+      <p className="mt-2 text-base font-medium text-[var(--term-text)]">See you next season.</p>
       <p className="mt-1 text-xs text-[var(--term-text-muted)]">
         {nextSeason} season tips off in October.
       </p>
@@ -44,8 +45,12 @@ function TeamLogo({ abbreviation }: { abbreviation: string }) {
   if (!nbaId || error) {
     return (
       <span
-        className="mono flex size-6 shrink-0 items-center justify-center bg-[var(--term-surface-2)] text-[9px] font-bold text-slate-500"
-        style={{ borderRadius: "var(--term-radius-sm)" }}
+        className="mono flex size-6 shrink-0 items-center justify-center text-[9px] font-bold text-white"
+        style={{
+          borderRadius: "var(--term-radius-sm)",
+          background: getTeamColors(abbreviation).primary,
+          boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.14)",
+        }}
       >
         {abbreviation}
       </span>
@@ -173,7 +178,7 @@ export function UpcomingContent() {
                 return (
                   <tr
                     key={g.gameId}
-                    className={`transition-colors ${i % 2 === 1 ? "bg-[var(--term-bg)]" : "bg-white"} hover:bg-[var(--term-surface-2)]`}
+                    className={`transition-colors ${i % 2 === 1 ? "bg-[var(--term-bg)]" : "bg-[var(--term-surface)]"} hover:bg-[var(--term-surface-2)]`}
                   >
                     <td style={{ ...tdStyle, color: "var(--term-text-muted)" }}>
                       {format(new Date(g.date + "T00:00:00"), "MMM d")}

@@ -15,7 +15,7 @@ export function PageHeader({
       >
         {eyebrow}
       </span>
-      <h1 className="text-2xl font-bold tracking-tight text-slate-900">{title}</h1>
+      <h1 className="text-2xl font-bold tracking-tight text-[var(--term-text)]">{title}</h1>
       <p className="mono max-w-2xl" style={{ fontSize: 11, color: "var(--term-text-muted)", lineHeight: 1.5 }}>
         {description}
       </p>
