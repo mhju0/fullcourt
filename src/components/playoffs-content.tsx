@@ -33,7 +33,7 @@ function MethodMetricCard({
   return (
     <div
       className="flex flex-col gap-1 px-3 py-3"
-      style={{ background: "var(--term-surface-2)", borderRadius: "var(--term-radius)", borderLeft: `3px solid ${accent}` }}
+      style={{ background: "var(--term-surface-2)", borderRadius: "var(--term-radius)", borderLeft: `2px solid ${accent}` }}
     >
       <span className="mono" style={{ fontSize: 10, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 700 }}>
         {label}
@@ -218,7 +218,7 @@ function SeriesCard({ series }: { series: PlayoffSeriesWithPredictions }) {
 
   return (
     <div
-      className="flex flex-col"
+      className="flex flex-col transition-shadow hover:shadow-[0_2px_10px_rgba(23,64,139,0.08)]"
       style={{ background: "var(--term-surface)", border: "1px solid var(--term-border)", borderLeft: `2px solid ${accent}`, borderRadius: "var(--term-radius)", overflow: "hidden" }}
     >
       <div
@@ -228,7 +228,7 @@ function SeriesCard({ series }: { series: PlayoffSeriesWithPredictions }) {
         aria-label={expanded ? "Collapse series details" : "Expand series details"}
         onClick={toggle}
         onKeyDown={onKeyDown}
-        className="cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-[var(--term-blue)]/40"
+        className="cursor-pointer outline-none transition-colors hover:bg-[var(--term-bg)] focus-visible:ring-2 focus-visible:ring-[var(--term-blue)]/40"
         style={{ padding: "10px 14px" }}
       >
         <div className="flex items-center justify-between gap-3">
