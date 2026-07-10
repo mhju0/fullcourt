@@ -603,7 +603,7 @@ export function MatchupCard({ game, index = 0, isScoreFlashing = false }: Matchu
 
   return (
     <div
-      className="animate-[fadeInUp_0.4s_ease-out_forwards] flex flex-col"
+      className="animate-[fadeInUp_0.4s_ease-out_forwards] flex flex-col transition-shadow hover:shadow-[0_2px_10px_rgba(23,64,139,0.08)]"
       style={{
         animationDelay: `${index * 40}ms`,
         background: "var(--term-surface)",
@@ -621,7 +621,7 @@ export function MatchupCard({ game, index = 0, isScoreFlashing = false }: Matchu
         onClick={toggle}
         onKeyDown={onKeyDown}
         className={cn(
-          "cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-[var(--term-blue)]/40",
+          "cursor-pointer outline-none transition-colors hover:bg-[var(--term-bg)] focus-visible:ring-2 focus-visible:ring-[var(--term-blue)]/40",
           isScoreFlashing && "animate-[scoreFlash_0.5s_ease-out]"
         )}
         style={{ padding: "10px 14px" }}
