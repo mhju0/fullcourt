@@ -2,6 +2,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
+import { currentDisplaySeason } from "@/lib/nba-season"
 import { cn } from "@/lib/utils"
 
 const NAV_LINKS = [
@@ -12,28 +13,12 @@ const NAV_LINKS = [
   { href: "/shot-quality", label: "SHOT QUALITY" },
 ] as const
 
-const TICKER_ITEMS = [
-  { team: "BOS", dir: "up",   value: "2.4" },
-  { team: "DEN", dir: "up",   value: "1.8" },
-  { team: "LAL", dir: "down", value: "1.2" },
-  { team: "MIA", dir: "flat", value: "0.0" },
-  { team: "NYK", dir: "up",   value: "0.9" },
-  { team: "GSW", dir: "down", value: "0.6" },
-] as const
-
-const SEASON_LABEL = "2025-26 SEASON"
 // Hardcoded for now — wire to "are there games today" later.
 const HAS_LIVE_GAMES = false
 
 function isActive(pathname: string, href: string): boolean {
   if (href === "/") return pathname === "/"
   return pathname === href || pathname.startsWith(href + "/")
-}
-
-function TickerArrow({ dir }: { dir: "up" | "down" | "flat" }) {
-  if (dir === "up")   return <span style={{ color: "var(--term-pos)" }}>▲</span>
-  if (dir === "down") return <span style={{ color: "var(--term-neg)" }}>▼</span>
-  return <span style={{ color: "rgba(255,255,255,0.4)" }}>—</span>
 }
 
 export function NavBar() {
@@ -56,7 +41,7 @@ export function NavBar() {
             <span style={{ color: "var(--term-text-muted)" }}>NBA ANALYTICS PLATFORM</span>
           </div>
           <div className="flex items-center gap-3" style={{ fontSize: "10px", letterSpacing: "0.08em" }}>
-            <span style={{ color: "var(--term-text-muted)" }}>{SEASON_LABEL}</span>
+            <span style={{ color: "var(--term-text-muted)" }}>{currentDisplaySeason()} SEASON</span>
             {HAS_LIVE_GAMES && (
               <span className="flex items-center gap-1.5">
                 <span
@@ -92,7 +77,10 @@ export function NavBar() {
               <Link
                 key={href}
                 href={href}
-                className={cn("flex h-full items-center transition-colors")}
+                className={cn(
+                  "flex h-full items-center transition-colors",
+                  !active && "hover:text-[var(--term-text)]"
+                )}
                 style={{
                   fontSize: "11px",
                   letterSpacing: "0.05em",
@@ -106,50 +94,6 @@ export function NavBar() {
           })}
         </div>
       </nav>
-
-      {/* NAVY TICKER STRIP */}
-      <div
-        className="mono overflow-hidden"
-        style={{
-          height: "26px",
-          background: "var(--term-blue)",
-        }}
-      >
-        <div className="mx-auto flex h-full max-w-7xl items-center gap-4 px-4 sm:px-6">
-          <span
-            style={{
-              fontSize: "10px",
-              letterSpacing: "0.12em",
-              color: "rgba(255,255,255,0.4)",
-              flexShrink: 0,
-            }}
-          >
-            TICKER
-          </span>
-          <div className="relative flex-1 overflow-hidden">
-            <div
-              className="flex whitespace-nowrap"
-              style={{
-                animation: "marquee 40s linear infinite",
-                gap: "32px",
-                width: "max-content",
-              }}
-            >
-              {[...TICKER_ITEMS, ...TICKER_ITEMS].map((item, i) => (
-                <span
-                  key={i}
-                  className="inline-flex items-center gap-2"
-                  style={{ fontSize: "11px", color: "rgba(255,255,255,0.85)", letterSpacing: "0.04em" }}
-                >
-                  <span style={{ color: "var(--term-surface)", fontWeight: 700 }}>{item.team}</span>
-                  <TickerArrow dir={item.dir} />
-                  <span>{item.value} RA</span>
-                </span>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
     </header>
   )
 }

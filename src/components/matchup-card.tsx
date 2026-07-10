@@ -8,6 +8,7 @@ import { TRAVEL_LOOKBACK_DAYS } from "@/lib/fatigue"
 import { NBA_TEAM_IDS } from "@/lib/nba-team-ids"
 import { formatRestAdvantageDisplay } from "@/lib/rest-advantage-display"
 import { getTeamBranding } from "@/lib/team-history"
+import { TERM_ACCENT } from "@/lib/terminal-styles"
 import { cn } from "@/lib/utils"
 import type { FatigueInfo, GameResponse } from "@/types"
 
@@ -27,10 +28,10 @@ function getConfidence(diff: number | null | undefined): Confidence {
 }
 
 function confidenceAccent(c: Confidence): string {
-  if (c === "high") return "var(--term-red)"
-  if (c === "med") return "var(--term-blue)"
-  if (c === "neutral") return "var(--term-hardwood)"
-  return "var(--term-neutral)"
+  if (c === "high") return TERM_ACCENT.red
+  if (c === "med") return TERM_ACCENT.blue
+  if (c === "neutral") return TERM_ACCENT.tan
+  return TERM_ACCENT.neutral
 }
 
 // ─── Team logo ───────────────────────────────────────────────────
@@ -620,7 +621,7 @@ export function MatchupCard({ game, index = 0, isScoreFlashing = false }: Matchu
         onClick={toggle}
         onKeyDown={onKeyDown}
         className={cn(
-          "cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-[#17408B]/40",
+          "cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-[var(--term-blue)]/40",
           isScoreFlashing && "animate-[scoreFlash_0.5s_ease-out]"
         )}
         style={{ padding: "10px 14px" }}

@@ -13,18 +13,13 @@ import {
 } from "@/components/matchup-card"
 import { getTeamBranding } from "@/lib/team-history"
 import { apiFetcher } from "@/lib/fetcher"
+import { termInsetStyle } from "@/lib/terminal-styles"
 import { cn } from "@/lib/utils"
 import type {
   GameDetailResponse,
   GameResponse,
   TeamRecentResultGame,
 } from "@/types"
-
-const TERM_INSET = {
-  background: "var(--term-bg)",
-  border: "1px solid var(--term-border)",
-  borderRadius: "var(--term-radius)",
-} as const
 
 const FOCUSABLE_SELECTOR =
   'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
@@ -147,7 +142,7 @@ function ExploreGameDetailBody({
         />
       </div>
 
-      <div className="mt-1 px-3 py-4 sm:px-4" style={TERM_INSET}>
+      <div className="mt-1 px-3 py-4 sm:px-4" style={termInsetStyle}>
         <p
           className="mono mb-3 text-center uppercase"
           style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.08em", color: "var(--term-text-muted)" }}

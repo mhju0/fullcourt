@@ -3,11 +3,12 @@
 import { useCallback, useState, type KeyboardEvent } from "react"
 import useSWR from "swr"
 import { ChevronDown } from "lucide-react"
+import { SeasonSelector } from "@/components/season-selector"
 import { Skeleton } from "@/components/ui/skeleton"
 import { cn } from "@/lib/utils"
 import { apiFetcher } from "@/lib/fetcher"
-import { NBA_SEASONS, defaultNbaSeason } from "@/lib/nba-season"
-import { termCardStyle } from "@/lib/terminal-styles"
+import { currentDisplaySeason } from "@/lib/nba-season"
+import { TERM_ACCENT, termCardStyle } from "@/lib/terminal-styles"
 import type {
   PlayoffMethodSummary,
   PlayoffRoundGroup,
@@ -15,58 +16,6 @@ import type {
   PlayoffSeriesWithPredictions,
   PlayoffsResponse,
 } from "@/types"
-
-// ─── Shared styles (terminal) ─────────────────────────────────────
-
-const termSelectClass =
-  "mono inline-flex items-center gap-2 bg-white px-3 py-1.5 text-[11px] uppercase tracking-[0.05em] text-slate-700 transition-colors hover:bg-[var(--term-surface-2)] cursor-pointer appearance-none pr-8"
-
-const termSelectStyle: React.CSSProperties = {
-  border: "1px solid var(--term-border)",
-  borderRadius: "var(--term-radius)",
-  backgroundImage:
-    "url('data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20width=%2712%27%20height=%2712%27%20viewBox=%270%200%2024%2024%27%20fill=%27none%27%20stroke=%27%238A8478%27%20stroke-width=%272%27%3E%3Cpath%20d=%27M6%209l6%206%206-6%27/%3E%3C/svg%3E')",
-  backgroundRepeat: "no-repeat",
-  backgroundPosition: "right 0.5rem center",
-  backgroundSize: "0.75rem",
-}
-
-// ─── Season selector ───────────────────────────────────────────────
-
-const SEASON_OPTIONS = [...NBA_SEASONS].reverse()
-
-function SeasonSelector({
-  season,
-  onSeasonChange,
-}: {
-  season: string
-  onSeasonChange: (season: string) => void
-}) {
-  return (
-    <div className="flex flex-col gap-1.5">
-      <label
-        htmlFor="playoffs-season"
-        className="mono"
-        style={{ fontSize: 10, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 600 }}
-      >
-        SEASON
-      </label>
-      <select
-        id="playoffs-season"
-        value={season}
-        onChange={(e) => onSeasonChange(e.target.value)}
-        className={cn(termSelectClass, "max-w-xs")}
-        style={termSelectStyle}
-      >
-        {SEASON_OPTIONS.map((s) => (
-          <option key={s} value={s}>
-            {s}
-          </option>
-        ))}
-      </select>
-    </div>
-  )
-}
 
 // ─── Method comparison header ──────────────────────────────────────
 
@@ -147,9 +96,9 @@ function seriesCorrectness(
 }
 
 function correctnessAccent(status: CorrectnessStatus): string {
-  if (status === "correct") return "var(--term-blue)"
-  if (status === "incorrect") return "var(--term-red)"
-  return "var(--term-hardwood)"
+  if (status === "correct") return TERM_ACCENT.blue
+  if (status === "incorrect") return TERM_ACCENT.red
+  return TERM_ACCENT.tan
 }
 
 function CorrectnessBadge({ status, source }: { status: CorrectnessStatus; source: CorrectnessSource }) {
@@ -279,7 +228,7 @@ function SeriesCard({ series }: { series: PlayoffSeriesWithPredictions }) {
         aria-label={expanded ? "Collapse series details" : "Expand series details"}
         onClick={toggle}
         onKeyDown={onKeyDown}
-        className="cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-[#17408B]/40"
+        className="cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-[var(--term-blue)]/40"
         style={{ padding: "10px 14px" }}
       >
         <div className="flex items-center justify-between gap-3">
@@ -391,7 +340,7 @@ function PlayoffsSkeleton() {
 // ─── Main component ───────────────────────────────────────────────
 
 export function PlayoffsContent() {
-  const [season, setSeason] = useState<string>(defaultNbaSeason())
+  const [season, setSeason] = useState<string>(currentDisplaySeason())
 
   const { data, error: swrError, isLoading: loading } = useSWR<PlayoffsResponse>(
     `/api/playoffs?season=${season}`,
@@ -407,7 +356,7 @@ export function PlayoffsContent() {
   if (error || !data) {
     return (
       <div className="flex flex-col gap-4">
-        <SeasonSelector season={season} onSeasonChange={setSeason} />
+        <SeasonSelector id="playoffs-season" season={season} onSeasonChange={setSeason} />
         <div
           className="mono px-6 py-12 text-center"
           style={{ ...termCardStyle, borderLeft: "2px solid var(--term-red)" }}
@@ -425,7 +374,7 @@ export function PlayoffsContent() {
 
   return (
     <div className="flex flex-col gap-4">
-      <SeasonSelector season={season} onSeasonChange={setSeason} />
+      <SeasonSelector id="playoffs-season" season={season} onSeasonChange={setSeason} />
 
       <MethodComparisonHeader summary={data.summary} />
 
