@@ -3,29 +3,12 @@
 import { useMemo, useState } from "react"
 import useSWR from "swr"
 import { ChevronDown } from "lucide-react"
+import { SeasonSelector } from "@/components/season-selector"
 import { Skeleton } from "@/components/ui/skeleton"
-import { cn } from "@/lib/utils"
 import { apiFetcher } from "@/lib/fetcher"
-import { NBA_SEASONS, defaultNbaSeason } from "@/lib/nba-season"
+import { currentDisplaySeason } from "@/lib/nba-season"
 import { termCardStyle } from "@/lib/terminal-styles"
 import type { ShotQualityCell, ShotQualityResponse } from "@/types"
-
-// ─── Shared styles (terminal, mirrors playoffs-content) ────────────
-
-const termSelectClass =
-  "mono inline-flex items-center gap-2 bg-white px-3 py-1.5 text-[11px] uppercase tracking-[0.05em] text-slate-700 transition-colors hover:bg-[var(--term-surface-2)] cursor-pointer appearance-none pr-8"
-
-const termSelectStyle: React.CSSProperties = {
-  border: "1px solid var(--term-border)",
-  borderRadius: "var(--term-radius)",
-  backgroundImage:
-    "url('data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20width=%2712%27%20height=%2712%27%20viewBox=%270%200%2024%2024%27%20fill=%27none%27%20stroke=%27%238A8478%27%20stroke-width=%272%27%3E%3Cpath%20d=%27M6%209l6%206%206-6%27/%3E%3C/svg%3E')",
-  backgroundRepeat: "no-repeat",
-  backgroundPosition: "right 0.5rem center",
-  backgroundSize: "0.75rem",
-}
-
-const SEASON_OPTIONS = [...NBA_SEASONS].reverse()
 
 // ─── Court geometry ────────────────────────────────────────────────
 // The API grid is UNFOLDED, origin = the rim, in 1-ft cells:
@@ -88,41 +71,6 @@ const seqColor = (t: number): string => mix(TAN, BLUE, clamp01(t))
 /** Divergent GBM−baseline ramp: negative → blue, ~0 → neutral, positive → red. `t` in [-1,1]. */
 const divColor = (t: number): string =>
   t >= 0 ? mix(NEUTRAL, RED, clamp01(t)) : mix(NEUTRAL, BLUE, clamp01(-t))
-
-// ─── Season selector ───────────────────────────────────────────────
-
-function SeasonSelector({
-  season,
-  onSeasonChange,
-}: {
-  season: string
-  onSeasonChange: (season: string) => void
-}) {
-  return (
-    <div className="flex flex-col gap-1.5">
-      <label
-        htmlFor="shot-quality-season"
-        className="mono"
-        style={{ fontSize: 10, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 600 }}
-      >
-        SEASON
-      </label>
-      <select
-        id="shot-quality-season"
-        value={season}
-        onChange={(e) => onSeasonChange(e.target.value)}
-        className={cn(termSelectClass, "max-w-xs")}
-        style={termSelectStyle}
-      >
-        {SEASON_OPTIONS.map((s) => (
-          <option key={s} value={s}>
-            {s}
-          </option>
-        ))}
-      </select>
-    </div>
-  )
-}
 
 // ─── Encoding toggle ───────────────────────────────────────────────
 
@@ -401,7 +349,7 @@ function MessageCard({ tone, title, body }: { tone: "muted" | "error"; title: st
 // ─── Main component ────────────────────────────────────────────────
 
 export function ShotQualityContent() {
-  const [season, setSeason] = useState<string>(defaultNbaSeason())
+  const [season, setSeason] = useState<string>(currentDisplaySeason())
   const [mode, setMode] = useState<ColorMode>("value")
 
   const { data, error: swrError, isLoading } = useSWR<ShotQualityResponse>(
@@ -452,7 +400,7 @@ export function ShotQualityContent() {
 
   const controls = (
     <div className="flex flex-wrap items-end gap-4">
-      <SeasonSelector season={season} onSeasonChange={setSeason} />
+      <SeasonSelector id="shot-quality-season" season={season} onSeasonChange={setSeason} />
       <EncodingToggle mode={mode} onModeChange={setMode} />
     </div>
   )

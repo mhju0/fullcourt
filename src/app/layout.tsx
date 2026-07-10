@@ -61,13 +61,32 @@ export default function RootLayout({
               RENDERED: {renderedAt} ·{" "}
               <a
                 href="/api/health"
+                className="transition-colors hover:text-[var(--term-text)]"
                 style={{ color: "var(--term-text-muted)", textDecoration: "underline" }}
               >
                 SYSTEM STATUS
               </a>
             </span>
             <span style={{ fontSize: "10px", color: "var(--term-text-muted)", letterSpacing: "0.04em" }}>
-              BUILT BY MJ
+              <a
+                href="https://github.com/mhju0"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="transition-colors hover:text-[var(--term-text)]"
+                style={{ color: "var(--term-text-muted)", textDecoration: "underline" }}
+              >
+                BUILT BY MJ
+              </a>
+              {" · "}
+              <a
+                href="https://github.com/mhju0/fullcourt"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="transition-colors hover:text-[var(--term-text)]"
+                style={{ color: "var(--term-text-muted)", textDecoration: "underline" }}
+              >
+                SOURCE
+              </a>
             </span>
           </div>
         </footer>
