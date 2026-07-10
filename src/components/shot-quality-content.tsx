@@ -61,10 +61,13 @@ function mix(a: RGB, b: RGB, t: number): string {
   return `rgb(${r} ${g} ${bl})`
 }
 
-const TAN: RGB = hexToRgb("#C4853C") // low expected eFG%
-const BLUE: RGB = hexToRgb("#17408B") // high expected eFG% (and "gbm lower" in diff view)
-const RED: RGB = hexToRgb("#C9082A") // "gbm higher" in diff view
-const NEUTRAL: RGB = hexToRgb("#EFEAE0") // diff ≈ 0
+// Dark-court ramp: endpoints brightened so markers read on the near-black court,
+// and the diff-neutral pulled down to a court-adjacent tone so "no difference"
+// cells recede instead of glowing.
+const TAN: RGB = hexToRgb("#D2A24C") // low expected eFG%
+const BLUE: RGB = hexToRgb("#3B82F6") // high expected eFG% (and "gbm lower" in diff view)
+const RED: RGB = hexToRgb("#E5484D") // "gbm higher" in diff view
+const NEUTRAL: RGB = hexToRgb("#2A313A") // diff ≈ 0
 
 /** Sequential expected-eFG% ramp: low → tan, high → blue. `t` already normalized to [0,1]. */
 const seqColor = (t: number): string => mix(TAN, BLUE, clamp01(t))
@@ -141,8 +144,8 @@ function LegendBar({ gradient, left, mid, right }: { gradient: string; left: str
 
 // ─── Court chrome (lines) ──────────────────────────────────────────
 
-const LINE = "#C0BAAE"
-const BOUNDARY = "#A8A296"
+const LINE = "#464E59"
+const BOUNDARY = "#5A6470"
 const RIM_RED = "var(--term-red)"
 
 /** Samples an arc of `radius` (ft) about court-center (cxFt, cyFt), α ∈ [−aMax, aMax] deg. */
@@ -249,7 +252,7 @@ function ShotCourt({
         width="100%"
         role="img"
         aria-label={`${title}: half-court expected-shot-value map, ${cells.length} cells`}
-        style={{ display: "block", background: "#FCFBF9", border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }}
+        style={{ display: "block", background: "#0F1318", border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }}
       >
         <g>
           {markers.map((m) => {

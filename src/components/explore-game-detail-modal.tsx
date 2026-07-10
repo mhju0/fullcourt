@@ -335,7 +335,7 @@ function ExploreGameDetailModalContent({
                 type="button"
                 variant="ghost"
                 size="sm"
-                className="h-7 gap-1 rounded-full px-2 text-xs text-slate-500 hover:text-slate-800"
+                className="h-7 gap-1 rounded-full px-2 text-xs text-[var(--term-text-muted)] hover:text-[var(--term-text)]"
                 onClick={goBack}
                 aria-label="Back to previous game"
               >
