@@ -109,6 +109,30 @@ export function defaultNbaSeason(): NbaSeasonLabel {
   return NBA_SEASONS[NBA_SEASONS.length - 1];
 }
 
+/**
+ * Season to show as "current" for nav/labels/defaults: the in-progress season
+ * while it's running (Oct–Apr), the most recently completed one otherwise.
+ * Unlike `defaultNbaSeason`, not clamped to `NBA_SEASONS` — takes an explicit
+ * date so callers (and tests) aren't tied to the real wall clock.
+ */
+export function currentDisplaySeason(todayKey: string = formatLocalDateKey()): string {
+  return seasonLabelForDateKey(todayKey);
+}
+
+/** Season label immediately following the given one (e.g. "2025-26" → "2026-27"). */
+export function nextSeasonLabel(season: string): string {
+  const nextStartYear = parseSeasonStartYear(season) + 1;
+  return `${nextStartYear}-${String(nextStartYear + 1).slice(-2)}`;
+}
+
+/** True between the end of the most recently completed regular season and the start of the next. */
+export function isNbaOffSeason(todayKey: string = formatLocalDateKey()): boolean {
+  const season = currentDisplaySeason(todayKey);
+  const bounds = regularSeasonDateBounds(season);
+  const nextBounds = regularSeasonDateBounds(nextSeasonLabel(season));
+  return todayKey < bounds.from || (todayKey > bounds.to && todayKey < nextBounds.from);
+}
+
 export function pickDefaultGamesDate(
   todayKey: string,
   availableDates: readonly { date: string }[]

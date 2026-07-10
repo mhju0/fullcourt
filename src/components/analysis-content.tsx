@@ -305,23 +305,30 @@ const PAGE_SIZE = 20
 
 // ─── Explore Games sub-component ──────────────────────────────────
 
+type DrillSignal = { threshold: number; token: number } | null
+
 function ExploreGames({
   exploreRef,
-  initialRaFilter,
+  drillSignal,
 }: {
   exploreRef: React.RefObject<HTMLDivElement | null>
-  initialRaFilter: number
+  drillSignal: DrillSignal
 }) {
-  const [raFilter, setRaFilter] = useState(initialRaFilter)
+  const [raFilter, setRaFilter] = useState(drillSignal?.threshold ?? 0)
   const [teamFilter, setTeamFilter] = useState("")
   const [seasonFilter, setSeasonFilter] = useState("")
   const [resultFilter, setResultFilter] = useState<"all" | "correct" | "incorrect">("all")
   const [page, setPage] = useState(1)
   const [detailGameId, setDetailGameId] = useState<number | null>(null)
   const [detailOpen, setDetailOpen] = useState(false)
+  const [appliedDrillToken, setAppliedDrillToken] = useState(drillSignal?.token ?? 0)
 
-  if (initialRaFilter !== raFilter && initialRaFilter !== 0) {
-    setRaFilter(initialRaFilter)
+  // Applies a chart-bar drill-down exactly once per click, keyed on `token`
+  // (not the threshold value) so a repeat click on the same bar still applies,
+  // and so it never re-fires and fights a later dropdown change or CLEAR FILTERS.
+  if (drillSignal && drillSignal.token !== appliedDrillToken) {
+    setAppliedDrillToken(drillSignal.token)
+    setRaFilter(drillSignal.threshold)
     setPage(1)
   }
 
@@ -602,10 +609,11 @@ function ExploreGames({
 // ─── Main component ───────────────────────────────────────────────
 
 export function AnalysisContent() {
-  const [drillRaFilter, setDrillRaFilter] = useState(0)
+  const [drillSignal, setDrillSignal] = useState<DrillSignal>(null)
   const [seasonRaFilter, setSeasonRaFilter] = useState(0)
 
   const exploreRef = useRef<HTMLDivElement>(null)
+  const drillTokenRef = useRef(0)
 
   const { data, error: swrError, isLoading: loading } = useSWR<AnalysisResponse>(
     "/api/analysis",
@@ -640,7 +648,8 @@ export function AnalysisContent() {
     (datum: unknown) => {
       const d = datum as WinRateDatum
       const threshold = d.threshold ?? 0
-      setDrillRaFilter(threshold)
+      drillTokenRef.current += 1
+      setDrillSignal({ threshold, token: drillTokenRef.current })
       setTimeout(() => {
         exploreRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
       }, 60)
@@ -870,7 +879,7 @@ export function AnalysisContent() {
       )}
 
       {/* Explore Games */}
-      <ExploreGames exploreRef={exploreRef} initialRaFilter={drillRaFilter} />
+      <ExploreGames exploreRef={exploreRef} drillSignal={drillSignal} />
     </div>
   )
 }

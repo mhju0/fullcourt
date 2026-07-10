@@ -5,7 +5,7 @@ import Image from "next/image"
 import useSWR from "swr"
 import { format } from "date-fns"
 import { NBA_TEAM_IDS } from "@/lib/nba-team-ids"
-import { parseSeasonStartYear, regularSeasonDateBounds } from "@/lib/nba-season"
+import { currentDisplaySeason, isNbaOffSeason, nextSeasonLabel } from "@/lib/nba-season"
 import { apiFetcher } from "@/lib/fetcher"
 import { Skeleton } from "@/components/ui/skeleton"
 import { termCardStyle } from "@/lib/terminal-styles"
@@ -40,11 +40,6 @@ const RA_OPTIONS = [
   { label: "RA ≥ 5", value: 5 },
   { label: "RA ≥ 7", value: 7 },
 ]
-
-function nextSeasonLabel(season: string): string {
-  const nextStartYear = parseSeasonStartYear(season) + 1
-  return `${nextStartYear}-${String(nextStartYear + 1).slice(-2)}`
-}
 
 function OffSeasonEmptyState({ nextSeason }: { nextSeason: string }) {
   return (
@@ -95,13 +90,9 @@ function TeamLogo({ abbreviation }: { abbreviation: string }) {
 export function UpcomingContent() {
   const [raFilter, setRaFilter] = useState(0)
 
-  const season = "2025-26"
-  const seasonBounds = regularSeasonDateBounds(season)
-  const today = format(new Date(), "yyyy-MM-dd")
+  const season = currentDisplaySeason()
   const nextSeason = nextSeasonLabel(season)
-  const nextSeasonBounds = regularSeasonDateBounds(nextSeason)
-  const isOffSeason =
-    today < seasonBounds.from || (today > seasonBounds.to && today < nextSeasonBounds.from)
+  const isOffSeason = isNbaOffSeason()
 
   const params = new URLSearchParams({ season })
   if (raFilter > 0) params.set("minRA", String(raFilter))

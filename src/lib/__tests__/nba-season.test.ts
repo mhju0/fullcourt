@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { formatLocalDateKey, pickDefaultGamesDate } from "../nba-season";
+import {
+  currentDisplaySeason,
+  formatLocalDateKey,
+  isNbaOffSeason,
+  pickDefaultGamesDate,
+} from "../nba-season";
 import type { GameDateCount } from "@/types";
 
 function dates(values: string[]): GameDateCount[] {
@@ -78,5 +83,57 @@ describe("pickDefaultGamesDate", () => {
 describe("formatLocalDateKey", () => {
   it("formats with local date parts instead of UTC serialization", () => {
     expect(formatLocalDateKey(new Date(2026, 2, 30, 0, 30))).toBe("2026-03-30");
+  });
+});
+
+describe("currentDisplaySeason", () => {
+  it("returns the in-progress season mid-season", () => {
+    expect(currentDisplaySeason("2026-01-15")).toBe("2025-26");
+  });
+
+  it("returns the most recently completed season during the July offseason", () => {
+    expect(currentDisplaySeason("2026-07-10")).toBe("2025-26");
+  });
+
+  it("flips to the new season on Oct 1", () => {
+    expect(currentDisplaySeason("2026-10-01")).toBe("2026-27");
+  });
+
+  it("still returns the old season on Sep 30, the day before rollover", () => {
+    expect(currentDisplaySeason("2026-09-30")).toBe("2025-26");
+  });
+
+  it("still returns the current season on Apr 30, its last day", () => {
+    expect(currentDisplaySeason("2026-04-30")).toBe("2025-26");
+  });
+
+  it("returns the just-completed season on May 1, the first offseason day", () => {
+    expect(currentDisplaySeason("2026-05-01")).toBe("2025-26");
+  });
+});
+
+describe("isNbaOffSeason", () => {
+  it("is false mid-season", () => {
+    expect(isNbaOffSeason("2026-01-15")).toBe(false);
+  });
+
+  it("is true in the July offseason", () => {
+    expect(isNbaOffSeason("2026-07-10")).toBe(true);
+  });
+
+  it("is false on Oct 1, the season's first day", () => {
+    expect(isNbaOffSeason("2026-10-01")).toBe(false);
+  });
+
+  it("is true on Sep 30, the day before the season starts", () => {
+    expect(isNbaOffSeason("2026-09-30")).toBe(true);
+  });
+
+  it("is false on Apr 30, the season's last day", () => {
+    expect(isNbaOffSeason("2026-04-30")).toBe(false);
+  });
+
+  it("is true on May 1, the first offseason day", () => {
+    expect(isNbaOffSeason("2026-05-01")).toBe(true);
   });
 });
