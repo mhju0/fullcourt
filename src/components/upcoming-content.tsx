@@ -8,28 +8,8 @@ import { NBA_TEAM_IDS } from "@/lib/nba-team-ids"
 import { currentDisplaySeason, isNbaOffSeason, nextSeasonLabel } from "@/lib/nba-season"
 import { apiFetcher } from "@/lib/fetcher"
 import { Skeleton } from "@/components/ui/skeleton"
-import { termCardStyle } from "@/lib/terminal-styles"
+import { termCardStyle, termThStyle as thStyle, termTdStyle as tdStyle } from "@/lib/terminal-styles"
 import type { UpcomingGameWithRA } from "@/types"
-
-// ─── Shared styles (terminal) ─────────────────────────────────────
-
-const thStyle: React.CSSProperties = {
-  fontFamily: "'Courier New', Courier, monospace",
-  fontSize: 10,
-  letterSpacing: "0.08em",
-  color: "var(--term-text-muted)",
-  fontWeight: 700,
-  padding: "8px 10px",
-  background: "var(--term-surface-2)",
-  borderBottom: "1px solid var(--term-border)",
-  textTransform: "uppercase",
-}
-
-const tdStyle: React.CSSProperties = {
-  padding: "8px 10px",
-  borderBottom: "1px solid var(--term-border)",
-  fontSize: 11,
-}
 
 // ─── RA threshold options ──────────────────────────────────────────
 
@@ -115,7 +95,7 @@ export function UpcomingContent() {
             <button
               key={opt.value}
               onClick={() => setRaFilter(opt.value)}
-              className="mono transition-colors"
+              className="mono transition-[background-color,border-color,transform] active:scale-[0.97]"
               style={{
                 background: active ? "var(--term-blue)" : "var(--term-surface)",
                 color: active ? "var(--term-surface)" : "var(--term-text)",
