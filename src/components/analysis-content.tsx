@@ -18,7 +18,6 @@ import { format } from "date-fns"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { ExploreGameDetailModal } from "@/components/explore-game-detail-modal"
 import { Skeleton } from "@/components/ui/skeleton"
-import { cn } from "@/lib/utils"
 import { apiFetcher } from "@/lib/fetcher"
 import { NBA_SEASONS } from "@/lib/nba-season"
 import { termCardStyle } from "@/lib/terminal-styles"
@@ -84,16 +83,32 @@ function SectionDivider({ label, descriptor }: { label: string; descriptor?: str
 
 // ─── Stat card (matches page.tsx pattern) ─────────────────────────
 
-function StatCard({ label, value, sub }: { label: string; value: string; sub?: string }) {
+function StatCard({
+  label,
+  value,
+  sub,
+  accent = "var(--term-hardwood)",
+}: {
+  label: string
+  value: string
+  sub?: string
+  accent?: string
+}) {
   return (
     <div
-      className="mono flex flex-col gap-1"
-      style={{ background: "var(--term-surface-2)", borderRadius: "var(--term-radius)", padding: "10px 12px" }}
+      className="mono flex flex-col gap-1.5"
+      style={{
+        background: "var(--term-surface)",
+        border: "1px solid var(--term-border)",
+        borderLeft: `2px solid ${accent}`,
+        borderRadius: "var(--term-radius)",
+        padding: "12px 14px",
+      }}
     >
       <span style={{ fontSize: 10, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 600 }}>
         {label}
       </span>
-      <span className="tabular-nums" style={{ fontSize: 20, fontWeight: 500, color: "var(--term-text)", lineHeight: 1 }}>
+      <span className="tabular-nums" style={{ fontSize: 24, fontWeight: 600, color: "var(--term-text)", lineHeight: 1 }}>
         {value}
       </span>
       {sub && (
@@ -709,17 +724,20 @@ export function AnalysisContent() {
           label="OVERALL WIN RATE"
           value={`${data.overallWinRate}%`}
           sub={`${data.totalGames.toLocaleString()} GAMES`}
+          accent="var(--term-blue)"
         />
         <StatCard
           label="HOME RESTED WIN%"
           value={`${data.homeAwayBreakdown.homeTeamMoreRested.winPct}%`}
           sub={`${data.homeAwayBreakdown.homeTeamMoreRested.restedTeamWins.toLocaleString()} / ${data.homeAwayBreakdown.homeTeamMoreRested.games.toLocaleString()}`}
+          accent="var(--term-hardwood)"
         />
         {ra5 && (
           <StatCard
             label="WIN RATE · RA ≥ 5"
             value={`${ra5.winPct}%`}
             sub={`${ra5.games.toLocaleString()} GAMES`}
+            accent="var(--term-blue)"
           />
         )}
       </div>
@@ -823,7 +841,7 @@ export function AnalysisContent() {
               <button
                 key={opt.value}
                 onClick={() => handleSeasonFilterChange(opt.value)}
-                className={cn("mono transition-colors")}
+                className="mono transition-[background-color,border-color,transform] active:scale-[0.97]"
                 style={{
                   background: active ? "var(--term-blue)" : "var(--term-surface)",
                   color: active ? "var(--term-surface)" : "var(--term-text)",
