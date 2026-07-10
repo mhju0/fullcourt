@@ -43,7 +43,7 @@ const HIGH_CONF_THRESHOLD = 2.0
 
 // Terminal-style flat button: white bg, 1px border, mono uppercase, 4px corners.
 const termBtn =
-  "mono inline-flex items-center gap-2 bg-white px-3 py-1.5 text-[11px] uppercase tracking-[0.05em] text-slate-700 transition-[background-color,border-color,transform] hover:bg-[var(--term-surface-2)]"
+  "mono inline-flex items-center gap-2 bg-[var(--term-surface)] px-3 py-1.5 text-[11px] uppercase tracking-[0.05em] text-[var(--term-text-dim)] transition-[background-color,border-color,transform] hover:bg-[var(--term-surface-2)]"
 const termBtnStyle: React.CSSProperties = { border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }
 
 // ─── Stat summary row ────────────────────────────────────────────
@@ -229,7 +229,7 @@ function DateChip({
       <span className="tabular-nums" style={{ fontSize: 14, fontWeight: 700, lineHeight: 1.1 }}>
         {day}
       </span>
-      <span className="tabular-nums" style={{ fontSize: 9, color: selected ? "rgba(255,255,255,0.7)" : "var(--term-text-muted)" }}>
+      <span className="tabular-nums" style={{ fontSize: 9, color: selected ? "rgba(10,11,13,0.62)" : "var(--term-text-muted)" }}>
         {count} {count === 1 ? "GM" : "GMS"}
       </span>
     </button>
@@ -458,7 +458,7 @@ export default function HomePage() {
         <span className="mono" style={{ fontSize: 10, letterSpacing: "0.08em", color: "var(--term-red)", fontWeight: 700 }}>
           REST ADVANTAGE DASHBOARD
         </span>
-        <h1 className="text-2xl font-bold tracking-tight text-slate-900">Today&apos;s Matchups</h1>
+        <h1 className="text-2xl font-bold tracking-tight text-[var(--term-text)]">Today&apos;s Matchups</h1>
         <p className="mono max-w-2xl" style={{ fontSize: 11, color: "var(--term-text-muted)", lineHeight: 1.5 }}>
           FATIGUE SCORES FOR EVERY NBA GAME. HIGHER DIFFERENTIAL = ONE TEAM CARRYING MORE TRAVEL AND SCHEDULE LOAD.
         </p>
@@ -486,7 +486,7 @@ export default function HomePage() {
             style={{
               ...termBtnStyle,
               backgroundImage:
-                "url('data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20width=%2712%27%20height=%2712%27%20viewBox=%270%200%2024%2024%27%20fill=%27none%27%20stroke=%27%238A8478%27%20stroke-width=%272%27%3E%3Cpath%20d=%27M6%209l6%206%206-6%27/%3E%3C/svg%3E')",
+                "url('data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20width=%2712%27%20height=%2712%27%20viewBox=%270%200%2024%2024%27%20fill=%27none%27%20stroke=%27%238A929C%27%20stroke-width=%272%27%3E%3Cpath%20d=%27M6%209l6%206%206-6%27/%3E%3C/svg%3E')",
               backgroundRepeat: "no-repeat",
               backgroundPosition: "right 0.5rem center",
               backgroundSize: "0.75rem",
@@ -571,7 +571,7 @@ export default function HomePage() {
             onClick={() => shiftSelectedDay(-1)}
             disabled={!selectedDateKey}
             aria-label="Previous day"
-            className="bg-white active:scale-95"
+            className="bg-[var(--term-surface)] active:scale-95"
             style={{ border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }}
           >
             <ChevronLeft />
@@ -589,7 +589,7 @@ export default function HomePage() {
             onClick={() => shiftSelectedDay(1)}
             disabled={!selectedDateKey}
             aria-label="Next day"
-            className="bg-white active:scale-95"
+            className="bg-[var(--term-surface)] active:scale-95"
             style={{ border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }}
           >
             <ChevronRight />
