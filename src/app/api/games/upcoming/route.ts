@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getPublicApiErrorMessage } from "@/lib/api-errors";
 import { getUpcomingGamesWithRA } from "@/lib/db/queries";
+import { currentDisplaySeason } from "@/lib/nba-season";
 import type { ApiResponse, UpcomingGameWithRA } from "@/types";
 
 export const runtime = "nodejs";
@@ -11,7 +12,7 @@ export async function GET(
 ): Promise<NextResponse<ApiResponse<UpcomingGameWithRA[]>>> {
   const { searchParams } = new URL(req.url);
   const minRA = Math.max(0, parseFloat(searchParams.get("minRA") ?? "0") || 0);
-  const season = searchParams.get("season") ?? "2025-26";
+  const season = searchParams.get("season") ?? currentDisplaySeason();
 
   try {
     const games = await getUpcomingGamesWithRA(season, minRA);

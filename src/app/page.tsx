@@ -10,9 +10,11 @@ import { MatchupCard } from "@/components/matchup-card"
 import { apiFetcher } from "@/lib/fetcher"
 import { useLiveGames } from "@/hooks/useLiveGames"
 import {
+  currentDisplaySeason,
   defaultNbaCalendarMonth,
   defaultNbaSeason,
   formatLocalDateKey,
+  isNbaOffSeason,
   NBA_REGULAR_MONTHS,
   NBA_SEASONS,
   pickDefaultGamesDate,
@@ -76,7 +78,7 @@ function StatSummaryRow({
     <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
       <StatCard label="GAMES TODAY" value={String(gamesToday)} />
       <StatCard label="AVG REST ADV" value={avgRestAdv} />
-      <StatCard label="SEASON WIN RATE" value={seasonWinRate} />
+      <StatCard label="ALL-TIME WIN RATE" value={seasonWinRate} />
       <StatCard label="HIGH CONF PICKS" value={String(highConfPicks)} />
     </div>
   )
@@ -145,6 +147,31 @@ function EmptyState({ label }: { label: string }) {
   )
 }
 
+function OffSeasonBanner({ season }: { season: string }) {
+  return (
+    <div
+      className="mono flex flex-wrap items-center justify-between gap-2 px-4 py-2.5"
+      style={{
+        background: "var(--term-surface)",
+        border: "1px solid var(--term-border)",
+        borderLeft: "2px solid var(--term-hardwood)",
+        borderRadius: "var(--term-radius)",
+      }}
+    >
+      <span style={{ fontSize: 11, letterSpacing: "0.04em", color: "var(--term-text)", fontWeight: 600 }}>
+        {season} SEASON COMPLETE — SHOWING FINAL SLATE
+      </span>
+      <a
+        href="/analysis"
+        className="transition-colors hover:underline"
+        style={{ fontSize: 11, letterSpacing: "0.04em", color: "var(--term-blue)", fontWeight: 700 }}
+      >
+        EXPLORE THE 40-SEASON BACKTEST →
+      </a>
+    </div>
+  )
+}
+
 function ErrorState({ message }: { message: string }) {
   return (
     <div
@@ -202,6 +229,9 @@ function DateChip({
 // ─── Page ────────────────────────────────────────────────────────
 
 export default function HomePage() {
+  const showOffSeasonBanner = isNbaOffSeason()
+  const offSeasonLabel = currentDisplaySeason()
+
   const [season, setSeason] = useState<string>(() => defaultNbaSeason())
   const [month, setMonth] = useState<number>(() => defaultNbaCalendarMonth())
   const [availableDates, setAvailableDates] = useState<GameDateCount[]>([])
@@ -556,6 +586,8 @@ export default function HomePage() {
           </Button>
         </div>
       </div>
+
+      {showOffSeasonBanner && <OffSeasonBanner season={offSeasonLabel} />}
 
       {/* Matchups section */}
       <div className="flex flex-col gap-2">

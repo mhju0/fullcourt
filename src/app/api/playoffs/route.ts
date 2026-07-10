@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { getPublicApiErrorMessage } from "@/lib/api-errors";
 import { getPlayoffSeriesWithPredictions } from "@/lib/db/queries";
-import { NBA_SEASONS } from "@/lib/nba-season";
+import { currentDisplaySeason, NBA_SEASONS } from "@/lib/nba-season";
 import type {
   ApiResponse,
   PlayoffMethodSummary,
@@ -15,8 +15,6 @@ export const runtime = "nodejs";
 
 /** DB-backed; do not prerender at build (avoids requiring `DATABASE_URL` during `next build`). */
 export const dynamic = "force-dynamic";
-
-const DEFAULT_SEASON = "2025-26";
 
 const SeasonSchema = z.string().refine((s) => NBA_SEASONS.includes(s), {
   message: "Invalid season",
@@ -74,7 +72,7 @@ export async function GET(
   req: NextRequest
 ): Promise<NextResponse<ApiResponse<PlayoffsResponse>>> {
   const rawSeason = req.nextUrl.searchParams.get("season");
-  const parsed = SeasonSchema.safeParse(rawSeason ?? DEFAULT_SEASON);
+  const parsed = SeasonSchema.safeParse(rawSeason ?? currentDisplaySeason());
 
   if (!parsed.success) {
     const msg = parsed.error.issues[0]?.message ?? "Invalid season";
