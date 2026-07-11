@@ -631,6 +631,11 @@ export async function searchRegularSeasonGames(filters: SearchFilters): Promise<
     isNotNull(games.homeScore),
     isNotNull(games.awayScore),
     gameDateWithinRegularSeasonCalendar,
+    // The search route always discards neutral games (|rest advantage| < 0.5).
+    // Exclude them in SQL so an unfiltered search doesn't scan+join ~all ~46k
+    // regular games only to drop half of them in JS. A higher minRA below raises
+    // this floor further.
+    sql`abs(cast(${awayFatigue.score} as numeric) - cast(${homeFatigue.score} as numeric)) >= 0.5`,
   ];
 
   if (filters.season) {
