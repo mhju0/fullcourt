@@ -7,7 +7,7 @@ import { SeasonSelector } from "@/components/season-selector"
 import { Skeleton } from "@/components/ui/skeleton"
 import { apiFetcher } from "@/lib/fetcher"
 import { currentDisplaySeason } from "@/lib/nba-season"
-import { termCardStyle } from "@/lib/terminal-styles"
+import { termCardStyle, termInsetStyle } from "@/lib/terminal-styles"
 import type { ShotQualityCell, ShotQualityResponse } from "@/types"
 
 // ─── Court geometry ────────────────────────────────────────────────
@@ -127,17 +127,99 @@ function EncodingToggle({
   )
 }
 
-// ─── Legends ───────────────────────────────────────────────────────
+// ─── "How to read this" strip (legend + plain-language key) ────────
 
-function LegendBar({ gradient, left, mid, right }: { gradient: string; left: string; mid?: string; right: string }) {
+function BigLegend({
+  caption,
+  gradient,
+  left,
+  mid,
+  right,
+}: {
+  caption: string
+  gradient: string
+  left: string
+  mid?: string
+  right: string
+}) {
   return (
-    <div className="flex flex-col gap-1" style={{ maxWidth: 320 }}>
-      <div style={{ height: 10, borderRadius: "var(--term-radius-sm)", border: "1px solid var(--term-border)", background: gradient }} />
-      <div className="mono flex justify-between" style={{ fontSize: 9, color: "var(--term-text-muted)", letterSpacing: "0.04em" }}>
+    <div className="flex w-full max-w-[420px] shrink-0 flex-col gap-1.5 sm:w-[340px]">
+      <span className="mono" style={{ fontSize: 10, letterSpacing: "0.1em", color: "var(--term-text-muted)", fontWeight: 700 }}>
+        {caption}
+      </span>
+      <div style={{ height: 16, borderRadius: "var(--term-radius-sm)", border: "1px solid var(--term-border)", background: gradient }} />
+      <div className="mono flex justify-between tabular-nums" style={{ fontSize: 11, color: "var(--term-text-dim)", letterSpacing: "0.03em", fontWeight: 600 }}>
         <span>{left}</span>
         {mid ? <span>{mid}</span> : null}
         <span>{right}</span>
       </div>
+    </div>
+  )
+}
+
+/**
+ * Mode-aware first-glance guide: an enlarged color legend plus a 3-line
+ * plain-sentence key. Deliberately sentence case (not the mono-caps chrome)
+ * so it reads as human help, not more terminal furniture.
+ */
+function HowToRead({
+  mode,
+  seqLo,
+  seqHi,
+  divD,
+}: {
+  mode: ColorMode
+  seqLo: number
+  seqHi: number
+  divD: number
+}) {
+  return (
+    <div className="mb-4 flex flex-col gap-4 px-4 py-3.5 sm:flex-row sm:items-center sm:gap-6" style={termInsetStyle}>
+      {mode === "value" ? (
+        <>
+          <BigLegend
+            caption="EXPECTED eFG%"
+            gradient={`linear-gradient(90deg, ${seqColor(0)}, ${seqColor(1)})`}
+            left={`${(seqLo * 100).toFixed(0)}% · low value`}
+            right={`${(seqHi * 100).toFixed(0)}% · high value`}
+          />
+          <div className="flex min-w-0 flex-col gap-1" style={{ fontSize: 12.5, lineHeight: 1.55, color: "var(--term-text-dim)" }}>
+            <p>
+              Each square is a spot on the floor; bigger squares mean more shots attempted there.
+            </p>
+            <p>
+              Color is what an average shooter earns from that spot:{" "}
+              <span style={{ color: "var(--term-blue)", fontWeight: 600 }}>blue is high-value</span> (rim, corner threes),{" "}
+              <span style={{ color: "var(--term-hardwood)", fontWeight: 600 }}>tan is low-value</span> (long mid-range).
+            </p>
+            <p style={{ color: "var(--term-text-muted)" }}>
+              Both courts show the same shots: BASELINE averages by zone, so it looks blocky; GBM smooths the
+              same data into a continuous surface.
+            </p>
+          </div>
+        </>
+      ) : (
+        <>
+          <BigLegend
+            caption="GBM − BASELINE"
+            gradient={`linear-gradient(90deg, ${divColor(-1)}, ${divColor(0)}, ${divColor(1)})`}
+            left={`−${(divD * 100).toFixed(1)} pp · GBM lower`}
+            mid="0"
+            right={`+${(divD * 100).toFixed(1)} pp · GBM higher`}
+          />
+          <div className="flex min-w-0 flex-col gap-1" style={{ fontSize: 12.5, lineHeight: 1.55, color: "var(--term-text-dim)" }}>
+            <p>One court: where the two models disagree about a spot&apos;s value.</p>
+            <p>
+              <span style={{ color: "var(--term-red)", fontWeight: 600 }}>Red: GBM rates it higher</span> than the zone
+              average, <span style={{ color: "var(--term-blue)", fontWeight: 600 }}>blue: lower</span>; dark squares mean
+              the models agree.
+            </p>
+            <p style={{ color: "var(--term-text-muted)" }}>
+              Disagreement concentrates along zone borders, which is exactly what a smooth surface fixes.
+            </p>
+          </div>
+        </>
+      )}
     </div>
   )
 }
@@ -445,21 +527,9 @@ export function ShotQualityContent() {
               <span className="mono" style={{ fontSize: 10, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 700 }}>
                 {season} · {data.meta.cellCount.toLocaleString()} CELLS · {data.meta.totalFga.toLocaleString()} FGA
               </span>
-              {mode === "value" ? (
-                <LegendBar
-                  gradient={`linear-gradient(90deg, ${seqColor(0)}, ${seqColor(1)})`}
-                  left={`${(stats.seqLo * 100).toFixed(0)}%`}
-                  right={`${(stats.seqHi * 100).toFixed(0)}% eFG`}
-                />
-              ) : (
-                <LegendBar
-                  gradient={`linear-gradient(90deg, ${divColor(-1)}, ${divColor(0)}, ${divColor(1)})`}
-                  left={`−${(stats.divD * 100).toFixed(1)} (GBM LOWER)`}
-                  mid="0"
-                  right={`+${(stats.divD * 100).toFixed(1)} pp (HIGHER)`}
-                />
-              )}
             </div>
+
+            <HowToRead mode={mode} seqLo={stats.seqLo} seqHi={stats.seqHi} divD={stats.divD} />
 
             {mode === "value" ? (
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
