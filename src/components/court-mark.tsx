@@ -37,9 +37,9 @@ export function CourtMark({
         </clipPath>
       </defs>
       <g clipPath={`url(#${clip})`}>
-        <path d="M6 7 H30 L42 41 H6 Z" fill="rgba(59,130,246,0.5)" />
-        <path d="M30 7 H66 V41 H42 Z" fill="rgba(229,72,77,0.5)" />
-        <path d="M30 7 L42 41" stroke="#F2F4F7" strokeWidth="3.4" />
+        <path d="M6 7 H33 L39 41 H6 Z" fill="rgba(59,130,246,0.5)" />
+        <path d="M33 7 H66 V41 H39 Z" fill="rgba(229,72,77,0.5)" />
+        <path d="M33 7 L39 41" stroke="#F2F4F7" strokeWidth="3.4" />
       </g>
       <rect x="6" y="7" width="60" height="34" rx="3" stroke="#F2F4F7" strokeWidth="4" />
       <circle cx="36" cy="24" r="6" stroke="#F5A623" strokeWidth="3.6" />

@@ -3,9 +3,9 @@
   <g transform="translate(0 12)">
     <clipPath id="court"><rect x="6" y="7" width="60" height="34" rx="3"/></clipPath>
     <g clip-path="url(#court)">
-      <path d="M6 7 H30 L42 41 H6 Z" fill="#3B82F6" fill-opacity="0.55"/>
-      <path d="M30 7 H66 V41 H42 Z" fill="#E5484D" fill-opacity="0.55"/>
-      <path d="M30 7 L42 41" stroke="#F2F4F7" stroke-width="3.2"/>
+      <path d="M6 7 H33 L39 41 H6 Z" fill="#3B82F6" fill-opacity="0.55"/>
+      <path d="M33 7 H66 V41 H39 Z" fill="#E5484D" fill-opacity="0.55"/>
+      <path d="M33 7 L39 41" stroke="#F2F4F7" stroke-width="3.2"/>
     </g>
     <rect x="6" y="7" width="60" height="34" rx="3" stroke="#F2F4F7" stroke-width="4"/>
     <circle cx="36" cy="24" r="6" stroke="#F5A623" stroke-width="3.6"/>

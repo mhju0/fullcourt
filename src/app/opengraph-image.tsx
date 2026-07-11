@@ -5,7 +5,7 @@ export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
 // The C1 court mark, inlined as a data-URI so satori rasterizes it directly.
-const MARK = `<svg xmlns="http://www.w3.org/2000/svg" width="360" height="240" viewBox="0 0 72 48" fill="none"><defs><clipPath id="c"><rect x="6" y="7" width="60" height="34" rx="3"/></clipPath></defs><g clip-path="url(#c)"><path d="M6 7 H30 L42 41 H6 Z" fill="#3B82F6" fill-opacity="0.5"/><path d="M30 7 H66 V41 H42 Z" fill="#E5484D" fill-opacity="0.5"/><path d="M30 7 L42 41" stroke="#F2F4F7" stroke-width="2.4"/></g><rect x="6" y="7" width="60" height="34" rx="3" stroke="#F2F4F7" stroke-width="3"/><circle cx="36" cy="24" r="6" stroke="#F5A623" stroke-width="2.6"/></svg>`;
+const MARK = `<svg xmlns="http://www.w3.org/2000/svg" width="360" height="240" viewBox="0 0 72 48" fill="none"><defs><clipPath id="c"><rect x="6" y="7" width="60" height="34" rx="3"/></clipPath></defs><g clip-path="url(#c)"><path d="M6 7 H33 L39 41 H6 Z" fill="#3B82F6" fill-opacity="0.5"/><path d="M33 7 H66 V41 H39 Z" fill="#E5484D" fill-opacity="0.5"/><path d="M33 7 L39 41" stroke="#F2F4F7" stroke-width="2.4"/></g><rect x="6" y="7" width="60" height="34" rx="3" stroke="#F2F4F7" stroke-width="3"/><circle cx="36" cy="24" r="6" stroke="#F5A623" stroke-width="2.6"/></svg>`;
 const MARK_SRC = `data:image/svg+xml,${encodeURIComponent(MARK)}`;
 
 export default function OpengraphImage() {
