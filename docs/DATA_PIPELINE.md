@@ -50,13 +50,19 @@ Steps:
 ### `fetch_nba_schedule_cdn.py` — current/future schedule
 - Source: `https://cdn.nba.com/static/json/staticData/scheduleLeagueV2.json`
   (`leagueSchedule.gameDates[].games[]`).
-- Regular season only (`gameId` prefix `002`). `games.date` = **UTC calendar date** of
-  `gameDateTimeUTC` (the UTC-vs-ET caveat).
-- Upsert preserves data already present:
+- Regular season only (`gameId` prefix `002`). `games.date` = **US/Eastern calendar date**
+  of `gameDateTimeUTC` — the NBA's scheduling day, same convention as nba_api's
+  `GAME_DATE`. (Historically this stored the *UTC* date, pushing every ~8 PM ET tip onto
+  the next day — e.g. the Apr 12, 2026 finale rendered as 7 + 8 games across two days;
+  fixed 2026-07-11, repaired via the self-healing upsert below.)
+- Upsert: `date = EXCLUDED.date` (schedule truth wins — self-heals mis-dated rows),
   `home_score = COALESCE(EXCLUDED.home_score, games.home_score)` (same for away) and never
-  downgrades a `final` status back to `scheduled`.
+  downgrades a `final` status back to `scheduled`. `main()` logs a pre-upsert
+  date-mismatch report so CI runs show exactly which rows were repaired.
 - New CDN rows are inserted with `overtime_periods = 0`, `game_type = 'regular'`.
-- Optional `utc_month_filter=(year, month)`; `None` = whole regular-season payload.
+- Optional `month_filter=(year, month)` (ET); `None` = whole regular-season payload.
+- Manual repair: dispatch the GitHub Actions workflow with `task=resync-schedule`
+  (bypasses the season gate; the CDN geo-blocks non-US IPs, so run it from CI).
 
 ### `nba_ot_periods.py` — overtime detection
 - `fetch_overtime_periods(game_id, delay_seconds=0.65)` calls `BoxScoreSummaryV2`, reads
