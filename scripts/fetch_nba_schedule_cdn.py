@@ -12,10 +12,15 @@ Drizzle ``games`` table:
   external_id, date, season, home_team_id, away_team_id,
   home_score, away_score, status, overtime_periods, game_type
 
-Tip-off time uses ``gameDateTimeUTC``; the ``date`` column is the UTC calendar
-date of that instant (``YYYY-MM-DD``), consistent for indexing and queries.
+Tip-off time uses ``gameDateTimeUTC``; the ``date`` column is the **US/Eastern**
+calendar date of that instant (``YYYY-MM-DD``) — the NBA's own scheduling day and
+the same convention ``fetch_schedule.py`` gets from nba_api's ``GAME_DATE``.
+(Storing the UTC date here used to push every ~8 PM ET tip onto the next day —
+e.g. the Apr 12, 2026 season finale showed 7 games on the 12th and 8 on the 13th.)
+The upsert also updates ``date`` on conflict, so re-running this script repairs
+any previously mis-dated rows.
 
-Optional ``utc_month_filter=(year, month)`` (e.g. ``(2026, 4)`` for April 2026)
+Optional ``month_filter=(year, month)`` (e.g. ``(2026, 4)`` for April 2026, ET)
 limits which games are emitted — use ``None`` for the full regular-season slate
 (e.g. ``daily_update.py``).
 """
@@ -33,6 +38,7 @@ from typing import Any, Iterator
 
 import psycopg2
 from dotenv import load_dotenv
+from zoneinfo import ZoneInfo
 
 _SCRIPTS_DIR = str(Path(__file__).resolve().parent)
 if _SCRIPTS_DIR not in sys.path:
@@ -42,8 +48,12 @@ from fetch_schedule import load_team_id_map, normalize_abbr, normalize_stats_gam
 
 CDN_URL = "https://cdn.nba.com/static/json/staticData/scheduleLeagueV2.json"
 
+ET = ZoneInfo("America/New_York")
+
 # ON CONFLICT DO UPDATE: never overwrite a 'final' status with 'scheduled', and
 # never overwrite existing scores with NULL (CDN may lack scores for in-progress games).
+# `date` IS updated — the CDN schedule is the source of truth for when a game is
+# played (ET), and this self-heals rows stored with the old UTC-date convention.
 UPSERT_SQL = """
 INSERT INTO games (
     external_id, date, season,
@@ -53,6 +63,7 @@ INSERT INTO games (
 )
 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
 ON CONFLICT (external_id) DO UPDATE SET
+    date       = EXCLUDED.date,
     home_score = COALESCE(EXCLUDED.home_score, games.home_score),
     away_score = COALESCE(EXCLUDED.away_score, games.away_score),
     status     = CASE WHEN games.status = 'final' THEN games.status ELSE EXCLUDED.status END;
@@ -67,7 +78,7 @@ class CdnScheduleGame:
     home_team_tricode: str
     away_team_tricode: str
     game_date_time_utc: str
-    game_date_utc: date
+    game_date_et: date
     game_status: int
     home_score_raw: int | None
     away_score_raw: int | None
@@ -124,7 +135,7 @@ def parse_cdn_schedule_games(data: dict[str, Any]) -> list[CdnScheduleGame]:
     Extracts:
       - gameId
       - homeTeam.teamTricode / awayTeam.teamTricode
-      - gameDateTimeUTC (tip) and UTC calendar date for ``games.date``
+      - gameDateTimeUTC (tip) and its US/Eastern calendar date for ``games.date``
       - gameStatus + scores for upsert status/score columns
     """
     out: list[CdnScheduleGame] = []
@@ -162,7 +173,7 @@ def parse_cdn_schedule_games(data: dict[str, Any]) -> list[CdnScheduleGame]:
                 home_team_tricode=home_tri,
                 away_team_tricode=away_tri,
                 game_date_time_utc=raw_iso,
-                game_date_utc=tip.date(),
+                game_date_et=tip.astimezone(ET).date(),
                 game_status=game_status,
                 home_score_raw=home_score_raw,
                 away_score_raw=away_score_raw,
@@ -171,20 +182,20 @@ def parse_cdn_schedule_games(data: dict[str, Any]) -> list[CdnScheduleGame]:
     return out
 
 
-def filter_games_by_utc_month(
+def filter_games_by_month(
     games: list[CdnScheduleGame],
     year: int,
     month: int,
 ) -> list[CdnScheduleGame]:
-    """Keep games whose tip-off (UTC calendar date) falls in ``year``-``month``."""
-    return [g for g in games if g.game_date_utc.year == year and g.game_date_utc.month == month]
+    """Keep games whose tip-off (ET calendar date) falls in ``year``-``month``."""
+    return [g for g in games if g.game_date_et.year == year and g.game_date_et.month == month]
 
 
 def build_cdn_records(
     data: dict[str, Any],
     team_map: dict[str, int],
     *,
-    utc_month_filter: tuple[int, int] | None = None,
+    month_filter: tuple[int, int] | None = None,
 ) -> tuple[list[tuple], str]:
     """Parse CDN JSON into upsert-ready tuples for the ``games`` table.
 
@@ -192,7 +203,7 @@ def build_cdn_records(
       (external_id, date, season, home_team_id, away_team_id,
        home_score, away_score, status, overtime_periods, game_type)
 
-    ``utc_month_filter`` — if ``(2026, 4)``, only April 2026 (UTC game date).
+    ``month_filter`` — if ``(2026, 4)``, only April 2026 (ET game date).
     ``None`` = all regular-season games in the payload.
     """
     league = data.get("leagueSchedule") or {}
@@ -200,9 +211,9 @@ def build_cdn_records(
     season_label = _derive_season_label(str(season_year))
 
     parsed = parse_cdn_schedule_games(data)
-    if utc_month_filter is not None:
-        y, m = utc_month_filter
-        parsed = filter_games_by_utc_month(parsed, y, m)
+    if month_filter is not None:
+        y, m = month_filter
+        parsed = filter_games_by_month(parsed, y, m)
 
     records: list[tuple] = []
     skipped = 0
@@ -229,7 +240,7 @@ def build_cdn_records(
             away_score = None
             status = "scheduled"
 
-        date_str = g.game_date_utc.isoformat()
+        date_str = g.game_date_et.isoformat()
 
         records.append(
             (
@@ -262,6 +273,40 @@ def upsert_game_records(conn: psycopg2.extensions.connection, records: list[tupl
     return len(records)
 
 
+def report_date_mismatches(
+    conn: psycopg2.extensions.connection,
+    records: list[tuple],
+    season_label: str,
+) -> int:
+    """Log rows whose stored ``date`` differs from the CDN's ET date (pre-upsert audit)."""
+    incoming = {rec[0]: rec[1] for rec in records}  # external_id -> ET date string
+    with conn.cursor() as cur:
+        cur.execute(
+            "SELECT external_id, date FROM games WHERE season = %s AND game_type = 'regular'",
+            (season_label,),
+        )
+        rows = cur.fetchall()
+
+    mismatches = [
+        (ext_id, db_date.isoformat(), incoming[ext_id])
+        for ext_id, db_date in rows
+        if ext_id in incoming and db_date.isoformat() != incoming[ext_id]
+    ]
+    if mismatches:
+        dates = sorted(m[1] for m in mismatches)
+        print(
+            f"  DATE REPAIR: {len(mismatches)} stored rows differ from the CDN ET date "
+            f"(stored dates span {dates[0]}..{dates[-1]}); the upsert will correct them."
+        )
+        for ext_id, db_date, et_date in mismatches[:10]:
+            print(f"    {ext_id}: {db_date} -> {et_date}")
+        if len(mismatches) > 10:
+            print(f"    … and {len(mismatches) - 10} more")
+    else:
+        print("  DATE REPAIR: no stored/CDN date mismatches.")
+    return len(mismatches)
+
+
 def main() -> None:
     load_dotenv(Path(__file__).parent / ".env")
     database_url = os.getenv("DATABASE_URL")
@@ -279,8 +324,10 @@ def main() -> None:
         team_map = load_team_id_map(conn)
         print(f"Loaded {len(team_map)} teams from DB.")
 
-        records, season_label = build_cdn_records(data, team_map, utc_month_filter=month_filter)
+        records, season_label = build_cdn_records(data, team_map, month_filter=month_filter)
         print(f"Parsed {len(records)} regular-season games for season {season_label}.")
+
+        report_date_mismatches(conn, records, season_label)
 
         count = upsert_game_records(conn, records)
         print(f"Upserted {count} games into DB (new rows inserted or existing rows updated).")

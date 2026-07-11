@@ -46,9 +46,11 @@ def today_et() -> date:
 def _fetch_regular_season_dates() -> list[date]:
     """Regular-season (``002`` gameId) tip-off dates from the live CDN schedule.
 
-    Each date is the UTC calendar date of ``gameDateTimeUTC`` — consistent with
-    how ``fetch_nba_schedule_cdn.py`` stores ``games.date``. Raises on any
-    network / JSON error; the caller wraps this in try/except.
+    Each date is the UTC calendar date of ``gameDateTimeUTC``. Note:
+    ``fetch_nba_schedule_cdn.py`` stores ``games.date`` as the **ET** calendar
+    date; the gate deliberately keeps the cheaper UTC read because the
+    ±``SEASON_BUFFER_DAYS`` buffer already absorbs the one-day boundary fuzz.
+    Raises on any network / JSON error; the caller wraps this in try/except.
     """
     req = urllib.request.Request(CDN_SCHEDULE_URL, headers={"User-Agent": "Mozilla/5.0"})
     with urllib.request.urlopen(req, timeout=30) as resp:

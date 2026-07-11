@@ -16,6 +16,17 @@ on:
   schedule:
     - cron: "0 21 * * *"
   workflow_dispatch:
+    inputs:
+      task:
+        description: >-
+          daily = normal pipeline (season-gated). resync-schedule = re-run the CDN
+          schedule fetch only (NOT season-gated) — repairs games.date rows via the
+          self-healing upsert; use for date-convention fixes or schedule shifts.
+        type: choice
+        default: daily
+        options:
+          - daily
+          - resync-schedule
 
 jobs:
   update:
@@ -44,7 +55,18 @@ jobs:
       - name: Install Python dependencies
         run: pip install -r scripts/requirements.txt
 
+      # Normal path: cron runs (inputs.task is empty) and manual "daily" dispatches.
       - name: Run daily update
+        if: ${{ github.event.inputs.task != 'resync-schedule' }}
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: python scripts/daily_update.py
+
+      # Manual repair path: re-run the CDN schedule fetch only. Bypasses the season
+      # gate (fetch_nba_schedule_cdn.main has none) so games.date rows can be
+      # repaired in the offseason via the self-healing upsert.
+      - name: Resync schedule dates (manual)
+        if: ${{ github.event.inputs.task == 'resync-schedule' }}
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: python scripts/fetch_nba_schedule_cdn.py
