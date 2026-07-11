@@ -11,6 +11,7 @@ import {
   teams,
 } from "./schema";
 import {
+  formatEasternDateKey,
   intersectDateBounds,
   monthCalendarBounds,
   regularSeasonDateBounds,
@@ -786,7 +787,8 @@ export async function getUpcomingGamesWithRA(
     .orderBy(predictions.gameId, desc(predictions.createdAt))
     .as("latest_open_pred_upcoming");
 
-  const todayStr = format(new Date(), "yyyy-MM-dd");
+  // ET, not server-local: games.date stores ET dates and this runs on Vercel (UTC).
+  const todayStr = formatEasternDateKey();
 
   const conditions = [
     eq(games.season, season),
