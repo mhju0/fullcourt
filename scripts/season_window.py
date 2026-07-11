@@ -43,6 +43,19 @@ def today_et() -> date:
     return datetime.now(ET).date()
 
 
+def current_season_start_year(today: date | None = None) -> int:
+    """First calendar year of the active NBA season for ``today`` (ET).
+
+    Oct–Dec → this year; Jan–Sep → the previous year. Mirrors the season-label
+    logic in ``src/lib/nba-season.ts`` (``m >= 10 ? y : y - 1``) so the Python
+    pipeline and the TS app always agree on which season is "current". Seed and
+    backfill scripts derive their latest season from this instead of hardcoding a
+    year, so the season rollover needs no code edit.
+    """
+    d = today or today_et()
+    return d.year if d.month >= 10 else d.year - 1
+
+
 def _fetch_regular_season_dates() -> list[date]:
     """Regular-season (``002`` gameId) tip-off dates from the live CDN schedule.
 

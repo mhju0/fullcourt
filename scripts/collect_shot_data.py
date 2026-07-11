@@ -35,6 +35,8 @@ import time
 from datetime import datetime, timezone
 from pathlib import Path
 
+from season_window import current_season_start_year
+
 logger = logging.getLogger("collect_shot_data")
 
 DELAY_SECONDS = 1.5
@@ -46,8 +48,9 @@ EMPTY_LOG = DATA_DIR / "_empty.log"
 # Confirmed by SQ-0 (ml/shot_data_probe.txt): 1996-97 is the earliest season
 # with usable non-zero LOC_X/LOC_Y; 1990-91 returns 0 rows / no LOC columns.
 EARLIEST_SEASON_START_YEAR = 1996
-# "current season" per the SQ-2 task scope -- update this when a new season starts.
-CURRENT_SEASON_START_YEAR = 2025
+# Derived from today's ET date (mirrors src/lib/nba-season.ts), so a season rollover
+# needs no code edit. As of the 2025-26 season this resolves to 2025.
+CURRENT_SEASON_START_YEAR = current_season_start_year()
 
 # The 24 columns SQ-0 actually observed from a live pull (ml/shot_data_probe.txt §2).
 EXPECTED_COLUMNS = {
