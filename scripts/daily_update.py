@@ -172,7 +172,7 @@ def main() -> None:
     try:
         team_map = load_team_id_map(conn)
         cdn_records, cdn_season = build_cdn_records(
-            cdn_data, team_map, utc_month_filter=None
+            cdn_data, team_map, month_filter=None
         )
         cdn_count = upsert_cdn_records(conn, cdn_records)
         print(f"[daily_update] CDN upserted {cdn_count} games for season {cdn_season}.")
