@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   currentDisplaySeason,
+  formatEasternDateKey,
   formatLocalDateKey,
   isNbaOffSeason,
   pickDefaultGamesDate,
@@ -83,6 +84,28 @@ describe("pickDefaultGamesDate", () => {
 describe("formatLocalDateKey", () => {
   it("formats with local date parts instead of UTC serialization", () => {
     expect(formatLocalDateKey(new Date(2026, 2, 30, 0, 30))).toBe("2026-03-30");
+  });
+});
+
+describe("formatEasternDateKey", () => {
+  it("keeps an evening ET tip on its ET day even though UTC has rolled over (EDT)", () => {
+    // 8 PM EDT on Apr 12 = 00:00 UTC Apr 13 — the exact shape of the season-finale bug.
+    expect(formatEasternDateKey(new Date("2026-04-13T00:00:00Z"))).toBe("2026-04-12");
+  });
+
+  it("handles EST (UTC-5) in midwinter", () => {
+    // 10 PM EST Jan 14 = 03:00 UTC Jan 15.
+    expect(formatEasternDateKey(new Date("2026-01-15T03:00:00Z"))).toBe("2026-01-14");
+  });
+
+  it("matches the UTC date for afternoon ET times", () => {
+    expect(formatEasternDateKey(new Date("2026-04-12T18:00:00Z"))).toBe("2026-04-12");
+  });
+
+  it("is independent of the process timezone (Seoul, UTC, anywhere)", () => {
+    // 2026-07-11 13:00 KST = 04:00 UTC = 00:00 EDT — ET day is Jul 11 regardless of host TZ.
+    expect(formatEasternDateKey(new Date("2026-07-11T04:00:00Z"))).toBe("2026-07-11");
+    expect(formatEasternDateKey(new Date("2026-07-11T03:59:00Z"))).toBe("2026-07-10");
   });
 });
 

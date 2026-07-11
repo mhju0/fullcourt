@@ -6,8 +6,12 @@ import { endOfMonth, format, startOfMonth } from "date-fns";
  * Oldest → newest for stable sort; UI often reverses for “latest first” dropdowns.
  */
 export const NBA_SEASONS: readonly string[] = (() => {
-  const now = new Date();
-  const currentSeasonStart = now.getMonth() + 1 >= 10 ? now.getFullYear() : now.getFullYear() - 1;
+  // ET calendar (the NBA's scheduling day) — formatEasternDateKey isn't declared yet here.
+  const [y, m] = new Intl.DateTimeFormat("en-CA", { timeZone: "America/New_York" })
+    .format(new Date())
+    .split("-")
+    .map(Number);
+  const currentSeasonStart = m >= 10 ? y : y - 1;
   const latestSupportedStart = Math.max(2025, currentSeasonStart);
   const out: string[] = [];
   for (let y = 1985; y <= latestSupportedStart; y++) {
@@ -59,6 +63,25 @@ export function formatLocalDateKey(date = new Date()): string {
   return `${year}-${month}-${day}`;
 }
 
+// en-CA renders as YYYY-MM-DD; America/New_York is the NBA's scheduling day.
+const EASTERN_DATE_FMT = new Intl.DateTimeFormat("en-CA", {
+  timeZone: "America/New_York",
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+});
+
+/**
+ * US/Eastern calendar date as YYYY-MM-DD — the app's "basketball today".
+ * `games.date` stores ET dates, so every "what day is it" decision (today's
+ * slate, season defaults, offseason detection, the cron's live window) must use
+ * this rather than the viewer's or server's local timezone. A viewer in Seoul at
+ * 11 AM sees the US evening slate still in progress, not tomorrow's empty day.
+ */
+export function formatEasternDateKey(date = new Date()): string {
+  return EASTERN_DATE_FMT.format(date);
+}
+
 export function seasonLabelForDateKey(dateKey: string): string {
   const year = Number(dateKey.slice(0, 4));
   const month = Number(dateKey.slice(5, 7));
@@ -96,16 +119,16 @@ export function intersectDateBounds(
   return { from, to };
 }
 
-/** Default month tab: current month if Oct–Apr, else October (off-season). */
+/** Default month tab: current ET month if Oct–Apr, else October (off-season). */
 export function defaultNbaCalendarMonth(): number {
-  const m = new Date().getMonth() + 1;
+  const m = Number(formatEasternDateKey().slice(5, 7));
   if (NBA_REGULAR_MONTHS.some((x) => x.value === m)) return m;
   return 10;
 }
 
 export function defaultNbaSeason(): NbaSeasonLabel {
-  const localSeason = seasonLabelForDateKey(formatLocalDateKey());
-  if (NBA_SEASONS.includes(localSeason)) return localSeason as NbaSeasonLabel;
+  const currentSeason = seasonLabelForDateKey(formatEasternDateKey());
+  if (NBA_SEASONS.includes(currentSeason)) return currentSeason as NbaSeasonLabel;
   return NBA_SEASONS[NBA_SEASONS.length - 1];
 }
 
@@ -115,7 +138,7 @@ export function defaultNbaSeason(): NbaSeasonLabel {
  * Unlike `defaultNbaSeason`, not clamped to `NBA_SEASONS` — takes an explicit
  * date so callers (and tests) aren't tied to the real wall clock.
  */
-export function currentDisplaySeason(todayKey: string = formatLocalDateKey()): string {
+export function currentDisplaySeason(todayKey: string = formatEasternDateKey()): string {
   return seasonLabelForDateKey(todayKey);
 }
 
@@ -126,7 +149,7 @@ export function nextSeasonLabel(season: string): string {
 }
 
 /** True between the end of the most recently completed regular season and the start of the next. */
-export function isNbaOffSeason(todayKey: string = formatLocalDateKey()): boolean {
+export function isNbaOffSeason(todayKey: string = formatEasternDateKey()): boolean {
   const season = currentDisplaySeason(todayKey);
   const bounds = regularSeasonDateBounds(season);
   const nextBounds = regularSeasonDateBounds(nextSeasonLabel(season));

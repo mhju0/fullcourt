@@ -13,7 +13,7 @@ import {
   currentDisplaySeason,
   defaultNbaCalendarMonth,
   defaultNbaSeason,
-  formatLocalDateKey,
+  formatEasternDateKey,
   isNbaOffSeason,
   NBA_REGULAR_MONTHS,
   NBA_SEASONS,
@@ -27,7 +27,7 @@ import type { AnalysisResponse, ApiResponse, GameDateCount, GameResponse } from 
 
 function pickInitialDate(dates: GameDateCount[]): string | null {
   if (dates.length === 0) return null
-  const todayKey = format(new Date(), "yyyy-MM-dd")
+  const todayKey = formatEasternDateKey() // "today" = the NBA's ET calendar day, not the viewer's
   if (dates.some((d) => d.date === todayKey)) return todayKey
   return dates[dates.length - 1].date
 }
@@ -256,7 +256,7 @@ export default function HomePage() {
 
   const pendingSelectionResetRef = useRef<PendingScope | null>(null)
   const isFirstDatesFetchRef = useRef(true)
-  const initialTodayKeyRef = useRef(formatLocalDateKey())
+  const initialTodayKeyRef = useRef(formatEasternDateKey())
 
   const gameIds = useMemo(() => games.map((g) => g.id), [games])
   const { liveUpdates, recentlyUpdated } = useLiveGames(gameIds)

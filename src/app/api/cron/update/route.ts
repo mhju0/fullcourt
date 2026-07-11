@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
 import { eq, and, inArray } from "drizzle-orm";
-import { format } from "date-fns";
 import { getPublicApiErrorMessage } from "@/lib/api-errors";
 import { db } from "@/lib/db";
 import { games } from "@/lib/db/schema";
+import { formatEasternDateKey } from "@/lib/nba-season";
 
 /** Drizzle + `postgres` need the Node.js runtime (not Edge). */
 export const runtime = "nodejs";
@@ -49,7 +49,9 @@ export async function GET(request: Request) {
   }
 
   try {
-    const today = format(new Date(), "yyyy-MM-dd");
+    // ET, not server-UTC: games.date stores ET calendar dates, and a 9 PM ET tip
+    // is already "tomorrow" in UTC — the old server-local date missed late games.
+    const today = formatEasternDateKey();
 
     // Find all games that are live or scheduled for today
     const gamesToCheck = await db
