@@ -153,7 +153,9 @@ Realtime pushes the row change → connected clients update in place.
   against mis-tagged source rows.
 - **Design system unified (2026-06-29):** Today's Games, Analysis, Future Games
   (`upcoming-content.tsx`) and the game-detail modal (`explore-game-detail-modal.tsx`) all use
-  the flat "Bloomberg Terminal" style; the earlier glassmorphism look has been fully migrated out.
+  one flat design system; the earlier glassmorphism look has been fully migrated out. (This
+  "Bloomberg Terminal" light style was later superseded by the dark "Broadcast" redesign, which
+  kept the flat/token architecture — see [FRONTEND.md](FRONTEND.md).)
 - **Removed (2026-06-29):** the dead `/api/analysis/accuracy` endpoint and its orphaned query fns
   (`getResolvedPredictions`, `getUpcomingPredictionsForSeason`) + `Accuracy*` types — nothing else
   imported them, so the route + dead code were deleted rather than rewired.

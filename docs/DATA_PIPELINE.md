@@ -96,16 +96,18 @@ Steps:
   `DATABASE_URL`; coarse **Oct 1–Apr 30** fallback on any failure. `SEASON_BUFFER_DAYS = 3`
   absorbs UTC-vs-ET boundary fuzz. Runnable standalone for a quick in/out-of-season check.
 
-## Playoff Predictor pipeline (in progress)
+## Playoff Predictor pipeline (complete)
 
 A **separate, isolated** ingestion + series-build path for the Playoff Predictor module (design:
 [PLAYOFF_PREDICTOR_DESIGN.md](PLAYOFF_PREDICTOR_DESIGN.md); status + remaining phases:
 [ROADMAP.md](ROADMAP.md)). These scripts are **not** part of `daily_update.py` — they are run
 manually. They never modify regular-season (`002`) rows, never touch `fatigue.ts`, and never
-rename the rest-advantage metric. **Verified 2026-06-29** (read-only `SELECT`): 2,827 `playoffs`
-+ 318 `finals` (`004`) + 36 `play_in` (`005`) game rows are present; `build_series_dataset.py`
-built **600 series** (all four feature columns NULL); the tag-integrity guard reports **0**
-prefix↔`game_type` mismatches.
+rename the rest-advantage metric. **Verified 2026-07-02** (read-only `SELECT`): 2,827 `playoffs`
++ 318 `finals` (`004`) + 36 `play_in` (`005`) game rows are present; the skeleton pass built
+**600 series**, the feature pass populated all four feature columns (599 trainable), and a
+walk-forward logistic model persisted **1,049** predictions; the tag-integrity guard reports
+**0** prefix↔`game_type` mismatches. Full build record:
+[PLAYOFF_PREDICTOR_DESIGN.md](PLAYOFF_PREDICTOR_DESIGN.md).
 
 ### `scripts/fetch_playoffs.py` — ingest playoff/finals games (Phase 1)
 - nba_api `LeagueGameFinder` with `season_type_nullable="Playoffs"` for each in-scope season
@@ -136,9 +138,11 @@ prefix↔`game_type` mismatches.
   resolved `series_winner_team_id` (with win-count sanity warnings).
 - Idempotent `ON CONFLICT (external_series_key) DO UPDATE` that refreshes **only** the skeleton
   columns — the four feature columns (`seed_diff`, `win_pct_diff`, `entry_rest_diff`, `h2h_diff`)
-  are intentionally **left NULL** for a later 2b-ii feature pass (not yet built). `--dry-run`
-  computes + validates without writing; a completed season that fails the 15-series/all-resolved
-  invariant exits non-zero.
+  are left NULL here and populated by the **2b-ii feature pass** (`ml/compute_series_features.py`,
+  built), after which `ml/train_series_model.py` (walk-forward logistic) and `ml/predict_series.py`
+  persist predictions — the full chain is documented in
+  [PLAYOFF_PREDICTOR_DESIGN.md](PLAYOFF_PREDICTOR_DESIGN.md). `--dry-run` computes + validates
+  without writing; a completed season that fails the 15-series/all-resolved invariant exits non-zero.
 
 ## Shot Quality pipeline — Expected Shot Value (xeFG%)
 
