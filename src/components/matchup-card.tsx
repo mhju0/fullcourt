@@ -161,7 +161,7 @@ export function GameStatusRow({
       <div className="mono flex items-center gap-3" style={{ fontSize: "11px" }}>
         <LiveIndicator />
         {homeScore !== null && awayScore !== null && (
-          <span className="tabular-nums" style={{ fontSize: "15px", letterSpacing: "-0.02em", color: "var(--term-text)", fontWeight: 800 }}>
+          <span className="tabular-nums" style={{ fontSize: "19px", letterSpacing: "-0.02em", color: "var(--term-text)", fontWeight: 800 }}>
             {awayScore} – {homeScore}
           </span>
         )}
@@ -173,7 +173,7 @@ export function GameStatusRow({
     return (
       <div className="mono flex items-center gap-3" style={{ fontSize: "11px" }}>
         <span style={{ color: "var(--term-text-muted)", letterSpacing: "0.08em" }}>FINAL</span>
-        <span className="tabular-nums" style={{ fontSize: "15px", letterSpacing: "-0.02em", color: "var(--term-text)", fontWeight: 800 }}>
+        <span className="tabular-nums" style={{ fontSize: "19px", letterSpacing: "-0.02em", color: "var(--term-text)", fontWeight: 800 }}>
           {awayScore} – {homeScore}
         </span>
       </div>
@@ -212,22 +212,22 @@ function TeamBlock({
 }) {
   const colors = getTeamColors(abbreviation)
   return (
-    <div className={cn("flex min-w-0 items-center gap-2.5", align === "right" && "flex-row-reverse text-right")}>
-      <TeamLogo abbreviation={abbreviation} season={season} fallback={fallback} size={24} color={colors.primary} />
-      <div className="flex min-w-0 flex-col">
+    <div className={cn("flex min-w-0 items-center gap-3", align === "right" && "flex-row-reverse text-right")}>
+      <TeamLogo abbreviation={abbreviation} season={season} fallback={fallback} size={32} color={colors.primary} />
+      <div className="flex min-w-0 flex-col gap-0.5">
         <span
-          className={cn("mono inline-flex items-center gap-1", align === "right" && "flex-row-reverse")}
-          style={{ fontSize: "9px", letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 600 }}
+          className={cn("mono inline-flex items-center gap-1.5 tabular-nums", align === "right" && "flex-row-reverse")}
+          style={{ fontSize: "17px", letterSpacing: "-0.01em", color: "var(--term-text)", fontWeight: 800, lineHeight: 1 }}
         >
           <span
             aria-hidden
-            style={{ width: 5, height: 5, borderRadius: "50%", background: colors.primary, boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.28)", flexShrink: 0 }}
+            style={{ width: 7, height: 7, borderRadius: "50%", background: colors.primary, boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.28)", flexShrink: 0 }}
           />
           {abbreviation}
         </span>
         <span
           className="truncate"
-          style={{ fontSize: "12px", fontWeight: 500, color: "var(--term-text)", lineHeight: 1.2 }}
+          style={{ fontSize: "11px", fontWeight: 500, color: "var(--term-text-muted)", lineHeight: 1.2 }}
         >
           {city}
         </span>
@@ -248,8 +248,8 @@ function FatigueBarRow({
   tone: FatigueBarTone
 }) {
   return (
-    <div className="flex items-center gap-2">
-      <span className="mono shrink-0 tabular-nums" style={{ width: 28, fontSize: "10px", color: "var(--term-text-muted)", fontWeight: 600 }}>
+    <div className="flex items-center gap-2.5">
+      <span className="mono shrink-0 tabular-nums" style={{ width: 30, fontSize: "11px", letterSpacing: "0.04em", color: "var(--term-text-muted)", fontWeight: 700 }}>
         {abbr}
       </span>
       {score !== null ? (
@@ -257,7 +257,7 @@ function FatigueBarRow({
       ) : (
         <div className="flex-1" style={{ height: 4, background: "var(--term-surface-2)", borderRadius: "var(--term-radius-bar)" }} />
       )}
-      <span className="mono shrink-0 tabular-nums" style={{ width: 28, fontSize: "10px", color: "var(--term-text)", fontWeight: 600, textAlign: "right" }}>
+      <span className="mono shrink-0 tabular-nums" style={{ width: 38, fontSize: "16px", color: "var(--term-text)", fontWeight: 800, textAlign: "right", lineHeight: 1 }}>
         {score !== null ? score.toFixed(1) : "—"}
       </span>
     </div>
@@ -322,22 +322,22 @@ function RestAdvPanel({
         REST ADVANTAGE
       </span>
 
-      <div className="mono flex items-baseline justify-center gap-1 tabular-nums" style={{ lineHeight: 1 }}>
+      <div className="mono flex items-baseline justify-center gap-1.5 tabular-nums" style={{ lineHeight: 1 }}>
         {display.kind === "team" ? (
           <>
-            <span style={{ fontSize: "20px", fontWeight: 700, color }}>
+            <span style={{ fontSize: "16px", fontWeight: 800, letterSpacing: "0.02em", color }}>
               {display.teamAbbreviation}
             </span>
-            <span style={{ fontSize: "20px", fontWeight: 700, color: "var(--term-text)" }}>
+            <span style={{ fontSize: "26px", fontWeight: 800, letterSpacing: "-0.02em", color: "var(--term-text)" }}>
               {display.value}
             </span>
           </>
         ) : (
           <>
-            <span style={{ fontSize: "18px", fontWeight: 700, color: "var(--term-text-muted)" }}>
+            <span style={{ fontSize: "16px", fontWeight: 800, letterSpacing: "0.04em", color: "var(--term-text-muted)" }}>
               EVEN
             </span>
-            <span style={{ fontSize: "18px", fontWeight: 700, color: "var(--term-text-muted)" }}>
+            <span style={{ fontSize: "26px", fontWeight: 800, letterSpacing: "-0.02em", color: "var(--term-text-muted)" }}>
               {value}
             </span>
           </>
@@ -655,10 +655,10 @@ export function MatchupCard({ game, index = 0, isScoreFlashing = false }: Matchu
           "cursor-pointer outline-none transition-colors hover:bg-[var(--term-surface-2)] focus-visible:ring-2 focus-visible:ring-[var(--term-blue)]/40",
           isScoreFlashing && "animate-[scoreFlash_0.5s_ease-out]"
         )}
-        style={{ padding: "10px 14px" }}
+        style={{ padding: "14px 16px" }}
       >
         {/* Status line (live/final/upcoming) */}
-        <div className="mb-2 flex items-center justify-between">
+        <div className="mb-3 flex items-center justify-between">
           <GameStatusRow status={game.status} homeScore={game.homeScore} awayScore={game.awayScore} />
           <ChevronDown
             className={cn("size-4 text-[var(--term-text-muted)] transition-transform duration-200", expanded && "rotate-180")}
@@ -667,8 +667,8 @@ export function MatchupCard({ game, index = 0, isScoreFlashing = false }: Matchu
         </div>
 
         {/* Main row: away | bars | home | RA */}
-        <div className="flex items-center gap-4">
-          <div className="w-[110px] shrink-0">
+        <div className="flex items-center gap-5">
+          <div className="w-[140px] shrink-0">
             <TeamBlock
               abbreviation={awayBrand.abbreviation}
               city={awayBrand.city ?? game.awayTeam.city}
@@ -687,7 +687,7 @@ export function MatchupCard({ game, index = 0, isScoreFlashing = false }: Matchu
             />
           </div>
 
-          <div className="w-[110px] shrink-0">
+          <div className="w-[140px] shrink-0">
             <TeamBlock
               abbreviation={homeBrand.abbreviation}
               city={homeBrand.city ?? game.homeTeam.city}
