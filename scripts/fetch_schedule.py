@@ -46,6 +46,7 @@ if _SCRIPTS_DIR not in sys.path:
     sys.path.insert(0, _SCRIPTS_DIR)
 
 from nba_ot_periods import fetch_overtime_periods
+from season_window import current_season_start_year
 
 _scripts_env = Path(__file__).parent / ".env"
 if not (os.environ.get("DATABASE_URL") or "").strip():
@@ -64,9 +65,13 @@ SKIP_OT_SEED = os.environ.get("NBA_SEED_SKIP_OT", "").lower() in ("1", "true", "
 
 # 2019-20 omitted — Orlando bubble has no meaningful travel for fatigue analysis.
 def _nba_season_labels() -> list[str]:
-    """Start years 1985..2025 → '1985-86' .. '2025-26'; skip 2019-20 bubble."""
+    """Start years 1985..<current ET season> → '1985-86' .. latest; skip 2019-20 bubble.
+
+    The upper bound is derived from today's ET date, so the seed auto-extends when a
+    new NBA season starts — no hardcoded year to bump at rollover.
+    """
     out: list[str] = []
-    for y in range(1985, 2026):
+    for y in range(1985, current_season_start_year() + 1):
         if y == 2019:
             continue
         out.append(f"{y}-{str(y + 1)[-2:]}")
