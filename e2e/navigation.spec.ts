@@ -1,8 +1,5 @@
 import { expect, test } from "@playwright/test";
 
-// Active-link color (#C9082A) is applied via an inline style, not a class.
-const ACTIVE_COLOR = "rgb(201, 8, 42)";
-
 test.describe("Primary navigation", () => {
   test("exposes core routes with an active-state treatment", async ({ page }) => {
     await page.goto("/");
@@ -16,18 +13,22 @@ test.describe("Primary navigation", () => {
     await expect(analysis).toBeVisible();
     await expect(picks).toBeVisible();
 
-    await expect(games).toHaveCSS("color", ACTIVE_COLOR);
+    // The active route carries aria-current="page" (rendered as the amber underline).
+    // Assert inactive links lack it too, so the check actually discriminates.
+    await expect(games).toHaveAttribute("aria-current", "page");
+    await expect(analysis).not.toHaveAttribute("aria-current", "page");
 
     await analysis.click();
     await expect(page).toHaveURL(/\/analysis$/);
-    await expect(analysis).toHaveCSS("color", ACTIVE_COLOR);
+    await expect(analysis).toHaveAttribute("aria-current", "page");
+    await expect(games).not.toHaveAttribute("aria-current", "page");
 
     await picks.click();
     await expect(page).toHaveURL(/\/upcoming$/);
-    await expect(picks).toHaveCSS("color", ACTIVE_COLOR);
+    await expect(picks).toHaveAttribute("aria-current", "page");
 
     await games.click();
     await expect(page).toHaveURL(/\/$/);
-    await expect(games).toHaveCSS("color", ACTIVE_COLOR);
+    await expect(games).toHaveAttribute("aria-current", "page");
   });
 });
