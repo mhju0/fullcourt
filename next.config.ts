@@ -21,6 +21,9 @@ const nextConfig: NextConfig = {
         source: "/:path*",
         headers: [
           { key: "X-Content-Type-Options", value: "nosniff" },
+          // Clickjacking: the app is never meant to be framed. DENY beats
+          // SAMEORIGIN here since nothing embeds it in an iframe.
+          { key: "X-Frame-Options", value: "DENY" },
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
           {
             key: "Permissions-Policy",
