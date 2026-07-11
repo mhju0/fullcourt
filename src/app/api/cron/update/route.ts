@@ -1,3 +1,4 @@
+import { timingSafeEqual } from "node:crypto";
 import { NextResponse } from "next/server";
 import { eq, and, inArray } from "drizzle-orm";
 import { getPublicApiErrorMessage } from "@/lib/api-errors";
@@ -43,7 +44,7 @@ export async function GET(request: Request) {
         { status: 503 }
       );
     }
-    if (authHeader !== `Bearer ${cronSecret}`) {
+    if (!authHeader || !constantTimeEqual(authHeader, `Bearer ${cronSecret}`)) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
   }
@@ -168,6 +169,18 @@ interface NbaGame {
   gameStatus: number;
   homeTeam: { score: number };
   awayTeam: { score: number };
+}
+
+/**
+ * Constant-time string compare for the cron bearer token, so a rejected request
+ * can't leak the secret byte-by-byte via response timing. Comparing lengths first
+ * only reveals the token length, which is not sensitive.
+ */
+function constantTimeEqual(a: string, b: string): boolean {
+  const ab = Buffer.from(a);
+  const bb = Buffer.from(b);
+  if (ab.length !== bb.length) return false;
+  return timingSafeEqual(ab, bb);
 }
 
 /** Align scoreboard `gameId` with DB `external_id` (zero-padded 10-digit stats id). */

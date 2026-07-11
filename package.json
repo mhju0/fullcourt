@@ -37,7 +37,10 @@
     "neverBuiltDependencies": [
       "sharp",
       "unrs-resolver"
-    ]
+    ],
+    "overrides": {
+      "ws@>=8.0.0 <8.21.0": ">=8.21.0"
+    }
   },
   "devDependencies": {
     "@playwright/test": "^1.58.2",
