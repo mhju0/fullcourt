@@ -195,28 +195,43 @@ export function GameStatusRow({
   )
 }
 
-// ─── Team block ──────────────────────────────────────────────────
+// ─── Team stat row (identity + fatigue bar + value, grouped) ─────
 
-function TeamBlock({
+/** Which team's fatigue reads "higher" (more tired, red) vs "lower" (blue). */
+function fatigueTones(
+  awayScore: number | null,
+  homeScore: number | null
+): { away: FatigueBarTone; home: FatigueBarTone } {
+  if (awayScore !== null && homeScore !== null) {
+    if (awayScore > homeScore) return { away: "higher", home: "lower" }
+    if (homeScore > awayScore) return { away: "lower", home: "higher" }
+  }
+  return { away: "neutral", home: "neutral" }
+}
+
+/** One team on its own line: logo · tricode/city · fatigue bar · fatigue value. */
+function TeamStatRow({
   abbreviation,
   city,
   season,
   fallback,
-  align = "left",
+  score,
+  tone,
 }: {
   abbreviation: string
   city: string
   season: string
   fallback: { name: string; city: string }
-  align?: "left" | "right"
+  score: number | null
+  tone: FatigueBarTone
 }) {
   const colors = getTeamColors(abbreviation)
   return (
-    <div className={cn("flex min-w-0 items-center gap-3", align === "right" && "flex-row-reverse text-right")}>
-      <TeamLogo abbreviation={abbreviation} season={season} fallback={fallback} size={32} color={colors.primary} />
-      <div className="flex min-w-0 flex-col gap-0.5">
+    <div className="flex items-center gap-3">
+      <TeamLogo abbreviation={abbreviation} season={season} fallback={fallback} size={30} color={colors.primary} />
+      <div className="flex w-[132px] shrink-0 flex-col gap-0.5">
         <span
-          className={cn("mono inline-flex items-center gap-1.5 tabular-nums", align === "right" && "flex-row-reverse")}
+          className="mono inline-flex items-center gap-1.5 tabular-nums"
           style={{ fontSize: "17px", letterSpacing: "-0.01em", color: "var(--term-text)", fontWeight: 800, lineHeight: 1 }}
         >
           <span
@@ -225,72 +240,18 @@ function TeamBlock({
           />
           {abbreviation}
         </span>
-        <span
-          className="truncate"
-          style={{ fontSize: "11px", fontWeight: 500, color: "var(--term-text-muted)", lineHeight: 1.2 }}
-        >
+        <span className="truncate" style={{ fontSize: "11px", fontWeight: 500, color: "var(--term-text-muted)", lineHeight: 1.2 }}>
           {city}
         </span>
       </div>
-    </div>
-  )
-}
-
-// ─── Center fatigue bars ─────────────────────────────────────────
-
-function FatigueBarRow({
-  abbr,
-  score,
-  tone,
-}: {
-  abbr: string
-  score: number | null
-  tone: FatigueBarTone
-}) {
-  return (
-    <div className="flex items-center gap-2.5">
-      <span className="mono shrink-0 tabular-nums" style={{ width: 30, fontSize: "11px", letterSpacing: "0.04em", color: "var(--term-text-muted)", fontWeight: 700 }}>
-        {abbr}
-      </span>
       {score !== null ? (
         <FatigueBar score={score} tone={tone} className="flex-1" />
       ) : (
         <div className="flex-1" style={{ height: 4, background: "var(--term-surface-2)", borderRadius: "var(--term-radius-bar)" }} />
       )}
-      <span className="mono shrink-0 tabular-nums" style={{ width: 38, fontSize: "16px", color: "var(--term-text)", fontWeight: 800, textAlign: "right", lineHeight: 1 }}>
+      <span className="mono shrink-0 tabular-nums" style={{ width: 40, fontSize: "16px", color: "var(--term-text)", fontWeight: 800, textAlign: "right", lineHeight: 1 }}>
         {score !== null ? score.toFixed(1) : "—"}
       </span>
-    </div>
-  )
-}
-
-function FatigueBarsBlock({
-  awayAbbr,
-  homeAbbr,
-  awayScore,
-  homeScore,
-}: {
-  awayAbbr: string
-  homeAbbr: string
-  awayScore: number | null
-  homeScore: number | null
-}) {
-  let awayTone: FatigueBarTone = "neutral"
-  let homeTone: FatigueBarTone = "neutral"
-  if (awayScore !== null && homeScore !== null) {
-    if (awayScore > homeScore) {
-      awayTone = "higher"
-      homeTone = "lower"
-    } else if (homeScore > awayScore) {
-      homeTone = "higher"
-      awayTone = "lower"
-    }
-  }
-
-  return (
-    <div className="flex flex-col gap-2">
-      <FatigueBarRow abbr={awayAbbr} score={awayScore} tone={awayTone} />
-      <FatigueBarRow abbr={homeAbbr} score={homeScore} tone={homeTone} />
     </div>
   )
 }
@@ -611,6 +572,8 @@ export function MatchupCard({ game, index = 0, isScoreFlashing = false }: Matchu
   const confidence = getConfidence(diff)
   const accent = confidenceAccent(confidence)
 
+  const tones = fatigueTones(game.awayFatigue?.score ?? null, game.homeFatigue?.score ?? null)
+
   const toggle = useCallback(() => {
     setExpanded((e) => !e)
   }, [])
@@ -666,34 +629,24 @@ export function MatchupCard({ game, index = 0, isScoreFlashing = false }: Matchu
           />
         </div>
 
-        {/* Main row: away | bars | home | RA */}
-        <div className="flex items-center gap-5">
-          <div className="w-[140px] shrink-0">
-            <TeamBlock
+        {/* Main row: two stacked team rows (identity + fatigue) | RA verdict */}
+        <div className="flex items-stretch gap-4">
+          <div className="flex min-w-0 flex-1 flex-col justify-center gap-2.5">
+            <TeamStatRow
               abbreviation={awayBrand.abbreviation}
               city={awayBrand.city ?? game.awayTeam.city}
               season={game.season}
               fallback={awayFallback}
-              align="left"
+              score={game.awayFatigue?.score ?? null}
+              tone={tones.away}
             />
-          </div>
-
-          <div className="min-w-0 flex-1">
-            <FatigueBarsBlock
-              awayAbbr={awayBrand.abbreviation}
-              homeAbbr={homeBrand.abbreviation}
-              awayScore={game.awayFatigue?.score ?? null}
-              homeScore={game.homeFatigue?.score ?? null}
-            />
-          </div>
-
-          <div className="w-[140px] shrink-0">
-            <TeamBlock
+            <TeamStatRow
               abbreviation={homeBrand.abbreviation}
               city={homeBrand.city ?? game.homeTeam.city}
               season={game.season}
               fallback={homeFallback}
-              align="right"
+              score={game.homeFatigue?.score ?? null}
+              tone={tones.home}
             />
           </div>
 
