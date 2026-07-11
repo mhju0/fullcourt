@@ -24,7 +24,7 @@ Test files and coverage:
 |------|--------|
 | `src/lib/__tests__/fatigue.test.ts` | `calculateFatigue` / `calculateRestAdvantage`: opener baseline, freshness bonus, back-to-back, 3-in-4, density, travel windows + the travel-leg contract, road-trip streak, altitude (`×1.15`), overtime (`+0.5` / `+1.0`), combined compounding. |
 | `src/lib/__tests__/haversine.test.ts` | Great-circle distances (LA↔Boston ≈2,591mi, NY↔SF, Dallas↔Denver), symmetry, identical-point = 0. |
-| `src/lib/__tests__/nba-season.test.ts` | `pickDefaultGamesDate` (today/postseason/October-start cases) and `formatLocalDateKey` (no UTC shift). |
+| `src/lib/__tests__/nba-season.test.ts` | `pickDefaultGamesDate` (today/postseason/October-start cases), `formatLocalDateKey` and `formatEasternDateKey` (US/Eastern, viewer-timezone-independent), `currentDisplaySeason`, and `isNbaOffSeason`. |
 | `src/lib/__tests__/rest-advantage-display.test.ts` | `formatRestAdvantageDisplay` team/neutral labeling + one-decimal formatting. |
 | `src/lib/__tests__/team-history.test.ts` | `getTeamBranding` historical eras (SEA/NJN/VAN/NOH/Bobcats/Bullets), current-era logos, fallback behavior. |
 | `src/app/api/__tests__/analysis.test.ts` | `GET /api/analysis` payload shape, percentage bounds, threshold ordering `[2,3,5,7]`, `seasonMinRA=7` filtering. Mocks `@/lib/db/queries`. |
@@ -49,8 +49,8 @@ Config (`playwright.config.ts`): `testDir: ./e2e`, `baseURL: http://localhost:30
 > on demand (`pnpm test:e2e`), never in CI.
 >
 > - **`navigation.spec.ts`** — nav links `TODAY'S GAMES` / `ANALYSIS` / `PICKS` →
->   `/` / `/analysis` / `/upcoming`. The active link is asserted via its inline color
->   (`#C9082A` → `rgb(201, 8, 42)`), since the active state is an inline style, not a class.
+>   `/` / `/analysis` / `/upcoming`. The active link is asserted via its `aria-current="page"`
+>   attribute (the amber-underline active state), and inactive links are checked to lack it.
 > - **`home.spec.ts`** — the heading is the `<h1>` **"Today's Matchups"** (`REST ADVANTAGE
 >   DASHBOARD` is an eyebrow `<span>`); controls use `getByLabel("Season")`, the
 >   `selected-date-display` placeholder `PICK A DATE`, and the empty state `NO GAMES SCHEDULED`.
@@ -80,8 +80,8 @@ issue is resolved — the specs now use Playwright's `getByLabel`.
 
 > **This is the only GitHub Actions workflow.** There is **no test/lint CI** — `pnpm test:run`,
 > `pnpm lint`, and Playwright are **not** run in CI; the only automated quality gate is the
-> Vercel build (`next build`, which type-checks). Run the suites locally. (The in-progress
-> Playoff Predictor scripts and the `ml/` directory likewise have no automated tests yet.)
+> Vercel build (`next build`, which type-checks). Run the suites locally. (The Playoff
+> Predictor scripts and the `ml/` directory likewise have no automated tests.)
 
 ### Vercel cron — `vercel.json`
 
@@ -101,6 +101,8 @@ issue is resolved — the specs now use Playwright's `getByLabel`.
 Vercel auto-deploys from `main`. DB-backed routes are `force-dynamic` + `runtime = "nodejs"`
 so the build doesn't require `DATABASE_URL` and queries never run on Edge. `next.config.ts`
 allow-lists remote image hosts (`cdn.nba.com/logos/**`, `a.espncdn.com/i/teamlogos/nba/**`)
-and sets security headers (`X-Content-Type-Options: nosniff`, `Referrer-Policy:
-strict-origin-when-cross-origin`, `Permissions-Policy: camera=(), microphone=(),
-geolocation=()`).
+and sets security headers: `Content-Security-Policy` (default-src `'self'`, `frame-ancestors
+'none'`, `object-src 'none'`, connect-src scoped to Supabase, img-src to the two logo CDNs;
+`'unsafe-eval'` is dev-only), `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`,
+`Referrer-Policy: strict-origin-when-cross-origin`, and `Permissions-Policy: camera=(),
+microphone=(), geolocation=()`.

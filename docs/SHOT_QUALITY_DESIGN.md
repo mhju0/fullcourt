@@ -292,10 +292,12 @@ the same `{ data, error }` envelope + Zod validation + `getPublicApiErrorMessage
   `dynamic = "force-dynamic"` like the other DB routes.
 - **Frontend:** a new **`/shot-quality`** page (working route name; tracks the §1 name decision),
   added to `nav-bar.tsx` — the **only** surface that reads shot data (isolation, §7). The core
-  visual is a **half-court hexbin / shot chart** in the **Bloomberg-Terminal aesthetic** (mono
-  Courier, left-border accents, NBA red `#C9082A` / blue `#17408B` / tan `#C4853C`, page bg
-  `#F7F6F3`, **no glassmorphism, no dark mode**), with color/size encoding expected eFG% vs
-  attempts. Shot-chart rendering is inherently visual, so it will get proper **loading / empty /
+  visual is a **half-court hexbin / shot chart**. As shipped it uses the dark **"Broadcast"**
+  aesthetic (mono Courier, `--term-*` tokens, dark court `#0F1318`; value ramp tan `#D2A24C` →
+  blue `#3B82F6`, and a blue→neutral→red `#E5484D` divergent ramp for the GBM−baseline view),
+  with color/size encoding expected eFG% vs attempts. *(This was originally specced in the
+  earlier light "Bloomberg Terminal" palette; the module was rebuilt dark in the Broadcast
+  redesign.)* Shot-chart rendering is inherently visual, so it will get proper **loading / empty /
   edge-state** treatment (e.g. sparse-cell seasons, teams with few attempts in a zone) when
   actually built. See [FRONTEND.md](FRONTEND.md) for the design system.
 

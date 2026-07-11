@@ -78,8 +78,8 @@ No secondary indexes beyond the PK and the unique `abbreviation`.
 | Column | Type | Null | Default | Key / notes |
 |--------|------|------|---------|-------------|
 | `id` | serial | no | auto | **PK** |
-| `external_id` (`externalId`) | varchar | no | — | **unique**; 10-digit NBA stats `GAME_ID` (zero-padded). Regular season starts `002`. Conflict target for all upserts. |
-| `date` | date | no | — | game date (`YYYY-MM-DD`). See UTC-vs-ET note below. |
+| `external_id` (`externalId`) | varchar | no | — | **unique**; 10-digit NBA stats `GAME_ID` (zero-padded). Regular season starts `002`. Conflict target for all upserts. Exception: 5 backfilled 2024-25 games carry a `bref-…` synthetic id (they have no stats `GAME_ID`) — see the date note below and `audit/schedule-date-audit-2026-07-12.md`. |
+| `date` | date | no | — | **ET** calendar date of tip-off (`YYYY-MM-DD`). See the date note below. |
 | `season` | varchar | no | — | `"YYYY-YY"` label |
 | `home_team_id` (`homeTeamId`) | integer | no | — | **FK → teams.id** |
 | `away_team_id` (`awayTeamId`) | integer | no | — | **FK → teams.id** |
@@ -92,8 +92,10 @@ No secondary indexes beyond the PK and the unique `abbreviation`.
 **Indexes:** `games_date_idx (date)`, `games_status_idx (status)`,
 `games_home_team_idx (home_team_id)`, `games_away_team_idx (away_team_id)`.
 
-**Verified counts (2026-06-29, read-only `SELECT`):** 49,348 rows — **`regular` 46,167**
-(`002`), `playoffs` 2,827 + `finals` 318 (`004`), `play_in` 36 (`005`). The tag-integrity
+**Verified counts (2026-07-12, read-only `SELECT`):** 49,353 rows — **`regular` 46,172**
+(`002`, incl. 5 `bref-` backfill), `playoffs` 2,827 + `finals` 318 (`004`), `play_in` 36
+(`005`). The +5 vs. the 2026-06-29 snapshot are the missing 2024-25 games added by the
+40-season schedule audit (`audit/schedule-date-audit-2026-07-12.md`). The tag-integrity
 guard (`external_id` prefix ↔ `game_type`) reports **0 mismatches** — no `004`/`005` row is
 mislabeled `regular`, so nothing leaks into the regular-season product.
 
@@ -103,10 +105,13 @@ mislabeled `regular`, so nothing leaks into the regular-season product.
 - Migration `0003_games_moneylines.sql` adds `home_moneyline` and `away_moneyline`
   (`integer`, nullable). These columns exist **in the DB only** — they are **not present in
   `schema.ts`** and no tracked script populates or reads them.
-- **UTC-vs-ET `date`:** `fetch_nba_schedule_cdn.py` writes `date` as the UTC calendar date
-  of tip-off; `fetch_schedule.py` (nba_api) writes the ET `GAME_DATE`. Upserts conflict on
-  `external_id` and do **not** update `date`, so the value is fixed by whichever writer
-  inserts the row first.
+- **`date` is US/Eastern everywhere (fixed 2026-07-11).** Both writers store the ET calendar
+  date of tip-off: `fetch_nba_schedule_cdn.py` converts `gameDateTimeUTC` → `America/New_York`
+  (matching nba_api's `GAME_DATE`), and its upsert now sets **`date = EXCLUDED.date`**, so
+  re-running self-heals a mis-dated row. History: the CDN path previously stored the UTC date,
+  which split the 2026-04-12 finale across two days and corrupted late-season fatigue inputs —
+  found and repaired in the 40-season audit (`audit/schedule-date-audit-2026-07-12.md`); see
+  also [DATA_PIPELINE.md](DATA_PIPELINE.md).
 
 ## Table: `fatigue_scores`
 
@@ -137,10 +142,10 @@ Two rows per game (one per team). Latest-by-`computed_at` wins in reads
 | `has_coast_to_coast_road_swing` (`hasCoastToCoastRoadSwing`) | boolean | no | `false` | large E–W spread on trip; added in `0002` |
 | `computed_at` (`computedAt`) | timestamp | no | `now()` | used to pick the newest row per (game, team) |
 
-**Verified coverage (2026-06-29, read-only `SELECT`):** of **46,167** final regular-season
-games, only **8** are missing a `fatigue_scores` row on either side (all in 2025-26; ≈0.017%) —
-they simply don't surface in analysis (which inner-joins fatigue). Remediable with
-`pnpm exec tsx scripts/backfill_fatigue.ts`.
+**Verified coverage (2026-07-12, read-only `SELECT`):** all **46,172** final regular-season
+games have a `fatigue_scores` row on **both** sides — **0 missing**. (The 8 gaps noted on
+2026-06-29, all in 2025-26, were filled by the fatigue recompute that followed the 40-season
+schedule audit.) Rebuild anytime with `pnpm exec tsx scripts/backfill_fatigue.ts`.
 
 **Indexes:** `fatigue_scores_game_id_idx (game_id)`,
 `fatigue_scores_team_id_idx (team_id)`.

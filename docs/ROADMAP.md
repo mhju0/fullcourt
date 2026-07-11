@@ -100,8 +100,8 @@ either finished to a small honest milestone *or* cleanly parked.
    - ✅ **Removed the `TeamRow` no-op shim** (`matchup-card.tsx`) and its modal import.
    - ✅ **Wired the `SEASON WIN RATE` stat card to the live value** (`src/app/page.tsx`) — it now
      fetches `overallWinRate` from `/api/analysis` via SWR (same number `/analysis` shows), so the
-     old hardcoded `SEASON_WIN_RATE = "53.5"` constant is gone. Still open: the decorative hardcoded
-     nav ticker, so its numbers aren't mistaken for live values.
+     old hardcoded `SEASON_WIN_RATE = "53.5"` constant is gone. (The decorative hardcoded nav
+     ticker this note used to flag was since removed entirely in the Broadcast dark redesign.)
 3. **Make "tested" true in CI.** Add a small GitHub Actions workflow running `pnpm test:run` +
    `pnpm lint` (and optionally Playwright against a seeded DB) so the README's testing claim is
    backed by CI.

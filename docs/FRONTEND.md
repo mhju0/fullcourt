@@ -11,9 +11,12 @@ the actual code (`src/app/`, `src/components/`, `src/app/globals.css`).
 - Metadata: title default `"FullCourt — NBA Analytics"`, template `"%s · FullCourt"`, plus
   a description.
 - Layout: `<NavBar />` (sticky), `<main>` with a centered `max-w-7xl` container
-  (`px-4 py-8 sm:px-6`), and a footer (`#F0EEE9` bg, top border `#E2DFD8`) showing
-  `LAST UPDATED: <ISO> UTC · PIPELINE OK` and `BUILT BY MJ`. `lastUpdated` is computed from
-  `new Date().toISOString()` at render time (server render → UTC).
+  (`px-4 py-8 sm:px-6`), and a footer (`var(--term-surface-2)` bg, top border
+  `var(--term-border)`) showing `RENDERED: <ts> UTC · SYSTEM STATUS` (the latter a link to
+  `/api/health`) and `BUILT BY MJ · SOURCE` (two links → the author's GitHub and the repo).
+  `renderedAt` is `new Date().toISOString()` truncated to the minute at render time — the
+  **render** time, explicitly **not** data/pipeline freshness (live health lives behind the
+  SYSTEM STATUS link).
 
 ## Pages
 
@@ -74,25 +77,28 @@ defender distance or shot-clock data).
 
 ## Components
 
-### `nav-bar.tsx` — two-layer header + ticker (sticky, `z-50`)
+### `nav-bar.tsx` — two-layer header (sticky, `z-50`)
 
-1. **Top status bar** (28px, `#F0EEE9`, bottom border `#E2DFD8`): `FULLCOURT` (red
-   `#C9082A`) + `NBA ANALYTICS PLATFORM` (muted), and on the right `SEASON_LABEL =
-   "2025-26 SEASON"` plus a LIVE dot gated by `HAS_LIVE_GAMES` (**hardcoded `false`**).
-2. **Main nav** (44px, white, bottom border `#E2DFD8`): links from `NAV_LINKS` —
-   `TODAY'S GAMES → /`, `ANALYSIS → /analysis`, `PICKS → /upcoming`, `PLAYOFFS → /playoffs`,
-   `SHOT QUALITY → /shot-quality`. Active link is NBA red text with a 2px red bottom border
-   (set via **inline style**, not a Tailwind class).
-3. **Navy ticker** (26px, `#17408B`): a `TICKER` label + a CSS `marquee` (40s linear loop)
-   of **hardcoded** `TICKER_ITEMS` (BOS/DEN/LAL/MIA/NYK/GSW with up `▲` green / down `▼` red
-   / flat `—` arrows and a fake `RA` value). These ticker values are decorative, not live.
+1. **Top status bar** (28px, `var(--term-surface-2)`, bottom border `var(--term-border)`):
+   a `<CourtMark size={22}>` brand logo + `FULLCOURT` (`var(--term-red)`) + `NBA ANALYTICS
+   PLATFORM` (muted), and on the right `currentDisplaySeason() + " SEASON"` (dynamic — from
+   `src/lib/nba-season.ts`, not a hardcoded label) plus an amber LIVE dot gated by
+   `HAS_LIVE_GAMES` (**hardcoded `false`**).
+2. **Main nav** (44px, `var(--term-surface)`, bottom border `var(--term-border)`): links from
+   `NAV_LINKS` — `TODAY'S GAMES → /`, `ANALYSIS → /analysis`, `PICKS → /upcoming`,
+   `PLAYOFFS → /playoffs`, `SHOT QUALITY → /shot-quality`. The active link gets an amber
+   bottom border (`border-[var(--term-amber)]`) + `text-[var(--term-text)]` and carries
+   `aria-current="page"`; inactive links are muted with a hover-to-text transition.
 
-### `matchup-card.tsx` — the core matchup row (new terminal style)
+### `matchup-card.tsx` — the core matchup row (broadcast/dark style)
 
-Flat white card (`#E2DFD8` border) with a **left-border accent** colored by confidence:
+Dark card (`background: var(--term-surface)`, `1px solid var(--term-border)`) topped by a
+team-color band (away | home from `getTeamColors`) with a **2px left-border accent** colored
+by confidence:
 - `getConfidence(diff)`: `high` `|diff| ≥ 2.0`, `med` `≥ 1.0`, `neutral` otherwise, `none`
-  when no RA. `confidenceAccent`: high `#C9082A`, med `#17408B`, neutral `#C4853C`, none
-  `#888888`.
+  when no RA. `confidenceAccent` returns the `TERM_ACCENT` tokens (`src/lib/terminal-styles.ts`):
+  high `TERM_ACCENT.red`, med `TERM_ACCENT.blue`, neutral `TERM_ACCENT.tan`, none
+  `TERM_ACCENT.neutral`.
 
 Layout per card: status line (`GameStatusRow` → LIVE/FINAL/UPCOMING + score),
 `away TeamBlock | FatigueBarsBlock | home TeamBlock | RestAdvPanel`, a `MetaStrip`, and a
@@ -114,8 +120,8 @@ click/keyboard-expandable detail grid (two `FatigueDetailColumn`s). Subcomponent
 ### `fatigue-bar.tsx`
 
 A 4px progress bar; `SCALE_MAX = 10` (scores above clamp to 100% fill); tone colors:
-`higher` `#C9082A`, `lower` `#17408B`, `neutral` `#888888`. `role="progressbar"` with aria
-min/now/max.
+`higher` `var(--term-red)`, `lower` `var(--term-blue)`, `neutral` `var(--term-neutral)`.
+`role="progressbar"` with aria min/now/max.
 
 ### `analysis-content.tsx` (+ `analysis-lazy.tsx`)
 
@@ -133,18 +139,18 @@ Loaded via `next/dynamic` with `ssr: false` and a skeleton. Uses SWR:
 
 Loaded via `next/dynamic` (`ssr: false`). SWR `/api/games/upcoming?season=2025-26&minRA=…`.
 RA filter pills, an off-season empty state (`OffSeasonEmptyState`), and a table of upcoming
-games with an "edge" badge (home edge blue, away edge red). Rendered in the flat **terminal
-style** (white `termCard` surface, `1px solid #E2DFD8` borders, `border-radius: 4`, `.mono`
-labels) — consistent with Today's Games / Analysis (migrated 2026-06-29).
+games with an "edge" badge (home edge blue, away edge red). Rendered in the dark **broadcast
+style** (`var(--term-surface)` card fill, `1px solid var(--term-border)`, `.mono` labels) —
+consistent with Today's Games / Analysis.
 
 ### `explore-game-detail-modal.tsx`
 
 Portal-rendered modal (`createPortal` to `document.body`). SWR `/api/game/{id}`, with a
 nav-history stack so clicking a "recent game" drills into that game and Back returns. Escape
 and backdrop close it. Renders `GameStatusRow`, `RaBadge`, two `FatigueDetailColumn`s, and
-`RecentResultsList` (last-5 W/L) per team. Rendered in the flat **terminal style** (white panel,
-`1px solid #E2DFD8`, `border-radius: 4`, `.mono` labels, `TERM_INSET` `#F7F6F3` breakdown
-surface) — migrated off glassmorphism 2026-06-29.
+`RecentResultsList` (last-5 W/L) per team. Rendered in the dark **broadcast style**
+(`var(--term-surface)` panel, `1px solid var(--term-border)`, `.mono` labels, a
+`var(--term-surface-2)` inset breakdown surface).
 
 ### `playoffs-content.tsx` (+ `playoffs-lazy.tsx`)
 
@@ -241,12 +247,12 @@ redesign.)
 
 ### Card / accent patterns
 
-- Terminal cards: white fill, `1px solid #E2DFD8`, `border-radius: 4px`. Many add a **2px
-  left-border accent** (`#C4853C` default, `#C9082A` for errors/high-confidence, `#17408B`
-  for highlights).
+- Broadcast cards: `var(--term-surface)` fill, `1px solid var(--term-border)`,
+  `var(--term-radius)`. Many add a **2px left-border accent** via `TERM_ACCENT`
+  (`.tan` default, `.red` for errors/high-confidence, `.blue` for highlights).
 - Uppercase mono labels with wide letter-spacing (`0.04–0.12em`) for "technical" headers.
-- Animations (`globals.css`): `marquee` (ticker), `fadeInUp` (card entrance, staggered by
-  `index * 40ms`), `scoreFlash` (live-update glow).
+- Animations (`globals.css`): `fadeInUp` (card entrance, staggered by `index * 40ms`),
+  `scoreFlash` (live-update glow).
 
 ### Shot chart / court geometry (`shot-quality-content.tsx`)
 
@@ -258,11 +264,20 @@ floor(LOC_Y/10)`, 1-ft cells — see `scripts/aggregate_shot_grid.py` in
 `sx`/`sy` helpers (`PX = 12` px/ft, half-court `50 × 47` ft + 1ft padding). `CourtLines` draws
 the boundary, paint, free-throw circle, backboard/rim, restricted-area arc, three-point line
 (two straight corner segments + an arc computed from `asin(22 / 23.75)`), and the center-circle
-arc — all derived geometrically, not hardcoded pixel paths. Color ramps: sequential
-tan→blue (`#C4853C` → `#17408B`) for expected-eFG%, divergent blue→neutral→red
-(`#17408B` → `#EFEAE0` → `#C9082A`) for the GBM−baseline diff.
+arc — all derived geometrically, not hardcoded pixel paths. Color ramps (endpoints
+brightened to read on the near-black `#0F1318` court): sequential tan→blue
+(`#D2A24C` → `#3B82F6`) for expected-eFG%, divergent blue→neutral→red
+(`#3B82F6` → `#2A313A` → `#E5484D`) for the GBM−baseline diff.
 
-### Two-layer header + ticker
+### Two-layer header
 
-Sticky header = top status bar (28px) + main nav (44px) + navy ticker (26px); see
-`nav-bar.tsx` above. Footer mirrors the terminal aesthetic with mono metadata.
+Sticky header = top status bar (28px) + main nav (44px); see `nav-bar.tsx` above. Footer
+mirrors the broadcast aesthetic with mono metadata.
+
+### Brand mark
+
+The FullCourt logo ("Angled Divider" court) lives in `src/components/court-mark.tsx`
+(`<CourtMark size>` — a tilted center line splitting a blue/rested half from a red/fatigued
+half, with an amber center circle; fixed brand hexes, not theme tokens). It renders in the
+nav status bar; the same mark backs the favicon (`src/app/icon.svg`) and the social/OG card
+(`src/app/opengraph-image.tsx`).
