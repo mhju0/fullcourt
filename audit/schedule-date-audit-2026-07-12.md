@@ -1,0 +1,76 @@
+# FullCourt — full schedule & date audit (all 40 seasons)
+
+**Date:** 2026-07-12
+**Oracle:** Basketball-Reference monthly schedule pages (`NBA_<year>_games-<month>.html`),
+cross-checked against ESPN for the flagged games. B-Ref reachable only from the dev
+machine (residential IP); it 403s from datacenter IPs.
+**Method:** per-season diff of DB vs B-Ref. Primary signal = per-date game **count**
+(team-agnostic, immune to 40 years of franchise-code churn). Backstop = full game-set
+comparison (date + normalized matchup) → classifies SHIFTED / MISSING / EXTRA.
+**Coverage:** 40 seasons (1985-86 → 2025-26, no 2019-20 bubble), 340 B-Ref month-pages,
+0 fetch failures. All game types (regular + playoffs + finals + play-in).
+
+## Headline
+
+- **37 seasons (1985-86 → 2022-23): byte-perfect** vs B-Ref — every date and every
+  matchup, including all playoffs, finals, both lockout seasons (1998-99, 2011-12) and
+  the 2020-21 COVID calendar. The nba_api historical seed is completely correct.
+- **All real problems are confined to the two most recent, CDN-ingested seasons.**
+- **Only 2 actual date errors exist in the entire database** — both 2025-26, both the
+  known UTC-vs-ET +1-day shift, both missed by last session's April-only repair.
+
+## Findings
+
+### 2025-26 — 2 date shifts (UTC-bug residue) [repair: UPDATE date]
+Confirmed by **both** B-Ref and ESPN:
+
+| Matchup | Stored (wrong) | Correct | Note |
+|---|---|---|---|
+| `DAL@DET` | 2025-11-02 | **2025-11-01** | night tip stored as next-day UTC |
+| `SAS@OKC` | 2025-12-14 | **2025-12-13** | NBA Cup semifinal (low-game day) |
+
+2025-26 regular season is otherwise **complete** (1230/1230). The April 2026 finale
+repair from the prior session holds (B-Ref independently confirms Apr 12 = 15, Apr 13 = 0).
+
+### 2024-25 — 5 missing regular-season games [repair: INSERT]
+Regular season = **1225**, five short of 1230. All genuinely absent (not shifted, not
+home/away-swapped):
+
+| Matchup | Date | Kind |
+|---|---|---|
+| `MIA@WAS` | 2024-11-02 | ordinary |
+| `ATL@MIL` | 2024-12-14 | NBA Cup **semifinal** (counts toward record) |
+| `HOU@OKC` | 2024-12-14 | NBA Cup **semifinal** (counts toward record) |
+| `SAS@IND` | 2025-01-23 | ordinary (DB has 0 SAS/IND games all season) |
+| `IND@SAS` | 2025-01-25 | ordinary |
+
+Sourcing constraint for repair: B-Ref supplies date, teams, final score, and OT, but
+**not** the stats.nba `002…` game id our `external_id` convention requires. nba_api
+(stats.nba.com) is unreachable from Seoul; it may be reachable from CI (US IP).
+
+### Expected exclusions — NOT errors (3 IST/NBA-Cup finals)
+The In-Season Tournament **championship** is played at a neutral site (T-Mobile Arena,
+Las Vegas) and does **not** count toward the 82-game record, so nba_api correctly omits
+it. Our DB is right to lack these:
+
+| Matchup | Date | Season |
+|---|---|---|
+| `IND@LAL` | 2023-12-09 | 2023-24 |
+| `MIL@OKC` | 2024-12-17 | 2024-25 |
+| `SAS@NYK` | 2025-12-16 | 2025-26 |
+
+## Root cause
+
+Both problem seasons (2024-25, 2025-26) passed through the CDN "current-season" ingest
+(`fetch_nba_schedule_cdn.py`) — the path that had the UTC date bug (now fixed) and, for
+2024-25, apparently never captured 5 games (the 2 neutral-site Cup semifinals + 3
+others, likely rescheduled after the last sync). The nba_api historical seed
+(`fetch_schedule.py`) that produced 1985-86 → 2023-24 is complete and correctly dated.
+
+## Recommended repair (Phase B — pending approval)
+
+1. **2 date shifts (2025-26):** `UPDATE games SET date` to the B-Ref/ESPN-confirmed
+   date, then recompute 2025-26 fatigue + predictions. Identical to the April repair.
+2. **5 missing games (2024-25):** decide id sourcing — insert from B-Ref with a
+   documented synthetic id, or fetch real `002…` ids + data via nba_api from CI, then
+   recompute 2024-25 fatigue for affected teams.
