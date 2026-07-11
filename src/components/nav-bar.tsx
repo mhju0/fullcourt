@@ -2,6 +2,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
+import { CourtMark } from "@/components/court-mark"
 import { currentDisplaySeason } from "@/lib/nba-season"
 import { cn } from "@/lib/utils"
 
@@ -36,9 +37,10 @@ export function NavBar() {
         }}
       >
         <div className="mx-auto flex h-full max-w-7xl items-center justify-between px-4 sm:px-6">
-          <div className="flex items-center gap-3" style={{ fontSize: "10px", letterSpacing: "0.08em" }}>
+          <div className="flex items-center gap-2.5" style={{ fontSize: "10px", letterSpacing: "0.08em" }}>
+            <CourtMark size={22} className="shrink-0" />
             <span style={{ color: "var(--term-red)", fontWeight: 700 }}>FULLCOURT</span>
-            <span style={{ color: "var(--term-text-muted)" }}>NBA ANALYTICS PLATFORM</span>
+            <span className="hidden sm:inline" style={{ color: "var(--term-text-muted)" }}>NBA ANALYTICS PLATFORM</span>
           </div>
           <div className="flex items-center gap-3" style={{ fontSize: "10px", letterSpacing: "0.08em" }}>
             <span style={{ color: "var(--term-text-muted)" }}>{currentDisplaySeason()} SEASON</span>

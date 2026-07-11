@@ -17,13 +17,29 @@ const outfit = Outfit({
   weight: ["600", "700"],
 });
 
+const SITE_URL = "https://fullcourt-nba.vercel.app";
+const SITE_DESC =
+  "FullCourt is an NBA analytics platform. Today it models rest and fatigue to surface each matchup's rest advantage, with more models on the way.";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: {
     default: "FullCourt — NBA Analytics",
     template: "%s · FullCourt",
   },
-  description:
-    "FullCourt is an NBA analytics platform. Today it models rest and fatigue to surface each matchup's rest advantage, with more models on the way.",
+  description: SITE_DESC,
+  openGraph: {
+    type: "website",
+    siteName: "FullCourt",
+    url: SITE_URL,
+    title: "FullCourt — NBA Analytics",
+    description: SITE_DESC,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "FullCourt — NBA Analytics",
+    description: SITE_DESC,
+  },
 };
 
 export default function RootLayout({
