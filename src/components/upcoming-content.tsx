@@ -59,7 +59,7 @@ function TeamLogo({ abbreviation }: { abbreviation: string }) {
 
   return (
     <Image
-      src={`https://cdn.nba.com/logos/nba/${nbaId}/global/L/logo.svg`}
+      src={`https://cdn.nba.com/logos/nba/${nbaId}/primary/D/logo.svg`}
       alt={`${abbreviation} logo`}
       width={24}
       height={24}

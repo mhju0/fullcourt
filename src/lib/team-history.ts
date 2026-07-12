@@ -22,7 +22,9 @@ function nbaSvgLogo(currentAbbrev: string): string {
   if (id === undefined) {
     return espnLogo(currentAbbrev);
   }
-  return `https://cdn.nba.com/logos/nba/${id}/global/L/logo.svg`;
+  // `primary/D` = the clean icon-only mark styled for dark backgrounds.
+  // (`global/L` is the roundel/wordmark with the team name baked in.)
+  return `https://cdn.nba.com/logos/nba/${id}/primary/D/logo.svg`;
 }
 
 /** Current-era defaults when no historical rule applies (abbrev = DB / canonical). */
