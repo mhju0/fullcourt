@@ -1,4 +1,8 @@
-# 🏀 FullCourt
+<div align="center">
+
+<img src="docs/logo.svg" alt="FullCourt logo" width="104" height="104" />
+
+# FullCourt
 
 **An NBA analytics platform that turns four decades of schedule data into game-level predictions.**
 
@@ -7,6 +11,8 @@
 ![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?logo=typescript&logoColor=white)
 ![Supabase](https://img.shields.io/badge/Supabase-PostgreSQL-3FCF8E?logo=supabase&logoColor=white)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind-v4-38BDF8?logo=tailwindcss&logoColor=white)
+
+</div>
 
 FullCourt quantifies how **travel, rest, and schedule density** shape NBA outcomes. Its flagship model assigns every team a multi-factor **fatigue score**, derives a **rest advantage** for each matchup, and backtests it against roughly 40 seasons of regular-season results.
 
