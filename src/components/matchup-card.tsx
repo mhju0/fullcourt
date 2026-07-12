@@ -58,7 +58,7 @@ function TeamLogo({
       : (() => {
           const nbaId = NBA_TEAM_IDS[abbreviation]
           return nbaId
-            ? `https://cdn.nba.com/logos/nba/${nbaId}/global/L/logo.svg`
+            ? `https://cdn.nba.com/logos/nba/${nbaId}/primary/D/logo.svg`
             : null
         })()
 

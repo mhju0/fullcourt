@@ -18,7 +18,7 @@ describe("getTeamBranding", () => {
     expect(b.name).toBe("Thunder");
     expect(b.city).toBe("Oklahoma City");
     expect(b.logoUrl).toBe(
-      "https://cdn.nba.com/logos/nba/1610612760/global/L/logo.svg"
+      "https://cdn.nba.com/logos/nba/1610612760/primary/D/logo.svg"
     );
   });
 
@@ -38,7 +38,7 @@ describe("getTeamBranding", () => {
     expect(b.name).toBe("Nets");
     expect(b.city).toBe("Brooklyn");
     expect(b.logoUrl).toBe(
-      "https://cdn.nba.com/logos/nba/1610612751/global/L/logo.svg"
+      "https://cdn.nba.com/logos/nba/1610612751/primary/D/logo.svg"
     );
   });
 
@@ -58,7 +58,7 @@ describe("getTeamBranding", () => {
     expect(b.name).toBe("Grizzlies");
     expect(b.city).toBe("Memphis");
     expect(b.logoUrl).toBe(
-      "https://cdn.nba.com/logos/nba/1610612763/global/L/logo.svg"
+      "https://cdn.nba.com/logos/nba/1610612763/primary/D/logo.svg"
     );
   });
 
@@ -78,7 +78,7 @@ describe("getTeamBranding", () => {
     expect(b.name).toBe("Hornets");
     expect(b.city).toBe("Charlotte");
     expect(b.logoUrl).toBe(
-      "https://cdn.nba.com/logos/nba/1610612766/global/L/logo.svg"
+      "https://cdn.nba.com/logos/nba/1610612766/primary/D/logo.svg"
     );
   });
 
@@ -98,7 +98,7 @@ describe("getTeamBranding", () => {
     expect(b.name).toBe("Lakers");
     expect(b.city).toBe("Los Angeles");
     expect(b.logoUrl).toBe(
-      "https://cdn.nba.com/logos/nba/1610612747/global/L/logo.svg"
+      "https://cdn.nba.com/logos/nba/1610612747/primary/D/logo.svg"
     );
   });
 

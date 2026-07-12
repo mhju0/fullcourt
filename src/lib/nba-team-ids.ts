@@ -2,8 +2,8 @@
  * Maps team abbreviations (as stored in our database) to the official
  * NBA team IDs used by the NBA CDN for logo assets.
  *
- * Logo URL pattern:
- *   https://cdn.nba.com/logos/nba/{nbaId}/global/L/logo.svg
+ * Logo URL pattern (see team-history.ts):
+ *   https://cdn.nba.com/logos/nba/{nbaId}/primary/D/logo.svg
  */
 export const NBA_TEAM_IDS: Record<string, number> = {
   ATL: 1610612737,
