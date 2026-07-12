@@ -161,7 +161,7 @@ export function GameStatusRow({
       <div className="mono flex items-center gap-3" style={{ fontSize: "11px" }}>
         <LiveIndicator />
         {homeScore !== null && awayScore !== null && (
-          <span className="tabular-nums" style={{ fontSize: "19px", letterSpacing: "-0.02em", color: "var(--term-text)", fontWeight: 800 }}>
+          <span className="tabular-nums" style={{ fontSize: "22px", letterSpacing: "-0.02em", color: "var(--term-text)", fontWeight: 800 }}>
             {awayScore} – {homeScore}
           </span>
         )}
@@ -173,7 +173,7 @@ export function GameStatusRow({
     return (
       <div className="mono flex items-center gap-3" style={{ fontSize: "11px" }}>
         <span style={{ color: "var(--term-text-muted)", letterSpacing: "0.08em" }}>FINAL</span>
-        <span className="tabular-nums" style={{ fontSize: "19px", letterSpacing: "-0.02em", color: "var(--term-text)", fontWeight: 800 }}>
+        <span className="tabular-nums" style={{ fontSize: "22px", letterSpacing: "-0.02em", color: "var(--term-text)", fontWeight: 800 }}>
           {awayScore} – {homeScore}
         </span>
       </div>
@@ -212,6 +212,7 @@ function fatigueTones(
 /** One team on its own line: logo · tricode/city · fatigue bar · fatigue value. */
 function TeamStatRow({
   abbreviation,
+  name,
   city,
   season,
   fallback,
@@ -219,6 +220,7 @@ function TeamStatRow({
   tone,
 }: {
   abbreviation: string
+  name: string
   city: string
   season: string
   fallback: { name: string; city: string }
@@ -229,12 +231,12 @@ function TeamStatRow({
   return (
     <div className="flex items-center gap-4">
       <TeamLogo abbreviation={abbreviation} season={season} fallback={fallback} size={30} color={colors.primary} />
-      <div className="flex w-[132px] shrink-0 flex-col gap-0.5">
+      <div className="flex w-[140px] shrink-0 flex-col gap-0.5">
         <span
-          className="mono inline-flex items-center tabular-nums"
-          style={{ fontSize: "17px", letterSpacing: "-0.01em", color: "var(--term-text)", fontWeight: 800, lineHeight: 1 }}
+          className="mono truncate"
+          style={{ fontSize: "16px", letterSpacing: "-0.01em", color: "var(--term-text)", fontWeight: 800, lineHeight: 1.05 }}
         >
-          {abbreviation}
+          {name}
         </span>
         <span className="truncate" style={{ fontSize: "11px", fontWeight: 500, color: "var(--term-text-muted)", lineHeight: 1.2 }}>
           {city}
@@ -620,6 +622,7 @@ export function MatchupCard({ game, index = 0, isScoreFlashing = false }: Matchu
           <div className="flex min-w-0 flex-1 flex-col justify-center gap-2.5">
             <TeamStatRow
               abbreviation={awayBrand.abbreviation}
+              name={awayBrand.name}
               city={awayBrand.city ?? game.awayTeam.city}
               season={game.season}
               fallback={awayFallback}
@@ -628,6 +631,7 @@ export function MatchupCard({ game, index = 0, isScoreFlashing = false }: Matchu
             />
             <TeamStatRow
               abbreviation={homeBrand.abbreviation}
+              name={homeBrand.name}
               city={homeBrand.city ?? game.homeTeam.city}
               season={game.season}
               fallback={homeFallback}
