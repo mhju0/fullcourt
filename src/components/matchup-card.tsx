@@ -227,17 +227,13 @@ function TeamStatRow({
 }) {
   const colors = getTeamColors(abbreviation)
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex items-center gap-4">
       <TeamLogo abbreviation={abbreviation} season={season} fallback={fallback} size={30} color={colors.primary} />
       <div className="flex w-[132px] shrink-0 flex-col gap-0.5">
         <span
-          className="mono inline-flex items-center gap-1.5 tabular-nums"
+          className="mono inline-flex items-center tabular-nums"
           style={{ fontSize: "17px", letterSpacing: "-0.01em", color: "var(--term-text)", fontWeight: 800, lineHeight: 1 }}
         >
-          <span
-            aria-hidden
-            style={{ width: 7, height: 7, borderRadius: "50%", background: colors.primary, boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.28)", flexShrink: 0 }}
-          />
           {abbreviation}
         </span>
         <span className="truncate" style={{ fontSize: "11px", fontWeight: 500, color: "var(--term-text-muted)", lineHeight: 1.2 }}>
@@ -565,9 +561,6 @@ export function MatchupCard({ game, index = 0, isScoreFlashing = false }: Matchu
   const homeBrand = getTeamBranding(game.homeTeam.abbreviation, game.season, homeFallback)
   const awayBrand = getTeamBranding(game.awayTeam.abbreviation, game.season, awayFallback)
 
-  const awayColors = getTeamColors(awayBrand.abbreviation)
-  const homeColors = getTeamColors(homeBrand.abbreviation)
-
   const diff = game.restAdvantage?.differential ?? null
   const confidence = getConfidence(diff)
   const accent = confidenceAccent(confidence)
@@ -600,13 +593,6 @@ export function MatchupCard({ game, index = 0, isScoreFlashing = false }: Matchu
         overflow: "hidden",
       }}
     >
-      {/* Team-color band (away | home) — broadcast identity */}
-      <div className="flex" style={{ height: 4 }} aria-hidden>
-        <span style={{ flex: 1, background: awayColors.primary }} />
-        <span style={{ width: 1, background: "rgba(0,0,0,0.35)" }} />
-        <span style={{ flex: 1, background: homeColors.primary }} />
-      </div>
-
       <div
         role="button"
         tabIndex={0}
