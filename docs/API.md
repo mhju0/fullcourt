@@ -1,11 +1,11 @@
 # API reference
 
-Nine route handlers under `src/app/api/`, all **`GET`**. Every app route returns the
-`{ data, error }` envelope (`/api/cron/update` also adds `meta`). Errors are passed through
-`getPublicApiErrorMessage` (`src/lib/api-errors.ts`): in production it hides internals
-unless the message contains `invalid` / `validation` / `not found`; in dev it returns the
-raw message. Client code unwraps the envelope via `apiFetcher` (`src/lib/fetcher.ts`),
-which throws when `error` is non-null.
+Ten route handlers live under `src/app/api/`, all **`GET`**. Product-data routes return the
+`{ data, error }` envelope (`/api/cron/update` also adds `meta`); `/api/health` intentionally
+uses a dedicated liveness shape. `getPublicApiErrorMessage` (`src/lib/api-errors.ts`) exposes
+only explicit `PublicApiError` messages in production and otherwise returns a generic error;
+development mode may include the raw `Error.message`. Client code unwraps product envelopes via
+`apiFetcher` (`src/lib/fetcher.ts`), which throws when `error` is non-null.
 
 Response envelope (`ApiResponse<T>` in `src/types/index.ts`):
 
@@ -24,6 +24,7 @@ Response envelope (`ApiResponse<T>` in `src/types/index.ts`):
 | `GET /api/playoffs` | `season?` | `PlayoffsResponse` | `getPlayoffSeriesWithPredictions` |
 | `GET /api/shot-quality` | `season`, `model?` | `ShotQualityResponse` | `getShotQualityGrid` |
 | `GET /api/cron/update` | (Bearer auth) | `{ gamesUpdated }` | reads/updates `games` |
+| `GET /api/health` | none | dedicated `{ status, db, timestamp }` | `select 1` |
 
 Routes that touch the DB declare `export const runtime = "nodejs"` and (where applicable)
 `dynamic = "force-dynamic"` so they aren't prerendered at build (no `DATABASE_URL` needed
@@ -78,10 +79,11 @@ the home-page day chips.
 Filtered, paginated search over **final, regular** games. Powers the Analysis "Explore
 Games" table.
 
-- **Query params** (plain parsing, not Zod):
-  - `minRA` — float; only `> 0` applies (`abs(awayFatigue − homeFatigue) ≥ minRA` in SQL).
-  - `team` — abbreviation; matches home **or** away.
-  - `season` — `"YYYY-YY"`.
+- **Query params** (Zod; invalid input → `400` without querying):
+  - `minRA` — finite nonnegative number; only `> 0` applies
+    (`abs(awayFatigue − homeFatigue) ≥ minRA` in SQL).
+  - `team` — uppercase 2–3 letter abbreviation; matches home **or** away.
+  - `season` — must be in `NBA_SEASONS`.
   - `result` — `all` (default) / `correct` (rested team won) / `incorrect`.
   - `page` — default `1` (min 1).
   - `limit` — default `20` (`DEFAULT_LIMIT`), capped at `100` (`MAX_LIMIT`).
@@ -100,7 +102,8 @@ Games" table.
 Scheduled regular-season games from today onward, with their open-prediction edge. Powers
 Future Games. `runtime = "nodejs"`, `dynamic = "force-dynamic"`.
 
-- **Query:** `minRA` (float, floored at 0), `season` (default **`"2025-26"`**).
+- **Query (Zod):** `minRA` (finite nonnegative number), `season` (must be in
+  `NBA_SEASONS`; defaults through `currentDisplaySeason()`). Invalid input → `400`.
 - **Query fn:** `getUpcomingGamesWithRA(season, minRA)` — scheduled regular games with an
   open prediction, `date ≥ today`, within the regular-season calendar, optionally filtered
   to `|differential| ≥ minRA`.
@@ -130,7 +133,7 @@ Historical backtest over **final, regular** games that have fatigue for both tea
 `runtime = "nodejs"`, `dynamic = "force-dynamic"`. **Reads game outcomes — it does not read
 the `predictions` table.**
 
-- **Query:** `seasonMinRA` (float, floored at 0) — when `> 0.5`, the season win-rate
+- **Query (Zod):** `seasonMinRA` (finite nonnegative number; default `0`) — when `> 0.5`, the season win-rate
   breakdown uses `|differential| ≥ seasonMinRA` instead of the default decidable set.
 - **Constants:** `NEUTRAL_THRESHOLD = 0.5`, `THRESHOLDS = [2, 3, 5, 7]`.
 - **Computation:** for each game `differential = awayFatigue − homeFatigue`, rested side =
@@ -204,7 +207,8 @@ Vercel-cron live-score refresh. `runtime = "nodejs"`, `dynamic = "force-dynamic"
   must send `Authorization: Bearer <CRON_SECRET>`; mismatch → `401`. If auth is required but
   `CRON_SECRET` is unset → `503` (misconfiguration). Without `VERCEL`/`CRON_SECRET` (local)
   the route is open.
-- **Behavior:** find today's `scheduled`/`live` games → fetch the NBA CDN scoreboard
+- **Behavior:** find today's `scheduled`/`live` games → fetch the NBA CDN scoreboard with a
+  10-second timeout
   (`todaysScoreboard_00.json`) → match by normalized 10-digit `external_id` → `UPDATE games`
   when status/score changed. Scores of `0` are written as `null`. NBA CDN status codes map
   `2 → live`, `3 → final`, else `scheduled`.
@@ -212,3 +216,14 @@ Vercel-cron live-score refresh. `runtime = "nodejs"`, `dynamic = "force-dynamic"
   nbaGamesAvailable } }`. With nothing to do: `gamesUpdated: 0` + a `meta.message`. NBA CDN
   non-200 → `502`; other failures → `500`.
 - Updates propagate to browsers via Supabase Realtime (`useLiveGames`).
+
+---
+
+## `GET /api/health`
+
+Public DB-liveness probe for uptime monitors. It intentionally does not use `ApiResponse<T>`.
+
+- **Behavior:** runs `select 1` against the live database.
+- **Success:** `200` `{ status: "ok", db: "up", timestamp }`.
+- **Failure:** `503` `{ status: "error", db: "down", timestamp }`; the raw DB error is logged
+  server-side and never included in the response.

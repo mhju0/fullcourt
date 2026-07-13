@@ -16,12 +16,13 @@ comparison (date + normalized matchup) → classifies SHIFTED / MISSING / EXTRA.
   matchup, including all playoffs, finals, both lockout seasons (1998-99, 2011-12) and
   the 2020-21 COVID calendar. The nba_api historical seed is completely correct.
 - **All real problems are confined to the two most recent, CDN-ingested seasons.**
-- **Only 2 actual date errors exist in the entire database** — both 2025-26, both the
-  known UTC-vs-ET +1-day shift, both missed by last session's April-only repair.
+- **The audit found 2 actual date errors** — both 2025-26, both the known UTC-vs-ET
+  +1-day shift, both missed by the prior April-only repair. They were corrected after this
+  comparison; see Resolution below.
 
 ## Findings
 
-### 2025-26 — 2 date shifts (UTC-bug residue) [repair: UPDATE date]
+### 2025-26 — 2 date shifts (UTC-bug residue) [repaired]
 Confirmed by **both** B-Ref and ESPN:
 
 | Matchup | Stored (wrong) | Correct | Note |
@@ -32,7 +33,7 @@ Confirmed by **both** B-Ref and ESPN:
 2025-26 regular season is otherwise **complete** (1230/1230). The April 2026 finale
 repair from the prior session holds (B-Ref independently confirms Apr 12 = 15, Apr 13 = 0).
 
-### 2024-25 — 5 missing regular-season games [repair: INSERT]
+### 2024-25 — 5 missing regular-season games [repaired]
 Regular season = **1225**, five short of 1230. All genuinely absent (not shifted, not
 home/away-swapped):
 
@@ -67,10 +68,10 @@ Both problem seasons (2024-25, 2025-26) passed through the CDN "current-season" 
 others, likely rescheduled after the last sync). The nba_api historical seed
 (`fetch_schedule.py`) that produced 1985-86 → 2023-24 is complete and correctly dated.
 
-## Recommended repair (Phase B — pending approval)
+## Resolution (completed 2026-07-12)
 
-1. **2 date shifts (2025-26):** `UPDATE games SET date` to the B-Ref/ESPN-confirmed
-   date, then recompute 2025-26 fatigue + predictions. Identical to the April repair.
-2. **5 missing games (2024-25):** decide id sourcing — insert from B-Ref with a
-   documented synthetic id, or fetch real `002…` ids + data via nba_api from CI, then
-   recompute 2024-25 fatigue for affected teams.
+1. The two 2025-26 rows were updated to the independently confirmed ET dates.
+2. The five missing 2024-25 games were inserted with documented `bref-…` synthetic IDs because
+   the NBA stats IDs were not retrievable from the available network location.
+3. Affected fatigue scores and predictions were recomputed. The resulting database inventory and
+   tag-integrity verification are recorded in `docs/DATABASE.md`.

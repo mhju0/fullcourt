@@ -20,7 +20,8 @@ the actual code (`src/app/`, `src/components/`, `src/app/globals.css`).
 
 ## Pages
 
-Five routes today — `/`, `/analysis`, `/upcoming`, `/playoffs`, `/shot-quality`.
+Five product routes ship today — `/`, `/analysis`, `/upcoming`, `/playoffs`, `/shot-quality` —
+plus a branded App Router `not-found` page for unknown paths.
 
 ### `/` — Today's Games (`src/app/page.tsx`, client component)
 
@@ -74,6 +75,11 @@ two `ShotCourt` half-court SVGs depending on the toggle. See "Shot chart / court
 under Design system below for the rendering details, and a collapsible `MethodologyNote`
 explaining the baseline/GBM framing (small calibration win, not a large accuracy jump; no
 defender distance or shot-clock data).
+
+### Unknown routes — `src/app/not-found.tsx`
+
+Static server component inside the shared shell. It provides a branded 404 heading and direct
+recovery links to Today's Games and Analysis without adding a client bundle or data request.
 
 ## Components
 

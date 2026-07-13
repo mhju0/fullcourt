@@ -20,9 +20,9 @@ FullCourt quantifies how **travel, rest, and schedule density** shape NBA outcom
 
 🔗 **Live demo:** https://fullcourt-nba.vercel.app &nbsp;·&nbsp; **Code:** https://github.com/mhju0/fullcourt
 
-<!-- Add a screenshot or short GIF of the app here — one of the highest-impact things on a portfolio README:
-![FullCourt — Today's Matchups](docs/screenshot.png)
--->
+> **Project status:** feature-complete and in maintenance mode. The live demo and scheduled data
+> pipeline remain operational; future changes are limited to security, dependency compatibility,
+> season rollover, data-source breakage, deployment reliability, and verified correctness fixes.
 
 ---
 
@@ -107,18 +107,30 @@ Data spans **1985-86 to the present**, excluding the 2019-20 Orlando bubble (no 
 
 ```bash
 pnpm install
-
-# Create .env.local with:
-#   DATABASE_URL=postgresql://...                 (required — Supabase Postgres)
-#   NEXT_PUBLIC_SUPABASE_URL=...                   (optional — enables live scores)
-#   NEXT_PUBLIC_SUPABASE_ANON_KEY=...              (optional)
-
-pnpm drizzle-kit push          # create the base tables from schema.ts
-python scripts/seed_teams.py   # seed the 30 teams + arena coordinates
-pnpm dev                       # http://localhost:3000
+cp .env.example .env.local
+# Fill DATABASE_URL, then optionally add the public Supabase Realtime values.
+pnpm dev
 ```
 
-Incremental SQL migrations (RLS, grants, indexes) live in `drizzle/` and are applied manually. Full pipeline, schema, and architecture details live in [`docs/`](docs/).
+Open http://localhost:3000. A populated Supabase PostgreSQL database is required for product data.
+The repository intentionally has no one-command database reset/bootstrap: its committed SQL files
+are incremental and production-compatible, and `schema.ts` intentionally lags two live tables and
+one index. Do **not** run `drizzle-kit push` or `generate`; follow
+[`docs/DATABASE.md`](docs/DATABASE.md) and apply required SQL manually in a dedicated Supabase
+project. Ingest and model commands are documented in
+[`docs/DATA_PIPELINE.md`](docs/DATA_PIPELINE.md).
+
+### Validation
+
+```bash
+pnpm lint
+pnpm typecheck
+pnpm test:run
+pnpm build
+```
+
+Playwright is integration-style and requires the running app plus populated database:
+`pnpm test:e2e`.
 
 ---
 
@@ -148,4 +160,5 @@ docs/             # architecture, database, pipeline, API, frontend
 
 ---
 
-Built by **Michael Ju** ([@mhju0](https://github.com/mhju0)).
+Built by **Michael Ju** ([@mhju0](https://github.com/mhju0)). Licensed under the
+[MIT License](LICENSE).

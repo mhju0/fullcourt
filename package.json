@@ -9,6 +9,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "typecheck": "tsc --noEmit --incremental false",
     "test": "vitest",
     "test:run": "vitest run",
     "test:e2e": "playwright test",
@@ -39,6 +40,8 @@
       "unrs-resolver"
     ],
     "overrides": {
+      "@babel/core@<=7.29.0": "7.29.6",
+      "postcss@<8.5.10": "8.5.10",
       "ws@>=8.0.0 <8.21.0": ">=8.21.0"
     }
   },

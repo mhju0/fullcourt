@@ -39,8 +39,8 @@
 --          from pg_indexes
 --          where schemaname = 'public' and tablename = 'fatigue_scores';
 --        Expect a row: fatigue_scores_game_team_computed_idx.
---     4. after-EXPLAIN re-measurement is a SEPARATE session (out of scope here) —
---        the index does not exist in the DB until this file is applied.
+--     4. after-EXPLAIN re-measurement is recorded in
+--        docs/audit/tier3-explain-after.txt (the index was applied manually).
 
 CREATE INDEX CONCURRENTLY IF NOT EXISTS fatigue_scores_game_team_computed_idx
   ON public.fatigue_scores (game_id, team_id, computed_at DESC);

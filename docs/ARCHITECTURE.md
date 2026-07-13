@@ -126,8 +126,10 @@ Design system and component props in [FRONTEND.md](FRONTEND.md).
 - **Vercel cron** (`vercel.json`) hits `GET /api/cron/update` to refresh live scores, which
   then propagate to clients through Supabase Realtime (currently monthly in the offseason; the
   route does not season-gate).
-- **Vercel** auto-deploys from `main`. There is **no test/lint CI workflow** — Vitest +
-  Playwright run locally; the Vercel build runs `next build` (type-check) only.
+- **GitHub Actions** `ci.yml` runs frozen install, lint, strict type-check, Vitest, and the
+  production build on pushes to `main` and pull requests. Playwright remains local because it
+  requires a populated database.
+- **Vercel** auto-deploys from `main` after its own production build.
 
 Details in [TESTING_AND_CICD.md](TESTING_AND_CICD.md).
 
@@ -159,9 +161,9 @@ Realtime pushes the row change → connected clients update in place.
 - **Removed (2026-06-29):** the dead `/api/analysis/accuracy` endpoint and its orphaned query fns
   (`getResolvedPredictions`, `getUpcomingPredictionsForSeason`) + `Accuracy*` types — nothing else
   imported them, so the route + dead code were deleted rather than rewired.
-- **Versions (verified against code):** Next.js **16.2.1**, React **19.2.4**; the GitHub cron is
+- **Versions (verified against code):** Next.js **16.2.10**, React **19.2.4**; the GitHub cron is
   `0 21 * * *` (daily, year-round, season self-gated); live site
-  https://fullcourt-nba.vercel.app. README is in sync with these, and no `fetch_odds.ts` exists.
+  https://fullcourt-nba.vercel.app, and no `fetch_odds.ts` exists.
 - **Playoff Predictor (complete):** an additive, isolated module — see the subsection below and
   [ROADMAP.md](ROADMAP.md).
 - **Shot Quality (complete):** an additive, isolated module — see the subsection below and

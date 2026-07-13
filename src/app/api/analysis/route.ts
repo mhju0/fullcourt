@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 import { getPublicApiErrorMessage } from "@/lib/api-errors";
 import { getCompletedGamesWithFatigue } from "@/lib/db/queries";
 import type {
@@ -16,6 +17,9 @@ export const dynamic = "force-dynamic";
 
 const NEUTRAL_THRESHOLD = 0.5;
 const THRESHOLDS = [2, 3, 5, 7] as const;
+const QuerySchema = z.object({
+  seasonMinRA: z.coerce.number().finite().min(0).default(0),
+});
 
 /** Returns a win percentage (0–100, 1 decimal). */
 function winPct(wins: number, total: number): number {
@@ -131,7 +135,21 @@ function buildStats(rows: ProcessedRow[], seasonMinRA = 0): Omit<AnalysisRespons
 
 export async function GET(req: NextRequest): Promise<NextResponse<ApiResponse<AnalysisResponse>>> {
   const { searchParams } = new URL(req.url);
-  const seasonMinRA = Math.max(0, parseFloat(searchParams.get("seasonMinRA") ?? "0") || 0);
+  const parsed = QuerySchema.safeParse({
+    seasonMinRA: searchParams.get("seasonMinRA") ?? undefined,
+  });
+
+  if (!parsed.success) {
+    return NextResponse.json(
+      {
+        data: null as unknown as AnalysisResponse,
+        error: parsed.error.issues[0]?.message ?? "Invalid analysis parameters",
+      },
+      { status: 400 }
+    );
+  }
+
+  const { seasonMinRA } = parsed.data;
 
   try {
     const rows = await getCompletedGamesWithFatigue();

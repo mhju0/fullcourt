@@ -10,8 +10,8 @@
 --   • anon          — SELECT only (browser / supabase-js public reads)
 --   • service_role — full CRUD (API routes, scripts, server-side writes)
 --
--- Apply manually in the Supabase SQL editor when ready (do not assume
--- drizzle-kit push runs this file unless your workflow includes it).
+-- Apply manually in the Supabase SQL editor. Do not run drizzle-kit push/generate;
+-- schema.ts intentionally lags the live database.
 --
 -- When you add new public tables later, add matching GRANT lines in the same
 -- migration pattern so the Data API keeps working after Supabase’s deadline.
