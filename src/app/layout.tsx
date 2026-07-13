@@ -19,7 +19,7 @@ const outfit = Outfit({
 
 const SITE_URL = "https://fullcourt-nba.vercel.app";
 const SITE_DESC =
-  "FullCourt is an NBA analytics platform. Today it models rest and fatigue to surface each matchup's rest advantage, with more models on the way.";
+  "FullCourt is a completed NBA analytics portfolio project modeling rest advantage, playoff series probabilities, and location-based shot value.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),

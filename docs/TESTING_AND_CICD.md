@@ -8,6 +8,7 @@ pnpm test:run     # Vitest once (CI-style)
 pnpm test:e2e     # Playwright (auto-starts `pnpm dev`)
 pnpm test:e2e:ui  # Playwright UI mode
 pnpm lint         # eslint (flat config: next/core-web-vitals + next/typescript)
+pnpm typecheck    # strict TypeScript without emitting files
 pnpm build        # next build (type-checks as part of the build)
 ```
 
@@ -27,9 +28,12 @@ Test files and coverage:
 | `src/lib/__tests__/nba-season.test.ts` | `pickDefaultGamesDate` (today/postseason/October-start cases), `formatLocalDateKey` and `formatEasternDateKey` (US/Eastern, viewer-timezone-independent), `currentDisplaySeason`, and `isNbaOffSeason`. |
 | `src/lib/__tests__/rest-advantage-display.test.ts` | `formatRestAdvantageDisplay` team/neutral labeling + one-decimal formatting. |
 | `src/lib/__tests__/team-history.test.ts` | `getTeamBranding` historical eras (SEA/NJN/VAN/NOH/Bobcats/Bullets), current-era logos, fallback behavior. |
+| `src/lib/__tests__/fetcher.test.ts` | `apiFetcher` success envelopes, safe API errors, non-JSON HTTP failures, malformed envelopes. |
 | `src/app/api/__tests__/analysis.test.ts` | `GET /api/analysis` payload shape, percentage bounds, threshold ordering `[2,3,5,7]`, `seasonMinRA=7` filtering. Mocks `@/lib/db/queries`. |
 | `src/app/api/__tests__/games-dates.test.ts` | `GET /api/games/dates` Zod validation (missing/invalid season, invalid month) + query delegation. Mocks `@/lib/db/queries`. |
 | `src/app/api/__tests__/games.test.ts` | `GET /api/games/[date]` valid/invalid dates, empty results, `GameResponse` shape. Mocks `@/lib/db/queries`. |
+| `src/app/api/__tests__/games-search.test.ts` | `GET /api/games/search` defaults, validation, and query delegation. |
+| `src/app/api/__tests__/games-upcoming.test.ts` | `GET /api/games/upcoming` season/threshold validation and query delegation. |
 
 API route tests `vi.mock("@/lib/db/queries")`, so they exercise validation + response
 shaping without a real database. These should pass against the current code.
@@ -58,11 +62,14 @@ Config (`playwright.config.ts`): `testDir: ./e2e`, `baseURL: http://localhost:30
 >   section dividers "WIN RATE BY RA THRESHOLD", "HOME TEAM MORE RESTED", and
 >   "WIN RATE BY SEASON" (no `text-7xl` hero).
 
-Note a pre-existing lint/`tsc` caveat around `src/app/page.tsx`
-(`react-hooks/set-state-in-effect`). The earlier `e2e/home.spec.ts` `getByLabelText` typing
-issue is resolved — the specs now use Playwright's `getByLabel`.
-
 ## CI/CD
+
+### GitHub Actions — `.github/workflows/ci.yml`
+
+Pushes to `main` and pull requests run a non-DB quality gate on Node 22 with the repository's
+pinned pnpm: frozen install → lint → type-check → Vitest → production build. The workflow uses
+read-only repository permissions and cancels superseded runs. Playwright remains local because
+its integration-style specs require a populated database.
 
 ### GitHub Actions — `.github/workflows/daily-update.yml`
 
@@ -78,10 +85,9 @@ issue is resolved — the specs now use Playwright's `getByLabel`.
   it). `daily_update.py` shells out to `pnpm exec tsx scripts/run-daily.ts`, so both Node and
   Python toolchains are required in the runner.
 
-> **This is the only GitHub Actions workflow.** There is **no test/lint CI** — `pnpm test:run`,
-> `pnpm lint`, and Playwright are **not** run in CI; the only automated quality gate is the
-> Vercel build (`next build`, which type-checks). Run the suites locally. (The Playoff
-> Predictor scripts and the `ml/` directory likewise have no automated tests.)
+The data workflow is independent from `.github/workflows/ci.yml`; failures in ingestion do not
+disable the code-quality gate. Playwright, Playoff Predictor scripts, and the `ml/` pipeline are
+still verified on demand rather than in CI.
 
 ### Vercel cron — `vercel.json`
 
@@ -90,8 +96,8 @@ issue is resolved — the specs now use Playwright's `getByLabel`.
 ```
 
 - Current schedule **`0 10 1 * *`** = 10:00 UTC on the 1st of each month (offseason). Switch
-  to **`0 10 * * *`** (daily) in-season. JSON can't hold comments, so `CLAUDE.md` is the
-  source of truth for this.
+  to **`0 10 * * *`** (daily) in-season. `vercel.json` is the source of truth for the deployed
+  cadence; the season-rollover runbook explains when to change it.
 - The cron hits `GET /api/cron/update` with `Authorization: Bearer <CRON_SECRET>`; the route
   refreshes live scores from the NBA CDN and updates `games`, which Supabase Realtime pushes
   to clients. On Vercel Hobby, crons are limited to once per day.

@@ -37,6 +37,18 @@ describe("GET /api/analysis", () => {
     mockGetCompleted.mockReset();
   });
 
+  it.each(["?seasonMinRA=banana", "?seasonMinRA=-1", "?seasonMinRA=Infinity"])(
+    "returns 400 without querying for invalid parameters: %s",
+    async (search) => {
+      const res = await GET(makeReq(search));
+
+      expect(res.status).toBe(400);
+      expect(mockGetCompleted).not.toHaveBeenCalled();
+      const body = (await res.json()) as { error: string };
+      expect(body.error.length).toBeGreaterThan(0);
+    }
+  );
+
   it("returns 200 with the expected analysis payload shape", async () => {
     mockGetCompleted.mockResolvedValueOnce([
       row("2024-01-02", 4, 9, 110, 100),

@@ -3,10 +3,10 @@
 **Scope:** `fatigue_scores` double `DISTINCT ON`, live indexes, EXPLAIN of the
 `/api/analysis` read path, N+1, bundle. **Date:** 2026-07-03. **Model:** Opus 4.8.
 
-**Read-only:** no source/config/schema/index changes were made. The only writes are the
-files under `docs/audit/`. Index proposals below are **suggestions only — NOT applied**;
-they are gated to a future `0009` migration (manual SQL via the `fullcourt-migration`
-skill, with RLS/grant review).
+**Read-only:** no source/config/schema/index changes were made by the audit session. Sections
+1–5 preserve the original pre-index proposal wording. Section 6 records the later human-applied
+`0009` migration and its read-only after measurement; earlier “NOT applied” labels describe the
+state during the original audit, not the current database state.
 
 **Evidence files** (raw, cited by line):
 - `docs/audit/tier3-explain.txt` — Drizzle `.toSQL()` + `EXPLAIN (ANALYZE, BUFFERS, VERBOSE)` for 3 queries + row counts.

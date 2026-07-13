@@ -4,7 +4,7 @@ Read-only. No DB access. Live nba_api calls only.
 ======================================================================
 
 ## 1. Endpoint reality check
-nba_api module path: /Users/michaelju/Workspace/Projects/fullcourt/venv/lib/python3.11/site-packages/nba_api/__init__.py
+nba_api module: installed in the project virtual environment
 
 ShotChartDetail.__init__ ACTUAL parameters (name = default):
   team_id = <class 'inspect._empty'>

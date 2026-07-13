@@ -64,8 +64,11 @@ ml/shot_value/*.pkl
 .serena/
 
 # agent / local project memory
-# CLAUDE.md is local-only project memory (may contain machine-specific notes) — keep private
+# Agent notes and installed skills are local-only and may contain machine-specific context.
+AGENTS.md
 CLAUDE.md
+/.agents/
+/.codex/
 
 # Claude Code: publish OUR workflow assets, keep local + third-party out
 .claude/settings.local.json

@@ -6,6 +6,8 @@ import { db } from "@/lib/db";
 import { games } from "@/lib/db/schema";
 import { formatEasternDateKey } from "@/lib/nba-season";
 
+const SCOREBOARD_TIMEOUT_MS = 10_000;
+
 /** Drizzle + `postgres` need the Node.js runtime (not Edge). */
 export const runtime = "nodejs";
 
@@ -84,6 +86,7 @@ export async function GET(request: Request) {
     const response = await fetch(scoreboardUrl, {
       headers: { "User-Agent": "fullcourt/1.0" },
       next: { revalidate: 0 },
+      signal: AbortSignal.timeout(SCOREBOARD_TIMEOUT_MS),
     });
 
     if (!response.ok) {

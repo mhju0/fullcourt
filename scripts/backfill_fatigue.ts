@@ -16,9 +16,8 @@
  *
  * Prerequisite — `fatigue_scores` must include columns from `drizzle/0002_fatigue_schedule_road.sql`
  * (`games_in_last_30_days`, `road_trip_consecutive_away`, `is_three_in_four`, `is_four_in_six`,
- * `has_coast_to_coast_road_swing`). If inserts fail with "column does not exist", run:
- *   pnpm drizzle-kit push
- * or execute that SQL file in the Supabase SQL editor against the same DATABASE_URL.
+ * `has_coast_to_coast_road_swing`). If inserts fail with "column does not exist", execute that
+ * migration file manually in the Supabase SQL editor against the same DATABASE_URL.
  */
 
 import { and, asc, between, eq, isNull, sql } from "drizzle-orm";
@@ -58,7 +57,7 @@ async function assertFatigueScoresSchema(appDb: AppDb): Promise<void> {
   if (missing.length > 0) {
     console.error(
       "[backfill] fatigue_scores is missing column(s): %s\n" +
-        "Apply migration drizzle/0002_fatigue_schedule_road.sql or run: pnpm drizzle-kit push\n" +
+        "Apply migration drizzle/0002_fatigue_schedule_road.sql in the Supabase SQL editor.\n" +
         "(Uses DATABASE_URL from .env.local — same DB the backfill targets.)",
       missing.join(", ")
     );

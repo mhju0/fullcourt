@@ -1,32 +1,56 @@
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 import { getPublicApiErrorMessage } from "@/lib/api-errors";
 import { searchRegularSeasonGames } from "@/lib/db/queries";
+import { NBA_SEASONS } from "@/lib/nba-season";
 import type { ApiResponse, GameSearchResponse, GameSearchResult } from "@/types";
 
 const DEFAULT_LIMIT = 20;
 const MAX_LIMIT = 100;
 const NEUTRAL_THRESHOLD = 0.5;
 
+const QuerySchema = z.object({
+  minRA: z.coerce.number().finite().min(0).default(0),
+  team: z.string().regex(/^[A-Z]{2,3}$/, "Team must be a 2-3 letter abbreviation").optional(),
+  season: z.string().refine((value) => NBA_SEASONS.includes(value), {
+    message: "Invalid season",
+  }).optional(),
+  result: z.enum(["all", "correct", "incorrect"]).default("all"),
+  page: z.coerce.number().int().min(1).default(1),
+  limit: z.coerce.number().int().min(1).max(MAX_LIMIT).default(DEFAULT_LIMIT),
+});
+
 export async function GET(
   req: NextRequest
 ): Promise<NextResponse<ApiResponse<GameSearchResponse>>> {
   const { searchParams } = req.nextUrl;
 
-  const minRA = parseFloat(searchParams.get("minRA") ?? "0") || 0;
-  const team = searchParams.get("team") ?? "";
-  const season = searchParams.get("season") ?? "";
-  const result = searchParams.get("result") ?? "all"; // "all" | "correct" | "incorrect"
-  const page = Math.max(1, parseInt(searchParams.get("page") ?? "1", 10));
-  const limit = Math.min(
-    MAX_LIMIT,
-    Math.max(1, parseInt(searchParams.get("limit") ?? String(DEFAULT_LIMIT), 10))
-  );
+  const parsed = QuerySchema.safeParse({
+    minRA: searchParams.get("minRA") ?? undefined,
+    team: searchParams.get("team") ?? undefined,
+    season: searchParams.get("season") ?? undefined,
+    result: searchParams.get("result") ?? undefined,
+    page: searchParams.get("page") ?? undefined,
+    limit: searchParams.get("limit") ?? undefined,
+  });
+
+  if (!parsed.success) {
+    return NextResponse.json(
+      {
+        data: { games: [], total: 0, page: 1, limit: DEFAULT_LIMIT },
+        error: parsed.error.issues[0]?.message ?? "Invalid search parameters",
+      },
+      { status: 400 }
+    );
+  }
+
+  const { minRA, team, season, result, page, limit } = parsed.data;
 
   try {
     const rows = await searchRegularSeasonGames({
       minRA: minRA > 0 ? minRA : undefined,
-      team: team || undefined,
-      season: season || undefined,
+      team,
+      season,
     });
 
     // Compute rest advantage and outcome for each row
