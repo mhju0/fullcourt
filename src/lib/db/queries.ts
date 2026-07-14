@@ -16,6 +16,11 @@ import {
   monthCalendarBounds,
   regularSeasonDateBounds,
 } from "@/lib/nba-season";
+import {
+  classifyRestAdvantage,
+  type HistoricalGameEvidenceRow,
+  type HistoricalGameSearchRow,
+} from "@/lib/rest-advantage-evidence";
 import type {
   FatigueInfo,
   GameDateCount,
@@ -30,8 +35,6 @@ import type {
   TeamRecentResultGame,
   UpcomingGameWithRA,
 } from "@/types";
-
-const NEUTRAL_THRESHOLD = 0.5;
 
 /** One fatigue row per (game, team), preferring the most recently computed. */
 function latestFatigueSubquery(alias: string) {
@@ -547,20 +550,11 @@ export async function getRegularSeasonGameDatesWithCounts(
 
 // ─── Analysis query ─────────────────────────────────────────────
 
-type CompletedGameRow = {
-  date: string;
-  season: string;
-  homeScore: number | null;
-  awayScore: number | null;
-  homeFatigueScore: string;
-  awayFatigueScore: string;
-};
-
 /**
  * Returns all final games that have fatigue scores computed for both teams.
  * Only the fields needed for analysis are selected to keep the payload lean.
  */
-export async function getCompletedGamesWithFatigue(): Promise<CompletedGameRow[]> {
+export async function getCompletedGamesWithFatigue(): Promise<HistoricalGameEvidenceRow[]> {
   const homeFatigue = latestFatigueSubquery("home_fatigue_latest");
   const awayFatigue = latestFatigueSubquery("away_fatigue_latest");
 
@@ -601,24 +595,14 @@ type SearchFilters = {
   season?: string; // "YYYY-YY"
 };
 
-type SearchRow = {
-  id: number;
-  date: string;
-  season: string;
-  homeTeamAbbr: string;
-  awayTeamAbbr: string;
-  homeScore: number | null;
-  awayScore: number | null;
-  homeFatigueScore: string;
-  awayFatigueScore: string;
-};
-
 /**
  * Returns final regular-season games matching the given filters, newest first.
  * Result filtering (correct/incorrect) and pagination are done by the caller
  * after computing restedTeamWon in JavaScript.
  */
-export async function searchRegularSeasonGames(filters: SearchFilters): Promise<SearchRow[]> {
+export async function searchRegularSeasonGames(
+  filters: SearchFilters
+): Promise<HistoricalGameSearchRow[]> {
   const homeTeam = alias(teams, "home_team");
   const awayTeam = alias(teams, "away_team");
   const homeFatigue = latestFatigueSubquery("home_fatigue_latest");
@@ -749,19 +733,7 @@ function buildRestAdvantage(
   away: FatigueInfo | null
 ): RestAdvantage | null {
   if (home === null || away === null) return null;
-
-  const differential = away.score - home.score;
-  let advantageTeam: RestAdvantage["advantageTeam"];
-
-  if (differential > NEUTRAL_THRESHOLD) {
-    advantageTeam = "home";
-  } else if (differential < -NEUTRAL_THRESHOLD) {
-    advantageTeam = "away";
-  } else {
-    advantageTeam = "neutral";
-  }
-
-  return { differential, advantageTeam };
+  return classifyRestAdvantage(home.score, away.score);
 }
 
 // ─── Upcoming games with rest advantage ─────────────────────────
