@@ -4,6 +4,10 @@ import { eq, and, inArray } from "drizzle-orm";
 import { getPublicApiErrorMessage } from "@/lib/api-errors";
 import { db } from "@/lib/db";
 import { games } from "@/lib/db/schema";
+import {
+  reconcileLiveScores,
+  type NbaScoreboard,
+} from "@/lib/live-score-sync";
 import { formatEasternDateKey } from "@/lib/nba-season";
 
 const SCOREBOARD_TIMEOUT_MS = 10_000;
@@ -62,6 +66,8 @@ export async function GET(request: Request) {
         id: games.id,
         externalId: games.externalId,
         status: games.status,
+        homeScore: games.homeScore,
+        awayScore: games.awayScore,
       })
       .from(games)
       .where(
@@ -106,40 +112,21 @@ export async function GET(request: Request) {
     const scoreboard = (await response.json()) as NbaScoreboard;
     const nbaGames = scoreboard.scoreboard.games;
 
-    let gamesUpdated = 0;
+    const updates = reconcileLiveScores(gamesToCheck, nbaGames);
 
-    for (const dbGame of gamesToCheck) {
-      const dbId = normalizeStatsGameId(dbGame.externalId);
-      const nbaGame = nbaGames.find(
-        (g) => normalizeStatsGameId(g.gameId) === dbId
-      );
-
-      if (!nbaGame) continue;
-
-      const newStatus = mapGameStatus(nbaGame.gameStatus);
-      const homeScore = nbaGame.homeTeam.score;
-      const awayScore = nbaGame.awayTeam.score;
-
-      // Only update if something changed
-      if (
-        newStatus !== dbGame.status ||
-        (newStatus !== "scheduled" && (homeScore > 0 || awayScore > 0))
-      ) {
-        await db
-          .update(games)
-          .set({
-            status: newStatus,
-            homeScore: homeScore > 0 ? homeScore : null,
-            awayScore: awayScore > 0 ? awayScore : null,
-          })
-          .where(eq(games.id, dbGame.id));
-
-        gamesUpdated++;
-      }
+    for (const update of updates) {
+      await db
+        .update(games)
+        .set({
+          status: update.status,
+          homeScore: update.homeScore,
+          awayScore: update.awayScore,
+        })
+        .where(eq(games.id, update.gameId));
     }
 
     return NextResponse.json({
-      data: { gamesUpdated },
+      data: { gamesUpdated: updates.length },
       error: null,
       meta: {
         checkedGames: gamesToCheck.length,
@@ -158,22 +145,6 @@ export async function GET(request: Request) {
   }
 }
 
-// ─── NBA API types ──────────────────────────────────────────────
-
-interface NbaScoreboard {
-  scoreboard: {
-    games: NbaGame[];
-  };
-}
-
-interface NbaGame {
-  gameId: string;
-  /** 1 = scheduled, 2 = live, 3 = final */
-  gameStatus: number;
-  homeTeam: { score: number };
-  awayTeam: { score: number };
-}
-
 /**
  * Constant-time string compare for the cron bearer token, so a rejected request
  * can't leak the secret byte-by-byte via response timing. Comparing lengths first
@@ -184,25 +155,4 @@ function constantTimeEqual(a: string, b: string): boolean {
   const bb = Buffer.from(b);
   if (ab.length !== bb.length) return false;
   return timingSafeEqual(ab, bb);
-}
-
-/** Align scoreboard `gameId` with DB `external_id` (zero-padded 10-digit stats id). */
-function normalizeStatsGameId(id: string): string {
-  const s = String(id).trim();
-  if (/^\d+$/.test(s) && s.length < 10) {
-    return s.padStart(10, "0");
-  }
-  return s;
-}
-
-/** Maps NBA API gameStatus code to our internal status string. */
-function mapGameStatus(nbaStatus: number): string {
-  switch (nbaStatus) {
-    case 2:
-      return "live";
-    case 3:
-      return "final";
-    default:
-      return "scheduled";
-  }
 }
