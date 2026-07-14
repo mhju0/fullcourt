@@ -13,7 +13,8 @@ the actual code (`src/app/`, `src/components/`, `src/app/globals.css`).
 - Layout: `<NavBar />` (sticky), `<main>` with a centered `max-w-7xl` container
   (`px-4 py-8 sm:px-6`), and a footer (`var(--term-surface-2)` bg, top border
   `var(--term-border)`) showing `RENDERED: <ts> UTC · SYSTEM STATUS` (the latter a link to
-  `/api/health`) and `BUILT BY MJ · SOURCE` (two links → the author's GitHub and the repo).
+  `/api/health`) and `GUIDE · BUILT BY MJ · SOURCE` (two links → the author's GitHub and the
+  repo). `GUIDE` opens the client-side first-visit onboarding dialog at any time.
   `renderedAt` is `new Date().toISOString()` truncated to the minute at render time — the
   **render** time, explicitly **not** data/pipeline freshness (live health lives behind the
   SYSTEM STATUS link).
@@ -91,10 +92,21 @@ recovery links to Today's Games and Analysis without adding a client bundle or d
    `src/lib/nba-season.ts`, not a hardcoded label) plus an amber LIVE dot gated by
    `HAS_LIVE_GAMES` (**hardcoded `false`**).
 2. **Main nav** (44px, `var(--term-surface)`, bottom border `var(--term-border)`): links from
-   `NAV_LINKS` — `TODAY'S GAMES → /`, `ANALYSIS → /analysis`, `PICKS → /upcoming`,
+   `PRIMARY_NAV_ITEMS` (`src/lib/primary-navigation.ts`) — `TODAY'S GAMES → /`, `ANALYSIS → /analysis`, `PICKS → /upcoming`,
    `PLAYOFFS → /playoffs`, `SHOT QUALITY → /shot-quality`. The active link gets an amber
    bottom border (`border-[var(--term-amber)]`) + `text-[var(--term-text)]` and carries
    `aria-current="page"`; inactive links are muted with a hover-to-text transition.
+
+### `onboarding-guide.tsx`
+
+Client-side, first-visit orientation dialog implemented with Base UI `Dialog`. On mount it reads
+the versioned `localStorage` flag `fullcourt:onboarding:v1`; new visitors see the dialog, while
+returning visitors see the unobtrusive `GUIDE` footer control. It explains the five routes from
+the shared `PRIMARY_NAV_ITEMS` source, with page links that dismiss the dialog and navigate.
+Close, backdrop, Escape, and `START EXPLORING` all persist the completion flag; if browser storage
+is unavailable, the guide still closes for the current page. The responsive panel is centered on
+desktop and becomes a scrollable bottom sheet on mobile. Base UI provides the modal semantics,
+focus trap, dismissal, and trigger-focus restoration.
 
 ### `matchup-card.tsx` — the core matchup row (broadcast/dark style)
 

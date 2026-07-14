@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Outfit } from "next/font/google";
 import { NavBar } from "@/components/nav-bar";
+import { OnboardingGuide } from "@/components/onboarding-guide";
 import "./globals.css";
 
 const inter = Inter({
@@ -84,6 +85,8 @@ export default function RootLayout({
               </a>
             </span>
             <span style={{ fontSize: "10px", color: "var(--term-text-muted)", letterSpacing: "0.04em" }}>
+              <OnboardingGuide />
+              {" · "}
               <a
                 href="https://github.com/mhju0"
                 target="_blank"

@@ -53,7 +53,10 @@ database for this check.
 Config (`playwright.config.ts`): `testDir: ./e2e`, `baseURL: http://localhost:3000`,
 `chromium` only, `fullyParallel`, reporters `list` + `html` (no auto-open). `webServer` runs
 `pnpm dev` (reuses an existing server unless `CI`); in CI `retries: 2`, `workers: 1`,
-`forbidOnly`. Specs: `e2e/home.spec.ts`, `e2e/analysis.spec.ts`, `e2e/navigation.spec.ts`.
+`forbidOnly`. Existing specs receive a completed onboarding storage state so the first-visit
+dialog cannot block their legacy interactions; `e2e/onboarding.spec.ts` overrides that state with
+an empty browser. Specs: `e2e/home.spec.ts`, `e2e/analysis.spec.ts`, `e2e/navigation.spec.ts`,
+`e2e/onboarding.spec.ts`.
 
 > **The e2e specs target the current terminal UI** (they are **not** stale — they assert the live
 > markup, including the `Today's Matchups` / `Rest Advantage Analysis` headings and the
@@ -71,6 +74,9 @@ Config (`playwright.config.ts`): `testDir: ./e2e`, `baseURL: http://localhost:30
 > - **`analysis.spec.ts`** — terminal markup: heading "Rest Advantage Analysis" plus the
 >   section dividers "WIN RATE BY RA THRESHOLD", "HOME TEAM MORE RESTED", and
 >   "WIN RATE BY SEASON" (no `text-7xl` hero).
+> - **`onboarding.spec.ts`** — a fresh browser sees all five page explanations; closing the
+>   guide persists through reload, the `GUIDE` footer control reopens it, and Escape restores
+>   focus to that control.
 
 ## CI/CD
 
