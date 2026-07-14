@@ -45,6 +45,10 @@ if _SCRIPTS_DIR not in sys.path:
     sys.path.insert(0, _SCRIPTS_DIR)
 
 from fetch_schedule import load_team_id_map, normalize_abbr, normalize_stats_game_id
+from schedule_upsert_contract import (
+    CDN_SCHEDULE_UPSERT_POLICY,
+    build_schedule_upsert_sql,
+)
 
 CDN_URL = "https://cdn.nba.com/static/json/staticData/scheduleLeagueV2.json"
 
@@ -54,20 +58,7 @@ ET = ZoneInfo("America/New_York")
 # never overwrite existing scores with NULL (CDN may lack scores for in-progress games).
 # `date` IS updated — the CDN schedule is the source of truth for when a game is
 # played (ET), and this self-heals rows stored with the old UTC-date convention.
-UPSERT_SQL = """
-INSERT INTO games (
-    external_id, date, season,
-    home_team_id, away_team_id,
-    home_score, away_score, status,
-    overtime_periods, game_type
-)
-VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-ON CONFLICT (external_id) DO UPDATE SET
-    date       = EXCLUDED.date,
-    home_score = COALESCE(EXCLUDED.home_score, games.home_score),
-    away_score = COALESCE(EXCLUDED.away_score, games.away_score),
-    status     = CASE WHEN games.status = 'final' THEN games.status ELSE EXCLUDED.status END;
-"""
+UPSERT_SQL = build_schedule_upsert_sql(CDN_SCHEDULE_UPSERT_POLICY)
 
 
 @dataclass(frozen=True)

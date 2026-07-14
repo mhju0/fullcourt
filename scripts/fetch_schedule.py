@@ -46,6 +46,10 @@ if _SCRIPTS_DIR not in sys.path:
     sys.path.insert(0, _SCRIPTS_DIR)
 
 from nba_ot_periods import fetch_overtime_periods
+from schedule_upsert_contract import (
+    STATS_SCHEDULE_UPSERT_POLICY,
+    build_schedule_upsert_sql,
+)
 from season_window import current_season_start_year
 
 _scripts_env = Path(__file__).parent / ".env"
@@ -351,21 +355,7 @@ def upsert_game_records(conn, records: list[tuple]) -> int:
     return len(unique)
 
 
-INSERT_SQL = """
-INSERT INTO games (
-    external_id, date, season,
-    home_team_id, away_team_id,
-    home_score, away_score, status,
-    overtime_periods, game_type
-)
-VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-ON CONFLICT (external_id) DO UPDATE SET
-    home_score = EXCLUDED.home_score,
-    away_score = EXCLUDED.away_score,
-    status = EXCLUDED.status,
-    overtime_periods = EXCLUDED.overtime_periods,
-    game_type = EXCLUDED.game_type;
-"""
+INSERT_SQL = build_schedule_upsert_sql(STATS_SCHEDULE_UPSERT_POLICY)
 
 
 def main() -> None:
