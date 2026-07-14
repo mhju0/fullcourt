@@ -66,15 +66,21 @@ Python pulls schedules/scores/OT and writes rows into `games` (and `teams`). The
 orchestrator `daily_update.py` is the GitHub Actions entry point; it seeds the CDN
 schedule, upserts a rolling `[today−7, today+60]` window from `nba_api`, refreshes OT for
 recent finals, then shells out to the TypeScript modeling step. Full per-script detail in
-[DATA_PIPELINE.md](DATA_PIPELINE.md).
+[DATA_PIPELINE.md](DATA_PIPELINE.md). `schedule_upsert_contract.py` explicitly records the
+two source-authority policies: CDN data may repair ET game dates while preserving final
+results; Stats API data refreshes scores/status/OT/game type without moving game dates.
 
 ### 3. Modeling (TypeScript via `tsx`, `scripts/` + `src/lib/`)
 
-Fatigue math lives **only** in `src/lib/fatigue.ts` (`calculateFatigue`,
-`calculateRestAdvantage`) and is reused by every writer so Python never duplicates it:
+Fatigue math lives **only** in `src/lib/fatigue.ts` and is reused by every writer so Python
+never duplicates it. `src/lib/rest-advantage-evidence.ts` is the canonical boundary and
+historical-evidence layer (`|RA| < 0.5` is neutral; exactly `±0.5` is decisive):
 
 - `run-daily.ts` — recomputes `fatigue_scores` for a `[date, date+14]` window and
-  regenerates **open** (ungraded) predictions for scheduled games.
+  regenerates **open** (ungraded) predictions for scheduled games through
+  `src/lib/daily-refresh.ts`. Each game's two fatigue rows and optional prediction are
+  replaced in one transaction after computation succeeds; a failed game keeps its prior
+  rows while later games still run, and the process reports failure after the batch.
 - `backfill_fatigue.ts` — bulk/idempotent fatigue computation (chronological; `--force`
   wipes and recomputes all).
 - `backfill_predictions.ts` — retroactively inserts **resolved** predictions for finished
@@ -126,9 +132,9 @@ Design system and component props in [FRONTEND.md](FRONTEND.md).
 - **Vercel cron** (`vercel.json`) hits `GET /api/cron/update` to refresh live scores, which
   then propagate to clients through Supabase Realtime (currently monthly in the offseason; the
   route does not season-gate).
-- **GitHub Actions** `ci.yml` runs frozen install, lint, strict type-check, Vitest, and the
-  production build on pushes to `main` and pull requests. Playwright remains local because it
-  requires a populated database.
+- **GitHub Actions** `ci.yml` runs frozen install, lint, strict type-check, Vitest, the
+  import-light Python schedule-contract tests, and the production build on pushes to `main`
+  and pull requests. Playwright remains local because it requires a populated database.
 - **Vercel** auto-deploys from `main` after its own production build.
 
 Details in [TESTING_AND_CICD.md](TESTING_AND_CICD.md).
@@ -141,14 +147,17 @@ Details in [TESTING_AND_CICD.md](TESTING_AND_CICD.md).
 `fatigue_scores`, computes `restAdvantage`) → `MatchupCard` list → `useLiveGames`
 subscribes to `games` UPDATE events and merges score/status changes.
 
-**Live score cron:** Vercel → `GET /api/cron/update` (Bearer `CRON_SECRET`) → query
-today's scheduled/live games → fetch NBA CDN scoreboard → `UPDATE games` on change → Supabase
-Realtime pushes the row change → connected clients update in place.
+**Live score cron:** Vercel → `GET /api/cron/update` (Bearer `CRON_SECRET`) → query today's
+scheduled/live games with stored scores → fetch NBA CDN scoreboard →
+`reconcileLiveScores` returns only changed rows → `UPDATE games` → Supabase Realtime pushes
+the row change → connected clients update in place.
 
 ## Notable architectural decisions & current discrepancies
 
 - **Single source of fatigue math** in `src/lib/fatigue.ts`, shared by API reads and all
   pipeline writers.
+- **Single rest-advantage evidence contract** in `src/lib/rest-advantage-evidence.ts`, shared
+  by analysis, game search, API matchup reads, and resolved/open prediction writers.
 - **Lazy DB proxy** so importing `@/lib/db` during build is side-effect-free.
 - **Regular-season calendar guard** (`gameDateWithinRegularSeasonCalendar` in `queries.ts`)
   re-filters by Oct 1–Apr 30 even though ingest already excludes non-`002` IDs, defending
