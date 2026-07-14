@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { getPublicApiErrorMessage } from "@/lib/api-errors";
-import { searchRegularSeasonGames } from "@/lib/db/queries";
 import { NBA_SEASONS } from "@/lib/nba-season";
-import { buildHistoricalGameSearch } from "@/lib/rest-advantage-evidence";
+import { searchHistoricalGameEvidence } from "@/lib/rest-advantage-evidence-server";
 import type { ApiResponse, GameSearchResponse } from "@/types";
 
 const DEFAULT_LIMIT = 20;
@@ -46,14 +45,17 @@ export async function GET(
   const { minRA, team, season, result, page, limit } = parsed.data;
 
   try {
-    const rows = await searchRegularSeasonGames({
+    const data = await searchHistoricalGameEvidence({
       minRA: minRA > 0 ? minRA : undefined,
       team,
       season,
+      result,
+      page,
+      limit,
     });
 
     return NextResponse.json({
-      data: buildHistoricalGameSearch(rows, { result, page, limit }),
+      data,
       error: null,
     });
   } catch (err) {
