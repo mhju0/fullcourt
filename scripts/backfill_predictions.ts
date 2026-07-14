@@ -18,10 +18,9 @@ import type { PostgresJsDatabase } from "drizzle-orm/postgres-js";
 import type * as Schema from "@/lib/db/schema";
 import { fatigueScores, games, predictions } from "@/lib/db/schema";
 import { loadEnvLocal } from "@/lib/load-env-local";
+import { classifyRestAdvantage } from "@/lib/rest-advantage-evidence";
 
 type AppDb = PostgresJsDatabase<typeof Schema>;
-
-const NEUTRAL_THRESHOLD = 0.5;
 
 async function main(): Promise<void> {
   loadEnvLocal();
@@ -91,18 +90,17 @@ async function main(): Promise<void> {
       const homeFat = parseFloat(game.homeFatigueScore);
       const awayFat = parseFloat(game.awayFatigueScore);
 
-      // differential = awayFatigue - homeFatigue
-      // positive → home team is more rested (lower fatigue)
-      const differential = awayFat - homeFat;
-
-      if (Math.abs(differential) < NEUTRAL_THRESHOLD) {
+      const restAdvantage = classifyRestAdvantage(homeFat, awayFat);
+      if (restAdvantage.advantageTeam === "neutral") {
         skippedNeutral++;
         continue;
       }
 
       // Predicted winner = the team with LOWER fatigue (more rested)
       const predictedTeamId =
-        differential >= 0 ? game.homeTeamId : game.awayTeamId;
+        restAdvantage.advantageTeam === "home"
+          ? game.homeTeamId
+          : game.awayTeamId;
 
       // Actual winner
       const homeScore = game.homeScore as number;
@@ -114,7 +112,9 @@ async function main(): Promise<void> {
       await appDb.insert(predictions).values({
         gameId: game.id,
         predictedAdvantageTeamId: predictedTeamId,
-        restAdvantageDifferential: String(Math.round(differential * 100) / 100),
+        restAdvantageDifferential: String(
+          Math.round(restAdvantage.differential * 100) / 100
+        ),
         actualWinnerId,
         createdAt: new Date(game.date),
       });
