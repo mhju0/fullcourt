@@ -4,15 +4,8 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { CourtMark } from "@/components/court-mark"
 import { currentDisplaySeason } from "@/lib/nba-season"
+import { PRIMARY_NAV_ITEMS } from "@/lib/primary-navigation"
 import { cn } from "@/lib/utils"
-
-const NAV_LINKS = [
-  { href: "/", label: "TODAY'S GAMES" },
-  { href: "/analysis", label: "ANALYSIS" },
-  { href: "/upcoming", label: "PICKS" },
-  { href: "/playoffs", label: "PLAYOFFS" },
-  { href: "/shot-quality", label: "SHOT QUALITY" },
-] as const
 
 // Hardcoded for now — wire to "are there games today" later.
 const HAS_LIVE_GAMES = false
@@ -75,7 +68,7 @@ export function NavBar() {
         aria-label="Main navigation"
       >
         <div className="mx-auto flex h-full max-w-7xl items-center gap-6 px-4 sm:px-6">
-          {NAV_LINKS.map(({ href, label }) => {
+          {PRIMARY_NAV_ITEMS.map(({ href, label }) => {
             const active = isActive(pathname, href)
             return (
               <Link
