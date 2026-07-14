@@ -74,7 +74,8 @@ results; Stats API data refreshes scores/status/OT/game type without moving game
 
 Fatigue math lives **only** in `src/lib/fatigue.ts` and is reused by every writer so Python
 never duplicates it. `src/lib/rest-advantage-evidence.ts` is the canonical boundary and
-historical-evidence layer (`|RA| < 0.5` is neutral; exactly `±0.5` is decisive):
+historical-evidence core (`|RA| < 0.5` is neutral; exactly `±0.5` is decisive), while
+`rest-advantage-evidence-server.ts` owns the complete DB-backed operations used by routes:
 
 - `run-daily.ts` — recomputes `fatigue_scores` for a `[date, date+14]` window and
   regenerates **open** (ungraded) predictions for scheduled games through
@@ -106,7 +107,7 @@ cached on `globalThis` to survive HMR/serverless reuse.
 
 ### 5. API (Next.js route handlers, `src/app/api/`)
 
-Nine `route.ts` handlers, all `GET`, all returning `{ data, error }` (cron adds `meta`).
+Ten `route.ts` handlers, all `GET`, all returning `{ data, error }` (cron adds `meta`).
 Inputs validated with Zod; DB access goes through `src/lib/db/queries.ts`. DB-backed routes
 set `export const runtime = "nodejs"` and `dynamic = "force-dynamic"` to avoid build-time
 prerender and Edge (postgres-js needs Node). Full list in [API.md](API.md).

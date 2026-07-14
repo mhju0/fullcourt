@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { getPublicApiErrorMessage } from "@/lib/api-errors";
-import { getCompletedGamesWithFatigue } from "@/lib/db/queries";
-import { buildHistoricalBacktest } from "@/lib/rest-advantage-evidence";
+import { getHistoricalBacktest } from "@/lib/rest-advantage-evidence-server";
 import type { AnalysisResponse, ApiResponse } from "@/types";
 
 export const runtime = "nodejs";
@@ -33,8 +32,7 @@ export async function GET(req: NextRequest): Promise<NextResponse<ApiResponse<An
   const { seasonMinRA } = parsed.data;
 
   try {
-    const rows = await getCompletedGamesWithFatigue();
-    const response = buildHistoricalBacktest(rows, seasonMinRA);
+    const response = await getHistoricalBacktest(seasonMinRA);
 
     return NextResponse.json({ data: response, error: null });
   } catch (err) {

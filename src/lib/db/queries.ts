@@ -18,6 +18,7 @@ import {
 } from "@/lib/nba-season";
 import {
   classifyRestAdvantage,
+  NEUTRAL_REST_ADVANTAGE_THRESHOLD,
   type HistoricalGameEvidenceRow,
   type HistoricalGameSearchRow,
 } from "@/lib/rest-advantage-evidence";
@@ -619,7 +620,7 @@ export async function searchRegularSeasonGames(
     // Exclude them in SQL so an unfiltered search doesn't scan+join ~all ~46k
     // regular games only to drop half of them in JS. A higher minRA below raises
     // this floor further.
-    sql`abs(cast(${awayFatigue.score} as numeric) - cast(${homeFatigue.score} as numeric)) >= 0.5`,
+    sql`abs(cast(${awayFatigue.score} as numeric) - cast(${homeFatigue.score} as numeric)) >= ${NEUTRAL_REST_ADVANTAGE_THRESHOLD}`,
   ];
 
   if (filters.season) {
