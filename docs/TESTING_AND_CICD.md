@@ -10,6 +10,8 @@ pnpm test:e2e:ui  # Playwright UI mode
 pnpm lint         # eslint (flat config: next/core-web-vitals + next/typescript)
 pnpm typecheck    # strict TypeScript without emitting files
 pnpm build        # next build (type-checks as part of the build)
+python3 -m unittest discover -s scripts/tests -p 'test_*.py' -v
+                   # import-light Python ingestion contract tests
 ```
 
 ## Unit tests — Vitest
@@ -29,6 +31,9 @@ Test files and coverage:
 | `src/lib/__tests__/rest-advantage-display.test.ts` | `formatRestAdvantageDisplay` team/neutral labeling + one-decimal formatting. |
 | `src/lib/__tests__/team-history.test.ts` | `getTeamBranding` historical eras (SEA/NJN/VAN/NOH/Bobcats/Bullets), current-era logos, fallback behavior. |
 | `src/lib/__tests__/fetcher.test.ts` | `apiFetcher` success envelopes, safe API errors, non-JSON HTTP failures, malformed envelopes. |
+| `src/lib/__tests__/rest-advantage-evidence.test.ts` | Canonical neutral boundary, historical backtest aggregation, game-explorer outcome filtering/pagination. |
+| `src/lib/__tests__/live-score-sync.test.ts` | Scoreboard ID/status normalization and changed-row-only reconciliation. |
+| `src/lib/__tests__/daily-refresh.test.ts` | Per-game failure isolation/continuation and neutral open-prediction replacement. |
 | `src/app/api/__tests__/analysis.test.ts` | `GET /api/analysis` payload shape, percentage bounds, threshold ordering `[2,3,5,7]`, `seasonMinRA=7` filtering. Mocks `@/lib/db/queries`. |
 | `src/app/api/__tests__/games-dates.test.ts` | `GET /api/games/dates` Zod validation (missing/invalid season, invalid month) + query delegation. Mocks `@/lib/db/queries`. |
 | `src/app/api/__tests__/games.test.ts` | `GET /api/games/[date]` valid/invalid dates, empty results, `GameResponse` shape. Mocks `@/lib/db/queries`. |
@@ -37,6 +42,11 @@ Test files and coverage:
 
 API route tests `vi.mock("@/lib/db/queries")`, so they exercise validation + response
 shaping without a real database. These should pass against the current code.
+
+The stdlib `unittest` suite at `scripts/tests/test_schedule_upsert_contract.py` characterizes
+the intentional source-authority split between CDN schedule rows and Stats API result rows.
+It imports only `schedule_upsert_contract.py`, so CI does not need pipeline dependencies or a
+database for this check.
 
 ## End-to-end tests — Playwright
 
@@ -66,10 +76,11 @@ Config (`playwright.config.ts`): `testDir: ./e2e`, `baseURL: http://localhost:30
 
 ### GitHub Actions — `.github/workflows/ci.yml`
 
-Pushes to `main` and pull requests run a non-DB quality gate on Node 22 with the repository's
-pinned pnpm: frozen install → lint → type-check → Vitest → production build. The workflow uses
-read-only repository permissions and cancels superseded runs. Playwright remains local because
-its integration-style specs require a populated database.
+Pushes to `main` and pull requests run a non-DB quality gate on Node 22 and Python 3.11 with
+the repository's pinned pnpm: frozen install → lint → type-check → Vitest → Python schedule
+contract tests → production build. The workflow uses read-only repository permissions and
+cancels superseded runs. Playwright remains local because its integration-style specs require
+a populated database.
 
 ### GitHub Actions — `.github/workflows/daily-update.yml`
 

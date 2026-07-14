@@ -32,6 +32,11 @@ jobs:
           node-version: "22"
           cache: "pnpm"
 
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
@@ -43,6 +48,9 @@ jobs:
 
       - name: Run unit tests
         run: pnpm test:run
+
+      - name: Run schedule contract tests
+        run: python -m unittest discover -s scripts/tests -p 'test_*.py' -v
 
       - name: Build production app
         run: pnpm build

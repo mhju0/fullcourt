@@ -43,6 +43,8 @@ Steps:
 - `get_game_type` tags `finals` (`004` prefix + month ≥ 6) / `playoffs` (`004`) / `regular`.
 - Upsert: `INSERT … ON CONFLICT (external_id) DO UPDATE` refreshing `home_score`,
   `away_score`, `status`, `overtime_periods`, `game_type`.
+- Conflict behavior comes from the import-light `schedule_upsert_contract.py` Stats policy;
+  unlike the CDN policy, this result source does not reassign `games.date`.
 - `API_DELAY_SECONDS = 1`. `NBA_SEED_SKIP_OT=1` skips BoxScore OT (OT stays 0; much faster).
 - Also exports the date-range helpers (`fetch_league_df_date_range`,
   `pair_games_from_date_range_df`, `upsert_game_records`) reused by `daily_update.py`.
@@ -59,6 +61,9 @@ Steps:
   `home_score = COALESCE(EXCLUDED.home_score, games.home_score)` (same for away) and never
   downgrades a `final` status back to `scheduled`. `main()` logs a pre-upsert
   date-mismatch report so CI runs show exactly which rows were repaired.
+- Conflict behavior comes from the import-light `schedule_upsert_contract.py` CDN policy;
+  its characterization tests prevent the two ingestion sources from silently exchanging
+  authority.
 - New CDN rows are inserted with `overtime_periods = 0`, `game_type = 'regular'`.
 - Optional `month_filter=(year, month)` (ET); `None` = whole regular-season payload.
 - Manual repair: dispatch the GitHub Actions workflow with `task=resync-schedule`
@@ -224,11 +229,14 @@ per-shot" framing.
 
 ### `scripts/run-daily.ts` — daily refresh
 - Args: a single `YYYY-MM-DD`. Operates over `[date, date+14]`.
-- Deletes existing `fatigue_scores` for those games, then recomputes both teams via
-  `calculateFatigue` (recent games from `fetchRecentGamesForTeam`) and inserts fresh rows.
-- For `scheduled` games in the window: deletes **open** predictions
-  (`actual_winner_id IS NULL`) and re-inserts one per game where `|RA| ≥ 0.5`
-  (`NEUTRAL_THRESHOLD = 0.5`); the predicted team is the lower-fatigue side.
+- Delegates game computation to `src/lib/daily-refresh.ts`. Both teams are computed before
+  writes begin, then that game's old fatigue rows, two replacements, and scheduled game's
+  **open** prediction (`actual_winner_id IS NULL`) are replaced in one transaction.
+- A calculation/write failure rolls back only that game, preserving its last-known-good rows;
+  later games continue. The batch exits non-zero after processing if any game failed, so CI
+  still alerts operators.
+- Scheduled games receive one prediction where canonical `|RA| ≥ 0.5`; neutral games remove
+  any prior open prediction without inserting a replacement.
 
 ### `scripts/backfill_fatigue.ts` — bulk fatigue
 - Default: only games missing a home-side `fatigue_scores` row (idempotent). Optional

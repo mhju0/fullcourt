@@ -209,9 +209,10 @@ Vercel-cron live-score refresh. `runtime = "nodejs"`, `dynamic = "force-dynamic"
   the route is open.
 - **Behavior:** find today's `scheduled`/`live` games → fetch the NBA CDN scoreboard with a
   10-second timeout
-  (`todaysScoreboard_00.json`) → match by normalized 10-digit `external_id` → `UPDATE games`
-  when status/score changed. Scores of `0` are written as `null`. NBA CDN status codes map
-  `2 → live`, `3 → final`, else `scheduled`.
+  (`todaysScoreboard_00.json`) → match by normalized 10-digit `external_id` → compare status
+  and both scores through `reconcileLiveScores` → `UPDATE games` only for changed rows.
+  Scores of `0` are represented as `null`. NBA CDN status codes map `2 → live`, `3 → final`,
+  else `scheduled`; unchanged rows do not generate redundant Supabase Realtime events.
 - **Success:** `{ data: { gamesUpdated }, error: null, meta: { checkedGames,
   nbaGamesAvailable } }`. With nothing to do: `gamesUpdated: 0` + a `meta.message`. NBA CDN
   non-200 → `502`; other failures → `500`.
