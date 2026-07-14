@@ -6,16 +6,17 @@
  * Usage: pnpm exec tsx scripts/run-daily.ts YYYY-MM-DD
  */
 
-import { and, asc, gte, inArray, isNull, lte } from "drizzle-orm";
+import { and, asc, eq, gte, isNull, lte } from "drizzle-orm";
 import { addDays, format, parseISO } from "date-fns";
 import type { PostgresJsDatabase } from "drizzle-orm/postgres-js";
 import type * as Schema from "@/lib/db/schema";
 import { fatigueScores, games, predictions, teams } from "@/lib/db/schema";
-import { calculateFatigue } from "@/lib/fatigue";
+import {
+  refreshDailyGames,
+  type DailyRefreshPort,
+} from "@/lib/daily-refresh";
 import { fetchRecentGamesForTeam } from "@/lib/fatigue-recent-games";
 import { loadEnvLocal } from "@/lib/load-env-local";
-
-const NEUTRAL_THRESHOLD = 0.5;
 
 type AppDb = PostgresJsDatabase<typeof Schema>;
 
@@ -32,7 +33,6 @@ async function main(): Promise<void> {
   const appDb = db as AppDb;
 
   const teamRows = await appDb.select().from(teams);
-  const teamById = new Map(teamRows.map((t) => [t.id, t]));
 
   const endDate = format(addDays(parseISO(dateArg), 14), "yyyy-MM-dd");
   const todaysGames = await appDb
@@ -48,151 +48,64 @@ async function main(): Promise<void> {
     .where(and(gte(games.date, dateArg), lte(games.date, endDate)))
     .orderBy(asc(games.date), asc(games.id));
 
-  const gameIds = todaysGames.map((g) => g.id);
-
-  if (gameIds.length === 0) {
+  if (todaysGames.length === 0) {
     console.log(`[run-daily] No games in DB for ${dateArg}–${endDate}; skipping fatigue & predictions.`);
     return;
   }
 
-  await appDb.delete(fatigueScores).where(inArray(fatigueScores.gameId, gameIds));
+  const port: DailyRefreshPort = {
+    loadRecentGames(teamId, gameDate) {
+      return fetchRecentGamesForTeam(appDb, teamId, gameDate);
+    },
+    async replaceGameRefresh(write) {
+      await appDb.transaction(async (tx) => {
+        await tx
+          .delete(fatigueScores)
+          .where(eq(fatigueScores.gameId, write.gameId));
+        await tx.insert(fatigueScores).values(
+          write.fatigueRows.map((row) => ({
+            gameId: write.gameId,
+            ...row,
+          }))
+        );
 
-  let fatigueRows = 0;
-
-  // TODO: Wrap per-game fatigue computation in try-catch so a single failure
-  // (e.g. missing coordinates) doesn't crash the entire batch. Currently low risk
-  // because team data comes from the seeded teams table, but would matter if the
-  // DB has partial data.
-  for (const game of todaysGames) {
-    const home = teamById.get(game.homeTeamId);
-    const away = teamById.get(game.awayTeamId);
-    if (!home || !away) {
-      console.warn(`[run-daily] skip game ${game.id}: missing team`);
-      continue;
-    }
-
-    const gameDateStr = String(game.date);
-    const homeLat = parseFloat(home.latitude);
-    const homeLon = parseFloat(home.longitude);
-    const awayLat = parseFloat(away.latitude);
-    const awayLon = parseFloat(away.longitude);
-    const visitingAltitudeAway = home.altitudeFlag === true;
-
-    const recentHome = await fetchRecentGamesForTeam(appDb, game.homeTeamId, gameDateStr);
-    const homeResult = calculateFatigue(
-      gameDateStr,
-      recentHome,
-      false,
-      homeLat,
-      homeLon,
-      homeLat,
-      homeLon,
-      true
-    );
-
-    const recentAway = await fetchRecentGamesForTeam(appDb, game.awayTeamId, gameDateStr);
-    const awayResult = calculateFatigue(
-      gameDateStr,
-      recentAway,
-      visitingAltitudeAway,
-      awayLat,
-      awayLon,
-      homeLat,
-      homeLon,
-      false
-    );
-
-    const rows: Array<{ teamId: number; result: typeof homeResult }> = [
-      { teamId: game.homeTeamId, result: homeResult },
-      { teamId: game.awayTeamId, result: awayResult },
-    ];
-
-    for (const { teamId, result: r } of rows) {
-      const adjustedScore = Math.round(r.score * 100) / 100;
-      await appDb.insert(fatigueScores).values({
-        gameId: game.id,
-        teamId,
-        score: String(adjustedScore),
-        decayLoadScore: String(r.decayLoadScore),
-        travelLoadScore: String(r.travelLoadScore),
-        backToBackMultiplier: String(r.backToBackMultiplier),
-        altitudeMultiplier: String(r.altitudeMultiplier),
-        densityMultiplier: String(r.densityMultiplier),
-        freshnessBonus: String(r.freshnessBonus),
-        gamesInLast7Days: r.gamesInLast7Days,
-        gamesInLast30Days: r.gamesInLast30Days,
-        travelDistanceMiles: String(r.travelDistanceMiles),
-        isBackToBack: r.isBackToBack,
-        daysSinceLastGame: r.daysSinceLastGame,
-        isOvertimePenalty: r.isOvertimePenalty,
-        roadTripConsecutiveAway: r.roadTripConsecutiveAway,
-        isThreeInFour: r.isThreeInFour,
-        isFourInSix: r.isFourInSix,
-        hasCoastToCoastRoadSwing: r.hasCoastToCoastRoadSwing,
+        if (write.replaceUnresolvedPrediction) {
+          await tx
+            .delete(predictions)
+            .where(
+              and(
+                eq(predictions.gameId, write.gameId),
+                isNull(predictions.actualWinnerId)
+              )
+            );
+          if (write.prediction !== null) {
+            await tx.insert(predictions).values({
+              gameId: write.gameId,
+              ...write.prediction,
+              actualWinnerId: null,
+            });
+          }
+        }
       });
-      fatigueRows++;
-    }
-  }
+    },
+  };
 
-  const scheduledIds = todaysGames.filter((g) => g.status === "scheduled").map((g) => g.id);
+  const summary = await refreshDailyGames({
+    games: todaysGames.map((game) => ({ ...game, date: String(game.date) })),
+    teams: teamRows,
+    port,
+  });
 
-  let predictionRows = 0;
-
-  if (scheduledIds.length > 0) {
-    await appDb
-      .delete(predictions)
-      .where(
-        and(inArray(predictions.gameId, scheduledIds), isNull(predictions.actualWinnerId))
-      );
-
-    const fatigueForDay = await appDb
-      .select({
-        gameId: fatigueScores.gameId,
-        teamId: fatigueScores.teamId,
-        score: fatigueScores.score,
-      })
-      .from(fatigueScores)
-      .where(inArray(fatigueScores.gameId, scheduledIds));
-
-    const scoreByGameTeam = new Map<string, number>();
-    for (const row of fatigueForDay) {
-      scoreByGameTeam.set(`${row.gameId}:${row.teamId}`, parseFloat(row.score));
-    }
-
-    for (const game of todaysGames) {
-      if (game.status !== "scheduled") continue;
-
-      const h = scoreByGameTeam.get(`${game.id}:${game.homeTeamId}`);
-      const a = scoreByGameTeam.get(`${game.id}:${game.awayTeamId}`);
-      if (h === undefined || a === undefined || Number.isNaN(h) || Number.isNaN(a)) {
-        console.warn(`[run-daily] skip prediction for game ${game.id}: missing fatigue`);
-        continue;
-      }
-
-      const differential = a - h;
-      // Skip neutral games (|RA| < 0.5) — no meaningful rest advantage to predict on.
-      if (Math.abs(differential) < NEUTRAL_THRESHOLD) {
-        continue;
-      }
-      const predictedAdvantageTeamId =
-        differential > 0 ? game.homeTeamId : game.awayTeamId;
-
-      await appDb.insert(predictions).values({
-        gameId: game.id,
-        predictedAdvantageTeamId,
-        restAdvantageDifferential: String(
-          Math.round(differential * 100) / 100
-        ),
-        actualWinnerId: null,
-      });
-      predictionRows++;
-    }
+  for (const failure of summary.failedGames) {
+    console.warn(
+      `[run-daily] preserved game ${failure.gameId} after refresh failure: ${failure.reason}`
+    );
   }
 
   console.log(
-    `[run-daily] ${dateArg}–${endDate}: fatigue rows written=${fatigueRows}, predictions written=${predictionRows}`
+    `[run-daily] ${dateArg}–${endDate}: games refreshed=${summary.gamesRefreshed}, fatigue rows written=${summary.fatigueRowsWritten}, predictions written=${summary.predictionRowsWritten}, failures=${summary.failedGames.length}`
   );
-
+  if (summary.failedGames.length > 0) process.exitCode = 1;
 }
 
 main().catch((err) => {
