@@ -23,7 +23,7 @@
 > This document remains the single source of truth for the module's **design rationale** (§1–§3
 > below still describe why each feature and encoding choice was made, and match the shipped code).
 > Values cited from source are line-referenced; when this doc and the code disagree later, **trust
-> the code and fix this doc** (per `CLAUDE.md`).
+> the code and fix this doc**.
 
 ## 0. Scope and locked decisions
 
@@ -377,7 +377,7 @@ per-game and rest-advantage-specific):
 - `model_version` (varchar), `created_at` (timestamp).
 
 **Migration must mirror existing security patterns** so Supabase's Data API keeps working
-(deadlines in `CLAUDE.md` / `drizzle/0005`):
+(deadlines in [DATABASE.md](DATABASE.md) / `drizzle/0005_supabase_grants.sql`):
 - Add `ENABLE ROW LEVEL SECURITY` + "Allow public read" (SELECT `using (true)`) +
   "Allow service role all" policies for both new tables, mirroring
   `drizzle/0004_enable_rls.sql`.
