@@ -212,8 +212,9 @@ maps) when the Supabase env vars are unset (client is `null`).
 
 ### `components/ui/*` — shadcn primitives
 
-`badge`, `button`, `separator`, `tabs` are built on **`@base-ui/react`** with
-`class-variance-authority` variants; `card` and `skeleton` are plain `div`s. `cn()`
+Only two primitives survive: `button`, built on **`@base-ui/react`** with
+`class-variance-authority` variants, and `skeleton`, a plain `div`. (`@base-ui/react` is
+also used directly for the `onboarding-guide` dialog.) `cn()`
 (`src/lib/utils.ts`) merges classes with `clsx` + `tailwind-merge`. `components.json` pins
 the shadcn `base-nova` style, `neutral` base color, CSS variables, and the `@/components`,
 `@/lib`, `@/hooks`, `@/components/ui` aliases.
