@@ -31,7 +31,7 @@ export default function OpengraphImage() {
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
-          <div style={{ display: "flex", fontSize: 96, fontWeight: 800, letterSpacing: -3 }}>
+          <div style={{ display: "flex", fontSize: 96, fontWeight: 800, letterSpacing: -1.5 }}>
             <span style={{ color: "#F2F4F7" }}>Full</span>
             <span style={{ color: "#F5A623" }}>Court</span>
           </div>
