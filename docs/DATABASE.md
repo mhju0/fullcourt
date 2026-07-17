@@ -81,7 +81,7 @@ No secondary indexes beyond the PK and the unique `abbreviation`.
 | Column | Type | Null | Default | Key / notes |
 |--------|------|------|---------|-------------|
 | `id` | serial | no | auto | **PK** |
-| `external_id` (`externalId`) | varchar | no | — | **unique**; 10-digit NBA stats `GAME_ID` (zero-padded). Regular season starts `002`. Conflict target for all upserts. Exception: 5 backfilled 2024-25 games carry a `bref-…` synthetic id (they have no stats `GAME_ID`) — see the date note below and `audit/schedule-date-audit-2026-07-12.md`. |
+| `external_id` (`externalId`) | varchar | no | — | **unique**; 10-digit NBA stats `GAME_ID` (zero-padded). Regular season starts `002`. Conflict target for all upserts. Exception: 5 backfilled 2024-25 games carry a `bref-…` synthetic id (they have no stats `GAME_ID`) — see the date note below and `docs/audit/schedule-date-audit-2026-07-12.md`. |
 | `date` | date | no | — | **ET** calendar date of tip-off (`YYYY-MM-DD`). See the date note below. |
 | `season` | varchar | no | — | `"YYYY-YY"` label |
 | `home_team_id` (`homeTeamId`) | integer | no | — | **FK → teams.id** |
@@ -98,7 +98,7 @@ No secondary indexes beyond the PK and the unique `abbreviation`.
 **Verified counts (2026-07-12, read-only `SELECT`):** 49,353 rows — **`regular` 46,172**
 (`002`, incl. 5 `bref-` backfill), `playoffs` 2,827 + `finals` 318 (`004`), `play_in` 36
 (`005`). The +5 vs. the 2026-06-29 snapshot are the missing 2024-25 games added by the
-40-season schedule audit (`audit/schedule-date-audit-2026-07-12.md`). The tag-integrity
+40-season schedule audit (`docs/audit/schedule-date-audit-2026-07-12.md`). The tag-integrity
 guard (`external_id` prefix ↔ `game_type`) reports **0 mismatches** — no `004`/`005` row is
 mislabeled `regular`, so nothing leaks into the regular-season product.
 
@@ -113,7 +113,7 @@ mislabeled `regular`, so nothing leaks into the regular-season product.
   (matching nba_api's `GAME_DATE`), and its upsert now sets **`date = EXCLUDED.date`**, so
   re-running self-heals a mis-dated row. History: the CDN path previously stored the UTC date,
   which split the 2026-04-12 finale across two days and corrupted late-season fatigue inputs —
-  found and repaired in the 40-season audit (`audit/schedule-date-audit-2026-07-12.md`); see
+  found and repaired in the 40-season audit (`docs/audit/schedule-date-audit-2026-07-12.md`); see
   also [DATA_PIPELINE.md](DATA_PIPELINE.md).
 
 ## Table: `fatigue_scores`

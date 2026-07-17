@@ -180,7 +180,7 @@ export interface UpcomingGameWithRA {
   predictedAdvantageAbbreviation: string;
 }
 
-// ─── Playoff Predictor (backend only — GET /api/playoffs; no page yet) ──
+// ─── Playoff Predictor (GET /api/playoffs → the /playoffs page) ──
 
 export interface PlayoffTeamRef {
   id: number;

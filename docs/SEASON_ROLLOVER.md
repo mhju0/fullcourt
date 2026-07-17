@@ -87,7 +87,7 @@ self-gates via `is_in_season`, so there is no GitHub cadence to change.
 
 ## 6. Data-integrity re-audit (recommended each season)
 
-The method proven in `audit/schedule-date-audit-2026-07-12.md`: from the dev machine, fetch
+The method proven in `docs/audit/schedule-date-audit-2026-07-12.md`: from the dev machine, fetch
 basketball-reference monthly pages (`leagues/NBA_<endYear>_games-<month>.html`), parse the
 `csk="YYYYMMDD<home-tricode>"` key, and diff per-date game **counts** vs the DB (team-agnostic,
 so franchise-code churn doesn't matter). Cross-check any flagged date against ESPN. This
