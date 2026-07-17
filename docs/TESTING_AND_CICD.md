@@ -109,12 +109,14 @@ still verified on demand rather than in CI.
 ### Vercel cron — `vercel.json`
 
 ```json
-{ "crons": [ { "path": "/api/cron/update", "schedule": "0 10 1 * *" } ] }
+{ "crons": [ { "path": "/api/cron/update", "schedule": "0 3 * * *" } ] }
 ```
 
-- Current schedule **`0 10 1 * *`** = 10:00 UTC on the 1st of each month (offseason). Switch
-  to **`0 10 * * *`** (daily) in-season. `vercel.json` is the source of truth for the deployed
-  cadence; the season-rollover runbook explains when to change it.
+- Schedule **`0 3 * * *`** = 03:00 UTC daily, **year-round** — 10 PM EST / 11 PM EDT, i.e.
+  mid-slate and still ET date D under both DST regimes. Offseason runs early-return before any
+  CDN fetch, so there is **no seasonal cadence switch**. Vercel **Hobby fires crons once a day**
+  (within the hour), so this is a backstop, not live polling. `vercel.json` is the source of
+  truth for the deployed cadence.
 - The cron hits `GET /api/cron/update` with `Authorization: Bearer <CRON_SECRET>`; the route
   refreshes live scores from the NBA CDN and updates `games`, which Supabase Realtime pushes
   to clients. On Vercel Hobby, crons are limited to once per day.
