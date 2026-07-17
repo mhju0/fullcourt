@@ -64,13 +64,11 @@ ml/shot_value/*.pkl
 .serena/
 
 # agent / local project memory
-# Agent notes and installed skills are local-only and may contain machine-specific context.
+# Agent notes, editor tooling, and installed skills are local-only and may contain
+# machine-specific context. Kept on disk, out of the published index.
 AGENTS.md
 CLAUDE.md
 /.agents/
+/.claude/
 /.codex/
-
-# Claude Code: publish OUR workflow assets, keep local + third-party out
-.claude/settings.local.json
-.claude/skills/react-best-practices/
 .tokensave/
