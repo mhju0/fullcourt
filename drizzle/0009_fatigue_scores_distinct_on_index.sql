@@ -8,10 +8,9 @@
 --        FROM fatigue_scores
 --        ORDER BY game_id, team_id, computed_at DESC
 --      With no index matching that ordering, Postgres must materialize + Sort the
---      whole table before the DISTINCT ON (see docs/audit/tier3-performance.md and
---      the before-EXPLAIN baseline in docs/audit/tier3-explain.txt). This index
---      lets the planner walk fatigue_scores in (game_id, team_id, computed_at DESC)
---      order and pick the first row per group with NO Sort node.
+--      whole table before the DISTINCT ON. This index lets the planner walk
+--      fatigue_scores in (game_id, team_id, computed_at DESC) order and pick the
+--      first row per group with NO Sort node.
 --
 --      Column order/direction MUST match the query exactly:
 --        game_id ASC, team_id ASC, computed_at DESC.
@@ -32,15 +31,16 @@
 --   low-write table, but blocks writes for the build duration).
 --
 --   Steps:
---     1. before-EXPLAIN baseline: already captured in docs/audit/tier3-explain.txt.
+--     1. Capture a before-EXPLAIN (ANALYZE, BUFFERS) baseline of the DISTINCT ON read
+--        so the Sort node is on record.
 --     2. Run the CREATE INDEX CONCURRENTLY statement below (alone).
 --     3. Verify:
 --          select indexname, indexdef
 --          from pg_indexes
 --          where schemaname = 'public' and tablename = 'fatigue_scores';
 --        Expect a row: fatigue_scores_game_team_computed_idx.
---     4. after-EXPLAIN re-measurement is recorded in
---        docs/audit/tier3-explain-after.txt (the index was applied manually).
+--     4. Re-run the EXPLAIN and confirm the Sort node is gone.
+--        (This index was applied manually and is live.)
 
 CREATE INDEX CONCURRENTLY IF NOT EXISTS fatigue_scores_game_team_computed_idx
   ON public.fatigue_scores (game_id, team_id, computed_at DESC);
