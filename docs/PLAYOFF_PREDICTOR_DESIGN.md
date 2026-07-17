@@ -443,29 +443,3 @@ Same shape as the rest of the product: **Python writes to the DB, the app reads.
   on-demand per round.
 - **Headline feature variant:** ship raw `entry_rest_diff` (days) as the interpretable
   headline, or the `calculateFatigue`-based Game-1 rest-advantage differential, or both?
-
----
-
-## Self-review
-
-Re-read against the actual codebase (`fatigue.ts`, `fatigue-recent-games.ts`,
-`queries.ts`, `schema.ts`, `nba-season.ts`, `fetch_schedule.py`, `backfill_game_types.py`,
-`daily_update.py`, `drizzle/0004`–`0005`). Each acceptance criterion below is addressed,
-specific, and consistent with the code.
-
-| # | Criterion | Pass | Notes / assumptions |
-|---|---|---|---|
-| 1 | Problem framing & target encoding | ✅ | Recommends **home-court-team-wins** binary encoding with justification vs higher-seed; sign convention stated. Grounded in `calculateRestAdvantage` (`fatigue.ts:545`) and the home/away product model. |
-| 2 | Critical fatigue insight (within-series symmetry) | ✅ | Stated explicitly: identical days-rest + near-identical travel ⇒ within-series RA ≈ 0 ⇒ `NEUTRAL_THRESHOLD = 0.5` (`queries.ts:21`) flags all "neutral"; the asymmetric signal is **entry rest** (rust-vs-rest). Verified `fetchRecentGamesForTeam` has **no `game_type` filter** (`fatigue-recent-games.ts:58–65`), enabling Game-1 entry-rest from existing code. |
-| 3 | Feature set with precise definitions | ✅ | `entry_rest_diff` (headline, incl. play-in & bye handling), `seed_diff`, `win_pct_diff`, `has_home_court` (folded into label), `h2h_diff`, `is_best_of_7` — each with formula, orientation, and an availability column (existing vs new ingestion). |
-| 4 | Data gap analysis | ✅ | Confirms **0 playoff rows** today from code (`SEASON_TYPES` `:78`, `002` gate `:135`, `get_game_type` `:148`); estimates **~600 series / ~3,200 games** over **40 in-scope seasons** (2019-20 excluded, `nba-season.ts:8`); specifies source/season-type/`004` prefix/tagging/back-extent and the **hard non-modification** guarantees (002 vs 004 namespace; chronology protects reg-season fatigue). Counts since **verified 2026-06-29** (read-only `SELECT`): **600 series / 3,145 `004` games** (2,827 playoffs + 318 finals) + **36 `005` play-in** — matching the estimate. |
-| 5 | Small-data constraint & bake-off protocol | ✅ | Quantifies ~600 series; lists 5 candidates (2 baselines + plain LR + regularized LR + one tree model); specifies **walk-forward CV**, selection on validation only, **test touched once** on last 3 seasons; explicit anti-test-leakage warning with **interpretability as tiebreaker**; metrics = accuracy, log-loss, **lift over baselines** (must beat "higher seed wins"). |
-| 6 | Architecture & schema | ✅ | New `playoff_series` + `playoff_series_predictions` tables (with RLS + grants mirroring `drizzle/0004`/`0005`); per-game rows in existing `games` (tagged); ML in new **`ml/`** Python/scikit-learn dir; predictions surfaced via new API route + `/playoffs` page (Python writes, app reads); isolation via existing `game_type='regular'` + calendar guards (`queries.ts:198,381,547,744,907,51`); **rest-advantage metric not renamed.** |
-| 7 | Open questions | ✅ | Bulleted: seed source, play-in tagging, format-flag precision, shortened seasons, test-set size, prediction timing/UX, headline-feature variant. |
-
-**Assumptions made (flagged for the human):** (a) ~5.7 avg games/bo7 series and ~4.3/bo5
-are league-historical rules of thumb, used only to size the sample; (b) the locked
-"best-of-5 pre-2003" is interpreted as *first round only*, consistent with NBA history
-(Open Question raised to confirm); (c) home-court holder is cleanly derivable once games
-are ingested (Game-1 host); (d) play-in games will be ingested as per-game substrate but
-never modeled as series targets. All seven criteria **pass**.
