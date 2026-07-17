@@ -79,8 +79,13 @@ later re-run self-heals any mis-dated rows (this is what fixed the 2026-04 UTC-d
 `vercel.json` runs `/api/cron/update` (live scores). JSON has no comments — the file is the
 source of truth.
 
-- Offseason (current): `"schedule": "0 10 1 * *"` (1st of month) — the route finds no games.
-- **In-season: change to `"0 10 * * *"` (daily)** so live scores refresh each game day.
+- `"schedule": "0 3 * * *"` (daily, 03:00 UTC) — **year-round; nothing to change at rollover.**
+  The route does not season-gate, but it early-returns before any CDN fetch when no game is
+  `scheduled`/`live` for today(ET), so an offseason run costs one indexed query.
+- 03:00 UTC = 10 PM EST / 11 PM EDT: mid-slate, and still ET **date D** in both DST regimes.
+  (`0 10 * * *` would fire 5–6 AM ET, before tip-off; `0 4 * * *` would cross midnight ET under
+  EDT and query the wrong date.) Vercel **Hobby allows one cron/day**, so this is a backstop —
+  live UX comes from Supabase Realtime and the GitHub Actions pipeline.
 
 GitHub Actions (`.github/workflows/daily-update.yml`) runs daily **year-round** already and
 self-gates via `is_in_season`, so there is no GitHub cadence to change.
