@@ -108,7 +108,8 @@ keeps options open.
 ### 2019-20 bubble — recommend **do NOT exclude** (but confirm)
 The regular-season fatigue product excludes the 2019-20 Orlando bubble because it has **no real
 travel** and would corrupt a travel-based model (`src/lib/nba-season.ts`,
-`scripts/fetch_schedule.py`) — see `CLAUDE.md`. **That rationale does not apply here:** shot
+`scripts/fetch_schedule.py`) — see [DATA_PIPELINE.md](DATA_PIPELINE.md). **That rationale does not
+apply here:** shot
 locations on an NBA court are identical regardless of travel, and the bubble games were played
 on regulation courts. Excluding them would only throw away ~1 season of valid shot geometry.
 
@@ -266,7 +267,7 @@ The exact tables depend on the §3 storage decision:
   the storage limit (§3) and needs the most index care.
 
 **Every new table must mirror the security pattern** (or the Data API won't expose it after
-Supabase's enforcement dates — `CLAUDE.md`, `drizzle/0004`/`0005`):
+Supabase's enforcement dates — [DATABASE.md](DATABASE.md), `drizzle/0004`/`0005`):
 - `ENABLE ROW LEVEL SECURITY` + two policies: **`Allow public read`** (`FOR SELECT USING (true)`)
   and **`Allow service role all`** (`FOR ALL USING (auth.role() = 'service_role')`).
 - Grants: `grant select … to anon;` and `grant select, insert, update, delete … to service_role;`.
@@ -405,7 +406,7 @@ the expected-eFG%/xPPS headline metrics — matches what actually shipped.
 ## Self-review
 
 Re-read against the probes (`ml/shot_data_probe.txt`, `ml/shot_defend_probe.txt`), the project
-docs (`CLAUDE.md`, `DATABASE.md`, `API.md`, `ROADMAP.md`, `PLAYOFF_PREDICTOR_DESIGN.md`), and the
+docs (`DATABASE.md`, `API.md`, `ROADMAP.md`, `PLAYOFF_PREDICTOR_DESIGN.md`), and the
 `drizzle/` migration listing. Each required section is covered; every open decision is deferred
 to the human, not silently locked.
 
