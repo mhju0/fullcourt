@@ -6,10 +6,10 @@ import type { CSSProperties } from "react"
  * locally — see docs/FRONTEND.md for the underlying --term-* CSS variables.
  *
  * Type scale (apply new sizes from this list, not ad hoc fontSize values):
- *   9px  micro label (uppercase, tracked)   — table headers, badges, meta strips
- *   10px small label (uppercase, tracked)   — stat card labels, section eyebrows
- *   11px body / data                        — table cells, inline data
- *   12-14px emphasized inline                — team abbreviations, card titles
+ *   10px micro label (uppercase, tracked)   — table headers, badges, meta strips
+ *   11px small label (uppercase, tracked)   — stat card labels, section eyebrows
+ *   12px body / data                        — table cells, inline data
+ *   13-16px emphasized inline                — team abbreviations, card titles
  *   20-24px stat value                       — StatCard-style numbers
  *   32px hero stat value                     — headline metrics (accuracy %, etc.)
  */
@@ -29,7 +29,7 @@ export const termInsetStyle: CSSProperties = {
 }
 
 export const termSelectClass =
-  "mono inline-flex items-center gap-2 bg-[var(--term-surface)] px-3 py-1.5 text-[11px] uppercase tracking-[0.05em] text-[var(--term-text-dim)] transition-colors hover:bg-[var(--term-surface-2)] cursor-pointer appearance-none pr-8"
+  "mono inline-flex items-center gap-2 bg-[var(--term-surface)] px-3 py-1.5 text-[12px] uppercase tracking-[0.05em] text-[var(--term-text-dim)] transition-colors hover:bg-[var(--term-surface-2)] cursor-pointer appearance-none pr-8"
 
 export const termSelectStyle: CSSProperties = {
   border: "1px solid var(--term-border)",
@@ -43,7 +43,7 @@ export const termSelectStyle: CSSProperties = {
 
 export const termThStyle: CSSProperties = {
   fontFamily: "'Courier New', Courier, monospace",
-  fontSize: 10,
+  fontSize: 11,
   letterSpacing: "0.08em",
   color: "var(--term-text-muted)",
   fontWeight: 700,
@@ -56,7 +56,7 @@ export const termThStyle: CSSProperties = {
 export const termTdStyle: CSSProperties = {
   padding: "8px 10px",
   borderBottom: "1px solid var(--term-border)",
-  fontSize: 11,
+  fontSize: 12,
 }
 
 /**

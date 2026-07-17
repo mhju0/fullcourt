@@ -166,8 +166,10 @@ the row change → connected clients update in place.
 - **Design system unified (2026-06-29):** Today's Games, Analysis, Future Games
   (`upcoming-content.tsx`) and the game-detail modal (`explore-game-detail-modal.tsx`) all use
   one flat design system; the earlier glassmorphism look has been fully migrated out. (This
-  "Bloomberg Terminal" light style was later superseded by the dark "Broadcast" redesign, which
-  kept the flat/token architecture — see [FRONTEND.md](FRONTEND.md).)
+  "Bloomberg Terminal" light style was later superseded by the dark "Broadcast" redesign, and
+  the theme was then flipped back to light on 2026-07-17 for legibility — every step kept the
+  same flat/token architecture and the same components, moving only token values. See
+  [FRONTEND.md](FRONTEND.md).)
 - **Removed (2026-06-29):** the dead `/api/analysis/accuracy` endpoint and its orphaned query fns
   (`getResolvedPredictions`, `getUpcomingPredictionsForSeason`) + `Accuracy*` types — nothing else
   imported them, so the route + dead code were deleted rather than rewired.

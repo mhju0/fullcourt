@@ -47,86 +47,88 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-/* ── FullCourt "Broadcast" theme ─────────────────────────────────
-   Dark, always-on. A game-night broadcast graphics language: near-black
-   ground, team colors carry each matchup, and an amber "live" accent.
-   NBA red/blue survive as the fatigue/rest-advantage data semantics
-   (red = more fatigued, blue = more rested), brightened for dark
-   legibility. Single theme — no toggle (see docs/FRONTEND.md).       */
+/* ── FullCourt "Broadcast" theme — LIGHT ─────────────────────────
+   Single light theme, always-on. A daylight broadcast / editorial
+   box-score language: warm off-white paper ground, white cards that
+   lift on hairline borders, near-black text. Team colors carry each
+   matchup; a burnt-amber "live" accent. NBA red/blue survive as the
+   fatigue/rest-advantage data semantics (red = more fatigued,
+   blue = more rested), darkened for legibility on white.
+   Single theme — no toggle (see docs/FRONTEND.md).                  */
 
 :root {
-  /* Commit the whole app to dark; ignores OS light preference. */
-  color-scheme: dark;
+  /* Commit the whole app to light; ignores OS dark preference. */
+  color-scheme: light;
 
-  --background: #0A0B0D;
-  --foreground: #F2F4F7;
+  --background: #FAF9F6;
+  --foreground: #111318;
 
-  --card: #12151A;
-  --card-foreground: #F2F4F7;
+  --card: #FFFFFF;
+  --card-foreground: #111318;
 
-  --popover: #12151A;
-  --popover-foreground: #F2F4F7;
+  --popover: #FFFFFF;
+  --popover-foreground: #111318;
 
-  /* NBA blue as primary — brightened so it reads on near-black */
-  --primary: #3B82F6;
-  --primary-foreground: #0A0B0D;
+  /* NBA blue as primary — darkened so it reads on white */
+  --primary: #2563EB;
+  --primary-foreground: #FFFFFF;
 
-  --secondary: #191D24;
-  --secondary-foreground: #F2F4F7;
+  --secondary: #F0EEE9;
+  --secondary-foreground: #111318;
 
-  --muted: #191D24;
-  --muted-foreground: #8A929C;
+  --muted: #F0EEE9;
+  --muted-foreground: #5A626C;
 
-  /* Hardwood tan as accent — used sparingly */
-  --accent: #D2A24C;
-  --accent-foreground: #0A0B0D;
+  /* Hardwood tan as accent — darkened for white */
+  --accent: #A16207;
+  --accent-foreground: #FFFFFF;
 
-  /* NBA red for destructive / danger — dark-legible */
-  --destructive: #E5484D;
+  /* NBA red for destructive / danger — white-legible */
+  --destructive: #DC2626;
 
-  /* Hairline borders for components (buttons, inputs) on dark */
-  --border: rgba(255, 255, 255, 0.10);
-  --input: rgba(255, 255, 255, 0.08);
-  --ring: rgba(59, 130, 246, 0.45);
+  /* Hairline borders for components (buttons, inputs) on white */
+  --border: rgba(0, 0, 0, 0.12);
+  --input: rgba(0, 0, 0, 0.14);
+  --ring: rgba(37, 99, 235, 0.45);
 
-  /* Sports analytics chart palette (dark-tuned) */
-  --chart-1: #3B82F6;  /* NBA blue    */
-  --chart-2: #E5484D;  /* NBA red     */
-  --chart-3: #D2A24C;  /* hardwood    */
-  --chart-4: #31C46B;  /* emerald     */
-  --chart-5: #A78BFA;  /* violet      */
+  /* Sports analytics chart palette (light-tuned) */
+  --chart-1: #2563EB;  /* NBA blue    */
+  --chart-2: #DC2626;  /* NBA red     */
+  --chart-3: #A16207;  /* hardwood    */
+  --chart-4: #15803D;  /* emerald     */
+  --chart-5: #7C3AED;  /* violet      */
 
   --radius: 0.75rem;
 
-  --sidebar: #12151A;
-  --sidebar-foreground: #F2F4F7;
-  --sidebar-primary: #3B82F6;
-  --sidebar-primary-foreground: #0A0B0D;
-  --sidebar-accent: rgba(59, 130, 246, 0.14);
-  --sidebar-accent-foreground: #F2F4F7;
-  --sidebar-border: rgba(255, 255, 255, 0.10);
-  --sidebar-ring: rgba(59, 130, 246, 0.45);
+  --sidebar: #FFFFFF;
+  --sidebar-foreground: #111318;
+  --sidebar-primary: #2563EB;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: rgba(37, 99, 235, 0.12);
+  --sidebar-accent-foreground: #111318;
+  --sidebar-border: rgba(0, 0, 0, 0.12);
+  --sidebar-ring: rgba(37, 99, 235, 0.45);
 
-  /* FullCourt terminal design tokens — Broadcast dark values.
+  /* FullCourt terminal design tokens — Broadcast light values.
      Component code reads only these tokens, so the app re-themes here. */
   /* surfaces & text */
-  --term-bg: #0A0B0D;
-  --term-surface: #12151A;
-  --term-surface-2: #191D24;
-  --term-border: #23262C;
-  --term-hairline: #2E323A;
-  --term-text: #F2F4F7;
-  --term-text-muted: #8A929C;
-  --term-text-dim: #B7BEC7;
-  /* brand / bar colors — brightened for dark legibility */
-  --term-red: #E5484D;
-  --term-blue: #3B82F6;
-  --term-hardwood: #D2A24C;
-  --term-amber: #F5A623;   /* Broadcast "live" / active-tab accent */
+  --term-bg: #FAF9F6;
+  --term-surface: #FFFFFF;
+  --term-surface-2: #F0EEE9;
+  --term-border: #E2DED6;
+  --term-hairline: #D4CFC5;
+  --term-text: #111318;
+  --term-text-muted: #5A626C;
+  --term-text-dim: #363B42;
+  /* brand / bar colors — darkened for white legibility */
+  --term-red: #DC2626;
+  --term-blue: #2563EB;
+  --term-hardwood: #A16207;
+  --term-amber: #C2410C;   /* Broadcast "live" / active-tab accent */
   /* semantic */
-  --term-pos: #31C46B;
-  --term-neg: #F0603E;
-  --term-neutral: #8A929C;
+  --term-pos: #15803D;
+  --term-neg: #DC2626;
+  --term-neutral: #6B7280;
   /* radius */
   --term-radius: 4px;
   --term-radius-sm: 2px;

@@ -69,7 +69,7 @@ export function OnboardingGuide() {
                   className="mono font-bold"
                   style={{
                     color: "var(--term-amber)",
-                    fontSize: "10px",
+                    fontSize: "11px",
                     letterSpacing: "0.08em",
                   }}
                 >
@@ -82,7 +82,7 @@ export function OnboardingGuide() {
                   className="mono mt-1 max-w-lg"
                   style={{
                     color: "var(--term-text-dim)",
-                    fontSize: "11px",
+                    fontSize: "12px",
                     lineHeight: 1.5,
                   }}
                 >
@@ -117,7 +117,7 @@ export function OnboardingGuide() {
                           className="mono block font-bold"
                           style={{
                             color: "var(--term-text)",
-                            fontSize: "11px",
+                            fontSize: "12px",
                             letterSpacing: "0.06em",
                           }}
                         >
@@ -149,7 +149,7 @@ export function OnboardingGuide() {
                 className="mono border border-[var(--term-amber)] bg-[var(--term-amber)] px-4 py-2 font-bold text-[var(--term-bg)] transition-colors hover:bg-[var(--term-hardwood)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--term-amber)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--term-surface)] active:translate-y-px"
                 style={{
                   borderRadius: "var(--term-radius-sm)",
-                  fontSize: "10px",
+                  fontSize: "11px",
                   letterSpacing: "0.06em",
                 }}
               >

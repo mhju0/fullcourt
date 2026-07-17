@@ -34,7 +34,7 @@ const termTooltip: React.CSSProperties = {
   borderRadius: "var(--term-radius)",
   padding: "8px 10px",
   fontFamily: "'Courier New', Courier, monospace",
-  fontSize: 11,
+  fontSize: 12,
 }
 
 const exploreSelectStyle: React.CSSProperties = {
@@ -42,7 +42,7 @@ const exploreSelectStyle: React.CSSProperties = {
   border: "1px solid var(--term-border)",
   borderRadius: "var(--term-radius)",
   padding: "6px 10px",
-  fontSize: 11,
+  fontSize: 12,
   fontFamily: "'Courier New', Courier, monospace",
   color: "var(--term-text)",
   letterSpacing: "0.04em",
@@ -50,7 +50,7 @@ const exploreSelectStyle: React.CSSProperties = {
 
 const exploreThStyle: React.CSSProperties = {
   fontFamily: "'Courier New', Courier, monospace",
-  fontSize: 10,
+  fontSize: 11,
   letterSpacing: "0.08em",
   color: "var(--term-text-muted)",
   fontWeight: 700,
@@ -63,7 +63,7 @@ const exploreThStyle: React.CSSProperties = {
 const exploreTdBaseStyle: React.CSSProperties = {
   padding: "8px 10px",
   borderBottom: "1px solid var(--term-border)",
-  fontSize: 11,
+  fontSize: 12,
 }
 
 // ─── Section divider ──────────────────────────────────────────────
@@ -72,7 +72,7 @@ function SectionDivider({ label, descriptor }: { label: string; descriptor?: str
   return (
     <div
       className="mono flex items-center gap-3 py-2"
-      style={{ fontSize: 10, letterSpacing: "0.08em", color: "var(--term-text-muted)" }}
+      style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-text-muted)" }}
     >
       <span style={{ fontWeight: 700 }}>{label}</span>
       <span style={{ flex: 1, height: 1, background: "var(--term-border)" }} />
@@ -105,14 +105,14 @@ function StatCard({
         padding: "12px 14px",
       }}
     >
-      <span style={{ fontSize: 10, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 600 }}>
+      <span style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 600 }}>
         {label}
       </span>
       <span className="tabular-nums" style={{ fontSize: 24, fontWeight: 600, color: "var(--term-text)", lineHeight: 1 }}>
         {value}
       </span>
       {sub && (
-        <span style={{ fontSize: 10, color: "var(--term-text-muted)", letterSpacing: "0.04em" }}>{sub}</span>
+        <span style={{ fontSize: 11, color: "var(--term-text-muted)", letterSpacing: "0.04em" }}>{sub}</span>
       )}
     </div>
   )
@@ -143,7 +143,7 @@ function WinRateTooltip({ active, payload }: TooltipContentProps) {
       ))}
       <p style={{ color: "var(--term-text-muted)", marginTop: 2 }}>{d.games.toLocaleString()} GAMES</p>
       {d.threshold !== undefined && (
-        <p style={{ marginTop: 4, fontSize: 10, color: "var(--term-blue)" }}>CLICK TO EXPLORE ↓</p>
+        <p style={{ marginTop: 4, fontSize: 11, color: "var(--term-blue)" }}>CLICK TO EXPLORE ↓</p>
       )}
     </div>
   )
@@ -203,7 +203,7 @@ function SeasonWinRateBySeasonChart({
       ) : chartData.length === 0 ? (
         <div
           className="mono flex h-full items-center justify-center"
-          style={{ border: "1px dashed var(--term-border)", borderRadius: "var(--term-radius)", fontSize: 11, color: "var(--term-text-muted)" }}
+          style={{ border: "1px dashed var(--term-border)", borderRadius: "var(--term-radius)", fontSize: 12, color: "var(--term-text-muted)" }}
         >
           NO SEASON-LEVEL DATA YET
         </div>
@@ -217,7 +217,7 @@ function SeasonWinRateBySeasonChart({
             />
             <XAxis
               dataKey="label"
-              tick={{ fontSize: 10, fill: "var(--term-text-muted)", fontFamily: "'Courier New', Courier, monospace" }}
+              tick={{ fontSize: 11, fill: "var(--term-text-muted)", fontFamily: "'Courier New', Courier, monospace" }}
               tickLine={false}
               axisLine={false}
               interval={0}
@@ -228,7 +228,7 @@ function SeasonWinRateBySeasonChart({
             <YAxis
               domain={[40, 70]}
               tickFormatter={(v: number) => `${v}%`}
-              tick={{ fontSize: 11, fill: "var(--term-text-muted)", fontFamily: "'Courier New', Courier, monospace" }}
+              tick={{ fontSize: 12, fill: "var(--term-text-muted)", fontFamily: "'Courier New', Courier, monospace" }}
               tickLine={false}
               axisLine={false}
               width={40}
@@ -245,7 +245,7 @@ function SeasonWinRateBySeasonChart({
               label={{
                 value: "COIN FLIP",
                 position: "insideTopRight",
-                fontSize: 10,
+                fontSize: 11,
                 fill: "var(--term-red)",
                 opacity: 0.8,
               }}
@@ -263,7 +263,7 @@ function SeasonWinRateBySeasonChart({
                 formatter={(v: string | number | boolean | null | undefined) =>
                   typeof v === "number" ? `n=${v.toLocaleString()}` : ""
                 }
-                style={{ fontSize: "10px", fill: "var(--term-text-muted)", fontFamily: "'Courier New', Courier, monospace" }}
+                style={{ fontSize: "11px", fill: "var(--term-text-muted)", fontFamily: "'Courier New', Courier, monospace" }}
               />
             </Bar>
           </BarChart>
@@ -405,7 +405,7 @@ function ExploreGames({
         }}
       />
       <SectionDivider label="EXPLORE GAMES" descriptor={`${total.toLocaleString()} TOTAL`} />
-      <p className="mono mt-1" style={{ fontSize: 10, color: "var(--term-text-muted)", letterSpacing: "0.04em" }}>
+      <p className="mono mt-1" style={{ fontSize: 11, color: "var(--term-text-muted)", letterSpacing: "0.04em" }}>
         FILTER AND BROWSE INDIVIDUAL MATCHUPS — CLICK A ROW FOR DETAILS.
       </p>
 
@@ -551,7 +551,7 @@ function ExploreGames({
                         style={{
                           background: "var(--term-blue)",
                           color: "var(--term-surface)",
-                          fontSize: 10,
+                          fontSize: 11,
                           fontWeight: 700,
                           padding: "2px 6px",
                           borderRadius: "var(--term-radius-sm)",
@@ -569,7 +569,7 @@ function ExploreGames({
                         className="mono inline-flex items-center"
                         style={{
                           color: g.restedTeamWon ? "var(--term-pos)" : "var(--term-red)",
-                          fontSize: 10,
+                          fontSize: 11,
                           fontWeight: 700,
                           letterSpacing: "0.06em",
                         }}
@@ -587,7 +587,7 @@ function ExploreGames({
 
       {/* Pagination */}
       {total > 0 && (
-        <div className="mono mt-3 flex items-center justify-between" style={{ fontSize: 10, color: "var(--term-text-muted)", letterSpacing: "0.04em" }}>
+        <div className="mono mt-3 flex items-center justify-between" style={{ fontSize: 11, color: "var(--term-text-muted)", letterSpacing: "0.04em" }}>
           <p>
             {loading
               ? "LOADING…"
@@ -603,7 +603,7 @@ function ExploreGames({
             >
               <ChevronLeft className="size-4" />
             </button>
-            <span className="mono px-2 tabular-nums" style={{ fontSize: 11, color: "var(--term-text)", fontWeight: 600 }}>
+            <span className="mono px-2 tabular-nums" style={{ fontSize: 12, color: "var(--term-text)", fontWeight: 600 }}>
               {page} / {totalPages || 1}
             </span>
             <button
@@ -681,10 +681,10 @@ export function AnalysisContent() {
         className="mono px-6 py-12 text-center"
         style={{ ...termCardStyle, borderLeft: "2px solid var(--term-red)" }}
       >
-        <p style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-red)", fontWeight: 700 }}>
+        <p style={{ fontSize: 12, letterSpacing: "0.08em", color: "var(--term-red)", fontWeight: 700 }}>
           FAILED TO LOAD ANALYSIS
         </p>
-        <p className="mt-1" style={{ fontSize: 10, color: "var(--term-text-muted)" }}>
+        <p className="mt-1" style={{ fontSize: 11, color: "var(--term-text-muted)" }}>
           {error ?? "UNKNOWN ERROR"}
         </p>
       </div>
@@ -709,11 +709,11 @@ export function AnalysisContent() {
     <div className="flex flex-col gap-4">
       {/* Eyebrow heading */}
       <div className="flex flex-col gap-1">
-        <span className="mono" style={{ fontSize: 10, letterSpacing: "0.08em", color: "var(--term-red)", fontWeight: 700 }}>
+        <span className="mono" style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-red)", fontWeight: 700 }}>
           HISTORICAL BACKTEST
         </span>
         <h1 className="text-2xl font-bold tracking-tight text-[var(--term-text)]">Rest Advantage Analysis</h1>
-        <p className="mono max-w-2xl" style={{ fontSize: 11, color: "var(--term-text-muted)", lineHeight: 1.5 }}>
+        <p className="mono max-w-2xl" style={{ fontSize: 12, color: "var(--term-text-muted)", lineHeight: 1.5 }}>
           AMONG FINAL REGULAR-SEASON GAMES WITH FATIGUE DATA, DID THE MORE-RESTED TEAM WIN?
           THIS DOES NOT READ STORED PREDICTION ROWS.
         </p>
@@ -756,14 +756,14 @@ export function AnalysisContent() {
               />
               <XAxis
                 dataKey="label"
-                tick={{ fontSize: 11, fill: "var(--term-text-muted)", fontFamily: "'Courier New', Courier, monospace" }}
+                tick={{ fontSize: 12, fill: "var(--term-text-muted)", fontFamily: "'Courier New', Courier, monospace" }}
                 tickLine={false}
                 axisLine={false}
               />
               <YAxis
                 domain={[45, 75]}
                 tickFormatter={(v: number) => `${v}%`}
-                tick={{ fontSize: 11, fill: "var(--term-text-muted)", fontFamily: "'Courier New', Courier, monospace" }}
+                tick={{ fontSize: 12, fill: "var(--term-text-muted)", fontFamily: "'Courier New', Courier, monospace" }}
                 tickLine={false}
                 axisLine={false}
                 width={40}
@@ -780,7 +780,7 @@ export function AnalysisContent() {
                 label={{
                   value: "COIN FLIP",
                   position: "insideTopRight",
-                  fontSize: 10,
+                  fontSize: 11,
                   fill: "var(--term-red)",
                   opacity: 0.8,
                 }}
@@ -800,7 +800,7 @@ export function AnalysisContent() {
                   formatter={(v: string | number | boolean | null | undefined) =>
                     typeof v === "number" ? `n=${v.toLocaleString()}` : ""
                   }
-                  style={{ fontSize: "10px", fill: "var(--term-text-muted)", fontFamily: "'Courier New', Courier, monospace" }}
+                  style={{ fontSize: "11px", fill: "var(--term-text-muted)", fontFamily: "'Courier New', Courier, monospace" }}
                 />
               </Bar>
             </BarChart>
@@ -817,7 +817,7 @@ export function AnalysisContent() {
         <p className="mono mt-3 tabular-nums" style={{ fontSize: 36, fontWeight: 700, color: "var(--term-blue)", lineHeight: 1 }}>
           {data.homeAwayBreakdown.homeTeamMoreRested.winPct}%
         </p>
-        <p className="mono mt-1" style={{ fontSize: 11, color: "var(--term-text-muted)", letterSpacing: "0.04em" }}>
+        <p className="mono mt-1" style={{ fontSize: 12, color: "var(--term-text-muted)", letterSpacing: "0.04em" }}>
           {data.homeAwayBreakdown.homeTeamMoreRested.restedTeamWins.toLocaleString()} WINS /{" "}
           {data.homeAwayBreakdown.homeTeamMoreRested.games.toLocaleString()} GAMES
         </p>
@@ -850,7 +850,7 @@ export function AnalysisContent() {
                   border: `1px solid ${active ? "var(--term-blue)" : "var(--term-border)"}`,
                   borderRadius: "var(--term-radius)",
                   padding: "4px 10px",
-                  fontSize: 11,
+                  fontSize: 12,
                   letterSpacing: "0.04em",
                   fontWeight: 600,
                   cursor: "pointer",
@@ -879,7 +879,7 @@ export function AnalysisContent() {
             borderRadius: "var(--term-radius)",
           }}
         >
-          <p className="mono" style={{ fontSize: 10, letterSpacing: "0.12em", color: "var(--term-blue)", fontWeight: 700 }}>
+          <p className="mono" style={{ fontSize: 11, letterSpacing: "0.12em", color: "var(--term-blue)", fontWeight: 700 }}>
             KEY INSIGHT
           </p>
           <p className="mt-2 text-sm leading-relaxed text-[var(--term-text-dim)]">

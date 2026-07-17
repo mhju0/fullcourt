@@ -6,7 +6,7 @@ import { ChevronDown } from "lucide-react"
 import { FatigueBar, type FatigueBarTone } from "@/components/fatigue-bar"
 import { TRAVEL_LOOKBACK_DAYS } from "@/lib/fatigue"
 import { NBA_TEAM_IDS } from "@/lib/nba-team-ids"
-import { getTeamColors } from "@/lib/nba-team-colors"
+import { getTeamColors, readableTextOn } from "@/lib/nba-team-colors"
 import { formatRestAdvantageDisplay } from "@/lib/rest-advantage-display"
 import { getTeamBranding } from "@/lib/team-history"
 import { TERM_ACCENT } from "@/lib/terminal-styles"
@@ -66,13 +66,14 @@ function TeamLogo({
     // Team-colored fallback chip (broadcast identity when the CDN logo is missing).
     return (
       <div
-        className="mono flex shrink-0 items-center justify-center text-[9px] font-bold text-white"
+        className="mono flex shrink-0 items-center justify-center text-[10px] font-bold"
         style={{
           width: size,
           height: size,
           borderRadius: "var(--term-radius-sm)",
           background: color ?? "var(--term-surface-2)",
-          boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.14)",
+          color: color ? readableTextOn(color) : "var(--term-text)",
+          boxShadow: "inset 0 0 0 1px rgba(0,0,0,0.12)",
         }}
       >
         {abbreviation}
@@ -102,7 +103,7 @@ function ConfidenceBadge({ confidence }: { confidence: Confidence }) {
   const label = confidence === "high" ? "HIGH CONF" : confidence === "med" ? "MED CONF" : "NEUTRAL"
 
   const baseStyle: React.CSSProperties = {
-    fontSize: "10px",
+    fontSize: "11px",
     letterSpacing: "0.06em",
     padding: "2px 8px",
     borderRadius: "var(--term-radius-sm)",
@@ -137,7 +138,7 @@ function ConfidenceBadge({ confidence }: { confidence: Confidence }) {
 
 function LiveIndicator() {
   return (
-    <span className="mono inline-flex items-center gap-1.5" style={{ fontSize: "10px", letterSpacing: "0.06em", color: "var(--term-amber)", fontWeight: 700 }}>
+    <span className="mono inline-flex items-center gap-1.5" style={{ fontSize: "11px", letterSpacing: "0.06em", color: "var(--term-amber)", fontWeight: 700 }}>
       <span
         className="animate-[pulse_1.7s_ease-in-out_infinite]"
         style={{ display: "inline-block", width: 6, height: 6, borderRadius: "50%", background: "var(--term-amber)", boxShadow: "0 0 8px var(--term-amber)" }}
@@ -158,7 +159,7 @@ export function GameStatusRow({
 }) {
   if (status === "live") {
     return (
-      <div className="mono flex items-center gap-3" style={{ fontSize: "11px" }}>
+      <div className="mono flex items-center gap-3" style={{ fontSize: "12px" }}>
         <LiveIndicator />
         {homeScore !== null && awayScore !== null && (
           <span className="tabular-nums" style={{ fontSize: "22px", letterSpacing: "-0.02em", color: "var(--term-text)", fontWeight: 800 }}>
@@ -171,7 +172,7 @@ export function GameStatusRow({
 
   if (status === "final" && awayScore !== null && homeScore !== null) {
     return (
-      <div className="mono flex items-center gap-3" style={{ fontSize: "11px" }}>
+      <div className="mono flex items-center gap-3" style={{ fontSize: "12px" }}>
         <span style={{ color: "var(--term-text-muted)", letterSpacing: "0.08em" }}>FINAL</span>
         <span className="tabular-nums" style={{ fontSize: "22px", letterSpacing: "-0.02em", color: "var(--term-text)", fontWeight: 800 }}>
           {awayScore} – {homeScore}
@@ -182,14 +183,14 @@ export function GameStatusRow({
 
   if (status === "final") {
     return (
-      <span className="mono" style={{ fontSize: "10px", letterSpacing: "0.08em", color: "var(--term-text-muted)" }}>
+      <span className="mono" style={{ fontSize: "11px", letterSpacing: "0.08em", color: "var(--term-text-muted)" }}>
         FINAL
       </span>
     )
   }
 
   return (
-    <span className="mono" style={{ fontSize: "10px", letterSpacing: "0.08em", color: "var(--term-text-muted)" }}>
+    <span className="mono" style={{ fontSize: "11px", letterSpacing: "0.08em", color: "var(--term-text-muted)" }}>
       UPCOMING
     </span>
   )
@@ -238,7 +239,7 @@ function TeamStatRow({
         >
           {name}
         </span>
-        <span className="truncate" style={{ fontSize: "11px", fontWeight: 500, color: "var(--term-text-muted)", lineHeight: 1.2 }}>
+        <span className="truncate" style={{ fontSize: "12px", fontWeight: 500, color: "var(--term-text-muted)", lineHeight: 1.2 }}>
           {city}
         </span>
       </div>
@@ -277,7 +278,7 @@ function RestAdvPanel({
 
   return (
     <div className="flex w-[180px] shrink-0 flex-col items-center gap-2 pl-4 sm:w-[200px]" style={{ borderLeft: "1px solid var(--term-border)" }}>
-      <span className="mono" style={{ fontSize: "9px", letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 600 }}>
+      <span className="mono" style={{ fontSize: "10px", letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 600 }}>
         REST ADVANTAGE
       </span>
 
@@ -344,7 +345,7 @@ function RestAdvPanel({
             }}
           />
         </div>
-        <div className="mono flex items-center justify-between" style={{ fontSize: "9px", color: "var(--term-text-muted)", fontWeight: 600 }}>
+        <div className="mono flex items-center justify-between" style={{ fontSize: "10px", color: "var(--term-text-muted)", fontWeight: 600 }}>
           <span>{awayAbbr}</span>
           <span>{homeAbbr}</span>
         </div>
@@ -381,7 +382,7 @@ function MetaStrip({ game }: { game: GameResponse }) {
         background: "var(--term-bg)",
         borderTop: "1px solid var(--term-border)",
         padding: "4px 14px",
-        fontSize: "10px",
+        fontSize: "11px",
         color: "var(--term-text-muted)",
         letterSpacing: "0.04em",
       }}
@@ -420,7 +421,7 @@ function FatigueDetailRow({
   highlight?: boolean
 }) {
   return (
-    <div className="mono flex justify-between gap-2" style={{ fontSize: 11 }}>
+    <div className="mono flex justify-between gap-2" style={{ fontSize: 12 }}>
       <span style={{ color: "var(--term-text-muted)", letterSpacing: "0.04em" }}>{k}</span>
       <span className="tabular-nums" style={{ color: highlight ? "var(--term-red)" : "var(--term-text)", fontWeight: 600 }}>
         {v}
@@ -440,7 +441,7 @@ export function FatigueDetailColumn({
     return (
       <div
         className="mono px-3 py-3 text-center"
-        style={{ fontSize: 11, color: "var(--term-text-muted)", background: "var(--term-surface)", border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }}
+        style={{ fontSize: 12, color: "var(--term-text-muted)", background: "var(--term-surface)", border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }}
       >
         NO FATIGUE DATA
       </div>
@@ -457,7 +458,7 @@ export function FatigueDetailColumn({
       <p
         className="mono pb-1.5"
         style={{
-          fontSize: 10,
+          fontSize: 11,
           letterSpacing: "0.08em",
           color: "var(--term-text-muted)",
           fontWeight: 700,
@@ -497,7 +498,7 @@ export function RaBadge({
 }) {
   if (!restAdvantage) {
     return (
-      <span className="mono" style={{ fontSize: 10, color: "var(--term-text-muted)", letterSpacing: "0.08em" }}>
+      <span className="mono" style={{ fontSize: 11, color: "var(--term-text-muted)", letterSpacing: "0.08em" }}>
         NO DATA
       </span>
     )
@@ -507,7 +508,7 @@ export function RaBadge({
       <span
         className="mono inline-flex items-center"
         style={{
-          fontSize: 9,
+          fontSize: 10,
           letterSpacing: "0.06em",
           padding: "2px 7px",
           borderRadius: "var(--term-radius-sm)",
@@ -526,7 +527,7 @@ export function RaBadge({
     <span
       className="mono inline-flex items-center"
       style={{
-        fontSize: 9,
+        fontSize: 10,
         letterSpacing: "0.06em",
         padding: "2px 7px",
         borderRadius: "var(--term-radius-sm)",
@@ -585,7 +586,7 @@ export function MatchupCard({ game, index = 0, isScoreFlashing = false }: Matchu
 
   return (
     <div
-      className="animate-[fadeInUp_0.4s_ease-out_forwards] flex flex-col transition-shadow hover:shadow-[0_18px_44px_-26px_rgba(0,0,0,0.9)]"
+      className="animate-[fadeInUp_0.4s_ease-out_forwards] flex flex-col transition-shadow hover:shadow-[0_12px_32px_-20px_rgba(0,0,0,0.28)]"
       style={{
         animationDelay: `${index * 40}ms`,
         background: "var(--term-surface)",
