@@ -71,4 +71,5 @@ CLAUDE.md
 /.agents/
 /.claude/
 /.codex/
+/docs/agents/
 .tokensave/
