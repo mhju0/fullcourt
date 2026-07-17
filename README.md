@@ -6,6 +6,7 @@
 
 **An NBA analytics platform that turns four decades of schedule data into game-level predictions.**
 
+[![CI](https://github.com/mhju0/fullcourt/actions/workflows/ci.yml/badge.svg)](https://github.com/mhju0/fullcourt/actions/workflows/ci.yml)
 [![Daily NBA Update](https://github.com/mhju0/fullcourt/actions/workflows/daily-update.yml/badge.svg)](https://github.com/mhju0/fullcourt/actions/workflows/daily-update.yml)
 ![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=next.js)
 ![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?logo=typescript&logoColor=white)
@@ -23,6 +24,25 @@ FullCourt quantifies how **travel, rest, and schedule density** shape NBA outcom
 > **Project status:** feature-complete and in maintenance mode. The live demo and scheduled data
 > pipeline remain operational; future changes are limited to security, dependency compatibility,
 > season rollover, data-source breakage, deployment reliability, and verified correctness fixes.
+
+---
+
+## Demo
+
+**Analysis — the 40-season backtest behind the headline finding.** Win rate by rest-advantage
+threshold, plotted against a coin-flip baseline so the size of the edge stays honest.
+
+<img src="docs/screenshots/analysis.png" alt="Rest Advantage Analysis: win rate by rest-advantage threshold across 38,985 regular-season games, each bar labelled with its sample size and compared against a 50% coin-flip reference line" width="900" />
+
+**Today's Games — the per-matchup view.** Each team's fatigue score, the rest-advantage
+differential, and a confidence read, with team colors carrying each card.
+
+<img src="docs/screenshots/today.png" alt="Today's Games: matchup cards showing each team's fatigue bar, fatigue score, and a rest-advantage panel naming the more-rested team" width="900" />
+
+**Expected Shot Value — location-only xeFG%.** A gradient-boosted location model beside the
+zone-average baseline it is measured against.
+
+<img src="docs/screenshots/shot-quality.png" alt="Expected Shot Value: two half-court maps comparing a zone-average baseline against a gradient-boosted location model, with marker size showing shot attempts and color showing expected effective field-goal percentage" width="900" />
 
 ---
 
