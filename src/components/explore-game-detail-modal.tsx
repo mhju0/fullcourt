@@ -47,7 +47,7 @@ function RecentResultsList({
       <p
         className="mono pb-1.5 text-center uppercase"
         style={{
-          fontSize: 10,
+          fontSize: 11,
           letterSpacing: "0.08em",
           color: "var(--term-text-muted)",
           fontWeight: 700,
@@ -57,7 +57,7 @@ function RecentResultsList({
         {label}
       </p>
       {items.length === 0 ? (
-        <p className="mono mt-2 text-center" style={{ fontSize: 10, color: "var(--term-text-muted)" }}>
+        <p className="mono mt-2 text-center" style={{ fontSize: 11, color: "var(--term-text-muted)" }}>
           NO RECENT GAMES
         </p>
       ) : (
@@ -75,7 +75,7 @@ function RecentResultsList({
                 }
               }}
               className="mono flex cursor-pointer flex-wrap items-center justify-between gap-x-2 px-1.5 py-1 transition-colors hover:bg-[var(--term-surface-2)] focus-visible:bg-[var(--term-surface-2)] focus-visible:outline-none"
-              style={{ fontSize: 11, color: "var(--term-text)", borderRadius: "var(--term-radius-sm)" }}
+              style={{ fontSize: 12, color: "var(--term-text)", borderRadius: "var(--term-radius-sm)" }}
               aria-label={`View game details: ${format(parseISO(g.date), "MMM d")} vs ${g.opponentAbbreviation}`}
             >
               <span style={{ color: "var(--term-text-muted)" }}>
@@ -130,7 +130,7 @@ function ExploreGameDetailBody({
         <span className="mx-1.5" style={{ fontWeight: 400, color: "var(--term-hairline)" }}>@</span>
         {homeBrand.abbreviation}
       </p>
-      <p className="mono text-center uppercase" style={{ fontSize: 10, color: "var(--term-text-muted)", letterSpacing: "0.04em" }}>
+      <p className="mono text-center uppercase" style={{ fontSize: 11, color: "var(--term-text-muted)", letterSpacing: "0.04em" }}>
         {format(parseISO(game.date), "EEEE, MMMM d, yyyy")} · {game.season}
       </p>
 
@@ -145,7 +145,7 @@ function ExploreGameDetailBody({
       <div className="mt-1 px-3 py-4 sm:px-4" style={termInsetStyle}>
         <p
           className="mono mb-3 text-center uppercase"
-          style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.08em", color: "var(--term-text-muted)" }}
+          style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.08em", color: "var(--term-text-muted)" }}
         >
           Fatigue breakdown
         </p>
@@ -164,7 +164,7 @@ function ExploreGameDetailBody({
       <div>
         <p
           className="mono mb-2 text-center uppercase"
-          style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.08em", color: "var(--term-text-muted)" }}
+          style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.08em", color: "var(--term-text-muted)" }}
         >
           Recent Games
         </p>
@@ -346,7 +346,7 @@ function ExploreGameDetailModalContent({
             <h2
               id={titleId}
               className={cn("mono uppercase", canGoBack && "sr-only")}
-              style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.08em", color: "var(--term-text-muted)" }}
+              style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.08em", color: "var(--term-text-muted)" }}
             >
               Game details
             </h2>
@@ -364,12 +364,12 @@ function ExploreGameDetailModalContent({
         </div>
 
         {loading && (
-          <p className="mono py-8 text-center" style={{ fontSize: 11, color: "var(--term-text-muted)", letterSpacing: "0.06em" }}>
+          <p className="mono py-8 text-center" style={{ fontSize: 12, color: "var(--term-text-muted)", letterSpacing: "0.06em" }}>
             LOADING…
           </p>
         )}
         {error && (
-          <p className="mono py-6 text-center" style={{ fontSize: 11, color: "var(--term-red)", letterSpacing: "0.06em" }}>
+          <p className="mono py-6 text-center" style={{ fontSize: 12, color: "var(--term-red)", letterSpacing: "0.06em" }}>
             {error}
           </p>
         )}

@@ -35,16 +35,16 @@ function MethodMetricCard({
       className="flex flex-col gap-1 px-3 py-3"
       style={{ background: "var(--term-surface-2)", borderRadius: "var(--term-radius)", borderLeft: `2px solid ${accent}` }}
     >
-      <span className="mono" style={{ fontSize: 10, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 700 }}>
+      <span className="mono" style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 700 }}>
         {label}
       </span>
       <span className="mono tabular-nums" style={{ fontSize: 32, fontWeight: 700, color: "var(--term-text)", lineHeight: 1.1 }}>
         {summary.accuracy}%
       </span>
-      <span className="mono" style={{ fontSize: 10, color: "var(--term-text-muted)", letterSpacing: "0.04em" }}>
+      <span className="mono" style={{ fontSize: 11, color: "var(--term-text-muted)", letterSpacing: "0.04em" }}>
         {sub}
       </span>
-      <span className="mono tabular-nums" style={{ fontSize: 10, color: "var(--term-text-muted)" }}>
+      <span className="mono tabular-nums" style={{ fontSize: 11, color: "var(--term-text-muted)" }}>
         {summary.predictedCorrect.toLocaleString()} / {summary.knownWinnerGames.toLocaleString()} CORRECT
       </span>
     </div>
@@ -68,7 +68,7 @@ function MethodComparisonHeader({ summary }: { summary: PlayoffsResponse["summar
           accent="var(--term-hardwood)"
         />
       </div>
-      <p className="mono mt-3" style={{ fontSize: 10, color: "var(--term-text-muted)", letterSpacing: "0.04em", lineHeight: 1.5 }}>
+      <p className="mono mt-3" style={{ fontSize: 11, color: "var(--term-text-muted)", letterSpacing: "0.04em", lineHeight: 1.5 }}>
         OUT-OF-SAMPLE ACCURACY IS PREDICTED FROM PRIOR SEASONS ONLY — THE HONEST GENERALIZATION NUMBER.
         IN-SAMPLE REFLECTS FIT ON DATA THE MODEL WAS TRAINED ON AND WILL TYPICALLY LOOK BETTER.
       </p>
@@ -107,11 +107,11 @@ function CorrectnessBadge({ status, source }: { status: CorrectnessStatus; sourc
   return (
     <span
       className="mono inline-flex items-center gap-1"
-      style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.04em", color: accent }}
+      style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.04em", color: accent }}
     >
       {label}
       {source === "insample" && (
-        <span style={{ fontSize: 9, color: "var(--term-text-muted)", fontWeight: 600 }}>(IN-SAMPLE)</span>
+        <span style={{ fontSize: 10, color: "var(--term-text-muted)", fontWeight: 600 }}>(IN-SAMPLE)</span>
       )}
     </span>
   )
@@ -139,16 +139,16 @@ function MethodInline({
 }) {
   if (!method) {
     return (
-      <span className="mono inline-flex items-center gap-1" style={{ fontSize: 10, color: "var(--term-text-muted)", letterSpacing: "0.04em" }}>
+      <span className="mono inline-flex items-center gap-1" style={{ fontSize: 11, color: "var(--term-text-muted)", letterSpacing: "0.04em" }}>
         <span style={{ fontWeight: 700, color: "var(--term-text)" }}>{label}</span>
         N/A
-        <span style={{ fontSize: 9 }}>(insufficient history)</span>
+        <span style={{ fontSize: 10 }}>(insufficient history)</span>
       </span>
     )
   }
   const prob = methodDisplayProb(method, series)
   return (
-    <span className="mono inline-flex items-center gap-1 tabular-nums" style={{ fontSize: 10, color: "var(--term-text)", letterSpacing: "0.04em" }}>
+    <span className="mono inline-flex items-center gap-1 tabular-nums" style={{ fontSize: 11, color: "var(--term-text)", letterSpacing: "0.04em" }}>
       <span style={{ fontWeight: 700, color: "var(--term-text-muted)" }}>{label}</span>
       {(prob * 100).toFixed(1)}% {method.predictedWinnerTeam.abbreviation}
     </span>
@@ -159,7 +159,7 @@ function MethodInline({
 
 function FeatureRow({ k, v }: { k: string; v: string }) {
   return (
-    <div className="mono flex justify-between gap-2" style={{ fontSize: 11 }}>
+    <div className="mono flex justify-between gap-2" style={{ fontSize: 12 }}>
       <span style={{ color: "var(--term-text-muted)", letterSpacing: "0.04em" }}>{k}</span>
       <span className="tabular-nums" style={{ color: "var(--term-text)", fontWeight: 600 }}>{v}</span>
     </div>
@@ -180,7 +180,7 @@ function SeriesFeatureGrid({ series }: { series: PlayoffSeriesWithPredictions })
     >
       <p
         className="mono pb-1.5"
-        style={{ fontSize: 10, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 700, borderBottom: "1px solid var(--term-border)" }}
+        style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 700, borderBottom: "1px solid var(--term-border)" }}
       >
         SERIES FEATURES
       </p>
@@ -188,7 +188,7 @@ function SeriesFeatureGrid({ series }: { series: PlayoffSeriesWithPredictions })
       <FeatureRow k="WIN% DIFF" v={formatFeature(series.winPctDiff)} />
       <FeatureRow k="ENTRY REST DIFF" v={formatFeature(series.entryRestDiff)} />
       <FeatureRow k="H2H DIFF" v={formatFeature(series.h2hDiff)} />
-      <p className="mono mt-1" style={{ fontSize: 9, color: "var(--term-text-muted)", letterSpacing: "0.04em", lineHeight: 1.4 }}>
+      <p className="mono mt-1" style={{ fontSize: 10, color: "var(--term-text-muted)", letterSpacing: "0.04em", lineHeight: 1.4 }}>
         SIGN CONVENTION: (HOME-COURT − OPPONENT). POSITIVE FAVORS HOME-COURT ({series.homeCourtTeam.abbreviation}).
       </p>
     </div>
@@ -243,12 +243,12 @@ function SeriesCard({ series }: { series: PlayoffSeriesWithPredictions }) {
                 HC
               </span>
             </span>
-            <span className="mono" style={{ fontSize: 11, color: "var(--term-text-muted)" }}>vs</span>
+            <span className="mono" style={{ fontSize: 12, color: "var(--term-text-muted)" }}>vs</span>
             <span className="mono" style={{ fontSize: 12, fontWeight: 700, color: "var(--term-text)" }}>
               {series.opponentTeam.abbreviation}
             </span>
             {series.conference && (
-              <span className="mono" style={{ fontSize: 9, color: "var(--term-text-muted)", letterSpacing: "0.06em" }}>
+              <span className="mono" style={{ fontSize: 10, color: "var(--term-text-muted)", letterSpacing: "0.06em" }}>
                 {series.conference.toUpperCase()}
               </span>
             )}
@@ -261,7 +261,7 @@ function SeriesCard({ series }: { series: PlayoffSeriesWithPredictions }) {
         </div>
 
         <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
-          <div className="mono flex items-center gap-2 tabular-nums" style={{ fontSize: 11 }}>
+          <div className="mono flex items-center gap-2 tabular-nums" style={{ fontSize: 12 }}>
             <span style={{ color: "var(--term-text)", fontWeight: 600 }}>
               {homeWins}-{oppWins}
             </span>
@@ -299,7 +299,7 @@ function SeriesCard({ series }: { series: PlayoffSeriesWithPredictions }) {
 function RoundSection({ group }: { group: PlayoffRoundGroup }) {
   return (
     <div className="flex flex-col gap-2">
-      <div className="mono flex items-center gap-3 py-1" style={{ fontSize: 10, letterSpacing: "0.08em", color: "var(--term-text-muted)" }}>
+      <div className="mono flex items-center gap-3 py-1" style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-text-muted)" }}>
         <span style={{ fontWeight: 700 }}>
           {group.roundLabel.toUpperCase()} · {group.series.length} SERIES
         </span>
@@ -361,10 +361,10 @@ export function PlayoffsContent() {
           className="mono px-6 py-12 text-center"
           style={{ ...termCardStyle, borderLeft: "2px solid var(--term-red)" }}
         >
-          <p style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-red)", fontWeight: 700 }}>
+          <p style={{ fontSize: 12, letterSpacing: "0.08em", color: "var(--term-red)", fontWeight: 700 }}>
             FAILED TO LOAD PLAYOFF PREDICTIONS
           </p>
-          <p className="mt-1" style={{ fontSize: 10, color: "var(--term-text-muted)" }}>
+          <p className="mt-1" style={{ fontSize: 11, color: "var(--term-text-muted)" }}>
             {error ?? "UNKNOWN ERROR"}
           </p>
         </div>
@@ -380,7 +380,7 @@ export function PlayoffsContent() {
 
       {data.rounds.length === 0 ? (
         <div className="mono px-6 py-12 text-center" style={termCardStyle}>
-          <p style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 700 }}>
+          <p style={{ fontSize: 12, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 700 }}>
             NO PLAYOFF PREDICTIONS FOR THIS SEASON
           </p>
         </div>

@@ -43,7 +43,7 @@ const HIGH_CONF_THRESHOLD = 2.0
 
 // Terminal-style flat button: white bg, 1px border, mono uppercase, 4px corners.
 const termBtn =
-  "mono inline-flex items-center gap-2 bg-[var(--term-surface)] px-3 py-1.5 text-[11px] uppercase tracking-[0.05em] text-[var(--term-text-dim)] transition-[background-color,border-color,transform] hover:bg-[var(--term-surface-2)]"
+  "mono inline-flex items-center gap-2 bg-[var(--term-surface)] px-3 py-1.5 text-[12px] uppercase tracking-[0.05em] text-[var(--term-text-dim)] transition-[background-color,border-color,transform] hover:bg-[var(--term-surface-2)]"
 const termBtnStyle: React.CSSProperties = { border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }
 
 // ─── Stat summary row ────────────────────────────────────────────
@@ -60,7 +60,7 @@ function StatCard({ label, value, accent }: { label: string; value: string; acce
         padding: "12px 14px",
       }}
     >
-      <span style={{ fontSize: 10, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 600 }}>
+      <span style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 600 }}>
         {label}
       </span>
       <span className="tabular-nums" style={{ fontSize: 24, fontWeight: 600, color: "var(--term-text)", lineHeight: 1 }}>
@@ -95,7 +95,7 @@ function StatSummaryRow({
 
 function SectionDivider({ label, count }: { label: string; count: number }) {
   return (
-    <div className="mono flex items-center gap-3 py-2" style={{ fontSize: 10, letterSpacing: "0.08em", color: "var(--term-text-muted)" }}>
+    <div className="mono flex items-center gap-3 py-2" style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-text-muted)" }}>
       <span style={{ fontWeight: 700 }}>{label}</span>
       <span style={{ flex: 1, height: 1, background: "var(--term-border)" }} />
       <span style={{ fontWeight: 600 }}>
@@ -146,10 +146,10 @@ function EmptyState({ label }: { label: string }) {
       className="mono flex flex-col items-center gap-2 px-6 py-16 text-center"
       style={{ background: "var(--term-surface)", border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }}
     >
-      <p style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-text)", fontWeight: 700 }}>
+      <p style={{ fontSize: 12, letterSpacing: "0.08em", color: "var(--term-text)", fontWeight: 700 }}>
         NO GAMES SCHEDULED
       </p>
-      <p style={{ fontSize: 10, color: "var(--term-text-muted)" }}>NO NBA GAMES ON {label.toUpperCase()}</p>
+      <p style={{ fontSize: 11, color: "var(--term-text-muted)" }}>NO NBA GAMES ON {label.toUpperCase()}</p>
     </div>
   )
 }
@@ -165,13 +165,13 @@ function OffSeasonBanner({ season }: { season: string }) {
         borderRadius: "var(--term-radius)",
       }}
     >
-      <span style={{ fontSize: 11, letterSpacing: "0.04em", color: "var(--term-text)", fontWeight: 600 }}>
+      <span style={{ fontSize: 12, letterSpacing: "0.04em", color: "var(--term-text)", fontWeight: 600 }}>
         {season} SEASON COMPLETE — SHOWING FINAL SLATE
       </span>
       <a
         href="/analysis"
         className="transition-colors hover:underline"
-        style={{ fontSize: 11, letterSpacing: "0.04em", color: "var(--term-blue)", fontWeight: 700 }}
+        style={{ fontSize: 12, letterSpacing: "0.04em", color: "var(--term-blue)", fontWeight: 700 }}
       >
         EXPLORE THE 40-SEASON BACKTEST →
       </a>
@@ -185,10 +185,10 @@ function ErrorState({ message }: { message: string }) {
       className="mono flex flex-col items-center gap-2 px-6 py-12 text-center"
       style={{ background: "var(--term-surface)", border: "1px solid var(--term-border)", borderLeft: "2px solid var(--term-red)", borderRadius: "var(--term-radius)" }}
     >
-      <p style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-red)", fontWeight: 700 }}>
+      <p style={{ fontSize: 12, letterSpacing: "0.08em", color: "var(--term-red)", fontWeight: 700 }}>
         FAILED TO LOAD GAMES
       </p>
-      <p style={{ fontSize: 10, color: "var(--term-text-muted)" }}>{message}</p>
+      <p style={{ fontSize: 11, color: "var(--term-text-muted)" }}>{message}</p>
     </div>
   )
 }
@@ -229,7 +229,7 @@ function DateChip({
       <span className="tabular-nums" style={{ fontSize: 14, fontWeight: 700, lineHeight: 1.1 }}>
         {day}
       </span>
-      <span className="tabular-nums" style={{ fontSize: 9, color: selected ? "rgba(10,11,13,0.62)" : "var(--term-text-muted)" }}>
+      <span className="tabular-nums" style={{ fontSize: 10, color: selected ? "rgba(10,11,13,0.62)" : "var(--term-text-muted)" }}>
         {count} {count === 1 ? "GM" : "GMS"}
       </span>
     </button>
@@ -455,11 +455,11 @@ export default function HomePage() {
     <div className="flex flex-col gap-6">
       {/* Heading */}
       <div className="flex flex-col gap-1">
-        <span className="mono" style={{ fontSize: 10, letterSpacing: "0.08em", color: "var(--term-red)", fontWeight: 700 }}>
+        <span className="mono" style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-red)", fontWeight: 700 }}>
           REST ADVANTAGE DASHBOARD
         </span>
         <h1 className="text-2xl font-bold tracking-tight text-[var(--term-text)]">Today&apos;s Matchups</h1>
-        <p className="mono max-w-2xl" style={{ fontSize: 11, color: "var(--term-text-muted)", lineHeight: 1.5 }}>
+        <p className="mono max-w-2xl" style={{ fontSize: 12, color: "var(--term-text-muted)", lineHeight: 1.5 }}>
           FATIGUE SCORES FOR EVERY NBA GAME. HIGHER DIFFERENTIAL = ONE TEAM CARRYING MORE TRAVEL AND SCHEDULE LOAD.
         </p>
       </div>
@@ -475,7 +475,7 @@ export default function HomePage() {
       {/* Filters — grouped as one secondary control panel */}
       <div className="flex flex-col gap-4" style={termCardStyle}>
         <div className="flex flex-col gap-1.5">
-          <label htmlFor="nba-season" className="mono" style={{ fontSize: 10, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 600 }}>
+          <label htmlFor="nba-season" className="mono" style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 600 }}>
             SEASON
           </label>
           <select
@@ -501,7 +501,7 @@ export default function HomePage() {
         </div>
 
         <div className="flex flex-col gap-1.5">
-          <span className="mono" style={{ fontSize: 10, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 600 }}>
+          <span className="mono" style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 600 }}>
             MONTH
           </span>
           <div className="-mx-1 overflow-x-auto overflow-y-hidden pb-1 [scrollbar-width:thin]">
@@ -531,18 +531,18 @@ export default function HomePage() {
         </div>
 
         {errorDates ? (
-          <p className="mono" style={{ fontSize: 11, color: "var(--term-red)" }} role="alert">
+          <p className="mono" style={{ fontSize: 12, color: "var(--term-red)" }} role="alert">
             {errorDates}
           </p>
         ) : loadingDates ? (
           <Skeleton className="h-16 w-full max-w-md bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)" }} />
         ) : availableDates.length === 0 ? (
-          <p className="mono" style={{ fontSize: 11, color: "var(--term-text-muted)" }}>
+          <p className="mono" style={{ fontSize: 12, color: "var(--term-text-muted)" }}>
             NO GAMES IN THIS MONTH.
           </p>
         ) : (
           <div className="flex flex-col gap-1.5">
-            <span className="mono" style={{ fontSize: 10, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 600 }}>
+            <span className="mono" style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 600 }}>
               DAYS WITH GAMES
             </span>
             <div className="flex flex-wrap gap-1.5">
@@ -578,7 +578,7 @@ export default function HomePage() {
           </Button>
           <p
             className="mono min-w-[12rem] text-center sm:text-left"
-            style={{ fontSize: 11, letterSpacing: "0.04em", color: "var(--term-text)", fontWeight: 600 }}
+            style={{ fontSize: 12, letterSpacing: "0.04em", color: "var(--term-text)", fontWeight: 600 }}
             data-testid="selected-date-display"
           >
             {formattedSelected?.toUpperCase() ?? "PICK A DATE"}

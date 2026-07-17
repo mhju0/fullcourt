@@ -61,13 +61,13 @@ function mix(a: RGB, b: RGB, t: number): string {
   return `rgb(${r} ${g} ${bl})`
 }
 
-// Dark-court ramp: endpoints brightened so markers read on the near-black court,
-// and the diff-neutral pulled down to a court-adjacent tone so "no difference"
-// cells recede instead of glowing.
-const TAN: RGB = hexToRgb("#D2A24C") // low expected eFG%
-const BLUE: RGB = hexToRgb("#3B82F6") // high expected eFG% (and "gbm lower" in diff view)
-const RED: RGB = hexToRgb("#E5484D") // "gbm higher" in diff view
-const NEUTRAL: RGB = hexToRgb("#2A313A") // diff ≈ 0
+// Light-court ramp: endpoints darkened so markers read on the white court,
+// and the diff-neutral lifted to a near-white tone so "no difference"
+// cells recede into the court instead of reading as dark markers.
+const TAN: RGB = hexToRgb("#A16207") // low expected eFG%
+const BLUE: RGB = hexToRgb("#2563EB") // high expected eFG% (and "gbm lower" in diff view)
+const RED: RGB = hexToRgb("#DC2626") // "gbm higher" in diff view
+const NEUTRAL: RGB = hexToRgb("#E5E7EB") // diff ≈ 0
 
 /** Sequential expected-eFG% ramp: low → tan, high → blue. `t` already normalized to [0,1]. */
 const seqColor = (t: number): string => mix(TAN, BLUE, clamp01(t))
@@ -92,7 +92,7 @@ function EncodingToggle({
   ]
   return (
     <div className="flex flex-col gap-1.5">
-      <span className="mono" style={{ fontSize: 10, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 600 }}>
+      <span className="mono" style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 600 }}>
         COLOR ENCODING
       </span>
       <div className="inline-flex" role="group" aria-label="Color encoding">
@@ -106,7 +106,7 @@ function EncodingToggle({
               onClick={() => onModeChange(o.key)}
               className={`mono px-3 py-1.5 transition-colors ${active ? "" : "hover:bg-[var(--term-surface-2)]"}`}
               style={{
-                fontSize: 11,
+                fontSize: 12,
                 letterSpacing: "0.05em",
                 background: active ? "var(--term-blue)" : undefined,
                 color: active ? "var(--term-surface)" : "var(--term-text-dim)",
@@ -144,11 +144,11 @@ function BigLegend({
 }) {
   return (
     <div className="flex w-full max-w-[420px] shrink-0 flex-col gap-1.5 sm:w-[340px]">
-      <span className="mono" style={{ fontSize: 10, letterSpacing: "0.1em", color: "var(--term-text-muted)", fontWeight: 700 }}>
+      <span className="mono" style={{ fontSize: 11, letterSpacing: "0.1em", color: "var(--term-text-muted)", fontWeight: 700 }}>
         {caption}
       </span>
       <div style={{ height: 16, borderRadius: "var(--term-radius-sm)", border: "1px solid var(--term-border)", background: gradient }} />
-      <div className="mono flex justify-between tabular-nums" style={{ fontSize: 11, color: "var(--term-text-dim)", letterSpacing: "0.03em", fontWeight: 600 }}>
+      <div className="mono flex justify-between tabular-nums" style={{ fontSize: 12, color: "var(--term-text-dim)", letterSpacing: "0.03em", fontWeight: 600 }}>
         <span>{left}</span>
         {mid ? <span>{mid}</span> : null}
         <span>{right}</span>
@@ -211,7 +211,7 @@ function HowToRead({
             <p>One court: where the two models disagree about a spot&apos;s value.</p>
             <p>
               <span style={{ color: "var(--term-red)", fontWeight: 600 }}>Red: GBM rates it higher</span> than the zone
-              average, <span style={{ color: "var(--term-blue)", fontWeight: 600 }}>blue: lower</span>; dark squares mean
+              average, <span style={{ color: "var(--term-blue)", fontWeight: 600 }}>blue: lower</span>; pale squares mean
               the models agree.
             </p>
             <p style={{ color: "var(--term-text-muted)" }}>
@@ -322,10 +322,10 @@ function ShotCourt({
   return (
     <figure className="flex flex-col gap-2">
       <figcaption className="flex flex-col gap-0.5">
-        <span className="mono" style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.05em", color: "var(--term-text)" }}>
+        <span className="mono" style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.05em", color: "var(--term-text)" }}>
           {title}
         </span>
-        <span className="mono" style={{ fontSize: 9, color: "var(--term-text-muted)", letterSpacing: "0.04em" }}>
+        <span className="mono" style={{ fontSize: 10, color: "var(--term-text-muted)", letterSpacing: "0.04em" }}>
           {subtitle}
         </span>
       </figcaption>
@@ -334,7 +334,7 @@ function ShotCourt({
         width="100%"
         role="img"
         aria-label={`${title}: half-court expected-shot-value map, ${cells.length} cells`}
-        style={{ display: "block", background: "#0F1318", border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }}
+        style={{ display: "block", background: "#FFFFFF", border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }}
       >
         <g>
           {markers.map((m) => {
@@ -369,14 +369,14 @@ function MethodologyNote() {
     <details className="mono group" style={{ ...termCardStyle, padding: 0 }}>
       <summary
         className="flex cursor-pointer items-center justify-between rounded-[var(--term-radius)] px-4 py-3 outline-none transition-colors hover:bg-[var(--term-surface-2)]"
-        style={{ fontSize: 10, letterSpacing: "0.08em", color: "var(--term-text)", fontWeight: 700 }}
+        style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-text)", fontWeight: 700 }}
       >
         METHODOLOGY
         <ChevronDown className="size-4 text-[var(--term-text-muted)] transition-transform duration-200 group-open:rotate-180" aria-hidden />
       </summary>
       <div
         className="flex flex-col gap-2 px-4 pb-4"
-        style={{ fontSize: 10, color: "var(--term-text-muted)", letterSpacing: "0.03em", lineHeight: 1.55 }}
+        style={{ fontSize: 11, color: "var(--term-text-muted)", letterSpacing: "0.03em", lineHeight: 1.55 }}
       >
         <p>
           <span style={{ color: "var(--term-text)", fontWeight: 700 }}>BASELINE</span> = LEAGUE-AVERAGE MAKE
@@ -421,9 +421,9 @@ function MessageCard({ tone, title, body }: { tone: "muted" | "error"; title: st
   const accent = tone === "error" ? "var(--term-red)" : "var(--term-text-muted)"
   return (
     <div className="mono px-6 py-12 text-center" style={{ ...termCardStyle, borderLeft: `2px solid ${accent}` }}>
-      <p style={{ fontSize: 11, letterSpacing: "0.08em", color: accent, fontWeight: 700 }}>{title}</p>
+      <p style={{ fontSize: 12, letterSpacing: "0.08em", color: accent, fontWeight: 700 }}>{title}</p>
       {body ? (
-        <p className="mt-1" style={{ fontSize: 10, color: "var(--term-text-muted)" }}>
+        <p className="mt-1" style={{ fontSize: 11, color: "var(--term-text-muted)" }}>
           {body}
         </p>
       ) : null}
@@ -524,7 +524,7 @@ export function ShotQualityContent() {
         <>
           <div style={termCardStyle}>
             <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
-              <span className="mono" style={{ fontSize: 10, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 700 }}>
+              <span className="mono" style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 700 }}>
                 {season} · {data.meta.cellCount.toLocaleString()} CELLS · {data.meta.totalFga.toLocaleString()} FGA
               </span>
             </div>
@@ -566,7 +566,7 @@ export function ShotQualityContent() {
               </div>
             )}
 
-            <p className="mono mt-3" style={{ fontSize: 9, color: "var(--term-text-muted)", letterSpacing: "0.04em", lineHeight: 1.5 }}>
+            <p className="mono mt-3" style={{ fontSize: 10, color: "var(--term-text-muted)", letterSpacing: "0.04em", lineHeight: 1.5 }}>
               MARKER SIZE = SHOT ATTEMPTS (FGA) FROM THAT CELL. HOVER A CELL FOR ITS ZONE, VOLUME, AND VALUE.
             </p>
           </div>

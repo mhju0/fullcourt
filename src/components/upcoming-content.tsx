@@ -5,7 +5,7 @@ import Image from "next/image"
 import useSWR from "swr"
 import { format } from "date-fns"
 import { NBA_TEAM_IDS } from "@/lib/nba-team-ids"
-import { getTeamColors } from "@/lib/nba-team-colors"
+import { getTeamColors, readableTextOn } from "@/lib/nba-team-colors"
 import { currentDisplaySeason, isNbaOffSeason, nextSeasonLabel } from "@/lib/nba-season"
 import { apiFetcher } from "@/lib/fetcher"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -25,7 +25,7 @@ const RA_OPTIONS = [
 function OffSeasonEmptyState({ nextSeason }: { nextSeason: string }) {
   return (
     <div className="rounded-[4px] border border-[var(--term-border)] border-l-2 border-l-[var(--term-hardwood)] bg-[var(--term-surface)] px-6 py-10 text-center">
-      <p className="mono text-[10px] font-semibold uppercase tracking-[0.08em] text-[var(--term-text-muted)]">
+      <p className="mono text-[11px] font-semibold uppercase tracking-[0.08em] text-[var(--term-text-muted)]">
         REGULAR SEASON COMPLETE
       </p>
       <p className="mt-2 text-base font-medium text-[var(--term-text)]">See you next season.</p>
@@ -43,13 +43,15 @@ function TeamLogo({ abbreviation }: { abbreviation: string }) {
   const nbaId = NBA_TEAM_IDS[abbreviation]
 
   if (!nbaId || error) {
+    const bg = getTeamColors(abbreviation).primary
     return (
       <span
-        className="mono flex size-6 shrink-0 items-center justify-center text-[9px] font-bold text-white"
+        className="mono flex size-6 shrink-0 items-center justify-center text-[10px] font-bold"
         style={{
           borderRadius: "var(--term-radius-sm)",
-          background: getTeamColors(abbreviation).primary,
-          boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.14)",
+          background: bg,
+          color: readableTextOn(bg),
+          boxShadow: "inset 0 0 0 1px rgba(0,0,0,0.12)",
         }}
       >
         {abbreviation}
@@ -107,7 +109,7 @@ export function UpcomingContent() {
                 border: `1px solid ${active ? "var(--term-blue)" : "var(--term-border)"}`,
                 borderRadius: "var(--term-radius)",
                 padding: "4px 10px",
-                fontSize: 11,
+                fontSize: 12,
                 letterSpacing: "0.04em",
                 fontWeight: 600,
                 cursor: "pointer",
@@ -121,7 +123,7 @@ export function UpcomingContent() {
 
       {/* ── Game count ────────────────────────────────────────────── */}
       {!loading && !error && games && (
-        <p className="mono mb-3" style={{ fontSize: 10, color: "var(--term-text-muted)", letterSpacing: "0.04em" }}>
+        <p className="mono mb-3" style={{ fontSize: 11, color: "var(--term-text-muted)", letterSpacing: "0.04em" }}>
           {games.length.toLocaleString()} GAME{games.length !== 1 ? "S" : ""} FOUND
         </p>
       )}
@@ -143,7 +145,7 @@ export function UpcomingContent() {
             borderRadius: "var(--term-radius)",
           }}
         >
-          <p style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-red)", fontWeight: 700 }}>{error}</p>
+          <p style={{ fontSize: 12, letterSpacing: "0.08em", color: "var(--term-red)", fontWeight: 700 }}>{error}</p>
         </div>
       ) : !games || games.length === 0 ? (
         isOffSeason ? (
@@ -151,7 +153,7 @@ export function UpcomingContent() {
         ) : (
           <div
             className="mono px-6 py-12 text-center"
-            style={{ border: "1px dashed var(--term-border)", borderRadius: "var(--term-radius)", fontSize: 11, color: "var(--term-text-muted)" }}
+            style={{ border: "1px dashed var(--term-border)", borderRadius: "var(--term-radius)", fontSize: 12, color: "var(--term-text-muted)" }}
           >
             NO SCHEDULED GAMES MATCH THIS FILTER.
           </div>
@@ -213,7 +215,7 @@ export function UpcomingContent() {
                         style={{
                           background: isHomeAdv ? "var(--term-blue)" : "var(--term-red)",
                           color: "var(--term-surface)",
-                          fontSize: 10,
+                          fontSize: 11,
                           fontWeight: 700,
                           padding: "2px 6px",
                           borderRadius: "var(--term-radius-sm)",

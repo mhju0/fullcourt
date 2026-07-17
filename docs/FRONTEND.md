@@ -108,9 +108,9 @@ is unavailable, the guide still closes for the current page. The responsive pane
 desktop and becomes a scrollable bottom sheet on mobile. Base UI provides the modal semantics,
 focus trap, dismissal, and trigger-focus restoration.
 
-### `matchup-card.tsx` — the core matchup row (broadcast/dark style)
+### `matchup-card.tsx` — the core matchup row (broadcast style)
 
-Dark card (`background: var(--term-surface)`, `1px solid var(--term-border)`) topped by a
+White card (`background: var(--term-surface)`, `1px solid var(--term-border)`) topped by a
 team-color band (away | home from `getTeamColors`) with a **2px left-border accent** colored
 by confidence:
 - `getConfidence(diff)`: `high` `|diff| ≥ 2.0`, `med` `≥ 1.0`, `neutral` otherwise, `none`
@@ -157,7 +157,7 @@ Loaded via `next/dynamic` with `ssr: false` and a skeleton. Uses SWR:
 
 Loaded via `next/dynamic` (`ssr: false`). SWR `/api/games/upcoming?season=2025-26&minRA=…`.
 RA filter pills, an off-season empty state (`OffSeasonEmptyState`), and a table of upcoming
-games with an "edge" badge (home edge blue, away edge red). Rendered in the dark **broadcast
+games with an "edge" badge (home edge blue, away edge red). Rendered in the **broadcast
 style** (`var(--term-surface)` card fill, `1px solid var(--term-border)`, `.mono` labels) —
 consistent with Today's Games / Analysis.
 
@@ -166,7 +166,7 @@ consistent with Today's Games / Analysis.
 Portal-rendered modal (`createPortal` to `document.body`). SWR `/api/game/{id}`, with a
 nav-history stack so clicking a "recent game" drills into that game and Back returns. Escape
 and backdrop close it. Renders `GameStatusRow`, `RaBadge`, two `FatigueDetailColumn`s, and
-`RecentResultsList` (last-5 W/L) per team. Rendered in the dark **broadcast style**
+`RecentResultsList` (last-5 W/L) per team. Rendered in the **broadcast style**
 (`var(--term-surface)` panel, `1px solid var(--term-border)`, `.mono` labels, a
 `var(--term-surface-2)` inset breakdown surface).
 
@@ -218,42 +218,52 @@ maps) when the Supabase env vars are unset (client is `null`).
 the shadcn `base-nova` style, `neutral` base color, CSS variables, and the `@/components`,
 `@/lib`, `@/hooks`, `@/components/ui` aliases.
 
-## Design system — "Broadcast" (dark)
+## Design system — "Broadcast" (light)
 
-The app is **dark-only** — a game-night broadcast graphics language: a near-black ground,
-team colors carrying each matchup, monospace data values, an amber "live" accent, and NBA
-red/blue kept strictly as the **fatigue / rest-advantage data semantics** (red = more fatigued,
-blue = more rested), brightened for legibility on dark. `<html>` carries the `dark` class and
-`globals.css` sets `color-scheme: dark`. Every color flows through the `--term-*` CSS tokens, so
-reskinning the tokens in `globals.css` re-themes the whole app; component code should read tokens,
-never hard-code hexes. (Previous "Bloomberg Terminal" light theme retired in the Broadcast
-redesign.)
+The app is **light-only** — a daylight broadcast / editorial box-score language: a warm
+off-white paper ground, white cards lifting on hairline borders, near-black text, team colors
+carrying each matchup, monospace data values, a burnt-amber "live" accent, and NBA red/blue kept
+strictly as the **fatigue / rest-advantage data semantics** (red = more fatigued, blue = more
+rested), darkened for legibility on white. `<html>` carries **no** `dark` class and `globals.css`
+sets `color-scheme: light`. Every color flows through the `--term-*` CSS tokens, so reskinning the
+tokens in `globals.css` re-themes the whole app; component code should read tokens, never
+hard-code hexes.
 
-### Color tokens (verified — dark values in `globals.css :root`)
+> **Theme lineage:** "Bloomberg Terminal" (light) → "Broadcast" (dark) → **"Broadcast" (light,
+> current — flipped 2026-07-17 for legibility)**. Each redesign kept the same flat/token
+> architecture and the same components; only token values moved.
+
+### Color tokens (verified — light values in `globals.css :root`)
 
 | Token / Hex | Role |
 |-------------|------|
-| `--term-bg #0A0B0D` | page background (near-black) |
-| `--term-surface #12151A` | card / panel fill |
-| `--term-surface-2 #191D24` | stat tiles, inset panels, hover |
-| `--term-border #23262C` | borders / dividers |
-| `--term-hairline #2E323A` | subtle inner rules / center markers |
-| `--term-text #F2F4F7` | primary text |
-| `--term-text-muted #8A929C` | muted / label text |
-| `--term-text-dim #B7BEC7` | secondary text (brighter than muted) |
-| `--term-red #E5484D` | high confidence · danger · "higher fatigue" |
-| `--term-blue #3B82F6` | primary · med confidence · "lower fatigue" · charts · active data |
-| `--term-hardwood #D2A24C` | neutral accent |
-| `--term-amber #F5A623` | **live** dot + active nav underline (broadcast accent) |
-| `--term-pos #31C46B` / `--term-neg #F0603E` | win / loss, up / down |
+| `--term-bg #FAF9F6` | page background (warm off-white paper) |
+| `--term-surface #FFFFFF` | card / panel fill (lifts off the page) |
+| `--term-surface-2 #F0EEE9` | stat tiles, inset panels, table headers, hover |
+| `--term-border #E2DED6` | borders / dividers |
+| `--term-hairline #D4CFC5` | subtle inner rules / center markers |
+| `--term-text #111318` | primary text (near-black) |
+| `--term-text-muted #5A626C` | muted / label text |
+| `--term-text-dim #363B42` | secondary text (darker than muted) |
+| `--term-red #DC2626` | high confidence · danger · "higher fatigue" |
+| `--term-blue #2563EB` | primary · med confidence · "lower fatigue" · charts · active data |
+| `--term-hardwood #A16207` | neutral accent |
+| `--term-amber #C2410C` | **live** dot + active nav underline (broadcast accent) |
+| `--term-pos #15803D` / `--term-neg #DC2626` | win / loss, up / down |
+| `--term-neutral #6B7280` | neutral semantic / badge outlines |
+
+> On light, "raised" reads as *slightly tinted*, not lighter: `--term-surface` is pure white and
+> `--term-surface-2` steps **down** into warm gray — the inverse of the dark theme's ramp.
 
 > Team colors (matchup + upcoming cards) come from `src/lib/nba-team-colors.ts`
 > (`getTeamColors(abbr)` → `{ primary, secondary }`, neutral fallback). They are brand chrome
 > only — the top color band, logo chips, and identity dots — and never override the red/blue
-> fatigue semantics. shadcn semantic tokens in `:root` are set to matching dark values
-> (`--background #0A0B0D`, `--foreground #F2F4F7`, `--card #12151A`, `--primary #3B82F6`,
-> `--destructive #E5484D`, `--accent #D2A24C`); chart palette `--chart-1..5` =
-> blue / red / hardwood / emerald / violet.
+> fatigue semantics. Chip text runs through `readableTextOn(hex)` (same module), which picks
+> `#FFFFFF` or `#111318` by the fill's sRGB luminance — without it, light primaries (SAS
+> `#C4CED4`) would render white-on-white. shadcn semantic tokens in `:root` are set to matching
+> light values (`--background #FAF9F6`, `--foreground #111318`, `--card #FFFFFF`,
+> `--primary #2563EB`, `--destructive #DC2626`, `--accent #A16207`); chart palette
+> `--chart-1..5` = blue / red / hardwood / emerald / violet.
 
 ### Typography
 
@@ -283,9 +293,11 @@ floor(LOC_Y/10)`, 1-ft cells — see `scripts/aggregate_shot_grid.py` in
 the boundary, paint, free-throw circle, backboard/rim, restricted-area arc, three-point line
 (two straight corner segments + an arc computed from `asin(22 / 23.75)`), and the center-circle
 arc — all derived geometrically, not hardcoded pixel paths. Color ramps (endpoints
-brightened to read on the near-black `#0F1318` court): sequential tan→blue
-(`#D2A24C` → `#3B82F6`) for expected-eFG%, divergent blue→neutral→red
-(`#3B82F6` → `#2A313A` → `#E5484D`) for the GBM−baseline diff.
+darkened to read on the white `#FFFFFF` court): sequential tan→blue
+(`#A16207` → `#2563EB`) for expected-eFG%, divergent blue→neutral→red
+(`#2563EB` → `#E5E7EB` → `#DC2626`) for the GBM−baseline diff. The diff-neutral is
+near-white so "models agree" cells recede *into* the court (on the dark theme it was a
+near-black `#2A313A` for the same reason).
 
 ### Two-layer header
 
@@ -297,5 +309,11 @@ mirrors the broadcast aesthetic with mono metadata.
 The FullCourt logo ("Angled Divider" court) lives in `src/components/court-mark.tsx`
 (`<CourtMark size>` — a tilted center line splitting a blue/rested half from a red/fatigued
 half, with an amber center circle; fixed brand hexes, not theme tokens). It renders in the
-nav status bar; the same mark backs the favicon (`src/app/icon.svg`) and the social/OG card
-(`src/app/opengraph-image.tsx`).
+nav status bar, so its strokes are **near-black `#111318`** to read on the light chrome.
+
+> **Off-page brand assets stay dark by design.** The favicon (`src/app/icon.svg`) and the
+> social/OG card (`src/app/opengraph-image.tsx`) are self-contained badges that carry their own
+> dark ground (`#12151A` / `#0A0B0D`) and keep the pre-flip brightened palette (`#3B82F6`,
+> `#E5484D`, `#F5A623`, `#F2F4F7`). They never sit on the app's page background — a browser tab
+> and a link-preview card render on someone else's chrome — so they stay legible as-is and were
+> deliberately left untouched in the light flip. Do **not** "fix" them to match the in-app mark.

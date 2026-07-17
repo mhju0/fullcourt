@@ -30,12 +30,12 @@ export function NavBar() {
         }}
       >
         <div className="mx-auto flex h-full max-w-7xl items-center justify-between px-4 sm:px-6">
-          <div className="flex items-center gap-2.5" style={{ fontSize: "10px", letterSpacing: "0.08em" }}>
+          <div className="flex items-center gap-2.5" style={{ fontSize: "11px", letterSpacing: "0.08em" }}>
             <CourtMark size={22} className="shrink-0" />
             <span style={{ color: "var(--term-red)", fontWeight: 700 }}>FULLCOURT</span>
             <span className="hidden sm:inline" style={{ color: "var(--term-text-muted)" }}>NBA ANALYTICS PLATFORM</span>
           </div>
-          <div className="flex items-center gap-3" style={{ fontSize: "10px", letterSpacing: "0.08em" }}>
+          <div className="flex items-center gap-3" style={{ fontSize: "11px", letterSpacing: "0.08em" }}>
             <span style={{ color: "var(--term-text-muted)" }}>{currentDisplaySeason()} SEASON</span>
             {HAS_LIVE_GAMES && (
               <span className="flex items-center gap-1.5">
@@ -81,7 +81,7 @@ export function NavBar() {
                     ? "border-[var(--term-amber)] text-[var(--term-text)]"
                     : "border-transparent text-[var(--term-text-muted)] hover:text-[var(--term-text)]"
                 )}
-                style={{ fontSize: "11px", letterSpacing: "0.05em" }}
+                style={{ fontSize: "12px", letterSpacing: "0.05em" }}
               >
                 {label}
               </Link>
