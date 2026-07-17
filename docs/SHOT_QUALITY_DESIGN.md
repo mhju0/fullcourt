@@ -400,34 +400,3 @@ gate result above:
 Everything else in §1–§8 above — the honest framing, the hybrid storage split, the model
 comparison being served (not just internally benchmarked), the location-only feature scope, and
 the expected-eFG%/xPPS headline metrics — matches what actually shipped.
-
----
-
-## Self-review
-
-Re-read against the probes (`ml/shot_data_probe.txt`, `ml/shot_defend_probe.txt`), the project
-docs (`DATABASE.md`, `API.md`, `ROADMAP.md`, `PLAYOFF_PREDICTOR_DESIGN.md`), and the
-`drizzle/` migration listing. Each required section is covered; every open decision is deferred
-to the human, not silently locked.
-
-> **Historical note:** the table below reviews the *original design draft* against the probes —
-> it predates the build and is kept for the record. The build itself is reviewed in "Actual
-> build vs. design" above and cross-referenced against real code/output files throughout §7–§8.
-
-| # | Section | Done | Notes |
-|---|---|---|---|
-| 1 | Purpose & honest framing | ✅ | States IS (location-based expected value) vs IS NOT (no defender/shot-clock → not contestedness); recommends **"Expected Shot Value (xeFG%)"** with the "calibration win, not classification win" rationale; name flagged open. |
-| 2 | Data source & scope | ✅ | `ShotChartDetail` only; season options anchored to the **1996-97** coordinate reach [Verified probe §5]; 2019-20 bubble analyzed both ways, **recommend include** (no travel dependence), flagged open. |
-| 3 | Storage strategy | ✅ | Four options (a–d) with concrete size/query/fidelity/complexity trade-offs; **Supabase limit tagged [Unknown]** and made the gating question; recommends **hybrid (c)+(d)** as limit-robust, final call deferred. |
-| 4 | Model definition | ✅ | Target = make/miss → `P(make)`, derived xeFG%/xPPS; features from available fields only (no tracking); **baseline = zone-average**; win = calibration; walk-forward by season with regime-shift + leakage guards. |
-| 5 | Schema & migration (draft) | ✅ | Draft tables per storage choice (`shot_grid` + `shot_value_surface`, or raw `shots`); **next migration = `0008`** [Verified drizzle listing]; RLS (2 policies) + grants + `tablesFilter` pattern; explicit "hand-apply, nothing created now." |
-| 6 | API & frontend sketch | ✅ | `GET /api/shot-quality` (`{ data, error }`); `/shot-quality` hexbin page in the terminal aesthetic (colors/bg cited); kept a sketch; loading/empty states noted for build time. |
-| 7 | Phasing plan | ✅ | SQ-0…SQ-7 table, each with a human-run verification gate and a commit; isolation guarantees (no `fatigue.ts`, no metric rename, additive tables, separate ingest). |
-| 8 | Open decisions | ✅ | Seven bulleted decisions (name, season scope, bubble, storage, model family, player identity, headline metric) for a one-pass answer. |
-
-**Constraints honored:** no code/schema/migration/frontend created (only this doc); `fatigue.ts`
-untouched; rest-advantage identifiers untouched; no `drizzle-kit`, no git, no DB connection, no
-`nba_api` calls, no Alembic. All probe-derived facts are cited to the probe files; the Supabase
-limit is tagged **[Unknown]** pending human confirmation.
-</content>
-</invoke>
