@@ -182,3 +182,7 @@ docs/             # architecture, database, pipeline, API, frontend
 
 Built by **Michael Ju** ([@mhju0](https://github.com/mhju0)). Licensed under the
 [MIT License](LICENSE).
+
+The bundled [Outfit](https://github.com/Outfitio/Outfit-Fonts) font faces in
+`src/app/fonts/` (used to render the social/OG card) are © 2021 The Outfit Project Authors
+and licensed separately under the [SIL Open Font License 1.1](src/app/fonts/OFL.txt).
