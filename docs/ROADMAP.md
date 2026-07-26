@@ -6,10 +6,22 @@ kept operational for portfolio review; no additional product modules are planned
 "Feature-complete" means no new **product modules**. Interface and correctness work continues:
 a design and UX audit on 2026-07-26 shipped a quick-win pass — the confidence-tier fix, the
 focus indicator, IBM Plex Mono, deviation-from-coin-flip backtest charts, and the Upcoming
-Edges rename —
-and left a tracked backlog in [GitHub issues](https://github.com/mhju0/fullcourt/issues),
-including one **P0**: three failure paths that render nothing and a missing error boundary
-([#1](https://github.com/mhju0/fullcourt/issues/1)). The repository is not closed to fixes.
+Edges rename.
+
+A closeout pass on 2026-07-27 emptied the tracker. Shipped: the blank-render P0 and a route
+error boundary ([#1](https://github.com/mhju0/fullcourt/issues/1)); a historical hit rate and
+sample size on every rest-advantage number, on both the matchup cards and Upcoming Edges
+([#4](https://github.com/mhju0/fullcourt/issues/4)); and the retirement of the unrendered
+`monthlyTrends` payload ([#6](https://github.com/mhju0/fullcourt/issues/6)). Closed as
+`wontfix` after verifying each against HEAD — real, but not worth building on a project
+entering its off-season: URL-reflected view state
+([#2](https://github.com/mhju0/fullcourt/issues/2)), the seven-step type scale and home-page
+thesis block ([#3](https://github.com/mhju0/fullcourt/issues/3)), and extracting the three
+duplicated presentational components ([#5](https://github.com/mhju0/fullcourt/issues/5)).
+
+The dependency tree is deliberately frozen; see
+[SEASON_ROLLOVER.md §8](SEASON_ROLLOVER.md) before regenerating the lockfile, and §7 for the
+season counts that do not derive themselves. The repository is not closed to fixes.
 
 ## Shipped modules
 
