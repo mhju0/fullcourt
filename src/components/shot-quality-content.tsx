@@ -368,35 +368,41 @@ function MethodologyNote() {
   return (
     <details className="mono group" style={{ ...termCardStyle, padding: 0 }}>
       <summary
-        className="flex cursor-pointer items-center justify-between rounded-[var(--term-radius)] px-4 py-3 outline-none transition-colors hover:bg-[var(--term-surface-2)]"
+        className="flex cursor-pointer items-center justify-between rounded-[var(--term-radius)] px-4 py-3 transition-colors hover:bg-[var(--term-surface-2)]"
         style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-text)", fontWeight: 700 }}
       >
         METHODOLOGY
         <ChevronDown className="size-4 text-[var(--term-text-muted)] transition-transform duration-200 group-open:rotate-180" aria-hidden />
       </summary>
       <div
-        className="flex flex-col gap-2 px-4 pb-4"
-        style={{ fontSize: 11, color: "var(--term-text-muted)", letterSpacing: "0.03em", lineHeight: 1.55 }}
+        className="flex max-w-3xl flex-col gap-3 px-4 pb-4"
+        style={{ fontSize: 15, color: "var(--term-text-muted)", lineHeight: 1.55 }}
       >
         <p>
-          <span style={{ color: "var(--term-text)", fontWeight: 700 }}>BASELINE</span> = LEAGUE-AVERAGE MAKE
-          RATE PER SHOT ZONE (THE FLOOR — A STEP FUNCTION). <span style={{ color: "var(--term-text)", fontWeight: 700 }}>GBM</span>{" "}
-          = A LOCATION-BASED GRADIENT-BOOSTING MODEL THAT RESOLVES VALUE AS A SMOOTH SURFACE FINER THAN THE ~6 NATIVE ZONES.
+          <span style={{ color: "var(--term-text)", fontWeight: 600 }}>Baseline</span> is the
+          league-average make rate per shot zone — the floor, and a step function.{" "}
+          <span style={{ color: "var(--term-text)", fontWeight: 600 }}>GBM</span> is a
+          location-based gradient-boosting model that resolves value as a smooth surface, finer
+          than the six native zones.
         </p>
         <p>
-          THE GBM BEAT THE ZONE BASELINE ON WALK-FORWARD LOG-LOSS / BRIER, BUT THE MARGIN IS SMALL
-          (~1%). THIS IS A CONSISTENT <span style={{ color: "var(--term-text)", fontWeight: 700 }}>CALIBRATION</span> IMPROVEMENT,
-          NOT A LARGE ACCURACY JUMP — A SINGLE SHOT IS NEAR A COIN FLIP WITHIN ANY ZONE.
+          The GBM beat the zone baseline on walk-forward log-loss and Brier score, but the margin
+          is small — about 1%. Treat it as a consistent{" "}
+          <span style={{ color: "var(--term-text)", fontWeight: 600 }}>calibration</span>{" "}
+          improvement, not a large accuracy jump: within any one zone, a single shot is close to a
+          coin flip.
         </p>
         <p>
-          EXPECTED eFG% IS WHAT AN AVERAGE SHOOTER CONVERTS FROM EACH SPOT. THE GAP BETWEEN A TEAM&apos;S
-          ACTUAL AND EXPECTED eFG% READS AS{" "}
-          <span style={{ color: "var(--term-text)", fontWeight: 700 }}>SHOTS-ABOVE-EXPECTED</span> (SHOT-MAKING RELATIVE TO SHOT SELECTION).
+          Expected eFG% is what an average shooter converts from each spot. The gap between a
+          team&apos;s actual and expected eFG% reads as{" "}
+          <span style={{ color: "var(--term-text)", fontWeight: 600 }}>shots above expected</span>{" "}
+          — shot-making relative to shot selection.
         </p>
         <p>
-          THE SURFACE COMES FROM A MODEL TRAINED ON PRIOR SEASONS (EXPANDING WINDOW). BECAUSE SHOT
-          EFFICIENCY DRIFTS OVER TIME, THE MOST RECENT SEASON&apos;S EXPECTED VALUES CAN RUN SLIGHTLY LOW.
-          NO DEFENDER DISTANCE OR SHOT CLOCK IS USED (ABSENT FROM PUBLIC NBA DATA).
+          The surface comes from a model trained on prior seasons using an expanding window.
+          Because shot efficiency drifts over time, the most recent season&apos;s expected values
+          can run slightly low. No defender distance or shot clock is used — neither appears in
+          public NBA data.
         </p>
       </div>
     </details>

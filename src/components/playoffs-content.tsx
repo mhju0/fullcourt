@@ -65,12 +65,13 @@ function MethodComparisonHeader({ summary }: { summary: PlayoffsResponse["summar
           label="IN-SAMPLE"
           sub="FULL TRAINING FIT"
           summary={summary.fullInsample}
-          accent="var(--term-hardwood)"
+          accent="var(--term-neutral)"
         />
       </div>
-      <p className="mono mt-3" style={{ fontSize: 11, color: "var(--term-text-muted)", letterSpacing: "0.04em", lineHeight: 1.5 }}>
-        OUT-OF-SAMPLE ACCURACY IS PREDICTED FROM PRIOR SEASONS ONLY — THE HONEST GENERALIZATION NUMBER.
-        IN-SAMPLE REFLECTS FIT ON DATA THE MODEL WAS TRAINED ON AND WILL TYPICALLY LOOK BETTER.
+      <p className="mt-3 max-w-3xl" style={{ fontSize: 15, color: "var(--term-text-muted)", lineHeight: 1.55 }}>
+        Out-of-sample accuracy is predicted from prior seasons only — the honest
+        generalisation number, and the one to judge the model on. In-sample reflects fit on
+        data the model was trained on, and will almost always look better than it is.
       </p>
     </div>
   )
@@ -98,7 +99,9 @@ function seriesCorrectness(
 function correctnessAccent(status: CorrectnessStatus): string {
   if (status === "correct") return TERM_ACCENT.blue
   if (status === "incorrect") return TERM_ACCENT.red
-  return TERM_ACCENT.tan
+  // "pending" is neutral grey, not tan — tan does not separate from red for
+  // deuteranopia (ΔE 3.2), which made an upset and a pending series look alike.
+  return TERM_ACCENT.neutral
 }
 
 function CorrectnessBadge({ status, source }: { status: CorrectnessStatus; source: CorrectnessSource }) {
@@ -228,7 +231,7 @@ function SeriesCard({ series }: { series: PlayoffSeriesWithPredictions }) {
         aria-label={expanded ? "Collapse series details" : "Expand series details"}
         onClick={toggle}
         onKeyDown={onKeyDown}
-        className="cursor-pointer outline-none transition-colors hover:bg-[var(--term-bg)] focus-visible:ring-2 focus-visible:ring-[var(--term-blue)]/40"
+        className="cursor-pointer transition-colors hover:bg-[var(--term-bg)] focus-visible:ring-2 focus-visible:ring-[var(--term-blue)]/40"
         style={{ padding: "10px 14px" }}
       >
         <div className="flex items-center justify-between gap-3">

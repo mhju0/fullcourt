@@ -74,7 +74,7 @@ function RecentResultsList({
                   onGameClick(g.gameId)
                 }
               }}
-              className="mono flex cursor-pointer flex-wrap items-center justify-between gap-x-2 px-1.5 py-1 transition-colors hover:bg-[var(--term-surface-2)] focus-visible:bg-[var(--term-surface-2)] focus-visible:outline-none"
+              className="mono flex cursor-pointer flex-wrap items-center justify-between gap-x-2 px-1.5 py-1 transition-colors hover:bg-[var(--term-surface-2)] focus-visible:bg-[var(--term-surface-2)]"
               style={{ fontSize: 12, color: "var(--term-text)", borderRadius: "var(--term-radius-sm)" }}
               aria-label={`View game details: ${format(parseISO(g.date), "MMM d")} vs ${g.opponentAbbreviation}`}
             >
