@@ -8,6 +8,7 @@ import { TRAVEL_LOOKBACK_DAYS } from "@/lib/fatigue"
 import { NBA_TEAM_IDS } from "@/lib/nba-team-ids"
 import { getTeamColors, readableTextOn } from "@/lib/nba-team-colors"
 import { formatRestAdvantageDisplay } from "@/lib/rest-advantage-display"
+import { NEUTRAL_REST_ADVANTAGE_THRESHOLD } from "@/lib/rest-advantage-evidence"
 import { getTeamBranding } from "@/lib/team-history"
 import { TERM_ACCENT } from "@/lib/terminal-styles"
 import { cn } from "@/lib/utils"
@@ -18,20 +19,30 @@ import type { FatigueInfo, GameResponse } from "@/types"
 const HIGH_CONF_THRESHOLD = 2.0
 const MED_CONF_THRESHOLD = 1.0
 
-type Confidence = "high" | "med" | "neutral" | "none"
+export type Confidence = "high" | "med" | "low" | "neutral" | "none"
 
-function getConfidence(diff: number | null | undefined): Confidence {
+/**
+ * Confidence tiers sit ABOVE the canonical call threshold, never straddling it.
+ * `classifyRestAdvantage` calls a game for a team at |differential| >= 0.5, so a
+ * gap of e.g. 0.7 makes RestAdvPanel print "BOS 0.7"; tiering that as "neutral"
+ * made the same panel name a team and declare the matchup neutral at once. Anything
+ * the classifier calls is at least "low" — see the invariant test in __tests__.
+ */
+export function getConfidence(diff: number | null | undefined): Confidence {
   if (diff === null || diff === undefined) return "none"
   const abs = Math.abs(diff)
   if (abs >= HIGH_CONF_THRESHOLD) return "high"
   if (abs >= MED_CONF_THRESHOLD) return "med"
+  if (abs >= NEUTRAL_REST_ADVANTAGE_THRESHOLD) return "low"
   return "neutral"
 }
 
 function confidenceAccent(c: Confidence): string {
   if (c === "high") return TERM_ACCENT.red
   if (c === "med") return TERM_ACCENT.blue
-  if (c === "neutral") return TERM_ACCENT.tan
+  // Not tan: against --term-red it measures ΔE 3.2 for deuteranopia (floor 8) and 14.5
+  // for normal vision (floor 15), so a "HIGH CONF" and a "NEUTRAL" card were
+  // indistinguishable at a 2px border. Magnitude is carried by the badge text instead.
   return TERM_ACCENT.neutral
 }
 
@@ -100,7 +111,14 @@ function TeamLogo({
 function ConfidenceBadge({ confidence }: { confidence: Confidence }) {
   if (confidence === "none") return null
 
-  const label = confidence === "high" ? "HIGH CONF" : confidence === "med" ? "MED CONF" : "NEUTRAL"
+  const label =
+    confidence === "high"
+      ? "HIGH CONF"
+      : confidence === "med"
+        ? "MED CONF"
+        : confidence === "low"
+          ? "LOW CONF"
+          : "NEUTRAL"
 
   const baseStyle: React.CSSProperties = {
     fontSize: "11px",
@@ -604,7 +622,7 @@ export function MatchupCard({ game, index = 0, isScoreFlashing = false }: Matchu
         onClick={toggle}
         onKeyDown={onKeyDown}
         className={cn(
-          "cursor-pointer outline-none transition-colors hover:bg-[var(--term-surface-2)] focus-visible:ring-2 focus-visible:ring-[var(--term-blue)]/40",
+          "cursor-pointer transition-colors hover:bg-[var(--term-surface-2)] focus-visible:ring-2 focus-visible:ring-[var(--term-blue)]/40",
           isScoreFlashing && "animate-[scoreFlash_0.5s_ease-out]"
         )}
         style={{ padding: "14px 16px" }}
