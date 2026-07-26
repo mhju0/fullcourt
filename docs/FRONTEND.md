@@ -270,7 +270,7 @@ hard-code hexes.
 | `--term-text-dim #363B42` | secondary text (darker than muted) |
 | `--term-red #DC2626` | high confidence · danger · "higher fatigue" |
 | `--term-blue #2563EB` | primary · med confidence · "lower fatigue" · charts · active data |
-| `--term-blue-ghost #C3D4FA` | the coin-flip portion of a win-rate bar (see Charts below) |
+| `--term-bar-base #E3DFD6` | the coin-flip portion of a win-rate bar — warm neutral, not a second blue (see Charts below) |
 | `--term-hardwood #A16207` | **non-data chrome only** — off-season banners, amber CTA hover |
 | `--term-amber #C2410C` | **live** dot + active nav underline (broadcast accent) |
 | `--term-pos #15803D` / `--term-neg #DC2626` | win / loss, up / down |
@@ -337,17 +337,21 @@ onboarding dialog keeps its explicit amber rings, which are a real visible indic
 ### Charts (`analysis-content.tsx`)
 
 Both backtest bar charts are **zero-based** — `domain={[0, yMax]}`, where `yMax` comes from
-`chartMaxPct()` (the greater of 70 and the data's peak rounded up to a decade, so no bar can
-be clipped). They previously clipped to `[45, 75]` and `[40, 70]`, which renders a 4.8-point
-edge as a landslide.
+`chartMaxPct()` (the greater of 80 and the data's peak rounded up to a whole 20-point tick
+step, so no bar can be clipped and the top gridline is always a labelled tick — `ticks` comes
+from `chartTicks()` because Recharts, left to improvise on a `[0, 70]` domain, emitted
+0/20/40/60 plus an orphan 70). They previously clipped to `[45, 75]` and `[40, 70]`, which
+renders a 4.8-point edge as a landslide.
 
 Legibility is recovered without the dishonest axis by splitting each bar at the baseline:
 `splitAtBaseline(winPct)` yields `base = min(winPct, 50)` and `edge = max(0, winPct - 50)`,
-stacked under one `stackId`. The `base` segment is `--term-blue-ghost` ("what a coin flip
+stacked under one `stackId`. The `base` segment is `--term-bar-base` ("what a coin flip
 already gives you") and the `edge` segment is solid `--term-blue` ("the edge the model
-finds") — so the measured edge is the part with length. `BASELINE_PCT = 50` is drawn as a
-solid 2px `--term-text` `ReferenceLine` **declared after the bars** so it renders on top, and
-a `BaselineLegend` names all three marks. Tooltips read the win rate off the datum, not off
+finds") — so the measured edge is both the only saturated mark and the part with length.
+`BASELINE_PCT = 50` is drawn as a **hairline dashed** `--term-neutral` `ReferenceLine`
+(1px, `4 4`, 0.7 opacity) **declared after the bars** so it renders on top, with no inline
+"COIN FLIP" text; the neutral/blue seam already marks 50% on every bar, so the line only
+confirms the rule. A `BaselineLegend` names all three marks. Tooltips read the win rate off the datum, not off
 `payload` — with two stacked series, iterating `payload` would print the split halves — and
 each adds a `±N.N PP VS COIN FLIP` line.
 

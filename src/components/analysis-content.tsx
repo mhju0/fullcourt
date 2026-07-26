@@ -91,7 +91,7 @@ function BaselineLegend() {
       style={{ fontSize: 11, color: "var(--term-text-muted)", letterSpacing: "0.03em" }}
     >
       <span className="inline-flex items-center gap-2">
-        <span style={{ width: 12, height: 12, borderRadius: 2, background: "var(--term-blue-ghost)" }} />
+        <span style={{ width: 12, height: 12, borderRadius: 2, background: "var(--term-bar-base)" }} />
         WHAT A COIN FLIP ALREADY GIVES YOU
       </span>
       <span className="inline-flex items-center gap-2">
@@ -99,7 +99,7 @@ function BaselineLegend() {
         THE EDGE THE MODEL FINDS
       </span>
       <span className="inline-flex items-center gap-2">
-        <span style={{ width: 14, height: 2, background: "var(--term-text)" }} />
+        <span style={{ width: 14, borderTop: "1px dashed var(--term-neutral)" }} />
         50% BASELINE
       </span>
     </div>
@@ -147,12 +147,22 @@ function StatCard({
 
 /** A coin flip. Every win-rate bar is split here so the edge is what has length. */
 const BASELINE_PCT = 50
-const MIN_CHART_MAX_PCT = 70
+const TICK_STEP_PCT = 20
+const MIN_CHART_MAX_PCT = 80
 
-/** Zero-based, rounded up to a clean decade so no bar is ever clipped. */
+/**
+ * Zero-based, rounded up to a whole tick step so no bar is ever clipped AND the
+ * top gridline is always a labelled tick. Letting Recharts pick ticks off a
+ * domain of [0, 70] produced 0/20/40/60 plus an orphan 70 at an odd interval.
+ */
 function chartMaxPct(values: readonly number[]): number {
   const peak = values.length > 0 ? Math.max(...values) : 0
-  return Math.max(MIN_CHART_MAX_PCT, Math.ceil(peak / 10) * 10)
+  return Math.max(MIN_CHART_MAX_PCT, Math.ceil(peak / TICK_STEP_PCT) * TICK_STEP_PCT)
+}
+
+/** Evenly spaced ticks up to and including `max`. Recharts otherwise improvises. */
+function chartTicks(max: number): number[] {
+  return Array.from({ length: max / TICK_STEP_PCT + 1 }, (_, i) => i * TICK_STEP_PCT)
 }
 
 /** Splits a win rate into the coin-flip portion and the measured edge above it. */
@@ -285,6 +295,7 @@ function SeasonWinRateBySeasonChart({
             />
             <YAxis
               domain={[0, yMax]}
+              ticks={chartTicks(yMax)}
               tickFormatter={(v: number) => `${v}%`}
               tick={{ fontSize: 12, fill: "var(--term-text-muted)", fontFamily: MONO_FONT_STACK }}
               tickLine={false}
@@ -304,10 +315,18 @@ function SeasonWinRateBySeasonChart({
                 Sample size stays available on hover. Likewise no inline baseline label —
                 the bars run the full width here, so it has nowhere to sit; the legend
                 below names the rule. */}
-            <Bar dataKey="base" stackId="wr" fill="var(--term-blue-ghost)" maxBarSize={48} isAnimationActive={false} />
+            <Bar dataKey="base" stackId="wr" fill="var(--term-bar-base)" maxBarSize={48} isAnimationActive={false} />
             <Bar dataKey="edge" stackId="wr" fill="var(--term-blue)" maxBarSize={48} isAnimationActive={false} />
-            {/* Declared after the bars so the baseline draws on top of them. */}
-            <ReferenceLine y={BASELINE_PCT} stroke="var(--term-text)" strokeWidth={2} />
+            {/* Declared after the bars so the baseline draws on top of them. Hairline
+                and dashed on purpose: the neutral/blue seam already marks 50% on every
+                bar, so this only has to confirm the rule, not shout it. */}
+            <ReferenceLine
+              y={BASELINE_PCT}
+              stroke="var(--term-neutral)"
+              strokeWidth={1}
+              strokeDasharray="4 4"
+              strokeOpacity={0.7}
+            />
           </BarChart>
         </ResponsiveContainer>
       )}
@@ -806,6 +825,7 @@ export function AnalysisContent() {
               />
               <YAxis
                 domain={[0, thresholdYMax]}
+                ticks={chartTicks(thresholdYMax)}
                 tickFormatter={(v: number) => `${v}%`}
                 tick={{ fontSize: 12, fill: "var(--term-text-muted)", fontFamily: MONO_FONT_STACK }}
                 tickLine={false}
@@ -821,7 +841,7 @@ export function AnalysisContent() {
               <Bar
                 dataKey="base"
                 stackId="wr"
-                fill="var(--term-blue-ghost)"
+                fill="var(--term-bar-base)"
                 maxBarSize={72}
                 style={{ cursor: "pointer" }}
                 onClick={handleBarClick}
@@ -845,17 +865,16 @@ export function AnalysisContent() {
                   style={{ fontSize: "11px", fill: "var(--term-text-muted)", fontFamily: MONO_FONT_STACK }}
                 />
               </Bar>
-              {/* Declared after the bars so the baseline draws on top of them. */}
+              {/* Declared after the bars so the baseline draws on top of them. Hairline
+                  and dashed on purpose — see the season chart. No inline "COIN FLIP"
+                  label either: the legend below already names the rule, and the text sat
+                  in the plot competing with the bars. */}
               <ReferenceLine
                 y={BASELINE_PCT}
-                stroke="var(--term-text)"
-                strokeWidth={2}
-                label={{
-                  value: "COIN FLIP",
-                  position: "insideTopRight",
-                  fontSize: 11,
-                  fill: "var(--term-text)",
-                }}
+                stroke="var(--term-neutral)"
+                strokeWidth={1}
+                strokeDasharray="4 4"
+                strokeOpacity={0.7}
               />
             </BarChart>
           </ResponsiveContainer>
