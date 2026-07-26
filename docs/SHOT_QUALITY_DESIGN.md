@@ -1,5 +1,11 @@
 # Shot Quality Model — Design & Build Record
 
+> **Local working artifacts.** Citations to files under `ml/` (probe dumps,
+> `*_metrics.txt`, `sq5_*.txt`) and `docs/audit/` refer to unpublished analysis
+> artifacts kept out of the repository. Each is reproducible by the script named
+> alongside it, and is cited as provenance for the numbers rather than as a
+> browsable link.
+
 > **Status (2026-07-02): BUILT.** All phases SQ-0…SQ-7 are complete — code, schema (migration
 > `0008`, hand-applied), a live `GET /api/shot-quality` route, and a `/shot-quality` page + nav
 > link all exist. This document was originally written as a pre-build design draft (§1–§8 below

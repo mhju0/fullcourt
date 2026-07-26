@@ -13,7 +13,8 @@ Reproduce:
 ```
 
 All numbers below were emitted to `ml/phase3_results.txt` and re-read from that file (not via
-`grep`) to guard against terminal digit-masking.
+`grep`) to guard against terminal digit-masking. That raw output is a local working artifact
+and is not committed; re-run the command above to regenerate it.
 
 ---
 

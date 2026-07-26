@@ -1,5 +1,11 @@
 # Database
 
+> **Local working artifacts.** Citations to files under `ml/` (probe dumps,
+> `*_metrics.txt`, `sq5_*.txt`) and `docs/audit/` refer to unpublished analysis
+> artifacts kept out of the repository. Each is reproducible by the script named
+> alongside it, and is cited as provenance for the numbers rather than as a
+> browsable link.
+
 Schema, migrations, RLS, and Data API grants — all transcribed from
 `src/lib/db/schema.ts` and `drizzle/*.sql`. Column names below are the **physical
 PostgreSQL column** (with the Drizzle field name in parentheses where they differ).

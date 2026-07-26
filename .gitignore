@@ -73,5 +73,12 @@ CLAUDE.md
 /.codex/
 /docs/agents/
 .tokensave/
-# Design/UX audit working files — kept on disk, deliberately unpublished.
+# Internal analysis kept on disk and deliberately unpublished: design/UX audit working
+# files, the docs/audit reports, and raw model probe/metric dumps from the ml pipeline.
 /design-audit/
+/docs/audit/
+ml/phase3_results.txt
+ml/predict_series_dryrun.txt
+ml/shot_data_probe.txt
+ml/shot_defend_probe.txt
+ml/shot_value/

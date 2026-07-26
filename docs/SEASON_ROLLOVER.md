@@ -1,5 +1,11 @@
 # Season rollover runbook (NBA 2026-27 and beyond)
 
+> **Local working artifacts.** Citations to files under `ml/` (probe dumps,
+> `*_metrics.txt`, `sq5_*.txt`) and `docs/audit/` refer to unpublished analysis
+> artifacts kept out of the repository. Each is reproducible by the script named
+> alongside it, and is cited as provenance for the numbers rather than as a
+> browsable link.
+
 How FullCourt moves to a new NBA season. **Most of it is automatic.** The one manual
 step is seeding the new schedule, because the NBA CDN blocks the environments that
 could otherwise fetch it. Written after the 2026-07 full-schedule audit; keep it current.

@@ -1,5 +1,11 @@
 # Data pipeline & fatigue model
 
+> **Local working artifacts.** Citations to files under `ml/` (probe dumps,
+> `*_metrics.txt`, `sq5_*.txt`) and `docs/audit/` refer to unpublished analysis
+> artifacts kept out of the repository. Each is reproducible by the script named
+> alongside it, and is cited as provenance for the numbers rather than as a
+> browsable link.
+
 Two halves: **Python** ingests schedule/score/OT data into `games`/`teams`; **TypeScript**
 (`tsx`) computes `fatigue_scores` and `predictions` using `src/lib/fatigue.ts`. All
 constants below are copied from the source.
