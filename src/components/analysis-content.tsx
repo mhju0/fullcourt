@@ -297,29 +297,17 @@ function SeasonWinRateBySeasonChart({
             />
             {/* Zero-based, split at the baseline: the pale segment is what a coin flip
                 already gives you, the solid segment is the measured edge. */}
+            {/* No per-bar n= label here, unlike the four-bar threshold chart. At ~40
+                seasons each bar is roughly 44px wide while "n=1,031" needs ~45px, and
+                zero-basing compresses a 52–58% spread into the top ~10% of the plot, so
+                every label lands at nearly the same height and they overlap into a smear.
+                Sample size stays available on hover. Likewise no inline baseline label —
+                the bars run the full width here, so it has nowhere to sit; the legend
+                below names the rule. */}
             <Bar dataKey="base" stackId="wr" fill="var(--term-blue-ghost)" maxBarSize={48} isAnimationActive={false} />
-            <Bar dataKey="edge" stackId="wr" fill="var(--term-blue)" maxBarSize={48} isAnimationActive={false}>
-              <LabelList
-                dataKey="games"
-                position="top"
-                formatter={(v: string | number | boolean | null | undefined) =>
-                  typeof v === "number" ? `n=${v.toLocaleString()}` : ""
-                }
-                style={{ fontSize: "11px", fill: "var(--term-text-muted)", fontFamily: MONO_FONT_STACK }}
-              />
-            </Bar>
+            <Bar dataKey="edge" stackId="wr" fill="var(--term-blue)" maxBarSize={48} isAnimationActive={false} />
             {/* Declared after the bars so the baseline draws on top of them. */}
-            <ReferenceLine
-              y={BASELINE_PCT}
-              stroke="var(--term-text)"
-              strokeWidth={2}
-              label={{
-                value: "COIN FLIP",
-                position: "insideTopRight",
-                fontSize: 11,
-                fill: "var(--term-text)",
-              }}
-            />
+            <ReferenceLine y={BASELINE_PCT} stroke="var(--term-text)" strokeWidth={2} />
           </BarChart>
         </ResponsiveContainer>
       )}
