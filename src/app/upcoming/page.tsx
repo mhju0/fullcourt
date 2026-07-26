@@ -4,7 +4,7 @@ import { UpcomingContentLazy } from "@/components/upcoming-lazy";
 import { currentDisplaySeason } from "@/lib/nba-season";
 
 export const metadata: Metadata = {
-  title: "Future Games",
+  title: "Upcoming Edges",
 };
 
 export default function UpcomingPage() {
@@ -12,8 +12,8 @@ export default function UpcomingPage() {
     <div className="flex flex-col gap-4">
       <PageHeader
         eyebrow={`${currentDisplaySeason()} SEASON`}
-        title="Future Games"
-        description="UPCOMING SCHEDULED GAMES FILTERED BY REST ADVANTAGE THRESHOLD."
+        title="Upcoming Edges"
+        description="Scheduled games where one team arrives measurably fresher, filtered by the size of the rest gap. This is not betting advice."
       />
 
       <UpcomingContentLazy />

@@ -16,7 +16,7 @@ test.describe("First-visit guide", () => {
       guide.getByRole("link", { name: "Today's Games" })
     ).toBeVisible();
     await expect(guide.getByRole("link", { name: "Analysis" })).toBeVisible();
-    await expect(guide.getByRole("link", { name: "Picks" })).toBeVisible();
+    await expect(guide.getByRole("link", { name: "Upcoming Edges" })).toBeVisible();
     await expect(guide.getByRole("link", { name: "Playoffs" })).toBeVisible();
     await expect(
       guide.getByRole("link", { name: "Shot Quality" })

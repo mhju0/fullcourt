@@ -7,9 +7,6 @@ import { currentDisplaySeason } from "@/lib/nba-season"
 import { PRIMARY_NAV_ITEMS } from "@/lib/primary-navigation"
 import { cn } from "@/lib/utils"
 
-// Hardcoded for now — wire to "are there games today" later.
-const HAS_LIVE_GAMES = false
-
 function isActive(pathname: string, href: string): boolean {
   if (href === "/") return pathname === "/"
   return pathname === href || pathname.startsWith(href + "/")
@@ -37,22 +34,6 @@ export function NavBar() {
           </div>
           <div className="flex items-center gap-3" style={{ fontSize: "11px", letterSpacing: "0.08em" }}>
             <span style={{ color: "var(--term-text-muted)" }}>{currentDisplaySeason()} SEASON</span>
-            {HAS_LIVE_GAMES && (
-              <span className="flex items-center gap-1.5">
-                <span
-                  className="animate-[pulse_1.7s_ease-in-out_infinite]"
-                  style={{
-                    display: "inline-block",
-                    width: "8px",
-                    height: "8px",
-                    borderRadius: "50%",
-                    background: "var(--term-amber)",
-                    boxShadow: "0 0 9px var(--term-amber)",
-                  }}
-                />
-                <span style={{ color: "var(--term-amber)", fontWeight: 700 }}>LIVE</span>
-              </span>
-            )}
           </div>
         </div>
       </div>

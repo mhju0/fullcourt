@@ -12,7 +12,7 @@ export default function PlayoffsPage() {
       <PageHeader
         eyebrow="PLAYOFF PREDICTOR"
         title="Series Predictions"
-        description="PREDICTS PLAYOFF SERIES WINNERS FROM REST/FATIGUE-DERIVED FEATURES — SAME REST-ADVANTAGE LINEAGE AS THE REGULAR-SEASON MODEL, RUN THROUGH A SEPARATE SERIES-LEVEL MODEL."
+        description="Predicts playoff series winners from rest- and fatigue-derived features — the same rest-advantage lineage as the regular-season model, run through a separate series-level model."
       />
 
       <PlayoffsContentLazy />

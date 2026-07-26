@@ -13,7 +13,9 @@ export const PRIMARY_NAV_ITEMS = [
   },
   {
     href: "/upcoming",
-    label: "PICKS",
+    // Not "PICKS": the route, the page heading and the tab title all said something
+    // different, and "picks" promised betting tips the guide copy below disclaims.
+    label: "UPCOMING EDGES",
     guideDescription:
       "Find scheduled matchups with a larger modeled rest edge. This is not betting advice.",
   },

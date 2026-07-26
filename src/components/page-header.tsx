@@ -16,7 +16,9 @@ export function PageHeader({
         {eyebrow}
       </span>
       <h1 className="text-2xl font-bold tracking-tight text-[var(--term-text)]">{title}</h1>
-      <p className="mono max-w-2xl" style={{ fontSize: 12, color: "var(--term-text-muted)", lineHeight: 1.5 }}>
+      {/* Sentence case in the body face, not uppercase mono: caps remove word-shape
+          cues and slow reading for anything longer than a label. */}
+      <p className="max-w-2xl" style={{ fontSize: 15, color: "var(--term-text-muted)", lineHeight: 1.55 }}>
         {description}
       </p>
     </div>

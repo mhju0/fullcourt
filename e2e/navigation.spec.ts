@@ -7,7 +7,7 @@ test.describe("Primary navigation", () => {
     const nav = page.getByRole("navigation", { name: "Main navigation" });
     const games = nav.getByRole("link", { name: "Today's Games" });
     const analysis = nav.getByRole("link", { name: "Analysis" });
-    const picks = nav.getByRole("link", { name: "Picks" });
+    const picks = nav.getByRole("link", { name: "Upcoming Edges" });
 
     await expect(games).toBeVisible();
     await expect(analysis).toBeVisible();
