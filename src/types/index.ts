@@ -92,14 +92,6 @@ export interface HomeAwayBreakdown {
   };
 }
 
-export interface MonthlyTrend {
-  /** "YYYY-MM" */
-  month: string;
-  games: number;
-  restedTeamWins: number;
-  winPct: number;
-}
-
 /** Historical backtest stats (final games with fatigue data, |RA| >= 0.5). */
 export interface AnalysisResponse {
   /** Total games counted (|RA| >= 0.5). */
@@ -109,8 +101,6 @@ export interface AnalysisResponse {
   overallWinRate: number;
   thresholds: ThresholdBucket[];
   homeAwayBreakdown: HomeAwayBreakdown;
-  /** Sorted chronologically (ascending). */
-  monthlyTrends: MonthlyTrend[];
   /**
    * More-rested team win rate aggregated per NBA season (regular-season calendar only).
    */

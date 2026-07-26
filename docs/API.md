@@ -144,7 +144,6 @@ the `predictions` table.**
     winPct`)
   - `homeAwayBreakdown` (`homeTeamMoreRested` / `awayTeamMoreRested`: `games, restedTeamWins,
     winPct`)
-  - `monthlyTrends: MonthlyTrend[]` (`"YYYY-MM"`, ascending)
   - `seasonWinRates` (per season: `season, games, restedTeamWins, winPct`)
 - All `winPct` values are 0–100 with one decimal.
 

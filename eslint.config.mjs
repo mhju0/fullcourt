@@ -15,6 +15,7 @@ const eslintConfig = defineConfig([
     // Python virtualenv for the data pipeline + ml/ scripts — some deps (e.g.
     // scikit-learn's HTML-repr widget) ship stray .js files ESLint would otherwise scan.
     "venv/**",
+    "scripts/venv/**",
     "ml/.venv/**",
   ]),
 ]);

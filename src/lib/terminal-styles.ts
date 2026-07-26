@@ -71,8 +71,5 @@ export const termTdStyle: CSSProperties = {
 export const TERM_ACCENT = {
   red: "var(--term-red)",
   blue: "var(--term-blue)",
-  tan: "var(--term-hardwood)",
   neutral: "var(--term-neutral)",
 } as const
-
-export type TermAccentTone = keyof typeof TERM_ACCENT

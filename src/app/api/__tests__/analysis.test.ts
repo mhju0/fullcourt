@@ -88,7 +88,6 @@ describe("GET /api/analysis", () => {
         winPct: expect.any(Number),
       }),
     });
-    expect(Array.isArray(d.monthlyTrends)).toBe(true);
     expect(Array.isArray(d.seasonWinRates)).toBe(true);
   });
 
@@ -110,7 +109,6 @@ describe("GET /api/analysis", () => {
     }
     pcts.push(d.homeAwayBreakdown.homeTeamMoreRested.winPct);
     pcts.push(d.homeAwayBreakdown.awayTeamMoreRested.winPct);
-    for (const m of d.monthlyTrends) pcts.push(m.winPct);
 
     for (const p of pcts) {
       expect(p).toBeGreaterThanOrEqual(0);

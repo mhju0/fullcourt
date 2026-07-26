@@ -10,7 +10,6 @@ import {
   timestamp,
   varchar,
 } from "drizzle-orm/pg-core";
-import { relations } from "drizzle-orm";
 
 export const teams = pgTable("teams", {
   id: serial("id").primaryKey(),
@@ -199,101 +198,4 @@ export const playoffSeriesPredictions = pgTable(
     createdAt: timestamp("created_at").notNull().defaultNow(),
   },
   (t) => [index("playoff_series_predictions_series_id_idx").on(t.seriesId)]
-);
-
-// ─── Relations ──────────────────────────────────────────────────
-
-export const teamsRelations = relations(teams, ({ many }) => ({
-  homeGames: many(games, { relationName: "homeTeam" }),
-  awayGames: many(games, { relationName: "awayTeam" }),
-  fatigueScores: many(fatigueScores),
-  predictedAdvantages: many(predictions, { relationName: "predictedAdvantageTeam" }),
-  actualWins: many(predictions, { relationName: "actualWinner" }),
-  playoffSeriesHomeCourt: many(playoffSeries, {
-    relationName: "playoffSeriesHomeCourtTeam",
-  }),
-  playoffSeriesOpponent: many(playoffSeries, {
-    relationName: "playoffSeriesOpponentTeam",
-  }),
-  playoffSeriesWon: many(playoffSeries, { relationName: "playoffSeriesWinner" }),
-  playoffSeriesPredicted: many(playoffSeriesPredictions),
-}));
-
-export const gamesRelations = relations(games, ({ one, many }) => ({
-  homeTeam: one(teams, {
-    fields: [games.homeTeamId],
-    references: [teams.id],
-    relationName: "homeTeam",
-  }),
-  awayTeam: one(teams, {
-    fields: [games.awayTeamId],
-    references: [teams.id],
-    relationName: "awayTeam",
-  }),
-  fatigueScores: many(fatigueScores),
-  predictions: many(predictions),
-}));
-
-export const fatigueScoresRelations = relations(fatigueScores, ({ one }) => ({
-  game: one(games, {
-    fields: [fatigueScores.gameId],
-    references: [games.id],
-  }),
-  team: one(teams, {
-    fields: [fatigueScores.teamId],
-    references: [teams.id],
-  }),
-}));
-
-export const predictionsRelations = relations(predictions, ({ one }) => ({
-  game: one(games, {
-    fields: [predictions.gameId],
-    references: [games.id],
-  }),
-  predictedAdvantageTeam: one(teams, {
-    fields: [predictions.predictedAdvantageTeamId],
-    references: [teams.id],
-    relationName: "predictedAdvantageTeam",
-  }),
-  actualWinner: one(teams, {
-    fields: [predictions.actualWinnerId],
-    references: [teams.id],
-    relationName: "actualWinner",
-  }),
-}));
-
-export const playoffSeriesRelations = relations(
-  playoffSeries,
-  ({ one, many }) => ({
-    homeCourtTeam: one(teams, {
-      fields: [playoffSeries.homeCourtTeamId],
-      references: [teams.id],
-      relationName: "playoffSeriesHomeCourtTeam",
-    }),
-    opponentTeam: one(teams, {
-      fields: [playoffSeries.opponentTeamId],
-      references: [teams.id],
-      relationName: "playoffSeriesOpponentTeam",
-    }),
-    seriesWinner: one(teams, {
-      fields: [playoffSeries.seriesWinnerTeamId],
-      references: [teams.id],
-      relationName: "playoffSeriesWinner",
-    }),
-    predictions: many(playoffSeriesPredictions),
-  })
-);
-
-export const playoffSeriesPredictionsRelations = relations(
-  playoffSeriesPredictions,
-  ({ one }) => ({
-    series: one(playoffSeries, {
-      fields: [playoffSeriesPredictions.seriesId],
-      references: [playoffSeries.id],
-    }),
-    predictedWinnerTeam: one(teams, {
-      fields: [playoffSeriesPredictions.predictedWinnerTeamId],
-      references: [teams.id],
-    }),
-  })
 );

@@ -3,7 +3,6 @@ import type {
   GameSearchResponse,
   GameSearchResult,
   HomeAwayBreakdown,
-  MonthlyTrend,
   RestAdvantage,
   ThresholdBucket,
 } from "@/types";
@@ -107,23 +106,6 @@ export function buildHistoricalBacktest(
     },
   };
 
-  const monthly = new Map<string, { games: number; wins: number }>();
-  for (const row of decidable) {
-    const month = row.date.slice(0, 7);
-    const aggregate = monthly.get(month) ?? { games: 0, wins: 0 };
-    aggregate.games++;
-    if (row.restedTeamWon) aggregate.wins++;
-    monthly.set(month, aggregate);
-  }
-  const monthlyTrends: MonthlyTrend[] = Array.from(monthly.entries())
-    .sort(([left], [right]) => left.localeCompare(right))
-    .map(([month, aggregate]) => ({
-      month,
-      games: aggregate.games,
-      restedTeamWins: aggregate.wins,
-      winPct: winPct(aggregate.wins, aggregate.games),
-    }));
-
   const seasonSource =
     seasonMinRA > NEUTRAL_REST_ADVANTAGE_THRESHOLD
       ? decidable.filter((row) => Math.abs(row.differential) >= seasonMinRA)
@@ -150,7 +132,6 @@ export function buildHistoricalBacktest(
     overallWinRate: winPct(overallWins, decidable.length),
     thresholds,
     homeAwayBreakdown,
-    monthlyTrends,
     seasonWinRates,
   };
 }
