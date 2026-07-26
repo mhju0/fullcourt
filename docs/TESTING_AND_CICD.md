@@ -19,7 +19,8 @@ python3 -m unittest discover -s scripts/tests -p 'test_*.py' -v
 Config (`vitest.config.ts`): `environment: "node"`, `include: ["src/**/*.test.ts"]`,
 `passWithNoTests: false`, alias `@ → ./src`. `@vitejs/plugin-react` and Testing Library
 (`@testing-library/react`, `@testing-library/jest-dom`) are installed; current tests are
-pure unit/route tests (no component rendering yet).
+pure unit/route tests (no component rendering yet) — the one test that imports a component
+imports only an exported pure function from it, never renders it.
 
 Test files and coverage:
 
@@ -39,6 +40,7 @@ Test files and coverage:
 | `src/app/api/__tests__/games.test.ts` | `GET /api/games/[date]` valid/invalid dates, empty results, `GameResponse` shape. Mocks `@/lib/db/queries`. |
 | `src/app/api/__tests__/games-search.test.ts` | `GET /api/games/search` defaults, validation, and query delegation. |
 | `src/app/api/__tests__/games-upcoming.test.ts` | `GET /api/games/upcoming` season/threshold validation and query delegation. |
+| `src/components/__tests__/matchup-card-confidence.test.ts` | **Invariant:** anything `classifyRestAdvantage` calls for a team is never labelled `NEUTRAL` by `getConfidence`. Sweeps −3.0…3.0 in 0.1 steps and asserts the contradiction set is empty, plus the tier boundaries (0.5 `low` / 1.0 `med` / 2.0 `high`). Discriminating: with the pre-fix tiers it fails listing exactly `[-0.9…-0.5, 0.5…0.9]`. |
 
 API route tests `vi.mock("@/lib/db/queries")`, so they exercise validation + response
 shaping without a real database. These should pass against the current code.
@@ -60,12 +62,13 @@ an empty browser. Specs: `e2e/home.spec.ts`, `e2e/analysis.spec.ts`, `e2e/naviga
 
 > **The e2e specs target the current terminal UI** (they are **not** stale — they assert the live
 > markup, including the `Today's Matchups` / `Rest Advantage Analysis` headings and the
-> `TODAY'S GAMES`/`ANALYSIS`/`PICKS` nav; none reference a removed `/tracker` route). They still
+> `TODAY'S GAMES`/`ANALYSIS`/`UPCOMING EDGES` nav; none reference a removed `/tracker` route).
+> They still
 > need a running server **and** a populated database to pass — the suite drives real
 > `/api/games/*` and `/api/analysis` responses, so it is not a build-time check, and it runs only
 > on demand (`pnpm test:e2e`), never in CI.
 >
-> - **`navigation.spec.ts`** — nav links `TODAY'S GAMES` / `ANALYSIS` / `PICKS` →
+> - **`navigation.spec.ts`** — nav links `TODAY'S GAMES` / `ANALYSIS` / `UPCOMING EDGES` →
 >   `/` / `/analysis` / `/upcoming`. The active link is asserted via its `aria-current="page"`
 >   attribute (the amber-underline active state), and inactive links are checked to lack it.
 > - **`home.spec.ts`** — the heading is the `<h1>` **"Today's Matchups"** (`REST ADVANTAGE

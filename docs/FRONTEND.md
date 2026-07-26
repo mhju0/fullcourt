@@ -5,9 +5,10 @@ the actual code (`src/app/`, `src/components/`, `src/app/globals.css`).
 
 ## App shell — `src/app/layout.tsx`
 
-- Fonts via `next/font/google`: **Inter** (`--font-inter`, weights 400/500/600 — body/sans)
-  and **Outfit** (`--font-outfit`, weights 600/700 — headings, exposed as the `font-heading`
-  utility). `<html>` gets both font variables + `antialiased`.
+- Fonts via `next/font/google`: **Inter** (`--font-inter`, weights 400/500/600 — body/sans),
+  **Outfit** (`--font-outfit`, weights 600/700 — headings, exposed as the `font-heading`
+  utility), and **IBM Plex Mono** (`--font-plex-mono`, weights 400/600/700 — all data, labels
+  and chart ticks). `<html>` gets all three font variables + `antialiased`.
 - Metadata: title default `"FullCourt — NBA Analytics"`, template `"%s · FullCourt"`, plus
   a description.
 - Layout: `<NavBar />` (sticky), `<main>` with a centered `max-w-7xl` container
@@ -37,11 +38,20 @@ State machine over season/month/day:
 - `useLiveGames(gameIds)` merges Realtime score/status updates into the rendered list;
   recently-updated cards flash (`scoreFlash`).
 - Pieces: heading eyebrow `REST ADVANTAGE DASHBOARD` + `<h1>Today's Matchups</h1>`;
-  `StatSummaryRow` (GAMES TODAY, AVG REST ADV, **SEASON WIN RATE** fetched live via
+  `StatSummaryRow` (GAMES ON THIS DATE, AVG REST ADV, **ALL-TIME WIN RATE** fetched live via
   `useSWR("/api/analysis")` — the same `overallWinRate` `/analysis` renders, shown as `—` while
-  loading/on error, HIGH CONF PICKS where `HIGH_CONF_THRESHOLD = 2.0`); season `<select>`;
-  month tabs (`NBA_REGULAR_MONTHS`); `DateChip`s ("DAYS WITH GAMES"); prev/next day arrows;
-  the `MatchupCard` list with skeleton/empty/error states.
+  loading/on error, HIGH CONF PICKS where `HIGH_CONF_THRESHOLD = 2.0`); the shared
+  `<SeasonSelector>`; month tabs (`NBA_REGULAR_MONTHS`); `DateChip`s ("DAYS WITH GAMES");
+  prev/next day arrows; the `MatchupCard` list with skeleton/empty/error states.
+- The first tile is **"GAMES ON THIS DATE"**, not "GAMES TODAY": its value is
+  `mergedGames.length` for the *selected* day, and `pickDefaultGamesDate` deliberately selects
+  a non-today date whenever today has no games (the normal case in the off-season).
+- The season control is the shared `<SeasonSelector>` (`season-selector.tsx`), which lists
+  **newest season first**. The hand-rolled `<select>` it replaced mapped `NBA_SEASONS` raw, so
+  it opened on 1985-86 and disagreed with every other season picker in the app.
+- Month tabs and `DateChip`s carry their active/inactive colors in **classes, not the `style`
+  prop**. An inline `background`/`border` shorthand outranks any class rule, which previously
+  made both controls' `hover:` states dead.
 
 ### `/analysis` — Analysis (`src/app/analysis/page.tsx`)
 
@@ -49,10 +59,13 @@ Server wrapper just renders `<AnalysisContentLazy />`. The lazy client component
 (`analysis-content.tsx`) owns the header — a terminal-style `HISTORICAL BACKTEST` eyebrow +
 `<h1>Rest Advantage Analysis</h1>` + descriptor — so the heading renders once.
 
-### `/upcoming` — Future Games (`src/app/upcoming/page.tsx`)
+### `/upcoming` — Upcoming Edges (`src/app/upcoming/page.tsx`)
 
-Server wrapper: header (`2025–26 Season` + `<h1>Future Games</h1>` + description) then
-`<UpcomingContentLazy />`.
+Server wrapper: header (`<season> SEASON` eyebrow + `<h1>Upcoming Edges</h1>` + description)
+then `<UpcomingContentLazy />`. The nav label, the `<h1>` and the metadata title are all
+**"Upcoming Edges"** — previously the nav said `PICKS` while the page and tab said "Future
+Games", three names for one destination, and "picks" promised betting tips that the guide copy
+explicitly disclaims.
 
 ### `/playoffs` — Playoff Predictor (`src/app/playoffs/page.tsx`)
 
@@ -89,10 +102,11 @@ recovery links to Today's Games and Analysis without adding a client bundle or d
 1. **Top status bar** (28px, `var(--term-surface-2)`, bottom border `var(--term-border)`):
    a `<CourtMark size={22}>` brand logo + `FULLCOURT` (`var(--term-red)`) + `NBA ANALYTICS
    PLATFORM` (muted), and on the right `currentDisplaySeason() + " SEASON"` (dynamic — from
-   `src/lib/nba-season.ts`, not a hardcoded label) plus an amber LIVE dot gated by
-   `HAS_LIVE_GAMES` (**hardcoded `false`**).
+   `src/lib/nba-season.ts`, not a hardcoded label). There is **no LIVE dot** — it was gated by
+   a `HAS_LIVE_GAMES` constant hardcoded to `false`, so it never rendered in any state; the
+   dead branch was removed. Per-game LIVE status is shown by `MatchupCard` instead.
 2. **Main nav** (44px, `var(--term-surface)`, bottom border `var(--term-border)`): links from
-   `PRIMARY_NAV_ITEMS` (`src/lib/primary-navigation.ts`) — `TODAY'S GAMES → /`, `ANALYSIS → /analysis`, `PICKS → /upcoming`,
+   `PRIMARY_NAV_ITEMS` (`src/lib/primary-navigation.ts`) — `TODAY'S GAMES → /`, `ANALYSIS → /analysis`, `UPCOMING EDGES → /upcoming`,
    `PLAYOFFS → /playoffs`, `SHOT QUALITY → /shot-quality`. The active link gets an amber
    bottom border (`border-[var(--term-amber)]`) + `text-[var(--term-text)]` and carries
    `aria-current="page"`; inactive links are muted with a hover-to-text transition.
@@ -113,10 +127,18 @@ focus trap, dismissal, and trigger-focus restoration.
 White card (`background: var(--term-surface)`, `1px solid var(--term-border)`) topped by a
 team-color band (away | home from `getTeamColors`) with a **2px left-border accent** colored
 by confidence:
-- `getConfidence(diff)`: `high` `|diff| ≥ 2.0`, `med` `≥ 1.0`, `neutral` otherwise, `none`
-  when no RA. `confidenceAccent` returns the `TERM_ACCENT` tokens (`src/lib/terminal-styles.ts`):
-  high `TERM_ACCENT.red`, med `TERM_ACCENT.blue`, neutral `TERM_ACCENT.tan`, none
-  `TERM_ACCENT.neutral`.
+- `getConfidence(diff)`: `high` `|diff| ≥ 2.0`, `med` `≥ 1.0`, **`low` `≥ 0.5`**, `neutral`
+  below that, `none` when no RA. The `low` tier exists because the canonical classifier
+  (`NEUTRAL_REST_ADVANTAGE_THRESHOLD = 0.5`, imported from `rest-advantage-evidence.ts` rather
+  than redeclared) calls a game for a team at 0.5: with tiers starting at 1.0, every gap in
+  `[0.5, 1.0)` made `RestAdvPanel` print e.g. `BOS 0.7` while the badge directly beneath it
+  printed `NEUTRAL`. The invariant — *anything the classifier calls is at least `low`* — is
+  pinned by `src/components/__tests__/matchup-card-confidence.test.ts`.
+- `confidenceAccent` returns `TERM_ACCENT` tokens (`src/lib/terminal-styles.ts`): high
+  `.red`, med `.blue`, everything else `.neutral`. **Not `.tan`** — against `--term-red` it
+  measures ΔE 3.2 for deuteranopia (floor 8) and 14.5 for normal vision (floor 15), so a
+  HIGH CONF and a NEUTRAL card were indistinguishable at a 2px border. Confidence is
+  magnitude, and is carried by the badge text rather than a third hue.
 
 Layout per card: status line (`GameStatusRow` → LIVE/FINAL/UPCOMING + score),
 `away TeamBlock | FatigueBarsBlock | home TeamBlock | RestAdvPanel`, a `MetaStrip`, and a
@@ -128,7 +150,7 @@ click/keyboard-expandable detail grid (two `FatigueDetailColumn`s). Subcomponent
 - `RestAdvPanel` (~180–200px, left divider): `REST ADVANTAGE` label, team abbreviation +
   value (or `EVEN`), a center-anchored fill bar (home fills right in blue, away fills left in
   red; fill width = `min(|diff|/5, 1) * 50%`), and a `ConfidenceBadge` (HIGH CONF red /
-  MED CONF blue / NEUTRAL outlined).
+  MED CONF blue / LOW CONF and NEUTRAL outlined).
 - `MetaStrip` — game date plus flag chips: `AWAY/HOME B2B`, `AWAY/HOME 3IN4`, `AWAY/HOME
   4IN6`, `ALT`, `COAST`, `OT`.
 - `FatigueDetailColumn` — GP (30D/7D), back-to-back, 3-in-4, 4-in-6, road streak, travel
@@ -248,7 +270,8 @@ hard-code hexes.
 | `--term-text-dim #363B42` | secondary text (darker than muted) |
 | `--term-red #DC2626` | high confidence · danger · "higher fatigue" |
 | `--term-blue #2563EB` | primary · med confidence · "lower fatigue" · charts · active data |
-| `--term-hardwood #A16207` | neutral accent |
+| `--term-blue-ghost #C3D4FA` | the coin-flip portion of a win-rate bar (see Charts below) |
+| `--term-hardwood #A16207` | **non-data chrome only** — off-season banners, amber CTA hover |
 | `--term-amber #C2410C` | **live** dot + active nav underline (broadcast accent) |
 | `--term-pos #15803D` / `--term-neg #DC2626` | win / loss, up / down |
 | `--term-neutral #6B7280` | neutral semantic / badge outlines |
@@ -264,21 +287,76 @@ hard-code hexes.
 > `#C4CED4`) would render white-on-white. shadcn semantic tokens in `:root` are set to matching
 > light values (`--background #FAF9F6`, `--foreground #111318`, `--card #FFFFFF`,
 > `--primary #2563EB`, `--destructive #DC2626`, `--accent #A16207`); chart palette
-> `--chart-1..5` = blue / red / hardwood / emerald / violet.
+> `--chart-1..5` = blue / red / hardwood / emerald / violet. **The `--chart-*` palette is
+> shadcn scaffolding that no chart in this app reads** — recharts pulls `--term-*` directly.
+> Do not adopt it without re-measuring: `--chart-5` violet against `--chart-1` blue separates
+> by ΔE 0.4 for deuteranopia. `--term-blue` ↔ `--term-red` is the only pair in the codebase
+> that passes every separation check (ΔE 38.2 normal vision, 29.9 protanopia), which is why
+> the fatigue / rest-advantage semantics stay on exactly those two and nothing is added
+> alongside them.
 
 ### Typography
 
 - **Body / sans:** Inter (`--font-inter`).
 - **Headings (`h1–h3`):** Outfit (`--font-heading` / `font-heading` utility), bold + tight
   tracking.
-- **Data / labels:** the `.mono` class = `'Courier New', Courier, monospace`; numeric values
-  use `tabular-nums`. The Tailwind `--font-mono` token is a `ui-monospace` system stack.
+- **Data / labels:** the `.mono` class = `var(--font-plex-mono)` (**IBM Plex Mono**, loaded by
+  `next/font/google` in `layout.tsx`) with a `ui-monospace` fallback, and
+  `font-variant-numeric: tabular-nums` applied on the class itself. TS/TSX style objects that
+  need the same stack import `MONO_FONT_STACK` from `src/lib/terminal-styles.ts` rather than
+  re-declaring it — this includes every recharts `tick.fontFamily`.
+- This replaced `'Courier New'`, which set roughly 80% of the visible text: a metrically loose
+  typewriter face with weak tabular figures, and the largest single source of visual
+  cheapness in a dense numeric UI. `next/font` ships with Next.js, so the swap added **no npm
+  dependency**.
+
+### Sentence case vs. caps
+
+Uppercase mono is for **labels of about three words or fewer** — stat-card captions, table
+headers, section dividers, badges. Anything that is a *sentence* is set in Inter, sentence
+case, at 15px: `PageHeader` descriptions, the `/analysis` and `/` intro paragraphs, the
+playoffs OOS-vs-in-sample explainer, and the shot-quality `MethodologyNote`. All-caps removes
+word-shape cues and measurably slows reading past a few words.
+
+### Focus
+
+One app-wide indicator, defined once in `globals.css`:
+
+```css
+:focus-visible { outline: 2px solid var(--term-blue); outline-offset: 2px; }
+```
+
+`--ring` is a **solid** `#2563EB`. It was `rgba(37, 99, 235, 0.45)` and further halved by an
+`outline-ring/50` applied to `*`, which composited to 1.97:1 on white — under the 3:1 non-text
+minimum. Components may **reinforce** focus with a ring or a background tint but must not
+replace it: `focus-visible:outline-none` was removed from `matchup-card`, `playoffs-content`,
+`analysis-content` (explorer rows), `explore-game-detail-modal` and `shot-quality-content`
+(the methodology `<summary>`, which had focus removed with no replacement at all). The
+onboarding dialog keeps its explicit amber rings, which are a real visible indicator.
+
+### Charts (`analysis-content.tsx`)
+
+Both backtest bar charts are **zero-based** — `domain={[0, yMax]}`, where `yMax` comes from
+`chartMaxPct()` (the greater of 70 and the data's peak rounded up to a decade, so no bar can
+be clipped). They previously clipped to `[45, 75]` and `[40, 70]`, which renders a 4.8-point
+edge as a landslide.
+
+Legibility is recovered without the dishonest axis by splitting each bar at the baseline:
+`splitAtBaseline(winPct)` yields `base = min(winPct, 50)` and `edge = max(0, winPct - 50)`,
+stacked under one `stackId`. The `base` segment is `--term-blue-ghost` ("what a coin flip
+already gives you") and the `edge` segment is solid `--term-blue` ("the edge the model
+finds") — so the measured edge is the part with length. `BASELINE_PCT = 50` is drawn as a
+solid 2px `--term-text` `ReferenceLine` **declared after the bars** so it renders on top, and
+a `BaselineLegend` names all three marks. Tooltips read the win rate off the datum, not off
+`payload` — with two stacked series, iterating `payload` would print the split halves — and
+each adds a `±N.N PP VS COIN FLIP` line.
 
 ### Card / accent patterns
 
 - Broadcast cards: `var(--term-surface)` fill, `1px solid var(--term-border)`,
   `var(--term-radius)`. Many add a **2px left-border accent** via `TERM_ACCENT`
-  (`.tan` default, `.red` for errors/high-confidence, `.blue` for highlights).
+  (`.neutral` default, `.red` for errors/high-confidence, `.blue` for highlights).
+  `TERM_ACCENT.tan` is **not** used in any data role — see the token table above.
 - Uppercase mono labels with wide letter-spacing (`0.04–0.12em`) for "technical" headers.
 - Animations (`globals.css`): `fadeInUp` (card entrance, staggered by `index * 40ms`),
   `scoreFlash` (live-update glow).

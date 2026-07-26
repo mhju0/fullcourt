@@ -294,7 +294,7 @@ the same `{ data, error }` envelope + Zod validation + `getPublicApiErrorMessage
 - **Frontend:** a new **`/shot-quality`** page (working route name; tracks the §1 name decision),
   added to `nav-bar.tsx` — the **only** surface that reads shot data (isolation, §7). The core
   visual is a **half-court hexbin / shot chart**. As shipped it uses the light **"Broadcast"**
-  aesthetic (mono Courier, `--term-*` tokens, white court `#FFFFFF`; value ramp tan `#A16207` →
+  aesthetic (IBM Plex Mono, `--term-*` tokens, white court `#FFFFFF`; value ramp tan `#A16207` →
   blue `#2563EB`, and a blue→neutral→red `#DC2626` divergent ramp with a near-white `#E5E7EB`
   neutral for the GBM−baseline view), with color/size encoding expected eFG% vs attempts.
   *(Palette lineage: originally specced light ("Bloomberg Terminal"), rebuilt dark in the

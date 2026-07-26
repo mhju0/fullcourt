@@ -30,9 +30,10 @@ FullCourt quantifies how **travel, rest, and schedule density** shape NBA outcom
 ## Demo
 
 **Analysis — the 40-season backtest behind the headline finding.** Win rate by rest-advantage
-threshold, plotted against a coin-flip baseline so the size of the edge stays honest.
+threshold on a zero-based axis, with each bar split at the 50% coin-flip line: the pale
+segment is what chance already accounts for, the solid segment is the measured edge.
 
-<img src="docs/screenshots/analysis.png" alt="Rest Advantage Analysis: win rate by rest-advantage threshold across 38,985 regular-season games, each bar labelled with its sample size and compared against a 50% coin-flip reference line" width="900" />
+<img src="docs/screenshots/analysis.png" alt="Rest Advantage Analysis: win rate by rest-advantage threshold across 38,985 regular-season games on a zero-based axis. Each bar is split at a solid 50% coin-flip baseline, with a pale lower segment for the coin-flip portion and a solid blue upper segment for the measured edge, and is labelled with its sample size" width="900" />
 
 **Today's Games — the per-matchup view.** Each team's fatigue score, the rest-advantage
 differential, and a confidence read, with team colors carrying each card.

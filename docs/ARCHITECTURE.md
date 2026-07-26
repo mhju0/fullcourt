@@ -114,7 +114,8 @@ prerender and Edge (postgres-js needs Node). Full list in [API.md](API.md).
 
 ### 6. Frontend (Next.js App Router + React 19)
 
-- `app/layout.tsx` — Inter (body) + Outfit (headings) fonts, `<NavBar>`, footer, metadata.
+- `app/layout.tsx` — Inter (body) + Outfit (headings) + IBM Plex Mono (data/labels) fonts,
+  `<NavBar>`, footer, metadata.
 - `app/page.tsx` — **Today's Games** (client): season/month/day pickers → `/api/games/dates`
   then `/api/games/[date]`, with live merges from `useLiveGames`.
 - `app/analysis/page.tsx` / `app/upcoming/page.tsx` / `app/playoffs/page.tsx` /
@@ -163,7 +164,7 @@ the row change → connected clients update in place.
 - **Regular-season calendar guard** (`gameDateWithinRegularSeasonCalendar` in `queries.ts`)
   re-filters by Oct 1–Apr 30 even though ingest already excludes non-`002` IDs, defending
   against mis-tagged source rows.
-- **Design system unified (2026-06-29):** Today's Games, Analysis, Future Games
+- **Design system unified (2026-06-29):** Today's Games, Analysis, Upcoming Edges
   (`upcoming-content.tsx`) and the game-detail modal (`explore-game-detail-modal.tsx`) all use
   one flat design system; the earlier glassmorphism look has been fully migrated out. (This
   "Bloomberg Terminal" light style was later superseded by the dark "Broadcast" redesign, and
