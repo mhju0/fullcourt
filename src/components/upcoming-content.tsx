@@ -9,8 +9,9 @@ import { getTeamColors, readableTextOn } from "@/lib/nba-team-colors"
 import { currentDisplaySeason, isNbaOffSeason, nextSeasonLabel } from "@/lib/nba-season"
 import { apiFetcher } from "@/lib/fetcher"
 import { Skeleton } from "@/components/ui/skeleton"
+import { buildRestAdvantageEvidence } from "@/lib/rest-advantage-display"
 import { termCardStyle, termThStyle as thStyle, termTdStyle as tdStyle } from "@/lib/terminal-styles"
-import type { UpcomingGameWithRA } from "@/types"
+import type { AnalysisResponse, UpcomingGameWithRA } from "@/types"
 
 // ─── RA threshold options ──────────────────────────────────────────
 
@@ -92,6 +93,21 @@ export function UpcomingContent() {
   )
   const error = swrError ? (swrError instanceof Error ? swrError.message : "Failed to load games") : null
 
+  // Backtest slice that denominates each row's edge. Unlike the home page this component
+  // has no /api/analysis data to inherit, so it fetches its own. A failure here is not
+  // surfaced: the table still renders and the historical column reads "—", because a
+  // missing hit rate must never take the schedule down with it.
+  const { data: analysis } = useSWR<AnalysisResponse>("/api/analysis", apiFetcher, {
+    revalidateOnFocus: false,
+  })
+  const evidenceSource = analysis
+    ? {
+        thresholds: analysis.thresholds,
+        overallWinRate: analysis.overallWinRate,
+        totalGames: analysis.totalGames,
+      }
+    : null
+
   return (
     <div style={termCardStyle}>
       {/* ── Filter pills ──────────────────────────────────────────── */}
@@ -169,6 +185,7 @@ export function UpcomingContent() {
                 <th style={{ ...thStyle, textAlign: "right" }} className="hidden sm:table-cell">Away Fat.</th>
                 <th style={{ ...thStyle, textAlign: "center" }}>RA</th>
                 <th style={{ ...thStyle, textAlign: "center" }}>Edge</th>
+                <th style={{ ...thStyle, textAlign: "right" }}>Historically</th>
               </tr>
             </thead>
             <tbody>
@@ -176,6 +193,10 @@ export function UpcomingContent() {
                 const absDiff = Math.abs(g.restAdvantageDifferential)
                 const advAbbr = g.predictedAdvantageAbbreviation
                 const isHomeAdv = advAbbr === g.homeTeam.abbreviation
+                const evidence = buildRestAdvantageEvidence(
+                  g.restAdvantageDifferential,
+                  evidenceSource
+                )
 
                 return (
                   <tr
@@ -225,11 +246,36 @@ export function UpcomingContent() {
                         {advAbbr} EDGE
                       </span>
                     </td>
+                    <td style={{ ...tdStyle, textAlign: "right" }} className="tabular-nums">
+                      {evidence ? (
+                        <span
+                          className="inline-flex flex-col items-end"
+                          style={{ lineHeight: 1.35 }}
+                        >
+                          <span style={{ fontSize: 12, fontWeight: 700, color: "var(--term-text)" }}>
+                            {evidence.winPct.toFixed(1)}%
+                          </span>
+                          <span style={{ fontSize: 10, color: "var(--term-text-muted)" }}>
+                            gap {evidence.classLabel} · n={evidence.games.toLocaleString("en-US")}
+                          </span>
+                        </span>
+                      ) : (
+                        <span style={{ color: "var(--term-text-muted)" }}>—</span>
+                      )}
+                    </td>
                   </tr>
                 )
               })}
             </tbody>
           </table>
+          <p
+            className="mt-3"
+            style={{ fontSize: 11, lineHeight: 1.5, color: "var(--term-text-muted)" }}
+          >
+            &ldquo;Historically&rdquo; is how often the more-rested team won across every past
+            regular-season game in the matching rest-advantage class, against a 50% coin-flip
+            baseline. It describes that class of games, not this one. Not betting advice.
+          </p>
         </div>
       )}
     </div>

@@ -7,7 +7,11 @@ import { FatigueBar, type FatigueBarTone } from "@/components/fatigue-bar"
 import { TRAVEL_LOOKBACK_DAYS } from "@/lib/fatigue"
 import { NBA_TEAM_IDS } from "@/lib/nba-team-ids"
 import { getTeamColors, readableTextOn } from "@/lib/nba-team-colors"
-import { formatRestAdvantageDisplay } from "@/lib/rest-advantage-display"
+import {
+  buildRestAdvantageEvidence,
+  formatRestAdvantageDisplay,
+  type RestAdvantageEvidenceSource,
+} from "@/lib/rest-advantage-display"
 import { NEUTRAL_REST_ADVANTAGE_THRESHOLD } from "@/lib/rest-advantage-evidence"
 import { getTeamBranding } from "@/lib/team-history"
 import { TERM_ACCENT } from "@/lib/terminal-styles"
@@ -565,9 +569,20 @@ interface MatchupCardProps {
   game: GameResponse
   index?: number
   isScoreFlashing?: boolean
+  /**
+   * Backtest slice used to give the rest-advantage number its historical hit rate and
+   * sample size. Omitted (or still loading) simply hides the evidence line — the card
+   * never asserts a rate it cannot also denominate.
+   */
+  evidenceSource?: RestAdvantageEvidenceSource | null
 }
 
-export function MatchupCard({ game, index = 0, isScoreFlashing = false }: MatchupCardProps) {
+export function MatchupCard({
+  game,
+  index = 0,
+  isScoreFlashing = false,
+  evidenceSource = null,
+}: MatchupCardProps) {
   const [expanded, setExpanded] = useState(false)
 
   const homeFallback = useMemo(
@@ -585,6 +600,10 @@ export function MatchupCard({ game, index = 0, isScoreFlashing = false }: Matchu
   const diff = game.restAdvantage?.differential ?? null
   const confidence = getConfidence(diff)
   const accent = confidenceAccent(confidence)
+  const evidence = useMemo(
+    () => buildRestAdvantageEvidence(diff, evidenceSource),
+    [diff, evidenceSource]
+  )
 
   const tones = fatigueTones(game.awayFatigue?.score ?? null, game.homeFatigue?.score ?? null)
 
@@ -667,6 +686,15 @@ export function MatchupCard({ game, index = 0, isScoreFlashing = false }: Matchu
           />
         </div>
       </div>
+
+      {evidence ? (
+        <p
+          className="px-4 pb-2"
+          style={{ fontSize: 12, lineHeight: 1.5, color: "var(--term-text-muted)" }}
+        >
+          {evidence.sentence}
+        </p>
+      ) : null}
 
       <MetaStrip game={game} />
 

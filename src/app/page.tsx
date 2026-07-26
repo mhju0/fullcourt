@@ -270,6 +270,18 @@ export default function HomePage() {
     revalidateOnFocus: false,
   })
   const seasonWinRate = analysis ? `${analysis.overallWinRate}%` : "—"
+  // Same payload, reused to denominate every card's rest-advantage number.
+  const evidenceSource = useMemo(
+    () =>
+      analysis
+        ? {
+            thresholds: analysis.thresholds,
+            overallWinRate: analysis.overallWinRate,
+            totalGames: analysis.totalGames,
+          }
+        : null,
+    [analysis]
+  )
 
   const clearSelectedDate = useCallback(() => {
     setSelectedDateKey(null)
@@ -608,6 +620,7 @@ export default function HomePage() {
                 game={game}
                 index={i}
                 isScoreFlashing={recentlyUpdated.has(game.id)}
+                evidenceSource={evidenceSource}
               />
             ))}
           </div>
