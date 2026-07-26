@@ -7,6 +7,7 @@ import useSWR from "swr"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import { MatchupCard } from "@/components/matchup-card"
+import { SeasonSelector } from "@/components/season-selector"
 import { apiFetcher } from "@/lib/fetcher"
 import { useLiveGames } from "@/hooks/useLiveGames"
 import {
@@ -16,7 +17,6 @@ import {
   formatEasternDateKey,
   isNbaOffSeason,
   NBA_REGULAR_MONTHS,
-  NBA_SEASONS,
   pickDefaultGamesDate,
 } from "@/lib/nba-season"
 import { termCardStyle } from "@/lib/terminal-styles"
@@ -83,8 +83,10 @@ function StatSummaryRow({
 }) {
   return (
     <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
-      <StatCard label="GAMES TODAY" value={String(gamesToday)} accent="var(--term-hardwood)" />
-      <StatCard label="AVG REST ADV" value={avgRestAdv} accent="var(--term-hardwood)" />
+      {/* Not "TODAY": this is the count for the selected date, and the page deliberately
+          auto-selects the most recent date with games whenever today has none. */}
+      <StatCard label="GAMES ON THIS DATE" value={String(gamesToday)} accent="var(--term-neutral)" />
+      <StatCard label="AVG REST ADV" value={avgRestAdv} accent="var(--term-neutral)" />
       <StatCard label="ALL-TIME WIN RATE" value={seasonWinRate} accent="var(--term-blue)" />
       <StatCard label="HIGH CONF PICKS" value={String(highConfPicks)} accent="var(--term-red)" />
     </div>
@@ -113,7 +115,9 @@ function MatchupRowSkeleton() {
       style={{
         background: "var(--term-surface)",
         border: "1px solid var(--term-border)",
-        borderLeft: "2px solid var(--term-hardwood)",
+        // Matches the resting accent of the card this skeleton stands in for, so the
+        // left rule does not change colour when the real data lands.
+        borderLeft: "2px solid var(--term-neutral)",
         borderRadius: "var(--term-radius)",
         padding: "10px 14px",
       }}
@@ -214,17 +218,15 @@ function DateChip({
       onClick={onClick}
       aria-label={ariaLabel}
       aria-current={selected ? "date" : undefined}
+      // Colours live in classes, not the style prop: an inline `border`/`background`
+      // shorthand outranks any class rule, which silently killed the hover state.
       className={cn(
-        "mono flex min-w-[3rem] flex-col items-center px-2 py-1.5 transition-[transform,background-color,border-color] active:scale-[0.97]",
-        !selected && "hover:border-[var(--term-blue)]"
+        "mono flex min-w-[3rem] flex-col items-center border border-[var(--term-border)] px-2 py-1.5 transition-[transform,background-color,border-color] active:scale-[0.97]",
+        selected
+          ? "border-l-2 border-l-[var(--term-blue)] bg-[var(--term-blue)] text-[var(--term-surface)]"
+          : "bg-[var(--term-surface)] text-[var(--term-text)] hover:border-[var(--term-blue)]"
       )}
-      style={{
-        background: selected ? "var(--term-blue)" : "var(--term-surface)",
-        border: "1px solid var(--term-border)",
-        borderLeft: selected ? "2px solid var(--term-blue)" : "1px solid var(--term-border)",
-        borderRadius: "var(--term-radius)",
-        color: selected ? "var(--term-surface)" : "var(--term-text)",
-      }}
+      style={{ borderRadius: "var(--term-radius)" }}
     >
       <span className="tabular-nums" style={{ fontSize: 14, fontWeight: 700, lineHeight: 1.1 }}>
         {day}
@@ -459,8 +461,9 @@ export default function HomePage() {
           REST ADVANTAGE DASHBOARD
         </span>
         <h1 className="text-2xl font-bold tracking-tight text-[var(--term-text)]">Today&apos;s Matchups</h1>
-        <p className="mono max-w-2xl" style={{ fontSize: 12, color: "var(--term-text-muted)", lineHeight: 1.5 }}>
-          FATIGUE SCORES FOR EVERY NBA GAME. HIGHER DIFFERENTIAL = ONE TEAM CARRYING MORE TRAVEL AND SCHEDULE LOAD.
+        <p className="max-w-2xl" style={{ fontSize: 15, color: "var(--term-text-muted)", lineHeight: 1.55 }}>
+          A fatigue score for every team in every game, built from travel, rest and schedule
+          density. The bigger the gap between two teams, the more one side is carrying.
         </p>
       </div>
 
@@ -474,31 +477,10 @@ export default function HomePage() {
 
       {/* Filters — grouped as one secondary control panel */}
       <div className="flex flex-col gap-4" style={termCardStyle}>
-        <div className="flex flex-col gap-1.5">
-          <label htmlFor="nba-season" className="mono" style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 600 }}>
-            SEASON
-          </label>
-          <select
-            id="nba-season"
-            value={season}
-            onChange={(e) => onSeasonChange(e.target.value)}
-            className={cn(termBtn, "max-w-xs cursor-pointer appearance-none pr-8")}
-            style={{
-              ...termBtnStyle,
-              backgroundImage:
-                "url('data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20width=%2712%27%20height=%2712%27%20viewBox=%270%200%2024%2024%27%20fill=%27none%27%20stroke=%27%238A929C%27%20stroke-width=%272%27%3E%3Cpath%20d=%27M6%209l6%206%206-6%27/%3E%3C/svg%3E')",
-              backgroundRepeat: "no-repeat",
-              backgroundPosition: "right 0.5rem center",
-              backgroundSize: "0.75rem",
-            }}
-          >
-            {NBA_SEASONS.map((s) => (
-              <option key={s} value={s}>
-                {s}
-              </option>
-            ))}
-          </select>
-        </div>
+        {/* The shared selector, which lists newest-season-first. The hand-rolled one this
+            replaces mapped NBA_SEASONS raw, so it opened on 1985-86 with the current
+            season ~40 options down — and disagreed with every other season picker. */}
+        <SeasonSelector id="nba-season" season={season} onSeasonChange={onSeasonChange} />
 
         <div className="flex flex-col gap-1.5">
           <span className="mono" style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 600 }}>
@@ -514,11 +496,17 @@ export default function HomePage() {
                     type="button"
                     onClick={() => onMonthTabClick(m)}
                     aria-pressed={active}
-                    className={cn(termBtn, "shrink-0 active:scale-[0.97]")}
+                    // Same reason as DateChip: an inline `background` outranked
+                    // termBtn's hover:bg-*, so the month tabs never responded to hover.
+                    className={cn(
+                      termBtn,
+                      "shrink-0 active:scale-[0.97]",
+                      active
+                        ? "bg-[var(--term-blue)] text-[var(--term-surface)] hover:bg-[var(--term-blue)]"
+                        : "text-[var(--term-text)]"
+                    )}
                     style={{
                       ...termBtnStyle,
-                      background: active ? "var(--term-blue)" : "var(--term-surface)",
-                      color: active ? "var(--term-surface)" : "var(--term-text)",
                       borderColor: active ? "var(--term-blue)" : "var(--term-border)",
                     }}
                   >
