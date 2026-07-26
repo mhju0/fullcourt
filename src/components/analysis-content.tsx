@@ -20,7 +20,7 @@ import { ExploreGameDetailModal } from "@/components/explore-game-detail-modal"
 import { Skeleton } from "@/components/ui/skeleton"
 import { apiFetcher } from "@/lib/fetcher"
 import { NBA_SEASONS } from "@/lib/nba-season"
-import { termCardStyle } from "@/lib/terminal-styles"
+import { MONO_FONT_STACK, termCardStyle } from "@/lib/terminal-styles"
 import type {
   AnalysisResponse,
   GameSearchResponse,
@@ -33,7 +33,7 @@ const termTooltip: React.CSSProperties = {
   border: "1px solid var(--term-border)",
   borderRadius: "var(--term-radius)",
   padding: "8px 10px",
-  fontFamily: "'Courier New', Courier, monospace",
+  fontFamily: MONO_FONT_STACK,
   fontSize: 12,
 }
 
@@ -43,13 +43,13 @@ const exploreSelectStyle: React.CSSProperties = {
   borderRadius: "var(--term-radius)",
   padding: "6px 10px",
   fontSize: 12,
-  fontFamily: "'Courier New', Courier, monospace",
+  fontFamily: MONO_FONT_STACK,
   color: "var(--term-text)",
   letterSpacing: "0.04em",
 }
 
 const exploreThStyle: React.CSSProperties = {
-  fontFamily: "'Courier New', Courier, monospace",
+  fontFamily: MONO_FONT_STACK,
   fontSize: 11,
   letterSpacing: "0.08em",
   color: "var(--term-text-muted)",
@@ -81,13 +81,38 @@ function SectionDivider({ label, descriptor }: { label: string; descriptor?: str
   )
 }
 
+// ─── Chart legend ─────────────────────────────────────────────────
+
+/** Names the two stacked segments. Required: the bars carry two series. */
+function BaselineLegend() {
+  return (
+    <div
+      className="mono mt-3 flex flex-wrap items-center gap-x-5 gap-y-1.5"
+      style={{ fontSize: 11, color: "var(--term-text-muted)", letterSpacing: "0.03em" }}
+    >
+      <span className="inline-flex items-center gap-2">
+        <span style={{ width: 12, height: 12, borderRadius: 2, background: "var(--term-blue-ghost)" }} />
+        WHAT A COIN FLIP ALREADY GIVES YOU
+      </span>
+      <span className="inline-flex items-center gap-2">
+        <span style={{ width: 12, height: 12, borderRadius: 2, background: "var(--term-blue)" }} />
+        THE EDGE THE MODEL FINDS
+      </span>
+      <span className="inline-flex items-center gap-2">
+        <span style={{ width: 14, height: 2, background: "var(--term-text)" }} />
+        50% BASELINE
+      </span>
+    </div>
+  )
+}
+
 // ─── Stat card (matches page.tsx pattern) ─────────────────────────
 
 function StatCard({
   label,
   value,
   sub,
-  accent = "var(--term-hardwood)",
+  accent = "var(--term-neutral)",
 }: {
   label: string
   value: string
@@ -118,6 +143,26 @@ function StatCard({
   )
 }
 
+// ─── Chart scale ──────────────────────────────────────────────────
+
+/** A coin flip. Every win-rate bar is split here so the edge is what has length. */
+const BASELINE_PCT = 50
+const MIN_CHART_MAX_PCT = 70
+
+/** Zero-based, rounded up to a clean decade so no bar is ever clipped. */
+function chartMaxPct(values: readonly number[]): number {
+  const peak = values.length > 0 ? Math.max(...values) : 0
+  return Math.max(MIN_CHART_MAX_PCT, Math.ceil(peak / 10) * 10)
+}
+
+/** Splits a win rate into the coin-flip portion and the measured edge above it. */
+function splitAtBaseline(winPct: number): { base: number; edge: number } {
+  return {
+    base: Math.min(winPct, BASELINE_PCT),
+    edge: Math.max(0, winPct - BASELINE_PCT),
+  }
+}
+
 // ─── Chart datum shapes ───────────────────────────────────────────
 
 type WinRateDatum = {
@@ -125,6 +170,8 @@ type WinRateDatum = {
   winPct: number
   games: number
   threshold?: number
+  base: number
+  edge: number
 }
 
 // ─── Custom tooltips ──────────────────────────────────────────────
@@ -135,12 +182,15 @@ function WinRateTooltip({ active, payload }: TooltipContentProps) {
   return (
     <div style={termTooltip}>
       <p style={{ color: "var(--term-text)", fontWeight: 700, letterSpacing: "0.04em" }}>{d.label.toUpperCase()}</p>
-      {payload.map((p) => (
-        <p key={p.dataKey as string} style={{ color: p.color, marginTop: 2 }}>
-          WIN RATE:{" "}
-          <span style={{ fontWeight: 700 }}>{typeof p.value === "number" ? p.value : "--"}%</span>
-        </p>
-      ))}
+      {/* Read the win rate off the datum, not off `payload` — the bar is two stacked
+          segments, so iterating payload would print the split halves instead. */}
+      <p style={{ marginTop: 2, color: "var(--term-blue)" }}>
+        WIN RATE: <span style={{ fontWeight: 700 }}>{d.winPct}%</span>
+      </p>
+      <p style={{ color: "var(--term-text-muted)", marginTop: 2 }}>
+        {d.winPct >= BASELINE_PCT ? "+" : "−"}
+        {Math.abs(d.winPct - BASELINE_PCT).toFixed(1)} PP VS COIN FLIP
+      </p>
       <p style={{ color: "var(--term-text-muted)", marginTop: 2 }}>{d.games.toLocaleString()} GAMES</p>
       {d.threshold !== undefined && (
         <p style={{ marginTop: 4, fontSize: 11, color: "var(--term-blue)" }}>CLICK TO EXPLORE ↓</p>
@@ -154,6 +204,8 @@ type SeasonWinRateDatum = {
   winPct: number
   games: number
   restedTeamWins: number
+  base: number
+  edge: number
 }
 
 function SeasonWinRateTooltip({ active, payload }: TooltipContentProps) {
@@ -164,6 +216,10 @@ function SeasonWinRateTooltip({ active, payload }: TooltipContentProps) {
       <p style={{ color: "var(--term-text)", fontWeight: 700, letterSpacing: "0.04em" }}>{d.label}</p>
       <p style={{ marginTop: 2, color: "var(--term-blue)" }}>
         WIN RATE: <span style={{ fontWeight: 700 }}>{d.winPct}%</span>
+      </p>
+      <p style={{ color: "var(--term-text-muted)", marginTop: 2 }}>
+        {d.winPct >= BASELINE_PCT ? "+" : "−"}
+        {Math.abs(d.winPct - BASELINE_PCT).toFixed(1)} PP VS COIN FLIP
       </p>
       <p style={{ color: "var(--term-text-muted)", marginTop: 2 }}>
         {d.restedTeamWins.toLocaleString()} / {d.games.toLocaleString()} (RESTED TEAM WON)
@@ -194,7 +250,9 @@ function SeasonWinRateBySeasonChart({
     winPct: s.winPct,
     games: s.games,
     restedTeamWins: s.restedTeamWins,
+    ...splitAtBaseline(s.winPct),
   }))
+  const yMax = chartMaxPct(chartData.map((d) => d.winPct))
 
   return (
     <div className="mt-4 h-72 min-w-0">
@@ -217,7 +275,7 @@ function SeasonWinRateBySeasonChart({
             />
             <XAxis
               dataKey="label"
-              tick={{ fontSize: 11, fill: "var(--term-text-muted)", fontFamily: "'Courier New', Courier, monospace" }}
+              tick={{ fontSize: 11, fill: "var(--term-text-muted)", fontFamily: MONO_FONT_STACK }}
               tickLine={false}
               axisLine={false}
               interval={0}
@@ -226,9 +284,9 @@ function SeasonWinRateBySeasonChart({
               height={52}
             />
             <YAxis
-              domain={[40, 70]}
+              domain={[0, yMax]}
               tickFormatter={(v: number) => `${v}%`}
-              tick={{ fontSize: 12, fill: "var(--term-text-muted)", fontFamily: "'Courier New', Courier, monospace" }}
+              tick={{ fontSize: 12, fill: "var(--term-text-muted)", fontFamily: MONO_FONT_STACK }}
               tickLine={false}
               axisLine={false}
               width={40}
@@ -237,35 +295,31 @@ function SeasonWinRateBySeasonChart({
               cursor={{ fill: "rgba(23,64,139,0.06)" }}
               content={(props: TooltipContentProps) => <SeasonWinRateTooltip {...props} />}
             />
-            <ReferenceLine
-              y={50}
-              stroke="var(--term-red)"
-              strokeDasharray="4 4"
-              strokeOpacity={0.55}
-              label={{
-                value: "COIN FLIP",
-                position: "insideTopRight",
-                fontSize: 11,
-                fill: "var(--term-red)",
-                opacity: 0.8,
-              }}
-            />
-            <Bar
-              dataKey="winPct"
-              fill="var(--term-blue)"
-              radius={[0, 0, 0, 0]}
-              maxBarSize={48}
-              isAnimationActive={false}
-            >
+            {/* Zero-based, split at the baseline: the pale segment is what a coin flip
+                already gives you, the solid segment is the measured edge. */}
+            <Bar dataKey="base" stackId="wr" fill="var(--term-blue-ghost)" maxBarSize={48} isAnimationActive={false} />
+            <Bar dataKey="edge" stackId="wr" fill="var(--term-blue)" maxBarSize={48} isAnimationActive={false}>
               <LabelList
                 dataKey="games"
                 position="top"
                 formatter={(v: string | number | boolean | null | undefined) =>
                   typeof v === "number" ? `n=${v.toLocaleString()}` : ""
                 }
-                style={{ fontSize: "11px", fill: "var(--term-text-muted)", fontFamily: "'Courier New', Courier, monospace" }}
+                style={{ fontSize: "11px", fill: "var(--term-text-muted)", fontFamily: MONO_FONT_STACK }}
               />
             </Bar>
+            {/* Declared after the bars so the baseline draws on top of them. */}
+            <ReferenceLine
+              y={BASELINE_PCT}
+              stroke="var(--term-text)"
+              strokeWidth={2}
+              label={{
+                value: "COIN FLIP",
+                position: "insideTopRight",
+                fontSize: 11,
+                fill: "var(--term-text)",
+              }}
+            />
           </BarChart>
         </ResponsiveContainer>
       )}
@@ -528,7 +582,7 @@ function ExploreGames({
                       }
                     }}
                     style={{ background: rowBg, cursor: "pointer" }}
-                    className="hover:bg-[var(--term-surface-2)] focus-visible:bg-[var(--term-surface-2)] focus-visible:outline-none"
+                    className="hover:bg-[var(--term-surface-2)] focus-visible:bg-[var(--term-surface-2)]"
                     aria-label={`Open details: ${g.awayTeamAbbreviation} at ${g.homeTeamAbbreviation}, ${g.date}`}
                   >
                     <td style={{ ...exploreTdBaseStyle, color: "var(--term-text-muted)" }}>
@@ -696,7 +750,9 @@ export function AnalysisContent() {
     winPct: t.winPct,
     games: t.games,
     threshold: t.threshold,
+    ...splitAtBaseline(t.winPct),
   }))
+  const thresholdYMax = chartMaxPct(barData.map((d) => d.winPct))
 
   const ra5 = data.thresholds.find((t) => t.threshold === 5)
   const ra7 = data.thresholds.find((t) => t.threshold === 7)
@@ -713,9 +769,9 @@ export function AnalysisContent() {
           HISTORICAL BACKTEST
         </span>
         <h1 className="text-2xl font-bold tracking-tight text-[var(--term-text)]">Rest Advantage Analysis</h1>
-        <p className="mono max-w-2xl" style={{ fontSize: 12, color: "var(--term-text-muted)", lineHeight: 1.5 }}>
-          AMONG FINAL REGULAR-SEASON GAMES WITH FATIGUE DATA, DID THE MORE-RESTED TEAM WIN?
-          THIS DOES NOT READ STORED PREDICTION ROWS.
+        <p className="max-w-2xl" style={{ fontSize: 15, color: "var(--term-text-muted)", lineHeight: 1.55 }}>
+          Among completed regular-season games with fatigue data on both sides, did the
+          more-rested team win? The bar to beat is 50%.
         </p>
       </div>
 
@@ -731,7 +787,7 @@ export function AnalysisContent() {
           label="HOME RESTED WIN%"
           value={`${data.homeAwayBreakdown.homeTeamMoreRested.winPct}%`}
           sub={`${data.homeAwayBreakdown.homeTeamMoreRested.restedTeamWins.toLocaleString()} / ${data.homeAwayBreakdown.homeTeamMoreRested.games.toLocaleString()}`}
-          accent="var(--term-hardwood)"
+          accent="var(--term-neutral)"
         />
         {ra5 && (
           <StatCard
@@ -756,14 +812,14 @@ export function AnalysisContent() {
               />
               <XAxis
                 dataKey="label"
-                tick={{ fontSize: 12, fill: "var(--term-text-muted)", fontFamily: "'Courier New', Courier, monospace" }}
+                tick={{ fontSize: 12, fill: "var(--term-text-muted)", fontFamily: MONO_FONT_STACK }}
                 tickLine={false}
                 axisLine={false}
               />
               <YAxis
-                domain={[45, 75]}
+                domain={[0, thresholdYMax]}
                 tickFormatter={(v: number) => `${v}%`}
-                tick={{ fontSize: 12, fill: "var(--term-text-muted)", fontFamily: "'Courier New', Courier, monospace" }}
+                tick={{ fontSize: 12, fill: "var(--term-text-muted)", fontFamily: MONO_FONT_STACK }}
                 tickLine={false}
                 axisLine={false}
                 width={40}
@@ -772,23 +828,21 @@ export function AnalysisContent() {
                 cursor={{ fill: "rgba(23,64,139,0.06)" }}
                 content={winRateTooltipRenderer}
               />
-              <ReferenceLine
-                y={50}
-                stroke="var(--term-red)"
-                strokeDasharray="4 4"
-                strokeOpacity={0.55}
-                label={{
-                  value: "COIN FLIP",
-                  position: "insideTopRight",
-                  fontSize: 11,
-                  fill: "var(--term-red)",
-                  opacity: 0.8,
-                }}
+              {/* Zero-based, split at the baseline. Both segments stay clickable so the
+                  drill-down still fires anywhere on the bar. */}
+              <Bar
+                dataKey="base"
+                stackId="wr"
+                fill="var(--term-blue-ghost)"
+                maxBarSize={72}
+                style={{ cursor: "pointer" }}
+                onClick={handleBarClick}
+                isAnimationActive={false}
               />
               <Bar
-                dataKey="winPct"
+                dataKey="edge"
+                stackId="wr"
                 fill="var(--term-blue)"
-                radius={[0, 0, 0, 0]}
                 maxBarSize={72}
                 style={{ cursor: "pointer" }}
                 onClick={handleBarClick}
@@ -800,12 +854,25 @@ export function AnalysisContent() {
                   formatter={(v: string | number | boolean | null | undefined) =>
                     typeof v === "number" ? `n=${v.toLocaleString()}` : ""
                   }
-                  style={{ fontSize: "11px", fill: "var(--term-text-muted)", fontFamily: "'Courier New', Courier, monospace" }}
+                  style={{ fontSize: "11px", fill: "var(--term-text-muted)", fontFamily: MONO_FONT_STACK }}
                 />
               </Bar>
+              {/* Declared after the bars so the baseline draws on top of them. */}
+              <ReferenceLine
+                y={BASELINE_PCT}
+                stroke="var(--term-text)"
+                strokeWidth={2}
+                label={{
+                  value: "COIN FLIP",
+                  position: "insideTopRight",
+                  fontSize: 11,
+                  fill: "var(--term-text)",
+                }}
+              />
             </BarChart>
           </ResponsiveContainer>
         </div>
+        <BaselineLegend />
       </div>
 
       {/* Home rested breakdown — terminal bar */}
@@ -866,6 +933,7 @@ export function AnalysisContent() {
           seasonWinRates={displayedSeasonRates}
           loading={seasonRateLoading}
         />
+        <BaselineLegend />
       </div>
 
       {/* Key insight callout */}
