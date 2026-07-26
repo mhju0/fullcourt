@@ -37,9 +37,11 @@ the line in red.
 <img src="docs/screenshots/analysis.png" alt="Rest Advantage Analysis: win rate by rest-advantage threshold across 38,985 regular-season games, drawn as deviation columns measured from a 50% coin flip. Bars rise from a zero line in blue — plus 6.6 points at RA at least 2 up to plus 13.4 at RA at least 7 — and each is labelled with its sample size" width="900" />
 
 **Today's Games — the per-matchup view.** Each team's fatigue score, the rest-advantage
-differential, and a confidence read, with team colors carrying each card.
+differential, and a confidence read. Every rest-advantage number carries the historical hit
+rate and sample size of its class, measured against a 50% coin flip; matchups the model calls
+neutral get no claim at all.
 
-<img src="docs/screenshots/today.png" alt="Today's Games: matchup cards showing each team's fatigue bar, fatigue score, and a rest-advantage panel naming the more-rested team" width="900" />
+<img src="docs/screenshots/today.png" alt="Today's Games: matchup cards, each showing both teams' fatigue bars and scores, a rest-advantage panel naming the more-rested team with a confidence badge, and a sentence giving that gap its historical win rate, sample size and distance from a 50% coin flip. Matchups scored EVEN carry no such sentence." width="900" />
 
 **Expected Shot Value — location-only xeFG%.** A gradient-boosted location model beside the
 zone-average baseline it is measured against.
