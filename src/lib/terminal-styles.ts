@@ -41,8 +41,12 @@ export const termSelectStyle: CSSProperties = {
   backgroundSize: "0.75rem",
 }
 
+/** The data face, matching the `.mono` class in globals.css. */
+export const MONO_FONT_STACK =
+  "var(--font-plex-mono), ui-monospace, SFMono-Regular, Menlo, monospace"
+
 export const termThStyle: CSSProperties = {
-  fontFamily: "'Courier New', Courier, monospace",
+  fontFamily: MONO_FONT_STACK,
   fontSize: 11,
   letterSpacing: "0.08em",
   color: "var(--term-text-muted)",

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Outfit } from "next/font/google";
+import { IBM_Plex_Mono, Inter, Outfit } from "next/font/google";
 import { NavBar } from "@/components/nav-bar";
 import { OnboardingGuide } from "@/components/onboarding-guide";
 import "./globals.css";
@@ -16,6 +16,16 @@ const outfit = Outfit({
   subsets: ["latin"],
   display: "swap",
   weight: ["600", "700"],
+});
+
+// The data face. Replaces 'Courier New', which set ~80% of the visible text and has
+// loose metrics and weak tabular figures — the wrong choice for a dense numeric UI.
+// next/font ships with Next.js, so this adds no npm dependency.
+const plexMono = IBM_Plex_Mono({
+  variable: "--font-plex-mono",
+  subsets: ["latin"],
+  display: "swap",
+  weight: ["400", "600", "700"],
 });
 
 const SITE_URL = "https://fullcourt-nba.vercel.app";
@@ -57,7 +67,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${outfit.variable} h-full antialiased`}
+      className={`${inter.variable} ${outfit.variable} ${plexMono.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col font-sans text-foreground">
         <NavBar />
