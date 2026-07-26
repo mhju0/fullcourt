@@ -3,6 +3,13 @@
 FullCourt is **feature-complete and in maintenance mode** as of 2026-07-13. The repository is
 kept operational for portfolio review; no additional product modules are planned.
 
+"Feature-complete" means no new **product modules**. Interface and correctness work continues:
+a design and UX audit on 2026-07-26 shipped a quick-win pass — the confidence-tier fix, the
+focus indicator, IBM Plex Mono, zero-based backtest charts, and the Upcoming Edges rename —
+and left a tracked backlog in [GitHub issues](https://github.com/mhju0/fullcourt/issues),
+including one **P0**: three failure paths that render nothing and a missing error boundary
+([#1](https://github.com/mhju0/fullcourt/issues/1)). The repository is not closed to fixes.
+
 ## Shipped modules
 
 - **Rest Advantage** — the flagship regular-season fatigue model, historical backtest, game
@@ -19,7 +26,9 @@ kept operational for portfolio review; no additional product modules are planned
 ## Maintenance responsibilities
 
 - Follow [SEASON_ROLLOVER.md](SEASON_ROLLOVER.md) before each new NBA season.
-- Switch the Vercel live-score cron between the documented offseason and in-season cadence.
+- The Vercel live-score cron runs **daily, year-round** — there is no seasonal cadence to
+  switch. `/api/cron/update` early-returns before any CDN fetch when today's ET date has no
+  `scheduled|live` rows, so an off-season run costs one indexed query. See `vercel.json`.
 - Keep GitHub Actions, Vercel, Supabase environment variables, and dependency security patches
   current.
 - Re-run the documented schedule/date integrity audit after new season ingestion.

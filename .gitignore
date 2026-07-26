@@ -73,3 +73,5 @@ CLAUDE.md
 /.codex/
 /docs/agents/
 .tokensave/
+# Design/UX audit working files — kept on disk, deliberately unpublished.
+/design-audit/
