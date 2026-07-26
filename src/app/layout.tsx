@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { IBM_Plex_Mono, Inter, Outfit } from "next/font/google";
 import { NavBar } from "@/components/nav-bar";
 import { OnboardingGuide } from "@/components/onboarding-guide";
@@ -31,6 +31,12 @@ const plexMono = IBM_Plex_Mono({
 const SITE_URL = "https://fullcourt-nba.vercel.app";
 const SITE_DESC =
   "FullCourt is a completed NBA analytics portfolio project modeling rest advantage, playoff series probabilities, and location-based shot value.";
+
+// The app is committed light-only (globals.css sets color-scheme: light), so pin the
+// mobile browser chrome to --term-bg instead of letting Safari/Chrome pick a default.
+export const viewport: Viewport = {
+  themeColor: "#FAF9F6",
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),

@@ -17,6 +17,7 @@ import {
   formatEasternDateKey,
   isNbaOffSeason,
   NBA_REGULAR_MONTHS,
+  NBA_SEASONS,
   pickDefaultGamesDate,
 } from "@/lib/nba-season"
 import { termCardStyle } from "@/lib/terminal-styles"
@@ -74,12 +75,12 @@ function StatSummaryRow({
   gamesToday,
   avgRestAdv,
   seasonWinRate,
-  highConfPicks,
+  highConfGames,
 }: {
   gamesToday: number
   avgRestAdv: string
   seasonWinRate: string
-  highConfPicks: number
+  highConfGames: number
 }) {
   return (
     <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
@@ -88,7 +89,7 @@ function StatSummaryRow({
       <StatCard label="GAMES ON THIS DATE" value={String(gamesToday)} accent="var(--term-neutral)" />
       <StatCard label="AVG REST ADV" value={avgRestAdv} accent="var(--term-neutral)" />
       <StatCard label="ALL-TIME WIN RATE" value={seasonWinRate} accent="var(--term-blue)" />
-      <StatCard label="HIGH CONF PICKS" value={String(highConfPicks)} accent="var(--term-red)" />
+      <StatCard label="HIGH CONF GAMES" value={String(highConfGames)} accent="var(--term-red)" />
     </div>
   )
 }
@@ -177,7 +178,7 @@ function OffSeasonBanner({ season }: { season: string }) {
         className="transition-colors hover:underline"
         style={{ fontSize: 12, letterSpacing: "0.04em", color: "var(--term-blue)", fontWeight: 700 }}
       >
-        EXPLORE THE 40-SEASON BACKTEST →
+        EXPLORE THE {NBA_SEASONS.length}-SEASON BACKTEST →
       </a>
     </div>
   )
@@ -464,7 +465,7 @@ export default function HomePage() {
     .filter((d) => d > 0)
   const avgRestAdv =
     diffs.length === 0 ? "0.0" : (diffs.reduce((s, d) => s + d, 0) / diffs.length).toFixed(1)
-  const highConfPicks = mergedGames.filter(
+  const highConfGames = mergedGames.filter(
     (g) => Math.abs(g.restAdvantage?.differential ?? 0) >= HIGH_CONF_THRESHOLD
   ).length
 
@@ -487,7 +488,7 @@ export default function HomePage() {
         gamesToday={gamesToday}
         avgRestAdv={avgRestAdv}
         seasonWinRate={seasonWinRate}
-        highConfPicks={highConfPicks}
+        highConfGames={highConfGames}
       />
 
       {/* Filters — grouped as one secondary control panel */}

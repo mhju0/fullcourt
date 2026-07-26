@@ -1,6 +1,8 @@
 import { readFile } from "node:fs/promises";
 import { ImageResponse } from "next/og";
 
+import { NBA_SEASONS } from "@/lib/nba-season";
+
 export const alt = "FullCourt — NBA analytics: rest, fatigue, and shot value";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
@@ -67,7 +69,7 @@ export default async function OpengraphImage() {
         <div style={{ display: "flex", alignItems: "center", gap: 26, fontSize: 26, color: "#5B626C", letterSpacing: 2 }}>
           <div style={{ display: "flex", color: "#3B82F6", fontWeight: 700 }}>REST ADVANTAGE</div>
           <div style={{ display: "flex" }}>·</div>
-          <div style={{ display: "flex" }}>40-SEASON BACKTEST</div>
+          <div style={{ display: "flex" }}>{`${NBA_SEASONS.length}-SEASON BACKTEST`}</div>
           <div style={{ display: "flex" }}>·</div>
           <div style={{ display: "flex" }}>SHOT QUALITY</div>
         </div>

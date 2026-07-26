@@ -52,7 +52,9 @@ zone-average baseline it is measured against.
 
 - **Today's Games** — live matchup cards with fatigue bars, a rest-advantage gauge, and real-time score/status updates via Supabase Realtime.
 - **Analysis** — a historical backtest: win rate by rest-advantage threshold and by season, home/away splits, and a filterable game explorer.
-- **Picks** — upcoming regular-season games ranked by their predicted rest-advantage edge.
+- **Upcoming Edges** — upcoming regular-season games ranked by their predicted rest-advantage
+  edge, each shown with the historical hit rate and sample size of its rest-advantage class.
+  Not betting advice.
 - **Playoff Predictor** — series-winner predictions from rest/fatigue-derived features, showing walk-forward out-of-sample accuracy next to in-sample as an honest overfitting check.
 - **Shot Quality (Expected Shot Value / xeFG%)** — a half-court hexbin map of expected effective FG% per grid cell, comparing a location-only gradient-boosted model against a zone-average baseline. Honest framing: public NBA data has no defender distance or shot-clock signal, so this is shot-**location** value only, and the model's edge over the baseline is a small calibration win (~1% on log-loss / Brier), not a large accuracy jump.
 
