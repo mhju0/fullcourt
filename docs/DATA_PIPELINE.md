@@ -39,7 +39,8 @@ Steps:
 ## Python ingest scripts
 
 ### `fetch_schedule.py` — full historical seed
-- Seasons **1985-86 → 2025-26**, **excluding 2019-20** (COVID bubble). `SEASON_TYPES =
+- Seasons **1985-86 → the current ET season**, derived via
+  `range(1985, current_season_start_year() + 1)`, **excluding 2019-20** (COVID bubble). `SEASON_TYPES =
   ["Regular Season"]` only; playoffs never fetched.
 - Each game appears twice in `LeagueGameFinder` (one row per team); rows are paired by
   `GAME_ID` using `MATCHUP` (`vs.` = home, `@` = away).

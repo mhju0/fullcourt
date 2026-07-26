@@ -59,7 +59,9 @@ shot_value_surface has no FK to teams (keyed by season/cell_x/cell_y/model_versi
                                                              isolated — no existing query reads it)
 ```
 
-Drizzle `relations()` are declared for all of the above (`teamsRelations`,
+Drizzle `relations()` are **not** declared: every query in `src/lib/db/queries.ts` is an
+explicit join and the codebase never uses `db.query.`, so the relation metadata was removed.
+Historically they existed for (`teamsRelations`,
 `gamesRelations`, `fatigueScoresRelations`, `predictionsRelations`) with named relations
 (`homeTeam`/`awayTeam`, `predictedAdvantageTeam`/`actualWinner`). Note: relations are
 metadata for the Drizzle relational API; the actual queries in `queries.ts` use explicit

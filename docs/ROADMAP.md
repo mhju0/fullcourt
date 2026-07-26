@@ -5,7 +5,8 @@ kept operational for portfolio review; no additional product modules are planned
 
 "Feature-complete" means no new **product modules**. Interface and correctness work continues:
 a design and UX audit on 2026-07-26 shipped a quick-win pass — the confidence-tier fix, the
-focus indicator, IBM Plex Mono, zero-based backtest charts, and the Upcoming Edges rename —
+focus indicator, IBM Plex Mono, deviation-from-coin-flip backtest charts, and the Upcoming
+Edges rename —
 and left a tracked backlog in [GitHub issues](https://github.com/mhju0/fullcourt/issues),
 including one **P0**: three failure paths that render nothing and a missing error boundary
 ([#1](https://github.com/mhju0/fullcourt/issues/1)). The repository is not closed to fixes.

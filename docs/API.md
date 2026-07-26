@@ -155,7 +155,8 @@ Playoff Predictor bracket + predictions for one season. `runtime = "nodejs"`,
 `dynamic = "force-dynamic"`. Backend is complete and live (see caution above for verified
 row counts).
 
-- **Query:** `season` (must be in `NBA_SEASONS`; defaults to `"2025-26"` if omitted). Invalid
+- **Query:** `season` (must be in `NBA_SEASONS`; defaults to `currentDisplaySeason()`
+  (`src/lib/nba-season.ts`) if omitted). Invalid
   season → `400`.
 - **Query fn:** `getPlayoffSeriesWithPredictions(season)` — joins `playoff_series` to
   `playoff_series_predictions` (aliased self-joins for the two prediction methods) and to

@@ -132,8 +132,9 @@ Design system and component props in [FRONTEND.md](FRONTEND.md).
   (`0 21 * * *`); the script self-gates on the NBA season (`season_window.is_in_season`) and
   exits 0 cleanly in the offseason — so there is no cadence to switch.
 - **Vercel cron** (`vercel.json`) hits `GET /api/cron/update` to refresh live scores, which
-  then propagate to clients through Supabase Realtime (currently monthly in the offseason; the
-  route does not season-gate).
+  then propagate to clients through Supabase Realtime (daily, year-round — the route does not
+  season-gate, but it early-returns before any CDN fetch when today's ET date has no
+  `scheduled`/`live` rows).
 - **GitHub Actions** `ci.yml` runs frozen install, lint, strict type-check, Vitest, the
   import-light Python schedule-contract tests, and the production build on pushes to `main`
   and pull requests. Playwright remains local because it requires a populated database.

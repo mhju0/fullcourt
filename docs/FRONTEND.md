@@ -40,7 +40,7 @@ State machine over season/month/day:
 - Pieces: heading eyebrow `REST ADVANTAGE DASHBOARD` + `<h1>Today's Matchups</h1>`;
   `StatSummaryRow` (GAMES ON THIS DATE, AVG REST ADV, **ALL-TIME WIN RATE** fetched live via
   `useSWR("/api/analysis")` — the same `overallWinRate` `/analysis` renders, shown as `—` while
-  loading/on error, HIGH CONF PICKS where `HIGH_CONF_THRESHOLD = 2.0`); the shared
+  loading/on error, HIGH CONF GAMES where `HIGH_CONF_THRESHOLD = 2.0`); the shared
   `<SeasonSelector>`; month tabs (`NBA_REGULAR_MONTHS`); `DateChip`s ("DAYS WITH GAMES");
   prev/next day arrows; the `MatchupCard` list with skeleton/empty/error states.
 - The first tile is **"GAMES ON THIS DATE"**, not "GAMES TODAY": its value is
@@ -134,6 +134,12 @@ by confidence:
   `[0.5, 1.0)` made `RestAdvPanel` print e.g. `BOS 0.7` while the badge directly beneath it
   printed `NEUTRAL`. The invariant — *anything the classifier calls is at least `low`* — is
   pinned by `src/components/__tests__/matchup-card-confidence.test.ts`.
+- Beneath the card body, `buildRestAdvantageEvidence` (`src/lib/rest-advantage-display.ts`)
+  renders one sentence giving the rest-advantage number its historical hit rate, sample size
+  and distance from the 50% coin flip. Buckets are **cumulative**, so a 4.1 gap resolves to
+  "gaps of 3 or more"; a called gap below 2 falls back to the overall rate worded "any
+  measurable gap". Neutral matchups, a missing `/api/analysis` payload, or any class with a
+  zero denominator render nothing at all.
 - `confidenceAccent` returns `TERM_ACCENT` tokens (`src/lib/terminal-styles.ts`): high
   `.red`, med `.blue`, everything else `.neutral`. **Not `.tan`** — against `--term-red` it
   measures ΔE 3.2 for deuteranopia (floor 8) and 14.5 for normal vision (floor 15), so a
@@ -177,7 +183,8 @@ Loaded via `next/dynamic` with `ssr: false` and a skeleton. Uses SWR:
 
 ### `upcoming-content.tsx` (+ `upcoming-lazy.tsx`)
 
-Loaded via `next/dynamic` (`ssr: false`). SWR `/api/games/upcoming?season=2025-26&minRA=…`.
+Loaded via `next/dynamic` (`ssr: false`). SWR `/api/games/upcoming?season=<currentDisplaySeason()>&minRA=…`,
+plus a second SWR call to `/api/analysis` for the historical column.
 RA filter pills, an off-season empty state (`OffSeasonEmptyState`), and a table of upcoming
 games with an "edge" badge (home edge blue, away edge red). Rendered in the **broadcast
 style** (`var(--term-surface)` card fill, `1px solid var(--term-border)`, `.mono` labels) —
@@ -272,7 +279,7 @@ hard-code hexes.
 | `--term-blue #2563EB` | primary · med confidence · "lower fatigue" · charts · active data |
 | `--term-hardwood #A16207` | **non-data chrome only** — off-season banners, amber CTA hover |
 | `--term-amber #C2410C` | **live** dot + active nav underline (broadcast accent) |
-| `--term-pos #15803D` / `--term-neg #DC2626` | win / loss, up / down |
+| `--term-pos #15803D` | win / up |
 | `--term-neutral #6B7280` | neutral semantic / badge outlines |
 
 > On light, "raised" reads as *slightly tinted*, not lighter: `--term-surface` is pure white and
@@ -369,7 +376,7 @@ solve never arises. Regression tests: `src/components/__tests__/analysis-deviati
 - Broadcast cards: `var(--term-surface)` fill, `1px solid var(--term-border)`,
   `var(--term-radius)`. Many add a **2px left-border accent** via `TERM_ACCENT`
   (`.neutral` default, `.red` for errors/high-confidence, `.blue` for highlights).
-  `TERM_ACCENT.tan` is **not** used in any data role — see the token table above.
+  `TERM_ACCENT` carries `red` / `blue` / `neutral` only; the unused `tan` key was removed.
 - Uppercase mono labels with wide letter-spacing (`0.04–0.12em`) for "technical" headers.
 - Animations (`globals.css`): `fadeInUp` (card entrance, staggered by `index * 40ms`),
   `scoreFlash` (live-update glow).
@@ -403,9 +410,16 @@ The FullCourt logo ("Angled Divider" court) lives in `src/components/court-mark.
 half, with an amber center circle; fixed brand hexes, not theme tokens). It renders in the
 nav status bar, so its strokes are **near-black `#111318`** to read on the light chrome.
 
-> **Off-page brand assets stay dark by design.** The favicon (`src/app/icon.svg`) and the
-> social/OG card (`src/app/opengraph-image.tsx`) are self-contained badges that carry their own
+> **Off-page brand assets stay dark by design.** Four assets: the favicon (`src/app/icon.svg`),
+> the social/OG card (`src/app/opengraph-image.tsx`), the README header mark (`docs/logo.svg`)
+> and the GitHub repo social preview (`docs/social-preview.png`). All are self-contained
+> badges that carry their own
 > dark ground (`#12151A` / `#0A0B0D`) and keep the pre-flip brightened palette (`#3B82F6`,
 > `#E5484D`, `#F5A623`, `#F2F4F7`). They never sit on the app's page background — a browser tab
 > and a link-preview card render on someone else's chrome — so they stay legible as-is and were
 > deliberately left untouched in the light flip. Do **not** "fix" them to match the in-app mark.
+
+`docs/social-preview.png` is the GitHub repo social preview (Settings → Social preview). It is
+uploaded out-of-band and referenced by no code, so a dead-file sweep will read it as an orphan
+— it is not. It is hand-matched to `src/app/opengraph-image.tsx`; re-export and re-upload the
+two together.

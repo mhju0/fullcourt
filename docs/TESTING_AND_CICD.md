@@ -17,10 +17,10 @@ python3 -m unittest discover -s scripts/tests -p 'test_*.py' -v
 ## Unit tests — Vitest
 
 Config (`vitest.config.ts`): `environment: "node"`, `include: ["src/**/*.test.ts"]`,
-`passWithNoTests: false`, alias `@ → ./src`. `@vitejs/plugin-react` and Testing Library
-(`@testing-library/react`, `@testing-library/jest-dom`) are installed; current tests are
-pure unit/route tests (no component rendering yet) — the one test that imports a component
-imports only an exported pure function from it, never renders it.
+`passWithNoTests: false`, alias `@ → ./src`. There is **no** React plugin and no Testing
+Library — neither is in `package.json`, and nothing renders a component. Every test is a
+node-environment unit or route test; the two that import from a component module import
+only exported pure functions.
 
 Test files and coverage:
 
@@ -29,7 +29,7 @@ Test files and coverage:
 | `src/lib/__tests__/fatigue.test.ts` | `calculateFatigue` / `calculateRestAdvantage`: opener baseline, freshness bonus, back-to-back, 3-in-4, density, travel windows + the travel-leg contract, road-trip streak, altitude (`×1.15`), overtime (`+0.5` / `+1.0`), combined compounding. |
 | `src/lib/__tests__/haversine.test.ts` | Great-circle distances (LA↔Boston ≈2,591mi, NY↔SF, Dallas↔Denver), symmetry, identical-point = 0. |
 | `src/lib/__tests__/nba-season.test.ts` | `pickDefaultGamesDate` (today/postseason/October-start cases), `formatLocalDateKey` and `formatEasternDateKey` (US/Eastern, viewer-timezone-independent), `currentDisplaySeason`, and `isNbaOffSeason`. |
-| `src/lib/__tests__/rest-advantage-display.test.ts` | `formatRestAdvantageDisplay` team/neutral labeling + one-decimal formatting. |
+| `src/lib/__tests__/rest-advantage-display.test.ts` | `formatRestAdvantageDisplay` team/neutral labeling + one-decimal formatting, and `buildRestAdvantageEvidence`: cumulative-bucket selection (a 4.1 gap resolves to "3 or more", **not** the RA≥5 rate), threshold boundaries, the sub-2 overall fallback, the 0.5 call boundary, zero-denominator refusal, and signed counterfactual wording. Discriminating: sorting the cleared buckets ascending fails exactly the two selection tests. |
 | `src/lib/__tests__/team-history.test.ts` | `getTeamBranding` historical eras (SEA/NJN/VAN/NOH/Bobcats/Bullets), current-era logos, fallback behavior. |
 | `src/lib/__tests__/fetcher.test.ts` | `apiFetcher` success envelopes, safe API errors, non-JSON HTTP failures, malformed envelopes. |
 | `src/lib/__tests__/rest-advantage-evidence.test.ts` | Canonical neutral boundary, historical backtest aggregation, game-explorer outcome filtering/pagination. |
@@ -40,6 +40,11 @@ Test files and coverage:
 | `src/app/api/__tests__/games.test.ts` | `GET /api/games/[date]` valid/invalid dates, empty results, `GameResponse` shape. Mocks `@/lib/db/queries`. |
 | `src/app/api/__tests__/games-search.test.ts` | `GET /api/games/search` defaults, validation, and query delegation. |
 | `src/app/api/__tests__/games-upcoming.test.ts` | `GET /api/games/upcoming` season/threshold validation and query delegation. |
+| `src/app/api/__tests__/health.test.ts` | `GET /api/health` liveness up/down, via a mocked `db.execute`. |
+| `src/app/api/__tests__/playoffs.test.ts` | `GET /api/playoffs` response shape + season validation. |
+| `src/lib/__tests__/api-errors.test.ts` | `getPublicApiErrorMessage`: `PublicApiError` passthrough vs. the generic fallback for unknown throwables. |
+| `src/lib/__tests__/nba-team-colors.test.ts` | `readableTextOn` luminance-based chip text — guards the light-theme fix where a pale primary (SAS `#C4CED4`) rendered white-on-white. |
+| `src/components/__tests__/analysis-deviation.test.ts` | Deviation-column encoding: `deviationFill` sign mapping, `deviationScale` tick derivation, and the `minPointSize` zero-stub. |
 | `src/components/__tests__/matchup-card-confidence.test.ts` | **Invariant:** anything `classifyRestAdvantage` calls for a team is never labelled `NEUTRAL` by `getConfidence`. Sweeps −3.0…3.0 in 0.1 steps and asserts the contradiction set is empty, plus the tier boundaries (0.5 `low` / 1.0 `med` / 2.0 `high`). Discriminating: with the pre-fix tiers it fails listing exactly `[-0.9…-0.5, 0.5…0.9]`. |
 
 API route tests `vi.mock("@/lib/db/queries")`, so they exercise validation + response
@@ -58,7 +63,7 @@ Config (`playwright.config.ts`): `testDir: ./e2e`, `baseURL: http://localhost:30
 `forbidOnly`. Existing specs receive a completed onboarding storage state so the first-visit
 dialog cannot block their legacy interactions; `e2e/onboarding.spec.ts` overrides that state with
 an empty browser. Specs: `e2e/home.spec.ts`, `e2e/analysis.spec.ts`, `e2e/navigation.spec.ts`,
-`e2e/onboarding.spec.ts`.
+`e2e/onboarding.spec.ts`, `e2e/playoffs.spec.ts`, `e2e/shot-quality.spec.ts`.
 
 > **The e2e specs target the current terminal UI** (they are **not** stale — they assert the live
 > markup, including the `Today's Matchups` / `Rest Advantage Analysis` headings and the

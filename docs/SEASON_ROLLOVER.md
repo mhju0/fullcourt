@@ -18,7 +18,8 @@ could otherwise fetch it. Written after the 2026-07 full-schedule audit; keep it
 2. **The new schedule will NOT auto-ingest.** `fetch_nba_schedule_cdn.py` reads
    `cdn.nba.com`, which returns **403** from Seoul *and* GitHub Actions. Seeding 2026-27 is
    a manual step (below).
-3. Flip the **Vercel cron cadence** to daily for in-season live scores.
+3. **Nothing to change on the Vercel cron** — it is already daily and year-round
+   (`vercel.json` `0 3 * * *`, set in 8b7888e). See Section 5.
 
 ## 1. What rolls over automatically (no action)
 
@@ -63,7 +64,8 @@ not for live scoring). **Prefer a stats-ID source (`stats.nba.com`) for a live s
 
 **~October 2026 — season starts:**
 - [ ] Confirm the app shows 2026-27 in the season dropdown (automatic).
-- [ ] Flip the Vercel cron cadence (Section 5).
+- [ ] Confirm `vercel.json` still reads `"0 3 * * *"` (no change expected — Section 5).
+- [ ] Bump the hardcoded season counts that cannot derive (Section 7).
 - [ ] After the first week, run the data-integrity re-audit (Section 6) to catch date drift early.
 
 ## 4. Seeding the new schedule (manual)
@@ -80,7 +82,7 @@ pnpm exec tsx scripts/backfill_predictions.ts
 `fetch_nba_schedule_cdn.py` upserts on `external_id` and sets `date = EXCLUDED.date`, so a
 later re-run self-heals any mis-dated rows (this is what fixed the 2026-04 UTC-date bug).
 
-## 5. Vercel cron cadence (offseason ↔ in-season)
+## 5. Vercel cron cadence (year-round — no seasonal switch)
 
 `vercel.json` runs `/api/cron/update` (live scores). JSON has no comments — the file is the
 source of truth.
@@ -104,3 +106,42 @@ basketball-reference monthly pages (`leagues/NBA_<endYear>_games-<month>.html`),
 so franchise-code churn doesn't matter). Cross-check any flagged date against ESPN. This
 catches the UTC-vs-ET date-shift class of bug that a sampled spot-check misses. Note the three
 NBA Cup finals (neutral-site, T-Mobile Arena) are correctly excluded from the 82-game record.
+
+## 7. Manual copy that does NOT derive (bump at rollover)
+
+Most season-dependent values derive themselves (Section 1). These do not, and nothing in the
+pipeline will flag them — they simply become wrong the moment the ET clock rolls the season:
+
+| Where | What | Note |
+|-------|------|------|
+| `README.md:18`, `:32`, `:121` | "roughly 40 seasons" / "40-season backtest" / "every one of the 40 seasons" | `NBA_SEASONS` = 1985..current minus 2019-20. 40 today; 41 from 2026-10-01. |
+| `docs/social-preview.png` | Baked "40-SEASON BACKTEST" wordmark | Re-export, then **re-upload** via GitHub → Settings → Social preview. It is referenced by no code, so nothing else will remind you. |
+| `docs/screenshots/*.png` + their README alt text | Any figure quoted in an `alt=` attribute | Alt text describes the frozen image, so it is correct until the image is retaken. Retaking a screenshot obliges rewriting its alt text in the same commit — a screen-reader user gets the alt text *instead of* the picture. |
+
+Already derived, for contrast: the in-app CTA (`src/app/page.tsx`) and the OG card
+(`src/app/opengraph-image.tsx`) both read `NBA_SEASONS.length`. Note the OG card is cached by
+GitHub and every social platform, so a corrected card only appears after they re-crawl.
+
+## 8. Dependency freeze — do not regenerate the lockfile casually
+
+The tree is deliberately frozen (Next 16.2.10 / React 19.2.4). Three security overrides are
+pinned in `package.json` under the `pnpm` field:
+
+```
+"ws@>=8.0.0 <8.21.0": ">=8.21.0"   ·   "postcss@<8.5.10": "8.5.10"   ·   "@babel/core@<=7.29.0": "7.29.6"
+```
+
+**pnpm 10 and later do not read that field at all.** Any modern pnpm prints
+`[WARN] The "pnpm" field in package.json is no longer read by pnpm` on every script — that
+warning is expected, not a fault. The pins survive today only because two things hold:
+
+1. `packageManager: "pnpm@9.15.9"` in `package.json`, which makes a pnpm ≥10 client delegate
+   to 9.15.9, the version that *does* read the field; and
+2. `pnpm install --frozen-lockfile` in CI against a committed `pnpm-lock.yaml` whose
+   `overrides:` block (lines 11-14) already resolves `ws@8.21.0`.
+
+So: **do not bump `packageManager`, and do not regenerate `pnpm-lock.yaml`, without moving
+`overrides` + `neverBuiltDependencies` into `pnpm-workspace.yaml` in the same change**
+(workspace-level overrides need pnpm ≥10.4). Skip that and all three CVE pins vanish silently,
+with no error and no failing test. Do **not** move them while `packageManager` still says
+9.15.9 — that version does not read the workspace file, so the pins would break the other way.
