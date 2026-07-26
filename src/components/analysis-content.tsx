@@ -4,6 +4,7 @@ import { useCallback, useRef, useState } from "react"
 import {
   BarChart,
   Bar,
+  Cell,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -83,7 +84,10 @@ function SectionDivider({ label, descriptor }: { label: string; descriptor?: str
 
 // ─── Chart legend ─────────────────────────────────────────────────
 
-/** Names the two stacked segments. Required: the bars carry two series. */
+/**
+ * Names the two poles of the diverging scale. The zero rule needs no swatch —
+ * it is the axis, and the axis labels it.
+ */
 function BaselineLegend() {
   return (
     <div
@@ -91,17 +95,14 @@ function BaselineLegend() {
       style={{ fontSize: 11, color: "var(--term-text-muted)", letterSpacing: "0.03em" }}
     >
       <span className="inline-flex items-center gap-2">
-        <span style={{ width: 12, height: 12, borderRadius: 2, background: "var(--term-bar-base)" }} />
-        WHAT A COIN FLIP ALREADY GIVES YOU
-      </span>
-      <span className="inline-flex items-center gap-2">
         <span style={{ width: 12, height: 12, borderRadius: 2, background: "var(--term-blue)" }} />
-        THE EDGE THE MODEL FINDS
+        RESTED TEAM BEAT A COIN FLIP
       </span>
       <span className="inline-flex items-center gap-2">
-        <span style={{ width: 14, borderTop: "1px dashed var(--term-neutral)" }} />
-        50% BASELINE
+        <span style={{ width: 12, height: 12, borderRadius: 2, background: "var(--term-red)" }} />
+        RESTED TEAM LOST TO A COIN FLIP
       </span>
+      <span>PERCENTAGE POINTS · 0 = 50% WIN RATE</span>
     </div>
   )
 }
@@ -145,32 +146,73 @@ function StatCard({
 
 // ─── Chart scale ──────────────────────────────────────────────────
 
-/** A coin flip. Every win-rate bar is split here so the edge is what has length. */
+/** A coin flip. Win-rate charts plot the distance from here, not the win rate. */
 const BASELINE_PCT = 50
-const TICK_STEP_PCT = 20
-const MIN_CHART_MAX_PCT = 80
 
 /**
- * Zero-based, rounded up to a whole tick step so no bar is ever clipped AND the
- * top gridline is always a labelled tick. Letting Recharts pick ticks off a
- * domain of [0, 70] produced 0/20/40/60 plus an orphan 70 at an odd interval.
+ * Win-rate bars are **deviation columns**: the plotted value is `winPct - 50`, in
+ * percentage points, and zero IS the coin flip. This replaced a zero-based bar
+ * stacked from a `base` (≤50) and an `edge` (>50) segment.
+ *
+ * Why it changed:
+ *  - A stack encodes part-to-whole, but "the coin-flip half" is not a part of
+ *    anything — it was one number cut at an arbitrary height, so two colors
+ *    described a single measurement.
+ *  - The old split could not draw a losing slice at all: `edge` clamped to 0, so
+ *    a 39.0% season (real — RA ≥ 7, 2016-17) rendered as a bare base segment,
+ *    the same kind of mark as 50.0%, while the legend still called it "what a
+ *    coin flip already gives you".
+ *  - Deviation columns are genuinely zero-based on the measured quantity, so the
+ *    truncated-axis dishonesty the split existed to avoid never arises.
  */
-function chartMaxPct(values: readonly number[]): number {
-  const peak = values.length > 0 ? Math.max(...values) : 0
-  return Math.max(MIN_CHART_MAX_PCT, Math.ceil(peak / TICK_STEP_PCT) * TICK_STEP_PCT)
+export function toDeviation(winPct: number): number {
+  return Math.round((winPct - BASELINE_PCT) * 10) / 10
 }
 
-/** Evenly spaced ticks up to and including `max`. Recharts otherwise improvises. */
-function chartTicks(max: number): number[] {
-  return Array.from({ length: max / TICK_STEP_PCT + 1 }, (_, i) => i * TICK_STEP_PCT)
+/**
+ * Blue above the coin flip, red below — the two poles of a diverging scale, with
+ * a neutral midpoint. Dead-even is real: RA ≥ 7 in 2011-12 went 17/34.
+ */
+export function deviationFill(deviation: number): string {
+  if (deviation === 0) return "var(--term-neutral)"
+  return deviation < 0 ? "var(--term-red)" : "var(--term-blue)"
 }
 
-/** Splits a win rate into the coin-flip portion and the measured edge above it. */
-function splitAtBaseline(winPct: number): { base: number; edge: number } {
-  return {
-    base: Math.min(winPct, BASELINE_PCT),
-    edge: Math.max(0, winPct - BASELINE_PCT),
-  }
+/**
+ * A dead-even slice has zero length, so without this it draws nothing at all and
+ * reads as missing data rather than as "exactly a coin flip". Give it a 2px stub;
+ * every other bar keeps its true length.
+ */
+export function minBarSize(value: number | undefined | null): number {
+  return value === 0 ? 2 : 0
+}
+
+const TICK_STEP_CANDIDATES = [2, 5, 10] as const
+const MAX_TICK_INTERVALS = 6
+
+/**
+ * A signed domain with evenly spaced ticks that always includes zero. Recharts
+ * left to improvise emits odd intervals (a `[0, 70]` domain gave 0/20/40/60 plus
+ * an orphan 70), and a hardcoded ceiling silently clips — the RA ≥ 7 season
+ * series runs −11.0 to +25.0 pp.
+ */
+export function deviationScale(values: readonly number[]): { domain: [number, number]; ticks: number[] } {
+  const peak = values.length > 0 ? Math.max(...values, 0) : 0
+  const trough = values.length > 0 ? Math.min(...values, 0) : 0
+  const step =
+    TICK_STEP_CANDIDATES.find((s) => (peak - trough) / s <= MAX_TICK_INTERVALS) ??
+    TICK_STEP_CANDIDATES[TICK_STEP_CANDIDATES.length - 1]
+  const max = Math.max(step, Math.ceil(peak / step) * step)
+  const min = Math.min(0, Math.floor(trough / step) * step)
+  const ticks: number[] = []
+  for (let v = min; v <= max + 1e-9; v += step) ticks.push(Math.round(v))
+  return { domain: [min, max], ticks }
+}
+
+/** Signed pp, phrased the way the tooltips already do: +6.6 / −11.0 / 0. */
+export function formatDeviation(pp: number): string {
+  if (pp === 0) return "0"
+  return `${pp > 0 ? "+" : "−"}${Math.abs(pp)}`
 }
 
 // ─── Chart datum shapes ───────────────────────────────────────────
@@ -180,8 +222,8 @@ type WinRateDatum = {
   winPct: number
   games: number
   threshold?: number
-  base: number
-  edge: number
+  /** winPct − 50, in percentage points. Negative below the coin flip. */
+  deviation: number
 }
 
 // ─── Custom tooltips ──────────────────────────────────────────────
@@ -192,15 +234,12 @@ function WinRateTooltip({ active, payload }: TooltipContentProps) {
   return (
     <div style={termTooltip}>
       <p style={{ color: "var(--term-text)", fontWeight: 700, letterSpacing: "0.04em" }}>{d.label.toUpperCase()}</p>
-      {/* Read the win rate off the datum, not off `payload` — the bar is two stacked
-          segments, so iterating payload would print the split halves instead. */}
-      <p style={{ marginTop: 2, color: "var(--term-blue)" }}>
-        WIN RATE: <span style={{ fontWeight: 700 }}>{d.winPct}%</span>
+      {/* The bar plots the deviation, so the tooltip leads with it and carries the
+          absolute win rate underneath — the axis no longer shows it anywhere. */}
+      <p style={{ marginTop: 2, color: deviationFill(d.deviation) }}>
+        <span style={{ fontWeight: 700 }}>{formatDeviation(d.deviation)} PP</span> VS COIN FLIP
       </p>
-      <p style={{ color: "var(--term-text-muted)", marginTop: 2 }}>
-        {d.winPct >= BASELINE_PCT ? "+" : "−"}
-        {Math.abs(d.winPct - BASELINE_PCT).toFixed(1)} PP VS COIN FLIP
-      </p>
+      <p style={{ color: "var(--term-text-muted)", marginTop: 2 }}>WIN RATE: {d.winPct}%</p>
       <p style={{ color: "var(--term-text-muted)", marginTop: 2 }}>{d.games.toLocaleString()} GAMES</p>
       {d.threshold !== undefined && (
         <p style={{ marginTop: 4, fontSize: 11, color: "var(--term-blue)" }}>CLICK TO EXPLORE ↓</p>
@@ -214,8 +253,8 @@ type SeasonWinRateDatum = {
   winPct: number
   games: number
   restedTeamWins: number
-  base: number
-  edge: number
+  /** winPct − 50, in percentage points. Negative below the coin flip. */
+  deviation: number
 }
 
 function SeasonWinRateTooltip({ active, payload }: TooltipContentProps) {
@@ -224,13 +263,10 @@ function SeasonWinRateTooltip({ active, payload }: TooltipContentProps) {
   return (
     <div style={termTooltip}>
       <p style={{ color: "var(--term-text)", fontWeight: 700, letterSpacing: "0.04em" }}>{d.label}</p>
-      <p style={{ marginTop: 2, color: "var(--term-blue)" }}>
-        WIN RATE: <span style={{ fontWeight: 700 }}>{d.winPct}%</span>
+      <p style={{ marginTop: 2, color: deviationFill(d.deviation) }}>
+        <span style={{ fontWeight: 700 }}>{formatDeviation(d.deviation)} PP</span> VS COIN FLIP
       </p>
-      <p style={{ color: "var(--term-text-muted)", marginTop: 2 }}>
-        {d.winPct >= BASELINE_PCT ? "+" : "−"}
-        {Math.abs(d.winPct - BASELINE_PCT).toFixed(1)} PP VS COIN FLIP
-      </p>
+      <p style={{ color: "var(--term-text-muted)", marginTop: 2 }}>WIN RATE: {d.winPct}%</p>
       <p style={{ color: "var(--term-text-muted)", marginTop: 2 }}>
         {d.restedTeamWins.toLocaleString()} / {d.games.toLocaleString()} (RESTED TEAM WON)
       </p>
@@ -260,9 +296,9 @@ function SeasonWinRateBySeasonChart({
     winPct: s.winPct,
     games: s.games,
     restedTeamWins: s.restedTeamWins,
-    ...splitAtBaseline(s.winPct),
+    deviation: toDeviation(s.winPct),
   }))
-  const yMax = chartMaxPct(chartData.map((d) => d.winPct))
+  const { domain, ticks } = deviationScale(chartData.map((d) => d.deviation))
 
   return (
     <div className="mt-4 h-72 min-w-0">
@@ -294,9 +330,9 @@ function SeasonWinRateBySeasonChart({
               height={52}
             />
             <YAxis
-              domain={[0, yMax]}
-              ticks={chartTicks(yMax)}
-              tickFormatter={(v: number) => `${v}%`}
+              domain={domain}
+              ticks={ticks}
+              tickFormatter={formatDeviation}
               tick={{ fontSize: 12, fill: "var(--term-text-muted)", fontFamily: MONO_FONT_STACK }}
               tickLine={false}
               axisLine={false}
@@ -306,27 +342,18 @@ function SeasonWinRateBySeasonChart({
               cursor={{ fill: "rgba(23,64,139,0.06)" }}
               content={(props: TooltipContentProps) => <SeasonWinRateTooltip {...props} />}
             />
-            {/* Zero-based, split at the baseline: the pale segment is what a coin flip
-                already gives you, the solid segment is the measured edge. */}
-            {/* No per-bar n= label here, unlike the four-bar threshold chart. At ~40
-                seasons each bar is roughly 44px wide while "n=1,031" needs ~45px, and
-                zero-basing compresses a 52–58% spread into the top ~10% of the plot, so
-                every label lands at nearly the same height and they overlap into a smear.
-                Sample size stays available on hover. Likewise no inline baseline label —
-                the bars run the full width here, so it has nowhere to sit; the legend
-                below names the rule. */}
-            <Bar dataKey="base" stackId="wr" fill="var(--term-bar-base)" maxBarSize={48} isAnimationActive={false} />
-            <Bar dataKey="edge" stackId="wr" fill="var(--term-blue)" maxBarSize={48} isAnimationActive={false} />
-            {/* Declared after the bars so the baseline draws on top of them. Hairline
-                and dashed on purpose: the neutral/blue seam already marks 50% on every
-                bar, so this only has to confirm the rule, not shout it. */}
-            <ReferenceLine
-              y={BASELINE_PCT}
-              stroke="var(--term-neutral)"
-              strokeWidth={1}
-              strokeDasharray="4 4"
-              strokeOpacity={0.7}
-            />
+            {/* No per-bar value label here, unlike the four-bar threshold chart: at ~40
+                seasons each bar is roughly 44px wide and the labels overlap into a smear.
+                Sample size and win rate stay available on hover. */}
+            <Bar dataKey="deviation" maxBarSize={48} minPointSize={minBarSize} isAnimationActive={false}>
+              {chartData.map((d) => (
+                <Cell key={d.label} fill={deviationFill(d.deviation)} />
+              ))}
+            </Bar>
+            {/* Declared after the bars so it draws on top. This is the zero axis, not a
+                decoration, so it is solid ink at full weight — the one rule on the chart
+                that is allowed to be assertive. */}
+            <ReferenceLine y={0} stroke="var(--term-text)" strokeWidth={1.5} />
           </BarChart>
         </ResponsiveContainer>
       )}
@@ -757,9 +784,9 @@ export function AnalysisContent() {
     winPct: t.winPct,
     games: t.games,
     threshold: t.threshold,
-    ...splitAtBaseline(t.winPct),
+    deviation: toDeviation(t.winPct),
   }))
-  const thresholdYMax = chartMaxPct(barData.map((d) => d.winPct))
+  const thresholdScale = deviationScale(barData.map((d) => d.deviation))
 
   const ra5 = data.thresholds.find((t) => t.threshold === 5)
   const ra7 = data.thresholds.find((t) => t.threshold === 7)
@@ -778,7 +805,8 @@ export function AnalysisContent() {
         <h1 className="text-2xl font-bold tracking-tight text-[var(--term-text)]">Rest Advantage Analysis</h1>
         <p className="max-w-2xl" style={{ fontSize: 15, color: "var(--term-text-muted)", lineHeight: 1.55 }}>
           Among completed regular-season games with fatigue data on both sides, did the
-          more-rested team win? The bar to beat is 50%.
+          more-rested team win? Charts plot the gap against a coin flip in percentage
+          points, so zero is a 50% win rate.
         </p>
       </div>
 
@@ -824,9 +852,9 @@ export function AnalysisContent() {
                 axisLine={false}
               />
               <YAxis
-                domain={[0, thresholdYMax]}
-                ticks={chartTicks(thresholdYMax)}
-                tickFormatter={(v: number) => `${v}%`}
+                domain={thresholdScale.domain}
+                ticks={thresholdScale.ticks}
+                tickFormatter={formatDeviation}
                 tick={{ fontSize: 12, fill: "var(--term-text-muted)", fontFamily: MONO_FONT_STACK }}
                 tickLine={false}
                 axisLine={false}
@@ -836,26 +864,20 @@ export function AnalysisContent() {
                 cursor={{ fill: "rgba(23,64,139,0.06)" }}
                 content={winRateTooltipRenderer}
               />
-              {/* Zero-based, split at the baseline. Both segments stay clickable so the
-                  drill-down still fires anywhere on the bar. */}
+              {/* Deviation columns from zero = coin flip. `position="top"` puts the
+                  label above the cap for a positive bar and below the foot for a
+                  negative one, so it never lands inside the mark. */}
               <Bar
-                dataKey="base"
-                stackId="wr"
-                fill="var(--term-bar-base)"
+                dataKey="deviation"
                 maxBarSize={72}
-                style={{ cursor: "pointer" }}
-                onClick={handleBarClick}
-                isAnimationActive={false}
-              />
-              <Bar
-                dataKey="edge"
-                stackId="wr"
-                fill="var(--term-blue)"
-                maxBarSize={72}
+                minPointSize={minBarSize}
                 style={{ cursor: "pointer" }}
                 onClick={handleBarClick}
                 isAnimationActive={false}
               >
+                {barData.map((d) => (
+                  <Cell key={d.label} fill={deviationFill(d.deviation)} />
+                ))}
                 <LabelList
                   dataKey="games"
                   position="top"
@@ -865,17 +887,9 @@ export function AnalysisContent() {
                   style={{ fontSize: "11px", fill: "var(--term-text-muted)", fontFamily: MONO_FONT_STACK }}
                 />
               </Bar>
-              {/* Declared after the bars so the baseline draws on top of them. Hairline
-                  and dashed on purpose — see the season chart. No inline "COIN FLIP"
-                  label either: the legend below already names the rule, and the text sat
-                  in the plot competing with the bars. */}
-              <ReferenceLine
-                y={BASELINE_PCT}
-                stroke="var(--term-neutral)"
-                strokeWidth={1}
-                strokeDasharray="4 4"
-                strokeOpacity={0.7}
-              />
+              {/* Declared after the bars so it draws on top. Solid ink at full weight:
+                  this is the zero axis, not an annotation laid over the plot. */}
+              <ReferenceLine y={0} stroke="var(--term-text)" strokeWidth={1.5} />
             </BarChart>
           </ResponsiveContainer>
         </div>

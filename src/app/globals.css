@@ -126,11 +126,6 @@
   /* brand / bar colors — darkened for white legibility */
   --term-red: #DC2626;
   --term-blue: #2563EB;
-  /* The portion of a win-rate bar a coin flip already accounts for. Charts are
-     zero-based; only the segment ABOVE 50% is solid, so the edge carries the length.
-     Deliberately neutral, not a second blue — it is inert context, and a pale blue
-     read as a competing data series and drowned out the edge it exists to frame. */
-  --term-bar-base: #E3DFD6;
   --term-hardwood: #A16207;
   --term-amber: #C2410C;   /* Broadcast "live" / active-tab accent */
   /* semantic */
