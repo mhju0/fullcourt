@@ -437,10 +437,13 @@ export default function HomePage() {
       ? format(parseISO(`${selectedDateKey}T12:00:00`), "MMMM d, yyyy")
       : "this date"
 
-  const showGamesError = errorGames !== null
-  const showGamesSkeleton = loadingGames && !showGamesError
-  const showGamesEmpty =
-    !showGamesError && !showGamesSkeleton && selectedDateKey !== null && mergedGames.length === 0
+  // A failed /api/games/dates leaves selectedDateKey null and errorGames null, so the
+  // matchups region has to fall back to errorDates/loadingDates — otherwise every branch
+  // below is false and the section renders nothing under its own MATCHUPS header.
+  const gamesErrorMessage = errorGames ?? errorDates
+  const showGamesError = gamesErrorMessage !== null
+  const showGamesSkeleton = (loadingGames || loadingDates) && !showGamesError
+  const showGamesEmpty = !showGamesError && !showGamesSkeleton && mergedGames.length === 0
 
   // Summary metrics for the stat row.
   const gamesToday = mergedGames.length
@@ -592,7 +595,7 @@ export default function HomePage() {
         <SectionDivider label="MATCHUPS" count={mergedGames.length} />
 
         {showGamesError ? (
-          <ErrorState message={errorGames} />
+          <ErrorState message={gamesErrorMessage} />
         ) : showGamesSkeleton ? (
           <SkeletonList />
         ) : showGamesEmpty ? (
