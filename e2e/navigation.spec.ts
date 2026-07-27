@@ -5,9 +5,11 @@ test.describe("Primary navigation", () => {
     await page.goto("/");
 
     const nav = page.getByRole("navigation", { name: "Main navigation" });
-    const games = nav.getByRole("link", { name: "Games", exact: true });
-    const modelResults = nav.getByRole("link", { name: "Model Results" });
-    const scheduleEdge = nav.getByRole("link", { name: "Schedule Edge" });
+    // Labels are uppercase strings in PRIMARY_NAV_ITEMS, and `exact` matching is
+    // case-sensitive — so these must be spelled the way the source spells them.
+    const games = nav.getByRole("link", { name: "GAMES", exact: true });
+    const modelResults = nav.getByRole("link", { name: "MODEL RESULTS", exact: true });
+    const scheduleEdge = nav.getByRole("link", { name: "SCHEDULE EDGE", exact: true });
 
     await expect(games).toBeVisible();
     await expect(modelResults).toBeVisible();

@@ -12,17 +12,14 @@ test.describe("First-visit guide", () => {
 
     const guide = page.getByRole("dialog", { name: "Welcome to FullCourt" });
     await expect(guide).toBeVisible();
-    await expect(
-      guide.getByRole("link", { name: "Games", exact: true })
-    ).toBeVisible();
-    await expect(guide.getByRole("link", { name: "Schedule Edge" })).toBeVisible();
-    await expect(guide.getByRole("link", { name: "Model Results" })).toBeVisible();
-    await expect(
-      guide.getByRole("link", { name: "Playoff Predictions" })
-    ).toBeVisible();
-    await expect(
-      guide.getByRole("link", { name: "Shot Value" })
-    ).toBeVisible();
+    // Each guide row's link wraps both the label and its description, so the accessible
+    // name is label + description — "GAMES" as a link name would match two rows. Assert
+    // the label span's exact text instead.
+    await expect(guide.getByText("GAMES", { exact: true })).toBeVisible();
+    await expect(guide.getByText("SCHEDULE EDGE", { exact: true })).toBeVisible();
+    await expect(guide.getByText("MODEL RESULTS", { exact: true })).toBeVisible();
+    await expect(guide.getByText("PLAYOFF PREDICTIONS", { exact: true })).toBeVisible();
+    await expect(guide.getByText("SHOT VALUE", { exact: true })).toBeVisible();
     await expect(
       guide.getByText(
         "Browse any season's games, past or current, and compare each team's fatigue and rest advantage.",
