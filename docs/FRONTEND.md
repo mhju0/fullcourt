@@ -22,7 +22,8 @@ the actual code (`src/app/`, `src/components/`, `src/app/globals.css`).
 
 ## Pages
 
-Five product routes ship today — `/`, `/analysis`, `/upcoming`, `/playoffs`, `/shot-quality` —
+Six product routes ship today — `/`, `/analysis`, `/upcoming`, `/playoffs`, `/schedule`,
+`/shot-quality` —
 plus a branded App Router `not-found` page for unknown paths.
 
 ### `/` — Today's Games (`src/app/page.tsx`, client component)
@@ -78,6 +79,21 @@ explicitly framed "OOS is the honest generalization number"), and per-round `Ser
 inline, a correctness badge) that reveals a `SeriesFeatureGrid` (seed diff / win% diff / entry
 rest diff / h2h diff) on click.
 
+### `/schedule` — Schedule Disparity (`src/app/schedule/page.tsx`)
+
+Server component; metadata title `"Schedule Disparity"`; renders a `<PageHeader>` plus
+`<ScheduleDisparityContentLazy />`. The lazy client component
+(`schedule-disparity-content.tsx`) fetches `/api/schedule-disparity?season=…` via SWR and
+renders a `<SeasonSelector>`, a diverging **net rest edge** column chart (reusing
+`deviationFill` / `minBarSize` from `analysis-content.tsx`, so zero is the fair schedule and
+negative bars hang below the line in red), and a per-team table carrying the capped and
+uncapped totals side by side.
+
+A **provisional** season — any season with a game that is not final — shows an as-of date, the
+games-per-team count, and a sentence explaining that the NBA announces only 80 of 82 games
+before opening night and fills the rest after NBA Cup group play. There is deliberately no
+cross-season ranking anywhere on the page.
+
 ### `/shot-quality` — Expected Shot Value (`src/app/shot-quality/page.tsx`)
 
 Server component; metadata title `"Expected Shot Value"`; renders `<ShotQualityContentLazy />`
@@ -107,7 +123,7 @@ recovery links to Today's Games and Analysis without adding a client bundle or d
    dead branch was removed. Per-game LIVE status is shown by `MatchupCard` instead.
 2. **Main nav** (44px, `var(--term-surface)`, bottom border `var(--term-border)`): links from
    `PRIMARY_NAV_ITEMS` (`src/lib/primary-navigation.ts`) — `TODAY'S GAMES → /`, `ANALYSIS → /analysis`, `UPCOMING EDGES → /upcoming`,
-   `PLAYOFFS → /playoffs`, `SHOT QUALITY → /shot-quality`. The active link gets an amber
+   `PLAYOFFS → /playoffs`, `SCHEDULE → /schedule`, `SHOT QUALITY → /shot-quality`. The active link gets an amber
    bottom border (`border-[var(--term-amber)]`) + `text-[var(--term-text)]` and carries
    `aria-current="page"`; inactive links are muted with a hover-to-text transition.
 

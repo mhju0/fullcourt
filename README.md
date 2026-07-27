@@ -58,6 +58,12 @@ zone-average baseline it is measured against.
   edge, each shown with the historical hit rate and sample size of its rest-advantage class.
   Not betting advice.
 - **Playoff Predictor** — series-winner predictions from rest/fatigue-derived features, showing walk-forward out-of-sample accuracy next to in-sample as an honest overfitting check.
+- **Schedule Disparity** — which teams a season's schedule favored, ranked by **net rest edge**
+  in days against their opponents, with back-to-back and short-rest differentials beside it.
+  Honest framing: it describes the schedule rather than predicting anything, much of the gap is
+  structural rather than anyone being favored, and every figure is scoped to its own season —
+  season length, team count and the league-wide rest distribution all shifted across four
+  decades, so there is deliberately no all-time ranking.
 - **Shot Quality (Expected Shot Value / xeFG%)** — a half-court hexbin map of expected effective FG% per grid cell, comparing a location-only gradient-boosted model against a zone-average baseline. Honest framing: public NBA data has no defender distance or shot-clock signal, so this is shot-**location** value only, and the model's edge over the baseline is a small calibration win (~1% on log-loss / Brier), not a large accuracy jump.
 
 Each analytics module is **additive and isolated** — its own scripts, tables, routes, and page — so new modules never destabilize the flagship rest-advantage flow.
@@ -83,7 +89,7 @@ flowchart TD
 - **Serve:** Next.js App Router route handlers (Zod-validated, `{ data, error }` envelope) feed a React 19 frontend using SWR and Supabase Realtime.
 - **Ship:** Vercel auto-deploys from `main`; GitHub Actions runs the daily pipeline.
 
-The diagram above is the flagship rest-advantage flow. Playoff Predictor and Shot Quality are separate scripts/tables/routes/pages that never touch `fatigue.ts` and are never read by the flagship queries; see [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for their data flows.
+The diagram above is the flagship rest-advantage flow. Playoff Predictor, Shot Quality and Schedule Disparity are separate routes/pages that never touch `fatigue.ts` and are never read by the flagship queries; see [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for their data flows. Schedule Disparity is read-only — it adds no table, no migration and no ingest.
 
 ---
 
@@ -183,6 +189,7 @@ docs/             # architecture, database, pipeline, API, frontend
 - [x] **Rest Advantage model** (flagship) — fatigue score + rest-advantage backtest
 - [x] **Playoff Predictor** — series-winner model (fatigue + ML) at `/playoffs`
 - [x] **Shot Quality** — Expected Shot Value / xeFG% half-court hexbin at `/shot-quality`
+- [x] **Schedule Disparity** — net rest edge per team-season at `/schedule`
 
 ---
 

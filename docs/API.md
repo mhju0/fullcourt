@@ -23,6 +23,7 @@ Response envelope (`ApiResponse<T>` in `src/types/index.ts`):
 | `GET /api/analysis` | `seasonMinRA?` | `AnalysisResponse` | `getCompletedGamesWithFatigue` |
 | `GET /api/playoffs` | `season?` | `PlayoffsResponse` | `getPlayoffSeriesWithPredictions` |
 | `GET /api/shot-quality` | `season`, `model?` | `ShotQualityResponse` | `getShotQualityGrid` |
+| `GET /api/schedule-disparity` | `season?` | `ScheduleDisparityResponse` | `getScheduleDisparity` |
 | `GET /api/cron/update` | (Bearer auth) | `{ gamesUpdated }` | reads/updates `games` |
 | `GET /api/health` | none | dedicated `{ status, db, timestamp }` | `select 1` |
 

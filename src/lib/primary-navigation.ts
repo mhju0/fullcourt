@@ -26,6 +26,12 @@ export const PRIMARY_NAV_ITEMS = [
       "Compare series win probabilities from FullCourt's separate playoff model.",
   },
   {
+    href: "/schedule",
+    label: "SCHEDULE",
+    guideDescription:
+      "See which teams a season's schedule favored, in days of rest against their opponents.",
+  },
+  {
     href: "/shot-quality",
     label: "SHOT QUALITY",
     guideDescription:

@@ -119,7 +119,7 @@ prerender and Edge (postgres-js needs Node). Full list in [API.md](API.md).
 - `app/page.tsx` — **Today's Games** (client): season/month/day pickers → `/api/games/dates`
   then `/api/games/[date]`, with live merges from `useLiveGames`.
 - `app/analysis/page.tsx` / `app/upcoming/page.tsx` / `app/playoffs/page.tsx` /
-  `app/shot-quality/page.tsx` — thin server wrappers that render client content via
+  `app/schedule/page.tsx` / `app/shot-quality/page.tsx` — thin server wrappers that render client content via
   `next/dynamic` (`ssr: false`) with skeleton fallbacks.
 - Client data fetching uses SWR through `src/lib/fetcher.ts`; live updates use Supabase
   Realtime via `src/hooks/useLiveGames.ts`.
@@ -182,6 +182,9 @@ the row change → connected clients update in place.
   [ROADMAP.md](ROADMAP.md).
 - **Shot Quality (complete):** an additive, isolated module — see the subsection below and
   [SHOT_QUALITY_DESIGN.md](SHOT_QUALITY_DESIGN.md).
+- **Schedule Disparity (complete):** the most isolated module of the three — **read-only**, with
+  no migration, no table and no ingest. See the subsection below and
+  [its design spec](superpowers/specs/2026-07-27-schedule-disparity-design.md).
 
 ## Playoff Predictor (complete) — data flow
 
@@ -303,3 +306,38 @@ GET /api/shot-quality  →  getShotQualityGrid()  →  ShotQualityResponse
   for *evaluating* the model choice, not for serving distinct per-season predictions. The
   frontend's diff view is a **single** court (GBM − baseline), not the two-court diff view
   sketched in the original design doc's wireframe.
+
+## Schedule Disparity — data flow
+
+The most isolated of the additive modules: it is **read-only**. No migration, no new table, no
+ingest script, no pipeline change. It reads `games` and `fatigue_scores` and nothing reads what
+it produces.
+
+```
+GET /api/schedule-disparity  →  getScheduleDisparity()
+                                  ├─ getRegularSeasonScheduleForDisparity(season)   (~1,230 rows)
+                                  ├─ getTeamDirectory()
+                                  └─ computeScheduleDisparity()   (pure, src/lib/schedule-disparity.ts)
+                                       →  ScheduleDisparityResponse
+```
+
+The arithmetic runs in a pure TypeScript module rather than in SQL. At one season's row count
+the aggregation is negligible, and it makes every metric directly assertable in unit tests
+instead of requiring assertions against generated SQL.
+
+Two definitions deliberately live here rather than being read from `fatigue_scores`:
+
+- **Rest days** are derived from the game dates themselves. `backfill_fatigue.ts` only fills
+  games *missing* fatigue rows, so inserting a game into a published schedule leaves its
+  neighbours stale — and the NBA does exactly that every season, announcing only 80 of 82 games
+  before opening night. See [ADR 0001](adr/0001-derive-rest-days-from-games.md).
+- **3-in-4 / 4-in-6** are classified per game ("this game is the third in four nights").
+  `fatigue_scores.is_three_in_four` answers a different question — whether a dense stretch
+  occurred anywhere in a 30-day lookback — and so cannot be summed into a season count.
+
+A pinning test (`src/lib/__tests__/schedule-disparity.test.ts`) holds the module's rest days
+equal to `calculateFatigue`'s `daysSinceLastGame`, without needing a database. If the two
+definitions ever drift, that test fails.
+
+Full design in [its spec](superpowers/specs/2026-07-27-schedule-disparity-design.md); route in
+[API.md](API.md); page in [FRONTEND.md](FRONTEND.md).
