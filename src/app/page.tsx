@@ -523,150 +523,150 @@ export default function HomePage() {
         <UpcomingContentLazy />
       ) : (
         <>
-      {/* Stat summary row */}
-      <StatSummaryRow
-        gamesToday={gamesToday}
-        avgRestAdv={avgRestAdv}
-        seasonWinRate={seasonWinRate}
-        highConfGames={highConfGames}
-      />
+          {/* Stat summary row */}
+          <StatSummaryRow
+            gamesToday={gamesToday}
+            avgRestAdv={avgRestAdv}
+            seasonWinRate={seasonWinRate}
+            highConfGames={highConfGames}
+          />
 
-      {/* Filters — grouped as one secondary control panel */}
-      <div className="flex flex-col gap-4" style={termCardStyle}>
-        {/* The shared selector, which lists newest-season-first. The hand-rolled one this
-            replaces mapped NBA_SEASONS raw, so it opened on 1985-86 with the current
-            season ~40 options down — and disagreed with every other season picker. */}
-        <SeasonSelector id="nba-season" season={season} onSeasonChange={onSeasonChange} />
+          {/* Filters — grouped as one secondary control panel */}
+          <div className="flex flex-col gap-4" style={termCardStyle}>
+            {/* The shared selector, which lists newest-season-first. The hand-rolled one this
+                replaces mapped NBA_SEASONS raw, so it opened on 1985-86 with the current
+                season ~40 options down — and disagreed with every other season picker. */}
+            <SeasonSelector id="nba-season" season={season} onSeasonChange={onSeasonChange} />
 
-        <div className="flex flex-col gap-1.5">
-          <span className="mono" style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 600 }}>
-            MONTH
-          </span>
-          <div className="-mx-1 overflow-x-auto overflow-y-hidden pb-1 [scrollbar-width:thin]">
-            <div className="flex min-w-min gap-1.5 px-1">
-              {NBA_REGULAR_MONTHS.map(({ value: m, label }) => {
-                const active = month === m
-                return (
-                  <button
-                    key={m}
-                    type="button"
-                    onClick={() => onMonthTabClick(m)}
-                    aria-pressed={active}
-                    // Same reason as DateChip: an inline `background` outranked
-                    // termBtn's hover:bg-*, so the month tabs never responded to hover.
-                    className={cn(
-                      termBtn,
-                      "shrink-0 active:scale-[0.97]",
-                      active
-                        ? "bg-[var(--term-blue)] text-[var(--term-surface)] hover:bg-[var(--term-blue)]"
-                        : "text-[var(--term-text)]"
-                    )}
-                    style={{
-                      ...termBtnStyle,
-                      borderColor: active ? "var(--term-blue)" : "var(--term-border)",
-                    }}
-                  >
-                    {label.toUpperCase()}
-                  </button>
-                )
-              })}
+            <div className="flex flex-col gap-1.5">
+              <span className="mono" style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 600 }}>
+                MONTH
+              </span>
+              <div className="-mx-1 overflow-x-auto overflow-y-hidden pb-1 [scrollbar-width:thin]">
+                <div className="flex min-w-min gap-1.5 px-1">
+                  {NBA_REGULAR_MONTHS.map(({ value: m, label }) => {
+                    const active = month === m
+                    return (
+                      <button
+                        key={m}
+                        type="button"
+                        onClick={() => onMonthTabClick(m)}
+                        aria-pressed={active}
+                        // Same reason as DateChip: an inline `background` outranked
+                        // termBtn's hover:bg-*, so the month tabs never responded to hover.
+                        className={cn(
+                          termBtn,
+                          "shrink-0 active:scale-[0.97]",
+                          active
+                            ? "bg-[var(--term-blue)] text-[var(--term-surface)] hover:bg-[var(--term-blue)]"
+                            : "text-[var(--term-text)]"
+                        )}
+                        style={{
+                          ...termBtnStyle,
+                          borderColor: active ? "var(--term-blue)" : "var(--term-border)",
+                        }}
+                      >
+                        {label.toUpperCase()}
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+            </div>
+
+            {errorDates ? (
+              <p className="mono" style={{ fontSize: 12, color: "var(--term-red)" }} role="alert">
+                {errorDates}
+              </p>
+            ) : loadingDates ? (
+              <Skeleton className="h-16 w-full max-w-md bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)" }} />
+            ) : availableDates.length === 0 ? (
+              <p className="mono" style={{ fontSize: 12, color: "var(--term-text-muted)" }}>
+                NO GAMES IN THIS MONTH.
+              </p>
+            ) : (
+              <div className="flex flex-col gap-1.5">
+                <span className="mono" style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 600 }}>
+                  DAYS WITH GAMES
+                </span>
+                <div className="flex flex-wrap gap-1.5">
+                  {availableDates.map(({ date: d, gameCount }) => {
+                    const dayNum = format(parseISO(`${d}T12:00:00`), "d")
+                    const longLabel = format(parseISO(`${d}T12:00:00`), "MMMM d, yyyy")
+                    return (
+                      <DateChip
+                        key={d}
+                        day={dayNum}
+                        count={gameCount}
+                        selected={selectedDateKey === d}
+                        onClick={() => setSelectedDateKey(d)}
+                        ariaLabel={`${longLabel}, ${gameCount} games`}
+                      />
+                    )
+                  })}
+                </div>
+              </div>
+            )}
+
+            <div className="flex flex-wrap items-center gap-2">
+              <Button
+                variant="outline"
+                size="icon-sm"
+                onClick={() => shiftSelectedDay(-1)}
+                disabled={!selectedDateKey}
+                aria-label="Previous day"
+                className="bg-[var(--term-surface)] active:scale-95"
+                style={{ border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }}
+              >
+                <ChevronLeft />
+              </Button>
+              <p
+                className="mono min-w-[12rem] text-center sm:text-left"
+                style={{ fontSize: 12, letterSpacing: "0.04em", color: "var(--term-text)", fontWeight: 600 }}
+                data-testid="selected-date-display"
+              >
+                {formattedSelected?.toUpperCase() ?? "PICK A DATE"}
+              </p>
+              <Button
+                variant="outline"
+                size="icon-sm"
+                onClick={() => shiftSelectedDay(1)}
+                disabled={!selectedDateKey}
+                aria-label="Next day"
+                className="bg-[var(--term-surface)] active:scale-95"
+                style={{ border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }}
+              >
+                <ChevronRight />
+              </Button>
             </div>
           </div>
-        </div>
 
-        {errorDates ? (
-          <p className="mono" style={{ fontSize: 12, color: "var(--term-red)" }} role="alert">
-            {errorDates}
-          </p>
-        ) : loadingDates ? (
-          <Skeleton className="h-16 w-full max-w-md bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)" }} />
-        ) : availableDates.length === 0 ? (
-          <p className="mono" style={{ fontSize: 12, color: "var(--term-text-muted)" }}>
-            NO GAMES IN THIS MONTH.
-          </p>
-        ) : (
-          <div className="flex flex-col gap-1.5">
-            <span className="mono" style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 600 }}>
-              DAYS WITH GAMES
-            </span>
-            <div className="flex flex-wrap gap-1.5">
-              {availableDates.map(({ date: d, gameCount }) => {
-                const dayNum = format(parseISO(`${d}T12:00:00`), "d")
-                const longLabel = format(parseISO(`${d}T12:00:00`), "MMMM d, yyyy")
-                return (
-                  <DateChip
-                    key={d}
-                    day={dayNum}
-                    count={gameCount}
-                    selected={selectedDateKey === d}
-                    onClick={() => setSelectedDateKey(d)}
-                    ariaLabel={`${longLabel}, ${gameCount} games`}
-                  />
-                )
-              })}
-            </div>
-          </div>
-        )}
+          {showOffSeasonBanner && <OffSeasonBanner season={offSeasonLabel} />}
 
-        <div className="flex flex-wrap items-center gap-2">
-          <Button
-            variant="outline"
-            size="icon-sm"
-            onClick={() => shiftSelectedDay(-1)}
-            disabled={!selectedDateKey}
-            aria-label="Previous day"
-            className="bg-[var(--term-surface)] active:scale-95"
-            style={{ border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }}
-          >
-            <ChevronLeft />
-          </Button>
-          <p
-            className="mono min-w-[12rem] text-center sm:text-left"
-            style={{ fontSize: 12, letterSpacing: "0.04em", color: "var(--term-text)", fontWeight: 600 }}
-            data-testid="selected-date-display"
-          >
-            {formattedSelected?.toUpperCase() ?? "PICK A DATE"}
-          </p>
-          <Button
-            variant="outline"
-            size="icon-sm"
-            onClick={() => shiftSelectedDay(1)}
-            disabled={!selectedDateKey}
-            aria-label="Next day"
-            className="bg-[var(--term-surface)] active:scale-95"
-            style={{ border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }}
-          >
-            <ChevronRight />
-          </Button>
-        </div>
-      </div>
-
-      {showOffSeasonBanner && <OffSeasonBanner season={offSeasonLabel} />}
-
-      {/* Matchups section */}
-      <div className="flex flex-col gap-2">
-        <SectionDivider label="MATCHUPS" count={mergedGames.length} />
-
-        {showGamesError ? (
-          <ErrorState message={gamesErrorMessage} />
-        ) : showGamesSkeleton ? (
-          <SkeletonList />
-        ) : showGamesEmpty ? (
-          <EmptyState label={shortLabel} />
-        ) : mergedGames.length > 0 ? (
+          {/* Matchups section */}
           <div className="flex flex-col gap-2">
-            {mergedGames.map((game, i) => (
-              <MatchupCard
-                key={game.id}
-                game={game}
-                index={i}
-                isScoreFlashing={recentlyUpdated.has(game.id)}
-                evidenceSource={evidenceSource}
-              />
-            ))}
+            <SectionDivider label="MATCHUPS" count={mergedGames.length} />
+
+            {showGamesError ? (
+              <ErrorState message={gamesErrorMessage} />
+            ) : showGamesSkeleton ? (
+              <SkeletonList />
+            ) : showGamesEmpty ? (
+              <EmptyState label={shortLabel} />
+            ) : mergedGames.length > 0 ? (
+              <div className="flex flex-col gap-2">
+                {mergedGames.map((game, i) => (
+                  <MatchupCard
+                    key={game.id}
+                    game={game}
+                    index={i}
+                    isScoreFlashing={recentlyUpdated.has(game.id)}
+                    evidenceSource={evidenceSource}
+                  />
+                ))}
+              </div>
+            ) : null}
           </div>
-        ) : null}
-      </div>
         </>
       )}
     </div>

@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 
 test.describe("Home page", () => {
-  test("loads matchups heading, season control, and month tabs", async ({ page }) => {
+  test("loads the Games heading, season control, and month tabs", async ({ page }) => {
     await page.goto("/");
 
     await expect(

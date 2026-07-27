@@ -81,7 +81,9 @@ test.describe("Schedule Disparity page", () => {
     await page.goto("/");
 
     const nav = page.getByRole("navigation", { name: "Main navigation" });
-    const schedule = nav.getByRole("link", { name: "Schedule" });
+    // Exact: a bare "Schedule" is a case-insensitive substring that passes only by accident
+    // of "SCHEDULE EDGE" containing it, and would go ambiguous the moment a second tab does.
+    const schedule = nav.getByRole("link", { name: "SCHEDULE EDGE", exact: true });
 
     await expect(schedule).toBeVisible();
     await expect(schedule).not.toHaveAttribute("aria-current", "page");

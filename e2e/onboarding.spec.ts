@@ -12,17 +12,18 @@ test.describe("First-visit guide", () => {
 
     const guide = page.getByRole("dialog", { name: "Welcome to FullCourt" });
     await expect(guide).toBeVisible();
-    // Each guide row's link wraps both the label and its description, so the accessible
-    // name is label + description — "GAMES" as a link name would match two rows. Assert
-    // the label span's exact text instead.
-    await expect(guide.getByText("GAMES", { exact: true })).toBeVisible();
-    await expect(guide.getByText("SCHEDULE EDGE", { exact: true })).toBeVisible();
-    await expect(guide.getByText("MODEL RESULTS", { exact: true })).toBeVisible();
-    await expect(guide.getByText("PLAYOFF PREDICTIONS", { exact: true })).toBeVisible();
-    await expect(guide.getByText("SHOT VALUE", { exact: true })).toBeVisible();
+    // Each guide row's link wraps both the label and its description, so the accessible name
+    // is "LABEL <description>". A bare { name: "GAMES" } would match two rows, since the
+    // MODEL RESULTS description also ends in "individual games." — hence the start anchor.
+    // Keep getByRole rather than getByText: the rows must stay links, not just text.
+    await expect(guide.getByRole("link", { name: /^GAMES\b/ })).toBeVisible();
+    await expect(guide.getByRole("link", { name: /^SCHEDULE EDGE\b/ })).toBeVisible();
+    await expect(guide.getByRole("link", { name: /^MODEL RESULTS\b/ })).toBeVisible();
+    await expect(guide.getByRole("link", { name: /^PLAYOFF PREDICTIONS\b/ })).toBeVisible();
+    await expect(guide.getByRole("link", { name: /^SHOT VALUE\b/ })).toBeVisible();
     await expect(
       guide.getByText(
-        "Browse any season's games, past or current, and compare each team's fatigue and rest advantage.",
+        "Compare each team's fatigue and rest advantage — by date across any season, or ranked by edge for the games ahead.",
       ),
     ).toBeVisible();
     await expect(

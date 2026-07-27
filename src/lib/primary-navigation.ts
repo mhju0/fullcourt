@@ -5,7 +5,7 @@ export const PRIMARY_NAV_ITEMS = [
     // page browses any season's slate — so no time word ("today's") can stay true here.
     label: "GAMES",
     guideDescription:
-      "Browse any season's games, past or current, and compare each team's fatigue and rest advantage.",
+      "Compare each team's fatigue and rest advantage — by date across any season, or ranked by edge for the games ahead.",
   },
   {
     href: "/schedule",

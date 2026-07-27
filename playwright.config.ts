@@ -13,7 +13,7 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   // Serial everywhere, not just CI. The suite runs against one `pnpm dev` server, so parallel
   // workers race each other for cold Turbopack compiles rather than for CPU: measured 18 passed
-  // in 17.1s serially vs. 26s *and* readiness-gate failures on /schedule at the default worker
+  // in 16.8s serially vs. 26s *and* readiness-gate failures on /schedule at the default worker
   // count. Parallelism here buys nothing and costs correctness.
   workers: 1,
   reporter: [["list"], ["html", { open: "never" }]],

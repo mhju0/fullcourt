@@ -66,8 +66,9 @@ serially against 26s *and* readiness-gate failures on `/schedule` at the default
 parallelism bought negative time here. (`fullyParallel` is left on; with one worker it only
 affects ordering.) Existing specs receive a completed onboarding storage state so the first-visit
 dialog cannot block their legacy interactions; `e2e/onboarding.spec.ts` overrides that state with
-an empty browser. Specs: `e2e/home.spec.ts`, `e2e/analysis.spec.ts`, `e2e/navigation.spec.ts`,
-`e2e/onboarding.spec.ts`, `e2e/playoffs.spec.ts`, `e2e/shot-quality.spec.ts`.
+an empty browser. Specs (7): `e2e/home.spec.ts`, `e2e/analysis.spec.ts`, `e2e/navigation.spec.ts`,
+`e2e/onboarding.spec.ts`, `e2e/playoffs.spec.ts`, `e2e/schedule-disparity.spec.ts`,
+`e2e/shot-quality.spec.ts`.
 
 > **The e2e specs target the current terminal UI** (they are **not** stale — they assert the live
 > markup, including the `Games` / `Rest Advantage Analysis` headings and the
