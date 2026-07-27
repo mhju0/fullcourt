@@ -101,6 +101,14 @@ export default function RootLayout({
               </a>
             </span>
             <span style={{ fontSize: "11px", color: "var(--term-text-muted)", letterSpacing: "0.04em" }}>
+              <a
+                href="/about"
+                className="transition-colors hover:text-[var(--term-text)]"
+                style={{ color: "var(--term-text-muted)", textDecoration: "underline" }}
+              >
+                WHAT THIS MEASURES
+              </a>
+              {" · "}
               <OnboardingGuide />
               {" · "}
               <a
