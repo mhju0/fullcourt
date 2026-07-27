@@ -118,8 +118,9 @@ prerender and Edge (postgres-js needs Node). Full list in [API.md](API.md).
   `<NavBar>`, footer, metadata.
 - `app/page.tsx` — **Games** (client, nav label `GAMES`): season/month/day pickers → `/api/games/dates`
   then `/api/games/[date]`, with live merges from `useLiveGames`. Its UPCOMING view mounts
-  `upcoming-content.tsx`, absorbed from the retired `/upcoming` route (now a permanent redirect
-  to `/` in `next.config.ts`).
+  `upcoming-content.tsx`, absorbed from the retired `/upcoming` route (now a redirect
+  to `/` in `next.config.ts`). The browsing state machine lives in `hooks/useGameSlate.ts` over
+  the pure reducer `lib/game-slate-machine.ts` — see the decision entry below.
 - `app/analysis/page.tsx` / `app/playoffs/page.tsx` /
   `app/schedule/page.tsx` / `app/shot-quality/page.tsx` — thin server wrappers that render client content via
   `next/dynamic` (`ssr: false`) with skeleton fallbacks.
@@ -187,6 +188,18 @@ the row change → connected clients update in place.
 - **Schedule Disparity (complete):** the most isolated module of the three — **read-only**, with
   no migration, no table and no ingest. See the subsection below and
   [its design spec](superpowers/specs/2026-07-27-schedule-disparity-design.md).
+- **Game slate extracted to a pure reducer (2026-07-27):** browsing state moved out of
+  `app/page.tsx` (672 → 490 lines) into `lib/game-slate-machine.ts`, with `hooks/useGameSlate.ts`
+  as a thin React shell owning only the two fetches, the Realtime overlay and date formatting.
+  Two decisions do the work: **`selectedDate` is the only stored position and the month is
+  derived from it**, which deletes the `setState`-during-render sync that existed to keep two
+  values agreeing; and **days are fetched per season rather than per month**, which makes a
+  month click resolve from memory and so deletes both `pendingSelectionResetRef` (no round trip
+  to race) and `isFirstDatesFetchRef` (the monthless fetch is now the only fetch). Status became
+  one tagged union instead of four booleans, removing the `errorGames ?? errorDates` patch by
+  making its state unnameable. Keeping the reducer free of React is what lets it be unit-tested
+  (25 cases) **without adding a DOM environment or `@testing-library`** — the dependency tree
+  stays frozen. Three designs were generated and compared first; the shipped one is a synthesis.
 - **Nav renamed to five plain-noun tabs (2026-07-27):** `GAMES`, `SCHEDULE EDGE`,
   `MODEL RESULTS`, `PLAYOFF PREDICTIONS`, `SHOT VALUE`. The old six mixed three naming axes —
   time (`TODAY'S GAMES`, `UPCOMING EDGES`), method (`ANALYSIS`, `SHOT QUALITY`) and domain

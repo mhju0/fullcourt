@@ -35,22 +35,43 @@ deep link is an old bookmark, which the redirect lands on the default BY DATE vi
 **BY DATE** is the state machine below; **UPCOMING** renders `<UpcomingContentLazy />` in place
 of the stat row, filter panel and matchup list.
 
-State machine over season/month/day:
-- On mount, fetches `/api/games/dates?season=…` (no `month` on the first fetch), then on
-  month/season change refetches with `month`. Picks an initial day with `pickDefaultGamesDate`
-  (today if it has games; else first upcoming October date at season start; else nearest /
-  last available). Selecting a day fetches `/api/games/{date}`. Requests use `AbortController`.
-- A render-time block snaps the active month tab to the month of `selectedDateKey` so the
-  prev/next-day arrows can cross month boundaries; `onMonthTabClick` clears the selected day
-  first (via `pendingSelectionResetRef`) so this sync doesn't immediately revert the click.
-- `useLiveGames(gameIds)` merges Realtime score/status updates into the rendered list;
-  recently-updated cards flash (`scoreFlash`).
+Browsing state lives in **`useGameSlate`** (`src/hooks/useGameSlate.ts`), a thin shell over the
+pure reducer in `src/lib/game-slate-machine.ts`. The page holds no fetch, no date arithmetic and
+no loading flags of its own.
+
+- **`selectedDate` is the only stored position; the month is derived from it** (`slateMonth`).
+  Two values that must agree can disagree, which is why the previous version needed a
+  `setState`-during-render block to reconcile `month` with `selectedDateKey`. A derivation
+  cannot disagree with itself, so crossing a month boundary with the arrows needs no sync step.
+- **Days are fetched per season, not per month** — `/api/games/dates?season=…` with no `month`
+  param, filtered in memory. A month click therefore resolves synchronously, so there is no
+  round trip for `pendingSelectionResetRef` to arbitrate and no first-fetch special case for
+  `isFirstDatesFetchRef` to flag. Both refs are gone. Selecting a day fetches
+  `/api/games/{date}`; both requests use `AbortController`.
+- Because the day list is season-wide, months a season never played (the 1998-99 and 2011-12
+  lockouts) are knowable, so those tabs **disable** instead of round-tripping to an empty result.
+- **Status is one tagged value**, not four booleans: `loadingDays` · `daysError` · `noDays` ·
+  `loadingSlate` · `slateError` · `slateEmpty` · `slateReady`. The old shape allowed
+  `loadingDates && errorDates && !errorGames`, which rendered nothing under its own MATCHUPS
+  header and needed an `errorGames ?? errorDates` patch. That combination now has no name.
+  The matchup region is one exhaustive `switch` closed with a `never` assignment; `calendarView`
+  projects the seven statuses onto the chip region's four renderings so the switch is written once.
+- A slate response for a date the user has already left is **dropped by the reducer**, an
+  out-of-order guard the `AbortController`-only version lacked.
+- `useLiveGames(gameIds)` is folded into the hook; each returned game carries `isScoreFlashing`
+  and the score/status overlay already applied.
+- `initSlate` freezes "today" (ET) and the pre-selection fallback month at mount — constants,
+  not state, so neither can drift.
+
+Initial day selection still uses `pickDefaultGamesDate` (today if it has games; else the first
+upcoming October date at season start; else nearest / last available).
 - Pieces: heading eyebrow `REST ADVANTAGE DASHBOARD` + `<h1>Games</h1>`; the BY DATE/UPCOMING
   toggle;
   `StatSummaryRow` (GAMES ON THIS DATE, AVG REST ADV, **ALL-TIME WIN RATE** fetched live via
   `useSWR("/api/analysis")` — the same `overallWinRate` `/analysis` renders, shown as `—` while
   loading/on error, HIGH CONF GAMES where `HIGH_CONF_THRESHOLD = 2.0`); the shared
-  `<SeasonSelector>`; month tabs (`NBA_REGULAR_MONTHS`); `DateChip`s ("DAYS WITH GAMES");
+  `<SeasonSelector>`; month tabs (from `slate.months`, disabled at `dayCount === 0`);
+  `DateChip`s ("DAYS WITH GAMES", pre-formatted by the hook);
   prev/next day arrows; the `MatchupCard` list with skeleton/empty/error states.
 - The first tile is **"GAMES ON THIS DATE"**, not "GAMES TODAY": its value is
   `mergedGames.length` for the *selected* day, and `pickDefaultGamesDate` deliberately selects

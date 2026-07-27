@@ -30,6 +30,7 @@ Test files and coverage:
 | `src/lib/__tests__/haversine.test.ts` | Great-circle distances (LA↔Boston ≈2,591mi, NY↔SF, Dallas↔Denver), symmetry, identical-point = 0. |
 | `src/lib/__tests__/nba-season.test.ts` | `pickDefaultGamesDate` (today/postseason/October-start cases), `formatLocalDateKey` and `formatEasternDateKey` (US/Eastern, viewer-timezone-independent), `currentDisplaySeason`, and `isNbaOffSeason`. |
 | `src/lib/__tests__/rest-advantage-display.test.ts` | `formatRestAdvantageDisplay` team/neutral labeling + one-decimal formatting, and `buildRestAdvantageEvidence`: cumulative-bucket selection (a 4.1 gap resolves to "3 or more", **not** the RA≥5 rate), threshold boundaries, the sub-2 overall fallback, the 0.5 call boundary, zero-denominator refusal, and signed counterfactual wording. Discriminating: sorting the cleared buckets ascending fails exactly the two selection tests. |
+| `src/lib/__tests__/game-slate-machine.test.ts` | The game-slate reducer (25 cases): the month deriving from `selectedDate` across month and year boundaries, `MONTH_SELECTED` resolving from memory without re-entering `loadingDays`, stale slate responses being dropped, `slateEmpty` vs `slateError` separation, season invalidation, no-op events returning the same state **by identity**, `monthTabs` counting never-played months as `dayCount: 0`, and `calendarView` being total over all seven statuses — the property the old `errorGames ?? errorDates` bug violated. Discriminating: removing the stale-response guard fails 1 test; storing the month instead of deriving it fails 6. Runs in the `node` environment with no DOM, because the reducer has no React in it. |
 | `src/lib/__tests__/team-history.test.ts` | `getTeamBranding` historical eras (SEA/NJN/VAN/NOH/Bobcats/Bullets), current-era logos, fallback behavior. |
 | `src/lib/__tests__/fetcher.test.ts` | `apiFetcher` success envelopes, safe API errors, non-JSON HTTP failures, malformed envelopes. |
 | `src/lib/__tests__/rest-advantage-evidence.test.ts` | Canonical neutral boundary, historical backtest aggregation, game-explorer outcome filtering/pagination. |
@@ -89,6 +90,11 @@ an empty browser. Specs (7): `e2e/home.spec.ts`, `e2e/analysis.spec.ts`, `e2e/na
 >   One spec covers the retired `/upcoming` route: it asserts the redirect lands on `/` **and**
 >   that the view toggle swaps the body (the `Previous day` control disappears under UPCOMING
 >   and returns under BY DATE) — a redirect-only assertion would pass on a broken toggle.
+>   Two specs pin the season-wide day fetch introduced with `useGameSlate`: one waits for a
+>   `/api/games/dates` response carrying `season=` and asserts the **absence** of `month=`, so a
+>   regression to per-month fetching fails rather than passing quietly; the other steps the
+>   arrows past the end of December and asserts the `JAN` tab takes `aria-pressed="true"`,
+>   covering the derived month across a boundary.
 > - **`analysis.spec.ts`** — terminal markup: heading "Rest Advantage Analysis" plus the
 >   section dividers "WIN RATE BY RA THRESHOLD", "HOME TEAM MORE RESTED", and
 >   "WIN RATE BY SEASON" (no `text-7xl` hero).
