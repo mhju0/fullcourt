@@ -281,27 +281,27 @@ export interface ShotQualityResponse {
 
 // ─── Schedule Disparity ──────────────────────────────────────────
 
-/** One team's season-level schedule disparity figures. */
+/**
+ * One team's season-level schedule disparity figures, as the page renders them.
+ *
+ * Deliberately narrower than what `computeScheduleDisparity` produces. The module is the
+ * analytical unit and computes (and tests) the full metric set — uncapped totals, the season
+ * fatigue sum, 4-in-6, per-team edge counts. This is the delivery surface, and it carries only
+ * what `/schedule` puts on screen, so the payload cannot drift into the unrendered state that
+ * retired `monthlyTrends`.
+ */
 export interface ScheduleDisparityTeam {
   teamId: number;
   abbreviation: string;
   name: string;
-  /** Counted games — each side's season opener is excluded. */
-  games: number;
   /** Season sum of (own rest days − opponent rest days), each side capped at 5. */
   netRestEdge: number;
-  /** The same sum with no cap, so the cap stays auditable. */
-  netRestEdgeUncapped: number;
-  /** Season sum of (opponent fatigue − own fatigue); null when no counted game is scored. */
-  netFatigueEdge: number | null;
-  /** The same figure per counted game — the displayed form. Null when nothing is scored. */
+  /** Fatigue-score edge per counted game. Null when no counted game is scored. */
   netFatigueEdgePerGame: number | null;
   /** Back-to-backs avoided relative to opponents. Positive is favorable, like every figure here. */
   backToBackEdge: number;
+  /** Third-nights-in-four avoided relative to opponents. */
   threeInFourEdge: number;
-  fourInSixEdge: number;
-  gamesWithEdge: number;
-  gamesWithLargeEdge: number;
 }
 
 /**
@@ -309,9 +309,9 @@ export interface ScheduleDisparityTeam {
  * count, and the league-wide rest distribution all shifted across the ~40 seasons.
  */
 export interface ScheduleDisparityLeague {
-  largestEdge: number;
-  largestDisadvantage: number;
+  /** Spread in days between the most and least favored team. */
   delta: number;
+  /** Counted games where one side held any rest edge, and where that edge reached 3+ days. */
   gamesWithAnyEdge: number;
   gamesWithLargeEdge: number;
   countedGames: number;
@@ -325,8 +325,6 @@ export interface ScheduleDisparityResponse {
   asOf: string;
   /** Every regular-season game in the season — the denominator `league.countedGames` sits in. */
   scheduledGames: number;
-  gamesPerTeamMin: number;
-  gamesPerTeamMax: number;
   teams: ScheduleDisparityTeam[];
   league: ScheduleDisparityLeague;
 }

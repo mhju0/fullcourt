@@ -31,28 +31,18 @@ function payload(overrides: Partial<ScheduleDisparityResponse> = {}): ScheduleDi
     provisional: false,
     asOf: "2026-07-27",
     scheduledGames: 1230,
-    gamesPerTeamMin: 82,
-    gamesPerTeamMax: 82,
     teams: [
       {
         teamId: 1,
         abbreviation: "LAL",
         name: "Lakers",
-        games: 81,
         netRestEdge: 12,
-        netRestEdgeUncapped: 15,
-        netFatigueEdge: 8.4,
         netFatigueEdgePerGame: 0.1,
         backToBackEdge: 3,
         threeInFourEdge: 2,
-        fourInSixEdge: 1,
-        gamesWithEdge: 30,
-        gamesWithLargeEdge: 4,
       },
     ],
     league: {
-      largestEdge: 12,
-      largestDisadvantage: -14,
       delta: 26,
       gamesWithAnyEdge: 500,
       gamesWithLargeEdge: 60,
@@ -106,14 +96,14 @@ describe("GET /api/schedule-disparity", () => {
   });
 
   it("returns the payload under the { data, error } contract", async () => {
-    mockGet.mockResolvedValueOnce(payload({ provisional: true, gamesPerTeamMax: 80 }));
+    mockGet.mockResolvedValueOnce(payload({ provisional: true, scheduledGames: 1200 }));
 
     const res = await GET(makeReq());
     const body = (await res.json()) as { data: ScheduleDisparityResponse; error: string | null };
 
     expect(body.error).toBeNull();
     expect(body.data.provisional).toBe(true);
-    expect(body.data.gamesPerTeamMax).toBe(80);
+    expect(body.data.scheduledGames).toBe(1200);
     expect(body.data.teams[0].netRestEdge).toBe(12);
   });
 
@@ -139,7 +129,7 @@ describe("GET /api/schedule-disparity — upcoming seasons", () => {
     // Between schedule release and ingest this is the normal state, not an error: the module
     // exists to report on schedules before they are played.
     mockGet.mockResolvedValueOnce(
-      payload({ season: UPCOMING, provisional: true, teams: [], gamesPerTeamMin: 0, gamesPerTeamMax: 0 })
+      payload({ season: UPCOMING, provisional: true, teams: [], scheduledGames: 0 })
     );
 
     const res = await GET(makeReq(`?season=${UPCOMING}`));

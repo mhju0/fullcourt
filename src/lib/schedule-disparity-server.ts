@@ -23,12 +23,18 @@ export async function getScheduleDisparity(
   const result = computeScheduleDisparity(season, games);
   const byId = new Map(directory.map((t) => [t.id, t]));
 
+  // Mapped field by field rather than spread: the module's result is deliberately wider than
+  // the response, and a spread would quietly ship every future metric it gains.
   const teams: ScheduleDisparityTeam[] = result.teams.map((t) => {
     const team = byId.get(t.teamId);
     return {
-      ...t,
+      teamId: t.teamId,
       abbreviation: team?.abbreviation ?? "—",
       name: team?.name ?? `Team ${t.teamId}`,
+      netRestEdge: t.netRestEdge,
+      netFatigueEdgePerGame: t.netFatigueEdgePerGame,
+      backToBackEdge: t.backToBackEdge,
+      threeInFourEdge: t.threeInFourEdge,
     };
   });
 
@@ -37,9 +43,12 @@ export async function getScheduleDisparity(
     provisional: result.provisional,
     asOf: formatEasternDateKey(new Date()),
     scheduledGames: result.scheduledGames,
-    gamesPerTeamMin: result.gamesPerTeamMin,
-    gamesPerTeamMax: result.gamesPerTeamMax,
     teams,
-    league: result.league,
+    league: {
+      delta: result.league.delta,
+      gamesWithAnyEdge: result.league.gamesWithAnyEdge,
+      gamesWithLargeEdge: result.league.gamesWithLargeEdge,
+      countedGames: result.league.countedGames,
+    },
   };
 }

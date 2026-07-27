@@ -243,7 +243,7 @@ export function ScheduleDisparityContent() {
           <StatCell
             label="Games with an edge"
             value={data.league.gamesWithAnyEdge.toLocaleString()}
-            sub="one side better rested"
+            sub={`${data.league.gamesWithLargeEdge.toLocaleString()} of them by 3+ days`}
           />
         </div>
       ) : null}

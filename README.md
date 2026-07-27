@@ -48,6 +48,12 @@ zone-average baseline it is measured against.
 
 <img src="docs/screenshots/shot-quality.png" alt="Expected Shot Value: two half-court maps comparing a zone-average baseline against a gradient-boosted location model, with marker size showing shot attempts and color showing expected effective field-goal percentage" width="900" />
 
+**Schedule Disparity — who the schedule favored.** All 30 teams ranked by net rest edge in days,
+drawn from a zero line so the bar length *is* the edge. Positive is favorable in every column on
+the page.
+
+<img src="docs/screenshots/schedule.png" alt="Schedule Disparity for 2025-26: a summary strip reading most favored plus 15 days (Portland Trail Blazers), least favored minus 11 (Boston Celtics), a spread of 26 days best to worst, and 557 games with a rest edge of which 14 were by 3 or more days. Below it all 30 teams are ranked as horizontal bars diverging from a zero line, blue to the right for a favorable edge and red to the left for an unfavorable one, from Portland at plus 15 down through four teams at exactly zero to Boston at minus 11. A header note states the season is final with 1,214 of 1,230 games compared." width="900" />
+
 ---
 
 ## Features

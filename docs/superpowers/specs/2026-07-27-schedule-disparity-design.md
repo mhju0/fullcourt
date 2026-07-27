@@ -60,10 +60,9 @@ of games with a 3+ day advantage, count of games with any advantage.
   `src/lib/fatigue.ts`). Without a cap the All-Star break dominates a season's total with
   something that is not disparity: both teams get roughly a week off, rarely the same number of
   days, and those few games would swamp the other 80.
-- The **uncapped** sum is computed and returned alongside the capped one, so the cap stays
-  auditable and reversible without recomputation. It is deliberately **not** a column: for most
-  teams it lands within a day of the capped figure, so it costs a column of width to tell a
-  reader nothing they can act on.
+- The **uncapped** sum is computed and unit-tested alongside the capped one, so the cap stays
+  auditable and reversible. It is deliberately **not** a column — for most teams it lands within
+  a day of the capped figure — and deliberately **not** in the API response either; see §4.2.
 
 ### 3.1.1 Fatigue edge is shown per game, not as a season total
 
@@ -131,6 +130,19 @@ it a pure schedule fact requiring no model trust. The **net fatigue edge** colum
 Cost: two places in the codebase compute "days since last game." A test pins them together
 (§8). Recorded as [ADR 0001](../../adr/0001-derive-rest-days-from-games.md) so the duplication is
 not "cleaned up" later, reintroducing the drift.
+
+### 4.2 The response is narrower than the module
+
+`computeScheduleDisparity` produces the full metric set — uncapped totals, the season fatigue
+sum, 4-in-6 edges, per-team edge counts, games-per-team — and unit tests all of it. The API
+response carries **only what `/schedule` renders**.
+
+This is deliberate. Issue [#6](https://github.com/mhju0/fullcourt/issues/6) retired the
+unrendered `monthlyTrends` payload for exactly this reason, and an eleven-field version of the
+same problem had accumulated here. The module stays the analytical unit, where a metric earns
+its place by being tested; the response is the delivery surface, where a field earns its place
+by being on screen. `schedule-disparity-server.ts` maps field by field rather than spreading, so
+a future metric added to the module cannot silently ship.
 
 ## 5. Provisional schedules and the NBA Cup
 
