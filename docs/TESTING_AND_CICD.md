@@ -66,19 +66,24 @@ an empty browser. Specs: `e2e/home.spec.ts`, `e2e/analysis.spec.ts`, `e2e/naviga
 `e2e/onboarding.spec.ts`, `e2e/playoffs.spec.ts`, `e2e/shot-quality.spec.ts`.
 
 > **The e2e specs target the current terminal UI** (they are **not** stale — they assert the live
-> markup, including the `Today's Matchups` / `Rest Advantage Analysis` headings and the
-> `TODAY'S GAMES`/`ANALYSIS`/`UPCOMING EDGES` nav; none reference a removed `/tracker` route).
+> markup, including the `Games` / `Rest Advantage Analysis` headings and the
+> `GAMES`/`MODEL RESULTS`/`SCHEDULE EDGE` nav; none reference a removed `/tracker` or
+> `/upcoming` route).
 > They still
 > need a running server **and** a populated database to pass — the suite drives real
 > `/api/games/*` and `/api/analysis` responses, so it is not a build-time check, and it runs only
 > on demand (`pnpm test:e2e`), never in CI.
 >
-> - **`navigation.spec.ts`** — nav links `TODAY'S GAMES` / `ANALYSIS` / `UPCOMING EDGES` →
->   `/` / `/analysis` / `/upcoming`. The active link is asserted via its `aria-current="page"`
+> - **`navigation.spec.ts`** — nav links `GAMES` / `MODEL RESULTS` / `SCHEDULE EDGE` →
+>   `/` / `/analysis` / `/schedule`. The active link is asserted via its `aria-current="page"`
 >   attribute (the amber-underline active state), and inactive links are checked to lack it.
-> - **`home.spec.ts`** — the heading is the `<h1>` **"Today's Matchups"** (`REST ADVANTAGE
+>   The link count is pinned at **5**, so a resurrected sixth tab fails here.
+> - **`home.spec.ts`** — the heading is the `<h1>` **"Games"** (`REST ADVANTAGE
 >   DASHBOARD` is an eyebrow `<span>`); controls use `getByLabel("Season")`, the
 >   `selected-date-display` placeholder `PICK A DATE`, and the empty state `NO GAMES SCHEDULED`.
+>   One spec covers the retired `/upcoming` route: it asserts the redirect lands on `/` **and**
+>   that the view toggle swaps the body (the `Previous day` control disappears under UPCOMING
+>   and returns under BY DATE) — a redirect-only assertion would pass on a broken toggle.
 > - **`analysis.spec.ts`** — terminal markup: heading "Rest Advantage Analysis" plus the
 >   section dividers "WIN RATE BY RA THRESHOLD", "HOME TEAM MORE RESTED", and
 >   "WIN RATE BY SEASON" (no `text-7xl` hero).

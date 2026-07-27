@@ -41,3 +41,21 @@ _Avoid_: rest advantage, season fatigue
 **Provisional season**:
 A season containing any game that is not final. Its figures carry an as-of date and may revise as the schedule fills in.
 _Avoid_: incomplete season, partial season
+
+## Nav labels
+
+The five tabs are the product's public vocabulary; the terms above are its internal one. A nav
+label is written for a casual fan reading at a glance, so it must be a plain noun phrase with
+no time word — and it must not borrow a mainstream term that means something else on other
+sports sites, which misroutes a confident click worse than jargon stalls an uncertain one.
+
+| Tab | Route | Page `<h1>` | Not called |
+|---|---|---|---|
+| GAMES | `/` | Games | Today's Games — the season selector reaches 1985-86, so no time word stays true |
+| SCHEDULE EDGE | `/schedule` | Schedule Disparity | Schedule — that means a game list everywhere else, which is GAMES |
+| MODEL RESULTS | `/analysis` | Rest Advantage Analysis | Analysis (every page is analysis); Historical Data (GAMES already browses history, and "data" promises a dump) |
+| PLAYOFF PREDICTIONS | `/playoffs` | Series Predictions | Playoff Odds — mainstream that means *making* the playoffs, not winning a series |
+| SHOT VALUE | `/shot-quality` | Expected Shot Value | Shot Charts — mainstream that means a player's makes/misses by spot |
+
+Module names are unaffected: the code, tables, scripts and design records still say Playoff
+Predictor, Shot Quality and Schedule Disparity.

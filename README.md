@@ -29,14 +29,14 @@ FullCourt quantifies how **travel, rest, and schedule density** shape NBA outcom
 
 ## Demo
 
-**Analysis — the 40-season backtest behind the headline finding.** Win rate by rest-advantage
+**Model Results — the 40-season backtest behind the headline finding.** Win rate by rest-advantage
 threshold, plotted as the gap against a coin flip in percentage points: zero is a 50% win
 rate, so the bar's length is the measured edge. Slices the model gets backwards hang below
 the line in red.
 
 <img src="docs/screenshots/analysis.png" alt="Rest Advantage Analysis: win rate by rest-advantage threshold across 38,985 regular-season games, drawn as deviation columns measured from a 50% coin flip. Bars rise from a zero line in blue — plus 6.6 points at RA at least 2 up to plus 13.4 at RA at least 7 — and each is labelled with its sample size" width="900" />
 
-**Today's Games — the per-matchup view.** Each team's fatigue score, the rest-advantage
+**Games — the per-matchup view.** Each team's fatigue score, the rest-advantage
 differential, and a confidence read. Every rest-advantage number carries the historical hit
 rate and sample size of its class, measured against a 50% coin flip; matchups the model calls
 neutral get no claim at all.
@@ -58,19 +58,25 @@ the page.
 
 ## Features
 
-- **Today's Games** — live matchup cards with fatigue bars, a rest-advantage gauge, and real-time score/status updates via Supabase Realtime.
-- **Analysis** — a historical backtest: win rate by rest-advantage threshold and by season, home/away splits, and a filterable game explorer.
-- **Upcoming Edges** — upcoming regular-season games ranked by their predicted rest-advantage
-  edge, each shown with the historical hit rate and sample size of its rest-advantage class.
-  Not betting advice.
-- **Playoff Predictor** — series-winner predictions from rest/fatigue-derived features, showing walk-forward out-of-sample accuracy next to in-sample as an honest overfitting check.
-- **Schedule Disparity** — which teams a season's schedule favored, ranked by **net rest edge**
+The five nav tabs below are the five product routes. Labels are plain nouns with no time
+words — the pattern every mainstream NBA nav uses — while the precise terms (`xeFG%`, net rest
+edge) live in each page's eyebrow, where surrounding context decodes them.
+
+- **Games** (`/`) — live matchup cards with fatigue bars, a rest-advantage gauge, and real-time
+  score/status updates via Supabase Realtime. Browses any season back to 1985-86 by date, and
+  carries an **UPCOMING** view: scheduled games ranked by their predicted rest-advantage edge,
+  each shown with the historical hit rate and sample size of its rest-advantage class. Not
+  betting advice. (This view is the retired `/upcoming` route, which now redirects here.)
+- **Schedule Edge** (`/schedule`) — which teams a season's schedule favored, ranked by **net rest edge**
   in days against their opponents, with back-to-back and short-rest differentials beside it.
   Honest framing: it describes the schedule rather than predicting anything, much of the gap is
   structural rather than anyone being favored, and every figure is scoped to its own season —
   season length, team count and the league-wide rest distribution all shifted across four
   decades, so there is deliberately no all-time ranking.
-- **Shot Quality (Expected Shot Value / xeFG%)** — a half-court hexbin map of expected effective FG% per grid cell, comparing a location-only gradient-boosted model against a zone-average baseline. Honest framing: public NBA data has no defender distance or shot-clock signal, so this is shot-**location** value only, and the model's edge over the baseline is a small calibration win (~1% on log-loss / Brier), not a large accuracy jump.
+- **Model Results** (`/analysis`) — the historical backtest that scores the rest model: win rate by
+  rest-advantage threshold and by season, home/away splits, and a filterable game explorer.
+- **Playoff Predictions** (`/playoffs`) — series-winner predictions from rest/fatigue-derived features, showing walk-forward out-of-sample accuracy next to in-sample as an honest overfitting check.
+- **Shot Value** (`/shot-quality`, Expected Shot Value / xeFG%) — a half-court hexbin map of expected effective FG% per grid cell, comparing a location-only gradient-boosted model against a zone-average baseline. Honest framing: public NBA data has no defender distance or shot-clock signal, so this is shot-**location** value only, and the model's edge over the baseline is a small calibration win (~1% on log-loss / Brier), not a large accuracy jump.
 
 Each analytics module is **additive and isolated** — its own scripts, tables, routes, and page — so new modules never destabilize the flagship rest-advantage flow.
 

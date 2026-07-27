@@ -61,7 +61,7 @@ Two results changed the plan:
 
 The trade is unchanged: a b-ref seed carries no stats `GAME_ID`, so those rows use synthetic
 `bref-…` external ids and the live-score cron cannot key on them. Schedule Disparity needs only
-dates and team pairs, so it works fully off a b-ref seed; Today's Games live scoring does not.
+dates and team pairs, so it works fully off a b-ref seed; the Games page's live scoring does not.
 
 **Why the source matters:** `games.external_id` is the 10-digit stats ID (`002…` regular).
 The live-score cron and the playoff/shot modules key on it. ESPN and B-Ref do **not** expose
@@ -78,8 +78,8 @@ not for live scoring). **Prefer a stats-ID source (`stats.nba.com`) for a live s
       this, since Akamai policy can change.
 - [ ] Seed from **basketball-reference**, which the same probe measured at **200 from GitHub
       Actions** as well as from the dev machine (§2). Rows carry synthetic `bref-…` external
-      ids, so they are complete for the backtest, Analysis and `/schedule` — but the live-score
-      cron keys on stats `GAME_ID`, so Today's Games will not match them.
+      ids, so they are complete for the backtest, Model Results and `/schedule` — but the
+      live-score cron keys on stats `GAME_ID`, so the Games page will not match them.
 - [ ] If live scoring for the new season matters, seed instead from a US **residential** IP
       using nba_api, which is the only route left that yields `002…` ids.
 

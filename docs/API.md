@@ -100,8 +100,9 @@ Games" table.
 
 ## `GET /api/games/upcoming`
 
-Scheduled regular-season games from today onward, with their open-prediction edge. Powers
-Upcoming Edges. `runtime = "nodejs"`, `dynamic = "force-dynamic"`.
+Scheduled regular-season games from today onward, with their open-prediction edge. Powers the
+UPCOMING view on `/` (formerly the standalone `/upcoming` route, now a redirect — the endpoint
+itself is unchanged). `runtime = "nodejs"`, `dynamic = "force-dynamic"`.
 
 - **Query (Zod):** `minRA` (finite nonnegative number), `season` (must be in
   `NBA_SEASONS`; defaults through `currentDisplaySeason()`). Invalid input → `400`.

@@ -22,11 +22,18 @@ the actual code (`src/app/`, `src/components/`, `src/app/globals.css`).
 
 ## Pages
 
-Six product routes ship today — `/`, `/analysis`, `/upcoming`, `/playoffs`, `/schedule`,
+Five product routes ship today — `/`, `/analysis`, `/playoffs`, `/schedule`,
 `/shot-quality` —
-plus a branded App Router `not-found` page for unknown paths.
+plus a branded App Router `not-found` page for unknown paths. `/upcoming` was retired: it is a
+permanent redirect to `/` (`next.config.ts`), whose UPCOMING view now renders what it used to.
 
-### `/` — Today's Games (`src/app/page.tsx`, client component)
+### `/` — Games (`src/app/page.tsx`, client component)
+
+Two views behind a toggle (`role="group"`, `aria-label="Games view"`), held in local `view`
+state rather than a query param — the nav no longer links to `/upcoming`, so the only inbound
+deep link is an old bookmark, which the redirect lands on the default BY DATE view.
+**BY DATE** is the state machine below; **UPCOMING** renders `<UpcomingContentLazy />` in place
+of the stat row, filter panel and matchup list.
 
 State machine over season/month/day:
 - On mount, fetches `/api/games/dates?season=…` (no `month` on the first fetch), then on
@@ -38,7 +45,8 @@ State machine over season/month/day:
   first (via `pendingSelectionResetRef`) so this sync doesn't immediately revert the click.
 - `useLiveGames(gameIds)` merges Realtime score/status updates into the rendered list;
   recently-updated cards flash (`scoreFlash`).
-- Pieces: heading eyebrow `REST ADVANTAGE DASHBOARD` + `<h1>Today's Matchups</h1>`;
+- Pieces: heading eyebrow `REST ADVANTAGE DASHBOARD` + `<h1>Games</h1>`; the BY DATE/UPCOMING
+  toggle;
   `StatSummaryRow` (GAMES ON THIS DATE, AVG REST ADV, **ALL-TIME WIN RATE** fetched live via
   `useSWR("/api/analysis")` — the same `overallWinRate` `/analysis` renders, shown as `—` while
   loading/on error, HIGH CONF GAMES where `HIGH_CONF_THRESHOLD = 2.0`); the shared
@@ -60,13 +68,13 @@ Server wrapper just renders `<AnalysisContentLazy />`. The lazy client component
 (`analysis-content.tsx`) owns the header — a terminal-style `HISTORICAL BACKTEST` eyebrow +
 `<h1>Rest Advantage Analysis</h1>` + descriptor — so the heading renders once.
 
-### `/upcoming` — Upcoming Edges (`src/app/upcoming/page.tsx`)
+### `/upcoming` — retired
 
-Server wrapper: header (`<season> SEASON` eyebrow + `<h1>Upcoming Edges</h1>` + description)
-then `<UpcomingContentLazy />`. The nav label, the `<h1>` and the metadata title are all
-**"Upcoming Edges"** — previously the nav said `PICKS` while the page and tab said "Future
-Games", three names for one destination, and "picks" promised betting tips that the guide copy
-explicitly disclaims.
+Folded into `/` as its UPCOMING view when the nav dropped to five tabs; the route is now a
+permanent redirect (`next.config.ts`). Only the route and the tab went — `/api/games/upcoming`,
+`upcoming-content.tsx` and their tests are unchanged. A sixth tab was the wrong price for it:
+the page and `/` render the same object (games carrying a rest edge) under different filters,
+and three of the five labels would otherwise have ended in "EDGES".
 
 ### `/playoffs` — Playoff Predictor (`src/app/playoffs/page.tsx`)
 
@@ -124,7 +132,7 @@ defender distance or shot-clock data).
 ### Unknown routes — `src/app/not-found.tsx`
 
 Static server component inside the shared shell. It provides a branded 404 heading and direct
-recovery links to Today's Games and Analysis without adding a client bundle or data request.
+recovery links to Games and Model Results without adding a client bundle or data request.
 
 ## Components
 
@@ -137,8 +145,15 @@ recovery links to Today's Games and Analysis without adding a client bundle or d
    a `HAS_LIVE_GAMES` constant hardcoded to `false`, so it never rendered in any state; the
    dead branch was removed. Per-game LIVE status is shown by `MatchupCard` instead.
 2. **Main nav** (44px, `var(--term-surface)`, bottom border `var(--term-border)`): links from
-   `PRIMARY_NAV_ITEMS` (`src/lib/primary-navigation.ts`) — `TODAY'S GAMES → /`, `ANALYSIS → /analysis`, `UPCOMING EDGES → /upcoming`,
-   `PLAYOFFS → /playoffs`, `SCHEDULE → /schedule`, `SHOT QUALITY → /shot-quality`. The active link gets an amber
+   `PRIMARY_NAV_ITEMS` (`src/lib/primary-navigation.ts`) — `GAMES → /`, `SCHEDULE EDGE → /schedule`,
+   `MODEL RESULTS → /analysis`, `PLAYOFF PREDICTIONS → /playoffs`, `SHOT VALUE → /shot-quality`.
+   Five bare noun phrases, no time words: mainstream NBA navs (ESPN, CBS) name the thing and
+   leave time to a date picker, and NN/g's category-name guidance rules out both jargon
+   (`EDGES`) and generic labels (`ANALYSIS`, `DATA`). Labels are also checked against *borrowed*
+   meaning — bare `SCHEDULE` means a game list on every other sports site, which is this site's
+   `GAMES`, so the disparity tab keeps its qualifier. Precise terms (`xeFG%`, `SCHEDULE
+   DISPARITY · NET REST EDGE`) stay in the page eyebrows, where context decodes them.
+   The active link gets an amber
    bottom border (`border-[var(--term-amber)]`) + `text-[var(--term-text)]` and carries
    `aria-current="page"`; inactive links are muted with a hover-to-text transition.
 
@@ -214,12 +229,13 @@ Loaded via `next/dynamic` with `ssr: false` and a skeleton. Uses SWR:
 
 ### `upcoming-content.tsx` (+ `upcoming-lazy.tsx`)
 
-Loaded via `next/dynamic` (`ssr: false`). SWR `/api/games/upcoming?season=<currentDisplaySeason()>&minRA=…`,
+Loaded via `next/dynamic` (`ssr: false`). Mounted by `/`'s UPCOMING view since `/upcoming` was
+retired. SWR `/api/games/upcoming?season=<currentDisplaySeason()>&minRA=…`,
 plus a second SWR call to `/api/analysis` for the historical column.
 RA filter pills, an off-season empty state (`OffSeasonEmptyState`), and a table of upcoming
 games with an "edge" badge (home edge blue, away edge red). Rendered in the **broadcast
 style** (`var(--term-surface)` card fill, `1px solid var(--term-border)`, `.mono` labels) —
-consistent with Today's Games / Analysis.
+consistent with Games / Model Results.
 
 ### `explore-game-detail-modal.tsx`
 

@@ -16,6 +16,11 @@ URL-reflected view state
 thesis block ([#3](https://github.com/mhju0/fullcourt/issues/3)), and extracting the three
 duplicated presentational components ([#5](https://github.com/mhju0/fullcourt/issues/5)).
 
+On 2026-07-27 the nav was renamed to five plain-noun tabs — `GAMES`, `SCHEDULE EDGE`,
+`MODEL RESULTS`, `PLAYOFF PREDICTIONS`, `SHOT VALUE` — and `/upcoming` was folded into `GAMES`
+as a view toggle rather than kept as a sixth tab. Module names are unchanged; see
+[GLOSSARY.md §Nav labels](GLOSSARY.md) for the label-by-label rationale.
+
 The dependency tree is deliberately pinned; see
 [SEASON_ROLLOVER.md §8](SEASON_ROLLOVER.md) before regenerating the lockfile, and §7 for the
 season counts that do not derive themselves.

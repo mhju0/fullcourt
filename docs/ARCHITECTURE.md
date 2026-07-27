@@ -36,7 +36,7 @@ the discrepancy is called out.
 │        ▲                                                                            │
 │ app/api/**/route.ts  ── Zod-validated, { data, error } envelope                    │
 │        ▲                                                                            │
-│ Server pages (analysis/page.tsx, upcoming/page.tsx) → dynamic client components    │
+│ Server pages (analysis/page.tsx, playoffs/page.tsx) → dynamic client components   │
 │ Client page app/page.tsx + SWR (src/lib/fetcher.ts) + Supabase Realtime hook       │
 └─────────────────────────────────────────────────────────────────────────────────┘
                                                   ▲
@@ -116,9 +116,11 @@ prerender and Edge (postgres-js needs Node). Full list in [API.md](API.md).
 
 - `app/layout.tsx` — Inter (body) + Outfit (headings) + IBM Plex Mono (data/labels) fonts,
   `<NavBar>`, footer, metadata.
-- `app/page.tsx` — **Today's Games** (client): season/month/day pickers → `/api/games/dates`
-  then `/api/games/[date]`, with live merges from `useLiveGames`.
-- `app/analysis/page.tsx` / `app/upcoming/page.tsx` / `app/playoffs/page.tsx` /
+- `app/page.tsx` — **Games** (client, nav label `GAMES`): season/month/day pickers → `/api/games/dates`
+  then `/api/games/[date]`, with live merges from `useLiveGames`. Its UPCOMING view mounts
+  `upcoming-content.tsx`, absorbed from the retired `/upcoming` route (now a permanent redirect
+  to `/` in `next.config.ts`).
+- `app/analysis/page.tsx` / `app/playoffs/page.tsx` /
   `app/schedule/page.tsx` / `app/shot-quality/page.tsx` — thin server wrappers that render client content via
   `next/dynamic` (`ssr: false`) with skeleton fallbacks.
 - Client data fetching uses SWR through `src/lib/fetcher.ts`; live updates use Supabase
@@ -144,7 +146,7 @@ Details in [TESTING_AND_CICD.md](TESTING_AND_CICD.md).
 
 ## Request lifecycle examples
 
-**Today's Games:** browser → `app/page.tsx` → `fetch('/api/games/dates?season=&month=')` →
+**Games (BY DATE view):** browser → `app/page.tsx` → `fetch('/api/games/dates?season=&month=')` →
 `getRegularSeasonGameDatesWithCounts` → render day chips → on select
 `fetch('/api/games/{date}')` → `getGamesByDate` (joins `games`+`teams`+ latest
 `fatigue_scores`, computes `restAdvantage`) → `MatchupCard` list → `useLiveGames`
@@ -165,7 +167,7 @@ the row change → connected clients update in place.
 - **Regular-season calendar guard** (`gameDateWithinRegularSeasonCalendar` in `queries.ts`)
   re-filters by Oct 1–Apr 30 even though ingest already excludes non-`002` IDs, defending
   against mis-tagged source rows.
-- **Design system unified (2026-06-29):** Today's Games, Analysis, Upcoming Edges
+- **Design system unified (2026-06-29):** the home page, the analysis page, the upcoming table
   (`upcoming-content.tsx`) and the game-detail modal (`explore-game-detail-modal.tsx`) all use
   one flat design system; the earlier glassmorphism look has been fully migrated out. (This
   "Bloomberg Terminal" light style was later superseded by the dark "Broadcast" redesign, and
@@ -185,6 +187,14 @@ the row change → connected clients update in place.
 - **Schedule Disparity (complete):** the most isolated module of the three — **read-only**, with
   no migration, no table and no ingest. See the subsection below and
   [its design spec](superpowers/specs/2026-07-27-schedule-disparity-design.md).
+- **Nav renamed to five plain-noun tabs (2026-07-27):** `GAMES`, `SCHEDULE EDGE`,
+  `MODEL RESULTS`, `PLAYOFF PREDICTIONS`, `SHOT VALUE`. The old six mixed three naming axes —
+  time (`TODAY'S GAMES`, `UPCOMING EDGES`), method (`ANALYSIS`, `SHOT QUALITY`) and domain
+  (`PLAYOFFS`, `SCHEDULE`) — and collided twice. `/upcoming` was folded into `GAMES` as a view
+  toggle rather than kept as a sixth tab, since it and `/` render the same object under
+  different filters. **Module names did not change**: the code, tables, scripts and design
+  records still say Playoff Predictor, Shot Quality and Schedule Disparity. Only the nav
+  labels, the home `<h1>` and `/analysis`'s metadata title moved.
 
 ## Playoff Predictor (complete) — data flow
 
