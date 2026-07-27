@@ -1,0 +1,66 @@
+# One-off reachability probe for the NBA data sources, run from a US GitHub runner.
+#
+# Why this exists: docs/SEASON_ROLLOVER.md §2 records that `cdn.nba.com` returns 403 from both
+# Seoul and GitHub Actions, and lists `stats.nba.com` from Actions as **untested**. That single
+# unknown gates the clean 2026-27 schedule ingest path — `fetch_schedule.py` uses nba_api, which
+# talks to `stats.nba.com`, and only that source yields the `002…` IDs the live-score cron and
+# the playoff/shot modules key on.
+#
+# Reads nothing and writes nothing: no database, no secrets, no repository changes. Safe to run
+# at any time. Record the result in docs/SEASON_ROLLOVER.md §2 with the date.
+#
+# Run it: GitHub repo → Actions → "Probe NBA data sources" → Run workflow.
+
+name: Probe NBA data sources
+
+on:
+  workflow_dispatch:
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Report runner egress region
+        run: |
+          echo "Runner public IP / geo (Akamai blocks are region- and datacenter-sensitive):"
+          curl -sS -m 20 https://ipinfo.io/json || echo "  (ipinfo unreachable — not fatal)"
+
+      - name: Probe each source
+        run: |
+          UA='Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36'
+
+          probe() {
+            local label="$1" url="$2"
+            # -m 25 bounds the stats.nba.com case, which times out rather than refusing.
+            local out
+            out=$(curl -sS -o /dev/null -m 25 -A "$UA" \
+                  -w '%{http_code} %{size_download}b %{time_total}s' "$url" 2>&1) \
+              || out="FAILED ($out)"
+            printf '%-34s %s\n' "$label" "$out"
+          }
+
+          echo "=== NBA data-source reachability from a GitHub Actions runner ==="
+          echo "date: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          echo
+
+          # THE question this workflow exists to answer.
+          probe "stats.nba.com scheduleleaguev2" \
+            "https://stats.nba.com/stats/scheduleleaguev2?LeagueID=00&Season=2025-26"
+          probe "stats.nba.com leaguegamefinder" \
+            "https://stats.nba.com/stats/leaguegamefinder?PlayerOrTeam=T&LeagueID=00&Season=2024-25&SeasonType=Regular+Season"
+
+          # Known 403 from both Seoul and Actions — re-confirm, since Akamai policy changes.
+          probe "cdn.nba.com staticData schedule" \
+            "https://cdn.nba.com/static/json/staticData/scheduleLeagueV2.json"
+
+          # Known-good fallbacks, for contrast.
+          probe "ESPN scoreboard" \
+            "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20250315"
+          probe "basketball-reference month page" \
+            "https://www.basketball-reference.com/leagues/NBA_2025_games-march.html"
+
+          echo
+          echo "Reading the result:"
+          echo "  200  → the clean path works from CI; fetch_schedule.py can seed the new season."
+          echo "  403  → blocked by region/datacenter policy, as cdn.nba.com already is."
+          echo "  FAILED/000 → timed out, which is how stats.nba.com behaves from Seoul."
