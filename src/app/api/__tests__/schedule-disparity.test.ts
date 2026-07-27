@@ -42,6 +42,7 @@ function payload(overrides: Partial<ScheduleDisparityResponse> = {}): ScheduleDi
         netRestEdge: 12,
         netRestEdgeUncapped: 15,
         netFatigueEdge: 8.4,
+        netFatigueEdgePerGame: 0.1,
         backToBackEdge: 3,
         threeInFourEdge: 2,
         fourInSixEdge: 1,

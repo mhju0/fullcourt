@@ -54,6 +54,15 @@ export interface DisparityTeamRow {
   /** Season sum of (opponent fatigue − own fatigue). Null when no counted game is scored. */
   netFatigueEdge: number | null;
   /**
+   * The same figure per counted game — what the page displays.
+   *
+   * The season sum is the misleading form: 81 games of a small per-game difference reads as a
+   * three-digit number and invites over-reading. Per game it lands on the same scale as the
+   * flagship rest advantage, where the app already treats a gap below
+   * NEUTRAL_REST_ADVANTAGE_THRESHOLD as no call at all.
+   */
+  netFatigueEdgePerGame: number | null;
+  /**
    * Back-to-backs AVOIDED: opponents' count minus this team's, over counted games. Oriented so
    * positive is favorable, matching netRestEdge and netFatigueEdge — every figure this module
    * publishes answers "did the schedule treat this team better than the teams it played?".
@@ -309,6 +318,10 @@ export function computeScheduleDisparity(
       netRestEdge,
       netRestEdgeUncapped,
       netFatigueEdge: fatiguePairs > 0 ? Number(fatigueSum.toFixed(2)) : null,
+      netFatigueEdgePerGame:
+        fatiguePairs > 0 && teamSides.length > 0
+          ? Number((fatigueSum / teamSides.length).toFixed(2))
+          : null,
       backToBackEdge,
       threeInFourEdge,
       fourInSixEdge,

@@ -36,7 +36,7 @@ Grain: one computed row per `(season, team)` — roughly 1,200 rows across the h
 | Metric | Definition |
 |---|---|
 | **Net rest edge** | Σ over the team's games of (own rest days − opponent's rest days). The headline. |
-| **Net fatigue edge** | Σ over the team's games of (opponent fatigue score − own fatigue score). |
+| **Net fatigue edge** | Σ over the team's games of (opponent fatigue score − own fatigue score), displayed **per counted game**. |
 | **B2B edge** | Opponents' back-to-back count − this team's, over those games. |
 | **3-in-4 / 4-in-6 edges** | Same construction over games that are themselves the 3rd in 4 nights / 4th in 6. |
 
@@ -60,8 +60,20 @@ of games with a 3+ day advantage, count of games with any advantage.
   `src/lib/fatigue.ts`). Without a cap the All-Star break dominates a season's total with
   something that is not disparity: both teams get roughly a week off, rarely the same number of
   days, and those few games would swamp the other 80.
-- The **uncapped** sum is computed and returned alongside the capped one, so the cap is
-  auditable and reversible without recomputation.
+- The **uncapped** sum is computed and returned alongside the capped one, so the cap stays
+  auditable and reversible without recomputation. It is deliberately **not** a column: for most
+  teams it lands within a day of the capped figure, so it costs a column of width to tell a
+  reader nothing they can act on.
+
+### 3.1.1 Fatigue edge is shown per game, not as a season total
+
+The season sum is the misleading form. Across 2025-26 the per-game fatigue edge spans just
+−0.63 … +0.61, and the app already treats a rest-advantage gap below
+`NEUTRAL_REST_ADVANTAGE_THRESHOLD` (0.5) as too small to call — **only 3 of 30 teams clear that
+line**. Summed over ~81 games those same differences print as ±50, which reads as a chasm
+between teams that are, per game, indistinguishable. Rest edge stays a season total because days
+are intuitive to accumulate; fatigue points are not, and on a per-game scale they are directly
+comparable to the flagship metric.
 - **Season openers are excluded** — a team's first game of a season has no previous game, and a
   game is only counted when *both* sides have a defined previous game.
 - Rest is computed per team over that team's own season games, so it never reaches across a

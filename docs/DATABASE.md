@@ -153,15 +153,21 @@ Two rows per game (one per team). Latest-by-`computed_at` wins in reads
 | `has_coast_to_coast_road_swing` (`hasCoastToCoastRoadSwing`) | boolean | no | `false` | large E–W spread on trip; added in `0002` |
 | `computed_at` (`computedAt`) | timestamp | no | `now()` | used to pick the newest row per (game, team) |
 
-> **`is_three_in_four` / `is_four_in_six` are stale in the database.** Both were computed by a
-> predicate that asked whether a dense stretch occurred anywhere in the 30-day lookback, rather
-> than whether *this* game is a short-rest game — so a team with 16 days of rest and a fatigue
-> score of `0` was still flagged. Fixed in `src/lib/fatigue.ts`, but stored rows keep the old
-> values until a recompute. This is **not urgent and affects no displayed number**: the flags
-> never entered the fatigue score (`baseLoad * b2b * altitude * stressMult` + freshness + OT —
-> schedule density reaches the score through `scheduleStressMultiplier`, which is windowed
-> correctly), and no query, route, or component reads either column. A future
-> `scripts/backfill_fatigue.ts --force` will correct them as a side effect.
+> **`is_three_in_four` / `is_four_in_six` were repaired on 2026-07-27.** Both had been computed
+> by a predicate that asked whether a dense stretch occurred anywhere in the 30-day lookback
+> rather than whether *this* game is a short-rest game, so a team with 16 days of rest and a
+> fatigue score of `0` still came back flagged. **69,550 of 98,705 rows (70%) were wrong.**
+>
+> No displayed number ever depended on them: the flags never entered the fatigue score
+> (`baseLoad * b2b * altitude * stressMult` + freshness + OT — schedule density reaches the
+> score through `scheduleStressMultiplier`, which was always windowed correctly), and no query,
+> route or component reads either column.
+>
+> Repaired with `scripts/repair_density_flags.ts`, **not** `backfill_fatigue.ts --force`: that
+> path DELETEs the whole table before a 30–90 minute rebuild, which on a live site is an
+> hour-long outage of every page. The repair script only ever writes those two booleans, took
+> 17 seconds, and needed no downtime. It is idempotent — re-run it any time to confirm 0 rows
+> would change.
 
 **Verified coverage (2026-07-12, read-only `SELECT`):** all **46,172** final regular-season
 games have a `fatigue_scores` row on **both** sides — **0 missing**. (The 8 gaps noted on

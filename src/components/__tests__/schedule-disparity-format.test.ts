@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest"
 
 import {
   formatSignedDays,
-  formatSignedScore,
+  formatSignedRate,
 } from "@/components/schedule-disparity-content"
 
 /**
@@ -26,21 +26,26 @@ describe("formatSignedDays", () => {
   })
 })
 
-describe("formatSignedScore", () => {
-  it("keeps one decimal so near-ties stay distinguishable", () => {
-    expect(formatSignedScore(49.02)).toBe("+49.0")
-    expect(formatSignedScore(-50.87)).toBe("−50.9")
+describe("formatSignedRate", () => {
+  it("keeps two decimals, because the whole league fits inside roughly ±0.65", () => {
+    expect(formatSignedRate(0.61)).toBe("+0.61")
+    expect(formatSignedRate(-0.63)).toBe("−0.63")
+  })
+
+  it("distinguishes values that one decimal would collapse together", () => {
+    // Cleveland and Utah round to the same figure at one decimal but are meaningfully apart.
+    expect(formatSignedRate(0.61)).not.toBe(formatSignedRate(0.5))
   })
 
   it("renders a missing fatigue edge as an em dash rather than a zero", () => {
-    // Null means no counted game is scored yet — an unplayed schedule. Printing 0.0 would
+    // Null means no counted game is scored yet — an unplayed schedule. Printing 0.00 would
     // claim the teams came out even, which is a different statement from "not known".
-    expect(formatSignedScore(null)).toBe("—")
+    expect(formatSignedRate(null)).toBe("—")
   })
 
   it("never emits a negative zero", () => {
-    // −0.04 rounds to −0, which would print as "−0.0" and imply a disadvantage that isn't there.
-    expect(formatSignedScore(-0.04)).toBe("0.0")
-    expect(formatSignedScore(0)).toBe("0.0")
+    // −0.004 rounds to −0, which would print as "−0.00" and imply a disadvantage that isn't there.
+    expect(formatSignedRate(-0.004)).toBe("0.00")
+    expect(formatSignedRate(0)).toBe("0.00")
   })
 })

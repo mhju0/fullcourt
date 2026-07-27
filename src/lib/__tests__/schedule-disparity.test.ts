@@ -206,6 +206,33 @@ describe("computeScheduleDisparity — fatigue edge", () => {
     expect(byId.get(3)!.netFatigueEdge).toBe(-3); // G3: 5 − 8
   });
 
+  it("reports the per-game rate, which is what the page shows", () => {
+    const { byId } = teamsById();
+
+    // T2 has two counted games totalling +1, so +0.50 per game.
+    expect(byId.get(2)!.netFatigueEdge).toBe(1);
+    expect(byId.get(2)!.games).toBe(2);
+    expect(byId.get(2)!.netFatigueEdgePerGame).toBe(0.5);
+    // T3's single counted game carries the whole total.
+    expect(byId.get(3)!.netFatigueEdgePerGame).toBe(-3);
+  });
+
+  it("leaves the per-game rate null when the season total is null", () => {
+    const unscored = FIXTURE.map((g) => ({ ...g, homeFatigueScore: null, awayFatigueScore: null }));
+    const { teams } = computeScheduleDisparity("2023-24", unscored);
+
+    expect(teams.every((t) => t.netFatigueEdgePerGame === null)).toBe(true);
+  });
+
+  it("never divides by zero when a team has no counted games", () => {
+    const onlyOpeners = [game("2024-01-01", 2, 1, { homeFatigueScore: "5", awayFatigueScore: "9" })];
+    const { teams } = computeScheduleDisparity("2023-24", onlyOpeners);
+
+    expect(teams.every((t) => t.games === 0)).toBe(true);
+    expect(teams.every((t) => t.netFatigueEdgePerGame === null)).toBe(true);
+    expect(teams.every((t) => !Number.isNaN(t.netFatigueEdgePerGame as number))).toBe(true);
+  });
+
   it("is null when no counted game has fatigue on both sides", () => {
     const unscored = FIXTURE.map((g) => ({
       ...g,

@@ -294,6 +294,8 @@ export interface ScheduleDisparityTeam {
   netRestEdgeUncapped: number;
   /** Season sum of (opponent fatigue − own fatigue); null when no counted game is scored. */
   netFatigueEdge: number | null;
+  /** The same figure per counted game — the displayed form. Null when nothing is scored. */
+  netFatigueEdgePerGame: number | null;
   /** Back-to-backs avoided relative to opponents. Positive is favorable, like every figure here. */
   backToBackEdge: number;
   threeInFourEdge: number;

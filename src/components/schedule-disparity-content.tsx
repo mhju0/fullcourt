@@ -6,6 +6,7 @@ import { ChevronDown } from "lucide-react"
 import { SeasonSelector } from "@/components/season-selector"
 import { Skeleton } from "@/components/ui/skeleton"
 import { apiFetcher } from "@/lib/fetcher"
+import { NEUTRAL_REST_ADVANTAGE_THRESHOLD } from "@/lib/rest-advantage-evidence"
 import { browsableSeasons, NBA_SEASONS } from "@/lib/nba-season"
 import {
   termCardStyle,
@@ -23,12 +24,17 @@ export function formatSignedDays(days: number): string {
   return `${days > 0 ? "+" : "−"}${Math.abs(days)}`
 }
 
-/** Signed fatigue points to one decimal; em dash when no counted game is scored yet. */
-export function formatSignedScore(edge: number | null): string {
-  if (edge === null) return "—"
-  const rounded = Math.round(edge * 10) / 10
-  if (rounded === 0) return "0.0"
-  return `${rounded > 0 ? "+" : "−"}${Math.abs(rounded).toFixed(1)}`
+/**
+ * Signed per-game rate to two decimals; em dash when nothing is scored yet.
+ *
+ * Two decimals because the whole league fits inside roughly ±0.65 — at one decimal most teams
+ * would collapse onto the same handful of values.
+ */
+export function formatSignedRate(rate: number | null): string {
+  if (rate === null) return "—"
+  const rounded = Math.round(rate * 100) / 100
+  if (rounded === 0) return "0.00"
+  return `${rounded > 0 ? "+" : "−"}${Math.abs(rounded).toFixed(2)}`
 }
 
 /**
@@ -137,17 +143,19 @@ function ColumnGuide({ countedGames, scheduledGames }: { countedGames: number; s
         </p>
         <p>
           {term("Rest edge")} — days of rest this team had, minus the days its opponents had, added
-          up across the season. Rest is capped at five days per side first, because the All-Star
-          break hands both teams about a week off and would otherwise swamp the other eighty games.
+          up across the season. Rest counts at most five days per side, because the All-Star break
+          hands both teams about a week off and would otherwise swamp the other eighty games.
         </p>
         <p>
-          {term("Uncapped")} — the same total with no five-day ceiling, shown so you can check the
-          cap is not hiding anything.
+          {term("Fatigue edge / gm")} — the same comparison in fatigue score rather than days, so it
+          also counts travel, altitude and schedule density, and shown{" "}
+          <em>per game</em> rather than as a season total. On this scale the app already treats a
+          gap under {NEUTRAL_REST_ADVANTAGE_THRESHOLD.toFixed(1)} as too small to call, and most
+          teams sit inside that band — so read it as a nudge, not a verdict.
         </p>
         <p>
-          {term("Fatigue edge")} — the same comparison in fatigue score rather than raw days, so it
-          also counts travel, altitude and schedule density. A team can hold a large rest edge in
-          days that mostly disappears here once its travel is counted.
+          Rest edge and fatigue edge can disagree, and where they do is the interesting part: a team
+          can win the day count and still arrive more tired, because it flew further to get there.
         </p>
         <p>
           {term("B2B edge")} and {term("3-in-4 edge")} — back-to-backs, and third-nights-in-four,
@@ -322,8 +330,7 @@ export function ScheduleDisparityContent() {
                     <th style={{ ...termThStyle, textAlign: "left" }}>Team</th>
                     <th style={{ ...termThStyle, textAlign: "left" }}>Rest edge</th>
                     <th style={{ ...termThStyle, textAlign: "right" }}>Days</th>
-                    <th style={{ ...termThStyle, textAlign: "right" }}>Uncapped</th>
-                    <th style={{ ...termThStyle, textAlign: "right" }}>Fatigue edge</th>
+                    <th style={{ ...termThStyle, textAlign: "right" }}>Fatigue edge / gm</th>
                     <th style={{ ...termThStyle, textAlign: "right" }}>B2B edge</th>
                     <th style={{ ...termThStyle, textAlign: "right" }}>3-in-4 edge</th>
                   </tr>
@@ -358,15 +365,9 @@ export function ScheduleDisparityContent() {
                       </td>
                       <td
                         className="mono"
-                        style={{ ...termTdStyle, textAlign: "right", fontVariantNumeric: "tabular-nums", color: "var(--term-text-muted)" }}
+                        style={{ ...termTdStyle, textAlign: "right", fontVariantNumeric: "tabular-nums", color: edgeColor(t.netFatigueEdgePerGame) }}
                       >
-                        {formatSignedDays(t.netRestEdgeUncapped)}
-                      </td>
-                      <td
-                        className="mono"
-                        style={{ ...termTdStyle, textAlign: "right", fontVariantNumeric: "tabular-nums", color: edgeColor(t.netFatigueEdge) }}
-                      >
-                        {formatSignedScore(t.netFatigueEdge)}
+                        {formatSignedRate(t.netFatigueEdgePerGame)}
                       </td>
                       <td
                         className="mono"
@@ -386,8 +387,8 @@ export function ScheduleDisparityContent() {
               </table>
             </div>
             <p style={{ marginTop: 12, fontSize: 13, color: "var(--term-text-muted)", lineHeight: 1.55 }}>
-              Positive is favorable in every column. Fatigue edge lags for games that have not been
-              played yet.
+              Positive is favorable in every column. Fatigue edge is per game and lags for games
+              that have not been played yet.
             </p>
           </div>
         </>
