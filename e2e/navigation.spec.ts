@@ -5,27 +5,31 @@ test.describe("Primary navigation", () => {
     await page.goto("/");
 
     const nav = page.getByRole("navigation", { name: "Main navigation" });
-    const games = nav.getByRole("link", { name: "Today's Games" });
-    const analysis = nav.getByRole("link", { name: "Analysis" });
-    const picks = nav.getByRole("link", { name: "Upcoming Edges" });
+    const games = nav.getByRole("link", { name: "Games", exact: true });
+    const modelResults = nav.getByRole("link", { name: "Model Results" });
+    const scheduleEdge = nav.getByRole("link", { name: "Schedule Edge" });
 
     await expect(games).toBeVisible();
-    await expect(analysis).toBeVisible();
-    await expect(picks).toBeVisible();
+    await expect(modelResults).toBeVisible();
+    await expect(scheduleEdge).toBeVisible();
+
+    // Five tabs since /upcoming was folded into Games — asserted so a stray sixth tab,
+    // or a resurrected Upcoming Edges, fails here rather than silently returning.
+    await expect(nav.getByRole("link")).toHaveCount(5);
 
     // The active route carries aria-current="page" (rendered as the amber underline).
     // Assert inactive links lack it too, so the check actually discriminates.
     await expect(games).toHaveAttribute("aria-current", "page");
-    await expect(analysis).not.toHaveAttribute("aria-current", "page");
+    await expect(modelResults).not.toHaveAttribute("aria-current", "page");
 
-    await analysis.click();
+    await modelResults.click();
     await expect(page).toHaveURL(/\/analysis$/);
-    await expect(analysis).toHaveAttribute("aria-current", "page");
+    await expect(modelResults).toHaveAttribute("aria-current", "page");
     await expect(games).not.toHaveAttribute("aria-current", "page");
 
-    await picks.click();
-    await expect(page).toHaveURL(/\/upcoming$/);
-    await expect(picks).toHaveAttribute("aria-current", "page");
+    await scheduleEdge.click();
+    await expect(page).toHaveURL(/\/schedule$/);
+    await expect(scheduleEdge).toHaveAttribute("aria-current", "page");
 
     await games.click();
     await expect(page).toHaveURL(/\/$/);

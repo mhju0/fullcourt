@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import { MatchupCard } from "@/components/matchup-card"
 import { SeasonSelector } from "@/components/season-selector"
+import { UpcomingContentLazy } from "@/components/upcoming-lazy"
 import { apiFetcher } from "@/lib/fetcher"
 import { useLiveGames } from "@/hooks/useLiveGames"
 import {
@@ -245,6 +246,11 @@ export default function HomePage() {
   const showOffSeasonBanner = isNbaOffSeason()
   const offSeasonLabel = currentDisplaySeason()
 
+  // The two views the old /upcoming tab and this page used to split between. Local state,
+  // not a query param: the nav no longer links to /upcoming, so the only inbound deep link
+  // is an old bookmark, and that redirects here and lands on the date browser.
+  const [view, setView] = useState<"date" | "upcoming">("date")
+
   const [season, setSeason] = useState<string>(() => defaultNbaSeason())
   const [month, setMonth] = useState<number>(() => defaultNbaCalendarMonth())
   const [availableDates, setAvailableDates] = useState<GameDateCount[]>([])
@@ -476,13 +482,47 @@ export default function HomePage() {
         <span className="mono" style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-red)", fontWeight: 700 }}>
           REST ADVANTAGE DASHBOARD
         </span>
-        <h1 className="text-2xl font-bold tracking-tight text-[var(--term-text)]">Today&apos;s Matchups</h1>
+        {/* Not "Today's Matchups": the season selector reaches back to 1985-86, so the
+            heading was already wrong on any past date, and the UPCOMING view widened it. */}
+        <h1 className="text-2xl font-bold tracking-tight text-[var(--term-text)]">Games</h1>
         <p className="max-w-2xl" style={{ fontSize: 15, color: "var(--term-text-muted)", lineHeight: 1.55 }}>
           A fatigue score for every team in every game, built from travel, rest and schedule
           density. The bigger the gap between two teams, the more one side is carrying.
         </p>
       </div>
 
+      {/* View toggle — absorbed the old /upcoming route, which is now a redirect here. */}
+      <div className="flex flex-wrap gap-1.5" role="group" aria-label="Games view">
+        {([
+          { id: "date", label: "BY DATE" },
+          { id: "upcoming", label: "UPCOMING" },
+        ] as const).map(({ id, label }) => (
+          <button
+            key={id}
+            type="button"
+            onClick={() => setView(id)}
+            aria-pressed={view === id}
+            className={cn(
+              termBtn,
+              "shrink-0 active:scale-[0.97]",
+              view === id
+                ? "bg-[var(--term-blue)] text-[var(--term-surface)] hover:bg-[var(--term-blue)]"
+                : "text-[var(--term-text)]"
+            )}
+            style={{
+              ...termBtnStyle,
+              borderColor: view === id ? "var(--term-blue)" : "var(--term-border)",
+            }}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+
+      {view === "upcoming" ? (
+        <UpcomingContentLazy />
+      ) : (
+        <>
       {/* Stat summary row */}
       <StatSummaryRow
         gamesToday={gamesToday}
@@ -627,6 +667,8 @@ export default function HomePage() {
           </div>
         ) : null}
       </div>
+        </>
+      )}
     </div>
   )
 }

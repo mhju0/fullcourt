@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { AnalysisContentLazy } from "@/components/analysis-lazy";
 
 export const metadata: Metadata = {
-  title: "Analysis",
+  title: "Model Results",
 };
 
 // The page header (eyebrow + "Rest Advantage Analysis" h1) lives inside

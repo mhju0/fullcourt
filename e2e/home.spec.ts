@@ -5,12 +5,29 @@ test.describe("Home page", () => {
     await page.goto("/");
 
     await expect(
-      page.getByRole("heading", { name: "Today's Matchups" })
+      page.getByRole("heading", { name: "Games", exact: true })
     ).toBeVisible();
 
     await expect(page.getByLabel("Season")).toBeVisible();
     await expect(page.getByRole("button", { name: /^OCT$/ })).toBeVisible();
     await expect(page.getByRole("button", { name: /^DEC$/ })).toBeVisible();
+  });
+
+  // The old /upcoming route was folded into this page as its UPCOMING view. Both halves
+  // are asserted: the redirect (so old links still land) and the toggle actually swapping
+  // the body (so a broken branch can't pass by leaving the date browser mounted).
+  test("absorbs the retired /upcoming route as a view toggle", async ({ page }) => {
+    await page.goto("/upcoming");
+    await expect(page).toHaveURL(/\/$/);
+
+    const views = page.getByRole("group", { name: "Games view" });
+    await expect(page.getByRole("button", { name: "Previous day" })).toBeVisible();
+
+    await views.getByRole("button", { name: "UPCOMING" }).click();
+    await expect(page.getByRole("button", { name: "Previous day" })).toBeHidden();
+
+    await views.getByRole("button", { name: "BY DATE" }).click();
+    await expect(page.getByRole("button", { name: "Previous day" })).toBeVisible();
   });
 
   test("previous-day control moves the selected date display backward", async ({ page }) => {

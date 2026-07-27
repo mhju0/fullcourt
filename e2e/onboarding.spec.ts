@@ -13,27 +13,29 @@ test.describe("First-visit guide", () => {
     const guide = page.getByRole("dialog", { name: "Welcome to FullCourt" });
     await expect(guide).toBeVisible();
     await expect(
-      guide.getByRole("link", { name: "Today's Games" })
+      guide.getByRole("link", { name: "Games", exact: true })
     ).toBeVisible();
-    await expect(guide.getByRole("link", { name: "Analysis" })).toBeVisible();
-    await expect(guide.getByRole("link", { name: "Upcoming Edges" })).toBeVisible();
-    await expect(guide.getByRole("link", { name: "Playoffs" })).toBeVisible();
+    await expect(guide.getByRole("link", { name: "Schedule Edge" })).toBeVisible();
+    await expect(guide.getByRole("link", { name: "Model Results" })).toBeVisible();
     await expect(
-      guide.getByRole("link", { name: "Shot Quality" })
+      guide.getByRole("link", { name: "Playoff Predictions" })
+    ).toBeVisible();
+    await expect(
+      guide.getByRole("link", { name: "Shot Value" })
     ).toBeVisible();
     await expect(
       guide.getByText(
-        "Browse any regular-season slate and compare each team's fatigue and rest advantage.",
+        "Browse any season's games, past or current, and compare each team's fatigue and rest advantage.",
       ),
     ).toBeVisible();
     await expect(
       guide.getByText(
-        "Explore the historical backtest, threshold results, season trends, and individual games.",
+        "See which teams a season's schedule favored, in days of rest against their opponents.",
       ),
     ).toBeVisible();
     await expect(
       guide.getByText(
-        "Find scheduled matchups with a larger modeled rest edge. This is not betting advice.",
+        "Check how the rest model scored against history — threshold win rates, season trends, and individual games.",
       ),
     ).toBeVisible();
     await expect(

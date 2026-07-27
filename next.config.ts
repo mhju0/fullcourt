@@ -34,6 +34,11 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  // /upcoming was folded into the GAMES page as its UPCOMING view when the nav dropped
+  // to five tabs. Permanent so old bookmarks and any external link settle on the new home.
+  async redirects() {
+    return [{ source: "/upcoming", destination: "/", permanent: true }];
+  },
   async headers() {
     return [
       {
