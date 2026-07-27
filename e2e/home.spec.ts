@@ -78,18 +78,51 @@ test.describe("Home page", () => {
     await expect(fatigueDecimal).toBeVisible();
   });
 
+  // The month tab is derived from the selected date rather than stored beside it, so
+  // stepping across a boundary moves the tab by definition. The version this replaced
+  // needed a setState-during-render block plus a ref handshake to achieve the same thing.
+  test("crossing a month boundary with the arrows moves the month tab", async ({ page }) => {
+    await page.goto("/");
+
+    await page.getByLabel("Season").selectOption("2024-25");
+    await page.getByRole("button", { name: /^DEC$/ }).click();
+
+    const display = page.getByTestId("selected-date-display");
+    await expect(display).toContainText("DECEMBER", { timeout: 60_000 });
+
+    // Land on the last December day with games, then step past it.
+    await page.locator('button[aria-label*="December"]').last().click();
+    await expect(display).toContainText("DECEMBER");
+
+    const next = page.getByRole("button", { name: "Next day" });
+    for (let i = 0; i < 5; i++) {
+      await next.click();
+      const text = await display.textContent();
+      if (text && !text.includes("DECEMBER")) break;
+    }
+
+    await expect(display).toContainText("JANUARY");
+    await expect(page.getByRole("button", { name: /^JAN$/ })).toHaveAttribute("aria-pressed", "true");
+    await expect(page.getByRole("button", { name: /^DEC$/ })).toHaveAttribute("aria-pressed", "false");
+  });
+
   test("previous day from an early season date can reach a day with no games", async ({ page }) => {
     await page.goto("/");
 
     await page.getByLabel("Season").selectOption("2024-25");
-    await page.getByRole("button", { name: /^OCT$/ }).click();
 
+    // One dates request per season, with no `month` param — a month click now resolves
+    // from the in-memory day list instead of a round trip. Asserted negatively too, so
+    // a regression back to month-scoped fetching fails here rather than passing quietly.
     await page.waitForResponse(
       (res) =>
         res.url().includes("/api/games/dates") &&
-        res.url().includes("month=10") &&
+        res.url().includes("season=2024-25") &&
+        !res.url().includes("month=") &&
         res.status() === 200
     );
+
+    await page.getByRole("button", { name: /^OCT$/ }).click();
 
     const firstDayWithGames = page.locator('button[aria-label*="games"]').first();
     await expect(firstDayWithGames).toBeVisible({ timeout: 60_000 });

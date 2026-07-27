@@ -1,7 +1,6 @@
 "use client"
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { addDays, format, parseISO } from "date-fns"
+import { useMemo, useState } from "react"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import useSWR from "swr"
 import { Button } from "@/components/ui/button"
@@ -10,36 +9,13 @@ import { MatchupCard } from "@/components/matchup-card"
 import { SeasonSelector } from "@/components/season-selector"
 import { UpcomingContentLazy } from "@/components/upcoming-lazy"
 import { apiFetcher } from "@/lib/fetcher"
-import { useLiveGames } from "@/hooks/useLiveGames"
-import {
-  currentDisplaySeason,
-  defaultNbaCalendarMonth,
-  defaultNbaSeason,
-  formatEasternDateKey,
-  isNbaOffSeason,
-  NBA_REGULAR_MONTHS,
-  NBA_SEASONS,
-  pickDefaultGamesDate,
-} from "@/lib/nba-season"
+import { useGameSlate, type GameSlate } from "@/hooks/useGameSlate"
+import { currentDisplaySeason, isNbaOffSeason, NBA_SEASONS } from "@/lib/nba-season"
 import { termCardStyle } from "@/lib/terminal-styles"
 import { cn } from "@/lib/utils"
-import type { AnalysisResponse, ApiResponse, GameDateCount, GameResponse } from "@/types"
+import type { AnalysisResponse } from "@/types"
 
 // ─── Helpers ─────────────────────────────────────────────────────
-
-function pickInitialDate(dates: GameDateCount[]): string | null {
-  if (dates.length === 0) return null
-  const todayKey = formatEasternDateKey() // "today" = the NBA's ET calendar day, not the viewer's
-  if (dates.some((d) => d.date === todayKey)) return todayKey
-  return dates[dates.length - 1].date
-}
-
-function filterDatesByMonth(dates: GameDateCount[], month: number): GameDateCount[] {
-  const monthKey = String(month).padStart(2, "0")
-  return dates.filter((d) => d.date.slice(5, 7) === monthKey)
-}
-
-type PendingScope = { season: string; month: number }
 
 const HIGH_CONF_THRESHOLD = 2.0
 
@@ -155,7 +131,9 @@ function EmptyState({ label }: { label: string }) {
       <p style={{ fontSize: 12, letterSpacing: "0.08em", color: "var(--term-text)", fontWeight: 700 }}>
         NO GAMES SCHEDULED
       </p>
-      <p style={{ fontSize: 11, color: "var(--term-text-muted)" }}>NO NBA GAMES ON {label.toUpperCase()}</p>
+      {/* The preposition lives in the label so this reads correctly for a single
+          date ("on December 25, 2024") and for a whole season alike. */}
+      <p style={{ fontSize: 11, color: "var(--term-text-muted)" }}>NO NBA GAMES {label.toUpperCase()}</p>
     </div>
   )
 }
@@ -242,6 +220,56 @@ function DateChip({
 
 // ─── Page ────────────────────────────────────────────────────────
 
+
+/**
+ * The exhaustive switch. Every status must render something, which is what makes
+ * the old `errorGames ?? errorDates` fallback unnecessary — and, more to the
+ * point, impossible to forget. Adding an eighth status breaks the build here.
+ */
+function Matchups({
+  slate,
+  evidenceSource,
+}: {
+  slate: GameSlate
+  evidenceSource: React.ComponentProps<typeof MatchupCard>["evidenceSource"]
+}) {
+  switch (slate.status) {
+    case "loadingDays":
+    case "loadingSlate":
+      return <SkeletonList />
+
+    case "daysError":
+    case "slateError":
+      return <ErrorState message={slate.message ?? "Something went wrong"} />
+
+    case "noDays":
+      return <EmptyState label={`in the ${slate.season} season`} />
+
+    case "slateEmpty":
+      return <EmptyState label={`on ${slate.selectedLabel?.short ?? "this date"}`} />
+
+    case "slateReady":
+      return (
+        <div className="flex flex-col gap-2">
+          {slate.games.map((game, i) => (
+            <MatchupCard
+              key={game.id}
+              game={game}
+              index={i}
+              isScoreFlashing={game.isScoreFlashing}
+              evidenceSource={evidenceSource}
+            />
+          ))}
+        </div>
+      )
+
+    default: {
+      const exhaustive: never = slate.status
+      return exhaustive
+    }
+  }
+}
+
 export default function HomePage() {
   const showOffSeasonBanner = isNbaOffSeason()
   const offSeasonLabel = currentDisplaySeason()
@@ -251,28 +279,13 @@ export default function HomePage() {
   // is an old bookmark, and that redirects here and lands on the date browser.
   const [view, setView] = useState<"date" | "upcoming">("date")
 
-  const [season, setSeason] = useState<string>(() => defaultNbaSeason())
-  const [month, setMonth] = useState<number>(() => defaultNbaCalendarMonth())
-  const [availableDates, setAvailableDates] = useState<GameDateCount[]>([])
-  const [selectedDateKey, setSelectedDateKey] = useState<string | null>(null)
-
-  const [loadingDates, setLoadingDates] = useState(true)
-  const [errorDates, setErrorDates] = useState<string | null>(null)
-
-  const [games, setGames] = useState<GameResponse[]>([])
-  const [loadingGames, setLoadingGames] = useState(false)
-  const [errorGames, setErrorGames] = useState<string | null>(null)
-
-  const pendingSelectionResetRef = useRef<PendingScope | null>(null)
-  const isFirstDatesFetchRef = useRef(true)
-  const initialTodayKeyRef = useRef(formatEasternDateKey())
-
-  const gameIds = useMemo(() => games.map((g) => g.id), [games])
-  const { liveUpdates, recentlyUpdated } = useLiveGames(gameIds)
+  // Season/month/day browsing, the two fetches and the Realtime overlay all live in
+  // the hook; its decisions live in a pure reducer that is unit-tested without a DOM.
+  const slate = useGameSlate()
 
   // Live overall win rate for the stat card — same value /analysis renders,
-  // computed from the DB by /api/analysis (0–100, 1 decimal). Isolated from the
-  // date/games state machine; shows "—" while loading or if the request fails.
+  // computed from the DB by /api/analysis (0–100, 1 decimal). Deliberately outside
+  // the slate: it is season-independent and must not gate the date browser.
   const { data: analysis } = useSWR<AnalysisResponse>("/api/analysis", apiFetcher, {
     revalidateOnFocus: false,
   })
@@ -290,188 +303,14 @@ export default function HomePage() {
     [analysis]
   )
 
-  const clearSelectedDate = useCallback(() => {
-    setSelectedDateKey(null)
-    setGames([])
-    setLoadingGames(false)
-    setErrorGames(null)
-  }, [])
-
-  const mergedGames =
-    Object.keys(liveUpdates).length === 0
-      ? games
-      : games.map((game) => {
-          const update = liveUpdates[game.id]
-          if (!update) return game
-          return {
-            ...game,
-            homeScore: update.homeScore ?? game.homeScore,
-            awayScore: update.awayScore ?? game.awayScore,
-            status: update.status ?? game.status,
-          }
-        })
-
-  // Sync calendar month tab when the selected day moves across a month boundary.
-  if (selectedDateKey) {
-    const m = Number(selectedDateKey.slice(5, 7))
-    if (NBA_REGULAR_MONTHS.some((x) => x.value === m) && m !== month) {
-      setMonth(m)
-    }
-  }
-
-  useEffect(() => {
-    const controller = new AbortController()
-    let active = true
-
-    queueMicrotask(() => {
-      if (!active) return
-      setLoadingDates(true)
-      setErrorDates(null)
-    })
-
-    const isInitialFetch =
-      isFirstDatesFetchRef.current && pendingSelectionResetRef.current === null
-    const params = new URLSearchParams({ season })
-    if (!isInitialFetch) params.set("month", String(month))
-    fetch(`/api/games/dates?${params.toString()}`, { signal: controller.signal })
-      .then((res) => res.json() as Promise<ApiResponse<GameDateCount[]>>)
-      .then(({ data, error: apiError }) => {
-        if (apiError) throw new Error(apiError)
-        return data
-      })
-      .then((data) => {
-        setAvailableDates(data)
-        const pending = pendingSelectionResetRef.current
-        const matchesPending =
-          pending !== null && pending.season === season && pending.month === month
-        if (matchesPending) {
-          pendingSelectionResetRef.current = null
-          const nextDate = data.length > 0 ? pickInitialDate(data) : null
-          if (nextDate) setSelectedDateKey(nextDate)
-          else clearSelectedDate()
-          return
-        }
-        if (isFirstDatesFetchRef.current) {
-          isFirstDatesFetchRef.current = false
-          const nextDate = pickDefaultGamesDate(initialTodayKeyRef.current, data)
-          if (nextDate) {
-            const nextMonth = Number(nextDate.slice(5, 7))
-            setAvailableDates(filterDatesByMonth(data, nextMonth))
-            setSelectedDateKey(nextDate)
-            if (nextMonth !== month) setMonth(nextMonth)
-          } else {
-            clearSelectedDate()
-          }
-          return
-        }
-        setSelectedDateKey((prev) => {
-          if (!prev) return data.length > 0 ? pickInitialDate(data) : null
-          const pm = Number(prev.slice(5, 7))
-          if (pm === month) return prev
-          return prev
-        })
-      })
-      .catch((err: unknown) => {
-        if (err instanceof Error && err.name === "AbortError") return
-        setErrorDates(err instanceof Error ? err.message : "Failed to load dates")
-        setAvailableDates([])
-      })
-      .finally(() => {
-        if (!controller.signal.aborted) setLoadingDates(false)
-      })
-
-    return () => {
-      active = false
-      controller.abort()
-    }
-  }, [clearSelectedDate, season, month])
-
-  useEffect(() => {
-    if (!selectedDateKey) {
-      return
-    }
-
-    const controller = new AbortController()
-    let active = true
-
-    queueMicrotask(() => {
-      if (!active) return
-      setLoadingGames(true)
-      setErrorGames(null)
-    })
-
-    fetch(`/api/games/${selectedDateKey}`, { signal: controller.signal })
-      .then((res) => res.json() as Promise<ApiResponse<GameResponse[]>>)
-      .then(({ data, error: apiError }) => {
-        if (apiError) throw new Error(apiError)
-        setGames(data)
-      })
-      .catch((err: unknown) => {
-        if (err instanceof Error && err.name === "AbortError") return
-        setErrorGames(err instanceof Error ? err.message : "Something went wrong")
-        setGames([])
-      })
-      .finally(() => {
-        if (!controller.signal.aborted) setLoadingGames(false)
-      })
-
-    return () => {
-      active = false
-      controller.abort()
-    }
-  }, [selectedDateKey])
-
-  function onSeasonChange(next: string) {
-    pendingSelectionResetRef.current = { season: next, month }
-    setLoadingDates(true)
-    setErrorDates(null)
-    setSeason(next)
-  }
-
-  function onMonthTabClick(nextMonth: number) {
-    // Clear the selected date so the render-time month-sync block (which snaps
-    // `month` to whatever month `selectedDateKey` belongs to, to support arrow
-    // navigation across month boundaries) does not immediately revert this
-    // change. The dates-fetch effect repopulates the selection from the new
-    // month's first available day via pendingSelectionResetRef.
-    clearSelectedDate()
-    pendingSelectionResetRef.current = { season, month: nextMonth }
-    setLoadingDates(true)
-    setErrorDates(null)
-    setMonth(nextMonth)
-  }
-
-  function shiftSelectedDay(delta: number) {
-    if (!selectedDateKey) return
-    const base = parseISO(`${selectedDateKey}T12:00:00`)
-    setSelectedDateKey(format(addDays(base, delta), "yyyy-MM-dd"))
-  }
-
-  const formattedSelected =
-    selectedDateKey !== null
-      ? format(parseISO(`${selectedDateKey}T12:00:00`), "EEEE, MMMM d, yyyy")
-      : null
-  const shortLabel =
-    selectedDateKey !== null
-      ? format(parseISO(`${selectedDateKey}T12:00:00`), "MMMM d, yyyy")
-      : "this date"
-
-  // A failed /api/games/dates leaves selectedDateKey null and errorGames null, so the
-  // matchups region has to fall back to errorDates/loadingDates — otherwise every branch
-  // below is false and the section renders nothing under its own MATCHUPS header.
-  const gamesErrorMessage = errorGames ?? errorDates
-  const showGamesError = gamesErrorMessage !== null
-  const showGamesSkeleton = (loadingGames || loadingDates) && !showGamesError
-  const showGamesEmpty = !showGamesError && !showGamesSkeleton && mergedGames.length === 0
-
-  // Summary metrics for the stat row.
-  const gamesToday = mergedGames.length
-  const diffs = mergedGames
+  // Summary metrics for the stat row. Page policy, not slate policy — the threshold
+  // is this page's editorial call, so it stays here rather than inside the hook.
+  const diffs = slate.games
     .map((g) => Math.abs(g.restAdvantage?.differential ?? 0))
     .filter((d) => d > 0)
   const avgRestAdv =
     diffs.length === 0 ? "0.0" : (diffs.reduce((s, d) => s + d, 0) / diffs.length).toFixed(1)
-  const highConfGames = mergedGames.filter(
+  const highConfGames = slate.games.filter(
     (g) => Math.abs(g.restAdvantage?.differential ?? 0) >= HIGH_CONF_THRESHOLD
   ).length
 
@@ -525,7 +364,7 @@ export default function HomePage() {
         <>
           {/* Stat summary row */}
           <StatSummaryRow
-            gamesToday={gamesToday}
+            gamesToday={slate.games.length}
             avgRestAdv={avgRestAdv}
             seasonWinRate={seasonWinRate}
             highConfGames={highConfGames}
@@ -533,10 +372,11 @@ export default function HomePage() {
 
           {/* Filters — grouped as one secondary control panel */}
           <div className="flex flex-col gap-4" style={termCardStyle}>
-            {/* The shared selector, which lists newest-season-first. The hand-rolled one this
-                replaces mapped NBA_SEASONS raw, so it opened on 1985-86 with the current
-                season ~40 options down — and disagreed with every other season picker. */}
-            <SeasonSelector id="nba-season" season={season} onSeasonChange={onSeasonChange} />
+            <SeasonSelector
+              id="nba-season"
+              season={slate.season}
+              onSeasonChange={(season) => slate.send({ type: "SEASON_SELECTED", season })}
+            />
 
             <div className="flex flex-col gap-1.5">
               <span className="mono" style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 600 }}>
@@ -544,43 +384,42 @@ export default function HomePage() {
               </span>
               <div className="-mx-1 overflow-x-auto overflow-y-hidden pb-1 [scrollbar-width:thin]">
                 <div className="flex min-w-min gap-1.5 px-1">
-                  {NBA_REGULAR_MONTHS.map(({ value: m, label }) => {
-                    const active = month === m
-                    return (
-                      <button
-                        key={m}
-                        type="button"
-                        onClick={() => onMonthTabClick(m)}
-                        aria-pressed={active}
-                        // Same reason as DateChip: an inline `background` outranked
-                        // termBtn's hover:bg-*, so the month tabs never responded to hover.
-                        className={cn(
-                          termBtn,
-                          "shrink-0 active:scale-[0.97]",
-                          active
-                            ? "bg-[var(--term-blue)] text-[var(--term-surface)] hover:bg-[var(--term-blue)]"
-                            : "text-[var(--term-text)]"
-                        )}
-                        style={{
-                          ...termBtnStyle,
-                          borderColor: active ? "var(--term-blue)" : "var(--term-border)",
-                        }}
-                      >
-                        {label.toUpperCase()}
-                      </button>
-                    )
-                  })}
+                  {slate.months.map(({ value, label, dayCount, isSelected }) => (
+                    <button
+                      key={value}
+                      type="button"
+                      onClick={() => slate.send({ type: "MONTH_SELECTED", month: value })}
+                      aria-pressed={isSelected}
+                      // A season-wide day list means we know which months were never
+                      // played (the 1998-99 and 2011-12 lockouts), so these disable
+                      // instead of round-tripping to an empty result.
+                      disabled={dayCount === 0}
+                      className={cn(
+                        termBtn,
+                        "shrink-0 active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-40 disabled:active:scale-100",
+                        isSelected
+                          ? "bg-[var(--term-blue)] text-[var(--term-surface)] hover:bg-[var(--term-blue)]"
+                          : "text-[var(--term-text)]"
+                      )}
+                      style={{
+                        ...termBtnStyle,
+                        borderColor: isSelected ? "var(--term-blue)" : "var(--term-border)",
+                      }}
+                    >
+                      {label.toUpperCase()}
+                    </button>
+                  ))}
                 </div>
               </div>
             </div>
 
-            {errorDates ? (
-              <p className="mono" style={{ fontSize: 12, color: "var(--term-red)" }} role="alert">
-                {errorDates}
-              </p>
-            ) : loadingDates ? (
+            {slate.calendar.kind === "loading" ? (
               <Skeleton className="h-16 w-full max-w-md bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)" }} />
-            ) : availableDates.length === 0 ? (
+            ) : slate.calendar.kind === "error" ? (
+              <p className="mono" style={{ fontSize: 12, color: "var(--term-red)" }} role="alert">
+                {slate.calendar.message}
+              </p>
+            ) : slate.calendar.kind === "empty" ? (
               <p className="mono" style={{ fontSize: 12, color: "var(--term-text-muted)" }}>
                 NO GAMES IN THIS MONTH.
               </p>
@@ -590,20 +429,16 @@ export default function HomePage() {
                   DAYS WITH GAMES
                 </span>
                 <div className="flex flex-wrap gap-1.5">
-                  {availableDates.map(({ date: d, gameCount }) => {
-                    const dayNum = format(parseISO(`${d}T12:00:00`), "d")
-                    const longLabel = format(parseISO(`${d}T12:00:00`), "MMMM d, yyyy")
-                    return (
-                      <DateChip
-                        key={d}
-                        day={dayNum}
-                        count={gameCount}
-                        selected={selectedDateKey === d}
-                        onClick={() => setSelectedDateKey(d)}
-                        ariaLabel={`${longLabel}, ${gameCount} games`}
-                      />
-                    )
-                  })}
+                  {slate.days.map((d) => (
+                    <DateChip
+                      key={d.date}
+                      day={d.dayOfMonth}
+                      count={d.gameCount}
+                      selected={d.isSelected}
+                      onClick={() => slate.send({ type: "DATE_SELECTED", date: d.date })}
+                      ariaLabel={d.ariaLabel}
+                    />
+                  ))}
                 </div>
               </div>
             )}
@@ -612,8 +447,8 @@ export default function HomePage() {
               <Button
                 variant="outline"
                 size="icon-sm"
-                onClick={() => shiftSelectedDay(-1)}
-                disabled={!selectedDateKey}
+                onClick={() => slate.send({ type: "DAY_SHIFTED", delta: -1 })}
+                disabled={!slate.selectedDate}
                 aria-label="Previous day"
                 className="bg-[var(--term-surface)] active:scale-95"
                 style={{ border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }}
@@ -625,13 +460,13 @@ export default function HomePage() {
                 style={{ fontSize: 12, letterSpacing: "0.04em", color: "var(--term-text)", fontWeight: 600 }}
                 data-testid="selected-date-display"
               >
-                {formattedSelected?.toUpperCase() ?? "PICK A DATE"}
+                {slate.selectedLabel?.long.toUpperCase() ?? "PICK A DATE"}
               </p>
               <Button
                 variant="outline"
                 size="icon-sm"
-                onClick={() => shiftSelectedDay(1)}
-                disabled={!selectedDateKey}
+                onClick={() => slate.send({ type: "DAY_SHIFTED", delta: 1 })}
+                disabled={!slate.selectedDate}
                 aria-label="Next day"
                 className="bg-[var(--term-surface)] active:scale-95"
                 style={{ border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }}
@@ -645,27 +480,8 @@ export default function HomePage() {
 
           {/* Matchups section */}
           <div className="flex flex-col gap-2">
-            <SectionDivider label="MATCHUPS" count={mergedGames.length} />
-
-            {showGamesError ? (
-              <ErrorState message={gamesErrorMessage} />
-            ) : showGamesSkeleton ? (
-              <SkeletonList />
-            ) : showGamesEmpty ? (
-              <EmptyState label={shortLabel} />
-            ) : mergedGames.length > 0 ? (
-              <div className="flex flex-col gap-2">
-                {mergedGames.map((game, i) => (
-                  <MatchupCard
-                    key={game.id}
-                    game={game}
-                    index={i}
-                    isScoreFlashing={recentlyUpdated.has(game.id)}
-                    evidenceSource={evidenceSource}
-                  />
-                ))}
-              </div>
-            ) : null}
+            <SectionDivider label="MATCHUPS" count={slate.games.length} />
+            <Matchups slate={slate} evidenceSource={evidenceSource} />
           </div>
         </>
       )}
