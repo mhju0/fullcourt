@@ -1,27 +1,24 @@
 # Project status
 
-FullCourt is **feature-complete and in maintenance mode** as of 2026-07-13. The repository is
-kept operational for portfolio review; no additional product modules are planned.
-
-"Feature-complete" means no new **product modules**. Interface and correctness work continues:
-a design and UX audit on 2026-07-26 shipped a quick-win pass — the confidence-tier fix, the
-focus indicator, IBM Plex Mono, deviation-from-coin-flip backtest charts, and the Upcoming
-Edges rename.
+FullCourt is **actively developed**. New analytics modules are added as additive, isolated
+slices, alongside continuing interface and correctness work — a design and UX audit on
+2026-07-26 shipped a quick-win pass: the confidence-tier fix, the focus indicator, IBM Plex
+Mono, deviation-from-coin-flip backtest charts, and the Upcoming Edges rename.
 
 A closeout pass on 2026-07-27 emptied the tracker. Shipped: the blank-render P0 and a route
 error boundary ([#1](https://github.com/mhju0/fullcourt/issues/1)); a historical hit rate and
 sample size on every rest-advantage number, on both the matchup cards and Upcoming Edges
 ([#4](https://github.com/mhju0/fullcourt/issues/4)); and the retirement of the unrendered
 `monthlyTrends` payload ([#6](https://github.com/mhju0/fullcourt/issues/6)). Closed as
-`wontfix` after verifying each against HEAD — real, but not worth building on a project
-entering its off-season: URL-reflected view state
+`wontfix` after verifying each against HEAD — real, but judged not worth building at the time:
+URL-reflected view state
 ([#2](https://github.com/mhju0/fullcourt/issues/2)), the seven-step type scale and home-page
 thesis block ([#3](https://github.com/mhju0/fullcourt/issues/3)), and extracting the three
 duplicated presentational components ([#5](https://github.com/mhju0/fullcourt/issues/5)).
 
-The dependency tree is deliberately frozen; see
+The dependency tree is deliberately pinned; see
 [SEASON_ROLLOVER.md §8](SEASON_ROLLOVER.md) before regenerating the lockfile, and §7 for the
-season counts that do not derive themselves. The repository is not closed to fixes.
+season counts that do not derive themselves.
 
 ## Shipped modules
 
@@ -45,11 +42,13 @@ season counts that do not derive themselves. The repository is not closed to fix
 - Keep GitHub Actions, Vercel, Supabase environment variables, and dependency security patches
   current.
 - Re-run the documented schedule/date integrity audit after new season ingestion.
-- Preserve the isolation of the three analytics modules and the existing rest-advantage naming
+- Preserve the isolation of each analytics module and the existing rest-advantage naming
   contract.
 
-## Archive posture
+## In progress
 
-The live demo and scheduled data pipeline remain operational, but feature development is closed.
-Future changes should be limited to security, dependency compatibility, data-source breakage,
-season rollover, deployment reliability, or verified correctness defects.
+- **Schedule Disparity** — which teams the schedule favored in a given season, ranked by net
+  rest edge in days. Read-only: no migration, no new table, no ingest. Every figure is scoped to
+  its own season; there is deliberately no cross-era ranking. See
+  [the design spec](superpowers/specs/2026-07-27-schedule-disparity-design.md) and
+  [ADR 0001](adr/0001-derive-rest-days-from-games.md).

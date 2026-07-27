@@ -27,3 +27,15 @@ _Avoid_: playoff rest-advantage model
 **Expected Shot Value**:
 The location-based expected effective field-goal percentage for a court cell. It does not represent defender-aware or shot-clock-aware shot quality.
 _Avoid_: complete shot quality
+
+**Net rest edge**:
+A team's season total of `own rest days − opponent rest days`, each side capped at 5 days, season openers excluded. Positive means the schedule favored the team. Season-level and team-oriented, unlike rest advantage.
+_Avoid_: rest advantage, rest differential
+
+**Net fatigue edge**:
+The same season sum as net rest edge, expressed in fatigue-score units rather than days.
+_Avoid_: rest advantage, season fatigue
+
+**Provisional season**:
+A season containing any game that is not final. Its figures carry an as-of date and may revise as the schedule fills in.
+_Avoid_: incomplete season, partial season

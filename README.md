@@ -21,9 +21,9 @@ FullCourt quantifies how **travel, rest, and schedule density** shape NBA outcom
 
 🔗 **Live demo:** https://fullcourt-nba.vercel.app &nbsp;·&nbsp; **Code:** https://github.com/mhju0/fullcourt
 
-> **Project status:** feature-complete and in maintenance mode. The live demo and scheduled data
-> pipeline remain operational; future changes are limited to security, dependency compatibility,
-> season rollover, data-source breakage, deployment reliability, and verified correctness fixes.
+> **Project status:** actively developed. The live demo and scheduled data pipeline are
+> operational, and new analytics modules are built as additive, isolated slices — their own
+> scripts, tables, routes, and page — so they never destabilize the flagship rest-advantage flow.
 
 ---
 
