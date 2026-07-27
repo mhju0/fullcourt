@@ -10,7 +10,7 @@
  * 7. OVERTIME: Prior-game OT adds flat fatigue.
  */
 
-import { addDays, differenceInCalendarDays, parseISO, subDays } from "date-fns";
+import { differenceInCalendarDays, parseISO, subDays } from "date-fns";
 import { haversineDistance } from "./haversine";
 
 // ─── Configuration ──────────────────────────────────────────────
@@ -107,9 +107,9 @@ export interface FatigueResult {
   isBackToBack: boolean;
   daysSinceLastGame: number | null;
   isOvertimePenalty: boolean;
-  /** ≥3 games in some rolling 4-calendar-day window (ending before tip). */
+  /** This game is the team's 3rd across tonight and the prior 3 nights. */
   isThreeInFour: boolean;
-  /** ≥4 games in some rolling 6-calendar-day window. */
+  /** This game is the team's 4th across tonight and the prior 5 nights. */
   isFourInSix: boolean;
   /** Large east–west spread across home + road venues on the active / just-finished trip. */
   hasCoastToCoastRoadSwing: boolean;
@@ -134,38 +134,34 @@ function sortedUniqueGameDates(recentGames: RecentGame[]): string[] {
   return [...new Set(recentGames.map((g) => g.date))].sort();
 }
 
-/** Max games that fall in any contiguous `spanDays`-day calendar window (inclusive). */
-function maxGamesInRollingCalendarSpan(dates: string[], spanDays: number): number {
-  if (dates.length === 0) return 0;
-  const sorted = [...dates].sort();
-  let max = 0;
-  for (const firstStr of sorted) {
-    const first = parseISO(firstStr);
-    const lastInSpan = addDays(first, spanDays - 1);
-    const c = sorted.filter((ds) => {
-      const d = parseISO(ds);
-      return d >= first && d <= lastInSpan;
-    }).length;
-    if (c > max) max = c;
-  }
-  return max;
+/**
+ * Games in the `spanDays`-calendar-day window that ENDS on `gameDate`, counting that game.
+ *
+ * The window is anchored to tonight rather than floated across the lookback. An earlier version
+ * took the max over any window in the 30-day `recentGames` list, which answered "did a dense
+ * stretch happen recently?" instead of "is tonight a short-rest game?" — so a team with 16 days
+ * of rest and a fatigue score of 0 still came back flagged. These flags describe tonight.
+ */
+function gamesInWindowEndingAt(
+  recentGames: RecentGame[],
+  gameDate: string,
+  spanDays: number
+): number {
+  const tip = parseISO(gameDate);
+  const priorInWindow = sortedUniqueGameDates(recentGames).filter(
+    (d) => differenceInCalendarDays(tip, parseISO(d)) < spanDays
+  ).length;
+  return priorInWindow + 1; // tonight counts as one of them
 }
 
-/**
- * "3 in 4 nights" means tonight is the team's 3rd game in a 4-calendar-day
- * span, so we must include the current game date in the rolling window count.
- */
+/** "3 in 4 nights": tonight is the team's 3rd game across tonight and the prior 3 nights. */
 function computeIsThreeInFour(recentGames: RecentGame[], gameDate: string): boolean {
-  const dates = [...sortedUniqueGameDates(recentGames), gameDate];
-  return maxGamesInRollingCalendarSpan(dates, 4) >= 3;
+  return gamesInWindowEndingAt(recentGames, gameDate, 4) >= 3;
 }
 
-/**
- * "4 in 6 nights" — same logic: tonight counts as one of the 4.
- */
+/** "4 in 6 nights": same shape, tonight plus the prior 5 nights. */
 function computeIsFourInSix(recentGames: RecentGame[], gameDate: string): boolean {
-  const dates = [...sortedUniqueGameDates(recentGames), gameDate];
-  return maxGamesInRollingCalendarSpan(dates, 6) >= 4;
+  return gamesInWindowEndingAt(recentGames, gameDate, 6) >= 4;
 }
 
 function scheduleStressMultiplier(recentGames: RecentGame[], gameDate: string): number {

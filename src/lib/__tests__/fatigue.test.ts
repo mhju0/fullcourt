@@ -378,3 +378,62 @@ describe("calculateRestAdvantage", () => {
     expect(calculateRestAdvantage(homeHeavy, away)).toBeLessThan(0);
   });
 });
+
+/**
+ * The flags name a property of *tonight's* game: fatigue.ts states "'3 in 4 nights' means
+ * tonight is the team's 3rd game in a 4-calendar-day span". They previously asked a different
+ * question — whether any 4-day window inside the 30-day lookback held 3 games — so a fully
+ * rested team stayed flagged for weeks after a dense stretch ended.
+ */
+describe("3-in-4 / 4-in-6 flags describe tonight, not the lookback", () => {
+  const dense = ["2025-03-01", "2025-03-02", "2025-03-04"].map((date) =>
+    baseRecent({ date })
+  );
+
+  it("flags a game that is genuinely the 3rd in 4 nights", () => {
+    const r = fatigueHomeTeam("2025-03-04", [
+      baseRecent({ date: "2025-03-01" }),
+      baseRecent({ date: "2025-03-02" }),
+    ]);
+
+    expect(r.isThreeInFour).toBe(true);
+  });
+
+  it("does not flag a rested game weeks after a dense stretch ended", () => {
+    // 16 days of rest; the 3-in-4 stretch ended 2025-03-04, still inside the 30-day lookback.
+    const r = fatigueHomeTeam("2025-03-20", dense);
+
+    expect(r.daysSinceLastGame).toBe(16);
+    expect(r.isThreeInFour).toBe(false);
+    expect(r.isFourInSix).toBe(false);
+  });
+
+  it("does not contradict a zero fatigue score", () => {
+    const r = fatigueHomeTeam("2025-03-20", dense);
+
+    // A team the model scores as completely fresh must not also read as short-rest.
+    expect(r.score).toBe(0);
+    expect(r.isThreeInFour).toBe(false);
+  });
+
+  it("flags a game that is genuinely the 4th in 6 nights", () => {
+    const r = fatigueHomeTeam("2025-03-06", [
+      baseRecent({ date: "2025-03-01" }),
+      baseRecent({ date: "2025-03-03" }),
+      baseRecent({ date: "2025-03-05" }),
+    ]);
+
+    expect(r.isFourInSix).toBe(true);
+  });
+
+  it("stops flagging 4-in-6 once the window has moved past the stretch", () => {
+    const r = fatigueHomeTeam("2025-03-12", [
+      baseRecent({ date: "2025-03-01" }),
+      baseRecent({ date: "2025-03-03" }),
+      baseRecent({ date: "2025-03-05" }),
+      baseRecent({ date: "2025-03-06" }),
+    ]);
+
+    expect(r.isFourInSix).toBe(false);
+  });
+});

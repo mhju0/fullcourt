@@ -148,10 +148,20 @@ Two rows per game (one per team). Latest-by-`computed_at` wins in reads
 | `days_since_last_game` (`daysSinceLastGame`) | integer | yes | — | null = opener / no prior game |
 | `is_overtime_penalty` (`isOvertimePenalty`) | boolean | no | `false` | prior game went to OT |
 | `road_trip_consecutive_away` (`roadTripConsecutiveAway`) | integer | no | `0` | consecutive away games (incl. tonight when away); added in `0002` |
-| `is_three_in_four` (`isThreeInFour`) | boolean | no | `false` | ≥3 games in a rolling 4-day span; added in `0002` |
-| `is_four_in_six` (`isFourInSix`) | boolean | no | `false` | ≥4 games in a rolling 6-day span; added in `0002` |
+| `is_three_in_four` (`isThreeInFour`) | boolean | no | `false` | this game is the team's 3rd across it and the prior 3 nights; added in `0002`. Written but read by nothing — see the note below |
+| `is_four_in_six` (`isFourInSix`) | boolean | no | `false` | this game is the team's 4th across it and the prior 5 nights; added in `0002`. Written but read by nothing — see the note below |
 | `has_coast_to_coast_road_swing` (`hasCoastToCoastRoadSwing`) | boolean | no | `false` | large E–W spread on trip; added in `0002` |
 | `computed_at` (`computedAt`) | timestamp | no | `now()` | used to pick the newest row per (game, team) |
+
+> **`is_three_in_four` / `is_four_in_six` are stale in the database.** Both were computed by a
+> predicate that asked whether a dense stretch occurred anywhere in the 30-day lookback, rather
+> than whether *this* game is a short-rest game — so a team with 16 days of rest and a fatigue
+> score of `0` was still flagged. Fixed in `src/lib/fatigue.ts`, but stored rows keep the old
+> values until a recompute. This is **not urgent and affects no displayed number**: the flags
+> never entered the fatigue score (`baseLoad * b2b * altitude * stressMult` + freshness + OT —
+> schedule density reaches the score through `scheduleStressMultiplier`, which is windowed
+> correctly), and no query, route, or component reads either column. A future
+> `scripts/backfill_fatigue.ts --force` will correct them as a side effect.
 
 **Verified coverage (2026-07-12, read-only `SELECT`):** all **46,172** final regular-season
 games have a `fatigue_scores` row on **both** sides — **0 missing**. (The 8 gaps noted on
