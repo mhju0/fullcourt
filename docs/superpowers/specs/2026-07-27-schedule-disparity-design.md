@@ -1,7 +1,7 @@
 # Schedule Disparity — design
 
 **Date:** 2026-07-27
-**Status:** approved, not yet implemented
+**Status:** implemented and verified against the live database (2026-07-27)
 **Module:** Schedule Disparity (`/schedule`, `/api/schedule-disparity`)
 
 ## 1. What this answers
@@ -229,10 +229,21 @@ protected **rest advantage**, which is matchup-level and home-oriented:
    seasons but not the upcoming one. This is a prerequisite the module cannot satisfy itself.
 2. **`docs/SEASON_ROLLOVER.md:108` goes stale this season** — it describes the Cup finals as
    "neutral-site, T-Mobile Arena." Exclusion is by ID prefix, not venue, so no code breaks.
-3. **Unverified against the live database.** This design was written without `DATABASE_URL`
-   access. Two claims are inferred from ingest code and docs and must be confirmed during
-   implementation: that Cup championship games are genuinely absent from `games`, and the
-   per-season game counts for the lockout seasons.
+3. **Verified against the live database (2026-07-27).** Read-only queries confirmed every
+   claim this design had inferred:
+   - **Cup championships are absent from `games`** — no rows at all on 2023-12-09, 2024-12-17
+     or 2025-12-16.
+   - **All 30 teams have exactly 82 regular-season games** in each of 2023-24, 2024-25 and
+     2025-26, so the finalists are correctly not at 83.
+   - **Lockout counts are as documented** — 1998-99: 50 games across 29 teams (correct for that
+     era); 2011-12: 66; 2020-21: 72; 2019-20 absent entirely.
+   - **Every historical season is fully final**, so `provisional` is correctly false throughout.
+   - The module ran over 2025-26, 2011-12 and 1998-99 with the **zero-sum invariant holding
+     exactly** (Σ net rest edge = 0, capped and uncapped) on all three.
+
+   One result worth recording: 2025-26 Portland is **+15 rest days but only +4.39 fatigue
+   edge**, against Cleveland's +10 / +49.02. That divergence — favourable rest days largely
+   consumed by travel and density — is what the second column exists to expose.
 4. **Neutral-site regular-season games** (Paris, Mexico City, Abu Dhabi, pre-2026 Cup
    semifinals) are tagged home/away though neither team is home. This does not affect the
    rest-days headline, only travel inside the fatigue column.
