@@ -1,9 +1,12 @@
 import { describe, expect, it } from "vitest";
 import {
+  browsableSeasons,
   currentDisplaySeason,
   formatEasternDateKey,
   formatLocalDateKey,
   isNbaOffSeason,
+  NBA_SEASONS,
+  nextSeasonLabel,
   pickDefaultGamesDate,
 } from "../nba-season";
 import type { GameDateCount } from "@/types";
@@ -158,5 +161,49 @@ describe("isNbaOffSeason", () => {
 
   it("is true on May 1, the first offseason day", () => {
     expect(isNbaOffSeason("2026-05-01")).toBe(true);
+  });
+});
+
+describe("browsableSeasons", () => {
+  const latestWithData = NBA_SEASONS[NBA_SEASONS.length - 1];
+  const upcoming = nextSeasonLabel(latestWithData);
+
+  it.each(["-08-15", "-09-01", "-09-30"])(
+    "offers the upcoming season during the Aug–Sep window (%s)",
+    (suffix) => {
+      const seasons = browsableSeasons(`2026${suffix}`);
+
+      expect(seasons).toContain(upcoming);
+      expect(seasons.length).toBe(NBA_SEASONS.length + 1);
+    }
+  );
+
+  it.each(["2026-07-31", "2026-10-01", "2026-12-25", "2027-01-15", "2027-04-30"])(
+    "does not offer it outside that window (%s)",
+    (todayKey) => {
+      expect(browsableSeasons(todayKey)).toEqual(NBA_SEASONS);
+    }
+  );
+
+  it("never drops or reorders the seasons that have data", () => {
+    const seasons = browsableSeasons("2026-08-15");
+
+    expect(seasons.slice(0, NBA_SEASONS.length)).toEqual([...NBA_SEASONS]);
+  });
+
+  it("leaves the backtest count untouched — the reason this list is separate", () => {
+    // NBA_SEASONS.length backs the "N-SEASON BACKTEST" copy; widening it there would
+    // advertise a season with no completed games.
+    const before = NBA_SEASONS.length;
+    browsableSeasons("2026-08-15");
+
+    expect(NBA_SEASONS.length).toBe(before);
+    expect(NBA_SEASONS).not.toContain(upcoming);
+  });
+
+  it("appends exactly one season, not an open-ended run of future ones", () => {
+    const seasons = browsableSeasons("2026-08-15");
+
+    expect(seasons).not.toContain(nextSeasonLabel(upcoming));
   });
 });

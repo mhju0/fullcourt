@@ -17,7 +17,7 @@ import { SeasonSelector } from "@/components/season-selector"
 import { Skeleton } from "@/components/ui/skeleton"
 import { deviationFill, formatDeviation, minBarSize } from "@/components/analysis-content"
 import { apiFetcher } from "@/lib/fetcher"
-import { NBA_SEASONS } from "@/lib/nba-season"
+import { browsableSeasons, NBA_SEASONS } from "@/lib/nba-season"
 import {
   MONO_FONT_STACK,
   termCardStyle,
@@ -28,6 +28,7 @@ import {
 import type { ScheduleDisparityResponse, ScheduleDisparityTeam } from "@/types"
 
 const LATEST_SEASON = NBA_SEASONS[NBA_SEASONS.length - 1]
+const SEASON_OPTIONS = browsableSeasons()
 
 /** Signed whole days, matching the deviation phrasing used on the Analysis charts. */
 function formatDays(days: number): string {
@@ -89,7 +90,12 @@ export function ScheduleDisparityContent() {
   return (
     <div className="flex flex-col gap-4">
       <div style={termCardStyle}>
-        <SeasonSelector id="schedule-disparity-season" season={season} onSeasonChange={setSeason} />
+        <SeasonSelector
+          id="schedule-disparity-season"
+          season={season}
+          onSeasonChange={setSeason}
+          seasons={SEASON_OPTIONS}
+        />
         {data ? (
           <p
             className="mono"

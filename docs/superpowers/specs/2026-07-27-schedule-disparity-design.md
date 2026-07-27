@@ -170,6 +170,23 @@ Every figure is therefore scoped to its own season. The one form of cross-season
 would be defensible — standardizing each team against its own season's distribution — is
 deliberately not built, and would be the only such feature considered later.
 
+## 6.1 Two season lists, and why
+
+`NBA_SEASONS` does two jobs: it gatekeeps which seasons may be requested, and its `.length`
+backs the "N-SEASON BACKTEST" copy (`src/app/page.tsx`, `src/app/opengraph-image.tsx`). Those
+coincide until schedule-release day, when the upcoming season exists as *data* but not yet as
+*calendar* — `NBA_SEASONS` derives its upper bound from the ET clock and does not roll over
+until October 1.
+
+Widening `NBA_SEASONS` would make the site advertise a backtest one season larger than the
+evidence, trading a data gap for a false claim. So the browsing meaning gets its own list,
+`browsableSeasons()`, which is `NBA_SEASONS` plus the upcoming season during August and
+September only. The counting meaning keeps `NBA_SEASONS` untouched.
+
+The window closes on October 1 because `NBA_SEASONS` rolls over then and the upcoming season
+becomes the current one. Only Schedule Disparity uses the wider list; `SeasonSelector` takes it
+as an optional prop, so the other four pages are unaffected.
+
 ## 7. Honest framing on the page
 
 Two statements the page carries, both load-bearing:

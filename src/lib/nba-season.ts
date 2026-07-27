@@ -4,6 +4,12 @@ import { endOfMonth, format, startOfMonth } from "date-fns";
  * Seasons the app and ingest pipeline support (2019-20 bubble omitted).
  * 1985-86 … latest supported/current NBA season.
  * Oldest → newest for stable sort; UI often reverses for “latest first” dropdowns.
+ *
+ * This list means **"seasons with data"**. It is what `NBA_SEASONS.length` counts in the
+ * "N-SEASON BACKTEST" claims (`src/app/page.tsx`, `src/app/opengraph-image.tsx`), so it must
+ * never include a season that has not been played. To offer an upcoming season for browsing
+ * before it starts, use {@link browsableSeasons} instead — see its comment for why the two
+ * meanings are separate.
  */
 export const NBA_SEASONS: readonly string[] = (() => {
   // ET calendar (the NBA's scheduling day) — formatEasternDateKey isn't declared yet here.
@@ -146,6 +152,33 @@ export function currentDisplaySeason(todayKey: string = formatEasternDateKey()):
 export function nextSeasonLabel(season: string): string {
   const nextStartYear = parseSeasonStartYear(season) + 1;
   return `${nextStartYear}-${String(nextStartYear + 1).slice(-2)}`;
+}
+
+/** ET months in which an unplayed upcoming season may be browsed (Aug 1 → Sep 30). */
+const UPCOMING_SEASON_BROWSE_MONTHS = new Set([8, 9]);
+
+/**
+ * Seasons a schedule-facing surface may browse: {@link NBA_SEASONS} plus the upcoming season
+ * during August and September.
+ *
+ * Why this is separate from `NBA_SEASONS` rather than an extension of it: that constant does
+ * two jobs — gatekeeping which seasons may be requested, and counting how many seasons of
+ * evidence back the headline claim. Those coincide until schedule-release day, when the next
+ * season exists as *data* but not yet as *calendar*: `NBA_SEASONS` derives its upper bound from
+ * the ET clock and does not roll over until October 1. Widening it would make the site
+ * advertise an "N-season backtest" one season larger than the evidence, trading a data gap for
+ * a false claim. So the browsing meaning gets its own list and the counting meaning keeps
+ * `NBA_SEASONS`.
+ *
+ * The window closes on October 1 because `NBA_SEASONS` itself rolls over then — after that the
+ * upcoming season is simply the current one and needs no special case. Between schedule release
+ * and ingest the extra season has no rows yet; that is a normal empty state, not an error.
+ */
+export function browsableSeasons(todayKey: string = formatEasternDateKey()): readonly string[] {
+  const month = Number(todayKey.slice(5, 7));
+  if (!UPCOMING_SEASON_BROWSE_MONTHS.has(month)) return NBA_SEASONS;
+  const latest = NBA_SEASONS[NBA_SEASONS.length - 1];
+  return [...NBA_SEASONS, nextSeasonLabel(latest)];
 }
 
 /** True between the end of the most recently completed regular season and the start of the next. */

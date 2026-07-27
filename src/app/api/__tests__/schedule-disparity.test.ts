@@ -2,12 +2,24 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { NextRequest } from "next/server";
 import { GET } from "../schedule-disparity/route";
 import { getScheduleDisparity } from "@/lib/schedule-disparity-server";
-import { NBA_SEASONS } from "@/lib/nba-season";
+import { NBA_SEASONS, nextSeasonLabel } from "@/lib/nba-season";
 import type { ScheduleDisparityResponse } from "@/types";
 
 vi.mock("@/lib/schedule-disparity-server", () => ({
   getScheduleDisparity: vi.fn(),
 }));
+
+// browsableSeasons() reads the real ET clock, so its result changes with the month. Pin it to
+// the Aug–Sep behavior (data seasons + one upcoming) so this file tests the route's contract
+// rather than the calendar. The upcoming-season rule itself is tested in nba-season.test.ts.
+vi.mock("@/lib/nba-season", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@/lib/nba-season")>();
+  const upcoming = actual.nextSeasonLabel(actual.NBA_SEASONS[actual.NBA_SEASONS.length - 1]);
+  return {
+    ...actual,
+    browsableSeasons: () => [...actual.NBA_SEASONS, upcoming],
+  };
+});
 
 const mockGet = vi.mocked(getScheduleDisparity);
 
@@ -111,5 +123,44 @@ describe("GET /api/schedule-disparity", () => {
 
     expect(res.status).toBe(500);
     expect(body.error.length).toBeGreaterThan(0);
+  });
+});
+
+describe("GET /api/schedule-disparity — upcoming seasons", () => {
+  const UPCOMING = nextSeasonLabel(LATEST_SEASON);
+
+  beforeEach(() => {
+    mockGet.mockReset();
+  });
+
+  it("accepts an upcoming season that has no data yet", async () => {
+    // Between schedule release and ingest this is the normal state, not an error: the module
+    // exists to report on schedules before they are played.
+    mockGet.mockResolvedValueOnce(
+      payload({ season: UPCOMING, provisional: true, teams: [], gamesPerTeamMin: 0, gamesPerTeamMax: 0 })
+    );
+
+    const res = await GET(makeReq(`?season=${UPCOMING}`));
+
+    expect(res.status).toBe(200);
+    expect(mockGet).toHaveBeenCalledWith(UPCOMING);
+  });
+
+  it("still rejects a season beyond the browsable list", async () => {
+    const twoAhead = nextSeasonLabel(UPCOMING);
+
+    const res = await GET(makeReq(`?season=${twoAhead}`));
+
+    expect(res.status).toBe(400);
+    expect(mockGet).not.toHaveBeenCalled();
+  });
+
+  it("defaults to the newest season with data, never the empty upcoming one", async () => {
+    mockGet.mockResolvedValueOnce(payload());
+
+    await GET(makeReq());
+
+    expect(mockGet).toHaveBeenCalledWith(LATEST_SEASON);
+    expect(mockGet).not.toHaveBeenCalledWith(UPCOMING);
   });
 });

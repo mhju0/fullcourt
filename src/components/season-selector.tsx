@@ -10,11 +10,18 @@ export function SeasonSelector({
   id,
   season,
   onSeasonChange,
+  /**
+   * Override the option list. Defaults to seasons with data; Schedule Disparity passes
+   * `browsableSeasons()` so an upcoming schedule can be browsed before its season starts.
+   */
+  seasons,
 }: {
   id: string
   season: string
   onSeasonChange: (season: string) => void
+  seasons?: readonly string[]
 }) {
+  const options = seasons ? [...seasons].reverse() : SEASON_OPTIONS
   return (
     <div className="flex flex-col gap-1.5">
       <label
@@ -31,7 +38,7 @@ export function SeasonSelector({
         className={cn(termSelectClass, "max-w-xs")}
         style={termSelectStyle}
       >
-        {SEASON_OPTIONS.map((s) => (
+        {options.map((s) => (
           <option key={s} value={s}>
             {s}
           </option>
