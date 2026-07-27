@@ -58,9 +58,13 @@ database for this check.
 ## End-to-end tests — Playwright
 
 Config (`playwright.config.ts`): `testDir: ./e2e`, `baseURL: http://localhost:3000`,
-`chromium` only, `fullyParallel`, reporters `list` + `html` (no auto-open). `webServer` runs
-`pnpm dev` (reuses an existing server unless `CI`); in CI `retries: 2`, `workers: 1`,
-`forbidOnly`. Existing specs receive a completed onboarding storage state so the first-visit
+`chromium` only, reporters `list` + `html` (no auto-open). `webServer` runs
+`pnpm dev` (reuses an existing server unless `CI`); in CI `retries: 2` and `forbidOnly`.
+**`workers: 1` everywhere**, not only in CI: the suite drives one dev server, so parallel
+workers race for cold Turbopack compiles rather than for CPU. Measured 18 passed in 16.8s
+serially against 26s *and* readiness-gate failures on `/schedule` at the default worker count —
+parallelism bought negative time here. (`fullyParallel` is left on; with one worker it only
+affects ordering.) Existing specs receive a completed onboarding storage state so the first-visit
 dialog cannot block their legacy interactions; `e2e/onboarding.spec.ts` overrides that state with
 an empty browser. Specs: `e2e/home.spec.ts`, `e2e/analysis.spec.ts`, `e2e/navigation.spec.ts`,
 `e2e/onboarding.spec.ts`, `e2e/playoffs.spec.ts`, `e2e/shot-quality.spec.ts`.
