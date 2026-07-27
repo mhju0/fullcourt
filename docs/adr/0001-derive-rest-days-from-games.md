@@ -3,9 +3,8 @@
 Status: accepted (2026-07-27)
 
 `fatigue_scores.days_since_last_game` already holds each team's rest before a game, so the
-Schedule Disparity module reading it would be the obvious choice. It does not. The module's
-headline metric computes rest days with a `LAG` window function over `games`, partitioned by
-`(team, season)`.
+Schedule Disparity module reading it would be the obvious choice. It does not. The module derives
+rest days from the game dates in `games`, per team, within a single season.
 
 The reason is staleness under schedule change. `scripts/backfill_fatigue.ts:131` only fills
 games *missing* fatigue rows, so when a game is inserted into an existing schedule the
@@ -24,9 +23,14 @@ fatigue model — which is what the page claims to be.
 ## Consequences
 
 Two places in the codebase compute "days since last game," which reads as duplication worth
-cleaning up. It is not. `src/lib/__tests__/` carries a pinning test asserting the two agree on
-played games; that test is what keeps the duplication safe, and it must fail if either
-definition drifts.
+cleaning up. It is not. `src/lib/__tests__/schedule-disparity.test.ts` carries a pinning test
+holding `restDaysBeforeGames` equal to `calculateFatigue`'s `daysSinceLastGame`. That test is
+what keeps the duplication safe, and it must fail if either definition drifts.
+
+The same reasoning applies to the 3-in-4 and 4-in-6 flags, which the module also defines itself
+rather than reading from `fatigue_scores` — though there for a second reason: the stored flag
+answers a different question (whether a dense stretch occurred anywhere in a 30-day lookback)
+and cannot be summed into a season count. See the design spec, §3.2.
 
 The module's secondary **net fatigue edge** column still reads `fatigue_scores` and therefore
 still lags for unplayed games. That limitation is stated on the page rather than engineered

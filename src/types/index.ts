@@ -278,3 +278,50 @@ export interface ShotQualityResponse {
   };
 }
 
+
+// ─── Schedule Disparity ──────────────────────────────────────────
+
+/** One team's season-level schedule disparity figures. */
+export interface ScheduleDisparityTeam {
+  teamId: number;
+  abbreviation: string;
+  name: string;
+  /** Counted games — each side's season opener is excluded. */
+  games: number;
+  /** Season sum of (own rest days − opponent rest days), each side capped at 5. */
+  netRestEdge: number;
+  /** The same sum with no cap, so the cap stays auditable. */
+  netRestEdgeUncapped: number;
+  /** Season sum of (opponent fatigue − own fatigue); null when no counted game is scored. */
+  netFatigueEdge: number | null;
+  backToBackDiff: number;
+  threeInFourDiff: number;
+  fourInSixDiff: number;
+  gamesWithEdge: number;
+  gamesWithLargeEdge: number;
+}
+
+/**
+ * Season-level figures. Deliberately carries no cross-season ranking — season length, team
+ * count, and the league-wide rest distribution all shifted across the ~40 seasons.
+ */
+export interface ScheduleDisparityLeague {
+  largestEdge: number;
+  largestDisadvantage: number;
+  delta: number;
+  gamesWithAnyEdge: number;
+  gamesWithLargeEdge: number;
+  countedGames: number;
+}
+
+export interface ScheduleDisparityResponse {
+  season: string;
+  /** True when any game in the season is not final, so figures may still revise. */
+  provisional: boolean;
+  /** ET date the figures were computed, for the as-of line on provisional seasons. */
+  asOf: string;
+  gamesPerTeamMin: number;
+  gamesPerTeamMax: number;
+  teams: ScheduleDisparityTeam[];
+  league: ScheduleDisparityLeague;
+}

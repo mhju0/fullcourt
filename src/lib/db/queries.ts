@@ -10,6 +10,7 @@ import {
   predictions,
   teams,
 } from "./schema";
+import type { DisparityGameRow } from "@/lib/schedule-disparity";
 import {
   formatEasternDateKey,
   intersectDateBounds,
@@ -1132,4 +1133,67 @@ export async function getShotQualityGrid(season: string): Promise<ShotQualityCel
   `)) as unknown as ShotQualityGridRow[];
 
   return rows.map(mapShotQualityRow);
+}
+
+// ─── Schedule Disparity query ───────────────────────────────────
+
+/**
+ * One season's regular-season games with both sides' latest fatigue score, for Schedule
+ * Disparity. Rest days are NOT selected here: the module derives them from the game dates
+ * themselves, because `fatigue_scores.days_since_last_game` goes stale when games are inserted
+ * into a published schedule. See docs/adr/0001-derive-rest-days-from-games.md.
+ *
+ * Unplayed games are included on purpose — the module reports on schedules before they are
+ * played — so both fatigue scores are nullable.
+ */
+export async function getRegularSeasonScheduleForDisparity(
+  season: string
+): Promise<DisparityGameRow[]> {
+  const homeFatigue = latestFatigueSubquery("home_fatigue_disparity");
+  const awayFatigue = latestFatigueSubquery("away_fatigue_disparity");
+
+  const rows = await db
+    .select({
+      date: games.date,
+      status: games.status,
+      homeTeamId: games.homeTeamId,
+      awayTeamId: games.awayTeamId,
+      homeFatigueScore: homeFatigue.score,
+      awayFatigueScore: awayFatigue.score,
+    })
+    .from(games)
+    .leftJoin(
+      homeFatigue,
+      and(eq(homeFatigue.gameId, games.id), eq(homeFatigue.teamId, games.homeTeamId))
+    )
+    .leftJoin(
+      awayFatigue,
+      and(eq(awayFatigue.gameId, games.id), eq(awayFatigue.teamId, games.awayTeamId))
+    )
+    .where(and(eq(games.season, season), eq(games.gameType, "regular")))
+    .orderBy(asc(games.date), asc(games.id));
+
+  return rows.map((r) => ({
+    date: String(r.date),
+    status: String(r.status),
+    homeTeamId: Number(r.homeTeamId),
+    awayTeamId: Number(r.awayTeamId),
+    homeFatigueScore: r.homeFatigueScore === null ? null : String(r.homeFatigueScore),
+    awayFatigueScore: r.awayFatigueScore === null ? null : String(r.awayFatigueScore),
+  }));
+}
+
+/** Identifying fields for every team, so disparity rows can be labelled without a second join. */
+export async function getTeamDirectory(): Promise<
+  { id: number; abbreviation: string; name: string }[]
+> {
+  const rows = await db
+    .select({ id: teams.id, abbreviation: teams.abbreviation, name: teams.name })
+    .from(teams);
+
+  return rows.map((r) => ({
+    id: Number(r.id),
+    abbreviation: String(r.abbreviation),
+    name: String(r.name),
+  }));
 }

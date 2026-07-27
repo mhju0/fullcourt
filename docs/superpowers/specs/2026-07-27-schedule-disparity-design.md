@@ -38,7 +38,7 @@ Grain: one computed row per `(season, team)` — roughly 1,200 rows across the h
 | **Net rest edge** | Σ over the team's games of (own rest days − opponent's rest days). The headline. |
 | **Net fatigue edge** | Σ over the team's games of (opponent fatigue score − own fatigue score). |
 | **B2B differential** | Own back-to-back count − opponents' back-to-back count in those games. |
-| **3-in-4 / 4-in-6 differentials** | Same construction over `is_three_in_four` / `is_four_in_six`. |
+| **3-in-4 / 4-in-6 differentials** | Same construction, counting games that are themselves the 3rd game in 4 nights / 4th in 6. |
 | **Games with an edge** | Count of games where own rest days exceeded the opponent's. |
 | **Games with a 3+ day edge** | Same, threshold 3. |
 
@@ -59,7 +59,18 @@ of games with a 3+ day advantage, count of games with any advantage.
   auditable and reversible without recomputation.
 - **Season openers are excluded** — a team's first game of a season has no previous game, and a
   game is only counted when *both* sides have a defined previous game.
-- The `LAG` is partitioned by `(team, season)` so it never reaches across a season boundary.
+- Rest is computed per team over that team's own season games, so it never reaches across a
+  season boundary.
+
+### 3.2 Density flags are defined here, not read from `fatigue_scores`
+
+`fatigue_scores.is_three_in_four` asks whether a 3-in-4 occurred anywhere in the team's 30-day
+lookback (`maxGamesInRollingCalendarSpan`, `src/lib/fatigue.ts`). That flag stays true for many
+games after the dense stretch ends, so summing it over a season would not count short-rest games.
+
+This module instead classifies each game on its own — "this game is the third in four nights" —
+so the season total counts actual short-rest games. The two predicates are deliberately
+different and must not be described as the same measure.
 
 ## 4. Architecture
 
@@ -83,8 +94,12 @@ games ⋈ fatigue_scores  →  /api/schedule-disparity  →  /schedule
 ### 4.1 Rest days derive from `games`, not `fatigue_scores`
 
 `fatigue_scores.days_since_last_game` exists and looks like the obvious source. The module does
-**not** use it for the headline. Instead it computes rest days with a `LAG` window function over
-`games`.
+**not** use it for the headline. Instead it derives rest days from the game dates themselves.
+
+The season's games (~1,230 rows) are fetched and the arithmetic runs in a pure TypeScript module,
+`src/lib/schedule-disparity.ts`, rather than in SQL. At that row count the aggregation is
+negligible, and it makes every metric directly assertable in unit tests instead of requiring
+assertions against generated SQL.
 
 The reason is staleness under schedule change, and the NBA Cup makes it concrete (§5).
 `scripts/backfill_fatigue.ts:131` only fills games *missing* fatigue rows, so when a game is
@@ -170,9 +185,10 @@ Two statements the page carries, both load-bearing:
 - **Aggregation unit tests** against a fixture season with hand-computed rest days, asserting
   the 5-day cap, the excluded-opener rule, and the season-boundary partition **on the generated
   SQL or the pure function**, not on incidental row order.
-- **A pinning test** asserting the `LAG`-derived rest days equal
-  `fatigue_scores.days_since_last_game` for played games. This is what makes the §4.1
-  duplication safe; it must fail if either definition drifts.
+- **A pinning test** asserting this module's rest days equal the fatigue model's
+  `daysSinceLastGame`. It calls `calculateFatigue` directly rather than reading the database, so
+  it runs in CI with no `DATABASE_URL`. This is what makes the §4.1 duplication safe; it must
+  fail if either definition drifts.
 - **Provisional-rule test**: a season with any non-final game reports provisional; a fully final
   season does not; a 66-game lockout season is not misreported.
 - **Route test** mirroring `src/app/api/__tests__/analysis.test.ts`, covering the `{ data, error }`
