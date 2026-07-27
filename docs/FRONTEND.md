@@ -84,15 +84,30 @@ rest diff / h2h diff) on click.
 Server component; metadata title `"Schedule Disparity"`; renders a `<PageHeader>` plus
 `<ScheduleDisparityContentLazy />`. The lazy client component
 (`schedule-disparity-content.tsx`) fetches `/api/schedule-disparity?season=…` via SWR and
-renders a `<SeasonSelector>`, a diverging **net rest edge** column chart (reusing
-`deviationFill` / `minBarSize` from `analysis-content.tsx`, so zero is the fair schedule and
-negative bars hang below the line in red), and a per-team table carrying the capped and
-uncapped totals side by side.
+renders, in order: a `<SeasonSelector>` over `browsableSeasons()`, a four-cell summary strip
+(most favored / least favored / spread / games with an edge), the ranked **net rest edge**
+list, the column guide, and the full breakdown table.
 
-A **provisional** season — any season with a game that is not final — shows an as-of date, the
-games-per-team count, and a sentence explaining that the NBA announces only 80 of 82 games
-before opening night and fills the rest after NBA Cup group play. There is deliberately no
-cross-season ranking anywhere on the page.
+**Horizontal, not vertical.** The ranked list is 30 CSS rows, not a Recharts `BarChart` — the
+bars *are* the leaderboard, so team codes sit upright and rank reads top to bottom. The
+Analysis page's vertical deviation columns are right there because its x-axis is *time*; here
+the axis is *rank*, where horizontal is legible and vertical forces 9px rotated labels. The
+`EdgeBar` component draws both the list rows and the table's inline column, on a domain
+symmetric around zero so a −8 and a +8 are equally long.
+
+**One sign convention.** Every figure is oriented so **positive is favorable**, including the
+`backToBackEdge` / `threeInFourEdge` fields, which count short-rest games *avoided* relative to
+opponents. `edgeColor()` therefore maps the whole table with one rule: blue favorable, red
+unfavorable, grey exactly even.
+
+**Column guide.** A native `<details>` (`ColumnGuide`) mirroring `MethodologyNote` in
+`shot-quality-content.tsx` — chosen over hover tooltips because it opens on tap, takes keyboard
+focus, and is announced by screen readers.
+
+A **provisional** season — any season with a game that is not final — shows an as-of date and a
+sentence explaining that the NBA announces only 80 of 82 games before opening night and fills
+the rest after NBA Cup group play. There is deliberately no cross-season ranking anywhere on
+the page.
 
 ### `/shot-quality` — Expected Shot Value (`src/app/shot-quality/page.tsx`)
 

@@ -2,26 +2,13 @@
 
 import { useState } from "react"
 import useSWR from "swr"
-import {
-  Bar,
-  BarChart,
-  CartesianGrid,
-  Cell,
-  ReferenceLine,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts"
+import { ChevronDown } from "lucide-react"
 import { SeasonSelector } from "@/components/season-selector"
 import { Skeleton } from "@/components/ui/skeleton"
-import { deviationFill, formatDeviation, minBarSize } from "@/components/analysis-content"
 import { apiFetcher } from "@/lib/fetcher"
 import { browsableSeasons, NBA_SEASONS } from "@/lib/nba-season"
 import {
-  MONO_FONT_STACK,
   termCardStyle,
-  termInsetStyle,
   termTdStyle,
   termThStyle,
 } from "@/lib/terminal-styles"
@@ -30,39 +17,150 @@ import type { ScheduleDisparityResponse, ScheduleDisparityTeam } from "@/types"
 const LATEST_SEASON = NBA_SEASONS[NBA_SEASONS.length - 1]
 const SEASON_OPTIONS = browsableSeasons()
 
-/** Signed whole days, matching the deviation phrasing used on the Analysis charts. */
-function formatDays(days: number): string {
+/** Signed whole days: +15 / −11 / 0. Matches the deviation phrasing on the Analysis charts. */
+export function formatSignedDays(days: number): string {
   if (days === 0) return "0"
   return `${days > 0 ? "+" : "−"}${Math.abs(days)}`
 }
 
-/** Signed fatigue points to one decimal; null when no counted game is scored yet. */
-function formatFatigue(edge: number | null): string {
+/** Signed fatigue points to one decimal; em dash when no counted game is scored yet. */
+export function formatSignedScore(edge: number | null): string {
   if (edge === null) return "—"
   const rounded = Math.round(edge * 10) / 10
   if (rounded === 0) return "0.0"
   return `${rounded > 0 ? "+" : "−"}${Math.abs(rounded).toFixed(1)}`
 }
 
-interface ChartDatum {
-  label: string
-  edge: number
-  name: string
-  games: number
+/**
+ * Blue favorable, red unfavorable, grey exactly even — the same diverging pair the Analysis
+ * page uses. Every figure on this page is oriented so positive is favorable, so one mapping
+ * serves the whole table.
+ */
+function edgeColor(value: number | null): string {
+  if (value === null || value === 0) return "var(--term-neutral)"
+  return value > 0 ? "var(--term-blue)" : "var(--term-red)"
 }
 
-function EdgeTooltip({ active, payload }: { active?: boolean; payload?: { payload: ChartDatum }[] }) {
-  if (!active || !payload?.length) return null
-  const d = payload[0].payload
+/**
+ * Bar length as a percentage of half the track. The domain is symmetric around zero so a −8
+ * and a +8 draw identically long — an axis fitted to the data would make them differ.
+ */
+function barGeometry(value: number, bound: number) {
+  const pct = bound === 0 ? 0 : (Math.abs(value) / bound) * 50
+  return value >= 0
+    ? { left: "50%", width: `${pct}%` }
+    : { right: "50%", width: `${pct}%` }
+}
+
+function StatCell({ label, value, sub, tone }: {
+  label: string
+  value: string
+  sub: string
+  tone?: string
+}) {
+  return (
+    <div className="flex flex-col gap-[3px] bg-[var(--term-surface)] px-[13px] py-[11px]">
+      <span
+        className="mono"
+        style={{ fontSize: 10, letterSpacing: "0.09em", textTransform: "uppercase", color: "var(--term-text-muted)" }}
+      >
+        {label}
+      </span>
+      <span
+        className="mono"
+        style={{ fontSize: 21, fontWeight: 700, fontVariantNumeric: "tabular-nums", color: tone ?? "var(--term-text)" }}
+      >
+        {value}
+      </span>
+      <span className="mono" style={{ fontSize: 10.5, color: "var(--term-text-muted)" }}>
+        {sub}
+      </span>
+    </div>
+  )
+}
+
+/** Diverging bar on a zero rule. Shared by the ranked list and the table's inline column. */
+function EdgeBar({ value, bound, height }: { value: number; bound: number; height: number }) {
+  const geo = barGeometry(value, bound)
+  return (
+    <div
+      className="relative w-full"
+      style={{ height, background: "var(--term-surface-2)", borderRadius: "var(--term-radius-bar)" }}
+    >
+      <div className="absolute inset-y-0 z-[2]" style={{ left: "50%", width: 1.5, background: "var(--term-text)" }} />
+      <div
+        className="absolute"
+        style={{ ...geo, top: 2, bottom: 2, background: edgeColor(value), borderRadius: "var(--term-radius-bar)" }}
+      />
+    </div>
+  )
+}
+
+/**
+ * Column explainer. A native <details> rather than hover tooltips: it opens on tap, takes
+ * keyboard focus, and is announced by screen readers. Mirrors the MethodologyNote pattern in
+ * shot-quality-content.tsx.
+ */
+function ColumnGuide({ countedGames, scheduledGames }: { countedGames: number; scheduledGames: number }) {
+  const term = (t: string) => (
+    <span style={{ color: "var(--term-text)", fontWeight: 600 }}>{t}</span>
+  )
 
   return (
-    <div className="mono" style={{ ...termInsetStyle, fontSize: 11, padding: "8px 10px" }}>
-      <p style={{ fontWeight: 700, color: "var(--term-text)" }}>{d.name}</p>
-      <p style={{ marginTop: 2, color: deviationFill(d.edge) }}>
-        <span style={{ fontWeight: 700 }}>{formatDays(d.edge)} DAYS</span> NET REST EDGE
-      </p>
-      <p style={{ marginTop: 2, color: "var(--term-text-muted)" }}>{d.games} GAMES COUNTED</p>
-    </div>
+    <details className="mono group" style={{ ...termCardStyle, padding: 0 }}>
+      <summary
+        className="flex cursor-pointer items-center justify-between rounded-[var(--term-radius)] px-4 py-3 transition-colors hover:bg-[var(--term-surface-2)]"
+        style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-text)", fontWeight: 700 }}
+      >
+        WHAT THESE COLUMNS MEAN
+        <ChevronDown
+          className="size-4 text-[var(--term-text-muted)] transition-transform duration-200 group-open:rotate-180"
+          aria-hidden
+        />
+      </summary>
+      <div
+        className="flex max-w-3xl flex-col gap-3 px-4 pb-4"
+        style={{ fontSize: 15, color: "var(--term-text-muted)", lineHeight: 1.55 }}
+      >
+        <p
+          style={{
+            background: "var(--term-surface-2)",
+            borderLeft: "2px solid var(--term-blue)",
+            borderRadius: "var(--term-radius-sm)",
+            padding: "9px 12px",
+            color: "var(--term-text)",
+            fontSize: 14,
+          }}
+        >
+          <strong>One rule for the whole table: positive is always favorable.</strong> A plus sign
+          means the schedule treated this team better than the teams it played.
+        </p>
+        <p>
+          {term("Rest edge")} — days of rest this team had, minus the days its opponents had, added
+          up across the season. Rest is capped at five days per side first, because the All-Star
+          break hands both teams about a week off and would otherwise swamp the other eighty games.
+        </p>
+        <p>
+          {term("Uncapped")} — the same total with no five-day ceiling, shown so you can check the
+          cap is not hiding anything.
+        </p>
+        <p>
+          {term("Fatigue edge")} — the same comparison in fatigue score rather than raw days, so it
+          also counts travel, altitude and schedule density. A team can hold a large rest edge in
+          days that mostly disappears here once its travel is counted.
+        </p>
+        <p>
+          {term("B2B edge")} and {term("3-in-4 edge")} — back-to-backs, and third-nights-in-four,
+          avoided relative to opponents. Positive means the team arrived rested more often than the
+          teams across from it.
+        </p>
+        <p>
+          Every team plays a full schedule. This page compares the {countedGames.toLocaleString()} of{" "}
+          {scheduledGames.toLocaleString()} games where <em>both</em> sides had a previous game to
+          rest from — a season opener has no rest to measure.
+        </p>
+      </div>
+    </details>
   )
 }
 
@@ -75,17 +173,12 @@ export function ScheduleDisparityContent() {
   )
 
   const teams: ScheduleDisparityTeam[] = data?.teams ?? []
-  const chartData: ChartDatum[] = teams.map((t) => ({
-    label: t.abbreviation,
-    edge: t.netRestEdge,
-    name: t.name,
-    games: t.games,
-  }))
+  const bound = teams.length
+    ? Math.max(5, Math.ceil(Math.max(...teams.map((t) => Math.abs(t.netRestEdge))) / 5) * 5)
+    : 5
 
-  // The domain is symmetric around zero so a team's bar length is comparable in both
-  // directions — an asymmetric axis would make a −8 look longer than a +8.
-  const peak = chartData.length ? Math.max(...chartData.map((d) => Math.abs(d.edge)), 1) : 1
-  const bound = Math.ceil(peak / 5) * 5
+  const most = teams[0]
+  const least = teams[teams.length - 1]
 
   return (
     <div className="flex flex-col gap-4">
@@ -101,16 +194,10 @@ export function ScheduleDisparityContent() {
             className="mono"
             style={{ marginTop: 10, fontSize: 11, color: "var(--term-text-muted)", lineHeight: 1.6 }}
           >
-            {data.provisional ? (
-              <>
-                PROVISIONAL · {data.gamesPerTeamMin === data.gamesPerTeamMax
-                  ? `${data.gamesPerTeamMax} GAMES`
-                  : `${data.gamesPerTeamMin}–${data.gamesPerTeamMax} GAMES`}{" "}
-                SCHEDULED PER TEAM · AS OF {data.asOf}
-              </>
-            ) : (
-              <>FINAL · {data.league.countedGames} GAMES COUNTED</>
-            )}
+            {data.provisional ? "PROVISIONAL" : "FINAL"} ·{" "}
+            {data.league.countedGames.toLocaleString()} OF{" "}
+            {data.scheduledGames.toLocaleString()} GAMES COMPARED
+            {data.provisional ? ` · AS OF ${data.asOf}` : ""}
           </p>
         ) : null}
         {data?.provisional ? (
@@ -122,115 +209,188 @@ export function ScheduleDisparityContent() {
         ) : null}
       </div>
 
+      {data && most && least ? (
+        <div
+          className="grid gap-px overflow-hidden"
+          style={{
+            gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))",
+            background: "var(--term-border)",
+            border: "1px solid var(--term-border)",
+            borderRadius: "var(--term-radius)",
+          }}
+        >
+          <StatCell
+            label="Most favored"
+            value={formatSignedDays(most.netRestEdge)}
+            sub={`${most.abbreviation} · ${most.name}`}
+            tone={edgeColor(most.netRestEdge)}
+          />
+          <StatCell
+            label="Least favored"
+            value={formatSignedDays(least.netRestEdge)}
+            sub={`${least.abbreviation} · ${least.name}`}
+            tone={edgeColor(least.netRestEdge)}
+          />
+          <StatCell label="Spread" value={String(data.league.delta)} sub="days, best to worst" />
+          <StatCell
+            label="Games with an edge"
+            value={data.league.gamesWithAnyEdge.toLocaleString()}
+            sub="one side better rested"
+          />
+        </div>
+      ) : null}
+
       <div style={termCardStyle}>
         <p
           className="mono"
-          style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 600 }}
+          style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 600, textTransform: "uppercase" }}
         >
-          NET REST EDGE — DAYS, VS OPPONENTS
+          Net rest edge — days gained on opponents
         </p>
-        <div style={{ height: 340, marginTop: 12 }}>
-          {isLoading ? (
-            <Skeleton
-              className="h-full w-full bg-[var(--term-surface-2)]"
-              style={{ borderRadius: "var(--term-radius)" }}
-            />
-          ) : error || chartData.length === 0 ? (
-            <div
-              className="mono flex h-full items-center justify-center"
-              style={{
-                border: "1px dashed var(--term-border)",
-                borderRadius: "var(--term-radius)",
-                fontSize: 12,
-                color: error ? "var(--term-red)" : "var(--term-text-muted)",
-              }}
-            >
-              {error ? "COULD NOT LOAD SCHEDULE DISPARITY" : "NO SCHEDULE DATA FOR THIS SEASON"}
-            </div>
-          ) : (
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={chartData} margin={{ top: 12, right: 12, left: 0, bottom: 8 }}>
-                <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="var(--term-border)" />
-                <XAxis
-                  dataKey="label"
-                  tick={{ fontSize: 10, fill: "var(--term-text-muted)", fontFamily: MONO_FONT_STACK }}
-                  tickLine={false}
-                  axisLine={false}
-                  interval={0}
-                  angle={-45}
-                  textAnchor="end"
-                  height={52}
-                />
-                <YAxis
-                  domain={[-bound, bound]}
-                  tickFormatter={formatDeviation}
-                  tick={{ fontSize: 12, fill: "var(--term-text-muted)", fontFamily: MONO_FONT_STACK }}
-                  tickLine={false}
-                  axisLine={false}
-                  width={40}
-                />
-                <Tooltip cursor={{ fill: "rgba(23,64,139,0.06)" }} content={<EdgeTooltip />} />
-                <Bar dataKey="edge" maxBarSize={28} minPointSize={minBarSize} isAnimationActive={false}>
-                  {chartData.map((d) => (
-                    <Cell key={d.label} fill={deviationFill(d.edge)} />
-                  ))}
-                </Bar>
-                {/* Zero is the fair schedule, so it is solid ink rather than a gridline. */}
-                <ReferenceLine y={0} stroke="var(--term-text)" strokeWidth={1.5} />
-              </BarChart>
-            </ResponsiveContainer>
-          )}
-        </div>
+
+        {isLoading ? (
+          <Skeleton
+            className="mt-3 h-[420px] w-full bg-[var(--term-surface-2)]"
+            style={{ borderRadius: "var(--term-radius)" }}
+          />
+        ) : error || teams.length === 0 ? (
+          <div
+            className="mono mt-3 flex h-40 items-center justify-center"
+            style={{
+              border: "1px dashed var(--term-border)",
+              borderRadius: "var(--term-radius)",
+              fontSize: 12,
+              color: error ? "var(--term-red)" : "var(--term-text-muted)",
+            }}
+          >
+            {error ? "COULD NOT LOAD SCHEDULE DISPARITY" : "NO SCHEDULE DATA FOR THIS SEASON"}
+          </div>
+        ) : (
+          <ol className="mt-3 flex list-none flex-col gap-[2px] p-0">
+            {teams.map((t, i) => (
+              <li
+                key={t.teamId}
+                className="grid items-center gap-2"
+                style={{ gridTemplateColumns: "26px 40px 1fr 46px" }}
+              >
+                <span
+                  className="mono text-right"
+                  style={{ fontSize: 10, color: "var(--term-text-muted)", fontVariantNumeric: "tabular-nums" }}
+                >
+                  {i + 1}
+                </span>
+                <span className="mono" style={{ fontSize: 12, fontWeight: 700, color: "var(--term-text)" }}>
+                  {t.abbreviation}
+                </span>
+                <EdgeBar value={t.netRestEdge} bound={bound} height={15} />
+                <span
+                  className="mono text-right"
+                  style={{
+                    fontSize: 12,
+                    fontWeight: 700,
+                    fontVariantNumeric: "tabular-nums",
+                    color: edgeColor(t.netRestEdge),
+                  }}
+                >
+                  {formatSignedDays(t.netRestEdge)}
+                </span>
+              </li>
+            ))}
+          </ol>
+        )}
       </div>
 
       {data && teams.length > 0 ? (
-        <div style={termCardStyle}>
-          <div className="overflow-x-auto">
-            <table className="w-full" style={{ borderCollapse: "collapse" }}>
-              <thead>
-                <tr>
-                  <th style={termThStyle}>TEAM</th>
-                  <th style={{ ...termThStyle, textAlign: "right" }}>NET REST EDGE</th>
-                  <th style={{ ...termThStyle, textAlign: "right" }}>UNCAPPED</th>
-                  <th style={{ ...termThStyle, textAlign: "right" }}>NET FATIGUE EDGE</th>
-                  <th style={{ ...termThStyle, textAlign: "right" }}>B2B DIFF</th>
-                  <th style={{ ...termThStyle, textAlign: "right" }}>3-IN-4 DIFF</th>
-                  <th style={{ ...termThStyle, textAlign: "right" }}>GAMES</th>
-                </tr>
-              </thead>
-              <tbody>
-                {teams.map((t) => (
-                  <tr key={t.teamId}>
-                    <td style={termTdStyle}>
-                      <span style={{ fontWeight: 700 }}>{t.abbreviation}</span>{" "}
-                      <span style={{ color: "var(--term-text-muted)" }}>{t.name}</span>
-                    </td>
-                    <td
-                      style={{ ...termTdStyle, textAlign: "right", color: deviationFill(t.netRestEdge), fontWeight: 700 }}
-                    >
-                      {formatDays(t.netRestEdge)}
-                    </td>
-                    <td style={{ ...termTdStyle, textAlign: "right", color: "var(--term-text-muted)" }}>
-                      {formatDays(t.netRestEdgeUncapped)}
-                    </td>
-                    <td style={{ ...termTdStyle, textAlign: "right" }}>{formatFatigue(t.netFatigueEdge)}</td>
-                    <td style={{ ...termTdStyle, textAlign: "right" }}>{formatDays(t.backToBackDiff)}</td>
-                    <td style={{ ...termTdStyle, textAlign: "right" }}>{formatDays(t.threeInFourDiff)}</td>
-                    <td style={{ ...termTdStyle, textAlign: "right", color: "var(--term-text-muted)" }}>
-                      {t.games}
-                    </td>
+        <>
+          <ColumnGuide
+            countedGames={data.league.countedGames}
+            scheduledGames={data.scheduledGames}
+          />
+
+          <div style={termCardStyle}>
+            <p
+              className="mono"
+              style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 600, textTransform: "uppercase" }}
+            >
+              Full breakdown
+            </p>
+            <div className="mt-3 overflow-x-auto">
+              <table className="w-full" style={{ borderCollapse: "collapse" }}>
+                <thead>
+                  <tr>
+                    <th style={{ ...termThStyle, textAlign: "left" }}>#</th>
+                    <th style={{ ...termThStyle, textAlign: "left" }}>Team</th>
+                    <th style={{ ...termThStyle, textAlign: "left" }}>Rest edge</th>
+                    <th style={{ ...termThStyle, textAlign: "right" }}>Days</th>
+                    <th style={{ ...termThStyle, textAlign: "right" }}>Uncapped</th>
+                    <th style={{ ...termThStyle, textAlign: "right" }}>Fatigue edge</th>
+                    <th style={{ ...termThStyle, textAlign: "right" }}>B2B edge</th>
+                    <th style={{ ...termThStyle, textAlign: "right" }}>3-in-4 edge</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {teams.map((t, i) => (
+                    <tr key={t.teamId}>
+                      <td
+                        className="mono"
+                        style={{ ...termTdStyle, fontSize: 10, textAlign: "right", color: "var(--term-text-muted)" }}
+                      >
+                        {i + 1}
+                      </td>
+                      <td className="mono whitespace-nowrap" style={termTdStyle}>
+                        <span style={{ fontWeight: 700 }}>{t.abbreviation}</span>{" "}
+                        <span style={{ color: "var(--term-text-muted)" }}>{t.name}</span>
+                      </td>
+                      <td style={{ ...termTdStyle, width: "30%", minWidth: 150 }}>
+                        <EdgeBar value={t.netRestEdge} bound={bound} height={11} />
+                      </td>
+                      <td
+                        className="mono"
+                        style={{
+                          ...termTdStyle,
+                          textAlign: "right",
+                          fontVariantNumeric: "tabular-nums",
+                          fontWeight: 700,
+                          color: edgeColor(t.netRestEdge),
+                        }}
+                      >
+                        {formatSignedDays(t.netRestEdge)}
+                      </td>
+                      <td
+                        className="mono"
+                        style={{ ...termTdStyle, textAlign: "right", fontVariantNumeric: "tabular-nums", color: "var(--term-text-muted)" }}
+                      >
+                        {formatSignedDays(t.netRestEdgeUncapped)}
+                      </td>
+                      <td
+                        className="mono"
+                        style={{ ...termTdStyle, textAlign: "right", fontVariantNumeric: "tabular-nums", color: edgeColor(t.netFatigueEdge) }}
+                      >
+                        {formatSignedScore(t.netFatigueEdge)}
+                      </td>
+                      <td
+                        className="mono"
+                        style={{ ...termTdStyle, textAlign: "right", fontVariantNumeric: "tabular-nums", color: edgeColor(t.backToBackEdge) }}
+                      >
+                        {formatSignedDays(t.backToBackEdge)}
+                      </td>
+                      <td
+                        className="mono"
+                        style={{ ...termTdStyle, textAlign: "right", fontVariantNumeric: "tabular-nums", color: edgeColor(t.threeInFourEdge) }}
+                      >
+                        {formatSignedDays(t.threeInFourEdge)}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <p style={{ marginTop: 12, fontSize: 13, color: "var(--term-text-muted)", lineHeight: 1.55 }}>
+              Positive is favorable in every column. Fatigue edge lags for games that have not been
+              played yet.
+            </p>
           </div>
-          <p style={{ marginTop: 12, fontSize: 13, color: "var(--term-text-muted)", lineHeight: 1.55 }}>
-            Rest is capped at five days per side before differencing, because the All-Star break
-            otherwise dominates a season total with something that is not disparity. The uncapped
-            column is shown so the cap is auditable. Net fatigue edge folds in travel and schedule
-            density, and lags for games that have not been played.
-          </p>
-        </div>
+        </>
       ) : null}
     </div>
   )

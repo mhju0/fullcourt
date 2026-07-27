@@ -229,13 +229,21 @@ describe("computeScheduleDisparity — fatigue edge", () => {
 });
 
 describe("computeScheduleDisparity — density differentials", () => {
-  it("counts a back-to-back for the team on one day's rest and against its opponent", () => {
+  it("charges the back-to-back to the team on one day's rest, crediting its opponent", () => {
     const { byId } = teamsById();
 
-    // G3: T3 rests 1 (back-to-back), T2 rests 2.
-    expect(byId.get(3)!.backToBackDiff).toBe(1);
-    expect(byId.get(2)!.backToBackDiff).toBe(-1);
-    expect(byId.get(1)!.backToBackDiff).toBe(0);
+    // G3: T3 rests 1 (back-to-back), T2 rests 2. Positive is favorable, so T2 gains.
+    expect(byId.get(3)!.backToBackEdge).toBe(-1);
+    expect(byId.get(2)!.backToBackEdge).toBe(1);
+    expect(byId.get(1)!.backToBackEdge).toBe(0);
+  });
+
+  it("nets density edges to zero across the league, like the rest edge", () => {
+    const { result } = teamsById();
+
+    expect(result.teams.reduce((s, t) => s + t.backToBackEdge, 0)).toBe(0);
+    expect(result.teams.reduce((s, t) => s + t.threeInFourEdge, 0)).toBe(0);
+    expect(result.teams.reduce((s, t) => s + t.fourInSixEdge, 0)).toBe(0);
   });
 
   it("flags a game that is the third in four nights, not merely near one", () => {
@@ -251,9 +259,10 @@ describe("computeScheduleDisparity — density differentials", () => {
     const t1 = teams.find((t) => t.teamId === 1)!;
     const t2 = teams.find((t) => t.teamId === 2)!;
 
-    // Only 03-04 is counted for both sides; T1 is on its third night in four, T2 is not.
-    expect(t1.threeInFourDiff).toBe(1);
-    expect(t2.threeInFourDiff).toBe(-1);
+    // Only 03-04 is counted for both sides; T1 is on its third night in four, T2 is not — so
+    // the edge is negative for T1, who drew the harder assignment.
+    expect(t1.threeInFourEdge).toBe(-1);
+    expect(t2.threeInFourEdge).toBe(1);
   });
 
   it("does not flag a game merely because an earlier stretch was dense", () => {
@@ -269,7 +278,7 @@ describe("computeScheduleDisparity — density differentials", () => {
 
     // Only 03-20 is counted for both sides (03-02 and 03-03 face opponents playing openers),
     // and standing alone it is not short rest — so the earlier dense stretch contributes nothing.
-    expect(t1.threeInFourDiff).toBe(0);
+    expect(t1.threeInFourEdge).toBe(0);
   });
 });
 

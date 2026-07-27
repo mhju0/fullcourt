@@ -294,9 +294,10 @@ export interface ScheduleDisparityTeam {
   netRestEdgeUncapped: number;
   /** Season sum of (opponent fatigue − own fatigue); null when no counted game is scored. */
   netFatigueEdge: number | null;
-  backToBackDiff: number;
-  threeInFourDiff: number;
-  fourInSixDiff: number;
+  /** Back-to-backs avoided relative to opponents. Positive is favorable, like every figure here. */
+  backToBackEdge: number;
+  threeInFourEdge: number;
+  fourInSixEdge: number;
   gamesWithEdge: number;
   gamesWithLargeEdge: number;
 }
@@ -320,6 +321,8 @@ export interface ScheduleDisparityResponse {
   provisional: boolean;
   /** ET date the figures were computed, for the as-of line on provisional seasons. */
   asOf: string;
+  /** Every regular-season game in the season — the denominator `league.countedGames` sits in. */
+  scheduledGames: number;
   gamesPerTeamMin: number;
   gamesPerTeamMax: number;
   teams: ScheduleDisparityTeam[];

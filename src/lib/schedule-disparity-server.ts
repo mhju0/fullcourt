@@ -36,6 +36,7 @@ export async function getScheduleDisparity(
     season: result.season,
     provisional: result.provisional,
     asOf: formatEasternDateKey(new Date()),
+    scheduledGames: result.scheduledGames,
     gamesPerTeamMin: result.gamesPerTeamMin,
     gamesPerTeamMax: result.gamesPerTeamMax,
     teams,

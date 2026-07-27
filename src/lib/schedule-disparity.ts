@@ -53,10 +53,16 @@ export interface DisparityTeamRow {
   netRestEdgeUncapped: number;
   /** Season sum of (opponent fatigue − own fatigue). Null when no counted game is scored. */
   netFatigueEdge: number | null;
-  /** Own count minus opponents' count, over counted games. */
-  backToBackDiff: number;
-  threeInFourDiff: number;
-  fourInSixDiff: number;
+  /**
+   * Back-to-backs AVOIDED: opponents' count minus this team's, over counted games. Oriented so
+   * positive is favorable, matching netRestEdge and netFatigueEdge — every figure this module
+   * publishes answers "did the schedule treat this team better than the teams it played?".
+   */
+  backToBackEdge: number;
+  /** Third-night-in-four games avoided, same orientation. */
+  threeInFourEdge: number;
+  /** Fourth-night-in-six games avoided, same orientation. */
+  fourInSixEdge: number;
   /** Counted games where the team had more rest than its opponent. */
   gamesWithEdge: number;
   /** Counted games where that edge was LARGE_EDGE_DAYS or more. */
@@ -83,6 +89,8 @@ export interface ScheduleDisparityResult {
    * (50 games in 1998-99, 66 in 2011-12, 72 in 2020-21) provisional forever.
    */
   provisional: boolean;
+  /** Every regular-season game in the season, counted or not — the honest denominator. */
+  scheduledGames: number;
   /** Games scheduled per team, min and max across teams. Equal unless the schedule is uneven. */
   gamesPerTeamMin: number;
   gamesPerTeamMax: number;
@@ -268,9 +276,9 @@ export function computeScheduleDisparity(
     let netRestEdgeUncapped = 0;
     let fatigueSum = 0;
     let fatiguePairs = 0;
-    let backToBackDiff = 0;
-    let threeInFourDiff = 0;
-    let fourInSixDiff = 0;
+    let backToBackEdge = 0;
+    let threeInFourEdge = 0;
+    let fourInSixEdge = 0;
     let gamesWithEdge = 0;
     let gamesWithLargeEdge = 0;
 
@@ -286,13 +294,13 @@ export function computeScheduleDisparity(
         fatiguePairs++;
       }
 
-      // Each differential is own-count minus opponents'-count over the same counted games.
-      if (s.isBackToBack) backToBackDiff++;
-      if (isBackToBack(s.oppRestDays)) backToBackDiff--;
-      if (s.isThreeInFour) threeInFourDiff++;
-      if (s.oppIsThreeInFour) threeInFourDiff--;
-      if (s.isFourInSix) fourInSixDiff++;
-      if (s.oppIsFourInSix) fourInSixDiff--;
+      // Opponent's count minus this team's, so a positive edge means the schedule was kinder.
+      if (isBackToBack(s.oppRestDays)) backToBackEdge++;
+      if (s.isBackToBack) backToBackEdge--;
+      if (s.oppIsThreeInFour) threeInFourEdge++;
+      if (s.isThreeInFour) threeInFourEdge--;
+      if (s.oppIsFourInSix) fourInSixEdge++;
+      if (s.isFourInSix) fourInSixEdge--;
     }
 
     teams.push({
@@ -301,9 +309,9 @@ export function computeScheduleDisparity(
       netRestEdge,
       netRestEdgeUncapped,
       netFatigueEdge: fatiguePairs > 0 ? Number(fatigueSum.toFixed(2)) : null,
-      backToBackDiff,
-      threeInFourDiff,
-      fourInSixDiff,
+      backToBackEdge,
+      threeInFourEdge,
+      fourInSixEdge,
       gamesWithEdge,
       gamesWithLargeEdge,
     });
@@ -320,6 +328,7 @@ export function computeScheduleDisparity(
   return {
     season,
     provisional: games.some((g) => g.status !== "final"),
+    scheduledGames: games.length,
     gamesPerTeamMin: scheduledPerTeam.length ? Math.min(...scheduledPerTeam) : 0,
     gamesPerTeamMax: scheduledPerTeam.length ? Math.max(...scheduledPerTeam) : 0,
     teams,

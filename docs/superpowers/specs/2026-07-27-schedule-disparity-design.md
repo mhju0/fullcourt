@@ -37,8 +37,13 @@ Grain: one computed row per `(season, team)` — roughly 1,200 rows across the h
 |---|---|
 | **Net rest edge** | Σ over the team's games of (own rest days − opponent's rest days). The headline. |
 | **Net fatigue edge** | Σ over the team's games of (opponent fatigue score − own fatigue score). |
-| **B2B differential** | Own back-to-back count − opponents' back-to-back count in those games. |
-| **3-in-4 / 4-in-6 differentials** | Same construction, counting games that are themselves the 3rd game in 4 nights / 4th in 6. |
+| **B2B edge** | Opponents' back-to-back count − this team's, over those games. |
+| **3-in-4 / 4-in-6 edges** | Same construction over games that are themselves the 3rd in 4 nights / 4th in 6. |
+
+Every published figure is oriented so **positive is favorable** — the page states that rule once
+and applies it to every column, which is why the density fields are named `…Edge` (short-rest
+games *avoided*) rather than `…Diff`. A column that counted upward for a worse schedule while its
+neighbours counted upward for a better one cannot be labelled coherently.
 | **Games with an edge** | Count of games where own rest days exceeded the opponent's. |
 | **Games with a 3+ day edge** | Same, threshold 3. |
 
