@@ -32,6 +32,12 @@ season counts that do not derive themselves.
 - **Shot Quality** — complete collection, aggregation, model evaluation, persisted expected-value
   surface, API, and `/shot-quality` UI. Public data supports location value, not defender- or
   shot-clock-aware quality; see [SHOT_QUALITY_DESIGN.md](SHOT_QUALITY_DESIGN.md).
+- **Schedule Disparity** — which teams a season's schedule favored, ranked by net rest edge in
+  days, at `/schedule`. The most isolated module: **read-only**, no migration, no table, no
+  ingest. Every figure is scoped to its own season — there is deliberately no cross-era ranking.
+  Verified against the live database on 2026-07-27. See
+  [the design spec](superpowers/specs/2026-07-27-schedule-disparity-design.md) and
+  [ADR 0001](adr/0001-derive-rest-days-from-games.md).
 
 ## Maintenance responsibilities
 
@@ -45,10 +51,4 @@ season counts that do not derive themselves.
 - Preserve the isolation of each analytics module and the existing rest-advantage naming
   contract.
 
-## In progress
 
-- **Schedule Disparity** — which teams the schedule favored in a given season, ranked by net
-  rest edge in days. Read-only: no migration, no new table, no ingest. Every figure is scoped to
-  its own season; there is deliberately no cross-era ranking. See
-  [the design spec](superpowers/specs/2026-07-27-schedule-disparity-design.md) and
-  [ADR 0001](adr/0001-derive-rest-days-from-games.md).

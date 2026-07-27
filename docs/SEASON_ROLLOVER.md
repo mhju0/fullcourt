@@ -72,13 +72,16 @@ not for live scoring). **Prefer a stats-ID source (`stats.nba.com`) for a live s
 ## 3. Rollover checklist
 
 **~August 2026 — schedule releases:**
-- [ ] Test `stats.nba.com` reachability from a GitHub Actions run (a one-off `workflow_dispatch`
-      that curls `stats.nba.com/stats/scheduleleaguev2`). If it responds, the existing
-      `fetch_schedule.py` (nba_api) can seed 2026-27 with correct `002…` IDs from CI — the
-      clean path.
-- [ ] If `stats.nba.com` is also blocked from CI: seed from a reachable environment (dev
-      machine / a US residential IP) using nba_api, or fall back to ESPN/B-Ref with synthetic
-      IDs (acceptable for backtest-only; degrades live-score matching).
+- [x] ~~Test `stats.nba.com` reachability from GitHub Actions.~~ **Answered 2026-07-27: it times
+      out there too** (25s, 0 bytes, runner in San Jose) — a datacenter block, not a geo block.
+      There is **no clean `002…`-ID path**. Re-run `probe-data-sources.yml` before relying on
+      this, since Akamai policy can change.
+- [ ] Seed from **basketball-reference**, which the same probe measured at **200 from GitHub
+      Actions** as well as from the dev machine (§2). Rows carry synthetic `bref-…` external
+      ids, so they are complete for the backtest, Analysis and `/schedule` — but the live-score
+      cron keys on stats `GAME_ID`, so Today's Games will not match them.
+- [ ] If live scoring for the new season matters, seed instead from a US **residential** IP
+      using nba_api, which is the only route left that yields `002…` ids.
 
 **~October 2026 — season starts:**
 - [ ] Confirm the app shows 2026-27 in the season dropdown (automatic).

@@ -33,7 +33,9 @@ A team's season total of `own rest days − opponent rest days`, each side cappe
 _Avoid_: rest advantage, rest differential
 
 **Net fatigue edge**:
-The same season sum as net rest edge, expressed in fatigue-score units rather than days.
+The same comparison as net rest edge but in fatigue-score units rather than days, so it also
+carries travel and schedule density. Reported **per game**: the season sum turns per-game
+differences too small to call into figures that look decisive.
 _Avoid_: rest advantage, season fatigue
 
 **Provisional season**:
