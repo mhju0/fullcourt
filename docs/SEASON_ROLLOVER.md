@@ -40,11 +40,28 @@ truth and mirrors the TS logic, so both agree on "the current season".
 | Source | From Seoul (dev) | From GitHub Actions (US) | Gives stats `002…` game IDs? |
 |---|---|---|---|
 | `cdn.nba.com` staticData schedule | **403** | **403** | yes (but unreachable) |
-| `stats.nba.com` (nba_api) | **times out** | **untested** — try this first | yes |
+| `stats.nba.com` (nba_api) | **times out** | **times out** | yes (but unreachable) |
 | `cdn.nba.com` liveData (live scores) | 403 | untested | — |
-| ESPN `site.api…/scoreboard?dates=YYYYMMDD` | **200** | 200 (expected) | **no** (ESPN event IDs) |
-| basketball-reference monthly pages | **200** (residential IP + UA) | 403 (datacenter) | no |
+| ESPN `site.api…/scoreboard?dates=YYYYMMDD` | **200** | **200** | **no** (ESPN event IDs) |
+| basketball-reference monthly pages | **200** (residential IP + UA) | **200** | no |
 | Supabase (`DATABASE_URL`) | reachable | reachable | — |
+
+**Actions column measured 2026-07-27** by `.github/workflows/probe-data-sources.yml` (runs
+`30247134313` / `30248448510`, runner egress San Jose, California). Re-run it any time from
+Actions → "Probe NBA data sources"; it reads nothing and writes nothing.
+
+Two results changed the plan:
+
+- **`stats.nba.com` is unreachable from CI as well**, timing out after 25s with 0 bytes exactly
+  as it does from Seoul. It is a datacenter block, not a geo block, so there is **no clean
+  `002…`-ID path** for seeding 2026-27. The "try this first" step in §3 is answered: it fails.
+- **basketball-reference returns 200 from GitHub Actions** (518 KB). This table previously
+  recorded it as 403 from datacenters — true of Anthropic/subagent IPs, but not of GitHub's
+  runners. So b-ref is reachable from *both* environments and is the practical seeding source.
+
+The trade is unchanged: a b-ref seed carries no stats `GAME_ID`, so those rows use synthetic
+`bref-…` external ids and the live-score cron cannot key on them. Schedule Disparity needs only
+dates and team pairs, so it works fully off a b-ref seed; Today's Games live scoring does not.
 
 **Why the source matters:** `games.external_id` is the 10-digit stats ID (`002…` regular).
 The live-score cron and the playoff/shot modules key on it. ESPN and B-Ref do **not** expose

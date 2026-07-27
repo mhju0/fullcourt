@@ -67,7 +67,6 @@ ml/shot_value/*.pkl
 # Agent notes, editor tooling, and installed skills are local-only and may contain
 # machine-specific context. Kept on disk, out of the published index.
 AGENTS.md
-CLAUDE.md
 /.agents/
 /.claude/
 /.codex/
