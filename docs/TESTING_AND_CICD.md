@@ -47,6 +47,9 @@ Test files and coverage:
 | `src/lib/__tests__/nba-team-colors.test.ts` | `readableTextOn` luminance-based chip text — guards the light-theme fix where a pale primary (SAS `#C4CED4`) rendered white-on-white. |
 | `src/components/__tests__/analysis-deviation.test.ts` | Deviation-column encoding: `deviationFill` sign mapping, `deviationScale` tick derivation, and the `minPointSize` zero-stub. |
 | `src/components/__tests__/matchup-card-confidence.test.ts` | **Invariant:** anything `classifyRestAdvantage` calls for a team is never labelled `NEUTRAL` by `getConfidence`. Sweeps −3.0…3.0 in 0.1 steps and asserts the contradiction set is empty, plus the tier boundaries (0.5 `low` / 1.0 `med` / 2.0 `high`). Discriminating: with the pre-fix tiers it fails listing exactly `[-0.9…-0.5, 0.5…0.9]`. |
+| `src/lib/__tests__/schedule-disparity.test.ts` | `computeScheduleDisparity` over in-memory rows, grouped by property: `restDaysBeforeGames` returning null for the opener; counted games excluding any game where **either** side is opening; the 5-day cap applied per side *before* differencing (with capped and uncapped totals both returned so the cap stays auditable); the invariants — nets to zero league-wide, orders most-favored first, and is independent of the order games arrive in; league figures (spread, games with a non-zero edge, scheduled per team including uneven schedules); provisional derived from **any non-final game** rather than a game count, so a short season is not misreported and a live game counts as provisional; and fatigue edge summed opponent-minus-own, reported per game, null-safe with no divide-by-zero. |
+| `src/app/api/__tests__/schedule-disparity.test.ts` | `GET /api/schedule-disparity`: unknown and malformed seasons rejected **without querying**, the `{ data, error }` envelope, and a 500 carrying a public message when the query throws. Also pins the two-season-list behaviour — an upcoming season with no data yet is accepted, a season beyond the browsable list is not, and the no-parameter default resolves to the newest season *with data* rather than the empty upcoming one. Mocks `@/lib/db/queries`. |
+| `src/components/__tests__/schedule-disparity-format.test.ts` | `formatSignedDays` / `formatSignedRate`: a plus on favorable edges, a typographic minus rather than a hyphen, an exactly even schedule as a bare unsigned zero, two decimals on the rate (the whole league fits inside roughly ±0.65, so one decimal would collapse distinct teams together), an em dash rather than a zero for a missing fatigue edge, and never a negative zero. |
 
 API route tests `vi.mock("@/lib/db/queries")`, so they exercise validation + response
 shaping without a real database. These should pass against the current code.
@@ -62,14 +65,15 @@ Config (`playwright.config.ts`): `testDir: ./e2e`, `baseURL: http://localhost:30
 `chromium` only, reporters `list` + `html` (no auto-open). `webServer` runs
 `pnpm dev` (reuses an existing server unless `CI`); in CI `retries: 2` and `forbidOnly`.
 **`workers: 1` everywhere**, not only in CI: the suite drives one dev server, so parallel
-workers race for cold Turbopack compiles rather than for CPU. Measured 18 passed in 16.8s
-serially against 26s *and* readiness-gate failures on `/schedule` at the default worker count —
-parallelism bought negative time here. (`fullyParallel` is left on; with one worker it only
-affects ordering.) Existing specs receive a completed onboarding storage state so the first-visit
-dialog cannot block their legacy interactions; `e2e/onboarding.spec.ts` overrides that state with
-an empty browser. Specs (7): `e2e/home.spec.ts`, `e2e/analysis.spec.ts`, `e2e/navigation.spec.ts`,
-`e2e/onboarding.spec.ts`, `e2e/playoffs.spec.ts`, `e2e/schedule-disparity.spec.ts`,
-`e2e/shot-quality.spec.ts`.
+workers race for cold Turbopack compiles rather than for CPU. Measured, at the 18-test suite of
+the time, 16.8s serially against 26s *and* readiness-gate failures on `/schedule` at the default
+worker count — parallelism bought negative time here. (`fullyParallel` is left on; with one
+worker it only affects ordering.) Existing specs receive a completed onboarding storage state so
+the first-visit dialog cannot block their legacy interactions; `e2e/onboarding.spec.ts` overrides
+that state with an empty browser. Specs (8): `e2e/home.spec.ts`, `e2e/about.spec.ts`,
+`e2e/analysis.spec.ts`, `e2e/navigation.spec.ts`, `e2e/onboarding.spec.ts`,
+`e2e/playoffs.spec.ts`, `e2e/schedule-disparity.spec.ts`, `e2e/shot-quality.spec.ts` — **22 tests**
+at time of writing.
 
 > **The e2e specs target the current terminal UI** (they are **not** stale — they assert the live
 > markup, including the `Games` / `Rest Advantage Analysis` headings and the
@@ -83,7 +87,15 @@ an empty browser. Specs (7): `e2e/home.spec.ts`, `e2e/analysis.spec.ts`, `e2e/na
 > - **`navigation.spec.ts`** — nav links `GAMES` / `MODEL RESULTS` / `SCHEDULE EDGE` →
 >   `/` / `/analysis` / `/schedule`. The active link is asserted via its `aria-current="page"`
 >   attribute (the amber-underline active state), and inactive links are checked to lack it.
->   The link count is pinned at **5**, so a resurrected sixth tab fails here.
+>   The link count is pinned at **5**, so a resurrected sixth tab fails here. A second spec
+>   pins `/about`'s entry point: it asserts `ABOUT` is **absent** from the `Main navigation`
+>   landmark, then clicks the status-bar link and checks the landing heading and
+>   `aria-current`. Verified to fail — at the click — with the status-bar link removed.
+> - **`about.spec.ts`** — the landing page renders its hero, both calls to action, and a
+>   `Product surfaces` nav of exactly five links carrying the five nav labels, so a future nav
+>   rename that misses this page fails here instead of drifting quietly. A second test re-pins
+>   the five-tab count from `/` and follows the footer's `WHAT THIS MEASURES` link. The hero
+>   assertion allows 30s: the page is `ssr: false`, so a cold Turbopack compile is on the path.
 > - **`home.spec.ts`** — the heading is the `<h1>` **"Games"** (`REST ADVANTAGE
 >   DASHBOARD` is an eyebrow `<span>`); controls use `getByLabel("Season")`, the
 >   `selected-date-display` placeholder `PICK A DATE`, and the empty state `NO GAMES SCHEDULED`.

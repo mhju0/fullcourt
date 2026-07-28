@@ -1,6 +1,6 @@
 # API reference
 
-Ten route handlers live under `src/app/api/`, all **`GET`**. Product-data routes return the
+Eleven route handlers live under `src/app/api/`, all **`GET`**. Product-data routes return the
 `{ data, error }` envelope (`/api/cron/update` also adds `meta`); `/api/health` intentionally
 uses a dedicated liveness shape. `getPublicApiErrorMessage` (`src/lib/api-errors.ts`) exposes
 only explicit `PublicApiError` messages in production and otherwise returns a generic error;

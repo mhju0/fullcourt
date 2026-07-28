@@ -80,6 +80,10 @@ edge) live in each page's eyebrow, where surrounding context decodes them.
 
 Each analytics module is **additive and isolated** — its own scripts, tables, routes, and page — so new modules never destabilize the flagship rest-advantage flow.
 
+One route sits outside that set: **`/about`**, a landing page that explains what the product
+measures. It serves no data and is deliberately not a sixth tab — it is reached from an `ABOUT`
+link in the status bar and from the footer.
+
 ---
 
 ## Architecture
@@ -124,7 +128,7 @@ Data spans **1985-86 to the present**, excluding the 2019-20 Orlando bubble (no 
 
 | Layer | Tech |
 |-------|------|
-| Frontend | Next.js 16 (App Router), React 19, TypeScript (strict), Tailwind CSS v4, shadcn/ui, Recharts, SWR |
+| Frontend | Next.js 16 (App Router), React 19, TypeScript (strict), Tailwind CSS v4, shadcn/ui, Recharts, SWR, GSAP (dynamically imported, `/about` only) |
 | API | Next.js route handlers, Zod validation, Drizzle ORM, postgres-js |
 | Database | Supabase PostgreSQL — Row-Level Security + Realtime |
 | Data pipeline | Python (`nba_api`, `pandas`) + TypeScript (`tsx`) |
@@ -187,7 +191,7 @@ src/
   lib/
     fatigue.ts    # the fatigue model (single source of truth)
     db/           # Drizzle schema, queries, client
-  hooks/          # Supabase Realtime
+  hooks/          # Supabase Realtime + the game-slate controller
 scripts/          # Python ingest + TypeScript modeling + Shot Quality pipeline
 ml/               # Shot Quality modeling (isolated venv, scikit-learn) + local shot cache
 drizzle/          # SQL migrations (RLS, grants, indexes)
@@ -208,6 +212,10 @@ docs/             # architecture, database, pipeline, API, frontend
 Built by **Michael Ju** ([@mhju0](https://github.com/mhju0)). Licensed under the
 [MIT License](LICENSE).
 
+The interface is set in **Space Grotesk** (headings), **Inter** (body) and **IBM Plex Mono**
+(data and labels), all loaded through `next/font/google` — no font files are committed for them.
+
 The bundled [Outfit](https://github.com/Outfitio/Outfit-Fonts) font faces in
-`src/app/fonts/` (used to render the social/OG card) are © 2021 The Outfit Project Authors
-and licensed separately under the [SIL Open Font License 1.1](src/app/fonts/OFL.txt).
+`src/app/fonts/` are © 2021 The Outfit Project Authors and licensed separately under the
+[SIL Open Font License 1.1](src/app/fonts/OFL.txt). They render the social/OG card only — a
+logotype is a fixed asset and does not have to track the UI's display face.

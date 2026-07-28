@@ -21,9 +21,25 @@ On 2026-07-27 the nav was renamed to five plain-noun tabs — `GAMES`, `SCHEDULE
 as a view toggle rather than kept as a sixth tab. Module names are unchanged; see
 [GLOSSARY.md §Nav labels](GLOSSARY.md) for the label-by-label rationale.
 
+On 2026-07-28 an interface pass followed: **Space Grotesk** replaced Outfit as the display
+face at weight 500, and all five pages took the same layout grammar — 32px page titles, a
+`gap-12` rhythm between chapters, and stat tiles ruled on the top edge rather than the left.
+See [FRONTEND.md §Page rhythm](FRONTEND.md). The same pass added **`/about`**, a dark landing
+page that explains what the product measures; it is not a sixth tab, and is reached from the
+status bar and the footer.
+
+Two directions were considered and **declined**, so they are not backlog:
+- Restyling the five app pages in the dark cinematic aesthetic used by `/about` — it would
+  overwrite the light "Broadcast" system (which already went light → dark → light once, see
+  [ARCHITECTURE.md](ARCHITECTURE.md)) and widen the CSP product-wide.
+- A generated brand kit / identity board.
+
 The dependency tree is deliberately pinned; see
 [SEASON_ROLLOVER.md §8](SEASON_ROLLOVER.md) before regenerating the lockfile, and §7 for the
-season counts that do not derive themselves.
+season counts and frozen `/about` figures that do not derive themselves. **`gsap` is the one
+runtime dependency added since the freeze** (2026-07-28, for `/about` only). It is imported
+inside an effect so it stays out of the shared bundle, and `@gsap/react` was deliberately not
+added alongside it.
 
 ## Shipped modules
 

@@ -59,3 +59,7 @@ sports sites, which misroutes a confident click worse than jargon stalls an unce
 
 Module names are unaffected: the code, tables, scripts and design records still say Playoff
 Predictor, Shot Quality and Schedule Disparity.
+
+`/about` is **not** a sixth tab and has no label in this table. It explains what the product
+measures rather than serving data, so it lives in the status bar and the footer. The five-link
+count is asserted in `e2e/navigation.spec.ts` and again in `e2e/about.spec.ts`.

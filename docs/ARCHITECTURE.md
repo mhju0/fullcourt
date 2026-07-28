@@ -107,7 +107,7 @@ cached on `globalThis` to survive HMR/serverless reuse.
 
 ### 5. API (Next.js route handlers, `src/app/api/`)
 
-Ten `route.ts` handlers, all `GET`, all returning `{ data, error }` (cron adds `meta`).
+Eleven `route.ts` handlers, all `GET`, all returning `{ data, error }` (cron adds `meta`).
 Inputs validated with Zod; DB access goes through `src/lib/db/queries.ts`. DB-backed routes
 set `export const runtime = "nodejs"` and `dynamic = "force-dynamic"` to avoid build-time
 prerender and Edge (postgres-js needs Node). Full list in [API.md](API.md).
@@ -124,6 +124,9 @@ prerender and Edge (postgres-js needs Node). Full list in [API.md](API.md).
 - `app/analysis/page.tsx` / `app/playoffs/page.tsx` /
   `app/schedule/page.tsx` / `app/shot-quality/page.tsx` — thin server wrappers that render client content via
   `next/dynamic` (`ssr: false`) with skeleton fallbacks.
+- `app/about/page.tsx` — **the landing / explainer page**, outside the five product surfaces.
+  Serves no data and touches no query; visuals are CSS and inline SVG only, so `img-src` did
+  not have to widen. GSAP is imported *inside* an effect, keeping it out of the shared bundle.
 - Client data fetching uses SWR through `src/lib/fetcher.ts`; live updates use Supabase
   Realtime via `src/hooks/useLiveGames.ts`.
 
@@ -208,6 +211,19 @@ the row change → connected clients update in place.
   different filters. **Module names did not change**: the code, tables, scripts and design
   records still say Playoff Predictor, Shot Quality and Schedule Disparity. Only the nav
   labels, the home `<h1>` and `/analysis`'s metadata title moved.
+- **One layout grammar across all five pages (2026-07-28):** Space Grotesk replaced Outfit as
+  the display face at weight 500, and every page took the same rhythm — 32px title, `gap-12`
+  between chapters, stat tiles ruled on the top edge. Split deliberately: the font family and
+  base heading weight are **global** (they cannot sensibly differ per page and live behind the
+  existing `--font-heading` indirection), while the layout work was applied per page. Loading
+  and error branches carry the same `gap-12` so nothing shifts when data lands. Rules and the
+  inline-style gotcha are in [FRONTEND.md §Page rhythm](FRONTEND.md).
+- **`/about` added (2026-07-28), and deliberately not a sixth tab.** It explains the product
+  rather than serving data. It is the *only* place the dark cinematic treatment lives — restyling
+  the five app pages that way was considered and declined, because it would overwrite the light
+  Broadcast system and widen the CSP product-wide. `gsap` is the one runtime dependency added
+  since the freeze; `@gsap/react` was not added with it, and no remote images were introduced,
+  so the CSP is unchanged.
 
 ## Playoff Predictor (complete) — data flow
 
