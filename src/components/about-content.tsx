@@ -109,7 +109,13 @@ const SURFACES = [
   { name: "Model Results", href: "/analysis", copy: "The backtest that scores the model against history: thresholds, season trends, and every individual game." },
   { name: "Playoff Predictions", href: "/playoffs", copy: "Series winners from the same rest lineage, with walk-forward accuracy shown beside in-sample." },
   { name: "Shot Value", href: "/shot-quality", copy: "Expected efficiency by court location. Public data has no defender distance — so this is location value, and we name that limit." },
+  { name: "Rest & Shooting", href: "/shooting", copy: "Every player's shooting on no rest against three days off, season by season. One season of it is noise, and the page says so." },
 ];
+
+/* The heading counts the list rather than stating a number, so adding a surface can
+   never leave the page claiming a total it no longer has. Spelled out because a
+   numeral reads wrong at display size next to the rest of this page's headings. */
+const COUNT_WORD = ["no", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight"];
 
 const METHOD = [
   { n: "01", h: "Ingest is gated on the season", p: "A daily job runs year-round and exits cleanly in the offseason, before touching the database. Nothing is written that the calendar cannot justify." },
@@ -292,10 +298,10 @@ export function AboutContent() {
         </div>
       </section>
 
-      {/* ── Interest: the five surfaces ───────────────────────── */}
+      {/* ── Interest: the product surfaces ─────────────────────── */}
       <section className="mx-auto max-w-7xl px-6 pb-40">
         <h2 className="font-heading mb-14 font-bold" style={{ fontSize: "clamp(1.9rem,4.4vw,3.2rem)", letterSpacing: "-0.03em" }}>
-          Five surfaces
+          {COUNT_WORD[SURFACES.length]} surfaces
         </h2>
         {/* A labelled landmark: this is a second, distinct set of navigation links, and
             each one's accessible name is "<label> <copy>" because the card is one target. */}
@@ -327,13 +333,13 @@ export function AboutContent() {
                 <SurfaceGlyph kind={i} />
               </div>
 
-              {/* Fixed height, so every card's text block starts at the same y and the five
+              {/* Fixed height, so every card's text block starts at the same y and the
                   names sit on one line. Bottom-anchored blocks of differing copy length were
                   pushing each title to its own height, which read as a ragged row. */}
               <div className="lg:min-h-[9.5rem]">
                 <span className="font-heading block whitespace-nowrap text-xl font-bold">{s.name}</span>
                 {/* Always legible. This copy used to be lg:opacity-0 until hover, which left
-                    five tall empty boxes at rest — the accordion read as a loading state. */}
+                    tall empty boxes at rest — the accordion read as a loading state. */}
                 <span
                   className="mt-3 block max-w-[30rem] text-sm"
                   style={{ color: DIM, lineHeight: 1.6 }}

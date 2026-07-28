@@ -36,4 +36,12 @@ export const PRIMARY_NAV_ITEMS = [
     guideDescription:
       "Map expected shooting efficiency by court location and model version.",
   },
+  {
+    href: "/shooting",
+    // Not "SHOOTING": SHOT VALUE is already about shooting, and the two would read as a
+    // pair of near-synonyms in the same bar. The qualifier names what only this page has.
+    label: "REST & SHOOTING",
+    guideDescription:
+      "Look up any player's shooting on no rest against three days off, season by season.",
+  },
 ] as const;

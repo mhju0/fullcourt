@@ -128,6 +128,9 @@
   --term-blue: #2563EB;
   --term-hardwood: #A16207;
   --term-amber: #C2410C;   /* Broadcast "live" / active-tab accent */
+  /* The accent at partial strength, for grouping rules that must register
+     without competing with the data they enclose. */
+  --term-rail: rgba(194, 65, 12, 0.42);
   /* semantic */
   --term-pos: #15803D;
   --term-neutral: #6B7280;
@@ -231,4 +234,33 @@
 .mono {
   font-family: var(--font-plex-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
   font-variant-numeric: tabular-nums;
+}
+
+/* ── Player rest database (/shooting) ────────────────────────────
+   An expanded player's seasons are rows of the browse table itself, so there is
+   one header and one column grid and nothing for the sticky header to collide
+   with. The group needs to be findable at a glance without shouting: a tinted
+   ground, a rail down the left edge, and a rule top and bottom. Three signals
+   held at low strength, each of which still reads if the others fail — a single
+   subtle tone would not survive on every display.                              */
+.fc-rest-table tbody tr.fc-open > td {
+  background: color-mix(in srgb, var(--term-amber) 7%, var(--term-surface));
+  border-top: 1px solid var(--term-rail);
+}
+.fc-rest-table tbody tr.fc-sub > td {
+  background: color-mix(in srgb, var(--term-amber) 3%, var(--term-surface));
+  cursor: default;
+}
+.fc-rest-table tbody tr.fc-sub.fc-here > td {
+  background: color-mix(in srgb, var(--term-amber) 7%, var(--term-surface));
+}
+.fc-rest-table tbody tr.fc-open > td:first-child,
+.fc-rest-table tbody tr.fc-sub > td:first-child {
+  border-left: 2px solid var(--term-rail);
+}
+.fc-rest-table tbody tr.fc-groupend > td {
+  border-bottom: 1px solid var(--term-rail);
+}
+.fc-rest-table tbody tr:not(.fc-sub):not(.fc-open):hover > td {
+  background: var(--term-surface-2);
 }
