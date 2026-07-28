@@ -109,7 +109,7 @@ const SURFACES = [
   { name: "Model Results", href: "/analysis", copy: "The backtest that scores the model against history: thresholds, season trends, and every individual game." },
   { name: "Playoff Predictions", href: "/playoffs", copy: "Series winners from the same rest lineage, with walk-forward accuracy shown beside in-sample." },
   { name: "Shot Value", href: "/shot-quality", copy: "Expected efficiency by court location. Public data has no defender distance — so this is location value, and we name that limit." },
-  { name: "Rest & Shooting", href: "/shooting", copy: "Every player's shooting on no rest against three days off, season by season. One season of it is noise, and the page says so." },
+  { name: "Player Shooting", href: "/shooting", copy: "Every player's shooting on no rest against three days off, season by season. One season of it is noise, and the page says so." },
 ];
 
 /* The heading counts the list rather than stating a number, so adding a surface can

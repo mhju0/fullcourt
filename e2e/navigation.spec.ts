@@ -10,12 +10,12 @@ test.describe("Primary navigation", () => {
     const games = nav.getByRole("link", { name: "GAMES", exact: true });
     const modelResults = nav.getByRole("link", { name: "MODEL RESULTS", exact: true });
     const scheduleEdge = nav.getByRole("link", { name: "SCHEDULE EDGE", exact: true });
-    const restShooting = nav.getByRole("link", { name: "REST & SHOOTING", exact: true });
+    const playerShooting = nav.getByRole("link", { name: "PLAYER SHOOTING", exact: true });
 
     await expect(games).toBeVisible();
     await expect(modelResults).toBeVisible();
     await expect(scheduleEdge).toBeVisible();
-    await expect(restShooting).toBeVisible();
+    await expect(playerShooting).toBeVisible();
 
     // The exact tab count is asserted so that a stray tab, or a resurrected Upcoming
     // Edges, fails here rather than silently appearing. Adding a surface is a

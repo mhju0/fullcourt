@@ -21,7 +21,7 @@ test.describe("About page", () => {
       "Model Results",
       "Playoff Predictions",
       "Shot Value",
-      "Rest & Shooting",
+      "Player Shooting",
     ]) {
       await expect(
         surfaces.getByRole("link", { name: new RegExp(`^${name}\\b`) })

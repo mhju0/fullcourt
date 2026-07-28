@@ -237,9 +237,15 @@ the row change → connected clients update in place.
      markup; the seven `*-lazy` modules each restated `dynamic(..., { ssr: false })` around the
      one part that differs.
 - **Nav renamed to plain-noun tabs (2026-07-27):** `GAMES`, `SCHEDULE EDGE`,
-  `MODEL RESULTS`, `PLAYOFF PREDICTIONS`, `SHOT VALUE` — joined by `REST & SHOOTING` when
-  `/shooting` shipped (2026-07-28). That one is qualified rather than bare `SHOOTING`, because
-  `SHOT VALUE` is also about shooting and the two would have read as near-synonyms side by side.
+  `MODEL RESULTS`, `PLAYOFF PREDICTIONS`, `SHOT VALUE` — joined by `PLAYER SHOOTING` when
+  `/shooting` shipped (2026-07-28). That one is qualified rather than bare `SHOOTING` because
+  on Basketball-Reference and NBA.com that word already means shot *location*, which is
+  `SHOT VALUE`. It shipped as `REST & SHOOTING`, on the narrower reasoning that the two would
+  read as near-synonyms side by side in the bar; once `SHOT VALUE` moved behind the `OTHER`
+  menu that reasoning expired, and the label was rewritten to separate the two by subject —
+  people here, court cells there — which holds whether or not they share the bar. Not
+  `PLAYER REST`: the rest tab is `SCHEDULE EDGE`, and colliding with our own vocabulary
+  misroutes worse than colliding with someone else's.
   The old six mixed three naming axes —
   time (`TODAY'S GAMES`, `UPCOMING EDGES`), method (`ANALYSIS`, `SHOT QUALITY`) and domain
   (`PLAYOFFS`, `SCHEDULE`) — and collided twice. `/upcoming` was folded into `GAMES` as a view

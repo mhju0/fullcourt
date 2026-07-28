@@ -160,7 +160,7 @@ under Design system below for the rendering details, and a collapsible `Methodol
 explaining the baseline/GBM framing (small calibration win, not a large accuracy jump; no
 defender distance or shot-clock data).
 
-### `/shooting` — Rest & Shooting (`src/app/shooting/page.tsx`)
+### `/shooting` — Player Shooting (`src/app/shooting/page.tsx`)
 
 Server component; metadata title `"Shooting by Rest"`; `PageHeader` plus
 `<PlayerRestContentLazy />`. The lazy client component (`player-rest-content.tsx`) fetches
@@ -236,13 +236,14 @@ recovery links to Games and Model Results without adding a client bundle or data
 2. **Main nav** (44px, `var(--term-surface)`, bottom border `var(--term-border)`): links from
    `PRIMARY_NAV_ITEMS` (`src/lib/primary-navigation.ts`) — `GAMES → /`, `SCHEDULE EDGE → /schedule`,
    `MODEL RESULTS → /analysis`, `PLAYOFF PREDICTIONS → /playoffs`, `SHOT VALUE → /shot-quality`,
-   `REST & SHOOTING → /shooting`. The surface count on `/about` is derived from that list rather
+   `PLAYER SHOOTING → /shooting`. The surface count on `/about` is derived from that list rather
    than written out, so adding a tab cannot leave the page claiming a total it no longer has.
-   Five bare noun phrases, no time words: mainstream NBA navs (ESPN, CBS) name the thing and
+   Bare noun phrases, no time words: mainstream NBA navs (ESPN, CBS) name the thing and
    leave time to a date picker, and NN/g's category-name guidance rules out both jargon
    (`EDGES`) and generic labels (`ANALYSIS`, `DATA`). Labels are also checked against *borrowed*
    meaning — bare `SCHEDULE` means a game list on every other sports site, which is this site's
-   `GAMES`, so the disparity tab keeps its qualifier. Precise terms (`xeFG%`, `SCHEDULE
+   `GAMES`, so the disparity tab keeps its qualifier; bare `SHOOTING` means shot location on
+   Basketball-Reference and NBA.com, which is `SHOT VALUE`, so the player tab keeps its own. Precise terms (`xeFG%`, `SCHEDULE
    DISPARITY · NET REST EDGE`) stay in the page eyebrows, where context decodes them.
    The active link gets an amber
    bottom border (`border-[var(--term-amber)]`) + `text-[var(--term-text)]` and carries

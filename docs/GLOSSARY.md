@@ -44,10 +44,14 @@ _Avoid_: incomplete season, partial season
 
 ## Nav labels
 
-The five tabs are the product's public vocabulary; the terms above are its internal one. A nav
+The tabs are the product's public vocabulary; the terms above are its internal one. A nav
 label is written for a casual fan reading at a glance, so it must be a plain noun phrase with
 no time word — and it must not borrow a mainstream term that means something else on other
 sports sites, which misroutes a confident click worse than jargon stalls an uncertain one.
+
+Five tabs sit directly in the bar (`DIRECT_NAV_ITEMS`); SHOT VALUE sits behind the OTHER menu
+(`OTHER_NAV_ITEMS`). That grouping keeps the bar short as the set of smaller reference surfaces
+grows — it does not rank those surfaces below the direct tabs.
 
 | Tab | Route | Page `<h1>` | Not called |
 |---|---|---|---|
@@ -55,11 +59,12 @@ sports sites, which misroutes a confident click worse than jargon stalls an unce
 | SCHEDULE EDGE | `/schedule` | Schedule Disparity | Schedule — that means a game list everywhere else, which is GAMES |
 | MODEL RESULTS | `/analysis` | Rest Advantage Analysis | Analysis (every page is analysis); Historical Data (GAMES already browses history, and "data" promises a dump) |
 | PLAYOFF PREDICTIONS | `/playoffs` | Series Predictions | Playoff Odds — mainstream that means *making* the playoffs, not winning a series |
-| SHOT VALUE | `/shot-quality` | Expected Shot Value | Shot Charts — mainstream that means a player's makes/misses by spot |
+| PLAYER SHOOTING | `/shooting` | Shooting by Rest | Shooting — on Basketball-Reference and NBA.com that means shot *location*, which is SHOT VALUE; Player Rest / Rest Splits — the rest tab is SCHEDULE EDGE, and an internal collision misroutes worse than an external one; Splits — ESPN's word for exactly this page, but jargon for a casual fan and silent about the measure |
+| SHOT VALUE *(OTHER)* | `/shot-quality` | Expected Shot Value | Shot Charts — mainstream that means a player's makes/misses by spot |
 
 Module names are unaffected: the code, tables, scripts and design records still say Playoff
 Predictor, Shot Quality and Schedule Disparity.
 
-`/about` is **not** a sixth tab and has no label in this table. It explains what the product
+`/about` is **not** a tab and has no label in this table. It explains what the product
 measures rather than serving data, so it lives in the status bar and the footer. The five-link
 count is asserted in `e2e/navigation.spec.ts` and again in `e2e/about.spec.ts`.

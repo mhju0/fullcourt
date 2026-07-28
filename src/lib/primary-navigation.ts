@@ -32,9 +32,12 @@ export const DIRECT_NAV_ITEMS = [
   },
   {
     href: "/shooting",
-    // Not "SHOOTING": SHOT VALUE is already about shooting, and the two would read as a
-    // pair of near-synonyms in the same bar. The qualifier names what only this page has.
-    label: "REST & SHOOTING",
+    // Not bare "SHOOTING": on Basketball-Reference and NBA.com that word means shot
+    // *location*, which is SHOT VALUE. "Player" is the qualifier that separates the two by
+    // subject — people here, court cells there — and it keeps working if SHOT VALUE ever
+    // returns to the bar. Not "PLAYER REST": the rest tab is SCHEDULE EDGE, and colliding
+    // with our own vocabulary misroutes worse than colliding with someone else's.
+    label: "PLAYER SHOOTING",
     guideDescription:
       "Look up any player's shooting on no rest against three days off, season by season.",
   },

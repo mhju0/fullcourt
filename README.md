@@ -54,7 +54,7 @@ probability it was called at.
 
 <img src="docs/screenshots/playoffs.png" alt="Series Predictions for 2025-26. Two tiles read out-of-sample 66.7% (walk-forward, 10 of 15 correct) and in-sample 66.7% (full training fit, 10 of 15 correct), with a note that out-of-sample is predicted from prior seasons only and is the honest generalisation number. Below, the first round's 8 series are listed, each with its result and the model's probability: Cleveland beat Toronto 4-3 at 59.8% CORRECT, Detroit beat Orlando 4-3 at 96.0% CORRECT, Philadelphia beat Boston 4-3 against an 89.6% Boston call marked UPSET, New York beat Atlanta 4-2 at 75.2% CORRECT, the Lakers beat Houston 4-2 at 51.7% CORRECT, Minnesota beat Denver 4-2 against a 72.0% Denver call marked UPSET, San Antonio beat Portland 4-1 at 96.1% CORRECT, and Oklahoma City swept Phoenix 4-0 at 96.7% CORRECT." width="900" />
 
-**Rest & Shooting — a lookup, not a ranking.** Every player's eFG% on zero rest beside three or
+**Player Shooting — a lookup, not a ranking.** Every player's eFG% on zero rest beside three or
 more days off, with the split's sample size shown on both sides so a thin season reads as thin.
 
 <img src="docs/screenshots/shooting.png" alt="Shooting by Rest for 2025-26, filtered to players with 300 or more attempts, 284 players in the season. A note defines no rest as having played yesterday and 3+ days rest as at least three days since his last game, both counted from the games he actually played, with rest effect being the right column minus the left. A table sorted by field-goal attempts lists each player's team, age, games, FGA, overall eFG%, then eFG% and attempts on no rest, the same on 3+ days rest, and the signed rest effect drawn as a bar. Jaylen Brown leads by volume at 1,543 attempts with a plus 1.90 effect; Jalen Brunson shows 49.3% on 223 no-rest attempts against 55.0% on 380 rested ones for plus 5.67; Luka Dončić runs the other way at 65.5% against 55.2% for minus 10.32; James Harden shows the largest positive at plus 11.54." width="900" />
@@ -88,7 +88,7 @@ with no time words — the pattern every mainstream NBA nav uses — while the p
   rest-advantage threshold and by season, home/away splits, and a filterable game explorer.
 - **Playoff Predictions** (`/playoffs`) — series-winner predictions from rest/fatigue-derived features, showing walk-forward out-of-sample accuracy next to in-sample as an honest overfitting check.
 - **Shot Value** (`/shot-quality`, under **OTHER**) — a half-court hexbin map of expected effective FG% per grid cell, comparing a location-only gradient-boosted model against a zone-average baseline. Honest framing: public NBA data has no defender distance or shot-clock signal, so this is shot-**location** value only, and the model's edge over the baseline is a small calibration win (~1% on log-loss / Brier), not a large accuracy jump.
-- **Rest & Shooting** (`/shooting`) — a browsable database of every player's eFG% on zero rest
+- **Player Shooting** (`/shooting`) — a browsable database of every player's eFG% on zero rest
   against three or more days off, for any season since 1996-97 or pooled across a career. Rest is
   the player's **own**, counted from the games he actually played, so a night off for load
   management is never credited to him as rest. Honest framing: a single season's split carries a
