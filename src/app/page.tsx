@@ -225,7 +225,11 @@ function DateChip({
       // Colours live in classes, not the style prop: an inline `border`/`background`
       // shorthand outranks any class rule, which silently killed the hover state.
       className={cn(
-        "mono flex min-w-[3rem] flex-col items-center border border-[var(--term-border)] px-2 py-1.5 transition-[transform,background-color,border-color] active:scale-[0.97]",
+        // Fixed width, not min-width: the count line varies from "1 GM" to "15 GMS",
+        // so a minimum let the wider chips grow and the row came out at three
+        // different widths. 15 is the most games a 30-team league can play in a day,
+        // and that longest line measures 55px, so 60px fits every case with room.
+        "mono flex w-[3.75rem] flex-col items-center border border-[var(--term-border)] px-2 py-1.5 transition-[transform,background-color,border-color] active:scale-[0.97]",
         selected
           ? "border-l-2 border-l-[var(--term-blue)] bg-[var(--term-blue)] text-[var(--term-surface)]"
           : "bg-[var(--term-surface)] text-[var(--term-text)] hover:border-[var(--term-blue)]"
@@ -407,12 +411,21 @@ export default function HomePage() {
           <div className="flex flex-col gap-[18px]" style={{ ...termCardStyle, padding: 18 }}>
             <div>
               <GroupLabel>Scope</GroupLabel>
-              <div className="flex flex-wrap items-center gap-x-4 gap-y-3">
-                <SeasonSelector
-                  id="nba-season"
-                  season={slate.season}
-                  onSeasonChange={(season) => slate.send({ type: "SEASON_SELECTED", season })}
-                />
+              {/* Align to the bottom, not the centre: the season block is label +
+                  select stacked, so centring it against 32px-tall month buttons put
+                  the select below their midline. Both controls are the same height,
+                  so sharing a bottom edge lines their tops up too. */}
+              <div className="flex flex-wrap items-end gap-x-4 gap-y-3">
+                {/* Matches the month strip's `pb-1` scrollbar clearance. Without it that
+                    padding sits inside only one of the two flex items, so aligning their
+                    bottoms still left the buttons 4px above the select. */}
+                <div className="pb-1">
+                  <SeasonSelector
+                    id="nba-season"
+                    season={slate.season}
+                    onSeasonChange={(season) => slate.send({ type: "SEASON_SELECTED", season })}
+                  />
+                </div>
                 <div className="-mx-1 min-w-0 flex-1 overflow-x-auto overflow-y-hidden pb-1 [scrollbar-width:thin]">
                   <div className="flex min-w-min gap-1.5 px-1">
                   {slate.months.map(({ value, label, dayCount, isSelected }) => (
