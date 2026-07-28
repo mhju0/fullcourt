@@ -1,4 +1,5 @@
-export const PRIMARY_NAV_ITEMS = [
+/** Tabs rendered directly in the bar, in order. */
+export const DIRECT_NAV_ITEMS = [
   {
     href: "/",
     // Deliberately plain: every mainstream NBA nav (ESPN, CBS) uses bare nouns, and the
@@ -30,13 +31,6 @@ export const PRIMARY_NAV_ITEMS = [
       "Compare series win probabilities from FullCourt's separate playoff model.",
   },
   {
-    href: "/shot-quality",
-    // The page's own h1 minus the jargon; "xeFG%" stays in the eyebrow where context decodes it.
-    label: "SHOT VALUE",
-    guideDescription:
-      "Map expected shooting efficiency by court location and model version.",
-  },
-  {
     href: "/shooting",
     // Not "SHOOTING": SHOT VALUE is already about shooting, and the two would read as a
     // pair of near-synonyms in the same bar. The qualifier names what only this page has.
@@ -45,3 +39,27 @@ export const PRIMARY_NAV_ITEMS = [
       "Look up any player's shooting on no rest against three days off, season by season.",
   },
 ] as const;
+
+/** The label on the menu trigger that reveals {@link OTHER_NAV_ITEMS}. */
+export const OTHER_NAV_LABEL = "OTHER";
+
+/**
+ * Surfaces that live behind the OTHER menu rather than taking a tab of their own.
+ * These are still first-class pages — the grouping keeps the bar short as the set of
+ * smaller reference surfaces grows, rather than ranking them below the direct tabs.
+ */
+export const OTHER_NAV_ITEMS = [
+  {
+    href: "/shot-quality",
+    // The page's own h1 minus the jargon; "xeFG%" stays in the eyebrow where context decodes it.
+    label: "SHOT VALUE",
+    guideDescription:
+      "Map expected shooting efficiency by court location and model version.",
+  },
+] as const;
+
+/**
+ * Every primary surface, direct tabs first. Consumers that describe the product rather
+ * than draw the bar — the first-visit guide especially — want the whole set, not the split.
+ */
+export const PRIMARY_NAV_ITEMS = [...DIRECT_NAV_ITEMS, ...OTHER_NAV_ITEMS] as const;

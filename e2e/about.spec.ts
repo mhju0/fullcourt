@@ -38,10 +38,11 @@ test.describe("About page", () => {
     await page.goto("/");
 
     // /about stays out of the primary nav: it explains the product rather than being
-    // one of its surfaces. The count tracks PRIMARY_NAV_ITEMS, so a new tab has to be
-    // a deliberate edit here too.
+    // one of its surfaces. The count tracks DIRECT_NAV_ITEMS — the surfaces behind the
+    // OTHER menu are not in the DOM until it opens — so a new tab has to be a
+    // deliberate edit here too.
     const nav = page.getByRole("navigation", { name: "Main navigation" });
-    await expect(nav.getByRole("link")).toHaveCount(6);
+    await expect(nav.getByRole("link")).toHaveCount(5);
 
     await page.getByRole("link", { name: "WHAT THIS MEASURES" }).click();
     await expect(page).toHaveURL(/\/about$/);

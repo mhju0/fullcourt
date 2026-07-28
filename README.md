@@ -68,9 +68,10 @@ more days off, with the split's sample size shown on both sides so a thin season
 
 ## Features
 
-The five nav tabs below are the five product routes. Labels are plain nouns with no time
-words — the pattern every mainstream NBA nav uses — while the precise terms (`xeFG%`, net rest
-edge) live in each page's eyebrow, where surrounding context decodes them.
+Six product routes sit behind five direct nav tabs plus an **OTHER** menu, which holds the
+smaller reference surfaces so the bar stays short as they accumulate. Labels are plain nouns
+with no time words — the pattern every mainstream NBA nav uses — while the precise terms
+(`xeFG%`, net rest edge) live in each page's eyebrow, where surrounding context decodes them.
 
 - **Games** (`/`) — live matchup cards with fatigue bars, a rest-advantage gauge, and real-time
   score/status updates via Supabase Realtime. Browses any season back to 1985-86 by date, and
@@ -86,7 +87,7 @@ edge) live in each page's eyebrow, where surrounding context decodes them.
 - **Model Results** (`/analysis`) — the historical backtest that scores the rest model: win rate by
   rest-advantage threshold and by season, home/away splits, and a filterable game explorer.
 - **Playoff Predictions** (`/playoffs`) — series-winner predictions from rest/fatigue-derived features, showing walk-forward out-of-sample accuracy next to in-sample as an honest overfitting check.
-- **Shot Value** (`/shot-quality`, Expected Shot Value / xeFG%) — a half-court hexbin map of expected effective FG% per grid cell, comparing a location-only gradient-boosted model against a zone-average baseline. Honest framing: public NBA data has no defender distance or shot-clock signal, so this is shot-**location** value only, and the model's edge over the baseline is a small calibration win (~1% on log-loss / Brier), not a large accuracy jump.
+- **Shot Value** (`/shot-quality`, under **OTHER**) — a half-court hexbin map of expected effective FG% per grid cell, comparing a location-only gradient-boosted model against a zone-average baseline. Honest framing: public NBA data has no defender distance or shot-clock signal, so this is shot-**location** value only, and the model's edge over the baseline is a small calibration win (~1% on log-loss / Brier), not a large accuracy jump.
 - **Rest & Shooting** (`/shooting`) — a browsable database of every player's eFG% on zero rest
   against three or more days off, for any season since 1996-97 or pooled across a career. Rest is
   the player's **own**, counted from the games he actually played, so a night off for load
