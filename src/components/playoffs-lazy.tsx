@@ -1,30 +1,27 @@
 "use client"
 
-import dynamic from "next/dynamic"
+import { lazyContent } from "@/components/lazy-content"
 import { Skeleton } from "@/components/ui/skeleton"
 import { termCardStyle } from "@/lib/terminal-styles"
 
-export const PlayoffsContentLazy = dynamic(
+export const PlayoffsContentLazy = lazyContent(
   () => import("@/components/playoffs-content").then((m) => m.PlayoffsContent),
-  {
-    loading: () => (
-      <div className="flex flex-col gap-4">
-        <div style={termCardStyle}>
-          <Skeleton className="h-4 w-32 bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)" }} />
-        </div>
-        <div style={termCardStyle}>
-          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-            <Skeleton className="h-24 w-full bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)" }} />
-            <Skeleton className="h-24 w-full bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)" }} />
-          </div>
-        </div>
-        <div className="flex flex-col gap-2">
-          <Skeleton className="h-16 w-full bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)" }} />
-          <Skeleton className="h-16 w-full bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)" }} />
-          <Skeleton className="h-16 w-full bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)" }} />
+  () => (
+    <div className="flex flex-col gap-4">
+      <div style={termCardStyle}>
+        <Skeleton className="h-4 w-32 bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)" }} />
+      </div>
+      <div style={termCardStyle}>
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+          <Skeleton className="h-24 w-full bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)" }} />
+          <Skeleton className="h-24 w-full bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)" }} />
         </div>
       </div>
-    ),
-    ssr: false,
-  }
+      <div className="flex flex-col gap-2">
+        <Skeleton className="h-16 w-full bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)" }} />
+        <Skeleton className="h-16 w-full bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)" }} />
+        <Skeleton className="h-16 w-full bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)" }} />
+      </div>
+    </div>
+  )
 )

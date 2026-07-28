@@ -6,6 +6,7 @@ import useSWR from "swr"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import { MatchupCard } from "@/components/matchup-card"
+import { PageHeader } from "@/components/page-header"
 import { SeasonSelector } from "@/components/season-selector"
 import { UpcomingContentLazy } from "@/components/upcoming-lazy"
 import { apiFetcher } from "@/lib/fetcher"
@@ -349,20 +350,14 @@ export default function HomePage() {
     <div className="flex flex-col gap-12">
       {/* Heading + view toggle: one chapter, so they sit close together. */}
       <div className="flex flex-col gap-5">
-        <div className="flex flex-col gap-1.5">
-          <span className="mono" style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-red)", fontWeight: 600 }}>
-            REST ADVANTAGE DASHBOARD
-          </span>
-          {/* Not "Today's Matchups": the season selector reaches back to 1985-86, so the
-              heading was already wrong on any past date, and the UPCOMING view widened it.
-              32px is the "hero stat value" slot already documented in terminal-styles.ts —
-              at 24px the page title was the same size as the stat numbers beneath it. */}
-          <h1 className="text-[32px] leading-[1.05] text-[var(--term-text)]">Games</h1>
-          <p className="max-w-[34rem]" style={{ fontSize: 15, color: "var(--term-text-muted)", lineHeight: 1.55 }}>
-            A fatigue score for every team in every game, built from travel, rest and schedule
-            density. The bigger the gap between two teams, the more one side is carrying.
-          </p>
-        </div>
+        {/* Not "Today's Matchups": the season selector reaches back to 1985-86, so the
+            heading was already wrong on any past date, and the UPCOMING view widened it. */}
+        <PageHeader
+          eyebrow="REST ADVANTAGE DASHBOARD"
+          title="Games"
+          description="A fatigue score for every team in every game, built from travel, rest and schedule density. The bigger the gap between two teams, the more one side is carrying."
+          descriptionMaxWidth="34rem"
+        />
 
       {/* View toggle — absorbed the old /upcoming route, which is now a redirect here. */}
       <div className="flex flex-wrap gap-1.5" role="group" aria-label="Games view">

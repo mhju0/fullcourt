@@ -18,6 +18,7 @@ import useSWR from "swr"
 import { format } from "date-fns"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { ExploreGameDetailModal } from "@/components/explore-game-detail-modal"
+import { PageHeader } from "@/components/page-header"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useExploreGames, type DrillSignal } from "@/hooks/useExploreGames"
 import type { ExploreResult } from "@/lib/explore-games-machine"
@@ -730,20 +731,12 @@ export function AnalysisContent() {
 
   return (
     <div className="flex flex-col gap-12">
-      {/* Eyebrow heading */}
-      <div className="flex flex-col gap-1.5">
-        <span className="mono" style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-red)", fontWeight: 600 }}>
-          HISTORICAL BACKTEST
-        </span>
-        {/* Kept in step with PageHeader by hand: this page renders its own header so the
-            eyebrow can sit inside the data-dependent branch. */}
-        <h1 className="text-[32px] leading-[1.05] text-[var(--term-text)]">Rest Advantage Analysis</h1>
-        <p className="max-w-2xl" style={{ fontSize: 15, color: "var(--term-text-muted)", lineHeight: 1.55 }}>
-          Among completed regular-season games with fatigue data on both sides, did the
-          more-rested team win? Charts plot the gap against a coin flip in percentage
-          points, so zero is a 50% win rate.
-        </p>
-      </div>
+      {/* Inside the loaded branch, so the heading arrives with the data it describes. */}
+      <PageHeader
+        eyebrow="HISTORICAL BACKTEST"
+        title="Rest Advantage Analysis"
+        description="Among completed regular-season games with fatigue data on both sides, did the more-rested team win? Charts plot the gap against a coin flip in percentage points, so zero is a 50% win rate."
+      />
 
       {/* Hero stat row (terminal stat cards) */}
       <div className="grid grid-cols-2 gap-2 md:grid-cols-3">
