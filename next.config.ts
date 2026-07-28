@@ -10,7 +10,7 @@ const contentSecurityPolicy = [
   "default-src 'self'",
   `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}`,
   "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data: https://cdn.nba.com https://a.espncdn.com",
+  "img-src 'self' data: https://a.espncdn.com",
   "font-src 'self' data:",
   "connect-src 'self' https://*.supabase.co wss://*.supabase.co",
   "frame-ancestors 'none'",
@@ -22,11 +22,6 @@ const contentSecurityPolicy = [
 const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "cdn.nba.com",
-        pathname: "/logos/**",
-      },
       {
         protocol: "https",
         hostname: "a.espncdn.com",

@@ -57,7 +57,7 @@ the discrepancy is called out.
 | NBA CDN live scoreboard | `https://cdn.nba.com/static/json/liveData/scoreboard/todaysScoreboard_00.json` | Live score/status refresh (`/api/cron/update`). |
 | nba_api (stats.nba.com) | `LeagueGameFinder` | Historical + windowed schedules and final scores (`fetch_schedule.py`, `daily_update.py`, `backfill_historical.py`). |
 | nba_api (stats.nba.com) | `BoxScoreSummaryV2` | Overtime-period detection (`nba_ot_periods.py`). |
-| NBA CDN logos | `https://cdn.nba.com/logos/nba/{teamId}/global/L/logo.svg` | Current-era team logos (`src/lib/team-history.ts`, `nba-team-ids.ts`). |
+| ESPN logos | `https://a.espncdn.com/i/teamlogos/nba/500/{slug}.png` | Every team logo, current and historical (`src/lib/team-history.ts`). Dark-on-light for all 30; the NBA CDN ships no light-background mark for BKN or SAS, and 403s from Seoul and CI. |
 | ESPN CDN logos | `https://a.espncdn.com/i/teamlogos/nba/500/{abbr}.png` | Historical/relocated-era logos. |
 
 ### 2. Ingestion (Python, `scripts/`)

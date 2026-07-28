@@ -3,7 +3,6 @@
  * DB `teams` rows use current abbreviations; this maps (abbrev, season) → labels + logos.
  */
 
-import { NBA_TEAM_IDS } from "@/lib/nba-team-ids";
 import { parseSeasonStartYear } from "@/lib/nba-season";
 
 export interface TeamBranding {
@@ -13,18 +12,29 @@ export interface TeamBranding {
   logoUrl: string;
 }
 
+/** ESPN slugs that are not just the lower-cased abbreviation we store. */
+const ESPN_SLUGS: Record<string, string> = { NOP: "no", UTA: "utah" };
+
+/**
+ * Every logo, current era and historical, comes from ESPN's set.
+ *
+ * The NBA's own CDN publishes a light and a dark variant per team (`primary/L`,
+ * `primary/D`) and we were serving the dark one — white ink — on this app's near-white
+ * ground: Utah's mark was a single #FCFCFC fill and invisible, Philadelphia's wordmark
+ * was white on white. Switching to `primary/L` fixes those two, but not Brooklyn or San
+ * Antonio: their marks are #FFFFFF and #C4CED3 in every variant the CDN ships, because
+ * those brands genuinely are white and silver. ESPN normalises all 30 to dark-on-light,
+ * which is why their scoreboard needs no chip behind a logo, and it is reachable from
+ * this app's region and from CI, where cdn.nba.com answers 403.
+ */
 function espnLogo(displayAbbr: string): string {
-  return `https://a.espncdn.com/i/teamlogos/nba/500/${displayAbbr.toLowerCase()}.png`;
+  const slug = ESPN_SLUGS[displayAbbr] ?? displayAbbr.toLowerCase();
+  return `https://a.espncdn.com/i/teamlogos/nba/500/${slug}.png`;
 }
 
-function nbaSvgLogo(currentAbbrev: string): string {
-  const id = NBA_TEAM_IDS[currentAbbrev];
-  if (id === undefined) {
-    return espnLogo(currentAbbrev);
-  }
-  // `primary/D` = the clean icon-only mark styled for dark backgrounds.
-  // (`global/L` is the roundel/wordmark with the team name baked in.)
-  return `https://cdn.nba.com/logos/nba/${id}/primary/D/logo.svg`;
+/** Current-era logo for a stored abbreviation. The one place a logo URL is built. */
+export function teamLogoUrl(abbrev: string): string {
+  return espnLogo(abbrev);
 }
 
 /** Current-era defaults when no historical rule applies (abbrev = DB / canonical). */
@@ -72,7 +82,7 @@ function currentBranding(
     abbreviation: abbrev,
     name,
     city,
-    logoUrl: nbaSvgLogo(abbrev),
+    logoUrl: espnLogo(abbrev),
   };
 }
 
@@ -81,7 +91,7 @@ function currentBranding(
  * (e.g. `"2005-06"`). Uses historical labels where the franchise rebranded or relocated;
  * otherwise current branding. Optional `fallback` overrides name/city for the current-era path only.
  *
- * Historical logos use ESPN PNGs; current logos use the NBA CDN SVG for the canonical abbrev.
+ * Every logo is an ESPN PNG (see `espnLogo`).
  */
 export function getTeamBranding(
   currentAbbreviation: string,

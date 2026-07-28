@@ -18,7 +18,7 @@ describe("getTeamBranding", () => {
     expect(b.name).toBe("Thunder");
     expect(b.city).toBe("Oklahoma City");
     expect(b.logoUrl).toBe(
-      "https://cdn.nba.com/logos/nba/1610612760/primary/D/logo.svg"
+      "https://a.espncdn.com/i/teamlogos/nba/500/okc.png"
     );
   });
 
@@ -38,7 +38,7 @@ describe("getTeamBranding", () => {
     expect(b.name).toBe("Nets");
     expect(b.city).toBe("Brooklyn");
     expect(b.logoUrl).toBe(
-      "https://cdn.nba.com/logos/nba/1610612751/primary/D/logo.svg"
+      "https://a.espncdn.com/i/teamlogos/nba/500/bkn.png"
     );
   });
 
@@ -58,7 +58,7 @@ describe("getTeamBranding", () => {
     expect(b.name).toBe("Grizzlies");
     expect(b.city).toBe("Memphis");
     expect(b.logoUrl).toBe(
-      "https://cdn.nba.com/logos/nba/1610612763/primary/D/logo.svg"
+      "https://a.espncdn.com/i/teamlogos/nba/500/mem.png"
     );
   });
 
@@ -78,7 +78,7 @@ describe("getTeamBranding", () => {
     expect(b.name).toBe("Hornets");
     expect(b.city).toBe("Charlotte");
     expect(b.logoUrl).toBe(
-      "https://cdn.nba.com/logos/nba/1610612766/primary/D/logo.svg"
+      "https://a.espncdn.com/i/teamlogos/nba/500/cha.png"
     );
   });
 
@@ -98,7 +98,7 @@ describe("getTeamBranding", () => {
     expect(b.name).toBe("Lakers");
     expect(b.city).toBe("Los Angeles");
     expect(b.logoUrl).toBe(
-      "https://cdn.nba.com/logos/nba/1610612747/primary/D/logo.svg"
+      "https://a.espncdn.com/i/teamlogos/nba/500/lal.png"
     );
   });
 
@@ -109,7 +109,18 @@ describe("getTeamBranding", () => {
     });
     expect(b.name).toBe("Lakers Custom");
     expect(b.city).toBe("LA");
-    expect(b.logoUrl).toContain("1610612747");
+    expect(b.logoUrl).toContain("/lal.png");
+  });
+
+  it("uses ESPN's own slug where it is not the abbreviation we store", () => {
+    // ESPN serves these two under a different name; /nop.png and /uta.png are 404s,
+    // which would silently fall back to a tricode chip for two teams.
+    expect(getTeamBranding("NOP", "2024-25").logoUrl).toBe(
+      "https://a.espncdn.com/i/teamlogos/nba/500/no.png"
+    );
+    expect(getTeamBranding("UTA", "2024-25").logoUrl).toBe(
+      "https://a.espncdn.com/i/teamlogos/nba/500/utah.png"
+    );
   });
 
   it("historical branding ignores fallback", () => {

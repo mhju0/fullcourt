@@ -5,7 +5,6 @@ import Image from "next/image"
 import { ChevronDown } from "lucide-react"
 import { FatigueBar, type FatigueBarTone } from "@/components/fatigue-bar"
 import { TRAVEL_LOOKBACK_DAYS } from "@/lib/fatigue"
-import { NBA_TEAM_IDS } from "@/lib/nba-team-ids"
 import { getTeamColors, readableTextOn } from "@/lib/nba-team-colors"
 import {
   buildRestAdvantageEvidence,
@@ -13,7 +12,7 @@ import {
   type RestAdvantageEvidenceSource,
 } from "@/lib/rest-advantage-display"
 import { NEUTRAL_REST_ADVANTAGE_THRESHOLD } from "@/lib/rest-advantage-evidence"
-import { getTeamBranding } from "@/lib/team-history"
+import { getTeamBranding, teamLogoUrl } from "@/lib/team-history"
 import { TERM_ACCENT } from "@/lib/terminal-styles"
 import { cn } from "@/lib/utils"
 import type { FatigueInfo, GameResponse } from "@/types"
@@ -70,15 +69,11 @@ function TeamLogo({
   const logoUrl =
     season !== undefined
       ? getTeamBranding(abbreviation, season, fallback).logoUrl
-      : (() => {
-          const nbaId = NBA_TEAM_IDS[abbreviation]
-          return nbaId
-            ? `https://cdn.nba.com/logos/nba/${nbaId}/primary/D/logo.svg`
-            : null
-        })()
+      : teamLogoUrl(abbreviation)
 
-  if (!logoUrl || error) {
-    // Team-colored fallback chip (broadcast identity when the CDN logo is missing).
+  if (error) {
+    // Team-colored fallback chip (broadcast identity when the logo host is unreachable
+    // or has no asset for this abbreviation — several defunct-team slugs 404).
     return (
       <div
         className="mono flex shrink-0 items-center justify-center text-[10px] font-bold"

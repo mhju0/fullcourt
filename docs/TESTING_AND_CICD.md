@@ -175,9 +175,9 @@ still verified on demand rather than in CI.
 
 Vercel auto-deploys from `main`. DB-backed routes are `force-dynamic` + `runtime = "nodejs"`
 so the build doesn't require `DATABASE_URL` and queries never run on Edge. `next.config.ts`
-allow-lists remote image hosts (`cdn.nba.com/logos/**`, `a.espncdn.com/i/teamlogos/nba/**`)
+allow-lists the remote image host (`a.espncdn.com/i/teamlogos/nba/**`)
 and sets security headers: `Content-Security-Policy` (default-src `'self'`, `frame-ancestors
-'none'`, `object-src 'none'`, connect-src scoped to Supabase, img-src to the two logo CDNs;
+'none'`, `object-src 'none'`, connect-src scoped to Supabase, img-src to the logo CDN;
 `'unsafe-eval'` is dev-only), `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`,
 `Referrer-Policy: strict-origin-when-cross-origin`, and `Permissions-Policy: camera=(),
 microphone=(), geolocation=()`.

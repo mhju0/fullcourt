@@ -397,10 +397,10 @@ franchises. Rules (by season start year):
 | CHA | Charlotte Bobcats | 2004–2013 |
 | WAS | Washington Bullets (`WSB`) | 1985–1996 |
 
-Logos: **historical** eras use ESPN PNGs
-(`a.espncdn.com/i/teamlogos/nba/500/{abbr}.png`); **current** eras use the NBA CDN SVG
-(`cdn.nba.com/logos/nba/{nbaId}/global/L/logo.svg`) where `nbaId` comes from
-`src/lib/nba-team-ids.ts` (which also maps the historical codes to their franchise IDs).
+Logos: every era uses ESPN PNGs (`a.espncdn.com/i/teamlogos/nba/500/{slug}.png`), where
+`slug` is the lower-cased display abbreviation apart from two exceptions in `ESPN_SLUGS`
+(`NOP` → `no`, `UTA` → `utah`). The NBA CDN is not used: its light-background variant is
+still a white mark for BKN and SAS, and the host 403s from Seoul and from CI.
 
 ## Shooting by Rest pipeline — the `/shooting` player database
 

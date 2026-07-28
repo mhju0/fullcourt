@@ -4,7 +4,7 @@ import { useState } from "react"
 import Image from "next/image"
 import useSWR from "swr"
 import { format } from "date-fns"
-import { NBA_TEAM_IDS } from "@/lib/nba-team-ids"
+import { teamLogoUrl } from "@/lib/team-history"
 import { getTeamColors, readableTextOn } from "@/lib/nba-team-colors"
 import { currentDisplaySeason, isNbaOffSeason, nextSeasonLabel } from "@/lib/nba-season"
 import { apiFetcher } from "@/lib/fetcher"
@@ -41,9 +41,7 @@ function OffSeasonEmptyState({ nextSeason }: { nextSeason: string }) {
 
 function TeamLogo({ abbreviation }: { abbreviation: string }) {
   const [error, setError] = useState(false)
-  const nbaId = NBA_TEAM_IDS[abbreviation]
-
-  if (!nbaId || error) {
+  if (error) {
     const bg = getTeamColors(abbreviation).primary
     return (
       <span
@@ -62,7 +60,7 @@ function TeamLogo({ abbreviation }: { abbreviation: string }) {
 
   return (
     <Image
-      src={`https://cdn.nba.com/logos/nba/${nbaId}/primary/D/logo.svg`}
+      src={teamLogoUrl(abbreviation)}
       alt={`${abbreviation} logo`}
       width={24}
       height={24}

@@ -1,6 +1,6 @@
 /**
  * Official-ish NBA team colors, keyed by the same abbreviations the DB stores
- * (mirrors the keys in `nba-team-ids.ts`, historical aliases included). Used by
+ * (current abbreviations plus the historical aliases). Used by
  * the Broadcast matchup UI to theme each game with its two teams' colors.
  *
  * `primary` drives the color band + logo chip; `secondary` is the complementary
@@ -44,7 +44,7 @@ export const NBA_TEAM_COLORS: Record<string, TeamColors> = {
   TOR: { primary: "#CE1141", secondary: "#B4975A" },
   UTA: { primary: "#002B5C", secondary: "#F9A01B" },
   WAS: { primary: "#002B5C", secondary: "#E31837" },
-  // Historical franchises (share IDs with current teams in nba-team-ids.ts)
+  // Historical franchises (same franchise as a current team under an older code)
   NJN: { primary: "#002A60", secondary: "#CD1041" },
   VAN: { primary: "#00838A", secondary: "#BC953B" },
   NOH: { primary: "#002B5C", secondary: "#00778B" },
