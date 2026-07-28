@@ -1,14 +1,19 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { NextRequest } from "next/server";
 import { GET } from "../analysis/route";
-import { getCompletedGamesWithFatigue } from "@/lib/db/queries";
+import { getCompletedGamesStamp, getCompletedGamesWithFatigue } from "@/lib/db/queries";
 import type { AnalysisResponse } from "@/types";
 
 vi.mock("@/lib/db/queries", () => ({
   getCompletedGamesWithFatigue: vi.fn(),
+  getCompletedGamesStamp: vi.fn(),
 }));
 
 const mockGetCompleted = vi.mocked(getCompletedGamesWithFatigue);
+const mockStamp = vi.mocked(getCompletedGamesStamp);
+
+/** A distinct stamp per case, so the backtest cache never answers one case from another's rows. */
+let stampSeq = 0;
 
 /** Build final games with fatigue strings. `away - home` = rest-advantage differential. */
 function row(
@@ -35,6 +40,8 @@ function makeReq(search = "") {
 describe("GET /api/analysis", () => {
   beforeEach(() => {
     mockGetCompleted.mockReset();
+    mockStamp.mockReset();
+    mockStamp.mockResolvedValue(`stamp-${++stampSeq}`);
   });
 
   it.each(["?seasonMinRA=banana", "?seasonMinRA=-1", "?seasonMinRA=Infinity"])(

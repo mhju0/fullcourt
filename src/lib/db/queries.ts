@@ -1,5 +1,21 @@
 import { format, parseISO, subDays } from "date-fns";
-import { and, asc, desc, eq, gte, inArray, isNotNull, isNull, lt, lte, or, sql, type SQL } from "drizzle-orm";
+import {
+  and,
+  asc,
+  count,
+  desc,
+  eq,
+  gte,
+  inArray,
+  isNotNull,
+  isNull,
+  lt,
+  lte,
+  max,
+  or,
+  sql,
+  type SQL,
+} from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
 import { db } from "./index";
 import {
@@ -455,6 +471,22 @@ export async function getRegularSeasonGameDatesWithCounts(
 }
 
 // ─── Analysis query ─────────────────────────────────────────────
+
+/**
+ * A cheap stand-in for "has the backtest input changed?".
+ *
+ * The backtest reads every final regular-season game, so its answer can only
+ * move when one more game goes final or a score is corrected. Both show up in
+ * this pair, and reading it costs an index scan rather than ~46k joined rows.
+ */
+export async function getCompletedGamesStamp(): Promise<string> {
+  const [row] = await db
+    .select({ finals: count(), latest: max(games.date) })
+    .from(games)
+    .where(and(eq(games.status, "final"), eq(games.gameType, "regular")));
+
+  return `${row?.finals ?? 0}@${row?.latest ?? "none"}`;
+}
 
 /**
  * Returns all final games that have fatigue scores computed for both teams.
