@@ -382,14 +382,22 @@ function PlayerRows({
       >
         <td style={DIM_TD}>{rank}</td>
         <td style={{ ...termTdStyle, fontWeight: 500 }}>{row.name}</td>
-        <td style={{ ...termTdStyle, fontFamily: MONO_FONT_STACK, color: "var(--term-text-muted)" }}>{row.context}</td>
-        <td style={DIM_TD}>{row.age}</td>
-        <td style={DIM_TD}>{row.games}</td>
-        <td style={NUM_TD}>{row.fga.toLocaleString()}</td>
-        <td style={NUM_TD}>{fmt(row.efg)}</td>
-        <ArmCell efg={row.noRestEfg} fga={row.noRestFga} />
-        <ArmCell efg={row.restedEfg} fga={row.restedFga} />
-        <EffectCell value={row.effect} cap={cap} />
+        {/* Open, this row's numbers are repeated verbatim by one of the rows below it — the
+            browsed season, or Career — so it drops to a name plate over the group. */}
+        {expanded ? (
+          Array.from({ length: 8 }, (_, i) => <td key={i} style={termTdStyle} />)
+        ) : (
+          <>
+            <td style={{ ...termTdStyle, fontFamily: MONO_FONT_STACK, color: "var(--term-text-muted)" }}>{row.context}</td>
+            <td style={DIM_TD}>{row.age}</td>
+            <td style={DIM_TD}>{row.games}</td>
+            <td style={NUM_TD}>{row.fga.toLocaleString()}</td>
+            <td style={NUM_TD}>{fmt(row.efg)}</td>
+            <ArmCell efg={row.noRestEfg} fga={row.noRestFga} />
+            <ArmCell efg={row.restedEfg} fga={row.restedFga} />
+            <EffectCell value={row.effect} cap={cap} />
+          </>
+        )}
       </tr>
 
       {expanded &&
