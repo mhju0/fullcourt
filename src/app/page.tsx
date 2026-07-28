@@ -27,19 +27,14 @@ const termBtnStyle: React.CSSProperties = { border: "1px solid var(--term-border
 
 // ─── Stat summary row ────────────────────────────────────────────
 
-/** Percentage points off a coin flip, always signed. Minus is U+2212, matching the tables. */
-function signedPp(v: number): string {
-  return `${v > 0 ? "+" : v < 0 ? "−" : ""}${Math.abs(v).toFixed(1)}`
-}
-
-function StatCard({ label, value, accent, note }: { label: string; value: string; accent: string; note?: string }) {
+function StatCard({ label, value, accent }: { label: string; value: string; accent: string }) {
   return (
     <div
       className="mono flex flex-col gap-2"
       style={{
         background: "var(--term-surface)",
         border: "1px solid var(--term-border)",
-        // Top rule, not left: as a left border the four tiles read as a list with coloured
+        // Top rule, not left: as a left border the tiles read as a list with coloured
         // bullets. Along the top edge they read as a row of measures, which is what they are.
         borderTop: `2px solid ${accent}`,
         borderRadius: "var(--term-radius)",
@@ -52,41 +47,29 @@ function StatCard({ label, value, accent, note }: { label: string; value: string
       <span className="tabular-nums" style={{ fontSize: 24, fontWeight: 500, letterSpacing: "-0.01em", color: "var(--term-text)", lineHeight: 1 }}>
         {value}
       </span>
-      {note && (
-        <span style={{ fontSize: 10, letterSpacing: "0.06em", color: "var(--term-text-muted)" }}>{note}</span>
-      )}
     </div>
   )
 }
 
+/* Three tiles, all of them about the slate on screen. The fourth used to carry the
+   40-season backtest rate, which described none of these games: the historical claim
+   belongs on each matchup card, where it is stated for that game's own rest gap, and
+   on /analysis, which exists to prove it. */
 function StatSummaryRow({
   gamesToday,
   avgRestAdv,
-  restedEdge,
-  restedEdgeNote,
   highConfGames,
 }: {
   gamesToday: number
   avgRestAdv: string
-  restedEdge: string
-  restedEdgeNote: string
   highConfGames: number
 }) {
   return (
-    <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
+    <div className="grid grid-cols-2 gap-2 md:grid-cols-3">
       {/* Not "TODAY": this is the count for the selected date, and the page deliberately
           auto-selects the most recent date with games whenever today has none. */}
       <StatCard label="GAMES ON THIS DATE" value={String(gamesToday)} accent="var(--term-neutral)" />
       <StatCard label="AVG REST ADV" value={avgRestAdv} accent="var(--term-neutral)" />
-      {/* Not a win rate: a bare 54.7% names no subject and no baseline, and it is the only
-          tile here that ignores the selected date. Stated as the gap from a coin flip, the
-          way /analysis states it, with its scope on the card. */}
-      <StatCard
-        label="RESTED-TEAM EDGE"
-        value={restedEdge}
-        note={restedEdgeNote}
-        accent="var(--term-blue)"
-      />
       <StatCard label="HIGH CONF GAMES" value={String(highConfGames)} accent="var(--term-red)" />
     </div>
   )
@@ -330,17 +313,13 @@ export default function HomePage() {
   // the hook; its decisions live in a pure reducer that is unit-tested without a DOM.
   const slate = useGameSlate()
 
-  // Live overall win rate for the stat card — same value /analysis renders,
-  // computed from the DB by /api/analysis (0–100, 1 decimal). Deliberately outside
-  // the slate: it is season-independent and must not gate the date browser.
+  // The backtest, fetched only to denominate the matchup cards' evidence sentences.
+  // Deliberately outside the slate: it is season-independent and must not gate the
+  // date browser.
   const { data: analysis } = useSWR<AnalysisResponse>("/api/analysis", apiFetcher, {
     revalidateOnFocus: false,
   })
-  const restedEdge = analysis ? `${signedPp(analysis.overallWinRate - 50)} PP` : "—"
-  const restedEdgeNote = analysis
-    ? `VS. A COIN FLIP · ${analysis.seasonWinRates.length} SEASONS`
-    : "VS. A COIN FLIP"
-  // Same payload, reused to denominate every card's rest-advantage number.
+  // Each card's rest-advantage number is stated against this.
   const evidenceSource = useMemo(
     () =>
       analysis
@@ -417,8 +396,6 @@ export default function HomePage() {
           <StatSummaryRow
             gamesToday={slate.games.length}
             avgRestAdv={avgRestAdv}
-            restedEdge={restedEdge}
-            restedEdgeNote={restedEdgeNote}
             highConfGames={highConfGames}
           />
 
