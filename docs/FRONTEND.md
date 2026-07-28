@@ -94,8 +94,10 @@ upcoming October date at season start; else nearest / last available).
 ### `/analysis` — Analysis (`src/app/analysis/page.tsx`)
 
 Server wrapper just renders `<AnalysisContentLazy />`. The lazy client component
-(`analysis-content.tsx`) owns the header — a terminal-style `HISTORICAL BACKTEST` eyebrow +
-`<h1>Rest Advantage Analysis</h1>` + descriptor — so the heading renders once.
+(`analysis-content.tsx`) renders `<PageHeader>` itself — `HISTORICAL BACKTEST` /
+`Rest Advantage Analysis` — inside the loaded branch, so the heading arrives with the data it
+describes. It used to hand-copy `PageHeader`'s markup for that; the component works fine
+inside a branch.
 
 ### `/upcoming` — retired
 
@@ -306,19 +308,24 @@ A 4px progress bar; `SCALE_MAX = 10` (scores above clamp to 100% fill); tone col
 
 ### `analysis-content.tsx` (+ `analysis-lazy.tsx`)
 
-Loaded via `next/dynamic` with `ssr: false` and a skeleton. Uses SWR:
+Loaded via `lazyContent` (see below). Uses SWR:
 - `/api/analysis` for the main payload; `/api/analysis?seasonMinRA=<n>` when a season RA
   threshold pill is active.
 - Renders terminal stat cards, a **Win Rate by RA Threshold** Recharts bar chart (clicking a
   bar sets the explore filter and smooth-scrolls to the table), a **Home Team More Rested**
   breakdown, a **Win Rate by Season** chart with RA-threshold toggles, a **Key Insight**
   callout (RA ≥ 5 / ≥ 7), and the `ExploreGames` table.
-- `ExploreGames`: SWR `/api/games/search` with RA/team/season/result filters + pagination
-  (`PAGE_SIZE = 20`, `keepPreviousData`), opening `ExploreGameDetailModal` per row.
+- `ExploreGames`: JSX only. Its state lives in `explore-games-machine.ts` (pure, no React)
+  behind `useExploreGames` (`src/hooks/useExploreGames.ts`), which owns the single SWR call to
+  `/api/games/search` (`EXPLORE_PAGE_SIZE = 20`, `keepPreviousData`). The machine holds the four
+  filters, the page, the applied drill token and the detail-modal pair; `exploreSearchKey` builds
+  the URL and `pageWindow` derives "showing X–Y of Z". Any filter change returns to page 1 in one
+  place. Same shape as `game-slate-machine.ts`, and tested the same way —
+  `src/lib/__tests__/explore-games-machine.test.ts`, no DOM.
 
 ### `upcoming-content.tsx` (+ `upcoming-lazy.tsx`)
 
-Loaded via `next/dynamic` (`ssr: false`). Mounted by `/`'s UPCOMING view since `/upcoming` was
+Loaded via `lazyContent` (see below). Mounted by `/`'s UPCOMING view since `/upcoming` was
 retired. SWR `/api/games/upcoming?season=<currentDisplaySeason()>&minRA=…`,
 plus a second SWR call to `/api/analysis` for the historical column.
 RA filter pills, an off-season empty state (`OffSeasonEmptyState`), and a table of upcoming
@@ -374,6 +381,15 @@ events on the `public.games` table, filtered to the tracked `gameIds` (O(1) `Set
 Returns `{ liveUpdates: Record<id, {homeScore, awayScore, status}>, recentlyUpdated:
 Set<id> }`; `recentlyUpdated` clears after 600ms to drive the flash. No-ops (returns empty
 maps) when the Supabase env vars are unset (client is `null`).
+
+### `components/lazy-content.tsx`
+
+`lazyContent(load, skeleton)` — `next/dynamic` with `ssr: false` and the given skeleton as its
+`loading`. Every page's content component is loaded this way: these surfaces are client-only
+state fed by a fetch, so server-rendering them would ship markup React immediately replaces.
+The seven `*-lazy` modules remain separate files because `dynamic()` with `ssr: false` cannot
+be called from a server component and the pages are server components — but each now carries
+only its skeleton, not a restatement of the loader.
 
 ### `components/ui/*` — shadcn primitives
 
@@ -459,9 +475,10 @@ Every page is built the same way, so moving between tabs does not feel like movi
 products:
 
 - **Page title = 32px**, the "hero stat value" slot in `terminal-styles.ts`. At 24px a title
-  was the same size as the stat numbers under it. `PageHeader` sets this for `/schedule`,
-  `/playoffs` and `/shot-quality`; `/` and `/analysis` render their own header inline (they
-  need the eyebrow inside a data-dependent branch) and are kept in step by hand.
+  was the same size as the stat numbers under it. `PageHeader` sets it for every page —
+  `/schedule`, `/playoffs`, `/shot-quality`, `/shooting`, and now `/` and `/analysis`, which
+  used to hand-copy its markup. Its one prop beyond the copy is `descriptionMaxWidth`
+  (default `42rem`); `/` passes `34rem`.
 - **`gap-12` between chapters** — heading, controls, results — on the page's top-level column,
   with tighter spacing inside anything that belongs together. A uniform `gap-4` gave a heading
   the same separation as two halves of one control panel. Loading and error branches carry the

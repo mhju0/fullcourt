@@ -7,11 +7,20 @@ only explicit `PublicApiError` messages in production and otherwise returns a ge
 development mode may include the raw `Error.message`. Client code unwraps product envelopes via
 `apiFetcher` (`src/lib/fetcher.ts`), which throws when `error` is non-null.
 
-Response envelope (`ApiResponse<T>` in `src/types/index.ts`):
+Response envelope (`ApiResponse<T>` in `src/types/index.ts`) — a discriminated union, so a
+failed request carries no `data` at all:
 
 ```ts
-{ data: T; error: string | null; meta?: Record<string, unknown> }
+| { data: T;    error: null;   meta?: Record<string, unknown> }
+| { data: null; error: string; meta?: Record<string, unknown> }
 ```
+
+Every product route is built by `jsonRoute` (`src/lib/api-route.ts`), which owns the whole
+envelope: it merges search params and dynamic segments into one record (empty strings read as
+absent), validates them against the route's Zod schema, returns `400` with the first issue's
+message, and maps a thrown error to `500` — or, for a `PublicApiError`, to that error's own
+status and message. A route supplies only its schema and its operation. `season` and `minRA`
+are validated by the shared `seasonParam` / `minRAParam`.
 
 | Route | Params | Returns (`data`) | DB query |
 |-------|--------|------------------|----------|
@@ -45,7 +54,7 @@ Games for one calendar date.
 
 - **Path param:** `date` — validated by Zod `^\d{4}-\d{2}-\d{2}$`.
 - **Success:** `200` `{ data: GameResponse[], error: null }`.
-- **Errors:** `400` invalid date (`{ data: [], error }`); `500` on failure.
+- **Errors:** `400` invalid date; `500` on failure. Both send `data: null`.
 - **Query:** `getGamesByDate(date)` — joins `games` + home/away `teams` + latest
   `fatigue_scores` per side, filtered to `game_type = 'regular'`; also computes per-team
   `is4In6` and games-in-last-30 in JS, then builds `homeFatigue`/`awayFatigue`
@@ -140,6 +149,13 @@ the `predictions` table.**
 - **Constants:** `NEUTRAL_THRESHOLD = 0.5`, `THRESHOLDS = [2, 3, 5, 7]`.
 - **Computation:** for each game `differential = awayFatigue − homeFatigue`, rested side =
   home if `≥ 0` else away, `restedTeamWon` from the final score. "Decidable" = `|diff| ≥ 0.5`.
+- **Held until a game goes final.** The read has no `LIMIT` — it is every final regular-season
+  game with fatigue on both sides — so `getHistoricalBacktest`
+  (`src/lib/rest-advantage-evidence-server.ts`) keeps its answer keyed by `seasonMinRA` and
+  discards it when `getCompletedGamesStamp()` (a `count` + `max(date)` over final regular-season
+  games) changes. Three client surfaces request this payload; without that, each request
+  re-read and re-reduced the whole set. The cache is per server instance and bounded, because
+  `seasonMinRA` arrives from a query string.
 - **Success:** `{ data: AnalysisResponse, error: null }`:
   - `totalGames`, `overallWins`, `overallWinRate`
   - `thresholds: ThresholdBucket[]` (one per `[2,3,5,7]`: `threshold, games, restedTeamWins,

@@ -31,12 +31,14 @@ Test files and coverage:
 | `src/lib/__tests__/nba-season.test.ts` | `pickDefaultGamesDate` (today/postseason/October-start cases), `formatLocalDateKey` and `formatEasternDateKey` (US/Eastern, viewer-timezone-independent), `currentDisplaySeason`, and `isNbaOffSeason`. |
 | `src/lib/__tests__/rest-advantage-display.test.ts` | `formatRestAdvantageDisplay` team/neutral labeling + one-decimal formatting, and `buildRestAdvantageEvidence`: cumulative-bucket selection (a 4.1 gap resolves to "3 or more", **not** the RA≥5 rate), threshold boundaries, the sub-2 overall fallback, the 0.5 call boundary, zero-denominator refusal, and signed counterfactual wording. Discriminating: sorting the cleared buckets ascending fails exactly the two selection tests. |
 | `src/lib/__tests__/game-slate-machine.test.ts` | The game-slate reducer (25 cases): the month deriving from `selectedDate` across month and year boundaries, `MONTH_SELECTED` resolving from memory without re-entering `loadingDays`, stale slate responses being dropped, `slateEmpty` vs `slateError` separation, season invalidation, no-op events returning the same state **by identity**, `monthTabs` counting never-played months as `dayCount: 0`, and `calendarView` being total over all seven statuses — the property the old `errorGames ?? errorDates` bug violated. Discriminating: removing the stale-response guard fails 1 test; storing the month instead of deriving it fails 6. Runs in the `node` environment with no DOM, because the reducer has no React in it. |
+| `src/lib/__tests__/explore-games-machine.test.ts` | The Explore Games reducer and selectors (19 cases): every filter change returning to page 1, `FILTERS_CLEARED` clearing all four at once, the drill signal applying **once per token** so a stale signal cannot fight a later change while a repeat click on the same bar still applies, page clamping in both directions and against an empty result set, `pageWindow` reporting the 1-based inclusive range (and nothing at all rather than "1–0 of 0"), `exploreSearchKey` omitting inactive filters, and the detail modal's id/open pair moving together. No DOM — the machine has no React in it. |
+| `src/lib/__tests__/rest-advantage-evidence-server.test.ts` | The backtest cache: the expensive read happening once while `getCompletedGamesStamp()` is unchanged, repeating as soon as it moves, keyed per `seasonMinRA`, and bounded against arbitrary thresholds from the query string. Discriminating: removing the cache read fails two cases, removing the stamp comparison fails the third. |
 | `src/lib/__tests__/team-history.test.ts` | `getTeamBranding` historical eras (SEA/NJN/VAN/NOH/Bobcats/Bullets), current-era logos, fallback behavior. |
 | `src/lib/__tests__/fetcher.test.ts` | `apiFetcher` success envelopes, safe API errors, non-JSON HTTP failures, malformed envelopes. |
 | `src/lib/__tests__/rest-advantage-evidence.test.ts` | Canonical neutral boundary, historical backtest aggregation, game-explorer outcome filtering/pagination. |
 | `src/lib/__tests__/live-score-sync.test.ts` | Scoreboard ID/status normalization and changed-row-only reconciliation. |
 | `src/lib/__tests__/daily-refresh.test.ts` | Per-game failure isolation/continuation and neutral open-prediction replacement. |
-| `src/app/api/__tests__/analysis.test.ts` | `GET /api/analysis` payload shape, percentage bounds, threshold ordering `[2,3,5,7]`, `seasonMinRA=7` filtering. Mocks `@/lib/db/queries`. |
+| `src/app/api/__tests__/analysis.test.ts` | `GET /api/analysis` payload shape, percentage bounds, threshold ordering `[2,3,5,7]`, `seasonMinRA=7` filtering. Mocks `@/lib/db/queries`, and gives each case a distinct stamp so the backtest cache never answers one case from another's rows. |
 | `src/app/api/__tests__/games-dates.test.ts` | `GET /api/games/dates` Zod validation (missing/invalid season, invalid month) + query delegation. Mocks `@/lib/db/queries`. |
 | `src/app/api/__tests__/games.test.ts` | `GET /api/games/[date]` valid/invalid dates, empty results, `GameResponse` shape. Mocks `@/lib/db/queries`. |
 | `src/app/api/__tests__/games-search.test.ts` | `GET /api/games/search` defaults, validation, and query delegation. |
@@ -52,7 +54,11 @@ Test files and coverage:
 | `src/components/__tests__/schedule-disparity-format.test.ts` | `formatSignedDays` / `formatSignedRate`: a plus on favorable edges, a typographic minus rather than a hyphen, an exactly even schedule as a bare unsigned zero, two decimals on the rate (the whole league fits inside roughly ±0.65, so one decimal would collapse distinct teams together), an em dash rather than a zero for a missing fatigue edge, and never a negative zero. |
 
 API route tests `vi.mock("@/lib/db/queries")`, so they exercise validation + response
-shaping without a real database. These should pass against the current code.
+shaping without a real database. They call the route's exported `GET` with a real
+`NextRequest`, because `jsonRoute` (`src/lib/api-route.ts`) reads `req.nextUrl` — one parsing
+path for every route, rather than each test faking whichever shape its route happened to use.
+A 4xx/5xx now carries `data: null`, not an empty value of `T`. These should pass against the
+current code.
 
 The stdlib `unittest` suite at `scripts/tests/test_schedule_upsert_contract.py` characterizes
 the intentional source-authority split between CDN schedule rows and Stats API result rows.

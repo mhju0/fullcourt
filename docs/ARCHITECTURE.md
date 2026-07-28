@@ -34,7 +34,7 @@ the discrepancy is called out.
 │ src/lib/db (Drizzle + postgres-js, lazy singleton)                                 │
 │   └─ src/lib/db/queries.ts  ── typed, aliased multi-table joins                    │
 │        ▲                                                                            │
-│ app/api/**/route.ts  ── Zod-validated, { data, error } envelope                    │
+│ app/api/**/route.ts  ── schema + operation, via jsonRoute (src/lib/api-route.ts)   │
 │        ▲                                                                            │
 │ Server pages (analysis/page.tsx, playoffs/page.tsx) → dynamic client components   │
 │ Client page app/page.tsx + SWR (src/lib/fetcher.ts) + Supabase Realtime hook       │
@@ -108,9 +108,14 @@ cached on `globalThis` to survive HMR/serverless reuse.
 ### 5. API (Next.js route handlers, `src/app/api/`)
 
 Eleven `route.ts` handlers, all `GET`, all returning `{ data, error }` (cron adds `meta`).
-Inputs validated with Zod; DB access goes through `src/lib/db/queries.ts`. DB-backed routes
-set `export const runtime = "nodejs"` and `dynamic = "force-dynamic"` to avoid build-time
-prerender and Edge (postgres-js needs Node). Full list in [API.md](API.md).
+Nine of them are one call to `jsonRoute` (`src/lib/api-route.ts`) with a Zod schema and an
+operation: the module owns param reading, validation, the 400, the 500 and the logging, so
+those five decisions are made once rather than per route. `/api/health` and `/api/cron/update`
+keep their own contracts and stay outside it. `data` is `null` on any error — the envelope is
+a discriminated union, not a nullable `error` beside a `T` that isn't there. DB access goes
+through `src/lib/db/queries.ts`. DB-backed routes set `export const runtime = "nodejs"` and
+`dynamic = "force-dynamic"` to avoid build-time prerender and Edge (postgres-js needs Node).
+Full list in [API.md](API.md).
 
 ### 6. Frontend (Next.js App Router + React 19)
 
@@ -206,6 +211,31 @@ the row change → connected clients update in place.
   making its state unnameable. Keeping the reducer free of React is what lets it be unit-tested
   (25 cases) **without adding a DOM environment or `@testing-library`** — the dependency tree
   stays frozen. Three designs were generated and compared first; the shipped one is a synthesis.
+- **Architecture pass: five deepenings (2026-07-28):** each collapses a shape that had been
+  duplicated per caller.
+  1. **One request module for the ten read routes** (`lib/api-route.ts`). The handlers were
+     shallow — parse, validate, 400, 500, log was larger than the operation — and had drifted
+     into six copies of the season validator and six fallback messages. `ApiResponse<T>` became
+     a discriminated union: it had declared `data` non-null while every error path wrote
+     `null as unknown as T`, and `/api/games/search` returned a successful-looking
+     `{ games: [], total: 0 }` that a client ignoring `error` would read as zero results.
+     `PublicApiError` had been defined and tested but never thrown; `jsonRoute` honours it and
+     `/api/game/[id]` uses it for its 404.
+  2. **One game-with-fatigue read** (`queries.ts`). `getGamesByDate` and `getGameById` each had
+     their own 40-column projection and their own fatigue dedup — LATERAL in one, DISTINCT ON in
+     the other — held equal by a comment. Both now go through `selectGamesWithFatigue`, and the
+     row type is derived from that query rather than hand-declared as a third copy of the column
+     list. `readFatigueSide` is the only place `decimal`-as-string stops being true. Verified
+     against the live DB: 60 recent games read both ways, 0 mismatches.
+  3. **The backtest holds its answer** until a game goes final (see §5 and API.md) — the read has
+     no `LIMIT` and three surfaces ask for it.
+  4. **Explore Games got the reducer treatment** the game slate already had —
+     `lib/explore-games-machine.ts` + `hooks/useExploreGames.ts`. It was carrying the same eight
+     `useState` values and render-time reconciliation the slate work deleted, with the search URL
+     and pagination arithmetic assembled where no test could reach them.
+  5. **One `PageHeader`, one `lazyContent`.** `PageHeader` had two hand-maintained copies of its
+     markup; the seven `*-lazy` modules each restated `dynamic(..., { ssr: false })` around the
+     one part that differs.
 - **Nav renamed to plain-noun tabs (2026-07-27):** `GAMES`, `SCHEDULE EDGE`,
   `MODEL RESULTS`, `PLAYOFF PREDICTIONS`, `SHOT VALUE` — joined by `REST & SHOOTING` when
   `/shooting` shipped (2026-07-28). That one is qualified rather than bare `SHOOTING`, because
