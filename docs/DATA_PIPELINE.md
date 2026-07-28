@@ -402,6 +402,42 @@ Logos: **historical** eras use ESPN PNGs
 (`cdn.nba.com/logos/nba/{nbaId}/global/L/logo.svg`) where `nbaId` comes from
 `src/lib/nba-team-ids.ts` (which also maps the historical codes to their franchise IDs).
 
+## Shooting by Rest pipeline — the `/shooting` player database
+
+A **separate, isolated** path, like Shot Quality above: run manually from **`ml/.venv`**, never
+part of `daily_update.py`, and it writes **nothing to Postgres**. It reads `games.date` and
+nothing else from the database, on a read-only connection. Source and licensing rationale:
+[adr/0002-shooting-source-hoopr.md](adr/0002-shooting-source-hoopr.md).
+
+### `scripts/fetch_shooting_data.py` — per-game box scores + rosters
+Downloads three hoopR datasets (`player_boxscores`, `rosters`, `team_boxscores`) for 1996-97
+onward from the sportsdataverse GitHub release CDN into the gitignored `ml/data/shooting/`.
+MIT-licensed, static, unauthenticated, and its `game_id` **is** our `games.external_id`.
+`--force` re-downloads; `--only <dataset>` fetches one.
+
+### `scripts/export_player_rest.py` — the served payload
+Joins those box scores to `games.date`, derives each player's **own** rest (days since the last
+game *he played*, so a night off for load management is never credited to him as rest) and his
+age at tip-off, then writes `public/data/player-rest.json` — around 730 KB, ~264 KB over the
+wire, as columnar arrays.
+
+Two properties the page depends on, both enforced here:
+
+- **No minimum-attempts gate on seasons.** The page prints a `Career` row summed from the
+  seasons listed under it, so every season a player appeared in has to be present or the total
+  would not equal its own column. Volume filtering belongs in the UI, and lives there.
+- **Each split arm is recorded independently.** Requiring both arms to be non-empty before
+  writing either one silently dropped seasons with rested attempts but no back-to-back ones,
+  which put 294 career arms out of step with the seasons beneath them.
+
+Career deltas ship pre-shrunk (empirical Bayes, `w = tau^2 / (tau^2 + se^2)`) because the
+weighting needs the whole league pool, which a single browser session does not have. Everything
+else — games, attempts, eFG%, both arms — the page re-derives from the season rows.
+
+Re-run after a season ends, then commit the regenerated JSON. 2019-20 is absent because `games`
+excludes the Orlando bubble league-wide (see `scripts/fetch_schedule.py`): no normal travel, so
+no rest to measure.
+
 ## Cron cadence
 
 | Scheduler | File | Schedule | Notes |

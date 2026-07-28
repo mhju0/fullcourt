@@ -122,9 +122,12 @@ prerender and Edge (postgres-js needs Node). Full list in [API.md](API.md).
   to `/` in `next.config.ts`). The browsing state machine lives in `hooks/useGameSlate.ts` over
   the pure reducer `lib/game-slate-machine.ts` — see the decision entry below.
 - `app/analysis/page.tsx` / `app/playoffs/page.tsx` /
-  `app/schedule/page.tsx` / `app/shot-quality/page.tsx` — thin server wrappers that render client content via
-  `next/dynamic` (`ssr: false`) with skeleton fallbacks.
-- `app/about/page.tsx` — **the landing / explainer page**, outside the five product surfaces.
+  `app/schedule/page.tsx` / `app/shot-quality/page.tsx` / `app/shooting/page.tsx` — thin server
+  wrappers that render client content via `next/dynamic` (`ssr: false`) with skeleton fallbacks.
+  `/shooting` is the one surface fed by a **static asset** (`public/data/player-rest.json`) rather
+  than an API route: its export changes once a season, so a Postgres round trip could only ever
+  return the same numbers.
+- `app/about/page.tsx` — **the landing / explainer page**, outside the product surfaces.
   Serves no data and touches no query; visuals are CSS and inline SVG only, so `img-src` did
   not have to widen. GSAP is imported *inside* an effect, keeping it out of the shared bundle.
 - Client data fetching uses SWR through `src/lib/fetcher.ts`; live updates use Supabase
@@ -203,8 +206,11 @@ the row change → connected clients update in place.
   making its state unnameable. Keeping the reducer free of React is what lets it be unit-tested
   (25 cases) **without adding a DOM environment or `@testing-library`** — the dependency tree
   stays frozen. Three designs were generated and compared first; the shipped one is a synthesis.
-- **Nav renamed to five plain-noun tabs (2026-07-27):** `GAMES`, `SCHEDULE EDGE`,
-  `MODEL RESULTS`, `PLAYOFF PREDICTIONS`, `SHOT VALUE`. The old six mixed three naming axes —
+- **Nav renamed to plain-noun tabs (2026-07-27):** `GAMES`, `SCHEDULE EDGE`,
+  `MODEL RESULTS`, `PLAYOFF PREDICTIONS`, `SHOT VALUE` — joined by `REST & SHOOTING` when
+  `/shooting` shipped (2026-07-28). That one is qualified rather than bare `SHOOTING`, because
+  `SHOT VALUE` is also about shooting and the two would have read as near-synonyms side by side.
+  The old six mixed three naming axes —
   time (`TODAY'S GAMES`, `UPCOMING EDGES`), method (`ANALYSIS`, `SHOT QUALITY`) and domain
   (`PLAYOFFS`, `SCHEDULE`) — and collided twice. `/upcoming` was folded into `GAMES` as a view
   toggle rather than kept as a sixth tab, since it and `/` render the same object under

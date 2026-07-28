@@ -77,6 +77,13 @@ edge) live in each page's eyebrow, where surrounding context decodes them.
   rest-advantage threshold and by season, home/away splits, and a filterable game explorer.
 - **Playoff Predictions** (`/playoffs`) — series-winner predictions from rest/fatigue-derived features, showing walk-forward out-of-sample accuracy next to in-sample as an honest overfitting check.
 - **Shot Value** (`/shot-quality`, Expected Shot Value / xeFG%) — a half-court hexbin map of expected effective FG% per grid cell, comparing a location-only gradient-boosted model against a zone-average baseline. Honest framing: public NBA data has no defender distance or shot-clock signal, so this is shot-**location** value only, and the model's edge over the baseline is a small calibration win (~1% on log-loss / Brier), not a large accuracy jump.
+- **Rest & Shooting** (`/shooting`) — a browsable database of every player's eFG% on zero rest
+  against three or more days off, for any season since 1996-97 or pooled across a career. Rest is
+  the player's **own**, counted from the games he actually played, so a night off for load
+  management is never credited to him as rest. Honest framing: a single season's split carries a
+  standard error near 7 pp and correlates with the same player's next season at roughly zero, so
+  the page is a lookup rather than a ranking — a season describes what happened, and only the
+  career line, shrunk toward the league mean, supports a claim.
 
 Each analytics module is **additive and isolated** — its own scripts, tables, routes, and page — so new modules never destabilize the flagship rest-advantage flow.
 
