@@ -1,5 +1,5 @@
 import { format, parseISO, subDays } from "date-fns";
-import { and, asc, desc, eq, gte, inArray, isNotNull, isNull, lt, lte, or, sql } from "drizzle-orm";
+import { and, asc, desc, eq, gte, inArray, isNotNull, isNull, lt, lte, or, sql, type SQL } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
 import { db } from "./index";
 import {
@@ -38,28 +38,50 @@ import type {
   UpcomingGameWithRA,
 } from "@/types";
 
+/**
+ * The fatigue columns every read selects. Written once: the DISTINCT ON and the
+ * correlated LATERAL below must return the same shape or they are not
+ * interchangeable.
+ */
+const FATIGUE_COLUMNS = {
+  gameId: fatigueScores.gameId,
+  teamId: fatigueScores.teamId,
+  score: fatigueScores.score,
+  isBackToBack: fatigueScores.isBackToBack,
+  gamesInLast7Days: fatigueScores.gamesInLast7Days,
+  travelDistanceMiles: fatigueScores.travelDistanceMiles,
+  altitudeMultiplier: fatigueScores.altitudeMultiplier,
+  daysSinceLastGame: fatigueScores.daysSinceLastGame,
+  isOvertimePenalty: fatigueScores.isOvertimePenalty,
+  roadTripConsecutiveAway: fatigueScores.roadTripConsecutiveAway,
+  hasCoastToCoastRoadSwing: fatigueScores.hasCoastToCoastRoadSwing,
+};
+
 /** One fatigue row per (game, team), preferring the most recently computed. */
 function latestFatigueSubquery(alias: string) {
   return db
-    .selectDistinctOn(
-      [fatigueScores.gameId, fatigueScores.teamId],
-      {
-        gameId: fatigueScores.gameId,
-        teamId: fatigueScores.teamId,
-        score: fatigueScores.score,
-        isBackToBack: fatigueScores.isBackToBack,
-        gamesInLast7Days: fatigueScores.gamesInLast7Days,
-        travelDistanceMiles: fatigueScores.travelDistanceMiles,
-        altitudeMultiplier: fatigueScores.altitudeMultiplier,
-        daysSinceLastGame: fatigueScores.daysSinceLastGame,
-        isOvertimePenalty: fatigueScores.isOvertimePenalty,
-        roadTripConsecutiveAway: fatigueScores.roadTripConsecutiveAway,
-        hasCoastToCoastRoadSwing: fatigueScores.hasCoastToCoastRoadSwing,
-      }
-    )
+    .selectDistinctOn([fatigueScores.gameId, fatigueScores.teamId], FATIGUE_COLUMNS)
     .from(fatigueScores)
     .orderBy(fatigueScores.gameId, fatigueScores.teamId, desc(fatigueScores.computedAt))
     .as(alias);
+}
+
+/**
+ * Same rows as `latestFatigueSubquery`, one index seek per game/side instead of
+ * deduplicating the whole `fatigue_scores` table. `computed_at DESC` is the only
+ * tie-break — do not add a secondary sort key, or the two stop agreeing.
+ */
+function latestFatigueLateral(
+  teamIdColumn: typeof games.homeTeamId | typeof games.awayTeamId,
+  subqueryAlias: string
+) {
+  return db
+    .select(FATIGUE_COLUMNS)
+    .from(fatigueScores)
+    .where(and(eq(fatigueScores.gameId, games.id), eq(fatigueScores.teamId, teamIdColumn)))
+    .orderBy(desc(fatigueScores.computedAt))
+    .limit(1)
+    .as(subqueryAlias);
 }
 
 /**
@@ -151,46 +173,17 @@ async function computeIs4In6Map(
 }
 
 /**
- * Returns all games scheduled for a given date (YYYY-MM-DD), with full team
- * info and pre-computed fatigue scores for both sides.
+ * The one game-with-fatigue read. Both public entry points — a date's slate and a
+ * single game — differ only in their `where`, so they share this projection
+ * rather than keeping two column lists that have to be held equal by hand.
  */
-export async function getGamesByDate(date: string): Promise<GameResponse[]> {
+function selectGamesWithFatigue(where: SQL | undefined) {
   const homeTeam = alias(teams, "home_team");
   const awayTeam = alias(teams, "away_team");
-  // Correlated LATERAL replacement for latestFatigueSubquery: one index seek per
-  // game/side instead of deduplicating the whole fatigue_scores table. Must stay
-  // result-identical to DISTINCT ON (game_id, team_id) ... ORDER BY computed_at DESC:
-  // same 11 columns, LEFT join (fatigue-less game → null side), and computed_at DESC
-  // as the only tie-break — do not add a secondary sort key.
-  const latestFatigueLateral = (
-    teamIdColumn: typeof games.homeTeamId | typeof games.awayTeamId,
-    subqueryAlias: string
-  ) =>
-    db
-      .select({
-        gameId: fatigueScores.gameId,
-        teamId: fatigueScores.teamId,
-        score: fatigueScores.score,
-        isBackToBack: fatigueScores.isBackToBack,
-        gamesInLast7Days: fatigueScores.gamesInLast7Days,
-        travelDistanceMiles: fatigueScores.travelDistanceMiles,
-        altitudeMultiplier: fatigueScores.altitudeMultiplier,
-        daysSinceLastGame: fatigueScores.daysSinceLastGame,
-        isOvertimePenalty: fatigueScores.isOvertimePenalty,
-        roadTripConsecutiveAway: fatigueScores.roadTripConsecutiveAway,
-        hasCoastToCoastRoadSwing: fatigueScores.hasCoastToCoastRoadSwing,
-      })
-      .from(fatigueScores)
-      .where(
-        and(eq(fatigueScores.gameId, games.id), eq(fatigueScores.teamId, teamIdColumn))
-      )
-      .orderBy(desc(fatigueScores.computedAt))
-      .limit(1)
-      .as(subqueryAlias);
   const homeFatigue = latestFatigueLateral(games.homeTeamId, "home_fatigue_latest");
   const awayFatigue = latestFatigueLateral(games.awayTeamId, "away_fatigue_latest");
 
-  const rows = await db
+  return db
     .select({
       // Game
       id: games.id,
@@ -237,61 +230,47 @@ export async function getGamesByDate(date: string): Promise<GameResponse[]> {
     .innerJoin(awayTeam, eq(games.awayTeamId, awayTeam.id))
     .leftJoinLateral(homeFatigue, sql`true`)
     .leftJoinLateral(awayFatigue, sql`true`)
-    .where(and(eq(games.date, date), eq(games.gameType, "regular")))
+    .where(where)
     // The pre-LATERAL query had no ORDER BY, but its plan happened to emit rows in
     // away-team-id order and the home page renders cards in array order. Pin that
     // order so the rewrite is response-identical. A team plays at most one game per
     // date, so away_team_id is a unique sort key here.
     .orderBy(asc(games.awayTeamId));
+}
 
+/** Derived, not re-declared: a third copy of the column list could drift from the query. */
+type GameFatigueJoinRow = Awaited<ReturnType<typeof selectGamesWithFatigue>>[number];
+
+/**
+ * Attaches the two schedule-density figures the projection cannot join and maps
+ * to the response shape.
+ *
+ * Precondition: every row shares one game date — both callers query a single
+ * date — so the density lookups run once rather than per row.
+ */
+async function toGameResponses(rows: GameFatigueJoinRow[]): Promise<GameResponse[]> {
+  if (rows.length === 0) return [];
+
+  const date = String(rows[0].date);
   const teamIds = rows.flatMap((r) => [r.homeTeamId, r.awayTeamId]);
   const [is4In6Map, games30Map] = await Promise.all([
     computeIs4In6Map(date, teamIds),
     getTeamGameCountsInDaysBefore(date, teamIds, 30),
   ]);
 
-  return rows.map((row) =>
-    mapJoinedRowToGameResponse(row, is4In6Map, games30Map)
-  );
+  return rows.map((row) => mapJoinedRowToGameResponse(row, is4In6Map, games30Map));
 }
 
-/** Shared row shape from getGamesByDate / getGameById joins. */
-type GameFatigueJoinRow = {
-  id: number;
-  externalId: string;
-  date: string;
-  season: string;
-  status: string;
-  homeScore: number | null;
-  awayScore: number | null;
-  homeTeamId: number;
-  awayTeamId: number;
-  homeTeamName: string;
-  homeTeamAbbreviation: string;
-  homeTeamCity: string;
-  homeTeamAltitude: boolean;
-  awayTeamName: string;
-  awayTeamAbbreviation: string;
-  awayTeamCity: string;
-  homeFatigueScore: string | null;
-  homeIsBackToBack: boolean | null;
-  homeGamesInLast7Days: number | null;
-  homeTravelDistanceMiles: string | null;
-  homeAltitudeMultiplier: string | null;
-  homeDaysSinceLastGame: number | null;
-  homeIsOvertimePenalty: boolean | null;
-  homeRoadTripConsecutiveAway: number | null;
-  homeHasCoastToCoastRoadSwing: boolean | null;
-  awayFatigueScore: string | null;
-  awayIsBackToBack: boolean | null;
-  awayGamesInLast7Days: number | null;
-  awayTravelDistanceMiles: string | null;
-  awayAltitudeMultiplier: string | null;
-  awayDaysSinceLastGame: number | null;
-  awayIsOvertimePenalty: boolean | null;
-  awayRoadTripConsecutiveAway: number | null;
-  awayHasCoastToCoastRoadSwing: boolean | null;
-};
+/**
+ * Returns all games scheduled for a given date (YYYY-MM-DD), with full team
+ * info and pre-computed fatigue scores for both sides.
+ */
+export async function getGamesByDate(date: string): Promise<GameResponse[]> {
+  const rows = await selectGamesWithFatigue(
+    and(eq(games.date, date), eq(games.gameType, "regular"))
+  );
+  return toGameResponses(rows);
+}
 
 function mapJoinedRowToGameResponse(
   row: GameFatigueJoinRow,
@@ -299,13 +278,7 @@ function mapJoinedRowToGameResponse(
   games30Map: Map<number, number>
 ): GameResponse {
   const homeFatigueData = buildFatigueInfo(
-    row.homeFatigueScore,
-    row.homeIsBackToBack,
-    row.homeGamesInLast7Days,
-    row.homeDaysSinceLastGame,
-    row.homeTravelDistanceMiles,
-    row.homeAltitudeMultiplier,
-    row.homeIsOvertimePenalty,
+    readFatigueSide(row, "home"),
     {
       gamesInLast30Days: games30Map.get(row.homeTeamId) ?? 0,
       is4In6: is4In6Map.get(row.homeTeamId) ?? false,
@@ -320,13 +293,7 @@ function mapJoinedRowToGameResponse(
   );
 
   const awayFatigueData = buildFatigueInfo(
-    row.awayFatigueScore,
-    row.awayIsBackToBack,
-    row.awayGamesInLast7Days,
-    row.awayDaysSinceLastGame,
-    row.awayTravelDistanceMiles,
-    row.awayAltitudeMultiplier,
-    row.awayIsOvertimePenalty,
+    readFatigueSide(row, "away"),
     {
       gamesInLast30Days: games30Map.get(row.awayTeamId) ?? 0,
       is4In6: is4In6Map.get(row.awayTeamId) ?? false,
@@ -372,73 +339,10 @@ function mapJoinedRowToGameResponse(
  * Single regular-season game by primary key (for detail modal / deep links).
  */
 export async function getGameById(id: number): Promise<GameResponse | null> {
-  const homeTeam = alias(teams, "home_team");
-  const awayTeam = alias(teams, "away_team");
-  const homeFatigue = latestFatigueSubquery("home_fatigue_latest");
-  const awayFatigue = latestFatigueSubquery("away_fatigue_latest");
-
-  const rows = await db
-    .select({
-      id: games.id,
-      externalId: games.externalId,
-      date: games.date,
-      season: games.season,
-      status: games.status,
-      homeScore: games.homeScore,
-      awayScore: games.awayScore,
-      homeTeamId: games.homeTeamId,
-      awayTeamId: games.awayTeamId,
-      homeTeamName: homeTeam.name,
-      homeTeamAbbreviation: homeTeam.abbreviation,
-      homeTeamCity: homeTeam.city,
-      homeTeamAltitude: homeTeam.altitudeFlag,
-      awayTeamName: awayTeam.name,
-      awayTeamAbbreviation: awayTeam.abbreviation,
-      awayTeamCity: awayTeam.city,
-      homeFatigueScore: homeFatigue.score,
-      homeIsBackToBack: homeFatigue.isBackToBack,
-      homeGamesInLast7Days: homeFatigue.gamesInLast7Days,
-      homeTravelDistanceMiles: homeFatigue.travelDistanceMiles,
-      homeAltitudeMultiplier: homeFatigue.altitudeMultiplier,
-      homeDaysSinceLastGame: homeFatigue.daysSinceLastGame,
-      homeIsOvertimePenalty: homeFatigue.isOvertimePenalty,
-      homeRoadTripConsecutiveAway: homeFatigue.roadTripConsecutiveAway,
-      homeHasCoastToCoastRoadSwing: homeFatigue.hasCoastToCoastRoadSwing,
-      awayFatigueScore: awayFatigue.score,
-      awayIsBackToBack: awayFatigue.isBackToBack,
-      awayGamesInLast7Days: awayFatigue.gamesInLast7Days,
-      awayTravelDistanceMiles: awayFatigue.travelDistanceMiles,
-      awayAltitudeMultiplier: awayFatigue.altitudeMultiplier,
-      awayDaysSinceLastGame: awayFatigue.daysSinceLastGame,
-      awayIsOvertimePenalty: awayFatigue.isOvertimePenalty,
-      awayRoadTripConsecutiveAway: awayFatigue.roadTripConsecutiveAway,
-      awayHasCoastToCoastRoadSwing: awayFatigue.hasCoastToCoastRoadSwing,
-    })
-    .from(games)
-    .innerJoin(homeTeam, eq(games.homeTeamId, homeTeam.id))
-    .innerJoin(awayTeam, eq(games.awayTeamId, awayTeam.id))
-    .leftJoin(
-      homeFatigue,
-      and(eq(homeFatigue.gameId, games.id), eq(homeFatigue.teamId, games.homeTeamId))
-    )
-    .leftJoin(
-      awayFatigue,
-      and(eq(awayFatigue.gameId, games.id), eq(awayFatigue.teamId, games.awayTeamId))
-    )
-    .where(and(eq(games.id, id), eq(games.gameType, "regular")))
-    .limit(1);
-
-  const row = rows[0];
-  if (!row) return null;
-
-  const dateStr = String(row.date);
-  const teamIds = [row.homeTeamId, row.awayTeamId];
-  const [is4In6Map, games30Map] = await Promise.all([
-    computeIs4In6Map(dateStr, teamIds),
-    getTeamGameCountsInDaysBefore(dateStr, teamIds, 30),
-  ]);
-
-  return mapJoinedRowToGameResponse(row, is4In6Map, games30Map);
+  const rows = await selectGamesWithFatigue(
+    and(eq(games.id, id), eq(games.gameType, "regular"))
+  );
+  return (await toGameResponses(rows))[0] ?? null;
 }
 
 /**
@@ -685,18 +589,59 @@ type FatigueScheduleExtras = {
   hasCoastToCoastRoadSwing: boolean;
 };
 
-/** Builds a FatigueInfo object from raw DB columns, or returns null if no fatigue data exists. */
+/**
+ * One side's fatigue columns, already numeric.
+ *
+ * `decimal` columns arrive from postgres as strings. Reading them into this
+ * shape is the only place that stops being true, so nothing downstream —
+ * including this file — parses a fatigue figure again.
+ */
+type FatigueSideValues = {
+  score: number | null;
+  isBackToBack: boolean | null;
+  gamesInLast7Days: number | null;
+  daysSinceLastGame: number | null;
+  travelDistanceMiles: number;
+  altitudeMultiplier: number;
+  isOvertimePenalty: boolean | null;
+};
+
+function readFatigueSide(row: GameFatigueJoinRow, side: "home" | "away"): FatigueSideValues {
+  const f = side === "home"
+    ? {
+        score: row.homeFatigueScore,
+        isBackToBack: row.homeIsBackToBack,
+        gamesInLast7Days: row.homeGamesInLast7Days,
+        daysSinceLastGame: row.homeDaysSinceLastGame,
+        travelDistanceMiles: row.homeTravelDistanceMiles,
+        altitudeMultiplier: row.homeAltitudeMultiplier,
+        isOvertimePenalty: row.homeIsOvertimePenalty,
+      }
+    : {
+        score: row.awayFatigueScore,
+        isBackToBack: row.awayIsBackToBack,
+        gamesInLast7Days: row.awayGamesInLast7Days,
+        daysSinceLastGame: row.awayDaysSinceLastGame,
+        travelDistanceMiles: row.awayTravelDistanceMiles,
+        altitudeMultiplier: row.awayAltitudeMultiplier,
+        isOvertimePenalty: row.awayIsOvertimePenalty,
+      };
+
+  return {
+    ...f,
+    score: f.score === null ? null : parseFloat(f.score),
+    travelDistanceMiles: parseFloat(f.travelDistanceMiles ?? "0"),
+    altitudeMultiplier: parseFloat(f.altitudeMultiplier ?? "1"),
+  };
+}
+
+/** Builds a FatigueInfo object from one side's columns, or null if that side has no fatigue row. */
 function buildFatigueInfo(
-  score: string | null,
-  isBackToBack: boolean | null,
-  gamesInLast7Days: number | null,
-  daysSinceLastGame: number | null,
-  travelDistanceMiles: string | null,
-  altitudeMultiplier: string | null,
-  isOvertimePenalty: boolean | null,
+  fatigue: FatigueSideValues,
   extras: FatigueScheduleExtras,
   ctx: FatigueInfoContext
 ): FatigueInfo | null {
+  const { score, isBackToBack, gamesInLast7Days, daysSinceLastGame, isOvertimePenalty } = fatigue;
   if (score === null) return null;
 
   const g7 = gamesInLast7Days ?? 0;
@@ -704,17 +649,17 @@ function buildFatigueInfo(
   const is3In4Approx =
     g7 >= 3 && dRest !== null && dRest <= 2;
 
-  const altitudePenalty = parseFloat(altitudeMultiplier ?? "1") > 1.0;
+  const altitudePenalty = fatigue.altitudeMultiplier > 1.0;
   const altitudeArenaLabel =
     ctx.side === "away" && altitudePenalty && ctx.homeAltitudeFlag
       ? `${ctx.homeTeamCity} (altitude)`
       : null;
 
   return {
-    score: parseFloat(score),
+    score,
     isBackToBack: isBackToBack ?? false,
     is3In4: is3In4Approx,
-    travelDistanceMiles: parseFloat(travelDistanceMiles ?? "0"),
+    travelDistanceMiles: fatigue.travelDistanceMiles,
     altitudePenalty,
     altitudeArenaLabel,
     daysRest: daysSinceLastGame,
