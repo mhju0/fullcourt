@@ -129,22 +129,17 @@ describe("buildRestAdvantageEvidence", () => {
     ).toBeNull();
   });
 
-  it("states the counterfactual in the correct direction", () => {
+  it("signs the deviation in the correct direction", () => {
     const below: RestAdvantageEvidenceSource = {
       ...source,
       thresholds: [{ threshold: 2, games: 900, restedTeamWins: 405, winPct: 45.0 }],
     };
-    expect(buildRestAdvantageEvidence(3, below)?.sentence).toContain(
-      "5.0 points below a coin flip"
-    );
+    expect(buildRestAdvantageEvidence(3, below)?.deviation).toBe(-5);
 
     const level: RestAdvantageEvidenceSource = {
       ...source,
       thresholds: [{ threshold: 2, games: 900, restedTeamWins: 450, winPct: 50 }],
     };
-    expect(buildRestAdvantageEvidence(3, level)?.sentence).toContain(
-      "level with a coin flip"
-    );
     expect(buildRestAdvantageEvidence(3, level)?.deviation).toBe(0);
   });
 
@@ -152,13 +147,13 @@ describe("buildRestAdvantageEvidence", () => {
     expect(buildRestAdvantageEvidence(1.2, source)?.sentence).toContain("n = 39,412");
   });
 
-  it("states both the denominator and the counterfactual in every sentence", () => {
+  it("states the denominator, and no coin flip, in every sentence", () => {
     // The house rule, asserted directly.
     for (const diff of [0.6, 1.2, 2.5, 4.1, 6, 12]) {
       const ev = buildRestAdvantageEvidence(diff, source);
       expect(ev, `no evidence for ${diff}`).not.toBeNull();
       expect(ev!.sentence).toMatch(/n = [\d,]+/);
-      expect(ev!.sentence).toContain("coin flip");
+      expect(ev!.sentence).not.toContain("coin flip");
     }
   });
 });

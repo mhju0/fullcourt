@@ -99,13 +99,6 @@ export function buildRestAdvantageEvidence(
   if (games <= 0) return null;
 
   const deviation = Math.round((winPct - 50) * 10) / 10;
-  const magnitude = Math.abs(deviation).toFixed(1);
-  const counterfactual =
-    deviation > 0
-      ? `${magnitude} points above a coin flip`
-      : deviation < 0
-        ? `${magnitude} points below a coin flip`
-        : "level with a coin flip";
 
   const subject = cleared
     ? `Gaps of ${classLabel}`
@@ -120,6 +113,6 @@ export function buildRestAdvantageEvidence(
       cleared ? "have" : "has"
     } gone the rested team's way ${winPct.toFixed(
       1
-    )}% of the time — ${counterfactual} (n = ${games.toLocaleString("en-US")}).`,
+    )}% of the time (n = ${games.toLocaleString("en-US")}).`,
   };
 }
