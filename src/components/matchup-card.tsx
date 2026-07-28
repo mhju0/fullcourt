@@ -623,7 +623,10 @@ export function MatchupCard({
 
   return (
     <div
-      className="animate-[fadeInUp_0.4s_ease-out_forwards] flex flex-col transition-shadow hover:shadow-[0_12px_32px_-20px_rgba(0,0,0,0.28)]"
+      // The staggered entry and hover shadow were already here; the 2px lift and the
+      // border response are new. `motion-reduce` cancels the transform for the same
+      // reason globals.css neutralises the fadeInUp keyframe.
+      className="animate-[fadeInUp_0.4s_ease-out_forwards] flex flex-col transition-[box-shadow,transform,border-color] duration-200 hover:-translate-y-0.5 hover:border-[var(--term-hairline)] hover:shadow-[0_12px_32px_-20px_rgba(0,0,0,0.28)] motion-reduce:transition-none motion-reduce:hover:translate-y-0"
       style={{
         animationDelay: `${index * 40}ms`,
         background: "var(--term-surface)",

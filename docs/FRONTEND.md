@@ -6,9 +6,15 @@ the actual code (`src/app/`, `src/components/`, `src/app/globals.css`).
 ## App shell — `src/app/layout.tsx`
 
 - Fonts via `next/font/google`: **Inter** (`--font-inter`, weights 400/500/600 — body/sans),
-  **Outfit** (`--font-outfit`, weights 600/700 — headings, exposed as the `font-heading`
-  utility), and **IBM Plex Mono** (`--font-plex-mono`, weights 400/600/700 — all data, labels
-  and chart ticks). `<html>` gets all three font variables + `antialiased`.
+  **Space Grotesk** (`--font-space-grotesk`, weights 400/500/600/700 — headings, exposed as the
+  `font-heading` utility), and **IBM Plex Mono** (`--font-plex-mono`, weights 400/600/700 — all
+  data, labels and chart ticks). `<html>` gets all three font variables + `antialiased`.
+  - **Space Grotesk replaced Outfit (2026-07-28).** Outfit is geometric and reads heavy at the
+    sizes headings actually use — the page title carried the same visual weight as the stat
+    numbers below it. Space Grotesk sets a lighter line, so the base heading weight dropped
+    `font-bold` → `font-medium` in the same change. Outfit is **still bundled** under
+    `src/app/fonts/` for the OG card: that wordmark is a fixed brand asset, and a logotype does
+    not have to share the UI's display face. It is no longer downloaded by the client.
 - Metadata: title default `"FullCourt — NBA Analytics"`, template `"%s · FullCourt"`, plus
   a description.
 - Layout: `<NavBar />` (sticky), `<main>` with a centered `max-w-7xl` container
@@ -70,8 +76,10 @@ upcoming October date at season start; else nearest / last available).
   `StatSummaryRow` (GAMES ON THIS DATE, AVG REST ADV, **ALL-TIME WIN RATE** fetched live via
   `useSWR("/api/analysis")` — the same `overallWinRate` `/analysis` renders, shown as `—` while
   loading/on error, HIGH CONF GAMES where `HIGH_CONF_THRESHOLD = 2.0`); the shared
-  `<SeasonSelector>`; month tabs (from `slate.months`, disabled at `dayCount === 0`);
-  `DateChip`s ("DAYS WITH GAMES", pre-formatted by the hook);
+  a two-group control panel — **Scope** (`<SeasonSelector>` + month tabs from `slate.months`,
+  disabled at `dayCount === 0`) and **Day** (`DateChip`s pre-formatted by the hook, plus the
+  prev/next arrows). The old "DAYS WITH GAMES" caption is gone: the group is labelled, and each
+  chip states its own count;
   prev/next day arrows; the `MatchupCard` list with skeleton/empty/error states.
 - The first tile is **"GAMES ON THIS DATE"**, not "GAMES TODAY": its value is
   `mergedGames.length` for the *selected* day, and `pickDefaultGamesDate` deliberately selects
@@ -372,8 +380,9 @@ hard-code hexes.
 ### Typography
 
 - **Body / sans:** Inter (`--font-inter`).
-- **Headings (`h1–h3`):** Outfit (`--font-heading` / `font-heading` utility), bold + tight
-  tracking.
+- **Headings (`h1–h3`):** Space Grotesk (`--font-heading` / `font-heading` utility), **medium**
+  (500) + tight tracking (`-0.025em`). The base layer in `globals.css` supplies both, so pages
+  set only the size — a page heading should not need to restate weight or family.
 - **Data / labels:** the `.mono` class = `var(--font-plex-mono)` (**IBM Plex Mono**, loaded by
   `next/font/google` in `layout.tsx`) with a `ui-monospace` fallback, and
   `font-variant-numeric: tabular-nums` applied on the class itself. TS/TSX style objects that

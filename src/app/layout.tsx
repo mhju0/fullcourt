@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { IBM_Plex_Mono, Inter, Outfit } from "next/font/google";
+import { IBM_Plex_Mono, Inter, Space_Grotesk } from "next/font/google";
 import { NavBar } from "@/components/nav-bar";
 import { OnboardingGuide } from "@/components/onboarding-guide";
 import "./globals.css";
@@ -11,11 +11,18 @@ const inter = Inter({
   weight: ["400", "500", "600"],
 });
 
-const outfit = Outfit({
-  variable: "--font-outfit",
+// The display face. Replaces Outfit, whose geometric forms read heavy at the sizes
+// headings actually use — the page title was the same visual weight as its own stat
+// numbers. Space Grotesk carries a lighter colour at the same nominal weight, so the
+// base heading weight drops 700 → 500 in globals.css alongside this.
+//
+// Outfit is still bundled under src/app/fonts for the OG card: that wordmark is a
+// fixed brand asset, and a logotype does not have to share the UI's display face.
+const spaceGrotesk = Space_Grotesk({
+  variable: "--font-space-grotesk",
   subsets: ["latin"],
   display: "swap",
-  weight: ["600", "700"],
+  weight: ["400", "500", "600", "700"],
 });
 
 // The data face. Replaces 'Courier New', which set ~80% of the visible text and has
@@ -73,7 +80,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${outfit.variable} ${plexMono.variable} h-full antialiased`}
+      className={`${inter.variable} ${spaceGrotesk.variable} ${plexMono.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col font-sans text-foreground">
         <NavBar />

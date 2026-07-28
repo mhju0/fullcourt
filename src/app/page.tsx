@@ -33,15 +33,17 @@ function StatCard({ label, value, accent }: { label: string; value: string; acce
       style={{
         background: "var(--term-surface)",
         border: "1px solid var(--term-border)",
-        borderLeft: `2px solid ${accent}`,
+        // Top rule, not left: as a left border the four tiles read as a list with coloured
+        // bullets. Along the top edge they read as a row of measures, which is what they are.
+        borderTop: `2px solid ${accent}`,
         borderRadius: "var(--term-radius)",
-        padding: "12px 14px",
+        padding: "14px 14px 16px",
       }}
     >
-      <span style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 600 }}>
+      <span style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 500 }}>
         {label}
       </span>
-      <span className="tabular-nums" style={{ fontSize: 24, fontWeight: 600, color: "var(--term-text)", lineHeight: 1 }}>
+      <span className="tabular-nums" style={{ fontSize: 24, fontWeight: 500, letterSpacing: "-0.01em", color: "var(--term-text)", lineHeight: 1 }}>
         {value}
       </span>
     </div>
@@ -67,6 +69,28 @@ function StatSummaryRow({
       <StatCard label="AVG REST ADV" value={avgRestAdv} accent="var(--term-neutral)" />
       <StatCard label="ALL-TIME WIN RATE" value={seasonWinRate} accent="var(--term-blue)" />
       <StatCard label="HIGH CONF GAMES" value={String(highConfGames)} accent="var(--term-red)" />
+    </div>
+  )
+}
+
+// ─── Control-panel group label ───────────────────────────────────
+
+/** Names one group of controls inside the filter panel. 10px is the micro-label slot. */
+function GroupLabel({ children }: { children: React.ReactNode }) {
+  return (
+    <div
+      className="mono uppercase"
+      style={{
+        fontSize: 10,
+        letterSpacing: "0.1em",
+        fontWeight: 600,
+        color: "var(--term-text-muted)",
+        paddingBottom: 8,
+        marginBottom: 14,
+        borderBottom: "1px solid var(--term-surface-2)",
+      }}
+    >
+      {children}
     </div>
   )
 }
@@ -315,20 +339,26 @@ export default function HomePage() {
   ).length
 
   return (
-    <div className="flex flex-col gap-6">
-      {/* Heading */}
-      <div className="flex flex-col gap-1">
-        <span className="mono" style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-red)", fontWeight: 700 }}>
-          REST ADVANTAGE DASHBOARD
-        </span>
-        {/* Not "Today's Matchups": the season selector reaches back to 1985-86, so the
-            heading was already wrong on any past date, and the UPCOMING view widened it. */}
-        <h1 className="text-2xl font-bold tracking-tight text-[var(--term-text)]">Games</h1>
-        <p className="max-w-2xl" style={{ fontSize: 15, color: "var(--term-text-muted)", lineHeight: 1.55 }}>
-          A fatigue score for every team in every game, built from travel, rest and schedule
-          density. The bigger the gap between two teams, the more one side is carrying.
-        </p>
-      </div>
+    // gap-12 sets the distance between chapters — heading, controls, results — while
+    // elements that belong together carry their own tighter spacing. The previous uniform
+    // gap-6 gave a heading the same separation as two halves of one control panel.
+    <div className="flex flex-col gap-12">
+      {/* Heading + view toggle: one chapter, so they sit close together. */}
+      <div className="flex flex-col gap-5">
+        <div className="flex flex-col gap-1.5">
+          <span className="mono" style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-red)", fontWeight: 600 }}>
+            REST ADVANTAGE DASHBOARD
+          </span>
+          {/* Not "Today's Matchups": the season selector reaches back to 1985-86, so the
+              heading was already wrong on any past date, and the UPCOMING view widened it.
+              32px is the "hero stat value" slot already documented in terminal-styles.ts —
+              at 24px the page title was the same size as the stat numbers beneath it. */}
+          <h1 className="text-[32px] leading-[1.05] text-[var(--term-text)]">Games</h1>
+          <p className="max-w-[34rem]" style={{ fontSize: 15, color: "var(--term-text-muted)", lineHeight: 1.55 }}>
+            A fatigue score for every team in every game, built from travel, rest and schedule
+            density. The bigger the gap between two teams, the more one side is carrying.
+          </p>
+        </div>
 
       {/* View toggle — absorbed the old /upcoming route, which is now a redirect here. */}
       <div className="flex flex-wrap gap-1.5" role="group" aria-label="Games view">
@@ -356,6 +386,7 @@ export default function HomePage() {
             {label}
           </button>
         ))}
+        </div>
       </div>
 
       {view === "upcoming" ? (
@@ -370,20 +401,20 @@ export default function HomePage() {
             highConfGames={highConfGames}
           />
 
-          {/* Filters — grouped as one secondary control panel */}
-          <div className="flex flex-col gap-4" style={termCardStyle}>
-            <SeasonSelector
-              id="nba-season"
-              season={slate.season}
-              onSeasonChange={(season) => slate.send({ type: "SEASON_SELECTED", season })}
-            />
-
-            <div className="flex flex-col gap-1.5">
-              <span className="mono" style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 600 }}>
-                MONTH
-              </span>
-              <div className="-mx-1 overflow-x-auto overflow-y-hidden pb-1 [scrollbar-width:thin]">
-                <div className="flex min-w-min gap-1.5 px-1">
+          {/* Filters — two labelled groups rather than three stacked rows that each
+              repeated the same label treatment. Season and month answer one question
+              ("which stretch of basketball"), so they share a group. */}
+          <div className="flex flex-col gap-[18px]" style={{ ...termCardStyle, padding: 18 }}>
+            <div>
+              <GroupLabel>Scope</GroupLabel>
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-3">
+                <SeasonSelector
+                  id="nba-season"
+                  season={slate.season}
+                  onSeasonChange={(season) => slate.send({ type: "SEASON_SELECTED", season })}
+                />
+                <div className="-mx-1 min-w-0 flex-1 overflow-x-auto overflow-y-hidden pb-1 [scrollbar-width:thin]">
+                  <div className="flex min-w-min gap-1.5 px-1">
                   {slate.months.map(({ value, label, dayCount, isSelected }) => (
                     <button
                       key={value}
@@ -409,10 +440,13 @@ export default function HomePage() {
                       {label.toUpperCase()}
                     </button>
                   ))}
+                  </div>
                 </div>
               </div>
             </div>
 
+            <div>
+              <GroupLabel>Day</GroupLabel>
             {slate.calendar.kind === "loading" ? (
               <Skeleton className="h-16 w-full max-w-md bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)" }} />
             ) : slate.calendar.kind === "error" ? (
@@ -424,26 +458,23 @@ export default function HomePage() {
                 NO GAMES IN THIS MONTH.
               </p>
             ) : (
-              <div className="flex flex-col gap-1.5">
-                <span className="mono" style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 600 }}>
-                  DAYS WITH GAMES
-                </span>
-                <div className="flex flex-wrap gap-1.5">
-                  {slate.days.map((d) => (
-                    <DateChip
-                      key={d.date}
-                      day={d.dayOfMonth}
-                      count={d.gameCount}
-                      selected={d.isSelected}
-                      onClick={() => slate.send({ type: "DATE_SELECTED", date: d.date })}
-                      ariaLabel={d.ariaLabel}
-                    />
-                  ))}
-                </div>
+              // The old "DAYS WITH GAMES" caption is gone: the group is already labelled
+              // "Day", and every chip states its own game count.
+              <div className="flex flex-wrap gap-1.5">
+                {slate.days.map((d) => (
+                  <DateChip
+                    key={d.date}
+                    day={d.dayOfMonth}
+                    count={d.gameCount}
+                    selected={d.isSelected}
+                    onClick={() => slate.send({ type: "DATE_SELECTED", date: d.date })}
+                    ariaLabel={d.ariaLabel}
+                  />
+                ))}
               </div>
             )}
 
-            <div className="flex flex-wrap items-center gap-2">
+            <div className="mt-3.5 flex flex-wrap items-center gap-2">
               <Button
                 variant="outline"
                 size="icon-sm"
@@ -473,6 +504,7 @@ export default function HomePage() {
               >
                 <ChevronRight />
               </Button>
+              </div>
             </div>
           </div>
 

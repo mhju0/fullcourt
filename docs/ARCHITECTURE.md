@@ -114,7 +114,7 @@ prerender and Edge (postgres-js needs Node). Full list in [API.md](API.md).
 
 ### 6. Frontend (Next.js App Router + React 19)
 
-- `app/layout.tsx` — Inter (body) + Outfit (headings) + IBM Plex Mono (data/labels) fonts,
+- `app/layout.tsx` — Inter (body) + Space Grotesk (headings) + IBM Plex Mono (data/labels) fonts,
   `<NavBar>`, footer, metadata.
 - `app/page.tsx` — **Games** (client, nav label `GAMES`): season/month/day pickers → `/api/games/dates`
   then `/api/games/[date]`, with live merges from `useLiveGames`. Its UPCOMING view mounts
