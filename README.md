@@ -38,10 +38,9 @@ the line in red.
 
 **Games — the per-matchup view.** Each team's fatigue score, the rest-advantage
 differential, and a confidence read. Every rest-advantage number carries the historical hit
-rate and sample size of its class, measured against a 50% coin flip; matchups the model calls
-neutral get no claim at all.
+rate and sample size of its class; matchups the model calls neutral get no claim at all.
 
-<img src="docs/screenshots/games.png" alt="The Games page for Sunday, April 12, 2026. Four tiles read 15 games on this date, an average rest advantage of 0.7, an all-time win rate of 54.7%, and 0 high-confidence games. A filter panel below is split into two labelled groups: Scope, holding the 2025-26 season and month buttons from October to April with April selected, and Day, holding day chips 1 through 12 each captioned with its game count, with the 12th selected. Two matchup cards follow. The first, Brooklyn Nets 101 at Toronto Raptors 136, shows fatigue bars of 3.5 and 4.4, a rest-advantage panel giving BKN plus 1.0 with a LOW CONF badge, and a sentence reading that any measurable gap has gone the rested team's way 54.7% of the time, 4.7 points above a coin flip, from 38,985 games. The second, Chicago Bulls 128 at Dallas Mavericks 149, shows equal fatigue scores of 4.6, is scored EVEN 0.0 with a NEUTRAL badge, and carries no such sentence." width="900" />
+<img src="docs/screenshots/games.png" alt="The Games page for Sunday, April 12, 2026, with a BY DATE / UPCOMING toggle set to BY DATE. Four tiles read 15 games on this date, an average rest advantage of 0.7, an all-time win rate of 54.7%, and 0 high-confidence games. A Scope panel below holds the 2025-26 season with month buttons from October to April, April selected, and day chips 1 through 12 each captioned with its game count, the 12th selected. A banner reads that the 2025-26 season is complete and the final slate is showing, linking to the 40-season backtest. Two matchup cards follow. The first, Brooklyn Nets 101 at Toronto Raptors 136, shows fatigue bars of 3.5 and 4.4, a rest-advantage panel giving BKN plus 1.0 with a LOW CONF badge, and a sentence reading that any measurable gap has gone the rested team's way 54.7% of the time from 38,985 games. The second, Chicago Bulls 128 at Dallas Mavericks 149, shows equal fatigue scores of 4.6, is scored EVEN 0.0 with a NEUTRAL badge, and carries no such sentence." width="900" />
 
 **Expected Shot Value — location-only xeFG%.** A gradient-boosted location model beside the
 zone-average baseline it is measured against.
@@ -53,6 +52,17 @@ drawn from a zero line so the bar length *is* the edge. Positive is favorable in
 the page.
 
 <img src="docs/screenshots/schedule.png" alt="Schedule Disparity for 2025-26: a summary strip reading most favored plus 15 days (Portland Trail Blazers), least favored minus 11 (Boston Celtics), a spread of 26 days best to worst, and 557 games with a rest edge of which 14 were by 3 or more days. Below it all 30 teams are ranked as horizontal bars diverging from a zero line, blue to the right for a favorable edge and red to the left for an unfavorable one, from Portland at plus 15 down through four teams at exactly zero to Boston at minus 11. A header note states the season is final with 1,214 of 1,230 games compared." width="900" />
+
+**Series Predictions — the playoff model, scored honestly.** Out-of-sample accuracy sits beside
+in-sample so the overfitting gap is visible rather than hidden, and every series shows the
+probability it was called at.
+
+<img src="docs/screenshots/playoffs.png" alt="Series Predictions for 2025-26. Two tiles read out-of-sample 66.7% (walk-forward, 10 of 15 correct) and in-sample 66.7% (full training fit, 10 of 15 correct), with a note that out-of-sample is predicted from prior seasons only and is the honest generalisation number. Below, the first round's 8 series are listed, each with its result and the model's probability: Cleveland beat Toronto 4-3 at 59.8% CORRECT, Detroit beat Orlando 4-3 at 96.0% CORRECT, Philadelphia beat Boston 4-3 against an 89.6% Boston call marked UPSET, New York beat Atlanta 4-2 at 75.2% CORRECT, the Lakers beat Houston 4-2 at 51.7% CORRECT, Minnesota beat Denver 4-2 against a 72.0% Denver call marked UPSET, San Antonio beat Portland 4-1 at 96.1% CORRECT, and Oklahoma City swept Phoenix 4-0 at 96.7% CORRECT." width="900" />
+
+**Rest & Shooting — a lookup, not a ranking.** Every player's eFG% on zero rest beside three or
+more days off, with the split's sample size shown on both sides so a thin season reads as thin.
+
+<img src="docs/screenshots/shooting.png" alt="Shooting by Rest for 2025-26, filtered to players with 300 or more attempts, 284 players in the season. A note defines no rest as having played yesterday and 3+ days rest as at least three days since his last game, both counted from the games he actually played, with rest effect being the right column minus the left. A table sorted by field-goal attempts lists each player's team, age, games, FGA, overall eFG%, then eFG% and attempts on no rest, the same on 3+ days rest, and the signed rest effect drawn as a bar. Jaylen Brown leads by volume at 1,543 attempts with a plus 1.90 effect; Jalen Brunson shows 49.3% on 223 no-rest attempts against 55.0% on 380 rested ones for plus 5.67; Luka Dončić runs the other way at 65.5% against 55.2% for minus 10.32; James Harden shows the largest positive at plus 11.54." width="900" />
 
 ---
 
@@ -112,7 +122,13 @@ flowchart TD
 - **Serve:** Next.js App Router route handlers (Zod-validated, `{ data, error }` envelope) feed a React 19 frontend using SWR and Supabase Realtime.
 - **Ship:** Vercel auto-deploys from `main`; GitHub Actions runs the daily pipeline.
 
-The diagram above is the flagship rest-advantage flow. Playoff Predictor, Shot Quality and Schedule Disparity are separate routes/pages that never touch `fatigue.ts` and are never read by the flagship queries; see [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for their data flows. Schedule Disparity is read-only — it adds no table, no migration and no ingest.
+The diagram above is the flagship rest-advantage flow. Playoff Predictor, Shot Quality, Schedule
+Disparity and Shooting by Rest are separate routes/pages that never touch `fatigue.ts` and are
+never read by the flagship queries; see [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for their
+data flows. Two of them touch the database not at all: Schedule Disparity is read-only — no table,
+no migration, no ingest — and Shooting by Rest is served entirely from a committed static asset
+(`public/data/player-rest.json`) built offline from [hoopR](docs/adr/0002-shooting-source-hoopr.md),
+so it adds nothing to the runtime query path.
 
 ---
 
@@ -199,10 +215,11 @@ src/
     fatigue.ts    # the fatigue model (single source of truth)
     db/           # Drizzle schema, queries, client
   hooks/          # Supabase Realtime + the game-slate controller
-scripts/          # Python ingest + TypeScript modeling + Shot Quality pipeline
-ml/               # Shot Quality modeling (isolated venv, scikit-learn) + local shot cache
+scripts/          # Python ingest + TypeScript modeling + Shot Quality / Shooting pipelines
+ml/               # Shot Quality modeling (isolated venv, scikit-learn) + gitignored data cache
+public/data/      # committed static analytics assets (player-rest.json feeds /shooting)
 drizzle/          # SQL migrations (RLS, grants, indexes)
-docs/             # architecture, database, pipeline, API, frontend
+docs/             # architecture, database, pipeline, API, frontend, ADRs
 ```
 
 ---
@@ -213,6 +230,7 @@ docs/             # architecture, database, pipeline, API, frontend
 - [x] **Playoff Predictor** — series-winner model (fatigue + ML) at `/playoffs`
 - [x] **Shot Quality** — Expected Shot Value / xeFG% half-court hexbin at `/shot-quality`
 - [x] **Schedule Disparity** — net rest edge per team-season at `/schedule`
+- [x] **Shooting by Rest** — per-player eFG% split by his own rest at `/shooting`
 
 ---
 

@@ -273,8 +273,7 @@ export function AboutContent() {
             <h3 className="font-heading text-2xl font-bold">{NBA_SEASONS.length} seasons, 38,985 games</h3>
             <p className="mt-3 max-w-[42ch]" style={{ color: DIM, lineHeight: 1.65 }}>
               Every rest-advantage claim carries the historical hit rate and sample size of its
-              class, measured against a coin flip. Matchups the model calls neutral make no claim
-              at all.
+              class. Matchups the model calls neutral make no claim at all.
             </p>
           </article>
 
