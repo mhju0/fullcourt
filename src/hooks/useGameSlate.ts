@@ -52,9 +52,9 @@ export interface GameSlate {
 /** Both endpoints answer in the `{ data, error }` envelope. */
 async function readEnvelope<T>(url: string, signal: AbortSignal): Promise<T> {
   const res = await fetch(url, { signal });
-  const { data, error } = (await res.json()) as ApiResponse<T>;
-  if (error) throw new Error(error);
-  return data;
+  const body = (await res.json()) as ApiResponse<T>;
+  if (body.error !== null) throw new Error(body.error);
+  return body.data;
 }
 
 const isAbort = (err: unknown) => err instanceof Error && err.name === "AbortError";

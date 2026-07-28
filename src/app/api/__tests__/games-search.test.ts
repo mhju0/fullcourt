@@ -46,8 +46,9 @@ describe("GET /api/games/search", () => {
 
     expect(res.status).toBe(400);
     expect(mockSearchGames).not.toHaveBeenCalled();
-    const body = (await res.json()) as { data: { page: number; limit: number }; error: string };
-    expect(body.data).toMatchObject({ page: 1, limit: 20 });
+    const body = (await res.json()) as { data: null; error: string };
+    // No fabricated page/limit: a client that ignores `error` must not read this as "0 results".
+    expect(body.data).toBeNull();
     expect(body.error.length).toBeGreaterThan(0);
   });
 

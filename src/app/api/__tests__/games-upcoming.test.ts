@@ -35,8 +35,8 @@ describe("GET /api/games/upcoming", () => {
 
       expect(res.status).toBe(400);
       expect(mockGetUpcoming).not.toHaveBeenCalled();
-      const body = (await res.json()) as { data: unknown[]; error: string };
-      expect(body.data).toEqual([]);
+      const body = (await res.json()) as { data: unknown[] | null; error: string };
+      expect(body.data).toBeNull();
       expect(body.error.length).toBeGreaterThan(0);
     }
   );

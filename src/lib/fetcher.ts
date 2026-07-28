@@ -18,7 +18,7 @@ export async function apiFetcher<T>(url: string): Promise<T> {
     throw new Error(res.ok ? "Invalid API response" : `Request failed (${res.status})`)
   }
 
-  if (body.error) throw new Error(body.error)
+  if (body.error !== null) throw new Error(body.error)
   if (!res.ok) throw new Error(`Request failed (${res.status})`)
   return body.data
 }

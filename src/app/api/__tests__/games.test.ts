@@ -1,4 +1,4 @@
-import type { NextRequest } from "next/server";
+import { NextRequest } from "next/server";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { GET } from "../games/[date]/route";
 import { getGamesByDate } from "@/lib/db/queries";
@@ -66,6 +66,9 @@ const sampleGame: GameResponse = {
   },
 };
 
+/** The route reads only its dynamic segment, but `jsonRoute` still merges search params. */
+const req = () => new NextRequest("http://localhost/api/games/x");
+
 describe("GET /api/games/[date]", () => {
   beforeEach(() => {
     mockGetGamesByDate.mockReset();
@@ -74,7 +77,7 @@ describe("GET /api/games/[date]", () => {
   it("returns 200 with an array for a valid YYYY-MM-DD date", async () => {
     mockGetGamesByDate.mockResolvedValueOnce([sampleGame]);
 
-    const res = await GET({} as NextRequest, {
+    const res = await GET(req(), {
       params: Promise.resolve({ date: "2024-12-25" }),
     });
 
@@ -90,16 +93,16 @@ describe("GET /api/games/[date]", () => {
 
   it("returns 400 with an error message for invalid date strings", async () => {
     for (const bad of ["banana", "13-25-2024", "2024/12/25", "24-12-25"]) {
-      const res = await GET({} as NextRequest, {
+      const res = await GET(req(), {
         params: Promise.resolve({ date: bad }),
       });
 
       expect(res.status).toBe(400);
       const body = (await res.json()) as {
-        data: GameResponse[];
+        data: GameResponse[] | null;
         error: string;
       };
-      expect(body.data).toEqual([]);
+      expect(body.data).toBeNull();
       expect(typeof body.error).toBe("string");
       expect(body.error.length).toBeGreaterThan(0);
     }
@@ -110,7 +113,7 @@ describe("GET /api/games/[date]", () => {
   it("returns 200 with an empty array when no games exist for that date", async () => {
     mockGetGamesByDate.mockResolvedValueOnce([]);
 
-    const res = await GET({} as NextRequest, {
+    const res = await GET(req(), {
       params: Promise.resolve({ date: "2026-07-15" }),
     });
 
@@ -126,7 +129,7 @@ describe("GET /api/games/[date]", () => {
   it("response objects match GameResponse shape", async () => {
     mockGetGamesByDate.mockResolvedValueOnce([sampleGame]);
 
-    const res = await GET({} as NextRequest, {
+    const res = await GET(req(), {
       params: Promise.resolve({ date: "2024-12-25" }),
     });
 

@@ -62,11 +62,14 @@ export interface GameResponse {
   restAdvantage: RestAdvantage | null;
 }
 
-export interface ApiResponse<T> {
-  data: T;
-  error: string | null;
-  meta?: Record<string, unknown>;
-}
+/**
+ * The read envelope. A discriminated union rather than `data: T` with a
+ * nullable `error`: on failure there is no `T` to send, and the previous shape
+ * forced every route to write `data: null as unknown as T`.
+ */
+export type ApiResponse<T> =
+  | { data: T; error: null; meta?: Record<string, unknown> }
+  | { data: null; error: string; meta?: Record<string, unknown> };
 
 // ─── Analysis ────────────────────────────────────────────────────
 

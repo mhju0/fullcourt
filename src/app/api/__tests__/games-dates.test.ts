@@ -22,8 +22,8 @@ describe("GET /api/games/dates", () => {
   it("returns 400 when season is missing", async () => {
     const res = await GET(req("http://localhost/api/games/dates?month=3"));
     expect(res.status).toBe(400);
-    const body = (await res.json()) as { data: GameDateCount[]; error: string };
-    expect(body.data).toEqual([]);
+    const body = (await res.json()) as { data: GameDateCount[] | null; error: string };
+    expect(body.data).toBeNull();
     expect(body.error.length).toBeGreaterThan(0);
     expect(mockGetDates).not.toHaveBeenCalled();
   });

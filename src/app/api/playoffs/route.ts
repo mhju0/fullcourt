@@ -1,10 +1,8 @@
-import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { getPublicApiErrorMessage } from "@/lib/api-errors";
+import { jsonRoute, seasonParam } from "@/lib/api-route";
 import { getPlayoffSeriesWithPredictions } from "@/lib/db/queries";
-import { currentDisplaySeason, NBA_SEASONS } from "@/lib/nba-season";
+import { currentDisplaySeason } from "@/lib/nba-season";
 import type {
-  ApiResponse,
   PlayoffMethodSummary,
   PlayoffRoundGroup,
   PlayoffSeriesWithPredictions,
@@ -15,10 +13,6 @@ export const runtime = "nodejs";
 
 /** DB-backed; do not prerender at build (avoids requiring `DATABASE_URL` during `next build`). */
 export const dynamic = "force-dynamic";
-
-const SeasonSchema = z.string().refine((s) => NBA_SEASONS.includes(s), {
-  message: "Invalid season",
-});
 
 const ROUND_LABELS: Record<number, string> = {
   1: "First Round",
@@ -68,26 +62,13 @@ function groupByRound(series: PlayoffSeriesWithPredictions[]): PlayoffRoundGroup
     }));
 }
 
-export async function GET(
-  req: NextRequest
-): Promise<NextResponse<ApiResponse<PlayoffsResponse>>> {
-  const rawSeason = req.nextUrl.searchParams.get("season");
-  const parsed = SeasonSchema.safeParse(rawSeason ?? currentDisplaySeason());
-
-  if (!parsed.success) {
-    const msg = parsed.error.issues[0]?.message ?? "Invalid season";
-    return NextResponse.json(
-      { data: null as unknown as PlayoffsResponse, error: msg },
-      { status: 400 }
-    );
-  }
-
-  const season = parsed.data;
-
-  try {
+export const GET = jsonRoute(
+  "api/playoffs",
+  z.object({ season: seasonParam.optional() }),
+  async ({ season = currentDisplaySeason() }): Promise<PlayoffsResponse> => {
     const series = await getPlayoffSeriesWithPredictions(season);
 
-    const response: PlayoffsResponse = {
+    return {
       season,
       rounds: groupByRound(series),
       summary: {
@@ -95,16 +76,5 @@ export async function GET(
         walkForwardOos: computeMethodSummary(series, "walkForwardOos"),
       },
     };
-
-    return NextResponse.json({ data: response, error: null });
-  } catch (err) {
-    console.error("[api/playoffs]", err);
-    return NextResponse.json(
-      {
-        data: null as unknown as PlayoffsResponse,
-        error: getPublicApiErrorMessage(err),
-      },
-      { status: 500 }
-    );
   }
-}
+);
