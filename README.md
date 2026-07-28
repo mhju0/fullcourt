@@ -29,29 +29,24 @@ FullCourt quantifies how **travel, rest, and schedule density** shape NBA outcom
 
 ## Demo
 
-**Model Results — the 40-season backtest behind the headline finding.** Win rate by rest-advantage
-threshold, plotted as the gap against a coin flip in percentage points: zero is a 50% win
-rate, so the bar's length is the measured edge. Slices the model gets backwards hang below
-the line in red.
-
-<img src="docs/screenshots/analysis.png" alt="Rest Advantage Analysis. Three summary tiles read an overall win rate of 54.7% across 38,985 games, a home-rested win rate of 60.9% from 16,010 of 26,289 games, and 61.1% at a rest advantage of 5 or more across 5,763 games. Below them, win rate by rest-advantage threshold is drawn as deviation columns measured from a 50% coin flip: four blue bars rise from a zero line, growing left to right from RA at least 2 to RA at least 7, each labelled with its sample size — 22,740, 15,076, 5,763 and 1,903 games. A legend states that blue means the rested team beat a coin flip and red means it lost to one." width="900" />
-
 **Games — the per-matchup view.** Each team's fatigue score, the rest-advantage
 differential, and a confidence read. Every rest-advantage number carries the historical hit
 rate and sample size of its class; matchups the model calls neutral get no claim at all.
 
 <img src="docs/screenshots/games.png" alt="The Games page for Sunday, April 12, 2026, with a BY DATE / UPCOMING toggle set to BY DATE. Four tiles read 15 games on this date, an average rest advantage of 0.7, an all-time win rate of 54.7%, and 0 high-confidence games. A Scope panel below holds the 2025-26 season with month buttons from October to April, April selected, and day chips 1 through 12 each captioned with its game count, the 12th selected. A banner reads that the 2025-26 season is complete and the final slate is showing, linking to the 40-season backtest. Two matchup cards follow. The first, Brooklyn Nets 101 at Toronto Raptors 136, shows fatigue bars of 3.5 and 4.4, a rest-advantage panel giving BKN plus 1.0 with a LOW CONF badge, and a sentence reading that any measurable gap has gone the rested team's way 54.7% of the time from 38,985 games. The second, Chicago Bulls 128 at Dallas Mavericks 149, shows equal fatigue scores of 4.6, is scored EVEN 0.0 with a NEUTRAL badge, and carries no such sentence." width="900" />
 
-**Expected Shot Value — location-only xeFG%.** A gradient-boosted location model beside the
-zone-average baseline it is measured against.
-
-<img src="docs/screenshots/shot-quality.png" alt="Expected Shot Value for 2025-26, covering 1,808 cells and 219,121 shot attempts. A colour scale runs from 26% low value in tan to 56% high value in blue. Two half-court maps sit side by side: BASELINE, the zone average, whose colour changes in blocky steps at zone boundaries, and GBM, the location model, whose colour varies smoothly. Both show a blue arc along the three-point line and blue at the rim, with the long mid-range in tan — most visibly so on the GBM court. Marker size encodes shot attempts from that cell." width="900" />
-
 **Schedule Disparity — who the schedule favored.** All 30 teams ranked by net rest edge in days,
 drawn from a zero line so the bar length *is* the edge. Positive is favorable in every column on
 the page.
 
 <img src="docs/screenshots/schedule.png" alt="Schedule Disparity for 2025-26: a summary strip reading most favored plus 15 days (Portland Trail Blazers), least favored minus 11 (Boston Celtics), a spread of 26 days best to worst, and 557 games with a rest edge of which 14 were by 3 or more days. Below it all 30 teams are ranked as horizontal bars diverging from a zero line, blue to the right for a favorable edge and red to the left for an unfavorable one, from Portland at plus 15 down through four teams at exactly zero to Boston at minus 11. A header note states the season is final with 1,214 of 1,230 games compared." width="900" />
+
+**Model Results — the 40-season backtest behind the headline finding.** Win rate by rest-advantage
+threshold, plotted as the gap against a coin flip in percentage points: zero is a 50% win
+rate, so the bar's length is the measured edge. Slices the model gets backwards hang below
+the line in red.
+
+<img src="docs/screenshots/analysis.png" alt="Rest Advantage Analysis. Three summary tiles read an overall win rate of 54.7% across 38,985 games, a home-rested win rate of 60.9% from 16,010 of 26,289 games, and 61.1% at a rest advantage of 5 or more across 5,763 games. Below them, win rate by rest-advantage threshold is drawn as deviation columns measured from a 50% coin flip: four blue bars rise from a zero line, growing left to right from RA at least 2 to RA at least 7, each labelled with its sample size — 22,740, 15,076, 5,763 and 1,903 games. A legend states that blue means the rested team beat a coin flip and red means it lost to one." width="900" />
 
 **Series Predictions — the playoff model, scored honestly.** Out-of-sample accuracy sits beside
 in-sample so the overfitting gap is visible rather than hidden, and every series shows the
@@ -63,6 +58,11 @@ probability it was called at.
 more days off, with the split's sample size shown on both sides so a thin season reads as thin.
 
 <img src="docs/screenshots/shooting.png" alt="Shooting by Rest for 2025-26, filtered to players with 300 or more attempts, 284 players in the season. A note defines no rest as having played yesterday and 3+ days rest as at least three days since his last game, both counted from the games he actually played, with rest effect being the right column minus the left. A table sorted by field-goal attempts lists each player's team, age, games, FGA, overall eFG%, then eFG% and attempts on no rest, the same on 3+ days rest, and the signed rest effect drawn as a bar. Jaylen Brown leads by volume at 1,543 attempts with a plus 1.90 effect; Jalen Brunson shows 49.3% on 223 no-rest attempts against 55.0% on 380 rested ones for plus 5.67; Luka Dončić runs the other way at 65.5% against 55.2% for minus 10.32; James Harden shows the largest positive at plus 11.54." width="900" />
+
+**Expected Shot Value — location-only xeFG%.** A gradient-boosted location model beside the
+zone-average baseline it is measured against.
+
+<img src="docs/screenshots/shot-quality.png" alt="Expected Shot Value for 2025-26, covering 1,808 cells and 219,121 shot attempts. A colour scale runs from 26% low value in tan to 56% high value in blue. Two half-court maps sit side by side: BASELINE, the zone average, whose colour changes in blocky steps at zone boundaries, and GBM, the location model, whose colour varies smoothly. Both show a blue arc along the three-point line and blue at the rim, with the long mid-range in tan — most visibly so on the GBM court. Marker size encodes shot attempts from that cell." width="900" />
 
 ---
 
