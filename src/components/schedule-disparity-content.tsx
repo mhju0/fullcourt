@@ -310,11 +310,6 @@ export function ScheduleDisparityContent() {
 
       {data && teams.length > 0 ? (
         <>
-          <ColumnGuide
-            countedGames={data.league.countedGames}
-            scheduledGames={data.scheduledGames}
-          />
-
           <div style={termCardStyle}>
             <p
               className="mono"
@@ -391,6 +386,11 @@ export function ScheduleDisparityContent() {
               that have not been played yet.
             </p>
           </div>
+
+          <ColumnGuide
+            countedGames={data.league.countedGames}
+            scheduledGames={data.scheduledGames}
+          />
         </>
       ) : null}
     </div>
