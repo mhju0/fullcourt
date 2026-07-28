@@ -221,6 +221,7 @@ ml/               # Shot Quality modeling (isolated venv, scikit-learn) + gitign
 public/data/      # committed static analytics assets (player-rest.json feeds /shooting)
 drizzle/          # SQL migrations (RLS, grants, indexes)
 docs/             # architecture, database, pipeline, API, frontend, ADRs
+                  # screenshots regenerate with `node scripts/screenshots.mjs` against a running dev server
 ```
 
 ---
