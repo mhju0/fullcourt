@@ -58,17 +58,30 @@ const VOLUME_OPTIONS = [
 const CAREER_CAP = 4
 const SEASON_CAP = 10
 
-const COLUMNS: { key: SortKey | null; label: string; unit?: string; align?: "right" }[] = [
-  { key: null, label: "#" },
-  { key: "name", label: "Player" },
-  { key: null, label: "Team" },
-  { key: "age", label: "Age", align: "right" },
-  { key: "games", label: "G", align: "right" },
-  { key: "fga", label: "FGA", align: "right" },
-  { key: "efg", label: "eFG%", align: "right" },
-  { key: "noRestEfg", label: "No rest", unit: "eFG% · attempts", align: "right" },
-  { key: "restedEfg", label: "3+ days rest", unit: "eFG% · attempts", align: "right" },
-  { key: "effect", label: "Rest effect", unit: "3+ days − no rest", align: "right" },
+/**
+ * `width` drives a <colgroup>. Auto layout hands leftover table width to whichever
+ * columns hold text, which put a chasm between TEAM and AGE while AGE and G sat on top
+ * of each other; pinning every column and leaving PLAYER as the only elastic one sends
+ * all the slack to the one column that can use it. `#` is right-aligned like the ranks
+ * it labels — as a left-aligned header it floated a column-width away from its numbers.
+ */
+const COLUMNS: {
+  key: SortKey | null
+  label: string
+  unit?: string
+  align?: "right"
+  width: string
+}[] = [
+  { key: null, label: "#", align: "right", width: "44px" },
+  { key: "name", label: "Player", width: "auto" },
+  { key: null, label: "Team", width: "72px" },
+  { key: "age", label: "Age", align: "right", width: "56px" },
+  { key: "games", label: "G", align: "right", width: "56px" },
+  { key: "fga", label: "FGA", align: "right", width: "76px" },
+  { key: "efg", label: "eFG%", align: "right", width: "68px" },
+  { key: "noRestEfg", label: "No rest", unit: "eFG% · attempts", align: "right", width: "128px" },
+  { key: "restedEfg", label: "3+ days rest", unit: "eFG% · attempts", align: "right", width: "128px" },
+  { key: "effect", label: "Rest effect", unit: "3+ days − no rest", align: "right", width: "176px" },
 ]
 
 function fmt(v: number | null | undefined, digits = 1): string {
@@ -285,6 +298,11 @@ export function PlayerRestContent() {
         style={{ ...termCardStyle, padding: 0, maxHeight: "74vh" }}
       >
         <table className="w-full border-collapse text-[12px]">
+          <colgroup>
+            {COLUMNS.map((col) => (
+              <col key={col.label} style={{ width: col.width }} />
+            ))}
+          </colgroup>
           <thead>
             <tr>
               {COLUMNS.map((col) => {
