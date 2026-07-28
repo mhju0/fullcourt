@@ -138,11 +138,16 @@ export function AboutContent() {
         gsap.from(".fc-hero-in", { y: 30, opacity: 0, duration: 1.1, stagger: 0.12, ease: "power3.out" });
 
         // Scrubbing reveal: words brighten in sequence as the sentence is read past.
+        // `end` is measured off the section's CENTER, not its bottom. Ending on "bottom 45%"
+        // meant the last word only lit once the element's bottom had climbed to mid-viewport
+        // — by which point the paragraph's top was already scrolled off — so the sentence was
+        // still finishing after the reader had left it. Centre-based, it completes while the
+        // whole paragraph is on screen.
         gsap.to(".fc-word", {
           opacity: 1,
           stagger: 0.5,
           ease: "none",
-          scrollTrigger: { trigger: ".fc-thesis", start: "top 78%", end: "bottom 45%", scrub: true },
+          scrollTrigger: { trigger: ".fc-thesis", start: "top 80%", end: "center 55%", scrub: true },
         });
 
         gsap.utils.toArray<HTMLElement>(".fc-rise").forEach((el) => {
@@ -253,7 +258,7 @@ export function AboutContent() {
       {/* ── Interest: gapless bento ───────────────────────────── */}
       <section className="mx-auto max-w-7xl px-6 pb-40">
         <h2 className="font-heading mb-14 font-bold" style={{ fontSize: "clamp(1.9rem,4.4vw,3.2rem)", letterSpacing: "-0.03em", maxWidth: "20ch" }}>
-          Evidence, not vibes
+          Evidence, not just the eye test
         </h2>
         {/* 6 columns, dense flow: 4+2 across rows one and two, then a full 6. No dead cells. */}
         <div className="grid auto-rows-[minmax(11rem,auto)] grid-flow-dense grid-cols-2 gap-3 md:grid-cols-6">
@@ -281,7 +286,7 @@ export function AboutContent() {
             <h3 className="font-heading text-2xl font-bold">Much of the gap is structural</h3>
             <p className="mt-3 max-w-[62ch]" style={{ color: DIM, lineHeight: 1.65 }}>
               Geography, arena availability and broadcast windows produce rest imbalance without
-              anyone favouring anyone. That is said on the page, not in a footnote.
+              anyone favouring anyone.
             </p>
           </article>
         </div>
@@ -299,7 +304,11 @@ export function AboutContent() {
             <Link
               key={s.href}
               href={s.href}
-              className="group relative flex flex-1 flex-col justify-between overflow-hidden rounded-xl border p-6 transition-[flex] duration-700 ease-out lg:hover:flex-[3.2]"
+              // Equal widths, and no width animation on hover. The card used to expand to
+              // flex-[3.2], which re-wrapped its whole paragraph on every frame of the
+              // transition — every line re-broke continuously, which read as chaos rather
+              // than motion. Hover now changes only colour, which cannot reflow text.
+              className="group relative flex flex-1 flex-col justify-between overflow-hidden rounded-xl border p-6 transition-colors duration-300 hover:border-[rgba(245,241,232,.34)] hover:bg-[rgba(245,241,232,.04)]"
               style={{ borderColor: "rgba(245,241,232,.14)", background: "linear-gradient(180deg,rgba(245,241,232,.05),rgba(11,13,16,.6))" }}
             >
               {/* Decorative, and aria-hidden for it: the index is ornament and the route is
@@ -318,7 +327,10 @@ export function AboutContent() {
                 <SurfaceGlyph kind={i} />
               </div>
 
-              <div>
+              {/* Fixed height, so every card's text block starts at the same y and the five
+                  names sit on one line. Bottom-anchored blocks of differing copy length were
+                  pushing each title to its own height, which read as a ragged row. */}
+              <div className="lg:min-h-[9.5rem]">
                 <span className="font-heading block whitespace-nowrap text-xl font-bold">{s.name}</span>
                 {/* Always legible. This copy used to be lg:opacity-0 until hover, which left
                     five tall empty boxes at rest — the accordion read as a loading state. */}
