@@ -52,7 +52,7 @@ test.describe("Primary navigation", () => {
     await about.click();
 
     await expect(page).toHaveURL(/\/about$/);
-    await expect(page.getByRole("heading", { level: 1 })).toContainText("One side is always carrying");
+    await expect(page.getByRole("heading", { level: 1 })).toContainText("Rest is a stat");
     await expect(page.getByRole("link", { name: "ABOUT", exact: true })).toHaveAttribute("aria-current", "page");
   });
 });

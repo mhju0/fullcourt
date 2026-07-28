@@ -6,7 +6,7 @@ test.describe("About page", () => {
 
     // Client-rendered (ssr: false), so give the chunk a moment on a cold dev compile.
     await expect(
-      page.getByRole("heading", { name: "One side is always carrying." })
+      page.getByRole("heading", { name: "Rest is a stat" })
     ).toBeVisible({ timeout: 30_000 });
 
     // The surface links use the five nav labels, so a nav rename that misses this page

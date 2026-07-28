@@ -171,6 +171,22 @@ footer — not from the main nav, whose five-link count is asserted in `e2e/navi
 Headings use `font-bold` (700), not extrabold: `layout.tsx` loads Space Grotesk at
 400/500/600/700, so an 800 request resolved to the 700 face anyway.
 
+Two things on this page are easy to get wrong twice:
+
+- **The stacking method cards dim with `filter: brightness()`, never `opacity`.** They are
+  `sticky` and physically overlap, so a card at `opacity: 0.45` shows the card *beneath* it
+  straight through — card 02's heading landing on card 01's paragraph. The last card is not
+  animated at all, which is why the bug only ever showed on 01 and 02.
+- **The five surface cards keep their copy visible at rest.** It was `lg:opacity-0` until
+  hover, and five tall cards showing only a label read as a loading state, not an accordion.
+  Each card now carries a mono index, its route, a `SurfaceGlyph` miniature of what that page
+  draws, and the copy. Index, route and glyph are `aria-hidden`, so the link's accessible name
+  stays `"<label> <copy>"` — which is what `e2e/about.spec.ts` anchors on.
+
+Display statements on this page take **no terminal period** (`Rest is a stat`, `Five surfaces`,
+`How a number earns its place`). Body copy and the scrubbing thesis keep normal punctuation —
+they are prose, not statements.
+
 Known rough edge: the light app header sits directly above the dark hero, with no transition.
 
 ### Unknown routes — `src/app/not-found.tsx`

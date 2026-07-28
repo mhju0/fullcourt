@@ -34,6 +34,75 @@ function CourtSplit({ className = "" }: { className?: string }) {
   );
 }
 
+/**
+ * A miniature of what each page actually draws — fatigue bars, a diverging ranking, the
+ * backtest columns, a bracket, the arc. Inline SVG, no data, no request: it fills the
+ * surface cards with a preview rather than decoration, so the glyph is wayfinding.
+ */
+function SurfaceGlyph({ kind }: { kind: number }) {
+  const blue = "#2563EB";
+  const red = "#DC2626";
+  const line = "rgba(245,241,232,.22)";
+  const common = { viewBox: "0 0 120 56", className: "w-full", "aria-hidden": true as const };
+
+  if (kind === 0)
+    return ( // Games — two fatigue bars, unequal
+      <svg {...common}>
+        <rect x="4" y="14" width="112" height="7" rx="3.5" fill={line} />
+        <rect x="4" y="14" width="62" height="7" rx="3.5" fill={blue} />
+        <rect x="4" y="33" width="112" height="7" rx="3.5" fill={line} />
+        <rect x="4" y="33" width="88" height="7" rx="3.5" fill={red} />
+      </svg>
+    );
+
+  if (kind === 1)
+    return ( // Schedule Edge — a ranking diverging from zero
+      <svg {...common}>
+        {[14, 9, 4, -6, -12].map((v, i) => (
+          <rect
+            key={i}
+            x={v >= 0 ? 60 : 60 + v * 3.2}
+            y={5 + i * 10}
+            width={Math.abs(v) * 3.2}
+            height="6"
+            rx="3"
+            fill={v >= 0 ? blue : red}
+          />
+        ))}
+        <rect x="59.4" y="3" width="1.2" height="52" fill={line} />
+      </svg>
+    );
+
+  if (kind === 2)
+    return ( // Model Results — backtest columns off a coin-flip baseline
+      <svg {...common}>
+        {[13, 18, 27, 34].map((h, i) => (
+          <rect key={i} x={12 + i * 26} y={46 - h} width="15" height={h} rx="2" fill={blue} />
+        ))}
+        <rect x="4" y="46" width="112" height="1.2" fill={line} />
+      </svg>
+    );
+
+  if (kind === 3)
+    return ( // Playoff Predictions — a bracket converging
+      <svg {...common} fill="none" stroke={line} strokeWidth="1.6">
+        <path d="M6 10h26v18h26M6 46h26V28" />
+        <path d="M114 10H88v18H62M114 46H88V28" />
+        <circle cx="60" cy="28" r="4.5" fill={blue} stroke="none" />
+      </svg>
+    );
+
+  return ( // Shot Value — the arc, denser at the rim
+    <svg {...common}>
+      <path d="M10 50a50 50 0 0 1 100 0" fill="none" stroke={line} strokeWidth="1.4" />
+      {[16, 28, 42, 60, 78, 92, 104].map((x, i) => (
+        <circle key={i} cx={x} cy={50 - Math.round(Math.sin((i / 6) * Math.PI) * 26)} r="3" fill={blue} opacity=".85" />
+      ))}
+      <circle cx="60" cy="48" r="5" fill={red} opacity=".7" />
+    </svg>
+  );
+}
+
 const SURFACES = [
   { name: "Games", href: "/", copy: "Any season's slate by date, each team's fatigue score, and the rest gap between them — with live scores." },
   { name: "Schedule Edge", href: "/schedule", copy: "Which teams a season's schedule favoured, in days of rest against their opponents. Scoped to its own season, always." },
@@ -90,15 +159,23 @@ export function AboutContent() {
         });
 
         // Card stacking: each card dims and shrinks as the next slides over it.
+        // Dimming is `brightness`, NOT `opacity`. These cards are sticky and physically
+        // overlap, so a card at opacity 0.45 shows the card beneath it straight through —
+        // card 02's heading rendered on top of card 01's paragraph. brightness() darkens
+        // the same amount while the card stays opaque.
         const cards = gsap.utils.toArray<HTMLElement>(".fc-card");
         cards.forEach((card, i) => {
           if (i === cards.length - 1) return;
-          gsap.to(card, {
-            scale: 0.95,
-            opacity: 0.45,
-            ease: "none",
-            scrollTrigger: { trigger: cards[i + 1], start: "top 85%", end: "top 32%", scrub: true },
-          });
+          gsap.fromTo(
+            card,
+            { scale: 1, filter: "brightness(1)" },
+            {
+              scale: 0.95,
+              filter: "brightness(0.45)",
+              ease: "none",
+              scrollTrigger: { trigger: cards[i + 1], start: "top 85%", end: "top 32%", scrub: true },
+            }
+          );
         });
       }, root);
     })();
@@ -135,7 +212,7 @@ export function AboutContent() {
             className="fc-hero-in font-heading font-bold"
             style={{ fontSize: "clamp(2.6rem,7vw,5.6rem)", lineHeight: 0.98, letterSpacing: "-0.035em" }}
           >
-            One side is always carrying.
+            Rest is a stat
           </h1>
           <p className="fc-hero-in mx-auto mt-8 max-w-xl" style={{ color: DIM, fontSize: "1.05rem", lineHeight: 1.65 }}>
             FullCourt measures what the schedule does to a team before the ball is tipped —
@@ -176,7 +253,7 @@ export function AboutContent() {
       {/* ── Interest: gapless bento ───────────────────────────── */}
       <section className="mx-auto max-w-7xl px-6 pb-40">
         <h2 className="font-heading mb-14 font-bold" style={{ fontSize: "clamp(1.9rem,4.4vw,3.2rem)", letterSpacing: "-0.03em", maxWidth: "20ch" }}>
-          Evidence, not vibes.
+          Evidence, not vibes
         </h2>
         {/* 6 columns, dense flow: 4+2 across rows one and two, then a full 6. No dead cells. */}
         <div className="grid auto-rows-[minmax(11rem,auto)] grid-flow-dense grid-cols-2 gap-3 md:grid-cols-6">
@@ -213,25 +290,45 @@ export function AboutContent() {
       {/* ── Interest: the five surfaces ───────────────────────── */}
       <section className="mx-auto max-w-7xl px-6 pb-40">
         <h2 className="font-heading mb-14 font-bold" style={{ fontSize: "clamp(1.9rem,4.4vw,3.2rem)", letterSpacing: "-0.03em" }}>
-          Five surfaces.
+          Five surfaces
         </h2>
         {/* A labelled landmark: this is a second, distinct set of navigation links, and
             each one's accessible name is "<label> <copy>" because the card is one target. */}
         <nav aria-label="Product surfaces" className="flex flex-col gap-2 lg:h-[26rem] lg:flex-row">
-          {SURFACES.map((s) => (
+          {SURFACES.map((s, i) => (
             <Link
               key={s.href}
               href={s.href}
-              className="group relative flex flex-1 flex-col justify-end overflow-hidden rounded-xl border p-6 transition-[flex] duration-700 ease-out lg:hover:flex-[3.2]"
+              className="group relative flex flex-1 flex-col justify-between overflow-hidden rounded-xl border p-6 transition-[flex] duration-700 ease-out lg:hover:flex-[3.2]"
               style={{ borderColor: "rgba(245,241,232,.14)", background: "linear-gradient(180deg,rgba(245,241,232,.05),rgba(11,13,16,.6))" }}
             >
-              <span className="font-heading whitespace-nowrap text-xl font-bold">{s.name}</span>
+              {/* Decorative, and aria-hidden for it: the index is ornament and the route is
+                  already carried by href. Keeping them out of the accessible name leaves it
+                  as "<label> <copy>", which is what e2e/about.spec.ts anchors on. */}
               <span
-                className="mt-2 max-w-[30rem] text-sm opacity-100 transition-opacity duration-500 lg:opacity-0 lg:group-hover:opacity-100"
-                style={{ color: DIM, lineHeight: 1.6 }}
+                aria-hidden="true"
+                className="mono flex items-baseline justify-between gap-2"
+                style={{ fontSize: 11, letterSpacing: "0.1em", color: "rgba(245,241,232,.34)" }}
               >
-                {s.copy}
+                <span>{String(i + 1).padStart(2, "0")}</span>
+                <span className="truncate">{s.href}</span>
               </span>
+
+              <div aria-hidden="true" className="my-6 px-1 opacity-70 transition-opacity duration-500 group-hover:opacity-100">
+                <SurfaceGlyph kind={i} />
+              </div>
+
+              <div>
+                <span className="font-heading block whitespace-nowrap text-xl font-bold">{s.name}</span>
+                {/* Always legible. This copy used to be lg:opacity-0 until hover, which left
+                    five tall empty boxes at rest — the accordion read as a loading state. */}
+                <span
+                  className="mt-3 block max-w-[30rem] text-sm"
+                  style={{ color: DIM, lineHeight: 1.6 }}
+                >
+                  {s.copy}
+                </span>
+              </div>
             </Link>
           ))}
         </nav>
@@ -240,7 +337,7 @@ export function AboutContent() {
       {/* ── Desire: stacking method cards ─────────────────────── */}
       <section className="mx-auto max-w-5xl px-6 pb-40">
         <h2 className="font-heading mb-14 font-bold" style={{ fontSize: "clamp(1.9rem,4.4vw,3.2rem)", letterSpacing: "-0.03em", maxWidth: "22ch" }}>
-          How a number earns its place.
+          How a number earns its place
         </h2>
         {METHOD.map((m, i) => (
           <article
@@ -262,7 +359,7 @@ export function AboutContent() {
       {/* ── Action ────────────────────────────────────────────── */}
       <section className="px-6 pb-44 pt-16 text-center">
         <h2 className="font-heading mx-auto max-w-4xl font-bold" style={{ fontSize: "clamp(2.3rem,7.5vw,6rem)", lineHeight: 0.98, letterSpacing: "-0.035em" }}>
-          Read the schedule before it reads you.
+          Read the schedule before it reads you
         </h2>
         <Link
           href="/"

@@ -8,7 +8,8 @@ export const metadata: Metadata = {
 };
 
 // Deliberately not a sixth nav tab: the primary nav is five plain-noun tabs naming the
-// five product surfaces, and a marketing page is not one of them. Reached from the footer.
+// five product surfaces, and a marketing page is not one of them. Reached from the ABOUT
+// link in the status bar and from WHAT THIS MEASURES in the footer.
 export default function AboutPage() {
   return <AboutContentLazy />;
 }
