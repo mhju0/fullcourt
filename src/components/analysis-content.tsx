@@ -19,13 +19,12 @@ import { format } from "date-fns"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { ExploreGameDetailModal } from "@/components/explore-game-detail-modal"
 import { Skeleton } from "@/components/ui/skeleton"
+import { useExploreGames, type DrillSignal } from "@/hooks/useExploreGames"
+import type { ExploreResult } from "@/lib/explore-games-machine"
 import { apiFetcher } from "@/lib/fetcher"
 import { NBA_SEASONS } from "@/lib/nba-season"
 import { MONO_FONT_STACK, termCardStyle } from "@/lib/terminal-styles"
-import type {
-  AnalysisResponse,
-  GameSearchResponse,
-} from "@/types"
+import type { AnalysisResponse } from "@/types"
 
 // ─── Shared styles (terminal) ─────────────────────────────────────
 
@@ -407,11 +406,7 @@ const NBA_TEAMS = [
   "POR", "SAC", "SAS", "TOR", "UTA", "WAS",
 ]
 
-const PAGE_SIZE = 20
-
 // ─── Explore Games sub-component ──────────────────────────────────
-
-type DrillSignal = { threshold: number; token: number } | null
 
 function ExploreGames({
   exploreRef,
@@ -420,78 +415,20 @@ function ExploreGames({
   exploreRef: React.RefObject<HTMLDivElement | null>
   drillSignal: DrillSignal
 }) {
-  const [raFilter, setRaFilter] = useState(drillSignal?.threshold ?? 0)
-  const [teamFilter, setTeamFilter] = useState("")
-  const [seasonFilter, setSeasonFilter] = useState("")
-  const [resultFilter, setResultFilter] = useState<"all" | "correct" | "incorrect">("all")
-  const [page, setPage] = useState(1)
-  const [detailGameId, setDetailGameId] = useState<number | null>(null)
-  const [detailOpen, setDetailOpen] = useState(false)
-  const [appliedDrillToken, setAppliedDrillToken] = useState(drillSignal?.token ?? 0)
+  const { state, send, results, total, loading, error, window: pages, hasFilters } =
+    useExploreGames(drillSignal)
+  const { minRA: raFilter, team: teamFilter, season: seasonFilter, result: resultFilter, page } = state
+  const { totalPages, start, end } = pages
 
-  // Applies a chart-bar drill-down exactly once per click, keyed on `token`
-  // (not the threshold value) so a repeat click on the same bar still applies,
-  // and so it never re-fires and fights a later dropdown change or CLEAR FILTERS.
-  if (drillSignal && drillSignal.token !== appliedDrillToken) {
-    setAppliedDrillToken(drillSignal.token)
-    setRaFilter(drillSignal.threshold)
-    setPage(1)
-  }
-
-  const searchParams = new URLSearchParams()
-  if (raFilter > 0) searchParams.set("minRA", String(raFilter))
-  if (teamFilter) searchParams.set("team", teamFilter)
-  if (seasonFilter) searchParams.set("season", seasonFilter)
-  if (resultFilter !== "all") searchParams.set("result", resultFilter)
-  searchParams.set("page", String(page))
-  searchParams.set("limit", String(PAGE_SIZE))
-  const searchKey = `/api/games/search?${searchParams}`
-
-  const { data: searchData, error: searchError, isLoading: loading } = useSWR<GameSearchResponse>(
-    searchKey,
-    apiFetcher,
-    { revalidateOnFocus: false, keepPreviousData: true }
-  )
-  const results = searchData?.games ?? []
-  const total = searchData?.total ?? 0
-  const error = searchError
-    ? (searchError instanceof Error ? searchError.message : "Failed to load games")
-    : null
-
-  const handleRaChange = useCallback((v: number) => {
-    setRaFilter(v)
-    setPage(1)
-  }, [])
-  const handleTeamChange = useCallback((v: string) => {
-    setTeamFilter(v)
-    setPage(1)
-  }, [])
-  const handleSeasonChange = useCallback((v: string) => {
-    setSeasonFilter(v)
-    setPage(1)
-  }, [])
-  const handleResultChange = useCallback((v: "all" | "correct" | "incorrect") => {
-    setResultFilter(v)
-    setPage(1)
-  }, [])
-
-  const totalPages = Math.ceil(total / PAGE_SIZE)
-  const start = (page - 1) * PAGE_SIZE + 1
-  const end = Math.min(page * PAGE_SIZE, total)
-
-  const openDetail = useCallback((id: number) => {
-    setDetailGameId(id)
-    setDetailOpen(true)
-  }, [])
+  const openDetail = useCallback((gameId: number) => send({ type: "DETAIL_OPENED", gameId }), [send])
 
   return (
     <div ref={exploreRef} style={termCardStyle}>
       <ExploreGameDetailModal
-        gameId={detailGameId}
-        open={detailOpen}
+        gameId={state.detailGameId}
+        open={state.detailOpen}
         onOpenChange={(next) => {
-          setDetailOpen(next)
-          if (!next) setDetailGameId(null)
+          if (!next) send({ type: "DETAIL_CLOSED" })
         }}
       />
       <SectionDivider label="EXPLORE GAMES" descriptor={`${total.toLocaleString()} TOTAL`} />
@@ -503,7 +440,7 @@ function ExploreGames({
       <div className="mt-3 flex flex-wrap gap-2">
         <select
           value={raFilter}
-          onChange={(e) => handleRaChange(Number(e.target.value))}
+          onChange={(e) => send({ type: "MIN_RA_SELECTED", minRA: Number(e.target.value) })}
           style={exploreSelectStyle}
           aria-label="Rest advantage filter"
         >
@@ -513,7 +450,7 @@ function ExploreGames({
         </select>
         <select
           value={teamFilter}
-          onChange={(e) => handleTeamChange(e.target.value)}
+          onChange={(e) => send({ type: "TEAM_SELECTED", team: e.target.value })}
           style={exploreSelectStyle}
           aria-label="Team filter"
         >
@@ -522,7 +459,7 @@ function ExploreGames({
         </select>
         <select
           value={seasonFilter}
-          onChange={(e) => handleSeasonChange(e.target.value)}
+          onChange={(e) => send({ type: "SEASON_SELECTED", season: e.target.value })}
           style={exploreSelectStyle}
           aria-label="Season filter"
         >
@@ -531,7 +468,7 @@ function ExploreGames({
         </select>
         <select
           value={resultFilter}
-          onChange={(e) => handleResultChange(e.target.value as "all" | "correct" | "incorrect")}
+          onChange={(e) => send({ type: "RESULT_SELECTED", result: e.target.value as ExploreResult })}
           style={exploreSelectStyle}
           aria-label="Result filter"
         >
@@ -540,15 +477,9 @@ function ExploreGames({
           <option value="incorrect">Rested Team Lost</option>
         </select>
 
-        {(raFilter > 0 || teamFilter || seasonFilter || resultFilter !== "all") && (
+        {hasFilters && (
           <button
-            onClick={() => {
-              setRaFilter(0)
-              setTeamFilter("")
-              setSeasonFilter("")
-              setResultFilter("all")
-              setPage(1)
-            }}
+            onClick={() => send({ type: "FILTERS_CLEARED" })}
             className="mono"
             style={{
               ...exploreSelectStyle,
@@ -685,7 +616,7 @@ function ExploreGames({
           </p>
           <div className="flex items-center gap-1">
             <button
-              onClick={() => setPage((p) => Math.max(1, p - 1))}
+              onClick={() => send({ type: "PAGE_SHIFTED", delta: -1, totalPages })}
               disabled={page === 1 || loading}
               className="flex size-7 items-center justify-center bg-[var(--term-surface)] text-[var(--term-text-dim)] transition-colors hover:bg-[var(--term-surface-2)] disabled:opacity-40"
               style={{ border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }}
@@ -697,7 +628,7 @@ function ExploreGames({
               {page} / {totalPages || 1}
             </span>
             <button
-              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+              onClick={() => send({ type: "PAGE_SHIFTED", delta: 1, totalPages })}
               disabled={page >= totalPages || loading}
               className="flex size-7 items-center justify-center bg-[var(--term-surface)] text-[var(--term-text-dim)] transition-colors hover:bg-[var(--term-surface-2)] disabled:opacity-40"
               style={{ border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }}
