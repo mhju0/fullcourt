@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 
 export default function SchedulePage() {
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-12">
       <PageHeader
         eyebrow="SCHEDULE DISPARITY · NET REST EDGE"
         title="Schedule Disparity"

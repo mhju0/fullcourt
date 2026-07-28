@@ -189,7 +189,7 @@ export function ScheduleDisparityContent() {
   const least = teams[teams.length - 1]
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-12">
       <div style={termCardStyle}>
         <SeasonSelector
           id="schedule-disparity-season"

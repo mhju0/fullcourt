@@ -393,6 +393,32 @@ hard-code hexes.
   cheapness in a dense numeric UI. `next/font` ships with Next.js, so the swap added **no npm
   dependency**.
 
+### Page rhythm
+
+Every page is built the same way, so moving between tabs does not feel like moving between
+products:
+
+- **Page title = 32px**, the "hero stat value" slot in `terminal-styles.ts`. At 24px a title
+  was the same size as the stat numbers under it. `PageHeader` sets this for `/schedule`,
+  `/playoffs` and `/shot-quality`; `/` and `/analysis` render their own header inline (they
+  need the eyebrow inside a data-dependent branch) and are kept in step by hand.
+- **`gap-12` between chapters** — heading, controls, results — on the page's top-level column,
+  with tighter spacing inside anything that belongs together. A uniform `gap-4` gave a heading
+  the same separation as two halves of one control panel. Loading and error branches carry the
+  same `gap-12` so the layout does not shift when data lands.
+- **Stat tiles take a 2px rule on the *top* edge**, not the left. As a left border a row of
+  tiles reads as a list with coloured bullets; along the top edge it reads as a row of
+  measures. Single centred callouts (error cards, "key insight") keep the left rule — they are
+  one statement, not a row.
+- **Cards that expand lift 2px on hover** (`hover:-translate-y-0.5`), cancelled under
+  `motion-reduce`. Do not pair this with a `hover:border-*` class on `MatchupCard` or the
+  playoff `SeriesCard`: both set `border` as an inline style, which beats any non-`!important`
+  class rule, so such a hover silently does nothing.
+
+The Games filter panel's `Scope` / `Day` grouping is deliberately **not** carried to the other
+pages — it exists because that page has three interacting controls. The others have one or two,
+already self-labelled.
+
 ### Sentence case vs. caps
 
 Uppercase mono is for **labels of about three words or fewer** — stat-card captions, table

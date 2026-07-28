@@ -498,7 +498,7 @@ export function ShotQualityContent() {
 
   if (isLoading && !data) {
     return (
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-12">
         {controls}
         <CourtSkeleton />
       </div>
@@ -507,7 +507,7 @@ export function ShotQualityContent() {
 
   if (error || !data) {
     return (
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-12">
         {controls}
         <MessageCard tone="error" title="FAILED TO LOAD SHOT DATA" body={error ?? "UNKNOWN ERROR"} />
       </div>
@@ -517,7 +517,7 @@ export function ShotQualityContent() {
   const isEmpty = cells.length === 0
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-12">
       {controls}
 
       {isEmpty ? (

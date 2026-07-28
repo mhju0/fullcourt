@@ -33,7 +33,7 @@ function MethodMetricCard({
   return (
     <div
       className="flex flex-col gap-1 px-3 py-3"
-      style={{ background: "var(--term-surface-2)", borderRadius: "var(--term-radius)", borderLeft: `2px solid ${accent}` }}
+      style={{ background: "var(--term-surface-2)", borderRadius: "var(--term-radius)", borderTop: `2px solid ${accent}` }}
     >
       <span className="mono" style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 700 }}>
         {label}
@@ -221,7 +221,8 @@ function SeriesCard({ series }: { series: PlayoffSeriesWithPredictions }) {
 
   return (
     <div
-      className="flex flex-col transition-shadow hover:shadow-[0_2px_10px_rgba(23,64,139,0.08)]"
+      // Same 2px lift as MatchupCard; the shadow was already here.
+      className="flex flex-col transition-[box-shadow,transform] duration-200 hover:-translate-y-0.5 hover:shadow-[0_2px_10px_rgba(23,64,139,0.08)] motion-reduce:transition-none motion-reduce:hover:translate-y-0"
       style={{ background: "var(--term-surface)", border: "1px solid var(--term-border)", borderLeft: `2px solid ${accent}`, borderRadius: "var(--term-radius)", overflow: "hidden" }}
     >
       <div
@@ -321,7 +322,7 @@ function RoundSection({ group }: { group: PlayoffRoundGroup }) {
 
 function PlayoffsSkeleton() {
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-12">
       <div style={termCardStyle}>
         <Skeleton className="h-4 w-32 bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)" }} />
       </div>
@@ -358,7 +359,7 @@ export function PlayoffsContent() {
 
   if (error || !data) {
     return (
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-12">
         <SeasonSelector id="playoffs-season" season={season} onSeasonChange={setSeason} />
         <div
           className="mono px-6 py-12 text-center"
@@ -376,7 +377,7 @@ export function PlayoffsContent() {
   }
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-12">
       <SeasonSelector id="playoffs-season" season={season} onSeasonChange={setSeason} />
 
       <MethodComparisonHeader summary={data.summary} />

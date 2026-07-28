@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 
 export default function ShotQualityPage() {
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-12">
       <PageHeader
         eyebrow="EXPECTED SHOT VALUE · xeFG%"
         title="Expected Shot Value"

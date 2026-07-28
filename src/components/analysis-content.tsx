@@ -126,7 +126,9 @@ function StatCard({
       style={{
         background: "var(--term-surface)",
         border: "1px solid var(--term-border)",
-        borderLeft: `2px solid ${accent}`,
+        // Top rule, not left: as a left border a row of tiles reads as a list with coloured
+        // bullets. Along the top edge it reads as a row of measures. Matches page.tsx.
+        borderTop: `2px solid ${accent}`,
         borderRadius: "var(--term-radius)",
         padding: "12px 14px",
       }}
@@ -365,7 +367,7 @@ function SeasonWinRateBySeasonChart({
 
 function AnalysisSkeleton() {
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-12">
       <div style={termCardStyle}>
         <Skeleton className="h-12 w-32 bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)" }} />
         <Skeleton className="mt-2 h-3 w-52 bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)" }} />
@@ -796,13 +798,15 @@ export function AnalysisContent() {
   )
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-12">
       {/* Eyebrow heading */}
-      <div className="flex flex-col gap-1">
-        <span className="mono" style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-red)", fontWeight: 700 }}>
+      <div className="flex flex-col gap-1.5">
+        <span className="mono" style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-red)", fontWeight: 600 }}>
           HISTORICAL BACKTEST
         </span>
-        <h1 className="text-2xl font-bold tracking-tight text-[var(--term-text)]">Rest Advantage Analysis</h1>
+        {/* Kept in step with PageHeader by hand: this page renders its own header so the
+            eyebrow can sit inside the data-dependent branch. */}
+        <h1 className="text-[32px] leading-[1.05] text-[var(--term-text)]">Rest Advantage Analysis</h1>
         <p className="max-w-2xl" style={{ fontSize: 15, color: "var(--term-text-muted)", lineHeight: 1.55 }}>
           Among completed regular-season games with fatigue data on both sides, did the
           more-rested team win? Charts plot the gap against a coin flip in percentage
