@@ -34,19 +34,19 @@ threshold, plotted as the gap against a coin flip in percentage points: zero is 
 rate, so the bar's length is the measured edge. Slices the model gets backwards hang below
 the line in red.
 
-<img src="docs/screenshots/analysis.png" alt="Rest Advantage Analysis: win rate by rest-advantage threshold across 38,985 regular-season games, drawn as deviation columns measured from a 50% coin flip. Bars rise from a zero line in blue — plus 6.6 points at RA at least 2 up to plus 13.4 at RA at least 7 — and each is labelled with its sample size" width="900" />
+<img src="docs/screenshots/analysis.png" alt="Rest Advantage Analysis. Three summary tiles read an overall win rate of 54.7% across 38,985 games, a home-rested win rate of 60.9% from 16,010 of 26,289 games, and 61.1% at a rest advantage of 5 or more across 5,763 games. Below them, win rate by rest-advantage threshold is drawn as deviation columns measured from a 50% coin flip: four blue bars rise from a zero line, growing left to right from RA at least 2 to RA at least 7, each labelled with its sample size — 22,740, 15,076, 5,763 and 1,903 games. A legend states that blue means the rested team beat a coin flip and red means it lost to one." width="900" />
 
 **Games — the per-matchup view.** Each team's fatigue score, the rest-advantage
 differential, and a confidence read. Every rest-advantage number carries the historical hit
 rate and sample size of its class, measured against a 50% coin flip; matchups the model calls
 neutral get no claim at all.
 
-<img src="docs/screenshots/today.png" alt="Today's Games: matchup cards, each showing both teams' fatigue bars and scores, a rest-advantage panel naming the more-rested team with a confidence badge, and a sentence giving that gap its historical win rate, sample size and distance from a 50% coin flip. Matchups scored EVEN carry no such sentence." width="900" />
+<img src="docs/screenshots/games.png" alt="The Games page for Sunday, April 12, 2026. Four tiles read 15 games on this date, an average rest advantage of 0.7, an all-time win rate of 54.7%, and 0 high-confidence games. A filter panel below is split into two labelled groups: Scope, holding the 2025-26 season and month buttons from October to April with April selected, and Day, holding day chips 1 through 12 each captioned with its game count, with the 12th selected. Two matchup cards follow. The first, Brooklyn Nets 101 at Toronto Raptors 136, shows fatigue bars of 3.5 and 4.4, a rest-advantage panel giving BKN plus 1.0 with a LOW CONF badge, and a sentence reading that any measurable gap has gone the rested team's way 54.7% of the time, 4.7 points above a coin flip, from 38,985 games. The second, Chicago Bulls 128 at Dallas Mavericks 149, shows equal fatigue scores of 4.6, is scored EVEN 0.0 with a NEUTRAL badge, and carries no such sentence." width="900" />
 
 **Expected Shot Value — location-only xeFG%.** A gradient-boosted location model beside the
 zone-average baseline it is measured against.
 
-<img src="docs/screenshots/shot-quality.png" alt="Expected Shot Value: two half-court maps comparing a zone-average baseline against a gradient-boosted location model, with marker size showing shot attempts and color showing expected effective field-goal percentage" width="900" />
+<img src="docs/screenshots/shot-quality.png" alt="Expected Shot Value for 2025-26, covering 1,808 cells and 219,121 shot attempts. A colour scale runs from 26% low value in tan to 56% high value in blue. Two half-court maps sit side by side: BASELINE, the zone average, whose colour changes in blocky steps at zone boundaries, and GBM, the location model, whose colour varies smoothly. Both show a blue arc along the three-point line and blue at the rim, with the long mid-range in tan — most visibly so on the GBM court. Marker size encodes shot attempts from that cell." width="900" />
 
 **Schedule Disparity — who the schedule favored.** All 30 teams ranked by net rest edge in days,
 drawn from a zero line so the bar length *is* the edge. Positive is favorable in every column on

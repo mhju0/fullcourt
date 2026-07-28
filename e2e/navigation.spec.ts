@@ -37,4 +37,22 @@ test.describe("Primary navigation", () => {
     await expect(page).toHaveURL(/\/$/);
     await expect(games).toHaveAttribute("aria-current", "page");
   });
+
+  test("reaches /about from the status bar without adding a sixth tab", async ({ page }) => {
+    await page.goto("/");
+
+    // Deliberately outside the "Main navigation" landmark: /about explains the product
+    // rather than being one of the five surfaces. Asserted here because the footer link
+    // alone left the page effectively unreachable.
+    const nav = page.getByRole("navigation", { name: "Main navigation" });
+    await expect(nav.getByRole("link", { name: "ABOUT", exact: true })).toHaveCount(0);
+
+    const about = page.getByRole("link", { name: "ABOUT", exact: true });
+    await expect(about).toBeVisible();
+    await about.click();
+
+    await expect(page).toHaveURL(/\/about$/);
+    await expect(page.getByRole("heading", { level: 1 })).toContainText("One side is always carrying");
+    await expect(page.getByRole("link", { name: "ABOUT", exact: true })).toHaveAttribute("aria-current", "page");
+  });
 });

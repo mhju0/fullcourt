@@ -158,6 +158,21 @@ under Design system below for the rendering details, and a collapsible `Methodol
 explaining the baseline/GBM framing (small calibration win, not a large accuracy jump; no
 defender distance or shot-clock data).
 
+### `/about` — landing / explainer (`src/app/about/page.tsx`)
+
+Deliberately unlike the rest of the app: dark ground, oversized display type, GSAP scroll
+work. It explains what the product measures rather than serving data, which is why it is
+**not** one of the five surfaces. Visuals are CSS and inline SVG only — no remote images —
+so `img-src` in `next.config.ts` did not have to widen; GSAP is imported inside `useEffect`
+so it stays out of the shared bundle.
+
+Reachable from an `ABOUT` link in the **top status bar** and from `WHAT THIS MEASURES` in the
+footer — not from the main nav, whose five-link count is asserted in `e2e/navigation.spec.ts`.
+Headings use `font-bold` (700), not extrabold: `layout.tsx` loads Space Grotesk at
+400/500/600/700, so an 800 request resolved to the 700 face anyway.
+
+Known rough edge: the light app header sits directly above the dark hero, with no transition.
+
 ### Unknown routes — `src/app/not-found.tsx`
 
 Static server component inside the shared shell. It provides a branded 404 heading and direct
@@ -170,7 +185,10 @@ recovery links to Games and Model Results without adding a client bundle or data
 1. **Top status bar** (28px, `var(--term-surface-2)`, bottom border `var(--term-border)`):
    a `<CourtMark size={22}>` brand logo + `FULLCOURT` (`var(--term-red)`) + `NBA ANALYTICS
    PLATFORM` (muted), and on the right `currentDisplaySeason() + " SEASON"` (dynamic — from
-   `src/lib/nba-season.ts`, not a hardcoded label). There is **no LIVE dot** — it was gated by
+   `src/lib/nba-season.ts`, not a hardcoded label), preceded by an `ABOUT` link to `/about`.
+   That link lives here, not in the main nav, because `/about` explains the product rather
+   than being a sixth surface — and because the nav's five-link count is asserted in e2e.
+   There is **no LIVE dot** — it was gated by
    a `HAS_LIVE_GAMES` constant hardcoded to `false`, so it never rendered in any state; the
    dead branch was removed. Per-game LIVE status is shown by `MatchupCard` instead.
 2. **Main nav** (44px, `var(--term-surface)`, bottom border `var(--term-border)`): links from

@@ -33,6 +33,20 @@ export function NavBar() {
             <span className="hidden sm:inline" style={{ color: "var(--term-text-muted)" }}>NBA ANALYTICS PLATFORM</span>
           </div>
           <div className="flex items-center gap-3" style={{ fontSize: "11px", letterSpacing: "0.08em" }}>
+            {/* Secondary chrome, deliberately not a sixth tab: /about explains the product,
+                it is not one of the five surfaces, and the nav's five-link count is asserted
+                in e2e. The footer link alone left the page effectively unreachable. */}
+            <Link
+              href="/about"
+              aria-current={pathname === "/about" ? "page" : undefined}
+              className="transition-colors hover:text-[var(--term-text)]"
+              style={{
+                color: pathname === "/about" ? "var(--term-text)" : "var(--term-text-muted)",
+                fontWeight: 600,
+              }}
+            >
+              ABOUT
+            </Link>
             <span style={{ color: "var(--term-text-muted)" }}>{currentDisplaySeason()} SEASON</span>
           </div>
         </div>

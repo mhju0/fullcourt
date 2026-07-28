@@ -128,8 +128,11 @@ export function AboutContent() {
         <CourtSplit className="pointer-events-none absolute left-1/2 top-1/2 w-[min(80rem,140%)] -translate-x-1/2 -translate-y-1/2 opacity-[0.13]" />
 
         <div className="relative z-10 mx-auto max-w-5xl">
+          {/* font-bold (700), not extrabold: layout.tsx loads Space Grotesk at 400/500/600/700,
+              so an 800 request resolved to the 700 face anyway. The declaration now matches
+              what renders — raise both together if this page ever wants a heavier display cut. */}
           <h1
-            className="fc-hero-in font-heading font-extrabold"
+            className="fc-hero-in font-heading font-bold"
             style={{ fontSize: "clamp(2.6rem,7vw,5.6rem)", lineHeight: 0.98, letterSpacing: "-0.035em" }}
           >
             One side is always carrying.
@@ -172,7 +175,7 @@ export function AboutContent() {
 
       {/* ── Interest: gapless bento ───────────────────────────── */}
       <section className="mx-auto max-w-7xl px-6 pb-40">
-        <h2 className="font-heading mb-14 font-extrabold" style={{ fontSize: "clamp(1.9rem,4.4vw,3.2rem)", letterSpacing: "-0.03em", maxWidth: "20ch" }}>
+        <h2 className="font-heading mb-14 font-bold" style={{ fontSize: "clamp(1.9rem,4.4vw,3.2rem)", letterSpacing: "-0.03em", maxWidth: "20ch" }}>
           Evidence, not vibes.
         </h2>
         {/* 6 columns, dense flow: 4+2 across rows one and two, then a full 6. No dead cells. */}
@@ -188,12 +191,12 @@ export function AboutContent() {
           </article>
 
           <article className="fc-rise flex flex-col justify-end rounded-xl border p-6 md:col-span-2" style={{ borderColor: "rgba(245,241,232,.14)" }}>
-            <span className="font-heading font-extrabold" style={{ fontSize: "2.6rem", lineHeight: 1, color: "#7FA9FF" }}>+13.4</span>
+            <span className="font-heading font-bold" style={{ fontSize: "2.6rem", lineHeight: 1, color: "#7FA9FF" }}>+13.4</span>
             <p className="mt-2 text-sm" style={{ color: DIM }}>Win-rate points at a rest advantage of seven or more.</p>
           </article>
 
           <article className="fc-rise flex flex-col justify-end rounded-xl border p-6 md:col-span-2" style={{ borderColor: "rgba(245,241,232,.14)" }}>
-            <span className="font-heading font-extrabold" style={{ fontSize: "2.6rem", lineHeight: 1, color: "#E0A340" }}>26</span>
+            <span className="font-heading font-bold" style={{ fontSize: "2.6rem", lineHeight: 1, color: "#E0A340" }}>26</span>
             <p className="mt-2 text-sm" style={{ color: DIM }}>Days between the most and least favoured schedule last season.</p>
           </article>
 
@@ -209,7 +212,7 @@ export function AboutContent() {
 
       {/* ── Interest: the five surfaces ───────────────────────── */}
       <section className="mx-auto max-w-7xl px-6 pb-40">
-        <h2 className="font-heading mb-14 font-extrabold" style={{ fontSize: "clamp(1.9rem,4.4vw,3.2rem)", letterSpacing: "-0.03em" }}>
+        <h2 className="font-heading mb-14 font-bold" style={{ fontSize: "clamp(1.9rem,4.4vw,3.2rem)", letterSpacing: "-0.03em" }}>
           Five surfaces.
         </h2>
         {/* A labelled landmark: this is a second, distinct set of navigation links, and
@@ -236,7 +239,7 @@ export function AboutContent() {
 
       {/* ── Desire: stacking method cards ─────────────────────── */}
       <section className="mx-auto max-w-5xl px-6 pb-40">
-        <h2 className="font-heading mb-14 font-extrabold" style={{ fontSize: "clamp(1.9rem,4.4vw,3.2rem)", letterSpacing: "-0.03em", maxWidth: "22ch" }}>
+        <h2 className="font-heading mb-14 font-bold" style={{ fontSize: "clamp(1.9rem,4.4vw,3.2rem)", letterSpacing: "-0.03em", maxWidth: "22ch" }}>
           How a number earns its place.
         </h2>
         {METHOD.map((m, i) => (
@@ -245,7 +248,7 @@ export function AboutContent() {
             className="fc-card sticky top-[16vh] mb-6 flex min-h-[19rem] flex-col justify-between rounded-2xl border p-10"
             style={{ borderColor: "rgba(245,241,232,.16)", background: ["#12161B", "#161B22", "#1B2129"][i] }}
           >
-            <span className="font-heading font-extrabold" style={{ fontSize: "clamp(2.6rem,6vw,5rem)", lineHeight: 1, color: "rgba(245,241,232,.14)" }}>
+            <span className="font-heading font-bold" style={{ fontSize: "clamp(2.6rem,6vw,5rem)", lineHeight: 1, color: "rgba(245,241,232,.14)" }}>
               {m.n}
             </span>
             <div>
@@ -258,7 +261,7 @@ export function AboutContent() {
 
       {/* ── Action ────────────────────────────────────────────── */}
       <section className="px-6 pb-44 pt-16 text-center">
-        <h2 className="font-heading mx-auto max-w-4xl font-extrabold" style={{ fontSize: "clamp(2.3rem,7.5vw,6rem)", lineHeight: 0.98, letterSpacing: "-0.035em" }}>
+        <h2 className="font-heading mx-auto max-w-4xl font-bold" style={{ fontSize: "clamp(2.3rem,7.5vw,6rem)", lineHeight: 0.98, letterSpacing: "-0.035em" }}>
           Read the schedule before it reads you.
         </h2>
         <Link
