@@ -128,6 +128,7 @@ def load_player_games() -> list[dict]:
                     "gid": gid,
                     "pid": r["person_id"],
                     "name": f"{r['first_name']} {r['family_name']}".strip(),
+                    "team": r["team_tricode"],
                     "season": r["season"],
                     "min": parse_min(r["minutes"]),
                     "fgm": int(r["field_goals_made"] or 0),
