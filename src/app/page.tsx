@@ -27,7 +27,12 @@ const termBtnStyle: React.CSSProperties = { border: "1px solid var(--term-border
 
 // ─── Stat summary row ────────────────────────────────────────────
 
-function StatCard({ label, value, accent }: { label: string; value: string; accent: string }) {
+/** Percentage points off a coin flip, always signed. Minus is U+2212, matching the tables. */
+function signedPp(v: number): string {
+  return `${v > 0 ? "+" : v < 0 ? "−" : ""}${Math.abs(v).toFixed(1)}`
+}
+
+function StatCard({ label, value, accent, note }: { label: string; value: string; accent: string; note?: string }) {
   return (
     <div
       className="mono flex flex-col gap-2"
@@ -47,6 +52,9 @@ function StatCard({ label, value, accent }: { label: string; value: string; acce
       <span className="tabular-nums" style={{ fontSize: 24, fontWeight: 500, letterSpacing: "-0.01em", color: "var(--term-text)", lineHeight: 1 }}>
         {value}
       </span>
+      {note && (
+        <span style={{ fontSize: 10, letterSpacing: "0.06em", color: "var(--term-text-muted)" }}>{note}</span>
+      )}
     </div>
   )
 }
@@ -54,12 +62,14 @@ function StatCard({ label, value, accent }: { label: string; value: string; acce
 function StatSummaryRow({
   gamesToday,
   avgRestAdv,
-  seasonWinRate,
+  restedEdge,
+  restedEdgeNote,
   highConfGames,
 }: {
   gamesToday: number
   avgRestAdv: string
-  seasonWinRate: string
+  restedEdge: string
+  restedEdgeNote: string
   highConfGames: number
 }) {
   return (
@@ -68,7 +78,15 @@ function StatSummaryRow({
           auto-selects the most recent date with games whenever today has none. */}
       <StatCard label="GAMES ON THIS DATE" value={String(gamesToday)} accent="var(--term-neutral)" />
       <StatCard label="AVG REST ADV" value={avgRestAdv} accent="var(--term-neutral)" />
-      <StatCard label="ALL-TIME WIN RATE" value={seasonWinRate} accent="var(--term-blue)" />
+      {/* Not a win rate: a bare 54.7% names no subject and no baseline, and it is the only
+          tile here that ignores the selected date. Stated as the gap from a coin flip, the
+          way /analysis states it, with its scope on the card. */}
+      <StatCard
+        label="RESTED-TEAM EDGE"
+        value={restedEdge}
+        note={restedEdgeNote}
+        accent="var(--term-blue)"
+      />
       <StatCard label="HIGH CONF GAMES" value={String(highConfGames)} accent="var(--term-red)" />
     </div>
   )
@@ -318,7 +336,10 @@ export default function HomePage() {
   const { data: analysis } = useSWR<AnalysisResponse>("/api/analysis", apiFetcher, {
     revalidateOnFocus: false,
   })
-  const seasonWinRate = analysis ? `${analysis.overallWinRate}%` : "—"
+  const restedEdge = analysis ? `${signedPp(analysis.overallWinRate - 50)} PP` : "—"
+  const restedEdgeNote = analysis
+    ? `VS. A COIN FLIP · ${analysis.seasonWinRates.length} SEASONS`
+    : "VS. A COIN FLIP"
   // Same payload, reused to denominate every card's rest-advantage number.
   const evidenceSource = useMemo(
     () =>
@@ -396,7 +417,8 @@ export default function HomePage() {
           <StatSummaryRow
             gamesToday={slate.games.length}
             avgRestAdv={avgRestAdv}
-            seasonWinRate={seasonWinRate}
+            restedEdge={restedEdge}
+            restedEdgeNote={restedEdgeNote}
             highConfGames={highConfGames}
           />
 

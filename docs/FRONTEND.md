@@ -73,9 +73,11 @@ Initial day selection still uses `pickDefaultGamesDate` (today if it has games; 
 upcoming October date at season start; else nearest / last available).
 - Pieces: heading eyebrow `REST ADVANTAGE DASHBOARD` + `<h1>Games</h1>`; the BY DATE/UPCOMING
   toggle;
-  `StatSummaryRow` (GAMES ON THIS DATE, AVG REST ADV, **ALL-TIME WIN RATE** fetched live via
-  `useSWR("/api/analysis")` — the same `overallWinRate` `/analysis` renders, shown as `—` while
-  loading/on error, HIGH CONF GAMES where `HIGH_CONF_THRESHOLD = 2.0`); the shared
+  `StatSummaryRow` (GAMES ON THIS DATE, AVG REST ADV, **RESTED-TEAM EDGE** fetched live via
+  `useSWR("/api/analysis")` — `overallWinRate − 50` in percentage points, captioned with its
+  scope, because a bare win rate named neither its subject nor the coin flip it is measured
+  against and was the one tile that ignores the selected date; `—` while loading/on error,
+  HIGH CONF GAMES where `HIGH_CONF_THRESHOLD = 2.0`); the shared
   a two-group control panel — **Scope** (`<SeasonSelector>` + month tabs from `slate.months`,
   disabled at `dayCount === 0`) and **Day** (`DateChip`s pre-formatted by the hook, plus the
   prev/next arrows). The old "DAYS WITH GAMES" caption is gone: the group is labelled, and each
