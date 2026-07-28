@@ -1,1 +1,19 @@
 packages: []
+
+# pnpm 10 stopped reading the "pnpm" field in package.json and moved the build-approval
+# settings out of .npmrc; pnpm 11 then replaced onlyBuiltDependencies/neverBuiltDependencies
+# with the allowBuilds map below. Keep the overrides in step with whatever advisory
+# motivated them — ws is a CVE pin, not a preference.
+overrides:
+  '@babel/core@<=7.29.0': 7.29.6
+  postcss@<8.5.10: 8.5.10
+  ws@>=8.0.0 <8.21.0: '>=8.21.0'
+
+# Carries forward the previous policy verbatim: .npmrc allowed esbuild alone to run its
+# install scripts, so everything else stayed unbuilt. msw is new to this list only because
+# pnpm 11 now reports it; it was never built before either.
+allowBuilds:
+  esbuild: true
+  msw: false
+  sharp: false
+  unrs-resolver: false
