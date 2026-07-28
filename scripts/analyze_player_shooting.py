@@ -27,6 +27,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import json
 import math
 import os
 import sys
@@ -253,6 +254,92 @@ def shrink(pairs, grand: float) -> list[tuple]:
     return out
 
 
+# ── per-player export ────────────────────────────────────────────────────────
+
+EXPORT_MIN_FGA = 150   # per arm, per player, career — low enough to include role players
+
+
+def _arm(rows) -> tuple[int, int, int]:
+    fgm = sum(r["fgm"] for r in rows)
+    fga = sum(r["fga"] for r in rows)
+    fg3m = sum(r["fg3m"] for r in rows)
+    return fgm, fga, fg3m
+
+
+def export_players(rows, name_of, birth, gdate, grand_rest: float, root: Path) -> None:
+    """Write one JSON row per player for the browsable database."""
+    by_pid: dict[str, list[dict]] = defaultdict(list)
+    for r in rows:
+        by_pid[r["pid"]].append(r)
+
+    b2b = lambda r: r["rest"] == 1
+    rested = lambda r: r["rest"] is not None and r["rest"] >= 3
+    busy = lambda r: r["load7"] >= 3
+    cold = lambda r: r["load7"] <= 1
+
+    raw: list[dict] = []
+    for pid, gs in by_pid.items():
+        t, c = [g for g in gs if b2b(g)], [g for g in gs if rested(g)]
+        bz, cd = [g for g in gs if busy(g)], [g for g in gs if cold(g)]
+        tf, cf = _arm(t), _arm(c)
+        bf, df = _arm(bz), _arm(cd)
+        if tf[1] < EXPORT_MIN_FGA or cf[1] < EXPORT_MIN_FGA:
+            continue
+
+        seasons = sorted({g["season"] for g in gs})
+        ages = [g["age"] for g in gs if g["age"] is not None]
+        all_f = _arm(gs)
+
+        rest_d = (efg(*tf) - efg(*cf)) * 100
+        rest_se = math.sqrt(efg_se(*tf) ** 2 + efg_se(*cf) ** 2)
+
+        has_rhythm = bf[1] >= EXPORT_MIN_FGA and df[1] >= EXPORT_MIN_FGA
+        rhy_d = (efg(*bf) - efg(*df)) * 100 if has_rhythm else None
+        rhy_se = (math.sqrt(efg_se(*bf) ** 2 + efg_se(*df) ** 2)) if has_rhythm else None
+
+        raw.append({
+            "id": pid,
+            "name": name_of.get(pid, pid),
+            "from": seasons[0], "to": seasons[-1],
+            "g": len(gs),
+            "fga": all_f[1],
+            "efg": round(efg(*all_f) * 100, 2),
+            "ageLo": min(ages) if ages else None,
+            "ageHi": max(ages) if ages else None,
+            "b2bFga": tf[1], "b2bEfg": round(efg(*tf) * 100, 2),
+            "restFga": cf[1], "restEfg": round(efg(*cf) * 100, 2),
+            "restD": round(rest_d, 2), "restSe": round(rest_se, 2),
+            "busyFga": bf[1] or 0, "busyEfg": round(efg(*bf) * 100, 2) if bf[1] else None,
+            "coldFga": df[1] or 0, "coldEfg": round(efg(*df) * 100, 2) if df[1] else None,
+            "rhyD": round(rhy_d, 2) if rhy_d is not None else None,
+            "rhySe": round(rhy_se, 2) if rhy_se is not None else None,
+        })
+
+    # Empirical-Bayes shrinkage, computed once over the exported pool.
+    for field, dkey, skey, out in (("rest", "restD", "restSe", "restShrunk"),
+                                   ("rhythm", "rhyD", "rhySe", "rhyShrunk")):
+        vals = [(p[dkey], p[skey]) for p in raw if p.get(dkey) is not None]
+        if len(vals) < 3:
+            continue
+        mean = sum(d for d, _ in vals) / len(vals)
+        var_obs = sum((d - mean) ** 2 for d, _ in vals) / (len(vals) - 1)
+        mean_var = sum(s * s for _, s in vals) / len(vals)
+        tau2 = max(var_obs - mean_var, 0.0)
+        for p in raw:
+            if p.get(dkey) is None:
+                p[out] = None
+                continue
+            s = p[skey]
+            w = tau2 / (tau2 + s * s) if (tau2 + s * s) > 0 else 0.0
+            p[out] = round(mean + w * (p[dkey] - mean), 2)
+
+    raw.sort(key=lambda p: -p["fga"])
+    dest = root / "ml" / "data" / "shooting" / "player_shooting.json"
+    dest.write_text(json.dumps(raw, separators=(",", ":")), encoding="utf-8")
+    print(f"exported {len(raw):,} players -> {dest.relative_to(root)} "
+          f"({dest.stat().st_size / 1024:.0f} KB)")
+
+
 # ── main ─────────────────────────────────────────────────────────────────────
 
 def main() -> int:
@@ -410,6 +497,12 @@ def main() -> int:
             emit(f"| {name_of.get(pid, pid)} | **{sh:+.2f} pp** | {raw:+.2f} | "
                  f"{se:.2f} | {a:,} / {b:,} |")
         emit()
+
+    # ---- 6. per-player export ----------------------------------------------
+    # Powers the browsable player database. Deliberately a LOOKUP, not a ranking:
+    # once nothing is being claimed league-wide, the multiple-comparisons problem
+    # that makes a leaderboard dishonest simply does not arise.
+    export_players(rows, name_of, birth, gdate, grand, ROOT)
 
     emit("## What this does and does not remove")
     emit()
