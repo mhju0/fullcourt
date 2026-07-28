@@ -243,16 +243,20 @@
    ground, a rail down the left edge, and a rule top and bottom. Three signals
    held at low strength, each of which still reads if the others fail — a single
    subtle tone would not survive on every display.                              */
+/* The open player's block is tinted roughly twice as strongly as it first shipped: at 7%/3%
+   the wash was visible once you looked for it, but the point of it is to find the expanded
+   player without looking. The two levels stay one step apart so the header row and its own
+   current season still read as the group's anchors. */
 .fc-rest-table tbody tr.fc-open > td {
-  background: color-mix(in srgb, var(--term-amber) 7%, var(--term-surface));
+  background: color-mix(in srgb, var(--term-amber) 14%, var(--term-surface));
   border-top: 1px solid var(--term-rail);
 }
 .fc-rest-table tbody tr.fc-sub > td {
-  background: color-mix(in srgb, var(--term-amber) 3%, var(--term-surface));
+  background: color-mix(in srgb, var(--term-amber) 6%, var(--term-surface));
   cursor: default;
 }
 .fc-rest-table tbody tr.fc-sub.fc-here > td {
-  background: color-mix(in srgb, var(--term-amber) 7%, var(--term-surface));
+  background: color-mix(in srgb, var(--term-amber) 14%, var(--term-surface));
 }
 .fc-rest-table tbody tr.fc-open > td:first-child,
 .fc-rest-table tbody tr.fc-sub > td:first-child {

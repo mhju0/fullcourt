@@ -66,8 +66,8 @@ const COLUMNS: { key: SortKey | null; label: string; unit?: string; align?: "rig
   { key: "games", label: "G", align: "right" },
   { key: "fga", label: "FGA", align: "right" },
   { key: "efg", label: "eFG%", align: "right" },
-  { key: "noRestEfg", label: "No rest", unit: "eFG% / attempts", align: "right" },
-  { key: "restedEfg", label: "3+ days rest", unit: "eFG% / attempts", align: "right" },
+  { key: "noRestEfg", label: "No rest", unit: "eFG% · attempts", align: "right" },
+  { key: "restedEfg", label: "3+ days rest", unit: "eFG% · attempts", align: "right" },
   { key: "effect", label: "Rest effect", unit: "3+ days − no rest", align: "right" },
 ]
 
@@ -122,7 +122,8 @@ function ArmCell({ efg, fga }: { efg: number | null; fga: number }) {
   }
   return (
     <td style={{ ...termTdStyle, textAlign: "right", fontFamily: MONO_FONT_STACK, fontVariantNumeric: "tabular-nums" }}>
-      {fmt(efg)} <span style={{ color: "var(--term-text-muted)" }}>/{fga.toLocaleString()}</span>
+      {fmt(efg)}{" "}
+      <span style={{ color: "var(--term-text-muted)" }}>· {fga.toLocaleString()}</span>
     </td>
   )
 }
