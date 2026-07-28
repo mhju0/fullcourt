@@ -59,6 +59,12 @@ export const OTHER_NAV_ITEMS = [
     guideDescription:
       "Map expected shooting efficiency by court location and model version.",
   },
+  {
+    href: "/referees",
+    label: "REFEREE BIAS",
+    guideDescription:
+      "Whether referee assignments move outcomes — under construction.",
+  },
 ] as const;
 
 /**
