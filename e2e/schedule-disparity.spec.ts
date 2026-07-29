@@ -33,7 +33,7 @@ test.describe("Schedule Disparity page", () => {
     }
   });
 
-  test("orders the leaderboard by net rest edge, most favored first", async ({ page }) => {
+  test("orders the leaderboard by net edge games, most favored first", async ({ page }) => {
     await page.goto("/schedule");
 
     const rows = page.getByRole("listitem");
