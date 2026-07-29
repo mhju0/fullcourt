@@ -3,15 +3,15 @@ import { PageHeader } from "@/components/page-header";
 import { termCardStyle } from "@/lib/terminal-styles";
 
 export const metadata: Metadata = {
-  title: "Referee Bias",
+  title: "Referee Effect",
 };
 
 export default function RefereesPage() {
   return (
     <div className="flex flex-col gap-12">
       <PageHeader
-        eyebrow="REFEREE BIAS · IN PROGRESS"
-        title="Referee Bias"
+        eyebrow="REFEREE EFFECT · IN PROGRESS"
+        title="Referee Effect"
         description="Whether referee assignments carry a measurable, repeatable effect on outcomes — foul differentials, the home whistle, crew tendencies."
       />
 

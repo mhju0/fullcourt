@@ -485,7 +485,7 @@ export function FatigueDetailColumn({
         {label.toUpperCase()}
       </p>
 
-      <FatigueDetailRow k="GP (30D / 7D)" v={`${fatigue.gamesInLast30Days} / ${fatigue.gamesInLast7Days}`} />
+      <FatigueDetailRow k="GAMES, LAST 30 / 7 DAYS" v={`${fatigue.gamesInLast30Days} / ${fatigue.gamesInLast7Days}`} />
       <FatigueDetailRow k="BACK-TO-BACK" v={<PenaltyMark active={fatigue.isBackToBack} />} />
       <FatigueDetailRow k="3 IN 4" v={<PenaltyMark active={fatigue.is3In4} />} />
       <FatigueDetailRow k="4 IN 6" v={<PenaltyMark active={fatigue.is4In6} />} />
@@ -494,7 +494,7 @@ export function FatigueDetailColumn({
         v={fatigue.roadTripConsecutiveAway === 0 ? "—" : `×${fatigue.roadTripConsecutiveAway}`}
       />
       <FatigueDetailRow
-        k={`TRAVEL ${TRAVEL_LOOKBACK_DAYS}D (MI)`}
+        k={`MILES FLOWN, LAST ${TRAVEL_LOOKBACK_DAYS} DAYS`}
         v={Math.round(fatigue.travelDistanceMiles).toLocaleString()}
         highlight={travelHigh}
       />

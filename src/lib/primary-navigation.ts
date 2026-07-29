@@ -61,7 +61,7 @@ export const OTHER_NAV_ITEMS = [
   },
   {
     href: "/referees",
-    label: "REFEREE BIAS",
+    label: "REFEREE EFFECT",
     guideDescription:
       "Whether referee assignments move outcomes — under construction.",
   },
