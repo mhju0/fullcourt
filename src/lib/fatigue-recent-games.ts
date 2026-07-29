@@ -5,6 +5,7 @@ import { alias } from "drizzle-orm/pg-core";
 import type * as Schema from "./db/schema";
 import { games, teams } from "./db/schema";
 import type { RecentGame } from "./fatigue";
+import { neutralVenueCoordinates } from "./neutral-venues";
 import { eraCoordinates } from "./team-era-coordinates";
 
 type AppDb = PostgresJsDatabase<typeof Schema>;
@@ -22,6 +23,8 @@ export interface PriorGameRow {
   awayLon: string;
   awayAltitude: boolean;
   overtimePeriods: number;
+  neutralSite?: boolean;
+  neutralVenueCity?: string | null;
 }
 
 import { FATIGUE_RECENT_LOOKBACK_DAYS } from "./fatigue";
@@ -56,6 +59,8 @@ export async function fetchRecentGamesForTeam(
       awayLon: awayTeamAlias.longitude,
       awayAltitude: awayTeamAlias.altitudeFlag,
       overtimePeriods: games.overtimePeriods,
+      neutralSite: games.neutralSite,
+      neutralVenueCity: games.neutralVenueCity,
     })
     .from(games)
     .innerJoin(homeTeamAlias, eq(games.homeTeamId, homeTeamAlias.id))
@@ -87,31 +92,34 @@ export function rowToRecentGame(row: PriorGameRow, teamId: number): RecentGame {
     parseFloat(row.awayLat),
     parseFloat(row.awayLon)
   );
-  const isHome = row.homeTeamId === teamId;
-  if (isHome) {
-    return {
-      date,
-      teamId,
-      opponentTeamId: row.awayTeamId,
-      isHome: true,
-      teamLat: home.latitude,
-      teamLon: home.longitude,
-      opponentLat: away.latitude,
-      opponentLon: away.longitude,
-      opponentAltitudeFlag: row.awayAltitude,
-      overtimePeriods: row.overtimePeriods,
-    };
-  }
+  // A neutral-site game is an away game for BOTH teams: neither slept at home, and
+  // the travel leg has to depart from and arrive at the real venue, not an arena
+  // nobody visited. Unknown city → null → today's behaviour (home team's arena).
+  const neutral = row.neutralSite
+    ? neutralVenueCoordinates(row.neutralVenueCity)
+    : null;
+  const venue = neutral
+    ? { venueLat: neutral.latitude, venueLon: neutral.longitude }
+    : {};
+
+  // Which side the subject team is on is a fact about the fixture; whether that counts
+  // as "home" is a separate question the neutral flag can override. Keeping them apart
+  // is what lets the nominal home team of a Paris game be scored as a road team.
+  const isHomeSide = row.homeTeamId === teamId;
+  const self = isHomeSide ? home : away;
+  const opponent = isHomeSide ? away : home;
+
   return {
     date,
     teamId,
-    opponentTeamId: row.homeTeamId,
-    isHome: false,
-    teamLat: away.latitude,
-    teamLon: away.longitude,
-    opponentLat: home.latitude,
-    opponentLon: home.longitude,
-    opponentAltitudeFlag: row.homeAltitude,
+    opponentTeamId: isHomeSide ? row.awayTeamId : row.homeTeamId,
+    isHome: isHomeSide && !neutral,
+    teamLat: self.latitude,
+    teamLon: self.longitude,
+    opponentLat: opponent.latitude,
+    opponentLon: opponent.longitude,
+    opponentAltitudeFlag: isHomeSide ? row.awayAltitude : row.homeAltitude,
     overtimePeriods: row.overtimePeriods,
+    ...venue,
   };
 }

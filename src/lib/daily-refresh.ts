@@ -3,6 +3,7 @@ import {
   type FatigueResult,
   type RecentGame,
 } from "@/lib/fatigue";
+import { neutralVenueCoordinates } from "@/lib/neutral-venues";
 import { classifyRestAdvantage } from "@/lib/rest-advantage-evidence";
 
 export type DailyRefreshGame = {
@@ -11,6 +12,8 @@ export type DailyRefreshGame = {
   homeTeamId: number;
   awayTeamId: number;
   status: string;
+  neutralSite?: boolean;
+  neutralVenueCity?: string | null;
 };
 
 export type DailyRefreshTeam = {
@@ -92,6 +95,13 @@ export async function refreshDailyGames(input: {
       const awayLat = parseCoordinate(away.latitude, away.id, "latitude");
       const awayLon = parseCoordinate(away.longitude, away.id, "longitude");
 
+      // Neutral site → both teams are away, at a venue that is neither arena.
+      const neutral = game.neutralSite
+        ? neutralVenueCoordinates(game.neutralVenueCity)
+        : null;
+      const venueLat = neutral ? neutral.latitude : homeLat;
+      const venueLon = neutral ? neutral.longitude : homeLon;
+
       const recentHome = await input.port.loadRecentGames(
         game.homeTeamId,
         game.date
@@ -99,12 +109,12 @@ export async function refreshDailyGames(input: {
       const homeResult = calculateFatigue(
         game.date,
         recentHome,
-        false,
+        neutral?.altitude ?? false,
         homeLat,
         homeLon,
-        homeLat,
-        homeLon,
-        true
+        venueLat,
+        venueLon,
+        !neutral
       );
       const recentAway = await input.port.loadRecentGames(
         game.awayTeamId,
@@ -113,11 +123,11 @@ export async function refreshDailyGames(input: {
       const awayResult = calculateFatigue(
         game.date,
         recentAway,
-        home.altitudeFlag,
+        neutral?.altitude ?? home.altitudeFlag,
         awayLat,
         awayLon,
-        homeLat,
-        homeLon,
+        venueLat,
+        venueLon,
         false
       );
 

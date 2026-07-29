@@ -97,6 +97,23 @@ export interface RecentGame {
   opponentLon: number;
   opponentAltitudeFlag: boolean;
   overtimePeriods: number;
+  /**
+   * Where the game was actually played, when that is neither team's arena. Set only
+   * for neutral-site games (Paris, Mexico City, …), which are treated as away games
+   * for BOTH teams — physically neither side slept at home.
+   */
+  venueLat?: number;
+  venueLon?: number;
+}
+
+/** The arena a past game was played in: the neutral venue if any, else home/opponent. */
+function arenaOf(game: RecentGame): { lat: number; lon: number } {
+  if (game.venueLat !== undefined && game.venueLon !== undefined) {
+    return { lat: game.venueLat, lon: game.venueLon };
+  }
+  return game.isHome
+    ? { lat: game.teamLat, lon: game.teamLon }
+    : { lat: game.opponentLat, lon: game.opponentLon };
 }
 
 export interface FatigueResult {
@@ -220,6 +237,10 @@ function roadTripStreak(
  * arenas plus every era coordinate classify correctly — verified 2026-07-30.
  */
 function standardUtcOffsetHours(lon: number): number {
+  // Across the Atlantic — only reachable via neutral-site games (London, Paris, Berlin).
+  // Same technique: the 1.5° boundary sits in the gap between London (0.003°, UTC+0)
+  // and Paris (2.378°, UTC+1). No NBA venue lies between them.
+  if (lon > -30) return lon > 1.5 ? 1 : 0;
   if (lon > -87.0) return -5; // Eastern  (westmost: IND −86.16 | CHI −87.67 is Central)
   if (lon > -101.0) return -6; // Central  (westmost: SAS −98.44 | DEN −105.01 is Mountain)
   if (lon > -115.0) return -7; // Mountain (westmost: PHX −112.07 | LAL −118.27 is Pacific)
@@ -257,10 +278,19 @@ function isDaylightSaving(date: Date): boolean {
   return date >= start && date < end;
 }
 
-/** Phoenix is the lone NBA arena that never observes DST; UTA sits 0.17° away but 7° north. */
+/**
+ * Phoenix is the lone NBA *arena* that never observes DST; UTA sits 0.17° away but 7°
+ * north, so a latitude bound separates them. Mexico City is excluded too: it has been
+ * UTC−6 year-round since Mexico dropped DST in 2022, and before that its DST window
+ * (April–October) never overlapped the November–December dates the NBA plays there.
+ *
+ * European neutral venues are evaluated with US DST dates, which is harmless because
+ * those games are played in January and February — standard time on both continents.
+ */
 function observesDaylightSaving(lat: number, lon: number): boolean {
   const isPhoenix = lat < 36 && lon <= -111.6 && lon >= -112.6;
-  return !isPhoenix;
+  const isMexicoCity = lat < 25;
+  return !isPhoenix && !isMexicoCity;
 }
 
 /** Actual UTC offset (hours) of a venue on a given date, DST included. */
@@ -334,8 +364,7 @@ function travelMilesBetweenGames(
   }
 
   const prevWasHome = previousGame.isHome;
-  const prevArenaLat = prevWasHome ? previousGame.teamLat : previousGame.opponentLat;
-  const prevArenaLon = prevWasHome ? previousGame.teamLon : previousGame.opponentLon;
+  const { lat: prevArenaLat, lon: prevArenaLon } = arenaOf(previousGame);
 
   if (isSameArena(prevArenaLat, prevArenaLon, currentArenaLat, currentArenaLon)) {
     return 0;
@@ -406,12 +435,7 @@ function computeTotalTravelMiles(
   const prevBeforeChain =
     firstIdxInWindow > 0 ? recentGames[firstIdxInWindow - 1]! : null;
   const chainStart = recentGames[firstIdxInWindow]!;
-  const chainStartLat = chainStart.isHome
-    ? chainStart.teamLat
-    : chainStart.opponentLat;
-  const chainStartLon = chainStart.isHome
-    ? chainStart.teamLon
-    : chainStart.opponentLon;
+  const { lat: chainStartLat, lon: chainStartLon } = arenaOf(chainStart);
 
   total += travelMilesBetweenGames(
     prevBeforeChain,
@@ -425,8 +449,7 @@ function computeTotalTravelMiles(
   for (let i = firstIdxInWindow; i < recentGames.length - 1; i++) {
     const prev = recentGames[i]!;
     const cur = recentGames[i + 1]!;
-    const curArenaLat = cur.isHome ? cur.teamLat : cur.opponentLat;
-    const curArenaLon = cur.isHome ? cur.teamLon : cur.opponentLon;
+    const { lat: curArenaLat, lon: curArenaLon } = arenaOf(cur);
     total += travelMilesBetweenGames(
       prev,
       cur.isHome,

@@ -43,6 +43,8 @@ async function main(): Promise<void> {
       homeTeamId: games.homeTeamId,
       awayTeamId: games.awayTeamId,
       status: games.status,
+      neutralSite: games.neutralSite,
+      neutralVenueCity: games.neutralVenueCity,
     })
     .from(games)
     .where(and(gte(games.date, dateArg), lte(games.date, endDate)))

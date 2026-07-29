@@ -29,6 +29,7 @@ import type * as Schema from "@/lib/db/schema";
 import { fatigueScores, games, teams } from "@/lib/db/schema";
 import { calculateFatigue } from "@/lib/fatigue";
 import { fetchRecentGamesForTeam } from "@/lib/fatigue-recent-games";
+import { neutralVenueCoordinates } from "@/lib/neutral-venues";
 import { eraCoordinates } from "@/lib/team-era-coordinates";
 import { loadEnvLocal } from "@/lib/load-env-local";
 
@@ -110,6 +111,8 @@ async function main(): Promise<void> {
     date: string;
     homeTeamId: number;
     awayTeamId: number;
+    neutralSite: boolean;
+    neutralVenueCity: string | null;
   }>;
 
   if (force) {
@@ -122,6 +125,8 @@ async function main(): Promise<void> {
         date: games.date,
         homeTeamId: games.homeTeamId,
         awayTeamId: games.awayTeamId,
+        neutralSite: games.neutralSite,
+        neutralVenueCity: games.neutralVenueCity,
       })
       .from(games)
       .orderBy(asc(games.date));
@@ -140,6 +145,8 @@ async function main(): Promise<void> {
         date: games.date,
         homeTeamId: games.homeTeamId,
         awayTeamId: games.awayTeamId,
+        neutralSite: games.neutralSite,
+        neutralVenueCity: games.neutralVenueCity,
       })
       .from(games)
       .leftJoin(
@@ -197,27 +204,34 @@ async function main(): Promise<void> {
       const awayLon = awayEra.longitude;
       const visitingAltitudeAway = home.altitudeFlag === true;
 
+      // Neutral site → both teams are away, at a venue that is neither arena.
+      const neutral = game.neutralSite
+        ? neutralVenueCoordinates(game.neutralVenueCity)
+        : null;
+      const venueLat = neutral ? neutral.latitude : homeLat;
+      const venueLon = neutral ? neutral.longitude : homeLon;
+
       const recentHome = await fetchRecentGamesForTeam(appDb, game.homeTeamId, dateStr);
       const homeResult = calculateFatigue(
         dateStr,
         recentHome,
-        false,
+        neutral?.altitude ?? false,
         homeLat,
         homeLon,
-        homeLat,
-        homeLon,
-        true
+        venueLat,
+        venueLon,
+        !neutral
       );
 
       const recentAway = await fetchRecentGamesForTeam(appDb, game.awayTeamId, dateStr);
       const awayResult = calculateFatigue(
         dateStr,
         recentAway,
-        visitingAltitudeAway,
+        neutral?.altitude ?? visitingAltitudeAway,
         awayLat,
         awayLon,
-        homeLat,
-        homeLon,
+        venueLat,
+        venueLon,
         false
       );
 

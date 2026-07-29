@@ -531,6 +531,79 @@ describe("time-zone displacement uses real zones, not a longitude proxy", () => 
   });
 });
 
+/**
+ * Neutral-site games are away games for BOTH teams, played at a venue that is neither
+ * arena. Before this, travel legs geolocated them at the listed home team's building —
+ * so a Lakers "home" game in Paris cost 0 miles and the return flight never happened.
+ */
+describe("neutral-site venues", () => {
+  const PARIS_LAT = 48.8386;
+  const PARIS_LON = 2.3784;
+
+  /** LAL is the nominal home team, but the game is in Paris. */
+  function lalInParis(recent: RecentGame[]) {
+    return calculateFatigue(
+      "2025-01-23",
+      recent,
+      false,
+      LA_LAT,
+      LA_LON,
+      PARIS_LAT,
+      PARIS_LON,
+      false // neutral → not a home game for either side
+    );
+  }
+
+  it("charges the flight to Paris rather than treating it as a home stand", () => {
+    const recent: RecentGame[] = [baseRecent({ date: "2025-01-21", isHome: true })];
+    const result = lalInParis(recent);
+
+    // LA → Paris great-circle is ~5,650 mi; anything near 0 means it was treated as home.
+    expect(result.travelDistanceMiles).toBeGreaterThan(5000);
+    expect(result.travelLoadScore).toBeGreaterThan(0);
+  });
+
+  it("counts Paris as time-zone displacement (9 hours from Los Angeles)", () => {
+    const recent: RecentGame[] = [baseRecent({ date: "2025-01-21", isHome: true })];
+    expect(lalInParis(recent).hasTimeZoneDisplacement).toBe(true);
+  });
+
+  it("flies the team home from a neutral venue on the next leg", () => {
+    // Prior game in Paris (venue override set), tonight back home in LA.
+    const recent: RecentGame[] = [
+      {
+        ...baseRecent({ date: "2025-01-23", isHome: false }),
+        venueLat: PARIS_LAT,
+        venueLon: PARIS_LON,
+      },
+    ];
+    const backHome = calculateFatigue(
+      "2025-01-26",
+      recent,
+      false,
+      LA_LAT,
+      LA_LON,
+      LA_LAT,
+      LA_LON,
+      true
+    );
+    expect(backHome.travelDistanceMiles).toBeGreaterThan(5000);
+  });
+
+  it("resolves London and Paris to different zones despite both being European", () => {
+    const recent: RecentGame[] = [baseRecent({ date: "2025-01-21", isHome: true })];
+    const london = calculateFatigue(
+      "2025-01-23", recent, false, BOS_LAT, BOS_LON, 51.503, 0.0032, false
+    );
+    const paris = calculateFatigue(
+      "2025-01-23", recent, false, BOS_LAT, BOS_LON, PARIS_LAT, PARIS_LON, false
+    );
+    // Both displaced from Boston, but the venues sit in different zones (UTC+0 vs +1).
+    expect(london.hasTimeZoneDisplacement).toBe(true);
+    expect(paris.hasTimeZoneDisplacement).toBe(true);
+  });
+});
+
 describe("calculateRestAdvantage", () => {
   it("positive when away team is more fatigued (home rested advantage)", () => {
     const home = fatigueHomeTeam("2025-01-10", []);

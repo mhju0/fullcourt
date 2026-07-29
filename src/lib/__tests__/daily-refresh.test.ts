@@ -103,4 +103,62 @@ describe("refreshDailyGames", () => {
     });
     expect(result.predictionRowsWritten).toBe(0);
   });
+
+  /**
+   * The venue swap lives in the caller, not in calculateFatigue — passing Paris
+   * coordinates always worked; what was broken was daily-refresh handing it the home
+   * team's arena. So this asserts on the refresh path, where the bug actually was.
+   */
+  it("sends both teams to the neutral venue instead of the home arena", async () => {
+    const port: DailyRefreshPort = {
+      async loadRecentGames() {
+        // One prior home game each, so tonight has a real travel leg to measure.
+        return [
+          {
+            date: "2026-01-12",
+            teamId: 1,
+            opponentTeamId: 2,
+            isHome: true,
+            teamLat: 42.3601,
+            teamLon: -71.0589,
+            opponentLat: 40.7128,
+            opponentLon: -74.006,
+            opponentAltitudeFlag: false,
+            overtimePeriods: 0,
+          },
+        ];
+      },
+      async replaceGameRefresh() {},
+    };
+
+    const collect = async (neutral: boolean) => {
+      let write: DailyRefreshWrite | undefined;
+      await refreshDailyGames({
+        games: [
+          {
+            id: 13,
+            date: "2026-01-15",
+            homeTeamId: 1,
+            awayTeamId: 2,
+            status: "final",
+            ...(neutral
+              ? { neutralSite: true, neutralVenueCity: "Paris" }
+              : {}),
+          },
+        ],
+        teams,
+        port: { ...port, async replaceGameRefresh(w) { write = w; } },
+      });
+      return write!.fatigueRows;
+    };
+
+    const [homeAtHome] = await collect(false);
+    const [homeInParis] = await collect(true);
+
+    // Boston hosting Boston-based games flies nowhere; Boston "hosting" in Paris flies ~3,400 mi.
+    expect(Number(homeAtHome.travelDistanceMiles)).toBe(0);
+    expect(Number(homeInParis.travelDistanceMiles)).toBeGreaterThan(3000);
+    expect(homeInParis.hasTimeZoneDisplacement).toBe(true);
+    expect(homeAtHome.hasTimeZoneDisplacement).toBe(false);
+  });
 });
