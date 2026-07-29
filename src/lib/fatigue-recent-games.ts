@@ -5,6 +5,7 @@ import { alias } from "drizzle-orm/pg-core";
 import type * as Schema from "./db/schema";
 import { games, teams } from "./db/schema";
 import type { RecentGame } from "./fatigue";
+import { eraCoordinates } from "./team-era-coordinates";
 
 type AppDb = PostgresJsDatabase<typeof Schema>;
 
@@ -12,6 +13,8 @@ export interface PriorGameRow {
   date: string;
   homeTeamId: number;
   awayTeamId: number;
+  homeAbbr: string;
+  awayAbbr: string;
   homeLat: string;
   homeLon: string;
   homeAltitude: boolean;
@@ -44,6 +47,8 @@ export async function fetchRecentGamesForTeam(
       date: games.date,
       homeTeamId: games.homeTeamId,
       awayTeamId: games.awayTeamId,
+      homeAbbr: homeTeamAlias.abbreviation,
+      awayAbbr: awayTeamAlias.abbreviation,
       homeLat: homeTeamAlias.latitude,
       homeLon: homeTeamAlias.longitude,
       homeAltitude: homeTeamAlias.altitudeFlag,
@@ -69,30 +74,43 @@ export async function fetchRecentGamesForTeam(
 }
 
 export function rowToRecentGame(row: PriorGameRow, teamId: number): RecentGame {
+  const date = String(row.date);
+  const home = eraCoordinates(
+    row.homeAbbr,
+    date,
+    parseFloat(row.homeLat),
+    parseFloat(row.homeLon)
+  );
+  const away = eraCoordinates(
+    row.awayAbbr,
+    date,
+    parseFloat(row.awayLat),
+    parseFloat(row.awayLon)
+  );
   const isHome = row.homeTeamId === teamId;
   if (isHome) {
     return {
-      date: String(row.date),
+      date,
       teamId,
       opponentTeamId: row.awayTeamId,
       isHome: true,
-      teamLat: parseFloat(row.homeLat),
-      teamLon: parseFloat(row.homeLon),
-      opponentLat: parseFloat(row.awayLat),
-      opponentLon: parseFloat(row.awayLon),
+      teamLat: home.latitude,
+      teamLon: home.longitude,
+      opponentLat: away.latitude,
+      opponentLon: away.longitude,
       opponentAltitudeFlag: row.awayAltitude,
       overtimePeriods: row.overtimePeriods,
     };
   }
   return {
-    date: String(row.date),
+    date,
     teamId,
     opponentTeamId: row.homeTeamId,
     isHome: false,
-    teamLat: parseFloat(row.awayLat),
-    teamLon: parseFloat(row.awayLon),
-    opponentLat: parseFloat(row.homeLat),
-    opponentLon: parseFloat(row.homeLon),
+    teamLat: away.latitude,
+    teamLon: away.longitude,
+    opponentLat: home.latitude,
+    opponentLon: home.longitude,
     opponentAltitudeFlag: row.homeAltitude,
     overtimePeriods: row.overtimePeriods,
   };

@@ -27,6 +27,7 @@ import type * as Schema from "@/lib/db/schema";
 import { fatigueScores, games, teams } from "@/lib/db/schema";
 import { calculateFatigue } from "@/lib/fatigue";
 import { fetchRecentGamesForTeam } from "@/lib/fatigue-recent-games";
+import { eraCoordinates } from "@/lib/team-era-coordinates";
 import { loadEnvLocal } from "@/lib/load-env-local";
 
 type AppDb = PostgresJsDatabase<typeof Schema>;
@@ -176,10 +177,22 @@ async function main(): Promise<void> {
       }
 
       const dateStr = String(game.date);
-      const homeLat = parseFloat(home.latitude);
-      const homeLon = parseFloat(home.longitude);
-      const awayLat = parseFloat(away.latitude);
-      const awayLon = parseFloat(away.longitude);
+      const homeEra = eraCoordinates(
+        home.abbreviation,
+        dateStr,
+        parseFloat(home.latitude),
+        parseFloat(home.longitude)
+      );
+      const awayEra = eraCoordinates(
+        away.abbreviation,
+        dateStr,
+        parseFloat(away.latitude),
+        parseFloat(away.longitude)
+      );
+      const homeLat = homeEra.latitude;
+      const homeLon = homeEra.longitude;
+      const awayLat = awayEra.latitude;
+      const awayLon = awayEra.longitude;
       const visitingAltitudeAway = home.altitudeFlag === true;
 
       const recentHome = await fetchRecentGamesForTeam(appDb, game.homeTeamId, dateStr);
