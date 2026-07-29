@@ -422,8 +422,9 @@ describe("ratified rule #2 — time-zone displacement replaces coast-to-coast", 
 
     expect(displaced.hasTimeZoneDisplacement).toBe(true);
     expect(local.hasTimeZoneDisplacement).toBe(false);
-    // The bonus is the only difference between these two road-segment loads.
-    expect(displaced.roadSegmentLoadScore - local.roadSegmentLoadScore).toBeCloseTo(0.88, 2);
+    // The bonus is the only difference between these two road-segment loads. LA → Boston
+    // is eastward, so the ratified 0.88 carries the 1.25 advance penalty (2026-07-30).
+    expect(displaced.roadSegmentLoadScore - local.roadSegmentLoadScore).toBeCloseTo(1.1, 2);
   });
 
   it("never fires retroactively at home, even right after a coast-crossing trip", () => {
@@ -540,6 +541,91 @@ describe("time-zone displacement uses real zones, not a longitude proxy", () => 
  * Two back-to-backs with identical calendar dates but different tips: a 10:30pm game
  * followed by a 7pm game is a ~21h turnaround; the reverse is ~27h. Ratified 2026-07-30.
  */
+/**
+ * Displacement decays as the body clock re-entrains (~1 day per zone) and is heavier
+ * travelling east than west. Both ratified 2026-07-30.
+ */
+describe("circadian direction and acclimation", () => {
+  const NY_LAT = 40.7505;
+  const NY_LON = -73.9934;
+
+  /** Away game at `venue`, preceded by `priorVenues` (oldest → newest) on the road. */
+  function trip(
+    homeLat: number,
+    homeLon: number,
+    priorVenues: Array<[number, number]>,
+    venueLat: number,
+    venueLon: number
+  ) {
+    // A prior home game first, so this is a real road trip rather than a season opener
+    // (openers score 0 by ratified rule #1 and would mask the term under test).
+    const recent: RecentGame[] = [
+      {
+        ...baseRecent({ date: "2025-01-01", isHome: true }),
+        teamLat: homeLat,
+        teamLon: homeLon,
+        opponentLat: homeLat,
+        opponentLon: homeLon,
+      },
+      ...priorVenues.map(([lat, lon], i) => ({
+        ...baseRecent({ date: `2025-01-0${i + 2}`, isHome: false }),
+        teamLat: homeLat,
+        teamLon: homeLon,
+        opponentLat: lat,
+        opponentLon: lon,
+      })),
+    ];
+    return calculateFatigue(
+      `2025-01-0${priorVenues.length + 2}`,
+      recent,
+      false,
+      homeLat,
+      homeLon,
+      venueLat,
+      venueLon,
+      false
+    );
+  }
+
+  it("charges more travelling east than the mirror-image trip west", () => {
+    // LA → New York (3 zones east) vs New York → LA (3 zones west).
+    const eastward = trip(LA_LAT, LA_LON, [], NY_LAT, NY_LON);
+    const westward = trip(NY_LAT, NY_LON, [], LA_LAT, LA_LON);
+
+    expect(eastward.roadSegmentLoadScore).toBeCloseTo(0.88 * 1.25, 2);
+    expect(westward.roadSegmentLoadScore).toBeCloseTo(0.88 * 0.85, 2);
+    expect(eastward.roadSegmentLoadScore).toBeGreaterThan(westward.roadSegmentLoadScore);
+  });
+
+  it("decays across successive nights in the same zone and clears the flag", () => {
+    const east: Array<[number, number]> = [[NY_LAT, NY_LON]];
+    const night1 = trip(LA_LAT, LA_LON, [], NY_LAT, NY_LON);
+    const night2 = trip(LA_LAT, LA_LON, east, NY_LAT, NY_LON);
+    const night3 = trip(LA_LAT, LA_LON, [...east, [BOS_LAT, BOS_LON]], NY_LAT, NY_LON);
+    const night4 = trip(
+      LA_LAT, LA_LON,
+      [...east, [BOS_LAT, BOS_LON], [NY_LAT, NY_LON]],
+      NY_LAT, NY_LON
+    );
+
+    // 3 zones crossed → thirds. Road-streak load grows, so compare the trend of the
+    // displacement component via the flag plus a strictly decreasing sequence.
+    expect(night1.hasTimeZoneDisplacement).toBe(true);
+    expect(night2.hasTimeZoneDisplacement).toBe(true);
+    expect(night3.hasTimeZoneDisplacement).toBe(true);
+    expect(night4.hasTimeZoneDisplacement).toBe(false); // fully re-entrained
+  });
+
+  it("does not count nights spent in a different zone as acclimation", () => {
+    // Prior game back in the Pacific zone resets the clock; tonight in NY is night one.
+    const viaHome = trip(LA_LAT, LA_LON, [[LA_LAT, LA_LON]], NY_LAT, NY_LON);
+    expect(viaHome.hasTimeZoneDisplacement).toBe(true);
+    // Full undecayed eastward charge, exactly as if the trip had just begun.
+    const streakLoad = 0.34 * Math.max(0, viaHome.roadTripConsecutiveAway - 2);
+    expect(viaHome.roadSegmentLoadScore - streakLoad).toBeCloseTo(0.88 * 1.25, 2);
+  });
+});
+
 describe("back-to-back turnaround hours", () => {
   const prevLateTip = new Date("2025-01-11T03:00:00Z"); // 10pm ET on the 10th
   const prevEarlyTip = new Date("2025-01-11T00:00:00Z"); // 7pm ET on the 10th

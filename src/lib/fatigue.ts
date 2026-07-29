@@ -85,6 +85,16 @@ const ROAD_STREAK_PER_GAME = 0.34;
 const TIME_ZONE_DISPLACEMENT_BONUS = 0.88;
 
 /**
+ * Direction matters: advancing the body clock (travelling east) is harder than delaying
+ * it (west). Deliberately modest at 1.47:1 — the advance-vs-delay asymmetry is well
+ * established in chronobiology, but NBA-specific box-score studies disagree, so this
+ * encodes the mechanism without betting heavily on it. The pair averages near 1.0, so
+ * the overall scale of the term does not drift. Ratified 2026-07-30.
+ */
+const TIME_ZONE_EASTWARD_MULTIPLIER = 1.25;
+const TIME_ZONE_WESTWARD_MULTIPLIER = 0.85;
+
+/**
  * Min clock shift (hours) between home arena and tonight's venue to count as displaced.
  * The circadian shift is what this term charges for, so it fires only when the team is
  * actually on the road that far from home tonight, never retroactively at home and never
@@ -317,23 +327,68 @@ export function venueUtcOffsetHours(lat: number, lon: number, date: Date): numbe
 }
 
 /**
- * Displaced = on the road tonight, ≥2 hours of clock shift from the home arena.
- *
- * Signed inputs (not `Math.abs` on longitude) because the shift's direction is the
- * physiologically meaningful part; the magnitude test is all this predicate uses.
+ * Consecutive prior games already played in tonight's time zone, walking back from the
+ * most recent. Three straight games on the east coast means the body clock has had
+ * three nights to re-entrain; the walk stops at the first game in a different zone
+ * (a home game, say), which is exactly when the clock would have been reset.
  */
-function isTimeZoneDisplaced(
+function nightsAcclimated(
+  recentGames: RecentGame[],
+  venueOffset: number
+): number {
+  let nights = 0;
+  for (let i = recentGames.length - 1; i >= 0; i--) {
+    const game = recentGames[i]!;
+    const arena = arenaOf(game);
+    const offset = venueUtcOffsetHours(arena.lat, arena.lon, parseISO(game.date));
+    if (offset !== venueOffset) break;
+    nights += 1;
+  }
+  return nights;
+}
+
+/**
+ * Circadian load from tonight's venue: zero at home, zero under two hours of shift,
+ * and otherwise the ratified 0.88 scaled by direction and by how far the team has
+ * already re-entrained.
+ *
+ * Re-entrainment runs at roughly one day per zone crossed, so a three-zone trip decays
+ * 0.88 → 0.59 → 0.29 → 0 across successive nights. Previously this charged the full
+ * 0.88 on night six of an east-coast trip, when the team had long since adjusted.
+ */
+function timeZoneDisplacement(
   currentGameIsHome: boolean,
   tip: Date,
   teamHomeLat: number,
   teamHomeLon: number,
   currentVenueLat: number,
-  currentVenueLon: number
-): boolean {
-  if (currentGameIsHome) return false;
+  currentVenueLon: number,
+  recentGames: RecentGame[]
+): { load: number; displaced: boolean } {
+  if (currentGameIsHome) return { load: 0, displaced: false };
+
   const homeOffset = venueUtcOffsetHours(teamHomeLat, teamHomeLon, tip);
   const venueOffset = venueUtcOffsetHours(currentVenueLat, currentVenueLon, tip);
-  return Math.abs(venueOffset - homeOffset) >= TIME_ZONE_DISPLACEMENT_MIN_HOURS;
+  // Offsets grow more negative westward, so a positive shift means travelling east.
+  const shift = venueOffset - homeOffset;
+  const zonesCrossed = Math.abs(shift);
+  if (zonesCrossed < TIME_ZONE_DISPLACEMENT_MIN_HOURS) {
+    return { load: 0, displaced: false };
+  }
+
+  const direction =
+    shift > 0 ? TIME_ZONE_EASTWARD_MULTIPLIER : TIME_ZONE_WESTWARD_MULTIPLIER;
+  const remaining = Math.max(
+    0,
+    1 - nightsAcclimated(recentGames, venueOffset) / zonesCrossed
+  );
+
+  return {
+    load: TIME_ZONE_DISPLACEMENT_BONUS * direction * remaining,
+    // The flag means "jet-lagged tonight", not "far from home" — an acclimated team
+    // on night four of a trip is no longer displaced, and the UI chip follows suit.
+    displaced: remaining > 0,
+  };
 }
 
 /**
@@ -354,11 +409,10 @@ function backToBackMultiplier(
   return Math.round(clamped * 1000) / 1000;
 }
 
-function roadSegmentLoad(streak: number, displaced: boolean): number {
+function roadSegmentLoad(streak: number, displacementLoad: number): number {
   const loadFromStreak =
     ROAD_STREAK_PER_GAME * Math.max(0, streak - ROAD_STREAK_SOFT);
-  const displacementAdd = displaced ? TIME_ZONE_DISPLACEMENT_BONUS : 0;
-  return Math.round((loadFromStreak + displacementAdd) * 100) / 100;
+  return Math.round((loadFromStreak + displacementLoad) * 100) / 100;
 }
 
 function isSameArena(lat1: number, lon1: number, lat2: number, lon2: number): boolean {
@@ -530,15 +584,16 @@ export function calculateFatigue(
   const stressMult = scheduleStressMultiplier(recentGames, gameDate);
 
   const roadStreak = roadTripStreak(recentGames, currentGameIsHome);
-  const displaced = isTimeZoneDisplaced(
+  const { load: displacementLoad, displaced } = timeZoneDisplacement(
     currentGameIsHome,
     tip,
     teamHomeLat,
     teamHomeLon,
     currentVenueLat,
-    currentVenueLon
+    currentVenueLon,
+    recentGames
   );
-  const roadLoad = roadSegmentLoad(roadStreak, displaced);
+  const roadLoad = roadSegmentLoad(roadStreak, displacementLoad);
 
   if (recentGames.length === 0) {
     // Ratified rule #1 (2026-07-29): a team's first game of the season scores 0.00 —
