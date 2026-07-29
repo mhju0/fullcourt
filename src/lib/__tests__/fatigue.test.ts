@@ -462,6 +462,75 @@ describe("ratified rule #2 — time-zone displacement replaces coast-to-coast", 
   });
 });
 
+/**
+ * Real time zones replace the 26°-longitude proxy. Every case below straddles 26° in the
+ * direction that made the old rule wrong, so each one fails against the longitude test.
+ */
+describe("time-zone displacement uses real zones, not a longitude proxy", () => {
+  const ATL_LAT = 33.7573;
+  const ATL_LON = -84.3963;
+  const DAL_LAT = 32.7905;
+  const DAL_LON = -96.8103;
+  const OKC_LAT = 35.4634;
+  const OKC_LON = -97.5151;
+  const PHX_LAT = 33.4457;
+  const PHX_LON = -112.0712;
+  const CHI_LAT = 41.8807;
+  const CHI_LON = -87.6742;
+
+  function awayFrom(
+    gameDate: string,
+    homeLat: number,
+    homeLon: number,
+    venueLat: number,
+    venueLon: number
+  ) {
+    return calculateFatigue(
+      gameDate,
+      [{ ...baseRecent({ date: "2025-01-05", isHome: true }), teamLat: homeLat, teamLon: homeLon }],
+      false,
+      homeLat,
+      homeLon,
+      venueLat,
+      venueLon,
+      false
+    );
+  }
+
+  it("fires for Denver at Atlanta — 2 zones apart but only 20.6° of longitude", () => {
+    const r = awayFrom("2025-01-08", DEN_LAT, DEN_LON, ATL_LAT, ATL_LON);
+    expect(Math.abs(ATL_LON - DEN_LON)).toBeLessThan(26); // old rule stayed silent here
+    expect(r.hasTimeZoneDisplacement).toBe(true);
+  });
+
+  it("fires for the Lakers at Dallas — 2 zones apart but only 21.5° of longitude", () => {
+    const r = awayFrom("2025-01-08", LA_LAT, LA_LON, DAL_LAT, DAL_LON);
+    expect(Math.abs(DAL_LON - LA_LON)).toBeLessThan(26);
+    expect(r.hasTimeZoneDisplacement).toBe(true);
+  });
+
+  it("stays silent for Boston at Oklahoma City — 26.5° of longitude but only 1 zone", () => {
+    const r = awayFrom("2025-01-08", BOS_LAT, BOS_LON, OKC_LAT, OKC_LON);
+    expect(Math.abs(OKC_LON - BOS_LON)).toBeGreaterThan(26); // old rule false-fired here
+    expect(r.hasTimeZoneDisplacement).toBe(false);
+  });
+
+  it("tracks Phoenix's missing DST: Chicago at Phoenix is 2 zones in October, 1 in January", () => {
+    const october = awayFrom("2025-10-28", CHI_LAT, CHI_LON, PHX_LAT, PHX_LON);
+    const january = awayFrom("2026-01-15", CHI_LAT, CHI_LON, PHX_LAT, PHX_LON);
+
+    expect(october.hasTimeZoneDisplacement).toBe(true);
+    expect(january.hasTimeZoneDisplacement).toBe(false);
+  });
+
+  it("resolves relocated-era coordinates: Seattle-era Sonics at Chicago is 2 zones", () => {
+    const SEA_LAT = 47.6221;
+    const SEA_LON = -122.354;
+    const r = awayFrom("1995-01-08", SEA_LAT, SEA_LON, CHI_LAT, CHI_LON);
+    expect(r.hasTimeZoneDisplacement).toBe(true);
+  });
+});
+
 describe("calculateRestAdvantage", () => {
   it("positive when away team is more fatigued (home rested advantage)", () => {
     const home = fatigueHomeTeam("2025-01-10", []);

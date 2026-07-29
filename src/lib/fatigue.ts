@@ -70,12 +70,17 @@ const ROAD_STREAK_PER_GAME = 0.34;
 const TIME_ZONE_DISPLACEMENT_BONUS = 0.88;
 
 /**
- * Min longitude gap (deg) between home arena and tonight's venue to count as displaced.
- * 26° ≈ two US time zones — the circadian shift is what this term charges for, so it
- * fires only when the team is actually on the road that far from home tonight, never
- * retroactively at home and never off the whole trip's spread (ratified 2026-07-29).
+ * Min clock shift (hours) between home arena and tonight's venue to count as displaced.
+ * The circadian shift is what this term charges for, so it fires only when the team is
+ * actually on the road that far from home tonight, never retroactively at home and never
+ * off the whole trip's spread (ratified 2026-07-29).
+ *
+ * Was a 26°-longitude proxy for "two time zones". Longitude is a poor proxy: measured over
+ * 2015-16+, it missed 871 of 3,522 genuine two-zone road games (every Denver trip east,
+ * every Texas↔California pair, MIN@LAL, OKC@POR …) and false-fired on 40 one-zone games
+ * (BOS@OKC, BOS@SAS). Real zones replace it; the ≥2 intent is unchanged.
  */
-const TIME_ZONE_DISPLACEMENT_MIN_LON_DEG = 26;
+const TIME_ZONE_DISPLACEMENT_MIN_HOURS = 2;
 
 const SAME_ARENA_MILES = 1;
 
@@ -117,7 +122,7 @@ export interface FatigueResult {
   isThreeInFour: boolean;
   /** This game is the team's 4th across tonight and the prior 5 nights. */
   isFourInSix: boolean;
-  /** Tonight's game is on the road ≥2 time zones (≥26° longitude) from home. */
+  /** Tonight's game is on the road ≥2 hours of clock shift from the home arena. */
   hasTimeZoneDisplacement: boolean;
 }
 
@@ -206,16 +211,82 @@ function roadTripStreak(
   return streak;
 }
 
-/** Displaced = on the road tonight, ≥2 time zones from the home arena. */
+/**
+ * Standard-time UTC offset (hours) for a venue longitude.
+ *
+ * Cutoffs, not a team lookup, so relocated-era coordinates resolve correctly for free
+ * (Seattle/Vancouver → Pacific, Katrina-era New Orleans in OKC → Central). Each boundary
+ * sits in the empty gap between the two nearest arenas on either side, so all 30 current
+ * arenas plus every era coordinate classify correctly — verified 2026-07-30.
+ */
+function standardUtcOffsetHours(lon: number): number {
+  if (lon > -87.0) return -5; // Eastern  (westmost: IND −86.16 | CHI −87.67 is Central)
+  if (lon > -101.0) return -6; // Central  (westmost: SAS −98.44 | DEN −105.01 is Mountain)
+  if (lon > -115.0) return -7; // Mountain (westmost: PHX −112.07 | LAL −118.27 is Pacific)
+  return -8; // Pacific
+}
+
+/** Nth (1-indexed) Sunday of `month` (0-indexed), in local calendar terms. */
+function nthSunday(year: number, month: number, n: number): Date {
+  const first = new Date(year, month, 1);
+  return new Date(year, month, 1 + ((7 - first.getDay()) % 7) + (n - 1) * 7);
+}
+
+/** Last Sunday of `month` (0-indexed). */
+function lastSunday(year: number, month: number): Date {
+  const last = new Date(year, month + 1, 0);
+  return new Date(year, month, last.getDate() - last.getDay());
+}
+
+/**
+ * US daylight saving in effect on `date`.
+ *
+ * Only Arizona ignores DST, so this changes no offset *difference* except for games
+ * involving Phoenix — everyone else shifts together. Two rule eras are modeled: since
+ * 2007, 2nd Sunday of March → 1st Sunday of November; 1987–2006, 1st Sunday of April →
+ * last Sunday of October.
+ *
+ * ponytail: the 1976–1986 rule (DST began the *last* Sunday of April) is not modeled —
+ * it would only change Phoenix games in April 1986/87. Add the third branch if a
+ * Suns-vs-Central April game from those two seasons ever matters.
+ */
+function isDaylightSaving(date: Date): boolean {
+  const y = date.getFullYear();
+  const start = y >= 2007 ? nthSunday(y, 2, 2) : nthSunday(y, 3, 1);
+  const end = y >= 2007 ? nthSunday(y, 10, 1) : lastSunday(y, 9);
+  return date >= start && date < end;
+}
+
+/** Phoenix is the lone NBA arena that never observes DST; UTA sits 0.17° away but 7° north. */
+function observesDaylightSaving(lat: number, lon: number): boolean {
+  const isPhoenix = lat < 36 && lon <= -111.6 && lon >= -112.6;
+  return !isPhoenix;
+}
+
+/** Actual UTC offset (hours) of a venue on a given date, DST included. */
+export function venueUtcOffsetHours(lat: number, lon: number, date: Date): number {
+  const base = standardUtcOffsetHours(lon);
+  return isDaylightSaving(date) && observesDaylightSaving(lat, lon) ? base + 1 : base;
+}
+
+/**
+ * Displaced = on the road tonight, ≥2 hours of clock shift from the home arena.
+ *
+ * Signed inputs (not `Math.abs` on longitude) because the shift's direction is the
+ * physiologically meaningful part; the magnitude test is all this predicate uses.
+ */
 function isTimeZoneDisplaced(
   currentGameIsHome: boolean,
+  tip: Date,
+  teamHomeLat: number,
   teamHomeLon: number,
+  currentVenueLat: number,
   currentVenueLon: number
 ): boolean {
   if (currentGameIsHome) return false;
-  return (
-    Math.abs(currentVenueLon - teamHomeLon) >= TIME_ZONE_DISPLACEMENT_MIN_LON_DEG
-  );
+  const homeOffset = venueUtcOffsetHours(teamHomeLat, teamHomeLon, tip);
+  const venueOffset = venueUtcOffsetHours(currentVenueLat, currentVenueLon, tip);
+  return Math.abs(venueOffset - homeOffset) >= TIME_ZONE_DISPLACEMENT_MIN_HOURS;
 }
 
 function roadSegmentLoad(streak: number, displaced: boolean): number {
@@ -402,7 +473,10 @@ export function calculateFatigue(
   const roadStreak = roadTripStreak(recentGames, currentGameIsHome);
   const displaced = isTimeZoneDisplaced(
     currentGameIsHome,
+    tip,
+    teamHomeLat,
     teamHomeLon,
+    currentVenueLat,
     currentVenueLon
   );
   const roadLoad = roadSegmentLoad(roadStreak, displaced);
