@@ -47,6 +47,15 @@ export const games = pgTable(
     gameType: varchar("game_type", { length: 16 }).notNull().default("regular"),
     /** Overtime periods beyond regulation (1 = one OT, 2 = double OT, …). */
     overtimePeriods: integer("overtime_periods").notNull().default(0),
+    /**
+     * Actual tip-off instant (migration 0011). Null before ~2002 and wherever ESPN
+     * has no event — `games.date` remains the only guaranteed temporal key.
+     */
+    tipOffUtc: timestamp("tip_off_utc", { withTimezone: true }),
+    /** Game played at neither team's arena (migration 0011); travel legs adjust. */
+    neutralSite: boolean("neutral_site").notNull().default(false),
+    /** City of a neutral-site game ("Paris", "Mexico City", …); null otherwise. */
+    neutralVenueCity: varchar("neutral_venue_city"),
   },
   (t) => [
     index("games_date_idx").on(t.date),

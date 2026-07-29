@@ -12,8 +12,11 @@ Daily NBA pipeline for GitHub Actions (and local runs):
    stale/wrong scores (not only “yesterday”), inserts missing games, and loads upcoming
    slates (e.g. April) without re-running the full season fetch.
 
-2. Refresh **overtime_periods** for **final** regular-season games in the LeagueGameFinder
-   window whose dates fall in **[today − LOOKBACK_DAYS, today)** (bounded BoxScoreSummary calls).
+2. Refresh **game context** (overtime periods, tip-off time, neutral-site flag) for
+   **[today − LOOKBACK_DAYS, today]** via `scripts/fetch_game_context.ts`. This replaced a
+   stats.nba.com BoxScoreSummary loop that could never have worked from here: stats.nba.com
+   times out from this network and from CI, so `overtime_periods` sat at 0 for all 49,353
+   games and the fatigue model's overtime term never fired once. ESPN is reachable.
 
 3. Run `pnpm exec tsx scripts/run-daily.ts <today ET>` to refresh fatigue for today’s
    slate and regenerate open predictions.
@@ -27,7 +30,7 @@ from __future__ import annotations
 import os
 import subprocess
 import sys
-from datetime import date, datetime, timedelta
+from datetime import datetime, timedelta
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
@@ -38,7 +41,6 @@ if _SCRIPTS_DIR not in sys.path:
 # NOTE: fetch_nba_schedule_cdn / fetch_schedule read DATABASE_URL at import time
 # (fetch_schedule sys.exits when it is unset), so they are imported lazily inside
 # main() — AFTER the offseason gate — so the offseason path requires no secret.
-from nba_ot_periods import fetch_overtime_periods
 from season_window import is_in_season
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
@@ -70,41 +72,6 @@ def resolve_database_url() -> str:
         )
         sys.exit(1)
     return url
-
-
-def refresh_ot_lookback_finals(conn, today: date, records: list[tuple]) -> int:
-    """
-    Refresh overtime_periods for finals in [today - LOOKBACK_DAYS, today) so downstream
-    fatigue (prior-game OT flag) stays accurate — not only “yesterday.”
-
-    Tuple layout matches pair_games_from_date_range_df:
-    (external_id, game_date, season, ... home_score, away_score, status, ot, game_type)
-    """
-    oldest = today - timedelta(days=LOOKBACK_DAYS)
-    n = 0
-    seen: set[str] = set()
-    with conn.cursor() as cur:
-        for rec in records:
-            gid_str = rec[0]
-            gdate = rec[1]
-            status = rec[7]
-            if status != "final" or gdate < oldest or gdate >= today:
-                continue
-            if gid_str in seen:
-                continue
-            seen.add(gid_str)
-            ot_periods = fetch_overtime_periods(str(gid_str))
-            cur.execute(
-                """
-                UPDATE games
-                SET overtime_periods = %s
-                WHERE external_id = %s
-                """,
-                (ot_periods, str(gid_str)),
-            )
-            n += cur.rowcount
-    conn.commit()
-    return n
 
 
 def main() -> None:
@@ -181,19 +148,34 @@ def main() -> None:
             print("[daily_update] LeagueGameFinder returned no rows for window.")
             records: list[tuple] = []
         else:
-            # Skip per-game OT during bulk pairing (hundreds of games); refresh yesterday below.
+            # Skip per-game OT during bulk pairing; the ESPN context step below fills it in.
             records = pair_games_from_date_range_df(df, team_map, force_skip_ot=True)
             n = upsert_stats_window_records(conn, records)
             conn.commit()
             print(f"[daily_update] upserted {n} regular-season game row(s) in window.")
 
-        if records:
-            ot_updated = refresh_ot_lookback_finals(conn, today, records)
-            print(
-                f"[daily_update] overtime_periods refreshed for finals in {LOOKBACK_DAYS}d lookback: {ot_updated} row(s)"
-            )
     finally:
         conn.close()
+
+    # Game context (overtime periods, tip-off, neutral site) for the lookback window.
+    # Must precede run-daily.ts, which reads overtime_periods when scoring fatigue.
+    # --refresh because a scoreboard cached mid-game carries no final line score.
+    print(f"[daily_update] refreshing game context for the {LOOKBACK_DAYS}d lookback …")
+    ctx = subprocess.run(
+        [
+            "pnpm", "exec", "tsx", "scripts/fetch_game_context.ts",
+            (today - timedelta(days=LOOKBACK_DAYS)).isoformat(),
+            today_str,
+            "--refresh",
+        ],
+        cwd=str(REPO_ROOT),
+        env={**os.environ, "DATABASE_URL": database_url},
+        check=False,
+    )
+    if ctx.returncode != 0:
+        # Non-fatal: fatigue still scores without it, just without the OT term for
+        # these few games. Failing the whole cron over a third-party outage is worse.
+        print("[daily_update] WARNING: game context refresh failed; continuing.")
 
     print(f"[daily_update] running Node pipeline for {today_str} …")
     result = subprocess.run(
