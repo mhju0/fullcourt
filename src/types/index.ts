@@ -32,7 +32,7 @@ export interface FatigueInfo {
    * or with no road streak into this game.
    */
   roadTripConsecutiveAway: number;
-  /** Large east–west spread between home and road venues on the current / recent trip. */
+  /** Tonight's game is on the road ≥2 time zones (≥26° longitude) from home. */
   hasTimeZoneDisplacement: boolean;
 }
 
