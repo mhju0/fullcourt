@@ -43,6 +43,7 @@ async function main(): Promise<void> {
       homeTeamId: games.homeTeamId,
       awayTeamId: games.awayTeamId,
       status: games.status,
+      tipOffUtc: games.tipOffUtc,
       neutralSite: games.neutralSite,
       neutralVenueCity: games.neutralVenueCity,
     })

@@ -12,6 +12,7 @@ export type DailyRefreshGame = {
   homeTeamId: number;
   awayTeamId: number;
   status: string;
+  tipOffUtc?: Date | null;
   neutralSite?: boolean;
   neutralVenueCity?: string | null;
 };
@@ -114,7 +115,8 @@ export async function refreshDailyGames(input: {
         homeLon,
         venueLat,
         venueLon,
-        !neutral
+        !neutral,
+        game.tipOffUtc
       );
       const recentAway = await input.port.loadRecentGames(
         game.awayTeamId,
@@ -128,7 +130,8 @@ export async function refreshDailyGames(input: {
         awayLon,
         venueLat,
         venueLon,
-        false
+        false,
+        game.tipOffUtc
       );
 
       const homeFatigue = toFatigueScoreWrite(game.homeTeamId, homeResult);

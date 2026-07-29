@@ -34,6 +34,21 @@ const TRAVEL_REFERENCE_MILES = 1000;
 
 const B2B_MULTIPLIER = 1.38;
 
+/**
+ * Back-to-backs are not equal. `games.date` is a bare calendar date, so a 10:30pm ET
+ * tip followed by a 7:00pm tip (~20.5h) scored identically to 7:00pm then 10:30pm
+ * (~27.5h) — a seven-hour spread inside one flag.
+ *
+ * 1.38 is the value at a nominal 24-hour turnaround, adjusted ±0.02 per hour and
+ * clamped, so the realistic worst case adds 0.08 to a 0.38 excess (~21% more penalty).
+ * Missing tip times on either game fall back to exactly 1.38, preserving the pre-2002
+ * era where ESPN has no data. Ratified 2026-07-30.
+ */
+const B2B_TURNAROUND_NOMINAL_HOURS = 24;
+const B2B_TURNAROUND_PER_HOUR = 0.02;
+const B2B_MULTIPLIER_MIN = 1.3;
+const B2B_MULTIPLIER_MAX = 1.46;
+
 const ALTITUDE_MULTIPLIER = 1.15;
 
 const FRESHNESS_MAX_BONUS = -2.0;
@@ -97,6 +112,8 @@ export interface RecentGame {
   opponentLon: number;
   opponentAltitudeFlag: boolean;
   overtimePeriods: number;
+  /** Actual tip-off instant; null before ~2002, where ESPN has no event. */
+  tipOffUtc?: Date | null;
   /**
    * Where the game was actually played, when that is neither team's arena. Set only
    * for neutral-site games (Paris, Mexico City, …), which are treated as away games
@@ -319,6 +336,24 @@ function isTimeZoneDisplaced(
   return Math.abs(venueOffset - homeOffset) >= TIME_ZONE_DISPLACEMENT_MIN_HOURS;
 }
 
+/**
+ * Back-to-back multiplier, sharpened by the real gap between tips when both are known.
+ * Returns the flat ratified 1.38 whenever either tip time is missing.
+ */
+function backToBackMultiplier(
+  previousTip: Date | null | undefined,
+  currentTip: Date | null | undefined
+): number {
+  if (!previousTip || !currentTip) return B2B_MULTIPLIER;
+  const hours = (currentTip.getTime() - previousTip.getTime()) / 3_600_000;
+  if (!Number.isFinite(hours)) return B2B_MULTIPLIER;
+  const adjusted =
+    B2B_MULTIPLIER +
+    B2B_TURNAROUND_PER_HOUR * (B2B_TURNAROUND_NOMINAL_HOURS - hours);
+  const clamped = Math.min(B2B_MULTIPLIER_MAX, Math.max(B2B_MULTIPLIER_MIN, adjusted));
+  return Math.round(clamped * 1000) / 1000;
+}
+
 function roadSegmentLoad(streak: number, displaced: boolean): number {
   const loadFromStreak =
     ROAD_STREAK_PER_GAME * Math.max(0, streak - ROAD_STREAK_SOFT);
@@ -483,7 +518,8 @@ export function calculateFatigue(
   teamHomeLon: number,
   currentVenueLat: number,
   currentVenueLon: number,
-  currentGameIsHome: boolean
+  currentGameIsHome: boolean,
+  currentTipOffUtc?: Date | null
 ): FatigueResult {
   const tip = parseISO(gameDate);
 
@@ -566,7 +602,9 @@ export function calculateFatigue(
 
   const daysSinceLastGame = differenceInCalendarDays(tip, parseISO(lastGame.date));
   const isBackToBack = daysSinceLastGame === 1;
-  const b2bMultiplier = isBackToBack ? B2B_MULTIPLIER : 1.0;
+  const b2bMultiplier = isBackToBack
+    ? backToBackMultiplier(lastGame.tipOffUtc, currentTipOffUtc)
+    : 1.0;
 
   const altMultiplier = isVisitingAltitude ? ALTITUDE_MULTIPLIER : 1.0;
 

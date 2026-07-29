@@ -536,6 +536,48 @@ describe("time-zone displacement uses real zones, not a longitude proxy", () => 
  * arena. Before this, travel legs geolocated them at the listed home team's building —
  * so a Lakers "home" game in Paris cost 0 miles and the return flight never happened.
  */
+/**
+ * Two back-to-backs with identical calendar dates but different tips: a 10:30pm game
+ * followed by a 7pm game is a ~21h turnaround; the reverse is ~27h. Ratified 2026-07-30.
+ */
+describe("back-to-back turnaround hours", () => {
+  const prevLateTip = new Date("2025-01-11T03:00:00Z"); // 10pm ET on the 10th
+  const prevEarlyTip = new Date("2025-01-11T00:00:00Z"); // 7pm ET on the 10th
+  const tonightEarly = new Date("2025-01-12T00:00:00Z"); // 7pm ET on the 11th
+  const tonightLate = new Date("2025-01-12T03:00:00Z"); // 10pm ET on the 11th
+
+  function b2b(prevTip: Date | null, tonightTip: Date | null) {
+    const recent: RecentGame[] = [
+      { ...baseRecent({ date: "2025-01-10", isHome: true }), tipOffUtc: prevTip },
+    ];
+    return calculateFatigue(
+      "2025-01-11", recent, false, LA_LAT, LA_LON, LA_LAT, LA_LON, true, tonightTip
+    );
+  }
+
+  it("penalises a short turnaround more than a long one", () => {
+    const short = b2b(prevLateTip, tonightEarly); // 21h
+    const long = b2b(prevEarlyTip, tonightLate); // 27h
+
+    expect(short.backToBackMultiplier).toBeCloseTo(1.44, 3);
+    expect(long.backToBackMultiplier).toBeCloseTo(1.32, 3);
+    expect(short.score).toBeGreaterThan(long.score);
+  });
+
+  it("falls back to the flat 1.38 when either tip time is missing", () => {
+    expect(b2b(null, tonightEarly).backToBackMultiplier).toBe(1.38);
+    expect(b2b(prevLateTip, null).backToBackMultiplier).toBe(1.38);
+    expect(b2b(null, null).backToBackMultiplier).toBe(1.38);
+  });
+
+  it("clamps absurd turnarounds rather than extrapolating", () => {
+    const absurdlyShort = b2b(new Date("2025-01-11T20:00:00Z"), tonightEarly); // 4h
+    const absurdlyLong = b2b(new Date("2025-01-10T00:00:00Z"), tonightLate); // 51h
+    expect(absurdlyShort.backToBackMultiplier).toBe(1.46);
+    expect(absurdlyLong.backToBackMultiplier).toBe(1.3);
+  });
+});
+
 describe("neutral-site venues", () => {
   const PARIS_LAT = 48.8386;
   const PARIS_LON = 2.3784;

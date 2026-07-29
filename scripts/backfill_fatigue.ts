@@ -113,6 +113,7 @@ async function main(): Promise<void> {
     awayTeamId: number;
     neutralSite: boolean;
     neutralVenueCity: string | null;
+    tipOffUtc: Date | null;
   }>;
 
   if (force) {
@@ -127,6 +128,7 @@ async function main(): Promise<void> {
         awayTeamId: games.awayTeamId,
         neutralSite: games.neutralSite,
         neutralVenueCity: games.neutralVenueCity,
+        tipOffUtc: games.tipOffUtc,
       })
       .from(games)
       .orderBy(asc(games.date));
@@ -147,6 +149,7 @@ async function main(): Promise<void> {
         awayTeamId: games.awayTeamId,
         neutralSite: games.neutralSite,
         neutralVenueCity: games.neutralVenueCity,
+        tipOffUtc: games.tipOffUtc,
       })
       .from(games)
       .leftJoin(
@@ -220,7 +223,8 @@ async function main(): Promise<void> {
         homeLon,
         venueLat,
         venueLon,
-        !neutral
+        !neutral,
+        game.tipOffUtc
       );
 
       const recentAway = await fetchRecentGamesForTeam(appDb, game.awayTeamId, dateStr);
@@ -232,7 +236,8 @@ async function main(): Promise<void> {
         awayLon,
         venueLat,
         venueLon,
-        false
+        false,
+        game.tipOffUtc
       );
 
       const entries: Array<{ teamId: number; result: typeof homeResult }> = [

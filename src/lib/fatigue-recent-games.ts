@@ -23,6 +23,7 @@ export interface PriorGameRow {
   awayLon: string;
   awayAltitude: boolean;
   overtimePeriods: number;
+  tipOffUtc?: Date | null;
   neutralSite?: boolean;
   neutralVenueCity?: string | null;
 }
@@ -59,6 +60,7 @@ export async function fetchRecentGamesForTeam(
       awayLon: awayTeamAlias.longitude,
       awayAltitude: awayTeamAlias.altitudeFlag,
       overtimePeriods: games.overtimePeriods,
+      tipOffUtc: games.tipOffUtc,
       neutralSite: games.neutralSite,
       neutralVenueCity: games.neutralVenueCity,
     })
@@ -120,6 +122,7 @@ export function rowToRecentGame(row: PriorGameRow, teamId: number): RecentGame {
     opponentLon: opponent.longitude,
     opponentAltitudeFlag: isHomeSide ? row.awayAltitude : row.homeAltitude,
     overtimePeriods: row.overtimePeriods,
+    tipOffUtc: row.tipOffUtc ?? null,
     ...venue,
   };
 }
