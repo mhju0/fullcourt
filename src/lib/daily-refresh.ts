@@ -38,7 +38,7 @@ export type FatigueScoreWrite = {
   roadTripConsecutiveAway: number;
   isThreeInFour: boolean;
   isFourInSix: boolean;
-  hasCoastToCoastRoadSwing: boolean;
+  hasTimeZoneDisplacement: boolean;
 };
 
 export type PredictionWrite = {
@@ -196,7 +196,7 @@ function toFatigueScoreWrite(
     roadTripConsecutiveAway: result.roadTripConsecutiveAway,
     isThreeInFour: result.isThreeInFour,
     isFourInSix: result.isFourInSix,
-    hasCoastToCoastRoadSwing: result.hasCoastToCoastRoadSwing,
+    hasTimeZoneDisplacement: result.hasTimeZoneDisplacement,
   };
 }
 

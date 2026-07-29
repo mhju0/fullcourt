@@ -232,7 +232,7 @@ async function main(): Promise<void> {
           roadTripConsecutiveAway: r.roadTripConsecutiveAway,
           isThreeInFour: r.isThreeInFour,
           isFourInSix: r.isFourInSix,
-          hasCoastToCoastRoadSwing: r.hasCoastToCoastRoadSwing,
+          hasTimeZoneDisplacement: r.hasTimeZoneDisplacement,
         });
         totalRows++;
       }

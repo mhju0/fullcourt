@@ -389,7 +389,7 @@ function MetaStrip({ game }: { game: GameResponse }) {
   if (game.awayFatigue?.is4In6) flags.push("AWAY 4IN6")
   if (game.homeFatigue?.is4In6) flags.push("HOME 4IN6")
   if (game.awayFatigue?.altitudePenalty) flags.push("ALT")
-  if (game.awayFatigue?.hasCoastToCoastRoadSwing) flags.push("COAST")
+  if (game.awayFatigue?.hasTimeZoneDisplacement) flags.push("JET LAG")
   if (game.awayFatigue?.isOvertimePenalty || game.homeFatigue?.isOvertimePenalty) flags.push("OT")
 
   return (

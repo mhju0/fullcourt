@@ -70,7 +70,7 @@ const FATIGUE_COLUMNS = {
   daysSinceLastGame: fatigueScores.daysSinceLastGame,
   isOvertimePenalty: fatigueScores.isOvertimePenalty,
   roadTripConsecutiveAway: fatigueScores.roadTripConsecutiveAway,
-  hasCoastToCoastRoadSwing: fatigueScores.hasCoastToCoastRoadSwing,
+  hasTimeZoneDisplacement: fatigueScores.hasTimeZoneDisplacement,
 };
 
 /** One fatigue row per (game, team), preferring the most recently computed. */
@@ -229,7 +229,7 @@ function selectGamesWithFatigue(where: SQL | undefined) {
       homeDaysSinceLastGame: homeFatigue.daysSinceLastGame,
       homeIsOvertimePenalty: homeFatigue.isOvertimePenalty,
       homeRoadTripConsecutiveAway: homeFatigue.roadTripConsecutiveAway,
-      homeHasCoastToCoastRoadSwing: homeFatigue.hasCoastToCoastRoadSwing,
+      homeHasTimeZoneDisplacement: homeFatigue.hasTimeZoneDisplacement,
       // Away fatigue
       awayFatigueScore: awayFatigue.score,
       awayIsBackToBack: awayFatigue.isBackToBack,
@@ -239,7 +239,7 @@ function selectGamesWithFatigue(where: SQL | undefined) {
       awayDaysSinceLastGame: awayFatigue.daysSinceLastGame,
       awayIsOvertimePenalty: awayFatigue.isOvertimePenalty,
       awayRoadTripConsecutiveAway: awayFatigue.roadTripConsecutiveAway,
-      awayHasCoastToCoastRoadSwing: awayFatigue.hasCoastToCoastRoadSwing,
+      awayHasTimeZoneDisplacement: awayFatigue.hasTimeZoneDisplacement,
     })
     .from(games)
     .innerJoin(homeTeam, eq(games.homeTeamId, homeTeam.id))
@@ -299,7 +299,7 @@ function mapJoinedRowToGameResponse(
       gamesInLast30Days: games30Map.get(row.homeTeamId) ?? 0,
       is4In6: is4In6Map.get(row.homeTeamId) ?? false,
       roadTripConsecutiveAway: row.homeRoadTripConsecutiveAway ?? 0,
-      hasCoastToCoastRoadSwing: row.homeHasCoastToCoastRoadSwing ?? false,
+      hasTimeZoneDisplacement: row.homeHasTimeZoneDisplacement ?? false,
     },
     {
       side: "home",
@@ -314,7 +314,7 @@ function mapJoinedRowToGameResponse(
       gamesInLast30Days: games30Map.get(row.awayTeamId) ?? 0,
       is4In6: is4In6Map.get(row.awayTeamId) ?? false,
       roadTripConsecutiveAway: row.awayRoadTripConsecutiveAway ?? 0,
-      hasCoastToCoastRoadSwing: row.awayHasCoastToCoastRoadSwing ?? false,
+      hasTimeZoneDisplacement: row.awayHasTimeZoneDisplacement ?? false,
     },
     {
       side: "away",
@@ -618,7 +618,7 @@ type FatigueScheduleExtras = {
   gamesInLast30Days: number;
   is4In6: boolean;
   roadTripConsecutiveAway: number;
-  hasCoastToCoastRoadSwing: boolean;
+  hasTimeZoneDisplacement: boolean;
 };
 
 /**
@@ -702,7 +702,7 @@ function buildFatigueInfo(
     // Road-trip streak is only shown for the visiting team (type contract).
     roadTripConsecutiveAway:
       ctx.side === "home" ? 0 : extras.roadTripConsecutiveAway,
-    hasCoastToCoastRoadSwing: extras.hasCoastToCoastRoadSwing,
+    hasTimeZoneDisplacement: extras.hasTimeZoneDisplacement,
   };
 }
 

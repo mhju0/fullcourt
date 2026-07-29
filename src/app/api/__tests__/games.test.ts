@@ -43,7 +43,7 @@ const sampleGame: GameResponse = {
     is4In6: false,
     isOvertimePenalty: false,
     roadTripConsecutiveAway: 0,
-    hasCoastToCoastRoadSwing: false,
+    hasTimeZoneDisplacement: false,
   },
   awayFatigue: {
     score: 5.3,
@@ -58,7 +58,7 @@ const sampleGame: GameResponse = {
     is4In6: true,
     isOvertimePenalty: true,
     roadTripConsecutiveAway: 3,
-    hasCoastToCoastRoadSwing: true,
+    hasTimeZoneDisplacement: true,
   },
   restAdvantage: {
     differential: 3.2,

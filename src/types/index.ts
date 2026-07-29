@@ -33,7 +33,7 @@ export interface FatigueInfo {
    */
   roadTripConsecutiveAway: number;
   /** Large east–west spread between home and road venues on the current / recent trip. */
-  hasCoastToCoastRoadSwing: boolean;
+  hasTimeZoneDisplacement: boolean;
 }
 
 export interface RestAdvantage {

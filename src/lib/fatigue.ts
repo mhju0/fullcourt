@@ -3,7 +3,7 @@
  *
  * 1. DECAY LOAD: Recent games (up to ~30 days) contribute fatigue with exponential decay.
  * 2. TRAVEL LOAD: Cumulative travel (7-day rolling window of legs) with log scaling.
- * 3. ROAD SEGMENT LOAD: Consecutive games away from home + coast-to-coast swings.
+ * 3. ROAD SEGMENT LOAD: Consecutive games away from home + time-zone displacement.
  * 4. SCHEDULE STRESS: Multi-window density (6/7/12/15/30-day) vs NBA “tough slate” anchors.
  * 5. MULTIPLIERS: Back-to-back, altitude, schedule stress (combined into densityMultiplier in DB).
  * 6. FRESHNESS BONUS: Extended rest reduces fatigue.
@@ -66,10 +66,16 @@ const ROAD_STREAK_SOFT = 2;
 
 const ROAD_STREAK_PER_GAME = 0.34;
 
-const ROAD_COAST_TO_COAST_BONUS = 0.88;
+/** Magnitude kept from the old coast-to-coast bonus; calibration is an audit item. */
+const TIME_ZONE_DISPLACEMENT_BONUS = 0.88;
 
-/** Min longitude spread (deg) on home + road venues to flag a coast swing. */
-const COAST_LON_SPREAD_DEG = 26;
+/**
+ * Min longitude gap (deg) between home arena and tonight's venue to count as displaced.
+ * 26° ≈ two US time zones — the circadian shift is what this term charges for, so it
+ * fires only when the team is actually on the road that far from home tonight, never
+ * retroactively at home and never off the whole trip's spread (ratified 2026-07-29).
+ */
+const TIME_ZONE_DISPLACEMENT_MIN_LON_DEG = 26;
 
 const SAME_ARENA_MILES = 1;
 
@@ -111,8 +117,8 @@ export interface FatigueResult {
   isThreeInFour: boolean;
   /** This game is the team's 4th across tonight and the prior 5 nights. */
   isFourInSix: boolean;
-  /** Large east–west spread across home + road venues on the active / just-finished trip. */
-  hasCoastToCoastRoadSwing: boolean;
+  /** Tonight's game is on the road ≥2 time zones (≥26° longitude) from home. */
+  hasTimeZoneDisplacement: boolean;
 }
 
 // ─── Schedule / road helpers ───────────────────────────────────
@@ -180,46 +186,43 @@ function scheduleStressMultiplier(recentGames: RecentGame[], gameDate: string): 
   return Math.round(mult * 1000) / 1000;
 }
 
-/**
- * Consecutive away games: walk back from most recent game; if tonight is away, add 1.
- * Returns venue longitudes for those away games (not including tonight — caller adds current).
- */
-function roadTripContext(
+/** Consecutive away games: walk back from most recent game; if tonight is away, add 1. */
+function roadTripStreak(
   recentGames: RecentGame[],
   currentGameIsHome: boolean
-): { streak: number; awayVenueLons: number[] } {
+): number {
   const sorted = [...recentGames].sort((a, b) => a.date.localeCompare(b.date));
-  const awayVenueLons: number[] = [];
+  let streak = 0;
   for (let i = sorted.length - 1; i >= 0; i--) {
     if (!sorted[i].isHome) {
-      awayVenueLons.push(sorted[i].opponentLon);
+      streak += 1;
     } else {
       break;
     }
   }
-  let streak = awayVenueLons.length;
   if (!currentGameIsHome) {
     streak += 1;
   }
-  return { streak, awayVenueLons };
+  return streak;
 }
 
-function hasCoastToCoastSwing(teamHomeLon: number, venueLons: number[]): boolean {
-  if (venueLons.length === 0) return false;
-  const all = [teamHomeLon, ...venueLons];
-  const spread = Math.max(...all) - Math.min(...all);
-  return spread >= COAST_LON_SPREAD_DEG;
+/** Displaced = on the road tonight, ≥2 time zones from the home arena. */
+function isTimeZoneDisplaced(
+  currentGameIsHome: boolean,
+  teamHomeLon: number,
+  currentVenueLon: number
+): boolean {
+  if (currentGameIsHome) return false;
+  return (
+    Math.abs(currentVenueLon - teamHomeLon) >= TIME_ZONE_DISPLACEMENT_MIN_LON_DEG
+  );
 }
 
-function roadSegmentLoad(
-  streak: number,
-  coast: boolean
-): { load: number; hasCoastToCoastRoadSwing: boolean } {
+function roadSegmentLoad(streak: number, displaced: boolean): number {
   const loadFromStreak =
     ROAD_STREAK_PER_GAME * Math.max(0, streak - ROAD_STREAK_SOFT);
-  const coastAdd = coast ? ROAD_COAST_TO_COAST_BONUS : 0;
-  const load = Math.round((loadFromStreak + coastAdd) * 100) / 100;
-  return { load, hasCoastToCoastRoadSwing: coast };
+  const displacementAdd = displaced ? TIME_ZONE_DISPLACEMENT_BONUS : 0;
+  return Math.round((loadFromStreak + displacementAdd) * 100) / 100;
 }
 
 function isSameArena(lat1: number, lon1: number, lat2: number, lon2: number): boolean {
@@ -396,49 +399,28 @@ export function calculateFatigue(
   const isFourInSix = computeIsFourInSix(recentGames, gameDate);
   const stressMult = scheduleStressMultiplier(recentGames, gameDate);
 
-  const { streak: roadStreak, awayVenueLons } = roadTripContext(
-    recentGames,
-    currentGameIsHome
+  const roadStreak = roadTripStreak(recentGames, currentGameIsHome);
+  const displaced = isTimeZoneDisplaced(
+    currentGameIsHome,
+    teamHomeLon,
+    currentVenueLon
   );
-  const venueLonsForCoast = currentGameIsHome
-    ? awayVenueLons
-    : [...awayVenueLons, currentVenueLon];
-  const coast = hasCoastToCoastSwing(teamHomeLon, venueLonsForCoast);
-  const { load: roadLoad, hasCoastToCoastRoadSwing } = roadSegmentLoad(roadStreak, coast);
+  const roadLoad = roadSegmentLoad(roadStreak, displaced);
 
   if (recentGames.length === 0) {
-    if (currentGameIsHome) {
-      return {
-        score: 0,
-        decayLoadScore: 0,
-        travelLoadScore: 0,
-        roadSegmentLoadScore: 0,
-        backToBackMultiplier: 1.0,
-        altitudeMultiplier: 1.0,
-        densityMultiplier: stressMult,
-        freshnessBonus: 0,
-        overtimeFatigueBonus: 0,
-        gamesInLast7Days: 0,
-        gamesInLast30Days: 0,
-        roadTripConsecutiveAway: 0,
-        travelDistanceMiles: 0,
-        isBackToBack: false,
-        daysSinceLastGame: null,
-        isOvertimePenalty: false,
-        isThreeInFour: false,
-        isFourInSix: false,
-        hasCoastToCoastRoadSwing: false,
-      };
-    }
-
-    const openerCoast = hasCoastToCoastSwing(teamHomeLon, [currentVenueLon]);
-    const openerRoad = roadSegmentLoad(1, openerCoast);
+    // Ratified rule #1 (2026-07-29): a team's first game of the season scores 0.00 —
+    // a full offseason leaves nothing accumulated to charge for. The flight to an away
+    // opener is still real, so its miles are computed and displayed, never zeroed, and
+    // the displacement flag stays factual. Both feed the NEXT game's 7-day window.
+    const openerMiles = currentGameIsHome
+      ? 0
+      : haversineDistance(teamHomeLat, teamHomeLon, currentVenueLat, currentVenueLon);
 
     return {
-      score: Math.max(0, openerRoad.load),
+      score: 0,
       decayLoadScore: 0,
       travelLoadScore: 0,
-      roadSegmentLoadScore: openerRoad.load,
+      roadSegmentLoadScore: 0,
       backToBackMultiplier: 1.0,
       altitudeMultiplier: isVisitingAltitude ? ALTITUDE_MULTIPLIER : 1.0,
       densityMultiplier: stressMult,
@@ -446,14 +428,14 @@ export function calculateFatigue(
       overtimeFatigueBonus: 0,
       gamesInLast7Days: 0,
       gamesInLast30Days: 0,
-      roadTripConsecutiveAway: 1,
-      travelDistanceMiles: 0,
+      roadTripConsecutiveAway: currentGameIsHome ? 0 : 1,
+      travelDistanceMiles: Math.round(openerMiles),
       isBackToBack: false,
       daysSinceLastGame: null,
       isOvertimePenalty: false,
       isThreeInFour: false,
       isFourInSix: false,
-      hasCoastToCoastRoadSwing: openerRoad.hasCoastToCoastRoadSwing,
+      hasTimeZoneDisplacement: displaced,
     };
   }
 
@@ -534,7 +516,7 @@ export function calculateFatigue(
     isOvertimePenalty: overtimeFatigueBonus > 0,
     isThreeInFour,
     isFourInSix,
-    hasCoastToCoastRoadSwing,
+    hasTimeZoneDisplacement: displaced,
   };
 }
 

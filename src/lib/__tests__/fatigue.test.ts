@@ -355,6 +355,113 @@ describe("calculateFatigue", () => {
   });
 });
 
+/**
+ * Ratified rules (2026-07-29):
+ * #1 — a team's first game of the season scores 0.00 fatigue; the miles flown to get
+ *      there are computed and displayed, never zeroed.
+ * #2 — the coast-to-coast bonus is a time-zone displacement term: it fires only when
+ *      tonight's game is on the road ≥2 time zones (≥26° longitude) from home — never
+ *      retroactively at home, and never based on the whole trip's spread.
+ */
+describe("ratified rule #1 — season openers", () => {
+  /** Minneapolis (Target Center). */
+  const MIN_LAT = 44.9795;
+  const MIN_LON = -93.2762;
+  /** Portland (Moda Center). */
+  const POR_LAT = 45.5316;
+  const POR_LON = -122.6668;
+
+  it("MIN at POR opener (the 2025-10-22 case): zero score, real miles, factual displacement", () => {
+    const result = calculateFatigue(
+      "2025-10-22",
+      [],
+      false,
+      MIN_LAT,
+      MIN_LON,
+      POR_LAT,
+      POR_LON,
+      false
+    );
+
+    // The 0.88 opening-night "coast" charge was the defect: a full offseason means
+    // zero accumulated load, whatever tonight's longitude says.
+    expect(result.score).toBe(0);
+    expect(result.roadSegmentLoadScore).toBe(0);
+    expect(result.travelLoadScore).toBe(0);
+
+    // But the flight is real and stays visible: ~1,422 great-circle miles.
+    expect(result.travelDistanceMiles).toBeGreaterThan(1400);
+    expect(result.travelDistanceMiles).toBeLessThan(1450);
+
+    // Central → Pacific is a genuine 2-zone displacement; the flag stays factual.
+    expect(result.hasTimeZoneDisplacement).toBe(true);
+    expect(result.roadTripConsecutiveAway).toBe(1);
+  });
+
+  it("home opener stays the fully rested baseline with zero miles", () => {
+    const result = fatigueHomeTeam("2025-10-22", []);
+    expect(result.score).toBe(0);
+    expect(result.travelDistanceMiles).toBe(0);
+    expect(result.hasTimeZoneDisplacement).toBe(false);
+  });
+
+  it("away opener within 2 zones: zero score, real miles, no displacement", () => {
+    // LAL opening at Denver: 13° of longitude, one zone.
+    const result = fatigueAwayTeam("2025-10-22", [], true, DEN_LAT, DEN_LON);
+    expect(result.score).toBe(0);
+    expect(result.travelDistanceMiles).toBeGreaterThan(800);
+    expect(result.hasTimeZoneDisplacement).toBe(false);
+  });
+});
+
+describe("ratified rule #2 — time-zone displacement replaces coast-to-coast", () => {
+  it("fires on a road game ≥2 zones from home, even a one-game trip", () => {
+    const recent: RecentGame[] = [baseRecent({ date: "2025-01-05", isHome: true })];
+    const displaced = fatigueAwayTeam("2025-01-08", recent, false, BOS_LAT, BOS_LON);
+    const local = fatigueAwayTeam("2025-01-08", recent, false, DEN_LAT, DEN_LON);
+
+    expect(displaced.hasTimeZoneDisplacement).toBe(true);
+    expect(local.hasTimeZoneDisplacement).toBe(false);
+    // The bonus is the only difference between these two road-segment loads.
+    expect(displaced.roadSegmentLoadScore - local.roadSegmentLoadScore).toBeCloseTo(0.88, 2);
+  });
+
+  it("never fires retroactively at home, even right after a coast-crossing trip", () => {
+    const recent: RecentGame[] = [
+      baseRecent({ date: "2025-01-03", isHome: false, opponentLat: NYC_LAT, opponentLon: NYC_LON }),
+      baseRecent({ date: "2025-01-05", isHome: false, opponentLat: BOS_LAT, opponentLon: BOS_LON }),
+    ];
+    const backHome = fatigueHomeTeam("2025-01-07", recent);
+    expect(backHome.hasTimeZoneDisplacement).toBe(false);
+  });
+
+  it("measures tonight's venue against home, not the whole trip's spread", () => {
+    // Denver-based team, earlier trip game in Boston, tonight in LA: 13° from home.
+    // The old spread-over-the-trip logic flagged this; displacement must not.
+    const recent: RecentGame[] = [
+      baseRecent({
+        date: "2025-01-05",
+        isHome: false,
+        teamLat: DEN_LAT,
+        teamLon: DEN_LON,
+        opponentLat: BOS_LAT,
+        opponentLon: BOS_LON,
+      }),
+    ];
+    const result = calculateFatigue(
+      "2025-01-07",
+      recent,
+      false,
+      DEN_LAT,
+      DEN_LON,
+      LA_LAT,
+      LA_LON,
+      false
+    );
+    expect(result.hasTimeZoneDisplacement).toBe(false);
+  });
+});
+
 describe("calculateRestAdvantage", () => {
   it("positive when away team is more fatigued (home rested advantage)", () => {
     const home = fatigueHomeTeam("2025-01-10", []);
