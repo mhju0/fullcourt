@@ -51,6 +51,25 @@ const B2B_MULTIPLIER_MAX = 1.46;
 
 const ALTITUDE_MULTIPLIER = 1.15;
 
+/**
+ * Thin air does not clear the moment the plane lands. Applied the night AFTER visiting
+ * altitude, when tonight's venue is at normal elevation — roughly half the 1.15 excess,
+ * since the acute effect is weaker than being there. Never applies to Denver or Utah
+ * leaving home: descending is not the hard direction. Ratified 2026-07-30.
+ */
+const ALTITUDE_CARRYOVER_MULTIPLIER = 1.06;
+
+/**
+ * A 30-point blowout rests the starters; a two-point thriller does not. Overtime was
+ * the model's only measure of how hard a game was, so a rout and a war cost the same
+ * 2.65. Below 15 points nothing is discounted (competitive throughout); the discount
+ * ramps to a 25% cap by 35, because starters still played three quarters even in a
+ * rout. Ratified 2026-07-30.
+ */
+const BLOWOUT_MARGIN_FLOOR = 15;
+const BLOWOUT_MARGIN_RANGE = 20;
+const BLOWOUT_MAX_DISCOUNT = 0.25;
+
 const FRESHNESS_MAX_BONUS = -2.0;
 
 const FRESHNESS_PLATEAU_DAYS = 3;
@@ -124,6 +143,10 @@ export interface RecentGame {
   overtimePeriods: number;
   /** Actual tip-off instant; null before ~2002, where ESPN has no event. */
   tipOffUtc?: Date | null;
+  /** Absolute final margin; drives the blowout discount. Null when scores are absent. */
+  pointMargin?: number | null;
+  /** Whether the venue this game was played at sits at altitude. */
+  venueAltitude?: boolean;
   /**
    * Where the game was actually played, when that is neither team's arena. Set only
    * for neutral-site games (Paris, Mexico City, …), which are treated as away games
@@ -409,6 +432,17 @@ function backToBackMultiplier(
   return Math.round(clamped * 1000) / 1000;
 }
 
+/**
+ * Fraction of a game's base cost to charge, given how lopsided it was. 1.0 for any
+ * game inside 15 points; falls linearly to 0.75 by a 35-point margin. Unknown margin
+ * charges in full — the model never discounts on missing data.
+ */
+function blowoutDiscount(pointMargin: number | null | undefined): number {
+  if (pointMargin == null || !Number.isFinite(pointMargin)) return 1;
+  const excess = (Math.abs(pointMargin) - BLOWOUT_MARGIN_FLOOR) / BLOWOUT_MARGIN_RANGE;
+  return 1 - BLOWOUT_MAX_DISCOUNT * Math.min(1, Math.max(0, excess));
+}
+
 function roadSegmentLoad(streak: number, displacementLoad: number): number {
   const loadFromStreak =
     ROAD_STREAK_PER_GAME * Math.max(0, streak - ROAD_STREAK_SOFT);
@@ -631,7 +665,8 @@ export function calculateFatigue(
   for (const game of recentGames) {
     const daysAgo = differenceInCalendarDays(tip, parseISO(game.date));
     if (daysAgo < 1 || daysAgo > DECAY_LOOKBACK_DAYS) continue;
-    decayLoadScore += GAME_BASE_COST * Math.exp(-DECAY_RATE * daysAgo);
+    decayLoadScore +=
+      GAME_BASE_COST * blowoutDiscount(game.pointMargin) * Math.exp(-DECAY_RATE * daysAgo);
   }
   decayLoadScore = Math.round(decayLoadScore * 100) / 100;
 
@@ -661,13 +696,28 @@ export function calculateFatigue(
     ? backToBackMultiplier(lastGame.tipOffUtc, currentTipOffUtc)
     : 1.0;
 
-  const altMultiplier = isVisitingAltitude ? ALTITUDE_MULTIPLIER : 1.0;
+  // Visiting altitude tonight dominates; otherwise the night after a visit carries a
+  // smaller residual. `!lastGame.isHome` matters: Denver and Utah leaving home are
+  // descending, which is the easy direction and earns nothing.
+  const priorVisitToAltitude = !lastGame.isHome && lastGame.venueAltitude === true;
+  const altMultiplier = isVisitingAltitude
+    ? ALTITUDE_MULTIPLIER
+    : priorVisitToAltitude
+      ? ALTITUDE_CARRYOVER_MULTIPLIER
+      : 1.0;
 
+  // Anchored so the curve starts at exactly 0 on the plateau day. Previously the gate
+  // dropped a continuous function in at full strength, so crossing from two days' rest
+  // to three produced a −1.26 step out of nowhere — an artifact of the `if`, not a
+  // model of recovery. Rest credit now begins at the plateau and accrues from there.
   let freshnessBonus = 0;
   if (daysSinceLastGame >= FRESHNESS_PLATEAU_DAYS) {
     freshnessBonus =
       FRESHNESS_MAX_BONUS *
-      (1 - Math.exp(-daysSinceLastGame / FRESHNESS_PLATEAU_DAYS));
+      (1 -
+        Math.exp(
+          -(daysSinceLastGame - FRESHNESS_PLATEAU_DAYS) / FRESHNESS_PLATEAU_DAYS
+        ));
     freshnessBonus = Math.round(freshnessBonus * 100) / 100;
   }
 

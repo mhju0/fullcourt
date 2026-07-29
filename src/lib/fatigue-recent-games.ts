@@ -24,6 +24,8 @@ export interface PriorGameRow {
   awayAltitude: boolean;
   overtimePeriods: number;
   tipOffUtc?: Date | null;
+  homeScore?: number | null;
+  awayScore?: number | null;
   neutralSite?: boolean;
   neutralVenueCity?: string | null;
 }
@@ -61,6 +63,8 @@ export async function fetchRecentGamesForTeam(
       awayAltitude: awayTeamAlias.altitudeFlag,
       overtimePeriods: games.overtimePeriods,
       tipOffUtc: games.tipOffUtc,
+      homeScore: games.homeScore,
+      awayScore: games.awayScore,
       neutralSite: games.neutralSite,
       neutralVenueCity: games.neutralVenueCity,
     })
@@ -123,6 +127,13 @@ export function rowToRecentGame(row: PriorGameRow, teamId: number): RecentGame {
     opponentAltitudeFlag: isHomeSide ? row.awayAltitude : row.homeAltitude,
     overtimePeriods: row.overtimePeriods,
     tipOffUtc: row.tipOffUtc ?? null,
+    pointMargin:
+      row.homeScore != null && row.awayScore != null
+        ? Math.abs(row.homeScore - row.awayScore)
+        : null,
+    // The venue's altitude, not the opponent's: for a neutral game that is the neutral
+    // city (Mexico City sits above Denver), otherwise the host arena.
+    venueAltitude: neutral ? neutral.altitude : row.homeAltitude,
     ...venue,
   };
 }

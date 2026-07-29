@@ -545,6 +545,93 @@ describe("time-zone displacement uses real zones, not a longitude proxy", () => 
  * Displacement decays as the body clock re-entrains (~1 day per zone) and is heavier
  * travelling east than west. Both ratified 2026-07-30.
  */
+/** Ratified 2026-07-30: prior-game workload, continuous rest credit, altitude residue. */
+describe("blowout discount", () => {
+  function priorGame(margin: number | null) {
+    return calculateFatigue(
+      "2025-01-10",
+      [{ ...baseRecent({ date: "2025-01-09", isHome: true }), pointMargin: margin }],
+      false, LA_LAT, LA_LON, LA_LAT, LA_LON, true
+    );
+  }
+
+  it("charges a competitive game in full and a rout at the 25% cap", () => {
+    const close = priorGame(2).decayLoadScore;
+    const rout = priorGame(40).decayLoadScore;
+    expect(priorGame(15).decayLoadScore).toBe(close); // floor: nothing under 15
+    // cap: never more than 25% off (decay load is rounded to 2dp, so compare loosely)
+    expect(rout).toBeCloseTo(close * 0.75, 1);
+  });
+
+  it("ramps between the floor and the cap rather than stepping", () => {
+    const at20 = priorGame(20).decayLoadScore;
+    const at30 = priorGame(30).decayLoadScore;
+    expect(at20).toBeLessThan(priorGame(15).decayLoadScore);
+    expect(at30).toBeLessThan(at20);
+  });
+
+  it("charges in full when the margin is unknown", () => {
+    expect(priorGame(null).decayLoadScore).toBe(priorGame(2).decayLoadScore);
+  });
+});
+
+describe("freshness is continuous at the plateau", () => {
+  function rest(days: number) {
+    const prior = new Date(Date.UTC(2025, 0, 10));
+    prior.setUTCDate(prior.getUTCDate() - days);
+    return fatigueHomeTeam("2025-01-10", [
+      baseRecent({ date: prior.toISOString().slice(0, 10), isHome: true }),
+    ]);
+  }
+
+  it("grants no credit on the plateau day itself, removing the old −1.26 step", () => {
+    expect(rest(2).freshnessBonus).toBe(0);
+    // was −1.26: a gate artifact, not recovery. (toBeCloseTo because the curve
+    // evaluates to −0 here, which Object.is treats as distinct from 0.)
+    expect(rest(3).freshnessBonus).toBeCloseTo(0, 5);
+  });
+
+  it("accrues monotonically after the plateau toward the −2.0 ceiling", () => {
+    const bonuses = [4, 5, 6, 8, 10].map((d) => rest(d).freshnessBonus);
+    for (let i = 1; i < bonuses.length; i++) {
+      expect(bonuses[i]).toBeLessThan(bonuses[i - 1]!);
+    }
+    expect(bonuses.at(-1)!).toBeGreaterThan(-2);
+  });
+});
+
+describe("altitude carryover", () => {
+  const denverVisit = {
+    ...baseRecent({ date: "2025-01-09", isHome: false }),
+    opponentLat: DEN_LAT,
+    opponentLon: DEN_LON,
+    venueAltitude: true,
+  };
+
+  it("charges a residual the night after visiting altitude", () => {
+    const result = fatigueHomeTeam("2025-01-10", [denverVisit]);
+    expect(result.altitudeMultiplier).toBe(1.06);
+  });
+
+  it("does not stack: being at altitude tonight still charges the full 1.15", () => {
+    const result = calculateFatigue(
+      "2025-01-10", [denverVisit], true, LA_LAT, LA_LON, DEN_LAT, DEN_LON, false
+    );
+    expect(result.altitudeMultiplier).toBe(1.15);
+  });
+
+  it("gives Denver nothing for leaving home — descending is the easy direction", () => {
+    const denverHomeGame = {
+      ...baseRecent({ date: "2025-01-09", isHome: true }),
+      teamLat: DEN_LAT,
+      teamLon: DEN_LON,
+      venueAltitude: true,
+    };
+    const result = fatigueHomeTeam("2025-01-10", [denverHomeGame]);
+    expect(result.altitudeMultiplier).toBe(1.0);
+  });
+});
+
 describe("circadian direction and acclimation", () => {
   const NY_LAT = 40.7505;
   const NY_LON = -73.9934;
