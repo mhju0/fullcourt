@@ -98,7 +98,10 @@ No secondary indexes beyond the PK and the unique `abbreviation`.
 | `away_score` (`awayScore`) | integer | yes | — | null until final |
 | `status` | varchar | no | `'scheduled'` | `scheduled` / `live` / `final` |
 | `game_type` (`gameType`) | varchar(16) | no | `'regular'` | `regular` / `playoffs` / `finals`. App filters to `regular`. |
-| `overtime_periods` (`overtimePeriods`) | integer | no | `0` | 0 = regulation, 1 = one OT, … |
+| `overtime_periods` (`overtimePeriods`) | integer | no | `0` | 0 = regulation, 1 = one OT, … Populated from ESPN by `fetch_game_context.ts` (2002-03+); **0 for earlier seasons means unknown, not "no OT"**. |
+| `tip_off_utc` (`tipOffUtc`) | timestamptz | yes | — | Real tip instant (migration 0011). Null pre-2002; the b2b multiplier falls back to a flat 1.38. |
+| `neutral_site` (`neutralSite`) | boolean | no | `false` | Migration 0011. ESPN sets this only from 2013, so earlier international games are unmarked. |
+| `neutral_venue_city` (`neutralVenueCity`) | varchar | yes | — | e.g. `Paris`; coordinates live in `src/lib/neutral-venues.ts`. |
 
 **Indexes:** `games_date_idx (date)`, `games_status_idx (status)`,
 `games_home_team_idx (home_team_id)`, `games_away_team_idx (away_team_id)`.
@@ -150,7 +153,7 @@ Two rows per game (one per team). Latest-by-`computed_at` wins in reads
 | `road_trip_consecutive_away` (`roadTripConsecutiveAway`) | integer | no | `0` | consecutive away games (incl. tonight when away); added in `0002` |
 | `is_three_in_four` (`isThreeInFour`) | boolean | no | `false` | this game is the team's 3rd across it and the prior 3 nights; added in `0002`. Written but read by nothing — see the note below |
 | `is_four_in_six` (`isFourInSix`) | boolean | no | `false` | this game is the team's 4th across it and the prior 5 nights; added in `0002`. Written but read by nothing — see the note below |
-| `has_coast_to_coast_road_swing` (`hasCoastToCoastRoadSwing`) | boolean | no | `false` | large E–W spread on trip; added in `0002` |
+| `has_time_zone_displacement` (`hasTimeZoneDisplacement`) | boolean | no | `false` | jet-lagged tonight: on the road ≥2 hours of clock shift from home and not yet re-entrained. Added in `0002` as `has_coast_to_coast_road_swing`, renamed in `0010` |
 | `computed_at` (`computedAt`) | timestamp | no | `now()` | used to pick the newest row per (game, team) |
 
 > **`is_three_in_four` / `is_four_in_six` were repaired on 2026-07-27.** Both had been computed
@@ -405,8 +408,10 @@ grants for **two** tables, `shot_grid` and `shot_value_surface`, in one file).
 | `0007_playoff_series_predictions.sql` | Create `playoff_series_predictions` (Playoff Predictor model output) + its RLS policies and Data API grants. Standalone SQL. |
 | `0008_shot_quality_grid.sql` | Create `shot_grid` + `shot_value_surface` (Shot Quality / Expected Shot Value) + RLS policies and Data API grants for both. Standalone SQL; hand-applied in the Supabase SQL editor per the file's own header comment. |
 | `0009_fatigue_scores_distinct_on_index.sql` | Add the live `(game_id, team_id, computed_at DESC)` index used by latest-fatigue reads. Hand-applied with `CREATE INDEX CONCURRENTLY`; no schema.ts change. |
+| `0010_rename_time_zone_displacement.sql` | Rename `fatigue_scores.has_coast_to_coast_road_swing` → `has_time_zone_displacement`. |
+| `0011_games_tip_off_neutral_site.sql` | Add `tip_off_utc`, `neutral_site`, `neutral_venue_city` to `games`. Applied 2026-07-30. See ADR 0003 for the era limits of the ESPN source. |
 
-The **next migration number is `0010`**. `drizzle.config.ts` restricts introspection to
+The **next migration number is `0012`**. `drizzle.config.ts` restricts introspection to
 `schemaFilter: ["public"]`,
 `tablesFilter: ["teams","games","fatigue_scores","predictions","playoff_series"]` (unchanged
 by `0007`/`0008` — see the Conventions note above), and `extensionsFilters: ["postgis"]` (the

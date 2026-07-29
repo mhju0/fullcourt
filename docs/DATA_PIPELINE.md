@@ -30,9 +30,15 @@ Steps:
    (`LeagueGameFinder`, 3 retries on timeout). On repeated timeout it logs a warning and
    continues with an empty frame. Rows are paired with `pair_games_from_date_range_df(…,
    force_skip_ot=True)` (skips per-game OT during the bulk pass) and upserted.
-4. **Refresh OT for recent finals** — `refresh_ot_lookback_finals` updates
-   `overtime_periods` for finals dated in `[today−7, today)` via `fetch_overtime_periods`
-   (bounded BoxScore calls), keeping prior-game OT accurate for fatigue.
+4. **Refresh game context for recent finals** — `scripts/fetch_game_context.ts <today−7>
+   <today> --refresh` updates `overtime_periods`, `tip_off_utc` and `neutral_site` from
+   ESPN, keeping them accurate for fatigue. `--refresh` is required: a scoreboard cached
+   while a game was still in progress carries no final line score. A failure here is
+   logged and does not fail the job — fatigue still scores without it.
+
+   This replaced a `stats.nba.com` BoxScoreSummary loop that could never have worked from
+   outside the US: `overtime_periods` sat at 0 for all 49,353 games, so the fatigue model's
+   overtime term never fired once. See ADR 0003 for the era limits of the ESPN source.
 5. **Run the Node modeling step** — `pnpm exec tsx scripts/run-daily.ts <today ET>`; a
    non-zero exit fails the job.
 
@@ -76,10 +82,21 @@ Steps:
 - Manual repair: dispatch the GitHub Actions workflow with `task=resync-schedule`
   (bypasses the season gate; the CDN geo-blocks non-US IPs, so run it from CI).
 
-### `nba_ot_periods.py` — overtime detection
+### `nba_ot_periods.py` — overtime detection (legacy)
 - `fetch_overtime_periods(game_id, delay_seconds=0.65)` calls `BoxScoreSummaryV2`, reads
   the last `PERIOD`, returns `max(0, period − 4)` (period 5 ⇒ 1 OT). Returns `0` on any
   failure. Rate-limited by a sleep before each call.
+- **`stats.nba.com` is unreachable from outside the US**, so this silently returned 0 for
+  every game. `daily_update.py` no longer uses it; `fetch_schedule.py` still imports it.
+  Overtime now comes from `fetch_game_context.ts`.
+
+### `fetch_game_context.ts` — overtime, tip-off, neutral site
+- One ESPN scoreboard call per game date returns all three: `linescores.length − 4` is the
+  overtime count, `competitions[0].date` the tip instant, `neutralSite` + `venue.address.city`
+  the neutral flag and location. Responses share `fetch_officials.ts`'s cache directory and
+  `sb-YYYYMMDD.json` naming, so dates that script already pulled cost no HTTP.
+- Backfilled 29,784 games from 2002-03: 1,750 overtime games, 28 neutral across five cities,
+  0 unmatched. Games with no line score keep their existing value rather than being forced to 0.
 
 ### `seed_teams.py` — teams + geography
 - Inserts all 30 teams (`abbreviation, name, city, conference, latitude, longitude,
@@ -248,7 +265,12 @@ per-shot" framing.
 ### `scripts/backfill_fatigue.ts` — bulk fatigue
 - Default: only games missing a home-side `fatigue_scores` row (idempotent). Optional
   `YYYY-MM-DD YYYY-MM-DD` range. `--force` wipes all `fatigue_scores` and recomputes every
-  game. Chronological order (fatigue depends on prior games).
+  game. Chronological order for readable progress; note the ordering is not a correctness
+  requirement, since `calculateFatigue` reads prior games from `games`, never from
+  `fatigue_scores`. A full `--force` run is ~4 hours against a remote Supabase (~186 games/min,
+  four round trips per game) and leaves the site without fatigue data while it runs — back up
+  `fatigue_scores` first. Batching the inserts or running games concurrently would both be
+  safe if that ever matters.
 - `assertFatigueScoresSchema` fails fast if the `0002` columns are missing.
 
 ### `scripts/backfill_predictions.ts` — resolved predictions
@@ -263,7 +285,8 @@ per-shot" framing.
 ### Shared loaders
 - `src/lib/fatigue-recent-games.ts::fetchRecentGamesForTeam` — final games in
   `[date − FATIGUE_RECENT_LOOKBACK_DAYS, date)` for a team, oldest→newest, mapped to
-  `RecentGame` (team/opponent coords, `opponentAltitudeFlag`, `overtimePeriods`).
+  `RecentGame` (team/opponent coords, `opponentAltitudeFlag`, `overtimePeriods`, `tipOffUtc`,
+  `pointMargin`, `venueAltitude`, and `venueLat`/`venueLon` for neutral-site games).
 - `src/lib/load-env-local.ts::loadEnvLocal` — merges `.env.local` into `process.env` for
   `tsx` scripts (Next env isn't auto-loaded there).
 
@@ -283,8 +306,10 @@ currentVenueLat, currentVenueLon, currentGameIsHome) → FatigueResult`.
 | `GAME_BASE_COST` | `2.65` | per-game base fatigue before decay |
 | `TRAVEL_SCALE` | `1.75` | travel load coefficient |
 | `TRAVEL_REFERENCE_MILES` | `1000` | reference distance in the log term |
-| `B2B_MULTIPLIER` | `1.38` | back-to-back multiplier |
-| `ALTITUDE_MULTIPLIER` | `1.15` | visiting-altitude multiplier (DEN/UTA) |
+| `B2B_MULTIPLIER` | `1.38` | back-to-back multiplier, at a nominal 24h turnaround |
+| `B2B_TURNAROUND_PER_HOUR` | `0.02` | adjustment per hour away from 24, clamped `[1.30, 1.46]` |
+| `ALTITUDE_MULTIPLIER` | `1.15` | visiting-altitude multiplier (DEN/UTA, Mexico City) |
+| `ALTITUDE_CARRYOVER_MULTIPLIER` | `1.06` | the night after visiting altitude |
 | `FRESHNESS_MAX_BONUS` | `-2.0` | max (most negative) rest discount |
 | `FRESHNESS_PLATEAU_DAYS` | `3` | rest-days plateau constant |
 | `OVERTIME_SINGLE_BONUS` | `0.5` | prior game = 1 OT |
@@ -293,8 +318,13 @@ currentVenueLat, currentVenueLon, currentGameIsHome) → FatigueResult`.
 | `SCHEDULE_STRESS_CURVE` | `0.058` | density slope per stress point |
 | `ROAD_STREAK_SOFT` | `2` | free consecutive away games before road load starts |
 | `ROAD_STREAK_PER_GAME` | `0.34` | road load per away game beyond the soft cap |
-| `ROAD_COAST_TO_COAST_BONUS` | `0.88` | flat add for a coast-to-coast swing |
-| `COAST_LON_SPREAD_DEG` | `26` | min longitude spread (deg) to flag a coast swing |
+| `TIME_ZONE_DISPLACEMENT_BONUS` | `0.88` | circadian add, before direction and acclimation |
+| `TIME_ZONE_DISPLACEMENT_MIN_HOURS` | `2` | min clock shift that counts as displaced |
+| `TIME_ZONE_EASTWARD_MULTIPLIER` | `1.25` | advancing the body clock is the harder direction |
+| `TIME_ZONE_WESTWARD_MULTIPLIER` | `0.85` | delaying it is easier |
+| `BLOWOUT_MARGIN_FLOOR` | `15` | margin below which no discount applies |
+| `BLOWOUT_MARGIN_RANGE` | `20` | points from floor to the full discount |
+| `BLOWOUT_MAX_DISCOUNT` | `0.25` | cap on the per-game cost discount |
 | `SAME_ARENA_MILES` | `1` | distance under which two venues count as the same |
 | `EARTH_RADIUS_MILES` | `3958.8` | haversine radius (`src/lib/haversine.ts`) |
 
@@ -332,10 +362,20 @@ only flies home when its *next* game is at home):
 **3. Road-segment load** — consecutive away games (incl. tonight when away):
 
 ```
-roadLoad = ROAD_STREAK_PER_GAME * max(0, streak - ROAD_STREAK_SOFT) + (coast ? ROAD_COAST_TO_COAST_BONUS : 0)
-         = 0.34 * max(0, streak - 2) + (coast ? 0.88 : 0)
+roadLoad = 0.34 * max(0, streak - 2) + displacementLoad
+
+displacementLoad = 0                                    // at home, or shift < 2 hours
+                 = 0.88 * direction * remaining         // otherwise
+  direction  = 1.25 travelling east, 0.85 west          // advancing the clock is harder
+  remaining  = max(0, 1 - nightsInZone / zonesCrossed)  // re-entrains ~1 day per zone
 ```
-`coast` is true when the longitude spread across home + road venues on the trip ≥ 26°.
+Zones come from a venue's **actual UTC offset**, resolved geographically from longitude
+cutoffs (each boundary placed in the empty gap between the nearest arenas), with Phoenix and
+Mexico City excluded from DST and a branch for European neutral venues. This replaced a 26°
+longitude proxy that missed 871 of 3,522 genuine two-zone road games and false-fired on 40.
+
+`hasTimeZoneDisplacement` means **jet-lagged tonight**, not "far from home" — it clears once
+`remaining` reaches 0.
 
 **4. Schedule-density (stress) multiplier** — per `WINDOW_STRESS` window, count prior games;
 if above `baseline`, add `min(1.15, (n − baseline)/(tough − baseline))` stress points; then:
@@ -345,18 +385,37 @@ densityMultiplier = 1 + min(SCHEDULE_STRESS_MAX_MULT - 1, stressPoints * SCHEDUL
                   = 1 + min(0.42, stressPoints * 0.058)          // stored as density_multiplier
 ```
 
-**5. Multipliers** — back-to-back (`daysSinceLastGame === 1` ⇒ `×1.38`) and altitude
-(visiting DEN/UTA ⇒ `×1.15`).
-
-**6. Freshness bonus** — when `daysSinceLastGame ≥ 3`:
+**5. Multipliers** — back-to-back and altitude.
 
 ```
-freshnessBonus = FRESHNESS_MAX_BONUS * (1 - exp(-daysSinceLastGame / FRESHNESS_PLATEAU_DAYS))
-               = -2.0 * (1 - e^(-daysRest / 3))                  // diminishing toward -2.0
+b2bMult = 1.0                                           // not a back-to-back
+        = clamp(1.38 + 0.02 * (24 - turnaroundHours), 1.30, 1.46)   // both tips known
+        = 1.38                                          // either tip missing (pre-2002)
+
+altMult = 1.15   visiting altitude tonight (DEN/UTA, or Mexico City at 7,350 ft)
+        = 1.06   the night AFTER visiting altitude, at a normal-elevation venue
+        = 1.0    otherwise; never for DEN/UTA leaving home (descending is the easy way)
 ```
+
+**6. Freshness bonus** — when `daysSinceLastGame ≥ 3`, anchored to start at exactly 0 on the
+plateau day:
+
+```
+freshnessBonus = -2.0 * (1 - e^(-(daysRest - 3) / 3))            // 0 at d=3, → -2.0
+```
+Previously the gate dropped this curve in at full strength, so crossing from two days' rest to
+three produced a −1.26 step out of nowhere — an artifact of the conditional, not recovery.
 
 **7. Overtime penalty** — from the **prior** game: `+1.0` if ≥ 2 OT, `+0.5` if exactly 1 OT,
-else `0`.
+else `0`. Dormant until 2026-07-30: `overtime_periods` had never been populated (see ADR 0003).
+
+**8. Blowout discount** — each game's base cost in step 1 is scaled by how lopsided it was,
+since a rout rests the starters and overtime was previously the only measure of difficulty:
+
+```
+gameCost = 2.65 * (1 - 0.25 * clamp((|margin| - 15) / 20, 0, 1))
+```
+Nothing under 15 points; ramps to a 25% cap by 35. An unknown margin charges in full.
 
 ### Final score
 
@@ -365,6 +424,10 @@ baseLoad      = decayLoad + travelLoad + roadLoad
 multiplied    = baseLoad * b2bMult * altMult * densityMult
 finalScore    = max(0, multiplied + freshnessBonus + overtimeBonus)     // rounded to 2 dp
 ```
+
+Neutral-site games (Paris, Mexico City, London, Las Vegas, Berlin) are scored as **away games
+for both teams** — neither side slept at home, so both pay the flight out and the flight back,
+and travel legs use the real venue rather than the listed host's arena.
 
 Special cases:
 - **No prior games + home tonight:** score `0` (fully rested baseline).
