@@ -117,7 +117,7 @@ flowchart TD
     vercel["Vercel cron — live scores"] --> api
 ```
 
-- **Ingest (Python):** `nba_api` and the NBA CDN feed schedules, scores, and overtime data into Postgres. A daily GitHub Actions job **self-gates on the NBA season** — it runs year-round on a fixed schedule but exits cleanly during the offseason (before touching the database or any API), so there is no cron cadence to toggle.
+- **Ingest (Python + TypeScript):** `nba_api` and the NBA CDN feed schedules and scores into Postgres; ESPN supplies overtime periods, tip-off times and neutral-site venues (`stats.nba.com` is unreachable from outside the US). A daily GitHub Actions job **self-gates on the NBA season** — it runs year-round on a fixed schedule but exits cleanly during the offseason (before touching the database or any API), so there is no cron cadence to toggle.
 - **Model (TypeScript):** a single source-of-truth fatigue engine (`src/lib/fatigue.ts`) is shared by every pipeline writer *and* every API read, so the math is never duplicated.
 - **Store:** Supabase PostgreSQL with Row-Level Security; reads run as type-safe Drizzle queries.
 - **Serve:** Next.js App Router route handlers (Zod-validated, `{ data, error }` envelope) feed a React 19 frontend using SWR and Supabase Realtime.
@@ -139,12 +139,14 @@ Each team's score combines:
 
 - **Workload** — exponential decay over the last 30 days (recent games weigh more).
 - **Travel** — log-scaled great-circle miles, with a realistic travel contract: a team only flies home when its *next* game is at home (no phantom round-trips between two road games).
-- **Back-to-backs & altitude** — multipliers for one-day rest and for visiting Denver / Utah.
+- **Back-to-backs & altitude** — a one-day-rest multiplier sharpened by the *actual* hours between tips (a 10:30pm game into a 7pm game is not the same as the reverse), plus multipliers for visiting Denver, Utah or Mexico City, and a smaller residual the night after.
 - **Schedule density** — a multi-window stress multiplier (3-in-4, 4-in-6).
-- **Road trips** — added load for long road stretches and coast-to-coast swings.
-- **Freshness & overtime** — a rest discount for extended breaks; a penalty when the prior game went to overtime.
+- **Road trips & body clock** — added load for long road stretches, plus a circadian charge for playing two or more time zones from home. It is heavier travelling east than west, and it decays as the team re-entrains, at roughly a day per zone crossed.
+- **Freshness & game difficulty** — a rest discount for extended breaks, and prior-game load weighted by how hard the game actually was: overtime adds, a blowout that rested the starters subtracts.
 
 Data spans **1985-86 to the present**, excluding the 2019-20 Orlando bubble (no real travel) and all playoff/finals games from the fatigue model (the fixed two-team series format breaks the travel assumptions).
+
+Three inputs — overtime, tip-off times and neutral sites — come from ESPN, whose coverage starts around 2002. Earlier seasons are scored by the same formula without them, which is a deliberate, documented trade rather than a silent gap: see [ADR 0003](docs/adr/0003-fatigue-inputs-limited-to-espn-era.md).
 
 ---
 
