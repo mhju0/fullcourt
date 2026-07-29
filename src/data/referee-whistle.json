@@ -1,0 +1,1289 @@
+{
+  "source": "ESPN game summaries",
+  "generated": "2026-07-29",
+  "firstSeason": "2015-16",
+  "lastSeason": "2025-26",
+  "seasonsCovered": 10,
+  "gamesCovered": 11577,
+  "gamesSkipped": 573,
+  "league": {
+    "n": 11577,
+    "homeFtaEdge": 0.62,
+    "sdHomeFtaEdge": 8.99,
+    "totalFta": 45.2,
+    "sdTotalFta": 11.2,
+    "homeWinPct": 56.4
+  },
+  "officials": [
+    {
+      "name": "Gediminas Petraitis",
+      "games": 669,
+      "homeFtaEdge": 0.35,
+      "homeFtaEdgeZ": -0.8,
+      "totalFta": 45.3,
+      "totalFtaZ": 0.3,
+      "homeWinPct": 55.9,
+      "homeWinPctZ": -0.3
+    },
+    {
+      "name": "Josh Tiven",
+      "games": 610,
+      "homeFtaEdge": 0.79,
+      "homeFtaEdgeZ": 0.5,
+      "totalFta": 45.6,
+      "totalFtaZ": 0.8,
+      "homeWinPct": 55.1,
+      "homeWinPctZ": -0.7
+    },
+    {
+      "name": "Brent Barnaky",
+      "games": 585,
+      "homeFtaEdge": 0.85,
+      "homeFtaEdgeZ": 0.6,
+      "totalFta": 44.3,
+      "totalFtaZ": -1.9,
+      "homeWinPct": 52.3,
+      "homeWinPctZ": -2
+    },
+    {
+      "name": "James Williams",
+      "games": 585,
+      "homeFtaEdge": 0.07,
+      "homeFtaEdgeZ": -1.5,
+      "totalFta": 44.8,
+      "totalFtaZ": -0.9,
+      "homeWinPct": 57.1,
+      "homeWinPctZ": 0.3
+    },
+    {
+      "name": "Brian Forte",
+      "games": 584,
+      "homeFtaEdge": 0.28,
+      "homeFtaEdgeZ": -0.9,
+      "totalFta": 44.1,
+      "totalFtaZ": -2.4,
+      "homeWinPct": 55.8,
+      "homeWinPctZ": -0.3
+    },
+    {
+      "name": "Zach Zarba",
+      "games": 583,
+      "homeFtaEdge": -0.12,
+      "homeFtaEdgeZ": -2,
+      "totalFta": 44.3,
+      "totalFtaZ": -1.8,
+      "homeWinPct": 55.9,
+      "homeWinPctZ": -0.2
+    },
+    {
+      "name": "Marc Davis",
+      "games": 576,
+      "homeFtaEdge": 0.98,
+      "homeFtaEdgeZ": 1,
+      "totalFta": 43.9,
+      "totalFtaZ": -2.8,
+      "homeWinPct": 57.3,
+      "homeWinPctZ": 0.4
+    },
+    {
+      "name": "Nick Buchert",
+      "games": 575,
+      "homeFtaEdge": 0.06,
+      "homeFtaEdgeZ": -1.5,
+      "totalFta": 45.5,
+      "totalFtaZ": 0.7,
+      "homeWinPct": 56.3,
+      "homeWinPctZ": 0
+    },
+    {
+      "name": "Karl Lane",
+      "games": 569,
+      "homeFtaEdge": 0.12,
+      "homeFtaEdgeZ": -1.3,
+      "totalFta": 45.7,
+      "totalFtaZ": 1.2,
+      "homeWinPct": 58,
+      "homeWinPctZ": 0.8
+    },
+    {
+      "name": "Tyler Ford",
+      "games": 564,
+      "homeFtaEdge": 0.97,
+      "homeFtaEdgeZ": 0.9,
+      "totalFta": 47,
+      "totalFtaZ": 3.8,
+      "homeWinPct": 56.2,
+      "homeWinPctZ": -0.1
+    },
+    {
+      "name": "Sean Wright",
+      "games": 563,
+      "homeFtaEdge": 0.52,
+      "homeFtaEdgeZ": -0.3,
+      "totalFta": 46.9,
+      "totalFtaZ": 3.6,
+      "homeWinPct": 54.4,
+      "homeWinPctZ": -1
+    },
+    {
+      "name": "Tony Brothers",
+      "games": 562,
+      "homeFtaEdge": 0.51,
+      "homeFtaEdgeZ": -0.3,
+      "totalFta": 46.5,
+      "totalFtaZ": 2.8,
+      "homeWinPct": 60,
+      "homeWinPctZ": 1.7
+    },
+    {
+      "name": "Courtney Kirkland",
+      "games": 557,
+      "homeFtaEdge": 1.5,
+      "homeFtaEdgeZ": 2.3,
+      "totalFta": 45,
+      "totalFtaZ": -0.5,
+      "homeWinPct": 54,
+      "homeWinPctZ": -1.1
+    },
+    {
+      "name": "Pat Fraher",
+      "games": 557,
+      "homeFtaEdge": 0.83,
+      "homeFtaEdgeZ": 0.6,
+      "totalFta": 45.8,
+      "totalFtaZ": 1.2,
+      "homeWinPct": 56,
+      "homeWinPctZ": -0.2
+    },
+    {
+      "name": "Justin Van Duyne",
+      "games": 556,
+      "homeFtaEdge": 1.09,
+      "homeFtaEdgeZ": 1.2,
+      "totalFta": 44.3,
+      "totalFtaZ": -1.9,
+      "homeWinPct": 55.9,
+      "homeWinPctZ": -0.2
+    },
+    {
+      "name": "Curtis Blair",
+      "games": 549,
+      "homeFtaEdge": 0.93,
+      "homeFtaEdgeZ": 0.8,
+      "totalFta": 44.2,
+      "totalFtaZ": -2,
+      "homeWinPct": 56.3,
+      "homeWinPctZ": -0.1
+    },
+    {
+      "name": "Scott Foster",
+      "games": 543,
+      "homeFtaEdge": 0.38,
+      "homeFtaEdgeZ": -0.6,
+      "totalFta": 46.1,
+      "totalFtaZ": 1.8,
+      "homeWinPct": 60.8,
+      "homeWinPctZ": 2
+    },
+    {
+      "name": "Mitchell Ervin",
+      "games": 543,
+      "homeFtaEdge": 0.84,
+      "homeFtaEdgeZ": 0.6,
+      "totalFta": 47.7,
+      "totalFtaZ": 5.1,
+      "homeWinPct": 55.6,
+      "homeWinPctZ": -0.4
+    },
+    {
+      "name": "Marat Kogut",
+      "games": 542,
+      "homeFtaEdge": 0.54,
+      "homeFtaEdgeZ": -0.2,
+      "totalFta": 46.4,
+      "totalFtaZ": 2.4,
+      "homeWinPct": 53.9,
+      "homeWinPctZ": -1.2
+    },
+    {
+      "name": "Kevin Scott",
+      "games": 540,
+      "homeFtaEdge": 0.64,
+      "homeFtaEdgeZ": 0.1,
+      "totalFta": 43.9,
+      "totalFtaZ": -2.6,
+      "homeWinPct": 56.3,
+      "homeWinPctZ": -0.1
+    },
+    {
+      "name": "Mark Lindsay",
+      "games": 538,
+      "homeFtaEdge": 0.07,
+      "homeFtaEdgeZ": -1.4,
+      "totalFta": 45.6,
+      "totalFtaZ": 0.9,
+      "homeWinPct": 56.1,
+      "homeWinPctZ": -0.1
+    },
+    {
+      "name": "Kevin Cutler",
+      "games": 537,
+      "homeFtaEdge": 1.49,
+      "homeFtaEdgeZ": 2.2,
+      "totalFta": 44,
+      "totalFtaZ": -2.5,
+      "homeWinPct": 53.3,
+      "homeWinPctZ": -1.5
+    },
+    {
+      "name": "John Goble",
+      "games": 527,
+      "homeFtaEdge": 0.14,
+      "homeFtaEdgeZ": -1.2,
+      "totalFta": 44.9,
+      "totalFtaZ": -0.6,
+      "homeWinPct": 56.4,
+      "homeWinPctZ": 0
+    },
+    {
+      "name": "Ed Malloy",
+      "games": 527,
+      "homeFtaEdge": 1.61,
+      "homeFtaEdgeZ": 2.5,
+      "totalFta": 43.9,
+      "totalFtaZ": -2.6,
+      "homeWinPct": 59,
+      "homeWinPctZ": 1.2
+    },
+    {
+      "name": "Scott Twardoski",
+      "games": 524,
+      "homeFtaEdge": 0.68,
+      "homeFtaEdgeZ": 0.2,
+      "totalFta": 45.3,
+      "totalFtaZ": 0.1,
+      "homeWinPct": 59.4,
+      "homeWinPctZ": 1.4
+    },
+    {
+      "name": "Dedric Taylor",
+      "games": 514,
+      "homeFtaEdge": 1.48,
+      "homeFtaEdgeZ": 2.2,
+      "totalFta": 46,
+      "totalFtaZ": 1.6,
+      "homeWinPct": 57.6,
+      "homeWinPctZ": 0.5
+    },
+    {
+      "name": "Ben Taylor",
+      "games": 512,
+      "homeFtaEdge": -0.1,
+      "homeFtaEdgeZ": -1.8,
+      "totalFta": 45.8,
+      "totalFtaZ": 1.3,
+      "homeWinPct": 58.2,
+      "homeWinPctZ": 0.8
+    },
+    {
+      "name": "James Capers",
+      "games": 499,
+      "homeFtaEdge": 1.45,
+      "homeFtaEdgeZ": 2.1,
+      "totalFta": 44.9,
+      "totalFtaZ": -0.5,
+      "homeWinPct": 62.1,
+      "homeWinPctZ": 2.6
+    },
+    {
+      "name": "Michael Smith",
+      "games": 494,
+      "homeFtaEdge": 1.2,
+      "homeFtaEdgeZ": 1.4,
+      "totalFta": 45.5,
+      "totalFtaZ": 0.6,
+      "homeWinPct": 60.3,
+      "homeWinPctZ": 1.8
+    },
+    {
+      "name": "Jacyn Goble",
+      "games": 494,
+      "homeFtaEdge": 0.78,
+      "homeFtaEdgeZ": 0.4,
+      "totalFta": 46.9,
+      "totalFtaZ": 3.5,
+      "homeWinPct": 58.5,
+      "homeWinPctZ": 0.9
+    },
+    {
+      "name": "Derrick Collins",
+      "games": 489,
+      "homeFtaEdge": 0.61,
+      "homeFtaEdgeZ": 0,
+      "totalFta": 44.4,
+      "totalFtaZ": -1.5,
+      "homeWinPct": 57.5,
+      "homeWinPctZ": 0.5
+    },
+    {
+      "name": "Eric Dalen",
+      "games": 489,
+      "homeFtaEdge": 0.38,
+      "homeFtaEdgeZ": -0.6,
+      "totalFta": 43.7,
+      "totalFtaZ": -2.9,
+      "homeWinPct": 56.6,
+      "homeWinPctZ": 0.1
+    },
+    {
+      "name": "Rodney Mott",
+      "games": 484,
+      "homeFtaEdge": 0.65,
+      "homeFtaEdgeZ": 0.1,
+      "totalFta": 44.9,
+      "totalFtaZ": -0.5,
+      "homeWinPct": 57.4,
+      "homeWinPctZ": 0.5
+    },
+    {
+      "name": "Tre Maddox",
+      "games": 483,
+      "homeFtaEdge": 0.64,
+      "homeFtaEdgeZ": 0.1,
+      "totalFta": 44.9,
+      "totalFtaZ": -0.6,
+      "homeWinPct": 57.3,
+      "homeWinPctZ": 0.4
+    },
+    {
+      "name": "Bill Kennedy",
+      "games": 476,
+      "homeFtaEdge": 0.14,
+      "homeFtaEdgeZ": -1.2,
+      "totalFta": 45,
+      "totalFtaZ": -0.3,
+      "homeWinPct": 55.3,
+      "homeWinPctZ": -0.5
+    },
+    {
+      "name": "Sean Corbin",
+      "games": 472,
+      "homeFtaEdge": 1.42,
+      "homeFtaEdgeZ": 1.9,
+      "totalFta": 44.9,
+      "totalFtaZ": -0.6,
+      "homeWinPct": 56.6,
+      "homeWinPctZ": 0.1
+    },
+    {
+      "name": "J.T. Orr",
+      "games": 465,
+      "homeFtaEdge": -0.38,
+      "homeFtaEdgeZ": -2.4,
+      "totalFta": 45.5,
+      "totalFtaZ": 0.6,
+      "homeWinPct": 57.6,
+      "homeWinPctZ": 0.5
+    },
+    {
+      "name": "David Guthrie",
+      "games": 456,
+      "homeFtaEdge": 0.68,
+      "homeFtaEdgeZ": 0.2,
+      "totalFta": 44.8,
+      "totalFtaZ": -0.7,
+      "homeWinPct": 55,
+      "homeWinPctZ": -0.6
+    },
+    {
+      "name": "Ray Acosta",
+      "games": 450,
+      "homeFtaEdge": 0.36,
+      "homeFtaEdgeZ": -0.6,
+      "totalFta": 44.9,
+      "totalFtaZ": -0.6,
+      "homeWinPct": 54.7,
+      "homeWinPctZ": -0.7
+    },
+    {
+      "name": "Matt Boland",
+      "games": 440,
+      "homeFtaEdge": -0.36,
+      "homeFtaEdgeZ": -2.3,
+      "totalFta": 45,
+      "totalFtaZ": -0.3,
+      "homeWinPct": 53.4,
+      "homeWinPctZ": -1.3
+    },
+    {
+      "name": "Aaron Smith",
+      "games": 432,
+      "homeFtaEdge": 0.76,
+      "homeFtaEdgeZ": 0.3,
+      "totalFta": 44.1,
+      "totalFtaZ": -2,
+      "homeWinPct": 60.2,
+      "homeWinPctZ": 1.6
+    },
+    {
+      "name": "Tom Washington",
+      "games": 412,
+      "homeFtaEdge": 0.96,
+      "homeFtaEdgeZ": 0.8,
+      "totalFta": 43.8,
+      "totalFtaZ": -2.5,
+      "homeWinPct": 59.7,
+      "homeWinPctZ": 1.3
+    },
+    {
+      "name": "Eric Lewis",
+      "games": 411,
+      "homeFtaEdge": 0.88,
+      "homeFtaEdgeZ": 0.6,
+      "totalFta": 46.8,
+      "totalFtaZ": 2.8,
+      "homeWinPct": 57.4,
+      "homeWinPctZ": 0.4
+    },
+    {
+      "name": "Leon Wood",
+      "games": 400,
+      "homeFtaEdge": 0.34,
+      "homeFtaEdgeZ": -0.6,
+      "totalFta": 44.4,
+      "totalFtaZ": -1.4,
+      "homeWinPct": 54,
+      "homeWinPctZ": -1
+    },
+    {
+      "name": "CJ Washington",
+      "games": 396,
+      "homeFtaEdge": 0.38,
+      "homeFtaEdgeZ": -0.5,
+      "totalFta": 46.2,
+      "totalFtaZ": 1.7,
+      "homeWinPct": 51.5,
+      "homeWinPctZ": -2
+    },
+    {
+      "name": "Brett Nansel",
+      "games": 394,
+      "homeFtaEdge": -0.94,
+      "homeFtaEdgeZ": -3.4,
+      "totalFta": 45.4,
+      "totalFtaZ": 0.4,
+      "homeWinPct": 61.7,
+      "homeWinPctZ": 2.1
+    },
+    {
+      "name": "Natalie Sago",
+      "games": 387,
+      "homeFtaEdge": 0.22,
+      "homeFtaEdgeZ": -0.9,
+      "totalFta": 45,
+      "totalFtaZ": -0.3,
+      "homeWinPct": 52.7,
+      "homeWinPctZ": -1.5
+    },
+    {
+      "name": "Derek Richardson",
+      "games": 380,
+      "homeFtaEdge": 0.8,
+      "homeFtaEdgeZ": 0.4,
+      "totalFta": 43.8,
+      "totalFtaZ": -2.4,
+      "homeWinPct": 56.3,
+      "homeWinPctZ": 0
+    },
+    {
+      "name": "Jason Goldenberg",
+      "games": 371,
+      "homeFtaEdge": 0.94,
+      "homeFtaEdgeZ": 0.7,
+      "totalFta": 45.8,
+      "totalFtaZ": 1,
+      "homeWinPct": 59.3,
+      "homeWinPctZ": 1.1
+    },
+    {
+      "name": "Scott Wall",
+      "games": 365,
+      "homeFtaEdge": 0.17,
+      "homeFtaEdgeZ": -1,
+      "totalFta": 45.2,
+      "totalFtaZ": 0,
+      "homeWinPct": 52.9,
+      "homeWinPctZ": -1.4
+    },
+    {
+      "name": "J.B. DeRosa",
+      "games": 363,
+      "homeFtaEdge": -0.24,
+      "homeFtaEdgeZ": -1.8,
+      "totalFta": 45.7,
+      "totalFtaZ": 0.8,
+      "homeWinPct": 58.4,
+      "homeWinPctZ": 0.8
+    },
+    {
+      "name": "Jonathan Sterling",
+      "games": 352,
+      "homeFtaEdge": 1.46,
+      "homeFtaEdgeZ": 1.8,
+      "totalFta": 44.9,
+      "totalFtaZ": -0.5,
+      "homeWinPct": 62.2,
+      "homeWinPctZ": 2.2
+    },
+    {
+      "name": "Phenizee Ransom",
+      "games": 344,
+      "homeFtaEdge": 0.07,
+      "homeFtaEdgeZ": -1.1,
+      "totalFta": 45.5,
+      "totalFtaZ": 0.5,
+      "homeWinPct": 48.5,
+      "homeWinPctZ": -2.9
+    },
+    {
+      "name": "Brandon Adair",
+      "games": 323,
+      "homeFtaEdge": 0.33,
+      "homeFtaEdgeZ": -0.6,
+      "totalFta": 43.2,
+      "totalFtaZ": -3.2,
+      "homeWinPct": 53.3,
+      "homeWinPctZ": -1.1
+    },
+    {
+      "name": "Mousa Dagher",
+      "games": 320,
+      "homeFtaEdge": -0.54,
+      "homeFtaEdgeZ": -2.3,
+      "totalFta": 45.2,
+      "totalFtaZ": 0,
+      "homeWinPct": 50.6,
+      "homeWinPctZ": -2.1
+    },
+    {
+      "name": "Tony Brown",
+      "games": 319,
+      "homeFtaEdge": 0.85,
+      "homeFtaEdgeZ": 0.5,
+      "totalFta": 46.1,
+      "totalFtaZ": 1.5,
+      "homeWinPct": 59.6,
+      "homeWinPctZ": 1.1
+    },
+    {
+      "name": "Kane Fitzgerald",
+      "games": 319,
+      "homeFtaEdge": 0.38,
+      "homeFtaEdgeZ": -0.5,
+      "totalFta": 46.9,
+      "totalFtaZ": 2.8,
+      "homeWinPct": 62.1,
+      "homeWinPctZ": 2
+    },
+    {
+      "name": "John Butler",
+      "games": 315,
+      "homeFtaEdge": 0.43,
+      "homeFtaEdgeZ": -0.4,
+      "totalFta": 44.8,
+      "totalFtaZ": -0.6,
+      "homeWinPct": 54.3,
+      "homeWinPctZ": -0.8
+    },
+    {
+      "name": "Andy Nagy",
+      "games": 314,
+      "homeFtaEdge": 0.61,
+      "homeFtaEdgeZ": 0,
+      "totalFta": 45.7,
+      "totalFtaZ": 0.8,
+      "homeWinPct": 50.6,
+      "homeWinPctZ": -2.1
+    },
+    {
+      "name": "Matt Myers",
+      "games": 305,
+      "homeFtaEdge": 0.49,
+      "homeFtaEdgeZ": -0.3,
+      "totalFta": 45.7,
+      "totalFtaZ": 0.7,
+      "homeWinPct": 58.7,
+      "homeWinPctZ": 0.8
+    },
+    {
+      "name": "Lauren Holtkamp",
+      "games": 269,
+      "homeFtaEdge": 0.79,
+      "homeFtaEdgeZ": 0.3,
+      "totalFta": 45.3,
+      "totalFtaZ": 0.1,
+      "homeWinPct": 56.9,
+      "homeWinPctZ": 0.2
+    },
+    {
+      "name": "Ken Mauer",
+      "games": 267,
+      "homeFtaEdge": -0.03,
+      "homeFtaEdgeZ": -1.2,
+      "totalFta": 47.2,
+      "totalFtaZ": 2.9,
+      "homeWinPct": 56.6,
+      "homeWinPctZ": 0
+    },
+    {
+      "name": "Evan Scott",
+      "games": 265,
+      "homeFtaEdge": 0.47,
+      "homeFtaEdgeZ": -0.3,
+      "totalFta": 44,
+      "totalFtaZ": -1.8,
+      "homeWinPct": 56.6,
+      "homeWinPctZ": 0.1
+    },
+    {
+      "name": "Mark Ayotte",
+      "games": 264,
+      "homeFtaEdge": 1.01,
+      "homeFtaEdgeZ": 0.7,
+      "totalFta": 45.8,
+      "totalFtaZ": 0.9,
+      "homeWinPct": 61.7,
+      "homeWinPctZ": 1.7
+    },
+    {
+      "name": "Nate Green",
+      "games": 256,
+      "homeFtaEdge": 0.5,
+      "homeFtaEdgeZ": -0.2,
+      "totalFta": 44,
+      "totalFtaZ": -1.7,
+      "homeWinPct": 55.9,
+      "homeWinPctZ": -0.2
+    },
+    {
+      "name": "Jenna Schroeder",
+      "games": 250,
+      "homeFtaEdge": 1.25,
+      "homeFtaEdgeZ": 1.1,
+      "totalFta": 44.1,
+      "totalFtaZ": -1.6,
+      "homeWinPct": 52.4,
+      "homeWinPctZ": -1.3
+    },
+    {
+      "name": "Ashley Moyer-Gleich",
+      "games": 247,
+      "homeFtaEdge": 0.87,
+      "homeFtaEdgeZ": 0.4,
+      "totalFta": 45.1,
+      "totalFtaZ": -0.1,
+      "homeWinPct": 54.3,
+      "homeWinPctZ": -0.7
+    },
+    {
+      "name": "Suyash Mehta",
+      "games": 243,
+      "homeFtaEdge": 1.31,
+      "homeFtaEdgeZ": 1.2,
+      "totalFta": 46.1,
+      "totalFtaZ": 1.2,
+      "homeWinPct": 54.3,
+      "homeWinPctZ": -0.7
+    },
+    {
+      "name": "Leroy Richardson",
+      "games": 239,
+      "homeFtaEdge": 1.55,
+      "homeFtaEdgeZ": 1.6,
+      "totalFta": 46.5,
+      "totalFtaZ": 1.8,
+      "homeWinPct": 56.1,
+      "homeWinPctZ": -0.1
+    },
+    {
+      "name": "Brandon Schwab",
+      "games": 239,
+      "homeFtaEdge": 0.23,
+      "homeFtaEdgeZ": -0.7,
+      "totalFta": 44.7,
+      "totalFtaZ": -0.7,
+      "homeWinPct": 53.1,
+      "homeWinPctZ": -1
+    },
+    {
+      "name": "Haywoode Workman",
+      "games": 230,
+      "homeFtaEdge": 0.96,
+      "homeFtaEdgeZ": 0.6,
+      "totalFta": 45.7,
+      "totalFtaZ": 0.6,
+      "homeWinPct": 57,
+      "homeWinPctZ": 0.2
+    },
+    {
+      "name": "Bennie Adams",
+      "games": 225,
+      "homeFtaEdge": 1.62,
+      "homeFtaEdgeZ": 1.7,
+      "totalFta": 45.4,
+      "totalFtaZ": 0.3,
+      "homeWinPct": 54.7,
+      "homeWinPctZ": -0.5
+    },
+    {
+      "name": "Mike Callahan",
+      "games": 221,
+      "homeFtaEdge": 1.32,
+      "homeFtaEdgeZ": 1.2,
+      "totalFta": 43.6,
+      "totalFtaZ": -2.1,
+      "homeWinPct": 56.6,
+      "homeWinPctZ": 0
+    },
+    {
+      "name": "Ron Garretson",
+      "games": 214,
+      "homeFtaEdge": 2.3,
+      "homeFtaEdgeZ": 2.7,
+      "totalFta": 42.5,
+      "totalFtaZ": -3.4,
+      "homeWinPct": 57.9,
+      "homeWinPctZ": 0.5
+    },
+    {
+      "name": "John Conley",
+      "games": 202,
+      "homeFtaEdge": 0.62,
+      "homeFtaEdgeZ": 0,
+      "totalFta": 45.1,
+      "totalFtaZ": -0.1,
+      "homeWinPct": 53.5,
+      "homeWinPctZ": -0.8
+    },
+    {
+      "name": "Danielle Scott",
+      "games": 195,
+      "homeFtaEdge": 0.73,
+      "homeFtaEdgeZ": 0.2,
+      "totalFta": 42.9,
+      "totalFtaZ": -2.8,
+      "homeWinPct": 54.4,
+      "homeWinPctZ": -0.6
+    },
+    {
+      "name": "Robert Hussey",
+      "games": 192,
+      "homeFtaEdge": 0.28,
+      "homeFtaEdgeZ": -0.5,
+      "totalFta": 44.7,
+      "totalFtaZ": -0.7,
+      "homeWinPct": 58.9,
+      "homeWinPctZ": 0.7
+    },
+    {
+      "name": "Jason Phillips",
+      "games": 176,
+      "homeFtaEdge": 1.44,
+      "homeFtaEdgeZ": 1.2,
+      "totalFta": 45.7,
+      "totalFtaZ": 0.6,
+      "homeWinPct": 64.2,
+      "homeWinPctZ": 2.1
+    },
+    {
+      "name": "Matt Kallio",
+      "games": 174,
+      "homeFtaEdge": 0.68,
+      "homeFtaEdgeZ": 0.1,
+      "totalFta": 45.1,
+      "totalFtaZ": -0.2,
+      "homeWinPct": 56.3,
+      "homeWinPctZ": 0
+    },
+    {
+      "name": "Che Flores",
+      "games": 159,
+      "homeFtaEdge": 0.25,
+      "homeFtaEdgeZ": -0.5,
+      "totalFta": 45.6,
+      "totalFtaZ": 0.5,
+      "homeWinPct": 47.8,
+      "homeWinPctZ": -2.2
+    },
+    {
+      "name": "Derrick Stafford",
+      "games": 157,
+      "homeFtaEdge": -1.27,
+      "homeFtaEdgeZ": -2.6,
+      "totalFta": 44.4,
+      "totalFtaZ": -0.8,
+      "homeWinPct": 49,
+      "homeWinPctZ": -1.9
+    },
+    {
+      "name": "Gary Zielinski",
+      "games": 155,
+      "homeFtaEdge": 1.82,
+      "homeFtaEdgeZ": 1.7,
+      "totalFta": 46.5,
+      "totalFtaZ": 1.4,
+      "homeWinPct": 63.2,
+      "homeWinPctZ": 1.7
+    },
+    {
+      "name": "Dannica Baroody",
+      "games": 137,
+      "homeFtaEdge": 0.83,
+      "homeFtaEdgeZ": 0.3,
+      "totalFta": 44.4,
+      "totalFtaZ": -0.9,
+      "homeWinPct": 67.2,
+      "homeWinPctZ": 2.5
+    },
+    {
+      "name": "Bill Spooner",
+      "games": 130,
+      "homeFtaEdge": 0.69,
+      "homeFtaEdgeZ": 0.1,
+      "totalFta": 45.8,
+      "totalFtaZ": 0.7,
+      "homeWinPct": 59.2,
+      "homeWinPctZ": 0.6
+    },
+    {
+      "name": "Simone Jelks",
+      "games": 127,
+      "homeFtaEdge": 0.61,
+      "homeFtaEdgeZ": 0,
+      "totalFta": 45.6,
+      "totalFtaZ": 0.4,
+      "homeWinPct": 44.9,
+      "homeWinPctZ": -2.6
+    },
+    {
+      "name": "Monty McCutchen",
+      "games": 126,
+      "homeFtaEdge": 0.88,
+      "homeFtaEdgeZ": 0.3,
+      "totalFta": 45.6,
+      "totalFtaZ": 0.4,
+      "homeWinPct": 64.3,
+      "homeWinPctZ": 1.8
+    },
+    {
+      "name": "Sha'Rae Mitchell",
+      "games": 120,
+      "homeFtaEdge": 1.02,
+      "homeFtaEdgeZ": 0.5,
+      "totalFta": 45.4,
+      "totalFtaZ": 0.2,
+      "homeWinPct": 56.7,
+      "homeWinPctZ": 0.1
+    },
+    {
+      "name": "Dan Crawford",
+      "games": 99,
+      "homeFtaEdge": 1.89,
+      "homeFtaEdgeZ": 1.4,
+      "totalFta": 45,
+      "totalFtaZ": -0.2,
+      "homeWinPct": 62.6,
+      "homeWinPctZ": 1.2
+    },
+    {
+      "name": "Intae Hwang",
+      "games": 96,
+      "homeFtaEdge": -0.7,
+      "homeFtaEdgeZ": -1.4,
+      "totalFta": 43.9,
+      "totalFtaZ": -1.1,
+      "homeWinPct": 51,
+      "homeWinPctZ": -1.1
+    },
+    {
+      "name": "Tyler Ricks",
+      "games": 89,
+      "homeFtaEdge": 0.63,
+      "homeFtaEdgeZ": 0,
+      "totalFta": 43.5,
+      "totalFtaZ": -1.4,
+      "homeWinPct": 49.4,
+      "homeWinPctZ": -1.3
+    },
+    {
+      "name": "Steven Anderson",
+      "games": 71,
+      "homeFtaEdge": 2.13,
+      "homeFtaEdgeZ": 1.4,
+      "totalFta": 48,
+      "totalFtaZ": 2.1,
+      "homeWinPct": 60.6,
+      "homeWinPctZ": 0.7
+    },
+    {
+      "name": "Jenna Reneau",
+      "games": 68,
+      "homeFtaEdge": 1.63,
+      "homeFtaEdgeZ": 0.9,
+      "totalFta": 46.5,
+      "totalFtaZ": 0.9,
+      "homeWinPct": 45.6,
+      "homeWinPctZ": -1.8
+    },
+    {
+      "name": "Pat O'Connell",
+      "games": 63,
+      "homeFtaEdge": 1.22,
+      "homeFtaEdgeZ": 0.5,
+      "totalFta": 46.9,
+      "totalFtaZ": 1.2,
+      "homeWinPct": 57.1,
+      "homeWinPctZ": 0.1
+    },
+    {
+      "name": "JB DeRosa",
+      "games": 61,
+      "homeFtaEdge": 0.36,
+      "homeFtaEdgeZ": -0.2,
+      "totalFta": 42.8,
+      "totalFtaZ": -1.7,
+      "homeWinPct": 63.9,
+      "homeWinPctZ": 1.2
+    },
+    {
+      "name": "JD Ralls",
+      "games": 61,
+      "homeFtaEdge": 0.49,
+      "homeFtaEdgeZ": -0.1,
+      "totalFta": 48.1,
+      "totalFtaZ": 2,
+      "homeWinPct": 54.1,
+      "homeWinPctZ": -0.4
+    },
+    {
+      "name": "David Jones",
+      "games": 46,
+      "homeFtaEdge": 1.11,
+      "homeFtaEdgeZ": 0.4,
+      "totalFta": 42.7,
+      "totalFtaZ": -1.5,
+      "homeWinPct": 63,
+      "homeWinPctZ": 0.9
+    },
+    {
+      "name": "Eli Roe",
+      "games": 45,
+      "homeFtaEdge": 0.24,
+      "homeFtaEdgeZ": -0.3,
+      "totalFta": 46.8,
+      "totalFtaZ": 0.9,
+      "homeWinPct": 60,
+      "homeWinPctZ": 0.5
+    },
+    {
+      "name": "J.D. Ralls",
+      "games": 45,
+      "homeFtaEdge": -3.13,
+      "homeFtaEdgeZ": -2.8,
+      "totalFta": 43.7,
+      "totalFtaZ": -0.9,
+      "homeWinPct": 44.4,
+      "homeWinPctZ": -1.6
+    },
+    {
+      "name": "Biniam Maru",
+      "games": 42,
+      "homeFtaEdge": 0.4,
+      "homeFtaEdgeZ": -0.2,
+      "totalFta": 48.8,
+      "totalFtaZ": 2.1,
+      "homeWinPct": 47.6,
+      "homeWinPctZ": -1.1
+    },
+    {
+      "name": "Brent Haskill",
+      "games": 32,
+      "homeFtaEdge": -0.25,
+      "homeFtaEdgeZ": -0.5,
+      "totalFta": 46.9,
+      "totalFtaZ": 0.9,
+      "homeWinPct": 50,
+      "homeWinPctZ": -0.7
+    },
+    {
+      "name": "Steve Anderson",
+      "games": 31,
+      "homeFtaEdge": 1.29,
+      "homeFtaEdgeZ": 0.4,
+      "totalFta": 46.3,
+      "totalFtaZ": 0.5,
+      "homeWinPct": 67.7,
+      "homeWinPctZ": 1.3
+    },
+    {
+      "name": "Tyler Mirkovich",
+      "games": 19,
+      "homeFtaEdge": -3.47,
+      "homeFtaEdgeZ": -2,
+      "totalFta": 51.6,
+      "totalFtaZ": 2.5,
+      "homeWinPct": 68.4,
+      "homeWinPctZ": 1.1
+    },
+    {
+      "name": "John Gobel",
+      "games": 16,
+      "homeFtaEdge": -2.31,
+      "homeFtaEdgeZ": -1.3,
+      "totalFta": 49.7,
+      "totalFtaZ": 1.6,
+      "homeWinPct": 50,
+      "homeWinPctZ": -0.5
+    },
+    {
+      "name": "Vladimir Voyard-Tadal",
+      "games": 10,
+      "homeFtaEdge": 4.1,
+      "homeFtaEdgeZ": 1.2,
+      "totalFta": 50.3,
+      "totalFtaZ": 1.4,
+      "homeWinPct": 70,
+      "homeWinPctZ": 0.9
+    },
+    {
+      "name": "Nate  Green",
+      "games": 9,
+      "homeFtaEdge": -4,
+      "homeFtaEdgeZ": -1.5,
+      "totalFta": 42.2,
+      "totalFtaZ": -0.8,
+      "homeWinPct": 22.2,
+      "homeWinPctZ": -2.1
+    },
+    {
+      "name": "Blanca Burns",
+      "games": 8,
+      "homeFtaEdge": 0.25,
+      "homeFtaEdgeZ": -0.1,
+      "totalFta": 45.8,
+      "totalFtaZ": 0.1,
+      "homeWinPct": 25,
+      "homeWinPctZ": -1.8
+    },
+    {
+      "name": "Nate Cearley",
+      "games": 8,
+      "homeFtaEdge": -5.25,
+      "homeFtaEdgeZ": -1.8,
+      "totalFta": 45.8,
+      "totalFtaZ": 0.1,
+      "homeWinPct": 50,
+      "homeWinPctZ": -0.4
+    },
+    {
+      "name": "Clare Simmons",
+      "games": 6,
+      "homeFtaEdge": -0.67,
+      "homeFtaEdgeZ": -0.3,
+      "totalFta": 41.3,
+      "totalFtaZ": -0.8,
+      "homeWinPct": 50,
+      "homeWinPctZ": -0.3
+    },
+    {
+      "name": "Joe Crawford",
+      "games": 5,
+      "homeFtaEdge": 4,
+      "homeFtaEdgeZ": 0.8,
+      "totalFta": 50,
+      "totalFtaZ": 1,
+      "homeWinPct": 60,
+      "homeWinPctZ": 0.2
+    },
+    {
+      "name": "Randy Richardson",
+      "games": 5,
+      "homeFtaEdge": -4.4,
+      "homeFtaEdgeZ": -1.2,
+      "totalFta": 37.2,
+      "totalFtaZ": -1.6,
+      "homeWinPct": 60,
+      "homeWinPctZ": 0.2
+    },
+    {
+      "name": "Agon Abazi",
+      "games": 4,
+      "homeFtaEdge": -0.5,
+      "homeFtaEdgeZ": -0.2,
+      "totalFta": 44,
+      "totalFtaZ": -0.2,
+      "homeWinPct": 50,
+      "homeWinPctZ": -0.3
+    },
+    {
+      "name": "Jack Nies",
+      "games": 3,
+      "homeFtaEdge": 2,
+      "homeFtaEdgeZ": 0.3,
+      "totalFta": 55.3,
+      "totalFtaZ": 1.6,
+      "homeWinPct": 66.7,
+      "homeWinPctZ": 0.4
+    },
+    {
+      "name": "Kevin Sparrock",
+      "games": 3,
+      "homeFtaEdge": 4.33,
+      "homeFtaEdgeZ": 0.7,
+      "totalFta": 49,
+      "totalFtaZ": 0.6,
+      "homeWinPct": 66.7,
+      "homeWinPctZ": 0.4
+    },
+    {
+      "name": "Gina Catanzariti",
+      "games": 3,
+      "homeFtaEdge": -5,
+      "homeFtaEdgeZ": -1.1,
+      "totalFta": 47,
+      "totalFtaZ": 0.3,
+      "homeWinPct": 100,
+      "homeWinPctZ": 1.5
+    },
+    {
+      "name": "Klajdi Mulla",
+      "games": 3,
+      "homeFtaEdge": -2.33,
+      "homeFtaEdgeZ": -0.6,
+      "totalFta": 57.7,
+      "totalFtaZ": 1.9,
+      "homeWinPct": 33.3,
+      "homeWinPctZ": -0.8
+    },
+    {
+      "name": "Chelisa Painter",
+      "games": 3,
+      "homeFtaEdge": -11,
+      "homeFtaEdgeZ": -2.2,
+      "totalFta": 42.3,
+      "totalFtaZ": -0.4,
+      "homeWinPct": 0,
+      "homeWinPctZ": -2
+    },
+    {
+      "name": "Joe Forte",
+      "games": 2,
+      "homeFtaEdge": -6.5,
+      "homeFtaEdgeZ": -1.1,
+      "totalFta": 35.5,
+      "totalFtaZ": -1.2,
+      "homeWinPct": 100,
+      "homeWinPctZ": 1.2
+    },
+    {
+      "name": "Antonio Conde",
+      "games": 2,
+      "homeFtaEdge": -12.5,
+      "homeFtaEdgeZ": -2.1,
+      "totalFta": 41.5,
+      "totalFtaZ": -0.5,
+      "homeWinPct": 100,
+      "homeWinPctZ": 1.2
+    },
+    {
+      "name": "Marcy Williams",
+      "games": 2,
+      "homeFtaEdge": -3,
+      "homeFtaEdgeZ": -0.6,
+      "totalFta": 49,
+      "totalFtaZ": 0.5,
+      "homeWinPct": 0,
+      "homeWinPctZ": -1.6
+    },
+    {
+      "name": "James Buntin",
+      "games": 1,
+      "homeFtaEdge": 0,
+      "homeFtaEdgeZ": -0.1,
+      "totalFta": 40,
+      "totalFtaZ": -0.5,
+      "homeWinPct": 100,
+      "homeWinPctZ": 0.9
+    },
+    {
+      "name": "Bernie Fryer",
+      "games": 1,
+      "homeFtaEdge": 11,
+      "homeFtaEdgeZ": 1.2,
+      "totalFta": 41,
+      "totalFtaZ": -0.4,
+      "homeWinPct": 100,
+      "homeWinPctZ": 0.9
+    },
+    {
+      "name": "Michael Borgelt",
+      "games": 1,
+      "homeFtaEdge": -10,
+      "homeFtaEdgeZ": -1.2,
+      "totalFta": 48,
+      "totalFtaZ": 0.3,
+      "homeWinPct": 100,
+      "homeWinPctZ": 0.9
+    },
+    {
+      "name": "Mark Wunderlich",
+      "games": 1,
+      "homeFtaEdge": -4,
+      "homeFtaEdgeZ": -0.5,
+      "totalFta": 54,
+      "totalFtaZ": 0.8,
+      "homeWinPct": 0,
+      "homeWinPctZ": -1.1
+    },
+    {
+      "name": "Greg Dandridge",
+      "games": 1,
+      "homeFtaEdge": -1,
+      "homeFtaEdgeZ": -0.2,
+      "totalFta": 45,
+      "totalFtaZ": 0,
+      "homeWinPct": 100,
+      "homeWinPctZ": 0.9
+    },
+    {
+      "name": "JT Orr",
+      "games": 1,
+      "homeFtaEdge": 0,
+      "homeFtaEdgeZ": -0.1,
+      "totalFta": 60,
+      "totalFtaZ": 1.3,
+      "homeWinPct": 100,
+      "homeWinPctZ": 0.9
+    },
+    {
+      "name": "Art Vaulk",
+      "games": 1,
+      "homeFtaEdge": 10,
+      "homeFtaEdgeZ": 1,
+      "totalFta": 22,
+      "totalFtaZ": -2.1,
+      "homeWinPct": 0,
+      "homeWinPctZ": -1.1
+    },
+    {
+      "name": "Isaac Barnett",
+      "games": 1,
+      "homeFtaEdge": -1,
+      "homeFtaEdgeZ": -0.2,
+      "totalFta": 57,
+      "totalFtaZ": 1.1,
+      "homeWinPct": 0,
+      "homeWinPctZ": -1.1
+    }
+  ]
+}

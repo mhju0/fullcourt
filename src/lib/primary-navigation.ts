@@ -63,7 +63,7 @@ export const OTHER_NAV_ITEMS = [
     href: "/referees",
     label: "REFEREE EFFECT",
     guideDescription:
-      "Whether referee assignments move outcomes — under construction.",
+      "See each referee's whistle against the league baseline — and how much of it is noise.",
   },
 ] as const;
 
