@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { PageHeader } from "@/components/page-header";
 import { ScheduleDisparityContentLazy } from "@/components/schedule-disparity-lazy";
+import { WinTotalMarketCheck } from "@/components/win-total-market-check";
 
 export const metadata: Metadata = {
   title: "Schedule Disparity",
@@ -16,6 +17,9 @@ export default function SchedulePage() {
       />
 
       <ScheduleDisparityContentLazy />
+
+      {/* Static and season-independent, so it lives outside the season selector's data flow. */}
+      <WinTotalMarketCheck />
     </div>
   );
 }

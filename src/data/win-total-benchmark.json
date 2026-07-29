@@ -1,0 +1,44 @@
+{
+  "source": "sportsoddshistory.com archive (hosted at covers.com)",
+  "generated": "2026-07-29",
+  "firstSeason": "1993-94",
+  "lastSeason": "2025-26",
+  "seasonsCovered": 31,
+  "teamSeasons": 884,
+  "pushes": 3,
+  "overall": {
+    "overs": 422,
+    "n": 881
+  },
+  "correlation": {
+    "r": -0.0157,
+    "n": 884
+  },
+  "buckets": [
+    {
+      "label": "+10 or better",
+      "overs": 49,
+      "n": 102
+    },
+    {
+      "label": "+5 to +9",
+      "overs": 67,
+      "n": 144
+    },
+    {
+      "label": "−4 to +4",
+      "overs": 191,
+      "n": 386
+    },
+    {
+      "label": "−9 to −5",
+      "overs": 74,
+      "n": 163
+    },
+    {
+      "label": "−10 or worse",
+      "overs": 41,
+      "n": 86
+    }
+  ]
+}
