@@ -1,8 +1,12 @@
 /**
  * FullCourt — Schedule Disparity
  *
- * Which teams a season's schedule favored, measured as **net rest edge**: the season sum of
- * (own rest days − opponent rest days) across a team's regular-season games.
+ * Which teams a season's schedule favored, headlined as **net edge games** (ratified
+ * 2026-07-29): games where the team held a fatigue advantage of at least the app-wide
+ * 0.5 call threshold, minus games where it faced one. Counts of discrete, nameable games
+ * — not a season-summed average — with a 1.5 tier for big edges. Rest-days sums remain
+ * computed internally (the cap behavior is pinned by tests and an ADR) but no longer
+ * headline the page.
  *
  * Descriptive, not predictive. This reports a property of the schedule; whether rest predicts
  * outcomes is the Rest Advantage backtest's question.
@@ -21,6 +25,14 @@
  */
 
 import { differenceInCalendarDays, parseISO } from "date-fns";
+import { NEUTRAL_REST_ADVANTAGE_THRESHOLD } from "./rest-advantage-evidence";
+
+/**
+ * A game is a "big edge" at this fatigue gap or more. One tier above the app-wide call
+ * threshold ({@link NEUTRAL_REST_ADVANTAGE_THRESHOLD}); flagged for calibration review
+ * alongside the displacement bonus.
+ */
+export const BIG_EDGE_FATIGUE_THRESHOLD = 1.5;
 
 /**
  * Rest is capped per side before differencing. The fatigue model already holds that rest stops
@@ -72,6 +84,16 @@ export interface DisparityTeamRow {
   threeInFourEdge: number;
   /** Fourth-night-in-six games avoided, same orientation. */
   fourInSixEdge: number;
+  /** Counted games with a fatigue advantage ≥ the app's 0.5 call threshold. */
+  favorableGames: number;
+  /** Counted games facing a fatigue disadvantage ≥ 0.5. */
+  unfavorableGames: number;
+  /** favorableGames − unfavorableGames: the page's headline ranking. */
+  netEdgeGames: number;
+  /** The ≥ {@link BIG_EDGE_FATIGUE_THRESHOLD} tier of favorableGames. */
+  bigFavorableGames: number;
+  /** The ≥ 1.5 tier of unfavorableGames. */
+  bigUnfavorableGames: number;
   /** Counted games where the team had more rest than its opponent. */
   gamesWithEdge: number;
   /** Counted games where that edge was LARGE_EDGE_DAYS or more. */
@@ -79,11 +101,11 @@ export interface DisparityTeamRow {
 }
 
 export interface DisparityLeagueRow {
-  /** Largest and smallest team net rest edge this season, and the spread between them. */
+  /** Largest and smallest team net edge games this season, and the spread between them. */
   largestEdge: number;
   largestDisadvantage: number;
   delta: number;
-  /** Counted games where either side held an edge / an edge of 3+ days. */
+  /** Counted games where either side's fatigue edge reached 0.5 / the 1.5 big tier. */
   gamesWithAnyEdge: number;
   gamesWithLargeEdge: number;
   /** Counted games — the denominator for the two counts above. */
@@ -246,9 +268,12 @@ export function computeScheduleDisparity(
     if (homeRest === undefined || awayRest === undefined) continue;
 
     countedGames++;
-    const edge = cap(homeRest) - cap(awayRest);
-    if (edge !== 0) gamesWithAnyEdge++;
-    if (Math.abs(edge) >= LARGE_EDGE_DAYS) leagueGamesWithLargeEdge++;
+    const fatigueGap =
+      toFatigue(g.homeFatigueScore) !== null && toFatigue(g.awayFatigueScore) !== null
+        ? Math.abs(toFatigue(g.awayFatigueScore)! - toFatigue(g.homeFatigueScore)!)
+        : null;
+    if (fatigueGap !== null && fatigueGap >= NEUTRAL_REST_ADVANTAGE_THRESHOLD) gamesWithAnyEdge++;
+    if (fatigueGap !== null && fatigueGap >= BIG_EDGE_FATIGUE_THRESHOLD) leagueGamesWithLargeEdge++;
 
     const homeDense = denseByTeam.get(g.homeTeamId)!.get(g)!;
     const awayDense = denseByTeam.get(g.awayTeamId)!.get(g)!;
@@ -290,6 +315,10 @@ export function computeScheduleDisparity(
     let fourInSixEdge = 0;
     let gamesWithEdge = 0;
     let gamesWithLargeEdge = 0;
+    let favorableGames = 0;
+    let unfavorableGames = 0;
+    let bigFavorableGames = 0;
+    let bigUnfavorableGames = 0;
 
     for (const s of teamSides) {
       const capped = cap(s.restDays) - cap(s.oppRestDays);
@@ -299,8 +328,16 @@ export function computeScheduleDisparity(
       if (capped >= LARGE_EDGE_DAYS) gamesWithLargeEdge++;
 
       if (s.fatigue !== null && s.oppFatigue !== null) {
-        fatigueSum += s.oppFatigue - s.fatigue;
+        const d = s.oppFatigue - s.fatigue;
+        fatigueSum += d;
         fatiguePairs++;
+        if (d >= NEUTRAL_REST_ADVANTAGE_THRESHOLD) {
+          favorableGames++;
+          if (d >= BIG_EDGE_FATIGUE_THRESHOLD) bigFavorableGames++;
+        } else if (d <= -NEUTRAL_REST_ADVANTAGE_THRESHOLD) {
+          unfavorableGames++;
+          if (d <= -BIG_EDGE_FATIGUE_THRESHOLD) bigUnfavorableGames++;
+        }
       }
 
       // Opponent's count minus this team's, so a positive edge means the schedule was kinder.
@@ -325,14 +362,19 @@ export function computeScheduleDisparity(
       backToBackEdge,
       threeInFourEdge,
       fourInSixEdge,
+      favorableGames,
+      unfavorableGames,
+      netEdgeGames: favorableGames - unfavorableGames,
+      bigFavorableGames,
+      bigUnfavorableGames,
       gamesWithEdge,
       gamesWithLargeEdge,
     });
   }
 
-  teams.sort((a, b) => b.netRestEdge - a.netRestEdge || a.teamId - b.teamId);
+  teams.sort((a, b) => b.netEdgeGames - a.netEdgeGames || a.teamId - b.teamId);
 
-  const edges = teams.map((t) => t.netRestEdge);
+  const edges = teams.map((t) => t.netEdgeGames);
   const largestEdge = edges.length ? Math.max(...edges) : 0;
   const largestDisadvantage = edges.length ? Math.min(...edges) : 0;
 

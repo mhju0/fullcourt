@@ -297,10 +297,15 @@ export interface ScheduleDisparityTeam {
   teamId: number;
   abbreviation: string;
   name: string;
-  /** Season sum of (own rest days − opponent rest days), each side capped at 5. */
-  netRestEdge: number;
-  /** Fatigue-score edge per counted game. Null when no counted game is scored. */
-  netFatigueEdgePerGame: number | null;
+  /** Counted games with a fatigue advantage ≥ the app's 0.5 call threshold. */
+  favorableGames: number;
+  /** Counted games facing a fatigue disadvantage ≥ 0.5. */
+  unfavorableGames: number;
+  /** favorableGames − unfavorableGames — the page's headline ranking. */
+  netEdgeGames: number;
+  /** The ≥ 1.5 "big edge" tier of each count. */
+  bigFavorableGames: number;
+  bigUnfavorableGames: number;
   /** Back-to-backs avoided relative to opponents. Positive is favorable, like every figure here. */
   backToBackEdge: number;
   /** Third-nights-in-four avoided relative to opponents. */
@@ -312,9 +317,9 @@ export interface ScheduleDisparityTeam {
  * count, and the league-wide rest distribution all shifted across the ~40 seasons.
  */
 export interface ScheduleDisparityLeague {
-  /** Spread in days between the most and least favored team. */
+  /** Spread in net edge games between the most and least favored team. */
   delta: number;
-  /** Counted games where one side held any rest edge, and where that edge reached 3+ days. */
+  /** Counted games where one side's fatigue edge reached 0.5, and the ≥1.5 big tier. */
   gamesWithAnyEdge: number;
   gamesWithLargeEdge: number;
   countedGames: number;

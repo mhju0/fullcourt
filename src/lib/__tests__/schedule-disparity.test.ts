@@ -135,9 +135,16 @@ describe("computeScheduleDisparity — invariants", () => {
     expect(uncapped).toBe(0);
   });
 
-  it("orders teams by net rest edge, most favored first", () => {
+  it("orders teams by net edge games, most favored first", () => {
     const { result } = teamsById();
-    expect(result.teams.map((t) => t.teamId)).toEqual([2, 1, 3]);
+    // T1: +1 (G4 gives it a +2 fatigue gap). T2: 0 (one favorable, one unfavorable).
+    // T3: −1 (G3's −3 gap).
+    expect(result.teams.map((t) => t.teamId)).toEqual([1, 2, 3]);
+  });
+
+  it("nets edge games to zero across the league — every favorable game is someone's unfavorable one", () => {
+    const { result } = teamsById();
+    expect(result.teams.reduce((sum, t) => sum + t.netEdgeGames, 0)).toBe(0);
   });
 
   it("is independent of the order games arrive in", () => {
@@ -149,7 +156,7 @@ describe("computeScheduleDisparity — invariants", () => {
 });
 
 describe("computeScheduleDisparity — league figures", () => {
-  it("reports the spread between the most and least favored teams", () => {
+  it("reports the spread between the most and least favored teams, in edge games", () => {
     const { result } = teamsById();
 
     expect(result.league.largestEdge).toBe(1);
@@ -157,12 +164,12 @@ describe("computeScheduleDisparity — league figures", () => {
     expect(result.league.delta).toBe(2);
   });
 
-  it("counts only games where the capped edge is non-zero", () => {
+  it("counts games with a fatigue edge at the app's 0.5 call threshold, and big edges at 1.5", () => {
     const { result } = teamsById();
 
-    // G3 has an edge; G4's edge vanishes under the cap.
-    expect(result.league.gamesWithAnyEdge).toBe(1);
-    expect(result.league.gamesWithLargeEdge).toBe(0);
+    // G3's gap is 3.0 and G4's is 2.0 — both are calls, both are big.
+    expect(result.league.gamesWithAnyEdge).toBe(2);
+    expect(result.league.gamesWithLargeEdge).toBe(2);
   });
 
   it("reports games scheduled per team, including uneven schedules", () => {
@@ -193,6 +200,56 @@ describe("computeScheduleDisparity — provisional seasons", () => {
   it("treats a live game as provisional", () => {
     const live = [...FIXTURE.slice(0, 3), game("2024-01-10", 1, 2, { status: "live" })];
     expect(computeScheduleDisparity("2023-24", live).provisional).toBe(true);
+  });
+});
+
+describe("computeScheduleDisparity — edge games (ratified 2026-07-29)", () => {
+  it("counts favorable and unfavorable games at the 0.5 threshold and nets them", () => {
+    const { byId } = teamsById();
+
+    // T2: G3 is +3 (favorable), G4 is −2 (unfavorable) → 1/1, net 0.
+    expect(byId.get(2)!.favorableGames).toBe(1);
+    expect(byId.get(2)!.unfavorableGames).toBe(1);
+    expect(byId.get(2)!.netEdgeGames).toBe(0);
+
+    expect(byId.get(1)!.netEdgeGames).toBe(1);
+    expect(byId.get(3)!.netEdgeGames).toBe(-1);
+  });
+
+  it("tiers big edges at 1.5 in both directions", () => {
+    const { byId } = teamsById();
+
+    expect(byId.get(2)!.bigFavorableGames).toBe(1); // G3, +3.0
+    expect(byId.get(2)!.bigUnfavorableGames).toBe(1); // G4, −2.0
+    expect(byId.get(1)!.bigFavorableGames).toBe(1); // G4, +2.0
+    expect(byId.get(3)!.bigUnfavorableGames).toBe(1); // G3, −3.0
+  });
+
+  it("treats exactly ±0.5 as a call and exactly ±1.5 as big, matching classifyRestAdvantage", () => {
+    const games = [
+      game("2024-01-01", 1, 2), // openers, uncounted
+      game("2024-01-03", 1, 2, { homeFatigueScore: "1.0", awayFatigueScore: "1.5" }), // +0.5 home
+      game("2024-01-05", 2, 1, { homeFatigueScore: "3.0", awayFatigueScore: "1.5" }), // +1.5 away
+    ];
+    const { teams } = computeScheduleDisparity("2023-24", games);
+    const t1 = teams.find((t) => t.teamId === 1)!;
+
+    expect(t1.favorableGames).toBe(2); // both games are calls for T1
+    expect(t1.bigFavorableGames).toBe(1); // only the second is big
+    expect(t1.netEdgeGames).toBe(2);
+  });
+
+  it("skips games without both fatigue scores rather than counting them as even", () => {
+    const games = [
+      game("2024-01-01", 1, 2),
+      game("2024-01-03", 1, 2, { homeFatigueScore: null, awayFatigueScore: "2.0" }),
+    ];
+    const { teams } = computeScheduleDisparity("2023-24", games);
+    const t1 = teams.find((t) => t.teamId === 1)!;
+
+    expect(t1.favorableGames).toBe(0);
+    expect(t1.unfavorableGames).toBe(0);
+    expect(t1.netEdgeGames).toBe(0);
   });
 });
 

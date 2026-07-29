@@ -105,7 +105,7 @@ function SurfaceGlyph({ kind }: { kind: number }) {
 
 const SURFACES = [
   { name: "Games", href: "/", copy: "Any season's slate by date, each team's fatigue score, and the rest gap between them — with live scores." },
-  { name: "Schedule Edge", href: "/schedule", copy: "Which teams a season's schedule favoured, in days of rest against their opponents. Scoped to its own season, always." },
+  { name: "Schedule Edge", href: "/schedule", copy: "Which teams a season's schedule favoured, counted in games with a real rest edge. Scoped to its own season, always." },
   { name: "Model Results", href: "/analysis", copy: "The backtest that scores the model against history: thresholds, season trends, and every individual game." },
   { name: "Playoff Predictions", href: "/playoffs", copy: "Series winners from the same rest lineage, with walk-forward accuracy shown beside in-sample." },
   { name: "Shot Value", href: "/shot-quality", copy: "Expected efficiency by court location. Public data has no defender distance — so this is location value, and we name that limit." },

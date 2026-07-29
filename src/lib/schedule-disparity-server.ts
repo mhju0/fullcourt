@@ -31,8 +31,11 @@ export async function getScheduleDisparity(
       teamId: t.teamId,
       abbreviation: team?.abbreviation ?? "—",
       name: team?.name ?? `Team ${t.teamId}`,
-      netRestEdge: t.netRestEdge,
-      netFatigueEdgePerGame: t.netFatigueEdgePerGame,
+      favorableGames: t.favorableGames,
+      unfavorableGames: t.unfavorableGames,
+      netEdgeGames: t.netEdgeGames,
+      bigFavorableGames: t.bigFavorableGames,
+      bigUnfavorableGames: t.bigUnfavorableGames,
       backToBackEdge: t.backToBackEdge,
       threeInFourEdge: t.threeInFourEdge,
     };

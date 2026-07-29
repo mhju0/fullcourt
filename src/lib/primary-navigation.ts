@@ -14,7 +14,7 @@ export const DIRECT_NAV_ITEMS = [
     // which is this site's GAMES tab. The qualifier is what blocks the wrong click.
     label: "SCHEDULE EDGE",
     guideDescription:
-      "See which teams a season's schedule favored, in days of rest against their opponents.",
+      "See which teams a season's schedule favored, counted in games with a real rest edge.",
   },
   {
     href: "/analysis",

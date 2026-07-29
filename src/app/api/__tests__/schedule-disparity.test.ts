@@ -36,8 +36,11 @@ function payload(overrides: Partial<ScheduleDisparityResponse> = {}): ScheduleDi
         teamId: 1,
         abbreviation: "LAL",
         name: "Lakers",
-        netRestEdge: 12,
-        netFatigueEdgePerGame: 0.1,
+        favorableGames: 18,
+        unfavorableGames: 11,
+        netEdgeGames: 7,
+        bigFavorableGames: 6,
+        bigUnfavorableGames: 2,
         backToBackEdge: 3,
         threeInFourEdge: 2,
       },
@@ -104,7 +107,7 @@ describe("GET /api/schedule-disparity", () => {
     expect(body.error).toBeNull();
     expect(body.data.provisional).toBe(true);
     expect(body.data.scheduledGames).toBe(1200);
-    expect(body.data.teams[0].netRestEdge).toBe(12);
+    expect(body.data.teams[0].netEdgeGames).toBe(7);
   });
 
   it("returns 500 with a public message when the query throws", async () => {

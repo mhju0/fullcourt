@@ -18,23 +18,10 @@ import type { ScheduleDisparityResponse, ScheduleDisparityTeam } from "@/types"
 const LATEST_SEASON = NBA_SEASONS[NBA_SEASONS.length - 1]
 const SEASON_OPTIONS = browsableSeasons()
 
-/** Signed whole days: +15 / −11 / 0. Matches the deviation phrasing on the Analysis charts. */
-export function formatSignedDays(days: number): string {
-  if (days === 0) return "0"
-  return `${days > 0 ? "+" : "−"}${Math.abs(days)}`
-}
-
-/**
- * Signed per-game rate to two decimals; em dash when nothing is scored yet.
- *
- * Two decimals because the whole league fits inside roughly ±0.65 — at one decimal most teams
- * would collapse onto the same handful of values.
- */
-export function formatSignedRate(rate: number | null): string {
-  if (rate === null) return "—"
-  const rounded = Math.round(rate * 100) / 100
-  if (rounded === 0) return "0.00"
-  return `${rounded > 0 ? "+" : "−"}${Math.abs(rounded).toFixed(2)}`
+/** Signed whole count: +15 / −11 / 0. Matches the deviation phrasing on the Analysis charts. */
+export function formatSignedCount(count: number): string {
+  if (count === 0) return "0"
+  return `${count > 0 ? "+" : "−"}${Math.abs(count)}`
 }
 
 /**
@@ -142,20 +129,21 @@ function ColumnGuide({ countedGames, scheduledGames }: { countedGames: number; s
           means the schedule treated this team better than the teams it played.
         </p>
         <p>
-          {term("Rest edge")} — days of rest this team had, minus the days its opponents had, added
-          up across the season. Rest counts at most five days per side, because the All-Star break
-          hands both teams about a week off and would otherwise swamp the other eighty games.
+          {term("Net edge games")} — games where this team arrived with a real rest edge, minus
+          games where its opponent did. &ldquo;Real&rdquo; means a fatigue gap of at least{" "}
+          {NEUTRAL_REST_ADVANTAGE_THRESHOLD.toFixed(1)} — the same bar the whole site uses before
+          calling an edge, on the Games page and in the backtest. Every unit is one nameable game,
+          not a season average.
         </p>
         <p>
-          {term("Fatigue edge / gm")} — the same comparison in fatigue score rather than days, so it
-          also counts travel, altitude and schedule density, and shown{" "}
-          <em>per game</em> rather than as a season total. On this scale the app already treats a
-          gap under {NEUTRAL_REST_ADVANTAGE_THRESHOLD.toFixed(1)} as too small to call, and most
-          teams sit inside that band — so read it as a nudge, not a verdict.
+          {term("Fav / Unfav")} — the two counts behind the net: games with the edge, and games
+          against it. Fatigue folds in rest, travel, altitude and schedule density, so these counts
+          can disagree with a bare day count — a team can have more rest days and still arrive more
+          tired, because it flew further to get there.
         </p>
         <p>
-          Rest edge and fatigue edge can disagree, and where they do is the interesting part: a team
-          can win the day count and still arrive more tired, because it flew further to get there.
+          {term("Big edge")} — the same net, counting only gaps of 1.5 or more. Fewer games, louder
+          signal.
         </p>
         <p>
           {term("B2B edge")} and {term("3-in-4 edge")} — back-to-backs, and third-nights-in-four,
@@ -165,7 +153,8 @@ function ColumnGuide({ countedGames, scheduledGames }: { countedGames: number; s
         <p>
           Every team plays a full schedule. This page compares the {countedGames.toLocaleString()} of{" "}
           {scheduledGames.toLocaleString()} games where <em>both</em> sides had a previous game to
-          rest from — a season opener has no rest to measure.
+          rest from — a season opener has no rest to measure. Edge games are counted from played
+          games, so a season in progress lags until its games are scored.
         </p>
       </div>
     </details>
@@ -182,7 +171,7 @@ export function ScheduleDisparityContent() {
 
   const teams: ScheduleDisparityTeam[] = data?.teams ?? []
   const bound = teams.length
-    ? Math.max(5, Math.ceil(Math.max(...teams.map((t) => Math.abs(t.netRestEdge))) / 5) * 5)
+    ? Math.max(5, Math.ceil(Math.max(...teams.map((t) => Math.abs(t.netEdgeGames))) / 5) * 5)
     : 5
 
   const most = teams[0]
@@ -229,21 +218,21 @@ export function ScheduleDisparityContent() {
         >
           <StatCell
             label="Most favored"
-            value={formatSignedDays(most.netRestEdge)}
+            value={formatSignedCount(most.netEdgeGames)}
             sub={`${most.abbreviation} · ${most.name}`}
-            tone={edgeColor(most.netRestEdge)}
+            tone={edgeColor(most.netEdgeGames)}
           />
           <StatCell
             label="Least favored"
-            value={formatSignedDays(least.netRestEdge)}
+            value={formatSignedCount(least.netEdgeGames)}
             sub={`${least.abbreviation} · ${least.name}`}
-            tone={edgeColor(least.netRestEdge)}
+            tone={edgeColor(least.netEdgeGames)}
           />
-          <StatCell label="Spread" value={String(data.league.delta)} sub="days, best to worst" />
+          <StatCell label="Spread" value={String(data.league.delta)} sub="edge games, best to worst" />
           <StatCell
             label="Games with an edge"
             value={data.league.gamesWithAnyEdge.toLocaleString()}
-            sub={`${data.league.gamesWithLargeEdge.toLocaleString()} of them by 3+ days`}
+            sub={`${data.league.gamesWithLargeEdge.toLocaleString()} of them big (1.5+)`}
           />
         </div>
       ) : null}
@@ -253,7 +242,7 @@ export function ScheduleDisparityContent() {
           className="mono"
           style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 600, textTransform: "uppercase" }}
         >
-          Net rest edge — days gained on opponents
+          Net edge games — games with a real rest edge, minus games against one
         </p>
 
         {isLoading ? (
@@ -290,17 +279,17 @@ export function ScheduleDisparityContent() {
                 <span className="mono" style={{ fontSize: 12, fontWeight: 700, color: "var(--term-text)" }}>
                   {t.abbreviation}
                 </span>
-                <EdgeBar value={t.netRestEdge} bound={bound} height={15} />
+                <EdgeBar value={t.netEdgeGames} bound={bound} height={15} />
                 <span
                   className="mono text-right"
                   style={{
                     fontSize: 12,
                     fontWeight: 700,
                     fontVariantNumeric: "tabular-nums",
-                    color: edgeColor(t.netRestEdge),
+                    color: edgeColor(t.netEdgeGames),
                   }}
                 >
-                  {formatSignedDays(t.netRestEdge)}
+                  {formatSignedCount(t.netEdgeGames)}
                 </span>
               </li>
             ))}
@@ -323,9 +312,10 @@ export function ScheduleDisparityContent() {
                   <tr>
                     <th style={{ ...termThStyle, textAlign: "left" }}>#</th>
                     <th style={{ ...termThStyle, textAlign: "left" }}>Team</th>
-                    <th style={{ ...termThStyle, textAlign: "left" }}>Rest edge</th>
-                    <th style={{ ...termThStyle, textAlign: "right" }}>Days</th>
-                    <th style={{ ...termThStyle, textAlign: "right" }}>Fatigue edge / gm</th>
+                    <th style={{ ...termThStyle, textAlign: "left" }}>Edge games</th>
+                    <th style={{ ...termThStyle, textAlign: "right" }}>Net</th>
+                    <th style={{ ...termThStyle, textAlign: "right" }}>Fav / Unfav</th>
+                    <th style={{ ...termThStyle, textAlign: "right" }}>Big edge</th>
                     <th style={{ ...termThStyle, textAlign: "right" }}>B2B edge</th>
                     <th style={{ ...termThStyle, textAlign: "right" }}>3-in-4 edge</th>
                   </tr>
@@ -344,7 +334,7 @@ export function ScheduleDisparityContent() {
                         <span style={{ color: "var(--term-text-muted)" }}>{t.name}</span>
                       </td>
                       <td style={{ ...termTdStyle, width: "30%", minWidth: 150 }}>
-                        <EdgeBar value={t.netRestEdge} bound={bound} height={11} />
+                        <EdgeBar value={t.netEdgeGames} bound={bound} height={11} />
                       </td>
                       <td
                         className="mono"
@@ -353,28 +343,34 @@ export function ScheduleDisparityContent() {
                           textAlign: "right",
                           fontVariantNumeric: "tabular-nums",
                           fontWeight: 700,
-                          color: edgeColor(t.netRestEdge),
+                          color: edgeColor(t.netEdgeGames),
                         }}
                       >
-                        {formatSignedDays(t.netRestEdge)}
+                        {formatSignedCount(t.netEdgeGames)}
+                      </td>
+                      <td
+                        className="mono whitespace-nowrap"
+                        style={{ ...termTdStyle, textAlign: "right", fontVariantNumeric: "tabular-nums", color: "var(--term-text-muted)" }}
+                      >
+                        {t.favorableGames} / {t.unfavorableGames}
                       </td>
                       <td
                         className="mono"
-                        style={{ ...termTdStyle, textAlign: "right", fontVariantNumeric: "tabular-nums", color: edgeColor(t.netFatigueEdgePerGame) }}
+                        style={{ ...termTdStyle, textAlign: "right", fontVariantNumeric: "tabular-nums", color: edgeColor(t.bigFavorableGames - t.bigUnfavorableGames) }}
                       >
-                        {formatSignedRate(t.netFatigueEdgePerGame)}
+                        {formatSignedCount(t.bigFavorableGames - t.bigUnfavorableGames)}
                       </td>
                       <td
                         className="mono"
                         style={{ ...termTdStyle, textAlign: "right", fontVariantNumeric: "tabular-nums", color: edgeColor(t.backToBackEdge) }}
                       >
-                        {formatSignedDays(t.backToBackEdge)}
+                        {formatSignedCount(t.backToBackEdge)}
                       </td>
                       <td
                         className="mono"
                         style={{ ...termTdStyle, textAlign: "right", fontVariantNumeric: "tabular-nums", color: edgeColor(t.threeInFourEdge) }}
                       >
-                        {formatSignedDays(t.threeInFourEdge)}
+                        {formatSignedCount(t.threeInFourEdge)}
                       </td>
                     </tr>
                   ))}
@@ -382,8 +378,8 @@ export function ScheduleDisparityContent() {
               </table>
             </div>
             <p style={{ marginTop: 12, fontSize: 13, color: "var(--term-text-muted)", lineHeight: 1.55 }}>
-              Positive is favorable in every column. Fatigue edge is per game and lags for games
-              that have not been played yet.
+              Positive is favorable in every column. Edge games are counted from the same fatigue
+              scores as the Games page, so a season in progress lags until its games are played.
             </p>
           </div>
 
