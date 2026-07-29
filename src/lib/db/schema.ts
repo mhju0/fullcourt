@@ -90,9 +90,7 @@ export const fatigueScores = pgTable(
     roadTripConsecutiveAway: integer("road_trip_consecutive_away").notNull().default(0),
     isThreeInFour: boolean("is_three_in_four").notNull().default(false),
     isFourInSix: boolean("is_four_in_six").notNull().default(false),
-    // TS name follows the ratified time-zone reframing; the column rename is deferred
-    // to the Phase 2 recompute migration so Phase 1 stays schema-untouched.
-    hasTimeZoneDisplacement: boolean("has_coast_to_coast_road_swing").notNull().default(false),
+    hasTimeZoneDisplacement: boolean("has_time_zone_displacement").notNull().default(false),
 
     computedAt: timestamp("computed_at").notNull().defaultNow(),
   },

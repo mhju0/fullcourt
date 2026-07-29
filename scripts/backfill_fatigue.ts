@@ -14,10 +14,12 @@
  *
  * Typical runtime: scales with game count (~30–90+ minutes for 20 seasons / ~25k+ games).
  *
- * Prerequisite — `fatigue_scores` must include columns from `drizzle/0002_fatigue_schedule_road.sql`
- * (`games_in_last_30_days`, `road_trip_consecutive_away`, `is_three_in_four`, `is_four_in_six`,
- * `has_coast_to_coast_road_swing`). If inserts fail with "column does not exist", execute that
- * migration file manually in the Supabase SQL editor against the same DATABASE_URL.
+ * Prerequisite — `fatigue_scores` must include the columns from
+ * `drizzle/0002_fatigue_schedule_road.sql` as later renamed by
+ * `drizzle/0010_rename_time_zone_displacement.sql` (`games_in_last_30_days`,
+ * `road_trip_consecutive_away`, `is_three_in_four`, `is_four_in_six`,
+ * `has_time_zone_displacement`). If inserts fail with "column does not exist", execute
+ * those migration files manually in the Supabase SQL editor against the same DATABASE_URL.
  */
 
 import { and, asc, between, eq, isNull, sql } from "drizzle-orm";
@@ -37,7 +39,7 @@ const REQUIRED_FATIGUE_COLUMNS = [
   "road_trip_consecutive_away",
   "is_three_in_four",
   "is_four_in_six",
-  "has_coast_to_coast_road_swing",
+  "has_time_zone_displacement",
 ] as const;
 
 /**
