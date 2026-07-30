@@ -6,12 +6,14 @@ import { Skeleton } from "@/components/ui/skeleton"
 import {
   buildRows,
   careerTotals,
+  franchiseOptions,
   indexPayload,
   S,
   searchKey,
   seasonLabel,
   seasonRow,
   type BrowseRow,
+  type BuildOptions,
   type PlayerRestIndex,
   type PlayerRestPayload,
   type SortKey,
@@ -152,11 +154,16 @@ export function PlayerRestContent() {
 
   const index = useMemo(() => (data ? indexPayload(data) : null), [data])
 
+  const teamOptions = useMemo(() => (index ? franchiseOptions(index.teams) : []), [index])
+
   // The ?player= link, read once at mount. Held separately from `query` so that
   // typing in the search box never re-opens a player behind the user's back.
   const [linkedName] = useState(() => readPlayerParam())
   const [year, setYear] = useState<number | "career" | null>(null)
   const [minFga, setMinFga] = useState(300)
+  const [team, setTeam] = useState("")          // "" = all teams
+  const [pos, setPos] = useState("")            // "" = all positions
+  const [evidencedOnly, setEvidencedOnly] = useState(false)
   const [query, setQuery] = useState(linkedName)
   // Key and direction are one piece of state, not two. Held apart, flipping a
   // direction meant calling setDir from inside setSort's updater — and React may
@@ -206,8 +213,11 @@ export function PlayerRestContent() {
       query: searchKey(query),
       sort: sort.key,
       dir: sort.dir,
+      team: team || null,
+      pos: (pos || null) as BuildOptions["pos"],
+      evidencedOnly,
     })
-  }, [index, activeYear, minFga, query, sort])
+  }, [index, activeYear, minFga, query, sort, team, pos, evidencedOnly])
 
   if (error) {
     return (
@@ -261,6 +271,38 @@ export function PlayerRestContent() {
           ))}
         </select>
 
+        <label className="mono text-[10px] uppercase tracking-[0.08em] text-[var(--term-text-muted)]" htmlFor="pr-team">
+          Team
+        </label>
+        <select
+          id="pr-team"
+          className={termSelectClass}
+          style={termSelectStyle}
+          value={team}
+          onChange={(e) => setTeam(e.target.value)}
+        >
+          <option value="">All teams</option>
+          {teamOptions.map((o) => (
+            <option key={o.value} value={o.value}>{o.label}</option>
+          ))}
+        </select>
+
+        <label className="mono text-[10px] uppercase tracking-[0.08em] text-[var(--term-text-muted)]" htmlFor="pr-pos">
+          Position
+        </label>
+        <select
+          id="pr-pos"
+          className={termSelectClass}
+          style={termSelectStyle}
+          value={pos}
+          onChange={(e) => setPos(e.target.value)}
+        >
+          <option value="">All positions</option>
+          <option value="G">Guards</option>
+          <option value="F">Forwards</option>
+          <option value="C">Centers</option>
+        </select>
+
         <input
           type="search"
           value={query}
@@ -270,6 +312,16 @@ export function PlayerRestContent() {
           className="mono min-w-[190px] bg-[var(--term-surface)] px-3 py-1.5 text-[12px] text-[var(--term-text)] placeholder:text-[var(--term-text-muted)]"
           style={{ border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }}
         />
+
+        <label className="mono flex cursor-pointer items-center gap-1.5 text-[10px] uppercase tracking-[0.08em] text-[var(--term-text-muted)]">
+          <input
+            type="checkbox"
+            checked={evidencedOnly}
+            onChange={(e) => setEvidencedOnly(e.target.checked)}
+            style={{ accentColor: "var(--term-blue)" }}
+          />
+          Hide noisy rows
+        </label>
 
         <span className="mono ml-auto text-[10px] uppercase tracking-[0.08em] text-[var(--term-text-muted)]">
           {rows.length.toLocaleString()}{" "}
