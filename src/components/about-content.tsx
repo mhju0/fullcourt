@@ -192,16 +192,21 @@ export function AboutContent({ stats }: { stats: AboutStats }) {
         gsap.from(".fc-hero-in", { y: 30, opacity: 0, duration: 1.1, stagger: 0.12, ease: "power3.out" });
 
         // Scrubbing reveal: words brighten in sequence as the sentence is read past.
-        // `end` is measured off the section's CENTER, not its bottom. Ending on "bottom 45%"
-        // meant the last word only lit once the element's bottom had climbed to mid-viewport
-        // — by which point the paragraph's top was already scrolled off — so the sentence was
-        // still finishing after the reader had left it. Centre-based, it completes while the
-        // whole paragraph is on screen.
+        //
+        // Only `end` controls when the last word lands. Under scrub the whole stagger timeline
+        // is normalised across the scroll span, so raising or lowering `stagger` changes the
+        // spacing of the wave but never its finish — the final word always lights exactly at
+        // the end trigger. This previously ended on "center 55%", which resolves to the
+        // section's top reaching 5% of the viewport: the sentence only completed once it was
+        // dead centre, so the reader arrived at a paragraph that was still lighting up.
+        //
+        // "top 25%" finishes it while the sentence sits about three-quarters down the screen,
+        // so it is fully lit on arrival and centring it is the reward rather than the trigger.
         gsap.to(".fc-word", {
           opacity: 1,
           stagger: 0.5,
           ease: "none",
-          scrollTrigger: { trigger: ".fc-thesis", start: "top 80%", end: "center 55%", scrub: true },
+          scrollTrigger: { trigger: ".fc-thesis", start: "top 80%", end: "top 25%", scrub: true },
         });
 
         gsap.utils.toArray<HTMLElement>(".fc-rise").forEach((el) => {
@@ -267,8 +272,10 @@ export function AboutContent({ stats }: { stats: AboutStats }) {
 
       {/* ── 2. Why it matters ─────────────────────────────────── */}
       <section className={`fc-thesis mx-auto max-w-5xl px-6 ${VIEW}`}>
-        <p className="font-heading font-medium" style={{ fontSize: "clamp(1.5rem,3.6vw,2.9rem)", lineHeight: 1.28, letterSpacing: "-0.02em" }}>
-          {"A back-to-back in Denver is not the same game as three days rest at home. The schedule decides part of the result, and it does it quietly."
+        {/* Larger than the old copy carried: at ten words this has to hold a whole screen,
+            where the previous twenty-four-word version filled it by length alone. */}
+        <p className="font-heading font-medium" style={{ fontSize: "clamp(2.1rem,5.6vw,4.4rem)", lineHeight: 1.15, letterSpacing: "-0.03em" }}>
+          {"Every game starts uneven. The schedule decided that months ago."
             .split(" ")
             .map((w, i) => (
               <span key={i} className="fc-word" style={{ opacity: 0.12 }}>
@@ -278,40 +285,7 @@ export function AboutContent({ stats }: { stats: AboutStats }) {
         </p>
       </section>
 
-      {/* ── 3. What the score is made of ──────────────────────── */}
-      <section className={`mx-auto w-full max-w-7xl px-6 ${VIEW}`}>
-        <div className="grid gap-12 lg:grid-cols-[22rem_1fr] lg:gap-20">
-          <div className="lg:sticky lg:top-32 lg:self-start">
-            <h2 className="font-heading font-bold" style={{ fontSize: "clamp(1.9rem,4.4vw,3.2rem)", letterSpacing: "-0.03em", lineHeight: 1.05 }}>
-              What the score is made of
-            </h2>
-            <p className="mt-6 max-w-sm" style={{ color: DIM, lineHeight: 1.65 }}>
-              Six measurements of the same night, combined into one number per team. Each is a
-              physical fact about the schedule, not a rating of the roster.
-            </p>
-          </div>
-
-          <ol className="flex flex-col">
-            {INPUTS.map((input, i) => (
-              <li
-                key={input.term}
-                className="fc-rise grid grid-cols-[2.5rem_1fr] items-baseline gap-x-5 py-6"
-                style={{ borderTop: i === 0 ? undefined : "1px solid rgba(245,241,232,.12)" }}
-              >
-                <span className="mono" style={{ fontSize: 11, letterSpacing: "0.1em", color: "rgba(245,241,232,.3)" }}>
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                <div>
-                  <h3 className="font-heading text-xl font-bold">{input.term}</h3>
-                  <p className="mt-2 max-w-[54ch]" style={{ color: DIM, lineHeight: 1.6 }}>{input.detail}</p>
-                </div>
-              </li>
-            ))}
-          </ol>
-        </div>
-      </section>
-
-      {/* ── 4. What it found ──────────────────────────────────── */}
+      {/* ── 3. What it found ──────────────────────────────────── */}
       <section className={`mx-auto w-full max-w-7xl px-6 ${VIEW}`}>
         <h2 className="font-heading font-bold" style={{ fontSize: "clamp(1.9rem,4.4vw,3.2rem)", letterSpacing: "-0.03em", maxWidth: "20ch" }}>
           Evidence, not just the eye test
@@ -354,7 +328,7 @@ export function AboutContent({ stats }: { stats: AboutStats }) {
         </div>
       </section>
 
-      {/* ── 5. Where to use it ────────────────────────────────── */}
+      {/* ── 4. Where to use it ────────────────────────────────── */}
       <section className={`mx-auto w-full max-w-7xl px-6 ${VIEW}`}>
         <h2 className="font-heading mb-12 font-bold" style={{ fontSize: "clamp(1.9rem,4.4vw,3.2rem)", letterSpacing: "-0.03em" }}>
           {COUNT_WORD[SURFACES.length]} surfaces
@@ -391,6 +365,39 @@ export function AboutContent({ stats }: { stats: AboutStats }) {
             </Link>
           ))}
         </nav>
+      </section>
+
+      {/* ── 5. What the score is made of ──────────────────────── */}
+      <section className={`mx-auto w-full max-w-7xl px-6 ${VIEW}`}>
+        <div className="grid gap-12 lg:grid-cols-[22rem_1fr] lg:gap-20">
+          <div className="lg:sticky lg:top-32 lg:self-start">
+            <h2 className="font-heading font-bold" style={{ fontSize: "clamp(1.9rem,4.4vw,3.2rem)", letterSpacing: "-0.03em", lineHeight: 1.05 }}>
+              What the score is made of
+            </h2>
+            <p className="mt-6 max-w-sm" style={{ color: DIM, lineHeight: 1.65 }}>
+              Six measurements of the same night, combined into one number per team. Each is a
+              physical fact about the schedule, not a rating of the roster.
+            </p>
+          </div>
+
+          <ol className="flex flex-col">
+            {INPUTS.map((input, i) => (
+              <li
+                key={input.term}
+                className="fc-rise grid grid-cols-[2.5rem_1fr] items-baseline gap-x-5 py-6"
+                style={{ borderTop: i === 0 ? undefined : "1px solid rgba(245,241,232,.12)" }}
+              >
+                <span className="mono" style={{ fontSize: 11, letterSpacing: "0.1em", color: "rgba(245,241,232,.3)" }}>
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <div>
+                  <h3 className="font-heading text-xl font-bold">{input.term}</h3>
+                  <p className="mt-2 max-w-[54ch]" style={{ color: DIM, lineHeight: 1.6 }}>{input.detail}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </div>
       </section>
 
       {/* ── 6. The standard ───────────────────────────────────── */}
