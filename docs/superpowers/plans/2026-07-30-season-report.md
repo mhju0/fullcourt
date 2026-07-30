@@ -39,7 +39,8 @@ Every task's requirements implicitly include this section.
 | `src/components/season-report-lazy.tsx` | **Create.** Skeleton. |
 | `src/components/season-report-content.tsx` | **Create.** Selector, tiles, and all seven sections. |
 | `src/lib/primary-navigation.ts` | **Modify.** Sixth `DIRECT_NAV_ITEMS` entry. |
-| `e2e/about.spec.ts` | **Modify.** Nav link count 5 → 6, two places. |
+| `src/components/about-content.tsx` | **Modify.** Sixth entry in the hand-maintained `SURFACES` array, which `/about` renders and one of the specs counts. |
+| `e2e/about.spec.ts` | **Modify.** Two count assertions 5 → 6 — they count two *different* lists; see Task 5 Step 2. |
 | `e2e/season.spec.ts` | **Create.** Smoke test. |
 | `src/app/page.tsx` | **Modify.** Repoint `OffSeasonBanner` to `/season`, drop the season count. |
 
@@ -1402,9 +1403,22 @@ In `src/lib/primary-navigation.ts`, insert as the **second** `DIRECT_NAV_ITEMS` 
 
 Second, not last: a reader who has just looked at today's games is one step from the season those games belong to. Moving it is a one-line change if the order reads wrong on screen.
 
-- [ ] **Step 2: Update the two nav count assertions**
+- [ ] **Step 2: Update the two count assertions — and the list one of them counts**
 
-`e2e/about.spec.ts` asserts the nav has exactly five links, in two places. Change both `toHaveCount(5)` to `toHaveCount(6)`.
+`e2e/about.spec.ts` has two `toHaveCount(5)` assertions, and they count **different lists**. Both become 6, but only one of them updates for free:
+
+- **Line 47** counts `navigation[name="Main navigation"]`, rendered from `DIRECT_NAV_ITEMS`. Step 1 already took it to six. Change the number and you are done.
+- **Line 17** counts `navigation[name="Product surfaces"]` on `/about`, which is the hand-maintained `SURFACES` array in `src/components/about-content.tsx:122-128` — **not** derived from `DIRECT_NAV_ITEMS`. Changing the assertion alone makes the test fail, because the array still holds five entries.
+
+So `src/components/about-content.tsx` is also a Modify target for this task. Add the new surface as the **second** `SURFACES` entry, mirroring the nav order:
+
+```ts
+  { name: "Season Report", href: "/season", copy: "One season read end to end: how the rest call scored against its own history, which teams turned a rest edge into wins, and what the schedule asked of each of them." },
+```
+
+The comment directly below that array states the list "names the five tabs in the nav bar" and warns about the page claiming "six surfaces while the bar showed five". Update both numbers so it stays true — that comment exists precisely to catch this drift, and leaving it stale defeats it.
+
+Then in `e2e/about.spec.ts`: both `toHaveCount(5)` → `toHaveCount(6)`, and add `"Season Report"` as the second entry of the `for (const name of [...])` list so the card order is asserted too.
 
 Do not touch `e2e/onboarding.spec.ts`: its copy must never state a count, because the guide renders all of `PRIMARY_NAV_ITEMS`.
 
