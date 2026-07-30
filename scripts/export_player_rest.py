@@ -41,7 +41,7 @@ import json
 import math
 import os
 import sys
-from collections import defaultdict
+from collections import Counter, defaultdict
 from datetime import date
 from pathlib import Path
 
@@ -139,6 +139,25 @@ def main() -> int:
         ])
     seasons.sort(key=lambda r: (r[0], r[1]))
 
+    # ── modal position, from started games only ────────────────────────────────
+    # The box-score position column is filled only for the five starters, so this is
+    # "what he plays when he starts". 86% of players ever started; the rest export ""
+    # and appear only under the page's "All positions". Ties break toward the position
+    # he started most recently, via the lexicographic order of NBA game ids.
+    pos_count: dict[str, Counter] = defaultdict(Counter)
+    pos_last: dict[tuple[str, str], str] = {}
+    for r in rows:
+        if r.get("pos"):
+            pos_count[r["pid"]][r["pos"]] += 1
+            key = (r["pid"], r["pos"])
+            pos_last[key] = max(pos_last.get(key, ""), r["gid"])
+    pos = [""] * len(names)
+    for pid, i in nix.items():
+        c = pos_count.get(pid)
+        if c:
+            pos[i] = max(c, key=lambda p: (c[p], pos_last[(pid, p)]))
+    assert len(pos) == len(names)
+
     # ── career deltas, then empirical-Bayes shrinkage over the whole pool ──────
     # A player with 250 attempts per arm carries a standard error near 4pp, so the
     # extremes of a raw ranking are noise rather than talent. Weighting by
@@ -168,6 +187,7 @@ def main() -> int:
         "generated": date.today().isoformat(),
         "names": names,
         "teams": teams,
+        "pos": pos,
         "seasons": seasons,
         "shrunk": shrunk,
     }
@@ -177,6 +197,8 @@ def main() -> int:
     yrs = sorted({r[1] for r in seasons})
     print(f"{len(names):,} players · {len(seasons):,} player-seasons · "
           f"{len(shrunk):,} with a career estimate")
+    have = sum(1 for p in pos if p)
+    print(f"positions for {have:,}/{len(pos):,} players ({have / len(pos):.1%}; blank = never started)")
     # 2019-20 is present from 2026-07-30, minus its bubble games. It was absent for as long as
     # `games` had no rows for the season at all, and the check used to assert that absence.
     print(f"seasons {yrs[0]}-{yrs[-1]}, {len(yrs)} of them "
