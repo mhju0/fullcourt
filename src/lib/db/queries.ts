@@ -27,6 +27,7 @@ import {
   teams,
 } from "./schema";
 import type { DisparityGameRow } from "@/lib/schedule-disparity";
+import { ABNORMAL_STRETCHES } from "@/lib/season-regime";
 import {
   formatEasternDateKey,
   intersectDateBounds,
@@ -101,13 +102,26 @@ function latestFatigueLateral(
 }
 
 /**
- * NBA regular-season calendar window (Oct 1 → Apr 30) for the season label on each row.
- * Excludes May/June playoff dates that may be mis-tagged as regular in source data.
+ * The season-regime policy in SQL: exclude games inside a named abnormal stretch, and nothing
+ * else. Correlated per row, so it works on queries spanning many seasons.
+ *
+ * Replaced an "October 1 to April 30" window that reached the right answer for the 2019-20
+ * bubble by coincidence and the wrong one for two shifted seasons — it dropped 135 real
+ * 2020-21 games and 44 from 1998-99, with no mis-tagged playoff rows anywhere in the data to
+ * justify the cost. `game_type = 'regular'` already does the job that window was nominally for.
+ *
+ * With an empty stretch list this is `true`, which is the correct no-op.
  */
-const gameDateWithinRegularSeasonCalendar = sql`
-  ${games.date} >= to_date(left(${games.season}, 4) || '-10-01', 'YYYY-MM-DD')
-  AND ${games.date} <= to_date((left(${games.season}, 4)::integer + 1)::text || '-04-30', 'YYYY-MM-DD')
-`;
+const gameIsNormallyPlayed =
+  ABNORMAL_STRETCHES.length === 0
+    ? sql`true`
+    : sql.join(
+        ABNORMAL_STRETCHES.map(
+          (stretch) =>
+            sql`NOT (${games.season} = ${stretch.season} AND ${games.date} BETWEEN ${stretch.from} AND ${stretch.to})`
+        ),
+        sql` AND `
+      );
 
 async function getTeamGameCountsInDaysBefore(
   gameDateYmd: string,
@@ -520,7 +534,7 @@ export async function getCompletedGamesWithFatigue(): Promise<HistoricalGameEvid
         eq(games.gameType, "regular"),
         isNotNull(games.homeScore),
         isNotNull(games.awayScore),
-        gameDateWithinRegularSeasonCalendar
+        gameIsNormallyPlayed
       )
     );
 }
@@ -552,7 +566,7 @@ export async function searchRegularSeasonGames(
     eq(games.gameType, "regular"),
     isNotNull(games.homeScore),
     isNotNull(games.awayScore),
-    gameDateWithinRegularSeasonCalendar,
+    gameIsNormallyPlayed,
     // The search route always discards neutral games (|rest advantage| < 0.5).
     // Exclude them in SQL so an unfiltered search doesn't scan+join ~all ~46k
     // regular games only to drop half of them in JS. A higher minRA below raises
@@ -751,7 +765,7 @@ export async function getUpcomingGamesWithRA(
     eq(games.gameType, "regular"),
     eq(games.status, "scheduled"),
     gte(games.date, todayStr),
-    gameDateWithinRegularSeasonCalendar,
+    gameIsNormallyPlayed,
   ];
 
   if (minRA > 0) {

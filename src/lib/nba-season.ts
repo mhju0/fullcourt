@@ -62,9 +62,28 @@ export function parseSeasonStartYear(season: string): number {
 /**
  * Regular season spans Oct 1 (start year) through Apr 30 (start year + 1).
  */
+/**
+ * The calendar window a season's regular-season games occupy: October 1 through April 30.
+ *
+ * This is the project's single **season-regime policy** — the answer to "which games of a
+ * season may a model read". It matters beyond tidiness because it is what separates a
+ * normally-played stretch from an abnormal one inside the same season label: the 2019-20
+ * Orlando bubble ran 30 Jul – 11 Oct 2020, so it falls outside this window and is excluded
+ * by the same rule that drops mis-tagged May/June playoff dates.
+ *
+ * The rule was previously written twice — here in TypeScript and again by hand in SQL in
+ * `db/queries.ts` — and applied to only some readers, which is how a policy decision ends up
+ * enforced at ingest instead. Both expressions now derive from these two constants.
+ */
+export const REGULAR_SEASON_START_MONTH_DAY = "10-01";
+export const REGULAR_SEASON_END_MONTH_DAY = "04-30";
+
 export function regularSeasonDateBounds(season: string): { from: string; to: string } {
   const y = parseSeasonStartYear(season);
-  return { from: `${y}-10-01`, to: `${y + 1}-04-30` };
+  return {
+    from: `${y}-${REGULAR_SEASON_START_MONTH_DAY}`,
+    to: `${y + 1}-${REGULAR_SEASON_END_MONTH_DAY}`,
+  };
 }
 
 /** Local calendar date as YYYY-MM-DD. Avoids UTC shifts from Date#toISOString(). */
