@@ -16,17 +16,19 @@ URL-reflected view state
 thesis block ([#3](https://github.com/mhju0/fullcourt/issues/3)), and extracting the three
 duplicated presentational components ([#5](https://github.com/mhju0/fullcourt/issues/5)).
 
-On 2026-07-27 the nav was renamed to five plain-noun tabs — `GAMES`, `SCHEDULE EDGE`,
-`MODEL RESULTS`, `PLAYOFF PREDICTIONS`, `SHOT VALUE` — and `/upcoming` was folded into `GAMES`
-as a view toggle rather than kept as a sixth tab. Module names are unchanged; see
+On 2026-07-27 the nav was renamed to five plain-noun tabs and `/upcoming` was folded into
+`GAMES` as a view toggle rather than kept as a sixth tab. The five are now `GAMES`,
+`SCHEDULE EDGE`, `MODEL RESULTS`, `PLAYOFF PREDICTIONS` and `PLAYER SHOOTING`; `SHOT VALUE`
+and `REFEREE EFFECT` live behind the `OTHER` menu. Module names are unchanged; see
 [GLOSSARY.md §Nav labels](GLOSSARY.md) for the label-by-label rationale.
 
 On 2026-07-28 an interface pass followed: **Space Grotesk** replaced Outfit as the display
 face at weight 500, and all five pages took the same layout grammar — 32px page titles, a
 `gap-12` rhythm between chapters, and stat tiles ruled on the top edge rather than the left.
 See [FRONTEND.md §Page rhythm](FRONTEND.md). The same pass added **`/about`**, a dark landing
-page that explains what the product measures; it is not a sixth tab, and is reached from the
-status bar and the footer.
+page that explains what the product measures. It is still not a tab, but as of 2026-07-30 it
+is reached from a right-aligned `Reference` landmark in the nav row rather than the status
+bar, which proved too quiet to be found.
 
 Two directions were considered and **declined**, so they are not backlog:
 - Restyling the five app pages in the dark cinematic aesthetic used by `/about` — it would
@@ -37,7 +39,8 @@ Two directions were considered and **declined**, so they are not backlog:
 The dependency tree is deliberately pinned; see
 [SEASON_ROLLOVER.md §8](SEASON_ROLLOVER.md) before regenerating the lockfile, and §7 for the
 season counts and frozen `/about` figures that do not derive themselves. **`gsap` is the one
-runtime dependency added since the freeze** (2026-07-28, for `/about` only). It is imported
+runtime dependency added since the freeze** (2026-07-28, for `/about` only; still the only
+one as of 2026-07-30). It is imported
 inside an effect so it stays out of the shared bundle, and `@gsap/react` was deliberately not
 added alongside it.
 
@@ -53,8 +56,8 @@ added alongside it.
 - **Shot Quality** — complete collection, aggregation, model evaluation, persisted expected-value
   surface, API, and `/shot-quality` UI. Public data supports location value, not defender- or
   shot-clock-aware quality; see [SHOT_QUALITY_DESIGN.md](SHOT_QUALITY_DESIGN.md).
-- **Schedule Disparity** — which teams a season's schedule favored, ranked by net rest edge in
-  days, at `/schedule`. The most isolated module: **read-only**, no migration, no table, no
+- **Schedule Disparity** — which teams a season's schedule favored, ranked by **net edge
+  games** at `/schedule` (the days-based rest edge was retired 2026-07-30). The most isolated module: **read-only**, no migration, no table, no
   ingest. Every figure is scoped to its own season — there is deliberately no cross-era ranking.
   Verified against the live database on 2026-07-27. See
   [the design spec](superpowers/specs/2026-07-27-schedule-disparity-design.md) and
@@ -72,4 +75,47 @@ added alongside it.
 - Preserve the isolation of each analytics module and the existing rest-advantage naming
   contract.
 
+## 2026-07-29 → 30 — the fatigue overhaul
 
+A second audit of `src/lib/fatigue.ts` found ten defects and all but one were fixed. The three
+that mattered most:
+
+- **The overtime term had never fired.** `games.overtime_periods` read 0 for all 49,353 games,
+  because its only loader used `stats.nba.com`, which is unreachable from outside the US. It is
+  now sourced from ESPN by `scripts/fetch_game_context.ts`.
+- **Time zones were approximated by a 26° longitude test**, which missed 871 of 3,522 genuine
+  two-zone road trips and false-fired on 40. Zones are now resolved from real UTC offsets.
+- **Neutral-site games were geolocated at the listed host's arena.** They are now scored as away
+  games for *both* teams, at the venue they actually travelled to.
+
+Also added: turnaround hours sharpening the back-to-back multiplier, acclimation decay and an
+eastward/westward asymmetry on the circadian term, a blowout discount on prior-game load, a
+continuous freshness curve, and an altitude carryover. Cumulative season load was considered
+and **declined**. Migration `0011` added `tip_off_utc`, `neutral_site` and
+`neutral_venue_city`. See [ADR 0003](adr/0003-fatigue-inputs-limited-to-espn-era.md) for the
+era limits of the ESPN source, and [DATA_PIPELINE.md](DATA_PIPELINE.md) for the revised formula.
+
+**Read the result honestly.** Published tier win rates rose about a point, but on games both
+the old and new model call, accuracy moved 0.15pp and the two pick the same team 98.8% of the
+time. The gain is the new model *declining* 2,661 games the old one called at below a coin
+flip. That is better selectivity, not better prediction.
+
+Single-term ablations, holding the sample fixed: recent workload −1.59pp, back-to-backs
+−0.90pp, travel −0.35pp, road segment −0.15pp, and altitude, overtime and freshness at roughly
+nothing, with schedule density very slightly harmful. The model is essentially recent workload
+plus back-to-backs. The four terms that earn nothing are kept because they are physically real
+and correctly computed, which is a different claim from being useful.
+
+## 2026-07-29 → 30 — surfaces
+
+- **Referee Effect** shipped 2026-07-29 at `/referees`, then was **reduced to a placeholder on
+  2026-07-30**. Its central question — does any referee tilt the whistle home? — came back
+  inside noise, and a table of muted cells invites readers to find names in it anyway. The
+  ingest (`scripts/fetch_officials.ts`) and its dataset test are deliberately left in place so
+  the page can return without a re-ingest.
+- **Behind the Data** added 2026-07-30: a seven-route reference section documenting every
+  model's terms, constants and limits, reached from the nav row's `Reference` landmark and from
+  a `HOW THIS IS CALCULATED` link on each product page.
+- **`/about` rebuilt** 2026-07-30 as seven full-viewport sections. Its evidence figures are now
+  read from the live backtest rather than hardcoded — all three had gone stale, one of them
+  citing a metric that had been retired.

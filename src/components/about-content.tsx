@@ -257,12 +257,15 @@ export function AboutContent({ stats }: { stats: AboutStats }) {
             Rest is a stat
           </h1>
           {/* Mechanism-led, to complete the headline: if the h1 asserts that rest is a stat,
-              the line under it should name what the stat is made of.
+              the line under it should name what the stat is made of. "Days off" rather than
+              "rest": the headline already uses "rest" for the whole idea, so repeating it here
+              for one specific input would have the pair saying rest is a stat, and also one of
+              three ingredients in that stat.
               The start season is derived rather than typed, and it is a start date rather
               than a count on purpose — the evidence section already carries "40 seasons", so
               repeating the count here would spend the same beat twice. */}
           <p className="fc-hero-in mx-auto mt-8 max-w-xl" style={{ color: DIM, fontSize: "1.05rem", lineHeight: 1.65 }}>
-            Travel, rest and schedule density — scored for every team in every game since{" "}
+            Travel, days off and schedule density — scored for every team in every game since{" "}
             {NBA_SEASONS[0]}.
           </p>
         </div>

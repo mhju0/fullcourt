@@ -1,4 +1,14 @@
 # Shot Quality Model — Design & Build Record
+> **Reader-facing version:** [`/behind-the-data/shot-value`](../src/app/behind-the-data/shot-value/page.tsx)
+> states the same model in plain terms — the two surfaces, the zone baseline it is measured
+> against, and the defender data public sources do not carry.
+>
+> Verified against the live database on 2026-07-30: `shot_grid` spans `cell_x` −25→24 and
+> `cell_y` −5→41, i.e. **one-foot cells over a half court**, across **30 seasons**
+> (1996-97 … 2025-26); `shot_value_surface` holds 55,036 rows for each of `gbm-v1` and
+> `baseline-zone-v1`. The `/shot-quality` page still exists and is unchanged, but as of
+> 2026-07-27 it is reached through the nav's **OTHER** menu rather than a direct tab.
+
 
 > **Local working artifacts.** Citations to files under `ml/` (probe dumps,
 > `*_metrics.txt`, `sq5_*.txt`) and `docs/audit/` refer to unpublished analysis

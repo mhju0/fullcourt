@@ -26,7 +26,7 @@ Test files and coverage:
 
 | File | Covers |
 |------|--------|
-| `src/lib/__tests__/fatigue.test.ts` | `calculateFatigue` / `calculateRestAdvantage`: opener baseline, freshness bonus, back-to-back, 3-in-4, density, travel windows + the travel-leg contract, road-trip streak, altitude (`×1.15`), overtime (`+0.5` / `+1.0`), combined compounding. |
+| `src/lib/__tests__/fatigue.test.ts` | `calculateFatigue` / `calculateRestAdvantage`: opener baseline, freshness curve, back-to-back, 3-in-4, density, travel windows + the travel-leg contract, road-trip streak, altitude and its carryover, overtime, combined compounding. Since 2026-07-30 also: real time zones vs the retired 26° longitude proxy (including Phoenix's missing DST), neutral-site venues, turnaround-hour sharpening of the back-to-back multiplier, circadian direction and acclimation decay, and the blowout discount. **Every one of those was proven to fail against the unfixed model before being accepted** — `git stash push src/lib/fatigue.ts`, re-run, pop. |
 | `src/lib/__tests__/haversine.test.ts` | Great-circle distances (LA↔Boston ≈2,591mi, NY↔SF, Dallas↔Denver), symmetry, identical-point = 0. |
 | `src/lib/__tests__/nba-season.test.ts` | `pickDefaultGamesDate` (today/postseason/October-start cases), `formatLocalDateKey` and `formatEasternDateKey` (US/Eastern, viewer-timezone-independent), `currentDisplaySeason`, and `isNbaOffSeason`. |
 | `src/lib/__tests__/rest-advantage-display.test.ts` | `formatRestAdvantageDisplay` team/neutral labeling + one-decimal formatting, and `buildRestAdvantageEvidence`: cumulative-bucket selection (a 4.1 gap resolves to "3 or more", **not** the RA≥5 rate), threshold boundaries, the sub-2 overall fallback, the 0.5 call boundary, zero-denominator refusal, and signed counterfactual wording. Discriminating: sorting the cleared buckets ascending fails exactly the two selection tests. |
@@ -76,10 +76,18 @@ the time, 16.8s serially against 26s *and* readiness-gate failures on `/schedule
 worker count — parallelism bought negative time here. (`fullyParallel` is left on; with one
 worker it only affects ordering.) Existing specs receive a completed onboarding storage state so
 the first-visit dialog cannot block their legacy interactions; `e2e/onboarding.spec.ts` overrides
-that state with an empty browser. Specs (8): `e2e/home.spec.ts`, `e2e/about.spec.ts`,
-`e2e/analysis.spec.ts`, `e2e/navigation.spec.ts`, `e2e/onboarding.spec.ts`,
-`e2e/playoffs.spec.ts`, `e2e/schedule-disparity.spec.ts`, `e2e/shot-quality.spec.ts`,
-`e2e/shooting.spec.ts` — **31 tests** at time of writing.
+that state with an empty browser. Specs (10): `e2e/home.spec.ts`, `e2e/about.spec.ts`,
+`e2e/analysis.spec.ts`, `e2e/behind-the-data.spec.ts`, `e2e/navigation.spec.ts`,
+`e2e/onboarding.spec.ts`, `e2e/playoffs.spec.ts`, `e2e/schedule-disparity.spec.ts`,
+`e2e/shot-quality.spec.ts`, `e2e/shooting.spec.ts` — **46 tests** (2026-07-30).
+
+`e2e/behind-the-data.spec.ts` covers the reference section: that it is reachable from the
+`Reference` landmark and *not* from `Main navigation` or the `OTHER` menu, that every section is
+its own addressable route, and that each product page's `HOW THIS IS CALCULATED` link lands on
+the right one. It also carries a **rendered prose-spacing sweep** over all seven pages — a JSX
+text node that wraps to the next line silently loses its leading space ("30days",
+"backtest.The"), which review cannot catch because the source looks correct. Formula blocks are
+excluded, since camelCase inside them is code.
 
 `e2e/shooting.spec.ts` covers the `/shooting` player database: that the volume floor actually
 reduces the row count, that an expanded player's seasons carry the same cell count as the single
@@ -101,13 +109,14 @@ back on expand.
 > - **`navigation.spec.ts`** — nav links `GAMES` / `MODEL RESULTS` / `SCHEDULE EDGE` →
 >   `/` / `/analysis` / `/schedule`. The active link is asserted via its `aria-current="page"`
 >   attribute (the amber-underline active state), and inactive links are checked to lack it.
->   The link count is pinned at **5**, so a resurrected sixth tab fails here. A second spec
->   pins `/about`'s entry point: it asserts `ABOUT` is **absent** from the `Main navigation`
->   landmark, then clicks the status-bar link and checks the landing heading and
->   `aria-current`. Verified to fail — at the click — with the status-bar link removed.
-> - **`about.spec.ts`** — the landing page renders its hero, both calls to action, and a
->   `Product surfaces` nav of exactly five links carrying the five nav labels, so a future nav
->   rename that misses this page fails here instead of drifting quietly. A second test re-pins
+>   The link count is pinned at **5**, so a resurrected sixth tab fails here. `ABOUT` and
+>   `BEHIND THE DATA` sit in a separate `Reference` landmark in the same row, which is exactly
+>   why that count still holds: two landmarks, one bar. A second spec pins `/about`'s entry
+>   point by asserting it is **absent** from `Main navigation` before following it.
+> - **`about.spec.ts`** — the landing page renders its hero, its single call to action, and a
+>   `Product surfaces` nav of exactly five links carrying the five direct nav labels, so a
+>   future nav rename that misses this page fails here instead of drifting quietly. It also
+>   asserts the hero's old pair of buttons is **gone** (`See the backtest` at count 0). A second test re-pins
 >   the five-tab count from `/` and follows the footer's `WHAT THIS MEASURES` link. The hero
 >   assertion allows 30s: the page is `ssr: false`, so a cold Turbopack compile is on the path.
 > - **`home.spec.ts`** — the heading is the `<h1>` **"Games"** (`REST ADVANTAGE

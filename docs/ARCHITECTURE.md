@@ -13,9 +13,11 @@ the discrepancy is called out.
 │ (scheduleLeagueV2.json)   │      │  → future/current slate      │   │ PostgreSQL       │
 │ NBA CDN live scoreboard   │      │ fetch_schedule.py            │──▶│  teams           │
 │ (todaysScoreboard_00.json)│      │  → historical seasons        │   │  games           │
-│ nba_api / stats.nba.com   │─────▶│ nba_ot_periods.py            │   │  fatigue_scores  │
-│  (LeagueGameFinder,       │      │  → overtime periods          │   │  predictions     │
-│   BoxScoreSummaryV2)      │      │ seed_teams.py → 30 teams     │   └──────────────────┘
+│ nba_api / stats.nba.com   │─────▶│ seed_teams.py → 30 teams     │   │  fatigue_scores  │
+│  (LeagueGameFinder)       │      │                              │   │  predictions     │
+│ ESPN site.api scoreboard  │─────▶│ fetch_game_context.ts        │   └──────────────────┘
+│  (overtime, tip-off,      │      │  → overtime / tip / neutral  │
+│   neutral site)           │      │                              │
 └──────────────────────────┘      └──────────────┬───────────────┘             │
                                                   │ orchestrated by             │
                                                   │ daily_update.py             │
@@ -56,7 +58,8 @@ the discrepancy is called out.
 | NBA CDN schedule | `https://cdn.nba.com/static/json/staticData/scheduleLeagueV2.json` | Current-season + future games (`fetch_nba_schedule_cdn.py`). No auth. |
 | NBA CDN live scoreboard | `https://cdn.nba.com/static/json/liveData/scoreboard/todaysScoreboard_00.json` | Live score/status refresh (`/api/cron/update`). |
 | nba_api (stats.nba.com) | `LeagueGameFinder` | Historical + windowed schedules and final scores (`fetch_schedule.py`, `daily_update.py`, `backfill_historical.py`). |
-| nba_api (stats.nba.com) | `BoxScoreSummaryV2` | Overtime-period detection (`nba_ot_periods.py`). |
+| ESPN site.api | `/scoreboard?dates=` | Overtime periods, tip-off times, neutral-site venues (`fetch_game_context.ts`), 2002-03 on. One call per game date returns all three. |
+| ~~nba_api (stats.nba.com)~~ | ~~`BoxScoreSummaryV2`~~ | **Retired 2026-07-30** as the overtime source. `stats.nba.com` is unreachable from outside the US, so `nba_ot_periods.py` silently returned 0 for every game and the fatigue model's overtime term never fired. Still imported by `fetch_schedule.py`; no longer used by `daily_update.py`. |
 | ESPN logos | `https://a.espncdn.com/i/teamlogos/nba/500/{slug}.png` | Every team logo, current and historical (`src/lib/team-history.ts`). Dark-on-light for all 30; the NBA CDN ships no light-background mark for BKN or SAS, and 403s from Seoul and CI. |
 | ESPN CDN logos | `https://a.espncdn.com/i/teamlogos/nba/500/{abbr}.png` | Historical/relocated-era logos. |
 
@@ -133,8 +136,16 @@ Full list in [API.md](API.md).
   than an API route: its export changes once a season, so a Postgres round trip could only ever
   return the same numbers.
 - `app/about/page.tsx` — **the landing / explainer page**, outside the product surfaces.
-  Serves no data and touches no query; visuals are CSS and inline SVG only, so `img-src` did
-  not have to widen. GSAP is imported *inside* an effect, keeping it out of the shared bundle.
+  Visuals are CSS and inline SVG only, so `img-src` did not have to widen, and GSAP is imported
+  *inside* an effect, keeping it out of the shared bundle. It is a **server component as of
+  2026-07-30**: it reads `getHistoricalBacktest` and passes the evidence figures down, because
+  the three it used to hardcode had all gone stale. Revalidated daily.
+- `app/behind-the-data/**` — **the reference section**, seven static routes documenting each
+  model's terms, constants and limits. No data fetching: constants are imported from source
+  (`FATIGUE_CONSTANTS` and friends) so the prose cannot drift from the code, and measured
+  figures carry the date they were measured.
+- `app/referees/page.tsx` — **a placeholder** since 2026-07-30. The whistle findings were inside
+  noise; the ingest and dataset test remain so it can return without a re-ingest.
 - Client data fetching uses SWR through `src/lib/fetcher.ts`; live updates use Supabase
   Realtime via `src/hooks/useLiveGames.ts`.
 

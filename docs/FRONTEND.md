@@ -194,8 +194,18 @@ work. It explains what the product measures rather than serving data, which is w
 so `img-src` in `next.config.ts` did not have to widen; GSAP is imported inside `useEffect`
 so it stays out of the shared bundle.
 
-Reachable from an `ABOUT` link in the **top status bar** and from `WHAT THIS MEASURES` in the
-footer — not from the main nav, whose five-link count is asserted in `e2e/navigation.spec.ts`.
+Reachable from an `ABOUT` link in the nav row's **`Reference` landmark** and from
+`WHAT THIS MEASURES` in the footer — not from the main nav, whose five-link count is asserted
+in `e2e/navigation.spec.ts`. It sat in the top status bar until 2026-07-30, which proved too
+quiet to be found; the reference links are now the same size and weight as a tab, and the gap
+between the two groups is what says "not one of the five".
+
+Rebuilt 2026-07-30 into **seven full-viewport sections** (`calc(100svh - 72px)` each, the
+subtraction being the sticky chrome — without it every section overran the fold by the header's
+height). Order: the claim, the thesis, the evidence, the five surfaces, what the score is made
+of, the standard, the way in. The hero carries no buttons: they competed with the single line
+the page opens on. Evidence figures come from `getHistoricalBacktest` via the server page and
+are revalidated daily, because all three were hardcoded and all three had gone stale.
 Headings use `font-bold` (700), not extrabold: `layout.tsx` loads Space Grotesk at
 400/500/600/700, so an 800 request resolved to the 700 face anyway.
 
@@ -211,7 +221,7 @@ Two things on this page are easy to get wrong twice:
   draws, and the copy. Index, route and glyph are `aria-hidden`, so the link's accessible name
   stays `"<label> <copy>"` — which is what `e2e/about.spec.ts` anchors on.
 
-Display statements on this page take **no terminal period** (`Rest is a stat`, `Six surfaces`,
+Display statements on this page take **no terminal period** (`Rest is a stat`, `Five surfaces`,
 `How a number earns its place`). Body copy and the scrubbing thesis keep normal punctuation —
 they are prose, not statements.
 
@@ -224,22 +234,60 @@ recovery links to Games and Model Results without adding a client bundle or data
 
 ## Components
 
+### `/behind-the-data/*` — the reference section (7 routes)
+
+`/behind-the-data` plus one route per model (`rest-advantage`, `schedule-edge`,
+`playoff-predictions`, `player-shooting`, `shot-value`) and a shared `data-and-limits`. Real
+routes rather than client-side tabs, so each method is linkable, crawlable, and deep-linkable
+from the page it explains. `BehindTheDataShell` supplies the header and the section sub-nav;
+`behind-the-data-parts.tsx` supplies the shared prose primitives so six pages cannot drift into
+six typographic treatments of the same content.
+
+Constants are **imported from source** (`FATIGUE_CONSTANTS`, `BIG_EDGE_FATIGUE_THRESHOLD`,
+`REST_DAYS_CAP`) rather than retyped, so the prose cannot drift from the code. Measured figures
+that cannot be computed per page view carry the date they were measured.
+
+`MethodLink` (`src/components/method-link.tsx`) renders the `HOW THIS IS CALCULATED` link on
+each product page, resolved through `methodologyHrefFor()` — it returns null for surfaces with
+no documented section, so adding one to `BEHIND_THE_DATA_SECTIONS` is all it takes.
+
+> **Prose spacing has a rendered test.** A JSX text node that wraps to the next line silently
+> loses its leading space, producing "30days" and "backtest.The". It is invisible in review
+> because the source looks correct, so `e2e/behind-the-data.spec.ts` sweeps the rendered `<p>`
+> and `<li>` text of every reference page for run-together words. Formula blocks are excluded —
+> camelCase inside them is code.
+
+### `/referees` — placeholder
+
+Reduced to a "Coming soon" page on 2026-07-30. The whistle numbers came back inside noise, and
+a table of muted cells invites readers to find names in it anyway. `src/data/referee-whistle.json`
+and its test remain, so the page can return without a re-ingest.
+
 ### `nav-bar.tsx` — two-layer header (sticky, `z-50`)
 
 1. **Top status bar** (28px, `var(--term-surface-2)`, bottom border `var(--term-border)`):
    a `<CourtMark size={22}>` brand logo + `FULLCOURT` (`var(--term-red)`) + `NBA ANALYTICS
-   PLATFORM` (muted), and on the right `currentDisplaySeason() + " SEASON"` (dynamic — from
-   `src/lib/nba-season.ts`, not a hardcoded label), preceded by an `ABOUT` link to `/about`.
-   That link lives here, not in the main nav, because `/about` explains the product rather
-   than being a sixth surface — and because the nav's five-link count is asserted in e2e.
+   PLATFORM` (muted), wrapped in a link to `/` — the wordmark was inert until 2026-07-30, the
+   one piece of chrome people reflexively click. Home is `GAMES`, not `/about`: a logo landing
+   on an explainer breaks the "take me back to the product" contract.
+   The right side is now empty. It previously held `currentDisplaySeason() + " SEASON"`, removed
+   2026-07-30 — it was not interactive, and on a site covering forty seasons it implied the whole
+   product was scoped to one — and an `ABOUT` link, which moved to the nav row.
    There is **no LIVE dot** — it was gated by
    a `HAS_LIVE_GAMES` constant hardcoded to `false`, so it never rendered in any state; the
    dead branch was removed. Per-game LIVE status is shown by `MatchupCard` instead.
-2. **Main nav** (44px, `var(--term-surface)`, bottom border `var(--term-border)`): links from
-   `PRIMARY_NAV_ITEMS` (`src/lib/primary-navigation.ts`) — `GAMES → /`, `SCHEDULE EDGE → /schedule`,
-   `MODEL RESULTS → /analysis`, `PLAYOFF PREDICTIONS → /playoffs`, `SHOT VALUE → /shot-quality`,
-   `PLAYER SHOOTING → /shooting`. The surface count on `/about` is derived from that list rather
-   than written out, so adding a tab cannot leave the page claiming a total it no longer has.
+2. **Main nav** (44px, `var(--term-surface)`, bottom border `var(--term-border)`) holds **two
+   navigation landmarks in one row**. Left, `aria-label="Main navigation"`: the five direct tabs
+   from `DIRECT_NAV_ITEMS` (`src/lib/primary-navigation.ts`) — `GAMES → /`,
+   `SCHEDULE EDGE → /schedule`, `MODEL RESULTS → /analysis`,
+   `PLAYOFF PREDICTIONS → /playoffs`, `PLAYER SHOOTING → /shooting` — followed by the `OTHER`
+   menu holding `SHOT VALUE → /shot-quality` and `REFEREE EFFECT → /referees`. Right,
+   `ml-auto` and `aria-label="Reference"`: `ABOUT → /about` and
+   `BEHIND THE DATA → /behind-the-data`. Two landmarks rather than one so the reference links
+   never inflate the asserted five-link count, and so screen readers announce them as what they
+   are. The surface list on `/about` is derived from `DIRECT_NAV_ITEMS`, so adding a tab cannot
+   leave the page claiming a total it no longer has — `SHOT VALUE` is absent from it because it
+   is an `OTHER` item.
    Bare noun phrases, no time words: mainstream NBA navs (ESPN, CBS) name the thing and
    leave time to a date picker, and NN/g's category-name guidance rules out both jargon
    (`EDGES`) and generic labels (`ANALYSIS`, `DATA`). Labels are also checked against *borrowed*

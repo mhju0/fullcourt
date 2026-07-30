@@ -1,4 +1,15 @@
 # Playoff Predictor — Design
+> **Reader-facing version:** [`/behind-the-data/playoff-predictions`](../src/app/behind-the-data/playoff-predictions/page.tsx)
+> states the same model in plain terms — the five stored features, why the target is the
+> home-court team, and why out-of-sample accuracy is published beside in-sample.
+>
+> This file is the **build record** for the phase, kept as written. Where it discusses options
+> it did not take (`has_home_court` as a stored column, for one — it is folded into the label
+> and intercept, and `playoff_series` has no such field), that is design history rather than a
+> description of what shipped. Verified against `src/lib/db/schema.ts` on 2026-07-30: the
+> stored features are `seed_diff`, `win_pct_diff`, `entry_rest_diff`, `h2h_diff` and
+> `is_best_of_7`.
+
 
 > **Status (updated 2026-07-02): complete, end to end.** Every phase in this design has shipped:
 > per-game ingest (`scripts/fetch_playoffs.py` for `004` playoff/finals, `scripts/fetch_play_in.py`

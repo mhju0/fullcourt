@@ -42,6 +42,16 @@ for (const { file, path: route, height } of PAGES) {
   // Not networkidle: /shot-quality holds a Realtime socket open, so idle never comes.
   await page.goto(BASE + route, { waitUntil: "load", timeout: 60_000 });
   await page.addStyleTag({ content: "nextjs-portal { display: none !important }" });
+
+  // Wait for the content, not the clock. A fixed 4s pause captured /games mid-load once the
+  // dev server had more routes to compile — the shot shipped with "0 games" and five empty
+  // skeleton rows, which is a worse artifact than the stale one it replaced. Skeletons carry
+  // data-slot="skeleton", so their absence is the real "this page is ready" signal.
+  await page
+    .waitForFunction(() => document.querySelectorAll('[data-slot="skeleton"]').length === 0, {
+      timeout: 45_000,
+    })
+    .catch(() => console.warn(`  ${file}: skeletons still present at timeout`));
   await page.waitForTimeout(4000); // charts mount and animate in
 
   // The footer prints the render clock, so an unfrozen capture produces a fresh

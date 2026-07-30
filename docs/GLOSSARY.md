@@ -61,6 +61,9 @@ grows — it does not rank those surfaces below the direct tabs.
 | PLAYOFF PREDICTIONS | `/playoffs` | Series Predictions | Playoff Odds — mainstream that means *making* the playoffs, not winning a series |
 | PLAYER SHOOTING | `/shooting` | Shooting by Rest | Shooting — on Basketball-Reference and NBA.com that means shot *location*, which is SHOT VALUE; Player Rest / Rest Splits — the rest tab is SCHEDULE EDGE, and an internal collision misroutes worse than an external one; Splits — ESPN's word for exactly this page, but jargon for a casual fan and silent about the measure |
 | SHOT VALUE *(OTHER)* | `/shot-quality` | Expected Shot Value | Shot Charts — mainstream that means a player's makes/misses by spot |
+| REFEREE EFFECT *(OTHER)* | `/referees` | Coming soon | Referee Bias — the page was named for the question, not a conclusion; it is a placeholder since 2026-07-30 because the home-whistle finding sat inside noise |
+| ABOUT *(Reference)* | `/about` | Rest is a stat | — not a tab: it explains the product rather than being a surface of it |
+| BEHIND THE DATA *(Reference)* | `/behind-the-data` | Behind the data | Methodology — that word promises a paper; this is read by people deciding whether to trust a number they just saw |
 
 Module names are unaffected: the code, tables, scripts and design records still say Playoff
 Predictor, Shot Quality and Schedule Disparity.

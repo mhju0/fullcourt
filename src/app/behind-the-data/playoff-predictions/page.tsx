@@ -40,7 +40,7 @@ const FEATURES = [
   {
     name: "is_best_of_7",
     what: "Series format flag.",
-    why: "First rounds were best-of-5 through the 2002 season; a shorter series is more random.",
+    why: "First rounds were best-of-5 through 2001-02; a shorter series is more random.",
   },
 ] as const;
 
