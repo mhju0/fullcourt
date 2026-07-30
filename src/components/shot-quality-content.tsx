@@ -2,7 +2,6 @@
 
 import { useMemo, useState } from "react"
 import useSWR from "swr"
-import { ChevronDown } from "lucide-react"
 import { SeasonSelector } from "@/components/season-selector"
 import { Skeleton } from "@/components/ui/skeleton"
 import { apiFetcher } from "@/lib/fetcher"
@@ -362,53 +361,6 @@ function ShotCourt({
   )
 }
 
-// ─── Methodology note ──────────────────────────────────────────────
-
-function MethodologyNote() {
-  return (
-    <details className="mono group" style={{ ...termCardStyle, padding: 0 }}>
-      <summary
-        className="flex cursor-pointer items-center justify-between rounded-[var(--term-radius)] px-4 py-3 transition-colors hover:bg-[var(--term-surface-2)]"
-        style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-text)", fontWeight: 700 }}
-      >
-        METHODOLOGY
-        <ChevronDown className="size-4 text-[var(--term-text-muted)] transition-transform duration-200 group-open:rotate-180" aria-hidden />
-      </summary>
-      <div
-        className="flex max-w-3xl flex-col gap-3 px-4 pb-4"
-        style={{ fontSize: 15, color: "var(--term-text-muted)", lineHeight: 1.55 }}
-      >
-        <p>
-          <span style={{ color: "var(--term-text)", fontWeight: 600 }}>Baseline</span> is the
-          league-average make rate per shot zone — the floor, and a step function.{" "}
-          <span style={{ color: "var(--term-text)", fontWeight: 600 }}>GBM</span> is a
-          location-based gradient-boosting model that resolves value as a smooth surface, finer
-          than the six native zones.
-        </p>
-        <p>
-          The GBM beat the zone baseline on walk-forward log-loss and Brier score, but the margin
-          is small — about 1%. Treat it as a consistent{" "}
-          <span style={{ color: "var(--term-text)", fontWeight: 600 }}>calibration</span>{" "}
-          improvement, not a large accuracy jump: within any one zone, a single shot is close to a
-          coin flip.
-        </p>
-        <p>
-          Expected eFG% is what an average shooter converts from each spot. The gap between a
-          team&apos;s actual and expected eFG% reads as{" "}
-          <span style={{ color: "var(--term-text)", fontWeight: 600 }}>shots above expected</span>{" "}
-          — shot-making relative to shot selection.
-        </p>
-        <p>
-          The surface comes from a model trained on prior seasons using an expanding window.
-          Because shot efficiency drifts over time, the most recent season&apos;s expected values
-          can run slightly low. No defender distance or shot clock is used — neither appears in
-          public NBA data.
-        </p>
-      </div>
-    </details>
-  )
-}
-
 // ─── States ────────────────────────────────────────────────────────
 
 function CourtSkeleton() {
@@ -527,58 +479,54 @@ export function ShotQualityContent() {
           body="SHOT-LOCATION COORDINATES ONLY REACH BACK TO 1996-97."
         />
       ) : (
-        <>
-          <div style={termCardStyle}>
-            <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
-              <span className="mono" style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 700 }}>
-                {season} · {data.meta.cellCount.toLocaleString()} CELLS · {data.meta.totalFga.toLocaleString()} FGA
-              </span>
-            </div>
-
-            <HowToRead mode={mode} seqLo={stats.seqLo} seqHi={stats.seqHi} divD={stats.divD} />
-
-            {mode === "value" ? (
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <ShotCourt
-                  cells={cells}
-                  scaleFga={stats.scaleFga}
-                  getValue={seqValue("baseline")}
-                  getColor={seqColorFor}
-                  formatValue={fmtEfg}
-                  title="BASELINE"
-                  subtitle="ZONE-AVERAGE (STEP SURFACE)"
-                />
-                <ShotCourt
-                  cells={cells}
-                  scaleFga={stats.scaleFga}
-                  getValue={seqValue("gbm")}
-                  getColor={seqColorFor}
-                  formatValue={fmtEfg}
-                  title="GBM"
-                  subtitle="LOCATION MODEL (SMOOTH SURFACE)"
-                />
-              </div>
-            ) : (
-              <div className="mx-auto w-full md:max-w-md">
-                <ShotCourt
-                  cells={cells}
-                  scaleFga={stats.scaleFga}
-                  getValue={diffValue}
-                  getColor={diffColorFor}
-                  formatValue={fmtDiff}
-                  title="GBM − BASELINE"
-                  subtitle="Δ EXPECTED eFG% — WHERE THE SMOOTH SURFACE DISAGREES WITH THE ZONE STEPS"
-                />
-              </div>
-            )}
-
-            <p className="mono mt-3" style={{ fontSize: 10, color: "var(--term-text-muted)", letterSpacing: "0.04em", lineHeight: 1.5 }}>
-              MARKER SIZE = SHOT ATTEMPTS (FGA) FROM THAT CELL. HOVER A CELL FOR ITS ZONE, VOLUME, AND VALUE.
-            </p>
+        <div style={termCardStyle}>
+          <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
+            <span className="mono" style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 700 }}>
+              {season} · {data.meta.cellCount.toLocaleString()} CELLS · {data.meta.totalFga.toLocaleString()} FGA
+            </span>
           </div>
 
-          <MethodologyNote />
-        </>
+          <HowToRead mode={mode} seqLo={stats.seqLo} seqHi={stats.seqHi} divD={stats.divD} />
+
+          {mode === "value" ? (
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <ShotCourt
+                cells={cells}
+                scaleFga={stats.scaleFga}
+                getValue={seqValue("baseline")}
+                getColor={seqColorFor}
+                formatValue={fmtEfg}
+                title="BASELINE"
+                subtitle="ZONE-AVERAGE (STEP SURFACE)"
+              />
+              <ShotCourt
+                cells={cells}
+                scaleFga={stats.scaleFga}
+                getValue={seqValue("gbm")}
+                getColor={seqColorFor}
+                formatValue={fmtEfg}
+                title="GBM"
+                subtitle="LOCATION MODEL (SMOOTH SURFACE)"
+              />
+            </div>
+          ) : (
+            <div className="mx-auto w-full md:max-w-md">
+              <ShotCourt
+                cells={cells}
+                scaleFga={stats.scaleFga}
+                getValue={diffValue}
+                getColor={diffColorFor}
+                formatValue={fmtDiff}
+                title="GBM − BASELINE"
+                subtitle="Δ EXPECTED eFG% — WHERE THE SMOOTH SURFACE DISAGREES WITH THE ZONE STEPS"
+              />
+            </div>
+          )}
+
+          <p className="mono mt-3" style={{ fontSize: 10, color: "var(--term-text-muted)", letterSpacing: "0.04em", lineHeight: 1.5 }}>
+            MARKER SIZE = SHOT ATTEMPTS (FGA) FROM THAT CELL. HOVER A CELL FOR ITS ZONE, VOLUME, AND VALUE.
+          </p>
+        </div>
       )}
     </div>
   )

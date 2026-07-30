@@ -34,6 +34,12 @@ export default function ShotValueMethodPage() {
         <Formula>
           {`xeFG% = P(make) × (1.5 if the cell is behind the three-point line, else 1)`}
         </Formula>
+        <Prose>
+          Expected eFG% is what an average shooter converts from a given spot. The gap between
+          what a team actually shot and what the surface expected from those same spots is{" "}
+          <strong>shots above expected</strong> — shot-making measured against shot selection,
+          rather than mixed in with it.
+        </Prose>
         <Note>
           Because the value is expressed as eFG%, the long mid-range reads as the worst real
           estate on the floor even though its make probability beats a three. That is the
@@ -62,8 +68,15 @@ export default function ShotValueMethodPage() {
           drawn around real differences in the first place. The location model wins by roughly
           one percent on log-loss and Brier score, which is a{" "}
           <strong>calibration improvement, not an accuracy jump</strong>. It is stated that way
-          on the page rather than dressed up.
+          on the page rather than dressed up. Inside any one zone a single shot stays close to a
+          coin flip, and no reordering of the surface changes that.
         </Prose>
+        <Note>
+          Both surfaces are trained on prior seasons under an expanding window, so a season is
+          never scored by a model that has seen it. Shot efficiency drifts upward over time,
+          which means the most recent season&rsquo;s expected values can run slightly low —
+          shots above expected for the current season are therefore biased a little high.
+        </Note>
       </Section>
 
       <Section label="WHAT THIS IS NOT" descriptor="THE NAME IS DELIBERATE">
@@ -74,7 +87,8 @@ export default function ShotValueMethodPage() {
           to this model, because from the floor plan alone they are indistinguishable.
         </Prose>
         <Prose>
-          That is why it is called <strong>shot value</strong> rather than shot quality: it
+          That is why it is called <strong>shot value</strong>{" "}
+          rather than shot quality: it
           answers &ldquo;what is a shot from here worth on average&rdquo;, never &ldquo;was
           this a good shot&rdquo;.
         </Prose>
