@@ -474,8 +474,15 @@ function PlayerRows({
         <tr className="fc-sub fc-groupend">
           <td style={termTdStyle} />
           <td colSpan={9} style={{ ...termTdStyle, whiteSpace: "normal", fontSize: 12, color: "var(--term-text-muted)" }}>
-            His career figure is {signed(estimate.delta)} pp, give or take {estimate.se.toFixed(2)} pp of standard
-            error — {signed(estimate.shrunk)} once shrunk toward the league.
+            {/* Was: "…give or take X pp of standard error — Y once shrunk toward the league",
+                which stacked three pieces of jargon in one line and was misread in testing as
+                "one strong toward the lead". The shrunk figure stays because it is the honest
+                one — a raw career gap off ~250 attempts per side carries a standard error near
+                4 points, so the extremes of a raw ranking are mostly noise — but it now says
+                why in words rather than naming the method. */}
+            Raw career gap: {signed(estimate.delta)} percentage points, give or take{" "}
+            {estimate.se.toFixed(2)}. Small shot counts make gaps look bigger than they really
+            are, so {signed(estimate.shrunk)} is the fairer estimate.
           </td>
         </tr>
       )}
@@ -483,7 +490,8 @@ function PlayerRows({
         <tr className="fc-sub fc-groupend">
           <td style={termTdStyle} />
           <td colSpan={9} style={{ ...termTdStyle, whiteSpace: "normal", fontSize: 12, color: "var(--term-text-muted)" }}>
-            No career estimate: he has not cleared 150 attempts in both situations, so only his seasons are shown.
+            No career estimate — he has not taken 150 shots both on no rest and on three or more
+            days rest, so only his seasons are shown.
           </td>
         </tr>
       )}
