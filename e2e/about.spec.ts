@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 
 test.describe("About page", () => {
-  test("renders the hero, every surface, and both calls to action", async ({ page }) => {
+  test("renders the hero, every surface, and the single way in", async ({ page }) => {
     await page.goto("/about");
 
     // Client-rendered (ssr: false), so give the chunk a moment on a cold dev compile.
@@ -27,10 +27,13 @@ test.describe("About page", () => {
       ).toBeVisible();
     }
 
-    await expect(
-      page.getByRole("link", { name: "Open the games board" }).first()
-    ).toBeVisible();
-    await expect(page.getByRole("link", { name: "See the backtest" })).toBeVisible();
+    // One call to action, at the end. The hero carried a pair of buttons under the
+    // headline; they competed with the one line the page opens on and asked for a decision
+    // before the argument had been made. The hero is now the claim and nothing else.
+    const enter = page.getByRole("link", { name: "Open the games board" });
+    await expect(enter).toHaveCount(1);
+    await expect(enter).toBeVisible();
+    await expect(page.getByRole("link", { name: "See the backtest" })).toHaveCount(0);
   });
 
   test("is reachable from the footer, and is not itself a nav tab", async ({ page }) => {

@@ -92,13 +92,15 @@ function SurfaceGlyph({ kind }: { kind: number }) {
       </svg>
     );
 
-  return ( // Shot Value — the arc, denser at the rim
+  return ( // Player Shooting — the same player on no rest and on three days off
     <svg {...common}>
-      <path d="M10 50a50 50 0 0 1 100 0" fill="none" stroke={line} strokeWidth="1.4" />
-      {[16, 28, 42, 60, 78, 92, 104].map((x, i) => (
-        <circle key={i} cx={x} cy={50 - Math.round(Math.sin((i / 6) * Math.PI) * 26)} r="3" fill={blue} opacity=".85" />
+      {[0, 1, 2].map((g) => (
+        <g key={g} transform={`translate(${6 + g * 40} 0)`}>
+          <rect x="0" y={48 - [22, 31, 27][g]} width="12" height={[22, 31, 27][g]} rx="2" fill={red} opacity=".75" />
+          <rect x="15" y={48 - [30, 26, 38][g]} width="12" height={[30, 26, 38][g]} rx="2" fill={blue} />
+        </g>
       ))}
-      <circle cx="60" cy="48" r="5" fill={red} opacity=".7" />
+      <rect x="4" y="48" width="112" height="1.2" fill={line} />
     </svg>
   );
 }
@@ -115,18 +117,61 @@ const SURFACES = [
 // Value lives in the OTHER menu alongside the other reference surfaces. Listing it here made
 // the page claim six surfaces while the bar showed five.
 
+
+/**
+ * The standard each published number has to clear, and what each rule rules out.
+ *
+ * These were numbered 01/02/03 in a sticky card stack. They are three principles applied
+ * in parallel, not three steps in a sequence, so the numbering encoded nothing — and the
+ * stack cost a viewport per card to say one sentence. The second column is the honest half:
+ * a rule is only worth stating if something is given up for it.
+ */
+const STANDARD = [
+  {
+    rule: "A number ships with its sample size",
+    rulesOut:
+      "Rates with no n attached. A split measured over three games would otherwise read exactly like one measured over three hundred.",
+  },
+  {
+    rule: "One engine, never duplicated",
+    rulesOut:
+      "A matchup card that quietly disagrees with the backtest. Every pipeline writer and every read share one source of truth, so the number on screen is the number that was tested.",
+  },
+  {
+    rule: "Limits publish beside results",
+    rulesOut:
+      "Rounding a finding up. Out-of-sample accuracy sits next to in-sample, and a calibration win is called a calibration win rather than an accuracy jump.",
+  },
+];
+
+/** What the fatigue score is assembled from, in the order the model applies it. */
+const INPUTS = [
+  { term: "Recent workload", detail: "Every game in the last 30 days, decaying — last night counts for far more than last week." },
+  { term: "Travel", detail: "Great-circle miles between consecutive arenas, log-scaled, with no phantom trips home." },
+  { term: "Body clock", detail: "Two or more hours of time shift, charged harder eastward and decaying as the team re-entrains." },
+  { term: "Back-to-backs", detail: "Sharpened by the real gap between tip-offs, because a late game into an early one is not 24 hours." },
+  { term: "Altitude", detail: "Denver, Utah and Mexico City, plus a smaller residue the night after." },
+  { term: "Density", detail: "Games per rolling window measured against a normal pace, not a raw count." },
+];
+
 /* The heading counts the list rather than stating a number, so adding a surface can
    never leave the page claiming a total it no longer has. Spelled out because a
    numeral reads wrong at display size next to the rest of this page's headings. */
 const COUNT_WORD = ["no", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight"];
 
-const METHOD = [
-  { n: "01", h: "Ingest is gated on the season", p: "A daily job runs year-round and exits cleanly in the offseason, before touching the database. Nothing is written that the calendar cannot justify." },
-  { n: "02", h: "One fatigue engine, never duplicated", p: "A single source of truth is shared by every pipeline writer and every API read, so the number on the card is the number in the backtest." },
-  { n: "03", h: "The limits ship with the result", p: "Out-of-sample accuracy sits beside in-sample. A calibration win is called a calibration win, not an accuracy jump." },
-];
+export interface AboutStats {
+  games: number;
+  overallEdgePp: number;
+  widestEdgePp: number;
+  widestEdgeGames: number;
+}
 
-export function AboutContent() {
+/** Every section is one viewport minus the sticky chrome, so nothing lands half-visible. */
+const VIEW = "flex min-h-[calc(100svh-72px)] flex-col justify-center";
+
+const signedPp = (v: number) => (v >= 0 ? `+${v.toFixed(1)}` : `\u2212${Math.abs(v).toFixed(1)}`);
+
+export function AboutContent({ stats }: { stats: AboutStats }) {
   const root = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -172,25 +217,6 @@ export function AboutContent() {
           );
         });
 
-        // Card stacking: each card dims and shrinks as the next slides over it.
-        // Dimming is `brightness`, NOT `opacity`. These cards are sticky and physically
-        // overlap, so a card at opacity 0.45 shows the card beneath it straight through —
-        // card 02's heading rendered on top of card 01's paragraph. brightness() darkens
-        // the same amount while the card stays opaque.
-        const cards = gsap.utils.toArray<HTMLElement>(".fc-card");
-        cards.forEach((card, i) => {
-          if (i === cards.length - 1) return;
-          gsap.fromTo(
-            card,
-            { scale: 1, filter: "brightness(1)" },
-            {
-              scale: 0.95,
-              filter: "brightness(0.45)",
-              ease: "none",
-              scrollTrigger: { trigger: cards[i + 1], start: "top 85%", end: "top 32%", scrub: true },
-            }
-          );
-        });
       }, root);
     })();
 
@@ -209,8 +235,8 @@ export function AboutContent() {
     >
       <div aria-hidden="true" style={{ position: "fixed", inset: 0, pointerEvents: "none", zIndex: 1, opacity: 0.15, backgroundImage: GRAIN }} />
 
-      {/* ── Attention ─────────────────────────────────────────── */}
-      <header className="relative flex min-h-[86svh] items-center justify-center px-6 py-28 text-center">
+      {/* ── 1. The claim ──────────────────────────────────────── */}
+      <header className={`relative items-center px-6 text-center ${VIEW}`}>
         <div
           aria-hidden="true"
           className="absolute inset-0"
@@ -219,9 +245,6 @@ export function AboutContent() {
         <CourtSplit className="pointer-events-none absolute left-1/2 top-1/2 w-[min(80rem,140%)] -translate-x-1/2 -translate-y-1/2 opacity-[0.13]" />
 
         <div className="relative z-10 mx-auto max-w-5xl">
-          {/* font-bold (700), not extrabold: layout.tsx loads Space Grotesk at 400/500/600/700,
-              so an 800 request resolved to the 700 face anyway. The declaration now matches
-              what renders — raise both together if this page ever wants a heavier display cut. */}
           <h1
             className="fc-hero-in font-heading font-bold"
             style={{ fontSize: "clamp(2.6rem,7vw,5.6rem)", lineHeight: 0.98, letterSpacing: "-0.035em" }}
@@ -230,29 +253,20 @@ export function AboutContent() {
           </h1>
           <p className="fc-hero-in mx-auto mt-8 max-w-xl" style={{ color: DIM, fontSize: "1.05rem", lineHeight: 1.65 }}>
             FullCourt measures what the schedule does to a team before the ball is tipped —
-            travel, rest and density, across {NBA_SEASONS.length} seasons of evidence.
+            travel, rest and density, across {`${NBA_SEASONS.length} seasons`} of evidence.
           </p>
-          <div className="fc-hero-in mt-10 flex flex-wrap justify-center gap-3">
-            <Link
-              href="/"
-              className="rounded-full px-8 py-3.5 text-sm font-semibold transition-transform hover:-translate-y-0.5"
-              style={{ background: BONE, color: INK }}
-            >
-              Open the games board
-            </Link>
-            <Link
-              href="/analysis"
-              className="rounded-full border px-8 py-3.5 text-sm font-semibold transition-transform hover:-translate-y-0.5"
-              style={{ borderColor: "rgba(245,241,232,.26)", color: BONE }}
-            >
-              See the backtest
-            </Link>
-          </div>
+        </div>
+
+        {/* A scroll cue rather than buttons. With nothing to click, the page still has to say
+            that it continues — and a hairline says it without competing with the headline. */}
+        <div aria-hidden="true" className="fc-hero-in absolute bottom-10 left-1/2 flex -translate-x-1/2 flex-col items-center gap-3">
+          <span className="mono" style={{ fontSize: 10, letterSpacing: "0.22em", color: "rgba(245,241,232,.34)" }}>SCROLL</span>
+          <span style={{ width: 1, height: 44, background: "linear-gradient(rgba(245,241,232,.34), transparent)" }} />
         </div>
       </header>
 
-      {/* ── Interest: the thesis, revealed on scroll ──────────── */}
-      <section className="fc-thesis mx-auto max-w-5xl px-6 py-40">
+      {/* ── 2. Why it matters ─────────────────────────────────── */}
+      <section className={`fc-thesis mx-auto max-w-5xl px-6 ${VIEW}`}>
         <p className="font-heading font-medium" style={{ fontSize: "clamp(1.5rem,3.6vw,2.9rem)", lineHeight: 1.28, letterSpacing: "-0.02em" }}>
           {"A back-to-back in Denver is not the same game as three days rest at home. The schedule decides part of the result, and it does it quietly."
             .split(" ")
@@ -264,64 +278,97 @@ export function AboutContent() {
         </p>
       </section>
 
-      {/* ── Interest: gapless bento ───────────────────────────── */}
-      <section className="mx-auto max-w-7xl px-6 pb-40">
-        <h2 className="font-heading mb-14 font-bold" style={{ fontSize: "clamp(1.9rem,4.4vw,3.2rem)", letterSpacing: "-0.03em", maxWidth: "20ch" }}>
-          Evidence, not just the eye test
-        </h2>
-        {/* 6 columns, dense flow: 4+2 across rows one and two, then a full 6. No dead cells. */}
-        <div className="grid auto-rows-[minmax(11rem,auto)] grid-flow-dense grid-cols-2 gap-3 md:grid-cols-6">
-          <article className="fc-rise relative flex flex-col justify-end overflow-hidden rounded-xl border p-8 md:col-span-4 md:row-span-2" style={{ borderColor: "rgba(245,241,232,.14)", background: "linear-gradient(160deg,rgba(37,99,235,.10),rgba(11,13,16,0) 60%)" }}>
-            <CourtSplit className="pointer-events-none absolute -right-10 -top-10 w-72 opacity-[0.16]" />
-            <h3 className="font-heading text-2xl font-bold">{NBA_SEASONS.length} seasons, 38,985 games</h3>
-            <p className="mt-3 max-w-[42ch]" style={{ color: DIM, lineHeight: 1.65 }}>
-              Every rest-advantage claim carries the historical hit rate and sample size of its
-              class. Matchups the model calls neutral make no claim at all.
+      {/* ── 3. What the score is made of ──────────────────────── */}
+      <section className={`mx-auto w-full max-w-7xl px-6 ${VIEW}`}>
+        <div className="grid gap-12 lg:grid-cols-[22rem_1fr] lg:gap-20">
+          <div className="lg:sticky lg:top-32 lg:self-start">
+            <h2 className="font-heading font-bold" style={{ fontSize: "clamp(1.9rem,4.4vw,3.2rem)", letterSpacing: "-0.03em", lineHeight: 1.05 }}>
+              What the score is made of
+            </h2>
+            <p className="mt-6 max-w-sm" style={{ color: DIM, lineHeight: 1.65 }}>
+              Six measurements of the same night, combined into one number per team. Each is a
+              physical fact about the schedule, not a rating of the roster.
             </p>
-          </article>
+          </div>
 
-          <article className="fc-rise flex flex-col justify-end rounded-xl border p-6 md:col-span-2" style={{ borderColor: "rgba(245,241,232,.14)" }}>
-            <span className="font-heading font-bold" style={{ fontSize: "2.6rem", lineHeight: 1, color: "#7FA9FF" }}>+13.4</span>
-            <p className="mt-2 text-sm" style={{ color: DIM }}>Win-rate points at a rest advantage of seven or more.</p>
-          </article>
-
-          <article className="fc-rise flex flex-col justify-end rounded-xl border p-6 md:col-span-2" style={{ borderColor: "rgba(245,241,232,.14)" }}>
-            <span className="font-heading font-bold" style={{ fontSize: "2.6rem", lineHeight: 1, color: "#E0A340" }}>26</span>
-            <p className="mt-2 text-sm" style={{ color: DIM }}>Days between the most and least favoured schedule last season.</p>
-          </article>
-
-          <article className="fc-rise flex flex-col justify-end rounded-xl border p-8 md:col-span-6" style={{ borderColor: "rgba(245,241,232,.14)", background: "linear-gradient(100deg,rgba(161,98,7,.10),rgba(11,13,16,0) 55%)" }}>
-            <h3 className="font-heading text-2xl font-bold">Much of the gap is structural</h3>
-            <p className="mt-3 max-w-[62ch]" style={{ color: DIM, lineHeight: 1.65 }}>
-              Geography, arena availability and broadcast windows produce rest imbalance without
-              anyone favouring anyone.
-            </p>
-          </article>
+          <ol className="flex flex-col">
+            {INPUTS.map((input, i) => (
+              <li
+                key={input.term}
+                className="fc-rise grid grid-cols-[2.5rem_1fr] items-baseline gap-x-5 py-6"
+                style={{ borderTop: i === 0 ? undefined : "1px solid rgba(245,241,232,.12)" }}
+              >
+                <span className="mono" style={{ fontSize: 11, letterSpacing: "0.1em", color: "rgba(245,241,232,.3)" }}>
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <div>
+                  <h3 className="font-heading text-xl font-bold">{input.term}</h3>
+                  <p className="mt-2 max-w-[54ch]" style={{ color: DIM, lineHeight: 1.6 }}>{input.detail}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
         </div>
       </section>
 
-      {/* ── Interest: the product surfaces ─────────────────────── */}
-      <section className="mx-auto max-w-7xl px-6 pb-40">
-        <h2 className="font-heading mb-14 font-bold" style={{ fontSize: "clamp(1.9rem,4.4vw,3.2rem)", letterSpacing: "-0.03em" }}>
+      {/* ── 4. What it found ──────────────────────────────────── */}
+      <section className={`mx-auto w-full max-w-7xl px-6 ${VIEW}`}>
+        <h2 className="font-heading font-bold" style={{ fontSize: "clamp(1.9rem,4.4vw,3.2rem)", letterSpacing: "-0.03em", maxWidth: "20ch" }}>
+          Evidence, not just the eye test
+        </h2>
+
+        <div className="mt-14 grid gap-10 lg:grid-cols-[1.15fr_1fr] lg:items-end lg:gap-16">
+          <div className="fc-rise">
+            <span
+              className="font-heading block font-bold"
+              style={{ fontSize: "clamp(5rem,15vw,11rem)", lineHeight: 0.85, letterSpacing: "-0.04em", color: "#7FA9FF" }}
+            >
+              {signedPp(stats.widestEdgePp)}
+            </span>
+            <p className="mt-6 max-w-[34ch]" style={{ color: BONE, fontSize: "1.05rem", lineHeight: 1.6 }}>
+              Win-rate points above a coin flip when the rest gap is at its widest, across{" "}
+              {stats.widestEdgeGames.toLocaleString()} games.
+            </p>
+          </div>
+
+          <div className="flex flex-col gap-8">
+            <div className="fc-rise" style={{ borderTop: "1px solid rgba(245,241,232,.14)", paddingTop: "1.5rem" }}>
+              <span className="font-heading font-bold" style={{ fontSize: "clamp(2rem,4vw,3rem)", lineHeight: 1 }}>
+                {`${NBA_SEASONS.length} seasons`}
+              </span>
+              <p className="mt-3 max-w-[46ch]" style={{ color: DIM, lineHeight: 1.6 }}>
+                {stats.games.toLocaleString()} completed games where the model made a call. The
+                ones it reads as too close carry no claim at all.
+              </p>
+            </div>
+            <div className="fc-rise" style={{ borderTop: "1px solid rgba(245,241,232,.14)", paddingTop: "1.5rem" }}>
+              <span className="font-heading font-bold" style={{ fontSize: "clamp(2rem,4vw,3rem)", lineHeight: 1, color: "#E0A340" }}>
+                {signedPp(stats.overallEdgePp)}
+              </span>
+              <p className="mt-3 max-w-[46ch]" style={{ color: DIM, lineHeight: 1.6 }}>
+                Across every call it makes, not only the strongest. Much of the underlying gap is
+                structural — geography and broadcast windows, not favouritism.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── 5. Where to use it ────────────────────────────────── */}
+      <section className={`mx-auto w-full max-w-7xl px-6 ${VIEW}`}>
+        <h2 className="font-heading mb-12 font-bold" style={{ fontSize: "clamp(1.9rem,4.4vw,3.2rem)", letterSpacing: "-0.03em" }}>
           {COUNT_WORD[SURFACES.length]} surfaces
         </h2>
         {/* A labelled landmark: this is a second, distinct set of navigation links, and
             each one's accessible name is "<label> <copy>" because the card is one target. */}
-        <nav aria-label="Product surfaces" className="flex flex-col gap-2 lg:h-[26rem] lg:flex-row">
+        <nav aria-label="Product surfaces" className="flex flex-col gap-2 lg:h-[24rem] lg:flex-row">
           {SURFACES.map((s, i) => (
             <Link
               key={s.href}
               href={s.href}
-              // Equal widths, and no width animation on hover. The card used to expand to
-              // flex-[3.2], which re-wrapped its whole paragraph on every frame of the
-              // transition — every line re-broke continuously, which read as chaos rather
-              // than motion. Hover now changes only colour, which cannot reflow text.
               className="group relative flex flex-1 flex-col justify-between overflow-hidden rounded-xl border p-6 transition-colors duration-300 hover:border-[rgba(245,241,232,.34)] hover:bg-[rgba(245,241,232,.04)]"
               style={{ borderColor: "rgba(245,241,232,.14)", background: "linear-gradient(180deg,rgba(245,241,232,.05),rgba(11,13,16,.6))" }}
             >
-              {/* Decorative, and aria-hidden for it: the index is ornament and the route is
-                  already carried by href. Keeping them out of the accessible name leaves it
-                  as "<label> <copy>", which is what e2e/about.spec.ts anchors on. */}
               <span
                 aria-hidden="true"
                 className="mono flex items-baseline justify-between gap-2"
@@ -331,21 +378,13 @@ export function AboutContent() {
                 <span className="truncate">{s.href}</span>
               </span>
 
-              <div aria-hidden="true" className="my-6 px-1 opacity-70 transition-opacity duration-500 group-hover:opacity-100">
+              <div aria-hidden="true" className="my-5 px-1 opacity-70 transition-opacity duration-500 group-hover:opacity-100">
                 <SurfaceGlyph kind={i} />
               </div>
 
-              {/* Fixed height, so every card's text block starts at the same y and the
-                  names sit on one line. Bottom-anchored blocks of differing copy length were
-                  pushing each title to its own height, which read as a ragged row. */}
-              <div className="lg:min-h-[9.5rem]">
+              <div className="lg:min-h-[8.5rem]">
                 <span className="font-heading block whitespace-nowrap text-xl font-bold">{s.name}</span>
-                {/* Always legible. This copy used to be lg:opacity-0 until hover, which left
-                    tall empty boxes at rest — the accordion read as a loading state. */}
-                <span
-                  className="mt-3 block max-w-[30rem] text-sm"
-                  style={{ color: DIM, lineHeight: 1.6 }}
-                >
+                <span className="mt-3 block max-w-[30rem] text-sm" style={{ color: DIM, lineHeight: 1.6 }}>
                   {s.copy}
                 </span>
               </div>
@@ -354,30 +393,39 @@ export function AboutContent() {
         </nav>
       </section>
 
-      {/* ── Desire: stacking method cards ─────────────────────── */}
-      <section className="mx-auto max-w-5xl px-6 pb-40">
-        <h2 className="font-heading mb-14 font-bold" style={{ fontSize: "clamp(1.9rem,4.4vw,3.2rem)", letterSpacing: "-0.03em", maxWidth: "22ch" }}>
+      {/* ── 6. The standard ───────────────────────────────────── */}
+      <section className={`mx-auto w-full max-w-6xl px-6 ${VIEW}`}>
+        <h2 className="font-heading font-bold" style={{ fontSize: "clamp(1.9rem,4.4vw,3.2rem)", letterSpacing: "-0.03em", maxWidth: "22ch" }}>
           How a number earns its place
         </h2>
-        {METHOD.map((m, i) => (
-          <article
-            key={m.n}
-            className="fc-card sticky top-[16vh] mb-6 flex min-h-[19rem] flex-col justify-between rounded-2xl border p-10"
-            style={{ borderColor: "rgba(245,241,232,.16)", background: ["#12161B", "#161B22", "#1B2129"][i] }}
-          >
-            <span className="font-heading font-bold" style={{ fontSize: "clamp(2.6rem,6vw,5rem)", lineHeight: 1, color: "rgba(245,241,232,.14)" }}>
-              {m.n}
-            </span>
-            <div>
-              <h3 className="font-heading font-bold" style={{ fontSize: "clamp(1.4rem,2.8vw,2.1rem)", maxWidth: "22ch" }}>{m.h}</h3>
-              <p className="mt-3 max-w-[46ch]" style={{ color: DIM, lineHeight: 1.65 }}>{m.p}</p>
+        <p className="mt-6 max-w-[52ch]" style={{ color: DIM, lineHeight: 1.65 }}>
+          Three rules, and what each one costs. A rule is only worth stating if something is
+          given up for it.
+        </p>
+
+        <dl className="mt-14 flex flex-col">
+          {STANDARD.map((s, i) => (
+            <div
+              key={s.rule}
+              className="fc-rise grid gap-x-14 gap-y-3 py-8 md:grid-cols-2"
+              style={{ borderTop: "1px solid rgba(245,241,232,.14)", borderBottom: i === STANDARD.length - 1 ? "1px solid rgba(245,241,232,.14)" : undefined }}
+            >
+              <dt className="font-heading font-bold" style={{ fontSize: "clamp(1.3rem,2.4vw,1.9rem)", lineHeight: 1.2, letterSpacing: "-0.015em" }}>
+                {s.rule}
+              </dt>
+              <dd>
+                <span className="mono block" style={{ fontSize: 10, letterSpacing: "0.16em", color: "rgba(245,241,232,.34)" }}>
+                  RULES OUT
+                </span>
+                <p className="mt-2.5" style={{ color: DIM, lineHeight: 1.65 }}>{s.rulesOut}</p>
+              </dd>
             </div>
-          </article>
-        ))}
+          ))}
+        </dl>
       </section>
 
-      {/* ── Action ────────────────────────────────────────────── */}
-      <section className="px-6 pb-44 pt-16 text-center">
+      {/* ── 7. The way in ─────────────────────────────────────── */}
+      <section className={`items-center px-6 text-center ${VIEW}`}>
         <h2 className="font-heading mx-auto max-w-4xl font-bold" style={{ fontSize: "clamp(2.3rem,7.5vw,6rem)", lineHeight: 0.98, letterSpacing: "-0.035em" }}>
           Read the schedule before it reads you
         </h2>
