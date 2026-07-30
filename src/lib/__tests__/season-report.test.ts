@@ -168,3 +168,120 @@ describe("buildSeasonReport vs buildHistoricalBacktest", () => {
     expect(report.atLeastTwo.winPct).toBe(bucket!.winPct);
   });
 });
+
+describe("buildSeasonReport — rest edge conversion", () => {
+  it("scores each team against its own tired record, not the league's", () => {
+    const rows: SeasonReportRow[] = [
+      // Team 1 rested and wins twice.
+      game({ gameId: 1, homeTeamId: 1, awayTeamId: 2, home: side(1), away: side(4) }),
+      game({ gameId: 2, homeTeamId: 1, awayTeamId: 3, home: side(1), away: side(4) }),
+      // Team 1 tired and loses twice (it is away, and away loses 90-100).
+      game({ gameId: 3, homeTeamId: 2, awayTeamId: 1, home: side(1), away: side(4) }),
+      game({ gameId: 4, homeTeamId: 3, awayTeamId: 1, home: side(1), away: side(4) }),
+    ];
+
+    const team1 = buildSeasonReport("2025-26", rows).teams.find((t) => t.teamId === 1);
+
+    expect(team1).toMatchObject({
+      restedGames: 2,
+      restedWins: 2,
+      restedWinPct: 100,
+      tiredGames: 2,
+      tiredWins: 0,
+      tiredWinPct: 0,
+      swing: 100,
+    });
+  });
+
+  it("leaves swing null when a team has no games on one side of the split", () => {
+    const rows: SeasonReportRow[] = [
+      game({ gameId: 1, homeTeamId: 1, awayTeamId: 2, home: side(1), away: side(4) }),
+    ];
+
+    const teams = buildSeasonReport("2025-26", rows).teams;
+
+    expect(teams.find((t) => t.teamId === 1)).toMatchObject({ tiredGames: 0, swing: null });
+    expect(teams.find((t) => t.teamId === 2)).toMatchObject({ restedGames: 0, swing: null });
+  });
+
+  it("sorts by swing descending, nulls last, tie-broken on teamId", () => {
+    const rows: SeasonReportRow[] = [
+      // Home is the fresher side and home always wins here, so whoever is home is
+      // rested-and-won and whoever is away is tired-and-lost. Teams 3 and 4 each get
+      // one of each → swing +100 both.
+      game({ gameId: 1, homeTeamId: 3, awayTeamId: 4, home: side(1), away: side(4) }),
+      game({ gameId: 2, homeTeamId: 4, awayTeamId: 3, home: side(1), away: side(4) }),
+      // Away is the fresher side and away always loses, so teams 5 and 6 are each
+      // rested-and-lost once and tired-and-won once → swing −100 both.
+      game({ gameId: 3, homeTeamId: 6, awayTeamId: 5, home: side(4), away: side(1) }),
+      game({ gameId: 4, homeTeamId: 5, awayTeamId: 6, home: side(4), away: side(1) }),
+    ];
+
+    const teams = buildSeasonReport("2025-26", rows).teams;
+
+    // +100 pair first in teamId order, then the −100 pair in teamId order.
+    expect(teams.map((t) => t.teamId)).toEqual([3, 4, 5, 6]);
+    expect(teams.map((t) => t.swing)).toEqual([100, 100, -100, -100]);
+  });
+
+  it("puts every null swing after every scored one, whatever the teamIds", () => {
+    const rows: SeasonReportRow[] = [
+      // Team 1 is the fresher side here and wins → rested 1-0.
+      game({ gameId: 1, homeTeamId: 1, awayTeamId: 9, home: side(1), away: side(4) }),
+      // Team 1 is the tireder side here and loses → tired 0-1. Team 2 only ever rests.
+      game({ gameId: 2, homeTeamId: 2, awayTeamId: 1, home: side(1), away: side(4) }),
+    ];
+
+    const teams = buildSeasonReport("2025-26", rows).teams;
+
+    // Team 1 has both arms (+100); teams 2 and 9 have one arm each, so they trail in teamId order.
+    expect(teams.map((t) => t.teamId)).toEqual([1, 2, 9]);
+    expect(teams.map((t) => t.swing)).toEqual([100, null, null]);
+  });
+});
+
+describe("buildSeasonReport — schedule tax", () => {
+  it("counts schedule facts on every completed game, including neutral ones", () => {
+    const rows: SeasonReportRow[] = [
+      game({
+        gameId: 1,
+        homeTeamId: 1,
+        awayTeamId: 2,
+        // Neutral, so this game contributes to no rate at all.
+        home: side(1, { travelDistanceMiles: "500.4", isBackToBack: true }),
+        away: side(1.2, { travelDistanceMiles: "1200.6", isThreeInFour: true, hasTimeZoneDisplacement: true }),
+      }),
+    ];
+
+    const teams = buildSeasonReport("2025-26", rows).teams;
+
+    expect(teams.find((t) => t.teamId === 1)).toMatchObject({
+      restedGames: 0,
+      tiredGames: 0,
+      travelMiles: 500,
+      backToBacks: 1,
+      threeInFours: 0,
+      jetLagGames: 0,
+    });
+    expect(teams.find((t) => t.teamId === 2)).toMatchObject({
+      travelMiles: 1201,
+      backToBacks: 0,
+      threeInFours: 1,
+      jetLagGames: 1,
+    });
+  });
+
+  it("ignores games without a final score, so future travel is not counted as flown", () => {
+    const rows: SeasonReportRow[] = [
+      game({
+        gameId: 1,
+        homeTeamId: 1,
+        homeScore: null,
+        awayScore: null,
+        home: side(1, { travelDistanceMiles: "999" }),
+      }),
+    ];
+
+    expect(buildSeasonReport("2025-26", rows).teams).toEqual([]);
+  });
+});
