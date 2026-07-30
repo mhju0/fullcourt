@@ -95,6 +95,26 @@ export interface HomeAwayBreakdown {
   };
 }
 
+/**
+ * Rest's effect with venue held fixed. Every rate here is a *home* win rate, so the
+ * difference between the two conditions is what rest is worth once home-court advantage
+ * is taken out of it — unlike `overallWinRate`, which blends the two.
+ */
+export interface VenueControlledRestEffect {
+  /** All final games in scope, including ones too close to call. */
+  games: number;
+  /** Home win rate across every game in scope — the home-court baseline. */
+  baselineHomeWinRate: number;
+  homeRestedGames: number;
+  /** Home win rate in games where the home side was the more rested one. */
+  homeRestedHomeWinRate: number;
+  awayRestedGames: number;
+  /** Home win rate in games where the *visitor* was the more rested one. */
+  awayRestedHomeWinRate: number;
+  /** homeRestedHomeWinRate − awayRestedHomeWinRate, in percentage points. */
+  swingPp: number;
+}
+
 /** Historical backtest stats (final games with fatigue data, |RA| >= 0.5). */
 export interface AnalysisResponse {
   /** Total games counted (|RA| >= 0.5). */
@@ -113,6 +133,14 @@ export interface AnalysisResponse {
     restedTeamWins: number;
     winPct: number;
   }[];
+  /** The honest effect size: rest's worth with home-court advantage held out of it. */
+  venueControlled: VenueControlledRestEffect;
+  /**
+   * The same figure per era. Worth publishing because the two components move in opposite
+   * directions — home-court advantage has decayed while the rest effect has grown — so the
+   * blended headline drifts down while the thing being measured gets stronger.
+   */
+  venueControlledByEra: (VenueControlledRestEffect & { label: string })[];
 }
 
 // ─── Game search ─────────────────────────────────────────────────

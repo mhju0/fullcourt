@@ -62,8 +62,9 @@ export const OTHER_NAV_ITEMS = [
   {
     href: "/referees",
     label: "REFEREE EFFECT",
-    guideDescription:
-      "See each referee's whistle against the league baseline — and how much of it is noise.",
+    // The page is a placeholder — the whistle numbers came back inside noise and were pulled.
+    // The description has to stop promising a table that is no longer there.
+    guideDescription: "Still being built.",
   },
 ] as const;
 
