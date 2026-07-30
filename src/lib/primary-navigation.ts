@@ -53,6 +53,14 @@ export const OTHER_NAV_LABEL = "OTHER";
  */
 export const OTHER_NAV_ITEMS = [
   {
+    href: "/behind-the-data",
+    // Not "METHODOLOGY": that word promises a paper. This page is read by people deciding
+    // whether to trust a number they just saw, and it names the thing they want.
+    label: "BEHIND THE DATA",
+    guideDescription:
+      "Read how the fatigue score is calculated, what each term is worth, and what the model cannot see.",
+  },
+  {
     href: "/shot-quality",
     // The page's own h1 minus the jargon; "xeFG%" stays in the eyebrow where context decodes it.
     label: "SHOT VALUE",

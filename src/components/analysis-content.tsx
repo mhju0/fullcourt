@@ -71,7 +71,12 @@ const exploreTdBaseStyle: React.CSSProperties = {
 
 /** "+3.5pp" / "−0.1pp", with a true minus sign rather than a hyphen. */
 function signedPp(value: number): string {
-  return value >= 0 ? `+${value}pp` : `−${Math.abs(value)}pp`
+  return value >= 0 ? `+${value.toFixed(1)}pp` : `−${Math.abs(value).toFixed(1)}pp`
+}
+
+/** One decimal always, so a row of rates does not mix "60%" with "61.3%". */
+function ratePct(value: number): string {
+  return `${value.toFixed(1)}%`
 }
 
 function SectionDivider({ label, descriptor }: { label: string; descriptor?: string }) {
@@ -757,7 +762,7 @@ export function AnalysisContent() {
         <StatCard
           label="REST, NET OF HOME COURT"
           value={`${signedPp(data.venueControlled.swingPp)}`}
-          sub={`VS ${data.venueControlled.baselineHomeWinRate}% HOME BASELINE`}
+          sub={`VS ${ratePct(data.venueControlled.baselineHomeWinRate)} HOME BASELINE`}
           accent="var(--term-red)"
         />
         {ra5 && (
@@ -857,9 +862,12 @@ export function AnalysisContent() {
 
         <div className="mt-5 grid gap-px overflow-hidden" style={{ background: "var(--term-border)", border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))" }}>
           {[
-            { label: "Home team more rested", value: `${data.venueControlled.homeRestedHomeWinRate}%`, sub: `${data.venueControlled.homeRestedGames.toLocaleString()} games` },
-            { label: "Home-court baseline", value: `${data.venueControlled.baselineHomeWinRate}%`, sub: "every game, either way" },
-            { label: "Visitor more rested", value: `${data.venueControlled.awayRestedHomeWinRate}%`, sub: `${data.venueControlled.awayRestedGames.toLocaleString()} games` },
+            // Labelled "when …" rather than "home team more rested": every value in this row
+            // is a home win rate, the condition is what varies, and the old wording collided
+            // with the HOME TEAM MORE RESTED section heading further down the page.
+            { label: "When home is rested", value: ratePct(data.venueControlled.homeRestedHomeWinRate), sub: `${data.venueControlled.homeRestedGames.toLocaleString()} games` },
+            { label: "Home-court baseline", value: ratePct(data.venueControlled.baselineHomeWinRate), sub: "every game, either way" },
+            { label: "When visitor is rested", value: ratePct(data.venueControlled.awayRestedHomeWinRate), sub: `${data.venueControlled.awayRestedGames.toLocaleString()} games` },
             { label: "Rest is worth", value: signedPp(data.venueControlled.swingPp), sub: "difference of the two" },
           ].map((cell) => (
             <div key={cell.label} className="flex flex-col gap-[3px] bg-[var(--term-surface)] px-[13px] py-[11px]">
@@ -878,7 +886,7 @@ export function AnalysisContent() {
 
         <p className="mt-4" style={{ maxWidth: "46rem", fontSize: 14, color: "var(--term-text-muted)", lineHeight: 1.55 }}>
           Even when the visitor is the fresher team, it still loses{" "}
-          {data.venueControlled.awayRestedHomeWinRate}% of the time. Home court is worth
+          {ratePct(data.venueControlled.awayRestedHomeWinRate)} of the time. Home court is worth
           roughly three times what rest is. This is associational, not causal: there is no
           control for opponent strength, and rest correlates with schedule position — a rested
           visitor is often a good team midway through a road trip.
@@ -910,7 +918,7 @@ export function AnalysisContent() {
                     <tr key={era.label}>
                       <td style={termTdStyle}>{era.label}</td>
                       <td style={{ ...termTdStyle, textAlign: "right" }}>{era.games.toLocaleString()}</td>
-                      <td style={{ ...termTdStyle, textAlign: "right" }}>{era.baselineHomeWinRate}%</td>
+                      <td style={{ ...termTdStyle, textAlign: "right" }}>{ratePct(era.baselineHomeWinRate)}</td>
                       <td
                         style={{
                           ...termTdStyle,

@@ -86,8 +86,12 @@ export function OnboardingGuide() {
                     lineHeight: 1.5,
                   }}
                 >
-                  Five views for exploring schedule load, historical results,
-                  playoff probabilities, and shot value.
+                  {/* Deliberately count-free and topic-free. This list renders every entry in
+                      PRIMARY_NAV_ITEMS, so a hardcoded "Five views" went stale the moment the
+                      OTHER menu gained a surface — it was already claiming five while listing
+                      seven. Same principle as /about, which counts its list rather than
+                      naming a number. */}
+                  Every surface, and what each one is for.
                 </Dialog.Description>
               </div>
 

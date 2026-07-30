@@ -128,6 +128,43 @@ const TIME_ZONE_DISPLACEMENT_MIN_HOURS = 2;
 
 const SAME_ARENA_MILES = 1;
 
+/**
+ * The constants the Behind the Data page publishes, read straight from the model.
+ *
+ * The page explains this formula to readers, so any number it states has to be the number
+ * the code actually uses. Referencing the consts rather than retyping them into prose makes
+ * that drift impossible — change a value above and the page follows.
+ */
+export const FATIGUE_CONSTANTS = Object.freeze({
+  decayLookbackDays: DECAY_LOOKBACK_DAYS,
+  decayRate: DECAY_RATE,
+  gameBaseCost: GAME_BASE_COST,
+  travelLookbackDays: TRAVEL_LOOKBACK_DAYS,
+  travelScale: TRAVEL_SCALE,
+  travelReferenceMiles: TRAVEL_REFERENCE_MILES,
+  b2bMultiplier: B2B_MULTIPLIER,
+  b2bNominalHours: B2B_TURNAROUND_NOMINAL_HOURS,
+  b2bPerHour: B2B_TURNAROUND_PER_HOUR,
+  b2bMin: B2B_MULTIPLIER_MIN,
+  b2bMax: B2B_MULTIPLIER_MAX,
+  altitudeMultiplier: ALTITUDE_MULTIPLIER,
+  altitudeCarryover: ALTITUDE_CARRYOVER_MULTIPLIER,
+  blowoutFloor: BLOWOUT_MARGIN_FLOOR,
+  blowoutRange: BLOWOUT_MARGIN_RANGE,
+  blowoutMaxDiscount: BLOWOUT_MAX_DISCOUNT,
+  freshnessMaxBonus: FRESHNESS_MAX_BONUS,
+  freshnessPlateauDays: FRESHNESS_PLATEAU_DAYS,
+  overtimeSingle: OVERTIME_SINGLE_BONUS,
+  overtimeMulti: OVERTIME_MULTI_BONUS,
+  densityMaxMultiplier: SCHEDULE_STRESS_MAX_MULT,
+  roadStreakFree: ROAD_STREAK_SOFT,
+  roadStreakPerGame: ROAD_STREAK_PER_GAME,
+  displacementBonus: TIME_ZONE_DISPLACEMENT_BONUS,
+  displacementMinHours: TIME_ZONE_DISPLACEMENT_MIN_HOURS,
+  eastwardMultiplier: TIME_ZONE_EASTWARD_MULTIPLIER,
+  westwardMultiplier: TIME_ZONE_WESTWARD_MULTIPLIER,
+});
+
 // ─── Types ──────────────────────────────────────────────────────
 
 export interface RecentGame {
