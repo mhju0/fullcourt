@@ -126,9 +126,11 @@ def main() -> int:
         p = name_idx(pid, games[0]["name"])
         whole = arm(games)
         ages = [g["age"] for g in games if g["age"] is not None]
-        # Traded mid-season: list the two he played most, then a marker.
+        # Traded mid-season: list the two he played most, then a marker. Ties on game
+        # count break alphabetically so re-exports are reproducible — labels are
+        # load-bearing for the team filter.
         order = sorted({g["team"] for g in games if g["team"]},
-                       key=lambda t: -sum(1 for g in games if g["team"] == t))
+                       key=lambda t: (-sum(1 for g in games if g["team"] == t), t))
         label = "/".join(order[:2]) + ("+" if len(order) > 2 else "")
         t = arm([g for g in games if b2b(g)])
         c = arm([g for g in games if rested(g)])
@@ -143,14 +145,14 @@ def main() -> int:
     # The box-score position column is filled only for the five starters, so this is
     # "what he plays when he starts". 86% of players ever started; the rest export ""
     # and appear only under the page's "All positions". Ties break toward the position
-    # he started most recently, via the lexicographic order of NBA game ids.
+    # he started most recently, via (season, game id).
     pos_count: dict[str, Counter] = defaultdict(Counter)
-    pos_last: dict[tuple[str, str], str] = {}
+    pos_last: dict[tuple[str, str], tuple[str, str]] = {}
     for r in rows:
         if r.get("pos"):
             pos_count[r["pid"]][r["pos"]] += 1
             key = (r["pid"], r["pos"])
-            pos_last[key] = max(pos_last.get(key, ""), r["gid"])
+            pos_last[key] = max(pos_last.get(key, ("", "")), (r["season"], r["gid"]))
     pos = [""] * len(names)
     for pid, i in nix.items():
         c = pos_count.get(pid)

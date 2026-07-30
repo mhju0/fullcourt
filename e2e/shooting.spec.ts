@@ -116,7 +116,7 @@ test.describe("Shooting by Rest", () => {
     const okc = await page.getByTestId("player-row").count();
     expect(okc).toBeGreaterThan(0);
     expect(okc).toBeLessThan(all);
-    // Every visible team cell belongs to the franchise — Seattle years included.
+    // Every visible team cell belongs to the franchise (the SEA arm matters only in pre-2008 seasons).
     for (const cell of await page.getByTestId("player-row").locator("td:nth-child(3)").allTextContents()) {
       expect(cell).toMatch(/OKC|SEA/);
     }

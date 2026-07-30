@@ -31,7 +31,7 @@ per player, parallel to `names`.
 - The export prints the coverage split so a future re-export that loses the column fails
   loudly, not silently.
 - One re-export of `public/data/player-rest.json`. The component reads `payload.pos`
-  with an optional-chain so a CDN-cached old file renders (position filter inert) rather
+  with an optional-chain so a CDN-cached old file renders (position filter matches nothing when set) rather
   than crashes.
 
 ## 2 · Filter logic — pure, in `src/lib/player-rest.ts`
