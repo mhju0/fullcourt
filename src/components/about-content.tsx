@@ -128,30 +128,27 @@ const SURFACES = [
  */
 const STANDARD = [
   {
-    rule: "A number ships with its sample size",
-    rulesOut:
-      "Rates with no n attached. A split measured over three games would otherwise read exactly like one measured over three hundred.",
+    rule: "Every number shows its sample size",
+    rulesOut: "Not knowing whether a result came from three games or three hundred.",
   },
   {
-    rule: "One engine, never duplicated",
-    rulesOut:
-      "A matchup card that quietly disagrees with the backtest. Every pipeline writer and every read share one source of truth, so the number on screen is the number that was tested.",
+    rule: "One model, used everywhere",
+    rulesOut: "A game card quietly disagreeing with the backtest behind it.",
   },
   {
-    rule: "Limits publish beside results",
-    rulesOut:
-      "Rounding a finding up. Out-of-sample accuracy sits next to in-sample, and a calibration win is called a calibration win rather than an accuracy jump.",
+    rule: "Limits are published with results",
+    rulesOut: "A small win being told as a big one.",
   },
 ];
 
 /** What the fatigue score is assembled from, in the order the model applies it. */
 const INPUTS = [
-  { term: "Recent workload", detail: "Every game in the last 30 days, decaying — last night counts for far more than last week." },
-  { term: "Travel", detail: "Great-circle miles between consecutive arenas, log-scaled, with no phantom trips home." },
-  { term: "Body clock", detail: "Two or more hours of time shift, charged harder eastward and decaying as the team re-entrains." },
-  { term: "Back-to-backs", detail: "Sharpened by the real gap between tip-offs, because a late game into an early one is not 24 hours." },
-  { term: "Altitude", detail: "Denver, Utah and Mexico City, plus a smaller residue the night after." },
-  { term: "Density", detail: "Games per rolling window measured against a normal pace, not a raw count." },
+  { term: "Recent workload", detail: "Games in the last 30 days, decaying. Last night counts for far more than last week." },
+  { term: "Travel", detail: "Miles between arenas, log-scaled. No phantom trips home." },
+  { term: "Body clock", detail: "Time zones crossed, charged harder going east, fading as the team adjusts." },
+  { term: "Back-to-backs", detail: "Weighted by the real hours between tip-offs, not just the calendar." },
+  { term: "Altitude", detail: "Denver, Utah and Mexico City — plus the night after." },
+  { term: "Density", detail: "Games per window against a normal pace, not a raw count." },
 ];
 
 /* The heading counts the list rather than stating a number, so adding a surface can
@@ -166,8 +163,15 @@ export interface AboutStats {
   widestEdgeGames: number;
 }
 
-/** Every section is one viewport minus the sticky chrome, so nothing lands half-visible. */
-const VIEW = "flex min-h-[calc(100svh-72px)] flex-col justify-center";
+/**
+ * Every section is one viewport minus the sticky chrome, so nothing lands half-visible.
+ *
+ * The vertical padding is not decoration. `min-h` sets a floor, not a ceiling, so a section
+ * whose content exceeds it grows — and two tall sections in a row then met with no gap at all,
+ * which read as one continuous wall of text. The padding only takes effect in exactly that
+ * case; where content is shorter than the viewport the section is still exactly one screen.
+ */
+const VIEW = "flex min-h-[calc(100svh-72px)] flex-col justify-center py-24";
 
 const signedPp = (v: number) => (v >= 0 ? `+${v.toFixed(1)}` : `\u2212${Math.abs(v).toFixed(1)}`);
 
@@ -377,7 +381,9 @@ export function AboutContent({ stats }: { stats: AboutStats }) {
 
       {/* ── 5. What the score is made of ──────────────────────── */}
       <section className={`mx-auto w-full max-w-7xl px-6 ${VIEW}`}>
-        <div className="grid gap-12 lg:grid-cols-[22rem_1fr] lg:gap-20">
+        {/* 26rem, not 22: at the narrower measure the heading broke as "What the / score is
+            made / of", stranding a two-letter word on its own line. */}
+        <div className="grid gap-12 lg:grid-cols-[26rem_1fr] lg:gap-16">
           <div className="lg:sticky lg:top-32 lg:self-start">
             <h2 className="font-heading font-bold" style={{ fontSize: "clamp(1.9rem,4.4vw,3.2rem)", letterSpacing: "-0.03em", lineHeight: 1.05 }}>
               What the score is made of
@@ -388,19 +394,21 @@ export function AboutContent({ stats }: { stats: AboutStats }) {
             </p>
           </div>
 
-          <ol className="flex flex-col">
+          {/* Two columns from sm up. Stacked, six items ran this section to 1.25 screens and
+              put two dense text blocks back to back with the rules panel below it. */}
+          <ol className="grid gap-x-12 sm:grid-cols-2">
             {INPUTS.map((input, i) => (
               <li
                 key={input.term}
-                className="fc-rise grid grid-cols-[2.5rem_1fr] items-baseline gap-x-5 py-6"
-                style={{ borderTop: i === 0 ? undefined : "1px solid rgba(245,241,232,.12)" }}
+                className="fc-rise grid grid-cols-[2.5rem_1fr] items-baseline gap-x-4 py-5"
+                style={{ borderTop: "1px solid rgba(245,241,232,.12)" }}
               >
                 <span className="mono" style={{ fontSize: 11, letterSpacing: "0.1em", color: "rgba(245,241,232,.3)" }}>
                   {String(i + 1).padStart(2, "0")}
                 </span>
                 <div>
-                  <h3 className="font-heading text-xl font-bold">{input.term}</h3>
-                  <p className="mt-2 max-w-[54ch]" style={{ color: DIM, lineHeight: 1.6 }}>{input.detail}</p>
+                  <h3 className="font-heading text-lg font-bold">{input.term}</h3>
+                  <p className="mt-1.5 max-w-[38ch] text-sm" style={{ color: DIM, lineHeight: 1.6 }}>{input.detail}</p>
                 </div>
               </li>
             ))}
@@ -409,34 +417,44 @@ export function AboutContent({ stats }: { stats: AboutStats }) {
       </section>
 
       {/* ── 6. The standard ───────────────────────────────────── */}
-      <section className={`mx-auto w-full max-w-6xl px-6 ${VIEW}`}>
+      {/* Set on a panel, unlike the plain hairline list two sections up. Both are dense and
+          both were the same body colour, so on one screen they read as one undifferentiated
+          block. Fewer words here does most of the work; the surface does the rest. */}
+      <section className={`mx-auto w-full max-w-5xl px-6 ${VIEW}`}>
         <h2 className="font-heading font-bold" style={{ fontSize: "clamp(1.9rem,4.4vw,3.2rem)", letterSpacing: "-0.03em", maxWidth: "22ch" }}>
           How a number earns its place
         </h2>
-        <p className="mt-6 max-w-[52ch]" style={{ color: DIM, lineHeight: 1.65 }}>
-          Three rules, and what each one costs. A rule is only worth stating if something is
-          given up for it.
+        <p className="mt-5 max-w-[46ch]" style={{ color: DIM, fontSize: "1.05rem", lineHeight: 1.6 }}>
+          Three rules, and what each one costs.
         </p>
 
-        <dl className="mt-14 flex flex-col">
+        <div
+          className="fc-rise mt-12 overflow-hidden rounded-2xl border"
+          style={{ borderColor: "rgba(245,241,232,.14)", background: "rgba(245,241,232,.035)" }}
+        >
+          {/* The label is a column header, stated once. It read "RULES OUT" above every row,
+              which is three times to say a thing that only needed saying once. */}
+          <div
+            className="mono hidden gap-8 px-8 py-4 md:grid md:grid-cols-[1.1fr_1fr]"
+            style={{ fontSize: 10, letterSpacing: "0.16em", color: "rgba(245,241,232,.4)", borderBottom: "1px solid rgba(245,241,232,.12)" }}
+          >
+            <span>THE RULE</span>
+            <span>WHAT IT RULES OUT</span>
+          </div>
+
           {STANDARD.map((s, i) => (
             <div
               key={s.rule}
-              className="fc-rise grid gap-x-14 gap-y-3 py-8 md:grid-cols-2"
-              style={{ borderTop: "1px solid rgba(245,241,232,.14)", borderBottom: i === STANDARD.length - 1 ? "1px solid rgba(245,241,232,.14)" : undefined }}
+              className="grid gap-x-8 gap-y-2 px-8 py-7 md:grid-cols-[1.1fr_1fr] md:items-baseline"
+              style={{ borderTop: i === 0 ? undefined : "1px solid rgba(245,241,232,.12)" }}
             >
-              <dt className="font-heading font-bold" style={{ fontSize: "clamp(1.3rem,2.4vw,1.9rem)", lineHeight: 1.2, letterSpacing: "-0.015em" }}>
+              <p className="font-heading font-bold" style={{ fontSize: "clamp(1.15rem,2vw,1.5rem)", lineHeight: 1.25, letterSpacing: "-0.01em" }}>
                 {s.rule}
-              </dt>
-              <dd>
-                <span className="mono block" style={{ fontSize: 10, letterSpacing: "0.16em", color: "rgba(245,241,232,.34)" }}>
-                  RULES OUT
-                </span>
-                <p className="mt-2.5" style={{ color: DIM, lineHeight: 1.65 }}>{s.rulesOut}</p>
-              </dd>
+              </p>
+              <p style={{ color: DIM, lineHeight: 1.6 }}>{s.rulesOut}</p>
             </div>
           ))}
-        </dl>
+        </div>
       </section>
 
       {/* ── 7. The way in ─────────────────────────────────────── */}

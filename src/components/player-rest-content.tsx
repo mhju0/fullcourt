@@ -44,8 +44,11 @@ async function payloadFetcher(url: string): Promise<PlayerRestPayload> {
 }
 
 /** The 2019-20 season is absent league-wide; without a marker a career just looks broken. */
-const BUBBLE_BEFORE = 2020
-const BUBBLE_AFTER = 2018
+// Season start years, so 2020 = 2020-21 and 2018 = 2018-19; the gap between them is the
+// omitted 2019-20. Named by their position in the list, which runs newest-first — the row
+// ABOVE the marker is the later season. They read inverted otherwise and invite a "fix".
+const BUBBLE_ROW_ABOVE = 2020
+const BUBBLE_ROW_BELOW = 2018
 
 const VOLUME_OPTIONS = [
   { value: 0, label: "Everyone" },
@@ -421,13 +424,14 @@ function PlayerRows({
       {expanded &&
         seasons.map((s, i) => {
           const sr = seasonRow(index, s)
-          const bubble = i > 0 && seasons[i - 1][S.YEAR] === BUBBLE_BEFORE && s[S.YEAR] === BUBBLE_AFTER
+          const bubble = i > 0 && seasons[i - 1][S.YEAR] === BUBBLE_ROW_ABOVE && s[S.YEAR] === BUBBLE_ROW_BELOW
           return (
             <Fragment key={s[S.YEAR]}>
               {bubble && (
                 <tr className="fc-sub">
                   <td colSpan={10} style={{ ...termTdStyle, fontFamily: MONO_FONT_STACK, fontSize: 10.5, color: "var(--term-text-muted)" }}>
-                    2019-20 — omitted league-wide, the whole season and not only its bubble games
+                    2019-20 (the season that ended in the Orlando bubble, Jul–Oct 2020) — omitted
+                    league-wide: the whole season, not only its bubble games
                   </td>
                 </tr>
               )}
