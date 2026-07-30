@@ -105,20 +105,20 @@ export function NavBar() {
           borderBottom: "1px solid var(--term-border)",
         }}
       >
-        {/* Below ~900px the eight links do not fit a line, and the row was clipping them: on a
+        {/* Below ~900px the nine links do not fit a line, and the row was clipping them: on a
             390px phone the fifth tab wrapped inside a 44px box and the reference links were
             simply not on screen. It is now one horizontally scrollable strip — links keep their
             full size and `ml-auto` still right-aligns the reference group whenever the content
             does fit, so the desktop row is unchanged. A scroll strip over a drawer because the
-            whole nav is eight short labels: a hamburger would hide all eight behind a tap to
+            whole nav is nine short labels: a hamburger would hide all nine behind a tap to
             solve a problem that a swipe already solves. The OTHER menu is unaffected — it
             renders through a Portal, so this container cannot clip its popup. */}
         <div className="fc-nav-scroll mx-auto flex h-full max-w-7xl items-center gap-6 overflow-x-auto px-4 sm:px-6">
           {/* Two landmarks in one row. The product tabs keep the "Main navigation" name and
-              its asserted five-link count; the reference links are a separate landmark so
+              its asserted six-link count; the reference links are a separate landmark so
               they never inflate that count and so screen readers announce them as what they
               are. Visually they are the same size and weight as a tab — the gap is what says
-              "not one of the five", not a smaller type size. */}
+              "not one of the six", not a smaller type size. */}
           <nav aria-label="Main navigation" className="flex h-full shrink-0 items-center gap-6">
           {DIRECT_NAV_ITEMS.map(({ href, label }) => {
             const active = isActive(pathname, href)
