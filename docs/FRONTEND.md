@@ -703,7 +703,17 @@ broadcast aesthetic with mono metadata.
 The FullCourt logo ("Angled Divider" court) lives in `src/components/court-mark.tsx`
 (`<CourtMark size>` — a tilted center line splitting a blue/rested half from a red/fatigued
 half, with an amber center circle; fixed brand hexes, not theme tokens). It renders in the
-nav status bar, so its strokes are **near-black `#111318`** to read on the light chrome.
+brand bar, so its strokes are **near-black `#111318`** to read on the light chrome.
+
+**The divider leans top-right to bottom-left** — `M39 7 L33 41` in the 72×48 viewBox — matching
+the oversized `CourtSplit` court on `/about`. It leaned the other way until 2026-07-30, so the
+same mark pointed two directions depending on which surface you were looking at. That geometry
+is duplicated in four files (`court-mark.tsx`, `src/app/icon.svg`, `docs/logo.svg`, and the
+`MARK` string in `src/app/opengraph-image.tsx`) plus the hand-exported
+`docs/social-preview.png`; there is no shared source, so **change them together**. The center
+circle is the badge amber `#F5A623` everywhere, including in-app: it was `--term-amber`
+(`#C2410C`) in `CourtMark` alone until 2026-07-30, which at 34px read as a second red sitting
+next to the fatigued half rather than as the live accent.
 
 > **Off-page brand assets stay dark by design.** Four assets: the favicon (`src/app/icon.svg`),
 > the social/OG card (`src/app/opengraph-image.tsx`), the README header mark (`docs/logo.svg`)
