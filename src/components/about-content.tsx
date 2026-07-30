@@ -25,10 +25,24 @@ const GRAIN =
 function CourtSplit({ className = "" }: { className?: string }) {
   return (
     <svg viewBox="0 0 240 150" className={className} aria-hidden="true">
+      {/* The divider fades out at both ends instead of stopping dead on the court's edge.
+          A butt cap on a slanted line meets a horizontal border at a slant, so each end
+          showed as a blunt off-angle notch sitting just past the rule — the one detail on
+          this hero that read as unfinished. The gradient runs along the line itself
+          (userSpaceOnUse, same endpoints), so the stroke emerges and dissolves rather than
+          being cut. `round` caps clean up what little edge is left at 13% opacity. */}
+      <defs>
+        <linearGradient id="fc-court-split" gradientUnits="userSpaceOnUse" x1="150" y1="8" x2="96" y2="142">
+          <stop offset="0" stopColor={BONE} stopOpacity="0" />
+          <stop offset="0.22" stopColor={BONE} stopOpacity="0.55" />
+          <stop offset="0.78" stopColor={BONE} stopOpacity="0.55" />
+          <stop offset="1" stopColor={BONE} stopOpacity="0" />
+        </linearGradient>
+      </defs>
       <rect x="8" y="8" width="224" height="134" rx="4" fill="none" stroke={BONE} strokeOpacity=".28" strokeWidth="2" />
       <path d="M8 8 H150 L96 142 H8 Z" fill="#2563EB" fillOpacity=".13" />
       <path d="M150 8 H232 V142 H96 Z" fill="#DC2626" fillOpacity=".08" />
-      <path d="M150 8 L96 142" stroke={BONE} strokeOpacity=".55" strokeWidth="2.5" />
+      <path d="M150 8 L96 142" stroke="url(#fc-court-split)" strokeWidth="2.5" strokeLinecap="round" />
       <circle cx="120" cy="75" r="22" fill="none" stroke="#A16207" strokeOpacity=".7" strokeWidth="2" />
     </svg>
   );
