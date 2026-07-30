@@ -42,6 +42,23 @@ export const BIG_EDGE_FATIGUE_THRESHOLD = 1.5;
  */
 export const REST_DAYS_CAP = 5;
 
+/**
+ * Largest spread in games played between the busiest and quietest team that this module will
+ * still rank. Above it, the season is refused.
+ *
+ * No date filter can express this rule, which is why it lives here rather than in the
+ * season-regime policy: the problem is not *how* the games were played but that there are
+ * unequal numbers of them. This module ranks teams against each other within one season, so a
+ * team with four fewer games has four fewer chances to accumulate an edge — its total moves
+ * without the schedule having favoured anyone.
+ *
+ * Two, because the data says two is safe. Across all 40 ingested seasons the largest spread is
+ * **one** game (2012-13, a single cancellation), so the threshold has real margin and flags
+ * nothing currently in the database. A season halted mid-schedule sits far above it: teams had
+ * played 63 to 67 games when 2019-20 was suspended, a spread of four.
+ */
+export const RANKABLE_SEASON_GAME_SPREAD_LIMIT = 2;
+
 /** A game counts toward the 3+ day bucket at this rest-days edge or greater. */
 const LARGE_EDGE_DAYS = 3;
 
@@ -234,6 +251,38 @@ function toFatigue(raw: string | null): number | null {
  * A game counts for a team only when BOTH sides have a previous game in the season, so neither
  * team's opener is counted for either side.
  */
+/**
+ * Whether a season's games can be ranked against each other at all.
+ *
+ * Returns the counts so a caller can say *why* rather than only that it refused — a reader
+ * who asks for a season and gets nothing is owed the reason.
+ */
+export function seasonRankability(games: readonly DisparityGameRow[]): {
+  rankable: boolean;
+  fewestGames: number;
+  mostGames: number;
+  spread: number;
+} {
+  const played = new Map<number, number>();
+  for (const game of games) {
+    played.set(game.homeTeamId, (played.get(game.homeTeamId) ?? 0) + 1);
+    played.set(game.awayTeamId, (played.get(game.awayTeamId) ?? 0) + 1);
+  }
+  const counts = [...played.values()];
+  if (counts.length === 0) {
+    return { rankable: false, fewestGames: 0, mostGames: 0, spread: 0 };
+  }
+  const fewestGames = Math.min(...counts);
+  const mostGames = Math.max(...counts);
+  const spread = mostGames - fewestGames;
+  return {
+    rankable: spread <= RANKABLE_SEASON_GAME_SPREAD_LIMIT,
+    fewestGames,
+    mostGames,
+    spread,
+  };
+}
+
 export function computeScheduleDisparity(
   season: string,
   games: DisparityGameRow[]

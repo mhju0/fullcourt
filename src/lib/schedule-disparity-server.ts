@@ -3,7 +3,7 @@ import {
   getTeamDirectory,
 } from "@/lib/db/queries";
 import { formatEasternDateKey } from "@/lib/nba-season";
-import { computeScheduleDisparity } from "@/lib/schedule-disparity";
+import { computeScheduleDisparity, seasonRankability } from "@/lib/schedule-disparity";
 import type { ScheduleDisparityResponse, ScheduleDisparityTeam } from "@/types";
 
 /**
@@ -19,6 +19,19 @@ export async function getScheduleDisparity(
     getRegularSeasonScheduleForDisparity(season),
     getTeamDirectory(),
   ]);
+
+  // Refuse rather than mislead. This module's whole output is a ranking of teams against each
+  // other, so a season where they played unequal numbers of games produces a table that looks
+  // like a finding and is an artefact of exposure. The message carries the counts because a
+  // reader who asked for a season and got nothing is owed the reason.
+  const rankability = seasonRankability(games);
+  if (!rankability.rankable && games.length > 0) {
+    throw new Error(
+      `${season} cannot be ranked: teams played between ${rankability.fewestGames} and ` +
+        `${rankability.mostGames} games. Schedule edge compares teams within a season, so an ` +
+        `unequal number of games moves a team's total without the schedule having favoured anyone.`
+    );
+  }
 
   const result = computeScheduleDisparity(season, games);
   const byId = new Map(directory.map((t) => [t.id, t]));

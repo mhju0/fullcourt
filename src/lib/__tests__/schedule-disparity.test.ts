@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   computeScheduleDisparity,
+  seasonRankability,
   REST_DAYS_CAP,
   restDaysBeforeGames,
   type DisparityGameRow,
@@ -408,5 +409,58 @@ describe("rest days agree with the fatigue model", () => {
     const [, fromDisparity] = restDaysBeforeGames([prev, current]);
 
     expect(fromDisparity).toBe(fromFatigue);
+  });
+});
+
+/**
+ * The rule no date filter can express. Schedule Edge ranks teams against each other inside one
+ * season, so unequal game counts move a team's total for reasons the schedule did not cause.
+ */
+describe("seasonRankability", () => {
+  const game = (home: number, away: number): DisparityGameRow => ({
+    date: "2020-01-15",
+    status: "final",
+    homeTeamId: home,
+    awayTeamId: away,
+    homeFatigueScore: "3.0",
+    awayFatigueScore: "3.0",
+  });
+
+  /** `perTeam` games for each of four teams, then `extra` more between teams 1 and 2. */
+  const season = (perTeam: number, extra = 0) => {
+    const rows: DisparityGameRow[] = [];
+    for (let i = 0; i < perTeam; i++) {
+      rows.push(game(1, 2));
+      rows.push(game(3, 4));
+    }
+    for (let i = 0; i < extra; i++) rows.push(game(1, 2));
+    return rows;
+  };
+
+  it("ranks a season where every team played the same number", () => {
+    const r = seasonRankability(season(41));
+    expect(r.rankable).toBe(true);
+    expect(r.spread).toBe(0);
+  });
+
+  it("tolerates the odd cancellation, which real seasons have", () => {
+    // 2012-13 carried a one-game spread and must stay rankable.
+    const r = seasonRankability(season(41, 1));
+    expect(r.spread).toBe(1);
+    expect(r.rankable).toBe(true);
+  });
+
+  it("refuses a season halted mid-schedule", () => {
+    // 2019-20 shape: teams stopped between 63 and 67 games.
+    const r = seasonRankability(season(31, 4));
+    expect(r.spread).toBe(4);
+    expect(r.rankable).toBe(false);
+    expect(r.fewestGames).toBeLessThan(r.mostGames);
+  });
+
+  it("reports no games as un-rankable rather than throwing", () => {
+    const r = seasonRankability([]);
+    expect(r.rankable).toBe(false);
+    expect(r.mostGames).toBe(0);
   });
 });
