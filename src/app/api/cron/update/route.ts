@@ -114,16 +114,20 @@ export async function GET(request: Request) {
 
     const updates = reconcileLiveScores(gamesToCheck, nbaGames);
 
-    for (const update of updates) {
-      await db
-        .update(games)
-        .set({
-          status: update.status,
-          homeScore: update.homeScore,
-          awayScore: update.awayScore,
-        })
-        .where(eq(games.id, update.gameId));
-    }
+    // One round-trip per game, issued together rather than in series. `reconcileLiveScores`
+    // returns at most one update per distinct game id, so these never contend for the same row.
+    await Promise.all(
+      updates.map((update) =>
+        db
+          .update(games)
+          .set({
+            status: update.status,
+            homeScore: update.homeScore,
+            awayScore: update.awayScore,
+          })
+          .where(eq(games.id, update.gameId))
+      )
+    );
 
     return NextResponse.json({
       data: { gamesUpdated: updates.length },

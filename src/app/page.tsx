@@ -334,14 +334,27 @@ export default function HomePage() {
 
   // Summary metrics for the stat row. Page policy, not slate policy — the threshold
   // is this page's editorial call, so it stays here rather than inside the hook.
-  const diffs = slate.games
-    .map((g) => Math.abs(g.restAdvantage?.differential ?? 0))
-    .filter((d) => d > 0)
-  const avgRestAdv =
-    diffs.length === 0 ? "0.0" : (diffs.reduce((s, d) => s + d, 0) / diffs.length).toFixed(1)
-  const highConfGames = slate.games.filter(
-    (g) => Math.abs(g.restAdvantage?.differential ?? 0) >= HIGH_CONF_THRESHOLD
-  ).length
+  //
+  // One pass, memoized on the slate: this used to run map + filter + reduce + a second
+  // filter on every render — including renders driven by `view`, the season selector and
+  // the Realtime score overlay, none of which change the answer.
+  const { avgRestAdv, highConfGames } = useMemo(() => {
+    let sum = 0
+    let counted = 0
+    let highConf = 0
+    for (const g of slate.games) {
+      const diff = Math.abs(g.restAdvantage?.differential ?? 0)
+      if (diff > 0) {
+        sum += diff
+        counted += 1
+      }
+      if (diff >= HIGH_CONF_THRESHOLD) highConf += 1
+    }
+    return {
+      avgRestAdv: counted === 0 ? "0.0" : (sum / counted).toFixed(1),
+      highConfGames: highConf,
+    }
+  }, [slate.games])
 
   return (
     // gap-12 sets the distance between chapters — heading, controls, results — while
