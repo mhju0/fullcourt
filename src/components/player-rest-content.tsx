@@ -139,6 +139,9 @@ function ArmCell({ efg, fga }: { efg: number | null; fga: number }) {
   )
 }
 
+const FILTER_LABEL =
+  "mono text-[10px] uppercase tracking-[0.08em] text-[var(--term-text-muted)]"
+
 const NUM_TD: React.CSSProperties = {
   ...termTdStyle,
   textAlign: "right",
@@ -239,94 +242,105 @@ export function PlayerRestContent() {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex flex-wrap items-center gap-2">
-        <label className="mono text-[10px] uppercase tracking-[0.08em] text-[var(--term-text-muted)]" htmlFor="pr-season">
-          Season
-        </label>
-        <select
-          id="pr-season"
-          className={termSelectClass}
-          style={termSelectStyle}
-          value={String(activeYear)}
-          onChange={(e) => setYear(e.target.value === "career" ? "career" : Number(e.target.value))}
-        >
-          <option value="career">Career (all seasons)</option>
-          {index.years.map((y) => (
-            <option key={y} value={y}>{seasonLabel(y)}</option>
-          ))}
-        </select>
+      {/* Two rows, not one wrapping row. Six controls plus the result count could not fit a
+          1440px line, so the count — the one thing that answers "did my filter do anything" —
+          was the piece that wrapped away from everything else. Row one is the four filters;
+          row two is find-a-name plus the count it produces. Each label/select pair is its own
+          flex box so a wrap can never separate a label from the control it names. */}
+      <div className="flex flex-col gap-2.5">
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+          <span className="flex items-center gap-2">
+            <label className={FILTER_LABEL} htmlFor="pr-season">Season</label>
+            <select
+              id="pr-season"
+              className={termSelectClass}
+              style={termSelectStyle}
+              value={String(activeYear)}
+              onChange={(e) => setYear(e.target.value === "career" ? "career" : Number(e.target.value))}
+            >
+              {/* "Career (all seasons)" sized this select to its widest option and pushed the
+                  whole row over the line. The option list is seasons; "Career" is unambiguous. */}
+              <option value="career">Career</option>
+              {index.years.map((y) => (
+                <option key={y} value={y}>{seasonLabel(y)}</option>
+              ))}
+            </select>
+          </span>
 
-        <label className="mono text-[10px] uppercase tracking-[0.08em] text-[var(--term-text-muted)]" htmlFor="pr-volume">
-          Volume
-        </label>
-        <select
-          id="pr-volume"
-          className={termSelectClass}
-          style={termSelectStyle}
-          value={minFga}
-          onChange={(e) => setMinFga(Number(e.target.value))}
-        >
-          {VOLUME_OPTIONS.map((o) => (
-            <option key={o.value} value={o.value}>{o.label}</option>
-          ))}
-        </select>
+          <span className="flex items-center gap-2">
+            <label className={FILTER_LABEL} htmlFor="pr-volume">Volume</label>
+            <select
+              id="pr-volume"
+              className={termSelectClass}
+              style={termSelectStyle}
+              value={minFga}
+              onChange={(e) => setMinFga(Number(e.target.value))}
+            >
+              {VOLUME_OPTIONS.map((o) => (
+                <option key={o.value} value={o.value}>{o.label}</option>
+              ))}
+            </select>
+          </span>
 
-        <label className="mono text-[10px] uppercase tracking-[0.08em] text-[var(--term-text-muted)]" htmlFor="pr-team">
-          Team
-        </label>
-        <select
-          id="pr-team"
-          className={termSelectClass}
-          style={termSelectStyle}
-          value={team}
-          onChange={(e) => setTeam(e.target.value)}
-        >
-          <option value="">All teams</option>
-          {teamOptions.map((o) => (
-            <option key={o.value} value={o.value}>{o.label}</option>
-          ))}
-        </select>
+          <span className="flex items-center gap-2">
+            <label className={FILTER_LABEL} htmlFor="pr-team">Team</label>
+            <select
+              id="pr-team"
+              className={termSelectClass}
+              style={termSelectStyle}
+              value={team}
+              onChange={(e) => setTeam(e.target.value)}
+            >
+              <option value="">All teams</option>
+              {teamOptions.map((o) => (
+                <option key={o.value} value={o.value}>{o.label}</option>
+              ))}
+            </select>
+          </span>
 
-        <label className="mono text-[10px] uppercase tracking-[0.08em] text-[var(--term-text-muted)]" htmlFor="pr-pos">
-          Position
-        </label>
-        <select
-          id="pr-pos"
-          className={termSelectClass}
-          style={termSelectStyle}
-          value={pos}
-          onChange={(e) => setPos(e.target.value)}
-        >
-          <option value="">All positions</option>
-          <option value="G">Guards</option>
-          <option value="F">Forwards</option>
-          <option value="C">Centers</option>
-        </select>
+          <span className="flex items-center gap-2">
+            <label className={FILTER_LABEL} htmlFor="pr-pos">Position</label>
+            <select
+              id="pr-pos"
+              className={termSelectClass}
+              style={termSelectStyle}
+              value={pos}
+              onChange={(e) => setPos(e.target.value)}
+            >
+              <option value="">All positions</option>
+              <option value="G">Guards</option>
+              <option value="F">Forwards</option>
+              <option value="C">Centers</option>
+            </select>
+          </span>
+        </div>
 
-        <input
-          type="search"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search player"
-          aria-label="Search player"
-          className="mono min-w-[190px] bg-[var(--term-surface)] px-3 py-1.5 text-[12px] text-[var(--term-text)] placeholder:text-[var(--term-text-muted)]"
-          style={{ border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }}
-        />
-
-        <label className="mono flex cursor-pointer items-center gap-1.5 text-[10px] uppercase tracking-[0.08em] text-[var(--term-text-muted)]">
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
           <input
-            type="checkbox"
-            checked={evidencedOnly}
-            onChange={(e) => setEvidencedOnly(e.target.checked)}
-            style={{ accentColor: "var(--term-blue)" }}
+            type="search"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search player"
+            aria-label="Search player"
+            className="mono w-full max-w-[260px] bg-[var(--term-surface)] px-3 py-1.5 text-[12px] text-[var(--term-text)] placeholder:text-[var(--term-text-muted)]"
+            style={{ border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }}
           />
-          Hide noisy rows
-        </label>
 
-        <span className="mono ml-auto text-[10px] uppercase tracking-[0.08em] text-[var(--term-text-muted)]">
-          {rows.length.toLocaleString()}{" "}
-          {activeYear === "career" ? "players" : `players in ${seasonLabel(activeYear)}`}
-        </span>
+          <label className="mono flex cursor-pointer items-center gap-1.5 text-[10px] uppercase tracking-[0.08em] text-[var(--term-text-muted)]">
+            <input
+              type="checkbox"
+              checked={evidencedOnly}
+              onChange={(e) => setEvidencedOnly(e.target.checked)}
+              style={{ accentColor: "var(--term-blue)" }}
+            />
+            Hide noisy rows
+          </label>
+
+          <span className="mono ml-auto text-[10px] uppercase tracking-[0.08em] text-[var(--term-text-muted)]">
+            {rows.length.toLocaleString()}{" "}
+            {activeYear === "career" ? "players" : `players in ${seasonLabel(activeYear)}`}
+          </span>
+        </div>
       </div>
 
       <p style={{ fontSize: 12, color: "var(--term-text-muted)", lineHeight: 1.6, maxWidth: "92ch", margin: 0 }}>
