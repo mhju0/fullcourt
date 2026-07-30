@@ -81,3 +81,6 @@ ml/predict_series_dryrun.txt
 ml/shot_data_probe.txt
 ml/shot_defend_probe.txt
 ml/shot_value/
+
+# Claude SDD scratch workspaces (ledgers, briefs, review packages)
+.superpowers/
