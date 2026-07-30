@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { ChevronRight } from "lucide-react";
 import { BehindTheDataShell } from "@/components/behind-the-data-shell";
 import { Note, Prose, Section } from "@/components/behind-the-data-parts";
 import { BEHIND_THE_DATA_SECTIONS } from "@/lib/behind-the-data-sections";
@@ -64,17 +65,25 @@ export default function BehindTheDataPage() {
       <Section label="SECTIONS" descriptor={`${MODEL_SECTIONS.length} PAGES`}>
         <div className="flex flex-col">
           {MODEL_SECTIONS.map((section, i) => (
+            // The accent bar is an `inset` box-shadow rather than a `border-left` so hovering
+            // causes no layout shift, and the row's own padding absorbs the 2px nudge. Colour
+            // lives in a Tailwind class, NOT in `style` — an inline `color` outranks any
+            // non-`!important` class, which is exactly why this row's hover state silently did
+            // nothing before 2026-07-30 (see FRONTEND.md on inline-style specificity).
             <Link
               key={section.href}
               href={section.href}
-              className="group flex flex-col gap-1 py-3.5 transition-colors"
+              className="group flex flex-col gap-1 py-3.5 pl-0 transition-[box-shadow,transform,background-color,padding-left] duration-200 hover:translate-x-0.5 hover:bg-[var(--term-surface-2)] hover:pl-2.5 hover:shadow-[inset_2px_0_0_var(--term-red)] motion-reduce:transition-none motion-reduce:hover:translate-x-0"
               style={{ borderTop: i === 0 ? undefined : "1px solid var(--term-border)" }}
             >
-              <span
-                className="mono transition-colors group-hover:text-[var(--term-red)]"
-                style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.06em", color: "var(--term-text)" }}
+              <span className="mono flex items-center gap-1.5 text-[var(--term-text)] transition-colors group-hover:text-[var(--term-red)]"
+                style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.06em" }}
               >
                 {section.label}
+                <ChevronRight
+                  className="size-3.5 -translate-x-1 opacity-0 transition-[opacity,transform] duration-200 group-hover:translate-x-0 group-hover:opacity-100 motion-reduce:transition-none"
+                  aria-hidden
+                />
               </span>
               <span style={{ fontSize: 14, color: "var(--term-text-muted)", lineHeight: 1.5, maxWidth: "46rem" }}>
                 {BLURB[section.href]}
