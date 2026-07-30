@@ -33,6 +33,8 @@ export interface PlayerRestPayload {
   seasons: number[][]
   /** [player, careerDelta, careerSe, careerShrunk] — only players clearing 150 attempts per arm */
   shrunk: number[][]
+  /** "G" | "F" | "C" | "" per player, parallel to `names`. Absent in payloads exported before the filters. */
+  pos?: string[]
 }
 
 export interface CareerEstimate {
@@ -45,6 +47,7 @@ export interface PlayerRestIndex {
   generated: string
   names: string[]
   teams: string[]
+  pos: string[]
   /** Search keys with diacritics stripped, parallel to `names`. */
   searchKeys: string[]
   /** Every season a player appeared in, oldest first. */
@@ -143,6 +146,7 @@ export function indexPayload(payload: PlayerRestPayload): PlayerRestIndex {
     generated: payload.generated,
     names: payload.names,
     teams: payload.teams,
+    pos: payload.pos ?? [],
     searchKeys: payload.names.map(searchKey),
     seasonsByPlayer,
     career,
@@ -207,6 +211,49 @@ export function seasonRow(index: PlayerRestIndex, r: number[]): BrowseRow {
   }
 }
 
+/**
+ * Historical tricode → the franchise it became, the way Basketball-Reference and the
+ * NBA's own franchise histories fold them. The team filter offers franchises, so a
+ * visitor picking OKC finds the Seattle years instead of losing them to a defunct code.
+ */
+const CURRENT_BY_HISTORICAL: Record<string, string> = {
+  SEA: "OKC", VAN: "MEM", NJN: "BKN", NOH: "NOP", NOK: "NOP", CHH: "CHA",
+}
+
+const franchiseOf = (tricode: string): string => CURRENT_BY_HISTORICAL[tricode] ?? tricode
+
+/** Tricodes in a season team label: "LAL/CLE+" → ["LAL", "CLE"]. The "+" marks a third
+    team the label does not carry — 0.7% of player-seasons, accepted in the spec. */
+const labelTricodes = (label: string): string[] => label.replace(/\+$/, "").split("/")
+
+const matchesFranchise = (label: string, franchise: string): boolean =>
+  labelTricodes(label).some((t) => franchiseOf(t) === franchise)
+
+export interface FranchiseOption {
+  value: string
+  label: string
+}
+
+/** One dropdown option per franchise found in the payload's team labels, sorted by
+    tricode, labeled "OKC · SEA" where a defunct code was folded in. */
+export function franchiseOptions(teams: readonly string[]): FranchiseOption[] {
+  const folded = new Map<string, Set<string>>()
+  for (const teamLabel of teams) {
+    for (const t of labelTricodes(teamLabel)) {
+      const f = franchiseOf(t)
+      const hist = folded.get(f) ?? new Set<string>()
+      if (t !== f) hist.add(t)
+      folded.set(f, hist)
+    }
+  }
+  return [...folded.entries()]
+    .sort((a, b) => a[0].localeCompare(b[0]))
+    .map(([value, hist]) => ({
+      value,
+      label: hist.size ? `${value} · ${[...hist].sort().join("/")}` : value,
+    }))
+}
+
 export interface BuildOptions {
   /** A season start year, or "career" to pool every season a player played. */
   year: number | "career"
@@ -215,6 +262,12 @@ export interface BuildOptions {
   sort: SortKey
   /** -1 descending, 1 ascending. */
   dir: -1 | 1
+  /** Current-era franchise tricode ("OKC" covers the Seattle years); null/absent = all teams. */
+  team?: string | null
+  /** Modal position. Players without one (never started) match only when this is null/absent. */
+  pos?: "G" | "F" | "C" | null
+  /** Keep only rows whose effect clears its own standard error — the rows rendered dim. */
+  evidencedOnly?: boolean
 }
 
 export function buildRows(index: PlayerRestIndex, opts: BuildOptions): BrowseRow[] {
@@ -224,6 +277,7 @@ export function buildRows(index: PlayerRestIndex, opts: BuildOptions): BrowseRow
     for (const [player, seasons] of index.seasonsByPlayer) {
       const est = index.career.get(player)
       if (!est) continue // no career estimate: too thin in one arm to rank
+      if (opts.team && !seasons.some((s) => matchesFranchise(index.teams[s[S.TEAM]], opts.team!))) continue
       const t = careerTotals(seasons)
       rows.push({
         player,
@@ -245,12 +299,16 @@ export function buildRows(index: PlayerRestIndex, opts: BuildOptions): BrowseRow
   } else {
     for (const seasons of index.seasonsByPlayer.values()) {
       const r = seasons.find((s) => s[S.YEAR] === opts.year)
-      if (r) rows.push(seasonRow(index, r))
+      if (!r) continue
+      if (opts.team && !matchesFranchise(index.teams[r[S.TEAM]], opts.team)) continue
+      rows.push(seasonRow(index, r))
     }
   }
 
   const filtered = rows.filter((r) => {
     if (r.fga < opts.minFga) return false
+    if (opts.pos && index.pos[r.player] !== opts.pos) return false
+    if (opts.evidencedOnly && r.underEvidenced) return false
     if (!opts.query) return true
     return index.searchKeys[r.player].includes(opts.query)
   })

@@ -1,8 +1,11 @@
 import { describe, expect, it } from "vitest";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import {
   buildRows,
   careerTotals,
   effectSe,
+  franchiseOptions,
   indexPayload,
   restEffect,
   S,
@@ -182,5 +185,95 @@ describe("underEvidenced", () => {
   it("does not flag a difference the sample can actually support", () => {
     const row = seasonRow(index, season(0, 2025, { noRestFga: 2000, noRestEfg: 45, restedFga: 2000, restedEfg: 55 }));
     expect(row.underEvidenced).toBe(false);
+  });
+});
+
+describe("franchiseOptions", () => {
+  it("builds one option per franchise, folding history into its label", () => {
+    const opts = franchiseOptions(["DEN", "SEA", "OKC", "MIA/BOS"]);
+    expect(opts.map((o) => o.value)).toEqual(["BOS", "DEN", "MIA", "OKC"]);
+    expect(opts.find((o) => o.value === "OKC")!.label).toBe("OKC · SEA");
+    expect(opts.find((o) => o.value === "DEN")!.label).toBe("DEN");
+  });
+
+  // The drift check from the spec: a future relocation adds a tricode the folding
+  // table does not claim, which must break this test rather than silently grow the
+  // dropdown past 30 franchises.
+  it("claims every tricode in the shipped payload for exactly 30 franchises", () => {
+    const payload = JSON.parse(
+      readFileSync(join(process.cwd(), "public", "data", "player-rest.json"), "utf8")
+    ) as PlayerRestPayload;
+    const opts = franchiseOptions(payload.teams);
+    expect(opts.map((o) => o.value)).toEqual([
+      "ATL", "BKN", "BOS", "CHA", "CHI", "CLE", "DAL", "DEN", "DET", "GSW",
+      "HOU", "IND", "LAC", "LAL", "MEM", "MIA", "MIL", "MIN", "NOP", "NYK",
+      "OKC", "ORL", "PHI", "PHX", "POR", "SAC", "SAS", "TOR", "UTA", "WAS",
+    ]);
+  });
+});
+
+describe("buildRows — team filter", () => {
+  const index = indexPayload(PAYLOAD);
+  const base = { year: 2025 as const, minFga: 0, query: "", sort: "fga" as const, dir: -1 as const };
+
+  it("keeps only that franchise's players in a season view", () => {
+    expect(buildRows(index, { ...base, team: "POR" }).map((r) => r.name)).toEqual(["Al-Farouq Aminu"]);
+  });
+
+  it("matches a traded player under either of his season's teams", () => {
+    expect(buildRows(index, { ...base, team: "BOS" }).map((r) => r.name)).toEqual(["Fringe Player"]);
+    expect(buildRows(index, { ...base, team: "MIA" }).map((r) => r.name)).toEqual(["Fringe Player"]);
+  });
+
+  it("career view matches a player who ever played for the franchise", () => {
+    expect(buildRows(index, { ...base, year: "career", team: "DEN" }).map((r) => r.name)).toEqual(["Nikola Jokić"]);
+    expect(buildRows(index, { ...base, year: "career", team: "POR" }).map((r) => r.name)).toEqual(["Al-Farouq Aminu"]);
+  });
+
+  it("folds a historical tricode into its franchise", () => {
+    const idx = indexPayload({ ...PAYLOAD, teams: ["SEA", "POR", "MIA/BOS"] });
+    expect(buildRows(idx, { ...base, team: "OKC" }).map((r) => r.name)).toEqual(["Nikola Jokić"]);
+  });
+});
+
+describe("buildRows — position filter", () => {
+  const index = indexPayload({ ...PAYLOAD, pos: ["C", "F", ""] });
+  const base = { year: 2025 as const, minFga: 0, query: "", sort: "fga" as const, dir: -1 as const };
+
+  it("keeps only players known to play the position", () => {
+    expect(buildRows(index, { ...base, pos: "C" }).map((r) => r.name)).toEqual(["Nikola Jokić"]);
+  });
+
+  it("shows a player with no known position only under all positions", () => {
+    for (const pos of ["G", "F", "C"] as const) {
+      expect(buildRows(index, { ...base, pos }).map((r) => r.name)).not.toContain("Fringe Player");
+    }
+    expect(buildRows(index, base).map((r) => r.name)).toContain("Fringe Player");
+  });
+
+  it("matches nothing when the payload predates the pos array", () => {
+    // Old CDN-cached JSON + new code: honest empty, not a crash and not silently wrong.
+    expect(buildRows(indexPayload(PAYLOAD), { ...base, pos: "G" })).toEqual([]);
+  });
+});
+
+describe("buildRows — evidencedOnly", () => {
+  const index = indexPayload(PAYLOAD);
+  const base = { year: 2025 as const, minFga: 0, query: "", sort: "fga" as const, dir: -1 as const };
+
+  it("drops exactly the rows rendered dim", () => {
+    // Jokić 2025: effect −2.8 vs SE ≈ 4.39 → dim. Fringe: no effect → dim. Aminu: +10 vs 6.45 → kept.
+    expect(buildRows(index, { ...base, evidencedOnly: true }).map((r) => r.name)).toEqual(["Al-Farouq Aminu"]);
+    expect(buildRows(index, base)).toHaveLength(3);
+  });
+
+  it("applies in career view too", () => {
+    // Aminu's delta (1.0) is inside his SE (2.2) here, so the filter must drop him;
+    // with the main fixture both career players are well-evidenced and a broken
+    // filter would pass unnoticed.
+    const idx = indexPayload({ ...PAYLOAD, shrunk: [[0, -1.71, 1.5, -1.06], [1, 1.0, 2.2, 0.9]] });
+    expect(
+      buildRows(idx, { ...base, year: "career", evidencedOnly: true }).map((r) => r.name)
+    ).toEqual(["Nikola Jokić"]);
   });
 });
