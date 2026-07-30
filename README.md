@@ -148,6 +148,16 @@ Data spans **1985-86 to the present**, excluding the 2019-20 Orlando bubble (no 
 
 Three inputs — overtime, tip-off times and neutral sites — come from ESPN, whose coverage starts around 2002. Earlier seasons are scored by the same formula without them, which is a deliberate, documented trade rather than a silent gap: see [ADR 0003](docs/adr/0003-fatigue-inputs-limited-to-espn-era.md).
 
+The model was overhauled on 2026-07-30 — real time zones in place of a longitude proxy, a
+circadian term that decays as teams acclimate, prior-game load weighted by margin, and an
+overtime penalty that had shipped years earlier but never once fired, because its data source
+was unreachable and every game read zero overtime. Honest framing of the result: on games both
+the old and new model call, accuracy moved **+0.15pp** and the two pick the same team 98.8% of
+the time. The published hit rates rise about a point because the new model **abstains** from
+2,661 games the old one called at 49% — below a coin flip. That is better selectivity, not
+better prediction, and it is worth more to a site whose premise is only claiming an edge where
+one exists.
+
 ---
 
 ## Tech stack
