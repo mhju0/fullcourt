@@ -16,6 +16,15 @@ test.describe("Season Report", () => {
 
     await selector.selectOption("2015-16");
     await expect(page.getByTestId("season-vs-history-heading")).toHaveText("2015-16 VS HISTORY");
+
+    // Still on 2015-16 from the season switch above: a complete 30-team season.
+    await expect(page.getByTestId("edge-conversion-row")).toHaveCount(30);
+    await expect(page.getByTestId("schedule-tax-row")).toHaveCount(30);
+
+    // Section 4 caps at ten however many decidable games a season holds.
+    await expect(page.getByTestId("loudest-call-row")).toHaveCount(10);
+
+    await expect(page.getByTestId("fatigue-calendar")).toBeVisible();
   });
 
   test("is reachable from the primary nav", async ({ page }) => {
