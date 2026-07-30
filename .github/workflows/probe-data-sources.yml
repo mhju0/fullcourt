@@ -13,6 +13,9 @@
 
 name: Probe NBA data sources
 
+# No checkout, no API calls against GitHub: the GITHUB_TOKEN gets no permissions at all.
+permissions: {}
+
 on:
   workflow_dispatch:
 
