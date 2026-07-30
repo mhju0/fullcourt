@@ -5,7 +5,6 @@ import type {
   HomeAwayBreakdown,
   RestAdvantage,
   ThresholdBucket,
-  VenueControlledRestEffect,
 } from "@/types";
 
 export const NEUTRAL_REST_ADVANTAGE_THRESHOLD = 0.5;
@@ -45,82 +44,8 @@ type ProcessedHistoricalGame = {
 
 const BACKTEST_THRESHOLDS = [2, 3, 5, 7] as const;
 
-/**
- * Era buckets for the venue-controlled swing. Roughly decades, chosen because the trend
- * across them is monotone and the boundaries are not tuned to flatter any of them.
- * `from` is inclusive, `to` exclusive, compared as "YYYY-YY" season labels.
- */
-const SWING_ERAS = [
-  { label: "1985–1994", from: "0000-00", to: "1995-96" },
-  { label: "1995–2004", from: "1995-96", to: "2005-06" },
-  { label: "2005–2014", from: "2005-06", to: "2015-16" },
-  { label: "2015–present", from: "2015-16", to: "9999-99" },
-] as const;
-
 function winPct(wins: number, total: number): number {
   return total > 0 ? Math.round((wins / total) * 1000) / 10 : 0;
-}
-
-/**
- * Home win rate split by which side was more rested, plus the difference between them.
- *
- * `restedTeamWon` conflates two effects: rest and home-court advantage. Because the home
- * team is the more-rested side in ~70% of decidable games — travel load alone nearly
- * guarantees it — the headline win rate is substantially a restatement of "home teams win".
- * Holding venue fixed (every figure here is a *home* win rate) isolates what rest is worth:
- * measured across all 40 seasons the swing is ~3.4pp against a ~55% headline, and home-court
- * advantage is worth roughly three times as much.
- *
- * Associational, not causal: no control for opponent strength, and rest correlates with
- * schedule position — a rested visitor is often a good team mid-road-trip.
- */
-function buildVenueControlled(
-  rows: readonly HistoricalGameEvidenceRow[],
-  inEra: (season: string) => boolean = () => true
-): VenueControlledRestEffect {
-  let allGames = 0;
-  let allHomeWins = 0;
-  let homeRested = 0;
-  let homeRestedHomeWins = 0;
-  let awayRested = 0;
-  let awayRestedHomeWins = 0;
-
-  for (const row of rows) {
-    if (row.homeScore === null || row.awayScore === null) continue;
-    if (!inEra(row.season)) continue;
-
-    const homeWon = row.homeScore > row.awayScore;
-    allGames++;
-    if (homeWon) allHomeWins++;
-
-    // Positive differential = the away team carries more fatigue = the home side is rested.
-    const differential =
-      Number.parseFloat(row.awayFatigueScore) - Number.parseFloat(row.homeFatigueScore);
-    if (differential > NEUTRAL_REST_ADVANTAGE_THRESHOLD) {
-      homeRested++;
-      if (homeWon) homeRestedHomeWins++;
-    } else if (differential < -NEUTRAL_REST_ADVANTAGE_THRESHOLD) {
-      awayRested++;
-      if (homeWon) awayRestedHomeWins++;
-    }
-  }
-
-  const homeRestedRate = homeRested > 0 ? homeRestedHomeWins / homeRested : 0;
-  const awayRestedRate = awayRested > 0 ? awayRestedHomeWins / awayRested : 0;
-  const swing =
-    homeRested > 0 && awayRested > 0
-      ? Math.round((homeRestedRate - awayRestedRate) * 1000) / 10
-      : 0;
-
-  return {
-    games: allGames,
-    baselineHomeWinRate: winPct(allHomeWins, allGames),
-    homeRestedGames: homeRested,
-    homeRestedHomeWinRate: winPct(homeRestedHomeWins, homeRested),
-    awayRestedGames: awayRested,
-    awayRestedHomeWinRate: winPct(awayRestedHomeWins, awayRested),
-    swingPp: swing,
-  };
 }
 
 /** Builds the complete historical backtest from final games with both fatigue scores. */
@@ -208,14 +133,6 @@ export function buildHistoricalBacktest(
     thresholds,
     homeAwayBreakdown,
     seasonWinRates,
-    venueControlled: buildVenueControlled(rows),
-    venueControlledByEra: SWING_ERAS.map((era) => ({
-      label: era.label,
-      ...buildVenueControlled(
-        rows,
-        (season) => season >= era.from && season < era.to
-      ),
-    })).filter((era) => era.games > 0),
   };
 }
 

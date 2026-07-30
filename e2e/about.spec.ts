@@ -14,13 +14,12 @@ test.describe("About page", () => {
     // label + copy, so the accessible name is "<label> <copy>" — anchor at the start
     // rather than matching exactly.
     const surfaces = page.getByRole("navigation", { name: "Product surfaces" });
-    await expect(surfaces.getByRole("link")).toHaveCount(6);
+    await expect(surfaces.getByRole("link")).toHaveCount(5);
     for (const name of [
       "Games",
       "Schedule Edge",
       "Model Results",
       "Playoff Predictions",
-      "Shot Value",
       "Player Shooting",
     ]) {
       await expect(

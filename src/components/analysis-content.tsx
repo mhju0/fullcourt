@@ -24,7 +24,7 @@ import { useExploreGames, type DrillSignal } from "@/hooks/useExploreGames"
 import type { ExploreResult } from "@/lib/explore-games-machine"
 import { apiFetcher } from "@/lib/fetcher"
 import { NBA_SEASONS } from "@/lib/nba-season"
-import { MONO_FONT_STACK, termCardStyle, termTdStyle, termThStyle } from "@/lib/terminal-styles"
+import { MONO_FONT_STACK, termCardStyle } from "@/lib/terminal-styles"
 import type { AnalysisResponse } from "@/types"
 
 // ─── Shared styles (terminal) ─────────────────────────────────────
@@ -68,16 +68,6 @@ const exploreTdBaseStyle: React.CSSProperties = {
 }
 
 // ─── Section divider ──────────────────────────────────────────────
-
-/** "+3.5pp" / "−0.1pp", with a true minus sign rather than a hyphen. */
-function signedPp(value: number): string {
-  return value >= 0 ? `+${value.toFixed(1)}pp` : `−${Math.abs(value).toFixed(1)}pp`
-}
-
-/** One decimal always, so a row of rates does not mix "60%" with "61.3%". */
-function ratePct(value: number): string {
-  return `${value.toFixed(1)}%`
-}
 
 function SectionDivider({ label, descriptor }: { label: string; descriptor?: string }) {
   return (
@@ -756,14 +746,11 @@ export function AnalysisContent() {
           sub={`${data.totalGames.toLocaleString()} GAMES`}
           accent="var(--term-blue)"
         />
-        {/* The honest effect size. Sits beside the headline rather than replacing it,
-            because the two answer different questions and the gap between them is the
-            point — see the REST NET OF HOME COURT section below. */}
         <StatCard
-          label="REST, NET OF HOME COURT"
-          value={`${signedPp(data.venueControlled.swingPp)}`}
-          sub={`VS ${ratePct(data.venueControlled.baselineHomeWinRate)} HOME BASELINE`}
-          accent="var(--term-red)"
+          label="HOME RESTED WIN%"
+          value={`${data.homeAwayBreakdown.homeTeamMoreRested.winPct}%`}
+          sub={`${data.homeAwayBreakdown.homeTeamMoreRested.restedTeamWins.toLocaleString()} / ${data.homeAwayBreakdown.homeTeamMoreRested.games.toLocaleString()}`}
+          accent="var(--term-neutral)"
         />
         {ra5 && (
           <StatCard
@@ -835,118 +822,6 @@ export function AnalysisContent() {
           </ResponsiveContainer>
         </div>
         <BaselineLegend />
-      </div>
-
-      {/* Rest net of home court — the confound, stated rather than buried */}
-      <div style={termCardStyle}>
-        <SectionDivider
-          label="REST, NET OF HOME COURT"
-          descriptor={`${data.venueControlled.games.toLocaleString()} GAMES`}
-        />
-        <p className="mt-3" style={{ maxWidth: "46rem", fontSize: 15, color: "var(--term-text)", lineHeight: 1.55 }}>
-          The win rate above conflates two things. Travel load alone makes the home team the
-          more-rested side in{" "}
-          <strong>
-            {Math.round(
-              (data.venueControlled.homeRestedGames /
-                (data.venueControlled.homeRestedGames + data.venueControlled.awayRestedGames)) *
-                100
-            )}
-            %
-          </strong>{" "}
-          of games it can call, so &ldquo;the rested team won&rdquo; is substantially a
-          restatement of &ldquo;the home team won&rdquo;. Holding the venue fixed separates
-          them — every figure below is a <strong>home</strong> win rate, so the difference
-          between the two conditions is what rest is worth on its own.
-        </p>
-
-        <div className="mt-5 grid gap-px overflow-hidden" style={{ background: "var(--term-border)", border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))" }}>
-          {[
-            // Labelled "when …" rather than "home team more rested": every value in this row
-            // is a home win rate, the condition is what varies, and the old wording collided
-            // with the HOME TEAM MORE RESTED section heading further down the page.
-            { label: "When home is rested", value: ratePct(data.venueControlled.homeRestedHomeWinRate), sub: `${data.venueControlled.homeRestedGames.toLocaleString()} games` },
-            { label: "Home-court baseline", value: ratePct(data.venueControlled.baselineHomeWinRate), sub: "every game, either way" },
-            { label: "When visitor is rested", value: ratePct(data.venueControlled.awayRestedHomeWinRate), sub: `${data.venueControlled.awayRestedGames.toLocaleString()} games` },
-            { label: "Rest is worth", value: signedPp(data.venueControlled.swingPp), sub: "difference of the two" },
-          ].map((cell) => (
-            <div key={cell.label} className="flex flex-col gap-[3px] bg-[var(--term-surface)] px-[13px] py-[11px]">
-              <span className="mono" style={{ fontSize: 10, letterSpacing: "0.09em", textTransform: "uppercase", color: "var(--term-text-muted)" }}>
-                {cell.label}
-              </span>
-              <span className="mono" style={{ fontSize: 21, fontWeight: 700, fontVariantNumeric: "tabular-nums", color: "var(--term-text)" }}>
-                {cell.value}
-              </span>
-              <span className="mono" style={{ fontSize: 10.5, color: "var(--term-text-muted)" }}>
-                {cell.sub}
-              </span>
-            </div>
-          ))}
-        </div>
-
-        <p className="mt-4" style={{ maxWidth: "46rem", fontSize: 14, color: "var(--term-text-muted)", lineHeight: 1.55 }}>
-          Even when the visitor is the fresher team, it still loses{" "}
-          {ratePct(data.venueControlled.awayRestedHomeWinRate)} of the time. Home court is worth
-          roughly three times what rest is. This is associational, not causal: there is no
-          control for opponent strength, and rest correlates with schedule position — a rested
-          visitor is often a good team midway through a road trip.
-        </p>
-
-        {data.venueControlledByEra.length > 1 && (
-          <>
-            <div className="mt-8">
-              <SectionDivider label="BY ERA" descriptor="TWO TRENDS, OPPOSITE DIRECTIONS" />
-            </div>
-            <p className="mt-2" style={{ maxWidth: "46rem", fontSize: 14, color: "var(--term-text-muted)", lineHeight: 1.55 }}>
-              Home-court advantage has decayed across four decades while the rest effect has
-              grown from nothing. The blended headline drifts down while the thing this site
-              measures gets stronger — which is the clearest argument for reading the right
-              column rather than the win rate at the top of the page.
-            </p>
-            <div className="mt-4 overflow-x-auto">
-              <table className="mono w-full" style={{ fontSize: 12, borderCollapse: "collapse" }}>
-                <thead>
-                  <tr>
-                    <th style={termThStyle}>ERA</th>
-                    <th style={{ ...termThStyle, textAlign: "right" }}>GAMES</th>
-                    <th style={{ ...termThStyle, textAlign: "right" }}>HOME-COURT BASELINE</th>
-                    <th style={{ ...termThStyle, textAlign: "right" }}>REST, NET OF VENUE</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {data.venueControlledByEra.map((era) => (
-                    <tr key={era.label}>
-                      <td style={termTdStyle}>{era.label}</td>
-                      <td style={{ ...termTdStyle, textAlign: "right" }}>{era.games.toLocaleString()}</td>
-                      <td style={{ ...termTdStyle, textAlign: "right" }}>{ratePct(era.baselineHomeWinRate)}</td>
-                      <td
-                        style={{
-                          ...termTdStyle,
-                          textAlign: "right",
-                          fontWeight: 700,
-                          // Muted where the effect is indistinguishable from nothing, so the
-                          // 1985-94 row cannot be read as a small positive finding.
-                          color:
-                            Math.abs(era.swingPp) < 1
-                              ? "var(--term-text-muted)"
-                              : "var(--term-text)",
-                        }}
-                      >
-                        {signedPp(era.swingPp)}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            <p className="mt-4" style={{ maxWidth: "46rem", fontSize: 14, color: "var(--term-text-muted)", lineHeight: 1.55 }}>
-              The first row is the caution. Its raw win rates are the highest anywhere in the
-              data, and its rest effect is nil — those numbers are home court almost entirely.
-              Impressive-looking hit rates from the 1980s are not evidence that rest mattered
-              more then.
-            </p>
-          </>
-        )}
       </div>
 
       {/* Home rested breakdown — terminal bar */}

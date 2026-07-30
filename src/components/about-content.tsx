@@ -108,9 +108,12 @@ const SURFACES = [
   { name: "Schedule Edge", href: "/schedule", copy: "Which teams a season's schedule favoured, counted in games with a real rest edge. Scoped to its own season, always." },
   { name: "Model Results", href: "/analysis", copy: "The backtest that scores the model against history: thresholds, season trends, and every individual game." },
   { name: "Playoff Predictions", href: "/playoffs", copy: "Series winners from the same rest lineage, with walk-forward accuracy shown beside in-sample." },
-  { name: "Shot Value", href: "/shot-quality", copy: "Expected efficiency by court location. Public data has no defender distance — so this is location value, and we name that limit." },
   { name: "Player Shooting", href: "/shooting", copy: "Every player's shooting on no rest against three days off, season by season. One season of it is noise, and the page says so." },
 ];
+
+// Shot Value is intentionally absent: this list names the five tabs in the nav bar, and Shot
+// Value lives in the OTHER menu alongside the other reference surfaces. Listing it here made
+// the page claim six surfaces while the bar showed five.
 
 /* The heading counts the list rather than stating a number, so adding a surface can
    never leave the page claiming a total it no longer has. Spelled out because a

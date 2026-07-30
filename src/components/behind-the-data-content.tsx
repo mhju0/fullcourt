@@ -6,10 +6,9 @@ import { termCardStyle, termTdStyle, termThStyle } from "@/lib/terminal-styles";
  * Methodology page. Every constant is read from `FATIGUE_CONSTANTS` rather than retyped,
  * so the page cannot drift from the model it describes.
  *
- * The measured figures (ablation deltas, the venue-controlled swing, term activity counts)
- * are from the 2026-07-30 recompute and are stated as of that date, because they require a
- * full-table analysis that is not worth running per page view. The live equivalents are on
- * MODEL RESULTS; where a number here could go stale, it is dated.
+ * The ablation deltas are from the 2026-07-30 recompute and are stated as of that date,
+ * because they need a full-table analysis that is not worth running per page view. Anything
+ * that could go stale is dated.
  */
 
 const MEASURED_ON = "2026-07-30";
@@ -240,23 +239,6 @@ direction    = ${K.eastwardMultiplier} eastward, ${K.westwardMultiplier} westwar
           place in the backtest. Being correct and being useful are different claims, and this
           table is the one that separates them. Terms interact multiplicatively, so these
           figures do not sum to the total.
-        </Note>
-      </Section>
-
-      <Section label="READING THE WIN RATE" descriptor="THE CONFOUND">
-        <Prose>
-          The headline &ldquo;more-rested team won X%&rdquo; is not a clean measure of rest.
-          Travel load alone makes the home team the more-rested side in about 70% of the games
-          the model calls, so that number is substantially a restatement of &ldquo;home teams
-          win&rdquo;. Holding the venue fixed, rest is worth about a third of what home court
-          is. Both figures, and the same split by era, are published on MODEL RESULTS.
-        </Prose>
-        <Note>
-          The era split matters more than it sounds. Home-court advantage has decayed across
-          four decades while the rest effect has grown from nothing, so the blended headline
-          drifts downward while the thing being measured gets stronger. It also means the
-          best-looking hit rates in the data — from the late 1980s — come from the era where
-          rest had no measurable effect at all. Those numbers are home court.
         </Note>
       </Section>
 

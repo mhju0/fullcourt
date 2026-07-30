@@ -4,13 +4,22 @@ import { Menu } from "@base-ui/react/menu"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { CourtMark } from "@/components/court-mark"
-import { currentDisplaySeason } from "@/lib/nba-season"
 import {
   DIRECT_NAV_ITEMS,
   OTHER_NAV_ITEMS,
   OTHER_NAV_LABEL,
 } from "@/lib/primary-navigation"
 import { cn } from "@/lib/utils"
+
+/**
+ * Reference surfaces, reached from the top status bar rather than the tab bar or the OTHER
+ * menu. Kept here rather than in primary-navigation.ts because these are deliberately NOT
+ * primary surfaces — the onboarding guide enumerates that module and should not offer these.
+ */
+const SECONDARY_LINKS = [
+  { href: "/about", label: "ABOUT" },
+  { href: "/behind-the-data", label: "BEHIND THE DATA" },
+] as const
 
 function isActive(pathname: string, href: string): boolean {
   if (href === "/") return pathname === "/"
@@ -43,27 +52,43 @@ export function NavBar() {
         }}
       >
         <div className="mx-auto flex h-full max-w-7xl items-center justify-between px-4 sm:px-6">
-          <div className="flex items-center gap-2.5" style={{ fontSize: "11px", letterSpacing: "0.08em" }}>
+          {/* The wordmark goes home, which is what every visitor already expects a logo to
+              do. It was previously inert — the one piece of chrome people reflexively click
+              and nothing happened. Home is GAMES, not /about: a logo that lands you on a
+              marketing page breaks the "take me back to the product" contract. */}
+          <Link
+            href="/"
+            className="flex items-center gap-2.5 transition-opacity hover:opacity-80"
+            style={{ fontSize: "11px", letterSpacing: "0.08em" }}
+            aria-label="FullCourt home"
+          >
             <CourtMark size={22} className="shrink-0" />
             <span style={{ color: "var(--term-red)", fontWeight: 700 }}>FULLCOURT</span>
             <span className="hidden sm:inline" style={{ color: "var(--term-text-muted)" }}>NBA ANALYTICS PLATFORM</span>
-          </div>
+          </Link>
           <div className="flex items-center gap-3" style={{ fontSize: "11px", letterSpacing: "0.08em" }}>
-            {/* Secondary chrome, deliberately not a sixth tab: /about explains the product,
-                it is not one of the five surfaces, and the nav's five-link count is asserted
-                in e2e. The footer link alone left the page effectively unreachable. */}
-            <Link
-              href="/about"
-              aria-current={pathname === "/about" ? "page" : undefined}
-              className="transition-colors hover:text-[var(--term-text)]"
-              style={{
-                color: pathname === "/about" ? "var(--term-text)" : "var(--term-text-muted)",
-                fontWeight: 600,
-              }}
-            >
-              ABOUT
-            </Link>
-            <span style={{ color: "var(--term-text-muted)" }}>{currentDisplaySeason()} SEASON</span>
+            {/* Secondary chrome, deliberately not tabs: these two explain the product and the
+                model rather than being surfaces of it, and the nav's five-link count is
+                asserted in e2e. Quiet on purpose — 11px muted mono outside the navigation
+                landmark — but reachable from every page, which the footer link alone was not.
+                BEHIND THE DATA sits beside ABOUT rather than in the OTHER menu, because OTHER
+                holds data surfaces and this is reference material.
+                The "2025-26 SEASON" readout that used to sit here is gone: it was inert, and on
+                a site covering forty seasons it implied the whole thing was scoped to one. */}
+            {SECONDARY_LINKS.map(({ href, label }) => (
+              <Link
+                key={href}
+                href={href}
+                aria-current={pathname === href ? "page" : undefined}
+                className="transition-colors hover:text-[var(--term-text)]"
+                style={{
+                  color: pathname === href ? "var(--term-text)" : "var(--term-text-muted)",
+                  fontWeight: 600,
+                }}
+              >
+                {label}
+              </Link>
+            ))}
           </div>
         </div>
       </div>
