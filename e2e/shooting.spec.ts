@@ -106,4 +106,19 @@ test.describe("Shooting by Rest", () => {
     await open(page, "lebron");
     await expect(page).toHaveURL(/player=LeBron\+James|player=LeBron%20James/);
   });
+
+  test("the team filter narrows the table to one franchise's players", async ({ page }) => {
+    await page.goto("/shooting");
+    await page.getByTestId("player-row").first().waitFor(READY);
+
+    const all = await page.getByTestId("player-row").count();
+    await page.selectOption("#pr-team", "OKC");
+    const okc = await page.getByTestId("player-row").count();
+    expect(okc).toBeGreaterThan(0);
+    expect(okc).toBeLessThan(all);
+    // Every visible team cell belongs to the franchise — Seattle years included.
+    for (const cell of await page.getByTestId("player-row").locator("td:nth-child(3)").allTextContents()) {
+      expect(cell).toMatch(/OKC|SEA/);
+    }
+  });
 });
