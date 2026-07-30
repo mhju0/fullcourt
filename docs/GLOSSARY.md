@@ -17,7 +17,7 @@ A matchup whose absolute rest advantage is below `0.5`, so neither team receives
 _Avoid_: tie
 
 **Historical backtest**:
-The regular-season evaluation of whether the team favored by rest advantage won. It excludes the 2019–20 Orlando bubble because that setting removes normal travel conditions.
+The regular-season evaluation of whether the team favored by rest advantage won. It excludes **all of 2019-20** — the entire season, not only its Orlando bubble games, since a season interrupted at 63-67 of 82 cannot be ranked at season grain. 2020-21 and both lockout seasons are included: short is fine, interrupted is not.
 _Avoid_: prediction accuracy test
 
 **Playoff Predictor**:

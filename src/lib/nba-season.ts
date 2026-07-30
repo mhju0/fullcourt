@@ -1,7 +1,13 @@
 import { endOfMonth, format, startOfMonth } from "date-fns";
 
 /**
- * Seasons the app and ingest pipeline support (2019-20 bubble omitted).
+ * Seasons the app and ingest pipeline support.
+ *
+ * 2019-20 is omitted **entirely** — not merely its bubble games. Teams had played 63-67 of
+ * 82 before the March 2020 suspension, so roughly 970 normally-travelled games go with it.
+ * That is deliberate: a truncated season where teams played different game counts cannot be
+ * ranked at season grain, which is what Schedule Edge does, and the game-level gain would be
+ * about 2.5% of the backtest. 2020-21 IS included (72 games, condensed).
  * 1985-86 … latest supported/current NBA season.
  * Oldest → newest for stable sort; UI often reverses for “latest first” dropdowns.
  *

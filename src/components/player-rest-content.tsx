@@ -427,7 +427,7 @@ function PlayerRows({
               {bubble && (
                 <tr className="fc-sub">
                   <td colSpan={10} style={{ ...termTdStyle, fontFamily: MONO_FONT_STACK, fontSize: 10.5, color: "var(--term-text-muted)" }}>
-                    2019-20 — Orlando bubble, excluded league-wide: no normal travel, so no rest to measure
+                    2019-20 — omitted league-wide, the whole season and not only its bubble games
                   </td>
                 </tr>
               )}

@@ -144,7 +144,9 @@ Each team's score combines:
 - **Road trips & body clock** — added load for long road stretches, plus a circadian charge for playing two or more time zones from home. It is heavier travelling east than west, and it decays as the team re-entrains, at roughly a day per zone crossed.
 - **Freshness & game difficulty** — a rest discount for extended breaks, and prior-game load weighted by how hard the game actually was: overtime adds, a blowout that rested the starters subtracts.
 
-Data spans **1985-86 to the present**, excluding the 2019-20 Orlando bubble (no real travel) and all playoff/finals games from the fatigue model (the fixed two-team series format breaks the travel assumptions).
+Data spans **1985-86 to the present**, excluding all of **2019-20** and every playoff/finals game from the fatigue model (a fixed two-team series breaks the travel assumptions).
+
+The 2019-20 exclusion is the whole season, not only its Orlando bubble games: teams had played 63-67 of 82 before the March 2020 suspension, and those ~970 normally-travelled games go with it. A truncated season in which teams played *different* game counts cannot be ranked at season grain, which is what Schedule Edge does. 2020-21 **is** included — ordinary travel, just compressed into 72 games — as are the 1998-99 and 2011-12 lockout seasons.
 
 Three inputs — overtime, tip-off times and neutral sites — come from ESPN, whose coverage starts around 2002. Earlier seasons are scored by the same formula without them, which is a deliberate, documented trade rather than a silent gap: see [ADR 0003](docs/adr/0003-fatigue-inputs-limited-to-espn-era.md).
 

@@ -98,7 +98,7 @@ export default function DataAndLimitsPage() {
         <ValueGrid
           values={[
             { label: "Playoff games", value: "Excluded", sub: "from the fatigue model" },
-            { label: "2019-20 bubble", value: "Excluded", sub: "no travel happened" },
+            { label: "2019-20", value: "All of it", sub: "the season, not just the bubble" },
             { label: "Preseason", value: "Excluded", sub: "rotations are not real" },
           ]}
         />
@@ -109,10 +109,32 @@ export default function DataAndLimitsPage() {
           Playoff Predictions page.
         </Prose>
         <Prose>
-          The 2019-20 bubble is excluded because every game was played in one location. A
-          travel-and-rest model has nothing to measure there, and including it would drag four
-          decades of averages toward a season that could not repeat.
+          <strong>2019-20 is absent in full</strong>, which is worth stating precisely because
+          the short version — &ldquo;the bubble is excluded&rdquo; — implies less than is true.
+          Teams had played 63 to 67 of their 82 games before the March 2020 suspension, and
+          those roughly 970 normally-travelled games are gone as well.
         </Prose>
+        <Prose>
+          Dropping them is deliberate rather than lazy. A truncated season in which teams played
+          different numbers of games cannot be ranked at season grain, which is exactly what
+          Schedule Edge does — a four-game difference in exposure would move a team&rsquo;s total
+          without the schedule having favoured anyone. Against that, the games would add about
+          2.5% to the backtest, which moves the measured edge in its third decimal.
+        </Prose>
+        <Note>
+          Two asymmetries follow from it. <strong>2020-21 is included</strong> — its travel was
+          ordinary, just compressed into a 72-game season between December and May, which means
+          its schedule density runs hotter than the density anchors were calibrated against. And{" "}
+          <strong>Shot Value does cover 2019-20</strong>: shot locations do not care about travel,
+          so that surface has no reason to drop the season the fatigue model cannot use. It is the
+          one place on the site where a season exists that the rest of it behaves as though it
+          did not.
+        </Note>
+        <Note>
+          The lockout seasons are kept for the same reason 2020-21 is: 1998-99 ran 50 games and
+          2011-12 ran 66, both with normal travel. Short seasons are only a problem for this
+          model when they are also <em>interrupted</em>.
+        </Note>
       </Section>
 
       <Section label="ACCURACY OF THE TRAVEL FIGURE" descriptor="AN ESTIMATE WITH EXACT INPUTS">

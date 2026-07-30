@@ -11,11 +11,21 @@ when games go final.
 DATABASE_URL: use the process environment first (e.g. GitHub Actions); otherwise
 load from scripts/.env for local development.
 
-Skipped season — 2019-20 (COVID bubble):
-  After the March 2020 shutdown, the league finished the season in a single-site
-  bubble in Orlando with no real home/road travel. Feeding those games into our
-  haversine / travel-fatigue model would corrupt schedule-load signals, so this
-  season is omitted entirely.
+Skipped season — 2019-20 (COVID):
+  The league suspended play on 2020-03-11 with teams having played 63-67 of 82, then
+  finished in a single-site Orlando bubble with no real home/road travel. The bubble
+  games alone would corrupt the haversine / travel-fatigue signal, so the season is
+  omitted **entirely** — including the ~970 games played normally before the stoppage.
+
+  That wider cut is deliberate. A season in which teams played DIFFERENT numbers of
+  games cannot be ranked at season grain, which is what the Schedule Edge module does:
+  a four-game difference in exposure would move a team's total without the schedule
+  having favoured anyone. The pre-stoppage games would add ~2.5% to the backtest,
+  which is not worth special-casing every season-level aggregate for.
+
+  2020-21 IS included: ordinary travel, merely compressed into 72 games. So are the
+  1998-99 (50-game) and 2011-12 (66-game) lockout seasons. Short is fine here;
+  interrupted is not.
 
 Other notes:
   2020-21: Normal home/away schedule (no bubble) — included.

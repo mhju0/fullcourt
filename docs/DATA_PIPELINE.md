@@ -498,7 +498,9 @@ weighting needs the whole league pool, which a single browser session does not h
 else — games, attempts, eFG%, both arms — the page re-derives from the season rows.
 
 Re-run after a season ends, then commit the regenerated JSON. 2019-20 is absent because `games`
-excludes the Orlando bubble league-wide (see `scripts/fetch_schedule.py`): no normal travel, so
+excludes **all of 2019-20** league-wide — the season, not merely its bubble games (see
+`scripts/fetch_schedule.py`). The ~970 games played normally before the March 2020 suspension
+go with it, because a season stopped at 63-67 of 82 cannot be ranked at season grain. No normal travel, so
 no rest to measure.
 
 ## Cron cadence
