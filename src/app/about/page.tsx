@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { AboutContentLazy } from "@/components/about-lazy";
+import type { AboutStats } from "@/components/about-content";
 import { getHistoricalBacktest } from "@/lib/rest-advantage-evidence-server";
 
 export const metadata: Metadata = {
@@ -24,18 +25,29 @@ export const metadata: Metadata = {
  */
 export const revalidate = 86400;
 
-export default async function AboutPage() {
+/**
+ * Null when there is no database to read, which is a build without DATABASE_URL — CI, or a
+ * clone that has not been configured. The page still builds and still says what the product
+ * measures; only the three evidence figures are withheld, and they render as em dashes rather
+ * than as numbers nobody verified.
+ *
+ * The check is on the variable, deliberately, rather than a try/catch around the query. A
+ * missing database is a known environment; a database that is present and failing is a real
+ * fault, and swallowing it would ship a marketing page quietly missing its evidence.
+ */
+async function loadStats(): Promise<AboutStats | null> {
+  if (!process.env.DATABASE_URL) return null;
+
   const backtest = await getHistoricalBacktest(0);
   const widest = backtest.thresholds.find((t) => t.threshold === 7);
+  return {
+    games: backtest.totalGames,
+    overallEdgePp: Math.round((backtest.overallWinRate - 50) * 10) / 10,
+    widestEdgePp: widest ? Math.round((widest.winPct - 50) * 10) / 10 : 0,
+    widestEdgeGames: widest?.games ?? 0,
+  };
+}
 
-  return (
-    <AboutContentLazy
-      stats={{
-        games: backtest.totalGames,
-        overallEdgePp: Math.round((backtest.overallWinRate - 50) * 10) / 10,
-        widestEdgePp: widest ? Math.round((widest.winPct - 50) * 10) / 10 : 0,
-        widestEdgeGames: widest?.games ?? 0,
-      }}
-    />
-  );
+export default async function AboutPage() {
+  return <AboutContentLazy stats={await loadStats()} />;
 }

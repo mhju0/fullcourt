@@ -14,6 +14,17 @@ python3 -m unittest discover -s scripts/tests -p 'test_*.py' -v
                    # import-light Python ingestion contract tests
 ```
 
+> **Build without a database before pushing.** `/about` is a server component that reads the
+> live backtest, so it is data-dependent at build time — and a local `pnpm build` passes on
+> `.env.local` while CI, which has no `DATABASE_URL`, fails at prerender. That gap went
+> unnoticed for three pushes on 2026-07-30. The page now withholds its three evidence figures
+> when no database is configured rather than failing, but the way to catch this class of
+> problem is to build the way CI does:
+>
+> ```
+> mv .env.local .env.local.bak && pnpm build; mv .env.local.bak .env.local
+> ```
+
 ## Unit tests — Vitest
 
 Config (`vitest.config.ts`): `environment: "node"`, `include: ["src/**/*.test.ts"]`,

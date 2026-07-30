@@ -175,7 +175,10 @@ const VIEW = "flex min-h-[calc(100svh-72px)] flex-col justify-center py-24";
 
 const signedPp = (v: number) => (v >= 0 ? `+${v.toFixed(1)}` : `\u2212${Math.abs(v).toFixed(1)}`);
 
-export function AboutContent({ stats }: { stats: AboutStats }) {
+/** Em dash, not a zero: a figure that could not be read must not look like a measurement. */
+const NO_FIGURE = "\u2014";
+
+export function AboutContent({ stats }: { stats: AboutStats | null }) {
   const root = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -309,11 +312,11 @@ export function AboutContent({ stats }: { stats: AboutStats }) {
               className="font-heading block font-bold"
               style={{ fontSize: "clamp(5rem,15vw,11rem)", lineHeight: 0.85, letterSpacing: "-0.04em", color: "#7FA9FF" }}
             >
-              {signedPp(stats.widestEdgePp)}
+              {stats ? signedPp(stats.widestEdgePp) : NO_FIGURE}
             </span>
             <p className="mt-6 max-w-[34ch]" style={{ color: BONE, fontSize: "1.05rem", lineHeight: 1.6 }}>
               Win-rate points above a coin flip when the rest gap is at its widest, across{" "}
-              {stats.widestEdgeGames.toLocaleString()} games.
+              {stats ? `${stats.widestEdgeGames.toLocaleString()} games` : "the widest rest gaps"}.
             </p>
           </div>
 
@@ -323,13 +326,13 @@ export function AboutContent({ stats }: { stats: AboutStats }) {
                 {`${NBA_SEASONS.length} seasons`}
               </span>
               <p className="mt-3 max-w-[46ch]" style={{ color: DIM, lineHeight: 1.6 }}>
-                {stats.games.toLocaleString()} completed games where the model made a call. The
+                {stats ? `${stats.games.toLocaleString()} completed games` : "Every completed game"} where the model made a call. The
                 ones it reads as too close carry no claim at all.
               </p>
             </div>
             <div className="fc-rise" style={{ borderTop: "1px solid rgba(245,241,232,.14)", paddingTop: "1.5rem" }}>
               <span className="font-heading font-bold" style={{ fontSize: "clamp(2rem,4vw,3rem)", lineHeight: 1, color: "#E0A340" }}>
-                {signedPp(stats.overallEdgePp)}
+                {stats ? signedPp(stats.overallEdgePp) : NO_FIGURE}
               </span>
               <p className="mt-3 max-w-[46ch]" style={{ color: DIM, lineHeight: 1.6 }}>
                 Across every call it makes, not only the strongest. Much of the underlying gap is
