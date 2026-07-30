@@ -12,9 +12,12 @@ import {
 import { cn } from "@/lib/utils"
 
 /**
- * Reference surfaces, reached from the top status bar rather than the tab bar or the OTHER
- * menu. Kept here rather than in primary-navigation.ts because these are deliberately NOT
- * primary surfaces — the onboarding guide enumerates that module and should not offer these.
+ * Reference surfaces: right-aligned in the nav row, in their own landmark. They explain the
+ * product rather than being surfaces of it, so they are not tabs — but they are the same size
+ * and weight as tabs, because the top status strip proved too quiet to be found.
+ *
+ * Kept here rather than in primary-navigation.ts on purpose: that module is what the
+ * onboarding guide enumerates, and the guide should offer product surfaces, not documentation.
  */
 const SECONDARY_LINKS = [
   { href: "/about", label: "ABOUT" },
@@ -66,44 +69,25 @@ export function NavBar() {
             <span style={{ color: "var(--term-red)", fontWeight: 700 }}>FULLCOURT</span>
             <span className="hidden sm:inline" style={{ color: "var(--term-text-muted)" }}>NBA ANALYTICS PLATFORM</span>
           </Link>
-          <div className="flex items-center gap-3" style={{ fontSize: "11px", letterSpacing: "0.08em" }}>
-            {/* Secondary chrome, deliberately not tabs: these two explain the product and the
-                model rather than being surfaces of it, and the nav's five-link count is
-                asserted in e2e. Quiet on purpose — 11px muted mono outside the navigation
-                landmark — but reachable from every page, which the footer link alone was not.
-                BEHIND THE DATA sits beside ABOUT rather than in the OTHER menu, because OTHER
-                holds data surfaces and this is reference material.
-                The "2025-26 SEASON" readout that used to sit here is gone: it was inert, and on
-                a site covering forty seasons it implied the whole thing was scoped to one. */}
-            {SECONDARY_LINKS.map(({ href, label }) => (
-              <Link
-                key={href}
-                href={href}
-                aria-current={pathname === href ? "page" : undefined}
-                className="transition-colors hover:text-[var(--term-text)]"
-                style={{
-                  color: pathname === href ? "var(--term-text)" : "var(--term-text-muted)",
-                  fontWeight: 600,
-                }}
-              >
-                {label}
-              </Link>
-            ))}
-          </div>
         </div>
       </div>
 
       {/* MAIN NAV BAR */}
-      <nav
+      <div
         className="mono"
         style={{
           height: "44px",
           background: "var(--term-surface)",
           borderBottom: "1px solid var(--term-border)",
         }}
-        aria-label="Main navigation"
       >
         <div className="mx-auto flex h-full max-w-7xl items-center gap-6 px-4 sm:px-6">
+          {/* Two landmarks in one row. The product tabs keep the "Main navigation" name and
+              its asserted five-link count; the reference links are a separate landmark so
+              they never inflate that count and so screen readers announce them as what they
+              are. Visually they are the same size and weight as a tab — the gap is what says
+              "not one of the five", not a smaller type size. */}
+          <nav aria-label="Main navigation" className="flex h-full items-center gap-6">
           {DIRECT_NAV_ITEMS.map(({ href, label }) => {
             const active = isActive(pathname, href)
             return (
@@ -171,8 +155,26 @@ export function NavBar() {
               </Menu.Positioner>
             </Menu.Portal>
           </Menu.Root>
+          </nav>
+
+          <nav aria-label="Reference" className="ml-auto flex h-full items-center gap-5">
+            {SECONDARY_LINKS.map(({ href, label }) => {
+              const active = isActive(pathname, href)
+              return (
+                <Link
+                  key={href}
+                  href={href}
+                  aria-current={active ? "page" : undefined}
+                  className={cn(TAB_CLASS, tabTone(active))}
+                  style={TAB_STYLE}
+                >
+                  {label}
+                </Link>
+              )
+            })}
+          </nav>
         </div>
-      </nav>
+      </div>
     </header>
   )
 }

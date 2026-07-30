@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { MethodLink } from "@/components/method-link";
 import { PageHeader } from "@/components/page-header";
 import { PlayoffsContentLazy } from "@/components/playoffs-lazy";
 
@@ -14,6 +15,7 @@ export default function PlayoffsPage() {
         title="Series Predictions"
         description="Predicts playoff series winners from rest- and fatigue-derived features — the same rest-advantage lineage as the regular-season model, run through a separate series-level model."
       />
+      <MethodLink surfaceHref="/playoffs" />
 
       <PlayoffsContentLazy />
     </div>

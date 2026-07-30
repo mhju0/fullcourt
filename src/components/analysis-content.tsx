@@ -18,6 +18,7 @@ import useSWR from "swr"
 import { format } from "date-fns"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { ExploreGameDetailModal } from "@/components/explore-game-detail-modal"
+import { MethodLink } from "@/components/method-link"
 import { PageHeader } from "@/components/page-header"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useExploreGames, type DrillSignal } from "@/hooks/useExploreGames"
@@ -737,6 +738,7 @@ export function AnalysisContent() {
         title="Rest Advantage Analysis"
         description="Among completed regular-season games with fatigue data on both sides, did the more-rested team win? Charts plot the gap against a coin flip in percentage points, so zero is a 50% win rate."
       />
+      <MethodLink surfaceHref="/analysis" />
 
       {/* Hero stat row (terminal stat cards) */}
       <div className="grid grid-cols-2 gap-2 md:grid-cols-3">

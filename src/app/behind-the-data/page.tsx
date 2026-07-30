@@ -1,16 +1,88 @@
 import type { Metadata } from "next";
-import { BehindTheDataContent } from "@/components/behind-the-data-content";
+import Link from "next/link";
+import { BehindTheDataShell } from "@/components/behind-the-data-shell";
+import { Note, Prose, Section } from "@/components/behind-the-data-parts";
+import { BEHIND_THE_DATA_SECTIONS } from "@/lib/behind-the-data-sections";
+import { NBA_SEASONS } from "@/lib/nba-season";
 
 export const metadata: Metadata = {
   title: "Behind the Data",
   description:
-    "How FullCourt's fatigue score is calculated, what each term is actually worth, where the data comes from, and what the model cannot see.",
+    "How every FullCourt number is calculated — the fatigue model, schedule edge, playoff predictions, player shooting and shot value, with their sources and limits.",
 };
 
-// Lives in the OTHER menu rather than taking a sixth tab: the bar is five plain-noun tabs
-// naming the five product surfaces, and this is a reference surface, not one of them.
-// Static — every number is either a model constant or a dated measurement, so there is
-// nothing to fetch.
+/** Every section but the overview itself, for the index list below. */
+const MODEL_SECTIONS = BEHIND_THE_DATA_SECTIONS.filter(
+  (s) => s.href !== "/behind-the-data"
+);
+
+const BLURB: Record<string, string> = {
+  "/behind-the-data/rest-advantage":
+    "The fatigue score: eight terms, what each constant is, and which of them actually carry the result.",
+  "/behind-the-data/schedule-edge":
+    "How a season's schedule is scored for and against a team, and why the count is games rather than days.",
+  "/behind-the-data/playoff-predictions":
+    "The series model's features, and why its out-of-sample accuracy is published beside its in-sample number.",
+  "/behind-the-data/player-shooting":
+    "No rest against three days off, and how much of any player's split is noise.",
+  "/behind-the-data/shot-value":
+    "Expected shooting value by court location, and the defender data public sources do not have.",
+  "/behind-the-data/data-and-limits":
+    "Where the data comes from, which seasons carry which fields, and what is excluded on purpose.",
+};
+
 export default function BehindTheDataPage() {
-  return <BehindTheDataContent />;
+  return (
+    <BehindTheDataShell
+      eyebrow="BEHIND THE DATA"
+      title="Behind the data"
+      description="Every model on this site, written out: the terms, the constants, the thresholds, and the measured results. If a number appears on a page, its arithmetic is here."
+    >
+      <Section label="HOW TO READ ANY NUMBER HERE" descriptor="THREE RULES">
+        <Prose>
+          <strong>Sample size travels with the claim.</strong> A rate without an n attached is
+          not evidence, so every rate on the site carries the count it came from. Where a split
+          is inside the noise, it is drawn muted rather than left to look like a finding.
+        </Prose>
+        <Prose>
+          <strong>Nothing is tuned against its own backtest.</strong>{" "}
+          The fatigue model&rsquo;s constants were set by reasoning about the physical effect and fixed before the
+          historical numbers were run. A model fitted to maximise its own reported accuracy
+          would report whatever accuracy it was asked for.
+        </Prose>
+        <Prose>
+          <strong>Limits are published beside results.</strong> Each section ends with what its
+          model cannot see. Those lists are the most useful part of this reference: they are the
+          conditions under which the number on the product page is wrong.
+        </Prose>
+        <Note>
+          Data spans {`${NBA_SEASONS.length} seasons`}, 1985-86 to the present. Not every field
+          reaches back that far — see Data &amp; limits for which seasons carry what.
+        </Note>
+      </Section>
+
+      <Section label="SECTIONS" descriptor={`${MODEL_SECTIONS.length} PAGES`}>
+        <div className="flex flex-col">
+          {MODEL_SECTIONS.map((section, i) => (
+            <Link
+              key={section.href}
+              href={section.href}
+              className="group flex flex-col gap-1 py-3.5 transition-colors"
+              style={{ borderTop: i === 0 ? undefined : "1px solid var(--term-border)" }}
+            >
+              <span
+                className="mono transition-colors group-hover:text-[var(--term-red)]"
+                style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.06em", color: "var(--term-text)" }}
+              >
+                {section.label}
+              </span>
+              <span style={{ fontSize: 14, color: "var(--term-text-muted)", lineHeight: 1.5, maxWidth: "46rem" }}>
+                {BLURB[section.href]}
+              </span>
+            </Link>
+          ))}
+        </div>
+      </Section>
+    </BehindTheDataShell>
+  );
 }

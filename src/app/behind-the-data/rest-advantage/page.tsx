@@ -1,77 +1,28 @@
-import { PageHeader } from "@/components/page-header";
+import type { Metadata } from "next";
+import { BehindTheDataShell } from "@/components/behind-the-data-shell";
+import {
+  Formula,
+  LimitList,
+  Note,
+  Prose,
+  Section,
+} from "@/components/behind-the-data-parts";
 import { FATIGUE_CONSTANTS as K } from "@/lib/fatigue";
-import { termCardStyle, termTdStyle, termThStyle } from "@/lib/terminal-styles";
+import { termTdStyle, termThStyle } from "@/lib/terminal-styles";
+
+export const metadata: Metadata = {
+  title: "Rest Advantage — Behind the Data",
+  description:
+    "The fatigue score in full: its eight terms, every constant, and single-term ablations showing which of them actually carry the result.",
+};
 
 /**
- * Methodology page. Every constant is read from `FATIGUE_CONSTANTS` rather than retyped,
- * so the page cannot drift from the model it describes.
- *
- * The ablation deltas are from the 2026-07-30 recompute and are stated as of that date,
- * because they need a full-table analysis that is not worth running per page view. Anything
- * that could go stale is dated.
+ * The flagship model's reference page. Constants are read from `FATIGUE_CONSTANTS` rather
+ * than retyped, so the prose cannot drift from the code. Measured figures carry the date
+ * they were measured, because they need a full-table analysis that is not worth running per
+ * page view.
  */
-
 const MEASURED_ON = "2026-07-30";
-
-function Section({
-  label,
-  descriptor,
-  children,
-}: {
-  label: string;
-  descriptor?: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div style={termCardStyle}>
-      <div
-        className="mono flex items-center gap-3 py-2"
-        style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-text-muted)" }}
-      >
-        <span style={{ fontWeight: 700 }}>{label}</span>
-        <span style={{ flex: 1, height: 1, background: "var(--term-border)" }} />
-        {descriptor && <span style={{ fontWeight: 600 }}>{descriptor}</span>}
-      </div>
-      <div className="mt-3 flex flex-col gap-4">{children}</div>
-    </div>
-  );
-}
-
-function Prose({ children }: { children: React.ReactNode }) {
-  return (
-    <p style={{ maxWidth: "46rem", fontSize: 15, color: "var(--term-text)", lineHeight: 1.6 }}>
-      {children}
-    </p>
-  );
-}
-
-function Note({ children }: { children: React.ReactNode }) {
-  return (
-    <p style={{ maxWidth: "46rem", fontSize: 14, color: "var(--term-text-muted)", lineHeight: 1.55 }}>
-      {children}
-    </p>
-  );
-}
-
-/** Monospace formula block — the actual arithmetic, not a paraphrase of it. */
-function Formula({ children }: { children: React.ReactNode }) {
-  return (
-    <pre
-      className="mono overflow-x-auto"
-      style={{
-        background: "var(--term-surface-2)",
-        border: "1px solid var(--term-border)",
-        borderRadius: "var(--term-radius)",
-        padding: "12px 14px",
-        fontSize: 12,
-        lineHeight: 1.7,
-        color: "var(--term-text)",
-      }}
-    >
-      {children}
-    </pre>
-  );
-}
 
 /** Single-term ablations from the 2026-07-30 recompute: swing lost when the term is removed. */
 const ABLATIONS = [
@@ -85,16 +36,14 @@ const ABLATIONS = [
   { term: "Schedule density", delta: 0.04, verdict: "Slightly harmful" },
 ] as const;
 
-export function BehindTheDataContent() {
-  return (
-    <div className="flex flex-col gap-12">
-      <PageHeader
-        eyebrow="BEHIND THE DATA"
-        title="How this is calculated"
-        description="Every number on this site comes out of one function. This page states what that function does, what each piece of it is actually worth, and what it cannot see. Where a measurement flatters the model, it is labelled."
-        descriptionMaxWidth="46rem"
-      />
 
+export default function RestAdvantageMethodPage() {
+  return (
+    <BehindTheDataShell
+      eyebrow="BEHIND THE DATA · REST ADVANTAGE"
+      title="Rest advantage"
+      description="Every number on the Games and Model Results pages comes out of one function. This states what it does, what each piece of it is worth, and what it cannot see."
+    >
       <Section label="THE SCORE" descriptor="ONE FUNCTION, EIGHT TERMS">
         <Prose>
           Each team carries a fatigue score for each game. It is not a rating of the team — it
@@ -269,26 +218,16 @@ direction    = ${K.eastwardMultiplier} eastward, ${K.westwardMultiplier} westwar
         <Prose>
           The model reads schedules. It knows nothing about the teams playing.
         </Prose>
-        <ul
-          className="flex flex-col gap-2"
-          style={{ maxWidth: "46rem", fontSize: 15, color: "var(--term-text)", lineHeight: 1.55 }}
-        >
-          {[
+        <LimitList
+          items={[
             "No injuries, rotations or minutes played. A rested team missing two starters scores the same as a healthy one.",
-            "No team quality. Rest advantage is not a prediction of who is better, and a rested visitor is often a good team midway through a road trip — which is why the win rates here are associational, not causal.",
+            "No team quality. Rest advantage is not a prediction of who is better, and a rested visitor is often a good team midway through a road trip — which is why these win rates are associational, not causal.",
             "No actual itineraries. Teams are assumed to fly venue to venue and only home when the next game is home. No public source records what they really did.",
             "No load management. A star sitting a back-to-back is exactly the effect this model would want to capture, and it is invisible here.",
             "Playoffs are excluded entirely. A fixed two-team series breaks the travel assumptions.",
             "The 2019-20 bubble is excluded. No travel happened.",
-          ].map((limit) => (
-            <li key={limit} className="flex gap-2.5">
-              <span className="mono" style={{ color: "var(--term-red)", flexShrink: 0 }}>
-                —
-              </span>
-              <span>{limit}</span>
-            </li>
-          ))}
-        </ul>
+          ]}
+        />
       </Section>
 
       <Section label="HOW THE MODEL IS SCORED" descriptor="NO TUNING AGAINST THE BACKTEST">
@@ -307,6 +246,6 @@ direction    = ${K.eastwardMultiplier} eastward, ${K.westwardMultiplier} westwar
           prediction. The distinction is easy to lose and worth keeping.
         </Note>
       </Section>
-    </div>
+    </BehindTheDataShell>
   );
 }

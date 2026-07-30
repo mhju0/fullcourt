@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { MethodLink } from "@/components/method-link";
 import { PageHeader } from "@/components/page-header";
 import { ShotQualityContentLazy } from "@/components/shot-quality-lazy";
 
@@ -14,6 +15,7 @@ export default function ShotQualityPage() {
         title="Expected Shot Value"
         description="Location-based expected field-goal efficiency by court zone. No defender distance or shot clock — public NBA data captures where a shot came from, not how contested it was."
       />
+      <MethodLink surfaceHref="/shot-quality" />
 
       <ShotQualityContentLazy />
     </div>

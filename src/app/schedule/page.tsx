@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { MethodLink } from "@/components/method-link";
 import { PageHeader } from "@/components/page-header";
 import { ScheduleDisparityContentLazy } from "@/components/schedule-disparity-lazy";
 import { WinTotalMarketCheck } from "@/components/win-total-market-check";
@@ -15,6 +16,7 @@ export default function SchedulePage() {
         title="Schedule Disparity"
         description="Which teams a season's schedule favored, counted in games where one side arrived with a real rest edge. This describes the schedule — it is not a prediction, and much of the gap is structural: geography, arena availability and broadcast windows produce rest imbalance without anyone favoring anyone. Every figure is scoped to its own season."
       />
+      <MethodLink surfaceHref="/schedule" />
 
       <ScheduleDisparityContentLazy />
 
