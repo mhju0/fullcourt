@@ -30,9 +30,7 @@ import type { DisparityGameRow } from "@/lib/schedule-disparity";
 import { ABNORMAL_STRETCHES } from "@/lib/season-regime";
 import {
   formatEasternDateKey,
-  intersectDateBounds,
   monthCalendarBounds,
-  regularSeasonDateBounds,
 } from "@/lib/nba-season";
 import {
   classifyRestAdvantage,
@@ -294,10 +292,15 @@ async function toGameResponses(rows: GameFatigueJoinRow[]): Promise<GameResponse
 /**
  * Returns all games scheduled for a given date (YYYY-MM-DD), with full team
  * info and pre-computed fatigue scores for both sides.
+ *
+ * Regime-filtered like every other reader. Each row here carries a rest advantage, and that
+ * number is the fatigue model speaking — publishing one for a game the same model calls
+ * abnormal would have the site contradict its own methodology page, which says the bubble is
+ * excluded because there is no travel to measure.
  */
 export async function getGamesByDate(date: string): Promise<GameResponse[]> {
   const rows = await selectGamesWithFatigue(
-    and(eq(games.date, date), eq(games.gameType, "regular"))
+    and(eq(games.date, date), eq(games.gameType, "regular"), gameIsNormallyPlayed)
   );
   return toGameResponses(rows);
 }
@@ -452,14 +455,10 @@ export async function getRegularSeasonGameDatesWithCounts(
   season: string,
   month?: number
 ): Promise<GameDateCount[]> {
-  const seasonBounds = regularSeasonDateBounds(season);
-  const window =
-    month === undefined
-      ? seasonBounds
-      : intersectDateBounds(seasonBounds, monthCalendarBounds(season, month));
-  if (!window) {
-    return [];
-  }
+  // No season-wide date window: `games.season` already scopes the rows, and clipping them to an
+  // October-April calendar on top of it only ever removed real games. It hid all 135 of
+  // 2020-21's May games, which ran to the 16th, and every 2019-20 game from July onward.
+  const window = month === undefined ? null : monthCalendarBounds(season, month);
 
   const rows = await db
     .select({
@@ -471,8 +470,9 @@ export async function getRegularSeasonGameDatesWithCounts(
       and(
         eq(games.season, season),
         eq(games.gameType, "regular"),
-        gte(games.date, window.from),
-        lte(games.date, window.to)
+        gameIsNormallyPlayed,
+        window ? gte(games.date, window.from) : undefined,
+        window ? lte(games.date, window.to) : undefined
       )
     )
     .groupBy(games.date)

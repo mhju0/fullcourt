@@ -3,11 +3,12 @@ import { endOfMonth, format, startOfMonth } from "date-fns";
 /**
  * Seasons the app and ingest pipeline support.
  *
- * 2019-20 is omitted **entirely** — not merely its bubble games. Teams had played 63-67 of
- * 82 before the March 2020 suspension, so roughly 970 normally-travelled games go with it.
- * That is deliberate: a truncated season where teams played different game counts cannot be
- * ranked at season grain, which is what Schedule Edge does, and the game-level gain would be
- * about 2.5% of the backtest. 2020-21 IS included (72 games, condensed).
+ * Every season that has been played, 2019-20 included. It was omitted here until 2026-07-30,
+ * which took the ~970 games played normally before the March 2020 suspension with it and cost
+ * Player Shooting a season because Schedule Edge could not rank one. What a given surface may
+ * use is now decided per surface: `ABNORMAL_STRETCHES` (season-regime.ts) drops the bubble
+ * games from every model, and {@link rankableSeasons} withholds seasons whose teams played
+ * unequal numbers of games from the one module that ranks them.
  * 1985-86 … latest supported/current NBA season.
  * Oldest → newest for stable sort; UI often reverses for “latest first” dropdowns.
  *
@@ -27,7 +28,6 @@ export const NBA_SEASONS: readonly string[] = (() => {
   const latestSupportedStart = Math.max(2025, currentSeasonStart);
   const out: string[] = [];
   for (let y = 1985; y <= latestSupportedStart; y++) {
-    if (y === 2019) continue;
     out.push(`${y}-${String(y + 1).slice(-2)}`);
   }
   return out;
@@ -35,7 +35,14 @@ export const NBA_SEASONS: readonly string[] = (() => {
 
 export type NbaSeasonLabel = (typeof NBA_SEASONS)[number];
 
-/** Regular-season calendar months (Oct–Apr) in tab order. */
+/**
+ * The months every season gets a tab for, in tab order.
+ *
+ * Oct-Apr is the ordinary span, and these are shown even when empty so a lockout's missing
+ * months read as disabled rather than vanishing. Seasons that overrun it — 2020-21 into May,
+ * 2019-20 into October 2020 — get their extra months appended by `monthTabs`, which only shows
+ * a month outside this list when games were actually played in it.
+ */
 export const NBA_REGULAR_MONTHS: readonly { value: number; label: string }[] = [
   { value: 10, label: "Oct" },
   { value: 11, label: "Nov" },
@@ -60,20 +67,18 @@ export function parseSeasonStartYear(season: string): number {
 }
 
 /**
- * Regular season spans Oct 1 (start year) through Apr 30 (start year + 1).
- */
-/**
- * The calendar window a season's regular-season games occupy: October 1 through April 30.
+ * The months a regular season *typically* occupies: October 1 through April 30.
  *
- * This is the project's single **season-regime policy** — the answer to "which games of a
- * season may a model read". It matters beyond tidiness because it is what separates a
- * normally-played stretch from an abnormal one inside the same season label: the 2019-20
- * Orlando bubble ran 30 Jul – 11 Oct 2020, so it falls outside this window and is excluded
- * by the same rule that drops mis-tagged May/June playoff dates.
+ * **Typically, not actually.** Seasons overrun this window — 2020-21 ran to 16 May, 1998-99 to
+ * 5 May, and 2019-20 to 11 October 2020 — so this is a rule of thumb about the NBA calendar and
+ * nothing may filter games by it. Its one job is telling {@link isNbaOffSeason} roughly when
+ * basketball is not being played.
  *
- * The rule was previously written twice — here in TypeScript and again by hand in SQL in
- * `db/queries.ts` — and applied to only some readers, which is how a policy decision ends up
- * enforced at ingest instead. Both expressions now derive from these two constants.
+ * It used to describe itself as the project's single season-regime policy, and was used as one.
+ * That was wrong twice over: it excluded the 2019-20 bubble only by coincidence of dates, and it
+ * silently dropped 179 legitimate games from the seasons that overran it. Which games a model
+ * may read is now `season-regime.ts`, which names the abnormal stretches instead of guessing at
+ * them from the calendar.
  */
 export const REGULAR_SEASON_START_MONTH_DAY = "10-01";
 export const REGULAR_SEASON_END_MONTH_DAY = "04-30";
@@ -148,6 +153,16 @@ export function intersectDateBounds(
   const to = a.to < b.to ? a.to : b.to;
   if (from > to) return null;
   return { from, to };
+}
+
+/**
+ * Season-calendar ordering for a month: October first through September last.
+ *
+ * Not the calendar-year order. A season's May comes after its January, so sorting by month
+ * number would file the overrun months at the front of the season they end.
+ */
+export function seasonMonthOrder(month: number): number {
+  return month >= 10 ? month - 10 : month + 2;
 }
 
 /** Default month tab: current ET month if Oct–Apr, else October (off-season). */

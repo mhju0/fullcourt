@@ -154,11 +154,30 @@ def load_birthdays() -> dict[str, date]:
     return out
 
 
+#: Stretches that are not normally-played basketball. Mirrors ABNORMAL_STRETCHES in
+#: src/lib/season-regime.ts, which is the source of truth -- this is the Python expression of
+#: the same rule, and the two must be changed together.
+#:
+#: It matters more here than anywhere else on the site. Rest is counted from the games a
+#: player actually played, so his first game back in the bubble sits about 141 days after his
+#: last one before the suspension. Without this filter that single game would enter the
+#: "3+ days rest" arm of every player who appeared in it -- one of the cleanest-looking
+#: rested samples imaginable, produced by a global pause rather than by rest.
+ABNORMAL_STRETCHES = [
+    ("2019-20", "2020-07-30", "2020-10-11"),  # Orlando bubble
+]
+
+
 def load_game_dates(conn) -> dict[str, date]:
+    clauses = " ".join(
+        f"AND NOT (season = '{s}' AND date BETWEEN '{a}' AND '{b}')"
+        for s, a, b in ABNORMAL_STRETCHES
+    )
     with conn.cursor() as cur:
-        cur.execute("""
+        cur.execute(f"""
             SELECT external_id, date FROM games
             WHERE game_type='regular' AND status='final' AND external_id LIKE '002%%'
+            {clauses}
         """)
         return {ext: d for ext, d in cur.fetchall()}
 

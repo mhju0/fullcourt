@@ -71,8 +71,9 @@ export function WinTotalMarketCheck() {
 
       <p style={{ marginTop: 10, maxWidth: "44rem", fontSize: 12.5, color: "var(--term-text-muted)", lineHeight: 1.55 }}>
         Lines from the {benchmark.source}, {benchmark.firstSeason} through {benchmark.lastSeason}.
-        No lines were published for the 1998-99 lockout, and 2019-20 sits outside this
-        site&rsquo;s dataset. {benchmark.pushes} pushes are excluded from the rates; overs hit{" "}
+        No lines were published for the 1998-99 lockout, and 2019-20 is skipped here
+        because its season was suspended at 63 to 67 games — a preseason win total never got a
+        full schedule to resolve against. {benchmark.pushes} pushes are excluded from the rates; overs hit{" "}
         {pct(benchmark.overall.overs, benchmark.overall.n)} overall — win totals lean under
         league-wide, edge or no edge. The archive&rsquo;s win count matched this site&rsquo;s own
         game records for every one of the {benchmark.teamSeasons} team-seasons before anything

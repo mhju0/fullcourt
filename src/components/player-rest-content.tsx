@@ -43,13 +43,6 @@ async function payloadFetcher(url: string): Promise<PlayerRestPayload> {
   return (await res.json()) as PlayerRestPayload
 }
 
-/** The 2019-20 season is absent league-wide; without a marker a career just looks broken. */
-// Season start years, so 2020 = 2020-21 and 2018 = 2018-19; the gap between them is the
-// omitted 2019-20. Named by their position in the list, which runs newest-first — the row
-// ABOVE the marker is the later season. They read inverted otherwise and invite a "fix".
-const BUBBLE_ROW_ABOVE = 2020
-const BUBBLE_ROW_BELOW = 2018
-
 const VOLUME_OPTIONS = [
   { value: 0, label: "Everyone" },
   { value: 300, label: "300+ attempts" },
@@ -361,7 +354,9 @@ export function PlayerRestContent() {
 
       <p style={{ fontSize: 12, color: "var(--term-text-muted)", lineHeight: 1.6, maxWidth: "76ch", margin: 0 }}>
         {index.names.length.toLocaleString()} players · 1996-97 through{" "}
-        {seasonLabel(index.years[0])}, regular season, 2019-20 excluded. eFG% counts a three as 1.5 makes. A single
+        {seasonLabel(index.years[0])}, regular season. 2019-20 covers only the games played before the March 2020
+        suspension — its Orlando bubble games are left out, because a player&rsquo;s first game back sat about
+        141 days after his last one and that is a pause, not rest. eFG% counts a three as 1.5 makes. A single
         season&rsquo;s rest split carries a standard error near 7 pp and correlates with the player&rsquo;s own next
         season at roughly zero, so a season describes what happened rather than what he is; the career line is the
         number that supports a claim.
@@ -422,19 +417,10 @@ function PlayerRows({
       </tr>
 
       {expanded &&
-        seasons.map((s, i) => {
+        seasons.map((s) => {
           const sr = seasonRow(index, s)
-          const bubble = i > 0 && seasons[i - 1][S.YEAR] === BUBBLE_ROW_ABOVE && s[S.YEAR] === BUBBLE_ROW_BELOW
           return (
             <Fragment key={s[S.YEAR]}>
-              {bubble && (
-                <tr className="fc-sub">
-                  <td colSpan={10} style={{ ...termTdStyle, fontFamily: MONO_FONT_STACK, fontSize: 10.5, color: "var(--term-text-muted)" }}>
-                    2019-20 (the season that ended in the Orlando bubble, Jul–Oct 2020) — omitted
-                    league-wide: the whole season, not only its bubble games
-                  </td>
-                </tr>
-              )}
               <tr className={`fc-sub${s[S.YEAR] === browsedYear ? " fc-here" : ""}`} data-testid="season-row">
                 <td style={termTdStyle} />
                 <td style={{ ...termTdStyle, paddingLeft: 26, fontFamily: MONO_FONT_STACK, color: "var(--term-text-dim)" }}>

@@ -61,7 +61,7 @@ export default function DataAndLimitsPage() {
           Not every field reaches back as far as the schedule does. Three inputs arrive from
           ESPN rather than the NBA, because the NBA endpoint that serves them is not reachable
           from outside the United States — a failure that went unnoticed long enough that the
-          overtime term sat dormant across all 49,353 games before it was found.
+          overtime term sat dormant across every game in the dataset before it was found.
         </Prose>
         <div className="overflow-x-auto">
           <table className="mono w-full" style={{ fontSize: 12, borderCollapse: "collapse" }}>
@@ -98,7 +98,7 @@ export default function DataAndLimitsPage() {
         <ValueGrid
           values={[
             { label: "Playoff games", value: "Excluded", sub: "from the fatigue model" },
-            { label: "2019-20", value: "All of it", sub: "the season, not just the bubble" },
+            { label: "Orlando bubble", value: "Excluded", sub: "Jul–Oct 2020, every model" },
             { label: "Preseason", value: "Excluded", sub: "rotations are not real" },
           ]}
         />
@@ -109,31 +109,33 @@ export default function DataAndLimitsPage() {
           Playoff Predictions page.
         </Prose>
         <Prose>
-          <strong>2019-20 is absent in full</strong>, which is worth stating precisely because
-          the short version — &ldquo;the bubble is excluded&rdquo; — implies less than is true.
-          Teams had played 63 to 67 of their 82 games before the March 2020 suspension, and
-          those roughly 970 normally-travelled games are gone as well.
-        </Prose>
-        <Prose>
-          Dropping them is deliberate rather than lazy. A truncated season in which teams played
-          different numbers of games cannot be ranked at season grain, which is exactly what
-          Schedule Edge does — a four-game difference in exposure would move a team&rsquo;s total
-          without the schedule having favoured anyone. Against that, the games would add about
-          2.5% to the backtest, which moves the measured edge in its third decimal.
+          The <strong>2019-20 Orlando bubble</strong> is excluded because every game was played
+          at a single site: there is no travel to measure and no home crowd to weigh. That is a
+          statement about roughly 88 games between 30 July and 11 October 2020, not about the
+          season. The 971 games that season played before the 11 March suspension were reached by
+          flying to them, and they are in.
         </Prose>
         <Note>
-          Two asymmetries follow from it. <strong>2020-21 is included</strong> — its travel was
-          ordinary, just compressed into a 72-game season between December and May, which means
-          its schedule density runs hotter than the density anchors were calibrated against. And{" "}
-          <strong>Shot Value does cover 2019-20</strong>: shot locations do not care about travel,
-          so that surface has no reason to drop the season the fatigue model cannot use. It is the
-          one place on the site where a season exists that the rest of it behaves as though it
-          did not.
+          <strong>This is narrower than it used to be.</strong> Until 30 July 2026 the whole of
+          2019-20 was absent, and those ~970 ordinary games went with it. The rule was written as
+          a calendar window — October to April — which caught the bubble only by coincidence of
+          dates, and along the way dropped 179 legitimate games from seasons that did not run
+          October to April: 135 from 2020-21, which ran to 16 May, and 44 from the 1998-99
+          lockout season. Naming the abnormal stretch excludes exactly what it means to.
         </Note>
+        <Prose>
+          One surface still withholds the season in full. <strong>Schedule Edge</strong> ranks
+          teams against each other within a single season, and 2019-20 stopped with teams having
+          played between 63 and 67 games. A team with four fewer games has four fewer chances to
+          accumulate an edge, so its total would move without the schedule having favoured
+          anyone. That is a different objection from the bubble one — not how the games were
+          played, but that there are unequal numbers of them — and it applies to no other
+          season on record, where the widest spread is a single game.
+        </Prose>
         <Note>
           The lockout seasons are kept for the same reason 2020-21 is: 1998-99 ran 50 games and
-          2011-12 ran 66, both with normal travel. Short seasons are only a problem for this
-          model when they are also <em>interrupted</em>.
+          2011-12 ran 66, both with normal travel and both complete. A short season is only a
+          problem for this site when it is also <em>interrupted</em>.
         </Note>
       </Section>
 

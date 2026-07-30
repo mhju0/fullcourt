@@ -24,6 +24,7 @@
  * thing. See the design spec, §6.
  */
 
+import { NBA_SEASONS } from "@/lib/nba-season";
 import { differenceInCalendarDays, parseISO } from "date-fns";
 import { NEUTRAL_REST_ADVANTAGE_THRESHOLD } from "./rest-advantage-evidence";
 
@@ -58,6 +59,34 @@ export const REST_DAYS_CAP = 5;
  * played 63 to 67 games when 2019-20 was suspended, a spread of four.
  */
 export const RANKABLE_SEASON_GAME_SPREAD_LIMIT = 2;
+
+/**
+ * Seasons this module withholds because their teams did not play comparable numbers of games.
+ *
+ * Only this module. Every other surface offers all {@link NBA_SEASONS}, because only this one
+ * ranks teams against each other within a season — the exact operation an unequal game count
+ * invalidates. Rest Advantage pools games, Player Shooting pools shots, and neither cares that
+ * one team played four more times than another.
+ *
+ * 2019-20 qualifies for a reason no date filter can express: the season was suspended on
+ * 2020-03-11 with teams having played 63 to 67 games. That is a spread of four, twice the
+ * limit, and it survives the bubble filter — the games that create it are ordinary
+ * pre-suspension games, not bubble games. (Unfiltered the spread is eleven, since only 22
+ * teams were invited to Orlando.)
+ *
+ * This list is a UI convenience, not the rule. The rule is {@link seasonRankability}, computed
+ * from the games themselves, and `schedule-disparity-server.ts` throws if a season reaching it
+ * exceeds the limit. So a season wrongly listed here is merely hidden, while one wrongly
+ * missing from it fails loudly with its counts rather than publishing a bad ranking.
+ */
+export const TRUNCATED_SEASONS: readonly string[] = ["2019-20"];
+
+/**
+ * The seasons Schedule Edge will rank, newest last, as a subset of {@link NBA_SEASONS}.
+ */
+export function rankableSeasons(seasons: readonly string[] = NBA_SEASONS): readonly string[] {
+  return seasons.filter((s) => !TRUNCATED_SEASONS.includes(s));
+}
 
 /** A game counts toward the 3+ day bucket at this rest-days edge or greater. */
 const LARGE_EDGE_DAYS = 3;

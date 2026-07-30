@@ -7,7 +7,8 @@ import { SeasonSelector } from "@/components/season-selector"
 import { Skeleton } from "@/components/ui/skeleton"
 import { apiFetcher } from "@/lib/fetcher"
 import { NEUTRAL_REST_ADVANTAGE_THRESHOLD } from "@/lib/rest-advantage-evidence"
-import { browsableSeasons, NBA_SEASONS } from "@/lib/nba-season"
+import { browsableSeasons } from "@/lib/nba-season"
+import { rankableSeasons } from "@/lib/schedule-disparity"
 import {
   termCardStyle,
   termTdStyle,
@@ -15,8 +16,11 @@ import {
 } from "@/lib/terminal-styles"
 import type { ScheduleDisparityResponse, ScheduleDisparityTeam } from "@/types"
 
-const LATEST_SEASON = NBA_SEASONS[NBA_SEASONS.length - 1]
-const SEASON_OPTIONS = browsableSeasons()
+// Rankable rather than browsable: this is the one module that ranks teams against each other
+// inside a season, so a season whose teams played unequal numbers of games is withheld here and
+// offered everywhere else. See TRUNCATED_SEASONS.
+const SEASON_OPTIONS = rankableSeasons(browsableSeasons())
+const LATEST_SEASON = SEASON_OPTIONS[SEASON_OPTIONS.length - 1]
 
 /** Signed whole count: +15 / −11 / 0. Matches the deviation phrasing on the Analysis charts. */
 export function formatSignedCount(count: number): string {

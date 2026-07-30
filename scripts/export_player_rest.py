@@ -12,9 +12,12 @@ move daily. Nothing here does, so a CDN-cacheable asset is both simpler and
 faster than a round trip to Postgres for numbers that cannot have changed.
 
 Rest is the player's own, counted from the games he actually played, so a night
-off for load management is never credited to him as rest. 2019-20 is absent
-because `games` excludes the Orlando bubble league-wide (see
-scripts/fetch_schedule.py) -- no normal travel, so no rest to measure.
+off for load management is never credited to him as rest. That is also why the
+Orlando bubble has to be filtered out here rather than left to the caller: a
+player's first bubble game sits about 141 days after his last one before the
+suspension, and counting that as rest would put the cleanest-looking rested
+sample in the file into an arm that a global pause produced. See
+ABNORMAL_STRETCHES in scripts/analyze_player_shooting.py.
 
 Shape (columnar arrays; ~4x smaller than a list of objects):
 
@@ -174,8 +177,10 @@ def main() -> int:
     yrs = sorted({r[1] for r in seasons})
     print(f"{len(names):,} players · {len(seasons):,} player-seasons · "
           f"{len(shrunk):,} with a career estimate")
+    # 2019-20 is present from 2026-07-30, minus its bubble games. It was absent for as long as
+    # `games` had no rows for the season at all, and the check used to assert that absence.
     print(f"seasons {yrs[0]}-{yrs[-1]}, {len(yrs)} of them "
-          f"({'2019-20 absent' if 2019 not in yrs else 'WARNING: 2019-20 present'})")
+          f"({'2019-20 present' if 2019 in yrs else 'WARNING: 2019-20 missing'})")
     print(f"league mean rest effect {mean:+.3f} pp, tau {math.sqrt(tau2):.2f}")
     print(f"-> {DEST.relative_to(ROOT)}  {DEST.stat().st_size / 1024:.0f} KB")
     return 0

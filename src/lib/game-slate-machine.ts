@@ -1,4 +1,4 @@
-import { NBA_REGULAR_MONTHS, pickDefaultGamesDate } from "@/lib/nba-season";
+import { NBA_REGULAR_MONTHS, pickDefaultGamesDate, seasonMonthOrder } from "@/lib/nba-season";
 import type { GameDateCount, GameResponse } from "@/types";
 
 /**
@@ -241,16 +241,32 @@ export function daysInMonth(state: SlateState): readonly GameDateCount[] {
  * Month tabs with their day counts. A season-wide day list means we know which
  * months were never played (1998-99, 2011-12 lockouts), so those tabs disable
  * instead of round-tripping to an empty result.
+ *
+ * Months outside the ordinary Oct-Apr span appear only when that season played in them, which
+ * is why they are read off the days rather than listed as constants: 2020-21 needs a May tab
+ * for its 135 games and 2019-20 needs Jul through Oct, while the other 38 seasons would show
+ * five permanently-empty tabs if the union were hardcoded.
  */
 export function monthTabs(state: SlateState): MonthTab[] {
   const selected = slateMonth(state);
-  return NBA_REGULAR_MONTHS.map(({ value, label }) => ({
+  const core = new Set(NBA_REGULAR_MONTHS.map((m) => m.value));
+  const extra = [...new Set(state.days.map((d) => monthOf(d.date)))]
+    .filter((m) => !core.has(m))
+    .sort((a, b) => seasonMonthOrder(a) - seasonMonthOrder(b))
+    .map((value) => ({ value, label: MONTH_LABELS[value - 1] }));
+
+  return [...NBA_REGULAR_MONTHS, ...extra].map(({ value, label }) => ({
     value,
     label,
     dayCount: state.days.filter((d) => monthOf(d.date) === value).length,
     isSelected: value === selected,
   }));
 }
+
+const MONTH_LABELS = [
+  "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+] as const;
 
 /**
  * The chip region has four renderings, not seven. Keeping this mapping here —

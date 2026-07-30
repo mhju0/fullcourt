@@ -225,7 +225,7 @@ direction    = ${K.eastwardMultiplier} eastward, ${K.westwardMultiplier} westwar
             "No actual itineraries. Teams are assumed to fly venue to venue and only home when the next game is home. No public source records what they really did.",
             "No load management. A star sitting a back-to-back is exactly the effect this model would want to capture, and it is invisible here.",
             "Playoffs are excluded entirely. A fixed two-team series breaks the travel assumptions.",
-            "The whole of 2019-20 is missing, not just its bubble games — the roughly 970 played normally before the March 2020 suspension are gone too. 2020-21 is included, but it is a condensed 72-game season, so its schedule density runs hotter than the anchors were set against.",
+            "The 2019-20 Orlando bubble is excluded — one site, no travel, no crowd. The roughly 970 games that season played before the March 2020 suspension are ordinary and are included. 2020-21 is included too, but it is a condensed 72-game season, so its schedule density runs hotter than the anchors were set against.",
           ]}
         />
       </Section>

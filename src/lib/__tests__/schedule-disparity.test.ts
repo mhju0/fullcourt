@@ -2,11 +2,14 @@ import { describe, expect, it } from "vitest";
 import {
   computeScheduleDisparity,
   seasonRankability,
+  rankableSeasons,
+  TRUNCATED_SEASONS,
   REST_DAYS_CAP,
   restDaysBeforeGames,
   type DisparityGameRow,
 } from "../schedule-disparity";
 import { calculateFatigue, type RecentGame } from "../fatigue";
+import { NBA_SEASONS } from "../nba-season";
 
 function game(
   date: string,
@@ -464,3 +467,50 @@ describe("seasonRankability", () => {
     expect(r.mostGames).toBe(0);
   });
 });
+
+describe("rankableSeasons", () => {
+  it("withholds exactly the truncated seasons and keeps every other one", () => {
+    const rankable = rankableSeasons();
+    expect(rankable).not.toContain("2019-20");
+    expect(rankable).toHaveLength(NBA_SEASONS.length - TRUNCATED_SEASONS.length);
+    for (const season of NBA_SEASONS) {
+      expect(rankable.includes(season)).toBe(!TRUNCATED_SEASONS.includes(season));
+    }
+  });
+
+  // Without this, a typo in TRUNCATED_SEASONS ("2019-2020") makes the filter a silent no-op and
+  // Schedule Edge starts offering a season it cannot rank. The failure would surface only as a
+  // thrown request from schedule-disparity-server, and only if someone selected that season.
+  it("names only seasons that exist", () => {
+    for (const season of TRUNCATED_SEASONS) expect(NBA_SEASONS).toContain(season);
+  });
+
+  it("keeps 2019-20 available everywhere else", () => {
+    expect(NBA_SEASONS).toContain("2019-20");
+  });
+
+  // The reason 2019-20 is withheld, restated as data: a spread of four is over the limit, and
+  // it is the pre-suspension games that create it, so the bubble filter does not rescue it.
+  it("refuses the game-count spread that a suspended season produces", () => {
+    expect(seasonRankability(teamsWithGameCounts([67, 67, 63, 65])).rankable).toBe(false);
+    expect(seasonRankability(teamsWithGameCounts([82, 82, 81, 82])).rankable).toBe(true);
+  });
+});
+
+/** Games shaped so that team i has played `counts[i]` of them. Opponents are irrelevant here. */
+function teamsWithGameCounts(counts: readonly number[]): DisparityGameRow[] {
+  const rows: DisparityGameRow[] = [];
+  counts.forEach((n, team) => {
+    for (let i = 0; i < n; i++) {
+      rows.push({
+        date: "2020-01-01",
+        status: "final",
+        homeTeamId: team,
+        awayTeamId: -1 - team, // a distinct filler opponent per team, so it adds no counts of its own
+        homeFatigueScore: "0",
+        awayFatigueScore: "0",
+      });
+    }
+  });
+  return rows;
+}

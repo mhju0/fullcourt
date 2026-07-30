@@ -208,6 +208,27 @@ describe("monthTabs", () => {
     expect(byValue[11].dayCount).toBe(0);
   });
 
+  // 2020-21 ran to 16 May and 2019-20 to 11 October 2020. Both were unreachable through this
+  // component until 2026-07-30: the tab list stopped at April, so the days existed in the
+  // response and had nowhere to be clicked.
+  it("adds a tab for months the season overran into, in season order", () => {
+    const tabs = monthTabs(
+      ready({ days: [day("2021-04-30"), day("2021-05-16", 8), day("2020-12-22")] })
+    );
+    const overrun = tabs.find((t) => t.value === 5);
+    expect(overrun?.label).toBe("May");
+    expect(overrun?.dayCount).toBe(1);
+    // Last, not filed before January the way a numeric sort would put it.
+    expect(tabs.at(-1)?.value).toBe(5);
+    expect(tabs.map((t) => t.value).indexOf(5)).toBeGreaterThan(
+      tabs.map((t) => t.value).indexOf(1)
+    );
+  });
+
+  it("shows no month outside Oct-Apr when the season stayed inside it", () => {
+    expect(monthTabs(ready()).map((t) => t.value)).toEqual([10, 11, 12, 1, 2, 3, 4]);
+  });
+
   it("marks exactly one tab selected", () => {
     expect(monthTabs(ready()).filter((t) => t.isSelected)).toHaveLength(1);
   });
