@@ -1899,9 +1899,11 @@ function LoudestCalls({
   return (
     <div className="flex flex-col gap-3">
       <SectionDivider label="LOUDEST CALLS" descriptor="RANKED BY REST GAP" />
+      {/* No "this season": the selector reaches back to 1985-86, so that phrasing is false
+          the moment anyone browses a past season. Global Constraints forbid it. */}
       <p style={{ fontSize: 14, color: "var(--term-text-muted)", maxWidth: "42rem", lineHeight: 1.55 }}>
-        The games this season where the two teams arrived in the most different states, whether
-        or not it worked out. Ranked by the size of the rest gap rather than by the final margin,
+        The games where the two teams arrived in the most different states, whether or not
+        it worked out. Ranked by the size of the rest gap rather than by the final margin,
         because the two have nothing to do with each other.
       </p>
       <div className="flex flex-col gap-[2px]">
