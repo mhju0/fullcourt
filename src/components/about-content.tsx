@@ -171,7 +171,7 @@ export interface AboutStats {
  * which read as one continuous wall of text. The padding only takes effect in exactly that
  * case; where content is shorter than the viewport the section is still exactly one screen.
  */
-const VIEW = "flex min-h-[calc(100svh-72px)] flex-col justify-center py-24";
+const VIEW = "flex min-h-[calc(100svh-var(--term-chrome-h))] flex-col justify-center py-24";
 
 const signedPp = (v: number) => (v >= 0 ? `+${v.toFixed(1)}` : `\u2212${Math.abs(v).toFixed(1)}`);
 

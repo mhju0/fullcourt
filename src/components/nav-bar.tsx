@@ -30,7 +30,8 @@ function isActive(pathname: string, href: string): boolean {
 }
 
 /** Shared by the direct tabs and the OTHER trigger so the underline reads identically. */
-const TAB_CLASS = "flex h-full items-center border-b-2 font-semibold transition-colors"
+const TAB_CLASS =
+  "flex h-full shrink-0 items-center whitespace-nowrap border-b-2 font-semibold transition-colors"
 const TAB_STYLE = { fontSize: "12px", letterSpacing: "0.05em" } as const
 
 function tabTone(active: boolean): string {
@@ -45,11 +46,10 @@ export function NavBar() {
 
   return (
     <header className="sticky top-0 z-50">
-      {/* TOP STATUS BAR */}
+      {/* BRAND BAR */}
       <div
-        className="mono"
         style={{
-          height: "28px",
+          height: "52px",
           background: "var(--term-surface-2)",
           borderBottom: "1px solid var(--term-border)",
         }}
@@ -58,16 +58,40 @@ export function NavBar() {
           {/* The wordmark goes home, which is what every visitor already expects a logo to
               do. It was previously inert — the one piece of chrome people reflexively click
               and nothing happened. Home is GAMES, not /about: a logo that lands you on a
-              marketing page breaks the "take me back to the product" contract. */}
+              marketing page breaks the "take me back to the product" contract.
+
+              Sized as a logotype rather than as chrome text (2026-07-30). At 11px mono it was
+              smaller than the tabs beneath it, so the one element that names the product read
+              as the least important thing in the header. It is now 22px in the display face
+              (Space Grotesk, the same face as every page title) with the descriptor demoted to
+              a mono tagline behind a hairline rule — the standard analytics-site header shape:
+              one mark, one large name, one small qualifier. Two tones, FULL near-black and
+              COURT red, so the name carries the brand accent instead of being flatly red;
+              `aria-label` keeps the accessible name a single "FullCourt home". */}
           <Link
             href="/"
-            className="flex items-center gap-2.5 transition-opacity hover:opacity-80"
-            style={{ fontSize: "11px", letterSpacing: "0.08em" }}
+            className="flex items-center gap-3 transition-opacity hover:opacity-80"
             aria-label="FullCourt home"
           >
-            <CourtMark size={22} className="shrink-0" />
-            <span style={{ color: "var(--term-red)", fontWeight: 700 }}>FULLCOURT</span>
-            <span className="hidden sm:inline" style={{ color: "var(--term-text-muted)" }}>NBA ANALYTICS PLATFORM</span>
+            <CourtMark size={34} className="shrink-0" />
+            <span
+              className="font-heading"
+              style={{ fontSize: "22px", fontWeight: 700, letterSpacing: "-0.015em", lineHeight: 1 }}
+            >
+              <span style={{ color: "var(--term-text)" }}>FULL</span>
+              <span style={{ color: "var(--term-red)" }}>COURT</span>
+            </span>
+            <span
+              aria-hidden
+              className="hidden sm:block"
+              style={{ width: 1, height: 18, background: "var(--term-hairline)" }}
+            />
+            <span
+              className="mono hidden sm:inline"
+              style={{ fontSize: "10px", letterSpacing: "0.12em", color: "var(--term-text-muted)" }}
+            >
+              NBA ANALYTICS PLATFORM
+            </span>
           </Link>
         </div>
       </div>
@@ -81,13 +105,21 @@ export function NavBar() {
           borderBottom: "1px solid var(--term-border)",
         }}
       >
-        <div className="mx-auto flex h-full max-w-7xl items-center gap-6 px-4 sm:px-6">
+        {/* Below ~900px the eight links do not fit a line, and the row was clipping them: on a
+            390px phone the fifth tab wrapped inside a 44px box and the reference links were
+            simply not on screen. It is now one horizontally scrollable strip — links keep their
+            full size and `ml-auto` still right-aligns the reference group whenever the content
+            does fit, so the desktop row is unchanged. A scroll strip over a drawer because the
+            whole nav is eight short labels: a hamburger would hide all eight behind a tap to
+            solve a problem that a swipe already solves. The OTHER menu is unaffected — it
+            renders through a Portal, so this container cannot clip its popup. */}
+        <div className="fc-nav-scroll mx-auto flex h-full max-w-7xl items-center gap-6 overflow-x-auto px-4 sm:px-6">
           {/* Two landmarks in one row. The product tabs keep the "Main navigation" name and
               its asserted five-link count; the reference links are a separate landmark so
               they never inflate that count and so screen readers announce them as what they
               are. Visually they are the same size and weight as a tab — the gap is what says
               "not one of the five", not a smaller type size. */}
-          <nav aria-label="Main navigation" className="flex h-full items-center gap-6">
+          <nav aria-label="Main navigation" className="flex h-full shrink-0 items-center gap-6">
           {DIRECT_NAV_ITEMS.map(({ href, label }) => {
             const active = isActive(pathname, href)
             return (
@@ -157,7 +189,7 @@ export function NavBar() {
           </Menu.Root>
           </nav>
 
-          <nav aria-label="Reference" className="ml-auto flex h-full items-center gap-5">
+          <nav aria-label="Reference" className="ml-auto flex h-full shrink-0 items-center gap-5">
             {SECONDARY_LINKS.map(({ href, label }) => {
               const active = isActive(pathname, href)
               return (

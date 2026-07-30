@@ -138,6 +138,10 @@
   --term-radius: 4px;
   --term-radius-sm: 2px;
   --term-radius-bar: 1px;
+  /* Height of the sticky chrome: brand bar (52px) + main nav (44px). /about's
+     full-viewport sections subtract it, and they overran the fold by exactly this
+     much the last two times it changed and they did not. One number, one place. */
+  --term-chrome-h: 96px;
 }
 
 /* ── Animations ─────────────────────────────────────────────────── */
@@ -247,6 +251,16 @@
    the wash was visible once you looked for it, but the point of it is to find the expanded
    player without looking. The two levels stay one step apart so the header row and its own
    current season still read as the group's anchors. */
+/* The nav row scrolls sideways below ~900px. Its scrollbar is hidden because the row is 44px
+   tall and the bar would land on the active tab's underline — the one piece of state the row
+   carries. The links stay reachable by keyboard (focus scrolls them into view) and by swipe. */
+.fc-nav-scroll {
+  scrollbar-width: none;
+}
+.fc-nav-scroll::-webkit-scrollbar {
+  display: none;
+}
+
 .fc-rest-table tbody tr.fc-open > td {
   background: color-mix(in srgb, var(--term-amber) 14%, var(--term-surface));
   border-top: 1px solid var(--term-rail);

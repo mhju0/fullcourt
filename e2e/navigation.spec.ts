@@ -66,6 +66,32 @@ test.describe("Primary navigation", () => {
     await expect(other).toHaveAttribute("data-active-surface", "true");
   });
 
+  test("on a phone the nav scrolls itself rather than the page", async ({ page }) => {
+    // Eight links do not fit a 390px line. They used to overflow the row and take the whole
+    // document with them: measured 238px of horizontal page scroll, with the labels squeezed
+    // (SCHEDULE EDGE down to 62px, wrapping inside a 44px box) and the reference links off
+    // screen entirely. The row is its own scroll strip now, so the page itself must not move.
+    await page.setViewportSize({ width: 390, height: 700 });
+    await page.goto("/analysis");
+
+    const pageOverflow = await page.evaluate(
+      () => document.documentElement.scrollWidth - document.documentElement.clientWidth
+    );
+    expect(pageOverflow).toBe(0);
+
+    // …and the strip is what carries the overflow instead, so nothing was solved by hiding it.
+    const strip = page.locator(".fc-nav-scroll");
+    const { scrollW, clientW } = await strip.evaluate((el) => ({
+      scrollW: el.scrollWidth,
+      clientW: el.clientWidth,
+    }));
+    expect(scrollW).toBeGreaterThan(clientW);
+
+    // The far end of the strip is still reachable — a swipe away, not gone.
+    await page.getByRole("link", { name: "BEHIND THE DATA", exact: true }).click();
+    await expect(page).toHaveURL(/\/behind-the-data$/);
+  });
+
   test("reaches /about from the status bar without becoming a tab itself", async ({ page }) => {
     await page.goto("/");
 

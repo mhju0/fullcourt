@@ -11,6 +11,6 @@ export const AboutContentLazy = lazyContent(
   () => import("@/components/about-content").then((m) => m.AboutContent),
   () => (
     // Matches the first section's height so the hero does not jump when it mounts.
-    <div style={{ minHeight: "calc(100svh - 72px)" }} />
+    <div style={{ minHeight: "calc(100svh - var(--term-chrome-h))" }} />
   )
 )
