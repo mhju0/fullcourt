@@ -19,6 +19,7 @@ import type * as Schema from "@/lib/db/schema";
 import { fatigueScores, games, predictions } from "@/lib/db/schema";
 import { loadEnvLocal } from "@/lib/load-env-local";
 import { classifyRestAdvantage } from "@/lib/rest-advantage-evidence";
+import { isNormallyPlayed } from "@/lib/season-regime";
 
 type AppDb = PostgresJsDatabase<typeof Schema>;
 
@@ -43,6 +44,7 @@ async function main(): Promise<void> {
     .select({
       id: games.id,
       date: games.date,
+      season: games.season,
       homeTeamId: games.homeTeamId,
       awayTeamId: games.awayTeamId,
       homeScore: games.homeScore,
@@ -69,8 +71,15 @@ async function main(): Promise<void> {
     )
     .orderBy(games.date);
 
-  const toProcess = allGames.filter((g) => !existingGameIds.has(g.id));
-  console.log(`\nFound ${allGames.length} total regular-season games with fatigue scores.`);
+  // Regime filter, matching every reader of `predictions`. Bubble games carry fatigue rows
+  // because the backfill scores whatever is in `games`, but a prediction for one would be a
+  // row no surface reads and no backtest counts.
+  const inScope = allGames.filter((g) => isNormallyPlayed(g.season, g.date));
+  const toProcess = inScope.filter((g) => !existingGameIds.has(g.id));
+  if (inScope.length !== allGames.length) {
+    console.log(`Excluded ${allGames.length - inScope.length} games inside an abnormal stretch.`);
+  }
+  console.log(`\nFound ${inScope.length} in-scope regular-season games with fatigue scores.`);
   console.log(`Processing ${toProcess.length} new games...\n`);
 
   if (toProcess.length === 0) {

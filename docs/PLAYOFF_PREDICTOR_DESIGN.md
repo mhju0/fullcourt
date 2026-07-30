@@ -246,8 +246,10 @@ DB is clean. A `004`-tagged-as-`regular` invariant check is added to guard again
 regressions. Exact post-ingestion counts are **to be confirmed during the full backfill**.
 
 ### 4.2 Sample estimate (in-scope seasons)
-`NBA_SEASONS` (`src/lib/nba-season.ts:8`) spans 1985-86 … 2025-26 with **2019-20 excluded**
-= **40 seasons** in scope. Standard modern bracket = **15 series/season** (8 first-round +
+`NBA_SEASONS` spans 1985-86 … 2025-26 = **41 seasons**, but this model excludes **2019-20**
+on its own grounds (bubble playoffs — entry rest is meaningless after a 4.5-month layoff), so
+**40 seasons** are in scope here. As of 2026-07-30 that is a series-model decision, not a
+product-wide one; the regular season is used everywhere else. Standard modern bracket = **15 series/season** (8 first-round +
 4 conf semis + 2 conf finals + 1 Finals).
 
 - **Series:** ~40 × 15 ≈ **~600 playoff series** total (the modeling sample).
@@ -276,8 +278,9 @@ A **new, separate ingestion path** (do not loosen the regular-season scripts in 
 4. **Tagging:** set `game_type` via the **existing** `get_game_type`
    (`fetch_schedule.py:148`): `004` + month ≥ 6 ⇒ `finals`, else `playoffs`. These values
    already exist in the schema (`games.gameType` default `'regular'`, `schema.ts:47`).
-5. **How far back:** all in-scope seasons (1985-86 … current), **2019-20 excluded**
-   (mirror the existing skip at `fetch_schedule.py:69`). 2020-21 included.
+5. **How far back:** all in-scope seasons (1985-86 … current), **2019-20 excluded** by this
+   model itself (`ml/build_series_dataset.py`), no longer a mirror of an ingest skip — ingest
+   stopped skipping it on 2026-07-30. 2020-21 included.
 6. **Upsert discipline:** reuse `INSERT … ON CONFLICT (external_id) DO UPDATE`
    (`fetch_schedule.py:331`). Because playoff rows carry **`004` external IDs**, they can
    **never collide** with regular-season `002` rows. This is the structural guarantee that
@@ -419,12 +422,18 @@ Same shape as the rest of the product: **Python writes to the DB, the app reads.
   It is the **only** surface that reads playoff data.
 
 ### 6.5 Isolation from the regular-season product (verified mechanisms)
-- Every existing read query already pins `eq(games.gameType, "regular")` (e.g.
-  `getGamesByDate` `queries.ts:198`, `getGameById` `:381`, `getCompletedGamesWithFatigue`
-  `:547`, `searchRegularSeasonGames` `:744`, upcoming `:907`) **and** the calendar guard
-  `gameDateWithinRegularSeasonCalendar` (Oct 1–Apr 30, `queries.ts:51`). Playoff rows are
-  tagged `playoffs`/`finals` and dated May/June, so they are excluded **twice**. No change
-  to these queries is required or permitted.
+- Every existing read query pins `eq(games.gameType, "regular")` — `getGamesByDate`,
+  `getGameById`, `getCompletedGamesWithFatigue`, `searchRegularSeasonGames` and the upcoming
+  read — and that tag is what isolates the playoff product.
+
+  > **Updated 2026-07-30.** This section originally credited a second guard,
+  > `gameDateWithinRegularSeasonCalendar` (Oct 1–Apr 30), and called playoff rows "excluded
+  > twice" because they are dated May/June. That belt was never load-bearing and was not free:
+  > it dropped 179 legitimate regular-season games from 2020-21 and 1998-99, both of which
+  > overran April, while catching **zero** mis-tagged playoff rows — the data has none. It is
+  > replaced by `gameIsNormallyPlayed`, which excludes named abnormal stretches and nothing
+  > else. Isolation now rests on `game_type` alone, which is the mechanism that was actually
+  > doing the work. See [ADR 0004](adr/0004-season-exclusions-belong-to-modules-not-ingest.md).
 - The new playoff queries are the inverse: they filter to `game_type IN ('playoffs',
   'finals')` and never join into the regular-season pages.
 - The **rest-advantage metric is untouched** — `calculateRestAdvantage`, the

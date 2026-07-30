@@ -135,9 +135,9 @@ pipeline will flag them — they simply become wrong the moment the ET clock rol
 
 | Where | What | Note |
 |-------|------|------|
-| `README.md:18`, `:32`, `:147` | "roughly 40 seasons" / "40-season backtest" / "every one of the 40 seasons" | `NBA_SEASONS` = 1985..current minus 2019-20. 40 today; 41 from 2026-10-01. |
+| `README.md:18`, `:32`, `:147` | "41 seasons" / "41-season backtest" / "every one of the 41 seasons" | `NBA_SEASONS` = 1985..current, no season skipped since 2026-07-30. **41** today; 42 from 2026-10-01. |
 | ~~`src/components/about-content.tsx`~~ | ~~"38,985 games", "+13.4", "26"~~ | **No longer a rollover chore (2026-07-30).** All three were stale — the game count, the RA≥7 deviation, and a rest-spread figure whose metric had been retired outright. `/about` is now a server component reading `getHistoricalBacktest`, revalidated daily, so these figures track the pipeline rather than the last edit. Nothing to re-read at rollover. |
-| `docs/social-preview.png` | Baked "40-SEASON BACKTEST" wordmark | Re-export, then **re-upload** via GitHub → Settings → Social preview. It is referenced by no code, so nothing else will remind you. |
+| `docs/social-preview.png` | Baked "40-SEASON BACKTEST" wordmark | **Stale now, not at rollover:** the site reads 41 since 2019-20 was admitted on 2026-07-30. Re-export, then **re-upload** via GitHub → Settings → Social preview. It is referenced by no code, so nothing else will remind you. |
 | `docs/screenshots/*.png` + their README alt text | Any figure quoted in an `alt=` attribute | Alt text describes the frozen image, so it is correct until the image is retaken. Retaking a screenshot obliges rewriting its alt text in the same commit — a screen-reader user gets the alt text *instead of* the picture. |
 
 Already derived, for contrast: the in-app CTA (`src/app/page.tsx`) and the OG card

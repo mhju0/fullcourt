@@ -1,4 +1,4 @@
-# Fatigue terms apply where their data exists, not uniformly across 40 seasons
+# Fatigue terms apply where their data exists, not uniformly across every season
 
 Status: accepted (2026-07-30)
 
@@ -25,7 +25,7 @@ A pre-2002 game is scored by the same formula, with these inputs absent:
   scored at the listed home team's arena, which understates travel for the teams involved.
 
 Every other term — decay load, travel, road segment, time-zone displacement, schedule stress,
-freshness, altitude, blowout discount — is fully available across all 40 seasons. Time zones in
+freshness, altitude, blowout discount — is fully available across every season. Time zones in
 particular are resolved geographically rather than from a data feed, so relocated-era coordinates
 (Seattle, Vancouver, Katrina-era New Orleans) work identically in 1995 and 2025.
 
@@ -37,7 +37,7 @@ and neither should be papered over:
 1. **Cross-era score comparisons are weaker than they look.** A 1994 score and a 2024 score are
    not built from the same information. The site already declines to rank across eras in the
    Schedule Disparity module for a related reason.
-2. **The 40-season backtest mixes both regimes.** Its headline number is a blend. Because the
+2. **The full-history backtest mixes both regimes.** Its headline number is a blend. Because the
    missing terms are secondary and their absence is unbiased with respect to who wins, this
    dilutes the measured edge rather than inflating it — the error direction is conservative, but
    it is an error.

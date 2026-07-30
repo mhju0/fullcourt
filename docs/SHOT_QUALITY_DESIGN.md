@@ -122,20 +122,22 @@ what actually lands in Supabase. Decoupling "what we pull" from "what we persist
 keeps options open.
 
 ### 2019-20 bubble — recommend **do NOT exclude** (but confirm)
-The regular-season fatigue product excludes the 2019-20 Orlando bubble because it has **no real
-travel** and would corrupt a travel-based model (`src/lib/nba-season.ts`,
-`scripts/fetch_schedule.py`) — see [DATA_PIPELINE.md](DATA_PIPELINE.md). **That rationale does not
-apply here:** shot
-locations on an NBA court are identical regardless of travel, and the bubble games were played
-on regulation courts. Excluding them would only throw away ~1 season of valid shot geometry.
+The travel-based models exclude the 2019-20 Orlando bubble because it has **no real travel**
+(`src/lib/season-regime.ts`) — see [DATA_PIPELINE.md](DATA_PIPELINE.md). **That rationale does
+not apply here:** shot locations on an NBA court are identical regardless of travel, and the
+bubble games were played on regulation courts. Excluding them would only throw away valid shot
+geometry.
 
-- **Recommendation:** **include 2019-20** for the shot model, and add a one-line note in the
-  doc/code that this is a *deliberate divergence* from the fatigue product's exclusion (so a
-  future reader doesn't "fix" it to match). [Inferred]
-- **Counter-argument (present for the human):** if a design goal is *cross-module season-set
-  consistency* ("every FullCourt model uses the same season list"), excluding 2019-20 keeps the
-  two products' season vocabularies identical at the cost of one season of good data. This is a
-  judgment call — flagged in §8.
+- **Recommendation:** **include 2019-20** for the shot model, including its bubble games.
+- **Counter-argument (present for the human):** cross-module season-set consistency — "every
+  FullCourt model uses the same season list" — at the cost of good data.
+
+> **Settled 2026-07-30, and the counter-argument lost twice over.** The wider architecture moved
+> the same way this section argued: exclusions now sit with the module that objects to the data
+> rather than at ingest, so 2019-20's regular season is in `games` and every surface decides for
+> itself. Shot Value's inclusion of the bubble is no longer a divergence needing a warning
+> comment — it is the general rule, and the only remaining asymmetry is that Shot Value keeps the
+> bubble games the travel models drop.
 
 ---
 

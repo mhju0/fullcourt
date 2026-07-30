@@ -52,7 +52,7 @@ function StatCard({ label, value, accent }: { label: string; value: string; acce
 }
 
 /* Three tiles, all of them about the slate on screen. The fourth used to carry the
-   40-season backtest rate, which described none of these games: the historical claim
+   all-seasons backtest rate, which described none of these games: the historical claim
    belongs on each matchup card, where it is stated for that game's own rest gap, and
    on /analysis, which exists to prove it. */
 function StatSummaryRow({

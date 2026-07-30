@@ -16,9 +16,16 @@ What this script does (and only this):
   * Keeps ONLY ``004``-prefixed stats GAME_IDs via ``is_playoff_game_id``
     (the playoff analogue of ``is_regular_season_game_id``).
 
-Seasons: 1985-86 through the current season, EXCLUDING 2019-20 (the COVID Orlando
-bubble — mirrors ``fetch_schedule.py``'s skip). 2020-21 is included. The season list
-is imported from ``fetch_schedule.SEASONS`` so the two paths never drift.
+Seasons: 1985-86 through the current season, imported from ``fetch_schedule.SEASONS`` so the
+two paths never drift. That list included every season from 2026-07-30, so **this script no
+longer skips 2019-20** -- it will ingest the bubble playoffs into ``games`` like any others.
+
+That is deliberate. ``games`` records what was played; the objection to the 2019-20 playoffs
+belongs to the model that would read them, not to ingest. The series model excludes the season
+in ``ml/build_series_dataset.py`` and ``ml/compute_series_features.py``, because those playoffs
+were reached through a 4.5-month layoff and eight seeding games inside a single-site bubble, so
+``entry_rest_diff`` -- its headline feature -- has no meaning for them. ``playoff_series``
+therefore holds 0 rows for 2019-20 no matter what this script ingests.
 
 DATE CONVENTION (critical):
   This historical backfill uses the nba_api ET ``GAME_DATE`` exactly like
@@ -157,7 +164,7 @@ def resolve_seasons(requested: str | None) -> list[str]:
         in_range = f"{SEASONS[0]} … {SEASONS[-1]}"
         sys.exit(
             f"ERROR: season '{requested}' is not in scope. "
-            f"Expected one of the in-scope labels ({in_range}, 2019-20 excluded)."
+            f"Expected one of the in-scope labels ({in_range})."
         )
     return [requested]
 

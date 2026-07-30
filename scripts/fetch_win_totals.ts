@@ -13,7 +13,9 @@
  *
  * Coverage limits (verified 2026-07-29, not assumptions):
  *  - archive has no lines before 1993-94, and none for the 1998-99 lockout;
- *  - 2019-20 is excluded because this site's dataset omits the bubble season;
+ *  - 2019-20 is excluded because the season was suspended at 63-67 of 82 games, so a
+ *    preseason win total never got a full schedule to resolve against. (The site's dataset
+ *    does carry the season as of 2026-07-30; this exclusion is about the market line.)
  *  - a few 1994-95 / 1995-96 teams are listed with line "N/A" and are skipped.
  *
  * Usage: npx tsx scripts/fetch_win_totals.ts

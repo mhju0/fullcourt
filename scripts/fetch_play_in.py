@@ -29,8 +29,8 @@ CRITICAL ISOLATION CONTEXT:
 DATE CONVENTION: nba_api ET ``GAME_DATE`` (consistent with fetch_schedule / fetch_playoffs)
 so first-round entry-rest day-counts line up across regular/play-in/playoff rows.
 
-Seasons: 2020-21 through current (the play-in era), derived from ``fetch_schedule.SEASONS``
-(2019-20 is already excluded there).
+Seasons: 2020-21 through current (the play-in era), derived from ``fetch_schedule.SEASONS``.
+2019-20 predates the play-in in its current form, so the season list never reaches it.
 
 HARD ISOLATION GUARANTEES:
   * Only ``005`` external_ids are ever upserted — a ``002`` (regular) or ``004`` (playoff)

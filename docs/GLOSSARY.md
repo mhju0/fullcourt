@@ -17,7 +17,7 @@ A matchup whose absolute rest advantage is below `0.5`, so neither team receives
 _Avoid_: tie
 
 **Historical backtest**:
-The regular-season evaluation of whether the team favored by rest advantage won. It excludes **all of 2019-20** — the entire season, not only its Orlando bubble games, since a season interrupted at 63-67 of 82 cannot be ranked at season grain. 2020-21 and both lockout seasons are included: short is fine, interrupted is not.
+The regular-season evaluation of whether the team favored by rest advantage won. It excludes the **2019-20 Orlando bubble** — the 88 games played at a single site from 30 July to 11 October 2020 — and nothing else of that season; its 971 pre-suspension games are in. 2020-21 and both lockout seasons are included: short is fine, interrupted is not. Withholding a *whole* season is a separate rule belonging to Schedule Edge alone (see **Truncated season**).
 _Avoid_: prediction accuracy test
 
 **Playoff Predictor**:
@@ -41,6 +41,14 @@ _Avoid_: rest advantage, season fatigue
 **Provisional season**:
 A season containing any game that is not final. Its figures carry an as-of date and may revise as the schedule fills in.
 _Avoid_: incomplete season, partial season
+
+**Abnormal stretch**:
+A range of dates within one season whose games were not reached by travelling to them, so no model on the site may read them. The list lives in `src/lib/season-regime.ts` and currently holds one entry: the 2019-20 Orlando bubble, 30 July to 11 October 2020. This is about **how the games were played**, and it excludes dates, never a season.
+_Avoid_: excluded season, COVID season, bubble season
+
+**Truncated season**:
+A season whose teams did not play comparable numbers of games, so they cannot be ranked against each other. Withheld from **Schedule Edge only**, and offered everywhere else. 2019-20 is the sole member: it was suspended with teams having played 63 to 67 games, a spread of four against a limit of two, where every other season sits within one. This is about **how many games there are**, which is a different objection from an abnormal stretch and does not travel with it.
+_Avoid_: short season (1998-99 and 2011-12 are short and are ranked normally), incomplete season
 
 ## Nav labels
 

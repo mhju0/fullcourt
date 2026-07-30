@@ -53,10 +53,11 @@ export const REST_DAYS_CAP = 5;
  * team with four fewer games has four fewer chances to accumulate an edge — its total moves
  * without the schedule having favoured anyone.
  *
- * Two, because the data says two is safe. Across all 40 ingested seasons the largest spread is
- * **one** game (2012-13, a single cancellation), so the threshold has real margin and flags
- * nothing currently in the database. A season halted mid-schedule sits far above it: teams had
- * played 63 to 67 games when 2019-20 was suspended, a spread of four.
+ * Two, because the data says two is safe. Across the other 40 ingested seasons the largest
+ * spread is **one** game (2012-13, a single cancellation), so the threshold has real margin.
+ * A season halted mid-schedule sits well above it: teams had played 63 to 67 games when
+ * 2019-20 was suspended, a spread of four. That season is the only one it flags, and it is
+ * withheld by name in {@link TRUNCATED_SEASONS} so the selector never offers it.
  */
 export const RANKABLE_SEASON_GAME_SPREAD_LIMIT = 2;
 

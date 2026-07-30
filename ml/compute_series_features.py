@@ -82,8 +82,12 @@ import psycopg2
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 
-# Season excluded everywhere in the product (COVID Orlando bubble). No 2019-20 series exist
-# in playoff_series, but we keep the constant for parity with the skeleton builder.
+# The 2019-20 playoffs were played entirely inside the Orlando bubble, reached through a
+# 4.5-month layoff and eight seeding games, so ``entry_rest_diff`` -- this model's headline
+# feature -- has no meaning for them. This is the series model's own exclusion, not the
+# product-wide one: the regular season's pre-suspension games are used everywhere else as of
+# 2026-07-30. No 2019-20 series exist in playoff_series; the constant is kept for parity with
+# the skeleton builder.
 EXCLUDED_SEASON = "2019-20"
 
 

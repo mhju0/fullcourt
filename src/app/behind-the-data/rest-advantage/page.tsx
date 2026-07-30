@@ -196,8 +196,8 @@ direction    = ${K.eastwardMultiplier} eastward, ${K.westwardMultiplier} westwar
           Schedules, scores and results come from the NBA&rsquo;s own feeds. Overtime periods,
           tip-off times and neutral-site venues come from ESPN, because the NBA endpoint that
           serves them is not reachable from outside the United States — a failure that went
-          unnoticed long enough that the overtime term sat dormant across all 49,353 games
-          before it was found and fixed on {MEASURED_ON}.
+          unnoticed long enough that the overtime term sat dormant across every game in the
+          dataset before it was found and fixed on {MEASURED_ON}.
         </Prose>
         <Prose>
           Arena coordinates are era-correct: Sonics games resolve to Seattle, not Oklahoma City,

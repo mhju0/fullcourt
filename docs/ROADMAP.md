@@ -80,7 +80,7 @@ added alongside it.
 A second audit of `src/lib/fatigue.ts` found ten defects and all but one were fixed. The three
 that mattered most:
 
-- **The overtime term had never fired.** `games.overtime_periods` read 0 for all 49,353 games,
+- **The overtime term had never fired.** `games.overtime_periods` read 0 for every game in the database,
   because its only loader used `stats.nba.com`, which is unreachable from outside the US. It is
   now sourced from ESPN by `scripts/fetch_game_context.ts`.
 - **Time zones were approximated by a 26° longitude test**, which missed 871 of 3,522 genuine
@@ -119,3 +119,21 @@ and correctly computed, which is a different claim from being useful.
 - **`/about` rebuilt** 2026-07-30 as seven full-viewport sections. Its evidence figures are now
   read from the live backtest rather than hardcoded — all three had gone stale, one of them
   citing a metric that had been retired.
+- **2019-20 admitted** 2026-07-30. The season had been excluded from `NBA_SEASONS` outright and
+  never ingested, which discarded the 971 games played before the March 2020 suspension in order
+  to exclude the 88 played in the Orlando bubble. Exclusions moved to the module that objects to
+  the data: `ABNORMAL_STRETCHES` drops the bubble from every model, `TRUNCATED_SEASONS` withholds
+  the season from Schedule Edge alone (the one surface that ranks teams within a season, and so
+  cannot tolerate a 63-to-67 game spread), and the series model keeps its own exclusion because
+  the bubble playoffs followed a 4½-month layoff. See
+  [ADR 0004](adr/0004-season-exclusions-belong-to-modules-not-ingest.md).
+
+  The same pass retired the Oct 1–Apr 30 window as a data filter. It had been documented as the
+  project's single season-regime policy while silently dropping 135 of 2020-21's May games and 44
+  of 1998-99's, neither of which was reachable through the Games month tabs either. The backtest
+  grew 38,084 → 38,851 games and the headline rate moved 55.6% → 55.50%.
+
+  Seeding needed a detour: `stats.nba.com` is unreachable from Seoul and from GitHub's runners,
+  so `scripts/seed_season_from_hoopr.ts` joins hoopR box scores (canonical NBA game ids, sides,
+  scores) to the ESPN scoreboard (dates) on `(away tricode, away pts, home tricode, home pts)`.
+  It matched 1,142 of 1,142 and refuses to write a partial season.

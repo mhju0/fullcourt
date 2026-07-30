@@ -15,7 +15,7 @@
 
 </div>
 
-FullCourt quantifies how **travel, rest, and schedule density** shape NBA outcomes. Its flagship model assigns every team a multi-factor **fatigue score**, derives a **rest advantage** for each matchup, and backtests it against roughly 40 seasons of regular-season results.
+FullCourt quantifies how **travel, rest, and schedule density** shape NBA outcomes. Its flagship model assigns every team a multi-factor **fatigue score**, derives a **rest advantage** for each matchup, and backtests it against 41 seasons of regular-season results.
 
 > **The finding:** the more-rested team wins the majority of games — and the edge widens once the rest-advantage gap reaches **5+ points**. These rates are computed live from the database and surfaced on the site (currently **~55% overall**, rising to **~61%** at a 5+ gap).
 
@@ -41,7 +41,7 @@ the page.
 
 <img src="docs/screenshots/schedule.png" alt="Schedule Disparity for 2025-26: a summary strip reading most favored plus 15 days (Portland Trail Blazers), least favored minus 11 (Boston Celtics), a spread of 26 days best to worst, and 557 games with a rest edge of which 14 were by 3 or more days. Below it all 30 teams are ranked as horizontal bars diverging from a zero line, blue to the right for a favorable edge and red to the left for an unfavorable one, from Portland at plus 15 down through four teams at exactly zero to Boston at minus 11. A header note states the season is final with 1,214 of 1,230 games compared." width="900" />
 
-**Model Results — the 40-season backtest behind the headline finding.** Win rate by rest-advantage
+**Model Results — the 41-season backtest behind the headline finding.** Win rate by rest-advantage
 threshold, plotted as the gap against a coin flip in percentage points: zero is a 50% win
 rate, so the bar's length is the measured edge. Slices the model gets backwards hang below
 the line in red.
@@ -144,9 +144,9 @@ Each team's score combines:
 - **Road trips & body clock** — added load for long road stretches, plus a circadian charge for playing two or more time zones from home. It is heavier travelling east than west, and it decays as the team re-entrains, at roughly a day per zone crossed.
 - **Freshness & game difficulty** — a rest discount for extended breaks, and prior-game load weighted by how hard the game actually was: overtime adds, a blowout that rested the starters subtracts.
 
-Data spans **1985-86 to the present**, excluding all of **2019-20** and every playoff/finals game from the fatigue model (a fixed two-team series breaks the travel assumptions).
+Data spans **1985-86 to the present**, excluding every playoff/finals game from the fatigue model (a fixed two-team series breaks the travel assumptions) and the **2019-20 Orlando bubble** — 88 games at a single site, with no travel to measure and no home crowd.
 
-The 2019-20 exclusion is the whole season, not only its Orlando bubble games: teams had played 63-67 of 82 before the March 2020 suspension, and those ~970 normally-travelled games go with it. A truncated season in which teams played *different* game counts cannot be ranked at season grain, which is what Schedule Edge does. 2020-21 **is** included — ordinary travel, just compressed into 72 games — as are the 1998-99 and 2011-12 lockout seasons.
+That exclusion is the bubble, not the season ([ADR 0004](docs/adr/0004-season-exclusions-belong-to-modules-not-ingest.md)). The 971 games 2019-20 played before the March 2020 suspension were reached by flying to them and are fully in. One surface still withholds the season in full: **Schedule Edge** ranks teams against each other within a season, and 2019-20 stopped with teams having played between 63 and 67 games, so a team with four fewer games would carry four fewer chances to accumulate an edge. Every other season is within a single game of even. 2020-21 is included — ordinary travel, compressed into 72 games — as are the 1998-99 and 2011-12 lockout seasons: short is fine, interrupted is not.
 
 Three inputs — overtime, tip-off times and neutral sites — come from ESPN, whose coverage starts around 2002. Earlier seasons are scored by the same formula without them, which is a deliberate, documented trade rather than a silent gap: see [ADR 0003](docs/adr/0003-fatigue-inputs-limited-to-espn-era.md).
 
@@ -182,7 +182,7 @@ one exists.
 - **Single source of truth** — one fatigue engine shared by pipeline writers and API reads, so the model math is never duplicated or drifts between write and read paths.
 - **Self-gating pipeline** — the daily GitHub Actions job checks whether the NBA season is active and exits cleanly in the offseason (before touching the DB or any API), so it runs year-round with no manual cron changes.
 - **Query performance** — hot read paths use `LEFT JOIN LATERAL … ORDER BY … LIMIT 1` against a composite index to fetch the latest fatigue row per team, replacing full-table `DISTINCT ON` scans — verified byte-for-byte identical output before/after.
-- **Data integrity** — every one of the 40 seasons is reconciled against an independent source (Basketball-Reference, 340 monthly pages, cross-checked with ESPN) to catch timezone date-shift bugs a sampled check would miss; game dates are stored in US/Eastern end-to-end with a self-healing upsert (`date = EXCLUDED.date`), so a re-run repairs any mis-dated row.
+- **Data integrity** — every one of the 41 seasons is reconciled against an independent source (Basketball-Reference, 340 monthly pages, cross-checked with ESPN) to catch timezone date-shift bugs a sampled check would miss; game dates are stored in US/Eastern end-to-end with a self-healing upsert (`date = EXCLUDED.date`), so a re-run repairs any mis-dated row.
 - **Security** — Supabase RLS with explicit Data API grants (anon read, service-role writes); a Content-Security-Policy + `X-Frame-Options: DENY`, and a constant-time comparison on the cron bearer token.
 - **Real-time** — score and status changes push to the browser through Supabase Realtime.
 - **Tested & shipped** — Vitest unit/route + Playwright e2e (run locally); ships via Vercel (auto-deploy + a live-score cron) and a scheduled GitHub Actions data pipeline.

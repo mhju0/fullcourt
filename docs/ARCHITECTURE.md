@@ -187,9 +187,12 @@ the row change → connected clients update in place.
 - **Single rest-advantage evidence contract** in `src/lib/rest-advantage-evidence.ts`, shared
   by analysis, game search, API matchup reads, and resolved/open prediction writers.
 - **Lazy DB proxy** so importing `@/lib/db` during build is side-effect-free.
-- **Regular-season calendar guard** (`gameDateWithinRegularSeasonCalendar` in `queries.ts`)
-  re-filters by Oct 1–Apr 30 even though ingest already excludes non-`002` IDs, defending
-  against mis-tagged source rows.
+- **Season-regime guard** (`gameIsNormallyPlayed` in `queries.ts`, built from
+  `ABNORMAL_STRETCHES` in `season-regime.ts`) excludes games that were not reached by
+  travelling to them — currently only the 2019-20 Orlando bubble. It replaced an Oct 1–Apr 30
+  calendar window on 2026-07-30, which caught the bubble by coincidence of dates and dropped 179
+  legitimate games from two seasons that overran April. See
+  [ADR 0004](adr/0004-season-exclusions-belong-to-modules-not-ingest.md).
 - **Design system unified (2026-06-29):** the home page, the analysis page, the upcoming table
   (`upcoming-content.tsx`) and the game-detail modal (`explore-game-detail-modal.tsx`) all use
   one flat design system; the earlier glassmorphism look has been fully migrated out. (This
@@ -284,7 +287,7 @@ A **separate, isolated** module that predicts the winner of each playoff *series
 rationale live in [PLAYOFF_PREDICTOR_DESIGN.md](PLAYOFF_PREDICTOR_DESIGN.md); the build record is
 in [ROADMAP.md](ROADMAP.md). It never touches `fatigue.ts`, never renames the rest-advantage
 metric, and the regular-season pages never read its data (every existing read pins
-`game_type = 'regular'` + the Oct 1–Apr 30 calendar guard).
+`game_type = 'regular'`, alongside the season-regime guard).
 
 Full pipeline, ingest through the served page (live DB **verified 2026-07-02**, read-only
 `SELECT`s: 3,145 `004` + 36 `005` game rows; 600 `playoff_series` rows, all four feature columns
@@ -323,8 +326,9 @@ nba_api PlayIn    → scripts/fetch_play_in.py   → games (005 rows, game_type=
 
 - **Ingest** reuses `fetch_schedule.py`'s pairing/upsert helpers, gated to `004` (`is_playoff_game_id`)
   and `005` (`is_play_in_game_id`) stats-ID prefixes, so a regular-season `002` row can never be
-  written or mutated. Play-in rows fall **inside** the Oct 1–Apr 30 calendar window, so their
-  `game_type='play_in'` tag is the sole thing keeping them out of the regular-season product.
+  written or mutated. No date window separates play-in rows from the regular season, so their
+  `game_type='play_in'` tag is the sole thing keeping them out of the regular-season product —
+  it always was, since they fell inside the old calendar window too.
 - **Series build** groups `004` games by `(season, unordered team-pair)`, sets the home-court team
   from the opener's host, tallies wins from final games, and derives `round` via a backward bracket
   walk validated against `[8,4,2,1]` per season.

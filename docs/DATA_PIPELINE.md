@@ -46,8 +46,10 @@ Steps:
 
 ### `fetch_schedule.py` — full historical seed
 - Seasons **1985-86 → the current ET season**, derived via
-  `range(1985, current_season_start_year() + 1)`, **excluding 2019-20** (COVID bubble). `SEASON_TYPES =
-  ["Regular Season"]` only; playoffs never fetched.
+  `range(1985, current_season_start_year() + 1)` — **no season is skipped**. 2019-20 was until
+  2026-07-30; it is now seeded (see `scripts/seed_season_from_hoopr.ts`, since stats.nba.com is
+  unreachable) and its bubble games are excluded downstream by `ABNORMAL_STRETCHES` rather than
+  by never being ingested. `SEASON_TYPES = ["Regular Season"]` only; playoffs never fetched.
 - Each game appears twice in `LeagueGameFinder` (one row per team); rows are paired by
   `GAME_ID` using `MATCHUP` (`vs.` = home, `@` = away).
 - Keeps only regular-season IDs (`is_regular_season_game_id` → `002` prefix); normalizes
@@ -141,6 +143,10 @@ walk-forward logistic model persisted **1,049** predictions; the tag-integrity g
 ### `scripts/fetch_playoffs.py` — ingest playoff/finals games (Phase 1)
 - nba_api `LeagueGameFinder` with `season_type_nullable="Playoffs"` for each in-scope season
   (1985-86 → current, **2019-20 excluded**; season list imported from `fetch_schedule.SEASONS`).
+  This exclusion stayed after the regular-season one was lifted, and for its own reason: the
+  2019-20 playoffs were played entirely inside the bubble, after a 4½-month layoff followed by
+  eight seeding games, so `entry_rest_diff` — the series model's headline feature — has no
+  meaning for them. `playoff_series` holds 0 rows for the season, by design.
 - Reuses `fetch_schedule.py`'s `_pair_games_dataframe` / `ABBR_ALIASES` / `get_game_type` /
   `INSERT … ON CONFLICT (external_id) DO UPDATE`. Keeps **only `004`-prefixed** IDs via
   `is_playoff_game_id` (the playoff analogue of the `002` gate). `get_game_type` tags `finals`
@@ -497,11 +503,15 @@ Career deltas ship pre-shrunk (empirical Bayes, `w = tau^2 / (tau^2 + se^2)`) be
 weighting needs the whole league pool, which a single browser session does not have. Everything
 else — games, attempts, eFG%, both arms — the page re-derives from the season rows.
 
-Re-run after a season ends, then commit the regenerated JSON. 2019-20 is absent because `games`
-excludes **all of 2019-20** league-wide — the season, not merely its bubble games (see
-`scripts/fetch_schedule.py`). The ~970 games played normally before the March 2020 suspension
-go with it, because a season stopped at 63-67 of 82 cannot be ranked at season grain. No normal travel, so
-no rest to measure.
+Re-run after a season ends, then commit the regenerated JSON. 2019-20 **is present** as of
+2026-07-30, covering the 971 games played before the March 2020 suspension; its bubble games are
+dropped by `ABNORMAL_STRETCHES`, which `analyze_player_shooting.py` mirrors in Python.
+
+That filter is load-bearing here in a way it is nowhere else. Rest is counted from the games a
+player actually played, so his first bubble game sits roughly 141 days after his last one before
+the suspension. Unfiltered, that single game enters the 3+ days arm for every player who
+appeared in it — the cleanest-looking rested sample in the file, produced by a global pause
+rather than by rest.
 
 ## Cron cadence
 

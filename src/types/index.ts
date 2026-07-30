@@ -314,7 +314,7 @@ export interface ScheduleDisparityTeam {
 
 /**
  * Season-level figures. Deliberately carries no cross-season ranking — season length, team
- * count, and the league-wide rest distribution all shifted across the ~40 seasons.
+ * count, and the league-wide rest distribution all shifted across the four decades covered.
  */
 export interface ScheduleDisparityLeague {
   /** Spread in net edge games between the most and least favored team. */

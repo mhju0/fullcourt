@@ -72,7 +72,8 @@ test.describe("Schedule Disparity page", () => {
     await expect(page.getByRole("listitem").first()).toBeVisible({ timeout: 20_000 });
 
     // Season length, team count and the league-wide rest distribution all shifted across the
-    // ~40 seasons, so all-time framing would compare numbers that don't mean the same thing.
+    // four decades covered, so all-time framing would compare numbers that don't mean the same
+    // thing.
     const body = await page.locator("body").innerText();
     expect(body).not.toMatch(/largest since|most since|all[- ]time|record for any season/i);
   });

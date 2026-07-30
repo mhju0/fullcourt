@@ -106,10 +106,12 @@ No secondary indexes beyond the PK and the unique `abbreviation`.
 **Indexes:** `games_date_idx (date)`, `games_status_idx (status)`,
 `games_home_team_idx (home_team_id)`, `games_away_team_idx (away_team_id)`.
 
-**Verified counts (2026-07-12, read-only `SELECT`):** 49,353 rows — **`regular` 46,172**
-(`002`, incl. 5 `bref-` backfill), `playoffs` 2,827 + `finals` 318 (`004`), `play_in` 36
-(`005`). The +5 vs. the 2026-06-29 snapshot are the missing 2024-25 games added by the
-40-season schedule audit (`docs/audit/schedule-date-audit-2026-07-12.md`). The tag-integrity
+**Verified counts (2026-07-30, read-only `SELECT`):** 50,495 rows — **`regular` 47,231**
+(`002`, incl. 5 `bref-` backfill), `playoffs` 2,910 + `finals` 318 (`004`), `play_in` 36
+(`005`), across **41** distinct seasons. The +1,142 vs. the 2026-07-12 snapshot is the 2019-20
+seed (`scripts/seed_season_from_hoopr.ts`): 1,059 regular + 83 playoff games. Of the regular
+rows, **47,143 are normally played** — the 88 excluded are the Orlando bubble games, which stay
+in `games` and are filtered by `ABNORMAL_STRETCHES` at read time rather than being absent. The tag-integrity
 guard (`external_id` prefix ↔ `game_type`) reports **0 mismatches** — no `004`/`005` row is
 mislabeled `regular`, so nothing leaks into the regular-season product.
 
@@ -172,10 +174,10 @@ Two rows per game (one per team). Latest-by-`computed_at` wins in reads
 > 17 seconds, and needed no downtime. It is idempotent — re-run it any time to confirm 0 rows
 > would change.
 
-**Verified coverage (2026-07-12, read-only `SELECT`):** all **46,172** final regular-season
-games have a `fatigue_scores` row on **both** sides — **0 missing**. (The 8 gaps noted on
-2026-06-29, all in 2025-26, were filled by the fatigue recompute that followed the 40-season
-schedule audit.) Rebuild anytime with `pnpm exec tsx scripts/backfill_fatigue.ts`.
+**Verified coverage (2026-07-30, read-only `SELECT`):** **100,990** rows — exactly two per
+game across all 50,495 games, with **0** games holding any other count. Playoff and bubble games
+are scored too; whether a model may read them is decided at query time, not by withholding the
+row. Rebuild anytime with `pnpm exec tsx scripts/backfill_fatigue.ts`.
 
 **Indexes:** `fatigue_scores_game_id_idx (game_id)`,
 `fatigue_scores_team_id_idx (team_id)`.
@@ -238,8 +240,10 @@ feature pass (`ml/compute_series_features.py`, the four `*_diff` columns below),
 > The skeleton builder's `ON CONFLICT … DO UPDATE` deliberately omits the four feature columns,
 > and the feature pass's upsert writes only those columns — so the two passes can re-run
 > independently without clobbering each other. RLS + Data API grants for this table ship in `0006`
-> (mirroring `0004`/`0005`). **Verified 2026-07-02** (read-only `SELECT`): **600 series** rows — 40
-> seasons × 15 (1985-86…2025-26, 2019-20 excluded); 599 have a resolved `series_winner_team_id` (1
+> (mirroring `0004`/`0005`). **Verified 2026-07-30** (read-only `SELECT`): **600 series** rows — 40
+> seasons × 15 (1985-86…2025-26, 2019-20 excluded: its playoffs were played inside the bubble, so
+> entry rest carries no signal — this is the series model's own exclusion, unaffected by the
+> regular season joining the dataset on 2026-07-30); 599 have a resolved `series_winner_team_id` (1
 > unresolved: 1986-87 LAL–OKC 3–1, one missing historical `004` game); **all 600 rows have all four
 > feature columns non-NULL**. The trainable set for modeling is **599** (label present AND all 4
 > features present) [Verified `ml/PHASE3_REPORT.md:39-42`].

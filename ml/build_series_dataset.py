@@ -13,8 +13,10 @@ DATA SCOPE
   * Reads only ``games`` rows with ``game_type IN ('playoffs','finals')`` (the ``004``
     pool). The playoffs/finals sub-tag is a noisy ``month >= 6`` heuristic and is treated
     as a single pool — it is NEVER used to determine round.
-  * Excludes ``005`` play-in rows (not series) and season ``'2019-20'`` (the COVID bubble,
-    matching the regular-season exclusion in ``src/lib/nba-season.ts``).
+  * Excludes ``005`` play-in rows (not series) and season ``'2019-20'``, whose playoffs were
+    played entirely inside the bubble after a 4.5-month layoff -- so entry rest, the series
+    model's headline feature, is meaningless for them. This is this model's own exclusion; the
+    regular season is no longer excluded product-wide (see ``src/lib/season-regime.ts``).
   * Tallies wins/winners from FINAL games only (both scores present).
 
 SERIES GROUPING
@@ -51,7 +53,8 @@ import psycopg2
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 
-# Season excluded everywhere in the product (COVID Orlando bubble — no real travel/rest).
+# Excluded from the series model: bubble playoffs, so entry rest carries no signal. Not a
+# product-wide exclusion any more -- see src/lib/season-regime.ts.
 EXCLUDED_SEASON = "2019-20"
 # Expected modern-bracket round sizes: [first round, conf semis, conf finals, Finals].
 EXPECTED_ROUND_COUNTS = [8, 4, 2, 1]
