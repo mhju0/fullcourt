@@ -24,6 +24,7 @@ function side(score: number, extra: Partial<SeasonReportSide> = {}): SeasonRepor
 function game(overrides: Partial<SeasonReportRow> & { gameId: number }): SeasonReportRow {
   return {
     date: "2025-10-21",
+    status: "final",
     homeTeamId: 1,
     awayTeamId: 2,
     homeScore: 100,
@@ -85,6 +86,23 @@ describe("buildSeasonReport — what counts", () => {
     expect(report.scheduledGames).toBe(2);
     expect(report.completedGames).toBe(0);
     expect(report.overall.games).toBe(0);
+  });
+
+  it("excludes a live game even with both scores and both fatigue sides already populated", () => {
+    // A game at 24-19 in the first quarter: status "live", both scores written by the cron,
+    // both pre-game fatigue rows already exist, and the rest gap is decidable. Only `status`
+    // stops it from being scored as a HIT or MISS.
+    const report = buildSeasonReport("2025-26", [
+      game({ gameId: 1, status: "live", homeScore: 24, awayScore: 19, home: side(1), away: side(4) }),
+    ]);
+
+    expect(report.scheduledGames).toBe(1);
+    expect(report.completedGames).toBe(0);
+    expect(report.overall.games).toBe(0);
+    expect(report.overall.restedTeamWins).toBe(0);
+    expect(report.teams).toEqual([]);
+    expect(report.loudestCalls).toEqual([]);
+    expect(report.weeks).toEqual([]);
   });
 
   it("splits the RA >= 2 tier out of the overall rate", () => {

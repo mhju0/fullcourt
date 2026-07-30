@@ -54,6 +54,12 @@ export interface SeasonReportSide {
 export interface SeasonReportRow {
   gameId: number;
   date: string;
+  /**
+   * Raw `games.status` ("scheduled" | "live" | "final"). Completion is one decision — a
+   * live game can already carry both scores and both fatigue rows — and it lives here,
+   * in the reducer the fixture tests can see, rather than in the query's `where` clause.
+   */
+  status: string;
   homeTeamId: number;
   awayTeamId: number;
   homeScore: number | null;
@@ -248,6 +254,7 @@ export function buildSeasonReport(
   let firstDate: string | null = null;
 
   for (const row of rows) {
+    if (row.status !== "final") continue;
     if (row.home === null || row.away === null) continue;
     if (row.homeScore === null || row.awayScore === null) continue;
     completedGames++;

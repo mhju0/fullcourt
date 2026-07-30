@@ -1196,20 +1196,23 @@ export async function getTeamDirectory(): Promise<
 /**
  * Every regular-season game in one season with both sides' latest fatigue row.
  *
- * LEFT joins and no status filter, unlike `getCompletedGamesWithFatigue`: the
- * progress tile needs a count of the season's scheduled games, and the reducer
- * is what decides that a game without a score or without both fatigue sides
- * contributes to no aggregate. `gameIsNormallyPlayed` still applies — the 2019-20
+ * LEFT joins and no status filter, unlike `getCompletedGamesWithFatigue`: the progress
+ * tile needs a count of the season's scheduled games, so this reads every one of them.
+ * `status` is still selected below — completion is decided once, in the reducer
+ * (`buildSeasonReport`), so the same rule that says a game without a score or without
+ * both fatigue sides contributes to no aggregate also says a `live` game does not, even
+ * with both scores already populated. `gameIsNormallyPlayed` still applies — the 2019-20
  * bubble is not games anyone travelled to.
  */
 export async function getSeasonReportRows(season: string): Promise<SeasonReportRow[]> {
-  const homeFatigue = latestFatigueSubquery("home_fatigue_season_report");
-  const awayFatigue = latestFatigueSubquery("away_fatigue_season_report");
+  const homeFatigue = latestFatigueLateral(games.homeTeamId, "home_fatigue_season_report");
+  const awayFatigue = latestFatigueLateral(games.awayTeamId, "away_fatigue_season_report");
 
   const rows = await db
     .select({
       gameId: games.id,
       date: games.date,
+      status: games.status,
       homeTeamId: games.homeTeamId,
       awayTeamId: games.awayTeamId,
       homeScore: games.homeScore,
@@ -1226,14 +1229,8 @@ export async function getSeasonReportRows(season: string): Promise<SeasonReportR
       awayHasTimeZoneDisplacement: awayFatigue.hasTimeZoneDisplacement,
     })
     .from(games)
-    .leftJoin(
-      homeFatigue,
-      and(eq(homeFatigue.gameId, games.id), eq(homeFatigue.teamId, games.homeTeamId))
-    )
-    .leftJoin(
-      awayFatigue,
-      and(eq(awayFatigue.gameId, games.id), eq(awayFatigue.teamId, games.awayTeamId))
-    )
+    .leftJoinLateral(homeFatigue, sql`true`)
+    .leftJoinLateral(awayFatigue, sql`true`)
     .where(
       and(eq(games.season, season), eq(games.gameType, "regular"), gameIsNormallyPlayed)
     )
@@ -1244,6 +1241,7 @@ export async function getSeasonReportRows(season: string): Promise<SeasonReportR
   return rows.map((r) => ({
     gameId: Number(r.gameId),
     date: String(r.date),
+    status: String(r.status),
     homeTeamId: Number(r.homeTeamId),
     awayTeamId: Number(r.awayTeamId),
     homeScore: r.homeScore === null ? null : Number(r.homeScore),
