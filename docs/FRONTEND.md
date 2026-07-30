@@ -151,9 +151,8 @@ symmetric around zero so a −8 and a +8 are equally long.
 opponents. `edgeColor()` therefore maps the whole table with one rule: blue favorable, red
 unfavorable, grey exactly even.
 
-**Column guide.** A native `<details>` (`ColumnGuide`) mirroring `MethodologyNote` in
-`shot-quality-content.tsx` — chosen over hover tooltips because it opens on tap, takes keyboard
-focus, and is announced by screen readers.
+**Column guide.** A native `<details>` (`ColumnGuide`) — chosen over hover tooltips because it
+opens on tap, takes keyboard focus, and is announced by screen readers.
 
 A **provisional** season — any season with a game that is not final — shows an as-of date and a
 sentence explaining that the NBA announces only 80 of 82 games before opening night and fills
@@ -168,9 +167,9 @@ client component (`shot-quality-content.tsx`) fetches `/api/shot-quality?season=
 renders a season `<select>`, an `EncodingToggle` (`EXPECTED eFG%` sequential view vs.
 `GBM − BASELINE` divergent-diff view — a **single** court in diff mode, not two), and one or
 two `ShotCourt` half-court SVGs depending on the toggle. See "Shot chart / court geometry"
-under Design system below for the rendering details, and a collapsible `MethodologyNote`
-explaining the baseline/GBM framing (small calibration win, not a large accuracy jump; no
-defender distance or shot-clock data).
+under Design system below for the rendering details. The page carries **no methodology block
+of its own** — it was a duplicate of `/behind-the-data/shot-value` and was removed 2026-07-30;
+the `HOW THIS IS CALCULATED` link at the top of the page is the single door to the method.
 
 ### `/shooting` — Player Shooting (`src/app/shooting/page.tsx`)
 
@@ -192,6 +191,15 @@ of `--term-amber`, a 2px `--term-rail` down the left edge of every row including
 marker, and a rule above and below. Each still reads if the others fail — a single subtle tone
 did not survive the dark palette, where `--term-surface-2` sits a few points off `--term-surface`.
 
+**The filter bar is two rows, not one wrapping row** (2026-07-30). Row one is the four
+`<select>` filters — Season, Volume, Team, Position — each label/control pair wrapped in its own
+flex box so a wrap can never separate a label from what it names. Row two is the search box, the
+`Hide noisy rows` checkbox, and the result count pushed right with `ml-auto`. Six controls plus
+the count did not fit a 1440px line, and the piece that wrapped away was the count — the one
+element that answers "did my filter do anything". The Season option for all seasons reads
+`Career`, not `Career (all seasons)`: the longest option sizes the whole `<select>`, and the list
+is visibly seasons already.
+
 A `?player=<name>` query parameter opens that player directly, and expanding one rewrites the URL
 via `history.replaceState`, so a view can be linked and shared without the route ever leaving
 `/shooting`.
@@ -210,7 +218,8 @@ in `e2e/navigation.spec.ts`. It sat in the top status bar until 2026-07-30, whic
 quiet to be found; the reference links are now the same size and weight as a tab, and the gap
 between the two groups is what says "not one of the five".
 
-Rebuilt 2026-07-30 into **seven full-viewport sections** (`calc(100svh - 72px)` each, the
+Rebuilt 2026-07-30 into **seven full-viewport sections** (`calc(100svh - var(--term-chrome-h))`
+each, the
 subtraction being the sticky chrome — without it every section overran the fold by the header's
 height). Order: the claim, the thesis, the evidence, the five surfaces, what the score is made
 of, the standard, the way in. The hero carries no buttons: they competed with the single line
@@ -253,6 +262,18 @@ from the page it explains. `BehindTheDataShell` supplies the header and the sect
 `behind-the-data-parts.tsx` supplies the shared prose primitives so six pages cannot drift into
 six typographic treatments of the same content.
 
+**Colour is load-bearing here** (2026-07-30). The pages were near-uniform black-on-white and
+read as one undifferentiated wall, so each primitive carries an accent and each accent means one
+thing: **red** for the `Section` header band (a tinted strip with a red inset rail and a red
+descriptor chip) and for `LimitList` — what a model cannot do; **blue** for the arithmetic,
+i.e. `Formula` and the `ValueGrid` numbers; **gold** for `Note`, an aside qualifying the claim
+above it. Accents are hairline rails over 4–7% tints, never filled blocks, so body text stays
+the highest-contrast thing on the page. `ValueGrid` cells layer their tint over
+`var(--term-surface)` with a `linear-gradient` rather than using it alone — the cells sit on a
+1px grid painted by the parent's background, and a translucent cell let that border colour
+through and turned the whole grid grey. The sub-nav's active section carries the same red
+underline the main nav uses, since bolder text alone on a row of bold mono labels was no signal.
+
 Constants are **imported from source** (`FATIGUE_CONSTANTS`, `BIG_EDGE_FATIGUE_THRESHOLD`,
 `REST_DAYS_CAP`) rather than retyped, so the prose cannot drift from the code. Measured figures
 that cannot be computed per page view carry the date they were measured.
@@ -275,9 +296,15 @@ and its test remain, so the page can return without a re-ingest.
 
 ### `nav-bar.tsx` — two-layer header (sticky, `z-50`)
 
-1. **Top status bar** (28px, `var(--term-surface-2)`, bottom border `var(--term-border)`):
-   a `<CourtMark size={22}>` brand logo + `FULLCOURT` (`var(--term-red)`) + `NBA ANALYTICS
-   PLATFORM` (muted), wrapped in a link to `/` — the wordmark was inert until 2026-07-30, the
+1. **Brand bar** (52px, `var(--term-surface-2)`, bottom border `var(--term-border)`):
+   a `<CourtMark size={34}>` + the wordmark + a hairline rule + `NBA ANALYTICS PLATFORM`
+   (mono 10px, muted, hidden below `sm`), wrapped in a link to `/`.
+   The wordmark is **22px Space Grotesk 700**, two-tone — `FULL` in `var(--term-text)`,
+   `COURT` in `var(--term-red)`. It was 11px mono until 2026-07-30, i.e. *smaller than the tabs
+   beneath it*, so the one element naming the product read as the least important thing in the
+   header; it is now sized as a logotype in the same display face as every page title. The
+   `aria-label="FullCourt home"` keeps the accessible name one string across the split spans,
+   which is what `e2e/behind-the-data.spec.ts` clicks. The wordmark was inert until 2026-07-30, the
    one piece of chrome people reflexively click. Home is `GAMES`, not `/about`: a logo landing
    on an explainer breaks the "take me back to the product" contract.
    The right side is now empty. It previously held `currentDisplaySeason() + " SEASON"`, removed
@@ -298,6 +325,20 @@ and its test remain, so the page can return without a re-ingest.
    are. The surface list on `/about` is derived from `DIRECT_NAV_ITEMS`, so adding a tab cannot
    leave the page claiming a total it no longer has — `SHOT VALUE` is absent from it because it
    is an `OTHER` item.
+
+   **Below ~900px the row is a horizontal scroll strip** (`.fc-nav-scroll`, `overflow-x-auto`,
+   `shrink-0` + `whitespace-nowrap` on every link), added 2026-07-30. Eight links do not fit a
+   390px line and they used to take the whole document sideways with them: measured 238px of
+   horizontal page scroll, `SCHEDULE EDGE` squeezed to 62px and wrapping inside a 44px box, and
+   both reference links off screen. `ml-auto` still right-aligns the reference group whenever
+   the content fits, so the desktop row is byte-for-byte what it was. A strip rather than a
+   drawer because the whole nav is eight short labels — a hamburger would hide all eight behind
+   a tap to solve what a swipe solves. The scrollbar is hidden in `globals.css`: at 44px tall it
+   would land on the active tab's underline, which is the only state the row carries. The
+   `OTHER` popup is unaffected — `Menu.Portal` renders it outside this container, so the
+   `overflow` cannot clip it. `e2e/navigation.spec.ts` asserts the page does not scroll
+   sideways at 390px, that the strip is what overflows instead, and that `BEHIND THE DATA` is
+   still clickable at that width.
    Bare noun phrases, no time words: mainstream NBA navs (ESPN, CBS) name the thing and
    leave time to a date picker, and NN/g's category-name guidance rules out both jargon
    (`EDGES`) and generic labels (`ANALYSIS`, `DATA`). Labels are also checked against *borrowed*
@@ -443,9 +484,8 @@ Loaded via `next/dynamic` (`ssr: false`). SWR `/api/shot-quality?season=…`
   stay visible on top. `value` mode renders **two** courts side by side (baseline vs. GBM);
   `diff` mode renders **one** court (GBM − baseline) — a deliberate simplification from the
   two-court diff view sketched in the original design doc.
-- A collapsible `MethodologyNote` (`<details>`) explaining baseline vs. GBM, the ~1%
-  calibration-not-accuracy framing, what "shots-above-expected" means, and that the surface is
-  trained on prior seasons only (expanding window) with no defender-distance/shot-clock signal.
+The baseline/GBM framing, what "shots-above-expected" means, and the expanding-window
+training all live on `/behind-the-data/shot-value` — this component states none of it twice.
 
 ### `hooks/useLiveGames.ts`
 
@@ -574,7 +614,7 @@ already self-labelled.
 Uppercase mono is for **labels of about three words or fewer** — stat-card captions, table
 headers, section dividers, badges. Anything that is a *sentence* is set in Inter, sentence
 case, at 15px: `PageHeader` descriptions, the `/analysis` and `/` intro paragraphs, the
-playoffs calibration-vs-accuracy explainer, and the shot-quality `MethodologyNote`. All-caps removes
+playoffs calibration-vs-accuracy explainer, and the reference pages' `Prose`. All-caps removes
 word-shape cues and measurably slows reading past a few words.
 
 ### Focus
@@ -589,8 +629,7 @@ One app-wide indicator, defined once in `globals.css`:
 `outline-ring/50` applied to `*`, which composited to 1.97:1 on white — under the 3:1 non-text
 minimum. Components may **reinforce** focus with a ring or a background tint but must not
 replace it: `focus-visible:outline-none` was removed from `matchup-card`, `playoffs-content`,
-`analysis-content` (explorer rows), `explore-game-detail-modal` and `shot-quality-content`
-(the methodology `<summary>`, which had focus removed with no replacement at all). The
+`analysis-content` (explorer rows) and `explore-game-detail-modal`. The
 onboarding dialog keeps its explicit amber rings, which are a real visible indicator.
 
 ### Charts (`analysis-content.tsx`)
@@ -653,8 +692,11 @@ near-black `#2A313A` for the same reason).
 
 ### Two-layer header
 
-Sticky header = top status bar (28px) + main nav (44px); see `nav-bar.tsx` above. Footer
-mirrors the broadcast aesthetic with mono metadata.
+Sticky header = brand bar (52px) + main nav (44px) = **96px**, published as
+`--term-chrome-h` in `globals.css`. `/about`'s full-viewport sections subtract that token
+rather than a literal, because they overran the fold by exactly the difference the last two
+times the chrome changed height and they did not. See `nav-bar.tsx` above. Footer mirrors the
+broadcast aesthetic with mono metadata.
 
 ### Brand mark
 
