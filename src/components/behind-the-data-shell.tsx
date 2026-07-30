@@ -48,11 +48,14 @@ export function BehindTheDataShell({
               key={section.href}
               href={section.href}
               aria-current={active ? "page" : undefined}
+              // The active section was bolder text and nothing else, which on a row of
+              // already-bold mono labels is close to no signal at all. It now carries the
+              // same red underline the main nav uses for "you are here".
               className={cn(
-                "font-semibold transition-colors",
+                "border-b-2 py-1 font-semibold transition-colors",
                 active
-                  ? "text-[var(--term-text)]"
-                  : "text-[var(--term-text-muted)] hover:text-[var(--term-text)]"
+                  ? "border-[var(--term-red)] text-[var(--term-text)]"
+                  : "border-transparent text-[var(--term-text-muted)] hover:text-[var(--term-text)]"
               )}
             >
               {section.label}
