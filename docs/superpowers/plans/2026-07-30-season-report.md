@@ -292,7 +292,8 @@ export interface SeasonReport {
 export function winRateBand(wins: number, games: number): number | null {
   if (games === 0) return null;
   const p = wins / games;
-  return Math.round(196 * Math.sqrt((p * (1 - p)) / games)) / 10;
+  // 1960 = 1.96 × 100 (into percentage points) × 10 (to survive rounding at one decimal).
+  return Math.round(1960 * Math.sqrt((p * (1 - p)) / games)) / 10;
 }
 
 function rate(wins: number, games: number): SeasonReportRate {
