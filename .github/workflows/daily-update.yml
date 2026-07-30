@@ -65,8 +65,11 @@ jobs:
         run: pip install -r scripts/requirements.txt
 
       # Normal path: cron runs (inputs.task is empty) and manual "daily" dispatches.
+      # Only the normal path. Testing "not resync-schedule" meant every future task ran the
+      # daily pipeline first as well — seed-season did, and in-season that would have been a
+      # real double-run rather than the harmless offseason no-op it was.
       - name: Run daily update
-        if: ${{ github.event.inputs.task != 'resync-schedule' }}
+        if: ${{ github.event.inputs.task == '' || github.event.inputs.task == 'daily' }}
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: python scripts/daily_update.py
