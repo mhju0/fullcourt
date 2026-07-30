@@ -127,5 +127,21 @@ test.describe("Reference prose spacing", () => {
 
       expect(offenders, `run-together text: ${offenders.join(", ")}`).toEqual([]);
     });
+
+    // The text sweep above only catches a join it can see — a capital or a digit at the seam.
+    // `</strong>rather` is the same defect and is invisible to it, because both sides are
+    // lowercase. Two of them were shipped and live on these pages until 2026-07-30. The seam
+    // itself is checkable even when the words are not: an inline tag is never legitimately
+    // followed straight by a letter in this prose, only by punctuation or a space.
+    test(`no lost space after an inline tag on /behind-the-data${route || " (overview)"}`, async ({
+      page,
+    }) => {
+      await page.goto(`/behind-the-data${route}`);
+
+      const html = await page.content();
+      const seams = [...html.matchAll(/<\/(strong|em|code)>[a-zA-Z(]\w*/g)].map((m) => m[0]);
+
+      expect(seams, `lost space: ${seams.join(", ")}`).toEqual([]);
+    });
   }
 });

@@ -24,7 +24,8 @@ export default function PlayerShootingMethodPage() {
     >
       <Section label="THE SPLIT" descriptor="TWO REST STATES">
         <Prose>
-          Each of a player&rsquo;s games is labelled by how long <em>he</em> had rested — counted
+          Each of a player&rsquo;s games is labelled by how long <em>he</em>{" "}
+          had rested — counted
           from the games he actually played, not his team&rsquo;s schedule. A player returning
           from injury into a team back-to-back is rested; the team is not.
         </Prose>
