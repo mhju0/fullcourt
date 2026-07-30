@@ -22,11 +22,20 @@ on:
           daily = normal pipeline (season-gated). resync-schedule = re-run the CDN
           schedule fetch only (NOT season-gated) — repairs games.date rows via the
           self-healing upsert; use for date-convention fixes or schedule shifts.
+          seed-season = ingest one historical season named in `season`; runs here
+          because stats.nba.com is unreachable from outside the US.
         type: choice
         default: daily
         options:
           - daily
           - resync-schedule
+          - seed-season
+      season:
+        description: >-
+          Season label for seed-season, e.g. "2019-20". Ignored by the other tasks.
+          Safe to re-run: the upsert is keyed on external_id.
+        type: string
+        required: false
 
 jobs:
   update:
@@ -70,3 +79,23 @@ jobs:
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: python scripts/fetch_nba_schedule_cdn.py
+
+      # Seed one historical season. This exists because stats.nba.com refuses connections
+      # from outside the US, so nba_api cannot be driven from a developer machine abroad —
+      # the same unreachability that left overtime_periods at 0 for every game until it was
+      # sourced from ESPN instead. GitHub's runners are US-based, so the fetch works here.
+      #
+      # Idempotent: fetch_schedule.py upserts on external_id, so re-running a season repairs
+      # rows rather than duplicating them. NBA_SEED_SKIP_OT is set because overtime now comes
+      # from ESPN via fetch_game_context.ts, and the BoxScore calls this would otherwise make
+      # are both slow and unreachable.
+      - name: Seed one season (manual)
+        if: ${{ github.event.inputs.task == 'seed-season' }}
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          NBA_SEED_SKIP_OT: "1"
+        run: |
+          test -n "${{ github.event.inputs.season }}" || {
+            echo "::error::seed-season requires the 'season' input, e.g. 2019-20"; exit 1;
+          }
+          python scripts/fetch_schedule.py "${{ github.event.inputs.season }}"

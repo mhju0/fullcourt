@@ -77,22 +77,32 @@ if not DATABASE_URL:
 # Set NBA_SEED_SKIP_OT=1 to skip per-game BoxScore calls (faster seed; OT stays 0).
 SKIP_OT_SEED = os.environ.get("NBA_SEED_SKIP_OT", "").lower() in ("1", "true", "yes")
 
-# 2019-20 omitted — Orlando bubble has no meaningful travel for fatigue analysis.
 def _nba_season_labels() -> list[str]:
-    """Start years 1985..<current ET season> → '1985-86' .. latest; skip 2019-20 bubble.
+    """Start years 1985..<current ET season> → '1985-86' .. latest.
 
     The upper bound is derived from today's ET date, so the seed auto-extends when a
     new NBA season starts — no hardcoded year to bump at rollover.
+
+    No season is skipped here any more. 2019-20 used to be, on the grounds that its
+    Orlando bubble games have no meaningful travel — but that put a modelling decision
+    in the ingest, where it applied to every surface at once and took the ~970 games
+    played normally before the 2020-03-11 suspension with it. Which games a model may
+    read is now decided at read time: see src/lib/season-regime.ts for the bubble
+    stretch, and the rankability rule in src/lib/schedule-disparity.ts for seasons that
+    cannot be ranked because their teams played unequal numbers of games.
     """
-    out: list[str] = []
-    for y in range(1985, current_season_start_year() + 1):
-        if y == 2019:
-            continue
-        out.append(f"{y}-{str(y + 1)[-2:]}")
-    return out
+    return [
+        f"{y}-{str(y + 1)[-2:]}"
+        for y in range(1985, current_season_start_year() + 1)
+    ]
 
 
 SEASONS = _nba_season_labels()
+
+#: One season, for the seed-season workflow task. `fetch_schedule.py 2019-20` ingests just
+#: that season — stats.nba.com is unreachable from outside the US, so this is dispatched from
+#: CI rather than run locally.
+SEASON_ARG = sys.argv[1] if len(sys.argv) > 1 else None
 # Playoffs excluded — app and fatigue model target regular season only.
 SEASON_TYPES = ["Regular Season"]
 
@@ -380,7 +390,14 @@ def main() -> None:
 
         total_upserts = 0
 
-        for season in SEASONS:
+        seasons = [SEASON_ARG] if SEASON_ARG else SEASONS
+        if SEASON_ARG:
+            if SEASON_ARG not in SEASONS:
+                print(f"ERROR: {SEASON_ARG} is not a supported season label.", file=sys.stderr)
+                sys.exit(1)
+            print(f"Single-season mode: {SEASON_ARG}\n")
+
+        for season in seasons:
             print(f"── Season {season} ──────────────────────────────")
             season_records: list[tuple] = []
 
