@@ -3,6 +3,7 @@ import {
   buildSeasonReport,
   MIN_GAMES_FOR_INFERENCE,
   winRateBand,
+  type SeasonReportRate,
   type SeasonReportRow,
   type SeasonReportSide,
 } from "@/lib/season-report";
@@ -283,5 +284,147 @@ describe("buildSeasonReport — schedule tax", () => {
     ];
 
     expect(buildSeasonReport("2025-26", rows).teams).toEqual([]);
+  });
+});
+
+import { allSeasonNormExcluding, seasonReportVerdict } from "@/lib/season-report";
+
+describe("buildSeasonReport — loudest calls", () => {
+  it("ranks by rest advantage rather than margin, and signs the margin from the rested side", () => {
+    const rows: SeasonReportRow[] = [
+      // Small gap, huge margin. Must NOT outrank the game below.
+      game({ gameId: 1, home: side(1), away: side(2), homeScore: 140, awayScore: 90 }),
+      // Big gap, small margin, and the rested side lost.
+      game({ gameId: 2, home: side(1), away: side(9), homeScore: 98, awayScore: 100 }),
+    ];
+
+    const calls = buildSeasonReport("2025-26", rows).loudestCalls;
+
+    expect(calls.map((c) => c.gameId)).toEqual([2, 1]);
+    expect(calls[0]).toMatchObject({
+      restAdvantage: 8,
+      advantageTeam: "home",
+      restedTeamWon: false,
+      restedMargin: -2,
+    });
+    expect(calls[1]).toMatchObject({ restedTeamWon: true, restedMargin: 50 });
+  });
+
+  it("keeps at most ten, tie-broken on date then gameId", () => {
+    const rows: SeasonReportRow[] = Array.from({ length: 12 }, (_, i) =>
+      game({ gameId: 100 - i, date: "2025-11-02", home: side(1), away: side(4) })
+    );
+
+    const calls = buildSeasonReport("2025-26", rows).loudestCalls;
+
+    expect(calls).toHaveLength(10);
+    // Every gap is identical, so the tie-break decides: ascending gameId.
+    expect(calls.map((c) => c.gameId)).toEqual([89, 90, 91, 92, 93, 94, 95, 96, 97, 98]);
+  });
+
+  it("excludes neutral games — a call the model never made is not a loud one", () => {
+    const rows: SeasonReportRow[] = [game({ gameId: 1, home: side(1), away: side(1.2) })];
+
+    expect(buildSeasonReport("2025-26", rows).loudestCalls).toEqual([]);
+  });
+});
+
+describe("buildSeasonReport — fatigue calendar", () => {
+  it("buckets into seven-day weeks counted from the season's first game", () => {
+    const rows: SeasonReportRow[] = [
+      game({ gameId: 1, date: "2025-10-21", home: side(2), away: side(4) }), // week 1
+      game({ gameId: 2, date: "2025-10-27", home: side(3), away: side(3) }), // week 1 (day 6)
+      game({ gameId: 3, date: "2025-10-28", home: side(6), away: side(8) }), // week 2 (day 7)
+    ];
+
+    const weeks = buildSeasonReport("2025-26", rows).weeks;
+
+    expect(weeks).toEqual([
+      { week: 1, startDate: "2025-10-21", games: 2, avgFatigue: 3 },
+      { week: 2, startDate: "2025-10-28", games: 1, avgFatigue: 7 },
+    ]);
+  });
+
+  it("averages across both sides of every completed game, decidable or not", () => {
+    const rows: SeasonReportRow[] = [
+      game({ gameId: 1, date: "2025-10-21", home: side(1), away: side(1.2) }), // neutral
+    ];
+
+    expect(buildSeasonReport("2025-26", rows).weeks).toEqual([
+      { week: 1, startDate: "2025-10-21", games: 1, avgFatigue: 1.1 },
+    ]);
+  });
+
+  it("has no weeks at all for a season with nothing completed", () => {
+    expect(buildSeasonReport("2025-26", []).weeks).toEqual([]);
+  });
+});
+
+describe("allSeasonNormExcluding", () => {
+  it("drops the displayed season so it is not compared against itself", () => {
+    const norm = allSeasonNormExcluding(
+      [
+        { season: "2024-25", games: 100, restedTeamWins: 60 },
+        { season: "2025-26", games: 100, restedTeamWins: 40 },
+      ],
+      "2025-26"
+    );
+
+    expect(norm).toBe(60);
+  });
+
+  it("pools games rather than averaging season rates", () => {
+    // 90 of 200 = 45%. Averaging the two rates would give 50%.
+    const norm = allSeasonNormExcluding(
+      [
+        { season: "2023-24", games: 100, restedTeamWins: 80 },
+        { season: "2024-25", games: 100, restedTeamWins: 10 },
+      ],
+      "2025-26"
+    );
+
+    expect(norm).toBe(45);
+  });
+
+  it("is null when the displayed season is the only one", () => {
+    expect(
+      allSeasonNormExcluding([{ season: "2025-26", games: 100, restedTeamWins: 50 }], "2025-26")
+    ).toBeNull();
+  });
+});
+
+describe("seasonReportVerdict", () => {
+  const rateOf = (wins: number, games: number): SeasonReportRate => ({
+    games,
+    restedTeamWins: wins,
+    winPct: Math.round((wins / games) * 1000) / 10,
+    band: winRateBand(wins, games),
+  });
+
+  it("is too early below the gate, however far the rate sits from the norm", () => {
+    expect(seasonReportVerdict(rateOf(99, 99), 55.6)).toEqual({ kind: "tooEarly", games: 99 });
+  });
+
+  it("is too early when no norm is available", () => {
+    expect(seasonReportVerdict(rateOf(500, 1000), null)).toEqual({ kind: "tooEarly", games: 1000 });
+  });
+
+  it("is in line when the gap falls inside the band", () => {
+    // 52% of 940 → band 3.2, so a 54.0 norm is 2.0 away and inside it.
+    const verdict = seasonReportVerdict(rateOf(489, 940), 54);
+
+    expect(verdict.kind).toBe("inLine");
+  });
+
+  it("is below when the norm sits outside the band above the rate", () => {
+    const verdict = seasonReportVerdict(rateOf(489, 940), 55.6);
+
+    expect(verdict).toMatchObject({ kind: "below", norm: 55.6, band: 3.2 });
+  });
+
+  it("is above when the rate clears the norm by more than the band", () => {
+    const verdict = seasonReportVerdict(rateOf(600, 940), 55.6);
+
+    expect(verdict.kind).toBe("above");
   });
 });

@@ -16,6 +16,8 @@
  * fewer place for the two halves to drift apart.
  */
 
+import { addDays, differenceInCalendarDays, format, parseISO } from "date-fns";
+
 import { classifyRestAdvantage, winPct } from "@/lib/rest-advantage-evidence";
 
 /**
@@ -98,6 +100,50 @@ export interface SeasonReportTeam {
   jetLagGames: number;
 }
 
+/**
+ * One game the model had an opinion about, ranked by how loud that opinion was.
+ *
+ * Ranked by rest advantage and NOT by margin: the two are uncorrelated, so a
+ * margin ranking surfaces blowouts the model had no conviction about (2025-26's
+ * biggest "correct" margins sat at rest gaps of 1.0 and 1.6). Conviction plus
+ * the result is the honest ordering, and it puts hits and misses in one table.
+ */
+export interface SeasonReportCall {
+  gameId: number;
+  date: string;
+  homeTeamId: number;
+  awayTeamId: number;
+  homeScore: number;
+  awayScore: number;
+  /** Absolute rest advantage to two decimals. */
+  restAdvantage: number;
+  advantageTeam: "home" | "away";
+  restedTeamWon: boolean;
+  /** Final margin from the rested side's view, so a miss is negative. */
+  restedMargin: number;
+}
+
+/** One seven-day bucket of the season, for the league fatigue curve. */
+export interface SeasonReportWeek {
+  /** 1-based. */
+  week: number;
+  /** First calendar day of the bucket, YYYY-MM-DD. */
+  startDate: string;
+  games: number;
+  /** Mean fatigue over both sides of every completed game in the bucket, two decimals. */
+  avgFatigue: number;
+}
+
+/**
+ * The one sentence under the tiles. Three states and no superlative: a "biggest
+ * gap since 2011-12" claim reads as a finding and is a ranking of noise.
+ */
+export type SeasonReportVerdict =
+  | { kind: "tooEarly"; games: number }
+  | { kind: "inLine"; winPct: number; band: number; norm: number }
+  | { kind: "above"; winPct: number; band: number; norm: number }
+  | { kind: "below"; winPct: number; band: number; norm: number };
+
 export interface SeasonReport {
   season: string;
   /** Every regular-season game in the season — the progress tile's denominator. */
@@ -107,6 +153,8 @@ export interface SeasonReport {
   overall: SeasonReportRate;
   atLeastTwo: SeasonReportRate;
   teams: SeasonReportTeam[];
+  loudestCalls: SeasonReportCall[];
+  weeks: SeasonReportWeek[];
 }
 
 /**
@@ -133,6 +181,12 @@ function rate(wins: number, games: number): SeasonReportRate {
 
 /** The RA tier published per season alongside the overall rate. RA≥5 and ≥7 are not. */
 const SECOND_TIER_THRESHOLD = 2;
+
+/** How many games the loudest-calls table holds. */
+const LOUDEST_CALL_COUNT = 10;
+
+/** Days per fatigue-calendar bucket, counted from the season's first game. */
+const CALENDAR_BUCKET_DAYS = 7;
 
 /**
  * Mutable accumulator. The percentages and the swing are derived once at the end;
@@ -167,6 +221,17 @@ function accumulateScheduleTax(entry: TeamAccumulator, side: SeasonReportSide): 
   if (side.hasTimeZoneDisplacement) entry.jetLagGames++;
 }
 
+/**
+ * Which seven-day bucket a date falls in, counted from the season's first game.
+ *
+ * Bucketed off the first game rather than by ISO week so the first bucket is
+ * always full and no season opens with a two-day sliver that reads as a quiet week.
+ */
+function bucketIndex(firstDate: string, date: string): number {
+  const days = differenceInCalendarDays(parseISO(date), parseISO(firstDate));
+  return Math.floor(days / CALENDAR_BUCKET_DAYS);
+}
+
 export function buildSeasonReport(
   season: string,
   rows: readonly SeasonReportRow[]
@@ -177,6 +242,10 @@ export function buildSeasonReport(
   let tierGames = 0;
   let tierWins = 0;
   const teams = new Map<number, TeamAccumulator>();
+  const calls: SeasonReportCall[] = [];
+  const buckets = new Map<number, { games: number; fatigueSum: number }>();
+  // Rows arrive date-ascending from the query, so the first completed game dates the calendar.
+  let firstDate: string | null = null;
 
   for (const row of rows) {
     if (row.home === null || row.away === null) continue;
@@ -187,6 +256,13 @@ export function buildSeasonReport(
     const awayFatigue = Number.parseFloat(row.away.fatigueScore);
     accumulateScheduleTax(teamEntry(teams, row.homeTeamId), row.home);
     accumulateScheduleTax(teamEntry(teams, row.awayTeamId), row.away);
+
+    if (firstDate === null) firstDate = row.date;
+    const week = bucketIndex(firstDate, row.date);
+    const bucket = buckets.get(week) ?? { games: 0, fatigueSum: 0 };
+    bucket.games++;
+    bucket.fatigueSum += homeFatigue + awayFatigue;
+    buckets.set(week, bucket);
 
     const { differential, advantageTeam } = classifyRestAdvantage(homeFatigue, awayFatigue);
     if (advantageTeam === "neutral") continue;
@@ -211,6 +287,22 @@ export function buildSeasonReport(
     const tired = teamEntry(teams, tiredTeamId);
     tired.tiredGames++;
     if (!restedTeamWon) tired.tiredWins++;
+
+    calls.push({
+      gameId: row.gameId,
+      date: row.date,
+      homeTeamId: row.homeTeamId,
+      awayTeamId: row.awayTeamId,
+      homeScore: row.homeScore,
+      awayScore: row.awayScore,
+      restAdvantage: Math.round(Math.abs(differential) * 100) / 100,
+      advantageTeam,
+      restedTeamWon,
+      restedMargin:
+        advantageTeam === "home"
+          ? row.homeScore - row.awayScore
+          : row.awayScore - row.homeScore,
+    });
   }
 
   const teamRows: SeasonReportTeam[] = [...teams.values()].map((t) => {
@@ -237,6 +329,28 @@ export function buildSeasonReport(
     return b.swing - a.swing || a.teamId - b.teamId;
   });
 
+  calls.sort(
+    (a, b) =>
+      b.restAdvantage - a.restAdvantage ||
+      a.date.localeCompare(b.date) ||
+      a.gameId - b.gameId
+  );
+
+  const weeks: SeasonReportWeek[] = [...buckets.entries()]
+    .sort(([a], [b]) => a - b)
+    .map(([index, bucket]) => ({
+      week: index + 1,
+      // firstDate is non-null whenever a bucket exists — a bucket is only ever created
+      // on the same line that sets it.
+      startDate: format(
+        addDays(parseISO(firstDate as string), index * CALENDAR_BUCKET_DAYS),
+        "yyyy-MM-dd"
+      ),
+      games: bucket.games,
+      // Two sides per game, so the denominator is games * 2.
+      avgFatigue: Math.round((bucket.fatigueSum / (bucket.games * 2)) * 100) / 100,
+    }));
+
   return {
     season,
     scheduledGames: rows.length,
@@ -244,5 +358,49 @@ export function buildSeasonReport(
     overall: rate(overallWins, overallGames),
     atLeastTwo: rate(tierWins, tierGames),
     teams: teamRows,
+    loudestCalls: calls.slice(0, LOUDEST_CALL_COUNT),
+    weeks,
   };
+}
+
+/**
+ * The all-season rest win rate with one season withheld.
+ *
+ * Withheld because a page that compares 2025-26 against a baseline containing
+ * 2025-26 is grading against itself. Games are pooled rather than season rates
+ * averaged, so a short season cannot weigh as much as a full one.
+ */
+export function allSeasonNormExcluding(
+  seasonWinRates: readonly { season: string; games: number; restedTeamWins: number }[],
+  season: string
+): number | null {
+  let games = 0;
+  let wins = 0;
+  for (const row of seasonWinRates) {
+    if (row.season === season) continue;
+    games += row.games;
+    wins += row.restedTeamWins;
+  }
+  return games === 0 ? null : winPct(wins, games);
+}
+
+/**
+ * Which of the three things the page is allowed to say about a season's rate.
+ *
+ * "Inside the band" means the season and the norm are not distinguishable at
+ * this sample size, which is the common case: a full season carries ±3.2pp and
+ * seasons rarely move further than that.
+ */
+export function seasonReportVerdict(
+  rate: SeasonReportRate,
+  norm: number | null
+): SeasonReportVerdict {
+  if (rate.games < MIN_GAMES_FOR_INFERENCE || rate.band === null || norm === null) {
+    return { kind: "tooEarly", games: rate.games };
+  }
+
+  const delta = rate.winPct - norm;
+  const shared = { winPct: rate.winPct, band: rate.band, norm };
+  if (Math.abs(delta) <= rate.band) return { kind: "inLine", ...shared };
+  return { kind: delta > 0 ? "above" : "below", ...shared };
 }
