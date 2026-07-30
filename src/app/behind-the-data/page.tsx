@@ -8,7 +8,7 @@ import { NBA_SEASONS } from "@/lib/nba-season";
 export const metadata: Metadata = {
   title: "Behind the Data",
   description:
-    "How every FullCourt number is calculated — the fatigue model, schedule edge, playoff predictions, player shooting and shot value, with their sources and limits.",
+    "How every FullCourt number is calculated — the fatigue model, schedule edge, playoff predictions, player shooting and shot value, with their sources, their limits, and where each has no measurable edge.",
 };
 
 /** Every section but the overview itself, for the index list below. */
@@ -22,7 +22,7 @@ const BLURB: Record<string, string> = {
   "/behind-the-data/schedule-edge":
     "How a season's schedule is scored for and against a team, and why the count is games rather than days.",
   "/behind-the-data/playoff-predictions":
-    "The series model's features, and why its out-of-sample accuracy is published beside its in-sample number.",
+    "The series model's features, why its edge is calibration rather than accuracy, and what it is not descended from.",
   "/behind-the-data/player-shooting":
     "No rest against three days off, and how much of any player's split is noise.",
   "/behind-the-data/shot-value":

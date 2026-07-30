@@ -48,9 +48,11 @@ the line in red.
 
 <img src="docs/screenshots/analysis.png" alt="Rest Advantage Analysis. A HOW THIS IS CALCULATED link sits under the heading. Three summary tiles read an overall win rate of 55.6% across 37,934 games, a home-rested win rate of 61.3% from 16,277 of 26,559 games, and 63.1% at a rest advantage of 5 or more across 3,854 games. Below them, win rate by rest-advantage threshold is drawn as deviation columns measured from a 50% coin flip: four blue bars rise from a zero line, growing left to right from RA at least 2 to RA at least 7, each labelled with its sample size — 19,740, 12,097, 3,854 and 938 games. A legend states that blue means the rested team beat a coin flip and red means it lost to one." width="900" />
 
-**Series Predictions — the playoff model, scored honestly.** Out-of-sample accuracy sits beside
-in-sample so the overfitting gap is visible rather than hidden, and every series shows the
-probability it was called at.
+**Series Predictions — the playoff model, scored honestly.** The page leads with the only thing
+this model measurably wins at: calibration. Log loss and Brier score sit ~13-14% better than the
+base rate, while accuracy is shown alongside as having no real edge over "always pick the
+home-court team" — because publishing the first without the second would be the dishonest half of
+one result. Every series shows the probability it was called at.
 
 <img src="docs/screenshots/playoffs.png" alt="Series Predictions for 2025-26. Two tiles read out-of-sample 66.7% (walk-forward, 10 of 15 correct) and in-sample 66.7% (full training fit, 10 of 15 correct), with a note that out-of-sample is predicted from prior seasons only and is the honest generalisation number. Below, the first round's 8 series are listed, each with its result and the model's probability: Cleveland beat Toronto 4-3 at 59.8% CORRECT, Detroit beat Orlando 4-3 at 96.0% CORRECT, Philadelphia beat Boston 4-3 against an 89.6% Boston call marked UPSET, New York beat Atlanta 4-2 at 75.2% CORRECT, the Lakers beat Houston 4-2 at 51.7% CORRECT, Minnesota beat Denver 4-2 against a 72.0% Denver call marked UPSET, San Antonio beat Portland 4-1 at 96.1% CORRECT, and Oklahoma City swept Phoenix 4-0 at 96.7% CORRECT." width="900" />
 
@@ -86,7 +88,14 @@ with no time words — the pattern every mainstream NBA nav uses — while the p
   decades, so there is deliberately no all-time ranking.
 - **Model Results** (`/analysis`) — the historical backtest that scores the rest model: win rate by
   rest-advantage threshold and by season, home/away splits, and a filterable game explorer.
-- **Playoff Predictions** (`/playoffs`) — series-winner predictions from rest/fatigue-derived features, showing walk-forward out-of-sample accuracy next to in-sample as an honest overfitting check.
+- **Playoff Predictions** (`/playoffs`) — the probability each playoff series goes the home-court
+  team's way, at series grain. Honest framing: this is **not** a playoff fatigue model — it is a
+  separate four-feature logistic driven mainly by regular-season record (`win_pct_diff` outweighs
+  the one rest-shaped input roughly three to one), and its measured edge is **calibration, not
+  accuracy**. Over 30 seasons predicted in advance it improves log loss and Brier score ~13-14%
+  against the base rate while calling 74.7% of series right versus 74.4% for "always pick the
+  home-court team" — a tie inside the noise. The page says so on its face, and tells you to read
+  the probabilities rather than the picks.
 - **Shot Value** (`/shot-quality`, under **OTHER**) — a half-court hexbin map of expected effective FG% per grid cell, comparing a location-only gradient-boosted model against a zone-average baseline. Honest framing: public NBA data has no defender distance or shot-clock signal, so this is shot-**location** value only, and the model's edge over the baseline is a small calibration win (~1% on log-loss / Brier), not a large accuracy jump.
 - **Player Shooting** (`/shooting`) — a browsable database of every player's eFG% on zero rest
   against three or more days off, for any season since 1996-97 or pooled across a career. Rest is
@@ -243,7 +252,7 @@ docs/             # architecture, database, pipeline, API, frontend, ADRs
 ## Modules
 
 - [x] **Rest Advantage model** (flagship) — fatigue score + rest-advantage backtest
-- [x] **Playoff Predictor** — series-winner model (fatigue + ML) at `/playoffs`
+- [x] **Playoff Predictor** — series win-probability model (record-driven logistic) at `/playoffs`
 - [x] **Shot Quality** — Expected Shot Value / xeFG% half-court hexbin at `/shot-quality`
 - [x] **Schedule Disparity** — net rest edge per team-season at `/schedule`
 - [x] **Shooting by Rest** — per-player eFG% split by his own rest at `/shooting`

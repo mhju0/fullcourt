@@ -7,40 +7,51 @@ import {
   Prose,
   Section,
 } from "@/components/behind-the-data-parts";
+import {
+  PLAYOFF_MODEL_ACCURACY,
+  PLAYOFF_MODEL_CALIBRATION,
+  PLAYOFF_MODEL_EVAL,
+} from "@/lib/playoff-model-metrics";
 import { termTdStyle, termThStyle } from "@/lib/terminal-styles";
 
 export const metadata: Metadata = {
   title: "Playoff Predictions — Behind the Data",
   description:
-    "The playoff series model: its features, why the target is the home-court team, and why out-of-sample accuracy is published beside the in-sample number.",
+    "The playoff series model: its four features and what actually drives it, why the target is the home-court team, and why its edge is calibration rather than accuracy.",
 };
 
-/** The series-grain feature set, as stored on `playoff_series`. */
+/**
+ * The model's feature set, in descending order of how much it actually moves the prediction.
+ *
+ * `weight` is the standardized logistic coefficient from `ml/PHASE3_REPORT.md` §4 — the honest
+ * ordering, and the reason this table is sorted this way rather than by narrative importance.
+ * The site used to introduce `entry_rest_diff` first and call it the headline feature; the
+ * coefficients say otherwise, so the page now says otherwise too.
+ */
 const FEATURES = [
   {
-    name: "entry_rest_diff",
-    what: "Days of rest each side carried into game one, differenced.",
-    why: "The headline feature, and the only one descended from the rest model the rest of the site is built on.",
+    name: "win_pct_diff",
+    weight: "+0.72",
+    what: "Regular-season win percentage, differenced.",
+    why: "The dominant driver by roughly two to one. This model is, first and foremost, a regular-season-record model.",
   },
   {
     name: "seed_diff",
+    weight: "+0.38",
     what: "Seed gap between the two teams.",
-    why: "Derived as a win-percentage rank proxy rather than read from an official bracket seed.",
+    why: "Derived as a win-percentage rank proxy rather than read from an official bracket seed, so it can drift a line in tiebreak eras.",
   },
   {
-    name: "win_pct_diff",
-    what: "Regular-season win percentage, differenced.",
-    why: "The plainest available measure of which team is better.",
+    name: "entry_rest_diff",
+    weight: "+0.23",
+    what: "Days of rest each side carried into game one, differenced.",
+    why: "The only rest-shaped input, and third of four by weight. Raw days off — not the site's fatigue score.",
   },
   {
     name: "h2h_diff",
+    weight: "+0.12",
     what: "Regular-season head-to-head record between the two.",
-    why: "Small samples — often three or four games — so it carries little weight.",
-  },
-  {
-    name: "is_best_of_7",
-    what: "Series format flag.",
-    why: "First rounds were best-of-5 through 2001-02; a shorter series is more random.",
+    why: "Small samples — often three or four games — so it carries the least weight of the four.",
   },
 ] as const;
 
@@ -49,7 +60,7 @@ export default function PlayoffPredictionsMethodPage() {
     <BehindTheDataShell
       eyebrow="BEHIND THE DATA · PLAYOFF PREDICTIONS"
       title="Playoff predictions"
-      description="A separate model from the regular-season one, at series grain rather than game grain. It predicts who wins a series, not who wins a night."
+      description="A separate model from the regular-season one, at series grain rather than game grain. It estimates how likely a series is to go one way, not who wins a night — and its edge is the honesty of that probability, not the pick it implies."
     >
       <Section label="WHAT IS PREDICTED" descriptor="SERIES GRAIN">
         <Prose>
@@ -62,19 +73,22 @@ export default function PlayoffPredictionsMethodPage() {
           {`P(home-court team wins the series)   →   ≥ 0.5 predicts them, otherwise the opponent`}
         </Formula>
         <Note>
-          Playoff games are deliberately excluded from the regular-season fatigue model: a
-          fixed two-team series breaks its travel assumptions, since the opponent never
-          changes and the itinerary is known in advance. The two models share a lineage and a
-          philosophy, not a code path.
+          This is <strong>not</strong> a playoff version of the fatigue model, and it is worth
+          being blunt about that because the site used to imply it was. It shares a philosophy
+          with the rest model — that rest is a measurable input nobody prices — but it shares no
+          code, no constants and no feature definition. Playoff games are deliberately excluded
+          from the fatigue model itself: a fixed two-team series breaks its travel assumptions,
+          since the opponent never changes and the itinerary is known in advance.
         </Note>
       </Section>
 
-      <Section label="THE FEATURES" descriptor={`${FEATURES.length} INPUTS`}>
+      <Section label="THE FEATURES" descriptor={`${FEATURES.length} INPUTS · BY WEIGHT`}>
         <div className="overflow-x-auto">
           <table className="mono w-full" style={{ fontSize: 12, borderCollapse: "collapse" }}>
             <thead>
               <tr>
                 <th style={termThStyle}>FEATURE</th>
+                <th style={termThStyle}>WEIGHT</th>
                 <th style={termThStyle}>WHAT IT IS</th>
                 <th style={termThStyle}>NOTE</th>
               </tr>
@@ -83,6 +97,9 @@ export default function PlayoffPredictionsMethodPage() {
               {FEATURES.map((f) => (
                 <tr key={f.name}>
                   <td style={{ ...termTdStyle, fontWeight: 700, whiteSpace: "nowrap" }}>{f.name}</td>
+                  <td style={{ ...termTdStyle, fontWeight: 700, whiteSpace: "nowrap" }} className="tabular-nums">
+                    {f.weight}
+                  </td>
                   <td style={termTdStyle}>{f.what}</td>
                   <td style={{ ...termTdStyle, color: "var(--term-text-muted)" }}>{f.why}</td>
                 </tr>
@@ -90,26 +107,103 @@ export default function PlayoffPredictionsMethodPage() {
             </tbody>
           </table>
         </div>
+        <Note>
+          Weights are standardized logistic coefficients, so they are comparable to each other
+          directly. All four are positive: every dimension of home-court advantage pushes the
+          probability the same way, which is why the model almost always picks the home-court
+          team and why its picks are hard to distinguish from that rule.
+          <br />
+          <br />
+          A fifth column, <strong>is_best_of_7</strong>, is stored on each series — first rounds
+          were best-of-five through 2001-02, and a shorter series is more random — but it is{" "}
+          <strong>not</strong> fed to the model. This page previously listed it as an input; it
+          is not one.
+        </Note>
       </Section>
 
-      <Section label="WHY TWO ACCURACY NUMBERS" descriptor="THE IMPORTANT PART">
+      <Section label="WHAT THE MODEL ACTUALLY WINS AT" descriptor="CALIBRATION, NOT ACCURACY">
         <Prose>
-          Every series carries two predictions. The <strong>in-sample</strong> one comes from a
-          model that has already seen that series in training. The{" "}
-          <strong>walk-forward, out-of-sample</strong> one comes from a model trained only on
-          seasons that had already happened when the series was played.
+          The honest result splits in two, and only one half is good. Measured over{" "}
+          {PLAYOFF_MODEL_EVAL.folds} seasons predicted in advance ({PLAYOFF_MODEL_EVAL.series}{" "}
+          series, {PLAYOFF_MODEL_EVAL.firstSeason} onward), the model produces{" "}
+          <strong>materially better-calibrated probabilities</strong> than the base rate — it
+          knows the difference between a lopsided matchup and a near coin flip.
+        </Prose>
+        <div className="overflow-x-auto">
+          <table className="mono w-full" style={{ fontSize: 12, borderCollapse: "collapse" }}>
+            <thead>
+              <tr>
+                <th style={termThStyle}>METRIC</th>
+                <th style={termThStyle}>MODEL</th>
+                <th style={termThStyle}>BASE RATE</th>
+                <th style={termThStyle}>VERDICT</th>
+              </tr>
+            </thead>
+            <tbody>
+              {PLAYOFF_MODEL_CALIBRATION.map((m) => (
+                <tr key={m.key}>
+                  <td style={{ ...termTdStyle, fontWeight: 700, whiteSpace: "nowrap" }}>{m.label}</td>
+                  <td style={termTdStyle} className="tabular-nums">{m.model.toFixed(4)}</td>
+                  <td style={termTdStyle} className="tabular-nums">{m.baseline.toFixed(4)}</td>
+                  <td style={{ ...termTdStyle, color: "var(--term-blue)", fontWeight: 700 }}>
+                    {m.improvementPct}% BETTER
+                  </td>
+                </tr>
+              ))}
+              <tr>
+                <td style={{ ...termTdStyle, fontWeight: 700, whiteSpace: "nowrap" }}>ACCURACY</td>
+                <td style={termTdStyle} className="tabular-nums">
+                  {(PLAYOFF_MODEL_ACCURACY.model * 100).toFixed(1)}%
+                </td>
+                <td style={termTdStyle} className="tabular-nums">
+                  {(PLAYOFF_MODEL_ACCURACY.baseline * 100).toFixed(1)}%
+                </td>
+                <td style={{ ...termTdStyle, color: "var(--term-text-muted)", fontWeight: 700 }}>
+                  NO REAL EDGE
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <Prose>
+          Log loss and Brier score are both lower-is-better measures of whether a stated
+          probability is honest: a model that says 90% and is right nine times in ten scores
+          well, and one that says 90% and is right six times in ten does not. The base rate is
+          the simplest possible competitor — {PLAYOFF_MODEL_ACCURACY.baselineName}, at the
+          historical rate they win.
         </Prose>
         <Prose>
-          Only the second is evidence. In-sample accuracy on a small dataset is close to
-          meaningless — it measures how well a model memorises, and with a few hundred series
-          it can memorise a great deal. It is published anyway, beside the honest number, so
-          the gap between them is visible rather than hidden.
+          On <strong>accuracy</strong> that competitor is just as good. Across the same seasons
+          the model beat it, tied it, and lost to it {PLAYOFF_MODEL_ACCURACY.winTieLoss} times,
+          and the confidence interval around the model&rsquo;s accuracy contains the base rate
+          outright. So the correct reading of this page is: <strong>use the probability, ignore
+          the pick.</strong>
         </Prose>
         <Note>
           The dataset is small by the standards of any modelling problem: a few hundred series
           across the covered seasons, against roughly forty-six thousand regular-season games.
-          That is the central constraint here, and it is why the model stays deliberately
-          simple rather than reaching for something expressive enough to overfit.
+          That is the central constraint here, and it is why the model stays deliberately simple
+          rather than reaching for something expressive enough to overfit — and why no amount of
+          further work turns this into a strong classifier.
+        </Note>
+      </Section>
+
+      <Section label="FORECAST VERSUS HINDSIGHT" descriptor="WHICH NUMBER IS REAL">
+        <Prose>
+          A series&rsquo; <strong>pick</strong> comes from a model trained only on seasons that
+          had already finished when that series was played. That is a real forecast, and it is
+          the only figure treated as evidence anywhere on the site.
+        </Prose>
+        <Prose>
+          A series&rsquo; <strong>hindsight</strong> figure comes from one model fitted across
+          every covered season at once, including the one being predicted. It already knew the
+          answer, so it flatters itself and is not evidence of anything.
+        </Prose>
+        <Note>
+          Hindsight exists for one reason: the model needs about ten seasons of prior history
+          before its first honest fit, so the earliest covered brackets have no forecast at all.
+          For those seasons the hindsight figure is the only number that exists, and the page
+          labels it as such. For every later season the product page shows the forecast alone.
         </Note>
       </Section>
 

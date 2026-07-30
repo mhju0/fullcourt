@@ -1,7 +1,17 @@
 # Playoff Predictor — Design
 > **Reader-facing version:** [`/behind-the-data/playoff-predictions`](../src/app/behind-the-data/playoff-predictions/page.tsx)
 > states the same model in plain terms — the five stored features, why the target is the
-> home-court team, and why out-of-sample accuracy is published beside in-sample.
+> home-court team, why its edge is calibration rather than accuracy, and why it is **not** a
+> playoff version of the fatigue model.
+>
+> **Repositioned 2026-07-30 (presentation only).** `/playoffs` previously headlined two accuracy
+> tiles and described itself as sharing the regular-season model's rest lineage. Both overstated
+> the result: accuracy ties the majority-home-court baseline inside the noise (§5.3,
+> [`ml/PHASE3_REPORT.md`](../ml/PHASE3_REPORT.md) §3), and `entry_rest_diff` is raw days off
+> re-implemented in `ml/compute_series_features.py` — third of four by standardized coefficient,
+> and it never imports `fatigue.ts`. The surface now leads with log loss / Brier against the base
+> rate, states the accuracy tie in the same card, and shows the in-sample fit only for the early
+> seasons that have no walk-forward forecast. No model, feature, table, column or script changed.
 >
 > This file is the **build record** for the phase, kept as written. Where it discusses options
 > it did not take (`has_home_court` as a stored column, for one — it is folded into the label

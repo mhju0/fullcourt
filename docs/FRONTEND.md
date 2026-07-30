@@ -112,13 +112,23 @@ and three of the five labels would otherwise have ended in "EDGES".
 ### `/playoffs` — Playoff Predictor (`src/app/playoffs/page.tsx`)
 
 Server wrapper: header (`PLAYOFF PREDICTOR` eyebrow in red + `<h1>Series Predictions</h1>` +
-a descriptor tying it to the same rest-advantage lineage as the regular-season model) then
-`<PlayoffsContentLazy />`. The lazy client component (`playoffs-content.tsx`) owns a season
-`<select>`, a `MethodComparisonHeader` (walk-forward-OOS vs. full-in-sample accuracy cards,
-explicitly framed "OOS is the honest generalization number"), and per-round `SeriesCard` lists
-— each an expandable row (home-court team, opponent, series score, OOS/IN win-probability
-inline, a correctness badge) that reveals a `SeriesFeatureGrid` (seed diff / win% diff / entry
-rest diff / h2h diff) on click.
+a descriptor naming it a separate, record-driven series model whose value is calibration rather
+than the pick) then `<PlayoffsContentLazy />`. The lazy client component
+(`playoffs-content.tsx`) owns a season `<select>`, a `ModelResultHeader`, a `SeasonScoreboard`,
+and per-round `SeriesCard` lists — each an expandable row (home-court team, opponent, series
+score, `PICK`/`HINDSIGHT` win-probability inline, a correctness badge) that reveals a
+`SeriesFeatureGrid` (seed diff / win% diff / entry rest diff / h2h diff) on click.
+
+**Repositioned 2026-07-30.** The page used to headline two accuracy tiles — walk-forward OOS
+beside full-in-sample — and describe itself as sharing the regular-season model's rest lineage.
+Both were wrong, in the same direction: accuracy is the one metric this model cannot beat a
+one-line baseline on, and the "lineage" is one raw-days feature (third of four by coefficient)
+that never imports `fatigue.ts`. The header now leads with calibration (log loss / Brier vs the
+base rate, sourced from `src/lib/playoff-model-metrics.ts`) and states the accuracy tie in the
+same card. The hindsight fit is no longer shown beside the forecast — `SeasonScoreboard` renders
+it **only** when `summary.walkForwardOos.knownWinnerGames === 0`, i.e. the earliest seasons that
+have no honest forecast at all. See the ADR-style note in `playoff-model-metrics.ts` and the
+reader-facing version at `/behind-the-data/playoff-predictions`.
 
 ### `/schedule` — Schedule Disparity (`src/app/schedule/page.tsx`)
 
@@ -395,15 +405,27 @@ and backdrop close it. Renders `GameStatusRow`, `RaBadge`, two `FatigueDetailCol
 
 ### `playoffs-content.tsx` (+ `playoffs-lazy.tsx`)
 
-Loaded via `next/dynamic` (`ssr: false`). SWR `/api/playoffs?season=…`. Renders
-`MethodComparisonHeader` (two `MethodMetricCard`s — OOS blue accent, in-sample tan accent —
-each showing accuracy% + `predictedCorrect / knownWinnerGames`), then a `RoundSection` per
-playoff round, each holding expandable `SeriesCard`s: header row = home-court team (`HC`
-chip) vs. opponent, series score, `MethodInline` OOS/IN win-probability reads, and a
-`CorrectnessBadge` (✓ CORRECT blue / ✗ UPSET red / — pending tan, with an "(IN-SAMPLE)" tag
-when OOS wasn't available). Expanding a card reveals `SeriesFeatureGrid` (seed diff, win% diff,
-entry rest diff, h2h diff; sign convention = home-court minus opponent). Same terminal-card /
-`.mono` styling as the rest of the app.
+Loaded via `next/dynamic` (`ssr: false`). SWR `/api/playoffs?season=…`. Renders, in order:
+
+1. `ModelResultHeader` — two `CalibrationTile`s (log loss, Brier: model value, the base rate it
+   is measured against, and the % improvement) plus two prose lines, one naming what the model is
+   good at and one naming what it is not. Reads every figure from
+   `src/lib/playoff-model-metrics.ts`; takes **no props**, because these are pooled model
+   constants rather than per-season query output.
+2. `SeasonScoreboard` — the selected bracket only, as a `ScoreLine` (`predictedCorrect /
+   knownWinnerGames` + accuracy%), explicitly captioned with how far one flipped upset moves it.
+   Shows `PREDICTED IN ADVANCE` normally, and `HINDSIGHT FIT` **instead** (never beside) when the
+   season has no walk-forward coverage.
+3. A `RoundSection` per playoff round, each holding expandable `SeriesCard`s: header row =
+   home-court team (`HC` chip) vs. opponent, series score, `MethodInline` `PICK`/`HINDSIGHT`
+   win-probability reads, and a `CorrectnessBadge` (✓ CORRECT blue / ✗ UPSET red / — pending
+   neutral, with a "(HINDSIGHT)" tag when no forecast backed the verdict). Expanding a card
+   reveals `SeriesFeatureGrid` (seed diff, win% diff, entry rest diff, h2h diff; sign convention
+   = home-court minus opponent).
+
+Same terminal-card / `.mono` styling as the rest of the app. `MethodComparisonHeader` /
+`MethodMetricCard` and the `OOS`/`IN` labels were removed in the 2026-07-30 repositioning
+described under `/playoffs` above.
 
 ### `shot-quality-content.tsx` (+ `shot-quality-lazy.tsx`)
 
@@ -552,7 +574,7 @@ already self-labelled.
 Uppercase mono is for **labels of about three words or fewer** — stat-card captions, table
 headers, section dividers, badges. Anything that is a *sentence* is set in Inter, sentence
 case, at 15px: `PageHeader` descriptions, the `/analysis` and `/` intro paragraphs, the
-playoffs OOS-vs-in-sample explainer, and the shot-quality `MethodologyNote`. All-caps removes
+playoffs calibration-vs-accuracy explainer, and the shot-quality `MethodologyNote`. All-caps removes
 word-shape cues and measurably slows reading past a few words.
 
 ### Focus

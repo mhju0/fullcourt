@@ -321,7 +321,8 @@ nba_api PlayIn    → scripts/fetch_play_in.py   → games (005 rows, game_type=
                               GET /api/playoffs  →  getPlayoffSeriesWithPredictions()
                                                        ▼
                          /playoffs page  →  PlayoffsContent  →  bracket of expandable SeriesCards
-                                             (OOS-vs-in-sample accuracy header, per-series feature grid)
+                                             (calibration-led ModelResultHeader + per-season
+                                              SeasonScoreboard, per-series feature grid)
 ```
 
 - **Ingest** reuses `fetch_schedule.py`'s pairing/upsert helpers, gated to `004` (`is_playoff_game_id`)
@@ -345,8 +346,15 @@ nba_api PlayIn    → scripts/fetch_play_in.py   → games (005 rows, game_type=
   `ml/PHASE3_REPORT.md` §5, "Honest headline"].
 - **Predictions** (`ml/predict_series.py --write`) persist both an in-sample fit (all 599 trainable
   rows, for display on seasons too early for OOS) and the walk-forward OOS probability (only for
-  the 450 series in the 30 eval-fold seasons; the first 10 min-train seasons have no OOS score) —
-  `/playoffs` shows both side by side and labels which one backs each series' correctness badge.
+  the 450 series in the 30 eval-fold seasons; the first 10 min-train seasons have no OOS score).
+  `/playoffs` surfaces the OOS probability as the series `PICK` and labels the in-sample one
+  `HINDSIGHT`; the per-season scoreboard shows the hindsight figure **only** for the early seasons
+  that have no forecast, rather than beside it. Both DB `prediction_method` values are unchanged —
+  the 2026-07-30 repositioning was presentation-only (see [FRONTEND.md](FRONTEND.md) `/playoffs`).
+- **Published metrics** live in `src/lib/playoff-model-metrics.ts`, not in the components: pooled
+  walk-forward log loss / Brier / accuracy against the base rate, transcribed from
+  [`ml/PHASE3_REPORT.md`](../ml/PHASE3_REPORT.md) §3-4. They are constants because they describe a
+  fitted model, and they change only when `ml/train_series_model.py` is re-run.
 
 ## Shot Quality (Expected Shot Value / xeFG%) — data flow
 

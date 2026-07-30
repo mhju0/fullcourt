@@ -13,7 +13,7 @@ export default function PlayoffsPage() {
       <PageHeader
         eyebrow="PLAYOFF PREDICTOR"
         title="Series Predictions"
-        description="Predicts playoff series winners from rest- and fatigue-derived features — the same rest-advantage lineage as the regular-season model, run through a separate series-level model."
+        description="Estimates how likely each playoff series is to go the home-court team's way. A separate series-level model, driven mainly by regular-season record, with a modest rest-versus-rust term. Its value is the calibration of the probability, not the pick."
       />
       <MethodLink surfaceHref="/playoffs" />
 

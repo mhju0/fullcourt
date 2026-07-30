@@ -189,7 +189,11 @@ row counts).
     a given series).
   - `summary: { fullInsample, walkForwardOos }` — each a `PlayoffMethodSummary`
     (`knownWinnerGames`, `predictedCorrect`, `accuracy` 0–100) computed only over series that
-    have both a known winner and a non-null prediction for that method.
+    have both a known winner and a non-null prediction for that method. **Per-season and
+    therefore small** (~15 series), which is why the UI presents these as one bracket's result
+    rather than as a model metric — `walkForwardOos.knownWinnerGames === 0` is also how the page
+    detects a season too early to have any honest forecast. The model's published metrics are
+    pooled constants in `src/lib/playoff-model-metrics.ts`, not derived from this response.
 - **Errors:** `500` + `getPublicApiErrorMessage` on failure.
 
 ## `GET /api/shot-quality`

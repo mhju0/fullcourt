@@ -50,7 +50,9 @@ added alongside it.
   explorer, and upcoming-game edge view.
 - **Playoff Predictor** — complete ingest, series feature pipeline, walk-forward evaluation,
   persisted predictions, API, and `/playoffs` UI. The model improves calibration rather than
-  distinguishably improving accuracy over the majority-home-court baseline; see
+  distinguishably improving accuracy over the majority-home-court baseline; **as of 2026-07-30 the
+  surface leads with that calibration result** instead of headlining accuracy, and no longer
+  claims descent from the regular-season fatigue model. See
   [PLAYOFF_PREDICTOR_DESIGN.md](PLAYOFF_PREDICTOR_DESIGN.md) and
   [`ml/PHASE3_REPORT.md`](../ml/PHASE3_REPORT.md).
 - **Shot Quality** — complete collection, aggregation, model evaluation, persisted expected-value

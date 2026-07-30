@@ -109,7 +109,7 @@ const SURFACES = [
   { name: "Games", href: "/", copy: "Any season's slate by date, each team's fatigue score, and the rest gap between them — with live scores." },
   { name: "Schedule Edge", href: "/schedule", copy: "Which teams a season's schedule favoured, counted in games with a real rest edge. Scoped to its own season, always." },
   { name: "Model Results", href: "/analysis", copy: "The backtest that scores the model against history: thresholds, season trends, and every individual game." },
-  { name: "Playoff Predictions", href: "/playoffs", copy: "Series winners from the same rest lineage, with walk-forward accuracy shown beside in-sample." },
+  { name: "Playoff Predictions", href: "/playoffs", copy: "How likely each playoff series is to go the home-court team's way. A separate model, and one that calibrates better than it picks — the page says which." },
   { name: "Player Shooting", href: "/shooting", copy: "Every player's shooting on no rest against three days off, season by season. One season of it is noise, and the page says so." },
 ];
 
