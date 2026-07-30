@@ -28,10 +28,12 @@ the actual code (`src/app/`, `src/components/`, `src/app/globals.css`).
 
 ## Pages
 
-Five product routes ship today — `/`, `/analysis`, `/playoffs`, `/schedule`,
-`/shot-quality` —
-plus a branded App Router `not-found` page for unknown paths. `/upcoming` was retired: it is a
-permanent redirect to `/` (`next.config.ts`), whose UPCOMING view now renders what it used to.
+Seven product routes ship today — `/`, `/season`, `/analysis`, `/playoffs`, `/schedule`,
+`/shot-quality`, `/shooting` —
+plus a branded App Router `not-found` page for unknown paths. (This count was stale at "five"
+before this section was last touched: it omitted `/shooting`, which had already shipped.)
+`/upcoming` was retired: it is a permanent redirect to `/` (`next.config.ts`), whose UPCOMING
+view now renders what it used to.
 
 ### `/` — Games (`src/app/page.tsx`, client component)
 
@@ -213,10 +215,10 @@ so `img-src` in `next.config.ts` did not have to widen; GSAP is imported inside 
 so it stays out of the shared bundle.
 
 Reachable from an `ABOUT` link in the nav row's **`Reference` landmark** and from
-`WHAT THIS MEASURES` in the footer — not from the main nav, whose five-link count is asserted
+`WHAT THIS MEASURES` in the footer — not from the main nav, whose six-link count is asserted
 in `e2e/navigation.spec.ts`. It sat in the top status bar until 2026-07-30, which proved too
 quiet to be found; the reference links are now the same size and weight as a tab, and the gap
-between the two groups is what says "not one of the five".
+between the two groups is what says "not one of the six".
 
 Rebuilt 2026-07-30 into **seven full-viewport sections** (`calc(100svh - var(--term-chrome-h))`
 each, the
@@ -314,17 +316,22 @@ and its test remain, so the page can return without a re-ingest.
    a `HAS_LIVE_GAMES` constant hardcoded to `false`, so it never rendered in any state; the
    dead branch was removed. Per-game LIVE status is shown by `MatchupCard` instead.
 2. **Main nav** (44px, `var(--term-surface)`, bottom border `var(--term-border)`) holds **two
-   navigation landmarks in one row**. Left, `aria-label="Main navigation"`: the five direct tabs
+   navigation landmarks in one row**. Left, `aria-label="Main navigation"`: the six direct tabs
    from `DIRECT_NAV_ITEMS` (`src/lib/primary-navigation.ts`) — `GAMES → /`,
-   `SCHEDULE EDGE → /schedule`, `MODEL RESULTS → /analysis`,
+   `SEASON REPORT → /season`, `SCHEDULE EDGE → /schedule`, `MODEL RESULTS → /analysis`,
    `PLAYOFF PREDICTIONS → /playoffs`, `PLAYER SHOOTING → /shooting` — followed by the `OTHER`
    menu holding `SHOT VALUE → /shot-quality` and `REFEREE EFFECT → /referees`. Right,
    `ml-auto` and `aria-label="Reference"`: `ABOUT → /about` and
    `BEHIND THE DATA → /behind-the-data`. Two landmarks rather than one so the reference links
-   never inflate the asserted five-link count, and so screen readers announce them as what they
-   are. The surface list on `/about` is derived from `DIRECT_NAV_ITEMS`, so adding a tab cannot
-   leave the page claiming a total it no longer has — `SHOT VALUE` is absent from it because it
-   is an `OTHER` item.
+   never inflate the asserted six-link count, and so screen readers announce them as what they
+   are.
+   **The surface list on `/about` is *not* derived from `DIRECT_NAV_ITEMS`** — `SURFACES` in
+   `src/components/about-content.tsx` is a separate, hand-maintained array. An earlier version
+   of this doc claimed the two were linked, which was false and let a tab addition on this
+   branch ship without `/about` in sync for a time. There is no shared source: adding or
+   renaming a direct tab requires a matching hand edit to `SURFACES`, and `SHOT VALUE` is
+   correctly absent from it only because someone left it out on purpose, not because the list
+   knows it belongs to `OTHER_NAV_ITEMS`.
 
    **Below ~900px the row is a horizontal scroll strip** (`.fc-nav-scroll`, `overflow-x-auto`,
    `shrink-0` + `whitespace-nowrap` on every link), added 2026-07-30. Eight links do not fit a

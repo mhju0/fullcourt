@@ -11,6 +11,12 @@ import { buildSeasonReport, type SeasonReportResponse } from "@/lib/season-repor
  * Same stamp trick as `rest-advantage-evidence-server.ts`, and the same reason:
  * the figures cannot change while no game has finished, and this reads every
  * game in a season with no LIMIT. Bounded by the season list, which is closed.
+ *
+ * The stamp is exact for the backtest, whose inputs are only final games — but this query
+ * also reads scheduled games, so it is not exact here: at the start of a new season the
+ * stamp can sit unmoved for weeks after the schedule is seeded, serving `0 / 0` until
+ * opening night. Known and documented, not fixed — see "Known limitation" under the
+ * season-start section of `docs/SEASON_ROLLOVER.md` for why, and the two ways to close it.
  */
 let cache: { stamp: string; bySeason: Map<string, SeasonReportResponse> } | null = null;
 

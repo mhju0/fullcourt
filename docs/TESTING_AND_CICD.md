@@ -87,10 +87,10 @@ the time, 16.8s serially against 26s *and* readiness-gate failures on `/schedule
 worker count — parallelism bought negative time here. (`fullyParallel` is left on; with one
 worker it only affects ordering.) Existing specs receive a completed onboarding storage state so
 the first-visit dialog cannot block their legacy interactions; `e2e/onboarding.spec.ts` overrides
-that state with an empty browser. Specs (10): `e2e/home.spec.ts`, `e2e/about.spec.ts`,
+that state with an empty browser. Specs (11): `e2e/home.spec.ts`, `e2e/about.spec.ts`,
 `e2e/analysis.spec.ts`, `e2e/behind-the-data.spec.ts`, `e2e/navigation.spec.ts`,
 `e2e/onboarding.spec.ts`, `e2e/playoffs.spec.ts`, `e2e/schedule-disparity.spec.ts`,
-`e2e/shot-quality.spec.ts`, `e2e/shooting.spec.ts` — **46 tests** (2026-07-30).
+`e2e/season.spec.ts`, `e2e/shot-quality.spec.ts`, `e2e/shooting.spec.ts` — **46 tests**.
 
 `e2e/behind-the-data.spec.ts` covers the reference section: that it is reachable from the
 `Reference` landmark and *not* from `Main navigation` or the `OTHER` menu, that every section is
@@ -120,15 +120,16 @@ back on expand.
 > - **`navigation.spec.ts`** — nav links `GAMES` / `MODEL RESULTS` / `SCHEDULE EDGE` →
 >   `/` / `/analysis` / `/schedule`. The active link is asserted via its `aria-current="page"`
 >   attribute (the amber-underline active state), and inactive links are checked to lack it.
->   The link count is pinned at **5**, so a resurrected sixth tab fails here. `ABOUT` and
->   `BEHIND THE DATA` sit in a separate `Reference` landmark in the same row, which is exactly
->   why that count still holds: two landmarks, one bar. A second spec pins `/about`'s entry
->   point by asserting it is **absent** from `Main navigation` before following it.
+>   The link count is pinned at **6** (`SEASON REPORT` joined the bar with `/season`), so a
+>   resurrected seventh tab fails here. `ABOUT` and `BEHIND THE DATA` sit in a separate
+>   `Reference` landmark in the same row, which is exactly why that count still holds: two
+>   landmarks, one bar. A second spec pins `/about`'s entry point by asserting it is
+>   **absent** from `Main navigation` before following it.
 > - **`about.spec.ts`** — the landing page renders its hero, its single call to action, and a
->   `Product surfaces` nav of exactly five links carrying the five direct nav labels, so a
+>   `Product surfaces` nav of exactly six links carrying the six direct nav labels, so a
 >   future nav rename that misses this page fails here instead of drifting quietly. It also
 >   asserts the hero's old pair of buttons is **gone** (`See the backtest` at count 0). A second test re-pins
->   the five-tab count from `/` and follows the footer's `WHAT THIS MEASURES` link. The hero
+>   the six-tab count from `/` and follows the footer's `WHAT THIS MEASURES` link. The hero
 >   assertion allows 30s: the page is `ssr: false`, so a cold Turbopack compile is on the path.
 > - **`home.spec.ts`** — the heading is the `<h1>` **"Games"** (`REST ADVANTAGE
 >   DASHBOARD` is an eyebrow `<span>`); controls use `getByLabel("Season")`, the

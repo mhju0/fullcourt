@@ -130,11 +130,13 @@ Full list in [API.md](API.md).
   to `/` in `next.config.ts`). The browsing state machine lives in `hooks/useGameSlate.ts` over
   the pure reducer `lib/game-slate-machine.ts` — see the decision entry below.
 - `app/analysis/page.tsx` / `app/playoffs/page.tsx` /
-  `app/schedule/page.tsx` / `app/shot-quality/page.tsx` / `app/shooting/page.tsx` — thin server
-  wrappers that render client content via `next/dynamic` (`ssr: false`) with skeleton fallbacks.
-  `/shooting` is the one surface fed by a **static asset** (`public/data/player-rest.json`) rather
-  than an API route: its export changes once a season, so a Postgres round trip could only ever
-  return the same numbers.
+  `app/schedule/page.tsx` / `app/shot-quality/page.tsx` / `app/shooting/page.tsx` /
+  `app/season/page.tsx` — thin server wrappers that render client content via `next/dynamic`
+  (`ssr: false`) with skeleton fallbacks. `/shooting` is built entirely on a **static asset**
+  (`public/data/player-rest.json`) rather than an API route: its export changes once a season,
+  so a Postgres round trip could only ever return the same numbers. `/season`'s last section
+  (zero-rest workload) reads the same static file for the same reason — `/shooting` is no
+  longer the only surface that does.
 - `app/about/page.tsx` — **the landing / explainer page**, outside the product surfaces.
   Visuals are CSS and inline SVG only, so `img-src` did not have to widen, and GSAP is imported
   *inside* an effect, keeping it out of the shared bundle. It is a **server component as of
