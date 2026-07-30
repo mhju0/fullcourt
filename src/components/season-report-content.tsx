@@ -10,6 +10,7 @@ import { apiFetcher } from "@/lib/fetcher"
 import { NBA_SEASONS } from "@/lib/nba-season"
 import {
   allSeasonNormExcluding,
+  MIN_GAMES_FOR_INFERENCE,
   seasonReportVerdict,
   type SeasonReportCall,
   type SeasonReportRate,
@@ -29,6 +30,23 @@ const LATEST_SEASON = NBA_SEASONS[NBA_SEASONS.length - 1]
 /** One decimal with a sign, for a swing or a gap. */
 function signedPct(value: number): string {
   return `${value > 0 ? "+" : value < 0 ? "−" : ""}${Math.abs(value).toFixed(1)}`
+}
+
+/**
+ * The vs-history blurb, read off the loaded season rather than a hardcoded 82-game figure —
+ * a shortened season (1998-99, 2019-20 pre-bubble) or a mid-season one carries a real, much
+ * wider band, and stating "roughly 940 games" beside either was simply false.
+ */
+function decidableGamesSentence(rate: SeasonReportRate): string {
+  if (rate.band === null) return "This season has no games with a decidable rest gap yet."
+  return `This season has produced ${rate.games.toLocaleString()} games with a decidable rest gap so far, worth about ±${rate.band.toFixed(1)} percentage points either way. Seasons move inside that range more often than they move outside it.`
+}
+
+/** The middle value of a sorted number list, for a prose figure that should track real data. */
+function median(values: number[]): number {
+  const sorted = [...values].sort((a, b) => a - b)
+  const mid = Math.floor(sorted.length / 2)
+  return sorted.length % 2 === 0 ? (sorted[mid - 1] + sorted[mid]) / 2 : sorted[mid]
 }
 
 function Tile({
@@ -72,15 +90,17 @@ function Tile({
 
 /** A rate tile that refuses to print a number it cannot stand behind. */
 function RateTile({ label, rate, testId }: { label: string; rate: SeasonReportRate; testId?: string }) {
-  const gated = rate.band === null
+  const gated = rate.games < MIN_GAMES_FOR_INFERENCE || rate.band === null
   return (
     <Tile
       label={label}
       value={gated ? "—" : `${rate.winPct.toFixed(1)}%`}
       sub={
-        gated
-          ? "NO DECIDABLE GAMES YET"
-          : `±${rate.band!.toFixed(1)} · ${rate.games.toLocaleString()} GAMES`
+        !gated
+          ? `±${rate.band!.toFixed(1)} · ${rate.games.toLocaleString()} GAMES`
+          : rate.games === 0
+            ? "NO DECIDABLE GAMES YET"
+            : `TOO EARLY · ${rate.games} OF ${MIN_GAMES_FOR_INFERENCE} GAMES NEEDED`
       }
       accent={gated ? "var(--term-neutral)" : "var(--term-blue)"}
       testId={testId}
@@ -103,7 +123,7 @@ function SectionDivider({ label, descriptor, testId }: { label: string; descript
   )
 }
 
-/** The one sentence under the tiles. Three states, no superlative. */
+/** The one sentence under the tiles. Four states, no superlative. */
 function VerdictLine({ verdict }: { verdict: SeasonReportVerdict }) {
   const { text, tone } =
     verdict.kind === "tooEarly"
@@ -111,15 +131,20 @@ function VerdictLine({ verdict }: { verdict: SeasonReportVerdict }) {
           text: `TOO EARLY TO CALL — ${verdict.games.toLocaleString()} DECIDABLE GAMES SO FAR`,
           tone: "var(--term-text-muted)",
         }
-      : verdict.kind === "inLine"
+      : verdict.kind === "noNorm"
         ? {
-            text: `IN LINE WITH THE ALL-SEASON NORM — ${verdict.winPct.toFixed(1)}% ±${verdict.band.toFixed(1)} VS ${verdict.norm.toFixed(1)}%`,
-            tone: "var(--term-text)",
+            text: "ALL-SEASON NORM UNAVAILABLE",
+            tone: "var(--term-text-muted)",
           }
-        : {
-            text: `${verdict.kind === "above" ? "ABOVE" : "BELOW"} THE NORM — ${verdict.winPct.toFixed(1)}% ±${verdict.band.toFixed(1)} VS ${verdict.norm.toFixed(1)}%`,
-            tone: verdict.kind === "above" ? "var(--term-blue)" : "var(--term-red)",
-          }
+        : verdict.kind === "inLine"
+          ? {
+              text: `IN LINE WITH THE ALL-SEASON NORM — ${verdict.winPct.toFixed(1)}% ±${verdict.band.toFixed(1)} VS ${verdict.norm.toFixed(1)}%`,
+              tone: "var(--term-text)",
+            }
+          : {
+              text: `${verdict.kind === "above" ? "ABOVE" : "BELOW"} THE NORM — ${verdict.winPct.toFixed(1)}% ±${verdict.band.toFixed(1)} VS ${verdict.norm.toFixed(1)}%`,
+              tone: verdict.kind === "above" ? "var(--term-blue)" : "var(--term-red)",
+            }
 
   return (
     <p className="mono" style={{ fontSize: 12, letterSpacing: "0.04em", fontWeight: 600, color: tone }}>
@@ -141,6 +166,20 @@ function armText(wins: number, games: number, pct: number | null): string {
 }
 
 /**
+ * The edge-conversion blurb, read off the loaded teams rather than a hardcoded "roughly
+ * thirty" — true only of a completed 82-game season, and false mid-season or in a shortened
+ * one, where each arm carries far fewer games.
+ */
+function edgeConversionSentence(teams: SeasonReportTeamLabelled[]): string {
+  const armSize = teams.length > 0 ? Math.round(median(teams.map((t) => t.restedGames))) : 0
+  const armSentence =
+    armSize > 0
+      ? `Around ${armSize} games sit behind each arm for a typical team, so treat these`
+      : "Treat these"
+  return `How much better each team played as the fresher side than as the tireder one. A team is its own comparison here, because win rate when rested on its own mostly ranks how good the team was. ${armSentence} as records rather than as a table of who manages rest well.`
+}
+
+/**
  * Rest edge conversion.
  *
  * A record table, deliberately not a ranking. Each team is measured against its own
@@ -155,10 +194,7 @@ function EdgeConversion({ teams }: { teams: SeasonReportTeamLabelled[] }) {
     <div className="flex flex-col gap-3">
       <SectionDivider label="REST EDGE CONVERSION" descriptor="RECORDS, NOT A RANKING" />
       <p style={{ fontSize: 14, color: "var(--term-text-muted)", maxWidth: "42rem", lineHeight: 1.55 }}>
-        How much better each team played as the fresher side than as the tireder one. A team is
-        its own comparison here, because win rate when rested on its own mostly ranks how good
-        the team was. Roughly thirty games sit behind each arm, so treat these as records rather
-        than as a table of who manages rest well.
+        {edgeConversionSentence(teams)}
       </p>
       <div className="overflow-x-auto">
         <table className="mono w-full" style={{ borderCollapse: "collapse", minWidth: 520 }}>
@@ -446,9 +482,7 @@ export function SeasonReportContent() {
             />
             {verdict ? <VerdictLine verdict={verdict} /> : null}
             <p style={{ fontSize: 14, color: "var(--term-text-muted)", maxWidth: "42rem", lineHeight: 1.55 }}>
-              A season yields roughly 940 games with a decidable rest gap, which is worth about
-              three percentage points either way. Seasons move inside that range more often than
-              they move outside it.{" "}
+              {decidableGamesSentence(data.overall)}{" "}
               <a href="/analysis" style={{ color: "var(--term-blue)", fontWeight: 600 }}>
                 See the full backtest →
               </a>

@@ -423,8 +423,12 @@ describe("seasonReportVerdict", () => {
     expect(seasonReportVerdict(rateOf(99, 99), 55.6)).toEqual({ kind: "tooEarly", games: 99 });
   });
 
-  it("is too early when no norm is available", () => {
-    expect(seasonReportVerdict(rateOf(500, 1000), null)).toEqual({ kind: "tooEarly", games: 1000 });
+  it("reports noNorm, not tooEarly, when the sample is sufficient but the baseline failed to load", () => {
+    expect(seasonReportVerdict(rateOf(500, 1000), null)).toEqual({ kind: "noNorm" });
+  });
+
+  it("still reports tooEarly for a thin sample even when the norm is also unavailable", () => {
+    expect(seasonReportVerdict(rateOf(40, 99), null)).toEqual({ kind: "tooEarly", games: 99 });
   });
 
   it("is in line when the gap falls inside the band", () => {

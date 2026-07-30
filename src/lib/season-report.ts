@@ -141,11 +141,17 @@ export interface SeasonReportWeek {
 }
 
 /**
- * The one sentence under the tiles. Three states and no superlative: a "biggest
+ * The one sentence under the tiles. Four states and no superlative: a "biggest
  * gap since 2011-12" claim reads as a finding and is a ranking of noise.
+ *
+ * `noNorm` is distinct from `tooEarly`: `norm === null` means the all-season baseline
+ * could not be loaded (e.g. `/api/analysis` failed), not that this season's sample is
+ * thin. Conflating the two would have a fully-played season announce itself as too
+ * early to call.
  */
 export type SeasonReportVerdict =
   | { kind: "tooEarly"; games: number }
+  | { kind: "noNorm" }
   | { kind: "inLine"; winPct: number; band: number; norm: number }
   | { kind: "above"; winPct: number; band: number; norm: number }
   | { kind: "below"; winPct: number; band: number; norm: number };
@@ -402,8 +408,11 @@ export function seasonReportVerdict(
   rate: SeasonReportRate,
   norm: number | null
 ): SeasonReportVerdict {
-  if (rate.games < MIN_GAMES_FOR_INFERENCE || rate.band === null || norm === null) {
+  if (rate.games < MIN_GAMES_FOR_INFERENCE || rate.band === null) {
     return { kind: "tooEarly", games: rate.games };
+  }
+  if (norm === null) {
+    return { kind: "noNorm" };
   }
 
   const delta = rate.winPct - norm;
@@ -421,8 +430,4 @@ export interface SeasonReportTeamLabelled extends SeasonReportTeam {
 /** What `/api/season-report` returns. */
 export interface SeasonReportResponse extends Omit<SeasonReport, "teams"> {
   teams: SeasonReportTeamLabelled[];
-  /** True while any game in the season is unplayed, so the figures may still revise. */
-  provisional: boolean;
-  /** ET date the figures were computed, for the as-of line on a provisional season. */
-  asOf: string;
 }

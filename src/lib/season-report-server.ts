@@ -3,7 +3,6 @@ import {
   getSeasonReportRows,
   getTeamDirectory,
 } from "@/lib/db/queries";
-import { formatEasternDateKey } from "@/lib/nba-season";
 import { buildSeasonReport, type SeasonReportResponse } from "@/lib/season-report";
 
 /**
@@ -43,8 +42,6 @@ export async function getSeasonReport(season: string): Promise<SeasonReportRespo
         name: team?.name ?? `Team ${t.teamId}`,
       };
     }),
-    provisional: report.completedGames < report.scheduledGames,
-    asOf: formatEasternDateKey(new Date()),
   };
 
   cache.bySeason.set(season, response);
