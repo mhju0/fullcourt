@@ -6,7 +6,11 @@ packages: []
 # motivated them — ws is a CVE pin, not a preference.
 overrides:
   '@babel/core@<=7.29.0': 7.29.6
-  postcss@<8.5.10: 8.5.10
+  # 8.5.10 pinned an earlier advisory; 8.5.18 covers the 2026-07 pair (arbitrary file
+  # read <=8.5.11, source-map path traversal <=8.5.17).
+  postcss@<8.5.18: 8.5.18
+  # libvips CVEs inherited by sharp <0.35.0 (next's image optimizer).
+  sharp@<0.35.0: '>=0.35.0'
   ws@>=8.0.0 <8.21.0: '>=8.21.0'
 
 # Carries forward the previous policy verbatim: .npmrc allowed esbuild alone to run its
