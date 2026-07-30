@@ -17,7 +17,9 @@ const PAGES = [
   { file: "games", path: "/", height: 1390 },
   { file: "analysis", path: "/analysis", height: 1160 },
   { file: "schedule", path: "/schedule", height: 1320 },
-  { file: "playoffs", path: "/playoffs", height: 1300 },
+  // Raised from 1300 on 2026-07-30: the calibration-led header is one card taller than the
+  // accuracy tiles it replaced, which pushed 1300 to a cut mid-way through the fourth series.
+  { file: "playoffs", path: "/playoffs", height: 1670 },
   { file: "shooting", path: "/shooting", height: 1400 },
   { file: "shot-quality", path: "/shot-quality", height: 1430 },
 ];

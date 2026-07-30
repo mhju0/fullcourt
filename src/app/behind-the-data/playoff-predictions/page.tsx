@@ -174,8 +174,8 @@ export default function PlayoffPredictionsMethodPage() {
         </Prose>
         <Prose>
           On <strong>accuracy</strong> that competitor is just as good. Across the same seasons
-          the model beat it, tied it, and lost to it {PLAYOFF_MODEL_ACCURACY.winTieLoss} times,
-          and the confidence interval around the model&rsquo;s accuracy contains the base rate
+          the model beat it, tied it, and lost to it {PLAYOFF_MODEL_ACCURACY.winTieLoss}{" "}
+          times, and the confidence interval around the model&rsquo;s accuracy contains the base rate
           outright. So the correct reading of this page is: <strong>use the probability, ignore
           the pick.</strong>
         </Prose>
