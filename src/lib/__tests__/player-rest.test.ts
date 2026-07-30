@@ -12,6 +12,7 @@ import {
   searchKey,
   seasonLabel,
   seasonRow,
+  zeroRestWorkload,
   type PlayerRestPayload,
 } from "../player-rest";
 
@@ -233,6 +234,36 @@ describe("buildRows — team filter", () => {
   it("folds a historical tricode into its franchise", () => {
     const idx = indexPayload({ ...PAYLOAD, teams: ["SEA", "POR", "MIA/BOS"] });
     expect(buildRows(idx, { ...base, team: "OKC" }).map((r) => r.name)).toEqual(["Nikola Jokić"]);
+  });
+});
+
+describe("zeroRestWorkload", () => {
+  const payload = {
+    generated: "2026-07-30",
+    names: ["Alpha", "Beta", "Gamma"],
+    teams: ["AAA", "BBB"],
+    seasons: [
+      // [player, year, team, age, games, fga, efg, noRestFga, noRestEfg, restedFga, restedEfg]
+      [0, 2025, 0, 27, 70, 900, 55.0, 240, 52.1, 660, 56.4],
+      [1, 2025, 1, 24, 68, 700, 51.0, 310, 49.8, 390, 52.0],
+      [2, 2024, 0, 31, 60, 800, 54.0, 400, 53.0, 400, 55.0], // wrong season
+    ],
+    shrunk: [],
+  };
+
+  it("ranks a season's players by attempts taken on no rest", () => {
+    expect(zeroRestWorkload(payload, 2025, 10)).toEqual([
+      { name: "Beta", team: "BBB", noRestFga: 310, noRestEfg: 49.8, games: 68 },
+      { name: "Alpha", team: "AAA", noRestFga: 240, noRestEfg: 52.1, games: 70 },
+    ]);
+  });
+
+  it("honours the limit", () => {
+    expect(zeroRestWorkload(payload, 2025, 1).map((r) => r.name)).toEqual(["Beta"]);
+  });
+
+  it("returns nothing for a season absent from the payload", () => {
+    expect(zeroRestWorkload(payload, 1999, 10)).toEqual([]);
   });
 });
 

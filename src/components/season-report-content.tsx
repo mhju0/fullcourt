@@ -5,6 +5,7 @@ import useSWR from "swr"
 import { ExploreGameDetailModal } from "@/components/explore-game-detail-modal"
 import { SeasonSelector } from "@/components/season-selector"
 import { Skeleton } from "@/components/ui/skeleton"
+import { ZeroRestWorkload } from "@/components/zero-rest-workload"
 import { apiFetcher } from "@/lib/fetcher"
 import { NBA_SEASONS } from "@/lib/nba-season"
 import {
@@ -440,7 +441,7 @@ export function SeasonReportContent() {
           <div className="flex flex-col gap-3">
             <SectionDivider
               label={`${data.season} VS HISTORY`}
-              descriptor="EXCLUDES THIS SEASON FROM THE NORM"
+              descriptor="EXCLUDES THE DISPLAYED SEASON"
               testId="season-vs-history-heading"
             />
             {verdict ? <VerdictLine verdict={verdict} /> : null}
@@ -458,6 +459,11 @@ export function SeasonReportContent() {
           <LoudestCalls calls={data.loudestCalls} abbrById={abbrById} />
           <ScheduleTax teams={data.teams} />
           <FatigueCalendar weeks={data.weeks} />
+
+          <div className="flex flex-col gap-3">
+            <SectionDivider label="ZERO-REST WORKLOAD" descriptor="VOLUME, NOT EFFECT" />
+            <ZeroRestWorkload season={data.season} />
+          </div>
         </>
       )}
     </div>

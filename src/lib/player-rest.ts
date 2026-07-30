@@ -325,3 +325,41 @@ export function buildRows(index: PlayerRestIndex, opts: BuildOptions): BrowseRow
   })
   return filtered
 }
+
+/** One player's no-rest shooting volume in one season. */
+export interface ZeroRestWorkloadRow {
+  name: string
+  team: string
+  noRestFga: number
+  noRestEfg: number
+  games: number
+}
+
+/**
+ * A season's players ranked by shot attempts taken on zero days' rest.
+ *
+ * Volume, deliberately not a rest *effect*. A single season's eFG% split is not an
+ * estimate of anything — at 50 attempts per arm the extremes swing ±30pp and the top of
+ * any such list is bench players with tiny samples, which is why the career `shrunk`
+ * column exists. Attempts on no rest is a plain fact, and it answers the question worth
+ * asking here: who is being asked to carry the back-to-backs.
+ *
+ * Ties break on name so the table is stable between renders.
+ */
+export function zeroRestWorkload(
+  payload: PlayerRestPayload,
+  seasonStartYear: number,
+  limit: number
+): ZeroRestWorkloadRow[] {
+  return payload.seasons
+    .filter((row) => row[S.YEAR] === seasonStartYear)
+    .map((row) => ({
+      name: payload.names[row[S.PLAYER]],
+      team: payload.teams[row[S.TEAM]],
+      noRestFga: row[S.NO_REST_FGA],
+      noRestEfg: row[S.NO_REST_EFG],
+      games: row[S.GAMES],
+    }))
+    .sort((a, b) => b.noRestFga - a.noRestFga || a.name.localeCompare(b.name))
+    .slice(0, limit)
+}
