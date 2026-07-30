@@ -8,6 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { cn } from "@/lib/utils"
 import { apiFetcher } from "@/lib/fetcher"
 import { currentDisplaySeason } from "@/lib/nba-season"
+import { playoffModelSeasons } from "@/lib/playoff-seasons"
 import { TERM_ACCENT, termCardStyle } from "@/lib/terminal-styles"
 import type {
   PlayoffMethodSummary,
@@ -343,6 +344,13 @@ function PlayoffsSkeleton() {
 
 // ─── Main component ───────────────────────────────────────────────
 
+/**
+ * Not every season with data — every season this model covers. 2019-20's playoffs were played
+ * in the bubble and produce no series, and offering a permanently empty season renders as a
+ * broken page rather than as an empty one.
+ */
+const PLAYOFF_SEASONS = playoffModelSeasons()
+
 export function PlayoffsContent() {
   const [season, setSeason] = useState<string>(currentDisplaySeason())
 
@@ -360,7 +368,7 @@ export function PlayoffsContent() {
   if (error || !data) {
     return (
       <div className="flex flex-col gap-12">
-        <SeasonSelector id="playoffs-season" season={season} onSeasonChange={setSeason} />
+        <SeasonSelector id="playoffs-season" season={season} onSeasonChange={setSeason} seasons={PLAYOFF_SEASONS} />
         <div
           className="mono px-6 py-12 text-center"
           style={{ ...termCardStyle, borderLeft: "2px solid var(--term-red)" }}
@@ -378,18 +386,26 @@ export function PlayoffsContent() {
 
   return (
     <div className="flex flex-col gap-12">
-      <SeasonSelector id="playoffs-season" season={season} onSeasonChange={setSeason} />
+      <SeasonSelector id="playoffs-season" season={season} onSeasonChange={setSeason} seasons={PLAYOFF_SEASONS} />
 
-      <MethodComparisonHeader summary={data.summary} />
-
+      {/* No accuracy header when there is nothing to score. Rendering it anyway prints "0%"
+          over "0 / 0 CORRECT", which reads as the model having got every series wrong rather
+          than as having predicted none — the difference between an empty page and a broken
+          one. Reachable whenever a season's playoffs have not been played yet. */}
       {data.rounds.length === 0 ? (
         <div className="mono px-6 py-12 text-center" style={termCardStyle}>
           <p style={{ fontSize: 12, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 700 }}>
             NO PLAYOFF PREDICTIONS FOR THIS SEASON
           </p>
+          <p className="mt-2" style={{ fontSize: 11, color: "var(--term-text-muted)" }}>
+            These playoffs have not been played yet.
+          </p>
         </div>
       ) : (
-        data.rounds.map((group) => <RoundSection key={group.round} group={group} />)
+        <>
+          <MethodComparisonHeader summary={data.summary} />
+          {data.rounds.map((group) => <RoundSection key={group.round} group={group} />)}
+        </>
       )}
     </div>
   )

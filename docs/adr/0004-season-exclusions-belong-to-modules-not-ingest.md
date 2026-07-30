@@ -39,7 +39,7 @@ Three named rules replace the one window, each owned by the concern that actuall
 |---|---|---|---|
 | `ABNORMAL_STRETCHES` | `src/lib/season-regime.ts` | The games were not reached by travelling to them | Dates, never a season. One entry: the bubble. |
 | `TRUNCATED_SEASONS` | `src/lib/schedule-disparity.ts` | Teams played unequal numbers of games, so they cannot be ranked | Schedule Edge only. One entry: 2019-20. |
-| Bubble playoffs | `ml/build_series_dataset.py` | Entry rest is meaningless after a 4½-month layoff | The series model only. |
+| Bubble playoffs | `ml/build_series_dataset.py`, mirrored for the UI in `src/lib/playoff-seasons.ts` | Entry rest is meaningless after a 4½-month layoff | The series model only. |
 
 They are deliberately not one rule. An abnormal stretch is about *how* games were played; a
 truncated season is about *how many* there are. 1998-99 and 2011-12 are short and are ranked
@@ -70,6 +70,26 @@ normally — short is fine, interrupted is not.
   model itself, which is where the objection belongs.
 - The backtest grew from 38,084 to **38,851** games; the headline rate moved 55.6% → **55.50%**.
   The new games are ~2% of the sample and behave like the rest of it.
+
+### Follow-up: the selector this missed (2026-07-30)
+
+The first version of this change gave Schedule Edge its own season list and did not give one to
+Playoff Predictions, whose exclusion is described above but existed only in Python. The selector
+began offering 2019-20, and the page rendered two **0%** accuracy tiles above an empty bracket —
+which reads as a broken tab, not as an empty season. Reported from production the same day.
+
+Two fixes, and the second is the more general one:
+
+1. `playoffModelSeasons()` mirrors the Python `EXCLUDED_SEASON`, with a test that reads
+   `ml/build_series_dataset.py` and fails if the two disagree.
+2. The accuracy header is no longer rendered when there are no series. `0 / 0 CORRECT` under a
+   `0%` headline claims the model got everything wrong when it in fact predicted nothing — and
+   that path is reachable for any season whose playoffs have not been played yet, so it was
+   waiting to misfire again every October regardless of 2019-20.
+
+The lesson generalises past this ADR: moving a rule from ingest to per-module means **every**
+module that holds an opinion needs somewhere to express it. Two of the three had a home; the
+third had only a Python constant and a paragraph in a design doc.
 
 ## What this does not license
 
