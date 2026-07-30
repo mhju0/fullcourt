@@ -404,3 +404,18 @@ export function seasonReportVerdict(
   if (Math.abs(delta) <= rate.band) return { kind: "inLine", ...shared };
   return { kind: delta > 0 ? "above" : "below", ...shared };
 }
+
+/** A team row with the labels the UI needs, attached by the server module. */
+export interface SeasonReportTeamLabelled extends SeasonReportTeam {
+  abbreviation: string;
+  name: string;
+}
+
+/** What `/api/season-report` returns. */
+export interface SeasonReportResponse extends Omit<SeasonReport, "teams"> {
+  teams: SeasonReportTeamLabelled[];
+  /** True while any game in the season is unplayed, so the figures may still revise. */
+  provisional: boolean;
+  /** ET date the figures were computed, for the as-of line on a provisional season. */
+  asOf: string;
+}
