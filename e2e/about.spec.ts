@@ -14,9 +14,10 @@ test.describe("About page", () => {
     // label + copy, so the accessible name is "<label> <copy>" — anchor at the start
     // rather than matching exactly.
     const surfaces = page.getByRole("navigation", { name: "Product surfaces" });
-    await expect(surfaces.getByRole("link")).toHaveCount(5);
+    await expect(surfaces.getByRole("link")).toHaveCount(6);
     for (const name of [
       "Games",
+      "Season Report",
       "Schedule Edge",
       "Model Results",
       "Playoff Predictions",
@@ -44,7 +45,7 @@ test.describe("About page", () => {
     // OTHER menu are not in the DOM until it opens — so a new tab has to be a
     // deliberate edit here too.
     const nav = page.getByRole("navigation", { name: "Main navigation" });
-    await expect(nav.getByRole("link")).toHaveCount(5);
+    await expect(nav.getByRole("link")).toHaveCount(6);
 
     await page.getByRole("link", { name: "WHAT THIS MEASURES" }).click();
     await expect(page).toHaveURL(/\/about$/);

@@ -9,6 +9,15 @@ export const DIRECT_NAV_ITEMS = [
       "Compare each team's fatigue and rest advantage — by date across any season, or ranked by edge for the games ahead.",
   },
   {
+    href: "/season",
+    // Not "SEASON REVIEW": review implies the season has ended, and this page runs live from
+    // October. Not bare "SEASON": GAMES already browses any season's slate and SCHEDULE EDGE
+    // already ranks teams inside one, so the noun alone collides with two tabs we own.
+    label: "SEASON REPORT",
+    guideDescription:
+      "Read one season end to end — how the rest call scored, which teams converted a rest edge, and what the schedule cost each of them.",
+  },
+  {
     href: "/schedule",
     // Not bare "SCHEDULE": on every other sports site that word means a list of games,
     // which is this site's GAMES tab. The qualifier is what blocks the wrong click.
