@@ -209,6 +209,16 @@ export interface PlayoffSeriesWithPredictions {
   winPctDiff: number | null;
   entryRestDiff: number | null;
   h2hDiff: number | null;
+  /**
+   * Opponent's prior-round grind minus the home-court team's, where grind is games beyond a
+   * sweep. Positive favors the home-court team — the sign is inverted versus the other diffs
+   * on purpose so that "positive is good for home court" holds for every one of them.
+   */
+  priorGrindDiff: number | null;
+  /** Games the home-court team played in its previous round. null in Round 1. */
+  homeCourtPriorGames: number | null;
+  /** Games the opponent played in its previous round. null in Round 1. */
+  opponentPriorGames: number | null;
   /** Either method may be absent (null) for a given series — never fabricated. */
   predictions: {
     fullInsample: PlayoffSeriesPredictionMethod | null;

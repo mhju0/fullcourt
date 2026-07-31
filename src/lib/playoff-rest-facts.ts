@@ -120,3 +120,22 @@ export const PLAYOFF_ROUND_SPLIT = Object.freeze({
  * already argues is the right one here.
  */
 export const PLAYOFF_ROUNDS_TWO_PLUS_RECORD = Object.freeze({ win: 11, tie: 16, loss: 3 });
+
+/**
+ * How a series card names a team's previous round.
+ *
+ * Games played, not grind: "survived a 7" is a phrase a fan already owns, while "grind 3" is
+ * modelling vocabulary. The format matters for the wording as much as for the arithmetic — in
+ * a best-of-5, five games IS the full distance.
+ */
+export function priorRoundGamesLabel(
+  gamesPlayed: number | null,
+  isBestOf7: boolean
+): string | null {
+  if (gamesPlayed === null) return null;
+  const sweep = isBestOf7 ? 4 : 3;
+  const distance = isBestOf7 ? 7 : 5;
+  if (gamesPlayed <= sweep) return `swept in ${gamesPlayed}`;
+  if (gamesPlayed >= distance) return `survived a ${gamesPlayed}`;
+  return `closed in ${gamesPlayed}`;
+}

@@ -873,6 +873,7 @@ type PlayoffSeriesJoinRow = {
   winPctDiff: string | null;
   entryRestDiff: string | null;
   h2hDiff: string | null;
+  priorGrindDiff: string | null;
   fullInsampleProb: string | null;
   fullInsampleWinnerTeamId: number | null;
   fullInsampleWinnerAbbr: string | null;
@@ -906,7 +907,10 @@ function buildPredictionMethodResult(
   };
 }
 
-function mapRowToPlayoffSeriesWithPredictions(row: PlayoffSeriesJoinRow): PlayoffSeriesWithPredictions {
+function mapRowToPlayoffSeriesWithPredictions(
+  row: PlayoffSeriesJoinRow,
+  priorGames: Map<string, number>
+): PlayoffSeriesWithPredictions {
   const seriesWinnerTeam: PlayoffTeamRef | null =
     row.seriesWinnerTeamId !== null && row.seriesWinnerTeamAbbr !== null && row.seriesWinnerTeamName !== null
       ? { id: row.seriesWinnerTeamId, abbreviation: row.seriesWinnerTeamAbbr, name: row.seriesWinnerTeamName }
@@ -935,6 +939,9 @@ function mapRowToPlayoffSeriesWithPredictions(row: PlayoffSeriesJoinRow): Playof
     winPctDiff: row.winPctDiff !== null ? parseFloat(row.winPctDiff) : null,
     entryRestDiff: row.entryRestDiff !== null ? parseFloat(row.entryRestDiff) : null,
     h2hDiff: row.h2hDiff !== null ? parseFloat(row.h2hDiff) : null,
+    priorGrindDiff: row.priorGrindDiff !== null ? parseFloat(row.priorGrindDiff) : null,
+    homeCourtPriorGames: priorGames.get(`${row.round}:${row.homeCourtTeamId}`) ?? null,
+    opponentPriorGames: priorGames.get(`${row.round}:${row.opponentTeamId}`) ?? null,
     predictions: {
       fullInsample: buildPredictionMethodResult(
         row.fullInsampleProb,
@@ -954,6 +961,36 @@ function mapRowToPlayoffSeriesWithPredictions(row: PlayoffSeriesJoinRow): Playof
       ),
     },
   };
+}
+
+/**
+ * Games each team played in the round before, keyed by `${round}:${teamId}`, for one season.
+ *
+ * A separate small query rather than a lateral join: "the series in round N−1 that this team
+ * appeared in" is a lookup over the same season's rows, and the season's row count is 15, so
+ * resolving it in memory is both clearer and cheaper than expressing it in SQL.
+ */
+async function priorRoundGamesBySeason(season: string): Promise<Map<string, number>> {
+  const rows = await db
+    .select({
+      round: playoffSeries.round,
+      homeCourtTeamId: playoffSeries.homeCourtTeamId,
+      opponentTeamId: playoffSeries.opponentTeamId,
+      homeCourtWins: playoffSeries.homeCourtWins,
+      opponentWins: playoffSeries.opponentWins,
+    })
+    .from(playoffSeries)
+    .where(eq(playoffSeries.season, season));
+
+  const out = new Map<string, number>();
+  for (const r of rows) {
+    if (r.homeCourtWins === null || r.opponentWins === null) continue;
+    const played = r.homeCourtWins + r.opponentWins;
+    // Keyed by the round the value is consumed IN, i.e. one after the round it was played in.
+    out.set(`${r.round + 1}:${r.homeCourtTeamId}`, played);
+    out.set(`${r.round + 1}:${r.opponentTeamId}`, played);
+  }
+  return out;
 }
 
 /**
@@ -995,6 +1032,7 @@ export async function getPlayoffSeriesWithPredictions(
       winPctDiff: playoffSeries.winPctDiff,
       entryRestDiff: playoffSeries.entryRestDiff,
       h2hDiff: playoffSeries.h2hDiff,
+      priorGrindDiff: playoffSeries.priorGrindDiff,
       fullInsampleProb: fullInsample.predictedHomeCourtWinProb,
       fullInsampleWinnerTeamId: fullInsample.predictedWinnerTeamId,
       fullInsampleWinnerAbbr: fullInsamplePredictedTeam.abbreviation,
@@ -1023,7 +1061,8 @@ export async function getPlayoffSeriesWithPredictions(
     .where(eq(playoffSeries.season, season))
     .orderBy(asc(playoffSeries.round), asc(playoffSeries.conference), asc(playoffSeries.id));
 
-  return rows.map(mapRowToPlayoffSeriesWithPredictions);
+  const priorGames = await priorRoundGamesBySeason(season);
+  return rows.map((row) => mapRowToPlayoffSeriesWithPredictions(row, priorGames));
 }
 
 // ─── Shot Quality: Expected Shot Value (xeFG%) surface ──────────

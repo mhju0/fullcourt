@@ -31,6 +31,9 @@ function series(
     winPctDiff: 0.1,
     entryRestDiff: 0,
     h2hDiff: 1,
+    priorGrindDiff: 0,
+    homeCourtPriorGames: null,
+    opponentPriorGames: null,
     predictions: {
       fullInsample: {
         predictedHomeCourtWinProb: 0.7,
