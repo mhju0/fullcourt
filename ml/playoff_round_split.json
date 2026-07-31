@@ -36,6 +36,7 @@
     "baselineAccuracy": 74.4,
     "logLoss": 0.4939,
     "baselineLogLoss": 0.5696,
-    "brier": 0.1628
+    "brier": 0.1628,
+    "baselineBrier": 0.1907
   }
 }

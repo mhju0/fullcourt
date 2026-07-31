@@ -450,7 +450,7 @@ def round_split_summary(res: WalkForwardResult, baseline: WalkForwardResult) -> 
     all_mask = np.ones(len(res.pooled_y), dtype=bool)
 
     pooled_acc, pooled_ll, pooled_brier = res.pooled()
-    base_acc, base_ll, _ = baseline.pooled()
+    base_acc, base_ll, base_brier = baseline.pooled()
     return {
         "modelVersion": "logistic_grind_v2",
         "features": list(FEATURES),
@@ -465,6 +465,7 @@ def round_split_summary(res: WalkForwardResult, baseline: WalkForwardResult) -> 
             "logLoss": round(float(pooled_ll), 4),
             "baselineLogLoss": round(float(base_ll), 4),
             "brier": round(float(pooled_brier), 4),
+            "baselineBrier": round(float(base_brier), 4),
         },
     }
 

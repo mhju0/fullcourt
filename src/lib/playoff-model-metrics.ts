@@ -15,6 +15,11 @@
  * entry_rest_diff). The page no longer headlines them — see `playoff-rest-facts.ts`, which
  * holds the round split that is now the model's claim — but they remain the pooled figures
  * and the method page still quotes them.
+ *
+ * Every pooled figure below (calibration model/baseline, accuracy model/baseline, winTieLoss)
+ * is pinned in `src/lib/__tests__/playoff-rest-facts.test.ts` against the `pooled` /
+ * `pooledRecord` blocks of the committed `ml/playoff_round_split.json` — not against
+ * `ml/phase3_results.txt`, which is gitignored and would let these drift silently on a retrain.
  */
 
 /** The pooled walk-forward evaluation span these metrics were measured over. */
@@ -61,8 +66,8 @@ export const PLAYOFF_MODEL_CALIBRATION = Object.freeze([
  * measurement error, exactly as accurate.
  */
 export const PLAYOFF_MODEL_ACCURACY = Object.freeze({
-  model: 0.7533,
-  baseline: 0.7444,
+  model: 0.753,
+  baseline: 0.744,
   baselineName: "always predict the home-court team",
   winTieLoss: "11/13/6",
 });
