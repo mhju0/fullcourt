@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { useMemo, useState, type CSSProperties } from "react"
 import useSWR from "swr"
 import { ExploreGameDetailModal } from "@/components/explore-game-detail-modal"
 import { SeasonSelector } from "@/components/season-selector"
@@ -159,10 +159,29 @@ function swingColor(swing: number | null): string {
   return swing > 0 ? "var(--term-blue)" : "var(--term-red)"
 }
 
-/** A win-rate arm, or an em dash when the team never played on that side of the split. */
-function armText(wins: number, games: number, pct: number | null): string {
-  if (pct === null) return "—"
-  return `${wins}-${games - wins} (${pct.toFixed(0)}%)`
+/**
+ * The three cells for one arm of the split — wins, losses, win rate — or em dashes across
+ * all three when the team never played on that side. Wins and losses get their own columns
+ * rather than a packed "21-8" so neither number has to be inferred from its position.
+ */
+function ArmCells({ wins, games, pct }: { wins: number; games: number; pct: number | null }) {
+  const cell: CSSProperties = { ...termTdStyle, textAlign: "right" }
+  if (pct === null) {
+    return (
+      <>
+        <td style={cell}>—</td>
+        <td style={cell}>—</td>
+        <td style={cell}>—</td>
+      </>
+    )
+  }
+  return (
+    <>
+      <td className="tabular-nums" style={cell}>{wins}</td>
+      <td className="tabular-nums" style={cell}>{games - wins}</td>
+      <td className="tabular-nums" style={cell}>{pct.toFixed(0)}%</td>
+    </>
+  )
 }
 
 /**
@@ -197,13 +216,22 @@ function EdgeConversion({ teams }: { teams: SeasonReportTeamLabelled[] }) {
         {edgeConversionSentence(teams)}
       </p>
       <div className="overflow-x-auto">
-        <table className="mono w-full" style={{ borderCollapse: "collapse", minWidth: 520 }}>
+        <table className="mono w-full" style={{ borderCollapse: "collapse", minWidth: 560, maxWidth: 760 }}>
           <thead>
             <tr>
-              <th style={termThStyle}>TEAM</th>
-              <th style={{ ...termThStyle, textAlign: "right" }}>RESTED</th>
-              <th style={{ ...termThStyle, textAlign: "right" }}>TIRED</th>
-              <th style={{ ...termThStyle, textAlign: "right" }}>SWING</th>
+              <th rowSpan={2} style={termThStyle}>TEAM</th>
+              <th colSpan={3} style={{ ...termThStyle, textAlign: "center", borderBottom: "none" }}>
+                RESTED
+              </th>
+              <th colSpan={3} style={{ ...termThStyle, textAlign: "center", borderBottom: "none" }}>
+                TIRED
+              </th>
+              <th rowSpan={2} style={{ ...termThStyle, textAlign: "right" }}>SWING</th>
+            </tr>
+            <tr>
+              {["WINS", "LOSSES", "WIN%", "WINS", "LOSSES", "WIN%"].map((label, i) => (
+                <th key={i} style={{ ...termThStyle, textAlign: "right" }}>{label}</th>
+              ))}
             </tr>
           </thead>
           <tbody>
@@ -212,12 +240,8 @@ function EdgeConversion({ teams }: { teams: SeasonReportTeamLabelled[] }) {
               return (
                 <tr key={t.teamId} data-testid="edge-conversion-row" style={{ opacity: thinRow ? 0.45 : 1 }}>
                   <td style={termTdStyle}>{t.abbreviation}</td>
-                  <td className="tabular-nums" style={{ ...termTdStyle, textAlign: "right" }}>
-                    {armText(t.restedWins, t.restedGames, t.restedWinPct)}
-                  </td>
-                  <td className="tabular-nums" style={{ ...termTdStyle, textAlign: "right" }}>
-                    {armText(t.tiredWins, t.tiredGames, t.tiredWinPct)}
-                  </td>
+                  <ArmCells wins={t.restedWins} games={t.restedGames} pct={t.restedWinPct} />
+                  <ArmCells wins={t.tiredWins} games={t.tiredGames} pct={t.tiredWinPct} />
                   <td
                     className="tabular-nums"
                     style={{ ...termTdStyle, textAlign: "right", color: swingColor(t.swing), fontWeight: 700 }}

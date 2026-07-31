@@ -46,6 +46,9 @@ export const MONO_FONT_STACK =
   "var(--font-plex-mono), ui-monospace, SFMono-Regular, Menlo, monospace"
 
 export const termThStyle: CSSProperties = {
+  // `th` defaults to centered while `td` defaults to left, so a header sharing this style
+  // with an unstyled cell drifts out of line with the column beneath it. Left is the match.
+  textAlign: "left",
   fontFamily: MONO_FONT_STACK,
   fontSize: 11,
   letterSpacing: "0.08em",
