@@ -23,7 +23,7 @@ const BLURB: Record<string, string> = {
   "/behind-the-data/schedule-edge":
     "How a season's schedule is scored for and against a team, and why the count is games rather than days.",
   "/behind-the-data/playoff-predictions":
-    "The series model's features, why its edge is calibration rather than accuracy, and what it is not descended from.",
+    "The grind tax and whether it is just the better team, the series model's features, and why its edge is calibration rather than accuracy.",
   "/behind-the-data/player-shooting":
     "No rest against three days off, and how much of any player's split is noise.",
   "/behind-the-data/shot-value":

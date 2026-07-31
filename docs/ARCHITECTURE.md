@@ -327,7 +327,7 @@ nba_api PlayIn    → scripts/fetch_play_in.py   → games (005 rows, game_type=
                                                        │
                               GET /api/playoffs  →  getPlayoffSeriesWithPredictions()
                                                        ▼
-                         /playoffs page  →  PlayoffRestArgument (the finding, stated first)
+                         /playoffs page  →  PlayoffRestArgument (the two headline numbers)
                                           +  PlayoffsContent  →  bracket of expandable SeriesCards
                                              (per-side grind line, per-series feature grid)
 ```

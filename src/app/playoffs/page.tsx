@@ -14,11 +14,11 @@ export default function PlayoffsPage() {
       <PageHeader
         eyebrow="PLAYOFF REST"
         title="The round before decides the round after"
-        description="How a long series taxes the team that survived it, why the effect survives the obvious objection, and what it costs the model's picks in the bracket below."
+        description="How a long series taxes the team that survived it, what that does to the round after, and what it costs the model's picks in the bracket below."
       />
       <MethodLink surfaceHref="/playoffs" />
 
-      {/* Argument first, bracket second. These are siblings on purpose: showing the bracket
+      {/* Finding first, bracket second. These are siblings on purpose: showing the bracket
           first is a swap of these two lines, not a rewrite of either. */}
       <PlayoffRestArgument />
       <PlayoffsContentLazy />

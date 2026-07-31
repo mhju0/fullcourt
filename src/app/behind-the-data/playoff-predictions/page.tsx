@@ -13,6 +13,9 @@ import {
   PLAYOFF_MODEL_EVAL,
 } from "@/lib/playoff-model-metrics";
 import {
+  PLAYOFF_BEST_OF_FIVE,
+  PLAYOFF_ENTRY_REST_BUCKETS,
+  PLAYOFF_GRIND_EXOGENOUS,
   PLAYOFF_MODEL_COEFFICIENTS,
   PLAYOFF_ROUND_SPLIT,
   PLAYOFF_ROUNDS_TWO_PLUS_RECORD,
@@ -147,6 +150,127 @@ export default function PlayoffPredictionsMethodPage() {
           2026-07-31, when <strong>entry_rest_diff</strong> (raw days of rest) was swapped for{" "}
           <strong>prior_grind_diff</strong> above. The <strong>v1</strong> prediction rows are
           retained rather than overwritten, so older predictions stay auditable.
+        </Note>
+      </Section>
+
+      <Section label="&ldquo;ISN&rsquo;T THAT JUST THE BETTER TEAM?&rdquo;" descriptor="THE CONFOUND TEST">
+        <Prose>
+          The Playoff Rest page shows teams winning far more often when their opponent came out
+          of a long previous round. Fair objection: you earn a short series by being good, so
+          maybe the fresh team just wins because it was better all along. The reason that does
+          not cover it is that{" "}
+          <strong>how long your opponent&rsquo;s last series went is not up to you</strong> — it
+          was decided by two other teams. So hold your own last round fixed at a quick close, and
+          let only their side vary.
+        </Prose>
+        <div className="overflow-x-auto">
+          <table className="mono w-full" style={{ fontSize: 12, borderCollapse: "collapse" }}>
+            <thead>
+              <tr>
+                <th style={termThStyle}>THEIR LAST ROUND</th>
+                <th style={termThStyle}>SERIES</th>
+                <th style={termThStyle}>
+                  YOU WON THE SERIES
+                  <span style={termThUnitStyle}>%</span>
+                </th>
+                <th style={termThStyle}>
+                  YOUR RECORD EDGE
+                  <span style={termThUnitStyle}>MEAN WIN% DIFF</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style={{ ...termTdStyle, fontWeight: 700, whiteSpace: "nowrap" }}>They closed it early</td>
+                <td style={termTdStyle} className="tabular-nums">{PLAYOFF_GRIND_EXOGENOUS.oppClosedEarly.n}</td>
+                <td style={termTdStyle} className="tabular-nums">{PLAYOFF_GRIND_EXOGENOUS.oppClosedEarly.winPct.toFixed(1)}</td>
+                <td style={termTdStyle} className="tabular-nums">{PLAYOFF_GRIND_EXOGENOUS.oppClosedEarly.meanWinPctDiff.toFixed(3)}</td>
+              </tr>
+              <tr style={{ borderTop: "1px solid var(--term-border)" }}>
+                <td style={{ ...termTdStyle, fontWeight: 700, whiteSpace: "nowrap" }}>They went the distance</td>
+                <td style={termTdStyle} className="tabular-nums">{PLAYOFF_GRIND_EXOGENOUS.oppWentLong.n}</td>
+                <td style={{ ...termTdStyle, color: "var(--term-blue)", fontWeight: 700 }} className="tabular-nums">
+                  {PLAYOFF_GRIND_EXOGENOUS.oppWentLong.winPct.toFixed(1)}
+                </td>
+                <td style={termTdStyle} className="tabular-nums">{PLAYOFF_GRIND_EXOGENOUS.oppWentLong.meanWinPctDiff.toFixed(3)}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <Prose>
+          {(
+            PLAYOFF_GRIND_EXOGENOUS.oppWentLong.winPct -
+            PLAYOFF_GRIND_EXOGENOUS.oppClosedEarly.winPct
+          ).toFixed(1)}{" "}
+          points, from something you did not control. But read the last column honestly: the
+          teams whose opponents went long were also slightly better on record, so part of that
+          gap is quality rather than exhaustion.
+        </Prose>
+        <Prose>
+          So widen back out to every second-round-or-later series — no longer holding your own
+          last round fixed — and keep only the evenly-matched ones, where neither side has a real
+          record advantage to hide behind:{" "}
+          <strong>
+            {PLAYOFF_GRIND_EXOGENOUS.closeMatchupOppClosedEarly.winPct.toFixed(1)}% becomes{" "}
+            {PLAYOFF_GRIND_EXOGENOUS.closeMatchupOppWentLong.winPct.toFixed(1)}%
+          </strong>{" "}
+          ({PLAYOFF_GRIND_EXOGENOUS.closeMatchupOppClosedEarly.n} series against{" "}
+          {PLAYOFF_GRIND_EXOGENOUS.closeMatchupOppWentLong.n}), a gap of{" "}
+          {(
+            PLAYOFF_GRIND_EXOGENOUS.closeMatchupOppWentLong.winPct -
+            PLAYOFF_GRIND_EXOGENOUS.closeMatchupOppClosedEarly.winPct
+          ).toFixed(1)}{" "}
+          points. It barely shrinks.
+        </Prose>
+        <Prose>
+          And running it the other way — when you are the one who went the distance — moves it{" "}
+          {Math.abs(PLAYOFF_GRIND_EXOGENOUS.mirrorDeltaPts).toFixed(1)} points the wrong way,
+          which is the signature of a differential rather than of long series being bad in the
+          absolute.
+        </Prose>
+        <Prose>
+          The same thing counted a second way, by the layoff into Game 1 rather than by the
+          previous round&rsquo;s length — rounds 2+:
+        </Prose>
+        <div className="overflow-x-auto">
+          <table className="mono w-full" style={{ fontSize: 12, borderCollapse: "collapse" }}>
+            <thead>
+              <tr>
+                <th style={termThStyle}>REST INTO GAME 1</th>
+                <th style={termThStyle}>SERIES</th>
+                <th style={termThStyle}>
+                  WON THE SERIES
+                  <span style={termThUnitStyle}>%</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {PLAYOFF_ENTRY_REST_BUCKETS.map((b, i) => (
+                <tr key={b.label} style={i > 0 ? { borderTop: "1px solid var(--term-border)" } : undefined}>
+                  <td style={{ ...termTdStyle, fontWeight: 700, whiteSpace: "nowrap" }}>{b.label}</td>
+                  <td style={termTdStyle} className="tabular-nums">{b.n}</td>
+                  <td style={termTdStyle} className="tabular-nums">{b.winPct.toFixed(1)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <Note>
+          <strong>What we cannot tell you:</strong>{" "}
+          whether it is really fatigue. A team that
+          needed seven games to get past someone has also just shown it is worse than its record
+          said — and this data cannot separate &ldquo;worn down&rdquo; from &ldquo;not as good as
+          we thought.&rdquo; Game-by-game the edge does not fade the way tiredness should, which
+          cuts against the fatigue reading. The effect is solid; the reason for it is arguable,
+          and we would rather say so.
+          <br />
+          <br />
+          &ldquo;Closed it early&rdquo; means a team won its previous round within one game of a
+          sweep; &ldquo;went the distance&rdquo; means it needed the last game or the one before
+          it. Grind is counted as games beyond a sweep rather than as raw games played because{" "}
+          {PLAYOFF_BEST_OF_FIVE.round1BestOfFive} of {PLAYOFF_BEST_OF_FIVE.round1Total} first
+          rounds in this record were best-of-five, where five games means a team went the full
+          distance rather than closing early.
         </Note>
       </Section>
 

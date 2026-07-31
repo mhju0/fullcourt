@@ -118,6 +118,14 @@ describe("the claims the page makes are actually true of the data", () => {
     }
   });
 
+  it("the edge reverses when you went the distance too", () => {
+    // The grind-gap card states this reversal in words. It is what makes the finding a
+    // differential rather than "long series are bad in the absolute".
+    expect(PLAYOFF_GRIND_MATRIX.ownHighOppHigh.winPct).toBeLessThan(
+      PLAYOFF_GRIND_MATRIX.ownHighOppLow.winPct
+    );
+  });
+
   it("the effect survives the strength control", () => {
     expect(PLAYOFF_GRIND_EXOGENOUS.closeMatchupOppWentLong.winPct).toBeGreaterThan(
       PLAYOFF_GRIND_EXOGENOUS.closeMatchupOppClosedEarly.winPct
