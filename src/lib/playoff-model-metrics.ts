@@ -10,6 +10,11 @@
  * metric on which this model has no measurable edge (see {@link PLAYOFF_MODEL_ACCURACY}). The
  * page now leads with calibration, so the numbers behind that claim need one home rather than
  * being retyped into a component, a method page and a README.
+ *
+ * As of 2026-07-31 these describe the `logistic_grind_v2` model (prior_grind_diff replaced
+ * entry_rest_diff). The page no longer headlines them — see `playoff-rest-facts.ts`, which
+ * holds the round split that is now the model's claim — but they remain the pooled figures
+ * and the method page still quotes them.
  */
 
 /** The pooled walk-forward evaluation span these metrics were measured over. */
@@ -31,7 +36,7 @@ export const PLAYOFF_MODEL_CALIBRATION = Object.freeze([
   Object.freeze({
     key: "logLoss",
     label: "LOG LOSS",
-    model: 0.4959,
+    model: 0.4939,
     baseline: 0.5696,
     /** Relative reduction vs the base rate, rounded for display. */
     improvementPct: 13,
@@ -39,9 +44,9 @@ export const PLAYOFF_MODEL_CALIBRATION = Object.freeze([
   Object.freeze({
     key: "brier",
     label: "BRIER SCORE",
-    model: 0.1638,
+    model: 0.1628,
     baseline: 0.1907,
-    improvementPct: 14,
+    improvementPct: 15,
   }),
 ]);
 
@@ -50,12 +55,13 @@ export const PLAYOFF_MODEL_CALIBRATION = Object.freeze([
  * be the dishonest half of the same result.
  *
  * The 95% CI on the model's accuracy contains the baseline, and across the 30 folds the model
- * beat / tied / lost to the baseline 11 / 11 / 8 times. "Predict the home-court team" is,
- * within measurement error, exactly as accurate.
+ * beat / tied / lost to the baseline 11 / 13 / 6 times (`ml/phase3_results.txt`, the
+ * `logistic:unreg` row's per-season W/T/L vs the majority baseline). "Predict the home-court
+ * team" is, within measurement error, exactly as accurate.
  */
 export const PLAYOFF_MODEL_ACCURACY = Object.freeze({
-  model: 0.7467,
+  model: 0.7533,
   baseline: 0.7444,
   baselineName: "always predict the home-court team",
-  winTieLoss: "11/11/8",
+  winTieLoss: "11/13/6",
 });
