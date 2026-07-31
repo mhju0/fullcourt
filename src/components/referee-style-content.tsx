@@ -5,10 +5,8 @@ import {
   FOUL_COLUMNS,
   isNotable,
   publishable,
-  ranksFor,
   relativePct,
   sortRows,
-  type FoulColumnKey,
   type RefereeFoulStyle,
   type RefereeStyleRow,
 } from "@/lib/referee-foul-style"
@@ -47,22 +45,10 @@ export function RefereeStyleContent({ data }: { data: RefereeFoulStyle }) {
   const [sort, setSort] = useState<{ key: SortKey; dir: 1 | -1 }>({ key: "games", dir: -1 })
   const [chiefsOnly, setChiefsOnly] = useState(false)
 
-  // Ranks are computed over the whole published field, never the filtered view — "#1 of 74"
-  // has to mean the same thing whether or not the crew-chief filter is on.
-  const field = useMemo(() => publishable(data.officials), [data.officials])
-  const ranks = useMemo(
-    () =>
-      Object.fromEntries(FOUL_COLUMNS.map((c) => [c.key, ranksFor(field, c.key)])) as Record<
-        FoulColumnKey,
-        Map<string, number>
-      >,
-    [field]
-  )
-
   const rows = useMemo(() => {
-    const base = field.filter((r) => (chiefsOnly ? r.chiefGames > 0 : true))
+    const base = publishable(data.officials).filter((r) => (chiefsOnly ? r.chiefGames > 0 : true))
     return sortRows(base, sort.key, sort.dir)
-  }, [field, sort, chiefsOnly])
+  }, [data.officials, sort, chiefsOnly])
 
   const chiefCount = useMemo(
     () => publishable(data.officials).filter((r) => r.chiefGames > 0).length,
@@ -180,12 +166,13 @@ export function RefereeStyleContent({ data }: { data: RefereeFoulStyle }) {
                   const z = row[`${c.key}Z` as keyof RefereeStyleRow] as number
                   const rel = relativePct(v, data.leagueShares[c.key])
                   return (
-                    // Rank lives in the tooltip, not beside the number. Printed inline it put two
-                    // competing figures in every cell and the table stopped being scannable —
-                    // which is the whole job of a table someone browses rather than studies.
+                    // No rank here, in the cell or in a tooltip. Printed inline it put two
+                    // competing figures in every cell; hidden behind a native `title` it took a
+                    // second of motionless hover to appear and nothing signalled it existed, so
+                    // it was a feature only its author could find. Sorting a column answers the
+                    // same question in one click. Emphasis alone carries the scan.
                     <td
                       key={c.key}
-                      title={`${row.name} — ${c.label.toLowerCase()} fouls: #${ranks[c.key].get(row.name)} of ${field.length}`}
                       className="tabular-nums"
                       style={{
                         ...termTdStyle,

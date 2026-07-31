@@ -95,17 +95,6 @@ export function relativePct(deviation: number, leagueShare: number): number {
   return Math.round((100 * deviation) / leagueShare);
 }
 
-/** Rank within a column, 1 = calls it most. Ties share the lower rank, as in a standings table. */
-export function ranksFor(rows: RefereeStyleRow[], key: FoulColumnKey): Map<string, number> {
-  const ordered = [...rows].sort((a, b) => b[key] - a[key] || a.name.localeCompare(b.name));
-  const out = new Map<string, number>();
-  ordered.forEach((r, i) => {
-    const prev = ordered[i - 1];
-    out.set(r.name, prev && prev[key] === r[key] ? out.get(prev.name)! : i + 1);
-  });
-  return out;
-}
-
 /**
  * Sort by a column, descending by magnitude for deviations and plainly descending for counts.
  * Ties break on name so the order is total — two officials with identical rounded deviations

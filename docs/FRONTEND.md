@@ -304,11 +304,13 @@ league's own seasonal mix, per foul type, each with a z-score at that official's
 `referee-style-content.tsx` renders it as a sortable table; `src/lib/referee-foul-style.ts` owns
 the types, the |z| ≥ 2 emphasis rule and the 200-game publication bar.
 
-**Two things were built and removed, both for the same reason — this is a page to browse, not
-to study.** A leaderboard strip naming the most and fewest of each type said only what sorting
-a column already says. And the per-column rank, printed inline as `+23% #1`, put two competing
-figures in every cell; rank now lives in the cell's tooltip, where it costs nothing to ignore.
-Emphasis alone — blue above the league, red below, muted inside noise — carries the scan.
+**Three things were built and removed, all for the same reason — this is a page to browse, not
+to study.** A leaderboard strip naming the most and fewest of each type said only what sorting a
+column already says. Per-column rank printed inline as `+23% #1` put two competing figures in
+every cell. Moving that rank into a native `title` tooltip was worse, not better: it takes about
+a second of motionless hover to appear, nothing signals that it exists, and it does nothing on
+touch — present in the DOM and absent in practice. Emphasis alone — blue above the league, red
+below, muted inside noise — carries the scan, and a sort answers the ranking question in a click.
 
 **The stored unit is not the displayed one.** The JSON holds percentage-point deviations, but
 `relativePct` scales each against its own league share before render, so a cell reads `+23% #1`

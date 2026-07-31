@@ -6,7 +6,6 @@ import {
   NOTABLE_Z,
   isNotable,
   publishable,
-  ranksFor,
   relativePct,
   sortRows,
   type RefereeFoulStyle,
@@ -110,31 +109,7 @@ describe("referee foul style — helpers", () => {
     expect(relativePct(0, 6.1)).toBe(0);
   });
 
-  it("ranks 1 = calls it most, and gives tied officials the same rank", () => {
-    const rows = [
-      { name: "High", offensive: 0.9 },
-      { name: "TieA", offensive: 0.4 },
-      { name: "TieB", offensive: 0.4 },
-      { name: "Low", offensive: -0.2 },
-    ] as never;
-    const r = ranksFor(rows, "offensive");
-    expect(r.get("High")).toBe(1);
-    // Both tied officials read 2nd; the next one down still lands at 4, as in a standings table.
-    expect(r.get("TieA")).toBe(2);
-    expect(r.get("TieB")).toBe(2);
-    expect(r.get("Low")).toBe(4);
-  });
 
-  it("ranks every published official exactly once per column", () => {
-    // The table prints "#n" beside every cell, so a missing name would render "#undefined".
-    const rows = publishable(data.officials);
-    for (const col of FOUL_COLUMNS) {
-      const r = ranksFor(rows, col.key);
-      expect(r.size, col.key).toBe(rows.length);
-      expect(Math.min(...r.values()), col.key).toBe(1);
-      expect(Math.max(...r.values()), col.key).toBeLessThanOrEqual(rows.length);
-    }
-  });
 
   it("breaks sort ties on name so the order is total", () => {
     const rows = [
