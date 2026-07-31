@@ -1,0 +1,36 @@
+{
+  "modelVersion": "logistic_grind_v2",
+  "features": [
+    "seed_diff",
+    "win_pct_diff",
+    "prior_grind_diff",
+    "h2h_diff"
+  ],
+  "roundsTwoPlus": {
+    "n": 210,
+    "model": 73.3,
+    "baseline": 69.5,
+    "logLoss": 0.5658,
+    "baselineLogLoss": 0.6148
+  },
+  "roundOne": {
+    "n": 240,
+    "model": 77.1,
+    "baseline": 78.8,
+    "logLoss": 0.4311,
+    "baselineLogLoss": 0.5173
+  },
+  "roundsTwoPlusRecord": {
+    "win": 11,
+    "tie": 16,
+    "loss": 3
+  },
+  "pooled": {
+    "n": 450,
+    "accuracy": 75.3,
+    "baselineAccuracy": 74.4,
+    "logLoss": 0.4939,
+    "baselineLogLoss": 0.5696,
+    "brier": 0.1628
+  }
+}
