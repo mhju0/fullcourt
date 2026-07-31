@@ -185,9 +185,11 @@ row counts).
   - `rounds: PlayoffRoundGroup[]` — series grouped by `round` (ascending), each with a
     `roundLabel` (`"First Round"` / `"Conference Semifinals"` / `"Conference Finals"` /
     `"Finals"`) and the series list (`PlayoffSeriesWithPredictions[]`: teams, `isBestOf7`,
-    win counts, the four raw features `seedDiff`/`winPctDiff`/`entryRestDiff`/`h2hDiff`, and
-    a `predictions` object with `fullInsample` / `walkForwardOos` — either may be `null` for
-    a given series).
+    win counts, the four raw features `seedDiff`/`winPctDiff`/`entryRestDiff`/`h2hDiff`, plus
+    `priorGrindDiff` (the model's current feature — `entryRestDiff` is retained but no longer
+    fed to it) and `homeCourtPriorGames`/`opponentPriorGames` (each side's prior-round game
+    count, `null` in Round 1), and a `predictions` object with `fullInsample` /
+    `walkForwardOos` — either may be `null` for a given series).
   - `summary: { fullInsample, walkForwardOos }` — each a `PlayoffMethodSummary`
     (`knownWinnerGames`, `predictedCorrect`, `accuracy` 0–100) computed only over series that
     have both a known winner and a non-null prediction for that method. **Per-season and

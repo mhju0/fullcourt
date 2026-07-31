@@ -17,9 +17,9 @@ const PAGES = [
   { file: "games", path: "/", height: 1390 },
   { file: "analysis", path: "/analysis", height: 1160 },
   { file: "schedule", path: "/schedule", height: 1320 },
-  // Raised from 1300 on 2026-07-30: the calibration-led header is one card taller than the
-  // accuracy tiles it replaced, which pushed 1300 to a cut mid-way through the fourth series.
-  { file: "playoffs", path: "/playoffs", height: 1670 },
+  // Raised from 1670 on 2026-07-31: the page was rebuilt argument-first (Sections A-D ahead
+  // of the bracket), so this now stops after Section C's confound test instead of mid-bracket.
+  { file: "playoffs", path: "/playoffs", height: 1965 },
   { file: "shooting", path: "/shooting", height: 1400 },
   { file: "shot-quality", path: "/shot-quality", height: 1430 },
 ];

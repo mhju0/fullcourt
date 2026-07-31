@@ -29,7 +29,7 @@ test.describe("Behind the Data", () => {
     for (const label of [
       "REST ADVANTAGE",
       "SCHEDULE EDGE",
-      "PLAYOFF PREDICTIONS",
+      "PLAYOFF REST",
       "PLAYER SHOOTING",
       "SHOT VALUE",
       "DATA & LIMITS",

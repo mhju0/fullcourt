@@ -253,7 +253,7 @@ the row change → connected clients update in place.
      markup; the seven `*-lazy` modules each restated `dynamic(..., { ssr: false })` around the
      one part that differs.
 - **Nav renamed to plain-noun tabs (2026-07-27):** `GAMES`, `SCHEDULE EDGE`,
-  `MODEL RESULTS`, `PLAYOFF PREDICTIONS`, `SHOT VALUE` — joined by `PLAYER SHOOTING` when
+  `MODEL RESULTS`, `PLAYOFF REST`, `SHOT VALUE` — joined by `PLAYER SHOOTING` when
   `/shooting` shipped (2026-07-28). That one is qualified rather than bare `SHOOTING` because
   on Basketball-Reference and NBA.com that word already means shot *location*, which is
   `SHOT VALUE`. It shipped as `REST & SHOOTING`, on the narrower reasoning that the two would

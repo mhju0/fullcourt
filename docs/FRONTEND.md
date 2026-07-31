@@ -111,26 +111,33 @@ permanent redirect (`next.config.ts`). Only the route and the tab went — `/api
 the page and `/` render the same object (games carrying a rest edge) under different filters,
 and three of the five labels would otherwise have ended in "EDGES".
 
-### `/playoffs` — Playoff Predictor (`src/app/playoffs/page.tsx`)
+### `/playoffs` — Playoff Predictor, tab renamed PLAYOFF REST (`src/app/playoffs/page.tsx`)
 
-Server wrapper: header (`PLAYOFF PREDICTOR` eyebrow in red + `<h1>Series Predictions</h1>` +
-a descriptor naming it a separate, record-driven series model whose value is calibration rather
-than the pick) then `<PlayoffsContentLazy />`. The lazy client component
-(`playoffs-content.tsx`) owns a season `<select>`, a `ModelResultHeader`, a `SeasonScoreboard`,
-and per-round `SeriesCard` lists — each an expandable row (home-court team, opponent, series
-score, `PICK`/`HINDSIGHT` win-probability inline, a correctness badge) that reveals a
-`SeriesFeatureGrid` (seed diff / win% diff / entry rest diff / h2h diff) on click.
+Server wrapper: `<PageHeader>` (`PLAYOFF REST` eyebrow + `<h1>The round before decides the round
+after</h1>` + a descriptor naming the argument), then two siblings — `<PlayoffRestArgument />`
+(Sections A–D, `playoff-rest-sections.tsx`) followed by `<PlayoffsContentLazy />` (the bracket).
+Siblings rather than one wrapping the other, so putting the bracket first is a swap of two lines
+in `page.tsx`, not a rewrite of either.
 
-**Repositioned 2026-07-30.** The page used to headline two accuracy tiles — walk-forward OOS
-beside full-in-sample — and describe itself as sharing the regular-season model's rest lineage.
-Both were wrong, in the same direction: accuracy is the one metric this model cannot beat a
-one-line baseline on, and the "lineage" is one raw-days feature (third of four by coefficient)
-that never imports `fatigue.ts`. The header now leads with calibration (log loss / Brier vs the
-base rate, sourced from `src/lib/playoff-model-metrics.ts`) and states the accuracy tie in the
-same card. The hindsight fit is no longer shown beside the forecast — `SeasonScoreboard` renders
-it **only** when `summary.walkForwardOos.knownWinnerGames === 0`, i.e. the earliest seasons that
-have no honest forecast at all. See the ADR-style note in `playoff-model-metrics.ts` and the
-reader-facing version at `/behind-the-data/playoff-predictions`.
+Sections A–D are a server component with no data fetching — every figure is a published
+constant from `src/lib/playoff-rest-facts.ts`, so the argument renders even if the DB is down:
+**A** `THE POSTSEASON HAS NO REST` (equal-rest game counts), **B** `THE GRIND TAX` (the
+grind-matrix table), **C** the "isn't that just the better team?" confound test with its own
+published caveat, **D** `WHAT THE MODEL DOES WITH IT` (the round-split accuracy table and the
+per-season paired record).
+
+The bracket (`playoffs-content.tsx`) owns a season `<select>`, a `ModelResultHeader`, a
+`SeasonScoreboard`, and per-round `SeriesCard` lists — each an expandable row (home-court team,
+opponent, series score, a `GrindLine` naming how both sides arrived, `PICK`/`HINDSIGHT`
+win-probability inline, a correctness badge) that reveals a `SeriesFeatureGrid` (seed diff /
+win% diff / prior grind diff / entry rest diff / h2h diff) on click.
+
+**Rebuilt argument-first, 2026-07-31.** The page used to open on the bracket and headline two
+calibration tiles (log loss / Brier vs the base rate, sourced from
+`src/lib/playoff-model-metrics.ts`). It now leads with Sections A–D so the claim reads without
+any DB round trip, and the model — retrained as `logistic_grind_v2`, swapping `entry_rest_diff`
+for `prior_grind_diff` — is supporting evidence rather than the headline. See the reader-facing
+version at `/behind-the-data/playoff-predictions`.
 
 ### `/schedule` — Schedule Disparity (`src/app/schedule/page.tsx`)
 
@@ -350,7 +357,7 @@ alone. It is style, not bias, and the copy says so.
    navigation landmarks in one row**. Left, `aria-label="Main navigation"`: the six direct tabs
    from `DIRECT_NAV_ITEMS` (`src/lib/primary-navigation.ts`) — `GAMES → /`,
    `SEASON REPORT → /season`, `SCHEDULE EDGE → /schedule`, `MODEL RESULTS → /analysis`,
-   `PLAYOFF PREDICTIONS → /playoffs`, `PLAYER SHOOTING → /shooting` — followed by the `OTHER`
+   `PLAYOFF REST → /playoffs`, `PLAYER SHOOTING → /shooting` — followed by the `OTHER`
    menu holding `SHOT VALUE → /shot-quality` and `REFEREE EFFECT → /referees`. Right,
    `ml-auto` and `aria-label="Reference"`: `ABOUT → /about` and
    `BEHIND THE DATA → /behind-the-data`. Two landmarks rather than one so the reference links
