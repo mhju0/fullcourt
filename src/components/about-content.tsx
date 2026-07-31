@@ -107,7 +107,7 @@ function SurfaceGlyph({ href }: { href: string }) {
     );
 
   if (href === "/playoffs")
-    return ( // Playoff Predictions — a bracket converging
+    return ( // Playoff Rest — a bracket converging
       <svg {...common} fill="none" stroke={line} strokeWidth="1.6">
         <path d="M6 10h26v18h26M6 46h26V28" />
         <path d="M114 10H88v18H62M114 46H88V28" />
@@ -140,7 +140,7 @@ const SURFACES = [
   { name: "Season Report", href: "/season", copy: "One season read end to end: how the rest call scored, and what the schedule cost each team." },
   { name: "Schedule Edge", href: "/schedule", copy: "Which teams a season's schedule favoured, counted in games with a real rest edge." },
   { name: "Model Results", href: "/analysis", copy: "The backtest that scores the model against history: thresholds, season trends, and every individual game." },
-  { name: "Playoff Predictions", href: "/playoffs", copy: "How likely each playoff series is to go the home team's way. Calibrated better than it picks." },
+  { name: "Playoff Rest", href: "/playoffs", copy: "What surviving a long series costs the round after, and the bracket picks that price it in." },
   { name: "Player Shooting", href: "/shooting", copy: "Every player's shooting on no rest against three days off. One season of it is noise." },
 ];
 
@@ -406,9 +406,10 @@ export function AboutContent({ stats }: { stats: AboutStats | null }) {
               </div>
 
               <div>
-                {/* Two lines reserved, not nowrap: "Playoff Predictions" cannot fit one line at
-                    a sixth of the row and was being clipped by the card's overflow. Reserving
-                    the pair keeps every card's copy starting on the same line either way. */}
+                {/* Two lines reserved, not nowrap: the longest labels ("Player Shooting",
+                    "Season Report") cannot fit one line at a sixth of the row and were being
+                    clipped by the card's overflow. Reserving the pair keeps every card's copy
+                    starting on the same line either way. */}
                 <span className="font-heading block text-xl font-bold leading-tight lg:h-[3.5rem]">{s.name}</span>
                 <span className="mt-3 block max-w-[30rem] text-sm" style={{ color: DIM, lineHeight: 1.6 }}>
                   {s.copy}

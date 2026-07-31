@@ -96,14 +96,20 @@ with no time words — the pattern every mainstream NBA nav uses — while the p
   decades, so there is deliberately no all-time ranking.
 - **Model Results** (`/analysis`) — the historical backtest that scores the rest model: win rate by
   rest-advantage threshold and by season, home/away splits, and a filterable game explorer.
-- **Playoff Predictions** (`/playoffs`) — the probability each playoff series goes the home-court
-  team's way, at series grain. Honest framing: this is **not** a playoff fatigue model — it is a
-  separate four-feature logistic driven mainly by regular-season record (`win_pct_diff` outweighs
-  the one rest-shaped input roughly three to one), and its measured edge is **calibration, not
-  accuracy**. Over 30 seasons predicted in advance it improves log loss and Brier score ~13-14%
-  against the base rate while calling 74.7% of series right versus 74.4% for "always pick the
-  home-court team" — a tie inside the noise. The page says so on its face, and tells you to read
-  the probabilities rather than the picks.
+- **Playoff Rest** (`/playoffs`) — what surviving a long series costs the round after, argued
+  before the bracket rather than under it. Every playoff game past Game 1 is played on equal rest
+  by construction, so the only rest signal left is how far each team's previous round ran, read
+  format-aware (Round 1 was best-of-five through 2001-02). The home-court team's series win rate
+  in rounds 2+ runs 68.9% when both sides closed early against 85.4% when only the opponent went
+  the distance, and the gap survives narrowing to evenly-matched series. Below the argument sits
+  the bracket: a four-feature logistic at series grain, still driven mainly by regular-season
+  record (`win_pct_diff` outweighs the one rest-shaped input, `prior_grind_diff`, about two and a
+  half to one). Honest framing: the model's gain lives where a prior round exists to have been
+  ground down by — 73.3% against a 69.5% always-pick-the-home-court baseline over 210 rounds-2+
+  series, per-season 11-16-3 — and it *loses* in Round 1, 77.1% against 78.8%, where the feature
+  is zero for every row. Pooled over 30 seasons predicted in advance that nets out to 75.3% vs
+  74.4%, a tie inside the noise; the durable win is calibration, log loss 0.5696 → 0.4939 (~13%)
+  and Brier 0.1907 → 0.1628 (~15%). The page says all of this on its face.
 - **Shot Value** (`/shot-quality`, under **OTHER**) — a half-court hexbin map of expected effective FG% per grid cell, comparing a location-only gradient-boosted model against a zone-average baseline. Honest framing: public NBA data has no defender distance or shot-clock signal, so this is shot-**location** value only, and the model's edge over the baseline is a small calibration win (~1% on log-loss / Brier), not a large accuracy jump.
 - **Player Shooting** (`/shooting`) — a browsable database of every player's eFG% on zero rest
   against three or more days off, for any season since 1996-97 or pooled across a career. Rest is

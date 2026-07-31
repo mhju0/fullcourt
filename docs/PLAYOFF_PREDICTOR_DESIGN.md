@@ -41,8 +41,14 @@
 > (pooled 0.7467 vs. 0.7444; paired per-season record 11/11/8) — see
 > [`ml/PHASE3_REPORT.md`](../ml/PHASE3_REPORT.md) §5 for the full honest-headline writeup.
 >
+> **Superseded 2026-07-31:** `entry_rest_diff` — called the headline feature throughout below,
+> including §3.7's table — was replaced in the model by `prior_grind_diff` (`logistic_grind_v2`);
+> it is still stored and displayed but is no longer a model input. This is a dated design record,
+> so the text below is left as written; see [ARCHITECTURE.md](ARCHITECTURE.md) and
+> [`ml/PHASE3_REPORT.md`](../ml/PHASE3_REPORT.md) for the current feature set.
+>
 > This document remains the single source of truth for the module's **design rationale** (§1–§3
-> below still describe why each feature and encoding choice was made, and match the shipped code).
+> below describe why each feature and encoding choice was made, as of the date above).
 > Values cited from source are line-referenced; when this doc and the code disagree later, **trust
 > the code and fix this doc**.
 

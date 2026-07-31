@@ -145,8 +145,9 @@ walk-forward logistic model persisted **1,049** predictions; the tag-integrity g
   (1985-86 → current, **2019-20 excluded**; season list imported from `fetch_schedule.SEASONS`).
   This exclusion stayed after the regular-season one was lifted, and for its own reason: the
   2019-20 playoffs were played entirely inside the bubble, after a 4½-month layoff followed by
-  eight seeding games, so `entry_rest_diff` — the series model's headline feature — has no
-  meaning for them. `playoff_series` holds 0 rows for the season, by design.
+  eight seeding games, so every rest quantity the module is built on — `entry_rest_diff`, and
+  the `prior_grind_diff` that replaced it in the model on 2026-07-31 — has no meaning for them.
+  `playoff_series` holds 0 rows for the season, by design.
 - Reuses `fetch_schedule.py`'s `_pair_games_dataframe` / `ABBR_ALIASES` / `get_game_type` /
   `INSERT … ON CONFLICT (external_id) DO UPDATE`. Keeps **only `004`-prefixed** IDs via
   `is_playoff_game_id` (the playoff analogue of the `002` gate). `get_game_type` tags `finals`

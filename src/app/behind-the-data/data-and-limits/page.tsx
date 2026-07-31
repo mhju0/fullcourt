@@ -105,7 +105,7 @@ export default function DataAndLimitsPage() {
           Playoff games are excluded from the regular-season fatigue model because a fixed
           two-team series breaks its travel assumptions — the opponent never changes and the
           itinerary is known weeks ahead. They are modelled separately, at series grain, on the
-          Playoff Predictions page.
+          Playoff Rest page.
         </Prose>
         <Prose>
           The <strong>2019-20 Orlando bubble</strong> is excluded because every game was played

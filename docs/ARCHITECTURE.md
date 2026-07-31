@@ -307,24 +307,27 @@ nba_api PlayIn    → scripts/fetch_play_in.py   → games (005 rows, game_type=
                               ml/compute_series_features.py (writes ONLY the 4 feature columns:
                                                               seed_diff, win_pct_diff,
                                                               entry_rest_diff, h2h_diff)
+                              ml/compute_prior_grind.py     (writes ONLY prior_grind_diff)
                                                        ▼
-                         playoff_series  (600 rows, all 4 features populated, 599 trainable)
+                         playoff_series  (600 rows, all 5 columns populated, 599 trainable;
+                                           the model reads 4 of them — entry_rest_diff is
+                                           stored and displayed, not fed in)
                                                        │
                               ml/train_series_model.py (walk-forward-by-season logistic bake-off
                                                          → ml/PHASE3_REPORT.md, model of record:
                                                          unregularized logistic)
                                                        │
                               ml/predict_series.py --write (full_insample + walk_forward_oos
-                                                             P(home-court wins), logistic_unreg_v1)
+                                                             P(home-court wins), logistic_grind_v2)
                                                        ▼
                          playoff_series_predictions   (1,049 rows: 599 full_insample +
                                                          450 walk_forward_oos)
                                                        │
                               GET /api/playoffs  →  getPlayoffSeriesWithPredictions()
                                                        ▼
-                         /playoffs page  →  PlayoffsContent  →  bracket of expandable SeriesCards
-                                             (calibration-led ModelResultHeader + per-season
-                                              SeasonScoreboard, per-series feature grid)
+                         /playoffs page  →  PlayoffRestArgument (the finding, stated first)
+                                          +  PlayoffsContent  →  bracket of expandable SeriesCards
+                                             (per-side grind line, per-series feature grid)
 ```
 
 - **Ingest** reuses `fetch_schedule.py`'s pairing/upsert helpers, gated to `004` (`is_playoff_game_id`)
@@ -335,17 +338,24 @@ nba_api PlayIn    → scripts/fetch_play_in.py   → games (005 rows, game_type=
 - **Series build** groups `004` games by `(season, unordered team-pair)`, sets the home-court team
   from the opener's host, tallies wins from final games, and derives `round` via a backward bracket
   walk validated against `[8,4,2,1]` per season.
-- **Feature pass** (`ml/compute_series_features.py`) computes `win_pct_diff`/`h2h_diff` from
-  regular-season-only games, `entry_rest_diff` from the most recent final game strictly before
-  Game 1, and `seed_diff` as a regular-season Win%-rank proxy — no feature reads
-  `series_winner_team_id` [Verified `ml/PHASE3_REPORT.md:148-157`, leakage audit].
+- **Feature pass** (`ml/compute_series_features.py`, plus `ml/compute_prior_grind.py`) computes
+  `win_pct_diff`/`h2h_diff` from regular-season-only games, `seed_diff` as a regular-season
+  Win%-rank proxy, and `prior_grind_diff` as format-aware games beyond a sweep in the prior round
+  only (`games_played - (4 if is_best_of_7 else 3)`, opponent minus home-court, 0 for every
+  Round 1 row). `entry_rest_diff` — days of rest into Game 1, from the most recent final game
+  strictly before it — is still computed and stored, but since 2026-07-31 it is not a model
+  feature. No feature reads `series_winner_team_id` [Verified `ml/PHASE3_REPORT.md:181-193`,
+  leakage audit].
 - **Model** (`ml/train_series_model.py`): expanding-window walk-forward by season (never random
   k-fold — same-season series share one bracket and would leak), 30 eval folds (1995-96…2025-26),
-  450 pooled eval predictions. The unregularized logistic is the model of record: pooled accuracy
-  0.7467 vs. the 0.7444 majority-home-court baseline (**not distinguishable** — paired per-season
-  W/T/L is 11/11/8), but log-loss improves 0.5696 → 0.4959 (≈13% relative) and Brier 0.1907 →
-  0.1638 (≈14% relative) — a **calibration** win, not a classification win [Verified
-  `ml/PHASE3_REPORT.md` §5, "Honest headline"].
+  450 pooled eval predictions. `logistic_grind_v2` is the model of record: pooled accuracy
+  0.753 vs. the 0.744 majority-home-court baseline (**not distinguishable**), but log-loss
+  improves 0.5696 → 0.4939 (≈13% relative) and Brier 0.1907 → 0.1628 (≈15% relative) — a
+  **calibration** win, not a classification win. Pooling hides where the accuracy lives: split by
+  round the model beats the baseline in rounds 2+ (73.3% vs 69.5%, n=210, paired per-season
+  11/16/3) and loses in Round 1 (77.1% vs 78.8%, n=240), where `prior_grind_diff` is 0 for every
+  row [Verified `ml/PHASE3_REPORT.md` §3a and §5, "Honest headline"; machine-readable copy at
+  `ml/playoff_round_split.json`].
 - **Predictions** (`ml/predict_series.py --write`) persist both an in-sample fit (all 599 trainable
   rows, for display on seasons too early for OOS) and the walk-forward OOS probability (only for
   the 450 series in the 30 eval-fold seasons; the first 10 min-train seasons have no OOS score).

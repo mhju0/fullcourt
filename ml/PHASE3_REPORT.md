@@ -160,7 +160,7 @@ standardized ⇒ magnitudes comparable):
 | intercept | +1.3724 | strong home-court prior (matches the 74.6% base rate) |
 | `win_pct_diff` | **+0.7141** | dominant driver — regular-season record gap |
 | `seed_diff` | +0.4026 | proxy seed gap |
-| `prior_grind_diff` | +0.2822 | opponent ground down more in the prior round than home-court was (inverted-sign feature — see §1) |
+| `prior_grind_diff` | +0.2822 | opponent ground down more in the prior round than home-court was (inverted-sign feature — see the note under this table) |
 | `h2h_diff` | +0.1233 | weak head-to-head signal |
 
 All four coefficients are **positive** — every home-court-advantage dimension raises
