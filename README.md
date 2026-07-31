@@ -27,6 +27,13 @@ FullCourt quantifies how **travel, rest, and schedule density** shape NBA outcom
 
 ---
 
+## License
+
+Copyright (c) 2026 Michael Ju. All rights reserved.
+No license is granted for use, copying, modification, or distribution of this code as of 2026-07-30. This repository is public for portfolio review purposes only.
+
+---
+
 ## Demo
 
 **Games — the per-matchup view.** Each team's fatigue score, the rest-advantage
@@ -259,8 +266,7 @@ docs/             # architecture, database, pipeline, API, frontend, ADRs
 
 ---
 
-Built by **Michael Ju** ([@mhju0](https://github.com/mhju0)). Licensed under the
-[MIT License](LICENSE).
+Built by **Michael Ju** ([@mhju0](https://github.com/mhju0)).
 
 The interface is set in **Space Grotesk** (headings), **Inter** (body) and **IBM Plex Mono**
 (data and labels), all loaded through `next/font/google` — no font files are committed for them.
