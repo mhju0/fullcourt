@@ -21,8 +21,8 @@ The regular-season evaluation of whether the team favored by rest advantage won.
 _Avoid_: prediction accuracy test
 
 **Playoff Predictor**:
-The series-level model that estimates the probability a playoff series goes the home-court team's way, from pre-series evidence. It is separate from the regular-season historical backtest, and separate from the fatigue model: it shares no code path, and `win_pct_diff` outweighs its one rest-shaped feature roughly three to one. Its measured edge is **calibration** — ~13-14% better log loss and Brier than the base rate — not accuracy, where it ties "always pick the home-court team" inside the noise.
-_Avoid_: playoff rest-advantage model; playoff fatigue model; "the fatigue model applied to playoffs" — this guidance predates the surface copy that violated it, which was corrected 2026-07-30. Also avoid quoting its accuracy as a headline result.
+The series-level model that estimates the probability a playoff series goes the home-court team's way, from pre-series evidence. It is separate from the regular-season historical backtest, and separate from the fatigue model: it shares no code path, and `win_pct_diff` outweighs its prior-round-grind feature 2.53 to 1 (standardized coefficients). Its edge is **calibration** — ~13% better log loss, ~15% better Brier than the base rate — not pooled accuracy, which ties the base rate inside the noise; split by round it beats "always pick the home-court team" in rounds 2+ (73.3% vs 69.5%, n=210) and loses in Round 1 (77.1% vs 78.8%, n=240).
+_Avoid_: playoff rest-advantage model; playoff fatigue model; "the fatigue model applied to playoffs" — this guidance predates the surface copy that violated it, which was corrected 2026-07-30. Also avoid quoting pooled accuracy alone as a headline result — the round split is real but conditional on round.
 
 **Expected Shot Value**:
 The location-based expected effective field-goal percentage for a court cell. It does not represent defender-aware or shot-clock-aware shot quality.
@@ -66,7 +66,7 @@ grows — it does not rank those surfaces below the direct tabs.
 | GAMES | `/` | Games | Today's Games — the season selector reaches 1985-86, so no time word stays true |
 | SCHEDULE EDGE | `/schedule` | Schedule Disparity | Schedule — that means a game list everywhere else, which is GAMES |
 | MODEL RESULTS | `/analysis` | Rest Advantage Analysis | Analysis (every page is analysis); Historical Data (GAMES already browses history, and "data" promises a dump) |
-| PLAYOFF PREDICTIONS | `/playoffs` | Series Predictions | Playoff Odds — mainstream that means *making* the playoffs, not winning a series |
+| PLAYOFF REST | `/playoffs` | The round before decides the round after | Playoff Odds — mainstream that means *making* the playoffs, not winning a series; PLAYOFF EDGE — `edge` is the qualifier that makes SCHEDULE EDGE legible as something other than a game list, and a second EDGE tab stops it qualifying |
 | PLAYER SHOOTING | `/shooting` | Shooting by Rest | Shooting — on Basketball-Reference and NBA.com that means shot *location*, which is SHOT VALUE; Player Rest / Rest Splits — the rest tab is SCHEDULE EDGE, and an internal collision misroutes worse than an external one; Splits — ESPN's word for exactly this page, but jargon for a casual fan and silent about the measure |
 | SHOT VALUE *(OTHER)* | `/shot-quality` | Expected Shot Value | Shot Charts — mainstream that means a player's makes/misses by spot |
 | REFEREE EFFECT *(OTHER)* | `/referees` | Coming soon | Referee Bias — the page was named for the question, not a conclusion; it is a placeholder since 2026-07-30 because the home-whistle finding sat inside noise |

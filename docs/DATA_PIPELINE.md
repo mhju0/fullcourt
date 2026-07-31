@@ -136,7 +136,9 @@ manually. They never modify regular-season (`002`) rows, never touch `fatigue.ts
 rename the rest-advantage metric. **Verified 2026-07-02** (read-only `SELECT`): 2,827 `playoffs`
 + 318 `finals` (`004`) + 36 `play_in` (`005`) game rows are present; the skeleton pass built
 **600 series**, the feature pass populated all four feature columns (599 trainable), and a
-walk-forward logistic model persisted **1,049** predictions; the tag-integrity guard reports
+walk-forward logistic model persisted **1,049** predictions per model version — **2,098** rows
+across the two, since `logistic_grind_v2` was written beside a retained `logistic_unreg_v1`
+rather than over it (**verified 2026-07-31**); the tag-integrity guard reports
 **0** prefix↔`game_type` mismatches. Full build record:
 [PLAYOFF_PREDICTOR_DESIGN.md](PLAYOFF_PREDICTOR_DESIGN.md).
 
@@ -145,8 +147,9 @@ walk-forward logistic model persisted **1,049** predictions; the tag-integrity g
   (1985-86 → current, **2019-20 excluded**; season list imported from `fetch_schedule.SEASONS`).
   This exclusion stayed after the regular-season one was lifted, and for its own reason: the
   2019-20 playoffs were played entirely inside the bubble, after a 4½-month layoff followed by
-  eight seeding games, so `entry_rest_diff` — the series model's headline feature — has no
-  meaning for them. `playoff_series` holds 0 rows for the season, by design.
+  eight seeding games, so every rest quantity the module is built on — `entry_rest_diff`, and
+  the `prior_grind_diff` that replaced it in the model on 2026-07-31 — has no meaning for them.
+  `playoff_series` holds 0 rows for the season, by design.
 - Reuses `fetch_schedule.py`'s `_pair_games_dataframe` / `ABBR_ALIASES` / `get_game_type` /
   `INSERT … ON CONFLICT (external_id) DO UPDATE`. Keeps **only `004`-prefixed** IDs via
   `is_playoff_game_id` (the playoff analogue of the `002` gate). `get_game_type` tags `finals`

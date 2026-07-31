@@ -55,13 +55,14 @@ the line in red.
 
 <img src="docs/screenshots/analysis.png" alt="Rest Advantage Analysis. A HOW THIS IS CALCULATED link sits under the heading. Three summary tiles read an overall win rate of 55.6% across 37,934 games, a home-rested win rate of 61.3% from 16,277 of 26,559 games, and 63.1% at a rest advantage of 5 or more across 3,854 games. Below them, win rate by rest-advantage threshold is drawn as deviation columns measured from a 50% coin flip: four blue bars rise from a zero line, growing left to right from RA at least 2 to RA at least 7, each labelled with its sample size — 19,740, 12,097, 3,854 and 938 games. A legend states that blue means the rested team beat a coin flip and red means it lost to one." width="900" />
 
-**Series Predictions — the playoff model, scored honestly.** The page leads with the only thing
-this model measurably wins at: calibration. Log loss and Brier score sit ~13-14% better than the
-base rate, while accuracy is shown alongside as having no real edge over "always pick the
-home-court team" — because publishing the first without the second would be the dishonest half of
-one result. Every series shows the probability it was called at.
+**Playoff Rest — what surviving a long series costs the round after.** The page leads with the
+argument, not the bracket: every playoff game after Game 1 is played on equal rest by
+construction, so the only rest signal left is how far each team's previous round ran. The
+home-court team's series win rate climbs from 68.9% to 85.4% depending on whether its opponent
+closed out early or went the distance, the effect survives holding a team's own result fixed, and
+the model's bracket picks below carry that gain.
 
-<img src="docs/screenshots/playoffs.png" alt="Series Predictions for 2025-26. Two tiles lead with calibration: LOG LOSS 0.496 against a 0.570 base rate, 13% better, and BRIER SCORE 0.164 against 0.191, 14% better. Beneath them two statements — that what the model is good at is knowing how sure to be, across 30 seasons predicted in advance covering 450 series, and that what it is not good at is picking winners, calling 74.7% of series right against 74.4% for always predicting the home-court team, a gap of 0.2 points well inside the noise, having beaten, tied and lost to that rule 11/11/8; it closes by saying to read the probabilities, not the picks. A second card, THIS BRACKET 2025-26, reads PREDICTED IN ADVANCE 10 / 15 (66.7%), trained on earlier seasons only, noting one flipped upset moves it 6.7 points. Below, the first round's 8 series each show a result, a PICK probability and a HINDSIGHT probability: Cleveland beat Toronto 4-3, pick 59.8% CLE, CORRECT; Detroit beat Orlando 4-3, pick 96.0% DET, CORRECT; Philadelphia beat Boston 3-4 against an 89.6% BOS pick, UPSET; New York beat Atlanta 4-2, pick 75.2% NYK, CORRECT; the Lakers beat Houston 4-2, pick 51.7% LAL, CORRECT; Minnesota beat Denver 2-4 against a 72.0% DEN pick, UPSET; San Antonio beat Portland 4-1, pick 96.1% SAS, CORRECT; and Oklahoma City swept Phoenix 4-0, pick 96.7% OKC, CORRECT." width="900" />
+<img src="docs/screenshots/playoffs.png" alt="Playoff Rest for 2025-26. The header reads PLAYOFF REST and The round before decides the round after. THE POSTSEASON HAS NO REST states 2,545 of 2,545 playoff games after Game 1 were played on equal rest, with only 277 of 600 Game 1s equally rested. THE GRIND TAX gives the home-court team's series win rate, rounds 2+, by both teams' prior-round length: 68.9% (74 series) when both closed early, 85.4% (89 series) when only the opponent went the distance, 65.9% (44 series) when only the home-court team did, and 59.7% (72 series) when both did — plus the same split counted by rest days into Game 1: 65.7% (67 series) on 2+ days short, 59.8% (92) within a day either way, 83.3% (120) on 2+ days rested. A section titled 'Isn't that just the better team?' answers the confound: holding a team's own prior round fixed at a quick close, its win rate is 68.9% when the opponent closed early versus 85.4% when the opponent went the distance, a 16.5-point gap from something outside the team's control; narrowed to evenly-matched series only, 53.2% becomes 67.9%, still a 14.7-point gap; and reversed, being the team that went the distance costs 6.2 points the other way." width="900" />
 
 **Player Shooting — a lookup, not a ranking.** Every player's eFG% on zero rest beside three or
 more days off, with the split's sample size shown on both sides so a thin season reads as thin.
@@ -95,14 +96,20 @@ with no time words — the pattern every mainstream NBA nav uses — while the p
   decades, so there is deliberately no all-time ranking.
 - **Model Results** (`/analysis`) — the historical backtest that scores the rest model: win rate by
   rest-advantage threshold and by season, home/away splits, and a filterable game explorer.
-- **Playoff Predictions** (`/playoffs`) — the probability each playoff series goes the home-court
-  team's way, at series grain. Honest framing: this is **not** a playoff fatigue model — it is a
-  separate four-feature logistic driven mainly by regular-season record (`win_pct_diff` outweighs
-  the one rest-shaped input roughly three to one), and its measured edge is **calibration, not
-  accuracy**. Over 30 seasons predicted in advance it improves log loss and Brier score ~13-14%
-  against the base rate while calling 74.7% of series right versus 74.4% for "always pick the
-  home-court team" — a tie inside the noise. The page says so on its face, and tells you to read
-  the probabilities rather than the picks.
+- **Playoff Rest** (`/playoffs`) — what surviving a long series costs the round after, argued
+  before the bracket rather than under it. Every playoff game past Game 1 is played on equal rest
+  by construction, so the only rest signal left is how far each team's previous round ran, read
+  format-aware (Round 1 was best-of-five through 2001-02). The home-court team's series win rate
+  in rounds 2+ runs 68.9% when both sides closed early against 85.4% when only the opponent went
+  the distance, and the gap survives narrowing to evenly-matched series. Below the argument sits
+  the bracket: a four-feature logistic at series grain, still driven mainly by regular-season
+  record (`win_pct_diff` outweighs the one rest-shaped input, `prior_grind_diff`, about two and a
+  half to one). Honest framing: the model's gain lives where a prior round exists to have been
+  ground down by — 73.3% against a 69.5% always-pick-the-home-court baseline over 210 rounds-2+
+  series, per-season 11-16-3 — and it *loses* in Round 1, 77.1% against 78.8%, where the feature
+  is zero for every row. Pooled over 30 seasons predicted in advance that nets out to 75.3% vs
+  74.4%, a tie inside the noise; the durable win is calibration, log loss 0.5696 → 0.4939 (~13%)
+  and Brier 0.1907 → 0.1628 (~15%). The page says all of this on its face.
 - **Shot Value** (`/shot-quality`, under **OTHER**) — a half-court hexbin map of expected effective FG% per grid cell, comparing a location-only gradient-boosted model against a zone-average baseline. Honest framing: public NBA data has no defender distance or shot-clock signal, so this is shot-**location** value only, and the model's edge over the baseline is a small calibration win (~1% on log-loss / Brier), not a large accuracy jump.
 - **Player Shooting** (`/shooting`) — a browsable database of every player's eFG% on zero rest
   against three or more days off, for any season since 1996-97 or pooled across a career. Rest is

@@ -35,9 +35,14 @@ export const DIRECT_NAV_ITEMS = [
   },
   {
     href: "/playoffs",
-    label: "PLAYOFF PREDICTIONS",
+    // Not "PLAYOFF EDGE": `edge` is the qualifier that makes SCHEDULE EDGE legible as something
+    // other than a game list, and a second EDGE tab stops it qualifying. Not "PLAYOFF EFFECT":
+    // REFEREE EFFECT means the effect referees have, so by that pattern this would read as the
+    // effect the playoffs have — backwards, since the page is about the effect of rest inside
+    // them. "REST" is the site's own word and the page is the postseason answer to it.
+    label: "PLAYOFF REST",
     guideDescription:
-      "Compare series win probabilities from FullCourt's separate playoff model.",
+      "See what surviving a long series costs a team in the round that follows.",
   },
   {
     href: "/shooting",

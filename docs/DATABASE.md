@@ -230,8 +230,9 @@ feature pass (`ml/compute_series_features.py`, the four `*_diff` columns below),
 | `opponent_wins` (`opponentWins`) | smallint | yes | — | games won; null until resolved |
 | `seed_diff` (`seedDiff`) | decimal | yes | — | regular-season Win%-rank proxy, `(opponent − home-court)`; populated for all 600 rows |
 | `win_pct_diff` (`winPctDiff`) | decimal | yes | — | dominant model feature (see `playoff_series_predictions` below); populated for all 600 rows |
-| `entry_rest_diff` (`entryRestDiff`) | decimal | yes | — | headline rust-vs-rest signal; populated for all 600 rows |
+| `entry_rest_diff` (`entryRestDiff`) | decimal | yes | — | raw rust-vs-rest signal (days of rest, differenced); populated for all 600 rows but no longer fed to the model — superseded by `prior_grind_diff` (2026-07-31) |
 | `h2h_diff` (`h2hDiff`) | decimal | yes | — | populated for all 600 rows |
+| `prior_grind_diff` (`priorGrindDiff`) | decimal | yes | — | `(opponent − home-court)` prior-round grind, where grind = `games_played − (4 if is_best_of_7 else 3)`; sign is **inverted** vs the other `*_diff` columns so positive still favors home court. `0` for every Round 1 row (no prior round exists); `NULL` only when a prior series could not be resolved at all. Added by migration `0012` (2026-07-31), replacing `entry_rest_diff` in the model. |
 | `external_series_key` (`externalSeriesKey`) | varchar | no | — | **unique**; deterministic `"{season}_{abbrA}-{abbrB}"` for idempotent upserts |
 | `computed_at` (`computedAt`) | timestamp | no | `now()` | last build time |
 
@@ -273,12 +274,15 @@ methods per series (`fullInsample`, `walkForwardOos`) via aliased self-joins.
 `0007` (mirroring `0004`/`0005`/`0006`). **Not** in `drizzle.config.ts`'s `tablesFilter`
 despite being declared in `schema.ts` — see the Conventions note above.
 
-**Verified 2026-07-02** (read-only `SELECT`): **1,049 rows total** — **599** `full_insample`
-(one per trainable series) + **450** `walk_forward_oos` (skips the first 10 min-train seasons per
-`ml/predict_series.py`'s expanding window), all `model_version = 'logistic_unreg_v1'` (the
-unregularized logistic selected in `ml/PHASE3_REPORT.md` §5). Model accuracy/log-loss/Brier: see
-that report — headline is a **calibration** improvement over the majority baseline, not a
-distinguishable accuracy win (§5, "Honest headline").
+**Verified 2026-07-31** (read-only `SELECT`): **2,098 rows total** — **1,049 per
+`model_version`**, each being **599** `full_insample` (one per trainable series) + **450**
+`walk_forward_oos` (skips the first 10 min-train seasons per `ml/predict_series.py`'s expanding
+window). The two versions are `logistic_unreg_v1` and the `logistic_grind_v2` that superseded it
+on 2026-07-31; the UNIQUE above is what lets them coexist, so v1 was retained rather than
+overwritten and older predictions stay auditable. Expect this total to grow by 1,049 per future
+version, not to stay flat. Model accuracy/log-loss/Brier: see `ml/PHASE3_REPORT.md` — headline is
+a **calibration** improvement over the majority baseline, not a distinguishable accuracy win
+(§5, "Honest headline").
 
 ## Table: `shot_grid` (Shot Quality — Expected Shot Value / xeFG%)
 
@@ -414,8 +418,9 @@ grants for **two** tables, `shot_grid` and `shot_value_surface`, in one file).
 | `0009_fatigue_scores_distinct_on_index.sql` | Add the live `(game_id, team_id, computed_at DESC)` index used by latest-fatigue reads. Hand-applied with `CREATE INDEX CONCURRENTLY`; no schema.ts change. |
 | `0010_rename_time_zone_displacement.sql` | Rename `fatigue_scores.has_coast_to_coast_road_swing` → `has_time_zone_displacement`. |
 | `0011_games_tip_off_neutral_site.sql` | Add `tip_off_utc`, `neutral_site`, `neutral_venue_city` to `games`. Applied 2026-07-30. See ADR 0003 for the era limits of the ESPN source. |
+| `0012_playoff_series_prior_grind.sql` | Add `playoff_series.prior_grind_diff` (nullable numeric). Standalone SQL; RLS and grants already cover the table. Applied 2026-07-31. |
 
-The **next migration number is `0012`**. `drizzle.config.ts` restricts introspection to
+The **next migration number is `0013`**. `drizzle.config.ts` restricts introspection to
 `schemaFilter: ["public"]`,
 `tablesFilter: ["teams","games","fatigue_scores","predictions","playoff_series"]` (unchanged
 by `0007`/`0008` — see the Conventions note above), and `extensionsFilters: ["postgis"]` (the

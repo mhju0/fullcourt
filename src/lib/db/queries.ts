@@ -873,6 +873,7 @@ type PlayoffSeriesJoinRow = {
   winPctDiff: string | null;
   entryRestDiff: string | null;
   h2hDiff: string | null;
+  priorGrindDiff: string | null;
   fullInsampleProb: string | null;
   fullInsampleWinnerTeamId: number | null;
   fullInsampleWinnerAbbr: string | null;
@@ -906,7 +907,13 @@ function buildPredictionMethodResult(
   };
 }
 
-function mapRowToPlayoffSeriesWithPredictions(row: PlayoffSeriesJoinRow): PlayoffSeriesWithPredictions {
+function mapRowToPlayoffSeriesWithPredictions(
+  row: PlayoffSeriesJoinRow,
+  priorGames: Map<string, PriorRoundSeries>
+): PlayoffSeriesWithPredictions {
+  const homeCourtPrior = priorGames.get(`${row.round}:${row.homeCourtTeamId}`) ?? null;
+  const opponentPrior = priorGames.get(`${row.round}:${row.opponentTeamId}`) ?? null;
+
   const seriesWinnerTeam: PlayoffTeamRef | null =
     row.seriesWinnerTeamId !== null && row.seriesWinnerTeamAbbr !== null && row.seriesWinnerTeamName !== null
       ? { id: row.seriesWinnerTeamId, abbreviation: row.seriesWinnerTeamAbbr, name: row.seriesWinnerTeamName }
@@ -935,6 +942,11 @@ function mapRowToPlayoffSeriesWithPredictions(row: PlayoffSeriesJoinRow): Playof
     winPctDiff: row.winPctDiff !== null ? parseFloat(row.winPctDiff) : null,
     entryRestDiff: row.entryRestDiff !== null ? parseFloat(row.entryRestDiff) : null,
     h2hDiff: row.h2hDiff !== null ? parseFloat(row.h2hDiff) : null,
+    priorGrindDiff: row.priorGrindDiff !== null ? parseFloat(row.priorGrindDiff) : null,
+    homeCourtPriorGames: homeCourtPrior?.games ?? null,
+    opponentPriorGames: opponentPrior?.games ?? null,
+    homeCourtPriorIsBestOf7: homeCourtPrior?.isBestOf7 ?? null,
+    opponentPriorIsBestOf7: opponentPrior?.isBestOf7 ?? null,
     predictions: {
       fullInsample: buildPredictionMethodResult(
         row.fullInsampleProb,
@@ -954,6 +966,47 @@ function mapRowToPlayoffSeriesWithPredictions(row: PlayoffSeriesJoinRow): Playof
       ),
     },
   };
+}
+
+/** A team's previous-round series: how long it ran, and the format it ran under. */
+type PriorRoundSeries = { games: number; isBestOf7: boolean };
+
+/**
+ * Each team's round-before series, keyed by `${round}:${teamId}`, for one season.
+ *
+ * A separate small query rather than a lateral join: "the series in round N−1 that this team
+ * appeared in" is a lookup over the same season's rows, and the season's row count is 15, so
+ * resolving it in memory is both clearer and cheaper than expressing it in SQL.
+ *
+ * The format travels with the game count because a count alone cannot be read: five games is
+ * the full distance in a best-of-5 and an early close in a best-of-7, and Round 1 was
+ * best-of-5 through 2001-02.
+ */
+async function priorRoundGamesBySeason(season: string): Promise<Map<string, PriorRoundSeries>> {
+  const rows = await db
+    .select({
+      round: playoffSeries.round,
+      isBestOf7: playoffSeries.isBestOf7,
+      homeCourtTeamId: playoffSeries.homeCourtTeamId,
+      opponentTeamId: playoffSeries.opponentTeamId,
+      homeCourtWins: playoffSeries.homeCourtWins,
+      opponentWins: playoffSeries.opponentWins,
+    })
+    .from(playoffSeries)
+    .where(eq(playoffSeries.season, season));
+
+  const out = new Map<string, PriorRoundSeries>();
+  for (const r of rows) {
+    if (r.homeCourtWins === null || r.opponentWins === null) continue;
+    const prior: PriorRoundSeries = {
+      games: r.homeCourtWins + r.opponentWins,
+      isBestOf7: r.isBestOf7,
+    };
+    // Keyed by the round the value is consumed IN, i.e. one after the round it was played in.
+    out.set(`${r.round + 1}:${r.homeCourtTeamId}`, prior);
+    out.set(`${r.round + 1}:${r.opponentTeamId}`, prior);
+  }
+  return out;
 }
 
 /**
@@ -995,6 +1048,7 @@ export async function getPlayoffSeriesWithPredictions(
       winPctDiff: playoffSeries.winPctDiff,
       entryRestDiff: playoffSeries.entryRestDiff,
       h2hDiff: playoffSeries.h2hDiff,
+      priorGrindDiff: playoffSeries.priorGrindDiff,
       fullInsampleProb: fullInsample.predictedHomeCourtWinProb,
       fullInsampleWinnerTeamId: fullInsample.predictedWinnerTeamId,
       fullInsampleWinnerAbbr: fullInsamplePredictedTeam.abbreviation,
@@ -1023,7 +1077,8 @@ export async function getPlayoffSeriesWithPredictions(
     .where(eq(playoffSeries.season, season))
     .orderBy(asc(playoffSeries.round), asc(playoffSeries.conference), asc(playoffSeries.id));
 
-  return rows.map(mapRowToPlayoffSeriesWithPredictions);
+  const priorGames = await priorRoundGamesBySeason(season);
+  return rows.map((row) => mapRowToPlayoffSeriesWithPredictions(row, priorGames));
 }
 
 // ─── Shot Quality: Expected Shot Value (xeFG%) surface ──────────

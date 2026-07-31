@@ -32,7 +32,7 @@ export const BEHIND_THE_DATA_SECTIONS = [
   },
   {
     href: "/behind-the-data/playoff-predictions",
-    label: "PLAYOFF PREDICTIONS",
+    label: "PLAYOFF REST",
     title: "Playoff predictions",
     surfaceHref: "/playoffs",
   },

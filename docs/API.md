@@ -42,8 +42,10 @@ Routes that touch the DB declare `export const runtime = "nodejs"` and (where ap
 during `next build`) and don't run on Edge (postgres-js needs Node).
 
 > **Playoff Predictor:** `GET /api/playoffs` is complete and serving live predictions —
-> `playoff_series_predictions` holds **1,049 rows** (599 `full_insample` + 450 `walk_forward_oos`,
-> `model_version = "logistic_unreg_v1"`) [Verified, live DB SELECT, 2026-07-02]. See
+> `playoff_series_predictions` holds **2,098 rows** — two `model_version`s × (599 `full_insample`
+> + 450 `walk_forward_oos`). `logistic_grind_v2` superseded `logistic_unreg_v1` on 2026-07-31 and
+> the v1 rows were retained rather than overwritten, so the row count is per version, not total
+> [Verified, live DB SELECT, 2026-07-31]. See
 > [ml/PHASE3_REPORT.md](../ml/PHASE3_REPORT.md) for the model's walk-forward accuracy/log-loss/Brier
 > numbers and the honest calibration-vs-accuracy framing.
 
@@ -185,9 +187,14 @@ row counts).
   - `rounds: PlayoffRoundGroup[]` — series grouped by `round` (ascending), each with a
     `roundLabel` (`"First Round"` / `"Conference Semifinals"` / `"Conference Finals"` /
     `"Finals"`) and the series list (`PlayoffSeriesWithPredictions[]`: teams, `isBestOf7`,
-    win counts, the four raw features `seedDiff`/`winPctDiff`/`entryRestDiff`/`h2hDiff`, and
-    a `predictions` object with `fullInsample` / `walkForwardOos` — either may be `null` for
-    a given series).
+    win counts, the four raw features `seedDiff`/`winPctDiff`/`entryRestDiff`/`h2hDiff`, plus
+    `priorGrindDiff` (the model's current feature — `entryRestDiff` is retained but no longer
+    fed to it) and `homeCourtPriorGames`/`opponentPriorGames` (each side's prior-round game
+    count, `null` in Round 1) beside `homeCourtPriorIsBestOf7`/`opponentPriorIsBestOf7` (that
+    prior series' own format — Round 1 was best-of-five through 2001-02, so a game count is
+    unreadable without it, and it is **not** the same as this series' `isBestOf7`), and a
+    `predictions` object with `fullInsample` /
+    `walkForwardOos` — either may be `null` for a given series).
   - `summary: { fullInsample, walkForwardOos }` — each a `PlayoffMethodSummary`
     (`knownWinnerGames`, `predictedCorrect`, `accuracy` 0–100) computed only over series that
     have both a known winner and a non-null prediction for that method. **Per-season and

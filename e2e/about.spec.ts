@@ -20,7 +20,7 @@ test.describe("About page", () => {
       "Season Report",
       "Schedule Edge",
       "Model Results",
-      "Playoff Predictions",
+      "Playoff Rest",
       "Player Shooting",
     ]) {
       await expect(

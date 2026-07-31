@@ -18,7 +18,7 @@ duplicated presentational components ([#5](https://github.com/mhju0/fullcourt/is
 
 On 2026-07-27 the nav was renamed to five plain-noun tabs and `/upcoming` was folded into
 `GAMES` as a view toggle rather than kept as a sixth tab. The five are now `GAMES`,
-`SCHEDULE EDGE`, `MODEL RESULTS`, `PLAYOFF PREDICTIONS` and `PLAYER SHOOTING`; `SHOT VALUE`
+`SCHEDULE EDGE`, `MODEL RESULTS`, `PLAYOFF REST` and `PLAYER SHOOTING`; `SHOT VALUE`
 and `REFEREE EFFECT` live behind the `OTHER` menu. Module names are unchanged; see
 [GLOSSARY.md §Nav labels](GLOSSARY.md) for the label-by-label rationale.
 

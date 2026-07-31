@@ -52,7 +52,10 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 
 # Persisted labels for the (later) DB write — kept as constants so both methods and the model
 # version can be stored without another migration.
-MODEL_VERSION = "logistic_unreg_v1"
+# Bumped from logistic_unreg_v1 (2026-07-31) when entry_rest_diff was replaced by
+# prior_grind_diff. The UNIQUE is (series_id, prediction_method, model_version), so the v1
+# rows coexist untouched and stay auditable — this is a new version, not an overwrite.
+MODEL_VERSION = "logistic_grind_v2"
 METHOD_INSAMPLE = "full_insample"
 METHOD_OOS = "walk_forward_oos"
 
@@ -104,7 +107,7 @@ def load_trainable(conn) -> Loaded:
                    (ps.series_winner_team_id = ps.home_court_team_id)::int AS y,
                    ps.seed_diff::float8,
                    ps.win_pct_diff::float8,
-                   ps.entry_rest_diff::float8,
+                   ps.prior_grind_diff::float8,
                    ps.h2h_diff::float8,
                    hc.abbreviation  AS home_abbr,
                    opp.abbreviation AS opp_abbr,
@@ -116,7 +119,7 @@ def load_trainable(conn) -> Loaded:
             WHERE ps.series_winner_team_id IS NOT NULL
               AND ps.seed_diff        IS NOT NULL
               AND ps.win_pct_diff     IS NOT NULL
-              AND ps.entry_rest_diff  IS NOT NULL
+              AND ps.prior_grind_diff IS NOT NULL
               AND ps.h2h_diff         IS NOT NULL
             ORDER BY ps.season, ps.round, ps.external_series_key
             """

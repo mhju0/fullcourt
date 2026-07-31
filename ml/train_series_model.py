@@ -15,7 +15,7 @@ LABEL / FEATURE CONTRACT  (verified against the live DB, STEP 0)
                    (The 1 excluded row, 1986-87_LAL-OKC, has a NULL winner.)
   Label          y = 1 if series_winner_team_id == home_court_team_id else 0.
   Features (fixed column order, all framed so + = advantage to the home-court team):
-                   [seed_diff, win_pct_diff, entry_rest_diff, h2h_diff]
+                   [seed_diff, win_pct_diff, prior_grind_diff, h2h_diff]
   Base rate      447/599 = 0.7462 of series are won by the home-court team (majority class).
 
 ────────────────────────────────────────────────────────────────────────────────────────
@@ -29,6 +29,7 @@ ml/compute_series_features.py:640.
 from __future__ import annotations
 
 import argparse
+import json
 import os
 import sys
 from dataclasses import dataclass
@@ -46,8 +47,16 @@ import psycopg2
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 
-# Fixed, documented feature column order. Every X matrix in this file uses exactly this.
-FEATURES = ["seed_diff", "win_pct_diff", "entry_rest_diff", "h2h_diff"]
+# Column order is FIXED and load-bearing — predict_series.py imports this list and indexes
+# into the same matrix. prior_grind_diff replaced entry_rest_diff (2026-07-31): the two
+# correlate at r = 0.910, and in a joint fit the rest coefficient flips negative, which is a
+# collinearity artifact rather than a finding. prior_grind_diff wins on accuracy, log-loss and
+# Brier, and reads as a sentence a fan already understands.
+#
+# NOTE the sign inversion: every other feature here is (home-court - opponent), while
+# prior_grind_diff is (opponent - home-court) so that positive still favors the home-court
+# team. The coefficient is therefore expected POSITIVE like the others.
+FEATURES = ["seed_diff", "win_pct_diff", "prior_grind_diff", "h2h_diff"]
 
 # Minimum number of seasons in the FIRST expanding-window training block before we start
 # evaluating. Justification (events-per-variable heuristic): with 4 features + intercept we
@@ -108,13 +117,13 @@ def load_trainable(conn) -> Dataset:
                    (series_winner_team_id = home_court_team_id)::int AS y,
                    seed_diff::float8,
                    win_pct_diff::float8,
-                   entry_rest_diff::float8,
+                   prior_grind_diff::float8,
                    h2h_diff::float8
             FROM playoff_series
             WHERE series_winner_team_id IS NOT NULL
               AND seed_diff        IS NOT NULL
               AND win_pct_diff     IS NOT NULL
-              AND entry_rest_diff  IS NOT NULL
+              AND prior_grind_diff IS NOT NULL
               AND h2h_diff         IS NOT NULL
             ORDER BY season, round, external_series_key
             """
@@ -166,6 +175,10 @@ class WalkForwardResult:
     per_season: list[dict]          # one dict per eval season
     pooled_y: np.ndarray
     pooled_p: np.ndarray
+    # Aligned row-for-row with pooled_y / pooled_p, so any pooled metric can be re-sliced
+    # after the fact. Added 2026-07-31 for the round split, which is the model's real claim.
+    pooled_rounds: np.ndarray
+    pooled_seasons: np.ndarray
 
     def pooled(self) -> tuple[float, float, float]:
         return fold_metrics(self.pooled_y, self.pooled_p)
@@ -196,6 +209,8 @@ def walk_forward(
     per_season: list[dict] = []
     pooled_y: list[int] = []
     pooled_p: list[float] = []
+    pooled_rounds: list[int] = []
+    pooled_seasons: list[str] = []
 
     for k in range(min_train, len(seasons)):
         train_seasons = set(seasons[:k])
@@ -219,12 +234,16 @@ def walk_forward(
         )
         pooled_y.extend(y_te.tolist())
         pooled_p.extend(p_hat.tolist())
+        pooled_rounds.extend(ds.rounds[te].tolist())
+        pooled_seasons.extend(ds.seasons[te].tolist())
 
     return WalkForwardResult(
         name=name,
         per_season=per_season,
         pooled_y=np.array(pooled_y, dtype=int),
         pooled_p=np.array(pooled_p, dtype=float),
+        pooled_rounds=np.array(pooled_rounds, dtype=int),
+        pooled_seasons=np.array(pooled_seasons, dtype=object),
     )
 
 
@@ -336,6 +355,121 @@ def wilson_or_normal_ci(p: float, n: int) -> tuple[float, float]:
     return (p - 1.96 * se, p + 1.96 * se)
 
 
+def round_split_block(res: WalkForwardResult) -> list[str]:
+    """Accuracy and log-loss split by round, plus the per-season paired record versus the
+    always-home-court rule in rounds 2+.
+
+    The split IS the headline. Pooled over all rounds this model beats the one-line rule by
+    about +0.9 points — a modest number that hides the real result by blending two opposite
+    ones together: the model wins by several points in rounds 2+, where a prior round exists
+    to have been ground down by, and loses in Round 1, where it does not. Reporting only the
+    pooled figure understates the rounds-2+ edge and hides the Round 1 loss entirely;
+    reporting only rounds 2+ would overstate it the other way, so both ship.
+    """
+    lines = ["", "── Round split (walk-forward, out-of-sample) ──", ""]
+    lines.append(
+        f"  {'slice':<12}{'n':>5}{'model acc':>11}{'always-HC':>11}{'log-loss':>11}{'base LL':>10}"
+    )
+    for label, mask in (
+        ("round 1", res.pooled_rounds == 1),
+        ("rounds 2+", res.pooled_rounds >= 2),
+    ):
+        n = int(mask.sum())
+        if n == 0:
+            continue
+        t, p = res.pooled_y[mask], res.pooled_p[mask]
+        base = np.full(n, t.mean())
+        lines.append(
+            f"  {label:<12}{n:>5}{(t == (p >= 0.5)).mean() * 100:>10.1f}%"
+            f"{t.mean() * 100:>10.1f}%"
+            f"{log_loss(t, p):>11.4f}{log_loss(t, base, labels=[0, 1]):>10.4f}"
+        )
+
+    wins = ties = losses = 0
+    m2 = res.pooled_rounds >= 2
+    for szn in sorted(set(res.pooled_seasons[m2].tolist())):
+        sel = m2 & (res.pooled_seasons == szn)
+        if not sel.any():
+            continue
+        model_acc = (res.pooled_y[sel] == (res.pooled_p[sel] >= 0.5)).mean()
+        base_acc = res.pooled_y[sel].mean()  # always-home-court accuracy on that slice
+        wins += model_acc > base_acc
+        ties += model_acc == base_acc
+        losses += model_acc < base_acc
+
+    lines += [
+        "",
+        f"  per-season paired record vs always-home-court, ROUNDS 2+: "
+        f"{wins} win / {ties} tie / {losses} loss",
+        "  (the pooled accuracy gap is only about 8 series — the paired record is the evidence",
+        "   that carries, and it is the test §5 of PHASE3_REPORT.md already argues for)",
+    ]
+    return lines
+
+
+def round_split_summary(res: WalkForwardResult, baseline: WalkForwardResult) -> dict:
+    """Numeric round-split summary for playoff_round_split.json — computed from the SAME
+    WalkForwardResult that round_split_block reports on, so the JSON and text can't disagree.
+
+    Slice (round 1 / rounds 2+) baselines use the local always-home-court rate, exactly as
+    round_split_block's "base LL" column does. The pooled baseline instead reads the actual
+    walk-forward `baseline:prior(majority)` result already printed in the ladder table, so the
+    JSON's pooled figures are identical to (not merely consistent with) the text report.
+    """
+
+    def slice_metrics(mask: np.ndarray) -> dict:
+        n = int(mask.sum())
+        t, p = res.pooled_y[mask], res.pooled_p[mask]
+        base = np.full(n, t.mean())
+        return {
+            "n": n,
+            "model": round(float((t == (p >= 0.5)).mean() * 100), 1),
+            "baseline": round(float(t.mean() * 100), 1),
+            "logLoss": round(float(log_loss(t, p)), 4),
+            "baselineLogLoss": round(float(log_loss(t, base, labels=[0, 1])), 4),
+        }
+
+    def paired_record(mask: np.ndarray) -> dict:
+        """Per-season paired win/tie/loss against the always-home-court rule, restricted
+        to `mask`. `roundsTwoPlusRecord` and `pooledRecord` are the same comparison over
+        different slices (rounds 2+ vs every round)."""
+        wins = ties = losses = 0
+        for szn in sorted(set(res.pooled_seasons[mask].tolist())):
+            sel = mask & (res.pooled_seasons == szn)
+            if not sel.any():
+                continue
+            model_acc = (res.pooled_y[sel] == (res.pooled_p[sel] >= 0.5)).mean()
+            base_acc = res.pooled_y[sel].mean()
+            wins += model_acc > base_acc
+            ties += model_acc == base_acc
+            losses += model_acc < base_acc
+        return {"win": int(wins), "tie": int(ties), "loss": int(losses)}
+
+    r1_mask = res.pooled_rounds == 1
+    r2_mask = res.pooled_rounds >= 2
+    all_mask = np.ones(len(res.pooled_y), dtype=bool)
+
+    pooled_acc, pooled_ll, pooled_brier = res.pooled()
+    base_acc, base_ll, base_brier = baseline.pooled()
+    return {
+        "modelVersion": "logistic_grind_v2",
+        "features": list(FEATURES),
+        "roundsTwoPlus": slice_metrics(r2_mask),
+        "roundOne": slice_metrics(r1_mask),
+        "roundsTwoPlusRecord": paired_record(r2_mask),
+        "pooledRecord": paired_record(all_mask),
+        "pooled": {
+            "n": int(len(res.pooled_y)),
+            "accuracy": round(float(pooled_acc * 100), 1),
+            "baselineAccuracy": round(float(base_acc * 100), 1),
+            "logLoss": round(float(pooled_ll), 4),
+            "baselineLogLoss": round(float(base_ll), 4),
+            "brier": round(float(pooled_brier), 4),
+            "baselineBrier": round(float(base_brier), 4),
+        },
+    }
+
+
 def build_report(ds: Dataset, results: list[WalkForwardResult]) -> str:
     L: list[str] = []
 
@@ -377,6 +511,10 @@ def build_report(ds: Dataset, results: list[WalkForwardResult]) -> str:
         ll_s = "   n/a" if is_sign else f"{pll:>10.4f}"
         br_s = "   n/a" if is_sign else f"{pbr:>9.4f}"
         w(f"  {r.name:<34} {pa:>10.4f} {macc:>7.4f}±{msd:<4.3f} {ll_s} {br_s}")
+
+    # ── Round split (model of record: unregularized logistic) ──
+    model_of_record = next(r for r in results if r.name == "logistic:unreg")
+    L.extend(round_split_block(model_of_record))
     w("")
 
     # ── Pooled accuracy with uncertainty + comparison to majority ──
@@ -486,6 +624,25 @@ def main() -> None:
     out.write_text(report)
     print(report)
     print(f"(report written to {out})")
+
+    # Committed JSON so the page's TypeScript constants can be pinned against a versioned
+    # artifact (phase3_results.txt is gitignored). Derived from the same WalkForwardResult
+    # the round-split text block reports on, so the two can never disagree.
+    model_of_record = next(r for r in results if r.name == "logistic:unreg")
+    baseline = next(r for r in results if r.name == "baseline:prior(majority)")
+    summary = round_split_summary(model_of_record, baseline)
+
+    # Standardized coefficients (§4 of PHASE3_REPORT.md), keyed by feature name so the method
+    # page can read them instead of hand-typing — the same fit interpret_logistic() already
+    # produces for the text report, computed once more here since main() doesn't otherwise see
+    # build_report()'s local `logi`.
+    logi = interpret_logistic(ds)
+    summary["coefficients"] = {k: round(v, 4) for k, v in logi["coefs"].items()}
+    summary["intercept"] = round(logi["intercept"], 4)
+
+    json_out = REPO_ROOT / "ml" / "playoff_round_split.json"
+    json_out.write_text(json.dumps(summary, indent=2) + "\n")
+    print(f"(round split JSON written to {json_out})")
 
 
 if __name__ == "__main__":

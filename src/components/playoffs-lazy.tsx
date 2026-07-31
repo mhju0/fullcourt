@@ -9,13 +9,7 @@ export const PlayoffsContentLazy = lazyContent(
   () => (
     <div className="flex flex-col gap-4">
       <div style={termCardStyle}>
-        <Skeleton className="h-4 w-32 bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)" }} />
-      </div>
-      <div style={termCardStyle}>
-        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-          <Skeleton className="h-24 w-full bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)" }} />
-          <Skeleton className="h-24 w-full bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)" }} />
-        </div>
+        <Skeleton className="h-10 w-64 bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)" }} />
       </div>
       <div className="flex flex-col gap-2">
         <Skeleton className="h-16 w-full bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)" }} />

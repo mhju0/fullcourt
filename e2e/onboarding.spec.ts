@@ -19,7 +19,7 @@ test.describe("First-visit guide", () => {
     await expect(guide.getByRole("link", { name: /^GAMES\b/ })).toBeVisible();
     await expect(guide.getByRole("link", { name: /^SCHEDULE EDGE\b/ })).toBeVisible();
     await expect(guide.getByRole("link", { name: /^MODEL RESULTS\b/ })).toBeVisible();
-    await expect(guide.getByRole("link", { name: /^PLAYOFF PREDICTIONS\b/ })).toBeVisible();
+    await expect(guide.getByRole("link", { name: /^PLAYOFF REST\b/ })).toBeVisible();
     await expect(guide.getByRole("link", { name: /^SHOT VALUE\b/ })).toBeVisible();
     await expect(
       guide.getByText(
@@ -38,7 +38,7 @@ test.describe("First-visit guide", () => {
     ).toBeVisible();
     await expect(
       guide.getByText(
-        "Compare series win probabilities from FullCourt's separate playoff model.",
+        "See what surviving a long series costs a team in the round that follows.",
       ),
     ).toBeVisible();
     await expect(
