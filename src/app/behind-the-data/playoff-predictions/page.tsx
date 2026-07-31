@@ -12,7 +12,7 @@ import {
   PLAYOFF_MODEL_CALIBRATION,
   PLAYOFF_MODEL_EVAL,
 } from "@/lib/playoff-model-metrics";
-import { termTdStyle, termThStyle } from "@/lib/terminal-styles";
+import { termTdStyle, termThStyle, termThUnitStyle } from "@/lib/terminal-styles";
 
 export const metadata: Metadata = {
   title: "Playoff Predictions — Behind the Data",
@@ -88,7 +88,10 @@ export default function PlayoffPredictionsMethodPage() {
             <thead>
               <tr>
                 <th style={termThStyle}>FEATURE</th>
-                <th style={termThStyle}>WEIGHT</th>
+                <th style={termThStyle}>
+                  WEIGHT
+                  <span style={termThUnitStyle}>LOG-ODDS PER UNIT</span>
+                </th>
                 <th style={termThStyle}>WHAT IT IS</th>
                 <th style={termThStyle}>NOTE</th>
               </tr>
@@ -134,8 +137,16 @@ export default function PlayoffPredictionsMethodPage() {
             <thead>
               <tr>
                 <th style={termThStyle}>METRIC</th>
-                <th style={termThStyle}>MODEL</th>
-                <th style={termThStyle}>BASE RATE</th>
+                {/* No single unit fits: the rows are log loss, a Brier score and a percentage,
+                    so the scale is named by each row's own METRIC cell rather than up here. */}
+                <th style={termThStyle}>
+                  MODEL
+                  <span style={termThUnitStyle}>IN THE METRIC AT LEFT</span>
+                </th>
+                <th style={termThStyle}>
+                  BASE RATE
+                  <span style={termThUnitStyle}>IN THE METRIC AT LEFT</span>
+                </th>
                 <th style={termThStyle}>VERDICT</th>
               </tr>
             </thead>

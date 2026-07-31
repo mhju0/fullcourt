@@ -13,6 +13,7 @@ import {
   termCardStyle,
   termTdStyle,
   termThStyle,
+  termThUnitStyle,
 } from "@/lib/terminal-styles"
 import type { ScheduleDisparityResponse, ScheduleDisparityTeam } from "@/types"
 
@@ -314,14 +315,29 @@ export function ScheduleDisparityContent() {
               <table className="w-full" style={{ borderCollapse: "collapse" }}>
                 <thead>
                   <tr>
-                    <th style={{ ...termThStyle, textAlign: "left" }}>#</th>
+                    <th style={{ ...termThStyle, textAlign: "right" }}>#</th>
                     <th style={{ ...termThStyle, textAlign: "left" }}>Team</th>
                     <th style={{ ...termThStyle, textAlign: "left" }}>Edge games</th>
-                    <th style={{ ...termThStyle, textAlign: "right" }}>Net</th>
-                    <th style={{ ...termThStyle, textAlign: "right" }}>Fav / Unfav</th>
-                    <th style={{ ...termThStyle, textAlign: "right" }}>Big edge</th>
-                    <th style={{ ...termThStyle, textAlign: "right" }}>B2B edge</th>
-                    <th style={{ ...termThStyle, textAlign: "right" }}>3-in-4 edge</th>
+                    <th style={{ ...termThStyle, textAlign: "right" }}>
+                      Net
+                      <span style={termThUnitStyle}>games</span>
+                    </th>
+                    <th style={{ ...termThStyle, textAlign: "right" }}>
+                      Fav / Unfav
+                      <span style={termThUnitStyle}>games</span>
+                    </th>
+                    <th style={{ ...termThStyle, textAlign: "right" }}>
+                      Big edge
+                      <span style={termThUnitStyle}>games</span>
+                    </th>
+                    <th style={{ ...termThStyle, textAlign: "right" }}>
+                      B2B edge
+                      <span style={termThUnitStyle}>games</span>
+                    </th>
+                    <th style={{ ...termThStyle, textAlign: "right" }}>
+                      3-in-4 edge
+                      <span style={termThUnitStyle}>games</span>
+                    </th>
                   </tr>
                 </thead>
                 <tbody>

@@ -8,7 +8,7 @@ import {
   Section,
 } from "@/components/behind-the-data-parts";
 import { FATIGUE_CONSTANTS as K } from "@/lib/fatigue";
-import { termTdStyle, termThStyle } from "@/lib/terminal-styles";
+import { termTdStyle, termThStyle, termThUnitStyle } from "@/lib/terminal-styles";
 
 export const metadata: Metadata = {
   title: "Rest Advantage — Behind the Data",
@@ -156,7 +156,10 @@ direction    = ${K.eastwardMultiplier} eastward, ${K.westwardMultiplier} westwar
             <thead>
               <tr>
                 <th style={termThStyle}>TERM REMOVED</th>
-                <th style={{ ...termThStyle, textAlign: "right" }}>EFFECT LOST</th>
+                <th style={{ ...termThStyle, textAlign: "right" }}>
+                  EFFECT LOST
+                  <span style={termThUnitStyle}>PCT POINTS</span>
+                </th>
                 <th style={termThStyle}></th>
               </tr>
             </thead>

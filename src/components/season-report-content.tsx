@@ -19,7 +19,7 @@ import {
   type SeasonReportVerdict,
   type SeasonReportWeek,
 } from "@/lib/season-report"
-import { termCardStyle, termTdStyle, termThStyle } from "@/lib/terminal-styles"
+import { termCardStyle, termTdStyle, termThStyle, termThUnitStyle } from "@/lib/terminal-styles"
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts"
 import type { AnalysisResponse } from "@/types"
 
@@ -226,7 +226,10 @@ function EdgeConversion({ teams }: { teams: SeasonReportTeamLabelled[] }) {
               <th colSpan={3} style={{ ...termThStyle, textAlign: "center", borderBottom: "none" }}>
                 TIRED
               </th>
-              <th rowSpan={2} style={{ ...termThStyle, textAlign: "right" }}>SWING</th>
+              <th rowSpan={2} style={{ ...termThStyle, textAlign: "right" }}>
+                SWING
+                <span style={termThUnitStyle}>PCT POINTS</span>
+              </th>
             </tr>
             <tr>
               {["WINS", "LOSSES", "WIN%", "WINS", "LOSSES", "WIN%"].map((label, i) => (
@@ -363,9 +366,18 @@ function ScheduleTax({ teams }: { teams: SeasonReportTeamLabelled[] }) {
             <tr>
               <th style={termThStyle}>TEAM</th>
               <th style={{ ...termThStyle, textAlign: "right" }}>MILES FLOWN</th>
-              <th style={{ ...termThStyle, textAlign: "right" }}>BACK-TO-BACKS</th>
-              <th style={{ ...termThStyle, textAlign: "right" }}>3-IN-4</th>
-              <th style={{ ...termThStyle, textAlign: "right" }}>JET LAG</th>
+              <th style={{ ...termThStyle, textAlign: "right" }}>
+                BACK-TO-BACKS
+                <span style={termThUnitStyle}>GAMES</span>
+              </th>
+              <th style={{ ...termThStyle, textAlign: "right" }}>
+                3-IN-4
+                <span style={termThUnitStyle}>GAMES</span>
+              </th>
+              <th style={{ ...termThStyle, textAlign: "right" }}>
+                JET LAG
+                <span style={termThUnitStyle}>GAMES</span>
+              </th>
             </tr>
           </thead>
           <tbody>

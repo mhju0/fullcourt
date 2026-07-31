@@ -1,4 +1,4 @@
-import { termCardStyle, termTdStyle, termThStyle } from "@/lib/terminal-styles";
+import { termCardStyle, termTdStyle, termThStyle, termThUnitStyle } from "@/lib/terminal-styles";
 import benchmark from "@/data/win-total-benchmark.json";
 
 /** Percent with one decimal from an over count — 47.9% styling, tabular in the table. */
@@ -33,7 +33,10 @@ export function WinTotalMarketCheck() {
           <thead>
             <tr>
               <th style={{ ...termThStyle, textAlign: "left" }}>Net edge games</th>
-              <th style={{ ...termThStyle, textAlign: "right" }}>Went over</th>
+              <th style={{ ...termThStyle, textAlign: "right" }}>
+                Went over
+                <span style={termThUnitStyle}>percent of the bucket</span>
+              </th>
               <th style={{ ...termThStyle, textAlign: "right" }}>Team-seasons</th>
             </tr>
           </thead>

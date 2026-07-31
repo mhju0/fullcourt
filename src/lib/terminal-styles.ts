@@ -67,6 +67,23 @@ export const termTdStyle: CSSProperties = {
 }
 
 /**
+ * The unit line under a column header — "GAMES", "MILES", "PCT POINTS". Every column of
+ * numbers states what it counts, so no figure on this site is a bare quantity the reader
+ * has to infer a scale for. Sits inside the `th`, below the label, deliberately quiet.
+ *
+ * Columns whose label already names the unit (`MILES FLOWN`, `WIN%`, `GAMES`) do not take
+ * one — repeating it reads as noise rather than as a clarification.
+ */
+export const termThUnitStyle: CSSProperties = {
+  display: "block",
+  fontWeight: 400,
+  fontSize: 9.5,
+  letterSpacing: "0.04em",
+  textTransform: "none",
+  opacity: 0.72,
+}
+
+/**
  * Canonical accent-color slots. Each domain (confidence, correctness, etc.)
  * keeps its own status → tone mapping, but every mapping resolves through
  * this one object so the palette lives in exactly one place.

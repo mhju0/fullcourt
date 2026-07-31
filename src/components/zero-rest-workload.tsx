@@ -5,7 +5,7 @@ import useSWR from "swr"
 import { Skeleton } from "@/components/ui/skeleton"
 import { parseSeasonStartYear } from "@/lib/nba-season"
 import { zeroRestWorkload, type PlayerRestPayload } from "@/lib/player-rest"
-import { termCardStyle, termTdStyle, termThStyle } from "@/lib/terminal-styles"
+import { termCardStyle, termTdStyle, termThStyle, termThUnitStyle } from "@/lib/terminal-styles"
 
 const ROW_LIMIT = 15
 
@@ -92,7 +92,10 @@ export function ZeroRestWorkload({ season }: { season: string }) {
                 <tr>
                   <th style={termThStyle}>PLAYER</th>
                   <th style={termThStyle}>TEAM</th>
-                  <th style={{ ...termThStyle, textAlign: "right" }}>NO-REST FGA</th>
+                  <th style={{ ...termThStyle, textAlign: "right" }}>
+                    NO-REST FGA
+                    <span style={termThUnitStyle}>SHOT ATTEMPTS</span>
+                  </th>
                   <th style={{ ...termThStyle, textAlign: "right" }}>NO-REST EFG%</th>
                   <th style={{ ...termThStyle, textAlign: "right" }}>GAMES</th>
                 </tr>

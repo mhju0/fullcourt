@@ -10,7 +10,7 @@ import { currentDisplaySeason, isNbaOffSeason, nextSeasonLabel } from "@/lib/nba
 import { apiFetcher } from "@/lib/fetcher"
 import { Skeleton } from "@/components/ui/skeleton"
 import { buildRestAdvantageEvidence } from "@/lib/rest-advantage-display"
-import { termCardStyle, termThStyle as thStyle, termTdStyle as tdStyle } from "@/lib/terminal-styles"
+import { termCardStyle, termThStyle as thStyle, termTdStyle as tdStyle, termThUnitStyle } from "@/lib/terminal-styles"
 import type { AnalysisResponse, UpcomingGameWithRA } from "@/types"
 
 // ─── RA threshold options ──────────────────────────────────────────
@@ -179,11 +179,23 @@ export function UpcomingContent() {
               <tr>
                 <th style={{ ...thStyle, textAlign: "left" }}>Date</th>
                 <th style={{ ...thStyle, textAlign: "left" }}>Matchup</th>
-                <th style={{ ...thStyle, textAlign: "right" }} className="hidden sm:table-cell">Home Fat.</th>
-                <th style={{ ...thStyle, textAlign: "right" }} className="hidden sm:table-cell">Away Fat.</th>
-                <th style={{ ...thStyle, textAlign: "center" }}>RA</th>
+                <th style={{ ...thStyle, textAlign: "right" }} className="hidden sm:table-cell">
+                  Home Fat.
+                  <span style={termThUnitStyle}>fatigue score</span>
+                </th>
+                <th style={{ ...thStyle, textAlign: "right" }} className="hidden sm:table-cell">
+                  Away Fat.
+                  <span style={termThUnitStyle}>fatigue score</span>
+                </th>
+                <th style={{ ...thStyle, textAlign: "center" }}>
+                  RA
+                  <span style={termThUnitStyle}>fatigue gap</span>
+                </th>
                 <th style={{ ...thStyle, textAlign: "center" }}>Edge</th>
-                <th style={{ ...thStyle, textAlign: "right" }}>Historically</th>
+                <th style={{ ...thStyle, textAlign: "right" }}>
+                  Historically
+                  <span style={termThUnitStyle}>win rate</span>
+                </th>
               </tr>
             </thead>
             <tbody>

@@ -25,6 +25,7 @@ import {
   termSelectStyle,
   termTdStyle,
   termThStyle,
+  termThUnitStyle,
 } from "@/lib/terminal-styles"
 
 /**
@@ -73,9 +74,9 @@ const COLUMNS: {
   { key: null, label: "#", align: "right", width: "44px" },
   { key: "name", label: "Player", width: "auto" },
   { key: null, label: "Team", width: "72px" },
-  { key: "age", label: "Age", align: "right", width: "56px" },
-  { key: "games", label: "G", align: "right", width: "56px" },
-  { key: "fga", label: "FGA", align: "right", width: "76px" },
+  { key: "age", label: "Age", unit: "years", align: "right", width: "56px" },
+  { key: "games", label: "G", unit: "games", align: "right", width: "56px" },
+  { key: "fga", label: "FGA", unit: "attempts", align: "right", width: "76px" },
   { key: "efg", label: "eFG%", align: "right", width: "68px" },
   { key: "noRestEfg", label: "No rest", unit: "eFG% · attempts", align: "right", width: "128px" },
   { key: "restedEfg", label: "3+ days rest", unit: "eFG% · attempts", align: "right", width: "128px" },
@@ -402,14 +403,7 @@ export function PlayerRestContent() {
                   >
                     {col.label}
                     {active ? (sort.dir === -1 ? " ↓" : " ↑") : ""}
-                    {col.unit && (
-                      <span
-                        className="block"
-                        style={{ fontWeight: 400, fontSize: 9.5, letterSpacing: "0.04em", textTransform: "none", opacity: 0.72 }}
-                      >
-                        {col.unit}
-                      </span>
-                    )}
+                    {col.unit && <span style={termThUnitStyle}>{col.unit}</span>}
                   </th>
                 )
               })}

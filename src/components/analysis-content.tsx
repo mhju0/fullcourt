@@ -25,7 +25,7 @@ import { useExploreGames, type DrillSignal } from "@/hooks/useExploreGames"
 import type { ExploreResult } from "@/lib/explore-games-machine"
 import { apiFetcher } from "@/lib/fetcher"
 import { NBA_SEASONS } from "@/lib/nba-season"
-import { MONO_FONT_STACK, termCardStyle } from "@/lib/terminal-styles"
+import { MONO_FONT_STACK, termCardStyle, termThStyle, termThUnitStyle } from "@/lib/terminal-styles"
 import type { AnalysisResponse } from "@/types"
 
 // ─── Shared styles (terminal) ─────────────────────────────────────
@@ -48,18 +48,6 @@ const exploreSelectStyle: React.CSSProperties = {
   fontFamily: MONO_FONT_STACK,
   color: "var(--term-text)",
   letterSpacing: "0.04em",
-}
-
-const exploreThStyle: React.CSSProperties = {
-  fontFamily: MONO_FONT_STACK,
-  fontSize: 11,
-  letterSpacing: "0.08em",
-  color: "var(--term-text-muted)",
-  fontWeight: 700,
-  padding: "8px 10px",
-  background: "var(--term-surface-2)",
-  borderBottom: "1px solid var(--term-border)",
-  textTransform: "uppercase",
 }
 
 const exploreTdBaseStyle: React.CSSProperties = {
@@ -501,13 +489,22 @@ function ExploreGames({
         <table className="mono w-full" style={{ borderCollapse: "collapse" }}>
           <thead>
             <tr>
-              <th style={{ ...exploreThStyle, textAlign: "left" }}>Date</th>
-              <th style={{ ...exploreThStyle, textAlign: "left" }}>Matchup</th>
-              <th style={{ ...exploreThStyle, textAlign: "right" }} className="hidden sm:table-cell">Home Fat.</th>
-              <th style={{ ...exploreThStyle, textAlign: "right" }} className="hidden sm:table-cell">Away Fat.</th>
-              <th style={{ ...exploreThStyle, textAlign: "center" }}>RA</th>
-              <th style={{ ...exploreThStyle, textAlign: "center" }} className="hidden sm:table-cell">Score</th>
-              <th style={{ ...exploreThStyle, textAlign: "center" }}>Result</th>
+              <th style={{ ...termThStyle, textAlign: "left" }}>Date</th>
+              <th style={{ ...termThStyle, textAlign: "left" }}>Matchup</th>
+              <th style={{ ...termThStyle, textAlign: "right" }} className="hidden sm:table-cell">
+                Home Fat.
+                <span style={termThUnitStyle}>fatigue score</span>
+              </th>
+              <th style={{ ...termThStyle, textAlign: "right" }} className="hidden sm:table-cell">
+                Away Fat.
+                <span style={termThUnitStyle}>fatigue score</span>
+              </th>
+              <th style={{ ...termThStyle, textAlign: "center" }}>
+                RA
+                <span style={termThUnitStyle}>fatigue gap</span>
+              </th>
+              <th style={{ ...termThStyle, textAlign: "center" }} className="hidden sm:table-cell">Score</th>
+              <th style={{ ...termThStyle, textAlign: "center" }}>Result</th>
             </tr>
           </thead>
           <tbody>
