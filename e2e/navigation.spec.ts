@@ -20,9 +20,9 @@ test.describe("Primary navigation", () => {
     // The exact tab count is asserted so that a stray tab, or a resurrected Upcoming
     // Edges, fails here rather than silently appearing. Adding a surface is a
     // deliberate edit to DIRECT_NAV_ITEMS or OTHER_NAV_ITEMS, /about's SURFACES, and
-    // this line. Five direct links; SHOT VALUE lives behind the OTHER menu and only
+    // this line. Six direct links; SHOT VALUE lives behind the OTHER menu and only
     // enters the DOM once that menu opens, which the next test covers.
-    await expect(nav.getByRole("link")).toHaveCount(5);
+    await expect(nav.getByRole("link")).toHaveCount(6);
     await expect(nav.getByRole("link", { name: "SHOT VALUE", exact: true })).toHaveCount(0);
 
     // The active route carries aria-current="page" (rendered as the amber underline).

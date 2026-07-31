@@ -11,7 +11,7 @@ import { SeasonSelector } from "@/components/season-selector"
 import { UpcomingContentLazy } from "@/components/upcoming-lazy"
 import { apiFetcher } from "@/lib/fetcher"
 import { useGameSlate, type GameSlate } from "@/hooks/useGameSlate"
-import { currentDisplaySeason, isNbaOffSeason, NBA_SEASONS } from "@/lib/nba-season"
+import { currentDisplaySeason, isNbaOffSeason } from "@/lib/nba-season"
 import { termCardStyle } from "@/lib/terminal-styles"
 import { cn } from "@/lib/utils"
 import type { AnalysisResponse } from "@/types"
@@ -179,11 +179,11 @@ function OffSeasonBanner({ season }: { season: string }) {
         {season} SEASON COMPLETE — SHOWING FINAL SLATE
       </span>
       <a
-        href="/analysis"
+        href="/season"
         className="transition-colors hover:underline"
         style={{ fontSize: 12, letterSpacing: "0.04em", color: "var(--term-blue)", fontWeight: 700 }}
       >
-        EXPLORE THE {NBA_SEASONS.length}-SEASON BACKTEST →
+        SEE THE FULL SEASON REPORT →
       </a>
     </div>
   )

@@ -44,7 +44,8 @@ type ProcessedHistoricalGame = {
 
 const BACKTEST_THRESHOLDS = [2, 3, 5, 7] as const;
 
-function winPct(wins: number, total: number): number {
+/** Win percentage to one decimal. Shared so two surfaces cannot round one statistic differently. */
+export function winPct(wins: number, total: number): number {
   return total > 0 ? Math.round((wins / total) * 1000) / 10 : 0;
 }
 

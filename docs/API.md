@@ -1,6 +1,6 @@
 # API reference
 
-Eleven route handlers live under `src/app/api/`, all **`GET`**. Product-data routes return the
+Twelve route handlers live under `src/app/api/`, all **`GET`**. Product-data routes return the
 `{ data, error }` envelope (`/api/cron/update` also adds `meta`); `/api/health` intentionally
 uses a dedicated liveness shape. `getPublicApiErrorMessage` (`src/lib/api-errors.ts`) exposes
 only explicit `PublicApiError` messages in production and otherwise returns a generic error;
@@ -33,6 +33,7 @@ are validated by the shared `seasonParam` / `minRAParam`.
 | `GET /api/playoffs` | `season?` | `PlayoffsResponse` | `getPlayoffSeriesWithPredictions` |
 | `GET /api/shot-quality` | `season`, `model?` | `ShotQualityResponse` | `getShotQualityGrid` |
 | `GET /api/schedule-disparity` | `season?` | `ScheduleDisparityResponse` | `getScheduleDisparity` |
+| `GET /api/season-report` | `season?` | `SeasonReportResponse` | `getSeasonReportRows` |
 | `GET /api/cron/update` | (Bearer auth) | `{ gamesUpdated }` | reads/updates `games` |
 | `GET /api/health` | none | dedicated `{ status, db, timestamp }` | `select 1` |
 
@@ -218,6 +219,39 @@ Expected Shot Value (xeFG%) grid + model surface for one season. `runtime = "nod
   - `meta: { cellCount, totalFga }` — computed in the handler from `cells`.
 - **Errors:** `500` + `getPublicApiErrorMessage` on failure. An unknown/future season with no
   grid rows returns `{ cells: [], meta: { cellCount: 0, totalFga: 0 } }`, not an error.
+
+---
+
+## `GET /api/season-report`
+
+One season, reported through the site's rest-advantage lens. Powers `/season`.
+`runtime = "nodejs"`, `dynamic = "force-dynamic"`.
+
+- **Query (Zod):** `season?` — must be in `NBA_SEASONS`; defaults to the newest season with
+  data (`NBA_SEASONS[NBA_SEASONS.length - 1]`), since this page reports games that were
+  played rather than the browsable-including-upcoming list.
+- **Query fn:** `getSeasonReportRows(season)` — every regular-season game in the season with
+  both sides' latest fatigue row (LEFT joined, so unplayed games are included for the
+  progress tile), reduced by the pure `buildSeasonReport` in `src/lib/season-report.ts`.
+  Completion is decided once, in that reducer: a row counts toward every aggregate only when
+  `status === "final"` and both scores and both fatigue sides are present — not in the query,
+  so the same fixture tests that cover the rest of the module cover it too.
+- **Held until a game goes final**, same stamp trick as `/api/analysis`
+  (`src/lib/season-report-server.ts`, keyed per season).
+- **Success:** `{ data: SeasonReportResponse, error: null }`:
+  - `season`, `scheduledGames` (every regular-season game), `completedGames` (final, scored,
+    both fatigue sides present)
+  - `overall` / `atLeastTwo: SeasonReportRate` — `{ games, restedTeamWins, winPct, band }`,
+    the rest-advantage win rate overall and for RA ≥ 2 (the only per-season threshold this
+    page publishes; RA ≥ 5 and ≥ 7 run too thin at one season's sample size)
+  - `teams: SeasonReportTeamLabelled[]` — per team: rested/tired games+wins+winPct, `swing`
+    (rested − tired, null if either arm is empty), and the schedule facts (`travelMiles`,
+    `backToBacks`, `threeInFours`, `jetLagGames`)
+  - `loudestCalls: SeasonReportCall[]` — the ten games with the largest rest gap, ranked by
+    gap rather than margin, each tagged hit/miss
+  - `weeks: SeasonReportWeek[]` — league-average fatigue in seven-day buckets from the
+    season's first game
+- **Errors:** `500` + `getPublicApiErrorMessage` on failure.
 
 ---
 

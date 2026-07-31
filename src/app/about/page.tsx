@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 
 /**
  * Reached from the reference links in the nav row, not from a tab: this explains the
- * product rather than being one of its five surfaces.
+ * product rather than being one of its six surfaces.
  *
  * The evidence figures are read from the same backtest the Model Results page renders rather
  * than typed into the copy. They were hardcoded until 2026-07-30 and had gone stale in all

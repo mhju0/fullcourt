@@ -53,13 +53,13 @@ function CourtSplit({ className = "" }: { className?: string }) {
  * backtest columns, a bracket, the arc. Inline SVG, no data, no request: it fills the
  * surface cards with a preview rather than decoration, so the glyph is wayfinding.
  */
-function SurfaceGlyph({ kind }: { kind: number }) {
+function SurfaceGlyph({ href }: { href: string }) {
   const blue = "#2563EB";
   const red = "#DC2626";
   const line = "rgba(245,241,232,.22)";
   const common = { viewBox: "0 0 120 56", className: "w-full", "aria-hidden": true as const };
 
-  if (kind === 0)
+  if (href === "/")
     return ( // Games — two fatigue bars, unequal
       <svg {...common}>
         <rect x="4" y="14" width="112" height="7" rx="3.5" fill={line} />
@@ -69,7 +69,16 @@ function SurfaceGlyph({ kind }: { kind: number }) {
       </svg>
     );
 
-  if (kind === 1)
+  if (href === "/season")
+    return ( // Season Report — season progress against the vs-history marker
+      <svg {...common}>
+        <rect x="4" y="24" width="112" height="8" rx="4" fill={line} />
+        <rect x="4" y="24" width="78" height="8" rx="4" fill={blue} />
+        <rect x="69" y="17" width="2.4" height="22" rx="1.2" fill={red} />
+      </svg>
+    );
+
+  if (href === "/schedule")
     return ( // Schedule Edge — a ranking diverging from zero
       <svg {...common}>
         {[14, 9, 4, -6, -12].map((v, i) => (
@@ -87,7 +96,7 @@ function SurfaceGlyph({ kind }: { kind: number }) {
       </svg>
     );
 
-  if (kind === 2)
+  if (href === "/analysis")
     return ( // Model Results — backtest columns off a coin-flip baseline
       <svg {...common}>
         {[13, 18, 27, 34].map((h, i) => (
@@ -97,7 +106,7 @@ function SurfaceGlyph({ kind }: { kind: number }) {
       </svg>
     );
 
-  if (kind === 3)
+  if (href === "/playoffs")
     return ( // Playoff Predictions — a bracket converging
       <svg {...common} fill="none" stroke={line} strokeWidth="1.6">
         <path d="M6 10h26v18h26M6 46h26V28" />
@@ -121,15 +130,16 @@ function SurfaceGlyph({ kind }: { kind: number }) {
 
 const SURFACES = [
   { name: "Games", href: "/", copy: "Any season's slate by date, each team's fatigue score, and the rest gap between them — with live scores." },
+  { name: "Season Report", href: "/season", copy: "One season read end to end: how the rest call scored against its own history, which teams turned a rest edge into wins, and what the schedule asked of each of them." },
   { name: "Schedule Edge", href: "/schedule", copy: "Which teams a season's schedule favoured, counted in games with a real rest edge. Scoped to its own season, always." },
   { name: "Model Results", href: "/analysis", copy: "The backtest that scores the model against history: thresholds, season trends, and every individual game." },
   { name: "Playoff Predictions", href: "/playoffs", copy: "How likely each playoff series is to go the home-court team's way. A separate model, and one that calibrates better than it picks — the page says which." },
   { name: "Player Shooting", href: "/shooting", copy: "Every player's shooting on no rest against three days off, season by season. One season of it is noise, and the page says so." },
 ];
 
-// Shot Value is intentionally absent: this list names the five tabs in the nav bar, and Shot
+// Shot Value is intentionally absent: this list names the six tabs in the nav bar, and Shot
 // Value lives in the OTHER menu alongside the other reference surfaces. Listing it here made
-// the page claim six surfaces while the bar showed five.
+// the page claim seven surfaces while the bar showed six.
 
 
 /**
@@ -382,7 +392,7 @@ export function AboutContent({ stats }: { stats: AboutStats | null }) {
               </span>
 
               <div aria-hidden="true" className="my-5 px-1 opacity-70 transition-opacity duration-500 group-hover:opacity-100">
-                <SurfaceGlyph kind={i} />
+                <SurfaceGlyph href={s.href} />
               </div>
 
               <div className="lg:min-h-[8.5rem]">

@@ -27,6 +27,7 @@ import {
   teams,
 } from "./schema";
 import type { DisparityGameRow } from "@/lib/schedule-disparity";
+import type { SeasonReportRow } from "@/lib/season-report";
 import { ABNORMAL_STRETCHES } from "@/lib/season-regime";
 import {
   formatEasternDateKey,
@@ -63,6 +64,7 @@ const FATIGUE_COLUMNS = {
   teamId: fatigueScores.teamId,
   score: fatigueScores.score,
   isBackToBack: fatigueScores.isBackToBack,
+  isThreeInFour: fatigueScores.isThreeInFour,
   gamesInLast7Days: fatigueScores.gamesInLast7Days,
   travelDistanceMiles: fatigueScores.travelDistanceMiles,
   altitudeMultiplier: fatigueScores.altitudeMultiplier,
@@ -1186,5 +1188,83 @@ export async function getTeamDirectory(): Promise<
     id: Number(r.id),
     abbreviation: String(r.abbreviation),
     name: String(r.name),
+  }));
+}
+
+// ─── Season Report query ─────────────────────────────────────────
+
+/**
+ * Every regular-season game in one season with both sides' latest fatigue row.
+ *
+ * LEFT joins and no status filter, unlike `getCompletedGamesWithFatigue`: the progress
+ * tile needs a count of the season's scheduled games, so this reads every one of them.
+ * `status` is still selected below — completion is decided once, in the reducer
+ * (`buildSeasonReport`), so the same rule that says a game without a score or without
+ * both fatigue sides contributes to no aggregate also says a `live` game does not, even
+ * with both scores already populated. `gameIsNormallyPlayed` still applies — the 2019-20
+ * bubble is not games anyone travelled to.
+ */
+export async function getSeasonReportRows(season: string): Promise<SeasonReportRow[]> {
+  const homeFatigue = latestFatigueLateral(games.homeTeamId, "home_fatigue_season_report");
+  const awayFatigue = latestFatigueLateral(games.awayTeamId, "away_fatigue_season_report");
+
+  const rows = await db
+    .select({
+      gameId: games.id,
+      date: games.date,
+      status: games.status,
+      homeTeamId: games.homeTeamId,
+      awayTeamId: games.awayTeamId,
+      homeScore: games.homeScore,
+      awayScore: games.awayScore,
+      homeFatigueScore: homeFatigue.score,
+      homeTravelDistanceMiles: homeFatigue.travelDistanceMiles,
+      homeIsBackToBack: homeFatigue.isBackToBack,
+      homeIsThreeInFour: homeFatigue.isThreeInFour,
+      homeHasTimeZoneDisplacement: homeFatigue.hasTimeZoneDisplacement,
+      awayFatigueScore: awayFatigue.score,
+      awayTravelDistanceMiles: awayFatigue.travelDistanceMiles,
+      awayIsBackToBack: awayFatigue.isBackToBack,
+      awayIsThreeInFour: awayFatigue.isThreeInFour,
+      awayHasTimeZoneDisplacement: awayFatigue.hasTimeZoneDisplacement,
+    })
+    .from(games)
+    .leftJoinLateral(homeFatigue, sql`true`)
+    .leftJoinLateral(awayFatigue, sql`true`)
+    .where(
+      and(eq(games.season, season), eq(games.gameType, "regular"), gameIsNormallyPlayed)
+    )
+    // Date-ascending is a contract, not a convenience: the reducer dates its fatigue
+    // calendar from the first row it accepts.
+    .orderBy(asc(games.date), asc(games.id));
+
+  return rows.map((r) => ({
+    gameId: Number(r.gameId),
+    date: String(r.date),
+    status: String(r.status),
+    homeTeamId: Number(r.homeTeamId),
+    awayTeamId: Number(r.awayTeamId),
+    homeScore: r.homeScore === null ? null : Number(r.homeScore),
+    awayScore: r.awayScore === null ? null : Number(r.awayScore),
+    home:
+      r.homeFatigueScore === null
+        ? null
+        : {
+            fatigueScore: String(r.homeFatigueScore),
+            travelDistanceMiles: String(r.homeTravelDistanceMiles),
+            isBackToBack: Boolean(r.homeIsBackToBack),
+            isThreeInFour: Boolean(r.homeIsThreeInFour),
+            hasTimeZoneDisplacement: Boolean(r.homeHasTimeZoneDisplacement),
+          },
+    away:
+      r.awayFatigueScore === null
+        ? null
+        : {
+            fatigueScore: String(r.awayFatigueScore),
+            travelDistanceMiles: String(r.awayTravelDistanceMiles),
+            isBackToBack: Boolean(r.awayIsBackToBack),
+            isThreeInFour: Boolean(r.awayIsThreeInFour),
+            hasTimeZoneDisplacement: Boolean(r.awayHasTimeZoneDisplacement),
+          },
   }));
 }

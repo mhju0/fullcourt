@@ -89,6 +89,23 @@ not for live scoring). **Prefer a stats-ID source (`stats.nba.com`) for a live s
 - [ ] Bump the hardcoded season counts that cannot derive (Section 7).
 - [ ] After the first week, run the data-integrity re-audit (Section 6) to catch date drift early.
 
+**Known limitation, not fixed: `/season` can serve a stale empty rollover for weeks.**
+`getSeasonReport()` (`src/lib/season-report-server.ts`) keys its cache on
+`getCompletedGamesStamp()`, which counts **final** games — exact for `/api/analysis`, whose
+inputs are only final games. `/season` deliberately also reads scheduled (not-yet-played)
+games, so the stamp is not exact for it. On 1 October the season list rolls over and
+`/season` defaults to 2026-27. The first request that season caches a report off whatever
+`getCompletedGamesStamp()` reads at that moment — and no regular-season game goes final
+until opening night, roughly three weeks later. Until then the stamp never moves, so the
+cache never invalidates, and the new nav tab's default view serves `0 / 0 · NO GAMES
+SCHEDULED` even after 2026-27 has been seeded (Section 4). Serverless recycling on Vercel
+masks this intermittently, since a fresh instance starts with an empty cache — which is why
+it can look fixed on one request and stale on the next.
+Two ways to close it, neither done here: widen the stamp to also count scheduled games for
+the season in view (still cheap — an indexed `count`), so a newly-seeded schedule moves the
+stamp even with nothing final yet; or put a TTL on the cache entry so it self-expires without
+needing a stamp change at all.
+
 ## 4. Seeding the new schedule (manual)
 
 From a reachable environment with `DATABASE_URL` set, run from the repo root:

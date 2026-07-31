@@ -1,13 +1,13 @@
 import { expect, test } from "@playwright/test";
 
 test.describe("Behind the Data", () => {
-  test("sits in the Reference landmark, not among the five product tabs", async ({ page }) => {
+  test("sits in the Reference landmark, not among the six product tabs", async ({ page }) => {
     await page.goto("/");
 
-    // Two landmarks share the nav row. The product tabs keep their asserted five-link count;
+    // Two landmarks share the nav row. The product tabs keep their asserted six-link count;
     // the reference links are a separate landmark so they read as utility, not product.
     const mainNav = page.getByRole("navigation", { name: "Main navigation" });
-    await expect(mainNav.getByRole("link")).toHaveCount(5);
+    await expect(mainNav.getByRole("link")).toHaveCount(6);
     await expect(
       mainNav.getByRole("link", { name: "BEHIND THE DATA", exact: true })
     ).toHaveCount(0);
