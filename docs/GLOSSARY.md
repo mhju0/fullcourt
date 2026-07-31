@@ -21,8 +21,8 @@ The regular-season evaluation of whether the team favored by rest advantage won.
 _Avoid_: prediction accuracy test
 
 **Playoff Predictor**:
-The series-level model that estimates the probability a playoff series goes the home-court team's way, from pre-series evidence. It is separate from the regular-season historical backtest, and separate from the fatigue model: it shares no code path, and `win_pct_diff` outweighs its one rest-shaped feature roughly three to one. Its measured edge is **calibration** — ~13-14% better log loss and Brier than the base rate — not accuracy, where it ties "always pick the home-court team" inside the noise.
-_Avoid_: playoff rest-advantage model; playoff fatigue model; "the fatigue model applied to playoffs" — this guidance predates the surface copy that violated it, which was corrected 2026-07-30. Also avoid quoting its accuracy as a headline result.
+The series-level model that estimates the probability a playoff series goes the home-court team's way, from pre-series evidence. It is separate from the regular-season historical backtest, and separate from the fatigue model: it shares no code path, and `win_pct_diff` outweighs its prior-round-grind feature 2.53 to 1 (standardized coefficients). Its edge is **calibration** — ~13% better log loss, ~15% better Brier than the base rate — not pooled accuracy, which ties the base rate inside the noise; split by round it beats "always pick the home-court team" in rounds 2+ (73.3% vs 69.5%, n=210) and loses in Round 1 (77.1% vs 78.8%, n=240).
+_Avoid_: playoff rest-advantage model; playoff fatigue model; "the fatigue model applied to playoffs" — this guidance predates the surface copy that violated it, which was corrected 2026-07-30. Also avoid quoting pooled accuracy alone as a headline result — the round split is real but conditional on round.
 
 **Expected Shot Value**:
 The location-based expected effective field-goal percentage for a court cell. It does not represent defender-aware or shot-clock-aware shot quality.
