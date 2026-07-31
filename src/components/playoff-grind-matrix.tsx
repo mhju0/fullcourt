@@ -93,13 +93,18 @@ export function PlayoffGrindMatrix() {
           </caption>
           <thead>
             <tr>
-              <th style={{ ...ROW_HEAD, color: "var(--term-text-muted)", fontSize: 11, letterSpacing: "0.08em" }}>
+              {/* A `td`, not a `th`: this corner cell heads no column — it labels what the
+                  two columns to its right mean, while the column beneath it holds the row
+                  headers. As a `th` with no scope it resolves to `scope="col"` and gets
+                  announced as the header of every row label. Styling is inline, so the tag
+                  swap changes nothing visually. */}
+              <td style={{ ...ROW_HEAD, color: "var(--term-text-muted)", fontSize: 11, letterSpacing: "0.08em" }}>
                 THEIR LAST ROUND →
-              </th>
-              <th className="mono" style={{ ...ROW_HEAD, textAlign: "right", fontSize: 11, letterSpacing: "0.06em", color: "var(--term-text-muted)" }}>
+              </td>
+              <th scope="col" className="mono" style={{ ...ROW_HEAD, textAlign: "right", fontSize: 11, letterSpacing: "0.06em", color: "var(--term-text-muted)" }}>
                 CLOSED IT EARLY
               </th>
-              <th className="mono" style={{ ...ROW_HEAD, textAlign: "right", fontSize: 11, letterSpacing: "0.06em", color: "var(--term-text-muted)" }}>
+              <th scope="col" className="mono" style={{ ...ROW_HEAD, textAlign: "right", fontSize: 11, letterSpacing: "0.06em", color: "var(--term-text-muted)" }}>
                 WENT THE DISTANCE
               </th>
             </tr>
