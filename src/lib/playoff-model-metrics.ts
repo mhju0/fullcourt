@@ -55,9 +55,10 @@ export const PLAYOFF_MODEL_CALIBRATION = Object.freeze([
  * be the dishonest half of the same result.
  *
  * The 95% CI on the model's accuracy contains the baseline, and across the 30 folds the model
- * beat / tied / lost to the baseline 11 / 13 / 6 times (`ml/phase3_results.txt`, the
- * `logistic:unreg` row's per-season W/T/L vs the majority baseline). "Predict the home-court
- * team" is, within measurement error, exactly as accurate.
+ * beat / tied / lost to the baseline 11 / 13 / 6 times — `winTieLoss` mirrors
+ * `ml/playoff_round_split.json`'s `pooledRecord`, pinned by
+ * `src/lib/__tests__/playoff-rest-facts.test.ts`. "Predict the home-court team" is, within
+ * measurement error, exactly as accurate.
  */
 export const PLAYOFF_MODEL_ACCURACY = Object.freeze({
   model: 0.7533,

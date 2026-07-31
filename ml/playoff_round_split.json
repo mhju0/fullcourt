@@ -25,6 +25,11 @@
     "tie": 16,
     "loss": 3
   },
+  "pooledRecord": {
+    "win": 11,
+    "tie": 13,
+    "loss": 6
+  },
   "pooled": {
     "n": 450,
     "accuracy": 75.3,

@@ -429,19 +429,25 @@ def round_split_summary(res: WalkForwardResult, baseline: WalkForwardResult) -> 
             "baselineLogLoss": round(float(log_loss(t, base, labels=[0, 1])), 4),
         }
 
+    def paired_record(mask: np.ndarray) -> dict:
+        """Per-season paired win/tie/loss against the always-home-court rule, restricted
+        to `mask`. `roundsTwoPlusRecord` and `pooledRecord` are the same comparison over
+        different slices (rounds 2+ vs every round)."""
+        wins = ties = losses = 0
+        for szn in sorted(set(res.pooled_seasons[mask].tolist())):
+            sel = mask & (res.pooled_seasons == szn)
+            if not sel.any():
+                continue
+            model_acc = (res.pooled_y[sel] == (res.pooled_p[sel] >= 0.5)).mean()
+            base_acc = res.pooled_y[sel].mean()
+            wins += model_acc > base_acc
+            ties += model_acc == base_acc
+            losses += model_acc < base_acc
+        return {"win": int(wins), "tie": int(ties), "loss": int(losses)}
+
     r1_mask = res.pooled_rounds == 1
     r2_mask = res.pooled_rounds >= 2
-
-    wins = ties = losses = 0
-    for szn in sorted(set(res.pooled_seasons[r2_mask].tolist())):
-        sel = r2_mask & (res.pooled_seasons == szn)
-        if not sel.any():
-            continue
-        model_acc = (res.pooled_y[sel] == (res.pooled_p[sel] >= 0.5)).mean()
-        base_acc = res.pooled_y[sel].mean()
-        wins += model_acc > base_acc
-        ties += model_acc == base_acc
-        losses += model_acc < base_acc
+    all_mask = np.ones(len(res.pooled_y), dtype=bool)
 
     pooled_acc, pooled_ll, pooled_brier = res.pooled()
     base_acc, base_ll, _ = baseline.pooled()
@@ -450,7 +456,8 @@ def round_split_summary(res: WalkForwardResult, baseline: WalkForwardResult) -> 
         "features": list(FEATURES),
         "roundsTwoPlus": slice_metrics(r2_mask),
         "roundOne": slice_metrics(r1_mask),
-        "roundsTwoPlusRecord": {"win": int(wins), "tie": int(ties), "loss": int(losses)},
+        "roundsTwoPlusRecord": paired_record(r2_mask),
+        "pooledRecord": paired_record(all_mask),
         "pooled": {
             "n": int(len(res.pooled_y)),
             "accuracy": round(float(pooled_acc * 100), 1),
