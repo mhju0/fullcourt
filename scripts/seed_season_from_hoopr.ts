@@ -3,7 +3,7 @@
  *
  * This exists because the project's normal ingest is unreachable. `fetch_schedule.py` drives
  * nba_api against stats.nba.com, which times out from Seoul *and* from GitHub's runners — so
- * no historical season can be fetched from anywhere this project can run code. The 40 seasons
+ * no historical season can be fetched from anywhere this project can run code. The seasons
  * already in the database were ingested when that endpoint still answered.
  *
  * Two sources, each for the thing it actually has:

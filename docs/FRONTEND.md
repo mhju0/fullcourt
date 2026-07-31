@@ -77,7 +77,7 @@ upcoming October date at season start; else nearest / last available).
   toggle;
   `StatSummaryRow` (GAMES ON THIS DATE, AVG REST ADV, HIGH CONF GAMES where
   `HIGH_CONF_THRESHOLD = 2.0` — three tiles, all scoped to the slate on screen; a fourth
-  once carried the 40-season backtest rate, which described none of the games shown and is
+  once carried the full-history backtest rate, which described none of the games shown and is
   stated per matchup and on /analysis instead); `useSWR("/api/analysis")` stays, since the
   matchup cards' evidence sentences are denominated from it; the shared
   a two-group control panel — **Scope** (`<SeasonSelector>` + month tabs from `slate.months`,
@@ -310,7 +310,7 @@ and its test remain, so the page can return without a re-ingest.
    one piece of chrome people reflexively click. Home is `GAMES`, not `/about`: a logo landing
    on an explainer breaks the "take me back to the product" contract.
    The right side is now empty. It previously held `currentDisplaySeason() + " SEASON"`, removed
-   2026-07-30 — it was not interactive, and on a site covering forty seasons it implied the whole
+   2026-07-30 — it was not interactive, and on a site covering four decades of seasons it implied the whole
    product was scoped to one — and an `ABOUT` link, which moved to the nav row.
    There is **no LIVE dot** — it was gated by
    a `HAS_LIVE_GAMES` constant hardcoded to `false`, so it never rendered in any state; the

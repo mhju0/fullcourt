@@ -128,13 +128,20 @@ function SurfaceGlyph({ href }: { href: string }) {
   );
 }
 
+/**
+ * The six cards are one row of identical shapes, so every `copy` here is held to ONE OR TWO
+ * sentences of 10–20 words. This is a layout contract, not a style preference: the card is a
+ * fixed-height flex column, so a description that runs long grows its own text block and
+ * shoves that card's title out of line with the other five. Keep them within range when
+ * editing, and a new surface arrives inside the range too.
+ */
 const SURFACES = [
-  { name: "Games", href: "/", copy: "Any season's slate by date, each team's fatigue score, and the rest gap between them — with live scores." },
-  { name: "Season Report", href: "/season", copy: "One season read end to end: how the rest call scored against its own history, which teams turned a rest edge into wins, and what the schedule asked of each of them." },
-  { name: "Schedule Edge", href: "/schedule", copy: "Which teams a season's schedule favoured, counted in games with a real rest edge. Scoped to its own season, always." },
+  { name: "Games", href: "/", copy: "Every season's slate by date, with fatigue scores, rest gaps, and live scores during the season." },
+  { name: "Season Report", href: "/season", copy: "One season read end to end: how the rest call scored, and what the schedule cost each team." },
+  { name: "Schedule Edge", href: "/schedule", copy: "Which teams a season's schedule favoured, counted in games with a real rest edge." },
   { name: "Model Results", href: "/analysis", copy: "The backtest that scores the model against history: thresholds, season trends, and every individual game." },
-  { name: "Playoff Predictions", href: "/playoffs", copy: "How likely each playoff series is to go the home-court team's way. A separate model, and one that calibrates better than it picks — the page says which." },
-  { name: "Player Shooting", href: "/shooting", copy: "Every player's shooting on no rest against three days off, season by season. One season of it is noise, and the page says so." },
+  { name: "Playoff Predictions", href: "/playoffs", copy: "How likely each playoff series is to go the home team's way. Calibrated better than it picks." },
+  { name: "Player Shooting", href: "/shooting", copy: "Every player's shooting on no rest against three days off. One season of it is noise." },
 ];
 
 // Shot Value is intentionally absent: this list names the six tabs in the nav bar, and Shot
@@ -379,7 +386,10 @@ export function AboutContent({ stats }: { stats: AboutStats | null }) {
             <Link
               key={s.href}
               href={s.href}
-              className="group relative flex flex-1 flex-col justify-between overflow-hidden rounded-xl border p-6 transition-colors duration-300 hover:border-[rgba(245,241,232,.34)] hover:bg-[rgba(245,241,232,.04)]"
+              // Stacked from the top, deliberately NOT `justify-between`: that distributed the
+              // slack around a text block whose height follows its copy, so a longer
+              // description silently lifted that one card's title above the other five.
+              className="group relative flex flex-1 flex-col overflow-hidden rounded-xl border p-6 transition-colors duration-300 hover:border-[rgba(245,241,232,.34)] hover:bg-[rgba(245,241,232,.04)]"
               style={{ borderColor: "rgba(245,241,232,.14)", background: "linear-gradient(180deg,rgba(245,241,232,.05),rgba(11,13,16,.6))" }}
             >
               <span
@@ -395,8 +405,11 @@ export function AboutContent({ stats }: { stats: AboutStats | null }) {
                 <SurfaceGlyph href={s.href} />
               </div>
 
-              <div className="lg:min-h-[8.5rem]">
-                <span className="font-heading block whitespace-nowrap text-xl font-bold">{s.name}</span>
+              <div>
+                {/* Two lines reserved, not nowrap: "Playoff Predictions" cannot fit one line at
+                    a sixth of the row and was being clipped by the card's overflow. Reserving
+                    the pair keeps every card's copy starting on the same line either way. */}
+                <span className="font-heading block text-xl font-bold leading-tight lg:h-[3.5rem]">{s.name}</span>
                 <span className="mt-3 block max-w-[30rem] text-sm" style={{ color: DIM, lineHeight: 1.6 }}>
                   {s.copy}
                 </span>

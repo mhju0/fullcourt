@@ -37,7 +37,7 @@ Post-fetch (recompute aggregates for analysis + tracker; repo root, DATABASE_URL
   pnpm exec tsx scripts/backfill_fatigue.ts
   pnpm exec tsx scripts/backfill_predictions.ts
 
-Large historical pulls: fatigue backfill can take 30–90+ minutes for ~40 seasons.
+Large historical pulls: fatigue backfill can take 30–90+ minutes for the full history.
 """
 
 import os

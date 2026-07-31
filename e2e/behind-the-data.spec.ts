@@ -81,7 +81,7 @@ test.describe("Status bar", () => {
 
   test("no longer advertises a single current season in the chrome", async ({ page }) => {
     await page.goto("/");
-    // The site covers forty seasons; a fixed "2025-26 SEASON" readout in the chrome implied
+    // The site covers four decades of seasons; a fixed "2025-26 SEASON" readout in the chrome implied
     // the whole product was scoped to one, and it was not interactive either.
     //
     // Scoped to the header on purpose. The home page still carries an offseason banner
@@ -120,10 +120,14 @@ test.describe("Reference prose spacing", () => {
       // code, not run-together words, so reading <p> and <li> is both simpler and stricter
       // than stripping the code blocks out of a whole-body dump.
       const text = (await page.locator("p, li").allInnerTexts()).join("\n");
-      const offenders = [...text.matchAll(/[a-z.,)][A-Z][a-z]{2,}|\d[a-z]{3,}/g)]
-        .map((m) => m[0])
+      // Whole words, then the seam test — not the seam alone. Matching the seam yielded
+      // fragments like "lCourt" for "FullCourt", which no entry in the allow-list below could
+      // ever match, so the allow-list was inert until the first camelCase proper noun reached
+      // one of these pages. `.,)` stay inside a word because "x.Word" IS the defect.
+      const offenders = (text.match(/[A-Za-z0-9.,)]+/g) ?? [])
+        .filter((w) => /[a-z.,)][A-Z][a-z]{2,}|\d[a-z]{3,}/.test(w))
         // Legitimately unspaced: proper nouns and metric names the prose uses inline.
-        .filter((s) => !/NBA|FullCourt|GBM|UTC|eFG|xeFG|ESPN/.test(s));
+        .filter((w) => !/^(NBA|FullCourt|GBM|UTC|eFG|xeFG|ESPN|hoopR)$/.test(w.replace(/^[.,)]+|[.,)]+$/g, "")));
 
       expect(offenders, `run-together text: ${offenders.join(", ")}`).toEqual([]);
     });

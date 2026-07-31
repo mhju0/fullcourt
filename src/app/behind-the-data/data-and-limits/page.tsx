@@ -13,7 +13,7 @@ import { termTdStyle, termThStyle } from "@/lib/terminal-styles";
 export const metadata: Metadata = {
   title: "Data & Limits — Behind the Data",
   description:
-    "Where FullCourt's data comes from, which seasons carry which fields, what is excluded on purpose, and the known gaps.",
+    "Where FullCourt's data comes from, which seasons carry which fields, what is excluded on purpose, what the site does not model, and the known gaps.",
 };
 
 const COVERAGE = [
@@ -57,11 +57,12 @@ export default function DataAndLimitsPage() {
       description="Where the numbers come from, which seasons carry which fields, and what is left out on purpose. The gaps are stated because a model is only as good as the reader's ability to check it."
     >
       <Section label="COVERAGE" descriptor={`${NBA_SEASONS.length} SEASONS`}>
+        {/* Deliberately says nothing about *why* three fields come from ESPN. The reason is
+            operational, it identifies where this is run from, and no reader of this page is
+            served by it. The sources themselves are the answer, and the table lists them. */}
         <Prose>
-          Not every field reaches back as far as the schedule does. Three inputs arrive from
-          ESPN rather than the NBA, because the NBA endpoint that serves them is not reachable
-          from outside the United States — a failure that went unnoticed long enough that the
-          overtime term sat dormant across every game in the dataset before it was found.
+          Not every field reaches back as far as the schedule does. Three inputs come from ESPN
+          rather than the NBA feeds, and the table says which seasons carry which.
         </Prose>
         <div className="overflow-x-auto">
           <table className="mono w-full" style={{ fontSize: 12, borderCollapse: "collapse" }}>
@@ -86,11 +87,9 @@ export default function DataAndLimitsPage() {
           </table>
         </div>
         <Note>
-          The consequence is worth stating plainly: the fatigue model is quietly a slightly
-          different model before and after 2002. Terms are applied where their data exists
-          rather than being back-filled with guesses or withheld from four decades of games,
-          and the cost is that a 1994 score and a 2024 score are not built from identical
-          information.
+          The consequence, plainly: the fatigue model is a slightly different model before and
+          after 2002. Terms are applied where their data exists rather than back-filled with
+          guesses, so a 1994 score and a 2024 score are not built from identical information.
         </Note>
       </Section>
 
@@ -154,13 +153,29 @@ export default function DataAndLimitsPage() {
         </Note>
       </Section>
 
+      {/* Separate from KNOWN GAPS on purpose, and the distinction is the point: a gap is
+          something this site tried to have and does not. What follows is the opposite — inputs
+          it could add and has decided against, because adding them would change what the site
+          is. Filing them as gaps read as an apology for a choice. */}
+      <Section label="WHAT THIS SITE DOES NOT DO" descriptor="A CHOICE, NOT A GAP">
+        <Prose>
+          FullCourt measures what the schedule does to teams. It is not a prediction service, so
+          it does not model opponent strength, betting lines, favourites and underdogs, or injuries
+          and availability.
+        </Prose>
+        <Note>
+          Those inputs are what a forecast is built from, and adding them would make this a
+          tipping site that happens to track rest. The historical win rates here are
+          associational for the same reason: they describe what has followed a rest gap, not what
+          causes a team to win.
+        </Note>
+      </Section>
+
       <Section label="KNOWN GAPS" descriptor="NOT YET FIXED">
         <LimitList
           items={[
-            "Pre-2002 overtime is unknown rather than zero. Basketball-Reference could close this gap; it has not been done.",
-            "Neutral-site games before 2013 are unmarked, so Mexico City games from 1997 and the 2011-12 London games are geolocated at the listed host's arena.",
-            "No injury or availability data anywhere on the site. This is the largest single limitation across every model here.",
-            "No opponent-strength control in any of the historical win rates. They are associational, not causal.",
+            "Pre-2002 overtime is unknown rather than zero. Basketball-Reference carries it and could close this gap; it has not been done.",
+            "Neutral-site games before 2013 are unmarked, so Mexico City games from 1997 and the 2011-12 London games are geolocated at the listed host's arena. Basketball-Reference marks them.",
             "Arena coordinates are era-correct for relocations, but neutral-site venues rely on a small hand-maintained list of cities.",
           ]}
         />
