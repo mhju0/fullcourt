@@ -163,6 +163,19 @@ export const playoffSeries = pgTable(
     seedDiff: decimal("seed_diff"),
     winPctDiff: decimal("win_pct_diff"),
     entryRestDiff: decimal("entry_rest_diff"),
+    /**
+     * Opponent's prior-round grind minus the home-court team's, where one team's grind is
+     * `games_played - (4 if is_best_of_7 else 3)` — games beyond a sweep.
+     *
+     * SIGN IS INVERTED vs the other *_diff columns on purpose: this is (opponent - home-court)
+     * so that positive still favors the home-court team. 136 of 320 Round 1 series (1985-86 ..
+     * 2001-02) were best-of-5, where five games means going the full distance rather than
+     * closing early, so the format adjustment is mandatory rather than cosmetic.
+     *
+     * 0 in Round 1 (no prior round exists — a fact, not a fill value). NULL only where a prior
+     * series cannot be resolved. Written by `ml/compute_prior_grind.py`; migration 0012.
+     */
+    priorGrindDiff: decimal("prior_grind_diff"),
     h2hDiff: decimal("h2h_diff"),
     /** Deterministic "season:round:team:team" key for idempotent upserts. */
     externalSeriesKey: varchar("external_series_key").notNull().unique(),
