@@ -60,7 +60,7 @@ export default function PlayoffPredictionsMethodPage() {
     <BehindTheDataShell
       eyebrow="BEHIND THE DATA · PLAYOFF PREDICTIONS"
       title="Playoff predictions"
-      description="A separate model from the regular-season one, at series grain rather than game grain. It estimates how likely a series is to go one way, not who wins a night — and its edge is the honesty of that probability, not the pick it implies."
+      description="A separate model from the regular-season one, at series grain rather than game grain. Its edge is the honesty of the probability, not the pick it implies."
     >
       <Section label="WHAT IS PREDICTED" descriptor="SERIES GRAIN">
         <Prose>

@@ -30,7 +30,7 @@ export default function RefereesPage() {
       <PageHeader
         eyebrow="REFEREE EFFECT · FOUL STYLE"
         title="What each official calls"
-        description={`Officials don't call the same game the same way. Every figure below is how much more or less often one calls that foul than the league does — across ${data.gamesCovered.toLocaleString()} games since ${data.firstSeason}. Sort any column.`}
+        description={`Officials don't call the same game the same way. Every figure is how much more or less often one calls that foul than the league does, across ${data.gamesCovered.toLocaleString()} games since ${data.firstSeason}.`}
       />
 
       <RefereeStyleContent data={data} />

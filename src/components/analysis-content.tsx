@@ -733,7 +733,7 @@ export function AnalysisContent() {
       <PageHeader
         eyebrow="HISTORICAL BACKTEST"
         title="Rest Advantage Analysis"
-        description="Among completed regular-season games with fatigue data on both sides, did the more-rested team win? Charts plot the gap against a coin flip in percentage points, so zero is a 50% win rate."
+        description="Among completed regular-season games with fatigue data on both sides, did the more-rested team win? Charts plot the gap against a coin flip, so zero is a 50% win rate."
       />
       <MethodLink surfaceHref="/analysis" />
 

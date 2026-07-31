@@ -15,7 +15,12 @@ test.describe("Schedule Disparity page", () => {
 
     // The page describes a schedule; it does not predict outcomes. That disclaimer is
     // load-bearing for a rest-disparity leaderboard, which invites reading intent into it.
-    await expect(page.getByText(/it is not a prediction/i)).toBeVisible();
+    //
+    // Matched on the claim, not on one phrasing of it: the header was shortened to two lines
+    // on 2026-07-31 and "it is not a prediction" became "Not a prediction", which failed a
+    // regex pinned to the longer form while the disclaimer itself never left the page. This
+    // still fails if the sentence is dropped, which is what the test is for.
+    await expect(page.getByText(/not a prediction/i)).toBeVisible();
     await expect(page.getByText(/much of the gap is structural/i)).toBeVisible();
   });
 

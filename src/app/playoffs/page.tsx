@@ -13,7 +13,7 @@ export default function PlayoffsPage() {
       <PageHeader
         eyebrow="PLAYOFF PREDICTOR"
         title="Series Predictions"
-        description="Estimates how likely each playoff series is to go the home-court team's way. A separate series-level model, driven mainly by regular-season record, with a modest rest-versus-rust term. Its value is the calibration of the probability, not the pick."
+        description="How likely each playoff series is to go the home-court team's way. A separate model driven mainly by regular-season record. Its value is the calibration, not the pick."
       />
       <MethodLink surfaceHref="/playoffs" />
 

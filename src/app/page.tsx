@@ -369,7 +369,6 @@ export default function HomePage() {
           eyebrow="REST ADVANTAGE DASHBOARD"
           title="Games"
           description="A fatigue score for every team in every game, built from travel, rest and schedule density. The bigger the gap between two teams, the more one side is carrying."
-          descriptionMaxWidth="34rem"
         />
 
       {/* View toggle — absorbed the old /upcoming route, which is now a redirect here. */}
