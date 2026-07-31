@@ -38,5 +38,12 @@
     "baselineLogLoss": 0.5696,
     "brier": 0.1628,
     "baselineBrier": 0.1907
-  }
+  },
+  "coefficients": {
+    "seed_diff": 0.4026,
+    "win_pct_diff": 0.7141,
+    "prior_grind_diff": 0.2822,
+    "h2h_diff": 0.1233
+  },
+  "intercept": 1.3724
 }

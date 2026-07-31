@@ -13,6 +13,7 @@ import {
   PLAYOFF_MODEL_EVAL,
 } from "@/lib/playoff-model-metrics";
 import {
+  PLAYOFF_MODEL_COEFFICIENTS,
   PLAYOFF_ROUND_SPLIT,
   PLAYOFF_ROUNDS_TWO_PLUS_RECORD,
 } from "@/lib/playoff-rest-facts";
@@ -24,40 +25,51 @@ export const metadata: Metadata = {
     "The playoff series model: its four features and what actually drives it, why the target is the home-court team, and why its edge is calibration rather than accuracy.",
 };
 
+/** `+0.71` from `0.7141` — sign always shown, since a bare `0.71` reads as "no direction". */
+function formatCoef(weight: number): string {
+  return `${weight >= 0 ? "+" : ""}${weight.toFixed(2)}`;
+}
+
+const winPctToSeedRatio = (
+  PLAYOFF_MODEL_COEFFICIENTS.win_pct_diff / PLAYOFF_MODEL_COEFFICIENTS.seed_diff
+).toFixed(1);
+
 /**
  * The model's feature set, in descending order of how much it actually moves the prediction.
  *
- * `weight` is the standardized logistic coefficient from `ml/PHASE3_REPORT.md` §4 — the honest
+ * `weight` is the standardized logistic coefficient, sourced from
+ * `PLAYOFF_MODEL_COEFFICIENTS` (`ml/PHASE3_REPORT.md` §4) rather than hand-typed — the honest
  * ordering, and the reason this table is sorted this way rather than by narrative importance.
  * The site used to introduce `entry_rest_diff` first and call it the headline feature; the
  * coefficients say otherwise, so the page now says otherwise too.
  *
  * `logistic_grind_v2` superseded `logistic_unreg_v1` on 2026-07-31, swapping `entry_rest_diff`
  * (raw days of rest) for `prior_grind_diff` (format-aware prior-round grind). The `v1` rows are
- * retained in the DB — this table describes the current, `v2` fit.
+ * retained in the DB — this table describes the current, `v2` fit. Stated in rendered copy
+ * below (not just here) so a reader without the source sees it too.
  */
 const FEATURES = [
   {
     name: "win_pct_diff",
-    weight: "+0.71",
+    weight: PLAYOFF_MODEL_COEFFICIENTS.win_pct_diff,
     what: "Regular-season win percentage, differenced.",
-    why: "The dominant driver — roughly 1.8 times seed_diff's weight. This model is, first and foremost, a regular-season-record model.",
+    why: `The dominant driver — roughly ${winPctToSeedRatio} times seed_diff's weight. This model is, first and foremost, a regular-season-record model.`,
   },
   {
     name: "seed_diff",
-    weight: "+0.40",
+    weight: PLAYOFF_MODEL_COEFFICIENTS.seed_diff,
     what: "Seed gap between the two teams.",
     why: "Derived as a win-percentage rank proxy rather than read from an official bracket seed, so it can drift a line in tiebreak eras.",
   },
   {
     name: "prior_grind_diff",
-    weight: "+0.28",
+    weight: PLAYOFF_MODEL_COEFFICIENTS.prior_grind_diff,
     what: "The opponent's prior-round grind minus the home-court team's own, where grind is games played beyond a sweep (games_played − 4 for a best-of-7, − 3 otherwise).",
     why: "The subtraction order is deliberately inverted versus the other three features so a positive coefficient still favors the home-court team. Always 0 in Round 1, since there is no prior round to have been ground down by.",
   },
   {
     name: "h2h_diff",
-    weight: "+0.12",
+    weight: PLAYOFF_MODEL_COEFFICIENTS.h2h_diff,
     what: "Regular-season head-to-head record between the two.",
     why: "Small samples — often three or four games — so it carries the least weight of the four.",
   },
@@ -109,7 +121,7 @@ export default function PlayoffPredictionsMethodPage() {
                 <tr key={f.name}>
                   <td style={{ ...termTdStyle, fontWeight: 700, whiteSpace: "nowrap" }}>{f.name}</td>
                   <td style={{ ...termTdStyle, fontWeight: 700, whiteSpace: "nowrap" }} className="tabular-nums">
-                    {f.weight}
+                    {formatCoef(f.weight)}
                   </td>
                   <td style={termTdStyle}>{f.what}</td>
                   <td style={{ ...termTdStyle, color: "var(--term-text-muted)" }}>{f.why}</td>
@@ -129,6 +141,12 @@ export default function PlayoffPredictionsMethodPage() {
           were best-of-five through 2001-02, and a shorter series is more random — but it is{" "}
           <strong>not</strong> fed to the model. This page previously listed it as an input; it
           is not one.
+          <br />
+          <br />
+          <strong>logistic_grind_v2</strong> superseded <strong>logistic_unreg_v1</strong> on
+          2026-07-31, when <strong>entry_rest_diff</strong> (raw days of rest) was swapped for{" "}
+          <strong>prior_grind_diff</strong> above. The <strong>v1</strong> prediction rows are
+          retained rather than overwritten, so older predictions stay auditable.
         </Note>
       </Section>
 

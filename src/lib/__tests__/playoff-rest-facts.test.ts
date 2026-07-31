@@ -7,6 +7,8 @@ import {
   PLAYOFF_EQUAL_REST,
   PLAYOFF_GRIND_EXOGENOUS,
   PLAYOFF_GRIND_MATRIX,
+  PLAYOFF_MODEL_COEFFICIENTS,
+  PLAYOFF_MODEL_INTERCEPT,
   PLAYOFF_ROUND_SPLIT,
   PLAYOFF_ROUNDS_TWO_PLUS_RECORD,
 } from "@/lib/playoff-rest-facts";
@@ -55,6 +57,11 @@ describe("playoff rest facts mirror the generated report", () => {
 
   it("the paired record matches the generated report", () => {
     expect(PLAYOFF_ROUNDS_TWO_PLUS_RECORD).toEqual(roundSplit.roundsTwoPlusRecord);
+  });
+
+  it("the model coefficients match the generated report", () => {
+    expect(PLAYOFF_MODEL_COEFFICIENTS).toEqual(roundSplit.coefficients);
+    expect(PLAYOFF_MODEL_INTERCEPT).toBe(roundSplit.intercept);
   });
 
   it("the pooled win/tie/loss record matches the generated report", () => {

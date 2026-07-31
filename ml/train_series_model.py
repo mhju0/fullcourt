@@ -631,6 +631,15 @@ def main() -> None:
     model_of_record = next(r for r in results if r.name == "logistic:unreg")
     baseline = next(r for r in results if r.name == "baseline:prior(majority)")
     summary = round_split_summary(model_of_record, baseline)
+
+    # Standardized coefficients (§4 of PHASE3_REPORT.md), keyed by feature name so the method
+    # page can read them instead of hand-typing — the same fit interpret_logistic() already
+    # produces for the text report, computed once more here since main() doesn't otherwise see
+    # build_report()'s local `logi`.
+    logi = interpret_logistic(ds)
+    summary["coefficients"] = {k: round(v, 4) for k, v in logi["coefs"].items()}
+    summary["intercept"] = round(logi["intercept"], 4)
+
     json_out = REPO_ROOT / "ml" / "playoff_round_split.json"
     json_out.write_text(json.dumps(summary, indent=2) + "\n")
     print(f"(round split JSON written to {json_out})")

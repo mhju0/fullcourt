@@ -113,6 +113,20 @@ export const PLAYOFF_ROUND_SPLIT = Object.freeze({
 });
 
 /**
+ * Standardized L2-logistic coefficients for `logistic_grind_v2` (all 599 rows, in-sample;
+ * `ml/PHASE3_REPORT.md` §4). Keyed by feature name — not a positional tuple — so a column
+ * reorder in `ml/train_series_model.py` cannot silently mismatch this page's table.
+ */
+export const PLAYOFF_MODEL_COEFFICIENTS = Object.freeze({
+  seed_diff: 0.4026,
+  win_pct_diff: 0.7141,
+  prior_grind_diff: 0.2822,
+  h2h_diff: 0.1233,
+});
+
+export const PLAYOFF_MODEL_INTERCEPT = 1.3724;
+
+/**
  * Per-season paired record against the always-home-court rule in rounds 2+.
  *
  * The pooled accuracy gap is about eight series, so the pooled number alone is not evidence.
