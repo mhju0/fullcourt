@@ -290,11 +290,27 @@ no documented section, so adding one to `BEHIND_THE_DATA_SECTIONS` is all it tak
 > and `<li>` text of every reference page for run-together words. Formula blocks are excluded —
 > camelCase inside them is code.
 
-### `/referees` — placeholder
+### `/referees` — foul style
 
-Reduced to a "Coming soon" page on 2026-07-30. The whistle numbers came back inside noise, and
-a table of muted cells invites readers to find names in it anyway. `src/data/referee-whistle.json`
-and its test remain, so the page can return without a re-ingest.
+Returned 2026-07-31 asking a different question. The page was stubbed on 2026-07-30 because its
+original question — does any official tilt the whistle home? — came back inside noise, and a
+table of muted cells invites readers to find names in it anyway. Crew *rest* was tested next and
+was also a null. What does separate officials is the **mix** of fouls they call, and that
+survives baselining per season, per arena, and on share rather than count.
+
+`src/data/referee-foul-style.json` (written by `scripts/fetch_officials.ts` alongside the older
+`referee-whistle.json`) holds one row per official: deviation in percentage points from the
+league's own seasonal mix, per foul type, each with a z-score at that official's sample size.
+`referee-style-content.tsx` renders it as a sortable table; `src/lib/referee-foul-style.ts` owns
+the types, the |z| ≥ 2 emphasis rule and the 200-game publication bar.
+
+Three constraints the page states rather than hides. A call cannot be attributed to one of three
+officials, so every figure is roughly a third of the real effect — crews barely repeat, which
+makes colleagues noise rather than bias. Foul *type* is classified by the arena scorekeeper, so
+arena was tested as a confound and found orthogonal. And **crew chief is only marked from
+2024-25**: ESPN carries no role label, its `order` field matches the NBA's published crew chief
+10/10 in 2024-25 and 2025-26 but fails earlier, so the *As chief* column counts those seasons
+alone. It is style, not bias, and the copy says so.
 
 ### `nav-bar.tsx` — two-layer header (sticky, `z-50`)
 

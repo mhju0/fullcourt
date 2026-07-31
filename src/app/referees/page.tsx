@@ -1,65 +1,93 @@
 import type { Metadata } from "next";
+import { PageHeader } from "@/components/page-header";
+import { RefereeStyleContent } from "@/components/referee-style-content";
+import styleData from "@/data/referee-foul-style.json";
+import { FOUL_COLUMNS, publishable, type RefereeFoulStyle } from "@/lib/referee-foul-style";
+import { termCardStyle } from "@/lib/terminal-styles";
+
+const data = styleData as RefereeFoulStyle;
 
 export const metadata: Metadata = {
   title: "Referee Effect",
   description:
-    "Foul calls by referee crew — which crews call more, which call differently, and whether any of it moves a game. In development, arriving before September 2026.",
+    "How NBA officials differ in the kinds of foul they call — shooting, personal, loose ball, offensive and technical — measured against the league's own mix, season by season.",
 };
 
 /**
- * A centred holding page, deliberately without the site's `PageHeader`.
+ * Referee foul style.
  *
- * There is no data on screen, so the page has nothing to be the header of — left-aligned
- * chrome above an empty column read as a page that had failed to load rather than one that
- * has not shipped yet. One centred block states what is coming and when.
- *
- * The ingest still exists (`scripts/fetch_officials.ts`) and its aggregate
- * (`src/data/referee-whistle.json`) is still guarded by `referee-whistle.test.ts`, so the
- * data layer is intact and this page can return without a re-ingest. What was here before was
- * a table whose central question — does any referee tilt the whistle home? — came back inside
- * noise, and a page of muted cells invites readers to find names in it anyway.
+ * This page exists because the question it used to ask came back empty. Twice: no official
+ * tilts the whistle home beyond noise, and crew rest does not move it either. What does
+ * separate officials, clearly and repeatably, is the *mix* of fouls they call — and that is a
+ * statement about style, not about fairness, which is why nothing here is called bias.
  */
 export default function RefereesPage() {
+  const rows = publishable(data.officials);
+  const chiefs = rows.filter((r) => r.chiefGames > 0).length;
+
   return (
-    <div className="flex min-h-[60vh] flex-col items-center justify-center px-6 py-20 text-center">
-      <p
-        className="mono"
-        style={{ fontSize: 11, letterSpacing: "0.12em", fontWeight: 700, color: "var(--term-red)" }}
-      >
-        REFEREE EFFECT
-      </p>
+    <div className="flex flex-col gap-10">
+      <PageHeader
+        eyebrow="REFEREE EFFECT · FOUL STYLE"
+        title="What each official calls"
+        description={`Every foul in ${data.gamesCovered.toLocaleString()} games since ${data.firstSeason}, sorted by who called it. Officials do not call the same game the same way — the mix of shooting fouls against loose ball against offensive fouls varies far more between them than chance allows. Sort any column.`}
+      />
 
-      <h1
-        className="font-heading mt-4 font-bold"
-        style={{ fontSize: "clamp(2.4rem,7vw,4.5rem)", letterSpacing: "-0.03em", lineHeight: 1.02 }}
-      >
-        Coming soon
-      </h1>
+      <section className="flex flex-col gap-3">
+        <p style={{ fontSize: 15, color: "var(--term-text)", lineHeight: 1.6, maxWidth: "46rem" }}>
+          Each number is a <strong>deviation</strong>, not a rate: percentage points of a game&rsquo;s
+          own fouls, against the league average for that same season. Zero means an official calls
+          the league&rsquo;s mix. The league splits{" "}
+          {FOUL_COLUMNS.map((c) => `${data.leagueShares[c.key]}% ${c.label.toLowerCase()}`).join(
+            " · "
+          )}
+          , out of {data.foulsPerGame} fouls a game.
+        </p>
+        <p style={{ fontSize: 15, color: "var(--term-text-muted)", lineHeight: 1.6, maxWidth: "46rem" }}>
+          Baselined within each season, because the taxonomy moves — take fouls ran more than
+          three times as often in 2020-21 as they did after the rule changed. Regulation games
+          only, since overtime adds fouls unevenly across types.
+        </p>
+      </section>
 
-      <p
-        className="mono mt-5"
-        style={{ fontSize: 12, letterSpacing: "0.08em", fontWeight: 600, color: "var(--term-text)" }}
-      >
-        CHECKING REFEREE BIAS · ARRIVING IN AUGUST, BEFORE SEPTEMBER
-      </p>
+      <RefereeStyleContent data={data} />
 
-      <p
-        className="mt-8"
-        style={{ maxWidth: "34rem", fontSize: 16, lineHeight: 1.65, color: "var(--term-text-muted)" }}
-      >
-        Every game is worked by a three-person crew, and not every crew calls a game the same
-        way. This page will measure that: how many fouls a crew calls per game against the
-        league&rsquo;s own average, which kinds of foul they call more and less often, and
-        whether the gap between the home and away bench moves with the crew or stays flat.
-      </p>
+      <section style={termCardStyle} className="flex flex-col gap-3">
+        <p
+          className="mono"
+          style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 600 }}
+        >
+          WHAT THIS IS NOT
+        </p>
+        <p style={{ fontSize: 15, color: "var(--term-text)", lineHeight: 1.6, maxWidth: "46rem" }}>
+          <strong>This is style, not bias.</strong> Calling more offensive fouls says nothing about
+          who benefits from them. The two questions that would be about fairness were both asked
+          here and both came back empty: no official tilts free throws toward the home team beyond
+          what chance predicts, and how much rest a crew had makes no measurable difference to how
+          a game is called.
+        </p>
+        <p style={{ fontSize: 15, color: "var(--term-text-muted)", lineHeight: 1.6, maxWidth: "46rem" }}>
+          <strong>A call cannot be traced to one official.</strong> Three work every game and the
+          play-by-play does not record which of them blew the whistle, so every game credits all
+          three and each figure above is roughly a third of the real effect. What keeps that from
+          becoming bias rather than dilution is that crews barely repeat — the same trio worked
+          together more than twice in only a handful of cases across{" "}
+          {data.gamesCovered.toLocaleString()} games — so an official&rsquo;s colleagues average out
+          over a career instead of colouring it.
+        </p>
+        <p style={{ fontSize: 15, color: "var(--term-text-muted)", lineHeight: 1.6, maxWidth: "46rem" }}>
+          <strong>Crew chief is marked only where it can be checked.</strong> The NBA assigns a crew
+          chief, a referee and an umpire to every game, but the feed behind this page carries no
+          role label. The ordering it does carry matches the NBA&rsquo;s published crew chief from{" "}
+          {data.crewChiefFirstSeason} on and does not before it, so the <em>As chief</em> column
+          counts those seasons alone — {chiefs} of these {rows.length} officials have chiefed a game
+          in them. Career totals would be larger.
+        </p>
+      </section>
 
-      <p
-        className="mt-4"
-        style={{ maxWidth: "34rem", fontSize: 16, lineHeight: 1.65, color: "var(--term-text-muted)" }}
-      >
-        Whistle volume is a real, measurable difference between crews. Whether it favours
-        anyone is a separate question, and the answer so far is that it does not — which is
-        what this page will say if it is still true when it ships.
+      <p className="mono" style={{ fontSize: 11, color: "var(--term-text-muted)" }}>
+        {data.source.toUpperCase()} · {data.firstSeason} THROUGH {data.lastSeason} · REGULAR SEASON ·
+        GENERATED {data.generated}
       </p>
     </div>
   );

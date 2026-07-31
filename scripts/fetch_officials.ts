@@ -28,7 +28,46 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 const FIRST_SEASON = "2015-16";
 const CACHE_DIR = "ml/data/officials";
 const OUT_PATH = "src/data/referee-whistle.json";
+const STYLE_OUT_PATH = "src/data/referee-foul-style.json";
 const CONCURRENCY = 10;
+
+/**
+ * The published foul taxonomy, mapping ESPN play-by-play `type.text` onto the columns the
+ * page shows. Anything foul-flagged and unlisted lands in neither — it is counted in the
+ * per-game total and shown in no column, which is what "other" means here.
+ *
+ * `Offensive Foul Turnover` is DELIBERATELY ABSENT and must stay that way: the NBA logs an
+ * offensive foul twice, once as the foul and once as the turnover it causes. Counting both
+ * inflates fouls per game by ~3.2. Verified against the box score's own PF total on 249
+ * games — including it gives 42.06/game against a box score of 38.84; excluding it gives
+ * 38.71, i.e. the play stream and the box score agree to 0.3%.
+ */
+const FOUL_TYPES = {
+  shooting: ["Shooting Foul"],
+  personal: ["Personal Foul", "Double Personal Foul", "Inbound Foul"],
+  looseBall: ["Loose Ball Foul"],
+  offensive: ["Offensive Foul"],
+  technical: [
+    "Technical Foul",
+    "Double Technical Foul",
+    "Hanging Technical Foul",
+    "Taunting Technical Foul",
+  ],
+} as const;
+type FoulKey = keyof typeof FOUL_TYPES;
+const FOUL_KEYS = Object.keys(FOUL_TYPES) as FoulKey[];
+const TYPE_LOOKUP = new Map<string, FoulKey>(
+  FOUL_KEYS.flatMap((k) => FOUL_TYPES[k].map((label) => [label, k] as const))
+);
+const DUPLICATE_OF_OFFENSIVE = "Offensive Foul Turnover";
+
+/**
+ * Crew-chief role is read off ESPN's `order` field, which is only trustworthy from this
+ * season on. Validated against archived official.nba.com pages carrying an explicit Crew
+ * Chief column: 10/10 games in 2024-25 and 2025-26, but 2/4 in 2023-24 and a clear failure
+ * in 2015-16. Widening this without new validation would invent a role.
+ */
+const CREW_CHIEF_FIRST_SEASON = "2024-25";
 
 /** ESPN scoreboard abbreviation → this site's abbreviation, where they differ. */
 const ESPN_ABBR: Record<string, string> = {
@@ -66,22 +105,41 @@ async function fetchJsonCached(url: string, cacheFile: string): Promise<unknown>
   return JSON.parse(body);
 }
 
+type FoulCounts = Record<FoulKey, number>;
+
 interface GameWhistle {
   season: string;
   date: string;
   home: string;
   away: string;
   officials: string[];
+  /** Slot 1 first, as ESPN orders them. Slot 1 is the crew chief from 2024-25 on. */
+  crewChief: string | null;
+  fouls: FoulCounts;
+  /** Every foul-flagged play bar the offensive-foul duplicate, including unpublished types. */
+  totalFouls: number;
+  /** 4 in a regulation game. Overtime inflates every foul count, so those games are dropped. */
+  periods: number;
   homeFta: number;
   awayFta: number;
   homeWon: boolean;
 }
 
 /* eslint-disable @typescript-eslint/no-explicit-any -- ESPN's payload is untyped upstream */
-function parseSummary(summary: any): { officials: string[]; fta: Record<string, number> } | null {
-  const officials: string[] = (summary?.gameInfo?.officials ?? []).map(
-    (o: any) => String(o.displayName)
-  );
+function parseSummary(summary: any): {
+  officials: string[];
+  crewChief: string | null;
+  fta: Record<string, number>;
+  fouls: FoulCounts;
+  totalFouls: number;
+  periods: number;
+} | null {
+  const raw: any[] = summary?.gameInfo?.officials ?? [];
+  const officials: string[] = raw.map((o: any) => String(o.displayName));
+  // ESPN sometimes omits `order`; without it there is no slot 1 to read a role from.
+  const first = raw.find((o: any) => Number(o?.order) === 1);
+  const crewChief = first ? String(first.displayName) : null;
+
   const fta: Record<string, number> = {};
   for (const t of summary?.boxscore?.teams ?? []) {
     const stat = (t.statistics ?? []).find(
@@ -90,8 +148,22 @@ function parseSummary(summary: any): { officials: string[]; fta: Record<string, 
     const attempted = stat ? Number(String(stat.displayValue).split("-")[1]) : NaN;
     fta[toOurAbbr(String(t.team.abbreviation))] = attempted;
   }
+
+  const fouls = Object.fromEntries(FOUL_KEYS.map((k) => [k, 0])) as FoulCounts;
+  let totalFouls = 0;
+  let periods = 0;
+  for (const p of summary?.plays ?? []) {
+    periods = Math.max(periods, Number(p?.period?.number) || 0);
+    const label = String(p?.type?.text ?? "");
+    if (!label.toLowerCase().includes("foul")) continue;
+    if (label === "No Foul" || label === DUPLICATE_OF_OFFENSIVE) continue;
+    totalFouls++;
+    const key = TYPE_LOOKUP.get(label);
+    if (key) fouls[key]++;
+  }
+
   if (officials.length === 0) return null;
-  return { officials, fta };
+  return { officials, crewChief, fta, fouls, totalFouls, periods };
 }
 /* eslint-enable @typescript-eslint/no-explicit-any */
 
@@ -201,6 +273,10 @@ async function main() {
         home,
         away,
         officials: parsed.officials,
+        crewChief: parsed.crewChief,
+        fouls: parsed.fouls,
+        totalFouls: parsed.totalFouls,
+        periods: parsed.periods,
         homeFta,
         awayFta,
         homeWon: g.homeScore! > g.awayScore!,
@@ -287,8 +363,135 @@ async function main() {
   };
   writeFileSync(OUT_PATH, JSON.stringify(out, null, 2) + "\n");
   console.log(`wrote ${OUT_PATH} — ${officials.length} officials`);
+
+  writeFileSync(STYLE_OUT_PATH, JSON.stringify(buildFoulStyle(collected, seasons), null, 2) + "\n");
+  console.log(`wrote ${STYLE_OUT_PATH}`);
   console.log("Officials pipeline complete");
   process.exit(0);
+}
+
+/**
+ * Foul-style aggregate — how each official's mix of foul types differs from the league's.
+ *
+ * Three deliberate choices, each of which changes the answer:
+ *
+ * 1. **Shares, not counts.** A share removes pace and how foul-prone the two teams are, so
+ *    what is left is the mix. Measured in percentage points of a game's own fouls.
+ * 2. **Baselined per season, never pooled.** The taxonomy moves under the league's feet —
+ *    take fouls ran 2.3 a game in 2020-21 and 0.6 by 2023-24 after the rule change, and
+ *    an official who worked one era and not the other would inherit the difference.
+ * 3. **Regulation games only.** Overtime adds fouls to the total but not proportionally
+ *    across types, so an official with more overtime would drift on mix alone.
+ *
+ * The number that cannot be fixed here is attribution: a call belongs to one of three
+ * officials and ESPN does not say which, so every game credits all three and each measured
+ * effect is roughly a third of the real one. What rescues it is that crews barely repeat —
+ * 87% of trios in this data occur exactly once — so an official's partners are effectively
+ * randomised across their career and wash out as noise rather than bias.
+ */
+function buildFoulStyle(collected: GameWhistle[], seasons: string[]) {
+  const round = (v: number, d: number) => Number(v.toFixed(d));
+  const MIN_FOULS = 20; // a game whose play stream is too thin to trust a mix from
+  const games = collected.filter((g) => g.periods === 4 && g.totalFouls >= MIN_FOULS);
+
+  const shareOf = (g: GameWhistle, k: FoulKey) => (100 * g.fouls[k]) / g.totalFouls;
+
+  // Season baselines: mean share per type, and mean fouls per game.
+  const bySeason = new Map<string, GameWhistle[]>();
+  for (const g of games) {
+    if (!bySeason.has(g.season)) bySeason.set(g.season, []);
+    bySeason.get(g.season)!.push(g);
+  }
+  const seasonMean = new Map<string, { shares: Record<FoulKey, number>; fouls: number }>();
+  for (const [season, gs] of bySeason) {
+    const shares = Object.fromEntries(
+      FOUL_KEYS.map((k) => [k, gs.reduce((a, g) => a + shareOf(g, k), 0) / gs.length])
+    ) as Record<FoulKey, number>;
+    seasonMean.set(season, {
+      shares,
+      fouls: gs.reduce((a, g) => a + g.totalFouls, 0) / gs.length,
+    });
+  }
+
+  // Per official, the per-game deviations from that game's own season baseline.
+  const per = new Map<
+    string,
+    { games: number; chiefGames: number; foulDev: number[]; dev: Record<FoulKey, number[]> }
+  >();
+  for (const g of games) {
+    const base = seasonMean.get(g.season)!;
+    const isChiefSeason = g.season >= CREW_CHIEF_FIRST_SEASON;
+    for (const name of g.officials) {
+      let r = per.get(name);
+      if (!r) {
+        r = {
+          games: 0,
+          chiefGames: 0,
+          foulDev: [],
+          dev: Object.fromEntries(FOUL_KEYS.map((k) => [k, [] as number[]])) as Record<
+            FoulKey,
+            number[]
+          >,
+        };
+        per.set(name, r);
+      }
+      r.games++;
+      if (isChiefSeason && g.crewChief === name) r.chiefGames++;
+      r.foulDev.push(g.totalFouls - base.fouls);
+      for (const k of FOUL_KEYS) r.dev[k].push(shareOf(g, k) - base.shares[k]);
+    }
+  }
+
+  /** Mean of the deviations, and how many standard errors it sits from zero. */
+  const meanAndZ = (v: number[]) => {
+    const n = v.length;
+    const mean = v.reduce((a, x) => a + x, 0) / n;
+    const sd = Math.sqrt(v.reduce((a, x) => a + (x - mean) ** 2, 0) / n);
+    return { mean, z: sd > 0 ? mean / (sd / Math.sqrt(n)) : 0 };
+  };
+
+  const officials = [...per.entries()]
+    .map(([name, r]) => {
+      const fouls = meanAndZ(r.foulDev);
+      const row: Record<string, unknown> = {
+        name,
+        games: r.games,
+        chiefGames: r.chiefGames,
+        fouls: round(fouls.mean, 2),
+        foulsZ: round(fouls.z, 1),
+      };
+      for (const k of FOUL_KEYS) {
+        const { mean, z } = meanAndZ(r.dev[k]);
+        row[k] = round(mean, 2);
+        row[`${k}Z`] = round(z, 1);
+      }
+      return row;
+    })
+    .sort((a, b) => (b.games as number) - (a.games as number));
+
+  // League shares averaged across seasons, for the column captions.
+  const leagueShares = Object.fromEntries(
+    FOUL_KEYS.map((k) => [
+      k,
+      round([...seasonMean.values()].reduce((a, s) => a + s.shares[k], 0) / seasonMean.size, 1),
+    ])
+  );
+
+  return {
+    source: "ESPN play-by-play",
+    generated: new Date().toISOString().slice(0, 10),
+    firstSeason: seasons[0],
+    lastSeason: seasons[seasons.length - 1],
+    gamesCovered: games.length,
+    gamesExcluded: collected.length - games.length,
+    crewChiefFirstSeason: CREW_CHIEF_FIRST_SEASON,
+    foulsPerGame: round(
+      [...seasonMean.values()].reduce((a, s) => a + s.fouls, 0) / seasonMean.size,
+      1
+    ),
+    leagueShares,
+    officials,
+  };
 }
 
 main().catch((e) => {
