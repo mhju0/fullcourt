@@ -5,7 +5,13 @@ import useSWR from "swr"
 import { Skeleton } from "@/components/ui/skeleton"
 import { parseSeasonStartYear } from "@/lib/nba-season"
 import { zeroRestWorkload, type PlayerRestPayload } from "@/lib/player-rest"
-import { termCardStyle, termTdStyle, termThStyle, termThUnitStyle } from "@/lib/terminal-styles"
+import {
+  TERM_NUMERIC_TABLE_MAX_WIDTH,
+  termCardStyle,
+  termTdStyle,
+  termThStyle,
+  termThUnitStyle,
+} from "@/lib/terminal-styles"
 
 const ROW_LIMIT = 15
 
@@ -87,7 +93,7 @@ export function ZeroRestWorkload({ season }: { season: string }) {
       ) : (
         <>
           <div className="overflow-x-auto">
-            <table className="mono w-full" style={{ borderCollapse: "collapse", minWidth: 460 }}>
+            <table className="mono w-full" style={{ borderCollapse: "collapse", minWidth: 460, maxWidth: TERM_NUMERIC_TABLE_MAX_WIDTH }}>
               <thead>
                 <tr>
                   <th style={termThStyle}>PLAYER</th>

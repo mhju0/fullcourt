@@ -67,6 +67,15 @@ export const termTdStyle: CSSProperties = {
 }
 
 /**
+ * The widest a table of mostly-numbers is allowed to get. Stretched to a full 1440px
+ * container, five numeric columns leave a team abbreviation at the far left and its figures
+ * stranded a third of the screen away, which reads as an alignment fault rather than as a
+ * table. Prose tables (the reference pages) are deliberately NOT capped — their note columns
+ * use the width.
+ */
+export const TERM_NUMERIC_TABLE_MAX_WIDTH = 760;
+
+/**
  * The unit line under a column header — "GAMES", "MILES", "PCT POINTS". Every column of
  * numbers states what it counts, so no figure on this site is a bare quantity the reader
  * has to infer a scale for. Sits inside the `th`, below the label, deliberately quiet.

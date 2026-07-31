@@ -19,7 +19,13 @@ import {
   type SeasonReportVerdict,
   type SeasonReportWeek,
 } from "@/lib/season-report"
-import { termCardStyle, termTdStyle, termThStyle, termThUnitStyle } from "@/lib/terminal-styles"
+import {
+  TERM_NUMERIC_TABLE_MAX_WIDTH,
+  termCardStyle,
+  termTdStyle,
+  termThStyle,
+  termThUnitStyle,
+} from "@/lib/terminal-styles"
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts"
 import type { AnalysisResponse } from "@/types"
 
@@ -216,7 +222,7 @@ function EdgeConversion({ teams }: { teams: SeasonReportTeamLabelled[] }) {
         {edgeConversionSentence(teams)}
       </p>
       <div className="overflow-x-auto">
-        <table className="mono w-full" style={{ borderCollapse: "collapse", minWidth: 560, maxWidth: 760 }}>
+        <table className="mono w-full" style={{ borderCollapse: "collapse", minWidth: 560, maxWidth: TERM_NUMERIC_TABLE_MAX_WIDTH }}>
           <thead>
             <tr>
               <th rowSpan={2} style={termThStyle}>TEAM</th>
@@ -361,7 +367,7 @@ function ScheduleTax({ teams }: { teams: SeasonReportTeamLabelled[] }) {
         </p>
       ) : null}
       <div className="overflow-x-auto">
-        <table className="mono w-full" style={{ borderCollapse: "collapse", minWidth: 520 }}>
+        <table className="mono w-full" style={{ borderCollapse: "collapse", minWidth: 520, maxWidth: TERM_NUMERIC_TABLE_MAX_WIDTH }}>
           <thead>
             <tr>
               <th style={termThStyle}>TEAM</th>
