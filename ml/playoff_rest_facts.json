@@ -1,0 +1,67 @@
+{
+  "generatedFrom": "playoff_series + games (play-in excluded)",
+  "equalRest": {
+    "game1Games": 600,
+    "game1Equal": 277,
+    "laterGames": 2545,
+    "laterEqual": 2545
+  },
+  "grindMatrix": {
+    "ownLowOppLow": {
+      "winPct": 68.9,
+      "n": 74
+    },
+    "ownLowOppHigh": {
+      "winPct": 85.4,
+      "n": 89
+    },
+    "ownHighOppLow": {
+      "winPct": 65.9,
+      "n": 44
+    },
+    "ownHighOppHigh": {
+      "winPct": 59.7,
+      "n": 72
+    }
+  },
+  "exogenous": {
+    "oppClosedEarly": {
+      "winPct": 68.9,
+      "n": 74,
+      "meanWinPctDiff": 0.0891
+    },
+    "oppWentLong": {
+      "winPct": 85.4,
+      "n": 89,
+      "meanWinPctDiff": 0.1079
+    },
+    "closeMatchupOppClosedEarly": {
+      "winPct": 53.2,
+      "n": 62
+    },
+    "closeMatchupOppWentLong": {
+      "winPct": 67.9,
+      "n": 78
+    },
+    "mirrorDeltaPts": -6.2
+  },
+  "entryRestBuckets": [
+    {
+      "label": "2 or more days short",
+      "n": 67,
+      "winPct": 65.7
+    },
+    {
+      "label": "within a day either way",
+      "n": 92,
+      "winPct": 59.8
+    },
+    {
+      "label": "2 or more days rested",
+      "n": 120,
+      "winPct": 83.3
+    }
+  ],
+  "bestOfFiveRound1Series": 136,
+  "round1TotalSeries": 320
+}
