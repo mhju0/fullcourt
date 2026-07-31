@@ -24,8 +24,8 @@ export function WinTotalMarketCheck() {
 
       <p style={{ marginTop: 8, maxWidth: "44rem", fontSize: 15, color: "var(--term-text)", lineHeight: 1.55 }}>
         If a schedule edge compounded over a season, the teams at the top of this page should
-        beat their preseason win-total lines. Across {benchmark.seasonsCovered} seasons of
-        archived lines, they don&rsquo;t:
+        beat their preseason win-total lines. Across {benchmark.seasonsCovered}{" "}
+        seasons of archived lines, they don&rsquo;t:
       </p>
 
       <div className="mt-3 overflow-x-auto">
@@ -65,7 +65,8 @@ export function WinTotalMarketCheck() {
       <p style={{ marginTop: 12, maxWidth: "44rem", fontSize: 15, color: "var(--term-text-muted)", lineHeight: 1.55 }}>
         No gradient, in either direction. The correlation between a team&rsquo;s net edge games
         and its finish against the line is r&nbsp;=&nbsp;{benchmark.correlation.r.toFixed(2)}{" "}
-        across {benchmark.correlation.n} team-seasons — statistically zero. The rest edge is real
+        across {benchmark.correlation.n}{" "}
+        team-seasons — statistically zero. The rest edge is real
         game to game, and that record lives on the Model Results page. But over a full season it
         amounts to a few possessions here and there, and the market&rsquo;s win totals already
         price the schedule. This is a null result, published on purpose: season over/unders are

@@ -317,7 +317,13 @@ function LoudestCalls({
             <span style={{ flex: 1, color: "var(--term-text)", fontWeight: 600 }}>
               {abbrById.get(c.awayTeamId) ?? "—"} @ {abbrById.get(c.homeTeamId) ?? "—"}
             </span>
-            <span className="tabular-nums" style={{ color: "var(--term-text-muted)", minWidth: 64 }}>
+            {/* Dropped below `sm`: the five columns' minimum widths total more than a 390px
+                phone, which pushed the whole page into a horizontal scroll. The score is the
+                one value here a reader can get by opening the row, so it is the one to cut. */}
+            <span
+              className="hidden tabular-nums sm:inline"
+              style={{ color: "var(--term-text-muted)", minWidth: 64 }}
+            >
               {c.awayScore}-{c.homeScore}
             </span>
             <span className="tabular-nums" style={{ color: "var(--term-text)", minWidth: 76 }}>

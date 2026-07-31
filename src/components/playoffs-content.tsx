@@ -497,7 +497,12 @@ export function PlayoffsContent() {
   }
 
   return (
-    <div className="flex flex-col gap-12">
+    // Capped as one column rather than per-section. A series row carries its matchup on the
+    // left and its pick, hindsight and verdict on the right, so at full container width it
+    // left a third of the screen empty between the two halves. Narrowing only those rows was
+    // worse — it gave the page two different right edges — so the whole column comes in
+    // together and everything stays aligned.
+    <div className="flex flex-col gap-12" style={{ maxWidth: 1040 }}>
       <SeasonSelector id="playoffs-season" season={season} onSeasonChange={setSeason} seasons={PLAYOFF_SEASONS} />
 
       {/* No accuracy header when there is nothing to score. Rendering it anyway prints "0%"

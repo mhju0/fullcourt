@@ -98,23 +98,36 @@ test.describe("Status bar", () => {
  * It has produced a visible defect twice on these pages, and it is invisible in review
  * because the source looks correct — the space is there, JSX just drops it.
  *
- * This sweeps the rendered prose of every reference page for the two signatures. Formula
- * blocks are excluded: camelCase identifiers inside them are code, not run-together words.
+ * This sweeps the rendered prose of every page for the two signatures. Formula blocks are
+ * excluded: camelCase identifiers inside them are code, not run-together words.
+ *
+ * The product pages are in this list because leaving them out cost us: /schedule shipped
+ * "Across 31seasons" and "884team-seasons" and went unnoticed, because the sweep that would
+ * have caught it on sight only ever visited /behind-the-data. Any page rendering a number
+ * beside a word belongs here.
  */
-test.describe("Reference prose spacing", () => {
+test.describe("Prose spacing", () => {
   const ROUTES = [
-    "",
-    "/rest-advantage",
-    "/schedule-edge",
-    "/playoff-predictions",
-    "/player-shooting",
-    "/shot-value",
-    "/data-and-limits",
+    "/behind-the-data",
+    "/behind-the-data/rest-advantage",
+    "/behind-the-data/schedule-edge",
+    "/behind-the-data/playoff-predictions",
+    "/behind-the-data/player-shooting",
+    "/behind-the-data/shot-value",
+    "/behind-the-data/data-and-limits",
+    "/",
+    "/season",
+    "/schedule",
+    "/analysis",
+    "/playoffs",
+    "/shooting",
+    "/shot-quality",
+    "/about",
   ];
 
   for (const route of ROUTES) {
-    test(`no run-together words on /behind-the-data${route || " (overview)"}`, async ({ page }) => {
-      await page.goto(`/behind-the-data${route}`);
+    test(`no run-together words on ${route}`, async ({ page }) => {
+      await page.goto(route);
 
       // Prose only. Formula blocks are <pre> and tables are cells; camelCase inside them is
       // code, not run-together words, so reading <p> and <li> is both simpler and stricter
@@ -137,10 +150,8 @@ test.describe("Reference prose spacing", () => {
     // lowercase. Two of them were shipped and live on these pages until 2026-07-30. The seam
     // itself is checkable even when the words are not: an inline tag is never legitimately
     // followed straight by a letter in this prose, only by punctuation or a space.
-    test(`no lost space after an inline tag on /behind-the-data${route || " (overview)"}`, async ({
-      page,
-    }) => {
-      await page.goto(`/behind-the-data${route}`);
+    test(`no lost space after an inline tag on ${route}`, async ({ page }) => {
+      await page.goto(route);
 
       const html = await page.content();
       const seams = [...html.matchAll(/<\/(strong|em|code)>[a-zA-Z(]\w*/g)].map((m) => m[0]);
