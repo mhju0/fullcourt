@@ -34,6 +34,8 @@ function series(
     priorGrindDiff: 0,
     homeCourtPriorGames: null,
     opponentPriorGames: null,
+    homeCourtPriorIsBestOf7: null,
+    opponentPriorIsBestOf7: null,
     predictions: {
       fullInsample: {
         predictedHomeCourtWinProb: 0.7,

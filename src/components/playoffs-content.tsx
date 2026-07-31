@@ -8,7 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { cn } from "@/lib/utils"
 import { apiFetcher } from "@/lib/fetcher"
 import { currentDisplaySeason } from "@/lib/nba-season"
-import { priorRoundGamesLabel } from "@/lib/playoff-rest-facts"
+import { grindLineLabels } from "@/lib/playoff-rest-facts"
 import { playoffModelSeasons } from "@/lib/playoff-seasons"
 import { TERM_ACCENT, termCardStyle } from "@/lib/terminal-styles"
 import type {
@@ -148,18 +148,20 @@ function SeriesFeatureGrid({ series }: { series: PlayoffSeriesWithPredictions })
  * Sits on the collapsed row rather than inside the drawer: it is the reason a reader is on
  * this page, and it was previously buried three clicks deep as a signed decimal.
  */
-function GrindLine({ series }: { series: PlayoffSeriesWithPredictions }) {
-  const home = priorRoundGamesLabel(series.homeCourtPriorGames, series.isBestOf7)
-  const opp = priorRoundGamesLabel(series.opponentPriorGames, series.isBestOf7)
-  if (!home || !opp) return null
-
+function GrindLine({
+  series,
+  labels,
+}: {
+  series: PlayoffSeriesWithPredictions
+  labels: { homeCourt: string; opponent: string }
+}) {
   return (
     <span className="mono" style={{ fontSize: 11, color: "var(--term-text-muted)", letterSpacing: "0.04em" }}>
       <span style={{ color: "var(--term-text)", fontWeight: 700 }}>{series.homeCourtTeam.abbreviation}</span>{" "}
-      {home}
+      {labels.homeCourt}
       <span style={{ padding: "0 6px" }}>·</span>
       <span style={{ color: "var(--term-text)", fontWeight: 700 }}>{series.opponentTeam.abbreviation}</span>{" "}
-      {opp}
+      {labels.opponent}
     </span>
   )
 }
@@ -184,6 +186,7 @@ function SeriesCard({ series }: { series: PlayoffSeriesWithPredictions }) {
 
   const homeWins = series.homeCourtWins ?? 0
   const oppWins = series.opponentWins ?? 0
+  const grindLabels = grindLineLabels(series)
 
   return (
     <div
@@ -230,9 +233,14 @@ function SeriesCard({ series }: { series: PlayoffSeriesWithPredictions }) {
           />
         </div>
 
-        <div className="mt-1.5">
-          <GrindLine series={series} />
-        </div>
+        {/* Wrapper only when there is a line: in Round 1 an empty `mt-1.5` div costs 0px
+            today because its margin collapses through, but only while the ancestor stays a
+            plain block. */}
+        {grindLabels && (
+          <div className="mt-1.5">
+            <GrindLine series={series} labels={grindLabels} />
+          </div>
+        )}
 
         <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
           <div className="mono flex items-center gap-2 tabular-nums" style={{ fontSize: 12 }}>

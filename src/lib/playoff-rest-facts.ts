@@ -153,3 +153,27 @@ export function priorRoundGamesLabel(
   if (gamesPlayed >= distance) return `survived a ${gamesPlayed}`;
   return `closed in ${gamesPlayed}`;
 }
+
+/**
+ * Both sides of one series card's grind line, or null when there is no prior round to name.
+ *
+ * Exists so the two labels cannot be read under the wrong format. Each side is labelled with
+ * ITS OWN previous series' format — never with `isBestOf7`, which describes the series being
+ * displayed. Round 1 was best-of-5 through 2001-02, so on a round-2 card from that era a
+ * 5-game previous round is `survived a 5` while the current series' best-of-7 flag would
+ * mislabel it `closed in 5`, and a 4-game one is `closed in 4`, not `swept in 4`.
+ */
+export function grindLineLabels(series: {
+  homeCourtPriorGames: number | null;
+  opponentPriorGames: number | null;
+  homeCourtPriorIsBestOf7: boolean | null;
+  opponentPriorIsBestOf7: boolean | null;
+}): { homeCourt: string; opponent: string } | null {
+  // The format is null exactly when the game count is; guarding it keeps that explicit
+  // rather than defaulting a missing format to best-of-7.
+  if (series.homeCourtPriorIsBestOf7 === null || series.opponentPriorIsBestOf7 === null) return null;
+  const homeCourt = priorRoundGamesLabel(series.homeCourtPriorGames, series.homeCourtPriorIsBestOf7);
+  const opponent = priorRoundGamesLabel(series.opponentPriorGames, series.opponentPriorIsBestOf7);
+  if (!homeCourt || !opponent) return null;
+  return { homeCourt, opponent };
+}

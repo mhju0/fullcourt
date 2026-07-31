@@ -219,6 +219,19 @@ export interface PlayoffSeriesWithPredictions {
   homeCourtPriorGames: number | null;
   /** Games the opponent played in its previous round. null in Round 1. */
   opponentPriorGames: number | null;
+  /**
+   * The format of each side's *previous* series — not this one's. Reading a prior-round game
+   * count needs the format it was played under: through 2001-02 Round 1 was best-of-5, so a
+   * 5-game previous round was the full distance while `isBestOf7` (this series, always true
+   * in rounds 2+) would call it an early close.
+   *
+   * Two fields rather than one shared flag because they are two independent lookups. The two
+   * teams' prior series can only differ in format across an era boundary, which never happens
+   * inside one season — but nothing in the lookup enforces that, so it is not modelled as an
+   * invariant. Both are null exactly when the matching `…PriorGames` is null (Round 1).
+   */
+  homeCourtPriorIsBestOf7: boolean | null;
+  opponentPriorIsBestOf7: boolean | null;
   /** Either method may be absent (null) for a given series — never fabricated. */
   predictions: {
     fullInsample: PlayoffSeriesPredictionMethod | null;
