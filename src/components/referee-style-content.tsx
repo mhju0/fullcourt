@@ -27,7 +27,7 @@ const COLUMNS: {
   { key: "name", label: "Official", width: "auto" },
   { key: "chiefGames", label: "As chief", unit: "games", align: "right", width: "84px" },
   { key: "games", label: "G", unit: "games", align: "right", width: "64px" },
-  { key: "fouls", label: "Fouls", unit: "vs season avg", align: "right", width: "96px" },
+  { key: "fouls", label: "Fouls", unit: "vs league avg", align: "right", width: "96px" },
   ...FOUL_COLUMNS.map((c) => ({
     key: c.key as SortKey,
     label: c.label,
@@ -180,8 +180,12 @@ export function RefereeStyleContent({ data }: { data: RefereeFoulStyle }) {
                   const z = row[`${c.key}Z` as keyof RefereeStyleRow] as number
                   const rel = relativePct(v, data.leagueShares[c.key])
                   return (
+                    // Rank lives in the tooltip, not beside the number. Printed inline it put two
+                    // competing figures in every cell and the table stopped being scannable —
+                    // which is the whole job of a table someone browses rather than studies.
                     <td
                       key={c.key}
+                      title={`${row.name} — ${c.label.toLowerCase()} fouls: #${ranks[c.key].get(row.name)} of ${field.length}`}
                       className="tabular-nums"
                       style={{
                         ...termTdStyle,
@@ -192,16 +196,6 @@ export function RefereeStyleContent({ data }: { data: RefereeFoulStyle }) {
                     >
                       {rel > 0 ? "+" : rel < 0 ? "−" : ""}
                       {Math.abs(rel)}%
-                      <span
-                        style={{
-                          marginLeft: 5,
-                          fontSize: 10,
-                          fontWeight: 400,
-                          color: "var(--term-text-muted)",
-                        }}
-                      >
-                        #{ranks[c.key].get(row.name)}
-                      </span>
                     </td>
                   )
                 })}

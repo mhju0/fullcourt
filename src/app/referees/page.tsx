@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
 import { PageHeader } from "@/components/page-header";
-import { RefereeLeaderboard } from "@/components/referee-leaderboard";
 import { RefereeStyleContent } from "@/components/referee-style-content";
 import styleData from "@/data/referee-foul-style.json";
-import { FOUL_COLUMNS, publishable, type RefereeFoulStyle } from "@/lib/referee-foul-style";
+import { publishable, type RefereeFoulStyle } from "@/lib/referee-foul-style";
 import { termCardStyle } from "@/lib/terminal-styles";
 
 const data = styleData as RefereeFoulStyle;
@@ -31,32 +30,8 @@ export default function RefereesPage() {
       <PageHeader
         eyebrow="REFEREE EFFECT · FOUL STYLE"
         title="What each official calls"
-        description={`Every foul in ${data.gamesCovered.toLocaleString()} games since ${data.firstSeason}, sorted by who called it. Officials do not call the same game the same way — the mix of shooting fouls against loose ball against offensive fouls varies far more between them than chance allows. Sort any column.`}
+        description={`Officials don't call the same game the same way. Every figure below is how much more or less often one calls that foul than the league does — across ${data.gamesCovered.toLocaleString()} games since ${data.firstSeason}. Sort any column.`}
       />
-
-      <section className="flex flex-col gap-3">
-        <p style={{ fontSize: 15, color: "var(--term-text)", lineHeight: 1.6, maxWidth: "46rem" }}>
-          Every figure is <strong>how much more or less often</strong> an official calls that foul
-          than the league does. <strong>+23%</strong> means they call it about a fifth more often
-          than average; the small grey number beside it is where that ranks among all{" "}
-          {rows.length} officials. Zero means they call it like everyone else.
-        </p>
-        <p style={{ fontSize: 15, color: "var(--term-text-muted)", lineHeight: 1.6, maxWidth: "46rem" }}>
-          For scale, a game has about {data.foulsPerGame} fouls in it, split{" "}
-          {FOUL_COLUMNS.map((c) => `${data.leagueShares[c.key]}% ${c.label.toLowerCase()}`).join(
-            " · "
-          )}
-          . So the rare types swing furthest in percentage terms while moving fewest actual calls —
-          the widest technical-foul gap on this page is about a fifth of a whistle a game.
-        </p>
-        <p style={{ fontSize: 15, color: "var(--term-text-muted)", lineHeight: 1.6, maxWidth: "46rem" }}>
-          Baselined within each season, because the taxonomy moves — take fouls ran more than
-          three times as often in 2020-21 as they did after the rule changed. Regulation games
-          only, since overtime adds fouls unevenly across types.
-        </p>
-      </section>
-
-      <RefereeLeaderboard rows={rows} leagueShares={data.leagueShares} />
 
       <RefereeStyleContent data={data} />
 

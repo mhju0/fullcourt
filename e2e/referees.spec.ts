@@ -40,26 +40,10 @@ test.describe("Referee Effect", () => {
     await expect(rows.first().getByText("CC", { exact: true })).toBeVisible();
   });
 
-  test("leads with a leaderboard naming the most and fewest of each foul type", async ({ page }) => {
-    await page.goto("/referees");
-    // One card per published foul type, each carrying both extremes.
-    await expect(page.getByText("MOST", { exact: true })).toHaveCount(5);
-    await expect(page.getByText("FEWEST", { exact: true })).toHaveCount(5);
-
-    // The leaderboard has to agree with the table it sits above: sorting offensive fouls
-    // descending must put the same official on top as the card names.
-    const lines = (await page.getByTestId("leader-offensive").innerText()).split("\n");
-    const mostNamed = lines[lines.indexOf("MOST") + 1];
-    expect(mostNamed).toBeTruthy();
-
-    await page.getByRole("columnheader", { name: /Offensive/ }).click();
-    const topRow = await page.getByTestId("referee-style-row").first().innerText();
-    expect(topRow).toContain(mostNamed);
-  });
 
   test("explains the number in plain terms rather than as a deviation", async ({ page }) => {
     await page.goto("/referees");
-    await expect(page.getByText("how much more or less often")).toBeVisible();
+    await expect(page.getByText(/how much more or less often/)).toBeVisible();
   });
 
   test("states that it is style rather than bias", async ({ page }) => {
