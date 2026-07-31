@@ -274,12 +274,15 @@ methods per series (`fullInsample`, `walkForwardOos`) via aliased self-joins.
 `0007` (mirroring `0004`/`0005`/`0006`). **Not** in `drizzle.config.ts`'s `tablesFilter`
 despite being declared in `schema.ts` — see the Conventions note above.
 
-**Verified 2026-07-02** (read-only `SELECT`): **1,049 rows total** — **599** `full_insample`
-(one per trainable series) + **450** `walk_forward_oos` (skips the first 10 min-train seasons per
-`ml/predict_series.py`'s expanding window), all `model_version = 'logistic_unreg_v1'` (the
-unregularized logistic selected in `ml/PHASE3_REPORT.md` §5). Model accuracy/log-loss/Brier: see
-that report — headline is a **calibration** improvement over the majority baseline, not a
-distinguishable accuracy win (§5, "Honest headline").
+**Verified 2026-07-31** (read-only `SELECT`): **2,098 rows total** — **1,049 per
+`model_version`**, each being **599** `full_insample` (one per trainable series) + **450**
+`walk_forward_oos` (skips the first 10 min-train seasons per `ml/predict_series.py`'s expanding
+window). The two versions are `logistic_unreg_v1` and the `logistic_grind_v2` that superseded it
+on 2026-07-31; the UNIQUE above is what lets them coexist, so v1 was retained rather than
+overwritten and older predictions stay auditable. Expect this total to grow by 1,049 per future
+version, not to stay flat. Model accuracy/log-loss/Brier: see `ml/PHASE3_REPORT.md` — headline is
+a **calibration** improvement over the majority baseline, not a distinguishable accuracy win
+(§5, "Honest headline").
 
 ## Table: `shot_grid` (Shot Quality — Expected Shot Value / xeFG%)
 

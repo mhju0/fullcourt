@@ -45,7 +45,11 @@
 > including §3.7's table — was replaced in the model by `prior_grind_diff` (`logistic_grind_v2`);
 > it is still stored and displayed but is no longer a model input. This is a dated design record,
 > so the text below is left as written; see [ARCHITECTURE.md](ARCHITECTURE.md) and
-> [`ml/PHASE3_REPORT.md`](../ml/PHASE3_REPORT.md) for the current feature set.
+> [`ml/PHASE3_REPORT.md`](../ml/PHASE3_REPORT.md) for the current feature set. The 2026-07-02
+> block above is a v1-era snapshot and stays correct for what that pipeline produced — its 1,049
+> prediction rows are the `logistic_unreg_v1` rows it names, and v2 has since added 1,049 more
+> beside them for **2,098** total (see [DATABASE.md](DATABASE.md)), because the v1 rows were
+> retained rather than overwritten.
 >
 > This document remains the single source of truth for the module's **design rationale** (§1–§3
 > below describe why each feature and encoding choice was made, as of the date above).

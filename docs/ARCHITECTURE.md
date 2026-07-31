@@ -293,7 +293,8 @@ metric, and the regular-season pages never read its data (every existing read pi
 
 Full pipeline, ingest through the served page (live DB **verified 2026-07-02**, read-only
 `SELECT`s: 3,145 `004` + 36 `005` game rows; 600 `playoff_series` rows, all four feature columns
-non-NULL, 599 trainable; 1,049 `playoff_series_predictions` rows):
+non-NULL, 599 trainable; and 2,098 `playoff_series_predictions` rows — two `model_version`s ×
+(599 + 450) since v1 was retained beside v2 — **verified 2026-07-31**):
 
 ```
 nba_api Playoffs  → scripts/fetch_playoffs.py  → games (004 rows, game_type playoffs/finals)
@@ -320,8 +321,9 @@ nba_api PlayIn    → scripts/fetch_play_in.py   → games (005 rows, game_type=
                               ml/predict_series.py --write (full_insample + walk_forward_oos
                                                              P(home-court wins), logistic_grind_v2)
                                                        ▼
-                         playoff_series_predictions   (1,049 rows: 599 full_insample +
-                                                         450 walk_forward_oos)
+                         playoff_series_predictions   (2,098 rows: 2 model_versions ×
+                                                         (599 full_insample +
+                                                          450 walk_forward_oos) — v1 retained)
                                                        │
                               GET /api/playoffs  →  getPlayoffSeriesWithPredictions()
                                                        ▼

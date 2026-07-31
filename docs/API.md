@@ -42,8 +42,10 @@ Routes that touch the DB declare `export const runtime = "nodejs"` and (where ap
 during `next build`) and don't run on Edge (postgres-js needs Node).
 
 > **Playoff Predictor:** `GET /api/playoffs` is complete and serving live predictions —
-> `playoff_series_predictions` holds **1,049 rows** (599 `full_insample` + 450 `walk_forward_oos`,
-> `model_version = "logistic_unreg_v1"`) [Verified, live DB SELECT, 2026-07-02]. See
+> `playoff_series_predictions` holds **2,098 rows** — two `model_version`s × (599 `full_insample`
+> + 450 `walk_forward_oos`). `logistic_grind_v2` superseded `logistic_unreg_v1` on 2026-07-31 and
+> the v1 rows were retained rather than overwritten, so the row count is per version, not total
+> [Verified, live DB SELECT, 2026-07-31]. See
 > [ml/PHASE3_REPORT.md](../ml/PHASE3_REPORT.md) for the model's walk-forward accuracy/log-loss/Brier
 > numbers and the honest calibration-vs-accuracy framing.
 

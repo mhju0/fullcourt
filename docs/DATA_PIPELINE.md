@@ -136,7 +136,9 @@ manually. They never modify regular-season (`002`) rows, never touch `fatigue.ts
 rename the rest-advantage metric. **Verified 2026-07-02** (read-only `SELECT`): 2,827 `playoffs`
 + 318 `finals` (`004`) + 36 `play_in` (`005`) game rows are present; the skeleton pass built
 **600 series**, the feature pass populated all four feature columns (599 trainable), and a
-walk-forward logistic model persisted **1,049** predictions; the tag-integrity guard reports
+walk-forward logistic model persisted **1,049** predictions per model version — **2,098** rows
+across the two, since `logistic_grind_v2` was written beside a retained `logistic_unreg_v1`
+rather than over it (**verified 2026-07-31**); the tag-integrity guard reports
 **0** prefix↔`game_type` mismatches. Full build record:
 [PLAYOFF_PREDICTOR_DESIGN.md](PLAYOFF_PREDICTOR_DESIGN.md).
 
