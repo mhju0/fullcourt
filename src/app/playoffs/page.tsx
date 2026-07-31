@@ -14,7 +14,7 @@ export default function PlayoffsPage() {
       <PageHeader
         eyebrow="PLAYOFF REST"
         title="The round before decides the round after"
-        description="How a long series taxes the team that survived it, and what that costs them in the round that follows, once the bracket keeps moving."
+        description="How a long series taxes the team that survived it, why the effect survives the obvious objection, and what it costs the model's picks in the bracket below."
       />
       <MethodLink surfaceHref="/playoffs" />
 

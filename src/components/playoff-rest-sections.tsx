@@ -169,9 +169,12 @@ function ConfoundSection() {
           {closeMatchupOppWentLong.winPct.toFixed(1)}%
         </span>{" "}
         ({closeMatchupOppClosedEarly.n} series against {closeMatchupOppWentLong.n}), a gap of{" "}
-        {closeDelta.toFixed(1)} points. It barely shrinks. And running it the other way — when
-        you are the one who went the distance — moves it {mirrorDeltaPts.toFixed(1)} points,
-        the wrong direction entirely.
+        {closeDelta.toFixed(1)} points. It barely shrinks.
+      </p>
+      <p style={BODY}>
+        And back in the full matrix — every second-round-or-later series, evenly matched or
+        not — running it the other way, when you are the one who went the distance, moves it{" "}
+        {Math.abs(mirrorDeltaPts).toFixed(1)} points the wrong way.
       </p>
       <div style={{ ...termCardStyle, borderLeft: "2px solid var(--term-neutral)" }}>
         <p className="mono pb-2" style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 700 }}>
