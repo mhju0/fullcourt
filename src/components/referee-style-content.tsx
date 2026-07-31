@@ -5,8 +5,10 @@ import {
   FOUL_COLUMNS,
   isNotable,
   publishable,
-  signedPp,
+  ranksFor,
+  relativePct,
   sortRows,
+  type FoulColumnKey,
   type RefereeFoulStyle,
   type RefereeStyleRow,
 } from "@/lib/referee-foul-style"
@@ -29,9 +31,9 @@ const COLUMNS: {
   ...FOUL_COLUMNS.map((c) => ({
     key: c.key as SortKey,
     label: c.label,
-    unit: "pct points",
+    unit: "vs league avg",
     align: "right" as const,
-    width: "104px",
+    width: "112px",
   })),
 ]
 
@@ -45,10 +47,22 @@ export function RefereeStyleContent({ data }: { data: RefereeFoulStyle }) {
   const [sort, setSort] = useState<{ key: SortKey; dir: 1 | -1 }>({ key: "games", dir: -1 })
   const [chiefsOnly, setChiefsOnly] = useState(false)
 
+  // Ranks are computed over the whole published field, never the filtered view — "#1 of 74"
+  // has to mean the same thing whether or not the crew-chief filter is on.
+  const field = useMemo(() => publishable(data.officials), [data.officials])
+  const ranks = useMemo(
+    () =>
+      Object.fromEntries(FOUL_COLUMNS.map((c) => [c.key, ranksFor(field, c.key)])) as Record<
+        FoulColumnKey,
+        Map<string, number>
+      >,
+    [field]
+  )
+
   const rows = useMemo(() => {
-    const base = publishable(data.officials).filter((r) => (chiefsOnly ? r.chiefGames > 0 : true))
+    const base = field.filter((r) => (chiefsOnly ? r.chiefGames > 0 : true))
     return sortRows(base, sort.key, sort.dir)
-  }, [data.officials, sort, chiefsOnly])
+  }, [field, sort, chiefsOnly])
 
   const chiefCount = useMemo(
     () => publishable(data.officials).filter((r) => r.chiefGames > 0).length,
@@ -116,8 +130,8 @@ export function RefereeStyleContent({ data }: { data: RefereeFoulStyle }) {
                 <td style={{ ...termTdStyle, textAlign: "right", fontSize: 10, color: "var(--term-text-muted)" }}>
                   {i + 1}
                 </td>
-                <td className="whitespace-nowrap" style={{ ...termTdStyle, fontWeight: 600 }}>
-                  {row.name}
+                <td style={{ ...termTdStyle, fontWeight: 600 }}>
+                  <span className="whitespace-nowrap">{row.name}</span>
                   {row.chiefGames > 0 && (
                     <span
                       title="Works as crew chief"
@@ -144,15 +158,27 @@ export function RefereeStyleContent({ data }: { data: RefereeFoulStyle }) {
                 <td className="tabular-nums" style={{ ...termTdStyle, textAlign: "right" }}>
                   {row.games}
                 </td>
+                {/* Relative like every column beside it. The underlying figure is a count of
+                    fouls per game rather than a share, so it is scaled against the league's
+                    own fouls per game instead of a share baseline. */}
                 <td
                   className="tabular-nums"
-                  style={{ ...termTdStyle, textAlign: "right", color: toneFor(row.fouls, row.foulsZ), fontWeight: isNotable(row.foulsZ) ? 700 : 400 }}
+                  style={{
+                    ...termTdStyle,
+                    textAlign: "right",
+                    color: toneFor(row.fouls, row.foulsZ),
+                    fontWeight: isNotable(row.foulsZ) ? 700 : 400,
+                  }}
                 >
-                  {signedPp(row.fouls)}
+                  {(() => {
+                    const rel = relativePct(row.fouls, data.foulsPerGame)
+                    return `${rel > 0 ? "+" : rel < 0 ? "−" : ""}${Math.abs(rel)}%`
+                  })()}
                 </td>
                 {FOUL_COLUMNS.map((c) => {
                   const v = row[c.key]
                   const z = row[`${c.key}Z` as keyof RefereeStyleRow] as number
+                  const rel = relativePct(v, data.leagueShares[c.key])
                   return (
                     <td
                       key={c.key}
@@ -164,7 +190,18 @@ export function RefereeStyleContent({ data }: { data: RefereeFoulStyle }) {
                         fontWeight: isNotable(z) ? 700 : 400,
                       }}
                     >
-                      {signedPp(v)}
+                      {rel > 0 ? "+" : rel < 0 ? "−" : ""}
+                      {Math.abs(rel)}%
+                      <span
+                        style={{
+                          marginLeft: 5,
+                          fontSize: 10,
+                          fontWeight: 400,
+                          color: "var(--term-text-muted)",
+                        }}
+                      >
+                        #{ranks[c.key].get(row.name)}
+                      </span>
                     </td>
                   )
                 })}

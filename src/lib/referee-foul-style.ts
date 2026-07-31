@@ -7,6 +7,11 @@
  * The paired `…Z` field is how many standard errors the deviation sits from zero at that
  * official's own sample size.
  *
+ * The page does NOT render those percentage points directly — `relativePct` converts each one
+ * against its own league share first, because +1.39pp is a rounding error on shooting fouls and
+ * the largest effect in the data on offensive fouls. The stored unit stays absolute so the
+ * conversion has something stable to divide.
+ *
  * Written by `scripts/fetch_officials.ts`, which documents why shares are baselined per season
  * and why overtime games are excluded.
  */
@@ -68,20 +73,37 @@ export function isNotable(z: number): boolean {
   return Math.abs(z) >= NOTABLE_Z;
 }
 
-/**
- * A deviation with an explicit sign, in percentage points. Unsigned zero reads as "no data"
- * beside the em dashes elsewhere on the site, so exact zero renders as a signed zero.
- */
-export function signedPp(value: number): string {
-  const sign = value > 0 ? "+" : value < 0 ? "−" : "";
-  return `${sign}${Math.abs(value).toFixed(2)}`;
-}
-
 /** Officials carrying enough games for the z-scores to mean anything on a public table. */
 export const MIN_GAMES = 200;
 
 export function publishable(rows: RefereeStyleRow[]): RefereeStyleRow[] {
   return rows.filter((r) => r.games >= MIN_GAMES);
+}
+
+/**
+ * A deviation expressed against its own league share — "+23%" rather than "+1.39pp".
+ *
+ * This is the number the table shows, because a percentage-point gap is unreadable without
+ * knowing the baseline it sits on: +1.39 is a rounding error against shooting fouls at 50.2%
+ * and the largest effect in the data against offensive fouls at 6.1%.
+ *
+ * The trade it makes, worth knowing before reading the table: relative change flatters the
+ * rare types. Officials span ±5% on shooting and ±26% on technicals, but in fouls a viewer
+ * would actually notice that is ±0.5 a game against ±0.2. Big relative, small absolute.
+ */
+export function relativePct(deviation: number, leagueShare: number): number {
+  return Math.round((100 * deviation) / leagueShare);
+}
+
+/** Rank within a column, 1 = calls it most. Ties share the lower rank, as in a standings table. */
+export function ranksFor(rows: RefereeStyleRow[], key: FoulColumnKey): Map<string, number> {
+  const ordered = [...rows].sort((a, b) => b[key] - a[key] || a.name.localeCompare(b.name));
+  const out = new Map<string, number>();
+  ordered.forEach((r, i) => {
+    const prev = ordered[i - 1];
+    out.set(r.name, prev && prev[key] === r[key] ? out.get(prev.name)! : i + 1);
+  });
+  return out;
 }
 
 /**

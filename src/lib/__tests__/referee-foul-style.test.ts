@@ -6,7 +6,8 @@ import {
   NOTABLE_Z,
   isNotable,
   publishable,
-  signedPp,
+  ranksFor,
+  relativePct,
   sortRows,
   type RefereeFoulStyle,
 } from "@/lib/referee-foul-style";
@@ -99,10 +100,40 @@ describe("referee foul style — helpers", () => {
     expect(isNotable(-1.99)).toBe(false);
   });
 
-  it("signs deviations, including zero", () => {
-    expect(signedPp(1.16)).toBe("+1.16");
-    expect(signedPp(-0.9)).toBe("−0.90");
-    expect(signedPp(0)).toBe("0.00");
+
+  it("scales a deviation against its own league share", () => {
+    // The whole point of the conversion: the same +1.39pp is trivial on shooting fouls and the
+    // largest effect in the data on offensive fouls, and the page must not present them alike.
+    expect(relativePct(1.39, 6.1)).toBe(23);
+    expect(relativePct(1.39, 50.2)).toBe(3);
+    expect(relativePct(-0.84, 6.1)).toBe(-14);
+    expect(relativePct(0, 6.1)).toBe(0);
+  });
+
+  it("ranks 1 = calls it most, and gives tied officials the same rank", () => {
+    const rows = [
+      { name: "High", offensive: 0.9 },
+      { name: "TieA", offensive: 0.4 },
+      { name: "TieB", offensive: 0.4 },
+      { name: "Low", offensive: -0.2 },
+    ] as never;
+    const r = ranksFor(rows, "offensive");
+    expect(r.get("High")).toBe(1);
+    // Both tied officials read 2nd; the next one down still lands at 4, as in a standings table.
+    expect(r.get("TieA")).toBe(2);
+    expect(r.get("TieB")).toBe(2);
+    expect(r.get("Low")).toBe(4);
+  });
+
+  it("ranks every published official exactly once per column", () => {
+    // The table prints "#n" beside every cell, so a missing name would render "#undefined".
+    const rows = publishable(data.officials);
+    for (const col of FOUL_COLUMNS) {
+      const r = ranksFor(rows, col.key);
+      expect(r.size, col.key).toBe(rows.length);
+      expect(Math.min(...r.values()), col.key).toBe(1);
+      expect(Math.max(...r.values()), col.key).toBeLessThanOrEqual(rows.length);
+    }
   });
 
   it("breaks sort ties on name so the order is total", () => {

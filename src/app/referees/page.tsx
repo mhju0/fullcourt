@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { PageHeader } from "@/components/page-header";
+import { RefereeLeaderboard } from "@/components/referee-leaderboard";
 import { RefereeStyleContent } from "@/components/referee-style-content";
 import styleData from "@/data/referee-foul-style.json";
 import { FOUL_COLUMNS, publishable, type RefereeFoulStyle } from "@/lib/referee-foul-style";
@@ -35,13 +36,18 @@ export default function RefereesPage() {
 
       <section className="flex flex-col gap-3">
         <p style={{ fontSize: 15, color: "var(--term-text)", lineHeight: 1.6, maxWidth: "46rem" }}>
-          Each number is a <strong>deviation</strong>, not a rate: percentage points of a game&rsquo;s
-          own fouls, against the league average for that same season. Zero means an official calls
-          the league&rsquo;s mix. The league splits{" "}
+          Every figure is <strong>how much more or less often</strong> an official calls that foul
+          than the league does. <strong>+23%</strong> means they call it about a fifth more often
+          than average; the small grey number beside it is where that ranks among all{" "}
+          {rows.length} officials. Zero means they call it like everyone else.
+        </p>
+        <p style={{ fontSize: 15, color: "var(--term-text-muted)", lineHeight: 1.6, maxWidth: "46rem" }}>
+          For scale, a game has about {data.foulsPerGame} fouls in it, split{" "}
           {FOUL_COLUMNS.map((c) => `${data.leagueShares[c.key]}% ${c.label.toLowerCase()}`).join(
             " · "
           )}
-          , out of {data.foulsPerGame} fouls a game.
+          . So the rare types swing furthest in percentage terms while moving fewest actual calls —
+          the widest technical-foul gap on this page is about a fifth of a whistle a game.
         </p>
         <p style={{ fontSize: 15, color: "var(--term-text-muted)", lineHeight: 1.6, maxWidth: "46rem" }}>
           Baselined within each season, because the taxonomy moves — take fouls ran more than
@@ -49,6 +55,8 @@ export default function RefereesPage() {
           only, since overtime adds fouls unevenly across types.
         </p>
       </section>
+
+      <RefereeLeaderboard rows={rows} leagueShares={data.leagueShares} />
 
       <RefereeStyleContent data={data} />
 

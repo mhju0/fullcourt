@@ -301,8 +301,16 @@ survives baselining per season, per arena, and on share rather than count.
 `src/data/referee-foul-style.json` (written by `scripts/fetch_officials.ts` alongside the older
 `referee-whistle.json`) holds one row per official: deviation in percentage points from the
 league's own seasonal mix, per foul type, each with a z-score at that official's sample size.
-`referee-style-content.tsx` renders it as a sortable table; `src/lib/referee-foul-style.ts` owns
-the types, the |z| ≥ 2 emphasis rule and the 200-game publication bar.
+`referee-style-content.tsx` renders it as a sortable table under a `referee-leaderboard.tsx`
+strip naming the most and fewest of each type; `src/lib/referee-foul-style.ts` owns the types,
+the |z| ≥ 2 emphasis rule and the 200-game publication bar.
+
+**The stored unit is not the displayed one.** The JSON holds percentage-point deviations, but
+`relativePct` scales each against its own league share before render, so a cell reads `+23% #1`
+rather than `+1.39pp`. A percentage-point gap is unreadable without its baseline — the same
++1.39 is a rounding error on shooting fouls at 50.2% and the largest effect in the data on
+offensive fouls at 6.1%. The trade, stated on the page: relative change flatters the rare types,
+so the widest technical-foul gap is +26% but only about a fifth of a whistle a game.
 
 Three constraints the page states rather than hides. A call cannot be attributed to one of three
 officials, so every figure is roughly a third of the real effect — crews barely repeat, which
