@@ -360,10 +360,11 @@ def round_split_block(res: WalkForwardResult) -> list[str]:
     always-home-court rule in rounds 2+.
 
     The split IS the headline. Pooled over all rounds this model beats the one-line rule by
-    about +0.2 points, which is noise — and that pooling is what hides the real result: the
-    model gains where a prior round exists to have been ground down by, and loses in Round 1
-    where it does not. Reporting only the pooled figure understates it in one direction and
-    reporting only rounds 2+ would overstate it in the other, so both ship.
+    about +0.9 points — a modest number that hides the real result by blending two opposite
+    ones together: the model wins by several points in rounds 2+, where a prior round exists
+    to have been ground down by, and loses in Round 1, where it does not. Reporting only the
+    pooled figure understates the rounds-2+ edge and hides the Round 1 loss entirely;
+    reporting only rounds 2+ would overstate it the other way, so both ship.
     """
     lines = ["", "── Round split (walk-forward, out-of-sample) ──", ""]
     lines.append(
