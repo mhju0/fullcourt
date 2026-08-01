@@ -62,7 +62,8 @@ Test files and coverage:
 | `src/components/__tests__/matchup-card-confidence.test.ts` | **Invariant:** anything `classifyRestAdvantage` calls for a team is never labelled `NEUTRAL` by `getConfidence`. Sweeps −3.0…3.0 in 0.1 steps and asserts the contradiction set is empty, plus the tier boundaries (0.5 `low` / 1.0 `med` / 2.0 `high`). Discriminating: with the pre-fix tiers it fails listing exactly `[-0.9…-0.5, 0.5…0.9]`. |
 | `src/lib/__tests__/schedule-disparity.test.ts` | `computeScheduleDisparity` over in-memory rows, grouped by property: `restDaysBeforeGames` returning null for the opener; counted games excluding any game where **either** side is opening; the 5-day cap applied per side *before* differencing (with capped and uncapped totals both returned so the cap stays auditable); the invariants — nets to zero league-wide, orders most-favored first, and is independent of the order games arrive in; league figures (spread, games with a non-zero edge, scheduled per team including uneven schedules); provisional derived from **any non-final game** rather than a game count, so a short season is not misreported and a live game counts as provisional; and fatigue edge summed opponent-minus-own, reported per game, null-safe with no divide-by-zero. |
 | `src/app/api/__tests__/schedule-disparity.test.ts` | `GET /api/schedule-disparity`: unknown and malformed seasons rejected **without querying**, the `{ data, error }` envelope, and a 500 carrying a public message when the query throws. Also pins the two-season-list behaviour — an upcoming season with no data yet is accepted, a season beyond the browsable list is not, and the no-parameter default resolves to the newest season *with data* rather than the empty upcoming one. Mocks `@/lib/db/queries`. |
-| `src/components/__tests__/schedule-disparity-format.test.ts` | `formatSignedDays` / `formatSignedRate`: a plus on favorable edges, a typographic minus rather than a hyphen, an exactly even schedule as a bare unsigned zero, two decimals on the rate (the whole league fits inside roughly ±0.65, so one decimal would collapse distinct teams together), an em dash rather than a zero for a missing fatigue edge, and never a negative zero. |
+| `src/lib/__tests__/signed-number.test.ts` | `signedNumber`: a plus on favorable values, a typographic U+2212 rather than the ASCII hyphen — pinning the two regressions the consolidation fixed, since the /playoffs series features and the model-coefficient table both rendered `toFixed`'s own sign — an exact zero left bare in both the as-is and fixed-decimal forms, decimal padding kept at zero (`season-report-content` strips `.0` off the result), and the documented edge that a value which only *rounds* to zero still carries its sign. Consolidated from the two formatters that had tests; nine others had none. |
+| `src/lib/__tests__/publishable-games.test.ts` | Reads `src/lib/db/queries.ts` and asserts every publishing reader routes through `publishableGames`, that the two density helpers deliberately do not, that each exception is named in the helper's docblock, and that the two predicates appear exactly once in the file — a second hand-written copy is how four readers lost the regime filter. |
 
 API route tests `vi.mock("@/lib/db/queries")`, so they exercise validation + response
 shaping without a real database. They call the route's exported `GET` with a real
@@ -87,10 +88,11 @@ the time, 16.8s serially against 26s *and* readiness-gate failures on `/schedule
 worker count — parallelism bought negative time here. (`fullyParallel` is left on; with one
 worker it only affects ordering.) Existing specs receive a completed onboarding storage state so
 the first-visit dialog cannot block their legacy interactions; `e2e/onboarding.spec.ts` overrides
-that state with an empty browser. Specs (11): `e2e/home.spec.ts`, `e2e/about.spec.ts`,
+that state with an empty browser. Specs (13): `e2e/home.spec.ts`, `e2e/about.spec.ts`,
 `e2e/analysis.spec.ts`, `e2e/behind-the-data.spec.ts`, `e2e/navigation.spec.ts`,
-`e2e/onboarding.spec.ts`, `e2e/playoffs.spec.ts`, `e2e/schedule-disparity.spec.ts`,
-`e2e/season.spec.ts`, `e2e/shot-quality.spec.ts`, `e2e/shooting.spec.ts` — **46 tests**.
+`e2e/onboarding.spec.ts`, `e2e/page-headers.spec.ts`, `e2e/playoffs.spec.ts`,
+`e2e/referees.spec.ts`, `e2e/schedule-disparity.spec.ts`, `e2e/season.spec.ts`,
+`e2e/shot-quality.spec.ts`, `e2e/shooting.spec.ts` — **69 tests**.
 
 `e2e/behind-the-data.spec.ts` covers the reference section: that it is reachable from the
 `Reference` landmark and *not* from `Main navigation` or the `OTHER` menu, that every section is

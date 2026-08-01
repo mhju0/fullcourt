@@ -43,7 +43,7 @@ A season containing any game that is not final. Its figures carry an as-of date 
 _Avoid_: incomplete season, partial season
 
 **Abnormal stretch**:
-A range of dates within one season whose games were not reached by travelling to them, so no model on the site may read them. The list lives in `src/lib/season-regime.ts` and currently holds one entry: the 2019-20 Orlando bubble, 30 July to 11 October 2020. This is about **how the games were played**, and it excludes dates, never a season.
+A range of dates within one season whose games were not reached by travelling to them, so no model on the site may read them. The list lives in `src/lib/season-regime.ts` and currently holds one entry: the 2019-20 Orlando bubble, 30 July to 11 October 2020. Every reader that publishes a game row applies it through `publishableGames()` in `src/lib/db/queries.ts`, which folds it in with the regular-season predicate; the two schedule-density helpers stay outside it on purpose, because they count physical schedule load rather than publishable rows. This is about **how the games were played**, and it excludes dates, never a season.
 _Avoid_: excluded season, COVID season, bubble season
 
 **Truncated season**:
@@ -57,13 +57,14 @@ label is written for a casual fan reading at a glance, so it must be a plain nou
 no time word — and it must not borrow a mainstream term that means something else on other
 sports sites, which misroutes a confident click worse than jargon stalls an uncertain one.
 
-Five tabs sit directly in the bar (`DIRECT_NAV_ITEMS`); SHOT VALUE sits behind the OTHER menu
-(`OTHER_NAV_ITEMS`). That grouping keeps the bar short as the set of smaller reference surfaces
-grows — it does not rank those surfaces below the direct tabs.
+Six tabs sit directly in the bar (`DIRECT_NAV_ITEMS`); SHOT VALUE and REFEREE EFFECT sit behind
+the OTHER menu (`OTHER_NAV_ITEMS`). That grouping keeps the bar short as the set of smaller
+reference surfaces grows — it does not rank those surfaces below the direct tabs.
 
 | Tab | Route | Page `<h1>` | Not called |
 |---|---|---|---|
 | GAMES | `/` | Games | Today's Games — the season selector reaches 1985-86, so no time word stays true |
+| SEASON REPORT | `/season` | Season Report | Season Review — review implies the season has ended, and this page runs live from October; bare Season — GAMES already browses any season's slate and SCHEDULE EDGE already ranks teams inside one |
 | SCHEDULE EDGE | `/schedule` | Schedule Disparity | Schedule — that means a game list everywhere else, which is GAMES |
 | MODEL RESULTS | `/analysis` | Rest Advantage Analysis | Analysis (every page is analysis); Historical Data (GAMES already browses history, and "data" promises a dump) |
 | PLAYOFF REST | `/playoffs` | The round before decides the round after | Playoff Odds — mainstream that means *making* the playoffs, not winning a series; PLAYOFF EDGE — `edge` is the qualifier that makes SCHEDULE EDGE legible as something other than a game list, and a second EDGE tab stops it qualifying |
@@ -77,5 +78,5 @@ Module names are unaffected: the code, tables, scripts and design records still 
 Predictor, Shot Quality and Schedule Disparity.
 
 `/about` is **not** a tab and has no label in this table. It explains what the product
-measures rather than serving data, so it lives in the status bar and the footer. The five-link
+measures rather than serving data, so it lives in the status bar and the footer. The six-link
 count is asserted in `e2e/navigation.spec.ts` and again in `e2e/about.spec.ts`.

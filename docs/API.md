@@ -5,7 +5,11 @@ Twelve route handlers live under `src/app/api/`, all **`GET`**. Product-data rou
 uses a dedicated liveness shape. `getPublicApiErrorMessage` (`src/lib/api-errors.ts`) exposes
 only explicit `PublicApiError` messages in production and otherwise returns a generic error;
 development mode may include the raw `Error.message`. Client code unwraps product envelopes via
-`apiFetcher` (`src/lib/fetcher.ts`), which throws when `error` is non-null.
+`apiFetcher` (`src/lib/fetcher.ts`), which throws when `error` is non-null. `errMsg(error)`
+ships beside it — the message a surface renders for a thrown value, and what
+`components/ui/message-card.tsx` is given. It replaced eight per-surface copies of the same
+ternary, every one of whose fallbacks was unreachable: `apiFetcher` only ever throws an
+`Error`, and SWR rethrows it unchanged.
 
 Response envelope (`ApiResponse<T>` in `src/types/index.ts`) — a discriminated union, so a
 failed request carries no `data` at all:
@@ -133,8 +137,10 @@ Single game detail for the explore modal (game card + last-5 results for both te
 
 - **Path param:** `id` — Zod `coerce.number().int().positive()`. Invalid → `400`
   (`"Invalid game id"`).
-- **Query:** `getGameDetailById(id)` = `getGameById` (regular only) + `getTeamRecentFinalResults`
-  (last 5 finals before the game date) for each team.
+- **Query:** `getGameDetailById(id)` = `getGameById` + `getTeamRecentFinalResults` (last 5
+  finals before the game date) for each team. Both filter through `publishableGames` — regular
+  season *and* normally played — so a 2019-20 bubble game is a `404` here rather than a served
+  rest advantage, and the recent-results strip no longer links into one.
 - **Success:** `{ data: GameDetailResponse, error: null }` where `GameDetailResponse =
   { game: GameResponse, homeRecentWeek: TeamRecentResultGame[], awayRecentWeek:
   TeamRecentResultGame[] }`. **Not found** → `404` `{ data: null, error: "Game not found" }`.
@@ -155,8 +161,8 @@ the `predictions` table.**
 - **Held until a game goes final.** The read has no `LIMIT` — it is every final regular-season
   game with fatigue on both sides — so `getHistoricalBacktest`
   (`src/lib/rest-advantage-evidence-server.ts`) keeps its answer keyed by `seasonMinRA` and
-  discards it when `getCompletedGamesStamp()` (a `count` + `max(date)` over final regular-season
-  games) changes. Three client surfaces request this payload; without that, each request
+  discards it when `getCompletedGamesStamp()` (a `count` + `max(date)` over the publishable
+  final games — the same population the backtest reads) changes. Three client surfaces request this payload; without that, each request
   re-read and re-reduced the whole set. The cache is per server instance and bounded, because
   `seasonMinRA` arrives from a query string.
 - **Success:** `{ data: AnalysisResponse, error: null }`:

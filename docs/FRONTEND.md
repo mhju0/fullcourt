@@ -563,12 +563,40 @@ only its skeleton, not a restatement of the loader.
 
 ### `components/ui/*` — shadcn primitives
 
-Only two primitives survive: `button`, built on **`@base-ui/react`** with
-`class-variance-authority` variants, and `skeleton`, a plain `div`. (`@base-ui/react` is
+Two shadcn primitives survive — `button`, built on **`@base-ui/react`** with
+`class-variance-authority` variants, and `skeleton`, a plain `div` — alongside one hand-written
+primitive that is not shadcn's, `message-card` (below). (`@base-ui/react` is
 also used directly for the `onboarding-guide` dialog.) `cn()`
 (`src/lib/utils.ts`) merges classes with `clsx` + `tailwind-merge`. `components.json` pins
 the shadcn `base-nova` style, `neutral` base color, CSS variables, and the `@/components`,
 `@/lib`, `@/hooks`, `@/components/ui` aliases.
+
+### `components/ui/message-card.tsx` — the failure/empty card
+
+`MessageCard({ tone, title, body? })` is what a surface renders instead of its data.
+
+It was born inside `shot-quality-content.tsx`, where it already had the right shape, and served
+one file. Everywhere else each module decided for itself: nine branches in five visual shapes —
+two full cards, a dashed box doubling as the empty state, a bare `<p>` that replaced the whole
+page, a 13px line off the type scale, and a `<td colSpan>` — one of which discarded the error
+message entirely.
+
+`tone="error"` carries `role="alert"`; `tone="muted"` does not. That asymmetry is the point: a
+failure that visibly replaced the page announced nothing to a screen reader on six of the eight
+surfaces, while an empty result is not an alert — nothing went wrong.
+
+Deliberately **not** used for three things a card would misrepresent:
+
+- the dashed in-place empties (`termDashedEmptyStyle`), which stand where a chart or a bar list
+  would be and two of which already sit inside a card — a second filled panel reads as content,
+  not absence;
+- the Explore Games `<tbody>` states, which need a `<td colSpan>`; three sites, one file;
+- every skeleton, each of which mirrors its own module's shape.
+
+`errMsg(error)` (`src/lib/fetcher.ts`) is the companion: the message to show for a thrown value.
+It lives next to the thing that throws, and replaced eight per-surface copies of the same
+ternary — each with a differently worded fallback that could never render, since `apiFetcher`
+only ever throws an `Error` and SWR rethrows it unchanged.
 
 ## Design system — "Broadcast" (light)
 
@@ -634,6 +662,14 @@ hard-code hexes.
   `font-variant-numeric: tabular-nums` applied on the class itself. TS/TSX style objects that
   need the same stack import `MONO_FONT_STACK` from `src/lib/terminal-styles.ts` rather than
   re-declaring it — this includes every recharts `tick.fontFamily`.
+- **Signed numbers:** every column whose sign is doing work — a schedule edge, a deviation from
+  the coin flip, a model coefficient, a swing — renders through `signedNumber(value, decimals?)`
+  (`src/lib/signed-number.ts`), never a hand-rolled template. Two rules, no options: **U+2212,
+  never the ASCII hyphen** (the hyphen-minus reads short and sits off the numeral's baseline in
+  a mono face), and **an exact zero is bare** (an even schedule points nowhere, and a sign would
+  claim it did). Units stay at the call site, because every numeric column names its own. It
+  replaced eleven copies that had drifted three ways: two emitted the hyphen, three signed an
+  exact zero, one could render `−0`.
 - This replaced `'Courier New'`, which set roughly 80% of the visible text: a metrically loose
   typewriter face with weak tabular figures, and the largest single source of visual
   cheapness in a dense numeric UI. `next/font` ships with Next.js, so the swap added **no npm
@@ -702,7 +738,11 @@ which is why it is the one assertive line on the chart.
 Both are required: Recharts left to improvise emitted 0/20/40/60 **plus an orphan 70**, and
 any hardcoded ceiling clips — the RA ≥ 7 season series runs **−11.0 to +25.0 pp**. The step
 comes from `TICK_STEP_CANDIDATES` (2 / 5 / 10), the smallest that keeps the axis under
-`MAX_TICK_INTERVALS`. `formatDeviation()` signs the ticks (`+10` / `0` / `−10`, U+2212).
+`MAX_TICK_INTERVALS`. `signedNumber()` (`src/lib/signed-number.ts`) signs the ticks (`+10` / `0`
+/ `−10`, U+2212) — the site-wide formatter, not a local one, so a hyphen cannot creep back into a
+single chart. It is wrapped as `tickFormatter={(v) => signedNumber(v)}` rather than passed by
+reference: Recharts types the prop as `(value, index) => string`, so a bare reference feeds the
+tick index into `decimals` and renders `+10`, `+20.0`, `+30.00` down one axis.
 
 `minPointSize={minBarSize}` gives a **dead-even** slice a 2px stub. Its true height is 0px, so
 without it the bar vanishes and reads as missing data — and it is real: RA ≥ 7 in 2011-12 went
