@@ -381,14 +381,11 @@ describe("rest days agree with the fatigue model", () => {
   function recentGame(date: string): RecentGame {
     return {
       date,
-      teamId: 1,
-      opponentTeamId: 2,
       isHome: true,
       teamLat: HOME.lat,
       teamLon: HOME.lon,
       opponentLat: HOME.lat,
       opponentLon: HOME.lon,
-      opponentAltitudeFlag: false,
       overtimePeriods: 0,
     };
   }
@@ -398,16 +395,16 @@ describe("rest days agree with the fatigue model", () => {
     ["2024-01-01", "2024-01-04"],
     ["2024-01-01", "2024-01-12"],
   ])("matches calculateFatigue's daysSinceLastGame for %s → %s", (prev, current) => {
-    const fromFatigue = calculateFatigue(
-      current,
-      [recentGame(prev)],
-      false,
-      HOME.lat,
-      HOME.lon,
-      HOME.lat,
-      HOME.lon,
-      true
-    ).daysSinceLastGame;
+    const fromFatigue = calculateFatigue({
+      gameDate: current,
+      recentGames: [recentGame(prev)],
+      isVisitingAltitude: false,
+      teamHomeLat: HOME.lat,
+      teamHomeLon: HOME.lon,
+      currentVenueLat: HOME.lat,
+      currentVenueLon: HOME.lon,
+      currentGameIsHome: true,
+    }).daysSinceLastGame;
 
     const [, fromDisparity] = restDaysBeforeGames([prev, current]);
 

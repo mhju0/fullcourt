@@ -117,14 +117,11 @@ export function rowToRecentGame(row: PriorGameRow, teamId: number): RecentGame {
 
   return {
     date,
-    teamId,
-    opponentTeamId: isHomeSide ? row.awayTeamId : row.homeTeamId,
     isHome: isHomeSide && !neutral,
     teamLat: self.latitude,
     teamLon: self.longitude,
     opponentLat: opponent.latitude,
     opponentLon: opponent.longitude,
-    opponentAltitudeFlag: isHomeSide ? row.awayAltitude : row.homeAltitude,
     overtimePeriods: row.overtimePeriods,
     tipOffUtc: row.tipOffUtc ?? null,
     pointMargin:

@@ -2,6 +2,8 @@ import { describe, expect, it } from "vitest";
 import {
   calculateFatigue,
   calculateRestAdvantage,
+  scoreGameFatigue,
+  type FatigueTeam,
   type RecentGame,
 } from "@/lib/fatigue";
 import { haversineDistance } from "@/lib/haversine";
@@ -25,14 +27,11 @@ const BOS_LON = -71.0621;
 function baseRecent(overrides: Partial<RecentGame> = {}): RecentGame {
   return {
     date: "2025-01-01",
-    teamId: 1,
-    opponentTeamId: 2,
     isHome: true,
     teamLat: LA_LAT,
     teamLon: LA_LON,
     opponentLat: LA_LAT,
     opponentLon: LA_LON,
-    opponentAltitudeFlag: false,
     overtimePeriods: 0,
     ...overrides,
   };
@@ -44,16 +43,16 @@ function fatigueHomeTeam(
   recent: RecentGame[],
   isVisitingAltitude = false
 ) {
-  return calculateFatigue(
+  return calculateFatigue({
     gameDate,
-    recent,
+    recentGames: recent,
     isVisitingAltitude,
-    LA_LAT,
-    LA_LON,
-    LA_LAT,
-    LA_LON,
-    true
-  );
+    teamHomeLat: LA_LAT,
+    teamHomeLon: LA_LON,
+    currentVenueLat: LA_LAT,
+    currentVenueLon: LA_LON,
+    currentGameIsHome: true,
+  });
 }
 
 /** Subject team is LAL on the road at `venueLat` / `venueLon`. */
@@ -64,16 +63,16 @@ function fatigueAwayTeam(
   venueLat: number,
   venueLon: number
 ) {
-  return calculateFatigue(
+  return calculateFatigue({
     gameDate,
-    recent,
+    recentGames: recent,
     isVisitingAltitude,
-    LA_LAT,
-    LA_LON,
-    venueLat,
-    venueLon,
-    false
-  );
+    teamHomeLat: LA_LAT,
+    teamHomeLon: LA_LON,
+    currentVenueLat: venueLat,
+    currentVenueLon: venueLon,
+    currentGameIsHome: false,
+  });
 }
 
 describe("calculateFatigue", () => {
@@ -372,16 +371,16 @@ describe("ratified rule #1 — season openers", () => {
   const POR_LON = -122.6668;
 
   it("MIN at POR opener (the 2025-10-22 case): zero score, real miles, factual displacement", () => {
-    const result = calculateFatigue(
-      "2025-10-22",
-      [],
-      false,
-      MIN_LAT,
-      MIN_LON,
-      POR_LAT,
-      POR_LON,
-      false
-    );
+    const result = calculateFatigue({
+      gameDate: "2025-10-22",
+      recentGames: [],
+      isVisitingAltitude: false,
+      teamHomeLat: MIN_LAT,
+      teamHomeLon: MIN_LON,
+      currentVenueLat: POR_LAT,
+      currentVenueLon: POR_LON,
+      currentGameIsHome: false,
+    });
 
     // The 0.88 opening-night "coast" charge was the defect: a full offseason means
     // zero accumulated load, whatever tonight's longitude says.
@@ -449,16 +448,16 @@ describe("ratified rule #2 — time-zone displacement replaces coast-to-coast", 
         opponentLon: BOS_LON,
       }),
     ];
-    const result = calculateFatigue(
-      "2025-01-07",
-      recent,
-      false,
-      DEN_LAT,
-      DEN_LON,
-      LA_LAT,
-      LA_LON,
-      false
-    );
+    const result = calculateFatigue({
+      gameDate: "2025-01-07",
+      recentGames: recent,
+      isVisitingAltitude: false,
+      teamHomeLat: DEN_LAT,
+      teamHomeLon: DEN_LON,
+      currentVenueLat: LA_LAT,
+      currentVenueLon: LA_LON,
+      currentGameIsHome: false,
+    });
     expect(result.hasTimeZoneDisplacement).toBe(false);
   });
 });
@@ -486,16 +485,18 @@ describe("time-zone displacement uses real zones, not a longitude proxy", () => 
     venueLat: number,
     venueLon: number
   ) {
-    return calculateFatigue(
+    return calculateFatigue({
       gameDate,
-      [{ ...baseRecent({ date: "2025-01-05", isHome: true }), teamLat: homeLat, teamLon: homeLon }],
-      false,
-      homeLat,
-      homeLon,
-      venueLat,
-      venueLon,
-      false
-    );
+      recentGames: [
+        { ...baseRecent({ date: "2025-01-05", isHome: true }), teamLat: homeLat, teamLon: homeLon },
+      ],
+      isVisitingAltitude: false,
+      teamHomeLat: homeLat,
+      teamHomeLon: homeLon,
+      currentVenueLat: venueLat,
+      currentVenueLon: venueLon,
+      currentGameIsHome: false,
+    });
   }
 
   it("fires for Denver at Atlanta — 2 zones apart but only 20.6° of longitude", () => {
@@ -548,11 +549,16 @@ describe("time-zone displacement uses real zones, not a longitude proxy", () => 
 /** Ratified 2026-07-30: prior-game workload, continuous rest credit, altitude residue. */
 describe("blowout discount", () => {
   function priorGame(margin: number | null) {
-    return calculateFatigue(
-      "2025-01-10",
-      [{ ...baseRecent({ date: "2025-01-09", isHome: true }), pointMargin: margin }],
-      false, LA_LAT, LA_LON, LA_LAT, LA_LON, true
-    );
+    return calculateFatigue({
+      gameDate: "2025-01-10",
+      recentGames: [{ ...baseRecent({ date: "2025-01-09", isHome: true }), pointMargin: margin }],
+      isVisitingAltitude: false,
+      teamHomeLat: LA_LAT,
+      teamHomeLon: LA_LON,
+      currentVenueLat: LA_LAT,
+      currentVenueLon: LA_LON,
+      currentGameIsHome: true,
+    });
   }
 
   it("charges a competitive game in full and a rout at the 25% cap", () => {
@@ -614,9 +620,16 @@ describe("altitude carryover", () => {
   });
 
   it("does not stack: being at altitude tonight still charges the full 1.15", () => {
-    const result = calculateFatigue(
-      "2025-01-10", [denverVisit], true, LA_LAT, LA_LON, DEN_LAT, DEN_LON, false
-    );
+    const result = calculateFatigue({
+      gameDate: "2025-01-10",
+      recentGames: [denverVisit],
+      isVisitingAltitude: true,
+      teamHomeLat: LA_LAT,
+      teamHomeLon: LA_LON,
+      currentVenueLat: DEN_LAT,
+      currentVenueLon: DEN_LON,
+      currentGameIsHome: false,
+    });
     expect(result.altitudeMultiplier).toBe(1.15);
   });
 
@@ -662,16 +675,16 @@ describe("circadian direction and acclimation", () => {
         opponentLon: lon,
       })),
     ];
-    return calculateFatigue(
-      `2025-01-0${priorVenues.length + 2}`,
-      recent,
-      false,
-      homeLat,
-      homeLon,
-      venueLat,
-      venueLon,
-      false
-    );
+    return calculateFatigue({
+      gameDate: `2025-01-0${priorVenues.length + 2}`,
+      recentGames: recent,
+      isVisitingAltitude: false,
+      teamHomeLat: homeLat,
+      teamHomeLon: homeLon,
+      currentVenueLat: venueLat,
+      currentVenueLon: venueLon,
+      currentGameIsHome: false,
+    });
   }
 
   it("charges more travelling east than the mirror-image trip west", () => {
@@ -723,9 +736,17 @@ describe("back-to-back turnaround hours", () => {
     const recent: RecentGame[] = [
       { ...baseRecent({ date: "2025-01-10", isHome: true }), tipOffUtc: prevTip },
     ];
-    return calculateFatigue(
-      "2025-01-11", recent, false, LA_LAT, LA_LON, LA_LAT, LA_LON, true, tonightTip
-    );
+    return calculateFatigue({
+      gameDate: "2025-01-11",
+      recentGames: recent,
+      isVisitingAltitude: false,
+      teamHomeLat: LA_LAT,
+      teamHomeLon: LA_LON,
+      currentVenueLat: LA_LAT,
+      currentVenueLon: LA_LON,
+      currentGameIsHome: true,
+      currentTipOffUtc: tonightTip,
+    });
   }
 
   it("penalises a short turnaround more than a long one", () => {
@@ -757,16 +778,16 @@ describe("neutral-site venues", () => {
 
   /** LAL is the nominal home team, but the game is in Paris. */
   function lalInParis(recent: RecentGame[]) {
-    return calculateFatigue(
-      "2025-01-23",
-      recent,
-      false,
-      LA_LAT,
-      LA_LON,
-      PARIS_LAT,
-      PARIS_LON,
-      false // neutral → not a home game for either side
-    );
+    return calculateFatigue({
+      gameDate: "2025-01-23",
+      recentGames: recent,
+      isVisitingAltitude: false,
+      teamHomeLat: LA_LAT,
+      teamHomeLon: LA_LON,
+      currentVenueLat: PARIS_LAT,
+      currentVenueLon: PARIS_LON,
+      currentGameIsHome: false, // neutral → not a home game for either side
+    });
   }
 
   it("charges the flight to Paris rather than treating it as a home stand", () => {
@@ -792,27 +813,34 @@ describe("neutral-site venues", () => {
         venueLon: PARIS_LON,
       },
     ];
-    const backHome = calculateFatigue(
-      "2025-01-26",
-      recent,
-      false,
-      LA_LAT,
-      LA_LON,
-      LA_LAT,
-      LA_LON,
-      true
-    );
+    const backHome = calculateFatigue({
+      gameDate: "2025-01-26",
+      recentGames: recent,
+      isVisitingAltitude: false,
+      teamHomeLat: LA_LAT,
+      teamHomeLon: LA_LON,
+      currentVenueLat: LA_LAT,
+      currentVenueLon: LA_LON,
+      currentGameIsHome: true,
+    });
     expect(backHome.travelDistanceMiles).toBeGreaterThan(5000);
   });
 
   it("resolves London and Paris to different zones despite both being European", () => {
     const recent: RecentGame[] = [baseRecent({ date: "2025-01-21", isHome: true })];
-    const london = calculateFatigue(
-      "2025-01-23", recent, false, BOS_LAT, BOS_LON, 51.503, 0.0032, false
-    );
-    const paris = calculateFatigue(
-      "2025-01-23", recent, false, BOS_LAT, BOS_LON, PARIS_LAT, PARIS_LON, false
-    );
+    const atVenue = (venueLat: number, venueLon: number) =>
+      calculateFatigue({
+        gameDate: "2025-01-23",
+        recentGames: recent,
+        isVisitingAltitude: false,
+        teamHomeLat: BOS_LAT,
+        teamHomeLon: BOS_LON,
+        currentVenueLat: venueLat,
+        currentVenueLon: venueLon,
+        currentGameIsHome: false,
+      });
+    const london = atVenue(51.503, 0.0032);
+    const paris = atVenue(PARIS_LAT, PARIS_LON);
     // Both displaced from Boston, but the venues sit in different zones (UTC+0 vs +1).
     expect(london.hasTimeZoneDisplacement).toBe(true);
     expect(paris.hasTimeZoneDisplacement).toBe(true);
@@ -899,5 +927,75 @@ describe("3-in-4 / 4-in-6 flags describe tonight, not the lookback", () => {
     ]);
 
     expect(r.isFourInSix).toBe(false);
+  });
+});
+
+/**
+ * `scoreGameFatigue` resolves the geometry so its two callers cannot resolve it differently.
+ *
+ * They had. `backfill_fatigue.ts` ran both teams through `eraCoordinates`; `daily-refresh.ts`
+ * read `team.latitude` raw, because its team type had no `abbreviation` to look one up with.
+ * The daily path never reaches back far enough for that to show, so nothing failed and nothing
+ * asserted the two agreed.
+ */
+describe("scoreGameFatigue", () => {
+  const OKC: FatigueTeam = {
+    id: 1,
+    abbreviation: "OKC",
+    // Paycom Center. Era-corrected to Seattle for any game before 2008-07-01.
+    latitude: "35.4634",
+    longitude: "-97.5151",
+    altitudeFlag: false,
+  };
+  const LAL: FatigueTeam = {
+    id: 2,
+    abbreviation: "LAL",
+    latitude: String(LA_LAT),
+    longitude: String(LA_LON),
+    altitudeFlag: false,
+  };
+
+  /** LAL flies to the Sonics/Thunder, two nights after a home game. */
+  function lalVisitsOkc(year: number) {
+    return scoreGameFatigue({
+      game: { date: `${year}-01-12` },
+      homeTeam: OKC,
+      awayTeam: LAL,
+      homeRecentGames: [],
+      awayRecentGames: [baseRecent({ date: `${year}-01-10`, isHome: true })],
+    }).away.travelDistanceMiles;
+  }
+
+  it("flies the visitor to Seattle for a Sonics-era game, not to Oklahoma City", () => {
+    // LA → Seattle is ~960 miles; LA → Oklahoma City is ~1,190. Reading the modern
+    // arena for a 1995 game moves the visitor 230 miles and mis-scores the leg.
+    expect(lalVisitsOkc(1995)).toBeLessThan(1050);
+    expect(lalVisitsOkc(2015)).toBeGreaterThan(1100);
+  });
+
+  it("sends both sides to the neutral city rather than the listed home arena", () => {
+    const home = scoreGameFatigue({
+      game: { date: "2025-01-23", neutralSite: true, neutralVenueCity: "Paris" },
+      homeTeam: LAL,
+      awayTeam: OKC,
+      homeRecentGames: [baseRecent({ date: "2025-01-20", isHome: true })],
+      awayRecentGames: [],
+    }).home;
+
+    // The nominal host is on the road too: nobody slept at home.
+    expect(home.travelDistanceMiles).toBeGreaterThan(5000);
+    expect(home.roadTripConsecutiveAway).toBe(1);
+  });
+
+  it("refuses a malformed coordinate rather than scoring it as NaN", () => {
+    expect(() =>
+      scoreGameFatigue({
+        game: { date: "2025-01-12" },
+        homeTeam: { ...OKC, latitude: "" },
+        awayTeam: LAL,
+        homeRecentGames: [],
+        awayRecentGames: [],
+      })
+    ).toThrow(/invalid latitude for team 1/);
   });
 });
