@@ -17,7 +17,7 @@
 
 FullCourt quantifies how **travel, rest, and schedule density** shape NBA outcomes. Its flagship model assigns every team a multi-factor **fatigue score**, derives a **rest advantage** for each matchup, and backtests it against every NBA season since 1985-86.
 
-> **The finding:** the more-rested team wins the majority of games — and the edge widens once the rest-advantage gap reaches **5+ points**. These rates are computed live from the database and surfaced on the site (currently **~55% overall**, rising to **~61%** at a 5+ gap).
+> **The finding:** the more-rested team wins the majority of games — and the edge widens once the rest-advantage gap reaches **5+ points**. These rates are computed live from the database and surfaced on the site (currently **~55% overall**, rising to **~63%** at a 5+ gap).
 
 🔗 **Live demo:** https://fullcourt-nba.vercel.app &nbsp;·&nbsp; **Code:** https://github.com/mhju0/fullcourt
 
@@ -40,20 +40,20 @@ No license is granted for use, copying, modification, or distribution of this co
 differential, and a confidence read. Every rest-advantage number carries the historical hit
 rate and sample size of its class; matchups the model calls neutral get no claim at all.
 
-<img src="docs/screenshots/games.png" alt="The Games page for Sunday, April 12, 2026, with a BY DATE / UPCOMING toggle set to BY DATE. Three tiles read 15 games on this date, an average rest advantage of 0.8, and 0 high-confidence games. A Scope panel below holds the 2025-26 season with month buttons from October to April, April selected, and day chips 1 through 12 each captioned with its game count, the 12th selected. A banner reads that the 2025-26 season is complete and the final slate is showing, linking to the backtest. Two matchup cards follow. The first, Brooklyn Nets 101 at Toronto Raptors 136, shows fatigue bars of 3.3 and 4.4, a rest-advantage panel giving BKN plus 1.1 with a MED CONF badge, and a sentence reading that any measurable gap has gone the rested team's way 55.6% of the time from 37,934 games. The second, Chicago Bulls 128 at Dallas Mavericks 149, shows fatigue scores of 4.4 and 4.6, is scored EVEN 0.2 with a NEUTRAL badge, and carries no such sentence." width="900" />
+<img src="docs/screenshots/games.png" alt="The Games page for Sunday, April 12, 2026, with a BY DATE / UPCOMING toggle set to BY DATE. Three tiles read 15 games on this date, an average rest advantage of 0.8, and 0 high-confidence games. A Scope panel below holds the 2025-26 season with month buttons from October to April, April selected, and day chips 1 through 12 each captioned with its game count, the 12th selected. A banner reads that the 2025-26 season is complete and the final slate is showing, linking to the backtest. Two matchup cards follow. The first, Brooklyn Nets 101 at Toronto Raptors 136, shows fatigue bars of 3.3 and 4.4, a rest-advantage panel giving BKN plus 1.1 with a MED CONF badge, and a sentence reading that any measurable gap has gone the rested team's way 55.5% of the time from 38,851 games. The second, Chicago Bulls 128 at Dallas Mavericks 149, shows fatigue scores of 4.4 and 4.6, is scored EVEN 0.2 with a NEUTRAL badge, and carries no such sentence." width="900" />
 
-**Schedule Disparity — who the schedule favored.** All 30 teams ranked by net rest edge in days,
+**Schedule Disparity — who the schedule favored.** All 30 teams ranked by net edge games,
 drawn from a zero line so the bar length *is* the edge. Positive is favorable in every column on
 the page.
 
-<img src="docs/screenshots/schedule.png" alt="Schedule Disparity for 2025-26: a summary strip reading most favored plus 15 days (Portland Trail Blazers), least favored minus 11 (Boston Celtics), a spread of 26 days best to worst, and 557 games with a rest edge of which 14 were by 3 or more days. Below it all 30 teams are ranked as horizontal bars diverging from a zero line, blue to the right for a favorable edge and red to the left for an unfavorable one, from Portland at plus 15 down through four teams at exactly zero to Boston at minus 11. A header note states the season is final with 1,214 of 1,230 games compared." width="900" />
+<img src="docs/screenshots/schedule.png" alt="Schedule Disparity for 2025-26, marked final with 1,214 of 1,230 games compared. A summary strip reads most favored plus 18 (Cleveland Cavaliers), least favored minus 17 (Boston Celtics), a spread of 35 edge games best to worst, and 938 games with an edge of which 537 were big (1.5+). Below it all 30 teams are ranked as horizontal bars diverging from a zero line, blue to the right for a favorable edge and red to the left for an unfavorable one, from Cleveland at plus 18 down through Sacramento at exactly zero to Boston at minus 17. A header note states the season is final with 1,214 of 1,230 games compared." width="900" />
 
 **Model Results — the full-history backtest behind the headline finding.** Win rate by rest-advantage
 threshold, plotted as the gap against a coin flip in percentage points: zero is a 50% win
 rate, so the bar's length is the measured edge. Slices the model gets backwards hang below
 the line in red.
 
-<img src="docs/screenshots/analysis.png" alt="Rest Advantage Analysis. A HOW THIS IS CALCULATED link sits under the heading. Three summary tiles read an overall win rate of 55.6% across 37,934 games, a home-rested win rate of 61.3% from 16,277 of 26,559 games, and 63.1% at a rest advantage of 5 or more across 3,854 games. Below them, win rate by rest-advantage threshold is drawn as deviation columns measured from a 50% coin flip: four blue bars rise from a zero line, growing left to right from RA at least 2 to RA at least 7, each labelled with its sample size — 19,740, 12,097, 3,854 and 938 games. A legend states that blue means the rested team beat a coin flip and red means it lost to one." width="900" />
+<img src="docs/screenshots/analysis.png" alt="Rest Advantage Analysis. A HOW THIS IS CALCULATED link sits under the heading. Three summary tiles read an overall win rate of 55.5% across 38,851 games, a home-rested win rate of 61.2% from 16,620 of 27,164 games, and 63.1% at a rest advantage of 5 or more across 3,922 games. Below them, win rate by rest-advantage threshold is drawn as deviation columns measured from a 50% coin flip: four blue bars rise from a zero line, growing left to right from RA at least 2 to RA at least 7, each labelled with its sample size — 20,150, 12,326, 3,922 and 954 games. A legend states that blue means the rested team beat a coin flip and red means it lost to one." width="900" />
 
 **Playoff Rest — what surviving a long series costs the round after.** The page leads with the
 argument, not the bracket: every playoff game after Game 1 is played on equal rest by
@@ -62,7 +62,7 @@ home-court team's series win rate climbs from 68.9% to 85.4% depending on whethe
 closed out early or went the distance, the effect survives holding a team's own result fixed, and
 the model's bracket picks below carry that gain.
 
-<img src="docs/screenshots/playoffs.png" alt="Playoff Rest for 2025-26. The header reads PLAYOFF REST and The round before decides the round after. THE POSTSEASON HAS NO REST states 2,545 of 2,545 playoff games after Game 1 were played on equal rest, with only 277 of 600 Game 1s equally rested. THE GRIND TAX gives the home-court team's series win rate, rounds 2+, by both teams' prior-round length: 68.9% (74 series) when both closed early, 85.4% (89 series) when only the opponent went the distance, 65.9% (44 series) when only the home-court team did, and 59.7% (72 series) when both did — plus the same split counted by rest days into Game 1: 65.7% (67 series) on 2+ days short, 59.8% (92) within a day either way, 83.3% (120) on 2+ days rested. A section titled 'Isn't that just the better team?' answers the confound: holding a team's own prior round fixed at a quick close, its win rate is 68.9% when the opponent closed early versus 85.4% when the opponent went the distance, a 16.5-point gap from something outside the team's control; narrowed to evenly-matched series only, 53.2% becomes 67.9%, still a 14.7-point gap; and reversed, being the team that went the distance costs 6.2 points the other way." width="900" />
+<img src="docs/screenshots/playoffs.png" alt="Playoff Rest for 2025-26. The header reads PLAYOFF REST and The round before decides the round after. THE POSTSEASON HAS NO REST states 2,545 of 2,545 playoff games after Game 1 were played on equal rest, with only 277 of 600 Game 1s equally rested. THE GRIND TAX leads with a single figure — plus 16.5 points better odds when the other team arrives off a long series, rounds 2+ — over two full-width bars that hold the reader's own last round fixed at a quick close: 68.9% across 74 series when the opponent also closed early, and a highlighted 85.4% across 89 series when the opponent went the distance. A line below notes that when you went the distance too the edge reverses, 65.9% against a fresh opponent and 59.7% against a tired one. A season selector set to 2025-26 follows, then the first-round bracket: eight series cards, each with the result, the model's pick probability, its hindsight probability, and a CORRECT or UPSET verdict." width="900" />
 
 **Player Shooting — a lookup, not a ranking.** Every player's eFG% on zero rest beside three or
 more days off, with the split's sample size shown on both sides so a thin season reads as thin.
@@ -78,24 +78,31 @@ zone-average baseline it is measured against.
 
 ## Features
 
-Six product routes sit behind five direct nav tabs plus an **OTHER** menu, which holds the
+Eight product routes sit behind six direct nav tabs plus an **OTHER** menu, which holds the
 smaller reference surfaces so the bar stays short as they accumulate. Labels are plain nouns
 with no time words — the pattern every mainstream NBA nav uses — while the precise terms
 (`xeFG%`, net rest edge) live in each page's eyebrow, where surrounding context decodes them.
 
 - **Games** (`/`) — live matchup cards with fatigue bars, a rest-advantage gauge, and real-time
   score/status updates via Supabase Realtime. Browses any season back to 1985-86 by date, and
-  carries an **UPCOMING** view: scheduled games ranked by their predicted rest-advantage edge,
-  each shown with the historical hit rate and sample size of its rest-advantage class. Not
+  carries an **UPCOMING** view: the remaining schedule in date order, filterable to a minimum
+  rest-advantage gap, each game shown with the historical hit rate and sample size of its
+  rest-advantage class. Not
   betting advice. (This view is the retired `/upcoming` route, which now redirects here.)
-- **Schedule Edge** (`/schedule`) — which teams a season's schedule favored, ranked by **net rest edge**
-  in days against their opponents, with back-to-back and short-rest differentials beside it.
+- **Season Report** (`/season`) — one season read end to end: how the rest call scored that year
+  against the all-season norm, which teams actually converted a rest edge into wins, what the
+  schedule cost each of them, and the nights the league played on zero rest. Honest framing: a
+  single season is a small sample, so every rate tile is gated at a minimum game count and the
+  verdict says "too early to call" rather than inventing one.
+- **Schedule Edge** (`/schedule`) — which teams a season's schedule favored, ranked by **net edge
+  games**: games arrived at with a real rest edge, minus games played against one, with
+  back-to-back and short-rest differentials beside it.
   Honest framing: it describes the schedule rather than predicting anything, much of the gap is
   structural rather than anyone being favored, and every figure is scoped to its own season —
   season length, team count and the league-wide rest distribution all shifted across four
   decades, so there is deliberately no all-time ranking.
 - **Model Results** (`/analysis`) — the historical backtest that scores the rest model: win rate by
-  rest-advantage threshold and by season, home/away splits, and a filterable game explorer.
+  rest-advantage threshold and by season, the home-rested split, and a filterable game explorer.
 - **Playoff Rest** (`/playoffs`) — what surviving a long series costs the round after, argued
   before the bracket rather than under it. Every playoff game past Game 1 is played on equal rest
   by construction, so the only rest signal left is how far each team's previous round ran, read
@@ -109,7 +116,9 @@ with no time words — the pattern every mainstream NBA nav uses — while the p
   series, per-season 11-16-3 — and it *loses* in Round 1, 77.1% against 78.8%, where the feature
   is zero for every row. Pooled over 30 seasons predicted in advance that nets out to 75.3% vs
   74.4%, a tie inside the noise; the durable win is calibration, log loss 0.5696 → 0.4939 (~13%)
-  and Brier 0.1907 → 0.1628 (~15%). The page says all of this on its face.
+  and Brier 0.1907 → 0.1628 (~15%). The page leads with the finding and the bracket; the full
+  argument — the round split, the confound test and the calibration table — sits one link away at
+  `/behind-the-data/playoff-predictions`.
 - **Shot Value** (`/shot-quality`, under **OTHER**) — a half-court hexbin map of expected effective FG% per grid cell, comparing a location-only gradient-boosted model against a zone-average baseline. Honest framing: public NBA data has no defender distance or shot-clock signal, so this is shot-**location** value only, and the model's edge over the baseline is a small calibration win (~1% on log-loss / Brier), not a large accuracy jump.
 - **Player Shooting** (`/shooting`) — a browsable database of every player's eFG% on zero rest
   against three or more days off, for any season since 1996-97 or pooled across a career. Rest is
@@ -119,11 +128,16 @@ with no time words — the pattern every mainstream NBA nav uses — while the p
   the page is a lookup rather than a ranking — a season describes what happened, and only the
   career line, shrunk toward the league mean, supports a claim.
 
+- **Referee Effect** (`/referees`, under **OTHER**) — a placeholder since 2026-07-30. The
+  per-official whistle numbers came back inside noise, so the finding was pulled rather than
+  published; the ingest and its dataset tests remain.
+
 Each analytics module is **additive and isolated** — its own scripts, tables, routes, and page — so new modules never destabilize the flagship rest-advantage flow.
 
-One route sits outside that set: **`/about`**, a landing page that explains what the product
-measures. It serves no data and is deliberately not a sixth tab — it is reached from an `ABOUT`
-link in the status bar and from the footer.
+Two routes sit outside that set: **`/about`**, a landing page that explains what the product
+measures, and **`/behind-the-data`**, the method pages behind each module. Neither is a tab —
+both are reached from reference links right-aligned in the nav row, and `/about` also from the
+footer. `/about` reads its three evidence figures from the same backtest `/analysis` renders.
 
 ---
 
@@ -163,7 +177,9 @@ Each team's score combines:
 - **Workload** — exponential decay over the last 30 days (recent games weigh more).
 - **Travel** — log-scaled great-circle miles, with a realistic travel contract: a team only flies home when its *next* game is at home (no phantom round-trips between two road games).
 - **Back-to-backs & altitude** — a one-day-rest multiplier sharpened by the *actual* hours between tips (a 10:30pm game into a 7pm game is not the same as the reverse), plus multipliers for visiting Denver, Utah or Mexico City, and a smaller residual the night after.
-- **Schedule density** — a multi-window stress multiplier (3-in-4, 4-in-6).
+- **Schedule density** — a stress multiplier across five windows (6, 7, 12, 15 and 30 days)
+  measured against a normal-pace anchor, capped at 1.42. The 3-in-4 and 4-in-6 flags are
+  reported alongside it, not inputs to it.
 - **Road trips & body clock** — added load for long road stretches, plus a circadian charge for playing two or more time zones from home. It is heavier travelling east than west, and it decays as the team re-entrains, at roughly a day per zone crossed.
 - **Freshness & game difficulty** — a rest discount for extended breaks, and prior-game load weighted by how hard the game actually was: overtime adds, a blowout that rested the starters subtracts.
 
@@ -193,7 +209,7 @@ one exists.
 | API | Next.js route handlers, Zod validation, Drizzle ORM, postgres-js |
 | Database | Supabase PostgreSQL — Row-Level Security + Realtime |
 | Data pipeline | Python (`nba_api`, `pandas`) + TypeScript (`tsx`) |
-| Modeling (Shot Quality) | scikit-learn (`HistGradientBoostingClassifier`, logistic regression) — isolated to `ml/`, not the app's runtime deps |
+| Modeling | scikit-learn — `HistGradientBoostingClassifier` in `scripts/` (Shot Quality), logistic regression in `ml/` (Playoff Predictor); Python-side only, never the app's runtime deps |
 | Testing | Vitest (unit + route), Playwright (e2e) |
 | Infra | Vercel, GitHub Actions |
 
@@ -205,7 +221,7 @@ one exists.
 - **Single source of truth** — one fatigue engine shared by pipeline writers and API reads, so the model math is never duplicated or drifts between write and read paths.
 - **Self-gating pipeline** — the daily GitHub Actions job checks whether the NBA season is active and exits cleanly in the offseason (before touching the DB or any API), so it runs year-round with no manual cron changes.
 - **Query performance** — hot read paths use `LEFT JOIN LATERAL … ORDER BY … LIMIT 1` against a composite index to fetch the latest fatigue row per team, replacing full-table `DISTINCT ON` scans — verified byte-for-byte identical output before/after.
-- **Data integrity** — every season in the database is reconciled against an independent source (Basketball-Reference, 340 monthly pages, cross-checked with ESPN) to catch timezone date-shift bugs a sampled check would miss; game dates are stored in US/Eastern end-to-end with a self-healing upsert (`date = EXCLUDED.date`), so a re-run repairs any mis-dated row.
+- **Data integrity** — the 40 seasons audited to date are reconciled against an independent source (Basketball-Reference, 340 monthly pages, cross-checked with ESPN); 2019-20 was admitted after that audit and is queued for the next run to catch timezone date-shift bugs a sampled check would miss; game dates are stored in US/Eastern end-to-end with a self-healing upsert (`date = EXCLUDED.date`), so a re-run repairs any mis-dated row.
 - **Security** — Supabase RLS with explicit Data API grants (anon read, service-role writes); a Content-Security-Policy + `X-Frame-Options: DENY`, and a constant-time comparison on the cron bearer token.
 - **Real-time** — score and status changes push to the browser through Supabase Realtime.
 - **Tested & shipped** — Vitest unit/route + Playwright e2e (run locally); ships via Vercel (auto-deploy + a live-score cron) and a scheduled GitHub Actions data pipeline.
@@ -254,8 +270,9 @@ src/
     db/           # Drizzle schema, queries, client
   hooks/          # Supabase Realtime + the game-slate controller
 scripts/          # Python ingest + TypeScript modeling + Shot Quality / Shooting pipelines
-ml/               # Shot Quality modeling (isolated venv, scikit-learn) + gitignored data cache
-public/data/      # committed static analytics assets (player-rest.json feeds /shooting)
+ml/               # Playoff Predictor series modeling (isolated venv, scikit-learn) + gitignored cache
+src/data/         # bundled analytics artifacts (referee foul style, win-total benchmark)
+public/data/      # the static asset /shooting fetches at runtime (player-rest.json)
 drizzle/          # SQL migrations (RLS, grants, indexes)
 docs/             # architecture, database, pipeline, API, frontend, ADRs
                   # screenshots regenerate with `node scripts/screenshots.mjs` against a running dev server
@@ -268,8 +285,10 @@ docs/             # architecture, database, pipeline, API, frontend, ADRs
 - [x] **Rest Advantage model** (flagship) — fatigue score + rest-advantage backtest
 - [x] **Playoff Predictor** — series win-probability model (record-driven logistic) at `/playoffs`
 - [x] **Shot Quality** — Expected Shot Value / xeFG% half-court hexbin at `/shot-quality`
-- [x] **Schedule Disparity** — net rest edge per team-season at `/schedule`
+- [x] **Schedule Disparity** — net edge games per team-season at `/schedule`
 - [x] **Shooting by Rest** — per-player eFG% split by his own rest at `/shooting`
+- [x] **Season Report** — one season end to end: the rest call, which teams converted an edge,
+      and what the schedule cost each of them, at `/season`
 
 ---
 
