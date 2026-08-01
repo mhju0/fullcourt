@@ -13,13 +13,16 @@ test.describe("Playoff Rest page", () => {
     await expect(page.getByText("PLAYOFF REST", { exact: true }).first()).toBeVisible();
   });
 
-  test("leads with the argument, not the bracket", async ({ page }) => {
+  test("leads with the finding, not the bracket", async ({ page }) => {
     await page.goto("/playoffs");
 
-    // Sections A-D are server-rendered constants, so they are present without any DB round
+    // Both sections are server-rendered constants, so they are present without any DB round
     // trip. This is what makes the page useful when the API is slow or empty.
     await expect(page.getByText("THE POSTSEASON HAS NO REST")).toBeVisible();
     await expect(page.getByText("THE GRIND TAX")).toBeVisible();
-    await expect(page.getByText("WHAT THE MODEL DOES WITH IT")).toBeVisible();
+
+    // The argument itself moved to Behind the Data on 2026-08-01; the product page carries the
+    // numbers only.
+    await expect(page.getByText("WHAT THE MODEL DOES WITH IT")).toHaveCount(0);
   });
 });

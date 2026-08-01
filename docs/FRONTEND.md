@@ -115,16 +115,28 @@ and three of the five labels would otherwise have ended in "EDGES".
 
 Server wrapper: `<PageHeader>` (`PLAYOFF REST` eyebrow + `<h1>The round before decides the round
 after</h1>` + a descriptor naming the argument), then two siblings — `<PlayoffRestArgument />`
-(Sections A–D, `playoff-rest-sections.tsx`) followed by `<PlayoffsContentLazy />` (the bracket).
+(Sections A–B, `playoff-rest-sections.tsx`) followed by `<PlayoffsContentLazy />` (the bracket).
 Siblings rather than one wrapping the other, so putting the bracket first is a swap of two lines
 in `page.tsx`, not a rewrite of either.
 
-Sections A–D are a server component with no data fetching — every figure is a published
-constant from `src/lib/playoff-rest-facts.ts`, so the argument renders even if the DB is down:
-**A** `THE POSTSEASON HAS NO REST` (equal-rest game counts), **B** `THE GRIND TAX` (the
-grind-matrix table), **C** the "isn't that just the better team?" confound test with its own
-published caveat, **D** `WHAT THE MODEL DOES WITH IT` (the round-split accuracy table and the
-per-season paired record).
+Sections A–B are a server component with no data fetching — every figure is a published
+constant from `src/lib/playoff-rest-facts.ts`, so the finding renders even if the DB is down:
+**A** `THE POSTSEASON HAS NO REST` (equal-rest game counts) and **B** `THE GRIND TAX`
+(`playoff-grind-gap.tsx`). Each is one card, a headline number, and at most three sentences.
+
+**B is two bars, not the 2×2 matrix it was.** `PlayoffGrindMatrix` rendered all four cells of
+`PLAYOFF_GRIND_MATRIX` with a lit maximum, and asked a casual reader to decode two axes before
+the finding appeared. `PlayoffGrindGap` holds the reader's own last round fixed at "closed
+early" — the top matrix row — so only the opponent's grind varies, leads with the `+16.5 points`
+gap, and keeps the reversal (when you went long too) as one sentence. The bar track is a full
+0–100 scale; a truncated axis would draw a bigger gap than the data has.
+
+**Trimmed to the numbers, 2026-08-01.** Two further sections used to sit here — the "isn't that
+just the better team?" confound test and `WHAT THE MODEL DOES WITH IT` (the round-split accuracy
+table) — and together they pushed the bracket four screens down. Both moved, in full and with
+their caveats, to `/behind-the-data/playoff-predictions`, which now owns the argument; the
+product page owns the numbers. `PLAYOFF_GRIND_EXOGENOUS`, `PLAYOFF_ENTRY_REST_BUCKETS` and
+`PLAYOFF_BEST_OF_FIVE` are consumed there rather than here.
 
 The bracket (`playoffs-content.tsx`) owns a season `<select>`, a `ModelResultHeader`, a
 `SeasonScoreboard`, and per-round `SeriesCard` lists — each an expandable row (home-court team,
@@ -134,7 +146,7 @@ win% diff / prior grind diff / entry rest diff / h2h diff) on click.
 
 **Rebuilt argument-first, 2026-07-31.** The page used to open on the bracket and headline two
 calibration tiles (log loss / Brier vs the base rate, sourced from
-`src/lib/playoff-model-metrics.ts`). It now leads with Sections A–D so the claim reads without
+`src/lib/playoff-model-metrics.ts`). It now leads with Sections A–B so the claim reads without
 any DB round trip, and the model — retrained as `logistic_grind_v2`, swapping `entry_rest_diff`
 for `prior_grind_diff` — is supporting evidence rather than the headline. See the reader-facing
 version at `/behind-the-data/playoff-predictions`.
