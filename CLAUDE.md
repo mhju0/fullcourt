@@ -94,7 +94,7 @@ Both additive modules are **complete**. Status and phase history live in committ
 - [docs/PLAYOFF_PREDICTOR_DESIGN.md](docs/PLAYOFF_PREDICTOR_DESIGN.md) — Playoff Predictor design
   and build record, the single source of truth for that module
 - [docs/SHOT_QUALITY_DESIGN.md](docs/SHOT_QUALITY_DESIGN.md) — Shot Quality, SQ-0 … SQ-7
-- [docs/adr/](docs/adr/) — five accepted decisions. Read the relevant one before reopening a
+- [docs/adr/](docs/adr/) — the accepted decisions. Read the relevant one before reopening a
   question it already settled.
 
 New analytics modules are built as **additive, isolated slices** — their own scripts, tables,
@@ -122,6 +122,13 @@ while touching branding.
 without escalating: those numbers were hand-set and ratified before the backtest ran, so tuning
 them against it would make the result circular. The file's *interface* is not frozen — ADR 0005
 reshaped it deliberately. Structural changes go through an ADR; number changes go through Michael.
+
+The ban was suspended once, deliberately, to find out whether fitted weights would beat the
+ratified ones. They do not, by enough to matter — and most of the model's terms turn out to
+carry no signal at all. Read [ADR 0006](docs/adr/0006-fatigue-weights-were-fitted-and-the-model-was-not-changed.md)
+before proposing either a refit or a new factor; it says what was already tried and measured.
+Use the harness (`scripts/export_fatigue_features.ts` → `ml/fit_fatigue_weights.py`) to answer
+questions of this shape — never a database recompute.
 
 ## Domain rules that are easy to get wrong
 
