@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { NBA_SEASONS } from "@/lib/nba-season";
+import { signedNumber } from "@/lib/signed-number";
 
 /**
  * The marketing page. Deliberately unlike the app: dark, cinematic, motion-led.
@@ -204,8 +205,6 @@ export interface AboutStats {
  */
 const VIEW = "flex min-h-[calc(100svh-var(--term-chrome-h))] flex-col justify-center py-24";
 
-const signedPp = (v: number) => (v >= 0 ? `+${v.toFixed(1)}` : `\u2212${Math.abs(v).toFixed(1)}`);
-
 /** Em dash, not a zero: a figure that could not be read must not look like a measurement. */
 const NO_FIGURE = "\u2014";
 
@@ -343,7 +342,7 @@ export function AboutContent({ stats }: { stats: AboutStats | null }) {
               className="font-heading block font-bold"
               style={{ fontSize: "clamp(5rem,15vw,11rem)", lineHeight: 0.85, letterSpacing: "-0.04em", color: "#7FA9FF" }}
             >
-              {stats ? signedPp(stats.widestEdgePp) : NO_FIGURE}
+              {stats ? signedNumber(stats.widestEdgePp, 1) : NO_FIGURE}
             </span>
             <p className="mt-6 max-w-[34ch]" style={{ color: BONE, fontSize: "1.05rem", lineHeight: 1.6 }}>
               Win-rate points above a coin flip when the rest gap is at its widest, across{" "}
@@ -363,7 +362,7 @@ export function AboutContent({ stats }: { stats: AboutStats | null }) {
             </div>
             <div className="fc-rise" style={{ borderTop: "1px solid rgba(245,241,232,.14)", paddingTop: "1.5rem" }}>
               <span className="font-heading font-bold" style={{ fontSize: "clamp(2rem,4vw,3rem)", lineHeight: 1, color: "#E0A340" }}>
-                {stats ? signedPp(stats.overallEdgePp) : NO_FIGURE}
+                {stats ? signedNumber(stats.overallEdgePp, 1) : NO_FIGURE}
               </span>
               <p className="mt-3 max-w-[46ch]" style={{ color: DIM, lineHeight: 1.6 }}>
                 Across every call it makes, not only the strongest. Much of the underlying gap is

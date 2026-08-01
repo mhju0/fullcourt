@@ -21,17 +21,13 @@ import {
   PLAYOFF_ROUNDS_TWO_PLUS_RECORD,
 } from "@/lib/playoff-rest-facts";
 import { termTdStyle, termThStyle, termThUnitStyle } from "@/lib/terminal-styles";
+import { signedNumber } from "@/lib/signed-number";
 
 export const metadata: Metadata = {
   title: "Playoff Predictions — Behind the Data",
   description:
     "The playoff series model: its four features and what actually drives it, why the target is the home-court team, and why its edge is calibration rather than accuracy.",
 };
-
-/** `+0.71` from `0.7141` — sign always shown, since a bare `0.71` reads as "no direction". */
-function formatCoef(weight: number): string {
-  return `${weight >= 0 ? "+" : ""}${weight.toFixed(2)}`;
-}
 
 const winPctToSeedRatio = (
   PLAYOFF_MODEL_COEFFICIENTS.win_pct_diff / PLAYOFF_MODEL_COEFFICIENTS.seed_diff
@@ -124,7 +120,7 @@ export default function PlayoffPredictionsMethodPage() {
                 <tr key={f.name}>
                   <td style={{ ...termTdStyle, fontWeight: 700, whiteSpace: "nowrap" }}>{f.name}</td>
                   <td style={{ ...termTdStyle, fontWeight: 700, whiteSpace: "nowrap" }} className="tabular-nums">
-                    {formatCoef(f.weight)}
+                    {signedNumber(f.weight, 2)}
                   </td>
                   <td style={termTdStyle}>{f.what}</td>
                   <td style={{ ...termTdStyle, color: "var(--term-text-muted)" }}>{f.why}</td>

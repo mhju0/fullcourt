@@ -11,6 +11,7 @@ import {
   type RefereeStyleRow,
 } from "@/lib/referee-foul-style"
 import { termCardStyle, termTdStyle, termThStyle, termThUnitStyle } from "@/lib/terminal-styles"
+import { signedNumber } from "@/lib/signed-number"
 
 type SortKey = keyof RefereeStyleRow
 
@@ -158,7 +159,7 @@ export function RefereeStyleContent({ data }: { data: RefereeFoulStyle }) {
                 >
                   {(() => {
                     const rel = relativePct(row.fouls, data.foulsPerGame)
-                    return `${rel > 0 ? "+" : rel < 0 ? "−" : ""}${Math.abs(rel)}%`
+                    return `${signedNumber(rel)}%`
                   })()}
                 </td>
                 {FOUL_COLUMNS.map((c) => {
@@ -181,8 +182,7 @@ export function RefereeStyleContent({ data }: { data: RefereeFoulStyle }) {
                         fontWeight: isNotable(z) ? 700 : 400,
                       }}
                     >
-                      {rel > 0 ? "+" : rel < 0 ? "−" : ""}
-                      {Math.abs(rel)}%
+                      {signedNumber(rel)}%
                     </td>
                   )
                 })}

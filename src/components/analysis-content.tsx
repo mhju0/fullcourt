@@ -27,6 +27,7 @@ import { apiFetcher } from "@/lib/fetcher"
 import { NBA_SEASONS } from "@/lib/nba-season"
 import { MONO_FONT_STACK, termCardStyle, termThStyle, termThUnitStyle } from "@/lib/terminal-styles"
 import type { AnalysisResponse } from "@/types"
+import { signedNumber } from "@/lib/signed-number"
 
 // ─── Shared styles (terminal) ─────────────────────────────────────
 
@@ -200,12 +201,6 @@ export function deviationScale(values: readonly number[]): { domain: [number, nu
   return { domain: [min, max], ticks }
 }
 
-/** Signed pp, phrased the way the tooltips already do: +6.6 / −11.0 / 0. */
-export function formatDeviation(pp: number): string {
-  if (pp === 0) return "0"
-  return `${pp > 0 ? "+" : "−"}${Math.abs(pp)}`
-}
-
 // ─── Chart datum shapes ───────────────────────────────────────────
 
 type WinRateDatum = {
@@ -228,7 +223,7 @@ function WinRateTooltip({ active, payload }: TooltipContentProps) {
       {/* The bar plots the deviation, so the tooltip leads with it and carries the
           absolute win rate underneath — the axis no longer shows it anywhere. */}
       <p style={{ marginTop: 2, color: deviationFill(d.deviation) }}>
-        <span style={{ fontWeight: 700 }}>{formatDeviation(d.deviation)} PP</span> VS COIN FLIP
+        <span style={{ fontWeight: 700 }}>{signedNumber(d.deviation)} PP</span> VS COIN FLIP
       </p>
       <p style={{ color: "var(--term-text-muted)", marginTop: 2 }}>WIN RATE: {d.winPct}%</p>
       <p style={{ color: "var(--term-text-muted)", marginTop: 2 }}>{d.games.toLocaleString()} GAMES</p>
@@ -255,7 +250,7 @@ function SeasonWinRateTooltip({ active, payload }: TooltipContentProps) {
     <div style={termTooltip}>
       <p style={{ color: "var(--term-text)", fontWeight: 700, letterSpacing: "0.04em" }}>{d.label}</p>
       <p style={{ marginTop: 2, color: deviationFill(d.deviation) }}>
-        <span style={{ fontWeight: 700 }}>{formatDeviation(d.deviation)} PP</span> VS COIN FLIP
+        <span style={{ fontWeight: 700 }}>{signedNumber(d.deviation)} PP</span> VS COIN FLIP
       </p>
       <p style={{ color: "var(--term-text-muted)", marginTop: 2 }}>WIN RATE: {d.winPct}%</p>
       <p style={{ color: "var(--term-text-muted)", marginTop: 2 }}>
@@ -323,7 +318,7 @@ function SeasonWinRateBySeasonChart({
             <YAxis
               domain={domain}
               ticks={ticks}
-              tickFormatter={formatDeviation}
+              tickFormatter={(v: number) => signedNumber(v)}
               tick={{ fontSize: 12, fill: "var(--term-text-muted)", fontFamily: MONO_FONT_STACK }}
               tickLine={false}
               axisLine={false}
@@ -781,7 +776,7 @@ export function AnalysisContent() {
               <YAxis
                 domain={thresholdScale.domain}
                 ticks={thresholdScale.ticks}
-                tickFormatter={formatDeviation}
+                tickFormatter={(v: number) => signedNumber(v)}
                 tick={{ fontSize: 12, fill: "var(--term-text-muted)", fontFamily: MONO_FONT_STACK }}
                 tickLine={false}
                 axisLine={false}

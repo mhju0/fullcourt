@@ -16,18 +16,13 @@ import {
   termThUnitStyle,
 } from "@/lib/terminal-styles"
 import type { ScheduleDisparityResponse, ScheduleDisparityTeam } from "@/types"
+import { signedNumber } from "@/lib/signed-number"
 
 // Rankable rather than browsable: this is the one module that ranks teams against each other
 // inside a season, so a season whose teams played unequal numbers of games is withheld here and
 // offered everywhere else. See TRUNCATED_SEASONS.
 const SEASON_OPTIONS = rankableSeasons(browsableSeasons())
 const LATEST_SEASON = SEASON_OPTIONS[SEASON_OPTIONS.length - 1]
-
-/** Signed whole count: +15 / −11 / 0. Matches the deviation phrasing on the Analysis charts. */
-export function formatSignedCount(count: number): string {
-  if (count === 0) return "0"
-  return `${count > 0 ? "+" : "−"}${Math.abs(count)}`
-}
 
 /**
  * Blue favorable, red unfavorable, grey exactly even — the same diverging pair the Analysis
@@ -223,13 +218,13 @@ export function ScheduleDisparityContent() {
         >
           <StatCell
             label="Most favored"
-            value={formatSignedCount(most.netEdgeGames)}
+            value={signedNumber(most.netEdgeGames)}
             sub={`${most.abbreviation} · ${most.name}`}
             tone={edgeColor(most.netEdgeGames)}
           />
           <StatCell
             label="Least favored"
-            value={formatSignedCount(least.netEdgeGames)}
+            value={signedNumber(least.netEdgeGames)}
             sub={`${least.abbreviation} · ${least.name}`}
             tone={edgeColor(least.netEdgeGames)}
           />
@@ -294,7 +289,7 @@ export function ScheduleDisparityContent() {
                     color: edgeColor(t.netEdgeGames),
                   }}
                 >
-                  {formatSignedCount(t.netEdgeGames)}
+                  {signedNumber(t.netEdgeGames)}
                 </span>
               </li>
             ))}
@@ -366,7 +361,7 @@ export function ScheduleDisparityContent() {
                           color: edgeColor(t.netEdgeGames),
                         }}
                       >
-                        {formatSignedCount(t.netEdgeGames)}
+                        {signedNumber(t.netEdgeGames)}
                       </td>
                       <td
                         className="mono whitespace-nowrap"
@@ -378,19 +373,19 @@ export function ScheduleDisparityContent() {
                         className="mono"
                         style={{ ...termTdStyle, textAlign: "right", fontVariantNumeric: "tabular-nums", color: edgeColor(t.bigFavorableGames - t.bigUnfavorableGames) }}
                       >
-                        {formatSignedCount(t.bigFavorableGames - t.bigUnfavorableGames)}
+                        {signedNumber(t.bigFavorableGames - t.bigUnfavorableGames)}
                       </td>
                       <td
                         className="mono"
                         style={{ ...termTdStyle, textAlign: "right", fontVariantNumeric: "tabular-nums", color: edgeColor(t.backToBackEdge) }}
                       >
-                        {formatSignedCount(t.backToBackEdge)}
+                        {signedNumber(t.backToBackEdge)}
                       </td>
                       <td
                         className="mono"
                         style={{ ...termTdStyle, textAlign: "right", fontVariantNumeric: "tabular-nums", color: edgeColor(t.threeInFourEdge) }}
                       >
-                        {formatSignedCount(t.threeInFourEdge)}
+                        {signedNumber(t.threeInFourEdge)}
                       </td>
                     </tr>
                   ))}

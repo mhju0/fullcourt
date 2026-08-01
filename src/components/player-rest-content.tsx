@@ -27,6 +27,7 @@ import {
   termThStyle,
   termThUnitStyle,
 } from "@/lib/terminal-styles"
+import { signedNumber } from "@/lib/signed-number"
 
 /**
  * Static asset, not an API route: this export changes once a season, so there is
@@ -88,8 +89,7 @@ function fmt(v: number | null | undefined, digits = 1): string {
 }
 
 function signed(v: number | null): string {
-  if (v === null) return "—"
-  return `${v > 0 ? "+" : v < 0 ? "−" : ""}${Math.abs(v).toFixed(2)}`
+  return v === null ? "—" : signedNumber(v, 2)
 }
 
 /** Number plus a bar, so magnitude reads before the digits do. */

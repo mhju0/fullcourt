@@ -9,6 +9,7 @@ import {
 } from "@/components/behind-the-data-parts";
 import { FATIGUE_CONSTANTS as K } from "@/lib/fatigue";
 import { termTdStyle, termThStyle, termThUnitStyle } from "@/lib/terminal-styles";
+import { signedNumber } from "@/lib/signed-number";
 
 export const metadata: Metadata = {
   title: "Rest Advantage — Behind the Data",
@@ -136,7 +137,7 @@ direction    = ${K.eastwardMultiplier} eastward, ${K.westwardMultiplier} westwar
               discount that begins at {K.freshnessPlateauDays} days and approaches{" "}
               {/* A true minus sign, and one decimal, so these read as the quantities the
                   model uses rather than as bare integers. */}
-              {K.freshnessMaxBonus.toFixed(1).replace("-", "−")}. A prior game that went to
+              {signedNumber(K.freshnessMaxBonus, 1)}. A prior game that went to
               overtime adds {K.overtimeSingle.toFixed(1)}, or {K.overtimeMulti.toFixed(1)} for
               double overtime or more.
             </Prose>
@@ -176,7 +177,7 @@ direction    = ${K.eastwardMultiplier} eastward, ${K.westwardMultiplier} westwar
                         Math.abs(a.delta) >= 0.3 ? "var(--term-text)" : "var(--term-text-muted)",
                     }}
                   >
-                    {a.delta > 0 ? `+${a.delta}` : `−${Math.abs(a.delta)}`}pp
+                    {signedNumber(a.delta)}pp
                   </td>
                   <td style={{ ...termTdStyle, color: "var(--term-text-muted)" }}>{a.verdict}</td>
                 </tr>

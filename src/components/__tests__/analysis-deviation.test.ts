@@ -3,7 +3,6 @@ import { describe, expect, it } from "vitest"
 import {
   deviationFill,
   deviationScale,
-  formatDeviation,
   minBarSize,
   toDeviation,
 } from "@/components/analysis-content"
@@ -102,13 +101,5 @@ describe("deviationScale", () => {
     const { domain, ticks } = deviationScale([])
     expect(domain[0]).toBeLessThan(domain[1])
     expect(ticks).toContain(0)
-  })
-})
-
-describe("formatDeviation", () => {
-  it("signs the axis ticks and drops the sign at zero", () => {
-    expect(formatDeviation(10)).toBe("+10")
-    expect(formatDeviation(0)).toBe("0")
-    expect(formatDeviation(-10)).toBe("−10") // U+2212, matching the tooltips
   })
 })

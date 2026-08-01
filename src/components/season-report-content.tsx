@@ -29,15 +29,11 @@ import {
 } from "@/lib/terminal-styles"
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts"
 import type { AnalysisResponse } from "@/types"
+import { signedNumber } from "@/lib/signed-number"
 
 // The newest season with data, which is the current one by construction: NBA_SEASONS is
 // derived from the ET date. No separate "is it the current season" question to get wrong.
 const LATEST_SEASON = NBA_SEASONS[NBA_SEASONS.length - 1]
-
-/** One decimal with a sign, for a swing or a gap. */
-function signedPct(value: number): string {
-  return `${value > 0 ? "+" : value < 0 ? "−" : ""}${Math.abs(value).toFixed(1)}`
-}
 
 /**
  * The vs-history blurb, read off the loaded season rather than a hardcoded 82-game figure —
@@ -285,7 +281,7 @@ function EdgeConversion({ teams }: { teams: SeasonReportTeamLabelled[] }) {
                     className="tabular-nums"
                     style={{ ...termTdStyle, textAlign: "right", color: swingColor(t.swing), fontWeight: 700 }}
                   >
-                    {t.swing === null ? "—" : signedPct(t.swing)}
+                    {t.swing === null ? "—" : signedNumber(t.swing, 1)}
                   </td>
                 </tr>
               )
@@ -367,7 +363,7 @@ function LoudestCalls({
                 color: c.restedTeamWon ? "var(--term-blue)" : "var(--term-red)",
               }}
             >
-              {c.restedTeamWon ? "HIT" : "MISS"} {signedPct(c.restedMargin).replace(".0", "")}
+              {c.restedTeamWon ? "HIT" : "MISS"} {signedNumber(c.restedMargin, 1).replace(".0", "")}
             </span>
           </button>
         ))}

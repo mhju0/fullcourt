@@ -17,6 +17,7 @@ import type {
   PlayoffSeriesWithPredictions,
   PlayoffsResponse,
 } from "@/types"
+import { signedNumber } from "@/lib/signed-number"
 
 // ─── Series correctness ─────────────────────────────────────────────
 
@@ -111,9 +112,7 @@ function FeatureRow({ k, v }: { k: string; v: string }) {
 }
 
 function formatFeature(v: number | null): string {
-  if (v === null) return "—"
-  const sign = v > 0 ? "+" : ""
-  return `${sign}${v.toFixed(2)}`
+  return v === null ? "—" : signedNumber(v, 2)
 }
 
 function SeriesFeatureGrid({ series }: { series: PlayoffSeriesWithPredictions }) {

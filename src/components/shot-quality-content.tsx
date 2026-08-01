@@ -8,6 +8,7 @@ import { apiFetcher } from "@/lib/fetcher"
 import { currentDisplaySeason } from "@/lib/nba-season"
 import { termCardStyle, termInsetStyle } from "@/lib/terminal-styles"
 import type { ShotQualityCell, ShotQualityResponse } from "@/types"
+import { signedNumber } from "@/lib/signed-number"
 
 // ─── Court geometry ────────────────────────────────────────────────
 // The API grid is UNFOLDED, origin = the rim, in 1-ft cells:
@@ -432,7 +433,7 @@ export function ShotQualityContent() {
   }, [cells])
 
   const fmtEfg = (v: number): string => `${(v * 100).toFixed(1)}% eFG`
-  const fmtDiff = (v: number): string => `${v >= 0 ? "+" : "−"}${(Math.abs(v) * 100).toFixed(1)} pp`
+  const fmtDiff = (v: number): string => `${signedNumber(v * 100, 1)} pp`
 
   const seqValue = (which: "baseline" | "gbm") => (c: ShotQualityCell): number | null =>
     c[which]?.expectedEfg ?? null
