@@ -91,6 +91,58 @@ fitted weights ship only if better, and a failure gets published rather than bur
   to out-rest home court fixes it by declining *every* away pick: 0 of 15,731. The cure
   confirms the diagnosis and deletes the feature.
 
+## Would a more complex formula find more? No — measured, not assumed
+
+The conclusion above came from a linear model, so using it to dismiss non-linear formulas would
+be circular. `ml/ceiling_test.py` asks the question the other way round, on the same 16 blind
+seasons: give a gradient-boosted model every feature at once and let it discover any curve and
+any interaction it likes.
+
+| model | log loss | vs controls only |
+|---|---|---|
+| controls only, no fatigue | 0.62328 | — |
+| **controls + the 4 survivors** | **0.62069** | **+0.00259** |
+| controls + all 20 fatigue features | 0.62125 | +0.00203 |
+| controls + survivors + hand-built interactions | 0.62109 | +0.00219 |
+| gradient boosting, all 22 features | 0.62425 | **−0.00096** |
+| gradient boosting, fatigue features only | 0.68230 | −0.05902 |
+
+**The simplest model wins.** Four linear terms beat twenty. They beat the physically obvious
+interactions (a back-to-back that also involved a flight, a back-to-back into altitude). And
+they beat a gradient-boosted model which, given everything, ends up *worse than not modelling
+fatigue at all* — it finds structure in the training seasons that does not survive to the next
+one.
+
+A win/loss outcome also discards most of what a game tells you, so the same factors were
+regressed on **point margin**, where the error bars are far tighter. Against a margin standard
+deviation of 13.78 points:
+
+| factor | points of margin | t | reading |
+|---|---|---|---|
+| back-to-back | 1.50 | 7.52 | real |
+| visiting altitude | 1.49 | 4.96 | real |
+| rest recovery | 2.23 | 2.41 | real, and **backwards** |
+| prior-game overtime | 0.47 | 2.39 | real |
+| travel (7 / 14 / 30 day) | 0.22 / −0.22 / −0.51 | 0.94 / −0.79 / −1.96 | zero |
+| workload (games / minutes / possessions) | 0.51 / 1.19 / −0.57 | 0.46 / 1.29 / −0.73 | zero |
+| jet lag | 0.39 | 1.83 | zero |
+| road segment, 3-in-4, 4-in-6, body clock, density | ≤0.15 | ≤1.20 | zero |
+
+The more powerful test agrees with the weaker one, and sharpens the rust-vs-rest result: extra
+rest is worth **−2.2 points**, at t = 2.41.
+
+So the limit is the information in the data, not the shape of the equation. Three real effects,
+each worth about a point and a half of margin, inside a 13.78-point standard deviation. Any
+future proposal to make the formula more sophisticated should be measured against this table
+first — the harness runs in seconds.
+
+The way to raise this ceiling is new information, not new mathematics. The largest missing input
+is **who is actually playing**: a rested star sitting out is worth more than every schedule term
+here combined, and nothing in this pipeline knows about it. A second, cheaper one: `games`
+already carries `home_moneyline` / `away_moneyline` columns that no tracked script populates,
+and a market line is a far better team-strength proxy than the rolling win percentage used as a
+control here.
+
 ## What this leaves on the table, for a human decision
 
 Not acted on here. Each changes a ratified constant, which is Michael's call.
