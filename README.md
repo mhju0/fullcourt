@@ -145,17 +145,20 @@ footer. `/about` reads its three evidence figures from the same backtest `/analy
 
 ```mermaid
 flowchart TD
-    src["NBA CDN · nba_api"] --> ingest["Python ingest (scripts/)"]
+    src["NBA CDN · nba_api · ESPN site.api"] --> ingest["Python ingest (scripts/)"]
     ingest --> db[("Supabase PostgreSQL")]
-    model["Fatigue model · src/lib/fatigue.ts"] -. shared .- db
+    db --> model["Fatigue model · src/lib/fatigue.ts<br/>run-daily.ts · backfill_fatigue.ts"]
+    model -->|"fatigue_scores · predictions"| db
     db --> api["Next.js route handlers · Zod · { data, error }"]
-    api --> ui["React 19 · SWR · Supabase Realtime"]
+    api -->|"live scores"| db
+    api --> ui["React 19 · SWR"]
+    db -.->|"Realtime push"| ui
     cron["GitHub Actions — daily, self-gating"] --> ingest
     vercel["Vercel cron — live scores"] --> api
 ```
 
 - **Ingest (Python + TypeScript):** `nba_api` and the NBA CDN feed schedules and scores into Postgres; ESPN supplies overtime periods, tip-off times and neutral-site venues (`stats.nba.com` is unreachable from outside the US). A daily GitHub Actions job **self-gates on the NBA season** — it runs year-round on a fixed schedule but exits cleanly during the offseason (before touching the database or any API), so there is no cron cadence to toggle.
-- **Model (TypeScript):** a single source-of-truth fatigue engine (`src/lib/fatigue.ts`) is shared by every pipeline writer *and* every API read, so the math is never duplicated.
+- **Model (TypeScript):** one fatigue engine (`src/lib/fatigue.ts`) with exactly two production callers, both writers — the nightly refresh (`run-daily.ts`) and the bulk backfill (`backfill_fatigue.ts`). A score is computed once, written to `fatigue_scores`, and every read serves that stored row, so there is no second copy of the math on the read path to drift from.
 - **Store:** Supabase PostgreSQL with Row-Level Security; reads run as type-safe Drizzle queries.
 - **Serve:** Next.js App Router route handlers (Zod-validated, `{ data, error }` envelope) feed a React 19 frontend using SWR and Supabase Realtime.
 - **Ship:** Vercel auto-deploys from `main`; GitHub Actions runs the daily pipeline.
@@ -218,7 +221,7 @@ one exists.
 ## Engineering highlights
 
 - **End-to-end type safety** — Drizzle ORM + Zod + strict TypeScript, from DB column to API response.
-- **Single source of truth** — one fatigue engine shared by pipeline writers and API reads, so the model math is never duplicated or drifts between write and read paths.
+- **Single source of truth** — one fatigue engine with two callers, both on the write path: a score is computed once and stored, and every read serves that row. No read-path copy of the model math exists to drift from the write path.
 - **Self-gating pipeline** — the daily GitHub Actions job checks whether the NBA season is active and exits cleanly in the offseason (before touching the DB or any API), so it runs year-round with no manual cron changes.
 - **Query performance** — hot read paths use `LEFT JOIN LATERAL … ORDER BY … LIMIT 1` against a composite index to fetch the latest fatigue row per team, replacing full-table `DISTINCT ON` scans — verified byte-for-byte identical output before/after.
 - **Data integrity** — the 40 seasons audited to date are reconciled against an independent source (Basketball-Reference, 340 monthly pages, cross-checked with ESPN); 2019-20 was admitted after that audit and is queued for the next run to catch timezone date-shift bugs a sampled check would miss; game dates are stored in US/Eastern end-to-end with a self-healing upsert (`date = EXCLUDED.date`), so a re-run repairs any mis-dated row.
