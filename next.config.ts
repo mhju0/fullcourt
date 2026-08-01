@@ -8,7 +8,10 @@ import type { NextConfig } from "next";
 const isDev = process.env.NODE_ENV !== "production";
 const contentSecurityPolicy = [
   "default-src 'self'",
-  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}`,
+  // Vercel Analytics serves its script same-origin in production (/_vercel/insights/
+  // script.js) and beacons to the same path, so prod needs no CSP change. Dev loads the
+  // debug script from va.vercel-scripts.com instead — allowed here, absent in prod.
+  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval' https://va.vercel-scripts.com" : ""}`,
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: https://a.espncdn.com",
   "font-src 'self' data:",

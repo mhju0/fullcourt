@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { Analytics } from "@vercel/analytics/next";
 import { IBM_Plex_Mono, Inter, Space_Grotesk } from "next/font/google";
 import { NavBar } from "@/components/nav-bar";
 import { OnboardingGuide } from "@/components/onboarding-guide";
@@ -140,6 +141,8 @@ export default function RootLayout({
             </span>
           </div>
         </footer>
+
+        <Analytics />
       </body>
     </html>
   );
