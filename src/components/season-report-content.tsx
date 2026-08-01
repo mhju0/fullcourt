@@ -30,6 +30,7 @@ import {
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts"
 import type { AnalysisResponse } from "@/types"
 import { signedNumber } from "@/lib/signed-number"
+import { MessageCard } from "@/components/ui/message-card"
 
 // The newest season with data, which is the current one by construction: NBA_SEASONS is
 // derived from the ET date. No separate "is it the current season" question to get wrong.
@@ -509,11 +510,7 @@ export function SeasonReportContent() {
   )
 
   if (error) {
-    return (
-      <p className="mono" role="alert" style={{ fontSize: 12, color: "var(--term-red)" }}>
-        FAILED TO LOAD THE SEASON REPORT.
-      </p>
-    )
+    return <MessageCard tone="error" title="FAILED TO LOAD THE SEASON REPORT." />
   }
 
   return (

@@ -23,6 +23,17 @@ export async function apiFetcher<T>(url: string): Promise<T> {
   return body.data
 }
 
+/**
+ * The message to show for a thrown value, for the surfaces that render one.
+ *
+ * Lives next to the thing that throws. Six modules and two hooks each carried their own copy of
+ * this ternary with a differently worded fallback — and every one of those fallbacks was
+ * unreachable, since `apiFetcher` only ever throws an `Error` and SWR rethrows it unchanged.
+ */
+export function errMsg(error: unknown): string {
+  return error instanceof Error ? error.message : "Something went wrong"
+}
+
 function isApiResponse<T>(value: unknown): value is ApiResponse<T> {
   return (
     typeof value === "object" &&

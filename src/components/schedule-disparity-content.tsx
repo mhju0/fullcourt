@@ -11,6 +11,7 @@ import { browsableSeasons } from "@/lib/nba-season"
 import { rankableSeasons } from "@/lib/schedule-disparity"
 import {
   termCardStyle,
+  termDashedEmptyStyle,
   termTdStyle,
   termThStyle,
   termThUnitStyle,
@@ -254,9 +255,7 @@ export function ScheduleDisparityContent() {
           <div
             className="mono mt-3 flex h-40 items-center justify-center"
             style={{
-              border: "1px dashed var(--term-border)",
-              borderRadius: "var(--term-radius)",
-              fontSize: 12,
+              ...termDashedEmptyStyle,
               color: error ? "var(--term-red)" : "var(--term-text-muted)",
             }}
           >

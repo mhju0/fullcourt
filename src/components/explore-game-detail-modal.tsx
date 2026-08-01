@@ -12,7 +12,7 @@ import {
   RaBadge,
 } from "@/components/matchup-card"
 import { getTeamBranding } from "@/lib/team-history"
-import { apiFetcher } from "@/lib/fetcher"
+import { apiFetcher, errMsg } from "@/lib/fetcher"
 import { termInsetStyle } from "@/lib/terminal-styles"
 import { cn } from "@/lib/utils"
 import type {
@@ -239,9 +239,7 @@ function ExploreGameDetailModalContent({
     error: swrError,
     isLoading: loading,
   } = useSWR<GameDetailResponse>(swrKey, apiFetcher, { revalidateOnFocus: false })
-  const error = swrError
-    ? (swrError instanceof Error ? swrError.message : "Failed to load")
-    : null
+  const error = swrError ? errMsg(swrError) : null
 
   const navigateTo = useCallback(
     (id: number) => {

@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { apiFetcher } from "@/lib/fetcher";
+import { apiFetcher, errMsg } from "@/lib/fetcher";
 
 afterEach(() => {
   vi.unstubAllGlobals();
@@ -60,5 +60,33 @@ describe("apiFetcher", () => {
     );
 
     await expect(apiFetcher("/api/games")).rejects.toThrow("Invalid API response");
+  });
+});
+
+/**
+ * The eight surfaces that render a failure each carried their own copy of this, with a
+ * differently worded fallback — and every fallback was unreachable, because `apiFetcher`
+ * only ever throws an `Error` and SWR rethrows it unchanged.
+ */
+describe("errMsg", () => {
+  it("passes an Error's own message through", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue(
+        new Response(JSON.stringify({ data: null, error: "No games for that date" }), {
+          status: 404,
+          headers: { "content-type": "application/json" },
+        })
+      )
+    );
+
+    // The whole path, not a hand-made Error: this is what a surface actually receives.
+    const thrown = await apiFetcher("/api/games/2024-12-25").catch((e) => e);
+    expect(errMsg(thrown)).toBe("No games for that date");
+  });
+
+  it("falls back for a thrown non-Error", () => {
+    expect(errMsg("boom")).toBe("Something went wrong");
+    expect(errMsg(undefined)).toBe("Something went wrong");
   });
 });

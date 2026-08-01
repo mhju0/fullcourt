@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useReducer, useState } from "react";
 import { format, parseISO } from "date-fns";
 import { useLiveGames } from "@/hooks/useLiveGames";
+import { errMsg } from "@/lib/fetcher";
 import {
   calendarView,
   daysInMonth,
@@ -85,7 +86,7 @@ export function useGameSlate(): GameSlate {
         if (isAbort(err)) return;
         dispatch({
           type: "DAYS_REJECTED",
-          message: err instanceof Error ? err.message : "Failed to load dates",
+          message: errMsg(err),
         });
       });
     return () => controller.abort();
@@ -103,7 +104,7 @@ export function useGameSlate(): GameSlate {
         dispatch({
           type: "SLATE_REJECTED",
           date: selectedDate,
-          message: err instanceof Error ? err.message : "Something went wrong",
+          message: errMsg(err),
         });
       });
     return () => controller.abort();

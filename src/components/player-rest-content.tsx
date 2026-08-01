@@ -28,6 +28,8 @@ import {
   termThUnitStyle,
 } from "@/lib/terminal-styles"
 import { signedNumber } from "@/lib/signed-number"
+import { MessageCard } from "@/components/ui/message-card"
+import { errMsg } from "@/lib/fetcher"
 
 /**
  * Static asset, not an API route: this export changes once a season, so there is
@@ -225,9 +227,11 @@ export function PlayerRestContent() {
 
   if (error) {
     return (
-      <div style={termCardStyle} role="alert">
-        <p style={{ fontSize: 13, color: "var(--term-red)" }}>{error.message}</p>
-      </div>
+      <MessageCard
+        tone="error"
+        title="FAILED TO LOAD THE PLAYER DATABASE"
+        body={errMsg(error)}
+      />
     )
   }
   if (isLoading || !index || activeYear === null) {

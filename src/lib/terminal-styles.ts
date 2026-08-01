@@ -21,6 +21,21 @@ export const termCardStyle: CSSProperties = {
   padding: 16,
 }
 
+/**
+ * The quiet empty state: a dashed outline where content would be, with no surface behind it.
+ *
+ * Deliberately not `MessageCard`. These sit in place of a chart, a table body or a bar list —
+ * two of the three are already inside a card — so a second filled card would read as a second
+ * panel rather than as an absence. Size and centring stay at the call site, since each one fills
+ * a differently shaped hole.
+ */
+export const termDashedEmptyStyle: CSSProperties = {
+  border: "1px dashed var(--term-border)",
+  borderRadius: "var(--term-radius)",
+  fontSize: 12,
+  color: "var(--term-text-muted)",
+}
+
 /** Recessed panel (breakdown sections inside a card, e.g. fatigue detail insets). */
 export const termInsetStyle: CSSProperties = {
   background: "var(--term-bg)",

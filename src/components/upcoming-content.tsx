@@ -7,11 +7,12 @@ import { format } from "date-fns"
 import { teamLogoUrl } from "@/lib/team-history"
 import { getTeamColors, readableTextOn } from "@/lib/nba-team-colors"
 import { currentDisplaySeason, isNbaOffSeason, nextSeasonLabel } from "@/lib/nba-season"
-import { apiFetcher } from "@/lib/fetcher"
+import { apiFetcher, errMsg } from "@/lib/fetcher"
 import { Skeleton } from "@/components/ui/skeleton"
 import { buildRestAdvantageEvidence } from "@/lib/rest-advantage-display"
-import { termCardStyle, termThStyle as thStyle, termTdStyle as tdStyle, termThUnitStyle } from "@/lib/terminal-styles"
+import { termCardStyle, termDashedEmptyStyle, termTdStyle as tdStyle, termThStyle as thStyle, termThUnitStyle } from "@/lib/terminal-styles"
 import type { AnalysisResponse, UpcomingGameWithRA } from "@/types"
+import { MessageCard } from "@/components/ui/message-card"
 
 // ─── RA threshold options ──────────────────────────────────────────
 
@@ -89,7 +90,7 @@ export function UpcomingContent() {
     apiFetcher,
     { revalidateOnFocus: false }
   )
-  const error = swrError ? (swrError instanceof Error ? swrError.message : "Failed to load games") : null
+  const error = swrError ? errMsg(swrError) : null
 
   // Backtest slice that denominates each row's edge. Unlike the home page this component
   // has no /api/analysis data to inherit, so it fetches its own. A failure here is not
@@ -150,24 +151,14 @@ export function UpcomingContent() {
           ))}
         </div>
       ) : error ? (
-        <div
-          className="mono px-6 py-10 text-center"
-          style={{
-            background: "var(--term-surface)",
-            border: "1px solid var(--term-border)",
-            borderLeft: "2px solid var(--term-red)",
-            borderRadius: "var(--term-radius)",
-          }}
-        >
-          <p style={{ fontSize: 12, letterSpacing: "0.08em", color: "var(--term-red)", fontWeight: 700 }}>{error}</p>
-        </div>
+        <MessageCard tone="error" title="FAILED TO LOAD GAMES" body={error} />
       ) : !games || games.length === 0 ? (
         isOffSeason ? (
           <OffSeasonEmptyState nextSeason={nextSeason} />
         ) : (
           <div
             className="mono px-6 py-12 text-center"
-            style={{ border: "1px dashed var(--term-border)", borderRadius: "var(--term-radius)", fontSize: 12, color: "var(--term-text-muted)" }}
+            style={termDashedEmptyStyle}
           >
             NO SCHEDULED GAMES MATCH THIS FILTER.
           </div>

@@ -23,11 +23,12 @@ import { PageHeader } from "@/components/page-header"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useExploreGames, type DrillSignal } from "@/hooks/useExploreGames"
 import type { ExploreResult } from "@/lib/explore-games-machine"
-import { apiFetcher } from "@/lib/fetcher"
+import { apiFetcher, errMsg } from "@/lib/fetcher"
 import { NBA_SEASONS } from "@/lib/nba-season"
-import { MONO_FONT_STACK, termCardStyle, termThStyle, termThUnitStyle } from "@/lib/terminal-styles"
+import { MONO_FONT_STACK, termCardStyle, termDashedEmptyStyle, termThStyle, termThUnitStyle } from "@/lib/terminal-styles"
 import type { AnalysisResponse } from "@/types"
 import { signedNumber } from "@/lib/signed-number"
+import { MessageCard } from "@/components/ui/message-card"
 
 // ─── Shared styles (terminal) ─────────────────────────────────────
 
@@ -293,7 +294,7 @@ function SeasonWinRateBySeasonChart({
       ) : chartData.length === 0 ? (
         <div
           className="mono flex h-full items-center justify-center"
-          style={{ border: "1px dashed var(--term-border)", borderRadius: "var(--term-radius)", fontSize: 12, color: "var(--term-text-muted)" }}
+          style={termDashedEmptyStyle}
         >
           NO SEASON-LEVEL DATA YET
         </div>
@@ -651,9 +652,7 @@ export function AnalysisContent() {
     apiFetcher,
     { revalidateOnFocus: false }
   )
-  const error = swrError
-    ? (swrError instanceof Error ? swrError.message : "Failed to load analysis")
-    : null
+  const error = swrError ? errMsg(swrError) : null
 
   const seasonSwrKey = seasonRaFilter > 0
     ? `/api/analysis?seasonMinRA=${seasonRaFilter}`
@@ -692,17 +691,7 @@ export function AnalysisContent() {
 
   if (error || !data) {
     return (
-      <div
-        className="mono px-6 py-12 text-center"
-        style={{ ...termCardStyle, borderLeft: "2px solid var(--term-red)" }}
-      >
-        <p style={{ fontSize: 12, letterSpacing: "0.08em", color: "var(--term-red)", fontWeight: 700 }}>
-          FAILED TO LOAD ANALYSIS
-        </p>
-        <p className="mt-1" style={{ fontSize: 11, color: "var(--term-text-muted)" }}>
-          {error ?? "UNKNOWN ERROR"}
-        </p>
-      </div>
+      <MessageCard tone="error" title="FAILED TO LOAD ANALYSIS" body={error ?? "UNKNOWN ERROR"} />
     )
   }
 
