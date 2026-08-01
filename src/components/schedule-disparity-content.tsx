@@ -8,26 +8,26 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { apiFetcher } from "@/lib/fetcher"
 import { NEUTRAL_REST_ADVANTAGE_THRESHOLD } from "@/lib/rest-advantage-evidence"
 import { browsableSeasons } from "@/lib/nba-season"
-import { rankableSeasons } from "@/lib/schedule-disparity"
+import { defaultRankableSeason, rankableSeasons } from "@/lib/schedule-disparity"
 import {
   termCardStyle,
+  termDashedEmptyStyle,
   termTdStyle,
   termThStyle,
   termThUnitStyle,
 } from "@/lib/terminal-styles"
 import type { ScheduleDisparityResponse, ScheduleDisparityTeam } from "@/types"
+import { signedNumber } from "@/lib/signed-number"
 
 // Rankable rather than browsable: this is the one module that ranks teams against each other
 // inside a season, so a season whose teams played unequal numbers of games is withheld here and
 // offered everywhere else. See TRUNCATED_SEASONS.
 const SEASON_OPTIONS = rankableSeasons(browsableSeasons())
-const LATEST_SEASON = SEASON_OPTIONS[SEASON_OPTIONS.length - 1]
 
-/** Signed whole count: +15 / −11 / 0. Matches the deviation phrasing on the Analysis charts. */
-export function formatSignedCount(count: number): string {
-  if (count === 0) return "0"
-  return `${count > 0 ? "+" : "−"}${Math.abs(count)}`
-}
+// Not `SEASON_OPTIONS[last]`. In August and September the options also carry the upcoming
+// season, which has no games until it is ingested — opening on it showed an empty page for two
+// months of every year. Same rule the route defaults to, so client and API agree.
+const LATEST_SEASON = defaultRankableSeason()
 
 /**
  * Blue favorable, red unfavorable, grey exactly even — the same diverging pair the Analysis
@@ -223,13 +223,13 @@ export function ScheduleDisparityContent() {
         >
           <StatCell
             label="Most favored"
-            value={formatSignedCount(most.netEdgeGames)}
+            value={signedNumber(most.netEdgeGames)}
             sub={`${most.abbreviation} · ${most.name}`}
             tone={edgeColor(most.netEdgeGames)}
           />
           <StatCell
             label="Least favored"
-            value={formatSignedCount(least.netEdgeGames)}
+            value={signedNumber(least.netEdgeGames)}
             sub={`${least.abbreviation} · ${least.name}`}
             tone={edgeColor(least.netEdgeGames)}
           />
@@ -259,9 +259,7 @@ export function ScheduleDisparityContent() {
           <div
             className="mono mt-3 flex h-40 items-center justify-center"
             style={{
-              border: "1px dashed var(--term-border)",
-              borderRadius: "var(--term-radius)",
-              fontSize: 12,
+              ...termDashedEmptyStyle,
               color: error ? "var(--term-red)" : "var(--term-text-muted)",
             }}
           >
@@ -294,7 +292,7 @@ export function ScheduleDisparityContent() {
                     color: edgeColor(t.netEdgeGames),
                   }}
                 >
-                  {formatSignedCount(t.netEdgeGames)}
+                  {signedNumber(t.netEdgeGames)}
                 </span>
               </li>
             ))}
@@ -366,7 +364,7 @@ export function ScheduleDisparityContent() {
                           color: edgeColor(t.netEdgeGames),
                         }}
                       >
-                        {formatSignedCount(t.netEdgeGames)}
+                        {signedNumber(t.netEdgeGames)}
                       </td>
                       <td
                         className="mono whitespace-nowrap"
@@ -378,19 +376,19 @@ export function ScheduleDisparityContent() {
                         className="mono"
                         style={{ ...termTdStyle, textAlign: "right", fontVariantNumeric: "tabular-nums", color: edgeColor(t.bigFavorableGames - t.bigUnfavorableGames) }}
                       >
-                        {formatSignedCount(t.bigFavorableGames - t.bigUnfavorableGames)}
+                        {signedNumber(t.bigFavorableGames - t.bigUnfavorableGames)}
                       </td>
                       <td
                         className="mono"
                         style={{ ...termTdStyle, textAlign: "right", fontVariantNumeric: "tabular-nums", color: edgeColor(t.backToBackEdge) }}
                       >
-                        {formatSignedCount(t.backToBackEdge)}
+                        {signedNumber(t.backToBackEdge)}
                       </td>
                       <td
                         className="mono"
                         style={{ ...termTdStyle, textAlign: "right", fontVariantNumeric: "tabular-nums", color: edgeColor(t.threeInFourEdge) }}
                       >
-                        {formatSignedCount(t.threeInFourEdge)}
+                        {signedNumber(t.threeInFourEdge)}
                       </td>
                     </tr>
                   ))}

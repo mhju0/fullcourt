@@ -185,12 +185,22 @@ the row change → connected clients update in place.
 ## Notable architectural decisions & current discrepancies
 
 - **Single source of fatigue math** in `src/lib/fatigue.ts`, shared by API reads and all
-  pipeline writers.
+  pipeline writers. Since 2026-08-01 that includes the *geometry*: `scoreGameFatigue` resolves
+  era coordinates, the neutral venue and altitude for both sides, rather than each writer
+  assembling them. Until then `backfill_fatigue.ts` applied `eraCoordinates` and
+  `daily-refresh.ts` did not — its team type carried no `abbreviation` to look one up with — and
+  nothing asserted the two agreed. See
+  [ADR 0005](adr/0005-fatigue-model-resolves-its-own-geometry.md).
 - **Single rest-advantage evidence contract** in `src/lib/rest-advantage-evidence.ts`, shared
   by analysis, game search, API matchup reads, and resolved/open prediction writers.
 - **Lazy DB proxy** so importing `@/lib/db` during build is side-effect-free.
 - **Season-regime guard** (`gameIsNormallyPlayed` in `queries.ts`, built from
-  `ABNORMAL_STRETCHES` in `season-regime.ts`) excludes games that were not reached by
+  `ABNORMAL_STRETCHES` in `season-regime.ts`), applied at one seam: the private
+  `publishableGames(...extra)` folds it in with `game_type = 'regular'`, and ten readers compose
+  on top. It was hand-written per call site until 2026-08-01, and four readers had omitted it —
+  `getGameById` served a bubble game carrying a rest advantage, two clicks from the Games
+  browser. The two schedule-density helpers stay outside it deliberately. It excludes games that
+  were not reached by
   travelling to them — currently only the 2019-20 Orlando bubble. It replaced an Oct 1–Apr 30
   calendar window on 2026-07-30, which caught the bubble by coincidence of dates and dropped 179
   legitimate games from two seasons that overran April. See
@@ -252,6 +262,31 @@ the row change → connected clients update in place.
   5. **One `PageHeader`, one `lazyContent`.** `PageHeader` had two hand-maintained copies of its
      markup; the seven `*-lazy` modules each restated `dynamic(..., { ssr: false })` around the
      one part that differs.
+- **Architecture pass: four deepenings (2026-08-01):** each replaces a rule that was restated
+  per caller with one place it lives.
+  1. **`publishableGames` in `queries.ts`.** The season-regime predicate and
+     `game_type = 'regular'` were hand-written at each call site, and four readers had omitted
+     the first: `getGameById`, `getTeamRecentFinalResults`, `getCompletedGamesStamp` and
+     `getRegularSeasonScheduleForDisparity`. Reachable, not theoretical — the recent-results
+     strip returned a team's Orlando bubble games and each row links into `/api/game/[id]`,
+     which served one as a card carrying a rest advantage. Ten readers now compose on the
+     helper; the two schedule-density helpers deliberately do not, because they count physical
+     schedule load and must agree with the unfiltered `fatigue-recent-games.ts`.
+     `publishable-games.test.ts` fails if either predicate is written a second time.
+  2. **`lib/signed-number.ts`.** Eleven hand-rolled signed formatters had drifted three ways:
+     two emitted the ASCII hyphen — including `/playoffs`, whose sibling `/schedule` formatter
+     carried a unit test for exactly that rule — three signed an exact zero, and one could
+     render `−0`. `signedNumber(value, decimals?)` is the whole interface; units stay at the
+     call site, because every numeric column names its own.
+  3. **`scoreGameFatigue` and a named `FatigueInput`** (ADR 0005). Nine positional parameters,
+     four of them adjacent bare `number`s for two different coordinate pairs, became one named
+     object; the geometry moved inside the model, closing the era-coordinate fork between the
+     two pipeline writers. `RecentGame` shed three fields no code read.
+  4. **`components/ui/message-card.tsx`.** Nine failure branches in five visual shapes, one
+     discarding the error message, `role="alert"` on two of them. `MessageCard` was already the
+     right answer inside `shot-quality-content`; it now serves every surface and announces the
+     error tone. `errMsg` in `fetcher.ts` replaced eight copies of one ternary whose fallback
+     was unreachable in all eight.
 - **Nav renamed to plain-noun tabs (2026-07-27):** `GAMES`, `SCHEDULE EDGE`,
   `MODEL RESULTS`, `PLAYOFF REST`, `SHOT VALUE` — joined by `PLAYER SHOOTING` when
   `/shooting` shipped (2026-07-28). That one is qualified rather than bare `SHOOTING` because

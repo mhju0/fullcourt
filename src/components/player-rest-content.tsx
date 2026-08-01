@@ -27,6 +27,9 @@ import {
   termThStyle,
   termThUnitStyle,
 } from "@/lib/terminal-styles"
+import { signedNumber } from "@/lib/signed-number"
+import { MessageCard } from "@/components/ui/message-card"
+import { errMsg } from "@/lib/fetcher"
 
 /**
  * Static asset, not an API route: this export changes once a season, so there is
@@ -88,8 +91,7 @@ function fmt(v: number | null | undefined, digits = 1): string {
 }
 
 function signed(v: number | null): string {
-  if (v === null) return "—"
-  return `${v > 0 ? "+" : v < 0 ? "−" : ""}${Math.abs(v).toFixed(2)}`
+  return v === null ? "—" : signedNumber(v, 2)
 }
 
 /** Number plus a bar, so magnitude reads before the digits do. */
@@ -225,9 +227,11 @@ export function PlayerRestContent() {
 
   if (error) {
     return (
-      <div style={termCardStyle} role="alert">
-        <p style={{ fontSize: 13, color: "var(--term-red)" }}>{error.message}</p>
-      </div>
+      <MessageCard
+        tone="error"
+        title="FAILED TO LOAD THE PLAYER DATABASE"
+        body={errMsg(error)}
+      />
     )
   }
   if (isLoading || !index || activeYear === null) {

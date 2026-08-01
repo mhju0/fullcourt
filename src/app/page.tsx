@@ -12,6 +12,7 @@ import { UpcomingContentLazy } from "@/components/upcoming-lazy"
 import { apiFetcher } from "@/lib/fetcher"
 import { useGameSlate, type GameSlate } from "@/hooks/useGameSlate"
 import { currentDisplaySeason, isNbaOffSeason } from "@/lib/nba-season"
+import { MessageCard } from "@/components/ui/message-card"
 import { termCardStyle } from "@/lib/terminal-styles"
 import { cn } from "@/lib/utils"
 import type { AnalysisResponse } from "@/types"
@@ -189,20 +190,6 @@ function OffSeasonBanner({ season }: { season: string }) {
   )
 }
 
-function ErrorState({ message }: { message: string }) {
-  return (
-    <div
-      className="mono flex flex-col items-center gap-2 px-6 py-12 text-center"
-      style={{ background: "var(--term-surface)", border: "1px solid var(--term-border)", borderLeft: "2px solid var(--term-red)", borderRadius: "var(--term-radius)" }}
-    >
-      <p style={{ fontSize: 12, letterSpacing: "0.08em", color: "var(--term-red)", fontWeight: 700 }}>
-        FAILED TO LOAD GAMES
-      </p>
-      <p style={{ fontSize: 11, color: "var(--term-text-muted)" }}>{message}</p>
-    </div>
-  )
-}
-
 // ─── Date picker chip ────────────────────────────────────────────
 
 function DateChip({
@@ -270,7 +257,7 @@ function Matchups({
 
     case "daysError":
     case "slateError":
-      return <ErrorState message={slate.message ?? "Something went wrong"} />
+      return <MessageCard tone="error" title="FAILED TO LOAD GAMES" body={slate.message ?? "Something went wrong"} />
 
     case "noDays":
       return <EmptyState label={`in the ${slate.season} season`} />

@@ -123,6 +123,26 @@ const gameIsNormallyPlayed =
         sql` AND `
       );
 
+/**
+ * The two predicates every reader that *publishes* a game row must apply: regular season, and
+ * not inside an abnormal stretch. Extra conditions compose on top.
+ *
+ * This exists because the rule was previously hand-written at each call site and four readers
+ * had quietly omitted it — including `getGameById`, which served a 2019-20 Orlando bubble game
+ * carrying a rest advantage. ADR-0004 moves *season* exclusions out to the module that objects;
+ * abnormal stretches are its one universal rule, and this is where it lives.
+ *
+ * Deliberately NOT applied by:
+ * - `getTeamGameCountsInDaysBefore` and `computeIs4In6Map` — they count physical schedule load,
+ *   not publishable rows, and must stay consistent with `fatigue-recent-games.ts`, which is also
+ *   unfiltered. Filtering one side would put two contradictory density figures on the same card.
+ * - `getShotQualityGrid` — reads `shot_grid`, never joins `games`. Shot Value keeps the bubble on
+ *   purpose (docs/SHOT_QUALITY_DESIGN.md): court geometry does not care that nobody flew there.
+ */
+function publishableGames(...extra: (SQL | undefined)[]): SQL | undefined {
+  return and(eq(games.gameType, "regular"), gameIsNormallyPlayed, ...extra);
+}
+
 async function getTeamGameCountsInDaysBefore(
   gameDateYmd: string,
   teamIds: number[],
@@ -301,9 +321,7 @@ async function toGameResponses(rows: GameFatigueJoinRow[]): Promise<GameResponse
  * excluded because there is no travel to measure.
  */
 export async function getGamesByDate(date: string): Promise<GameResponse[]> {
-  const rows = await selectGamesWithFatigue(
-    and(eq(games.date, date), eq(games.gameType, "regular"), gameIsNormallyPlayed)
-  );
+  const rows = await selectGamesWithFatigue(publishableGames(eq(games.date, date)));
   return toGameResponses(rows);
 }
 
@@ -372,11 +390,13 @@ function mapJoinedRowToGameResponse(
 
 /**
  * Single regular-season game by primary key (for detail modal / deep links).
+ *
+ * Regime-filtered: this row carries a rest advantage, so serving a bubble game here would
+ * publish a number the fatigue model refuses to compute. Reachable in two clicks before the
+ * filter was added — the recent-results strip below linked straight into it.
  */
 export async function getGameById(id: number): Promise<GameResponse | null> {
-  const rows = await selectGamesWithFatigue(
-    and(eq(games.id, id), eq(games.gameType, "regular"))
-  );
+  const rows = await selectGamesWithFatigue(publishableGames(eq(games.id, id)));
   return (await toGameResponses(rows))[0] ?? null;
 }
 
@@ -405,8 +425,7 @@ export async function getTeamRecentFinalResults(
     .innerJoin(homeT, eq(games.homeTeamId, homeT.id))
     .innerJoin(awayT, eq(games.awayTeamId, awayT.id))
     .where(
-      and(
-        eq(games.gameType, "regular"),
+      publishableGames(
         eq(games.status, "final"),
         isNotNull(games.homeScore),
         isNotNull(games.awayScore),
@@ -469,10 +488,8 @@ export async function getRegularSeasonGameDatesWithCounts(
     })
     .from(games)
     .where(
-      and(
+      publishableGames(
         eq(games.season, season),
-        eq(games.gameType, "regular"),
-        gameIsNormallyPlayed,
         window ? gte(games.date, window.from) : undefined,
         window ? lte(games.date, window.to) : undefined
       )
@@ -494,12 +511,16 @@ export async function getRegularSeasonGameDatesWithCounts(
  * The backtest reads every final regular-season game, so its answer can only
  * move when one more game goes final or a score is corrected. Both show up in
  * this pair, and reading it costs an index scan rather than ~46k joined rows.
+ *
+ * Filtered by the same rule as the query it stands in for. It counted 88 bubble games the
+ * backtest never reads, which did not make the stamp wrong — only a description of a different
+ * population than the one it keys.
  */
 export async function getCompletedGamesStamp(): Promise<string> {
   const [row] = await db
     .select({ finals: count(), latest: max(games.date) })
     .from(games)
-    .where(and(eq(games.status, "final"), eq(games.gameType, "regular")));
+    .where(publishableGames(eq(games.status, "final")));
 
   return `${row?.finals ?? 0}@${row?.latest ?? "none"}`;
 }
@@ -531,12 +552,10 @@ export async function getCompletedGamesWithFatigue(): Promise<HistoricalGameEvid
       and(eq(awayFatigue.gameId, games.id), eq(awayFatigue.teamId, games.awayTeamId))
     )
     .where(
-      and(
+      publishableGames(
         eq(games.status, "final"),
-        eq(games.gameType, "regular"),
         isNotNull(games.homeScore),
-        isNotNull(games.awayScore),
-        gameIsNormallyPlayed
+        isNotNull(games.awayScore)
       )
     );
 }
@@ -562,13 +581,12 @@ export async function searchRegularSeasonGames(
   const homeFatigue = latestFatigueSubquery("home_fatigue_latest");
   const awayFatigue = latestFatigueSubquery("away_fatigue_latest");
 
-  // Build conditions array — always filter to regular season final games
+  // Build conditions array — always filter to publishable final games
   const conditions = [
+    publishableGames(),
     eq(games.status, "final"),
-    eq(games.gameType, "regular"),
     isNotNull(games.homeScore),
     isNotNull(games.awayScore),
-    gameIsNormallyPlayed,
     // The search route always discards neutral games (|rest advantage| < 0.5).
     // Exclude them in SQL so an unfiltered search doesn't scan+join ~all ~46k
     // regular games only to drop half of them in JS. A higher minRA below raises
@@ -763,11 +781,10 @@ export async function getUpcomingGamesWithRA(
   const todayStr = formatEasternDateKey();
 
   const conditions = [
+    publishableGames(),
     eq(games.season, season),
-    eq(games.gameType, "regular"),
     eq(games.status, "scheduled"),
     gte(games.date, todayStr),
-    gameIsNormallyPlayed,
   ];
 
   if (minRA > 0) {
@@ -1193,6 +1210,10 @@ export async function getShotQualityGrid(season: string): Promise<ShotQualityCel
  *
  * Unplayed games are included on purpose — the module reports on schedules before they are
  * played — so both fatigue scores are nullable.
+ *
+ * `publishableGames` is a no-op here in practice: 2019-20 is the only abnormal stretch and
+ * Schedule Edge already withholds that season as truncated. It applies anyway, so the module
+ * does not depend on a second rule staying in place to get the first one right.
  */
 export async function getRegularSeasonScheduleForDisparity(
   season: string
@@ -1218,7 +1239,7 @@ export async function getRegularSeasonScheduleForDisparity(
       awayFatigue,
       and(eq(awayFatigue.gameId, games.id), eq(awayFatigue.teamId, games.awayTeamId))
     )
-    .where(and(eq(games.season, season), eq(games.gameType, "regular")))
+    .where(publishableGames(eq(games.season, season)))
     .orderBy(asc(games.date), asc(games.id));
 
   return rows.map((r) => ({
@@ -1256,7 +1277,7 @@ export async function getTeamDirectory(): Promise<
  * `status` is still selected below — completion is decided once, in the reducer
  * (`buildSeasonReport`), so the same rule that says a game without a score or without
  * both fatigue sides contributes to no aggregate also says a `live` game does not, even
- * with both scores already populated. `gameIsNormallyPlayed` still applies — the 2019-20
+ * with both scores already populated. `publishableGames` still applies — the 2019-20
  * bubble is not games anyone travelled to.
  */
 export async function getSeasonReportRows(season: string): Promise<SeasonReportRow[]> {
@@ -1286,9 +1307,7 @@ export async function getSeasonReportRows(season: string): Promise<SeasonReportR
     .from(games)
     .leftJoinLateral(homeFatigue, sql`true`)
     .leftJoinLateral(awayFatigue, sql`true`)
-    .where(
-      and(eq(games.season, season), eq(games.gameType, "regular"), gameIsNormallyPlayed)
-    )
+    .where(publishableGames(eq(games.season, season)))
     // Date-ascending is a contract, not a convenience: the reducer dates its fatigue
     // calendar from the first row it accepts.
     .orderBy(asc(games.date), asc(games.id));

@@ -27,10 +27,8 @@ import { alias } from "drizzle-orm/pg-core";
 import type { PostgresJsDatabase } from "drizzle-orm/postgres-js";
 import type * as Schema from "@/lib/db/schema";
 import { fatigueScores, games, teams } from "@/lib/db/schema";
-import { calculateFatigue } from "@/lib/fatigue";
+import { scoreGameFatigue } from "@/lib/fatigue";
 import { fetchRecentGamesForTeam } from "@/lib/fatigue-recent-games";
-import { neutralVenueCoordinates } from "@/lib/neutral-venues";
-import { eraCoordinates } from "@/lib/team-era-coordinates";
 import { loadEnvLocal } from "@/lib/load-env-local";
 
 type AppDb = PostgresJsDatabase<typeof Schema>;
@@ -189,56 +187,14 @@ async function main(): Promise<void> {
       }
 
       const dateStr = String(game.date);
-      const homeEra = eraCoordinates(
-        home.abbreviation,
-        dateStr,
-        parseFloat(home.latitude),
-        parseFloat(home.longitude)
-      );
-      const awayEra = eraCoordinates(
-        away.abbreviation,
-        dateStr,
-        parseFloat(away.latitude),
-        parseFloat(away.longitude)
-      );
-      const homeLat = homeEra.latitude;
-      const homeLon = homeEra.longitude;
-      const awayLat = awayEra.latitude;
-      const awayLon = awayEra.longitude;
-      const visitingAltitudeAway = home.altitudeFlag === true;
 
-      // Neutral site → both teams are away, at a venue that is neither arena.
-      const neutral = game.neutralSite
-        ? neutralVenueCoordinates(game.neutralVenueCity)
-        : null;
-      const venueLat = neutral ? neutral.latitude : homeLat;
-      const venueLon = neutral ? neutral.longitude : homeLon;
-
-      const recentHome = await fetchRecentGamesForTeam(appDb, game.homeTeamId, dateStr);
-      const homeResult = calculateFatigue(
-        dateStr,
-        recentHome,
-        neutral?.altitude ?? false,
-        homeLat,
-        homeLon,
-        venueLat,
-        venueLon,
-        !neutral,
-        game.tipOffUtc
-      );
-
-      const recentAway = await fetchRecentGamesForTeam(appDb, game.awayTeamId, dateStr);
-      const awayResult = calculateFatigue(
-        dateStr,
-        recentAway,
-        neutral?.altitude ?? visitingAltitudeAway,
-        awayLat,
-        awayLon,
-        venueLat,
-        venueLon,
-        false,
-        game.tipOffUtc
-      );
+      const { home: homeResult, away: awayResult } = scoreGameFatigue({
+        game: { ...game, date: dateStr },
+        homeTeam: home,
+        awayTeam: away,
+        homeRecentGames: await fetchRecentGamesForTeam(appDb, game.homeTeamId, dateStr),
+        awayRecentGames: await fetchRecentGamesForTeam(appDb, game.awayTeamId, dateStr),
+      });
 
       const entries: Array<{ teamId: number; result: typeof homeResult }> = [
         { teamId: game.homeTeamId, result: homeResult },

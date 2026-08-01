@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   computeScheduleDisparity,
   seasonRankability,
+  defaultRankableSeason,
   rankableSeasons,
   TRUNCATED_SEASONS,
   REST_DAYS_CAP,
@@ -9,7 +10,7 @@ import {
   type DisparityGameRow,
 } from "../schedule-disparity";
 import { calculateFatigue, type RecentGame } from "../fatigue";
-import { NBA_SEASONS } from "../nba-season";
+import { browsableSeasons, NBA_SEASONS } from "../nba-season";
 
 function game(
   date: string,
@@ -381,14 +382,11 @@ describe("rest days agree with the fatigue model", () => {
   function recentGame(date: string): RecentGame {
     return {
       date,
-      teamId: 1,
-      opponentTeamId: 2,
       isHome: true,
       teamLat: HOME.lat,
       teamLon: HOME.lon,
       opponentLat: HOME.lat,
       opponentLon: HOME.lon,
-      opponentAltitudeFlag: false,
       overtimePeriods: 0,
     };
   }
@@ -398,16 +396,16 @@ describe("rest days agree with the fatigue model", () => {
     ["2024-01-01", "2024-01-04"],
     ["2024-01-01", "2024-01-12"],
   ])("matches calculateFatigue's daysSinceLastGame for %s → %s", (prev, current) => {
-    const fromFatigue = calculateFatigue(
-      current,
-      [recentGame(prev)],
-      false,
-      HOME.lat,
-      HOME.lon,
-      HOME.lat,
-      HOME.lon,
-      true
-    ).daysSinceLastGame;
+    const fromFatigue = calculateFatigue({
+      gameDate: current,
+      recentGames: [recentGame(prev)],
+      isVisitingAltitude: false,
+      teamHomeLat: HOME.lat,
+      teamHomeLon: HOME.lon,
+      currentVenueLat: HOME.lat,
+      currentVenueLon: HOME.lon,
+      currentGameIsHome: true,
+    }).daysSinceLastGame;
 
     const [, fromDisparity] = restDaysBeforeGames([prev, current]);
 
@@ -514,3 +512,34 @@ function teamsWithGameCounts(counts: readonly number[]): DisparityGameRow[] {
   });
   return rows;
 }
+
+/**
+ * On 2026-08-01 `/schedule` opened on 2026-27 — a season with no games ingested — and rendered
+ * its empty state. Four e2e specs failed for two months of every year, and a reader saw a tab
+ * that looked broken rather than a season that had not started.
+ *
+ * The cause was a mismatch: the route already defaulted to the newest *played* season, and the
+ * client overrode it with the newest *browsable* one.
+ */
+describe("defaultRankableSeason", () => {
+  it("opens on the newest played season, not the upcoming one the options also offer", () => {
+    const played = ["2024-25", "2025-26"];
+    const options = rankableSeasons([...played, "2026-27"]);
+
+    // The selector still offers it — that is the point of browsableSeasons.
+    expect(options).toContain("2026-27");
+    // It just does not start there.
+    expect(defaultRankableSeason(played)).toBe("2025-26");
+  });
+
+  it("skips a truncated season rather than opening on one it refuses to rank", () => {
+    expect(defaultRankableSeason(["2018-19", "2019-20"])).toBe("2018-19");
+  });
+
+  it("never opens on a season outside NBA_SEASONS", () => {
+    // Discriminating only in August and September, which is exactly when the two lists differ —
+    // the whole window in which the bug was reachable.
+    expect(NBA_SEASONS).toContain(defaultRankableSeason());
+    expect(rankableSeasons(browsableSeasons())).toContain(defaultRankableSeason());
+  });
+});

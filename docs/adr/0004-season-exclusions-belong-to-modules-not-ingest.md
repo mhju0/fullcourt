@@ -91,6 +91,34 @@ The lesson generalises past this ADR: moving a rule from ingest to per-module me
 module that holds an opinion needs somewhere to express it. Two of the three had a home; the
 third had only a Python constant and a paragraph in a design doc.
 
+### Follow-up: the four readers that never applied it (2026-08-01)
+
+The lesson above was about modules that hold an opinion. This one is about the rule that has no
+module — `ABNORMAL_STRETCHES`, which **every** publishing reader must apply. It was hand-written
+at each call site in `src/lib/db/queries.ts`, and four readers had quietly omitted it:
+
+- `getGameById`
+- `getTeamRecentFinalResults`
+- `getCompletedGamesStamp`
+- `getRegularSeasonScheduleForDisparity`
+
+That was reachable, not theoretical. `getTeamRecentFinalResults` has no season filter, so for any
+2020-21 game the detail modal's recent-results strip returned that team's Orlando bubble games.
+Those rows are clickable into `/api/game/[id]`, and `getGameById` served one as a full card
+**carrying a rest advantage** — the exact publication this ADR's Consequences section says must
+not happen, two clicks from the Games browser, for 22 teams.
+
+`publishableGames(...extra)` now folds in `game_type = 'regular'` and the regime predicate; ten
+readers compose on top of it. A guard test asserts the predicates appear exactly once in the file,
+so a second hand-written copy — which is how the drift happened — fails the suite.
+
+Two readers stay outside it deliberately, and the docblock names them so an omission cannot pass
+as an exception: `getTeamGameCountsInDaysBefore` and `computeIs4In6Map` count *physical schedule
+load*, not publishable rows, and must agree with `fatigue-recent-games.ts`, which is equally
+unfiltered. Filtering the display side alone would put two contradictory density figures on the
+same card, and would report "0 games in last 30 days" for a team on its eighth game in sixteen
+nights.
+
 ## What this does not license
 
 Adding a season to `NBA_SEASONS` that has not been played. `NBA_SEASONS.length` is what the

@@ -8,12 +8,14 @@ import {
 const teams = [
   {
     id: 1,
+    abbreviation: "BOS",
     latitude: "42.3601",
     longitude: "-71.0589",
     altitudeFlag: false,
   },
   {
     id: 2,
+    abbreviation: "NYK",
     latitude: "40.7128",
     longitude: "-74.0060",
     altitudeFlag: false,
@@ -116,14 +118,11 @@ describe("refreshDailyGames", () => {
         return [
           {
             date: "2026-01-12",
-            teamId: 1,
-            opponentTeamId: 2,
             isHome: true,
             teamLat: 42.3601,
             teamLon: -71.0589,
             opponentLat: 40.7128,
             opponentLon: -74.006,
-            opponentAltitudeFlag: false,
             overtimePeriods: 0,
           },
         ];

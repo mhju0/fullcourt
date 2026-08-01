@@ -4,10 +4,12 @@ import { useMemo, useState } from "react"
 import useSWR from "swr"
 import { SeasonSelector } from "@/components/season-selector"
 import { Skeleton } from "@/components/ui/skeleton"
-import { apiFetcher } from "@/lib/fetcher"
+import { apiFetcher, errMsg } from "@/lib/fetcher"
 import { currentDisplaySeason } from "@/lib/nba-season"
 import { termCardStyle, termInsetStyle } from "@/lib/terminal-styles"
 import type { ShotQualityCell, ShotQualityResponse } from "@/types"
+import { signedNumber } from "@/lib/signed-number"
+import { MessageCard } from "@/components/ui/message-card"
 
 // ─── Court geometry ────────────────────────────────────────────────
 // The API grid is UNFOLDED, origin = the rim, in 1-ft cells:
@@ -375,20 +377,6 @@ function CourtSkeleton() {
   )
 }
 
-function MessageCard({ tone, title, body }: { tone: "muted" | "error"; title: string; body?: string }) {
-  const accent = tone === "error" ? "var(--term-red)" : "var(--term-text-muted)"
-  return (
-    <div className="mono px-6 py-12 text-center" style={{ ...termCardStyle, borderLeft: `2px solid ${accent}` }}>
-      <p style={{ fontSize: 12, letterSpacing: "0.08em", color: accent, fontWeight: 700 }}>{title}</p>
-      {body ? (
-        <p className="mt-1" style={{ fontSize: 11, color: "var(--term-text-muted)" }}>
-          {body}
-        </p>
-      ) : null}
-    </div>
-  )
-}
-
 // ─── Main component ────────────────────────────────────────────────
 
 export function ShotQualityContent() {
@@ -400,7 +388,7 @@ export function ShotQualityContent() {
     apiFetcher,
     { revalidateOnFocus: false, keepPreviousData: true }
   )
-  const error = swrError ? (swrError instanceof Error ? swrError.message : "Failed to load shot data") : null
+  const error = swrError ? errMsg(swrError) : null
 
   const cells = useMemo(() => data?.cells ?? [], [data])
 
@@ -432,7 +420,7 @@ export function ShotQualityContent() {
   }, [cells])
 
   const fmtEfg = (v: number): string => `${(v * 100).toFixed(1)}% eFG`
-  const fmtDiff = (v: number): string => `${v >= 0 ? "+" : "−"}${(Math.abs(v) * 100).toFixed(1)} pp`
+  const fmtDiff = (v: number): string => `${signedNumber(v * 100, 1)} pp`
 
   const seqValue = (which: "baseline" | "gbm") => (c: ShotQualityCell): number | null =>
     c[which]?.expectedEfg ?? null

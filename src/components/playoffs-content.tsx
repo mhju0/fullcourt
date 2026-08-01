@@ -6,7 +6,7 @@ import { ChevronDown } from "lucide-react"
 import { SeasonSelector } from "@/components/season-selector"
 import { Skeleton } from "@/components/ui/skeleton"
 import { cn } from "@/lib/utils"
-import { apiFetcher } from "@/lib/fetcher"
+import { apiFetcher, errMsg } from "@/lib/fetcher"
 import { currentDisplaySeason } from "@/lib/nba-season"
 import { grindLineLabels } from "@/lib/playoff-rest-facts"
 import { playoffModelSeasons } from "@/lib/playoff-seasons"
@@ -17,6 +17,8 @@ import type {
   PlayoffSeriesWithPredictions,
   PlayoffsResponse,
 } from "@/types"
+import { signedNumber } from "@/lib/signed-number"
+import { MessageCard } from "@/components/ui/message-card"
 
 // ─── Series correctness ─────────────────────────────────────────────
 
@@ -111,9 +113,7 @@ function FeatureRow({ k, v }: { k: string; v: string }) {
 }
 
 function formatFeature(v: number | null): string {
-  if (v === null) return "—"
-  const sign = v > 0 ? "+" : ""
-  return `${sign}${v.toFixed(2)}`
+  return v === null ? "—" : signedNumber(v, 2)
 }
 
 function SeriesFeatureGrid({ series }: { series: PlayoffSeriesWithPredictions }) {
@@ -330,9 +330,7 @@ export function PlayoffsContent() {
     apiFetcher,
     { revalidateOnFocus: false, keepPreviousData: true }
   )
-  const error = swrError
-    ? (swrError instanceof Error ? swrError.message : "Failed to load playoff predictions")
-    : null
+  const error = swrError ? errMsg(swrError) : null
 
   if (loading) return <PlayoffsSkeleton />
 
@@ -340,17 +338,11 @@ export function PlayoffsContent() {
     return (
       <div className="flex flex-col gap-12">
         <SeasonSelector id="playoffs-season" season={season} onSeasonChange={setSeason} seasons={PLAYOFF_SEASONS} />
-        <div
-          className="mono px-6 py-12 text-center"
-          style={{ ...termCardStyle, borderLeft: "2px solid var(--term-red)" }}
-        >
-          <p style={{ fontSize: 12, letterSpacing: "0.08em", color: "var(--term-red)", fontWeight: 700 }}>
-            FAILED TO LOAD THE BRACKET
-          </p>
-          <p className="mt-1" style={{ fontSize: 11, color: "var(--term-text-muted)" }}>
-            {error ?? "UNKNOWN ERROR"}
-          </p>
-        </div>
+        <MessageCard
+          tone="error"
+          title="FAILED TO LOAD THE BRACKET"
+          body={error ?? "UNKNOWN ERROR"}
+        />
       </div>
     )
   }
@@ -366,14 +358,11 @@ export function PlayoffsContent() {
 
       {/* Reachable whenever a season's playoffs have not been played yet. */}
       {data.rounds.length === 0 ? (
-        <div className="mono px-6 py-12 text-center" style={termCardStyle}>
-          <p style={{ fontSize: 12, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 700 }}>
-            NO BRACKET FOR THIS SEASON
-          </p>
-          <p className="mt-2" style={{ fontSize: 11, color: "var(--term-text-muted)" }}>
-            These playoffs have not been played yet.
-          </p>
-        </div>
+        <MessageCard
+          tone="muted"
+          title="NO BRACKET FOR THIS SEASON"
+          body="These playoffs have not been played yet."
+        />
       ) : (
         <>{data.rounds.map((group) => <RoundSection key={group.round} group={group} />)}</>
       )}

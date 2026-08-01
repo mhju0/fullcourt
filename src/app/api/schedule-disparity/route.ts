@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { jsonRoute } from "@/lib/api-route";
 import { browsableSeasons } from "@/lib/nba-season";
-import { rankableSeasons } from "@/lib/schedule-disparity";
+import { defaultRankableSeason, rankableSeasons } from "@/lib/schedule-disparity";
 import { getScheduleDisparity } from "@/lib/schedule-disparity-server";
 
 export const runtime = "nodejs";
@@ -17,7 +17,7 @@ const RANKABLE = () => rankableSeasons(browsableSeasons());
 const seasonSchema = z
   .string()
   .refine((s) => RANKABLE().includes(s), { message: "Unknown season" })
-  .default(rankableSeasons()[rankableSeasons().length - 1]);
+  .default(defaultRankableSeason());
 
 export const GET = jsonRoute(
   "api/schedule-disparity",

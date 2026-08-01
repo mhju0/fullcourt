@@ -294,15 +294,25 @@ per-shot" framing.
 ### Shared loaders
 - `src/lib/fatigue-recent-games.ts::fetchRecentGamesForTeam` — final games in
   `[date − FATIGUE_RECENT_LOOKBACK_DAYS, date)` for a team, oldest→newest, mapped to
-  `RecentGame` (team/opponent coords, `opponentAltitudeFlag`, `overtimePeriods`, `tipOffUtc`,
+  `RecentGame` (team/opponent coords, `overtimePeriods`, `tipOffUtc`,
   `pointMargin`, `venueAltitude`, and `venueLat`/`venueLon` for neutral-site games).
 - `src/lib/load-env-local.ts::loadEnvLocal` — merges `.env.local` into `process.env` for
   `tsx` scripts (Next env isn't auto-loaded there).
 
 ## The fatigue model (`src/lib/fatigue.ts`)
 
-`calculateFatigue(gameDate, recentGames, isVisitingAltitude, teamHomeLat, teamHomeLon,
-currentVenueLat, currentVenueLon, currentGameIsHome) → FatigueResult`.
+`scoreGameFatigue({ game, homeTeam, awayTeam, homeRecentGames, awayRecentGames })
+→ { home, away }` is what both writers call. It resolves era coordinates, the neutral venue and
+altitude once for both sides — which is what closed the fork where `backfill_fatigue.ts` applied
+`eraCoordinates` to tonight's arena and `daily-refresh.ts` read `team.latitude` raw. Coordinates
+are parsed strictly, so a malformed row throws rather than scoring NaN; both callers catch per
+game. See [ADR 0005](adr/0005-fatigue-model-resolves-its-own-geometry.md).
+
+Behind it, `calculateFatigue(input: FatigueInput) → FatigueResult` scores one side, where
+`FatigueInput` is `{ gameDate, recentGames, isVisitingAltitude, teamHomeLat, teamHomeLon,
+currentVenueLat, currentVenueLon, currentGameIsHome, currentTipOffUtc? }`. Named rather than
+positional: the arena pair and the venue pair used to sit adjacent as four bare `number`s, so
+transposing them typechecked cleanly and silently inverted both the travel and time-zone terms.
 
 ### Constants
 

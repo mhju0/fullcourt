@@ -12,7 +12,7 @@ import {
   type ExploreState,
   type PageWindow,
 } from "@/lib/explore-games-machine"
-import { apiFetcher } from "@/lib/fetcher"
+import { apiFetcher, errMsg } from "@/lib/fetcher"
 import type { GameSearchResponse, GameSearchResult } from "@/types"
 
 export const EXPLORE_PAGE_SIZE = 20
@@ -66,11 +66,7 @@ export function useExploreGames(drillSignal: DrillSignal): ExploreGames {
     results: data?.games ?? [],
     total,
     loading: isLoading,
-    error: swrError
-      ? swrError instanceof Error
-        ? swrError.message
-        : "Failed to load games"
-      : null,
+    error: swrError ? errMsg(swrError) : null,
     window: pageWindow(state, total, EXPLORE_PAGE_SIZE),
     hasFilters: hasActiveFilters(state),
   }

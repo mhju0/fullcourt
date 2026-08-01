@@ -1,6 +1,6 @@
 """Fetch NBA game schedules and insert into games table.
 
-Covers seasons from 1985-86 through 2025-26, excluding 2019-20 (see below).
+Covers every season from 1985-86 through the current one, with none skipped (see below).
 Each game appears twice in LeagueGameFinder (one row per team). We pair rows by
 GAME_ID, using MATCHUP ("vs." = home, "@ " = away) to identify home/away teams.
 
@@ -11,20 +11,21 @@ when games go final.
 DATABASE_URL: use the process environment first (e.g. GitHub Actions); otherwise
 load from scripts/.env for local development.
 
-Skipped season — 2019-20 (COVID):
-  The league suspended play on 2020-03-11 with teams having played 63-67 of 82, then
-  finished in a single-site Orlando bubble with no real home/road travel. The bubble
-  games alone would corrupt the haversine / travel-fatigue signal, so the season is
-  omitted **entirely** — including the ~970 games played normally before the stoppage.
+Ingest records what was played (ADR 0004):
+  2019-20 used to be skipped here, on the grounds that its Orlando bubble games have no
+  meaningful travel. That put a modelling decision in the ingest, where it applied to
+  every surface at once and took the ~971 games played normally before the 2020-03-11
+  suspension with it — including for Player Shooting, which has no travel dependence and
+  no reason to care about the bubble.
 
-  That wider cut is deliberate. A season in which teams played DIFFERENT numbers of
-  games cannot be ranked at season grain, which is what the Schedule Edge module does:
-  a four-game difference in exposure would move a team's total without the schedule
-  having favoured anyone. The pre-stoppage games would add ~2.5% to the backtest,
-  which is not worth special-casing every season-level aggregate for.
+  Which games a model may read is now decided at read time, by the module that objects:
+  `src/lib/season-regime.ts` names the bubble as a range of dates, and
+  `src/lib/schedule-disparity.ts` withholds whole seasons that cannot be ranked because
+  their teams played unequal numbers of games. See
+  docs/adr/0004-season-exclusions-belong-to-modules-not-ingest.md.
 
-  2020-21 IS included: ordinary travel, merely compressed into 72 games. So are the
-  1998-99 (50-game) and 2011-12 (66-game) lockout seasons. Short is fine here;
+  2020-21 is ordinary travel, merely compressed into 72 games, and the 1998-99 (50-game)
+  and 2011-12 (66-game) lockout seasons are short rather than interrupted. Short is fine;
   interrupted is not.
 
 Other notes:

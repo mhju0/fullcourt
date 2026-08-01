@@ -129,7 +129,7 @@ the *same* games on the *same* dates in the *same* two cities. Therefore, for an
 
 Run through the actual model (`src/lib/fatigue.ts`): `calculateFatigue` is driven by
 `daysSinceLastGame` (line 492), the 7-day travel window (`computeTotalTravelMiles`), the
-back-to-back multiplier (`B2B_MULTIPLIER`, line 35), schedule-stress windows
+back-to-back multiplier (`B2B_MULTIPLIER`, line 37), schedule-stress windows
 (`WINDOW_STRESS`, lines 52–58), and freshness (`FRESHNESS_*`). **All of these inputs are
 shared by both teams inside a series.** Consequently
 `calculateRestAdvantage(home, away)` (line 545) will be **≈ 0 for essentially every
@@ -442,9 +442,12 @@ Same shape as the rest of the product: **Python writes to the DB, the app reads.
   It is the **only** surface that reads playoff data.
 
 ### 6.5 Isolation from the regular-season product (verified mechanisms)
-- Every existing read query pins `eq(games.gameType, "regular")` — `getGamesByDate`,
+- Every publishing read goes through `publishableGames(...)`, which pins
+  `eq(games.gameType, "regular")` and the season-regime guard in one place — `getGamesByDate`,
   `getGameById`, `getCompletedGamesWithFatigue`, `searchRegularSeasonGames` and the upcoming
-  read — and that tag is what isolates the playoff product.
+  read all compose their own conditions on top of it — and that tag is what isolates the
+  playoff product. See [ADR 0004](adr/0004-season-exclusions-belong-to-modules-not-ingest.md),
+  "the four readers that never applied it."
 
   > **Updated 2026-07-30.** This section originally credited a second guard,
   > `gameDateWithinRegularSeasonCalendar` (Oct 1–Apr 30), and called playoff rows "excluded

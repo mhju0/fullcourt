@@ -12,6 +12,8 @@
 
 import { differenceInCalendarDays, parseISO, subDays } from "date-fns";
 import { haversineDistance } from "./haversine";
+import { neutralVenueCoordinates } from "./neutral-venues";
+import { eraCoordinates } from "./team-era-coordinates";
 
 // ─── Configuration ──────────────────────────────────────────────
 
@@ -169,14 +171,12 @@ export const FATIGUE_CONSTANTS = Object.freeze({
 
 export interface RecentGame {
   date: string; // "YYYY-MM-DD"
-  teamId: number;
-  opponentTeamId: number;
+  /** False at a neutral site even for the nominal host — neither side slept at home. */
   isHome: boolean;
   teamLat: number;
   teamLon: number;
   opponentLat: number;
   opponentLon: number;
-  opponentAltitudeFlag: boolean;
   overtimePeriods: number;
   /** Actual tip-off instant; null before ~2002, where ESPN has no event. */
   tipOffUtc?: Date | null;
@@ -635,17 +635,50 @@ function computeTotalTravelMiles(
 
 // ─── Core Algorithm ─────────────────────────────────────────────
 
-export function calculateFatigue(
-  gameDate: string,
-  recentGames: RecentGame[],
-  isVisitingAltitude: boolean,
-  teamHomeLat: number,
-  teamHomeLon: number,
-  currentVenueLat: number,
-  currentVenueLon: number,
-  currentGameIsHome: boolean,
-  currentTipOffUtc?: Date | null
-): FatigueResult {
+/**
+ * One team's side of one game.
+ *
+ * Named rather than positional because the two coordinate pairs mean different things and used
+ * to sit adjacent as four bare `number`s: transposing the arena with the venue type-checked
+ * cleanly and silently inverted both the travel and the time-zone terms.
+ *
+ * `recentGames` must be ordered oldest → newest and cover exactly the
+ * `FATIGUE_RECENT_LOOKBACK_DAYS` window before `gameDate`, final games only, from this team's
+ * perspective. `fetchRecentGamesForTeam` is what guarantees that; a hand-built array must match
+ * it. The last element anchors rest, back-to-back, altitude carryover and overtime, so an
+ * unsorted array produces a wrong score with no error.
+ *
+ * Most callers want `scoreGameFatigue` instead, which resolves the geometry for both sides.
+ */
+export interface FatigueInput {
+  gameDate: string;
+  recentGames: RecentGame[];
+  /** Whether tonight's venue sits at altitude, from this team's point of view. */
+  isVisitingAltitude: boolean;
+  /** This team's own arena, era-corrected for relocated franchises. */
+  teamHomeLat: number;
+  teamHomeLon: number;
+  /** Where tonight is actually played — the host arena, or a neutral city. */
+  currentVenueLat: number;
+  currentVenueLon: number;
+  /** False at a neutral site even for the nominal host: nobody slept at home. */
+  currentGameIsHome: boolean;
+  /** Null before ~2002, where ESPN has no event; the back-to-back multiplier falls back. */
+  currentTipOffUtc?: Date | null;
+}
+
+export function calculateFatigue(input: FatigueInput): FatigueResult {
+  const {
+    gameDate,
+    recentGames,
+    isVisitingAltitude,
+    teamHomeLat,
+    teamHomeLon,
+    currentVenueLat,
+    currentVenueLon,
+    currentGameIsHome,
+    currentTipOffUtc,
+  } = input;
   const tip = parseISO(gameDate);
 
   const games7 = countGamesInDaysBefore(recentGames, gameDate, 7);
@@ -802,4 +835,108 @@ export function calculateRestAdvantage(
   awayFatigue: FatigueResult
 ): number {
   return Math.round((awayFatigue.score - homeFatigue.score) * 100) / 100;
+}
+
+// ─── Scoring a whole game ───────────────────────────────────────
+
+/** The team fields the model needs. `latitude`/`longitude` are the DB's numeric-as-string. */
+export interface FatigueTeam {
+  id: number;
+  abbreviation: string;
+  latitude: string;
+  longitude: string;
+  altitudeFlag: boolean;
+}
+
+export interface FatigueGame {
+  date: string;
+  tipOffUtc?: Date | null;
+  neutralSite?: boolean;
+  neutralVenueCity?: string | null;
+}
+
+/**
+ * Both sides of one game, with the geometry resolved here rather than by each caller.
+ *
+ * The two production callers — `scripts/backfill_fatigue.ts` and `src/lib/daily-refresh.ts` —
+ * each assembled these coordinates themselves, and had diverged: backfill ran both teams through
+ * `eraCoordinates`, so a 1995 Sonics home game geolocates in Seattle, and daily-refresh read
+ * `team.latitude` raw. It was invisible only because the daily path never looks further back
+ * than a fortnight. Nothing asserted the two agreed, and nothing would have.
+ *
+ * Prior games were never affected: `rowToRecentGame` applies `eraCoordinates` on both paths.
+ * The fork was tonight's game alone.
+ *
+ * Coordinates are parsed strictly. Backfill previously used bare `parseFloat`, so a malformed
+ * row would have produced a NaN score rather than a failure; both callers already catch per
+ * game, so throwing is the safe unification.
+ */
+export function scoreGameFatigue(input: {
+  game: FatigueGame;
+  homeTeam: FatigueTeam;
+  awayTeam: FatigueTeam;
+  homeRecentGames: RecentGame[];
+  awayRecentGames: RecentGame[];
+}): { home: FatigueResult; away: FatigueResult } {
+  const { game, homeTeam, awayTeam } = input;
+  const date = String(game.date);
+
+  const homeArena = eraCoordinates(
+    homeTeam.abbreviation,
+    date,
+    parseCoordinate(homeTeam.latitude, homeTeam.id, "latitude"),
+    parseCoordinate(homeTeam.longitude, homeTeam.id, "longitude")
+  );
+  const awayArena = eraCoordinates(
+    awayTeam.abbreviation,
+    date,
+    parseCoordinate(awayTeam.latitude, awayTeam.id, "latitude"),
+    parseCoordinate(awayTeam.longitude, awayTeam.id, "longitude")
+  );
+
+  // Neutral site → both teams are away, at a venue that is neither arena. An unknown city
+  // resolves to null and falls back to the listed home team's arena.
+  const neutral = game.neutralSite
+    ? neutralVenueCoordinates(game.neutralVenueCity)
+    : null;
+  const venueLat = neutral ? neutral.latitude : homeArena.latitude;
+  const venueLon = neutral ? neutral.longitude : homeArena.longitude;
+
+  return {
+    home: calculateFatigue({
+      gameDate: date,
+      recentGames: input.homeRecentGames,
+      // At home, a team is not *visiting* altitude — unless the neutral city has it.
+      isVisitingAltitude: neutral?.altitude ?? false,
+      teamHomeLat: homeArena.latitude,
+      teamHomeLon: homeArena.longitude,
+      currentVenueLat: venueLat,
+      currentVenueLon: venueLon,
+      currentGameIsHome: !neutral,
+      currentTipOffUtc: game.tipOffUtc,
+    }),
+    away: calculateFatigue({
+      gameDate: date,
+      recentGames: input.awayRecentGames,
+      isVisitingAltitude: neutral?.altitude ?? homeTeam.altitudeFlag === true,
+      teamHomeLat: awayArena.latitude,
+      teamHomeLon: awayArena.longitude,
+      currentVenueLat: venueLat,
+      currentVenueLon: venueLon,
+      currentGameIsHome: false,
+      currentTipOffUtc: game.tipOffUtc,
+    }),
+  };
+}
+
+function parseCoordinate(
+  value: string,
+  teamId: number,
+  coordinate: "latitude" | "longitude"
+): number {
+  const parsed = Number.parseFloat(value);
+  if (!Number.isFinite(parsed)) {
+    throw new Error(`invalid ${coordinate} for team ${teamId}`);
+  }
+  return parsed;
 }

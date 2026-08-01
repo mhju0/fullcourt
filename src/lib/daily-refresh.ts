@@ -1,9 +1,9 @@
 import {
-  calculateFatigue,
+  scoreGameFatigue,
   type FatigueResult,
+  type FatigueTeam,
   type RecentGame,
 } from "@/lib/fatigue";
-import { neutralVenueCoordinates } from "@/lib/neutral-venues";
 import { classifyRestAdvantage } from "@/lib/rest-advantage-evidence";
 
 export type DailyRefreshGame = {
@@ -17,12 +17,12 @@ export type DailyRefreshGame = {
   neutralVenueCity?: string | null;
 };
 
-export type DailyRefreshTeam = {
-  id: number;
-  latitude: string;
-  longitude: string;
-  altitudeFlag: boolean;
-};
+/**
+ * `abbreviation` is what lets this path apply era-correct arena coordinates. Its absence from
+ * this type is why it did not: `run-daily.ts` already passes whole team rows, so the field was
+ * there at runtime and only missing from the contract.
+ */
+export type DailyRefreshTeam = FatigueTeam;
 
 export type FatigueScoreWrite = {
   teamId: number;
@@ -91,48 +91,20 @@ export async function refreshDailyGames(input: {
     try {
       const home = requireTeam(teamById, game.homeTeamId);
       const away = requireTeam(teamById, game.awayTeamId);
-      const homeLat = parseCoordinate(home.latitude, home.id, "latitude");
-      const homeLon = parseCoordinate(home.longitude, home.id, "longitude");
-      const awayLat = parseCoordinate(away.latitude, away.id, "latitude");
-      const awayLon = parseCoordinate(away.longitude, away.id, "longitude");
 
-      // Neutral site → both teams are away, at a venue that is neither arena.
-      const neutral = game.neutralSite
-        ? neutralVenueCoordinates(game.neutralVenueCity)
-        : null;
-      const venueLat = neutral ? neutral.latitude : homeLat;
-      const venueLon = neutral ? neutral.longitude : homeLon;
-
-      const recentHome = await input.port.loadRecentGames(
-        game.homeTeamId,
-        game.date
-      );
-      const homeResult = calculateFatigue(
-        game.date,
-        recentHome,
-        neutral?.altitude ?? false,
-        homeLat,
-        homeLon,
-        venueLat,
-        venueLon,
-        !neutral,
-        game.tipOffUtc
-      );
-      const recentAway = await input.port.loadRecentGames(
-        game.awayTeamId,
-        game.date
-      );
-      const awayResult = calculateFatigue(
-        game.date,
-        recentAway,
-        neutral?.altitude ?? home.altitudeFlag,
-        awayLat,
-        awayLon,
-        venueLat,
-        venueLon,
-        false,
-        game.tipOffUtc
-      );
+      const { home: homeResult, away: awayResult } = scoreGameFatigue({
+        game,
+        homeTeam: home,
+        awayTeam: away,
+        homeRecentGames: await input.port.loadRecentGames(
+          game.homeTeamId,
+          game.date
+        ),
+        awayRecentGames: await input.port.loadRecentGames(
+          game.awayTeamId,
+          game.date
+        ),
+      });
 
       const homeFatigue = toFatigueScoreWrite(game.homeTeamId, homeResult);
       const awayFatigue = toFatigueScoreWrite(game.awayTeamId, awayResult);
@@ -173,18 +145,6 @@ function requireTeam(
   const team = teamById.get(teamId);
   if (!team) throw new Error(`missing team ${teamId}`);
   return team;
-}
-
-function parseCoordinate(
-  value: string,
-  teamId: number,
-  coordinate: "latitude" | "longitude"
-): number {
-  const parsed = Number.parseFloat(value);
-  if (!Number.isFinite(parsed)) {
-    throw new Error(`invalid ${coordinate} for team ${teamId}`);
-  }
-  return parsed;
 }
 
 function toFatigueScoreWrite(
