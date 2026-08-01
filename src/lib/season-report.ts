@@ -30,6 +30,39 @@ import { classifyRestAdvantage, winPct } from "@/lib/rest-advantage-evidence";
  */
 export const MIN_GAMES_FOR_INFERENCE = 100;
 
+/**
+ * Seasons that did not run the ordinary 82-game shape, and what to say about them.
+ *
+ * Display copy only. It changes nothing that is computed and is deliberately separate from
+ * the two lists that do: `ABNORMAL_STRETCHES` (season-regime.ts) decides which *games* every
+ * model may read, and `TRUNCATED_SEASONS` (schedule-disparity.ts) decides which seasons may
+ * be *ranked*. A season can be unusual enough to warrant a sentence without being unusual
+ * enough to exclude — 1998-99 and 2011-12 are complete seasons of normally-played basketball
+ * and are excluded from nothing. This says what the reader is looking at before they read a
+ * number off it.
+ *
+ * Every figure here was read off the loaded database, not off memory. Four seasons qualify;
+ * every other season with data ran 82 games for all 30 teams.
+ */
+export const ABNORMAL_SEASON_NOTES: Readonly<Record<string, { label: string; note: string }>> = {
+  "1998-99": {
+    label: "LOCKOUT SEASON · 50 GAMES PER TEAM",
+    note: "A labour dispute cut the season to 50 games per team, all of them played between 5 February and 5 May 1999. Travel and crowds were ordinary; the calendar was not. Fifty games in 89 days is denser than usual, so back-to-backs and 3-in-4s run heavier here — and every count below is drawn from a season three-fifths the usual length, so totals are smaller and the win rates carry a wider band.",
+  },
+  "2011-12": {
+    label: "LOCKOUT SEASON · 66 GAMES PER TEAM",
+    note: "A second lockout cut the season to 66 games per team, from Christmas Day 2011 to 26 April 2012. The games were played normally, but a full schedule was pressed into four months, leaving the season denser than usual. Expect more back-to-backs and fewer total miles than a full season, and read the per-team counts against 66 games rather than 82.",
+  },
+  "2019-20": {
+    label: "SUSPENDED SEASON · 63–67 GAMES PER TEAM",
+    note: "COVID-19 suspended the season on 11 March 2020, with teams having played between 63 and 67 games. This report covers those 971 games and nothing else. The 88 games that restarted the season inside the Orlando bubble are excluded here and everywhere on the site — one site, no travel, no home crowd, nothing a rest model can read. Because teams stopped at different game counts, per-team totals below are not strictly comparable to one another.",
+  },
+  "2020-21": {
+    label: "CONDENSED SEASON · 72 GAMES PER TEAM",
+    note: "The season after the bubble was shortened to 72 games per team and run from 22 December 2020 to 16 May 2021 — ten fewer games in about four weeks less time, following a 71-day off-season. The games themselves are ordinary and are included in full, but most were played in empty or capacity-limited arenas, so home crowd is weaker here than in any other season while schedule density runs slightly hotter.",
+  },
+};
+
 /** One team's fatigue row for one game, as the DB layer hands it over. */
 export interface SeasonReportSide {
   /** Postgres `decimal`, so a string. */

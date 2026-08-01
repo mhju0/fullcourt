@@ -27,6 +27,24 @@ test.describe("Season Report", () => {
     await expect(page.getByTestId("fatigue-calendar")).toBeVisible();
   });
 
+  test("flags the shortened seasons and only those", async ({ page }) => {
+    await page.goto("/season");
+
+    const note = page.getByTestId("abnormal-season-note");
+    const selector = page.getByLabel("SEASON");
+
+    // 2015-16 ran 82 games for all 30 teams, so there is nothing to disclaim.
+    await selector.selectOption("2015-16");
+    await expect(note).toHaveCount(0);
+
+    await selector.selectOption("2019-20");
+    await expect(note).toContainText("63–67 GAMES PER TEAM");
+    await expect(note).toContainText("Orlando bubble");
+
+    await selector.selectOption("2011-12");
+    await expect(note).toContainText("LOCKOUT SEASON");
+  });
+
   test("is reachable from the primary nav", async ({ page }) => {
     await page.goto("/");
 

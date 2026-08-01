@@ -9,6 +9,7 @@ import { ZeroRestWorkload } from "@/components/zero-rest-workload"
 import { apiFetcher } from "@/lib/fetcher"
 import { NBA_SEASONS } from "@/lib/nba-season"
 import {
+  ABNORMAL_SEASON_NOTES,
   allSeasonNormExcluding,
   MIN_GAMES_FOR_INFERENCE,
   seasonReportVerdict,
@@ -111,6 +112,35 @@ function RateTile({ label, rate, testId }: { label: string; rate: SeasonReportRa
       accent={gated ? "var(--term-neutral)" : "var(--term-blue)"}
       testId={testId}
     />
+  )
+}
+
+/**
+ * The note above the tiles when the selected season did not run the ordinary 82-game shape.
+ *
+ * Rendered from the season alone, so it is up before the data arrives rather than after —
+ * the point is to be read *first*, not to caption numbers already on screen.
+ */
+function AbnormalSeasonNote({ season }: { season: string }) {
+  const note = ABNORMAL_SEASON_NOTES[season]
+  if (!note) return null
+
+  return (
+    <div
+      data-testid="abnormal-season-note"
+      className="flex flex-col gap-2"
+      style={{ ...termCardStyle, padding: 16, borderLeft: "2px solid var(--term-amber)" }}
+    >
+      <span
+        className="mono"
+        style={{ fontSize: 11, letterSpacing: "0.08em", fontWeight: 700, color: "var(--term-amber)" }}
+      >
+        {note.label}
+      </span>
+      <p style={{ fontSize: 14, color: "var(--term-text-muted)", maxWidth: "42rem", lineHeight: 1.55 }}>
+        {note.note}
+      </p>
+    </div>
   )
 }
 
@@ -495,6 +525,8 @@ export function SeasonReportContent() {
       <div style={{ ...termCardStyle, padding: 18 }}>
         <SeasonSelector id="season-report-season" season={season} onSeasonChange={setSeason} />
       </div>
+
+      <AbnormalSeasonNote season={season} />
 
       {isLoading || !data ? (
         <div className="grid grid-cols-2 gap-2 md:grid-cols-3">
