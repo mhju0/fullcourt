@@ -131,6 +131,18 @@ const TIME_ZONE_DISPLACEMENT_MIN_HOURS = 2;
 const SAME_ARENA_MILES = 1;
 
 /**
+ * Candidate decay rates the fitting harness grids over. `DECAY_RATE` (0.52) is the ratified
+ * value and is a member, so the grid always contains today's model.
+ *
+ * The rate is a *shape* parameter — it lives inside the decay sum rather than multiplying it,
+ * so no regression can reach it. Exporting the sum at each candidate rate is what lets the
+ * harness search it without re-deriving the model in another language.
+ */
+export const DECAY_RATE_GRID: readonly number[] = [
+  0.25, 0.3, 0.35, 0.4, 0.45, DECAY_RATE, 0.6, 0.7, 0.8,
+];
+
+/**
  * The constants the Behind the Data page publishes, read straight from the model.
  *
  * The page explains this formula to readers, so any number it states has to be the number
@@ -203,6 +215,38 @@ function arenaOf(game: RecentGame): { lat: number; lon: number } {
     : { lat: game.opponentLat, lon: game.opponentLon };
 }
 
+/**
+ * The raw, *unweighted* quantities the score is built from — what the model measured, before
+ * any ratified constant multiplies it.
+ *
+ * This exists so the fitting harness can ask "what should each factor be worth?" without a
+ * second copy of the model in another language. Only quantities that `FatigueResult` does not
+ * already expose in raw form appear here: `travelDistanceMiles`, `roadTripConsecutiveAway`,
+ * `daysSinceLastGame`, `gamesInLast7Days`, `gamesInLast30Days`, `isThreeInFour` and
+ * `isFourInSix` are already raw up there and are deliberately not repeated.
+ */
+export interface FatigueFeatures {
+  /** Σ blowoutDiscount × e^(−rate·daysAgo), one entry per `DECAY_RATE_GRID` rate, same order. */
+  decayUnits: number[];
+  /** Travel legs summed over 14 and 30 calendar days; the 7-day figure is `travelDistanceMiles`. */
+  travelMiles14: number;
+  travelMiles30: number;
+  /** Consecutive home games, including tonight when at home — the mirror of the road streak. */
+  homeStandLength: number;
+  /** Circadian load before the 0.88 scale: direction × how much re-entrainment is left. */
+  jetLagUnits: number;
+  /** Hours of clock shift between the home arena and tonight's venue. */
+  zonesCrossed: number;
+  /** Real hours between the prior tip and tonight's; null when either tip is unknown. */
+  turnaroundHours: number | null;
+  /** Overtime periods in the prior game. 0 before ~2002 means unknown (ADR 0003). */
+  priorOvertimePeriods: number;
+  /** Schedule-density stress points, before the curve and the cap flatten them. */
+  densityStressPoints: number;
+  /** Tip-off hour (0–24, fractional) in the team's HOME time zone. Null when the tip is unknown. */
+  bodyClockHour: number | null;
+}
+
 export interface FatigueResult {
   score: number;
   decayLoadScore: number;
@@ -228,6 +272,8 @@ export interface FatigueResult {
   isFourInSix: boolean;
   /** Tonight's game is on the road ≥2 hours of clock shift from the home arena. */
   hasTimeZoneDisplacement: boolean;
+  /** What the score was measured from, before the ratified constants weighted it. */
+  features: FatigueFeatures;
 }
 
 // ─── Schedule / road helpers ───────────────────────────────────
@@ -279,7 +325,17 @@ function computeIsFourInSix(recentGames: RecentGame[], gameDate: string): boolea
   return gamesInWindowEndingAt(recentGames, gameDate, 6) >= 4;
 }
 
-function scheduleStressMultiplier(recentGames: RecentGame[], gameDate: string): number {
+/**
+ * The density multiplier, and the raw stress points behind it.
+ *
+ * Points are returned alongside because the curve and the cap are both lossy: two very
+ * different slates can land on the same clamped multiplier, so the multiplier cannot be
+ * inverted back into what the schedule actually looked like.
+ */
+function scheduleStress(
+  recentGames: RecentGame[],
+  gameDate: string
+): { points: number; multiplier: number } {
   let stressPoints = 0;
   for (const w of WINDOW_STRESS) {
     const n = countGamesInDaysBefore(recentGames, gameDate, w.days);
@@ -292,24 +348,31 @@ function scheduleStressMultiplier(recentGames: RecentGame[], gameDate: string): 
     SCHEDULE_STRESS_MAX_MULT - 1,
     stressPoints * SCHEDULE_STRESS_CURVE
   );
-  return Math.round(mult * 1000) / 1000;
+  return { points: stressPoints, multiplier: Math.round(mult * 1000) / 1000 };
 }
 
-/** Consecutive away games: walk back from most recent game; if tonight is away, add 1. */
-function roadTripStreak(
+/**
+ * Consecutive games on one side of the ledger, walking back from the most recent, plus
+ * tonight when it matches.
+ *
+ * Road and home stands are the same walk in opposite directions: the road streak is what
+ * the model charges for, the home stand is what a recovery term would credit.
+ */
+function venueStreak(
   recentGames: RecentGame[],
+  wantHome: boolean,
   currentGameIsHome: boolean
 ): number {
   const sorted = [...recentGames].sort((a, b) => a.date.localeCompare(b.date));
   let streak = 0;
   for (let i = sorted.length - 1; i >= 0; i--) {
-    if (!sorted[i].isHome) {
+    if (sorted[i].isHome === wantHome) {
       streak += 1;
     } else {
       break;
     }
   }
-  if (!currentGameIsHome) {
+  if (currentGameIsHome === wantHome) {
     streak += 1;
   }
   return streak;
@@ -424,8 +487,10 @@ function timeZoneDisplacement(
   currentVenueLat: number,
   currentVenueLon: number,
   recentGames: RecentGame[]
-): { load: number; displaced: boolean } {
-  if (currentGameIsHome) return { load: 0, displaced: false };
+): { load: number; displaced: boolean; units: number; zonesCrossed: number } {
+  if (currentGameIsHome) {
+    return { load: 0, displaced: false, units: 0, zonesCrossed: 0 };
+  }
 
   const homeOffset = venueUtcOffsetHours(teamHomeLat, teamHomeLon, tip);
   const venueOffset = venueUtcOffsetHours(currentVenueLat, currentVenueLon, tip);
@@ -433,7 +498,7 @@ function timeZoneDisplacement(
   const shift = venueOffset - homeOffset;
   const zonesCrossed = Math.abs(shift);
   if (zonesCrossed < TIME_ZONE_DISPLACEMENT_MIN_HOURS) {
-    return { load: 0, displaced: false };
+    return { load: 0, displaced: false, units: 0, zonesCrossed };
   }
 
   const direction =
@@ -442,26 +507,56 @@ function timeZoneDisplacement(
     0,
     1 - nightsAcclimated(recentGames, venueOffset) / zonesCrossed
   );
+  const units = direction * remaining;
 
   return {
-    load: TIME_ZONE_DISPLACEMENT_BONUS * direction * remaining,
+    load: TIME_ZONE_DISPLACEMENT_BONUS * units,
     // The flag means "jet-lagged tonight", not "far from home" — an acclimated team
     // on night four of a trip is no longer displaced, and the UI chip follows suit.
     displaced: remaining > 0,
+    units,
+    zonesCrossed,
   };
+}
+
+/**
+ * Tip-off hour in the team's own time zone, 0–24 with fractional minutes.
+ *
+ * Distinct from the displacement term, which asks how many zones were crossed. This asks what
+ * time the body thinks it is at tip — a 7pm Pacific start is 10pm to an East-coast visitor
+ * whether or not they have re-entrained.
+ */
+function bodyClockHourAt(
+  tipUtc: Date | null | undefined,
+  teamHomeLat: number,
+  teamHomeLon: number
+): number | null {
+  if (!tipUtc || Number.isNaN(tipUtc.getTime())) return null;
+  const offset = venueUtcOffsetHours(teamHomeLat, teamHomeLon, tipUtc);
+  const utcHours = tipUtc.getUTCHours() + tipUtc.getUTCMinutes() / 60;
+  return (((utcHours + offset) % 24) + 24) % 24;
 }
 
 /**
  * Back-to-back multiplier, sharpened by the real gap between tips when both are known.
  * Returns the flat ratified 1.38 whenever either tip time is missing.
  */
+/** Real hours between two tips, or null when either is unknown (pre-2002, per ADR 0003). */
+function turnaroundHoursBetween(
+  previousTip: Date | null | undefined,
+  currentTip: Date | null | undefined
+): number | null {
+  if (!previousTip || !currentTip) return null;
+  const hours = (currentTip.getTime() - previousTip.getTime()) / 3_600_000;
+  return Number.isFinite(hours) ? hours : null;
+}
+
 function backToBackMultiplier(
   previousTip: Date | null | undefined,
   currentTip: Date | null | undefined
 ): number {
-  if (!previousTip || !currentTip) return B2B_MULTIPLIER;
-  const hours = (currentTip.getTime() - previousTip.getTime()) / 3_600_000;
-  if (!Number.isFinite(hours)) return B2B_MULTIPLIER;
+  const hours = turnaroundHoursBetween(previousTip, currentTip);
+  if (hours === null) return B2B_MULTIPLIER;
   const adjusted =
     B2B_MULTIPLIER +
     B2B_TURNAROUND_PER_HOUR * (B2B_TURNAROUND_NOMINAL_HOURS - hours);
@@ -685,10 +780,20 @@ export function calculateFatigue(input: FatigueInput): FatigueResult {
   const games30 = countGamesInDaysBefore(recentGames, gameDate, 30);
   const isThreeInFour = computeIsThreeInFour(recentGames, gameDate);
   const isFourInSix = computeIsFourInSix(recentGames, gameDate);
-  const stressMult = scheduleStressMultiplier(recentGames, gameDate);
+  const { points: stressPoints, multiplier: stressMult } = scheduleStress(
+    recentGames,
+    gameDate
+  );
 
-  const roadStreak = roadTripStreak(recentGames, currentGameIsHome);
-  const { load: displacementLoad, displaced } = timeZoneDisplacement(
+  const roadStreak = venueStreak(recentGames, false, currentGameIsHome);
+  const homeStandLength = venueStreak(recentGames, true, currentGameIsHome);
+  const bodyClockHour = bodyClockHourAt(currentTipOffUtc, teamHomeLat, teamHomeLon);
+  const {
+    load: displacementLoad,
+    displaced,
+    units: jetLagUnits,
+    zonesCrossed,
+  } = timeZoneDisplacement(
     currentGameIsHome,
     tip,
     teamHomeLat,
@@ -728,15 +833,37 @@ export function calculateFatigue(input: FatigueInput): FatigueResult {
       isThreeInFour: false,
       isFourInSix: false,
       hasTimeZoneDisplacement: displaced,
+      features: {
+        // Nothing has been played, so every accumulated quantity is genuinely zero rather
+        // than unknown. The flight to a road opener is real and is reported at all three
+        // windows — it is the same single leg in each.
+        decayUnits: DECAY_RATE_GRID.map(() => 0),
+        travelMiles14: openerMiles,
+        travelMiles30: openerMiles,
+        homeStandLength,
+        jetLagUnits,
+        zonesCrossed,
+        turnaroundHours: null,
+        priorOvertimePeriods: 0,
+        densityStressPoints: stressPoints,
+        bodyClockHour,
+      },
     };
   }
 
   let decayLoadScore = 0;
+  // Accumulated alongside the score rather than divided out of it afterwards: the score is
+  // rounded to 2 dp, which would cost the fit two significant figures on the model's
+  // largest term.
+  const decayUnits = DECAY_RATE_GRID.map(() => 0);
   for (const game of recentGames) {
     const daysAgo = differenceInCalendarDays(tip, parseISO(game.date));
     if (daysAgo < 1 || daysAgo > DECAY_LOOKBACK_DAYS) continue;
-    decayLoadScore +=
-      GAME_BASE_COST * blowoutDiscount(game.pointMargin) * Math.exp(-DECAY_RATE * daysAgo);
+    const discount = blowoutDiscount(game.pointMargin);
+    decayLoadScore += GAME_BASE_COST * discount * Math.exp(-DECAY_RATE * daysAgo);
+    for (let i = 0; i < DECAY_RATE_GRID.length; i++) {
+      decayUnits[i]! += discount * Math.exp(-DECAY_RATE_GRID[i]! * daysAgo);
+    }
   }
   decayLoadScore = Math.round(decayLoadScore * 100) / 100;
 
@@ -750,6 +877,22 @@ export function calculateFatigue(input: FatigueInput): FatigueResult {
     teamHomeLat,
     teamHomeLon,
     TRAVEL_LOOKBACK_DAYS
+  );
+
+  // Wider travel windows, for the fit only — the score still charges the ratified 7 days.
+  // Both are free: `recentGames` already spans 30 days, so no extra rows are read.
+  const travelWindowMiles = ([14, 30] as const).map((days) =>
+    computeTotalTravelMiles(
+      gameDate,
+      tip,
+      recentGames,
+      currentGameIsHome,
+      currentVenueLat,
+      currentVenueLon,
+      teamHomeLat,
+      teamHomeLon,
+      days
+    )
   );
 
   const lastGame = recentGames[recentGames.length - 1]!;
@@ -827,6 +970,18 @@ export function calculateFatigue(input: FatigueInput): FatigueResult {
     isThreeInFour,
     isFourInSix,
     hasTimeZoneDisplacement: displaced,
+    features: {
+      decayUnits,
+      travelMiles14: travelWindowMiles[0]!,
+      travelMiles30: travelWindowMiles[1]!,
+      homeStandLength,
+      jetLagUnits,
+      zonesCrossed,
+      turnaroundHours: turnaroundHoursBetween(lastGame.tipOffUtc, currentTipOffUtc),
+      priorOvertimePeriods: priorOtPeriods,
+      densityStressPoints: stressPoints,
+      bodyClockHour,
+    },
   };
 }
 
