@@ -8,7 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { apiFetcher } from "@/lib/fetcher"
 import { NEUTRAL_REST_ADVANTAGE_THRESHOLD } from "@/lib/rest-advantage-evidence"
 import { browsableSeasons } from "@/lib/nba-season"
-import { rankableSeasons } from "@/lib/schedule-disparity"
+import { defaultRankableSeason, rankableSeasons } from "@/lib/schedule-disparity"
 import {
   termCardStyle,
   termDashedEmptyStyle,
@@ -23,7 +23,11 @@ import { signedNumber } from "@/lib/signed-number"
 // inside a season, so a season whose teams played unequal numbers of games is withheld here and
 // offered everywhere else. See TRUNCATED_SEASONS.
 const SEASON_OPTIONS = rankableSeasons(browsableSeasons())
-const LATEST_SEASON = SEASON_OPTIONS[SEASON_OPTIONS.length - 1]
+
+// Not `SEASON_OPTIONS[last]`. In August and September the options also carry the upcoming
+// season, which has no games until it is ingested — opening on it showed an empty page for two
+// months of every year. Same rule the route defaults to, so client and API agree.
+const LATEST_SEASON = defaultRankableSeason()
 
 /**
  * Blue favorable, red unfavorable, grey exactly even — the same diverging pair the Analysis

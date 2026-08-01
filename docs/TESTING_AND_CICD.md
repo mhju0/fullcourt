@@ -92,7 +92,7 @@ that state with an empty browser. Specs (13): `e2e/home.spec.ts`, `e2e/about.spe
 `e2e/analysis.spec.ts`, `e2e/behind-the-data.spec.ts`, `e2e/navigation.spec.ts`,
 `e2e/onboarding.spec.ts`, `e2e/page-headers.spec.ts`, `e2e/playoffs.spec.ts`,
 `e2e/referees.spec.ts`, `e2e/schedule-disparity.spec.ts`, `e2e/season.spec.ts`,
-`e2e/shot-quality.spec.ts`, `e2e/shooting.spec.ts` — **69 tests**.
+`e2e/shot-quality.spec.ts`, `e2e/shooting.spec.ts` — **95 tests**.
 
 `e2e/behind-the-data.spec.ts` covers the reference section: that it is reachable from the
 `Reference` landmark and *not* from `Main navigation` or the `OTHER` menu, that every section is

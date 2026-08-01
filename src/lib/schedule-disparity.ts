@@ -89,6 +89,24 @@ export function rankableSeasons(seasons: readonly string[] = NBA_SEASONS): reado
   return seasons.filter((s) => !TRUNCATED_SEASONS.includes(s));
 }
 
+/**
+ * The season the module opens on: the newest that has actually been played.
+ *
+ * Deliberately not the last entry of the *options*. During August and September
+ * `browsableSeasons()` also offers the upcoming season so a published schedule can be looked at
+ * before it starts — but that season has no games until it is ingested, so opening on it renders
+ * an empty state, which reads as a broken tab rather than as an empty season. This is the same
+ * misfire ADR-0004's follow-up fixed for Playoff Predictions; Schedule Edge had it too.
+ *
+ * The selector still offers the upcoming season. It just does not start there.
+ */
+export function defaultRankableSeason(
+  playedSeasons: readonly string[] = NBA_SEASONS
+): string {
+  const rankable = rankableSeasons(playedSeasons);
+  return rankable[rankable.length - 1]!;
+}
+
 /** A game counts toward the 3+ day bucket at this rest-days edge or greater. */
 const LARGE_EDGE_DAYS = 3;
 
