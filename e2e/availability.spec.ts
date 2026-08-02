@@ -49,6 +49,17 @@ test.describe("Availability Cost page", () => {
     );
   });
 
+  test("offers the method at the moment a reader doubts the number", async ({ page }) => {
+    await page.goto("/availability");
+
+    // MethodLink renders nothing until a matching section exists, so this also catches the
+    // section being removed from BEHIND_THE_DATA_SECTIONS — which would silently drop the
+    // link rather than break the build.
+    await page.getByRole("link", { name: /HOW THIS IS CALCULATED/ }).click();
+    await expect(page).toHaveURL(/\/behind-the-data\/availability$/);
+    await expect(page.getByRole("heading", { name: "Availability cost" })).toBeVisible();
+  });
+
   test("is reachable through the OTHER menu and is not a direct tab", async ({ page }) => {
     await page.goto("/");
 

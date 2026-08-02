@@ -49,6 +49,12 @@ export const BEHIND_THE_DATA_SECTIONS = [
     surfaceHref: "/shot-quality",
   },
   {
+    href: "/behind-the-data/availability",
+    label: "AVAILABILITY COST",
+    title: "Availability cost",
+    surfaceHref: "/availability",
+  },
+  {
     href: "/behind-the-data/data-and-limits",
     label: "DATA & LIMITS",
     title: "Data and limits",
