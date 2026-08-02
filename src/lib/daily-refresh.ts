@@ -4,7 +4,7 @@ import {
   type FatigueTeam,
   type RecentGame,
 } from "@/lib/fatigue";
-import { classifyRestAdvantage } from "@/lib/rest-advantage-evidence";
+import { classifyRestAdvantage, isCalledSide } from "@/lib/rest-advantage-evidence";
 
 export type DailyRefreshGame = {
   id: number;
@@ -182,13 +182,13 @@ function buildPrediction(
     homeFatigueScore,
     awayFatigueScore
   );
-  if (restAdvantage.advantageTeam === "neutral") return null;
+  // Neutral means no edge to call. Not-called means there is an edge and it points at the
+  // visitor, where rest has never been enough to outweigh home court — `isCalledSide` carries
+  // the evidence.
+  if (!isCalledSide(restAdvantage.advantageTeam)) return null;
 
   return {
-    predictedAdvantageTeamId:
-      restAdvantage.advantageTeam === "home"
-        ? game.homeTeamId
-        : game.awayTeamId,
+    predictedAdvantageTeamId: game.homeTeamId,
     restAdvantageDifferential: String(
       Math.round(restAdvantage.differential * 100) / 100
     ),

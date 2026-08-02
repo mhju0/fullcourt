@@ -148,11 +148,15 @@ describe("GET /api/analysis", () => {
     }
   });
 
-  it("uses absolute RA >= 7 and credits away-rested wins consistently", async () => {
+  it("excludes rested-visitor games from every rate, however large their rest edge", async () => {
     mockGetCompleted.mockResolvedValueOnce([
+      // home rested by 8, home won → called, and a hit.
       { ...row("2017-01-01", 1, 9, 110, 100), season: "2016-17" },
+      // visitor rested by 8 and won → a big edge, and not called.
       { ...row("2017-01-02", 10, 2, 100, 108), season: "2016-17" },
+      // visitor rested by 8 and lost → also not called. Neither outcome is scored.
       { ...row("2017-01-03", 10, 2, 108, 100), season: "2016-17" },
+      // home rested by 6.9 → called, but under the 7 threshold.
       { ...row("2017-01-04", 4, 10.9, 100, 90), season: "2016-17" },
     ]);
 
@@ -160,17 +164,27 @@ describe("GET /api/analysis", () => {
     const body = (await res.json()) as { data: AnalysisResponse; error: string | null };
 
     expect(body.error).toBeNull();
+
+    // Only the first game is both called and over the threshold. The two rested-visitor games
+    // are dropped whichever way they went, which is the whole point: a rule that declined
+    // those picks cannot bank the one that happened to win.
     expect(body.data.thresholds.find((t) => t.threshold === 7)).toMatchObject({
-      games: 3,
-      restedTeamWins: 2,
+      games: 1,
+      restedTeamWins: 1,
     });
     expect(body.data.seasonWinRates).toEqual([
       {
         season: "2016-17",
-        games: 3,
-        restedTeamWins: 2,
-        winPct: 66.7,
+        games: 1,
+        restedTeamWins: 1,
+        winPct: 100,
       },
     ]);
+
+    // The evidence for declining them is still published, and still counts all three.
+    expect(body.data.homeAwayBreakdown).toMatchObject({
+      homeTeamMoreRested: { games: 2 },
+      awayTeamMoreRested: { games: 2, restedTeamWins: 1 },
+    });
   });
 });

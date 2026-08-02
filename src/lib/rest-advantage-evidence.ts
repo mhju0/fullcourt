@@ -25,6 +25,40 @@ export function classifyRestAdvantage(
   return { differential, advantageTeam };
 }
 
+/**
+ * Whether the site makes a **call** on a game, given which side the rest edge favours.
+ *
+ * Deliberately separate from `classifyRestAdvantage`, which answers a different question and
+ * must keep answering it: "the visitor is the more rested team" is a true statement about a
+ * schedule and the matchup cards should go on saying it. This function answers "would we bet
+ * on that", and the answer for a rested visitor is no.
+ *
+ * The evidence, measured on every decidable game from 2002-03 on: picking the more rested team
+ * when that team is the visitor won 44.39% of 7,224 calls. Raising the bar does not rescue it —
+ * the hit rate climbs to 46.05% at a rest edge of 3, and only reaches a coin flip at 50.29% by
+ * an edge of 5, which the schedule produces 171 times in twenty-four seasons.
+ *
+ * So rest alone never outweighs home court at any magnitude the NBA generates. That is a
+ * finding rather than a defect, and the honest response is to decline the call rather than
+ * publish one measured at worse than a coin flip. Adding home court to the rule and letting it
+ * decide was measured too: it covers 96.5% of games at 58.39% and still makes 776 losing road
+ * calls, which is a worse answer wearing better clothes. See ADR 0006.
+ *
+ * One place, not five — the backtest, the season report, the predictions backfill and the daily
+ * refresh all route through here, because a hand-written copy of this predicate in each reader
+ * is exactly how the regime filter got lost.
+ *
+ * Written as a type guard narrowing to `"home"` rather than returning a bare boolean, so the
+ * callers that then pick a team get that from the compiler instead of restating the rule. If a
+ * road call is ever justified, this signature widens and every call site is flagged for review
+ * — which is the point.
+ */
+export function isCalledSide(
+  advantageTeam: RestAdvantage["advantageTeam"]
+): advantageTeam is "home" {
+  return advantageTeam === "home";
+}
+
 export type HistoricalGameEvidenceRow = {
   date: string;
   season: string;
@@ -76,9 +110,14 @@ export function buildHistoricalBacktest(
     });
   }
 
-  const overallWins = decidable.filter((row) => row.restedTeamWon).length;
+  // Every headline figure counts only the games the site actually calls. `decidable` stays the
+  // wider set — it is what the home/away breakdown below is built from, and that breakdown is
+  // the evidence for declining the other half rather than a second headline.
+  const called = decidable.filter((row) => isCalledSide(row.restedTeamSide));
+
+  const overallWins = called.filter((row) => row.restedTeamWon).length;
   const thresholds: ThresholdBucket[] = BACKTEST_THRESHOLDS.map((threshold) => {
-    const bucket = decidable.filter(
+    const bucket = called.filter(
       (row) => Math.abs(row.differential) >= threshold
     );
     const wins = bucket.filter((row) => row.restedTeamWon).length;
@@ -109,8 +148,8 @@ export function buildHistoricalBacktest(
 
   const seasonSource =
     seasonMinRA > NEUTRAL_REST_ADVANTAGE_THRESHOLD
-      ? decidable.filter((row) => Math.abs(row.differential) >= seasonMinRA)
-      : decidable;
+      ? called.filter((row) => Math.abs(row.differential) >= seasonMinRA)
+      : called;
   const bySeason = new Map<string, { games: number; wins: number }>();
   for (const row of seasonSource) {
     const aggregate = bySeason.get(row.season) ?? { games: 0, wins: 0 };
@@ -128,9 +167,9 @@ export function buildHistoricalBacktest(
     }));
 
   return {
-    totalGames: decidable.length,
+    totalGames: called.length,
     overallWins,
-    overallWinRate: winPct(overallWins, decidable.length),
+    overallWinRate: winPct(overallWins, called.length),
     thresholds,
     homeAwayBreakdown,
     seasonWinRates,

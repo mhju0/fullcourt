@@ -27,13 +27,6 @@ FullCourt quantifies how **travel, rest, and schedule density** shape NBA outcom
 
 ---
 
-## License
-
-Copyright (c) 2026 Michael Ju. All rights reserved.
-No license is granted for use, copying, modification, or distribution of this code as of 2026-07-30. This repository is public for portfolio review purposes only.
-
----
-
 ## Demo
 
 **Games — the per-matchup view.** Each team's fatigue score, the rest-advantage
@@ -304,3 +297,10 @@ The bundled [Outfit](https://github.com/Outfitio/Outfit-Fonts) font faces in
 `src/app/fonts/` are © 2021 The Outfit Project Authors and licensed separately under the
 [SIL Open Font License 1.1](src/app/fonts/OFL.txt). They render the social/OG card only — a
 logotype is a fixed asset and does not have to track the UI's display face.
+
+---
+
+## License
+
+Copyright (c) 2026 Michael Ju. All rights reserved.
+No license is granted for use, copying, modification, or distribution of this code as of 2026-07-30. This repository is public for portfolio review purposes only.

@@ -55,16 +55,26 @@ describe("buildHistoricalBacktest", () => {
       },
     ]);
 
+    // The boundary has two parts, and the fixture exercises both. Game three is NEUTRAL at
+    // 0.49 and has never counted. Game two is DECIDABLE — the visitor is the rested side and
+    // went on to win — but is NO-CALL, because the site stopped picking rested road teams.
+    //
+    // So the headline counts games one and four only, and it counts one of them as a loss:
+    // a rule that declined its road picks and then quietly kept their wins would be scoring
+    // itself on games it never called.
     expect(result).toMatchObject({
-      totalGames: 3,
-      overallWins: 2,
-      overallWinRate: 66.7,
+      totalGames: 2,
+      overallWins: 1,
+      overallWinRate: 50,
       thresholds: [
         { threshold: 2, games: 1, restedTeamWins: 0, winPct: 0 },
         { threshold: 3, games: 0, restedTeamWins: 0, winPct: 0 },
         { threshold: 5, games: 0, restedTeamWins: 0, winPct: 0 },
         { threshold: 7, games: 0, restedTeamWins: 0, winPct: 0 },
       ],
+      // Unchanged, and deliberately so: the breakdown is the evidence for declining the road
+      // half, so it has to keep reporting that half. The away row is the argument, not a
+      // second headline.
       homeAwayBreakdown: {
         homeTeamMoreRested: { games: 2, restedTeamWins: 1, winPct: 50 },
         awayTeamMoreRested: { games: 1, restedTeamWins: 1, winPct: 100 },

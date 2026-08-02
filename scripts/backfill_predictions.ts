@@ -2,11 +2,17 @@
  * Prediction backfill script — retroactively generates predictions for all
  * completed regular-season games that have fatigue scores.
  *
- * Prediction rule: the team with the LOWER fatigue score (more rested) is
- * predicted to win. Games with |differential| < 0.5 are skipped (neutral).
+ * Prediction rule: the more rested team is predicted to win, but only when that team is
+ * also the home side. A rested visitor is not called — rest alone never outweighs home
+ * court at any magnitude the NBA schedule produces, and the old rule's road picks were
+ * measured at 44.39% across 7,224 games. `isCalledSide` holds the rule and the evidence;
+ * see ADR 0006.
+ *
+ * Games with |differential| < 0.5 are skipped as neutral, as before.
  *
  * Safe to run multiple times — games that already have a prediction entry
- * are skipped.
+ * are skipped. It has no --force: after a rule or model change, DELETE the rows first
+ * or the old picks survive.
  *
  * Usage:
  *   pnpm exec tsx scripts/backfill_predictions.ts
@@ -18,7 +24,7 @@ import type { PostgresJsDatabase } from "drizzle-orm/postgres-js";
 import type * as Schema from "@/lib/db/schema";
 import { fatigueScores, games, predictions } from "@/lib/db/schema";
 import { loadEnvLocal } from "@/lib/load-env-local";
-import { classifyRestAdvantage } from "@/lib/rest-advantage-evidence";
+import { classifyRestAdvantage, isCalledSide } from "@/lib/rest-advantage-evidence";
 import { isNormallyPlayed } from "@/lib/season-regime";
 
 type AppDb = PostgresJsDatabase<typeof Schema>;
@@ -88,7 +94,7 @@ async function main(): Promise<void> {
   }
 
   let inserted = 0;
-  let skippedNeutral = 0;
+  let skippedNoCall = 0;
   let errors = 0;
   let correctPredictions = 0;
 
@@ -100,16 +106,16 @@ async function main(): Promise<void> {
       const awayFat = parseFloat(game.awayFatigueScore);
 
       const restAdvantage = classifyRestAdvantage(homeFat, awayFat);
-      if (restAdvantage.advantageTeam === "neutral") {
-        skippedNeutral++;
+      // Neutral is "no edge"; not-called is "an edge pointing at the visitor", where rest has
+      // never been enough to outweigh home court. Both are skipped, and `isCalledSide` is the
+      // single place that knows the difference.
+      if (!isCalledSide(restAdvantage.advantageTeam)) {
+        skippedNoCall++;
         continue;
       }
 
-      // Predicted winner = the team with LOWER fatigue (more rested)
-      const predictedTeamId =
-        restAdvantage.advantageTeam === "home"
-          ? game.homeTeamId
-          : game.awayTeamId;
+      // Predicted winner = the home team, which by the line above is also the rested one.
+      const predictedTeamId = game.homeTeamId;
 
       // Actual winner
       const homeScore = game.homeScore as number;
@@ -136,7 +142,7 @@ async function main(): Promise<void> {
 
     if ((i + 1) % 500 === 0) {
       console.log(
-        `  ${i + 1}/${toProcess.length} games processed (${inserted} inserted, ${skippedNeutral} neutral, ${errors} errors)`
+        `  ${i + 1}/${toProcess.length} games processed (${inserted} inserted, ${skippedNoCall} no-call, ${errors} errors)`
       );
     }
   }
@@ -149,7 +155,7 @@ async function main(): Promise<void> {
   console.log(`\n${"─".repeat(50)}`);
   console.log(`Backfill complete.`);
   console.log(`  Total predictions inserted : ${inserted.toLocaleString()}`);
-  console.log(`  Skipped (neutral, |RA|<0.5): ${skippedNeutral.toLocaleString()}`);
+  console.log(`  Skipped (no call — neutral, or the edge favours the visitor): ${skippedNoCall.toLocaleString()}`);
   console.log(`  Errors                     : ${errors}`);
   console.log(`  Correct predictions        : ${correctPredictions.toLocaleString()}`);
   console.log(`  Overall accuracy           : ${accuracy}%`);

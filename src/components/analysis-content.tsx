@@ -717,7 +717,7 @@ export function AnalysisContent() {
       <PageHeader
         eyebrow="HISTORICAL BACKTEST"
         title="Rest Advantage Analysis"
-        description="Among completed regular-season games with fatigue data on both sides, did the more-rested team win? Charts plot the gap against a coin flip, so zero is a 50% win rate."
+        description="Among completed regular-season games with fatigue data on both sides, did the more-rested team win? The model only calls a game when the rested team is also at home — rest alone has never been enough to outweigh home court. Charts plot the gap against a coin flip, so zero is a 50% win rate."
       />
       <MethodLink surfaceHref="/analysis" />
 
@@ -729,10 +729,13 @@ export function AnalysisContent() {
           sub={`${data.totalGames.toLocaleString()} GAMES`}
           accent="var(--term-blue)"
         />
+        {/* Not the home-rested rate: every called game IS home-rested now, so that tile
+            printed the overall figure a second time. The declined half is the number a
+            reader cannot get anywhere else, and it is the reason the rule exists. */}
         <StatCard
-          label="HOME RESTED WIN%"
-          value={`${data.homeAwayBreakdown.homeTeamMoreRested.winPct}%`}
-          sub={`${data.homeAwayBreakdown.homeTeamMoreRested.restedTeamWins.toLocaleString()} / ${data.homeAwayBreakdown.homeTeamMoreRested.games.toLocaleString()}`}
+          label="RESTED VISITOR · DECLINED"
+          value={`${data.homeAwayBreakdown.awayTeamMoreRested.winPct}%`}
+          sub={`${data.homeAwayBreakdown.awayTeamMoreRested.games.toLocaleString()} GAMES NOT CALLED`}
           accent="var(--term-neutral)"
         />
         {ra5 && (
@@ -807,29 +810,40 @@ export function AnalysisContent() {
         <BaselineLegend />
       </div>
 
-      {/* Home rested breakdown — terminal bar */}
+      {/* The half the model declines, and why. This card used to show the home-rested rate,
+          which is now identical to the headline above it — every called game is home-rested.
+          The useful comparison is the two halves against each other. */}
       <div style={termCardStyle}>
         <SectionDivider
-          label="HOME TEAM MORE RESTED"
-          descriptor={`${data.homeAwayBreakdown.homeTeamMoreRested.games.toLocaleString()} GAMES`}
+          label="THE HALF THIS MODEL DECLINES"
+          descriptor={`${data.homeAwayBreakdown.awayTeamMoreRested.games.toLocaleString()} GAMES`}
         />
-        <p className="mono mt-3 tabular-nums" style={{ fontSize: 36, fontWeight: 700, color: "var(--term-blue)", lineHeight: 1 }}>
-          {data.homeAwayBreakdown.homeTeamMoreRested.winPct}%
+        <p className="mono mt-3 tabular-nums" style={{ fontSize: 36, fontWeight: 700, color: "var(--term-text)", lineHeight: 1 }}>
+          {data.homeAwayBreakdown.awayTeamMoreRested.winPct}%
         </p>
         <p className="mono mt-1" style={{ fontSize: 12, color: "var(--term-text-muted)", letterSpacing: "0.04em" }}>
-          {data.homeAwayBreakdown.homeTeamMoreRested.restedTeamWins.toLocaleString()} WINS /{" "}
-          {data.homeAwayBreakdown.homeTeamMoreRested.games.toLocaleString()} GAMES
+          {data.homeAwayBreakdown.awayTeamMoreRested.restedTeamWins.toLocaleString()}{" "}
+          WINS / {data.homeAwayBreakdown.awayTeamMoreRested.games.toLocaleString()} GAMES
         </p>
         <div className="mt-3 w-full" style={{ height: 4, background: "var(--term-surface-2)", borderRadius: "var(--term-radius-bar)" }}>
           <div
             className="h-full transition-all duration-700"
             style={{
-              width: `${data.homeAwayBreakdown.homeTeamMoreRested.winPct}%`,
-              background: "var(--term-blue)",
+              width: `${data.homeAwayBreakdown.awayTeamMoreRested.winPct}%`,
+              background: "var(--term-neutral)",
               borderRadius: "var(--term-radius-bar)",
             }}
           />
         </div>
+        <p className="mt-4" style={{ fontSize: 15, color: "var(--term-text-muted)", lineHeight: 1.55, maxWidth: "42rem" }}>
+          <span style={{ color: "var(--term-text)", fontWeight: 600 }}>
+            When the fresher team is the visitor, backing it loses.
+          </span>{" "}
+          Raising the bar does not rescue it — the rate is still under a coin flip at a rest
+          edge of 3, and only reaches even by an edge of 5, which the schedule produces a few
+          dozen times a decade. Rest alone never outweighs home court, so the model declines
+          these rather than publishing a call it has measured as a loser.
+        </p>
       </div>
 
       {/* Win rate by season */}

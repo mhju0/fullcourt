@@ -18,7 +18,7 @@
 
 import { addDays, differenceInCalendarDays, format, parseISO } from "date-fns";
 
-import { classifyRestAdvantage, winPct } from "@/lib/rest-advantage-evidence";
+import { classifyRestAdvantage, isCalledSide, winPct } from "@/lib/rest-advantage-evidence";
 
 /**
  * Decidable games below which a season's rest win rate is shown as "too early"
@@ -311,7 +311,12 @@ export function buildSeasonReport(
     buckets.set(week, bucket);
 
     const { differential, advantageTeam } = classifyRestAdvantage(homeFatigue, awayFatigue);
-    if (advantageTeam === "neutral") continue;
+    // The same boundary /analysis uses, from the same function — this page reports how the
+    // rest *call* scored, so a game the model declines is not one of its calls and does not
+    // belong in any total here. The schedule-tax accumulation above is deliberately outside
+    // this check: that measures the burden a schedule imposed, which is true whether or not
+    // the model made a call on the game.
+    if (!isCalledSide(advantageTeam)) continue;
 
     const homeWon = row.homeScore > row.awayScore;
     const restedTeamWon = advantageTeam === "home" ? homeWon : !homeWon;

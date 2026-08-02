@@ -55,14 +55,34 @@ describe("buildSeasonReport — the sign rule", () => {
     expect(report.overall.restedTeamWins).toBe(1);
   });
 
-  it("counts a rested loss as a loss, whichever side was rested", () => {
-    // away 1.0 vs home 4.0 → away is rested, and away lost by 10.
+  it("counts a rested loss as a loss", () => {
+    // home 1.0 vs away 4.0 → home is rested, and home lost by 10.
     const report = buildSeasonReport("2025-26", [
-      game({ gameId: 1, home: side(4), away: side(1) }),
+      game({ gameId: 1, homeScore: 90, awayScore: 100 }),
     ]);
 
     expect(report.overall.games).toBe(1);
     expect(report.overall.restedTeamWins).toBe(0);
+  });
+
+  it("does not count a game at all when the rested side is the visitor", () => {
+    // away 1.0 vs home 4.0 → the visitor is the fresher side, which the site no longer calls.
+    // It is excluded from the totals rather than counted as a loss: the model made no
+    // prediction here, so scoring itself on the outcome either way would be dishonest.
+    // `isCalledSide` is the single source of that boundary, shared with /analysis.
+    const restedVisitorWon = buildSeasonReport("2025-26", [
+      game({ gameId: 1, home: side(4), away: side(1), homeScore: 90, awayScore: 100 }),
+    ]);
+    const restedVisitorLost = buildSeasonReport("2025-26", [
+      game({ gameId: 1, home: side(4), away: side(1) }),
+    ]);
+
+    for (const report of [restedVisitorWon, restedVisitorLost]) {
+      expect(report.overall.games).toBe(0);
+      expect(report.overall.restedTeamWins).toBe(0);
+      // Still a completed game — it counts as played, and its schedule burden still counts.
+      expect(report.completedGames).toBe(1);
+    }
   });
 });
 
@@ -230,10 +250,31 @@ describe("buildSeasonReport — rest edge conversion", () => {
       // one of each → swing +100 both.
       game({ gameId: 1, homeTeamId: 3, awayTeamId: 4, home: side(1), away: side(4) }),
       game({ gameId: 2, homeTeamId: 4, awayTeamId: 3, home: side(1), away: side(4) }),
-      // Away is the fresher side and away always loses, so teams 5 and 6 are each
-      // rested-and-lost once and tired-and-won once → swing −100 both.
-      game({ gameId: 3, homeTeamId: 6, awayTeamId: 5, home: side(4), away: side(1) }),
-      game({ gameId: 4, homeTeamId: 5, awayTeamId: 6, home: side(4), away: side(1) }),
+      // Home is the fresher side again, but here home LOSES, so whoever is home is
+      // rested-and-lost and whoever is away is tired-and-won. Teams 5 and 6 each get one of
+      // each → swing −100 both.
+      //
+      // Built this way rather than by making the visitor the fresher side, which is how it
+      // used to read: those games are no longer called at all, so they would leave both teams
+      // with an empty arm and a null swing instead of the negative one this test needs.
+      game({
+        gameId: 3,
+        homeTeamId: 6,
+        awayTeamId: 5,
+        home: side(1),
+        away: side(4),
+        homeScore: 90,
+        awayScore: 100,
+      }),
+      game({
+        gameId: 4,
+        homeTeamId: 5,
+        awayTeamId: 6,
+        home: side(1),
+        away: side(4),
+        homeScore: 90,
+        awayScore: 100,
+      }),
     ];
 
     const teams = buildSeasonReport("2025-26", rows).teams;
