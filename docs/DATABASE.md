@@ -142,8 +142,8 @@ Two rows per game (one per team). Latest-by-`computed_at` wins in reads
 | `score` | decimal | no | — | composite fatigue (0 = fully rested, 15+ = severe) |
 | `decay_load_score` (`decayLoadScore`) | decimal | no | — | exponential-decay workload component |
 | `travel_load_score` (`travelLoadScore`) | decimal | no | — | log-scaled travel component |
-| `b2b_multiplier` (`backToBackMultiplier`) | decimal | no | — | `1.38` if back-to-back else `1.0` |
-| `altitude_multiplier` (`altitudeMultiplier`) | decimal | no | — | `1.15` if visiting altitude else `1.0` |
+| `b2b_multiplier` (`backToBackMultiplier`) | decimal | no | — | `1.0` if not back-to-back; otherwise `1.38` sharpened by turnaround hours and clamped to `1.30`–`1.46` (2026-07-30) |
+| `altitude_multiplier` (`altitudeMultiplier`) | decimal | no | — | `1.29` if visiting altitude else `1.0`. Raised from `1.15` on 2026-08-02 and every affected row recomputed, so no row still holds the old value — see ADR 0006 |
 | `density_multiplier` (`densityMultiplier`) | decimal | no | — | schedule-stress multiplier (stored name for "schedule density") |
 | `freshness_bonus` (`freshnessBonus`) | decimal | no | — | ≤ 0; extended-rest discount |
 | `games_in_last_7_days` (`gamesInLast7Days`) | integer | no | — | prior games in 7 calendar days |
