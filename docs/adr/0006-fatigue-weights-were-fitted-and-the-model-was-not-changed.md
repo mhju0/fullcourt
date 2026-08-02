@@ -187,16 +187,20 @@ losing road calls, which makes "only claim an edge where one exists" hollow.
 
 Each changes a ratified constant, which is Michael's call. Written before the amendment above,
 and left in the words the fit produced them in — that is the record. **1 and 3 were ratified the
-same day and are shipped; only 2 is still open.**
+same day and are shipped. 2 was investigated and closed the other way: travel stays.**
 
 1. ~~**Altitude is under-weighted and back-to-backs are diffuse.**~~ *Shipped — see the
    amendment.* These are the two real effects, worth ~5pp each. Altitude currently enters as a
    ×1.15 multiplier on a base that is usually small, so it moves a typical score by ~0.3 points;
    the fit says it deserves to be one of the two largest terms.
-2. **The score is dominated by a component that predicts nothing.** Travel is 45% of the mean
-   score and carries no signal. **Still open.** Removing it is a larger claim than it sounds,
-   because it is most of what the published number *is*; the term is physically real and
-   correctly computed, which is a different claim from being useful.
+2. ~~**The score is dominated by a component that predicts nothing.** Travel is 45% of the mean
+   score and carries no signal.~~ **CLOSED 2026-08-02 — travel stays, and the premise was
+   wrong.** "Carries no signal" was inferred from a fitted weight of zero and a +0.32pp ablation,
+   neither of which measures what the term contributes. Measured directly: travel is the only
+   reason 5,994 games get called at all, those games win 59.14%, and removing it costs 404
+   correct calls above a coin flip — more than any other term in the model. It lowers the
+   published *average* precisely because it widens the model's reach into slightly harder games.
+   That is a term earning its place, not a passenger. See the amendment above.
 3. ~~**The away-pick hole is live in production.**~~ *Shipped — see the amendment.* Whatever is
    done about the model, the shipped prediction rule is wrong on 54% of its 4,872 away calls.
 
@@ -218,11 +222,34 @@ It also records why the *previous* ablation table had to be thrown away rather t
 Holding the sample fixed measures a term only while the rule can pick either side. Now that a
 called game is always a home pick, every ablated model makes the identical pick on a fixed
 sample, so all eight terms would score exactly zero. What the terms do now is select which games
-get called, and that is what the replacement measures. Recent workload (−0.68pp) and
-back-to-backs (−0.31pp) are still the only two that cost the headline anything; travel (+0.32pp)
-and road segment (+0.24pp) land above zero, though both also cut thousands of calls, and calling
-fewer games can lift a rate on its own — so this is a third route to "travel carries no signal",
-not evidence that travel is harmful.
+get called, and that is what the replacement measures.
+
+**Every term finds winners, and the win-rate movement is a misleading way to rank them.** A term
+that finds extra winners at a rate below the model's own 61.17% average lowers the published
+percentage while raising the number of games won. Ranked by correct calls above a coin flip
+surrendered when the term is removed:
+
+| term | games only it finds | those games win | headline if removed | calls given up |
+|---|---:|---:|---:|---:|
+| Travel | 5,994 | 59.14% | **+0.32pp** | **404** |
+| Recent workload | 3,437 | 63.37% | −0.68pp | 336 |
+| Back-to-back | 1,743 | 63.57% | −0.31pp | 210 |
+| Road segment | 2,784 | 58.94% | +0.24pp | 209 |
+| Altitude | 616 | 62.34% | −0.03pp | 71 |
+| Schedule density | 707 | 60.54% | −0.08pp | 41 |
+| Overtime | 148 | 64.86% | −0.07pp | 20 |
+| Freshness | 148 | 60.14% | +0.02pp | −10 |
+
+**This corrects a reading recorded here earlier.** The +0.32pp row was first written up as a
+third route to "travel carries no signal". It is not. Travel is the widest net in the model —
+5,994 calls, more than twice any other term — and contributes more correct calls than any other
+single term. Deleting it would raise the headline by a third of a point while giving up 5,994
+winning predictions and 404 wins above a coin flip. The fit result above still stands and is
+narrower than it was made to sound: travel adds little *independent* information once workload
+and road segment are known, because those terms partly restate each other. Little independent
+signal is not no value.
+
+Freshness is the only term that gives back more than it brings, by ten calls out of 3,061.
 
 The suspension of the no-fitting rule ends here. `fatigue.ts` coefficients remain hand-set and
 ratified; this ADR is the record that fitting them was tried, under a protocol built to make the

@@ -123,8 +123,16 @@ Holding the sample fixed only measures anything while the rule can pick either s
 model stopped calling rested visitors on 2026-08-02, every fixed-sample ablation returns zero by
 construction, because a called game is always a home pick. They were re-measured that day on
 what the terms now actually do — select which games get called — by `ml/ablate_fatigue_terms.py`.
-The lopsidedness survives, and travel moves to the wrong side of zero. See
-`/behind-the-data/rest-advantage`.
+See `/behind-the-data/rest-advantage`.
+
+The re-measurement overturned the "four terms earn nothing" reading above. **Every term finds
+games that win.** Ranked by correct calls above a coin flip given up if removed: travel 404,
+recent workload 336, back-to-back 210, road segment 209, altitude 71, density 41, overtime 20,
+freshness −10. Travel leads because it is the widest net in the model — 5,994 calls no other
+term produces, winning at 59.14%. It *lowers* the published average (+0.32pp when removed) only
+because those games are slightly harder than the model's 61.17% core, which is what widening
+reach looks like. Deleting a term because its removal raises the headline would trade winning
+predictions for a prettier percentage.
 
 ## 2026-07-29 → 30 — surfaces
 

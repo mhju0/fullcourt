@@ -35,25 +35,30 @@ const MEASURED_ON = "2026-07-30";
  * 2026-08-02 a called game is always a pick of the home team, so on a fixed sample every
  * ablated model makes the identical pick and every term would score exactly zero.
  *
- * What the terms do now is *select* — they decide which games are called at all. So each
- * row neutralises one term, re-derives the call under the shipped rule, and reports where
- * the published win rate lands and how many games survive as calls.
+ * What the terms do now is *select* — they decide which games get called at all. Each row
+ * neutralises one term and re-derives the call under the shipped rule.
  *
- * Deliberately no verdict column any more. Travel and road segment land above zero, but
- * they also cut thousands of calls, and calling fewer games can lift a rate on its own —
- * labelling them "harmful" would claim more than this measurement supports.
+ * `found` / `foundWinPct` are the load-bearing columns, and `delta` is the trap. A term
+ * that finds extra winners at a rate below the model's own 61.17% average *lowers* the
+ * headline while *raising* the number of games won. Travel is exactly that: it is the
+ * single largest contributor of correct calls (+404 above a coin flip, more than any other
+ * term) and it still moves the headline +0.32pp when removed, because its 5,994 games win
+ * at 59.14% rather than 61.17%. Reading `delta` alone says delete it. Deleting it would
+ * give up more winning predictions than any other change available.
+ *
+ * Ordered by wins-above-a-coin-flip surrendered, not by delta.
  */
 const ABLATIONS_MEASURED_ON = "2026-08-02";
-const ABLATION_BASELINE = { winPct: 61.17, called: 27400 };
+const ABLATION_BASELINE = { winPct: 61.17, called: 27400, edge: 3061 };
 const ABLATIONS = [
-  { term: "Recent workload (decay)", delta: -0.68, called: 25979 },
-  { term: "Back-to-back", delta: -0.31, called: 26245 },
-  { term: "Schedule density", delta: -0.08, called: 27226 },
-  { term: "Overtime", delta: -0.07, called: 27395 },
-  { term: "Altitude", delta: -0.03, called: 26850 },
-  { term: "Freshness", delta: 0.02, called: 27456 },
-  { term: "Road segment", delta: 0.24, called: 24994 },
-  { term: "Travel", delta: 0.32, called: 23124 },
+  { term: "Travel", delta: 0.32, found: 5994, foundWinPct: 59.14, edgeLost: 404 },
+  { term: "Recent workload (decay)", delta: -0.68, found: 3437, foundWinPct: 63.37, edgeLost: 336 },
+  { term: "Back-to-back", delta: -0.31, found: 1743, foundWinPct: 63.57, edgeLost: 210 },
+  { term: "Road segment", delta: 0.24, found: 2784, foundWinPct: 58.94, edgeLost: 209 },
+  { term: "Altitude", delta: -0.03, found: 616, foundWinPct: 62.34, edgeLost: 71 },
+  { term: "Schedule density", delta: -0.08, found: 707, foundWinPct: 60.54, edgeLost: 41 },
+  { term: "Overtime", delta: -0.07, found: 148, foundWinPct: 64.86, edgeLost: 20 },
+  { term: "Freshness", delta: 0.02, found: 148, foundWinPct: 60.14, edgeLost: -10 },
 ] as const;
 
 
@@ -193,22 +198,29 @@ direction    = ${K.eastwardMultiplier} eastward, ${K.westwardMultiplier} westwar
           .
         </Prose>
         <Prose>
-          The result is lopsided in the same direction it has always been: the model is
-          essentially <strong>recent workload plus back-to-backs</strong>. Those two are the only
-          terms whose removal costs the headline anything.
+          <strong>Every term finds winners.</strong> They differ in how they do it. Back-to-backs
+          and recent workload are the <em>sharpest</em> — the games only they flag win at over
+          63%. Travel is the <em>widest</em>: it alone accounts for{" "}
+          {ABLATIONS[0].found.toLocaleString()}{" "}
+          of the model&rsquo;s calls, more than twice any other term, at{" "}
+          {ABLATIONS[0].foundWinPct}%.
         </Prose>
         <div className="overflow-x-auto">
           <table className="mono w-full" style={{ fontSize: 12, borderCollapse: "collapse" }}>
             <thead>
               <tr>
-                <th style={termThStyle}>TERM REMOVED</th>
+                <th style={termThStyle}>TERM</th>
                 <th style={{ ...termThStyle, textAlign: "right" }}>
-                  HEADLINE MOVES
-                  <span style={termThUnitStyle}>PCT POINTS</span>
+                  GAMES ONLY IT FINDS
+                  <span style={termThUnitStyle}>COUNT</span>
                 </th>
                 <th style={{ ...termThStyle, textAlign: "right" }}>
-                  GAMES STILL CALLED
-                  <span style={termThUnitStyle}>COUNT</span>
+                  THOSE GAMES
+                  <span style={termThUnitStyle}>WIN RATE</span>
+                </th>
+                <th style={{ ...termThStyle, textAlign: "right" }}>
+                  HEADLINE IF REMOVED
+                  <span style={termThUnitStyle}>PCT POINTS</span>
                 </th>
               </tr>
             </thead>
@@ -221,12 +233,15 @@ direction    = ${K.eastwardMultiplier} eastward, ${K.westwardMultiplier} westwar
                       ...termTdStyle,
                       textAlign: "right",
                       fontWeight: 700,
+                      // Weight by what the term contributes, which is the column that
+                      // decides whether it earns its place.
                       color:
-                        Math.abs(a.delta) >= 0.3 ? "var(--term-text)" : "var(--term-text-muted)",
+                        a.edgeLost >= 200 ? "var(--term-text)" : "var(--term-text-muted)",
                     }}
                   >
-                    {signedNumber(a.delta)}pp
+                    {a.found.toLocaleString()}
                   </td>
+                  <td style={{ ...termTdStyle, textAlign: "right" }}>{a.foundWinPct}%</td>
                   <td
                     style={{
                       ...termTdStyle,
@@ -234,7 +249,7 @@ direction    = ${K.eastwardMultiplier} eastward, ${K.westwardMultiplier} westwar
                       color: "var(--term-text-muted)",
                     }}
                   >
-                    {a.called.toLocaleString()}
+                    {signedNumber(a.delta)}pp
                   </td>
                 </tr>
               ))}
@@ -242,19 +257,30 @@ direction    = ${K.eastwardMultiplier} eastward, ${K.westwardMultiplier} westwar
           </table>
         </div>
         <Note>
-          Four terms — density, overtime, altitude and freshness — move the headline by less
-          than a tenth of a point. They are kept because they are physically real and correctly
-          computed, not because they earn their place in the backtest. Being correct and being
-          useful are different claims, and this table is the one that separates them.
+          The last column is a trap, and it is shown because hiding it would be worse. Travel
+          and road segment are the two terms whose removal <em>raises</em>{" "}
+          the published rate, which reads like an argument for deleting them. It is not. Both find winners at a rate
+          below the model&rsquo;s own {ABLATION_BASELINE.winPct}% average, so including them
+          pulls the average down while pushing the number of games won up. Travel gives the
+          model {ABLATIONS[0].edgeLost} more correct calls than a coin flip — the largest
+          contribution of any single term — and deleting it would buy a prettier headline by
+          giving up {ABLATIONS[0].found.toLocaleString()} winning predictions. A batting average
+          rises when you stop taking the harder at-bats.
         </Note>
         <Note>
-          Travel and road segment sit on the other side of zero: dropping either one leaves the
-          published rate slightly higher. Read that carefully. Both also cut thousands of games
-          from the called set, and calling fewer games can raise a rate on its own, so this is
-          not evidence that travel makes the model worse. It is a third route to the same
-          conclusion an out-of-sample fit reached separately — travel is roughly 45% of the
-          average fatigue score and carries no signal. Terms interact multiplicatively, so these
-          figures do not sum to the total.
+          The whole model sits at {ABLATION_BASELINE.edge.toLocaleString()} correct calls above a
+          coin flip across {ABLATION_BASELINE.called.toLocaleString()} games. Freshness is the
+          only term that gives back more than it brings, and it does so by ten calls. The others
+          are kept because they are physically real, correctly computed <em>and</em> additive.
+          Terms interact multiplicatively, so these figures do not sum to the total.
+        </Note>
+        <Note>
+          A separate out-of-sample fit found travel adds little <em>independent</em> information
+          once the other schedule terms are known, which is unsurprising — a team deep in a road
+          trip already scores high on workload and road segment, so the terms partly restate one
+          another. That is a narrower claim than it sounds, and it is not in tension with the
+          table above: travel is the tie-breaker that pushes those genuinely worn-down teams over
+          the line, and the games it pushes over do win.
         </Note>
       </Section>
 

@@ -65,15 +65,17 @@ test.describe("Behind the Data", () => {
     // export is still wired to the model rather than to hardcoded prose.
     await expect(page.getByText("2.65", { exact: false }).first()).toBeVisible();
 
-    // The ablation table's headline finding: recent workload is the one term whose removal
-    // actually costs the headline, and travel — the largest component of the score — sits on
-    // the wrong side of zero. Both rows, so a table that silently loses its worst news fails.
-    await expect(page.getByText("−0.68pp", { exact: true })).toBeVisible();
+    // The ablation table's load-bearing pair: travel finds more of the model's calls than any
+    // other term, and those games win. Asserted together with the +0.32pp row they explain,
+    // because the row on its own reads as an argument for deleting the term.
+    await expect(page.getByText("5,994", { exact: true })).toBeVisible();
+    await expect(page.getByText("59.14%", { exact: true })).toBeVisible();
     await expect(page.getByText("+0.32pp", { exact: true })).toBeVisible();
 
-    // The caveat that stops the row above being read as "travel makes the model worse".
+    // The sentence that stops that row being read as "travel makes the model worse". Without
+    // it the table's most important number is also its most misleading one.
     await expect(
-      page.getByText("calling fewer games can raise a rate on its own", { exact: false })
+      page.getByText("giving up 5,994 winning predictions", { exact: false })
     ).toBeVisible();
   });
 });

@@ -79,15 +79,26 @@ def assemble(df: pd.DataFrame, drop: str | None = None, neutral: float = 0.0) ->
     return (total.clip(lower=0) * 100).round() / 100
 
 
-def called_rate(home: pd.DataFrame, away: pd.DataFrame, col: str) -> tuple[int, float]:
+def calls(home: pd.DataFrame, away: pd.DataFrame, col: str):
     """Apply the shipped rule: call only when the home side is the fresher one."""
-    edge = away[col].to_numpy() - home[col].to_numpy()
-    called = edge >= NEUTRAL_THRESHOLD
-    n = int(called.sum())
+    return (away[col].to_numpy() - home[col].to_numpy()) >= NEUTRAL_THRESHOLD
+
+
+def rate(mask, won) -> tuple[int, float]:
+    n = int(mask.sum())
     if n == 0:
         return 0, 0.0
-    wins = int(home["won"].to_numpy()[called].sum())
-    return n, round(wins / n * 100, 2)
+    return n, round(int(won[mask].sum()) / n * 100, 2)
+
+
+def above_coin_flip(mask, won) -> int:
+    """Correct calls in excess of a coin flip. The measure of a model's total value.
+
+    A win *rate* rewards calling fewer, safer games; this rewards calling more winners.
+    They disagree, and the disagreement is the whole story on the travel term.
+    """
+    n = int(mask.sum())
+    return int(won[mask].sum()) - n / 2 if n else 0
 
 
 def main() -> None:
@@ -120,7 +131,10 @@ def main() -> None:
 
     home = home.assign(full=assemble(home))
     away = away.assign(full=assemble(away))
-    base_n, base_rate = called_rate(home, away, "full")
+    won = home["won"].to_numpy().astype(bool)
+    full = calls(home, away, "full")
+    base_n, base_rate = rate(full, won)
+    base_edge = above_coin_flip(full, won)
 
     lines = [
         "# Single-term fatigue ablations, re-measured",
@@ -129,19 +143,34 @@ def main() -> None:
         f"games after publishable filter    {len(paired)}",
         f"full model — called               {base_n}",
         f"full model — win rate             {base_rate}",
+        f"full model — wins above coin flip {base_edge:+.0f}",
         "",
         "Each row neutralises one term and re-derives the call under the shipped rule.",
-        "delta_pp is the movement in the published win rate; n is the games still called.",
         "",
-        f"{'term':<26}{'rate':>8}{'delta_pp':>11}{'n':>9}{'n_delta':>9}",
+        "  delta_pp   movement in the published win rate",
+        "  n          games the ablated model still calls",
+        "  uniq_n     games called ONLY when the term is present — what the term finds",
+        "  uniq_rate  win rate on those games. Above 50 means the term finds winners.",
+        "  edge_lost  correct-calls-above-a-coin-flip given up by removing the term.",
+        "",
+        "READ uniq_rate AND edge_lost BEFORE delta_pp. A term that finds extra winners at a",
+        "rate below the model's own average *lowers* the headline while *raising* the number",
+        "of games won — deleting it buys a prettier percentage with real predictions. That is",
+        "exactly what travel does, and delta_pp alone reads as the opposite.",
+        "",
+        f"{'term':<26}{'delta_pp':>10}{'n':>8}{'uniq_n':>8}{'uniq_rate':>11}{'edge_lost':>11}",
     ]
 
     for label, col, neutral in TERMS:
         h = home.assign(abl=assemble(home, col, neutral))
         a = away.assign(abl=assemble(away, col, neutral))
-        n, rate = called_rate(h, a, "abl")
+        abl = calls(h, a, "abl")
+        n, r = rate(abl, won)
+        uniq_n, uniq_rate = rate(full & ~abl, won)
+        edge_lost = base_edge - above_coin_flip(abl, won)
         lines.append(
-            f"{label:<26}{rate:>8.2f}{rate - base_rate:>11.2f}{n:>9}{n - base_n:>9}"
+            f"{label:<26}{r - base_rate:>10.2f}{n:>8}{uniq_n:>8}"
+            f"{uniq_rate:>10.2f}%{edge_lost:>+11.0f}"
         )
 
     REPORT.write_text("\n".join(lines) + "\n", encoding="utf-8")
