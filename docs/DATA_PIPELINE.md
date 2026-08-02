@@ -327,7 +327,7 @@ transposing them typechecked cleanly and silently inverted both the travel and t
 | `TRAVEL_REFERENCE_MILES` | `1000` | reference distance in the log term |
 | `B2B_MULTIPLIER` | `1.38` | back-to-back multiplier, at a nominal 24h turnaround |
 | `B2B_TURNAROUND_PER_HOUR` | `0.02` | adjustment per hour away from 24, clamped `[1.30, 1.46]` |
-| `ALTITUDE_MULTIPLIER` | `1.15` | visiting-altitude multiplier (DEN/UTA, Mexico City) |
+| `ALTITUDE_MULTIPLIER` | `1.29` | visiting-altitude multiplier (DEN/UTA, Mexico City). Raised from 1.15 on 2026-08-02 — see ADR 0006 |
 | `ALTITUDE_CARRYOVER_MULTIPLIER` | `1.06` | the night after visiting altitude |
 | `FRESHNESS_MAX_BONUS` | `-2.0` | max (most negative) rest discount |
 | `FRESHNESS_PLATEAU_DAYS` | `3` | rest-days plateau constant |
@@ -411,7 +411,7 @@ b2bMult = 1.0                                           // not a back-to-back
         = clamp(1.38 + 0.02 * (24 - turnaroundHours), 1.30, 1.46)   // both tips known
         = 1.38                                          // either tip missing (pre-2002)
 
-altMult = 1.15   visiting altitude tonight (DEN/UTA, or Mexico City at 7,350 ft)
+altMult = 1.29   visiting altitude tonight (DEN/UTA, or Mexico City at 7,350 ft)
         = 1.06   the night AFTER visiting altitude, at a normal-elevation venue
         = 1.0    otherwise; never for DEN/UTA leaving home (descending is the easy way)
 ```

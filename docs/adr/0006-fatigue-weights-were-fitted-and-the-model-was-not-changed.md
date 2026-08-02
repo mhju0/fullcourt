@@ -143,6 +143,46 @@ already carries `home_moneyline` / `away_moneyline` columns that no tracked scri
 and a market line is a far better team-strength proxy than the rolling win percentage used as a
 control here.
 
+## Amendment, 2026-08-02: two of the three were acted on
+
+Ratified the same day this ADR was written. The title still holds for what it claimed — the
+*weights* were not adopted and the model was not rewritten — but two items below moved from
+"left on the table" to shipped, so recording them here rather than leaving the ADR describing a
+state that no longer exists.
+
+**Altitude was raised, 1.15 → 1.29.** The absolute scale of a fatigue score is arbitrary, so the
+defensible question is the ratio between terms. Altitude sat at 0.405 of a back-to-back in the
+model and measures at 0.772 of one on margin — it was charging half what it should. Matching the
+measured ratio inside the existing multiplier shape gives an excess of `0.772 × 0.38 = 0.293`.
+This is a *descriptive* correction, not a predictive one: it barely moves accuracy, and it is
+consistent with declining the fitted weights above, because the reason for declining those was
+that they bought no predictive gain worth a rewrite. A term charging half its measured size is
+a different complaint.
+
+Two things were deliberately not done alongside it. The multiplier *shape* is still wrong — thin
+air costs a busy team more than a rested one, where the effect measures flat — and fixing that
+means the additive rewrite this ADR declined. And `ALTITUDE_CARRYOVER_MULTIPLIER` stays at 1.06
+even though it was derived as half the old excess, because it measures at 0.003 points and the
+unconstrained fit wanted it negative. Symmetry with how it was originally derived is not
+evidence.
+
+**The away-pick rule was changed.** The shipped rule predicted the lower-fatigue team whichever
+side that was, and its road-team picks ran at 44.39% across 7,224 calls. Checking whether any
+threshold rescued them:
+
+| away rest edge | n | away wins |
+|---|---|---|
+| RA ≤ −1 | 5,270 | 44.23% |
+| RA ≤ −3 | 1,214 | 46.05% |
+| RA ≤ −5 | 171 | 50.29% |
+| RA ≤ −6 | 49 | 51.02% |
+
+It reaches a coin flip only at edges the schedule barely produces. **Rest alone never outweighs
+home court at any magnitude the NBA generates**, which is a finding rather than a defect, and the
+model now declines instead of making the call. Adding home court to the rule and letting it
+decide was measured too and rejected: it covers 96.5% of games at 58.39% while still making 776
+losing road calls, which makes "only claim an edge where one exists" hollow.
+
 ## What this leaves on the table, for a human decision
 
 Not acted on here. Each changes a ratified constant, which is Michael's call.

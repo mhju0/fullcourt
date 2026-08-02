@@ -51,13 +51,36 @@ const B2B_TURNAROUND_PER_HOUR = 0.02;
 const B2B_MULTIPLIER_MIN = 1.3;
 const B2B_MULTIPLIER_MAX = 1.46;
 
-const ALTITUDE_MULTIPLIER = 1.15;
+/**
+ * Raised from 1.15 on 2026-08-02, the first ratified coefficient to change on evidence.
+ *
+ * The absolute scale of a fatigue score is arbitrary — only the ratios between terms carry
+ * meaning — so the question is not "how many points is thin air worth" but "how big is it
+ * next to a back-to-back". Measured on final margin across 35,458 games, altitude is 1.358
+ * points and a back-to-back is 1.759, a ratio of 0.772. In the model it was 0.405: altitude
+ * was charging about half what it should.
+ *
+ * Matching the measured ratio while keeping the multiplier shape gives an excess of
+ * 0.772 × 0.38 = 0.293. See ADR 0006.
+ *
+ * The shape itself is still wrong and is knowingly left alone: a multiplier means the same
+ * thin air costs a busy team more than a rested one, where the measurement says the effect is
+ * flat. Fixing that means making altitude additive, which is the model rewrite ADR 0006
+ * declined on its own evidence.
+ */
+const ALTITUDE_MULTIPLIER = 1.29;
 
 /**
  * Thin air does not clear the moment the plane lands. Applied the night AFTER visiting
- * altitude, when tonight's venue is at normal elevation — roughly half the 1.15 excess,
- * since the acute effect is weaker than being there. Never applies to Denver or Utah
- * leaving home: descending is not the hard direction. Ratified 2026-07-30.
+ * altitude, when tonight's venue is at normal elevation, since the acute effect is weaker
+ * than being there. Never applies to Denver or Utah leaving home: descending is not the hard
+ * direction. Ratified 2026-07-30.
+ *
+ * Deliberately NOT raised alongside `ALTITUDE_MULTIPLIER` on 2026-08-02, though it was set as
+ * half of that excess and is now roughly a fifth of it. The carryover was measured at 0.003
+ * points and the unconstrained fit wanted it negative, so there is no evidence to spend on
+ * making it bigger — only the symmetry of how it was originally derived, which is not
+ * evidence. It stays where it is until something measures it.
  */
 const ALTITUDE_CARRYOVER_MULTIPLIER = 1.06;
 

@@ -211,7 +211,7 @@ describe("calculateFatigue", () => {
     const flat = fatigueHomeTeam("2025-04-07", recent);
     const altitude = fatigueAwayTeam("2025-04-07", recent, true, DEN_LAT, DEN_LON);
 
-    expect(altitude.altitudeMultiplier).toBe(1.15);
+    expect(altitude.altitudeMultiplier).toBe(1.29);
     expect(flat.altitudeMultiplier).toBe(1);
     expect(altitude.score - flat.score).toBeGreaterThanOrEqual(1);
     expect(altitude.score - flat.score).toBeLessThanOrEqual(2.5);
@@ -244,7 +244,7 @@ describe("calculateFatigue", () => {
     );
 
     expect(stacked.isBackToBack).toBe(true);
-    expect(stacked.altitudeMultiplier).toBe(1.15);
+    expect(stacked.altitudeMultiplier).toBe(1.29);
     expect(stacked.score).toBeGreaterThan(flatNoB2b.score + 3);
   });
 
@@ -619,7 +619,7 @@ describe("altitude carryover", () => {
     expect(result.altitudeMultiplier).toBe(1.06);
   });
 
-  it("does not stack: being at altitude tonight still charges the full 1.15", () => {
+  it("does not stack: being at altitude tonight still charges the full 1.29", () => {
     const result = calculateFatigue({
       gameDate: "2025-01-10",
       recentGames: [denverVisit],
@@ -630,7 +630,7 @@ describe("altitude carryover", () => {
       currentVenueLon: DEN_LON,
       currentGameIsHome: false,
     });
-    expect(result.altitudeMultiplier).toBe(1.15);
+    expect(result.altitudeMultiplier).toBe(1.29);
   });
 
   it("gives Denver nothing for leaving home — descending is the easy direction", () => {
