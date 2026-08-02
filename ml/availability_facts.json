@@ -1,0 +1,226 @@
+{
+  "generatedFrom": "hoopR player box scores + games (final regular season only)",
+  "sample": {
+    "games": 35458,
+    "teamGames": 70932,
+    "firstSeason": "1996-97",
+    "lastSeason": "2025-26"
+  },
+  "definition": {
+    "rotationWindowGames": 5,
+    "rotationMinutes": 15.0,
+    "minAppearances": 2,
+    "qualityGames": 20
+  },
+  "effectsInPoints": {
+    "bestPlayerOut": {
+      "points": 2.863,
+      "t": 17.9
+    },
+    "homeCourt": {
+      "points": 2.824,
+      "t": 42.3
+    },
+    "backToBack": {
+      "points": 1.759,
+      "t": 13.4
+    },
+    "visitingAltitude": {
+      "points": 1.358,
+      "t": 5.1
+    },
+    "priorOvertime": {
+      "points": 0.544,
+      "t": 2.9
+    },
+    "missValuePerPoint": {
+      "points": 0.26,
+      "t": 21.9
+    }
+  },
+  "frequency": {
+    "teamGamesMissingBestPlayer": 0.0991,
+    "teamGamesMissingNobody": 0.4455,
+    "gamesEitherSideMissingBest": 0.1714,
+    "meanRotationSize": 8.62
+  },
+  "scheduleHoldsUp": {
+    "backToBack": {
+      "scheduleOnly": 1.759,
+      "absenceControlled": 1.641,
+      "shiftPct": 6.7
+    },
+    "visitingAltitude": {
+      "scheduleOnly": 1.358,
+      "absenceControlled": 1.282,
+      "shiftPct": 5.6
+    },
+    "priorOvertime": {
+      "scheduleOnly": 0.544,
+      "absenceControlled": 0.501,
+      "shiftPct": 7.9
+    },
+    "scheduleDensity": {
+      "scheduleOnly": 0.275,
+      "absenceControlled": 0.265,
+      "shiftPct": 3.8
+    }
+  },
+  "noise": {
+    "marginStdDev": 13.64,
+    "rmseScheduleOnly": 12.52,
+    "rmseWithAbsence": 12.436
+  },
+  "seasonBestOutRate": [
+    {
+      "season": "1996-97",
+      "rate": 0.0596,
+      "teamGames": 2233
+    },
+    {
+      "season": "1997-98",
+      "rate": 0.0648,
+      "teamGames": 2378
+    },
+    {
+      "season": "1998-99",
+      "rate": 0.0641,
+      "teamGames": 1450
+    },
+    {
+      "season": "1999-00",
+      "rate": 0.0509,
+      "teamGames": 2378
+    },
+    {
+      "season": "2000-01",
+      "rate": 0.0673,
+      "teamGames": 2378
+    },
+    {
+      "season": "2001-02",
+      "rate": 0.0656,
+      "teamGames": 2378
+    },
+    {
+      "season": "2002-03",
+      "rate": 0.0459,
+      "teamGames": 2373
+    },
+    {
+      "season": "2003-04",
+      "rate": 0.077,
+      "teamGames": 2378
+    },
+    {
+      "season": "2004-05",
+      "rate": 0.0772,
+      "teamGames": 2460
+    },
+    {
+      "season": "2005-06",
+      "rate": 0.0675,
+      "teamGames": 2460
+    },
+    {
+      "season": "2006-07",
+      "rate": 0.0809,
+      "teamGames": 2460
+    },
+    {
+      "season": "2007-08",
+      "rate": 0.0707,
+      "teamGames": 2460
+    },
+    {
+      "season": "2008-09",
+      "rate": 0.0829,
+      "teamGames": 2460
+    },
+    {
+      "season": "2009-10",
+      "rate": 0.078,
+      "teamGames": 2460
+    },
+    {
+      "season": "2010-11",
+      "rate": 0.0789,
+      "teamGames": 2460
+    },
+    {
+      "season": "2011-12",
+      "rate": 0.1136,
+      "teamGames": 1980
+    },
+    {
+      "season": "2012-13",
+      "rate": 0.0964,
+      "teamGames": 2458
+    },
+    {
+      "season": "2013-14",
+      "rate": 0.0935,
+      "teamGames": 2460
+    },
+    {
+      "season": "2014-15",
+      "rate": 0.1016,
+      "teamGames": 2460
+    },
+    {
+      "season": "2015-16",
+      "rate": 0.0829,
+      "teamGames": 2460
+    },
+    {
+      "season": "2016-17",
+      "rate": 0.0817,
+      "teamGames": 2460
+    },
+    {
+      "season": "2017-18",
+      "rate": 0.115,
+      "teamGames": 2460
+    },
+    {
+      "season": "2018-19",
+      "rate": 0.1106,
+      "teamGames": 2460
+    },
+    {
+      "season": "2019-20",
+      "rate": 0.1308,
+      "teamGames": 2118
+    },
+    {
+      "season": "2020-21",
+      "rate": 0.1417,
+      "teamGames": 2160
+    },
+    {
+      "season": "2021-22",
+      "rate": 0.1671,
+      "teamGames": 2460
+    },
+    {
+      "season": "2022-23",
+      "rate": 0.1772,
+      "teamGames": 2460
+    },
+    {
+      "season": "2023-24",
+      "rate": 0.1293,
+      "teamGames": 2460
+    },
+    {
+      "season": "2024-25",
+      "rate": 0.1918,
+      "teamGames": 2450
+    },
+    {
+      "season": "2025-26",
+      "rate": 0.1947,
+      "teamGames": 2460
+    }
+  ]
+}
