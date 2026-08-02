@@ -25,16 +25,35 @@ export const metadata: Metadata = {
  */
 const MEASURED_ON = "2026-07-30";
 
-/** Single-term ablations from the 2026-07-30 recompute: swing lost when the term is removed. */
+/**
+ * Single-term ablations, re-measured 2026-08-02 by `ml/ablate_fatigue_terms.py`.
+ *
+ * These replace a table measured on 2026-07-30 that asked a question the model can no
+ * longer be asked. That version held the set of games fixed and reported how much
+ * *accuracy* each term was worth, which only had an answer while the rule could pick
+ * either side: drop a term, the pick flips home to away, accuracy moves. Since
+ * 2026-08-02 a called game is always a pick of the home team, so on a fixed sample every
+ * ablated model makes the identical pick and every term would score exactly zero.
+ *
+ * What the terms do now is *select* — they decide which games are called at all. So each
+ * row neutralises one term, re-derives the call under the shipped rule, and reports where
+ * the published win rate lands and how many games survive as calls.
+ *
+ * Deliberately no verdict column any more. Travel and road segment land above zero, but
+ * they also cut thousands of calls, and calling fewer games can lift a rate on its own —
+ * labelling them "harmful" would claim more than this measurement supports.
+ */
+const ABLATIONS_MEASURED_ON = "2026-08-02";
+const ABLATION_BASELINE = { winPct: 61.17, called: 27400 };
 const ABLATIONS = [
-  { term: "Recent workload (decay)", delta: -1.59, verdict: "The engine" },
-  { term: "Back-to-back", delta: -0.9, verdict: "Second" },
-  { term: "Travel", delta: -0.35, verdict: "Real but modest" },
-  { term: "Road segment", delta: -0.15, verdict: "Marginal" },
-  { term: "Altitude", delta: -0.04, verdict: "Near zero" },
-  { term: "Overtime", delta: -0.02, verdict: "Near zero" },
-  { term: "Freshness", delta: -0.01, verdict: "Near zero" },
-  { term: "Schedule density", delta: 0.04, verdict: "Slightly harmful" },
+  { term: "Recent workload (decay)", delta: -0.68, called: 25979 },
+  { term: "Back-to-back", delta: -0.31, called: 26245 },
+  { term: "Schedule density", delta: -0.08, called: 27226 },
+  { term: "Overtime", delta: -0.07, called: 27395 },
+  { term: "Altitude", delta: -0.03, called: 26850 },
+  { term: "Freshness", delta: 0.02, called: 27456 },
+  { term: "Road segment", delta: 0.24, called: 24994 },
+  { term: "Travel", delta: 0.32, called: 23124 },
 ] as const;
 
 
@@ -159,12 +178,24 @@ direction    = ${K.eastwardMultiplier} eastward, ${K.westwardMultiplier} westwar
         </div>
       </Section>
 
-      <Section label="WHAT EACH TERM IS WORTH" descriptor={`MEASURED ${MEASURED_ON}`}>
+      <Section
+        label="WHAT EACH TERM IS WORTH"
+        descriptor={`MEASURED ${ABLATIONS_MEASURED_ON}`}
+      >
         <Prose>
-          Terms were removed one at a time and the model re-scored, holding the set of games
-          fixed. The column shows how much of the rest effect disappears without that term.
-          The result is lopsided: the model is essentially <strong>recent workload plus
-          back-to-backs</strong>, with travel a distant third.
+          Removing a term no longer changes <em>which</em> team gets picked — a called game is
+          always a pick of the home side. What it changes is which games get called at all. So
+          each term was neutralised in turn, the call re-derived, and the published win rate
+          re-measured against a baseline of{" "}
+          <strong>
+            {ABLATION_BASELINE.winPct}% across {ABLATION_BASELINE.called.toLocaleString()} games
+          </strong>
+          .
+        </Prose>
+        <Prose>
+          The result is lopsided in the same direction it has always been: the model is
+          essentially <strong>recent workload plus back-to-backs</strong>. Those two are the only
+          terms whose removal costs the headline anything.
         </Prose>
         <div className="overflow-x-auto">
           <table className="mono w-full" style={{ fontSize: 12, borderCollapse: "collapse" }}>
@@ -172,10 +203,13 @@ direction    = ${K.eastwardMultiplier} eastward, ${K.westwardMultiplier} westwar
               <tr>
                 <th style={termThStyle}>TERM REMOVED</th>
                 <th style={{ ...termThStyle, textAlign: "right" }}>
-                  EFFECT LOST
+                  HEADLINE MOVES
                   <span style={termThUnitStyle}>PCT POINTS</span>
                 </th>
-                <th style={termThStyle}></th>
+                <th style={{ ...termThStyle, textAlign: "right" }}>
+                  GAMES STILL CALLED
+                  <span style={termThUnitStyle}>COUNT</span>
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -193,18 +227,33 @@ direction    = ${K.eastwardMultiplier} eastward, ${K.westwardMultiplier} westwar
                   >
                     {signedNumber(a.delta)}pp
                   </td>
-                  <td style={{ ...termTdStyle, color: "var(--term-text-muted)" }}>{a.verdict}</td>
+                  <td
+                    style={{
+                      ...termTdStyle,
+                      textAlign: "right",
+                      color: "var(--term-text-muted)",
+                    }}
+                  >
+                    {a.called.toLocaleString()}
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
         <Note>
-          Four terms — altitude, overtime, freshness and density — contribute essentially
-          nothing to predictive ranking, and density is very slightly harmful. They are kept
-          because they are physically real and correctly computed, not because they earn their
-          place in the backtest. Being correct and being useful are different claims, and this
-          table is the one that separates them. Terms interact multiplicatively, so these
+          Four terms — density, overtime, altitude and freshness — move the headline by less
+          than a tenth of a point. They are kept because they are physically real and correctly
+          computed, not because they earn their place in the backtest. Being correct and being
+          useful are different claims, and this table is the one that separates them.
+        </Note>
+        <Note>
+          Travel and road segment sit on the other side of zero: dropping either one leaves the
+          published rate slightly higher. Read that carefully. Both also cut thousands of games
+          from the called set, and calling fewer games can raise a rate on its own, so this is
+          not evidence that travel makes the model worse. It is a third route to the same
+          conclusion an out-of-sample fit reached separately — travel is roughly 45% of the
+          average fatigue score and carries no signal. Terms interact multiplicatively, so these
           figures do not sum to the total.
         </Note>
       </Section>

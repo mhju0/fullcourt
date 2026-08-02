@@ -118,6 +118,14 @@ nothing, with schedule density very slightly harmful. The model is essentially r
 plus back-to-backs. The four terms that earn nothing are kept because they are physically real
 and correctly computed, which is a different claim from being useful.
 
+**Those ablation figures are a record of this pass, not a description of the current model.**
+Holding the sample fixed only measures anything while the rule can pick either side; once the
+model stopped calling rested visitors on 2026-08-02, every fixed-sample ablation returns zero by
+construction, because a called game is always a home pick. They were re-measured that day on
+what the terms now actually do — select which games get called — by `ml/ablate_fatigue_terms.py`.
+The lopsidedness survives, and travel moves to the wrong side of zero. See
+`/behind-the-data/rest-advantage`.
+
 ## 2026-07-29 → 30 — surfaces
 
 - **Referee Effect** shipped 2026-07-29 at `/referees`, then was **reduced to a placeholder on

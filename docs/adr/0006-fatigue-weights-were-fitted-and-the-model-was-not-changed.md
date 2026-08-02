@@ -208,6 +208,22 @@ so it is a faithful stand-in for the shipped model, and it turns a four-hour dat
 a few seconds. Any future question of this kind should be answered with it rather than by
 recomputing the database.
 
+`ml/ablate_fatigue_terms.py` was added 2026-08-02 on the same footing. It rebuilds each score
+from its exported components — `(decay + travel + road) × b2b × altitude × density + freshness +
+overtime`, the assembly in `fatigue.ts` — so a term can be neutralised without touching the
+model, then re-derives the call under the shipped rule. Its self-check is that the untouched
+reconstruction reproduces production exactly: 27,400 games called at 61.17%.
+
+It also records why the *previous* ablation table had to be thrown away rather than refreshed.
+Holding the sample fixed measures a term only while the rule can pick either side. Now that a
+called game is always a home pick, every ablated model makes the identical pick on a fixed
+sample, so all eight terms would score exactly zero. What the terms do now is select which games
+get called, and that is what the replacement measures. Recent workload (−0.68pp) and
+back-to-backs (−0.31pp) are still the only two that cost the headline anything; travel (+0.32pp)
+and road segment (+0.24pp) land above zero, though both also cut thousands of calls, and calling
+fewer games can lift a rate on its own — so this is a third route to "travel carries no signal",
+not evidence that travel is harmful.
+
 The suspension of the no-fitting rule ends here. `fatigue.ts` coefficients remain hand-set and
 ratified; this ADR is the record that fitting them was tried, under a protocol built to make the
 answer trustworthy, and that the answer was "the weights are not the problem".
