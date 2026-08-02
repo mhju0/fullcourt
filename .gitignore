@@ -68,7 +68,20 @@ ml/shot_value/*.pkl
 # machine-specific context. Kept on disk, out of the published index.
 AGENTS.md
 /.agents/
-/.claude/
+/.claude/*
+# Exceptions: the shared agent contract. `settings.json` carries the `deny` rules that enforce
+# the CLAUDE.md hard bans; `skills/` and `agents/` must be tracked because git worktrees do not
+# inherit untracked files, so an untracked skill set leaves every new worktree with no skills
+# at all. These are team contracts, not machine-specific context.
+!/.claude/settings.json
+!/.claude/skills/
+!/.claude/agents/
+# Still local-only: machine-specific overrides, plugin scratch state, and vendored third-party
+# skills (react-best-practices is Vercel Engineering content, re-installable, and ships no
+# license of its own — it is not ours to redistribute from a public repo).
+/.claude/settings.local.json
+/.claude/skill-stats.json
+/.claude/skills/react-best-practices/
 /.codex/
 /docs/agents/
 .tokensave/
