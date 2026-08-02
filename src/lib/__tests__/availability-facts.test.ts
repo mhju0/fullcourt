@@ -76,9 +76,11 @@ describe("the claims the copy will rest on", () => {
   });
 
   it("the season trend runs from rare to common", () => {
+    // The page says "more than three times as often", so the guard is three — a threshold
+    // looser than the sentence would let the copy age into being wrong without failing.
     const first = AVAILABILITY_BEST_OUT_BY_SEASON[0]!;
     const last = AVAILABILITY_BEST_OUT_BY_SEASON.at(-1)!;
-    expect(last.rate).toBeGreaterThan(first.rate * 2);
+    expect(last.rate).toBeGreaterThan(first.rate * 3);
   });
 
   it("the noise block keeps the page honest about explanatory power", () => {

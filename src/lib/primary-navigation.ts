@@ -74,6 +74,16 @@ export const OTHER_NAV_ITEMS = [
       "Map expected shooting efficiency by court location and model version.",
   },
   {
+    href: "/availability",
+    // Not bare "AVAILABILITY": on every other basketball site that word heads an injury
+    // report — who is out tonight. This page is the opposite tense, a finished measurement
+    // of what an absence cost, and it has no live lineup data at all. "COST" is the
+    // qualifier that blocks the wrong click, the same job "EDGE" does for SCHEDULE EDGE.
+    label: "AVAILABILITY COST",
+    guideDescription:
+      "See what losing a rotation player costs, in the same points as the schedule effects.",
+  },
+  {
     href: "/referees",
     label: "REFEREE EFFECT",
     // The page is a placeholder — the whistle numbers came back inside noise and were pulled.

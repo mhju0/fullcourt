@@ -28,10 +28,11 @@ the actual code (`src/app/`, `src/components/`, `src/app/globals.css`).
 
 ## Pages
 
-Seven product routes ship today — `/`, `/season`, `/analysis`, `/playoffs`, `/schedule`,
-`/shot-quality`, `/shooting` —
-plus a branded App Router `not-found` page for unknown paths. (This count was stale at "five"
-before this section was last touched: it omitted `/shooting`, which had already shipped.)
+The product routes shipping today are `/`, `/season`, `/analysis`, `/playoffs`, `/schedule`,
+`/shot-quality`, `/shooting`, `/referees` and `/availability`, plus a branded App Router
+`not-found` page for unknown paths. (This sentence used to open with a count, which went stale
+twice — first at "five" when it omitted `/shooting`, then at "seven". The list is the fact; a
+number in front of it is a second copy of the same fact that nothing checks.)
 `/upcoming` was retired: it is a permanent redirect to `/` (`next.config.ts`), whose UPCOMING
 view now renders what it used to.
 
@@ -309,6 +310,33 @@ no documented section, so adding one to `BEHIND_THE_DATA_SECTIONS` is all it tak
 > and `<li>` text of every reference page for run-together words. Formula blocks are excluded —
 > camelCase inside them is code.
 
+### `/availability` — what a missing player costs
+
+Shipped 2026-08-02, behind the `OTHER` menu. The one surface on the site with **no data fetch at
+all**: every figure is a frozen constant in `src/lib/availability-facts.ts`, mirrored from
+`ml/availability_facts.json` and pinned by `src/lib/__tests__/availability-facts.test.ts`. No API
+route, no client bundle, no loading state — the same arrangement as `PlayoffRestArgument`, and
+the reason the page is complete when the database is slow or empty.
+
+It exists to put one number beside the schedule numbers in the same unit: losing a team's best
+player is worth 2.86 points of final margin, against home court's 2.82 and a back-to-back's 1.76.
+The comparison is the point, so `availability-content.tsx` draws all five effects on **one shared
+track running from zero**, not one bar per card.
+
+Two pieces of copy are load-bearing and are asserted in `e2e/availability.spec.ts` rather than
+left to review:
+
+- *"This measures what an absence cost, not who will play tonight."* The measurement is
+  retrospective — absences are read from who actually took the floor. Without this line the page
+  reads as an injury report, which is also why the nav label is `AVAILABILITY COST` and not
+  `AVAILABILITY`.
+- *"And a basketball game is mostly noise."* Margins vary by 13.6 points and the residual is
+  still 12.4. The effects are real and precisely estimated; the page must not imply they explain
+  games.
+
+The season trend is one series, so it carries no legend and one hue, and every column holds a
+`title` — a reader gets any season's figure without the page shipping a line of JavaScript.
+
 ### `/referees` — foul style
 
 Returned 2026-07-31 asking a different question. The page was stubbed on 2026-07-30 because its
@@ -370,7 +398,8 @@ alone. It is style, not bias, and the copy says so.
    from `DIRECT_NAV_ITEMS` (`src/lib/primary-navigation.ts`) — `GAMES → /`,
    `SEASON REPORT → /season`, `SCHEDULE EDGE → /schedule`, `MODEL RESULTS → /analysis`,
    `PLAYOFF REST → /playoffs`, `PLAYER SHOOTING → /shooting` — followed by the `OTHER`
-   menu holding `SHOT VALUE → /shot-quality` and `REFEREE EFFECT → /referees`. Right,
+   menu holding `SHOT VALUE → /shot-quality`, `AVAILABILITY COST → /availability` and
+   `REFEREE EFFECT → /referees`. Right,
    `ml-auto` and `aria-label="Reference"`: `ABOUT → /about` and
    `BEHIND THE DATA → /behind-the-data`. Two landmarks rather than one so the reference links
    never inflate the asserted six-link count, and so screen readers announce them as what they
