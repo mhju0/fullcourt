@@ -45,7 +45,6 @@ while touching branding.
 - **All schema changes are manual SQL applied by the human** in the Supabase SQL editor. Use the
   `fullcourt-migration` skill.
 - **Python:** `logging`, not `print()`. `httpx`, not `requests`. No Alembic.
-- **No secrets in code or logs.**
 
 `src/lib/fatigue.ts` holds **ratified coefficients**. Never change a constant or a scoring term
 without escalating: those numbers were hand-set and ratified before the backtest ran, so tuning
@@ -85,12 +84,13 @@ questions of this shape — never a database recompute.
 
 - This environment has masked numeric digits in Bash stdout before. **Never trust grep/stdout for
   a number that matters.** Write it to a file and re-read it with the Read tool.
-- Verify before prescribing: check whether a workflow trigger already exists before adding one,
-  whether a component is actually unused before removing it, and the real deployed URL before
-  baking it into a file.
 
 ## Dev environment
 
+- **Verification commands.** `pnpm test:run` (Vitest), `pnpm typecheck`
+  (`tsc --noEmit --incremental false`), `pnpm lint` (ESLint), `pnpm build` (Next). Those four are
+  the commit gate. E2E is `pnpm test:e2e` and is deliberately not part of it — see the Playwright
+  note below.
 - **pnpm is the package manager.** `pnpm-workspace.yaml` exists, so the repo root is a workspace
   root: adding a root dependency needs `pnpm add -w <pkg>`, or pnpm refuses.
 - **Always run pipeline scripts from the project root.** `daily_update.py` and the backfills
