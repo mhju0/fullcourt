@@ -85,7 +85,6 @@ questions of this shape — never a database recompute.
 
 - This environment has masked numeric digits in Bash stdout before. **Never trust grep/stdout for
   a number that matters.** Write it to a file and re-read it with the Read tool.
-- Tag conclusions `[Verified file:line]` / `[Inferred]` / `[Unknown]`. No untagged claims.
 - Verify before prescribing: check whether a workflow trigger already exists before adding one,
   whether a component is actually unused before removing it, and the real deployed URL before
   baking it into a file.
