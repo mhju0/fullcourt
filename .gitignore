@@ -68,7 +68,11 @@ ml/shot_value/*.pkl
 # machine-specific context. Kept on disk, out of the published index.
 AGENTS.md
 /.agents/
-/.claude/
+/.claude/*
+# Exception: the shared permission guardrails. `settings.json` carries the `deny` rules that
+# enforce the CLAUDE.md hard bans, so it is a team contract rather than machine-specific
+# context. Everything else under `.claude/` — skills, agents, settings.local.json — stays local.
+!/.claude/settings.json
 /.codex/
 /docs/agents/
 .tokensave/
