@@ -185,16 +185,20 @@ losing road calls, which makes "only claim an edge where one exists" hollow.
 
 ## What this leaves on the table, for a human decision
 
-Not acted on here. Each changes a ratified constant, which is Michael's call.
+Each changes a ratified constant, which is Michael's call. Written before the amendment above,
+and left in the words the fit produced them in — that is the record. **1 and 3 were ratified the
+same day and are shipped; only 2 is still open.**
 
-1. **Altitude is under-weighted and back-to-backs are diffuse.** These are the two real effects,
-   worth ~5pp each. Altitude currently enters as a ×1.15 multiplier on a base that is usually
-   small, so it moves a typical score by ~0.3 points; the fit says it deserves to be one of the
-   two largest terms.
+1. ~~**Altitude is under-weighted and back-to-backs are diffuse.**~~ *Shipped — see the
+   amendment.* These are the two real effects, worth ~5pp each. Altitude currently enters as a
+   ×1.15 multiplier on a base that is usually small, so it moves a typical score by ~0.3 points;
+   the fit says it deserves to be one of the two largest terms.
 2. **The score is dominated by a component that predicts nothing.** Travel is 45% of the mean
-   score and carries no signal.
-3. **The away-pick hole is live in production.** Whatever is done about the model, the shipped
-   prediction rule is wrong on 54% of its 4,872 away calls.
+   score and carries no signal. **Still open.** Removing it is a larger claim than it sounds,
+   because it is most of what the published number *is*; the term is physically real and
+   correctly computed, which is a different claim from being useful.
+3. ~~**The away-pick hole is live in production.**~~ *Shipped — see the amendment.* Whatever is
+   done about the model, the shipped prediction rule is wrong on 54% of its 4,872 away calls.
 
 ## The harness is kept
 
