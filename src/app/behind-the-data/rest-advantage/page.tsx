@@ -61,6 +61,20 @@ restEdge   = awayScore − homeScore     (positive ⇒ the home side is fresher)
           A difference under 0.5 is treated as no call. That threshold is why the model declines
           a fifth of all games rather than predicting every one of them.
         </Note>
+        <Prose>
+          There is a <strong>second</strong> reason to decline, added on 2026-08-02: the model
+          only makes a call when the fresher team is also the home team. Backing a rested
+          visitor was measured at 44.4% across 7,224 games, and no threshold rescues it — the
+          rate is still under a coin flip at a rest edge of 3, and only reaches even at an edge
+          of 5, which the schedule produces a few dozen times a decade.
+        </Prose>
+        <Note>
+          Rest alone never outweighs home court at any magnitude the NBA schedule generates.
+          That is a finding rather than a defect, and the honest response is to decline the call
+          instead of publishing one already measured as a loser. Adding home court to the rule
+          and letting it decide was tested too: it covers 96.5% of games at 58.4% and still makes
+          776 losing road calls, which is a worse answer wearing better clothes.
+        </Note>
       </Section>
 
       <Section label="THE TERMS" descriptor="WITH THE CONSTANTS THE CODE USES">

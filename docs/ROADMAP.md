@@ -47,7 +47,17 @@ added alongside it.
 ## Shipped modules
 
 - **Rest Advantage** — the flagship regular-season fatigue model, historical backtest, game
-  explorer, and upcoming-game edge view.
+  explorer, and upcoming-game edge view. **The model no longer calls a game when the fresher
+  team is the visitor** (2026-08-02): backing a rested road team measured 44.4% across 7,224
+  games and no threshold rescues it, so rest alone never outweighs home court. The declined half
+  is published on `/analysis` as the evidence rather than dropped. Same day, `ALTITUDE_MULTIPLIER`
+  rose 1.15 → 1.29, the first ratified coefficient changed on measurement. See
+  [ADR 0006](adr/0006-fatigue-weights-were-fitted-and-the-model-was-not-changed.md).
+- **Availability Cost** — what a missing rotation player costs, in the same points of margin as
+  the schedule terms: losing a team's best player is worth 2.86, against home court's 2.82.
+  Retrospective by construction, so no live lineup feed and no database table — a generated
+  facts artifact pinned by a test, the same shape as Playoff Rest. Lives at `/availability`
+  behind the OTHER menu.
 - **Playoff Predictor** — complete ingest, series feature pipeline, walk-forward evaluation,
   persisted predictions, API, and `/playoffs` UI. The model improves calibration rather than
   distinguishably improving accuracy over the majority-home-court baseline; **as of 2026-07-30 the

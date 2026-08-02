@@ -27,6 +27,17 @@ const NEUTRAL_VENUES: Record<string, NeutralVenue> = {
   Berlin: { latitude: 52.5075, longitude: 13.4432, altitude: false }, // Uber Arena
 };
 
+/**
+ * Neutral venues that sit at altitude, derived from the table above rather than restated.
+ *
+ * A maintenance job that needs to find every game where a team met thin air has to know these
+ * as well as `teams.altitude_flag` — Mexico City is above Denver and belongs to no franchise,
+ * so a query written only against the flag misses it.
+ */
+export const ALTITUDE_NEUTRAL_CITIES: readonly string[] = Object.entries(NEUTRAL_VENUES)
+  .filter(([, venue]) => venue.altitude)
+  .map(([city]) => city);
+
 export function neutralVenueCoordinates(
   city: string | null | undefined
 ): NeutralVenue | null {

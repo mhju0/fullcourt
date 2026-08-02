@@ -284,7 +284,8 @@ per-shot" framing.
 
 ### `scripts/backfill_predictions.ts` — resolved predictions
 - For every **final, regular** game with both fatigue rows and no existing prediction:
-  predicts the lower-fatigue team, skips `|RA| < 0.5`, sets `actual_winner_id` from the
+  predicts the lower-fatigue team **when that team is also the home side**, skips `|RA| < 0.5`
+  and skips a rested visitor entirely (`isCalledSide`, ADR 0006), sets `actual_winner_id` from the
   final score, and stamps `created_at` with the game date. Prints overall backfill accuracy.
 
 ### `scripts/audit_data.ts` — coverage report

@@ -192,7 +192,7 @@ row. Rebuild anytime with `pnpm exec tsx scripts/backfill_fatigue.ts`.
 |--------|------|------|---------|-------|
 | `id` | serial | no | auto | **PK** |
 | `game_id` (`gameId`) | integer | no | — | **FK → games.id** |
-| `predicted_advantage_team_id` (`predictedAdvantageTeamId`) | integer | no | — | **FK → teams.id**; the more-rested (lower-fatigue) team |
+| `predicted_advantage_team_id` (`predictedAdvantageTeamId`) | integer | no | — | **FK → teams.id**; the more-rested (lower-fatigue) team. Since 2026-08-02 always the home team — a rested visitor is not called at all, see ADR 0006 |
 | `rest_advantage_differential` (`restAdvantageDifferential`) | decimal | no | — | `awayFatigue − homeFatigue` at prediction time |
 | `actual_winner_id` (`actualWinnerId`) | integer | yes | — | **FK → teams.id**; null = open/ungraded |
 | `created_at` (`createdAt`) | timestamp | no | `now()` | backfill sets it to the game date |
