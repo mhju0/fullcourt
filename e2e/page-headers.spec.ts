@@ -21,12 +21,14 @@ const ROUTES = [
   "/shooting",
   "/shot-quality",
   "/referees",
+  "/availability",
   "/behind-the-data",
   "/behind-the-data/rest-advantage",
   "/behind-the-data/schedule-edge",
   "/behind-the-data/playoff-predictions",
   "/behind-the-data/player-shooting",
   "/behind-the-data/shot-value",
+  "/behind-the-data/availability",
   "/behind-the-data/data-and-limits",
 ];
 

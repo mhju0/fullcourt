@@ -36,7 +36,7 @@ export default function AvailabilityMethodPage() {
     <BehindTheDataShell
       eyebrow="BEHIND THE DATA · AVAILABILITY COST"
       title="Availability cost"
-      description="What a missing rotation player costs, in the same points of final margin as the schedule effects. Measured after the fact, from who actually took the floor — this is not a forecast, and it is not an injury report."
+      description="What a missing rotation player costs, in the same points of margin as the schedule effects. Measured after the fact — not a forecast, and not an injury report."
     >
       <Section label="WHAT COUNTS AS MISSING" descriptor="THE ROTATION, NOT THE ROSTER">
         <Prose>

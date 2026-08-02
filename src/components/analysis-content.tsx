@@ -717,7 +717,7 @@ export function AnalysisContent() {
       <PageHeader
         eyebrow="HISTORICAL BACKTEST"
         title="Rest Advantage Analysis"
-        description="Among completed regular-season games with fatigue data on both sides, did the more-rested team win? The model only calls a game when the rested team is also at home — rest alone has never been enough to outweigh home court. Charts plot the gap against a coin flip, so zero is a 50% win rate."
+        description="Among completed regular-season games, did the more-rested team win? Called only when that team is also at home. Charts plot the gap against a coin flip, so zero is a 50% win rate."
       />
       <MethodLink surfaceHref="/analysis" />
 
