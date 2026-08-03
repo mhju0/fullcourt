@@ -334,7 +334,7 @@ transposing them typechecked cleanly and silently inverted both the travel and t
 | `FRESHNESS_PLATEAU_DAYS` | `3` | rest-days plateau constant |
 | `OVERTIME_SINGLE_BONUS` | `0.5` | prior game = 1 OT |
 | `OVERTIME_MULTI_BONUS` | `1.0` | prior game ≥ 2 OT |
-| `SCHEDULE_STRESS_MAX_MULT` | `1.42` | cap on the density multiplier |
+| `SCHEDULE_STRESS_MAX_MULT` | `1.42` | nominal cap on the density multiplier — **never binds**: the five windows are each clamped to `1.15`, so stress points ≤ `5.75` and `5.75 × 0.058 = 0.3335 < 0.42`. Realised maximum is `1.307` (verified 2026-08-03) |
 | `SCHEDULE_STRESS_CURVE` | `0.058` | density slope per stress point |
 | `ROAD_STREAK_SOFT` | `2` | free consecutive away games before road load starts |
 | `ROAD_STREAK_PER_GAME` | `0.34` | road load per away game beyond the soft cap |

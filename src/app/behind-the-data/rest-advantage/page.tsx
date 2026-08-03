@@ -171,8 +171,13 @@ direction    = ${K.eastwardMultiplier} eastward, ${K.westwardMultiplier} westwar
               altitude (Denver, Utah, and Mexico City at 7,350 ft) multiplies by{" "}
               {K.altitudeMultiplier}, and the following night at normal elevation by{" "}
               {K.altitudeCarryover}. Schedule density compares games played across five windows
-              against a normal pace, capped at {K.densityMaxMultiplier}. Extended rest earns a
-              discount that begins at {K.freshnessPlateauDays} days and approaches{" "}
+              {/* No cap is quoted here on purpose. SCHEDULE_STRESS_MAX_MULT is 1.42, but each
+                  of the five windows is clamped before the curve is applied, so the multiplier
+                  cannot structurally exceed ~1.33 and tops out at 1.307 on real schedules.
+                  Printing 1.42 told readers density could multiply fatigue by half again as
+                  much as it can. Verified 2026-08-03. */}{" "}
+              against a normal pace. Extended rest earns a discount that begins at{" "}
+              {K.freshnessPlateauDays} days and approaches{" "}
               {/* A true minus sign, and one decimal, so these read as the quantities the
                   model uses rather than as bare integers. */}
               {signedNumber(K.freshnessMaxBonus, 1)}. A prior game that went to
