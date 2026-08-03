@@ -45,6 +45,15 @@ Routes that touch the DB declare `export const runtime = "nodejs"` and (where ap
 `dynamic = "force-dynamic"` so they aren't prerendered at build (no `DATABASE_URL` needed
 during `next build`) and don't run on Edge (postgres-js needs Node).
 
+**Three product surfaces deliberately have no route in this table**, because nothing about them
+is per-request:
+
+| Surface | Served from | Why not a route |
+|---|---|---|
+| `/shooting` | `public/data/player-rest.json` (committed static asset) | Its export changes once a season, so a Postgres round trip could only ever return the same numbers. `/season`'s zero-rest section reads the same file. |
+| `/availability` | `src/lib/availability-facts.ts` (constants, pinned by a test) | A finished measurement, not a query — it moves only when `ml/availability_facts.py` is re-run. The page is a server component with no fetch and no loading state. |
+| `/referees` | — | A placeholder since 2026-07-30; the finding was pulled as noise. The ingest and its dataset tests remain so it can return without a re-ingest. |
+
 > **Playoff Predictor:** `GET /api/playoffs` is complete and serving live predictions —
 > `playoff_series_predictions` holds **2,098 rows** — two `model_version`s × (599 `full_insample`
 > + 450 `walk_forward_oos`). `logistic_grind_v2` superseded `logistic_unreg_v1` on 2026-07-31 and

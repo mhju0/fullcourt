@@ -292,6 +292,21 @@ per-shot" framing.
 - Counts final-regular games missing home/away/either fatigue rows, scheduled games missing
   fatigue, total rows, and the `computed_at` range. Suggests `backfill_fatigue.ts --force`.
 
+### `scripts/export_fatigue_features.ts` — the research harness's entry point
+- Exports every scored game's fatigue **components** (decay load at each candidate rate in
+  `DECAY_RATE_GRID`, travel, road, and each multiplier) to `ml/data/`, rather than the assembled
+  score. That is what lets a Python fit search terms and shape parameters without re-deriving the
+  model in another language; the exporter reproduces all stored scores exactly.
+- **Answer model questions with this, never with a database recompute.** It is read-only and
+  writes nothing back. Downstream: `ml/prepare_fatigue_dataset.py` builds the model table,
+  `ml/fit_fatigue_weights.py` fits weights out-of-sample, `ml/ablate_fatigue_terms.py` measures
+  what each term contributes, and `ml/ceiling_test.py` asks how much signal the schedule block
+  carries at all.
+- The result of running it is written down in
+  [ADR 0006](adr/0006-fatigue-weights-were-fitted-and-the-model-was-not-changed.md): fitted
+  weights did **not** beat the ratified ones by enough to matter. Read that before proposing a
+  refit or a new factor — it records what was already tried and measured.
+
 ### Shared loaders
 - `src/lib/fatigue-recent-games.ts::fetchRecentGamesForTeam` — final games in
   `[date − FATIGUE_RECENT_LOOKBACK_DAYS, date)` for a team, oldest→newest, mapped to
@@ -526,6 +541,49 @@ player actually played, so his first bubble game sits roughly 141 days after his
 the suspension. Unfiltered, that single game enters the 3+ days arm for every player who
 appeared in it — the cleanest-looking rested sample in the file, produced by a global pause
 rather than by rest.
+
+## Availability Cost pipeline — what a missing player costs
+
+A **manual, offline measurement**, not a pipeline in the scheduled sense: nothing here runs on a
+cron, writes to Postgres, or is read at request time. It answers a question in the same unit as
+the schedule terms — points of final margin — so the two can be compared in one sentence.
+
+Inputs are all under the gitignored `ml/data/`: the hoopR player box scores fetched for
+[Shooting by Rest](#shooting-by-rest-pipeline--the-shooting-player-database) (`ml/data/shooting/`),
+plus `fatigue_features.csv` and `fatigue_model_table.csv` from the fatigue export.
+
+**Absence is inferred from prior participation, never from tonight's sheet.** For each team-game
+the expected rotation is everyone who averaged at least 15.0 minutes across that team's previous
+5 games; a member recording no minutes tonight is missing, weighted by the minutes he had been
+playing. A long-term-injured player may never appear on an injury report at all, so the rotation
+the team has actually been using is the only reliable signal. That inference is available only
+*after* the game — which is why this measures cost and forecasts nothing.
+
+### `ml/availability_cost.py` — the measurement
+Fixed-effects OLS on final margin. Produces `ml/data/availability_report.txt` and
+`ml/data/availability_by_game.csv`. Runs two specifications: the headline effects each in their
+own model (the absence measures are collinear and split unstably when entered together), and the
+defensive one that puts absence and the schedule terms in a single regression.
+
+### `ml/availability_quality.py` — coverage and sanity
+Writes `ml/data/availability_quality_report.txt`: rotation-size distribution, per-season coverage,
+and the checks that would catch a join that silently lost players.
+
+### `ml/availability_facts.py` — the published artifact
+Re-runs only the parts that get published, at one specification, and writes the **committed**
+`ml/availability_facts.json`. `src/lib/availability-facts.ts` hand-mirrors that file and
+`src/lib/__tests__/availability-facts.test.ts` pins the two together, so a figure edited in a
+component and nowhere else fails the suite.
+
+The headline: losing a team's best player is worth **2.863** points (t 17.9) against home court's
+**2.824** (t 42.3) — the finding is that they land within 0.04 of each other. The defensive
+result is that every schedule term moves by under 8% once absence is controlled, so load
+management explains almost none of what a back-to-back costs. Honest framing is published
+alongside: a 13.64-point margin standard deviation against a 12.436 residual means everything
+measured here, team strength included, explains a small share of a basketball game.
+
+Re-run only when the underlying box scores change — after a season ends — then regenerate the
+JSON and re-sync the TypeScript constants. The suite tells you if you forget the second step.
 
 ## Cron cadence
 

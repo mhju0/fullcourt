@@ -134,6 +134,34 @@ because those games are slightly harder than the model's 61.17% core, which is w
 reach looks like. Deleting a term because its removal raises the headline would trade winning
 predictions for a prettier percentage.
 
+## 2026-08-02 → 03 — the search for a better model, and what it returned
+
+The fatigue model was pushed hard for a further gain and **did not yield one**. Weights were
+fitted out-of-sample on 16 blind seasons, alternative functional forms were searched broadly, and
+a set of new candidate variables was tested. Two changes survived and shipped — the altitude
+multiplier and the rested-visitor rule above. Nothing else did.
+
+That is the finding, and it is written down so the question is not reopened from scratch:
+
+- **Fitted weights do not beat the ratified ones** by enough to matter, and most terms carry no
+  independent signal. [ADR 0006](adr/0006-fatigue-weights-were-fitted-and-the-model-was-not-changed.md)
+  is the record; use the harness (`scripts/export_fatigue_features.ts` → `ml/fit_fatigue_weights.py`)
+  for questions of this shape, never a database recompute.
+- **Candidate variables that returned nothing:** signed jet lag, continuous schedule density, a
+  body-clock term controlled for franchise identity, a 30-day games window beyond the 7-day one,
+  and baselining a team against its own norm rather than an absolute scale. Franchise identity is
+  the confound that killed three of the five.
+- **The ceiling is close.** The schedule feature block carries roughly an eighth of the mutual
+  information team strength does, and the rest advantage prices at about **0.35 points of margin
+  per point of RA** against home court's ~4.7 in the same specification. The published RA ≥ 0.5
+  call is therefore worth around 0.18 points on a 13.9-point margin spread — real, precisely
+  estimated, and small.
+
+Two documentation defects were found in the same pass and both are fixed: the site published a
+schedule-density cap of `1.42` that the model **can never reach** (each of the five windows is
+clamped before the curve applies, so the realised maximum is `1.307`), and `ml/data/`'s model
+table had gone stale against the altitude change and was regenerated.
+
 ## 2026-07-29 → 30 — surfaces
 
 - **Referee Effect** shipped 2026-07-29 at `/referees`, then was **reduced to a placeholder on
@@ -141,9 +169,10 @@ predictions for a prettier percentage.
   inside noise, and a table of muted cells invites readers to find names in it anyway. The
   ingest (`scripts/fetch_officials.ts`) and its dataset test are deliberately left in place so
   the page can return without a re-ingest.
-- **Behind the Data** added 2026-07-30: a seven-route reference section documenting every
-  model's terms, constants and limits, reached from the nav row's `Reference` landmark and from
-  a `HOW THIS IS CALCULATED` link on each product page.
+- **Behind the Data** added 2026-07-30: a reference section documenting every model's terms,
+  constants and limits, reached from the nav row's `Reference` landmark and from a
+  `HOW THIS IS CALCULATED` link on each product page. It grows with the product — eight routes
+  as of 2026-08-03, an index plus one per model, the newest being `/behind-the-data/availability`.
 - **`/about` rebuilt** 2026-07-30 as seven full-viewport sections. Its evidence figures are now
   read from the live backtest rather than hardcoded — all three had gone stale, one of them
   citing a metric that had been retired.

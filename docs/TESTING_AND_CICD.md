@@ -33,7 +33,7 @@ Library — neither is in `package.json`, and nothing renders a component. Every
 node-environment unit or route test; the two that import from a component module import
 only exported pure functions.
 
-Test files and coverage:
+**38 test files, 468 tests** (`pnpm test:run`, verified 2026-08-03). Test files and coverage:
 
 | File | Covers |
 |------|--------|
@@ -64,6 +64,17 @@ Test files and coverage:
 | `src/app/api/__tests__/schedule-disparity.test.ts` | `GET /api/schedule-disparity`: unknown and malformed seasons rejected **without querying**, the `{ data, error }` envelope, and a 500 carrying a public message when the query throws. Also pins the two-season-list behaviour — an upcoming season with no data yet is accepted, a season beyond the browsable list is not, and the no-parameter default resolves to the newest season *with data* rather than the empty upcoming one. Mocks `@/lib/db/queries`. |
 | `src/lib/__tests__/signed-number.test.ts` | `signedNumber`: a plus on favorable values, a typographic U+2212 rather than the ASCII hyphen — pinning the two regressions the consolidation fixed, since the /playoffs series features and the model-coefficient table both rendered `toFixed`'s own sign — an exact zero left bare in both the as-is and fixed-decimal forms, decimal padding kept at zero (`season-report-content` strips `.0` off the result), and the documented edge that a value which only *rounds* to zero still carries its sign. Consolidated from the two formatters that had tests; nine others had none. |
 | `src/lib/__tests__/publishable-games.test.ts` | Reads `src/lib/db/queries.ts` and asserts every publishing reader routes through `publishableGames`, that the two density helpers deliberately do not, that each exception is named in the helper's docblock, and that the two predicates appear exactly once in the file — a second hand-written copy is how four readers lost the regime filter. |
+| `src/lib/__tests__/season-regime.test.ts` | `ABNORMAL_STRETCHES`: the Orlando bubble excluded, 2019-20's pre-suspension games kept, seasons whose calendar does not run October–April kept, a no-op for unnamed seasons, and every stretch carrying a stated reason so the list stays auditable. Written for the regression where an Oct 1–Apr 30 date rule reached the right answer for the bubble by coincidence and silently dropped 135 real 2020-21 games and 44 from 1998-99. |
+| `src/lib/__tests__/season-report.test.ts` | `buildSeasonReport` and `winRateBand`: the 95% Wald half-width (null rather than NaN on zero games), the sign rule (lower fatigue is the rested side, a rested loss counts as a loss, **and a game is not counted at all when the rested side is the visitor** — the 2026-08-02 rule), what is excluded (the neutral band, missing score or fatigue side, live games), the RA ≥ 2 tier split, `MIN_GAMES_FOR_INFERENCE` gating, and an empty season rendering without throwing. |
+| `src/lib/__tests__/availability-facts.test.ts` | Pins `src/lib/availability-facts.ts` against the generated `ml/availability_facts.json`, block by block, so a figure edited in a component and nowhere else fails. Also guards the claims the copy rests on: every published effect clears \|t\| ≥ 2, best-player-out and home court stay within 0.5 points of each other (the headline sentence), no schedule term shifts more than 15% once absence is controlled (the load-management defence), the season trend runs rare → common by more than 3×, and the residual stays above 85% of the raw margin spread so the page cannot imply it explains games. |
+| `src/lib/__tests__/playoff-rest-facts.test.ts` | The same arrangement for `playoff-rest-facts.ts` against `ml/playoff_rest_report.py`'s output: equal-rest counts, the grind matrix, the exogenous block, entry-rest buckets, best-of-five context, the round split, the paired record, model coefficients, the pooled win/tie/loss record and accuracy, and the calibration table — plus that each `improvementPct` really is the relative reduction against its baseline. |
+| `src/lib/__tests__/playoff-prior-games.test.ts` | `priorRoundGamesLabel` and `grindLineLabels`: naming a sweep, a best-of-five sweep, an early close and going the distance in either format; returning null in Round 1 where no prior round exists; and reading a pre-2002-03 round-2 card under the **prior** round's best-of-five format rather than today's. |
+| `src/lib/__tests__/playoff-seasons.test.ts` | `playoffModelSeasons` withholds exactly the excluded seasons and no others, names only seasons that exist, keeps 2019-20 available to surfaces that are not the playoff model, and **agrees with the Python builder that owns the exclusion** — the check that stops the two lists drifting. |
+| `src/lib/__tests__/player-rest.test.ts` | The `/shooting` payload helpers: `seasonLabel` formatting, `searchKey` stripping diacritics so accented names stay findable, `restEffect` as rested minus no-rest (null when either arm is missing), `effectSe` shrinking as either arm grows, and `careerTotals` equalling the sum of the seasons printed beneath it while weighting eFG% by attempts rather than averaging season rates. |
+| `src/lib/__tests__/team-era-coordinates.test.ts` | `eraCoordinates` historical geography: Sonics-era OKC games in Seattle through 2007-08, Grizzlies in Vancouver through 2000-01, the Katrina-era Hornets in Oklahoma City for 2005-07 only, and pass-through for franchises that never moved. This is what stops a relocated team's travel being measured from the wrong city. |
+| `src/lib/__tests__/referee-whistle.test.ts` | Guards the regenerated `src/data/referee-whistle.json`: every collected game counted exactly once in the league block, each game assigned to about three officials, each official's home-FTA z computed from the league sd at their own sample size, and the rates/orderings the page relies on. A regeneration that broke the z arithmetic would otherwise silently bold noise. |
+| `src/lib/__tests__/referee-foul-style.test.ts` | Guards the shipped `referee-foul-style.json` aggregate rather than the arithmetic behind it: every column the page renders is present, deviations are zero-centred once weighted by games, the offensive-foul duplicate is excluded from fouls per game, crew-chief games are counted only in seasons where the role was validated, league shares sum to less than a whole game's fouls, and the helpers mark a deviation notable only at two standard errors and sort numerically with a total tie-break. |
+| `src/lib/__tests__/win-total-benchmark.test.ts` | Guards the regenerated `src/data/win-total-benchmark.json` against the invariants the Schedule Edge market-check states in prose: buckets partition the decided team-seasons exactly, over-counts stay within their bucket sizes, the correlation is a real `r` computed over every team-season, and the file covers the archive's full published range. |
 
 API route tests `vi.mock("@/lib/db/queries")`, so they exercise validation + response
 shaping without a real database. They call the route's exported `GET` with a real
@@ -88,16 +99,18 @@ the time, 16.8s serially against 26s *and* readiness-gate failures on `/schedule
 worker count — parallelism bought negative time here. (`fullyParallel` is left on; with one
 worker it only affects ordering.) Existing specs receive a completed onboarding storage state so
 the first-visit dialog cannot block their legacy interactions; `e2e/onboarding.spec.ts` overrides
-that state with an empty browser. Specs (13): `e2e/home.spec.ts`, `e2e/about.spec.ts`,
-`e2e/analysis.spec.ts`, `e2e/behind-the-data.spec.ts`, `e2e/navigation.spec.ts`,
-`e2e/onboarding.spec.ts`, `e2e/page-headers.spec.ts`, `e2e/playoffs.spec.ts`,
-`e2e/referees.spec.ts`, `e2e/schedule-disparity.spec.ts`, `e2e/season.spec.ts`,
-`e2e/shot-quality.spec.ts`, `e2e/shooting.spec.ts` — **95 tests**.
+that state with an empty browser. Specs (14): `e2e/home.spec.ts`, `e2e/about.spec.ts`,
+`e2e/analysis.spec.ts`, `e2e/availability.spec.ts`, `e2e/behind-the-data.spec.ts`,
+`e2e/navigation.spec.ts`, `e2e/onboarding.spec.ts`, `e2e/page-headers.spec.ts`,
+`e2e/playoffs.spec.ts`, `e2e/referees.spec.ts`, `e2e/schedule-disparity.spec.ts`,
+`e2e/season.spec.ts`, `e2e/shot-quality.spec.ts`, `e2e/shooting.spec.ts` — **102 tests**
+(`npx playwright test --list`, verified 2026-08-03; several specs generate their cases in a loop,
+so counting `test(` calls in the source undercounts).
 
 `e2e/behind-the-data.spec.ts` covers the reference section: that it is reachable from the
 `Reference` landmark and *not* from `Main navigation` or the `OTHER` menu, that every section is
 its own addressable route, and that each product page's `HOW THIS IS CALCULATED` link lands on
-the right one. It also carries a **rendered prose-spacing sweep** over all seven pages — a JSX
+the right one. It also carries a **rendered prose-spacing sweep** over all eight pages — a JSX
 text node that wraps to the next line silently loses its leading space ("30days",
 "backtest.The"), which review cannot catch because the source looks correct. Formula blocks are
 excluded, since camelCase inside them is code.
@@ -147,9 +160,11 @@ back on expand.
 > - **`analysis.spec.ts`** — terminal markup: heading "Rest Advantage Analysis" plus the
 >   section dividers "WIN RATE BY RA THRESHOLD", "HOME TEAM MORE RESTED", and
 >   "WIN RATE BY SEASON" (no `text-7xl` hero).
-> - **`onboarding.spec.ts`** — a fresh browser sees all five page explanations; closing the
->   guide persists through reload, the `GUIDE` footer control reopens it, and Escape restores
->   focus to that control.
+> - **`onboarding.spec.ts`** — a fresh browser sees the first-visit guide, which enumerates
+>   `PRIMARY_NAV_ITEMS` (the six direct tabs plus the three behind `OTHER`); the spec spot-checks
+>   five of those rows by accessible name rather than pinning a count, so adding a surface does
+>   not fail it. Closing the guide persists through reload, the `GUIDE` footer control reopens it,
+>   and Escape restores focus to that control.
 
 ## CI/CD
 

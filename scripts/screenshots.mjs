@@ -22,6 +22,11 @@ const PAGES = [
   { file: "playoffs", path: "/playoffs", height: 1965 },
   { file: "shooting", path: "/shooting", height: 1400 },
   { file: "shot-quality", path: "/shot-quality", height: 1430 },
+  // Stops after "THE SCHEDULE STILL COUNTS" (measured bottom 1849), so the shot carries the
+  // headline, the frequency, the load-management trend and the defensive result. The page
+  // runs 2,266px; the section below this one is the "what this is not" disclaimer, which the
+  // README states in prose anyway.
+  { file: "availability", path: "/availability", height: 1880 },
 ];
 
 const browser = await chromium.launch();
@@ -59,11 +64,19 @@ for (const { file, path: route, height } of PAGES) {
   // The footer prints the render clock, so an unfrozen capture produces a fresh
   // ~600KB binary diff on every run even when nothing changed. Blanking the value
   // (the SYSTEM STATUS link beside it survives) makes repeat runs no-ops.
+  //
+  // Every text node, not just the first: layout.tsx renders `RENDERED: {renderedAt} ·{" "}`,
+  // which React emits as separate nodes — "RENDERED: ", the timestamp, then " ·". Replacing
+  // only `firstChild` left the live timestamp on the page, so /shot-quality (the one capture
+  // whose fixed height reaches the footer) shipped a fresh ~600KB diff every single day.
   await page.evaluate(() => {
     for (const span of document.querySelectorAll("footer span")) {
-      const first = span.firstChild;
-      if (first?.nodeType === Node.TEXT_NODE && first.textContent?.includes("RENDERED:")) {
-        first.textContent = "RENDERED: — · ";
+      if (!span.textContent?.includes("RENDERED:")) continue;
+      let isFirst = true;
+      for (const node of [...span.childNodes]) {
+        if (node.nodeType !== Node.TEXT_NODE) continue;
+        node.textContent = isFirst ? "RENDERED: — · " : "";
+        isFirst = false;
       }
     }
   });

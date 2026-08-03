@@ -17,7 +17,13 @@
 
 FullCourt quantifies how **travel, rest, and schedule density** shape NBA outcomes. Its flagship model assigns every team a multi-factor **fatigue score**, derives a **rest advantage** for each matchup, and backtests it against every NBA season since 1985-86.
 
-> **The finding:** the more-rested team wins the majority of games — and the edge widens once the rest-advantage gap reaches **5+ points**. These rates are computed live from the database and surfaced on the site (currently **~55% overall**, rising to **~63%** at a 5+ gap).
+> **The finding:** where the model makes a call, the more-rested team wins the majority of games —
+> and the edge widens once the rest-advantage gap reaches **5+ points**. The call is deliberately
+> one-sided: since 2026-08-02 the model declines a game when the fresher team is the *visitor*,
+> because backing a rested road team measured 44.4% and no threshold rescues it. Every rate is
+> computed live from the database rather than typed here; as captured in the screenshots below on
+> 2026-08-03, that ran **61.2%** overall and **65.3%** at a 5+ gap, with the declined half
+> published beside it at 42.4%.
 
 🔗 **Live demo:** https://fullcourt-nba.vercel.app &nbsp;·&nbsp; **Code:** https://github.com/mhju0/fullcourt
 
@@ -67,11 +73,18 @@ zone-average baseline it is measured against.
 
 <img src="docs/screenshots/shot-quality.png" alt="Expected Shot Value for 2025-26, covering 1,808 cells and 219,121 shot attempts. A colour scale runs from 26% low value in tan to 56% high value in blue. Two half-court maps sit side by side: BASELINE, the zone average, whose colour changes in blocky steps at zone boundaries, and GBM, the location model, whose colour varies smoothly. Both show a blue arc along the three-point line and blue at the rim, with the long mid-range in tan — most visibly so on the GBM court. Marker size encodes shot attempts from that cell." width="900" />
 
+**Availability Cost — every effect this site measures, in one unit.** Losing your best player
+against playing at home, a back-to-back, thin air and an overtime, all in points of final margin
+so they can be read against each other directly. The page also answers the standing objection to
+the whole premise — that the schedule effects are really absences in disguise.
+
+<img src="docs/screenshots/availability.png" alt="Availability Cost, headed What a missing player is worth. WHAT AN ABSENCE COSTS leads with 2.86 points — what a team loses when its best player sits — over five bars in points of final margin: best player out 2.86 highlighted in blue, playing at home 2.82, on a back-to-back 1.76, visiting altitude 1.36, and off an overtime 0.54, measured across 35,458 games with both teams' records held equal. HOW OFTEN gives three figures: 17.1% of games have one side missing its best player, 44.5% of team-games are missing nobody from the rotation, and 8.6 players in a typical rotation. THE LOAD-MANAGEMENT ERA plots one bar per season from 1996-97 at 6.0% to a highlighted 2025-26 at 19.5%, noting the climb dips in 2023-24, the season the league first required 65 games for awards eligibility. THE SCHEDULE STILL COUNTS holds who actually played fixed and re-measures each schedule term: back-to-back 1.759 to 1.641 (6.7% shift), visiting altitude 1.358 to 1.282 (5.6%), off an overtime 0.544 to 0.501 (7.9%), and schedule density 0.275 to 0.265 (3.8%) — every one under 8%, so load management does not explain the schedule away." width="900" />
+
 ---
 
 ## Features
 
-Eight product routes sit behind six direct nav tabs plus an **OTHER** menu, which holds the
+Nine product routes sit behind six direct nav tabs plus an **OTHER** menu, which holds the
 smaller reference surfaces so the bar stays short as they accumulate. Labels are plain nouns
 with no time words — the pattern every mainstream NBA nav uses — while the precise terms
 (`xeFG%`, net rest edge) live in each page's eyebrow, where surrounding context decodes them.
@@ -121,6 +134,16 @@ with no time words — the pattern every mainstream NBA nav uses — while the p
   the page is a lookup rather than a ranking — a season describes what happened, and only the
   career line, shrunk toward the league mean, supports a claim.
 
+- **Availability Cost** (`/availability`, under **OTHER**) — what a missing rotation player costs,
+  measured in the same points of final margin as the schedule terms so the two can be read against
+  each other. Losing a team's best player is worth **2.86 points**, against home court's **2.82** —
+  the finding is that they land within 0.04 of one another. It also answers the standing objection
+  to the whole premise: putting absence and the schedule terms in one regression moves every
+  schedule coefficient by under 8%, so load management explains almost none of what a back-to-back
+  costs. Honest framing: **retrospective by construction**. Who sat is known only because the game
+  was played, so this measures what an absence cost and never forecasts who will be available
+  tonight — and a 13.64-point margin standard deviation against a 12.44 residual says everything
+  here, team strength included, explains a small share of a basketball game.
 - **Referee Effect** (`/referees`, under **OTHER**) — a placeholder since 2026-07-30. The
   per-official whistle numbers came back inside noise, so the finding was pulled rather than
   published; the ingest and its dataset tests remain.
@@ -157,12 +180,15 @@ flowchart TD
 - **Ship:** Vercel auto-deploys from `main`; GitHub Actions runs the daily pipeline.
 
 The diagram above is the flagship rest-advantage flow. Playoff Predictor, Shot Quality, Schedule
-Disparity and Shooting by Rest are separate routes/pages that never touch `fatigue.ts` and are
-never read by the flagship queries; see [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for their
-data flows. Two of them touch the database not at all: Schedule Disparity is read-only — no table,
-no migration, no ingest — and Shooting by Rest is served entirely from a committed static asset
+Disparity, Shooting by Rest and Availability Cost are separate routes/pages that never touch
+`fatigue.ts` and are never read by the flagship queries; see
+[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for their data flows. Three of them touch the
+database not at all: Schedule Disparity is read-only — no table, no migration, no ingest —
+Shooting by Rest is served entirely from a committed static asset
 (`public/data/player-rest.json`) built offline from [hoopR](docs/adr/0002-shooting-source-hoopr.md),
-so it adds nothing to the runtime query path.
+and Availability Cost ships as a generated constants module (`src/lib/availability-facts.ts`)
+pinned by a test against the artifact that produced it. None of the three add anything to the
+runtime query path.
 
 ---
 
@@ -174,7 +200,8 @@ Each team's score combines:
 - **Travel** — log-scaled great-circle miles, with a realistic travel contract: a team only flies home when its *next* game is at home (no phantom round-trips between two road games).
 - **Back-to-backs & altitude** — a one-day-rest multiplier sharpened by the *actual* hours between tips (a 10:30pm game into a 7pm game is not the same as the reverse), plus multipliers for visiting Denver, Utah or Mexico City, and a smaller residual the night after.
 - **Schedule density** — a stress multiplier across five windows (6, 7, 12, 15 and 30 days)
-  measured against a normal-pace anchor, capped at 1.42. The 3-in-4 and 4-in-6 flags are
+  measured against a normal-pace anchor. Each window is clamped before the curve is applied, so
+  the multiplier tops out near 1.31 on real schedules. The 3-in-4 and 4-in-6 flags are
   reported alongside it, not inputs to it.
 - **Road trips & body clock** — added load for long road stretches, plus a circadian charge for playing two or more time zones from home. It is heavier travelling east than west, and it decays as the team re-entrains, at roughly a day per zone crossed.
 - **Freshness & game difficulty** — a rest discount for extended breaks, and prior-game load weighted by how hard the game actually was: overtime adds, a blowout that rested the starters subtracts.
@@ -195,6 +222,20 @@ the time. The published hit rates rise about a point because the new model **abs
 better prediction, and it is worth more to a site whose premise is only claiming an edge where
 one exists.
 
+Two changes followed on **2026-08-02**, both on measurement rather than taste. The model
+**stopped calling a game when the fresher team is the visitor** — backing a rested road team ran
+44.4% across 7,224 games and no threshold rescued it, so rest alone never outweighs home court.
+That half is published on `/analysis` as the evidence rather than quietly dropped. And
+`ALTITUDE_MULTIPLIER` rose **1.15 → 1.29**, the first ratified coefficient ever changed on
+evidence: measured on final margin, altitude is worth 1.358 points against a back-to-back's
+1.759, a ratio of 0.772 where the model was charging 0.405.
+
+Those are the changes that survived. A weight-fitting harness was also built and run
+out-of-sample, and it **did not change the model** — fitted weights do not beat the ratified ones
+by enough to matter, and most of the model's terms carry no independent signal at all. That null
+is written down in [ADR 0006](docs/adr/0006-fatigue-weights-were-fitted-and-the-model-was-not-changed.md)
+so the question is not reopened from scratch.
+
 ---
 
 ## Tech stack
@@ -205,7 +246,7 @@ one exists.
 | API | Next.js route handlers, Zod validation, Drizzle ORM, postgres-js |
 | Database | Supabase PostgreSQL — Row-Level Security + Realtime |
 | Data pipeline | Python (`nba_api`, `pandas`) + TypeScript (`tsx`) |
-| Modeling | scikit-learn — `HistGradientBoostingClassifier` in `scripts/` (Shot Quality), logistic regression in `ml/` (Playoff Predictor); Python-side only, never the app's runtime deps |
+| Modeling | scikit-learn — `HistGradientBoostingClassifier` in `scripts/` (Shot Quality), logistic regression in `ml/` (Playoff Predictor), and fixed-effects OLS in `ml/` (Availability Cost, the fatigue weight-fitting harness); Python-side only, never the app's runtime deps |
 | Testing | Vitest (unit + route), Playwright (e2e) |
 | Infra | Vercel, GitHub Actions |
 
@@ -266,8 +307,10 @@ src/
     db/           # Drizzle schema, queries, client
   hooks/          # Supabase Realtime + the game-slate controller
 scripts/          # Python ingest + TypeScript modeling + Shot Quality / Shooting pipelines
-ml/               # Playoff Predictor series modeling (isolated venv, scikit-learn) + gitignored cache
-src/data/         # bundled analytics artifacts (referee foul style, win-total benchmark)
+ml/               # Playoff Predictor series modeling, the Availability Cost measurement, and the
+                  # fatigue weight-fitting harness (isolated venv, scikit-learn) + gitignored cache
+src/data/         # bundled analytics artifacts (referee whistle + foul style, win-total benchmark)
+src/lib/          # availability-facts.ts and playoff-rest-facts.ts — generated figures pinned by tests
 public/data/      # the static asset /shooting fetches at runtime (player-rest.json)
 drizzle/          # SQL migrations (RLS, grants, indexes)
 docs/             # architecture, database, pipeline, API, frontend, ADRs
@@ -285,6 +328,8 @@ docs/             # architecture, database, pipeline, API, frontend, ADRs
 - [x] **Shooting by Rest** — per-player eFG% split by his own rest at `/shooting`
 - [x] **Season Report** — one season end to end: the rest call, which teams converted an edge,
       and what the schedule cost each of them, at `/season`
+- [x] **Availability Cost** — what a missing rotation player costs in points of margin, at
+      `/availability`
 
 ---
 

@@ -110,8 +110,8 @@ cached on `globalThis` to survive HMR/serverless reuse.
 
 ### 5. API (Next.js route handlers, `src/app/api/`)
 
-Eleven `route.ts` handlers, all `GET`, all returning `{ data, error }` (cron adds `meta`).
-Nine of them are one call to `jsonRoute` (`src/lib/api-route.ts`) with a Zod schema and an
+Twelve `route.ts` handlers, all `GET`, all returning `{ data, error }` (cron adds `meta`).
+Ten of them are one call to `jsonRoute` (`src/lib/api-route.ts`) with a Zod schema and an
 operation: the module owns param reading, validation, the 400, the 500 and the logging, so
 those five decisions are made once rather than per route. `/api/health` and `/api/cron/update`
 keep their own contracts and stay outside it. `data` is `null` on any error — the envelope is
@@ -142,10 +142,14 @@ Full list in [API.md](API.md).
   *inside* an effect, keeping it out of the shared bundle. It is a **server component as of
   2026-07-30**: it reads `getHistoricalBacktest` and passes the evidence figures down, because
   the three it used to hardcode had all gone stale. Revalidated daily.
-- `app/behind-the-data/**` — **the reference section**, seven static routes documenting each
-  model's terms, constants and limits. No data fetching: constants are imported from source
-  (`FATIGUE_CONSTANTS` and friends) so the prose cannot drift from the code, and measured
-  figures carry the date they were measured.
+- `app/availability/page.tsx` — **Availability Cost** (nav label `AVAILABILITY COST`, under
+  `OTHER`). A pure server component with no fetch, no client bundle and no loading state: every
+  figure is a published constant from `src/lib/availability-facts.ts`. Same shape as the Playoff
+  Rest argument, for the same reason — it renders a finished measurement, not a query.
+- `app/behind-the-data/**` — **the reference section**, eight static routes (an index plus one per
+  model) documenting each model's terms, constants and limits. No data fetching: constants are
+  imported from source (`FATIGUE_CONSTANTS` and friends) so the prose cannot drift from the code,
+  and measured figures carry the date they were measured.
 - `app/referees/page.tsx` — **a placeholder** since 2026-07-30. The whistle findings were inside
   noise; the ingest and dataset test remain so it can return without a re-ingest.
 - Client data fetching uses SWR through `src/lib/fetcher.ts`; live updates use Supabase
@@ -494,3 +498,43 @@ definitions ever drift, that test fails.
 
 Full design in [its spec](superpowers/specs/2026-07-27-schedule-disparity-design.md); route in
 [API.md](API.md); page in [FRONTEND.md](FRONTEND.md).
+
+## Availability Cost — data flow
+
+The only module with **no runtime data path at all**. It has no table, no migration, no ingest
+script and no API route: the measurement is finished, so the page renders published constants.
+
+```
+OFFLINE (run by hand, not on any schedule)     [all inputs under the gitignored ml/data/]
+  hoopR player box scores (ml/data/shooting/)  ┐
+  fatigue_features.csv                         ├→ ml/availability_cost.py     fixed-effects OLS
+  fatigue_model_table.csv                      ┘                              on final margin
+                                                  ml/availability_quality.py  sanity + coverage
+                                                  ml/availability_facts.py
+                                                       →  ml/availability_facts.json  (committed)
+                                                               │
+COMMITTED                                                      ▼
+  src/lib/availability-facts.ts   ── typed, frozen constants, hand-mirrored from that JSON
+       ▲ pinned by src/lib/__tests__/availability-facts.test.ts
+       │
+  app/availability/page.tsx (server component, no fetch)  →  AvailabilityContent
+```
+
+Two structural decisions:
+
+- **No table.** A database row would imply the numbers are queried per request and could change
+  between them. They cannot — they move only when `ml/availability_facts.py` is re-run. Same
+  pattern, and the same reasoning, as `src/lib/playoff-rest-facts.ts`.
+- **The test is the seam.** `availability-facts.test.ts` reads `ml/availability_facts.json` and
+  asserts the TypeScript constants match it, so a figure edited in one place and not the other
+  fails the suite. The figures on the Playoff Rest page were once retyped into three files and
+  drifted; this is the fix for that class of bug.
+
+**Retrospective by construction.** Absence is inferred from prior participation — a player in the
+last five games at 15+ minutes who is missing from tonight's box score — because a long-term
+injured player may not be listed at all. That inference is only available *after* the game, so
+nothing here forecasts availability, and the page copy is required to say so.
+
+Page in [FRONTEND.md](FRONTEND.md); the measurement itself in
+[DATA_PIPELINE.md](DATA_PIPELINE.md); the reader-facing method at
+`/behind-the-data/availability`.

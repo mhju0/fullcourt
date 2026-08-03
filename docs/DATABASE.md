@@ -32,8 +32,14 @@ PostgreSQL column** (with the Drizzle field name in parentheses where they diffe
   "playoff_series"]` — `playoff_series_predictions`, `shot_grid`, and `shot_value_surface`
   are absent from it. Migration `0009` adds only the live fatigue read index and also remains
   intentionally absent from `schema.ts`. The `drizzle/` folder contains **incremental**
-  migrations `0001`–`0009` (there is **no
+  migrations `0001`–`0012` (there is **no
   committed `0000` initial migration** and no `meta/` snapshot folder).
+- **Three shipped modules have no table here at all, by design.** Schedule Disparity is
+  read-only over `games` + `fatigue_scores`; Shooting by Rest is served from the committed
+  `public/data/player-rest.json`; and Availability Cost ships as generated constants in
+  `src/lib/availability-facts.ts`, pinned by a test against `ml/availability_facts.json`. None
+  of the three needs a migration, and a table would wrongly imply their figures are queried —
+  and could change — per request. See [ARCHITECTURE.md](ARCHITECTURE.md) for each data flow.
 
 ## ER overview
 
