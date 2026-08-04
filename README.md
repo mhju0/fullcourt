@@ -20,16 +20,30 @@ FullCourt quantifies how **travel, rest, and schedule density** shape NBA outcom
 > **The finding:** where the model makes a call, the more-rested team wins the majority of games —
 > and the edge widens once the rest-advantage gap reaches **5+ points**. The call is deliberately
 > one-sided: since 2026-08-02 the model declines a game when the fresher team is the *visitor*,
-> because backing a rested road team measured 44.4% and no threshold rescues it. Every rate is
+> because backing a rested road team lost, and no threshold rescued it. Every rate is
 > computed live from the database rather than typed here; as captured in the screenshots below on
 > 2026-08-03, that ran **61.2%** overall and **65.3%** at a 5+ gap, with the declined half
-> published beside it at 42.4%.
+> published beside it at **42.4%**.
+>
+> Two samples get quoted for that declined half and they are not the same measurement: the
+> **44.4% across 7,224 games** in the decision record is every *decidable* game from 2002-03 on,
+> the window the weight-fitting harness was run over ([ADR 0006](docs/adr/0006-fatigue-weights-were-fitted-and-the-model-was-not-changed.md));
+> the **42.4% across 11,548** on `/analysis` is the full history back to 1985-86. Both say the
+> same thing, which is why the rule is a rule.
 
 🔗 **Live demo:** https://fullcourt-nba.vercel.app &nbsp;·&nbsp; **Code:** https://github.com/mhju0/fullcourt
 
-> **Project status:** actively developed. The live demo and scheduled data pipeline are
+> **Project status:** actively developed, and **all nine product surfaces are complete** — none
+> is a stub, a placeholder or a coming-soon. The live demo and scheduled data pipeline are
 > operational, and new analytics modules are built as additive, isolated slices — their own
 > scripts, tables, routes, and page — so they never destabilize the flagship rest-advantage flow.
+>
+> **The one thing outstanding is operational, not product:** the 2026-27 season has not been
+> seeded yet, because both NBA-owned data sources are blocked from outside the US *and* from
+> CI runners, so the ingest path for real `002…` game ids is still an open decision. Until it
+> is seeded the site's newest season stays 2025-26, which every surface handles — this is a
+> scheduled chore, not a defect. The runbook and the two candidate paths are in
+> [docs/SEASON_ROLLOVER.md §3](docs/SEASON_ROLLOVER.md).
 
 ---
 
@@ -108,7 +122,8 @@ with no time words — the pattern every mainstream NBA nav uses — while the p
   season length, team count and the league-wide rest distribution all shifted across four
   decades, so there is deliberately no all-time ranking.
 - **Model Results** (`/analysis`) — the historical backtest that scores the rest model: win rate by
-  rest-advantage threshold and by season, the home-rested split, and a filterable game explorer.
+  rest-advantage threshold and by season, the half the model declines (a rested visitor), and a
+  filterable game explorer.
 - **Playoff Rest** (`/playoffs`) — what surviving a long series costs the round after, argued
   before the bracket rather than under it. Every playoff game past Game 1 is played on equal rest
   by construction, so the only rest signal left is how far each team's previous round ran, read
@@ -125,7 +140,7 @@ with no time words — the pattern every mainstream NBA nav uses — while the p
   and Brier 0.1907 → 0.1628 (~15%). The page leads with the finding and the bracket; the full
   argument — the round split, the confound test and the calibration table — sits one link away at
   `/behind-the-data/playoff-predictions`.
-- **Shot Value** (`/shot-quality`, under **OTHER**) — a half-court hexbin map of expected effective FG% per grid cell, comparing a location-only gradient-boosted model against a zone-average baseline. Honest framing: public NBA data has no defender distance or shot-clock signal, so this is shot-**location** value only, and the model's edge over the baseline is a small calibration win (~1% on log-loss / Brier), not a large accuracy jump.
+- **Shot Value** (`/shot-quality`, under **OTHER**) — a half-court grid map of expected effective FG% per 1-ft cell, comparing a location-only gradient-boosted model against a zone-average baseline. Honest framing: public NBA data has no defender distance or shot-clock signal, so this is shot-**location** value only, and the model's edge over the baseline is a small calibration win (~1% on log-loss / Brier), not a large accuracy jump.
 - **Player Shooting** (`/shooting`) — a browsable database of every player's eFG% on zero rest
   against three or more days off, for any season since 1996-97 or pooled across a career. Rest is
   the player's **own**, counted from the games he actually played, so a night off for load
@@ -329,7 +344,7 @@ docs/             # architecture, database, pipeline, API, frontend, ADRs
 
 - [x] **Rest Advantage model** (flagship) — fatigue score + rest-advantage backtest
 - [x] **Playoff Predictor** — series win-probability model (record-driven logistic) at `/playoffs`
-- [x] **Shot Quality** — Expected Shot Value / xeFG% half-court hexbin at `/shot-quality`
+- [x] **Shot Quality** — Expected Shot Value / xeFG% half-court grid map at `/shot-quality`
 - [x] **Schedule Disparity** — net edge games per team-season at `/schedule`
 - [x] **Shooting by Rest** — per-player eFG% split by his own rest at `/shooting`
 - [x] **Season Report** — one season end to end: the rest call, which teams converted an edge,
