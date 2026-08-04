@@ -101,6 +101,34 @@ added alongside it.
   **This is an editorial decision, not drift** — it has been mistaken for stale documentation
   once already. Restoring it is two edits, both named in the page's docstring.
 
+## Known and not fixed
+
+Real, measured, and deliberately left open — recorded so each reads as a decision rather than an
+oversight. None is a defect in what the site publishes.
+
+- **Small-screen discoverability.** Measured 2026-08-04 at 360×780pt (iPhone 12/13 mini, the
+  narrowest target). No page overflows horizontally, but the nav bar clips mid-word and the
+  `OTHER` menu sits entirely off-screen with no scroll affordance, so Shot Value and Availability
+  Cost are unreachable without an undiscoverable swipe. Full measurements in
+  [FRONTEND.md §Small screens](FRONTEND.md).
+- **iOS zooms on form controls.** Every `<select>` is 12px (one control is 10px) against Safari's
+  16px focus-zoom threshold, so tapping a filter zooms the page and does not restore. Worst on
+  `/analysis` and `/shooting`. The fix is a 16px floor on focusable controls at mobile widths —
+  never `maximum-scale`, which would cost pinch-zoom.
+- **No PWA / home-screen support.** No manifest, no `apple-touch-icon`, no
+  `apple-mobile-web-app-capable`. Add to Home Screen works but yields a page-screenshot icon and
+  opens in Safari chrome rather than standalone.
+- **`/season` can serve a stale empty rollover for weeks from 1 October.**
+  `getCompletedGamesStamp()` counts only final games, so between the season-list rollover and
+  opening night the cache never invalidates. Two candidate fixes in
+  [SEASON_ROLLOVER.md §3](SEASON_ROLLOVER.md).
+- **`docs/social-preview.png` is stale** — it bakes in "40-SEASON BACKTEST" and the pre-2026-07-30
+  logo. It is a hand export and GitHub serves it from repo settings, so it has to be re-uploaded
+  by hand; nothing in the repo will remind you. See [SEASON_ROLLOVER.md §7](SEASON_ROLLOVER.md).
+- **2026-27 is not seeded.** Operational, not product — both NBA-owned sources are blocked from
+  outside the US *and* from CI runners, so the `002…`-id path is still an open decision. Runbook
+  and the two candidate paths in [SEASON_ROLLOVER.md §3](SEASON_ROLLOVER.md).
+
 ## Maintenance responsibilities
 
 - Follow [SEASON_ROLLOVER.md](SEASON_ROLLOVER.md) before each new NBA season.

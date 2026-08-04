@@ -22,7 +22,7 @@ and is not committed; re-run the command above to regenerate it.
 
 | Item | Value |
 |------|-------|
-| Table | `playoff_series` (`drizzle/0006_playoff_series.sql`, `src/lib/db/schema.ts:128`) |
+| Table | `playoff_series` (`drizzle/0006_playoff_series.sql`, `playoffSeries` in `src/lib/db/schema.ts`) |
 | Series key | `external_series_key` (varchar, unique) / `id` (serial PK) |
 | Home-court (reference) team | `home_court_team_id` (NOT NULL) |
 | Winner | `series_winner_team_id` (nullable) |

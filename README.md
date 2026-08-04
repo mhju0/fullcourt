@@ -21,9 +21,9 @@ FullCourt quantifies how **travel, rest, and schedule density** shape NBA outcom
 > and the edge widens once the rest-advantage gap reaches **5+ points**. The call is deliberately
 > one-sided: since 2026-08-02 the model declines a game when the fresher team is the *visitor*,
 > because backing a rested road team lost, and no threshold rescued it. Every rate is
-> computed live from the database rather than typed here; as captured in the screenshots below on
-> 2026-08-03, that ran **61.2%** overall and **65.3%** at a 5+ gap, with the declined half
-> published beside it at **42.4%**.
+> computed live from the database rather than typed here; as the screenshots below show, that ran
+> **61.2%** overall and **65.3%** at a 5+ gap, with the declined half published beside it at
+> **42.4%**.
 >
 > Two samples get quoted for that declined half and they are not the same measurement: the
 > **44.4% across 7,224 games** in the decision record is every *decidable* game from 2002-03 on,
@@ -52,6 +52,8 @@ FullCourt quantifies how **travel, rest, and schedule density** shape NBA outcom
 ---
 
 ## Demo
+
+Eight surfaces, not nine — `/referees` is deliberately held back and has no screenshot.
 
 **Games — the per-matchup view.** Each team's fatigue score, the rest-advantage
 differential, and a confidence read. Every rest-advantage number carries the historical hit
@@ -220,8 +222,9 @@ table, no migration and no ingest — it derives everything from the existing `g
 entirely from a committed static asset (`public/data/player-rest.json`) built offline from
 [hoopR](docs/adr/0002-shooting-source-hoopr.md), Availability Cost ships as a generated constants
 module (`src/lib/availability-facts.ts`) pinned by a test against the artifact that produced it,
-and Referee Effect renders a committed JSON artifact (`src/data/referee-foul-style.json`) written
-by its ingest script. Those three add nothing to the runtime query path.
+and Referee Effect reads a committed JSON artifact (`src/data/referee-foul-style.json`) written by
+its ingest script — currently only for the two coverage figures on its in-progress card, since the
+table itself is held back. Those three add nothing to the runtime query path.
 
 ---
 

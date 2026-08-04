@@ -311,7 +311,9 @@ the same `{ data, error }` envelope + Zod validation + `getPublicApiErrorMessage
   `dynamic = "force-dynamic"` like the other DB routes.
 - **Frontend:** a new **`/shot-quality`** page (working route name; tracks the §1 name decision),
   added to `nav-bar.tsx` — the **only** surface that reads shot data (isolation, §7). The core
-  visual is a **half-court hexbin / shot chart**. As shipped it uses the light **"Broadcast"**
+  visual is a **half-court shot chart on a square 1-ft grid** — one `<rect>` marker per cell,
+  sized by attempts. "Hexbin" elsewhere in this document is design-phase vocabulary, never what
+  shipped. As shipped it uses the light **"Broadcast"**
   aesthetic (IBM Plex Mono, `--term-*` tokens, white court `#FFFFFF`; value ramp tan `#A16207` →
   blue `#2563EB`, and a blue→neutral→red `#DC2626` divergent ramp with a near-white `#E5E7EB`
   neutral for the GBM−baseline view), with color/size encoding expected eFG% vs attempts.
@@ -342,7 +344,7 @@ actually happened, sourced from `ml/shot_value/*.txt` and this session's file re
 | **SQ-4 — Model & evaluation** ✅ | `scripts/sq4_train_shot_value.py` (baseline vs. logit) + `scripts/sq4b_train_gbm.py` (adds GBM) — walk-forward by season, 29 folds | *Gate result:* [Verified `ml/shot_value/sq4b_metrics.txt`] pooled over 5,922,214 valid shots — baseline log-loss `0.665382`/acc `61.59%`; logit log-loss `0.669353`/acc `60.52%` (**logit did not beat baseline**); GBM log-loss `0.660022`/acc `61.93%` (**GBM beat baseline**, +0.81% log-loss / +1.06% Brier / +0.34pp accuracy — a calibration win, not a big accuracy win, exactly the honest framing this doc set out to preserve). |
 | **SQ-5 — Prediction/output surface** ✅ | `scripts/sq5_write_surface.py` → `public.shot_value_surface` (`p_make`/`expected_efg`/`xpps` per cell × `model_version`) | *Gate result:* [Verified `ml/shot_value/sq5_surface_summary.txt`, `sq5_db_verify.txt`] **110,072** surface rows (55,036 cells × 2 model versions: `gbm-v1`, `baseline-zone-v1`); DB reconciliation **PASS**; all values within `[0,1]`/`[0,3]` bounds. |
 | **SQ-6 — API** ✅ | `GET /api/shot-quality` (`{ data, error }`, Zod, `getPublicApiErrorMessage`) + `getShotQualityGrid()` | *Gate result:* [Verified `src/app/api/shot-quality/route.ts`, `src/lib/db/queries.ts`] `runtime="nodejs"`, `dynamic="force-dynamic"`; `season` required, `model?` display-hint only (both model surfaces are always returned per cell); unknown/future seasons return `cells: []`, not an error. |
-| **SQ-7 — Page** ✅ | `/shot-quality` hexbin page + nav link, terminal aesthetic, loading/empty states | *Gate result:* [Verified `src/app/shot-quality/page.tsx`, `src/components/shot-quality-content.tsx`, `src/components/nav-bar.tsx`] nav link present; court-coordinate transform (`cellX+0.5`, `court_y = RIM_Y + cellY + 0.5`) checked against real zone landmarks; empty-season and error states implemented. |
+| **SQ-7 — Page** ✅ | `/shot-quality` square 1-ft-grid shot-chart page + nav link, terminal aesthetic, loading/empty states | *Gate result:* [Verified `src/app/shot-quality/page.tsx`, `src/components/shot-quality-content.tsx`, `src/components/nav-bar.tsx`] nav link present; court-coordinate transform (`cellX+0.5`, `court_y = RIM_Y + cellY + 0.5`) checked against real zone landmarks; empty-season and error states implemented. |
 
 ### Isolation guarantees (same discipline as the Playoff Predictor)
 - **Does not touch `src/lib/fatigue.ts`** and **does not rename** the rest-advantage metric
@@ -361,8 +363,10 @@ Each open decision below is followed by **→ Built:**, the value the shipped co
 - **[Name]** Ship as **"Expected Shot Value (xeFG%)"** (recommended, honest) vs keep the roadmap
   label "Shot Quality Model" vs another? Sets the page route/name too. (§1)
   **→ Built:** `"Expected Shot Value"` is the page `<title>` [Verified `src/app/shot-quality/page.tsx`];
-  route/nav label is `"SHOT QUALITY"` [Verified `src/components/nav-bar.tsx`]; xeFG% is the
-  metric used throughout the methodology copy.
+  xeFG% is the metric used throughout the methodology copy. The nav label was `"SHOT QUALITY"`
+  at build time and is now **`"SHOT VALUE"`**, defined in `OTHER_NAV_ITEMS`
+  [Verified `src/lib/primary-navigation.ts`] and reached through the OTHER menu rather than a
+  direct tab — `nav-bar.tsx` only maps the imported arrays.
 - **[Season scope]** **Full coordinate era 1996-97→present** (~30 seasons, recommended) vs
   trimmed 2013-14+ vs a short demo slice? (§2)
   **→ Built:** full era, 30 seasons 1996-97…2025-26 [Verified `ml/shot_value/sq5_surface_summary.txt`].
@@ -414,6 +418,11 @@ gate result above:
    **single** court in `GBM − BASELINE` mode (a divergent-color diff), and only renders two
    side-by-side courts in the sequential `EXPECTED eFG%` mode (baseline vs. GBM). See
    [FRONTEND.md](FRONTEND.md) for the component details.
+
+3. **The shot tables stay out of `schema.ts` *and* `drizzle.config.ts`'s `tablesFilter`.** §5
+   said to add them, as `playoff_series` had been; the build deliberately did not.
+   `shot_grid` and `shot_value_surface` are read by raw SQL, and keeping them out of both is what
+   makes `drizzle-kit` unable to propose dropping them. See the drizzle-kit ban in `CLAUDE.md`.
 
 Everything else in §1–§8 above — the honest framing, the hybrid storage split, the model
 comparison being served (not just internally benchmarked), the location-only feature scope, and

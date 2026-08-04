@@ -266,6 +266,10 @@ protected **rest advantage**, which is matchup-level and home-oriented:
      2025-26, so the finalists are correctly not at 83.
    - **Lockout counts are as documented** — 1998-99: 50 games across 29 teams (correct for that
      era); 2011-12: 66; 2020-21: 72; 2019-20 absent entirely.
+     *(Dated 2026-07-27 and left as measured. 2019-20 was admitted to `games` on 2026-07-30 —
+     ADR 0004 — and Schedule Edge now withholds it through its own `TRUNCATED_SEASONS` rule
+     rather than through it being missing from ingest. The nav has also grown from five tabs to
+     six plus a three-item OTHER menu.)*
    - **Every historical season is fully final**, so `provisional` is correctly false throughout.
    - The module ran over 2025-26, 2011-12 and 1998-99 with the **zero-sum invariant holding
      exactly** (Σ net rest edge = 0, capped and uncapped) on all three.

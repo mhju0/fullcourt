@@ -1,8 +1,9 @@
 # Playoff Predictor — Design
 > **Reader-facing version:** [`/behind-the-data/playoff-predictions`](../src/app/behind-the-data/playoff-predictions/page.tsx)
-> states the same model in plain terms — the five stored features, why the target is the
+> states the same model in plain terms — its **four model features**, why the target is the
 > home-court team, why its edge is calibration rather than accuracy, and why it is **not** a
-> playoff version of the fatigue model.
+> playoff version of the fatigue model. (Four *model* features against six *stored* columns —
+> `is_best_of_7` and one other are stored without being fitted.)
 >
 > **Repositioned 2026-07-30 (presentation only).** `/playoffs` previously headlined two accuracy
 > tiles and described itself as sharing the regular-season model's rest lineage. Both overstated
@@ -13,12 +14,21 @@
 > rate, states the accuracy tie in the same card, and shows the in-sample fit only for the early
 > seasons that have no walk-forward forecast. No model, feature, table, column or script changed.
 >
+> **Superseded 2026-07-31 — read this before trusting the paragraph above.** `/playoffs` was
+> rebuilt as **PLAYOFF REST**: it now leads with the grind argument
+> (`src/components/playoff-rest-sections.tsx`) and the bracket, and publishes **no model metrics
+> of its own**. Log loss, Brier and the accuracy tie moved to
+> `/behind-the-data/playoff-predictions`. The in-sample fit is shown on **every** series card as
+> `HINDSIGHT`, not only for pre-walk-forward seasons.
+>
 > This file is the **build record** for the phase, kept as written. Where it discusses options
 > it did not take (`has_home_court` as a stored column, for one — it is folded into the label
 > and intercept, and `playoff_series` has no such field), that is design history rather than a
 > description of what shipped. Verified against `src/lib/db/schema.ts` on 2026-07-30: the
 > stored features are `seed_diff`, `win_pct_diff`, `entry_rest_diff`, `h2h_diff` and
-> `is_best_of_7`.
+> `is_best_of_7` — plus **`prior_grind_diff`, added 2026-07-31**
+> (`drizzle/0012_playoff_series_prior_grind.sql`), which is the rest-shaped input the model
+> actually fits and the bracket renders.
 
 
 > **Status (updated 2026-07-02): complete, end to end.** Every phase in this design has shipped:
@@ -95,7 +105,7 @@ every coefficient is interpretable against a single, always-defined reference te
   of "seed" into the label.
 - **It matches the existing product's mental model.** The regular-season product is built
   around home/away and a home-referenced rest-advantage differential
-  (`restAdvantage = away.score − home.score`, `src/lib/fatigue.ts:545`). Keeping the
+  (`restAdvantage = away.score − home.score`, `calculateRestAdvantage` in `src/lib/fatigue.ts`). Keeping the
   playoff label home-referenced keeps the two products conceptually consistent.
 - **The naive baseline becomes a clean floor.** "Home-court team wins" is then literally
   `predict y = 1 always`, and "higher seed wins" is a second baseline computed from the
@@ -128,13 +138,14 @@ the *same* games on the *same* dates in the *same* two cities. Therefore, for an
   capture as a between-team difference).
 
 Run through the actual model (`src/lib/fatigue.ts`): `calculateFatigue` is driven by
-`daysSinceLastGame` (line 492), the 7-day travel window (`computeTotalTravelMiles`), the
+`daysSinceLastGame`, the 7-day travel window (`computeTotalTravelMiles`), the
 back-to-back multiplier (`B2B_MULTIPLIER`, line 37), schedule-stress windows
-(`WINDOW_STRESS`, lines 52–58), and freshness (`FRESHNESS_*`). **All of these inputs are
+(`WINDOW_STRESS`), and freshness (`FRESHNESS_*`). **All of these inputs are
 shared by both teams inside a series.** Consequently
 `calculateRestAdvantage(home, away)` (line 545) will be **≈ 0 for essentially every
-within-series game**, and the `NEUTRAL_THRESHOLD = 0.5` band in
-`src/lib/db/queries.ts:21` will classify nearly all of them as **neutral / no-call**.
+within-series game**, and the `NEUTRAL_REST_ADVANTAGE_THRESHOLD = 0.5` band in
+(declared in `src/lib/rest-advantage-evidence.ts`, applied in SQL by `src/lib/db/queries.ts`)
+will classify nearly all of them as **neutral / no-call**.
 
 **Implication — do NOT naively apply the per-game fatigue model to playoff games and
 average it.** Doing so would (a) report "neutral" everywhere and (b) falsely suggest that
@@ -149,7 +160,7 @@ gap is asymmetric and is the only place the fatigue machinery produces a meaning
 between-team difference at the series grain.
 
 **Convenient consequence:** `fetchRecentGamesForTeam`
-(`src/lib/fatigue-recent-games.ts:30`) filters by `status = 'final'` and a 30-day date
+(`fetchRecentGamesForTeam`, `src/lib/fatigue-recent-games.ts`) filters by `status = 'final'` and a 30-day date
 window but **does not filter `game_type`** (verified — the `where` clause at lines 58–65
 has no `gameType` predicate). So once playoff games are ingested into `games`, calling the
 *existing* per-game fatigue function on a **series opener** naturally pulls each team's
@@ -438,7 +449,8 @@ Same shape as the rest of the product: **Python writes to the DB, the app reads.
   `{ data, error }` envelope and `getPublicApiErrorMessage` (`src/lib/api-errors.ts`),
   reading `playoff_series` + `playoff_series_predictions` via a new query module (e.g.
   `getPlayoffSeriesWithPredictions`) in `src/lib/db/queries.ts`.
-- New page **`/playoffs`** (separate from `/`, `/analysis`, `/upcoming`), added to the nav.
+- New page **`/playoffs`** (separate from `/` and `/analysis`), added to the nav. (`/upcoming` was
+  later retired into the GAMES view toggle and now redirects to `/`.)
   It is the **only** surface that reads playoff data.
 
 ### 6.5 Isolation from the regular-season product (verified mechanisms)

@@ -88,6 +88,12 @@ the intentional source-authority split between CDN schedule rows and Stats API r
 It imports only `schedule_upsert_contract.py`, so CI does not need pipeline dependencies or a
 database for this check.
 
+**`ml/tests/test_compute_prior_grind.py` is run by nothing.** `ci.yml` discovers only
+`-s scripts/tests`, so this file executes only when someone runs it by hand. That is a coverage
+gap rather than a decision, and it is not free to close: `ml/` needs its own dependency stack
+(`ml/requirements.txt` — scipy, scikit-learn), which `ci.yml` deliberately does not install,
+so wiring it up means a second discover step **and** a pip install in the CI job.
+
 ## End-to-end tests — Playwright
 
 Config (`playwright.config.ts`): `testDir: ./e2e`, `baseURL: http://localhost:3000`,
