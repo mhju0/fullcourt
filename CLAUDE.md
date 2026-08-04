@@ -144,10 +144,12 @@ Skipping `prepare` fails **silently**: `fatigue_model_table.csv` is already on d
 - [docs/TESTING_AND_CICD.md](docs/TESTING_AND_CICD.md) — Vitest/Playwright, CI, data workflow
 - [docs/GLOSSARY.md](docs/GLOSSARY.md) — domain language and the nav-label rationale
 - [docs/SEASON_ROLLOVER.md](docs/SEASON_ROLLOVER.md) — rollover runbook and data-source matrix
-- [docs/agents/](docs/agents/) — how the engineering skills consume this repo: domain-doc
-  conventions, the `gh` issue-tracker rule, triage labels
-- [docs/audit/](docs/audit/) — read-only audit reports, and the one directory the
-  `fullcourt-audit` skill may write to
+
+Two more directories exist locally but are **gitignored**, so they are absent from a fresh clone
+and are deliberately not linked above: `docs/agents/` (how the engineering skills consume this
+repo — domain-doc conventions, the `gh` issue-tracker rule, triage labels) and `docs/audit/` (the
+one directory the `fullcourt-audit` skill may write to). Do not add a link to either from a
+committed file.
 
 ## Final report
 
