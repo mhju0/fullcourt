@@ -424,7 +424,8 @@ export default function PlayoffPredictionsMethodPage() {
           Hindsight exists for one reason: the model needs about ten seasons of prior history
           before its first honest fit, so the earliest covered brackets have no forecast at all.
           For those seasons the hindsight figure is the only number that exists, and the page
-          labels it as such. For every later season the product page shows the forecast alone.
+          labels it as such. For every later season the product page shows the forecast beside
+          the hindsight figure, each labelled, so the two are never mistaken for each other.
         </Note>
       </Section>
 

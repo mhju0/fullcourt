@@ -333,7 +333,11 @@ direction    = ${K.eastwardMultiplier} eastward, ${K.westwardMultiplier} westwar
           Every constant above was set by reasoning about the physical effect and reviewed
           before the backtest was run — none was fitted to maximise a win rate. That is the
           only reason the historical numbers mean anything: a model tuned against its own test
-          set would report whatever accuracy it was asked for.
+          set would report whatever accuracy it was asked for. One constant has since moved on
+          measured evidence: the altitude multiplier was raised from 1.15 to 1.29 on 2026-08-02
+          to match altitude&rsquo;s measured size against a back-to-back on final margin. That
+          is a different target from the win rates on this page, and the change is recorded in
+          ADR 0006 rather than folded in quietly.
         </Prose>
         <Note>
           The most recent overhaul is a fair illustration of why that discipline matters. Nine

@@ -9,15 +9,29 @@ import { NBA_SEASONS } from "@/lib/nba-season";
 export const metadata: Metadata = {
   title: "Behind the Data",
   description:
-    "How every FullCourt number is calculated — the fatigue model, schedule edge, playoff predictions, player shooting and shot value, with their sources, their limits, and where each has no measurable edge.",
+    "How every FullCourt number is calculated — the fatigue model, schedule edge, playoff predictions, player shooting, shot value and availability cost, with their sources, their limits, and where each has no measurable edge.",
 };
 
 /** Every section but the overview itself, for the index list below. */
+type ModelSectionHref = Exclude<
+  (typeof BEHIND_THE_DATA_SECTIONS)[number]["href"],
+  "/behind-the-data"
+>;
+
 const MODEL_SECTIONS = BEHIND_THE_DATA_SECTIONS.filter(
-  (s) => s.href !== "/behind-the-data"
+  (s): s is Extract<
+    (typeof BEHIND_THE_DATA_SECTIONS)[number],
+    { href: ModelSectionHref }
+  > => s.href !== "/behind-the-data"
 );
 
-const BLURB: Record<string, string> = {
+/**
+ * Keyed exhaustively on purpose. This was a `Record<string, string>`, so when
+ * `/behind-the-data/availability` was added the index rendered its label above an empty
+ * description and a finished section read as an unfinished one. A missing entry is now a
+ * compile error rather than a blank line nobody notices.
+ */
+const BLURB: Record<ModelSectionHref, string> = {
   "/behind-the-data/rest-advantage":
     "The fatigue score: eight terms, what each constant is, and which of them actually carry the result.",
   "/behind-the-data/schedule-edge":
@@ -28,6 +42,8 @@ const BLURB: Record<string, string> = {
     "No rest against three days off, and how much of any player's split is noise.",
   "/behind-the-data/shot-value":
     "Expected shooting value by court location, and the defender data public sources do not have.",
+  "/behind-the-data/availability":
+    "What counts as a missing rotation player, why an absence is priced above replacement, and why the schedule terms survive the control.",
   "/behind-the-data/data-and-limits":
     "Where the data comes from, which seasons carry which fields, and what is excluded on purpose.",
 };
@@ -37,7 +53,7 @@ export default function BehindTheDataPage() {
     <BehindTheDataShell
       eyebrow="BEHIND THE DATA"
       title="Behind the data"
-      description="Every model on this site, written out: the terms, the constants, the thresholds, and the measured results. If a number appears on a page, its arithmetic is here."
+      description="Every model with a section here, written out: the terms, the constants, the thresholds, and the measured results. Referee Effect is the one surface without one — its own page carries its method."
     >
       <Section label="HOW TO READ ANY NUMBER HERE" descriptor="THREE RULES">
         <Prose>
@@ -47,9 +63,12 @@ export default function BehindTheDataPage() {
         </Prose>
         <Prose>
           <strong>Nothing is tuned against its own backtest.</strong>{" "}
-          The fatigue model&rsquo;s constants were set by reasoning about the physical effect and fixed before the
-          historical numbers were run. A model fitted to maximise its own reported accuracy
-          would report whatever accuracy it was asked for.
+          The fatigue model&rsquo;s constants were set by reasoning about the physical effect
+          rather than fitted to the win rates this site publishes. One has since moved: the
+          altitude multiplier was raised on 2026-08-02 to match altitude&rsquo;s measured size
+          against a back-to-back on final margin — a different target from these win rates, and
+          recorded as such. A model fitted to maximise its own reported accuracy would report
+          whatever accuracy it was asked for.
         </Prose>
         <Prose>
           <strong>Limits are published beside results.</strong> Each section ends with what its

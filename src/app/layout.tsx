@@ -37,8 +37,12 @@ const plexMono = IBM_Plex_Mono({
 });
 
 const SITE_URL = "https://fullcourt-nba.vercel.app";
+// No route count and no "completed": both aged. This named three surfaces while the site
+// carried nine, because it was written before Schedule Edge, Season Report, Availability
+// Cost and Referee Effect shipped. Names the subjects instead, which a new module extends
+// rather than invalidates.
 const SITE_DESC =
-  "FullCourt is a completed NBA analytics portfolio project modeling rest advantage, playoff series probabilities, and location-based shot value.";
+  "FullCourt models what the NBA schedule does to a game — rest advantage, schedule edge, playoff series rest, player shooting by rest, shot value, the cost of a missing player, and referee foul style — checked against every season since 1985-86.";
 
 // The app is committed light-only (globals.css sets color-scheme: light), so pin the
 // mobile browser chrome to --term-bg instead of letting Safari/Chrome pick a default.

@@ -376,7 +376,11 @@ export function AboutContent({ stats }: { stats: AboutStats | null }) {
       {/* ── 4. Where to use it ────────────────────────────────── */}
       <section className={`mx-auto w-full max-w-7xl px-6 ${VIEW}`}>
         <h2 className="font-heading mb-12 font-bold" style={{ fontSize: "clamp(1.9rem,4.4vw,3.2rem)", letterSpacing: "-0.03em" }}>
-          {COUNT_WORD[SURFACES.length]} surfaces
+          {/* "tabs", not "surfaces": this row is the nav bar, and there are more surfaces than
+              tabs. Calling it surfaces made the page claim six while the product had nine — the
+              OTHER menu is named underneath instead, because widening this row past six squeezes
+              cards whose height is already a layout contract. */}
+          {COUNT_WORD[SURFACES.length]} tabs
         </h2>
         {/* A labelled landmark: this is a second, distinct set of navigation links, and
             each one's accessible name is "<label> <copy>" because the card is one target. */}
@@ -417,6 +421,25 @@ export function AboutContent({ stats }: { stats: AboutStats | null }) {
             </Link>
           ))}
         </nav>
+
+        {/* Outside the nav landmark on purpose: e2e/about.spec.ts asserts the card row is
+            exactly six links, and these three are the bar's OTHER menu rather than tabs. */}
+        <p className="mt-6 text-sm" style={{ color: DIM, lineHeight: 1.7 }}>
+          Three more sit behind the bar&rsquo;s <span className="mono">OTHER</span> menu, smaller
+          in scope but finished the same way:{" "}
+          <Link href="/shot-quality" className="underline underline-offset-2">
+            Shot Value
+          </Link>
+          ,{" "}
+          <Link href="/availability" className="underline underline-offset-2">
+            Availability Cost
+          </Link>{" "}
+          and{" "}
+          <Link href="/referees" className="underline underline-offset-2">
+            Referee Effect
+          </Link>
+          .
+        </p>
       </section>
 
       {/* ── 5. What the score is made of ──────────────────────── */}
