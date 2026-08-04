@@ -20,16 +20,30 @@ FullCourt quantifies how **travel, rest, and schedule density** shape NBA outcom
 > **The finding:** where the model makes a call, the more-rested team wins the majority of games —
 > and the edge widens once the rest-advantage gap reaches **5+ points**. The call is deliberately
 > one-sided: since 2026-08-02 the model declines a game when the fresher team is the *visitor*,
-> because backing a rested road team measured 44.4% and no threshold rescues it. Every rate is
+> because backing a rested road team lost, and no threshold rescued it. Every rate is
 > computed live from the database rather than typed here; as captured in the screenshots below on
 > 2026-08-03, that ran **61.2%** overall and **65.3%** at a 5+ gap, with the declined half
-> published beside it at 42.4%.
+> published beside it at **42.4%**.
+>
+> Two samples get quoted for that declined half and they are not the same measurement: the
+> **44.4% across 7,224 games** in the decision record is every *decidable* game from 2002-03 on,
+> the window the weight-fitting harness was run over ([ADR 0006](docs/adr/0006-fatigue-weights-were-fitted-and-the-model-was-not-changed.md));
+> the **42.4% across 11,548** on `/analysis` is the full history back to 1985-86. Both say the
+> same thing, which is why the rule is a rule.
 
 🔗 **Live demo:** https://fullcourt-nba.vercel.app &nbsp;·&nbsp; **Code:** https://github.com/mhju0/fullcourt
 
-> **Project status:** actively developed. The live demo and scheduled data pipeline are
+> **Project status:** actively developed, and **all nine product surfaces are complete** — none
+> is a stub, a placeholder or a coming-soon. The live demo and scheduled data pipeline are
 > operational, and new analytics modules are built as additive, isolated slices — their own
 > scripts, tables, routes, and page — so they never destabilize the flagship rest-advantage flow.
+>
+> **The one thing outstanding is operational, not product:** the 2026-27 season has not been
+> seeded yet, because both NBA-owned data sources are blocked from outside the US *and* from
+> CI runners, so the ingest path for real `002…` game ids is still an open decision. Until it
+> is seeded the site's newest season stays 2025-26, which every surface handles — this is a
+> scheduled chore, not a defect. The runbook and the two candidate paths are in
+> [docs/SEASON_ROLLOVER.md §3](docs/SEASON_ROLLOVER.md).
 
 ---
 
@@ -39,7 +53,14 @@ FullCourt quantifies how **travel, rest, and schedule density** shape NBA outcom
 differential, and a confidence read. Every rest-advantage number carries the historical hit
 rate and sample size of its class; matchups the model calls neutral get no claim at all.
 
-<img src="docs/screenshots/games.png" alt="The Games page for Sunday, April 12, 2026, with a BY DATE / UPCOMING toggle set to BY DATE. Three tiles read 15 games on this date, an average rest advantage of 0.8, and 0 high-confidence games. A Scope panel below holds the 2025-26 season with month buttons from October to April, April selected, and day chips 1 through 12 each captioned with its game count, the 12th selected. A banner reads that the 2025-26 season is complete and the final slate is showing, linking to the backtest. Two matchup cards follow. The first, Brooklyn Nets 101 at Toronto Raptors 136, shows fatigue bars of 3.3 and 4.4, a rest-advantage panel giving BKN plus 1.1 with a MED CONF badge, and a sentence reading that any measurable gap has gone the rested team's way 61.2% of the time from 27,400 games. The second, Chicago Bulls 128 at Dallas Mavericks 149, shows fatigue scores of 4.4 and 4.6, is scored EVEN 0.2 with a NEUTRAL badge, and carries no such sentence." width="900" />
+<img src="docs/screenshots/games.png" alt="The Games page for Sunday, April 12, 2026, with a BY DATE / UPCOMING toggle set to BY DATE. Three tiles read 15 games on this date, an average rest advantage of 0.8, and 0 high-confidence games. A Scope panel below holds the 2025-26 season with month buttons from October to April, April selected, and day chips 1 through 12 each captioned with its game count, the 12th selected. A banner reads that the 2025-26 season is complete and the final slate is showing, linking to the full season report. Two matchup cards follow. The first, Brooklyn Nets 101 at Toronto Raptors 136, shows fatigue bars of 3.3 and 4.4 and a rest-advantage panel giving BKN plus 1.1 with a MED CONF badge; because Brooklyn are the rested side and are the visitors, the card reads that this model declines a rested visitor, backing one having won 42.4% of the time from 11,548 games. The second, Chicago Bulls 128 at Dallas Mavericks 149, shows fatigue scores of 4.4 and 4.6, is scored EVEN 0.2 with a NEUTRAL badge, and carries no such sentence." width="900" />
+
+**Season Report — one season end to end.** How that year's rest call scored against the
+all-season norm, which teams actually converted a rest edge into wins, and what the schedule cost
+each of them. Every rate is gated on sample size: below 100 decidable games a tile reads
+"too early to call" rather than inventing a verdict.
+
+<img src="docs/screenshots/season.png" alt="Season Report for 2025-26. A season selector reads 2025-26, above three tiles: a rest-advantage win rate of 55.2% give or take 4.0 across 605 games, a win rate at RA of 2 or more of 56.9% give or take 5.6 across 297 games, and season progress at 1,230 of 1,230 games, 100% played. A section headed 2025-26 VS HISTORY, captioned that it excludes the displayed season, returns the verdict BELOW THE NORM — 55.2% give or take 4.0 against 61.3% — and explains that the season produced 605 games with a decidable rest gap, worth about 4 percentage points either way, with a link to the full backtest. Below it, REST EDGE CONVERSION is captioned records, not a ranking, and notes that around 19 games sit behind each arm for a typical team. Its table gives each team's wins, losses and win% when rested against the same when tired, plus the swing in percentage points: Phoenix leads at plus 35.4 (72% rested against 37% tired), then New York at plus 34.5 (90% against 55%) and Sacramento at plus 34.3 (42% against 8%), down through Boston at plus 13.5." width="900" />
 
 **Schedule Disparity — who the schedule favored.** All 30 teams ranked by net edge games,
 drawn from a zero line so the bar length *is* the edge. Positive is favorable in every column on
@@ -80,6 +101,14 @@ the whole premise — that the schedule effects are really absences in disguise.
 
 <img src="docs/screenshots/availability.png" alt="Availability Cost, headed What a missing player is worth. WHAT AN ABSENCE COSTS leads with 2.86 points — what a team loses when its best player sits — over five bars in points of final margin: best player out 2.86 highlighted in blue, playing at home 2.82, on a back-to-back 1.76, visiting altitude 1.36, and off an overtime 0.54, measured across 35,458 games with both teams' records held equal. HOW OFTEN gives three figures: 17.1% of games have one side missing its best player, 44.5% of team-games are missing nobody from the rotation, and 8.6 players in a typical rotation. THE LOAD-MANAGEMENT ERA plots one bar per season from 1996-97 at 6.0% to a highlighted 2025-26 at 19.5%, noting the climb dips in 2023-24, the season the league first required 65 games for awards eligibility. THE SCHEDULE STILL COUNTS holds who actually played fixed and re-measures each schedule term: back-to-back 1.759 to 1.641 (6.7% shift), visiting altitude 1.358 to 1.282 (5.6%), off an overtime 0.544 to 0.501 (7.9%), and schedule density 0.275 to 0.265 (3.8%) — every one under 8%, so load management does not explain the schedule away." width="900" />
 
+**Referee Effect — style, not bias.** Each official's *mix* of foul calls against the league's
+own seasonal mix. The two questions that would be about fairness — a home whistle tilt, and crew
+rest — were both asked and both came back inside noise, so the page publishes the one thing that
+does separate officials and refuses the word bias. It also states its own ceiling: three
+officials work every game and the play-by-play never records which blew the whistle.
+
+<img src="docs/screenshots/referees.png" alt="Referee Effect · Foul Style, headed What each official calls. The intro states that officials don't call the same game the same way, and that every figure is how much more or less often one calls that foul than the league does, across 11,952 games since 2015-16. A CREW CHIEFS ONLY checkbox sits above the table, with 74 of 74 officials shown at right. The table lists each official with a CC badge, games as crew chief, total games, and then six deviation columns against the league average — fouls, shooting, personal, loose ball, offensive and technical — each signed and coloured, with only the larger deviations emphasised. Gediminas Petraitis leads by volume at 721 games with a plus 11% technical rate; Zach Zarba runs 14% below league on both offensive and technical fouls; Scott Foster calls 23% more offensive fouls and 24% fewer technicals; Courtney Kirkland is plus 16% offensive and minus 22% technical. Most cells sit within a point or two of zero." width="900" />
+
 ---
 
 ## Features
@@ -108,7 +137,8 @@ with no time words — the pattern every mainstream NBA nav uses — while the p
   season length, team count and the league-wide rest distribution all shifted across four
   decades, so there is deliberately no all-time ranking.
 - **Model Results** (`/analysis`) — the historical backtest that scores the rest model: win rate by
-  rest-advantage threshold and by season, the home-rested split, and a filterable game explorer.
+  rest-advantage threshold and by season, the half the model declines (a rested visitor), and a
+  filterable game explorer.
 - **Playoff Rest** (`/playoffs`) — what surviving a long series costs the round after, argued
   before the bracket rather than under it. Every playoff game past Game 1 is played on equal rest
   by construction, so the only rest signal left is how far each team's previous round ran, read
@@ -125,7 +155,7 @@ with no time words — the pattern every mainstream NBA nav uses — while the p
   and Brier 0.1907 → 0.1628 (~15%). The page leads with the finding and the bracket; the full
   argument — the round split, the confound test and the calibration table — sits one link away at
   `/behind-the-data/playoff-predictions`.
-- **Shot Value** (`/shot-quality`, under **OTHER**) — a half-court hexbin map of expected effective FG% per grid cell, comparing a location-only gradient-boosted model against a zone-average baseline. Honest framing: public NBA data has no defender distance or shot-clock signal, so this is shot-**location** value only, and the model's edge over the baseline is a small calibration win (~1% on log-loss / Brier), not a large accuracy jump.
+- **Shot Value** (`/shot-quality`, under **OTHER**) — a half-court grid map of expected effective FG% per 1-ft cell, comparing a location-only gradient-boosted model against a zone-average baseline. Honest framing: public NBA data has no defender distance or shot-clock signal, so this is shot-**location** value only, and the model's edge over the baseline is a small calibration win (~1% on log-loss / Brier), not a large accuracy jump.
 - **Player Shooting** (`/shooting`) — a browsable database of every player's eFG% on zero rest
   against three or more days off, for any season since 1996-97 or pooled across a career. Rest is
   the player's **own**, counted from the games he actually played, so a night off for load
@@ -144,9 +174,14 @@ with no time words — the pattern every mainstream NBA nav uses — while the p
   was played, so this measures what an absence cost and never forecasts who will be available
   tonight — and a 13.64-point margin standard deviation against a 12.44 residual says everything
   here, team strength included, explains a small share of a basketball game.
-- **Referee Effect** (`/referees`, under **OTHER**) — a placeholder since 2026-07-30. The
-  per-official whistle numbers came back inside noise, so the finding was pulled rather than
-  published; the ingest and its dataset tests remain.
+- **Referee Effect** (`/referees`, under **OTHER**) — how each official's *mix* of foul calls
+  differs from the league's own seasonal mix, across every collected game since 2015-16. Honest
+  framing: **this is style, not bias.** The two questions that would be about fairness were both
+  asked and both came back empty — no official tilts free throws home beyond chance, and crew rest
+  makes no measurable difference — so the page publishes the one thing that does separate
+  officials and refuses the word bias. It also states its own ceiling: three officials work every
+  game and the play-by-play never records which one blew the whistle, so every game credits all
+  three and each figure is roughly a third of the real effect.
 
 Each analytics module is **additive and isolated** — its own scripts, tables, routes, and page — so new modules never destabilize the flagship rest-advantage flow.
 
@@ -180,15 +215,16 @@ flowchart TD
 - **Ship:** Vercel auto-deploys from `main`; GitHub Actions runs the daily pipeline.
 
 The diagram above is the flagship rest-advantage flow. Playoff Predictor, Shot Quality, Schedule
-Disparity, Shooting by Rest and Availability Cost are separate routes/pages that never touch
-`fatigue.ts` and are never read by the flagship queries; see
-[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for their data flows. Three of them touch the
-database not at all: Schedule Disparity is read-only — no table, no migration, no ingest —
-Shooting by Rest is served entirely from a committed static asset
-(`public/data/player-rest.json`) built offline from [hoopR](docs/adr/0002-shooting-source-hoopr.md),
-and Availability Cost ships as a generated constants module (`src/lib/availability-facts.ts`)
-pinned by a test against the artifact that produced it. None of the three add anything to the
-runtime query path.
+Disparity, Shooting by Rest, Availability Cost and Referee Effect are separate routes/pages that
+never touch `fatigue.ts` and are never read by the flagship queries; see
+[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for their data flows. Schedule Disparity adds no
+table, no migration and no ingest — it derives everything from the existing `games` and
+`fatigue_scores` reads. Three others do not query the database at all: Shooting by Rest is served
+entirely from a committed static asset (`public/data/player-rest.json`) built offline from
+[hoopR](docs/adr/0002-shooting-source-hoopr.md), Availability Cost ships as a generated constants
+module (`src/lib/availability-facts.ts`) pinned by a test against the artifact that produced it,
+and Referee Effect renders a committed JSON artifact (`src/data/referee-foul-style.json`) written
+by its ingest script. Those three add nothing to the runtime query path.
 
 ---
 
@@ -323,13 +359,14 @@ docs/             # architecture, database, pipeline, API, frontend, ADRs
 
 - [x] **Rest Advantage model** (flagship) — fatigue score + rest-advantage backtest
 - [x] **Playoff Predictor** — series win-probability model (record-driven logistic) at `/playoffs`
-- [x] **Shot Quality** — Expected Shot Value / xeFG% half-court hexbin at `/shot-quality`
+- [x] **Shot Quality** — Expected Shot Value / xeFG% half-court grid map at `/shot-quality`
 - [x] **Schedule Disparity** — net edge games per team-season at `/schedule`
 - [x] **Shooting by Rest** — per-player eFG% split by his own rest at `/shooting`
 - [x] **Season Report** — one season end to end: the rest call, which teams converted an edge,
       and what the schedule cost each of them, at `/season`
 - [x] **Availability Cost** — what a missing rotation player costs in points of margin, at
       `/availability`
+- [x] **Referee Effect** — each official's foul mix against the league's own, at `/referees`
 
 ---
 

@@ -585,6 +585,54 @@ measured here, team strength included, explains a small share of a basketball ga
 Re-run only when the underlying box scores change — after a season ends — then regenerate the
 JSON and re-sync the TypeScript constants. The suite tells you if you forget the second step.
 
+## Referee Effect pipeline — the `/referees` foul-style table
+
+One script, run by hand: **`scripts/fetch_officials.ts`** (`npx tsx scripts/fetch_officials.ts`).
+
+**Source is ESPN, and not by preference.** `cdn.nba.com` 403s and `stats.nba.com` times out from
+both Seoul and GitHub's runners (§ SEASON_ROLLOVER 2), while ESPN game summaries carry named
+officials back to at least 2002. Coverage starts at `FIRST_SEASON = "2015-16"`. Every HTTP
+response is cached under `ml/data/officials/` (gitignored) — the date scoreboards are
+`sb-YYYYMMDD.json`, **the same cache `fetch_game_context.ts` writes**, so the two scripts share
+fetches and a re-run or an extension to earlier seasons only pulls what is missing.
+
+**Two artifacts, both committed:**
+
+| Output | Metric | Pinned by |
+|---|---|---|
+| `src/data/referee-whistle.json` | Free-throw attempts by side — the home-tilt question | `referee-whistle.test.ts` |
+| `src/data/referee-foul-style.json` | Foul *mix* by type vs the league's own mix | `referee-foul-style.test.ts` |
+
+**Why FTA rather than fouls for the whistle metric:** it is the whistle's direct scoreboard
+consequence, and ESPN's `fouls` field is missing (rendered as `0`) for a nontrivial slice of
+games while FTA is present throughout. A scattered set of games — mostly Oct–Nov 2015 — carries
+no box statistics at all; those are counted and skipped rather than treated as zeros.
+
+**Three modelling decisions worth knowing before re-running:**
+
+- **Shares are baselined per season**, against that season's own mean share per foul type and
+  mean fouls per game. The league's foul mix moves across a decade, so an absolute baseline
+  would score officials on the era they worked in.
+- **Overtime games are excluded.** Foul rates do not scale evenly across types in overtime, so
+  an official with more of it would drift on mix alone.
+- **`Offensive Foul Turnover` is deliberately excluded from the taxonomy** and must stay that
+  way: the NBA logs an offensive foul twice, once as the foul and once as the turnover it
+  causes, so counting both double-counts the same call.
+
+**The publication bar is `MIN_GAMES = 200`** (`src/lib/referee-foul-style.ts`); `publishable()`
+filters below it, so the artifact holds more officials than the page shows. The page emphasises
+a cell only at `|z| >= 2`, and states in its own copy that a call cannot be attributed to one
+official — three work every game and the play-by-play never records which blew the whistle, so
+each figure is roughly a third of the real effect.
+
+## Win-total market check — `/schedule`'s published null
+
+**`scripts/fetch_win_totals.ts`** writes `src/data/win-total-benchmark.json`, rendered by
+`WinTotalMarketCheck` at the foot of `/schedule` and pinned by `win-total-benchmark.test.ts`.
+It benchmarks a season's schedule edge against the preseason win-total market and publishes the
+**null** it found (r ≈ −0.016 across 884 team-seasons) rather than dropping it. Run by hand,
+like the `ml/` artifacts; it covers a fixed archive range rather than tracking the live season.
+
 ## Cron cadence
 
 | Scheduler | File | Schedule | Notes |

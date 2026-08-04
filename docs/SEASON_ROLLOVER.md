@@ -163,24 +163,29 @@ GitHub and every social platform, so a corrected card only appears after they re
 
 ## 8. Dependency freeze — do not regenerate the lockfile casually
 
-The tree is deliberately frozen (Next 16.2.10 / React 19.2.4). Three security overrides are
-pinned in `package.json` under the `pnpm` field:
+The tree is deliberately frozen (Next 16.2.12 / React 19.2.4). Note that
+`eslint-config-next` is intentionally left at 16.2.10: it is a lint package, not part of the
+runtime, so it was not moved by the 2026-07-30 security patch.
+
+**Four** security overrides are pinned in `pnpm-workspace.yaml` under `overrides:` (lines 7-14):
 
 ```
-"ws@>=8.0.0 <8.21.0": ">=8.21.0"   ·   "postcss@<8.5.10": "8.5.10"   ·   "@babel/core@<=7.29.0": "7.29.6"
+'@babel/core@<=7.29.0': 7.29.6     ·   postcss@<8.5.18: 8.5.18
+sharp@<0.35.0: '>=0.35.0'          ·   ws@>=8.0.0 <8.21.0: '>=8.21.0'
 ```
 
-**pnpm 10 and later do not read that field at all.** Any modern pnpm prints
-`[WARN] The "pnpm" field in package.json is no longer read by pnpm` on every script — that
-warning is expected, not a fault. The pins survive today only because two things hold:
+Each is a CVE pin, not a preference — `postcss` sits at 8.5.18 rather than the older 8.5.10
+because that only covered an earlier advisory, and `sharp` is pinned for libvips CVEs inherited
+through Next's image optimizer.
 
-1. `packageManager: "pnpm@9.15.9"` in `package.json`, which makes a pnpm ≥10 client delegate
-   to 9.15.9, the version that *does* read the field; and
-2. `pnpm install --frozen-lockfile` in CI against a committed `pnpm-lock.yaml` whose
-   `overrides:` block (lines 11-14) already resolves `ws@8.21.0`.
+**The migration this section used to warn about is done.** `packageManager` is now
+`pnpm@11.8.0`, which reads `pnpm-workspace.yaml` directly, and `package.json` no longer has a
+`pnpm` field at all — so the old "delegate to 9.15.9 so it still reads the field" mechanism, and
+the expected `[WARN] The "pnpm" field … is no longer read` it produced, are both gone. Build
+approval moved with it: pnpm 11 replaced `onlyBuiltDependencies` / `neverBuiltDependencies` with
+the `allowBuilds:` map (lines 19-23).
 
-So: **do not bump `packageManager`, and do not regenerate `pnpm-lock.yaml`, without moving
-`overrides` + `neverBuiltDependencies` into `pnpm-workspace.yaml` in the same change**
-(workspace-level overrides need pnpm ≥10.4). Skip that and all three CVE pins vanish silently,
-with no error and no failing test. Do **not** move them while `packageManager` still says
-9.15.9 — that version does not read the workspace file, so the pins would break the other way.
+The standing rule is now just this: **keep the overrides in `pnpm-workspace.yaml`, and re-check
+each pin against its advisory before regenerating `pnpm-lock.yaml`.** After any regeneration,
+confirm the four still resolve — they appear in the lockfile's own `overrides:` block at lines
+7-11. Skip that check and a CVE pin can vanish silently, with no error and no failing test.

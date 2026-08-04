@@ -33,7 +33,9 @@ export const dynamic = "force-dynamic";
  * Unauthenticated access is rejected when `VERCEL=1` or when
  * `CRON_SECRET` is set (so local/staging can lock the route too).
  *
- * On Vercel Hobby, crons are limited to once per day (`vercel.json`: 10:00 UTC).
+ * On Vercel Hobby, crons are limited to once per day. `vercel.json` is the source of truth
+ * for the cadence and the time — restating the time here is what let this comment drift to
+ * 10:00 UTC, the value that was considered and rejected for firing before tip-off.
  */
 export async function GET(request: Request) {
   const authHeader = request.headers.get("authorization");

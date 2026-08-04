@@ -4,6 +4,7 @@ import {
   formatRestAdvantageDisplay,
   type RestAdvantageEvidenceSource,
 } from "@/lib/rest-advantage-display";
+import type { RestAdvantage } from "@/types";
 
 describe("formatRestAdvantageDisplay", () => {
   it("labels the away team when the API marks away as advantaged", () => {
@@ -65,7 +66,8 @@ describe("formatRestAdvantageDisplay", () => {
 
 describe("buildRestAdvantageEvidence", () => {
   const source: RestAdvantageEvidenceSource = {
-    // Cumulative buckets: each counts every game at or above its threshold.
+    // Cumulative buckets: each counts every game at or above its threshold. Every one of
+    // these is built from CALLED games only — i.e. the rested team was also at home.
     thresholds: [
       { threshold: 2, games: 20000, restedTeamWins: 11240, winPct: 56.2 },
       { threshold: 3, games: 12481, restedTeamWins: 7139, winPct: 57.2 },
@@ -74,12 +76,30 @@ describe("buildRestAdvantageEvidence", () => {
     ],
     overallWinRate: 54.8,
     totalGames: 39412,
+    homeAwayBreakdown: {
+      homeTeamMoreRested: { games: 39412, restedTeamWins: 21598, winPct: 54.8 },
+      awayTeamMoreRested: { games: 11548, restedTeamWins: 4894, winPct: 42.4 },
+    },
   };
+
+  /**
+   * `classifyRestAdvantage` derives `differential` as away fatigue minus home fatigue, so a
+   * POSITIVE gap means the home team is the rested one. These two helpers keep the fixtures
+   * on that convention rather than restating it at fifteen call sites.
+   */
+  const homeRested = (gap: number): RestAdvantage => ({
+    differential: gap,
+    advantageTeam: "home",
+  });
+  const awayRested = (gap: number): RestAdvantage => ({
+    differential: -gap,
+    advantageTeam: "away",
+  });
 
   it("picks the highest cleared bucket, not the nearest one", () => {
     // Regression: the original spec applied the RA>=5 rate (61.1%) to a 4.1 gap.
     // Because the buckets are cumulative, 4.1 belongs to "3 or more".
-    const ev = buildRestAdvantageEvidence(4.1, source);
+    const ev = buildRestAdvantageEvidence(homeRested(4.1), source);
     expect(ev?.classLabel).toBe("3 or more");
     expect(ev?.winPct).toBe(57.2);
     expect(ev?.games).toBe(12481);
@@ -87,16 +107,22 @@ describe("buildRestAdvantageEvidence", () => {
   });
 
   it("selects the top bucket for a gap that clears every threshold", () => {
-    expect(buildRestAdvantageEvidence(9.4, source)?.classLabel).toBe("7 or more");
+    expect(buildRestAdvantageEvidence(homeRested(9.4), source)?.classLabel).toBe(
+      "7 or more"
+    );
   });
 
   it("treats a threshold boundary as cleared", () => {
-    expect(buildRestAdvantageEvidence(2, source)?.classLabel).toBe("2 or more");
-    expect(buildRestAdvantageEvidence(1.999, source)?.classLabel).toBe("any measurable");
+    expect(buildRestAdvantageEvidence(homeRested(2), source)?.classLabel).toBe(
+      "2 or more"
+    );
+    expect(buildRestAdvantageEvidence(homeRested(1.999), source)?.classLabel).toBe(
+      "any measurable"
+    );
   });
 
   it("falls back to the overall rate for a called gap that clears no threshold", () => {
-    const ev = buildRestAdvantageEvidence(1.2, source);
+    const ev = buildRestAdvantageEvidence(homeRested(1.2), source);
     expect(ev?.classLabel).toBe("any measurable");
     expect(ev?.winPct).toBe(54.8);
     expect(ev?.games).toBe(39412);
@@ -104,15 +130,20 @@ describe("buildRestAdvantageEvidence", () => {
   });
 
   it("counts exactly 0.5 as a call, matching classifyRestAdvantage", () => {
-    expect(buildRestAdvantageEvidence(0.5, source)).not.toBeNull();
-    expect(buildRestAdvantageEvidence(0.49, source)).toBeNull();
+    expect(buildRestAdvantageEvidence(homeRested(0.5), source)).not.toBeNull();
+    expect(buildRestAdvantageEvidence(homeRested(0.49), source)).toBeNull();
   });
 
   it("says nothing for a neutral, absent or sourceless matchup", () => {
-    expect(buildRestAdvantageEvidence(0.1, source)).toBeNull();
+    expect(
+      buildRestAdvantageEvidence(
+        { differential: 0.1, advantageTeam: "neutral" },
+        source
+      )
+    ).toBeNull();
     expect(buildRestAdvantageEvidence(null, source)).toBeNull();
     expect(buildRestAdvantageEvidence(undefined, source)).toBeNull();
-    expect(buildRestAdvantageEvidence(4.1, null)).toBeNull();
+    expect(buildRestAdvantageEvidence(homeRested(4.1), null)).toBeNull();
   });
 
   it("ignores a bucket with a zero denominator and falls through", () => {
@@ -120,12 +151,19 @@ describe("buildRestAdvantageEvidence", () => {
       ...source,
       thresholds: [{ threshold: 7, games: 0, restedTeamWins: 0, winPct: 0 }],
     };
-    expect(buildRestAdvantageEvidence(8, sparse)?.classLabel).toBe("any measurable");
+    expect(buildRestAdvantageEvidence(homeRested(8), sparse)?.classLabel).toBe(
+      "any measurable"
+    );
   });
 
   it("refuses to make a claim with no denominator at all", () => {
     expect(
-      buildRestAdvantageEvidence(8, { thresholds: [], overallWinRate: 0, totalGames: 0 })
+      buildRestAdvantageEvidence(homeRested(8), {
+        thresholds: [],
+        overallWinRate: 0,
+        totalGames: 0,
+        homeAwayBreakdown: source.homeAwayBreakdown,
+      })
     ).toBeNull();
   });
 
@@ -134,26 +172,72 @@ describe("buildRestAdvantageEvidence", () => {
       ...source,
       thresholds: [{ threshold: 2, games: 900, restedTeamWins: 405, winPct: 45.0 }],
     };
-    expect(buildRestAdvantageEvidence(3, below)?.deviation).toBe(-5);
+    expect(buildRestAdvantageEvidence(homeRested(3), below)?.deviation).toBe(-5);
 
     const level: RestAdvantageEvidenceSource = {
       ...source,
       thresholds: [{ threshold: 2, games: 900, restedTeamWins: 450, winPct: 50 }],
     };
-    expect(buildRestAdvantageEvidence(3, level)?.deviation).toBe(0);
+    expect(buildRestAdvantageEvidence(homeRested(3), level)?.deviation).toBe(0);
   });
 
   it("renders the denominator with thousands separators", () => {
-    expect(buildRestAdvantageEvidence(1.2, source)?.sentence).toContain("n = 39,412");
+    expect(buildRestAdvantageEvidence(homeRested(1.2), source)?.sentence).toContain(
+      "n = 39,412"
+    );
   });
 
   it("states the denominator, and no coin flip, in every sentence", () => {
     // The house rule, asserted directly.
-    for (const diff of [0.6, 1.2, 2.5, 4.1, 6, 12]) {
-      const ev = buildRestAdvantageEvidence(diff, source);
-      expect(ev, `no evidence for ${diff}`).not.toBeNull();
-      expect(ev!.sentence).toMatch(/n = [\d,]+/);
-      expect(ev!.sentence).not.toContain("coin flip");
+    for (const gap of [0.6, 1.2, 2.5, 4.1, 6, 12]) {
+      for (const ra of [homeRested(gap), awayRested(gap)]) {
+        const ev = buildRestAdvantageEvidence(ra, source);
+        expect(ev, `no evidence for ${ra.advantageTeam} ${gap}`).not.toBeNull();
+        expect(ev!.sentence).toMatch(/n = [\d,]+/);
+        expect(ev!.sentence).not.toContain("coin flip");
+      }
     }
+  });
+
+  // ─── The rested team is the visitor ──────────────────────────────
+  //
+  // Every `thresholds` bucket and `overallWinRate` above is built from CALLED games only —
+  // `buildHistoricalBacktest` filters through `isCalledSide`, which is true for "home" alone.
+  // Keying the sentence off `Math.abs(differential)` therefore printed a home-rested-only win
+  // rate onto a card whose rested team is the visitor: the exact games the model declines, and
+  // which /analysis publishes as losing at 42.4%.
+
+  it("never states a called-games win rate on a rested-visitor matchup", () => {
+    for (const gap of [0.6, 1.2, 2.5, 4.1, 6, 12]) {
+      const sentence = buildRestAdvantageEvidence(awayRested(gap), source)!.sentence;
+      for (const homeOnlyRate of ["56.2", "57.2", "61.1", "63.4", "54.8"]) {
+        expect(sentence, `leaked the home-rested rate at gap ${gap}`).not.toContain(
+          homeOnlyRate
+        );
+      }
+      expect(sentence).not.toContain("n = 39,412");
+    }
+  });
+
+  it("states the declined half instead, with its own denominator", () => {
+    const ev = buildRestAdvantageEvidence(awayRested(4.1), source)!;
+    expect(ev.classLabel).toBe("rested visitor");
+    expect(ev.winPct).toBe(42.4);
+    expect(ev.games).toBe(11548);
+    expect(ev.deviation).toBe(-7.6);
+    expect(ev.sentence).toContain("42.4%");
+    expect(ev.sentence).toContain("n = 11,548");
+  });
+
+  it("says nothing when the declined half has no denominator either", () => {
+    expect(
+      buildRestAdvantageEvidence(awayRested(4.1), {
+        ...source,
+        homeAwayBreakdown: {
+          homeTeamMoreRested: { games: 39412, restedTeamWins: 21598, winPct: 54.8 },
+          awayTeamMoreRested: { games: 0, restedTeamWins: 0, winPct: 0 },
+        },
+      })
+    ).toBeNull();
   });
 });

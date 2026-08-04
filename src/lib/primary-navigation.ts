@@ -86,9 +86,11 @@ export const OTHER_NAV_ITEMS = [
   {
     href: "/referees",
     label: "REFEREE EFFECT",
-    // The page is a placeholder — the whistle numbers came back inside noise and were pulled.
-    // The description has to stop promising a table that is no longer there.
-    guideDescription: "Still being built.",
+    // Describes foul *style*, never bias: the two fairness questions (a home whistle tilt, and
+    // crew rest) were both asked and both came back inside noise, so the page publishes the one
+    // thing that does separate officials — which fouls they call — and says so itself.
+    guideDescription:
+      "Compare how each official's mix of foul calls differs from the league's own.",
   },
 ] as const;
 

@@ -1,10 +1,12 @@
 # One-off reachability probe for the NBA data sources, run from a US GitHub runner.
 #
-# Why this exists: docs/SEASON_ROLLOVER.md §2 records that `cdn.nba.com` returns 403 from both
-# Seoul and GitHub Actions, and lists `stats.nba.com` from Actions as **untested**. That single
-# unknown gates the clean 2026-27 schedule ingest path — `fetch_schedule.py` uses nba_api, which
-# talks to `stats.nba.com`, and only that source yields the `002…` IDs the live-score cron and
-# the playoff/shot modules key on.
+# Why this exists: it ANSWERED the question it was built for, on 2026-07-27 — `stats.nba.com`
+# times out from GitHub Actions too (25s, 0 bytes, runner in San Jose), so the block is a
+# datacenter block rather than a geo block and there is **no clean `002…`-ID path**. That result
+# is recorded in docs/SEASON_ROLLOVER.md §2 and drives the §3 seeding decision.
+#
+# It is kept as a RE-CONFIRMATION probe, not an open question: Akamai policy can change, and §3
+# explicitly asks for a re-run before anyone relies on that table to seed a season.
 #
 # Reads nothing and writes nothing: no database, no secrets, no repository changes. Safe to run
 # at any time. Record the result in docs/SEASON_ROLLOVER.md §2 with the date.

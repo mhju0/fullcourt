@@ -60,33 +60,67 @@ export type RestAdvantageEvidence = {
   sentence: string;
 };
 
-/** The backtest fields this module needs. Keeps callers from passing the whole payload. */
+/**
+ * The backtest fields this module needs. Keeps callers from passing the whole payload.
+ *
+ * `homeAwayBreakdown` is in here because `thresholds` and `overallWinRate` are **not**
+ * symmetric: `buildHistoricalBacktest` filters them through `isCalledSide`, so both describe
+ * home-rested games alone. The breakdown is the only field that can speak for the other half.
+ */
 export type RestAdvantageEvidenceSource = Pick<
   AnalysisResponse,
-  "thresholds" | "overallWinRate" | "totalGames"
+  "thresholds" | "overallWinRate" | "totalGames" | "homeAwayBreakdown"
 >;
 
 /**
  * Picks the historical class a matchup belongs to and states its record.
+ *
+ * Takes the whole `RestAdvantage` rather than a bare differential **on purpose**. The gap's
+ * magnitude alone does not identify a class: `thresholds` and `overallWinRate` are built from
+ * called games only (`isCalledSide`, i.e. the rested team was also at home), so keying off
+ * `Math.abs(differential)` printed a home-rested win rate onto rested-visitor cards — the very
+ * games this model declines, and which `/analysis` publishes as losing at 42.4%. Passing the
+ * pair together makes that mismatch unrepresentable.
  *
  * `thresholds` are CUMULATIVE (`|differential| >= threshold`), not disjoint bins, so a
  * 4.1 gap belongs to "3 or more" — not to a bucket centred on 4. Gaps the classifier
  * calls but that clear no threshold (0.5 <= |RA| < 2) fall back to the overall rate,
  * whose "any measurable" wording signals that it is the weakest class available.
  *
+ * A rested visitor gets the declined half instead, stated as the loss it is. The site's rule
+ * is to publish that half rather than drop it — the same thing `/analysis` does — because a
+ * card showing "LAL 4.1" and then saying nothing reads as an endorsement the model withheld.
+ *
  * Returns null when there is nothing honest to say: a neutral/no-call matchup, a missing
  * backtest, or a class with a zero denominator.
  */
 export function buildRestAdvantageEvidence(
-  differential: number | null | undefined,
+  restAdvantage: RestAdvantage | null | undefined,
   source: RestAdvantageEvidenceSource | null | undefined
 ): RestAdvantageEvidence | null {
-  if (differential === null || differential === undefined) return null;
+  if (!restAdvantage) return null;
   if (!source) return null;
 
+  const { differential, advantageTeam } = restAdvantage;
   const abs = Math.abs(differential);
   // Below the canonical call threshold the app names no team, so it claims nothing.
+  if (advantageTeam === "neutral") return null;
   if (abs < NEUTRAL_REST_ADVANTAGE_THRESHOLD) return null;
+
+  if (advantageTeam === "away") {
+    const declined = source.homeAwayBreakdown?.awayTeamMoreRested;
+    if (!declined || declined.games <= 0) return null;
+
+    return {
+      classLabel: "rested visitor",
+      winPct: declined.winPct,
+      deviation: Math.round((declined.winPct - 50) * 10) / 10,
+      games: declined.games,
+      sentence: `This model declines a rested visitor: backing one has won ${declined.winPct.toFixed(
+        1
+      )}% of the time (n = ${declined.games.toLocaleString("en-US")}).`,
+    };
+  }
 
   const cleared = source.thresholds
     .filter((bucket) => abs >= bucket.threshold && bucket.games > 0)

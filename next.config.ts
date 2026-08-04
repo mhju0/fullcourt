@@ -4,7 +4,8 @@ import type { NextConfig } from "next";
 // HTML, so 'unsafe-inline' for script/style (required by Next's hydration bootstrap
 // + Recharts/Tailwind inline styles) is an acceptable trade for not running nonce
 // middleware. 'unsafe-eval' is dev-only (React Fast Refresh); prod omits it.
-// connect-src is scoped to Supabase Realtime; img-src to the two team-logo CDNs.
+// connect-src is scoped to Supabase Realtime; img-src to the one team-logo CDN,
+// a.espncdn.com. (cdn.nba.com was dropped on 2026-07-28 — ESPN draws all 30 marks on light.)
 const isDev = process.env.NODE_ENV !== "production";
 const contentSecurityPolicy = [
   "default-src 'self'",

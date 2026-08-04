@@ -596,8 +596,8 @@ export function MatchupCard({
   const confidence = getConfidence(diff)
   const accent = confidenceAccent(confidence)
   const evidence = useMemo(
-    () => buildRestAdvantageEvidence(diff, evidenceSource),
-    [diff, evidenceSource]
+    () => buildRestAdvantageEvidence(game.restAdvantage, evidenceSource),
+    [game.restAdvantage, evidenceSource]
   )
 
   const tones = fatigueTones(game.awayFatigue?.score ?? null, game.homeFatigue?.score ?? null)

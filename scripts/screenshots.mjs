@@ -15,6 +15,11 @@ const OUT = path.join(fileURLToPath(new URL("..", import.meta.url)), "docs/scree
 
 const PAGES = [
   { file: "games", path: "/", height: 1390 },
+  // 1450 lands just under the last complete REST EDGE CONVERSION row rather than slicing one
+  // in half. The skeleton wait logs a warning on this page: ZeroRestWorkload sits far below
+  // this cut and is still fetching player-rest.json when the timer expires. Harmless here —
+  // check the capture, not the warning.
+  { file: "season", path: "/season", height: 1450 },
   { file: "analysis", path: "/analysis", height: 1160 },
   { file: "schedule", path: "/schedule", height: 1320 },
   // Raised from 1670 on 2026-07-31: the page was rebuilt argument-first (Sections A-D ahead
@@ -27,6 +32,10 @@ const PAGES = [
   // runs 2,266px; the section below this one is the "what this is not" disclaimer, which the
   // README states in prose anyway.
   { file: "availability", path: "/availability", height: 1880 },
+  // Stops on a complete row rather than slicing one. The table runs the length of the
+  // publishable list (games >= MIN_GAMES), so a full-height capture would be a wall of rows;
+  // the three caveat sections below it are stated in the README prose instead.
+  { file: "referees", path: "/referees", height: 1450 },
 ];
 
 const browser = await chromium.launch();

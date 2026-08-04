@@ -160,8 +160,11 @@ export default function DataAndLimitsPage() {
       <Section label="WHAT THIS SITE DOES NOT DO" descriptor="A CHOICE, NOT A GAP">
         <Prose>
           FullCourt measures what the schedule does to teams. It is not a prediction service, so
-          it does not model opponent strength, betting lines, favourites and underdogs, or injuries
-          and availability.
+          nothing here takes opponent strength, betting lines, or favourites and underdogs as an
+          input to a pick, and it never forecasts who will be available tonight. Availability is
+          measured only after the fact, once the box score says who actually played — see
+          Availability cost, which prices an absence against the same schedule terms and uses
+          team strength as a control rather than a signal.
         </Prose>
         <Note>
           Those inputs are what a forecast is built from, and adding them would make this a

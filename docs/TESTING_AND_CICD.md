@@ -194,6 +194,26 @@ The data workflow is independent from `.github/workflows/ci.yml`; failures in in
 disable the code-quality gate. Playwright, Playoff Predictor scripts, and the `ml/` pipeline are
 still verified on demand rather than in CI.
 
+### GitHub Actions — `.github/workflows/probe-data-sources.yml`
+
+- **Name:** "Probe NBA data sources". **Trigger:** `workflow_dispatch` only — **never
+  scheduled**, so it costs nothing until someone asks a question with it.
+- **What it does:** requests `cdn.nba.com`, `stats.nba.com`, ESPN and basketball-reference from
+  a US runner and reports each result plus the runner's egress region. That is the only way to
+  separate a *geo* block from a *datacenter* block, which is exactly the distinction that
+  decides how a new season can be seeded.
+- **`permissions: {}`, no checkout, no secrets.** It reads nothing and writes nothing.
+- **Record the result in [SEASON_ROLLOVER.md §2](SEASON_ROLLOVER.md) with the date.** Its
+  2026-07-27 run is what established there is no clean `002…`-ID path, and §3's rollover
+  checklist asks for a re-run before relying on that, since Akamai policy can change.
+
+### Code scanning — CodeQL (no file in this repo)
+
+CodeQL runs on every push to `main` and appears in `gh run list` as workflow "CodeQL", event
+`dynamic`. It is GitHub's **default setup**, configured in repository settings rather than in
+`.github/workflows/`. Noted here so that auditing the workflow directory and concluding there is
+no code scanning does not happen twice.
+
 ### Vercel cron — `vercel.json`
 
 ```json

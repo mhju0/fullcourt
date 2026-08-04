@@ -314,6 +314,9 @@ export default function HomePage() {
             thresholds: analysis.thresholds,
             overallWinRate: analysis.overallWinRate,
             totalGames: analysis.totalGames,
+            // The three fields above describe called (home-rested) games only. A card whose
+            // rested team is the visitor is denominated against this instead.
+            homeAwayBreakdown: analysis.homeAwayBreakdown,
           }
         : null,
     [analysis]

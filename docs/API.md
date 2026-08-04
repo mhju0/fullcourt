@@ -52,7 +52,7 @@ is per-request:
 |---|---|---|
 | `/shooting` | `public/data/player-rest.json` (committed static asset) | Its export changes once a season, so a Postgres round trip could only ever return the same numbers. `/season`'s zero-rest section reads the same file. |
 | `/availability` | `src/lib/availability-facts.ts` (constants, pinned by a test) | A finished measurement, not a query — it moves only when `ml/availability_facts.py` is re-run. The page is a server component with no fetch and no loading state. |
-| `/referees` | — | A placeholder since 2026-07-30; the finding was pulled as noise. The ingest and its dataset tests remain so it can return without a re-ingest. |
+| `/referees` | `src/data/referee-foul-style.json` (committed artifact written by `scripts/fetch_officials.ts`, pinned by `referee-foul-style.test.ts`) | A finished aggregate over every collected game, not a query — it moves only when the ingest is re-run. The page is a server component with no fetch and no loading state. |
 
 > **Playoff Predictor:** `GET /api/playoffs` is complete and serving live predictions —
 > `playoff_series_predictions` holds **2,098 rows** — two `model_version`s × (599 `full_insample`
@@ -241,6 +241,32 @@ Expected Shot Value (xeFG%) grid + model surface for one season. `runtime = "nod
   - `meta: { cellCount, totalFga }` — computed in the handler from `cells`.
 - **Errors:** `500` + `getPublicApiErrorMessage` on failure. An unknown/future season with no
   grid rows returns `{ cells: [], meta: { cellCount: 0, totalFga: 0 } }`, not an error.
+
+---
+
+## `GET /api/schedule-disparity`
+
+Which teams a season's schedule favored, ranked by net edge games. Powers `/schedule`.
+`runtime = "nodejs"`, `dynamic = "force-dynamic"`.
+
+- **Query (Zod):** `season?` — validated against **`rankableSeasons(browsableSeasons())`**, not
+  `NBA_SEASONS`, and this is the one route where that distinction is load-bearing:
+  - `browsableSeasons()` admits an **upcoming** season, so a schedule can be requested before
+    the season starts;
+  - `rankableSeasons()` then removes the **truncated** ones, because this module ranks teams
+    *against each other within a season* and a 63-to-67-game spread gives one team fewer
+    chances to accumulate an edge (see [ADR 0004](adr/0004-season-exclusions-belong-to-modules-not-ingest.md)).
+  - The default is `defaultRankableSeason()` — the newest season **with data**, so a bare
+    request never lands on an empty upcoming season.
+  - A season beyond the browsable list → `400 Unknown season`.
+- **Query fn:** `getScheduleDisparity(season)` → `getRegularSeasonScheduleForDisparity(season)`
+  + `getTeamDirectory()`. Read-only: no table, no migration, no ingest — it derives everything
+  from the existing `games` and `fatigue_scores` reads.
+- **Success:** `{ data: ScheduleDisparityResponse, error: null }` — the 30 ranked teams, the
+  summary strip figures, and a provisional flag for a season still in progress.
+- **Errors:** `500` + `getPublicApiErrorMessage` on failure.
+
+`src/app/api/__tests__/schedule-disparity.test.ts` pins the two-season-list rule directly.
 
 ---
 
