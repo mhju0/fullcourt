@@ -85,10 +85,21 @@ added alongside it.
   counted from the games he actually played. Served entirely from the committed
   `public/data/player-rest.json` — no table, no route. A lookup rather than a ranking, because one
   season's split is noise; see [ADR 0002](adr/0002-shooting-source-hoopr.md).
-- **Referee Effect** — each official's *mix* of foul calls against the league's own seasonal mix,
-  at `/referees`. Rebuilt 2026-07-31 after the fairness question it was named for returned a null
-  (see the 2026-07-29 → 30 surfaces log below). Nothing here is called bias, and the page says why:
-  three officials work every game and the play-by-play does not record which one blew the whistle.
+
+## In progress
+
+- **Referee Effect** (`/referees`, under the OTHER menu) — **built but deliberately
+  unpublished.** The ingest (`scripts/fetch_officials.ts`), both committed datasets, the
+  `RefereeStyleContent` table and its unit tests all exist and work; the e2e specs that exercised
+  the table are kept and skipped rather than deleted. What is unfinished is the writing that has
+  to sit around the numbers, and that is not cosmetic: a table of per-official foul rates without
+  it invites exactly the bias reading the surface exists to refuse, since three officials work
+  every game and the play-by-play never records which one blew the whistle, so each figure is
+  roughly a third of the real effect.
+
+  The page therefore shows an in-progress card, and the nav guide says "Still being built."
+  **This is an editorial decision, not drift** — it has been mistaken for stale documentation
+  once already. Restoring it is two edits, both named in the page's docstring.
 
 ## Maintenance responsibilities
 

@@ -32,10 +32,6 @@ const PAGES = [
   // runs 2,266px; the section below this one is the "what this is not" disclaimer, which the
   // README states in prose anyway.
   { file: "availability", path: "/availability", height: 1880 },
-  // Stops on a complete row rather than slicing one. The table runs the length of the
-  // publishable list (games >= MIN_GAMES), so a full-height capture would be a wall of rows;
-  // the three caveat sections below it are stated in the README prose instead.
-  { file: "referees", path: "/referees", height: 1450 },
 ];
 
 const browser = await chromium.launch();

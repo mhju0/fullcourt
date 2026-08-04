@@ -150,13 +150,14 @@ Full list in [API.md](API.md).
   model) documenting each model's terms, constants and limits. No data fetching: constants are
   imported from source (`FATIGUE_CONSTANTS` and friends) so the prose cannot drift from the code,
   and measured figures carry the date they were measured.
-- `app/referees/page.tsx` — **Referee Effect** (nav label `REFEREE EFFECT`, under `OTHER`). Was a
-  placeholder for one day: the home-whistle question returned a null on 2026-07-30, and the page
-  **returned on 2026-07-31** asking a different one — the *mix* of fouls an official calls does
-  separate officials clearly, which is a statement about style rather than fairness, and the page
-  says so itself. A server component with no fetch: every figure is read from the committed
-  `src/data/referee-foul-style.json`, written by `scripts/fetch_officials.ts` and pinned by
-  `referee-foul-style.test.ts`. Same no-runtime-path shape as `/availability`.
+- `app/referees/page.tsx` — **Referee Effect** (nav label `REFEREE EFFECT`, under `OTHER`).
+  **Built but deliberately unpublished:** the page renders an in-progress `MessageCard`, not the
+  foul-style table. The home-whistle question returned a null on 2026-07-30 and the surface was
+  rebuilt on 2026-07-31 around a different one — the *mix* of fouls an official calls — but the
+  writing that makes that legible as style rather than fairness is unfinished, so it is held
+  back. The ingest, dataset, `RefereeStyleContent` and its tests are all intact; restoring is two
+  edits, named in the page's docstring. A server component with no fetch either way, the same
+  no-runtime-path shape as `/availability`.
 - Client data fetching uses SWR through `src/lib/fetcher.ts`; live updates use Supabase
   Realtime via `src/hooks/useLiveGames.ts`.
 
@@ -563,7 +564,8 @@ COMMITTED   src/data/referee-foul-style.json   ── plus src/data/referee-whis
                  │           and src/lib/__tests__/referee-whistle.test.ts
             src/lib/referee-foul-style.ts  ── types, the |z| >= 2 emphasis rule, column set
                  │
-            app/referees/page.tsx (server component, no fetch)  →  RefereeStyleContent
+            app/referees/page.tsx (server component, no fetch)  →  MessageCard "IN PROGRESS"
+                                                          (RefereeStyleContent, held back)
 ```
 
 **The page asks a narrower question than its name.** The two fairness questions — does any

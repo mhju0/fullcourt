@@ -53,7 +53,7 @@ export default function BehindTheDataPage() {
     <BehindTheDataShell
       eyebrow="BEHIND THE DATA"
       title="Behind the data"
-      description="Every model with a section here, written out: the terms, the constants, the thresholds, and the measured results. Referee Effect is the one surface without one — its own page carries its method."
+      description="Every model with a section here, written out: the terms, the constants, the thresholds, and the measured results. Referee Effect has no section because that surface is still being built."
     >
       <Section label="HOW TO READ ANY NUMBER HERE" descriptor="THREE RULES">
         <Prose>

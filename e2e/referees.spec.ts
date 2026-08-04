@@ -1,6 +1,44 @@
 import { test, expect } from "@playwright/test";
 
-test.describe("Referee Effect", () => {
+/**
+ * `/referees` is deliberately held back — see the docstring in `src/app/referees/page.tsx`.
+ *
+ * The table specs below are kept and skipped rather than deleted, so restoring the page is two
+ * edits and no rewriting: swap the card back for `<RefereeStyleContent data={data} />`, and turn
+ * `test.describe.skip` back into `test.describe`.
+ */
+test.describe("Referee Effect — held back", () => {
+  test("shows an in-progress card rather than the table", async ({ page }) => {
+    await page.goto("/referees");
+    await expect(
+      page.getByRole("heading", { name: "What each official calls" })
+    ).toBeVisible();
+    await expect(page.getByText("IN PROGRESS").first()).toBeVisible();
+    // The guard that matters: the data must not reach the page while it is held back.
+    await expect(page.getByTestId("referee-style-row")).toHaveCount(0);
+  });
+
+  test("says the data exists, so the state reads as unfinished rather than broken", async ({
+    page,
+  }) => {
+    await page.goto("/referees");
+    await expect(page.getByText(/data behind this is collected/)).toBeVisible();
+  });
+
+  test("is still labelled as unfinished in the nav guide", async ({ page }) => {
+    await page.goto("/");
+    await page.getByRole("button", { name: "GUIDE" }).click();
+    const guide = page.getByRole("navigation", { name: "FullCourt page guide" });
+    await expect(
+      guide.getByRole("link", { name: /^REFEREE EFFECT Still being built\./ })
+    ).toBeVisible();
+  });
+});
+
+// ─── Restore with the page ────────────────────────────────────────
+// Every assertion below passed against the real table on 2026-08-03. They are skipped, not
+// removed, because the component and dataset they exercise are untouched.
+test.describe.skip("Referee Effect — the published table", () => {
   test("renders the foul-style table", async ({ page }) => {
     await page.goto("/referees");
     await expect(page.getByRole("heading", { name: "What each official calls" })).toBeVisible();

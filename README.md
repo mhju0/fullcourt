@@ -33,10 +33,14 @@ FullCourt quantifies how **travel, rest, and schedule density** shape NBA outcom
 
 🔗 **Live demo:** https://fullcourt-nba.vercel.app &nbsp;·&nbsp; **Code:** https://github.com/mhju0/fullcourt
 
-> **Project status:** actively developed, and **all nine product surfaces are complete** — none
-> is a stub, a placeholder or a coming-soon. The live demo and scheduled data pipeline are
-> operational, and new analytics modules are built as additive, isolated slices — their own
-> scripts, tables, routes, and page — so they never destabilize the flagship rest-advantage flow.
+> **Project status:** actively developed. **Eight of the nine product surfaces are finished and
+> published; the ninth, Referee Effect, is deliberately held back** — its ingest, dataset, table
+> and tests are all in the repo and working, but the writing around them is not done, so
+> `/referees` shows an in-progress card rather than a half-finished analysis. Everything else on
+> the site is complete: no stubs, no placeholders, no coming-soons. The live demo and scheduled
+> data pipeline are operational, and new analytics modules are built as additive, isolated slices
+> — their own scripts, tables, routes, and page — so they never destabilize the flagship
+> rest-advantage flow.
 >
 > **The one thing outstanding is operational, not product:** the 2026-27 season has not been
 > seeded yet, because both NBA-owned data sources are blocked from outside the US *and* from
@@ -100,14 +104,6 @@ so they can be read against each other directly. The page also answers the stand
 the whole premise — that the schedule effects are really absences in disguise.
 
 <img src="docs/screenshots/availability.png" alt="Availability Cost, headed What a missing player is worth. WHAT AN ABSENCE COSTS leads with 2.86 points — what a team loses when its best player sits — over five bars in points of final margin: best player out 2.86 highlighted in blue, playing at home 2.82, on a back-to-back 1.76, visiting altitude 1.36, and off an overtime 0.54, measured across 35,458 games with both teams' records held equal. HOW OFTEN gives three figures: 17.1% of games have one side missing its best player, 44.5% of team-games are missing nobody from the rotation, and 8.6 players in a typical rotation. THE LOAD-MANAGEMENT ERA plots one bar per season from 1996-97 at 6.0% to a highlighted 2025-26 at 19.5%, noting the climb dips in 2023-24, the season the league first required 65 games for awards eligibility. THE SCHEDULE STILL COUNTS holds who actually played fixed and re-measures each schedule term: back-to-back 1.759 to 1.641 (6.7% shift), visiting altitude 1.358 to 1.282 (5.6%), off an overtime 0.544 to 0.501 (7.9%), and schedule density 0.275 to 0.265 (3.8%) — every one under 8%, so load management does not explain the schedule away." width="900" />
-
-**Referee Effect — style, not bias.** Each official's *mix* of foul calls against the league's
-own seasonal mix. The two questions that would be about fairness — a home whistle tilt, and crew
-rest — were both asked and both came back inside noise, so the page publishes the one thing that
-does separate officials and refuses the word bias. It also states its own ceiling: three
-officials work every game and the play-by-play never records which blew the whistle.
-
-<img src="docs/screenshots/referees.png" alt="Referee Effect · Foul Style, headed What each official calls. The intro states that officials don't call the same game the same way, and that every figure is how much more or less often one calls that foul than the league does, across 11,952 games since 2015-16. A CREW CHIEFS ONLY checkbox sits above the table, with 74 of 74 officials shown at right. The table lists each official with a CC badge, games as crew chief, total games, and then six deviation columns against the league average — fouls, shooting, personal, loose ball, offensive and technical — each signed and coloured, with only the larger deviations emphasised. Gediminas Petraitis leads by volume at 721 games with a plus 11% technical rate; Zach Zarba runs 14% below league on both offensive and technical fouls; Scott Foster calls 23% more offensive fouls and 24% fewer technicals; Courtney Kirkland is plus 16% offensive and minus 22% technical. Most cells sit within a point or two of zero." width="900" />
 
 ---
 
@@ -174,14 +170,15 @@ with no time words — the pattern every mainstream NBA nav uses — while the p
   was played, so this measures what an absence cost and never forecasts who will be available
   tonight — and a 13.64-point margin standard deviation against a 12.44 residual says everything
   here, team strength included, explains a small share of a basketball game.
-- **Referee Effect** (`/referees`, under **OTHER**) — how each official's *mix* of foul calls
-  differs from the league's own seasonal mix, across every collected game since 2015-16. Honest
-  framing: **this is style, not bias.** The two questions that would be about fairness were both
-  asked and both came back empty — no official tilts free throws home beyond chance, and crew rest
-  makes no measurable difference — so the page publishes the one thing that does separate
-  officials and refuses the word bias. It also states its own ceiling: three officials work every
-  game and the play-by-play never records which one blew the whistle, so every game credits all
-  three and each figure is roughly a third of the real effect.
+- **Referee Effect** (`/referees`, under **OTHER**) — **in progress, and deliberately
+  unpublished.** The subject is how each official's *mix* of foul calls differs from the league's
+  own seasonal mix, across every collected game since 2015-16. The ingest, the dataset, the table
+  component and its tests are all in the repo and working; what is not finished is the writing
+  that has to sit around them. A table of per-official numbers without that framing invites
+  exactly the bias reading the page exists to refuse — three officials work every game and the
+  play-by-play never records which one blew the whistle, so each figure is roughly a third of the
+  real effect. Rather than ship that half-finished, the page shows an in-progress card and the
+  nav says so.
 
 Each analytics module is **additive and isolated** — its own scripts, tables, routes, and page — so new modules never destabilize the flagship rest-advantage flow.
 
@@ -366,7 +363,10 @@ docs/             # architecture, database, pipeline, API, frontend, ADRs
       and what the schedule cost each of them, at `/season`
 - [x] **Availability Cost** — what a missing rotation player costs in points of margin, at
       `/availability`
-- [x] **Referee Effect** — each official's foul mix against the league's own, at `/referees`
+- [ ] **Referee Effect** — each official's foul mix against the league's own, at `/referees`.
+      **In progress and deliberately unpublished:** the ingest, dataset, table component and
+      its tests are all in the repo and working, but the writing around them is not finished,
+      so the page shows an in-progress card instead of the table.
 
 ---
 

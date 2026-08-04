@@ -86,11 +86,12 @@ export const OTHER_NAV_ITEMS = [
   {
     href: "/referees",
     label: "REFEREE EFFECT",
-    // Describes foul *style*, never bias: the two fairness questions (a home whistle tilt, and
-    // crew rest) were both asked and both came back inside noise, so the page publishes the one
-    // thing that does separate officials — which fouls they call — and says so itself.
-    guideDescription:
-      "Compare how each official's mix of foul calls differs from the league's own.",
+    // DELIBERATE, NOT STALE. The foul-style data and table exist and are wired up, but the
+    // page's content is not finished to the standard the rest of the site is held to, so the
+    // guide says so rather than presenting it as a completed surface. Do not "correct" this to
+    // describe the table — that is the mistake, and it has been made once already.
+    // Restore-to-finished is a deliberate edit by Michael, not a doc-currency fix.
+    guideDescription: "Still being built.",
   },
 ] as const;
 
