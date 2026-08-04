@@ -104,6 +104,26 @@ Server wrapper just renders `<AnalysisContentLazy />`. The lazy client component
 describes. It used to hand-copy `PageHeader`'s markup for that; the component works fine
 inside a branch.
 
+### `/season` — Season Report (`src/app/season/page.tsx`)
+
+Server wrapper; metadata title `"Season Report"`; renders a `<PageHeader>` (eyebrow
+`ONE SEASON, DEEP`) plus `<SeasonReportContentLazy />`. **No season in the `<h1>`** — the
+selector below it reaches back to 1985-86, so a title naming one would be wrong the moment it
+moved; the sections carry the label instead.
+
+The lazy client component (`season-report-content.tsx`) fetches `/api/season-report?season=…`
+and renders, in order: three rate tiles (rest-advantage win rate, win rate at RA ≥ 2, season
+progress) against an all-season marker, then `REST EDGE CONVERSION` (records, not a ranking),
+`LOUDEST CALLS` (ranked by rest gap), `SCHEDULE TAX` (completed games only), `FATIGUE CALENDAR`
+(league average by week) and `ZERO-REST WORKLOAD` (volume, not effect).
+
+**Every rate tile is gated on sample size.** `MIN_GAMES_FOR_INFERENCE` is 100
+(`src/lib/season-report.ts`); below it a tile reads `TOO EARLY · N OF 100 GAMES NEEDED` rather
+than printing a rate a single season cannot support.
+
+Its last section, `ZeroRestWorkload`, reads `public/data/player-rest.json` directly rather than
+the API — the second surface to serve from that static asset, after `/shooting`.
+
 ### `/upcoming` — retired
 
 Folded into `/` as its UPCOMING view when the nav dropped to five tabs; the route is now a
@@ -154,8 +174,12 @@ version at `/behind-the-data/playoff-predictions`.
 
 ### `/schedule` — Schedule Disparity (`src/app/schedule/page.tsx`)
 
-Server component; metadata title `"Schedule Disparity"`; renders a `<PageHeader>` plus
-`<ScheduleDisparityContentLazy />`. The lazy client component
+Server component; metadata title `"Schedule Disparity"`; renders a `<PageHeader>`, a
+`<MethodLink>`, `<ScheduleDisparityContentLazy />` and `<WinTotalMarketCheck />`. That last one
+is static and season-independent, which is why it sits outside the season selector's data flow:
+it reads the committed `src/data/win-total-benchmark.json` (guarded by
+`win-total-benchmark.test.ts`) and publishes a deliberate **null** — a season's schedule edge
+does not correlate with the preseason win-total market. The lazy client component
 (`schedule-disparity-content.tsx`) fetches `/api/schedule-disparity?season=…` via SWR and
 renders, in order: a `<SeasonSelector>` over `browsableSeasons()`, a four-cell summary strip
 (most favored / least favored / spread / games with an edge), the ranked **net rest edge**
@@ -243,7 +267,7 @@ between the two groups is what says "not one of the six".
 Rebuilt 2026-07-30 into **seven full-viewport sections** (`calc(100svh - var(--term-chrome-h))`
 each, the
 subtraction being the sticky chrome — without it every section overran the fold by the header's
-height). Order: the claim, the thesis, the evidence, the five surfaces, what the score is made
+height). Order: the claim, the thesis, the evidence, the six surface cards, what the score is made
 of, the standard, the way in. The hero carries no buttons: they competed with the single line
 the page opens on. Evidence figures come from `getHistoricalBacktest` via the server page and
 are revalidated daily, because all three were hardcoded and all three had gone stale.
@@ -256,7 +280,7 @@ Two things on this page are easy to get wrong twice:
   `sticky` and physically overlap, so a card at `opacity: 0.45` shows the card *beneath* it
   straight through — card 02's heading landing on card 01's paragraph. The last card is not
   animated at all, which is why the bug only ever showed on 01 and 02.
-- **The five surface cards keep their copy visible at rest.** It was `lg:opacity-0` until
+- **The six surface cards keep their copy visible at rest.** It was `lg:opacity-0` until
   hover, and five tall cards showing only a label read as a loading state, not an accordion.
   Each card now carries a mono index, its route, a `SurfaceGlyph` miniature of what that page
   draws, and the copy. Index, route and glyph are `aria-hidden`, so the link's accessible name
@@ -275,14 +299,19 @@ recovery links to Games and Model Results without adding a client bundle or data
 
 ## Components
 
-### `/behind-the-data/*` — the reference section (7 routes)
+### `/behind-the-data/*` — the reference section (8 routes)
 
 `/behind-the-data` plus one route per model (`rest-advantage`, `schedule-edge`,
-`playoff-predictions`, `player-shooting`, `shot-value`) and a shared `data-and-limits`. Real
+`playoff-predictions`, `player-shooting`, `shot-value`, `availability`) and a shared
+`data-and-limits`. Real
 routes rather than client-side tabs, so each method is linkable, crawlable, and deep-linkable
 from the page it explains. `BehindTheDataShell` supplies the header and the section sub-nav;
-`behind-the-data-parts.tsx` supplies the shared prose primitives so six pages cannot drift into
-six typographic treatments of the same content.
+`behind-the-data-parts.tsx` supplies the shared prose primitives so seven pages cannot drift into
+seven typographic treatments of the same content.
+
+`/referees` is the one product surface with no section here — its method (per-season share
+baselining, the |z| ≥ 2 emphasis rule, why a call cannot be attributed to one official) is
+stated on the page itself, and the index copy says so rather than promising a section.
 
 **Colour is load-bearing here** (2026-07-30). The pages were near-uniform black-on-white and
 read as one undifferentiated wall, so each primitive carries an accent and each accent means one
@@ -440,7 +469,7 @@ alone. It is style, not bias, and the copy says so.
 
 Client-side, first-visit orientation dialog implemented with Base UI `Dialog`. On mount it reads
 the versioned `localStorage` flag `fullcourt:onboarding:v1`; new visitors see the dialog, while
-returning visitors see the unobtrusive `GUIDE` footer control. It explains the five routes from
+returning visitors see the unobtrusive `GUIDE` footer control. It explains every primary surface — the six direct tabs plus the three behind `OTHER` — from
 the shared `PRIMARY_NAV_ITEMS` source, with page links that dismiss the dialog and navigate.
 Close, backdrop, Escape, and `START EXPLORING` all persist the completion flag; if browser storage
 is unavailable, the guide still closes for the current page. The responsive panel is centered on
@@ -547,8 +576,10 @@ Loaded via `next/dynamic` (`ssr: false`). SWR `/api/playoffs?season=…`. Render
    home-court team (`HC` chip) vs. opponent, series score, `MethodInline` `PICK`/`HINDSIGHT`
    win-probability reads, and a `CorrectnessBadge` (✓ CORRECT blue / ✗ UPSET red / — pending
    neutral, with a "(HINDSIGHT)" tag when no forecast backed the verdict). Expanding a card
-   reveals `SeriesFeatureGrid` (seed diff, win% diff, entry rest diff, h2h diff; sign convention
-   = home-court minus opponent).
+   reveals `SeriesFeatureGrid` (seed diff, win% diff, prior grind diff, entry rest diff, h2h
+   diff). Sign convention: positive always favours the home-court team, which means every row
+   is home-court − opponent *except* prior grind diff, which is opponent − home-court. The
+   component prints that caption itself.
 
 Same terminal-card / `.mono` styling as the rest of the app. `MethodComparisonHeader` /
 `MethodMetricCard` and the `OOS`/`IN` labels were removed in the 2026-07-30 repositioning
@@ -586,7 +617,7 @@ maps) when the Supabase env vars are unset (client is `null`).
 `lazyContent(load, skeleton)` — `next/dynamic` with `ssr: false` and the given skeleton as its
 `loading`. Every page's content component is loaded this way: these surfaces are client-only
 state fed by a fetch, so server-rendering them would ship markup React immediately replaces.
-The seven `*-lazy` modules remain separate files because `dynamic()` with `ssr: false` cannot
+The eight `*-lazy` modules remain separate files because `dynamic()` with `ssr: false` cannot
 be called from a server component and the pages are server components — but each now carries
 only its skeleton, not a restatement of the loader.
 

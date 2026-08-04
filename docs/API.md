@@ -244,6 +244,32 @@ Expected Shot Value (xeFG%) grid + model surface for one season. `runtime = "nod
 
 ---
 
+## `GET /api/schedule-disparity`
+
+Which teams a season's schedule favored, ranked by net edge games. Powers `/schedule`.
+`runtime = "nodejs"`, `dynamic = "force-dynamic"`.
+
+- **Query (Zod):** `season?` — validated against **`rankableSeasons(browsableSeasons())`**, not
+  `NBA_SEASONS`, and this is the one route where that distinction is load-bearing:
+  - `browsableSeasons()` admits an **upcoming** season, so a schedule can be requested before
+    the season starts;
+  - `rankableSeasons()` then removes the **truncated** ones, because this module ranks teams
+    *against each other within a season* and a 63-to-67-game spread gives one team fewer
+    chances to accumulate an edge (see [ADR 0004](adr/0004-season-exclusions-belong-to-modules-not-ingest.md)).
+  - The default is `defaultRankableSeason()` — the newest season **with data**, so a bare
+    request never lands on an empty upcoming season.
+  - A season beyond the browsable list → `400 Unknown season`.
+- **Query fn:** `getScheduleDisparity(season)` → `getRegularSeasonScheduleForDisparity(season)`
+  + `getTeamDirectory()`. Read-only: no table, no migration, no ingest — it derives everything
+  from the existing `games` and `fatigue_scores` reads.
+- **Success:** `{ data: ScheduleDisparityResponse, error: null }` — the 30 ranked teams, the
+  summary strip figures, and a provisional flag for a season still in progress.
+- **Errors:** `500` + `getPublicApiErrorMessage` on failure.
+
+`src/app/api/__tests__/schedule-disparity.test.ts` pins the two-season-list rule directly.
+
+---
+
 ## `GET /api/season-report`
 
 One season, reported through the site's rest-advantage lens. Powers `/season`.

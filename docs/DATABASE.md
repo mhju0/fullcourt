@@ -292,7 +292,7 @@ a **calibration** improvement over the majority baseline, not a distinguishable 
 
 ## Table: `shot_grid` (Shot Quality — Expected Shot Value / xeFG%)
 
-Aggregated per-cell shot counts — the read model for the `/shot-quality` hexbin chart. A
+Aggregated per-cell shot counts — the read model for the `/shot-quality` grid chart. A
 league-wide row (`team_id IS NULL`) exists per `(season, cell_x, cell_y)`; the schema also
 allows a per-team grain via a non-null `team_id`, though `getShotQualityGrid` only reads the
 league-wide rows today. **Not declared in `schema.ts`** (intentional — see Conventions);

@@ -224,7 +224,7 @@ the row change → connected clients update in place.
 - **Removed (2026-06-29):** the dead `/api/analysis/accuracy` endpoint and its orphaned query fns
   (`getResolvedPredictions`, `getUpcomingPredictionsForSeason`) + `Accuracy*` types — nothing else
   imported them, so the route + dead code were deleted rather than rewired.
-- **Versions (verified against code):** Next.js **16.2.10**, React **19.2.4**; the GitHub cron is
+- **Versions (verified against code):** Next.js **16.2.12**, React **19.2.4**; the GitHub cron is
   `0 21 * * *` (daily, year-round, season self-gated); live site
   https://fullcourt-nba.vercel.app, and no `fetch_odds.ts` exists.
 - **Playoff Predictor (complete):** an additive, isolated module — see the subsection below and
@@ -269,7 +269,7 @@ the row change → connected clients update in place.
      `useState` values and render-time reconciliation the slate work deleted, with the search URL
      and pagination arithmetic assembled where no test could reach them.
   5. **One `PageHeader`, one `lazyContent`.** `PageHeader` had two hand-maintained copies of its
-     markup; the seven `*-lazy` modules each restated `dynamic(..., { ssr: false })` around the
+     markup; the (then) seven `*-lazy` modules each restated `dynamic(..., { ssr: false })` around the
      one part that differs.
 - **Architecture pass: four deepenings (2026-08-01):** each replaces a rule that was restated
   per caller with one place it lives.
@@ -444,7 +444,7 @@ public.shot_value_surface                (p_make / expected_efg / xpps per cell 
         ▼
 GET /api/shot-quality  →  getShotQualityGrid()  →  ShotQualityResponse
         ▼
-/shot-quality page  →  ShotQualityContent  →  half-court hexbin SVG (2 courts value / 1 court diff)
+/shot-quality page  →  ShotQualityContent  →  half-court grid SVG (2 courts value / 1 court diff)
 ```
 
 - **Two different venvs, by design:** `collect_shot_data.py` runs in the **root** pipeline venv
