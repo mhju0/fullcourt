@@ -309,9 +309,11 @@ from the page it explains. `BehindTheDataShell` supplies the header and the sect
 `behind-the-data-parts.tsx` supplies the shared prose primitives so seven pages cannot drift into
 seven typographic treatments of the same content.
 
-`/referees` is the one product surface with no section here — its method (per-season share
-baselining, the |z| ≥ 2 emphasis rule, why a call cannot be attributed to one official) is
-stated on the page itself, and the index copy says so rather than promising a section.
+`/referees` has no section here, and is also the one product surface currently held back — its
+page shows an in-progress card rather than the foul-style table. Its method (per-season share
+baselining, the |z| ≥ 2 emphasis rule, why a call cannot be attributed to one official) is the
+writing that is unfinished, which is why the surface is unpublished; a section here would land
+with it.
 
 **Colour is load-bearing here** (2026-07-30). The pages were near-uniform black-on-white and
 read as one undifferentiated wall, so each primitive carries an accent and each accent means one
@@ -366,7 +368,14 @@ left to review:
 The season trend is one series, so it carries no legend and one hue, and every column holds a
 `title` — a reader gets any season's figure without the page shipping a line of JavaScript.
 
-### `/referees` — foul style
+### `/referees` — foul style *(built, deliberately unpublished)*
+
+**The page currently renders an in-progress card, not the table below.** Everything described in
+this section exists and works — it is held back because the writing around the numbers is not
+finished, and that framing is what stops the table reading as a bias claim. Restoring it is two
+edits, both named in the docstring of `src/app/referees/page.tsx`: swap the `MessageCard` back
+for `<RefereeStyleContent data={data} />`, and un-skip the table block in `e2e/referees.spec.ts`.
+Treat this as an editorial state, not stale documentation.
 
 Returned 2026-07-31 asking a different question. The page was stubbed on 2026-07-30 because its
 original question — does any official tilt the whistle home? — came back inside noise, and a
