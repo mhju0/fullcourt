@@ -144,9 +144,14 @@ with no time words — the pattern every mainstream NBA nav uses — while the p
   was played, so this measures what an absence cost and never forecasts who will be available
   tonight — and a 13.64-point margin standard deviation against a 12.44 residual says everything
   here, team strength included, explains a small share of a basketball game.
-- **Referee Effect** (`/referees`, under **OTHER**) — a placeholder since 2026-07-30. The
-  per-official whistle numbers came back inside noise, so the finding was pulled rather than
-  published; the ingest and its dataset tests remain.
+- **Referee Effect** (`/referees`, under **OTHER**) — how each official's *mix* of foul calls
+  differs from the league's own seasonal mix, across every collected game since 2015-16. Honest
+  framing: **this is style, not bias.** The two questions that would be about fairness were both
+  asked and both came back empty — no official tilts free throws home beyond chance, and crew rest
+  makes no measurable difference — so the page publishes the one thing that does separate
+  officials and refuses the word bias. It also states its own ceiling: three officials work every
+  game and the play-by-play never records which one blew the whistle, so every game credits all
+  three and each figure is roughly a third of the real effect.
 
 Each analytics module is **additive and isolated** — its own scripts, tables, routes, and page — so new modules never destabilize the flagship rest-advantage flow.
 
@@ -180,15 +185,16 @@ flowchart TD
 - **Ship:** Vercel auto-deploys from `main`; GitHub Actions runs the daily pipeline.
 
 The diagram above is the flagship rest-advantage flow. Playoff Predictor, Shot Quality, Schedule
-Disparity, Shooting by Rest and Availability Cost are separate routes/pages that never touch
-`fatigue.ts` and are never read by the flagship queries; see
-[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for their data flows. Three of them touch the
-database not at all: Schedule Disparity is read-only — no table, no migration, no ingest —
-Shooting by Rest is served entirely from a committed static asset
-(`public/data/player-rest.json`) built offline from [hoopR](docs/adr/0002-shooting-source-hoopr.md),
-and Availability Cost ships as a generated constants module (`src/lib/availability-facts.ts`)
-pinned by a test against the artifact that produced it. None of the three add anything to the
-runtime query path.
+Disparity, Shooting by Rest, Availability Cost and Referee Effect are separate routes/pages that
+never touch `fatigue.ts` and are never read by the flagship queries; see
+[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for their data flows. Schedule Disparity adds no
+table, no migration and no ingest — it derives everything from the existing `games` and
+`fatigue_scores` reads. Three others do not query the database at all: Shooting by Rest is served
+entirely from a committed static asset (`public/data/player-rest.json`) built offline from
+[hoopR](docs/adr/0002-shooting-source-hoopr.md), Availability Cost ships as a generated constants
+module (`src/lib/availability-facts.ts`) pinned by a test against the artifact that produced it,
+and Referee Effect renders a committed JSON artifact (`src/data/referee-foul-style.json`) written
+by its ingest script. Those three add nothing to the runtime query path.
 
 ---
 
@@ -330,6 +336,7 @@ docs/             # architecture, database, pipeline, API, frontend, ADRs
       and what the schedule cost each of them, at `/season`
 - [x] **Availability Cost** — what a missing rotation player costs in points of margin, at
       `/availability`
+- [x] **Referee Effect** — each official's foul mix against the league's own, at `/referees`
 
 ---
 

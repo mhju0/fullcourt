@@ -52,7 +52,7 @@ is per-request:
 |---|---|---|
 | `/shooting` | `public/data/player-rest.json` (committed static asset) | Its export changes once a season, so a Postgres round trip could only ever return the same numbers. `/season`'s zero-rest section reads the same file. |
 | `/availability` | `src/lib/availability-facts.ts` (constants, pinned by a test) | A finished measurement, not a query — it moves only when `ml/availability_facts.py` is re-run. The page is a server component with no fetch and no loading state. |
-| `/referees` | — | A placeholder since 2026-07-30; the finding was pulled as noise. The ingest and its dataset tests remain so it can return without a re-ingest. |
+| `/referees` | `src/data/referee-foul-style.json` (committed artifact written by `scripts/fetch_officials.ts`, pinned by `referee-foul-style.test.ts`) | A finished aggregate over every collected game, not a query — it moves only when the ingest is re-run. The page is a server component with no fetch and no loading state. |
 
 > **Playoff Predictor:** `GET /api/playoffs` is complete and serving live predictions —
 > `playoff_series_predictions` holds **2,098 rows** — two `model_version`s × (599 `full_insample`

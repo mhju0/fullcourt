@@ -150,8 +150,13 @@ Full list in [API.md](API.md).
   model) documenting each model's terms, constants and limits. No data fetching: constants are
   imported from source (`FATIGUE_CONSTANTS` and friends) so the prose cannot drift from the code,
   and measured figures carry the date they were measured.
-- `app/referees/page.tsx` — **a placeholder** since 2026-07-30. The whistle findings were inside
-  noise; the ingest and dataset test remain so it can return without a re-ingest.
+- `app/referees/page.tsx` — **Referee Effect** (nav label `REFEREE EFFECT`, under `OTHER`). Was a
+  placeholder for one day: the home-whistle question returned a null on 2026-07-30, and the page
+  **returned on 2026-07-31** asking a different one — the *mix* of fouls an official calls does
+  separate officials clearly, which is a statement about style rather than fairness, and the page
+  says so itself. A server component with no fetch: every figure is read from the committed
+  `src/data/referee-foul-style.json`, written by `scripts/fetch_officials.ts` and pinned by
+  `referee-foul-style.test.ts`. Same no-runtime-path shape as `/availability`.
 - Client data fetching uses SWR through `src/lib/fetcher.ts`; live updates use Supabase
   Realtime via `src/hooks/useLiveGames.ts`.
 
@@ -501,8 +506,11 @@ Full design in [its spec](superpowers/specs/2026-07-27-schedule-disparity-design
 
 ## Availability Cost — data flow
 
-The only module with **no runtime data path at all**. It has no table, no migration, no ingest
+The module with the **shortest runtime data path**. It has no table, no migration, no ingest
 script and no API route: the measurement is finished, so the page renders published constants.
+`/referees` shares the no-table / no-migration / no-route half of that shape — it too is a server
+component reading a committed artifact — but it does have an ingest script, which is the one real
+difference. See [Referee Effect — data flow](#referee-effect--data-flow).
 
 ```
 OFFLINE (run by hand, not on any schedule)     [all inputs under the gitignored ml/data/]
@@ -538,3 +546,34 @@ nothing here forecasts availability, and the page copy is required to say so.
 Page in [FRONTEND.md](FRONTEND.md); the measurement itself in
 [DATA_PIPELINE.md](DATA_PIPELINE.md); the reader-facing method at
 `/behind-the-data/availability`.
+
+## Referee Effect — data flow
+
+No table, no migration and no API route — but unlike Availability Cost it does have an ingest
+script, so the artifact is regenerated rather than hand-mirrored from a modelling run.
+
+```
+OFFLINE (run by hand, not on any schedule)
+  ESPN play-by-play  ──→  scripts/fetch_officials.ts
+      (shared sb-YYYYMMDD.json cache with fetch_game_context.ts)
+                              │  per-season share baselining; overtime games excluded
+                              ▼
+COMMITTED   src/data/referee-foul-style.json   ── plus src/data/referee-whistle.json
+                 ▲ pinned by src/lib/__tests__/referee-foul-style.test.ts
+                 │           and src/lib/__tests__/referee-whistle.test.ts
+            src/lib/referee-foul-style.ts  ── types, the |z| >= 2 emphasis rule, column set
+                 │
+            app/referees/page.tsx (server component, no fetch)  →  RefereeStyleContent
+```
+
+**The page asks a narrower question than its name.** The two fairness questions — does any
+official tilt the whistle home, and does crew rest move it — were both measured and both came
+back inside noise. What survives is *style*: the mix of fouls an official calls against the
+league's own seasonal mix. The page is required to say that is not a bias claim, and it does.
+
+**A call cannot be attributed to one official.** Three work every game and the play-by-play does
+not record who blew the whistle, so every game credits all three and each published figure is
+roughly a third of the real effect. Crews barely repeat, so colleagues average out over a career
+rather than colouring it — which is what keeps this dilution rather than bias.
+
+Page in [FRONTEND.md](FRONTEND.md); the ingest in [DATA_PIPELINE.md](DATA_PIPELINE.md).

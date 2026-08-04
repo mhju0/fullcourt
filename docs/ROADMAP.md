@@ -17,9 +17,10 @@ thesis block ([#3](https://github.com/mhju0/fullcourt/issues/3)), and extracting
 duplicated presentational components ([#5](https://github.com/mhju0/fullcourt/issues/5)).
 
 On 2026-07-27 the nav was renamed to five plain-noun tabs and `/upcoming` was folded into
-`GAMES` as a view toggle rather than kept as a sixth tab. The five are now `GAMES`,
-`SCHEDULE EDGE`, `MODEL RESULTS`, `PLAYOFF REST` and `PLAYER SHOOTING`; `SHOT VALUE`
-and `REFEREE EFFECT` live behind the `OTHER` menu. Module names are unchanged; see
+`GAMES` as a view toggle rather than kept as a sixth tab. The bar has since grown to **six**
+direct tabs — `GAMES`, `SEASON REPORT`, `SCHEDULE EDGE`, `MODEL RESULTS`, `PLAYOFF REST` and
+`PLAYER SHOOTING` — with `SHOT VALUE`, `AVAILABILITY COST` and `REFEREE EFFECT` behind the
+`OTHER` menu. Module names are unchanged; see
 [GLOSSARY.md §Nav labels](GLOSSARY.md) for the label-by-label rationale.
 
 On 2026-07-28 an interface pass followed: **Space Grotesk** replaced Outfit as the display
@@ -74,6 +75,20 @@ added alongside it.
   Verified against the live database on 2026-07-27. See
   [the design spec](superpowers/specs/2026-07-27-schedule-disparity-design.md) and
   [ADR 0001](adr/0001-derive-rest-days-from-games.md).
+- **Season Report** — one season read end to end at `/season`: how the rest call scored that year
+  against the all-season norm, which teams converted a rest edge into wins, what the schedule cost
+  each of them, and the nights the league played on zero rest. A direct nav tab since 2026-07-31,
+  served by `/api/season-report` over `buildSeasonReport`. Every rate tile is gated at a minimum
+  game count and reads "too early to call" rather than inventing a verdict from a small sample.
+- **Player Shooting** — every player's eFG% on zero rest against three or more days off, at
+  `/shooting`, for any season since 1996-97 or pooled across a career. Rest is the player's **own**,
+  counted from the games he actually played. Served entirely from the committed
+  `public/data/player-rest.json` — no table, no route. A lookup rather than a ranking, because one
+  season's split is noise; see [ADR 0002](adr/0002-shooting-source-hoopr.md).
+- **Referee Effect** — each official's *mix* of foul calls against the league's own seasonal mix,
+  at `/referees`. Rebuilt 2026-07-31 after the fairness question it was named for returned a null
+  (see the 2026-07-29 → 30 surfaces log below). Nothing here is called bias, and the page says why:
+  three officials work every game and the play-by-play does not record which one blew the whistle.
 
 ## Maintenance responsibilities
 
@@ -164,11 +179,15 @@ table had gone stale against the altitude change and was regenerated.
 
 ## 2026-07-29 → 30 — surfaces
 
-- **Referee Effect** shipped 2026-07-29 at `/referees`, then was **reduced to a placeholder on
-  2026-07-30**. Its central question — does any referee tilt the whistle home? — came back
-  inside noise, and a table of muted cells invites readers to find names in it anyway. The
-  ingest (`scripts/fetch_officials.ts`) and its dataset test are deliberately left in place so
-  the page can return without a re-ingest.
+- **Referee Effect** shipped 2026-07-29 at `/referees`, was **reduced to a placeholder on
+  2026-07-30**, and **returned on 2026-07-31** asking a different question. Its original one —
+  does any referee tilt the whistle home? — came back inside noise, and a table of muted cells
+  invites readers to find names in it anyway. Crew rest was asked next and returned a null too.
+  What does separate officials, clearly and repeatably, is the *mix* of fouls they call, so the
+  page now publishes that against the league's own seasonal mix — a statement about style, not
+  fairness, which is why nothing on it is called bias. Keeping the ingest
+  (`scripts/fetch_officials.ts`) and its dataset test through the placeholder day is what let the
+  page return without a re-ingest.
 - **Behind the Data** added 2026-07-30: a reference section documenting every model's terms,
   constants and limits, reached from the nav row's `Reference` landmark and from a
   `HOW THIS IS CALCULATED` link on each product page. It grows with the product — eight routes
