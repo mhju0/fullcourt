@@ -104,6 +104,7 @@ export function UpcomingContent() {
         thresholds: analysis.thresholds,
         overallWinRate: analysis.overallWinRate,
         totalGames: analysis.totalGames,
+        homeAwayBreakdown: analysis.homeAwayBreakdown,
       }
     : null
 
@@ -194,8 +195,17 @@ export function UpcomingContent() {
                 const absDiff = Math.abs(g.restAdvantageDifferential)
                 const advAbbr = g.predictedAdvantageAbbreviation
                 const isHomeAdv = advAbbr === g.homeTeam.abbreviation
+                // The predicted abbreviation is the authoritative side, not the sign of the
+                // stored differential — these rows come from `predictions`, which the daily
+                // refresh only writes for a home pick, so in practice `isHomeAdv` is always
+                // true here. Stated explicitly anyway: the evidence sentence is denominated
+                // on called games, and passing the pair is what keeps that honest if the
+                // rule ever widens.
                 const evidence = buildRestAdvantageEvidence(
-                  g.restAdvantageDifferential,
+                  {
+                    differential: g.restAdvantageDifferential,
+                    advantageTeam: isHomeAdv ? "home" : "away",
+                  },
                   evidenceSource
                 )
 
@@ -274,8 +284,9 @@ export function UpcomingContent() {
             style={{ fontSize: 11, lineHeight: 1.5, color: "var(--term-text-muted)" }}
           >
             &ldquo;Historically&rdquo; is how often the more-rested team won across every past
-            regular-season game in the matching rest-advantage class, against a 50% coin-flip
-            baseline. It describes that class of games, not this one. Not betting advice.
+            regular-season game in the matching rest-advantage class <em>where that team was also
+            at home</em> — the only games this model calls — against a 50% coin-flip baseline. It
+            describes that class of games, not this one. Not betting advice.
           </p>
         </div>
       )}
