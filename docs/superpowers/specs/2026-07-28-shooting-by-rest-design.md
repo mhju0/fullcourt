@@ -1,8 +1,21 @@
 # Shooting by Rest — design
 
 **Date:** 2026-07-28
-**Status:** Phase 1 specified; internal analysis only, nothing published
-**Module:** Shooting by Rest (no route yet — see §9)
+**Status:** **Superseded 2026-07-30 — kept as the design record for a phase that was not built.**
+**Module:** Shooting by Rest
+
+> Phase 1's *team-grain* report was never produced, and none of §8's deliverable paths exist
+> (`scripts/fetch_team_shooting.py`, `scripts/analyze_shooting_by_rest.mts`,
+> `drizzle/draft/000X_team_game_shooting.sql`, `docs/audit/shooting-by-rest-2026-07-28.md`).
+> The module shipped instead at the **player** grain — §9's Phase 2 — as **`/shooting`**, a direct
+> nav tab labelled `PLAYER SHOOTING`, served from the committed `public/data/player-rest.json`
+> and built by `scripts/fetch_shooting_data.py` → `scripts/analyze_player_shooting.py` →
+> `scripts/export_player_rest.py`. See
+> [the filters spec](2026-07-30-shooting-filters-design.md) and
+> [ADR 0002](../../adr/0002-shooting-source-hoopr.md).
+>
+> §9's "the five-tab nav is deliberately not expanded on speculation" is also historical: the bar
+> is now six direct tabs plus a three-item OTHER menu.
 
 ## 1. What this answers
 

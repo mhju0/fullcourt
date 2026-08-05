@@ -667,6 +667,49 @@ It lives next to the thing that throws, and replaced eight per-surface copies of
 ternary — each with a differently worded fallback that could never render, since `apiFetcher`
 only ever throws an `Error` and SWR rethrows it unchanged.
 
+## Small screens
+
+**Measured 2026-08-04 against production at 360×780pt @3x** — the real iPhone 12/13 mini
+viewport, and the narrowest screen the app has to hold. Note that Playwright's built-in
+`iPhone 12 Mini` descriptor reports **375**, which is wrong for that device; test at 360, because
+several layouts fit at 375 and are tight at 360.
+
+**No page overflows horizontally.** All eleven routes (the nine product pages plus `/about` and
+`/behind-the-data`) measured `scrollWidth === clientWidth` at 360pt. Wide content is contained
+rather than escaping, which is the invariant to protect when adding a table or a chart.
+
+Three deliberate horizontal scrollers carry that load, and each is a **content-discoverability**
+question rather than a layout bug:
+
+- **The nav bar** (`nav-bar.tsx`, `.fc-nav-scroll … overflow-x-auto`). The six direct tabs plus
+  the `OTHER` trigger total ~610pt of targets in a 360pt viewport, so at rest the bar shows
+  roughly three and a half tabs and clips mid-word. **`OTHER` is entirely off-screen**, which
+  means Shot Value and Availability Cost are unreachable for a reader who does not think to swipe
+  the bar. There is no fade or arrow affordance.
+- **The Games month/day chip rows** — same pattern; April is off-screen at rest in a full season.
+- **The wide data tables** (`/shooting`, `/schedule`, `/season`), each inside its own
+  `overflow-x-auto`. This is why the page itself does not overflow.
+
+**Form controls sit below the iOS zoom threshold.** Every `<select>` computes at 12px and one
+control on `/shooting` at 10px, against the 16px floor at which **Mobile Safari zooms the page on
+focus and does not zoom back out**. Densest surfaces: `/analysis` (four selects) and `/shooting`
+(four selects plus the player search input). The viewport meta is
+`width=device-width, initial-scale=1` with no `maximum-scale`, which is correct for accessibility
+— so the fix, if this is ever addressed, is a 16px floor on focusable controls at mobile widths,
+never disabling zoom.
+
+**Nav links measure 43pt tall**, one point under Apple's 44pt minimum touch target.
+
+**`/about` bleeds its decorative court SVG past both edges by design** — it is the one page whose
+children legitimately extend beyond the viewport box, and it is inside a clipping section, so it
+does not scroll the page.
+
+**There is no PWA/home-screen support and this is a gap, not a decision.** `/manifest.json`,
+`/manifest.webmanifest` and `/apple-touch-icon.png` all return 404, and there is no
+`apple-mobile-web-app-capable` meta — only `icon.svg` (which iOS ignores for home screens) and
+`themeColor`. Add to Home Screen therefore yields a screenshot-of-the-page icon and opens in
+Safari chrome rather than standalone.
+
 ## Design system — "Broadcast" (light)
 
 The app is **light-only** — a daylight broadcast / editorial box-score language: a warm

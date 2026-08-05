@@ -18,7 +18,8 @@ NOT for read-only diagnostics — use fullcourt-audit for those.
 
 ## Definition of done
 - Reviewer verdict PASS
-- `pnpm lint`, `pnpm test:run`, `pnpm build` all green
+- `pnpm lint`, `pnpm typecheck`, `pnpm test:run`, `pnpm build` all green — all four, since
+  `typecheck` is a required CI step and `next build` does not cover it
 - Final report includes an "Escalate to senior" section (may be "none")
 
 ## Escalate to senior (Claude Chat) — NEVER decide these alone

@@ -12,7 +12,10 @@ Check in order:
 1. Guardrails: no edits to src/lib/fatigue.ts; no renames of restAdvantage /
    RestAdvPanel / rest_advantage_differential / "REST ADVANTAGE" / "RA";
    no drizzle-kit push/generate; no new secrets in code.
-2. Suite: `pnpm lint`, `pnpm test:run`, `pnpm build`. Report exact failures.
+2. Suite: `pnpm lint`, `pnpm typecheck`, `pnpm test:run`, `pnpm build`. Report exact failures.
+   All four, in that order — they are the commit gate named in CLAUDE.md and CI runs `typecheck`
+   as its own step. `next build` does not substitute for it, so omitting it lets this agent
+   return PASS on a change CI then fails on a type error.
 3. Numbers: every numeric claim in the pending report must be re-verified by
    Reading the file directly. Bash stdout digits are untrustworthy in this
    environment. Reject any number sourced only from grep/stdout.

@@ -9,7 +9,10 @@ was dropped rather than copied, because that file had drifted from the code on e
 
 FullCourt models how NBA **travel, rest, and schedule density** affect game outcomes. Each team
 in a matchup gets a **fatigue score**; the differential is the **rest advantage**; the backtest
-asks whether the more-rested team actually won.
+asks whether the more-rested team actually won — counting only the games the site **calls**, which
+since 2026-08-02 means the more-rested team is also at home (`isCalledSide`,
+`src/lib/rest-advantage-evidence.ts`). Rest alone never outweighs home court at any magnitude the
+NBA produces, so a rested visitor is declined rather than picked.
 
 - Live: https://fullcourt-nba.vercel.app · Repo: https://github.com/mhju0/fullcourt
 - Headline figures are computed live from the database and rendered on the site. Do not hand-type
@@ -17,7 +20,8 @@ asks whether the more-rested team actually won.
 
 ## Module status
 
-Both additive modules are **complete**. Status and phase history live in committed docs, not here:
+**Nine product routes. Eight are published and complete; `/referees` is deliberately held back**
+(see the hard ban below). Status and phase history live in committed docs, not here:
 
 - [docs/ROADMAP.md](docs/ROADMAP.md) — project status, shipped modules, ongoing operational work
 - [docs/PLAYOFF_PREDICTOR_DESIGN.md](docs/PLAYOFF_PREDICTOR_DESIGN.md) — Playoff Predictor design
@@ -38,25 +42,51 @@ while touching branding.
 
 ## Hard bans
 
+- **Never publish `/referees`, and never "correct" its in-progress copy.** The page renders an
+  in-progress `MessageCard` and the nav guide says `"Still being built."` **on purpose** — the
+  data, `RefereeStyleContent` and its tests all work, but the writing around them is unfinished,
+  and a per-official foul table without it reads as the bias claim the surface exists to refuse.
+  A doc-currency pass will keep flagging this as stale drift; it is not. **This exact mistake was
+  made and shipped on 2026-08-04 and had to be reverted** (PRs #9 → #10). Publishing it is a
+  deliberate edit by Michael, never a side effect of tidying docs.
 - **Never rename rest-advantage identifiers.** See above.
 - **Never run `drizzle-kit push` or `drizzle-kit generate`.** `schema.ts` intentionally lags the
   live DB — `shot_grid` and `shot_value_surface` are read via raw SQL and are absent from it on
   purpose. Never reconcile it.
 - **All schema changes are manual SQL applied by the human** in the Supabase SQL editor. Use the
   `fullcourt-migration` skill.
-- **Python:** `logging`, not `print()`. `httpx`, not `requests`. No Alembic.
+- **Python:** no Alembic. New code uses `logging`, not `print()` — every `ml/` script and the
+  newer `scripts/sq*` / `aggregate_*` already do; the pipeline scripts (`daily_update.py`,
+  `fetch_schedule.py`) still print to the Actions log and are left alone. HTTP goes through stdlib
+  `urllib`; `requests` is present only because `nba_api` and `fetch_schedule.py` use it. **Do not
+  add `httpx`** — it is not a dependency of this repo.
 
 `src/lib/fatigue.ts` holds **ratified coefficients**. Never change a constant or a scoring term
 without escalating: those numbers were hand-set and ratified before the backtest ran, so tuning
 them against it would make the result circular. The file's *interface* is not frozen — ADR 0005
 reshaped it deliberately. Structural changes go through an ADR; number changes go through Michael.
 
+One coefficient has moved, and it is the precedent rather than a loophole: `ALTITUDE_MULTIPLIER`
+was raised 1.15 → 1.29 on 2026-08-02 — the first ratified constant changed on measured evidence,
+approved by Michael, reasoned in the constant's own docblock (`src/lib/fatigue.ts`) and in ADR
+0006. It was fitted against **final margin**, not against the win rates the site publishes, which
+is what keeps it non-circular. `ALTITUDE_CARRYOVER_MULTIPLIER` was deliberately *not* moved with it.
+
 The ban was suspended once, deliberately, to find out whether fitted weights would beat the
 ratified ones. They do not, by enough to matter — and most of the model's terms turn out to
 carry no signal at all. Read [ADR 0006](docs/adr/0006-fatigue-weights-were-fitted-and-the-model-was-not-changed.md)
 before proposing either a refit or a new factor; it says what was already tried and measured.
-Use the harness (`scripts/export_fatigue_features.ts` → `ml/fit_fatigue_weights.py`) to answer
-questions of this shape — never a database recompute.
+Use the harness to answer questions of this shape — never a database recompute. It is **three**
+steps and the middle one is not optional:
+
+```
+scripts/export_fatigue_features.ts   →  ml/data/fatigue_features.csv
+ml/prepare_fatigue_dataset.py        →  ml/data/fatigue_model_table.csv
+ml/fit_fatigue_weights.py            →  reads fatigue_model_table.csv
+```
+
+Skipping `prepare` fails **silently**: `fatigue_model_table.csv` is already on disk from the
+2026-08-02 run, so the fit succeeds against a stale table and reports numbers that look valid.
 
 ## Domain rules that are easy to get wrong
 
@@ -95,8 +125,12 @@ questions of this shape — never a database recompute.
   root: adding a root dependency needs `pnpm add -w <pkg>`, or pnpm refuses.
 - **Always run pipeline scripts from the project root.** `daily_update.py` and the backfills
   resolve the repo root relative to the file, and the `tsx` scripts rely on the `@/*` alias.
-- **Python:** activate a virtualenv, then `pip install -r requirements.txt` (root, pinned) or
-  `scripts/requirements.txt` (loose; what CI installs).
+- **Python: three requirements files, and they are not interchangeable.** Activate a virtualenv,
+  then `requirements.txt` (root, pinned) or `scripts/requirements.txt` (loose; what the
+  **daily-update** workflow installs — `ci.yml` installs no Python deps, since its one unittest is
+  stdlib-only). The `ml/` harness needs its own stack: `pip install -r ml/requirements.txt`
+  (scipy + scikit-learn), deliberately isolated from the pipeline pins. Running the fatigue
+  harness without it is an `ImportError`.
 - Env vars are documented with descriptions in the committed `.env.example`.
 - Playwright is **not** run in CI — its specs need a running server and a populated database.
 
@@ -110,6 +144,12 @@ questions of this shape — never a database recompute.
 - [docs/TESTING_AND_CICD.md](docs/TESTING_AND_CICD.md) — Vitest/Playwright, CI, data workflow
 - [docs/GLOSSARY.md](docs/GLOSSARY.md) — domain language and the nav-label rationale
 - [docs/SEASON_ROLLOVER.md](docs/SEASON_ROLLOVER.md) — rollover runbook and data-source matrix
+
+Two more directories exist locally but are **gitignored**, so they are absent from a fresh clone
+and are deliberately not linked above: `docs/agents/` (how the engineering skills consume this
+repo — domain-doc conventions, the `gh` issue-tracker rule, triage labels) and `docs/audit/` (the
+one directory the `fullcourt-audit` skill may write to). Do not add a link to either from a
+committed file.
 
 ## Final report
 

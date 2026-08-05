@@ -1,7 +1,8 @@
 # Security Policy
 
 FullCourt is a read-only analytics site: it serves public NBA statistics, stores no
-user accounts and collects no personal data. The only privileged surface is the
+user accounts, and collects no personal data beyond Vercel's cookieless page-view
+analytics (`@vercel/analytics`, mounted in `src/app/layout.tsx` and whitelisted in the CSP). The only privileged surface is the
 authenticated cron endpoint that refreshes scores.
 
 ## Reporting a vulnerability
