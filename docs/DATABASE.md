@@ -174,11 +174,11 @@ Two rows per game (one per team). Latest-by-`computed_at` wins in reads
 > score through `scheduleStressMultiplier`, which was always windowed correctly), and no query,
 > route or component reads either column.
 >
-> Repaired with `scripts/repair_density_flags.ts`, **not** `backfill_fatigue.ts --force`: that
-> path DELETEs the whole table before a 30–90 minute rebuild, which on a live site is an
-> hour-long outage of every page. The repair script only ever writes those two booleans, took
-> 17 seconds, and needed no downtime. It is idempotent — re-run it any time to confirm 0 rows
-> would change.
+> Repaired with a targeted script that wrote only those two booleans, **not**
+> `backfill_fatigue.ts --force`: that path DELETEs the whole table before a 30–90 minute
+> rebuild, which on a live site is an hour-long outage of every page. The repair took 17
+> seconds and needed no downtime. The script was removed once it had run — recover it from
+> git history if the same shape of repair is ever needed again.
 
 **Verified coverage (2026-07-30, read-only `SELECT`):** **100,990** rows — exactly two per
 game across all 50,495 games, with **0** games holding any other count. Playoff and bubble games
