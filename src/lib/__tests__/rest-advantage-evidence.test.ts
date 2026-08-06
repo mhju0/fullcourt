@@ -18,6 +18,92 @@ describe("classifyRestAdvantage", () => {
   );
 });
 
+/**
+ * The venue baseline is the number every published rate is now stated against, so what it
+ * counts is load-bearing. It is deliberately the WIDEST population in the payload — every
+ * scored game, including the neutral ones the headline drops and the road-rested ones it does
+ * not publish. A baseline computed on the same games as the numerator would already carry the
+ * effect it exists to subtract.
+ */
+describe("buildHistoricalBacktest — venue baseline", () => {
+  /** home rested + home won · home rested + home lost · NEUTRAL + home won · away rested + away won */
+  const MIXED = [
+    { date: "2024-01-02", season: "2023-24", homeScore: 110, awayScore: 100, homeFatigueScore: "5", awayFatigueScore: "7" },
+    { date: "2024-01-03", season: "2023-24", homeScore: 100, awayScore: 110, homeFatigueScore: "5", awayFatigueScore: "7" },
+    { date: "2024-01-04", season: "2023-24", homeScore: 100, awayScore: 90, homeFatigueScore: "5", awayFatigueScore: "5.2" },
+    { date: "2024-01-05", season: "2023-24", homeScore: 90, awayScore: 100, homeFatigueScore: "7", awayFatigueScore: "5" },
+  ] as const;
+
+  it("counts every scored game, including the neutral ones the headline drops", () => {
+    const result = buildHistoricalBacktest([...MIXED]);
+
+    // 4 scored games; the headline counts only the 1 that is home-rested AND decided.
+    expect(result.venueBaseline.games).toBe(4);
+    expect(result.totalGames).toBe(2);
+  });
+
+  it("counts home wins irrespective of which side was rested", () => {
+    const result = buildHistoricalBacktest([...MIXED]);
+
+    // Home won games 1 and 3 — one home-rested, one neutral.
+    expect(result.venueBaseline.homeWins).toBe(2);
+    expect(result.venueBaseline.homeWinPct).toBe(50);
+  });
+
+  it("derives the road rate from counts, not by subtracting the rounded home rate", () => {
+    // 3 games, home won 1: home 33.3%, road 66.7%. Subtracting gives 66.7 here too, so the
+    // guard that matters is the identity — both must come from the same counts.
+    const result = buildHistoricalBacktest([...MIXED].slice(0, 3));
+
+    expect(result.venueBaseline.homeWinPct + result.venueBaseline.roadWinPct).toBeCloseTo(100, 1);
+    expect(result.venueBaseline.roadWinPct).toBe(
+      Math.round(((result.venueBaseline.games - result.venueBaseline.homeWins) /
+        result.venueBaseline.games) * 1000) / 10
+    );
+  });
+
+  it("gives each season its own baseline, because home court is not stable across eras", () => {
+    const result = buildHistoricalBacktest([
+      // 1987-88: home wins both.
+      { date: "1988-01-02", season: "1987-88", homeScore: 110, awayScore: 100, homeFatigueScore: "5", awayFatigueScore: "7" },
+      { date: "1988-01-03", season: "1987-88", homeScore: 110, awayScore: 100, homeFatigueScore: "5", awayFatigueScore: "5.2" },
+      // 2023-24: home splits.
+      { date: "2024-01-02", season: "2023-24", homeScore: 110, awayScore: 100, homeFatigueScore: "5", awayFatigueScore: "7" },
+      { date: "2024-01-03", season: "2023-24", homeScore: 100, awayScore: 110, homeFatigueScore: "5", awayFatigueScore: "5.2" },
+    ]);
+
+    const byName = new Map(result.seasonWinRates.map((s) => [s.season, s]));
+    expect(byName.get("1987-88")?.homeBaselinePct).toBe(100);
+    expect(byName.get("2023-24")?.homeBaselinePct).toBe(50);
+  });
+
+  it("keeps each season's baseline on all its games, not only its published ones", () => {
+    const result = buildHistoricalBacktest([
+      // Published: home rested, home won.
+      { date: "2024-01-02", season: "2023-24", homeScore: 110, awayScore: 100, homeFatigueScore: "5", awayFatigueScore: "7" },
+      // Not published (neutral), and the home team lost it.
+      { date: "2024-01-03", season: "2023-24", homeScore: 100, awayScore: 110, homeFatigueScore: "5", awayFatigueScore: "5.2" },
+    ]);
+
+    const season = result.seasonWinRates[0];
+    // The published rate sees 1 game at 100%. The baseline sees both, at 50%.
+    expect(season.games).toBe(1);
+    expect(season.winPct).toBe(100);
+    expect(season.homeBaselinePct).toBe(50);
+  });
+
+  it("answers 0 rather than dividing by zero on an empty population", () => {
+    const result = buildHistoricalBacktest([]);
+
+    expect(result.venueBaseline).toEqual({
+      games: 0,
+      homeWins: 0,
+      homeWinPct: 0,
+      roadWinPct: 0,
+    });
+  });
+});
+
 describe("buildHistoricalBacktest", () => {
   it("aggregates decisive games through the canonical neutral/no-call boundary", () => {
     const result = buildHistoricalBacktest([

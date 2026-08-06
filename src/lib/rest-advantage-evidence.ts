@@ -5,6 +5,7 @@ import type {
   HomeAwayBreakdown,
   RestAdvantage,
   ThresholdBucket,
+  VenueBaseline,
 } from "@/types";
 
 export const NEUTRAL_REST_ADVANTAGE_THRESHOLD = 0.5;
@@ -90,8 +91,25 @@ export function buildHistoricalBacktest(
 ): AnalysisResponse {
   const decidable: ProcessedHistoricalGame[] = [];
 
+  // The venue baseline is tallied over every scored game, before any rest filter — including
+  // the neutral ones `decidable` drops. It has to be the wider set: it answers "what does this
+  // side win anyway", and a version computed only on games with a rest gap would already carry
+  // the effect it exists to subtract.
+  let baselineGames = 0;
+  let baselineHomeWins = 0;
+  const baselineBySeason = new Map<string, { games: number; homeWins: number }>();
+
   for (const row of rows) {
     if (row.homeScore === null || row.awayScore === null) continue;
+
+    const homeWon = row.homeScore > row.awayScore;
+
+    baselineGames++;
+    if (homeWon) baselineHomeWins++;
+    const seasonBaseline = baselineBySeason.get(row.season) ?? { games: 0, homeWins: 0 };
+    seasonBaseline.games++;
+    if (homeWon) seasonBaseline.homeWins++;
+    baselineBySeason.set(row.season, seasonBaseline);
 
     const restAdvantage = classifyRestAdvantage(
       Number.parseFloat(row.homeFatigueScore),
@@ -99,7 +117,6 @@ export function buildHistoricalBacktest(
     );
     if (restAdvantage.advantageTeam === "neutral") continue;
 
-    const homeWon = row.homeScore > row.awayScore;
     decidable.push({
       date: row.date,
       season: row.season,
@@ -159,12 +176,25 @@ export function buildHistoricalBacktest(
   }
   const seasonWinRates = Array.from(bySeason.entries())
     .sort(([left], [right]) => left.localeCompare(right))
-    .map(([season, aggregate]) => ({
-      season,
-      games: aggregate.games,
-      restedTeamWins: aggregate.wins,
-      winPct: winPct(aggregate.wins, aggregate.games),
-    }));
+    .map(([season, aggregate]) => {
+      const baseline = baselineBySeason.get(season);
+      return {
+        season,
+        games: aggregate.games,
+        restedTeamWins: aggregate.wins,
+        winPct: winPct(aggregate.wins, aggregate.games),
+        homeBaselinePct: baseline ? winPct(baseline.homeWins, baseline.games) : 0,
+      };
+    });
+
+  const venueBaseline: VenueBaseline = {
+    games: baselineGames,
+    homeWins: baselineHomeWins,
+    homeWinPct: winPct(baselineHomeWins, baselineGames),
+    // From the counts, not `100 − homeWinPct`: both halves of a rounding tie round upward, so
+    // subtracting a figure already rounded to one decimal can land a tenth off.
+    roadWinPct: winPct(baselineGames - baselineHomeWins, baselineGames),
+  };
 
   return {
     totalGames: called.length,
@@ -172,6 +202,7 @@ export function buildHistoricalBacktest(
     overallWinRate: winPct(overallWins, called.length),
     thresholds,
     homeAwayBreakdown,
+    venueBaseline,
     seasonWinRates,
   };
 }

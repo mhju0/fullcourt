@@ -172,12 +172,16 @@ describe("GET /api/analysis", () => {
       games: 1,
       restedTeamWins: 1,
     });
+    // The season's own home baseline stays on all four games — home won three of them — while
+    // the published rate sees only the one game that is both called and over the threshold.
+    // The two populations are meant to diverge; that divergence is what the frame subtracts.
     expect(body.data.seasonWinRates).toEqual([
       {
         season: "2016-17",
         games: 1,
         restedTeamWins: 1,
         winPct: 100,
+        homeBaselinePct: 75,
       },
     ]);
 

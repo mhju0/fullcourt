@@ -95,15 +95,41 @@ export interface HomeAwayBreakdown {
   };
 }
 
+/**
+ * How often each side wins regardless of rest — the number every published rest-advantage
+ * rate is stated against.
+ *
+ * Counted over every scored game in the population, **including the neutral ones the rest
+ * figures drop**. That is the point: a rate can only be read as an effect of rest if the
+ * venue's own contribution has been subtracted, and every game the site publishes a rate for
+ * is a home game.
+ */
+export interface VenueBaseline {
+  /** Every scored game, neutral included. Wider than `AnalysisResponse.totalGames`. */
+  games: number;
+  homeWins: number;
+  /** How often the home team wins, regardless of rest (0–100, 1 decimal). */
+  homeWinPct: number;
+  /** The same for the road side. Derived from counts, never as `100 − homeWinPct`. */
+  roadWinPct: number;
+}
+
 /** Historical backtest stats (final games with fatigue data, |RA| >= 0.5). */
 export interface AnalysisResponse {
-  /** Total games counted (|RA| >= 0.5). */
+  /**
+   * Games counted in every headline figure below: |RA| >= 0.5 **and** the more-rested team
+   * was also at home. Narrower than `venueBaseline.games` on both counts.
+   */
   totalGames: number;
   overallWins: number;
-  /** Win percentage (0–100, 1 decimal). */
+  /**
+   * Win percentage (0–100, 1 decimal). Read against `venueBaseline.homeWinPct`, not against
+   * 50 — every game in it is a home game.
+   */
   overallWinRate: number;
   thresholds: ThresholdBucket[];
   homeAwayBreakdown: HomeAwayBreakdown;
+  venueBaseline: VenueBaseline;
   /**
    * More-rested team win rate aggregated per NBA season (regular-season calendar only).
    */
@@ -112,6 +138,14 @@ export interface AnalysisResponse {
     games: number;
     restedTeamWins: number;
     winPct: number;
+    /**
+     * That season's own home win rate, over every scored game in it.
+     *
+     * Per-season rather than one constant because home-court advantage is not stable: it runs
+     * from 67.9% in 1987-88 to 54.3% in 2023-24. A fixed zero line would make the 1980s bars
+     * read as a rest effect when they are league-wide home court.
+     */
+    homeBaselinePct: number;
   }[];
 }
 
