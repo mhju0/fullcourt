@@ -8,32 +8,56 @@ import {
 } from "@/components/analysis-content"
 
 /**
- * The /analysis win-rate charts plot `winPct - 50` as signed deviation columns.
+ * The /analysis win-rate charts plot `winPct - baseline` as signed deviation columns.
  *
  * The encoding they replaced stacked a `base = min(winPct, 50)` segment under an
  * `edge = max(0, winPct - 50)` segment. That clamp is the defect these tests
  * pin: for any winPct <= 50 the edge was 0, so a losing slice drew as a bare
  * base segment — the same kind of mark as a dead-even one, with no encoding of
- * direction at all. Every "below the coin flip" case here fails under the clamp.
+ * direction at all. Every "below the baseline" case here fails under the clamp.
+ *
+ * The baseline is now a parameter and is NOT 50. Every game these charts count is one the
+ * rested team played at home, and home teams win ~59.9% of everything regardless of rest,
+ * so a coin-flip zero credited the model with home court it did not produce.
  */
+const HOME_BASELINE = 59.9
+
 describe("toDeviation", () => {
-  it("signs the distance from a coin flip in percentage points", () => {
-    expect(toDeviation(63.4)).toBe(13.4)
-    expect(toDeviation(56.6)).toBe(6.6)
-    expect(toDeviation(50)).toBe(0)
+  it("signs the distance from the baseline in percentage points", () => {
+    expect(toDeviation(63.4, HOME_BASELINE)).toBe(3.5)
+    expect(toDeviation(61.2, HOME_BASELINE)).toBe(1.3)
+    expect(toDeviation(HOME_BASELINE, HOME_BASELINE)).toBe(0)
+  })
+
+  /**
+   * The whole point of the change: rates that cleared a coin flip do not clear home court.
+   * 56.6% used to plot as +6.6 and is really 3.3 points BELOW what a home team wins anyway.
+   */
+  it("goes negative for rates that beat 50 but not the baseline", () => {
+    expect(toDeviation(56.6, HOME_BASELINE)).toBe(-3.3)
+    expect(toDeviation(50, HOME_BASELINE)).toBe(-9.9)
   })
 
   // The clamped `edge` returned 0 for all three of these.
-  it("goes negative below the coin flip", () => {
-    expect(toDeviation(39)).toBe(-11) // RA >= 7, 2016-17 (41 games)
-    expect(toDeviation(40)).toBe(-10) // RA >= 7, 1998-99 (25 games)
-    expect(toDeviation(48.3)).toBe(-1.7) // RA >= 7, 2022-23 (29 games)
+  it("goes negative below the baseline", () => {
+    expect(toDeviation(39, HOME_BASELINE)).toBe(-20.9) // RA >= 7, 2016-17 (41 games)
+    expect(toDeviation(40, HOME_BASELINE)).toBe(-19.9) // RA >= 7, 1998-99 (25 games)
+    expect(toDeviation(48.3, HOME_BASELINE)).toBe(-11.6) // RA >= 7, 2022-23 (29 games)
+  })
+
+  /**
+   * The season chart passes each season's own baseline, because home court ran from 67.9%
+   * in 1987-88 to 54.3% in 2023-24. The same win rate is a different finding in each era.
+   */
+  it("reads one rate differently against different eras", () => {
+    expect(toDeviation(62, 67.9)).toBe(-5.9)
+    expect(toDeviation(62, 54.3)).toBe(7.7)
   })
 
   it("keeps one decimal place instead of leaking float error", () => {
     // 63.4 - 50 is 13.399999999999999 in IEEE 754.
-    expect(toDeviation(63.4)).not.toBe(13.399999999999999)
-    expect(toDeviation(52.9).toString()).toBe("2.9")
+    expect(toDeviation(63.4, 50)).not.toBe(13.399999999999999)
+    expect(toDeviation(52.9, 50).toString()).toBe("2.9")
   })
 })
 

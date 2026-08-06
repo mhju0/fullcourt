@@ -81,7 +81,7 @@ function SectionDivider({ label, descriptor }: { label: string; descriptor?: str
  * Names the two poles of the diverging scale. The zero rule needs no swatch —
  * it is the axis, and the axis labels it.
  */
-function BaselineLegend() {
+function BaselineLegend({ zeroLabel }: { zeroLabel: string }) {
   return (
     <div
       className="mono mt-3 flex flex-wrap items-center gap-x-5 gap-y-1.5"
@@ -89,13 +89,13 @@ function BaselineLegend() {
     >
       <span className="inline-flex items-center gap-2">
         <span style={{ width: 12, height: 12, borderRadius: 2, background: "var(--term-blue)" }} />
-        RESTED TEAM BEAT A COIN FLIP
+        RESTED TEAM BEAT THE HOME BASELINE
       </span>
       <span className="inline-flex items-center gap-2">
         <span style={{ width: 12, height: 12, borderRadius: 2, background: "var(--term-red)" }} />
-        RESTED TEAM LOST TO A COIN FLIP
+        RESTED TEAM FELL SHORT OF IT
       </span>
-      <span>PERCENTAGE POINTS · 0 = 50% WIN RATE</span>
+      <span>{zeroLabel}</span>
     </div>
   )
 }
@@ -141,12 +141,9 @@ function StatCard({
 
 // ─── Chart scale ──────────────────────────────────────────────────
 
-/** A coin flip. Win-rate charts plot the distance from here, not the win rate. */
-const BASELINE_PCT = 50
-
 /**
- * Win-rate bars are **deviation columns**: the plotted value is `winPct - 50`, in
- * percentage points, and zero IS the coin flip. This replaced a zero-based bar
+ * Win-rate bars are **deviation columns**: the plotted value is `winPct - baseline`, in
+ * percentage points, and zero IS the baseline. This replaced a zero-based bar
  * stacked from a `base` (≤50) and an `edge` (>50) segment.
  *
  * Why it changed:
@@ -159,13 +156,19 @@ const BASELINE_PCT = 50
  *    coin flip already gives you".
  *  - Deviation columns are genuinely zero-based on the measured quantity, so the
  *    truncated-axis dishonesty the split existed to avoid never arises.
+ *
+ * The baseline is a parameter, and it is **not 50**. Every game on this page is one where
+ * the rested team was also at home, and home teams win ~59.9% of everything regardless of
+ * rest — so a coin-flip zero credited the model with nine points of home court it did not
+ * earn. Callers pass the venue baseline the API now ships; the season chart passes that
+ * season's own, because home court ran from 67.9% in 1987-88 to 54.3% in 2023-24.
  */
-export function toDeviation(winPct: number): number {
-  return Math.round((winPct - BASELINE_PCT) * 10) / 10
+export function toDeviation(winPct: number, baselinePct: number): number {
+  return Math.round((winPct - baselinePct) * 10) / 10
 }
 
 /**
- * Blue above the coin flip, red below — the two poles of a diverging scale, with
+ * Blue above the baseline, red below — the two poles of a diverging scale, with
  * a neutral midpoint. Dead-even is real: RA ≥ 7 in 2011-12 went 17/34.
  */
 export function deviationFill(deviation: number): string {
@@ -211,8 +214,10 @@ type WinRateDatum = {
   winPct: number
   games: number
   threshold?: number
-  /** winPct − 50, in percentage points. Negative below the coin flip. */
+  /** winPct − the venue baseline, in percentage points. Negative below it. */
   deviation: number
+  /** The baseline this bar is measured against, so the tooltip can name it. */
+  baselinePct: number
 }
 
 // ─── Custom tooltips ──────────────────────────────────────────────
@@ -223,10 +228,12 @@ function WinRateTooltip({ active, payload }: TooltipContentProps) {
   return (
     <div style={termTooltip}>
       <p style={{ color: "var(--term-text)", fontWeight: 700, letterSpacing: "0.04em" }}>{d.label.toUpperCase()}</p>
+      <p style={{ color: "var(--term-text-muted)", marginTop: 2 }}>RESTED TEAM AT HOME</p>
       {/* The bar plots the deviation, so the tooltip leads with it and carries the
-          absolute win rate underneath — the axis no longer shows it anywhere. */}
+          absolute win rate underneath — the axis no longer shows it anywhere. The
+          baseline is named on the same line so the two can never be read apart. */}
       <p style={{ marginTop: 2, color: deviationFill(d.deviation) }}>
-        <span style={{ fontWeight: 700 }}>{signedNumber(d.deviation)} PP</span> VS COIN FLIP
+        <span style={{ fontWeight: 700 }}>{signedNumber(d.deviation)} PP</span> VS {d.baselinePct}% BASELINE
       </p>
       <p style={{ color: "var(--term-text-muted)", marginTop: 2 }}>WIN RATE: {d.winPct}%</p>
       <p style={{ color: "var(--term-text-muted)", marginTop: 2 }}>{d.games.toLocaleString()} GAMES</p>
@@ -242,8 +249,10 @@ type SeasonWinRateDatum = {
   winPct: number
   games: number
   restedTeamWins: number
-  /** winPct − 50, in percentage points. Negative below the coin flip. */
+  /** winPct − that season's own home baseline, in percentage points. */
   deviation: number
+  /** That season's home win rate. Not a constant — see `toDeviation`. */
+  baselinePct: number
 }
 
 function SeasonWinRateTooltip({ active, payload }: TooltipContentProps) {
@@ -253,11 +262,14 @@ function SeasonWinRateTooltip({ active, payload }: TooltipContentProps) {
     <div style={termTooltip}>
       <p style={{ color: "var(--term-text)", fontWeight: 700, letterSpacing: "0.04em" }}>{d.label}</p>
       <p style={{ marginTop: 2, color: deviationFill(d.deviation) }}>
-        <span style={{ fontWeight: 700 }}>{signedNumber(d.deviation)} PP</span> VS COIN FLIP
+        <span style={{ fontWeight: 700 }}>{signedNumber(d.deviation)} PP</span> VS {d.baselinePct}% BASELINE
       </p>
       <p style={{ color: "var(--term-text-muted)", marginTop: 2 }}>WIN RATE: {d.winPct}%</p>
       <p style={{ color: "var(--term-text-muted)", marginTop: 2 }}>
         {d.restedTeamWins.toLocaleString()} / {d.games.toLocaleString()} (RESTED TEAM WON)
+      </p>
+      <p style={{ color: "var(--term-text-muted)", marginTop: 2 }}>
+        HOME TEAMS WON {d.baselinePct}% THAT SEASON
       </p>
     </div>
   )
@@ -280,12 +292,17 @@ function SeasonWinRateBySeasonChart({
   seasonWinRates: AnalysisResponse["seasonWinRates"]
   loading: boolean
 }) {
+  // Each season against its OWN home baseline. A single zero line across 41 seasons would
+  // be wrong at both ends: home teams won 67.9% in 1987-88 and 54.3% in 2023-24, so a fixed
+  // line renders the 1980s as a huge rest effect and the 2020s as a collapse, when neither
+  // is about rest at all.
   const chartData: SeasonWinRateDatum[] = seasonWinRates.map((s) => ({
     label: s.season,
     winPct: s.winPct,
     games: s.games,
     restedTeamWins: s.restedTeamWins,
-    deviation: toDeviation(s.winPct),
+    deviation: toDeviation(s.winPct, s.homeBaselinePct),
+    baselinePct: s.homeBaselinePct,
   }))
   const { domain, ticks } = deviationScale(chartData.map((d) => d.deviation))
 
@@ -694,12 +711,17 @@ export function AnalysisContent() {
     )
   }
 
+  const homeBaseline = data.venueBaseline.homeWinPct
+  const notCalledHomeRate = homeWinRateWhenVisitorRested(
+    data.homeAwayBreakdown.awayTeamMoreRested
+  )
   const barData: WinRateDatum[] = data.thresholds.map((t) => ({
     label: `RA ≥ ${t.threshold}`,
     winPct: t.winPct,
     games: t.games,
     threshold: t.threshold,
-    deviation: toDeviation(t.winPct),
+    deviation: toDeviation(t.winPct, homeBaseline),
+    baselinePct: homeBaseline,
   }))
   const thresholdScale = deviationScale(barData.map((d) => d.deviation))
 
@@ -716,23 +738,33 @@ export function AnalysisContent() {
       <PageHeader
         eyebrow="HISTORICAL BACKTEST"
         title="Rest Advantage Analysis"
-        description="Among completed regular-season games, did the more-rested team win? Called only when that team is also at home. Charts plot the gap against a coin flip, so zero is a 50% win rate."
+        // Kept to two lines at 1440px, which `page-headers.spec.ts` enforces. The legend
+        // under each chart carries the fuller "how often the home team wins anyway" gloss,
+        // so this line does not repeat it.
+        description={`Among completed regular-season games, did the more-rested team win? Counted only where that team was also at home, and measured against the ${homeBaseline}% home teams win anyway.`}
       />
       <MethodLink surfaceHref="/analysis" />
 
       {/* Hero stat row (terminal stat cards) */}
       <div className="grid grid-cols-2 gap-2 md:grid-cols-3">
+        {/* Every tile carries its lift, because the rate alone is not the finding. 61.2%
+            sounds like an eleven-point edge and is a one-point one: the other ten points are
+            home court, which the model did not produce. */}
         <StatCard
           label="OVERALL WIN RATE"
           value={`${data.overallWinRate}%`}
-          sub={`${data.totalGames.toLocaleString()} GAMES`}
+          sub={`${data.totalGames.toLocaleString()} GAMES · ${signedNumber(
+            toDeviation(data.overallWinRate, homeBaseline)
+          )} VS ${homeBaseline}% BASELINE`}
           accent="var(--term-blue)"
         />
         {ra5 && (
           <StatCard
             label="WIN RATE · RA ≥ 5"
             value={`${ra5.winPct}%`}
-            sub={`${ra5.games.toLocaleString()} GAMES`}
+            sub={`${ra5.games.toLocaleString()} GAMES · ${signedNumber(
+              toDeviation(ra5.winPct, homeBaseline)
+            )} VS BASELINE`}
             accent="var(--term-blue)"
           />
         )}
@@ -741,21 +773,26 @@ export function AnalysisContent() {
             page's HIGH CONF GAMES.
 
             The home team's rate rather than the rested visitor's, over the same games:
-            these are the matchups the model does not call, and the reason it does not is
-            that the home side keeps winning them. Stated that way it explains the rule
-            instead of confessing to a rate below a coin flip. The full argument, and what
-            happens at every threshold, is behind the data. */}
+            these are the matchups the model does not count, and the reason it does not is
+            that the home side keeps winning them. Under the baseline frame this tile also
+            earns a second reading — the home team does measurably WORSE here than it does
+            across all games, which is the rest effect showing up on the other side. */}
         <StatCard
-          label="HOME WIN RATE · NOT CALLED"
-          value={`${homeWinRateWhenVisitorRested(data.homeAwayBreakdown.awayTeamMoreRested)}%`}
-          sub={`${data.homeAwayBreakdown.awayTeamMoreRested.games.toLocaleString()} GAMES, VISITOR FRESHER`}
+          label="HOME WIN RATE · NOT COUNTED"
+          value={`${notCalledHomeRate}%`}
+          sub={`${data.homeAwayBreakdown.awayTeamMoreRested.games.toLocaleString()} GAMES · ${signedNumber(
+            toDeviation(notCalledHomeRate, homeBaseline)
+          )} VS BASELINE`}
           accent="var(--term-neutral)"
         />
       </div>
 
       {/* Bar chart — win rate by threshold */}
       <div style={termCardStyle}>
-        <SectionDivider label="WIN RATE BY RA THRESHOLD" descriptor="CLICK A BAR TO EXPLORE" />
+        <SectionDivider
+          label="WIN RATE BY RA THRESHOLD — RESTED TEAM AT HOME"
+          descriptor="CLICK A BAR TO EXPLORE"
+        />
         <div className="mt-2 h-72">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={barData} margin={{ top: 24, right: 24, left: 0, bottom: 0 }}>
@@ -812,7 +849,9 @@ export function AnalysisContent() {
             </BarChart>
           </ResponsiveContainer>
         </div>
-        <BaselineLegend />
+        <BaselineLegend
+          zeroLabel={`PERCENTAGE POINTS · 0 = ${homeBaseline}%, HOW OFTEN THE HOME TEAM WINS ANYWAY`}
+        />
       </div>
 
       {/* The card that argued this rule in full used to sit here. Every clause of it was
@@ -824,7 +863,10 @@ export function AnalysisContent() {
 
       {/* Win rate by season */}
       <div style={termCardStyle}>
-        <SectionDivider label="WIN RATE BY SEASON" descriptor="REGULAR SEASON (OCT–APR)" />
+        <SectionDivider
+          label="WIN RATE BY SEASON"
+          descriptor="VS THAT SEASON'S HOME BASELINE"
+        />
         <div className="mt-2 flex flex-wrap gap-1.5">
           {RA_THRESHOLD_OPTIONS.map((opt) => {
             const active = seasonRaFilter === opt.value
@@ -855,7 +897,7 @@ export function AnalysisContent() {
           seasonWinRates={displayedSeasonRates}
           loading={seasonRateLoading}
         />
-        <BaselineLegend />
+        <BaselineLegend zeroLabel="PERCENTAGE POINTS · 0 = THAT SEASON'S OWN HOME WIN RATE" />
       </div>
 
       {/* Key insight callout */}
@@ -870,18 +912,37 @@ export function AnalysisContent() {
           }}
         >
           <p className="mono" style={{ fontSize: 11, letterSpacing: "0.12em", color: "var(--term-blue)", fontWeight: 700 }}>
-            KEY INSIGHT
+            READING THESE NUMBERS
           </p>
+          {/* Rewritten with the baseline frame. The previous version called RA ≥ 5 "a
+              significant edge over the coin-flip baseline" — most of that edge was home
+              court — and said the signal "compounds at the extremes", which the data does
+              not support: the rate is flat from RA ≥ 5 upward, not rising. */}
           <p className="mt-2 text-sm leading-relaxed text-[var(--term-text-dim)]">
-            Teams with a Rest Advantage of{" "}
-            <span className="font-semibold text-[var(--term-text)]">+5 or more</span> win{" "}
-            <span className="mono font-bold" style={{ color: "var(--term-blue)" }}>{ra5.winPct}%</span> of games — a
-            significant edge over the coin-flip baseline.
+            Every game counted here is one the more-rested team played at home, and home teams
+            win{" "}
+            <span className="mono font-bold" style={{ color: "var(--term-text)" }}>{homeBaseline}%</span>{" "}
+            of all games regardless of rest. So the rate to read is not{" "}
+            <span className="mono tabular-nums">{data.overallWinRate}%</span> but the{" "}
+            <span className="mono font-bold" style={{ color: "var(--term-blue)" }}>
+              {signedNumber(toDeviation(data.overallWinRate, homeBaseline))}
+            </span>{" "}
+            points above that baseline — the part rest accounts for. A bigger gap is worth
+            more: at{" "}
+            <span className="font-semibold text-[var(--term-text)]">RA ≥ 5</span> the rested
+            team wins{" "}
+            <span className="mono font-bold" style={{ color: "var(--term-blue)" }}>{ra5.winPct}%</span>,{" "}
+            <span className="mono font-bold" style={{ color: "var(--term-blue)" }}>
+              {signedNumber(toDeviation(ra5.winPct, homeBaseline))}
+            </span>{" "}
+            over baseline across{" "}
+            <span className="mono tabular-nums">{ra5.games.toLocaleString()}</span> games.
             {ra7 && (
               <>
-                {" "}At RA ≥ 7, that rises to{" "}
-                <span className="mono font-bold" style={{ color: "var(--term-blue)" }}>{ra7.winPct}%</span> across{" "}
-                <span className="mono tabular-nums">{ra7.games.toLocaleString()}</span> games, suggesting the fatigue signal compounds at the extremes.
+                {" "}It does not keep climbing past that: RA ≥ 7 sits at{" "}
+                <span className="mono tabular-nums">{ra7.winPct}%</span> on{" "}
+                <span className="mono tabular-nums">{ra7.games.toLocaleString()}</span> games,
+                which is the same gain, not a larger one.
               </>
             )}
           </p>

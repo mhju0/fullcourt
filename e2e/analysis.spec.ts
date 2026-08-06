@@ -13,11 +13,18 @@ test.describe("Analysis page", () => {
     // The games the model does not call, kept on the page as a stat tile stating the home
     // team's rate. It was a full section arguing the rule; that argument lives once, in
     // /behind-the-data/rest-advantage, and the page keeps only the live figure.
-    await expect(page.getByText("HOME WIN RATE · NOT CALLED")).toBeVisible();
+    await expect(page.getByText("HOME WIN RATE · NOT COUNTED")).toBeVisible();
 
     // Terminal section dividers (current markup — no text-7xl hero).
-    await expect(page.getByText("WIN RATE BY RA THRESHOLD")).toBeVisible();
+    await expect(page.getByText(/WIN RATE BY RA THRESHOLD/)).toBeVisible();
     await expect(page.getByText("WIN RATE BY SEASON")).toBeVisible();
+
+    // The frame itself. Every rate on this page is measured against how often the home team
+    // wins anyway, not against a coin flip — if this line regresses to 50%, the page is
+    // crediting the model with roughly ten points of home court it did not produce.
+    await expect(page.getByText(/0 = \d\d\.\d%, HOW OFTEN THE HOME TEAM WINS ANYWAY/)).toBeVisible();
+    await expect(page.getByText("PERCENTAGE POINTS · 0 = THAT SEASON'S OWN HOME WIN RATE")).toBeVisible();
+    await expect(page.getByText(/COIN FLIP/)).toHaveCount(0);
   });
 
   /**
