@@ -1,3 +1,11 @@
+/**
+ * The route's own contract: which season it reads, what it rejects, and the envelope.
+ *
+ * The bracket grouping and the accuracy summaries moved to
+ * `src/lib/__tests__/playoff-bracket.test.ts` with the module that computes them. What
+ * stays here is what genuinely needs a request: param validation, the default season,
+ * and that the response reaches the browser under `{ data, error }`.
+ */
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { NextRequest } from "next/server";
 import { GET } from "../playoffs/route";
@@ -63,7 +71,7 @@ describe("GET /api/playoffs", () => {
     mockGetPlayoffSeries.mockReset();
   });
 
-  it("returns 200 with the { data, error } envelope shape, grouped by round", async () => {
+  it("returns 200 with the { data, error } envelope", async () => {
     mockGetPlayoffSeries.mockResolvedValueOnce([
       series({ seriesId: 1, round: 1 }),
       series({ seriesId: 2, round: 2, conference: null }),
@@ -79,11 +87,8 @@ describe("GET /api/playoffs", () => {
 
     expect(body.error).toBeNull();
     expect(body.data.season).toBe("2025-26");
-    expect(Array.isArray(body.data.rounds)).toBe(true);
     expect(body.data.rounds.map((r) => r.round)).toEqual([1, 2]);
-    expect(body.data.rounds[0].roundLabel).toBe("First Round");
-    expect(body.data.rounds[1].roundLabel).toBe("Conference Semifinals");
-    expect(body.data.rounds[0].series).toHaveLength(1);
+    expect(body.data.summary.fullInsample.knownWinnerGames).toBe(2);
   });
 
   it("defaults to season 2025-26 when the param is absent", async () => {
@@ -92,6 +97,14 @@ describe("GET /api/playoffs", () => {
     await GET(makeReq());
 
     expect(mockGetPlayoffSeries).toHaveBeenCalledWith("2025-26");
+  });
+
+  it("reads the season it was asked for", async () => {
+    mockGetPlayoffSeries.mockResolvedValueOnce([]);
+
+    await GET(makeReq("?season=2015-16"));
+
+    expect(mockGetPlayoffSeries).toHaveBeenCalledWith("2015-16");
   });
 
   it("rejects an invalid season with a 400 and the envelope error shape", async () => {
@@ -103,98 +116,13 @@ describe("GET /api/playoffs", () => {
     expect(mockGetPlayoffSeries).not.toHaveBeenCalled();
   });
 
-  it("surfaces both prediction methods for a series", async () => {
-    mockGetPlayoffSeries.mockResolvedValueOnce([series({ seriesId: 1 })]);
+  it("returns 500 with a public message when the query throws", async () => {
+    mockGetPlayoffSeries.mockRejectedValueOnce(new Error("DATABASE_URL is not set"));
 
     const res = await GET(makeReq());
-    const body = (await res.json()) as { data: PlayoffsResponse };
+    const body = (await res.json()) as { error: string };
 
-    const s = body.data.rounds[0].series[0];
-    expect(s.predictions.fullInsample).not.toBeNull();
-    expect(s.predictions.walkForwardOos).not.toBeNull();
-    expect(s.predictions.fullInsample?.predictedWinnerTeam.abbreviation).toBe("BOS");
-    expect(s.predictions.walkForwardOos?.predictedWinnerTeam.abbreviation).toBe("BOS");
-  });
-
-  it("passes through an absent prediction method as null rather than fabricating a value", async () => {
-    mockGetPlayoffSeries.mockResolvedValueOnce([
-      series({ seriesId: 1, predictions: { fullInsample: null, walkForwardOos: null } }),
-    ]);
-
-    const res = await GET(makeReq());
-    const body = (await res.json()) as { data: PlayoffsResponse };
-
-    const s = body.data.rounds[0].series[0];
-    expect(s.predictions.fullInsample).toBeNull();
-    expect(s.predictions.walkForwardOos).toBeNull();
-  });
-
-  it("computes summary accuracy only over known-winner series with a non-null prediction", async () => {
-    mockGetPlayoffSeries.mockResolvedValueOnce([
-      // Correct fullInsample prediction, known winner — counts.
-      series({
-        seriesId: 1,
-        seriesWinnerTeam: team(1, "BOS", "Celtics"),
-        predictions: {
-          fullInsample: {
-            predictedHomeCourtWinProb: 0.7,
-            predictedWinnerTeam: team(1, "BOS", "Celtics"),
-            modelVersion: "logistic_unreg_v1",
-            predictedWinnerCorrect: true,
-          },
-          walkForwardOos: null,
-        },
-      }),
-      // Incorrect fullInsample prediction, known winner — counts as wrong.
-      series({
-        seriesId: 2,
-        seriesWinnerTeam: team(4, "PHI", "76ers"),
-        predictions: {
-          fullInsample: {
-            predictedHomeCourtWinProb: 0.7,
-            predictedWinnerTeam: team(1, "BOS", "Celtics"),
-            modelVersion: "logistic_unreg_v1",
-            predictedWinnerCorrect: false,
-          },
-          walkForwardOos: null,
-        },
-      }),
-      // Unknown winner (series not yet resolved) — excluded from accuracy entirely.
-      series({
-        seriesId: 3,
-        seriesWinnerTeam: null,
-        homeCourtWins: 2,
-        opponentWins: 1,
-        predictions: {
-          fullInsample: {
-            predictedHomeCourtWinProb: 0.7,
-            predictedWinnerTeam: team(1, "BOS", "Celtics"),
-            modelVersion: "logistic_unreg_v1",
-            predictedWinnerCorrect: null,
-          },
-          walkForwardOos: null,
-        },
-      }),
-      // Known winner but no fullInsample prediction — excluded from fullInsample accuracy.
-      series({
-        seriesId: 4,
-        seriesWinnerTeam: team(1, "BOS", "Celtics"),
-        predictions: { fullInsample: null, walkForwardOos: null },
-      }),
-    ]);
-
-    const res = await GET(makeReq());
-    const body = (await res.json()) as { data: PlayoffsResponse };
-
-    expect(body.data.summary.fullInsample).toEqual({
-      knownWinnerGames: 2,
-      predictedCorrect: 1,
-      accuracy: 50,
-    });
-    expect(body.data.summary.walkForwardOos).toEqual({
-      knownWinnerGames: 0,
-      predictedCorrect: 0,
-      accuracy: 0,
-    });
+    expect(res.status).toBe(500);
+    expect(body.error.length).toBeGreaterThan(0);
   });
 });
