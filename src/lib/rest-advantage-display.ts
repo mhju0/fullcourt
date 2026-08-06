@@ -51,12 +51,22 @@ export function formatRestAdvantageDisplay(
  * call site.
  */
 export type RestAdvantageEvidence = {
-  /** "3 or more" for a bucketed gap, "any measurable" for the overall fallback. */
+  /**
+   * The class, ready to render on its own — `"gap 3 or more"`, `"gap any measurable"`, or
+   * `"home court · rested visitor"`.
+   *
+   * Self-describing rather than a bare value with the word "gap" prepended by the caller.
+   * The two branches below do not describe the same quantity, so a fixed prefix was only
+   * correct for one of them: over a rested-visitor figure it read "gap rested visitor"
+   * against the *home* team's rate, which states the opposite of the truth.
+   */
   classLabel: string;
-  /** Win percentage of the more-rested team in that class (0–100, 1 decimal). */
+  /**
+   * The win rate this evidence states (0–100, 1 decimal), and **whose** rate it is depends
+   * on the branch: the more-rested team's for a called gap, the home team's for a rested
+   * visitor. `classLabel` names the subject; the two always travel together.
+   */
   winPct: number;
-  /** Percentage points away from the 50% coin flip. Signed. */
-  deviation: number;
   /** The denominator. Never zero — a class with no games yields no evidence at all. */
   games: number;
   /** Ready-to-render sentence. */
@@ -130,9 +140,11 @@ export function toEvidenceSource(
  * calls but that clear no threshold (0.5 <= |RA| < 2) fall back to the overall rate,
  * whose "any measurable" wording signals that it is the weakest class available.
  *
- * A rested visitor gets the declined half instead, stated as the loss it is. The site's rule
- * is to publish that half rather than drop it — the same thing `/analysis` does — because a
- * card showing "LAL 4.1" and then saying nothing reads as an endorsement the model withheld.
+ * A rested visitor gets the uncalled half instead, stated as the home team's record over
+ * those same games rather than as the visitor's loss. The site's rule is to publish that half
+ * rather than drop it — the same thing `/analysis` does — because a card showing "LAL 4.1"
+ * and then saying nothing reads as an endorsement the model withheld. Saying it as a home win
+ * gives the reader the reason for the rule instead of only the verdict.
  *
  * Returns null when there is nothing honest to say: a neutral/no-call matchup, a missing
  * backtest, or a class with a zero denominator.
@@ -151,17 +163,21 @@ export function buildRestAdvantageEvidence(
   if (abs < NEUTRAL_REST_ADVANTAGE_THRESHOLD) return null;
 
   if (advantageTeam === "away") {
-    const declined = source.homeAwayBreakdown?.awayTeamMoreRested;
-    if (!declined || declined.games <= 0) return null;
+    const uncalled = source.homeAwayBreakdown?.awayTeamMoreRested;
+    if (!uncalled || uncalled.games <= 0) return null;
+
+    // The home team's rate over these games, not the rested visitor's. Same set, same
+    // counts — but stated as the win it is rather than the loss backing the visitor would
+    // have been, which is what makes the home-only rule legible instead of defensive.
+    const homeWinPct = homeWinRateWhenVisitorRested(uncalled);
 
     return {
-      classLabel: "rested visitor",
-      winPct: declined.winPct,
-      deviation: Math.round((declined.winPct - 50) * 10) / 10,
-      games: declined.games,
-      sentence: `This model declines a rested visitor: backing one has won ${declined.winPct.toFixed(
+      classLabel: "home court · rested visitor",
+      winPct: homeWinPct,
+      games: uncalled.games,
+      sentence: `When the fresher team is the visitor, the home team has still won ${homeWinPct.toFixed(
         1
-      )}% of the time (n = ${declined.games.toLocaleString("en-US")}).`,
+      )}% of the time (n = ${uncalled.games.toLocaleString("en-US")}).`,
     };
   }
 
@@ -169,26 +185,21 @@ export function buildRestAdvantageEvidence(
     .filter((bucket) => abs >= bucket.threshold && bucket.games > 0)
     .sort((a, b) => b.threshold - a.threshold)[0];
 
-  const classLabel = cleared ? `${cleared.threshold} or more` : "any measurable";
-  const winPct = cleared ? cleared.winPct : source.overallWinRate;
+  const bucketLabel = cleared ? `${cleared.threshold} or more` : "any measurable";
+  const rate = cleared ? cleared.winPct : source.overallWinRate;
   const games = cleared ? cleared.games : source.totalGames;
 
   if (games <= 0) return null;
 
-  const deviation = Math.round((winPct - 50) * 10) / 10;
-
-  const subject = cleared
-    ? `Gaps of ${classLabel}`
-    : "Any measurable gap";
+  const subject = cleared ? `Gaps of ${bucketLabel}` : "Any measurable gap";
 
   return {
-    classLabel,
-    winPct,
-    deviation,
+    classLabel: `gap ${bucketLabel}`,
+    winPct: rate,
     games,
     sentence: `${subject} ${
       cleared ? "have" : "has"
-    } gone the rested team's way ${winPct.toFixed(
+    } gone the rested team's way ${rate.toFixed(
       1
     )}% of the time (n = ${games.toLocaleString("en-US")}).`,
   };

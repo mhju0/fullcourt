@@ -258,7 +258,7 @@ export function UpcomingContent() {
                             {evidence.winPct.toFixed(1)}%
                           </span>
                           <span style={{ fontSize: 10, color: "var(--term-text-muted)" }}>
-                            gap {evidence.classLabel} · n={evidence.games.toLocaleString("en-US")}
+                            {evidence.classLabel} · n={evidence.games.toLocaleString("en-US")}
                           </span>
                         </span>
                       ) : (

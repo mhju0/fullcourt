@@ -198,7 +198,7 @@ describe("buildRestAdvantageEvidence", () => {
     // Regression: the original spec applied the RA>=5 rate (61.1%) to a 4.1 gap.
     // Because the buckets are cumulative, 4.1 belongs to "3 or more".
     const ev = buildRestAdvantageEvidence(homeRested(4.1), source);
-    expect(ev?.classLabel).toBe("3 or more");
+    expect(ev?.classLabel).toBe("gap 3 or more");
     expect(ev?.winPct).toBe(57.2);
     expect(ev?.games).toBe(12481);
     expect(ev?.sentence).not.toContain("61.1");
@@ -206,22 +206,22 @@ describe("buildRestAdvantageEvidence", () => {
 
   it("selects the top bucket for a gap that clears every threshold", () => {
     expect(buildRestAdvantageEvidence(homeRested(9.4), source)?.classLabel).toBe(
-      "7 or more"
+      "gap 7 or more"
     );
   });
 
   it("treats a threshold boundary as cleared", () => {
     expect(buildRestAdvantageEvidence(homeRested(2), source)?.classLabel).toBe(
-      "2 or more"
+      "gap 2 or more"
     );
     expect(buildRestAdvantageEvidence(homeRested(1.999), source)?.classLabel).toBe(
-      "any measurable"
+      "gap any measurable"
     );
   });
 
   it("falls back to the overall rate for a called gap that clears no threshold", () => {
     const ev = buildRestAdvantageEvidence(homeRested(1.2), source);
-    expect(ev?.classLabel).toBe("any measurable");
+    expect(ev?.classLabel).toBe("gap any measurable");
     expect(ev?.winPct).toBe(54.8);
     expect(ev?.games).toBe(39412);
     expect(ev?.sentence).toContain("Any measurable gap has gone");
@@ -250,7 +250,7 @@ describe("buildRestAdvantageEvidence", () => {
       thresholds: [{ threshold: 7, games: 0, restedTeamWins: 0, winPct: 0 }],
     };
     expect(buildRestAdvantageEvidence(homeRested(8), sparse)?.classLabel).toBe(
-      "any measurable"
+      "gap any measurable"
     );
   });
 
@@ -265,18 +265,17 @@ describe("buildRestAdvantageEvidence", () => {
     ).toBeNull();
   });
 
-  it("signs the deviation in the correct direction", () => {
+  it("publishes a class that lost, rather than suppressing it", () => {
+    // A bucket below a coin flip still gets stated. The house rule is to publish the
+    // record, not only the flattering ones.
     const below: RestAdvantageEvidenceSource = {
       ...source,
       thresholds: [{ threshold: 2, games: 900, restedTeamWins: 405, winPct: 45.0 }],
     };
-    expect(buildRestAdvantageEvidence(homeRested(3), below)?.deviation).toBe(-5);
+    const ev = buildRestAdvantageEvidence(homeRested(3), below)!;
 
-    const level: RestAdvantageEvidenceSource = {
-      ...source,
-      thresholds: [{ threshold: 2, games: 900, restedTeamWins: 450, winPct: 50 }],
-    };
-    expect(buildRestAdvantageEvidence(homeRested(3), level)?.deviation).toBe(0);
+    expect(ev.winPct).toBe(45);
+    expect(ev.sentence).toContain("45.0%");
   });
 
   it("renders the denominator with thousands separators", () => {
@@ -302,8 +301,11 @@ describe("buildRestAdvantageEvidence", () => {
   // Every `thresholds` bucket and `overallWinRate` above is built from CALLED games only —
   // `buildHistoricalBacktest` filters through `isCalledSide`, which is true for "home" alone.
   // Keying the sentence off `Math.abs(differential)` therefore printed a home-rested-only win
-  // rate onto a card whose rested team is the visitor: the exact games the model declines, and
-  // which /analysis publishes as losing at 42.4%.
+  // rate onto a card whose rested team is the visitor: the exact games the model does not call.
+  //
+  // Those games are now stated as the home team's record over them rather than as the
+  // visitor's loss — the same set and the same counts, with the subject changed so the
+  // sentence gives the reason for the home-only rule instead of only its verdict.
 
   it("never states a called-games win rate on a rested-visitor matchup", () => {
     for (const gap of [0.6, 1.2, 2.5, 4.1, 6, 12]) {
@@ -317,17 +319,30 @@ describe("buildRestAdvantageEvidence", () => {
     }
   });
 
-  it("states the declined half instead, with its own denominator", () => {
+  it("states the home team's record over the uncalled half, with its own denominator", () => {
+    // 11,548 games, the rested visitor won 4,894 — so the home team won the other 6,654,
+    // which is 57.6%. The visitor's own 42.4% is not what the card says any more.
     const ev = buildRestAdvantageEvidence(awayRested(4.1), source)!;
-    expect(ev.classLabel).toBe("rested visitor");
-    expect(ev.winPct).toBe(42.4);
+
+    expect(ev.classLabel).toBe("home court · rested visitor");
+    expect(ev.winPct).toBe(57.6);
     expect(ev.games).toBe(11548);
-    expect(ev.deviation).toBe(-7.6);
-    expect(ev.sentence).toContain("42.4%");
-    expect(ev.sentence).toContain("n = 11,548");
+    expect(ev.sentence).toBe(
+      "When the fresher team is the visitor, the home team has still won 57.6% of the time (n = 11,548)."
+    );
   });
 
-  it("says nothing when the declined half has no denominator either", () => {
+  it("names the home team as the subject, so the rate cannot be read as the visitor's", () => {
+    // The number and the label travel together: `/upcoming` renders classLabel directly
+    // beneath winPct, so a label naming the wrong side states the opposite of the truth.
+    const ev = buildRestAdvantageEvidence(awayRested(4.1), source)!;
+
+    expect(ev.sentence).toContain("the home team");
+    expect(ev.classLabel).toContain("home court");
+    expect(ev.sentence).not.toContain("42.4");
+  });
+
+  it("says nothing when the uncalled half has no denominator either", () => {
     expect(
       buildRestAdvantageEvidence(awayRested(4.1), {
         ...source,
