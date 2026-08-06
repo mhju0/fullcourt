@@ -1,10 +1,12 @@
 import { PublicApiError } from "@/lib/api-errors";
 import {
   getRegularSeasonScheduleForDisparity,
+  getSeasonGamesStamp,
   getTeamDirectory,
 } from "@/lib/db/queries";
 import { formatEasternDateKey } from "@/lib/nba-season";
 import { computeScheduleDisparity, seasonRankability } from "@/lib/schedule-disparity";
+import { createStampedCache } from "@/lib/stamped-cache";
 import { teamLabeller } from "@/lib/team-labels";
 import type { ScheduleDisparityResponse, ScheduleDisparityTeam } from "@/types";
 
@@ -13,8 +15,27 @@ import type { ScheduleDisparityResponse, ScheduleDisparityTeam } from "@/types";
  * figures, and label each team.
  *
  * Read-only — this module writes nothing and no other query reads anything it produces.
+ *
+ * Held until that season's games change, for the same reason the Season Report is: this reads
+ * every game in a season with no LIMIT and reduces them in JS. `getSeasonGamesStamp` is the
+ * right stamp without a new query — it counts `publishableGames(eq(games.season, season))`,
+ * which is exactly the population `getRegularSeasonScheduleForDisparity` reads. It also has to
+ * be the per-season stamp rather than the backtest's: this module reads scheduled games, not
+ * only final ones, and reporting on a schedule before it is played is the whole point.
+ *
+ * Unbounded because the key set is closed — the route validates against
+ * `rankableSeasons(browsableSeasons())`, so a reader cannot invent a season.
  */
-export async function getScheduleDisparity(
+const disparity = createStampedCache<string, ScheduleDisparityResponse>({
+  readStamp: (season) => getSeasonGamesStamp(season),
+  load: buildScheduleDisparity,
+});
+
+export function getScheduleDisparity(season: string): Promise<ScheduleDisparityResponse> {
+  return disparity(season);
+}
+
+async function buildScheduleDisparity(
   season: string
 ): Promise<ScheduleDisparityResponse> {
   const [games, directory] = await Promise.all([
@@ -65,6 +86,10 @@ export async function getScheduleDisparity(
   return {
     season: result.season,
     provisional: result.provisional,
+    // Stamped when the figures are computed, so a held response keeps the date it was built
+    // on rather than the date it was served. That is what the field claims to mean, and it is
+    // the honest reading: re-stamping today onto a held value would assert a computation that
+    // did not happen. The stamp guarantees the inputs have not moved since.
     asOf: formatEasternDateKey(new Date()),
     scheduledGames: result.scheduledGames,
     teams,
