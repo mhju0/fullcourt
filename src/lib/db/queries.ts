@@ -1270,6 +1270,33 @@ export async function getTeamDirectory(): Promise<
 // ─── Season Report query ─────────────────────────────────────────
 
 /**
+ * A cheap stand-in for "has this season's report changed?".
+ *
+ * Deliberately not `getCompletedGamesStamp`, which counts only final games. That stamp is
+ * exact for the backtest, whose inputs are only final games, and wrong for a reader that
+ * also reads scheduled ones: from the 1 October season-list rollover until opening night
+ * roughly three weeks later, nothing is final, so a freshly-seeded schedule never moved it
+ * and `/season` served `0 / 0` off a cache that could not invalidate.
+ *
+ * Three components, because three different things change the report. The row count moves
+ * when a season is seeded, the final count as it is played, and the latest date when a game
+ * is rescheduled. Same population as `getSeasonReportRows` below — a stamp that keys a
+ * different set of rows than the query it stands in for is the bug this replaces.
+ */
+export async function getSeasonGamesStamp(season: string): Promise<string> {
+  const [row] = await db
+    .select({
+      scheduled: count(),
+      finals: sql<number>`count(*) filter (where ${games.status} = 'final')`,
+      latest: max(games.date),
+    })
+    .from(games)
+    .where(publishableGames(eq(games.season, season)));
+
+  return `${row?.scheduled ?? 0}/${Number(row?.finals ?? 0)}@${row?.latest ?? "none"}`;
+}
+
+/**
  * Every regular-season game in one season with both sides' latest fatigue row.
  *
  * LEFT joins and no status filter, unlike `getCompletedGamesWithFatigue`: the progress

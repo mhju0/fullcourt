@@ -50,6 +50,16 @@ truth and mirrors the TS logic, so both agree on "the current season".
 `30247134313` / `30248448510`, runner egress San Jose, California). Re-run it any time from
 Actions → "Probe NBA data sources"; it reads nothing and writes nothing.
 
+**Dev column re-probed 2026-08-06** (Seoul, residential): `cdn.nba.com` staticData still
+**403**, ESPN scoreboard still **200**. Nothing in the table moved. The last column's "no" was
+re-measured rather than assumed — an ESPN scoreboard payload fetched the same day carries no
+`002…`-shaped id anywhere in it (event id `401809238`, `uid s:40~l:46~e:401809238`). That is
+worth restating because the id is not merely an identifier here: the `002`/`004`/`005` prefix
+**is** the game-type taxonomy, guarded by `scripts/audit_data.ts`, relied on by the playoff and
+play-in upsert contracts, and hoopR's `game_id` *is* our `external_id`
+(`scripts/fetch_shooting_data.py`). A source that cannot produce that prefix cannot seed a
+drop-in row, however reachable it is.
+
 Two results changed the plan:
 
 - **`stats.nba.com` is unreachable from CI as well**, timing out after 25s with 0 bytes exactly
@@ -89,22 +99,27 @@ not for live scoring). **Prefer a stats-ID source (`stats.nba.com`) for a live s
 - [ ] Bump the hardcoded season counts that cannot derive (Section 7).
 - [ ] After the first week, run the data-integrity re-audit (Section 6) to catch date drift early.
 
-**Known limitation, not fixed: `/season` can serve a stale empty rollover for weeks.**
-`getSeasonReport()` (`src/lib/season-report-server.ts`) keys its cache on
+**Fixed 2026-08-06 — was: `/season` could serve a stale empty rollover for weeks.**
+`getSeasonReport()` (`src/lib/season-report-server.ts`) used to key its cache on
 `getCompletedGamesStamp()`, which counts **final** games — exact for `/api/analysis`, whose
-inputs are only final games. `/season` deliberately also reads scheduled (not-yet-played)
-games, so the stamp is not exact for it. On 1 October the season list rolls over and
-`/season` defaults to 2026-27. The first request that season caches a report off whatever
-`getCompletedGamesStamp()` reads at that moment — and no regular-season game goes final
-until opening night, roughly three weeks later. Until then the stamp never moves, so the
-cache never invalidates, and the new nav tab's default view serves `0 / 0 · NO GAMES
-SCHEDULED` even after 2026-27 has been seeded (Section 4). Serverless recycling on Vercel
-masks this intermittently, since a fresh instance starts with an empty cache — which is why
-it can look fixed on one request and stale on the next.
-Two ways to close it, neither done here: widen the stamp to also count scheduled games for
-the season in view (still cheap — an indexed `count`), so a newly-seeded schedule moves the
-stamp even with nothing final yet; or put a TTL on the cache entry so it self-expires without
-needing a stamp change at all.
+inputs are only final games, and wrong for `/season`, which deliberately also reads scheduled
+(not-yet-played) games. On 1 October the season list rolls over and `/season` defaults to
+2026-27; no regular-season game goes final until opening night roughly three weeks later, so
+the stamp never moved, the cache never invalidated, and the tab's default view served
+`0 / 0 · NO GAMES SCHEDULED` even after 2026-27 had been seeded (Section 4). Serverless
+recycling on Vercel masked it intermittently — a fresh instance starts with an empty cache, so
+it could look fixed on one request and stale on the next.
+
+Closed by the first of the two options that were recorded here: a season-scoped
+`getSeasonGamesStamp(season)` (`src/lib/db/queries.ts`) over the same `publishableGames`
+population `getSeasonReportRows` reads, returning `scheduled/finals@latestDate`. The row count
+moves when a season is seeded, the final count as it is played, the date when a game is
+rescheduled. The cache entry is per-season to match, so switching the season in view no longer
+discards the others. Rejected: a TTL — it would have hidden a stamp that was simply keying the
+wrong population. Verified against the live DB on 2026-08-06: `2025-26 → 1230/1230@2026-04-12`,
+`2026-27 → 0/0@none` (the exact pre-seed state the bug hid in), `1996-97 → 1189/1189@1997-04-20`.
+Pinned by `src/lib/__tests__/season-report-server.test.ts`, which asserts the stamp keys the
+same predicate as the query it stands in for — an in-memory fixture cannot see that drift.
 
 ## 4. Seeding the new schedule (manual)
 
