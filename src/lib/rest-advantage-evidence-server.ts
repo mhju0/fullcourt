@@ -8,6 +8,7 @@ import {
   buildHistoricalGameSearch,
   type HistoricalGameSearchOptions,
 } from "@/lib/rest-advantage-evidence";
+import { createStampedCache } from "@/lib/stamped-cache";
 import type { AnalysisResponse, GameSearchResponse } from "@/types";
 
 export type HistoricalGameSearchRequest = HistoricalGameSearchOptions & {
@@ -22,32 +23,25 @@ export type HistoricalGameSearchRequest = HistoricalGameSearchOptions & {
  * no LIMIT — and reduces them in JS. Its interface hid that, so callers treated
  * it as a getter and asked for it once per surface.
  *
- * The result is held here until a game goes final. Entries are per `seasonMinRA`
- * because that is the only input; the map is bounded because that input arrives
- * from a query string.
+ * The result is held until a game goes final. `getCompletedGamesStamp` ignores the
+ * key because the population does not depend on it — one stamp covers every
+ * threshold. Entries are per `seasonMinRA` because that is the only input, and the
+ * cache is bounded because that input arrives from a query string.
  */
 const MAX_CACHED_THRESHOLDS = 16;
-let cache: { stamp: string; byMinRA: Map<number, AnalysisResponse> } | null = null;
+
+const backtest = createStampedCache<number, AnalysisResponse>({
+  readStamp: () => getCompletedGamesStamp(),
+  load: async (seasonMinRA) =>
+    buildHistoricalBacktest(await getCompletedGamesWithFatigue(), seasonMinRA),
+  maxEntries: MAX_CACHED_THRESHOLDS,
+});
 
 /** Complete server-side historical backtest operation, including retrieval. */
-export async function getHistoricalBacktest(
+export function getHistoricalBacktest(
   seasonMinRA: number
 ): Promise<AnalysisResponse> {
-  const stamp = await getCompletedGamesStamp();
-  if (cache === null || cache.stamp !== stamp) {
-    cache = { stamp, byMinRA: new Map() };
-  }
-
-  const hit = cache.byMinRA.get(seasonMinRA);
-  if (hit !== undefined) return hit;
-
-  const rows = await getCompletedGamesWithFatigue();
-  const response = buildHistoricalBacktest(rows, seasonMinRA);
-
-  if (cache.byMinRA.size >= MAX_CACHED_THRESHOLDS) cache.byMinRA.clear();
-  cache.byMinRA.set(seasonMinRA, response);
-
-  return response;
+  return backtest(seasonMinRA);
 }
 
 /** Complete server-side game-explorer operation, including retrieval. */
