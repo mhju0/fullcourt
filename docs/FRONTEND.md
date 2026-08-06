@@ -499,10 +499,19 @@ by confidence:
   pinned by `src/components/__tests__/matchup-card-confidence.test.ts`.
 - Beneath the card body, `buildRestAdvantageEvidence` (`src/lib/rest-advantage-display.ts`)
   renders one sentence giving the rest-advantage number its historical hit rate, sample size
-  and distance from the 50% coin flip. Buckets are **cumulative**, so a 4.1 gap resolves to
-  "gaps of 3 or more"; a called gap below 2 falls back to the overall rate worded "any
-  measurable gap". Neutral matchups, a missing `/api/analysis` payload, or any class with a
-  zero denominator render nothing at all.
+  and **the baseline that side wins anyway** — the home baseline for a rested home team, the
+  road baseline for a rested road team. Buckets are **cumulative**, so a 4.1 gap resolves to
+  `at home · gap ≥ 3`; a called gap below 2 falls back to the overall rate worded
+  `at home · any gap`. Neutral matchups, a missing `/api/analysis` payload, a missing
+  `venueBaseline`, or any class with a zero denominator render nothing at all.
+- **Both branches report the rested team, and always state the baseline in the same sentence**
+  (2026-08-06). The subject used to flip — the home-rested branch reported the rested team and
+  the road-rested branch reported the *home* team — which made `/upcoming`'s single win-rate
+  column mean two different things depending on the row. Keeping the baseline inside the one
+  sentence is deliberate: a rested road team's 42.4% standing alone beside a coloured `EDGE`
+  chip reads as a pick, where "42.4% — road teams win 40.1% overall" reads as a measurement,
+  and no truncation can separate them. `/upcoming`'s cell shows the rate, the signed lift, the
+  class label and the baseline together for the same reason.
 - `confidenceAccent` returns `TERM_ACCENT` tokens (`src/lib/terminal-styles.ts`): high
   `.red`, med `.blue`, everything else `.neutral`. **Not `.tan`** — against `--term-red` it
   measures ΔE 3.2 for deuteranopia (floor 8) and 14.5 for normal vision (floor 15), so a

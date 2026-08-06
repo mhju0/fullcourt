@@ -820,7 +820,7 @@ export function AnalysisContent() {
                 cursor={{ fill: "rgba(23,64,139,0.06)" }}
                 content={winRateTooltipRenderer}
               />
-              {/* Deviation columns from zero = coin flip. `position="top"` puts the
+              {/* Deviation columns from zero = the venue baseline. `position="top"` puts the
                   label above the cap for a positive bar and below the foot for a
                   negative one, so it never lands inside the mark. */}
               <Bar

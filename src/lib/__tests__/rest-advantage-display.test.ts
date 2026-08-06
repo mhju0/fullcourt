@@ -119,6 +119,7 @@ describe("toEvidenceSource", () => {
       homeTeamMoreRested: { games: 39412, restedTeamWins: 21598, winPct: 54.8 },
       awayTeamMoreRested: { games: 11548, restedTeamWins: 4894, winPct: 42.4 },
     },
+    venueBaseline: { games: 47143, homeWins: 28248, homeWinPct: 59.9, roadWinPct: 40.1 },
     seasonWinRates: [{ season: "2024-25", games: 1230, restedTeamWins: 700, winPct: 56.9 }],
   } as unknown as AnalysisResponse;
 
@@ -130,7 +131,15 @@ describe("toEvidenceSource", () => {
       overallWinRate: 54.8,
       totalGames: 39412,
       homeAwayBreakdown: payload.homeAwayBreakdown,
+      venueBaseline: payload.venueBaseline,
     });
+  });
+
+  it("keeps the baseline, without which no rate on a card means anything", () => {
+    const source = toEvidenceSource(payload);
+
+    expect(source?.venueBaseline.homeWinPct).toBe(59.9);
+    expect(source?.venueBaseline.roadWinPct).toBe(40.1);
   });
 
   /**
@@ -153,6 +162,7 @@ describe("toEvidenceSource", () => {
       "overallWinRate",
       "thresholds",
       "totalGames",
+      "venueBaseline",
     ]);
   });
 
@@ -178,6 +188,9 @@ describe("buildRestAdvantageEvidence", () => {
       homeTeamMoreRested: { games: 39412, restedTeamWins: 21598, winPct: 54.8 },
       awayTeamMoreRested: { games: 11548, restedTeamWins: 4894, winPct: 42.4 },
     },
+    // Wider than any row above, and neutral games are in it. Every rate here is stated
+    // against whichever of these two the rested team was playing under.
+    venueBaseline: { games: 47143, homeWins: 28248, homeWinPct: 59.9, roadWinPct: 40.1 },
   };
 
   /**
@@ -198,7 +211,7 @@ describe("buildRestAdvantageEvidence", () => {
     // Regression: the original spec applied the RA>=5 rate (61.1%) to a 4.1 gap.
     // Because the buckets are cumulative, 4.1 belongs to "3 or more".
     const ev = buildRestAdvantageEvidence(homeRested(4.1), source);
-    expect(ev?.classLabel).toBe("gap 3 or more");
+    expect(ev?.classLabel).toBe("at home · gap ≥ 3");
     expect(ev?.winPct).toBe(57.2);
     expect(ev?.games).toBe(12481);
     expect(ev?.sentence).not.toContain("61.1");
@@ -206,25 +219,25 @@ describe("buildRestAdvantageEvidence", () => {
 
   it("selects the top bucket for a gap that clears every threshold", () => {
     expect(buildRestAdvantageEvidence(homeRested(9.4), source)?.classLabel).toBe(
-      "gap 7 or more"
+      "at home · gap ≥ 7"
     );
   });
 
   it("treats a threshold boundary as cleared", () => {
     expect(buildRestAdvantageEvidence(homeRested(2), source)?.classLabel).toBe(
-      "gap 2 or more"
+      "at home · gap ≥ 2"
     );
     expect(buildRestAdvantageEvidence(homeRested(1.999), source)?.classLabel).toBe(
-      "gap any measurable"
+      "at home · any gap"
     );
   });
 
   it("falls back to the overall rate for a called gap that clears no threshold", () => {
     const ev = buildRestAdvantageEvidence(homeRested(1.2), source);
-    expect(ev?.classLabel).toBe("gap any measurable");
+    expect(ev?.classLabel).toBe("at home · any gap");
     expect(ev?.winPct).toBe(54.8);
     expect(ev?.games).toBe(39412);
-    expect(ev?.sentence).toContain("Any measurable gap has gone");
+    expect(ev?.sentence).toContain("Rested team at home, any gap: won 54.8%");
   });
 
   it("counts exactly 0.5 as a call, matching classifyRestAdvantage", () => {
@@ -250,7 +263,7 @@ describe("buildRestAdvantageEvidence", () => {
       thresholds: [{ threshold: 7, games: 0, restedTeamWins: 0, winPct: 0 }],
     };
     expect(buildRestAdvantageEvidence(homeRested(8), sparse)?.classLabel).toBe(
-      "gap any measurable"
+      "at home · any gap"
     );
   });
 
@@ -261,6 +274,17 @@ describe("buildRestAdvantageEvidence", () => {
         overallWinRate: 0,
         totalGames: 0,
         homeAwayBreakdown: source.homeAwayBreakdown,
+        venueBaseline: source.venueBaseline,
+      })
+    ).toBeNull();
+  });
+
+  it("says nothing at all without a baseline to state the rate against", () => {
+    // A rate with no baseline is the thing this whole frame exists to stop publishing.
+    expect(
+      buildRestAdvantageEvidence(homeRested(4.1), {
+        ...source,
+        venueBaseline: { games: 0, homeWins: 0, homeWinPct: 0, roadWinPct: 0 },
       })
     ).toBeNull();
   });
@@ -303,9 +327,10 @@ describe("buildRestAdvantageEvidence", () => {
   // Keying the sentence off `Math.abs(differential)` therefore printed a home-rested-only win
   // rate onto a card whose rested team is the visitor: the exact games the model does not call.
   //
-  // Those games are now stated as the home team's record over them rather than as the
-  // visitor's loss — the same set and the same counts, with the subject changed so the
-  // sentence gives the reason for the home-only rule instead of only its verdict.
+  // Both branches now report the RESTED team's own rate against that side's own baseline.
+  // The subject no longer flips between them: `/upcoming` renders one column from `winPct`,
+  // and a column that meant the rested team on one row and the home team on the next was
+  // unreadable. What varies is the baseline, not the subject.
 
   it("never states a called-games win rate on a rested-visitor matchup", () => {
     for (const gap of [0.6, 1.2, 2.5, 4.1, 6, 12]) {
@@ -319,27 +344,47 @@ describe("buildRestAdvantageEvidence", () => {
     }
   });
 
-  it("states the home team's record over the uncalled half, with its own denominator", () => {
-    // 11,548 games, the rested visitor won 4,894 — so the home team won the other 6,654,
-    // which is 57.6%. The visitor's own 42.4% is not what the card says any more.
+  it("states the rested road team's own record against the road baseline", () => {
     const ev = buildRestAdvantageEvidence(awayRested(4.1), source)!;
 
-    expect(ev.classLabel).toBe("home court · rested visitor");
-    expect(ev.winPct).toBe(57.6);
+    expect(ev.classLabel).toBe("on the road · all gaps");
+    expect(ev.winPct).toBe(42.4);
+    expect(ev.baselinePct).toBe(40.1);
+    expect(ev.lift).toBe(2.3);
     expect(ev.games).toBe(11548);
     expect(ev.sentence).toBe(
-      "When the fresher team is the visitor, the home team has still won 57.6% of the time (n = 11,548)."
+      "Rested team on the road: won 42.4% — road teams win 40.1% overall (n = 11,548)."
     );
   });
 
-  it("names the home team as the subject, so the rate cannot be read as the visitor's", () => {
-    // The number and the label travel together: `/upcoming` renders classLabel directly
-    // beneath winPct, so a label naming the wrong side states the opposite of the truth.
-    const ev = buildRestAdvantageEvidence(awayRested(4.1), source)!;
+  /**
+   * The reason 42.4% is publishable at all. Alone beside a coloured rest badge it reads as
+   * an endorsement of a side that loses more than it wins; against 40.1% it is a measurement.
+   * They are in one sentence so no truncation can separate them.
+   */
+  it("never states the road rate without the road baseline in the same sentence", () => {
+    for (const gap of [0.6, 1.2, 2.5, 4.1, 6, 12]) {
+      const ev = buildRestAdvantageEvidence(awayRested(gap), source)!;
 
-    expect(ev.sentence).toContain("the home team");
-    expect(ev.classLabel).toContain("home court");
-    expect(ev.sentence).not.toContain("42.4");
+      expect(ev.sentence).toContain("42.4");
+      expect(ev.sentence, `baseline missing at gap ${gap}`).toContain("40.1");
+    }
+  });
+
+  it("keeps the rested team as the subject on both branches", () => {
+    const home = buildRestAdvantageEvidence(homeRested(4.1), source)!;
+    const road = buildRestAdvantageEvidence(awayRested(4.1), source)!;
+
+    // Same subject, same verb, same denominator form — so a reader can compare the two.
+    expect(home.sentence.startsWith("Rested team at home")).toBe(true);
+    expect(road.sentence.startsWith("Rested team on the road")).toBe(true);
+    expect(home.winPct).toBe(57.2);
+    expect(road.winPct).toBe(42.4);
+  });
+
+  it("states each side against its own baseline, not against the other's", () => {
+    expect(buildRestAdvantageEvidence(homeRested(4.1), source)!.baselinePct).toBe(59.9);
+    expect(buildRestAdvantageEvidence(awayRested(4.1), source)!.baselinePct).toBe(40.1);
   });
 
   it("says nothing when the uncalled half has no denominator either", () => {

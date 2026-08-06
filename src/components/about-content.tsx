@@ -190,6 +190,11 @@ const COUNT_WORD = ["no", "One", "Two", "Three", "Four", "Five", "Six", "Seven",
 
 export interface AboutStats {
   games: number;
+  /**
+   * How often the home team wins regardless of rest. Both `*EdgePp` figures below are
+   * measured from here rather than from 50, because every game they count is a home game.
+   */
+  baselinePct: number;
   overallEdgePp: number;
   widestEdgePp: number;
   widestEdgeGames: number;
@@ -345,7 +350,9 @@ export function AboutContent({ stats }: { stats: AboutStats | null }) {
               {stats ? signedNumber(stats.widestEdgePp, 1) : NO_FIGURE}
             </span>
             <p className="mt-6 max-w-[34ch]" style={{ color: BONE, fontSize: "1.05rem", lineHeight: 1.6 }}>
-              Win-rate points above a coin flip when the rest gap is at its widest, across{" "}
+              Win-rate points above what a home team wins anyway
+              {stats ? ` (${stats.baselinePct.toFixed(1)}%)` : ""}, when the rest gap is at its
+              widest, across{" "}
               {stats ? `${stats.widestEdgeGames.toLocaleString()} games` : "the widest rest gaps"}.
             </p>
           </div>
@@ -365,8 +372,10 @@ export function AboutContent({ stats }: { stats: AboutStats | null }) {
                 {stats ? signedNumber(stats.overallEdgePp, 1) : NO_FIGURE}
               </span>
               <p className="mt-3 max-w-[46ch]" style={{ color: DIM, lineHeight: 1.6 }}>
-                Across every call it makes, not only the strongest. Much of the underlying gap is
-                structural — geography and broadcast windows, not favouritism.
+                Across every call it makes, not only the strongest — and measured against home
+                court rather than a coin flip, which is most of what a raw win rate here would
+                be. Much of the underlying gap is structural — geography and broadcast windows,
+                not favouritism.
               </p>
             </div>
           </div>

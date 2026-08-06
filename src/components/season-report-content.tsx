@@ -40,10 +40,15 @@ const LATEST_SEASON = NBA_SEASONS[NBA_SEASONS.length - 1]
  * The vs-history blurb, read off the loaded season rather than a hardcoded 82-game figure —
  * a shortened season (1998-99, 2019-20 pre-bubble) or a mid-season one carries a real, much
  * wider band, and stating "roughly 940 games" beside either was simply false.
+ *
+ * Says "with the rested team at home", not "with a decidable rest gap": `season-report.ts`
+ * filters through `isCalledSide`, so these counts are the home row alone. The wider decidable
+ * set includes rested-visitor games this page never counts, and the old wording named a
+ * population about 40% larger than the one behind the number.
  */
-function decidableGamesSentence(rate: SeasonReportRate): string {
-  if (rate.band === null) return "This season has no games with a decidable rest gap yet."
-  return `This season has produced ${rate.games.toLocaleString()} games with a decidable rest gap so far, worth about ±${rate.band.toFixed(1)} percentage points either way. Seasons move inside that range more often than they move outside it.`
+function countedGamesSentence(rate: SeasonReportRate): string {
+  if (rate.band === null) return "This season has no games yet with the rested team at home."
+  return `This season has produced ${rate.games.toLocaleString()} games with the rested team at home so far, worth about ±${rate.band.toFixed(1)} percentage points either way. Seasons move inside that range more often than they move outside it.`
 }
 
 /** The middle value of a sorted number list, for a prose figure that should track real data. */
@@ -103,7 +108,7 @@ function RateTile({ label, rate, testId }: { label: string; rate: SeasonReportRa
         !gated
           ? `±${rate.band!.toFixed(1)} · ${rate.games.toLocaleString()} GAMES`
           : rate.games === 0
-            ? "NO DECIDABLE GAMES YET"
+            ? "NO GAMES YET WITH THE RESTED TEAM AT HOME"
             : `TOO EARLY · ${rate.games} OF ${MIN_GAMES_FOR_INFERENCE} GAMES NEEDED`
       }
       accent={gated ? "var(--term-neutral)" : "var(--term-blue)"}
@@ -161,7 +166,7 @@ function VerdictLine({ verdict }: { verdict: SeasonReportVerdict }) {
   const { text, tone } =
     verdict.kind === "tooEarly"
       ? {
-          text: `TOO EARLY TO CALL — ${verdict.games.toLocaleString()} DECIDABLE GAMES SO FAR`,
+          text: `TOO EARLY TO CALL — ${verdict.games.toLocaleString()} GAMES SO FAR`,
           tone: "var(--term-text-muted)",
         }
       : verdict.kind === "noNorm"
@@ -532,7 +537,7 @@ export function SeasonReportContent() {
       ) : (
         <>
           <div className="grid grid-cols-2 gap-2 md:grid-cols-3">
-            <RateTile label="REST ADVANTAGE WIN RATE" rate={data.overall} testId="season-rest-win-rate" />
+            <RateTile label="RESTED TEAM AT HOME · WIN RATE" rate={data.overall} testId="season-rest-win-rate" />
             <RateTile label="WIN RATE · RA ≥ 2" rate={data.atLeastTwo} />
             <Tile
               label="SEASON PROGRESS"
@@ -553,7 +558,7 @@ export function SeasonReportContent() {
             />
             {verdict ? <VerdictLine verdict={verdict} /> : null}
             <p style={{ fontSize: 14, color: "var(--term-text-muted)", maxWidth: "42rem", lineHeight: 1.55 }}>
-              {decidableGamesSentence(data.overall)}{" "}
+              {countedGamesSentence(data.overall)}{" "}
               <a href="/analysis" style={{ color: "var(--term-blue)", fontWeight: 600 }}>
                 See the full backtest →
               </a>

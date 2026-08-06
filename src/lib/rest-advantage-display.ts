@@ -62,14 +62,29 @@ export type RestAdvantageEvidence = {
    */
   classLabel: string;
   /**
-   * The win rate this evidence states (0–100, 1 decimal), and **whose** rate it is depends
-   * on the branch: the more-rested team's for a called gap, the home team's for a rested
-   * visitor. `classLabel` names the subject; the two always travel together.
+   * The **more-rested team's** win rate in that class (0–100, 1 decimal), on both branches.
+   *
+   * Symmetric since 2026-08-06. It used to flip subject: the home-rested branch reported the
+   * rested team and the road-rested branch reported the home team, which made the two
+   * unreadable side by side — `/upcoming` renders one column from this and the column meant
+   * two different things depending on the row. Whose rate it is never varies now; what varies
+   * is `baselinePct`.
    */
   winPct: number;
+  /**
+   * What that same side wins anyway, regardless of rest — the home baseline for a rested home
+   * team, the road baseline for a rested road team.
+   *
+   * Inseparable from `winPct` by construction: `sentence` always states both, so a truncated
+   * render cannot show one without the other. A 42.4% standing alone beside a coloured rest
+   * badge reads as an endorsement of a losing side; 42.4% against 40.1% does not.
+   */
+  baselinePct: number;
+  /** `winPct − baselinePct`, signed. The part rest accounts for. */
+  lift: number;
   /** The denominator. Never zero — a class with no games yields no evidence at all. */
   games: number;
-  /** Ready-to-render sentence. */
+  /** Ready-to-render sentence. States the rate, the baseline and the denominator. */
   sentence: string;
 };
 
@@ -79,10 +94,13 @@ export type RestAdvantageEvidence = {
  * `homeAwayBreakdown` is in here because `thresholds` and `overallWinRate` are **not**
  * symmetric: `buildHistoricalBacktest` filters them through `isCalledSide`, so both describe
  * home-rested games alone. The breakdown is the only field that can speak for the other half.
+ *
+ * `venueBaseline` is in here because no rate above means anything without it. Both rows are
+ * stated against what that side wins anyway, the same way `/analysis` plots them.
  */
 export type RestAdvantageEvidenceSource = Pick<
   AnalysisResponse,
-  "thresholds" | "overallWinRate" | "totalGames" | "homeAwayBreakdown"
+  "thresholds" | "overallWinRate" | "totalGames" | "homeAwayBreakdown" | "venueBaseline"
 >;
 
 /**
@@ -122,6 +140,7 @@ export function toEvidenceSource(
     overallWinRate: backtest.overallWinRate,
     totalGames: backtest.totalGames,
     homeAwayBreakdown: backtest.homeAwayBreakdown,
+    venueBaseline: backtest.venueBaseline,
   };
 }
 
@@ -162,22 +181,24 @@ export function buildRestAdvantageEvidence(
   if (advantageTeam === "neutral") return null;
   if (abs < NEUTRAL_REST_ADVANTAGE_THRESHOLD) return null;
 
-  if (advantageTeam === "away") {
-    const uncalled = source.homeAwayBreakdown?.awayTeamMoreRested;
-    if (!uncalled || uncalled.games <= 0) return null;
+  const baseline = source.venueBaseline;
+  if (!baseline || baseline.games <= 0) return null;
 
-    // The home team's rate over these games, not the rested visitor's. Same set, same
-    // counts — but stated as the win it is rather than the loss backing the visitor would
-    // have been, which is what makes the home-only rule legible instead of defensive.
-    const homeWinPct = homeWinRateWhenVisitorRested(uncalled);
+  if (advantageTeam === "away") {
+    const onRoad = source.homeAwayBreakdown?.awayTeamMoreRested;
+    if (!onRoad || onRoad.games <= 0) return null;
 
     return {
-      classLabel: "home court · rested visitor",
-      winPct: homeWinPct,
-      games: uncalled.games,
-      sentence: `When the fresher team is the visitor, the home team has still won ${homeWinPct.toFixed(
+      classLabel: "on the road · all gaps",
+      winPct: onRoad.winPct,
+      baselinePct: baseline.roadWinPct,
+      lift: liftPoints(onRoad.winPct, baseline.roadWinPct),
+      games: onRoad.games,
+      sentence: `Rested team on the road: won ${onRoad.winPct.toFixed(
         1
-      )}% of the time (n = ${uncalled.games.toLocaleString("en-US")}).`,
+      )}% — road teams win ${baseline.roadWinPct.toFixed(
+        1
+      )}% overall (n = ${onRoad.games.toLocaleString("en-US")}).`,
     };
   }
 
@@ -185,22 +206,30 @@ export function buildRestAdvantageEvidence(
     .filter((bucket) => abs >= bucket.threshold && bucket.games > 0)
     .sort((a, b) => b.threshold - a.threshold)[0];
 
-  const bucketLabel = cleared ? `${cleared.threshold} or more` : "any measurable";
   const rate = cleared ? cleared.winPct : source.overallWinRate;
   const games = cleared ? cleared.games : source.totalGames;
 
   if (games <= 0) return null;
 
-  const subject = cleared ? `Gaps of ${bucketLabel}` : "Any measurable gap";
+  const gapLabel = cleared ? `gap ≥ ${cleared.threshold}` : "any gap";
 
   return {
-    classLabel: `gap ${bucketLabel}`,
+    classLabel: `at home · ${gapLabel}`,
     winPct: rate,
+    baselinePct: baseline.homeWinPct,
+    lift: liftPoints(rate, baseline.homeWinPct),
     games,
-    sentence: `${subject} ${
-      cleared ? "have" : "has"
-    } gone the rested team's way ${rate.toFixed(
+    // Same subject, same verb and same denominator form as the road branch above, so the two
+    // can be read against each other rather than only against themselves.
+    sentence: `Rested team at home, ${gapLabel}: won ${rate.toFixed(
       1
-    )}% of the time (n = ${games.toLocaleString("en-US")}).`,
+    )}% — home teams win ${baseline.homeWinPct.toFixed(
+      1
+    )}% overall (n = ${games.toLocaleString("en-US")}).`,
   };
+}
+
+/** Percentage points above the side's own baseline. One decimal, signed. */
+function liftPoints(winPct: number, baselinePct: number): number {
+  return Math.round((winPct - baselinePct) * 10) / 10;
 }

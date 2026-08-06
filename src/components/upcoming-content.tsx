@@ -11,6 +11,7 @@ import { apiFetcher, errMsg } from "@/lib/fetcher"
 import { useBacktest } from "@/hooks/useBacktest"
 import { Skeleton } from "@/components/ui/skeleton"
 import { buildRestAdvantageEvidence } from "@/lib/rest-advantage-display"
+import { signedNumber } from "@/lib/signed-number"
 import { termCardStyle, termDashedEmptyStyle, termTdStyle as tdStyle, termThStyle as thStyle, termThUnitStyle } from "@/lib/terminal-styles"
 import type { UpcomingGameWithRA } from "@/types"
 import { MessageCard } from "@/components/ui/message-card"
@@ -254,11 +255,25 @@ export function UpcomingContent() {
                           className="inline-flex flex-col items-end"
                           style={{ lineHeight: 1.35 }}
                         >
+                          {/* The rate and its lift share a line: a rested road team's 42.4%
+                              standing alone next to a coloured EDGE chip reads as a pick,
+                              where "42.4% +2.3" reads as the measurement it is. */}
                           <span style={{ fontSize: 12, fontWeight: 700, color: "var(--term-text)" }}>
-                            {evidence.winPct.toFixed(1)}%
+                            {evidence.winPct.toFixed(1)}%{" "}
+                            <span
+                              style={{
+                                fontSize: 10,
+                                fontWeight: 600,
+                                color:
+                                  evidence.lift >= 0 ? "var(--term-blue)" : "var(--term-red)",
+                              }}
+                            >
+                              {signedNumber(evidence.lift)}
+                            </span>
                           </span>
                           <span style={{ fontSize: 10, color: "var(--term-text-muted)" }}>
-                            {evidence.classLabel} · n={evidence.games.toLocaleString("en-US")}
+                            {evidence.classLabel} · vs {evidence.baselinePct.toFixed(1)}% · n=
+                            {evidence.games.toLocaleString("en-US")}
                           </span>
                         </span>
                       ) : (
@@ -275,9 +290,11 @@ export function UpcomingContent() {
             style={{ fontSize: 11, lineHeight: 1.5, color: "var(--term-text-muted)" }}
           >
             &ldquo;Historically&rdquo; is how often the more-rested team won across every past
-            regular-season game in the matching rest-advantage class <em>where that team was also
-            at home</em> — the only games this model calls — against a 50% coin-flip baseline. It
-            describes that class of games, not this one. Not betting advice.
+            regular-season game in the matching class, next to how often that side wins from that
+            venue <em>regardless</em> of rest — the signed figure is the difference. Visiting teams
+            travel, so the rested team is usually the home team; the two venues are counted
+            separately for that reason and never pooled. It describes a class of games, not this
+            one. Not betting advice.
           </p>
         </div>
       )}

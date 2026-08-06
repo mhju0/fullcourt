@@ -62,7 +62,10 @@ export default async function OpengraphImage() {
             <span style={{ color: "#F5A623" }}>Court</span>
           </div>
           <div style={{ display: "flex", fontSize: 38, color: "#B7BEC7", maxWidth: 960, lineHeight: 1.35 }}>
-            Rest, fatigue, and shot value — the more-rested NBA team wins ~55% of games.
+            {/* No figure: a static image cannot pin one, and the ~55% this carried predated
+                the 2026-08-02 rule change entirely. */}
+            Rest, travel and shot value — measured against every NBA regular season since
+            1985-86.
           </div>
         </div>
 

@@ -42,10 +42,19 @@ async function loadStats(): Promise<AboutStats | null> {
 
   const backtest = await getHistoricalBacktest(0);
   const widest = backtest.thresholds.find((t) => t.threshold === 7);
+
+  // Against the home baseline, not 50. Every game in these figures is one the rested team
+  // played at home, and home teams win ~59.9% of everything regardless of rest — so a
+  // coin-flip reference put roughly ten points of home court into a number this page
+  // presents, in its largest type, as what rest is worth.
+  const baseline = backtest.venueBaseline.homeWinPct;
+  const pointsOverBaseline = (rate: number) => Math.round((rate - baseline) * 10) / 10;
+
   return {
     games: backtest.totalGames,
-    overallEdgePp: Math.round((backtest.overallWinRate - 50) * 10) / 10,
-    widestEdgePp: widest ? Math.round((widest.winPct - 50) * 10) / 10 : 0,
+    baselinePct: baseline,
+    overallEdgePp: pointsOverBaseline(backtest.overallWinRate),
+    widestEdgePp: widest ? pointsOverBaseline(widest.winPct) : 0,
     widestEdgeGames: widest?.games ?? 0,
   };
 }
