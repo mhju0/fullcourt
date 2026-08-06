@@ -15,6 +15,5 @@ export const GET = jsonRoute(
     page: z.coerce.number().int().min(1).default(1),
     limit: z.coerce.number().int().min(1).max(MAX_LIMIT).default(DEFAULT_LIMIT),
   }),
-  ({ minRA, ...rest }) =>
-    searchHistoricalGameEvidence({ ...rest, minRA: minRA > 0 ? minRA : undefined })
+  searchHistoricalGameEvidence
 );

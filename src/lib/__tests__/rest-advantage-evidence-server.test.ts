@@ -6,6 +6,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
   getCompletedGamesStamp,
   getCompletedGamesWithFatigue,
+  searchRegularSeasonGames,
 } from "@/lib/db/queries";
 import type { HistoricalGameEvidenceRow } from "@/lib/rest-advantage-evidence";
 
@@ -17,6 +18,7 @@ vi.mock("@/lib/db/queries", () => ({
 
 const mockStamp = vi.mocked(getCompletedGamesStamp);
 const mockRows = vi.mocked(getCompletedGamesWithFatigue);
+const mockSearch = vi.mocked(searchRegularSeasonGames);
 
 const ROWS: HistoricalGameEvidenceRow[] = [
   {
@@ -89,5 +91,80 @@ describe("getHistoricalBacktest", () => {
     const callsBefore = mockRows.mock.calls.length;
     await getHistoricalBacktest(0);
     expect(mockRows.mock.calls.length).toBe(callsBefore + 1);
+  });
+});
+
+/**
+ * The explorer splits one request into the half that narrows rows in SQL and the half
+ * that shapes the page. Both halves used to be decided at the route: it translated a
+ * `minRA` of 0 into "no floor" before calling, which put a rule about what
+ * rest-advantage values mean into a file whose job is parsing a query string.
+ */
+describe("searchHistoricalGameEvidence", () => {
+  beforeEach(() => {
+    mockSearch.mockReset();
+    mockSearch.mockResolvedValue([]);
+  });
+
+  const REQUEST = { result: "all", page: 1, limit: 20 } as const;
+
+  it("reads a threshold of 0 as no floor, not as a threshold of zero", async () => {
+    // `minRAParam` defaults to 0, and the query already discards neutral games below the
+    // neutral cutoff — so `>= 0` and no floor return the same rows either way.
+    const { searchHistoricalGameEvidence } = await loadModule();
+
+    await searchHistoricalGameEvidence({ ...REQUEST, minRA: 0 });
+
+    expect(mockSearch).toHaveBeenCalledWith({
+      minRA: undefined,
+      team: undefined,
+      season: undefined,
+    });
+  });
+
+  it("passes a real threshold through", async () => {
+    const { searchHistoricalGameEvidence } = await loadModule();
+
+    await searchHistoricalGameEvidence({
+      ...REQUEST,
+      minRA: 5,
+      team: "SEA",
+      season: "1995-96",
+    });
+
+    expect(mockSearch).toHaveBeenCalledWith({
+      minRA: 5,
+      team: "SEA",
+      season: "1995-96",
+    });
+  });
+
+  it("keeps the paging half out of the query", async () => {
+    const { searchHistoricalGameEvidence } = await loadModule();
+
+    await searchHistoricalGameEvidence({
+      result: "correct",
+      page: 3,
+      limit: 50,
+      minRA: 2,
+    });
+
+    expect(mockSearch).toHaveBeenCalledWith({
+      minRA: 2,
+      team: undefined,
+      season: undefined,
+    });
+  });
+
+  it("carries the paging half into the response", async () => {
+    const { searchHistoricalGameEvidence } = await loadModule();
+
+    const response = await searchHistoricalGameEvidence({
+      result: "correct",
+      page: 3,
+      limit: 50,
+    });
+
+    expect(response).toMatchObject({ page: 3, limit: 50 });
   });
 });

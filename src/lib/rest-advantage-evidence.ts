@@ -182,6 +182,23 @@ export type HistoricalGameSearchRow = HistoricalGameEvidenceRow & {
   awayTeamAbbr: string;
 };
 
+/**
+ * What narrows the rows, applied in SQL.
+ *
+ * `minRA` absent means no floor beyond the neutral cutoff the query always applies.
+ * Lives here rather than in `queries.ts` for the same reason
+ * {@link HistoricalGameSearchRow} does: the evidence module owns the vocabulary, and the
+ * query is one reader of it.
+ */
+export type HistoricalGameSearchFilters = {
+  minRA?: number;
+  /** Team abbreviation — matches either side of the game. */
+  team?: string;
+  /** "YYYY-YY". */
+  season?: string;
+};
+
+/** What shapes the page, applied after the rows are in hand. */
 export type HistoricalGameSearchOptions = {
   result: "all" | "correct" | "incorrect";
   page: number;

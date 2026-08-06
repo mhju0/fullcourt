@@ -37,6 +37,7 @@ import {
   classifyRestAdvantage,
   NEUTRAL_REST_ADVANTAGE_THRESHOLD,
   type HistoricalGameEvidenceRow,
+  type HistoricalGameSearchFilters,
   type HistoricalGameSearchRow,
 } from "@/lib/rest-advantage-evidence";
 import type {
@@ -562,19 +563,13 @@ export async function getCompletedGamesWithFatigue(): Promise<HistoricalGameEvid
 
 // ─── Game search query ────────────────────────────────────────────
 
-type SearchFilters = {
-  minRA?: number;
-  team?: string;   // team abbreviation — either home or away
-  season?: string; // "YYYY-YY"
-};
-
 /**
  * Returns final regular-season games matching the given filters, newest first.
  * Result filtering (correct/incorrect) and pagination are done by the caller
  * after computing restedTeamWon in JavaScript.
  */
 export async function searchRegularSeasonGames(
-  filters: SearchFilters
+  filters: HistoricalGameSearchFilters
 ): Promise<HistoricalGameSearchRow[]> {
   const homeTeam = alias(teams, "home_team");
   const awayTeam = alias(teams, "away_team");
