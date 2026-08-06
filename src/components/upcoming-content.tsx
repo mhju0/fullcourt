@@ -8,10 +8,11 @@ import { teamLogoUrl } from "@/lib/team-history"
 import { getTeamColors, readableTextOn } from "@/lib/nba-team-colors"
 import { currentDisplaySeason, isNbaOffSeason, nextSeasonLabel } from "@/lib/nba-season"
 import { apiFetcher, errMsg } from "@/lib/fetcher"
+import { useBacktest } from "@/hooks/useBacktest"
 import { Skeleton } from "@/components/ui/skeleton"
 import { buildRestAdvantageEvidence } from "@/lib/rest-advantage-display"
 import { termCardStyle, termDashedEmptyStyle, termTdStyle as tdStyle, termThStyle as thStyle, termThUnitStyle } from "@/lib/terminal-styles"
-import type { AnalysisResponse, UpcomingGameWithRA } from "@/types"
+import type { UpcomingGameWithRA } from "@/types"
 import { MessageCard } from "@/components/ui/message-card"
 
 // ─── RA threshold options ──────────────────────────────────────────
@@ -93,20 +94,10 @@ export function UpcomingContent() {
   const error = swrError ? errMsg(swrError) : null
 
   // Backtest slice that denominates each row's edge. Unlike the home page this component
-  // has no /api/analysis data to inherit, so it fetches its own. A failure here is not
+  // has no /api/analysis data to inherit, so it reads its own. A failure here is not
   // surfaced: the table still renders and the historical column reads "—", because a
   // missing hit rate must never take the schedule down with it.
-  const { data: analysis } = useSWR<AnalysisResponse>("/api/analysis", apiFetcher, {
-    revalidateOnFocus: false,
-  })
-  const evidenceSource = analysis
-    ? {
-        thresholds: analysis.thresholds,
-        overallWinRate: analysis.overallWinRate,
-        totalGames: analysis.totalGames,
-        homeAwayBreakdown: analysis.homeAwayBreakdown,
-      }
-    : null
+  const { evidenceSource } = useBacktest()
 
   return (
     <div style={termCardStyle}>

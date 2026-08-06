@@ -2,20 +2,18 @@
 
 import { useMemo, useState } from "react"
 import { ChevronLeft, ChevronRight } from "lucide-react"
-import useSWR from "swr"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import { MatchupCard } from "@/components/matchup-card"
 import { PageHeader } from "@/components/page-header"
 import { SeasonSelector } from "@/components/season-selector"
 import { UpcomingContentLazy } from "@/components/upcoming-lazy"
-import { apiFetcher } from "@/lib/fetcher"
+import { useBacktest } from "@/hooks/useBacktest"
 import { useGameSlate, type GameSlate } from "@/hooks/useGameSlate"
 import { currentDisplaySeason, isNbaOffSeason } from "@/lib/nba-season"
 import { MessageCard } from "@/components/ui/message-card"
 import { termCardStyle } from "@/lib/terminal-styles"
 import { cn } from "@/lib/utils"
-import type { AnalysisResponse } from "@/types"
 
 // ─── Helpers ─────────────────────────────────────────────────────
 
@@ -300,27 +298,10 @@ export default function HomePage() {
   // the hook; its decisions live in a pure reducer that is unit-tested without a DOM.
   const slate = useGameSlate()
 
-  // The backtest, fetched only to denominate the matchup cards' evidence sentences.
+  // The backtest, read only to denominate the matchup cards' evidence sentences.
   // Deliberately outside the slate: it is season-independent and must not gate the
   // date browser.
-  const { data: analysis } = useSWR<AnalysisResponse>("/api/analysis", apiFetcher, {
-    revalidateOnFocus: false,
-  })
-  // Each card's rest-advantage number is stated against this.
-  const evidenceSource = useMemo(
-    () =>
-      analysis
-        ? {
-            thresholds: analysis.thresholds,
-            overallWinRate: analysis.overallWinRate,
-            totalGames: analysis.totalGames,
-            // The three fields above describe called (home-rested) games only. A card whose
-            // rested team is the visitor is denominated against this instead.
-            homeAwayBreakdown: analysis.homeAwayBreakdown,
-          }
-        : null,
-    [analysis]
-  )
+  const { evidenceSource } = useBacktest()
 
   // Summary metrics for the stat row. Page policy, not slate policy — the threshold
   // is this page's editorial call, so it stays here rather than inside the hook.

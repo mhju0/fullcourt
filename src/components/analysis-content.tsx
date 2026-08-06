@@ -21,9 +21,10 @@ import { ExploreGameDetailModal } from "@/components/explore-game-detail-modal"
 import { MethodLink } from "@/components/method-link"
 import { PageHeader } from "@/components/page-header"
 import { Skeleton } from "@/components/ui/skeleton"
+import { useBacktest } from "@/hooks/useBacktest"
 import { useExploreGames, type DrillSignal } from "@/hooks/useExploreGames"
 import type { ExploreResult } from "@/lib/explore-games-machine"
-import { apiFetcher, errMsg } from "@/lib/fetcher"
+import { apiFetcher } from "@/lib/fetcher"
 import { NBA_SEASONS } from "@/lib/nba-season"
 import { MONO_FONT_STACK, termCardStyle, termDashedEmptyStyle, termThStyle, termThUnitStyle } from "@/lib/terminal-styles"
 import type { AnalysisResponse } from "@/types"
@@ -647,12 +648,9 @@ export function AnalysisContent() {
   const exploreRef = useRef<HTMLDivElement>(null)
   const drillTokenRef = useRef(0)
 
-  const { data, error: swrError, isLoading: loading } = useSWR<AnalysisResponse>(
-    "/api/analysis",
-    apiFetcher,
-    { revalidateOnFocus: false }
-  )
-  const error = swrError ? errMsg(swrError) : null
+  // The one surface whose subject *is* the backtest, so it is also the only one that
+  // renders the failure rather than degrading around it.
+  const { data, error, loading } = useBacktest()
 
   const seasonSwrKey = seasonRaFilter > 0
     ? `/api/analysis?seasonMinRA=${seasonRaFilter}`

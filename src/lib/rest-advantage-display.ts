@@ -73,6 +73,27 @@ export type RestAdvantageEvidenceSource = Pick<
 >;
 
 /**
+ * Narrows a backtest payload to the fields above, or null before it arrives.
+ *
+ * Two surfaces did this inline and each re-listed the four keys by hand, which is how a
+ * `Pick` stops being the single statement of what the slice is. Written here, next to the
+ * type, so adding a field to the evidence means editing one place rather than finding
+ * every caller that spelled the old set out.
+ */
+export function toEvidenceSource(
+  backtest: AnalysisResponse | null | undefined
+): RestAdvantageEvidenceSource | null {
+  if (!backtest) return null;
+
+  return {
+    thresholds: backtest.thresholds,
+    overallWinRate: backtest.overallWinRate,
+    totalGames: backtest.totalGames,
+    homeAwayBreakdown: backtest.homeAwayBreakdown,
+  };
+}
+
+/**
  * Picks the historical class a matchup belongs to and states its record.
  *
  * Takes the whole `RestAdvantage` rather than a bare differential **on purpose**. The gap's

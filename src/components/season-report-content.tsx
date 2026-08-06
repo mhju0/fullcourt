@@ -7,6 +7,7 @@ import { SeasonSelector } from "@/components/season-selector"
 import { Skeleton } from "@/components/ui/skeleton"
 import { ZeroRestWorkload } from "@/components/zero-rest-workload"
 import { apiFetcher } from "@/lib/fetcher"
+import { useBacktest } from "@/hooks/useBacktest"
 import { NBA_SEASONS } from "@/lib/nba-season"
 import {
   ABNORMAL_SEASON_NOTES,
@@ -28,7 +29,6 @@ import {
   termThUnitStyle,
 } from "@/lib/terminal-styles"
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts"
-import type { AnalysisResponse } from "@/types"
 import { signedNumber } from "@/lib/signed-number"
 import { MessageCard } from "@/components/ui/message-card"
 
@@ -488,11 +488,9 @@ export function SeasonReportContent() {
     { revalidateOnFocus: false }
   )
 
-  // The all-season baseline. Season-independent, so it is fetched once and never refetched
-  // when the selector moves.
-  const { data: analysis } = useSWR<AnalysisResponse>("/api/analysis", apiFetcher, {
-    revalidateOnFocus: false,
-  })
+  // The all-season baseline. Season-independent, so it does not refetch when the
+  // selector moves.
+  const { data: analysis } = useBacktest()
 
   const norm = useMemo(
     () => (analysis ? allSeasonNormExcluding(analysis.seasonWinRates, season) : null),

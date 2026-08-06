@@ -2,9 +2,10 @@ import { describe, expect, it } from "vitest";
 import {
   buildRestAdvantageEvidence,
   formatRestAdvantageDisplay,
+  toEvidenceSource,
   type RestAdvantageEvidenceSource,
 } from "@/lib/rest-advantage-display";
-import type { RestAdvantage } from "@/types";
+import type { AnalysisResponse, RestAdvantage } from "@/types";
 
 describe("formatRestAdvantageDisplay", () => {
   it("labels the away team when the API marks away as advantaged", () => {
@@ -61,6 +62,63 @@ describe("formatRestAdvantageDisplay", () => {
       kind: "neutral",
       text: "NEUTRAL",
     });
+  });
+});
+
+/**
+ * The narrowing `useBacktest` applies before handing the payload to a matchup card.
+ * Four surfaces read the backtest and two of them used to re-list these four keys by
+ * hand, which is how the `Pick` above stopped being the single statement of the slice.
+ */
+describe("toEvidenceSource", () => {
+  const payload = {
+    thresholds: [{ threshold: 2, games: 20000, restedTeamWins: 11240, winPct: 56.2 }],
+    overallWinRate: 54.8,
+    totalGames: 39412,
+    homeAwayBreakdown: {
+      homeTeamMoreRested: { games: 39412, restedTeamWins: 21598, winPct: 54.8 },
+      awayTeamMoreRested: { games: 11548, restedTeamWins: 4894, winPct: 42.4 },
+    },
+    seasonWinRates: [{ season: "2024-25", games: 1230, restedTeamWins: 700, winPct: 56.9 }],
+  } as unknown as AnalysisResponse;
+
+  it("keeps every field the evidence sentence is built from", () => {
+    const source = toEvidenceSource(payload);
+
+    expect(source).toEqual({
+      thresholds: payload.thresholds,
+      overallWinRate: 54.8,
+      totalGames: 39412,
+      homeAwayBreakdown: payload.homeAwayBreakdown,
+    });
+  });
+
+  /**
+   * `thresholds` and `overallWinRate` describe called (home-rested) games alone, so a
+   * rested-visitor card has nothing to say without the breakdown. Dropping it would not
+   * fail a type check — the field is optional to no one — but it would silently unwrite
+   * the declined half of the model.
+   */
+  it("keeps the breakdown, which is the only field that speaks for rested visitors", () => {
+    const source = toEvidenceSource(payload);
+
+    expect(source?.homeAwayBreakdown.awayTeamMoreRested.winPct).toBe(42.4);
+  });
+
+  it("does not carry fields the evidence sentence has no use for", () => {
+    const source = toEvidenceSource(payload);
+
+    expect(Object.keys(source ?? {}).sort()).toEqual([
+      "homeAwayBreakdown",
+      "overallWinRate",
+      "thresholds",
+      "totalGames",
+    ]);
+  });
+
+  it("answers null before the backtest arrives, rather than a half-built source", () => {
+    expect(toEvidenceSource(undefined)).toBeNull();
+    expect(toEvidenceSource(null)).toBeNull();
   });
 });
 
