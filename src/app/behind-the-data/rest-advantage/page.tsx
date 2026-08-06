@@ -8,6 +8,14 @@ import {
   Section,
 } from "@/components/behind-the-data-parts";
 import { FATIGUE_CONSTANTS as K } from "@/lib/fatigue";
+import {
+  HOME_BAR_COUNTERFACTUAL,
+  liftOverBaseline,
+  RESTED_AT_HOME,
+  RESTED_ON_ROAD,
+  REST_SPLIT_BASELINE,
+  REST_SPLIT_SAMPLE,
+} from "@/lib/rest-split-facts";
 import { termTdStyle, termThStyle, termThUnitStyle } from "@/lib/terminal-styles";
 import { signedNumber } from "@/lib/signed-number";
 
@@ -62,6 +70,224 @@ const ABLATIONS = [
 ] as const;
 
 
+/** The 0.5 cutoff's cost, stated once and interpolated rather than described as "a fifth". */
+const NEUTRAL_GAMES = REST_SPLIT_SAMPLE.neutral.toLocaleString();
+
+/**
+ * Both rest rows against their own baselines, plus the games with no gap.
+ *
+ * Every scored game sits in exactly one of the first three rows — which is the point. A table
+ * that accounts for the whole population is harder to accuse of cherry-picking than a sentence
+ * saying it does not cherry-pick.
+ */
+function RestRowTable() {
+  const rows = [
+    {
+      label: "Rested team at home",
+      note: "published",
+      games: RESTED_AT_HOME.games,
+      winPct: RESTED_AT_HOME.winPct,
+      baseline: REST_SPLIT_BASELINE.homeWinPct,
+    },
+    {
+      label: "Rested team on the road",
+      note: "counted separately",
+      games: RESTED_ON_ROAD.games,
+      winPct: RESTED_ON_ROAD.winPct,
+      baseline: REST_SPLIT_BASELINE.roadWinPct,
+    },
+  ];
+
+  return (
+    <div className="overflow-x-auto">
+      <table className="mono w-full" style={{ fontSize: 12, borderCollapse: "collapse" }}>
+        <thead>
+          <tr>
+            <th style={termThStyle}>
+              RESTED TEAM
+              <span style={termThUnitStyle}>WHERE IT PLAYED</span>
+            </th>
+            <th style={{ ...termThStyle, textAlign: "right" }}>
+              GAMES
+              <span style={termThUnitStyle}>COUNT</span>
+            </th>
+            <th style={{ ...termThStyle, textAlign: "right" }}>
+              IT WON
+              <span style={termThUnitStyle}>WIN RATE</span>
+            </th>
+            <th style={{ ...termThStyle, textAlign: "right" }}>
+              BASELINE
+              <span style={termThUnitStyle}>SAME SIDE, ALL GAMES</span>
+            </th>
+            <th style={{ ...termThStyle, textAlign: "right" }}>
+              VS BASELINE
+              <span style={termThUnitStyle}>PCT POINTS</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((r) => (
+            <tr key={r.label}>
+              <td style={termTdStyle}>
+                {r.label}{" "}
+                <span style={{ color: "var(--term-text-muted)" }}>· {r.note}</span>
+              </td>
+              <td style={{ ...termTdStyle, textAlign: "right" }}>
+                {r.games.toLocaleString()}
+              </td>
+              <td style={{ ...termTdStyle, textAlign: "right", fontWeight: 700 }}>
+                {r.winPct}%
+              </td>
+              <td
+                style={{
+                  ...termTdStyle,
+                  textAlign: "right",
+                  color: "var(--term-text-muted)",
+                }}
+              >
+                {r.baseline}%
+              </td>
+              <td style={{ ...termTdStyle, textAlign: "right", fontWeight: 700 }}>
+                {signedNumber(liftOverBaseline(r.winPct, r.baseline))}
+              </td>
+            </tr>
+          ))}
+          <tr>
+            <td style={termTdStyle}>
+              No measurable gap{" "}
+              <span style={{ color: "var(--term-text-muted)" }}>· |RA| &lt; 0.5</span>
+            </td>
+            <td style={{ ...termTdStyle, textAlign: "right" }}>{NEUTRAL_GAMES}</td>
+            <td style={{ ...termTdStyle, textAlign: "right", color: "var(--term-text-muted)" }}>
+              —
+            </td>
+            <td style={{ ...termTdStyle, textAlign: "right", color: "var(--term-text-muted)" }}>
+              —
+            </td>
+            <td style={{ ...termTdStyle, textAlign: "right", color: "var(--term-text-muted)" }}>
+              —
+            </td>
+          </tr>
+          <tr>
+            <td style={{ ...termTdStyle, borderTop: "1px solid var(--term-border)" }}>
+              Every completed game since {REST_SPLIT_SAMPLE.firstSeason}
+            </td>
+            <td
+              style={{
+                ...termTdStyle,
+                borderTop: "1px solid var(--term-border)",
+                textAlign: "right",
+                fontWeight: 700,
+              }}
+            >
+              {REST_SPLIT_BASELINE.games.toLocaleString()}
+            </td>
+            <td
+              colSpan={3}
+              style={{
+                ...termTdStyle,
+                borderTop: "1px solid var(--term-border)",
+                textAlign: "right",
+                color: "var(--term-text-muted)",
+              }}
+            >
+              {REST_SPLIT_BASELINE.homeWinPct}% HOME · {REST_SPLIT_BASELINE.roadWinPct}% ROAD
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+/**
+ * The road row by rest gap.
+ *
+ * This replaces a sentence claiming "no threshold rescues it", which the full ladder refutes:
+ * the row reaches even at a gap of 6 and clears it at 7. Both of those rungs are tiny, and the
+ * caption says so — the honest reading is the schedule running out of examples, not a signal
+ * switching on. The old sentence was written from a ladder that stopped at 5.
+ */
+function RoadLadderTable() {
+  return (
+    <div className="overflow-x-auto">
+      <table className="mono w-full" style={{ fontSize: 12, borderCollapse: "collapse" }}>
+        <thead>
+          <tr>
+            <th style={termThStyle}>
+              REST GAP
+              <span style={termThUnitStyle}>AT LEAST</span>
+            </th>
+            <th style={{ ...termThStyle, textAlign: "right" }}>
+              GAMES
+              <span style={termThUnitStyle}>COUNT</span>
+            </th>
+            <th style={{ ...termThStyle, textAlign: "right" }}>
+              RESTED ROAD TEAM WON
+              <span style={termThUnitStyle}>WIN RATE</span>
+            </th>
+            <th style={{ ...termThStyle, textAlign: "right" }}>
+              VS {REST_SPLIT_BASELINE.roadWinPct}% BASELINE
+              <span style={termThUnitStyle}>PCT POINTS</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style={termTdStyle}>any</td>
+            <td style={{ ...termTdStyle, textAlign: "right" }}>
+              {RESTED_ON_ROAD.games.toLocaleString()}
+            </td>
+            <td style={{ ...termTdStyle, textAlign: "right", fontWeight: 700 }}>
+              {RESTED_ON_ROAD.winPct}%
+            </td>
+            <td style={{ ...termTdStyle, textAlign: "right" }}>
+              {signedNumber(
+                liftOverBaseline(RESTED_ON_ROAD.winPct, REST_SPLIT_BASELINE.roadWinPct)
+              )}
+            </td>
+          </tr>
+          {RESTED_ON_ROAD.ladder.map((rung) => (
+            <tr key={rung.gap}>
+              <td style={termTdStyle}>≥ {rung.gap}</td>
+              <td
+                style={{
+                  ...termTdStyle,
+                  textAlign: "right",
+                  // The thin rungs are muted rather than omitted: dropping them is how the
+                  // claim they refute survived, and printing them boldly would oversell 26 games.
+                  color: rung.games < 500 ? "var(--term-text-muted)" : undefined,
+                }}
+              >
+                {rung.games.toLocaleString()}
+              </td>
+              <td
+                style={{
+                  ...termTdStyle,
+                  textAlign: "right",
+                  fontWeight: 700,
+                  color: rung.games < 500 ? "var(--term-text-muted)" : undefined,
+                }}
+              >
+                {rung.winPct}%
+              </td>
+              <td
+                style={{
+                  ...termTdStyle,
+                  textAlign: "right",
+                  color: rung.games < 500 ? "var(--term-text-muted)" : undefined,
+                }}
+              >
+                {signedNumber(liftOverBaseline(rung.winPct, REST_SPLIT_BASELINE.roadWinPct))}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
 export default function RestAdvantageMethodPage() {
   return (
     <BehindTheDataShell
@@ -82,22 +308,68 @@ score      = max(0, baseLoad × backToBack × altitude × density + freshness + 
 restEdge   = awayScore − homeScore     (positive ⇒ the home side is fresher)`}
         </Formula>
         <Note>
-          A difference under 0.5 is treated as no call. That threshold is why the model declines
-          a fifth of all games rather than predicting every one of them.
+          A difference under 0.5 is treated as no gap at all — {NEUTRAL_GAMES} games, about one
+          in six, that carry no rest claim in either direction.
         </Note>
+      </Section>
+
+      <Section label="HOME COURT AND REST" descriptor="WHY THE TWO ARE COUNTED SEPARATELY">
         <Prose>
-          There is a <strong>second</strong> reason to decline, added on 2026-08-02: the model
-          only makes a call when the fresher team is also the home team. Backing a rested
-          visitor was measured at 44.4% across 7,224 games, and no threshold rescues it — the
-          rate is still under a coin flip at a rest edge of 3, and only reaches even at an edge
-          of 5, which the schedule produces a few dozen times a decade.
+          Rest and home court are entangled, and the entanglement is structural. A visiting team
+          has travelled by definition, so the fresher side is the home side in{" "}
+          {RESTED_AT_HOME.games.toLocaleString()} of the{" "}
+          {REST_SPLIT_SAMPLE.decided.toLocaleString()} games with a measurable gap. Two of the
+          eight terms above — body clock and altitude — can only ever charge the visitor, and
+          the schedule pushes the same way on its own: the visiting side is playing a second
+          night in a row roughly twice as often as the home side, and nothing in that term knows
+          which team is at home.
+        </Prose>
+        <Prose>
+          The obvious objection is that this only holds when the home team slept in its own bed.
+          It does not. In about half the schedule the home team had travelled in too, and there
+          the average rest edge falls by three quarters — while the home team still won 59.7% of
+          those games, 60.0% of the ones where it had flown farther than its opponent, and 58.0%
+          of the ones where it ended a road trip on a back-to-back. Playing at home is worth
+          about the same whatever the home team did to get there.
         </Prose>
         <Note>
-          Rest alone never outweighs home court at any magnitude the NBA schedule generates.
-          That is a finding rather than a defect, and the honest response is to decline the call
-          instead of publishing one already measured as a loser. Adding home court to the rule
-          and letting it decide was tested too: it covers 96.5% of games at 58.4% and still makes
-          776 losing road calls, which is a worse answer wearing better clothes.
+          So a rest advantage cannot be read on its own. It has to be read against the venue it
+          arrived with. Home teams win {REST_SPLIT_BASELINE.homeWinPct}% of all{" "}
+          {REST_SPLIT_BASELINE.games.toLocaleString()} games and road teams{" "}
+          {REST_SPLIT_BASELINE.roadWinPct}%. Against those, a rest advantage is worth{" "}
+          {signedNumber(liftOverBaseline(RESTED_AT_HOME.winPct, REST_SPLIT_BASELINE.homeWinPct))}{" "}
+          points to a rested home team and{" "}
+          {signedNumber(liftOverBaseline(RESTED_ON_ROAD.winPct, REST_SPLIT_BASELINE.roadWinPct))}{" "}
+          to a rested road team. It is a small effect on both sides, and on neither does it come
+          near the twenty points between the two baselines.
+        </Note>
+
+        <RestRowTable />
+
+        <Note>
+          The published rate is the home row. Not because the road row gains less — measured
+          against its own baseline it gains slightly more — but because every game in the home
+          row is also a home game, so one number carries both facts at once, and because a
+          rested road team at {RESTED_ON_ROAD.winPct}% is still losing more often than it wins.
+          A gain over a baseline is a measurement; a pick has to clear 50%.
+        </Note>
+        <RoadLadderTable />
+        <Note>
+          The last two rungs are {RESTED_ON_ROAD.ladder[4].games} and{" "}
+          {RESTED_ON_ROAD.ladder[5].games} games in {REST_SPLIT_SAMPLE.seasons} seasons. Read
+          them as the schedule running out of examples, not as a signal turning on. The gaps that
+          large happen a few dozen times a decade.
+        </Note>
+
+        <Note>
+          Folding home court into the score itself and letting the combined number pick was
+          measured too: with a {HOME_BAR_COUNTERFACTUAL.homeBar}-point home bar it covers{" "}
+          {HOME_BAR_COUNTERFACTUAL.coveragePct}% of games at{" "}
+          {HOME_BAR_COUNTERFACTUAL.accuracyPct}%, which is below simply picking the home team in
+          every one of the {REST_SPLIT_BASELINE.games.toLocaleString()}. It also makes{" "}
+          {HOME_BAR_COUNTERFACTUAL.roadCalls.toLocaleString()} road picks and loses{" "}
+          {HOME_BAR_COUNTERFACTUAL.roadLosses.toLocaleString()} of them. Adding a constant to
+          both sides does not create information.
         </Note>
       </Section>
 
@@ -278,6 +550,15 @@ direction    = ${K.eastwardMultiplier} eastward, ${K.westwardMultiplier} westwar
           only term that gives back more than it brings, and it does so by ten calls. The others
           are kept because they are physically real, correctly computed <em>and</em> additive.
           Terms interact multiplicatively, so these figures do not sum to the total.
+        </Note>
+        <Note>
+          The counts in this section are stated against a coin flip rather than against the{" "}
+          {REST_SPLIT_BASELINE.homeWinPct}% home baseline used everywhere else on the site. That
+          is deliberate: this table compares the terms with <em>each other</em>, and a common
+          reference that both share cancels out of that comparison. It is not the model&rsquo;s
+          edge over home court — that figure is{" "}
+          {signedNumber(liftOverBaseline(RESTED_AT_HOME.winPct, REST_SPLIT_BASELINE.homeWinPct))}{" "}
+          points, and it is the one the Model Results page publishes.
         </Note>
         <Note>
           A separate out-of-sample fit found travel adds little <em>independent</em> information

@@ -34,16 +34,26 @@ export function classifyRestAdvantage(
  * schedule and the matchup cards should go on saying it. This function answers "would we bet
  * on that", and the answer for a rested visitor is no.
  *
- * The evidence, measured on every decidable game from 2002-03 on: picking the more rested team
- * when that team is the visitor won 44.39% of 7,224 calls. Raising the bar does not rescue it —
- * the hit rate climbs to 46.05% at a rest edge of 3, and only reaches a coin flip at 50.29% by
- * an edge of 5, which the schedule produces 171 times in twenty-four seasons.
+ * The evidence, over every decidable game the site publishes (1985-86 on, re-measured
+ * 2026-08-06 by `scripts/measure_uncalled_half.ts`): backing the more rested team when that
+ * team is the visitor won 42.4% of 11,548 games. Home teams win 59.9% of everything and road
+ * teams 40.1%, so that row does gain against its own baseline — but a gain over a baseline is
+ * a measurement, and a pick has to clear 50%.
  *
- * So rest alone never outweighs home court at any magnitude the NBA generates. That is a
- * finding rather than a defect, and the honest response is to decline the call rather than
- * publish one measured at worse than a coin flip. Adding home court to the rule and letting it
- * decide was measured too: it covers 96.5% of games at 58.39% and still makes 776 losing road
- * calls, which is a worse answer wearing better clothes. See ADR 0006.
+ * The figures this docblock carried until 2026-08-06 — 44.39% of 7,224, and a ladder said to
+ * reach 50.29% only at an edge of 5 — were the 2002-03-onward harness slice, not the published
+ * population, and the site had no way to notice: they were prose. They are now generated into
+ * `ml/rest_split_facts.json` and pinned by a test. Two claims did not survive the correction:
+ * the road row reaches even at a gap of 6 and clears it at 7 (on 108 and 26 games, which is the
+ * schedule running out of examples rather than a signal), so "no threshold rescues it" is false
+ * as written; and "rest alone never outweighs home court at any magnitude" is an absolute
+ * resting on a pooled 41-season rate that has drifted — a rested road team is near even over
+ * the last five seasons. Neither sentence is published any more.
+ *
+ * What does hold, and is why this function exists: folding home court into the score and
+ * letting the combined number pick covers 96.5% of games at 59.7%, *below* the 59.9% you get by
+ * backing the home team in every game — adding a constant to both sides creates no information.
+ * See ADR 0006 and its 2026-08-06 addendum.
  *
  * One place, not five — the backtest, the season report, the predictions backfill and the daily
  * refresh all route through here, because a hand-written copy of this predicate in each reader

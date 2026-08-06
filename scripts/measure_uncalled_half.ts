@@ -37,6 +37,8 @@ import {
 } from "@/lib/rest-advantage-evidence";
 
 const OUT_PATH = path.join(process.cwd(), "ml", "data", "uncalled_half_report.txt");
+/** Committed, unlike the .txt — `ml/data/` is gitignored and a pin has to be in the repo. */
+const FACTS_PATH = path.join(process.cwd(), "ml", "rest_split_facts.json");
 
 /**
  * The thresholds the site's own backtest buckets by (2, 3, 5, 7), plus the neutral cutoff and
@@ -285,6 +287,102 @@ async function main(): Promise<void> {
   await mkdir(path.dirname(OUT_PATH), { recursive: true });
   await writeFile(OUT_PATH, out.join("\n") + "\n", "utf8");
   console.log(`[measure] wrote ${OUT_PATH}`);
+
+  await writeFile(FACTS_PATH, JSON.stringify(buildFacts(all), null, 2) + "\n", "utf8");
+  console.log(`[measure] wrote ${FACTS_PATH}`);
+}
+
+/**
+ * The subset of the report that `/behind-the-data/rest-advantage` publishes, as JSON.
+ *
+ * The text report above is for a person reading a measurement. This is the machine-readable
+ * mirror that `src/lib/rest-split-facts.ts` is pinned against, so a figure edited in prose and
+ * nowhere else fails the suite. That pin is the whole point: the page shipped
+ * "44.4% across 7,224 games" for four days after the population it described stopped being the
+ * one the site publishes, because nothing tied the sentence to a measurement.
+ *
+ * Unlike the .txt, this goes to `ml/` root rather than `ml/data/` — `ml/data/` is gitignored,
+ * and a pin has to be committed to pin anything.
+ */
+function buildFacts(all: readonly Scored[]) {
+  const decided = all.filter((r): r is Decided => r.restedTeamSide !== "neutral");
+  const homeRested = decided.filter((r) => r.restedTeamSide === "home");
+  const awayRested = decided.filter((r) => r.restedTeamSide === "away");
+  const seasons = [...new Set(all.map((r) => r.season))].sort();
+  const rate = (wins: number, n: number) =>
+    n > 0 ? Math.round((wins / n) * 1000) / 10 : 0;
+
+  const ladder = (rows: readonly Decided[], gaps: readonly number[]) =>
+    gaps.map((gap) => {
+      const bucket = rows.filter((r) => Math.abs(r.differential) >= gap);
+      const wins = bucket.filter((r) => r.restedTeamWon).length;
+      return { gap, games: bucket.length, wins, winPct: rate(wins, bucket.length) };
+    });
+
+  const homeWins = all.filter((r) => r.homeWon).length;
+
+  // "What if home court were folded into the score and the combined number allowed to pick?"
+  // — the objection the method page answers. Measured at a 3-point home bar, over EVERY scored
+  // game including the neutral ones, which is where its high coverage comes from.
+  const HOME_BAR = 3;
+  let calls = 0;
+  let correct = 0;
+  let roadCalls = 0;
+  let roadWins = 0;
+  for (const g of all) {
+    const margin = g.differential + HOME_BAR;
+    if (Math.abs(margin) < NEUTRAL_REST_ADVANTAGE_THRESHOLD) continue;
+    calls++;
+    const pickHome = margin >= 0;
+    const won = pickHome ? g.homeWon : !g.homeWon;
+    if (won) correct++;
+    if (!pickHome) {
+      roadCalls++;
+      if (won) roadWins++;
+    }
+  }
+
+  return {
+    counterfactual: {
+      homeBar: HOME_BAR,
+      calls,
+      coveragePct: rate(calls, all.length),
+      correct,
+      accuracyPct: rate(correct, calls),
+      roadCalls,
+      roadLosses: roadCalls - roadWins,
+      /** Picking the home team in every scored game — the bar the counterfactual must clear. */
+      alwaysHomePct: rate(homeWins, all.length),
+    },
+    sample: {
+      scoredGames: all.length,
+      neutral: all.filter((r) => r.restedTeamSide === "neutral").length,
+      decided: decided.length,
+      firstSeason: seasons[0],
+      lastSeason: seasons[seasons.length - 1],
+      seasons: seasons.length,
+    },
+    baseline: {
+      games: all.length,
+      homeWins,
+      homeWinPct: rate(homeWins, all.length),
+      roadWinPct: rate(all.length - homeWins, all.length),
+    },
+    restedAtHome: {
+      games: homeRested.length,
+      wins: homeRested.filter((r) => r.restedTeamWon).length,
+      winPct: rate(homeRested.filter((r) => r.restedTeamWon).length, homeRested.length),
+      // Every rung, not the four the first pass printed. The truncated ladder is what made
+      // "no threshold rescues it" look true when it is not.
+      ladder: ladder(homeRested, [2, 3, 4, 5, 6, 7]),
+    },
+    restedOnRoad: {
+      games: awayRested.length,
+      wins: awayRested.filter((r) => r.restedTeamWon).length,
+      winPct: rate(awayRested.filter((r) => r.restedTeamWon).length, awayRested.length),
+      ladder: ladder(awayRested, [2, 3, 4, 5, 6, 7]),
+    },
+  };
 }
 
 main().catch((err) => {

@@ -1,0 +1,112 @@
+{
+  "counterfactual": {
+    "homeBar": 3,
+    "calls": 45507,
+    "coveragePct": 96.5,
+    "correct": 27177,
+    "accuracyPct": 59.7,
+    "roadCalls": 1385,
+    "roadLosses": 752,
+    "alwaysHomePct": 59.9
+  },
+  "sample": {
+    "scoredGames": 47143,
+    "neutral": 8195,
+    "decided": 38948,
+    "firstSeason": "1985-86",
+    "lastSeason": "2025-26",
+    "seasons": 41
+  },
+  "baseline": {
+    "games": 47143,
+    "homeWins": 28248,
+    "homeWinPct": 59.9,
+    "roadWinPct": 40.1
+  },
+  "restedAtHome": {
+    "games": 27400,
+    "wins": 16761,
+    "winPct": 61.2,
+    "ladder": [
+      {
+        "gap": 2,
+        "games": 16078,
+        "wins": 9947,
+        "winPct": 61.9
+      },
+      {
+        "gap": 3,
+        "games": 10524,
+        "wins": 6639,
+        "winPct": 63.1
+      },
+      {
+        "gap": 4,
+        "games": 6389,
+        "wins": 4078,
+        "winPct": 63.8
+      },
+      {
+        "gap": 5,
+        "games": 3782,
+        "wins": 2469,
+        "winPct": 65.3
+      },
+      {
+        "gap": 6,
+        "games": 2153,
+        "wins": 1404,
+        "winPct": 65.2
+      },
+      {
+        "gap": 7,
+        "games": 1108,
+        "wins": 730,
+        "winPct": 65.9
+      }
+    ]
+  },
+  "restedOnRoad": {
+    "games": 11548,
+    "wins": 4894,
+    "winPct": 42.4,
+    "ladder": [
+      {
+        "gap": 2,
+        "games": 4351,
+        "wins": 1889,
+        "winPct": 43.4
+      },
+      {
+        "gap": 3,
+        "games": 2056,
+        "wins": 897,
+        "winPct": 43.6
+      },
+      {
+        "gap": 4,
+        "games": 949,
+        "wins": 443,
+        "winPct": 46.7
+      },
+      {
+        "gap": 5,
+        "games": 342,
+        "wins": 158,
+        "winPct": 46.2
+      },
+      {
+        "gap": 6,
+        "games": 108,
+        "wins": 54,
+        "winPct": 50
+      },
+      {
+        "gap": 7,
+        "games": 26,
+        "wins": 16,
+        "winPct": 61.5
+      }
+    ]
+  }
+}
