@@ -5,6 +5,7 @@ import {
 } from "@/lib/db/queries";
 import { buildSeasonReport, type SeasonReportResponse } from "@/lib/season-report";
 import { createStampedCache } from "@/lib/stamped-cache";
+import { teamLabeller } from "@/lib/team-labels";
 
 /**
  * One season's report, held until that season's games change.
@@ -26,18 +27,11 @@ const report = createStampedCache<string, SeasonReportResponse>({
     ]);
 
     const built = buildSeasonReport(season, rows);
-    const byId = new Map(directory.map((t) => [t.id, t]));
+    const label = teamLabeller(directory);
 
     return {
       ...built,
-      teams: built.teams.map((t) => {
-        const team = byId.get(t.teamId);
-        return {
-          ...t,
-          abbreviation: team?.abbreviation ?? "—",
-          name: team?.name ?? `Team ${t.teamId}`,
-        };
-      }),
+      teams: built.teams.map((t) => ({ ...t, ...label(t.teamId) })),
     };
   },
 });

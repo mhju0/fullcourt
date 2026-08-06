@@ -5,6 +5,7 @@ import {
 } from "@/lib/db/queries";
 import { formatEasternDateKey } from "@/lib/nba-season";
 import { computeScheduleDisparity, seasonRankability } from "@/lib/schedule-disparity";
+import { teamLabeller } from "@/lib/team-labels";
 import type { ScheduleDisparityResponse, ScheduleDisparityTeam } from "@/types";
 
 /**
@@ -41,16 +42,16 @@ export async function getScheduleDisparity(
   }
 
   const result = computeScheduleDisparity(season, games);
-  const byId = new Map(directory.map((t) => [t.id, t]));
+  const label = teamLabeller(directory);
 
   // Mapped field by field rather than spread: the module's result is deliberately wider than
   // the response, and a spread would quietly ship every future metric it gains.
   const teams: ScheduleDisparityTeam[] = result.teams.map((t) => {
-    const team = byId.get(t.teamId);
+    const { abbreviation, name } = label(t.teamId);
     return {
       teamId: t.teamId,
-      abbreviation: team?.abbreviation ?? "—",
-      name: team?.name ?? `Team ${t.teamId}`,
+      abbreviation,
+      name,
       favorableGames: t.favorableGames,
       unfavorableGames: t.unfavorableGames,
       netEdgeGames: t.netEdgeGames,
