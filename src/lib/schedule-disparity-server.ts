@@ -1,3 +1,4 @@
+import { PublicApiError } from "@/lib/api-errors";
 import {
   getRegularSeasonScheduleForDisparity,
   getTeamDirectory,
@@ -24,12 +25,18 @@ export async function getScheduleDisparity(
   // other, so a season where they played unequal numbers of games produces a table that looks
   // like a finding and is an artefact of exposure. The message carries the counts because a
   // reader who asked for a season and got nothing is owed the reason.
+  //
+  // Thrown as a `PublicApiError` because that is the only shape `api-errors.ts` lets reach the
+  // browser — a plain `Error` here is indistinguishable from a Drizzle failure and is replaced
+  // by the generic message in production, which silently unwrote the reason above. 422 rather
+  // than 400: the request was understood and the season is valid, and there is no ranking to give.
   const rankability = seasonRankability(games);
   if (!rankability.rankable && games.length > 0) {
-    throw new Error(
+    throw new PublicApiError(
       `${season} cannot be ranked: teams played between ${rankability.fewestGames} and ` +
         `${rankability.mostGames} games. Schedule edge compares teams within a season, so an ` +
-        `unequal number of games moves a team's total without the schedule having favoured anyone.`
+        `unequal number of games moves a team's total without the schedule having favoured anyone.`,
+      422
     );
   }
 
