@@ -42,6 +42,18 @@ _Avoid_: rest advantage, season fatigue
 What a team loses in points of final margin when a rotation player does not play. Absence is inferred from the rotation a team has actually been using — a player who appeared in the last five games at 15+ minutes and is not in tonight's box score — because a long-term-injured player may not be listed at all. **Retrospective by construction:** who sat is known only because the game was played, so it measures what an absence cost and never forecasts availability. Figures live in `src/lib/availability-facts.ts`, pinned by a test against `ml/availability_facts.json`.
 _Avoid_: injury report, injury impact, player availability model — all three imply a forward-looking feed this module does not have
 
+**Official**:
+The unit of every referee measurement on this site — one named person, never the three-person
+group they worked a game with. **There is no such thing as a crew here:** 11,981 games produced
+10,450 distinct trios, 87.3% of which appear exactly once, and the most-repeated trio in ten
+seasons appears five times. Personnel rotate almost every game, which is what makes co-official
+contamination noise rather than bias, and which is why a "crew tendency" cannot be measured at
+all. Crew *chief* is a real NBA role, but the role label is only reliable in this data from
+2024-25 onward, at ~9× fewer games per person — a filter or a label, never the unit a claim
+rests on. See [ADR 0007](adr/0007-referee-analysis-axes-are-pre-registered.md).
+_Avoid_: crew, referee crew, crew tendencies, crew foul rate — and never "referee bias", which
+is the question the surface was named for and not a conclusion it reached
+
 **Provisional season**:
 A season containing any game that is not final. Its figures carry an as-of date and may revise as the schedule fills in.
 _Avoid_: incomplete season, partial season

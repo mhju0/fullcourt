@@ -101,6 +101,14 @@ added alongside it.
   **This is an editorial decision, not drift** — it has been mistaken for stale documentation
   once already. Restoring it is two edits, both named in the page's docstring.
 
+  As of 2026-08-06 the gate is stated more precisely: the writing is unfinished because the one
+  finding behind it is thinner than the surface deserves, so more of the cached corpus is being
+  asked before anything is published. What may be asked is fixed in advance by
+  [ADR 0007](adr/0007-referee-analysis-axes-are-pre-registered.md) — three named axes, the
+  |z| ≥ 2 observed-versus-expected bar the module already uses, player-level effects explicitly
+  deferred to their own decision, and the rule that a null ships the page rather than extending
+  the stub indefinitely.
+
 ## Known and not fixed
 
 Real, measured, and deliberately left open — recorded so each reads as a decision rather than an
