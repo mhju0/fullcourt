@@ -119,6 +119,63 @@ prose. These are offline reductions over files already on disk and fetch nothing
 into the fetcher would make its name a lie; they sit apart for the same reason
 `scripts/analyze_player_shooting.py` sits apart from the fetchers.
 
+## Results, 2026-08-06 — A is a null, C is real and narrow
+
+Run by `scripts/analyze_officials_splits.ts` over 12,403 usable regular-season regulation games,
+2015-16 → 2025-26, from 13,209 cached summaries with 0 unreadable. 74 officials clear the
+200-game bar, so chance predicts **3.4** past |z| ≥ 2 per column. Foul plays naming neither side
+are 0.03% of the total. Everything below is in `ml/data/officials-splits.json`, which is
+gitignored — regenerate it rather than cite it.
+
+The sections above were committed before this ran. That is the whole point of them.
+
+**A — foul type × home/away: null.**
+
+| column | counts | shares |
+|---|---|---|
+| shooting | 6 (1.76×) | 7 (2.06×) |
+| personal | 7 (2.06×) | 7 (2.06×) |
+| loose ball | 5 (1.47×) | 6 (1.76×) |
+| offensive | 6 (1.76×) | 7 (2.06×) |
+| technical | 4 (1.18×) | 1 (0.29×) |
+
+Against foul *mix*, which ran 5–9× on the same bar, this is noise with a slight lean. It is also
+**weaker than the home-tilt null it was meant to rematch** (10 of 60 ≈ 3.3×). Splitting home tilt
+by foul type does not rescue it, and the question is now answered twice by two different measures.
+
+The league means are a useful check that the pipeline agrees with itself: home teams commit
+**0.192 fewer shooting fouls** and 0.109 fewer personals per game than visitors, which is the
+same home whistle the published +0.62 home FTA/game already describes, reached independently.
+
+**C — timing: real on the quarter, null in the last two minutes.**
+
+| metric | q1 | q2 | q3 | q4 |
+|---|---|---|---|---|
+| counts | 15 (4.41×) | 16 (4.71×) | 16 (4.71×) | 16 (4.71×) |
+| **shares** | **10 (2.94×)** | 2 (0.59×) | 5 (1.47×) | **8 (2.35×)** |
+
+The counts row is not a timing result — it is the published whistle-*volume* finding measured
+four times, since an official who calls more fouls is high in every quarter. Shares are the
+discriminating version, and they separate at the ends of a game and not in the middle. Note the
+shares sum to 100, so Q1 and Q4 are one degree of freedom rather than two: the finding is that
+some officials **shift fouls from early to late**, not two independent tendencies. Zach Zarba is
+the clearest case at −1.21pp in Q1 (z = −5.2) and +1.18pp in Q4 (z = +4.2) across 635 games — a
+near-exact mirror, which is what a single shifted distribution looks like.
+
+**The last two minutes of Q4: null, below chance.** 3 of 74 on counts (0.88×) and 2 of 74 on
+shares (0.59×), against 3.4 expected, on a league mean of 0.92 late fouls per game. Zarba, the
+standout on the coarse axis, sits at z = +0.2 here. "Officials swallow the whistle at the end" is
+the most repeated claim about NBA officiating in this whole area, and in ten seasons of
+play-by-play it does not happen — the Q1→Q4 drift is a whole-quarter distribution effect that has
+nothing to do with the closing minutes.
+
+**One control named above was not applied to C.** Season and pace were (per-season baselines;
+counts repeated as shares). Arena was not. It mattered for foul *mix* because foul type is
+scorekeeper-classified and arenas vary, and it is a weaker concern for quarter timing, but it was
+named in the pre-registration and is therefore outstanding rather than dismissed.
+
+**No axis was added after seeing this.** Axis B remains unrun and its definition unfixed.
+
 ## Related
 
 - [ADR 0006](0006-fatigue-weights-were-fitted-and-the-model-was-not-changed.md) — the same guard
