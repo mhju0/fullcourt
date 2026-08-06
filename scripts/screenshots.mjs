@@ -20,7 +20,10 @@ const PAGES = [
   // this cut and is still fetching player-rest.json when the timer expires. Harmless here —
   // check the capture, not the warning.
   { file: "season", path: "/season", height: 1450 },
-  { file: "analysis", path: "/analysis", height: 1160 },
+  // Raised from 1160 on 2026-08-06: the page lost its "half this model declines" card and
+  // gained the baseline frame, so 1160 now slices the season chart in half. This stops after
+  // the complete WIN RATE BY SEASON card.
+  { file: "analysis", path: "/analysis", height: 1400 },
   { file: "schedule", path: "/schedule", height: 1320 },
   // Raised from 1670 on 2026-07-31: the page was rebuilt argument-first (Sections A-D ahead
   // of the bracket), so this now stops after Section C's confound test instead of mid-bracket.
@@ -34,9 +37,22 @@ const PAGES = [
   { file: "availability", path: "/availability", height: 1880 },
 ];
 
+// Optional filter: `node scripts/screenshots.mjs analysis season` shoots only those.
+// One page changing is the common case, and regenerating all nine puts eight unrelated
+// binaries in the diff — which makes a review of the one that matters harder, not easier.
+const only = process.argv.slice(2);
+const targets = only.length > 0 ? PAGES.filter((p) => only.includes(p.file)) : PAGES;
+
+if (targets.length === 0) {
+  console.error(
+    `no page matches ${only.join(", ")}. known: ${PAGES.map((p) => p.file).join(", ")}`
+  );
+  process.exit(1);
+}
+
 const browser = await chromium.launch();
 
-for (const { file, path: route, height } of PAGES) {
+for (const { file, path: route, height } of targets) {
   const context = await browser.newContext({
     viewport: { width: 1440, height },
     deviceScaleFactor: 2,

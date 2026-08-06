@@ -3,10 +3,10 @@
  * completed regular-season games that have fatigue scores.
  *
  * Prediction rule: the more rested team is predicted to win, but only when that team is
- * also the home side. A rested visitor is not called — rest alone never outweighs home
- * court at any magnitude the NBA schedule produces, and the old rule's road picks were
- * measured at 44.39% across 7,224 games. `isCalledSide` holds the rule and the evidence;
- * see ADR 0006.
+ * also the home side. A rested visitor is not picked — that row measures 42.4% across 11,548
+ * games, and folding home court into the score instead lands below simply backing the home
+ * team every time (96.5% coverage at 59.7%, against 59.9%). `isCalledSide` holds the rule and
+ * the evidence; see ADR 0006 and its 2026-08-06 addendum.
  *
  * Games with |differential| < 0.5 are skipped as neutral, as before.
  *

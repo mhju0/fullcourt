@@ -9,10 +9,21 @@ was dropped rather than copied, because that file had drifted from the code on e
 
 FullCourt models how NBA **travel, rest, and schedule density** affect game outcomes. Each team
 in a matchup gets a **fatigue score**; the differential is the **rest advantage**; the backtest
-asks whether the more-rested team actually won — counting only the games the site **calls**, which
-since 2026-08-02 means the more-rested team is also at home (`isCalledSide`,
-`src/lib/rest-advantage-evidence.ts`). Rest alone never outweighs home court at any magnitude the
-NBA produces, so a rested visitor is declined rather than picked.
+asks whether the more-rested team actually won — counting only the games where that team is also
+at home (`isCalledSide`, `src/lib/rest-advantage-evidence.ts`, since 2026-08-02). The games where
+the rested team is the visitor are counted as their own row and published in full, never pooled
+into the headline.
+
+**Every published rate is read against a venue baseline, not against a coin flip** (since
+2026-08-06). Home teams win ~59.9% of all games regardless of rest, so a headline of 61.2%
+plotted against 50% credited the model with roughly ten points of home court it did not produce.
+`AnalysisResponse.venueBaseline` carries it, and the season chart uses each season's own, because
+home court ran from 67.9% in 1987-88 to 54.3% in 2023-24. Do not reintroduce a 50% zero line.
+
+Two claims the site used to publish were measured and retired on 2026-08-06 — *"rest alone never
+outweighs home court at any magnitude"* and *"no threshold rescues it"*. Both were absolutes
+resting on a pooled 41-season rate. Do not restate either; `src/lib/rest-split-facts.ts` and its
+test hold what replaced them.
 
 - Live: https://fullcourt-nba.vercel.app · Repo: https://github.com/mhju0/fullcourt
 - Headline figures are computed live from the database and rendered on the site. Do not hand-type

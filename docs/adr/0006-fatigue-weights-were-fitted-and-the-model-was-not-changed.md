@@ -255,6 +255,50 @@ The suspension of the no-fitting rule ends here. `fatigue.ts` coefficients remai
 ratified; this ADR is the record that fitting them was tried, under a protocol built to make the
 answer trustworthy, and that the answer was "the weights are not the problem".
 
+## Addendum — 2026-08-06: the away-pick evidence was re-measured, and two of its sentences do not survive
+
+Everything above stands as the record of what was decided on 2026-08-02 and why. This addendum
+corrects the *evidence* the away-pick section rests on. The decision it produced is unchanged;
+two of the sentences justifying it are not.
+
+**The table above is the 2002-03-onward slice, not the published population.** That was correct
+for this ADR — the fit floor is 2002 (ADR 0003) — but the site publishes from 1985-86, and the
+figures were quoted onward into the method page, the README, the roadmap and a code docblock as
+though they were the site's. Re-measured over the published population by
+`scripts/measure_uncalled_half.ts`, generated into `ml/rest_split_facts.json` and pinned by
+`src/lib/__tests__/rest-split-facts.test.ts`:
+
+| rested road team | n | won |
+|---|---|---|
+| any gap | 11,548 | 42.4% |
+| gap ≥ 3 | 2,056 | 43.6% |
+| gap ≥ 5 | 342 | 46.2% |
+| gap ≥ 6 | 108 | 50.0% |
+| gap ≥ 7 | 26 | 61.5% |
+
+**"Rest alone never outweighs home court at any magnitude the NBA generates" is retired.** It is
+an absolute resting on a pooled 41-season rate, and the rate has drifted: a rested road team won
+42.4% across all seasons, 47.7% across the last ten, and 49.3% across the last five. Home-court
+advantage has fallen league-wide over the same period — the per-season home win rate runs from
+67.9% in 1987-88 to 54.3% in 2023-24 — so the *lift* may be unchanged while the raw rate moves.
+That is exactly why an absolute was the wrong shape for the claim.
+
+**"No threshold rescues it" is also retired**, for a simpler reason: it is false as written. The
+row reaches even at a gap of 6 and clears it at 7. Both rungs are tiny, and the honest reading is
+the schedule running out of examples rather than a signal switching on — but the sentence claimed
+something the data does not say, and the ladder it was written from stopped at 5.
+
+**What still holds, and is the actual load-bearing argument.** Folding home court into the score
+and letting the combined number pick covers 96.5% of games at 59.7% — *below* the 59.9% you get
+by backing the home team in every one of the 47,143. Adding a constant to both sides creates no
+information. (The 58.39%/776 figures above are the 2002-03 slice; the full-population equivalents
+are 59.7% and 752.) The rule survives; only its justification needed re-basing.
+
+**Related, and larger than this ADR:** the same re-measurement established that every rate the
+site published was stated against a coin flip while every game in it was a home game. `/analysis`
+moved to a venue baseline on 2026-08-06. That is a presentation decision rather than a model one,
+so it is not an amendment here — but it is the reason this correction was found.
+
 ## Related
 
 - `docs/adr/0003-fatigue-inputs-limited-to-espn-era.md` — why the fit floor is 2002.

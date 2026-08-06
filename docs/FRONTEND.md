@@ -839,12 +839,21 @@ onboarding dialog keeps its explicit amber rings, which are a real visible indic
 
 ### Charts (`analysis-content.tsx`)
 
-Both backtest bar charts are **deviation columns**: `toDeviation(winPct)` plots
-`winPct - 50` in percentage points, so **zero is the coin flip** and the bar's length is the
-measured edge itself. `deviationFill()` colors the two poles — `--term-blue` above,
-`--term-red` below, `--term-neutral` at exactly zero — and `ReferenceLine y={0}` is drawn
+Both backtest bar charts are **deviation columns**: `toDeviation(winPct, baselinePct)` plots
+`winPct - baselinePct` in percentage points, so **zero is the venue baseline** and the bar's
+length is the part rest accounts for. `deviationFill()` colors the two poles — `--term-blue`
+above, `--term-red` below, `--term-neutral` at exactly zero — and `ReferenceLine y={0}` is drawn
 **after** the bars as solid `--term-text` at 1.5px. That rule is the axis, not an annotation,
 which is why it is the one assertive line on the chart.
+
+**The baseline is not 50, and this is load-bearing** (2026-08-06). Every game these charts count
+is one the more-rested team played at home, and home teams win ~59.9% of all games regardless of
+rest — so a coin-flip zero credited the model with about ten points of home court it did not
+produce. The threshold chart passes `data.venueBaseline.homeWinPct`; the season chart passes each
+season's own `homeBaselinePct`, because home court ran from 67.9% in 1987-88 to 54.3% in 2023-24
+and one fixed line would misread both ends. Both legends name their zero, and both tooltips print
+the baseline on the same line as the deviation so the two cannot be read apart.
+`e2e/analysis.spec.ts` asserts the zero-line copy and that no surface says `COIN FLIP`.
 
 `deviationScale()` derives a signed domain plus evenly spaced `ticks` from the data.
 Both are required: Recharts left to improvise emitted 0/20/40/60 **plus an orphan 70**, and

@@ -175,13 +175,23 @@ the `predictions` table.**
   re-read and re-reduced the whole set. The cache is per server instance and bounded, because
   `seasonMinRA` arrives from a query string.
 - **Success:** `{ data: AnalysisResponse, error: null }`:
-  - `totalGames`, `overallWins`, `overallWinRate`
+  - `totalGames`, `overallWins`, `overallWinRate` — the games where the rested team was **also
+    at home**, which is narrower than the population on both counts
   - `thresholds: ThresholdBucket[]` (one per `[2,3,5,7]`: `threshold, games, restedTeamWins,
     winPct`)
   - `homeAwayBreakdown` (`homeTeamMoreRested` / `awayTeamMoreRested`: `games, restedTeamWins,
     winPct`)
-  - `seasonWinRates` (per season: `season, games, restedTeamWins, winPct`)
+  - `venueBaseline` (`games, homeWins, homeWinPct, roadWinPct`)
+  - `seasonWinRates` (per season: `season, games, restedTeamWins, winPct, homeBaselinePct`)
 - All `winPct` values are 0–100 with one decimal.
+- **`venueBaseline` counts a wider population than everything else in the payload** (added
+  2026-08-06). It is tallied over every scored game — including the neutral ones the rest
+  figures drop and the road-rested ones the headline does not publish — because it answers
+  "what does this side win *anyway*", and a baseline drawn from the same games as the numerator
+  would already carry the effect it exists to subtract. `roadWinPct` comes from the counts, not
+  from `100 − homeWinPct`. `seasonWinRates[].homeBaselinePct` is the same figure per season,
+  which is not a constant: it runs from 67.9% in 1987-88 to 54.3% in 2023-24.
+  Every rate on `/analysis` is rendered against these rather than against 50%.
 
 ---
 

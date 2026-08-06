@@ -18,18 +18,23 @@
 FullCourt quantifies how **travel, rest, and schedule density** shape NBA outcomes. Its flagship model assigns every team a multi-factor **fatigue score**, derives a **rest advantage** for each matchup, and backtests it against every NBA season since 1985-86.
 
 > **The finding:** where the model makes a call, the more-rested team wins the majority of games —
-> and the edge widens once the rest-advantage gap reaches **5+ points**. The call is deliberately
-> one-sided: since 2026-08-02 the model declines a game when the fresher team is the *visitor*,
-> because backing a rested road team lost, and no threshold rescued it. Every rate is
-> computed live from the database rather than typed here; as the screenshots below show, that ran
-> **61.2%** overall and **65.3%** at a 5+ gap, with the declined half published beside it at
-> **42.4%**.
+> and the gain grows as the rest-advantage gap widens, up to about **5 points**, past which it is
+> flat. The call is deliberately one-sided: since 2026-08-02 the model counts a game only when the
+> fresher team is also at home, because a rested road team still loses more often than it wins and
+> folding home court into the score instead performs worse than simply backing the home team.
+> Every rate is computed live from the database rather than typed here; as the screenshots below
+> show, that ran **61.2%** overall and **65.3%** at a 5+ gap, with the other row published beside
+> it at **42.4%**.
 >
-> Two samples get quoted for that declined half and they are not the same measurement: the
-> **44.4% across 7,224 games** in the decision record is every *decidable* game from 2002-03 on,
-> the window the weight-fitting harness was run over ([ADR 0006](docs/adr/0006-fatigue-weights-were-fitted-and-the-model-was-not-changed.md));
-> the **42.4% across 11,548** on `/analysis` is the full history back to 1985-86. Both say the
-> same thing, which is why the rule is a rule.
+> Read both against a venue baseline, never against a coin flip. Home teams win **59.9%** of all
+> games regardless of rest and road teams **40.1%**, so those rates are worth **+1.3** and
+> **+2.3** points respectively — the part attributable to rest. `/analysis` plots against that
+> baseline for exactly this reason.
+>
+> A **44.4% across 7,224 games** figure appears in [ADR 0006](docs/adr/0006-fatigue-weights-were-fitted-and-the-model-was-not-changed.md)
+> and its 2026-08-06 addendum. It is the *2002-03-onward* harness slice, not the published
+> population, and it should not be quoted as the site's figure. `src/lib/rest-split-facts.ts`,
+> pinned against a generated artifact, holds the current numbers.
 
 🔗 **Live demo:** https://fullcourt-nba.vercel.app &nbsp;·&nbsp; **Code:** https://github.com/mhju0/fullcourt
 
@@ -59,7 +64,7 @@ Eight surfaces, not nine — `/referees` is deliberately held back and has no sc
 differential, and a confidence read. Every rest-advantage number carries the historical hit
 rate and sample size of its class; matchups the model calls neutral get no claim at all.
 
-<img src="docs/screenshots/games.png" alt="The Games page for Sunday, April 12, 2026, with a BY DATE / UPCOMING toggle set to BY DATE. Three tiles read 15 games on this date, an average rest advantage of 0.8, and 0 high-confidence games. A Scope panel below holds the 2025-26 season with month buttons from October to April, April selected, and day chips 1 through 12 each captioned with its game count, the 12th selected. A banner reads that the 2025-26 season is complete and the final slate is showing, linking to the full season report. Two matchup cards follow. The first, Brooklyn Nets 101 at Toronto Raptors 136, shows fatigue bars of 3.3 and 4.4 and a rest-advantage panel giving BKN plus 1.1 with a MED CONF badge; because Brooklyn are the rested side and are the visitors, the card reads that this model declines a rested visitor, backing one having won 42.4% of the time from 11,548 games. The second, Chicago Bulls 128 at Dallas Mavericks 149, shows fatigue scores of 4.4 and 4.6, is scored EVEN 0.2 with a NEUTRAL badge, and carries no such sentence." width="900" />
+<img src="docs/screenshots/games.png" alt="The Games page for Sunday, April 12, 2026, with a BY DATE / UPCOMING toggle set to BY DATE. Three tiles read 15 games on this date, an average rest advantage of 0.8, and 0 high-confidence games. A Scope panel below holds the 2025-26 season with month buttons from October to April, April selected, and day chips 1 through 12 each captioned with its game count, the 12th selected. A banner reads that the 2025-26 season is complete and the final slate is showing, linking to the full season report. Two matchup cards follow. The first, Brooklyn Nets 101 at Toronto Raptors 136, shows fatigue bars of 3.3 and 4.4 and a rest-advantage panel giving BKN plus 1.1 with a MED CONF badge; because Brooklyn are the rested side and are the visitors, the card reads that when the fresher team is the visitor the home team has still won 57.6% of the time, from 11,548 games. The second, Chicago Bulls 128 at Dallas Mavericks 149, shows fatigue scores of 4.4 and 4.6, is scored EVEN 0.2 with a NEUTRAL badge, and carries no such sentence." width="900" />
 
 **Season Report — one season end to end.** How that year's rest call scored against the
 all-season norm, which teams actually converted a rest edge into wins, and what the schedule cost
@@ -75,11 +80,12 @@ the page.
 <img src="docs/screenshots/schedule.png" alt="Schedule Disparity for 2025-26, marked final with 1,214 of 1,230 games compared. A summary strip reads most favored plus 21 (Utah Jazz), least favored minus 17 (Boston Celtics), a spread of 38 edge games best to worst, and 942 games with an edge of which 541 were big (1.5+). Below it all 30 teams are ranked as horizontal bars diverging from a zero line, blue to the right for a favorable edge and red to the left for an unfavorable one, from Utah at plus 21 and Cleveland at plus 18, down through Sacramento at exactly zero, to Houston at minus 16 and Boston at minus 17. The two altitude teams sit high — Utah first and Denver fifth at plus 11 — because visitors to thin air carry more fatigue. A header note states the season is final with 1,214 of 1,230 games compared." width="900" />
 
 **Model Results — the full-history backtest behind the headline finding.** Win rate by rest-advantage
-threshold, plotted as the gap against a coin flip in percentage points: zero is a 50% win
-rate, so the bar's length is the measured edge. Slices the model gets backwards hang below
-the line in red.
+threshold, plotted as the gap against **what that side wins anyway** in percentage points: zero is
+the home baseline, not a coin flip, because every game counted here is one the rested team played
+at home. The bar's length is the part rest accounts for. Slices below the baseline hang under the
+line in red.
 
-<img src="docs/screenshots/analysis.png" alt="Rest Advantage Analysis. The intro reads that among completed regular-season games the model asks whether the more-rested team won, and is called only when that team is also at home. A HOW THIS IS CALCULATED link sits below it. Three summary tiles read an overall win rate of 61.2% across 27,400 games, a RESTED VISITOR · DECLINED figure of 42.4% across 11,548 games not called, and 65.3% at a rest advantage of 5 or more across 3,782 games. Below them, win rate by rest-advantage threshold is drawn as deviation columns measured from a 50% coin flip: four blue bars rise from a zero line, growing left to right from RA at least 2 to RA at least 7, each labelled with its sample size — 16,078, 10,524, 3,782 and 1,108 games. A legend states that blue means the rested team beat a coin flip and red means it lost to one. A final card, THE HALF THIS MODEL DECLINES, shows 42.4% from 4,894 wins in 11,548 games and explains that backing a fresher visitor loses, that raising the bar does not rescue it, and that rest alone never outweighs home court." width="900" />
+<img src="docs/screenshots/analysis.png" alt="Rest Advantage Analysis. The intro reads that among completed regular-season games the model asks whether the more-rested team won, counted only where that team was also at home, and measured against the 59.9% home teams win anyway. A HOW THIS IS CALCULATED link sits below it. Three summary tiles read an overall win rate of 61.2% across 27,400 games at plus 1.3 versus the 59.9% baseline; 65.3% at a rest advantage of 5 or more across 3,782 games at plus 5.4; and a HOME WIN RATE, NOT COUNTED figure of 57.6% across 11,548 games at minus 2.3, the games where the rested team was the visitor. Below them, win rate by rest-advantage threshold is drawn as deviation columns measured from the home baseline rather than from a coin flip: four blue bars rise from a zero line at plus 2, plus 3.2, plus 5.4 and plus 6, labelled with sample sizes 16,078, 10,524, 3,782 and 1,108 games. A legend states that blue means the rested team beat the home baseline, red means it fell short, and that zero is 59.9%, how often the home team wins anyway. A second chart plots all forty-one seasons against each season’s own home baseline, mostly small blue bars between zero and plus 3.5 with a handful of red ones below the line." width="900" />
 
 **Playoff Rest — what surviving a long series costs the round after.** The page leads with the
 argument, not the bracket: every playoff game after Game 1 is played on equal rest by
@@ -260,8 +266,9 @@ one exists.
 
 Two changes followed on **2026-08-02**, both on measurement rather than taste. The model
 **stopped calling a game when the fresher team is the visitor** — backing a rested road team ran
-44.4% across 7,224 games and no threshold rescued it, so rest alone never outweighs home court.
-That half is published on `/analysis` as the evidence rather than quietly dropped. And
+42.4% across 11,548 games, and folding home court into the score instead covers 96.5% of games at
+59.7%, below the 59.9% from simply backing the home team every time. That row is published on
+`/analysis` as its own row rather than quietly dropped. And
 `ALTITUDE_MULTIPLIER` rose **1.15 → 1.29**, the first ratified coefficient ever changed on
 evidence: measured on final margin, altitude is worth 1.358 points against a back-to-back's
 1.759, a ratio of 0.772 where the model was charging 0.405.

@@ -16,8 +16,20 @@ _Avoid_: fatigue advantage, rest score
 A matchup whose absolute rest advantage is below `0.5`, so neither team receives a prediction from this metric. An absolute value of exactly `0.5` is a call, not neutral.
 _Avoid_: tie
 
+**Rested team at home**:
+Games where the more-rested team is also the home team. The site's published rest-advantage rate is measured on these and on nothing else. In code the predicate is `isCalledSide` (`src/lib/rest-advantage-evidence.ts`), which keeps its name on purpose — the vocabulary here is user-facing only, and a doc-currency pass must not "fix" the code to match the copy.
+_Avoid_: called games, the call, qualified games
+
+**Rested team on the road**:
+Games where the more-rested team is the visitor. Counted and published as their own row against a road baseline, never pooled into the published rate. Not a filter on the evidence: both rows appear on `/analysis` and on the method page.
+_Avoid_: rested visitor, declined games, the half this model declines
+
+**Baseline**:
+How often a side wins from that venue regardless of rest — 59.9% at home, 40.1% on the road, over every published game. Every rest-advantage rate is stated against it rather than against a coin flip, because every game the site publishes a rate for is a home game. Not a constant across time: the per-season figure runs from 67.9% in 1987-88 to 54.3% in 2023-24, which is why the season chart uses each season's own.
+_Avoid_: home-court advantage — that is the ~20-point spread between the two baselines, not either one of them
+
 **Historical backtest**:
-The regular-season evaluation of whether the team favored by rest advantage won. It excludes the **2019-20 Orlando bubble** — the 88 games played at a single site from 30 July to 11 October 2020 — and nothing else of that season; its 971 pre-suspension games are in. 2020-21 and both lockout seasons are included: short is fine, interrupted is not. Withholding a *whole* season is a separate rule belonging to Schedule Edge alone (see **Truncated season**).
+The regular-season evaluation of whether the team favored by rest advantage won, **on the games where that team was also at home** — every headline figure on the site is measured on that row alone, and read against the **baseline** rather than against 50%. It excludes the **2019-20 Orlando bubble** — the 88 games played at a single site from 30 July to 11 October 2020 — and nothing else of that season; its 971 pre-suspension games are in. 2020-21 and both lockout seasons are included: short is fine, interrupted is not. Withholding a *whole* season is a separate rule belonging to Schedule Edge alone (see **Truncated season**).
 _Avoid_: prediction accuracy test
 
 **Playoff Predictor**:

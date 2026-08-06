@@ -49,11 +49,16 @@ added alongside it.
 
 - **Rest Advantage** — the flagship regular-season fatigue model, historical backtest, game
   explorer, and upcoming-game edge view. **The model no longer calls a game when the fresher
-  team is the visitor** (2026-08-02): backing a rested road team measured 44.4% across 7,224
-  games and no threshold rescues it, so rest alone never outweighs home court. The declined half
-  is published on `/analysis` as the evidence rather than dropped. Same day, `ALTITUDE_MULTIPLIER`
-  rose 1.15 → 1.29, the first ratified coefficient changed on measurement. See
-  [ADR 0006](adr/0006-fatigue-weights-were-fitted-and-the-model-was-not-changed.md).
+  team is the visitor** (2026-08-02): backing a rested road team measures 42.4% across 11,548
+  games, and folding home court into the score instead covers 96.5% of games at 59.7% — below
+  the 59.9% from backing the home team every time. That row is published on `/analysis` as its
+  own row rather than dropped. Same day, `ALTITUDE_MULTIPLIER` rose 1.15 → 1.29, the first
+  ratified coefficient changed on measurement.
+  **Every published rate is read against a venue baseline rather than a coin flip**
+  (2026-08-06): home teams win 59.9% of all games regardless of rest, so the 61.2% headline is
+  worth +1.3 points, not +11.2. See
+  [ADR 0006](adr/0006-fatigue-weights-were-fitted-and-the-model-was-not-changed.md) and its
+  2026-08-06 addendum.
 - **Availability Cost** — what a missing rotation player costs, in the same points of margin as
   the schedule terms: losing a team's best player is worth 2.86, against home court's 2.82.
   Retrospective by construction, so no live lineup feed and no database table — a generated
