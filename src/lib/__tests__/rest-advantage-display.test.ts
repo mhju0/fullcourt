@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   buildRestAdvantageEvidence,
   formatRestAdvantageDisplay,
+  homeWinRateWhenVisitorRested,
   toEvidenceSource,
   type RestAdvantageEvidenceSource,
 } from "@/lib/rest-advantage-display";
@@ -62,6 +63,45 @@ describe("formatRestAdvantageDisplay", () => {
       kind: "neutral",
       text: "NEUTRAL",
     });
+  });
+});
+
+/**
+ * The games the model does not call, stated as the home team's win rather than the rested
+ * visitor's loss. Same set, same counts — only the subject changes.
+ */
+describe("homeWinRateWhenVisitorRested", () => {
+  it("reports the complement of the rested visitor's record", () => {
+    expect(
+      homeWinRateWhenVisitorRested({ games: 1000, restedTeamWins: 424, winPct: 42.4 })
+    ).toBe(57.6);
+  });
+
+  /**
+   * Derived from the counts, never as `100 − winPct`, and this fixture is the one that can
+   * tell the difference.
+   *
+   * 66/160 is 41.25% and 94/160 is 58.75% — both land exactly on a rounding tie, and
+   * `Math.round` takes both upward, so the two published halves come to 100.1. Subtracting
+   * the stored `winPct` would give 58.7 where the counts give 58.8.
+   */
+  it("derives from the counts rather than subtracting a rounded percentage", () => {
+    const split = { games: 160, restedTeamWins: 66, winPct: 41.3 };
+
+    expect(homeWinRateWhenVisitorRested(split)).toBe(58.8);
+    expect(homeWinRateWhenVisitorRested(split)).not.toBe(100 - split.winPct);
+  });
+
+  it("answers 0 for an empty set rather than dividing by zero", () => {
+    expect(
+      homeWinRateWhenVisitorRested({ games: 0, restedTeamWins: 0, winPct: 0 })
+    ).toBe(0);
+  });
+
+  it("reports a clean sweep as 100", () => {
+    expect(
+      homeWinRateWhenVisitorRested({ games: 50, restedTeamWins: 0, winPct: 0 })
+    ).toBe(100);
   });
 });
 

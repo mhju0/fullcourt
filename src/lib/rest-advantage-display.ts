@@ -1,5 +1,8 @@
-import { NEUTRAL_REST_ADVANTAGE_THRESHOLD } from "@/lib/rest-advantage-evidence";
-import type { AnalysisResponse, RestAdvantage } from "@/types";
+import {
+  NEUTRAL_REST_ADVANTAGE_THRESHOLD,
+  winPct,
+} from "@/lib/rest-advantage-evidence";
+import type { AnalysisResponse, HomeAwayBreakdown, RestAdvantage } from "@/types";
 
 export type RestAdvantageDisplay =
   | {
@@ -71,6 +74,25 @@ export type RestAdvantageEvidenceSource = Pick<
   AnalysisResponse,
   "thresholds" | "overallWinRate" | "totalGames" | "homeAwayBreakdown"
 >;
+
+/**
+ * The home team's win rate over the games where the *visitor* was the fresher side.
+ *
+ * The same games the breakdown already counts, stated as the win they are rather than as
+ * the loss backing the visitor would have been. That is the reason the rule is home-only,
+ * so it is the number worth publishing.
+ *
+ * Derived from the counts, not as `100 − winPct`: `winPct` is already rounded to one
+ * decimal, so subtracting it compounds that rounding. `games − restedTeamWins` is exact —
+ * `restedTeamWon` on these rows is `!homeWon` (`rest-advantage-evidence.ts:109`), and an
+ * NBA game cannot end tied, so every game in the set is one or the other.
+ */
+export function homeWinRateWhenVisitorRested(
+  awayTeamMoreRested: HomeAwayBreakdown["awayTeamMoreRested"]
+): number {
+  const { games, restedTeamWins } = awayTeamMoreRested;
+  return winPct(games - restedTeamWins, games);
+}
 
 /**
  * Narrows a backtest payload to the fields above, or null before it arrives.

@@ -10,13 +10,13 @@ test.describe("Analysis page", () => {
     ).toBeVisible({ timeout: 60_000 });
 
     await expect(page.getByText("OVERALL WIN RATE")).toBeVisible();
+    // The games the model does not call, kept on the page as a stat tile stating the home
+    // team's rate. It was a full section arguing the rule; that argument lives once, in
+    // /behind-the-data/rest-advantage, and the page keeps only the live figure.
+    await expect(page.getByText("HOME WIN RATE · NOT CALLED")).toBeVisible();
 
     // Terminal section dividers (current markup — no text-7xl hero).
     await expect(page.getByText("WIN RATE BY RA THRESHOLD")).toBeVisible();
-    // Was "HOME TEAM MORE RESTED", which became a second printing of the headline once the
-    // model stopped calling rested-visitor games — every called game is home-rested now.
-    // The card shows the declined half instead, which is the evidence for that rule.
-    await expect(page.getByText("THE HALF THIS MODEL DECLINES")).toBeVisible();
     await expect(page.getByText("WIN RATE BY SEASON")).toBeVisible();
   });
 

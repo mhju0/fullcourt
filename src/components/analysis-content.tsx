@@ -26,6 +26,7 @@ import { useExploreGames, type DrillSignal } from "@/hooks/useExploreGames"
 import type { ExploreResult } from "@/lib/explore-games-machine"
 import { apiFetcher } from "@/lib/fetcher"
 import { NBA_SEASONS } from "@/lib/nba-season"
+import { homeWinRateWhenVisitorRested } from "@/lib/rest-advantage-display"
 import { MONO_FONT_STACK, termCardStyle, termDashedEmptyStyle, termThStyle, termThUnitStyle } from "@/lib/terminal-styles"
 import type { AnalysisResponse } from "@/types"
 import { signedNumber } from "@/lib/signed-number"
@@ -727,15 +728,6 @@ export function AnalysisContent() {
           sub={`${data.totalGames.toLocaleString()} GAMES`}
           accent="var(--term-blue)"
         />
-        {/* Not the home-rested rate: every called game IS home-rested now, so that tile
-            printed the overall figure a second time. The declined half is the number a
-            reader cannot get anywhere else, and it is the reason the rule exists. */}
-        <StatCard
-          label="RESTED VISITOR · DECLINED"
-          value={`${data.homeAwayBreakdown.awayTeamMoreRested.winPct}%`}
-          sub={`${data.homeAwayBreakdown.awayTeamMoreRested.games.toLocaleString()} GAMES NOT CALLED`}
-          accent="var(--term-neutral)"
-        />
         {ra5 && (
           <StatCard
             label="WIN RATE · RA ≥ 5"
@@ -744,6 +736,21 @@ export function AnalysisContent() {
             accent="var(--term-blue)"
           />
         )}
+        {/* Last and in the muted accent, which is where every other tab puts the tile that
+            gives context rather than a result — `/season`'s SEASON PROGRESS, the home
+            page's HIGH CONF GAMES.
+
+            The home team's rate rather than the rested visitor's, over the same games:
+            these are the matchups the model does not call, and the reason it does not is
+            that the home side keeps winning them. Stated that way it explains the rule
+            instead of confessing to a rate below a coin flip. The full argument, and what
+            happens at every threshold, is behind the data. */}
+        <StatCard
+          label="HOME WIN RATE · NOT CALLED"
+          value={`${homeWinRateWhenVisitorRested(data.homeAwayBreakdown.awayTeamMoreRested)}%`}
+          sub={`${data.homeAwayBreakdown.awayTeamMoreRested.games.toLocaleString()} GAMES, VISITOR FRESHER`}
+          accent="var(--term-neutral)"
+        />
       </div>
 
       {/* Bar chart — win rate by threshold */}
@@ -808,41 +815,12 @@ export function AnalysisContent() {
         <BaselineLegend />
       </div>
 
-      {/* The half the model declines, and why. This card used to show the home-rested rate,
-          which is now identical to the headline above it — every called game is home-rested.
-          The useful comparison is the two halves against each other. */}
-      <div style={termCardStyle}>
-        <SectionDivider
-          label="THE HALF THIS MODEL DECLINES"
-          descriptor={`${data.homeAwayBreakdown.awayTeamMoreRested.games.toLocaleString()} GAMES`}
-        />
-        <p className="mono mt-3 tabular-nums" style={{ fontSize: 36, fontWeight: 700, color: "var(--term-text)", lineHeight: 1 }}>
-          {data.homeAwayBreakdown.awayTeamMoreRested.winPct}%
-        </p>
-        <p className="mono mt-1" style={{ fontSize: 12, color: "var(--term-text-muted)", letterSpacing: "0.04em" }}>
-          {data.homeAwayBreakdown.awayTeamMoreRested.restedTeamWins.toLocaleString()}{" "}
-          WINS / {data.homeAwayBreakdown.awayTeamMoreRested.games.toLocaleString()} GAMES
-        </p>
-        <div className="mt-3 w-full" style={{ height: 4, background: "var(--term-surface-2)", borderRadius: "var(--term-radius-bar)" }}>
-          <div
-            className="h-full transition-all duration-700"
-            style={{
-              width: `${data.homeAwayBreakdown.awayTeamMoreRested.winPct}%`,
-              background: "var(--term-neutral)",
-              borderRadius: "var(--term-radius-bar)",
-            }}
-          />
-        </div>
-        <p className="mt-4" style={{ fontSize: 15, color: "var(--term-text-muted)", lineHeight: 1.55, maxWidth: "42rem" }}>
-          <span style={{ color: "var(--term-text)", fontWeight: 600 }}>
-            When the fresher team is the visitor, backing it loses.
-          </span>{" "}
-          Raising the bar does not rescue it — the rate is still under a coin flip at a rest
-          edge of 3, and only reaches even by an edge of 5, which the schedule produces a few
-          dozen times a decade. Rest alone never outweighs home court, so the model declines
-          these rather than publishing a call it has measured as a loser.
-        </p>
-      </div>
+      {/* The card that argued this rule in full used to sit here. Every clause of it was
+          already in `/behind-the-data/rest-advantage`, near-verbatim, alongside a
+          counterfactual this page never carried — so it was thirty lines of duplication
+          arguing a caveat on the page whose subject is the result. The figure it published
+          is still live, in the stat tile above; the argument is one click away under the
+          method link. */}
 
       {/* Win rate by season */}
       <div style={termCardStyle}>
