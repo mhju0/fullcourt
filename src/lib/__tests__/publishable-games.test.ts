@@ -38,6 +38,7 @@ const PUBLISHING_READERS = [
   "getUpcomingGamesWithRA",
   "getRegularSeasonScheduleForDisparity",
   "getSeasonReportRows",
+  "getSeasonGamesStamp",
 ] as const;
 
 /**
