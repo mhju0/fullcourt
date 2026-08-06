@@ -3,6 +3,9 @@
 import dynamic from "next/dynamic"
 import type { ComponentType, ReactElement } from "react"
 
+import { Skeleton } from "@/components/ui/skeleton"
+import { cn } from "@/lib/utils"
+
 /**
  * How every page loads its content component.
  *
@@ -21,4 +24,25 @@ export function lazyContent<P extends object>(
   skeleton: () => ReactElement
 ) {
   return dynamic(load, { ssr: false, loading: skeleton })
+}
+
+/**
+ * The one skeleton bar. Every placeholder below is these, sized by `className`;
+ * the surface colour and corner were being restated at all 22 call sites.
+ *
+ * `radius` is here only because the ranked-list rows use `--term-radius-bar`.
+ */
+export function Bar({
+  className,
+  radius = "var(--term-radius)",
+}: {
+  className?: string
+  radius?: string
+}) {
+  return (
+    <Skeleton
+      className={cn("bg-[var(--term-surface-2)]", className)}
+      style={{ borderRadius: radius }}
+    />
+  )
 }
