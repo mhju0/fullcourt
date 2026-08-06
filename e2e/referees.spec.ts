@@ -4,8 +4,9 @@ import { test, expect } from "@playwright/test";
  * `/referees` is deliberately held back — see the docstring in `src/app/referees/page.tsx`.
  *
  * The table specs below are kept and skipped rather than deleted, so restoring the page is two
- * edits and no rewriting: swap the card back for `<RefereeStyleContent data={data} />`, and turn
- * `test.describe.skip` back into `test.describe`.
+ * edits and no rewriting: swap the card for `<RefereeEffectContent style={data} timing={timing} />`
+ * — which renders the same table inside the finished copy — and turn `test.describe.skip` back
+ * into `test.describe`.
  */
 test.describe("Referee Effect — held back", () => {
   test("shows an in-progress card rather than the table", async ({ page }) => {

@@ -15,17 +15,27 @@ export const metadata: Metadata = {
 /**
  * Referee foul style — DELIBERATELY UNPUBLISHED.
  *
- * The ingest, the dataset, `RefereeStyleContent` and its tests all still exist and are wired to
- * work: restoring this page is swapping the card below back for `<RefereeStyleContent data={data} />`
- * and un-skipping the table block in `e2e/referees.spec.ts`. Nothing has been deleted.
- *
- * It is held back because the writing around the table is not finished to the standard the rest
- * of the site is held to, and a table of per-official numbers with unfinished framing invites
- * exactly the bias reading the finished page exists to refuse — three officials work every game
- * and the play-by-play never records which blew the whistle.
+ * It is held back because a table of per-official numbers with unfinished framing invites exactly
+ * the bias reading the finished page exists to refuse — three officials work every game and the
+ * play-by-play never records which blew the whistle.
  *
  * This is an editorial decision by Michael, not drift. Do not "fix" it as stale documentation;
  * that has happened once already. Publishing it is a deliberate edit, not a currency pass.
+ *
+ * **The finished copy now exists and is still not rendered.** `RefereeEffectContent`
+ * (`src/components/referee-effect-content.tsx`) is the whole page: the foul-mix table, the
+ * quarter-timing finding, and the two nulls measured on 2026-08-06 under the pre-registration in
+ * `docs/adr/0007-referee-analysis-axes-are-pre-registered.md`. It is written, tested and left
+ * unwired on purpose, so publishing stays one deliberate line rather than a side effect.
+ *
+ * Publishing is two edits and no rewriting:
+ *   1. swap the `MessageCard` below for `<RefereeEffectContent style={data} timing={timing} />`,
+ *      importing `timing` from `@/data/referee-timing.json`, and
+ *   2. turn `test.describe.skip` back into `test.describe` in `e2e/referees.spec.ts`.
+ *
+ * The card's own wording still describes the writing as unfinished. That sentence is now out of
+ * date and is deliberately left standing: it is user-facing copy on a live page, so changing what
+ * a visitor reads here is Michael's call in the same way publishing it is.
  */
 export default function RefereesPage() {
   return (

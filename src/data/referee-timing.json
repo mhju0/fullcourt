@@ -1,0 +1,209 @@
+{
+  "source": "ESPN play-by-play",
+  "generated": "2026-08-06",
+  "firstSeason": "2015-16",
+  "lastSeason": "2025-26",
+  "gamesCovered": 12403,
+  "eligibleOfficials": 74,
+  "expectedByChance": 3.4,
+  "minGames": 200,
+  "notableZ": 2,
+  "lateWindowSeconds": 120,
+  "leagueQuarterShares": {
+    "q1": 20.305,
+    "q2": 25.552,
+    "q3": 26.026,
+    "q4": 28.118
+  },
+  "leagueLateFoulsPerGame": 0.921,
+  "leagueLateShareOfQ4": 8.521,
+  "leagueHomeAwayCounts": {
+    "shooting": -0.192,
+    "personal": -0.109,
+    "looseBall": -0.022,
+    "offensive": -0.026,
+    "technical": 0.038
+  },
+  "homeAway": {
+    "shooting": {
+      "observed": 7,
+      "expected": 3.4,
+      "ratio": 2.06
+    },
+    "personal": {
+      "observed": 7,
+      "expected": 3.4,
+      "ratio": 2.06
+    },
+    "looseBall": {
+      "observed": 6,
+      "expected": 3.4,
+      "ratio": 1.76
+    },
+    "offensive": {
+      "observed": 7,
+      "expected": 3.4,
+      "ratio": 2.06
+    },
+    "technical": {
+      "observed": 1,
+      "expected": 3.4,
+      "ratio": 0.29
+    }
+  },
+  "byQuarter": {
+    "q1": {
+      "observed": 10,
+      "expected": 3.4,
+      "ratio": 2.94
+    },
+    "q2": {
+      "observed": 2,
+      "expected": 3.4,
+      "ratio": 0.59
+    },
+    "q3": {
+      "observed": 5,
+      "expected": 3.4,
+      "ratio": 1.47
+    },
+    "q4": {
+      "observed": 8,
+      "expected": 3.4,
+      "ratio": 2.35
+    }
+  },
+  "lateWindow": {
+    "observed": 2,
+    "expected": 3.4,
+    "ratio": 0.59
+  },
+  "shifters": [
+    {
+      "name": "Zach Zarba",
+      "games": 635,
+      "q1": -1.214,
+      "q1Z": -5.2,
+      "q4": 1.175,
+      "q4Z": 4.2,
+      "shift": 2.39
+    },
+    {
+      "name": "Mark Ayotte",
+      "games": 323,
+      "q1": 0.837,
+      "q1Z": 2.6,
+      "q4": -0.691,
+      "q4Z": -1.8,
+      "shift": -1.53
+    },
+    {
+      "name": "Ed Malloy",
+      "games": 564,
+      "q1": 0.538,
+      "q1Z": 2.2,
+      "q4": -0.919,
+      "q4Z": -3,
+      "shift": -1.46
+    },
+    {
+      "name": "Tyler Ford",
+      "games": 611,
+      "q1": 0.817,
+      "q1Z": 3.4,
+      "q4": -0.632,
+      "q4Z": -2.2,
+      "shift": -1.45
+    },
+    {
+      "name": "Tom Washington",
+      "games": 473,
+      "q1": 0.492,
+      "q1Z": 1.8,
+      "q4": -0.908,
+      "q4Z": -2.9,
+      "shift": -1.4
+    },
+    {
+      "name": "Leon Wood",
+      "games": 440,
+      "q1": 0.927,
+      "q1Z": 3.3,
+      "q4": -0.416,
+      "q4Z": -1.2,
+      "shift": -1.34
+    },
+    {
+      "name": "John Butler",
+      "games": 331,
+      "q1": -0.886,
+      "q1Z": -2.6,
+      "q4": 0.404,
+      "q4Z": 1,
+      "shift": 1.29
+    },
+    {
+      "name": "Eric Dalen",
+      "games": 522,
+      "q1": 0.616,
+      "q1Z": 2.3,
+      "q4": -0.648,
+      "q4Z": -2,
+      "shift": -1.26
+    },
+    {
+      "name": "Kevin Cutler",
+      "games": 590,
+      "q1": 0.425,
+      "q1Z": 1.7,
+      "q4": -0.783,
+      "q4Z": -2.6,
+      "shift": -1.21
+    },
+    {
+      "name": "Marat Kogut",
+      "games": 583,
+      "q1": -0.881,
+      "q1Z": -3.7,
+      "q4": 0.331,
+      "q4Z": 1.1,
+      "shift": 1.21
+    },
+    {
+      "name": "Josh Tiven",
+      "games": 652,
+      "q1": -0.562,
+      "q1Z": -2.3,
+      "q4": 0.368,
+      "q4Z": 1.3,
+      "shift": 0.93
+    },
+    {
+      "name": "Pat Fraher",
+      "games": 604,
+      "q1": -0.22,
+      "q1Z": -1,
+      "q4": 0.615,
+      "q4Z": 2.1,
+      "shift": 0.83
+    },
+    {
+      "name": "James Williams",
+      "games": 617,
+      "q1": -0.512,
+      "q1Z": -2.1,
+      "q4": 0.292,
+      "q4Z": 1,
+      "shift": 0.8
+    },
+    {
+      "name": "Nick Buchert",
+      "games": 615,
+      "q1": -0.109,
+      "q1Z": -0.5,
+      "q4": 0.691,
+      "q4Z": 2.5,
+      "shift": 0.8
+    }
+  ]
+}

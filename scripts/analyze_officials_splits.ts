@@ -28,7 +28,10 @@ import { existsSync, readdirSync, readFileSync, writeFileSync, mkdirSync } from 
 import { isNotable, MIN_GAMES, NOTABLE_Z } from "../src/lib/referee-foul-style";
 
 const CACHE_DIR = "ml/data/officials";
+/** The full working table, gitignored. Cite the published summary below, never this. */
 const OUT_PATH = "ml/data/officials-splits.json";
+/** The publishable subset, committed, so page copy pins to a figure instead of typing one. */
+const PUBLISHED_PATH = "src/data/referee-timing.json";
 
 /** Mirrors `scripts/fetch_officials.ts`. Any change belongs in both or in neither. */
 const FOUL_TYPES = {
@@ -321,7 +324,69 @@ function main() {
 
   mkdirSync("ml/data", { recursive: true });
   writeFileSync(OUT_PATH, JSON.stringify(report, null, 2));
-  console.log(`\nwrote ${OUT_PATH}`);
+
+  /**
+   * The published summary. Three verdicts and the league context they sit in — never a raw cell,
+   * because the claim on the page is always "N officials past the bar against M expected", and a
+   * page that quoted one official's z would be making the finding out of the noise.
+   *
+   * Shifters are the exception, and they are per-official on purpose: the quarter result is only
+   * legible if a reader can see one. Gated at |z| >= 2 on either end of the game.
+   */
+  const shareRows = quarterShares.officials.filter((o) => (o.games as number) >= MIN_GAMES);
+  const shifters = shareRows
+    .filter((o) => isNotable(o.q1Z as number) || isNotable(o.q4Z as number))
+    .map((o) => ({
+      name: o.name as string,
+      games: o.games as number,
+      q1: o.q1 as number,
+      q1Z: o.q1Z as number,
+      q4: o.q4 as number,
+      q4Z: o.q4Z as number,
+      // Positive means fouls move from the start of the game toward the end of it.
+      shift: round((o.q4 as number) - (o.q1 as number), 2),
+    }))
+    .sort((a, b) => Math.abs(b.shift) - Math.abs(a.shift));
+
+  const verdictOf = (t: ReturnType<typeof deviationTable>, metric: string) => {
+    const v = t.verdict.find((x) => x.metric === metric)!;
+    return { observed: v.observed, expected: v.expected, ratio: v.ratio };
+  };
+
+  writeFileSync(
+    PUBLISHED_PATH,
+    JSON.stringify(
+      {
+        source: "ESPN play-by-play",
+        generated: report.generated,
+        firstSeason: report.seasons[0],
+        lastSeason: report.seasons[report.seasons.length - 1],
+        gamesCovered: games.length,
+        eligibleOfficials: quarterShares.eligibleOfficials,
+        expectedByChance: quarterShares.expectedByChance,
+        minGames: MIN_GAMES,
+        notableZ: NOTABLE_Z,
+        lateWindowSeconds: LATE_SECONDS,
+        leagueQuarterShares: quarterShares.leagueMean,
+        leagueLateFoulsPerGame: lateCounts.leagueMean.q4Late,
+        leagueLateShareOfQ4: lateShares.leagueMean.q4Late,
+        /** Home minus away, fouls per game. Negative means the home team commits fewer. */
+        leagueHomeAwayCounts: homeAwayCounts.leagueMean,
+        homeAway: Object.fromEntries(
+          FOUL_KEYS.map((k) => [k, verdictOf(homeAwayShares, k)])
+        ),
+        byQuarter: Object.fromEntries(
+          quarterMetrics.map((m) => [m, verdictOf(quarterShares, m)])
+        ),
+        lateWindow: verdictOf(lateShares, "q4Late"),
+        shifters,
+      },
+      null,
+      2
+    ) + "\n"
+  );
+
+  console.log(`\nwrote ${OUT_PATH} and ${PUBLISHED_PATH}`);
   for (const [axis, table] of [
     ["A counts", homeAwayCounts],
     ["A shares", homeAwayShares],
