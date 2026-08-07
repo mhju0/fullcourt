@@ -21,10 +21,36 @@ test.describe("Season Report", () => {
     await expect(page.getByTestId("edge-conversion-row")).toHaveCount(30);
     await expect(page.getByTestId("schedule-tax-row")).toHaveCount(30);
 
+    await expect(page.getByTestId("schedule-value-row")).toHaveCount(30);
+
     // Section 4 caps at ten however many decidable games a season holds.
     await expect(page.getByTestId("loudest-call-row")).toHaveCount(10);
 
     await expect(page.getByTestId("fatigue-calendar")).toBeVisible();
+  });
+
+  /**
+   * Copy guards, not layout checks. Both sentences exist to stop a specific misreading, and
+   * both are the kind of prose a tidying pass deletes as redundant.
+   */
+  test("gives the wins figure its scale and the swing column its baseline", async ({ page }) => {
+    await page.goto("/season");
+    await page.getByLabel("SEASON").selectOption("2015-16");
+
+    // Without this line, four-tenths of a win reads as "rest is nothing".
+    const scale = page.getByTestId("rest-scale-line");
+    await expect(scale).toContainText("of home court");
+    await expect(scale).toContainText("far smaller");
+
+    // The swing column's arms differ by venue, so its zero line is not zero.
+    const baseline = page.getByTestId("swing-baseline-note");
+    await expect(baseline).toContainText("NOT AGAINST ZERO");
+    await expect(baseline).toContainText("THE RESTED ARM IS PLAYED AT HOME");
+
+    // The section must never imply it is measuring how teams played.
+    await expect(page.getByTestId("schedule-value-heading")).toHaveText(
+      "WHAT THE SCHEDULE WAS WORTH"
+    );
   });
 
   test("flags the shortened seasons and only those", async ({ page }) => {

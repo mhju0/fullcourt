@@ -22,6 +22,11 @@ import {
   type SeasonReportWeek,
 } from "@/lib/season-report"
 import {
+  HOME_COURT_SPAN_PP,
+  REST_SHARE_OF_HOME_COURT,
+  REST_SPAN_PP,
+} from "@/lib/schedule-value"
+import {
   TERM_NUMERIC_TABLE_MAX_WIDTH,
   termCardStyle,
   termTdStyle,
@@ -191,10 +196,19 @@ function VerdictLine({ verdict }: { verdict: SeasonReportVerdict }) {
   )
 }
 
-/** Blue positive, red negative, grey exactly even — the diverging pair the other pages use. */
-function swingColor(swing: number | null): string {
-  if (swing === null || swing === 0) return "var(--term-neutral)"
-  return swing > 0 ? "var(--term-blue)" : "var(--term-red)"
+/**
+ * Blue above the baseline, red below, grey on it — the diverging pair the other pages use.
+ *
+ * Diverging around `baseline` rather than around zero, because zero is not this column's
+ * no-effect point: the rested arm is played at home and the tired arm on the road, so a team
+ * with no rest-conversion skill still posts about +10. Colouring from zero painted twenty-odd
+ * teams blue for having home-court advantage.
+ */
+function swingColor(swing: number | null, baseline: number | null): string {
+  if (swing === null) return "var(--term-neutral)"
+  const zero = baseline ?? 0
+  if (swing === zero) return "var(--term-neutral)"
+  return swing > zero ? "var(--term-blue)" : "var(--term-red)"
 }
 
 /**
@@ -237,6 +251,25 @@ function edgeConversionSentence(teams: SeasonReportTeamLabelled[]): string {
 }
 
 /**
+ * The swing column's zero line, stated above the table.
+ *
+ * Every rested-arm game is a home game and every tired-arm game is a road game — the site only
+ * calls a rest edge when the rested side is also at home — so most of what this column measures
+ * is home court. Without this line a reader takes a +35 swing for a finding about rest.
+ */
+function SwingBaselineNote({ baseline }: { baseline: number | null }) {
+  if (baseline === null) return null
+
+  return (
+    <p className="mono" data-testid="swing-baseline-note" style={{ fontSize: 11, color: "var(--term-text-muted)" }}>
+      A TEAM THAT CONVERTS REST NO BETTER THAN THE LEAGUE STILL SWINGS{" "}
+      {signedNumber(baseline, 1)} THIS SEASON · THE RESTED ARM IS PLAYED AT HOME AND THE TIRED ARM
+      ON THE ROAD, SO READ EVERY ROW AGAINST THAT AND NOT AGAINST ZERO
+    </p>
+  )
+}
+
+/**
  * Rest edge conversion.
  *
  * A record table, deliberately not a ranking. Each team is measured against its own
@@ -244,7 +277,13 @@ function edgeConversionSentence(teams: SeasonReportTeamLabelled[]): string {
  * quality — but the difference of two ~30-game proportions still carries roughly twelve
  * points of standard error, so nothing here is crowned and every row shows its n.
  */
-function EdgeConversion({ teams }: { teams: SeasonReportTeamLabelled[] }) {
+function EdgeConversion({
+  teams,
+  swingBaseline,
+}: {
+  teams: SeasonReportTeamLabelled[]
+  swingBaseline: number | null
+}) {
   const thin = teams.filter((t) => t.restedGames < 10 || t.tiredGames < 10).length
 
   return (
@@ -253,6 +292,7 @@ function EdgeConversion({ teams }: { teams: SeasonReportTeamLabelled[] }) {
       <p style={{ fontSize: 14, color: "var(--term-text-muted)", maxWidth: "42rem", lineHeight: 1.55 }}>
         {edgeConversionSentence(teams)}
       </p>
+      <SwingBaselineNote baseline={swingBaseline} />
       <div className="overflow-x-auto">
         <table className="mono w-full" style={{ borderCollapse: "collapse", minWidth: 560, maxWidth: TERM_NUMERIC_TABLE_MAX_WIDTH }}>
           <thead>
@@ -266,7 +306,11 @@ function EdgeConversion({ teams }: { teams: SeasonReportTeamLabelled[] }) {
               </th>
               <th rowSpan={2} style={{ ...termThStyle, textAlign: "right" }}>
                 SWING
-                <span style={termThUnitStyle}>PCT POINTS</span>
+                <span style={termThUnitStyle}>
+                  {swingBaseline === null
+                    ? "PCT POINTS"
+                    : `PCT POINTS · BASELINE ${signedNumber(swingBaseline, 1)}`}
+                </span>
               </th>
             </tr>
             <tr>
@@ -285,7 +329,12 @@ function EdgeConversion({ teams }: { teams: SeasonReportTeamLabelled[] }) {
                   <ArmCells wins={t.tiredWins} games={t.tiredGames} pct={t.tiredWinPct} />
                   <td
                     className="tabular-nums"
-                    style={{ ...termTdStyle, textAlign: "right", color: swingColor(t.swing), fontWeight: 700 }}
+                    style={{
+                      ...termTdStyle,
+                      textAlign: "right",
+                      color: swingColor(t.swing, swingBaseline),
+                      fontWeight: 700,
+                    }}
                   >
                     {t.swing === null ? "—" : signedNumber(t.swing, 1)}
                   </td>
@@ -300,6 +349,110 @@ function EdgeConversion({ teams }: { teams: SeasonReportTeamLabelled[] }) {
           {thin} {thin === 1 ? "TEAM HAS" : "TEAMS HAVE"} FEWER THAN 10 GAMES ON ONE SIDE AND {thin === 1 ? "IS" : "ARE"} DIMMED
         </p>
       ) : null}
+    </div>
+  )
+}
+
+/**
+ * What the schedule was worth.
+ *
+ * The section leads with the per-game effect and only then gives the season total, and that
+ * order is the whole design. Four-tenths of a win, read cold, invites a first-time reader to
+ * conclude rest is nothing. Read after "a rest edge is worth just under a fifth of home court",
+ * the same number says what is true: the effect is real and the schedule never lets it
+ * accumulate, because the league hands out edges close to evenly.
+ *
+ * Deliberately no result data. Every figure here is a property of the calendar, so a 64-win
+ * team and a 17-win team handed the same schedule get the same number — which is what makes it
+ * schedule *luck* and not a verdict on anybody.
+ */
+function ScheduleValue({ teams }: { teams: SeasonReportTeamLabelled[] }) {
+  const ranked = [...teams].sort(
+    (a, b) => b.scheduleValueWins - a.scheduleValueWins || a.teamId - b.teamId
+  )
+  const most = ranked[0]
+  const least = ranked[ranked.length - 1]
+
+  return (
+    <div className="flex flex-col gap-3">
+      <SectionDivider
+        label="WHAT THE SCHEDULE WAS WORTH"
+        descriptor="SCHEDULE LUCK, NOT RESULTS"
+        testId="schedule-value-heading"
+      />
+
+      {/* The scale line. Rendered as a callout rather than as body copy because it is the
+          sentence the table underneath cannot be read honestly without. */}
+      <div
+        data-testid="rest-scale-line"
+        style={{ ...termCardStyle, padding: 16, borderLeft: `2px solid var(--term-blue)` }}
+      >
+        <p style={{ fontSize: 14, color: "var(--term-text)", maxWidth: "42rem", lineHeight: 1.55 }}>
+          Being the fresher side moves a home team&rsquo;s win probability by{" "}
+          <strong>{REST_SPAN_PP.toFixed(1)} points</strong>. Playing at home instead of away moves
+          it by <strong>{HOME_COURT_SPAN_PP.toFixed(1)}</strong>. So a rest edge is worth about{" "}
+          <strong>
+            {Math.round(REST_SHARE_OF_HOME_COURT * 100)}% of home court
+          </strong>{" "}
+          — real, and far smaller than the thing every fan already accounts for.
+        </p>
+      </div>
+
+      <p style={{ fontSize: 14, color: "var(--term-text-muted)", maxWidth: "42rem", lineHeight: 1.55 }}>
+        Priced at that rate, here is what each team&rsquo;s own schedule was worth: every rest edge
+        it was handed, minus every one it had to face. No score is read, so this says nothing about
+        how any team played. It is small for everyone, and that is the finding — the league spreads
+        rest around evenly enough that no schedule is worth half a game either way.
+      </p>
+
+      {most && least ? (
+        <p className="mono" data-testid="schedule-value-extremes" style={{ fontSize: 11, color: "var(--term-text-muted)" }}>
+          {most.abbreviation} GAINED THE MOST AT {signedNumber(most.scheduleValueWins, 1)} WINS ·{" "}
+          {least.abbreviation} LOST THE MOST AT {signedNumber(least.scheduleValueWins, 1)}
+        </p>
+      ) : null}
+
+      <div className="overflow-x-auto">
+        <table
+          className="mono w-full"
+          style={{ borderCollapse: "collapse", minWidth: 420, maxWidth: TERM_NUMERIC_TABLE_MAX_WIDTH }}
+        >
+          <thead>
+            <tr>
+              <th style={termThStyle}>TEAM</th>
+              <th style={{ ...termThStyle, textAlign: "right" }}>
+                NET REST EDGE
+                <span style={termThUnitStyle}>GAMES</span>
+              </th>
+              <th style={{ ...termThStyle, textAlign: "right" }}>
+                WORTH
+                <span style={termThUnitStyle}>WINS</span>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {ranked.map((t) => (
+              <tr key={t.teamId} data-testid="schedule-value-row">
+                <td style={termTdStyle}>{t.abbreviation}</td>
+                <td className="tabular-nums" style={{ ...termTdStyle, textAlign: "right" }}>
+                  {signedNumber(t.netEdgeGames)}
+                </td>
+                <td
+                  className="tabular-nums"
+                  style={{
+                    ...termTdStyle,
+                    textAlign: "right",
+                    color: swingColor(t.scheduleValueWins, 0),
+                    fontWeight: 700,
+                  }}
+                >
+                  {signedNumber(t.scheduleValueWins, 1)}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   )
 }
@@ -565,7 +718,10 @@ export function SeasonReportContent() {
             </p>
           </div>
 
-          <EdgeConversion teams={data.teams} />
+          {/* Before the conversion table on purpose: this section carries the scale a reader
+              needs before any per-team rest number can be read at its true size. */}
+          <ScheduleValue teams={data.teams} />
+          <EdgeConversion teams={data.teams} swingBaseline={data.swingBaseline} />
           <LoudestCalls calls={data.loudestCalls} abbrById={abbrById} />
           <ScheduleTax teams={data.teams} />
           <FatigueCalendar weeks={data.weeks} />
