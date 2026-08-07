@@ -113,9 +113,27 @@ moved; the sections carry the label instead.
 
 The lazy client component (`season-report-content.tsx`) fetches `/api/season-report?season=…`
 and renders, in order: three rate tiles (rest-advantage win rate, win rate at RA ≥ 2, season
-progress) against an all-season marker, then `REST EDGE CONVERSION` (records, not a ranking),
-`LOUDEST CALLS` (ranked by rest gap), `SCHEDULE TAX` (completed games only), `FATIGUE CALENDAR`
-(league average by week) and `ZERO-REST WORKLOAD` (volume, not effect).
+progress) against an all-season marker, then `WHAT THE SCHEDULE WAS WORTH` (schedule luck, not
+results), `REST EDGE CONVERSION` (records, not a ranking), `LOUDEST CALLS` (ranked by rest gap),
+`SCHEDULE TAX` (completed games only), `FATIGUE CALENDAR` (league average by week) and
+`ZERO-REST WORKLOAD` (volume, not effect).
+
+**Two sentences in this page are load-bearing and read as redundant prose.** Both exist to stop
+a specific misreading, and `e2e/season.spec.ts` guards both:
+
+- `WHAT THE SCHEDULE WAS WORTH` opens with a callout stating the per-game effect — a rest edge
+  moves a home team 3.6 points against home court's 19.8, so about 18% of home court — **before**
+  the per-team wins table underneath it. That order is the design. The wins figure never leaves
+  ±0.4 for any team, and read cold it invites the conclusion that rest is nothing; read after the
+  scale line it says what is true, which is that the effect is real and the league distributes
+  edges evenly enough that it never accumulates. Never reorder these two, and never publish the
+  wins figure on a surface that does not carry the scale beside it.
+- `REST EDGE CONVERSION` prints `swingBaseline` above its table and diverges the `SWING` column's
+  colour around it rather than around zero. The rested arm is every game played as the fresher
+  side *at home* and the tired arm every game played as the tireder side *on the road* —
+  `isCalledSide` admits no other pairing — so a team with no rest-conversion skill still posts
+  about +10. Colouring from zero painted twenty-odd teams blue for having home-court advantage,
+  which is the same error the venue baseline was introduced to stop `/analysis` making.
 
 **Every rate tile is gated on sample size.** `MIN_GAMES_FOR_INFERENCE` is 100
 (`src/lib/season-report.ts`); below it a tile reads `TOO EARLY · N OF 100 GAMES NEEDED` rather
@@ -184,6 +202,12 @@ does not correlate with the preseason win-total market. The lazy client componen
 renders, in order: a `<SeasonSelector>` over `browsableSeasons()`, a four-cell summary strip
 (most favored / least favored / spread / games with an edge), the ranked **net rest edge**
 list, the column guide, and the full breakdown table.
+
+The breakdown table's **Worth (wins)** column is the same figure `/season` publishes, from the
+same conversion (`src/lib/schedule-value.ts`) and the same population — the two pages must never
+show a team different values. It carries the scale sentence directly above it for the reason
+`/season` does: a wins figure without the per-game effect beside it gets misread as the size of
+the effect rather than the size of the schedule's imbalance.
 
 **Horizontal, not vertical.** The ranked list is 30 CSS rows, not a Recharts `BarChart` — the
 bars *are* the leaderboard, so team codes sit upright and rank reads top to bottom. The

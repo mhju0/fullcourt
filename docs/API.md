@@ -313,6 +313,13 @@ Which teams a season's schedule favored, ranked by net edge games. Powers `/sche
   from the existing `games` and `fatigue_scores` reads.
 - **Success:** `{ data: ScheduleDisparityResponse, error: null }` — the 30 ranked teams, the
   summary strip figures, and a provisional flag for a season still in progress.
+  - Each team also carries `scheduleValueWins`: its net edge priced in wins through
+    `src/lib/schedule-value.ts`, the same conversion `/api/season-report` uses.
+    **The two routes must return the same value for the same team** — they are counted over the
+    same population (every scored game a team played, at the venue it played it), which is
+    deliberately *wider* than the opener-gated population `netEdgeGames` uses on this route. Put
+    it back behind that gate and the two pages disagree by a tenth of a win on a figure whose
+    whole range is about eight tenths.
 - **Errors:** `500` + `getPublicApiErrorMessage` on failure.
 
 `src/app/api/__tests__/schedule-disparity.test.ts` pins the two-season-list rule directly.
@@ -341,9 +348,15 @@ One season, reported through the site's rest-advantage lens. Powers `/season`.
   - `overall` / `atLeastTwo: SeasonReportRate` — `{ games, restedTeamWins, winPct, band }`,
     the rest-advantage win rate overall and for RA ≥ 2 (the only per-season threshold this
     page publishes; RA ≥ 5 and ≥ 7 run too thin at one season's sample size)
+  - `swingBaseline` — the swing a team with no rest-conversion skill still posts this season,
+    in percentage points, and the zero line for the `swing` field below. Non-zero (≈ +10) because
+    the rested arm is played at home and the tired arm on the road. Null when no game carried a
+    called rest edge.
   - `teams: SeasonReportTeamLabelled[]` — per team: rested/tired games+wins+winPct, `swing`
-    (rested − tired, null if either arm is empty), and the schedule facts (`travelMiles`,
-    `backToBacks`, `threeInFours`, `jetLagGames`)
+    (rested − tired, null if either arm is empty — read against `swingBaseline`, never zero),
+    `restStates` (games per venue × rest state, over every completed game), `netEdgeGames`,
+    `scheduleValueWins` (those edges priced through `src/lib/schedule-value.ts`), and the
+    schedule facts (`travelMiles`, `backToBacks`, `threeInFours`, `jetLagGames`)
   - `loudestCalls: SeasonReportCall[]` — the ten games with the largest rest gap, ranked by
     gap rather than margin, each tagged hit/miss
   - `weeks: SeasonReportWeek[]` — league-average fatigue in seven-day buckets from the
