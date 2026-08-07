@@ -256,10 +256,14 @@ the in-memory `createStampedCache` rarely hit.
 - **Do not "optimize" this to a US region to sit closer to readers.** These functions are
   latency-bound on the database, not on the reader; the CDN already terminates close to the
   reader. Moving them away from Tokyo re-creates the timeouts.
-- **Hobby allows exactly one region.** If `vercel.json` is ever ignored on this plan, the same
-  value must be set in Project Settings → Functions → Function Region. Verify with
+- **Hobby allows exactly one region, and honours `vercel.json`** — verified in production on
+  2026-08-07, so no dashboard setting is required. Should that ever change, the same value goes
+  in Project Settings → Functions → Function Region. Verify with
   `curl -sD - .../api/health -o /dev/null | grep x-vercel-id` — the **second** field is the
   execution region (`icn1::hnd1::…` is correct; `icn1::iad1::…` means it did not take).
+
+**Measured after the move** (same forced-cache-miss method as before it, `/api/analysis`):
+**0.55–1.02 s in `hnd1`, against 1.6–3.97 s in `iad1`.** Edge hits serve in ~0.05 s.
 
 ### Deployment
 
