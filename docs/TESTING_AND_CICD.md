@@ -225,7 +225,7 @@ no code scanning does not happen twice.
 ### Vercel cron — `vercel.json`
 
 ```json
-{ "crons": [ { "path": "/api/cron/update", "schedule": "0 3 * * *" } ] }
+{ "regions": ["hnd1"], "crons": [ { "path": "/api/cron/update", "schedule": "0 3 * * *" } ] }
 ```
 
 - Schedule **`0 3 * * *`** = 03:00 UTC daily, **year-round** — 10 PM EST / 11 PM EDT, i.e.
@@ -236,6 +236,30 @@ no code scanning does not happen twice.
 - The cron hits `GET /api/cron/update` with `Authorization: Bearer <CRON_SECRET>`; the route
   refreshes live scores from the NBA CDN and updates `games`, which Supabase Realtime pushes
   to clients. On Vercel Hobby, crons are limited to once per day.
+
+### Function region — `"regions": ["hnd1"]` (2026-08-07)
+
+**Functions must run in the same region as the database.** `hnd1` is Tokyo; the Supabase host is
+`aws-1-ap-northeast-1`. JSON has no comments, so the reasoning is here.
+
+Before this was set, functions took Vercel's default `iad1` (Washington DC) while the database
+sat in Tokyo, so **every query crossed the Pacific** and connection setup cost several round
+trips before the first one ran. Vercel emailed on 2026-08-07 that 36 invocations had hit the
+execution-time limit in 7 days — **7.8% of all invocations**. Measured against the live site that
+day: `/api/analysis` cold **4.55 s**, warm **0.82 s**, and 1.6–4.0 s across 18 forced cache
+misses. The same query from Seoul (a short hop to Tokyo) ran in ~1 s.
+
+Read this together with the two things that made the tail worse, both since fixed: no response
+was CDN-cached, and traffic is low enough (~66 invocations/day) that lambdas are usually cold, so
+the in-memory `createStampedCache` rarely hit.
+
+- **Do not "optimize" this to a US region to sit closer to readers.** These functions are
+  latency-bound on the database, not on the reader; the CDN already terminates close to the
+  reader. Moving them away from Tokyo re-creates the timeouts.
+- **Hobby allows exactly one region.** If `vercel.json` is ever ignored on this plan, the same
+  value must be set in Project Settings → Functions → Function Region. Verify with
+  `curl -sD - .../api/health -o /dev/null | grep x-vercel-id` — the **second** field is the
+  execution region (`icn1::hnd1::…` is correct; `icn1::iad1::…` means it did not take).
 
 ### Deployment
 
