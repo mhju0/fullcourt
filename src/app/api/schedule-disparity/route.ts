@@ -9,6 +9,10 @@ export const runtime = "nodejs";
 /** DB-backed; do not prerender at build (avoids requiring `DATABASE_URL` during `next build`). */
 export const dynamic = "force-dynamic";
 
+/** Stated rather than inherited: Hobby defaults to 10s and caps at 60s. Worst observed cold
+ *  read was 4.6s, so this is headroom for a slow refresh, not a budget to grow into. */
+export const maxDuration = 30;
+
 // Deliberately not `seasonParam`: validation uses the browsable list so an upcoming schedule can
 // be requested before its season starts, narrowed to the rankable ones because this module ranks
 // teams within a season and a truncated season cannot be ranked. The default stays the newest

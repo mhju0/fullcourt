@@ -10,10 +10,26 @@ import {
 } from "@/lib/live-score-sync";
 import { formatEasternDateKey } from "@/lib/nba-season";
 
+/**
+ * Must stay **strictly below** `maxDuration`, or the abort can never fire.
+ *
+ * It was equal to it: this route inherited Hobby's 10s default while asking for a 10s fetch
+ * timeout, so a slow CDN killed the function instead of returning the authored
+ * "Live score feed unavailable" 502 below. The 502 path was unreachable.
+ */
 const SCOREBOARD_TIMEOUT_MS = 10_000;
 
 /** Drizzle + `postgres` need the Node.js runtime (not Edge). */
 export const runtime = "nodejs";
+
+/**
+ * The ceiling, stated rather than inherited. Vercel Hobby defaults to 10s and caps at 60s.
+ *
+ * Set to the cap because this route has an external dependency it does not control — one DB
+ * read, a `cdn.nba.com` fetch, then one write per live game — and it runs once a day, so a slow
+ * run costs nothing. See `SCOREBOARD_TIMEOUT_MS` above for the invariant between the two.
+ */
+export const maxDuration = 60;
 
 /** Never prerender — uses DB and live NBA feed. */
 export const dynamic = "force-dynamic";

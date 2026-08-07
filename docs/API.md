@@ -45,6 +45,21 @@ Routes that touch the DB declare `export const runtime = "nodejs"` and (where ap
 `dynamic = "force-dynamic"` so they aren't prerendered at build (no `DATABASE_URL` needed
 during `next build`) and don't run on Edge (postgres-js needs Node).
 
+### Execution ceiling — `maxDuration` (2026-08-07)
+
+Stated per route rather than inherited. **Vercel Hobby defaults to 10s and caps at 60s.**
+
+| Route | `maxDuration` | Why |
+|---|---|---|
+| `/api/analysis`, `/api/playoffs`, `/api/schedule-disparity`, `/api/season-report`, `/api/shot-quality` | `30` | Worst observed cold read was 4.6s. Headroom for a slow refresh, not a budget to grow into. |
+| `/api/cron/update` | `60` | Has an external dependency it does not control (`cdn.nba.com`) and runs once a day, so a slow run costs nothing. |
+| everything else | unset (10s) | Light reads and the liveness probe, which should fail fast. |
+
+**`/api/cron/update` carries an invariant: `SCOREBOARD_TIMEOUT_MS` must stay strictly below
+`maxDuration`.** It was equal to it — a 10s fetch timeout inside an inherited 10s budget — so the
+`AbortSignal` could never fire and a slow CDN killed the function instead of returning the
+authored `"Live score feed unavailable"` 502. That 502 path was unreachable in production.
+
 ### Edge caching (2026-08-07)
 
 `force-dynamic` leaves `Cache-Control: max-age=0, must-revalidate`, so until 2026-08-07 every

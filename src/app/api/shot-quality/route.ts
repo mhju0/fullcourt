@@ -8,6 +8,10 @@ export const runtime = "nodejs";
 /** DB-backed; do not prerender at build (avoids requiring `DATABASE_URL` during `next build`). */
 export const dynamic = "force-dynamic";
 
+/** Stated rather than inherited: Hobby defaults to 10s and caps at 60s. Worst observed cold
+ *  read was 4.6s, so this is headroom for a slow refresh, not a budget to grow into. */
+export const maxDuration = 30;
+
 const DEFAULT_MODEL: ShotQualityModelVersion = "gbm-v1";
 
 export const GET = jsonRoute(
