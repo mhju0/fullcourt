@@ -14,7 +14,7 @@ export default function SchedulePage() {
       <PageHeader
         eyebrow="SCHEDULE DISPARITY · NET EDGE GAMES"
         title="Schedule Disparity"
-        description="Which teams a season's schedule favored, counted in games with a real rest edge. Not a prediction — much of the gap is structural, and every figure is scoped to its own season."
+        description="Which teams a season's schedule favored, counted in games with a real rest edge and priced in wins. Not a prediction — much of the gap is structural, and each season stands alone."
       />
       <MethodLink surfaceHref="/schedule" />
 

@@ -35,7 +35,7 @@ const BLURB: Record<ModelSectionHref, string> = {
   "/behind-the-data/rest-advantage":
     "The fatigue score: eight terms, what each constant is, and which of them actually carry the result.",
   "/behind-the-data/schedule-edge":
-    "How a season's schedule is scored for and against a team, and why the count is games rather than days.",
+    "How a season's schedule is scored for and against a team, what one rest edge is worth in wins, and why the count is games rather than days.",
   "/behind-the-data/playoff-predictions":
     "The grind tax and whether it is just the better team, the series model's features, and why its edge is calibration rather than accuracy.",
   "/behind-the-data/player-shooting":

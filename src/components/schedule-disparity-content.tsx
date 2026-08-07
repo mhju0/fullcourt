@@ -146,6 +146,15 @@ function ColumnGuide({ countedGames, scheduledGames }: { countedGames: number; s
           not a season average.
         </p>
         <p>
+          {term("Worth")} — the net edge priced in wins, at what a rest edge is measured to be
+          worth. Being the fresher side moves a home team&rsquo;s win probability{" "}
+          {REST_SPAN_PP.toFixed(1)} points against {HOME_COURT_SPAN_PP.toFixed(1)} for playing at
+          home at all, so an edge is about {Math.round(REST_SHARE_OF_HOME_COURT * 100)}% of home
+          court. It is small for every team because the league spreads edges out evenly, not
+          because rest does nothing — the per-game effect is the same either way. The Season Report
+          publishes the identical figure.
+        </p>
+        <p>
           {term("Fav / Unfav")} — the two counts behind the net: games with the edge, and games
           against it. Fatigue folds in rest, travel, altitude and schedule density, so these counts
           can disagree with a bare day count — a team can have more rest days and still arrive more
@@ -161,10 +170,13 @@ function ColumnGuide({ countedGames, scheduledGames }: { countedGames: number; s
           teams across from it.
         </p>
         <p>
-          Every team plays a full schedule. This page compares the {countedGames.toLocaleString()} of{" "}
-          {scheduledGames.toLocaleString()} games where <em>both</em> sides had a previous game to
-          rest from — a season opener has no rest to measure. Edge games are counted from played
-          games, so a season in progress lags until its games are scored.
+          Every team plays a full schedule. Every column except <em>Worth</em> compares the{" "}
+          {countedGames.toLocaleString()} of {scheduledGames.toLocaleString()} games where{" "}
+          <em>both</em> sides had a previous game to rest from — a season opener has no rest days
+          to measure. <em>Worth</em> deliberately counts the openers too: a fatigue score exists for
+          them, so the rest gap is measured even where the day count is not, and leaving them out
+          put this page a tenth of a win away from the Season Report on the same team. Edge games
+          are counted from played games, so a season in progress lags until its games are scored.
         </p>
       </div>
     </details>

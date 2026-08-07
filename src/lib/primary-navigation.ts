@@ -15,7 +15,7 @@ export const DIRECT_NAV_ITEMS = [
     // already ranks teams inside one, so the noun alone collides with two tabs we own.
     label: "SEASON REPORT",
     guideDescription:
-      "Read one season end to end — how the rest call scored, which teams converted a rest edge, and what the schedule cost each of them.",
+      "Read one season end to end — how the rest call scored, what each team's schedule was worth in wins, and which teams converted a rest edge.",
   },
   {
     href: "/schedule",
@@ -23,7 +23,7 @@ export const DIRECT_NAV_ITEMS = [
     // which is this site's GAMES tab. The qualifier is what blocks the wrong click.
     label: "SCHEDULE EDGE",
     guideDescription:
-      "See which teams a season's schedule favored, counted in games with a real rest edge.",
+      "See which teams a season's schedule favored, counted in games with a real rest edge and priced in wins.",
   },
   {
     href: "/analysis",

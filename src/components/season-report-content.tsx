@@ -402,7 +402,12 @@ function ScheduleValue({ teams }: { teams: SeasonReportTeamLabelled[] }) {
         Priced at that rate, here is what each team&rsquo;s own schedule was worth: every rest edge
         it was handed, minus every one it had to face. No score is read, so this says nothing about
         how any team played. It is small for everyone, and that is the finding — the league spreads
-        rest around evenly enough that no schedule is worth half a game either way.
+        rest around evenly enough that no schedule is worth half a game either way.{" "}
+        {/* The figure is derived, so it owes the reader its method. Schedule Edge publishes the
+            identical number and its method page documents the conversion. */}
+        <a href="/behind-the-data/schedule-edge" style={{ color: "var(--term-blue)", fontWeight: 600 }}>
+          How this is priced →
+        </a>
       </p>
 
       {most && least ? (

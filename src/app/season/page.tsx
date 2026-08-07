@@ -14,7 +14,7 @@ export default function SeasonPage() {
       <PageHeader
         eyebrow="ONE SEASON, DEEP"
         title="Season Report"
-        description="One NBA season read through rest and fatigue: how the rest-advantage call scored against its own history, and what the schedule actually cost each team."
+        description="One NBA season read through rest and fatigue: how the rest-advantage call scored against its own history, and what each team's schedule was actually worth — in wins, not percentages."
       />
 
       <SeasonReportContentLazy />

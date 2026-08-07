@@ -138,8 +138,8 @@ function SurfaceGlyph({ href }: { href: string }) {
  */
 const SURFACES = [
   { name: "Games", href: "/", copy: "Every season's slate by date, with fatigue scores, rest gaps, and live scores during the season." },
-  { name: "Season Report", href: "/season", copy: "One season read end to end: how the rest call scored, and what the schedule cost each team." },
-  { name: "Schedule Edge", href: "/schedule", copy: "Which teams a season's schedule favoured, counted in games with a real rest edge." },
+  { name: "Season Report", href: "/season", copy: "One season read end to end: how the rest call scored, and what each schedule was worth in wins." },
+  { name: "Schedule Edge", href: "/schedule", copy: "Which teams a season's schedule favoured, counted in games with a real rest edge and priced in wins." },
   { name: "Model Results", href: "/analysis", copy: "The backtest that scores the model against history: thresholds, season trends, and every individual game." },
   { name: "Playoff Rest", href: "/playoffs", copy: "What surviving a long series costs the round after, and the bracket picks that price it in." },
   { name: "Player Shooting", href: "/shooting", copy: "Every player's shooting on no rest against three days off. One season of it is noise." },

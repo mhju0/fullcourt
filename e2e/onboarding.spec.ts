@@ -28,7 +28,7 @@ test.describe("First-visit guide", () => {
     ).toBeVisible();
     await expect(
       guide.getByText(
-        "See which teams a season's schedule favored, counted in games with a real rest edge.",
+        "See which teams a season's schedule favored, counted in games with a real rest edge and priced in wins.",
       ),
     ).toBeVisible();
     await expect(
