@@ -491,3 +491,108 @@ describe("seasonReportVerdict", () => {
     expect(verdict.kind).toBe("above");
   });
 });
+
+describe("buildSeasonReport — rest states and schedule value", () => {
+  it("records a rest state for every completed game, including the ones the model declines", () => {
+    const report = buildSeasonReport("2025-26", [
+      game({ gameId: 1 }), // home rested — a call
+      game({ gameId: 2, home: side(4), away: side(1) }), // visitor rested — not a call
+      game({ gameId: 3, home: side(1), away: side(1.4) }), // neutral
+    ]);
+
+    const home = report.teams.find((t) => t.teamId === 1)!;
+    const away = report.teams.find((t) => t.teamId === 2)!;
+
+    // Only the first game reaches the two arms, but all three reach the states.
+    expect(home.restedGames).toBe(1);
+    expect(home.restStates).toEqual({
+      restedHome: 1,
+      neutralHome: 1,
+      tiredHome: 1,
+      restedRoad: 0,
+      neutralRoad: 0,
+      tiredRoad: 0,
+    });
+    expect(away.restStates).toEqual({
+      restedHome: 0,
+      neutralHome: 0,
+      tiredHome: 0,
+      restedRoad: 1,
+      neutralRoad: 1,
+      tiredRoad: 1,
+    });
+  });
+
+  it("leaves an unplayed game out of the states entirely", () => {
+    const report = buildSeasonReport("2025-26", [
+      game({ gameId: 1, status: "scheduled", homeScore: null, awayScore: null }),
+    ]);
+
+    expect(report.teams).toEqual([]);
+  });
+
+  it("nets the edges held against the edges faced, and prices them under half a win", () => {
+    const rows = [
+      ...Array.from({ length: 12 }, (_, i) => game({ gameId: i + 1 })),
+      ...Array.from({ length: 4 }, (_, i) =>
+        game({ gameId: i + 20, homeTeamId: 2, awayTeamId: 1 })
+      ),
+    ];
+    const report = buildSeasonReport("2025-26", rows);
+    const home = report.teams.find((t) => t.teamId === 1)!;
+
+    expect(home.netEdgeGames).toBe(12 - 4);
+    expect(home.scheduleValueWins).toBeGreaterThan(0);
+    expect(Math.abs(home.scheduleValueWins)).toBeLessThan(0.5);
+  });
+
+  /**
+   * The defect this section exists to stop repeating. Both teams below convert rest at exactly
+   * the league rate — neither is better than the other at anything — and both still post a
+   * twenty-point swing, because the rested arm is played at home and the tired arm on the road.
+   * A swing column read against zero would call both of them elite.
+   */
+  it("sets the swing baseline to the venue offset a team with no skill still posts", () => {
+    const rows = [
+      ...Array.from({ length: 10 }, (_, i) =>
+        game({
+          gameId: i + 1,
+          homeTeamId: 1,
+          awayTeamId: 2,
+          homeScore: i < 6 ? 100 : 90,
+          awayScore: i < 6 ? 90 : 100,
+        })
+      ),
+      ...Array.from({ length: 10 }, (_, i) =>
+        game({
+          gameId: i + 11,
+          homeTeamId: 2,
+          awayTeamId: 1,
+          homeScore: i < 6 ? 100 : 90,
+          awayScore: i < 6 ? 90 : 100,
+        })
+      ),
+    ];
+    const report = buildSeasonReport("2025-26", rows);
+
+    // League: 20 called games, 12 won by the rested home side → 60% against 40% on the road.
+    expect(report.overall.winPct).toBe(60);
+    expect(report.swingBaseline).toBe(20);
+
+    for (const team of report.teams) {
+      expect(team.restedWinPct).toBe(60);
+      expect(team.tiredWinPct).toBe(40);
+      expect(team.swing).toBe(20);
+      // The whole point: identical to the baseline, so the skill on display is zero.
+      expect(team.swing).toBe(report.swingBaseline);
+    }
+  });
+
+  it("has no swing baseline when no game carried a called rest edge", () => {
+    const report = buildSeasonReport("2025-26", [
+      game({ gameId: 1, home: side(1), away: side(1.4) }),
+    ]);
+
+    expect(report.swingBaseline).toBeNull();
+  });
+});

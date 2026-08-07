@@ -19,6 +19,11 @@
 import { addDays, differenceInCalendarDays, format, parseISO } from "date-fns";
 
 import { classifyRestAdvantage, isCalledSide, winPct } from "@/lib/rest-advantage-evidence";
+import {
+  netEdgeGames,
+  scheduleValueWins,
+  type RestStateCounts,
+} from "@/lib/schedule-value";
 
 /**
  * Decidable games below which a season's rest win rate is shown as "too early"
@@ -130,8 +135,33 @@ export interface SeasonReportTeam {
   tiredGames: number;
   tiredWins: number;
   tiredWinPct: number | null;
-  /** restedWinPct − tiredWinPct, one decimal. Null when either arm is empty. */
+  /**
+   * restedWinPct − tiredWinPct, one decimal. Null when either arm is empty.
+   *
+   * **Read against {@link SeasonReport.swingBaseline}, never against zero.** The rested arm is
+   * every game this team played as the fresher side *at home* and the tired arm is every game
+   * it played as the tireder side *on the road* — `isCalledSide` admits no other combination —
+   * so the two arms differ by venue as well as by rest, and a league of teams with no
+   * rest-conversion skill whatsoever still shows a swing of about ten points. Plotting this
+   * against a zero line credits every team with home court, which is the error the venue
+   * baseline was introduced to stop `/analysis` making.
+   */
   swing: number | null;
+  /**
+   * Which side of the rest gap this team was on, at which venue, over every completed game.
+   *
+   * Counted outside the `isCalledSide` filter that gates the two arms above: this describes the
+   * schedule a team was handed, and a game where the visitor held the edge is still a game that
+   * happened. It is what {@link SeasonReportTeam.scheduleValueWins} is computed from.
+   */
+  restStates: RestStateCounts;
+  /** Games where this team held a rest edge, minus games where it faced one, at either venue. */
+  netEdgeGames: number;
+  /**
+   * What those edges were worth, in wins. Schedule luck, not a result — no score is read, so a
+   * 64-win team and a 17-win team handed the same schedule get the same number.
+   */
+  scheduleValueWins: number;
   /** Schedule facts. Counted on every completed game, decidable or not. */
   travelMiles: number;
   backToBacks: number;
@@ -197,6 +227,18 @@ export interface SeasonReport {
   completedGames: number;
   overall: SeasonReportRate;
   atLeastTwo: SeasonReportRate;
+  /**
+   * The swing a team with no rest-conversion skill would still post this season, in percentage
+   * points — the zero line for {@link SeasonReportTeam.swing}.
+   *
+   * Both arms of the swing are the same 605-odd games seen from opposite ends: the rested arm
+   * is the home side of them, the tired arm is the road side. So the league's own swing is
+   * `restedRate − (100 − restedRate)`, and it is almost entirely home court. Computed from the
+   * counts rather than from the rounded `overall.winPct`, for the reason `venueBaseline` states.
+   *
+   * Null when no game this season had a called rest edge.
+   */
+  swingBaseline: number | null;
   teams: SeasonReportTeam[];
   loudestCalls: SeasonReportCall[];
   weeks: SeasonReportWeek[];
@@ -237,7 +279,10 @@ const CALENDAR_BUCKET_DAYS = 7;
  * Mutable accumulator. The percentages and the swing are derived once at the end;
  * `travelMiles` accumulates as a float here and is rounded in the same place.
  */
-type TeamAccumulator = Omit<SeasonReportTeam, "restedWinPct" | "tiredWinPct" | "swing">;
+type TeamAccumulator = Omit<
+  SeasonReportTeam,
+  "restedWinPct" | "tiredWinPct" | "swing" | "netEdgeGames" | "scheduleValueWins"
+>;
 
 function teamEntry(teams: Map<number, TeamAccumulator>, teamId: number): TeamAccumulator {
   const existing = teams.get(teamId);
@@ -249,6 +294,14 @@ function teamEntry(teams: Map<number, TeamAccumulator>, teamId: number): TeamAcc
     restedWins: 0,
     tiredGames: 0,
     tiredWins: 0,
+    restStates: {
+      restedHome: 0,
+      neutralHome: 0,
+      tiredHome: 0,
+      restedRoad: 0,
+      neutralRoad: 0,
+      tiredRoad: 0,
+    },
     travelMiles: 0,
     backToBacks: 0,
     threeInFours: 0,
@@ -311,6 +364,17 @@ export function buildSeasonReport(
     buckets.set(week, bucket);
 
     const { differential, advantageTeam } = classifyRestAdvantage(homeFatigue, awayFatigue);
+
+    // Both sides' rest state, recorded before the call filter below. A game the model declines
+    // to call is still a game the schedule handed both teams, and schedule value is a statement
+    // about the calendar rather than about the model's record on it.
+    const homeState =
+      advantageTeam === "home" ? "restedHome" : advantageTeam === "away" ? "tiredHome" : "neutralHome";
+    const awayState =
+      advantageTeam === "away" ? "restedRoad" : advantageTeam === "home" ? "tiredRoad" : "neutralRoad";
+    teamEntry(teams, row.homeTeamId).restStates[homeState]++;
+    teamEntry(teams, row.awayTeamId).restStates[awayState]++;
+
     // The same boundary /analysis uses, from the same function — this page reports how the
     // rest *call* scored, so a game the model declines is not one of its calls and does not
     // belong in any total here. The schedule-tax accumulation above is deliberately outside
@@ -367,6 +431,11 @@ export function buildSeasonReport(
         restedWinPct === null || tiredWinPct === null
           ? null
           : Math.round((restedWinPct - tiredWinPct) * 10) / 10,
+      netEdgeGames: netEdgeGames(t.restStates),
+      // Two decimals held in the payload, one shown: the figure lives inside ±0.5 for every
+      // team, so rounding it here would collapse a third of the league onto one value before
+      // the UI got a chance to decide how to say so.
+      scheduleValueWins: Math.round(scheduleValueWins(t.restStates) * 100) / 100,
       travelMiles: Math.round(t.travelMiles),
     };
   });
@@ -408,6 +477,10 @@ export function buildSeasonReport(
     completedGames,
     overall: rate(overallWins, overallGames),
     atLeastTwo: rate(tierWins, tierGames),
+    swingBaseline:
+      overallGames === 0
+        ? null
+        : Math.round(((overallWins / overallGames) * 2 - 1) * 1000) / 10,
     teams: teamRows,
     loudestCalls: calls.slice(0, LOUDEST_CALL_COUNT),
     weeks,
