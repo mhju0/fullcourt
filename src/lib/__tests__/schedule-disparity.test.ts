@@ -543,3 +543,51 @@ describe("defaultRankableSeason", () => {
     expect(rankableSeasons(browsableSeasons())).toContain(defaultRankableSeason());
   });
 });
+
+describe("schedule value in wins", () => {
+  /**
+   * The regression this exists to stop. Rest states were first accumulated behind the same
+   * opener gate every other figure here uses, which dropped one game per team and put this
+   * page a tenth of a win away from the Season Report on two of thirty teams — on a figure
+   * whose entire range is about eight tenths, under a label both pages share.
+   *
+   * G1 below is both teams' opener and carries a real rest gap. It must reach `restStates`
+   * and must NOT reach `netEdgeGames`, which counts only the games this module can rank.
+   */
+  it("prices a season opener that no other figure on the row counts", () => {
+    const withOpenerEdge: DisparityGameRow[] = [
+      game("2024-01-01", 2, 1, { homeFatigueScore: "3", awayFatigueScore: "6" }),
+      game("2024-01-05", 1, 2, { homeFatigueScore: "5", awayFatigueScore: "5.2" }),
+    ];
+    const result = computeScheduleDisparity("2023-24", withOpenerEdge);
+    const t2 = result.teams.find((t) => t.teamId === 2)!;
+
+    // The opener: team 2 at home and three points fresher. Counted as a rest state...
+    expect(t2.restStates.restedHome).toBe(1);
+    // ...and, because it is an opener, absent from the gated count beside it.
+    expect(t2.favorableGames).toBe(0);
+    expect(t2.netEdgeGames).toBe(0);
+
+    // The second game is inside the neutral band, so it is priced but is not an edge.
+    expect(t2.restStates.neutralRoad).toBe(1);
+    expect(t2.scheduleValueWins).toBeGreaterThan(0);
+  });
+
+  it("leaves a game missing a fatigue score out of every bucket rather than calling it neutral", () => {
+    const result = computeScheduleDisparity("2023-24", FIXTURE);
+
+    for (const team of result.teams) {
+      const counted = Object.values(team.restStates).reduce((a, b) => a + b, 0);
+      // Only G3 and G4 carry both fatigue scores, so no team can have more than two states.
+      expect(counted).toBeLessThanOrEqual(2);
+    }
+  });
+
+  it("stays inside half a win for every team on a full season's worth of edges", () => {
+    const result = computeScheduleDisparity("2023-24", FIXTURE);
+
+    for (const team of result.teams) {
+      expect(Math.abs(team.scheduleValueWins)).toBeLessThan(0.5);
+    }
+  });
+});

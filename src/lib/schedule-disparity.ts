@@ -27,6 +27,7 @@
 import { NBA_SEASONS } from "@/lib/nba-season";
 import { differenceInCalendarDays, parseISO } from "date-fns";
 import { NEUTRAL_REST_ADVANTAGE_THRESHOLD } from "./rest-advantage-evidence";
+import { scheduleValueWins, type RestStateCounts } from "./schedule-value";
 
 /**
  * A game is a "big edge" at this fatigue gap or more. One tier above the app-wide call
@@ -155,6 +156,25 @@ export interface DisparityTeamRow {
   unfavorableGames: number;
   /** favorableGames − unfavorableGames: the page's headline ranking. */
   netEdgeGames: number;
+  /**
+   * Every scored game split by venue as well as by side, which is what pricing them requires: a
+   * rest edge held at home is worth 1.25 points of win probability and the same edge held on
+   * the road is worth 2.30.
+   *
+   * Counted over a **wider population than every other figure on this row** — see the
+   * `restStates` helper for why, and do not "fix" the inconsistency by moving it behind the
+   * opener gate. That is where it started, and it made this page and the Season Report disagree
+   * about two teams by a tenth of a win.
+   */
+  restStates: RestStateCounts;
+  /**
+   * Those edges priced in wins, through the conversion the Season Report reads too.
+   *
+   * Small for every team by construction: the league distributes rest edges evenly enough that
+   * no season's schedule reaches half a game either way. Copy quoting it needs the per-game
+   * effect beside it, or the size of the number gets taken for the size of the effect.
+   */
+  scheduleValueWins: number;
   /** The ≥ {@link BIG_EDGE_FATIGUE_THRESHOLD} tier of favorableGames. */
   bigFavorableGames: number;
   /** The ≥ 1.5 tier of unfavorableGames. */
@@ -196,6 +216,8 @@ export interface ScheduleDisparityResult {
 
 /** One team's appearance in a game, once rest is known for both sides. */
 interface CountedSide {
+  /** Which end of the game this side played. Rest is priced differently at each. */
+  isHome: boolean;
   restDays: number;
   oppRestDays: number;
   fatigue: number | null;
@@ -293,6 +315,62 @@ function toFatigue(raw: string | null): number | null {
 }
 
 /**
+ * Each team's rest state in every scored game, at the venue it played.
+ *
+ * **Deliberately outside the opener gate that every other figure in this module sits behind.**
+ * That gate exists because a season opener has no previous game and so no defined *rest-days*
+ * differential — but a fatigue score exists for it, the rest gap is measured, and the Season
+ * Report counts it. Excluding it here made the two pages price the same team's schedule a
+ * tenth of a win apart, which is a quarter of the whole range the figure occupies.
+ *
+ * So this is the one population statement shared across the site, and the figures it feeds
+ * agree everywhere. The gated counts above (`favorableGames`, `netEdgeGames`) keep their own
+ * narrower population, which is correct for what they mean: they are counts of games this
+ * module ranks, and it does not rank a game it cannot difference.
+ *
+ * A game missing either fatigue score is absent from every bucket rather than filed as neutral
+ * — "no rest gap" and "no measurement" are different facts and the neutral bucket is priced.
+ */
+function restStates(games: readonly DisparityGameRow[]): Map<number, RestStateCounts> {
+  const byTeam = new Map<number, RestStateCounts>();
+  const entry = (teamId: number): RestStateCounts => {
+    const existing = byTeam.get(teamId);
+    if (existing !== undefined) return existing;
+    const created: RestStateCounts = {
+      restedHome: 0,
+      neutralHome: 0,
+      tiredHome: 0,
+      restedRoad: 0,
+      neutralRoad: 0,
+      tiredRoad: 0,
+    };
+    byTeam.set(teamId, created);
+    return created;
+  };
+
+  for (const g of games) {
+    const home = toFatigue(g.homeFatigueScore);
+    const away = toFatigue(g.awayFatigueScore);
+    if (home === null || away === null) continue;
+
+    // Positive means the home side is the fresher one — the orientation the whole app uses.
+    const differential = away - home;
+    if (differential >= NEUTRAL_REST_ADVANTAGE_THRESHOLD) {
+      entry(g.homeTeamId).restedHome++;
+      entry(g.awayTeamId).tiredRoad++;
+    } else if (differential <= -NEUTRAL_REST_ADVANTAGE_THRESHOLD) {
+      entry(g.homeTeamId).tiredHome++;
+      entry(g.awayTeamId).restedRoad++;
+    } else {
+      entry(g.homeTeamId).neutralHome++;
+      entry(g.awayTeamId).neutralRoad++;
+    }
+  }
+
+  return byTeam;
+}
+
+/**
  * Compute a season's schedule disparity from its regular-season games.
  *
  * Callers must pass exactly one season's games, already filtered to `game_type = 'regular'`.
@@ -378,6 +456,7 @@ export function computeScheduleDisparity(
     const awayFatigue = toFatigue(g.awayFatigueScore);
 
     sides.get(g.homeTeamId)!.push({
+      isHome: true,
       restDays: homeRest,
       oppRestDays: awayRest,
       fatigue: homeFatigue,
@@ -389,6 +468,7 @@ export function computeScheduleDisparity(
       oppIsFourInSix: awayDense.fourInSix,
     });
     sides.get(g.awayTeamId)!.push({
+      isHome: false,
       restDays: awayRest,
       oppRestDays: homeRest,
       fatigue: awayFatigue,
@@ -401,8 +481,18 @@ export function computeScheduleDisparity(
     });
   }
 
+  const restStatesByTeam = restStates(games);
+
   const teams: DisparityTeamRow[] = [];
   for (const [teamId, teamSides] of sides) {
+    const teamRestStates = restStatesByTeam.get(teamId) ?? {
+      restedHome: 0,
+      neutralHome: 0,
+      tiredHome: 0,
+      restedRoad: 0,
+      neutralRoad: 0,
+      tiredRoad: 0,
+    };
     let netRestEdge = 0;
     let netRestEdgeUncapped = 0;
     let fatigueSum = 0;
@@ -462,6 +552,9 @@ export function computeScheduleDisparity(
       favorableGames,
       unfavorableGames,
       netEdgeGames: favorableGames - unfavorableGames,
+      restStates: teamRestStates,
+      // Two decimals held, one displayed — the same reason the Season Report holds two.
+      scheduleValueWins: Math.round(scheduleValueWins(teamRestStates) * 100) / 100,
       bigFavorableGames,
       bigUnfavorableGames,
       gamesWithEdge,

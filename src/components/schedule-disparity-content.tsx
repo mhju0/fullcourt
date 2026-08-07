@@ -10,6 +10,11 @@ import { NEUTRAL_REST_ADVANTAGE_THRESHOLD } from "@/lib/rest-advantage-evidence"
 import { browsableSeasons } from "@/lib/nba-season"
 import { defaultRankableSeason, rankableSeasons } from "@/lib/schedule-disparity"
 import {
+  HOME_COURT_SPAN_PP,
+  REST_SHARE_OF_HOME_COURT,
+  REST_SPAN_PP,
+} from "@/lib/schedule-value"
+import {
   termCardStyle,
   termDashedEmptyStyle,
   termTdStyle,
@@ -309,6 +314,21 @@ export function ScheduleDisparityContent() {
             >
               Full breakdown
             </p>
+            {/* The scale the "worth" column cannot be read without. A rest edge is a real
+                per-game effect and a small one; the column is small because the league hands
+                edges out evenly, not because the effect is nothing. Stating only one of those
+                two facts beside a wins figure is what makes it misread. */}
+            <p
+              data-testid="schedule-worth-scale"
+              className="mt-2"
+              style={{ fontSize: 13, color: "var(--term-text-muted)", maxWidth: "42rem", lineHeight: 1.55 }}
+            >
+              <strong>Worth</strong> prices each edge at what it is measured to be: being the
+              fresher side moves a home team&rsquo;s win probability {REST_SPAN_PP.toFixed(1)}{" "}
+              points, against {HOME_COURT_SPAN_PP.toFixed(1)} for playing at home at all — about{" "}
+              {Math.round(REST_SHARE_OF_HOME_COURT * 100)}% of home court. Spread across a season
+              the league keeps close to even, no schedule is worth half a game either way.
+            </p>
             <div className="mt-3 overflow-x-auto">
               <table className="w-full" style={{ borderCollapse: "collapse" }}>
                 <thead>
@@ -319,6 +339,10 @@ export function ScheduleDisparityContent() {
                     <th style={{ ...termThStyle, textAlign: "right" }}>
                       Net
                       <span style={termThUnitStyle}>games</span>
+                    </th>
+                    <th style={{ ...termThStyle, textAlign: "right" }}>
+                      Worth
+                      <span style={termThUnitStyle}>wins</span>
                     </th>
                     <th style={{ ...termThStyle, textAlign: "right" }}>
                       Fav / Unfav
@@ -365,6 +389,21 @@ export function ScheduleDisparityContent() {
                         }}
                       >
                         {signedNumber(t.netEdgeGames)}
+                      </td>
+                      {/* The same figure the Season Report publishes, from the same conversion
+                          and the same population — the two must never disagree for a team. */}
+                      <td
+                        className="mono"
+                        data-testid="schedule-value-wins"
+                        style={{
+                          ...termTdStyle,
+                          textAlign: "right",
+                          fontVariantNumeric: "tabular-nums",
+                          fontWeight: 700,
+                          color: edgeColor(t.netEdgeGames),
+                        }}
+                      >
+                        {signedNumber(t.scheduleValueWins, 1)}
                       </td>
                       <td
                         className="mono whitespace-nowrap"

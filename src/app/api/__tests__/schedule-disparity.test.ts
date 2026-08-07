@@ -39,6 +39,7 @@ function payload(overrides: Partial<ScheduleDisparityResponse> = {}): ScheduleDi
         favorableGames: 18,
         unfavorableGames: 11,
         netEdgeGames: 7,
+        scheduleValueWins: 0.14,
         bigFavorableGames: 6,
         bigUnfavorableGames: 2,
         backToBackEdge: 3,

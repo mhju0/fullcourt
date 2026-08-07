@@ -76,6 +76,7 @@ async function buildScheduleDisparity(
       favorableGames: t.favorableGames,
       unfavorableGames: t.unfavorableGames,
       netEdgeGames: t.netEdgeGames,
+      scheduleValueWins: t.scheduleValueWins,
       bigFavorableGames: t.bigFavorableGames,
       bigUnfavorableGames: t.bigUnfavorableGames,
       backToBackEdge: t.backToBackEdge,

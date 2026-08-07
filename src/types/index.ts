@@ -360,6 +360,15 @@ export interface ScheduleDisparityTeam {
   unfavorableGames: number;
   /** favorableGames − unfavorableGames — the page's headline ranking. */
   netEdgeGames: number;
+  /**
+   * The same edges priced in wins, through the conversion the Season Report also reads.
+   *
+   * Held to two decimals and displayed to one. It is small for every team by construction —
+   * the league distributes rest edges evenly enough that no schedule reaches half a game — and
+   * copy that quotes it needs the per-game effect beside it (`REST_SHARE_OF_HOME_COURT`), or a
+   * reader takes the size of the number for the size of the effect.
+   */
+  scheduleValueWins: number;
   /** The ≥ 1.5 "big edge" tier of each count. */
   bigFavorableGames: number;
   bigUnfavorableGames: number;

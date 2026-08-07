@@ -132,11 +132,12 @@ export function netEdgeGames(counts: RestStateCounts): number {
  * disadvantage. That is a property of the metric, not a bug to correct: it is why this answers
  * "was the schedule fair" and cannot answer "does rest matter".
  *
- * **Callers decide the population and must say which one they used.** Schedule Disparity counts
- * games where both sides have a defined rest differential (so neither team's season opener);
- * the Season Report counts completed games with both fatigue rows. The two populations differ
- * by a handful of games per team, so the same team can land a hundredth of a win apart on the
- * two pages. Both are displayed to one decimal, where that difference cannot surface.
+ * **Every caller must price the same population: each scored game a team played, at the venue
+ * it played it.** This is not a stylistic preference. Schedule Disparity first counted these
+ * behind the opener gate its other metrics use, which dropped one game per team and moved two
+ * of thirty teams by a tenth of a win against the Season Report — a quarter of the entire range
+ * the figure occupies, on a number both pages label identically. A caller that needs a narrower
+ * set needs a differently-named figure, not this one.
  */
 export function scheduleValueWins(counts: RestStateCounts): number {
   let wins = 0;
