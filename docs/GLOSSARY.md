@@ -50,6 +50,31 @@ carries travel and schedule density. Reported **per game**: the season sum turns
 differences too small to call into figures that look decisive.
 _Avoid_: rest advantage, season fatigue
 
+**Schedule value**:
+What a season's rest edges were worth to a team, in **wins** — each game priced at the win
+probability its rest state is measured to carry against that venue's own baseline, then summed.
+Published on both `/season` and `/schedule` from one conversion (`src/lib/schedule-value.ts`), over
+one population: every scored game a team played, at the venue it played it. Reads no score, so a
+64-win team and a 17-win team handed the same schedule get the same number, and the league total
+is zero by construction. It is small for every team — no season's schedule has reached half a win
+either way — and that is a fact about the **calendar**, not about fatigue: the league distributes
+edges evenly enough that a real per-game effect never accumulates. Quote it only alongside the
+per-game effect it is derived from (a rest edge ≈ 18% of home court), or the size of the number
+gets taken for the size of the effect.
+_Avoid_: expected wins, wins added, rest value — the first two invite an actual-versus-expected
+reading the site deliberately does not publish
+
+**Swing**:
+On the Season Report's rest-edge conversion table, a team's win rate as the fresher side minus its
+win rate as the tireder one. **Its zero line is not zero.** The site calls a rest edge only when
+the rested team is also at home, so the rested arm is entirely home games and the tired arm
+entirely road games — a team with no rest-conversion skill whatsoever still posts about **+10**.
+The page states that baseline (`SeasonReport.swingBaseline`) above the table and diverges the
+column's colour around it. Each season carries its own, because home-court advantage has fallen
+from 67.9% in 1987-88 to 54.3% in 2023-24.
+_Avoid_: rest skill, conversion rate — a swing at or below the baseline is not a deficiency, and
+across four recent seasons the spread of team swings is at or below what coin-flipping predicts
+
 **Availability cost**:
 What a team loses in points of final margin when a rotation player does not play. Absence is inferred from the rotation a team has actually been using — a player who appeared in the last five games at 15+ minutes and is not in tonight's box score — because a long-term-injured player may not be listed at all. **Retrospective by construction:** who sat is known only because the game was played, so it measures what an absence cost and never forecasts availability. Figures live in `src/lib/availability-facts.ts`, pinned by a test against `ml/availability_facts.json`.
 _Avoid_: injury report, injury impact, player availability model — all three imply a forward-looking feed this module does not have

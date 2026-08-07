@@ -488,7 +488,16 @@ The arithmetic runs in a pure TypeScript module rather than in SQL. At one seaso
 the aggregation is negligible, and it makes every metric directly assertable in unit tests
 instead of requiring assertions against generated SQL.
 
-Two definitions deliberately live here rather than being read from `fatigue_scores`:
+**One population is deliberately wider than the rest of the module.** `restStates` — the counts
+that `src/lib/schedule-value.ts` prices into the `Worth (wins)` column — is accumulated over every
+scored game, outside the opener gate every other figure here sits behind. That gate exists because
+a season opener has no previous game and so no rest-*days* differential; but a fatigue score exists
+for it, so the rest gap *is* measured, and the Season Report counts it. Excluding it made the two
+pages price the same team a tenth of a win apart, which is a quarter of the figure's whole range.
+The gated counts keep their narrower population, which is correct for what they mean: they are
+counts of games this module ranks, and it does not rank a game it cannot difference.
+
+Two more definitions deliberately live here rather than being read from `fatigue_scores`:
 
 - **Rest days** are derived from the game dates themselves. `backfill_fatigue.ts` only fills
   games *missing* fatigue rows, so inserting a game into a published schedule leaves its

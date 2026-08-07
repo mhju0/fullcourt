@@ -31,6 +31,13 @@ FullCourt quantifies how **travel, rest, and schedule density** shape NBA outcom
 > **+2.3** points respectively — the part attributable to rest. `/analysis` plots against that
 > baseline for exactly this reason.
 >
+> **Scale, stated the same way for both factors.** Swapping which side is rested moves a home
+> team's win probability **3.6 points**; swapping the venue moves it **19.8**. So a rest edge is
+> worth just under **a fifth of home court** — real, and much smaller than the thing every fan
+> already prices in. Spread across a season the league keeps close to even, that comes to **under
+> half a win** for every team in the league, which `/season` and `/schedule` both publish per team.
+> The small number is a fact about the calendar, not about fatigue.
+>
 > A **44.4% across 7,224 games** figure appears in [ADR 0006](docs/adr/0006-fatigue-weights-were-fitted-and-the-model-was-not-changed.md)
 > and its 2026-08-06 addendum. It is the *2002-03-onward* harness slice, not the published
 > population, and it should not be quoted as the site's figure. `src/lib/rest-split-facts.ts`,
@@ -67,17 +74,17 @@ rate and sample size of its class; matchups the model calls neutral get no claim
 <img src="docs/screenshots/games.png" alt="The Games page for Sunday, April 12, 2026, with a BY DATE / UPCOMING toggle set to BY DATE. Three tiles read 15 games on this date, an average rest advantage of 0.8, and 0 high-confidence games. A Scope panel below holds the 2025-26 season with month buttons from October to April, April selected, and day chips 1 through 12 each captioned with its game count, the 12th selected. A banner reads that the 2025-26 season is complete and the final slate is showing, linking to the full season report. Two matchup cards follow. The first, Brooklyn Nets 101 at Toronto Raptors 136, shows fatigue bars of 3.3 and 4.4 and a rest-advantage panel giving BKN plus 1.1 with a MED CONF badge; because Brooklyn are the rested side and are the visitors, the card reads that the rested team on the road won 42.4% where road teams win 40.1% overall, from 11,548 games. The second, Chicago Bulls 128 at Dallas Mavericks 149, shows fatigue scores of 4.4 and 4.6, is scored EVEN 0.2 with a NEUTRAL badge, and carries no such sentence." width="900" />
 
 **Season Report — one season end to end.** How that year's rest call scored against the
-all-season norm, which teams actually converted a rest edge into wins, and what the schedule cost
-each of them. Every rate is gated on sample size: below 100 decidable games a tile reads
-"too early to call" rather than inventing a verdict.
+all-season norm, **what each team's schedule was worth in wins**, and which teams converted a rest
+edge. Every rate is gated on sample size: below 100 decidable games a tile reads "too early to
+call" rather than inventing a verdict.
 
-<img src="docs/screenshots/season.png" alt="Season Report for 2025-26. A season selector reads 2025-26, above three tiles: RESTED TEAM AT HOME, WIN RATE of 55.2% give or take 4.0 across 605 games; a win rate at RA of 2 or more of 56.9% give or take 5.6 across 297 games; and season progress at 1,230 of 1,230 games, 100% played. A section headed 2025-26 VS HISTORY, captioned that it excludes the displayed season, returns the verdict BELOW THE NORM — 55.2% give or take 4.0 against 61.3% — and explains that the season produced 605 games with the rested team at home, worth about 4 percentage points either way, with a link to the full backtest. Below it, REST EDGE CONVERSION is captioned records, not a ranking, and notes that around 19 games sit behind each arm for a typical team. Its table gives each team’s wins, losses and win% when rested against the same when tired, plus the swing in percentage points: Phoenix leads at plus 35.4 (72% rested against 37% tired), then New York at plus 34.5 (90% against 55%) and Sacramento at plus 34.3 (42% against 8%), down through Boston at plus 13.5." width="900" />
+<img src="docs/screenshots/season.png" alt="Season Report for 2025-26. A season selector reads 2025-26, above three tiles: RESTED TEAM AT HOME, WIN RATE of 55.2% give or take 4.0 across 605 games; a win rate at RA of 2 or more of 56.9% give or take 5.6 across 297 games; and season progress at 1,230 of 1,230 games, 100% played. A section headed 2025-26 VS HISTORY, captioned that it excludes the displayed season, returns the verdict BELOW THE NORM — 55.2% give or take 4.0 against 61.3% — and explains that the season produced 605 games with the rested team at home, worth about 4 percentage points either way, with a link to the full backtest. Below it, WHAT THE SCHEDULE WAS WORTH is captioned schedule luck, not results. It opens with a highlighted callout: being the fresher side moves a home team's win probability by 3.6 points, playing at home instead of away moves it by 19.8, so a rest edge is worth about 18% of home court — real, and far smaller than the thing every fan already accounts for. A paragraph adds that no score is read, that the figure is small for everyone, and that the league spreads rest evenly enough that no schedule is worth half a game either way, linking to how it is priced. A line reads that Utah gained the most at plus 0.4 wins and Boston lost the most at minus 0.3. Its table then gives each team's net rest edge in games against what that was worth in wins: Utah plus 21 and plus 0.4, Cleveland plus 18 and plus 0.3, Washington plus 14 and plus 0.3, then Denver, Chicago, San Antonio, Milwaukee and Philadelphia between plus 12 and plus 9 at plus 0.2, down to Indiana and Atlanta at plus 0.1." width="900" />
 
 **Schedule Disparity — who the schedule favored.** All 30 teams ranked by net edge games,
-drawn from a zero line so the bar length *is* the edge. Positive is favorable in every column on
-the page.
+drawn from a zero line so the bar length *is* the edge, and priced in wins beside it. Positive is
+favorable in every column on the page.
 
-<img src="docs/screenshots/schedule.png" alt="Schedule Disparity for 2025-26, marked final with 1,214 of 1,230 games compared. A summary strip reads most favored plus 21 (Utah Jazz), least favored minus 17 (Boston Celtics), a spread of 38 edge games best to worst, and 942 games with an edge of which 541 were big (1.5+). Below it all 30 teams are ranked as horizontal bars diverging from a zero line, blue to the right for a favorable edge and red to the left for an unfavorable one, from Utah at plus 21 and Cleveland at plus 18, down through Sacramento at exactly zero, to Houston at minus 16 and Boston at minus 17. The two altitude teams sit high — Utah first and Denver fifth at plus 11 — because visitors to thin air carry more fatigue. A header note states the season is final with 1,214 of 1,230 games compared." width="900" />
+<img src="docs/screenshots/schedule.png" alt="Schedule Disparity for 2025-26, marked final with 1,214 of 1,230 games compared. A summary strip reads most favored plus 21 (Utah Jazz), least favored minus 17 (Boston Celtics), a spread of 38 edge games best to worst, and 942 games with an edge of which 541 were big (1.5+). Below it all 30 teams are ranked as horizontal bars diverging from a zero line, blue to the right for a favorable edge and red to the left for an unfavorable one, from Utah at plus 21 and Cleveland at plus 18, down through Sacramento at exactly zero, to Houston at minus 16 and Boston at minus 17. The two altitude teams sit high — Utah first and Denver fifth at plus 11 — because visitors to thin air carry more fatigue. A FULL BREAKDOWN card follows, introduced by a sentence explaining that the Worth column prices each edge at what it is measured to be: being the fresher side moves a home team's win probability 3.6 points against 19.8 for playing at home at all, about 18% of home court, and that spread across a season the league keeps close to even no schedule is worth half a game either way. Its table adds a Worth column in wins beside the net in games — Utah plus 21 and plus 0.4, Cleveland plus 18 and plus 0.3, Washington plus 14 and plus 0.3, down to Atlanta plus 8 and plus 0.1 — alongside favourable/unfavourable counts, big-edge, back-to-back edge and 3-in-4 edge." width="900" />
 
 **Model Results — the full-history backtest behind the headline finding.** Win rate by rest-advantage
 threshold, plotted as the gap against **what that side wins anyway** in percentage points: zero is
@@ -129,17 +136,22 @@ with no time words — the pattern every mainstream NBA nav uses — while the p
   rest-advantage class. Not
   betting advice. (This view is the retired `/upcoming` route, which now redirects here.)
 - **Season Report** (`/season`) — one season read end to end: how the rest call scored that year
-  against the all-season norm, which teams actually converted a rest edge into wins, what the
-  schedule cost each of them, and the nights the league played on zero rest. Honest framing: a
+  against the all-season norm, **what each team's schedule was worth in wins**, which teams
+  converted a rest edge, and the nights the league played on zero rest. Honest framing: a
   single season is a small sample, so every rate tile is gated at a minimum game count and the
-  verdict says "too early to call" rather than inventing one.
+  verdict says "too early to call" rather than inventing one. The rest-edge conversion table is
+  read against a **stated baseline of about +10 points, not against zero** — its rested arm is
+  played at home and its tired arm on the road, so a team with no rest-conversion skill at all
+  still posts a double-digit swing.
 - **Schedule Edge** (`/schedule`) — which teams a season's schedule favored, ranked by **net edge
   games**: games arrived at with a real rest edge, minus games played against one, with
-  back-to-back and short-rest differentials beside it.
+  back-to-back and short-rest differentials beside it, and the same net **priced in wins**.
   Honest framing: it describes the schedule rather than predicting anything, much of the gap is
   structural rather than anyone being favored, and every figure is scoped to its own season —
   season length, team count and the league-wide rest distribution all shifted across four
-  decades, so there is deliberately no all-time ranking.
+  decades, so there is deliberately no all-time ranking. The wins figure never leaves ±0.4 for
+  any team, and that is a fact about the calendar rather than about fatigue: the league hands out
+  rest edges evenly enough that a real per-game effect never accumulates.
 - **Model Results** (`/analysis`) — the historical backtest that scores the rest model: win rate by
   rest-advantage threshold and by season, the half the model declines (a rested visitor), and a
   filterable game explorer.

@@ -75,16 +75,21 @@ added alongside it.
   surface, API, and `/shot-quality` UI. Public data supports location value, not defender- or
   shot-clock-aware quality; see [SHOT_QUALITY_DESIGN.md](SHOT_QUALITY_DESIGN.md).
 - **Schedule Disparity** — which teams a season's schedule favored, ranked by **net edge
-  games** at `/schedule` (the days-based rest edge was retired 2026-07-30). The most isolated module: **read-only**, no migration, no table, no
-  ingest. Every figure is scoped to its own season — there is deliberately no cross-era ranking.
-  Verified against the live database on 2026-07-27. See
-  [the design spec](superpowers/specs/2026-07-27-schedule-disparity-design.md) and
-  [ADR 0001](adr/0001-derive-rest-days-from-games.md).
+  games** at `/schedule` (the days-based rest edge was retired 2026-07-30) and, since 2026-08-07,
+  priced in **wins** through `src/lib/schedule-value.ts`. The most isolated module: **read-only**,
+  no migration, no table, no ingest. Every figure is scoped to its own season — there is
+  deliberately no cross-era ranking. Verified against the live database on 2026-07-27 and again
+  on 2026-08-07. See [the design spec](superpowers/specs/2026-07-27-schedule-disparity-design.md)
+  and [ADR 0001](adr/0001-derive-rest-days-from-games.md).
 - **Season Report** — one season read end to end at `/season`: how the rest call scored that year
-  against the all-season norm, which teams converted a rest edge into wins, what the schedule cost
-  each of them, and the nights the league played on zero rest. A direct nav tab since 2026-07-31,
-  served by `/api/season-report` over `buildSeasonReport`. Every rate tile is gated at a minimum
-  game count and reads "too early to call" rather than inventing a verdict from a small sample.
+  against the all-season norm, **what each team's schedule was worth in wins**, which teams
+  converted a rest edge, and the nights the league played on zero rest. A direct nav tab since
+  2026-07-31, served by `/api/season-report` over `buildSeasonReport`. Every rate tile is gated at
+  a minimum game count and reads "too early to call" rather than inventing a verdict from a small
+  sample. Two things landed 2026-08-07: the wins figure above, and a **baseline for the rest-edge
+  conversion swing**, which had been plotted against zero when its own no-effect line is about
+  +10 — the column's rested arm is played at home and its tired arm on the road, so it was
+  crediting every team with home-court advantage.
 - **Player Shooting** — every player's eFG% on zero rest against three or more days off, at
   `/shooting`, for any season since 1996-97 or pooled across a career. Rest is the player's **own**,
   counted from the games he actually played. Served entirely from the committed

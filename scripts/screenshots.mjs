@@ -15,16 +15,22 @@ const OUT = path.join(fileURLToPath(new URL("..", import.meta.url)), "docs/scree
 
 const PAGES = [
   { file: "games", path: "/", height: 1390 },
-  // 1450 lands just under the last complete REST EDGE CONVERSION row rather than slicing one
-  // in half. The skeleton wait logs a warning on this page: ZeroRestWorkload sits far below
+  // Recut on 2026-08-07: WHAT THE SCHEDULE WAS WORTH landed between VS HISTORY and REST EDGE
+  // CONVERSION, so 1450 sliced the new table mid-row. 1447 is the bottom of its tenth complete
+  // row, and the extremes line above the table carries both ends of the range that ten rows
+  // cannot show. The skeleton wait logs a warning on this page: ZeroRestWorkload sits far below
   // this cut and is still fetching player-rest.json when the timer expires. Harmless here —
   // check the capture, not the warning.
-  { file: "season", path: "/season", height: 1450 },
+  { file: "season", path: "/season", height: 1447 },
   // Raised from 1160 on 2026-08-06: the page lost its "half this model declines" card and
   // gained the baseline frame, so 1160 now slices the season chart in half. This stops after
   // the complete WIN RATE BY SEASON card.
   { file: "analysis", path: "/analysis", height: 1400 },
-  { file: "schedule", path: "/schedule", height: 1320 },
+  // Raised from 1320 on 2026-08-07. The page gained a Worth (wins) column, which lives in the
+  // breakdown table — and 1320 stopped above that table entirely, so the shot showed none of it.
+  // This reaches the scale sentence and the table's first nine complete rows — 1841 is row 9's
+  // bottom edge, and anything between it and 1806 slices that row in half.
+  { file: "schedule", path: "/schedule", height: 1841 },
   // Raised from 1670 on 2026-07-31: the page was rebuilt argument-first (Sections A-D ahead
   // of the bracket), so this now stops after Section C's confound test instead of mid-bracket.
   { file: "playoffs", path: "/playoffs", height: 1965 },
