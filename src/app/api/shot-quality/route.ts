@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { jsonRoute, seasonParam } from "@/lib/api-route";
+import { CACHE, jsonRoute, seasonParam } from "@/lib/api-route";
 import { getShotQualityGrid } from "@/lib/db/queries";
 import type { ShotQualityModelVersion, ShotQualityResponse } from "@/types";
 
@@ -29,5 +29,7 @@ export const GET = jsonRoute(
         totalFga: cells.reduce((sum, c) => sum + c.fga, 0),
       },
     };
-  }
+  },
+  // The grid is rebuilt by the shot-quality pipeline, never by a game going final.
+  CACHE.historical
 );

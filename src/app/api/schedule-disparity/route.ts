@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { jsonRoute } from "@/lib/api-route";
+import { CACHE, jsonRoute } from "@/lib/api-route";
 import { browsableSeasons } from "@/lib/nba-season";
 import { defaultRankableSeason, rankableSeasons } from "@/lib/schedule-disparity";
 import { getScheduleDisparity } from "@/lib/schedule-disparity-server";
@@ -19,8 +19,11 @@ const seasonSchema = z
   .refine((s) => RANKABLE().includes(s), { message: "Unknown season" })
   .default(defaultRankableSeason());
 
+// `historical`, not `inSeason`, because the season list is narrowed to the rankable ones: a
+// truncated season cannot be ranked, so this never serves a season still in progress.
 export const GET = jsonRoute(
   "api/schedule-disparity",
   z.object({ season: seasonSchema }),
-  ({ season }) => getScheduleDisparity(season)
+  ({ season }) => getScheduleDisparity(season),
+  CACHE.historical
 );

@@ -7,9 +7,9 @@
  * messages for one failure, two ways of reading the URL, and a `data` field
  * typed non-null but filled with `null as unknown as T` on every error path.
  *
- * A route now supplies only a Zod schema and the operation. Everything a caller
- * of the HTTP surface must know — how params are read, when it is a 400, what
- * `data` is on failure — lives here.
+ * A route now supplies a Zod schema, the operation, and optionally how long a CDN
+ * may hold the answer. Everything a caller of the HTTP surface must know — how
+ * params are read, when it is a 400, what `data` is on failure — lives here.
  */
 
 import { NextRequest, NextResponse } from "next/server";
@@ -25,6 +25,32 @@ export const seasonParam = z.string().refine((s) => NBA_SEASONS.includes(s), {
 
 /** Minimum absolute rest advantage; absent means "no floor". */
 export const minRAParam = z.coerce.number().finite().min(0).default(0);
+
+/**
+ * What a CDN may do with a **successful** response.
+ *
+ * `s-maxage` is how long the edge serves it without asking again. `stale-while-revalidate` is
+ * how long it may keep serving that stale copy while refreshing in the background, and it is
+ * the half that matters here: it takes the function off the reader's critical path, so a cold
+ * start costs a background refresh instead of a spinner.
+ *
+ * These routes were uncacheable until 2026-08-07 — `force-dynamic` leaves
+ * `max-age=0, must-revalidate`, so every visit executed a function that crossed the Pacific to
+ * reach the database. Combined with traffic too low to keep a lambda warm, 7.8% of invocations
+ * hit the execution-time limit. See `docs/TESTING_AND_CICD.md`.
+ *
+ * A policy is opt-in per route, because the right staleness is a claim about what the data is,
+ * not a default. Live-score routes deliberately have none: they are read through Supabase
+ * Realtime, and an edge-cached score would fight the subscription that corrects it.
+ */
+export const CACHE = {
+  /** Finished tables that only a pipeline run can move — the backtest, a settled season's grid. */
+  historical: "public, s-maxage=3600, stale-while-revalidate=86400",
+  /** Includes the season in progress, where an hour of drift would be visible. */
+  inSeason: "public, s-maxage=300, stale-while-revalidate=3600",
+} as const;
+
+export type CachePolicy = (typeof CACHE)[keyof typeof CACHE];
 
 /** Next passes dynamic segments here; a route with no segments gets nothing. */
 type SegmentContext<P> = { params: Promise<P> };
@@ -50,11 +76,16 @@ async function readInput(
  * Throw {@link PublicApiError} from `operation` to return an authored message
  * with a chosen status (this is how 404 is expressed); every other throw is
  * logged and collapsed to a generic 500 by `getPublicApiErrorMessage`.
+ *
+ * `cache` is applied to the success path only. A cached 500 would outlive the outage that
+ * produced it — for `stale-while-revalidate` measured in hours, long after the database came
+ * back — so every failure path stays uncacheable no matter what the route asked for.
  */
 export function jsonRoute<Schema extends z.ZodType, Data>(
   name: string,
   schema: Schema,
-  operation: (input: z.output<Schema>) => Promise<Data>
+  operation: (input: z.output<Schema>) => Promise<Data>,
+  cache?: CachePolicy
 ) {
   return async function GET(
     req: NextRequest,
@@ -70,7 +101,10 @@ export function jsonRoute<Schema extends z.ZodType, Data>(
     }
 
     try {
-      return NextResponse.json({ data: await operation(parsed.data), error: null });
+      return NextResponse.json(
+        { data: await operation(parsed.data), error: null },
+        cache ? { headers: { "Cache-Control": cache } } : undefined
+      );
     } catch (err) {
       if (err instanceof PublicApiError) {
         return NextResponse.json({ data: null, error: err.message }, { status: err.status });

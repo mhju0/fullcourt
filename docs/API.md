@@ -45,6 +45,30 @@ Routes that touch the DB declare `export const runtime = "nodejs"` and (where ap
 `dynamic = "force-dynamic"` so they aren't prerendered at build (no `DATABASE_URL` needed
 during `next build`) and don't run on Edge (postgres-js needs Node).
 
+### Edge caching (2026-08-07)
+
+`force-dynamic` leaves `Cache-Control: max-age=0, must-revalidate`, so until 2026-08-07 every
+visit executed a function. With traffic too low to keep a lambda warm, 7.8% of invocations hit
+the execution-time limit. Five routes now opt into a policy via `jsonRoute`'s fourth argument
+(`CACHE` in `src/lib/api-route.ts`):
+
+| Policy | Value | Routes |
+|---|---|---|
+| `CACHE.historical` | `public, s-maxage=3600, stale-while-revalidate=86400` | `/api/analysis`, `/api/shot-quality`, `/api/schedule-disparity` |
+| `CACHE.inSeason` | `public, s-maxage=300, stale-while-revalidate=3600` | `/api/season-report`, `/api/playoffs` |
+
+- **`stale-while-revalidate` is the half that fixed it.** The edge serves the stale copy
+  immediately and refreshes behind it, so a cold start costs a background refresh rather than a
+  spinner. `s-maxage` alone would not have done that.
+- **A policy is applied to 2xx only.** A cached 500 would outlive the outage that produced it by
+  up to the `stale-while-revalidate` window. `api-route.test.ts` pins this for 400, 404 and 500.
+- **The live-score routes deliberately have none** — `/api/games/*`, `/api/game/[id]`. They are
+  read alongside a Supabase Realtime subscription, and an edge-cached score would fight the
+  subscription that corrects it. `/api/health` is not a `jsonRoute` and must never be cached.
+- **Adding a policy to a route is a claim about what its data is**, not a performance knob.
+  A route serving a season in progress takes `inSeason`; `historical` is for tables only a
+  pipeline run can move.
+
 **Three product surfaces deliberately have no route in this table**, because nothing about them
 is per-request:
 
