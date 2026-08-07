@@ -6,8 +6,10 @@ import {
   liftOverBaseline,
   RESTED_AT_HOME,
   RESTED_ON_ROAD,
+  RESTED_ON_ROAD_BY_ERA,
   REST_SPLIT_BASELINE,
   REST_SPLIT_SAMPLE,
+  THIN_SAMPLE_GAMES,
 } from "@/lib/rest-split-facts";
 
 /**
@@ -41,6 +43,72 @@ describe("rest split facts mirror the generated measurement", () => {
 
   it("the home-bar counterfactual matches", () => {
     expect(HOME_BAR_COUNTERFACTUAL).toEqual(facts.counterfactual);
+  });
+
+  it("the era rows match, ladders included", () => {
+    expect(RESTED_ON_ROAD_BY_ERA).toEqual(facts.restedOnRoadByEra);
+  });
+});
+
+/**
+ * The era rows exist because two retired claims treated a pooled 41-season rate as timeless.
+ * These pin the shape of the replacement rather than only its values.
+ */
+describe("the road row by era", () => {
+  const [all, last10, last5] = RESTED_ON_ROAD_BY_ERA;
+
+  it("opens on the full population, so the eras are read as a subset of it", () => {
+    expect(all.games).toBe(RESTED_ON_ROAD.games);
+    expect(all.winPct).toBe(RESTED_ON_ROAD.winPct);
+    expect(all.seasons).toBe(REST_SPLIT_SAMPLE.seasons);
+  });
+
+  it("narrows monotonically", () => {
+    expect(last10.games).toBeLessThan(all.games);
+    expect(last5.games).toBeLessThan(last10.games);
+  });
+
+  /**
+   * The finding, and the reason the raw rate alone is not it: the road row has climbed nearly
+   * seven points, and the road baseline climbed with it. Quoting 49.3% without 44.7% beside it
+   * would restate the mistake this whole frame exists to fix.
+   */
+  it("shows the raw rate drifting upward", () => {
+    expect(last10.winPct).toBeGreaterThan(all.winPct);
+    expect(last5.winPct).toBeGreaterThan(last10.winPct);
+  });
+
+  it("shows the baseline drifting with it, which is most of the movement", () => {
+    expect(last10.roadBaselinePct).toBeGreaterThan(all.roadBaselinePct);
+    expect(last5.roadBaselinePct).toBeGreaterThan(last10.roadBaselinePct);
+
+    // Baseline movement accounts for the majority of the raw movement.
+    const rawMove = last5.winPct - all.winPct;
+    const baseMove = last5.roadBaselinePct - all.roadBaselinePct;
+    expect(baseMove).toBeGreaterThan(rawMove / 2);
+  });
+
+  it("states each era's lift against that era's own baseline", () => {
+    for (const era of RESTED_ON_ROAD_BY_ERA) {
+      expect(era.liftPp).toBe(Math.round((era.winPct - era.roadBaselinePct) * 10) / 10);
+    }
+  });
+
+  /**
+   * The specific rung that refuted "no threshold rescues it" in the modern game, and the one
+   * that is thin enough that the page must mute it. Both pinned so neither can drift silently.
+   */
+  it("carries a modern rung above even on a sample worth printing", () => {
+    const rung = last10.ladder.find((r) => r.gap === 4)!;
+
+    expect(rung.winPct).toBeGreaterThan(50);
+    expect(rung.games).toBeGreaterThanOrEqual(THIN_SAMPLE_GAMES);
+  });
+
+  it("marks the last-five rungs at gaps of 4 and 5 as too thin to quote", () => {
+    for (const gap of [4, 5]) {
+      expect(last5.ladder.find((r) => r.gap === gap)!.games).toBeLessThan(THIN_SAMPLE_GAMES);
+    }
   });
 });
 

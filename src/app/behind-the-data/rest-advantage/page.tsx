@@ -13,8 +13,11 @@ import {
   liftOverBaseline,
   RESTED_AT_HOME,
   RESTED_ON_ROAD,
+  RESTED_ON_ROAD_BY_ERA,
   REST_SPLIT_BASELINE,
   REST_SPLIT_SAMPLE,
+  THIN_SAMPLE_GAMES,
+  type RestGapRung,
 } from "@/lib/rest-split-facts";
 import { termTdStyle, termThStyle, termThUnitStyle } from "@/lib/terminal-styles";
 import { signedNumber } from "@/lib/signed-number";
@@ -256,7 +259,7 @@ function RoadLadderTable() {
                   textAlign: "right",
                   // The thin rungs are muted rather than omitted: dropping them is how the
                   // claim they refute survived, and printing them boldly would oversell 26 games.
-                  color: rung.games < 500 ? "var(--term-text-muted)" : undefined,
+                  color: rung.games < THIN_SAMPLE_GAMES ? "var(--term-text-muted)" : undefined,
                 }}
               >
                 {rung.games.toLocaleString()}
@@ -266,7 +269,7 @@ function RoadLadderTable() {
                   ...termTdStyle,
                   textAlign: "right",
                   fontWeight: 700,
-                  color: rung.games < 500 ? "var(--term-text-muted)" : undefined,
+                  color: rung.games < THIN_SAMPLE_GAMES ? "var(--term-text-muted)" : undefined,
                 }}
               >
                 {rung.winPct}%
@@ -275,13 +278,104 @@ function RoadLadderTable() {
                 style={{
                   ...termTdStyle,
                   textAlign: "right",
-                  color: rung.games < 500 ? "var(--term-text-muted)" : undefined,
+                  color: rung.games < THIN_SAMPLE_GAMES ? "var(--term-text-muted)" : undefined,
                 }}
               >
                 {signedNumber(liftOverBaseline(rung.winPct, REST_SPLIT_BASELINE.roadWinPct))}
               </td>
             </tr>
           ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+/**
+ * The road row inside recent eras, each against its own road baseline.
+ *
+ * The raw rate and the baseline are printed side by side because separating them is exactly
+ * the error the retired claims made. 49.3% over the last five seasons looks like rest suddenly
+ * mattering; most of that movement is home court weakening league-wide, and the column that
+ * survives it is the last one.
+ */
+function RoadEraTable() {
+  return (
+    <div className="overflow-x-auto">
+      <table className="mono w-full" style={{ fontSize: 12, borderCollapse: "collapse" }}>
+        <thead>
+          <tr>
+            <th style={termThStyle}>
+              ERA
+              <span style={termThUnitStyle}>SEASONS</span>
+            </th>
+            <th style={{ ...termThStyle, textAlign: "right" }}>
+              GAMES
+              <span style={termThUnitStyle}>COUNT</span>
+            </th>
+            <th style={{ ...termThStyle, textAlign: "right" }}>
+              RESTED ROAD TEAM WON
+              <span style={termThUnitStyle}>WIN RATE</span>
+            </th>
+            <th style={{ ...termThStyle, textAlign: "right" }}>
+              ROAD BASELINE
+              <span style={termThUnitStyle}>THAT ERA</span>
+            </th>
+            <th style={{ ...termThStyle, textAlign: "right" }}>
+              VS BASELINE
+              <span style={termThUnitStyle}>PCT POINTS</span>
+            </th>
+            <th style={{ ...termThStyle, textAlign: "right" }}>
+              BEST RUNG
+              <span style={termThUnitStyle}>GAP · WIN RATE</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {RESTED_ON_ROAD_BY_ERA.map((era) => {
+            // The strongest rung whose sample is worth printing. Picking the highest win rate
+            // regardless of n would put a 36-game bucket in the most prominent column here.
+            const solid = era.ladder.filter((r) => r.games >= THIN_SAMPLE_GAMES);
+            const best = solid.reduce<RestGapRung | null>(
+              (top, r) => (top === null || r.winPct > top.winPct ? r : top),
+              null
+            );
+            return (
+              <tr key={era.label}>
+                <td style={termTdStyle}>
+                  {era.label}{" "}
+                  <span style={{ color: "var(--term-text-muted)" }}>· {era.seasons}</span>
+                </td>
+                <td style={{ ...termTdStyle, textAlign: "right" }}>
+                  {era.games.toLocaleString()}
+                </td>
+                <td style={{ ...termTdStyle, textAlign: "right", fontWeight: 700 }}>
+                  {era.winPct}%
+                </td>
+                <td
+                  style={{
+                    ...termTdStyle,
+                    textAlign: "right",
+                    color: "var(--term-text-muted)",
+                  }}
+                >
+                  {era.roadBaselinePct}%
+                </td>
+                <td style={{ ...termTdStyle, textAlign: "right", fontWeight: 700 }}>
+                  {signedNumber(era.liftPp)}
+                </td>
+                <td
+                  style={{
+                    ...termTdStyle,
+                    textAlign: "right",
+                    color: "var(--term-text-muted)",
+                  }}
+                >
+                  {best ? `≥ ${best.gap} · ${best.winPct}%` : "—"}
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </div>
@@ -359,6 +453,36 @@ restEdge   = awayScore − homeScore     (positive ⇒ the home side is fresher)
           {RESTED_ON_ROAD.ladder[5].games} games in {REST_SPLIT_SAMPLE.seasons} seasons. Read
           them as the schedule running out of examples, not as a signal turning on. The gaps that
           large happen a few dozen times a decade.
+        </Note>
+
+        <Prose>
+          That ladder pools forty-one seasons, and home court has not held still across them —
+          so it is worth asking whether the road row looks the same now as it did in 1987. It
+          does not, and the reason matters more than the movement.
+        </Prose>
+
+        <RoadEraTable />
+
+        <Note>
+          The rested road team has climbed from {RESTED_ON_ROAD_BY_ERA[0].winPct}% to{" "}
+          {RESTED_ON_ROAD_BY_ERA[2].winPct}%, which looks like rest coming to matter more. Most
+          of it is not: the road baseline rose from {RESTED_ON_ROAD_BY_ERA[0].roadBaselinePct}%
+          to {RESTED_ON_ROAD_BY_ERA[2].roadBaselinePct}% over the same span, because home-court
+          advantage has weakened league-wide. What is left after subtracting that is the last
+          column, and it has moved much less —{" "}
+          {signedNumber(RESTED_ON_ROAD_BY_ERA[0].liftPp)} to{" "}
+          {signedNumber(RESTED_ON_ROAD_BY_ERA[2].liftPp)} points.
+        </Note>
+        <Note>
+          This is also why two sentences that used to sit on this page are gone. One said rest
+          never outweighs home court at any magnitude the schedule produces; the other said no
+          threshold rescues a rested road team. Both were absolutes drawn from the pooled rate,
+          and in the last ten seasons a gap of 4 or more puts the road row above even —{" "}
+          {RESTED_ON_ROAD_BY_ERA[1].ladder[2].winPct}% across{" "}
+          {RESTED_ON_ROAD_BY_ERA[1].ladder[2].games} games. That is a real sample, not a tail.
+          It does not make a rested road team a pick, because it still needs a gap the schedule
+          produces rarely and it is measured after the fact — but the absolutes were not true as
+          written, so they are not published.
         </Note>
 
         <Note>

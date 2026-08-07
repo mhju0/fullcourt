@@ -108,5 +108,112 @@
         "winPct": 61.5
       }
     ]
-  }
+  },
+  "restedOnRoadByEra": [
+    {
+      "label": "All seasons",
+      "seasons": 41,
+      "games": 11548,
+      "wins": 4894,
+      "winPct": 42.4,
+      "roadBaselinePct": 40.1,
+      "liftPp": 2.3,
+      "ladder": [
+        {
+          "gap": 2,
+          "games": 4351,
+          "wins": 1889,
+          "winPct": 43.4
+        },
+        {
+          "gap": 3,
+          "games": 2056,
+          "wins": 897,
+          "winPct": 43.6
+        },
+        {
+          "gap": 4,
+          "games": 949,
+          "wins": 443,
+          "winPct": 46.7
+        },
+        {
+          "gap": 5,
+          "games": 342,
+          "wins": 158,
+          "winPct": 46.2
+        }
+      ]
+    },
+    {
+      "label": "Last 10 seasons",
+      "seasons": 10,
+      "games": 3085,
+      "wins": 1470,
+      "winPct": 47.6,
+      "roadBaselinePct": 43.8,
+      "liftPp": 3.8,
+      "ladder": [
+        {
+          "gap": 2,
+          "games": 1131,
+          "wins": 564,
+          "winPct": 49.9
+        },
+        {
+          "gap": 3,
+          "games": 522,
+          "wins": 258,
+          "winPct": 49.4
+        },
+        {
+          "gap": 4,
+          "games": 228,
+          "wins": 117,
+          "winPct": 51.3
+        },
+        {
+          "gap": 5,
+          "games": 68,
+          "wins": 34,
+          "winPct": 50
+        }
+      ]
+    },
+    {
+      "label": "Last 5 seasons",
+      "seasons": 5,
+      "games": 1638,
+      "wins": 807,
+      "winPct": 49.3,
+      "roadBaselinePct": 44.7,
+      "liftPp": 4.6,
+      "ladder": [
+        {
+          "gap": 2,
+          "games": 602,
+          "wins": 314,
+          "winPct": 52.2
+        },
+        {
+          "gap": 3,
+          "games": 274,
+          "wins": 145,
+          "winPct": 52.9
+        },
+        {
+          "gap": 4,
+          "games": 117,
+          "wins": 68,
+          "winPct": 58.1
+        },
+        {
+          "gap": 5,
+          "games": 36,
+          "wins": 21,
+          "winPct": 58.3
+        }
+      ]
+    }
+  ]
 }

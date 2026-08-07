@@ -278,10 +278,17 @@ though they were the site's. Re-measured over the published population by
 
 **"Rest alone never outweighs home court at any magnitude the NBA generates" is retired.** It is
 an absolute resting on a pooled 41-season rate, and the rate has drifted: a rested road team won
-42.4% across all seasons, 47.7% across the last ten, and 49.3% across the last five. Home-court
-advantage has fallen league-wide over the same period — the per-season home win rate runs from
-67.9% in 1987-88 to 54.3% in 2023-24 — so the *lift* may be unchanged while the raw rate moves.
-That is exactly why an absolute was the wrong shape for the claim.
+42.4% across all seasons, 47.6% across the last ten, and 49.3% across the last five.
+
+Home-court advantage fell league-wide over the same period, and that turns out to be most of the
+movement rather than a caveat to it. Each era's own road baseline rose 40.1% → 43.8% → 44.7%, so
+the *lift* — the part attributable to rest — went +2.3 → +3.8 → +4.6. It has grown, but by far
+less than the raw rate, and reading the raw rate alone would have credited rest with a league-wide
+shift in home court. These figures are published on the method page's era table, and generated
+into `ml/rest_split_facts.json` alongside everything else.
+
+*(An earlier draft of this addendum said 47.7% for the last ten. It is 47.6% — 1,470 of 3,085 is
+47.6499, which rounds down. Corrected 2026-08-07.)*
 
 **"No threshold rescues it" is also retired**, for a simpler reason: it is false as written. The
 row reaches even at a gap of 6 and clears it at 7. Both rungs are tiny, and the honest reading is

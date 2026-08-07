@@ -321,6 +321,43 @@ function buildFacts(all: readonly Scored[]) {
 
   const homeWins = all.filter((r) => r.homeWon).length;
 
+  /**
+   * The same road row inside recent eras.
+   *
+   * The pooled 41-season figure is dominated by an era when home-court advantage was far
+   * larger than it is now, so the raw rate drifts on its own. Each era therefore carries its
+   * OWN baseline: the honest question is not "has 42.4% moved" — it has — but "has the gain
+   * over what a road team wins anyway moved", and that is a different answer.
+   */
+  const seasonStarts = [...new Set(all.map((r) => r.seasonStart))].sort((a, b) => a - b);
+  const eraFrom = (n: number) => seasonStarts[Math.max(0, seasonStarts.length - n)];
+
+  const eraRow = (label: string, floor: number) => {
+    const slice = all.filter((r) => r.seasonStart >= floor);
+    const sliceHomeWins = slice.filter((r) => r.homeWon).length;
+    const road = slice.filter(
+      (r): r is Decided => r.restedTeamSide === "away"
+    );
+    const wins = road.filter((r) => r.restedTeamWon).length;
+    const roadBaseline = rate(slice.length - sliceHomeWins, slice.length);
+    return {
+      label,
+      seasons: new Set(slice.map((r) => r.season)).size,
+      games: road.length,
+      wins,
+      winPct: rate(wins, road.length),
+      roadBaselinePct: roadBaseline,
+      liftPp: Math.round((rate(wins, road.length) - roadBaseline) * 10) / 10,
+      ladder: ladder(road, [2, 3, 4, 5]),
+    };
+  };
+
+  const eras = [
+    eraRow("All seasons", seasonStarts[0]),
+    eraRow("Last 10 seasons", eraFrom(10)),
+    eraRow("Last 5 seasons", eraFrom(5)),
+  ];
+
   // "What if home court were folded into the score and the combined number allowed to pick?"
   // — the objection the method page answers. Measured at a 3-point home bar, over EVERY scored
   // game including the neutral ones, which is where its high coverage comes from.
@@ -382,6 +419,7 @@ function buildFacts(all: readonly Scored[]) {
       winPct: rate(awayRested.filter((r) => r.restedTeamWon).length, awayRested.length),
       ladder: ladder(awayRested, [2, 3, 4, 5, 6, 7]),
     },
+    restedOnRoadByEra: eras,
   };
 }
 

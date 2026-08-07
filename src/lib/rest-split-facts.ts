@@ -96,6 +96,93 @@ export const RESTED_ON_ROAD: RestRow = Object.freeze({
   ]),
 });
 
+/** One era's road row, against that era's own road baseline. */
+export interface RestEraRow {
+  label: string;
+  seasons: number;
+  games: number;
+  wins: number;
+  winPct: number;
+  /** That era's own road baseline. Not a constant — home court has fallen league-wide. */
+  roadBaselinePct: number;
+  /** `winPct − roadBaselinePct`. The comparison that survives the drift. */
+  liftPp: number;
+  ladder: readonly RestGapRung[];
+}
+
+/**
+ * The road row inside recent eras, each against its own baseline.
+ *
+ * This exists because the pooled 41-season figure is dominated by an era when home-court
+ * advantage was far larger than it is now, and two claims the site used to publish leaned on
+ * the pooled rate as though it were timeless. Both are retired; this is what replaced them.
+ *
+ * The raw rate has moved a long way — 42.4% to 49.3% — and it would be easy to read that as
+ * rest mattering more. Most of it is not: the road baseline moved with it, 40.1% to 44.7%.
+ * What is left after subtracting that is the lift, and the lift is where the real question is.
+ *
+ * Every era carries its own baseline for the same reason the season chart does. Comparing a
+ * 2024 rate to a 1987 baseline measures the league, not the schedule.
+ */
+export const RESTED_ON_ROAD_BY_ERA: readonly RestEraRow[] = Object.freeze([
+  Object.freeze({
+    label: "All seasons",
+    seasons: 41,
+    games: 11548,
+    wins: 4894,
+    winPct: 42.4,
+    roadBaselinePct: 40.1,
+    liftPp: 2.3,
+    ladder: Object.freeze([
+      Object.freeze({ gap: 2, games: 4351, wins: 1889, winPct: 43.4 }),
+      Object.freeze({ gap: 3, games: 2056, wins: 897, winPct: 43.6 }),
+      Object.freeze({ gap: 4, games: 949, wins: 443, winPct: 46.7 }),
+      Object.freeze({ gap: 5, games: 342, wins: 158, winPct: 46.2 }),
+    ]),
+  }),
+  Object.freeze({
+    label: "Last 10 seasons",
+    seasons: 10,
+    games: 3085,
+    wins: 1470,
+    winPct: 47.6,
+    roadBaselinePct: 43.8,
+    liftPp: 3.8,
+    ladder: Object.freeze([
+      Object.freeze({ gap: 2, games: 1131, wins: 564, winPct: 49.9 }),
+      Object.freeze({ gap: 3, games: 522, wins: 258, winPct: 49.4 }),
+      Object.freeze({ gap: 4, games: 228, wins: 117, winPct: 51.3 }),
+      Object.freeze({ gap: 5, games: 68, wins: 34, winPct: 50 }),
+    ]),
+  }),
+  Object.freeze({
+    label: "Last 5 seasons",
+    seasons: 5,
+    games: 1638,
+    wins: 807,
+    winPct: 49.3,
+    roadBaselinePct: 44.7,
+    liftPp: 4.6,
+    ladder: Object.freeze([
+      Object.freeze({ gap: 2, games: 602, wins: 314, winPct: 52.2 }),
+      Object.freeze({ gap: 3, games: 274, wins: 145, winPct: 52.9 }),
+      Object.freeze({ gap: 4, games: 117, wins: 68, winPct: 58.1 }),
+      Object.freeze({ gap: 5, games: 36, wins: 21, winPct: 58.3 }),
+    ]),
+  }),
+]);
+
+/**
+ * Below this, a rung is printed muted and never quoted in prose.
+ *
+ * Set at 200 rather than higher on purpose. The last-ten rung at a gap of 4 is 228 games and
+ * sits above even — it is the single observation that refutes "no threshold rescues it" in the
+ * modern game, so a cut that hid it would be the same omission that let the claim stand. The
+ * last-five rungs at gaps of 4 and 5 are 117 and 36 games: they read as the most dramatic
+ * numbers in the table and are the least trustworthy in it.
+ */
+export const THIN_SAMPLE_GAMES = 200;
+
 /**
  * The obvious objection, measured: fold home court into the score and let the combined number
  * pick, instead of counting the two rows separately.
