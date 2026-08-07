@@ -323,7 +323,10 @@ export function ScheduleDisparityContent() {
               className="mt-2"
               style={{ fontSize: 13, color: "var(--term-text-muted)", maxWidth: "42rem", lineHeight: 1.55 }}
             >
-              <strong>Worth</strong> prices each edge at what it is measured to be: being the
+              {/* Explicit {" "}: JSX drops a bare space that opens a text node after an
+                  element, so "Worth prices" rendered as "Worthprices". */}
+              <strong>Worth</strong>{" "}
+              prices each edge at what it is measured to be: being the
               fresher side moves a home team&rsquo;s win probability {REST_SPAN_PP.toFixed(1)}{" "}
               points, against {HOME_COURT_SPAN_PP.toFixed(1)} for playing at home at all — about{" "}
               {Math.round(REST_SHARE_OF_HOME_COURT * 100)}% of home court. Spread across a season
