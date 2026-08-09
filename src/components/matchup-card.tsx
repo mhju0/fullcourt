@@ -41,11 +41,10 @@ export function getConfidence(diff: number | null | undefined): Confidence {
 }
 
 function confidenceAccent(c: Confidence): string {
-  if (c === "high") return TERM_ACCENT.red
-  if (c === "med") return TERM_ACCENT.blue
-  // Not tan: against --term-red it measures ΔE 3.2 for deuteranopia (floor 8) and 14.5
-  // for normal vision (floor 15), so a "HIGH CONF" and a "NEUTRAL" card were
-  // indistinguishable at a 2px border. Magnitude is carried by the badge text instead.
+  // Front Office decouples confidence from the data poles: the poles (rose/teal) say
+  // WHO is rested; confidence is chrome emphasis, so HIGH takes the indigo accent and
+  // everything below it stays quiet. Magnitude is carried by the badge text as before.
+  if (c === "high") return TERM_ACCENT.accent
   return TERM_ACCENT.neutral
 }
 
@@ -127,16 +126,22 @@ function ConfidenceBadge({ confidence }: { confidence: Confidence }) {
     fontWeight: 700,
   }
 
+  // The confidence ladder is loudness, not hue (Front Office): filled accent, then an
+  // ink outline, then a hairline outline. The data poles never appear here — a rose
+  // HIGH CONF badge beside a rose fatigue bar read as "fatigued wins", which is backwards.
   if (confidence === "high") {
     return (
-      <span className="mono inline-flex items-center" style={{ ...baseStyle, background: "var(--term-red)", color: "var(--term-surface)" }}>
+      <span className="mono inline-flex items-center" style={{ ...baseStyle, background: "var(--term-accent)", color: "var(--term-surface)" }}>
         {label}
       </span>
     )
   }
   if (confidence === "med") {
     return (
-      <span className="mono inline-flex items-center" style={{ ...baseStyle, background: "var(--term-blue)", color: "var(--term-surface)" }}>
+      <span
+        className="mono inline-flex items-center"
+        style={{ ...baseStyle, background: "transparent", border: "1px solid var(--term-text-dim)", color: "var(--term-text-dim)" }}
+      >
         {label}
       </span>
     )
@@ -641,7 +646,7 @@ export function MatchupCard({
         onClick={toggle}
         onKeyDown={onKeyDown}
         className={cn(
-          "cursor-pointer transition-colors hover:bg-[var(--term-surface-2)] focus-visible:ring-2 focus-visible:ring-[var(--term-blue)]/40",
+          "cursor-pointer transition-colors hover:bg-[var(--term-surface-2)] focus-visible:ring-2 focus-visible:ring-[var(--term-accent)]/40",
           isScoreFlashing && "animate-[scoreFlash_0.5s_ease-out]"
         )}
         style={{ padding: "14px 16px" }}

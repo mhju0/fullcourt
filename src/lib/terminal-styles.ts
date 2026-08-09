@@ -116,4 +116,6 @@ export const TERM_ACCENT = {
   red: "var(--term-red)",
   blue: "var(--term-blue)",
   neutral: "var(--term-neutral)",
+  /** The Front Office indigo — chrome emphasis (confidence, active states), never a data pole. */
+  accent: "var(--term-accent)",
 } as const

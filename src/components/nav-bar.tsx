@@ -66,8 +66,9 @@ export function NavBar() {
               (Space Grotesk, the same face as every page title) with the descriptor demoted to
               a mono tagline behind a hairline rule — the standard analytics-site header shape:
               one mark, one large name, one small qualifier. Two tones, FULL near-black and
-              COURT red, so the name carries the brand accent instead of being flatly red;
-              `aria-label` keeps the accessible name a single "FullCourt home". */}
+              COURT muted (Front Office keeps the poles for data, so the wordmark no longer
+              borrows the fatigued hue); `aria-label` keeps the accessible name a single
+              "FullCourt home". */}
           <Link
             href="/"
             className="flex items-center gap-3 transition-opacity hover:opacity-80"
@@ -79,7 +80,7 @@ export function NavBar() {
               style={{ fontSize: "22px", fontWeight: 700, letterSpacing: "-0.015em", lineHeight: 1 }}
             >
               <span style={{ color: "var(--term-text)" }}>FULL</span>
-              <span style={{ color: "var(--term-red)" }}>COURT</span>
+              <span style={{ color: "var(--term-text-muted)" }}>COURT</span>
             </span>
             <span
               aria-hidden
