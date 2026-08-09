@@ -41,7 +41,7 @@ export default function Error({
         <button
           type="button"
           onClick={reset}
-          className="mono border border-[var(--term-blue)] bg-[var(--term-blue)] px-4 py-2 text-xs font-semibold uppercase tracking-[0.08em] text-[var(--term-surface)] transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--term-blue)]"
+          className="mono border border-[var(--term-accent)] bg-[var(--term-accent)] px-4 py-2 text-xs font-semibold uppercase tracking-[0.08em] text-[var(--term-surface)] transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--term-accent)]"
         >
           Try again
         </button>

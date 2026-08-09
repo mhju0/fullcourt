@@ -238,7 +238,7 @@ function WinRateTooltip({ active, payload }: TooltipContentProps) {
       <p style={{ color: "var(--term-text-muted)", marginTop: 2 }}>WIN RATE: {d.winPct}%</p>
       <p style={{ color: "var(--term-text-muted)", marginTop: 2 }}>{d.games.toLocaleString()} GAMES</p>
       {d.threshold !== undefined && (
-        <p style={{ marginTop: 4, fontSize: 11, color: "var(--term-blue)" }}>CLICK TO EXPLORE ↓</p>
+        <p style={{ marginTop: 4, fontSize: 11, color: "var(--term-accent)" }}>CLICK TO EXPLORE ↓</p>
       )}
     </div>
   )
@@ -488,7 +488,8 @@ function ExploreGames({
             className="mono"
             style={{
               ...exploreSelectStyle,
-              color: "var(--term-red)",
+              // Accent: an in-page action, not the fatigued data pole.
+              color: "var(--term-accent)",
               cursor: "pointer",
               textTransform: "uppercase",
               letterSpacing: "0.06em",
@@ -876,9 +877,11 @@ export function AnalysisContent() {
                 onClick={() => handleSeasonFilterChange(opt.value)}
                 className="mono transition-[background-color,border-color,transform] active:scale-[0.97]"
                 style={{
-                  background: active ? "var(--term-blue)" : "var(--term-surface)",
+                  // Solid ink when active, never the rested-pole teal: the pill selects a
+                  // view of the chart, and only the marks inside it may wear a data pole.
+                  background: active ? "var(--term-text)" : "var(--term-surface)",
                   color: active ? "var(--term-surface)" : "var(--term-text)",
-                  border: `1px solid ${active ? "var(--term-blue)" : "var(--term-border)"}`,
+                  border: `1px solid ${active ? "var(--term-text)" : "var(--term-border)"}`,
                   borderRadius: "var(--term-radius)",
                   padding: "4px 10px",
                   fontSize: 12,
@@ -907,11 +910,13 @@ export function AnalysisContent() {
           style={{
             background: "var(--term-surface)",
             border: "1px solid var(--term-border)",
-            borderLeft: "2px solid var(--term-blue)",
+            // Accent, not the rested-pole teal: the callout is editorial chrome. The teal
+            // inside it stays, because there it colors the data figures themselves.
+            borderLeft: "2px solid var(--term-accent)",
             borderRadius: "var(--term-radius)",
           }}
         >
-          <p className="mono" style={{ fontSize: 11, letterSpacing: "0.12em", color: "var(--term-blue)", fontWeight: 700 }}>
+          <p className="mono" style={{ fontSize: 11, letterSpacing: "0.12em", color: "var(--term-accent)", fontWeight: 700 }}>
             READING THESE NUMBERS
           </p>
           {/* Rewritten with the baseline frame. The previous version called RA ≥ 5 "a

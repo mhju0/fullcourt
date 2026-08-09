@@ -16,7 +16,9 @@ const geist = Geist({
   variable: "--font-geist",
   subsets: ["latin"],
   display: "swap",
-  weight: ["400", "500", "600"],
+  // 700 is loaded for /about, whose display statements set font-bold — without it the
+  // browser synthesizes a faux bold from the 600 face.
+  weight: ["400", "500", "600", "700"],
 });
 
 // The data face. Replaces IBM Plex Mono with the direction's Geist Mono — same

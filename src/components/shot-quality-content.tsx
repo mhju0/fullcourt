@@ -62,19 +62,25 @@ function mix(a: RGB, b: RGB, t: number): string {
   return `rgb(${r} ${g} ${bl})`
 }
 
-// Light-court ramp: endpoints darkened so markers read on the white court,
-// and the diff-neutral lifted to a near-white tone so "no difference"
-// cells recede into the court instead of reading as dark markers.
-const TAN: RGB = hexToRgb("#A16207") // low expected eFG%
-const BLUE: RGB = hexToRgb("#2563EB") // high expected eFG% (and "gbm lower" in diff view)
-const RED: RGB = hexToRgb("#DC2626") // "gbm higher" in diff view
+// Front Office ramps, validated against the white court surface:
+// - Expected eFG% is a magnitude, so its ramp is sequential — ONE hue, light → dark
+//   teal. The old tan→blue ramp put two competing hues on a single scale. The light
+//   end is held at ≥2:1 against the court (a paler low end vanishes into it); the
+//   high end is the theme's deep teal.
+// - The GBM−baseline diff is a polarity, so it diverges through a neutral near-white
+//   midpoint (kept, so "no difference" cells recede into the court): rose for GBM
+//   higher, teal for GBM lower — the app's two data-pole hues.
+const TEAL_LOW: RGB = hexToRgb("#79BDD1") // sequential low end (pale teal)
+const TEAL_HIGH: RGB = hexToRgb("#065F74") // sequential high end (deep teal)
+const ROSE: RGB = hexToRgb("#E11D48") // "gbm higher" in diff view (= --term-red)
+const TEAL: RGB = hexToRgb("#0891B2") // "gbm lower" in diff view (= --term-blue)
 const NEUTRAL: RGB = hexToRgb("#E5E7EB") // diff ≈ 0
 
-/** Sequential expected-eFG% ramp: low → tan, high → blue. `t` already normalized to [0,1]. */
-const seqColor = (t: number): string => mix(TAN, BLUE, clamp01(t))
-/** Divergent GBM−baseline ramp: negative → blue, ~0 → neutral, positive → red. `t` in [-1,1]. */
+/** Sequential expected-eFG% ramp: pale → deep teal. `t` already normalized to [0,1]. */
+const seqColor = (t: number): string => mix(TEAL_LOW, TEAL_HIGH, clamp01(t))
+/** Divergent GBM−baseline ramp: negative → teal, ~0 → neutral, positive → rose. `t` in [-1,1]. */
 const divColor = (t: number): string =>
-  t >= 0 ? mix(NEUTRAL, RED, clamp01(t)) : mix(NEUTRAL, BLUE, clamp01(-t))
+  t >= 0 ? mix(NEUTRAL, ROSE, clamp01(t)) : mix(NEUTRAL, TEAL, clamp01(-t))
 
 // ─── Encoding toggle ───────────────────────────────────────────────
 
@@ -109,7 +115,9 @@ function EncodingToggle({
               style={{
                 fontSize: 12,
                 letterSpacing: "0.05em",
-                background: active ? "var(--term-blue)" : undefined,
+                // Solid ink when active: a view toggle is chrome, and teal now belongs
+                // to the court marks alone.
+                background: active ? "var(--term-text)" : undefined,
                 color: active ? "var(--term-surface)" : "var(--term-text-dim)",
                 border: "1px solid var(--term-border)",
                 borderLeft: i === 0 ? "1px solid var(--term-border)" : "none",
@@ -190,8 +198,9 @@ function HowToRead({
             </p>
             <p>
               Color is what an average shooter earns from that spot:{" "}
-              <span style={{ color: "var(--term-blue)", fontWeight: 600 }}>blue is high-value</span> (rim, corner threes),{" "}
-              <span style={{ color: "var(--term-hardwood)", fontWeight: 600 }}>tan is low-value</span> (long mid-range).
+              {/* The pale low end fails text contrast on white, so only the deep end is
+                  inked — the legend gradient above carries the low half of the scale. */}
+              <span style={{ color: "#065F74", fontWeight: 600 }}>deep teal is high-value</span> (rim, corner threes), pale teal is low-value (long mid-range).
             </p>
             <p style={{ color: "var(--term-text-muted)" }}>
               Both courts show the same shots: BASELINE averages by zone, so it looks blocky; GBM smooths the
@@ -211,8 +220,8 @@ function HowToRead({
           <div className="flex min-w-0 flex-col gap-1" style={{ fontSize: 12.5, lineHeight: 1.55, color: "var(--term-text-dim)" }}>
             <p>One court: where the two models disagree about a spot&apos;s value.</p>
             <p>
-              <span style={{ color: "var(--term-red)", fontWeight: 600 }}>Red: GBM rates it higher</span> than the zone
-              average, <span style={{ color: "var(--term-blue)", fontWeight: 600 }}>blue: lower</span>; pale squares mean
+              <span style={{ color: "var(--term-red)", fontWeight: 600 }}>Rose: GBM rates it higher</span> than the zone
+              average, <span style={{ color: "var(--term-blue)", fontWeight: 600 }}>teal: lower</span>; pale squares mean
               the models agree.
             </p>
             <p style={{ color: "var(--term-text-muted)" }}>

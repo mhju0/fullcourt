@@ -69,7 +69,8 @@ function StatSummaryRow({
           auto-selects the most recent date with games whenever today has none. */}
       <StatCard label="GAMES ON THIS DATE" value={String(gamesToday)} accent="var(--term-neutral)" />
       <StatCard label="AVG REST ADV" value={avgRestAdv} accent="var(--term-neutral)" />
-      <StatCard label="HIGH CONF GAMES" value={String(highConfGames)} accent="var(--term-red)" />
+      {/* Accent, not a data pole: HIGH CONF is confidence chrome, same as the badge. */}
+      <StatCard label="HIGH CONF GAMES" value={String(highConfGames)} accent="var(--term-accent)" />
     </div>
   )
 }
@@ -180,7 +181,7 @@ function OffSeasonBanner({ season }: { season: string }) {
       <a
         href="/season"
         className="transition-colors hover:underline"
-        style={{ fontSize: 12, letterSpacing: "0.04em", color: "var(--term-blue)", fontWeight: 700 }}
+        style={{ fontSize: 12, letterSpacing: "0.04em", color: "var(--term-accent)", fontWeight: 700 }}
       >
         SEE THE FULL SEASON REPORT →
       </a>
@@ -217,8 +218,10 @@ function DateChip({
         // different widths. 15 is the most games a 30-team league can play in a day,
         // and that longest line measures 55px, so 60px fits every case with room.
         "mono flex w-[3.75rem] flex-col items-center border border-[var(--term-border)] px-2 py-1.5 transition-[transform,background-color,border-color] active:scale-[0.97]",
+        // Selected = a solid ink block (the 08-front-office mock's .dchip.on), not the
+        // rested-pole teal: teal is a data color, and a chip is chrome.
         selected
-          ? "border-l-2 border-l-[var(--term-blue)] bg-[var(--term-blue)] text-[var(--term-surface)]"
+          ? "border-[var(--term-text)] bg-[var(--term-text)] text-[var(--term-surface)]"
           : "bg-[var(--term-surface)] text-[var(--term-text)] hover:border-[var(--term-blue)]"
       )}
       style={{ borderRadius: "var(--term-radius)" }}
@@ -226,7 +229,8 @@ function DateChip({
       <span className="tabular-nums" style={{ fontSize: 14, fontWeight: 700, lineHeight: 1.1 }}>
         {day}
       </span>
-      <span className="tabular-nums" style={{ fontSize: 10, color: selected ? "rgba(10,11,13,0.62)" : "var(--term-text-muted)" }}>
+      {/* #B7BBC6 is the mock's .dchip.on count line — muted light gray on the ink fill. */}
+      <span className="tabular-nums" style={{ fontSize: 10, color: selected ? "#B7BBC6" : "var(--term-text-muted)" }}>
         {count} {count === 1 ? "GM" : "GMS"}
       </span>
     </button>
@@ -347,12 +351,12 @@ export default function HomePage() {
               termBtn,
               "shrink-0 active:scale-[0.97]",
               view === id
-                ? "bg-[var(--term-blue)] text-[var(--term-surface)] hover:bg-[var(--term-blue)]"
+                ? "bg-[var(--term-text)] text-[var(--term-surface)] hover:bg-[var(--term-text)]"
                 : "text-[var(--term-text)]"
             )}
             style={{
               ...termBtnStyle,
-              borderColor: view === id ? "var(--term-blue)" : "var(--term-border)",
+              borderColor: view === id ? "var(--term-text)" : "var(--term-border)",
             }}
           >
             {label}
@@ -409,12 +413,12 @@ export default function HomePage() {
                         termBtn,
                         "shrink-0 active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-40 disabled:active:scale-100",
                         isSelected
-                          ? "bg-[var(--term-blue)] text-[var(--term-surface)] hover:bg-[var(--term-blue)]"
+                          ? "bg-[var(--term-text)] text-[var(--term-surface)] hover:bg-[var(--term-text)]"
                           : "text-[var(--term-text)]"
                       )}
                       style={{
                         ...termBtnStyle,
-                        borderColor: isSelected ? "var(--term-blue)" : "var(--term-border)",
+                        borderColor: isSelected ? "var(--term-text)" : "var(--term-border)",
                       }}
                     >
                       {label.toUpperCase()}

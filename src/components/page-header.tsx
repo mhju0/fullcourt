@@ -21,7 +21,7 @@ export function PageHeader({
     <div className="flex flex-col gap-1.5">
       <span
         className="mono"
-        style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-red)", fontWeight: 600 }}
+        style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-accent)", fontWeight: 600 }}
       >
         {eyebrow}
       </span>

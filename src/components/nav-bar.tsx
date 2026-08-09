@@ -63,7 +63,7 @@ export function NavBar() {
               Sized as a logotype rather than as chrome text (2026-07-30). At 11px mono it was
               smaller than the tabs beneath it, so the one element that names the product read
               as the least important thing in the header. It is now 22px in the display face
-              (Space Grotesk, the same face as every page title) with the descriptor demoted to
+              (the same face as every page title) with the descriptor demoted to
               a mono tagline behind a hairline rule — the standard analytics-site header shape:
               one mark, one large name, one small qualifier. Two tones, FULL near-black and
               COURT muted (Front Office keeps the poles for data, so the wordmark no longer

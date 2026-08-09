@@ -41,10 +41,15 @@ function CourtSplit({ className = "" }: { className?: string }) {
         </linearGradient>
       </defs>
       <rect x="8" y="8" width="224" height="134" rx="4" fill="none" stroke={BONE} strokeOpacity=".28" strokeWidth="2" />
-      <path d="M8 8 H150 L96 142 H8 Z" fill="#2563EB" fillOpacity=".13" />
-      <path d="M150 8 H232 V142 H96 Z" fill="#DC2626" fillOpacity=".08" />
+      {/* The two data poles, dark-tuned: teal = rested, rose = fatigued. Same hues the app
+          charts use, re-stepped for this ink ground (the light-tuned tokens sit outside the
+          dark lightness band) and validated as a pair against #0B0D10. */}
+      <path d="M8 8 H150 L96 142 H8 Z" fill="#0E9CBE" fillOpacity=".13" />
+      <path d="M150 8 H232 V142 H96 Z" fill="#F43F5E" fillOpacity=".08" />
       <path d="M150 8 L96 142" stroke="url(#fc-court-split)" strokeWidth="2.5" strokeLinecap="round" />
-      <circle cx="120" cy="75" r="22" fill="none" stroke="#A16207" strokeOpacity=".7" strokeWidth="2" />
+      {/* Quiet slate (the app's non-data chrome slot), not the retired Broadcast amber:
+          the center circle is decoration and must not read as a third data hue. */}
+      <circle cx="120" cy="75" r="22" fill="none" stroke="#4C5361" strokeOpacity=".7" strokeWidth="2" />
     </svg>
   );
 }
@@ -55,8 +60,9 @@ function CourtSplit({ className = "" }: { className?: string }) {
  * surface cards with a preview rather than decoration, so the glyph is wayfinding.
  */
 function SurfaceGlyph({ href }: { href: string }) {
-  const blue = "#2563EB";
-  const red = "#DC2626";
+  // Dark-tuned data poles (teal = rested, rose = fatigued) — see CourtSplit.
+  const blue = "#0E9CBE";
+  const red = "#F43F5E";
   const line = "rgba(245,241,232,.22)";
   const common = { viewBox: "0 0 120 56", className: "w-full", "aria-hidden": true as const };
 
@@ -287,7 +293,7 @@ export function AboutContent({ stats }: { stats: AboutStats | null }) {
         <div
           aria-hidden="true"
           className="absolute inset-0"
-          style={{ background: "radial-gradient(ellipse 65% 55% at 50% 42%, rgba(37,99,235,.16) 0%, transparent 60%), radial-gradient(ellipse 50% 40% at 78% 78%, rgba(161,98,7,.12) 0%, transparent 65%)" }}
+          style={{ background: "radial-gradient(ellipse 65% 55% at 50% 42%, rgba(14,156,190,.16) 0%, transparent 60%), radial-gradient(ellipse 50% 40% at 78% 78%, rgba(244,63,94,.12) 0%, transparent 65%)" }}
         />
         <CourtSplit className="pointer-events-none absolute left-1/2 top-1/2 w-[min(80rem,140%)] -translate-x-1/2 -translate-y-1/2 opacity-[0.13]" />
 
@@ -345,7 +351,9 @@ export function AboutContent({ stats }: { stats: AboutStats | null }) {
           <div className="fc-rise">
             <span
               className="font-heading block font-bold"
-              style={{ fontSize: "clamp(5rem,15vw,11rem)", lineHeight: 0.85, letterSpacing: "-0.04em", color: "#7FA9FF" }}
+              // The rested pole as display text: brighter than the mark-tuned #0E9CBE so a
+              // headline numeral keeps headline contrast (~8:1 on this ground).
+              style={{ fontSize: "clamp(5rem,15vw,11rem)", lineHeight: 0.85, letterSpacing: "-0.04em", color: "#2CB6D9" }}
             >
               {stats ? signedNumber(stats.widestEdgePp, 1) : NO_FIGURE}
             </span>
@@ -368,7 +376,9 @@ export function AboutContent({ stats }: { stats: AboutStats | null }) {
               </p>
             </div>
             <div className="fc-rise" style={{ borderTop: "1px solid rgba(245,241,232,.14)", paddingTop: "1.5rem" }}>
-              <span className="font-heading font-bold" style={{ fontSize: "clamp(2rem,4vw,3rem)", lineHeight: 1, color: "#E0A340" }}>
+              {/* Same quantity as the hero figure (edge over the venue baseline), so the same
+                  rested-pole display teal — the old amber was Broadcast accent, now retired. */}
+              <span className="font-heading font-bold" style={{ fontSize: "clamp(2rem,4vw,3rem)", lineHeight: 1, color: "#2CB6D9" }}>
                 {stats ? signedNumber(stats.overallEdgePp, 1) : NO_FIGURE}
               </span>
               <p className="mt-3 max-w-[46ch]" style={{ color: DIM, lineHeight: 1.6 }}>

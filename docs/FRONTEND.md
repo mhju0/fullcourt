@@ -5,16 +5,18 @@ the actual code (`src/app/`, `src/components/`, `src/app/globals.css`).
 
 ## App shell — `src/app/layout.tsx`
 
-- Fonts via `next/font/google`: **Inter** (`--font-inter`, weights 400/500/600 — body/sans),
-  **Space Grotesk** (`--font-space-grotesk`, weights 400/500/600/700 — headings, exposed as the
-  `font-heading` utility), and **IBM Plex Mono** (`--font-plex-mono`, weights 400/600/700 — all
-  data, labels and chart ticks). `<html>` gets all three font variables + `antialiased`.
-  - **Space Grotesk replaced Outfit (2026-07-28).** Outfit is geometric and reads heavy at the
-    sizes headings actually use — the page title carried the same visual weight as the stat
-    numbers below it. Space Grotesk sets a lighter line, so the base heading weight dropped
-    `font-bold` → `font-medium` in the same change. Outfit is **still bundled** under
-    `src/app/fonts/` for the OG card: that wordmark is a fixed brand asset, and a logotype does
-    not have to share the UI's display face. It is no longer downloaded by the client.
+- Fonts via `next/font/google`: **Geist** (`--font-geist`, weights 400/500/600 — body AND
+  headings; `--font-sans` and `--font-heading` both resolve to it) and **Geist Mono**
+  (`--font-geist-mono`, weights 400/600/700 — all data, labels and chart ticks, via `.mono`).
+  `<html>` gets both font variables + `antialiased`.
+  - **One family for body and headings (Front Office, 2026-08-09).** Titles separate from
+    prose by *weight*, not by face: the base heading rule in `globals.css` is `font-semibold`
+    (600), which distinguishes a title without the heavy line 700 sets. This retired Inter
+    (body) and **Space Grotesk** (display) from the UI, and IBM Plex Mono gave way to Geist
+    Mono — the same tabular discipline, one voice with the UI face. **Outfit is still
+    bundled** under `src/app/fonts/` for the OG card: that wordmark is a fixed brand asset,
+    and a logotype does not have to share the UI's display face. It is not downloaded by the
+    client.
 - Metadata: title default `"FullCourt — NBA Analytics"`, template `"%s · FullCourt"`, plus
   a description.
 - Layout: `<NavBar />` (sticky), `<main>` with a centered `max-w-7xl` container
@@ -85,7 +87,12 @@ upcoming October date at season start; else nearest / last available).
   disabled at `dayCount === 0`) and **Day** (`DateChip`s pre-formatted by the hook, plus the
   prev/next arrows). The old "DAYS WITH GAMES" caption is gone: the group is labelled, and each
   chip states its own count;
-  prev/next day arrows; the `MatchupCard` list with skeleton/empty/error states.
+  prev/next day arrows; the matchup slate with skeleton/empty/error states.
+- **The slate renders through `MatchupTable` (`matchup-table.tsx`) since 2026-08-09** — the
+  Front Office table spine: one continuous grid-table of rows rather than a stack of
+  `MatchupCard`s, with the same expand-in-place fatigue detail per game. `MatchupCard` still
+  exports the shared pieces (`ConfidenceBadge`, `FatigueDetailColumn`, `RaBadge`, …) the table
+  and the detail modal consume.
 - The first tile is **"GAMES ON THIS DATE"**, not "GAMES TODAY": its value is
   `mergedGames.length` for the *selected* day, and `pickDefaultGamesDate` deliberately selects
   a non-today date whenever today has no games (the normal case in the off-season).
@@ -295,8 +302,9 @@ height). Order: the claim, the thesis, the evidence, the six surface cards, what
 of, the standard, the way in. The hero carries no buttons: they competed with the single line
 the page opens on. Evidence figures come from `getHistoricalBacktest` via the server page and
 are revalidated daily, because all three were hardcoded and all three had gone stale.
-Headings use `font-bold` (700), not extrabold: `layout.tsx` loads Space Grotesk at
-400/500/600/700, so an 800 request resolved to the 700 face anyway.
+Headings use `font-bold` (700), not extrabold: `layout.tsx` loads Geist at 400/500/600/700
+— the 700 face is carried for this page specifically — so an 800 request resolves to the
+700 face anyway.
 
 Two things on this page are easy to get wrong twice:
 
@@ -441,8 +449,10 @@ alone. It is style, not bias, and the copy says so.
 1. **Brand bar** (52px, `var(--term-surface-2)`, bottom border `var(--term-border)`):
    a `<CourtMark size={34}>` + the wordmark + a hairline rule + `NBA ANALYTICS PLATFORM`
    (mono 10px, muted, hidden below `sm`), wrapped in a link to `/`.
-   The wordmark is **22px Space Grotesk 700**, two-tone — `FULL` in `var(--term-text)`,
-   `COURT` in `var(--term-red)`. It was 11px mono until 2026-07-30, i.e. *smaller than the tabs
+   The wordmark is **22px in the display face (Geist, 700)**, two-tone — `FULL` in
+   `var(--term-text)`, `COURT` in `var(--term-text-muted)`. `COURT` is **muted since
+   2026-08-09**: Front Office keeps the poles for data, so the wordmark no longer borrows the
+   fatigued hue. It was 11px mono until 2026-07-30, i.e. *smaller than the tabs
    beneath it*, so the one element naming the product read as the least important thing in the
    header; it is now sized as a logotype in the same display face as every page title. The
    `aria-label="FullCourt home"` keeps the accessible name one string across the split spans,
@@ -494,8 +504,9 @@ alone. It is style, not bias, and the copy says so.
    `GAMES`, so the disparity tab keeps its qualifier; bare `SHOOTING` means shot location on
    Basketball-Reference and NBA.com, which is `SHOT VALUE`, so the player tab keeps its own. Precise terms (`xeFG%`, `SCHEDULE
    DISPARITY · NET REST EDGE`) stay in the page eyebrows, where context decodes them.
-   The active link gets an amber
-   bottom border (`border-[var(--term-amber)]`) + `text-[var(--term-text)]` and carries
+   The active link gets an accent
+   bottom border (`border-[var(--term-amber)]` — the historical slot, aliasing
+   `--term-accent`) + `text-[var(--term-text)]` and carries
    `aria-current="page"`; inactive links are muted with a hover-to-text transition.
 
 ### `onboarding-guide.tsx`
@@ -509,7 +520,12 @@ is unavailable, the guide still closes for the current page. The responsive pane
 desktop and becomes a scrollable bottom sheet on mobile. Base UI provides the modal semantics,
 focus trap, dismissal, and trigger-focus restoration.
 
-### `matchup-card.tsx` — the core matchup row (broadcast style)
+### `matchup-card.tsx` — the core matchup row
+
+**Since 2026-08-09 the `/` slate renders through `MatchupTable` (`matchup-table.tsx`)**, not a
+stack of these cards — this file remains the home of the shared matchup pieces
+(`ConfidenceBadge`, `FatigueDetailColumn`, `TeamLogo`, `RaBadge`, `getConfidence`) that the
+table and the detail modal import.
 
 White card (`background: var(--term-surface)`, `1px solid var(--term-border)`) topped by a
 team-color band (away | home from `getTeamColors`) with a **2px left-border accent** colored
@@ -537,22 +553,25 @@ by confidence:
   and no truncation can separate them. `/upcoming`'s cell shows the rate, the signed lift, the
   class label and the baseline together for the same reason.
 - `confidenceAccent` returns `TERM_ACCENT` tokens (`src/lib/terminal-styles.ts`): high
-  `.red`, med `.blue`, everything else `.neutral`. **Not `.tan`** — against `--term-red` it
-  measures ΔE 3.2 for deuteranopia (floor 8) and 14.5 for normal vision (floor 15), so a
-  HIGH CONF and a NEUTRAL card were indistinguishable at a 2px border. Confidence is
-  magnitude, and is carried by the badge text rather than a third hue.
+  `.accent`, everything else `.neutral`. **Never a data pole** (2026-08-09) — the poles say
+  *who* is rested, and a rose HIGH CONF badge beside a rose fatigue bar read as "fatigued
+  wins", which is backwards. Confidence is magnitude, and is carried by the badge text and
+  the accent's loudness rather than a hue of its own.
 
 Layout per card: status line (`GameStatusRow` → LIVE/FINAL/UPCOMING + score),
 `away TeamBlock | FatigueBarsBlock | home TeamBlock | RestAdvPanel`, a `MetaStrip`, and a
 click/keyboard-expandable detail grid (two `FatigueDetailColumn`s). Subcomponents:
 - `TeamLogo` — season-aware logo via `getTeamBranding`; falls back to an abbreviation chip on
   error.
-- `FatigueBarsBlock` / `FatigueBarRow` — away + home `FatigueBar`s; the higher score is red
-  (`higher`), the lower blue (`lower`), equal/neutral grey.
+- `FatigueBarsBlock` / `FatigueBarRow` — away + home `FatigueBar`s; the higher score is rose
+  (`higher`), the lower teal (`lower`), equal/neutral grey.
 - `RestAdvPanel` (~180–200px, left divider): `REST ADVANTAGE` label, team abbreviation +
-  value (or `EVEN`), a center-anchored fill bar (home fills right in blue, away fills left in
-  red; fill width = `min(|diff|/5, 1) * 50%`), and a `ConfidenceBadge` (HIGH CONF red /
-  MED CONF blue / LOW CONF and NEUTRAL outlined).
+  value (or `EVEN`), a center-anchored fill bar (fill width = `min(|diff|/5, 1) * 50%`), and a
+  `ConfidenceBadge`. **The fill is always the rested pole** (`--term-blue` teal) whichever
+  side it extends toward — the advantaged team *is* the more-rested team, and direction alone
+  carries home/away; painting the away side rose said "rested team, fatigued color". The badge
+  ladder is loudness, not hue: HIGH CONF is a filled `--term-accent` chip, MED CONF an ink
+  outline, LOW CONF and NEUTRAL a hairline outline.
 - `MetaStrip` — game date plus flag chips: `AWAY/HOME B2B`, `AWAY/HOME 3IN4`, `AWAY/HOME
   4IN6`, `ALT`, `COAST`, `OT`.
 - `FatigueDetailColumn` — GP (30D/7D), back-to-back, 3-in-4, 4-in-6, road streak, travel
@@ -588,9 +607,11 @@ Loaded via `lazyContent` (see below). Mounted by `/`'s UPCOMING view since `/upc
 retired. SWR `/api/games/upcoming?season=<currentDisplaySeason()>&minRA=…`,
 plus a second SWR call to `/api/analysis` for the historical column.
 RA filter pills, an off-season empty state (`OffSeasonEmptyState`), and a table of upcoming
-games with an "edge" badge (home edge blue, away edge red). Rendered in the **broadcast
-style** (`var(--term-surface)` card fill, `1px solid var(--term-border)`, `.mono` labels) —
-consistent with Games / Model Results.
+games with an "edge" badge naming the more-rested side — **always the rested-pole teal**
+(2026-08-09), whichever venue that side plays at; it was side-colored (home blue / away red),
+which dressed a rested visitor in the fatigued hue. Rendered in the standard card style
+(`var(--term-surface)` fill, `1px solid var(--term-border)`, `.mono` labels) — consistent
+with Games / Model Results.
 
 ### `explore-game-detail-modal.tsx`
 
@@ -743,66 +764,77 @@ does not scroll the page.
 `themeColor`. Add to Home Screen therefore yields a screenshot-of-the-page icon and opens in
 Safari chrome rather than standalone.
 
-## Design system — "Broadcast" (light)
+## Design system — "Front Office" (light)
 
-The app is **light-only** — a daylight broadcast / editorial box-score language: a warm
-off-white paper ground, white cards lifting on hairline borders, near-black text, team colors
-carrying each matchup, monospace data values, a burnt-amber "live" accent, and NBA red/blue kept
-strictly as the **fatigue / rest-advantage data semantics** (red = more fatigued, blue = more
-rested), darkened for legibility on white. `<html>` carries **no** `dark` class and `globals.css`
-sets `color-scheme: light`. Every color flows through the `--term-*` CSS tokens, so reskinning the
-tokens in `globals.css` re-themes the whole app; component code should read tokens, never
-hard-code hexes.
+The app is **light-only** — a front-office data-room language: a cool near-white ground, white
+cards lifting on hairline borders, near-black ink, team colors carrying each matchup, monospace
+data values, one indigo accent carrying every kind of emphasis chrome, and rose/teal kept
+strictly as the **fatigue / rest-advantage data semantics** (rose = more fatigued, teal = more
+rested), tuned for legibility on white. **Selected/active chrome is a solid ink fill** — view
+toggles, month tabs, day chips and filter pills invert to `--term-text` background /
+`--term-surface` text when active, never a data pole. `<html>` carries **no** `dark` class and
+`globals.css` sets `color-scheme: light`. Every color flows through the `--term-*` CSS tokens,
+so reskinning the tokens in `globals.css` re-themes the whole app; component code should read
+tokens, never hard-code hexes.
 
-> **Theme lineage:** "Bloomberg Terminal" (light) → "Broadcast" (dark) → **"Broadcast" (light,
-> current — flipped 2026-07-17 for legibility)**. Each redesign kept the same flat/token
-> architecture and the same components; only token values moved.
+> **Theme lineage:** "Bloomberg Terminal" (light) → "Broadcast" (dark) → "Broadcast" (light,
+> flipped 2026-07-17 for legibility) → **"Front Office" (light, current — adopted 2026-08-09
+> from the round-2 direction mocks in `docs/design/`)**. Each redesign kept the same flat/token
+> architecture and the same components; only token values moved — plus one token added this
+> time, `--term-accent`, which splits emphasis chrome off the blue that used to double as both
+> "primary chrome" and the rested data pole.
 
 ### Color tokens (verified — light values in `globals.css :root`)
 
+Token NAMES are historical slots: `--term-red` holds the fatigued pole, `--term-blue` the
+rested pole, `--term-amber` the accent — whatever hue each currently is. Renaming them would
+touch every consumer for zero rendered change.
+
 | Token / Hex | Role |
 |-------------|------|
-| `--term-bg #FAF9F6` | page background (warm off-white paper) |
+| `--term-bg #F6F7F9` | page background (cool near-white) |
 | `--term-surface #FFFFFF` | card / panel fill (lifts off the page) |
-| `--term-surface-2 #F0EEE9` | stat tiles, inset panels, table headers, hover |
-| `--term-border #E2DED6` | borders / dividers |
-| `--term-hairline #D4CFC5` | subtle inner rules / center markers |
-| `--term-text #111318` | primary text (near-black) |
-| `--term-text-muted #5A626C` | muted / label text |
-| `--term-text-dim #363B42` | secondary text (darker than muted) |
-| `--term-red #DC2626` | high confidence · danger · "higher fatigue" |
-| `--term-blue #2563EB` | primary · med confidence · "lower fatigue" · charts · active data |
-| `--term-hardwood #A16207` | **non-data chrome only** — off-season banners, amber CTA hover |
-| `--term-amber #C2410C` | **live** dot + active nav underline (broadcast accent) |
+| `--term-surface-2 #EFF1F4` | stat tiles, inset panels, table headers, hover |
+| `--term-border #E4E6EB` | borders / dividers |
+| `--term-hairline #D6DAE1` | subtle inner rules / center markers |
+| `--term-text #16181D` | primary text (ink) — also the selected-chrome fill |
+| `--term-text-muted #5D6470` | muted / label text |
+| `--term-text-dim #333845` | secondary text (darker than muted) |
+| `--term-red #E11D48` | **data pole** — rose, "more fatigued"; LOST result text |
+| `--term-blue #0891B2` | **data pole** — teal, "more rested"; RA chips/meters, chart marks |
+| `--term-accent #4F46E5` | **the one accent** — eyebrows, live markers, HIGH CONF, in-page links/CTAs, callout rails |
+| `--term-amber` | aliases `--term-accent` — the historical slot name its consumers still read |
+| `--term-hardwood #4C5361` | **non-data chrome only** — off-season banners, quiet CTA hover |
+| `--term-rail rgba(79,70,229,0.42)` | the accent at partial strength, for grouping rules |
 | `--term-pos #15803D` | win / up |
 | `--term-neutral #6B7280` | neutral semantic / badge outlines |
 
 > On light, "raised" reads as *slightly tinted*, not lighter: `--term-surface` is pure white and
-> `--term-surface-2` steps **down** into warm gray — the inverse of the dark theme's ramp.
+> `--term-surface-2` steps **down** into cool gray — the inverse of the dark theme's ramp.
 
-> Team colors (matchup + upcoming cards) come from `src/lib/nba-team-colors.ts`
+> Team colors (matchup + upcoming rows) come from `src/lib/nba-team-colors.ts`
 > (`getTeamColors(abbr)` → `{ primary, secondary }`, neutral fallback). They are brand chrome
-> only — the top color band, logo chips, and identity dots — and never override the red/blue
+> only — the top color band, logo chips, and identity dots — and never override the rose/teal
 > fatigue semantics. Chip text runs through `readableTextOn(hex)` (same module), which picks
 > `#FFFFFF` or `#111318` by the fill's sRGB luminance — without it, light primaries (SAS
 > `#C4CED4`) would render white-on-white. shadcn semantic tokens in `:root` are set to matching
-> light values (`--background #FAF9F6`, `--foreground #111318`, `--card #FFFFFF`,
-> `--primary #2563EB`, `--destructive #DC2626`, `--accent #A16207`); chart palette
-> `--chart-1..5` = blue / red / hardwood / emerald / violet. **The `--chart-*` palette is
+> light values (`--background #F6F7F9`, `--foreground #16181D`, `--card #FFFFFF`,
+> `--primary #4F46E5`, `--destructive #E11D48`, `--accent #4F46E5`); chart palette
+> `--chart-1..5` = teal / rose / indigo / emerald / violet. **The `--chart-*` palette is
 > shadcn scaffolding that no chart in this app reads** — recharts pulls `--term-*` directly.
-> Do not adopt it without re-measuring: `--chart-5` violet against `--chart-1` blue separates
-> by ΔE 0.4 for deuteranopia. `--term-blue` ↔ `--term-red` is the only pair in the codebase
-> that passes every separation check (ΔE 38.2 normal vision, 29.9 protanopia), which is why
-> the fatigue / rest-advantage semantics stay on exactly those two and nothing is added
-> alongside them.
+> Do not adopt it without re-measuring. `--term-blue` ↔ `--term-red` is a validated pair
+> (worst-adjacent CVD and normal-vision ΔE figures are recorded in the token block comment in
+> `globals.css`, measured on white), which is why the fatigue / rest-advantage semantics stay
+> on exactly those two and nothing is added alongside them.
 
 ### Typography
 
-- **Body / sans:** Inter (`--font-inter`).
-- **Headings (`h1–h3`):** Space Grotesk (`--font-heading` / `font-heading` utility), **medium**
-  (500) + tight tracking (`-0.025em`). The base layer in `globals.css` supplies both, so pages
+- **Body / sans:** Geist (`--font-geist`).
+- **Headings (`h1–h3`):** the same Geist (`--font-heading` / `font-heading` utility resolve to
+  it), **semibold** (600) + tight tracking (`-0.025em`) — weight, not a second face, is what
+  separates a title from its prose. The base layer in `globals.css` supplies both, so pages
   set only the size — a page heading should not need to restate weight or family.
-- **Data / labels:** the `.mono` class = `var(--font-plex-mono)` (**IBM Plex Mono**, loaded by
+- **Data / labels:** the `.mono` class = `var(--font-geist-mono)` (**Geist Mono**, loaded by
   `next/font/google` in `layout.tsx`) with a `ui-monospace` fallback, and
   `font-variant-numeric: tabular-nums` applied on the class itself. TS/TSX style objects that
   need the same stack import `MONO_FONT_STACK` from `src/lib/terminal-styles.ts` rather than
@@ -860,15 +892,15 @@ word-shape cues and measurably slows reading past a few words.
 One app-wide indicator, defined once in `globals.css`:
 
 ```css
-:focus-visible { outline: 2px solid var(--term-blue); outline-offset: 2px; }
+:focus-visible { outline: 2px solid var(--term-accent); outline-offset: 2px; }
 ```
 
-`--ring` is a **solid** `#2563EB`. It was `rgba(37, 99, 235, 0.45)` and further halved by an
+`--ring` is a **solid** `#4F46E5`. It was `rgba(37, 99, 235, 0.45)` and further halved by an
 `outline-ring/50` applied to `*`, which composited to 1.97:1 on white — under the 3:1 non-text
 minimum. Components may **reinforce** focus with a ring or a background tint but must not
 replace it: `focus-visible:outline-none` was removed from `matchup-card`, `playoffs-content`,
 `analysis-content` (explorer rows) and `explore-game-detail-modal`. The
-onboarding dialog keeps its explicit amber rings, which are a real visible indicator.
+onboarding dialog keeps its explicit accent rings, which are a real visible indicator.
 
 ### Charts (`analysis-content.tsx`)
 
@@ -916,10 +948,11 @@ solve never arises. Regression tests: `src/components/__tests__/analysis-deviati
 
 ### Card / accent patterns
 
-- Broadcast cards: `var(--term-surface)` fill, `1px solid var(--term-border)`,
+- Cards: `var(--term-surface)` fill, `1px solid var(--term-border)`,
   `var(--term-radius)`. Many add a **2px left-border accent** via `TERM_ACCENT`
-  (`.neutral` default, `.red` for errors/high-confidence, `.blue` for highlights).
-  `TERM_ACCENT` carries `red` / `blue` / `neutral` only; the unused `tan` key was removed.
+  (`.neutral` default, `.red` for errors, `.accent` for high confidence and editorial
+  emphasis). `TERM_ACCENT` carries `red` / `blue` / `neutral` / `accent` — `.red` and `.blue`
+  are the data poles and no longer mark chrome; the unused `tan` key was removed.
 - Uppercase mono labels with wide letter-spacing (`0.04–0.12em`) for "technical" headers.
 - Animations (`globals.css`): `fadeInUp` (card entrance, staggered by `index * 40ms`),
   `scoreFlash` (live-update glow).
@@ -934,10 +967,13 @@ floor(LOC_Y/10)`, 1-ft cells — see `scripts/aggregate_shot_grid.py` in
 `sx`/`sy` helpers (`PX = 12` px/ft, half-court `50 × 47` ft + 1ft padding). `CourtLines` draws
 the boundary, paint, free-throw circle, backboard/rim, restricted-area arc, three-point line
 (two straight corner segments + an arc computed from `asin(22 / 23.75)`), and the center-circle
-arc — all derived geometrically, not hardcoded pixel paths. Color ramps (endpoints
-darkened to read on the white `#FFFFFF` court): sequential tan→blue
-(`#A16207` → `#2563EB`) for expected-eFG%, divergent blue→neutral→red
-(`#2563EB` → `#E5E7EB` → `#DC2626`) for the GBM−baseline diff. The diff-neutral is
+arc — all derived geometrically, not hardcoded pixel paths. Color ramps (Front Office,
+validated against the white `#FFFFFF` court): expected-eFG% is a magnitude, so its ramp is
+**sequential — one hue, light→dark teal** (`#79BDD1` → `#065F74`), with the pale end held at
+≥2:1 contrast against the court so low-value cells stay visible; the GBM−baseline diff is a
+polarity, so it **diverges through a neutral midpoint on the two data poles** — teal → gray →
+rose (`#0891B2` ← `#E5E7EB` → `#E11D48`), rose where GBM rates a spot higher. The old
+tan→blue value ramp put two competing hues on one scale. The diff-neutral is
 near-white so "models agree" cells recede *into* the court (on the dark theme it was a
 near-black `#2A313A` for the same reason).
 

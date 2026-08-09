@@ -112,9 +112,11 @@ export function UpcomingContent() {
               onClick={() => setRaFilter(opt.value)}
               className="mono transition-[background-color,border-color,transform] active:scale-[0.97]"
               style={{
-                background: active ? "var(--term-blue)" : "var(--term-surface)",
+                // Solid ink when active, never the rested-pole teal: the pill is chrome,
+                // and only the table's data marks may wear a pole.
+                background: active ? "var(--term-text)" : "var(--term-surface)",
                 color: active ? "var(--term-surface)" : "var(--term-text)",
-                border: `1px solid ${active ? "var(--term-blue)" : "var(--term-border)"}`,
+                border: `1px solid ${active ? "var(--term-text)" : "var(--term-border)"}`,
                 borderRadius: "var(--term-radius)",
                 padding: "4px 10px",
                 fontSize: 12,
@@ -237,7 +239,11 @@ export function UpcomingContent() {
                       <span
                         className="mono inline-flex items-center"
                         style={{
-                          background: isHomeAdv ? "var(--term-blue)" : "var(--term-red)",
+                          // Always the rested pole: the named team is the more-rested side,
+                          // whichever side it is. Side-coloring painted a rested visitor in
+                          // the fatigued hue — backwards under two-pole semantics (see
+                          // RaBadge in matchup-card.tsx).
+                          background: "var(--term-blue)",
                           color: "var(--term-surface)",
                           fontSize: 11,
                           fontWeight: 700,
