@@ -50,7 +50,7 @@ function confidenceAccent(c: Confidence): string {
 
 // ─── Team logo ───────────────────────────────────────────────────
 
-function TeamLogo({
+export function TeamLogo({
   abbreviation,
   season,
   fallback,
@@ -106,7 +106,7 @@ function TeamLogo({
 
 // ─── Confidence badge ────────────────────────────────────────────
 
-function ConfidenceBadge({ confidence }: { confidence: Confidence }) {
+export function ConfidenceBadge({ confidence }: { confidence: Confidence }) {
   if (confidence === "none") return null
 
   const label =
@@ -296,7 +296,10 @@ function RestAdvPanel({
   const isAwayAdv = advantageTeam === "away"
   const value = Math.abs(restAdvantage?.differential ?? 0).toFixed(1)
   const fillPercent = Math.min(Math.abs(restAdvantage?.differential ?? 0) / 5, 1) * 50
-  const color = isHomeAdv ? "var(--term-blue)" : isAwayAdv ? "var(--term-red)" : "var(--term-text-muted)"
+  // The advantaged team IS the more-rested team, so the fill is always the rested pole;
+  // which side it extends toward carries home/away. Painting the away side in the
+  // fatigued hue said "rested team, fatigued color" — backwards under two-pole semantics.
+  const color = advantageTeam === "neutral" ? "var(--term-text-muted)" : "var(--term-blue)"
 
   return (
     <div className="flex w-[180px] shrink-0 flex-col items-center gap-2 pl-4 sm:w-[200px]" style={{ borderLeft: "1px solid var(--term-border)" }}>
@@ -380,12 +383,8 @@ function RestAdvPanel({
 
 // ─── Metadata strip ──────────────────────────────────────────────
 
-function MetaStrip({ game }: { game: GameResponse }) {
-  const items: string[] = []
-
-  // Game date (no time field on GameResponse — show ISO date in mono).
-  items.push(game.date)
-
+/** The schedule-condition chips a game carries. One list, shared by the card strip and the table sub-row. */
+export function gameFlags(game: GameResponse): string[] {
   const flags: string[] = []
   if (game.awayFatigue?.isBackToBack) flags.push("AWAY B2B")
   if (game.homeFatigue?.isBackToBack) flags.push("HOME B2B")
@@ -396,6 +395,13 @@ function MetaStrip({ game }: { game: GameResponse }) {
   if (game.awayFatigue?.altitudePenalty) flags.push("ALT")
   if (game.awayFatigue?.hasTimeZoneDisplacement) flags.push("JET LAG")
   if (game.awayFatigue?.isOvertimePenalty || game.homeFatigue?.isOvertimePenalty) flags.push("OT")
+  return flags
+}
+
+function MetaStrip({ game }: { game: GameResponse }) {
+  // Game date (no time field on GameResponse — show ISO date in mono).
+  const items: string[] = [game.date]
+  const flags = gameFlags(game)
 
   return (
     <div
@@ -553,7 +559,8 @@ export function RaBadge({
         letterSpacing: "0.06em",
         padding: "2px 7px",
         borderRadius: "var(--term-radius-sm)",
-        background: isHomeAdv ? "var(--term-blue)" : "var(--term-red)",
+        // Always the rested pole: the named team is the more-rested side, whichever side it is.
+        background: "var(--term-blue)",
         color: "var(--term-surface)",
         fontWeight: 700,
       }}

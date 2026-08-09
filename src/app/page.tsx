@@ -4,7 +4,7 @@ import { useMemo, useState } from "react"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
-import { MatchupCard } from "@/components/matchup-card"
+import { MatchupTable } from "@/components/matchup-table"
 import { PageHeader } from "@/components/page-header"
 import { SeasonSelector } from "@/components/season-selector"
 import { UpcomingContentLazy } from "@/components/upcoming-lazy"
@@ -246,7 +246,7 @@ function Matchups({
   evidenceSource,
 }: {
   slate: GameSlate
-  evidenceSource: React.ComponentProps<typeof MatchupCard>["evidenceSource"]
+  evidenceSource: React.ComponentProps<typeof MatchupTable>["evidenceSource"]
 }) {
   switch (slate.status) {
     case "loadingDays":
@@ -264,19 +264,9 @@ function Matchups({
       return <EmptyState label={`on ${slate.selectedLabel?.short ?? "this date"}`} />
 
     case "slateReady":
-      return (
-        <div className="flex flex-col gap-2">
-          {slate.games.map((game, i) => (
-            <MatchupCard
-              key={game.id}
-              game={game}
-              index={i}
-              isScoreFlashing={game.isScoreFlashing}
-              evidenceSource={evidenceSource}
-            />
-          ))}
-        </div>
-      )
+      // The Front Office table spine: one continuous grid-table for the whole slate
+      // (docs/design/mocks/08-front-office.html) instead of a stack of cards.
+      return <MatchupTable games={slate.games} evidenceSource={evidenceSource} />
 
     default: {
       const exhaustive: never = slate.status
