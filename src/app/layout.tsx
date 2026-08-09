@@ -1,36 +1,29 @@
 import type { Metadata, Viewport } from "next";
 import { Analytics } from "@vercel/analytics/next";
-import { IBM_Plex_Mono, Inter, Space_Grotesk } from "next/font/google";
+import { Geist, Geist_Mono } from "next/font/google";
 import { NavBar } from "@/components/nav-bar";
 import { OnboardingGuide } from "@/components/onboarding-guide";
 import "./globals.css";
 
-const inter = Inter({
-  variable: "--font-inter",
+// One family for body AND headings — the Front Office direction (docs/design/
+// mocks/08-front-office.html, adopted 2026-08-09) separates titles from prose by
+// weight, not by face. Replaces Inter (body) + Space Grotesk (display); the base
+// heading weight moves 500 → 600 in globals.css alongside this.
+//
+// Outfit is still bundled under src/app/fonts for the OG card: that wordmark is a
+// fixed brand asset, and a logotype does not have to share the UI's display face.
+const geist = Geist({
+  variable: "--font-geist",
   subsets: ["latin"],
   display: "swap",
   weight: ["400", "500", "600"],
 });
 
-// The display face. Replaces Outfit, whose geometric forms read heavy at the sizes
-// headings actually use — the page title was the same visual weight as its own stat
-// numbers. Space Grotesk carries a lighter colour at the same nominal weight, so the
-// base heading weight drops 700 → 500 in globals.css alongside this.
-//
-// Outfit is still bundled under src/app/fonts for the OG card: that wordmark is a
-// fixed brand asset, and a logotype does not have to share the UI's display face.
-const spaceGrotesk = Space_Grotesk({
-  variable: "--font-space-grotesk",
-  subsets: ["latin"],
-  display: "swap",
-  weight: ["400", "500", "600", "700"],
-});
-
-// The data face. Replaces 'Courier New', which set ~80% of the visible text and has
-// loose metrics and weak tabular figures — the wrong choice for a dense numeric UI.
-// next/font ships with Next.js, so this adds no npm dependency.
-const plexMono = IBM_Plex_Mono({
-  variable: "--font-plex-mono",
+// The data face. Replaces IBM Plex Mono with the direction's Geist Mono — same
+// tabular discipline, one voice with the UI face. Weights mirror what Plex loaded
+// so existing font-semibold/font-bold mono text keeps a real face behind it.
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
   subsets: ["latin"],
   display: "swap",
   weight: ["400", "600", "700"],
@@ -47,7 +40,7 @@ const SITE_DESC =
 // The app is committed light-only (globals.css sets color-scheme: light), so pin the
 // mobile browser chrome to --term-bg instead of letting Safari/Chrome pick a default.
 export const viewport: Viewport = {
-  themeColor: "#FAF9F6",
+  themeColor: "#F6F7F9",
 };
 
 export const metadata: Metadata = {
@@ -85,7 +78,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${spaceGrotesk.variable} ${plexMono.variable} h-full antialiased`}
+      className={`${geist.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col font-sans text-foreground">
         <NavBar />

@@ -6,9 +6,9 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  --font-heading: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-plex-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+  --font-heading: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -47,95 +47,103 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-/* ── FullCourt "Broadcast" theme — LIGHT ─────────────────────────
-   Single light theme, always-on. A daylight broadcast / editorial
-   box-score language: warm off-white paper ground, white cards that
-   lift on hairline borders, near-black text. Team colors carry each
-   matchup; a burnt-amber "live" accent. NBA red/blue survive as the
-   fatigue/rest-advantage data semantics (red = more fatigued,
-   blue = more rested), darkened for legibility on white.
-   Single theme — no toggle (see docs/FRONTEND.md).                  */
+/* ── FullCourt "Front Office" theme — LIGHT ──────────────────────
+   Single light theme, always-on. The daylight pro instrument
+   (docs/design/mocks/08-front-office.html, selected 2026-08-09):
+   cool porcelain ground, white panels on hairline borders, near-black
+   ink, and one indigo accent spent a moment at a time. The data
+   semantics keep their two poles but move hue — rose = more fatigued,
+   teal = more rested (validated pair: worst-adjacent CVD ΔE 16.4,
+   normal-vision 21.4, ≥3:1 on white). Team colors stay chrome.
+   Lineage: Bloomberg light → Broadcast dark → Broadcast light →
+   Front Office light. Single theme — no toggle (see docs/FRONTEND.md). */
 
 :root {
   /* Commit the whole app to light; ignores OS dark preference. */
   color-scheme: light;
 
-  --background: #FAF9F6;
-  --foreground: #111318;
+  --background: #F6F7F9;
+  --foreground: #16181D;
 
   --card: #FFFFFF;
-  --card-foreground: #111318;
+  --card-foreground: #16181D;
 
   --popover: #FFFFFF;
-  --popover-foreground: #111318;
+  --popover-foreground: #16181D;
 
-  /* NBA blue as primary — darkened so it reads on white */
-  --primary: #2563EB;
+  /* Indigo as primary — the Front Office accent, not a data pole */
+  --primary: #4F46E5;
   --primary-foreground: #FFFFFF;
 
-  --secondary: #F0EEE9;
-  --secondary-foreground: #111318;
+  --secondary: #EFF1F4;
+  --secondary-foreground: #16181D;
 
-  --muted: #F0EEE9;
-  --muted-foreground: #5A626C;
+  --muted: #EFF1F4;
+  --muted-foreground: #5D6470;
 
-  /* Hardwood tan as accent — darkened for white */
-  --accent: #A16207;
+  --accent: #4F46E5;
   --accent-foreground: #FFFFFF;
 
-  /* NBA red for destructive / danger — white-legible */
-  --destructive: #DC2626;
+  /* Rose for destructive / danger — white-legible */
+  --destructive: #E11D48;
 
   /* Hairline borders for components (buttons, inputs) on white */
   --border: rgba(0, 0, 0, 0.12);
   --input: rgba(0, 0, 0, 0.14);
   /* Solid, not translucent: at rgba(…,0.45) — and halved again by `outline-ring/50`
      — the focus indicator measured 1.97:1 on white, under the 3:1 non-text minimum. */
-  --ring: #2563EB;
+  --ring: #4F46E5;
 
   /* Sports analytics chart palette (light-tuned) */
-  --chart-1: #2563EB;  /* NBA blue    */
-  --chart-2: #DC2626;  /* NBA red     */
-  --chart-3: #A16207;  /* hardwood    */
-  --chart-4: #15803D;  /* emerald     */
-  --chart-5: #7C3AED;  /* violet      */
+  --chart-1: #0891B2;  /* teal — rested pole  */
+  --chart-2: #E11D48;  /* rose — fatigued pole */
+  --chart-3: #4F46E5;  /* indigo accent        */
+  --chart-4: #15803D;  /* emerald              */
+  --chart-5: #7C3AED;  /* violet               */
 
-  --radius: 0.75rem;
+  --radius: 0.625rem;
 
   --sidebar: #FFFFFF;
-  --sidebar-foreground: #111318;
-  --sidebar-primary: #2563EB;
+  --sidebar-foreground: #16181D;
+  --sidebar-primary: #4F46E5;
   --sidebar-primary-foreground: #FFFFFF;
-  --sidebar-accent: rgba(37, 99, 235, 0.12);
-  --sidebar-accent-foreground: #111318;
+  --sidebar-accent: rgba(79, 70, 229, 0.12);
+  --sidebar-accent-foreground: #16181D;
   --sidebar-border: rgba(0, 0, 0, 0.12);
-  --sidebar-ring: rgba(37, 99, 235, 0.45);
+  --sidebar-ring: rgba(79, 70, 229, 0.45);
 
-  /* FullCourt terminal design tokens — Broadcast light values.
-     Component code reads only these tokens, so the app re-themes here. */
+  /* FullCourt terminal design tokens — Front Office light values.
+     Component code reads only these tokens, so the app re-themes here.
+     Token NAMES are historical slots (see docs/FRONTEND.md): --term-red
+     holds the fatigued pole, --term-blue the rested pole, --term-amber
+     the accent — whatever hue each currently is. */
   /* surfaces & text */
-  --term-bg: #FAF9F6;
+  --term-bg: #F6F7F9;
   --term-surface: #FFFFFF;
-  --term-surface-2: #F0EEE9;
-  --term-border: #E2DED6;
-  --term-hairline: #D4CFC5;
-  --term-text: #111318;
-  --term-text-muted: #5A626C;
-  --term-text-dim: #363B42;
-  /* brand / bar colors — darkened for white legibility */
-  --term-red: #DC2626;
-  --term-blue: #2563EB;
-  --term-hardwood: #A16207;
-  --term-amber: #C2410C;   /* Broadcast "live" / active-tab accent */
+  --term-surface-2: #EFF1F4;
+  --term-border: #E4E6EB;
+  --term-hairline: #D6DAE1;
+  --term-text: #16181D;
+  --term-text-muted: #5D6470;
+  --term-text-dim: #333845;
+  /* data poles — validated on white */
+  --term-red: #E11D48;     /* rose — more fatigued */
+  --term-blue: #0891B2;    /* teal — more rested   */
+  --term-hardwood: #4C5361; /* non-data chrome slot (banners, quiet CTA hover) */
+  /* The one accent. --term-amber is the historical slot name every consumer
+     already reads (live dot, active tab, /shooting group tint); --term-accent
+     is the same value under its real name for new code. */
+  --term-accent: #4F46E5;
+  --term-amber: var(--term-accent);
   /* The accent at partial strength, for grouping rules that must register
      without competing with the data they enclose. */
-  --term-rail: rgba(194, 65, 12, 0.42);
+  --term-rail: rgba(79, 70, 229, 0.42);
   /* semantic */
   --term-pos: #15803D;
   --term-neutral: #6B7280;
   /* radius */
-  --term-radius: 4px;
-  --term-radius-sm: 2px;
+  --term-radius: 8px;
+  --term-radius-sm: 4px;
   --term-radius-bar: 1px;
   /* Height of the sticky chrome: brand bar (52px) + main nav (44px). /about's
      full-viewport sections subtract it, and they overran the fold by exactly this
@@ -165,13 +173,13 @@
 /* Brief glow flash when a live game's score updates */
 @keyframes scoreFlash {
   0% {
-    box-shadow: 0 0 0 0 rgba(201, 8, 42, 0.4);
+    box-shadow: 0 0 0 0 rgba(79, 70, 229, 0.4);
   }
   30% {
-    box-shadow: 0 0 20px 4px rgba(201, 8, 42, 0.25);
+    box-shadow: 0 0 20px 4px rgba(79, 70, 229, 0.25);
   }
   100% {
-    box-shadow: 0 8px 32px rgba(23, 64, 139, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04);
+    box-shadow: 0 8px 32px rgba(22, 24, 29, 0.06), 0 2px 8px rgba(0, 0, 0, 0.04);
   }
 }
 
@@ -207,7 +215,7 @@
      a background tint, but must not replace it — a background change alone measured
      1.16:1 against the row it replaced. */
   :focus-visible {
-    outline: 2px solid var(--term-blue);
+    outline: 2px solid var(--term-accent);
     outline-offset: 2px;
   }
 
@@ -215,14 +223,15 @@
     @apply font-sans font-normal;
   }
 
-  /* Medium, not bold: Space Grotesk sets a darker line than Outfit at the same weight,
-     so 700 read as heavy at every heading size. tracking-tight is Tailwind's -0.025em,
-     which is the tracking this face wants at display sizes anyway. */
+  /* Semibold, not bold: headings share the body face now (Geist, Front Office), so
+     weight is what separates a title from its prose — 600 does that without the
+     heavy line 700 sets. tracking-tight is Tailwind's -0.025em, which Geist wants
+     at display sizes. */
   h1,
   h2,
   h3 {
     font-family: var(--font-heading), ui-sans-serif, system-ui, sans-serif;
-    @apply font-medium tracking-tight;
+    @apply font-semibold tracking-tight;
   }
 
   html, body {
@@ -235,7 +244,7 @@
 }
 
 .mono {
-  font-family: var(--font-plex-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-family: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
   font-variant-numeric: tabular-nums;
 }
 

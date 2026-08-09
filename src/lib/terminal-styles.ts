@@ -58,7 +58,7 @@ export const termSelectStyle: CSSProperties = {
 
 /** The data face, matching the `.mono` class in globals.css. */
 export const MONO_FONT_STACK =
-  "var(--font-plex-mono), ui-monospace, SFMono-Regular, Menlo, monospace"
+  "var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, monospace"
 
 export const termThStyle: CSSProperties = {
   // `th` defaults to centered while `td` defaults to left, so a header sharing this style
