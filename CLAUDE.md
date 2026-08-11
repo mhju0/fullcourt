@@ -64,8 +64,8 @@ while touching branding.
 - **Never run `drizzle-kit push` or `drizzle-kit generate`.** `schema.ts` intentionally lags the
   live DB — `shot_grid` and `shot_value_surface` are read via raw SQL and are absent from it on
   purpose. Never reconcile it.
-- **All schema changes are manual SQL applied by the human** in the Supabase SQL editor. Use the
-  `fullcourt-migration` skill.
+- **All schema changes are manual SQL applied by the human** in the Supabase SQL editor. Write
+  the SQL, hand it over, and wait — never apply it yourself and never assume it was applied.
 - **Python:** no Alembic. New code uses `logging`, not `print()` — every `ml/` script and the
   newer `scripts/sq*` / `aggregate_*` already do; the pipeline scripts (`daily_update.py`,
   `fetch_schedule.py`) still print to the Actions log and are left alone. HTTP goes through stdlib
@@ -157,10 +157,9 @@ Skipping `prepare` fails **silently**: `fatigue_model_table.csv` is already on d
 - [docs/SEASON_ROLLOVER.md](docs/SEASON_ROLLOVER.md) — rollover runbook and data-source matrix
 
 Two more directories exist locally but are **gitignored**, so they are absent from a fresh clone
-and are deliberately not linked above: `docs/agents/` (how the engineering skills consume this
-repo — domain-doc conventions, the `gh` issue-tracker rule, triage labels) and `docs/audit/` (the
-one directory the `fullcourt-audit` skill may write to). Do not add a link to either from a
-committed file.
+and are deliberately not linked above: `docs/agents/` (agent-facing conventions — domain-doc
+rules, the `gh` issue-tracker rule, triage labels) and `docs/audit/` (the one directory an audit
+pass may write to). Do not add a link to either from a committed file.
 
 ## Final report
 
