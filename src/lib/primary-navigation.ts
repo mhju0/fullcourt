@@ -5,8 +5,6 @@ export const DIRECT_NAV_ITEMS = [
     // Deliberately plain: every mainstream NBA nav (ESPN, CBS) uses bare nouns, and the
     // page browses any season's slate — so no time word ("today's") can stay true here.
     label: "GAMES",
-    guideDescription:
-      "Compare each team's fatigue and rest advantage — by date across any season, or ranked by edge for the games ahead.",
   },
   {
     href: "/season",
@@ -14,24 +12,18 @@ export const DIRECT_NAV_ITEMS = [
     // October. Not bare "SEASON": GAMES already browses any season's slate and SCHEDULE EDGE
     // already ranks teams inside one, so the noun alone collides with two tabs we own.
     label: "SEASON REPORT",
-    guideDescription:
-      "Read one season end to end — how the rest call scored, what each team's schedule was worth in wins, and which teams converted a rest edge.",
   },
   {
     href: "/schedule",
     // Not bare "SCHEDULE": on every other sports site that word means a list of games,
     // which is this site's GAMES tab. The qualifier is what blocks the wrong click.
     label: "SCHEDULE EDGE",
-    guideDescription:
-      "See which teams a season's schedule favored, counted in games with a real rest edge and priced in wins.",
   },
   {
     href: "/analysis",
     // Not "HISTORICAL DATA": GAMES already browses history, so that label collided with it,
     // and "data" promises a table dump. This page scores the model, not the games.
     label: "MODEL RESULTS",
-    guideDescription:
-      "Check how the rest model scored against history — threshold win rates, season trends, and individual games.",
   },
   {
     href: "/playoffs",
@@ -41,8 +33,6 @@ export const DIRECT_NAV_ITEMS = [
     // effect the playoffs have — backwards, since the page is about the effect of rest inside
     // them. "REST" is the site's own word and the page is the postseason answer to it.
     label: "PLAYOFF REST",
-    guideDescription:
-      "See what surviving a long series costs a team in the round that follows.",
   },
   {
     href: "/shooting",
@@ -52,8 +42,6 @@ export const DIRECT_NAV_ITEMS = [
     // returns to the bar. Not "PLAYER REST": the rest tab is SCHEDULE EDGE, and colliding
     // with our own vocabulary misroutes worse than colliding with someone else's.
     label: "PLAYER SHOOTING",
-    guideDescription:
-      "Look up any player's shooting on no rest against three days off, season by season.",
   },
 ] as const;
 
@@ -70,8 +58,6 @@ export const OTHER_NAV_ITEMS = [
     href: "/shot-quality",
     // The page's own h1 minus the jargon; "xeFG%" stays in the eyebrow where context decodes it.
     label: "SHOT VALUE",
-    guideDescription:
-      "Map expected shooting efficiency by court location and model version.",
   },
   {
     href: "/availability",
@@ -80,8 +66,6 @@ export const OTHER_NAV_ITEMS = [
     // of what an absence cost, and it has no live lineup data at all. "COST" is the
     // qualifier that blocks the wrong click, the same job "EDGE" does for SCHEDULE EDGE.
     label: "AVAILABILITY COST",
-    guideDescription:
-      "See what losing a rotation player costs, in the same points as the schedule effects.",
   },
   {
     href: "/referees",
@@ -96,12 +80,17 @@ export const OTHER_NAV_ITEMS = [
     // the first-visit guide's "Still being built." on 2026-08-11, when that guide was removed:
     // the warning had to keep a home in navigation rather than disappear with its old one.
     inProgress: true,
-    guideDescription: "Still being built.",
   },
 ] as const;
 
 /**
- * Every primary surface, direct tabs first. Consumers that describe the product rather
- * than draw the bar — the first-visit guide especially — want the whole set, not the split.
+ * Every primary surface, direct tabs first, for consumers that want the whole set rather than
+ * the bar's split of it.
+ *
+ * Each entry is a route and the label the nav draws for it, plus the reasoning for that label —
+ * these names were chosen against each other and against what the same words mean on other
+ * basketball sites, so the comments are the record of why a tab is not called something more
+ * obvious. Entries carried a `guideDescription` sentence until 2026-08-11; the first-visit
+ * guide was the only thing that ever rendered them, and they went when it did.
  */
 export const PRIMARY_NAV_ITEMS = [...DIRECT_NAV_ITEMS, ...OTHER_NAV_ITEMS] as const;
