@@ -175,7 +175,9 @@ back on expand.
 >   zero-line legends, and that the page nowhere says `COIN FLIP` — a regression to a 50%
 >   baseline would credit the model with roughly ten points of home court it did not produce.
 > - **`alignment-law.spec.ts`** — the absolute parts of the alignment law: the page title sits on
->   the container gutter, a `.fc-table` first cell takes no inset of its own, and expanding a
+>   the container gutter, a `.fc-table` first and last cell pad like their neighbours (compared,
+>   never pinned to a literal — and asserted *not* to be zero, so the rule reverted on
+>   2026-08-11 cannot come back unnoticed), and expanding a
 >   `/shooting` row does not shift it sideways. `alignment-audit.spec.ts` beside it only reports,
 >   writing every near-miss edge to `test-results/alignment/report.txt`; its count has a floor it
 >   cannot reach, so do not tune the instrument to improve it.
