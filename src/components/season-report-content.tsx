@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo, useState, type CSSProperties } from "react"
+import { useMemo, useState } from "react"
 import useSWR from "swr"
 import { ExploreGameDetailModal } from "@/components/explore-game-detail-modal"
 import { SeasonSelector } from "@/components/season-selector"
@@ -26,14 +26,8 @@ import {
   REST_SHARE_OF_HOME_COURT,
   REST_SPAN_PP,
 } from "@/lib/schedule-value"
-import {
-  TERM_NUMERIC_TABLE_MAX_WIDTH,
-  termCardStyle,
-  termTdStyle,
-  termThStyle,
-  termThUnitStyle,
-  WIDTH,
-} from "@/lib/terminal-styles"
+import { termCardStyle, WIDTH } from "@/lib/terminal-styles"
+import { DataTable, type DataColumn } from "@/components/ui/data-table"
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts"
 import { signedNumber } from "@/lib/signed-number"
 import { MessageCard } from "@/components/ui/message-card"
@@ -217,24 +211,28 @@ function swingColor(swing: number | null, baseline: number | null): string {
  * all three when the team never played on that side. Wins and losses get their own columns
  * rather than a packed "21-8" so neither number has to be inferred from its position.
  */
-function ArmCells({ wins, games, pct }: { wins: number; games: number; pct: number | null }) {
-  const cell: CSSProperties = { ...termTdStyle, textAlign: "right" }
-  if (pct === null) {
-    return (
-      <>
-        <td style={cell}>—</td>
-        <td style={cell}>—</td>
-        <td style={cell}>—</td>
-      </>
-    )
-  }
-  return (
-    <>
-      <td className="tabular-nums" style={cell}>{wins}</td>
-      <td className="tabular-nums" style={cell}>{games - wins}</td>
-      <td className="tabular-nums" style={cell}>{pct.toFixed(0)}%</td>
-    </>
-  )
+/**
+ * The three columns one arm of the rested/tired split contributes, under a shared group heading.
+ *
+ * Was `ArmCells`, a fragment of three `<td>`s the row spliced in — which meant the header row
+ * and the body row each described this arm separately and could disagree about how many columns
+ * it had. As columns they carry their own headers, so they cannot.
+ */
+function armColumns(
+  group: string,
+  arm: (row: SeasonReportTeamLabelled) => { wins: number; games: number; pct: number | null }
+): DataColumn<SeasonReportTeamLabelled>[] {
+  const of =
+    (pick: (a: { wins: number; games: number; pct: number }) => string | number) =>
+    (row: SeasonReportTeamLabelled) => {
+      const a = arm(row)
+      return a.pct === null ? "—" : pick({ wins: a.wins, games: a.games, pct: a.pct })
+    }
+  return [
+    { group, label: "WINS", numeric: true, cell: of((a) => a.wins) },
+    { group, label: "LOSSES", numeric: true, cell: of((a) => a.games - a.wins) },
+    { group, label: "WIN%", numeric: true, cell: of((a) => `${a.pct.toFixed(0)}%`) },
+  ]
 }
 
 /**
@@ -294,57 +292,35 @@ function EdgeConversion({
         {edgeConversionSentence(teams)}
       </p>
       <SwingBaselineNote baseline={swingBaseline} />
-      <div className="overflow-x-auto">
-        <table className="fc-table mono" style={{ borderCollapse: "collapse", minWidth: 560, maxWidth: TERM_NUMERIC_TABLE_MAX_WIDTH }}>
-          <thead>
-            <tr>
-              <th rowSpan={2} style={termThStyle}>TEAM</th>
-              <th colSpan={3} style={{ ...termThStyle, textAlign: "center", borderBottom: "none" }}>
-                RESTED
-              </th>
-              <th colSpan={3} style={{ ...termThStyle, textAlign: "center", borderBottom: "none" }}>
-                TIRED
-              </th>
-              <th rowSpan={2} style={{ ...termThStyle, textAlign: "right" }}>
-                SWING
-                <span style={termThUnitStyle}>
-                  {swingBaseline === null
-                    ? "PCT POINTS"
-                    : `PCT POINTS · BASELINE ${signedNumber(swingBaseline, 1)}`}
-                </span>
-              </th>
-            </tr>
-            <tr>
-              {["WINS", "LOSSES", "WIN%", "WINS", "LOSSES", "WIN%"].map((label, i) => (
-                <th key={i} style={{ ...termThStyle, textAlign: "right" }}>{label}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {teams.map((t) => {
-              const thinRow = t.restedGames < 10 || t.tiredGames < 10
-              return (
-                <tr key={t.teamId} data-testid="edge-conversion-row" style={{ opacity: thinRow ? 0.45 : 1 }}>
-                  <td style={termTdStyle}>{t.abbreviation}</td>
-                  <ArmCells wins={t.restedWins} games={t.restedGames} pct={t.restedWinPct} />
-                  <ArmCells wins={t.tiredWins} games={t.tiredGames} pct={t.tiredWinPct} />
-                  <td
-                    className="tabular-nums"
-                    style={{
-                      ...termTdStyle,
-                      textAlign: "right",
-                      color: swingColor(t.swing, swingBaseline),
-                      fontWeight: 700,
-                    }}
-                  >
-                    {t.swing === null ? "—" : signedNumber(t.swing, 1)}
-                  </td>
-                </tr>
-              )
-            })}
-          </tbody>
-        </table>
-      </div>
+      <DataTable
+        width="numeric"
+        minWidth={560}
+        rows={teams}
+        rowKey={(t) => t.teamId}
+        rowAttrs={(t) => ({
+          "data-testid": "edge-conversion-row",
+          style: { opacity: t.restedGames < 10 || t.tiredGames < 10 ? 0.45 : 1 },
+        })}
+        columns={[
+          { label: "TEAM", cell: (t) => t.abbreviation },
+          ...armColumns("RESTED", (t) => ({ wins: t.restedWins, games: t.restedGames, pct: t.restedWinPct })),
+          ...armColumns("TIRED", (t) => ({ wins: t.tiredWins, games: t.tiredGames, pct: t.tiredWinPct })),
+          {
+            label: "SWING",
+            unit:
+              swingBaseline === null
+                ? "PCT POINTS"
+                : `PCT POINTS · BASELINE ${signedNumber(swingBaseline, 1)}`,
+            numeric: true,
+            style: { fontWeight: 700 },
+            cell: (t) => (
+              <span style={{ color: swingColor(t.swing, swingBaseline) }}>
+                {t.swing === null ? "—" : signedNumber(t.swing, 1)}
+              </span>
+            ),
+          },
+        ]}
+      />
       {thin > 0 ? (
         <p className="mono" style={{ fontSize: 11, color: "var(--term-text-muted)" }}>
           {thin} {thin === 1 ? "TEAM HAS" : "TEAMS HAVE"} FEWER THAN 10 GAMES ON ONE SIDE AND {thin === 1 ? "IS" : "ARE"} DIMMED
@@ -418,47 +394,33 @@ function ScheduleValue({ teams }: { teams: SeasonReportTeamLabelled[] }) {
         </p>
       ) : null}
 
-      <div className="overflow-x-auto">
-        <table
-          className="fc-table mono"
-          style={{ borderCollapse: "collapse", minWidth: 420, maxWidth: TERM_NUMERIC_TABLE_MAX_WIDTH }}
-        >
-          <thead>
-            <tr>
-              <th style={termThStyle}>TEAM</th>
-              <th style={{ ...termThStyle, textAlign: "right" }}>
-                NET REST EDGE
-                <span style={termThUnitStyle}>GAMES</span>
-              </th>
-              <th style={{ ...termThStyle, textAlign: "right" }}>
-                WORTH
-                <span style={termThUnitStyle}>WINS</span>
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {ranked.map((t) => (
-              <tr key={t.teamId} data-testid="schedule-value-row">
-                <td style={termTdStyle}>{t.abbreviation}</td>
-                <td className="tabular-nums" style={{ ...termTdStyle, textAlign: "right" }}>
-                  {signedNumber(t.netEdgeGames)}
-                </td>
-                <td
-                  className="tabular-nums"
-                  style={{
-                    ...termTdStyle,
-                    textAlign: "right",
-                    color: swingColor(t.scheduleValueWins, 0),
-                    fontWeight: 700,
-                  }}
-                >
-                  {signedNumber(t.scheduleValueWins, 1)}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <DataTable
+        width="numeric"
+        minWidth={420}
+        rows={ranked}
+        rowKey={(t) => t.teamId}
+        rowAttrs={() => ({ "data-testid": "schedule-value-row" })}
+        columns={[
+          { label: "TEAM", cell: (t) => t.abbreviation },
+          {
+            label: "NET REST EDGE",
+            unit: "GAMES",
+            numeric: true,
+            cell: (t) => signedNumber(t.netEdgeGames),
+          },
+          {
+            label: "WORTH",
+            unit: "WINS",
+            numeric: true,
+            style: { fontWeight: 700 },
+            cell: (t) => (
+              <span style={{ color: swingColor(t.scheduleValueWins, 0) }}>
+                {signedNumber(t.scheduleValueWins, 1)}
+              </span>
+            ),
+          },
+        ]}
+      />
     </div>
   )
 }
@@ -563,41 +525,20 @@ function ScheduleTax({ teams }: { teams: SeasonReportTeamLabelled[] }) {
           {least.abbreviation} THE LEAST AT {least.travelMiles.toLocaleString()}
         </p>
       ) : null}
-      <div className="overflow-x-auto">
-        <table className="fc-table mono" style={{ borderCollapse: "collapse", minWidth: 520, maxWidth: TERM_NUMERIC_TABLE_MAX_WIDTH }}>
-          <thead>
-            <tr>
-              <th style={termThStyle}>TEAM</th>
-              <th style={{ ...termThStyle, textAlign: "right" }}>MILES FLOWN</th>
-              <th style={{ ...termThStyle, textAlign: "right" }}>
-                BACK-TO-BACKS
-                <span style={termThUnitStyle}>GAMES</span>
-              </th>
-              <th style={{ ...termThStyle, textAlign: "right" }}>
-                3-IN-4
-                <span style={termThUnitStyle}>GAMES</span>
-              </th>
-              <th style={{ ...termThStyle, textAlign: "right" }}>
-                JET LAG
-                <span style={termThUnitStyle}>GAMES</span>
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {byMiles.map((t) => (
-              <tr key={t.teamId} data-testid="schedule-tax-row">
-                <td style={termTdStyle}>{t.abbreviation}</td>
-                <td className="tabular-nums" style={{ ...termTdStyle, textAlign: "right" }}>
-                  {t.travelMiles.toLocaleString()}
-                </td>
-                <td className="tabular-nums" style={{ ...termTdStyle, textAlign: "right" }}>{t.backToBacks}</td>
-                <td className="tabular-nums" style={{ ...termTdStyle, textAlign: "right" }}>{t.threeInFours}</td>
-                <td className="tabular-nums" style={{ ...termTdStyle, textAlign: "right" }}>{t.jetLagGames}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <DataTable
+        width="numeric"
+        minWidth={520}
+        rows={byMiles}
+        rowKey={(t) => t.teamId}
+        rowAttrs={() => ({ "data-testid": "schedule-tax-row" })}
+        columns={[
+          { label: "TEAM", cell: (t) => t.abbreviation },
+          { label: "MILES FLOWN", numeric: true, cell: (t) => t.travelMiles.toLocaleString() },
+          { label: "BACK-TO-BACKS", unit: "GAMES", numeric: true, cell: (t) => t.backToBacks },
+          { label: "3-IN-4", unit: "GAMES", numeric: true, cell: (t) => t.threeInFours },
+          { label: "JET LAG", unit: "GAMES", numeric: true, cell: (t) => t.jetLagGames },
+        ]}
+      />
     </div>
   )
 }
