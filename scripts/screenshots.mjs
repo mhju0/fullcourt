@@ -13,34 +13,43 @@ import path from "node:path";
 const BASE = process.env.SCREENSHOT_BASE_URL ?? "http://localhost:3000";
 const OUT = path.join(fileURLToPath(new URL("..", import.meta.url)), "docs/screenshots");
 
+// Every height below was re-derived on 2026-08-11 after the alignment pass, by measuring the
+// bottom edge of the last complete card or table row in the DOM rather than by eye. The pass
+// moved almost every one of them: badges gained 2px of height, off-scale gaps were snapped, and
+// `termInsetStyle` became a band, so cards and rows are a few pixels taller than they were and
+// each old height had drifted into slicing the row it used to end on.
 const PAGES = [
-  { file: "games", path: "/", height: 1390 },
-  // Recut on 2026-08-07: WHAT THE SCHEDULE WAS WORTH landed between VS HISTORY and REST EDGE
-  // CONVERSION, so 1450 sliced the new table mid-row. 1447 is the bottom of its tenth complete
-  // row, and the extremes line above the table carries both ends of the range that ten rows
-  // cannot show. The skeleton wait logs a warning on this page: ZeroRestWorkload sits far below
-  // this cut and is still fetching player-rest.json when the timer expires. Harmless here —
-  // check the capture, not the warning.
-  { file: "season", path: "/season", height: 1447 },
-  // Raised from 1160 on 2026-08-06: the page lost its "half this model declines" card and
-  // gained the baseline frame, so 1160 now slices the season chart in half. This stops after
-  // the complete WIN RATE BY SEASON card.
-  { file: "analysis", path: "/analysis", height: 1400 },
-  // Raised from 1320 on 2026-08-07. The page gained a Worth (wins) column, which lives in the
-  // breakdown table — and 1320 stopped above that table entirely, so the shot showed none of it.
-  // This reaches the scale sentence and the table's first nine complete rows — 1841 is row 9's
-  // bottom edge, and anything between it and 1806 slices that row in half.
-  { file: "schedule", path: "/schedule", height: 1841 },
-  // Raised from 1670 on 2026-07-31: the page was rebuilt argument-first (Sections A-D ahead
-  // of the bracket), so this now stops after Section C's confound test instead of mid-bracket.
-  { file: "playoffs", path: "/playoffs", height: 1965 },
-  { file: "shooting", path: "/shooting", height: 1400 },
-  { file: "shot-quality", path: "/shot-quality", height: 1430 },
-  // Stops after "THE SCHEDULE STILL COUNTS" (measured bottom 1849), so the shot carries the
-  // headline, the frequency, the load-management trend and the defensive result. The page
-  // runs 2,266px; the section below this one is the "what this is not" disclaimer, which the
-  // README states in prose anyway.
-  { file: "availability", path: "/availability", height: 1880 },
+  // Two complete matchup cards, which is what the README's alt text describes. Cards run ~113px
+  // each here, so 1200 is the second card's bottom edge; 1390 (the old value) landed inside the
+  // fourth one.
+  { file: "games", path: "/", height: 1199 },
+  // Tenth complete row of WHAT THE SCHEDULE WAS WORTH (rows step 35px from 1136). The extremes
+  // line above the table carries both ends of the range that ten rows cannot show. The skeleton
+  // wait logs a warning on this page: ZeroRestWorkload sits far below this cut and is still
+  // fetching player-rest.json when the timer expires. Harmless — check the capture, not the
+  // warning.
+  { file: "season", path: "/season", height: 1451 },
+  // Stops after the complete WIN RATE BY SEASON card; the next block (READING THESE NUMBERS)
+  // ends at 1555.
+  { file: "analysis", path: "/analysis", height: 1380 },
+  // The scale sentence plus the breakdown table's first nine complete rows (rows step 35px
+  // from 1569); anything between 1814 and 1849 slices row 9 in half.
+  { file: "schedule", path: "/schedule", height: 1849 },
+  // The complete FIRST ROUND · 8 SERIES block, which is what the README's alt text describes.
+  // CONFERENCE SEMIFINALS runs on to 2398, and the old 1965 cut two series into it.
+  { file: "playoffs", path: "/playoffs", height: 1885 },
+  // Twenty-five complete player rows (rows step 35px from 611). Row 25 is James Harden, whom
+  // the README's alt text calls out as the largest positive rest effect — at the previous 1400
+  // the crop stopped at row 23, so the alt text had been describing a row the image did not
+  // contain. Ends on a row boundary either way.
+  { file: "shooting", path: "/shooting", height: 1451 },
+  // The whole two-court card, which ends at 1275. The old 1430 ran 155px past it into the
+  // footer.
+  { file: "shot-quality", path: "/shot-quality", height: 1275 },
+  // Stops after "THE SCHEDULE STILL COUNTS" (bottom 1891), so the shot carries the headline,
+  // the frequency, the load-management trend and the defensive result. The section below is the
+  // "what this is not" disclaimer, which the README states in prose anyway.
+  { file: "availability", path: "/availability", height: 1891 },
 ];
 
 // Optional filter: `node scripts/screenshots.mjs analysis season` shoots only those.
