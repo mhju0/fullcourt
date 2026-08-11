@@ -32,8 +32,9 @@ const PAGES = [
   // warning.
   { file: "season", path: "/season", height: 1451 },
   // Stops after the complete WIN RATE BY SEASON card; the next block (READING THESE NUMBERS)
-  // ends at 1555.
-  { file: "analysis", path: "/analysis", height: 1380 },
+  // starts at 1580. Up 152px from 1380 on 2026-08-11, when the excluded half left the hero tile
+  // row and became a 104px NOT COUNTED band beneath it (plus the 48px chapter gap).
+  { file: "analysis", path: "/analysis", height: 1532 },
   // The scale sentence plus the breakdown table's first nine complete rows (rows step 35px
   // from 1569); anything between 1814 and 1849 slices row 9 in half.
   { file: "schedule", path: "/schedule", height: 1849 },

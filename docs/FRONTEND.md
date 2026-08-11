@@ -144,6 +144,24 @@ Server wrapper just renders `<AnalysisContentLazy />`. The lazy client component
 describes. It used to hand-copy `PageHeader`'s markup for that; the component works fine
 inside a branch.
 
+**Two hero tiles, then the excluded half as a sentence** (2026-08-11). Both tiles name who won
+and over which slice — `RESTED TEAM AT HOME WON · ANY GAP` and `… · RA ≥ 5`. They led with the
+measure until this pass (`OVERALL WIN RATE`, `WIN RATE · RA ≥ 5`), which named neither: *overall*
+has no referent on a page whose finding is that the rate is **not** overall, and a bare "win
+rate" leaves whose unsaid.
+
+- **Do not add a third tile.** RA ≥ 7 is the obvious candidate and the wrong one — the rate is
+  flat from RA ≥ 5 upward, which the `READING THESE NUMBERS` callout says outright, so a third
+  ascending tile would draw a trend the data does not have off the page's thinnest slice. The
+  chart below already plots all four thresholds.
+- **The excluded half stays on the page, always.** It was a third tile and no label made it
+  legible, because the fault was not wording: a tile row is a row of *results* and this is the
+  rule they are produced under. It is now a `termInsetStyle` band headed `NOT COUNTED`, stating
+  the home team's rate over the games where the rested team was the visitor, against the same
+  home baseline as the tiles. Dropping it would leave the headline alone with no sign that
+  11,548 games were set aside to produce it. The argument for the rule lives once, in
+  `/behind-the-data/rest-advantage`; this is the live figure.
+
 ### `/season` — Season Report (`src/app/season/page.tsx`)
 
 Server wrapper; metadata title `"Season Report"`; renders a `<PageHeader>` (eyebrow

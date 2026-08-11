@@ -9,16 +9,24 @@ test.describe("Analysis page", () => {
       page.getByRole("heading", { name: "Rest Advantage Analysis" })
     ).toBeVisible({ timeout: 60_000 });
 
-    // Each tile names who won and over which slice. Asserted as literals because the failure
+    // Both tiles name who won and over which slice. Asserted as literals because the failure
     // being guarded is a regression to a label that names neither — "OVERALL WIN RATE" was
     // one, and "overall" is the single word this page cannot honestly use about its own rate.
     await expect(page.getByText("RESTED TEAM AT HOME WON · ANY GAP")).toBeVisible();
-    // The games the model does not call, kept on the page as a stat tile stating the home
-    // team's rate. It was a full section arguing the rule; that argument lives once, in
-    // /behind-the-data/rest-advantage, and the page keeps only the live figure. The exclusion
-    // itself is still stated, in the tile's sub-line rather than in its label.
-    await expect(page.getByText("HOME TEAM WON · RESTED VISITOR")).toBeVisible();
-    await expect(page.getByText(/NOT COUNTED/)).toBeVisible();
+    await expect(page.getByText("RESTED TEAM AT HOME WON · RA ≥ 5")).toBeVisible();
+    // Two tiles, not three. A third would be read as a third cut of the same measure, and the
+    // page's own callout says the rate is flat from RA ≥ 5 up — so an ascending third tile
+    // would draw a trend the data does not have.
+    await expect(page.locator("main").getByText(/^RESTED TEAM AT HOME WON/)).toHaveCount(2);
+
+    // The excluded half, which must never leave the page: without it the headline sits alone
+    // with no sign that 11,548 games were set aside to produce it. It is a sentence rather
+    // than a fourth tile — a tile row is a row of results and this is the rule they are
+    // produced under, which no 30-character label ever carried.
+    await expect(page.getByText("NOT COUNTED", { exact: true })).toBeVisible();
+    await expect(
+      page.getByText(/games where the rested team was the visitor, the home team won/)
+    ).toBeVisible();
 
     // Terminal section dividers (current markup — no text-7xl hero).
     await expect(page.getByText(/WIN RATE BY RA THRESHOLD/)).toBeVisible();
