@@ -103,11 +103,23 @@ function MethodInline({
 
 // ─── Feature drill-down ─────────────────────────────────────────────
 
-function FeatureRow({ k, v }: { k: string; v: string }) {
+/**
+ * One feature as a compact cell — label over value — rather than as a full-width row with the
+ * two ends pushed apart.
+ *
+ * As `justify-between` rows these measured 882–890px between a label and its number inside a
+ * ~987px panel, which is the width the numeric tables are capped at 760 to avoid (see
+ * TERM_NUMERIC_TABLE_MAX_WIDTH). A repeating two-end list can carry that distance because the
+ * eye learns the two columns, but these five are heterogeneous named features read once each,
+ * so there is no column to learn — just a long jump from "SEED DIFF" to "+1.00".
+ */
+function FeatureCell({ k, v }: { k: string; v: string }) {
   return (
-    <div className="mono flex justify-between gap-2" style={{ fontSize: 12 }}>
-      <span style={{ color: "var(--term-text-muted)", letterSpacing: "0.04em" }}>{k}</span>
-      <span className="tabular-nums" style={{ color: "var(--term-text)", fontWeight: 600 }}>{v}</span>
+    <div className="mono flex flex-col gap-1">
+      <span style={{ fontSize: 10, color: "var(--term-text-muted)", letterSpacing: "0.06em" }}>{k}</span>
+      <span className="tabular-nums" style={{ fontSize: 14, color: "var(--term-text)", fontWeight: 700 }}>
+        {v}
+      </span>
     </div>
   )
 }
@@ -128,11 +140,16 @@ function SeriesFeatureGrid({ series }: { series: PlayoffSeriesWithPredictions })
       >
         SERIES FEATURES
       </p>
-      <FeatureRow k="SEED DIFF" v={formatFeature(series.seedDiff)} />
-      <FeatureRow k="WIN% DIFF" v={formatFeature(series.winPctDiff)} />
-      <FeatureRow k="PRIOR GRIND DIFF" v={formatFeature(series.priorGrindDiff)} />
-      <FeatureRow k="ENTRY REST DIFF" v={formatFeature(series.entryRestDiff)} />
-      <FeatureRow k="H2H DIFF" v={formatFeature(series.h2hDiff)} />
+      {/* An actual grid now, not five full-width rows: the five features spread across the
+          width they already occupied instead of leaving ~885px of it empty between each label
+          and its number. */}
+      <div className="grid grid-cols-2 gap-x-6 gap-y-4 pt-1 sm:grid-cols-3 lg:grid-cols-5">
+        <FeatureCell k="SEED DIFF" v={formatFeature(series.seedDiff)} />
+        <FeatureCell k="WIN% DIFF" v={formatFeature(series.winPctDiff)} />
+        <FeatureCell k="PRIOR GRIND DIFF" v={formatFeature(series.priorGrindDiff)} />
+        <FeatureCell k="ENTRY REST DIFF" v={formatFeature(series.entryRestDiff)} />
+        <FeatureCell k="H2H DIFF" v={formatFeature(series.h2hDiff)} />
+      </div>
       <p className="mono mt-1" style={{ fontSize: 10, color: "var(--term-text-muted)", letterSpacing: "0.04em", lineHeight: 1.4 }}>
         SIGN CONVENTION: POSITIVE FAVORS HOME-COURT ({series.homeCourtTeam.abbreviation}). ALL ROWS ARE
         (HOME-COURT − OPPONENT) EXCEPT PRIOR GRIND DIFF, WHICH IS (OPPONENT − HOME-COURT) SO THAT
