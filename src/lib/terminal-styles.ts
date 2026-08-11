@@ -155,6 +155,13 @@ export const MONO_FONT_STACK =
  *
  * Consequence: a `<table>` using these styles MUST carry `className="fc-table"`. Omitting it
  * drops all cell padding, which is immediately and loudly visible rather than subtly wrong.
+ *
+ * **You almost certainly want `DataTable` (`src/components/ui/data-table.tsx`) instead.** Since
+ * 2026-08-11 it is the only thing that reads these two, and it applies the class name itself —
+ * which is the point, because "remember to add a class" was a rule enforced by a sentence in a
+ * docblock, and it was already broken in four places when the module was written. These stay
+ * exported for the module and for a genuinely one-off `<td>` that sits outside a column model
+ * (the `colSpan` note rows on `/shooting` and `/behind-the-data`).
  */
 export const termThStyle: CSSProperties = {
   // `th` defaults to centered while `td` defaults to left, so a header sharing this style

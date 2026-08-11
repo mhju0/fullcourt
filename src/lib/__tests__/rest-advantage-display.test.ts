@@ -106,7 +106,7 @@ describe("homeWinRateWhenVisitorRested", () => {
 });
 
 /**
- * The narrowing `useBacktest` applies before handing the payload to a matchup card.
+ * The narrowing `useBacktest` applies before handing the payload to a matchup row.
  * Four surfaces read the backtest and two of them used to re-list these four keys by
  * hand, which is how the `Pick` above stopped being the single statement of the slice.
  */

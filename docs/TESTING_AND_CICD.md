@@ -33,7 +33,9 @@ Library — neither is in `package.json`, and nothing renders a component. Every
 node-environment unit or route test; the two that import from a component module import
 only exported pure functions.
 
-**38 test files, 468 tests** (`pnpm test:run`, verified 2026-08-03). Test files and coverage:
+**48 test files, 621 tests** (`pnpm test:run`, verified 2026-08-11). The table below names what
+each file covers; it is not a per-file count, because a count per row is a second copy of a fact
+nothing checks. Run the command for the current figure.
 
 | File | Covers |
 |------|--------|
@@ -113,9 +115,10 @@ Specs (15): `e2e/home.spec.ts`, `e2e/about.spec.ts`, `e2e/alignment-audit.spec.t
 `e2e/alignment-law.spec.ts`, `e2e/analysis.spec.ts`, `e2e/availability.spec.ts`,
 `e2e/behind-the-data.spec.ts`, `e2e/navigation.spec.ts`, `e2e/page-headers.spec.ts`,
 `e2e/playoffs.spec.ts`, `e2e/referees.spec.ts`, `e2e/schedule-disparity.spec.ts`,
-`e2e/season.spec.ts`, `e2e/shot-quality.spec.ts`, `e2e/shooting.spec.ts` — **120 tests**
-(115 passed / 5 skipped, verified 2026-08-11; several specs generate their cases in a loop, so
-counting `test(` calls in the source undercounts).
+`e2e/season.spec.ts`, `e2e/shot-quality.spec.ts`, `e2e/shooting.spec.ts` — **121 tests**
+(116 passed / 5 skipped, verified 2026-08-11; several specs generate their cases in a loop, so
+counting `test(` calls in the source undercounts). The 5 skipped are the `/referees` table
+assertions, kept rather than deleted while that surface is unpublished.
 
 `e2e/behind-the-data.spec.ts` covers the reference section: that it is reachable from the
 `Reference` landmark and *not* from `Main navigation` or the `OTHER` menu, that every section is

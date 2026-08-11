@@ -207,7 +207,9 @@ function SeriesCard({ series }: { series: PlayoffSeriesWithPredictions }) {
 
   return (
     <div
-      // Same 2px lift as MatchupCard; the shadow was already here.
+      // The same 2px lift the retired MatchupCard had; the shadow was already here. Kept when
+      // that component went (2026-08-11) because a bracket card is still a card — the Games
+      // slate is what became a table, not every surface.
       className="flex flex-col transition-[box-shadow,transform] duration-200 hover:-translate-y-0.5 hover:shadow-[0_2px_10px_rgba(23,64,139,0.08)] motion-reduce:transition-none motion-reduce:hover:translate-y-0"
       style={{ background: "var(--term-surface)", border: "1px solid var(--term-border)", borderLeft: `2px solid ${accent}`, borderRadius: "var(--term-radius)", overflow: "hidden" }}
     >

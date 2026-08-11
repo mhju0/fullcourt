@@ -14,7 +14,7 @@ import { classifyRestAdvantage } from "@/lib/rest-advantage-evidence";
  * its NEUTRAL_REST_ADVANTAGE_THRESHOLD branch fails the first case below with ten
  * contradicting differentials.
  */
-describe("matchup card confidence tiers", () => {
+describe("matchup row confidence tiers", () => {
   // -3.0 … 3.0 in 0.1 steps, built from integers to avoid accumulating float drift.
   const differentials = Array.from({ length: 61 }, (_, i) => (i - 30) / 10);
 

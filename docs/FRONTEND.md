@@ -96,7 +96,7 @@ upcoming October date at season start; else nearest / last available).
   `HIGH_CONF_THRESHOLD = 2.0` — three tiles, all scoped to the slate on screen; a fourth
   once carried the full-history backtest rate, which described none of the games shown and is
   stated per matchup and on /analysis instead); `useSWR("/api/analysis")` stays, since the
-  matchup cards' evidence sentences are denominated from it; the shared
+  matchup rows' evidence sentences are denominated from it; the shared
   a two-group control panel — **Scope** (`<SeasonSelector>` + month tabs from `slate.months`,
   disabled at `dayCount === 0`) and **Day** (`DateChip`s pre-formatted by the hook, plus the
   prev/next arrows). The old "DAYS WITH GAMES" caption is gone: the group is labelled, and each
@@ -764,12 +764,16 @@ The eight `*-lazy` modules remain separate files because `dynamic()` with `ssr: 
 be called from a server component and the pages are server components — but each now carries
 only its skeleton, not a restatement of the loader.
 
-### `components/ui/*` — shadcn primitives
+### `components/ui/*` — the shared primitives
 
-Two shadcn primitives survive — `button`, built on **`@base-ui/react`** with
-`class-variance-authority` variants, and `skeleton`, a plain `div` — alongside one hand-written
-primitive that is not shadcn's, `message-card` (below). (`@base-ui/react` is
-also used directly by the modals.) `cn()`
+Four files, and only two of them came from shadcn: `button`, built on **`@base-ui/react`** with
+`class-variance-authority` variants, and `skeleton`, a plain `div`. The other two are
+hand-written and are the ones that carry weight — `data-table` (the module every table on the
+site draws through — see [§Alignment: two rails, one scale](#alignment-two-rails-one-scale)
+below, and its own docblock, which is the fuller account) and `message-card` (below). `shadcn`
+itself is a
+**devDependency** — the CLI that seeded those two files — not a runtime one; the runtime
+primitive package is `@base-ui/react`, which the nav also uses directly. `cn()`
 (`src/lib/utils.ts`) merges classes with `clsx` + `tailwind-merge`. `components.json` pins
 the shadcn `base-nova` style, `neutral` base color, CSS variables, and the `@/components`,
 `@/lib`, `@/hooks`, `@/components/ui` aliases.

@@ -93,7 +93,7 @@ function StatCard({ label, value, accent }: { label: string; value: string; acce
 
 /* Three tiles, all of them about the slate on screen. The fourth used to carry the
    all-seasons backtest rate, which described none of these games: the historical claim
-   belongs on each matchup card, where it is stated for that game's own rest gap, and
+   belongs in each matchup row, where it is stated for that game's own rest gap, and
    on /analysis, which exists to prove it. */
 function StatSummaryRow({
   gamesToday,
@@ -333,7 +333,7 @@ export default function HomePage() {
   // the hook; its decisions live in a pure reducer that is unit-tested without a DOM.
   const slate = useGameSlate()
 
-  // The backtest, read only to denominate the matchup cards' evidence sentences.
+  // The backtest, read only to denominate the matchup rows' evidence sentences.
   // Deliberately outside the slate: it is season-independent and must not gate the
   // date browser.
   const { evidenceSource } = useBacktest()

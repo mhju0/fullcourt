@@ -37,6 +37,34 @@ Two directions were considered and **declined**, so they are not backlog:
   [ARCHITECTURE.md](ARCHITECTURE.md)) and widen the CSP product-wide.
 - A generated brand kit / identity board.
 
+**On 2026-08-09 the interface was replaced outright — "Front Office".** Chosen from four
+light-only, data-forward directions after a first round of five wider ones; every mock and the
+reason each of the other three lost is in [design/README.md](design/README.md). It supersedes the
+2026-07-28 pass above rather than extending it: **one type family** (Geist / Geist Mono, so titles
+separate by weight and size rather than by face — retiring Inter, Space Grotesk and IBM Plex Mono
+together), an **indigo accent** spent one moment at a time, rose/teal **data poles**, and the
+Games slate rebuilt as **one continuous table** where a row expands in place. Still light-only;
+`/about` is still the one deliberately dark surface. No runtime dependency was added.
+
+**Two follow-on passes on 2026-08-11**, both consequences of that redesign rather than new
+features:
+
+- **The two-rail alignment law** — outer rail at the page gutter, inner rail at `SPACE_CARD`, and
+  exactly one sanctioned third rail (`SPACE_NESTED_ROW`, for the nested season rows on
+  `/shooting`). Stated in [FRONTEND.md](FRONTEND.md), guarded by `e2e/alignment-law.spec.ts`. One
+  rule shipped and was **reverted the same day**: zeroing a table's edge-cell inset put the first
+  column's text hard against the header band's fill. The box sits on the page rail; its cells sit
+  on the box's own inner rail.
+- **One table module.** `src/components/ui/data-table.tsx` absorbed what had been a *convention* —
+  a CSS rule, three exported style objects and a width constant, which twenty-one call sites had
+  to reproduce from memory. Five of the seven measurable facts had drifted across them, including
+  four tables combining `w-full` with the numeric cap, which silently means "always exactly
+  760px". **Every table on the site now renders through it;** the only `<table>` element left in
+  `src/` is the module's own. Two tables had independently grown a byte-identical sortable-column
+  descriptor and both had hung `onClick` on a bare `<th>`, so neither could be sorted from a
+  keyboard — fixed once, in the module. `scripts/screenshots.mjs` was rewritten alongside it to
+  end each capture on a **named element** instead of a pinned pixel height.
+
 The dependency tree is deliberately pinned; see
 [SEASON_ROLLOVER.md §8](SEASON_ROLLOVER.md) before regenerating the lockfile, and §7 for the
 season counts and frozen `/about` figures that do not derive themselves. **`gsap` is the one

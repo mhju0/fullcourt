@@ -130,8 +130,11 @@ smaller reference surfaces so the bar stays short as they accumulate. Labels are
 with no time words — the pattern every mainstream NBA nav uses — while the precise terms
 (`xeFG%`, net rest edge) live in each page's eyebrow, where surrounding context decodes them.
 
-- **Games** (`/`) — live matchup cards with fatigue bars, a rest-advantage gauge, and real-time
-  score/status updates via Supabase Realtime. Browses any season back to 1985-86 by date, and
+- **Games** (`/`) — the slate as one continuous table: a row per game carrying both fatigue
+  scores, the schedule flags behind them, a rest-advantage gauge and a confidence read, with
+  real-time score/status updates via Supabase Realtime. It was a stack of cards until 2026-08-09;
+  the table is the Front Office redesign's spine, and a row expands in place rather than opening
+  anything. Browses any season back to 1985-86 by date, and
   carries an **UPCOMING** view: the remaining schedule in date order, filterable to a minimum
   rest-advantage gap, each game shown with the historical hit rate and sample size of its
   rest-advantage class. Not
@@ -298,7 +301,7 @@ so the question is not reopened from scratch.
 
 | Layer | Tech |
 |-------|------|
-| Frontend | Next.js 16 (App Router), React 19, TypeScript (strict), Tailwind CSS v4, shadcn/ui, Recharts, SWR, GSAP (dynamically imported, `/about` only) |
+| Frontend | Next.js 16 (App Router), React 19, TypeScript (strict), Tailwind CSS v4, Base UI (the `button` and `nav` primitives, seeded from shadcn and trimmed to the call sites this app has), Recharts, SWR, GSAP (dynamically imported, `/about` only) |
 | API | Next.js route handlers, Zod validation, Drizzle ORM, postgres-js |
 | Database | Supabase PostgreSQL — Row-Level Security + Realtime |
 | Data pipeline | Python (`nba_api`, `pandas`) + TypeScript (`tsx`) |
@@ -357,7 +360,8 @@ Playwright is integration-style and requires the running app plus populated data
 ```
 src/
   app/            # App Router pages + typed API route handlers
-  components/     # matchup cards, fatigue bars, nav, charts, shot-quality court
+  components/     # the matchup table, fatigue bars, nav, charts, shot-quality court
+    ui/           # the shared primitives — DataTable draws every table on the site
   lib/
     fatigue.ts    # the fatigue model (single source of truth)
     db/           # Drizzle schema, queries, client
@@ -370,7 +374,10 @@ src/lib/          # availability-facts.ts and playoff-rest-facts.ts — generate
 public/data/      # the static asset /shooting fetches at runtime (player-rest.json)
 drizzle/          # SQL migrations (RLS, grants, indexes)
 docs/             # architecture, database, pipeline, API, frontend, ADRs
-                  # screenshots regenerate with `node scripts/screenshots.mjs` against a running dev server
+                  # screenshots regenerate with `node scripts/screenshots.mjs` against a running
+                  # app (`pnpm build && pnpm start`) and a populated database. Each capture ends
+                  # on a named element, not a pinned height, so it throws rather than cropping
+                  # mid-content when a layout changes. Override the host with SCREENSHOT_BASE_URL.
 ```
 
 ---
@@ -395,8 +402,10 @@ docs/             # architecture, database, pipeline, API, frontend, ADRs
 
 Built by **Michael Ju** ([@mhju0](https://github.com/mhju0)).
 
-The interface is set in **Space Grotesk** (headings), **Inter** (body) and **IBM Plex Mono**
-(data and labels), all loaded through `next/font/google` — no font files are committed for them.
+The interface is set in **Geist** (body and headings) and **Geist Mono** (data and labels), both
+loaded through `next/font/google` — no font files are committed for them. One family carries the
+whole UI: titles separate from body text by weight and size rather than by face, which is the
+"Front Office" direction adopted on 2026-08-09. It replaced Inter + Space Grotesk + IBM Plex Mono.
 
 The bundled [Outfit](https://github.com/Outfitio/Outfit-Fonts) font faces in
 `src/app/fonts/` are © 2021 The Outfit Project Authors and licensed separately under the

@@ -31,7 +31,7 @@ export function classifyRestAdvantage(
  *
  * Deliberately separate from `classifyRestAdvantage`, which answers a different question and
  * must keep answering it: "the visitor is the more rested team" is a true statement about a
- * schedule and the matchup cards should go on saying it. This function answers "would we bet
+ * schedule and the matchup rows should go on saying it. This function answers "would we bet
  * on that", and the answer for a rested visitor is no.
  *
  * The evidence, over every decidable game the site publishes (1985-86 on, re-measured
