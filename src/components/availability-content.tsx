@@ -50,7 +50,7 @@ function EffectBar({
   note?: string
 }) {
   return (
-    <div className="flex flex-col gap-1.5">
+    <div className="flex flex-col gap-2">
       <div className="flex flex-wrap items-baseline justify-between gap-x-3">
         <span
           style={{
@@ -127,7 +127,7 @@ function ScaleSection() {
           WHAT A TEAM LOSES WHEN ITS BEST PLAYER SITS · POINTS OF FINAL MARGIN
         </span>
 
-        <div className="mt-5 flex flex-col gap-4">
+        <div className="mt-6 flex flex-col gap-4">
           <EffectBar label="Best player out" points={e.bestPlayerOut.points} lit />
           <EffectBar label="Playing at home" points={e.homeCourt.points} />
           <EffectBar label="On a back-to-back" points={e.backToBack.points} />
@@ -161,7 +161,7 @@ function FrequencySection() {
       <div style={termCardStyle}>
         <div className="grid gap-6 sm:grid-cols-3">
           {cells.map((c) => (
-            <div key={c.label} className="flex flex-col gap-1.5">
+            <div key={c.label} className="flex flex-col gap-2">
               <span
                 className="mono tabular-nums"
                 style={{ fontSize: 28, fontWeight: 700, color: "var(--term-text)", lineHeight: 1.1 }}
@@ -216,7 +216,7 @@ function TrendSection() {
           this sample and is an ordinary one now.
         </p>
 
-        <figure className="mt-5 flex flex-col gap-2">
+        <figure className="mt-6 flex flex-col gap-2">
           <div
             className="flex items-end gap-[2px]"
             style={{ height: 96 }}
@@ -317,7 +317,7 @@ function ScheduleHoldsUpSection() {
             <tbody>
               {rows.map((r) => (
                 <tr key={r.label}>
-                  <td style={{ fontSize: 14, color: "var(--term-text)", padding: "10px 0" }}>
+                  <td style={{ fontSize: 14, color: "var(--term-text)", padding: "12px 0" }}>
                     {r.label}
                   </td>
                   {[r.scheduleOnly.toFixed(3), r.absenceControlled.toFixed(3), r.shiftPct.toFixed(1)].map(
@@ -329,7 +329,7 @@ function ScheduleHoldsUpSection() {
                           fontSize: 14,
                           color: "var(--term-text-muted)",
                           textAlign: "right",
-                          padding: "10px 0 10px 16px",
+                          padding: "12px 0 12px 16px",
                         }}
                       >
                         {v}

@@ -129,7 +129,7 @@ export function RefereeStyleContent({ data }: { data: RefereeFoulStyle }) {
                         color: "var(--term-blue)",
                         border: "1px solid var(--term-blue)",
                         borderRadius: "var(--term-radius-sm)",
-                        padding: "0 3px",
+                        padding: "0 4px",
                       }}
                     >
                       CC

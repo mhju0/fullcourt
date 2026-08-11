@@ -23,7 +23,7 @@ export function SeasonSelector({
 }) {
   const options = seasons ? [...seasons].reverse() : SEASON_OPTIONS
   return (
-    <div className="flex flex-col gap-1.5">
+    <div className="flex flex-col gap-2">
       <label
         htmlFor={id}
         className="mono"

@@ -92,10 +92,10 @@ export default function BehindTheDataPage() {
             <Link
               key={section.href}
               href={section.href}
-              className="group flex flex-col gap-1 py-3.5 pl-0 transition-[box-shadow,transform,background-color,padding-left] duration-200 hover:translate-x-0.5 hover:bg-[var(--term-surface-2)] hover:pl-2.5 hover:shadow-[inset_2px_0_0_var(--term-red)] motion-reduce:transition-none motion-reduce:hover:translate-x-0"
+              className="group flex flex-col gap-1 py-4 pl-0 transition-[box-shadow,transform,background-color,padding-left] duration-200 hover:translate-x-0.5 hover:bg-[var(--term-surface-2)] hover:pl-3 hover:shadow-[inset_2px_0_0_var(--term-red)] motion-reduce:transition-none motion-reduce:hover:translate-x-0"
               style={{ borderTop: i === 0 ? undefined : "1px solid var(--term-border)" }}
             >
-              <span className="mono flex items-center gap-1.5 text-[var(--term-text)] transition-colors group-hover:text-[var(--term-red)]"
+              <span className="mono flex items-center gap-2 text-[var(--term-text)] transition-colors group-hover:text-[var(--term-red)]"
                 style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.06em" }}
               >
                 {section.label}

@@ -28,7 +28,7 @@ const RA_OPTIONS = [
 
 function OffSeasonEmptyState({ nextSeason }: { nextSeason: string }) {
   return (
-    <div className="rounded-[4px] border border-[var(--term-border)] border-l-2 border-l-[var(--term-hardwood)] bg-[var(--term-surface)] px-6 py-10 text-center">
+    <div className="rounded-[4px] border border-[var(--term-border)] border-l-2 border-l-[var(--term-hardwood)] bg-[var(--term-surface)] px-6 py-12 text-center">
       <p className="mono text-[11px] font-semibold uppercase tracking-[0.08em] text-[var(--term-text-muted)]">
         REGULAR SEASON COMPLETE
       </p>
@@ -103,7 +103,7 @@ export function UpcomingContent() {
   return (
     <div style={termCardStyle}>
       {/* ── Filter pills ──────────────────────────────────────────── */}
-      <div className="mb-4 flex flex-wrap items-center gap-1.5">
+      <div className="mb-4 flex flex-wrap items-center gap-2">
         {RA_OPTIONS.map((opt) => {
           const active = raFilter === opt.value
           return (
@@ -118,7 +118,7 @@ export function UpcomingContent() {
                 color: active ? "var(--term-surface)" : "var(--term-text)",
                 border: `1px solid ${active ? "var(--term-text)" : "var(--term-border)"}`,
                 borderRadius: "var(--term-radius)",
-                padding: "4px 10px",
+                padding: "4px 12px",
                 fontSize: 12,
                 letterSpacing: "0.04em",
                 fontWeight: 600,
@@ -212,7 +212,7 @@ export function UpcomingContent() {
                       {format(new Date(g.date + "T00:00:00"), "MMM d")}
                     </td>
                     <td style={{ ...tdStyle, color: "var(--term-text)" }}>
-                      <div className="flex items-center gap-1.5">
+                      <div className="flex items-center gap-2">
                         <TeamLogo abbreviation={g.awayTeam.abbreviation} />
                         <span style={{ fontWeight: 600 }}>{g.awayTeam.abbreviation}</span>
                         <span style={{ color: "var(--term-hairline)" }}>@</span>
@@ -247,7 +247,7 @@ export function UpcomingContent() {
                           color: "var(--term-surface)",
                           fontSize: 11,
                           fontWeight: 700,
-                          padding: "2px 6px",
+                          padding: "4px 8px",
                           borderRadius: "var(--term-radius-sm)",
                           letterSpacing: "0.04em",
                         }}

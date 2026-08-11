@@ -123,7 +123,7 @@ function SeriesFeatureGrid({ series }: { series: PlayoffSeriesWithPredictions })
       style={{ background: "var(--term-surface)", border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }}
     >
       <p
-        className="mono pb-1.5"
+        className="mono pb-2"
         style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 700, borderBottom: "1px solid var(--term-border)" }}
       >
         SERIES FEATURES
@@ -159,7 +159,7 @@ function GrindLine({
     <span className="mono" style={{ fontSize: 11, color: "var(--term-text-muted)", letterSpacing: "0.04em" }}>
       <span style={{ color: "var(--term-text)", fontWeight: 700 }}>{series.homeCourtTeam.abbreviation}</span>{" "}
       {labels.homeCourt}
-      <span style={{ padding: "0 6px" }}>·</span>
+      <span style={{ padding: "0 8px" }}>·</span>
       <span style={{ color: "var(--term-text)", fontWeight: 700 }}>{series.opponentTeam.abbreviation}</span>{" "}
       {labels.opponent}
     </span>
@@ -202,7 +202,7 @@ function SeriesCard({ series }: { series: PlayoffSeriesWithPredictions }) {
         onClick={toggle}
         onKeyDown={onKeyDown}
         className="cursor-pointer transition-colors hover:bg-[var(--term-bg)] focus-visible:ring-2 focus-visible:ring-[var(--term-blue)]/40"
-        style={{ padding: "10px 14px" }}
+        style={{ padding: "12px 16px" }}
       >
         <div className="flex items-center justify-between gap-3">
           <div className="flex min-w-0 flex-wrap items-center gap-2">
@@ -210,7 +210,7 @@ function SeriesCard({ series }: { series: PlayoffSeriesWithPredictions }) {
               {series.homeCourtTeam.abbreviation}
               <span
                 className="mono"
-                style={{ fontSize: 8, fontWeight: 700, color: "var(--term-blue)", border: "1px solid var(--term-blue)", borderRadius: "var(--term-radius-sm)", padding: "0 3px" }}
+                style={{ fontSize: 8, fontWeight: 700, color: "var(--term-blue)", border: "1px solid var(--term-blue)", borderRadius: "var(--term-radius-sm)", padding: "0 4px" }}
                 aria-label="Home court"
               >
                 HC
@@ -233,11 +233,11 @@ function SeriesCard({ series }: { series: PlayoffSeriesWithPredictions }) {
           />
         </div>
 
-        {/* Wrapper only when there is a line: in Round 1 an empty `mt-1.5` div costs 0px
+        {/* Wrapper only when there is a line: in Round 1 an empty `mt-2` div costs 0px
             today because its margin collapses through, but only while the ancestor stays a
             plain block. */}
         {grindLabels && (
-          <div className="mt-1.5">
+          <div className="mt-2">
             <GrindLine series={series} labels={grindLabels} />
           </div>
         )}

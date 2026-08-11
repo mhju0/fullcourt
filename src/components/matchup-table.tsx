@@ -62,7 +62,7 @@ function StatusCell({
     <div className="mono flex flex-col justify-center gap-1">
       {status === "live" ? (
         <span
-          className="inline-flex items-center gap-1.5"
+          className="inline-flex items-center gap-2"
           style={{ fontSize: 10, letterSpacing: "0.08em", color: "var(--term-accent)", fontWeight: 700 }}
         >
           <span
@@ -185,8 +185,8 @@ function RestAdvCell({
   const fillPercent = Math.min(Math.abs(restAdvantage?.differential ?? 0) / 5, 1) * 50
 
   return (
-    <div className="flex flex-col justify-center gap-1.5">
-      <div className="mono flex items-baseline gap-1.5 tabular-nums" style={{ lineHeight: 1 }}>
+    <div className="flex flex-col justify-center gap-2">
+      <div className="mono flex items-baseline gap-2 tabular-nums" style={{ lineHeight: 1 }}>
         {display.kind === "team" ? (
           <>
             {/* The named team is the more-rested side, so it wears the rested pole. */}
@@ -210,7 +210,7 @@ function RestAdvCell({
       </div>
 
       {/* Center-anchored differential meter: teal fill toward the rested side, ±5 scale. */}
-      <div className="flex w-full items-center gap-1.5">
+      <div className="flex w-full items-center gap-2">
         <span className="mono shrink-0" style={{ fontSize: 9, color: "var(--term-text-muted)", fontWeight: 600 }}>
           A
         </span>
@@ -315,11 +315,11 @@ function GameRow({
           "grid cursor-pointer items-center gap-x-4 transition-colors hover:bg-[var(--term-surface-2)] focus-visible:ring-2 focus-visible:ring-[var(--term-accent)]/40",
           isScoreFlashing && "animate-[scoreFlash_0.5s_ease-out]"
         )}
-        style={{ gridTemplateColumns: GRID_COLS, padding: "10px 14px" }}
+        style={{ gridTemplateColumns: GRID_COLS, padding: "12px 16px" }}
       >
         <StatusCell status={game.status} date={game.date} homeScore={game.homeScore} awayScore={game.awayScore} />
 
-        <div className="flex min-w-0 flex-col gap-0.5">
+        <div className="flex min-w-0 flex-col gap-1">
           <TeamLine
             abbreviation={awayBrand.abbreviation}
             name={awayBrand.name}
@@ -338,7 +338,7 @@ function GameRow({
           />
         </div>
 
-        <div className="flex flex-col gap-0.5">
+        <div className="flex flex-col gap-1">
           <FatigueLine score={game.awayFatigue?.score ?? null} tone={tones.away} />
           <FatigueLine score={game.homeFatigue?.score ?? null} tone={tones.home} />
         </div>
@@ -363,7 +363,7 @@ function GameRow({
       {(evidence || flags.length > 0) && (
         <div
           className="flex flex-wrap items-baseline gap-x-3 gap-y-1"
-          style={{ padding: "0 14px 9px 30px" }}
+          style={{ padding: "0 16px 8px 32px" }}
         >
           {evidence && (
             <p className="m-0 flex min-w-0 items-baseline gap-2" style={{ fontSize: 12, lineHeight: 1.5, color: "var(--term-text-muted)" }}>
@@ -374,7 +374,7 @@ function GameRow({
             </p>
           )}
           {flags.length > 0 && (
-            <span className="ml-auto flex shrink-0 flex-wrap gap-1.5">
+            <span className="ml-auto flex shrink-0 flex-wrap gap-2">
               {flags.map((flag) => (
                 <span
                   key={flag}
@@ -386,7 +386,7 @@ function GameRow({
                     color: "var(--term-text-muted)",
                     border: "1px solid var(--term-border)",
                     borderRadius: "var(--term-radius-sm)",
-                    padding: "1px 5px",
+                    padding: "4px 8px",
                   }}
                 >
                   {flag}
@@ -442,7 +442,7 @@ export function MatchupTable({ games, evidenceSource = null }: MatchupTableProps
             className="mono grid items-center gap-x-4"
             style={{
               gridTemplateColumns: GRID_COLS,
-              padding: "7px 14px 7px 17px",
+              padding: "8px 16px",
               background: "var(--term-surface-2)",
               borderBottom: "1px solid var(--term-border)",
               fontSize: 10,

@@ -498,7 +498,7 @@ restEdge   = awayScore − homeScore     (positive ⇒ the home side is fresher)
       </Section>
 
       <Section label="THE TERMS" descriptor="WITH THE CONSTANTS THE CODE USES">
-        <div className="flex flex-col gap-5">
+        <div className="flex flex-col gap-6">
           <div>
             <Prose>
               {/* Hyphenated so no space is needed after the expression: a JSX text node

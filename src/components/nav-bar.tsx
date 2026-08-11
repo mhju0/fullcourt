@@ -145,7 +145,7 @@ export function NavBar() {
               data-active-surface={otherActive ? "true" : "false"}
               className={cn(
                 TAB_CLASS,
-                "gap-1.5 outline-none focus-visible:text-[var(--term-text)]",
+                "gap-2 outline-none focus-visible:text-[var(--term-text)]",
                 tabTone(otherActive)
               )}
               style={TAB_STYLE}
@@ -190,7 +190,7 @@ export function NavBar() {
           </Menu.Root>
           </nav>
 
-          <nav aria-label="Reference" className="ml-auto flex h-full shrink-0 items-center gap-5">
+          <nav aria-label="Reference" className="ml-auto flex h-full shrink-0 items-center gap-6">
             {SECONDARY_LINKS.map(({ href, label }) => {
               const active = isActive(pathname, href)
               return (

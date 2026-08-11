@@ -39,7 +39,7 @@ export const metadata: Metadata = {
  */
 export default function RefereesPage() {
   return (
-    <div className="flex flex-col gap-10">
+    <div className="flex flex-col gap-12">
       <PageHeader
         eyebrow="REFEREE EFFECT · IN PROGRESS"
         title="What each official calls"

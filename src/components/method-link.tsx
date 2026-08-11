@@ -16,14 +16,14 @@ export function MethodLink({ surfaceHref }: { surfaceHref: string }) {
   return (
     <Link
       href={href}
-      className="mono inline-flex w-fit items-center gap-1.5 transition-colors hover:text-[var(--term-text)]"
+      className="mono inline-flex w-fit items-center gap-2 transition-colors hover:text-[var(--term-text)]"
       style={{
         fontSize: 11,
         letterSpacing: "0.07em",
         fontWeight: 600,
         color: "var(--term-text-muted)",
         borderBottom: "1px solid var(--term-border)",
-        paddingBottom: 2,
+        paddingBottom: 4,
       }}
     >
       HOW THIS IS CALCULATED

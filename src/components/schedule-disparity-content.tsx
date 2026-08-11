@@ -130,7 +130,7 @@ function ColumnGuide({ countedGames, scheduledGames }: { countedGames: number; s
             background: "var(--term-surface-2)",
             borderLeft: "2px solid var(--term-blue)",
             borderRadius: "var(--term-radius-sm)",
-            padding: "9px 12px",
+            padding: "8px 12px",
             color: "var(--term-text)",
             fontSize: 14,
           }}

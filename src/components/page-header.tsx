@@ -1,24 +1,26 @@
+import { WIDTH } from "@/lib/terminal-styles"
+
 /**
  * Every page heading. Two pages used to hand-copy this markup — one because its
  * eyebrow has to sit inside a data-dependent branch, which is no reason to
- * duplicate a component, and one because it wants a narrower measure. That
- * measure is the single knob; everything else is fixed here so the type scale
- * cannot drift between pages again.
+ * duplicate a component, and one because it wants a narrower measure.
+ *
+ * The measure used to be a prop. It is now fixed at the one prose width in
+ * {@link WIDTH}: the only override left in the tree asked for 46rem, and 4rem of
+ * extra line length is not worth every reference page introducing itself on a
+ * different measure from every product page.
  */
 export function PageHeader({
   eyebrow,
   title,
   description,
-  descriptionMaxWidth = "42rem",
 }: {
   eyebrow: string
   title: string
   description: React.ReactNode
-  /** Line length for the description. Defaults to the `max-w-2xl` the pages share. */
-  descriptionMaxWidth?: string
 }) {
   return (
-    <div className="flex flex-col gap-1.5">
+    <div className="flex flex-col gap-2">
       <span
         className="mono"
         style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-accent)", fontWeight: 600 }}
@@ -33,7 +35,7 @@ export function PageHeader({
           cues and slow reading for anything longer than a label. */}
       <p
         style={{
-          maxWidth: descriptionMaxWidth,
+          maxWidth: WIDTH.prose,
           fontSize: 15,
           color: "var(--term-text-muted)",
           lineHeight: 1.55,

@@ -121,7 +121,7 @@ export function ConfidenceBadge({ confidence }: { confidence: Confidence }) {
   const baseStyle: React.CSSProperties = {
     fontSize: "11px",
     letterSpacing: "0.06em",
-    padding: "2px 8px",
+    padding: "4px 8px",
     borderRadius: "var(--term-radius-sm)",
     fontWeight: 700,
   }
@@ -160,7 +160,7 @@ export function ConfidenceBadge({ confidence }: { confidence: Confidence }) {
 
 function LiveIndicator() {
   return (
-    <span className="mono inline-flex items-center gap-1.5" style={{ fontSize: "11px", letterSpacing: "0.06em", color: "var(--term-amber)", fontWeight: 700 }}>
+    <span className="mono inline-flex items-center gap-2" style={{ fontSize: "11px", letterSpacing: "0.06em", color: "var(--term-amber)", fontWeight: 700 }}>
       <span
         className="animate-[pulse_1.7s_ease-in-out_infinite]"
         style={{ display: "inline-block", width: 6, height: 6, borderRadius: "50%", background: "var(--term-amber)", boxShadow: "0 0 8px var(--term-amber)" }}
@@ -254,7 +254,7 @@ function TeamStatRow({
   return (
     <div className="flex items-center gap-4">
       <TeamLogo abbreviation={abbreviation} season={season} fallback={fallback} size={30} color={colors.primary} />
-      <div className="flex w-[140px] shrink-0 flex-col gap-0.5">
+      <div className="flex w-[140px] shrink-0 flex-col gap-1">
         <span
           className="mono truncate"
           style={{ fontSize: "16px", letterSpacing: "-0.01em", color: "var(--term-text)", fontWeight: 800, lineHeight: 1.05 }}
@@ -307,7 +307,7 @@ function RestAdvPanel({
         REST ADVANTAGE
       </span>
 
-      <div className="mono flex items-baseline justify-center gap-1.5 tabular-nums" style={{ lineHeight: 1 }}>
+      <div className="mono flex items-baseline justify-center gap-2 tabular-nums" style={{ lineHeight: 1 }}>
         {display.kind === "team" ? (
           <>
             <span style={{ fontSize: "16px", fontWeight: 800, letterSpacing: "0.02em", color }}>
@@ -409,7 +409,7 @@ function MetaStrip({ game }: { game: GameResponse }) {
       style={{
         background: "var(--term-bg)",
         borderTop: "1px solid var(--term-border)",
-        padding: "4px 14px",
+        padding: "4px 16px",
         fontSize: "11px",
         color: "var(--term-text-muted)",
         letterSpacing: "0.04em",
@@ -484,7 +484,7 @@ export function FatigueDetailColumn({
       style={{ background: "var(--term-surface)", border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }}
     >
       <p
-        className="mono pb-1.5"
+        className="mono pb-2"
         style={{
           fontSize: 11,
           letterSpacing: "0.08em",
@@ -538,7 +538,7 @@ export function RaBadge({
         style={{
           fontSize: 10,
           letterSpacing: "0.06em",
-          padding: "2px 7px",
+          padding: "4px 8px",
           borderRadius: "var(--term-radius-sm)",
           border: "1px solid var(--term-neutral)",
           color: "var(--term-text-muted)",
@@ -557,7 +557,7 @@ export function RaBadge({
       style={{
         fontSize: 10,
         letterSpacing: "0.06em",
-        padding: "2px 7px",
+        padding: "4px 8px",
         borderRadius: "var(--term-radius-sm)",
         // Always the rested pole: the named team is the more-rested side, whichever side it is.
         background: "var(--term-blue)",
@@ -656,7 +656,7 @@ export function MatchupCard({
           "cursor-pointer transition-colors hover:bg-[var(--term-surface-2)] focus-visible:ring-2 focus-visible:ring-[var(--term-accent)]/40",
           isScoreFlashing && "animate-[scoreFlash_0.5s_ease-out]"
         )}
-        style={{ padding: "14px 16px" }}
+        style={{ padding: 16 }}
       >
         {/* Status line (live/final/upcoming) */}
         <div className="mb-3 flex items-center justify-between">
@@ -669,7 +669,7 @@ export function MatchupCard({
 
         {/* Main row: two stacked team rows (identity + fatigue) | RA verdict */}
         <div className="flex items-stretch gap-4">
-          <div className="flex min-w-0 flex-1 flex-col justify-center gap-2.5">
+          <div className="flex min-w-0 flex-1 flex-col justify-center gap-3">
             <TeamStatRow
               abbreviation={awayBrand.abbreviation}
               name={awayBrand.name}

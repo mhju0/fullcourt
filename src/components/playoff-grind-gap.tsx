@@ -17,7 +17,7 @@ const GAP_PTS = ownLowOppHigh.winPct - ownLowOppLow.winPct
 /** Track is a full 0-100 scale: a truncated axis would draw a bigger gap than the data has. */
 function Bar({ label, winPct, n, lit }: { label: string; winPct: number; n: number; lit?: boolean }) {
   return (
-    <div className="flex flex-col gap-1.5">
+    <div className="flex flex-col gap-2">
       <div className="flex flex-wrap items-baseline justify-between gap-x-3">
         <span style={{ fontSize: 15, fontWeight: lit ? 700 : 600, color: lit ? "var(--term-text)" : "var(--term-text-muted)" }}>
           {label}
@@ -55,7 +55,7 @@ export function PlayoffGrindGap() {
         BETTER YOUR ODDS WHEN THE OTHER TEAM ARRIVES OFF A LONG SERIES · ROUNDS 2+
       </span>
 
-      <div className="mt-5 flex flex-col gap-4">
+      <div className="mt-6 flex flex-col gap-4">
         <Bar label="They closed their last round early" winPct={ownLowOppLow.winPct} n={ownLowOppLow.n} />
         <Bar label="They went the distance" winPct={ownLowOppHigh.winPct} n={ownLowOppHigh.n} lit />
       </div>

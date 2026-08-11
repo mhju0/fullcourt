@@ -45,7 +45,7 @@ function RecentResultsList({
       style={{ background: "var(--term-surface)", border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }}
     >
       <p
-        className="mono pb-1.5 text-center uppercase"
+        className="mono pb-2 text-center uppercase"
         style={{
           fontSize: 11,
           letterSpacing: "0.08em",
@@ -77,7 +77,7 @@ function RecentResultsList({
               // Bg tint alone read as "highlighted" rather than "clickable". The 2px inset
               // accent bar is the same left-accent language SeriesCard uses for state, and
               // `inset` avoids the layout shift a border-left would cause on hover.
-              className="mono flex cursor-pointer flex-wrap items-center justify-between gap-x-2 px-1.5 py-1 transition-[box-shadow,transform,background-color] duration-200 hover:translate-x-0.5 hover:bg-[var(--term-surface-2)] hover:shadow-[inset_2px_0_0_var(--term-blue)] focus-visible:bg-[var(--term-surface-2)] focus-visible:shadow-[inset_2px_0_0_var(--term-blue)] motion-reduce:transition-none motion-reduce:hover:translate-x-0"
+              className="mono flex cursor-pointer flex-wrap items-center justify-between gap-x-2 px-2 py-1 transition-[box-shadow,transform,background-color] duration-200 hover:translate-x-0.5 hover:bg-[var(--term-surface-2)] hover:shadow-[inset_2px_0_0_var(--term-blue)] focus-visible:bg-[var(--term-surface-2)] focus-visible:shadow-[inset_2px_0_0_var(--term-blue)] motion-reduce:transition-none motion-reduce:hover:translate-x-0"
               style={{ fontSize: 12, color: "var(--term-text)", borderRadius: "var(--term-radius-sm)" }}
               aria-label={`View game details: ${format(parseISO(g.date), "MMM d")} vs ${g.opponentAbbreviation}`}
             >
@@ -130,14 +130,14 @@ function ExploreGameDetailBody({
         style={{ fontSize: 18, fontWeight: 700, color: "var(--term-text)", letterSpacing: "0.04em" }}
       >
         {awayBrand.abbreviation}
-        <span className="mx-1.5" style={{ fontWeight: 400, color: "var(--term-hairline)" }}>@</span>
+        <span className="mx-2" style={{ fontWeight: 400, color: "var(--term-hairline)" }}>@</span>
         {homeBrand.abbreviation}
       </p>
       <p className="mono text-center uppercase" style={{ fontSize: 11, color: "var(--term-text-muted)", letterSpacing: "0.04em" }}>
         {format(parseISO(game.date), "EEEE, MMMM d, yyyy")} · {game.season}
       </p>
 
-      <div className="flex justify-center py-0.5">
+      <div className="flex justify-center py-1">
         <RaBadge
           restAdvantage={game.restAdvantage}
           homeAbbr={homeBrand.abbreviation}
@@ -325,7 +325,7 @@ function ExploreGameDetailModalContent({
         aria-labelledby={titleId}
         className={cn(
           "relative z-[101] max-h-[min(90vh,720px)] w-full max-w-lg overflow-y-auto p-4 shadow-2xl",
-          "sm:p-5"
+          "sm:p-6"
         )}
         style={{
           background: "var(--term-surface)",

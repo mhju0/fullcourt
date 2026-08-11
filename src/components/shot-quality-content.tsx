@@ -98,7 +98,7 @@ function EncodingToggle({
     { key: "diff", label: "GBM − BASELINE" },
   ]
   return (
-    <div className="flex flex-col gap-1.5">
+    <div className="flex flex-col gap-2">
       <span className="mono" style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 600 }}>
         COLOR ENCODING
       </span>
@@ -111,7 +111,7 @@ function EncodingToggle({
               type="button"
               aria-pressed={active}
               onClick={() => onModeChange(o.key)}
-              className={`mono px-3 py-1.5 transition-colors ${active ? "" : "hover:bg-[var(--term-surface-2)]"}`}
+              className={`mono px-3 py-2 transition-colors ${active ? "" : "hover:bg-[var(--term-surface-2)]"}`}
               style={{
                 fontSize: 12,
                 letterSpacing: "0.05em",
@@ -152,7 +152,7 @@ function BigLegend({
   right: string
 }) {
   return (
-    <div className="flex w-full max-w-[420px] shrink-0 flex-col gap-1.5 sm:w-[340px]">
+    <div className="flex w-full max-w-[420px] shrink-0 flex-col gap-2 sm:w-[340px]">
       <span className="mono" style={{ fontSize: 11, letterSpacing: "0.1em", color: "var(--term-text-muted)", fontWeight: 700 }}>
         {caption}
       </span>
@@ -331,7 +331,7 @@ function ShotCourt({
 
   return (
     <figure className="flex flex-col gap-2">
-      <figcaption className="flex flex-col gap-0.5">
+      <figcaption className="flex flex-col gap-1">
         <span className="mono" style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.05em", color: "var(--term-text)" }}>
           {title}
         </span>

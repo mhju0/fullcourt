@@ -36,7 +36,7 @@ export function Section({
           floating on the same white as the body. Each card now has a visible top edge, which
           is what makes a page of six of them scan as six things. */}
       <div
-        className="mono flex items-center gap-3 px-4 py-2.5"
+        className="mono flex items-center gap-3 px-4 py-3"
         style={{
           fontSize: 11,
           letterSpacing: "0.08em",
@@ -55,7 +55,7 @@ export function Section({
               background: RED_TINT,
               border: "1px solid rgba(220, 38, 38, 0.18)",
               borderRadius: "var(--term-radius-sm)",
-              padding: "2px 7px",
+              padding: "4px 8px",
               whiteSpace: "nowrap",
             }}
           >
@@ -88,7 +88,7 @@ export function Note({ children }: { children: React.ReactNode }) {
         background: GOLD_TINT,
         borderLeft: "2px solid rgba(161, 98, 7, 0.5)",
         borderRadius: "0 var(--term-radius) var(--term-radius) 0",
-        padding: "10px 13px",
+        padding: 12,
       }}
     >
       {children}
@@ -106,7 +106,7 @@ export function Formula({ children }: { children: React.ReactNode }) {
         border: "1px solid rgba(37, 99, 235, 0.16)",
         borderLeft: "2px solid var(--term-blue)",
         borderRadius: "0 var(--term-radius) var(--term-radius) 0",
-        padding: "12px 14px",
+        padding: "12px 16px",
         fontSize: 12,
         lineHeight: 1.7,
         color: "var(--term-text)",
@@ -130,11 +130,11 @@ export function LimitList({ items }: { items: readonly string[] }) {
         background: RED_TINT,
         borderLeft: "2px solid var(--term-red)",
         borderRadius: "0 var(--term-radius) var(--term-radius) 0",
-        padding: "12px 14px",
+        padding: "12px 16px",
       }}
     >
       {items.map((item) => (
-        <li key={item} className="flex gap-2.5">
+        <li key={item} className="flex gap-3">
           <span className="mono" style={{ color: "var(--term-red)", flexShrink: 0 }}>
             —
           </span>

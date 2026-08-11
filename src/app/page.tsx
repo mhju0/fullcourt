@@ -21,7 +21,7 @@ const HIGH_CONF_THRESHOLD = 2.0
 
 // Terminal-style flat button: white bg, 1px border, mono uppercase, 4px corners.
 const termBtn =
-  "mono inline-flex items-center gap-2 bg-[var(--term-surface)] px-3 py-1.5 text-[12px] uppercase tracking-[0.05em] text-[var(--term-text-dim)] transition-[background-color,border-color,transform] hover:bg-[var(--term-surface-2)]"
+  "mono inline-flex items-center gap-2 bg-[var(--term-surface)] px-3 py-2 text-[12px] uppercase tracking-[0.05em] text-[var(--term-text-dim)] transition-[background-color,border-color,transform] hover:bg-[var(--term-surface-2)]"
 const termBtnStyle: React.CSSProperties = { border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }
 
 // ─── Stat summary row ────────────────────────────────────────────
@@ -37,7 +37,7 @@ function StatCard({ label, value, accent }: { label: string; value: string; acce
         // bullets. Along the top edge they read as a row of measures, which is what they are.
         borderTop: `2px solid ${accent}`,
         borderRadius: "var(--term-radius)",
-        padding: "14px 14px 16px",
+        padding: 16,
       }}
     >
       <span style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 500 }}>
@@ -123,7 +123,7 @@ function MatchupRowSkeleton() {
         // left rule does not change colour when the real data lands.
         borderLeft: "2px solid var(--term-neutral)",
         borderRadius: "var(--term-radius)",
-        padding: "10px 14px",
+        padding: "12px 16px",
       }}
     >
       <div className="flex items-center gap-4">
@@ -167,7 +167,7 @@ function EmptyState({ label }: { label: string }) {
 function OffSeasonBanner({ season }: { season: string }) {
   return (
     <div
-      className="mono flex flex-wrap items-center justify-between gap-2 px-4 py-2.5"
+      className="mono flex flex-wrap items-center justify-between gap-2 px-4 py-3"
       style={{
         background: "var(--term-surface)",
         border: "1px solid var(--term-border)",
@@ -217,7 +217,7 @@ function DateChip({
         // so a minimum let the wider chips grow and the row came out at three
         // different widths. 15 is the most games a 30-team league can play in a day,
         // and that longest line measures 55px, so 60px fits every case with room.
-        "mono flex w-[3.75rem] flex-col items-center border border-[var(--term-border)] px-2 py-1.5 transition-[transform,background-color,border-color] active:scale-[0.97]",
+        "mono flex w-[3.75rem] flex-col items-center border border-[var(--term-border)] px-2 py-2 transition-[transform,background-color,border-color] active:scale-[0.97]",
         // Selected = a solid ink block (the 08-front-office mock's .dchip.on), not the
         // rested-pole teal: teal is a data color, and a chip is chrome.
         selected
@@ -327,7 +327,7 @@ export default function HomePage() {
     // gap-6 gave a heading the same separation as two halves of one control panel.
     <div className="flex flex-col gap-12">
       {/* Heading + view toggle: one chapter, so they sit close together. */}
-      <div className="flex flex-col gap-5">
+      <div className="flex flex-col gap-6">
         {/* Not "Today's Matchups": the season selector reaches back to 1985-86, so the
             heading was already wrong on any past date, and the UPCOMING view widened it. */}
         <PageHeader
@@ -337,7 +337,7 @@ export default function HomePage() {
         />
 
       {/* View toggle — absorbed the old /upcoming route, which is now a redirect here. */}
-      <div className="flex flex-wrap gap-1.5" role="group" aria-label="Games view">
+      <div className="flex flex-wrap gap-2" role="group" aria-label="Games view">
         {([
           { id: "date", label: "BY DATE" },
           { id: "upcoming", label: "UPCOMING" },
@@ -379,7 +379,7 @@ export default function HomePage() {
           {/* Filters — two labelled groups rather than three stacked rows that each
               repeated the same label treatment. Season and month answer one question
               ("which stretch of basketball"), so they share a group. */}
-          <div className="flex flex-col gap-[18px]" style={{ ...termCardStyle, padding: 18 }}>
+          <div className="flex flex-col gap-[18px]" style={{ ...termCardStyle, padding: 16 }}>
             <div>
               <GroupLabel>Scope</GroupLabel>
               {/* Align to the bottom, not the centre: the season block is label +
@@ -398,7 +398,7 @@ export default function HomePage() {
                   />
                 </div>
                 <div className="-mx-1 min-w-0 flex-1 overflow-x-auto overflow-y-hidden pb-1 [scrollbar-width:thin]">
-                  <div className="flex min-w-min gap-1.5 px-1">
+                  <div className="flex min-w-min gap-2 px-1">
                   {slate.months.map(({ value, label, dayCount, isSelected }) => (
                     <button
                       key={value}
@@ -444,7 +444,7 @@ export default function HomePage() {
             ) : (
               // The old "DAYS WITH GAMES" caption is gone: the group is already labelled
               // "Day", and every chip states its own game count.
-              <div className="flex flex-wrap gap-1.5">
+              <div className="flex flex-wrap gap-2">
                 {slate.days.map((d) => (
                   <DateChip
                     key={d.date}
@@ -458,7 +458,7 @@ export default function HomePage() {
               </div>
             )}
 
-            <div className="mt-3.5 flex flex-wrap items-center gap-2">
+            <div className="mt-4 flex flex-wrap items-center gap-2">
               <Button
                 variant="outline"
                 size="icon-sm"

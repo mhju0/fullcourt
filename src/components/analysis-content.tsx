@@ -38,7 +38,7 @@ const termTooltip: React.CSSProperties = {
   background: "var(--term-surface)",
   border: "1px solid var(--term-border)",
   borderRadius: "var(--term-radius)",
-  padding: "8px 10px",
+  padding: "8px 12px",
   fontFamily: MONO_FONT_STACK,
   fontSize: 12,
 }
@@ -47,7 +47,7 @@ const exploreSelectStyle: React.CSSProperties = {
   background: "var(--term-surface)",
   border: "1px solid var(--term-border)",
   borderRadius: "var(--term-radius)",
-  padding: "6px 10px",
+  padding: "8px 12px",
   fontSize: 12,
   fontFamily: MONO_FONT_STACK,
   color: "var(--term-text)",
@@ -55,7 +55,7 @@ const exploreSelectStyle: React.CSSProperties = {
 }
 
 const exploreTdBaseStyle: React.CSSProperties = {
-  padding: "8px 10px",
+  padding: "8px 12px",
   borderBottom: "1px solid var(--term-border)",
   fontSize: 12,
 }
@@ -84,7 +84,7 @@ function SectionDivider({ label, descriptor }: { label: string; descriptor?: str
 function BaselineLegend({ zeroLabel }: { zeroLabel: string }) {
   return (
     <div
-      className="mono mt-3 flex flex-wrap items-center gap-x-5 gap-y-1.5"
+      className="mono mt-3 flex flex-wrap items-center gap-x-6 gap-y-2"
       style={{ fontSize: 11, color: "var(--term-text-muted)", letterSpacing: "0.03em" }}
     >
       <span className="inline-flex items-center gap-2">
@@ -115,7 +115,7 @@ function StatCard({
 }) {
   return (
     <div
-      className="mono flex flex-col gap-1.5"
+      className="mono flex flex-col gap-2"
       style={{
         background: "var(--term-surface)",
         border: "1px solid var(--term-border)",
@@ -123,7 +123,7 @@ function StatCard({
         // bullets. Along the top edge it reads as a row of measures. Matches page.tsx.
         borderTop: `2px solid ${accent}`,
         borderRadius: "var(--term-radius)",
-        padding: "12px 14px",
+        padding: "12px 16px",
       }}
     >
       <span style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 600 }}>
@@ -527,20 +527,20 @@ function ExploreGames({
             {loading ? (
               Array.from({ length: 5 }).map((_, i) => (
                 <tr key={i}>
-                  <td colSpan={7} style={{ ...exploreTdBaseStyle, padding: "10px" }}>
+                  <td colSpan={7} style={{ ...exploreTdBaseStyle, padding: 12 }}>
                     <Skeleton className="h-4 w-full bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius-sm)" }} />
                   </td>
                 </tr>
               ))
             ) : error ? (
               <tr>
-                <td colSpan={7} style={{ ...exploreTdBaseStyle, textAlign: "center", color: "var(--term-red)", padding: "20px" }}>
+                <td colSpan={7} style={{ ...exploreTdBaseStyle, textAlign: "center", color: "var(--term-red)", padding: 24 }}>
                   {error}
                 </td>
               </tr>
             ) : results.length === 0 ? (
               <tr>
-                <td colSpan={7} style={{ ...exploreTdBaseStyle, textAlign: "center", color: "var(--term-text-muted)", padding: "24px" }}>
+                <td colSpan={7} style={{ ...exploreTdBaseStyle, textAlign: "center", color: "var(--term-text-muted)", padding: 24 }}>
                   NO GAMES MATCH THE CURRENT FILTERS
                 </td>
               </tr>
@@ -589,7 +589,7 @@ function ExploreGames({
                           color: "var(--term-surface)",
                           fontSize: 11,
                           fontWeight: 700,
-                          padding: "2px 6px",
+                          padding: "4px 8px",
                           borderRadius: "var(--term-radius-sm)",
                           letterSpacing: "0.04em",
                         }}
@@ -868,7 +868,7 @@ export function AnalysisContent() {
           label="WIN RATE BY SEASON"
           descriptor="VS THAT SEASON'S HOME BASELINE"
         />
-        <div className="mt-2 flex flex-wrap gap-1.5">
+        <div className="mt-2 flex flex-wrap gap-2">
           {RA_THRESHOLD_OPTIONS.map((opt) => {
             const active = seasonRaFilter === opt.value
             return (
@@ -883,7 +883,7 @@ export function AnalysisContent() {
                   color: active ? "var(--term-surface)" : "var(--term-text)",
                   border: `1px solid ${active ? "var(--term-text)" : "var(--term-border)"}`,
                   borderRadius: "var(--term-radius)",
-                  padding: "4px 10px",
+                  padding: "4px 12px",
                   fontSize: 12,
                   letterSpacing: "0.04em",
                   fontWeight: 600,

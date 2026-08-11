@@ -60,7 +60,7 @@ export function OnboardingGuide() {
         <Dialog.Backdrop className="fixed inset-0 z-[100] bg-[var(--term-bg)] opacity-85" />
         <Dialog.Viewport className="fixed inset-0 z-[101] flex items-end justify-center sm:items-center sm:p-4">
           <Dialog.Popup
-            className="relative max-h-[88dvh] w-full overflow-y-auto border border-[var(--term-border)] border-t-2 border-t-[var(--term-amber)] bg-[var(--term-surface)] p-4 text-[var(--term-text)] outline-none sm:max-w-xl sm:p-5"
+            className="relative max-h-[88dvh] w-full overflow-y-auto border border-[var(--term-border)] border-t-2 border-t-[var(--term-amber)] bg-[var(--term-surface)] p-4 text-[var(--term-text)] outline-none sm:max-w-xl sm:p-6"
             style={{ borderRadius: "var(--term-radius)" }}
           >
             <div className="flex items-start justify-between gap-4">

@@ -84,7 +84,7 @@ function Tile({
         border: "1px solid var(--term-border)",
         borderTop: `2px solid ${accent}`,
         borderRadius: "var(--term-radius)",
-        padding: "14px 14px 16px",
+        padding: 16,
       }}
     >
       <span style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 500 }}>
@@ -676,7 +676,7 @@ export function SeasonReportContent() {
 
   return (
     <div className="flex flex-col gap-12">
-      <div style={{ ...termCardStyle, padding: 18 }}>
+      <div style={{ ...termCardStyle, padding: 16 }}>
         <SeasonSelector id="season-report-season" season={season} onSeasonChange={setSeason} />
       </div>
 

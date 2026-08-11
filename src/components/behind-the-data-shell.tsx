@@ -27,16 +27,11 @@ export function BehindTheDataShell({
 
   return (
     <div className="flex flex-col gap-8">
-      <PageHeader
-        eyebrow={eyebrow}
-        title={title}
-        description={description}
-        descriptionMaxWidth="46rem"
-      />
+      <PageHeader eyebrow={eyebrow} title={title} description={description} />
 
       <nav
         aria-label="Reference sections"
-        className="mono flex flex-wrap items-center gap-x-5 gap-y-2 border-y py-2.5"
+        className="mono flex flex-wrap items-center gap-x-6 gap-y-2 border-y py-3"
         style={{ borderColor: "var(--term-border)", fontSize: 11, letterSpacing: "0.08em" }}
       >
         {BEHIND_THE_DATA_SECTIONS.map((section) => {

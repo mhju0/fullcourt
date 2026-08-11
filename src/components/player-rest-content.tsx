@@ -253,7 +253,7 @@ export function PlayerRestContent() {
           was the piece that wrapped away from everything else. Row one is the four filters;
           row two is find-a-name plus the count it produces. Each label/select pair is its own
           flex box so a wrap can never separate a label from the control it names. */}
-      <div className="flex flex-col gap-2.5">
+      <div className="flex flex-col gap-3">
         <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
           <span className="flex items-center gap-2">
             <label className={FILTER_LABEL} htmlFor="pr-season">Season</label>
@@ -328,11 +328,11 @@ export function PlayerRestContent() {
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search player"
             aria-label="Search player"
-            className="mono w-full max-w-[260px] bg-[var(--term-surface)] px-3 py-1.5 text-[12px] text-[var(--term-text)] placeholder:text-[var(--term-text-muted)]"
+            className="mono w-full max-w-[260px] bg-[var(--term-surface)] px-3 py-2 text-[12px] text-[var(--term-text)] placeholder:text-[var(--term-text-muted)]"
             style={{ border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }}
           />
 
-          <label className="mono flex cursor-pointer items-center gap-1.5 text-[10px] uppercase tracking-[0.08em] text-[var(--term-text-muted)]">
+          <label className="mono flex cursor-pointer items-center gap-2 text-[10px] uppercase tracking-[0.08em] text-[var(--term-text-muted)]">
             <input
               type="checkbox"
               checked={evidencedOnly}
