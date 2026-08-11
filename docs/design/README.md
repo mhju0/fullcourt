@@ -28,10 +28,13 @@ Court") was reviewed and narrowed.
 | 08 | [Front Office](mocks/08-front-office.html) | The daylight pro instrument: one continuous 11-game table as the page's spine, indigo spent one moment at a time | Geist · Geist Mono | `#E11D48` rose / `#0891B2` teal | `#4F46E5` indigo |
 | 09 | [Stat Sheet](mocks/09-stat-sheet.html) | Swiss-modern data poster: chrome is ink, **color is data** — monochrome structure, oversized numerals | Instrument Sans · JetBrains Mono | `#DC2626` / `#2563EB` | none (ink) |
 
-**Status: direction 08 · Front Office was selected** (2026-08-09) and is being applied to
-the app. The other three are kept as the record of what was considered and why; 06 is the
-closest fallback (it is a pure token-level restyle — it validated with the brand's existing
-hexes unchanged).
+**Status: direction 08 · Front Office was selected** (2026-08-09) and **is fully applied** —
+tokens, Geist type, the indigo accent, the rose/teal data poles, and the Games slate rebuilt as
+one continuous table. Two follow-on passes on 2026-08-11 finished the job: the two-rail
+alignment law, and one `DataTable` module that now draws every table on the site. The other
+three directions are kept as the record of what was considered and why; 06 is the closest
+fallback (it is a pure token-level restyle — it validated with the brand's existing hexes
+unchanged).
 
 These are static pitches, not implementation specs: exact hexes, spacing, and structure in
 the app go through the normal token system (`globals.css` `--term-*`) and review, and the

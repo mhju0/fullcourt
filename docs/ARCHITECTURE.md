@@ -122,8 +122,9 @@ Full list in [API.md](API.md).
 
 ### 6. Frontend (Next.js App Router + React 19)
 
-- `app/layout.tsx` — Inter (body) + Space Grotesk (headings) + IBM Plex Mono (data/labels) fonts,
-  `<NavBar>`, footer, metadata.
+- `app/layout.tsx` — Geist (body **and** headings) + Geist Mono (data/labels) fonts, `<NavBar>`,
+  footer, metadata. One family across the UI since 2026-08-09; see the Front Office entry in the
+  decision log below.
 - `app/page.tsx` — **Games** (client, nav label `GAMES`): season/month/day pickers → `/api/games/dates`
   then `/api/games/[date]`, with live merges from `useLiveGames`. Its UPCOMING view mounts
   `upcoming-content.tsx`, absorbed from the retired `/upcoming` route (now a redirect
@@ -327,6 +328,25 @@ the row change → connected clients update in place.
   Broadcast system and widen the CSP product-wide. `gsap` is the one runtime dependency added
   since the freeze; `@gsap/react` was not added with it, and no remote images were introduced,
   so the CSP is unchanged.
+- **"Front Office" replaced the interface (2026-08-09), superseding the entry above.** Chosen
+  from four light-only, data-forward directions after a first round of five wider ones; the
+  mocks and the reasons the other three lost are in [design/README.md](design/README.md). What
+  changed: **one type family** — Geist and Geist Mono, so titles separate from body text by
+  weight and size rather than by face, retiring Inter + Space Grotesk + IBM Plex Mono — an
+  **indigo accent** spent one moment at a time, rose/teal **data poles**, and the Games slate
+  rebuilt as **one continuous table** rather than a stack of cards. The light Broadcast system
+  it replaced was itself light → dark → light; this is light-only too, and `/about` remains the
+  one deliberately dark surface. No new runtime dependency, no CSP change.
+- **The two-rail alignment law, and one table module (2026-08-11).** Two follow-on passes the
+  redesign made necessary. The law — outer rail at the page gutter, inner rail at `SPACE_CARD`,
+  exactly one sanctioned third rail — is stated in [FRONTEND.md](FRONTEND.md) and guarded by
+  `e2e/alignment-law.spec.ts`. Then `src/components/ui/data-table.tsx` absorbed table drawing:
+  there had been a *convention* spread across a CSS rule, three style objects and a width
+  constant, which twenty-one call sites had to reproduce from memory and five of seven
+  measurable facts had drifted on. **Every table on the site now renders through it**, and the
+  only `<table>` element left in `src/` is the module's own. `scripts/screenshots.mjs` was
+  rewritten in the same pass to end each capture on a **named element** rather than a pinned
+  pixel height, so a layout change no longer silently crops a screenshot mid-content.
 
 ## Playoff Predictor (complete) — data flow
 

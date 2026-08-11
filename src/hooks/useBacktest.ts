@@ -13,7 +13,7 @@ import type { AnalysisResponse } from "@/types"
  * The published backtest, which four surfaces read and none of them own.
  *
  * It is the denominator behind every rest-advantage claim on the site — the home page
- * matchup cards, the upcoming table, the Season Report's all-season baseline and
+ * matchup rows, the upcoming table, the Season Report's all-season baseline and
  * `/analysis` itself — so each of those surfaces was fetching it, and each was choosing
  * its own revalidation policy and its own answer for "what if it never arrives". Two of
  * them then rebuilt the same four-field slice by hand, re-listing the exact keys
