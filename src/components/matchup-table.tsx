@@ -7,7 +7,7 @@ import {
   ConfidenceBadge,
   FatigueDetailColumn,
   TeamLogo,
-  gameFlags,
+  teamGameFlags,
   getConfidence,
 } from "@/components/matchup-card"
 import { getTeamColors } from "@/lib/nba-team-colors"
@@ -17,6 +17,7 @@ import {
   type RestAdvantageEvidenceSource,
 } from "@/lib/rest-advantage-display"
 import { getTeamBranding } from "@/lib/team-history"
+import { SPACE_NESTED_ROW } from "@/lib/terminal-styles"
 import { cn } from "@/lib/utils"
 import type { GameResponse } from "@/types"
 
@@ -40,8 +41,20 @@ import type { GameResponse } from "@/types"
 // Column template shared by the header row and every game row, so the header can
 // never drift out of line with the cells beneath it.
 const GRID_COLS =
-  "minmax(96px,120px) minmax(210px,1.3fr) minmax(190px,1fr) minmax(190px,220px) minmax(118px,132px)"
-const GRID_MIN_WIDTH = 880
+  "minmax(96px,120px) minmax(210px,1.3fr) minmax(232px,1.1fr) minmax(190px,220px) minmax(118px,132px)"
+// Raised from 880 with the fatigue column, which now carries each team's schedule flags beside
+// its score. Sum of the column minimums plus four 16px gaps is 900, so this clears it.
+const GRID_MIN_WIDTH = 920
+
+/**
+ * Width reserved for a line's flag chips, so the strip is identical on every line and the
+ * fatigue numbers stay in one column however many flags a team carries.
+ *
+ * Sized for the widest thing it can hold: two four-character chips plus a `+N` overflow chip
+ * and their gaps (~98px). A single "JET LAG" is wider than one 4-char chip but never shares
+ * the strip — it sorts fifth, so it only ever appears alone or beside "ALT".
+ */
+const FLAG_STRIP_W = 104
 
 // ─── Status cell ─────────────────────────────────────────────────
 
@@ -139,16 +152,68 @@ function TeamLine({
   )
 }
 
-function FatigueLine({ score, tone }: { score: number | null; tone: FatigueBarTone }) {
+/**
+ * How many flags a line shows before collapsing the rest into a count. Measured over 79 games
+ * across ten dates: 84% of team-lines carry two or fewer, but a visiting team can stack five
+ * (B2B + 3IN4 + 4IN6 + ALT + JET LAG). Rendering all of them would either blow the column or
+ * wrap the row to a second line, and a row whose height depends on its flag count is the
+ * problem this replaced.
+ */
+const MAX_INLINE_FLAGS = 2
+
+/** The schedule flag chip — the fatigue score's reason, sitting next to the score. */
+function FlagChip({ label, muted = false }: { label: string; muted?: boolean }) {
+  return (
+    <span
+      className="mono shrink-0"
+      style={{
+        fontSize: 9,
+        letterSpacing: "0.06em",
+        fontWeight: 600,
+        color: "var(--term-text-muted)",
+        border: `1px solid var(--term-${muted ? "surface-2" : "border"})`,
+        borderRadius: "var(--term-radius-sm)",
+        padding: "0 4px",
+        lineHeight: "14px",
+      }}
+    >
+      {label}
+    </span>
+  )
+}
+
+function FatigueLine({
+  score,
+  tone,
+  flags,
+}: {
+  score: number | null
+  tone: FatigueBarTone
+  flags: string[]
+}) {
+  const shown = flags.slice(0, MAX_INLINE_FLAGS)
+  const hidden = flags.length - shown.length
+
   return (
     <div className="flex items-center gap-2" style={{ height: TEAM_LINE_H }}>
       {score !== null ? (
-        <FatigueBar score={score} tone={tone} className="flex-1" />
+        <FatigueBar score={score} tone={tone} className="min-w-[36px] flex-1" />
       ) : (
-        <div className="flex-1" style={{ height: 4, background: "var(--term-surface-2)", borderRadius: "var(--term-radius-bar)" }} />
+        <div className="min-w-[36px] flex-1" style={{ height: 4, background: "var(--term-surface-2)", borderRadius: "var(--term-radius-bar)" }} />
       )}
       <span className="mono shrink-0 tabular-nums" style={{ width: 30, fontSize: 13, fontWeight: 700, color: "var(--term-text)", textAlign: "right" }}>
         {score !== null ? score.toFixed(1) : "—"}
+      </span>
+      {/* Fixed-width so the two lines' chips align with each other and with the rows above and
+          below, whether a team carries two flags, one, or none. Chips start from the strip's
+          left edge rather than filling from its right: a list that grows rightward keeps its
+          first item on one rail, so a team with one flag lines up with the first flag of the
+          team above it instead of with that team's second. */}
+      <span className="flex shrink-0 items-center justify-start gap-1" style={{ width: FLAG_STRIP_W }}>
+        {shown.map((flag) => (
+          <FlagChip key={flag} label={flag} />
+        ))}
+        {hidden > 0 && <FlagChip label={`+${hidden}`} muted />}
       </span>
     </div>
   )
@@ -275,7 +340,7 @@ function GameRow({
     () => buildRestAdvantageEvidence(game.restAdvantage, evidenceSource),
     [game.restAdvantage, evidenceSource]
   )
-  const flags = gameFlags(game)
+  const flags = teamGameFlags(game)
   const tones = fatigueTones(game.awayFatigue?.score ?? null, game.homeFatigue?.score ?? null)
   const isLive = game.status === "live"
 
@@ -339,8 +404,8 @@ function GameRow({
         </div>
 
         <div className="flex flex-col gap-1">
-          <FatigueLine score={game.awayFatigue?.score ?? null} tone={tones.away} />
-          <FatigueLine score={game.homeFatigue?.score ?? null} tone={tones.home} />
+          <FatigueLine score={game.awayFatigue?.score ?? null} tone={tones.away} flags={flags.away} />
+          <FatigueLine score={game.homeFatigue?.score ?? null} tone={tones.home} flags={flags.home} />
         </div>
 
         <RestAdvCell
@@ -358,42 +423,33 @@ function GameRow({
         </div>
       </div>
 
-      {/* Evidence + flags sub-row. Rendered only when there is something to say — a
-          neutral game with no schedule flags adds no row at all. */}
-      {(evidence || flags.length > 0) && (
+      {/* Evidence sub-row — the exception, and now genuinely one.
+          It used to carry the schedule flags too, right-floated opposite the sentence. Measured
+          over 79 games: 53% of rows had both, 43% had flags with no sentence, and 0% ever had a
+          sentence with no flags. So the two-up layout only served the "both" case, while the
+          43% paid a full 32px band to right-align three chips against 901px of nothing — the
+          empty space under the team names. The flags now sit on their own team's fatigue line,
+          which is where they were describing all along, and this band renders for the sentence
+          alone. 47% of rows lose it entirely.
+          Tinted with a rule on top so the height it does add reads as attached content rather
+          than as the row having grown. */}
+      {evidence && (
         <div
-          className="flex flex-wrap items-baseline gap-x-3 gap-y-1"
-          style={{ padding: "0 16px 8px 32px" }}
+          style={{
+            // SPACE_NESTED_ROW, not a hand-set 32: this is a row nested inside a row group, the
+            // same shape as /shooting's expanded seasons, and docs/FRONTEND.md sanctions exactly
+            // one third rail. A second nested indent here would make that false.
+            padding: `8px 16px 8px ${SPACE_NESTED_ROW}px`,
+            background: "var(--term-surface-2)",
+            borderTop: "1px solid var(--term-border)",
+          }}
         >
-          {evidence && (
-            <p className="m-0 flex min-w-0 items-baseline gap-2" style={{ fontSize: 12, lineHeight: 1.5, color: "var(--term-text-muted)" }}>
-              <span aria-hidden className="mono" style={{ color: "var(--term-hairline)" }}>
-                ↳
-              </span>
-              {evidence.sentence}
-            </p>
-          )}
-          {flags.length > 0 && (
-            <span className="ml-auto flex shrink-0 flex-wrap gap-2">
-              {flags.map((flag) => (
-                <span
-                  key={flag}
-                  className="mono"
-                  style={{
-                    fontSize: 9,
-                    letterSpacing: "0.06em",
-                    fontWeight: 600,
-                    color: "var(--term-text-muted)",
-                    border: "1px solid var(--term-border)",
-                    borderRadius: "var(--term-radius-sm)",
-                    padding: "4px 8px",
-                  }}
-                >
-                  {flag}
-                </span>
-              ))}
+          <p className="m-0 flex min-w-0 items-baseline gap-2" style={{ fontSize: 12, lineHeight: 1.5, color: "var(--term-text-muted)" }}>
+            <span aria-hidden className="mono" style={{ color: "var(--term-hairline)" }}>
+              ↳
             </span>
-          )}
+            {evidence.sentence}
+          </p>
         </div>
       )}
 

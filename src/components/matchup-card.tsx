@@ -384,6 +384,34 @@ function RestAdvPanel({
 // ─── Metadata strip ──────────────────────────────────────────────
 
 /** The schedule-condition chips a game carries. One list, shared by the card strip and the table sub-row. */
+/**
+ * The same schedule flags as {@link gameFlags}, but split by the team they describe and with
+ * the AWAY/HOME prefix dropped.
+ *
+ * Every one of these is already read off one team's fatigue record — the prefix existed only
+ * because `gameFlags` pools them into a single strip, where a bare "3IN4" would not say whose.
+ * Rendered on a team's own line the prefix is noise, and it was roughly half of each chip.
+ *
+ * Altitude and jet lag are away-only by construction: they are what the *visiting* team carries
+ * into the building. Overtime is scoped per team here rather than pooled as one game-level flag,
+ * which `gameFlags` cannot do — a team that played an OT game yesterday is the one paying for it.
+ */
+export function teamGameFlags(game: GameResponse): { away: string[]; home: string[] } {
+  const away: string[] = []
+  const home: string[] = []
+  if (game.awayFatigue?.isBackToBack) away.push("B2B")
+  if (game.awayFatigue?.is3In4) away.push("3IN4")
+  if (game.awayFatigue?.is4In6) away.push("4IN6")
+  if (game.awayFatigue?.altitudePenalty) away.push("ALT")
+  if (game.awayFatigue?.hasTimeZoneDisplacement) away.push("JET LAG")
+  if (game.awayFatigue?.isOvertimePenalty) away.push("OT")
+  if (game.homeFatigue?.isBackToBack) home.push("B2B")
+  if (game.homeFatigue?.is3In4) home.push("3IN4")
+  if (game.homeFatigue?.is4In6) home.push("4IN6")
+  if (game.homeFatigue?.isOvertimePenalty) home.push("OT")
+  return { away, home }
+}
+
 export function gameFlags(game: GameResponse): string[] {
   const flags: string[] = []
   if (game.awayFatigue?.isBackToBack) flags.push("AWAY B2B")

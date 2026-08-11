@@ -93,6 +93,19 @@ upcoming October date at season start; else nearest / last available).
   `MatchupCard`s, with the same expand-in-place fatigue detail per game. `MatchupCard` still
   exports the shared pieces (`ConfidenceBadge`, `FatigueDetailColumn`, `RaBadge`, …) the table
   and the detail modal consume.
+- **Schedule flags sit on their own team's fatigue line, not in a shared strip** (2026-08-11),
+  via `teamGameFlags()` — which is why they read `3IN4` rather than `AWAY 3IN4`: on a team's own
+  line the prefix says nothing, and it was half of each chip. Two per line, then `+N`; the strip
+  is a fixed 104px so the fatigue numbers stay in one column however many flags a team carries.
+  They used to share a full-width sub-row with the evidence sentence, right-floated opposite it.
+  Measured over 79 games: 53% of rows had both, **43% had flags and no sentence, and 0% ever had
+  a sentence and no flags** — so the two-up layout only ever served the "both" case, while 43%
+  of rows paid a 32px band to right-align three chips against 901px of nothing. That empty space
+  under the team names is what this removed; rows without a sentence are now 81px against 116px
+  with one.
+- **The evidence sub-row is tinted (`--term-surface-2`) with a rule on top**, so the height it
+  adds reads as attached content rather than as the row having grown. It indents by
+  `SPACE_NESTED_ROW`, the one third rail the alignment law sanctions.
 - The first tile is **"GAMES ON THIS DATE"**, not "GAMES TODAY": its value is
   `mergedGames.length` for the *selected* day, and `pickDefaultGamesDate` deliberately selects
   a non-today date whenever today has no games (the normal case in the off-season).
