@@ -1,3 +1,4 @@
+import { Fragment } from "react"
 import type { CSSProperties, HTMLAttributes, ReactNode } from "react"
 import {
   termTdStyle,
@@ -28,13 +29,30 @@ import {
  * badges and links, not plain values.
  */
 
-export type DataColumn<Row> = {
+export type DataColumn<Row, K extends string = string> = {
   /**
-   * The header. A `ReactNode` rather than a string so a sortable column can bring its own
-   * button and arrow — the module does not own sorting, and a column that wants it does not
-   * have to fight for it.
+   * The header. A `ReactNode` rather than a string, so a column whose heading is more than a
+   * word — a link, an abbreviation with a title — does not have to fight for it.
    */
   label: ReactNode
+  /**
+   * Names the field this column sorts by, which is also what makes the header a sort control:
+   * focusable, `aria-sort` announced, Enter/Space as well as click.
+   *
+   * The module renders the control but does not own the state — `sort` and `onSortToggle` come
+   * from the caller, because both sorting tables already hold that state for other reasons
+   * (one feeds it to a `useMemo`, the other ships it to a worker). A module that owned it would
+   * have to be fought rather than used.
+   *
+   * Omit for a column that cannot be sorted: rank, a bar, a derived label.
+   */
+  sortKey?: K
+  /**
+   * Column width, as a CSS length, rendered into a `<colgroup>`. Set it on every column or
+   * none — a partial colgroup is worse than none, because auto layout then distributes the
+   * slack across whatever is left rather than the one column that can use it.
+   */
+  width?: string
   /**
    * The unit, rendered as the quiet sub-label under the header.
    *
@@ -71,9 +89,31 @@ export type DataColumn<Row> = {
   group?: string
 }
 
-export type DataTableProps<Row> = {
-  columns: DataColumn<Row>[]
+export type DataTableProps<Row, K extends string = string> = {
+  columns: DataColumn<Row, K>[]
   rows: readonly Row[]
+  /** The column currently sorted, and which way. Required for the sort arrows to mean anything. */
+  sort?: { key: K; dir: 1 | -1 }
+  /**
+   * A sortable header was activated. Gets the column's `sortKey`; the caller decides whether
+   * that flips the direction or moves to a new column.
+   */
+  onSortToggle?: (key: K) => void
+  /**
+   * Pins the header while the body scrolls. For the long tables — 500 players, 200 officials —
+   * where a column heading that scrolls away turns the numbers below it into anonymous digits.
+   */
+  stickyHeader?: boolean
+  /**
+   * Extra `<tr>`s emitted directly after a row's own — the `/players` expansion, where opening
+   * a player unfolds his seasons, a career line, and a note.
+   *
+   * Deliberately narrow: it can add rows but cannot touch the row it follows, so a caller
+   * reaching for it still renders its main row through `columns` like everyone else. The
+   * alternative was letting a caller replace row rendering wholesale, which is the shape that
+   * lets one table quietly drift back out of the module.
+   */
+  rowExtras?: (row: Row, index: number) => ReactNode
   /** Stable key per row. Required — an index key reorders wrongly the moment a table sorts. */
   rowKey: (row: Row, index: number) => string | number
   /**
@@ -113,29 +153,84 @@ export type DataTableProps<Row> = {
 
 /** Right for numbers, left otherwise, unless the column says different. One resolution, used
  *  by the header and the body cell alike so the two cannot disagree. */
-function alignOf<Row>(col: DataColumn<Row>): "left" | "right" | "center" {
+function alignOf<Row, K extends string>(col: DataColumn<Row, K>): "left" | "right" | "center" {
   return col.align ?? (col.numeric ? "right" : "left")
 }
 
-function headerStyle<Row>(col: DataColumn<Row>): CSSProperties {
-  return { ...termThStyle, textAlign: alignOf(col), ...col.style }
-}
-
-export function DataTable<Row>({
+export function DataTable<Row, K extends string = string>({
   columns,
   rows,
   rowKey,
+  sort,
+  onSortToggle,
+  stickyHeader,
+  rowExtras,
   width = "full",
   minWidth,
   rowAttrs,
   children,
   wrapperClassName,
   className,
-}: DataTableProps<Row>) {
+}: DataTableProps<Row, K>) {
   const grouped = columns.some((c) => c.group)
+  const sized = columns.some((c) => c.width)
+
+  const stickyStyle: CSSProperties = stickyHeader
+    ? { position: "sticky", top: 0, zIndex: 2 }
+    : {}
+
+  /**
+   * One header cell, for every branch below. Sorting used to be rendered by each table by
+   * hand, and both hand-written copies attached `onClick` to a bare `<th>` — no role, no
+   * `tabIndex`, no key handler — so neither table could be sorted from a keyboard at all.
+   * Doing it in one place fixes it in both, which is the whole argument for the module.
+   */
+  function Header({ col, rowSpan }: { col: DataColumn<Row, K>; rowSpan?: number }) {
+    const sortable = col.sortKey !== undefined && onSortToggle !== undefined
+    const active = col.sortKey !== undefined && sort?.key === col.sortKey
+    const toggle = () => col.sortKey !== undefined && onSortToggle?.(col.sortKey)
+
+    return (
+      <th
+        scope="col"
+        rowSpan={rowSpan}
+        className={col.className}
+        aria-sort={active ? (sort?.dir === -1 ? "descending" : "ascending") : undefined}
+        tabIndex={sortable ? 0 : undefined}
+        role={sortable ? "button" : undefined}
+        onClick={sortable ? toggle : undefined}
+        onKeyDown={
+          sortable
+            ? (e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault()
+                  toggle()
+                }
+              }
+            : undefined
+        }
+        style={{
+          ...termThStyle,
+          ...stickyStyle,
+          textAlign: alignOf(col),
+          ...(sortable ? { cursor: "pointer" } : null),
+          // A sorted column's heading comes forward; the rest stay quiet. Only applied where
+          // sorting exists at all, so a plain table's headers are untouched.
+          ...(onSortToggle
+            ? { color: active ? "var(--term-text)" : "var(--term-text-muted)" }
+            : null),
+          ...col.style,
+        }}
+      >
+        {col.label}
+        {active ? (sort?.dir === -1 ? " ↓" : " ↑") : ""}
+        {col.unit && <span style={termThUnitStyle}>{col.unit}</span>}
+      </th>
+    )
+  }
 
   // Runs of adjacent columns sharing a group, so a group heading spans exactly its own columns.
-  const groupRuns: { group?: string; span: number; col: DataColumn<Row> }[] = []
+  const groupRuns: { group?: string; span: number; col: DataColumn<Row, K> }[] = []
   for (const col of columns) {
     const last = groupRuns[groupRuns.length - 1]
     if (col.group && last?.group === col.group) last.span += 1
@@ -159,6 +254,13 @@ export function DataTable<Row>({
           ...(width === "numeric" ? { maxWidth: TERM_NUMERIC_TABLE_MAX_WIDTH } : null),
         }}
       >
+        {sized && (
+          <colgroup>
+            {columns.map((col, i) => (
+              <col key={i} style={{ width: col.width }} />
+            ))}
+          </colgroup>
+        )}
         <thead>
           {grouped ? (
             <>
@@ -169,15 +271,12 @@ export function DataTable<Row>({
                       key={`g${i}`}
                       colSpan={span}
                       className={col.className}
-                      style={{ ...termThStyle, textAlign: "center", borderBottom: "none" }}
+                      style={{ ...termThStyle, ...stickyStyle, textAlign: "center", borderBottom: "none" }}
                     >
                       {group}
                     </th>
                   ) : (
-                    <th key={`g${i}`} rowSpan={2} className={col.className} style={headerStyle(col)}>
-                      {col.label}
-                      {col.unit && <span style={termThUnitStyle}>{col.unit}</span>}
-                    </th>
+                    <Header key={`g${i}`} col={col} rowSpan={2} />
                   )
                 )}
               </tr>
@@ -185,39 +284,36 @@ export function DataTable<Row>({
                 {columns
                   .filter((c) => c.group)
                   .map((col, i) => (
-                    <th key={i} className={col.className} style={headerStyle(col)}>
-                      {col.label}
-                      {col.unit && <span style={termThUnitStyle}>{col.unit}</span>}
-                    </th>
+                    <Header key={i} col={col} />
                   ))}
               </tr>
             </>
           ) : (
             <tr>
               {columns.map((col, i) => (
-                <th key={i} className={col.className} style={headerStyle(col)}>
-                  {col.label}
-                  {col.unit && <span style={termThUnitStyle}>{col.unit}</span>}
-                </th>
+                <Header key={i} col={col} />
               ))}
             </tr>
           )}
         </thead>
         <tbody>
           {rows.map((row, i) => (
-            <tr key={rowKey(row, i)} {...rowAttrs?.(row, i)}>
-              {columns.map((col, c) => (
-                <td
-                  key={c}
-                  className={[col.className, col.numeric ? "tabular-nums" : null]
-                    .filter(Boolean)
-                    .join(" ")}
-                  style={{ ...termTdStyle, textAlign: alignOf(col), ...col.style }}
-                >
-                  {col.cell(row, i)}
-                </td>
-              ))}
-            </tr>
+            <Fragment key={rowKey(row, i)}>
+              <tr {...rowAttrs?.(row, i)}>
+                {columns.map((col, c) => (
+                  <td
+                    key={c}
+                    className={[col.className, col.numeric ? "tabular-nums" : null]
+                      .filter(Boolean)
+                      .join(" ")}
+                    style={{ ...termTdStyle, textAlign: alignOf(col), ...col.style }}
+                  >
+                    {col.cell(row, i)}
+                  </td>
+                ))}
+              </tr>
+              {rowExtras?.(row, i)}
+            </Fragment>
           ))}
           {children}
         </tbody>

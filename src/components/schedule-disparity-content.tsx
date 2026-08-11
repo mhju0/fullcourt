@@ -14,14 +14,8 @@ import {
   REST_SHARE_OF_HOME_COURT,
   REST_SPAN_PP,
 } from "@/lib/schedule-value"
-import {
-  termCardStyle,
-  termDashedEmptyStyle,
-  termTdStyle,
-  termThStyle,
-  termThUnitStyle,
-  WIDTH,
-} from "@/lib/terminal-styles"
+import { termCardStyle, termDashedEmptyStyle, WIDTH } from "@/lib/terminal-styles"
+import { DataTable } from "@/components/ui/data-table"
 import type { ScheduleDisparityResponse, ScheduleDisparityTeam } from "@/types"
 import { signedNumber } from "@/lib/signed-number"
 
@@ -345,111 +339,98 @@ export function ScheduleDisparityContent() {
               {Math.round(REST_SHARE_OF_HOME_COURT * 100)}% of home court. Spread across a season
               the league keeps close to even, no schedule is worth half a game either way.
             </p>
-            <div className="mt-3 overflow-x-auto">
-              <table className="fc-table w-full" style={{ borderCollapse: "collapse" }}>
-                <thead>
-                  <tr>
-                    <th style={{ ...termThStyle, textAlign: "right" }}>#</th>
-                    <th style={{ ...termThStyle, textAlign: "left" }}>Team</th>
-                    <th style={{ ...termThStyle, textAlign: "left" }}>Edge games</th>
-                    <th style={{ ...termThStyle, textAlign: "right" }}>
-                      Net
-                      <span style={termThUnitStyle}>games</span>
-                    </th>
-                    <th style={{ ...termThStyle, textAlign: "right" }}>
-                      Worth
-                      <span style={termThUnitStyle}>wins</span>
-                    </th>
-                    <th style={{ ...termThStyle, textAlign: "right" }}>
-                      Fav / Unfav
-                      <span style={termThUnitStyle}>games</span>
-                    </th>
-                    <th style={{ ...termThStyle, textAlign: "right" }}>
-                      Big edge
-                      <span style={termThUnitStyle}>games</span>
-                    </th>
-                    <th style={{ ...termThStyle, textAlign: "right" }}>
-                      B2B edge
-                      <span style={termThUnitStyle}>games</span>
-                    </th>
-                    <th style={{ ...termThStyle, textAlign: "right" }}>
-                      3-in-4 edge
-                      <span style={termThUnitStyle}>games</span>
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {teams.map((t, i) => (
-                    <tr key={t.teamId}>
-                      <td
-                        className="mono"
-                        style={{ ...termTdStyle, fontSize: 10, textAlign: "right", color: "var(--term-text-muted)" }}
-                      >
-                        {i + 1}
-                      </td>
-                      <td className="mono whitespace-nowrap" style={termTdStyle}>
-                        <span style={{ fontWeight: 700 }}>{t.abbreviation}</span>{" "}
-                        <span style={{ color: "var(--term-text-muted)" }}>{t.name}</span>
-                      </td>
-                      <td style={{ ...termTdStyle, width: "30%", minWidth: 150 }}>
-                        <EdgeBar value={t.netEdgeGames} bound={bound} height={11} />
-                      </td>
-                      <td
-                        className="mono"
-                        style={{
-                          ...termTdStyle,
-                          textAlign: "right",
-                          fontVariantNumeric: "tabular-nums",
-                          fontWeight: 700,
-                          color: edgeColor(t.netEdgeGames),
-                        }}
-                      >
-                        {signedNumber(t.netEdgeGames)}
-                      </td>
-                      {/* The same figure the Season Report publishes, from the same conversion
-                          and the same population — the two must never disagree for a team. */}
-                      <td
-                        className="mono"
-                        data-testid="schedule-value-wins"
-                        style={{
-                          ...termTdStyle,
-                          textAlign: "right",
-                          fontVariantNumeric: "tabular-nums",
-                          fontWeight: 700,
-                          color: edgeColor(t.netEdgeGames),
-                        }}
-                      >
-                        {signedNumber(t.scheduleValueWins, 1)}
-                      </td>
-                      <td
-                        className="mono whitespace-nowrap"
-                        style={{ ...termTdStyle, textAlign: "right", fontVariantNumeric: "tabular-nums", color: "var(--term-text-muted)" }}
-                      >
-                        {t.favorableGames} / {t.unfavorableGames}
-                      </td>
-                      <td
-                        className="mono"
-                        style={{ ...termTdStyle, textAlign: "right", fontVariantNumeric: "tabular-nums", color: edgeColor(t.bigFavorableGames - t.bigUnfavorableGames) }}
-                      >
-                        {signedNumber(t.bigFavorableGames - t.bigUnfavorableGames)}
-                      </td>
-                      <td
-                        className="mono"
-                        style={{ ...termTdStyle, textAlign: "right", fontVariantNumeric: "tabular-nums", color: edgeColor(t.backToBackEdge) }}
-                      >
-                        {signedNumber(t.backToBackEdge)}
-                      </td>
-                      <td
-                        className="mono"
-                        style={{ ...termTdStyle, textAlign: "right", fontVariantNumeric: "tabular-nums", color: edgeColor(t.threeInFourEdge) }}
-                      >
-                        {signedNumber(t.threeInFourEdge)}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+            <DataTable
+              wrapperClassName="mt-3 overflow-x-auto"
+              rows={teams}
+              rowKey={(t) => t.teamId}
+              columns={[
+                {
+                  label: "#",
+                  align: "right",
+                  style: { fontSize: 10, color: "var(--term-text-muted)" },
+                  cell: (_t, i) => i + 1,
+                },
+                {
+                  label: "Team",
+                  className: "whitespace-nowrap",
+                  cell: (t) => (
+                    <>
+                      <span style={{ fontWeight: 700 }}>{t.abbreviation}</span>{" "}
+                      <span style={{ color: "var(--term-text-muted)" }}>{t.name}</span>
+                    </>
+                  ),
+                },
+                {
+                  label: "Edge games",
+                  style: { width: "30%", minWidth: 150 },
+                  cell: (t) => <EdgeBar value={t.netEdgeGames} bound={bound} height={11} />,
+                },
+                {
+                  label: "Net",
+                  unit: "games",
+                  numeric: true,
+                  cell: (t) => (
+                    <span style={{ fontWeight: 700, color: edgeColor(t.netEdgeGames) }}>
+                      {signedNumber(t.netEdgeGames)}
+                    </span>
+                  ),
+                },
+                {
+                  // The same figure the Season Report publishes, from the same conversion
+                  // and the same population — the two must never disagree for a team.
+                  label: "Worth",
+                  unit: "wins",
+                  numeric: true,
+                  cell: (t) => (
+                    <span
+                      data-testid="schedule-value-wins"
+                      style={{ fontWeight: 700, color: edgeColor(t.netEdgeGames) }}
+                    >
+                      {signedNumber(t.scheduleValueWins, 1)}
+                    </span>
+                  ),
+                },
+                {
+                  label: "Fav / Unfav",
+                  unit: "games",
+                  numeric: true,
+                  className: "whitespace-nowrap",
+                  style: { color: "var(--term-text-muted)" },
+                  cell: (t) => `${t.favorableGames} / ${t.unfavorableGames}`,
+                },
+                {
+                  label: "Big edge",
+                  unit: "games",
+                  numeric: true,
+                  cell: (t) => (
+                    <span style={{ color: edgeColor(t.bigFavorableGames - t.bigUnfavorableGames) }}>
+                      {signedNumber(t.bigFavorableGames - t.bigUnfavorableGames)}
+                    </span>
+                  ),
+                },
+                {
+                  label: "B2B edge",
+                  unit: "games",
+                  numeric: true,
+                  cell: (t) => (
+                    <span style={{ color: edgeColor(t.backToBackEdge) }}>
+                      {signedNumber(t.backToBackEdge)}
+                    </span>
+                  ),
+                },
+                {
+                  label: "3-in-4 edge",
+                  unit: "games",
+                  numeric: true,
+                  cell: (t) => (
+                    <span style={{ color: edgeColor(t.threeInFourEdge) }}>
+                      {signedNumber(t.threeInFourEdge)}
+                    </span>
+                  ),
+                },
+              ]}
+            />
+
             <p style={{ marginTop: 12, fontSize: 13, color: "var(--term-text-muted)", lineHeight: 1.55 }}>
               Positive is favorable in every column. Edge games are counted from the same fatigue
               scores as the Games page, so a season in progress lags until its games are played.
