@@ -59,6 +59,13 @@ const VIEWPORTS = [
  */
 const NEAR_MISS_PX = 10;
 
+/**
+ * A 1px difference is structure, not a mistake: `getBoundingClientRect` includes an element's
+ * own border, so a bordered box's contents necessarily begin 1px inside the box's reported
+ * edge. Nothing in the design system can remove that, and reporting it buried the real strays.
+ */
+const NEAR_MISS_MIN_PX = 2;
+
 /** A rail needs this many edges on it before a nearby stray counts as missing *it*. */
 const RAIL_MIN_POPULATION = 4;
 
@@ -132,26 +139,26 @@ test("measure every rail on every page", async ({ page }) => {
             style.borderTopWidth !== "0px" ||
             (style.backgroundColor !== "rgba(0, 0, 0, 0)" && style.backgroundColor !== "transparent");
 
-          // A box that paints something has edges the eye can see. A box that only holds text
-          // still has an edge, because the text's own left side is what the reader lines up.
-          const holdsOwnText = [...el.childNodes].some(
-            (n) => n.nodeType === Node.TEXT_NODE && (n.textContent ?? "").trim().length > 0
-          );
+          // Only boxes have edges the page grid controls. An inline <em> or <span> in the middle
+          // of a sentence begins wherever the word before it ended and ends wherever its own last
+          // character falls — both of its edges measure the copy, not the layout. Counting them
+          // reported every sentence in the app as a pile of alignment faults. A badge is still
+          // counted, because it paints, and a paragraph is, because it is a block.
+          const isBox =
+            paints ||
+            style.display.startsWith("block") ||
+            style.display.startsWith("flex") ||
+            style.display.startsWith("grid") ||
+            style.display.startsWith("table") ||
+            style.display === "list-item" ||
+            el.tagName === "TD" ||
+            el.tagName === "TH";
 
-          if (!paints && !holdsOwnText) continue;
+          if (!isBox) continue;
 
           const label = describe(el);
-
-          // Left edges: a box's border and a text run's first glyph are both things the reader
-          // lines up, so both count.
           left.push({ x: Math.round(rect.left), label });
-
-          // Right edges: only boxes. An inline run of text ends wherever its last character
-          // happens to fall, so its right edge measures the copy, not the layout — including it
-          // reported every word count in the app as an alignment fault.
-          const isBox = paints || style.display.startsWith("block") || style.display.startsWith("flex") ||
-            style.display.startsWith("grid") || el.tagName === "TD" || el.tagName === "TH";
-          if (isBox) right.push({ x: Math.round(rect.right), label });
+          right.push({ x: Math.round(rect.right), label });
         }
 
         return { left, right };
@@ -183,7 +190,9 @@ test("measure every rail on every page", async ({ page }) => {
         const strays: string[] = [];
         for (const [x, labels] of sorted) {
           if (rails.includes(x)) continue;
-          const nearest = rails.find((r) => Math.abs(r - x) <= NEAR_MISS_PX && r !== x);
+          const nearest = rails.find(
+            (r) => Math.abs(r - x) <= NEAR_MISS_PX && Math.abs(r - x) >= NEAR_MISS_MIN_PX
+          );
           if (nearest === undefined) continue;
           const delta = x - nearest;
           strays.push(
