@@ -904,7 +904,10 @@ export function AnalysisContent() {
           method link. */}
 
       {/* Win rate by season */}
-      <div style={termCardStyle}>
+      {/* `data-shot-anchor` marks where the README's screenshot of this page ends. It is read by
+          scripts/screenshots.mjs, which measures this element's bottom edge instead of carrying a
+          hand-derived pixel height — see the header of that file. */}
+      <div style={termCardStyle} data-shot-anchor="win-rate-by-season">
         <SectionDivider
           label="WIN RATE BY SEASON"
           descriptor="VS THAT SEASON'S HOME BASELINE"

@@ -2,10 +2,25 @@
 //
 //   pnpm dev            # in another terminal
 //   node scripts/screenshots.mjs
+//   node scripts/screenshots.mjs analysis season      # just these two
 //
-// Heights are fixed per page rather than fullPage: the real pages run several
-// thousand pixels tall, which reads as a wall of pixels in a README. Each value
-// is the point where that page's last complete card ends.
+// Shots are cropped rather than fullPage: the real pages run several thousand pixels tall, which
+// reads as a wall of pixels in a README.
+//
+// EACH PAGE NAMES THE ELEMENT ITS SHOT ENDS ON, NOT HOW TALL THE SHOT IS. The crop height is
+// measured from that element's bottom edge at capture time. Until 2026-08-11 every entry carried a
+// hand-derived pixel height instead, with a paragraph of prose explaining what the number had been
+// measured against — so the rule lived in English next to the number it produced, and any layout
+// change silently invalidated it. There was no way for that to fail: `games.png` had been short of
+// the two matchup rows its alt text describes ever since the home page grew its thesis band, and
+// four heights moved by exactly 1px the day a table header gained a top rule. Those heights were
+// re-derived by hand three times in a single day before this replaced them.
+//
+// An anchor that no longer resolves throws. A stale number could not.
+//
+// Anchors are Playwright selectors. Prefer something the page already has — a row, an existing
+// `data-testid` — and fall back to a `data-shot-anchor` attribute on the block itself when the
+// intended cut is a whole card or section that nothing else identifies.
 import { chromium } from "@playwright/test";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
@@ -13,55 +28,51 @@ import path from "node:path";
 const BASE = process.env.SCREENSHOT_BASE_URL ?? "http://localhost:3000";
 const OUT = path.join(fileURLToPath(new URL("..", import.meta.url)), "docs/screenshots");
 
-// Every height below was re-derived on 2026-08-11 after the alignment pass, by measuring the
-// bottom edge of the last complete card or table row in the DOM rather than by eye. The pass
-// moved almost every one of them: badges gained 2px of height, off-scale gaps were snapped, and
-// `termInsetStyle` became a band, so cards and rows are a few pixels taller than they were and
-// each old height had drifted into slicing the row it used to end on.
-//
-// Four of them moved exactly +1px later the same day, when `.fc-table`'s header row took a
-// `border-top` so a table closes at the top as well as the bottom. One table above the anchor,
-// one pixel: season, schedule, shooting, availability. The pages with no `.fc-table` above their
-// anchor (games, analysis, playoffs, shot-quality) did not move.
+const WIDTH = 1440;
+// Tall enough that every anchor below is laid out and measurable in one pass. The page is rendered
+// at this height and then cropped, so nothing is resized between measuring and shooting.
+const MEASURE_HEIGHT = 2800;
+
 const PAGES = [
-  // Two complete matchup rows, which is what the README's alt text describes — the second one
-  // ends at 1240. Rows are a uniform 81px again (80px for the first, which carries no top
-  // rule): the evidence sentence moved into the expansion on 2026-08-11, so no collapsed row
-  // is taller than any other. The rows also start lower than they did, because this height was
-  // last derived before the home page grew its thesis band.
-  { file: "games", path: "/", height: 1240 },
-  // Tenth complete row of WHAT THE SCHEDULE WAS WORTH (rows step 35px from 1136). The extremes
-  // line above the table carries both ends of the range that ten rows cannot show. The skeleton
-  // wait logs a warning on this page: ZeroRestWorkload sits far below this cut and is still
-  // fetching player-rest.json when the timer expires. Harmless — check the capture, not the
-  // warning.
-  { file: "season", path: "/season", height: 1452 },
-  // Stops after the complete WIN RATE BY SEASON card; the next block (READING THESE NUMBERS)
-  // starts at 1580. Up 152px from 1380 on 2026-08-11, when the excluded half left the hero tile
-  // row and became a 104px NOT COUNTED band beneath it (plus the 48px chapter gap).
-  { file: "analysis", path: "/analysis", height: 1532 },
-  // The scale sentence plus the breakdown table's first nine complete rows (rows step 35px
-  // from 1569); anything between 1814 and 1849 slices row 9 in half.
-  { file: "schedule", path: "/schedule", height: 1850 },
-  // The complete FIRST ROUND · 8 SERIES block, which is what the README's alt text describes.
-  // CONFERENCE SEMIFINALS runs on to 2398, and the old 1965 cut two series into it.
-  { file: "playoffs", path: "/playoffs", height: 1885 },
-  // Twenty-five complete player rows (rows step 35px from 611). Row 25 is James Harden, whom
-  // the README's alt text calls out as the largest positive rest effect — at the previous 1400
-  // the crop stopped at row 23, so the alt text had been describing a row the image did not
-  // contain. Ends on a row boundary either way.
-  { file: "shooting", path: "/shooting", height: 1452 },
-  // The whole two-court card, which ends at 1275. The old 1430 ran 155px past it into the
-  // footer.
-  { file: "shot-quality", path: "/shot-quality", height: 1275 },
-  // Stops after "THE SCHEDULE STILL COUNTS" (bottom 1891), so the shot carries the headline,
-  // the frequency, the load-management trend and the defensive result. The section below is the
-  // "what this is not" disclaimer, which the README states in prose anyway.
-  { file: "availability", path: "/availability", height: 1892 },
+  // Two complete matchup rows, which is what the README's alt text describes. The row group's
+  // bottom is its toggle's bottom — the collapsed expansion below it has no height.
+  { file: "games", path: "/", endsAfter: '[aria-label$="game details"] >> nth=1' },
+  // Ten complete rows of WHAT THE SCHEDULE WAS WORTH. Anchored through the extremes line above it,
+  // because /season renders three tables and this is not the first.
+  {
+    file: "season",
+    path: "/season",
+    endsAfter: '[data-testid="schedule-value-extremes"] ~ div table.fc-table tbody tr >> nth=9',
+  },
+  // The whole WIN RATE BY SEASON card. The next block (READING THESE NUMBERS) is the "how to read
+  // this" essay, which the README states in prose anyway.
+  { file: "analysis", path: "/analysis", endsAfter: '[data-shot-anchor="win-rate-by-season"]' },
+  // Nine complete rows of FULL BREAKDOWN, the first of the two tables on the page.
+  {
+    file: "schedule",
+    path: "/schedule",
+    endsAfter: "table.fc-table >> nth=0 >> tbody tr >> nth=8",
+  },
+  // The complete FIRST ROUND block, which is what the README's alt text describes. Every round
+  // carries the anchor; the shot ends after the first.
+  { file: "playoffs", path: "/playoffs", endsAfter: '[data-shot-anchor="round-group"] >> nth=0' },
+  // Twenty-five complete player rows. Row 25 is the largest positive rest effect, which the
+  // README's alt text calls out by name.
+  { file: "shooting", path: "/shooting", endsAfter: "table.fc-table tbody tr >> nth=24" },
+  // The whole two-court card.
+  { file: "shot-quality", path: "/shot-quality", endsAfter: '[data-shot-anchor="two-court"]' },
+  // Through THE SCHEDULE STILL COUNTS, so the shot carries the headline, the frequency, the
+  // load-management trend and the defensive result. The section below it is the "what this is not"
+  // disclaimer, which the README states in prose anyway.
+  {
+    file: "availability",
+    path: "/availability",
+    endsAfter: '[data-shot-anchor="schedule-still-counts"]',
+  },
 ];
 
 // Optional filter: `node scripts/screenshots.mjs analysis season` shoots only those.
-// One page changing is the common case, and regenerating all nine puts eight unrelated
+// One page changing is the common case, and regenerating all eight puts seven unrelated
 // binaries in the diff — which makes a review of the one that matters harder, not easier.
 const only = process.argv.slice(2);
 const targets = only.length > 0 ? PAGES.filter((p) => only.includes(p.file)) : PAGES;
@@ -75,9 +86,9 @@ if (targets.length === 0) {
 
 const browser = await chromium.launch();
 
-for (const { file, path: route, height } of targets) {
+for (const { file, path: route, endsAfter } of targets) {
   const context = await browser.newContext({
-    viewport: { width: 1440, height },
+    viewport: { width: WIDTH, height: MEASURE_HEIGHT },
     deviceScaleFactor: 2,
     // Cards enter with a staggered fadeInUp; globals.css already neutralises that
     // keyframe under reduced motion. Without this a capture can land mid-fade and
@@ -90,7 +101,7 @@ for (const { file, path: route, height } of targets) {
   await page.goto(BASE + route, { waitUntil: "load", timeout: 60_000 });
   await page.addStyleTag({ content: "nextjs-portal { display: none !important }" });
 
-  // Wait for the content, not the clock. A fixed 4s pause captured /games mid-load once the
+  // Wait for the content, not the clock. A fixed pause captured /games mid-load once the
   // dev server had more routes to compile — the shot shipped with "0 games" and five empty
   // skeleton rows, which is a worse artifact than the stale one it replaced. Skeletons carry
   // data-slot="skeleton", so their absence is the real "this page is ready" signal.
@@ -121,9 +132,32 @@ for (const { file, path: route, height } of targets) {
     }
   });
 
-  await page.screenshot({ path: path.join(OUT, `${file}.png`) });
+  // The whole point of the rewrite: measure, never assume. A missing anchor is a hard failure —
+  // shooting the page anyway is how a wrong picture used to ship unnoticed.
+  const anchor = page.locator(endsAfter);
+  if ((await anchor.count()) === 0) {
+    throw new Error(
+      `${file}: anchor \`${endsAfter}\` matched nothing on ${route}. ` +
+        `The markup it names has moved or been renamed — re-point it rather than guessing a height.`
+    );
+  }
+  const box = await anchor.boundingBox();
+  if (!box) throw new Error(`${file}: anchor \`${endsAfter}\` is not visible on ${route}.`);
+
+  const height = Math.ceil(box.y + box.height);
+  if (height > MEASURE_HEIGHT) {
+    throw new Error(
+      `${file}: the shot wants ${height}px but the page was measured at ${MEASURE_HEIGHT}px. ` +
+        `Raise MEASURE_HEIGHT — the anchor was laid out below the fold and may have measured wrong.`
+    );
+  }
+
+  await page.screenshot({
+    path: path.join(OUT, `${file}.png`),
+    clip: { x: 0, y: 0, width: WIDTH, height },
+  });
   await context.close();
-  console.log(`${file}.png`);
+  console.log(`${file}.png  ${height}px`);
 }
 
 await browser.close();

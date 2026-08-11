@@ -279,7 +279,8 @@ function ScheduleHoldsUpSection() {
   const worst = Math.max(...rows.map((r) => Math.abs(r.shiftPct)))
 
   return (
-    <section className="flex flex-col gap-3">
+    // `data-shot-anchor`: where the README shot of this page ends (scripts/screenshots.mjs).
+    <section className="flex flex-col gap-3" data-shot-anchor="schedule-still-counts">
       <SectionHeading>THE SCHEDULE STILL COUNTS</SectionHeading>
       <div style={termCardStyle}>
         <p style={BODY}>
