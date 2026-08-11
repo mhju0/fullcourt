@@ -268,6 +268,11 @@ of `--term-amber`, a 2px `--term-rail` down the left edge of every row including
 marker, and a rule above and below. Each still reads if the others fail — a single subtle tone
 did not survive the dark palette, where `--term-surface-2` sits a few points off `--term-surface`.
 
+That rail is painted as `box-shadow: inset 2px 0 0`, **not** `border-left` (2026-08-11). As a
+border it consumed 2px of the cell's layout width, so an expanded player's first column sat 2px
+right of every collapsed player's — the marker meant to group the rows was knocking them out of
+the column. `e2e/alignment-law.spec.ts` asserts that expanding a row does not move it sideways.
+
 **The filter bar is two rows, not one wrapping row** (2026-07-30). Row one is the four
 `<select>` filters — Season, Volume, Team, Position — each label/control pair wrapped in its own
 flex box so a wrap can never separate a label from what it names. Row two is the search box, the
@@ -852,6 +857,72 @@ touch every consumer for zero rendered change.
   cheapness in a dense numeric UI. `next/font` ships with Next.js, so the swap added **no npm
   dependency**.
 
+### Alignment: two rails, one scale
+
+*(Established 2026-08-11. Before it, the app used twelve gap steps, about twenty distinct inline
+padding values and eight prose measures, so no two panels inset their contents to the same place
+and no two pages' paragraphs ended in the same place.)*
+
+**There are exactly two horizontal rails.**
+
+- The **outer rail** is the page gutter, set by the layout container — `mx-auto max-w-7xl px-4
+  sm:px-6` in `layout.tsx`, matched exactly by the brand bar, the nav row and the footer. Page
+  titles, top-level prose, section rules and card borders all begin here.
+- The **inner rail** is `SPACE_CARD` (16px) in from a box's own border. Every card insets its
+  contents by exactly this, so a card title and everything under it share one line.
+
+**One documented third rail** exists: `SPACE_NESTED_ROW` (28px), for a row that is
+hierarchically inside another row — the expanded seasons under a player on `/shooting`. The
+nesting is the information there, so it has to be visible. Nothing else may take a third rail.
+
+**Tables take no inset of their own.** Cell padding lives in the `.fc-table` rule in
+`globals.css`, not in `termThStyle` / `termTdStyle`, because the edge cells have to pad to
+**zero** and a style object cannot say "first child". That is what lets a table line up with
+whatever introduces it: the first column starts at the page gutter when the table sits on the
+page column, and at the card's inner rail when it sits in a card, without either context knowing
+about the other. Interior columns pad 12 a side. **A `<table>` using those styles must carry
+`className="fc-table"`** — omitting it drops all cell padding, which is loudly visible rather
+than subtly wrong.
+
+**Recessed panels are bands, not boxes.** `termInsetStyle` is a background plus rules top and
+bottom, with no side padding, so it bleeds to its container's content edge and its text stays on
+the same rail as the title above it. Pad it vertically at the call site, never horizontally. As
+a bordered box it put nested text on a third rail 32px in.
+
+**A rail must never cost layout width.** Draw a group marker as `box-shadow: inset 2px 0 0`, not
+`border-left`. As a border, the `/shooting` group rail pushed an expanded player's first column
+2px right of every collapsed one's — the rule meant to mark the group knocked the group out of
+its column. Same technique in `behind-the-data/page.tsx`'s hover state.
+
+**The spacing scale is `SPACE` in `terminal-styles.ts`: 4 / 8 / 12 / 16 / 24 / 32 / 48.** Every
+gap, pad and margin is one of those seven. New values round to nearest, ties up. 4px is the base
+because an 11px mono label sitting on its 32px number needs a step finer than 8.
+
+Two exemptions, both deliberate:
+
+- **Data-mark geometry.** The gaps between bar segments, shot-grid cells, the 4px fatigue bar's
+  own height. Those are *drawing*, sized against the data and the pixel grid, not layout. A
+  `gap-[2px]` between two bar segments is correct and must not be snapped to 4.
+- **Intrinsic control caps.** A season select, a modal, a hover tooltip, the shot-quality legend
+  (sizes to its colour ramp), the player search box (sizes to a name). These are not content
+  columns and keep their own widths.
+
+**Content columns pick from `WIDTH`**, never a new measure: `full` (the container), `wide`
+(1040px — a page-level column of mixed prose, tiles and charts), `numeric` (760px, re-exported
+as `TERM_NUMERIC_TABLE_MAX_WIDTH`), `prose` (42rem).
+
+Two things left alone on purpose: `components/ui/button.tsx` (vendored shadcn, its sizes live
+inside `has-data-*` variant selectors) and `opengraph-image.tsx`'s `72px 80px` (a fixed
+1200×630 brand asset, not a page).
+
+**Enforcement.** `e2e/alignment-law.spec.ts` asserts the absolute parts — title on the gutter,
+tables taking no inset, expanding a row not moving it. `e2e/alignment-audit.spec.ts` reports
+every near-miss edge across 17 routes × 3 viewports to `test-results/alignment/report.txt`; run
+it before and after a spacing change and diff. Its count has a floor it will never reach, since
+a wrapped nav row and a scrolling date strip place items by flow — treat it as advisory, and do
+not tune the instrument to improve it. There is deliberately **no ESLint rule** yet: a scale
+nobody has stress-tested through a real feature becomes a rule people disable.
+
 ### Page rhythm
 
 Every page is built the same way, so moving between tabs does not feel like moving between
@@ -860,8 +931,10 @@ products:
 - **Page title = 32px**, the "hero stat value" slot in `terminal-styles.ts`. At 24px a title
   was the same size as the stat numbers under it. `PageHeader` sets it for every page —
   `/schedule`, `/playoffs`, `/shot-quality`, `/shooting`, and now `/` and `/analysis`, which
-  used to hand-copy its markup. Its one prop beyond the copy is `descriptionMaxWidth`
-  (default `42rem`); `/` passes `34rem`.
+  used to hand-copy its markup. Its description measure is fixed at `WIDTH.prose`; the
+  `descriptionMaxWidth` prop was removed on 2026-08-11 because the one override left in the
+  tree asked for 46rem, and 4rem of line length is not worth every reference page introducing
+  itself on a different measure from every product page.
 - **`gap-12` between chapters** — heading, controls, results — on the page's top-level column,
   with tighter spacing inside anything that belongs together. A uniform `gap-4` gave a heading
   the same separation as two halves of one control panel. Loading and error branches carry the
