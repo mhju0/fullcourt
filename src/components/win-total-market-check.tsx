@@ -1,4 +1,4 @@
-import { termCardStyle, termTdStyle, termThStyle, termThUnitStyle } from "@/lib/terminal-styles";
+import { termCardStyle, termTdStyle, termThStyle, termThUnitStyle, WIDTH } from "@/lib/terminal-styles";
 import benchmark from "@/data/win-total-benchmark.json";
 
 /** Percent with one decimal from an over count — 47.9% styling, tabular in the table. */
@@ -22,7 +22,7 @@ export function WinTotalMarketCheck() {
         The market check — season win totals
       </p>
 
-      <p style={{ marginTop: 8, maxWidth: "44rem", fontSize: 15, color: "var(--term-text)", lineHeight: 1.55 }}>
+      <p style={{ marginTop: 8, maxWidth: WIDTH.prose, fontSize: 15, color: "var(--term-text)", lineHeight: 1.55 }}>
         If a schedule edge compounded over a season, the teams at the top of this page should
         beat their preseason win-total lines. Across {benchmark.seasonsCovered}{" "}
         seasons of archived lines, they don&rsquo;t:
@@ -62,7 +62,7 @@ export function WinTotalMarketCheck() {
         </table>
       </div>
 
-      <p style={{ marginTop: 12, maxWidth: "44rem", fontSize: 15, color: "var(--term-text-muted)", lineHeight: 1.55 }}>
+      <p style={{ marginTop: 12, maxWidth: WIDTH.prose, fontSize: 15, color: "var(--term-text-muted)", lineHeight: 1.55 }}>
         No gradient, in either direction. The correlation between a team&rsquo;s net edge games
         and its finish against the line is r&nbsp;=&nbsp;{benchmark.correlation.r.toFixed(2)}{" "}
         across {benchmark.correlation.n}{" "}
@@ -73,7 +73,7 @@ export function WinTotalMarketCheck() {
         not beatable from this page, and this site won&rsquo;t pretend otherwise.
       </p>
 
-      <p style={{ marginTop: 10, maxWidth: "44rem", fontSize: 12.5, color: "var(--term-text-muted)", lineHeight: 1.55 }}>
+      <p style={{ marginTop: 10, maxWidth: WIDTH.prose, fontSize: 12.5, color: "var(--term-text-muted)", lineHeight: 1.55 }}>
         Lines from the {benchmark.source}, {benchmark.firstSeason} through {benchmark.lastSeason}.
         No lines were published for the 1998-99 lockout, and 2019-20 is skipped here
         because its season was suspended at 63 to 67 games — a preseason win total never got a

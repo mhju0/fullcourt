@@ -11,6 +11,7 @@ import {
   termTdStyle,
   termThStyle,
   termThUnitStyle,
+  WIDTH,
 } from "@/lib/terminal-styles"
 
 const ROW_LIMIT = 15
@@ -62,7 +63,7 @@ export function ZeroRestWorkload({ season }: { season: string }) {
 
   return (
     <div className="flex flex-col gap-3" ref={anchor}>
-      <p style={{ fontSize: 14, color: "var(--term-text-muted)", maxWidth: "42rem", lineHeight: 1.55 }}>
+      <p style={{ fontSize: 14, color: "var(--term-text-muted)", maxWidth: WIDTH.prose, lineHeight: 1.55 }}>
         Who took the most shots on zero days&apos; rest. This is volume, not a verdict on how well
         they shot — a single season&apos;s rest split is too small to say that.{" "}
         <a href="/shooting" style={{ color: "var(--term-blue)", fontWeight: 600 }}>

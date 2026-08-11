@@ -151,6 +151,8 @@ function BigLegend({
   mid?: string
   right: string
 }) {
+  // max-w-[420px] is not one of the WIDTH content columns: a legend sizes to the colour ramp
+  // it labels, so that is an intrinsic cap on a control rather than a measure for reading.
   return (
     <div className="flex w-full max-w-[420px] shrink-0 flex-col gap-2 sm:w-[340px]">
       <span className="mono" style={{ fontSize: 11, letterSpacing: "0.1em", color: "var(--term-text-muted)", fontWeight: 700 }}>

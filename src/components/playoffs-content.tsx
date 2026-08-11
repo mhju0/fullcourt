@@ -10,7 +10,7 @@ import { apiFetcher, errMsg } from "@/lib/fetcher"
 import { currentDisplaySeason } from "@/lib/nba-season"
 import { grindLineLabels } from "@/lib/playoff-rest-facts"
 import { playoffModelSeasons } from "@/lib/playoff-seasons"
-import { TERM_ACCENT, termCardStyle } from "@/lib/terminal-styles"
+import { TERM_ACCENT, termCardStyle, WIDTH } from "@/lib/terminal-styles"
 import type {
   PlayoffRoundGroup,
   PlayoffSeriesPredictionMethod,
@@ -353,7 +353,7 @@ export function PlayoffsContent() {
     // left a third of the screen empty between the two halves. Narrowing only those rows was
     // worse — it gave the page two different right edges — so the whole column comes in
     // together and everything stays aligned.
-    <div className="flex flex-col gap-12" style={{ maxWidth: 1040 }}>
+    <div className="flex flex-col gap-12" style={{ maxWidth: WIDTH.wide }}>
       <SeasonSelector id="playoffs-season" season={season} onSeasonChange={setSeason} seasons={PLAYOFF_SEASONS} />
 
       {/* Reachable whenever a season's playoffs have not been played yet. */}

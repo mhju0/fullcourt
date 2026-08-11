@@ -32,6 +32,7 @@ import {
   termTdStyle,
   termThStyle,
   termThUnitStyle,
+  WIDTH,
 } from "@/lib/terminal-styles"
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts"
 import { signedNumber } from "@/lib/signed-number"
@@ -144,7 +145,7 @@ function AbnormalSeasonNote({ season }: { season: string }) {
       >
         {note.label}
       </span>
-      <p style={{ fontSize: 14, color: "var(--term-text-muted)", maxWidth: "42rem", lineHeight: 1.55 }}>
+      <p style={{ fontSize: 14, color: "var(--term-text-muted)", maxWidth: WIDTH.prose, lineHeight: 1.55 }}>
         {note.note}
       </p>
     </div>
@@ -289,7 +290,7 @@ function EdgeConversion({
   return (
     <div className="flex flex-col gap-3">
       <SectionDivider label="REST EDGE CONVERSION" descriptor="RECORDS, NOT A RANKING" />
-      <p style={{ fontSize: 14, color: "var(--term-text-muted)", maxWidth: "42rem", lineHeight: 1.55 }}>
+      <p style={{ fontSize: 14, color: "var(--term-text-muted)", maxWidth: WIDTH.prose, lineHeight: 1.55 }}>
         {edgeConversionSentence(teams)}
       </p>
       <SwingBaselineNote baseline={swingBaseline} />
@@ -387,7 +388,7 @@ function ScheduleValue({ teams }: { teams: SeasonReportTeamLabelled[] }) {
         data-testid="rest-scale-line"
         style={{ ...termCardStyle, padding: 16, borderLeft: `2px solid var(--term-blue)` }}
       >
-        <p style={{ fontSize: 14, color: "var(--term-text)", maxWidth: "42rem", lineHeight: 1.55 }}>
+        <p style={{ fontSize: 14, color: "var(--term-text)", maxWidth: WIDTH.prose, lineHeight: 1.55 }}>
           Being the fresher side moves a home team&rsquo;s win probability by{" "}
           <strong>{REST_SPAN_PP.toFixed(1)} points</strong>. Playing at home instead of away moves
           it by <strong>{HOME_COURT_SPAN_PP.toFixed(1)}</strong>. So a rest edge is worth about{" "}
@@ -398,7 +399,7 @@ function ScheduleValue({ teams }: { teams: SeasonReportTeamLabelled[] }) {
         </p>
       </div>
 
-      <p style={{ fontSize: 14, color: "var(--term-text-muted)", maxWidth: "42rem", lineHeight: 1.55 }}>
+      <p style={{ fontSize: 14, color: "var(--term-text-muted)", maxWidth: WIDTH.prose, lineHeight: 1.55 }}>
         Priced at that rate, here is what each team&rsquo;s own schedule was worth: every rest edge
         it was handed, minus every one it had to face. No score is read, so this says nothing about
         how any team played. It is small for everyone, and that is the finding — the league spreads
@@ -480,7 +481,7 @@ function LoudestCalls({
   return (
     <div className="flex flex-col gap-3">
       <SectionDivider label="LOUDEST CALLS" descriptor="RANKED BY REST GAP" />
-      <p style={{ fontSize: 14, color: "var(--term-text-muted)", maxWidth: "42rem", lineHeight: 1.55 }}>
+      <p style={{ fontSize: 14, color: "var(--term-text-muted)", maxWidth: WIDTH.prose, lineHeight: 1.55 }}>
         The games where the two teams arrived in the most different states, whether or not
         it worked out. Ranked by the size of the rest gap rather than by the final margin,
         because the two have nothing to do with each other.
@@ -552,7 +553,7 @@ function ScheduleTax({ teams }: { teams: SeasonReportTeamLabelled[] }) {
   return (
     <div className="flex flex-col gap-3">
       <SectionDivider label="SCHEDULE TAX" descriptor="COMPLETED GAMES ONLY" />
-      <p style={{ fontSize: 14, color: "var(--term-text-muted)", maxWidth: "42rem", lineHeight: 1.55 }}>
+      <p style={{ fontSize: 14, color: "var(--term-text-muted)", maxWidth: WIDTH.prose, lineHeight: 1.55 }}>
         What the schedule asked of each team. These are counts, not estimates — nothing here is
         a claim about who won because of it.
       </p>
@@ -611,7 +612,7 @@ function FatigueCalendar({ weeks }: { weeks: SeasonReportWeek[] }) {
   return (
     <div className="flex flex-col gap-3">
       <SectionDivider label="FATIGUE CALENDAR" descriptor="LEAGUE AVERAGE BY WEEK" />
-      <p style={{ fontSize: 14, color: "var(--term-text-muted)", maxWidth: "42rem", lineHeight: 1.55 }}>
+      <p style={{ fontSize: 14, color: "var(--term-text-muted)", maxWidth: WIDTH.prose, lineHeight: 1.55 }}>
         Average fatigue across every team in every game, week by week. The season is not evenly
         hard — density, travel and back-to-backs pile up in stretches.
       </p>
@@ -715,7 +716,7 @@ export function SeasonReportContent() {
               testId="season-vs-history-heading"
             />
             {verdict ? <VerdictLine verdict={verdict} /> : null}
-            <p style={{ fontSize: 14, color: "var(--term-text-muted)", maxWidth: "42rem", lineHeight: 1.55 }}>
+            <p style={{ fontSize: 14, color: "var(--term-text-muted)", maxWidth: WIDTH.prose, lineHeight: 1.55 }}>
               {countedGamesSentence(data.overall)}{" "}
               <a href="/analysis" style={{ color: "var(--term-blue)", fontWeight: 600 }}>
                 See the full backtest →

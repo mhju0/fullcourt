@@ -1,12 +1,12 @@
 import { PlayoffGrindGap } from "@/components/playoff-grind-gap"
 import { PLAYOFF_EQUAL_REST } from "@/lib/playoff-rest-facts"
-import { termCardStyle } from "@/lib/terminal-styles"
+import { termCardStyle, WIDTH } from "@/lib/terminal-styles"
 
 const BODY: React.CSSProperties = {
   fontSize: 15,
   color: "var(--term-text-muted)",
   lineHeight: 1.55,
-  maxWidth: "42rem",
+  maxWidth: WIDTH.prose,
 }
 const LEAD = { color: "var(--term-text)", fontWeight: 600 } as const
 
@@ -77,7 +77,7 @@ function GrindTaxSection() {
  */
 export function PlayoffRestArgument() {
   return (
-    <div className="flex flex-col gap-12" style={{ maxWidth: 1040 }}>
+    <div className="flex flex-col gap-12" style={{ maxWidth: WIDTH.wide }}>
       <NoRestSection />
       <GrindTaxSection />
     </div>

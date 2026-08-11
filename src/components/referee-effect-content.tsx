@@ -2,13 +2,13 @@ import { RefereeStyleContent } from "@/components/referee-style-content"
 import type { RefereeFoulStyle } from "@/lib/referee-foul-style"
 import { readingOf, topShifters, type RefereeTiming, type Verdict } from "@/lib/referee-timing"
 import { signedNumber } from "@/lib/signed-number"
-import { termCardStyle, termInsetStyle } from "@/lib/terminal-styles"
+import { termCardStyle, termInsetStyle, WIDTH } from "@/lib/terminal-styles"
 
 const BODY: React.CSSProperties = {
   fontSize: 15,
   color: "var(--term-text-muted)",
   lineHeight: 1.55,
-  maxWidth: "42rem",
+  maxWidth: WIDTH.prose,
 }
 const LEAD = { color: "var(--term-text)", fontWeight: 600 } as const
 

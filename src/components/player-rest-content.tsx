@@ -27,6 +27,7 @@ import {
   termTdStyle,
   termThStyle,
   termThUnitStyle,
+  WIDTH,
 } from "@/lib/terminal-styles"
 import { signedNumber } from "@/lib/signed-number"
 import { MessageCard } from "@/components/ui/message-card"
@@ -328,6 +329,8 @@ export function PlayerRestContent() {
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search player"
             aria-label="Search player"
+            /* Not one of the WIDTH content columns: a search box sizes to the longest name
+               someone will type, which is an intrinsic cap on a control. */
             className="mono w-full max-w-[260px] bg-[var(--term-surface)] px-3 py-2 text-[12px] text-[var(--term-text)] placeholder:text-[var(--term-text-muted)]"
             style={{ border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }}
           />
@@ -349,7 +352,7 @@ export function PlayerRestContent() {
         </div>
       </div>
 
-      <p style={{ fontSize: 12, color: "var(--term-text-muted)", lineHeight: 1.6, maxWidth: "92ch", margin: 0 }}>
+      <p style={{ fontSize: 12, color: "var(--term-text-muted)", lineHeight: 1.6, maxWidth: WIDTH.prose, margin: 0 }}>
         <strong style={{ color: "var(--term-text-dim)" }}>No rest</strong> — he played yesterday.{" "}
         <strong style={{ color: "var(--term-text-dim)" }}>3+ days rest</strong>{" "}
         {/* Explicit: a literal space before the dash here is swallowed when the text
@@ -431,7 +434,7 @@ export function PlayerRestContent() {
         </table>
       </div>
 
-      <p style={{ fontSize: 12, color: "var(--term-text-muted)", lineHeight: 1.6, maxWidth: "76ch", margin: 0 }}>
+      <p style={{ fontSize: 12, color: "var(--term-text-muted)", lineHeight: 1.6, maxWidth: WIDTH.prose, margin: 0 }}>
         {index.names.length.toLocaleString()} players · 1996-97 through{" "}
         {seasonLabel(index.years[0])}, regular season. 2019-20 covers only the games played before the March 2020
         suspension — its Orlando bubble games are left out, because a player&rsquo;s first game back sat about

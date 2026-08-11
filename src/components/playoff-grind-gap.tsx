@@ -1,5 +1,5 @@
 import { PLAYOFF_GRIND_MATRIX } from "@/lib/playoff-rest-facts"
-import { termCardStyle } from "@/lib/terminal-styles"
+import { termCardStyle, WIDTH } from "@/lib/terminal-styles"
 
 /**
  * The Grind Tax, as one number and two bars — replacing the 2×2 matrix on 2026-08-01.
@@ -60,7 +60,7 @@ export function PlayoffGrindGap() {
         <Bar label="They went the distance" winPct={ownLowOppHigh.winPct} n={ownLowOppHigh.n} lit />
       </div>
 
-      <p className="mt-4" style={{ fontSize: 15, color: "var(--term-text-muted)", lineHeight: 1.55, maxWidth: "42rem" }}>
+      <p className="mt-4" style={{ fontSize: 15, color: "var(--term-text-muted)", lineHeight: 1.55, maxWidth: WIDTH.prose }}>
         Both bars are teams that closed their own last round early, so the only thing changing is
         the opponent. When you went the distance too, the edge reverses —{" "}
         {ownHighOppLow.winPct.toFixed(1)}% against a fresh opponent,{" "}

@@ -1,4 +1,4 @@
-import { termCardStyle } from "@/lib/terminal-styles";
+import { termCardStyle, WIDTH } from "@/lib/terminal-styles";
 
 /**
  * Shared building blocks for the reference pages, so six pages cannot drift into six
@@ -70,7 +70,7 @@ export function Section({
 
 export function Prose({ children }: { children: React.ReactNode }) {
   return (
-    <p style={{ maxWidth: "46rem", fontSize: 15, color: "var(--term-text)", lineHeight: 1.6 }}>
+    <p style={{ maxWidth: WIDTH.prose, fontSize: 15, color: "var(--term-text)", lineHeight: 1.6 }}>
       {children}
     </p>
   );
@@ -81,7 +81,7 @@ export function Note({ children }: { children: React.ReactNode }) {
   return (
     <p
       style={{
-        maxWidth: "46rem",
+        maxWidth: WIDTH.prose,
         fontSize: 14,
         color: "var(--term-text-muted)",
         lineHeight: 1.55,
@@ -123,7 +123,7 @@ export function LimitList({ items }: { items: readonly string[] }) {
     <ul
       className="flex flex-col gap-2"
       style={{
-        maxWidth: "46rem",
+        maxWidth: WIDTH.prose,
         fontSize: 15,
         color: "var(--term-text)",
         lineHeight: 1.55,

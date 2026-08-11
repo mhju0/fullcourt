@@ -20,6 +20,7 @@ import {
   termTdStyle,
   termThStyle,
   termThUnitStyle,
+  WIDTH,
 } from "@/lib/terminal-styles"
 import type { ScheduleDisparityResponse, ScheduleDisparityTeam } from "@/types"
 import { signedNumber } from "@/lib/signed-number"
@@ -122,7 +123,7 @@ function ColumnGuide({ countedGames, scheduledGames }: { countedGames: number; s
         />
       </summary>
       <div
-        className="flex max-w-3xl flex-col gap-3 px-4 pb-4"
+        className="flex max-w-2xl flex-col gap-3 px-4 pb-4"
         style={{ fontSize: 15, color: "var(--term-text-muted)", lineHeight: 1.55 }}
       >
         <p
@@ -333,7 +334,7 @@ export function ScheduleDisparityContent() {
             <p
               data-testid="schedule-worth-scale"
               className="mt-2"
-              style={{ fontSize: 13, color: "var(--term-text-muted)", maxWidth: "42rem", lineHeight: 1.55 }}
+              style={{ fontSize: 13, color: "var(--term-text-muted)", maxWidth: WIDTH.prose, lineHeight: 1.55 }}
             >
               {/* Explicit {" "}: JSX drops a bare space that opens a text node after an
                   element, so "Worth prices" rendered as "Worthprices". */}

@@ -65,20 +65,28 @@ export const SPACE_CARD = SPACE.lg
 export const SPACE_NESTED_ROW = SPACE_CARD + SPACE.md
 
 /**
- * The three widths a *content column* may take. Anything wider than its neighbours by an
- * unexplained amount reads as a broken right edge, so new content picks one of these rather
- * than inventing a measure.
+ * The widths a *content column* may take. Anything wider than its neighbours by an unexplained
+ * amount reads as a broken right edge, so new content picks one of these rather than inventing
+ * a measure. Before this the app carried eight prose measures — 42rem, 44rem, 46rem, 48rem,
+ * 76ch, 92ch — which is why no two pages' paragraphs ended in the same place.
  *
  * These govern content columns only. An interactive control with an intrinsic size — a season
- * select, a modal, a hover tooltip — is not a content column and keeps its own cap.
+ * select, a modal, a hover tooltip — is not a content column and keeps its own cap. Neither is
+ * a data mark: the shot court sizes to its own geometry.
  */
 export const WIDTH = {
   /** Full container width; the layout's `max-w-7xl` supplies it. */
   full: null,
+  /**
+   * Wide content: a page-level column of mixed prose, tiles and charts that wants more than a
+   * table but should not run the full 1280. Already the de facto width of `/availability`,
+   * `/playoffs` and the playoff rest sections before it had a name.
+   */
+  wide: 1040,
+  /** Numeric tables. Re-exported below as {@link TERM_NUMERIC_TABLE_MAX_WIDTH}. */
+  numeric: 760,
   /** Prose measure. `PageHeader` descriptions, intro paragraphs, reference-page copy. */
   prose: "42rem",
-  /** Numeric tables — see {@link TERM_NUMERIC_TABLE_MAX_WIDTH}. */
-  numeric: "760px",
 } as const
 
 export const termCardStyle: CSSProperties = {
@@ -174,7 +182,7 @@ export const termTdStyle: CSSProperties = {
  * table. Prose tables (the reference pages) are deliberately NOT capped — their note columns
  * use the width.
  */
-export const TERM_NUMERIC_TABLE_MAX_WIDTH = 760;
+export const TERM_NUMERIC_TABLE_MAX_WIDTH = WIDTH.numeric;
 
 /**
  * The unit line under a column header — "GAMES", "MILES", "PCT POINTS". Every column of
