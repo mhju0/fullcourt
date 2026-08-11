@@ -88,9 +88,14 @@ export const OTHER_NAV_ITEMS = [
     label: "REFEREE EFFECT",
     // DELIBERATE, NOT STALE. The foul-style data and table exist and are wired up, but the
     // page's content is not finished to the standard the rest of the site is held to, so the
-    // guide says so rather than presenting it as a completed surface. Do not "correct" this to
+    // nav says so rather than presenting it as a completed surface. Do not "correct" this to
     // describe the table — that is the mistake, and it has been made once already.
     // Restore-to-finished is a deliberate edit by Michael, not a doc-currency fix.
+    //
+    // `inProgress` renders an IN PROGRESS tag beside the label in the OTHER menu. It replaced
+    // the first-visit guide's "Still being built." on 2026-08-11, when that guide was removed:
+    // the warning had to keep a home in navigation rather than disappear with its old one.
+    inProgress: true,
     guideDescription: "Still being built.",
   },
 ] as const;

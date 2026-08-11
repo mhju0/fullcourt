@@ -103,15 +103,19 @@ Config (`playwright.config.ts`): `testDir: ./e2e`, `baseURL: http://localhost:30
 workers race for cold Turbopack compiles rather than for CPU. Measured, at the 18-test suite of
 the time, 16.8s serially against 26s *and* readiness-gate failures on `/schedule` at the default
 worker count — parallelism bought negative time here. (`fullyParallel` is left on; with one
-worker it only affects ordering.) Existing specs receive a completed onboarding storage state so
-the first-visit dialog cannot block their legacy interactions; `e2e/onboarding.spec.ts` overrides
-that state with an empty browser. Specs (14): `e2e/home.spec.ts`, `e2e/about.spec.ts`,
-`e2e/analysis.spec.ts`, `e2e/availability.spec.ts`, `e2e/behind-the-data.spec.ts`,
-`e2e/navigation.spec.ts`, `e2e/onboarding.spec.ts`, `e2e/page-headers.spec.ts`,
+worker it only affects ordering.) Specs no longer receive any `storageState`: they used to boot
+with a completed-onboarding flag so the first-visit dialog could not open over whatever they were
+asserting, and that dialog was removed on 2026-08-11. `e2e/onboarding.spec.ts` went with it. What
+replaced the coupling is a readiness gate where a spec needs one — `navigation.spec.ts` waits for
+a client-owned control before clicking a header link, because a click landing mid-hydration hits a
+node React is replacing and the navigation is dropped.
+Specs (15): `e2e/home.spec.ts`, `e2e/about.spec.ts`, `e2e/alignment-audit.spec.ts`,
+`e2e/alignment-law.spec.ts`, `e2e/analysis.spec.ts`, `e2e/availability.spec.ts`,
+`e2e/behind-the-data.spec.ts`, `e2e/navigation.spec.ts`, `e2e/page-headers.spec.ts`,
 `e2e/playoffs.spec.ts`, `e2e/referees.spec.ts`, `e2e/schedule-disparity.spec.ts`,
-`e2e/season.spec.ts`, `e2e/shot-quality.spec.ts`, `e2e/shooting.spec.ts` — **102 tests**
-(`npx playwright test --list`, verified 2026-08-03; several specs generate their cases in a loop,
-so counting `test(` calls in the source undercounts).
+`e2e/season.spec.ts`, `e2e/shot-quality.spec.ts`, `e2e/shooting.spec.ts` — **120 tests**
+(115 passed / 5 skipped, verified 2026-08-11; several specs generate their cases in a loop, so
+counting `test(` calls in the source undercounts).
 
 `e2e/behind-the-data.spec.ts` covers the reference section: that it is reachable from the
 `Reference` landmark and *not* from `Main navigation` or the `OTHER` menu, that every section is
@@ -168,11 +172,11 @@ back on expand.
 >   and "WIN RATE BY SEASON" (no `text-7xl` hero). It also guards the **frame**: both
 >   zero-line legends, and that the page nowhere says `COIN FLIP` — a regression to a 50%
 >   baseline would credit the model with roughly ten points of home court it did not produce.
-> - **`onboarding.spec.ts`** — a fresh browser sees the first-visit guide, which enumerates
->   `PRIMARY_NAV_ITEMS` (the six direct tabs plus the three behind `OTHER`); the spec spot-checks
->   five of those rows by accessible name rather than pinning a count, so adding a surface does
->   not fail it. Closing the guide persists through reload, the `GUIDE` footer control reopens it,
->   and Escape restores focus to that control.
+> - **`alignment-law.spec.ts`** — the absolute parts of the alignment law: the page title sits on
+>   the container gutter, a `.fc-table` first cell takes no inset of its own, and expanding a
+>   `/shooting` row does not shift it sideways. `alignment-audit.spec.ts` beside it only reports,
+>   writing every near-miss edge to `test-results/alignment/report.txt`; its count has a floor it
+>   cannot reach, so do not tune the instrument to improve it.
 
 ## CI/CD
 

@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from "next";
 import { Analytics } from "@vercel/analytics/next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { NavBar } from "@/components/nav-bar";
-import { OnboardingGuide } from "@/components/onboarding-guide";
 import "./globals.css";
 
 // One family for body AND headings — the Front Office direction (docs/design/
@@ -115,8 +114,6 @@ export default function RootLayout({
               >
                 WHAT THIS MEASURES
               </a>
-              {" · "}
-              <OnboardingGuide />
               {" · "}
               <a
                 href="https://github.com/mhju0"

@@ -1,8 +1,4 @@
 import { defineConfig, devices } from "@playwright/test";
-import {
-  ONBOARDING_STORAGE_KEY,
-  ONBOARDING_STORAGE_VALUE,
-} from "./src/lib/onboarding";
 
 const BASE_URL = "http://localhost:3000";
 
@@ -19,20 +15,10 @@ export default defineConfig({
   reporter: [["list"], ["html", { open: "never" }]],
   use: {
     baseURL: BASE_URL,
-    storageState: {
-      cookies: [],
-      origins: [
-        {
-          origin: BASE_URL,
-          localStorage: [
-            {
-              name: ONBOARDING_STORAGE_KEY,
-              value: ONBOARDING_STORAGE_VALUE,
-            },
-          ],
-        },
-      ],
-    },
+    // No storageState any more. Every spec used to boot with an onboarding-complete flag in
+    // localStorage, because a modal opened over the app on first visit and covered whatever the
+    // test was about. The modal was removed on 2026-08-11 — the site now explains itself in
+    // place — so the flag, and the coupling of the whole e2e suite to it, went with it.
     trace: "on-first-retry",
     viewport: { width: 1280, height: 720 },
   },

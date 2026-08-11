@@ -26,12 +26,13 @@ test.describe("Referee Effect — held back", () => {
     await expect(page.getByText(/data behind this is collected/)).toBeVisible();
   });
 
-  test("is still labelled as unfinished in the nav guide", async ({ page }) => {
+  // Moved off the first-visit guide on 2026-08-11, when that guide was removed. The stance it
+  // guards is unchanged: navigation must say this surface is unfinished BEFORE you open it.
+  test("is still labelled as unfinished in the nav, before you open it", async ({ page }) => {
     await page.goto("/");
-    await page.getByRole("button", { name: "GUIDE" }).click();
-    const guide = page.getByRole("navigation", { name: "FullCourt page guide" });
+    await page.getByRole("button", { name: /^OTHER/ }).click();
     await expect(
-      guide.getByRole("link", { name: /^REFEREE EFFECT Still being built\./ })
+      page.getByRole("menuitem", { name: /REFEREE EFFECT IN PROGRESS/ })
     ).toBeVisible();
   });
 });

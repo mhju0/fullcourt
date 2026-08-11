@@ -16,8 +16,8 @@ import { cn } from "@/lib/utils"
  * product rather than being surfaces of it, so they are not tabs — but they are the same size
  * and weight as tabs, because the top status strip proved too quiet to be found.
  *
- * Kept here rather than in primary-navigation.ts on purpose: that module is what the
- * onboarding guide enumerates, and the guide should offer product surfaces, not documentation.
+ * Kept here rather than in primary-navigation.ts on purpose: that module enumerates product
+ * surfaces, and these two are documentation about the product rather than surfaces of it.
  */
 const SECONDARY_LINKS = [
   { href: "/about", label: "ABOUT" },
@@ -164,8 +164,12 @@ export function NavBar() {
                     letterSpacing: "0.05em",
                   }}
                 >
-                  {OTHER_NAV_ITEMS.map(({ href, label }) => {
+                  {OTHER_NAV_ITEMS.map((item) => {
+                    const { href, label } = item
                     const active = isActive(pathname, href)
+                    // `in` rather than a property read: OTHER_NAV_ITEMS is `as const`, so only
+                    // the entry that sets the flag has it on its type.
+                    const inProgress = "inProgress" in item && item.inProgress
                     return (
                       <Menu.Item
                         key={href}
@@ -173,7 +177,7 @@ export function NavBar() {
                         // middle-click, copy, or crawl — not a button that navigates.
                         render={<Link href={href} aria-current={active ? "page" : undefined} />}
                         className={cn(
-                          "block cursor-pointer px-4 py-2 font-semibold outline-none transition-colors",
+                          "flex cursor-pointer items-center gap-2 px-4 py-2 font-semibold outline-none transition-colors",
                           active
                             ? "text-[var(--term-text)]"
                             : "text-[var(--term-text-muted)]",
@@ -181,6 +185,27 @@ export function NavBar() {
                         )}
                       >
                         {label}
+                        {/* The unfinished surface says so before you click it, not after.
+                            This label used to live in the first-visit guide; that guide was
+                            removed on 2026-08-11 and the warning had to survive it, because a
+                            per-official foul table presented as finished reads as the bias
+                            claim the page exists to refuse (see CLAUDE.md). */}
+                        {inProgress && (
+                          <span
+                            style={{
+                              fontSize: 9,
+                              letterSpacing: "0.06em",
+                              fontWeight: 600,
+                              color: "var(--term-text-muted)",
+                              border: "1px solid var(--term-border)",
+                              borderRadius: "var(--term-radius-sm)",
+                              padding: "0 4px",
+                              lineHeight: "14px",
+                            }}
+                          >
+                            IN PROGRESS
+                          </span>
+                        )}
                       </Menu.Item>
                     )
                   })}

@@ -23,7 +23,7 @@ the actual code (`src/app/`, `src/components/`, `src/app/globals.css`).
   (`px-4 py-8 sm:px-6`), and a footer (`var(--term-surface-2)` bg, top border
   `var(--term-border)`) showing `RENDERED: <ts> UTC · SYSTEM STATUS` (the latter a link to
   `/api/health`) and `GUIDE · BUILT BY MJ · SOURCE` (two links → the author's GitHub and the
-  repo). `GUIDE` opens the client-side first-visit onboarding dialog at any time.
+  repo).
   `renderedAt` is `new Date().toISOString()` truncated to the minute at render time — the
   **render** time, explicitly **not** data/pipeline freshness (live health lives behind the
   SYSTEM STATUS link).
@@ -39,6 +39,19 @@ number in front of it is a second copy of the same fact that nothing checks.)
 view now renders what it used to.
 
 ### `/` — Games (`src/app/page.tsx`, client component)
+
+**The root states the thesis, not the format** (2026-08-11). The `<h1>` read `"Games"` until
+then — the same word as the tab, describing the table below it — so the largest type on the
+site's front door named the format rather than the subject, and a first-time visitor read
+"another scores site". The claim was already on the page, in the 15px description under it; it
+was simply out-ranked by the page's own hierarchy. The heading is now *"What the schedule does
+to a game"*, followed by `ThesisFigure`: the one headline number (`RESTED_AT_HOME.winPct`
+against `REST_SPLIT_BASELINE.homeWinPct`) with a `MethodLink`.
+
+`ThesisFigure` is deliberately **not** a fourth stat tile — the tiles below describe the
+selected day, and a forty-one-season result sitting in that row would read as another property
+of today's slate. Every figure in it is read from `rest-split-facts.ts`, never typed, and the
+season span is stated as "since 1985-86" rather than as a count so it cannot age.
 
 Two views behind a toggle (`role="group"`, `aria-label="Games view"`), held in local `view`
 state rather than a query param — the nav no longer links to `/upcoming`, so the only inbound
@@ -527,16 +540,26 @@ alone. It is style, not bias, and the copy says so.
    `--term-accent`) + `text-[var(--term-text)]` and carries
    `aria-current="page"`; inactive links are muted with a hover-to-text transition.
 
-### `onboarding-guide.tsx`
+### First-visit orientation — *(removed 2026-08-11)*
 
-Client-side, first-visit orientation dialog implemented with Base UI `Dialog`. On mount it reads
-the versioned `localStorage` flag `fullcourt:onboarding:v1`; new visitors see the dialog, while
-returning visitors see the unobtrusive `GUIDE` footer control. It explains every primary surface — the six direct tabs plus the three behind `OTHER` — from
-the shared `PRIMARY_NAV_ITEMS` source, with page links that dismiss the dialog and navigate.
-Close, backdrop, Escape, and `START EXPLORING` all persist the completion flag; if browser storage
-is unavailable, the guide still closes for the current page. The responsive panel is centered on
-desktop and becomes a scrollable bottom sheet on mobile. Base UI provides the modal semantics,
-focus trap, dismissal, and trigger-focus restoration.
+There was an `onboarding-guide.tsx`: a Base UI dialog that opened over the app on a visitor's
+first load, enumerated every primary surface from `PRIMARY_NAV_ITEMS`, and persisted a
+`fullcourt:onboarding:v1` flag. It is gone, along with `src/lib/onboarding.ts`,
+`e2e/onboarding.spec.ts`, and the `storageState` block every other e2e spec carried purely to
+stop it opening over them.
+
+It was removed because the site now explains itself in place. Benchmarks put embedded guidance at
+roughly **1.5× the action rate of a pop-up modal**, and user-triggered tours at **2–3×** the
+completion of auto-triggered ones — and a modal that only survives as a footer link is a modal
+nobody opens. The home page's thesis header does the site-level explaining; each page's
+`PageHeader` does the page-level explaining.
+
+**The one thing it uniquely carried had to survive it.** `/referees` was labelled
+`"Still being built."` in the guide, which is the deliberate, load-bearing stance recorded in
+CLAUDE.md. That warning now renders as an `IN PROGRESS` tag beside `REFEREE EFFECT` in the
+`OTHER` menu, driven by `inProgress: true` on its `primary-navigation.ts` entry, so navigation
+still says the surface is unfinished *before* it is opened. `e2e/referees.spec.ts` asserts it
+there. Do not drop that tag.
 
 ### `matchup-card.tsx` — the core matchup row
 
@@ -707,7 +730,7 @@ only its skeleton, not a restatement of the loader.
 Two shadcn primitives survive — `button`, built on **`@base-ui/react`** with
 `class-variance-authority` variants, and `skeleton`, a plain `div` — alongside one hand-written
 primitive that is not shadcn's, `message-card` (below). (`@base-ui/react` is
-also used directly for the `onboarding-guide` dialog.) `cn()`
+also used directly by the modals.) `cn()`
 (`src/lib/utils.ts`) merges classes with `clsx` + `tailwind-merge`. `components.json` pins
 the shadcn `base-nova` style, `neutral` base color, CSS variables, and the `@/components`,
 `@/lib`, `@/hooks`, `@/components/ui` aliases.
@@ -986,7 +1009,7 @@ One app-wide indicator, defined once in `globals.css`:
 minimum. Components may **reinforce** focus with a ring or a background tint but must not
 replace it: `focus-visible:outline-none` was removed from `matchup-card`, `playoffs-content`,
 `analysis-content` (explorer rows) and `explore-game-detail-modal`. The
-onboarding dialog keeps its explicit accent rings, which are a real visible indicator.
+explore-game modal keeps its explicit accent rings, which are a real visible indicator.
 
 ### Charts (`analysis-content.tsx`)
 
