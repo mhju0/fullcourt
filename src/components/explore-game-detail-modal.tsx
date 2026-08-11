@@ -10,7 +10,7 @@ import {
   FatigueDetailColumn,
   GameStatusRow,
   RaBadge,
-} from "@/components/matchup-card"
+} from "@/components/matchup-parts"
 import { getTeamBranding } from "@/lib/team-history"
 import { apiFetcher, errMsg } from "@/lib/fetcher"
 import { termInsetStyle } from "@/lib/terminal-styles"

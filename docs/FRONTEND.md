@@ -104,9 +104,9 @@ upcoming October date at season start; else nearest / last available).
   prev/next day arrows; the matchup slate with skeleton/empty/error states.
 - **The slate renders through `MatchupTable` (`matchup-table.tsx`) since 2026-08-09** — the
   Front Office table spine: one continuous grid-table of rows rather than a stack of
-  `MatchupCard`s, with the same expand-in-place fatigue detail per game. `MatchupCard` still
-  exports the shared pieces (`ConfidenceBadge`, `FatigueDetailColumn`, `RaBadge`, …) the table
-  and the detail modal consume.
+  `MatchupCard`s, with the same expand-in-place fatigue detail per game. That card was deleted on
+  2026-08-11, having rendered nowhere since; the shared pieces it used to house (`ConfidenceBadge`,
+  `FatigueDetailColumn`, `TeamLogo`, `RaBadge`, …) now live in `matchup-parts.tsx`.
 - **Schedule flags sit on their own team's fatigue line, not in a shared strip** (2026-08-11),
   via `teamGameFlags()` — which is why they read `3IN4` rather than `AWAY 3IN4`: on a team's own
   line the prefix says nothing, and it was half of each chip. Two per line, then `+N`; the strip
@@ -520,7 +520,7 @@ alone. It is style, not bias, and the copy says so.
    product was scoped to one — and an `ABOUT` link, which moved to the nav row.
    There is **no LIVE dot** — it was gated by
    a `HAS_LIVE_GAMES` constant hardcoded to `false`, so it never rendered in any state; the
-   dead branch was removed. Per-game LIVE status is shown by `MatchupCard` instead.
+   dead branch was removed. Per-game LIVE status is shown in the slate row instead (`matchup-table.tsx`).
 2. **Main nav** (44px, `var(--term-surface)`, bottom border `var(--term-border)`) holds **two
    navigation landmarks in one row**. Left, `aria-label="Main navigation"`: the six direct tabs
    from `DIRECT_NAV_ITEMS` (`src/lib/primary-navigation.ts`) — `GAMES → /`,
@@ -586,24 +586,33 @@ CLAUDE.md. That warning now renders as an `IN PROGRESS` tag beside `REFEREE EFFE
 still says the surface is unfinished *before* it is opened. `e2e/referees.spec.ts` asserts it
 there. Do not drop that tag.
 
-### `matchup-card.tsx` — the core matchup row
+### `matchup-parts.tsx` — the shared matchup pieces
 
-**Since 2026-08-09 the `/` slate renders through `MatchupTable` (`matchup-table.tsx`)**, not a
-stack of these cards — this file remains the home of the shared matchup pieces
-(`ConfidenceBadge`, `FatigueDetailColumn`, `TeamLogo`, `RaBadge`, `getConfidence`) that the
-table and the detail modal import.
+**Named `matchup-card.tsx` until 2026-08-11.** The Front Office redesign replaced the card stack
+with `MatchupTable` on 2026-08-09, and `MatchupCard` had rendered nowhere since — along with
+`MetaStrip` and the pooled `gameFlags()`, and the four private helpers only those three used
+(`confidenceAccent`, `fatigueTones`, `TeamStatRow`, `RestAdvPanel`). All of it is gone, which
+halved the file from 766 lines to ~380, and what is left is named for what it actually is: the
+pieces every matchup surface draws — `TeamLogo`, `ConfidenceBadge`, `GameStatusRow`,
+`FatigueDetailColumn`, `RaBadge`, `getConfidence`, `teamGameFlags`, and the `Confidence` type.
+`matchup-table.tsx`, `explore-game-detail-modal.tsx` and `upcoming-content.tsx` import from here.
 
-White card (`background: var(--term-surface)`, `1px solid var(--term-border)`) topped by a
-team-color band (away | home from `getTeamColors`) with a **2px left-border accent** colored
-by confidence:
+**One `TeamLogo`, not two.** `upcoming-content.tsx` carried a private copy until the same day — a
+second adapter at a seam that already existed, and one that took only an abbreviation, so it
+could not resolve era-correct branding through `getTeamBranding` even in principle. It now uses
+the shared one. No `season` is passed there because upcoming games are current-season, so the
+current logo is the correct one; the point is that the capability is a prop away rather than a
+rewrite.
+
+Confidence tiers:
 - `getConfidence(diff)`: `high` `|diff| ≥ 2.0`, `med` `≥ 1.0`, **`low` `≥ 0.5`**, `neutral`
   below that, `none` when no RA. The `low` tier exists because the canonical classifier
   (`NEUTRAL_REST_ADVANTAGE_THRESHOLD = 0.5`, imported from `rest-advantage-evidence.ts` rather
   than redeclared) calls a game for a team at 0.5: with tiers starting at 1.0, every gap in
-  `[0.5, 1.0)` made `RestAdvPanel` print e.g. `BOS 0.7` while the badge directly beneath it
+  `[0.5, 1.0)` made the rest-advantage cell print e.g. `BOS 0.7` while the badge beside it
   printed `NEUTRAL`. The invariant — *anything the classifier calls is at least `low`* — is
-  pinned by `src/components/__tests__/matchup-card-confidence.test.ts`.
-- Beneath the card body, `buildRestAdvantageEvidence` (`src/lib/rest-advantage-display.ts`)
+  pinned by `src/components/__tests__/matchup-parts-confidence.test.ts`.
+- In a row's expansion, `buildRestAdvantageEvidence` (`src/lib/rest-advantage-display.ts`)
   renders one sentence giving the rest-advantage number its historical hit rate, sample size
   and **the baseline that side wins anyway** — the home baseline for a rested home team, the
   road baseline for a rested road team. Buckets are **cumulative**, so a 4.1 gap resolves to
@@ -618,31 +627,28 @@ by confidence:
   chip reads as a pick, where "42.4% — road teams win 40.1% overall" reads as a measurement,
   and no truncation can separate them. `/upcoming`'s cell shows the rate, the signed lift, the
   class label and the baseline together for the same reason.
-- `confidenceAccent` returns `TERM_ACCENT` tokens (`src/lib/terminal-styles.ts`): high
-  `.accent`, everything else `.neutral`. **Never a data pole** (2026-08-09) — the poles say
-  *who* is rested, and a rose HIGH CONF badge beside a rose fatigue bar read as "fatigued
-  wins", which is backwards. Confidence is magnitude, and is carried by the badge text and
-  the accent's loudness rather than a hue of its own.
+- **Confidence is never a data pole** (2026-08-09) — the poles say *who* is rested, and a rose
+  HIGH CONF badge beside a rose fatigue bar read as "fatigued wins", which is backwards.
+  Confidence is magnitude, carried by the badge text and the accent's loudness rather than a hue
+  of its own. The badge ladder: HIGH CONF a filled `--term-accent` chip, MED CONF an ink
+  outline, LOW CONF and NEUTRAL a hairline outline. (`confidenceAccent` implemented this on the
+  retired card and went with it; `matchup-table.tsx` applies the same rule inline.)
 
-Layout per card: status line (`GameStatusRow` → LIVE/FINAL/UPCOMING + score),
-`away TeamBlock | FatigueBarsBlock | home TeamBlock | RestAdvPanel`, a `MetaStrip`, and a
-click/keyboard-expandable detail grid (two `FatigueDetailColumn`s). Subcomponents:
-- `TeamLogo` — season-aware logo via `getTeamBranding`; falls back to an abbreviation chip on
-  error.
-- `FatigueBarsBlock` / `FatigueBarRow` — away + home `FatigueBar`s; the higher score is rose
-  (`higher`), the lower teal (`lower`), equal/neutral grey.
-- `RestAdvPanel` (~180–200px, left divider): `REST ADVANTAGE` label, team abbreviation +
-  value (or `EVEN`), a center-anchored fill bar (fill width = `min(|diff|/5, 1) * 50%`), and a
-  `ConfidenceBadge`. **The fill is always the rested pole** (`--term-blue` teal) whichever
-  side it extends toward — the advantaged team *is* the more-rested team, and direction alone
-  carries home/away; painting the away side rose said "rested team, fatigued color". The badge
-  ladder is loudness, not hue: HIGH CONF is a filled `--term-accent` chip, MED CONF an ink
-  outline, LOW CONF and NEUTRAL a hairline outline.
-- `MetaStrip` — game date plus flag chips: `AWAY/HOME B2B`, `AWAY/HOME 3IN4`, `AWAY/HOME
-  4IN6`, `ALT`, `COAST`, `OT`.
+The pieces, and who draws them:
+- `TeamLogo` — season-aware logo via `getTeamBranding` when given a `season`, plain
+  `teamLogoUrl` without one; falls back to an abbreviation chip on error. Drawn by the slate
+  table, the detail modal and `/upcoming`.
+- `GameStatusRow` — LIVE / FINAL / UPCOMING plus the score.
+- `ConfidenceBadge` — the ladder above.
 - `FatigueDetailColumn` — GP (30D/7D), back-to-back, 3-in-4, 4-in-6, road streak, travel
-  miles (7-day; highlighted ≥1000), days rest.
-- Exported helpers reused by the modal: `GameStatusRow`, `FatigueDetailColumn`, `RaBadge`.
+  miles (7-day; highlighted ≥1000), days rest. Both the slate's expansion and the modal.
+- `RaBadge` — the compact `ABBR n.n RA` chip, used by the modal.
+- `teamGameFlags` — per-team schedule flags, de-prefixed. See the `/` section above.
+
+The **center-anchored rest-advantage meter** (fill width `min(|diff|/5, 1) * 50%`, always the
+rested pole `--term-blue` whichever side it extends toward, because the advantaged team *is* the
+more-rested one and direction alone carries home/away) now lives in `matchup-table.tsx` as
+`RestAdvCell`. It was `RestAdvPanel` here until 2026-08-11.
 
 ### `fatigue-bar.tsx`
 
@@ -1024,7 +1030,7 @@ products:
   measures. Single centred callouts (error cards, "key insight") keep the left rule — they are
   one statement, not a row.
 - **Cards that expand lift 2px on hover** (`hover:-translate-y-0.5`), cancelled under
-  `motion-reduce`. Do not pair this with a `hover:border-*` class on `MatchupCard` or the
+  `motion-reduce`. Do not pair this with a `hover:border-*` class on a slate row or the
   playoff `SeriesCard`: both set `border` as an inline style, which beats any non-`!important`
   class rule, so such a hover silently does nothing.
 
@@ -1051,7 +1057,7 @@ One app-wide indicator, defined once in `globals.css`:
 `--ring` is a **solid** `#4F46E5`. It was `rgba(37, 99, 235, 0.45)` and further halved by an
 `outline-ring/50` applied to `*`, which composited to 1.97:1 on white — under the 3:1 non-text
 minimum. Components may **reinforce** focus with a ring or a background tint but must not
-replace it: `focus-visible:outline-none` was removed from `matchup-card`, `playoffs-content`,
+replace it: `focus-visible:outline-none` was removed from `matchup-parts`, `playoffs-content`,
 `analysis-content` (explorer rows) and `explore-game-detail-modal`. The
 explore-game modal keeps its explicit accent rings, which are a real visible indicator.
 

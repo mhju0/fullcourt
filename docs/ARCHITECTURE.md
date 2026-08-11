@@ -184,7 +184,7 @@ Details in [TESTING_AND_CICD.md](TESTING_AND_CICD.md).
 **Games (BY DATE view):** browser → `app/page.tsx` → `fetch('/api/games/dates?season=&month=')` →
 `getRegularSeasonGameDatesWithCounts` → render day chips → on select
 `fetch('/api/games/{date}')` → `getGamesByDate` (joins `games`+`teams`+ latest
-`fatigue_scores`, computes `restAdvantage`) → `MatchupCard` list → `useLiveGames`
+`fatigue_scores`, computes `restAdvantage`) → `MatchupTable` rows → `useLiveGames`
 subscribes to `games` UPDATE events and merges score/status changes.
 
 **Live score cron:** Vercel → `GET /api/cron/update` (Bearer `CRON_SECRET`) → query today's

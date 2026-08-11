@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { getConfidence } from "@/components/matchup-card";
+import { getConfidence } from "@/components/matchup-parts";
 import { formatRestAdvantageDisplay } from "@/lib/rest-advantage-display";
 import { classifyRestAdvantage } from "@/lib/rest-advantage-evidence";
 

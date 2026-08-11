@@ -1,11 +1,10 @@
 "use client"
 
 import { useState } from "react"
-import Image from "next/image"
 import useSWR from "swr"
 import { format } from "date-fns"
-import { teamLogoUrl } from "@/lib/team-history"
-import { getTeamColors, readableTextOn } from "@/lib/nba-team-colors"
+import { TeamLogo } from "@/components/matchup-parts"
+import { getTeamColors } from "@/lib/nba-team-colors"
 import { currentDisplaySeason, isNbaOffSeason, nextSeasonLabel } from "@/lib/nba-season"
 import { apiFetcher, errMsg } from "@/lib/fetcher"
 import { useBacktest } from "@/hooks/useBacktest"
@@ -37,40 +36,6 @@ function OffSeasonEmptyState({ nextSeason }: { nextSeason: string }) {
         {nextSeason} season tips off in October.
       </p>
     </div>
-  )
-}
-
-// ─── Team logo ─────────────────────────────────────────────────────
-
-function TeamLogo({ abbreviation }: { abbreviation: string }) {
-  const [error, setError] = useState(false)
-  if (error) {
-    const bg = getTeamColors(abbreviation).primary
-    return (
-      <span
-        className="mono flex size-6 shrink-0 items-center justify-center text-[10px] font-bold"
-        style={{
-          borderRadius: "var(--term-radius-sm)",
-          background: bg,
-          color: readableTextOn(bg),
-          boxShadow: "inset 0 0 0 1px rgba(0,0,0,0.12)",
-        }}
-      >
-        {abbreviation}
-      </span>
-    )
-  }
-
-  return (
-    <Image
-      src={teamLogoUrl(abbreviation)}
-      alt={`${abbreviation} logo`}
-      width={24}
-      height={24}
-      unoptimized
-      className="size-6 shrink-0 object-contain"
-      onError={() => setError(true)}
-    />
   )
 }
 
@@ -212,11 +177,24 @@ export function UpcomingContent() {
                       {format(new Date(g.date + "T00:00:00"), "MMM d")}
                     </td>
                     <td style={{ ...tdStyle, color: "var(--term-text)" }}>
+                      {/* The shared TeamLogo, not a private copy. This page carried its own
+                          until 2026-08-11 — a second adapter at a seam that already existed,
+                          and one that could not take a season, so it had no way to resolve
+                          era-correct branding even in principle. No `season` is passed here
+                          because these games are upcoming: the current logo IS the correct one.
+                          The point is that the capability now sits one prop away instead of
+                          behind a rewrite. */}
                       <div className="flex items-center gap-2">
-                        <TeamLogo abbreviation={g.awayTeam.abbreviation} />
+                        <TeamLogo
+                          abbreviation={g.awayTeam.abbreviation}
+                          color={getTeamColors(g.awayTeam.abbreviation).primary}
+                        />
                         <span style={{ fontWeight: 600 }}>{g.awayTeam.abbreviation}</span>
                         <span style={{ color: "var(--term-hairline)" }}>@</span>
-                        <TeamLogo abbreviation={g.homeTeam.abbreviation} />
+                        <TeamLogo
+                          abbreviation={g.homeTeam.abbreviation}
+                          color={getTeamColors(g.homeTeam.abbreviation).primary}
+                        />
                         <span style={{ fontWeight: 600 }}>{g.homeTeam.abbreviation}</span>
                       </div>
                     </td>
@@ -242,7 +220,7 @@ export function UpcomingContent() {
                           // Always the rested pole: the named team is the more-rested side,
                           // whichever side it is. Side-coloring painted a rested visitor in
                           // the fatigued hue — backwards under two-pole semantics (see
-                          // RaBadge in matchup-card.tsx).
+                          // RaBadge in matchup-parts.tsx).
                           background: "var(--term-blue)",
                           color: "var(--term-surface)",
                           fontSize: 11,

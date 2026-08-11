@@ -69,7 +69,7 @@ test.describe("Home page", () => {
     );
 
     // MatchupCard's toggle row is role="button" with an "Expand/Collapse game
-    // details" aria-label (src/components/matchup-card.tsx:616-619) — there's
+    // details" aria-label (src/components/matchup-table.tsx) — there's
     // no combined "TEAM @ TEAM" text node in the current markup.
     const firstCard = page
       .getByRole("button", { name: /Expand game details|Collapse game details/ })
