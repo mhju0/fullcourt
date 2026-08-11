@@ -8,7 +8,7 @@ import {
   ValueGrid,
 } from "@/components/behind-the-data-parts";
 import { NBA_SEASONS } from "@/lib/nba-season";
-import { termTdStyle, termThStyle } from "@/lib/terminal-styles";
+import { DataTable } from "@/components/ui/data-table";
 
 export const metadata: Metadata = {
   title: "Data & Limits — Behind the Data",
@@ -64,28 +64,20 @@ export default function DataAndLimitsPage() {
           Not every field reaches back as far as the schedule does. Three inputs come from ESPN
           rather than the NBA feeds, and the table says which seasons carry which.
         </Prose>
-        <div className="overflow-x-auto">
-          <table className="fc-table mono w-full" style={{ fontSize: 12, borderCollapse: "collapse" }}>
-            <thead>
-              <tr>
-                <th style={termThStyle}>FIELD</th>
-                <th style={termThStyle}>FROM</th>
-                <th style={termThStyle}>SOURCE</th>
-                <th style={termThStyle}>NOTE</th>
-              </tr>
-            </thead>
-            <tbody>
-              {COVERAGE.map((row) => (
-                <tr key={row.field}>
-                  <td style={{ ...termTdStyle, fontWeight: 700 }}>{row.field}</td>
-                  <td style={{ ...termTdStyle, whiteSpace: "nowrap" }}>{row.from}</td>
-                  <td style={{ ...termTdStyle, whiteSpace: "nowrap" }}>{row.source}</td>
-                  <td style={{ ...termTdStyle, color: "var(--term-text-muted)" }}>{row.note}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <DataTable
+          rows={COVERAGE}
+          rowKey={(row) => row.field}
+          columns={[
+            { label: "FIELD", style: { fontWeight: 700 }, cell: (row) => row.field },
+            { label: "FROM", className: "whitespace-nowrap", cell: (row) => row.from },
+            { label: "SOURCE", className: "whitespace-nowrap", cell: (row) => row.source },
+            {
+              label: "NOTE",
+              style: { color: "var(--term-text-muted)" },
+              cell: (row) => row.note,
+            },
+          ]}
+        />
         <Note>
           The consequence, plainly: the fatigue model is a slightly different model before and
           after 2002. Terms are applied where their data exists rather than back-filled with
