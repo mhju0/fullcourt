@@ -29,7 +29,7 @@ export function WinTotalMarketCheck() {
       </p>
 
       <div className="mt-3 overflow-x-auto">
-        <table style={{ borderCollapse: "collapse", minWidth: 360 }}>
+        <table className="fc-table" style={{ borderCollapse: "collapse", minWidth: 360 }}>
           <thead>
             <tr>
               <th style={{ ...termThStyle, textAlign: "left" }}>Net edge games</th>

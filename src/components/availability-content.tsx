@@ -292,7 +292,7 @@ function ScheduleHoldsUpSection() {
         </p>
 
         <div className="mt-4 overflow-x-auto">
-          <table className="w-full" style={{ borderCollapse: "collapse", minWidth: 420 }}>
+          <table className="fc-table w-full" style={{ borderCollapse: "collapse", minWidth: 420 }}>
             <thead>
               <tr>
                 {["", "SCHEDULE ONLY (PTS)", "ABSENCE HELD FIXED (PTS)", "SHIFT (%)"].map((h, i) => (

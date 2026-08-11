@@ -33,7 +33,7 @@ function VerdictTile({ label, verdict }: { label: string; verdict: Verdict }) {
   const reading = readingOf(verdict)
   const lit = reading !== "at chance"
   return (
-    <div className="flex flex-col gap-1" style={termInsetStyle}>
+    <div className="flex flex-col gap-1 py-3" style={termInsetStyle}>
       <span
         className="mono"
         style={{ fontSize: 10, letterSpacing: "0.08em", color: "var(--term-text-muted)" }}

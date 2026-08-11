@@ -103,7 +103,7 @@ export default function PlayoffPredictionsMethodPage() {
 
       <Section label="THE FEATURES" descriptor={`${FEATURES.length} INPUTS · BY WEIGHT`}>
         <div className="overflow-x-auto">
-          <table className="mono w-full" style={{ fontSize: 12, borderCollapse: "collapse" }}>
+          <table className="fc-table mono w-full" style={{ fontSize: 12, borderCollapse: "collapse" }}>
             <thead>
               <tr>
                 <th style={termThStyle}>FEATURE</th>
@@ -160,7 +160,7 @@ export default function PlayoffPredictionsMethodPage() {
           let only their side vary.
         </Prose>
         <div className="overflow-x-auto">
-          <table className="mono w-full" style={{ fontSize: 12, borderCollapse: "collapse" }}>
+          <table className="fc-table mono w-full" style={{ fontSize: 12, borderCollapse: "collapse" }}>
             <thead>
               <tr>
                 <th style={termThStyle}>THEIR LAST ROUND</th>
@@ -229,7 +229,7 @@ export default function PlayoffPredictionsMethodPage() {
           previous round&rsquo;s length — rounds 2+:
         </Prose>
         <div className="overflow-x-auto">
-          <table className="mono w-full" style={{ fontSize: 12, borderCollapse: "collapse" }}>
+          <table className="fc-table mono w-full" style={{ fontSize: 12, borderCollapse: "collapse" }}>
             <thead>
               <tr>
                 <th style={termThStyle}>REST INTO GAME 1</th>
@@ -279,7 +279,7 @@ export default function PlayoffPredictionsMethodPage() {
           knows the difference between a lopsided matchup and a near coin flip.
         </Prose>
         <div className="overflow-x-auto">
-          <table className="mono w-full" style={{ fontSize: 12, borderCollapse: "collapse" }}>
+          <table className="fc-table mono w-full" style={{ fontSize: 12, borderCollapse: "collapse" }}>
             <thead>
               <tr>
                 <th style={termThStyle}>METRIC</th>
@@ -354,7 +354,7 @@ export default function PlayoffPredictionsMethodPage() {
           to it. From the second round on there is a grind to read, and it wins there.
         </Prose>
         <div className="overflow-x-auto">
-          <table className="mono w-full" style={{ fontSize: 12, borderCollapse: "collapse" }}>
+          <table className="fc-table mono w-full" style={{ fontSize: 12, borderCollapse: "collapse" }}>
             <thead>
               <tr>
                 <th style={termThStyle}>ROUNDS</th>

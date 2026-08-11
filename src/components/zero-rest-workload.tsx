@@ -93,7 +93,7 @@ export function ZeroRestWorkload({ season }: { season: string }) {
       ) : (
         <>
           <div className="overflow-x-auto">
-            <table className="mono w-full" style={{ borderCollapse: "collapse", minWidth: 460, maxWidth: TERM_NUMERIC_TABLE_MAX_WIDTH }}>
+            <table className="fc-table mono w-full" style={{ borderCollapse: "collapse", minWidth: 460, maxWidth: TERM_NUMERIC_TABLE_MAX_WIDTH }}>
               <thead>
                 <tr>
                   <th style={termThStyle}>PLAYER</th>

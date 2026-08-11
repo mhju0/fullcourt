@@ -20,6 +20,7 @@ import {
 } from "@/lib/player-rest"
 import {
   MONO_FONT_STACK,
+  SPACE_NESTED_ROW,
   termCardStyle,
   termSelectClass,
   termSelectStyle,
@@ -378,7 +379,7 @@ export function PlayerRestContent() {
             even though the magnitude is not. Size containment does not apply to table rows, so
             the browser still lays every row out and only pays the containment bookkeeping on
             top. Do not add it back on this table. */}
-        <table className="w-full table-fixed border-collapse text-[12px]">
+        <table className="fc-table w-full table-fixed border-collapse text-[12px]">
           <colgroup>
             {COLUMNS.map((col) => (
               <col key={col.label} style={{ width: col.width }} />
@@ -501,7 +502,7 @@ function PlayerRows({
             <Fragment key={s[S.YEAR]}>
               <tr className={`fc-sub${s[S.YEAR] === browsedYear ? " fc-here" : ""}`} data-testid="season-row">
                 <td style={termTdStyle} />
-                <td style={{ ...termTdStyle, paddingLeft: 26, fontFamily: MONO_FONT_STACK, color: "var(--term-text-dim)" }}>
+                <td style={{ ...termTdStyle, paddingLeft: SPACE_NESTED_ROW, fontFamily: MONO_FONT_STACK, color: "var(--term-text-dim)" }}>
                   {seasonLabel(s[S.YEAR])}
                 </td>
                 <td style={{ ...termTdStyle, fontFamily: MONO_FONT_STACK, color: "var(--term-text-muted)" }}>{sr.context}</td>
@@ -520,7 +521,7 @@ function PlayerRows({
       {expanded && totals && (
         <tr className="fc-sub fc-total" data-testid="career-row">
           <td style={termTdStyle} />
-          <td style={{ ...termTdStyle, paddingLeft: 26, fontFamily: MONO_FONT_STACK, fontWeight: 600 }}>Career</td>
+          <td style={{ ...termTdStyle, paddingLeft: SPACE_NESTED_ROW, fontFamily: MONO_FONT_STACK, fontWeight: 600 }}>Career</td>
           <td style={termTdStyle} />
           <td style={{ ...NUM_TD, fontWeight: 600 }}>
             {totals.ageLo && totals.ageHi ? `${totals.ageLo}–${totals.ageHi}` : "—"}

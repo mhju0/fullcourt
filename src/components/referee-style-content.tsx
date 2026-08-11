@@ -79,7 +79,7 @@ export function RefereeStyleContent({ data }: { data: RefereeFoulStyle }) {
       </div>
 
       <div className="overflow-x-auto" style={{ ...termCardStyle, padding: 0 }}>
-        <table className="mono w-full table-fixed border-collapse text-[12px]" style={{ minWidth: 940 }}>
+        <table className="fc-table mono w-full table-fixed border-collapse text-[12px]" style={{ minWidth: 940 }}>
           <colgroup>
             {COLUMNS.map((c) => (
               <col key={c.label} style={{ width: c.width }} />

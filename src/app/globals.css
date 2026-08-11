@@ -248,6 +248,33 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* ── Tables ──────────────────────────────────────────────────────
+   Cell padding lives here rather than in `termThStyle` / `termTdStyle` because the edge cells
+   need different treatment from the interior ones, and a style object has no way to say
+   "first child".
+
+   THE EDGE CELLS PAD TO ZERO. That is the whole rule, and it is what makes a table line up
+   with whatever sits above it: the first column's text starts exactly at its container's
+   content edge, so it lands on the page gutter when the table sits on the page column, and on
+   the card's inner rail when the table sits in a card — without either context needing to know
+   about the other. Cells used to pad 10px all round, which put every table's first column 10px
+   inside the heading that introduced it, in every context at once.
+
+   Interior columns pad 12 a side. Enough to read two right-aligned numeric columns as separate
+   measures; not so much that a ten-column table has to scroll for its whitespace.            */
+.fc-table th,
+.fc-table td {
+  padding: 8px 12px;
+}
+.fc-table th:first-child,
+.fc-table td:first-child {
+  padding-left: 0;
+}
+.fc-table th:last-child,
+.fc-table td:last-child {
+  padding-right: 0;
+}
+
 /* ── Player rest database (/shooting) ────────────────────────────
    An expanded player's seasons are rows of the browse table itself, so there is
    one header and one column grid and nothing for the sticky header to collide
@@ -280,9 +307,14 @@
 .fc-rest-table tbody tr.fc-sub.fc-here > td {
   background: color-mix(in srgb, var(--term-amber) 14%, var(--term-surface));
 }
+/* An inset shadow, not a border. As `border-left: 2px` this rule took 2px of layout width from
+   the cell, so an expanded player's first column sat 2px right of every collapsed player's —
+   the rail meant to mark the group was itself knocking the group out of the column. A shadow
+   paints in the same place and costs no width. (Same technique as the hover rule on
+   /behind-the-data.) */
 .fc-rest-table tbody tr.fc-open > td:first-child,
 .fc-rest-table tbody tr.fc-sub > td:first-child {
-  border-left: 2px solid var(--term-rail);
+  box-shadow: inset 2px 0 0 var(--term-rail);
 }
 .fc-rest-table tbody tr.fc-groupend > td {
   border-bottom: 1px solid var(--term-rail);

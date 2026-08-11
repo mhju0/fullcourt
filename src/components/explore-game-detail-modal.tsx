@@ -145,7 +145,9 @@ function ExploreGameDetailBody({
         />
       </div>
 
-      <div className="mt-1 px-3 py-4 sm:px-4" style={termInsetStyle}>
+      {/* No horizontal padding: `termInsetStyle` is a band, so it bleeds to the modal's inner
+          rail and its contents stay on the same line as everything else in the modal. */}
+      <div className="mt-4 py-4" style={termInsetStyle}>
         <p
           className="mono mb-3 text-center uppercase"
           style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.08em", color: "var(--term-text-muted)" }}

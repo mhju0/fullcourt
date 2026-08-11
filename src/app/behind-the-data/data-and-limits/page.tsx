@@ -65,7 +65,7 @@ export default function DataAndLimitsPage() {
           rather than the NBA feeds, and the table says which seasons carry which.
         </Prose>
         <div className="overflow-x-auto">
-          <table className="mono w-full" style={{ fontSize: 12, borderCollapse: "collapse" }}>
+          <table className="fc-table mono w-full" style={{ fontSize: 12, borderCollapse: "collapse" }}>
             <thead>
               <tr>
                 <th style={termThStyle}>FIELD</th>

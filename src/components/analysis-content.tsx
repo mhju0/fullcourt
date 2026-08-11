@@ -502,7 +502,7 @@ function ExploreGames({
 
       {/* Table */}
       <div className="mt-3 overflow-x-auto">
-        <table className="mono w-full" style={{ borderCollapse: "collapse" }}>
+        <table className="fc-table mono w-full" style={{ borderCollapse: "collapse" }}>
           <thead>
             <tr>
               <th style={{ ...termThStyle, textAlign: "left" }}>Date</th>

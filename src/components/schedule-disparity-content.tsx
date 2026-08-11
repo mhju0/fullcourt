@@ -345,7 +345,7 @@ export function ScheduleDisparityContent() {
               the league keeps close to even, no schedule is worth half a game either way.
             </p>
             <div className="mt-3 overflow-x-auto">
-              <table className="w-full" style={{ borderCollapse: "collapse" }}>
+              <table className="fc-table w-full" style={{ borderCollapse: "collapse" }}>
                 <thead>
                   <tr>
                     <th style={{ ...termThStyle, textAlign: "right" }}>#</th>

@@ -183,7 +183,7 @@ function HowToRead({
   divD: number
 }) {
   return (
-    <div className="mb-4 flex flex-col gap-4 px-4 py-3.5 sm:flex-row sm:items-center sm:gap-6" style={termInsetStyle}>
+    <div className="mb-4 flex flex-col gap-4 py-4 sm:flex-row sm:items-center sm:gap-6" style={termInsetStyle}>
       {mode === "value" ? (
         <>
           <BigLegend

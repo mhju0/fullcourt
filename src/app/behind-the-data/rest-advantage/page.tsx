@@ -103,7 +103,7 @@ function RestRowTable() {
 
   return (
     <div className="overflow-x-auto">
-      <table className="mono w-full" style={{ fontSize: 12, borderCollapse: "collapse" }}>
+      <table className="fc-table mono w-full" style={{ fontSize: 12, borderCollapse: "collapse" }}>
         <thead>
           <tr>
             <th style={termThStyle}>
@@ -214,7 +214,7 @@ function RestRowTable() {
 function RoadLadderTable() {
   return (
     <div className="overflow-x-auto">
-      <table className="mono w-full" style={{ fontSize: 12, borderCollapse: "collapse" }}>
+      <table className="fc-table mono w-full" style={{ fontSize: 12, borderCollapse: "collapse" }}>
         <thead>
           <tr>
             <th style={termThStyle}>
@@ -302,7 +302,7 @@ function RoadLadderTable() {
 function RoadEraTable() {
   return (
     <div className="overflow-x-auto">
-      <table className="mono w-full" style={{ fontSize: 12, borderCollapse: "collapse" }}>
+      <table className="fc-table mono w-full" style={{ fontSize: 12, borderCollapse: "collapse" }}>
         <thead>
           <tr>
             <th style={termThStyle}>
@@ -607,7 +607,7 @@ direction    = ${K.eastwardMultiplier} eastward, ${K.westwardMultiplier} westwar
           {ABLATIONS[0].foundWinPct}%.
         </Prose>
         <div className="overflow-x-auto">
-          <table className="mono w-full" style={{ fontSize: 12, borderCollapse: "collapse" }}>
+          <table className="fc-table mono w-full" style={{ fontSize: 12, borderCollapse: "collapse" }}>
             <thead>
               <tr>
                 <th style={termThStyle}>TERM</th>

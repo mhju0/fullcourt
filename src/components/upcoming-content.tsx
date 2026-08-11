@@ -160,7 +160,7 @@ export function UpcomingContent() {
         )
       ) : (
         <div className="overflow-x-auto">
-          <table className="mono w-full" style={{ borderCollapse: "collapse" }}>
+          <table className="fc-table mono w-full" style={{ borderCollapse: "collapse" }}>
             <thead>
               <tr>
                 <th style={{ ...thStyle, textAlign: "left" }}>Date</th>

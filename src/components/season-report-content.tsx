@@ -294,7 +294,7 @@ function EdgeConversion({
       </p>
       <SwingBaselineNote baseline={swingBaseline} />
       <div className="overflow-x-auto">
-        <table className="mono w-full" style={{ borderCollapse: "collapse", minWidth: 560, maxWidth: TERM_NUMERIC_TABLE_MAX_WIDTH }}>
+        <table className="fc-table mono w-full" style={{ borderCollapse: "collapse", minWidth: 560, maxWidth: TERM_NUMERIC_TABLE_MAX_WIDTH }}>
           <thead>
             <tr>
               <th rowSpan={2} style={termThStyle}>TEAM</th>
@@ -419,7 +419,7 @@ function ScheduleValue({ teams }: { teams: SeasonReportTeamLabelled[] }) {
 
       <div className="overflow-x-auto">
         <table
-          className="mono w-full"
+          className="fc-table mono w-full"
           style={{ borderCollapse: "collapse", minWidth: 420, maxWidth: TERM_NUMERIC_TABLE_MAX_WIDTH }}
         >
           <thead>
@@ -563,7 +563,7 @@ function ScheduleTax({ teams }: { teams: SeasonReportTeamLabelled[] }) {
         </p>
       ) : null}
       <div className="overflow-x-auto">
-        <table className="mono w-full" style={{ borderCollapse: "collapse", minWidth: 520, maxWidth: TERM_NUMERIC_TABLE_MAX_WIDTH }}>
+        <table className="fc-table mono w-full" style={{ borderCollapse: "collapse", minWidth: 520, maxWidth: TERM_NUMERIC_TABLE_MAX_WIDTH }}>
           <thead>
             <tr>
               <th style={termThStyle}>TEAM</th>
