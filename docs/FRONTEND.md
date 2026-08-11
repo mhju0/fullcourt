@@ -936,14 +936,33 @@ and no two pages' paragraphs ended in the same place.)*
 hierarchically inside another row — the expanded seasons under a player on `/shooting`. The
 nesting is the information there, so it has to be visible. Nothing else may take a third rail.
 
-**Tables take no inset of their own.** Cell padding lives in the `.fc-table` rule in
-`globals.css`, not in `termThStyle` / `termTdStyle`, because the edge cells have to pad to
-**zero** and a style object cannot say "first child". That is what lets a table line up with
-whatever introduces it: the first column starts at the page gutter when the table sits on the
-page column, and at the card's inner rail when it sits in a card, without either context knowing
-about the other. Interior columns pad 12 a side. **A `<table>` using those styles must carry
-`className="fc-table"`** — omitting it drops all cell padding, which is loudly visible rather
-than subtly wrong.
+**A table is a box, so it takes the inner rail like any other box.** Cell padding lives in the
+`.fc-table` rule in `globals.css`, not in `termThStyle` / `termTdStyle`, so all 21 tables pad
+identically without 21 call sites agreeing. **12 a side, every cell, edges included.**
+**A `<table>` using those styles must carry `className="fc-table"`** — omitting it drops all cell
+padding, which is loudly visible rather than subtly wrong.
+
+> The edge cells padded to **zero** for part of 2026-08-11, so a table's first column would land
+> on whatever rail its container sat on. **Reverted the same day.** `termThStyle` paints a
+> `--term-surface-2` header band and 20 of the 21 tables use it, so zeroing the inset put the
+> first column's text hard against a filled edge — which reads as broken however exactly it
+> lines up with the heading above. The box sits on the page rail; its cells sit on the box's own
+> inner rail. The earlier rule applied the two-rail model to the wrong element.
+> `alignment-law.spec.ts` asserts the first and last cells pad like their neighbours, comparing
+> rather than pinning a literal.
+
+**The numeric cap is a ceiling, not a target.** `TERM_NUMERIC_TABLE_MAX_WIDTH` (760) sets how
+wide a mostly-numbers table may *get*; a table must not also carry `w-full`, which turns the cap
+into a fixed width. The season report's three-column WHAT THE SCHEDULE WAS WORTH was the proof —
+at a forced 760 its middle column ran 390px wide to hold `+21`, so the eye crossed 528px of
+nothing between a team and its own number. Sized to content it lands at its 420px `minWidth`
+floor and reads as one scan. `minWidth` stays: it is the horizontal-scroll floor on a phone, not
+a target either.
+
+**Every table closes at the top as well as the bottom.** The last row's own `borderBottom` is the
+table's bottom edge, so `.fc-table thead tr:first-child th` takes a matching `border-top`. The
+header band's tint alone was doing that job, and a fill is not an edge. First header row only —
+the wide tables stack two, and a rule under the group labels would cut the header in half.
 
 **Recessed panels are bands, not boxes.** `termInsetStyle` is a background plus rules top and
 bottom, with no side padding, so it bleeds to its container's content edge and its text stays on

@@ -181,6 +181,13 @@ export const termTdStyle: CSSProperties = {
  * stranded a third of the screen away, which reads as an alignment fault rather than as a
  * table. Prose tables (the reference pages) are deliberately NOT capped — their note columns
  * use the width.
+ *
+ * A CEILING, NOT A TARGET. The four tables that use it dropped `w-full` on 2026-08-11, because
+ * `width: 100%` plus this cap means "always exactly 760" and a table with few columns does not
+ * need 760. The season report's three-column WHAT THE SCHEDULE WAS WORTH was the proof: its
+ * middle column ran 390px wide to hold `+21`, so the eye crossed 528px of nothing to get from
+ * `UTA` to its own number. Sized to content it lands near its `minWidth` floor instead and
+ * reads as one scan. Do not put `w-full` back on a table that also sets this.
  */
 export const TERM_NUMERIC_TABLE_MAX_WIDTH = WIDTH.numeric;
 

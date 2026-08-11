@@ -18,6 +18,11 @@ const OUT = path.join(fileURLToPath(new URL("..", import.meta.url)), "docs/scree
 // moved almost every one of them: badges gained 2px of height, off-scale gaps were snapped, and
 // `termInsetStyle` became a band, so cards and rows are a few pixels taller than they were and
 // each old height had drifted into slicing the row it used to end on.
+//
+// Four of them moved exactly +1px later the same day, when `.fc-table`'s header row took a
+// `border-top` so a table closes at the top as well as the bottom. One table above the anchor,
+// one pixel: season, schedule, shooting, availability. The pages with no `.fc-table` above their
+// anchor (games, analysis, playoffs, shot-quality) did not move.
 const PAGES = [
   // Two complete matchup rows, which is what the README's alt text describes — the second one
   // ends at 1240. Rows are a uniform 81px again (80px for the first, which carries no top
@@ -30,14 +35,14 @@ const PAGES = [
   // wait logs a warning on this page: ZeroRestWorkload sits far below this cut and is still
   // fetching player-rest.json when the timer expires. Harmless — check the capture, not the
   // warning.
-  { file: "season", path: "/season", height: 1451 },
+  { file: "season", path: "/season", height: 1452 },
   // Stops after the complete WIN RATE BY SEASON card; the next block (READING THESE NUMBERS)
   // starts at 1580. Up 152px from 1380 on 2026-08-11, when the excluded half left the hero tile
   // row and became a 104px NOT COUNTED band beneath it (plus the 48px chapter gap).
   { file: "analysis", path: "/analysis", height: 1532 },
   // The scale sentence plus the breakdown table's first nine complete rows (rows step 35px
   // from 1569); anything between 1814 and 1849 slices row 9 in half.
-  { file: "schedule", path: "/schedule", height: 1849 },
+  { file: "schedule", path: "/schedule", height: 1850 },
   // The complete FIRST ROUND · 8 SERIES block, which is what the README's alt text describes.
   // CONFERENCE SEMIFINALS runs on to 2398, and the old 1965 cut two series into it.
   { file: "playoffs", path: "/playoffs", height: 1885 },
@@ -45,14 +50,14 @@ const PAGES = [
   // the README's alt text calls out as the largest positive rest effect — at the previous 1400
   // the crop stopped at row 23, so the alt text had been describing a row the image did not
   // contain. Ends on a row boundary either way.
-  { file: "shooting", path: "/shooting", height: 1451 },
+  { file: "shooting", path: "/shooting", height: 1452 },
   // The whole two-court card, which ends at 1275. The old 1430 ran 155px past it into the
   // footer.
   { file: "shot-quality", path: "/shot-quality", height: 1275 },
   // Stops after "THE SCHEDULE STILL COUNTS" (bottom 1891), so the shot carries the headline,
   // the frequency, the load-management trend and the defensive result. The section below is the
   // "what this is not" disclaimer, which the README states in prose anyway.
-  { file: "availability", path: "/availability", height: 1891 },
+  { file: "availability", path: "/availability", height: 1892 },
 ];
 
 // Optional filter: `node scripts/screenshots.mjs analysis season` shoots only those.
@@ -78,10 +83,6 @@ for (const { file, path: route, height } of targets) {
     // keyframe under reduced motion. Without this a capture can land mid-fade and
     // come out washed out and a few pixels low.
     reducedMotion: "reduce",
-  });
-  // First-visit guide would cover every shot.
-  await context.addInitScript(() => {
-    window.localStorage.setItem("fullcourt:onboarding:v1", "complete");
   });
 
   const page = await context.newPage();

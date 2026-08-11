@@ -249,30 +249,35 @@
 }
 
 /* ── Tables ──────────────────────────────────────────────────────
-   Cell padding lives here rather than in `termThStyle` / `termTdStyle` because the edge cells
-   need different treatment from the interior ones, and a style object has no way to say
-   "first child".
+   Cell padding lives here rather than in `termThStyle` / `termTdStyle` so all 21 tables in the
+   app pad identically without 21 call sites having to agree.
 
-   THE EDGE CELLS PAD TO ZERO. That is the whole rule, and it is what makes a table line up
-   with whatever sits above it: the first column's text starts exactly at its container's
-   content edge, so it lands on the page gutter when the table sits on the page column, and on
-   the card's inner rail when the table sits in a card — without either context needing to know
-   about the other. Cells used to pad 10px all round, which put every table's first column 10px
-   inside the heading that introduced it, in every context at once.
+   EVERY CELL PADS THE SAME, EDGES INCLUDED. The edge cells padded to zero for part of
+   2026-08-11, on the theory that a table's first column should land on whatever rail its
+   container sits on — the page gutter on a bare page, a card's inner rail inside a card.
+   Reverted the same day. It was the wrong model of what a table is: `termThStyle` paints a
+   `--term-surface-2` header band, and 20 of the 21 tables use it, so zeroing the inset put the
+   first column's text hard against a filled edge. Text touching a fill reads as broken however
+   exactly it lines up with the heading above, and the season report's team column was the
+   proof.
 
-   Interior columns pad 12 a side. Enough to read two right-aligned numeric columns as separate
-   measures; not so much that a ten-column table has to scroll for its whitespace.            */
+   A table is a BOX, not page content. The box sits on the page rail; its cells sit on the
+   box's own inner rail. That is the same two-rail rule the rest of the app follows — the
+   earlier version applied it to the wrong element.
+
+   12 a side: enough to read two right-aligned numeric columns as separate measures, not so
+   much that a ten-column table has to scroll for its whitespace.                            */
 .fc-table th,
 .fc-table td {
   padding: 8px 12px;
 }
-.fc-table th:first-child,
-.fc-table td:first-child {
-  padding-left: 0;
-}
-.fc-table th:last-child,
-.fc-table td:last-child {
-  padding-right: 0;
+
+/* A closing rule at the bottom is the last row's own `borderBottom`, so the table needs a
+   matching one at the top or it reads as open-ended — the header band's tint was doing that
+   job alone, which is a fill, not an edge. First header row only: the wide tables stack two
+   header rows, and a rule under the group labels would cut the header in half.              */
+.fc-table thead tr:first-child th {
+  border-top: 1px solid var(--term-border);
 }
 
 /* ── Player rest database (/shooting) ────────────────────────────
