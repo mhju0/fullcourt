@@ -25,13 +25,12 @@ import {
   termSelectClass,
   termSelectStyle,
   termTdStyle,
-  termThStyle,
-  termThUnitStyle,
   WIDTH,
 } from "@/lib/terminal-styles"
 import { signedNumber } from "@/lib/signed-number"
 import { MessageCard } from "@/components/ui/message-card"
 import { errMsg } from "@/lib/fetcher"
+import { DataTable, type DataColumn } from "@/components/ui/data-table"
 
 /**
  * Static asset, not an API route: this export changes once a season, so there is
@@ -68,25 +67,96 @@ const SEASON_CAP = 10
  * of each other; pinning every column and leaving PLAYER as the only elastic one sends
  * all the slack to the one column that can use it. `#` is right-aligned like the ranks
  * it labels — as a left-aligned header it floated a column-width away from its numbers.
+ *
+ * Everything from `Team` rightward blanks while a player is open: those numbers are repeated
+ * verbatim by one of the rows below — the browsed season, or Career — so the row drops to a
+ * name plate over the group.
  */
-const COLUMNS: {
-  key: SortKey | null
-  label: string
-  unit?: string
-  align?: "right"
-  width: string
-}[] = [
-  { key: null, label: "#", align: "right", width: "44px" },
-  { key: "name", label: "Player", width: "auto" },
-  { key: null, label: "Team", width: "72px" },
-  { key: "age", label: "Age", unit: "years", align: "right", width: "56px" },
-  { key: "games", label: "G", unit: "games", align: "right", width: "56px" },
-  { key: "fga", label: "FGA", unit: "attempts", align: "right", width: "76px" },
-  { key: "efg", label: "eFG%", align: "right", width: "68px" },
-  { key: "noRestEfg", label: "No rest", unit: "eFG% · attempts", align: "right", width: "128px" },
-  { key: "restedEfg", label: "3+ days rest", unit: "eFG% · attempts", align: "right", width: "128px" },
-  { key: "effect", label: "Rest effect", unit: "3+ days − no rest", align: "right", width: "176px" },
-]
+function playerColumns(cap: number, isOpen: (row: BrowseRow) => boolean): DataColumn<BrowseRow, SortKey>[] {
+  /** Blanks while open. The first two columns keep theirs; the other eight are the repeat. */
+  const whenClosed =
+    <T,>(render: (row: BrowseRow) => T) =>
+    (row: BrowseRow) =>
+      isOpen(row) ? null : render(row)
+
+  return [
+    { label: "#", align: "right", width: "44px", style: DIM_TD, cell: (_row, i) => i + 1 },
+    {
+      label: "Player",
+      sortKey: "name",
+      width: "auto",
+      style: { fontWeight: 500 },
+      cell: (row) => row.name,
+    },
+    {
+      label: "Team",
+      width: "72px",
+      style: { fontFamily: MONO_FONT_STACK, color: "var(--term-text-muted)" },
+      cell: whenClosed((row) => row.context),
+    },
+    {
+      label: "Age",
+      unit: "years",
+      sortKey: "age",
+      numeric: true,
+      width: "56px",
+      style: DIM_TD,
+      cell: whenClosed((row) => row.age),
+    },
+    {
+      label: "G",
+      unit: "games",
+      sortKey: "games",
+      numeric: true,
+      width: "56px",
+      style: DIM_TD,
+      cell: whenClosed((row) => row.games),
+    },
+    {
+      label: "FGA",
+      unit: "attempts",
+      sortKey: "fga",
+      numeric: true,
+      width: "76px",
+      style: NUM_TD,
+      cell: whenClosed((row) => row.fga.toLocaleString()),
+    },
+    {
+      label: "eFG%",
+      sortKey: "efg",
+      numeric: true,
+      width: "68px",
+      style: NUM_TD,
+      cell: whenClosed((row) => fmt(row.efg)),
+    },
+    {
+      label: "No rest",
+      unit: "eFG% · attempts",
+      sortKey: "noRestEfg",
+      numeric: true,
+      width: "128px",
+      style: { fontFamily: MONO_FONT_STACK },
+      cell: whenClosed((row) => <ArmValue efg={row.noRestEfg} fga={row.noRestFga} />),
+    },
+    {
+      label: "3+ days rest",
+      unit: "eFG% · attempts",
+      sortKey: "restedEfg",
+      numeric: true,
+      width: "128px",
+      style: { fontFamily: MONO_FONT_STACK },
+      cell: whenClosed((row) => <ArmValue efg={row.restedEfg} fga={row.restedFga} />),
+    },
+    {
+      label: "Rest effect",
+      unit: "3+ days − no rest",
+      sortKey: "effect",
+      align: "right",
+      width: "176px",
+      cell: whenClosed((row) => <EffectValue value={row.effect} cap={cap} />),
+    },
+  ]
+}
 
 function fmt(v: number | null | undefined, digits = 1): string {
   return v === null || v === undefined ? "—" : v.toFixed(digits)
@@ -96,52 +166,59 @@ function signed(v: number | null): string {
   return v === null ? "—" : signedNumber(v, 2)
 }
 
-/** Number plus a bar, so magnitude reads before the digits do. */
-function EffectCell({ value, cap }: { value: number | null; cap: number }) {
-  if (value === null) {
-    return <td style={{ ...termTdStyle, textAlign: "right", color: "var(--term-text-muted)" }}>—</td>
-  }
+/**
+ * Number plus a bar, so magnitude reads before the digits do.
+ *
+ * These two render cell *content*, not a `<td>` — the main row's cells come from `DataTable`,
+ * which owns the element. The expansion rows below still write their own `<td>`, because they
+ * are extra rows outside the column model, and wrap these the same way.
+ */
+function EffectValue({ value, cap }: { value: number | null; cap: number }) {
+  if (value === null) return <span style={{ color: "var(--term-text-muted)" }}>—</span>
   const width = Math.min(Math.abs(value) / cap, 1) * 46
   const tone = value < 0 ? "var(--term-red)" : "var(--term-blue)"
   return (
-    <td style={termTdStyle}>
-      <span className="flex items-center justify-end gap-2">
-        <span
-          style={{ fontFamily: MONO_FONT_STACK, fontVariantNumeric: "tabular-nums", color: tone, minWidth: 52, textAlign: "right" }}
-        >
-          {signed(value)}
-        </span>
-        <span
-          aria-hidden
-          className="relative block flex-none"
-          style={{ width: 92, height: 8, background: "var(--term-surface-2)", borderRadius: "var(--term-radius-bar)" }}
-        >
-          <span
-            className="absolute top-0 block"
-            style={{
-              height: 8,
-              width,
-              background: tone,
-              borderRadius: "var(--term-radius-bar)",
-              ...(value < 0 ? { right: "50%" } : { left: "50%" }),
-            }}
-          />
-        </span>
+    <span className="flex items-center justify-end gap-2">
+      <span
+        style={{ fontFamily: MONO_FONT_STACK, fontVariantNumeric: "tabular-nums", color: tone, minWidth: 52, textAlign: "right" }}
+      >
+        {signed(value)}
       </span>
-    </td>
+      <span
+        aria-hidden
+        className="relative block flex-none"
+        style={{ width: 92, height: 8, background: "var(--term-surface-2)", borderRadius: "var(--term-radius-bar)" }}
+      >
+        <span
+          className="absolute top-0 block"
+          style={{
+            height: 8,
+            width,
+            background: tone,
+            borderRadius: "var(--term-radius-bar)",
+            ...(value < 0 ? { right: "50%" } : { left: "50%" }),
+          }}
+        />
+      </span>
+    </span>
   )
 }
 
-function ArmCell({ efg, fga }: { efg: number | null; fga: number }) {
-  if (efg === null || !fga) {
-    return <td style={{ ...termTdStyle, textAlign: "right", color: "var(--term-text-muted)" }}>—</td>
-  }
+function ArmValue({ efg, fga }: { efg: number | null; fga: number }) {
+  if (efg === null || !fga) return <span style={{ color: "var(--term-text-muted)" }}>—</span>
   return (
-    <td style={{ ...termTdStyle, textAlign: "right", fontFamily: MONO_FONT_STACK, fontVariantNumeric: "tabular-nums" }}>
-      {fmt(efg)}{" "}
-      <span style={{ color: "var(--term-text-muted)" }}>· {fga.toLocaleString()}</span>
-    </td>
+    <>
+      {fmt(efg)} <span style={{ color: "var(--term-text-muted)" }}>· {fga.toLocaleString()}</span>
+    </>
   )
+}
+
+/** The `<td>` the expansion rows wrap `ArmValue` in — the column model's own styling, by hand. */
+const ARM_TD: React.CSSProperties = {
+  ...termTdStyle,
+  textAlign: "right",
+  fontFamily: MONO_FONT_STACK,
+  fontVariantNumeric: "tabular-nums",
 }
 
 const FILTER_LABEL =
@@ -227,6 +304,13 @@ export function PlayerRestContent() {
     })
   }, [index, activeYear, minFga, query, sort, team, pos, evidencedOnly])
 
+  // Season swings run far past a career's, so the two bar scales differ.
+  const cap = activeYear === "career" ? CAREER_CAP : SEASON_CAP
+  const columns = useMemo(
+    () => playerColumns(cap, (row) => openPlayer === row.player),
+    [cap, openPlayer]
+  )
+
   if (error) {
     return (
       <MessageCard
@@ -244,8 +328,6 @@ export function PlayerRestContent() {
       </div>
     )
   }
-
-  const cap = activeYear === "career" ? CAREER_CAP : SEASON_CAP
 
   return (
     <div className="flex flex-col gap-4">
@@ -364,10 +446,7 @@ export function PlayerRestContent() {
         <strong style={{ color: "var(--term-text-dim)" }}>negative</strong> that he shoots better on short rest.
       </p>
 
-      <div
-        className="fc-rest-table overflow-auto"
-        style={{ ...termCardStyle, padding: 0, maxHeight: "74vh" }}
-      >
+      <div style={{ ...termCardStyle, padding: 0 }}>
         {/* `table-fixed` so the browser sizes columns from the colgroup below instead of
             measuring every cell. Career mode renders ~1,300 rows / ~13,000 cells, and under auto
             layout each filter or sort change re-measured all of them. Measured in Chrome at
@@ -382,56 +461,31 @@ export function PlayerRestContent() {
             even though the magnitude is not. Size containment does not apply to table rows, so
             the browser still lays every row out and only pays the containment bookkeeping on
             top. Do not add it back on this table. */}
-        <table className="fc-table w-full table-fixed border-collapse text-[12px]">
-          <colgroup>
-            {COLUMNS.map((col) => (
-              <col key={col.label} style={{ width: col.width }} />
-            ))}
-          </colgroup>
-          <thead>
-            <tr>
-              {COLUMNS.map((col) => {
-                const active = col.key !== null && sort.key === col.key
-                return (
-                  <th
-                    key={col.label}
-                    scope="col"
-                    aria-sort={active ? (sort.dir === -1 ? "descending" : "ascending") : undefined}
-                    style={{
-                      ...termThStyle,
-                      position: "sticky",
-                      top: 0,
-                      zIndex: 2,
-                      textAlign: col.align ?? "left",
-                      whiteSpace: "nowrap",
-                      cursor: col.key ? "pointer" : "default",
-                      color: active ? "var(--term-text)" : "var(--term-text-muted)",
-                    }}
-                    onClick={col.key ? () => sortBy(col.key as SortKey) : undefined}
-                  >
-                    {col.label}
-                    {active ? (sort.dir === -1 ? " ↓" : " ↑") : ""}
-                    {col.unit && <span style={termThUnitStyle}>{col.unit}</span>}
-                  </th>
-                )
-              })}
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((row, i) => (
-              <PlayerRows
-                key={row.player}
-                row={row}
-                rank={i + 1}
-                cap={cap}
-                index={index}
-                expanded={openPlayer === row.player}
-                browsedYear={activeYear}
-                onToggle={toggle}
-              />
-            ))}
-          </tbody>
-        </table>
+        <DataTable
+          className="table-fixed text-[12px]"
+          wrapperClassName="fc-rest-table overflow-auto"
+          stickyHeader
+          columns={columns}
+          rows={rows}
+          rowKey={(row) => row.player}
+          sort={sort}
+          onSortToggle={sortBy}
+          rowAttrs={(row) => ({
+            "data-player": String(row.player),
+            "data-testid": "player-row",
+            className: openPlayer === row.player ? "fc-open" : undefined,
+            style: {
+              cursor: "pointer",
+              opacity: row.underEvidenced && openPlayer !== row.player ? 0.48 : 1,
+            },
+            onClick: () => toggle(row.player),
+          })}
+          rowExtras={(row) =>
+            openPlayer === row.player ? (
+              <PlayerExpansion row={row} index={index} browsedYear={activeYear} />
+            ) : null
+          }
+        />
       </div>
 
       <p style={{ fontSize: 12, color: "var(--term-text-muted)", lineHeight: 1.6, maxWidth: WIDTH.prose, margin: 0 }}>
@@ -447,59 +501,31 @@ export function PlayerRestContent() {
   )
 }
 
-/** A player's row plus, when open, his seasons as rows of this same table. */
-function PlayerRows({
+/**
+ * The rows a player unfolds into: his seasons, a career line, and a note.
+ *
+ * These reach `DataTable` through `rowExtras`, which can add rows after a row but cannot touch
+ * the row itself — so the player's own row above still renders through `columns` like every
+ * other table's. They keep hand-written `<td>`s on purpose: an indented season label and a
+ * `colSpan` note are not the column model, and pretending otherwise would mean bending the
+ * module around one caller.
+ */
+function PlayerExpansion({
   row,
-  rank,
-  cap,
   index,
-  expanded,
   browsedYear,
-  onToggle,
 }: {
   row: BrowseRow
-  rank: number
-  cap: number
   index: PlayerRestIndex
-  expanded: boolean
   browsedYear: number | "career"
-  onToggle: (player: number) => void
 }) {
-  const seasons = expanded ? [...(index.seasonsByPlayer.get(row.player) ?? [])].reverse() : []
-  const totals = expanded ? careerTotals(index.seasonsByPlayer.get(row.player) ?? []) : null
+  const seasons = [...(index.seasonsByPlayer.get(row.player) ?? [])].reverse()
+  const totals = careerTotals(index.seasonsByPlayer.get(row.player) ?? [])
   const estimate = index.career.get(row.player)
 
   return (
     <>
-      <tr
-        data-player={row.player}
-        data-testid="player-row"
-        className={expanded ? "fc-open" : undefined}
-        style={{ cursor: "pointer", opacity: row.underEvidenced && !expanded ? 0.48 : 1 }}
-        onClick={() => onToggle(row.player)}
-      >
-        <td style={DIM_TD}>{rank}</td>
-        <td style={{ ...termTdStyle, fontWeight: 500 }}>{row.name}</td>
-        {/* Open, this row's numbers are repeated verbatim by one of the rows below it — the
-            browsed season, or Career — so it drops to a name plate over the group. */}
-        {expanded ? (
-          Array.from({ length: 8 }, (_, i) => <td key={i} style={termTdStyle} />)
-        ) : (
-          <>
-            <td style={{ ...termTdStyle, fontFamily: MONO_FONT_STACK, color: "var(--term-text-muted)" }}>{row.context}</td>
-            <td style={DIM_TD}>{row.age}</td>
-            <td style={DIM_TD}>{row.games}</td>
-            <td style={NUM_TD}>{row.fga.toLocaleString()}</td>
-            <td style={NUM_TD}>{fmt(row.efg)}</td>
-            <ArmCell efg={row.noRestEfg} fga={row.noRestFga} />
-            <ArmCell efg={row.restedEfg} fga={row.restedFga} />
-            <EffectCell value={row.effect} cap={cap} />
-          </>
-        )}
-      </tr>
-
-      {expanded &&
-        seasons.map((s) => {
+      {seasons.map((s) => {
           const sr = seasonRow(index, s)
           return (
             <Fragment key={s[S.YEAR]}>
@@ -513,15 +539,15 @@ function PlayerRows({
                 <td style={DIM_TD}>{sr.games}</td>
                 <td style={NUM_TD}>{sr.fga.toLocaleString()}</td>
                 <td style={NUM_TD}>{fmt(sr.efg)}</td>
-                <ArmCell efg={sr.noRestEfg} fga={sr.noRestFga} />
-                <ArmCell efg={sr.restedEfg} fga={sr.restedFga} />
-                <EffectCell value={sr.effect} cap={SEASON_CAP} />
+                <td style={ARM_TD}><ArmValue efg={sr.noRestEfg} fga={sr.noRestFga} /></td>
+                <td style={ARM_TD}><ArmValue efg={sr.restedEfg} fga={sr.restedFga} /></td>
+                <td style={termTdStyle}><EffectValue value={sr.effect} cap={SEASON_CAP} /></td>
               </tr>
             </Fragment>
           )
         })}
 
-      {expanded && totals && (
+      {totals && (
         <tr className="fc-sub fc-total" data-testid="career-row">
           <td style={termTdStyle} />
           <td style={{ ...termTdStyle, paddingLeft: SPACE_NESTED_ROW, fontFamily: MONO_FONT_STACK, fontWeight: 600 }}>Career</td>
@@ -532,13 +558,13 @@ function PlayerRows({
           <td style={{ ...NUM_TD, fontWeight: 600 }}>{totals.games.toLocaleString()}</td>
           <td style={{ ...NUM_TD, fontWeight: 600 }}>{totals.fga.toLocaleString()}</td>
           <td style={{ ...NUM_TD, fontWeight: 600 }}>{fmt(totals.efg)}</td>
-          <ArmCell efg={totals.noRestEfg} fga={totals.noRestFga} />
-          <ArmCell efg={totals.restedEfg} fga={totals.restedFga} />
-          <EffectCell value={totals.effect} cap={SEASON_CAP} />
+          <td style={ARM_TD}><ArmValue efg={totals.noRestEfg} fga={totals.noRestFga} /></td>
+          <td style={ARM_TD}><ArmValue efg={totals.restedEfg} fga={totals.restedFga} /></td>
+          <td style={termTdStyle}><EffectValue value={totals.effect} cap={SEASON_CAP} /></td>
         </tr>
       )}
 
-      {expanded && estimate && (
+      {estimate && (
         <tr className="fc-sub fc-groupend">
           <td style={termTdStyle} />
           <td colSpan={9} style={{ ...termTdStyle, whiteSpace: "normal", fontSize: 12, color: "var(--term-text-muted)" }}>
@@ -554,7 +580,7 @@ function PlayerRows({
           </td>
         </tr>
       )}
-      {expanded && !estimate && (
+      {!estimate && (
         <tr className="fc-sub fc-groupend">
           <td style={termTdStyle} />
           <td colSpan={9} style={{ ...termTdStyle, whiteSpace: "normal", fontSize: 12, color: "var(--term-text-muted)" }}>

@@ -301,6 +301,12 @@
   display: none;
 }
 
+/* The scrollport the sticky header pins against. Was an inline `maxHeight` on a wrapper the
+   caller drew itself; it lives here now so the table can own its own scroll box. */
+.fc-rest-table {
+  max-height: 74vh;
+}
+
 .fc-rest-table tbody tr.fc-open > td {
   background: color-mix(in srgb, var(--term-amber) 14%, var(--term-surface));
   border-top: 1px solid var(--term-rail);

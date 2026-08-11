@@ -79,8 +79,18 @@ export type DataColumn<Row, K extends string = string> = {
   cell: (row: Row, index: number) => ReactNode
   /** Extra classes for both the header cell and the body cells — responsive hiding, mostly. */
   className?: string
-  /** Per-column style escape hatch, merged last. Use sparingly; prefer `numeric`. */
+  /**
+   * Per-cell style escape hatch, merged last. **Body cells only.**
+   *
+   * It used to reach the header too, which was wrong in every one of the twenty-odd places it
+   * was used — all of them mean "how this column's numbers look", never "how its heading
+   * looks". Most leaked harmlessly because `termThStyle` already sets the same colour, font and
+   * weight, so the bug hid; a rank column asking for `fontSize: 10` did not, and shrank its own
+   * heading out of line with the eight beside it.
+   */
   style?: CSSProperties
+  /** Header-cell style, for the rare column whose heading needs something its cells do not. */
+  headStyle?: CSSProperties
   /**
    * Group heading. When any column sets one, the header becomes two rows: the groups span their
    * columns across the top, ungrouped columns get a `rowSpan={2}` cell, and the individual
@@ -190,41 +200,71 @@ export function DataTable<Row, K extends string = string>({
     const active = col.sortKey !== undefined && sort?.key === col.sortKey
     const toggle = () => col.sortKey !== undefined && onSortToggle?.(col.sortKey)
 
+    const content = (
+      <>
+        {col.label}
+        {active ? (sort?.dir === -1 ? " ↓" : " ↑") : ""}
+        {col.unit && <span style={termThUnitStyle}>{col.unit}</span>}
+      </>
+    )
+
     return (
       <th
         scope="col"
         rowSpan={rowSpan}
         className={col.className}
         aria-sort={active ? (sort?.dir === -1 ? "descending" : "ascending") : undefined}
-        tabIndex={sortable ? 0 : undefined}
-        role={sortable ? "button" : undefined}
-        onClick={sortable ? toggle : undefined}
-        onKeyDown={
-          sortable
-            ? (e) => {
-                if (e.key === "Enter" || e.key === " ") {
-                  e.preventDefault()
-                  toggle()
-                }
-              }
-            : undefined
-        }
         style={{
           ...termThStyle,
           ...stickyStyle,
           textAlign: alignOf(col),
-          ...(sortable ? { cursor: "pointer" } : null),
+          // A column with a pinned width is the one whose heading must not wrap — the width was
+          // chosen for the numbers below it, not for the label, so wrapping is how a two-word
+          // heading silently doubles the header band's height. Columns without a pinned width
+          // are free to wrap, which is what the prose tables want.
+          ...(col.width ? { whiteSpace: "nowrap" as const } : null),
           // A sorted column's heading comes forward; the rest stay quiet. Only applied where
           // sorting exists at all, so a plain table's headers are untouched.
           ...(onSortToggle
             ? { color: active ? "var(--term-text)" : "var(--term-text-muted)" }
             : null),
-          ...col.style,
+          ...col.headStyle,
         }}
       >
-        {col.label}
-        {active ? (sort?.dir === -1 ? " ↓" : " ↑") : ""}
-        {col.unit && <span style={termThUnitStyle}>{col.unit}</span>}
+        {sortable ? (
+          // A real <button> inside the <th>, not handlers on the <th> itself. The `th` keeps
+          // its implicit `columnheader` role and carries `aria-sort`; the button is what gets
+          // focus, Enter and Space. Putting `role="button"` on the `th` instead — the obvious
+          // shortcut — silently replaces `columnheader`, which is both wrong for the table's
+          // semantics and enough to break a `getByRole("columnheader")` query.
+          <button
+            type="button"
+            onClick={toggle}
+            style={{
+              display: "block",
+              width: "100%",
+              // The padding stays on the `th`, and the button carries none. Moving it in here
+              // would have given the button a bigger hit area, but it also makes the cell
+              // itself measure `padding: 0` — which is the two-rail alignment law broken, and
+              // `e2e/alignment-law.spec.ts` catches it. The cell owns the inset; the button
+              // owns the interaction.
+              padding: 0,
+              margin: 0,
+              font: "inherit",
+              color: "inherit",
+              letterSpacing: "inherit",
+              textTransform: "inherit",
+              textAlign: "inherit",
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+            }}
+          >
+            {content}
+          </button>
+        ) : (
+          content
+        )}
       </th>
     )
   }
