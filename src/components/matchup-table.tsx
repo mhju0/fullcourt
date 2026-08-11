@@ -17,7 +17,7 @@ import {
   type RestAdvantageEvidenceSource,
 } from "@/lib/rest-advantage-display"
 import { getTeamBranding } from "@/lib/team-history"
-import { SPACE_NESTED_ROW } from "@/lib/terminal-styles"
+import { SPACE, SPACE_CARD } from "@/lib/terminal-styles"
 import { cn } from "@/lib/utils"
 import type { GameResponse } from "@/types"
 
@@ -423,37 +423,20 @@ function GameRow({
         </div>
       </div>
 
-      {/* Evidence sub-row — the exception, and now genuinely one.
-          It used to carry the schedule flags too, right-floated opposite the sentence. Measured
-          over 79 games: 53% of rows had both, 43% had flags with no sentence, and 0% ever had a
-          sentence with no flags. So the two-up layout only served the "both" case, while the
-          43% paid a full 32px band to right-align three chips against 901px of nothing — the
-          empty space under the team names. The flags now sit on their own team's fatigue line,
-          which is where they were describing all along, and this band renders for the sentence
-          alone. 47% of rows lose it entirely.
-          Tinted with a rule on top so the height it does add reads as attached content rather
-          than as the row having grown. */}
-      {evidence && (
-        <div
-          style={{
-            // SPACE_NESTED_ROW, not a hand-set 32: this is a row nested inside a row group, the
-            // same shape as /shooting's expanded seasons, and docs/FRONTEND.md sanctions exactly
-            // one third rail. A second nested indent here would make that false.
-            padding: `8px 16px 8px ${SPACE_NESTED_ROW}px`,
-            background: "var(--term-surface-2)",
-            borderTop: "1px solid var(--term-border)",
-          }}
-        >
-          <p className="m-0 flex min-w-0 items-baseline gap-2" style={{ fontSize: 12, lineHeight: 1.5, color: "var(--term-text-muted)" }}>
-            <span aria-hidden className="mono" style={{ color: "var(--term-hairline)" }}>
-              ↳
-            </span>
-            {evidence.sentence}
-          </p>
-        </div>
-      )}
-
-      {/* Expanded detail — same two-column fatigue breakdown the cards used. */}
+      {/* Expanded detail — the evidence sentence, then the two-column fatigue breakdown.
+          The sentence was an always-on tinted sub-row until 2026-08-11, and it moved in here for
+          two reasons. The visible one: it renders only above the 0.5 call threshold, so a slate
+          gets a grey band under some rows and not others, and the ragged stripe read as damage
+          rather than as a signal. The load-bearing one: the sentence is not about the game. It
+          names the historical CLASS the matchup falls into, so a slate holds at most a couple of
+          distinct strings — on the 15-game date this was re-cut against, four rows carried a band
+          and three of them were byte-identical. Repeating a class-level fact once per row asserts
+          it is per-game, which is the one thing it is not.
+          It leads the expansion rather than trailing it because the click it answers came from the
+          REST ADVANTAGE cell: "is 1.1 a lot?" is the first question, the fatigue components are
+          the second. Nothing replaces it on the collapsed row — the RA figure and the confidence
+          badge already carry that far, and the home page's thesis band states the headline rate
+          against its baseline before the slate begins. */}
       <div
         className={cn(
           "grid transition-[grid-template-rows] duration-300 ease-out",
@@ -462,11 +445,33 @@ function GameRow({
       >
         <div className="overflow-hidden">
           <div
-            className="grid grid-cols-1 gap-3 px-3 py-3 sm:grid-cols-2"
-            style={{ background: "var(--term-bg)", borderTop: "1px solid var(--term-border)" }}
+            style={{
+              background: "var(--term-bg)",
+              borderTop: "1px solid var(--term-border)",
+              // The row's own 16px rail, not the 12px this block used to inset by: the detail
+              // cards now start on the same vertical line as the status cell above them.
+              padding: `${SPACE.md}px ${SPACE_CARD}px`,
+            }}
           >
-            <FatigueDetailColumn label={`AWAY · ${awayBrand.abbreviation}`} fatigue={game.awayFatigue} />
-            <FatigueDetailColumn label={`HOME · ${homeBrand.abbreviation}`} fatigue={game.homeFatigue} />
+            {evidence && (
+              <p
+                className="m-0"
+                style={{
+                  fontSize: 12,
+                  lineHeight: 1.5,
+                  color: "var(--term-text-muted)",
+                  paddingBottom: SPACE.md,
+                  marginBottom: SPACE.md,
+                  borderBottom: "1px solid var(--term-border)",
+                }}
+              >
+                {evidence.sentence}
+              </p>
+            )}
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <FatigueDetailColumn label={`AWAY · ${awayBrand.abbreviation}`} fatigue={game.awayFatigue} />
+              <FatigueDetailColumn label={`HOME · ${homeBrand.abbreviation}`} fatigue={game.homeFatigue} />
+            </div>
           </div>
         </div>
       </div>

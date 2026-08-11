@@ -27,7 +27,7 @@ import type { ExploreResult } from "@/lib/explore-games-machine"
 import { apiFetcher } from "@/lib/fetcher"
 import { NBA_SEASONS } from "@/lib/nba-season"
 import { homeWinRateWhenVisitorRested } from "@/lib/rest-advantage-display"
-import { MONO_FONT_STACK, termCardStyle, termDashedEmptyStyle, termThStyle, termThUnitStyle } from "@/lib/terminal-styles"
+import { MONO_FONT_STACK, termCardStyle, termDashedEmptyStyle, termInsetStyle, termThStyle, termThUnitStyle } from "@/lib/terminal-styles"
 import type { AnalysisResponse } from "@/types"
 import { signedNumber } from "@/lib/signed-number"
 import { MessageCard } from "@/components/ui/message-card"
@@ -746,13 +746,28 @@ export function AnalysisContent() {
       />
       <MethodLink surfaceHref="/analysis" />
 
-      {/* Hero stat row (terminal stat cards) */}
-      <div className="grid grid-cols-2 gap-2 md:grid-cols-3">
-        {/* Every tile carries its lift, because the rate alone is not the finding. 61.2%
-            sounds like an eleven-point edge and is a one-point one: the other ten points are
-            home court, which the model did not produce. */}
+      {/* Hero stat row — two tiles, one measure at two cuts.
+
+          Every tile carries its lift, because the rate alone is not the finding. 61.2% sounds
+          like an eleven-point edge and is a one-point one: the other ten points are home court,
+          which the model did not produce.
+
+          Both labels name WHO won and over WHICH slice, in that order. They used to lead with
+          the measure — "OVERALL WIN RATE", "WIN RATE · RA ≥ 5" — which named neither: "overall"
+          has no referent on a page whose whole point is that the rate is not overall (it is
+          home-only, called-games-only), and a bare "win rate" leaves the reader to guess whose.
+          "RESTED TEAM AT HOME" and "ANY GAP" are the site's existing words for these, from the
+          divider below and from the per-matchup evidence sentence; this row was the surface
+          still using its own.
+
+          A third cut does NOT belong here. RA ≥ 7 is the obvious candidate and is the wrong
+          one: the rate is flat from RA ≥ 5 upward, which the READING THESE NUMBERS callout
+          below says in as many words. Three ascending tiles would draw a trend the data does
+          not have, off the thinnest slice on the page. The chart under this row already plots
+          all four thresholds, which is where a reader should meet them. */}
+      <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
         <StatCard
-          label="OVERALL WIN RATE"
+          label="RESTED TEAM AT HOME WON · ANY GAP"
           value={`${data.overallWinRate}%`}
           sub={`${data.totalGames.toLocaleString()} GAMES · ${signedNumber(
             toDeviation(data.overallWinRate, homeBaseline)
@@ -761,7 +776,7 @@ export function AnalysisContent() {
         />
         {ra5 && (
           <StatCard
-            label="WIN RATE · RA ≥ 5"
+            label="RESTED TEAM AT HOME WON · RA ≥ 5"
             value={`${ra5.winPct}%`}
             sub={`${ra5.games.toLocaleString()} GAMES · ${signedNumber(
               toDeviation(ra5.winPct, homeBaseline)
@@ -769,23 +784,49 @@ export function AnalysisContent() {
             accent="var(--term-blue)"
           />
         )}
-        {/* Last and in the muted accent, which is where every other tab puts the tile that
-            gives context rather than a result — `/season`'s SEASON PROGRESS, the home
-            page's HIGH CONF GAMES.
+      </div>
 
-            The home team's rate rather than the rested visitor's, over the same games:
-            these are the matchups the model does not count, and the reason it does not is
-            that the home side keeps winning them. Under the baseline frame this tile also
-            earns a second reading — the home team does measurably WORSE here than it does
-            across all games, which is the rest effect showing up on the other side. */}
-        <StatCard
-          label="HOME WIN RATE · NOT COUNTED"
-          value={`${notCalledHomeRate}%`}
-          sub={`${data.homeAwayBreakdown.awayTeamMoreRested.games.toLocaleString()} GAMES · ${signedNumber(
-            toDeviation(notCalledHomeRate, homeBaseline)
-          )} VS BASELINE`}
-          accent="var(--term-neutral)"
-        />
+      {/* The excluded half. It was a third hero tile until 2026-08-11, and no label ever made
+          it legible, because the problem was not the wording: a tile row is a row of results,
+          and this is not a result. It is the rule the results are produced under. Squeezed into
+          a 30-character label it read as a fourth measure the reader could not place — first as
+          "HOME WIN RATE · NOT COUNTED", then as "HOME TEAM WON · RESTED VISITOR", and both left
+          the same question ("of what?"). Given a sentence it explains itself in one pass.
+
+          It stays on the page in some form, always: dropping it would leave 61.2% sitting alone
+          with no sign that 11,548 games were set aside to get it, and publishing the declined
+          half is the model's central honesty move (see CLAUDE.md). The full argument for the
+          rule lives once, in /behind-the-data/rest-advantage; this is the live figure.
+
+          The home team's rate rather than the rested visitor's, over the same games — stated as
+          the win it is rather than as the loss backing the visitor would have been, and against
+          the same home baseline as the tiles above so all three rates are read off one number.
+          `termInsetStyle` is a band by design: no horizontal inset, so this sits on the same
+          rail as the tiles and the page title rather than starting a third one. */}
+      <div className="flex flex-col gap-2 py-4" style={termInsetStyle}>
+        <p
+          className="mono"
+          style={{ fontSize: 11, letterSpacing: "0.12em", color: "var(--term-text-muted)", fontWeight: 700 }}
+        >
+          NOT COUNTED
+        </p>
+        <p className="text-sm leading-relaxed text-[var(--term-text-dim)]">
+          In the{" "}
+          <span className="mono tabular-nums">
+            {data.homeAwayBreakdown.awayTeamMoreRested.games.toLocaleString()}
+          </span>{" "}
+          games where the rested team was the <strong className="font-semibold text-[var(--term-text)]">visitor</strong>,
+          the home team won{" "}
+          <span className="mono font-bold" style={{ color: "var(--term-text)" }}>{notCalledHomeRate}%</span>.
+          The model does not count them, because the home side keeps winning them — but it wins
+          them by{" "}
+          <span className="mono font-bold" style={{ color: "var(--term-blue)" }}>
+            {signedNumber(toDeviation(notCalledHomeRate, homeBaseline))}
+          </span>{" "}
+          points against the{" "}
+          <span className="mono tabular-nums">{homeBaseline}%</span> it takes across all games,
+          which is the rest effect showing up on the side this page will not call.
+        </p>
       </div>
 
       {/* Bar chart — win rate by threshold */}
