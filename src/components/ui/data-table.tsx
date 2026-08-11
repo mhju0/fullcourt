@@ -44,11 +44,19 @@ export type DataColumn<Row> = {
    */
   unit?: string
   /**
-   * Holds a number. Right-aligns the header and the cell together — one flag rather than two
+   * Holds a number: tabular numerals, and right alignment unless `align` says otherwise.
+   * Alignment is set for the header and the cell together — one flag rather than two
    * `textAlign` overrides that can disagree, which is exactly how a header drifts off its own
    * column.
    */
   numeric?: boolean
+  /**
+   * Overrides where the column sits. Defaults to right for `numeric`, left otherwise, so the
+   * common cases need no alignment at all. Present for the genuinely centred column — a short
+   * gap figure or a badge, which reads as a marker rather than as a quantity to compare down
+   * the column.
+   */
+  align?: "left" | "right" | "center"
   /** Renders one cell. Gets the row and its index. */
   cell: (row: Row, index: number) => ReactNode
   /** Extra classes for both the header cell and the body cells — responsive hiding, mostly. */
@@ -103,12 +111,14 @@ export type DataTableProps<Row> = {
   className?: string
 }
 
+/** Right for numbers, left otherwise, unless the column says different. One resolution, used
+ *  by the header and the body cell alike so the two cannot disagree. */
+function alignOf<Row>(col: DataColumn<Row>): "left" | "right" | "center" {
+  return col.align ?? (col.numeric ? "right" : "left")
+}
+
 function headerStyle<Row>(col: DataColumn<Row>): CSSProperties {
-  return {
-    ...termThStyle,
-    ...(col.numeric ? { textAlign: "right" as const } : null),
-    ...col.style,
-  }
+  return { ...termThStyle, textAlign: alignOf(col), ...col.style }
 }
 
 export function DataTable<Row>({
@@ -202,11 +212,7 @@ export function DataTable<Row>({
                   className={[col.className, col.numeric ? "tabular-nums" : null]
                     .filter(Boolean)
                     .join(" ")}
-                  style={{
-                    ...termTdStyle,
-                    ...(col.numeric ? { textAlign: "right" as const } : null),
-                    ...col.style,
-                  }}
+                  style={{ ...termTdStyle, textAlign: alignOf(col), ...col.style }}
                 >
                   {col.cell(row, i)}
                 </td>

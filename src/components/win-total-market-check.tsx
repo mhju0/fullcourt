@@ -1,4 +1,5 @@
-import { termCardStyle, termTdStyle, termThStyle, termThUnitStyle, WIDTH } from "@/lib/terminal-styles";
+import { termCardStyle, WIDTH } from "@/lib/terminal-styles";
+import { DataTable } from "@/components/ui/data-table";
 import benchmark from "@/data/win-total-benchmark.json";
 
 /** Percent with one decimal from an over count — 47.9% styling, tabular in the table. */
@@ -28,39 +29,29 @@ export function WinTotalMarketCheck() {
         seasons of archived lines, they don&rsquo;t:
       </p>
 
-      <div className="mt-3 overflow-x-auto">
-        <table className="fc-table" style={{ borderCollapse: "collapse", minWidth: 360 }}>
-          <thead>
-            <tr>
-              <th style={{ ...termThStyle, textAlign: "left" }}>Net edge games</th>
-              <th style={{ ...termThStyle, textAlign: "right" }}>
-                Went over
-                <span style={termThUnitStyle}>percent of the bucket</span>
-              </th>
-              <th style={{ ...termThStyle, textAlign: "right" }}>Team-seasons</th>
-            </tr>
-          </thead>
-          <tbody>
-            {benchmark.buckets.map((b) => (
-              <tr key={b.label}>
-                <td className="mono" style={termTdStyle}>{b.label}</td>
-                <td
-                  className="mono"
-                  style={{ ...termTdStyle, textAlign: "right", fontVariantNumeric: "tabular-nums", fontWeight: 700 }}
-                >
-                  {pct(b.overs, b.n)}
-                </td>
-                <td
-                  className="mono"
-                  style={{ ...termTdStyle, textAlign: "right", fontVariantNumeric: "tabular-nums", color: "var(--term-text-muted)" }}
-                >
-                  {b.n}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <DataTable
+        wrapperClassName="mt-3 overflow-x-auto"
+        width="numeric"
+        minWidth={360}
+        rows={benchmark.buckets}
+        rowKey={(b) => b.label}
+        columns={[
+          { label: "Net edge games", cell: (b) => b.label },
+          {
+            label: "Went over",
+            unit: "percent of the bucket",
+            numeric: true,
+            style: { fontWeight: 700 },
+            cell: (b) => pct(b.overs, b.n),
+          },
+          {
+            label: "Team-seasons",
+            numeric: true,
+            style: { color: "var(--term-text-muted)" },
+            cell: (b) => b.n,
+          },
+        ]}
+      />
 
       <p style={{ marginTop: 12, maxWidth: WIDTH.prose, fontSize: 15, color: "var(--term-text-muted)", lineHeight: 1.55 }}>
         No gradient, in either direction. The correlation between a team&rsquo;s net edge games

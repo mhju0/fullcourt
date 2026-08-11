@@ -11,7 +11,8 @@ import { useBacktest } from "@/hooks/useBacktest"
 import { Skeleton } from "@/components/ui/skeleton"
 import { buildRestAdvantageEvidence } from "@/lib/rest-advantage-display"
 import { signedNumber } from "@/lib/signed-number"
-import { termCardStyle, termDashedEmptyStyle, termTdStyle as tdStyle, termThStyle as thStyle, termThUnitStyle } from "@/lib/terminal-styles"
+import { termCardStyle, termDashedEmptyStyle } from "@/lib/terminal-styles"
+import { DataTable } from "@/components/ui/data-table"
 import type { UpcomingGameWithRA } from "@/types"
 import { MessageCard } from "@/components/ui/message-card"
 
@@ -124,151 +125,139 @@ export function UpcomingContent() {
           </div>
         )
       ) : (
-        <div className="overflow-x-auto">
-          <table className="fc-table mono w-full" style={{ borderCollapse: "collapse" }}>
-            <thead>
-              <tr>
-                <th style={{ ...thStyle, textAlign: "left" }}>Date</th>
-                <th style={{ ...thStyle, textAlign: "left" }}>Matchup</th>
-                <th style={{ ...thStyle, textAlign: "right" }} className="hidden sm:table-cell">
-                  Home Fat.
-                  <span style={termThUnitStyle}>fatigue score</span>
-                </th>
-                <th style={{ ...thStyle, textAlign: "right" }} className="hidden sm:table-cell">
-                  Away Fat.
-                  <span style={termThUnitStyle}>fatigue score</span>
-                </th>
-                <th style={{ ...thStyle, textAlign: "center" }}>
-                  RA
-                  <span style={termThUnitStyle}>fatigue gap</span>
-                </th>
-                <th style={{ ...thStyle, textAlign: "center" }}>Edge</th>
-                <th style={{ ...thStyle, textAlign: "right" }}>
-                  Historically
-                  <span style={termThUnitStyle}>win rate</span>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {games.map((g, i) => {
-                const absDiff = Math.abs(g.restAdvantageDifferential)
-                const advAbbr = g.predictedAdvantageAbbreviation
-                const isHomeAdv = advAbbr === g.homeTeam.abbreviation
+        <>
+        <DataTable
+          rows={games}
+          rowKey={(g) => g.gameId}
+          rowAttrs={(_g, i) => ({
+            className: `transition-colors ${i % 2 === 1 ? "bg-[var(--term-bg)]" : "bg-[var(--term-surface)]"} hover:bg-[var(--term-surface-2)]`,
+          })}
+          columns={[
+            {
+              label: "Date",
+              style: { color: "var(--term-text-muted)" },
+              cell: (g) => format(new Date(g.date + "T00:00:00"), "MMM d"),
+            },
+            {
+              label: "Matchup",
+              style: { color: "var(--term-text)" },
+              cell: (g) => (
+                // The shared TeamLogo, not a private copy. This page carried its own until
+                // 2026-08-11 — a second adapter at a seam that already existed, and one that
+                // could not take a season, so it had no way to resolve era-correct branding
+                // even in principle. No `season` is passed because these games are upcoming:
+                // the current logo IS the correct one. The point is that the capability now
+                // sits one prop away instead of behind a rewrite.
+                <div className="flex items-center gap-2">
+                  <TeamLogo
+                    abbreviation={g.awayTeam.abbreviation}
+                    color={getTeamColors(g.awayTeam.abbreviation).primary}
+                  />
+                  <span style={{ fontWeight: 600 }}>{g.awayTeam.abbreviation}</span>
+                  <span style={{ color: "var(--term-hairline)" }}>@</span>
+                  <TeamLogo
+                    abbreviation={g.homeTeam.abbreviation}
+                    color={getTeamColors(g.homeTeam.abbreviation).primary}
+                  />
+                  <span style={{ fontWeight: 600 }}>{g.homeTeam.abbreviation}</span>
+                </div>
+              ),
+            },
+            {
+              label: "Home Fat.",
+              unit: "fatigue score",
+              numeric: true,
+              className: "hidden sm:table-cell",
+              style: { color: "var(--term-text)" },
+              cell: (g) => (g.homeFatigueScore !== null ? g.homeFatigueScore.toFixed(1) : "—"),
+            },
+            {
+              label: "Away Fat.",
+              unit: "fatigue score",
+              numeric: true,
+              className: "hidden sm:table-cell",
+              style: { color: "var(--term-text)" },
+              cell: (g) => (g.awayFatigueScore !== null ? g.awayFatigueScore.toFixed(1) : "—"),
+            },
+            {
+              label: "RA",
+              unit: "fatigue gap",
+              numeric: true,
+              align: "center",
+              style: { color: "var(--term-text)" },
+              cell: (g) => Math.abs(g.restAdvantageDifferential).toFixed(1),
+            },
+            {
+              label: "Edge",
+              align: "center",
+              cell: (g) => (
+                <span
+                  className="mono inline-flex items-center"
+                  style={{
+                    // Always the rested pole: the named team is the more-rested side, whichever
+                    // side it is. Side-coloring painted a rested visitor in the fatigued hue —
+                    // backwards under two-pole semantics (see RaBadge in matchup-parts.tsx).
+                    background: "var(--term-blue)",
+                    color: "var(--term-surface)",
+                    fontSize: 11,
+                    fontWeight: 700,
+                    padding: "4px 8px",
+                    borderRadius: "var(--term-radius-sm)",
+                    letterSpacing: "0.04em",
+                  }}
+                >
+                  {g.predictedAdvantageAbbreviation} EDGE
+                </span>
+              ),
+            },
+            {
+              label: "Historically",
+              unit: "win rate",
+              numeric: true,
+              cell: (g) => {
                 // The predicted abbreviation is the authoritative side, not the sign of the
                 // stored differential — these rows come from `predictions`, which the daily
-                // refresh only writes for a home pick, so in practice `isHomeAdv` is always
-                // true here. Stated explicitly anyway: the evidence sentence is denominated
-                // on called games, and passing the pair is what keeps that honest if the
-                // rule ever widens.
+                // refresh only writes for a home pick, so in practice this is always "home".
+                // Stated explicitly anyway: the evidence sentence is denominated on called
+                // games, and passing the pair is what keeps that honest if the rule widens.
                 const evidence = buildRestAdvantageEvidence(
                   {
                     differential: g.restAdvantageDifferential,
-                    advantageTeam: isHomeAdv ? "home" : "away",
+                    advantageTeam:
+                      g.predictedAdvantageAbbreviation === g.homeTeam.abbreviation
+                        ? "home"
+                        : "away",
                   },
                   evidenceSource
                 )
-
+                if (!evidence) return <span style={{ color: "var(--term-text-muted)" }}>—</span>
                 return (
-                  <tr
-                    key={g.gameId}
-                    className={`transition-colors ${i % 2 === 1 ? "bg-[var(--term-bg)]" : "bg-[var(--term-surface)]"} hover:bg-[var(--term-surface-2)]`}
-                  >
-                    <td style={{ ...tdStyle, color: "var(--term-text-muted)" }}>
-                      {format(new Date(g.date + "T00:00:00"), "MMM d")}
-                    </td>
-                    <td style={{ ...tdStyle, color: "var(--term-text)" }}>
-                      {/* The shared TeamLogo, not a private copy. This page carried its own
-                          until 2026-08-11 — a second adapter at a seam that already existed,
-                          and one that could not take a season, so it had no way to resolve
-                          era-correct branding even in principle. No `season` is passed here
-                          because these games are upcoming: the current logo IS the correct one.
-                          The point is that the capability now sits one prop away instead of
-                          behind a rewrite. */}
-                      <div className="flex items-center gap-2">
-                        <TeamLogo
-                          abbreviation={g.awayTeam.abbreviation}
-                          color={getTeamColors(g.awayTeam.abbreviation).primary}
-                        />
-                        <span style={{ fontWeight: 600 }}>{g.awayTeam.abbreviation}</span>
-                        <span style={{ color: "var(--term-hairline)" }}>@</span>
-                        <TeamLogo
-                          abbreviation={g.homeTeam.abbreviation}
-                          color={getTeamColors(g.homeTeam.abbreviation).primary}
-                        />
-                        <span style={{ fontWeight: 600 }}>{g.homeTeam.abbreviation}</span>
-                      </div>
-                    </td>
-                    <td
-                      style={{ ...tdStyle, textAlign: "right", color: "var(--term-text)" }}
-                      className="hidden tabular-nums sm:table-cell"
-                    >
-                      {g.homeFatigueScore !== null ? g.homeFatigueScore.toFixed(1) : "—"}
-                    </td>
-                    <td
-                      style={{ ...tdStyle, textAlign: "right", color: "var(--term-text)" }}
-                      className="hidden tabular-nums sm:table-cell"
-                    >
-                      {g.awayFatigueScore !== null ? g.awayFatigueScore.toFixed(1) : "—"}
-                    </td>
-                    <td style={{ ...tdStyle, textAlign: "center", color: "var(--term-text)" }} className="tabular-nums">
-                      {absDiff.toFixed(1)}
-                    </td>
-                    <td style={{ ...tdStyle, textAlign: "center" }}>
+                  <span className="inline-flex flex-col items-end" style={{ lineHeight: 1.35 }}>
+                    {/* The rate and its lift share a line: a rested road team's 42.4% standing
+                        alone next to a coloured EDGE chip reads as a pick, where "42.4% +2.3"
+                        reads as the measurement it is. */}
+                    <span style={{ fontSize: 12, fontWeight: 700, color: "var(--term-text)" }}>
+                      {evidence.winPct.toFixed(1)}%{" "}
                       <span
-                        className="mono inline-flex items-center"
                         style={{
-                          // Always the rested pole: the named team is the more-rested side,
-                          // whichever side it is. Side-coloring painted a rested visitor in
-                          // the fatigued hue — backwards under two-pole semantics (see
-                          // RaBadge in matchup-parts.tsx).
-                          background: "var(--term-blue)",
-                          color: "var(--term-surface)",
-                          fontSize: 11,
-                          fontWeight: 700,
-                          padding: "4px 8px",
-                          borderRadius: "var(--term-radius-sm)",
-                          letterSpacing: "0.04em",
+                          fontSize: 10,
+                          fontWeight: 600,
+                          color: evidence.lift >= 0 ? "var(--term-blue)" : "var(--term-red)",
                         }}
                       >
-                        {advAbbr} EDGE
+                        {signedNumber(evidence.lift)}
                       </span>
-                    </td>
-                    <td style={{ ...tdStyle, textAlign: "right" }} className="tabular-nums">
-                      {evidence ? (
-                        <span
-                          className="inline-flex flex-col items-end"
-                          style={{ lineHeight: 1.35 }}
-                        >
-                          {/* The rate and its lift share a line: a rested road team's 42.4%
-                              standing alone next to a coloured EDGE chip reads as a pick,
-                              where "42.4% +2.3" reads as the measurement it is. */}
-                          <span style={{ fontSize: 12, fontWeight: 700, color: "var(--term-text)" }}>
-                            {evidence.winPct.toFixed(1)}%{" "}
-                            <span
-                              style={{
-                                fontSize: 10,
-                                fontWeight: 600,
-                                color:
-                                  evidence.lift >= 0 ? "var(--term-blue)" : "var(--term-red)",
-                              }}
-                            >
-                              {signedNumber(evidence.lift)}
-                            </span>
-                          </span>
-                          <span style={{ fontSize: 10, color: "var(--term-text-muted)" }}>
-                            {evidence.classLabel} · vs {evidence.baselinePct.toFixed(1)}% · n=
-                            {evidence.games.toLocaleString("en-US")}
-                          </span>
-                        </span>
-                      ) : (
-                        <span style={{ color: "var(--term-text-muted)" }}>—</span>
-                      )}
-                    </td>
-                  </tr>
+                    </span>
+                    <span style={{ fontSize: 10, color: "var(--term-text-muted)" }}>
+                      {evidence.classLabel} · vs {evidence.baselinePct.toFixed(1)}% · n=
+                      {evidence.games.toLocaleString("en-US")}
+                    </span>
+                  </span>
                 )
-              })}
-            </tbody>
-          </table>
+              },
+            },
+          ]}
+        />
           <p
             className="mt-3"
             style={{ fontSize: 11, lineHeight: 1.5, color: "var(--term-text-muted)" }}
@@ -280,7 +269,7 @@ export function UpcomingContent() {
             separately for that reason and never pooled. It describes a class of games, not this
             one. Not betting advice.
           </p>
-        </div>
+        </>
       )}
     </div>
   )
