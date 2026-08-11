@@ -472,7 +472,7 @@ Same shape as the rest of the product: **Python writes to the DB, the app reads.
 - The new playoff queries are the inverse: they filter to `game_type IN ('playoffs',
   'finals')` and never join into the regular-season pages.
 - The **rest-advantage metric is untouched** — `calculateRestAdvantage`, the
-  `restAdvantage*` fields, `RestAdvPanel`, `formatRestAdvantageDisplay`, and the "REST
+  `restAdvantage*` fields, `RestAdvCell`, `formatRestAdvantageDisplay`, and the "REST
   ADVANTAGE"/"RA" labels keep their names. `entry_rest_diff` is a *new, separately named*
   series feature; it is not a rename of the metric.
 

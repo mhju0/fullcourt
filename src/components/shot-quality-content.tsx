@@ -478,7 +478,8 @@ export function ShotQualityContent() {
           body="SHOT-LOCATION COORDINATES ONLY REACH BACK TO 1996-97."
         />
       ) : (
-        <div style={termCardStyle}>
+        // `data-shot-anchor`: where the README shot of this page ends (scripts/screenshots.mjs).
+        <div style={termCardStyle} data-shot-anchor="two-court">
           <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
             <span className="mono" style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 700 }}>
               {season} · {data.meta.cellCount.toLocaleString()} CELLS · {data.meta.totalFga.toLocaleString()} FGA

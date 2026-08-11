@@ -348,7 +348,7 @@ actually happened, sourced from `ml/shot_value/*.txt` and this session's file re
 
 ### Isolation guarantees (same discipline as the Playoff Predictor)
 - **Does not touch `src/lib/fatigue.ts`** and **does not rename** the rest-advantage metric
-  (`restAdvantage`, `RestAdvPanel`, `rest_advantage_differential`, "REST ADVANTAGE", "RA").
+  (`restAdvantage`, `RestAdvCell`, `rest_advantage_differential`, "REST ADVANTAGE", "RA").
 - New tables are **additive**; no existing query reads them, and the shot page is the only
   surface that reads shot data — so the regular-season product is unaffected.
 - New ingest is a **separate path**; it does not loosen `fetch_schedule.py` /

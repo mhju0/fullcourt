@@ -297,7 +297,9 @@ function SeriesCard({ series }: { series: PlayoffSeriesWithPredictions }) {
 
 function RoundSection({ group }: { group: PlayoffRoundGroup }) {
   return (
-    <div className="flex flex-col gap-2">
+    // `data-shot-anchor` on every round, so scripts/screenshots.mjs can end the README shot after
+    // the first one by index rather than by a hand-derived pixel height.
+    <div className="flex flex-col gap-2" data-shot-anchor="round-group">
       <div className="mono flex items-center gap-3 py-1" style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-text-muted)" }}>
         <span style={{ fontWeight: 700 }}>
           {group.roundLabel.toUpperCase()} · {group.series.length} SERIES

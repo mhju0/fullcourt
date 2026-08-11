@@ -47,7 +47,7 @@ routes and page — so they never destabilize the rest-advantage flow.
 ## Brand vs. metric (critical)
 
 "FullCourt" is the product. "Rest advantage" is a **metric**: `restAdvantage`,
-`restAdvantageDifferential`, `rest_advantage_differential`, `RestAdvPanel`,
+`restAdvantageDifferential`, `rest_advantage_differential`, `RestAdvCell`,
 `formatRestAdvantageDisplay`, and the `REST ADVANTAGE` / `RA` UI labels. Never rename the metric
 while touching branding.
 

@@ -9,7 +9,7 @@ import {
   TeamLogo,
   teamGameFlags,
   getConfidence,
-} from "@/components/matchup-card"
+} from "@/components/matchup-parts"
 import { getTeamColors } from "@/lib/nba-team-colors"
 import {
   buildRestAdvantageEvidence,

@@ -27,7 +27,8 @@ import type { ExploreResult } from "@/lib/explore-games-machine"
 import { apiFetcher } from "@/lib/fetcher"
 import { NBA_SEASONS } from "@/lib/nba-season"
 import { homeWinRateWhenVisitorRested } from "@/lib/rest-advantage-display"
-import { MONO_FONT_STACK, termCardStyle, termDashedEmptyStyle, termInsetStyle, termThStyle, termThUnitStyle } from "@/lib/terminal-styles"
+import { MONO_FONT_STACK, termCardStyle, termDashedEmptyStyle, termInsetStyle, termTdStyle } from "@/lib/terminal-styles"
+import { DataTable } from "@/components/ui/data-table"
 import type { AnalysisResponse } from "@/types"
 import { signedNumber } from "@/lib/signed-number"
 import { MessageCard } from "@/components/ui/message-card"
@@ -52,12 +53,6 @@ const exploreSelectStyle: React.CSSProperties = {
   fontFamily: MONO_FONT_STACK,
   color: "var(--term-text)",
   letterSpacing: "0.04em",
-}
-
-const exploreTdBaseStyle: React.CSSProperties = {
-  padding: "8px 12px",
-  borderBottom: "1px solid var(--term-border)",
-  fontSize: 12,
 }
 
 // ─── Section divider ──────────────────────────────────────────────
@@ -501,125 +496,136 @@ function ExploreGames({
       </div>
 
       {/* Table */}
-      <div className="mt-3 overflow-x-auto">
-        <table className="fc-table mono w-full" style={{ borderCollapse: "collapse" }}>
-          <thead>
-            <tr>
-              <th style={{ ...termThStyle, textAlign: "left" }}>Date</th>
-              <th style={{ ...termThStyle, textAlign: "left" }}>Matchup</th>
-              <th style={{ ...termThStyle, textAlign: "right" }} className="hidden sm:table-cell">
-                Home Fat.
-                <span style={termThUnitStyle}>fatigue score</span>
-              </th>
-              <th style={{ ...termThStyle, textAlign: "right" }} className="hidden sm:table-cell">
-                Away Fat.
-                <span style={termThUnitStyle}>fatigue score</span>
-              </th>
-              <th style={{ ...termThStyle, textAlign: "center" }}>
-                RA
-                <span style={termThUnitStyle}>fatigue gap</span>
-              </th>
-              <th style={{ ...termThStyle, textAlign: "center" }} className="hidden sm:table-cell">Score</th>
-              <th style={{ ...termThStyle, textAlign: "center" }}>Result</th>
+      {/* Table. A local `exploreTdBaseStyle` const used to sit above this file holding
+          `padding: 8px 12px`, a bottom rule and `fontSize: 12` — byte-for-byte what `.fc-table`
+          and `termTdStyle` already gave every other table. A private copy of the shared style
+          is what a convention with no module behind it produces; the state rows below use the
+          shared one. */}
+      <DataTable
+        wrapperClassName="mt-3 overflow-x-auto"
+        rows={loading || error || results.length === 0 ? [] : results}
+        rowKey={(g) => g.gameId}
+        rowAttrs={(g, i) => ({
+          role: "button",
+          tabIndex: 0,
+          onClick: () => openDetail(g.gameId),
+          onKeyDown: (e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault()
+              openDetail(g.gameId)
+            }
+          },
+          style: { background: i % 2 === 1 ? "var(--term-bg)" : "var(--term-surface)", cursor: "pointer" },
+          className: "hover:bg-[var(--term-surface-2)] focus-visible:bg-[var(--term-surface-2)]",
+          "aria-label": `Open details: ${g.awayTeamAbbreviation} at ${g.homeTeamAbbreviation}, ${g.date}`,
+        })}
+        columns={[
+          {
+            label: "Date",
+            style: { color: "var(--term-text-muted)" },
+            cell: (g) => format(new Date(g.date + "T00:00:00"), "yyyy-MM-dd"),
+          },
+          {
+            label: "Matchup",
+            style: { color: "var(--term-text)", fontWeight: 600 },
+            cell: (g) => (
+              <>
+                {g.awayTeamAbbreviation}
+                <span style={{ margin: "0 4px", color: "var(--term-hairline)" }}>@</span>
+                {g.homeTeamAbbreviation}
+              </>
+            ),
+          },
+          {
+            label: "Home Fat.",
+            unit: "fatigue score",
+            numeric: true,
+            className: "hidden sm:table-cell",
+            style: { color: "var(--term-text)" },
+            cell: (g) => g.homeFatigueScore.toFixed(1),
+          },
+          {
+            label: "Away Fat.",
+            unit: "fatigue score",
+            numeric: true,
+            className: "hidden sm:table-cell",
+            style: { color: "var(--term-text)" },
+            cell: (g) => g.awayFatigueScore.toFixed(1),
+          },
+          {
+            label: "RA",
+            unit: "fatigue gap",
+            align: "center",
+            cell: (g) => (
+              <span
+                className="mono inline-flex items-center"
+                style={{
+                  background: "var(--term-blue)",
+                  color: "var(--term-surface)",
+                  fontSize: 11,
+                  fontWeight: 700,
+                  padding: "4px 8px",
+                  borderRadius: "var(--term-radius-sm)",
+                  letterSpacing: "0.04em",
+                }}
+              >
+                {g.advantageTeam === "home" ? g.homeTeamAbbreviation : g.awayTeamAbbreviation} +
+                {g.restAdvantageDifferential.toFixed(1)}
+              </span>
+            ),
+          },
+          {
+            label: "Score",
+            numeric: true,
+            align: "center",
+            className: "hidden sm:table-cell",
+            style: { color: "var(--term-text)" },
+            cell: (g) => `${g.awayScore}\u2013${g.homeScore}`,
+          },
+          {
+            label: "Result",
+            align: "center",
+            cell: (g) => (
+              <span
+                className="mono inline-flex items-center"
+                style={{
+                  color: g.restedTeamWon ? "var(--term-pos)" : "var(--term-red)",
+                  fontSize: 11,
+                  fontWeight: 700,
+                  letterSpacing: "0.06em",
+                }}
+              >
+                {g.restedTeamWon ? "WON" : "LOST"}
+              </span>
+            ),
+          },
+        ]}
+      >
+        {loading ? (
+          Array.from({ length: 5 }).map((_, i) => (
+            <tr key={i}>
+              <td colSpan={7} style={{ ...termTdStyle, padding: 12 }}>
+                <Skeleton
+                  className="h-4 w-full bg-[var(--term-surface-2)]"
+                  style={{ borderRadius: "var(--term-radius-sm)" }}
+                />
+              </td>
             </tr>
-          </thead>
-          <tbody>
-            {loading ? (
-              Array.from({ length: 5 }).map((_, i) => (
-                <tr key={i}>
-                  <td colSpan={7} style={{ ...exploreTdBaseStyle, padding: 12 }}>
-                    <Skeleton className="h-4 w-full bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius-sm)" }} />
-                  </td>
-                </tr>
-              ))
-            ) : error ? (
-              <tr>
-                <td colSpan={7} style={{ ...exploreTdBaseStyle, textAlign: "center", color: "var(--term-red)", padding: 24 }}>
-                  {error}
-                </td>
-              </tr>
-            ) : results.length === 0 ? (
-              <tr>
-                <td colSpan={7} style={{ ...exploreTdBaseStyle, textAlign: "center", color: "var(--term-text-muted)", padding: 24 }}>
-                  NO GAMES MATCH THE CURRENT FILTERS
-                </td>
-              </tr>
-            ) : (
-              results.map((g, i) => {
-                const advAbbr =
-                  g.advantageTeam === "home"
-                    ? g.homeTeamAbbreviation
-                    : g.awayTeamAbbreviation
-                const rowBg = i % 2 === 1 ? "var(--term-bg)" : "var(--term-surface)"
-                return (
-                  <tr
-                    key={g.gameId}
-                    role="button"
-                    tabIndex={0}
-                    onClick={() => openDetail(g.gameId)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" || e.key === " ") {
-                        e.preventDefault()
-                        openDetail(g.gameId)
-                      }
-                    }}
-                    style={{ background: rowBg, cursor: "pointer" }}
-                    className="hover:bg-[var(--term-surface-2)] focus-visible:bg-[var(--term-surface-2)]"
-                    aria-label={`Open details: ${g.awayTeamAbbreviation} at ${g.homeTeamAbbreviation}, ${g.date}`}
-                  >
-                    <td style={{ ...exploreTdBaseStyle, color: "var(--term-text-muted)" }}>
-                      {format(new Date(g.date + "T00:00:00"), "yyyy-MM-dd")}
-                    </td>
-                    <td style={{ ...exploreTdBaseStyle, color: "var(--term-text)", fontWeight: 600 }}>
-                      {g.awayTeamAbbreviation}
-                      <span style={{ margin: "0 4px", color: "var(--term-hairline)" }}>@</span>
-                      {g.homeTeamAbbreviation}
-                    </td>
-                    <td style={{ ...exploreTdBaseStyle, textAlign: "right", color: "var(--term-text)" }} className="hidden sm:table-cell tabular-nums">
-                      {g.homeFatigueScore.toFixed(1)}
-                    </td>
-                    <td style={{ ...exploreTdBaseStyle, textAlign: "right", color: "var(--term-text)" }} className="hidden sm:table-cell tabular-nums">
-                      {g.awayFatigueScore.toFixed(1)}
-                    </td>
-                    <td style={{ ...exploreTdBaseStyle, textAlign: "center" }}>
-                      <span
-                        className="mono inline-flex items-center"
-                        style={{
-                          background: "var(--term-blue)",
-                          color: "var(--term-surface)",
-                          fontSize: 11,
-                          fontWeight: 700,
-                          padding: "4px 8px",
-                          borderRadius: "var(--term-radius-sm)",
-                          letterSpacing: "0.04em",
-                        }}
-                      >
-                        {advAbbr} +{g.restAdvantageDifferential.toFixed(1)}
-                      </span>
-                    </td>
-                    <td style={{ ...exploreTdBaseStyle, textAlign: "center", color: "var(--term-text)" }} className="hidden sm:table-cell tabular-nums">
-                      {g.awayScore}–{g.homeScore}
-                    </td>
-                    <td style={{ ...exploreTdBaseStyle, textAlign: "center" }}>
-                      <span
-                        className="mono inline-flex items-center"
-                        style={{
-                          color: g.restedTeamWon ? "var(--term-pos)" : "var(--term-red)",
-                          fontSize: 11,
-                          fontWeight: 700,
-                          letterSpacing: "0.06em",
-                        }}
-                      >
-                        {g.restedTeamWon ? "WON" : "LOST"}
-                      </span>
-                    </td>
-                  </tr>
-                )
-              })
-            )}
-          </tbody>
-        </table>
-      </div>
+          ))
+        ) : error ? (
+          <tr>
+            <td colSpan={7} style={{ ...termTdStyle, textAlign: "center", color: "var(--term-red)", padding: 24 }}>
+              {error}
+            </td>
+          </tr>
+        ) : results.length === 0 ? (
+          <tr>
+            <td colSpan={7} style={{ ...termTdStyle, textAlign: "center", color: "var(--term-text-muted)", padding: 24 }}>
+              NO GAMES MATCH THE CURRENT FILTERS
+            </td>
+          </tr>
+        ) : null}
+      </DataTable>
 
       {/* Pagination */}
       {total > 0 && (
@@ -904,7 +910,10 @@ export function AnalysisContent() {
           method link. */}
 
       {/* Win rate by season */}
-      <div style={termCardStyle}>
+      {/* `data-shot-anchor` marks where the README's screenshot of this page ends. It is read by
+          scripts/screenshots.mjs, which measures this element's bottom edge instead of carrying a
+          hand-derived pixel height — see the header of that file. */}
+      <div style={termCardStyle} data-shot-anchor="win-rate-by-season">
         <SectionDivider
           label="WIN RATE BY SEASON"
           descriptor="VS THAT SEASON'S HOME BASELINE"

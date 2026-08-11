@@ -63,28 +63,65 @@ test.describe("The outer rail is one vertical line", () => {
   }
 });
 
-test.describe("A table's first column starts where its container does", () => {
+/**
+ * A table is a box, so its cells sit on the box's inner rail — every one of them, edges
+ * included. The edge cells padded to zero for part of 2026-08-11 so a first column would land
+ * on the page gutter; `termThStyle` paints the header band, so that put the column's text hard
+ * against a fill. This asserts the revert, and it discriminates: it compares the first cell to
+ * an interior one rather than pinning a literal, so the rule survives a change to the value.
+ */
+test.describe("A table's cells sit on one inset, edges included", () => {
   for (const route of ["/season", "/analysis", "/shooting", "/behind-the-data/rest-advantage"]) {
-    test(`first column takes no inset of its own on ${route}`, async ({ page }) => {
+    test(`no edge cell pads differently from its neighbours on ${route}`, async ({ page }) => {
       await page.setViewportSize({ width: 1440, height: 900 });
       await page.goto(route, { waitUntil: "networkidle" });
 
-      const offsets = await page.evaluate(() => {
-        const out: { pad: string; tag: string }[] = [];
+      const rows = await page.evaluate(() => {
+        const out: { first: string; interior: string; last: string; n: number }[] = [];
         for (const table of document.querySelectorAll("table.fc-table")) {
-          const first = table.querySelector("thead th:first-child, tbody td:first-child");
-          if (!first) continue;
-          out.push({ pad: getComputedStyle(first).paddingLeft, tag: first.tagName });
+          // The widest header row, so a table with grouped headers is measured on the row
+          // that actually has an interior cell to compare against.
+          const headRows = Array.from(table.querySelectorAll("thead tr"));
+          const head = headRows.sort((a, b) => b.children.length - a.children.length)[0];
+          const cells = head ? Array.from(head.children) : [];
+          if (cells.length < 3) continue;
+          out.push({
+            first: getComputedStyle(cells[0]).paddingLeft,
+            interior: getComputedStyle(cells[1]).paddingLeft,
+            last: getComputedStyle(cells[cells.length - 1]).paddingRight,
+            n: cells.length,
+          });
         }
         return out;
       });
 
-      expect(offsets.length, `${route} rendered no .fc-table`).toBeGreaterThan(0);
-      for (const { pad, tag } of offsets) {
-        expect(pad, `${route}: a <${tag}> first cell pads ${pad} instead of 0px`).toBe("0px");
+      expect(rows.length, `${route} rendered no .fc-table with 3+ columns`).toBeGreaterThan(0);
+      for (const { first, interior, last, n } of rows) {
+        expect(first, `${route}: a ${n}-column table's first cell pads ${first}, interior ${interior}`).toBe(interior);
+        expect(last, `${route}: a ${n}-column table's last cell pads ${last}, interior ${interior}`).toBe(interior);
+        expect(first, `${route}: cells pad to zero — the edge-to-zero rule was reverted`).not.toBe("0px");
       }
     });
   }
+});
+
+/**
+ * `TERM_NUMERIC_TABLE_MAX_WIDTH` is a ceiling, not a target. With `w-full` beside it a
+ * three-column table still took the full 760, which ran the season report's middle column to
+ * 390px to hold `+21` — 528px of nothing between a team and its own number.
+ */
+test("a few-column numeric table sizes to its content, not to the cap", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/season", { waitUntil: "networkidle" });
+
+  const worth = page.locator('[data-testid="schedule-value-extremes"] ~ div table.fc-table').first();
+  await expect(worth).toBeVisible();
+
+  const box = await worth.boundingBox();
+  expect(box).not.toBeNull();
+  // Its own `minWidth` is 420 and the shared cap is 760. Landing at the cap means `w-full`
+  // came back; landing at the floor means the columns are sized by their content.
+  expect(box!.width, `the three-column table is ${box!.width}px wide`).toBeLessThan(560);
 });
 
 test("expanding a /shooting player does not shift its row sideways", async ({ page }) => {

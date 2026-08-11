@@ -5,14 +5,8 @@ import useSWR from "swr"
 import { Skeleton } from "@/components/ui/skeleton"
 import { parseSeasonStartYear } from "@/lib/nba-season"
 import { zeroRestWorkload, type PlayerRestPayload } from "@/lib/player-rest"
-import {
-  TERM_NUMERIC_TABLE_MAX_WIDTH,
-  termCardStyle,
-  termTdStyle,
-  termThStyle,
-  termThUnitStyle,
-  WIDTH,
-} from "@/lib/terminal-styles"
+import { termCardStyle, WIDTH } from "@/lib/terminal-styles"
+import { DataTable } from "@/components/ui/data-table"
 
 const ROW_LIMIT = 15
 
@@ -93,37 +87,25 @@ export function ZeroRestWorkload({ season }: { season: string }) {
         </p>
       ) : (
         <>
-          <div className="overflow-x-auto">
-            <table className="fc-table mono w-full" style={{ borderCollapse: "collapse", minWidth: 460, maxWidth: TERM_NUMERIC_TABLE_MAX_WIDTH }}>
-              <thead>
-                <tr>
-                  <th style={termThStyle}>PLAYER</th>
-                  <th style={termThStyle}>TEAM</th>
-                  <th style={{ ...termThStyle, textAlign: "right" }}>
-                    NO-REST FGA
-                    <span style={termThUnitStyle}>SHOT ATTEMPTS</span>
-                  </th>
-                  <th style={{ ...termThStyle, textAlign: "right" }}>NO-REST EFG%</th>
-                  <th style={{ ...termThStyle, textAlign: "right" }}>GAMES</th>
-                </tr>
-              </thead>
-              <tbody>
-                {rows.map((r) => (
-                  <tr key={r.name} data-testid="zero-rest-row">
-                    <td style={termTdStyle}>{r.name}</td>
-                    <td style={termTdStyle}>{r.team}</td>
-                    <td className="tabular-nums" style={{ ...termTdStyle, textAlign: "right" }}>
-                      {r.noRestFga.toLocaleString()}
-                    </td>
-                    <td className="tabular-nums" style={{ ...termTdStyle, textAlign: "right" }}>
-                      {r.noRestEfg.toFixed(1)}
-                    </td>
-                    <td className="tabular-nums" style={{ ...termTdStyle, textAlign: "right" }}>{r.games}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <DataTable
+            width="numeric"
+            minWidth={460}
+            rows={rows}
+            rowKey={(r) => r.name}
+            rowAttrs={() => ({ "data-testid": "zero-rest-row" })}
+            columns={[
+              { label: "PLAYER", cell: (r) => r.name },
+              { label: "TEAM", cell: (r) => r.team },
+              {
+                label: "NO-REST FGA",
+                unit: "SHOT ATTEMPTS",
+                numeric: true,
+                cell: (r) => r.noRestFga.toLocaleString(),
+              },
+              { label: "NO-REST EFG%", numeric: true, cell: (r) => r.noRestEfg.toFixed(1) },
+              { label: "GAMES", numeric: true, cell: (r) => r.games },
+            ]}
+          />
           {/* Stated, not hidden: this file is a hand-run export and will lag a live season. */}
           <p className="mono" style={{ fontSize: 11, color: "var(--term-text-muted)" }}>
             PLAYER DATA THROUGH {stampLabel(data.generated)} · UPDATED SEPARATELY FROM THE FIGURES ABOVE
