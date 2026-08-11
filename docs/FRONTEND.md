@@ -314,6 +314,14 @@ one header, one column grid, and each season landing under the column that descr
 group is closed by a `Career` row summed from those same seasons; it is never read from a
 separate career record, because a total printed under a column has to equal that column.
 
+The player's own row renders through `DataTable`'s `columns` like every other table's; the
+seasons, the `Career` line and the closing note come from `rowExtras`, which can add rows after a
+row but cannot touch the row itself. They keep hand-written `<td>`s, because an indented season
+label and a `colSpan` note are not the column model — the alternative was bending the module
+around one caller. **Player names went from proportional to mono on 2026-08-11**: this was the
+last table on the site whose text cells were not mono, and it is the only visible change the
+port made anywhere.
+
 The group is marked out by three low-strength signals rather than one strong one: a tint at 3–7%
 of `--term-amber`, a 2px `--term-rail` down the left edge of every row including the 2019-20
 marker, and a rule above and below. Each still reads if the others fail — a single subtle tone
@@ -945,12 +953,36 @@ nesting is the information there, so it has to be visible. Nothing else may take
 **A table is a box, so it takes the inner rail like any other box.** Cell padding lives in the
 `.fc-table` rule in `globals.css`, not in `termThStyle` / `termTdStyle`, so all 21 tables pad
 identically without 21 call sites agreeing. **12 a side, every cell, edges included.**
-**A `<table>` using those styles must carry `className="fc-table"`** — omitting it drops all cell
-padding, which is loudly visible rather than subtly wrong.
+
+**Every table on the site is a `DataTable`** (`src/components/ui/data-table.tsx`), and since
+2026-08-11 there is no other kind — the only `<table>` element left in `src/` is the module's
+own. Give it `columns` and `rows`; it supplies the class name, the collapse mode, the header
+band, the top and bottom rules, unit sub-labels, numeric alignment, tabular numerals, the scroll
+wrapper and the cap. Read its docblock before adding a prop: what a caller decides is
+deliberately only what varies.
+
+> Before it existed there was a *convention* — a caller had to independently know twelve facts
+> to draw one table right, and five of the seven measurable ones had drifted across the 21 call
+> sites. Four omitted `mono`, two set `border-collapse` as a class where nineteen set it inline,
+> a dead `fontSize: 12` appeared on ten, and four combined `w-full` with the numeric cap, which
+> silently means "always exactly 760px". Two tables had independently grown a byte-identical
+> sortable-column descriptor, and both attached `onClick` to a bare `<th>`, so neither could be
+> sorted from a keyboard.
+
+Three things the module settled that are easy to get wrong again:
+
+- **A column's `style` is body-only.** `headStyle` is the header. A cell style that reached the
+  heading shrank a rank column's own label out of line with the eight beside it.
+- **A sortable heading is a real `<button>` inside the `<th>`.** `role="button"` on the `<th>`
+  replaces the implicit `columnheader` role — wrong for the table, and it breaks
+  `getByRole("columnheader")`.
+- **The padding stays on the cell, not on that button.** Moving it in buys a bigger hit area and
+  makes the cell measure `padding: 0`, which is this law broken.
 
 > The edge cells padded to **zero** for part of 2026-08-11, so a table's first column would land
 > on whatever rail its container sat on. **Reverted the same day.** `termThStyle` paints a
-> `--term-surface-2` header band and 20 of the 21 tables use it, so zeroing the inset put the
+> `--term-surface-2` header band and 20 of the 21 tables used it then — all 21 do now, through
+> `DataTable` — so zeroing the inset put the
 > first column's text hard against a filled edge — which reads as broken however exactly it
 > lines up with the heading above. The box sits on the page rail; its cells sit on the box's own
 > inner rail. The earlier rule applied the two-rail model to the wrong element.
@@ -959,7 +991,9 @@ padding, which is loudly visible rather than subtly wrong.
 
 **The numeric cap is a ceiling, not a target.** `TERM_NUMERIC_TABLE_MAX_WIDTH` (760) sets how
 wide a mostly-numbers table may *get*; a table must not also carry `w-full`, which turns the cap
-into a fixed width. The season report's three-column WHAT THE SCHEDULE WAS WORTH was the proof —
+into a fixed width. `DataTable` makes that unrepresentable — `width` is one field, `"full"` or
+`"numeric"`, so the two cannot both be set. The season report's three-column WHAT THE SCHEDULE
+WAS WORTH was the proof —
 at a forced 760 its middle column ran 390px wide to hold `+21`, so the eye crossed 528px of
 nothing between a team and its own number. Sized to content it lands at its 420px `minWidth`
 floor and reads as one scan. `minWidth` stays: it is the horizontal-scroll floor on a phone, not

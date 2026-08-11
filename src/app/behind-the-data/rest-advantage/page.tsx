@@ -19,7 +19,8 @@ import {
   THIN_SAMPLE_GAMES,
   type RestGapRung,
 } from "@/lib/rest-split-facts";
-import { termTdStyle, termThStyle, termThUnitStyle } from "@/lib/terminal-styles";
+import { termTdStyle } from "@/lib/terminal-styles";
+import { DataTable } from "@/components/ui/data-table";
 import { signedNumber } from "@/lib/signed-number";
 
 export const metadata: Metadata = {
@@ -102,60 +103,52 @@ function RestRowTable() {
   ];
 
   return (
-    <div className="overflow-x-auto">
-      <table className="fc-table mono w-full" style={{ fontSize: 12, borderCollapse: "collapse" }}>
-        <thead>
-          <tr>
-            <th style={termThStyle}>
-              RESTED TEAM
-              <span style={termThUnitStyle}>WHERE IT PLAYED</span>
-            </th>
-            <th style={{ ...termThStyle, textAlign: "right" }}>
-              GAMES
-              <span style={termThUnitStyle}>COUNT</span>
-            </th>
-            <th style={{ ...termThStyle, textAlign: "right" }}>
-              IT WON
-              <span style={termThUnitStyle}>WIN RATE</span>
-            </th>
-            <th style={{ ...termThStyle, textAlign: "right" }}>
-              BASELINE
-              <span style={termThUnitStyle}>SAME SIDE, ALL GAMES</span>
-            </th>
-            <th style={{ ...termThStyle, textAlign: "right" }}>
-              VS BASELINE
-              <span style={termThUnitStyle}>PCT POINTS</span>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((r) => (
-            <tr key={r.label}>
-              <td style={termTdStyle}>
-                {r.label}{" "}
-                <span style={{ color: "var(--term-text-muted)" }}>· {r.note}</span>
-              </td>
-              <td style={{ ...termTdStyle, textAlign: "right" }}>
-                {r.games.toLocaleString()}
-              </td>
-              <td style={{ ...termTdStyle, textAlign: "right", fontWeight: 700 }}>
-                {r.winPct}%
-              </td>
-              <td
-                style={{
-                  ...termTdStyle,
-                  textAlign: "right",
-                  color: "var(--term-text-muted)",
-                }}
-              >
-                {r.baseline}%
-              </td>
-              <td style={{ ...termTdStyle, textAlign: "right", fontWeight: 700 }}>
-                {signedNumber(liftOverBaseline(r.winPct, r.baseline))}
-              </td>
-            </tr>
-          ))}
-          <tr>
+    <DataTable
+      rows={rows}
+      rowKey={(r) => r.label}
+      columns={[
+        {
+          label: "RESTED TEAM",
+          unit: "WHERE IT PLAYED",
+          cell: (r) => (
+            <>
+              {r.label} <span style={{ color: "var(--term-text-muted)" }}>· {r.note}</span>
+            </>
+          ),
+        },
+        {
+          label: "GAMES",
+          unit: "COUNT",
+          numeric: true,
+          cell: (r) => r.games.toLocaleString(),
+        },
+        {
+          label: "IT WON",
+          unit: "WIN RATE",
+          numeric: true,
+          style: { fontWeight: 700 },
+          cell: (r) => `${r.winPct}%`,
+        },
+        {
+          label: "BASELINE",
+          unit: "SAME SIDE, ALL GAMES",
+          numeric: true,
+          style: { color: "var(--term-text-muted)" },
+          cell: (r) => `${r.baseline}%`,
+        },
+        {
+          label: "VS BASELINE",
+          unit: "PCT POINTS",
+          numeric: true,
+          style: { fontWeight: 700 },
+          cell: (r) => signedNumber(liftOverBaseline(r.winPct, r.baseline)),
+        },
+      ]}
+    >
+      {/* Two rows outside the split: the games with no gap to measure, and the population
+          every rate above is read against. Neither is a rested-team row, so neither belongs
+          in `rows`. */}
+      <tr>
             <td style={termTdStyle}>
               No measurable gap{" "}
               <span style={{ color: "var(--term-text-muted)" }}>· |RA| &lt; 0.5</span>
@@ -197,9 +190,7 @@ function RestRowTable() {
               {REST_SPLIT_BASELINE.homeWinPct}% HOME · {REST_SPLIT_BASELINE.roadWinPct}% ROAD
             </td>
           </tr>
-        </tbody>
-      </table>
-    </div>
+    </DataTable>
   );
 }
 
@@ -212,82 +203,53 @@ function RestRowTable() {
  * switching on. The old sentence was written from a ladder that stopped at 5.
  */
 function RoadLadderTable() {
+  // The unfiltered row is the ladder's own first rung — every rested road game, no gap floor —
+  // so it is a row rather than a hand-written one above the loop.
+  const rungs = [
+    { label: "any", games: RESTED_ON_ROAD.games, winPct: RESTED_ON_ROAD.winPct },
+    ...RESTED_ON_ROAD.ladder.map((r) => ({
+      label: `≥ ${r.gap}`,
+      games: r.games,
+      winPct: r.winPct,
+    })),
+  ];
+
+  // The thin rungs are muted rather than omitted: dropping them is how the claim they refute
+  // survived, and printing them boldly would oversell 26 games.
+  const thin = (r: (typeof rungs)[number]) =>
+    r.games < THIN_SAMPLE_GAMES ? "var(--term-text-muted)" : undefined;
+
   return (
-    <div className="overflow-x-auto">
-      <table className="fc-table mono w-full" style={{ fontSize: 12, borderCollapse: "collapse" }}>
-        <thead>
-          <tr>
-            <th style={termThStyle}>
-              REST GAP
-              <span style={termThUnitStyle}>AT LEAST</span>
-            </th>
-            <th style={{ ...termThStyle, textAlign: "right" }}>
-              GAMES
-              <span style={termThUnitStyle}>COUNT</span>
-            </th>
-            <th style={{ ...termThStyle, textAlign: "right" }}>
-              RESTED ROAD TEAM WON
-              <span style={termThUnitStyle}>WIN RATE</span>
-            </th>
-            <th style={{ ...termThStyle, textAlign: "right" }}>
-              VS {REST_SPLIT_BASELINE.roadWinPct}% BASELINE
-              <span style={termThUnitStyle}>PCT POINTS</span>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td style={termTdStyle}>any</td>
-            <td style={{ ...termTdStyle, textAlign: "right" }}>
-              {RESTED_ON_ROAD.games.toLocaleString()}
-            </td>
-            <td style={{ ...termTdStyle, textAlign: "right", fontWeight: 700 }}>
-              {RESTED_ON_ROAD.winPct}%
-            </td>
-            <td style={{ ...termTdStyle, textAlign: "right" }}>
-              {signedNumber(
-                liftOverBaseline(RESTED_ON_ROAD.winPct, REST_SPLIT_BASELINE.roadWinPct)
-              )}
-            </td>
-          </tr>
-          {RESTED_ON_ROAD.ladder.map((rung) => (
-            <tr key={rung.gap}>
-              <td style={termTdStyle}>≥ {rung.gap}</td>
-              <td
-                style={{
-                  ...termTdStyle,
-                  textAlign: "right",
-                  // The thin rungs are muted rather than omitted: dropping them is how the
-                  // claim they refute survived, and printing them boldly would oversell 26 games.
-                  color: rung.games < THIN_SAMPLE_GAMES ? "var(--term-text-muted)" : undefined,
-                }}
-              >
-                {rung.games.toLocaleString()}
-              </td>
-              <td
-                style={{
-                  ...termTdStyle,
-                  textAlign: "right",
-                  fontWeight: 700,
-                  color: rung.games < THIN_SAMPLE_GAMES ? "var(--term-text-muted)" : undefined,
-                }}
-              >
-                {rung.winPct}%
-              </td>
-              <td
-                style={{
-                  ...termTdStyle,
-                  textAlign: "right",
-                  color: rung.games < THIN_SAMPLE_GAMES ? "var(--term-text-muted)" : undefined,
-                }}
-              >
-                {signedNumber(liftOverBaseline(rung.winPct, REST_SPLIT_BASELINE.roadWinPct))}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+    <DataTable
+      rows={rungs}
+      rowKey={(r) => r.label}
+      columns={[
+        { label: "REST GAP", unit: "AT LEAST", cell: (r) => r.label },
+        {
+          label: "GAMES",
+          unit: "COUNT",
+          numeric: true,
+          cell: (r) => <span style={{ color: thin(r) }}>{r.games.toLocaleString()}</span>,
+        },
+        {
+          label: "RESTED ROAD TEAM WON",
+          unit: "WIN RATE",
+          numeric: true,
+          style: { fontWeight: 700 },
+          cell: (r) => <span style={{ color: thin(r) }}>{r.winPct}%</span>,
+        },
+        {
+          label: `VS ${REST_SPLIT_BASELINE.roadWinPct}% BASELINE`,
+          unit: "PCT POINTS",
+          numeric: true,
+          cell: (r) => (
+            <span style={{ color: thin(r) }}>
+              {signedNumber(liftOverBaseline(r.winPct, REST_SPLIT_BASELINE.roadWinPct))}
+            </span>
+          ),
+        },
+      ]}
+    />
   );
 }
 
@@ -301,38 +263,53 @@ function RoadLadderTable() {
  */
 function RoadEraTable() {
   return (
-    <div className="overflow-x-auto">
-      <table className="fc-table mono w-full" style={{ fontSize: 12, borderCollapse: "collapse" }}>
-        <thead>
-          <tr>
-            <th style={termThStyle}>
-              ERA
-              <span style={termThUnitStyle}>SEASONS</span>
-            </th>
-            <th style={{ ...termThStyle, textAlign: "right" }}>
-              GAMES
-              <span style={termThUnitStyle}>COUNT</span>
-            </th>
-            <th style={{ ...termThStyle, textAlign: "right" }}>
-              RESTED ROAD TEAM WON
-              <span style={termThUnitStyle}>WIN RATE</span>
-            </th>
-            <th style={{ ...termThStyle, textAlign: "right" }}>
-              ROAD BASELINE
-              <span style={termThUnitStyle}>THAT ERA</span>
-            </th>
-            <th style={{ ...termThStyle, textAlign: "right" }}>
-              VS BASELINE
-              <span style={termThUnitStyle}>PCT POINTS</span>
-            </th>
-            <th style={{ ...termThStyle, textAlign: "right" }}>
-              BEST RUNG
-              <span style={termThUnitStyle}>GAP · WIN RATE</span>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {RESTED_ON_ROAD_BY_ERA.map((era) => {
+    <DataTable
+      rows={RESTED_ON_ROAD_BY_ERA}
+      rowKey={(era) => era.label}
+      columns={[
+        {
+          label: "ERA",
+          unit: "SEASONS",
+          cell: (era) => (
+            <>
+              {era.label}{" "}
+              <span style={{ color: "var(--term-text-muted)" }}>· {era.seasons}</span>
+            </>
+          ),
+        },
+        {
+          label: "GAMES",
+          unit: "COUNT",
+          numeric: true,
+          cell: (era) => era.games.toLocaleString(),
+        },
+        {
+          label: "RESTED ROAD TEAM WON",
+          unit: "WIN RATE",
+          numeric: true,
+          style: { fontWeight: 700 },
+          cell: (era) => `${era.winPct}%`,
+        },
+        {
+          label: "ROAD BASELINE",
+          unit: "THAT ERA",
+          numeric: true,
+          style: { color: "var(--term-text-muted)" },
+          cell: (era) => `${era.roadBaselinePct}%`,
+        },
+        {
+          label: "VS BASELINE",
+          unit: "PCT POINTS",
+          numeric: true,
+          style: { fontWeight: 700 },
+          cell: (era) => signedNumber(era.liftPp),
+        },
+        {
+          label: "BEST RUNG",
+          unit: "GAP · WIN RATE",
+          numeric: true,
+          style: { color: "var(--term-text-muted)" },
+          cell: (era) => {
             // The strongest rung whose sample is worth printing. Picking the highest win rate
             // regardless of n would put a 36-game bucket in the most prominent column here.
             const solid = era.ladder.filter((r) => r.games >= THIN_SAMPLE_GAMES);
@@ -340,45 +317,11 @@ function RoadEraTable() {
               (top, r) => (top === null || r.winPct > top.winPct ? r : top),
               null
             );
-            return (
-              <tr key={era.label}>
-                <td style={termTdStyle}>
-                  {era.label}{" "}
-                  <span style={{ color: "var(--term-text-muted)" }}>· {era.seasons}</span>
-                </td>
-                <td style={{ ...termTdStyle, textAlign: "right" }}>
-                  {era.games.toLocaleString()}
-                </td>
-                <td style={{ ...termTdStyle, textAlign: "right", fontWeight: 700 }}>
-                  {era.winPct}%
-                </td>
-                <td
-                  style={{
-                    ...termTdStyle,
-                    textAlign: "right",
-                    color: "var(--term-text-muted)",
-                  }}
-                >
-                  {era.roadBaselinePct}%
-                </td>
-                <td style={{ ...termTdStyle, textAlign: "right", fontWeight: 700 }}>
-                  {signedNumber(era.liftPp)}
-                </td>
-                <td
-                  style={{
-                    ...termTdStyle,
-                    textAlign: "right",
-                    color: "var(--term-text-muted)",
-                  }}
-                >
-                  {best ? `≥ ${best.gap} · ${best.winPct}%` : "—"}
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
-    </div>
+            return best ? `≥ ${best.gap} · ${best.winPct}%` : "—";
+          },
+        },
+      ]}
+    />
   );
 }
 
@@ -606,57 +549,43 @@ direction    = ${K.eastwardMultiplier} eastward, ${K.westwardMultiplier} westwar
           of the model&rsquo;s calls, more than twice any other term, at{" "}
           {ABLATIONS[0].foundWinPct}%.
         </Prose>
-        <div className="overflow-x-auto">
-          <table className="fc-table mono w-full" style={{ fontSize: 12, borderCollapse: "collapse" }}>
-            <thead>
-              <tr>
-                <th style={termThStyle}>TERM</th>
-                <th style={{ ...termThStyle, textAlign: "right" }}>
-                  GAMES ONLY IT FINDS
-                  <span style={termThUnitStyle}>COUNT</span>
-                </th>
-                <th style={{ ...termThStyle, textAlign: "right" }}>
-                  THOSE GAMES
-                  <span style={termThUnitStyle}>WIN RATE</span>
-                </th>
-                <th style={{ ...termThStyle, textAlign: "right" }}>
-                  HEADLINE IF REMOVED
-                  <span style={termThUnitStyle}>PCT POINTS</span>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {ABLATIONS.map((a) => (
-                <tr key={a.term}>
-                  <td style={termTdStyle}>{a.term}</td>
-                  <td
-                    style={{
-                      ...termTdStyle,
-                      textAlign: "right",
-                      fontWeight: 700,
-                      // Weight by what the term contributes, which is the column that
-                      // decides whether it earns its place.
-                      color:
-                        a.edgeLost >= 200 ? "var(--term-text)" : "var(--term-text-muted)",
-                    }}
-                  >
-                    {a.found.toLocaleString()}
-                  </td>
-                  <td style={{ ...termTdStyle, textAlign: "right" }}>{a.foundWinPct}%</td>
-                  <td
-                    style={{
-                      ...termTdStyle,
-                      textAlign: "right",
-                      color: "var(--term-text-muted)",
-                    }}
-                  >
-                    {signedNumber(a.delta)}pp
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <DataTable
+          rows={ABLATIONS}
+          rowKey={(a) => a.term}
+          columns={[
+            { label: "TERM", cell: (a) => a.term },
+            {
+              label: "GAMES ONLY IT FINDS",
+              unit: "COUNT",
+              numeric: true,
+              style: { fontWeight: 700 },
+              cell: (a) => (
+                // Weight by what the term contributes, which is the column that decides
+                // whether it earns its place.
+                <span
+                  style={{
+                    color: a.edgeLost >= 200 ? "var(--term-text)" : "var(--term-text-muted)",
+                  }}
+                >
+                  {a.found.toLocaleString()}
+                </span>
+              ),
+            },
+            {
+              label: "THOSE GAMES",
+              unit: "WIN RATE",
+              numeric: true,
+              cell: (a) => `${a.foundWinPct}%`,
+            },
+            {
+              label: "HEADLINE IF REMOVED",
+              unit: "PCT POINTS",
+              numeric: true,
+              style: { color: "var(--term-text-muted)" },
+              cell: (a) => `${signedNumber(a.delta)}pp`,
+            },
+          ]}
+        />
         <Note>
           The last column is a trap, and it is shown because hiding it would be worse. Travel
           and road segment are the two terms whose removal <em>raises</em>{" "}

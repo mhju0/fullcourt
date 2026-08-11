@@ -1,3 +1,4 @@
+import { Fragment } from "react"
 import type { CSSProperties, HTMLAttributes, ReactNode } from "react"
 import {
   termTdStyle,
@@ -28,13 +29,30 @@ import {
  * badges and links, not plain values.
  */
 
-export type DataColumn<Row> = {
+export type DataColumn<Row, K extends string = string> = {
   /**
-   * The header. A `ReactNode` rather than a string so a sortable column can bring its own
-   * button and arrow — the module does not own sorting, and a column that wants it does not
-   * have to fight for it.
+   * The header. A `ReactNode` rather than a string, so a column whose heading is more than a
+   * word — a link, an abbreviation with a title — does not have to fight for it.
    */
   label: ReactNode
+  /**
+   * Names the field this column sorts by, which is also what makes the header a sort control:
+   * focusable, `aria-sort` announced, Enter/Space as well as click.
+   *
+   * The module renders the control but does not own the state — `sort` and `onSortToggle` come
+   * from the caller, because both sorting tables already hold that state for other reasons
+   * (one feeds it to a `useMemo`, the other ships it to a worker). A module that owned it would
+   * have to be fought rather than used.
+   *
+   * Omit for a column that cannot be sorted: rank, a bar, a derived label.
+   */
+  sortKey?: K
+  /**
+   * Column width, as a CSS length, rendered into a `<colgroup>`. Set it on every column or
+   * none — a partial colgroup is worse than none, because auto layout then distributes the
+   * slack across whatever is left rather than the one column that can use it.
+   */
+  width?: string
   /**
    * The unit, rendered as the quiet sub-label under the header.
    *
@@ -61,8 +79,18 @@ export type DataColumn<Row> = {
   cell: (row: Row, index: number) => ReactNode
   /** Extra classes for both the header cell and the body cells — responsive hiding, mostly. */
   className?: string
-  /** Per-column style escape hatch, merged last. Use sparingly; prefer `numeric`. */
+  /**
+   * Per-cell style escape hatch, merged last. **Body cells only.**
+   *
+   * It used to reach the header too, which was wrong in every one of the twenty-odd places it
+   * was used — all of them mean "how this column's numbers look", never "how its heading
+   * looks". Most leaked harmlessly because `termThStyle` already sets the same colour, font and
+   * weight, so the bug hid; a rank column asking for `fontSize: 10` did not, and shrank its own
+   * heading out of line with the eight beside it.
+   */
   style?: CSSProperties
+  /** Header-cell style, for the rare column whose heading needs something its cells do not. */
+  headStyle?: CSSProperties
   /**
    * Group heading. When any column sets one, the header becomes two rows: the groups span their
    * columns across the top, ungrouped columns get a `rowSpan={2}` cell, and the individual
@@ -71,9 +99,31 @@ export type DataColumn<Row> = {
   group?: string
 }
 
-export type DataTableProps<Row> = {
-  columns: DataColumn<Row>[]
+export type DataTableProps<Row, K extends string = string> = {
+  columns: DataColumn<Row, K>[]
   rows: readonly Row[]
+  /** The column currently sorted, and which way. Required for the sort arrows to mean anything. */
+  sort?: { key: K; dir: 1 | -1 }
+  /**
+   * A sortable header was activated. Gets the column's `sortKey`; the caller decides whether
+   * that flips the direction or moves to a new column.
+   */
+  onSortToggle?: (key: K) => void
+  /**
+   * Pins the header while the body scrolls. For the long tables — 500 players, 200 officials —
+   * where a column heading that scrolls away turns the numbers below it into anonymous digits.
+   */
+  stickyHeader?: boolean
+  /**
+   * Extra `<tr>`s emitted directly after a row's own — the `/players` expansion, where opening
+   * a player unfolds his seasons, a career line, and a note.
+   *
+   * Deliberately narrow: it can add rows but cannot touch the row it follows, so a caller
+   * reaching for it still renders its main row through `columns` like everyone else. The
+   * alternative was letting a caller replace row rendering wholesale, which is the shape that
+   * lets one table quietly drift back out of the module.
+   */
+  rowExtras?: (row: Row, index: number) => ReactNode
   /** Stable key per row. Required — an index key reorders wrongly the moment a table sorts. */
   rowKey: (row: Row, index: number) => string | number
   /**
@@ -113,29 +163,114 @@ export type DataTableProps<Row> = {
 
 /** Right for numbers, left otherwise, unless the column says different. One resolution, used
  *  by the header and the body cell alike so the two cannot disagree. */
-function alignOf<Row>(col: DataColumn<Row>): "left" | "right" | "center" {
+function alignOf<Row, K extends string>(col: DataColumn<Row, K>): "left" | "right" | "center" {
   return col.align ?? (col.numeric ? "right" : "left")
 }
 
-function headerStyle<Row>(col: DataColumn<Row>): CSSProperties {
-  return { ...termThStyle, textAlign: alignOf(col), ...col.style }
-}
-
-export function DataTable<Row>({
+export function DataTable<Row, K extends string = string>({
   columns,
   rows,
   rowKey,
+  sort,
+  onSortToggle,
+  stickyHeader,
+  rowExtras,
   width = "full",
   minWidth,
   rowAttrs,
   children,
   wrapperClassName,
   className,
-}: DataTableProps<Row>) {
+}: DataTableProps<Row, K>) {
   const grouped = columns.some((c) => c.group)
+  const sized = columns.some((c) => c.width)
+
+  const stickyStyle: CSSProperties = stickyHeader
+    ? { position: "sticky", top: 0, zIndex: 2 }
+    : {}
+
+  /**
+   * One header cell, for every branch below. Sorting used to be rendered by each table by
+   * hand, and both hand-written copies attached `onClick` to a bare `<th>` — no role, no
+   * `tabIndex`, no key handler — so neither table could be sorted from a keyboard at all.
+   * Doing it in one place fixes it in both, which is the whole argument for the module.
+   */
+  function Header({ col, rowSpan }: { col: DataColumn<Row, K>; rowSpan?: number }) {
+    const sortable = col.sortKey !== undefined && onSortToggle !== undefined
+    const active = col.sortKey !== undefined && sort?.key === col.sortKey
+    const toggle = () => col.sortKey !== undefined && onSortToggle?.(col.sortKey)
+
+    const content = (
+      <>
+        {col.label}
+        {active ? (sort?.dir === -1 ? " ↓" : " ↑") : ""}
+        {col.unit && <span style={termThUnitStyle}>{col.unit}</span>}
+      </>
+    )
+
+    return (
+      <th
+        scope="col"
+        rowSpan={rowSpan}
+        className={col.className}
+        aria-sort={active ? (sort?.dir === -1 ? "descending" : "ascending") : undefined}
+        style={{
+          ...termThStyle,
+          ...stickyStyle,
+          textAlign: alignOf(col),
+          // A column with a pinned width is the one whose heading must not wrap — the width was
+          // chosen for the numbers below it, not for the label, so wrapping is how a two-word
+          // heading silently doubles the header band's height. Columns without a pinned width
+          // are free to wrap, which is what the prose tables want.
+          ...(col.width ? { whiteSpace: "nowrap" as const } : null),
+          // A sorted column's heading comes forward; the rest stay quiet. Only applied where
+          // sorting exists at all, so a plain table's headers are untouched.
+          ...(onSortToggle
+            ? { color: active ? "var(--term-text)" : "var(--term-text-muted)" }
+            : null),
+          ...col.headStyle,
+        }}
+      >
+        {sortable ? (
+          // A real <button> inside the <th>, not handlers on the <th> itself. The `th` keeps
+          // its implicit `columnheader` role and carries `aria-sort`; the button is what gets
+          // focus, Enter and Space. Putting `role="button"` on the `th` instead — the obvious
+          // shortcut — silently replaces `columnheader`, which is both wrong for the table's
+          // semantics and enough to break a `getByRole("columnheader")` query.
+          <button
+            type="button"
+            onClick={toggle}
+            style={{
+              display: "block",
+              width: "100%",
+              // The padding stays on the `th`, and the button carries none. Moving it in here
+              // would have given the button a bigger hit area, but it also makes the cell
+              // itself measure `padding: 0` — which is the two-rail alignment law broken, and
+              // `e2e/alignment-law.spec.ts` catches it. The cell owns the inset; the button
+              // owns the interaction.
+              padding: 0,
+              margin: 0,
+              font: "inherit",
+              color: "inherit",
+              letterSpacing: "inherit",
+              textTransform: "inherit",
+              textAlign: "inherit",
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+            }}
+          >
+            {content}
+          </button>
+        ) : (
+          content
+        )}
+      </th>
+    )
+  }
 
   // Runs of adjacent columns sharing a group, so a group heading spans exactly its own columns.
-  const groupRuns: { group?: string; span: number; col: DataColumn<Row> }[] = []
+  const groupRuns: { group?: string; span: number; col: DataColumn<Row, K> }[] = []
   for (const col of columns) {
     const last = groupRuns[groupRuns.length - 1]
     if (col.group && last?.group === col.group) last.span += 1
@@ -159,6 +294,13 @@ export function DataTable<Row>({
           ...(width === "numeric" ? { maxWidth: TERM_NUMERIC_TABLE_MAX_WIDTH } : null),
         }}
       >
+        {sized && (
+          <colgroup>
+            {columns.map((col, i) => (
+              <col key={i} style={{ width: col.width }} />
+            ))}
+          </colgroup>
+        )}
         <thead>
           {grouped ? (
             <>
@@ -169,15 +311,12 @@ export function DataTable<Row>({
                       key={`g${i}`}
                       colSpan={span}
                       className={col.className}
-                      style={{ ...termThStyle, textAlign: "center", borderBottom: "none" }}
+                      style={{ ...termThStyle, ...stickyStyle, textAlign: "center", borderBottom: "none" }}
                     >
                       {group}
                     </th>
                   ) : (
-                    <th key={`g${i}`} rowSpan={2} className={col.className} style={headerStyle(col)}>
-                      {col.label}
-                      {col.unit && <span style={termThUnitStyle}>{col.unit}</span>}
-                    </th>
+                    <Header key={`g${i}`} col={col} rowSpan={2} />
                   )
                 )}
               </tr>
@@ -185,39 +324,36 @@ export function DataTable<Row>({
                 {columns
                   .filter((c) => c.group)
                   .map((col, i) => (
-                    <th key={i} className={col.className} style={headerStyle(col)}>
-                      {col.label}
-                      {col.unit && <span style={termThUnitStyle}>{col.unit}</span>}
-                    </th>
+                    <Header key={i} col={col} />
                   ))}
               </tr>
             </>
           ) : (
             <tr>
               {columns.map((col, i) => (
-                <th key={i} className={col.className} style={headerStyle(col)}>
-                  {col.label}
-                  {col.unit && <span style={termThUnitStyle}>{col.unit}</span>}
-                </th>
+                <Header key={i} col={col} />
               ))}
             </tr>
           )}
         </thead>
         <tbody>
           {rows.map((row, i) => (
-            <tr key={rowKey(row, i)} {...rowAttrs?.(row, i)}>
-              {columns.map((col, c) => (
-                <td
-                  key={c}
-                  className={[col.className, col.numeric ? "tabular-nums" : null]
-                    .filter(Boolean)
-                    .join(" ")}
-                  style={{ ...termTdStyle, textAlign: alignOf(col), ...col.style }}
-                >
-                  {col.cell(row, i)}
-                </td>
-              ))}
-            </tr>
+            <Fragment key={rowKey(row, i)}>
+              <tr {...rowAttrs?.(row, i)}>
+                {columns.map((col, c) => (
+                  <td
+                    key={c}
+                    className={[col.className, col.numeric ? "tabular-nums" : null]
+                      .filter(Boolean)
+                      .join(" ")}
+                    style={{ ...termTdStyle, textAlign: alignOf(col), ...col.style }}
+                  >
+                    {col.cell(row, i)}
+                  </td>
+                ))}
+              </tr>
+              {rowExtras?.(row, i)}
+            </Fragment>
           ))}
           {children}
         </tbody>

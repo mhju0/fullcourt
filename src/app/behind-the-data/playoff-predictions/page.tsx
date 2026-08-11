@@ -20,7 +20,8 @@ import {
   PLAYOFF_ROUND_SPLIT,
   PLAYOFF_ROUNDS_TWO_PLUS_RECORD,
 } from "@/lib/playoff-rest-facts";
-import { termTdStyle, termThStyle, termThUnitStyle } from "@/lib/terminal-styles";
+import { termTdStyle } from "@/lib/terminal-styles";
+import { DataTable } from "@/components/ui/data-table";
 import { signedNumber } from "@/lib/signed-number";
 
 export const metadata: Metadata = {
@@ -102,33 +103,34 @@ export default function PlayoffPredictionsMethodPage() {
       </Section>
 
       <Section label="THE FEATURES" descriptor={`${FEATURES.length} INPUTS · BY WEIGHT`}>
-        <div className="overflow-x-auto">
-          <table className="fc-table mono w-full" style={{ fontSize: 12, borderCollapse: "collapse" }}>
-            <thead>
-              <tr>
-                <th style={termThStyle}>FEATURE</th>
-                <th style={termThStyle}>
-                  WEIGHT
-                  <span style={termThUnitStyle}>LOG-ODDS PER UNIT</span>
-                </th>
-                <th style={termThStyle}>WHAT IT IS</th>
-                <th style={termThStyle}>NOTE</th>
-              </tr>
-            </thead>
-            <tbody>
-              {FEATURES.map((f) => (
-                <tr key={f.name}>
-                  <td style={{ ...termTdStyle, fontWeight: 700, whiteSpace: "nowrap" }}>{f.name}</td>
-                  <td style={{ ...termTdStyle, fontWeight: 700, whiteSpace: "nowrap" }} className="tabular-nums">
-                    {signedNumber(f.weight, 2)}
-                  </td>
-                  <td style={termTdStyle}>{f.what}</td>
-                  <td style={{ ...termTdStyle, color: "var(--term-text-muted)" }}>{f.why}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <DataTable
+          rows={FEATURES}
+          rowKey={(f) => f.name}
+          columns={[
+            {
+              label: "FEATURE",
+              className: "whitespace-nowrap",
+              style: { fontWeight: 700 },
+              cell: (f) => f.name,
+            },
+            {
+              label: "WEIGHT",
+              unit: "LOG-ODDS PER UNIT",
+              // Left, not right: the weights are read against each other as a list, and the
+              // column sits between two prose columns rather than among numbers.
+              align: "left",
+              className: "whitespace-nowrap tabular-nums",
+              style: { fontWeight: 700 },
+              cell: (f) => signedNumber(f.weight, 2),
+            },
+            { label: "WHAT IT IS", cell: (f) => f.what },
+            {
+              label: "NOTE",
+              style: { color: "var(--term-text-muted)" },
+              cell: (f) => f.why,
+            },
+          ]}
+        />
         <Note>
           Weights are standardized logistic coefficients, so they are comparable to each other
           directly. All four are positive: every dimension of home-court advantage pushes the
@@ -159,40 +161,48 @@ export default function PlayoffPredictionsMethodPage() {
           was decided by two other teams. So hold your own last round fixed at a quick close, and
           let only their side vary.
         </Prose>
-        <div className="overflow-x-auto">
-          <table className="fc-table mono w-full" style={{ fontSize: 12, borderCollapse: "collapse" }}>
-            <thead>
-              <tr>
-                <th style={termThStyle}>THEIR LAST ROUND</th>
-                <th style={termThStyle}>SERIES</th>
-                <th style={termThStyle}>
-                  YOU WON THE SERIES
-                  <span style={termThUnitStyle}>%</span>
-                </th>
-                <th style={termThStyle}>
-                  YOUR RECORD EDGE
-                  <span style={termThUnitStyle}>MEAN WIN% DIFF</span>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td style={{ ...termTdStyle, fontWeight: 700, whiteSpace: "nowrap" }}>They closed it early</td>
-                <td style={termTdStyle} className="tabular-nums">{PLAYOFF_GRIND_EXOGENOUS.oppClosedEarly.n}</td>
-                <td style={termTdStyle} className="tabular-nums">{PLAYOFF_GRIND_EXOGENOUS.oppClosedEarly.winPct.toFixed(1)}</td>
-                <td style={termTdStyle} className="tabular-nums">{PLAYOFF_GRIND_EXOGENOUS.oppClosedEarly.meanWinPctDiff.toFixed(3)}</td>
-              </tr>
-              <tr style={{ borderTop: "1px solid var(--term-border)" }}>
-                <td style={{ ...termTdStyle, fontWeight: 700, whiteSpace: "nowrap" }}>They went the distance</td>
-                <td style={termTdStyle} className="tabular-nums">{PLAYOFF_GRIND_EXOGENOUS.oppWentLong.n}</td>
-                <td style={{ ...termTdStyle, color: "var(--term-blue)", fontWeight: 700 }} className="tabular-nums">
-                  {PLAYOFF_GRIND_EXOGENOUS.oppWentLong.winPct.toFixed(1)}
-                </td>
-                <td style={termTdStyle} className="tabular-nums">{PLAYOFF_GRIND_EXOGENOUS.oppWentLong.meanWinPctDiff.toFixed(3)}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+        <DataTable
+          rows={[
+            { label: "They closed it early", ...PLAYOFF_GRIND_EXOGENOUS.oppClosedEarly },
+            // The row the section exists to show, so its rate is the one that carries colour.
+            { label: "They went the distance", ...PLAYOFF_GRIND_EXOGENOUS.oppWentLong, lead: true },
+          ]}
+          rowKey={(r) => r.label}
+          rowAttrs={(_r, i) =>
+            i === 1 ? { style: { borderTop: "1px solid var(--term-border)" } } : {}
+          }
+          columns={[
+            {
+              label: "THEIR LAST ROUND",
+              className: "whitespace-nowrap",
+              style: { fontWeight: 700 },
+              cell: (r) => r.label,
+            },
+            // Left-aligned, as they were: this table's numbers are two rows to compare against
+            // each other, not a column to scan down.
+            { label: "SERIES", className: "tabular-nums", cell: (r) => r.n },
+            {
+              label: "YOU WON THE SERIES",
+              unit: "%",
+              className: "tabular-nums",
+              cell: (r) => (
+                <span
+                  style={
+                    "lead" in r ? { color: "var(--term-blue)", fontWeight: 700 } : undefined
+                  }
+                >
+                  {r.winPct.toFixed(1)}
+                </span>
+              ),
+            },
+            {
+              label: "YOUR RECORD EDGE",
+              unit: "MEAN WIN% DIFF",
+              className: "tabular-nums",
+              cell: (r) => r.meanWinPctDiff.toFixed(3),
+            },
+          ]}
+        />
         <Prose>
           {(
             PLAYOFF_GRIND_EXOGENOUS.oppWentLong.winPct -
@@ -228,29 +238,28 @@ export default function PlayoffPredictionsMethodPage() {
           The same thing counted a second way, by the layoff into Game 1 rather than by the
           previous round&rsquo;s length — rounds 2+:
         </Prose>
-        <div className="overflow-x-auto">
-          <table className="fc-table mono w-full" style={{ fontSize: 12, borderCollapse: "collapse" }}>
-            <thead>
-              <tr>
-                <th style={termThStyle}>REST INTO GAME 1</th>
-                <th style={termThStyle}>SERIES</th>
-                <th style={termThStyle}>
-                  WON THE SERIES
-                  <span style={termThUnitStyle}>%</span>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {PLAYOFF_ENTRY_REST_BUCKETS.map((b, i) => (
-                <tr key={b.label} style={i > 0 ? { borderTop: "1px solid var(--term-border)" } : undefined}>
-                  <td style={{ ...termTdStyle, fontWeight: 700, whiteSpace: "nowrap" }}>{b.label}</td>
-                  <td style={termTdStyle} className="tabular-nums">{b.n}</td>
-                  <td style={termTdStyle} className="tabular-nums">{b.winPct.toFixed(1)}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <DataTable
+          rows={PLAYOFF_ENTRY_REST_BUCKETS}
+          rowKey={(b) => b.label}
+          rowAttrs={(_b, i) =>
+            i > 0 ? { style: { borderTop: "1px solid var(--term-border)" } } : {}
+          }
+          columns={[
+            {
+              label: "REST INTO GAME 1",
+              className: "whitespace-nowrap",
+              style: { fontWeight: 700 },
+              cell: (b) => b.label,
+            },
+            { label: "SERIES", className: "tabular-nums", cell: (b) => b.n },
+            {
+              label: "WON THE SERIES",
+              unit: "%",
+              className: "tabular-nums",
+              cell: (b) => b.winPct.toFixed(1),
+            },
+          ]}
+        />
         <Note>
           <strong>What we cannot tell you:</strong>{" "}
           whether it is really fatigue. A team that
@@ -278,50 +287,52 @@ export default function PlayoffPredictionsMethodPage() {
           <strong>materially better-calibrated probabilities</strong> than the base rate — it
           knows the difference between a lopsided matchup and a near coin flip.
         </Prose>
-        <div className="overflow-x-auto">
-          <table className="fc-table mono w-full" style={{ fontSize: 12, borderCollapse: "collapse" }}>
-            <thead>
-              <tr>
-                <th style={termThStyle}>METRIC</th>
-                {/* No single unit fits: the rows are log loss, a Brier score and a percentage,
-                    so the scale is named by each row's own METRIC cell rather than up here. */}
-                <th style={termThStyle}>
-                  MODEL
-                  <span style={termThUnitStyle}>IN THE METRIC AT LEFT</span>
-                </th>
-                <th style={termThStyle}>
-                  BASE RATE
-                  <span style={termThUnitStyle}>IN THE METRIC AT LEFT</span>
-                </th>
-                <th style={termThStyle}>VERDICT</th>
-              </tr>
-            </thead>
-            <tbody>
-              {PLAYOFF_MODEL_CALIBRATION.map((m) => (
-                <tr key={m.key}>
-                  <td style={{ ...termTdStyle, fontWeight: 700, whiteSpace: "nowrap" }}>{m.label}</td>
-                  <td style={termTdStyle} className="tabular-nums">{m.model.toFixed(4)}</td>
-                  <td style={termTdStyle} className="tabular-nums">{m.baseline.toFixed(4)}</td>
-                  <td style={{ ...termTdStyle, color: "var(--term-blue)", fontWeight: 700 }}>
-                    {m.improvementPct}% BETTER
-                  </td>
-                </tr>
-              ))}
-              <tr>
-                <td style={{ ...termTdStyle, fontWeight: 700, whiteSpace: "nowrap" }}>ACCURACY</td>
-                <td style={termTdStyle} className="tabular-nums">
-                  {(PLAYOFF_MODEL_ACCURACY.model * 100).toFixed(1)}%
-                </td>
-                <td style={termTdStyle} className="tabular-nums">
-                  {(PLAYOFF_MODEL_ACCURACY.baseline * 100).toFixed(1)}%
-                </td>
-                <td style={{ ...termTdStyle, color: "var(--term-text-muted)", fontWeight: 700 }}>
-                  NO REAL EDGE
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+        <DataTable
+          rows={PLAYOFF_MODEL_CALIBRATION}
+          rowKey={(m) => m.key}
+          columns={[
+            {
+              label: "METRIC",
+              className: "whitespace-nowrap",
+              style: { fontWeight: 700 },
+              cell: (m) => m.label,
+            },
+            // No single unit fits: the rows are log loss, a Brier score and a percentage, so
+            // the scale is named by each row's own METRIC cell rather than up here.
+            {
+              label: "MODEL",
+              unit: "IN THE METRIC AT LEFT",
+              className: "tabular-nums",
+              cell: (m) => m.model.toFixed(4),
+            },
+            {
+              label: "BASE RATE",
+              unit: "IN THE METRIC AT LEFT",
+              className: "tabular-nums",
+              cell: (m) => m.baseline.toFixed(4),
+            },
+            {
+              label: "VERDICT",
+              style: { color: "var(--term-blue)", fontWeight: 700 },
+              cell: (m) => `${m.improvementPct}% BETTER`,
+            },
+          ]}
+        >
+          {/* Accuracy is the half of the result that is not a win, so it sits below the three
+              calibration rows rather than among them — and its verdict is muted, not blue. */}
+          <tr>
+            <td style={{ ...termTdStyle, fontWeight: 700, whiteSpace: "nowrap" }}>ACCURACY</td>
+            <td style={termTdStyle} className="tabular-nums">
+              {(PLAYOFF_MODEL_ACCURACY.model * 100).toFixed(1)}%
+            </td>
+            <td style={termTdStyle} className="tabular-nums">
+              {(PLAYOFF_MODEL_ACCURACY.baseline * 100).toFixed(1)}%
+            </td>
+            <td style={{ ...termTdStyle, color: "var(--term-text-muted)", fontWeight: 700 }}>
+              NO REAL EDGE
+            </td>
+          </tr>
+        </DataTable>
         <Prose>
           Log loss and Brier score are both lower-is-better measures of whether a stated
           probability is honest: a model that says 90% and is right nine times in ten scores
@@ -353,52 +364,68 @@ export default function PlayoffPredictionsMethodPage() {
           down by — so the model knows nothing the always-home-court rule does not, and loses
           to it. From the second round on there is a grind to read, and it wins there.
         </Prose>
-        <div className="overflow-x-auto">
-          <table className="fc-table mono w-full" style={{ fontSize: 12, borderCollapse: "collapse" }}>
-            <thead>
-              <tr>
-                <th style={termThStyle}>ROUNDS</th>
-                <th style={termThStyle}>SERIES</th>
-                <th style={termThStyle}>
-                  MODEL
-                  <span style={termThUnitStyle}>ACCURACY %</span>
-                </th>
-                <th style={termThStyle}>
-                  ALWAYS HOME COURT
-                  <span style={termThUnitStyle}>ACCURACY %</span>
-                </th>
-                <th style={termThStyle}>
-                  LOG LOSS
-                  <span style={termThUnitStyle}>MODEL VS BASELINE</span>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td style={{ ...termTdStyle, fontWeight: 700, whiteSpace: "nowrap" }}>Second round onward</td>
-                <td style={termTdStyle} className="tabular-nums">{PLAYOFF_ROUND_SPLIT.roundsTwoPlus.n}</td>
-                <td style={{ ...termTdStyle, color: "var(--term-blue)", fontWeight: 700 }} className="tabular-nums">
-                  {PLAYOFF_ROUND_SPLIT.roundsTwoPlus.model.toFixed(1)}
-                </td>
-                <td style={termTdStyle} className="tabular-nums">{PLAYOFF_ROUND_SPLIT.roundsTwoPlus.baseline.toFixed(1)}</td>
-                <td style={termTdStyle} className="tabular-nums">
-                  {PLAYOFF_ROUND_SPLIT.roundsTwoPlus.logLoss.toFixed(4)} vs {PLAYOFF_ROUND_SPLIT.roundsTwoPlus.baselineLogLoss.toFixed(4)}
-                </td>
-              </tr>
-              <tr style={{ borderTop: "1px solid var(--term-border)" }}>
-                <td style={{ ...termTdStyle, fontWeight: 700, whiteSpace: "nowrap" }}>First round</td>
-                <td style={termTdStyle} className="tabular-nums">{PLAYOFF_ROUND_SPLIT.roundOne.n}</td>
-                <td style={termTdStyle} className="tabular-nums">{PLAYOFF_ROUND_SPLIT.roundOne.model.toFixed(1)}</td>
-                <td style={{ ...termTdStyle, fontWeight: 700 }} className="tabular-nums">
-                  {PLAYOFF_ROUND_SPLIT.roundOne.baseline.toFixed(1)}
-                </td>
-                <td style={termTdStyle} className="tabular-nums">
-                  {PLAYOFF_ROUND_SPLIT.roundOne.logLoss.toFixed(4)} vs {PLAYOFF_ROUND_SPLIT.roundOne.baselineLogLoss.toFixed(4)}
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+        <DataTable
+          // Each row emphasises whichever of the two accuracy columns actually won it — blue
+          // for the model, plain bold for the always-home-court rule. Naming the winner is
+          // what makes the split legible: the model wins from round two, and loses round one.
+          rows={[
+            {
+              label: "Second round onward",
+              ...PLAYOFF_ROUND_SPLIT.roundsTwoPlus,
+              winner: "model" as const,
+            },
+            {
+              label: "First round",
+              ...PLAYOFF_ROUND_SPLIT.roundOne,
+              winner: "baseline" as const,
+            },
+          ]}
+          rowKey={(r) => r.label}
+          rowAttrs={(_r, i) =>
+            i === 1 ? { style: { borderTop: "1px solid var(--term-border)" } } : {}
+          }
+          columns={[
+            {
+              label: "ROUNDS",
+              className: "whitespace-nowrap",
+              style: { fontWeight: 700 },
+              cell: (r) => r.label,
+            },
+            { label: "SERIES", className: "tabular-nums", cell: (r) => r.n },
+            {
+              label: "MODEL",
+              unit: "ACCURACY %",
+              className: "tabular-nums",
+              cell: (r) => (
+                <span
+                  style={
+                    r.winner === "model"
+                      ? { color: "var(--term-blue)", fontWeight: 700 }
+                      : undefined
+                  }
+                >
+                  {r.model.toFixed(1)}
+                </span>
+              ),
+            },
+            {
+              label: "ALWAYS HOME COURT",
+              unit: "ACCURACY %",
+              className: "tabular-nums",
+              cell: (r) => (
+                <span style={r.winner === "baseline" ? { fontWeight: 700 } : undefined}>
+                  {r.baseline.toFixed(1)}
+                </span>
+              ),
+            },
+            {
+              label: "LOG LOSS",
+              unit: "MODEL VS BASELINE",
+              className: "tabular-nums",
+              cell: (r) => `${r.logLoss.toFixed(4)} vs ${r.baselineLogLoss.toFixed(4)}`,
+            },
+          ]}
+        />
         <Note>
           {PLAYOFF_ROUND_SPLIT.roundsTwoPlus.n} series is not many, so one pooled number is not
           proof. Season by season, from the second round on, the model beat the always-home-court

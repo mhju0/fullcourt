@@ -10,36 +10,113 @@ import {
   type RefereeFoulStyle,
   type RefereeStyleRow,
 } from "@/lib/referee-foul-style"
-import { termCardStyle, termTdStyle, termThStyle, termThUnitStyle } from "@/lib/terminal-styles"
+import { termCardStyle } from "@/lib/terminal-styles"
 import { signedNumber } from "@/lib/signed-number"
+import { DataTable, type DataColumn } from "@/components/ui/data-table"
 
 type SortKey = keyof RefereeStyleRow
-
-const COLUMNS: {
-  key: SortKey | null
-  label: string
-  unit?: string
-  align?: "right"
-  width: string
-}[] = [
-  { key: null, label: "#", align: "right", width: "44px" },
-  { key: "name", label: "Official", width: "auto" },
-  { key: "chiefGames", label: "As chief", unit: "games", align: "right", width: "84px" },
-  { key: "games", label: "G", unit: "games", align: "right", width: "64px" },
-  { key: "fouls", label: "Fouls", unit: "vs league avg", align: "right", width: "96px" },
-  ...FOUL_COLUMNS.map((c) => ({
-    key: c.key as SortKey,
-    label: c.label,
-    unit: "vs league avg",
-    align: "right" as const,
-    width: "112px",
-  })),
-]
 
 /** Blue above the league mix, red below, muted when the gap is inside noise. */
 function toneFor(value: number, z: number): string {
   if (!isNotable(z)) return "var(--term-text-muted)"
   return value > 0 ? "var(--term-blue)" : "var(--term-red)"
+}
+
+/** A relative-to-league cell: emphasis carries the scan, tone carries the direction. */
+function relStyle(value: number, z: number) {
+  return { color: toneFor(value, z), fontWeight: isNotable(z) ? 700 : 400 }
+}
+
+function columnsFor(data: RefereeFoulStyle): DataColumn<RefereeStyleRow, SortKey>[] {
+  return [
+    {
+      label: "#",
+      align: "right",
+      width: "44px",
+      style: { fontSize: 10, color: "var(--term-text-muted)" },
+      cell: (_row, i) => i + 1,
+    },
+    {
+      label: "Official",
+      sortKey: "name",
+      width: "auto",
+      style: { fontWeight: 600 },
+      cell: (row) => (
+        <>
+          <span className="whitespace-nowrap">{row.name}</span>
+          {row.chiefGames > 0 && (
+            <span
+              title="Works as crew chief"
+              style={{
+                marginLeft: 6,
+                fontSize: 8,
+                fontWeight: 700,
+                color: "var(--term-blue)",
+                border: "1px solid var(--term-blue)",
+                borderRadius: "var(--term-radius-sm)",
+                padding: "0 4px",
+              }}
+            >
+              CC
+            </span>
+          )}
+        </>
+      ),
+    },
+    {
+      label: "As chief",
+      unit: "games",
+      sortKey: "chiefGames",
+      numeric: true,
+      width: "84px",
+      style: { color: "var(--term-text-muted)" },
+      cell: (row) => (row.chiefGames > 0 ? row.chiefGames : "—"),
+    },
+    {
+      label: "G",
+      unit: "games",
+      sortKey: "games",
+      numeric: true,
+      width: "64px",
+      cell: (row) => row.games,
+    },
+    {
+      // Relative like every column beside it. The underlying figure is a count of fouls per
+      // game rather than a share, so it is scaled against the league's own fouls per game
+      // instead of a share baseline.
+      label: "Fouls",
+      unit: "vs league avg",
+      sortKey: "fouls",
+      numeric: true,
+      width: "96px",
+      cell: (row) => (
+        <span style={relStyle(row.fouls, row.foulsZ)}>
+          {signedNumber(relativePct(row.fouls, data.foulsPerGame))}%
+        </span>
+      ),
+    },
+    ...FOUL_COLUMNS.map((c): DataColumn<RefereeStyleRow, SortKey> => ({
+      label: c.label,
+      unit: "vs league avg",
+      sortKey: c.key as SortKey,
+      numeric: true,
+      width: "112px",
+      // No rank here, in the cell or in a tooltip. Printed inline it put two competing
+      // figures in every cell; hidden behind a native `title` it took a second of motionless
+      // hover to appear and nothing signalled it existed, so it was a feature only its author
+      // could find. Sorting a column answers the same question in one click. Emphasis alone
+      // carries the scan.
+      cell: (row) => {
+        const v = row[c.key]
+        const z = row[`${c.key}Z` as keyof RefereeStyleRow] as number
+        return (
+          <span style={relStyle(v, z)}>
+            {signedNumber(relativePct(v, data.leagueShares[c.key]))}%
+          </span>
+        )
+      },
+    })),
+  ]
 }
 
 export function RefereeStyleContent({ data }: { data: RefereeFoulStyle }) {
@@ -50,6 +127,8 @@ export function RefereeStyleContent({ data }: { data: RefereeFoulStyle }) {
     const base = publishable(data.officials).filter((r) => (chiefsOnly ? r.chiefGames > 0 : true))
     return sortRows(base, sort.key, sort.dir)
   }, [data.officials, sort, chiefsOnly])
+
+  const columns = useMemo(() => columnsFor(data), [data])
 
   const chiefCount = useMemo(
     () => publishable(data.officials).filter((r) => r.chiefGames > 0).length,
@@ -78,118 +157,18 @@ export function RefereeStyleContent({ data }: { data: RefereeFoulStyle }) {
         </span>
       </div>
 
-      <div className="overflow-x-auto" style={{ ...termCardStyle, padding: 0 }}>
-        <table className="fc-table mono w-full table-fixed border-collapse text-[12px]" style={{ minWidth: 940 }}>
-          <colgroup>
-            {COLUMNS.map((c) => (
-              <col key={c.label} style={{ width: c.width }} />
-            ))}
-          </colgroup>
-          <thead>
-            <tr>
-              {COLUMNS.map((col) => {
-                const active = col.key !== null && sort.key === col.key
-                return (
-                  <th
-                    key={col.label}
-                    scope="col"
-                    aria-sort={active ? (sort.dir === -1 ? "descending" : "ascending") : undefined}
-                    onClick={col.key ? () => sortBy(col.key as SortKey) : undefined}
-                    style={{
-                      ...termThStyle,
-                      textAlign: col.align ?? "left",
-                      whiteSpace: "nowrap",
-                      cursor: col.key ? "pointer" : "default",
-                      color: active ? "var(--term-text)" : "var(--term-text-muted)",
-                    }}
-                  >
-                    {col.label}
-                    {active ? (sort.dir === -1 ? " ↓" : " ↑") : ""}
-                    {col.unit && <span style={termThUnitStyle}>{col.unit}</span>}
-                  </th>
-                )
-              })}
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((row, i) => (
-              <tr key={row.name} data-testid="referee-style-row">
-                <td style={{ ...termTdStyle, textAlign: "right", fontSize: 10, color: "var(--term-text-muted)" }}>
-                  {i + 1}
-                </td>
-                <td style={{ ...termTdStyle, fontWeight: 600 }}>
-                  <span className="whitespace-nowrap">{row.name}</span>
-                  {row.chiefGames > 0 && (
-                    <span
-                      title="Works as crew chief"
-                      style={{
-                        marginLeft: 6,
-                        fontSize: 8,
-                        fontWeight: 700,
-                        color: "var(--term-blue)",
-                        border: "1px solid var(--term-blue)",
-                        borderRadius: "var(--term-radius-sm)",
-                        padding: "0 4px",
-                      }}
-                    >
-                      CC
-                    </span>
-                  )}
-                </td>
-                <td
-                  className="tabular-nums"
-                  style={{ ...termTdStyle, textAlign: "right", color: "var(--term-text-muted)" }}
-                >
-                  {row.chiefGames > 0 ? row.chiefGames : "—"}
-                </td>
-                <td className="tabular-nums" style={{ ...termTdStyle, textAlign: "right" }}>
-                  {row.games}
-                </td>
-                {/* Relative like every column beside it. The underlying figure is a count of
-                    fouls per game rather than a share, so it is scaled against the league's
-                    own fouls per game instead of a share baseline. */}
-                <td
-                  className="tabular-nums"
-                  style={{
-                    ...termTdStyle,
-                    textAlign: "right",
-                    color: toneFor(row.fouls, row.foulsZ),
-                    fontWeight: isNotable(row.foulsZ) ? 700 : 400,
-                  }}
-                >
-                  {(() => {
-                    const rel = relativePct(row.fouls, data.foulsPerGame)
-                    return `${signedNumber(rel)}%`
-                  })()}
-                </td>
-                {FOUL_COLUMNS.map((c) => {
-                  const v = row[c.key]
-                  const z = row[`${c.key}Z` as keyof RefereeStyleRow] as number
-                  const rel = relativePct(v, data.leagueShares[c.key])
-                  return (
-                    // No rank here, in the cell or in a tooltip. Printed inline it put two
-                    // competing figures in every cell; hidden behind a native `title` it took a
-                    // second of motionless hover to appear and nothing signalled it existed, so
-                    // it was a feature only its author could find. Sorting a column answers the
-                    // same question in one click. Emphasis alone carries the scan.
-                    <td
-                      key={c.key}
-                      className="tabular-nums"
-                      style={{
-                        ...termTdStyle,
-                        textAlign: "right",
-                        color: toneFor(v, z),
-                        fontWeight: isNotable(z) ? 700 : 400,
-                      }}
-                    >
-                      {signedNumber(rel)}%
-                    </td>
-                  )
-                })}
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <div style={{ ...termCardStyle, padding: 0 }}>
+        <DataTable
+          wrapperClassName="overflow-x-auto"
+          className="table-fixed text-[12px]"
+          minWidth={940}
+          columns={columns}
+          rows={rows}
+          rowKey={(row) => row.name}
+          rowAttrs={() => ({ "data-testid": "referee-style-row" })}
+          sort={sort}
+          onSortToggle={sortBy}
+        />
       </div>
 
       <p className="mono" style={{ fontSize: 11, color: "var(--term-text-muted)", letterSpacing: "0.04em" }}>
