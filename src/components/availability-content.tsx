@@ -7,6 +7,7 @@ import {
   AVAILABILITY_SCHEDULE_HOLDS_UP,
 } from "@/lib/availability-facts"
 import { termCardStyle, WIDTH } from "@/lib/terminal-styles"
+import { DataTable } from "@/components/ui/data-table"
 
 const BODY: React.CSSProperties = {
   fontSize: 15,
@@ -292,56 +293,35 @@ function ScheduleHoldsUpSection() {
           under {Math.ceil(worst)}%.
         </p>
 
-        <div className="mt-4 overflow-x-auto">
-          <table className="fc-table w-full" style={{ borderCollapse: "collapse", minWidth: 420 }}>
-            <thead>
-              <tr>
-                {["", "SCHEDULE ONLY (PTS)", "ABSENCE HELD FIXED (PTS)", "SHIFT (%)"].map((h, i) => (
-                  <th
-                    key={h}
-                    className="mono"
-                    style={{
-                      fontSize: 10,
-                      letterSpacing: "0.06em",
-                      color: "var(--term-text-muted)",
-                      fontWeight: 700,
-                      textAlign: i === 0 ? "left" : "right",
-                      padding: "0 0 8px",
-                      borderBottom: "1px solid var(--term-border)",
-                    }}
-                  >
-                    {h}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map((r) => (
-                <tr key={r.label}>
-                  <td style={{ fontSize: 14, color: "var(--term-text)", padding: "12px 0" }}>
-                    {r.label}
-                  </td>
-                  {[r.scheduleOnly.toFixed(3), r.absenceControlled.toFixed(3), r.shiftPct.toFixed(1)].map(
-                    (v, i) => (
-                      <td
-                        key={i}
-                        className="mono tabular-nums"
-                        style={{
-                          fontSize: 14,
-                          color: "var(--term-text-muted)",
-                          textAlign: "right",
-                          padding: "12px 0 12px 16px",
-                        }}
-                      >
-                        {v}
-                      </td>
-                    )
-                  )}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        {/* Ported to DataTable on 2026-08-11. It carried `fc-table` but overrode every style
+            that class and `termThStyle`/`termTdStyle` supply — 10px headers with no band,
+            14px body cells, its own padding — so it opted into the convention and then opted
+            out of all of it, which meant it looked like nothing else on the site while still
+            picking up whatever `.fc-table` changed underneath it. It now reads as one of the
+            twenty-one. The two units moved out of the labels and into the unit slot, which is
+            the house rule every other numeric column already follows. */}
+        <DataTable
+          wrapperClassName="mt-4 overflow-x-auto"
+          minWidth={420}
+          rows={rows}
+          rowKey={(r) => r.label}
+          columns={[
+            { label: "", cell: (r) => r.label },
+            {
+              label: "SCHEDULE ONLY",
+              unit: "PTS",
+              numeric: true,
+              cell: (r) => r.scheduleOnly.toFixed(3),
+            },
+            {
+              label: "ABSENCE HELD FIXED",
+              unit: "PTS",
+              numeric: true,
+              cell: (r) => r.absenceControlled.toFixed(3),
+            },
+            { label: "SHIFT", unit: "%", numeric: true, cell: (r) => r.shiftPct.toFixed(1) },
+          ]}
+        />
       </div>
     </section>
   )

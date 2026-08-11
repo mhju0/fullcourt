@@ -27,7 +27,7 @@ import type { ExploreResult } from "@/lib/explore-games-machine"
 import { apiFetcher } from "@/lib/fetcher"
 import { NBA_SEASONS } from "@/lib/nba-season"
 import { homeWinRateWhenVisitorRested } from "@/lib/rest-advantage-display"
-import { MONO_FONT_STACK, termCardStyle, termDashedEmptyStyle, termInsetStyle } from "@/lib/terminal-styles"
+import { MONO_FONT_STACK, termCardStyle, termDashedEmptyStyle, termInsetStyle, termTdStyle } from "@/lib/terminal-styles"
 import { DataTable } from "@/components/ui/data-table"
 import type { AnalysisResponse } from "@/types"
 import { signedNumber } from "@/lib/signed-number"
@@ -53,12 +53,6 @@ const exploreSelectStyle: React.CSSProperties = {
   fontFamily: MONO_FONT_STACK,
   color: "var(--term-text)",
   letterSpacing: "0.04em",
-}
-
-const exploreTdBaseStyle: React.CSSProperties = {
-  padding: "8px 12px",
-  borderBottom: "1px solid var(--term-border)",
-  fontSize: 12,
 }
 
 // ─── Section divider ──────────────────────────────────────────────
@@ -502,9 +496,11 @@ function ExploreGames({
       </div>
 
       {/* Table */}
-      {/* Table. `exploreTdBaseStyle` used to live here as a local copy of the shared cell
-          style — same padding, same rule, same size — which is what a convention with no module
-          behind it produces. */}
+      {/* Table. A local `exploreTdBaseStyle` const used to sit above this file holding
+          `padding: 8px 12px`, a bottom rule and `fontSize: 12` — byte-for-byte what `.fc-table`
+          and `termTdStyle` already gave every other table. A private copy of the shared style
+          is what a convention with no module behind it produces; the state rows below use the
+          shared one. */}
       <DataTable
         wrapperClassName="mt-3 overflow-x-auto"
         rows={loading || error || results.length === 0 ? [] : results}
@@ -608,7 +604,7 @@ function ExploreGames({
         {loading ? (
           Array.from({ length: 5 }).map((_, i) => (
             <tr key={i}>
-              <td colSpan={7} style={{ ...exploreTdBaseStyle, padding: 12 }}>
+              <td colSpan={7} style={{ ...termTdStyle, padding: 12 }}>
                 <Skeleton
                   className="h-4 w-full bg-[var(--term-surface-2)]"
                   style={{ borderRadius: "var(--term-radius-sm)" }}
@@ -618,13 +614,13 @@ function ExploreGames({
           ))
         ) : error ? (
           <tr>
-            <td colSpan={7} style={{ ...exploreTdBaseStyle, textAlign: "center", color: "var(--term-red)", padding: 24 }}>
+            <td colSpan={7} style={{ ...termTdStyle, textAlign: "center", color: "var(--term-red)", padding: 24 }}>
               {error}
             </td>
           </tr>
         ) : results.length === 0 ? (
           <tr>
-            <td colSpan={7} style={{ ...exploreTdBaseStyle, textAlign: "center", color: "var(--term-text-muted)", padding: 24 }}>
+            <td colSpan={7} style={{ ...termTdStyle, textAlign: "center", color: "var(--term-text-muted)", padding: 24 }}>
               NO GAMES MATCH THE CURRENT FILTERS
             </td>
           </tr>
