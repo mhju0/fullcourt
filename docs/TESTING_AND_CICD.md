@@ -167,8 +167,9 @@ back on expand.
 >   regression to per-month fetching fails rather than passing quietly; the other steps the
 >   arrows past the end of December and asserts the `JAN` tab takes `aria-pressed="true"`,
 >   covering the derived month across a boundary.
-> - **`analysis.spec.ts`** — terminal markup: heading "Rest Advantage Analysis", the
->   "HOME WIN RATE · NOT COUNTED" tile, and the section dividers "WIN RATE BY RA THRESHOLD …"
+> - **`analysis.spec.ts`** — terminal markup: heading "Rest Advantage Analysis", the two hero
+>   tiles "RESTED TEAM AT HOME WON · ANY GAP" and "HOME TEAM WON · RESTED VISITOR" with its
+>   `NOT COUNTED` sub-line, and the section dividers "WIN RATE BY RA THRESHOLD …"
 >   and "WIN RATE BY SEASON" (no `text-7xl` hero). It also guards the **frame**: both
 >   zero-line legends, and that the page nowhere says `COIN FLIP` — a regression to a 50%
 >   baseline would credit the model with roughly ten points of home court it did not produce.

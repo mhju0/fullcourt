@@ -750,9 +750,19 @@ export function AnalysisContent() {
       <div className="grid grid-cols-2 gap-2 md:grid-cols-3">
         {/* Every tile carries its lift, because the rate alone is not the finding. 61.2%
             sounds like an eleven-point edge and is a one-point one: the other ten points are
-            home court, which the model did not produce. */}
+            home court, which the model did not produce.
+
+            Every label names WHO won and over WHICH slice, in that order. They used to lead
+            with the measure — "OVERALL WIN RATE", "WIN RATE · RA ≥ 5" — which named neither:
+            "overall" has no referent on a page whose whole point is that the rate is not
+            overall (it is home-only, called-games-only), and a bare "win rate" leaves the
+            reader to guess whose. The first two now share a prefix, so the eye reads them as
+            one measure at two cuts, and the third reads as visibly different — which is the
+            truth, since it is the half the model declines. "RESTED TEAM AT HOME" and "ANY GAP"
+            are the site's existing words for these, from the divider below and from the
+            per-matchup evidence sentence; this row was the surface still using its own. */}
         <StatCard
-          label="OVERALL WIN RATE"
+          label="RESTED TEAM AT HOME WON · ANY GAP"
           value={`${data.overallWinRate}%`}
           sub={`${data.totalGames.toLocaleString()} GAMES · ${signedNumber(
             toDeviation(data.overallWinRate, homeBaseline)
@@ -761,7 +771,7 @@ export function AnalysisContent() {
         />
         {ra5 && (
           <StatCard
-            label="WIN RATE · RA ≥ 5"
+            label="RESTED TEAM AT HOME WON · RA ≥ 5"
             value={`${ra5.winPct}%`}
             sub={`${ra5.games.toLocaleString()} GAMES · ${signedNumber(
               toDeviation(ra5.winPct, homeBaseline)
@@ -779,9 +789,12 @@ export function AnalysisContent() {
             earns a second reading — the home team does measurably WORSE here than it does
             across all games, which is the rest effect showing up on the other side. */}
         <StatCard
-          label="HOME WIN RATE · NOT COUNTED"
+          label="HOME TEAM WON · RESTED VISITOR"
           value={`${notCalledHomeRate}%`}
-          sub={`${data.homeAwayBreakdown.awayTeamMoreRested.games.toLocaleString()} GAMES · ${signedNumber(
+          // "NOT COUNTED" moved off the label and into the sub. On the label it was the only
+          // thing the tile said about itself, so it read as the tile's identity when it is
+          // actually the tile's consequence — the identity is which games these are.
+          sub={`${data.homeAwayBreakdown.awayTeamMoreRested.games.toLocaleString()} GAMES · NOT COUNTED · ${signedNumber(
             toDeviation(notCalledHomeRate, homeBaseline)
           )} VS BASELINE`}
           accent="var(--term-neutral)"

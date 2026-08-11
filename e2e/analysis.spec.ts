@@ -9,11 +9,16 @@ test.describe("Analysis page", () => {
       page.getByRole("heading", { name: "Rest Advantage Analysis" })
     ).toBeVisible({ timeout: 60_000 });
 
-    await expect(page.getByText("OVERALL WIN RATE")).toBeVisible();
+    // Each tile names who won and over which slice. Asserted as literals because the failure
+    // being guarded is a regression to a label that names neither — "OVERALL WIN RATE" was
+    // one, and "overall" is the single word this page cannot honestly use about its own rate.
+    await expect(page.getByText("RESTED TEAM AT HOME WON · ANY GAP")).toBeVisible();
     // The games the model does not call, kept on the page as a stat tile stating the home
     // team's rate. It was a full section arguing the rule; that argument lives once, in
-    // /behind-the-data/rest-advantage, and the page keeps only the live figure.
-    await expect(page.getByText("HOME WIN RATE · NOT COUNTED")).toBeVisible();
+    // /behind-the-data/rest-advantage, and the page keeps only the live figure. The exclusion
+    // itself is still stated, in the tile's sub-line rather than in its label.
+    await expect(page.getByText("HOME TEAM WON · RESTED VISITOR")).toBeVisible();
+    await expect(page.getByText(/NOT COUNTED/)).toBeVisible();
 
     // Terminal section dividers (current markup — no text-7xl hero).
     await expect(page.getByText(/WIN RATE BY RA THRESHOLD/)).toBeVisible();

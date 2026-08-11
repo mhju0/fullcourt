@@ -19,11 +19,12 @@ const OUT = path.join(fileURLToPath(new URL("..", import.meta.url)), "docs/scree
 // `termInsetStyle` became a band, so cards and rows are a few pixels taller than they were and
 // each old height had drifted into slicing the row it used to end on.
 const PAGES = [
-  // Two complete matchup cards, which is what the README's alt text describes — the second one
-  // ends at 1170. Row heights are no longer uniform: a game with an evidence sentence is 116px
-  // and one without is 81px, since the flags moved onto the team lines and the sentence band
-  // now renders only when there is a sentence.
-  { file: "games", path: "/", height: 1170 },
+  // Two complete matchup rows, which is what the README's alt text describes — the second one
+  // ends at 1240. Rows are a uniform 81px again (80px for the first, which carries no top
+  // rule): the evidence sentence moved into the expansion on 2026-08-11, so no collapsed row
+  // is taller than any other. The rows also start lower than they did, because this height was
+  // last derived before the home page grew its thesis band.
+  { file: "games", path: "/", height: 1240 },
   // Tenth complete row of WHAT THE SCHEDULE WAS WORTH (rows step 35px from 1136). The extremes
   // line above the table carries both ends of the range that ten rows cannot show. The skeleton
   // wait logs a warning on this page: ZeroRestWorkload sits far below this cut and is still

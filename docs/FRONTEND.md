@@ -89,7 +89,8 @@ no loading flags of its own.
 
 Initial day selection still uses `pickDefaultGamesDate` (today if it has games; else the first
 upcoming October date at season start; else nearest / last available).
-- Pieces: heading eyebrow `REST ADVANTAGE DASHBOARD` + `<h1>Games</h1>`; the BY DATE/UPCOMING
+- Pieces: heading eyebrow `REST ADVANTAGE DASHBOARD` + `<h1>What the schedule does to a game</h1>`
+  and the `ThesisFigure` band beneath it; the BY DATE/UPCOMING
   toggle;
   `StatSummaryRow` (GAMES ON THIS DATE, AVG REST ADV, HIGH CONF GAMES where
   `HIGH_CONF_THRESHOLD = 2.0` — three tiles, all scoped to the slate on screen; a fourth
@@ -114,11 +115,17 @@ upcoming October date at season start; else nearest / last available).
   Measured over 79 games: 53% of rows had both, **43% had flags and no sentence, and 0% ever had
   a sentence and no flags** — so the two-up layout only ever served the "both" case, while 43%
   of rows paid a 32px band to right-align three chips against 901px of nothing. That empty space
-  under the team names is what this removed; rows without a sentence are now 81px against 116px
-  with one.
-- **The evidence sub-row is tinted (`--term-surface-2`) with a rule on top**, so the height it
-  adds reads as attached content rather than as the row having grown. It indents by
-  `SPACE_NESTED_ROW`, the one third rail the alignment law sanctions.
+  under the team names is what this removed.
+- **The evidence sentence leads the expansion; it is not a sub-row** (2026-08-11). It renders
+  only above the 0.5 call threshold, so as an always-on band it striped a slate grey under some
+  rows and not others — and the sentence is not about the game anyway. It names the historical
+  **class** the matchup falls into, so a slate holds at most a couple of distinct strings: on the
+  15-game date it was re-cut against, four rows carried a band and three were byte-identical.
+  Repeating a class-level fact once per row asserts it is per-game. Inside the expansion it sits
+  above the two fatigue columns — the click came from the REST ADVANTAGE cell, so "is 1.1 a lot?"
+  is the first question and the components are the second. Every collapsed row is now the same
+  81px, and the expansion insets on the row's own 16px rail rather than the 12px it used to use,
+  so the detail cards start on the status cell's line.
 - The first tile is **"GAMES ON THIS DATE"**, not "GAMES TODAY": its value is
   `mergedGames.length` for the *selected* day, and `pickDefaultGamesDate` deliberately selects
   a non-today date whenever today has no games (the normal case in the off-season).
