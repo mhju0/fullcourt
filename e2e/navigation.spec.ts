@@ -103,6 +103,13 @@ test.describe("Primary navigation", () => {
 
     const about = page.getByRole("link", { name: "ABOUT", exact: true });
     await expect(about).toBeVisible();
+    // Visible is not the same as interactive. The header renders on the server, so this link is
+    // clickable-looking before React has hydrated it — and a click that lands mid-hydration hits
+    // a node that is being replaced, so the navigation is simply dropped. Waiting on a control
+    // the client tree owns proves hydration finished. This raced before anything on the home
+    // page changed; it only started failing when that page grew enough to widen the window.
+    await expect(page.getByLabel("Season")).toBeVisible();
+    await page.waitForLoadState("networkidle");
     await about.click();
 
     await expect(page).toHaveURL(/\/about$/);

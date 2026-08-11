@@ -1,12 +1,17 @@
 import { expect, test } from "@playwright/test";
 
 test.describe("Home page", () => {
-  test("loads the Games heading, season control, and month tabs", async ({ page }) => {
+  test("leads with the thesis, and loads the season control and month tabs", async ({ page }) => {
     await page.goto("/");
 
+    // The root's largest type states what the site measures, not the format it shows it in.
+    // It read "Games" until 2026-08-11, which named the table rather than the subject.
     await expect(
-      page.getByRole("heading", { name: "Games", exact: true })
+      page.getByRole("heading", { name: "What the schedule does to a game", exact: true })
     ).toBeVisible();
+
+    // The headline figure is read from rest-split-facts, never typed into the page.
+    await expect(page.getByText(/is how often the more-rested team wins/)).toBeVisible();
 
     await expect(page.getByLabel("Season")).toBeVisible();
     await expect(page.getByRole("button", { name: /^OCT$/ })).toBeVisible();

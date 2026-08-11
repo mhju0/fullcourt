@@ -12,6 +12,9 @@ import { useBacktest } from "@/hooks/useBacktest"
 import { useGameSlate, type GameSlate } from "@/hooks/useGameSlate"
 import { currentDisplaySeason, isNbaOffSeason } from "@/lib/nba-season"
 import { MessageCard } from "@/components/ui/message-card"
+import { MethodLink } from "@/components/method-link"
+import { REST_SPLIT_BASELINE, RESTED_AT_HOME } from "@/lib/rest-split-facts"
+import { signedNumber } from "@/lib/signed-number"
 import { termCardStyle } from "@/lib/terminal-styles"
 import { cn } from "@/lib/utils"
 
@@ -23,6 +26,44 @@ const HIGH_CONF_THRESHOLD = 2.0
 const termBtn =
   "mono inline-flex items-center gap-2 bg-[var(--term-surface)] px-3 py-2 text-[12px] uppercase tracking-[0.05em] text-[var(--term-text-dim)] transition-[background-color,border-color,transform] hover:bg-[var(--term-surface-2)]"
 const termBtnStyle: React.CSSProperties = { border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }
+
+// ─── Thesis figure ───────────────────────────────────────────────
+
+/**
+ * The site's one headline number, stated on the front door.
+ *
+ * Deliberately NOT a fourth stat tile: the tiles below describe the selected day, and a
+ * forty-one-season result sitting in that row would read as another property of today's slate.
+ * It is one figure with one sentence, above the day's controls, so the claim lands before the
+ * data does.
+ *
+ * Every figure here is read from `rest-split-facts.ts` rather than typed, which is the rule for
+ * anything published (CLAUDE.md). The season span is stated as "since 1985-86" rather than as a
+ * count, so it cannot age.
+ */
+function ThesisFigure() {
+  const lift = RESTED_AT_HOME.winPct - REST_SPLIT_BASELINE.homeWinPct
+  return (
+    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-8" style={termCardStyle}>
+      <span
+        className="mono tabular-nums shrink-0 whitespace-nowrap"
+        style={{ fontSize: 40, fontWeight: 700, lineHeight: 1.05, color: "var(--term-blue)" }}
+      >
+        {RESTED_AT_HOME.winPct.toFixed(1)}%
+      </span>
+      <div className="flex min-w-0 flex-col gap-2">
+        <span style={{ fontSize: 15, color: "var(--term-text)", fontWeight: 600, lineHeight: 1.45 }}>
+          is how often the more-rested team wins when it is also at home.
+        </span>
+        <span className="mono" style={{ fontSize: 11, letterSpacing: "0.06em", color: "var(--term-text-muted)", lineHeight: 1.5 }}>
+          {RESTED_AT_HOME.games.toLocaleString()} GAMES · {signedNumber(lift, 1)} AGAINST THE{" "}
+          {REST_SPLIT_BASELINE.homeWinPct.toFixed(1)}% HOME TEAMS WIN ANYWAY
+        </span>
+        <MethodLink surfaceHref="/" />
+      </div>
+    </div>
+  )
+}
 
 // ─── Stat summary row ────────────────────────────────────────────
 
@@ -328,13 +369,23 @@ export default function HomePage() {
     <div className="flex flex-col gap-12">
       {/* Heading + view toggle: one chapter, so they sit close together. */}
       <div className="flex flex-col gap-6">
-        {/* Not "Today's Matchups": the season selector reaches back to 1985-86, so the
+        {/* The root states the thesis, not the noun.
+            This heading read "Games" until 2026-08-11, which is what the tab says and what the
+            table below shows — so the largest type on the site's front door named the format
+            rather than the subject, and a first-time visitor read "scores site" and left. The
+            claim was on the page the whole time, in the 15px description under it; it was
+            simply out-ranked by the page's own hierarchy. The slate keeps its own MATCHUPS
+            divider, so nothing below loses its label.
+
+            Not "Today's Matchups" either: the season selector reaches back to 1985-86, so that
             heading was already wrong on any past date, and the UPCOMING view widened it. */}
         <PageHeader
           eyebrow="REST ADVANTAGE DASHBOARD"
-          title="Games"
-          description="A fatigue score for every team in every game, built from travel, rest and schedule density. The bigger the gap between two teams, the more one side is carrying."
+          title="What the schedule does to a game"
+          description="Travel, rest and schedule density, scored for every team in every game, then checked against what actually happened in every season since 1985-86."
         />
+
+        <ThesisFigure />
 
       {/* View toggle — absorbed the old /upcoming route, which is now a redirect here. */}
       <div className="flex flex-wrap gap-2" role="group" aria-label="Games view">
