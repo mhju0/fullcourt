@@ -30,17 +30,30 @@ function NoRestSection() {
   return (
     <section className="flex flex-col gap-3">
       <SectionHeading>THE POSTSEASON HAS NO REST</SectionHeading>
-      <div style={termCardStyle}>
-        <span
-          className="mono tabular-nums block"
-          style={{ fontSize: 40, fontWeight: 700, color: "var(--term-text)", lineHeight: 1.05 }}
-        >
-          {laterEqual.toLocaleString()} of {laterGames.toLocaleString()}
-        </span>
-        <span className="mono block" style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 700, marginTop: 6 }}>
-          PLAYOFF GAMES AFTER GAME 1, BOTH TEAMS ON THE SAME REST
-        </span>
-        <p className="mt-3" style={BODY}>
+      {/* The figure and its explanation sit side by side rather than stacked.
+          Stacked, the card ran the full 1040 column while its prose was capped at the 42rem
+          measure, so the right ~336px of it was empty on every card — the number was the
+          feature but got a third of the width, and the paragraph under it looked like it had
+          been cut short. Side by side, the number keeps its own column and the prose keeps a
+          readable line length, and the card is full because both columns are doing work.
+          Stacks below `md`, where there is only room for one column anyway. */}
+      <div className="flex flex-col gap-4 md:flex-row md:items-center md:gap-8" style={termCardStyle}>
+        {/* 360px, not less: "2,545 of 2,545" is fourteen mono characters at 40px and wraps
+            below this, which splits the one figure the section exists to state. */}
+        <div className="shrink-0 md:basis-[360px]">
+          <span
+            className="mono tabular-nums block whitespace-nowrap"
+            style={{ fontSize: 40, fontWeight: 700, color: "var(--term-text)", lineHeight: 1.05 }}
+          >
+            {laterEqual.toLocaleString()} of {laterGames.toLocaleString()}
+          </span>
+          <span className="mono block" style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 700, marginTop: 6 }}>
+            PLAYOFF GAMES AFTER GAME 1
+            <br />
+            BOTH TEAMS ON THE SAME REST
+          </span>
+        </div>
+        <p className="m-0" style={BODY}>
           <span style={LEAD}>Every single one.</span> Once a series starts the two teams share a
           schedule, so neither can be more rested. Playoff rest has exactly one place to exist:
           the wait before Game 1 — and only {game1Equal} of {game1Games} Game 1s were even.
