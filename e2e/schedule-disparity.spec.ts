@@ -6,7 +6,7 @@ test.describe("Schedule Disparity page", () => {
 
     // Heading + eyebrow render server-side in the page wrapper, independent of
     // ScheduleDisparityContentLazy — no need to wait on the ranked list.
-    await expect(page.getByRole("heading", { name: "Schedule Disparity" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Schedule Edge" })).toBeVisible();
     await expect(page.getByText("SCHEDULE DISPARITY · NET EDGE GAMES")).toBeVisible();
   });
 

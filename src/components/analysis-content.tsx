@@ -748,8 +748,8 @@ export function AnalysisContent() {
     <div className="flex flex-col gap-12">
       {/* Inside the loaded branch, so the heading arrives with the data it describes. */}
       <PageHeader
-        eyebrow="HISTORICAL BACKTEST"
-        title="Rest Advantage Analysis"
+        eyebrow="HISTORICAL BACKTEST · WIN RATE"
+        title="Model Results"
         description={claims.headerDescription}
       />
       <MethodLink surfaceHref="/analysis" />

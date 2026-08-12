@@ -6,7 +6,7 @@ test.describe("Analysis page", () => {
 
     // Heading + hero stats render once the /api/analysis payload resolves.
     await expect(
-      page.getByRole("heading", { name: "Rest Advantage Analysis" })
+      page.getByRole("heading", { name: "Model Results" })
     ).toBeVisible({ timeout: 60_000 });
 
     // Both tiles name who won and over which slice. Asserted as literals because the failure

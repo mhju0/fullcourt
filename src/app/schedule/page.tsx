@@ -13,7 +13,7 @@ export default function SchedulePage() {
     <div className="flex flex-col gap-12">
       <PageHeader
         eyebrow="SCHEDULE DISPARITY · NET EDGE GAMES"
-        title="Schedule Disparity"
+        title="Schedule Edge"
         description="Which teams a season's schedule favored, counted in games with a real rest edge and priced in wins. Not a prediction — much of the gap is structural, and each season stands alone."
       />
       <MethodLink surfaceHref="/schedule" />

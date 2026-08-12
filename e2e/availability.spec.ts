@@ -9,7 +9,7 @@ test.describe("Availability Cost page", () => {
     await page.goto("/availability");
 
     await expect(
-      page.getByRole("heading", { name: "What a missing player is worth" })
+      page.getByRole("heading", { name: "Availability Cost" })
     ).toBeVisible();
 
     // Every figure is a published constant, so the page is complete without a database round

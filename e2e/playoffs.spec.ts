@@ -7,10 +7,14 @@ test.describe("Playoff Rest page", () => {
     // Heading + eyebrow render server-side in the page wrapper, independent of
     // PlayoffsContentLazy — no need to wait on lazy/data-dependent content.
     await expect(
-      page.getByRole("heading", { name: "The round before decides the round after" })
+      page.getByRole("heading", { level: 1, name: "Playoff Rest" })
     ).toBeVisible();
 
-    await expect(page.getByText("PLAYOFF REST", { exact: true }).first()).toBeVisible();
+    // The eyebrow, not the nav tab. Asserted as a literal because "PLAYOFF REST" also appears
+    // in the nav, so a looser matcher would pass on the tab and stop testing this page's header.
+    await expect(
+      page.getByText("PRIOR-ROUND GRIND · SERIES WIN PROBABILITY")
+    ).toBeVisible();
   });
 
   test("leads with the finding, not the bracket", async ({ page }) => {
