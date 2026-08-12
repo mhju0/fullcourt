@@ -4,8 +4,10 @@ import {
   deviationFill,
   deviationScale,
   minBarSize,
-  toDeviation,
 } from "@/components/analysis-content"
+// The lift is claim vocabulary before it is a plotted value, so it lives with the claims.
+// The three helpers above are drawing alone and stay beside the chart.
+import { toDeviation } from "@/lib/analysis-claims"
 
 /**
  * The /analysis win-rate charts plot `winPct - baseline` as signed deviation columns.

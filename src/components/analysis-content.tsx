@@ -26,7 +26,12 @@ import { useExploreGames, type DrillSignal } from "@/hooks/useExploreGames"
 import type { ExploreResult } from "@/lib/explore-games-machine"
 import { apiFetcher } from "@/lib/fetcher"
 import { NBA_SEASONS } from "@/lib/nba-season"
-import { homeWinRateWhenVisitorRested } from "@/lib/rest-advantage-display"
+import {
+  BEYOND_CLAUSE,
+  WIDER_GAP_CLAUSE,
+  buildAnalysisClaims,
+  toDeviation,
+} from "@/lib/analysis-claims"
 import { MONO_FONT_STACK, termCardStyle, termDashedEmptyStyle, termInsetStyle, termTdStyle } from "@/lib/terminal-styles"
 import { DataTable } from "@/components/ui/data-table"
 import type { AnalysisResponse } from "@/types"
@@ -136,7 +141,7 @@ function StatCard({
 
 // ─── Chart scale ──────────────────────────────────────────────────
 
-/**
+/*
  * Win-rate bars are **deviation columns**: the plotted value is `winPct - baseline`, in
  * percentage points, and zero IS the baseline. This replaced a zero-based bar
  * stacked from a `base` (≤50) and an `edge` (>50) segment.
@@ -157,10 +162,11 @@ function StatCard({
  * rest — so a coin-flip zero credited the model with nine points of home court it did not
  * earn. Callers pass the venue baseline the API now ships; the season chart passes that
  * season's own, because home court ran from 67.9% in 1987-88 to 54.3% in 2023-24.
+ *
+ * `toDeviation` itself lives in `@/lib/analysis-claims`: the lift is claim vocabulary before
+ * it is a plotted value, since every tile and sentence on the page states a rate through it.
+ * What stays here is the drawing alone — fill, bar size and scale.
  */
-export function toDeviation(winPct: number, baselinePct: number): number {
-  return Math.round((winPct - baselinePct) * 10) / 10
-}
 
 /**
  * Blue above the baseline, red below — the two poles of a diverging scale, with
@@ -712,16 +718,18 @@ export function AnalysisContent() {
 
   if (loading) return <AnalysisSkeleton />
 
-  if (error || !data) {
+  // Every claim this page makes, decided in one place and tested there. A null means the
+  // payload arrived without a baseline or without a counted game, which is not a thinner
+  // page but an unpublishable one — so it takes the same branch as a failed fetch.
+  const claims = buildAnalysisClaims(data)
+
+  if (error || !data || !claims) {
     return (
       <MessageCard tone="error" title="FAILED TO LOAD ANALYSIS" body={error ?? "UNKNOWN ERROR"} />
     )
   }
 
   const homeBaseline = data.venueBaseline.homeWinPct
-  const notCalledHomeRate = homeWinRateWhenVisitorRested(
-    data.homeAwayBreakdown.awayTeamMoreRested
-  )
   const barData: WinRateDatum[] = data.thresholds.map((t) => ({
     label: `RA ≥ ${t.threshold}`,
     winPct: t.winPct,
@@ -731,9 +739,6 @@ export function AnalysisContent() {
     baselinePct: homeBaseline,
   }))
   const thresholdScale = deviationScale(barData.map((d) => d.deviation))
-
-  const ra5 = data.thresholds.find((t) => t.threshold === 5)
-  const ra7 = data.thresholds.find((t) => t.threshold === 7)
 
   const winRateTooltipRenderer = (props: TooltipContentProps) => (
     <WinRateTooltip {...props} />
@@ -745,68 +750,30 @@ export function AnalysisContent() {
       <PageHeader
         eyebrow="HISTORICAL BACKTEST"
         title="Rest Advantage Analysis"
-        // Kept to two lines at 1440px, which `page-headers.spec.ts` enforces. The legend
-        // under each chart carries the fuller "how often the home team wins anyway" gloss,
-        // so this line does not repeat it.
-        description={`Among completed regular-season games, did the more-rested team win? Counted only where that team was also at home, and measured against the ${homeBaseline}% home teams win anyway.`}
+        description={claims.headerDescription}
       />
       <MethodLink surfaceHref="/analysis" />
 
-      {/* Hero stat row — two tiles, one measure at two cuts.
-
-          Every tile carries its lift, because the rate alone is not the finding. 61.2% sounds
-          like an eleven-point edge and is a one-point one: the other ten points are home court,
-          which the model did not produce.
-
-          Both labels name WHO won and over WHICH slice, in that order. They used to lead with
-          the measure — "OVERALL WIN RATE", "WIN RATE · RA ≥ 5" — which named neither: "overall"
-          has no referent on a page whose whole point is that the rate is not overall (it is
-          home-only, called-games-only), and a bare "win rate" leaves the reader to guess whose.
-          "RESTED TEAM AT HOME" and "ANY GAP" are the site's existing words for these, from the
-          divider below and from the per-matchup evidence sentence; this row was the surface
-          still using its own.
-
-          A third cut does NOT belong here. RA ≥ 7 is the obvious candidate and is the wrong
-          one: the rate is flat from RA ≥ 5 upward, which the READING THESE NUMBERS callout
-          below says in as many words. Three ascending tiles would draw a trend the data does
-          not have, off the thinnest slice on the page. The chart under this row already plots
-          all four thresholds, which is where a reader should meet them. */}
+      {/* Hero stat row. Which tiles exist, what each is named, which slice it covers and the
+          rule that a third cut never appears are all decided by `buildAnalysisClaims` and
+          asserted in its tests. What is left here is the drawing. */}
       <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-        <StatCard
-          label="RESTED TEAM AT HOME WON · ANY GAP"
-          value={`${data.overallWinRate}%`}
-          sub={`${data.totalGames.toLocaleString()} GAMES · ${signedNumber(
-            toDeviation(data.overallWinRate, homeBaseline)
-          )} VS ${homeBaseline}% BASELINE`}
-          accent="var(--term-blue)"
-        />
-        {ra5 && (
+        {claims.tiles.map((tile) => (
           <StatCard
-            label="RESTED TEAM AT HOME WON · RA ≥ 5"
-            value={`${ra5.winPct}%`}
-            sub={`${ra5.games.toLocaleString()} GAMES · ${signedNumber(
-              toDeviation(ra5.winPct, homeBaseline)
-            )} VS BASELINE`}
+            key={tile.label}
+            label={tile.label}
+            value={tile.value}
+            sub={tile.detail}
             accent="var(--term-blue)"
           />
-        )}
+        ))}
       </div>
 
-      {/* The excluded half. It was a third hero tile until 2026-08-11, and no label ever made
-          it legible, because the problem was not the wording: a tile row is a row of results,
-          and this is not a result. It is the rule the results are produced under. Squeezed into
-          a 30-character label it read as a fourth measure the reader could not place — first as
-          "HOME WIN RATE · NOT COUNTED", then as "HOME TEAM WON · RESTED VISITOR", and both left
-          the same question ("of what?"). Given a sentence it explains itself in one pass.
+      {/* The excluded half. Why it is a band rather than a tile, and why it is stated as the
+          home team's win rather than the visitor's loss, is argued on `DeclinedHalf` in
+          `@/lib/analysis-claims`; the full argument for the rule itself lives once, in
+          /behind-the-data/rest-advantage.
 
-          It stays on the page in some form, always: dropping it would leave 61.2% sitting alone
-          with no sign that 11,548 games were set aside to get it, and publishing the declined
-          half is the model's central honesty move (see CLAUDE.md). The full argument for the
-          rule lives once, in /behind-the-data/rest-advantage; this is the live figure.
-
-          The home team's rate rather than the rested visitor's, over the same games — stated as
-          the win it is rather than as the loss backing the visitor would have been, and against
-          the same home baseline as the tiles above so all three rates are read off one number.
           `termInsetStyle` is a band by design: no horizontal inset, so this sits on the same
           rail as the tiles and the page title rather than starting a third one. */}
       <div className="flex flex-col gap-2 py-4" style={termInsetStyle}>
@@ -819,15 +786,15 @@ export function AnalysisContent() {
         <p className="text-sm leading-relaxed text-[var(--term-text-dim)]">
           In the{" "}
           <span className="mono tabular-nums">
-            {data.homeAwayBreakdown.awayTeamMoreRested.games.toLocaleString()}
+            {claims.declinedHalf.games.toLocaleString()}
           </span>{" "}
           games where the rested team was the <strong className="font-semibold text-[var(--term-text)]">visitor</strong>,
           the home team won{" "}
-          <span className="mono font-bold" style={{ color: "var(--term-text)" }}>{notCalledHomeRate}%</span>.
+          <span className="mono font-bold" style={{ color: "var(--term-text)" }}>{claims.declinedHalf.homeWinPct}%</span>.
           The model does not count them, because the home side keeps winning them — but it wins
           them by{" "}
           <span className="mono font-bold" style={{ color: "var(--term-blue)" }}>
-            {signedNumber(toDeviation(notCalledHomeRate, homeBaseline))}
+            {signedNumber(claims.declinedHalf.lift)}
           </span>{" "}
           points against the{" "}
           <span className="mono tabular-nums">{homeBaseline}%</span> it takes across all games,
@@ -897,9 +864,7 @@ export function AnalysisContent() {
             </BarChart>
           </ResponsiveContainer>
         </div>
-        <BaselineLegend
-          zeroLabel={`PERCENTAGE POINTS · 0 = ${homeBaseline}%, HOW OFTEN THE HOME TEAM WINS ANYWAY`}
-        />
+        <BaselineLegend zeroLabel={claims.thresholdZeroLabel} />
       </div>
 
       {/* The card that argued this rule in full used to sit here. Every clause of it was
@@ -950,11 +915,14 @@ export function AnalysisContent() {
           seasonWinRates={displayedSeasonRates}
           loading={seasonRateLoading}
         />
-        <BaselineLegend zeroLabel="PERCENTAGE POINTS · 0 = THAT SEASON'S OWN HOME WIN RATE" />
+        <BaselineLegend zeroLabel={claims.seasonZeroLabel} />
       </div>
 
-      {/* Key insight callout */}
-      {ra5 && (
+      {/* Key insight callout. Both comparisons in this paragraph — whether a bigger gap is
+          worth more, and whether the gain keeps climbing past RA ≥ 5 — are read off
+          `claims.reading`, never written as fixed prose over live figures. That is what this
+          paragraph got wrong twice; see `ReadingClaim` in `@/lib/analysis-claims`. */}
+      {claims.reading && (
         <div
           className="px-4 py-4"
           style={{
@@ -969,35 +937,34 @@ export function AnalysisContent() {
           <p className="mono" style={{ fontSize: 11, letterSpacing: "0.12em", color: "var(--term-accent)", fontWeight: 700 }}>
             READING THESE NUMBERS
           </p>
-          {/* Rewritten with the baseline frame. The previous version called RA ≥ 5 "a
-              significant edge over the coin-flip baseline" — most of that edge was home
-              court — and said the signal "compounds at the extremes", which the data does
-              not support: the rate is flat from RA ≥ 5 upward, not rising. */}
           <p className="mt-2 text-sm leading-relaxed text-[var(--term-text-dim)]">
             Every game counted here is one the more-rested team played at home, and home teams
             win{" "}
-            <span className="mono font-bold" style={{ color: "var(--term-text)" }}>{homeBaseline}%</span>{" "}
+            <span className="mono font-bold" style={{ color: "var(--term-text)" }}>{claims.reading.baselinePct}%</span>{" "}
             of all games regardless of rest. So the rate to read is not{" "}
-            <span className="mono tabular-nums">{data.overallWinRate}%</span> but the{" "}
+            <span className="mono tabular-nums">{claims.reading.overallWinPct}%</span> but the{" "}
             <span className="mono font-bold" style={{ color: "var(--term-blue)" }}>
-              {signedNumber(toDeviation(data.overallWinRate, homeBaseline))}
+              {signedNumber(claims.reading.overallLift)}
             </span>{" "}
-            points above that baseline — the part rest accounts for. A bigger gap is worth
-            more: at{" "}
-            <span className="font-semibold text-[var(--term-text)]">RA ≥ 5</span> the rested
-            team wins{" "}
-            <span className="mono font-bold" style={{ color: "var(--term-blue)" }}>{ra5.winPct}%</span>,{" "}
+            points above that baseline — the part rest accounts for.{" "}
+            {WIDER_GAP_CLAUSE[claims.reading.ra5.relationToAnyGap]} at{" "}
+            <span className="font-semibold text-[var(--term-text)]">
+              RA ≥ {claims.reading.ra5.threshold}
+            </span>{" "}
+            the rested team wins{" "}
+            <span className="mono font-bold" style={{ color: "var(--term-blue)" }}>{claims.reading.ra5.winPct}%</span>,{" "}
             <span className="mono font-bold" style={{ color: "var(--term-blue)" }}>
-              {signedNumber(toDeviation(ra5.winPct, homeBaseline))}
+              {signedNumber(claims.reading.ra5.lift)}
             </span>{" "}
             over baseline across{" "}
-            <span className="mono tabular-nums">{ra5.games.toLocaleString()}</span> games.
-            {ra7 && (
+            <span className="mono tabular-nums">{claims.reading.ra5.games.toLocaleString()}</span> games.
+            {claims.reading.beyond && (
               <>
-                {" "}It does not keep climbing past that: RA ≥ 7 sits at{" "}
-                <span className="mono tabular-nums">{ra7.winPct}%</span> on{" "}
-                <span className="mono tabular-nums">{ra7.games.toLocaleString()}</span> games,
-                which is the same gain, not a larger one.
+                {" "}{BEYOND_CLAUSE[claims.reading.beyond.relation].lead} RA ≥{" "}
+                {claims.reading.beyond.threshold} sits at{" "}
+                <span className="mono tabular-nums">{claims.reading.beyond.winPct}%</span> on{" "}
+                <span className="mono tabular-nums">{claims.reading.beyond.games.toLocaleString()}</span> games,
+                {" "}{BEYOND_CLAUSE[claims.reading.beyond.relation].tail}
               </>
             )}
           </p>
