@@ -12,9 +12,9 @@ export default function PlayoffsPage() {
   return (
     <div className="flex flex-col gap-12">
       <PageHeader
-        eyebrow="PLAYOFF REST"
-        title="The round before decides the round after"
-        description="How a long series taxes the team that survived it, what that does to the round after, and what it costs the model's picks in the bracket below."
+        eyebrow="PRIOR-ROUND GRIND · SERIES WIN RATE"
+        title="Playoff Rest"
+        description="The round before decides the round after. How a long series taxes the team that survived it, and what that costs the model's picks in the bracket below."
       />
       <MethodLink surfaceHref="/playoffs" />
 

@@ -115,6 +115,32 @@ _Avoid_: excluded season, COVID season, bubble season
 A season whose teams did not play comparable numbers of games, so they cannot be ranked against each other. Withheld from **Schedule Edge only**, and offered everywhere else. 2019-20 is the sole member: it was suspended with teams having played 63 to 67 games, a spread of four against a limit of two, where every other season sits within one. This is about **how many games there are**, which is a different objection from an abnormal stretch and does not travel with it.
 _Avoid_: short season (1998-99 and 2011-12 are short and are ranked normally), incomplete season
 
+## Page headers
+
+Every surface opens with the same four things in the same order — **eyebrow, title, description,
+method link** — and nothing else. The point is not that the pages look alike; it is that a reader
+learns once where the unit lives and where the summary lives, and from the second page onward
+stops reading the header and starts scanning it.
+
+- **Eyebrow: `SUBJECT · UNIT`.** It locates the reader and names what they are about to read in
+  numbers — `SHOOTING BY REST · eFG%`, `SCHEDULE DISPARITY · NET EDGE GAMES`. Where a surface has
+  no single unit, the second half is a scope instead: `ONE SEASON · WIN RATE AND WINS`. Never a
+  tagline, and never a bare repeat of the tab, which spends a line saying nothing. The reference
+  section runs the same form one level up: `BEHIND THE DATA · SHOT VALUE`. **Keep it to 35
+  characters** — that is the longest the design has ever carried, and the nav bar is already
+  known to clip at 360px, so an eyebrow is not the place to spend width.
+- **Title: a plain label**, ideally the tab you clicked. The header's job is orientation, not
+  argument — a claim in the largest type makes the reader work out whether it is the page's name
+  or its finding.
+- **Description: the claim, first sentence.** This is where a retired claim-title goes, and it is
+  where the interesting sentence belongs once the title is boring.
+- **Height follows content.** Two lines is a ceiling, not a target; `e2e/page-headers.spec.ts`
+  enforces it. A fixed-height block would force padding onto pages with less to say, and padding
+  reads as an empty slot.
+
+The one exception is `/`, which is still the front door and still leads with a claim. See the
+GAMES row below.
+
 ## Nav labels
 
 The tabs are the product's public vocabulary; the terms above are its internal one. A nav
@@ -128,14 +154,14 @@ of smaller reference surfaces grows — it does not rank those surfaces below th
 
 | Tab | Route | Page `<h1>` | Not called |
 |---|---|---|---|
-| GAMES | `/` | Games | Today's Games — the season selector reaches 1985-86, so no time word stays true |
+| GAMES | `/` | What the schedule does to a game | Today's Games — the season selector reaches 1985-86, so no time word stays true. **This row is the one h1 that is still a claim rather than a label**, because `/` is still the front door; the 2026-08-11 reasoning is in `page.tsx`. It becomes `Games` when the games board moves to `/games` |
 | SEASON REPORT | `/season` | Season Report | Season Review — review implies the season has ended, and this page runs live from October; bare Season — GAMES already browses any season's slate and SCHEDULE EDGE already ranks teams inside one |
-| SCHEDULE EDGE | `/schedule` | Schedule Disparity | Schedule — that means a game list everywhere else, which is GAMES |
-| MODEL RESULTS | `/analysis` | Rest Advantage Analysis | Analysis (every page is analysis); Historical Data (GAMES already browses history, and "data" promises a dump) |
-| PLAYOFF REST | `/playoffs` | The round before decides the round after | Playoff Odds — mainstream that means *making* the playoffs, not winning a series; PLAYOFF EDGE — `edge` is the qualifier that makes SCHEDULE EDGE legible as something other than a game list, and a second EDGE tab stops it qualifying |
+| SCHEDULE EDGE | `/schedule` | Schedule Edge | Schedule — that means a game list everywhere else, which is GAMES. The h1 matches the tab; the *module* is still named Schedule Disparity in code, tables and design docs |
+| MODEL RESULTS | `/analysis` | Model Results | Analysis (every page is analysis); Historical Data (GAMES already browses history, and "data" promises a dump). The h1 matches the tab — the rest-advantage metric is unchanged and still labels the RA columns, thresholds and filter on that page |
+| PLAYOFF REST | `/playoffs` | Playoff Rest | Playoff Odds — mainstream that means *making* the playoffs, not winning a series; PLAYOFF EDGE — `edge` is the qualifier that makes SCHEDULE EDGE legible as something other than a game list, and a second EDGE tab stops it qualifying |
 | PLAYER SHOOTING | `/shooting` | Shooting by Rest | Shooting — on Basketball-Reference and NBA.com that means shot *location*, which is SHOT VALUE; Player Rest / Rest Splits — the rest tab is SCHEDULE EDGE, and an internal collision misroutes worse than an external one; Splits — ESPN's word for exactly this page, but jargon for a casual fan and silent about the measure |
 | SHOT VALUE *(OTHER)* | `/shot-quality` | Expected Shot Value | Shot Charts — mainstream that means a player's makes/misses by spot |
-| AVAILABILITY COST *(OTHER)* | `/availability` | What a missing player is worth | Availability — everywhere else in basketball that heads an injury report, meaning who is out tonight; this page is the opposite tense, a finished measurement of what an absence cost, with no live lineup data at all. `Cost` blocks the wrong click the way `Edge` does for SCHEDULE EDGE |
+| AVAILABILITY COST *(OTHER)* | `/availability` | Availability Cost | Availability — everywhere else in basketball that heads an injury report, meaning who is out tonight; this page is the opposite tense, a finished measurement of what an absence cost, with no live lineup data at all. `Cost` blocks the wrong click the way `Edge` does for SCHEDULE EDGE |
 | REFEREE EFFECT *(OTHER)* | `/referees` | What each official calls *(in progress — the page shows an in-progress card, not the table)* | Referee Bias — the page was named for the question, not a conclusion, and the question came back inside noise. The subject is now foul *style*, which is explicitly not a fairness claim — but the framing that makes that legible is unfinished, so the surface is deliberately held back |
 | ABOUT *(Reference)* | `/about` | Rest is a stat | — not a tab: it explains the product rather than being a surface of it |
 | BEHIND THE DATA *(Reference)* | `/behind-the-data` | Behind the data | Methodology — that word promises a paper; this is read by people deciding whether to trust a number they just saw |
