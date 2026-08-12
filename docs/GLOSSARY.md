@@ -28,6 +28,18 @@ _Avoid_: rested visitor, declined games, the half this model declines
 How often a side wins from that venue regardless of rest — 59.9% at home, 40.1% on the road, over every published game. Every rest-advantage rate is stated against it rather than against a coin flip, because every game the site publishes a rate for is a home game. Not a constant across time: the per-season figure runs from 67.9% in 1987-88 to 54.3% in 2023-24, which is why the season chart uses each season's own.
 _Avoid_: home-court advantage — that is the ~20-point spread between the two baselines, not either one of them
 
+**Claim**:
+A statement the site publishes about measured data — a rate, a comparison between two rates, or
+the sentence carrying them. Every claim states its denominator and is read against a
+**baseline**, never against a coin flip, and one that can do neither is not published at all. A
+claim that compares two figures is **derived** from them rather than written around them, so the
+wording moves when the data does: `src/lib/rest-advantage-display.ts` for a single matchup,
+`src/lib/analysis-claims.ts` for the `/analysis` page. Prose asserting a comparison over live
+numbers is the defect both modules exist to prevent — the `/analysis` reading-these-numbers
+paragraph carried one twice before 2026-08-12.
+_Avoid_: finding, insight, takeaway — the first two overstate what a measured rate is, and
+"takeaway" invites a conclusion this site frequently declines to draw
+
 **Historical backtest**:
 The regular-season evaluation of whether the team favored by rest advantage won, **on the games where that team was also at home** — every headline figure on the site is measured on that row alone, and read against the **baseline** rather than against 50%. It excludes the **2019-20 Orlando bubble** — the 88 games played at a single site from 30 July to 11 October 2020 — and nothing else of that season; its 971 pre-suspension games are in. 2020-21 and both lockout seasons are included: short is fine, interrupted is not. Withholding a *whole* season is a separate rule belonging to Schedule Edge alone (see **Truncated season**).
 _Avoid_: prediction accuracy test
