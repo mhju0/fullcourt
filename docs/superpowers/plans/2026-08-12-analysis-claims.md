@@ -1,6 +1,7 @@
 # Analysis Claims — implementation plan
 
-**Date:** 2026-08-12 · **Status:** Complete, unpushed · **Branch:** `refactor/analysis-claims`
+**Date:** 2026-08-12 · **Status:** In review — [PR #21](https://github.com/mhju0/fullcourt/pull/21) ·
+**Branch:** `refactor/analysis-claims`
 
 > **For agentic workers:** steps use checkbox (`- [ ]`) syntax. Tick a box only after its
 > verification line passes. This file is the progress record — if a session ends mid-plan, the
@@ -119,7 +120,9 @@ own existing pattern one level up. It is not a new pattern.
 - [ ] **Run `pnpm test:e2e`.** Not run here: it needs a running server and a populated database.
       The rendered strings were held byte-identical for live data, and the six assertions in
       `e2e/analysis.spec.ts` were deliberately left untouched, so this is a confirmation rather
-      than an expected failure. **Nothing is pushed** — the branch is local only.
+      than an expected failure.
+- [ ] **Ratify or change `SAME_GAIN_TOLERANCE_PP`** (`src/lib/analysis-claims.ts`) — the one
+      invented number here. See the implementation-decisions section below.
 
 ---
 
