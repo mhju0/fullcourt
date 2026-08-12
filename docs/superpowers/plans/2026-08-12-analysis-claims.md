@@ -1,6 +1,6 @@
 # Analysis Claims — implementation plan
 
-**Date:** 2026-08-12 · **Status:** In progress · **Branch:** `refactor/analysis-claims`
+**Date:** 2026-08-12 · **Status:** Complete, unpushed · **Branch:** `refactor/analysis-claims`
 
 > **For agentic workers:** steps use checkbox (`- [ ]`) syntax. Tick a box only after its
 > verification line passes. This file is the progress record — if a session ends mid-plan, the
@@ -90,28 +90,36 @@ own existing pattern one level up. It is not a new pattern.
 
 ### Task 2: `src/lib/analysis-claims.ts`
 **Files:** create `src/lib/analysis-claims.ts`
-**Produces:** `AnalysisClaims`, `buildAnalysisClaims(data: AnalysisResponse): AnalysisClaims | null`
-**Consumes:** `AnalysisResponse`, `homeWinRateWhenVisitorRested`, `toDeviation`
+**Produces:** `AnalysisClaims`, `buildAnalysisClaims(data: AnalysisResponse): AnalysisClaims | null`,
+`toDeviation`, `WIDER_GAP_CLAUSE`, `BEYOND_CLAUSE`
+**Consumes:** `AnalysisResponse`, `homeWinRateWhenVisitorRested`, `signedNumber`
 
-- [ ] **Step 1:** Define `AnalysisClaims` — header sentence, tile set, declined-half figures, two legend zero-labels, the reading-these-numbers figures incl. the RA5/RA7 relation.
-- [ ] **Step 2:** Implement `buildAnalysisClaims`, returning `null` with no baseline or no games.
-- [ ] **Step 3:** Move the rule + history docblocks from `analysis-content.tsx:755-773`, `:795-811`, `:972-975`.
+- [x] **Step 1:** Define `AnalysisClaims` — header sentence, tile set, declined-half figures, two legend zero-labels, the reading-these-numbers figures incl. the RA5/RA7 relation.
+- [x] **Step 2:** Implement `buildAnalysisClaims`, returning `null` with no baseline or no games.
+- [x] **Step 3:** Move the rule + history docblocks from `analysis-content.tsx:755-773`, `:795-811`, `:972-975`.
 
 ### Task 3: `src/lib/__tests__/analysis-claims.test.ts`
-- [ ] **Step 1:** Rule-shaped test names, matching `rest-advantage-display.test.ts`.
-- [ ] **Step 2:** Cover — exactly two tiles; neither named "overall"; every rate carries a
+- [x] **Step 1:** Rule-shaped test names, matching `rest-advantage-display.test.ts`.
+- [x] **Step 2:** Cover — exactly two tiles; neither named "overall"; every rate carries a
       denominator and a lift; the declined half is always stated; no coin flip anywhere; the
       RA5/RA7 comparison matches the figures; `null` on an empty/baseline-less response.
-- [ ] **Step 3:** `pnpm test:run` green.
+- [x] **Step 3:** `pnpm test:run` green — 26 cases, suite 621 → 647.
 
 ### Task 4: Refactor `analysis-content.tsx`
-- [ ] **Step 1:** Consume `buildAnalysisClaims`; render from the returned set.
-- [ ] **Step 2:** Remove the orphaned locals the change leaves behind.
-- [ ] **Step 3:** Full gate green; `e2e/` untouched.
+- [x] **Step 1:** Consume `buildAnalysisClaims`; render from the returned set.
+- [x] **Step 2:** Remove the orphaned locals the change leaves behind (`ra5`, `ra7`,
+      `notCalledHomeRate`, the `homeWinRateWhenVisitorRested` import).
+- [x] **Step 3:** Full gate green; `e2e/` untouched.
 
 ### Task 5: Glossary and close-out
-- [ ] **Step 1:** Add the **Claim** term to `docs/GLOSSARY.md`.
-- [ ] **Step 2:** Full gate green, then update this file's status.
+- [x] **Step 1:** Add the **Claim** term to `docs/GLOSSARY.md`.
+- [x] **Step 2:** Full gate green, then update this file's status.
+
+### Remaining — needs a human
+- [ ] **Run `pnpm test:e2e`.** Not run here: it needs a running server and a populated database.
+      The rendered strings were held byte-identical for live data, and the six assertions in
+      `e2e/analysis.spec.ts` were deliberately left untouched, so this is a confirmation rather
+      than an expected failure. **Nothing is pushed** — the branch is local only.
 
 ---
 
@@ -141,4 +149,26 @@ Also noted, no action taken: `docs/agents/domain.md:25` says six ADRs; there are
 ## Progress log
 
 - **2026-08-12** — Branch `refactor/analysis-claims` cut from `main` at `bc4cbda`. Design
-  settled by grilling; plan written.
+  settled by grilling; plan written (`79be9e0`).
+- **2026-08-12** — Module, tests and component refactor landed (`56d3d33`). Gate: lint clean,
+  typecheck clean, 647 tests pass, build exit 0.
+
+## Decisions taken during implementation, beyond the settled design
+
+Both are judgment calls made while the work was in hand, and both are reversible:
+
+1. **The callout's *first* comparison was folded in too.** The plan scoped the RA≥7 relation.
+   In the file, "A bigger gap is worth more" turned out to be the same defect one clause
+   earlier — fixed prose comparing RA ≥ 5's lift with the any-gap lift. Fixing one and leaving
+   its neighbour would have been the inconsistency the work exists to remove, so
+   `ra5.relationToAnyGap` exists alongside `beyond.relation`.
+2. **`SAME_GAIN_TOLERANCE_PP = 1` is invented, and is the one number here nobody ratified.**
+   It decides only which *sentence* renders, never which games are counted, and it is not a
+   significance test. One point, because the page states lifts to one decimal and RA ≥ 7 is its
+   thinnest slice (~1,100 games, where a rate near 65% carries a standard error of about 1.4
+   points). Raising it makes the page quieter, never wronger. Worth a second opinion.
+
+`ClaimTile` also carries finished `value` / `detail` strings rather than parts alone, matching
+`buildRestAdvantageEvidence`, which returns finished sentences and pins "renders the denominator
+with thousands separators" as a test (`rest-advantage-display.test.ts:305`). Leaving the string
+in JSX would have left "no rate without its count" unasserted.
