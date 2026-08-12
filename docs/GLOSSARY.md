@@ -138,8 +138,8 @@ stops reading the header and starts scanning it.
   enforces it. A fixed-height block would force padding onto pages with less to say, and padding
   reads as an empty slot.
 
-The one exception is `/`, which is still the front door and still leads with a claim. See the
-GAMES row below.
+There is no exception. `/` is the marketing page and sets its own hero type rather than using
+`PageHeader`, so it is outside this pattern rather than an exception to it.
 
 ## Nav labels
 
@@ -154,7 +154,7 @@ of smaller reference surfaces grows — it does not rank those surfaces below th
 
 | Tab | Route | Page `<h1>` | Not called |
 |---|---|---|---|
-| GAMES | `/` | What the schedule does to a game | Today's Games — the season selector reaches 1985-86, so no time word stays true. **This row is the one h1 that is still a claim rather than a label**, because `/` is still the front door; the 2026-08-11 reasoning is in `page.tsx`. It becomes `Games` when the games board moves to `/games` |
+| GAMES | `/games` | Games | Today's Games — the season selector reaches 1985-86, so no time word stays true. The h1 was a claim from 2026-08-11 until the front-door swap on 2026-08-12: that was correct while this page *was* the front door, and wrong once it became an interior page. The reasoning for both directions is in `src/app/games/page.tsx` |
 | SEASON REPORT | `/season` | Season Report | Season Review — review implies the season has ended, and this page runs live from October; bare Season — GAMES already browses any season's slate and SCHEDULE EDGE already ranks teams inside one |
 | SCHEDULE EDGE | `/schedule` | Schedule Edge | Schedule — that means a game list everywhere else, which is GAMES. The h1 matches the tab; the *module* is still named Schedule Disparity in code, tables and design docs |
 | MODEL RESULTS | `/analysis` | Model Results | Analysis (every page is analysis); Historical Data (GAMES already browses history, and "data" promises a dump). The h1 matches the tab — the rest-advantage metric is unchanged and still labels the RA columns, thresholds and filter on that page |
@@ -163,16 +163,21 @@ of smaller reference surfaces grows — it does not rank those surfaces below th
 | SHOT VALUE *(OTHER)* | `/shot-quality` | Expected Shot Value | Shot Charts — mainstream that means a player's makes/misses by spot |
 | AVAILABILITY COST *(OTHER)* | `/availability` | Availability Cost | Availability — everywhere else in basketball that heads an injury report, meaning who is out tonight; this page is the opposite tense, a finished measurement of what an absence cost, with no live lineup data at all. `Cost` blocks the wrong click the way `Edge` does for SCHEDULE EDGE |
 | REFEREE EFFECT *(OTHER)* | `/referees` | What each official calls *(in progress — the page shows an in-progress card, not the table)* | Referee Bias — the page was named for the question, not a conclusion, and the question came back inside noise. The subject is now foul *style*, which is explicitly not a fairness claim — but the framing that makes that legible is unfinished, so the surface is deliberately held back |
-| ABOUT *(Reference)* | `/about` | Rest is a stat | — not a tab: it explains the product rather than being a surface of it |
+| *(front door — no tab)* | `/` | Rest is a stat | — reached by the wordmark and the footer, not by a tab: it explains the product rather than being a surface of it. It lived at `/about` until 2026-08-12, which still redirects here |
 | BEHIND THE DATA *(Reference)* | `/behind-the-data` | Behind the data | Methodology — that word promises a paper; this is read by people deciding whether to trust a number they just saw |
 
 Module names are unaffected: the code, tables, scripts and design records still say Playoff
 Predictor, Shot Quality and Schedule Disparity.
 
-`/about` and `/behind-the-data` are **not** tabs. They explain the product rather than being
-surfaces of it, so they sit in a separate right-aligned `Reference` landmark in the same nav row —
-the same size and weight as a tab, with the gap saying "not one of the six". They were moved there
-on 2026-07-30 from the top status strip, which proved too quiet to be found; `/about` is also
-reached from the footer. Because the two landmarks are separate, the six-link count of
-`Main navigation` still holds, and it is asserted in `e2e/navigation.spec.ts` and again in
-`e2e/about.spec.ts`.
+`/behind-the-data` is **not** a tab. It explains the product rather than being a surface of it, so
+it sits in a separate right-aligned `Reference` landmark in the same nav row — the same size and
+weight as a tab, with the gap saying "not one of the six". It was moved there on 2026-07-30 from
+the top status strip, which proved too quiet to be found. Because the two landmarks are separate,
+the six-link count of `Main navigation` still holds, and it is asserted in
+`e2e/navigation.spec.ts` and again in `e2e/home.spec.ts`.
+
+**The front door is `/` and has no tab at all** (2026-08-12). It was `/about`, sharing the
+Reference landmark, and the swap made a link from the chrome to the root redundant with the
+wordmark — which is where a visitor already reflexively clicks. So `Reference` now holds one
+link. The rule the swap follows: **no tab points at `/`**, which `e2e/navigation.spec.ts`
+asserts by requiring zero `aria-current` tabs there.

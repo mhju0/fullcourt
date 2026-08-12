@@ -1,7 +1,9 @@
 /** Tabs rendered directly in the bar, in order. */
 export const DIRECT_NAV_ITEMS = [
   {
-    href: "/",
+    // `/games`, not `/`, since 2026-08-12: `/` is the marketing page. This stays the first tab,
+    // so a returning visitor who types the bare domain reaches the board in one click.
+    href: "/games",
     // Deliberately plain: every mainstream NBA nav (ESPN, CBS) uses bare nouns, and the
     // page browses any season's slate — so no time word ("today's") can stay true here.
     label: "GAMES",

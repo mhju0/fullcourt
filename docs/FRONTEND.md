@@ -38,7 +38,7 @@ number in front of it is a second copy of the same fact that nothing checks.)
 `/upcoming` was retired: it is a permanent redirect to `/` (`next.config.ts`), whose UPCOMING
 view now renders what it used to.
 
-### `/` — Games (`src/app/page.tsx`, client component)
+### `/games` — Games (`src/app/games/page.tsx`, client component)
 
 **The root states the thesis, not the format** (2026-08-11). The `<h1>` read `"Games"` until
 then — the same word as the tab, describing the table below it — so the largest type on the
@@ -345,7 +345,7 @@ A `?player=<name>` query parameter opens that player directly, and expanding one
 via `history.replaceState`, so a view can be linked and shared without the route ever leaving
 `/shooting`.
 
-### `/about` — landing / explainer (`src/app/about/page.tsx`)
+### `/` — the front door / explainer (`src/app/page.tsx`)
 
 Deliberately unlike the rest of the app: dark ground, oversized display type, GSAP scroll
 work. It explains what the product measures rather than serving data, which is why it is
@@ -380,7 +380,7 @@ Two things on this page are easy to get wrong twice:
   hover, and five tall cards showing only a label read as a loading state, not an accordion.
   Each card now carries a mono index, its route, a `SurfaceGlyph` miniature of what that page
   draws, and the copy. Index, route and glyph are `aria-hidden`, so the link's accessible name
-  stays `"<label> <copy>"` — which is what `e2e/about.spec.ts` anchors on.
+  stays `"<label> <copy>"` — which is what `e2e/home.spec.ts` anchors on.
 
 Display statements on this page take **no terminal period** (`Rest is a stat`, `Five surfaces`,
 `How a number earns its place`). Body copy and the scrubbing thesis keep normal punctuation —
@@ -521,8 +521,11 @@ alone. It is style, not bias, and the copy says so.
    header; it is now sized as a logotype in the same display face as every page title. The
    `aria-label="FullCourt home"` keeps the accessible name one string across the split spans,
    which is what `e2e/behind-the-data.spec.ts` clicks. The wordmark was inert until 2026-07-30, the
-   one piece of chrome people reflexively click. Home is `GAMES`, not `/about`: a logo landing
-   on an explainer breaks the "take me back to the product" contract.
+   one piece of chrome people reflexively click. It points at `/`, the front door. That
+   inverted on 2026-08-12: while `/` WAS the games board this doc said "home is `GAMES`, not
+   `/about`: a logo landing on an explainer breaks the take-me-back-to-the-product contract",
+   which held only while home and the product were the same page. They split with the swap, and
+   "take me back to the product" is now the GAMES tab directly below the wordmark.
    The right side is now empty. It previously held `currentDisplaySeason() + " SEASON"`, removed
    2026-07-30 — it was not interactive, and on a site covering four decades of seasons it implied the whole
    product was scoped to one — and an `ABOUT` link, which moved to the nav row.
@@ -531,19 +534,20 @@ alone. It is style, not bias, and the copy says so.
    dead branch was removed. Per-game LIVE status is shown in the slate row instead (`matchup-table.tsx`).
 2. **Main nav** (44px, `var(--term-surface)`, bottom border `var(--term-border)`) holds **two
    navigation landmarks in one row**. Left, `aria-label="Main navigation"`: the six direct tabs
-   from `DIRECT_NAV_ITEMS` (`src/lib/primary-navigation.ts`) — `GAMES → /`,
+   from `DIRECT_NAV_ITEMS` (`src/lib/primary-navigation.ts`) — `GAMES → /games`,
    `SEASON REPORT → /season`, `SCHEDULE EDGE → /schedule`, `MODEL RESULTS → /analysis`,
    `PLAYOFF REST → /playoffs`, `PLAYER SHOOTING → /shooting` — followed by the `OTHER`
    menu holding `SHOT VALUE → /shot-quality`, `AVAILABILITY COST → /availability` and
    `REFEREE EFFECT → /referees`. Right,
-   `ml-auto` and `aria-label="Reference"`: `ABOUT → /about` and
-   `BEHIND THE DATA → /behind-the-data`. Two landmarks rather than one so the reference links
+   `ml-auto` and `aria-label="Reference"`: `BEHIND THE DATA → /behind-the-data` alone.
+   `ABOUT` left on 2026-08-12 when the page it pointed at became `/` — a chrome link to the
+   front door duplicates the wordmark. Two landmarks rather than one so the reference links
    never inflate the asserted six-link count, and so screen readers announce them as what they
    are.
-   **The surface list on `/about` is *not* derived from `DIRECT_NAV_ITEMS`** — `SURFACES` in
+   **The surface list on `/` is *not* derived from `DIRECT_NAV_ITEMS`** — `SURFACES` in
    `src/components/about-content.tsx` is a separate, hand-maintained array. An earlier version
    of this doc claimed the two were linked, which was false and let a tab addition on this
-   branch ship without `/about` in sync for a time. There is no shared source: adding or
+   branch ship without the front door in sync for a time. There is no shared source: adding or
    renaming a direct tab requires a matching hand edit to `SURFACES`, and `SHOT VALUE` is
    correctly absent from it only because someone left it out on purpose, not because the list
    knows it belongs to `OTHER_NAV_ITEMS`.
@@ -812,7 +816,7 @@ viewport, and the narrowest screen the app has to hold. Note that Playwright's b
 `iPhone 12 Mini` descriptor reports **375**, which is wrong for that device; test at 360, because
 several layouts fit at 375 and are tight at 360.
 
-**No page overflows horizontally.** All eleven routes (the nine product pages plus `/about` and
+**No page overflows horizontally.** All eleven routes (the nine product pages plus `/` and
 `/behind-the-data`) measured `scrollWidth === clientWidth` at 360pt. Wide content is contained
 rather than escaping, which is the invariant to protect when adding a table or a chart.
 
@@ -838,7 +842,7 @@ never disabling zoom.
 
 **Nav links measure 43pt tall**, one point under Apple's 44pt minimum touch target.
 
-**`/about` bleeds its decorative court SVG past both edges by design** — it is the one page whose
+**The front door (`/`) bleeds its decorative court SVG past both edges by design** — it is the one page whose
 children legitimately extend beyond the viewport box, and it is inside a clipping section, so it
 does not scroll the page.
 
@@ -1177,7 +1181,7 @@ near-black `#2A313A` for the same reason).
 ### Two-layer header
 
 Sticky header = brand bar (52px) + main nav (44px) = **96px**, published as
-`--term-chrome-h` in `globals.css`. `/about`'s full-viewport sections subtract that token
+`--term-chrome-h` in `globals.css`. the front door's full-viewport sections subtract that token
 rather than a literal, because they overran the fold by exactly the difference the last two
 times the chrome changed height and they did not. See `nav-bar.tsx` above. Footer mirrors the
 broadcast aesthetic with mono metadata.
@@ -1190,7 +1194,7 @@ half, with an amber center circle; fixed brand hexes, not theme tokens). It rend
 brand bar, so its strokes are **near-black `#111318`** to read on the light chrome.
 
 **The divider leans top-right to bottom-left** — `M39 7 L33 41` in the 72×48 viewBox — matching
-the oversized `CourtSplit` court on `/about`. It leaned the other way until 2026-07-30, so the
+the oversized `CourtSplit` court on the front door (`/`). It leaned the other way until 2026-07-30, so the
 same mark pointed two directions depending on which surface you were looking at. That geometry
 is duplicated in four files (`court-mark.tsx`, `src/app/icon.svg`, `docs/logo.svg`, and the
 `MARK` string in `src/app/opengraph-image.tsx`) plus the hand-exported

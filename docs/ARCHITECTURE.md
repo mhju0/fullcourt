@@ -128,7 +128,7 @@ Full list in [API.md](API.md).
 - `app/page.tsx` — **Games** (client, nav label `GAMES`): season/month/day pickers → `/api/games/dates`
   then `/api/games/[date]`, with live merges from `useLiveGames`. Its UPCOMING view mounts
   `upcoming-content.tsx`, absorbed from the retired `/upcoming` route (now a redirect
-  to `/` in `next.config.ts`). The browsing state machine lives in `hooks/useGameSlate.ts` over
+  to `/games` in `next.config.ts`). The browsing state machine lives in `hooks/useGameSlate.ts` over
   the pure reducer `lib/game-slate-machine.ts` — see the decision entry below.
 - `app/analysis/page.tsx` / `app/playoffs/page.tsx` /
   `app/schedule/page.tsx` / `app/shot-quality/page.tsx` / `app/shooting/page.tsx` /
@@ -138,7 +138,7 @@ Full list in [API.md](API.md).
   so a Postgres round trip could only ever return the same numbers. `/season`'s last section
   (zero-rest workload) reads the same static file for the same reason — `/shooting` is no
   longer the only surface that does.
-- `app/about/page.tsx` — **the landing / explainer page**, outside the product surfaces.
+- `app/page.tsx` — **the front door / explainer page**, outside the product surfaces. It was `app/about/page.tsx` until 2026-08-12; `/about` is now a 307 redirect here.
   Visuals are CSS and inline SVG only, so `img-src` did not have to widen, and GSAP is imported
   *inside* an effect, keeping it out of the shared bundle. It is a **server component as of
   2026-07-30**: it reads `getHistoricalBacktest` and passes the evidence figures down, because
@@ -335,7 +335,7 @@ the row change → connected clients update in place.
   weight and size rather than by face, retiring Inter + Space Grotesk + IBM Plex Mono — an
   **indigo accent** spent one moment at a time, rose/teal **data poles**, and the Games slate
   rebuilt as **one continuous table** rather than a stack of cards. The light Broadcast system
-  it replaced was itself light → dark → light; this is light-only too, and `/about` remains the
+  it replaced was itself light → dark → light; this is light-only too, and the front door (`/`, formerly `/about`) remains the
   one deliberately dark surface. No new runtime dependency, no CSP change.
 - **The two-rail alignment law, and one table module (2026-08-11).** Two follow-on passes the
   redesign made necessary. The law — outer rail at the page gutter, inner rail at `SPACE_CARD`,

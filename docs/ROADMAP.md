@@ -44,7 +44,7 @@ reason each of the other three lost is in [design/README.md](design/README.md). 
 separate by weight and size rather than by face — retiring Inter, Space Grotesk and IBM Plex Mono
 together), an **indigo accent** spent one moment at a time, rose/teal **data poles**, and the
 Games slate rebuilt as **one continuous table** where a row expands in place. Still light-only;
-`/about` is still the one deliberately dark surface. No runtime dependency was added.
+The front door (`/`, at `/about` until 2026-08-12) is still the one deliberately dark surface. No runtime dependency was added.
 
 **Two follow-on passes on 2026-08-11**, both consequences of that redesign rather than new
 features:
@@ -67,7 +67,7 @@ features:
 
 The dependency tree is deliberately pinned; see
 [SEASON_ROLLOVER.md §8](SEASON_ROLLOVER.md) before regenerating the lockfile, and §7 for the
-season counts and frozen `/about` figures that do not derive themselves. **`gsap` is the one
+season counts and frozen front-door figures that do not derive themselves. **`gsap` is the one
 runtime dependency added since the freeze** (2026-07-28, for `/about` only; still the only
 one as of 2026-07-30). It is imported
 inside an effect so it stays out of the shared bundle, and `@gsap/react` was deliberately not

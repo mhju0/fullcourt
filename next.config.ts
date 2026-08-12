@@ -33,12 +33,20 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  // /upcoming was folded into the GAMES page as its UPCOMING view when the nav dropped
-  // to five tabs. `permanent: false` (307), not 308: browsers cache a permanent redirect
-  // indefinitely and it cannot be invalidated server-side, so restoring /upcoming would
-  // leave every prior visitor stuck here. The nav is still settling; 307 keeps that door open.
+  // Both are 307, not 308, and for the same reason: browsers cache a permanent redirect
+  // indefinitely and it cannot be invalidated server-side, so a reversal would leave every
+  // prior visitor stuck. The nav is still settling; 307 keeps both doors open.
+  //
+  // /upcoming was folded into the games board as its UPCOMING view when the nav dropped to five
+  // tabs, and follows that board to /games.
+  //
+  // /about is where the marketing page lived until 2026-08-12. It is linked from the footer and
+  // from anywhere it has been shared, so the address has to keep working.
   async redirects() {
-    return [{ source: "/upcoming", destination: "/", permanent: false }];
+    return [
+      { source: "/upcoming", destination: "/games", permanent: false },
+      { source: "/about", destination: "/", permanent: false },
+    ];
   },
   async headers() {
     return [

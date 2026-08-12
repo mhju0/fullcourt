@@ -130,7 +130,7 @@ smaller reference surfaces so the bar stays short as they accumulate. Labels are
 with no time words — the pattern every mainstream NBA nav uses — while the precise terms
 (`xeFG%`, net rest edge) live in each page's eyebrow, where surrounding context decodes them.
 
-- **Games** (`/`) — the slate as one continuous table: a row per game carrying both fatigue
+- **Games** (`/games`) — the slate as one continuous table: a row per game carrying both fatigue
   scores, the schedule flags behind them, a rest-advantage gauge and a confidence read, with
   real-time score/status updates via Supabase Realtime. It was a stack of cards until 2026-08-09;
   the table is the Front Office redesign's spine, and a row expands in place rather than opening
@@ -206,10 +206,11 @@ with no time words — the pattern every mainstream NBA nav uses — while the p
 
 Each analytics module is **additive and isolated** — its own scripts, tables, routes, and page — so new modules never destabilize the flagship rest-advantage flow.
 
-Two routes sit outside that set: **`/about`**, a landing page that explains what the product
+Two routes sit outside that set: **`/`**, the front door, which explains what the product
 measures, and **`/behind-the-data`**, the method pages behind each module. Neither is a tab —
-both are reached from reference links right-aligned in the nav row, and `/about` also from the
-footer. `/about` reads its three evidence figures from the same backtest `/analysis` renders.
+`/` is reached from the wordmark and the footer, `/behind-the-data` from a reference link
+right-aligned in the nav row. `/` reads its three evidence figures from the same backtest
+`/analysis` renders. It lived at `/about` until 2026-08-12, which still redirects here.
 
 ---
 
@@ -301,7 +302,7 @@ so the question is not reopened from scratch.
 
 | Layer | Tech |
 |-------|------|
-| Frontend | Next.js 16 (App Router), React 19, TypeScript (strict), Tailwind CSS v4, Base UI (the `button` and `nav` primitives, seeded from shadcn and trimmed to the call sites this app has), Recharts, SWR, GSAP (dynamically imported, `/about` only) |
+| Frontend | Next.js 16 (App Router), React 19, TypeScript (strict), Tailwind CSS v4, Base UI (the `button` and `nav` primitives, seeded from shadcn and trimmed to the call sites this app has), Recharts, SWR, GSAP (dynamically imported, `/` only) |
 | API | Next.js route handlers, Zod validation, Drizzle ORM, postgres-js |
 | Database | Supabase PostgreSQL — Row-Level Security + Realtime |
 | Data pipeline | Python (`nba_api`, `pandas`) + TypeScript (`tsx`) |

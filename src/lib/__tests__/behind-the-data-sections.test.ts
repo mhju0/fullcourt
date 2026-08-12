@@ -13,10 +13,15 @@ import { PRIMARY_NAV_ITEMS } from "@/lib/primary-navigation";
  */
 describe("methodologyHrefFor", () => {
   it("answers for every surface the fatigue score is rendered on", () => {
-    // The three that share one section. `/` is the case that was broken.
-    expect(methodologyHrefFor("/")).toBe("/behind-the-data/rest-advantage");
+    // The three that share one section. The games board is the case that was broken; it was
+    // `/` until the front-door swap on 2026-08-12 moved it to `/games`.
+    expect(methodologyHrefFor("/games")).toBe("/behind-the-data/rest-advantage");
     expect(methodologyHrefFor("/analysis")).toBe("/behind-the-data/rest-advantage");
     expect(methodologyHrefFor("/season")).toBe("/behind-the-data/rest-advantage");
+  });
+
+  it("claims no section for the front door, which documents itself", () => {
+    expect(methodologyHrefFor("/")).toBeNull();
   });
 
   it("answers for each single-surface section", () => {

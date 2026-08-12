@@ -81,11 +81,14 @@ test.describe("Behind the Data", () => {
 });
 
 test.describe("Status bar", () => {
-  test("the wordmark returns to the home slate", async ({ page }) => {
+  test("the wordmark returns to the front door", async ({ page }) => {
     await page.goto("/analysis");
-    // Previously inert: the one piece of chrome people reflexively click did nothing.
+    // Previously inert: the one piece of chrome people reflexively click did nothing. It used
+    // to land on the games slate, because `/` was the slate. Since the 2026-08-12 swap `/` is
+    // the front door, which is where a wordmark is expected to go.
     await page.getByRole("link", { name: "FullCourt home" }).click();
     await expect(page).toHaveURL(/\/$/);
+    await expect(page.getByRole("heading", { level: 1 })).toContainText("Rest is a stat");
   });
 
   test("no longer advertises a single current season in the chrome", async ({ page }) => {
@@ -124,14 +127,15 @@ test.describe("Prose spacing", () => {
     "/behind-the-data/player-shooting",
     "/behind-the-data/shot-value",
     "/behind-the-data/data-and-limits",
+    // "/" is the front door (the marketing page, formerly /about); "/games" is the board.
     "/",
+    "/games",
     "/season",
     "/schedule",
     "/analysis",
     "/playoffs",
     "/shooting",
     "/shot-quality",
-    "/about",
   ];
 
   for (const route of ROUTES) {

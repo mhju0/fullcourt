@@ -66,7 +66,7 @@ function SurfaceGlyph({ href }: { href: string }) {
   const line = "rgba(245,241,232,.22)";
   const common = { viewBox: "0 0 120 56", className: "w-full", "aria-hidden": true as const };
 
-  if (href === "/")
+  if (href === "/games")
     return ( // Games — two fatigue bars, unequal
       <svg {...common}>
         <rect x="4" y="14" width="112" height="7" rx="3.5" fill={line} />
@@ -143,7 +143,7 @@ function SurfaceGlyph({ href }: { href: string }) {
  * editing, and a new surface arrives inside the range too.
  */
 const SURFACES = [
-  { name: "Games", href: "/", copy: "Every season's slate by date, with fatigue scores, rest gaps, and live scores during the season." },
+  { name: "Games", href: "/games", copy: "Every season's slate by date, with fatigue scores, rest gaps, and live scores during the season." },
   { name: "Season Report", href: "/season", copy: "One season read end to end: how the rest call scored, and what each schedule was worth in wins." },
   { name: "Schedule Edge", href: "/schedule", copy: "Which teams a season's schedule favoured, counted in games with a real rest edge and priced in wins." },
   { name: "Model Results", href: "/analysis", copy: "The backtest that scores the model against history: thresholds, season trends, and every individual game." },
@@ -544,8 +544,10 @@ export function AboutContent({ stats }: { stats: AboutStats | null }) {
         <h2 className="font-heading mx-auto max-w-4xl font-bold" style={{ fontSize: "clamp(2.3rem,7.5vw,6rem)", lineHeight: 0.98, letterSpacing: "-0.035em" }}>
           Read the schedule before it reads you
         </h2>
+        {/* `/games`, not `/`. This page moved to `/` on 2026-08-12, so a CTA pointing at `/`
+            would scroll the reader back to the top of the page they are already on. */}
         <Link
-          href="/"
+          href="/games"
           className="mt-12 inline-block rounded-full px-9 py-4 text-sm font-semibold transition-transform hover:-translate-y-0.5"
           style={{ background: BONE, color: INK }}
         >
