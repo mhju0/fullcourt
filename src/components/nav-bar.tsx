@@ -17,14 +17,21 @@ import { cn } from "@/lib/utils"
  * and weight as tabs, because the top status strip proved too quiet to be found.
  *
  * Kept here rather than in primary-navigation.ts on purpose: that module enumerates product
- * surfaces, and these two are documentation about the product rather than surfaces of it.
+ * surfaces, and this is documentation about the product rather than a surface of it.
+ *
+ * ABOUT left on 2026-08-12, when the page it pointed at became `/`. A link from the front door
+ * to itself is not a reference; the wordmark already goes there, and that is the convention a
+ * reader expects. One link is a thin landmark, but it is still the honest grouping — BEHIND THE
+ * DATA explains the product rather than being a surface of it, which is exactly what this
+ * landmark separates.
  */
 const SECONDARY_LINKS = [
-  { href: "/about", label: "ABOUT" },
   { href: "/behind-the-data", label: "BEHIND THE DATA" },
 ] as const
 
 function isActive(pathname: string, href: string): boolean {
+  // `/` is the marketing page and no tab points at it, so the exact-match branch this used to
+  // need for GAMES is gone. Kept as a guard: a prefix match on "/" would light every tab.
   if (href === "/") return pathname === "/"
   return pathname === href || pathname.startsWith(href + "/")
 }
@@ -57,8 +64,14 @@ export function NavBar() {
         <div className="mx-auto flex h-full max-w-7xl items-center justify-between px-4 sm:px-6">
           {/* The wordmark goes home, which is what every visitor already expects a logo to
               do. It was previously inert — the one piece of chrome people reflexively click
-              and nothing happened. Home is GAMES, not /about: a logo that lands you on a
-              marketing page breaks the "take me back to the product" contract.
+              and nothing happened.
+
+              It used to read "home is GAMES, not /about: a logo that lands you on a marketing
+              page breaks the 'take me back to the product' contract." That held while `/` WAS
+              the games board, so home and the product were one page. They split on 2026-08-12
+              and the rule inverts: `/` is now the front door, a wordmark pointing anywhere else
+              is the surprising choice, and "take me back to the product" is served by the GAMES
+              tab sitting first in the row directly below this.
 
               Sized as a logotype rather than as chrome text (2026-07-30). At 11px mono it was
               smaller than the tabs beneath it, so the one element that names the product read

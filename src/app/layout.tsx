@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Analytics } from "@vercel/analytics/next";
+import Link from "next/link";
 import { Geist, Geist_Mono } from "next/font/google";
 import { NavBar } from "@/components/nav-bar";
 import "./globals.css";
@@ -107,13 +108,16 @@ export default function RootLayout({
               </a>
             </span>
             <span style={{ fontSize: "11px", color: "var(--term-text-muted)", letterSpacing: "0.04em" }}>
-              <a
-                href="/about"
+              {/* `/` since 2026-08-12, when that page became the front door. `/about` still
+                  redirects here, but pointing straight at it saves the hop. `Link` rather than
+                  `<a>`: this is an internal route now, and `no-html-link-for-pages` enforces it. */}
+              <Link
+                href="/"
                 className="transition-colors hover:text-[var(--term-text)]"
                 style={{ color: "var(--term-text-muted)", textDecoration: "underline" }}
               >
                 WHAT THIS MEASURES
-              </a>
+              </Link>
               {" · "}
               <a
                 href="https://github.com/mhju0"

@@ -14,7 +14,7 @@ python3 -m unittest discover -s scripts/tests -p 'test_*.py' -v
                    # import-light Python ingestion contract tests
 ```
 
-> **Build without a database before pushing.** `/about` is a server component that reads the
+> **Build without a database before pushing.** `/` (the front door) is a server component that reads the
 > live backtest, so it is data-dependent at build time — and a local `pnpm build` passes on
 > `.env.local` while CI, which has no `DATABASE_URL`, fails at prerender. That gap went
 > unnoticed for three pushes on 2026-07-30. The page now withholds its three evidence figures
@@ -111,7 +111,7 @@ asserting, and that dialog was removed on 2026-08-11. `e2e/onboarding.spec.ts` w
 replaced the coupling is a readiness gate where a spec needs one — `navigation.spec.ts` waits for
 a client-owned control before clicking a header link, because a click landing mid-hydration hits a
 node React is replacing and the navigation is dropped.
-Specs (15): `e2e/home.spec.ts`, `e2e/about.spec.ts`, `e2e/alignment-audit.spec.ts`,
+Specs (15): `e2e/home.spec.ts` (the front door), `e2e/games.spec.ts`, `e2e/alignment-audit.spec.ts`,
 `e2e/alignment-law.spec.ts`, `e2e/analysis.spec.ts`, `e2e/availability.spec.ts`,
 `e2e/behind-the-data.spec.ts`, `e2e/navigation.spec.ts`, `e2e/page-headers.spec.ts`,
 `e2e/playoffs.spec.ts`, `e2e/referees.spec.ts`, `e2e/schedule-disparity.spec.ts`,
@@ -149,20 +149,22 @@ back on expand.
 >   `/` / `/analysis` / `/schedule`. The active link is asserted via its `aria-current="page"`
 >   attribute (the amber-underline active state), and inactive links are checked to lack it.
 >   The link count is pinned at **6** (`SEASON REPORT` joined the bar with `/season`), so a
->   resurrected seventh tab fails here. `ABOUT` and `BEHIND THE DATA` sit in a separate
->   `Reference` landmark in the same row, which is exactly why that count still holds: two
->   landmarks, one bar. A second spec pins `/about`'s entry point by asserting it is
->   **absent** from `Main navigation` before following it.
-> - **`about.spec.ts`** — the landing page renders its hero, its single call to action, and a
+>   resurrected seventh tab fails here. `BEHIND THE DATA` sits in a separate `Reference`
+>   landmark in the same row, which is exactly why that count still holds: two landmarks, one
+>   bar. Since the 2026-08-12 front-door swap that landmark holds one link — `ABOUT` left when
+>   the page it pointed at became `/` — and `navigation.spec.ts` also asserts that **no tab
+>   carries `aria-current` on `/`**, which is what stops a tab being wired back to the root.
+> - **`home.spec.ts`** — the front door renders its hero, its single call to action (pointing at
+>   `/games`, not itself), and a
 >   `Product surfaces` nav of exactly six links carrying the six direct nav labels, so a
 >   future nav rename that misses this page fails here instead of drifting quietly. It also
 >   asserts the hero's old pair of buttons is **gone** (`See the backtest` at count 0). A second test re-pins
->   the six-tab count from `/` and follows the footer's `WHAT THIS MEASURES` link. The hero
+>   the six-tab count from `/games` and follows the footer's `WHAT THIS MEASURES` link. The hero
 >   assertion allows 30s: the page is `ssr: false`, so a cold Turbopack compile is on the path.
-> - **`home.spec.ts`** — the heading is the `<h1>` **"Games"** (`REST ADVANTAGE
->   DASHBOARD` is an eyebrow `<span>`); controls use `getByLabel("Season")`, the
+> - **`games.spec.ts`** — the heading is the `<h1>` **"Games"** (`GAME SLATE · REST
+>   ADVANTAGE` is an eyebrow `<span>`); controls use `getByLabel("Season")`, the
 >   `selected-date-display` placeholder `PICK A DATE`, and the empty state `NO GAMES SCHEDULED`.
->   One spec covers the retired `/upcoming` route: it asserts the redirect lands on `/` **and**
+>   One spec covers the retired `/upcoming` route: it asserts the redirect lands on `/games` **and**
 >   that the view toggle swaps the body (the `Previous day` control disappears under UPCOMING
 >   and returns under BY DATE) — a redirect-only assertion would pass on a broken toggle.
 >   Two specs pin the season-wide day fetch introduced with `useGameSlate`: one waits for a

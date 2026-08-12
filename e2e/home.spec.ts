@@ -1,154 +1,72 @@
 import { expect, test } from "@playwright/test";
 
-test.describe("Home page", () => {
-  test("leads with the thesis, and loads the season control and month tabs", async ({ page }) => {
+/**
+ * The front door. This page lived at `/about` until 2026-08-12 and the spec moved with it —
+ * `e2e/home.spec.ts` used to cover the games board, which is now `e2e/games.spec.ts`. The
+ * redirect from the old address is asserted in `navigation.spec.ts`.
+ */
+test.describe("Front door", () => {
+  test("renders the hero, every surface, and the single way in", async ({ page }) => {
     await page.goto("/");
 
-    // The root's largest type states what the site measures, not the format it shows it in.
-    // It read "Games" until 2026-08-11, which named the table rather than the subject.
+    // Client-rendered (ssr: false), so give the chunk a moment on a cold dev compile.
     await expect(
-      page.getByRole("heading", { name: "What the schedule does to a game", exact: true })
-    ).toBeVisible();
+      page.getByRole("heading", { name: "Rest is a stat" })
+    ).toBeVisible({ timeout: 30_000 });
 
-    // The headline figure is read from rest-split-facts, never typed into the page.
-    await expect(page.getByText(/is how often the more-rested team wins/)).toBeVisible();
+    // The surface links mirror the nav labels, so a rename that misses this page shows
+    // up here rather than drifting quietly out of sync. Each card is one link wrapping
+    // label + copy, so the accessible name is "<label> <copy>" — anchor at the start
+    // rather than matching exactly.
+    const surfaces = page.getByRole("navigation", { name: "Product surfaces" });
+    await expect(surfaces.getByRole("link")).toHaveCount(6);
+    for (const name of [
+      "Games",
+      "Season Report",
+      "Schedule Edge",
+      "Model Results",
+      "Playoff Rest",
+      "Player Shooting",
+    ]) {
+      await expect(
+        surfaces.getByRole("link", { name: new RegExp(`^${name}\\b`) })
+      ).toBeVisible();
+    }
 
-    await expect(page.getByLabel("Season")).toBeVisible();
-    await expect(page.getByRole("button", { name: /^OCT$/ })).toBeVisible();
-    await expect(page.getByRole("button", { name: /^DEC$/ })).toBeVisible();
+    // One call to action, at the end. The hero carried a pair of buttons under the
+    // headline; they competed with the one line the page opens on and asked for a decision
+    // before the argument had been made. The hero is now the claim and nothing else.
+    const enter = page.getByRole("link", { name: "Open the games board" });
+    await expect(enter).toHaveCount(1);
+    await expect(enter).toBeVisible();
+    await expect(page.getByRole("link", { name: "See the backtest" })).toHaveCount(0);
   });
 
-  // The old /upcoming route was folded into this page as its UPCOMING view. Both halves
-  // are asserted: the redirect (so old links still land) and the toggle actually swapping
-  // the body (so a broken branch can't pass by leaving the date browser mounted).
-  test("absorbs the retired /upcoming route as a view toggle", async ({ page }) => {
-    await page.goto("/upcoming");
+  test("is reachable from the footer, and is not itself a nav tab", async ({ page }) => {
+    await page.goto("/games");
+
+    // The front door stays out of the primary nav: it explains the product rather than being
+    // one of its surfaces. The count tracks DIRECT_NAV_ITEMS — the surfaces behind the
+    // OTHER menu are not in the DOM until it opens — so a new tab has to be a
+    // deliberate edit here too.
+    const nav = page.getByRole("navigation", { name: "Main navigation" });
+    await expect(nav.getByRole("link")).toHaveCount(6);
+
+    await page.getByRole("link", { name: "WHAT THIS MEASURES" }).click();
     await expect(page).toHaveURL(/\/$/);
-
-    const views = page.getByRole("group", { name: "Games view" });
-    await expect(page.getByRole("button", { name: "Previous day" })).toBeVisible();
-
-    await views.getByRole("button", { name: "UPCOMING" }).click();
-    await expect(page.getByRole("button", { name: "Previous day" })).toBeHidden();
-
-    await views.getByRole("button", { name: "BY DATE" }).click();
-    await expect(page.getByRole("button", { name: "Previous day" })).toBeVisible();
   });
 
-  test("previous-day control moves the selected date display backward", async ({ page }) => {
+  test("its one CTA opens the board, not itself", async ({ page }) => {
     await page.goto("/");
 
-    const display = page.getByTestId("selected-date-display");
-    await expect(display).not.toHaveText("PICK A DATE", { timeout: 60_000 });
+    // The CTA pointed at `/` while this page was at `/about`. After the swap that would have
+    // scrolled the reader to the top of the page they were already on — a dead button that
+    // looks like it works, which nothing else here would have caught.
+    const enter = page.getByRole("link", { name: "Open the games board" });
+    await expect(enter).toHaveAttribute("href", "/games");
 
-    const before = await display.textContent();
-    expect(before).toBeTruthy();
-
-    await page.getByRole("button", { name: "Previous day" }).click();
-
-    const after = await display.textContent();
-    expect(after).toBeTruthy();
-    expect(after).not.toBe(before);
-  });
-
-  test("Christmas 2024 slate shows matchup cards with team abbreviations and fatigue decimals", async ({
-    page,
-  }) => {
-    await page.goto("/");
-
-    await page.getByLabel("Season").selectOption("2024-25");
-    await page.getByRole("button", { name: /^DEC$/ }).click();
-
-    const dec25 = page.getByRole("button", { name: /December 25, 2024/ });
-    await expect(dec25).toBeVisible({ timeout: 60_000 });
-    await dec25.click();
-
-    await page.waitForResponse(
-      (res) =>
-        res.url().includes("/api/games/2024-12-25") && res.status() === 200
-    );
-
-    // MatchupCard's toggle row is role="button" with an "Expand/Collapse game
-    // details" aria-label (src/components/matchup-table.tsx) — there's
-    // no combined "TEAM @ TEAM" text node in the current markup.
-    const firstCard = page
-      .getByRole("button", { name: /Expand game details|Collapse game details/ })
-      .first();
-    await expect(firstCard).toBeVisible({ timeout: 60_000 });
-
-    const abbreviation = firstCard.locator("span").filter({ hasText: /^[A-Z]{3}$/ }).first();
-    await expect(abbreviation).toBeVisible();
-
-    const fatigueDecimal = firstCard.locator(".tabular-nums").filter({ hasText: /\d+\.\d/ }).first();
-    await expect(fatigueDecimal).toBeVisible();
-  });
-
-  // The month tab is derived from the selected date rather than stored beside it, so
-  // stepping across a boundary moves the tab by definition. The version this replaced
-  // needed a setState-during-render block plus a ref handshake to achieve the same thing.
-  test("crossing a month boundary with the arrows moves the month tab", async ({ page }) => {
-    await page.goto("/");
-
-    await page.getByLabel("Season").selectOption("2024-25");
-    await page.getByRole("button", { name: /^DEC$/ }).click();
-
-    const display = page.getByTestId("selected-date-display");
-    await expect(display).toContainText("DECEMBER", { timeout: 60_000 });
-
-    // Land on the last December day with games, then step past it.
-    await page.locator('button[aria-label*="December"]').last().click();
-    await expect(display).toContainText("DECEMBER");
-
-    const next = page.getByRole("button", { name: "Next day" });
-    for (let i = 0; i < 5; i++) {
-      await next.click();
-      const text = await display.textContent();
-      if (text && !text.includes("DECEMBER")) break;
-    }
-
-    await expect(display).toContainText("JANUARY");
-    await expect(page.getByRole("button", { name: /^JAN$/ })).toHaveAttribute("aria-pressed", "true");
-    await expect(page.getByRole("button", { name: /^DEC$/ })).toHaveAttribute("aria-pressed", "false");
-  });
-
-  test("previous day from an early season date can reach a day with no games", async ({ page }) => {
-    await page.goto("/");
-
-    await page.getByLabel("Season").selectOption("2024-25");
-
-    // One dates request per season, with no `month` param — a month click now resolves
-    // from the in-memory day list instead of a round trip. Asserted negatively too, so
-    // a regression back to month-scoped fetching fails here rather than passing quietly.
-    await page.waitForResponse(
-      (res) =>
-        res.url().includes("/api/games/dates") &&
-        res.url().includes("season=2024-25") &&
-        !res.url().includes("month=") &&
-        res.status() === 200
-    );
-
-    await page.getByRole("button", { name: /^OCT$/ }).click();
-
-    const firstDayWithGames = page.locator('button[aria-label*="games"]').first();
-    await expect(firstDayWithGames).toBeVisible({ timeout: 60_000 });
-    await firstDayWithGames.click();
-
-    await page.waitForResponse(
-      (res) => res.url().includes("/api/games/20") && res.status() === 200
-    );
-
-    const prev = page.getByRole("button", { name: "Previous day" });
-    const empty = page.getByText("NO GAMES SCHEDULED");
-    for (let i = 0; i < 45; i++) {
-      await prev.click();
-      try {
-        await expect(empty).toBeVisible({ timeout: 1_000 });
-        return;
-      } catch {
-        // still on a day with games — keep stepping back
-      }
-    }
-
-    throw new Error("Expected to reach a date with no games within 45 previous-day steps");
+    await enter.click();
+    await expect(page).toHaveURL(/\/games$/);
+    await expect(page.getByRole("heading", { level: 1, name: "Games" })).toBeVisible();
   });
 });

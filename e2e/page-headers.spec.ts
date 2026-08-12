@@ -13,7 +13,9 @@ import { test, expect } from "@playwright/test";
  * measure. Narrow viewports legitimately wrap further and are not asserted here.
  */
 const ROUTES = [
-  "/",
+  // Not "/": since 2026-08-12 that is the marketing page, which sets its own hero type rather
+  // than using PageHeader. The games board it replaced now lives at /games.
+  "/games",
   "/season",
   "/schedule",
   "/analysis",
