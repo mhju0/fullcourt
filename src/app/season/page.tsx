@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { MethodLink } from "@/components/method-link";
 import { PageHeader } from "@/components/page-header";
 import { SeasonReportContentLazy } from "@/components/season-report-lazy";
 
@@ -16,6 +17,7 @@ export default function SeasonPage() {
         title="Season Report"
         description="One NBA season read through rest and fatigue: how the rest-advantage call scored against its own history, and what each team's schedule was actually worth — in wins, not percentages."
       />
+      <MethodLink surfaceHref="/season" />
 
       <SeasonReportContentLazy />
     </div>
