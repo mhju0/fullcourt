@@ -101,8 +101,10 @@ export default function RootLayout({
               RENDERED: {renderedAt} ·{" "}
               <a
                 href="/api/health"
-                className="transition-colors hover:text-[var(--term-text)]"
-                style={{ color: "var(--term-text-muted)", textDecoration: "underline" }}
+                // Colour is a class, not an inline `style`. It was inline until 2026-08-13, and
+                // an inline declaration outranks a class rule — so `hover:text-` never painted on
+                // any of these four links. Measured: computed colour identical at rest and hover.
+                className="underline transition-colors text-[var(--term-text-muted)] hover:text-[var(--term-text)]"
               >
                 SYSTEM STATUS
               </a>
@@ -113,8 +115,10 @@ export default function RootLayout({
                   `<a>`: this is an internal route now, and `no-html-link-for-pages` enforces it. */}
               <Link
                 href="/"
-                className="transition-colors hover:text-[var(--term-text)]"
-                style={{ color: "var(--term-text-muted)", textDecoration: "underline" }}
+                // Colour is a class, not an inline `style`. It was inline until 2026-08-13, and
+                // an inline declaration outranks a class rule — so `hover:text-` never painted on
+                // any of these four links. Measured: computed colour identical at rest and hover.
+                className="underline transition-colors text-[var(--term-text-muted)] hover:text-[var(--term-text)]"
               >
                 WHAT THIS MEASURES
               </Link>
@@ -123,8 +127,10 @@ export default function RootLayout({
                 href="https://github.com/mhju0"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="transition-colors hover:text-[var(--term-text)]"
-                style={{ color: "var(--term-text-muted)", textDecoration: "underline" }}
+                // Colour is a class, not an inline `style`. It was inline until 2026-08-13, and
+                // an inline declaration outranks a class rule — so `hover:text-` never painted on
+                // any of these four links. Measured: computed colour identical at rest and hover.
+                className="underline transition-colors text-[var(--term-text-muted)] hover:text-[var(--term-text)]"
               >
                 BUILT BY MJ
               </a>
@@ -133,8 +139,10 @@ export default function RootLayout({
                 href="https://github.com/mhju0/fullcourt"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="transition-colors hover:text-[var(--term-text)]"
-                style={{ color: "var(--term-text-muted)", textDecoration: "underline" }}
+                // Colour is a class, not an inline `style`. It was inline until 2026-08-13, and
+                // an inline declaration outranks a class rule — so `hover:text-` never painted on
+                // any of these four links. Measured: computed colour identical at rest and hover.
+                className="underline transition-colors text-[var(--term-text-muted)] hover:text-[var(--term-text)]"
               >
                 SOURCE
               </a>

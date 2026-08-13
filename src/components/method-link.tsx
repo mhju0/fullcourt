@@ -16,12 +16,15 @@ export function MethodLink({ surfaceHref }: { surfaceHref: string }) {
   return (
     <Link
       href={href}
-      className="mono inline-flex w-fit items-center gap-2 transition-colors hover:text-[var(--term-text)]"
+      // Colour is a class, not an inline `style`. It was inline until 2026-08-13, and an inline
+      // declaration outranks a class rule — so `hover:text-` never painted, on all eight surfaces
+      // this renders on. Measured: computed colour identical at rest and on hover. The rest of
+      // the style object stays inline; none of it is contested by a utility.
+      className="mono inline-flex w-fit items-center gap-2 transition-colors text-[var(--term-text-muted)] hover:text-[var(--term-text)]"
       style={{
         fontSize: 11,
         letterSpacing: "0.07em",
         fontWeight: 600,
-        color: "var(--term-text-muted)",
         borderBottom: "1px solid var(--term-border)",
         paddingBottom: 4,
       }}
