@@ -76,6 +76,21 @@ test.describe("Primary navigation", () => {
     await expect(page).toHaveURL(/\/games$/);
   });
 
+  test("the 404's Games button lands on the games board, not the front door", async ({ page }) => {
+    // The 2026-08-12 swap was checked component by component and this file was missed, because
+    // nothing routes to it: no nav link, no e2e spec, and no unit test renders it. The button
+    // still said GAMES while pointing at `/`, which had stopped being the games board — a link
+    // whose label and destination disagree, shown to someone already lost.
+    const response = await page.goto("/does-not-exist");
+    expect(response?.status()).toBe(404);
+
+    const games = page.getByRole("link", { name: "Games", exact: true });
+    await expect(games).toHaveAttribute("href", "/games");
+
+    await games.click();
+    await expect(page).toHaveURL(/\/games$/);
+  });
+
   test("reaches SHOT VALUE through the OTHER menu and marks the trigger active", async ({
     page,
   }) => {

@@ -20,8 +20,12 @@ export default function NotFound() {
         or explore the historical rest-advantage backtest.
       </p>
       <div className="mt-8 flex flex-wrap justify-center gap-3">
+        {/* `/games` since 2026-08-12. This said `/` for as long as `/` was the games board;
+            the front-door swap moved the board and left the label pointing at the marketing
+            page. The copy above promises "the games board", so the destination follows the
+            promise rather than the address. */}
         <Link
-          href="/"
+          href="/games"
           className="mono border border-[var(--term-accent)] bg-[var(--term-accent)] px-4 py-2 text-xs font-semibold uppercase tracking-[0.08em] text-[var(--term-surface)] transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--term-accent)]"
         >
           Games
