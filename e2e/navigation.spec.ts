@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
 
 test.describe("Primary navigation", () => {
   test("exposes core routes with an active-state treatment", async ({ page }) => {
@@ -59,6 +59,111 @@ test.describe("Primary navigation", () => {
     // The wordmark points at the front door, which is the convention once `/` stops being the
     // product. "Take me back to the product" is served by the GAMES tab below it.
     await expect(page.getByRole("link", { name: "FullCourt home" })).toHaveAttribute("href", "/");
+  });
+
+  /**
+   * The retracting bar, front door only. `/` stopped being a product surface on 2026-08-12, and
+   * chrome pinned over a long marketing scroll competes with it. Measured against the bar's own
+   * box rather than a class name, so the assertions survive a restyle.
+   */
+  const barTop = async (page: Page) =>
+    Math.round((await page.getByRole("banner").boundingBox())!.y);
+
+  /**
+   * Wheel from mid-viewport, so the gesture is never spent on the nav's own horizontal scroll
+   * strip — and then wait for the page to actually move. `mouse.wheel` dispatches the event but
+   * the scrolling it causes is not instant: reading `scrollY` straight afterwards reads 0, which
+   * silently turned "the bar did not retract" into a test that measured nothing.
+   */
+  const wheel = async (page: Page, dy: number) => {
+    const before = await page.evaluate(() => window.scrollY);
+    await page.mouse.move(640, 400);
+    await page.mouse.wheel(0, dy);
+    await expect.poll(() => page.evaluate(() => window.scrollY)).not.toBe(before);
+  };
+
+  test("the front door's bar retracts on the way down and comes back on the way up", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    await expect(page.getByRole("heading", { name: "Rest is a stat" })).toBeVisible({
+      timeout: 30_000,
+    });
+
+    const bar = page.getByRole("banner");
+    const height = (await bar.boundingBox())!.height;
+    expect(await barTop(page)).toBe(0);
+
+    // Where `<main>` starts in the document. The bar sits in normal flow above it, so retracting
+    // by collapsing height or `display` would drag the whole page up under the reader and fight
+    // the alignment law. A transform leaves this untouched, which is the point of using one.
+    const mainTop = () => page.evaluate(() => document.querySelector("main")!.offsetTop);
+    const mainBefore = await mainTop();
+
+    await wheel(page, 1400);
+    // Assert the page actually moved, or "the bar did not retract" would pass on a page that
+    // never scrolled and this test would be measuring nothing.
+    expect(await page.evaluate(() => window.scrollY)).toBeGreaterThan(height);
+    await expect.poll(async () => await barTop(page)).toBeLessThanOrEqual(-height + 1);
+    expect(await mainTop()).toBe(mainBefore);
+
+    // Retracted, NOT unmounted. `the front door is not a tab` above asserts six links and zero
+    // aria-current on this route; hiding the bar by dropping it from the DOM would take that
+    // invariant with it and this is what fails first if anyone tries.
+    const nav = page.getByRole("navigation", { name: "Main navigation" });
+    await expect(nav.getByRole("link")).toHaveCount(6);
+    await expect(nav.locator("[aria-current='page']")).toHaveCount(0);
+
+    await wheel(page, -400);
+    await expect.poll(async () => await barTop(page)).toBe(0);
+  });
+
+  test("a retracted bar comes back when the keyboard reaches it", async ({ page }) => {
+    await page.goto("/");
+    await expect(page.getByRole("heading", { name: "Rest is a stat" })).toBeVisible({
+      timeout: 30_000,
+    });
+
+    const height = (await page.getByRole("banner").boundingBox())!.height;
+    await wheel(page, 1400);
+    await expect.poll(async () => await barTop(page)).toBeLessThanOrEqual(-height + 1);
+
+    // A retracted bar still holds six focusable tabs. Landing a focus ring on a control sitting
+    // off the top of the screen is the serious half of this feature going wrong.
+    await page.getByRole("link", { name: "GAMES", exact: true }).focus();
+    await expect.poll(async () => await barTop(page)).toBe(0);
+  });
+
+  test("under reduced motion the bar still retracts, but does not slide", async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.goto("/");
+    await expect(page.getByRole("heading", { name: "Rest is a stat" })).toBeVisible({
+      timeout: 30_000,
+    });
+
+    const bar = page.getByRole("banner");
+    const height = (await bar.boundingBox())!.height;
+
+    // The 96px band never travels the screen; it is simply not where it was.
+    expect(await bar.evaluate((el) => getComputedStyle(el).transitionDuration)).toBe("0s");
+
+    await wheel(page, 1400);
+    await expect.poll(async () => await barTop(page)).toBeLessThanOrEqual(-height + 1);
+  });
+
+  test("every other route keeps the bar pinned", async ({ page }) => {
+    await page.goto("/analysis");
+
+    const bar = page.getByRole("banner");
+    const height = (await bar.boundingBox())!.height;
+    expect(await barTop(page)).toBe(0);
+
+    await wheel(page, 1400);
+    expect(await page.evaluate(() => window.scrollY)).toBeGreaterThan(height);
+
+    // Long enough for the front door's 300ms slide to have finished, had this route had one.
+    await page.waitForTimeout(600);
+    expect(await barTop(page)).toBe(0);
   });
 
   test("the old /about address still resolves to the front door", async ({ page }) => {
