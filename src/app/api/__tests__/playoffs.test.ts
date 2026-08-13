@@ -9,6 +9,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { NextRequest } from "next/server";
 import { GET } from "../playoffs/route";
+import { CACHE } from "@/lib/api-route";
 import { getPlayoffSeriesWithPredictions } from "@/lib/db/queries";
 import type { PlayoffsResponse, PlayoffSeriesWithPredictions } from "@/types";
 
@@ -124,5 +125,14 @@ describe("GET /api/playoffs", () => {
 
     expect(res.status).toBe(500);
     expect(body.error.length).toBeGreaterThan(0);
+  });
+
+  // Pins which policy this route asks for. `api-route.test.ts` proves the header mechanism, but
+  // nothing proved any route still requests one — a deleted policy failed no test.
+  it("asks the edge to hold the bracket only as long as an in-progress season allows", async () => {
+    mockGetPlayoffSeries.mockResolvedValueOnce([series({ seriesId: 1, round: 1 })]);
+
+    const res = await GET(makeReq());
+    expect(res.headers.get("cache-control")).toBe(CACHE.inSeason);
   });
 });

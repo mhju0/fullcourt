@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { NextRequest } from "next/server";
 import { GET } from "../schedule-disparity/route";
+import { CACHE } from "@/lib/api-route";
 import { getScheduleDisparity } from "@/lib/schedule-disparity-server";
 import { NBA_SEASONS, nextSeasonLabel } from "@/lib/nba-season";
 import type { ScheduleDisparityResponse } from "@/types";
@@ -158,5 +159,14 @@ describe("GET /api/schedule-disparity — upcoming seasons", () => {
 
     expect(mockGet).toHaveBeenCalledWith(LATEST_SEASON);
     expect(mockGet).not.toHaveBeenCalledWith(UPCOMING);
+  });
+
+  // Pins which policy this route asks for. `api-route.test.ts` proves the header mechanism, but
+  // nothing proved any route still requests one — a deleted policy failed no test.
+  it("lets the edge hold a settled schedule for the historical span", async () => {
+    mockGet.mockResolvedValueOnce(payload());
+
+    const res = await GET(makeReq());
+    expect(res.headers.get("cache-control")).toBe(CACHE.historical);
   });
 });

@@ -1,6 +1,7 @@
 import type { NextRequest } from "next/server";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { GET } from "../games/dates/route";
+import { CACHE } from "@/lib/api-route";
 import { getRegularSeasonGameDatesWithCounts } from "@/lib/db/queries";
 import type { GameDateCount } from "@/types";
 
@@ -58,5 +59,15 @@ describe("GET /api/games/dates", () => {
     const res = await GET(req("http://localhost/api/games/dates?season=2024-25&month=3"));
     expect(res.status).toBe(200);
     expect(mockGetDates).toHaveBeenCalledWith("2024-25", 3);
+  });
+
+  // `jsonRoute`'s own tests prove the header mechanism; nothing proved this route asks for it.
+  // Deleting the policy from the route left the whole suite green, which is how it went
+  // uncached through the 2026-08-07 pass in the first place.
+  it("lets the edge hold the date index, which carries no live score", async () => {
+    mockGetDates.mockResolvedValueOnce([{ date: "2024-10-22", gameCount: 2 }]);
+
+    const res = await GET(req("http://localhost/api/games/dates?season=2024-25"));
+    expect(res.headers.get("cache-control")).toBe(CACHE.inSeason);
   });
 });
