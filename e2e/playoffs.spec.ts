@@ -13,7 +13,7 @@ test.describe("Playoff Rest page", () => {
     // The eyebrow, not the nav tab. Asserted as a literal because "PLAYOFF REST" also appears
     // in the nav, so a looser matcher would pass on the tab and stop testing this page's header.
     await expect(
-      page.getByText("PRIOR-ROUND GRIND · SERIES WIN PROBABILITY")
+      page.getByText("PRIOR-ROUND GRIND · SERIES WIN RATE")
     ).toBeVisible();
   });
 
