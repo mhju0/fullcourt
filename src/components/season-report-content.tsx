@@ -455,9 +455,12 @@ function LoudestCalls({
             type="button"
             data-testid="loudest-call-row"
             onClick={() => setOpenGameId(c.gameId)}
-            className="mono flex items-center justify-between gap-3 px-3 py-2 text-left transition-colors hover:bg-[var(--term-surface-2)]"
+            // Background is a class, not an inline `style`. It was inline until 2026-08-13, and
+            // an inline declaration outranks a class rule — so `hover:bg-` never painted on a row
+            // that is a button and needs to look like one. Measured: computed background
+            // identical at rest and on hover.
+            className="mono flex items-center justify-between gap-3 px-3 py-2 text-left transition-colors bg-[var(--term-surface)] hover:bg-[var(--term-surface-2)]"
             style={{
-              background: "var(--term-surface)",
               border: "1px solid var(--term-border)",
               borderLeft: `2px solid ${c.restedTeamWon ? "var(--term-blue)" : "var(--term-red)"}`,
               borderRadius: "var(--term-radius)",

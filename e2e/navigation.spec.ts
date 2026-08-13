@@ -1,4 +1,4 @@
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test, type Locator, type Page } from "@playwright/test";
 
 test.describe("Primary navigation", () => {
   test("exposes core routes with an active-state treatment", async ({ page }) => {
@@ -164,6 +164,45 @@ test.describe("Primary navigation", () => {
     // Long enough for the front door's 300ms slide to have finished, had this route had one.
     await page.waitForTimeout(600);
     expect(await barTop(page)).toBe(0);
+  });
+
+  /**
+   * Chrome links have to answer the pointer, and twice now they silently have not: the colour or
+   * background sat in an inline `style` while the hover state was a `hover:` utility, and an
+   * inline declaration outranks a class rule — so the utility was dead and nothing noticed. Fixed
+   * on the home surface cards (#28) and again here on the footer and the method link, which
+   * between them render on every page and on eight respectively.
+   *
+   * Value-agnostic on purpose: it asserts the paint *moves*, not what it moves to, so a restyle
+   * keeps passing and a dead state fails.
+   */
+  const paintOf = (el: Locator) =>
+    el.evaluate((n) => {
+      const cs = getComputedStyle(n);
+      return `${cs.color} | ${cs.backgroundColor}`;
+    });
+
+  const answersThePointer = async (page: Page, el: Locator) => {
+    await el.scrollIntoViewIfNeeded();
+    await page.mouse.move(0, 0);
+    const rest = await paintOf(el);
+    await el.hover();
+    await expect.poll(() => paintOf(el)).not.toBe(rest);
+  };
+
+  test("the footer's links visibly answer the pointer", async ({ page }) => {
+    await page.goto("/games");
+
+    // The footer is on every page, so a dead hover here is dead everywhere.
+    await answersThePointer(page, page.getByRole("link", { name: "SYSTEM STATUS" }));
+    await answersThePointer(page, page.getByRole("link", { name: "WHAT THIS MEASURES" }));
+  });
+
+  test("the method link visibly answers the pointer", async ({ page }) => {
+    await page.goto("/analysis");
+    await page.waitForLoadState("networkidle");
+
+    await answersThePointer(page, page.locator('a[href^="/behind-the-data"]').last());
   });
 
   test("the old /about address still resolves to the front door", async ({ page }) => {
