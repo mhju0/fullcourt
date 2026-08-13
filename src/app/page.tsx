@@ -17,8 +17,10 @@ export const metadata: Metadata = {
  * link to it had already been moved once, in 2026-07-30, for being too quiet to find; this
  * finishes that fix rather than starting a new one.
  *
- * `/about` is now a redirect (`next.config.ts`), because the old address is in the footer, in
- * shared links and in `e2e/about.spec.ts`. The games board moved to `/games` and keeps the GAMES
+ * `/about` is now a redirect (`next.config.ts`), because the old address is in shared links and
+ * anything anyone bookmarked; `e2e/navigation.spec.ts` guards that it keeps resolving. The
+ * footer used to be the other reason and no longer is — it points straight at `/`, saving the
+ * hop. The games board moved to `/games` and keeps the GAMES
  * tab, so a returning visitor pays one click — and browser autocomplete spends most of those for
  * them.
  *

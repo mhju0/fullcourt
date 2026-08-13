@@ -441,8 +441,9 @@ export function AboutContent({ stats }: { stats: AboutStats | null }) {
           ))}
         </nav>
 
-        {/* Outside the nav landmark on purpose: e2e/about.spec.ts asserts the card row is
-            exactly six links, and these three are the bar's OTHER menu rather than tabs. */}
+        {/* Outside the nav landmark on purpose: e2e/home.spec.ts asserts the card row is
+            exactly six links, and these three are the bar's OTHER menu rather than tabs.
+            (That spec was `about.spec.ts` until 2026-08-12; it moved with the page.) */}
         <p className="mt-6 text-sm" style={{ color: DIM, lineHeight: 1.7 }}>
           Three more sit behind the bar&rsquo;s <span className="mono">OTHER</span> menu, smaller
           in scope but finished the same way:{" "}

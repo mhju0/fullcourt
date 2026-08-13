@@ -45,8 +45,11 @@ export default function Error({
         >
           Try again
         </button>
+        {/* `/games`, matching the label. Same 2026-08-12 miss as `not-found.tsx`: neither file
+            is reachable from a nav link or a spec, so the front-door swap's link sweep never
+            visited them. "Today's games" has to land on the games board. */}
         <Link
-          href="/"
+          href="/games"
           className="mono border border-[var(--term-border)] bg-[var(--term-surface)] px-4 py-2 text-xs font-semibold uppercase tracking-[0.08em] text-[var(--term-text)] transition-colors hover:border-[var(--term-text-muted)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--term-text)]"
         >
           Today&apos;s games
