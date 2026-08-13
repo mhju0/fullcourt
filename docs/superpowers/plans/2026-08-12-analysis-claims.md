@@ -117,10 +117,18 @@ own existing pattern one level up. It is not a new pattern.
 - [x] **Step 2:** Full gate green, then update this file's status.
 
 ### Remaining — needs a human
-- [ ] **Run `pnpm test:e2e`.** Not run here: it needs a running server and a populated database.
-      The rendered strings were held byte-identical for live data, and the six assertions in
-      `e2e/analysis.spec.ts` were deliberately left untouched, so this is a confirmation rather
-      than an expected failure.
+- [x] **Run `pnpm test:e2e`.** Done 2026-08-13 against `main` at `492982d`, with a running server
+      and a live database: **121 passed, 5 skipped, 0 failed** (the 5 are `referees.spec.ts`,
+      skipped on purpose). The prediction above held — the six `e2e/analysis.spec.ts` assertions
+      passed untouched, so the claims refactor was confirmed, not corrected.
+
+      The run did surface three stale assertions elsewhere, all from the page-header and
+      front-door PRs (#22–#24) rather than from this one, plus two live product defects those PRs
+      had introduced (`not-found.tsx` and `error.tsx` kept a button labelled for the games board
+      while pointing at `/`, which had stopped being it). Fixed in PRs #25 and #26. The lesson
+      worth carrying: e2e is deliberately outside the commit gate and CI, so a change that moves
+      a route or rewrites header copy needs one manual `pnpm test:e2e` before it merges —
+      all four gate commands passed with both defects in place.
 - [ ] **Ratify or change `SAME_GAIN_TOLERANCE_PP`** (`src/lib/analysis-claims.ts`) — the one
       invented number here. See the implementation-decisions section below.
 
