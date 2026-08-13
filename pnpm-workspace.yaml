@@ -6,9 +6,13 @@ packages: []
 # motivated them — ws is a CVE pin, not a preference.
 overrides:
   '@babel/core@<=7.29.0': 7.29.6
-  # 8.5.10 pinned an earlier advisory; 8.5.18 covers the 2026-07 pair (arbitrary file
-  # read <=8.5.11, source-map path traversal <=8.5.17).
-  postcss@<8.5.18: 8.5.18
+  # 8.5.10 pinned an earlier advisory; 8.5.18 covered the 2026-07 pair (arbitrary file
+  # read <=8.5.11, source-map path traversal <=8.5.17). Raised to 8.5.23 on 2026-08-13:
+  # the incomplete-fix advisory for GHSA-6g55-p6wh-862q reaches <=8.5.22, so the old pin
+  # had stopped being a fix and had become the thing holding postcss on a vulnerable
+  # version. A pin is only as good as the advisory that motivated it — re-read both
+  # before assuming this line is still doing its job.
+  postcss@<8.5.23: 8.5.23
   # libvips CVEs inherited by sharp <0.35.0 (next's image optimizer).
   sharp@<0.35.0: '>=0.35.0'
   ws@>=8.0.0 <8.21.0: '>=8.21.0'
