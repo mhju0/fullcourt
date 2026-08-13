@@ -3,9 +3,14 @@ import {
   BEYOND_CLAUSE,
   WIDER_GAP_CLAUSE,
   buildAnalysisClaims,
+  sameGainTolerancePp,
   toDeviation,
 } from "@/lib/analysis-claims";
 import type { AnalysisResponse, ThresholdBucket } from "@/types";
+
+/** Binomial standard error in percentage points — the module's own, restated for comparison. */
+const sePp = ({ games, wins }: { games: number; wins: number }) =>
+  100 * Math.sqrt(((wins / games) * (1 - wins / games)) / games);
 
 /**
  * Cumulative buckets, as the API ships them: each counts every game at or above its threshold.
@@ -162,10 +167,11 @@ describe("the chart zero labels", () => {
 });
 
 describe("the reading-these-numbers claim", () => {
-  it("calls a wider gap the same gain when its lift sits within a point of RA >= 5", () => {
+  it("calls a wider gap the same gain when its lift sits inside the noise on that bucket", () => {
     const claims = buildAnalysisClaims(response());
 
-    // 63.4 − 59.9 = 3.5 against 63.0 − 59.9 = 3.1. Four tenths apart: flat.
+    // 63.4 − 59.9 = 3.5 against 63.0 − 59.9 = 3.1. Four tenths apart, against a tolerance of
+    // about 1.7 derived from these counts: flat.
     expect(claims?.reading?.beyond?.relation).toBe("flat");
   });
 
@@ -206,6 +212,87 @@ describe("the reading-these-numbers claim", () => {
 
     expect(claims?.reading?.ra5.games).toBe(3782);
     expect(claims?.reading?.beyond?.games).toBe(1108);
+  });
+});
+
+/**
+ * The bar a difference has to clear is derived from the counts behind it, not chosen. This is
+ * what that buys, and none of it is reachable with a fixed threshold: the SAME difference in
+ * lift is a trend on a thick bucket and silence on a thin one.
+ *
+ * `SAME_GAIN_TOLERANCE_PP = 1` stood here until 2026-08-13 (issue #30). It failed its own stated
+ * rule — the page must not narrate a trend smaller than the noise, and on the live RA ≥ 7 bucket
+ * the noise is about 1.7 points, so a 1.1-point blip would have been published as a real climb.
+ */
+describe("the tolerance the comparison is measured against", () => {
+  /** Same shape, same lifts, 10× the games. */
+  const thick = response({
+    totalGames: 200_000,
+    overallWins: 122_400,
+    thresholds: [
+      { threshold: 5, games: 37_820, restedTeamWins: 23_827, winPct: 63.0 },
+      { threshold: 7, games: 11_080, restedTeamWins: 7_147, winPct: 64.5 },
+    ],
+  });
+
+  const thin = response({
+    thresholds: [
+      { threshold: 5, games: 3_782, restedTeamWins: 2_382, winPct: 63.0 },
+      { threshold: 7, games: 200, restedTeamWins: 129, winPct: 64.5 },
+    ],
+  });
+
+  it("reads one and the same climb as real on a thick bucket and as noise on a thin one", () => {
+    // Both are a lift of 4.6 against 3.1 — identical to one decimal, which is all the page shows.
+    for (const data of [thick, thin]) {
+      const r = buildAnalysisClaims(data)!.reading!;
+      expect(r.beyond!.lift - r.ra5.lift).toBeCloseTo(1.5, 5);
+    }
+
+    // 11,080 games behind it: the difference clears the noise and the page may say so.
+    expect(buildAnalysisClaims(thick)?.reading?.beyond?.relation).toBe("higher");
+    // 200 games behind it: the same difference is indistinguishable from nothing.
+    expect(buildAnalysisClaims(thin)?.reading?.beyond?.relation).toBe("flat");
+  });
+
+  it("widens as the narrow bucket thins", () => {
+    const wide = { games: 37_820, wins: 23_827 };
+    expect(sameGainTolerancePp({ games: 11_080, wins: 7_147 }, wide)).toBeLessThan(
+      sameGainTolerancePp({ games: 200, wins: 129 }, wide)
+    );
+  });
+
+  it("corrects for the buckets being nested rather than side by side", () => {
+    // The API ships CUMULATIVE buckets, so the narrow one's games are also in the wide one.
+    // Treating them as two independent samples understates the noise, because they share most
+    // of their observations — the honest contrast is against the remainder, which is smaller
+    // than the superset and therefore noisier.
+    const narrow = { games: 1_108, wins: 702 };
+    const wide = { games: 3_782, wins: 2_382 };
+    const naive = Math.hypot(sePp(narrow), sePp(wide));
+
+    expect(sameGainTolerancePp(narrow, wide)).toBeGreaterThan(naive);
+  });
+
+  it("claims nothing when the two buckets are the same population", () => {
+    // No remainder means no independent contrast, so no difference could be real. The page has
+    // to fall silent rather than compare a set with itself.
+    const same = { games: 1_108, wins: 702 };
+    expect(sameGainTolerancePp(same, same)).toBe(Infinity);
+
+    const identical = response({
+      thresholds: [
+        { threshold: 5, games: 3_782, restedTeamWins: 2_382, winPct: 63.0 },
+        { threshold: 7, games: 3_782, restedTeamWins: 2_382, winPct: 63.0 },
+      ],
+    });
+    expect(buildAnalysisClaims(identical)?.reading?.beyond?.relation).toBe("flat");
+  });
+
+  it("never drops below the one decimal the page prints", () => {
+    // A rate of exactly 100% collapses the binomial standard error to zero. Without a floor the
+    // tolerance would too, and a difference of a rounding step would start a sentence.
+    expect(sameGainTolerancePp({ games: 50, wins: 50 }, { games: 100, wins: 100 })).toBe(0.1);
   });
 });
 

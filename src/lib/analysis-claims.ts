@@ -32,17 +32,59 @@ export function toDeviation(winPct: number, baselinePct: number): number {
   return Math.round((winPct - baselinePct) * 10) / 10
 }
 
+/** A counted population: a denominator, and the wins inside it. */
+type Counted = { games: number; wins: number }
+
 /**
- * How close two lifts must sit, in percentage points, before the page calls them the same gain.
- *
- * An editorial **wording** threshold: it picks which sentence is rendered, never which games are
- * counted, and it is not a significance test. One point, because the page states every lift to
- * one decimal and RA ≥ 7 is the thinnest slice it plots — around a thousand games, where a rate
- * near 65% carries a standard error of roughly 1.4 points. A difference under a point is inside
- * the noise on that bucket by any reading, and the page must not narrate a trend smaller than
- * the noise. Raising this makes the page quieter, never wronger.
+ * The page states every lift to one decimal, so a tolerance below that would let pure rounding
+ * start a sentence. A floor rather than a mechanism — it only ever binds on a degenerate bucket
+ * (a rate of exactly 0% or 100%, where the binomial standard error collapses to zero).
  */
-const SAME_GAIN_TOLERANCE_PP = 1
+const DISPLAY_PRECISION_PP = 0.1
+
+/** Binomial standard error of a rate, in percentage points. */
+function standardErrorPp({ games, wins }: Counted): number {
+  const p = wins / games
+  return 100 * Math.sqrt((p * (1 - p)) / games)
+}
+
+/**
+ * How far apart two lifts must sit before the page calls one bigger than the other.
+ *
+ * **Derived, not chosen.** This was `SAME_GAIN_TOLERANCE_PP = 1` until 2026-08-13 — the one
+ * invented number in this module, and the shape of thing `CLAUDE.md` says to escalate rather
+ * than tune. Escalated (issue #30), and the answer was to remove the judgement call: the page
+ * must not narrate a trend smaller than the noise, so the noise is what the threshold should be.
+ *
+ * The fixed point failed its own rule. On live data the RA ≥ 7 bucket is ~1,100 games, where the
+ * difference against the band below it carries a standard error of about 1.7 points — so at a
+ * tolerance of 1, any gap between 1.0 and 3.4 points would have been published as a real trend
+ * while sitting inside the noise. Measured at the time of the change, moving to this rule altered
+ * no sentence on the page: every threshold from 1 to 4 points selected the same two clauses. What
+ * it changes is the future, and thin buckets most of all.
+ *
+ * `narrow` is a **subset** of `wide` — the API ships cumulative buckets, so RA ≥ 7 games are also
+ * RA ≥ 5 games. Comparing a subset with its own superset understates the difference's noise,
+ * because the two share most of their observations. The honest contrast is the narrow bucket
+ * against the remainder, which is what this computes.
+ *
+ * Still an editorial **wording** threshold and still not a significance test: it picks which
+ * sentence renders, never which games are counted. It is deliberately one standard error rather
+ * than two — this decides between "worth more" and "worth about the same", where the quiet
+ * reading is the safe one and a stricter bar would only ever make the page quieter.
+ */
+export function sameGainTolerancePp(narrow: Counted, wide: Counted): number {
+  const remainder: Counted = {
+    games: wide.games - narrow.games,
+    wins: wide.wins - narrow.wins,
+  }
+  // The two buckets are the same population, so there is no independent contrast to draw and no
+  // difference that could be real. Infinity reads as "flat", which is the claim-free branch.
+  if (remainder.games <= 0 || narrow.games <= 0) return Infinity
+
+  const tolerance = Math.hypot(standardErrorPp(narrow), standardErrorPp(remainder))
+  return Math.max(tolerance, DISPLAY_PRECISION_PP)
+}
 
 /** One hero tile: a rate, over a named slice, with the lift and denominator that qualify it. */
 export type ClaimTile = {
@@ -95,10 +137,19 @@ export type DeclinedHalf = {
 /** How one lift compares with another. Derived, never asserted. */
 export type SameGainRelation = "flat" | "higher" | "lower"
 
-/** `subject` against `reference`, in the page's wording. */
-function compareLift(subject: number, reference: number): SameGainRelation {
+/**
+ * `subject` against `reference`, in the page's wording.
+ *
+ * `tolerancePp` comes from {@link sameGainTolerancePp} rather than from a constant, so the bar a
+ * difference has to clear is set by how much data is behind it.
+ */
+function compareLift(
+  subject: number,
+  reference: number,
+  tolerancePp: number
+): SameGainRelation {
   const delta = subject - reference
-  if (Math.abs(delta) < SAME_GAIN_TOLERANCE_PP) return "flat"
+  if (Math.abs(delta) < tolerancePp) return "flat"
   return delta > 0 ? "higher" : "lower"
 }
 
@@ -247,7 +298,15 @@ export function buildAnalysisClaims(
         winPct: ra7.winPct,
         games: ra7.games,
         lift: beyondLift,
-        relation: compareLift(beyondLift, ra5Lift),
+        // RA >= 7 against RA >= 5, whose bucket contains it.
+        relation: compareLift(
+          beyondLift,
+          ra5Lift,
+          sameGainTolerancePp(
+            { games: ra7.games, wins: ra7.restedTeamWins },
+            { games: ra5.games, wins: ra5.restedTeamWins }
+          )
+        ),
       }
     }
     reading = {
@@ -259,7 +318,15 @@ export function buildAnalysisClaims(
         winPct: ra5.winPct,
         games: ra5.games,
         lift: ra5Lift,
-        relationToAnyGap: compareLift(ra5Lift, overallLift),
+        // RA >= 5 against every called game, whose count contains it.
+        relationToAnyGap: compareLift(
+          ra5Lift,
+          overallLift,
+          sameGainTolerancePp(
+            { games: ra5.games, wins: ra5.restedTeamWins },
+            { games: data.totalGames, wins: data.overallWins }
+          )
+        ),
       },
       beyond,
     }
