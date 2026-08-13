@@ -155,6 +155,34 @@ const SURFACES = [
 // Value lives in the OTHER menu alongside the other reference surfaces. Listing it here made
 // the page claim seven surfaces while the bar showed six.
 
+/**
+ * A surface card's resting skin and its interactive state.
+ *
+ * Every one of these is a utility rather than an inline `style`, and that is the fix itself.
+ * The resting `borderColor` and `background` used to sit in `style={{…}}` while the hover
+ * state was `hover:border-…` / `hover:bg-…` classes — and an inline declaration outranks a
+ * class rule, so both hover utilities were dead. Measured 2026-08-13: computed border-color
+ * and background-color were byte-identical at rest and on hover, and the only thing that moved
+ * on the whole card was the glyph's opacity. Never move these back into `style`.
+ *
+ * Hover and focus-visible get the identical treatment, written out twice on purpose: Tailwind
+ * scans source files for literal class strings, so composing `focus-visible:${…}` in a loop
+ * would compile to no CSS at all.
+ *
+ * Nothing here touches a box metric. The row height is a layout contract (`lg:h-[24rem]`) and
+ * all six cards have to stay one shape, so the lift is a transform and the elevation is a
+ * shadow — neither reflows the row. The gradient stays put and the wash rides in on
+ * background-color *behind* it: two `linear-gradient()` images do not interpolate, so
+ * swapping the gradient would snap while the border and shadow faded.
+ */
+const CARD_SKIN = [
+  "border-[rgba(245,241,232,.14)]",
+  "bg-[image:linear-gradient(180deg,rgba(245,241,232,.05),rgba(11,13,16,.6))]",
+  "transition duration-300 motion-reduce:transition-none",
+  "hover:border-[rgba(245,241,232,.48)] hover:bg-[color:rgba(245,241,232,.10)] hover:shadow-[0_18px_38px_-16px_rgba(0,0,0,.85)]",
+  "focus-visible:border-[rgba(245,241,232,.48)] focus-visible:bg-[color:rgba(245,241,232,.10)] focus-visible:shadow-[0_18px_38px_-16px_rgba(0,0,0,.85)]",
+  "motion-safe:hover:-translate-y-1 motion-safe:focus-visible:-translate-y-1",
+].join(" ");
 
 /**
  * The standard each published number has to clear, and what each rule rules out.
@@ -411,16 +439,24 @@ export function AboutContent({ stats }: { stats: AboutStats | null }) {
               // Stacked from the top, deliberately NOT `justify-between`: that distributed the
               // slack around a text block whose height follows its copy, so a longer
               // description silently lifted that one card's title above the other five.
-              className="group relative flex flex-1 flex-col overflow-hidden rounded-xl border p-6 transition-colors duration-300 hover:border-[rgba(245,241,232,.34)] hover:bg-[rgba(245,241,232,.04)]"
-              style={{ borderColor: "rgba(245,241,232,.14)", background: "linear-gradient(180deg,rgba(245,241,232,.05),rgba(11,13,16,.6))" }}
+              className={`group relative flex flex-1 flex-col overflow-hidden rounded-xl border p-6 ${CARD_SKIN}`}
             >
+              {/* The meta row's colour is a class, not inline, for the same cascade reason as
+                  CARD_SKIN: it has to brighten with the rest of the card. The arrow is the
+                  plainest "this navigates" cue available — the row is already aria-hidden, so
+                  the card's accessible name is still "<label> <copy>". */}
               <span
                 aria-hidden="true"
-                className="mono flex items-baseline justify-between gap-2"
-                style={{ fontSize: 11, letterSpacing: "0.1em", color: "rgba(245,241,232,.34)" }}
+                className="mono flex items-baseline justify-between gap-2 text-[rgba(245,241,232,.34)] transition-colors duration-300 group-hover:text-[rgba(245,241,232,.62)] group-focus-visible:text-[rgba(245,241,232,.62)] motion-reduce:transition-none"
+                style={{ fontSize: 11, letterSpacing: "0.1em" }}
               >
                 <span>{String(i + 1).padStart(2, "0")}</span>
-                <span className="truncate">{s.href}</span>
+                <span className="flex min-w-0 items-baseline gap-1.5">
+                  <span className="truncate">{s.href}</span>
+                  <span className="transition-transform duration-300 motion-reduce:transition-none motion-safe:group-hover:translate-x-0.5 motion-safe:group-focus-visible:translate-x-0.5">
+                    &rarr;
+                  </span>
+                </span>
               </span>
 
               <div aria-hidden="true" className="my-5 px-1 opacity-70 transition-opacity duration-500 group-hover:opacity-100">
