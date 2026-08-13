@@ -381,6 +381,15 @@ Two things on this page are easy to get wrong twice:
   Each card now carries a mono index, its route, a `SurfaceGlyph` miniature of what that page
   draws, and the copy. Index, route and glyph are `aria-hidden`, so the link's accessible name
   stays `"<label> <copy>"` — which is what `e2e/home.spec.ts` anchors on.
+- **Every colour the hover contests lives in `CARD_SKIN`, never in `style`** (2026-08-13). The
+  cards are links with a hover state that did not paint at all: the resting border and background
+  were inline styles, and an inline style beats any non-`!important` class rule, so
+  `hover:border-*` and `hover:bg-*` were dead on arrival. The ticket read this as a hover that was
+  too subtle; measurement showed there was none. Both resting values moved into the class layer,
+  which is the only fix — dialling the hover up would have changed nothing. `focus-visible:`
+  mirrors every hover declaration so keyboard reach shows the same state, the 1px lift is
+  `motion-safe:` only, and the meta row's colour is a class for the same reason so it brightens
+  with the card.
 
 Display statements on this page take **no terminal period** (`Rest is a stat`, `Five surfaces`,
 `How a number earns its place`). Body copy and the scrubbing thesis keep normal punctuation —
@@ -508,7 +517,7 @@ arena was tested as a confound and found orthogonal. And **crew chief is only ma
 10/10 in 2024-25 and 2025-26 but fails earlier, so the *As chief* column counts those seasons
 alone. It is style, not bias, and the copy says so.
 
-### `nav-bar.tsx` — two-layer header (sticky, `z-50`)
+### `nav-bar.tsx` — two-layer header (sticky, `z-50`, retracting on `/` only)
 
 1. **Brand bar** (52px, `var(--term-surface-2)`, bottom border `var(--term-border)`):
    a `<CourtMark size={34}>` + the wordmark + a hairline rule + `NBA ANALYTICS PLATFORM`
@@ -576,6 +585,35 @@ alone. It is style, not bias, and the copy says so.
    bottom border (`border-[var(--term-amber)]` — the historical slot, aliasing
    `--term-accent`) + `text-[var(--term-text)]` and carries
    `aria-current="page"`; inactive links are muted with a hover-to-text transition.
+
+**The bar retracts on scroll down and returns on scroll up — on `/` and nowhere else**
+(`useRetractingHeader`, 2026-08-13). `/` stopped being a product surface in the front-door swap,
+and a tab bar pinned over a long-scrolling argument competes with it rather than serving it.
+Every other route keeps the bar pinned, gated on the pathname the component already had, so no
+layout restructure was needed.
+
+Five things about it are load-bearing:
+
+- **It is a `transform`, never a height or `display` change.** The header sits in normal flow
+  above `<main>`; collapsing it would reflow the page under the reader and fight the alignment
+  law. Translating it leaves the flow box where it was.
+- **The tabs stay mounted while hidden.** `navigation.spec.ts` asserts six links and zero
+  `aria-current` on `/`; unmounting them to hide them would take that invariant with it.
+- **Two guards keep the bar reachable.** It never retracts above `BAR_HEIGHT_PX` (96 — the 52px
+  brand bar plus the 44px tab row), and a document with less scroll room than that never
+  retracts at all: a page that barely scrolls has nowhere to scroll back *from*, so the bar
+  would hide with no way left to ask for it.
+- **`SCROLL_NOISE_PX` (6) is a floor, not a filter.** Under it, `last` is deliberately *not*
+  updated, so a slow deliberate scroll accumulates until it clears the threshold instead of
+  being discarded a pixel at a time. Without the floor, trackpad momentum flaps the bar.
+- **The reset is adjust-during-render, not an effect.** `setRetracted(false)` in an effect body
+  cascades a second render to reach the same state and trips `react-hooks/set-state-in-effect`;
+  doing it during render means the bar never paints a frame in the wrong state. `hidden` is
+  *derived* (`enabled && retracted`) so a pinned route can never inherit a stale `true`.
+
+The listener is `{ passive: true }` and rAF-throttled, and its cleanup removes the listener *and*
+cancels any pending frame. Keyboard reach is preserved by `onFocus={reveal}` — tabbing into a
+retracted bar brings it back. The transition is `motion-safe:` only.
 
 ### First-visit orientation — *(removed 2026-08-11)*
 
@@ -1072,9 +1110,21 @@ products:
   measures. Single centred callouts (error cards, "key insight") keep the left rule — they are
   one statement, not a row.
 - **Cards that expand lift 2px on hover** (`hover:-translate-y-0.5`), cancelled under
-  `motion-reduce`. Do not pair this with a `hover:border-*` class on a slate row or the
-  playoff `SeriesCard`: both set `border` as an inline style, which beats any non-`!important`
-  class rule, so such a hover silently does nothing.
+  `motion-reduce`.
+- **An inline `style` beats every non-`!important` class rule, so a `hover:` utility for a
+  property that element also sets inline silently never paints.** This is the most repeated
+  frontend defect in the repo. Two elements are standing hazards rather than past bugs — the
+  slate row (`matchup-table.tsx:174`) and the playoff `SeriesCard` (`playoffs-content.tsx:135`,
+  `:214`) set `border` inline, so a `hover:border-*` on either would be dead on arrival. It has
+  actually shipped broken twice: the home surface cards, then four more sites across
+  `layout.tsx`, `method-link.tsx` and `season-report-content.tsx`. **The fix is always to move
+  the contested property into the class layer**, never to make the hover louder: a hover that
+  loses the cascade loses it at any intensity. Two things make this expensive to find — it fails
+  silently, and it reads as a *design* complaint ("too subtle") rather than a bug, so measure the
+  computed style before believing either. A grep-based sweep is only a first pass: of 11
+  candidates, 7 were false positives — some were a sibling utility that merely sat near the
+  `style` in the source, and some set `background: undefined`, which React omits from the DOM
+  entirely rather than emitting.
 
 The Games filter panel's `Scope` / `Day` grouping is deliberately **not** carried to the other
 pages — it exists because that page has three interacting controls. The others have one or two,
