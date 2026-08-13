@@ -136,6 +136,18 @@ own existing pattern one level up. It is not a new pattern.
 
 ## Deferred — recorded, not fixed
 
+> **Triaged and closed 2026-08-13** (issue #31). All four turned out to be documentation work with
+> no published figure at risk, including item 1: the authority rule below had already settled that
+> the glossary sentence changes and the code does not, so the "can change a published number"
+> worry did not survive contact. Done in one glossary pass — item 1's boundary is now stated as
+> "about 0.5" and **pinned by a test** (`rest-advantage-evidence.test.ts`) so the float behaviour
+> is a recorded decision rather than a surprise; item 2 got a **Neutral site** entry cross-linked
+> with **Neutral/no-call**; item 3 got **Back-to-back** and **Altitude**; item 4 got **Decidable**,
+> naming all three narrowings together. The ADR miscount below was fixed in the same pass.
+>
+> The same overclaim was found in two places this list did not name — the `classifyRestAdvantage`
+> docblock and `docs/agents/domain.md` — and both were corrected.
+
 Out of scope by decision (Q6), so they read as decisions rather than oversights:
 
 1. **The `0.5` boundary claims unreachable precision.** `GLOSSARY.md:16` and
