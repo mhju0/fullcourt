@@ -33,7 +33,7 @@ Library — neither is in `package.json`, and nothing renders a component. Every
 node-environment unit or route test; the two that import from a component module import
 only exported pure functions.
 
-**52 test files, 668 tests** (`pnpm test:run`, verified 2026-08-13). The table below names what
+**52 test files, 672 tests** (`pnpm test:run`, verified 2026-08-14). The table below names what
 each file covers; it is not a per-file count, because a count per row is a second copy of a fact
 nothing checks. Run the command for the current figure.
 

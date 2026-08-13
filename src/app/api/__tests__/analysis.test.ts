@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { NextRequest } from "next/server";
 import { GET } from "../analysis/route";
+import { CACHE } from "@/lib/api-route";
 import { getCompletedGamesStamp, getCompletedGamesWithFatigue } from "@/lib/db/queries";
 import type { AnalysisResponse } from "@/types";
 
@@ -190,5 +191,14 @@ describe("GET /api/analysis", () => {
       homeTeamMoreRested: { games: 2 },
       awayTeamMoreRested: { games: 2, restedTeamWins: 1 },
     });
+  });
+
+  // Pins which policy this route asks for. `api-route.test.ts` proves the header mechanism, but
+  // nothing proved any route still requests one — a deleted policy failed no test.
+  it("lets the edge hold the backtest, which only a pipeline run can move", async () => {
+    mockGetCompleted.mockResolvedValueOnce([row("2024-01-02", 4, 9, 110, 100)]);
+
+    const res = await GET(makeReq());
+    expect(res.headers.get("cache-control")).toBe(CACHE.historical);
   });
 });
