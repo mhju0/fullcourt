@@ -154,6 +154,14 @@ test.describe("Primary navigation", () => {
   test("every other route keeps the bar pinned", async ({ page }) => {
     await page.goto("/analysis");
 
+    // Wait for the payload before touching the wheel. This page is client-rendered and its own
+    // spec allows 60s for the heading; without the wait, `<main>` is still empty, the document
+    // has nothing to scroll, and the test fails on a page that never loaded rather than on a bar
+    // that moved. Seen on merged main 2026-08-13, with an empty `main` in the failure snapshot.
+    await expect(page.getByRole("heading", { name: "Model Results" })).toBeVisible({
+      timeout: 60_000,
+    });
+
     const bar = page.getByRole("banner");
     const height = (await bar.boundingBox())!.height;
     expect(await barTop(page)).toBe(0);
@@ -200,9 +208,14 @@ test.describe("Primary navigation", () => {
 
   test("the method link visibly answers the pointer", async ({ page }) => {
     await page.goto("/analysis");
-    await page.waitForLoadState("networkidle");
+    await expect(page.getByRole("heading", { name: "Model Results" })).toBeVisible({
+      timeout: 60_000,
+    });
 
-    await answersThePointer(page, page.locator('a[href^="/behind-the-data"]').last());
+    // Scoped to `main`, and NOT `.last()` on the whole page. The Reference landmark in the header
+    // also points at /behind-the-data, so before the payload arrives the loosest locator silently
+    // resolves to that nav tab instead — and passes, having measured the wrong element.
+    await answersThePointer(page, page.locator("main").locator('a[href^="/behind-the-data"]').first());
   });
 
   test("the old /about address still resolves to the front door", async ({ page }) => {
