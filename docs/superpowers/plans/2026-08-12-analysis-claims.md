@@ -129,8 +129,25 @@ own existing pattern one level up. It is not a new pattern.
       worth carrying: e2e is deliberately outside the commit gate and CI, so a change that moves
       a route or rewrites header copy needs one manual `pnpm test:e2e` before it merges —
       all four gate commands passed with both defects in place.
-- [ ] **Ratify or change `SAME_GAIN_TOLERANCE_PP`** (`src/lib/analysis-claims.ts`) — the one
-      invented number here. See the implementation-decisions section below.
+- [x] **Ratify or change `SAME_GAIN_TOLERANCE_PP`** (`src/lib/analysis-claims.ts`) — the one
+      invented number here. **Escalated and removed, 2026-08-13** (issue #30): Michael chose to
+      derive it rather than ratify a figure, so the constant is gone and
+      `sameGainTolerancePp(narrow, wide)` computes the noise floor from the counts behind each
+      comparison.
+
+      What the measurement found, and why the ticket's framing changed: the fixed point failed
+      its own docblock. That docblock's arithmetic was right — the RA ≥ 7 bucket is 1,108 games
+      and carries a standard error of 1.42pp — but its conclusion did not follow. It said the
+      page must never narrate a trend smaller than the noise, while 1pp let any gap from 1.0 to
+      about 3.4 be published as a real climb. The buckets are also **cumulative**, so RA ≥ 7 sits
+      inside RA ≥ 5; comparing a subset with its own superset understates the noise, and the
+      contrast is now drawn against the remainder.
+
+      Verified against the live payload: derived tolerances are 0.84 (RA ≥ 5 vs any gap, a 4.1pp
+      gap at 4.9σ) and 1.70 (RA ≥ 7 vs RA ≥ 5, a 0.6pp gap at 0.35σ), and **every published
+      sentence is unchanged** — as is every one of the 26 tests that pinned the old wording.
+      Every threshold from 1 to 4 selected the same clauses, so the decision was free at the time
+      it was taken; what it changes is the future, and thin buckets most of all.
 
 ---
 
@@ -173,11 +190,14 @@ Both are judgment calls made while the work was in hand, and both are reversible
    earlier — fixed prose comparing RA ≥ 5's lift with the any-gap lift. Fixing one and leaving
    its neighbour would have been the inconsistency the work exists to remove, so
    `ra5.relationToAnyGap` exists alongside `beyond.relation`.
-2. **`SAME_GAIN_TOLERANCE_PP = 1` is invented, and is the one number here nobody ratified.**
+2. ~~**`SAME_GAIN_TOLERANCE_PP = 1` is invented, and is the one number here nobody ratified.**
    It decides only which *sentence* renders, never which games are counted, and it is not a
    significance test. One point, because the page states lifts to one decimal and RA ≥ 7 is its
    thinnest slice (~1,100 games, where a rate near 65% carries a standard error of about 1.4
-   points). Raising it makes the page quieter, never wronger. Worth a second opinion.
+   points). Raising it makes the page quieter, never wronger.~~ **Worth a second opinion** — and
+   it got one. Removed 2026-08-13; see the checked item above. The reasoning quoted here was
+   sound on its arithmetic and wrong in its conclusion: it establishes that a difference *under*
+   a point is inside the noise, which does not make one *over* a point outside it.
 
 `ClaimTile` also carries finished `value` / `detail` strings rather than parts alone, matching
 `buildRestAdvantageEvidence`, which returns finished sentences and pins "renders the denominator
