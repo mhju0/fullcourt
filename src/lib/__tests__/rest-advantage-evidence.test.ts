@@ -16,6 +16,29 @@ describe("classifyRestAdvantage", () => {
       expect(classifyRestAdvantage(home, away).advantageTeam).toBe(expected);
     }
   );
+
+  /**
+   * The boundary is not exactly locatable, and the docs claimed it was until 2026-08-13.
+   *
+   * `differential` is a floating-point subtraction of two fatigue scores, so a gap that reads as
+   * `0.50` in decimal can compute just below `0.5` and fall on the neutral side — which drops the
+   * game from the published evidence entirely, not merely from a label. The cases above pass only
+   * because their literals happen to be exactly representable; this one is the same gap and is
+   * classified the other way.
+   *
+   * Pinned rather than fixed, matching the RA ≥ N threshold boundary left alone for the same
+   * reason: rounding at the comparison would move a handful of games across every published
+   * denominator to buy precision the metric does not have. This test exists so the behaviour is
+   * a recorded decision rather than a surprise, and so "about 0.5" stays the honest wording.
+   */
+  it("puts a gap of nominally 0.5 on the neutral side when the float lands short", () => {
+    expect(4.35 - 3.85).toBeLessThan(0.5);
+    expect(classifyRestAdvantage(3.85, 4.35).advantageTeam).toBe("neutral");
+
+    // The same nominal gap, from operands that subtract exactly, is a call. Both are 0.5 to a
+    // reader; only one is 0.5 to the comparison.
+    expect(classifyRestAdvantage(5, 5.5).advantageTeam).toBe("home");
+  });
 });
 
 /**

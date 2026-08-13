@@ -10,7 +10,13 @@ import type {
 
 export const NEUTRAL_REST_ADVANTAGE_THRESHOLD = 0.5;
 
-/** Canonical rest-advantage classification. Exactly ±0.5 is a call, not neutral. */
+/**
+ * Canonical rest-advantage classification. `|differential| >= 0.5` is a call, below it neutral.
+ *
+ * Read as "about 0.5", never "exactly 0.5": `differential` is a float subtraction, so a gap that
+ * reads as 0.50 can compute just under the threshold and land neutral — `4.35 − 3.85` does.
+ * Pinned in `rest-advantage-evidence.test.ts` and explained in `docs/GLOSSARY.md`.
+ */
 export function classifyRestAdvantage(
   homeFatigueScore: number,
   awayFatigueScore: number

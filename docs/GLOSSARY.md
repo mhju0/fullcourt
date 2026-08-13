@@ -8,13 +8,75 @@ FullCourt models how NBA schedule conditions affect game outcomes and presents t
 A multi-factor estimate of a team's accumulated schedule load for a game. Higher values mean greater estimated fatigue.
 _Avoid_: tiredness rating, exhaustion score
 
+**Back-to-back**:
+A game played the night after another one. Weighted by the **real hours between tip-offs** rather
+than by the calendar, so a late finish followed by an early start costs more than the date pair
+alone implies. With **altitude**, one of the two largest effects in the fatigue score — worth
+about 5.0 points of win probability when the weights were fitted, and the same sign in all 16
+folds. The turnaround-hours term itself was unstable under that fit (cv 1.09) even though the
+back-to-back flag was not. See
+[ADR 0006](adr/0006-fatigue-weights-were-fitted-and-the-model-was-not-changed.md).
+_Avoid_: b2b in user-facing copy, second night, consecutive games — the last is ambiguous between
+"back-to-back" and "in a row"
+
+**Altitude**:
+The thin-air term in the fatigue score, applied to Denver, Utah and Mexico City — and to the night
+after, which is a separate multiplier. Carried by `teams.altitude_flag`, and at a neutral site by
+that venue's own flag (`src/lib/neutral-venues.ts`), because the nominal home team's flag is false
+for a game played somewhere else. The largest single effect in the model when the weights were
+fitted, worth about 5.8 points of win probability, and its multiplier is **the one ratified
+constant ever changed**: 1.15 → 1.29 on 2026-08-02, fitted against final margin rather than against
+the win rates the site publishes, which is what kept it non-circular. The **carryover** multiplier
+was deliberately not moved with it — that term wanted to go backwards under the fit. See
+[ADR 0006](adr/0006-fatigue-weights-were-fitted-and-the-model-was-not-changed.md).
+_Avoid_: elevation, thin air, the Denver effect — the term covers three venues, not one
+
 **Rest advantage**:
 The matchup differential `away fatigue score − home fatigue score`. A positive value favors the home team; a negative value favors the away team.
 _Avoid_: fatigue advantage, rest score
 
 **Neutral/no-call**:
-A matchup whose absolute rest advantage is below `0.5`, so neither team receives a prediction from this metric. An absolute value of exactly `0.5` is a call, not neutral.
-_Avoid_: tie
+A matchup whose absolute rest advantage is below `0.5`, so neither team receives a prediction from
+this metric. The rule in code is `Math.abs(differential) < 0.5`
+(`src/lib/rest-advantage-evidence.ts`), so `0.5` and above is a call.
+
+**The boundary is not exactly locatable, and this entry used to claim it was.** The differential is
+a floating-point subtraction of two fatigue scores, and a gap that reads as `0.50` in decimal can
+compute just under it — measured, `4.35 − 3.85 = 0.49999999999999956`, which lands on the neutral
+side and drops the game from the evidence entirely. So a matchup sitting exactly on the line may
+fall either way, and no wording can promise otherwise. Left in place rather than fixed, the same
+call as the RA ≥ N threshold boundary: rounding at the comparison would move a handful of games
+across every published denominator to buy precision the metric does not have. Say "about 0.5",
+never "exactly 0.5 is a call".
+
+This is a **rest-advantage band**, and has nothing to do with a **neutral site** below.
+_Avoid_: tie; and do not write "neutral" unqualified where a venue could be meant
+
+**Neutral site**:
+A game played at neither team's arena — five cities in the data (Mexico City, London, Las Vegas,
+Paris, Berlin), each with its own coordinates and altitude flag in `src/lib/neutral-venues.ts`.
+Distance and thin air are computed from the venue rather than from the listed home team's arena,
+which is the whole reason the map exists. Entirely unrelated to **neutral/no-call** above: that is
+a band of rest advantage, this is a place.
+_Avoid_: neutral game (reads as no-call), international game (Las Vegas is not)
+
+**Decidable**:
+A game the rest metric can express an opinion about at all — the rest advantage clears the
+neutral band, so one side is the more rested. One of **three separate narrowings** the site
+applies, of which this glossary named only `called` for a long time:
+
+- **decidable** — not a no-call. One side is more rested. (`decidable` in
+  `src/lib/rest-advantage-evidence.ts`)
+- **called** — decidable *and* the more-rested team is at home. Every headline rate is measured
+  on this row alone. (`isCalledSide`; see **Rested team at home**)
+- **publishable** — the game is admissible at all: regular season, and outside an **abnormal
+  stretch**. (`publishableGames()` in `src/lib/db/queries.ts`)
+
+Only the first two nest: every called game is decidable, and the rested-on-the-road row is
+decidable and *not* called, which is exactly why it can be published as its own row. Publishable
+is a separate axis about admissibility, not about rest, so it is never a synonym for either.
+_Avoid_: valid game, usable game, qualified game — the first two suggest the excluded games are
+bad data rather than games the metric declines to speak about
 
 **Rested team at home**:
 Games where the more-rested team is also the home team. The site's published rest-advantage rate is measured on these and on nothing else. In code the predicate is `isCalledSide` (`src/lib/rest-advantage-evidence.ts`), which keeps its name on purpose — the vocabulary here is user-facing only, and a doc-currency pass must not "fix" the code to match the copy.
