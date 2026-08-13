@@ -23,10 +23,12 @@ import { dirname, resolve } from "node:path";
  */
 
 /** In scope per the alignment pass: the eight published routes, the reference section, and
- *  `/referees` (mechanically maintained, never published). `/about` is deliberately absent —
- *  it is a full-bleed, self-scoped surface that does not play by the shared grid. */
+ *  `/referees` (mechanically maintained, never published). The front door `/` is deliberately
+ *  absent — it is a full-bleed, self-scoped surface that does not play by the shared grid. It
+ *  was at `/about` when this list was written; the swap on 2026-08-12 moved it to `/` and the
+ *  games board it displaced to `/games`, so the exemption follows the page, not the address. */
 const ROUTES = [
-  "/",
+  "/games",
   "/season",
   "/schedule",
   "/analysis",

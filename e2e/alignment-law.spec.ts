@@ -21,8 +21,15 @@ import { test, expect } from "@playwright/test";
  *     one's.
  */
 
+/**
+ * `/games`, not `/`. The front door is a full-bleed, self-scoped surface that does not play by
+ * the shared grid — its hero is centred and its sections bleed past both edges by design, so
+ * measuring it against the container rail asserts a law it was never meant to follow. The
+ * exemption is not new; it was written into `alignment-audit.spec.ts` when this page lived at
+ * `/about`, and only the route changed on 2026-08-12.
+ */
 const ROUTES = [
-  "/",
+  "/games",
   "/season",
   "/schedule",
   "/analysis",

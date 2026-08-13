@@ -12,8 +12,11 @@ test.describe("Behind the Data", () => {
       mainNav.getByRole("link", { name: "BEHIND THE DATA", exact: true })
     ).toHaveCount(0);
 
+    // One link, not two. ABOUT left this landmark on 2026-08-12 when the page it pointed at
+    // became `/` — a chrome link to the front door duplicates the wordmark.
     const reference = page.getByRole("navigation", { name: "Reference" });
-    await expect(reference.getByRole("link", { name: "ABOUT", exact: true })).toBeVisible();
+    await expect(reference.getByRole("link")).toHaveCount(1);
+    await expect(reference.getByRole("link", { name: "ABOUT", exact: true })).toHaveCount(0);
 
     const link = reference.getByRole("link", { name: "BEHIND THE DATA", exact: true });
     await expect(link).toBeVisible();
