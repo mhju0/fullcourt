@@ -3,6 +3,7 @@
 import { Menu } from "@base-ui/react/menu"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
+import { useCallback, useEffect, useState } from "react"
 import { CourtMark } from "@/components/court-mark"
 import {
   DIRECT_NAV_ITEMS,
@@ -47,12 +48,116 @@ function tabTone(active: boolean): string {
     : "border-transparent text-[var(--term-text-muted)] hover:text-[var(--term-text)]"
 }
 
+/**
+ * The bar's own height: the 52px brand bar plus the 44px tab row. Two things key off it — the
+ * bar never retracts until the reader is at least its own height down the page, and a document
+ * with less scroll room than that never retracts at all.
+ */
+const BAR_HEIGHT_PX = 96
+
+/** Scroll jitter and trackpad momentum wobble, which otherwise flap the bar open and shut. */
+const SCROLL_NOISE_PX = 6
+
+/**
+ * Retract the bar on scroll down and bring it back on scroll up — on the front door only.
+ *
+ * `/` became a marketing page rather than a product surface in the 2026-08-12 front-door swap,
+ * and a tab bar pinned over a long-scrolling argument competes with it instead of serving it.
+ * Every other route keeps the bar pinned, which is why this is gated on the pathname the
+ * component already had in hand: no layout restructure was needed for any of it.
+ *
+ * Retraction is a transform, never a height or a `display` change. The header sits in normal
+ * flow above `<main>`, so collapsing it would reflow the page under the reader and fight the
+ * alignment law; translating it leaves its flow box exactly where it was. The tabs also stay
+ * mounted — `navigation.spec.ts` asserts six links and zero `aria-current` on `/`, and
+ * unmounting them to hide them would take that invariant with it.
+ */
+function useRetractingHeader(enabled: boolean) {
+  const [retracted, setRetracted] = useState(false)
+  const [wasEnabled, setWasEnabled] = useState(enabled)
+  const reveal = useCallback(() => setRetracted(false), [])
+
+  // Navigating away from the front door — and back to it — has to start with the bar shown.
+  // Adjusted during render rather than in the effect below: a setState in an effect body
+  // cascades a second render to reach the same place, which `react-hooks/set-state-in-effect`
+  // rejects, and doing it here means the bar never paints a frame in the wrong state.
+  if (wasEnabled !== enabled) {
+    setWasEnabled(enabled)
+    setRetracted(false)
+  }
+
+  useEffect(() => {
+    if (!enabled) return
+
+    let last = window.scrollY
+    let frame = 0
+
+    const measure = () => {
+      frame = 0
+      const y = window.scrollY
+      const delta = y - last
+
+      // Under the noise floor `last` is deliberately NOT updated, so a slow deliberate scroll
+      // accumulates until it clears the threshold rather than being discarded a pixel at a time.
+      if (Math.abs(delta) < SCROLL_NOISE_PX) return
+      last = y
+
+      // Always present at the top of the document, whichever way the reader arrived there.
+      if (y <= BAR_HEIGHT_PX) {
+        setRetracted(false)
+        return
+      }
+
+      // A viewport short enough that the page barely scrolls has nowhere to scroll back from:
+      // the bar would retract with no room left to ask for it again.
+      if (document.documentElement.scrollHeight - window.innerHeight <= BAR_HEIGHT_PX) {
+        setRetracted(false)
+        return
+      }
+
+      setRetracted(delta > 0)
+    }
+
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(measure)
+    }
+
+    window.addEventListener("scroll", onScroll, { passive: true })
+    return () => {
+      window.removeEventListener("scroll", onScroll)
+      if (frame) cancelAnimationFrame(frame)
+    }
+  }, [enabled])
+
+  // Derived, so a route that does not retract can never inherit a stale `true` from one that
+  // does — the reset above and this guard cover the two directions independently.
+  return { hidden: enabled && retracted, reveal }
+}
+
 export function NavBar() {
   const pathname = usePathname()
   const otherActive = OTHER_NAV_ITEMS.some((item) => isActive(pathname, item.href))
 
+  // The front door only. Every other surface keeps the bar pinned.
+  const retractable = pathname === "/"
+  const { hidden, reveal } = useRetractingHeader(retractable)
+
   return (
-    <header className="sticky top-0 z-50">
+    <header
+      className={cn(
+        "sticky top-0 z-50",
+        // motion-safe: under `prefers-reduced-motion` the bar still retracts, it just stops
+        // sliding to get there. A 96px band travelling the screen on every change of scroll
+        // direction is precisely the motion the preference asks to remove; the state change
+        // itself is not, and withholding that would leave the page's chrome behaving
+        // differently for those readers rather than merely more quietly.
+        retractable && "motion-safe:transition-transform motion-safe:duration-300",
+        hidden && "-translate-y-full"
+      )}
+      // A retracted bar still holds six focusable tabs. Tabbing into one has to bring it back,
+      // or the focus ring lands on a control sitting off the top of the screen.
+      onFocus={reveal}
+    >
       {/* BRAND BAR */}
       <div
         style={{
