@@ -391,6 +391,48 @@ Two things on this page are easy to get wrong twice:
   `motion-safe:` only, and the meta row's colour is a class for the same reason so it brightens
   with the card.
 
+#### Scroll choreography (2026-08-14)
+
+Sections 1 and 2 always had an effect that said what the section says — the hero assembles, the
+thesis lights word by word. Everything below them shared one generic `.fc-rise` scale-and-fade,
+applied identically to a headline figure, a principle row and a standards panel, and §4 and §7
+had no motion at all. The page stopped choreographing after §2 and started decorating. Each
+section now carries its own:
+
+| § | Hook | Effect |
+|---|---|---|
+| 1 | `.fc-hero-in` | entrance stagger, on load |
+| 2 | `.fc-word` | word-by-word brighten, scrubbed |
+| 3 | `.fc-evidence-item`, `[data-fc-count]` | rise + the figures counting to their value |
+| 4 | `.fc-card` | six cards in reading order, 8px / 70ms |
+| 5 | `.fc-rise` | unchanged for now — the pinned centrepiece lands separately |
+| 6 | `.fc-rule` | `clip-path` mask, row by row |
+| 7 | `.fc-outro-title`, `.fc-outro-cta` | headline masks up, button follows a beat later |
+
+Three rules hold this together, and each one is a bug that already happened:
+
+- **`fromTo`, never `from`.** A `from` tween infers its end values from whatever the element is
+  when the tween is built, and a later `ScrollTrigger.refresh()` — which the library also runs
+  itself, after a resize or once webfonts land — can re-apply the *start* state to a trigger that
+  is still alive. The six surface cards hit exactly this: `onEnter`, `onStart` and `onComplete`
+  all fired and all six still held `opacity: 0; transform: translate(0px, 8px)` inline. The one
+  section a reader is meant to click was invisible, and `lint`, `typecheck`, the unit suite and
+  `build` all passed over it. Their trigger spans nearly a screen and had reached only 44% of it,
+  so unlike the shorter ones it never reached its end and never killed itself. `e2e/home.spec.ts`
+  now asserts all six settle visible.
+- **Never park a resting state in an inline `style`.** The whole effect block returns early under
+  `prefers-reduced-motion: reduce`, correctly — these are scroll animations. Anything dimmed or
+  offset in the markup therefore *stays* that way for those readers, and an inline value cannot
+  be restored by any class rule. `.fc-word` sat at an inline `opacity: 0.12`, so the sentence the
+  page is built around rendered at 12% for exactly the audience that could not get the animation
+  back; it is `opacity-[0.12] motion-reduce:opacity-100` now. Same cascade rule as `CARD_SKIN`.
+- **Counted figures go through `signedNumber`**, never a hand-rolled format — the sign is U+2212
+  and a bare zero carries none, and a figure that formatted itself differently mid-count than at
+  rest would be its own defect. The count is driven off a proxy object, and the tween does not run
+  until its trigger fires, so the server-rendered figure is what shows until the reader arrives
+  rather than flashing to zero on load. With no `stats` the element holds an em dash and is not
+  counted at all.
+
 Display statements on this page take **no terminal period** (`Rest is a stat`, `Five surfaces`,
 `How a number earns its place`). Body copy and the scrubbing thesis keep normal punctuation —
 they are prose, not statements.

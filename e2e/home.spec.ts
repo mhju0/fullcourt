@@ -50,18 +50,35 @@ test.describe("Front door", () => {
    * e2e spec passed over it. Nothing here pins a colour: the assertions compare one state
    * against another, so a restyle keeps passing and a dead state fails.
    */
+  /**
+   * Read after a repaint boundary, never within one.
+   *
+   * Two `evaluate` calls can both land in the same frame, and computed style does not change
+   * between them — so `settledSkin` below would see two identical samples of a value that is
+   * still moving and call it settled. That produced a "hover" state holding a shadow 0.1% into
+   * its transition (`0px 0.0226585px 0.0478345px …`), which then failed to equal the real focus
+   * state. Waiting two frames guarantees consecutive samples straddle a paint, so a value in
+   * flight cannot repeat itself and only a genuinely stopped one reads as stable.
+   */
   const skinOf = (card: Locator) =>
-    card.evaluate((el) => {
-      const cs = getComputedStyle(el);
-      const r = el.getBoundingClientRect();
-      return {
-        paint: [cs.borderTopColor, cs.backgroundColor, cs.boxShadow].join(" | "),
-        // Width and height only. The lift is a transform and moves `top` deliberately;
-        // it is the box that must not move, because the row height is a layout contract.
-        size: `${Math.round(r.width)}x${Math.round(r.height)}`,
-        top: Math.round(r.top),
-      };
-    });
+    card.evaluate(
+      (el) =>
+        new Promise<{ paint: string; size: string; top: number }>((resolve) => {
+          requestAnimationFrame(() =>
+            requestAnimationFrame(() => {
+              const cs = getComputedStyle(el);
+              const r = el.getBoundingClientRect();
+              resolve({
+                paint: [cs.borderTopColor, cs.backgroundColor, cs.boxShadow].join(" | "),
+                // Width and height only. The lift is a transform and moves `top` deliberately;
+                // it is the box that must not move, because the row height is a layout contract.
+                size: `${Math.round(r.width)}x${Math.round(r.height)}`,
+                top: Math.round(r.top),
+              });
+            })
+          );
+        })
+    );
 
   /**
    * The card transitions over 300ms, so a state has to be read once it has stopped moving.
@@ -131,6 +148,61 @@ test.describe("Front door", () => {
 
     // The affordance survives; only the 4px lift is withheld.
     expect(hover.top).toBe(rest.top);
+  });
+
+  /**
+   * The thesis is the one sentence this page is built around, and it is dimmed to 12% in the
+   * markup so GSAP can brighten it word by word on scroll. The whole effect block returns early
+   * under `prefers-reduced-motion: reduce` — correctly, it is a scroll animation — but nothing
+   * restored the resting opacity, so the sentence stayed at 12% permanently for exactly the
+   * readers who cannot get the animation. `globals.css` neutralises `fadeInUp` / `scoreFlash` /
+   * `pulse` for this audience and never covered this one.
+   *
+   * Asserted as legibility rather than as an exact value, so retuning the effect keeps passing
+   * and only a genuinely unreadable resting state fails.
+   */
+  test("under reduced motion the thesis is legible, not left at its animation start", async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.goto("/");
+
+    const thesis = page.locator(".fc-thesis");
+    await expect(thesis).toBeVisible({ timeout: 30_000 });
+
+    // The effect is imported dynamically; give the chunk time to land and do nothing.
+    const opacities = async () =>
+      thesis.locator(".fc-word").evaluateAll((els) =>
+        els.map((el) => Number(getComputedStyle(el).opacity))
+      );
+
+    await expect.poll(async () => (await opacities()).length).toBeGreaterThan(0);
+    await expect.poll(async () => Math.min(...(await opacities()))).toBeGreaterThan(0.85);
+  });
+
+  /**
+   * A scroll reveal that never plays leaves its targets at the animation's *start* — invisible,
+   * with a silence nothing else catches: `lint`, `typecheck`, the unit suite and `build` all pass
+   * over six product links sitting at `opacity: 0`, and the accessible-name assertions above pass
+   * too, because the elements are present and named. It happened: the card row was built with
+   * `gsap.from`, whose end values are inferred, and a `ScrollTrigger.refresh()` re-applied the
+   * start state to a trigger that was still alive. `onEnter`, `onStart` and `onComplete` had all
+   * fired.
+   *
+   * Asserted on all six rather than the first, and as "visible enough to click" rather than an
+   * exact value, so retuning a reveal keeps passing.
+   */
+  test("every surface card settles visible once its reveal has played", async ({ page }) => {
+    await page.goto("/");
+
+    const surfaces = page.getByRole("navigation", { name: "Product surfaces" });
+    await expect(surfaces.getByRole("link")).toHaveCount(6, { timeout: 30_000 });
+    await surfaces.getByRole("link").first().scrollIntoViewIfNeeded();
+
+    const opacities = async () =>
+      surfaces.getByRole("link").evaluateAll((els) =>
+        els.map((el) => Number(getComputedStyle(el).opacity))
+      );
+
+    await expect.poll(async () => Math.min(...(await opacities()))).toBeGreaterThan(0.9);
   });
 
   test("is reachable from the footer, and is not itself a nav tab", async ({ page }) => {

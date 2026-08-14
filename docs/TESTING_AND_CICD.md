@@ -117,8 +117,8 @@ Specs (15): `e2e/home.spec.ts` (the front door), `e2e/games.spec.ts`, `e2e/align
 `e2e/alignment-law.spec.ts`, `e2e/analysis.spec.ts`, `e2e/availability.spec.ts`,
 `e2e/behind-the-data.spec.ts`, `e2e/navigation.spec.ts`, `e2e/page-headers.spec.ts`,
 `e2e/playoffs.spec.ts`, `e2e/referees.spec.ts`, `e2e/schedule-disparity.spec.ts`,
-`e2e/season.spec.ts`, `e2e/shot-quality.spec.ts`, `e2e/shooting.spec.ts` — **134 tests**
-(129 passed / 5 skipped, verified 2026-08-13; several specs generate their cases in a loop, so
+`e2e/season.spec.ts`, `e2e/shot-quality.spec.ts`, `e2e/shooting.spec.ts` — **136 tests**
+(131 passed / 5 skipped, verified 2026-08-14; several specs generate their cases in a loop, so
 counting `test(` calls in the source undercounts). The 5 skipped are the `/referees` table
 assertions, kept rather than deleted while that surface is unpublished.
 

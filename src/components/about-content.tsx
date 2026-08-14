@@ -298,6 +298,120 @@ export function AboutContent({ stats }: { stats: AboutStats | null }) {
           );
         });
 
+        // ── Sections 3–7 ────────────────────────────────────────────────────────────
+        //
+        // Sections 1 and 2 each got an effect that says what that section says — the hero
+        // assembles, the thesis lights word by word. Everything below them shared one generic
+        // `.fc-rise` scale-and-fade, applied identically to a headline figure, a principle row
+        // and a standards panel, and sections 4 and 7 had nothing at all. The page stopped
+        // choreographing and started decorating. These are per-section instead.
+        //
+        // All of them are entrance reveals (`once: true`), not scrubs. A scrub ties the effect
+        // to scroll position, which reads as scroll-jacking when applied to five sections in a
+        // row; the one place this page holds the reader is the pinned section, and it earns it.
+
+        /**
+         * Shared entrance. `once` so a reader scrolling back up is not re-animated at.
+         *
+         * **`fromTo`, never `from`.** A `from` tween infers its end values from whatever the
+         * element happens to be when the tween is built, and any later `ScrollTrigger.refresh()`
+         * — which the library also performs on its own, after a resize or once webfonts land —
+         * can re-apply the start state to a trigger that is still alive. The six surface cards
+         * hit exactly that: `onEnter`, `onStart` and `onComplete` all fired and all six still
+         * held `opacity: 0; transform: translate(0px, 8px)` inline, so the section a reader is
+         * meant to click was invisible. Their trigger spans nearly a screen and had only reached
+         * 44% of it, so unlike the shorter ones it never reached its end and never killed itself.
+         * Stating both ends removes the inference and the whole failure mode with it.
+         */
+        const reveal = (
+          targets: gsap.TweenTarget,
+          from: gsap.TweenVars,
+          vars: gsap.TweenVars & { trigger: Element }
+        ) => {
+          const { trigger, ...rest } = vars;
+          gsap.fromTo(targets, from, {
+            y: 0,
+            opacity: 1,
+            duration: 0.9,
+            ease: "power3.out",
+            scrollTrigger: { trigger, start: "top 82%", once: true },
+            ...rest,
+          });
+        };
+
+        // §3 — the figures tally rather than appear. The count is driven off a proxy object and
+        // written through `signedNumber`, never hand-formatted: the sign glyph is U+2212 and a
+        // bare zero carries no sign, and a figure that formatted itself differently mid-count
+        // than at rest would be its own bug.
+        gsap.utils.toArray<HTMLElement>("[data-fc-count]").forEach((el) => {
+          const target = Number(el.dataset.fcCount);
+          if (!Number.isFinite(target)) return;
+
+          const decimals = Number(el.dataset.fcCountDecimals ?? 0);
+          const signed = el.dataset.fcCountSigned === "1";
+          const proxy = { v: 0 };
+
+          // No `immediateRender`: the tween does not run until its trigger fires, so the
+          // server-rendered figure is what shows until the reader reaches it. Writing the start
+          // value on mount would flash the real number to zero before counting.
+          gsap.to(proxy, {
+            v: target,
+            duration: 1.2,
+            ease: "power2.out",
+            scrollTrigger: { trigger: el, start: "top 85%", once: true },
+            onUpdate: () => {
+              el.textContent = signed
+                ? signedNumber(proxy.v, decimals)
+                : proxy.v.toFixed(decimals);
+            },
+          });
+        });
+
+        const evidence = root.current?.querySelector(".fc-evidence");
+        if (evidence) reveal(".fc-evidence-item", { y: 28, opacity: 0 }, { trigger: evidence, stagger: 0.12 });
+
+        // §4 — the six cards arrive in reading order. 8px and 70ms: enough to read as sequence,
+        // not so much that the last card lands after the reader has already chosen one.
+        const cards = root.current?.querySelector(".fc-cards");
+        if (cards) reveal(".fc-card", { y: 8, opacity: 0 }, { trigger: cards, duration: 0.7, stagger: 0.07 });
+
+        // §6 — a real mask, done with `clip-path` rather than a wrapper: the rows are grid
+        // children with their own hairline borders, and wrapping each one in an overflow box to
+        // clip it would have changed the layout to animate it.
+        gsap.utils.toArray<HTMLElement>(".fc-rule").forEach((el, i) => {
+          gsap.fromTo(
+            el,
+            { clipPath: "inset(0 0 100% 0)", opacity: 0, y: 14 },
+            {
+              clipPath: "inset(0 0 0% 0)",
+              opacity: 1,
+              y: 0,
+              duration: 0.9,
+              delay: i * 0.12,
+              ease: "power3.out",
+              scrollTrigger: { trigger: el, start: "top 88%", once: true },
+            }
+          );
+        });
+
+        // §7 — the closing line masks up, and the button follows a beat later rather than with
+        // it. The page has spent seven screens making an argument; the one thing it asks for
+        // should arrive after the argument lands, not alongside it.
+        const outro = root.current?.querySelector(".fc-outro");
+        if (outro) {
+          gsap.fromTo(
+            ".fc-outro-title",
+            { clipPath: "inset(0 0 100% 0)", y: 24 },
+            {
+              clipPath: "inset(0 0 0% 0)",
+              y: 0,
+              duration: 1.1,
+              ease: "power3.out",
+              scrollTrigger: { trigger: outro, start: "top 78%", once: true },
+            }
+          );
+          reveal(".fc-outro-cta", { y: 12, opacity: 0 }, { trigger: outro, duration: 0.7, delay: 0.45 });
+        }
       }, root);
     })();
 
@@ -362,7 +476,12 @@ export function AboutContent({ stats }: { stats: AboutStats | null }) {
           {"Every game starts uneven. The schedule decided that months ago."
             .split(" ")
             .map((w, i) => (
-              <span key={i} className="fc-word" style={{ opacity: 0.12 }}>
+              // The resting dim is a class, never an inline style. GSAP brightens these on
+              // scroll and the whole effect block returns early under `prefers-reduced-motion`,
+              // which left the sentence at 12% forever for exactly the readers who cannot get
+              // the animation back. `motion-reduce:` restores it; an inline style could not have
+              // been overridden by any class rule, which is the same cascade trap as CARD_SKIN.
+              <span key={i} className="fc-word opacity-[0.12] motion-reduce:opacity-100">
                 {w}{" "}
               </span>
             ))}
@@ -375,13 +494,19 @@ export function AboutContent({ stats }: { stats: AboutStats | null }) {
           Evidence, not just the eye test
         </h2>
 
-        <div className="mt-14 grid gap-10 lg:grid-cols-[1.15fr_1fr] lg:items-end lg:gap-16">
-          <div className="fc-rise">
+        <div className="fc-evidence mt-14 grid gap-10 lg:grid-cols-[1.15fr_1fr] lg:items-end lg:gap-16">
+          <div className="fc-evidence-item">
             <span
               className="font-heading block font-bold"
               // The rested pole as display text: brighter than the mark-tuned #0E9CBE so a
               // headline numeral keeps headline contrast (~8:1 on this ground).
               style={{ fontSize: "clamp(5rem,15vw,11rem)", lineHeight: 0.85, letterSpacing: "-0.04em", color: "#2CB6D9" }}
+              // Counted only when there is a figure to count to. With no stats the element
+              // holds an em dash, and a count-up would animate it to a number that was never
+              // measured.
+              {...(stats
+                ? { "data-fc-count": stats.widestEdgePp, "data-fc-count-decimals": 1, "data-fc-count-signed": "1" }
+                : {})}
             >
               {stats ? signedNumber(stats.widestEdgePp, 1) : NO_FIGURE}
             </span>
@@ -394,19 +519,27 @@ export function AboutContent({ stats }: { stats: AboutStats | null }) {
           </div>
 
           <div className="flex flex-col gap-8">
-            <div className="fc-rise" style={{ borderTop: "1px solid rgba(245,241,232,.14)", paddingTop: "1.5rem" }}>
+            <div className="fc-evidence-item" style={{ borderTop: "1px solid rgba(245,241,232,.14)", paddingTop: "1.5rem" }}>
               <span className="font-heading font-bold" style={{ fontSize: "clamp(2rem,4vw,3rem)", lineHeight: 1 }}>
-                {`${NBA_SEASONS.length} seasons`}
+                {/* The numeral is its own element so the count can write to it without
+                    rebuilding the word beside it. */}
+                <span data-fc-count={NBA_SEASONS.length}>{NBA_SEASONS.length}</span> seasons
               </span>
               <p className="mt-3 max-w-[46ch]" style={{ color: DIM, lineHeight: 1.6 }}>
                 {stats ? `${stats.games.toLocaleString()} completed games` : "Every completed game"} where the model made a call. The
                 ones it reads as too close carry no claim at all.
               </p>
             </div>
-            <div className="fc-rise" style={{ borderTop: "1px solid rgba(245,241,232,.14)", paddingTop: "1.5rem" }}>
+            <div className="fc-evidence-item" style={{ borderTop: "1px solid rgba(245,241,232,.14)", paddingTop: "1.5rem" }}>
               {/* Same quantity as the hero figure (edge over the venue baseline), so the same
                   rested-pole display teal — the old amber was Broadcast accent, now retired. */}
-              <span className="font-heading font-bold" style={{ fontSize: "clamp(2rem,4vw,3rem)", lineHeight: 1, color: "#2CB6D9" }}>
+              <span
+                className="font-heading font-bold"
+                style={{ fontSize: "clamp(2rem,4vw,3rem)", lineHeight: 1, color: "#2CB6D9" }}
+                {...(stats
+                  ? { "data-fc-count": stats.overallEdgePp, "data-fc-count-decimals": 1, "data-fc-count-signed": "1" }
+                  : {})}
+              >
                 {stats ? signedNumber(stats.overallEdgePp, 1) : NO_FIGURE}
               </span>
               <p className="mt-3 max-w-[46ch]" style={{ color: DIM, lineHeight: 1.6 }}>
@@ -431,7 +564,7 @@ export function AboutContent({ stats }: { stats: AboutStats | null }) {
         </h2>
         {/* A labelled landmark: this is a second, distinct set of navigation links, and
             each one's accessible name is "<label> <copy>" because the card is one target. */}
-        <nav aria-label="Product surfaces" className="flex flex-col gap-2 lg:h-[24rem] lg:flex-row">
+        <nav aria-label="Product surfaces" className="fc-cards flex flex-col gap-2 lg:h-[24rem] lg:flex-row">
           {SURFACES.map((s, i) => (
             <Link
               key={s.href}
@@ -439,7 +572,7 @@ export function AboutContent({ stats }: { stats: AboutStats | null }) {
               // Stacked from the top, deliberately NOT `justify-between`: that distributed the
               // slack around a text block whose height follows its copy, so a longer
               // description silently lifted that one card's title above the other five.
-              className={`group relative flex flex-1 flex-col overflow-hidden rounded-xl border p-6 ${CARD_SKIN}`}
+              className={`fc-card group relative flex flex-1 flex-col overflow-hidden rounded-xl border p-6 ${CARD_SKIN}`}
             >
               {/* The meta row's colour is a class, not inline, for the same cascade reason as
                   CARD_SKIN: it has to brighten with the rest of the card. The arrow is the
@@ -548,7 +681,7 @@ export function AboutContent({ stats }: { stats: AboutStats | null }) {
         </p>
 
         <div
-          className="fc-rise mt-12 overflow-hidden rounded-2xl border"
+          className="mt-12 overflow-hidden rounded-2xl border"
           style={{ borderColor: "rgba(245,241,232,.14)", background: "rgba(245,241,232,.035)" }}
         >
           {/* The label is a column header, stated once. It read "RULES OUT" above every row,
@@ -564,7 +697,7 @@ export function AboutContent({ stats }: { stats: AboutStats | null }) {
           {STANDARD.map((s, i) => (
             <div
               key={s.rule}
-              className="grid gap-x-8 gap-y-2 px-8 py-7 md:grid-cols-[1.1fr_1fr] md:items-baseline"
+              className="fc-rule grid gap-x-8 gap-y-2 px-8 py-7 md:grid-cols-[1.1fr_1fr] md:items-baseline"
               style={{ borderTop: i === 0 ? undefined : "1px solid rgba(245,241,232,.12)" }}
             >
               <p className="font-heading font-bold" style={{ fontSize: "clamp(1.15rem,2vw,1.5rem)", lineHeight: 1.25, letterSpacing: "-0.01em" }}>
@@ -577,15 +710,15 @@ export function AboutContent({ stats }: { stats: AboutStats | null }) {
       </section>
 
       {/* ── 7. The way in ─────────────────────────────────────── */}
-      <section className={`items-center px-6 text-center ${VIEW}`}>
-        <h2 className="font-heading mx-auto max-w-4xl font-bold" style={{ fontSize: "clamp(2.3rem,7.5vw,6rem)", lineHeight: 0.98, letterSpacing: "-0.035em" }}>
+      <section className={`fc-outro items-center px-6 text-center ${VIEW}`}>
+        <h2 className="fc-outro-title font-heading mx-auto max-w-4xl font-bold" style={{ fontSize: "clamp(2.3rem,7.5vw,6rem)", lineHeight: 0.98, letterSpacing: "-0.035em" }}>
           Read the schedule before it reads you
         </h2>
         {/* `/games`, not `/`. This page moved to `/` on 2026-08-12, so a CTA pointing at `/`
             would scroll the reader back to the top of the page they are already on. */}
         <Link
           href="/games"
-          className="mt-12 inline-block rounded-full px-9 py-4 text-sm font-semibold transition-transform hover:-translate-y-0.5"
+          className="fc-outro-cta mt-12 inline-block rounded-full px-9 py-4 text-sm font-semibold transition-transform hover:-translate-y-0.5"
           style={{ background: BONE, color: INK }}
         >
           Open the games board
