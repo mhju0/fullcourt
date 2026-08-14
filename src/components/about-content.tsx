@@ -300,7 +300,9 @@ export function AboutContent({ stats }: { stats: AboutStats | null }) {
         /**
          * Shared entrance. `once` so a reader scrolling back up is not re-animated at.
          *
-         * **`fromTo`, never `from`.** A `from` tween infers its end values from whatever the
+         * **Anything driven by a ScrollTrigger uses `fromTo`, never `from`.** (The hero tween
+         * above is a plain on-load `from` and stays one — it has no trigger, so none of what
+         * follows can reach it.) A `from` tween infers its end values from whatever the
          * element happens to be when the tween is built, and any later `ScrollTrigger.refresh()`
          * — which the library also performs on its own, after a resize or once webfonts land —
          * can re-apply the start state to a trigger that is still alive. The six surface cards

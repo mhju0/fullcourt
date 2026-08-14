@@ -427,9 +427,11 @@ provider would put the whole app's chrome behind a re-render only one route ever
 
 Three rules hold this together, and each one is a bug that already happened:
 
-- **`fromTo`, never `from`.** A `from` tween infers its end values from whatever the element is
-  when the tween is built, and a later `ScrollTrigger.refresh()` — which the library also runs
-  itself, after a resize or once webfonts land — can re-apply the *start* state to a trigger that
+- **Anything driven by a ScrollTrigger uses `fromTo`, never `from`.** (§1's hero is a plain
+  on-load `from` and stays one — no trigger, so none of this reaches it.) A `from` tween infers
+  its end values from whatever the element is when the tween is built, and a later
+  `ScrollTrigger.refresh()` — which the library also runs itself, after a resize or once webfonts
+  land — can re-apply the *start* state to a trigger that
   is still alive. The six surface cards hit exactly this: `onEnter`, `onStart` and `onComplete`
   all fired and all six still held `opacity: 0; transform: translate(0px, 8px)` inline. The one
   section a reader is meant to click was invisible, and `lint`, `typecheck`, the unit suite and
