@@ -405,9 +405,25 @@ section now carries its own:
 | 2 | `.fc-word` | word-by-word brighten, scrubbed |
 | 3 | `.fc-evidence-item`, `[data-fc-count]` | rise + the figures counting to their value |
 | 4 | `.fc-card` | six cards in reading order, 8px / 70ms |
-| 5 | `.fc-rise` | unchanged for now — the pinned centrepiece lands separately |
+| 5 | `.fc-input` | **pinned centrepiece** — the heading holds while six inputs build |
 | 6 | `.fc-rule` | `clip-path` mask, row by row |
 | 7 | `.fc-outro-title`, `.fc-outro-cta` | headline masks up, button follows a beat later |
+
+**§5 is the only pin, and it is `lg`-only.** The heading stays put while the six inputs light one
+at a time, so the method assembles in front of the reader instead of being listed at them — the
+animation *is* the explanation, which is the one thing that justifies holding someone in place.
+Everything else is an entrance reveal, because five consecutive scrubbed sections read as
+scroll-jacking. `gsap.matchMedia()` gates the pin rather than a `window.innerWidth` check, so
+crossing the breakpoint on a resize unwinds it cleanly; below `lg` the same six items simply
+arrive, since a phone has no held column to build against and a pin would eat the whole gesture.
+`scrub: 0.6` rather than `true`, or the build follows trackpad jitter and reads as a stutter.
+
+**A pin and the retracting bar have to be told about each other.** Inside a pin the document is
+genuinely scrolling while nothing on screen moves, so `useRetractingHeader` — which hides the bar
+on a downward delta — would slide the chrome away for no reason the reader can see. The pin sets
+`document.documentElement.dataset.fcPinned` for its duration and the hook bails on it. A DOM
+attribute rather than shared state because it is one boolean crossing one boundary, and a context
+provider would put the whole app's chrome behind a re-render only one route ever triggers.
 
 Three rules hold this together, and each one is a bug that already happened:
 

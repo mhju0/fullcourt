@@ -102,6 +102,17 @@ function useRetractingHeader(enabled: boolean) {
       if (Math.abs(delta) < SCROLL_NOISE_PX) return
       last = y
 
+      // A pinned section holds its content still while the document keeps scrolling, so the
+      // delta above is real while nothing on screen has moved. Retracting there reads as the
+      // chrome leaving for no reason the reader can see. The front door sets this flag for the
+      // length of its pin (`about-content.tsx`); a DOM attribute rather than shared state
+      // because it is one boolean crossing one boundary, and a context provider for it would
+      // put the whole app's chrome behind a re-render that only one route ever triggers.
+      if (document.documentElement.dataset.fcPinned === "1") {
+        setRetracted(false)
+        return
+      }
+
       // Always present at the top of the document, whichever way the reader arrived there.
       if (y <= BAR_HEIGHT_PX) {
         setRetracted(false)

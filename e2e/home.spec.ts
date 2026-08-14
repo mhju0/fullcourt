@@ -205,6 +205,50 @@ test.describe("Front door", () => {
     await expect.poll(async () => Math.min(...(await opacities()))).toBeGreaterThan(0.9);
   });
 
+  /**
+   * The one section that holds the reader. Pinning is desktop-only, so this asserts the two
+   * things that make it a pin rather than a scroll: the section stays put while the document
+   * moves under it, and the six inputs are all lit by the time it lets go.
+   *
+   * The second half matters more than the first. A build that never completes leaves inputs at
+   * their start opacity — the same invisible-content failure the surface cards shipped with, and
+   * just as silent.
+   */
+  test("the score section holds while its six inputs build, then releases them all lit", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto("/");
+    await expect(page.getByRole("heading", { name: "Rest is a stat" })).toBeVisible({
+      timeout: 30_000,
+    });
+
+    const section = page.locator(".fc-inputs");
+    const top = async () => Math.round((await section.boundingBox())!.y);
+    const opacities = async () =>
+      page.locator(".fc-input").evaluateAll((els) =>
+        els.map((el) => Number(getComputedStyle(el).opacity))
+      );
+
+    const start = await page.evaluate(
+      () =>
+        Math.round(
+          (document.querySelector(".fc-inputs") as HTMLElement).getBoundingClientRect().top +
+            window.scrollY
+        )
+    );
+
+    // Held: 600px of document scroll, and the section has not moved off the top of the viewport.
+    await page.evaluate((y) => window.scrollTo(0, y), start);
+    await expect.poll(top).toBe(0);
+    await page.evaluate((y) => window.scrollTo(0, y), start + 600);
+    await expect.poll(top).toBe(0);
+
+    // Released, with every input lit.
+    await page.evaluate((y) => window.scrollTo(0, y), start + 1400);
+    await expect.poll(async () => Math.min(...(await opacities()))).toBeGreaterThan(0.9);
+  });
+
   test("is reachable from the footer, and is not itself a nav tab", async ({ page }) => {
     await page.goto("/games");
 

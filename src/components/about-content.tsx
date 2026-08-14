@@ -285,19 +285,6 @@ export function AboutContent({ stats }: { stats: AboutStats | null }) {
           scrollTrigger: { trigger: ".fc-thesis", start: "top 80%", end: "top 25%", scrub: true },
         });
 
-        gsap.utils.toArray<HTMLElement>(".fc-rise").forEach((el) => {
-          gsap.fromTo(
-            el,
-            { scale: 0.94, opacity: 0.4 },
-            {
-              scale: 1,
-              opacity: 1,
-              ease: "power2.out",
-              scrollTrigger: { trigger: el, start: "top 90%", end: "top 58%", scrub: true },
-            }
-          );
-        });
-
         // ── Sections 3–7 ────────────────────────────────────────────────────────────
         //
         // Sections 1 and 2 each got an effect that says what that section says — the hero
@@ -374,6 +361,57 @@ export function AboutContent({ stats }: { stats: AboutStats | null }) {
         // not so much that the last card lands after the reader has already chosen one.
         const cards = root.current?.querySelector(".fc-cards");
         if (cards) reveal(".fc-card", { y: 8, opacity: 0 }, { trigger: cards, duration: 0.7, stagger: 0.07 });
+
+        // §5 — the centrepiece, and the one place the page holds the reader.
+        //
+        // The heading stays put while the six inputs light one at a time, so the method
+        // assembles in front of you rather than being listed at you: here the animation *is*
+        // the explanation, which is the only thing that justifies spending a pin on a section.
+        //
+        // Desktop only. A pin takes over the scroll for the length of its range, and on a phone
+        // that is the whole screen and the whole gesture — the section is a stacked list there
+        // anyway, with no held column to build against, so a pin buys nothing. `matchMedia` also
+        // unwinds it cleanly when a resize crosses the breakpoint, which a hand-rolled
+        // `window.innerWidth` check does not.
+        const mm = gsap.matchMedia();
+
+        mm.add("(min-width: 1024px)", () => {
+          const section = root.current?.querySelector(".fc-inputs");
+          if (!section) return;
+
+          gsap.timeline({
+            scrollTrigger: {
+              trigger: section,
+              start: "top top",
+              end: "+=110%",
+              pin: true,
+              // Smoothed rather than welded: `scrub: true` ties the build to the wheel's exact
+              // jitter, and six items lighting in lockstep with trackpad noise reads as a
+              // stutter instead of a sequence.
+              scrub: 0.6,
+              // The retracting bar reads `window.scrollY` and hides on a downward delta. Inside
+              // a pin the document really is scrolling while nothing on screen moves, so the bar
+              // would slide away for no reason the reader can see. `nav-bar.tsx` watches this.
+              onToggle: (self) => {
+                document.documentElement.dataset.fcPinned = self.isActive ? "1" : "0";
+              },
+            },
+          }).fromTo(
+            ".fc-input",
+            { opacity: 0.18, y: 16 },
+            { opacity: 1, y: 0, stagger: 0.5, ease: "none" }
+          );
+
+          return () => {
+            delete document.documentElement.dataset.fcPinned;
+          };
+        });
+
+        // Below that breakpoint the same six items simply arrive.
+        mm.add("(max-width: 1023.98px)", () => {
+          const section = root.current?.querySelector(".fc-inputs");
+          if (section) reveal(".fc-input", { y: 18, opacity: 0 }, { trigger: section, stagger: 0.08 });
+        });
 
         // §6 — a real mask, done with `clip-path` rather than a wrapper: the rows are grid
         // children with their own hairline borders, and wrapping each one in an overflow box to
@@ -632,7 +670,7 @@ export function AboutContent({ stats }: { stats: AboutStats | null }) {
       </section>
 
       {/* ── 5. What the score is made of ──────────────────────── */}
-      <section className={`mx-auto w-full max-w-7xl px-6 ${VIEW}`}>
+      <section className={`fc-inputs mx-auto w-full max-w-7xl px-6 ${VIEW}`}>
         {/* 26rem, not 22: at the narrower measure the heading broke as "What the / score is
             made / of", stranding a two-letter word on its own line. */}
         <div className="grid gap-12 lg:grid-cols-[26rem_1fr] lg:gap-16">
@@ -652,7 +690,7 @@ export function AboutContent({ stats }: { stats: AboutStats | null }) {
             {INPUTS.map((input, i) => (
               <li
                 key={input.term}
-                className="fc-rise grid grid-cols-[2.5rem_1fr] items-baseline gap-x-4 py-5"
+                className="fc-input grid grid-cols-[2.5rem_1fr] items-baseline gap-x-4 py-5"
                 style={{ borderTop: "1px solid rgba(245,241,232,.12)" }}
               >
                 <span className="mono" style={{ fontSize: 11, letterSpacing: "0.1em", color: "rgba(245,241,232,.3)" }}>
