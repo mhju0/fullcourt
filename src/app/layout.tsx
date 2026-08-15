@@ -64,6 +64,15 @@ export const metadata: Metadata = {
     title: "FullCourt — NBA Analytics",
     description: SITE_DESC,
   },
+  // The other half of the install surface (app/manifest.ts): `capable` is what lets a
+  // home-screen launch open standalone on iOS, which reads the meta tag and not the
+  // manifest's `display`. Title matches the manifest short_name, not the full title —
+  // the space under an icon fits one word.
+  appleWebApp: {
+    capable: true,
+    title: "FullCourt",
+    statusBarStyle: "default",
+  },
 };
 
 export default function RootLayout({
