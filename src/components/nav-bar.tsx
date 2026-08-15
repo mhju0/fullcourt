@@ -3,7 +3,7 @@
 import { Menu } from "@base-ui/react/menu"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { CourtMark } from "@/components/court-mark"
 import {
   DIRECT_NAV_ITEMS,
@@ -145,9 +145,67 @@ function useRetractingHeader(enabled: boolean) {
   return { hidden: enabled && retracted, reveal }
 }
 
+/**
+ * Edge fades for the scroll strip — the affordance the strip was measured to lack.
+ *
+ * The 2026-08-04 pass found the OTHER menu sitting entirely off-screen at 360px "with no
+ * scroll affordance", so the tabs past the fold were unreachable in practice: nothing said
+ * the row continues. The scrollbar cannot be that signal — it is hidden on purpose, because
+ * at 44px tall it lands on the active tab's underline. A fade at the overflowing edge is how
+ * Naver Sports' tab strips and ESPN's mobile subnavs say "more this way", and it costs no
+ * height.
+ *
+ * State, not CSS alone: a static gradient would also sit over the row when the content fits,
+ * dimming the last tab for no reason. Each fade shows only while there is actually content
+ * under it — left fade once scrolled, right fade until the end.
+ *
+ * `scrollWidth` is not observable by ResizeObserver (it watches the border box, and the box
+ * never changes when the *content* widens), so the font landing is re-checked explicitly:
+ * the strip is mono/display webfonts, and their swap is exactly when overflow appears.
+ */
+function useEdgeFades() {
+  const ref = useRef<HTMLDivElement>(null)
+  const [fades, setFades] = useState({ left: false, right: false })
+
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+
+    let frame = 0
+    let disposed = false
+
+    const measure = () => {
+      frame = 0
+      if (disposed) return
+      const max = el.scrollWidth - el.clientWidth
+      const next = { left: el.scrollLeft > 1, right: el.scrollLeft < max - 1 }
+      setFades((prev) => (prev.left === next.left && prev.right === next.right ? prev : next))
+    }
+    const schedule = () => {
+      if (!frame) frame = requestAnimationFrame(measure)
+    }
+
+    measure()
+    el.addEventListener("scroll", schedule, { passive: true })
+    const ro = new ResizeObserver(schedule)
+    ro.observe(el)
+    void document.fonts?.ready.then(schedule)
+
+    return () => {
+      disposed = true
+      el.removeEventListener("scroll", schedule)
+      ro.disconnect()
+      if (frame) cancelAnimationFrame(frame)
+    }
+  }, [])
+
+  return { ref, fades }
+}
+
 export function NavBar() {
   const pathname = usePathname()
   const otherActive = OTHER_NAV_ITEMS.some((item) => isActive(pathname, item.href))
+  const { ref: stripRef, fades } = useEdgeFades()
 
   // The front door only. Every other surface keeps the bar pinned.
   const retractable = pathname === "/"
@@ -228,7 +286,7 @@ export function NavBar() {
 
       {/* MAIN NAV BAR */}
       <div
-        className="mono"
+        className="mono relative"
         style={{
           height: "44px",
           background: "var(--term-surface)",
@@ -243,7 +301,7 @@ export function NavBar() {
             whole nav is nine short labels: a hamburger would hide all nine behind a tap to
             solve a problem that a swipe already solves. The OTHER menu is unaffected — it
             renders through a Portal, so this container cannot clip its popup. */}
-        <div className="fc-nav-scroll mx-auto flex h-full max-w-7xl items-center gap-6 overflow-x-auto px-4 sm:px-6">
+        <div ref={stripRef} className="fc-nav-scroll mx-auto flex h-full max-w-7xl items-center gap-6 overflow-x-auto px-4 sm:px-6">
           {/* Two landmarks in one row. The product tabs keep the "Main navigation" name and
               its asserted six-link count; the reference links are a separate landmark so
               they never inflate that count and so screen readers announce them as what they
@@ -361,6 +419,28 @@ export function NavBar() {
             })}
           </nav>
         </div>
+
+        {/* The overflow affordance. Decorative overlays, never interactive: `pointer-events-none`
+            so they cannot eat a tap on the tab under them, and the *dynamic* half (opacity) is a
+            class while the static gradient is inline — nothing contests either, per the cascade
+            rule in docs/FRONTEND.md. Gradient from the row's own surface so the fade reads as the
+            row continuing, not as a shadow cast over it. */}
+        <div
+          aria-hidden="true"
+          className={cn(
+            "fc-nav-fade-left pointer-events-none absolute inset-y-0 left-0 w-8 transition-opacity duration-200 motion-reduce:transition-none",
+            fades.left ? "opacity-100" : "opacity-0"
+          )}
+          style={{ background: "linear-gradient(to right, var(--term-surface), transparent)" }}
+        />
+        <div
+          aria-hidden="true"
+          className={cn(
+            "fc-nav-fade-right pointer-events-none absolute inset-y-0 right-0 w-8 transition-opacity duration-200 motion-reduce:transition-none",
+            fades.right ? "opacity-100" : "opacity-0"
+          )}
+          style={{ background: "linear-gradient(to left, var(--term-surface), transparent)" }}
+        />
       </div>
     </header>
   )
