@@ -1,0 +1,149 @@
+# UI/UX Checklist — measured against the sports-data field
+
+Written 2026-08-15. A living checklist of the conventions major sports properties carry,
+what FullCourt adopts, what it already had, and what it **refuses with a reason** — so the
+next design pass starts from decisions, not from a blank sweep of "what do other sites do".
+
+**Provenance.** Claims about other sites come from their shipped pages, fetched and read on
+2026-08-15: ESPN, NBA.com, Basketball-Reference, CBS Sports (blocked — see below), Naver
+Sports (m.sports.naver.com shell + its CSS bundle), STATIZ (blocked), KBO (koreabaseball.com,
+including a server-rendered record page), KBL. Rows sourced from memory rather than a fetch
+say so. Re-verify before citing a row as current — sites redesign without notice.
+
+Legend: **[x]** adopted / already conforming · **[ ]** open, with owner · **[—]** refused,
+with the reason.
+
+---
+
+## 1. Mobile & touch
+
+- [x] **Horizontal tab strips signal their overflow with an edge fade** (Naver Sports tab
+  strips; ESPN mobile subnavs). Shipped 2026-08-15 (`useEdgeFades`, `nav-bar.tsx`): each side
+  fades only while content is under it, because a static gradient dims the last tab of a row
+  that fits. The 2026-08-04 measurement that motivated it — OTHER menu entirely off-screen at
+  360px with no affordance — is the entry this closes.
+- [x] **No control under 16px at phone widths** — the iOS input-zoom floor. Shipped
+  2026-08-15 in the class layer (`termSelectClass`, `EXPLORE_SELECT_CLASS`, the /shooting
+  search input): 16px below `sm`, the 12px scale above. Needs one hand check on a real
+  iPhone; the e2e asserts computed size, not Safari's behavior.
+- [—] **`user-scalable=no` / `maximum-scale=1`.** ESPN, NBA.com, Naver Sports and KBL all
+  ship it — it is the industry's answer to the same zoom problem, and it disables pinch-zoom
+  for every reader to solve a styling bug. B-Ref caps at `maximum-scale=2.0`, also a cut-down.
+  FullCourt keeps the default viewport and fixes the trigger instead.
+- [—] **KBO's `width=1200` fixed viewport** — no responsive layout at all; the phone gets a
+  desktop page to pinch around. Listed because it is what "just don't do RWD" looks like.
+- [x] **Touch targets ≥ 44px in the chrome.** The tab row is 44px tall by construction.
+- [ ] **Hand-measure the strip on a real device** — fade visibility over the actual OTHER
+  trigger at 360px, and the 16px floor against real Safari. Owner: Michael (device).
+
+## 2. Install & platform surface
+
+- [x] **Web app manifest** (ESPN `/manifest.json`, NBA.com `/site-manifest.json`). Shipped
+  2026-08-15: `manifest.webmanifest`, `display: standalone`, `start_url: /games` — the front
+  door argues, and someone who pinned the site has heard the argument.
+- [x] **`apple-touch-icon`** (every major property; Naver ships seven sizes). Shipped: the
+  court mark as a build-time 180×180 PNG (`app/apple-icon.tsx`), full-bleed because iOS
+  applies its own mask and fills transparency with black. Served **extensionless** at
+  `/apple-icon`, like `/opengraph-image` — the `.png` URL 404s; measured.
+- [x] **`theme-color`** (B-Ref ships `#4d4438`). Already present before this pass —
+  `viewport.themeColor` pinned to `--term-bg`, 2026-08-14.
+- [ ] **Maskable / 512px manifest icon.** Chromium's richest install prompt wants explicit
+  192/512 PNGs; the SVG covers Chrome but not every Android launcher. Worth doing only with
+  a real asset pass. Owner: Michael (brand asset).
+- [ ] **`docs/social-preview.png` is still the stale hand-export** — same icon family, still
+  a manual re-upload (SEASON_ROLLOVER §7). Unchanged by this pass; listed so the icon work
+  is seen as one family.
+
+## 3. Accessibility
+
+- [x] **Skip link as the first tab stop** (ESPN "Skip to main content"; Naver 본문 바로가기).
+  Shipped 2026-08-15, with the half most sites miss: `main` takes `tabIndex={-1}` so the
+  fragment jump moves *focus*, not just the URL — asserted in e2e.
+- [x] **Landmarks with accessible names** — two labelled navs in the bar, a labelled surface
+  nav on the front door. Predates this pass; e2e counts hang off the names.
+- [x] **Motion is opt-out end to end** — every scroll effect gates on
+  `prefers-reduced-motion`, and the resting state lives in the class layer so a reduced-motion
+  reader gets the *finished* page, not the animation's start frame (the `.fc-word` 12% lesson,
+  2026-08-14).
+- [x] **Focus states mirror hover** — `focus-visible:` carries every hover declaration on the
+  surface cards; the retracting bar reveals on keyboard entry (`onFocus={reveal}`).
+- [ ] **A full axe/VoiceOver pass has never been run.** The wins above are structural, not a
+  certification. Owner: next audit round (tooling), Michael (VoiceOver).
+
+## 4. Tables & data density
+
+- [x] **Mono/tabular numerals in every stat table** — `.mono` (Geist Mono) is the data face
+  site-wide. Notable: Naver's shipped home CSS contains **zero** `tabular-nums` /
+  `font-variant-numeric`, and KBO's record tables are `<thead>`-only with no `<caption>` or
+  `scope` — on numeral and table discipline FullCourt is already ahead of parts of the field,
+  not behind it.
+- [x] **Every numeric column names its unit** (`termThUnitStyle`) — the house rule since
+  2026-08-01. No fetched site does this consistently; keep it, it is a differentiator.
+- [x] **Width-capped numeric tables** (`TERM_NUMERIC_TABLE_MAX_WIDTH`) rather than B-Ref's
+  full-bleed stretch — a 2026-08-11 decision with its reasoning in `terminal-styles.ts`.
+- [x] **Row hover highlight on interactive rows** — the slate row carries `hover:bg`; rows
+  that do nothing get nothing, which is the honest version of B-Ref's everywhere-highlight.
+- [ ] **Sticky `<thead>` on long scrolling tables** (B-Ref, Baseball Savant). `/shooting`
+  already pins its header against `.fc-rest-table`'s own scrollport; the open question is
+  whether any *other* table runs long enough to deserve one. Measure before adopting —
+  FRONTEND.md records a real collision between a table's own sticky header and the page
+  chrome on this exact page.
+- [—] **Zebra striping** (STATIZ-dense tables). The hairline-border row rhythm is the house
+  style; stripes on top of it read as a second, competing rhythm. Revisit only if a table
+  ever drops its row borders.
+
+## 5. Trust & provenance (the Korean-site strength)
+
+- [ ] **An "as of" stamp on data surfaces** — Naver/KBO record pages carry 기준 시각 ("as of
+  08.15 06:00"); it is the single strongest trust pattern in the Korean set. FullCourt has
+  the server half already (`getCompletedGamesStamp`, the stamped cache) but no surface shows
+  it. The footer's `RENDERED` stamp is deliberately *not* this — it says when the layout
+  rendered and explicitly makes no data claim. Needs an API-shape decision (carry the stamp
+  in responses?) → Michael before any code.
+- [x] **Baselines named next to every rate** — the venue-baseline rule (CLAUDE.md). No
+  fetched site does this. It is the site's spine; the checklist exists partly so no adoption
+  ever dilutes it.
+- [x] **Refusing false precision** — em dash for unmeasured (`NO_FIGURE`), refusal rows,
+  "about 0.5". Keep.
+
+## 6. Loading, perf, resilience
+
+- [x] **Layout-stable loading** — loading/error branches keep the page's `gap-12` skeleton
+  so nothing shifts when data lands (FRONTEND.md).
+- [x] **Heavy libs stay out of the shared bundle** — recharts behind `*-lazy.tsx`, GSAP
+  inside an effect. Re-verified 2026-08-13.
+- [x] **Edge caching with staleness as a *claim*** — `CACHE.historical` / `CACHE.inSeason`
+  per route, policies pinned by tests (2026-08-14).
+- [ ] **Font subsetting for the OG/wordmark faces** — Outfit is bundled for the OG card
+  only; nobody has measured what it costs. Low stakes; next perf pass.
+
+## 7. Identity & theming
+
+- [x] **Light-only, committed** — "Broadcast" (FRONTEND.md). B-Ref ships a `theme-color` and
+  no dark mode either; ESPN/NBA are dark-capable apps, and FullCourt's refusal is a recorded
+  decision, not a gap. `/about` stays the one dark surface.
+- [—] **Team logos and marks** — every US property carries them; FullCourt deliberately does
+  not (licensing; abbreviations + era-aware city names instead). Not a gap.
+- [—] **Odds/betting modules** (ESPN pushes them hard; CBS leads with them). The win-total
+  market check exists as an *evidence* surface with a published null — that is the house
+  relationship to the betting market, and a odds rail would invert it.
+- [—] **Autoplay video, sticky video rails, infinite feeds** (ESPN, CBS, Naver home). A
+  reference site reads; it does not follow you.
+
+## 8. Blocked / unverified this round
+
+- **STATIZ and CBS Sports refuse non-browser fetches** (0 bytes to curl with either UA).
+  Their rows above are marked from memory. A browser-session pass could verify; low value —
+  nothing above hinges on either.
+- **Naver serves a JS shell** — head evidence is real (icons, viewport), but body-level
+  patterns (기준 stamps, sticky headers) come from its record pages as remembered, not as
+  fetched this round.
+
+---
+
+## How to use this
+
+A new UI/UX round starts by re-reading the **[ ]** rows, not by re-surveying the field. An
+adoption PR should name the row it closes and flip it to **[x]** with the date in the same
+commit — the same rule as FRONTEND.md and the code (docs ship with the change). A new
+refusal gets a **[—]** row with the reason, so the next pass does not relitigate it.

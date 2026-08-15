@@ -18,7 +18,12 @@ the actual code (`src/app/`, `src/components/`, `src/app/globals.css`).
     and a logotype does not have to share the UI's display face. It is not downloaded by the
     client.
 - Metadata: title default `"FullCourt — NBA Analytics"`, template `"%s · FullCourt"`, plus
-  a description.
+  a description; `appleWebApp` + `app/manifest.ts` + `app/apple-icon.tsx` are the install
+  surface (see §Small screens).
+- **The first tab stop on every page is a skip link** (2026-08-15 — ESPN's "Skip to main
+  content", Naver's 본문 바로가기). `sr-only` until focused; `main` carries `id="main"` and
+  `tabIndex={-1}` because a fragment jump alone moves the URL and not focus, and a skip link
+  that does not move focus skips nothing. e2e asserts the focus handoff, not just presence.
 - Layout: `<NavBar />` (sticky), `<main>` with a centered `max-w-7xl` container
   (`px-4 py-8 sm:px-6`), and a footer (`var(--term-surface-2)` bg, top border
   `var(--term-border)`) showing `RENDERED: <ts> UTC · SYSTEM STATUS` (the latter a link to
@@ -634,6 +639,16 @@ alone. It is style, not bias, and the copy says so.
    `overflow` cannot clip it. `e2e/navigation.spec.ts` asserts the page does not scroll
    sideways at 390px, that the strip is what overflows instead, and that `BEHIND THE DATA` is
    still clickable at that width.
+   **The strip fades the edge that still has content under it** (2026-08-15, `useEdgeFades`).
+   The 2026-08-04 measurement found the OTHER menu entirely off-screen at 360px with nothing
+   saying the row continues — the scrollbar cannot say it, being hidden for the underline's
+   sake. The fades are state-driven, not static CSS, because a fixed gradient would also dim
+   the last tab of a row that fits; each side shows only while content is under it and the
+   pair swaps at the far end. One measurement gotcha is recorded in the hook: ResizeObserver
+   watches the border box and therefore **cannot see `scrollWidth`**, so the webfont landing —
+   exactly the moment overflow appears — is re-checked via `document.fonts.ready`. The fades
+   are `pointer-events-none` and `aria-hidden`; e2e asserts both phone states and that a
+   desktop row that fits shows neither.
    Bare noun phrases, no time words: mainstream NBA navs (ESPN, CBS) name the thing and
    leave time to a date picker, and NN/g's category-name guidance rules out both jargon
    (`EDGES`) and generic labels (`ANALYSIS`, `DATA`). Labels are also checked against *borrowed*
@@ -923,20 +938,29 @@ question rather than a layout bug:
 
 - **The nav bar** (`nav-bar.tsx`, `.fc-nav-scroll … overflow-x-auto`). The six direct tabs plus
   the `OTHER` trigger total ~610pt of targets in a 360pt viewport, so at rest the bar shows
-  roughly three and a half tabs and clips mid-word. **`OTHER` is entirely off-screen**, which
-  means Shot Value and Availability Cost are unreachable for a reader who does not think to swipe
-  the bar. There is no fade or arrow affordance.
+  roughly three and a half tabs and clips mid-word — the clip itself is affordance (a cut word
+  says "more"), and **since 2026-08-15 the overflowing edge also fades** (`useEdgeFades`, §nav
+  above), which is the signal the 2026-08-04 measurement found missing when it put `OTHER`
+  entirely off-screen with nothing inviting the swipe. Re-measure discoverability on a real
+  device before calling this closed — the fade is the standard affordance (Naver, ESPN mobile),
+  not yet a measured outcome.
 - **The Games month/day chip rows** — same pattern; April is off-screen at rest in a full season.
 - **The wide data tables** (`/shooting`, `/schedule`, `/season`), each inside its own
   `overflow-x-auto`. This is why the page itself does not overflow.
 
-**Form controls sit below the iOS zoom threshold.** Every `<select>` computes at 12px and one
-control on `/shooting` at 10px, against the 16px floor at which **Mobile Safari zooms the page on
-focus and does not zoom back out**. Densest surfaces: `/analysis` (four selects) and `/shooting`
-(four selects plus the player search input). The viewport meta is
-`width=device-width, initial-scale=1` with no `maximum-scale`, which is correct for accessibility
-— so the fix, if this is ever addressed, is a 16px floor on focusable controls at mobile widths,
-never disabling zoom.
+**Form controls sit on the iOS zoom floor since 2026-08-15.** As measured 2026-08-04, every
+`<select>` computed at 12px against the 16px threshold at which **Mobile Safari zooms the page on
+focus and does not zoom back out** — worst on `/analysis` (four selects) and `/shooting` (four
+selects plus the player search input). Selects and text inputs are now `text-[16px] sm:text-[12px]`,
+and the floor lives in the **class layer** because an inline `fontSize` can be neither responsive
+nor overridden (`termSelectClass` for the shared mechanism; `/analysis`'s `exploreSelectStyle`
+gave up its inline `fontSize` for exactly this). The viewport stays
+`width=device-width, initial-scale=1` with no `maximum-scale` — ESPN, NBA.com, Naver Sports and
+KBL all ship `user-scalable=no` instead (verified 2026-08-15), which disables pinch-zoom for
+everyone to solve a styling bug; removing the trigger keeps the zoom. Two loose ends: the
+"Hide noisy rows" checkbox keeps its 10px label (checkboxes have not been observed to trigger the
+zoom), and the floor is asserted as computed size in e2e — real-Safari behavior still wants one
+hand check.
 
 **Nav links measure 43pt tall**, one point under Apple's 44pt minimum touch target.
 
@@ -944,11 +968,19 @@ never disabling zoom.
 children legitimately extend beyond the viewport box, and it is inside a clipping section, so it
 does not scroll the page.
 
-**There is no PWA/home-screen support and this is a gap, not a decision.** `/manifest.json`,
-`/manifest.webmanifest` and `/apple-touch-icon.png` all return 404, and there is no
-`apple-mobile-web-app-capable` meta — only `icon.svg` (which iOS ignores for home screens) and
-`themeColor`. Add to Home Screen therefore yields a screenshot-of-the-page icon and opens in
-Safari chrome rather than standalone.
+**The install surface shipped 2026-08-15** (it was a recorded gap — Add to Home Screen used to
+yield a page-screenshot icon opening in Safari chrome). Three pieces, and each has a reason:
+`app/manifest.ts` (`display: standalone`, `start_url: /games` — the front door argues, and
+someone who pinned the site has heard the argument; both colors are `--term-bg`, matching
+`viewport.themeColor` and the light-only decision); `app/apple-icon.tsx` (the court mark as a
+build-time 180×180 PNG — **full-bleed, no rounded corners**, because iOS applies its own mask
+and fills transparency with black; iOS ignores manifest icons entirely, which is why the SVG
+alone never worked); and `appleWebApp` metadata in `layout.tsx` (iOS reads the meta tag, not the
+manifest, for standalone launch). One trap, measured: **generated metadata routes serve at their
+basename** — `/apple-icon`, like `/opengraph-image` — and `/apple-icon.png` 404s, so the
+manifest references the extensionless URL. Guards: `e2e/pwa.spec.ts` (served, real PNG,
+advertised from every page) and `src/app/__tests__/manifest.test.ts` (the manifest's promises,
+in the commit gate — nothing else renders that file, the `not-found.tsx` blind spot again).
 
 ## Design system — "Front Office" (light)
 
