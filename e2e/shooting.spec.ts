@@ -11,6 +11,32 @@ async function open(page: import("@playwright/test").Page, name: string) {
 }
 
 test.describe("Shooting by Rest", () => {
+  /**
+   * The iOS input-zoom floor. Mobile Safari zooms the page when a focused control's font
+   * is under 16px and does not zoom back out on blur — this page and /analysis measured
+   * worst (docs/ROADMAP.md, 2026-08-04). The fix is raising the control to the threshold
+   * at phone widths, never `user-scalable=no`: that is what ESPN, NBA.com, Naver and KBL
+   * all ship, and it disables pinch-zoom for everyone to solve a styling problem.
+   *
+   * Asserted on this page because it carries both control kinds; termSelectClass covers
+   * every select that shares the mechanism. The desktop half pins that the floor is a
+   * phone-width override, not a site-wide size change.
+   */
+  test("phone controls sit on the 16px iOS zoom floor, desktop keeps the 12px scale", async ({ page }) => {
+    const fontOf = (sel: string) =>
+      page.locator(sel).first().evaluate((el) => getComputedStyle(el).fontSize);
+
+    await page.setViewportSize({ width: 390, height: 700 });
+    await page.goto("/shooting");
+    await expect(page.getByLabel("Search player")).toBeVisible({ timeout: 30_000 });
+    expect(await fontOf("select")).toBe("16px");
+    expect(await fontOf("input[type=search]")).toBe("16px");
+
+    await page.setViewportSize({ width: 1440, height: 900 });
+    expect(await fontOf("select")).toBe("12px");
+    expect(await fontOf("input[type=search]")).toBe("12px");
+  });
+
   test("renders the heading and eyebrow", async ({ page }) => {
     await page.goto("/shooting");
     await expect(page.getByRole("heading", { name: "Shooting by Rest" })).toBeVisible();

@@ -128,8 +128,18 @@ export const termInsetStyle: CSSProperties = {
   borderBottom: "1px solid var(--term-border)",
 }
 
+/**
+ * `text-[16px] sm:text-[12px]` is the iOS input-zoom floor, not a type-scale entry. Mobile
+ * Safari zooms the whole page when a focused control's font is under 16px, and the zoom does
+ * not undo itself on blur — measured worst on /analysis and /shooting (docs/ROADMAP.md,
+ * 2026-08-04). Every major sports property "fixes" this by disabling pinch-zoom instead
+ * (`user-scalable=no` — ESPN, NBA.com, Naver Sports, KBL, verified against their shipped
+ * heads 2026-08-15), which trades an accessibility right for a styling preference. Raising
+ * the control to the threshold at phone widths removes the trigger and keeps the zoom.
+ * The floor must stay in the CLASS layer: an inline fontSize cannot be made responsive.
+ */
 export const termSelectClass =
-  "mono inline-flex items-center gap-2 bg-[var(--term-surface)] px-3 py-1.5 text-[12px] uppercase tracking-[0.05em] text-[var(--term-text-dim)] transition-colors hover:bg-[var(--term-surface-2)] cursor-pointer appearance-none pr-8"
+  "mono inline-flex items-center gap-2 bg-[var(--term-surface)] px-3 py-1.5 text-[16px] sm:text-[12px] uppercase tracking-[0.05em] text-[var(--term-text-dim)] transition-colors hover:bg-[var(--term-surface-2)] cursor-pointer appearance-none pr-8"
 
 export const termSelectStyle: CSSProperties = {
   border: "1px solid var(--term-border)",

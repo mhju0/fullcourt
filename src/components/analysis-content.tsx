@@ -49,16 +49,20 @@ const termTooltip: React.CSSProperties = {
   fontSize: 12,
 }
 
+// No fontSize here. The size is the responsive class below (`EXPLORE_SELECT_CLASS`), because
+// the iOS input-zoom floor needs 16px at phone widths and 12px above — and an inline fontSize
+// cannot be responsive, nor overridden by any class. See termSelectClass in terminal-styles.ts.
 const exploreSelectStyle: React.CSSProperties = {
   background: "var(--term-surface)",
   border: "1px solid var(--term-border)",
   borderRadius: "var(--term-radius)",
   padding: "8px 12px",
-  fontSize: 12,
   fontFamily: MONO_FONT_STACK,
   color: "var(--term-text)",
   letterSpacing: "0.04em",
 }
+
+const EXPLORE_SELECT_CLASS = "text-[16px] sm:text-[12px]"
 
 // ─── Section divider ──────────────────────────────────────────────
 
@@ -447,6 +451,7 @@ function ExploreGames({
         <select
           value={raFilter}
           onChange={(e) => send({ type: "MIN_RA_SELECTED", minRA: Number(e.target.value) })}
+          className={EXPLORE_SELECT_CLASS}
           style={exploreSelectStyle}
           aria-label="Rest advantage filter"
         >
@@ -457,6 +462,7 @@ function ExploreGames({
         <select
           value={teamFilter}
           onChange={(e) => send({ type: "TEAM_SELECTED", team: e.target.value })}
+          className={EXPLORE_SELECT_CLASS}
           style={exploreSelectStyle}
           aria-label="Team filter"
         >
@@ -466,6 +472,7 @@ function ExploreGames({
         <select
           value={seasonFilter}
           onChange={(e) => send({ type: "SEASON_SELECTED", season: e.target.value })}
+          className={EXPLORE_SELECT_CLASS}
           style={exploreSelectStyle}
           aria-label="Season filter"
         >
@@ -475,6 +482,7 @@ function ExploreGames({
         <select
           value={resultFilter}
           onChange={(e) => send({ type: "RESULT_SELECTED", result: e.target.value as ExploreResult })}
+          className={EXPLORE_SELECT_CLASS}
           style={exploreSelectStyle}
           aria-label="Result filter"
         >

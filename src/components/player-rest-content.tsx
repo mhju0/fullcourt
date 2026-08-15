@@ -413,7 +413,9 @@ export function PlayerRestContent() {
             aria-label="Search player"
             /* Not one of the WIDTH content columns: a search box sizes to the longest name
                someone will type, which is an intrinsic cap on a control. */
-            className="mono w-full max-w-[260px] bg-[var(--term-surface)] px-3 py-2 text-[12px] text-[var(--term-text)] placeholder:text-[var(--term-text-muted)]"
+            /* 16px at phone widths is the iOS input-zoom floor, not a type-scale choice —
+               see termSelectClass in terminal-styles.ts for the whole reasoning. */
+            className="mono w-full max-w-[260px] bg-[var(--term-surface)] px-3 py-2 text-[16px] sm:text-[12px] text-[var(--term-text)] placeholder:text-[var(--term-text-muted)]"
             style={{ border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }}
           />
 
