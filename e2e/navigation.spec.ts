@@ -296,6 +296,67 @@ test.describe("Primary navigation", () => {
     await expect(page).toHaveURL(/\/behind-the-data$/);
   });
 
+  /**
+   * The strip has to *say* it scrolls. The 2026-08-04 measurement found the OTHER menu
+   * entirely off-screen at phone widths with nothing signalling that the row continues —
+   * the scrollbar is hidden on purpose, so it cannot be the signal. An edge fade is how
+   * Naver Sports' tab strips and ESPN's mobile subnavs carry this, and each side shows
+   * only while there is actually content under it: a fade over a row that fits would dim
+   * the last tab for no reason.
+   */
+  test("the phone strip fades the edge that still has content under it", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 700 });
+    await page.goto("/analysis");
+    await expect(page.getByRole("navigation", { name: "Main navigation" })).toBeVisible();
+
+    const strip = page.locator(".fc-nav-scroll");
+    const left = page.locator(".fc-nav-fade-left");
+    const right = page.locator(".fc-nav-fade-right");
+    const opacity = (loc: typeof left) => loc.evaluate((el) => getComputedStyle(el).opacity);
+
+    // At rest: content continues to the right and only to the right.
+    await expect.poll(() => opacity(right)).toBe("1");
+    await expect.poll(() => opacity(left)).toBe("0");
+
+    // Scrolled to the far end: the signals swap sides.
+    await strip.evaluate((el) => {
+      el.scrollLeft = el.scrollWidth;
+    });
+    await expect.poll(() => opacity(right)).toBe("0");
+    await expect.poll(() => opacity(left)).toBe("1");
+  });
+
+  /**
+   * The skip link is the first tab stop on every page — the pattern ESPN carries and Naver
+   * ships as 본문 바로가기. Without it a keyboard visitor walks the brand link, six tabs, the
+   * OTHER menu and the reference landmark before any page's content, on every page.
+   */
+  test("the first Tab lands on a skip link that reaches the content", async ({ page }) => {
+    await page.goto("/games");
+    await expect(page.getByRole("heading", { level: 1, name: "Games" })).toBeVisible();
+
+    await page.keyboard.press("Tab");
+    const skip = page.getByRole("link", { name: "Skip to main content" });
+    await expect(skip).toBeFocused();
+    await expect(skip).toBeVisible();
+
+    // Following it must move real focus into main, not just the URL fragment — otherwise the
+    // next Tab starts from the nav anyway and the link skipped nothing.
+    await page.keyboard.press("Enter");
+    await expect
+      .poll(() => page.evaluate(() => document.activeElement?.id ?? ""))
+      .toBe("main");
+  });
+
+  test("a desktop strip that fits shows no fade at all", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto("/analysis");
+    await expect(page.getByRole("navigation", { name: "Main navigation" })).toBeVisible();
+
+    await expect.poll(() => page.locator(".fc-nav-fade-left").evaluate((el) => getComputedStyle(el).opacity)).toBe("0");
+    await expect.poll(() => page.locator(".fc-nav-fade-right").evaluate((el) => getComputedStyle(el).opacity)).toBe("0");
+  });
+
   test("the Reference landmark holds documentation only, and no longer an ABOUT tab", async ({
     page,
   }) => {

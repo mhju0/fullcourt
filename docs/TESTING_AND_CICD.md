@@ -33,7 +33,7 @@ Library — neither is in `package.json`, and nothing renders a component. Every
 node-environment unit or route test; the two that import from a component module import
 only exported pure functions.
 
-**52 test files, 672 tests** (`pnpm test:run`, verified 2026-08-14). The table below names what
+**53 test files, 676 tests** (`pnpm test:run`, verified 2026-08-15). The table below names what
 each file covers; it is not a per-file count, because a count per row is a second copy of a fact
 nothing checks. Run the command for the current figure.
 
@@ -79,6 +79,7 @@ nothing checks. Run the command for the current figure.
 | `src/lib/__tests__/win-total-benchmark.test.ts` | Guards the regenerated `src/data/win-total-benchmark.json` against the invariants the Schedule Edge market-check states in prose: buckets partition the decided team-seasons exactly, over-counts stay within their bucket sizes, the correlation is a real `r` computed over every team-season, and the file covers the archive's full published range. |
 | `src/app/__tests__/not-found.test.ts` | The 404 page's links, asserted **href and label together** so the pair cannot drift: exactly `/games` and `/analysis`, the Games button pointing at the board rather than the front door, and the prose still naming the destination the buttons open. Covers a blind spot rather than duplicating e2e — `not-found.tsx` is reachable by no routing, so nothing in the commit gate rendered it, which is how a button labelled "Games" shipped pointing at `/` after the front-door swap. |
 | `src/app/__tests__/error-boundary.test.ts` | The other half of that blind spot: `error.tsx` rendered with its real props, its single link asserted as `/games` with the matching label, and the reference digest shown only when the error carries one. Both files render through `renderToStaticMarkup` + `createElement` — the repo has no jsdom and no Testing Library (see above), so this is how an unrouted component gets asserted without adding either, and `createElement` keeps the suite's `src/**` + `*.test.ts` include unchanged. It does not exercise Next's boundary wiring, only the defect class that actually occurred. |
+| `src/app/__tests__/manifest.test.ts` | The web app manifest's promises — standalone display, `/games` as the start URL, both colors on the committed light `--term-bg`, and both icon forms present. Same blind-spot family as the two rows above: nothing else in the gate renders `app/manifest.ts`. The served half (route answers, real PNG icon, advertised from every page) lives in `e2e/pwa.spec.ts`. |
 
 API route tests `vi.mock("@/lib/db/queries")`, so they exercise validation + response
 shaping without a real database. They call the route's exported `GET` with a real
@@ -113,12 +114,12 @@ asserting, and that dialog was removed on 2026-08-11. `e2e/onboarding.spec.ts` w
 replaced the coupling is a readiness gate where a spec needs one — `navigation.spec.ts` waits for
 a client-owned control before clicking a header link, because a click landing mid-hydration hits a
 node React is replacing and the navigation is dropped.
-Specs (15): `e2e/home.spec.ts` (the front door), `e2e/games.spec.ts`, `e2e/alignment-audit.spec.ts`,
+Specs (16): `e2e/home.spec.ts` (the front door), `e2e/games.spec.ts`, `e2e/alignment-audit.spec.ts`,
 `e2e/alignment-law.spec.ts`, `e2e/analysis.spec.ts`, `e2e/availability.spec.ts`,
 `e2e/behind-the-data.spec.ts`, `e2e/navigation.spec.ts`, `e2e/page-headers.spec.ts`,
-`e2e/playoffs.spec.ts`, `e2e/referees.spec.ts`, `e2e/schedule-disparity.spec.ts`,
-`e2e/season.spec.ts`, `e2e/shot-quality.spec.ts`, `e2e/shooting.spec.ts` — **137 tests**
-(132 passed / 5 skipped, verified 2026-08-14; several specs generate their cases in a loop, so
+`e2e/playoffs.spec.ts`, `e2e/pwa.spec.ts`, `e2e/referees.spec.ts`, `e2e/schedule-disparity.spec.ts`,
+`e2e/season.spec.ts`, `e2e/shot-quality.spec.ts`, `e2e/shooting.spec.ts` — **144 tests**
+(139 passed / 5 skipped, verified 2026-08-15; several specs generate their cases in a loop, so
 counting `test(` calls in the source undercounts). The 5 skipped are the `/referees` table
 assertions, kept rather than deleted while that surface is unpublished.
 

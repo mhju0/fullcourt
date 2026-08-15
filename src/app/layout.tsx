@@ -64,6 +64,15 @@ export const metadata: Metadata = {
     title: "FullCourt — NBA Analytics",
     description: SITE_DESC,
   },
+  // The other half of the install surface (app/manifest.ts): `capable` is what lets a
+  // home-screen launch open standalone on iOS, which reads the meta tag and not the
+  // manifest's `display`. Title matches the manifest short_name, not the full title —
+  // the space under an icon fits one word.
+  appleWebApp: {
+    capable: true,
+    title: "FullCourt",
+    statusBarStyle: "default",
+  },
 };
 
 export default function RootLayout({
@@ -83,9 +92,21 @@ export default function RootLayout({
       className={`${geist.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col font-sans text-foreground">
+        {/* First tab stop on every page (ESPN carries the same link; Naver's equivalent is
+            본문 바로가기). A keyboard or screen-reader visitor otherwise walks the full nav —
+            brand link, six tabs, a menu, a reference landmark — before every page's content.
+            `sr-only` until focused, so it costs the visual design nothing at rest. */}
+        <a
+          href="#main"
+          className="mono sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-[60] focus:rounded-[var(--term-radius)] focus:border focus:border-[var(--term-border)] focus:bg-[var(--term-surface)] focus:px-4 focus:py-2 focus:text-[13px] focus:font-semibold focus:text-[var(--term-text)]"
+        >
+          Skip to main content
+        </a>
         <NavBar />
 
-        <main className="flex-1">
+        {/* tabIndex -1 so the skip link's fragment navigation actually moves focus here —
+            without it the URL changes and the next Tab starts from the nav anyway. */}
+        <main id="main" tabIndex={-1} className="flex-1 outline-none">
           <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6">{children}</div>
         </main>
 

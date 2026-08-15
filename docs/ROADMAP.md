@@ -152,18 +152,21 @@ added alongside it.
 Real, measured, and deliberately left open — recorded so each reads as a decision rather than an
 oversight. None is a defect in what the site publishes.
 
-- **Small-screen discoverability.** Measured 2026-08-04 at 360×780pt (iPhone 12/13 mini, the
-  narrowest target). No page overflows horizontally, but the nav bar clips mid-word and the
-  `OTHER` menu sits entirely off-screen with no scroll affordance, so Shot Value and Availability
-  Cost are unreachable without an undiscoverable swipe. Full measurements in
-  [FRONTEND.md §Small screens](FRONTEND.md).
-- **iOS zooms on form controls.** Every `<select>` is 12px (one control is 10px) against Safari's
-  16px focus-zoom threshold, so tapping a filter zooms the page and does not restore. Worst on
-  `/analysis` and `/shooting`. The fix is a 16px floor on focusable controls at mobile widths —
-  never `maximum-scale`, which would cost pinch-zoom.
-- **No PWA / home-screen support.** No manifest, no `apple-touch-icon`, no
-  `apple-mobile-web-app-capable`. Add to Home Screen works but yields a page-screenshot icon and
-  opens in Safari chrome rather than standalone.
+- **Small-screen discoverability** — *affordance shipped 2026-08-15, outcome unmeasured.* The
+  2026-08-04 measurement (360×780pt) found the `OTHER` menu entirely off-screen with no scroll
+  affordance; the nav strip now fades the edge that still has content under it (the Naver/ESPN
+  pattern). The fade is the standard signal, not proof of discovery — re-measure on a real
+  device before closing. Full measurements in [FRONTEND.md §Small screens](FRONTEND.md).
+  The month/day chip rows on `/games` carry the same overflow with no fade; adopt there only if
+  the nav's fade proves itself.
+- ~~iOS zooms on form controls~~ — **fixed 2026-08-15**: selects and text inputs take a 16px
+  floor at phone widths in the class layer (12px from `sm` up), and the viewport still allows
+  pinch-zoom — the `maximum-scale` route was refused on purpose, being what ESPN/NBA/Naver/KBL
+  ship instead. e2e asserts the computed sizes; real-Safari behavior wants one hand check.
+- ~~No PWA / home-screen support~~ — **fixed 2026-08-15**: `manifest.webmanifest` (standalone,
+  `start_url` `/games`), a generated 180×180 `apple-touch-icon` of the court mark, and
+  `appleWebApp` metadata. `docs/social-preview.png` below is the one icon-family item still
+  open, and it is a hand re-upload, not code.
 - **`/season` can serve a stale empty rollover for weeks from 1 October.**
   `getCompletedGamesStamp()` counts only final games, so between the season-list rollover and
   opening night the cache never invalidates. Two candidate fixes in
