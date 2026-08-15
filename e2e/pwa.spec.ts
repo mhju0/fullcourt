@@ -30,7 +30,9 @@ test.describe("Install surface", () => {
     expect((await res.body()).length).toBeGreaterThan(1000);
   });
 
-  test("every page advertises the pair", async ({ page }) => {
+  // One page proves this because the tags come from the shared layout — the test's claim is
+  // scoped to what it renders, not to "every page" it never visits.
+  test("the shared layout advertises the pair", async ({ page }) => {
     await page.goto("/games");
     await expect(page.locator('link[rel="manifest"]')).toHaveAttribute(
       "href",
