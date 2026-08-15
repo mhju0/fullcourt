@@ -326,6 +326,28 @@ test.describe("Primary navigation", () => {
     await expect.poll(() => opacity(left)).toBe("1");
   });
 
+  /**
+   * The skip link is the first tab stop on every page — the pattern ESPN carries and Naver
+   * ships as 본문 바로가기. Without it a keyboard visitor walks the brand link, six tabs, the
+   * OTHER menu and the reference landmark before any page's content, on every page.
+   */
+  test("the first Tab lands on a skip link that reaches the content", async ({ page }) => {
+    await page.goto("/games");
+    await expect(page.getByRole("heading", { level: 1, name: "Games" })).toBeVisible();
+
+    await page.keyboard.press("Tab");
+    const skip = page.getByRole("link", { name: "Skip to main content" });
+    await expect(skip).toBeFocused();
+    await expect(skip).toBeVisible();
+
+    // Following it must move real focus into main, not just the URL fragment — otherwise the
+    // next Tab starts from the nav anyway and the link skipped nothing.
+    await page.keyboard.press("Enter");
+    await expect
+      .poll(() => page.evaluate(() => document.activeElement?.id ?? ""))
+      .toBe("main");
+  });
+
   test("a desktop strip that fits shows no fade at all", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto("/analysis");
