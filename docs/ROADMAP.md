@@ -181,6 +181,15 @@ oversight. None is a defect in what the site publishes.
   `espn-<eventId>`, cross-checked against Fox Sports. Both NBA-owned sources remain blocked from
   outside the US *and* from CI runners (re-probed the same day), so the `002…`-id path was not
   taken and is no longer needed — the nightly score path matches on (date, away, home) instead.
+- **Shooting by Rest will carry no 2026-27 data until those rows are re-keyed to `002…` ids.**
+  `scripts/analyze_player_shooting.py` filters `external_id LIKE '002%'` and joins hoopR box
+  scores on that id; 2026-27 is keyed `espn-<eventId>`, so the join finds nothing. Nothing else
+  is affected — the nightly score path matches on (date, away, home) precisely so it cannot be.
+  **The fix is available and measured**: hoopR's `nba_stats_*` ids are the canonical ones (its
+  2025-26 set matches this database exactly, 1,230 of 1,230), and `seed_season_from_hoopr.ts`
+  already dates hoopR box scores via the ESPN scoreboard. It only becomes possible once games
+  have been played, and the module needs a few months to clear its volume floor, so the real
+  deadline is about January 2027.
 - **The nightly pipeline was dead for the whole back half of 2025-26, and the fix has not yet
   run on a live slate.** `daily_update.py`'s first network call was to `cdn.nba.com`, which
   403s, so it raised before updating a score, reading overtime, or recomputing fatigue — every

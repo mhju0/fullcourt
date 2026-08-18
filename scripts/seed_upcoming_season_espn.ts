@@ -12,10 +12,20 @@
  * derivable — the NBA's game numbering is not date-ordered (2025-26 opens `0022500001`,
  * `0022500002`, then jumps to `0022500080` on night two) — and no reachable source carries
  * them. The `bref-` rows from the 2026-07-12 audit are the precedent for a non-stats key.
- * One consumer still matches on the `002…` shape and therefore skips these rows until they are
- * re-keyed against a canonical source once one is reachable:
+ * **"Not derivable" is true at release time only.** hoopR's `nba_stats_*` box scores carry the
+ * canonical `002…` id and are reachable — measured 2026-08-18, its 2025-26 regular-season ids
+ * match this database's `external_id` set exactly, 1,230 of 1,230 with none on either side. It
+ * publishes games that have been *played*, so it is no help for a schedule released in August,
+ * but it does mean a re-key becomes possible once the season is underway.
  *
- *   `scripts/analyze_player_shooting.py` — filters `external_id LIKE '002%'` (§ line 180)
+ * One consumer still matches on the `002…` shape and therefore skips these rows until then:
+ *
+ *   `scripts/analyze_player_shooting.py` — filters `external_id LIKE '002%'` (§ line 180) and
+ *   joins hoopR box scores on it, so **Shooting by Rest will carry no 2026-27 data until these
+ *   rows are re-keyed**. Dated: it needs a few months of games to clear its volume floor, so
+ *   the deadline is roughly January 2027, not opening night.
+ *   `scripts/seed_season_from_hoopr.ts` already has the machinery — hoopR box scores dated via
+ *   the ESPN scoreboard, since hoopR carries no date of its own.
  *
  * The nightly score path no longer does. `scripts/sync_scores_espn.ts` and `/api/cron/update`
  * both match on (date, away, home) through `src/lib/espn-scoreboard.ts`, so they maintain an
