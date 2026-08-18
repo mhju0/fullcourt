@@ -132,6 +132,24 @@ with the reason.
 
 ## 7. Identity & theming
 
+- [x] **One type scale, eight steps, each with one job** — `TYPE` in `terminal-styles.ts`
+  (2026-08-18). The scale had been a docblock listing *ranges*, and the app had drifted to 36
+  distinct font sizes including 9.5, 10.5, 12.5, 17, 19, 21 and 28. `scripts/audit_design_scale.mjs`
+  reports strays with `file:line`; `design-scale.test.ts` pins the steps and keeps the script's
+  copy in step. See FRONTEND.md §Type. Every major property runs a tight scale — this was
+  FullCourt's own gap, not a convention borrowed from anyone.
+- [ ] **One shared stat tile** — owner: Michael. Eight components draw "a labelled figure in a
+  box" independently (`StatCard` ×2, `Tile`, `RateTile`, `StatCell`, `VerdictTile`, plus inline
+  versions in `availability-content.tsx` and `playoff-*`). The 2026-08-18 pass made them agree
+  on the tokens; it did not extract the component, so they agree only by attention. `DataTable`
+  is the precedent for what extraction buys — 21 tables, one set of decisions.
+- [ ] **A tracking and leading scale** — owner: Michael. Measured 2026-08-18: **21 distinct
+  letter-spacing values** (0.08em and 0.04em carry most of it; 0.02/0.03/0.05/0.07/0.09/0.12/
+  0.16/0.22 are the undecided tail) and **15 line-heights** (1.55 for prose, 1/1.05/1.1 for
+  figures, then 1.35/1.4/1.5/1.65/1.7). Deliberately out of scope for the type pass — the axes
+  named in that request were alignment, padding, spacing and size, and collapsing tracking
+  touches ~120 call sites for a difference of hundredths of an em. The audit script already
+  reports both distributions.
 - [x] **Light-only, committed** — "Broadcast" (FRONTEND.md). B-Ref ships a `theme-color` and
   no dark mode either; ESPN/NBA are dark-capable apps, and FullCourt's refusal is a recorded
   decision, not a gap. `/about` stays the one dark surface.

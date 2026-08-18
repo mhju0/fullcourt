@@ -193,7 +193,7 @@ export const termInsetStyle: CSSProperties = {
  * The floor must stay in the CLASS layer: an inline fontSize cannot be made responsive.
  */
 export const termSelectClass =
-  "mono inline-flex items-center gap-2 bg-[var(--term-surface)] px-3 py-1.5 text-[16px] sm:text-[12px] uppercase tracking-[0.05em] text-[var(--term-text-dim)] transition-colors hover:bg-[var(--term-surface-2)] cursor-pointer appearance-none pr-8"
+  "mono inline-flex items-center gap-2 bg-[var(--term-surface)] px-3 py-2 text-[16px] sm:text-[12px] uppercase tracking-[0.05em] text-[var(--term-text-dim)] transition-colors hover:bg-[var(--term-surface-2)] cursor-pointer appearance-none pr-8"
 
 export const termSelectStyle: CSSProperties = {
   border: "1px solid var(--term-border)",

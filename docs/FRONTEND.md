@@ -486,6 +486,14 @@ Known rough edge: the light app header sits directly above the dark hero, with n
 Static server component inside the shared shell. It provides a branded 404 heading and direct
 recovery links to Games and Model Results without adding a client bundle or data request.
 
+**It is centred, and that is the one deliberate departure from the page-header pattern** — a full
+stop rather than a data surface, with no column of figures for a left rail to serve. Everything
+else about its type is `PageHeader`'s: eyebrow at `TYPE.label`, title at `TYPE.title`,
+description at `TYPE.body`. Until 2026-08-18 it and `error.tsx` were on a different system
+altogether — `text-4xl sm:text-5xl` titles (36/48px), `text-sm` prose, `leading-6`, `py-24`, a
+`max-w-lg` measure — which is what a page reachable by no nav link and no spec drifts into. The
+two files are line-for-line equivalents and must move together.
+
 ## Components
 
 ### `/behind-the-data/*` — the reference section (8 routes)
@@ -1089,6 +1097,85 @@ touch every consumer for zero rendered change.
   cheapness in a dense numeric UI. `next/font` ships with Next.js, so the swap added **no npm
   dependency**.
 
+### Type: eight steps, one job each
+
+*(Established 2026-08-18. Before it, the type scale was a docblock in `terminal-styles.ts`
+listing its slots as **ranges** — "13-16px emphasized inline", "20-24px stat value" — and a range
+is not a scale. Measurement found the app declaring **36 distinct font sizes**, among them 9.5,
+10.5, 12.5, 12.8, 16.8, 17, 19, 21, 26 and 28.)*
+
+`TYPE` in `terminal-styles.ts` is now a token object like `SPACE`, and every size in the app is
+one of eight numbers:
+
+| token | px | job |
+| --- | --- | --- |
+| `TYPE.micro` | 10 | uppercase mono *below* a label — unit lines under a column header, badges |
+| `TYPE.label` | 11 | uppercase mono label — section eyebrows, column headers, stat-tile captions |
+| `TYPE.data` | 12 | the data size — table cells, inline figures, chips, a name in a dense row |
+| `TYPE.body` | 15 | any sentence (see [§Sentence case vs. caps](#sentence-case-vs-caps)) |
+| `TYPE.emph` | 18 | a figure inside a dense row — a score, a rest-advantage differential |
+| `TYPE.stat` | 24 | the figure in a stat tile |
+| `TYPE.title` | 32 | page title (`PageHeader`) and hero stat |
+| `TYPE.figure` | 40 | the one headline figure of a module |
+
+**The three label sizes are one step apart, and that is the ladder rather than drift.** A figure
+(12) sits above its label (11), which sits above that label's own sub-label (10) — read down a
+stat tile or a two-row table header and each line recedes one step from the line it qualifies.
+`design-scale.test.ts` asserts that order, so it cannot silently invert.
+
+**Pick the step whose *job* matches. Do not round to the nearest.** Rounding is how the range
+came back last time: `emph` and `stat` exist as separate steps precisely because "a number, but
+bigger" was being answered with 17, 18, 19, 20, 21, 22 and 28 depending on the file.
+
+Three findings drove the steps, and each is a pattern worth not repeating:
+
+- **Prose was set at 12.5, 13, 14 and 15 with no rule dividing them**, while §Sentence case had
+  already fixed 15. `season-report-content.tsx` put **seven paragraphs at 14 directly under its
+  own 15px page description** — a one-pixel difference on one page, which reads as a rendering
+  fault rather than as a distinction. Where a file *did* mean a second register
+  (`behind-the-data-parts.tsx`'s `Note` vs `Prose`), the tint and the left rule were already
+  carrying it; the 1px step was doing nothing.
+- **There is no shared stat tile.** Eight components draw "a labelled figure in a box"
+  independently — `StatCard` twice, `Tile`, `RateTile`, `StatCell`, `VerdictTile`, and inline
+  versions in `availability-content.tsx` and `playoff-*`. `/schedule` built its at
+  **10 / 21 / 10.5 in an `11px 13px` box** where `/games` and `/season` use **11 / 24 / 11 in a
+  16px** one. They now agree on the tokens; **extracting the component is still open**, and
+  until it is, the values agree only by attention.
+- **9.5px was the only sub-pixel size in the app** (`termThUnitStyle`). Nothing chose it — it was
+  10 nudged by eye in one place, and a fractional size renders differently per platform, so it
+  cannot even be relied on to look like the distinction it claims to be.
+
+**Sizes that are deliberately *not* type-scale entries**, listed here and beside `TYPE` so an
+audit stops rediscovering them:
+
+- **16px on a focusable control** — the iOS input-zoom floor, a functional value rather than a
+  typographic one, and it must stay in the class layer to be responsive.
+- **The brand wordmark** (`nav-bar.tsx`, 22px) — sized to the 52px brand bar beside a 34px mark,
+  not to a text role. Resizing it is a branding decision.
+- **`/`** — a full-bleed editorial surface on its own fluid `clamp()` display scale, already
+  exempt by name from `alignment-audit.spec.ts` for the same reason. Its seven clamps each do a
+  distinct editorial job (hero, thesis, section, outro, figure); its body copy runs 1.05rem and
+  `text-sm`, which is **the one internal inconsistency left unfixed on purpose** — the page
+  carries unreviewed scroll motion, and a type pass is the wrong change to land on top of it.
+- **`opengraph-image.tsx`** — a fixed 1200×630 brand asset, not a page.
+- **`components/ui/button.tsx`** — vendored shadcn; its sizes live inside `has-data-*` variants.
+
+**Enforcement.** `node scripts/audit_design_scale.mjs` writes
+`test-results/design-scale/report.txt`: every type size, spacing value, width, tracking and
+leading the source declares, with `file:line` for anything off scale, and the exemptions above
+honoured so the stray list stays actionable. It is a **reporter and always exits 0** — same
+posture as `alignment-audit.spec.ts`, for the reason recorded under the alignment law. It reads
+`.tsx` and `.css` plus `terminal-styles.ts`; plain `.ts` files hold data, and one of them broke
+an earlier version — `rest-split-facts.ts` records rest gaps as `{ gap: 5, games: 3782 }`, which
+a property-name scan reports as nine off-scale gutters. A `gap` of five days is not five pixels.
+
+`design-scale.test.ts` pins the token values *and* asserts the script's own copy of both scales
+matches them — a stale copy would report a clean sheet while the app drifted, which is the worst
+failure an instrument can have, because it is silent and reassuring.
+
+The rendered side was checked once by hand on 2026-08-18: **18 of 19 routes paint only these
+eight sizes**, and the 19th is `/`.
+
 ### Alignment: two rails, one scale
 
 *(Established 2026-08-11. Before it, the app used twelve gap steps, about twenty distinct inline
@@ -1190,7 +1277,11 @@ as `TERM_NUMERIC_TABLE_MAX_WIDTH`), `prose` (42rem).
 
 Two things left alone on purpose: `components/ui/button.tsx` (vendored shadcn, its sizes live
 inside `has-data-*` variant selectors) and `opengraph-image.tsx`'s `72px 80px` (a fixed
-1200×630 brand asset, not a page).
+1200×630 brand asset, not a page). Both are also on the type scale's exemption list — see
+[§Type](#type-eight-steps-one-job-each), which carries the full set and the reason for each.
+
+One spacing stray the 2026-08-18 audit turned up in the token module itself: `termSelectClass`
+was `py-1.5`, i.e. 6px, so every season select on the site sat off the scale. Now `py-2`.
 
 **Enforcement.** `e2e/alignment-law.spec.ts` asserts the absolute parts — title on the gutter,
 tables taking no inset, expanding a row not moving it. `e2e/alignment-audit.spec.ts` reports
@@ -1244,10 +1335,14 @@ already self-labelled.
 ### Sentence case vs. caps
 
 Uppercase mono is for **labels of about three words or fewer** — stat-card captions, table
-headers, section dividers, badges. Anything that is a *sentence* is set in Inter, sentence
-case, at 15px: `PageHeader` descriptions, the `/analysis` and `/` intro paragraphs, the
-playoffs calibration-vs-accuracy explainer, and the reference pages' `Prose`. All-caps removes
-word-shape cues and measurably slows reading past a few words.
+headers, section dividers, badges. Anything that is a *sentence* is set in the body face,
+sentence case, at **`TYPE.body` (15px)**: `PageHeader` descriptions, the `/analysis` and `/`
+intro paragraphs, the playoffs calibration-vs-accuracy explainer, and the reference pages'
+`Prose`. All-caps removes word-shape cues and measurably slows reading past a few words.
+
+This rule predates the type scale and had already been broken in seven files by 2026-08-18 —
+prose at 12.5, 13 and 14 — which is why 15 is now a token rather than a number in this
+paragraph. A size named in prose is a size that drifts.
 
 ### Focus
 
