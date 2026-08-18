@@ -59,13 +59,41 @@ jobs:
             "https://cdn.nba.com/static/json/staticData/scheduleLeagueV2.json"
 
           # Known-good fallbacks, for contrast.
-          probe "ESPN scoreboard" \
+          #
+          # ESPN is probed THREE ways on purpose. Akamai fingerprints the whole header set,
+          # not the User-Agent alone: `curl -A '<Chrome UA>'` is a browser UA with none of a
+          # browser's other headers, and that combination is exactly what ESPN rejects. This
+          # probe reported ESPN as 403 for weeks on that basis while the pipeline was reading
+          # it successfully. `scripts/fetch_game_context.ts` and `scripts/sync_scores_espn.ts`
+          # both call it through Node's `fetch`, so the Node row is the one that speaks for
+          # the pipeline; the two curl rows are kept to show the fingerprint effect.
+          probe "ESPN scoreboard (curl, Chrome UA)" \
             "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20250315"
+
+          echo -n "ESPN scoreboard (curl, default UA)  "
+          curl -sS -o /dev/null -m 25 \
+            -w '%{http_code} %{size_download}b %{time_total}s\n' \
+            "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20250315" \
+            || echo "FAILED"
+
+          echo -n "ESPN scoreboard (node fetch)        "
+          node -e '
+            const url = "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20250315";
+            fetch(url, { headers: { "User-Agent": "Mozilla/5.0" } })
+              .then(async (r) => {
+                const body = await r.text();
+                console.log(`${r.status} ${body.length}b events=${(JSON.parse(body).events ?? []).length}`);
+              })
+              .catch((e) => console.log(`FAILED (${e.message})`));
+          '
+
           probe "basketball-reference month page" \
             "https://www.basketball-reference.com/leagues/NBA_2025_games-march.html"
 
           echo
           echo "Reading the result:"
           echo "  200  → the clean path works from CI; fetch_schedule.py can seed the new season."
+          echo "  NOTE: compare the three ESPN rows — a 403 on the Chrome-UA row next to a 200"
+          echo "        on the node-fetch row is the header-fingerprint effect, not an outage."
           echo "  403  → blocked by region/datacenter policy, as cdn.nba.com already is."
           echo "  FAILED/000 → timed out, which is how stats.nba.com behaves from Seoul."
