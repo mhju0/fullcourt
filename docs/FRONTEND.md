@@ -1338,9 +1338,11 @@ brand bar, so its strokes are **near-black `#111318`** to read on the light chro
 **The divider leans top-right to bottom-left** — `M39 7 L33 41` in the 72×48 viewBox — matching
 the oversized `CourtSplit` court on the front door (`/`). It leaned the other way until 2026-07-30, so the
 same mark pointed two directions depending on which surface you were looking at. That geometry
-is duplicated in four files (`court-mark.tsx`, `src/app/icon.svg`, `docs/logo.svg`, and the
-`MARK` string in `src/app/opengraph-image.tsx`) plus the hand-exported
-`docs/social-preview.png`; there is no shared source, so **change them together**. The center
+is duplicated in six files (`court-mark.tsx`, `src/app/icon.svg`, `docs/logo.svg`, the `MARK`
+string in `src/app/opengraph-image.tsx`, `src/app/apple-icon.tsx`, and
+`src/lib/brand/maskable-icon.tsx`); there is no shared source, so **change them together**.
+`docs/social-preview.png` is no longer in that list — since 2026-08-18 it is a render of the OG
+route rather than a hand export, so it inherits the geometry instead of copying it. The center
 circle is the badge amber `#F5A623` everywhere, including in-app: it was `--term-amber`
 (`#C2410C`) in `CourtMark` alone until 2026-07-30, which at 34px read as a second red sitting
 next to the fatigued half rather than as the live accent.
@@ -1356,5 +1358,6 @@ next to the fatigued half rather than as the live accent.
 
 `docs/social-preview.png` is the GitHub repo social preview (Settings → Social preview). It is
 uploaded out-of-band and referenced by no code, so a dead-file sweep will read it as an orphan
-— it is not. It is hand-matched to `src/app/opengraph-image.tsx`; re-export and re-upload the
-two together.
+— it is not. Since 2026-08-18 it is **a render of `/opengraph-image`**, not a hand match: refresh
+it with `curl -o docs/social-preview.png http://localhost:3000/opengraph-image` against a running
+dev server, then re-upload it in GitHub's settings — the upload is the only manual half.

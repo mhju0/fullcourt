@@ -30,6 +30,18 @@ test.describe("Install surface", () => {
     expect((await res.body()).length).toBeGreaterThan(1000);
   });
 
+  // Added 2026-08-18. Every icon the manifest names has to resolve, and the two maskable
+  // PNGs are the only ones whose URL carries an extension — the pairing most likely to be
+  // "tidied" into the extensionless form above and silently 404.
+  for (const edge of [192, 512]) {
+    test(`the ${edge}px maskable icon is served as a PNG`, async ({ request }) => {
+      const res = await request.get(`/icon-${edge}.png`);
+      expect(res.status()).toBe(200);
+      expect(res.headers()["content-type"]).toContain("image/png");
+      expect((await res.body()).length).toBeGreaterThan(1000);
+    });
+  }
+
   // One page proves this because the tags come from the shared layout — the test's claim is
   // scoped to what it renders, not to "every page" it never visits.
   test("the shared layout advertises the pair", async ({ page }) => {

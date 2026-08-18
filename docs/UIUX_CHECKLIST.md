@@ -47,12 +47,16 @@ with the reason.
   `/apple-icon`, like `/opengraph-image` — the `.png` URL 404s; measured.
 - [x] **`theme-color`** (B-Ref ships `#4d4438`). Already present before this pass —
   `viewport.themeColor` pinned to `--term-bg`, 2026-08-14.
-- [ ] **Maskable / 512px manifest icon.** Chromium's richest install prompt wants explicit
-  192/512 PNGs; the SVG covers Chrome but not every Android launcher. Worth doing only with
-  a real asset pass. Owner: Michael (brand asset).
-- [ ] **`docs/social-preview.png` is still the stale hand-export** — same icon family, still
-  a manual re-upload (SEASON_ROLLOVER §7). Unchanged by this pass; listed so the icon work
-  is seen as one family.
+- [x] **Maskable / 512px manifest icon.** Shipped 2026-08-18: `/icon-192.png` and
+  `/icon-512.png`, route handlers over one `maskableIconResponse()` renderer, declared
+  `purpose: "maskable"` only — the artwork is inset to the spec's 80% safe circle, so a
+  launcher that crops keeps the whole court and one that does not gets the SVG instead.
+  Route handlers rather than metadata routes, because the manifest has to name a stable URL
+  and a metadata route serves at a basename Next picks (`/apple-icon`).
+- [x] **`docs/social-preview.png` is no longer a hand export** — regenerated 2026-08-18 as a
+  render of `/opengraph-image`, which retires the drift (it carried "40-SEASON BACKTEST", the
+  retired ~55% claim, and the pre-2026-07-30 divider lean). **The GitHub re-upload is still
+  manual** and still Michael's: Settings → Social preview (SEASON_ROLLOVER §7).
 
 ## 3. Accessibility
 

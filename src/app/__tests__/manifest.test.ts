@@ -34,3 +34,28 @@ describe("web app manifest", () => {
     expect(types).toContain("image/png");
   });
 });
+
+describe("maskable icons", () => {
+  // Added 2026-08-18 (UIUX_CHECKLIST §2). An Android launcher that masks its icons crops
+  // whatever it is given; declaring artwork `maskable` that runs to the edges is how a
+  // court mark loses its corners on one launcher and gains a white plate on another.
+  const maskable = (m.icons ?? []).filter((i) => i.purpose === "maskable");
+
+  it("declares the 192 and 512 PNGs Chromium's install prompt reads", () => {
+    expect(maskable.map((i) => i.sizes).sort()).toEqual(["192x192", "512x512"]);
+    for (const icon of maskable) expect(icon.type).toBe("image/png");
+  });
+
+  it("names paths whose extension is real, not a metadata-route basename", () => {
+    // `/apple-icon` above is extensionless because Next picks that path. These two are
+    // route handlers, so `.png` is part of the served URL — asserting it here keeps a
+    // future "tidy the paths" edit from turning both into 404s.
+    for (const icon of maskable) expect(icon.src).toMatch(/^\/icon-\d+\.png$/);
+  });
+
+  it("keeps the unmasked path on a non-maskable icon", () => {
+    // A manifest whose every icon is `maskable` leaves a non-masking consumer rendering
+    // inset artwork. The SVG carries `purpose` undefined, i.e. "any".
+    expect((m.icons ?? []).some((i) => i.purpose === undefined)).toBe(true);
+  });
+});
