@@ -56,7 +56,8 @@ the discrepancy is called out.
 | Source | URL / library | Used for |
 |--------|---------------|----------|
 | NBA CDN schedule | `https://cdn.nba.com/static/json/staticData/scheduleLeagueV2.json` | Current-season + future games (`fetch_nba_schedule_cdn.py`). No auth. |
-| NBA CDN live scoreboard | `https://cdn.nba.com/static/json/liveData/scoreboard/todaysScoreboard_00.json` | Live score/status refresh (`/api/cron/update`). |
+| ~~NBA CDN live scoreboard~~ | ~~`todaysScoreboard_00.json`~~ | **Retired 2026-08-18** as the live-score source: 403 from every environment. Replaced by the ESPN scoreboard below. |
+| ESPN scoreboard | `https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=YYYYMMDD` | Scores, status, overtime, tip-off, neutral site (`sync_scores_espn.ts`, `fetch_game_context.ts`, `/api/cron/update`). Grouped by **ET** date, matching `games.date`. No auth. |
 | nba_api (stats.nba.com) | `LeagueGameFinder` | Historical + windowed schedules and final scores (`fetch_schedule.py`, `daily_update.py`, `backfill_historical.py`). |
 | ESPN site.api | `/scoreboard?dates=` | Overtime periods, tip-off times, neutral-site venues (`fetch_game_context.ts`), 2002-03 on. One call per game date returns all three. |
 | ~~nba_api (stats.nba.com)~~ | ~~`BoxScoreSummaryV2`~~ | **Retired 2026-07-30** as the overtime source. `stats.nba.com` is unreachable from outside the US, so `nba_ot_periods.py` silently returned 0 for every game and the fatigue model's overtime term never fired. Still imported by `fetch_schedule.py`; no longer used by `daily_update.py`. |
@@ -189,9 +190,16 @@ Details in [TESTING_AND_CICD.md](TESTING_AND_CICD.md).
 subscribes to `games` UPDATE events and merges score/status changes.
 
 **Live score cron:** Vercel → `GET /api/cron/update` (Bearer `CRON_SECRET`) → query today's
-scheduled/live games with stored scores → fetch NBA CDN scoreboard →
-`reconcileLiveScores` returns only changed rows → `UPDATE games` → Supabase Realtime pushes
-the row change → connected clients update in place.
+scheduled/live games **with their team abbreviations** → fetch that ET date's ESPN scoreboard →
+`reconcileScores` (`src/lib/espn-scoreboard.ts`) matches on **(away, home)** and returns only
+changed rows → `UPDATE games` → Supabase Realtime pushes the row change → connected clients
+update in place.
+
+Repointed from the NBA CDN to ESPN on 2026-08-18. The CDN 403s from every environment this
+project runs in, and the old matcher paired rows by normalized stats game id, which cannot
+match the `espn-<eventId>` external_ids the 2026-27 season is keyed by — so the route had two
+independent reasons it could never have updated a 2026-27 game. It now shares one matcher and
+one abbreviation map with `scripts/sync_scores_espn.ts`.
 
 ## Notable architectural decisions & current discrepancies
 

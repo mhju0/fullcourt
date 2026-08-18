@@ -177,9 +177,18 @@ oversight. None is a defect in what the site publishes.
   pre-2026-07-30 logo lean are gone from the tree — but GitHub serves the preview from repo
   settings, so the current file only becomes the live card once someone uploads it (Settings →
   Social preview). See [SEASON_ROLLOVER.md §7](SEASON_ROLLOVER.md).
-- **2026-27 is not seeded.** Operational, not product — both NBA-owned sources are blocked from
-  outside the US *and* from CI runners, so the `002…`-id path is still an open decision. Runbook
-  and the two candidate paths in [SEASON_ROLLOVER.md §3](SEASON_ROLLOVER.md).
+- ~~**2026-27 is not seeded.**~~ — **seeded 2026-08-18**: 1,200 games from ESPN, keyed
+  `espn-<eventId>`, cross-checked against Fox Sports. Both NBA-owned sources remain blocked from
+  outside the US *and* from CI runners (re-probed the same day), so the `002…`-id path was not
+  taken and is no longer needed — the nightly score path matches on (date, away, home) instead.
+- **The nightly pipeline was dead for the whole back half of 2025-26, and the fix has not yet
+  run on a live slate.** `daily_update.py`'s first network call was to `cdn.nba.com`, which
+  403s, so it raised before updating a score, reading overtime, or recomputing fatigue — every
+  in-season run from at least 2026-05-11 failed there, while the offseason runs either side
+  showed green from the season gate. Rewritten onto ESPN on 2026-08-18 and verified against
+  historical data (0 writes needed over dates whose values were already correct; a perturbed
+  row correctly repaired). It cannot be exercised against a real slate until 2026-10-20 —
+  **check the first in-season run by hand.**
 
 ## Maintenance responsibilities
 

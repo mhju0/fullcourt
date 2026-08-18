@@ -14,7 +14,17 @@ constants below are copied from the source.
 
 GitHub Actions entry point (also runnable locally). Time base is **America/New_York**.
 
-Window: `LOOKBACK_DAYS = 7`, `LOOKAHEAD_DAYS = 60` → operates over `[today−7, today+60]`.
+Window: `LOOKBACK_DAYS = 7` → operates over `[today−7, today]`. There is no look-ahead any
+more: the step that used it seeded future games from the NBA CDN, which is unreachable, and
+seeding is now `seed_upcoming_season_espn.ts`'s job.
+
+> **Rewritten 2026-08-18.** Steps 2 and 3 used to read `cdn.nba.com` and `stats.nba.com`. Both
+> are blocked from GitHub's runners — a *datacenter* block, not a geo block — and the CDN call
+> was the **first network call of the run**, so it raised `HTTPError: 403` before a score was
+> written, before overtime was read, and before any fatigue was recomputed. **Every in-season
+> run from at least 2026-05-11 through the end of the season failed there** (run 27170593847 and
+> the six before it); the green runs either side are offseason no-ops from the season gate. They
+> are replaced by one ESPN step that matches on the pairing rather than the id.
 
 Steps:
 0. **Season gate (runs first, stdlib-only).** `season_window.is_in_season(today ET)` reads the
@@ -24,23 +34,38 @@ Steps:
    DB-coupled module — so the offseason run needs no secret and never hits an NBA API.
 1. **Resolve `DATABASE_URL`** from the process env, else `.env.local`, else `scripts/.env`
    (`resolve_database_url`).
-2. **Seed future games from the NBA CDN** — `fetch_cdn_schedule()` → `build_cdn_records(…,
-   utc_month_filter=None)` → `upsert_cdn_records` (idempotent upsert).
-3. **Pull the windowed slate from `nba_api`** — `fetch_league_df_date_range(start, end)`
-   (`LeagueGameFinder`, 3 retries on timeout). On repeated timeout it logs a warning and
-   continues with an empty frame. Rows are paired with `pair_games_from_date_range_df(…,
-   force_skip_ot=True)` (skips per-game OT during the bulk pass) and upserted.
-4. **Refresh game context for recent finals** — `scripts/fetch_game_context.ts <today−7>
+2. **Sync scores, status and overtime from ESPN** — `scripts/sync_scores_espn.ts <today−7>
+   <today>`. One scoreboard call per ET date, matched to stored rows on **(date, away, home)**.
+   Writes `status`, `home_score`, `away_score` and `overtime_periods`. **Fatal on failure** —
+   this is the step the run exists for, and a silent skip leaves the site showing an unplayed
+   slate.
+
+   *Why the pairing and not `external_id`:* `external_id` is the table's only uniqueness guard,
+   and 2026-27 rows are keyed `espn-<eventId>`. An id-keyed writer fed from a different source
+   would **insert a duplicate of every row** rather than update it. Matching on the pairing
+   makes the writer blind to the key, so it maintains `espn-` and `002…` rows identically.
+
+   It never inserts or deletes. ESPN events with no stored row are **reported, not written** —
+   that is how a resolved NBA Cup fixture announces itself, and seeding stays with
+   `seed_upcoming_season_espn.ts`, which has its own invariants. A stored `final` is never
+   walked backwards, so re-running over old dates is safe.
+3. **Refresh game context for recent finals** — `scripts/fetch_game_context.ts <today−7>
    <today> --refresh` updates `overtime_periods`, `tip_off_utc` and `neutral_site` from
    ESPN, keeping them accurate for fatigue. `--refresh` is required: a scoreboard cached
-   while a game was still in progress carries no final line score. A failure here is
-   logged and does not fail the job — fatigue still scores without it.
+   while a game was still in progress carries no final line score. Must follow step 2 — it
+   only reads games already marked `final`. A failure here is logged and does not fail the
+   job, and costs less than it used to: step 2 already wrote `overtime_periods` from the same
+   scoreboard, so a failure here loses tip-off times and the neutral-site flag, not the
+   fatigue model's OT term.
 
    This replaced a `stats.nba.com` BoxScoreSummary loop that could never have worked from
    outside the US: `overtime_periods` sat at 0 for all 49,353 games, so the fatigue model's
    overtime term never fired once. See ADR 0003 for the era limits of the ESPN source.
-5. **Run the Node modeling step** — `pnpm exec tsx scripts/run-daily.ts <today ET>`; a
-   non-zero exit fails the job.
+4. **Run the Node modeling step** — `pnpm exec tsx scripts/run-daily.ts <today ET>`; a
+   non-zero exit fails the job. It recomputes `[today, today + 14]`, which is what carries an
+   overtime finalized in step 2 into the **next** games of the teams that played it: the OT
+   term reads `lastGame.overtimePeriods` (`src/lib/fatigue.ts`), and `fetchRecentGamesForTeam`
+   only sees games already marked `final`. Ordering 2 → 3 → 4 is therefore load-bearing.
 
 ## Python ingest scripts
 
@@ -96,9 +121,10 @@ Steps:
 - **`external_id` is `espn-<eventId>`, not a stats `002…` id.** The canonical ids are not
   derivable — NBA game numbering is not date-ordered (2025-26 opens `0022500001`,
   `0022500002`, then jumps to `0022500080` on night two) — and no reachable source carries
-  them. Precedent: the `bref-` rows from the 2026-07-12 audit. Two consumers match on the
-  `002…` shape and so skip these rows until they are re-keyed: `src/lib/live-score-sync.ts`
-  and `scripts/analyze_player_shooting.py`. Neither matters before tip-off.
+  them. Precedent: the `bref-` rows from the 2026-07-12 audit. **One** consumer still matches
+  on the `002…` shape and so skips these rows until they are re-keyed:
+  `scripts/analyze_player_shooting.py`. The nightly score path no longer does — see
+  `sync_scores_espn.ts` below.
 - Regular season only (`season.type === 2`); ESPN's TBD-vs-TBD NBA Cup knockout placeholders
   carry no teams and are skipped. `games.date` is the **ET** calendar date of the tip.
   Also writes `tip_off_utc`, `neutral_site`, `neutral_venue_city`.
@@ -132,6 +158,28 @@ Steps:
   `sb-YYYYMMDD.json` naming, so dates that script already pulled cost no HTTP.
 - Backfilled 29,784 games from 2002-03: 1,750 overtime games, 28 neutral across five cities,
   0 unmatched. Games with no line score keep their existing value rather than being forced to 0.
+
+### `sync_scores_espn.ts` — nightly scores, status and overtime
+- `pnpm exec tsx scripts/sync_scores_espn.ts <from> <to> [--dry-run]`. ET dates, inclusive.
+  Step 2 of `daily_update.py`; also the repair tool for a night that was missed.
+- **Matches on (date, away, home), never on `external_id`.** See the orchestration section for
+  why. The matcher and the ESPN→site abbreviation map live in `src/lib/espn-scoreboard.ts` and
+  are shared with `fetch_game_context.ts` and `/api/cron/update` — two copies would silently
+  match two different sets of games.
+- Writes `status`, `home_score`, `away_score`, `overtime_periods`. Never inserts, never deletes,
+  never touches `external_id` / `date` / `season` / the team columns.
+- **Overtime is only derived from a finished game.** A live game reports the periods played so
+  far, so period 5 mid-game would otherwise be written as an overtime that has not happened yet.
+- **A stored `final` is never walked backwards.** Refusals are counted and reported, not
+  written — a final score must not be undone by a feed glitch or by a re-run over a date whose
+  scoreboard has been recycled.
+- Reports ESPN events with no stored row. On 2025-26 this surfaced three genuine gaps in the
+  backfill (GSW@MIN 2026-01-24, DEN@MEM and DAL@MIL 2026-01-25) — the report is the feature.
+- Verified 2026-08-18: dry runs over 2025-10-21..24 (28 games, 3 of them overtime including two
+  double-OT) and 2026-01-20..26 (49 games) both produced **0 writes**, i.e. it reproduces the
+  existing pipeline's values exactly; and 2026-10-20..26 matched all **52** seeded 2026-27
+  fixtures with 0 unmatched on either side. The write path was exercised by perturbing one row
+  (game 72409) and confirming the sync restored `final / 125–124 / 2 OT`.
 
 ### `seed_teams.py` — teams + geography
 - Inserts all 30 teams (`abbreviation, name, city, conference, latitude, longitude,

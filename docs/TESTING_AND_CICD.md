@@ -49,7 +49,8 @@ nothing checks. Run the command for the current figure.
 | `src/lib/__tests__/team-history.test.ts` | `getTeamBranding` historical eras (SEA/NJN/VAN/NOH/Bobcats/Bullets), current-era logos, fallback behavior. |
 | `src/lib/__tests__/fetcher.test.ts` | `apiFetcher` success envelopes, safe API errors, non-JSON HTTP failures, malformed envelopes. |
 | `src/lib/__tests__/rest-advantage-evidence.test.ts` | Canonical neutral boundary, historical backtest aggregation, game-explorer outcome filtering/pagination. |
-| `src/lib/__tests__/live-score-sync.test.ts` | Scoreboard ID/status normalization and changed-row-only reconciliation. |
+| `src/lib/__tests__/espn-scoreboard.test.ts` | ESPN payload parsing, status mapping, and (date, away, home) reconciliation: overtime only from a finished game, a stored `final` never walked backwards, unmatched rows reported both ways. |
+| `src/app/api/__tests__/cron-update.test.ts` | The evening score pass: cron auth, that it reads ESPN scoped to today's ET date, writes overtime from the same payload, matches an `espn-` keyed row, and 502s rather than partially writing. |
 | `src/lib/__tests__/daily-refresh.test.ts` | Per-game failure isolation/continuation and neutral open-prediction replacement. |
 | `src/app/api/__tests__/analysis.test.ts` | `GET /api/analysis` payload shape, percentage bounds, threshold ordering `[2,3,5,7]`, `seasonMinRA=7` filtering. Mocks `@/lib/db/queries`, and gives each case a distinct stamp so the backtest cache never answers one case from another's rows. |
 | `src/app/api/__tests__/games-dates.test.ts` | `GET /api/games/dates` Zod validation (missing/invalid season, invalid month) + query delegation. Mocks `@/lib/db/queries`. Also pins the widened season rule: an upcoming season with a published schedule and no results is served, while the season after it is still refused. Mocks `browsableSeasons` to the Aug–Sep shape so the file tests the route, not the calendar. |
@@ -228,10 +229,17 @@ still verified on demand rather than in CI.
   a US runner and reports each result plus the runner's egress region. That is the only way to
   separate a *geo* block from a *datacenter* block, which is exactly the distinction that
   decides how a new season can be seeded.
+- **ESPN is probed three ways, and the difference is the point.** Akamai fingerprints the whole
+  header set, not the User-Agent alone: `curl -A '<Chrome UA>'` sends a browser UA with none of
+  a browser's other headers and gets a **403**, while the same UA through `fetch` gets a **200**.
+  The probe reported ESPN as blocked on that basis for three weeks while the pipeline read it
+  successfully; the `node fetch` row is the one that speaks for the pipeline, since that is how
+  `sync_scores_espn.ts`, `fetch_game_context.ts` and `/api/cron/update` all call it.
 - **`permissions: {}`, no checkout, no secrets.** It reads nothing and writes nothing.
 - **Record the result in [SEASON_ROLLOVER.md §2](SEASON_ROLLOVER.md) with the date.** Its
   2026-07-27 run is what established there is no clean `002…`-ID path, and §3's rollover
-  checklist asks for a re-run before relying on that, since Akamai policy can change.
+  checklist asks for a re-run before relying on that, since Akamai policy can change. Re-run
+  **2026-08-18**: unchanged for the NBA-owned sources, and it confirmed ESPN answers a runner.
 
 ### Code scanning — CodeQL (no file in this repo)
 
@@ -243,17 +251,20 @@ no code scanning does not happen twice.
 ### Vercel cron — `vercel.json`
 
 ```json
-{ "regions": ["hnd1"], "crons": [ { "path": "/api/cron/update", "schedule": "0 3 * * *" } ] }
+{ "regions": ["hnd1"], "crons": [ { "path": "/api/cron/update", "schedule": "0 7 * * *" } ] }
 ```
 
-- Schedule **`0 3 * * *`** = 03:00 UTC daily, **year-round** — 10 PM EST / 11 PM EDT, i.e.
-  mid-slate and still ET date D under both DST regimes. Offseason runs early-return before any
-  CDN fetch, so there is **no seasonal cadence switch**. Vercel **Hobby fires crons once a day**
-  (within the hour), so this is a backstop, not live polling. `vercel.json` is the source of
-  truth for the deployed cadence.
+- Schedule **`0 7 * * *`** = 07:00 UTC daily, **year-round** — 2 AM EST / 3 AM EDT, i.e. after
+  the last final of the night under both DST regimes. **Moved from `0 3 * * *` on 2026-08-18:**
+  03:00 UTC is 10 PM EST, so a west-coast game tipping at 10 PM ET was still in its first
+  quarter and its result was missed until the following afternoon's Actions run. Hobby fires
+  crons **once a day**, so the choice is "before some finals" or "after all of them", and only
+  the latter leaves the board correct overnight.
+- Offseason runs early-return before any network fetch, so there is **no seasonal cadence
+  switch**. `vercel.json` is the source of truth for the deployed cadence.
 - The cron hits `GET /api/cron/update` with `Authorization: Bearer <CRON_SECRET>`; the route
-  refreshes live scores from the NBA CDN and updates `games`, which Supabase Realtime pushes
-  to clients. On Vercel Hobby, crons are limited to once per day.
+  refreshes scores from **ESPN** (the NBA CDN 403s from every environment) and updates `games`,
+  which Supabase Realtime pushes to clients.
 
 ### Function region — `"regions": ["hnd1"]` (2026-08-07)
 

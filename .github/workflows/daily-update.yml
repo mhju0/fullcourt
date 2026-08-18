@@ -87,10 +87,14 @@ jobs:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: python scripts/fetch_nba_schedule_cdn.py
 
-      # Seed one historical season. This exists because stats.nba.com refuses connections
-      # from outside the US, so nba_api cannot be driven from a developer machine abroad —
-      # the same unreachability that left overtime_periods at 0 for every game until it was
-      # sourced from ESPN instead. GitHub's runners are US-based, so the fetch works here.
+      # Seed one historical season via nba_api / stats.nba.com.
+      #
+      # WARNING: this path is currently BROKEN and kept only because it costs nothing to keep.
+      # The comment here used to claim "GitHub's runners are US-based, so the fetch works here".
+      # That was disproved by probe-data-sources.yml on 2026-07-27 and re-confirmed 2026-08-18:
+      # stats.nba.com times out from Actions too (25s, 0 bytes, runners in San Jose and Des
+      # Moines). The block is a datacenter block, not a geo block, so being US-based does not
+      # help. An upcoming season is seeded with scripts/seed_upcoming_season_espn.ts instead.
       #
       # Idempotent: fetch_schedule.py upserts on external_id, so re-running a season repairs
       # rows rather than duplicating them. NBA_SEED_SKIP_OT is set because overtime now comes

@@ -42,7 +42,7 @@ truth and mirrors the TS logic, so both agree on "the current season".
 |---|---|---|---|
 | `cdn.nba.com` staticData schedule | **403** | **403** | yes (but unreachable) |
 | `stats.nba.com` (nba_api) | **times out** | **times out** | yes (but unreachable) |
-| `cdn.nba.com` liveData (live scores) | 403 | untested | — |
+| `cdn.nba.com` liveData (live scores) | 403 | **403** | — |
 | ESPN `site.api…/scoreboard?dates=YYYYMMDD` | **200** | **200** | **no** (ESPN event IDs) |
 | basketball-reference monthly pages | **200** (residential IP + UA) | **200** | no |
 | Supabase (`DATABASE_URL`) | reachable | reachable | — |
@@ -50,6 +50,17 @@ truth and mirrors the TS logic, so both agree on "the current season".
 **Actions column measured 2026-07-27** by `.github/workflows/probe-data-sources.yml` (runs
 `30247134313` / `30248448510`, runner egress San Jose, California). Re-run it any time from
 Actions → "Probe NBA data sources"; it reads nothing and writes nothing.
+
+**Both columns re-probed 2026-08-18** (run `32118299181`, runner egress Des Moines, Iowa),
+because a season was about to be seeded on the answer. Nothing moved for the NBA-owned sources:
+`stats.nba.com` still times out, `cdn.nba.com` still 403s. **ESPN answers a runner** — 200 with
+8 events.
+
+That run also corrected a false negative in the probe itself. It had been reporting ESPN as
+**403** while the pipeline was reading ESPN successfully: it sent a Chrome User-Agent through
+`curl`, i.e. a browser UA with none of a browser's other headers, and Akamai fingerprints the
+whole set. The same UA through `fetch` returns 200. ESPN is now probed three ways and the
+`node fetch` row is the one that speaks for the pipeline.
 
 **Dev column re-probed 2026-08-06** (Seoul, residential): `cdn.nba.com` staticData still
 **403**, ESPN scoreboard still **200**. Nothing in the table moved. The last column's "no" was
@@ -87,16 +98,26 @@ not for live scoring). **Prefer a stats-ID source (`stats.nba.com`) for a live s
       out there too** (25s, 0 bytes, runner in San Jose) — a datacenter block, not a geo block.
       There is **no clean `002…`-ID path**. Re-run `probe-data-sources.yml` before relying on
       this, since Akamai policy can change.
-- [ ] Seed from **basketball-reference**, which the same probe measured at **200 from GitHub
-      Actions** as well as from the dev machine (§2). Rows carry synthetic `bref-…` external
-      ids, so they are complete for the backtest, Model Results and `/schedule` — but the
-      live-score cron keys on stats `GAME_ID`, so the Games page will not match them.
-- [ ] If live scoring for the new season matters, seed instead from a US **residential** IP
-      using nba_api, which is the only route left that yields `002…` ids.
+- [x] ~~Seed from **basketball-reference**~~ / ~~seed from a US residential IP for `002…` ids.~~
+      **Neither was needed. Decided and executed 2026-08-18:** seeded from ESPN with
+      `scripts/seed_upcoming_season_espn.ts`, 1,200 games keyed `espn-<eventId>`, cross-checked
+      against Fox Sports (agreed on all 1,200).
+
+      The objection to a non-stats key was that "the live-score cron keys on stats `GAME_ID`, so
+      the Games page will not match them". **That was fixed rather than worked around.** The
+      nightly sync and the cron now match on **(date, away, home)** via
+      `src/lib/espn-scoreboard.ts`, so they are blind to the external id and maintain `espn-`
+      and `002…` rows identically. Re-keying to `002…` is no longer a prerequisite for anything
+      the site publishes — only `scripts/analyze_player_shooting.py` still filters on the shape.
 
 **~October 2026 — season starts:**
 - [ ] Confirm the app shows 2026-27 in the season dropdown (automatic).
-- [ ] Confirm `vercel.json` still reads `"0 3 * * *"` (no change expected — Section 5).
+- [ ] Confirm `vercel.json` still reads `"0 7 * * *"` (changed from `0 3` on 2026-08-18 so the
+      one daily run lands after the last final — Section 5).
+- [ ] **On the first game day, check the Actions run actually wrote scores** (it is the first
+      in-season run of the rewritten pipeline). Every in-season run from 2026-05-11 to the end
+      of 2025-26 failed at the old CDN call; the rewrite is verified against historical data
+      but has never executed on a live slate.
 - [ ] Bump the hardcoded season counts that cannot derive (Section 7).
 - [ ] After the first week, run the data-integrity re-audit (Section 6) to catch date drift early.
 

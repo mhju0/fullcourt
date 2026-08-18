@@ -12,13 +12,15 @@
  * derivable — the NBA's game numbering is not date-ordered (2025-26 opens `0022500001`,
  * `0022500002`, then jumps to `0022500080` on night two) — and no reachable source carries
  * them. The `bref-` rows from the 2026-07-12 audit are the precedent for a non-stats key.
- * Two consumers match on the `002…` shape and therefore skip these rows until they are
+ * One consumer still matches on the `002…` shape and therefore skips these rows until they are
  * re-keyed against a canonical source once one is reachable:
  *
- *   `src/lib/live-score-sync.ts`     — pairs stored rows to the NBA live feed by stats id
- *   `scripts/analyze_player_shooting.py` — joins hoopR box scores via `external_id LIKE '002%'`
+ *   `scripts/analyze_player_shooting.py` — filters `external_id LIKE '002%'` (§ line 180)
  *
- * Neither matters before tip-off: these rows carry no scores and the season has not started.
+ * The nightly score path no longer does. `scripts/sync_scores_espn.ts` and `/api/cron/update`
+ * both match on (date, away, home) through `src/lib/espn-scoreboard.ts`, so they maintain an
+ * `espn-` row and an `002…` row identically and no re-keying is needed to keep this season
+ * scored. That was the point of matching on the pairing rather than the id.
  *
  * The write is gated behind structural checks (§ validate) rather than trusted: a season is
  * only written if all 30 teams appear, every team has the same game count, no team is booked

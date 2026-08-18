@@ -3,18 +3,16 @@ import { NextResponse } from "next/server";
 import { eq, and, inArray } from "drizzle-orm";
 import { getPublicApiErrorMessage } from "@/lib/api-errors";
 import { db } from "@/lib/db";
-import { games } from "@/lib/db/schema";
-import {
-  reconcileLiveScores,
-  type NbaScoreboard,
-} from "@/lib/live-score-sync";
+import { games, teams } from "@/lib/db/schema";
+import { alias } from "drizzle-orm/pg-core";
+import { parseScoreboard, reconcileScores } from "@/lib/espn-scoreboard";
 import { formatEasternDateKey } from "@/lib/nba-season";
 
 /**
  * Must stay **strictly below** `maxDuration`, or the abort can never fire.
  *
  * It was equal to it: this route inherited Hobby's 10s default while asking for a 10s fetch
- * timeout, so a slow CDN killed the function instead of returning the authored
+ * timeout, so a slow feed killed the function instead of returning the authored
  * "Live score feed unavailable" 502 below. The 502 path was unreachable.
  */
 const SCOREBOARD_TIMEOUT_MS = 10_000;
@@ -37,9 +35,21 @@ export const dynamic = "force-dynamic";
 /**
  * GET /api/cron/update
  *
- * Vercel Cron-compatible endpoint that updates live NBA game scores.
- * Checks for games currently in "live" status or scheduled for today,
- * fetches current scores from the NBA CDN, and updates the database.
+ * Vercel Cron-compatible endpoint that updates live NBA game scores. Checks for games currently
+ * "live" or scheduled for today (ET), reads that date's ESPN scoreboard, and writes back status,
+ * scores and overtime.
+ *
+ * **Reads ESPN, and matches on (away, home), because the previous design could not work.** It
+ * fetched `cdn.nba.com`, which 403s — from this region and from GitHub's US runners alike, a
+ * datacenter block re-probed 2026-08-18 — and it paired rows by normalized stats game id, which
+ * cannot match the `espn-<eventId>` external_ids the 2026-27 season is keyed by. Both faults are
+ * removed by sharing `@/lib/espn-scoreboard` with `scripts/sync_scores_espn.ts`: one matcher,
+ * one abbreviation map, and a writer that cannot tell an `espn-` row from an `002…` one.
+ *
+ * This is the *evening* pass. The GitHub Actions pipeline (`scripts/daily_update.py`) runs at
+ * 21:00 UTC — before tip-off — so without this route a night's finals would not appear until the
+ * following afternoon. This route does not recompute fatigue; the Actions run does that, reading
+ * whatever this has already finalized.
  *
  * The Supabase Realtime subscription will automatically push changes
  * to all connected clients when the `games` table is updated.
@@ -52,6 +62,12 @@ export const dynamic = "force-dynamic";
  * On Vercel Hobby, crons are limited to once per day. `vercel.json` is the source of truth
  * for the cadence and the time — restating the time here is what let this comment drift to
  * 10:00 UTC, the value that was considered and rejected for firing before tip-off.
+ *
+ * That one run has to land after the last final of the night. It used to fire at 03:00 UTC,
+ * which is 22:00 ET in the winter — a west-coast game tipping at 22:00 ET was still in its
+ * first quarter, so its result was missed and the site carried a stale slate until the Actions
+ * run the following afternoon. One run per day means the choice is "before some finals" or
+ * "after all of them", and after is the only one that leaves the board correct overnight.
  */
 export async function GET(request: Request) {
   const authHeader = request.headers.get("authorization");
@@ -78,16 +94,23 @@ export async function GET(request: Request) {
     // is already "tomorrow" in UTC — the old server-local date missed late games.
     const today = formatEasternDateKey();
 
-    // Find all games that are live or scheduled for today
+    // Abbreviations, not ids: the pairing is what this route matches on.
+    const homeTeam = alias(teams, "home_team");
+    const awayTeam = alias(teams, "away_team");
+
     const gamesToCheck = await db
       .select({
         id: games.id,
-        externalId: games.externalId,
+        homeAbbr: homeTeam.abbreviation,
+        awayAbbr: awayTeam.abbreviation,
         status: games.status,
         homeScore: games.homeScore,
         awayScore: games.awayScore,
+        overtimePeriods: games.overtimePeriods,
       })
       .from(games)
+      .innerJoin(homeTeam, eq(games.homeTeamId, homeTeam.id))
+      .innerJoin(awayTeam, eq(games.awayTeamId, awayTeam.id))
       .where(
         and(
           eq(games.date, today),
@@ -103,37 +126,44 @@ export async function GET(request: Request) {
       });
     }
 
-    // Fetch today's scoreboard from the NBA CDN
+    // The date-scoped scoreboard rather than a "today" endpoint: ESPN groups this feed by ET
+    // calendar date, which is exactly what `games.date` stores, so the two agree by construction.
     const scoreboardUrl =
-      "https://cdn.nba.com/static/json/liveData/scoreboard/todaysScoreboard_00.json";
+      "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard" +
+      `?dates=${today.replaceAll("-", "")}`;
 
+    // The User-Agent is load-bearing in an unobvious way: ESPN's edge fingerprints the whole
+    // header set. A browser UA sent by curl with none of a browser's other headers gets a 403,
+    // while the same UA through a fetch implementation gets a 200. Measured both ways from a
+    // GitHub runner on 2026-08-18; see .github/workflows/probe-data-sources.yml.
     const response = await fetch(scoreboardUrl, {
-      headers: { "User-Agent": "fullcourt/1.0" },
+      headers: { "User-Agent": "Mozilla/5.0" },
       next: { revalidate: 0 },
       signal: AbortSignal.timeout(SCOREBOARD_TIMEOUT_MS),
     });
 
     if (!response.ok) {
-      console.error("[cron/update] NBA scoreboard HTTP", response.status);
+      console.error("[cron/update] ESPN scoreboard HTTP", response.status);
       return NextResponse.json(
         {
           data: { gamesUpdated: 0 },
           error:
             process.env.NODE_ENV === "production"
               ? "Live score feed unavailable"
-              : `NBA CDN returned ${response.status}`,
+              : `ESPN returned ${response.status}`,
         },
         { status: 502 }
       );
     }
 
-    const scoreboard = (await response.json()) as NbaScoreboard;
-    const nbaGames = scoreboard.scoreboard.games;
+    const espnGames = parseScoreboard(await response.json());
+    const { updates, refusedDowngrades } = reconcileScores(gamesToCheck, espnGames);
 
-    const updates = reconcileLiveScores(gamesToCheck, nbaGames);
-
-    // One round-trip per game, issued together rather than in series. `reconcileLiveScores`
-    // returns at most one update per distinct game id, so these never contend for the same row.
+    // One round-trip per game, issued together rather than in series. `reconcileScores` returns
+    // at most one update per distinct game id, so these never contend for the same row.
+    //
+    // overtime_periods is only written when the reconciliation actually derived one — a game
+    // still in progress reports null and keeps whatever is stored, rather than zeroing it.
     await Promise.all(
       updates.map((update) =>
         db
@@ -142,6 +172,9 @@ export async function GET(request: Request) {
             status: update.status,
             homeScore: update.homeScore,
             awayScore: update.awayScore,
+            ...(update.overtimePeriods !== null
+              ? { overtimePeriods: update.overtimePeriods }
+              : {}),
           })
           .where(eq(games.id, update.gameId))
       )
@@ -152,7 +185,8 @@ export async function GET(request: Request) {
       error: null,
       meta: {
         checkedGames: gamesToCheck.length,
-        nbaGamesAvailable: nbaGames.length,
+        espnGamesAvailable: espnGames.length,
+        refusedDowngrades: refusedDowngrades.length,
       },
     });
   } catch (err) {

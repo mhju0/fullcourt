@@ -52,12 +52,12 @@ Stated per route rather than inherited. **Vercel Hobby defaults to 10s and caps 
 | Route | `maxDuration` | Why |
 |---|---|---|
 | `/api/analysis`, `/api/playoffs`, `/api/schedule-disparity`, `/api/season-report`, `/api/shot-quality` | `30` | Worst observed cold read was 4.6s. Headroom for a slow refresh, not a budget to grow into. |
-| `/api/cron/update` | `60` | Has an external dependency it does not control (`cdn.nba.com`) and runs once a day, so a slow run costs nothing. |
+| `/api/cron/update` | `60` | Has an external dependency it does not control (ESPN) and runs once a day, so a slow run costs nothing. |
 | everything else | unset (10s) | Light reads and the liveness probe, which should fail fast. |
 
 **`/api/cron/update` carries an invariant: `SCOREBOARD_TIMEOUT_MS` must stay strictly below
 `maxDuration`.** It was equal to it — a 10s fetch timeout inside an inherited 10s budget — so the
-`AbortSignal` could never fire and a slow CDN killed the function instead of returning the
+`AbortSignal` could never fire and a slow feed killed the function instead of returning the
 authored `"Live score feed unavailable"` 502. That 502 path was unreachable in production.
 
 ### Edge caching (2026-08-07)
@@ -412,15 +412,23 @@ Vercel-cron live-score refresh. `runtime = "nodejs"`, `dynamic = "force-dynamic"
   must send `Authorization: Bearer <CRON_SECRET>`; mismatch → `401`. If auth is required but
   `CRON_SECRET` is unset → `503` (misconfiguration). Without `VERCEL`/`CRON_SECRET` (local)
   the route is open.
-- **Behavior:** find today's `scheduled`/`live` games → fetch the NBA CDN scoreboard with a
-  10-second timeout
-  (`todaysScoreboard_00.json`) → match by normalized 10-digit `external_id` → compare status
-  and both scores through `reconcileLiveScores` → `UPDATE games` only for changed rows.
-  Scores of `0` are represented as `null`. NBA CDN status codes map `2 → live`, `3 → final`,
-  else `scheduled`; unchanged rows do not generate redundant Supabase Realtime events.
+- **Behavior:** find today's (ET) `scheduled`/`live` games with their team abbreviations →
+  fetch that date's **ESPN** scoreboard with a 10-second timeout → match on **(away, home)** →
+  compare status, both scores and overtime through `reconcileScores`
+  (`src/lib/espn-scoreboard.ts`) → `UPDATE games` only for changed rows. Unchanged rows do not
+  generate redundant Supabase Realtime events.
+- **Source changed 2026-08-18.** It read `cdn.nba.com` and matched by normalized 10-digit
+  `external_id`. The CDN 403s from every environment this project runs in, *and* an id matcher
+  cannot pair an `espn-<eventId>` row, so it could never have updated a 2026-27 game. Matching
+  on the pairing makes the route blind to the key, so `espn-` and `002…` rows are maintained
+  identically.
+- **A stored `final` is never walked backwards**; such rows are counted in
+  `meta.refusedDowngrades` and left alone. `overtime_periods` is written only for a game ESPN
+  reports as finished — a live game reports the periods played so far, and period 5 mid-game is
+  not an overtime yet. A scheduled game's score is `null`, not ESPN's placeholder `0`.
 - **Success:** `{ data: { gamesUpdated }, error: null, meta: { checkedGames,
-  nbaGamesAvailable } }`. With nothing to do: `gamesUpdated: 0` + a `meta.message`. NBA CDN
-  non-200 → `502`; other failures → `500`.
+  espnGamesAvailable, refusedDowngrades } }`. With nothing to do: `gamesUpdated: 0` + a
+  `meta.message`. ESPN non-200 → `502`; other failures → `500`.
 - Updates propagate to browsers via Supabase Realtime (`useLiveGames`).
 
 ---

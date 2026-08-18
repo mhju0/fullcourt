@@ -7,10 +7,23 @@ Daily NBA pipeline for GitHub Actions (and local runs):
    modules, resolving DATABASE_URL, or hitting any NBA API. The offseason path needs
    no secret. A genuine in-season failure still exits non-zero so the job fails loudly.
 
-1. Pull a **rolling window** from nba_api (LeagueGameFinder): last 7 ET calendar days
-   through **60 days ahead**, upsert into `games` (scores, status, schedule). This fixes
-   stale/wrong scores (not only “yesterday”), inserts missing games, and loads upcoming
-   slates (e.g. April) without re-running the full season fetch.
+1. Sync **scores, status and overtime** for **[today − LOOKBACK_DAYS, today]** from ESPN via
+   `scripts/sync_scores_espn.ts`, matched on (date, away, home).
+
+   This step used to read `cdn.nba.com` and `stats.nba.com`. Both are blocked from GitHub's
+   runners — a datacenter block, not a geo one, re-probed 2026-08-18 (see
+   `.github/workflows/probe-data-sources.yml`) — and the CDN call was the FIRST network call
+   of the run, so it raised `HTTPError: 403` before a single score was updated, before
+   overtime was read, and before any fatigue was recomputed. **Every in-season run from at
+   least 2026-05-11 to the end of the season failed there.** The green runs either side of
+   that are offseason no-ops from the season gate above.
+
+   Matching on the pairing rather than on `external_id` is deliberate: 2026-27 rows are keyed
+   `espn-<eventId>`, `external_id` is the table's only uniqueness guard, and an id-keyed
+   writer fed from a different source would insert duplicates instead of updating.
+
+   It does not seed new fixtures — it reports ESPN events with no stored row and leaves
+   seeding to `scripts/seed_upcoming_season_espn.ts`, which has its own invariants.
 
 2. Refresh **game context** (overtime periods, tip-off time, neutral-site flag) for
    **[today − LOOKBACK_DAYS, today]** via `scripts/fetch_game_context.ts`. This replaced a
@@ -18,8 +31,15 @@ Daily NBA pipeline for GitHub Actions (and local runs):
    times out from this network and from CI, so `overtime_periods` sat at 0 for all 49,353
    games and the fatigue model's overtime term never fired once. ESPN is reachable.
 
-3. Run `pnpm exec tsx scripts/run-daily.ts <today ET>` to refresh fatigue for today’s
-   slate and regenerate open predictions.
+   Step 1 already wrote `overtime_periods` from the same scoreboard, so this step is a
+   belt-and-braces refresh for OT plus the sole writer of tip-off and neutral-site. That
+   ordering is why step 1 has to run first: this script only reads games already marked
+   `final`.
+
+3. Run `pnpm exec tsx scripts/run-daily.ts <today ET>` to refresh fatigue for today's
+   slate and regenerate open predictions. It recomputes `[today, today + 14]`, so an
+   overtime game finalized in step 1 feeds the overtime penalty into the fatigue of the
+   affected teams' next games before they are played.
 
 Requires DATABASE_URL in the environment (e.g. GitHub Actions secret) for the
 in-season path; the offseason gate runs without it.
@@ -38,16 +58,15 @@ _SCRIPTS_DIR = str(Path(__file__).resolve().parent)
 if _SCRIPTS_DIR not in sys.path:
     sys.path.insert(0, _SCRIPTS_DIR)
 
-# NOTE: fetch_nba_schedule_cdn / fetch_schedule read DATABASE_URL at import time
-# (fetch_schedule sys.exits when it is unset), so they are imported lazily inside
-# main() — AFTER the offseason gate — so the offseason path requires no secret.
+# season_window is stdlib-only by design: the offseason gate runs before DATABASE_URL is
+# resolved and before any third-party import, so an offseason run needs no secret and no deps.
 from season_window import is_in_season
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 
-# Inclusive calendar span: scores for recent days + full upcoming regular-season window.
+# How many ET calendar days back the nightly score sync re-checks. Wider than one day so a
+# night that failed, or a game finalized late, is repaired by the next run rather than lost.
 LOOKBACK_DAYS = 7
-LOOKAHEAD_DAYS = 60
 
 
 def resolve_database_url() -> str:
@@ -89,76 +108,31 @@ def main() -> None:
 
     database_url = resolve_database_url()
 
-    # Heavy / DB-coupled imports live here (not at module top) so the offseason gate
-    # above stays dependency-light (stdlib only) and never triggers fetch_schedule's
-    # import-time DATABASE_URL requirement.
-    import pandas as pd
-    import psycopg2
-    import requests
-
-    from fetch_nba_schedule_cdn import (
-        build_cdn_records,
-        fetch_cdn_schedule,
-        upsert_game_records as upsert_cdn_records,
-    )
-    from fetch_schedule import (
-        fetch_league_df_date_range,
-        load_team_id_map,
-        pair_games_from_date_range_df,
-        upsert_game_records as upsert_stats_window_records,
-    )
-
     window_start = today - timedelta(days=LOOKBACK_DAYS)
-    window_end = today + timedelta(days=LOOKAHEAD_DAYS)
-
     start_str = window_start.isoformat()
-    end_str = window_end.isoformat()
     today_str = today.isoformat()
 
     print(
         f"[daily_update] ET now={now_et.isoformat(timespec='seconds')} "
-        f"window={start_str}..{end_str} (today={today_str})"
+        f"window={start_str}..{today_str}"
     )
 
-    # Seed future games from CDN before fetching box scores
-    print("[daily_update] fetching CDN schedule to seed future games …")
-    cdn_data = fetch_cdn_schedule()
-
-    try:
-        df = fetch_league_df_date_range(start_str, end_str)
-    except (
-        requests.exceptions.ReadTimeout,
-        requests.exceptions.ConnectionError,
-    ):
-        print(
-            "[daily_update] ⚠️ LeagueGameFinder timed out after retries — skipping score updates, continuing pipeline…"
-        )
-        df = pd.DataFrame()
-
-    conn = psycopg2.connect(database_url)
-    try:
-        team_map = load_team_id_map(conn)
-        cdn_records, cdn_season = build_cdn_records(
-            cdn_data, team_map, month_filter=None
-        )
-        cdn_count = upsert_cdn_records(conn, cdn_records)
-        print(f"[daily_update] CDN upserted {cdn_count} games for season {cdn_season}.")
-
-        if df.empty:
-            print("[daily_update] LeagueGameFinder returned no rows for window.")
-            records: list[tuple] = []
-        else:
-            # Skip per-game OT during bulk pairing; the ESPN context step below fills it in.
-            records = pair_games_from_date_range_df(df, team_map, force_skip_ot=True)
-            n = upsert_stats_window_records(conn, records)
-            conn.commit()
-            print(f"[daily_update] upserted {n} regular-season game row(s) in window.")
-
-    finally:
-        conn.close()
+    # Scores, status and overtime from ESPN. Fatal on failure: this is the step the run
+    # exists for, and a silent skip would leave the site showing an unplayed slate.
+    print(f"[daily_update] syncing scores for {start_str}..{today_str} …")
+    scores = subprocess.run(
+        ["pnpm", "exec", "tsx", "scripts/sync_scores_espn.ts", start_str, today_str],
+        cwd=str(REPO_ROOT),
+        env={**os.environ, "DATABASE_URL": database_url},
+        check=False,
+    )
+    if scores.returncode != 0:
+        print("[daily_update] ERROR: score sync failed.", file=sys.stderr)
+        sys.exit(scores.returncode)
 
     # Game context (overtime periods, tip-off, neutral site) for the lookback window.
-    # Must precede run-daily.ts, which reads overtime_periods when scoring fatigue.
+    # Must follow the score sync — it only reads games already marked 'final' — and must
+    # precede run-daily.ts, which reads overtime_periods when scoring fatigue.
     # --refresh because a scoreboard cached mid-game carries no final line score.
     print(f"[daily_update] refreshing game context for the {LOOKBACK_DAYS}d lookback …")
     ctx = subprocess.run(
@@ -173,8 +147,9 @@ def main() -> None:
         check=False,
     )
     if ctx.returncode != 0:
-        # Non-fatal: fatigue still scores without it, just without the OT term for
-        # these few games. Failing the whole cron over a third-party outage is worse.
+        # Non-fatal, and cheaper to lose than it used to be: step 1 already wrote
+        # overtime_periods from the same scoreboard, so a failure here costs tip-off times
+        # and the neutral-site flag for these few games, not the fatigue model's OT term.
         print("[daily_update] WARNING: game context refresh failed; continuing.")
 
     print(f"[daily_update] running Node pipeline for {today_str} …")

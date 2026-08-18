@@ -37,31 +37,15 @@ config({ path: ".env.local" });
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import postgres from "postgres";
 
+// Shared with scripts/sync_scores_espn.ts, which matches ESPN events to stored rows on the
+// same (date, away, home) key. Two copies of this map would silently match two different
+// sets of games.
+import { toOurAbbr } from "@/lib/espn-scoreboard";
+
 /** ESPN's NBA coverage thins out before this; earlier seasons keep column defaults. */
 const FIRST_SEASON = "2002-03";
 const CACHE_DIR = "ml/data/officials";
 const CONCURRENCY = 10;
-
-/** ESPN scoreboard abbreviation → this site's abbreviation, where they differ. */
-const ESPN_ABBR: Record<string, string> = {
-  GS: "GSW",
-  NO: "NOP",
-  NY: "NYK",
-  SA: "SAS",
-  UTAH: "UTA",
-  WSH: "WAS",
-  // Relocated / renamed franchises, mapped to the row that carries their history
-  // (same convention as scripts/fetch_schedule.py ABBR_ALIASES).
-  SEA: "OKC",
-  NJ: "BKN",
-  NJN: "BKN",
-  NOH: "NOP",
-  NOK: "NOP",
-  CHH: "CHA",
-  CHO: "CHA",
-  VAN: "MEM",
-};
-const toOurAbbr = (espn: string) => ESPN_ABBR[espn] ?? espn;
 
 /** Run fn over items with at most `limit` in flight. */
 async function pool<T>(items: T[], limit: number, fn: (item: T) => Promise<void>): Promise<void> {
