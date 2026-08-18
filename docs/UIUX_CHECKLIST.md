@@ -138,18 +138,32 @@ with the reason.
   reports strays with `file:line`; `design-scale.test.ts` pins the steps and keeps the script's
   copy in step. See FRONTEND.md §Type. Every major property runs a tight scale — this was
   FullCourt's own gap, not a convention borrowed from anyone.
-- [ ] **One shared stat tile** — owner: Michael. Eight components draw "a labelled figure in a
-  box" independently (`StatCard` ×2, `Tile`, `RateTile`, `StatCell`, `VerdictTile`, plus inline
-  versions in `availability-content.tsx` and `playoff-*`). The 2026-08-18 pass made them agree
-  on the tokens; it did not extract the component, so they agree only by attention. `DataTable`
-  is the precedent for what extraction buys — 21 tables, one set of decisions.
-- [ ] **A tracking and leading scale** — owner: Michael. Measured 2026-08-18: **21 distinct
-  letter-spacing values** (0.08em and 0.04em carry most of it; 0.02/0.03/0.05/0.07/0.09/0.12/
-  0.16/0.22 are the undecided tail) and **15 line-heights** (1.55 for prose, 1/1.05/1.1 for
-  figures, then 1.35/1.4/1.5/1.65/1.7). Deliberately out of scope for the type pass — the axes
-  named in that request were alignment, padding, spacing and size, and collapsing tracking
-  touches ~120 call sites for a difference of hundredths of an em. The audit script already
-  reports both distributions.
+- [x] **One shared stat tile** — `StatTile` / `StatFigure` (2026-08-18). Replaced eight
+  independent implementations (`StatCard` ×2, `Tile`, `RateTile`, `StatCell`, `VerdictTile`, plus
+  inline copies in `availability-content.tsx` and `playoff-*`), which had disagreed on every
+  measurable property. Two components, not one, because the reading order carries meaning — label
+  first for a row a reader scans, figure first for the one number a section states. Verified: two
+  rendered signatures across four pages, differing only by the presence of a sub-label.
+- [x] **A tracking and leading scale** — `TRACK` (4 steps) and `LEAD` (3), 2026-08-18. Was 18
+  letter-spacing values and 15 line-heights; the tails were not decisions — 1, 1.05 and 1.1 all
+  meant "a figure needs no air above it". `TRACK` follows a rule rather than a history: more open
+  as the type gets smaller, tighter as it gets larger, asserted by a test so it cannot decay into
+  four arbitrary numbers.
+- [x] **The class layer can reach the scales** — a `@theme` block generates `text-micro` …
+  `text-figure`, `tracking-label` …, `leading-body` (2026-08-18). This was the gap that made drift
+  inevitable for class-built components: a responsive step cannot be an inline style, so they wrote
+  the literal because there was nothing else to write. `text-[16px] sm:text-data` is the standing
+  case, and the 16px stays a literal — mobile Safari's threshold, not a step of ours.
+- [x] **The scales are enforced, not just documented** — `page-contract.test.ts` runs the audit
+  script and fails the gate on any stray, superseding the earlier "deliberately no lint rule"
+  stance (2026-08-18). The reason for the reversal is measured, not aesthetic: the 15px prose rule
+  sat in FRONTEND.md unenforced and was broken across the module content components. The escape
+  hatch is a **named exemption with a reason**, which is reviewable in a diff, not a disabled test.
+- [x] **A new page cannot ship off-pattern** — [docs/ADDING_A_SURFACE.md](ADDING_A_SURFACE.md) is
+  the contract, and each of its rules names the test that holds it: `PageHeader`, the `gap-12`
+  chapter column, nav registration in both directions, and presence in the alignment audit's route
+  list. Written 2026-08-18 because every rule the UI pass found broken had been documented and
+  enforced nowhere.
 - [x] **Light-only, committed** — "Broadcast" (FRONTEND.md). B-Ref ships a `theme-color` and
   no dark mode either; ESPN/NBA are dark-capable apps, and FullCourt's refusal is a recorded
   decision, not a gap. `/about` stays the one dark surface.

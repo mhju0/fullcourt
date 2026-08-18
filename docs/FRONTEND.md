@@ -1160,18 +1160,69 @@ audit stops rediscovering them:
 - **`opengraph-image.tsx`** — a fixed 1200×630 brand asset, not a page.
 - **`components/ui/button.tsx`** — vendored shadcn; its sizes live inside `has-data-*` variants.
 
+### Tracking and leading
+
+*(Established 2026-08-18, in the same pass as `TYPE`.)*
+
+**`TRACK` is four steps** — `label` 0.08em, `data` 0.06em, `sub` 0.04em, `figure` −0.01em — and they
+follow a rule rather than a history: **more open as the type gets smaller, tighter as it gets
+larger.** A 10px cap line needs air a 12px one does not; a 24px numeral wants closing up.
+`design-scale.test.ts` asserts that ordering, so the scale cannot decay into four arbitrary numbers.
+
+There were **18 distinct values** before it, of which 0.08em and 0.04em carried three quarters of
+the app and the rest — 0.02, 0.03, 0.05, 0.07, 0.09, 0.1, 0.12 — varied by nothing but which file
+the label lived in. Every one was the same kind of object: a small uppercase mono label.
+
+**`LEAD` is three** — `figure` 1.1, `label` 1.4, `body` 1.55. The old fifteen were not decisions:
+1, 1.05 and 1.1 all meant *a figure needs no air above it*, and 1.5 through 1.7 all meant *this is a
+paragraph*. Two exemptions are real: `/`'s display type, and a **badge chip's `14px` line box**,
+which fixes the chip's height independently of its font size — geometry, like a data mark's gap.
+
+There is deliberately **no `display` tracking step**: page titles take their tracking from the base
+`h1, h2, h3` rule (Tailwind's `tracking-tight`), so nothing at display size sets it inline, and a
+token with no consumer is a thing the next person has to work out.
+
+### The scales in the class layer
+
+`globals.css` carries a Tailwind `@theme` block generating `text-micro` … `text-figure`,
+`tracking-label` …, `leading-body`. This is a **second copy of all three scales**, and it exists for
+one reason: a responsive step cannot be written as an inline style. `text-[16px] sm:text-data` — the
+iOS input-zoom floor — is the standing case, and before the block existed a class-built component
+had no way to reach the scale at all, so it wrote the literal. There was nothing else it could do.
+
+- An inline style reads the **TS token**. A class reads the **named step**. Both, never a literal.
+- The `16px` in that floor stays a literal on purpose: it is mobile Safari's threshold, not a step
+  of ours, and `design-scale.test.ts` asserts it never becomes one.
+- Three copies of each scale now exist — the TS tokens, this `@theme` block, and the audit script's
+  own list — and all three are pinned against each other by `design-scale.test.ts`. That is the
+  point: a stale copy would report a clean sheet while the app drifted.
+- **Do not read `var(--text-body)` from an inline style.** Tailwind emits a `@theme` variable only
+  when a utility uses it, so the var may not exist at runtime. Use the TS token inline.
+
 **Enforcement.** `node scripts/audit_design_scale.mjs` writes
 `test-results/design-scale/report.txt`: every type size, spacing value, width, tracking and
-leading the source declares, with `file:line` for anything off scale, and the exemptions above
-honoured so the stray list stays actionable. It is a **reporter and always exits 0** — same
-posture as `alignment-audit.spec.ts`, for the reason recorded under the alignment law. It reads
+leading the source declares, with `file:line` for anything off any of the four scales, and the
+exemptions above honoured so the stray list stays actionable. The script itself always exits 0 —
+it is a reporter, and reading it is how you find *what* moved. **What gates the commit is
+`page-contract.test.ts`, which runs it and fails if the total is not zero.** It reads
 `.tsx` and `.css` plus `terminal-styles.ts`; plain `.ts` files hold data, and one of them broke
 an earlier version — `rest-split-facts.ts` records rest gaps as `{ gap: 5, games: 3782 }`, which
 a property-name scan reports as nine off-scale gutters. A `gap` of five days is not five pixels.
 
-`design-scale.test.ts` pins the token values *and* asserts the script's own copy of both scales
-matches them — a stale copy would report a clean sheet while the app drifted, which is the worst
-failure an instrument can have, because it is silent and reassuring.
+`design-scale.test.ts` pins the token values *and* asserts the two other copies of the scales — the
+CSS `@theme` block and the script's own list — match them. A stale copy would report a clean sheet
+while the app drifted, which is the worst failure an instrument can have, because it is silent and
+reassuring. Both directions are verified discriminating: drifting `--text-body` to 14px fails the
+CSS guard, and smuggling a 14 into the script's `TYPE_SCALE` fails the script guard.
+
+**The stat tile is one component now.** `StatTile` and `StatFigure`
+(`src/components/ui/stat-tile.tsx`) replaced the eight hand-rolled versions on 2026-08-18 — the
+extraction the type pass identified and deferred. The split between the two is the reading order and
+it carries meaning: `StatTile` leads with the label, for a *row* of measures a reader scans;
+`StatFigure` leads with the figure, for the *one* number a section exists to state. A row of figures
+with captions underneath makes a reader read every number to find the one they wanted. Verified by
+measurement: across `/games`, `/season`, `/schedule` and `/analysis` the tiles render exactly two
+signatures, differing only by whether a sub-label is present.
 
 The rendered side was checked once by hand on 2026-08-18: **18 of 19 routes paint only these
 eight sizes**, and the 19th is `/`.
@@ -1288,8 +1339,20 @@ tables taking no inset, expanding a row not moving it. `e2e/alignment-audit.spec
 every near-miss edge across 17 routes × 3 viewports to `test-results/alignment/report.txt`; run
 it before and after a spacing change and diff. Its count has a floor it will never reach, since
 a wrapped nav row and a scrolling date strip place items by flow — treat it as advisory, and do
-not tune the instrument to improve it. There is deliberately **no ESLint rule** yet: a scale
-nobody has stress-tested through a real feature becomes a rule people disable.
+not tune the instrument to improve it. **Diff it for new *kinds* of stray, never for the count:**
+every rail in it is re-derived from where text actually lands, so a type change moves all of them
+at once (288 → 291 across the 2026-08-18 pass, with the three new entries measured directly and
+found to be pixel-rounding on a fractional grid track).
+
+> **The "no ESLint rule" line above was superseded on 2026-08-18.** It said: a scale nobody has
+> stress-tested through a real feature becomes a rule people disable. Two things then changed. The
+> scales went through a real pass — 36 font sizes to 8, 18 tracking values to 4, 15 leadings to 3,
+> across 19 routes — and the alternative got measured: the 15px prose rule sat in this document,
+> unenforced, and had been broken across the module content components. So the scales are now
+> enforced, by a **test** rather than a lint rule (`page-contract.test.ts` runs
+> `scripts/audit_design_scale.mjs` and fails on any stray), and the escape hatch is a named
+> exemption with a reason rather than a disabled check. See
+> [ADDING_A_SURFACE.md](ADDING_A_SURFACE.md).
 
 ### Page rhythm
 
