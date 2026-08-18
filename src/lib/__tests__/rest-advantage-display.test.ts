@@ -415,3 +415,33 @@ describe("buildRestAdvantageEvidence", () => {
     ).toBeNull();
   });
 });
+
+describe("formatRestAdvantageDisplay — projected provenance", () => {
+  const ra = { differential: 3.2, advantageTeam: "home" as const };
+
+  it("defaults to measured, so no caller opts into a claim by omission", () => {
+    const display = formatRestAdvantageDisplay(ra, "BOS", "LAL");
+    expect(display.kind).toBe("team");
+    expect(display.kind === "team" && display.projected).toBe(false);
+  });
+
+  it("carries the projected flag without changing the team or the figure", () => {
+    const measured = formatRestAdvantageDisplay(ra, "BOS", "LAL", false);
+    const projected = formatRestAdvantageDisplay(ra, "BOS", "LAL", true);
+
+    expect(projected.kind === "team" && projected.projected).toBe(true);
+    // Same reading, annotated — not a different reading.
+    expect(projected.text).toBe(measured.text);
+    expect(projected.kind === "team" && projected.teamAbbreviation).toBe("BOS");
+    expect(projected.kind === "team" && projected.value).toBe("3.2");
+  });
+
+  it("does not label a neutral or unmeasured cell as projected", () => {
+    // Both already say something specific about the measurement; a PROJECTED badge on top of
+    // "not measured" would be two provenance claims at once.
+    expect(
+      formatRestAdvantageDisplay({ differential: 0.1, advantageTeam: "neutral" }, "BOS", "LAL", true).kind
+    ).toBe("neutral");
+    expect(formatRestAdvantageDisplay(null, "BOS", "LAL", true).kind).toBe("unmeasured");
+  });
+});

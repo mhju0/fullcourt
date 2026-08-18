@@ -60,6 +60,12 @@ export interface GameResponse {
   homeFatigue: FatigueInfo | null;
   awayFatigue: FatigueInfo | null;
   restAdvantage: RestAdvantage | null;
+  /**
+   * This game's fatigue was projected from the published schedule rather than measured from
+   * played basketball — i.e. an unplayed game sits earlier in its season. See
+   * `src/lib/fatigue-provenance.ts`; it is NOT the same as "this game has not been played".
+   */
+  projectedFatigue: boolean;
 }
 
 /**
@@ -205,6 +211,8 @@ export interface UpcomingGameWithRA {
   awayFatigueScore: number | null;
   restAdvantageDifferential: number;
   predictedAdvantageAbbreviation: string;
+  /** See `GameResponse.projectedFatigue`. */
+  projectedFatigue: boolean;
 }
 
 // ─── Playoff Predictor (GET /api/playoffs → the /playoffs page) ──

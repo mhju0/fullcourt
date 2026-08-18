@@ -12,6 +12,8 @@ import {
   lt,
   lte,
   max,
+  min,
+  ne,
   or,
   sql,
   type SQL,
@@ -27,6 +29,7 @@ import {
   teams,
 } from "./schema";
 import type { DataAsOf } from "@/lib/data-as-of";
+import { isProjectedFatigue } from "@/lib/fatigue-provenance";
 import type { DisparityGameRow } from "@/lib/schedule-disparity";
 import type { SeasonReportRow } from "@/lib/season-report";
 import { ABNORMAL_STRETCHES } from "@/lib/season-regime";
@@ -300,17 +303,39 @@ type GameFatigueJoinRow = Awaited<ReturnType<typeof selectGamesWithFatigue>>[num
  * Precondition: every row shares one game date — both callers query a single
  * date — so the density lookups run once rather than per row.
  */
+/**
+ * The ET date of a season's earliest game that has not been played, or null when none remain.
+ *
+ * One scalar answers "is this game's fatigue projected?" for every game in the season — see
+ * `src/lib/fatigue-provenance.ts` for why that reduction is sound. Cheap: `games_date_idx` and
+ * `games_status_idx` both exist, and it reads one row.
+ */
+export async function getFirstUnplayedDate(season: string): Promise<string | null> {
+  const [row] = await db
+    .select({ first: min(games.date) })
+    .from(games)
+    .where(publishableGames(and(eq(games.season, season), ne(games.status, "final"))));
+
+  return row?.first ? String(row.first) : null;
+}
+
 async function toGameResponses(rows: GameFatigueJoinRow[]): Promise<GameResponse[]> {
   if (rows.length === 0) return [];
 
   const date = String(rows[0].date);
   const teamIds = rows.flatMap((r) => [r.homeTeamId, r.awayTeamId]);
-  const [is4In6Map, games30Map] = await Promise.all([
+  // Every row here shares one date, so it shares one season, so one scalar covers them all.
+  const [is4In6Map, games30Map, firstUnplayed] = await Promise.all([
     computeIs4In6Map(date, teamIds),
     getTeamGameCountsInDaysBefore(date, teamIds, 30),
+    getFirstUnplayedDate(String(rows[0].season)),
   ]);
+  const projectedFatigue = isProjectedFatigue(date, firstUnplayed);
 
-  return rows.map((row) => mapJoinedRowToGameResponse(row, is4In6Map, games30Map));
+  return rows.map((row) => ({
+    ...mapJoinedRowToGameResponse(row, is4In6Map, games30Map),
+    projectedFatigue,
+  }));
 }
 
 /**
@@ -327,11 +352,16 @@ export async function getGamesByDate(date: string): Promise<GameResponse[]> {
   return toGameResponses(rows);
 }
 
+/**
+ * Everything about one game except its fatigue provenance, which is a property of the season's
+ * progress rather than of the row — `toGameResponses` adds it, and the `Omit` is what stops a
+ * future caller assembling a `GameResponse` without deciding the question.
+ */
 function mapJoinedRowToGameResponse(
   row: GameFatigueJoinRow,
   is4In6Map: Map<number, boolean>,
   games30Map: Map<number, number>
-): GameResponse {
+): Omit<GameResponse, "projectedFatigue"> {
   const homeFatigueData = buildFatigueInfo(
     readFatigueSide(row, "home"),
     {
@@ -807,6 +837,8 @@ export async function getUpcomingGamesWithRA(
     );
   }
 
+  const firstUnplayed = await getFirstUnplayedDate(season);
+
   const rows = await db
     .select({
       gameId: games.id,
@@ -861,6 +893,7 @@ export async function getUpcomingGamesWithRA(
     awayFatigueScore: r.awayFatigueScore !== null ? parseFloat(String(r.awayFatigueScore)) : null,
     restAdvantageDifferential: parseFloat(String(r.differential)),
     predictedAdvantageAbbreviation: r.predictedTeamAbbreviation,
+    projectedFatigue: isProjectedFatigue(String(r.date), firstUnplayed),
   }));
 }
 

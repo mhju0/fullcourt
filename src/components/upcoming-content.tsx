@@ -5,13 +5,18 @@ import useSWR from "swr"
 import { format } from "date-fns"
 import { TeamLogo } from "@/components/matchup-parts"
 import { getTeamColors } from "@/lib/nba-team-colors"
-import { currentDisplaySeason, isNbaOffSeason, nextSeasonLabel } from "@/lib/nba-season"
+import {
+  currentDisplaySeason,
+  defaultNbaSeason,
+  isNbaOffSeason,
+  nextSeasonLabel,
+} from "@/lib/nba-season"
 import { apiFetcher, errMsg } from "@/lib/fetcher"
 import { useBacktest } from "@/hooks/useBacktest"
 import { Skeleton } from "@/components/ui/skeleton"
 import { buildRestAdvantageEvidence } from "@/lib/rest-advantage-display"
 import { signedNumber } from "@/lib/signed-number"
-import { LEAD, termCardStyle, termDashedEmptyStyle, TRACK } from "@/lib/terminal-styles"
+import { LEAD, termCardStyle, termDashedEmptyStyle, TRACK, TYPE } from "@/lib/terminal-styles"
 import { DataTable } from "@/components/ui/data-table"
 import type { UpcomingGameWithRA } from "@/types"
 import { MessageCard } from "@/components/ui/message-card"
@@ -26,15 +31,30 @@ const RA_OPTIONS = [
   { label: "RA ≥ 7", value: 7 },
 ]
 
-function OffSeasonEmptyState({ nextSeason }: { nextSeason: string }) {
+/**
+ * Nothing ahead — but for one of two different reasons, and they are not interchangeable.
+ *
+ * `awaitingSchedule` means the season being asked about has not started *and* carries no games
+ * yet, i.e. the league has not published it. Saying "regular season complete" there is simply
+ * false, and naming `nextSeasonLabel(season)` names a season two years out.
+ */
+function NoUpcomingGames({
+  season,
+  awaitingSchedule,
+}: {
+  season: string
+  awaitingSchedule: boolean
+}) {
   return (
     <div className="rounded-[4px] border border-[var(--term-border)] border-l-2 border-l-[var(--term-hardwood)] bg-[var(--term-surface)] px-6 py-12 text-center">
       <p className="mono text-[11px] font-semibold uppercase tracking-label text-[var(--term-text-muted)]">
-        REGULAR SEASON COMPLETE
+        {awaitingSchedule ? "SCHEDULE NOT PUBLISHED" : "REGULAR SEASON COMPLETE"}
       </p>
-      <p className="mt-2 text-body font-medium text-[var(--term-text)]">See you next season.</p>
+      <p className="mt-2 text-body font-medium text-[var(--term-text)]">
+        {awaitingSchedule ? "Nothing to show yet." : "See you next season."}
+      </p>
       <p className="mt-1 text-xs text-[var(--term-text-muted)]">
-        {nextSeason} season tips off in October.
+        {season} season tips off in October.
       </p>
     </div>
   )
@@ -45,9 +65,19 @@ function OffSeasonEmptyState({ nextSeason }: { nextSeason: string }) {
 export function UpcomingContent() {
   const [raFilter, setRaFilter] = useState(0)
 
-  const season = currentDisplaySeason()
-  const nextSeason = nextSeasonLabel(season)
+  // `defaultNbaSeason()`, not `currentDisplaySeason()`. They diverge for two months a year and
+  // this tab is on the wrong side of it: through August and September `currentDisplaySeason()`
+  // still names the season that just ended, so "upcoming" asked for a season with no game left
+  // ahead of it and rendered "see you next season" over a schedule that had already been
+  // published. `defaultNbaSeason()` names the season whose games are actually ahead, which is
+  // the same season the board opens on, and from October the two agree again.
+  const season = defaultNbaSeason()
   const isOffSeason = isNbaOffSeason()
+  // Are we looking past the season the calendar is in? Then an empty result means the schedule
+  // has not been published, not that basketball is over.
+  const awaitingSchedule = season > currentDisplaySeason()
+  // The season the empty card should name: the one we are waiting on either way.
+  const waitingOn = awaitingSchedule ? season : nextSeasonLabel(season)
 
   const params = new URLSearchParams({ season })
   if (raFilter > 0) params.set("minRA", String(raFilter))
@@ -115,7 +145,7 @@ export function UpcomingContent() {
         <MessageCard tone="error" title="FAILED TO LOAD GAMES" body={error} />
       ) : !games || games.length === 0 ? (
         isOffSeason ? (
-          <OffSeasonEmptyState nextSeason={nextSeason} />
+          <NoUpcomingGames season={waitingOn} awaitingSchedule={awaitingSchedule} />
         ) : (
           <div
             className="mono px-6 py-12 text-center"
@@ -185,7 +215,27 @@ export function UpcomingContent() {
               numeric: true,
               align: "center",
               style: { color: "var(--term-text)" },
-              cell: (g) => Math.abs(g.restAdvantageDifferential).toFixed(1),
+              // Annotated where the gap was read off the published schedule rather than
+              // measured from played basketball — an unplayed game sits earlier in the season,
+              // so the previous game's overtime and margin can still move it. Every other
+              // input is already fixed. See src/lib/fatigue-provenance.ts.
+              cell: (g) => (
+                <span className="inline-flex flex-col items-center" style={{ lineHeight: LEAD.label }}>
+                  <span>{Math.abs(g.restAdvantageDifferential).toFixed(1)}</span>
+                  {g.projectedFatigue && (
+                    <span
+                      style={{
+                        fontSize: TYPE.micro,
+                        fontWeight: 600,
+                        letterSpacing: TRACK.sub,
+                        color: "var(--term-text-muted)",
+                      }}
+                    >
+                      PROJ
+                    </span>
+                  )}
+                </span>
+              ),
             },
             {
               label: "Edge",

@@ -1,13 +1,16 @@
 import { z } from "zod";
-import { jsonRoute, minRAParam, seasonParam } from "@/lib/api-route";
+import { browsableSeasonParam, jsonRoute, minRAParam } from "@/lib/api-route";
 import { getUpcomingGamesWithRA } from "@/lib/db/queries";
-import { currentDisplaySeason } from "@/lib/nba-season";
+import { defaultNbaSeason } from "@/lib/nba-season";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export const GET = jsonRoute(
   "api/games/upcoming",
-  z.object({ minRA: minRAParam, season: seasonParam.optional() }),
-  ({ minRA, season }) => getUpcomingGamesWithRA(season ?? currentDisplaySeason(), minRA)
+  // `browsableSeasonParam`, not `seasonParam`: a released-but-unplayed season is exactly the
+  // one whose games are upcoming, and `seasonParam` validates against NBA_SEASONS, which by
+  // design excludes it until October. Evaluated per request — see api-route.ts.
+  z.object({ minRA: minRAParam, season: browsableSeasonParam.optional() }),
+  ({ minRA, season }) => getUpcomingGamesWithRA(season ?? defaultNbaSeason(), minRA)
 );

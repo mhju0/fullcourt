@@ -10,6 +10,16 @@ export type RestAdvantageDisplay =
       teamAbbreviation: string;
       value: string;
       text: string;
+      /**
+       * The differential was projected from the published schedule, not measured from played
+       * basketball — an unplayed game sits earlier in the season, so the prior-game overtime
+       * and blowout terms are still open. See `src/lib/fatigue-provenance.ts`.
+       *
+       * A property of this one reading rather than a fourth `kind`: the cell renders the same
+       * team and the same number either way, and only annotates where it came from. Making it
+       * a kind would have forced every consumer to handle a case that is not different.
+       */
+      projected: boolean;
     }
   | {
       kind: "neutral";
@@ -35,7 +45,8 @@ export function formatRestAdvantageValue(value: number): string {
 export function formatRestAdvantageDisplay(
   restAdvantage: RestAdvantage | null,
   homeAbbreviation: string,
-  awayAbbreviation: string
+  awayAbbreviation: string,
+  projected = false
 ): RestAdvantageDisplay {
   if (!restAdvantage) {
     return { kind: "unmeasured", text: "—" };
@@ -54,6 +65,7 @@ export function formatRestAdvantageDisplay(
     teamAbbreviation,
     value,
     text: `${teamAbbreviation} ${value}`,
+    projected,
   };
 }
 

@@ -1,5 +1,5 @@
 import { format, parseISO, subDays } from "date-fns";
-import { and, asc, eq, gte, lt, or } from "drizzle-orm";
+import { and, asc, eq, gte, inArray, lt, or } from "drizzle-orm";
 import type { PostgresJsDatabase } from "drizzle-orm/postgres-js";
 import { alias } from "drizzle-orm/pg-core";
 import type * as Schema from "./db/schema";
@@ -30,6 +30,29 @@ export interface PriorGameRow {
   neutralVenueCity?: string | null;
 }
 
+/**
+ * What a prior game is allowed to be.
+ *
+ * `"played"` is the default and the only thing the in-season pipeline uses: a prior game counts
+ * only once it is `final`, because its rest, travel and overtime are then facts.
+ *
+ * `"scheduled"` additionally accepts games that have not been played, and is how a published
+ * schedule is projected forward before its season starts. It is not a looser version of the
+ * same question — it answers a different one: *if this schedule is played as published, what
+ * does the fatigue look like?* Every input the model takes is schedule-derived (rest days,
+ * travel legs, back-to-back, density windows, altitude, time-zone displacement) **except two**,
+ * which are results and are therefore neutralised rather than guessed:
+ *
+ *   overtimePeriods → 0     (no prior-game OT penalty)
+ *   pointMargin     → null  (no blowout discount)
+ *
+ * A projected row is not marked in the database. It does not need to be: a fatigue row belongs
+ * to a game, and a game that is not `final` has not been played, so `games.status` already
+ * carries the distinction at every read site. Adding a column would create a second source of
+ * truth that could disagree with the first.
+ */
+export type PriorGameBasis = "played" | "scheduled";
+
 import { FATIGUE_RECENT_LOOKBACK_DAYS } from "./fatigue";
 
 /**
@@ -39,7 +62,8 @@ import { FATIGUE_RECENT_LOOKBACK_DAYS } from "./fatigue";
 export async function fetchRecentGamesForTeam(
   db: AppDb,
   teamId: number,
-  gameDateStr: string
+  gameDateStr: string,
+  basis: PriorGameBasis = "played"
 ): Promise<RecentGame[]> {
   const windowStart = format(
     subDays(parseISO(gameDateStr), FATIGUE_RECENT_LOOKBACK_DAYS),
@@ -48,7 +72,7 @@ export async function fetchRecentGamesForTeam(
   const homeTeamAlias = alias(teams, "home_team");
   const awayTeamAlias = alias(teams, "away_team");
 
-  const rows: PriorGameRow[] = await db
+  const rows: (PriorGameRow & { status: string })[] = await db
     .select({
       date: games.date,
       homeTeamId: games.homeTeamId,
@@ -67,6 +91,7 @@ export async function fetchRecentGamesForTeam(
       awayScore: games.awayScore,
       neutralSite: games.neutralSite,
       neutralVenueCity: games.neutralVenueCity,
+      status: games.status,
     })
     .from(games)
     .innerJoin(homeTeamAlias, eq(games.homeTeamId, homeTeamAlias.id))
@@ -74,14 +99,31 @@ export async function fetchRecentGamesForTeam(
     .where(
       and(
         or(eq(games.homeTeamId, teamId), eq(games.awayTeamId, teamId)),
-        eq(games.status, "final"),
+        basis === "played"
+          ? eq(games.status, "final")
+          : inArray(games.status, ["final", "scheduled", "live"]),
         gte(games.date, windowStart),
         lt(games.date, gameDateStr)
       )
     )
     .orderBy(asc(games.date));
 
-  return rows.map((row) => rowToRecentGame(row, teamId));
+  return rows.map((row) => rowToRecentGame(neutralizeIfUnplayed(row), teamId));
+}
+
+/**
+ * Strip the two result-derived inputs from a prior game that has not been played.
+ *
+ * Done explicitly rather than left to column defaults. An unplayed row happens to carry
+ * `overtime_periods = 0` and null scores today, but that is a default, not a promise — and a
+ * `live` row can carry a real partial score, which would otherwise feed a blowout discount off
+ * a game that is not over. Everything else on the row is schedule-derived and survives intact.
+ */
+export function neutralizeIfUnplayed<T extends PriorGameRow & { status: string }>(
+  row: T
+): T {
+  if (row.status === "final") return row;
+  return { ...row, overtimePeriods: 0, homeScore: null, awayScore: null };
 }
 
 export function rowToRecentGame(row: PriorGameRow, teamId: number): RecentGame {

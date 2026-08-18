@@ -64,6 +64,7 @@ const sampleGame: GameResponse = {
     differential: 3.2,
     advantageTeam: "home",
   },
+  projectedFatigue: false,
 };
 
 /** The route reads only its dynamic segment, but `jsonRoute` still merges search params. */

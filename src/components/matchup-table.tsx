@@ -237,12 +237,14 @@ function RestAdvCell({
   restAdvantage,
   homeAbbr,
   awayAbbr,
+  projectedFatigue,
 }: {
   restAdvantage: GameResponse["restAdvantage"]
   homeAbbr: string
   awayAbbr: string
+  projectedFatigue: boolean
 }) {
-  const display = formatRestAdvantageDisplay(restAdvantage, homeAbbr, awayAbbr)
+  const display = formatRestAdvantageDisplay(restAdvantage, homeAbbr, awayAbbr, projectedFatigue)
   const advantageTeam = restAdvantage?.advantageTeam ?? "neutral"
   const isHomeAdv = advantageTeam === "home"
   const isAwayAdv = advantageTeam === "away"
@@ -281,6 +283,23 @@ function RestAdvCell({
           </>
         )}
       </div>
+
+      {/* Where the number came from, stated only when it is not the ordinary case. A projected
+          differential is read off the published schedule: every input is already fixed except
+          the previous game's overtime and margin, so it moves only where one of those lands. */}
+      {display.kind === "team" && display.projected && (
+        <span
+          className="mono"
+          style={{
+            fontSize: TYPE.micro,
+            fontWeight: 600,
+            letterSpacing: TRACK.sub,
+            color: "var(--term-text-muted)",
+          }}
+        >
+          PROJECTED
+        </span>
+      )}
 
       {/* Center-anchored differential meter: teal fill toward the rested side, ±5 scale. */}
       <div className="flex w-full items-center gap-2">
@@ -422,6 +441,7 @@ function GameRow({
           restAdvantage={game.restAdvantage}
           homeAbbr={homeBrand.abbreviation}
           awayAbbr={awayBrand.abbreviation}
+          projectedFatigue={game.projectedFatigue}
         />
 
         <div className="flex items-center justify-end gap-2">
