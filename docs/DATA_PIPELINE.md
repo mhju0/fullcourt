@@ -167,6 +167,13 @@ Steps:
 - Backfilled 29,784 games from 2002-03: 1,750 overtime games, 28 neutral across five cities,
   0 unmatched. Games with no line score keep their existing value rather than being forced to 0.
 
+> **The exporter's fidelity check skips unplayed games** (since 2026-08-18). A released-but-unplayed
+> season carries *projected* fatigue scored from schedule priors, while the exporter rebuilds every
+> score from `final` priors only — the basis the research questions are asked on. Comparing them
+> measures nothing but the gap between the two bases, and it briefly reported 2,322 "mismatches"
+> that were the other question's answer. The report now prints `skipped (unplayed)` beside
+> `stored rows compared`, and the compared figure is back to 100,990 with 0 mismatches.
+
 ### `sync_scores_espn.ts` — nightly scores, status and overtime
 - `pnpm exec tsx scripts/sync_scores_espn.ts <from> <to> [--dry-run]`. ET dates, inclusive.
   Step 2 of `daily_update.py`; also the repair tool for a night that was missed.
@@ -446,6 +453,23 @@ per-shot" framing.
   [ADR 0006](adr/0006-fatigue-weights-were-fitted-and-the-model-was-not-changed.md): fitted
   weights did **not** beat the ratified ones by enough to matter. Read that before proposing a
   refit or a new factor — it records what was already tried and measured.
+
+### `ml/timezone_test.py` — the pre-registered circadian test (2026-08-18)
+- `ml/.venv/bin/python ml/timezone_test.py`, after the three-step harness. Reads
+  `fatigue_features.csv` for the direction terms and `fatigue_model_table.csv` for the outcome
+  and the strength control; writes `ml/data/timezone_report.txt`.
+- Asks the one circadian question ADR 0006 did **not**: does a ≥3h **eastward** shift arriving on
+  **short rest** cost anything, on top of the four-term model? Pre-registered in
+  `ml/timezone_preregistration.md` before any figure was seen — population, terms, protocol,
+  decision rule and prior expectation — following ADR 0007's convention.
+- **Answer: no**, on all three pre-registered conditions. See the 2026-08-18 addendum to
+  [ADR 0006](adr/0006-fatigue-weights-were-fitted-and-the-model-was-not-changed.md), which also
+  records the two figures that would have been read wrongly without measuring them: the raw
+  east/west asymmetry is a strength confound, and a stable-looking westward term is 86%
+  back-to-backs.
+- Needed a signed `zone_shift_hours`, added to `FatigueFeatures` and the exporter. **Reported,
+  never scored** — no term reads it, every score is unchanged, and the exporter still reproduces
+  all 100,990 stored rows exactly.
 
 ### Shared loaders
 - `src/lib/fatigue-recent-games.ts::fetchRecentGamesForTeam` — final games in

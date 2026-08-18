@@ -306,6 +306,75 @@ site published was stated against a coin flip while every game in it was a home 
 moved to a venue baseline on 2026-08-06. That is a presentation decision rather than a model one,
 so it is not an amendment here — but it is the reason this correction was found.
 
+## Addendum — 2026-08-18: the circadian question was asked narrowly, and answered no
+
+Michael asked whether crossing 3+ time zones costs anything, on the reasoning that athletes peak
+in the evening and a long flight moves the body clock away from that. Two things above already
+bore on it — jet lag (weight 0.001, cv 3.24) and body-clock tip time (pinned at 0; the
+unconstrained fit wanted −0.015) — but both were measured as **main effects across all games**.
+The narrower claim was untested: that the cost concentrates where the traveller has no time to
+re-entrain, a long **eastward** shift arriving on **short rest**.
+
+Pre-registered in `ml/timezone_preregistration.md` before any figure was seen, including the
+prior expectation (null) and the three conditions a finding had to clear. Run by
+`ml/timezone_test.py`; report at `ml/data/timezone_report.txt`. Same protocol, same folds:
+walk-forward, 16 blind seasons, 19,118 held-out games, sign-clamped, strength control in.
+
+Direction was not separable from the exported columns before this: `zones_crossed` is
+`Math.abs(shift)` and `jetlag_units` folds the east/west multiplier together with the
+re-entrainment fraction. A signed `zone_shift_hours` was added to `FatigueFeatures` and to the
+exporter. It is reported, never scored — every score is unchanged, and the exporter still
+reproduces all 100,990 stored rows exactly.
+
+**The pre-registered hypothesis fails all three conditions.**
+
+| condition | result |
+|---|---|
+| held-out log loss improves | **no** — the four candidates together are worth **−0.00003** |
+| sign stable across folds | **no** for the primary term: `d_east3_short` is pinned at 0 in **16 of 16** folds |
+| east beats west | **no, and reversed** — see below |
+
+| term | mean weight | cv | folds non-zero | added alone |
+|---|---:|---:|---:|---:|
+| `d_east3_short` *(primary)* | 0.0000 | — | 0/16 | −0.00000 |
+| `d_west3_short` | 0.0997 | 0.40 | 16/16 | −0.00002 |
+| `d_east3` | 0.0069 | 1.77 | 6/16 | −0.00002 |
+| `d_west3` | 0.0435 | 0.65 | 14/16 | +0.00003 |
+
+For scale: every fatigue factor in this model combined is worth +0.00245, and team strength alone
++0.060. The best of these is +0.00003.
+
+**Two results here would have been read wrongly without measuring them, and both were.**
+
+*The raw split looks like a real and sizeable asymmetry.* Home teams win 54.41% against a visitor
+who flew 3+ hours east (n = 1,643) and 61.96% against one who flew 3+ hours west (n = 1,635),
+either side of a 58.39% era baseline. Read cold that is a 7.5-point swing in the direction
+opposite to the circadian literature — travelling *east* would be helping. It is geography and
+quality. A ≥3h westward trip is an Eastern team visiting the Pacific coast and a ≥3h eastward trip
+is the reverse, and the mean strength edge to the home side flips sign with the direction:
+**−0.0281 in the eastward cell, +0.0218 in the westward one, −0.0021 where no long shift
+happened.** The win rate follows the strength, and once `d_strength` is in the model the
+asymmetry stops paying.
+
+*`d_west3_short` holds a stable non-zero weight in 16 of 16 folds and is still worth nothing.*
+That combination is the exact reading this ADR had to correct itself for once already. Measured
+rather than inferred: **86.4% of those games are back-to-backs**, and `d_is_b2b` is already in
+the baseline. The term is largely restating something the model has.
+
+**Altitude is not the confound, though it looked like the obvious one.** Denver and Utah sit in
+Mountain time, a 2-hour shift from Eastern, so the ≥3h threshold excludes them: overlap between
+every candidate term and `d_alt_visit` is **0.0%**.
+
+`fatigue.ts` is unchanged. `TIME_ZONE_DISPLACEMENT_BONUS`, `TIME_ZONE_EASTWARD_MULTIPLIER` and
+`TIME_ZONE_WESTWARD_MULTIPLIER` keep their ratified values — this measured no reason to move
+them, and it is worth saying plainly that it also produced **no evidence the shipped 1.25/0.85
+asymmetry is right**. It found no directional effect to be asymmetric about.
+
+What would change the answer is not a better cut of this data. It is knowing who actually
+travelled and how — arrival times, chartered legs, whether the team flew in the night before —
+none of which is in any source this project can reach. The ceiling this ADR describes still
+stands: **new information, not new mathematics.**
+
 ## Related
 
 - `docs/adr/0003-fatigue-inputs-limited-to-espn-era.md` — why the fit floor is 2002.

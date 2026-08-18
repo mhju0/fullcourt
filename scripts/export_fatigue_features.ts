@@ -107,6 +107,7 @@ const HEADER = [
   "home_stand",
   "jetlag_units",
   "zones_crossed",
+  "zone_shift_hours",
   "turnaround_hours",
   "prior_ot",
   "density_points",
@@ -175,6 +176,7 @@ function row(
     r.features.homeStandLength,
     r.features.jetLagUnits,
     r.features.zonesCrossed,
+    r.features.zoneShiftHours,
     r.features.turnaroundHours,
     r.features.priorOvertimePeriods,
     r.features.densityStressPoints,
@@ -308,6 +310,8 @@ async function main(): Promise<void> {
     computed: number;
   }> = [];
   const failures: Array<{ gameId: number; date: string; error: string }> = [];
+  /** Stored rows on unplayed games — projections, not comparable to a played-basis rebuild. */
+  let skippedUnplayed = 0;
 
   for (const g of gameRows) {
     const home = teamById.get(g.homeTeamId);
@@ -345,6 +349,16 @@ async function main(): Promise<void> {
         missingStored++;
         continue;
       }
+      // Only played games are comparable. Since 2026-08-18 a released-but-unplayed season
+      // carries *projected* fatigue (`scripts/project_fatigue.ts`), scored against prior games
+      // taken from the schedule — while this exporter deliberately rebuilds every score from
+      // `final` priors only, which is the basis the research question is asked on. Comparing
+      // the two measures nothing but the difference between the bases, and it was reporting
+      // 2,322 "mismatches" that were simply the other question's answer.
+      if (g.status !== "final") {
+        skippedUnplayed++;
+        continue;
+      }
       compared++;
       const storedNum = Number(prior.score);
       if (Math.abs(storedNum - result.score) > 1e-9) {
@@ -376,6 +390,7 @@ async function main(): Promise<void> {
     `csv rows written        ${written}`,
     `stored rows compared    ${compared}`,
     `no stored row           ${missingStored}`,
+    `skipped (unplayed)      ${skippedUnplayed}`,
     `scoring failures        ${failures.length}`,
     "",
     `SCORE MISMATCHES        ${mismatches.length}`,

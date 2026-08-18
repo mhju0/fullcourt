@@ -260,6 +260,17 @@ export interface FatigueFeatures {
   jetLagUnits: number;
   /** Hours of clock shift between the home arena and tonight's venue. */
   zonesCrossed: number;
+  /**
+   * The same shift, **signed**: positive travelling east, negative travelling west.
+   *
+   * Reported rather than scored — no term reads it, and adding it leaves every score identical.
+   * It exists because neither existing column can separate direction: `zonesCrossed` is the
+   * absolute value, and `jetLagUnits` folds the eastward/westward multiplier together with the
+   * re-entrainment fraction, so a small eastward shift and a large westward one are not
+   * distinguishable from it. Added 2026-08-18 for the pre-registered circadian test
+   * (`ml/timezone_preregistration.md`).
+   */
+  zoneShiftHours: number;
   /** Real hours between the prior tip and tonight's; null when either tip is unknown. */
   turnaroundHours: number | null;
   /** Overtime periods in the prior game. 0 before ~2002 means unknown (ADR 0003). */
@@ -510,9 +521,15 @@ function timeZoneDisplacement(
   currentVenueLat: number,
   currentVenueLon: number,
   recentGames: RecentGame[]
-): { load: number; displaced: boolean; units: number; zonesCrossed: number } {
+): {
+  load: number;
+  displaced: boolean;
+  units: number;
+  zonesCrossed: number;
+  zoneShiftHours: number;
+} {
   if (currentGameIsHome) {
-    return { load: 0, displaced: false, units: 0, zonesCrossed: 0 };
+    return { load: 0, displaced: false, units: 0, zonesCrossed: 0, zoneShiftHours: 0 };
   }
 
   const homeOffset = venueUtcOffsetHours(teamHomeLat, teamHomeLon, tip);
@@ -521,7 +538,7 @@ function timeZoneDisplacement(
   const shift = venueOffset - homeOffset;
   const zonesCrossed = Math.abs(shift);
   if (zonesCrossed < TIME_ZONE_DISPLACEMENT_MIN_HOURS) {
-    return { load: 0, displaced: false, units: 0, zonesCrossed };
+    return { load: 0, displaced: false, units: 0, zonesCrossed, zoneShiftHours: shift };
   }
 
   const direction =
@@ -539,6 +556,7 @@ function timeZoneDisplacement(
     displaced: remaining > 0,
     units,
     zonesCrossed,
+    zoneShiftHours: shift,
   };
 }
 
@@ -816,6 +834,7 @@ export function calculateFatigue(input: FatigueInput): FatigueResult {
     displaced,
     units: jetLagUnits,
     zonesCrossed,
+    zoneShiftHours,
   } = timeZoneDisplacement(
     currentGameIsHome,
     tip,
@@ -866,6 +885,7 @@ export function calculateFatigue(input: FatigueInput): FatigueResult {
         homeStandLength,
         jetLagUnits,
         zonesCrossed,
+        zoneShiftHours,
         turnaroundHours: null,
         priorOvertimePeriods: 0,
         densityStressPoints: stressPoints,
@@ -1000,6 +1020,7 @@ export function calculateFatigue(input: FatigueInput): FatigueResult {
       homeStandLength,
       jetLagUnits,
       zonesCrossed,
+      zoneShiftHours,
       turnaroundHours: turnaroundHoursBetween(lastGame.tipOffUtc, currentTipOffUtc),
       priorOvertimePeriods: priorOtPeriods,
       densityStressPoints: stressPoints,
