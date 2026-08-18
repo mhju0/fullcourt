@@ -33,7 +33,7 @@ export const TYPE = {
   /**
    * Any sentence. Fixed by docs/FRONTEND.md §"Sentence case vs. caps" — sentences are set in
    * the body face, sentence case, at this size, and uppercase mono is for labels of about three
-   * words or fewer. Seven paragraphs in `season-report-content.tsx` were at 14 and three in
+   * words or fewer. Eight paragraphs in `season-report-content.tsx` were at 14 and three in
    * `schedule-disparity-content.tsx` at 13, so a page's own description and the prose beneath it
    * were one pixel apart, which reads as a rendering fault rather than as a distinction.
    */

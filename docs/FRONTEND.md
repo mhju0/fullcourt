@@ -1130,7 +1130,7 @@ bigger" was being answered with 17, 18, 19, 20, 21, 22 and 28 depending on the f
 Three findings drove the steps, and each is a pattern worth not repeating:
 
 - **Prose was set at 12.5, 13, 14 and 15 with no rule dividing them**, while §Sentence case had
-  already fixed 15. `season-report-content.tsx` put **seven paragraphs at 14 directly under its
+  already fixed 15. `season-report-content.tsx` put **eight paragraphs at 14 directly under its
   own 15px page description** — a one-pixel difference on one page, which reads as a rendering
   fault rather than as a distinction. Where a file *did* mean a second register
   (`behind-the-data-parts.tsx`'s `Note` vs `Prose`), the tint and the left rule were already
@@ -1340,9 +1340,9 @@ sentence case, at **`TYPE.body` (15px)**: `PageHeader` descriptions, the `/analy
 intro paragraphs, the playoffs calibration-vs-accuracy explainer, and the reference pages'
 `Prose`. All-caps removes word-shape cues and measurably slows reading past a few words.
 
-This rule predates the type scale and had already been broken in seven files by 2026-08-18 —
-prose at 12.5, 13 and 14 — which is why 15 is now a token rather than a number in this
-paragraph. A size named in prose is a size that drifts.
+This rule predates the type scale and had already been broken across the module content
+components by 2026-08-18 — prose at 12.5, 13 and 14 — which is why 15 is now a token rather
+than a number in this paragraph. A size named in prose is a size that drifts.
 
 ### Focus
 
