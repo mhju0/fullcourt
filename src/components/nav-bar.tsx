@@ -10,7 +10,7 @@ import {
   OTHER_NAV_ITEMS,
   OTHER_NAV_LABEL,
 } from "@/lib/primary-navigation"
-import { TYPE } from "@/lib/terminal-styles"
+import { TRACK, TYPE } from "@/lib/terminal-styles"
 import { cn } from "@/lib/utils"
 
 /**
@@ -41,7 +41,7 @@ function isActive(pathname: string, href: string): boolean {
 /** Shared by the direct tabs and the OTHER trigger so the underline reads identically. */
 const TAB_CLASS =
   "flex h-full shrink-0 items-center whitespace-nowrap border-b-2 font-semibold transition-colors"
-const TAB_STYLE = { fontSize: "12px", letterSpacing: "0.05em" } as const
+const TAB_STYLE = { fontSize: "12px", letterSpacing: TRACK.data } as const
 
 function tabTone(active: boolean): string {
   return active
@@ -280,7 +280,7 @@ export function NavBar() {
             />
             <span
               className="mono hidden sm:inline"
-              style={{ fontSize: "10px", letterSpacing: "0.12em", color: "var(--term-text-muted)" }}
+              style={{ fontSize: "10px", letterSpacing: TRACK.label, color: "var(--term-text-muted)" }}
             >
               NBA ANALYTICS PLATFORM
             </span>
@@ -352,7 +352,7 @@ export function NavBar() {
                     background: "var(--term-surface)",
                     border: "1px solid var(--term-border)",
                     fontSize: "12px",
-                    letterSpacing: "0.05em",
+                    letterSpacing: TRACK.data,
                   }}
                 >
                   {OTHER_NAV_ITEMS.map((item) => {
@@ -385,7 +385,7 @@ export function NavBar() {
                           <span
                             style={{
                               fontSize: TYPE.micro,
-                              letterSpacing: "0.06em",
+                              letterSpacing: TRACK.data,
                               fontWeight: 600,
                               color: "var(--term-text-muted)",
                               border: "1px solid var(--term-border)",

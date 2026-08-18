@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { TYPE } from "@/lib/terminal-styles";
+import { LEAD, TRACK, TYPE } from "@/lib/terminal-styles";
 
 export default function NotFound() {
   return (
@@ -15,20 +15,20 @@ export default function NotFound() {
     >
       <p
         className="mono font-semibold uppercase text-[var(--term-red)]"
-        style={{ fontSize: TYPE.label, letterSpacing: "0.08em" }}
+        style={{ fontSize: TYPE.label, letterSpacing: TRACK.label }}
       >
         404 · Out of bounds
       </p>
       <h1
         id="not-found-title"
         className="mt-4 text-[var(--term-text)]"
-        style={{ fontSize: TYPE.title, lineHeight: 1.05 }}
+        style={{ fontSize: TYPE.title, lineHeight: LEAD.figure }}
       >
         Page not found
       </h1>
       <p
         className="mt-4 text-[var(--term-text-muted)]"
-        style={{ fontSize: TYPE.body, lineHeight: 1.55 }}
+        style={{ fontSize: TYPE.body, lineHeight: LEAD.body }}
       >
         This route is not part of the FullCourt analytics dashboard. Return to the games board
         or explore the historical rest-advantage backtest.
@@ -40,13 +40,13 @@ export default function NotFound() {
             promise rather than the address. */}
         <Link
           href="/games"
-          className="mono border border-[var(--term-accent)] bg-[var(--term-accent)] px-4 py-2 text-xs font-semibold uppercase tracking-[0.08em] text-[var(--term-surface)] transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--term-accent)]"
+          className="mono border border-[var(--term-accent)] bg-[var(--term-accent)] px-4 py-2 text-xs font-semibold uppercase tracking-label text-[var(--term-surface)] transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--term-accent)]"
         >
           Games
         </Link>
         <Link
           href="/analysis"
-          className="mono border border-[var(--term-border)] bg-[var(--term-surface)] px-4 py-2 text-xs font-semibold uppercase tracking-[0.08em] text-[var(--term-text)] transition-colors hover:border-[var(--term-text-muted)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--term-text)]"
+          className="mono border border-[var(--term-border)] bg-[var(--term-surface)] px-4 py-2 text-xs font-semibold uppercase tracking-label text-[var(--term-text)] transition-colors hover:border-[var(--term-text-muted)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--term-text)]"
         >
           Model results
         </Link>

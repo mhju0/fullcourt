@@ -14,7 +14,7 @@ import {
   REST_SHARE_OF_HOME_COURT,
   REST_SPAN_PP,
 } from "@/lib/schedule-value"
-import { SPACE, termCardStyle, termDashedEmptyStyle, TYPE, WIDTH } from "@/lib/terminal-styles"
+import { LEAD, SPACE, termCardStyle, termDashedEmptyStyle, TRACK, TYPE, WIDTH } from "@/lib/terminal-styles"
 import { DataTable } from "@/components/ui/data-table"
 import type { ScheduleDisparityResponse, ScheduleDisparityTeam } from "@/types"
 import { signedNumber } from "@/lib/signed-number"
@@ -60,7 +60,7 @@ function StatCell({ label, value, sub, tone }: {
     <div className="flex flex-col gap-1 bg-[var(--term-surface)] px-3 py-3">
       <span
         className="mono"
-        style={{ fontSize: 10, letterSpacing: "0.09em", textTransform: "uppercase", color: "var(--term-text-muted)" }}
+        style={{ fontSize: 10, letterSpacing: TRACK.label, textTransform: "uppercase", color: "var(--term-text-muted)" }}
       >
         {label}
       </span>
@@ -108,7 +108,7 @@ function ColumnGuide({ countedGames, scheduledGames }: { countedGames: number; s
     <details className="mono group" style={{ ...termCardStyle, padding: 0 }}>
       <summary
         className="flex cursor-pointer items-center justify-between rounded-[var(--term-radius)] px-4 py-3 transition-colors hover:bg-[var(--term-surface-2)]"
-        style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-text)", fontWeight: 700 }}
+        style={{ fontSize: 11, letterSpacing: TRACK.label, color: "var(--term-text)", fontWeight: 700 }}
       >
         WHAT THESE COLUMNS MEAN
         <ChevronDown
@@ -118,7 +118,7 @@ function ColumnGuide({ countedGames, scheduledGames }: { countedGames: number; s
       </summary>
       <div
         className="flex max-w-2xl flex-col gap-3 px-4 pb-4"
-        style={{ fontSize: TYPE.body, color: "var(--term-text-muted)", lineHeight: 1.55 }}
+        style={{ fontSize: TYPE.body, color: "var(--term-text-muted)", lineHeight: LEAD.body }}
       >
         <p
           style={{
@@ -206,7 +206,7 @@ export function ScheduleDisparityContent() {
         {data ? (
           <p
             className="mono"
-            style={{ marginTop: SPACE.md, fontSize: TYPE.label, color: "var(--term-text-muted)", lineHeight: 1.6 }}
+            style={{ marginTop: SPACE.md, fontSize: TYPE.label, color: "var(--term-text-muted)", lineHeight: LEAD.body }}
           >
             {data.provisional ? "PROVISIONAL" : "FINAL"} ·{" "}
             {data.league.countedGames.toLocaleString()} OF{" "}
@@ -215,7 +215,7 @@ export function ScheduleDisparityContent() {
           </p>
         ) : null}
         {data?.provisional ? (
-          <p style={{ marginTop: SPACE.sm, fontSize: TYPE.body, color: "var(--term-text-muted)", lineHeight: 1.55 }}>
+          <p style={{ marginTop: SPACE.sm, fontSize: TYPE.body, color: "var(--term-text-muted)", lineHeight: LEAD.body }}>
             This season&rsquo;s schedule is not finished. The NBA announces only 80 of each
             team&rsquo;s 82 games before opening night and fills the rest once NBA Cup group play
             resolves in December, so these figures will revise.
@@ -257,7 +257,7 @@ export function ScheduleDisparityContent() {
       <div style={termCardStyle}>
         <p
           className="mono"
-          style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 600, textTransform: "uppercase" }}
+          style={{ fontSize: 11, letterSpacing: TRACK.label, color: "var(--term-text-muted)", fontWeight: 600, textTransform: "uppercase" }}
         >
           Net edge games — games with a real rest edge, minus games against one
         </p>
@@ -317,7 +317,7 @@ export function ScheduleDisparityContent() {
           <div style={termCardStyle}>
             <p
               className="mono"
-              style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 600, textTransform: "uppercase" }}
+              style={{ fontSize: 11, letterSpacing: TRACK.label, color: "var(--term-text-muted)", fontWeight: 600, textTransform: "uppercase" }}
             >
               Full breakdown
             </p>
@@ -328,7 +328,7 @@ export function ScheduleDisparityContent() {
             <p
               data-testid="schedule-worth-scale"
               className="mt-2"
-              style={{ fontSize: TYPE.body, color: "var(--term-text-muted)", maxWidth: WIDTH.prose, lineHeight: 1.55 }}
+              style={{ fontSize: TYPE.body, color: "var(--term-text-muted)", maxWidth: WIDTH.prose, lineHeight: LEAD.body }}
             >
               {/* Explicit {" "}: JSX drops a bare space that opens a text node after an
                   element, so "Worth prices" rendered as "Worthprices". */}
@@ -431,7 +431,7 @@ export function ScheduleDisparityContent() {
               ]}
             />
 
-            <p style={{ marginTop: SPACE.md, fontSize: TYPE.body, color: "var(--term-text-muted)", lineHeight: 1.55 }}>
+            <p style={{ marginTop: SPACE.md, fontSize: TYPE.body, color: "var(--term-text-muted)", lineHeight: LEAD.body }}>
               Positive is favorable in every column. Edge games are counted from the same fatigue
               scores as the Games page, so a season in progress lags until its games are played.
             </p>

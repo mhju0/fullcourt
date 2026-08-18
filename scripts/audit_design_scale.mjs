@@ -42,6 +42,8 @@ const STYLE_MODULE = join(SRC, "lib", "terminal-styles.ts");
 /** The scales, kept in step with `src/lib/terminal-styles.ts` by `design-scale.test.ts`. */
 const TYPE_SCALE = [10, 11, 12, 15, 18, 24, 32, 40];
 const SPACE_SCALE = [4, 8, 12, 16, 24, 32, 48];
+const TRACK_SCALE = ["0.08em", "0.04em", "0.06em", "-0.01em"];
+const LEAD_SCALE = [1.1, 1.4, 1.55];
 /** 0 is not a step but is always legitimate; 28 is `SPACE_NESTED_ROW`, the one third rail. */
 const SPACE_OK = new Set([...SPACE_SCALE, 0, 28]);
 
@@ -79,6 +81,13 @@ const EXEMPT = [
  */
 const TYPE_ALWAYS_OK = new Set([16]);
 const SPACE_ALWAYS_OK = new Set([2, 3]);
+/**
+ * `14px` as a line-height is a **badge chip's box height**, fixed independently of its font size
+ * so a row of chips is one height whatever is in them. That is geometry, like a data mark's gap —
+ * not leading. `normal` and `inherit` are refusals to set the property at all, which is fine.
+ */
+const LEAD_ALWAYS_OK = new Set(["14px", "normal", "inherit"]);
+const TRACK_ALWAYS_OK = new Set(["normal", "inherit"]);
 
 const TW_SPACE_UNIT = 4; // Tailwind v4: 0.25rem
 const TW_TEXT = {
@@ -245,22 +254,26 @@ const width = section(
   "mark with an intrinsic size keeps its own, so most values here are legitimately their own."
 );
 const tracking = section(
-  "TRACKING — letter-spacing", "tracking", null,
-  "Informational: there is no tracking scale yet. 0.08em and 0.04em carry most of the app;\n" +
-  "the long tail of 0.02 / 0.03 / 0.05 / 0.07 / 0.09 / 0.12 / 0.16 / 0.22 is undecided, not\n" +
-  "designed. Deciding it is a separate pass from the 2026-08-18 type scale."
+  "TRACKING — letter-spacing", "tracking",
+  (v) => TRACK_SCALE.includes(String(v)) || TRACK_ALWAYS_OK.has(String(v)),
+  `scale: ${TRACK_SCALE.join(" / ")}   (TRACK: label / sub / data / figure)\n` +
+  "Was 18 distinct values, of which 0.08em and 0.04em carried three quarters and the rest varied\n" +
+  "by nothing but which file the label lived in."
 );
 const leading = section(
-  "LEADING — line-height", "leading", null,
-  "Informational, same status as tracking. 1.55 is the prose leading; 1 / 1.05 / 1.1 are for\n" +
-  "figures. The 1.35 / 1.4 / 1.5 / 1.65 / 1.7 tail is undecided."
+  "LEADING — line-height", "leading",
+  (v) => LEAD_SCALE.includes(Number(v)) || LEAD_ALWAYS_OK.has(String(v)),
+  `scale: ${LEAD_SCALE.join(" / ")}   (LEAD: figure / label / body)   plus a chip's 14px box\n` +
+  "Was 15 values, where 1 / 1.05 / 1.1 all meant \"a figure needs no air above it\" and\n" +
+  "1.5 / 1.55 / 1.6 / 1.65 / 1.7 all meant \"this is a paragraph\"."
 );
 
-const total = type.strays + space.strays;
+const total = type.strays + space.strays + tracking.strays + leading.strays;
 let out =
   "FULLCOURT DESIGN-SCALE AUDIT\n" +
   "scales live in src/lib/terminal-styles.ts · exemptions are listed there and honoured here\n" +
-  `\nOFF-SCALE TOTAL: ${total}  (type ${type.strays}, space ${space.strays})\n`;
+  `\nOFF-SCALE TOTAL: ${total}  (type ${type.strays}, space ${space.strays}, ` +
+  `tracking ${tracking.strays}, leading ${leading.strays})\n`;
 out += type.out + space.out + width.out + tracking.out + leading.out;
 
 const dir = join(ROOT, "test-results", "design-scale");

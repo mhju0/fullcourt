@@ -69,6 +69,66 @@ export const TYPE = {
  */
 
 /**
+ * The tracking scale. Uppercase mono is most of this app's chrome, and tracking is what makes a
+ * cap line readable at 10px — so it is a real axis, not a garnish.
+ *
+ * Measured 2026-08-18: **18 distinct letter-spacing values** outside the exempt surfaces, of which
+ * 0.08em and 0.04em carried three quarters of the app and the rest — 0.02, 0.03, 0.05, 0.07, 0.09,
+ * 0.1, 0.12 — varied by nothing but which file the label happened to live in. Every one of those
+ * was the same kind of object: a small uppercase mono label.
+ *
+ * The steps run **more open as the type gets smaller** (a 10px cap line needs air a 12px one does
+ * not) and **tighter as it gets larger** (a 24px numeral wants closing up, not opening out). That
+ * is the typographic rule the numbers now follow, rather than five files' worth of habit.
+ */
+export const TRACK = {
+  /** The default tracked label: eyebrows, column headers, tile captions, section dividers. */
+  label: "0.08em",
+  /**
+   * A label subordinate to another label — a unit line under a column header, the qualifier under
+   * a figure. Tighter, so it recedes without needing to shrink further.
+   */
+  sub: "0.04em",
+  /**
+   * Uppercase at {@link TYPE.data} size: nav tabs, selects, chips, badges, a team abbreviation
+   * sitting in a row of figures. Less air than a label needs, because 12px caps are already open
+   * enough to read at a glance.
+   */
+  data: "0.06em",
+  /**
+   * Large tabular figures — {@link TYPE.stat} and up — which want closing rather than opening.
+   * Only slightly: a numeral column is doing tabular work, and tightening it much starts to fight
+   * the grid the figures are lining up on. The app had −0.01em and −0.02em doing this job.
+   */
+  figure: "-0.01em",
+} as const
+
+/*
+ * There is deliberately no `display` step. Page titles take their tracking from the base
+ * `h1, h2, h3` rule in `globals.css` (Tailwind's `tracking-tight`), so nothing at display size
+ * sets it inline — and a token with no consumer is a thing the next person has to work out.
+ * `/`'s display clamps and the brand wordmark are the exceptions, and both are exempt by name.
+ */
+
+/**
+ * The leading scale. Three jobs, where there were fifteen values.
+ *
+ * The tail was not a set of decisions: 1, 1.05 and 1.1 all meant "a figure needs no air above it",
+ * and 1.5, 1.55, 1.6, 1.65 and 1.7 all meant "this is a paragraph". Two exemptions are real and
+ * stay out: `/`'s display type (0.85–1.25, sized against the viewport) and the **14px line box on a
+ * badge chip**, which is box geometry — it fixes the chip's height independently of its font size,
+ * the same way a data mark's gap is drawing rather than layout.
+ */
+export const LEAD = {
+  /** A figure or a title: its own line box and nothing more. */
+  figure: 1.1,
+  /** A label long enough to wrap. */
+  label: 1.4,
+  /** Prose. */
+  body: 1.55,
+} as const
+
+/**
  * The spacing scale. Every gap, pad and margin in the app is one of these seven numbers.
  *
  * Before this existed the app used twelve gap steps and about twenty distinct inline padding
@@ -183,7 +243,7 @@ export const termInsetStyle: CSSProperties = {
 }
 
 /**
- * `text-[16px] sm:text-[12px]` is the iOS input-zoom floor, not a type-scale entry. Mobile
+ * `text-[16px] sm:text-data` is the iOS input-zoom floor, not a type-scale entry. Mobile
  * Safari zooms the whole page when a focused control's font is under 16px, and the zoom does
  * not undo itself on blur — measured worst on /analysis and /shooting (docs/ROADMAP.md,
  * 2026-08-04). ESPN, NBA.com, Naver Sports and KBL all "fix" this by disabling pinch-zoom
@@ -193,7 +253,7 @@ export const termInsetStyle: CSSProperties = {
  * The floor must stay in the CLASS layer: an inline fontSize cannot be made responsive.
  */
 export const termSelectClass =
-  "mono inline-flex items-center gap-2 bg-[var(--term-surface)] px-3 py-2 text-[16px] sm:text-[12px] uppercase tracking-[0.05em] text-[var(--term-text-dim)] transition-colors hover:bg-[var(--term-surface-2)] cursor-pointer appearance-none pr-8"
+  "mono inline-flex items-center gap-2 bg-[var(--term-surface)] px-3 py-2 text-[16px] sm:text-data uppercase tracking-data text-[var(--term-text-dim)] transition-colors hover:bg-[var(--term-surface-2)] cursor-pointer appearance-none pr-8"
 
 export const termSelectStyle: CSSProperties = {
   border: "1px solid var(--term-border)",
@@ -233,7 +293,7 @@ export const termThStyle: CSSProperties = {
   textAlign: "left",
   fontFamily: MONO_FONT_STACK,
   fontSize: TYPE.label,
-  letterSpacing: "0.08em",
+  letterSpacing: TRACK.label,
   color: "var(--term-text-muted)",
   fontWeight: 700,
   background: "var(--term-surface-2)",
@@ -274,7 +334,7 @@ export const termThUnitStyle: CSSProperties = {
   display: "block",
   fontWeight: 400,
   fontSize: TYPE.micro,
-  letterSpacing: "0.04em",
+  letterSpacing: TRACK.sub,
   textTransform: "none",
   opacity: 0.72,
 }

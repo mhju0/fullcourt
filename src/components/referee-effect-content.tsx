@@ -2,21 +2,21 @@ import { RefereeStyleContent } from "@/components/referee-style-content"
 import type { RefereeFoulStyle } from "@/lib/referee-foul-style"
 import { readingOf, topShifters, type RefereeTiming, type Verdict } from "@/lib/referee-timing"
 import { signedNumber } from "@/lib/signed-number"
-import { termCardStyle, termInsetStyle, TYPE, WIDTH } from "@/lib/terminal-styles"
+import { LEAD, termCardStyle, termInsetStyle, TRACK, TYPE, WIDTH } from "@/lib/terminal-styles"
 
 const BODY: React.CSSProperties = {
   fontSize: TYPE.body,
   color: "var(--term-text-muted)",
-  lineHeight: 1.55,
+  lineHeight: LEAD.body,
   maxWidth: WIDTH.prose,
 }
-const LEAD = { color: "var(--term-text)", fontWeight: 600 } as const
+const LEAD_IN = { color: "var(--term-text)", fontWeight: 600 } as const
 
 function SectionHeading({ children }: { children: React.ReactNode }) {
   return (
     <div
       className="mono flex items-center gap-3 py-1"
-      style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-text-muted)" }}
+      style={{ fontSize: 11, letterSpacing: TRACK.label, color: "var(--term-text-muted)" }}
     >
       <span style={{ fontWeight: 700 }}>{children}</span>
       <span style={{ flex: 1, height: 1, background: "var(--term-border)" }} />
@@ -36,7 +36,7 @@ function VerdictTile({ label, verdict }: { label: string; verdict: Verdict }) {
     <div className="flex flex-col gap-1 py-3" style={termInsetStyle}>
       <span
         className="mono"
-        style={{ fontSize: 10, letterSpacing: "0.08em", color: "var(--term-text-muted)" }}
+        style={{ fontSize: 10, letterSpacing: TRACK.label, color: "var(--term-text-muted)" }}
       >
         {label}
       </span>
@@ -45,7 +45,7 @@ function VerdictTile({ label, verdict }: { label: string; verdict: Verdict }) {
         style={{
           fontSize: TYPE.stat,
           fontWeight: 700,
-          lineHeight: 1.1,
+          lineHeight: LEAD.figure,
           color: lit ? "var(--term-blue)" : "var(--term-text-muted)",
         }}
       >
@@ -83,7 +83,7 @@ export function RefereeEffectContent({
   return (
     <div className="flex flex-col gap-12">
       <p style={BODY}>
-        <span style={LEAD}>Officials do not call the same game the same way.</span> Across{" "}
+        <span style={LEAD_IN}>Officials do not call the same game the same way.</span> Across{" "}
         {timing.gamesCovered.toLocaleString()} regular-season games since {timing.firstSeason},
         one thing separates them clearly, and two of the things people most often assume about
         them do not survive contact with the play-by-play. This page is about what a whistle{" "}
@@ -151,7 +151,7 @@ export function RefereeEffectContent({
         <SectionHeading>TWO THINGS THAT ARE NOT TRUE</SectionHeading>
 
         <p style={BODY}>
-          <span style={LEAD}>Officials do not swallow the whistle at the end.</span> It is the
+          <span style={LEAD_IN}>Officials do not swallow the whistle at the end.</span> It is the
           most repeated claim about NBA officiating, and in{" "}
           {timing.gamesCovered.toLocaleString()} games it does not happen. The league calls{" "}
           {timing.leagueLateFoulsPerGame.toFixed(2)} fouls in the last {lateMinutes} minutes of a
@@ -163,7 +163,7 @@ export function RefereeEffectContent({
         </p>
 
         <p style={BODY}>
-          <span style={LEAD}>And no official tilts the whistle home.</span> Home teams do commit
+          <span style={LEAD_IN}>And no official tilts the whistle home.</span> Home teams do commit
           fewer fouls — {Math.abs(timing.leagueHomeAwayCounts.shooting).toFixed(2)} fewer shooting
           fouls a game than visitors — but that gap belongs to the league, not to any individual
           in it. Splitting each official&rsquo;s home-minus-away gap by foul type puts them at{" "}

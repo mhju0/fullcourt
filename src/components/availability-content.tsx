@@ -6,22 +6,22 @@ import {
   AVAILABILITY_SAMPLE,
   AVAILABILITY_SCHEDULE_HOLDS_UP,
 } from "@/lib/availability-facts"
-import { SPACE, termCardStyle, TYPE, WIDTH } from "@/lib/terminal-styles"
+import { LEAD, SPACE, termCardStyle, TRACK, TYPE, WIDTH } from "@/lib/terminal-styles"
 import { DataTable } from "@/components/ui/data-table"
 
 const BODY: React.CSSProperties = {
   fontSize: TYPE.body,
   color: "var(--term-text-muted)",
-  lineHeight: 1.55,
+  lineHeight: LEAD.body,
   maxWidth: WIDTH.prose,
 }
-const LEAD = { color: "var(--term-text)", fontWeight: 600 } as const
+const LEAD_IN = { color: "var(--term-text)", fontWeight: 600 } as const
 
 function SectionHeading({ children }: { children: React.ReactNode }) {
   return (
     <div
       className="mono flex items-center gap-3 py-1"
-      style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-text-muted)" }}
+      style={{ fontSize: 11, letterSpacing: TRACK.label, color: "var(--term-text-muted)" }}
     >
       <span style={{ fontWeight: 700 }}>{children}</span>
       <span style={{ flex: 1, height: 1, background: "var(--term-border)" }} />
@@ -67,7 +67,7 @@ function EffectBar({
           style={{
             fontSize: TYPE.stat,
             fontWeight: 700,
-            lineHeight: 1.1,
+            lineHeight: LEAD.figure,
             color: lit ? "var(--term-blue)" : "var(--term-text)",
           }}
         >
@@ -93,7 +93,7 @@ function EffectBar({
       {note ? (
         <span
           className="mono"
-          style={{ fontSize: 11, letterSpacing: "0.04em", color: "var(--term-text-muted)" }}
+          style={{ fontSize: 11, letterSpacing: TRACK.sub, color: "var(--term-text-muted)" }}
         >
           {note}
         </span>
@@ -111,7 +111,7 @@ function ScaleSection() {
       <div style={termCardStyle}>
         <span
           className="mono tabular-nums block"
-          style={{ fontSize: TYPE.figure, fontWeight: 700, color: "var(--term-blue)", lineHeight: 1.05 }}
+          style={{ fontSize: TYPE.figure, fontWeight: 700, color: "var(--term-blue)", lineHeight: LEAD.figure }}
         >
           {e.bestPlayerOut.points.toFixed(2)} points
         </span>
@@ -119,7 +119,7 @@ function ScaleSection() {
           className="mono block"
           style={{
             fontSize: 11,
-            letterSpacing: "0.08em",
+            letterSpacing: TRACK.label,
             color: "var(--term-text-muted)",
             fontWeight: 700,
             marginTop: SPACE.sm,
@@ -137,7 +137,7 @@ function ScaleSection() {
         </div>
 
         <p className="mt-4" style={BODY}>
-          <span style={LEAD}>Losing your best player costs about what playing at home is worth.</span>{" "}
+          <span style={LEAD_IN}>Losing your best player costs about what playing at home is worth.</span>{" "}
           Every bar is points of final margin, measured across{" "}
           {AVAILABILITY_SAMPLE.games.toLocaleString()}{" "}
           games with both teams&apos; records held equal, so they can be read against one another
@@ -165,7 +165,7 @@ function FrequencySection() {
             <div key={c.label} className="flex flex-col gap-2">
               <span
                 className="mono tabular-nums"
-                style={{ fontSize: TYPE.stat, fontWeight: 700, color: "var(--term-text)", lineHeight: 1.1 }}
+                style={{ fontSize: TYPE.stat, fontWeight: 700, color: "var(--term-text)", lineHeight: LEAD.figure }}
               >
                 {c.value}
               </span>
@@ -173,10 +173,10 @@ function FrequencySection() {
                 className="mono"
                 style={{
                   fontSize: 11,
-                  letterSpacing: "0.06em",
+                  letterSpacing: TRACK.data,
                   color: "var(--term-text-muted)",
                   fontWeight: 700,
-                  lineHeight: 1.4,
+                  lineHeight: LEAD.label,
                 }}
               >
                 {c.label}
@@ -209,7 +209,7 @@ function TrendSection() {
       <SectionHeading>THE LOAD-MANAGEMENT ERA</SectionHeading>
       <div style={termCardStyle}>
         <p style={BODY}>
-          <span style={LEAD}>
+          <span style={LEAD_IN}>
             Teams sit their best player more than three times as often as they did in{" "}
             {first.season}.
           </span>{" "}
@@ -242,13 +242,13 @@ function TrendSection() {
           <figcaption className="flex items-baseline justify-between">
             <span
               className="mono tabular-nums"
-              style={{ fontSize: 11, letterSpacing: "0.04em", color: "var(--term-text-muted)" }}
+              style={{ fontSize: 11, letterSpacing: TRACK.sub, color: "var(--term-text-muted)" }}
             >
               {first.season} · {(first.rate * 100).toFixed(1)}%
             </span>
             <span
               className="mono tabular-nums"
-              style={{ fontSize: 11, letterSpacing: "0.04em", color: "var(--term-blue)", fontWeight: 700 }}
+              style={{ fontSize: 11, letterSpacing: TRACK.sub, color: "var(--term-blue)", fontWeight: 700 }}
             >
               {last.season} · {(last.rate * 100).toFixed(1)}%
             </span>
@@ -285,7 +285,7 @@ function ScheduleHoldsUpSection() {
       <SectionHeading>THE SCHEDULE STILL COUNTS</SectionHeading>
       <div style={termCardStyle}>
         <p style={BODY}>
-          <span style={LEAD}>
+          <span style={LEAD_IN}>
             A back-to-back is not just teams resting their stars.
           </span>{" "}
           The obvious objection to measuring the schedule at all is that its effects are really
@@ -341,12 +341,12 @@ function LimitsSection() {
       <SectionHeading>WHAT THIS IS NOT</SectionHeading>
       <div style={termCardStyle}>
         <p style={BODY}>
-          <span style={LEAD}>This measures what an absence cost, not who will play tonight.</span>{" "}
+          <span style={LEAD_IN}>This measures what an absence cost, not who will play tonight.</span>{" "}
           Every figure here is worked out after the fact, from who actually took the floor. Lineups
           are not settled until shortly before tip, so none of this forecasts a game.
         </p>
         <p className="mt-3" style={BODY}>
-          <span style={LEAD}>And a basketball game is mostly noise.</span> Final margins vary by{" "}
+          <span style={LEAD_IN}>And a basketball game is mostly noise.</span> Final margins vary by{" "}
           {n.marginStdDev.toFixed(1)}{" "}
           points; knowing both teams&apos; records, their schedule and who was missing still leaves{" "}
           {n.rmseWithAbsence.toFixed(1)}. These effects are real and precisely measured. They are

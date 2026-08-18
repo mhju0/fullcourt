@@ -1,7 +1,7 @@
 "use client"
 
 import { NBA_SEASONS } from "@/lib/nba-season"
-import { termSelectClass, termSelectStyle } from "@/lib/terminal-styles"
+import { termSelectClass, termSelectStyle, TRACK } from "@/lib/terminal-styles"
 import { cn } from "@/lib/utils"
 
 const SEASON_OPTIONS = [...NBA_SEASONS].reverse()
@@ -27,7 +27,7 @@ export function SeasonSelector({
       <label
         htmlFor={id}
         className="mono"
-        style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 600 }}
+        style={{ fontSize: 11, letterSpacing: TRACK.label, color: "var(--term-text-muted)", fontWeight: 600 }}
       >
         SEASON
       </label>

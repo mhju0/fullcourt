@@ -6,7 +6,7 @@ import { SeasonSelector } from "@/components/season-selector"
 import { Skeleton } from "@/components/ui/skeleton"
 import { apiFetcher, errMsg } from "@/lib/fetcher"
 import { currentDisplaySeason } from "@/lib/nba-season"
-import { termCardStyle, termInsetStyle, TYPE } from "@/lib/terminal-styles"
+import { LEAD, termCardStyle, termInsetStyle, TRACK, TYPE } from "@/lib/terminal-styles"
 import type { ShotQualityCell, ShotQualityResponse } from "@/types"
 import { signedNumber } from "@/lib/signed-number"
 import { MessageCard } from "@/components/ui/message-card"
@@ -99,7 +99,7 @@ function EncodingToggle({
   ]
   return (
     <div className="flex flex-col gap-2">
-      <span className="mono" style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 600 }}>
+      <span className="mono" style={{ fontSize: 11, letterSpacing: TRACK.label, color: "var(--term-text-muted)", fontWeight: 600 }}>
         COLOR ENCODING
       </span>
       <div className="inline-flex" role="group" aria-label="Color encoding">
@@ -114,7 +114,7 @@ function EncodingToggle({
               className={`mono px-3 py-2 transition-colors ${active ? "" : "hover:bg-[var(--term-surface-2)]"}`}
               style={{
                 fontSize: 12,
-                letterSpacing: "0.05em",
+                letterSpacing: TRACK.data,
                 // Solid ink when active: a view toggle is chrome, and teal now belongs
                 // to the court marks alone.
                 background: active ? "var(--term-text)" : undefined,
@@ -155,11 +155,11 @@ function BigLegend({
   // it labels, so that is an intrinsic cap on a control rather than a measure for reading.
   return (
     <div className="flex w-full max-w-[420px] shrink-0 flex-col gap-2 sm:w-[340px]">
-      <span className="mono" style={{ fontSize: 11, letterSpacing: "0.1em", color: "var(--term-text-muted)", fontWeight: 700 }}>
+      <span className="mono" style={{ fontSize: 11, letterSpacing: TRACK.label, color: "var(--term-text-muted)", fontWeight: 700 }}>
         {caption}
       </span>
       <div style={{ height: 16, borderRadius: "var(--term-radius-sm)", border: "1px solid var(--term-border)", background: gradient }} />
-      <div className="mono flex justify-between tabular-nums" style={{ fontSize: 12, color: "var(--term-text-dim)", letterSpacing: "0.03em", fontWeight: 600 }}>
+      <div className="mono flex justify-between tabular-nums" style={{ fontSize: 12, color: "var(--term-text-dim)", letterSpacing: TRACK.sub, fontWeight: 600 }}>
         <span>{left}</span>
         {mid ? <span>{mid}</span> : null}
         <span>{right}</span>
@@ -194,7 +194,7 @@ function HowToRead({
             left={`${(seqLo * 100).toFixed(0)}% · low value`}
             right={`${(seqHi * 100).toFixed(0)}% · high value`}
           />
-          <div className="flex min-w-0 flex-col gap-1" style={{ fontSize: TYPE.body, lineHeight: 1.55, color: "var(--term-text-dim)" }}>
+          <div className="flex min-w-0 flex-col gap-1" style={{ fontSize: TYPE.body, lineHeight: LEAD.body, color: "var(--term-text-dim)" }}>
             <p>
               Each square is a spot on the floor; bigger squares mean more shots attempted there.
             </p>
@@ -219,7 +219,7 @@ function HowToRead({
             mid="0"
             right={`+${(divD * 100).toFixed(1)} pp · GBM higher`}
           />
-          <div className="flex min-w-0 flex-col gap-1" style={{ fontSize: TYPE.body, lineHeight: 1.55, color: "var(--term-text-dim)" }}>
+          <div className="flex min-w-0 flex-col gap-1" style={{ fontSize: TYPE.body, lineHeight: LEAD.body, color: "var(--term-text-dim)" }}>
             <p>One court: where the two models disagree about a spot&apos;s value.</p>
             <p>
               <span style={{ color: "var(--term-red)", fontWeight: 600 }}>Rose: GBM rates it higher</span> than the zone
@@ -334,10 +334,10 @@ function ShotCourt({
   return (
     <figure className="flex flex-col gap-2">
       <figcaption className="flex flex-col gap-1">
-        <span className="mono" style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.05em", color: "var(--term-text)" }}>
+        <span className="mono" style={{ fontSize: 12, fontWeight: 700, letterSpacing: TRACK.data, color: "var(--term-text)" }}>
           {title}
         </span>
-        <span className="mono" style={{ fontSize: 10, color: "var(--term-text-muted)", letterSpacing: "0.04em" }}>
+        <span className="mono" style={{ fontSize: 10, color: "var(--term-text-muted)", letterSpacing: TRACK.sub }}>
           {subtitle}
         </span>
       </figcaption>
@@ -481,7 +481,7 @@ export function ShotQualityContent() {
         // `data-shot-anchor`: where the README shot of this page ends (scripts/screenshots.mjs).
         <div style={termCardStyle} data-shot-anchor="two-court">
           <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
-            <span className="mono" style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 700 }}>
+            <span className="mono" style={{ fontSize: 11, letterSpacing: TRACK.label, color: "var(--term-text-muted)", fontWeight: 700 }}>
               {season} · {data.meta.cellCount.toLocaleString()} CELLS · {data.meta.totalFga.toLocaleString()} FGA
             </span>
           </div>
@@ -523,7 +523,7 @@ export function ShotQualityContent() {
             </div>
           )}
 
-          <p className="mono mt-3" style={{ fontSize: 10, color: "var(--term-text-muted)", letterSpacing: "0.04em", lineHeight: 1.5 }}>
+          <p className="mono mt-3" style={{ fontSize: 10, color: "var(--term-text-muted)", letterSpacing: TRACK.sub, lineHeight: LEAD.body }}>
             MARKER SIZE = SHOT ATTEMPTS (FGA) FROM THAT CELL. HOVER A CELL FOR ITS ZONE, VOLUME, AND VALUE.
           </p>
         </div>

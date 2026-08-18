@@ -18,15 +18,7 @@ import {
   type PlayerRestPayload,
   type SortKey,
 } from "@/lib/player-rest"
-import {
-  MONO_FONT_STACK,
-  SPACE_NESTED_ROW,
-  termCardStyle,
-  termSelectClass,
-  termSelectStyle,
-  termTdStyle,
-  WIDTH,
-} from "@/lib/terminal-styles"
+import { LEAD, MONO_FONT_STACK, SPACE_NESTED_ROW, termCardStyle, termSelectClass, termSelectStyle, termTdStyle, WIDTH } from "@/lib/terminal-styles"
 import { signedNumber } from "@/lib/signed-number"
 import { MessageCard } from "@/components/ui/message-card"
 import { errMsg } from "@/lib/fetcher"
@@ -222,7 +214,7 @@ const ARM_TD: React.CSSProperties = {
 }
 
 const FILTER_LABEL =
-  "mono text-[10px] uppercase tracking-[0.08em] text-[var(--term-text-muted)]"
+  "mono text-[10px] uppercase tracking-label text-[var(--term-text-muted)]"
 
 const NUM_TD: React.CSSProperties = {
   ...termTdStyle,
@@ -415,11 +407,11 @@ export function PlayerRestContent() {
                someone will type, which is an intrinsic cap on a control. */
             /* 16px at phone widths is the iOS input-zoom floor, not a type-scale choice —
                see termSelectClass in terminal-styles.ts for the whole reasoning. */
-            className="mono w-full max-w-[260px] bg-[var(--term-surface)] px-3 py-2 text-[16px] sm:text-[12px] text-[var(--term-text)] placeholder:text-[var(--term-text-muted)]"
+            className="mono w-full max-w-[260px] bg-[var(--term-surface)] px-3 py-2 text-[16px] sm:text-data text-[var(--term-text)] placeholder:text-[var(--term-text-muted)]"
             style={{ border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }}
           />
 
-          <label className="mono flex cursor-pointer items-center gap-2 text-[10px] uppercase tracking-[0.08em] text-[var(--term-text-muted)]">
+          <label className="mono flex cursor-pointer items-center gap-2 text-[10px] uppercase tracking-label text-[var(--term-text-muted)]">
             <input
               type="checkbox"
               checked={evidencedOnly}
@@ -429,14 +421,14 @@ export function PlayerRestContent() {
             Hide noisy rows
           </label>
 
-          <span className="mono ml-auto text-[10px] uppercase tracking-[0.08em] text-[var(--term-text-muted)]">
+          <span className="mono ml-auto text-[10px] uppercase tracking-label text-[var(--term-text-muted)]">
             {rows.length.toLocaleString()}{" "}
             {activeYear === "career" ? "players" : `players in ${seasonLabel(activeYear)}`}
           </span>
         </div>
       </div>
 
-      <p style={{ fontSize: 12, color: "var(--term-text-muted)", lineHeight: 1.6, maxWidth: WIDTH.prose, margin: 0 }}>
+      <p style={{ fontSize: 12, color: "var(--term-text-muted)", lineHeight: LEAD.body, maxWidth: WIDTH.prose, margin: 0 }}>
         <strong style={{ color: "var(--term-text-dim)" }}>No rest</strong> — he played yesterday.{" "}
         <strong style={{ color: "var(--term-text-dim)" }}>3+ days rest</strong>{" "}
         {/* Explicit: a literal space before the dash here is swallowed when the text
@@ -490,7 +482,7 @@ export function PlayerRestContent() {
         />
       </div>
 
-      <p style={{ fontSize: 12, color: "var(--term-text-muted)", lineHeight: 1.6, maxWidth: WIDTH.prose, margin: 0 }}>
+      <p style={{ fontSize: 12, color: "var(--term-text-muted)", lineHeight: LEAD.body, maxWidth: WIDTH.prose, margin: 0 }}>
         {index.names.length.toLocaleString()} players · 1996-97 through{" "}
         {seasonLabel(index.years[0])}, regular season. 2019-20 covers only the games played before the March 2020
         suspension — its Orlando bubble games are left out, because a player&rsquo;s first game back sat about

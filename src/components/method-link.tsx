@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { methodologyHrefFor } from "@/lib/behind-the-data-sections";
+import { TRACK } from "@/lib/terminal-styles";
 
 /**
  * The link from a product surface to the page explaining it.
@@ -23,7 +24,7 @@ export function MethodLink({ surfaceHref }: { surfaceHref: string }) {
       className="mono inline-flex w-fit items-center gap-2 transition-colors text-[var(--term-text-muted)] hover:text-[var(--term-text)]"
       style={{
         fontSize: 11,
-        letterSpacing: "0.07em",
+        letterSpacing: TRACK.label,
         fontWeight: 600,
         borderBottom: "1px solid var(--term-border)",
         paddingBottom: 4,

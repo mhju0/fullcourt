@@ -13,7 +13,7 @@ import { useGameSlate, type GameSlate } from "@/hooks/useGameSlate"
 import { currentDisplaySeason, isNbaOffSeason } from "@/lib/nba-season"
 import { MessageCard } from "@/components/ui/message-card"
 import { MethodLink } from "@/components/method-link"
-import { SPACE, SPACE_CARD, termCardStyle, TYPE } from "@/lib/terminal-styles"
+import { LEAD, SPACE, SPACE_CARD, termCardStyle, TRACK, TYPE } from "@/lib/terminal-styles"
 import { cn } from "@/lib/utils"
 
 // ─── Helpers ─────────────────────────────────────────────────────
@@ -22,7 +22,7 @@ const HIGH_CONF_THRESHOLD = 2.0
 
 // Terminal-style flat button: white bg, 1px border, mono uppercase, 4px corners.
 const termBtn =
-  "mono inline-flex items-center gap-2 bg-[var(--term-surface)] px-3 py-2 text-[12px] uppercase tracking-[0.05em] text-[var(--term-text-dim)] transition-[background-color,border-color,transform] hover:bg-[var(--term-surface-2)]"
+  "mono inline-flex items-center gap-2 bg-[var(--term-surface)] px-3 py-2 text-data uppercase tracking-data text-[var(--term-text-dim)] transition-[background-color,border-color,transform] hover:bg-[var(--term-surface-2)]"
 const termBtnStyle: React.CSSProperties = { border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }
 
 /* The site's headline figure used to sit here, between the header and the day's controls. It
@@ -47,10 +47,10 @@ function StatCard({ label, value, accent }: { label: string; value: string; acce
         padding: 16,
       }}
     >
-      <span style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 500 }}>
+      <span style={{ fontSize: 11, letterSpacing: TRACK.label, color: "var(--term-text-muted)", fontWeight: 500 }}>
         {label}
       </span>
-      <span className="tabular-nums" style={{ fontSize: TYPE.stat, fontWeight: 500, letterSpacing: "-0.01em", color: "var(--term-text)", lineHeight: 1 }}>
+      <span className="tabular-nums" style={{ fontSize: TYPE.stat, fontWeight: 500, letterSpacing: TRACK.figure, color: "var(--term-text)", lineHeight: LEAD.figure }}>
         {value}
       </span>
     </div>
@@ -91,7 +91,7 @@ function GroupLabel({ children }: { children: React.ReactNode }) {
       className="mono uppercase"
       style={{
         fontSize: 10,
-        letterSpacing: "0.1em",
+        letterSpacing: TRACK.label,
         fontWeight: 600,
         color: "var(--term-text-muted)",
         paddingBottom: SPACE.sm,
@@ -108,7 +108,7 @@ function GroupLabel({ children }: { children: React.ReactNode }) {
 
 function SectionDivider({ label, count }: { label: string; count: number }) {
   return (
-    <div className="mono flex items-center gap-3 py-2" style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-text-muted)" }}>
+    <div className="mono flex items-center gap-3 py-2" style={{ fontSize: 11, letterSpacing: TRACK.label, color: "var(--term-text-muted)" }}>
       <span style={{ fontWeight: 700 }}>{label}</span>
       <span style={{ flex: 1, height: 1, background: "var(--term-border)" }} />
       <span style={{ fontWeight: 600 }}>
@@ -161,7 +161,7 @@ function EmptyState({ label }: { label: string }) {
       className="mono flex flex-col items-center gap-2 px-6 py-12 text-center"
       style={{ background: "var(--term-surface)", border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }}
     >
-      <p style={{ fontSize: 12, letterSpacing: "0.08em", color: "var(--term-text)", fontWeight: 700 }}>
+      <p style={{ fontSize: 12, letterSpacing: TRACK.label, color: "var(--term-text)", fontWeight: 700 }}>
         NO GAMES SCHEDULED
       </p>
       {/* The preposition lives in the label so this reads correctly for a single
@@ -182,13 +182,13 @@ function OffSeasonBanner({ season }: { season: string }) {
         borderRadius: "var(--term-radius)",
       }}
     >
-      <span style={{ fontSize: 12, letterSpacing: "0.04em", color: "var(--term-text)", fontWeight: 600 }}>
+      <span style={{ fontSize: 12, letterSpacing: TRACK.sub, color: "var(--term-text)", fontWeight: 600 }}>
         {season} SEASON COMPLETE — SHOWING FINAL SLATE
       </span>
       <a
         href="/season"
         className="transition-colors hover:underline"
-        style={{ fontSize: 12, letterSpacing: "0.04em", color: "var(--term-accent)", fontWeight: 700 }}
+        style={{ fontSize: 12, letterSpacing: TRACK.sub, color: "var(--term-accent)", fontWeight: 700 }}
       >
         SEE THE FULL SEASON REPORT →
       </a>
@@ -233,7 +233,7 @@ function DateChip({
       )}
       style={{ borderRadius: "var(--term-radius)" }}
     >
-      <span className="tabular-nums" style={{ fontSize: TYPE.data, fontWeight: 700, lineHeight: 1.1 }}>
+      <span className="tabular-nums" style={{ fontSize: TYPE.data, fontWeight: 700, lineHeight: LEAD.figure }}>
         {day}
       </span>
       {/* #B7BBC6 is the mock's .dchip.on count line — muted light gray on the ink fill. */}
@@ -491,7 +491,7 @@ export default function HomePage() {
               </Button>
               <p
                 className="mono min-w-[12rem] text-center sm:text-left"
-                style={{ fontSize: 12, letterSpacing: "0.04em", color: "var(--term-text)", fontWeight: 600 }}
+                style={{ fontSize: 12, letterSpacing: TRACK.sub, color: "var(--term-text)", fontWeight: 600 }}
                 data-testid="selected-date-display"
               >
                 {slate.selectedLabel?.long.toUpperCase() ?? "PICK A DATE"}

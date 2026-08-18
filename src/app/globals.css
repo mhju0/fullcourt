@@ -47,6 +47,37 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
+/* ── The scales, in the class layer ───────────────────────────────
+   `TYPE`, `TRACK` and `LEAD` in `src/lib/terminal-styles.ts` are the source of truth, and an
+   inline style should read them from there. But a responsive step cannot be written inline —
+   `text-[16px] sm:text-[12px]`, the iOS input-zoom floor, is the standing example — and a
+   component built out of classes had no way to reach the scale at all, so it wrote the literal
+   and drifted. These generate `text-micro` … `text-figure`, `tracking-label` …, `leading-body`,
+   so the class layer names the same steps instead of re-deciding them.
+
+   `design-scale.test.ts` asserts these match the TS tokens. Two copies of a scale is a real
+   hazard — it is exactly how the audit script could have gone stale — so they are pinned
+   together rather than trusted to stay in step.                                              */
+@theme {
+  --text-micro: 10px;
+  --text-label: 11px;
+  --text-data: 12px;
+  --text-body: 15px;
+  --text-emph: 18px;
+  --text-stat: 24px;
+  --text-title: 32px;
+  --text-figure: 40px;
+
+  --tracking-label: 0.08em;
+  --tracking-sub: 0.04em;
+  --tracking-data: 0.06em;
+  --tracking-figure: -0.01em;
+
+  --leading-figure: 1.1;
+  --leading-label: 1.4;
+  --leading-body: 1.55;
+}
+
 /* ── FullCourt "Front Office" theme — LIGHT ──────────────────────
    Single light theme, always-on. The daylight pro instrument
    (docs/design/mocks/08-front-office.html, selected 2026-08-09):

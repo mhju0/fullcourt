@@ -1,5 +1,5 @@
 import { PLAYOFF_GRIND_MATRIX } from "@/lib/playoff-rest-facts"
-import { SPACE, termCardStyle, TYPE, WIDTH } from "@/lib/terminal-styles"
+import { LEAD, SPACE, termCardStyle, TRACK, TYPE, WIDTH } from "@/lib/terminal-styles"
 
 /**
  * The Grind Tax, as one number and two bars — replacing the 2×2 matrix on 2026-08-01.
@@ -24,7 +24,7 @@ function Bar({ label, winPct, n, lit }: { label: string; winPct: number; n: numb
         </span>
         <span
           className="mono tabular-nums"
-          style={{ fontSize: TYPE.stat, fontWeight: 700, lineHeight: 1.1, color: lit ? "var(--term-blue)" : "var(--term-text)" }}
+          style={{ fontSize: TYPE.stat, fontWeight: 700, lineHeight: LEAD.figure, color: lit ? "var(--term-blue)" : "var(--term-text)" }}
         >
           {winPct.toFixed(1)}%
         </span>
@@ -32,7 +32,7 @@ function Bar({ label, winPct, n, lit }: { label: string; winPct: number; n: numb
       <div style={{ height: 12, background: "var(--term-surface-2)", borderRadius: "var(--term-radius-bar)", overflow: "hidden" }}>
         <div style={{ width: `${winPct}%`, height: "100%", background: lit ? "var(--term-blue)" : "var(--term-neutral)" }} />
       </div>
-      <span className="mono" style={{ fontSize: 11, letterSpacing: "0.04em", color: "var(--term-text-muted)" }}>
+      <span className="mono" style={{ fontSize: 11, letterSpacing: TRACK.sub, color: "var(--term-text-muted)" }}>
         {n} SERIES
       </span>
     </div>
@@ -44,13 +44,13 @@ export function PlayoffGrindGap() {
     <div style={termCardStyle}>
       <span
         className="mono tabular-nums block"
-        style={{ fontSize: TYPE.figure, fontWeight: 700, color: "var(--term-blue)", lineHeight: 1.05 }}
+        style={{ fontSize: TYPE.figure, fontWeight: 700, color: "var(--term-blue)", lineHeight: LEAD.figure }}
       >
         +{GAP_PTS.toFixed(1)} points
       </span>
       <span
         className="mono block"
-        style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 700, marginTop: SPACE.sm }}
+        style={{ fontSize: 11, letterSpacing: TRACK.label, color: "var(--term-text-muted)", fontWeight: 700, marginTop: SPACE.sm }}
       >
         BETTER YOUR ODDS WHEN THE OTHER TEAM ARRIVES OFF A LONG SERIES · ROUNDS 2+
       </span>
@@ -60,7 +60,7 @@ export function PlayoffGrindGap() {
         <Bar label="They went the distance" winPct={ownLowOppHigh.winPct} n={ownLowOppHigh.n} lit />
       </div>
 
-      <p className="mt-4" style={{ fontSize: TYPE.body, color: "var(--term-text-muted)", lineHeight: 1.55, maxWidth: WIDTH.prose }}>
+      <p className="mt-4" style={{ fontSize: TYPE.body, color: "var(--term-text-muted)", lineHeight: LEAD.body, maxWidth: WIDTH.prose }}>
         Both bars are teams that closed their own last round early, so the only thing changing is
         the opponent. When you went the distance too, the edge reverses —{" "}
         {ownHighOppLow.winPct.toFixed(1)}% against a fresh opponent,{" "}

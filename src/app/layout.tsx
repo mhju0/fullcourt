@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Geist, Geist_Mono } from "next/font/google";
 import { NavBar } from "@/components/nav-bar";
 import "./globals.css";
+import { TRACK } from "@/lib/terminal-styles";
 
 // One family for body AND headings — the Front Office direction (docs/design/
 // mocks/08-front-office.html, adopted 2026-08-09) separates titles from prose by
@@ -118,7 +119,7 @@ export default function RootLayout({
           }}
         >
           <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-2 sm:px-6">
-            <span style={{ fontSize: "11px", color: "var(--term-text-muted)", letterSpacing: "0.04em" }}>
+            <span style={{ fontSize: "11px", color: "var(--term-text-muted)", letterSpacing: TRACK.sub }}>
               RENDERED: {renderedAt} ·{" "}
               <a
                 href="/api/health"
@@ -130,7 +131,7 @@ export default function RootLayout({
                 SYSTEM STATUS
               </a>
             </span>
-            <span style={{ fontSize: "11px", color: "var(--term-text-muted)", letterSpacing: "0.04em" }}>
+            <span style={{ fontSize: "11px", color: "var(--term-text-muted)", letterSpacing: TRACK.sub }}>
               {/* `/` since 2026-08-12, when that page became the front door. `/about` still
                   redirects here, but pointing straight at it saves the hop. `Link` rather than
                   `<a>`: this is an internal route now, and `no-html-link-for-pages` enforces it. */}

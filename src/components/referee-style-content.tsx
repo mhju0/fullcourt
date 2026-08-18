@@ -10,7 +10,7 @@ import {
   type RefereeFoulStyle,
   type RefereeStyleRow,
 } from "@/lib/referee-foul-style"
-import { SPACE, termCardStyle, TYPE } from "@/lib/terminal-styles"
+import { SPACE, termCardStyle, TRACK, TYPE } from "@/lib/terminal-styles"
 import { signedNumber } from "@/lib/signed-number"
 import { DataTable, type DataColumn } from "@/components/ui/data-table"
 
@@ -141,7 +141,7 @@ export function RefereeStyleContent({ data }: { data: RefereeFoulStyle }) {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="mono flex flex-wrap items-center gap-3" style={{ fontSize: 11, letterSpacing: "0.08em" }}>
+      <div className="mono flex flex-wrap items-center gap-3" style={{ fontSize: 11, letterSpacing: TRACK.label }}>
         <label className="flex cursor-pointer items-center gap-2" style={{ color: "var(--term-text-muted)" }}>
           <input
             type="checkbox"
@@ -171,7 +171,7 @@ export function RefereeStyleContent({ data }: { data: RefereeFoulStyle }) {
         />
       </div>
 
-      <p className="mono" style={{ fontSize: 11, color: "var(--term-text-muted)", letterSpacing: "0.04em" }}>
+      <p className="mono" style={{ fontSize: 11, color: "var(--term-text-muted)", letterSpacing: TRACK.sub }}>
         BOLD = BEYOND TWO STANDARD ERRORS · MUTED = INSIDE NOISE · CC = WORKS AS CREW CHIEF ·{" "}
         {chiefCount} OF {publishable(data.officials).length} DO
       </p>

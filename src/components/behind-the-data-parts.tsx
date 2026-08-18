@@ -1,4 +1,4 @@
-import { termCardStyle, TYPE, WIDTH } from "@/lib/terminal-styles";
+import { LEAD, termCardStyle, TRACK, TYPE, WIDTH } from "@/lib/terminal-styles";
 
 /**
  * Shared building blocks for the reference pages, so six pages cannot drift into six
@@ -39,7 +39,7 @@ export function Section({
         className="mono flex items-center gap-3 px-4 py-3"
         style={{
           fontSize: 11,
-          letterSpacing: "0.08em",
+          letterSpacing: TRACK.label,
           background: "var(--term-surface-2)",
           borderBottom: "1px solid var(--term-border)",
           boxShadow: "inset 3px 0 0 var(--term-red)",
@@ -70,7 +70,7 @@ export function Section({
 
 export function Prose({ children }: { children: React.ReactNode }) {
   return (
-    <p style={{ maxWidth: WIDTH.prose, fontSize: TYPE.body, color: "var(--term-text)", lineHeight: 1.6 }}>
+    <p style={{ maxWidth: WIDTH.prose, fontSize: TYPE.body, color: "var(--term-text)", lineHeight: LEAD.body }}>
       {children}
     </p>
   );
@@ -84,7 +84,7 @@ export function Note({ children }: { children: React.ReactNode }) {
         maxWidth: WIDTH.prose,
         fontSize: TYPE.body,
         color: "var(--term-text-muted)",
-        lineHeight: 1.55,
+        lineHeight: LEAD.body,
         background: GOLD_TINT,
         borderLeft: "2px solid rgba(161, 98, 7, 0.5)",
         borderRadius: "0 var(--term-radius) var(--term-radius) 0",
@@ -108,7 +108,7 @@ export function Formula({ children }: { children: React.ReactNode }) {
         borderRadius: "0 var(--term-radius) var(--term-radius) 0",
         padding: "12px 16px",
         fontSize: 12,
-        lineHeight: 1.7,
+        lineHeight: LEAD.body,
         color: "var(--term-text)",
       }}
     >
@@ -126,7 +126,7 @@ export function LimitList({ items }: { items: readonly string[] }) {
         maxWidth: WIDTH.prose,
         fontSize: TYPE.body,
         color: "var(--term-text)",
-        lineHeight: 1.55,
+        lineHeight: LEAD.body,
         background: RED_TINT,
         borderLeft: "2px solid var(--term-red)",
         borderRadius: "0 var(--term-radius) var(--term-radius) 0",
@@ -172,7 +172,7 @@ export function ValueGrid({
         >
           <span
             className="mono"
-            style={{ fontSize: 10, letterSpacing: "0.09em", textTransform: "uppercase", color: "var(--term-text-muted)" }}
+            style={{ fontSize: 10, letterSpacing: TRACK.label, textTransform: "uppercase", color: "var(--term-text-muted)" }}
           >
             {v.label}
           </span>

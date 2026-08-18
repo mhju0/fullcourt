@@ -33,7 +33,7 @@ import {
   toDeviation,
 } from "@/lib/analysis-claims"
 import type { DataAsOf } from "@/lib/data-as-of"
-import { MONO_FONT_STACK, SPACE, termCardStyle, termDashedEmptyStyle, termInsetStyle, termTdStyle, TYPE } from "@/lib/terminal-styles"
+import { LEAD, MONO_FONT_STACK, SPACE, termCardStyle, termDashedEmptyStyle, termInsetStyle, termTdStyle, TRACK, TYPE } from "@/lib/terminal-styles"
 import { DataTable } from "@/components/ui/data-table"
 import type { AnalysisResponse } from "@/types"
 import { signedNumber } from "@/lib/signed-number"
@@ -60,10 +60,10 @@ const exploreSelectStyle: React.CSSProperties = {
   padding: "8px 12px",
   fontFamily: MONO_FONT_STACK,
   color: "var(--term-text)",
-  letterSpacing: "0.04em",
+  letterSpacing: TRACK.sub,
 }
 
-const EXPLORE_SELECT_CLASS = "text-[16px] sm:text-[12px]"
+const EXPLORE_SELECT_CLASS = "text-[16px] sm:text-data"
 
 // ─── Section divider ──────────────────────────────────────────────
 
@@ -71,7 +71,7 @@ function SectionDivider({ label, descriptor }: { label: string; descriptor?: str
   return (
     <div
       className="mono flex items-center gap-3 py-2"
-      style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-text-muted)" }}
+      style={{ fontSize: 11, letterSpacing: TRACK.label, color: "var(--term-text-muted)" }}
     >
       <span style={{ fontWeight: 700 }}>{label}</span>
       <span style={{ flex: 1, height: 1, background: "var(--term-border)" }} />
@@ -90,7 +90,7 @@ function BaselineLegend({ zeroLabel }: { zeroLabel: string }) {
   return (
     <div
       className="mono mt-3 flex flex-wrap items-center gap-x-6 gap-y-2"
-      style={{ fontSize: 11, color: "var(--term-text-muted)", letterSpacing: "0.03em" }}
+      style={{ fontSize: 11, color: "var(--term-text-muted)", letterSpacing: TRACK.sub }}
     >
       <span className="inline-flex items-center gap-2">
         <span style={{ width: 12, height: 12, borderRadius: 2, background: "var(--term-blue)" }} />
@@ -131,14 +131,14 @@ function StatCard({
         padding: "12px 16px",
       }}
     >
-      <span style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 600 }}>
+      <span style={{ fontSize: 11, letterSpacing: TRACK.label, color: "var(--term-text-muted)", fontWeight: 600 }}>
         {label}
       </span>
-      <span className="tabular-nums" style={{ fontSize: TYPE.stat, fontWeight: 600, color: "var(--term-text)", lineHeight: 1 }}>
+      <span className="tabular-nums" style={{ fontSize: TYPE.stat, fontWeight: 600, color: "var(--term-text)", lineHeight: LEAD.figure }}>
         {value}
       </span>
       {sub && (
-        <span style={{ fontSize: 11, color: "var(--term-text-muted)", letterSpacing: "0.04em" }}>{sub}</span>
+        <span style={{ fontSize: 11, color: "var(--term-text-muted)", letterSpacing: TRACK.sub }}>{sub}</span>
       )}
     </div>
   )
@@ -233,7 +233,7 @@ function WinRateTooltip({ active, payload }: TooltipContentProps) {
   const d = payload[0].payload as WinRateDatum
   return (
     <div style={termTooltip}>
-      <p style={{ color: "var(--term-text)", fontWeight: 700, letterSpacing: "0.04em" }}>{d.label.toUpperCase()}</p>
+      <p style={{ color: "var(--term-text)", fontWeight: 700, letterSpacing: TRACK.sub }}>{d.label.toUpperCase()}</p>
       <p style={{ color: "var(--term-text-muted)", marginTop: SPACE.xs }}>RESTED TEAM AT HOME</p>
       {/* The bar plots the deviation, so the tooltip leads with it and carries the
           absolute win rate underneath — the axis no longer shows it anywhere. The
@@ -266,7 +266,7 @@ function SeasonWinRateTooltip({ active, payload }: TooltipContentProps) {
   const d = payload[0].payload as SeasonWinRateDatum
   return (
     <div style={termTooltip}>
-      <p style={{ color: "var(--term-text)", fontWeight: 700, letterSpacing: "0.04em" }}>{d.label}</p>
+      <p style={{ color: "var(--term-text)", fontWeight: 700, letterSpacing: TRACK.sub }}>{d.label}</p>
       <p style={{ marginTop: SPACE.xs, color: deviationFill(d.deviation) }}>
         <span style={{ fontWeight: 700 }}>{signedNumber(d.deviation)} PP</span> VS {d.baselinePct}% BASELINE
       </p>
@@ -443,7 +443,7 @@ function ExploreGames({
         }}
       />
       <SectionDivider label="EXPLORE GAMES" descriptor={`${total.toLocaleString()} TOTAL`} />
-      <p className="mono mt-1" style={{ fontSize: 11, color: "var(--term-text-muted)", letterSpacing: "0.04em" }}>
+      <p className="mono mt-1" style={{ fontSize: 11, color: "var(--term-text-muted)", letterSpacing: TRACK.sub }}>
         FILTER AND BROWSE INDIVIDUAL MATCHUPS — CLICK A ROW FOR DETAILS.
       </p>
 
@@ -502,7 +502,7 @@ function ExploreGames({
               color: "var(--term-accent)",
               cursor: "pointer",
               textTransform: "uppercase",
-              letterSpacing: "0.06em",
+              letterSpacing: TRACK.data,
             }}
           >
             CLEAR FILTERS
@@ -581,7 +581,7 @@ function ExploreGames({
                   fontWeight: 700,
                   padding: "4px 8px",
                   borderRadius: "var(--term-radius-sm)",
-                  letterSpacing: "0.04em",
+                  letterSpacing: TRACK.sub,
                 }}
               >
                 {g.advantageTeam === "home" ? g.homeTeamAbbreviation : g.awayTeamAbbreviation} +
@@ -607,7 +607,7 @@ function ExploreGames({
                   color: g.restedTeamWon ? "var(--term-pos)" : "var(--term-red)",
                   fontSize: 11,
                   fontWeight: 700,
-                  letterSpacing: "0.06em",
+                  letterSpacing: TRACK.data,
                 }}
               >
                 {g.restedTeamWon ? "WON" : "LOST"}
@@ -644,7 +644,7 @@ function ExploreGames({
 
       {/* Pagination */}
       {total > 0 && (
-        <div className="mono mt-3 flex items-center justify-between" style={{ fontSize: 11, color: "var(--term-text-muted)", letterSpacing: "0.04em" }}>
+        <div className="mono mt-3 flex items-center justify-between" style={{ fontSize: 11, color: "var(--term-text-muted)", letterSpacing: TRACK.sub }}>
           <p>
             {loading
               ? "LOADING…"
@@ -791,11 +791,11 @@ export function AnalysisContent({ asOf }: { asOf?: DataAsOf | null }) {
       <div className="flex flex-col gap-2 py-4" style={termInsetStyle}>
         <p
           className="mono"
-          style={{ fontSize: 11, letterSpacing: "0.12em", color: "var(--term-text-muted)", fontWeight: 700 }}
+          style={{ fontSize: 11, letterSpacing: TRACK.label, color: "var(--term-text-muted)", fontWeight: 700 }}
         >
           NOT COUNTED
         </p>
-        <p className="text-[var(--term-text-dim)]" style={{ fontSize: TYPE.body, lineHeight: 1.55 }}>
+        <p className="text-[var(--term-text-dim)]" style={{ fontSize: TYPE.body, lineHeight: LEAD.body }}>
           In the{" "}
           <span className="mono tabular-nums">
             {claims.declinedHalf.games.toLocaleString()}
@@ -912,7 +912,7 @@ export function AnalysisContent({ asOf }: { asOf?: DataAsOf | null }) {
                   borderRadius: "var(--term-radius)",
                   padding: "4px 12px",
                   fontSize: 12,
-                  letterSpacing: "0.04em",
+                  letterSpacing: TRACK.sub,
                   fontWeight: 600,
                   cursor: "pointer",
                 }}
@@ -946,10 +946,10 @@ export function AnalysisContent({ asOf }: { asOf?: DataAsOf | null }) {
             borderRadius: "var(--term-radius)",
           }}
         >
-          <p className="mono" style={{ fontSize: 11, letterSpacing: "0.12em", color: "var(--term-accent)", fontWeight: 700 }}>
+          <p className="mono" style={{ fontSize: 11, letterSpacing: TRACK.label, color: "var(--term-accent)", fontWeight: 700 }}>
             READING THESE NUMBERS
           </p>
-          <p className="mt-2 text-[var(--term-text-dim)]" style={{ fontSize: TYPE.body, lineHeight: 1.55 }}>
+          <p className="mt-2 text-[var(--term-text-dim)]" style={{ fontSize: TYPE.body, lineHeight: LEAD.body }}>
             Every game counted here is one the more-rested team played at home, and home teams
             win{" "}
             <span className="mono font-bold" style={{ color: "var(--term-text)" }}>{claims.reading.baselinePct}%</span>{" "}

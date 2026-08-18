@@ -17,7 +17,7 @@ import {
   type RestAdvantageEvidenceSource,
 } from "@/lib/rest-advantage-display"
 import { getTeamBranding } from "@/lib/team-history"
-import { SPACE, SPACE_CARD, TYPE } from "@/lib/terminal-styles"
+import { LEAD, SPACE, SPACE_CARD, TRACK, TYPE } from "@/lib/terminal-styles"
 import { cn } from "@/lib/utils"
 import type { GameResponse } from "@/types"
 
@@ -76,7 +76,7 @@ function StatusCell({
       {status === "live" ? (
         <span
           className="inline-flex items-center gap-2"
-          style={{ fontSize: 10, letterSpacing: "0.08em", color: "var(--term-accent)", fontWeight: 700 }}
+          style={{ fontSize: 10, letterSpacing: TRACK.label, color: "var(--term-accent)", fontWeight: 700 }}
         >
           <span
             className="animate-[pulse_1.7s_ease-in-out_infinite]"
@@ -85,12 +85,12 @@ function StatusCell({
           LIVE
         </span>
       ) : (
-        <span style={{ fontSize: 10, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 600 }}>
+        <span style={{ fontSize: 10, letterSpacing: TRACK.label, color: "var(--term-text-muted)", fontWeight: 600 }}>
           {status === "final" ? "FINAL" : "UPCOMING"}
         </span>
       )}
       {hasScore ? (
-        <span className="tabular-nums" style={{ fontSize: TYPE.emph, fontWeight: 700, letterSpacing: "-0.01em", color: "var(--term-text)", lineHeight: 1 }}>
+        <span className="tabular-nums" style={{ fontSize: TYPE.emph, fontWeight: 700, letterSpacing: TRACK.figure, color: "var(--term-text)", lineHeight: LEAD.figure }}>
           {awayScore} – {homeScore}
         </span>
       ) : (
@@ -136,7 +136,7 @@ function TeamLine({
           className="mono shrink-0"
           style={{
             fontSize: TYPE.micro,
-            letterSpacing: "0.06em",
+            letterSpacing: TRACK.data,
             fontWeight: 600,
             color: "var(--term-text-muted)",
             border: "1px solid var(--term-border)",
@@ -168,7 +168,7 @@ function FlagChip({ label, muted = false }: { label: string; muted?: boolean }) 
       className="mono shrink-0"
       style={{
         fontSize: TYPE.micro,
-        letterSpacing: "0.06em",
+        letterSpacing: TRACK.data,
         fontWeight: 600,
         color: "var(--term-text-muted)",
         border: `1px solid var(--term-${muted ? "surface-2" : "border"})`,
@@ -251,23 +251,23 @@ function RestAdvCell({
 
   return (
     <div className="flex flex-col justify-center gap-2">
-      <div className="mono flex items-baseline gap-2 tabular-nums" style={{ lineHeight: 1 }}>
+      <div className="mono flex items-baseline gap-2 tabular-nums" style={{ lineHeight: LEAD.figure }}>
         {display.kind === "team" ? (
           <>
             {/* The named team is the more-rested side, so it wears the rested pole. */}
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.02em", color: "var(--term-blue)" }}>
+            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: TRACK.data, color: "var(--term-blue)" }}>
               {display.teamAbbreviation}
             </span>
-            <span style={{ fontSize: TYPE.emph, fontWeight: 700, letterSpacing: "-0.02em", color: "var(--term-text)" }}>
+            <span style={{ fontSize: TYPE.emph, fontWeight: 700, letterSpacing: TRACK.figure, color: "var(--term-text)" }}>
               {display.value}
             </span>
           </>
         ) : (
           <>
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.04em", color: "var(--term-text-muted)" }}>
+            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: TRACK.sub, color: "var(--term-text-muted)" }}>
               EVEN
             </span>
-            <span style={{ fontSize: TYPE.emph, fontWeight: 700, letterSpacing: "-0.02em", color: "var(--term-text-muted)" }}>
+            <span style={{ fontSize: TYPE.emph, fontWeight: 700, letterSpacing: TRACK.figure, color: "var(--term-text-muted)" }}>
               {value}
             </span>
           </>
@@ -458,7 +458,7 @@ function GameRow({
                 className="m-0"
                 style={{
                   fontSize: 12,
-                  lineHeight: 1.5,
+                  lineHeight: LEAD.body,
                   color: "var(--term-text-muted)",
                   paddingBottom: SPACE.md,
                   marginBottom: SPACE.md,
@@ -507,7 +507,7 @@ export function MatchupTable({ games, evidenceSource = null }: MatchupTableProps
               background: "var(--term-surface-2)",
               borderBottom: "1px solid var(--term-border)",
               fontSize: 10,
-              letterSpacing: "0.08em",
+              letterSpacing: TRACK.label,
               fontWeight: 700,
               color: "var(--term-text-muted)",
             }}

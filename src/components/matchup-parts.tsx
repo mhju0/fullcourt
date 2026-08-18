@@ -6,7 +6,7 @@ import { TRAVEL_LOOKBACK_DAYS } from "@/lib/fatigue"
 import { readableTextOn } from "@/lib/nba-team-colors"
 import { NEUTRAL_REST_ADVANTAGE_THRESHOLD } from "@/lib/rest-advantage-evidence"
 import { getTeamBranding, teamLogoUrl } from "@/lib/team-history"
-import { TYPE } from "@/lib/terminal-styles"
+import { TRACK, TYPE } from "@/lib/terminal-styles"
 import type { FatigueInfo, GameResponse } from "@/types"
 
 // ─── Constants ───────────────────────────────────────────────────
@@ -104,7 +104,7 @@ export function ConfidenceBadge({ confidence }: { confidence: Confidence }) {
 
   const baseStyle: React.CSSProperties = {
     fontSize: "11px",
-    letterSpacing: "0.06em",
+    letterSpacing: TRACK.data,
     padding: "4px 8px",
     borderRadius: "var(--term-radius-sm)",
     fontWeight: 700,
@@ -144,7 +144,7 @@ export function ConfidenceBadge({ confidence }: { confidence: Confidence }) {
 
 function LiveIndicator() {
   return (
-    <span className="mono inline-flex items-center gap-2" style={{ fontSize: "11px", letterSpacing: "0.06em", color: "var(--term-amber)", fontWeight: 700 }}>
+    <span className="mono inline-flex items-center gap-2" style={{ fontSize: "11px", letterSpacing: TRACK.data, color: "var(--term-amber)", fontWeight: 700 }}>
       <span
         className="animate-[pulse_1.7s_ease-in-out_infinite]"
         style={{ display: "inline-block", width: 6, height: 6, borderRadius: "50%", background: "var(--term-amber)", boxShadow: "0 0 8px var(--term-amber)" }}
@@ -168,7 +168,7 @@ export function GameStatusRow({
       <div className="mono flex items-center gap-3" style={{ fontSize: "12px" }}>
         <LiveIndicator />
         {homeScore !== null && awayScore !== null && (
-          <span className="tabular-nums" style={{ fontSize: TYPE.stat, letterSpacing: "-0.02em", color: "var(--term-text)", fontWeight: 800 }}>
+          <span className="tabular-nums" style={{ fontSize: TYPE.stat, letterSpacing: TRACK.figure, color: "var(--term-text)", fontWeight: 800 }}>
             {awayScore} – {homeScore}
           </span>
         )}
@@ -179,8 +179,8 @@ export function GameStatusRow({
   if (status === "final" && awayScore !== null && homeScore !== null) {
     return (
       <div className="mono flex items-center gap-3" style={{ fontSize: "12px" }}>
-        <span style={{ color: "var(--term-text-muted)", letterSpacing: "0.08em" }}>FINAL</span>
-        <span className="tabular-nums" style={{ fontSize: TYPE.stat, letterSpacing: "-0.02em", color: "var(--term-text)", fontWeight: 800 }}>
+        <span style={{ color: "var(--term-text-muted)", letterSpacing: TRACK.label }}>FINAL</span>
+        <span className="tabular-nums" style={{ fontSize: TYPE.stat, letterSpacing: TRACK.figure, color: "var(--term-text)", fontWeight: 800 }}>
           {awayScore} – {homeScore}
         </span>
       </div>
@@ -189,14 +189,14 @@ export function GameStatusRow({
 
   if (status === "final") {
     return (
-      <span className="mono" style={{ fontSize: "11px", letterSpacing: "0.08em", color: "var(--term-text-muted)" }}>
+      <span className="mono" style={{ fontSize: "11px", letterSpacing: TRACK.label, color: "var(--term-text-muted)" }}>
         FINAL
       </span>
     )
   }
 
   return (
-    <span className="mono" style={{ fontSize: "11px", letterSpacing: "0.08em", color: "var(--term-text-muted)" }}>
+    <span className="mono" style={{ fontSize: "11px", letterSpacing: TRACK.label, color: "var(--term-text-muted)" }}>
       UPCOMING
     </span>
   )
@@ -259,7 +259,7 @@ function FatigueDetailRow({
 }) {
   return (
     <div className="mono flex justify-between gap-2" style={{ fontSize: 12 }}>
-      <span style={{ color: "var(--term-text-muted)", letterSpacing: "0.04em" }}>{k}</span>
+      <span style={{ color: "var(--term-text-muted)", letterSpacing: TRACK.sub }}>{k}</span>
       <span className="tabular-nums" style={{ color: highlight ? "var(--term-red)" : "var(--term-text)", fontWeight: 600 }}>
         {v}
       </span>
@@ -296,7 +296,7 @@ export function FatigueDetailColumn({
         className="mono pb-2"
         style={{
           fontSize: 11,
-          letterSpacing: "0.08em",
+          letterSpacing: TRACK.label,
           color: "var(--term-text-muted)",
           fontWeight: 700,
           borderBottom: "1px solid var(--term-border)",
@@ -335,7 +335,7 @@ export function RaBadge({
 }) {
   if (!restAdvantage) {
     return (
-      <span className="mono" style={{ fontSize: 11, color: "var(--term-text-muted)", letterSpacing: "0.08em" }}>
+      <span className="mono" style={{ fontSize: 11, color: "var(--term-text-muted)", letterSpacing: TRACK.label }}>
         NO DATA
       </span>
     )
@@ -346,7 +346,7 @@ export function RaBadge({
         className="mono inline-flex items-center"
         style={{
           fontSize: 10,
-          letterSpacing: "0.06em",
+          letterSpacing: TRACK.data,
           padding: "4px 8px",
           borderRadius: "var(--term-radius-sm)",
           border: "1px solid var(--term-neutral)",
@@ -365,7 +365,7 @@ export function RaBadge({
       className="mono inline-flex items-center"
       style={{
         fontSize: 10,
-        letterSpacing: "0.06em",
+        letterSpacing: TRACK.data,
         padding: "4px 8px",
         borderRadius: "var(--term-radius-sm)",
         // Always the rested pole: the named team is the more-rested side, whichever side it is.

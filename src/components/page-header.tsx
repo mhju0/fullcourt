@@ -1,5 +1,5 @@
 import { formatDataAsOf, type DataAsOf } from "@/lib/data-as-of"
-import { TYPE, WIDTH } from "@/lib/terminal-styles"
+import { LEAD, TRACK, TYPE, WIDTH } from "@/lib/terminal-styles"
 
 /**
  * Every page heading. Two pages used to hand-copy this markup — one because its
@@ -34,14 +34,14 @@ export function PageHeader({
     <div className="flex flex-col gap-2">
       <span
         className="mono"
-        style={{ fontSize: TYPE.label, letterSpacing: "0.08em", color: "var(--term-accent)", fontWeight: 600 }}
+        style={{ fontSize: TYPE.label, letterSpacing: TRACK.label, color: "var(--term-accent)", fontWeight: 600 }}
       >
         {eyebrow}
       </span>
       {/* `TYPE.title`. At `TYPE.stat` a page title was the same size as the stat numbers under
           it. Weight and tracking come from the base h1 rule — an explicit font-bold here would
           override it and only on these pages. */}
-      <h1 className="text-[var(--term-text)]" style={{ fontSize: TYPE.title, lineHeight: 1.05 }}>
+      <h1 className="text-[var(--term-text)]" style={{ fontSize: TYPE.title, lineHeight: LEAD.figure }}>
         {title}
       </h1>
       {/* Sentence case in the body face, not uppercase mono: caps remove word-shape
@@ -51,7 +51,7 @@ export function PageHeader({
           maxWidth: WIDTH.prose,
           fontSize: TYPE.body,
           color: "var(--term-text-muted)",
-          lineHeight: 1.55,
+          lineHeight: LEAD.body,
         }}
       >
         {description}
@@ -62,7 +62,7 @@ export function PageHeader({
       {stamp ? (
         <p
           className="mono"
-          style={{ fontSize: TYPE.label, letterSpacing: "0.08em", color: "var(--term-text-muted)" }}
+          style={{ fontSize: TYPE.label, letterSpacing: TRACK.label, color: "var(--term-text-muted)" }}
         >
           {stamp}
         </p>
