@@ -317,7 +317,12 @@ re-entrain, a long **eastward** shift arriving on **short rest**.
 
 Pre-registered in `ml/timezone_preregistration.md` before any figure was seen, including the
 prior expectation (null) and the three conditions a finding had to clear. Run by
-`ml/timezone_test.py`; report at `ml/data/timezone_report.txt`. Same protocol, same folds:
+`ml/timezone_test.py`; report at `ml/data/timezone_report.txt`, with a committed snapshot at
+`ml/TIMEZONE_REPORT.md` since `ml/data/` is gitignored.
+
+**None of this is published on the site, by decision.** It is kept so the question does not get
+re-asked from scratch, and where it belongs is Michael's call — see ROADMAP, "Known and not
+fixed". Do not surface it as part of a tidying pass. Same protocol, same folds:
 walk-forward, 16 blind seasons, 19,118 held-out games, sign-clamped, strength control in.
 
 Direction was not separable from the exported columns before this: `zones_crossed` is

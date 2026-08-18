@@ -1,10 +1,18 @@
 # Pre-registration — does a long eastward flight on short rest cost anything?
 
 Written **before any figure from this test was seen**, following the convention ADR 0007 set for
-the referee axes and the decide-in-advance rule ADR 0006 used for the weight fit. The result is
-published either way.
+the referee axes and the decide-in-advance rule ADR 0006 used for the weight fit. **The result is
+written down either way** — a null gets the same record a positive would, which is the rule this
+commits to in advance.
+
+That is about burying, not about the website. Whether a finding also belongs on a *page* is a
+separate decision taken afterwards, and for this one the answer so far is no — see below.
 
 Date: 2026-08-18. Requested by Michael after the question was raised on 2026-08-18.
+
+**Outcome: null on all three conditions.** Result snapshot in `ml/TIMEZONE_REPORT.md`, reasoning
+in the 2026-08-18 addendum to ADR 0006. Kept but **not published on the site**, by decision — the
+placement is an open question, not an oversight.
 
 ## The question, and why it is not already answered
 
