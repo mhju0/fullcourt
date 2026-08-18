@@ -112,17 +112,24 @@ describe("buildSeasonReport — what counts", () => {
     // A game at 24-19 in the first quarter: status "live", both scores written by the cron,
     // both pre-game fatigue rows already exist, and the rest gap is decidable. Only `status`
     // stops it from being scored as a HIT or MISS.
+    //
+    // Paired with a finished game so the season reports on the `"played"` basis — which is the
+    // situation this rule governs. A live game alone means the season has no completed game at
+    // all, and that is the schedule basis, covered in its own block below.
     const report = buildSeasonReport("2025-26", [
-      game({ gameId: 1, status: "live", homeScore: 24, awayScore: 19, home: side(1), away: side(4) }),
+      game({ gameId: 1, home: side(1), away: side(4), homeScore: 110, awayScore: 100 }),
+      game({ gameId: 2, status: "live", homeScore: 24, awayScore: 19, home: side(1), away: side(4) }),
     ]);
 
-    expect(report.scheduledGames).toBe(1);
-    expect(report.completedGames).toBe(0);
-    expect(report.overall.games).toBe(0);
-    expect(report.overall.restedTeamWins).toBe(0);
-    expect(report.teams).toEqual([]);
-    expect(report.loudestCalls).toEqual([]);
-    expect(report.weeks).toEqual([]);
+    expect(report.basis).toBe("played");
+    expect(report.scheduledGames).toBe(2);
+    expect(report.completedGames).toBe(1);
+    // The finished game is counted once; the live one adds nothing to any of these.
+    expect(report.overall.games).toBe(1);
+    expect(report.overall.restedTeamWins).toBe(1);
+    expect(report.loudestCalls).toHaveLength(1);
+    expect(report.weeks).toHaveLength(1);
+    expect(report.weeks[0].games).toBe(1);
   });
 
   it("splits the RA >= 2 tier out of the overall rate", () => {
@@ -332,17 +339,23 @@ describe("buildSeasonReport — schedule tax", () => {
   });
 
   it("ignores games without a final score, so future travel is not counted as flown", () => {
+    // Once a season is underway its figures describe what happened, so a fixture still ahead
+    // contributes no miles. The 999 below must not appear anywhere in the total.
     const rows: SeasonReportRow[] = [
+      game({ gameId: 1, homeTeamId: 1, home: side(1, { travelDistanceMiles: "100" }) }),
       game({
-        gameId: 1,
+        gameId: 2,
         homeTeamId: 1,
+        status: "scheduled",
         homeScore: null,
         awayScore: null,
         home: side(1, { travelDistanceMiles: "999" }),
       }),
     ];
 
-    expect(buildSeasonReport("2025-26", rows).teams).toEqual([]);
+    const report = buildSeasonReport("2025-26", rows);
+    expect(report.basis).toBe("played");
+    expect(report.teams.find((t) => t.teamId === 1)!.travelMiles).toBe(100);
   });
 });
 
@@ -523,12 +536,17 @@ describe("buildSeasonReport — rest states and schedule value", () => {
     });
   });
 
-  it("leaves an unplayed game out of the states entirely", () => {
+  it("leaves an unplayed game out of the states entirely once a season is underway", () => {
     const report = buildSeasonReport("2025-26", [
-      game({ gameId: 1, status: "scheduled", homeScore: null, awayScore: null }),
+      game({ gameId: 1 }),
+      game({ gameId: 2, status: "scheduled", homeScore: null, awayScore: null }),
     ]);
 
-    expect(report.teams).toEqual([]);
+    expect(report.basis).toBe("played");
+    const home = report.teams.find((t) => t.teamId === 1)!;
+    // One game's worth of states, not two.
+    const total = Object.values(home.restStates).reduce((a, b) => a + b, 0);
+    expect(total).toBe(1);
   });
 
   it("nets the edges held against the edges faced, and prices them under half a win", () => {
@@ -594,5 +612,55 @@ describe("buildSeasonReport — rest states and schedule value", () => {
     ]);
 
     expect(report.swingBaseline).toBeNull();
+  });
+});
+
+describe("buildSeasonReport — the schedule basis", () => {
+  it("reports the published schedule when not one game has been played", () => {
+    const rows: SeasonReportRow[] = [
+      game({ gameId: 1, status: "scheduled", homeScore: null, awayScore: null, home: side(1), away: side(4) }),
+      game({ gameId: 2, status: "scheduled", homeScore: null, awayScore: null, home: side(1), away: side(2) }),
+    ];
+
+    const report = buildSeasonReport("2026-27", rows);
+
+    expect(report.basis).toBe("schedule");
+    expect(report.completedGames).toBe(0);
+    // The half the calendar already decides.
+    expect(report.teams.length).toBeGreaterThan(0);
+    const home = report.teams.find((t) => t.teamId === 1)!;
+    expect(Object.values(home.restStates).reduce((a, b) => a + b, 0)).toBe(2);
+    expect(home.netEdgeGames).toBe(2);
+  });
+
+  it("still refuses to invent a record, because that half is a result", () => {
+    const report = buildSeasonReport("2026-27", [
+      game({ gameId: 1, status: "scheduled", homeScore: null, awayScore: null, home: side(1), away: side(4) }),
+    ]);
+
+    expect(report.overall.games).toBe(0);
+    expect(report.overall.restedTeamWins).toBe(0);
+    expect(report.atLeastTwo.games).toBe(0);
+    expect(report.swingBaseline).toBeNull();
+    expect(report.loudestCalls).toEqual([]);
+    // A projected tail on the weekly axis would read as measurement.
+    expect(report.weeks).toEqual([]);
+    expect(report.teams.every((t) => t.restedWinPct === null && t.swing === null)).toBe(true);
+  });
+
+  it("reverts to the played basis the moment one game is final", () => {
+    // "So far" and "projected" are different claims, so the report never blends them: one final
+    // game switches the whole page to describing that game alone.
+    const scheduled = Array.from({ length: 5 }, (_, i) =>
+      game({ gameId: i + 2, status: "scheduled", homeScore: null, awayScore: null })
+    );
+
+    const before = buildSeasonReport("2026-27", scheduled);
+    expect(before.basis).toBe("schedule");
+    expect(before.teams.find((t) => t.teamId === 1)!.restStates.restedHome).toBe(5);
+
+    const after = buildSeasonReport("2026-27", [game({ gameId: 1 }), ...scheduled]);
+    expect(after.basis).toBe("played");
+    expect(after.teams.find((t) => t.teamId === 1)!.restStates.restedHome).toBe(1);
   });
 });

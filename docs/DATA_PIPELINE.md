@@ -352,6 +352,30 @@ per-shot" framing.
 - Scheduled games receive one prediction where canonical `|RA| ≥ 0.5`; neutral games remove
   any prior open prediction without inserting a replacement.
 
+### `scripts/project_fatigue.ts` — fatigue for a season not yet played
+- `pnpm exec tsx scripts/project_fatigue.ts <season> [--force] [--dry-run]`.
+- **Not the same job as `backfill_fatigue.ts`, and the difference is why it exists.** That script
+  scores against prior games that are `final`, so on an unstarted season every team has no prior
+  game, every score is 0, and `buildRestAdvantage` reads those zeros as a *measured dead heat* —
+  which is exactly what printed "EVEN 0.0" across all 1,200 of 2026-27's fixtures on 2026-08-18
+  before the rows were deleted. This script passes `fetchRecentGamesForTeam`'s `"scheduled"`
+  basis instead, and answers: *if this schedule is played as published, what is the fatigue?*
+- **Two inputs are results and are neutralised rather than guessed:** prior-game overtime → 0,
+  prior-game margin → null (no blowout discount). Every other input — rest days, travel legs,
+  back-to-back, 3-in-4, 4-in-6, density windows, altitude, time-zone displacement, road-trip
+  length — is fixed the day the league publishes the schedule.
+- Selects `status = 'scheduled'` only, so a played game's measured fatigue can never be
+  overwritten. Default is games with no fatigue rows, which makes re-running cheap — that is what
+  lets it follow a mid-season re-seed (Cup fixtures resolving in December) without recomputing
+  the season. `--force` recomputes every scheduled game.
+- Writes open predictions too, via the same `refreshDailyGames` port `run-daily.ts` uses. As each
+  game comes within 14 days, `run-daily.ts` recomputes it on the default `"played"` basis, so a
+  projection is always replaced by the measured value before tip-off.
+- Run for 2026-27 on 2026-08-18: 1,200 games, 2,400 fatigue rows, 633 open predictions, 0 failures.
+- **Nothing marks a row as projected in the database, and nothing should.** A fatigue row belongs
+  to a game, and the season's own progress decides the question — see
+  `src/lib/fatigue-provenance.ts`. A stored copy could only ever disagree with it.
+
 ### `scripts/backfill_fatigue.ts` — bulk fatigue
 - Default: only games missing a home-side `fatigue_scores` row (idempotent). Optional
   `YYYY-MM-DD YYYY-MM-DD` range. `--force` wipes all `fatigue_scores` and recomputes every

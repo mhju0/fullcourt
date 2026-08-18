@@ -404,6 +404,31 @@ One season, reported through the site's rest-advantage lens. Powers `/season`.
 
 ---
 
+## Projected vs measured fatigue
+
+`GameResponse.projectedFatigue` and `UpcomingGameWithRA.projectedFatigue` say whether a game's
+rest advantage was **projected from the published schedule** or **measured from played
+basketball**. `SeasonReportResponse.basis` says the same thing for a whole season
+(`"played"` | `"schedule"`).
+
+It is **not** "has this game been played". A game tipping tonight has not been played, yet every
+input its fatigue rests on is already a fact. What makes fatigue projected is an unplayed game
+*earlier in the same season* — those are the rows the `"scheduled"` basis admits, and the two
+inputs it neutralises (prior-game overtime, prior-game margin) are the only ones still open. The
+rule reduces to one scalar per season, the date of its first unplayed game
+(`getFirstUnplayedDate`), because games are only played in date order. See
+`src/lib/fatigue-provenance.ts`.
+
+Opening night lands on the *measured* side, correctly: nobody has played, so nobody is more
+rested, and 0 is the true answer rather than a missing one.
+
+`/api/games/upcoming` and `/api/season-report` validate their `season` with
+**`browsableSeasonParam`**, not `seasonParam`: a released-but-unplayed season is exactly the one
+whose games are upcoming, and `seasonParam` excludes it until October by design. `/api/season-report`
+still *defaults* to the newest season with data — accepting an upcoming season is what lets a
+reader ask for it, while defaulting to it would open the page on a report whose results half is
+empty in preference to a complete one.
+
 ## `GET /api/cron/update`
 
 Vercel-cron live-score refresh. `runtime = "nodejs"`, `dynamic = "force-dynamic"`.

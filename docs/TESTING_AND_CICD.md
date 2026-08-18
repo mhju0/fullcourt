@@ -49,6 +49,8 @@ nothing checks. Run the command for the current figure.
 | `src/lib/__tests__/team-history.test.ts` | `getTeamBranding` historical eras (SEA/NJN/VAN/NOH/Bobcats/Bullets), current-era logos, fallback behavior. |
 | `src/lib/__tests__/fetcher.test.ts` | `apiFetcher` success envelopes, safe API errors, non-JSON HTTP failures, malformed envelopes. |
 | `src/lib/__tests__/rest-advantage-evidence.test.ts` | Canonical neutral boundary, historical backtest aggregation, game-explorer outcome filtering/pagination. |
+| `src/lib/__tests__/fatigue-provenance.test.ts` | The measured/projected rule: opening night is measured (nobody has played, so 0 is true), tonight's game is measured (all its priors are played), tomorrow is projected, and a finished season projects nothing. |
+| `src/lib/__tests__/fatigue-recent-games.test.ts` | The projection basis: an unplayed prior game keeps every schedule-derived field and loses exactly two (overtime, point margin) — including a **live** game's partial score, which column defaults would not have caught. |
 | `src/lib/__tests__/espn-scoreboard.test.ts` | ESPN payload parsing, status mapping, and (date, away, home) reconciliation: overtime only from a finished game, a stored `final` never walked backwards, unmatched rows reported both ways. |
 | `src/app/api/__tests__/cron-update.test.ts` | The evening score pass: cron auth, that it reads ESPN scoped to today's ET date, writes overtime from the same payload, matches an `espn-` keyed row, and 502s rather than partially writing. |
 | `src/lib/__tests__/daily-refresh.test.ts` | Per-game failure isolation/continuation and neutral open-prediction replacement. |

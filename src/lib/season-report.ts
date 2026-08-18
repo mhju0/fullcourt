@@ -221,6 +221,19 @@ export type SeasonReportVerdict =
 
 export interface SeasonReport {
   season: string;
+  /**
+   * What the schedule-derived figures below were counted over.
+   *
+   * `"played"` — the ordinary case. Every figure describes games that happened.
+   *
+   * `"schedule"` — the season has no completed game yet, so the figures that do not need a
+   * result (schedule value, travel, back-to-backs, 3-in-4s, jet-lag games) are counted over the
+   * **published schedule** instead, and the ones that do need a result are empty rather than
+   * zero. A season only ever reports this way before it starts: the moment one game is final,
+   * it reverts to `"played"` and describes that game alone, because "so far" and "projected"
+   * are different claims and a page must not silently switch between them mid-season.
+   */
+  basis: "played" | "schedule";
   /** Every regular-season game in the season — the progress tile's denominator. */
   scheduledGames: number;
   /** Games with a final score and both fatigue sides — every aggregate's denominator. */
@@ -334,6 +347,18 @@ export function buildSeasonReport(
   season: string,
   rows: readonly SeasonReportRow[]
 ): SeasonReport {
+  // Decided once, from the whole season, before anything is counted. A per-row decision would
+  // mix a played game and a projected one into the same total.
+  const hasCompletedGame = rows.some(
+    (r) =>
+      r.status === "final" &&
+      r.home !== null &&
+      r.away !== null &&
+      r.homeScore !== null &&
+      r.awayScore !== null
+  );
+  const basis: SeasonReport["basis"] = hasCompletedGame ? "played" : "schedule";
+
   let completedGames = 0;
   let overallGames = 0;
   let overallWins = 0;
@@ -346,22 +371,34 @@ export function buildSeasonReport(
   let firstDate: string | null = null;
 
   for (const row of rows) {
-    if (row.status !== "final") continue;
+    // Both fatigue sides are required on either basis — they are what every figure below is
+    // computed from, and a game missing one cannot contribute to anything.
     if (row.home === null || row.away === null) continue;
-    if (row.homeScore === null || row.awayScore === null) continue;
-    completedGames++;
+
+    // Carried as a nullable pair rather than a boolean so the narrowing survives: every line
+    // past the call filter reads both scores, and a boolean cannot prove they are there.
+    const scores =
+      row.status === "final" && row.homeScore !== null && row.awayScore !== null
+        ? { home: row.homeScore, away: row.awayScore }
+        : null;
+    if (basis === "played" && scores === null) continue;
+    if (scores !== null) completedGames++;
 
     const homeFatigue = Number.parseFloat(row.home.fatigueScore);
     const awayFatigue = Number.parseFloat(row.away.fatigueScore);
     accumulateScheduleTax(teamEntry(teams, row.homeTeamId), row.home);
     accumulateScheduleTax(teamEntry(teams, row.awayTeamId), row.away);
 
-    if (firstDate === null) firstDate = row.date;
-    const week = bucketIndex(firstDate, row.date);
-    const bucket = buckets.get(week) ?? { games: 0, fatigueSum: 0 };
-    bucket.games++;
-    bucket.fatigueSum += homeFatigue + awayFatigue;
-    buckets.set(week, bucket);
+    // Played games only. The weekly curve is a record of how heavy the season *was*, and a
+    // projected tail plotted on the same axis would read as measurement.
+    if (scores !== null) {
+      if (firstDate === null) firstDate = row.date;
+      const week = bucketIndex(firstDate, row.date);
+      const bucket = buckets.get(week) ?? { games: 0, fatigueSum: 0 };
+      bucket.games++;
+      bucket.fatigueSum += homeFatigue + awayFatigue;
+      buckets.set(week, bucket);
+    }
 
     const { differential, advantageTeam } = classifyRestAdvantage(homeFatigue, awayFatigue);
 
@@ -381,8 +418,11 @@ export function buildSeasonReport(
     // this check: that measures the burden a schedule imposed, which is true whether or not
     // the model made a call on the game.
     if (!isCalledSide(advantageTeam)) continue;
+    // Past this point every line reads a score. On the schedule basis there is none, and a
+    // rest call has no record until it has been played.
+    if (scores === null) continue;
 
-    const homeWon = row.homeScore > row.awayScore;
+    const homeWon = scores.home > scores.away;
     const restedTeamWon = advantageTeam === "home" ? homeWon : !homeWon;
 
     overallGames++;
@@ -408,15 +448,15 @@ export function buildSeasonReport(
       date: row.date,
       homeTeamId: row.homeTeamId,
       awayTeamId: row.awayTeamId,
-      homeScore: row.homeScore,
-      awayScore: row.awayScore,
+      homeScore: scores.home,
+      awayScore: scores.away,
       restAdvantage: Math.round(Math.abs(differential) * 100) / 100,
       advantageTeam,
       restedTeamWon,
       restedMargin:
         advantageTeam === "home"
-          ? row.homeScore - row.awayScore
-          : row.awayScore - row.homeScore,
+          ? scores.home - scores.away
+          : scores.away - scores.home,
     });
   }
 
@@ -473,6 +513,7 @@ export function buildSeasonReport(
 
   return {
     season,
+    basis,
     scheduledGames: rows.length,
     completedGames,
     overall: rate(overallWins, overallGames),

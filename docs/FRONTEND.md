@@ -173,6 +173,11 @@ the line. Three rules live in that module and are asserted in its test:
 - **No stamp rather than an empty one.** No `DATABASE_URL`, or no final games, renders nothing —
   the whole-element form of the `NO_FIGURE` rule.
 
+The Games board annotates a rest advantage with `PROJECTED` when it was read off the published
+schedule rather than measured (`GameResponse.projectedFatigue`; `PROJ` in the `/games` UPCOMING
+table). That is not "the game has not been played" — see `src/lib/fatigue-provenance.ts` and
+docs/API.md.
+
 The season-scoped surfaces (`/season`, `/schedule`) deliberately **do not** take this prop: their
 figures answer for one selected season, keyed on `getSeasonGamesStamp(season)`, so the global
 final-game date would be a different claim than the page makes. /schedule already prints its own
@@ -210,6 +215,26 @@ progress) against an all-season marker, then `WHAT THE SCHEDULE WAS WORTH` (sche
 results), `REST EDGE CONVERSION` (records, not a ranking), `LOUDEST CALLS` (ranked by rest gap),
 `SCHEDULE TAX` (completed games only), `FATIGUE CALENDAR` (league average by week) and
 `ZERO-REST WORKLOAD` (volume, not effect).
+
+**A season with no completed game reports on a different basis** (`SeasonReportResponse.basis`
+`=== "schedule"`, since 2026-08-18). The selector offers `browsableSeasons()`, so a released
+schedule can be chosen before its season starts — but the initial value stays the newest season
+*with data*, because this page's results half is its point and opening on a season that has none
+would bury a complete report behind a choice.
+
+On that basis the sections split by what they need. `WHAT THE SCHEDULE WAS WORTH` and
+`SCHEDULE TAX` are properties of the calendar and render in full — `SCHEDULE TAX`'s descriptor
+moves to `FULL PUBLISHED SCHEDULE`, because "COMPLETED GAMES ONLY" over a season with none
+describes an empty set rather than what is shown. The four that read a scoreboard —
+`REST EDGE CONVERSION`, `LOUDEST CALLS`, `FATIGUE CALENDAR`, `ZERO-REST WORKLOAD` — render an
+`AWAITING GAMES` card naming what they are waiting for, and the two rate tiles read an em dash.
+**Never render these as an empty version of themselves:** a win-rate table of zeros claims the
+rested team won none of its games, and a 0.0 swing claims rest made no difference. Neither has
+been measured. It is the same distinction the Games board draws between `—` and `0`, at section
+scale.
+
+The basis is decided once per season, never per row, and **reverts to `"played"` the moment one
+game is final** — "so far" and "projected" are different claims and the page must not blend them.
 
 **Two sentences in this page are load-bearing and read as redundant prose.** Both exist to stop
 a specific misreading, and `e2e/season.spec.ts` guards both:

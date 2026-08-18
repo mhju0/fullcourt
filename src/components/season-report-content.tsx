@@ -9,7 +9,7 @@ import { StatTile } from "@/components/ui/stat-tile"
 import { ZeroRestWorkload } from "@/components/zero-rest-workload"
 import { apiFetcher } from "@/lib/fetcher"
 import { useBacktest } from "@/hooks/useBacktest"
-import { NBA_SEASONS } from "@/lib/nba-season"
+import { browsableSeasons, NBA_SEASONS } from "@/lib/nba-season"
 import {
   ABNORMAL_SEASON_NOTES,
   allSeasonNormExcluding,
@@ -27,7 +27,7 @@ import {
   REST_SHARE_OF_HOME_COURT,
   REST_SPAN_PP,
 } from "@/lib/schedule-value"
-import { LEAD, termCardStyle, TRACK, TYPE, WIDTH } from "@/lib/terminal-styles"
+import { LEAD, termCardStyle, termDashedEmptyStyle, TRACK, TYPE, WIDTH } from "@/lib/terminal-styles"
 import { DataTable, type DataColumn } from "@/components/ui/data-table"
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts"
 import { signedNumber } from "@/lib/signed-number"
@@ -472,14 +472,26 @@ function LoudestCalls({
 }
 
 /** Schedule tax — facts about what each team was asked to do. No inference, so no gate. */
-function ScheduleTax({ teams }: { teams: SeasonReportTeamLabelled[] }) {
+function ScheduleTax({
+  teams,
+  basis,
+}: {
+  teams: SeasonReportTeamLabelled[]
+  basis: SeasonReportResponse["basis"]
+}) {
   const byMiles = [...teams].sort((a, b) => b.travelMiles - a.travelMiles || a.teamId - b.teamId)
   const most = byMiles[0]
   const least = byMiles[byMiles.length - 1]
 
   return (
     <div className="flex flex-col gap-3">
-      <SectionDivider label="SCHEDULE TAX" descriptor="COMPLETED GAMES ONLY" />
+      {/* The descriptor has to move with the basis. "COMPLETED GAMES ONLY" over a season with
+          no completed game describes an empty set, when what is actually shown is the whole
+          published schedule. */}
+      <SectionDivider
+        label="SCHEDULE TAX"
+        descriptor={basis === "schedule" ? "FULL PUBLISHED SCHEDULE" : "COMPLETED GAMES ONLY"}
+      />
       <p style={{ fontSize: TYPE.body, color: "var(--term-text-muted)", maxWidth: WIDTH.prose, lineHeight: LEAD.body }}>
         What the schedule asked of each team. These are counts, not estimates — nothing here is
         a claim about who won because of it.
@@ -509,6 +521,48 @@ function ScheduleTax({ teams }: { teams: SeasonReportTeamLabelled[] }) {
 }
 
 /** The league's fatigue curve across the season, in seven-day buckets from the first game. */
+/**
+ * A section that cannot be filled until games are played.
+ *
+ * Rendered instead of the section, never as an empty version of it: a win-rate table with zeros
+ * in it is a claim that the rested team won none of its games, and a 0.0 swing is a claim that
+ * rest made no difference. Neither has been measured. The same distinction the Games board
+ * draws between an em dash and a zero, at section scale.
+ */
+function AwaitingGames({
+  label,
+  descriptor,
+  needs,
+  testId,
+}: {
+  label: string
+  descriptor: string
+  needs: string
+  testId?: string
+}) {
+  return (
+    <div className="flex flex-col gap-3">
+      <SectionDivider label={label} descriptor={descriptor} testId={testId} />
+      <div className="mono px-6 py-8 text-center" style={termDashedEmptyStyle}>
+        <p style={{ fontSize: TYPE.label, fontWeight: 600, letterSpacing: TRACK.sub, color: "var(--term-text-muted)" }}>
+          AWAITING GAMES
+        </p>
+        <p
+          className="sans mx-auto mt-2"
+          style={{
+            fontSize: TYPE.body,
+            color: "var(--term-text-muted)",
+            lineHeight: LEAD.body,
+            maxWidth: WIDTH.prose,
+          }}
+        >
+          {needs}
+        </p>
+      </div>
+    </div>
+  )
+}
+
 function FatigueCalendar({ weeks }: { weeks: SeasonReportWeek[] }) {
   const peak = weeks.reduce<SeasonReportWeek | null>(
     (best, w) => (best === null || w.avgFatigue > best.avgFatigue ? w : best),
@@ -584,7 +638,15 @@ export function SeasonReportContent() {
   return (
     <div className="flex flex-col gap-12">
       <div style={{ ...termCardStyle, padding: 16 }}>
-        <SeasonSelector id="season-report-season" season={season} onSeasonChange={setSeason} />
+        {/* The browsable list, so a released-but-unplayed season can be chosen. The initial
+            value stays the newest season WITH data: this page's results half is its point, and
+            opening on a season that has none would bury a complete report behind a choice. */}
+        <SeasonSelector
+          id="season-report-season"
+          season={season}
+          onSeasonChange={setSeason}
+          seasons={browsableSeasons()}
+        />
       </div>
 
       <AbnormalSeasonNote season={season} />
@@ -602,8 +664,19 @@ export function SeasonReportContent() {
       ) : (
         <>
           <div className="grid grid-cols-2 gap-2 md:grid-cols-3">
-            <RateTile label="RESTED TEAM AT HOME · WIN RATE" rate={data.overall} testId="season-rest-win-rate" />
-            <RateTile label="WIN RATE · RA ≥ 2" rate={data.atLeastTwo} />
+            {/* Both rates are records. Before a ball is thrown up there is no record, and a
+                RateTile reading 0.0% over 0 games states one. */}
+            {data.basis === "schedule" ? (
+              <>
+                <StatTile label="RESTED TEAM AT HOME · WIN RATE" value="—" sub="AWAITING GAMES" />
+                <StatTile label="WIN RATE · RA ≥ 2" value="—" sub="AWAITING GAMES" />
+              </>
+            ) : (
+              <>
+                <RateTile label="RESTED TEAM AT HOME · WIN RATE" rate={data.overall} testId="season-rest-win-rate" />
+                <RateTile label="WIN RATE · RA ≥ 2" rate={data.atLeastTwo} />
+              </>
+            )}
             <StatTile
               label="SEASON PROGRESS"
               value={`${data.completedGames.toLocaleString()} / ${data.scheduledGames.toLocaleString()}`}
@@ -615,33 +688,82 @@ export function SeasonReportContent() {
             />
           </div>
 
-          <div className="flex flex-col gap-3">
-            <SectionDivider
-              label={`${data.season} VS HISTORY`}
-              descriptor="EXCLUDES THE DISPLAYED SEASON"
-              testId="season-vs-history-heading"
-            />
-            {verdict ? <VerdictLine verdict={verdict} /> : null}
+          {data.basis === "schedule" ? (
             <p style={{ fontSize: TYPE.body, color: "var(--term-text-muted)", maxWidth: WIDTH.prose, lineHeight: LEAD.body }}>
-              {countedGamesSentence(data.overall)}{" "}
+              No {data.season} game has been played. What the schedule hands each team is already
+              decided, so the sections below that read the calendar are complete; the ones that
+              read a scoreboard stay empty until games are played rather than showing a zero.{" "}
               <a href="/analysis" style={{ color: "var(--term-blue)", fontWeight: 600 }}>
                 See the full backtest →
               </a>
             </p>
-          </div>
+          ) : (
+            <div className="flex flex-col gap-3">
+              <SectionDivider
+                label={`${data.season} VS HISTORY`}
+                descriptor="EXCLUDES THE DISPLAYED SEASON"
+                testId="season-vs-history-heading"
+              />
+              {verdict ? <VerdictLine verdict={verdict} /> : null}
+              <p style={{ fontSize: TYPE.body, color: "var(--term-text-muted)", maxWidth: WIDTH.prose, lineHeight: LEAD.body }}>
+                {countedGamesSentence(data.overall)}{" "}
+                <a href="/analysis" style={{ color: "var(--term-blue)", fontWeight: 600 }}>
+                  See the full backtest →
+                </a>
+              </p>
+            </div>
+          )}
 
           {/* Before the conversion table on purpose: this section carries the scale a reader
-              needs before any per-team rest number can be read at its true size. */}
+              needs before any per-team rest number can be read at its true size.
+              Schedule-derived throughout, so it renders on either basis. */}
           <ScheduleValue teams={data.teams} />
-          <EdgeConversion teams={data.teams} swingBaseline={data.swingBaseline} />
-          <LoudestCalls calls={data.loudestCalls} abbrById={abbrById} />
-          <ScheduleTax teams={data.teams} />
-          <FatigueCalendar weeks={data.weeks} />
 
-          <div className="flex flex-col gap-3">
-            <SectionDivider label="ZERO-REST WORKLOAD" descriptor="VOLUME, NOT EFFECT" />
-            <ZeroRestWorkload season={data.season} />
-          </div>
+          {data.basis === "schedule" ? (
+            <AwaitingGames
+              label="REST EDGE CONVERSION"
+              descriptor="RECORDS, NOT A RANKING"
+              needs="A team's record as the rested side is a result. Nothing here can be filled until games are played."
+            />
+          ) : (
+            <EdgeConversion teams={data.teams} swingBaseline={data.swingBaseline} />
+          )}
+
+          {data.basis === "schedule" ? (
+            <AwaitingGames
+              label="LOUDEST CALLS"
+              descriptor="RANKED BY REST GAP"
+              needs="The season's widest rest gaps are already known, but whether the rested team won them is not."
+            />
+          ) : (
+            <LoudestCalls calls={data.loudestCalls} abbrById={abbrById} />
+          )}
+
+          {/* Travel, back-to-backs and 3-in-4s are properties of the calendar. */}
+          <ScheduleTax teams={data.teams} basis={data.basis} />
+
+          {data.basis === "schedule" ? (
+            <AwaitingGames
+              label="FATIGUE CALENDAR"
+              descriptor="LEAGUE AVERAGE BY WEEK"
+              needs="The weekly curve is a record of how heavy the season was. A projected tail on the same axis would read as measurement."
+            />
+          ) : (
+            <FatigueCalendar weeks={data.weeks} />
+          )}
+
+          {data.basis === "schedule" ? (
+            <AwaitingGames
+              label="ZERO-REST WORKLOAD"
+              descriptor="VOLUME, NOT EFFECT"
+              needs="Minutes played on zero days' rest are counted from box scores, which do not exist yet."
+            />
+          ) : (
+            <div className="flex flex-col gap-3">
+              <SectionDivider label="ZERO-REST WORKLOAD" descriptor="VOLUME, NOT EFFECT" />
+              <ZeroRestWorkload season={data.season} />
+            </div>
+          )}
         </>
       )}
     </div>
