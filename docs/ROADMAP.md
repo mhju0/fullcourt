@@ -185,11 +185,12 @@ oversight. None is a defect in what the site publishes.
   `scripts/analyze_player_shooting.py` filters `external_id LIKE '002%'` and joins hoopR box
   scores on that id; 2026-27 is keyed `espn-<eventId>`, so the join finds nothing. Nothing else
   is affected — the nightly score path matches on (date, away, home) precisely so it cannot be.
-  **The fix is available and measured**: hoopR's `nba_stats_*` ids are the canonical ones (its
-  2025-26 set matches this database exactly, 1,230 of 1,230), and `seed_season_from_hoopr.ts`
-  already dates hoopR box scores via the ESPN scoreboard. It only becomes possible once games
-  have been played, and the module needs a few months to clear its volume floor, so the real
-  deadline is about January 2027.
+  **Decided and built, waiting on games**: `scripts/rekey_season_from_hoopr.ts` (2026-08-18).
+  hoopR's `nba_stats_*` ids are the canonical ones, and the script matches them to stored rows on
+  (away, away points, home, home points) — validated against 2025-26, where keys built from its
+  1,230 rows resolved to the id each already holds, 1,230 correct with 0 wrong and 0 collisions.
+  It can only convert games that have been **played**, so run it from **January 2027**, and again
+  later for the remainder. See [SEASON_ROLLOVER.md §9](SEASON_ROLLOVER.md).
 - **The nightly pipeline was dead for the whole back half of 2025-26, and the fix has not yet
   run on a live slate.** `daily_update.py`'s first network call was to `cdn.nba.com`, which
   403s, so it raised before updating a score, reading overtime, or recomputing fatigue — every

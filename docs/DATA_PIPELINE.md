@@ -387,6 +387,30 @@ per-shot" framing.
   to a game, and the season's own progress decides the question — see
   `src/lib/fatigue-provenance.ts`. A stored copy could only ever disagree with it.
 
+### `scripts/rekey_season_from_hoopr.ts` — espn- ids → canonical `002…` ids
+- `pnpm exec tsx scripts/rekey_season_from_hoopr.ts <season> [--apply]`. **Dry run by default** —
+  `--apply` is required to write, inverting this repo's usual convention, because `external_id`
+  is the only uniqueness guard on `games`.
+- **Why it is needed:** 2026-27 was seeded from ESPN with `espn-<eventId>` keys. Nothing in the
+  published product cares — the nightly score path matches on (date, away, home) precisely so it
+  cannot — except `analyze_player_shooting.py`, which filters `external_id LIKE '002%'` **and**
+  joins hoopR box scores on that id. Without a re-key, Shooting by Rest carries no 2026-27 data.
+- **Match key:** `(away tricode, away points, home tricode, home points)`. Unlike
+  `seed_season_from_hoopr.ts` it needs no ESPN call to date the games — the rows being re-keyed
+  already hold their own final scores from the nightly sync.
+- **Incremental and idempotent.** Only `final` games with both scores can be matched, so it
+  converts whatever has been played and can be re-run later for the rest; a season with mixed
+  keys is fine. Rows already carrying a `002…` id are counted as done and never rewritten.
+- **Gates:** duplicate match keys on either side abort; a target id already held by a different
+  row aborts before anything is written; only `espn-` rows are touched (`bref-` rows from the
+  2026-07-12 audit are reported and left alone); the write is a single atomic
+  `UPDATE … FROM (values …)` additionally guarded on each row's current id, with the affected
+  count checked against the plan.
+- **Validated 2026-08-18** against 2025-26, the one season where the answer is checkable because
+  it already carries canonical ids: keys built from its 1,230 rows resolved to the id each row
+  already holds — 1,230 correct, 0 wrong, 0 unmatched, 0 collisions.
+- Nothing else needs re-pointing: `fatigue_scores` and `predictions` reference `games.id`.
+
 ### `scripts/backfill_fatigue.ts` — bulk fatigue
 - Default: only games missing a home-side `fatigue_scores` row (idempotent). Optional
   `YYYY-MM-DD YYYY-MM-DD` range. `--force` wipes all `fatigue_scores` and recomputes every

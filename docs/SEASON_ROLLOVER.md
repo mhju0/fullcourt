@@ -119,6 +119,10 @@ not for live scoring). **Prefer a stats-ID source (`stats.nba.com`) for a live s
       of 2025-26 failed at the old CDN call; the rewrite is verified against historical data
       but has never executed on a live slate.
 - [ ] Bump the hardcoded season counts that cannot derive (Section 7).
+
+**~January of the new season:**
+- [ ] **Re-key the season's `espn-` ids to canonical `002…` ids** (Section 9). Until this runs,
+      Shooting by Rest carries no data for it. Nothing else is affected.
 - [ ] After the first week, run the data-integrity re-audit (Section 6) to catch date drift early.
 
 **Fixed 2026-08-06 — was: `/season` could serve a stale empty rollover for weeks.**
@@ -226,3 +230,42 @@ The standing rule is now just this: **keep the overrides in `pnpm-workspace.yaml
 each pin against its advisory before regenerating `pnpm-lock.yaml`.** After any regeneration,
 confirm the four still resolve — they appear in the lockfile's own `overrides:` block at lines
 7-11. Skip that check and a CVE pin can vanish silently, with no error and no failing test.
+
+## 9. Re-key an ESPN-seeded season to canonical `002…` ids (January of that season)
+
+A season seeded before it was played carries `espn-<eventId>` external ids, because no reachable
+source has the canonical ones for a schedule that has not happened yet (§4). 2026-27 is the first
+season in that state.
+
+**What actually depends on the key** — one thing, and it is not on the published critical path:
+
+| consumer | keyed on | affected |
+|---|---|---|
+| nightly score sync, `/api/cron/update` | `(date, away, home)` | no — deliberately blind to the id |
+| `fatigue_scores`, `predictions` | `games.id` (integer PK) | no |
+| `analyze_player_shooting.py` | `external_id LIKE '002%'` + joins hoopR box scores on it | **yes — finds nothing** |
+
+So the only symptom is that **Shooting by Rest carries no data for that season.** That module
+needs a few months of games to clear its volume floor, which is why this is a January job rather
+than an opening-night one.
+
+**Run it:**
+
+```bash
+python scripts/fetch_shooting_data.py --only teams        # refresh the hoopR cache first
+pnpm exec tsx scripts/rekey_season_from_hoopr.ts 2026-27  # dry run — read the counts
+pnpm exec tsx scripts/rekey_season_from_hoopr.ts 2026-27 --apply
+```
+
+**Dry run is the default** and `--apply` is required, because `external_id` is the only
+uniqueness guard on `games`. Read the dry run before applying: it prints how many rows matched,
+which ones did not, and aborts outright if any target id already belongs to another row.
+
+**Expect to run it more than once.** Only `final` games can be matched — the key includes both
+final scores — so a January run converts what has been played and leaves the rest. Re-run after
+the season ends to finish the job. A season with mixed `002…` and `espn-` keys is a valid
+intermediate state; nothing breaks, and the shooting pipeline simply sees the games that have
+been converted, which are exactly the ones it can use.
+
+**Unmatched rows are normal mid-season**, since hoopR publishes on its own cadence and the most
+recent games may not be in the cached file. Refresh the cache and re-run rather than forcing it.
