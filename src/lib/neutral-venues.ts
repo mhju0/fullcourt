@@ -25,6 +25,11 @@ const NEUTRAL_VENUES: Record<string, NeutralVenue> = {
   "Las Vegas": { latitude: 36.1028, longitude: -115.1783, altitude: false }, // T-Mobile Arena
   Paris: { latitude: 48.8386, longitude: 2.3784, altitude: false }, // Accor Arena (Bercy)
   Berlin: { latitude: 52.5075, longitude: 13.4432, altitude: false }, // Uber Arena
+  // Added with the 2026-27 schedule: NOP host SAS at Co-op Live on 2027-01-17, three days
+  // after the pair meet in Paris. Without a row here that leg resolves to New Orleans and
+  // the model reads the second European game as a home stand rather than the longest
+  // road trip on the calendar.
+  Manchester: { latitude: 53.4839, longitude: -2.1953, altitude: false }, // Co-op Live
 };
 
 /**

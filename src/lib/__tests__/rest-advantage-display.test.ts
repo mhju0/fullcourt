@@ -52,6 +52,22 @@ describe("formatRestAdvantageDisplay", () => {
     });
   });
 
+  it("separates a game it never measured from one it called level", () => {
+    // A null rest advantage means no fatigue pair exists for the game, which is what every
+    // fixture of a released-but-unplayed season looks like. Reporting it as `neutral` put
+    // "EVEN 0.0" on the Games board for all 1,200 of them — a measurement never taken.
+    const unmeasured = formatRestAdvantageDisplay(null, "BOS", "LAL");
+    expect(unmeasured).toEqual({ kind: "unmeasured", text: "\u2014" });
+
+    const level = formatRestAdvantageDisplay(
+      { differential: 0.3, advantageTeam: "neutral" },
+      "BOS",
+      "LAL"
+    );
+    expect(level.kind).toBe("neutral");
+    expect(level.kind).not.toBe(unmeasured.kind);
+  });
+
   it("displays neutral text for neutral/no-call values", () => {
     expect(
       formatRestAdvantageDisplay(

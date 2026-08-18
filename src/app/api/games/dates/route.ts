@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { CACHE, jsonRoute, seasonParam } from "@/lib/api-route";
+import { browsableSeasonParam, CACHE, jsonRoute } from "@/lib/api-route";
 import { getRegularSeasonGameDatesWithCounts } from "@/lib/db/queries";
 
 /**
@@ -21,7 +21,9 @@ import { getRegularSeasonGameDatesWithCounts } from "@/lib/db/queries";
 export const GET = jsonRoute(
   "api/games/dates",
   z.object({
-    season: seasonParam,
+    // Browsable, not `seasonParam`: this is the calendar behind the Games board, so it has to
+    // answer for a season whose schedule is published but whose games have not been played.
+    season: browsableSeasonParam,
     month: z.coerce.number().int().min(1).max(12).optional(),
   }),
   ({ season, month }) => getRegularSeasonGameDatesWithCounts(season, month),

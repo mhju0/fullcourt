@@ -53,8 +53,9 @@ This is a **rest-advantage band**, and has nothing to do with a **neutral site**
 _Avoid_: tie; and do not write "neutral" unqualified where a venue could be meant
 
 **Neutral site**:
-A game played at neither team's arena — five cities in the data (Mexico City, London, Las Vegas,
-Paris, Berlin), each with its own coordinates and altitude flag in `src/lib/neutral-venues.ts`.
+A game played at neither team's arena — six cities in the data (Mexico City, London, Las Vegas,
+Paris, Berlin, and Manchester, added with the 2026-27 schedule for NOP–SAS at Co-op Live on
+2027-01-17), each with its own coordinates and altitude flag in `src/lib/neutral-venues.ts`.
 Distance and thin air are computed from the venue rather than from the listed home team's arena,
 which is the whole reason the map exists. Entirely unrelated to **neutral/no-call** above: that is
 a band of rest advantage, this is a place.

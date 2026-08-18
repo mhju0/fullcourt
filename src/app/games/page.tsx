@@ -10,7 +10,7 @@ import { SeasonSelector } from "@/components/season-selector"
 import { UpcomingContentLazy } from "@/components/upcoming-lazy"
 import { useBacktest } from "@/hooks/useBacktest"
 import { useGameSlate, type GameSlate } from "@/hooks/useGameSlate"
-import { currentDisplaySeason, isNbaOffSeason } from "@/lib/nba-season"
+import { browsableSeasons, currentDisplaySeason, isNbaOffSeason } from "@/lib/nba-season"
 import { MessageCard } from "@/components/ui/message-card"
 import { MethodLink } from "@/components/method-link"
 import { StatTile } from "@/components/ui/stat-tile"
@@ -45,7 +45,7 @@ function StatSummaryRow({
 }: {
   gamesToday: number
   avgRestAdv: string
-  highConfGames: number
+  highConfGames: string
 }) {
   return (
     <div className="grid grid-cols-2 gap-2 md:grid-cols-3">
@@ -54,7 +54,7 @@ function StatSummaryRow({
       <StatTile label="GAMES ON THIS DATE" value={String(gamesToday)} accent="var(--term-neutral)" />
       <StatTile label="AVG REST ADV" value={avgRestAdv} accent="var(--term-neutral)" />
       {/* Accent, not a data pole: HIGH CONF is confidence chrome, same as the badge. */}
-      <StatTile label="HIGH CONF GAMES" value={String(highConfGames)} accent="var(--term-accent)" />
+      <StatTile label="HIGH CONF GAMES" value={highConfGames} accent="var(--term-accent)" />
     </div>
   )
 }
@@ -291,17 +291,24 @@ export default function HomePage() {
     let sum = 0
     let counted = 0
     let highConf = 0
+    let measured = 0
     for (const g of slate.games) {
-      const diff = Math.abs(g.restAdvantage?.differential ?? 0)
+      if (g.restAdvantage === null) continue
+      measured += 1
+      const diff = Math.abs(g.restAdvantage.differential)
       if (diff > 0) {
         sum += diff
         counted += 1
       }
       if (diff >= HIGH_CONF_THRESHOLD) highConf += 1
     }
+    // An em dash, not "0.0" and not "0". A slate whose games carry no fatigue pair — every date
+    // of a released-but-unplayed season — has no average to report, and printing zero states a
+    // measurement that was never taken. `counted === 0` with `measured > 0` is different and
+    // still prints 0.0: that is a real slate on which every game came out exactly even.
     return {
-      avgRestAdv: counted === 0 ? "0.0" : (sum / counted).toFixed(1),
-      highConfGames: highConf,
+      avgRestAdv: measured === 0 ? "—" : counted === 0 ? "0.0" : (sum / counted).toFixed(1),
+      highConfGames: measured === 0 ? "—" : String(highConf),
     }
   }, [slate.games])
 
@@ -387,10 +394,14 @@ export default function HomePage() {
                     padding sits inside only one of the two flex items, so aligning their
                     bottoms still left the buttons 4px above the select. */}
                 <div className="pb-1">
+                  {/* The browsable list, so a released-but-unplayed schedule is selectable
+                      here and not only on Schedule Disparity. `defaultNbaSeason()` already
+                      opens the board on it; without this the dropdown could not name it. */}
                   <SeasonSelector
                     id="nba-season"
                     season={slate.season}
                     onSeasonChange={(season) => slate.send({ type: "SEASON_SELECTED", season })}
+                    seasons={browsableSeasons()}
                   />
                 </div>
                 <div className="-mx-1 min-w-0 flex-1 overflow-x-auto overflow-y-hidden pb-1 [scrollbar-width:thin]">
@@ -488,7 +499,12 @@ export default function HomePage() {
             </div>
           </div>
 
-          {showOffSeasonBanner && <OffSeasonBanner season={offSeasonLabel} />}
+          {/* Only over the season it describes. The board now opens on the upcoming season
+              once its schedule is released, and this banner sat above that slate announcing
+              that a *different* season was complete and that these were its final results. */}
+          {showOffSeasonBanner && slate.season === offSeasonLabel && (
+            <OffSeasonBanner season={offSeasonLabel} />
+          )}
 
           {/* Matchups section */}
           <div className="flex flex-col gap-2">

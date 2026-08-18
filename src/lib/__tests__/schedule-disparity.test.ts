@@ -149,7 +149,7 @@ describe("computeScheduleDisparity — invariants", () => {
 
   it("nets edge games to zero across the league — every favorable game is someone's unfavorable one", () => {
     const { result } = teamsById();
-    expect(result.teams.reduce((sum, t) => sum + t.netEdgeGames, 0)).toBe(0);
+    expect(result.teams.reduce((sum, t) => sum + (t.netEdgeGames ?? 0), 0)).toBe(0);
   });
 
   it("is independent of the order games arrive in", () => {
@@ -244,17 +244,48 @@ describe("computeScheduleDisparity — edge games (ratified 2026-07-29)", () => 
     expect(t1.netEdgeGames).toBe(2);
   });
 
-  it("skips games without both fatigue scores rather than counting them as even", () => {
+  it("reports nothing measured as null, not as a schedule that favoured nobody", () => {
+    // The game is skipped rather than filed as even — and with no other game to measure, the
+    // whole fatigue row answers "not measured". Returning 0 here is what put "0 edge games /
+    // 0.00 wins" on all 30 rows of the 2026-27 schedule the day it was ingested, which reads
+    // as a measured dead-even season rather than one that has not been played.
     const games = [
       game("2024-01-01", 1, 2),
       game("2024-01-03", 1, 2, { homeFatigueScore: null, awayFatigueScore: "2.0" }),
     ];
-    const { teams } = computeScheduleDisparity("2023-24", games);
+    const { teams, league } = computeScheduleDisparity("2023-24", games);
     const t1 = teams.find((t) => t.teamId === 1)!;
 
-    expect(t1.favorableGames).toBe(0);
-    expect(t1.unfavorableGames).toBe(0);
-    expect(t1.netEdgeGames).toBe(0);
+    expect(t1.favorableGames).toBeNull();
+    expect(t1.unfavorableGames).toBeNull();
+    expect(t1.netEdgeGames).toBeNull();
+    expect(t1.scheduleValueWins).toBeNull();
+    expect(t1.bigFavorableGames).toBeNull();
+    expect(t1.bigUnfavorableGames).toBeNull();
+    expect(league.delta).toBeNull();
+    expect(league.gamesWithAnyEdge).toBeNull();
+    expect(league.measuredGames).toBe(0);
+
+    // The date-derived figures are unaffected — they are what the page falls back to ranking on.
+    expect(t1.netRestEdge).toBe(0);
+    expect(league.countedGames).toBe(1);
+  });
+
+  it("still reports numbers when only some counted games carry a fatigue pair", () => {
+    // Null is reserved for "nothing at all was measured". A season part-way through must keep
+    // reporting, or the page would blank out every time a fixture arrived before its scores.
+    const games = [
+      game("2024-01-01", 1, 2),
+      game("2024-01-03", 1, 2, { homeFatigueScore: null, awayFatigueScore: "2.0" }),
+      game("2024-01-05", 1, 2, { homeFatigueScore: "1.0", awayFatigueScore: "3.0" }),
+    ];
+    const { teams, league } = computeScheduleDisparity("2023-24", games);
+    const t1 = teams.find((t) => t.teamId === 1)!;
+
+    expect(t1.favorableGames).toBe(1);
+    expect(t1.netEdgeGames).toBe(1);
+    expect(league.measuredGames).toBe(1);
+    expect(league.countedGames).toBe(2);
   });
 });
 
@@ -587,7 +618,7 @@ describe("schedule value in wins", () => {
     const result = computeScheduleDisparity("2023-24", FIXTURE);
 
     for (const team of result.teams) {
-      expect(Math.abs(team.scheduleValueWins)).toBeLessThan(0.5);
+      expect(Math.abs(team.scheduleValueWins ?? 0)).toBeLessThan(0.5);
     }
   });
 });

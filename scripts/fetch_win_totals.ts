@@ -167,7 +167,10 @@ async function main() {
     for (const row of lines) {
       const net = netByAbbr.get(row.abbr);
       const dbWins = winsByAbbr.get(row.abbr);
-      if (net === undefined || dbWins === undefined)
+      // `netEdgeGames` is null for a season with no fatigue measurement at all. That cannot
+      // happen for the played seasons this backtest reads, so it is a refusal rather than a
+      // skip — silently dropping teams would quietly change the denominator.
+      if (net === undefined || net === null || dbWins === undefined)
         throw new Error(`${season} ${row.abbr}: missing in our data`);
       if (dbWins !== row.actual)
         throw new Error(

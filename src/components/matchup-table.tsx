@@ -248,11 +248,19 @@ function RestAdvCell({
   const isAwayAdv = advantageTeam === "away"
   const value = Math.abs(restAdvantage?.differential ?? 0).toFixed(1)
   const fillPercent = Math.min(Math.abs(restAdvantage?.differential ?? 0) / 5, 1) * 50
+  // Not measured is not a dead heat, and this cell used to print them the same way: a game
+  // with no fatigue pair read as "EVEN 0.0". The distinction lives in the formatter, so it
+  // is unit-tested rather than asserted from the shape of `restAdvantage` here.
+  const measured = display.kind !== "unmeasured"
 
   return (
     <div className="flex flex-col justify-center gap-2">
       <div className="mono flex items-baseline gap-2 tabular-nums" style={{ lineHeight: LEAD.figure }}>
-        {display.kind === "team" ? (
+        {display.kind === "unmeasured" ? (
+          <span style={{ fontSize: TYPE.emph, fontWeight: 700, letterSpacing: TRACK.figure, color: "var(--term-text-muted)" }}>
+            {display.text}
+          </span>
+        ) : display.kind === "team" ? (
           <>
             {/* The named team is the more-rested side, so it wears the rested pole. */}
             <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: TRACK.data, color: "var(--term-blue)" }}>
@@ -284,7 +292,9 @@ function RestAdvCell({
           style={{ height: 8, background: "var(--term-surface-2)", borderRadius: "var(--term-radius-sm)" }}
           aria-hidden
         >
-          {advantageTeam === "neutral" ? (
+          {/* An empty track, not the neutral marker: that marker means "measured, and the two
+              sides came out level", which is a different statement from having no measurement. */}
+          {!measured ? null : advantageTeam === "neutral" ? (
             <span style={{ position: "absolute", left: "47.5%", top: 0, bottom: 0, width: "5%", background: "var(--term-hairline)" }} />
           ) : (
             <span

@@ -140,8 +140,15 @@ Days in a season (optionally one month) that have regular-season games, with cou
 day chips on `/games` — the games board, which has been `/games` rather than `/` since the
 2026-08-12 front-door swap.
 
-- **Query (Zod):** `season` (must be in `NBA_SEASONS`), `month?` (int 1–12). Missing/invalid
-  → `400`.
+- **Query (Zod):** `season` — validated with **`browsableSeasonParam`** (`browsableSeasons()`),
+  not `seasonParam` (`NBA_SEASONS`) — plus `month?` (int 1–12). Missing/invalid → `400`.
+  - Widened on 2026-08-18, when the 2026-27 schedule was ingested. This route answers *which
+    dates have games*, which is exactly the thing that exists before any game is played, and
+    the board now opens on the released-but-unplayed season (`defaultNbaSeason()`), so
+    `NBA_SEASONS` would have 400'd the page's own default until October 1.
+  - `browsableSeasonParam` evaluates the list **per request** rather than at module load: the
+    Aug–Sep window closes on October 1 and a warm serverless instance would otherwise keep
+    answering for the old one.
 - **Success:** `{ data: GameDateCount[], error: null }` where
   `GameDateCount = { date, gameCount }`.
 - **Cache:** `CACHE.inSeason` since 2026-08-14 — see the caching section above for why this one
@@ -329,6 +336,22 @@ Which teams a season's schedule favored, ranked by net edge games. Powers `/sche
   from the existing `games` and `fatigue_scores` reads.
 - **Success:** `{ data: ScheduleDisparityResponse, error: null }` — the 30 ranked teams, the
   summary strip figures, and a provisional flag for a season still in progress.
+  - **Every fatigue-derived field is `number | null`, and `null` means *not measured*** (added
+    2026-08-18): `favorableGames`, `unfavorableGames`, `netEdgeGames`, `scheduleValueWins`,
+    `bigFavorableGames`, `bigUnfavorableGames`, and on the league row `delta`,
+    `gamesWithAnyEdge`, `gamesWithLargeEdge`. Fatigue is scored from games already *played*
+    (`fetchRecentGamesForTeam` selects `status = 'final'`), so a season whose schedule is
+    published but unplayed has no reading at all. These returned `0` until the 2026-27 ingest
+    made that visible — thirty rows of "0 edge games / 0.00 wins", which reads as a measured
+    dead-even season rather than one that has not started. Null is emitted only when *nothing*
+    was measured; a season part-way through keeps reporting.
+  - `league.measuredGames` — counted games that actually carried a fatigue pair, and so were
+    genuinely compared. Distinct from `countedGames` (which only excludes each side's opener):
+    an unplayed season is `countedGames: 1184, measuredGames: 0`, and the page quotes the
+    second under the word "COMPARED".
+  - `netRestEdge` — the season's capped own-minus-opponent rest-days sum, per team. Derived
+    from game dates alone, so it is the one edge figure that is final the day a schedule is
+    published; it is what `/schedule` ranks and plots when the fatigue headline is null.
   - Each team also carries `scheduleValueWins`: its net edge priced in wins through
     `src/lib/schedule-value.ts`, the same conversion `/api/season-report` uses.
     **The two routes must return the same value for the same team** — they are counted over the

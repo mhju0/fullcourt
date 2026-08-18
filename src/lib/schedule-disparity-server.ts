@@ -73,6 +73,7 @@ async function buildScheduleDisparity(
       teamId: t.teamId,
       abbreviation,
       name,
+      netRestEdge: t.netRestEdge,
       favorableGames: t.favorableGames,
       unfavorableGames: t.unfavorableGames,
       netEdgeGames: t.netEdgeGames,
@@ -99,6 +100,7 @@ async function buildScheduleDisparity(
       gamesWithAnyEdge: result.league.gamesWithAnyEdge,
       gamesWithLargeEdge: result.league.gamesWithLargeEdge,
       countedGames: result.league.countedGames,
+      measuredGames: result.league.measuredGames,
     },
   };
 }

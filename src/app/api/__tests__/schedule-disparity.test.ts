@@ -37,6 +37,7 @@ function payload(overrides: Partial<ScheduleDisparityResponse> = {}): ScheduleDi
         teamId: 1,
         abbreviation: "LAL",
         name: "Lakers",
+        netRestEdge: 9,
         favorableGames: 18,
         unfavorableGames: 11,
         netEdgeGames: 7,
@@ -52,6 +53,7 @@ function payload(overrides: Partial<ScheduleDisparityResponse> = {}): ScheduleDi
       gamesWithAnyEdge: 500,
       gamesWithLargeEdge: 60,
       countedGames: 1200,
+      measuredGames: 1200,
     },
     ...overrides,
   };

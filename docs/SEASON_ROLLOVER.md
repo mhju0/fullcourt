@@ -26,7 +26,8 @@ could otherwise fetch it. Written after the 2026-07 full-schedule audit; keep it
 | Concern | Mechanism | File |
 |---|---|---|
 | Season dropdowns / defaults include 2026-27 | `NBA_SEASONS` derives its upper bound from the ET date (`max(2025, currentSeasonStart)`) | `src/lib/nba-season.ts:8-22` |
-| `/schedule` can browse 2026-27 from **August**, before the Oct 1 rollover | `browsableSeasons()` = `NBA_SEASONS` + the upcoming season, Aug–Sep only. Deliberately separate from `NBA_SEASONS`, whose `.length` backs the "N-SEASON BACKTEST" copy and must never count an unplayed season | `src/lib/nba-season.ts` |
+| `/schedule` and `/games` can browse 2026-27 from **August**, before the Oct 1 rollover | `browsableSeasons()` = `NBA_SEASONS` + the upcoming season, Aug–Sep only. Deliberately separate from `NBA_SEASONS`, whose `.length` backs the "N-SEASON BACKTEST" copy and must never count an unplayed season | `src/lib/nba-season.ts` |
+| `/games` **opens on** the upcoming season once it is browsable | `defaultNbaSeason()` returns the last entry of `browsableSeasons()`; the page's `<SeasonSelector>` is passed the same list, and `/api/games/dates` validates with `browsableSeasonParam` so the board's own default is not a 400 | `src/lib/nba-season.ts`, `src/lib/api-route.ts` |
 | "Today", season default, offseason check use ET | `formatEasternDateKey()` | `src/lib/nba-season.ts` |
 | Daily pipeline skips the offseason, runs in-season | `season_window.is_in_season()` (generic, no hardcoded year) | `scripts/season_window.py:91` |
 | Historical seed range extends to the current season | `range(1985, current_season_start_year() + 1)` | `scripts/fetch_schedule.py` |

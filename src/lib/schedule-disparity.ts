@@ -150,12 +150,19 @@ export interface DisparityTeamRow {
   threeInFourEdge: number;
   /** Fourth-night-in-six games avoided, same orientation. */
   fourInSixEdge: number;
-  /** Counted games with a fatigue advantage ≥ the app's 0.5 call threshold. */
-  favorableGames: number;
-  /** Counted games facing a fatigue disadvantage ≥ 0.5. */
-  unfavorableGames: number;
-  /** favorableGames − unfavorableGames: the page's headline ranking. */
-  netEdgeGames: number;
+  /**
+   * Counted games with a fatigue advantage ≥ the app's 0.5 call threshold.
+   *
+   * **Null when no counted game carried a fatigue pair**, like `netFatigueEdge` above and for
+   * the same reason. Fatigue is scored from games already played, so a season whose schedule is
+   * published but unplayed has none — and reporting 0 there says "measured, and the schedule
+   * favoured this team in zero games", which is a different claim from "not measured yet".
+   */
+  favorableGames: number | null;
+  /** Counted games facing a fatigue disadvantage ≥ 0.5. Null when nothing was measured. */
+  unfavorableGames: number | null;
+  /** favorableGames − unfavorableGames: the page's headline ranking. Null when unmeasured. */
+  netEdgeGames: number | null;
   /**
    * Every scored game split by venue as well as by side, which is what pricing them requires: a
    * rest edge held at home is worth 1.25 points of win probability and the same edge held on
@@ -174,11 +181,11 @@ export interface DisparityTeamRow {
    * no season's schedule reaches half a game either way. Copy quoting it needs the per-game
    * effect beside it, or the size of the number gets taken for the size of the effect.
    */
-  scheduleValueWins: number;
-  /** The ≥ {@link BIG_EDGE_FATIGUE_THRESHOLD} tier of favorableGames. */
-  bigFavorableGames: number;
-  /** The ≥ 1.5 tier of unfavorableGames. */
-  bigUnfavorableGames: number;
+  scheduleValueWins: number | null;
+  /** The ≥ {@link BIG_EDGE_FATIGUE_THRESHOLD} tier of favorableGames. Null when unmeasured. */
+  bigFavorableGames: number | null;
+  /** The ≥ 1.5 tier of unfavorableGames. Null when unmeasured. */
+  bigUnfavorableGames: number | null;
   /** Counted games where the team had more rest than its opponent. */
   gamesWithEdge: number;
   /** Counted games where that edge was LARGE_EDGE_DAYS or more. */
@@ -186,15 +193,26 @@ export interface DisparityTeamRow {
 }
 
 export interface DisparityLeagueRow {
-  /** Largest and smallest team net edge games this season, and the spread between them. */
-  largestEdge: number;
-  largestDisadvantage: number;
-  delta: number;
+  /**
+   * Largest and smallest team net edge games this season, and the spread between them.
+   * Null when no game carried a fatigue pair — see {@link DisparityLeagueRow.measuredGames}.
+   */
+  largestEdge: number | null;
+  largestDisadvantage: number | null;
+  delta: number | null;
   /** Counted games where either side's fatigue edge reached 0.5 / the 1.5 big tier. */
-  gamesWithAnyEdge: number;
-  gamesWithLargeEdge: number;
-  /** Counted games — the denominator for the two counts above. */
+  gamesWithAnyEdge: number | null;
+  gamesWithLargeEdge: number | null;
+  /** Counted games — excludes each side's opener. A population, not a comparison. */
   countedGames: number;
+  /**
+   * Counted games that actually carried a fatigue pair, and so were genuinely compared.
+   *
+   * Separate from `countedGames` because the two diverge exactly when it matters: an unplayed
+   * season has 1,184 counted games and 0 measured ones, and the page used to print the first
+   * number under the word "COMPARED".
+   */
+  measuredGames: number;
 }
 
 export interface ScheduleDisparityResult {
@@ -433,6 +451,7 @@ export function computeScheduleDisparity(
   for (const teamId of byTeam.keys()) sides.set(teamId, []);
 
   let countedGames = 0;
+  let measuredGames = 0;
   let gamesWithAnyEdge = 0;
   let leagueGamesWithLargeEdge = 0;
 
@@ -447,6 +466,7 @@ export function computeScheduleDisparity(
       toFatigue(g.homeFatigueScore) !== null && toFatigue(g.awayFatigueScore) !== null
         ? Math.abs(toFatigue(g.awayFatigueScore)! - toFatigue(g.homeFatigueScore)!)
         : null;
+    if (fatigueGap !== null) measuredGames++;
     if (fatigueGap !== null && fatigueGap >= NEUTRAL_REST_ADVANTAGE_THRESHOLD) gamesWithAnyEdge++;
     if (fatigueGap !== null && fatigueGap >= BIG_EDGE_FATIGUE_THRESHOLD) leagueGamesWithLargeEdge++;
 
@@ -549,24 +569,42 @@ export function computeScheduleDisparity(
       backToBackEdge,
       threeInFourEdge,
       fourInSixEdge,
-      favorableGames,
-      unfavorableGames,
-      netEdgeGames: favorableGames - unfavorableGames,
+      // Every figure below is a fatigue reading, so all of them answer "not measured" together
+      // rather than one field at a time. `fatiguePairs` is the single gate: it is 0 exactly when
+      // no counted game had both fatigue scores, which is the whole of a published-but-unplayed
+      // season. `restStates` is skipped by the same condition inside its own helper, so pricing
+      // it in wins would return a confident 0.00 from six zero counts.
+      favorableGames: fatiguePairs > 0 ? favorableGames : null,
+      unfavorableGames: fatiguePairs > 0 ? unfavorableGames : null,
+      netEdgeGames: fatiguePairs > 0 ? favorableGames - unfavorableGames : null,
       restStates: teamRestStates,
       // Two decimals held, one displayed — the same reason the Season Report holds two.
-      scheduleValueWins: Math.round(scheduleValueWins(teamRestStates) * 100) / 100,
-      bigFavorableGames,
-      bigUnfavorableGames,
+      scheduleValueWins:
+        fatiguePairs > 0 ? Math.round(scheduleValueWins(teamRestStates) * 100) / 100 : null,
+      bigFavorableGames: fatiguePairs > 0 ? bigFavorableGames : null,
+      bigUnfavorableGames: fatiguePairs > 0 ? bigUnfavorableGames : null,
       gamesWithEdge,
       gamesWithLargeEdge,
     });
   }
 
-  teams.sort((a, b) => b.netEdgeGames - a.netEdgeGames || a.teamId - b.teamId);
+  // Ranked by the fatigue headline where a season has one, and by net rest edge where it does
+  // not. Decided once for the season rather than per row so the comparator never mixes two
+  // scales. Leaving an unmeasured season in team-id order under a "most favoured first" heading
+  // would present an arbitrary list as a ranking; net rest edge is this module's namesake, is
+  // derived from dates alone, and so is defined for exactly the seasons the fatigue figure is not.
+  const rankedByFatigue = teams.some((t) => t.netEdgeGames !== null);
+  teams.sort((a, b) =>
+    rankedByFatigue
+      ? (b.netEdgeGames ?? 0) - (a.netEdgeGames ?? 0) || a.teamId - b.teamId
+      : b.netRestEdge - a.netRestEdge || a.teamId - b.teamId
+  );
 
-  const edges = teams.map((t) => t.netEdgeGames);
-  const largestEdge = edges.length ? Math.max(...edges) : 0;
-  const largestDisadvantage = edges.length ? Math.min(...edges) : 0;
+  const edges = teams
+    .map((t) => t.netEdgeGames)
+    .filter((edge): edge is number => edge !== null);
+  const largestEdge = edges.length ? Math.max(...edges) : null;
+  const largestDisadvantage = edges.length ? Math.min(...edges) : null;
 
   const scheduledPerTeam = [...byTeam.values()].map((list) => list.length);
 
@@ -580,10 +618,14 @@ export function computeScheduleDisparity(
     league: {
       largestEdge,
       largestDisadvantage,
-      delta: largestEdge - largestDisadvantage,
-      gamesWithAnyEdge,
-      gamesWithLargeEdge: leagueGamesWithLargeEdge,
+      delta:
+        largestEdge !== null && largestDisadvantage !== null
+          ? largestEdge - largestDisadvantage
+          : null,
+      gamesWithAnyEdge: measuredGames > 0 ? gamesWithAnyEdge : null,
+      gamesWithLargeEdge: measuredGames > 0 ? leagueGamesWithLargeEdge : null,
       countedGames,
+      measuredGames,
     },
   };
 }

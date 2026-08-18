@@ -172,10 +172,23 @@ export function defaultNbaCalendarMonth(): number {
   return 10;
 }
 
-export function defaultNbaSeason(): NbaSeasonLabel {
-  const currentSeason = seasonLabelForDateKey(formatEasternDateKey());
-  if (NBA_SEASONS.includes(currentSeason)) return currentSeason as NbaSeasonLabel;
-  return NBA_SEASONS[NBA_SEASONS.length - 1];
+/**
+ * The season a schedule-facing surface opens on: the newest one {@link browsableSeasons} offers.
+ *
+ * Deliberately not `currentDisplaySeason()`, and not the last entry of `NBA_SEASONS`. Between a
+ * schedule release and October 1 both of those name the season that has just *ended*, so on the
+ * day the NBA publishes the next calendar the Games board opened on last season's results and
+ * the new slate was reachable only by changing the dropdown. Deriving it from the browsable list
+ * instead means the board follows the release with no dated special case of its own: through
+ * August and September it is the upcoming season, and from October 1 that same season is simply
+ * the current one, because `NBA_SEASONS` has rolled over by then.
+ *
+ * Surfaces that *count* evidence rather than browse it still read `NBA_SEASONS` — the two
+ * meanings are separate on purpose, and {@link browsableSeasons} says why.
+ */
+export function defaultNbaSeason(todayKey: string = formatEasternDateKey()): NbaSeasonLabel {
+  const seasons = browsableSeasons(todayKey);
+  return seasons[seasons.length - 1];
 }
 
 /**

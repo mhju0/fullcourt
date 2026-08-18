@@ -14,6 +14,18 @@ export type RestAdvantageDisplay =
   | {
       kind: "neutral";
       text: string;
+    }
+  /**
+   * No fatigue pair exists for this game, so no differential was ever computed.
+   *
+   * Distinct from `neutral`, which is a *result*: the model measured both sides and called
+   * the gap too small to act on. Folding the two together is how the Games board came to
+   * print "EVEN 0.0" over all 1,200 fixtures of a released-but-unplayed season — fatigue is
+   * scored from games already played, so an unstarted season has no scores to difference.
+   */
+  | {
+      kind: "unmeasured";
+      text: string;
     };
 
 export function formatRestAdvantageValue(value: number): string {
@@ -25,7 +37,11 @@ export function formatRestAdvantageDisplay(
   homeAbbreviation: string,
   awayAbbreviation: string
 ): RestAdvantageDisplay {
-  if (!restAdvantage || restAdvantage.advantageTeam === "neutral") {
+  if (!restAdvantage) {
+    return { kind: "unmeasured", text: "—" };
+  }
+
+  if (restAdvantage.advantageTeam === "neutral") {
     return { kind: "neutral", text: "NEUTRAL" };
   }
 

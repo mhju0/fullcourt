@@ -64,6 +64,17 @@ deep link is an old bookmark, which the redirect lands on the default BY DATE vi
 **BY DATE** is the state machine below; **UPCOMING** renders `<UpcomingContentLazy />` in place
 of the stat row, filter panel and matchup list.
 
+**The board opens on the newest *browsable* season** (2026-08-18), not the newest one with
+data. `defaultNbaSeason()` now reads the last entry of `browsableSeasons()`, and the
+`<SeasonSelector>` is passed that same list — the two must agree, or the select renders a value
+none of its options carry. Between a schedule release and October 1 the old definition named
+the season that had just *ended*, so on the day the NBA published the 2026-27 calendar the
+board opened on 2025-26 results with the new slate hidden behind the dropdown. Outside that
+Aug–Sep window the two definitions are identical, so this needs no dated special case of its
+own. The off-season banner is gated on `slate.season === currentDisplaySeason()` for the same
+reason: it had been announcing "2025-26 SEASON COMPLETE — SHOWING FINAL SLATE" directly above
+next season's schedule.
+
 Browsing state lives in **`useGameSlate`** (`src/hooks/useGameSlate.ts`), a thin shell over the
 pure reducer in `src/lib/game-slate-machine.ts`. The page holds no fetch, no date arithmetic and
 no loading flags of its own.
@@ -284,6 +295,22 @@ does not correlate with the preseason win-total market. The lazy client componen
 renders, in order: a `<SeasonSelector>` over `browsableSeasons()`, a four-cell summary strip
 (most favored / least favored / spread / games with an edge), the ranked **net rest edge**
 list, the column guide, and the full breakdown table.
+
+**The page ranks on whichever figure the selected season has** (2026-08-18). `rankedByFatigue`
+is decided once per season — `teams.some(t => t.netEdgeGames !== null)` — and drives the bars,
+the summary strip, the leaderboard heading and the Net column's unit together. A
+published-but-unplayed season has no fatigue reading at all, so it ranks on `netRestEdge`
+instead: date-derived, the module's namesake, and defined for exactly the seasons the fatigue
+figure is not. Everything downstream moves with the flag, because a bar measured in rest days
+under a heading that says "net edge games" is a different claim than the one being made. The
+six fatigue columns render an em dash (`UNMEASURED`), never `0` — the same distinction
+`RestAdvCell` draws on the Games board. The standalone **Rest days** column only appears when
+the season *is* ranked by fatigue; otherwise the Net column already is that number, and
+printing both gave every row the same value twice.
+
+Worth keeping: adding that column made the divergence the module exists to show legible in one
+row — in 2025-26 Portland is −1 in edge games and **+15 in rest days**, Utah is +21 and −3. Days
+off and arriving fresh are not the same thing, and travel is the gap between them.
 
 The breakdown table's **Worth (wins)** column is the same figure `/season` publishes, from the
 same conversion (`src/lib/schedule-value.ts`) and the same population — the two pages must never
@@ -801,6 +828,17 @@ The **center-anchored rest-advantage meter** (fill width `min(|diff|/5, 1) * 50%
 rested pole `--term-blue` whichever side it extends toward, because the advantaged team *is* the
 more-rested one and direction alone carries home/away) now lives in `matchup-table.tsx` as
 `RestAdvCell`. It was `RestAdvPanel` here until 2026-08-11.
+
+**A game with no measurement prints an em dash, not `EVEN 0.0`** (2026-08-18). The two are
+different facts and the cell used to collapse them: `formatRestAdvantageDisplay` folded a
+`null` rest advantage into `kind: "neutral"`, which means *measured, and the sides came out
+level*. That was invisible until the 2026-27 schedule was ingested — fatigue is scored from
+games already played, so an unstarted season has no scores to difference and all 1,200
+fixtures rendered as a measured dead heat. The formatter now returns a third kind,
+`"unmeasured"`, the cell renders `display.text` for it, and the meter draws an empty track
+rather than the neutral centre marker. The distinction lives in the pure formatter so it is
+unit-tested (`src/lib/__tests__/rest-advantage-display.test.ts`) rather than asserted from the
+shape of `restAdvantage` inside the component.
 
 ### `fatigue-bar.tsx`
 

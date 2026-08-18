@@ -35,6 +35,20 @@ const LATEST_SEASON = defaultRankableSeason()
  * page uses. Every figure on this page is oriented so positive is favorable, so one mapping
  * serves the whole table.
  */
+/**
+ * What a column prints when the figure behind it was never measured.
+ *
+ * The em dash the whole site uses for "no reading" — deliberately not "0", which would claim
+ * the model looked and found nothing. See `RestAdvCell` in matchup-table.tsx for the same
+ * distinction on the Games board.
+ */
+const UNMEASURED = "—"
+
+/** `signedNumber`, or the em dash when there is nothing to sign. */
+function signedOrDash(value: number | null, decimals?: number): string {
+  return value === null ? UNMEASURED : signedNumber(value, decimals)
+}
+
 function edgeColor(value: number | null): string {
   if (value === null || value === 0) return "var(--term-neutral)"
   return value > 0 ? "var(--term-blue)" : "var(--term-red)"
@@ -151,6 +165,14 @@ function ColumnGuide({ countedGames, scheduledGames }: { countedGames: number; s
           signal.
         </p>
         <p>
+          {term("Rest days")} — the same comparison in bare days off, own minus opponent, capped at
+          five a side before differencing so the All-Star break cannot swamp a season. This is the
+          only edge column that comes from the calendar alone, which makes it the one that is final
+          the day the schedule is published: the fatigue columns need games to have been played and
+          read &mdash; until they have. It is also why the two can disagree — a team can bank rest
+          days and still arrive more tired, because it flew further to get there.
+        </p>
+        <p>
           {term("B2B edge")} and {term("3-in-4 edge")} — back-to-backs, and third-nights-in-four,
           avoided relative to opponents. Positive means the team arrived rested more often than the
           teams across from it.
@@ -178,8 +200,18 @@ export function ScheduleDisparityContent() {
   )
 
   const teams: ScheduleDisparityTeam[] = data?.teams ?? []
+
+  // Which figure this season is ranked by, decided once for the whole table. Fatigue is scored
+  // from games already played, so a published-but-unplayed season has no `netEdgeGames` at all
+  // and the bars would all draw at zero. Net rest edge is derived from dates alone and is the
+  // module's namesake, so it stands in — and the column headings follow it, because a bar
+  // measured in rest days must not sit under a heading that says games.
+  const rankedByFatigue = teams.some((t) => t.netEdgeGames !== null)
+  const rankValue = (t: ScheduleDisparityTeam) =>
+    rankedByFatigue ? (t.netEdgeGames ?? 0) : t.netRestEdge
+  const rankUnit = rankedByFatigue ? "games" : "rest days"
   const bound = teams.length
-    ? Math.max(5, Math.ceil(Math.max(...teams.map((t) => Math.abs(t.netEdgeGames))) / 5) * 5)
+    ? Math.max(5, Math.ceil(Math.max(...teams.map((t) => Math.abs(rankValue(t)))) / 5) * 5)
     : 5
 
   const most = teams[0]
@@ -200,7 +232,7 @@ export function ScheduleDisparityContent() {
             style={{ marginTop: SPACE.md, fontSize: TYPE.label, color: "var(--term-text-muted)", lineHeight: LEAD.body }}
           >
             {data.provisional ? "PROVISIONAL" : "FINAL"} ·{" "}
-            {data.league.countedGames.toLocaleString()} OF{" "}
+            {data.league.measuredGames.toLocaleString()} OF{" "}
             {data.scheduledGames.toLocaleString()} GAMES COMPARED
             {data.provisional ? ` · AS OF ${data.asOf}` : ""}
           </p>
@@ -210,6 +242,14 @@ export function ScheduleDisparityContent() {
             This season&rsquo;s schedule is not finished. The NBA announces only 80 of each
             team&rsquo;s 82 games before opening night and fills the rest once NBA Cup group play
             resolves in December, so these figures will revise.
+            {data.league.measuredGames === 0 ? (
+              <>
+                {" "}
+                None of it has been played yet, so the fatigue columns read &mdash; rather than
+                zero: rest advantage is scored from games already played. Rest days, back-to-backs
+                and three-in-fours come from the calendar and are final now.
+              </>
+            ) : null}
           </p>
         ) : null}
       </div>
@@ -226,21 +266,33 @@ export function ScheduleDisparityContent() {
         >
           <StatCell
             label="Most favored"
-            value={signedNumber(most.netEdgeGames)}
+            value={signedNumber(rankValue(most))}
             sub={`${most.abbreviation} · ${most.name}`}
-            tone={edgeColor(most.netEdgeGames)}
+            tone={edgeColor(rankValue(most))}
           />
           <StatCell
             label="Least favored"
-            value={signedNumber(least.netEdgeGames)}
+            value={signedNumber(rankValue(least))}
             sub={`${least.abbreviation} · ${least.name}`}
-            tone={edgeColor(least.netEdgeGames)}
+            tone={edgeColor(rankValue(least))}
           />
-          <StatCell label="Spread" value={String(data.league.delta)} sub="edge games, best to worst" />
+          <StatCell
+            label="Spread"
+            value={
+              rankedByFatigue
+                ? String(data.league.delta ?? UNMEASURED)
+                : String(rankValue(most) - rankValue(least))
+            }
+            sub={`${rankUnit}, best to worst`}
+          />
           <StatCell
             label="Games with an edge"
-            value={data.league.gamesWithAnyEdge.toLocaleString()}
-            sub={`${data.league.gamesWithLargeEdge.toLocaleString()} of them big (1.5+)`}
+            value={data.league.gamesWithAnyEdge?.toLocaleString() ?? UNMEASURED}
+            sub={
+              data.league.gamesWithLargeEdge === null
+                ? "not measured until the season is played"
+                : `${data.league.gamesWithLargeEdge.toLocaleString()} of them big (1.5+)`
+            }
           />
         </div>
       ) : null}
@@ -250,7 +302,9 @@ export function ScheduleDisparityContent() {
           className="mono"
           style={{ fontSize: 11, letterSpacing: TRACK.label, color: "var(--term-text-muted)", fontWeight: 600, textTransform: "uppercase" }}
         >
-          Net edge games — games with a real rest edge, minus games against one
+          {rankedByFatigue
+            ? "Net edge games — games with a real rest edge, minus games against one"
+            : "Net rest edge — days off this team banked, minus days off its opponents did"}
         </p>
 
         {isLoading ? (
@@ -285,17 +339,17 @@ export function ScheduleDisparityContent() {
                 <span className="mono" style={{ fontSize: 12, fontWeight: 700, color: "var(--term-text)" }}>
                   {t.abbreviation}
                 </span>
-                <EdgeBar value={t.netEdgeGames} bound={bound} height={15} />
+                <EdgeBar value={rankValue(t)} bound={bound} height={15} />
                 <span
                   className="mono text-right"
                   style={{
                     fontSize: 12,
                     fontWeight: 700,
                     fontVariantNumeric: "tabular-nums",
-                    color: edgeColor(t.netEdgeGames),
+                    color: edgeColor(rankValue(t)),
                   }}
                 >
-                  {signedNumber(t.netEdgeGames)}
+                  {signedNumber(rankValue(t))}
                 </span>
               </li>
             ))}
@@ -352,20 +406,40 @@ export function ScheduleDisparityContent() {
                   ),
                 },
                 {
-                  label: "Edge games",
+                  label: rankedByFatigue ? "Edge games" : "Rest edge",
                   style: { width: "30%", minWidth: 150 },
-                  cell: (t) => <EdgeBar value={t.netEdgeGames} bound={bound} height={11} />,
+                  cell: (t) => <EdgeBar value={rankValue(t)} bound={bound} height={11} />,
                 },
                 {
+                  // The ranking figure, whichever one this season has. Its unit moves with it:
+                  // a rest-days number under a "games" heading is a different claim.
                   label: "Net",
-                  unit: "games",
+                  unit: rankUnit,
                   numeric: true,
                   cell: (t) => (
-                    <span style={{ fontWeight: 700, color: edgeColor(t.netEdgeGames) }}>
-                      {signedNumber(t.netEdgeGames)}
+                    <span style={{ fontWeight: 700, color: edgeColor(rankValue(t)) }}>
+                      {signedNumber(rankValue(t))}
                     </span>
                   ),
                 },
+                // Date-derived, so it is the one edge figure that is final the day the schedule
+                // is published. Only shown alongside the fatigue headline — when the season is
+                // ranked on rest days the Net column already *is* this number, and printing both
+                // gave every row the same value twice.
+                ...(rankedByFatigue
+                  ? [
+                      {
+                        label: "Rest days",
+                        unit: "net",
+                        numeric: true,
+                        cell: (t: ScheduleDisparityTeam) => (
+                          <span style={{ color: edgeColor(t.netRestEdge) }}>
+                            {signedNumber(t.netRestEdge)}
+                          </span>
+                        ),
+                      },
+                    ]
+                  : []),
                 {
                   // The same figure the Season Report publishes, from the same conversion
                   // and the same population — the two must never disagree for a team.
@@ -377,7 +451,7 @@ export function ScheduleDisparityContent() {
                       data-testid="schedule-value-wins"
                       style={{ fontWeight: 700, color: edgeColor(t.netEdgeGames) }}
                     >
-                      {signedNumber(t.scheduleValueWins, 1)}
+                      {signedOrDash(t.scheduleValueWins, 1)}
                     </span>
                   ),
                 },
@@ -387,17 +461,22 @@ export function ScheduleDisparityContent() {
                   numeric: true,
                   className: "whitespace-nowrap",
                   style: { color: "var(--term-text-muted)" },
-                  cell: (t) => `${t.favorableGames} / ${t.unfavorableGames}`,
+                  cell: (t) =>
+                    t.favorableGames === null || t.unfavorableGames === null
+                      ? UNMEASURED
+                      : `${t.favorableGames} / ${t.unfavorableGames}`,
                 },
                 {
                   label: "Big edge",
                   unit: "games",
                   numeric: true,
-                  cell: (t) => (
-                    <span style={{ color: edgeColor(t.bigFavorableGames - t.bigUnfavorableGames) }}>
-                      {signedNumber(t.bigFavorableGames - t.bigUnfavorableGames)}
-                    </span>
-                  ),
+                  cell: (t) => {
+                    const big =
+                      t.bigFavorableGames === null || t.bigUnfavorableGames === null
+                        ? null
+                        : t.bigFavorableGames - t.bigUnfavorableGames
+                    return <span style={{ color: edgeColor(big) }}>{signedOrDash(big)}</span>
+                  },
                 },
                 {
                   label: "B2B edge",

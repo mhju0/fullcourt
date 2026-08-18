@@ -15,13 +15,28 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { getPublicApiErrorMessage, PublicApiError } from "@/lib/api-errors";
-import { NBA_SEASONS } from "@/lib/nba-season";
+import { browsableSeasons, NBA_SEASONS } from "@/lib/nba-season";
 import type { ApiResponse } from "@/types";
 
 /** The one season rule. Routes that need a different list say so explicitly. */
 export const seasonParam = z.string().refine((s) => NBA_SEASONS.includes(s), {
   message: "Invalid season",
 });
+
+/**
+ * The season rule for **schedule** routes, which may be asked for a season that has a calendar
+ * but no results yet.
+ *
+ * `seasonParam` is the right default precisely because it refuses those: a season with no
+ * completed games cannot back an analysis. A published schedule is the one thing that exists
+ * before the games do, so the routes serving it validate against {@link browsableSeasons}
+ * instead. Evaluated per request rather than captured at module load — the list closes on
+ * October 1, and a long-lived serverless instance would otherwise keep answering for the old
+ * window.
+ */
+export const browsableSeasonParam = z
+  .string()
+  .refine((s) => browsableSeasons().includes(s), { message: "Invalid season" });
 
 /** Minimum absolute rest advantage; absent means "no floor". */
 export const minRAParam = z.coerce.number().finite().min(0).default(0);

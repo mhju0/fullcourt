@@ -354,12 +354,28 @@ export interface ScheduleDisparityTeam {
   teamId: number;
   abbreviation: string;
   name: string;
-  /** Counted games with a fatigue advantage ≥ the app's 0.5 call threshold. */
-  favorableGames: number;
-  /** Counted games facing a fatigue disadvantage ≥ 0.5. */
-  unfavorableGames: number;
-  /** favorableGames − unfavorableGames — the page's headline ranking. */
-  netEdgeGames: number;
+  /**
+   * Season sum of the capped own-minus-opponent rest-days differential. Positive is favorable,
+   * like every figure here.
+   *
+   * Derived from game dates alone, so unlike every fatigue figure below it is defined for a
+   * season whose schedule is published but unplayed — which is why it is shipped: it is what
+   * lets the page rank 2026-27 in August instead of showing thirty blank rows. Capped at 5 days
+   * per side before differencing, justified by the model's own `FRESHNESS_PLATEAU_DAYS = 3`;
+   * uncapped, the All-Star break swamps the season total.
+   */
+  netRestEdge: number;
+  /**
+   * Counted games with a fatigue advantage ≥ the app's 0.5 call threshold.
+   *
+   * **Null means not measured, not zero.** Fatigue is scored from games already played, so
+   * every fatigue figure on this row is null together for an unplayed season.
+   */
+  favorableGames: number | null;
+  /** Counted games facing a fatigue disadvantage ≥ 0.5. Null when unmeasured. */
+  unfavorableGames: number | null;
+  /** favorableGames − unfavorableGames — the page's headline ranking. Null when unmeasured. */
+  netEdgeGames: number | null;
   /**
    * The same edges priced in wins, through the conversion the Season Report also reads.
    *
@@ -368,10 +384,10 @@ export interface ScheduleDisparityTeam {
    * copy that quotes it needs the per-game effect beside it (`REST_SHARE_OF_HOME_COURT`), or a
    * reader takes the size of the number for the size of the effect.
    */
-  scheduleValueWins: number;
-  /** The ≥ 1.5 "big edge" tier of each count. */
-  bigFavorableGames: number;
-  bigUnfavorableGames: number;
+  scheduleValueWins: number | null;
+  /** The ≥ 1.5 "big edge" tier of each count. Null when unmeasured. */
+  bigFavorableGames: number | null;
+  bigUnfavorableGames: number | null;
   /** Back-to-backs avoided relative to opponents. Positive is favorable, like every figure here. */
   backToBackEdge: number;
   /** Third-nights-in-four avoided relative to opponents. */
@@ -383,12 +399,20 @@ export interface ScheduleDisparityTeam {
  * count, and the league-wide rest distribution all shifted across the four decades covered.
  */
 export interface ScheduleDisparityLeague {
-  /** Spread in net edge games between the most and least favored team. */
-  delta: number;
+  /** Spread in net edge games between the most and least favored team. Null when unmeasured. */
+  delta: number | null;
   /** Counted games where one side's fatigue edge reached 0.5, and the ≥1.5 big tier. */
-  gamesWithAnyEdge: number;
-  gamesWithLargeEdge: number;
+  gamesWithAnyEdge: number | null;
+  gamesWithLargeEdge: number | null;
+  /** Counted games — excludes each side's opener. A population, not a comparison. */
   countedGames: number;
+  /**
+   * Counted games that carried a fatigue pair, and so were genuinely compared.
+   *
+   * The denominator the page should quote beside the word "COMPARED". It diverges from
+   * `countedGames` exactly when it matters: an unplayed season has 1,184 counted and 0 measured.
+   */
+  measuredGames: number;
 }
 
 export interface ScheduleDisparityResponse {

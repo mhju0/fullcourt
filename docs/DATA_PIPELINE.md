@@ -84,6 +84,39 @@ Steps:
 - Manual repair: dispatch the GitHub Actions workflow with `task=resync-schedule`
   (bypasses the season gate; the CDN geo-blocks non-US IPs, so run it from CI).
 
+### `seed_upcoming_season_espn.ts` — an upcoming season's schedule, from ESPN
+- `pnpm exec tsx scripts/seed_upcoming_season_espn.ts <season> [--dry-run] [--refresh]`.
+  Used on 2026-08-18 to seed 2026-27 the day the NBA published it.
+- **Why it exists:** on schedule-release day neither normal path can reach a source.
+  `fetch_schedule.py` needs stats.nba.com (times out from Seoul *and* CI) and
+  `fetch_nba_schedule_cdn.py` needs cdn.nba.com (403 from both — Akamai blocks non-US and
+  datacenter IPs alike, with or without browser headers). ESPN's scoreboard answers.
+  Note the trap: sending a `Mozilla/5.0` User-Agent is what *trips* the block; a plain
+  request gets 200. The script therefore sets no UA at all.
+- **`external_id` is `espn-<eventId>`, not a stats `002…` id.** The canonical ids are not
+  derivable — NBA game numbering is not date-ordered (2025-26 opens `0022500001`,
+  `0022500002`, then jumps to `0022500080` on night two) — and no reachable source carries
+  them. Precedent: the `bref-` rows from the 2026-07-12 audit. Two consumers match on the
+  `002…` shape and so skip these rows until they are re-keyed: `src/lib/live-score-sync.ts`
+  and `scripts/analyze_player_shooting.py`. Neither matters before tip-off.
+- Regular season only (`season.type === 2`); ESPN's TBD-vs-TBD NBA Cup knockout placeholders
+  carry no teams and are skipped. `games.date` is the **ET** calendar date of the tip.
+  Also writes `tip_off_utc`, `neutral_site`, `neutral_venue_city`.
+- Expect **1,200** games at release, not 1,230: the NBA publishes 80 of each team's 82 and
+  fills the rest once Cup group play resolves in December. Re-run then — the upsert is
+  idempotent on `external_id`.
+- **Gated, not trusted.** Writes nothing unless all 30 teams appear, every team has the same
+  game count, no team is double-booked on a date, no fixture repeats, every abbreviation
+  resolves, and no existing row for that season holds the same (date, home, away) under a
+  different `external_id` — `external_id` is the only uniqueness guard on `games`.
+- **Do not run `backfill_fatigue.ts` over the season this seeds.** Fatigue scores from
+  *played* games (`fetchRecentGamesForTeam` selects `status = 'final'`), so an unstarted
+  season scores every team 0 with a null `days_since_last_game`. Those rows are not inert:
+  `buildRestAdvantage` reads them as a measured dead heat and the board prints EVEN for all
+  1,200 fixtures. With no rows at all both correctly return null, and `run-daily.ts` — which
+  deletes and recomputes a date's rows rather than skipping scored ones — fills each day in
+  as it is played. This was done and reverted on 2026-08-18; 2,400 zero rows were deleted.
+
 ### `nba_ot_periods.py` — overtime detection (legacy)
 - `fetch_overtime_periods(game_id, delay_seconds=0.65)` calls `BoxScoreSummaryV2`, reads
   the last `PERIOD`, returns `max(0, period − 4)` (period 5 ⇒ 1 OT). Returns `0` on any

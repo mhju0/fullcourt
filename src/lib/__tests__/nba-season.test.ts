@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   browsableSeasons,
   currentDisplaySeason,
+  defaultNbaSeason,
   formatEasternDateKey,
   formatLocalDateKey,
   isNbaOffSeason,
@@ -205,5 +206,34 @@ describe("browsableSeasons", () => {
     const seasons = browsableSeasons("2026-08-15");
 
     expect(seasons).not.toContain(nextSeasonLabel(upcoming));
+  });
+});
+
+describe("defaultNbaSeason", () => {
+  const latestWithData = NBA_SEASONS[NBA_SEASONS.length - 1];
+  const upcoming = nextSeasonLabel(latestWithData);
+
+  it.each(["2026-08-01", "2026-08-18", "2026-09-30"])(
+    "opens on the upcoming season once its schedule is browsable (%s)",
+    (todayKey) => {
+      // The point of the change: on schedule-release day the board must not open on the
+      // season that just ended, with the new calendar hidden behind the dropdown.
+      expect(defaultNbaSeason(todayKey)).toBe(upcoming);
+    }
+  );
+
+  it.each(["2026-07-31", "2026-10-01", "2027-01-15", "2027-04-30"])(
+    "opens on the newest season with data outside that window (%s)",
+    (todayKey) => {
+      expect(defaultNbaSeason(todayKey)).toBe(latestWithData);
+    }
+  );
+
+  it("never returns a season the selector cannot offer", () => {
+    // The board's default and its dropdown read the same list; if they ever diverge the
+    // select renders with a value none of its options carry and silently shows the wrong one.
+    for (const todayKey of ["2026-07-31", "2026-08-18", "2026-10-01", "2027-02-01"]) {
+      expect(browsableSeasons(todayKey)).toContain(defaultNbaSeason(todayKey));
+    }
   });
 });
