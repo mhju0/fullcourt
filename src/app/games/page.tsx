@@ -13,6 +13,7 @@ import { useGameSlate, type GameSlate } from "@/hooks/useGameSlate"
 import { currentDisplaySeason, isNbaOffSeason } from "@/lib/nba-season"
 import { MessageCard } from "@/components/ui/message-card"
 import { MethodLink } from "@/components/method-link"
+import { StatTile } from "@/components/ui/stat-tile"
 import { LEAD, SPACE, SPACE_CARD, termCardStyle, TRACK, TYPE } from "@/lib/terminal-styles"
 import { cn } from "@/lib/utils"
 
@@ -33,30 +34,6 @@ const termBtnStyle: React.CSSProperties = { border: "1px solid var(--term-border
 
 // ─── Stat summary row ────────────────────────────────────────────
 
-function StatCard({ label, value, accent }: { label: string; value: string; accent: string }) {
-  return (
-    <div
-      className="mono flex flex-col gap-2"
-      style={{
-        background: "var(--term-surface)",
-        border: "1px solid var(--term-border)",
-        // Top rule, not left: as a left border the tiles read as a list with coloured
-        // bullets. Along the top edge they read as a row of measures, which is what they are.
-        borderTop: `2px solid ${accent}`,
-        borderRadius: "var(--term-radius)",
-        padding: 16,
-      }}
-    >
-      <span style={{ fontSize: 11, letterSpacing: TRACK.label, color: "var(--term-text-muted)", fontWeight: 500 }}>
-        {label}
-      </span>
-      <span className="tabular-nums" style={{ fontSize: TYPE.stat, fontWeight: 500, letterSpacing: TRACK.figure, color: "var(--term-text)", lineHeight: LEAD.figure }}>
-        {value}
-      </span>
-    </div>
-  )
-}
-
 /* Three tiles, all of them about the slate on screen. The fourth used to carry the
    all-seasons backtest rate, which described none of these games: the historical claim
    belongs in each matchup row, where it is stated for that game's own rest gap, and
@@ -74,10 +51,10 @@ function StatSummaryRow({
     <div className="grid grid-cols-2 gap-2 md:grid-cols-3">
       {/* Not "TODAY": this is the count for the selected date, and the page deliberately
           auto-selects the most recent date with games whenever today has none. */}
-      <StatCard label="GAMES ON THIS DATE" value={String(gamesToday)} accent="var(--term-neutral)" />
-      <StatCard label="AVG REST ADV" value={avgRestAdv} accent="var(--term-neutral)" />
+      <StatTile label="GAMES ON THIS DATE" value={String(gamesToday)} accent="var(--term-neutral)" />
+      <StatTile label="AVG REST ADV" value={avgRestAdv} accent="var(--term-neutral)" />
       {/* Accent, not a data pole: HIGH CONF is confidence chrome, same as the badge. */}
-      <StatCard label="HIGH CONF GAMES" value={String(highConfGames)} accent="var(--term-accent)" />
+      <StatTile label="HIGH CONF GAMES" value={String(highConfGames)} accent="var(--term-accent)" />
     </div>
   )
 }

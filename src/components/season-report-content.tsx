@@ -5,6 +5,7 @@ import useSWR from "swr"
 import { ExploreGameDetailModal } from "@/components/explore-game-detail-modal"
 import { SeasonSelector } from "@/components/season-selector"
 import { Skeleton } from "@/components/ui/skeleton"
+import { StatTile } from "@/components/ui/stat-tile"
 import { ZeroRestWorkload } from "@/components/zero-rest-workload"
 import { apiFetcher } from "@/lib/fetcher"
 import { useBacktest } from "@/hooks/useBacktest"
@@ -58,50 +59,11 @@ function median(values: number[]): number {
   return sorted.length % 2 === 0 ? (sorted[mid - 1] + sorted[mid]) / 2 : sorted[mid]
 }
 
-function Tile({
-  label,
-  value,
-  sub,
-  accent = "var(--term-neutral)",
-  testId,
-}: {
-  label: string
-  value: string
-  sub: string
-  accent?: string
-  testId?: string
-}) {
-  return (
-    <div
-      className="mono flex flex-col gap-2"
-      style={{
-        background: "var(--term-surface)",
-        border: "1px solid var(--term-border)",
-        borderTop: `2px solid ${accent}`,
-        borderRadius: "var(--term-radius)",
-        padding: 16,
-      }}
-    >
-      <span style={{ fontSize: 11, letterSpacing: TRACK.label, color: "var(--term-text-muted)", fontWeight: 500 }}>
-        {label}
-      </span>
-      <span
-        className="tabular-nums"
-        data-testid={testId}
-        style={{ fontSize: TYPE.stat, fontWeight: 500, letterSpacing: TRACK.figure, color: "var(--term-text)", lineHeight: LEAD.figure }}
-      >
-        {value}
-      </span>
-      <span style={{ fontSize: 11, color: "var(--term-text-muted)" }}>{sub}</span>
-    </div>
-  )
-}
-
 /** A rate tile that refuses to print a number it cannot stand behind. */
 function RateTile({ label, rate, testId }: { label: string; rate: SeasonReportRate; testId?: string }) {
   const gated = rate.games < MIN_GAMES_FOR_INFERENCE || rate.band === null
   return (
-    <Tile
+    <StatTile
       label={label}
       value={gated ? "—" : `${rate.winPct.toFixed(1)}%`}
       sub={
@@ -112,7 +74,7 @@ function RateTile({ label, rate, testId }: { label: string; rate: SeasonReportRa
             : `TOO EARLY · ${rate.games} OF ${MIN_GAMES_FOR_INFERENCE} GAMES NEEDED`
       }
       accent={gated ? "var(--term-neutral)" : "var(--term-blue)"}
-      testId={testId}
+      valueTestId={testId}
     />
   )
 }
@@ -642,7 +604,7 @@ export function SeasonReportContent() {
           <div className="grid grid-cols-2 gap-2 md:grid-cols-3">
             <RateTile label="RESTED TEAM AT HOME · WIN RATE" rate={data.overall} testId="season-rest-win-rate" />
             <RateTile label="WIN RATE · RA ≥ 2" rate={data.atLeastTwo} />
-            <Tile
+            <StatTile
               label="SEASON PROGRESS"
               value={`${data.completedGames.toLocaleString()} / ${data.scheduledGames.toLocaleString()}`}
               sub={

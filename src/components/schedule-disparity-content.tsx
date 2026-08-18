@@ -14,7 +14,8 @@ import {
   REST_SHARE_OF_HOME_COURT,
   REST_SPAN_PP,
 } from "@/lib/schedule-value"
-import { LEAD, SPACE, termCardStyle, termDashedEmptyStyle, TRACK, TYPE, WIDTH } from "@/lib/terminal-styles"
+import { LEAD, SPACE, SPACE_CARD, termCardStyle, termDashedEmptyStyle, TRACK, TYPE, WIDTH } from "@/lib/terminal-styles"
+import { StatTile } from "@/components/ui/stat-tile"
 import { DataTable } from "@/components/ui/data-table"
 import type { ScheduleDisparityResponse, ScheduleDisparityTeam } from "@/types"
 import { signedNumber } from "@/lib/signed-number"
@@ -50,29 +51,19 @@ function barGeometry(value: number, bound: number) {
     : { right: "50%", width: `${pct}%` }
 }
 
-function StatCell({ label, value, sub, tone }: {
-  label: string
-  value: string
-  sub: string
-  tone?: string
-}) {
+/**
+ * One cell of the divided grid below.
+ *
+ * The grid paints the dividers — `gap-px` over a border-coloured container — so each cell has to
+ * paint its own surface on top of it, and that surface is the box. `StatTile` fills it.
+ *
+ * The inset is the inner rail. It was a hand-set 12 until 2026-08-18, which put `/schedule`'s
+ * figures on a different rail from every other page's tiles.
+ */
+function StatCell(props: { label: string; value: string; sub: string; tone?: string }) {
   return (
-    <div className="flex flex-col gap-1 bg-[var(--term-surface)] px-3 py-3">
-      <span
-        className="mono"
-        style={{ fontSize: 10, letterSpacing: TRACK.label, textTransform: "uppercase", color: "var(--term-text-muted)" }}
-      >
-        {label}
-      </span>
-      <span
-        className="mono"
-        style={{ fontSize: TYPE.stat, fontWeight: 700, fontVariantNumeric: "tabular-nums", color: tone ?? "var(--term-text)" }}
-      >
-        {value}
-      </span>
-      <span className="mono" style={{ fontSize: TYPE.micro, color: "var(--term-text-muted)" }}>
-        {sub}
-      </span>
+    <div className="bg-[var(--term-surface)]" style={{ padding: SPACE_CARD }}>
+      <StatTile {...props} variant="cell" />
     </div>
   )
 }

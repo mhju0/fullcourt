@@ -38,6 +38,7 @@ import { DataTable } from "@/components/ui/data-table"
 import type { AnalysisResponse } from "@/types"
 import { signedNumber } from "@/lib/signed-number"
 import { MessageCard } from "@/components/ui/message-card"
+import { StatTile } from "@/components/ui/stat-tile"
 
 // ─── Shared styles (terminal) ─────────────────────────────────────
 
@@ -101,45 +102,6 @@ function BaselineLegend({ zeroLabel }: { zeroLabel: string }) {
         RESTED TEAM FELL SHORT OF IT
       </span>
       <span>{zeroLabel}</span>
-    </div>
-  )
-}
-
-// ─── Stat card (matches page.tsx pattern) ─────────────────────────
-
-function StatCard({
-  label,
-  value,
-  sub,
-  accent = "var(--term-neutral)",
-}: {
-  label: string
-  value: string
-  sub?: string
-  accent?: string
-}) {
-  return (
-    <div
-      className="mono flex flex-col gap-2"
-      style={{
-        background: "var(--term-surface)",
-        border: "1px solid var(--term-border)",
-        // Top rule, not left: as a left border a row of tiles reads as a list with coloured
-        // bullets. Along the top edge it reads as a row of measures. Matches page.tsx.
-        borderTop: `2px solid ${accent}`,
-        borderRadius: "var(--term-radius)",
-        padding: "12px 16px",
-      }}
-    >
-      <span style={{ fontSize: 11, letterSpacing: TRACK.label, color: "var(--term-text-muted)", fontWeight: 600 }}>
-        {label}
-      </span>
-      <span className="tabular-nums" style={{ fontSize: TYPE.stat, fontWeight: 600, color: "var(--term-text)", lineHeight: LEAD.figure }}>
-        {value}
-      </span>
-      {sub && (
-        <span style={{ fontSize: 11, color: "var(--term-text-muted)", letterSpacing: TRACK.sub }}>{sub}</span>
-      )}
     </div>
   )
 }
@@ -771,7 +733,7 @@ export function AnalysisContent({ asOf }: { asOf?: DataAsOf | null }) {
           asserted in its tests. What is left here is the drawing. */}
       <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
         {claims.tiles.map((tile) => (
-          <StatCard
+          <StatTile
             key={tile.label}
             label={tile.label}
             value={tile.value}

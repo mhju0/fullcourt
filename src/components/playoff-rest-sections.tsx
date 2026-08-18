@@ -1,6 +1,7 @@
 import { PlayoffGrindGap } from "@/components/playoff-grind-gap"
 import { PLAYOFF_EQUAL_REST } from "@/lib/playoff-rest-facts"
-import { LEAD, SPACE, termCardStyle, TRACK, TYPE, WIDTH } from "@/lib/terminal-styles"
+import { LEAD, termCardStyle, TRACK, TYPE, WIDTH } from "@/lib/terminal-styles"
+import { StatFigure } from "@/components/ui/stat-tile"
 
 const BODY: React.CSSProperties = {
   fontSize: TYPE.body,
@@ -41,17 +42,17 @@ function NoRestSection() {
         {/* 360px, not less: "2,545 of 2,545" is fourteen mono characters at 40px and wraps
             below this, which splits the one figure the section exists to state. */}
         <div className="shrink-0 md:basis-[360px]">
-          <span
-            className="mono tabular-nums block whitespace-nowrap"
-            style={{ fontSize: TYPE.figure, fontWeight: 700, color: "var(--term-text)", lineHeight: LEAD.figure }}
-          >
-            {laterEqual.toLocaleString()} of {laterGames.toLocaleString()}
-          </span>
-          <span className="mono block" style={{ fontSize: 11, letterSpacing: TRACK.label, color: "var(--term-text-muted)", fontWeight: 700, marginTop: SPACE.sm }}>
-            PLAYOFF GAMES AFTER GAME 1
-            <br />
-            BOTH TEAMS ON THE SAME REST
-          </span>
+          <StatFigure
+            value={`${laterEqual.toLocaleString()} of ${laterGames.toLocaleString()}`}
+            tone="var(--term-text)"
+            caption={
+              <>
+                PLAYOFF GAMES AFTER GAME 1
+                <br />
+                BOTH TEAMS ON THE SAME REST
+              </>
+            }
+          />
         </div>
         <p className="m-0" style={BODY}>
           <span style={LEAD_IN}>Every single one.</span> Once a series starts the two teams share a

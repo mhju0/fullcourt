@@ -6,8 +6,9 @@ import {
   AVAILABILITY_SAMPLE,
   AVAILABILITY_SCHEDULE_HOLDS_UP,
 } from "@/lib/availability-facts"
-import { LEAD, SPACE, termCardStyle, TRACK, TYPE, WIDTH } from "@/lib/terminal-styles"
+import { LEAD, termCardStyle, TRACK, TYPE, WIDTH } from "@/lib/terminal-styles"
 import { DataTable } from "@/components/ui/data-table"
+import { StatFigure } from "@/components/ui/stat-tile"
 
 const BODY: React.CSSProperties = {
   fontSize: TYPE.body,
@@ -109,24 +110,10 @@ function ScaleSection() {
     <section className="flex flex-col gap-3">
       <SectionHeading>WHAT AN ABSENCE COSTS</SectionHeading>
       <div style={termCardStyle}>
-        <span
-          className="mono tabular-nums block"
-          style={{ fontSize: TYPE.figure, fontWeight: 700, color: "var(--term-blue)", lineHeight: LEAD.figure }}
-        >
-          {e.bestPlayerOut.points.toFixed(2)} points
-        </span>
-        <span
-          className="mono block"
-          style={{
-            fontSize: 11,
-            letterSpacing: TRACK.label,
-            color: "var(--term-text-muted)",
-            fontWeight: 700,
-            marginTop: SPACE.sm,
-          }}
-        >
-          WHAT A TEAM LOSES WHEN ITS BEST PLAYER SITS · POINTS OF FINAL MARGIN
-        </span>
+        <StatFigure
+          value={`${e.bestPlayerOut.points.toFixed(2)} points`}
+          caption="WHAT A TEAM LOSES WHEN ITS BEST PLAYER SITS · POINTS OF FINAL MARGIN"
+        />
 
         <div className="mt-6 flex flex-col gap-4">
           <EffectBar label="Best player out" points={e.bestPlayerOut.points} lit />
@@ -162,26 +149,7 @@ function FrequencySection() {
       <div style={termCardStyle}>
         <div className="grid gap-6 sm:grid-cols-3">
           {cells.map((c) => (
-            <div key={c.label} className="flex flex-col gap-2">
-              <span
-                className="mono tabular-nums"
-                style={{ fontSize: TYPE.stat, fontWeight: 700, color: "var(--term-text)", lineHeight: LEAD.figure }}
-              >
-                {c.value}
-              </span>
-              <span
-                className="mono"
-                style={{
-                  fontSize: 11,
-                  letterSpacing: TRACK.data,
-                  color: "var(--term-text-muted)",
-                  fontWeight: 700,
-                  lineHeight: LEAD.label,
-                }}
-              >
-                {c.label}
-              </span>
-            </div>
+            <StatFigure key={c.label} value={c.value} caption={c.label} size="stat" tone="var(--term-text)" />
           ))}
         </div>
       </div>

@@ -1,5 +1,6 @@
 import { PLAYOFF_GRIND_MATRIX } from "@/lib/playoff-rest-facts"
-import { LEAD, SPACE, termCardStyle, TRACK, TYPE, WIDTH } from "@/lib/terminal-styles"
+import { LEAD, termCardStyle, TRACK, TYPE, WIDTH } from "@/lib/terminal-styles"
+import { StatFigure } from "@/components/ui/stat-tile"
 
 /**
  * The Grind Tax, as one number and two bars — replacing the 2×2 matrix on 2026-08-01.
@@ -42,18 +43,10 @@ function Bar({ label, winPct, n, lit }: { label: string; winPct: number; n: numb
 export function PlayoffGrindGap() {
   return (
     <div style={termCardStyle}>
-      <span
-        className="mono tabular-nums block"
-        style={{ fontSize: TYPE.figure, fontWeight: 700, color: "var(--term-blue)", lineHeight: LEAD.figure }}
-      >
-        +{GAP_PTS.toFixed(1)} points
-      </span>
-      <span
-        className="mono block"
-        style={{ fontSize: 11, letterSpacing: TRACK.label, color: "var(--term-text-muted)", fontWeight: 700, marginTop: SPACE.sm }}
-      >
-        BETTER YOUR ODDS WHEN THE OTHER TEAM ARRIVES OFF A LONG SERIES · ROUNDS 2+
-      </span>
+      <StatFigure
+        value={`+${GAP_PTS.toFixed(1)} points`}
+        caption="BETTER YOUR ODDS WHEN THE OTHER TEAM ARRIVES OFF A LONG SERIES · ROUNDS 2+"
+      />
 
       <div className="mt-6 flex flex-col gap-4">
         <Bar label="They closed their last round early" winPct={ownLowOppLow.winPct} n={ownLowOppLow.n} />

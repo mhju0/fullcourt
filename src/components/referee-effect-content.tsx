@@ -3,6 +3,7 @@ import type { RefereeFoulStyle } from "@/lib/referee-foul-style"
 import { readingOf, topShifters, type RefereeTiming, type Verdict } from "@/lib/referee-timing"
 import { signedNumber } from "@/lib/signed-number"
 import { LEAD, termCardStyle, termInsetStyle, TRACK, TYPE, WIDTH } from "@/lib/terminal-styles"
+import { StatTile } from "@/components/ui/stat-tile"
 
 const BODY: React.CSSProperties = {
   fontSize: TYPE.body,
@@ -32,28 +33,17 @@ function SectionHeading({ children }: { children: React.ReactNode }) {
 function VerdictTile({ label, verdict }: { label: string; verdict: Verdict }) {
   const reading = readingOf(verdict)
   const lit = reading !== "at chance"
+  // A recessed band is the box here, so the tile draws none of its own. `termInsetStyle` is
+  // padded vertically at the call site and never horizontally — that is the whole point of it.
   return (
-    <div className="flex flex-col gap-1 py-3" style={termInsetStyle}>
-      <span
-        className="mono"
-        style={{ fontSize: 10, letterSpacing: TRACK.label, color: "var(--term-text-muted)" }}
-      >
-        {label}
-      </span>
-      <span
-        className="mono tabular-nums"
-        style={{
-          fontSize: TYPE.stat,
-          fontWeight: 700,
-          lineHeight: LEAD.figure,
-          color: lit ? "var(--term-blue)" : "var(--term-text-muted)",
-        }}
-      >
-        {verdict.observed} vs {verdict.expected}
-      </span>
-      <span className="mono" style={{ fontSize: 10, color: "var(--term-text-muted)" }}>
-        {verdict.ratio}× CHANCE · {reading.toUpperCase()}
-      </span>
+    <div className="py-3" style={termInsetStyle}>
+      <StatTile
+        variant="cell"
+        label={label}
+        value={`${verdict.observed} vs ${verdict.expected}`}
+        sub={`${verdict.ratio}× CHANCE · ${reading.toUpperCase()}`}
+        tone={lit ? "var(--term-blue)" : "var(--term-text-muted)"}
+      />
     </div>
   )
 }
