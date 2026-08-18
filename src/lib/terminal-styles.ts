@@ -4,14 +4,68 @@ import type { CSSProperties } from "react"
  * Shared "Bloomberg Terminal meets NBA stats" style tokens. Keep every page
  * pulling from here instead of re-declaring the same card/select/table shapes
  * locally — see docs/FRONTEND.md for the underlying --term-* CSS variables.
+ */
+
+/**
+ * The type scale. Every font size in the app is one of these eight numbers, and each one has
+ * exactly one job.
  *
- * Type scale (apply new sizes from this list, not ad hoc fontSize values):
- *   10px micro label (uppercase, tracked)   — table headers, badges, meta strips
- *   11px small label (uppercase, tracked)   — stat card labels, section eyebrows
- *   12px body / data                        — table cells, inline data
- *   13-16px emphasized inline                — team abbreviations, card titles
- *   20-24px stat value                       — StatCard-style numbers
- *   32px hero stat value                     — headline metrics (accuracy %, etc.)
+ * This replaced a docblock that gave the same six slots as *ranges* — "13-16px emphasized
+ * inline", "20-24px stat value" — and a range is not a scale. It permitted 13, 14, 15 and 16 to
+ * mean the same thing, and measurement on 2026-08-18 found the app rendering **36 distinct
+ * sizes**, including 9.5, 10.5, 12.5, 12.8, 16.8, 17, 19, 21, 26 and 28. Sub-pixel sizes are the
+ * clearest tell: nothing chose 10.5px, it was 11 nudged by eye on one surface and nowhere else.
+ *
+ * The three label sizes ARE one step apart, and that is the ladder, not drift: a figure (12) sits
+ * above its label (11), which sits above its own sub-label (10). Read down a stat tile or a table
+ * header and each line recedes one step from the one it qualifies.
+ *
+ * New text picks the entry whose *job* matches. Rounding to the nearest number is how ranges
+ * came back last time.
+ */
+export const TYPE = {
+  /** Uppercase mono, subordinate to a label: unit lines under a column header, badges. */
+  micro: 10,
+  /** Uppercase mono label: section eyebrows, column headers, stat-tile captions. */
+  label: 11,
+  /** The data size: table cells, inline figures, chips, a team name in a dense row. */
+  data: 12,
+  /**
+   * Any sentence. Fixed by docs/FRONTEND.md §"Sentence case vs. caps" — sentences are set in
+   * the body face, sentence case, at this size, and uppercase mono is for labels of about three
+   * words or fewer. Seven paragraphs in `season-report-content.tsx` were at 14 and three in
+   * `schedule-disparity-content.tsx` at 13, so a page's own description and the prose beneath it
+   * were one pixel apart, which reads as a rendering fault rather than as a distinction.
+   */
+  body: 15,
+  /**
+   * A figure inside a dense row — a score, a rest-advantage differential. Distinct from
+   * {@link stat} because these live in the games board's 26px `TEAM_LINE_H` rows, where a tile's
+   * figure would not fit. Unifies a 17 and an 18 that sat in adjacent columns of one table.
+   */
+  emph: 18,
+  /** The figure in a stat tile. Was also 20, 21, 22 and 28 across five hand-rolled tiles. */
+  stat: 24,
+  /** Page title (`PageHeader`) and hero stat. */
+  title: 32,
+  /** The one headline figure of a module — /availability's cost, the playoff grind gap. */
+  figure: 40,
+} as const
+
+/**
+ * Sizes that are deliberately NOT type-scale entries, so a scale audit does not keep
+ * rediscovering them:
+ *
+ * - **16px on a focusable control** — the iOS input-zoom floor, and a functional value rather
+ *   than a typographic one. It must stay in the class layer to be responsive; see
+ *   {@link termSelectClass}.
+ * - **The brand wordmark** (`nav-bar.tsx`) — sized to the 52px brand bar, not to a text role.
+ *   Changing it is a branding decision, not a scale cleanup.
+ * - **`/` (the front door)** — a full-bleed editorial surface on its own fluid `clamp()` display
+ *   scale, already exempt by name from `e2e/alignment-audit.spec.ts` for the same reason.
+ * - **`opengraph-image.tsx`** — a fixed 1200×630 brand asset, not a page.
+ * - **`components/ui/button.tsx`** — vendored shadcn; its sizes live inside `has-data-*`
+ *   variant selectors.
  */
 
 /**
@@ -107,7 +161,7 @@ export const termCardStyle: CSSProperties = {
 export const termDashedEmptyStyle: CSSProperties = {
   border: "1px dashed var(--term-border)",
   borderRadius: "var(--term-radius)",
-  fontSize: 12,
+  fontSize: TYPE.data,
   color: "var(--term-text-muted)",
 }
 
@@ -178,7 +232,7 @@ export const termThStyle: CSSProperties = {
   // with an unstyled cell drifts out of line with the column beneath it. Left is the match.
   textAlign: "left",
   fontFamily: MONO_FONT_STACK,
-  fontSize: 11,
+  fontSize: TYPE.label,
   letterSpacing: "0.08em",
   color: "var(--term-text-muted)",
   fontWeight: 700,
@@ -189,7 +243,7 @@ export const termThStyle: CSSProperties = {
 
 export const termTdStyle: CSSProperties = {
   borderBottom: "1px solid var(--term-border)",
-  fontSize: 12,
+  fontSize: TYPE.data,
 }
 
 /**
@@ -219,7 +273,7 @@ export const TERM_NUMERIC_TABLE_MAX_WIDTH = WIDTH.numeric;
 export const termThUnitStyle: CSSProperties = {
   display: "block",
   fontWeight: 400,
-  fontSize: 9.5,
+  fontSize: TYPE.micro,
   letterSpacing: "0.04em",
   textTransform: "none",
   opacity: 0.72,

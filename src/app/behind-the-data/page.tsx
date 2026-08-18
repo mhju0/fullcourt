@@ -5,7 +5,7 @@ import { BehindTheDataShell } from "@/components/behind-the-data-shell";
 import { Note, Prose, Section } from "@/components/behind-the-data-parts";
 import { BEHIND_THE_DATA_SECTIONS } from "@/lib/behind-the-data-sections";
 import { NBA_SEASONS } from "@/lib/nba-season";
-import { WIDTH } from "@/lib/terminal-styles";
+import { TYPE, WIDTH } from "@/lib/terminal-styles";
 
 export const metadata: Metadata = {
   title: "Behind the Data",
@@ -105,7 +105,7 @@ export default function BehindTheDataPage() {
                   aria-hidden
                 />
               </span>
-              <span style={{ fontSize: 14, color: "var(--term-text-muted)", lineHeight: 1.5, maxWidth: WIDTH.prose }}>
+              <span style={{ fontSize: TYPE.body, color: "var(--term-text-muted)", lineHeight: 1.55, maxWidth: WIDTH.prose }}>
                 {BLURB[section.href]}
               </span>
             </Link>

@@ -1,9 +1,9 @@
 import { PlayoffGrindGap } from "@/components/playoff-grind-gap"
 import { PLAYOFF_EQUAL_REST } from "@/lib/playoff-rest-facts"
-import { termCardStyle, WIDTH } from "@/lib/terminal-styles"
+import { SPACE, termCardStyle, TYPE, WIDTH } from "@/lib/terminal-styles"
 
 const BODY: React.CSSProperties = {
-  fontSize: 15,
+  fontSize: TYPE.body,
   color: "var(--term-text-muted)",
   lineHeight: 1.55,
   maxWidth: WIDTH.prose,
@@ -43,11 +43,11 @@ function NoRestSection() {
         <div className="shrink-0 md:basis-[360px]">
           <span
             className="mono tabular-nums block whitespace-nowrap"
-            style={{ fontSize: 40, fontWeight: 700, color: "var(--term-text)", lineHeight: 1.05 }}
+            style={{ fontSize: TYPE.figure, fontWeight: 700, color: "var(--term-text)", lineHeight: 1.05 }}
           >
             {laterEqual.toLocaleString()} of {laterGames.toLocaleString()}
           </span>
-          <span className="mono block" style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 700, marginTop: 6 }}>
+          <span className="mono block" style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 700, marginTop: SPACE.sm }}>
             PLAYOFF GAMES AFTER GAME 1
             <br />
             BOTH TEAMS ON THE SAME REST

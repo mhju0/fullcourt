@@ -17,7 +17,7 @@ import {
   type RestAdvantageEvidenceSource,
 } from "@/lib/rest-advantage-display"
 import { getTeamBranding } from "@/lib/team-history"
-import { SPACE, SPACE_CARD } from "@/lib/terminal-styles"
+import { SPACE, SPACE_CARD, TYPE } from "@/lib/terminal-styles"
 import { cn } from "@/lib/utils"
 import type { GameResponse } from "@/types"
 
@@ -90,7 +90,7 @@ function StatusCell({
         </span>
       )}
       {hasScore ? (
-        <span className="tabular-nums" style={{ fontSize: 17, fontWeight: 700, letterSpacing: "-0.01em", color: "var(--term-text)", lineHeight: 1 }}>
+        <span className="tabular-nums" style={{ fontSize: TYPE.emph, fontWeight: 700, letterSpacing: "-0.01em", color: "var(--term-text)", lineHeight: 1 }}>
           {awayScore} – {homeScore}
         </span>
       ) : (
@@ -125,17 +125,17 @@ function TeamLine({
   return (
     <div className="flex min-w-0 items-center gap-2" style={{ height: TEAM_LINE_H }}>
       <TeamLogo abbreviation={abbreviation} season={season} fallback={fallback} size={20} color={colors.primary} />
-      <span className="truncate" style={{ fontSize: 13, fontWeight: 600, color: "var(--term-text)" }}>
+      <span className="truncate" style={{ fontSize: TYPE.data, fontWeight: 600, color: "var(--term-text)" }}>
         {name}
       </span>
-      <span className="hidden truncate lg:inline" style={{ fontSize: 11, color: "var(--term-text-muted)" }}>
+      <span className="hidden truncate lg:inline" style={{ fontSize: TYPE.micro, color: "var(--term-text-muted)" }}>
         {city}
       </span>
       {isHome && (
         <span
           className="mono shrink-0"
           style={{
-            fontSize: 9,
+            fontSize: TYPE.micro,
             letterSpacing: "0.06em",
             fontWeight: 600,
             color: "var(--term-text-muted)",
@@ -167,7 +167,7 @@ function FlagChip({ label, muted = false }: { label: string; muted?: boolean }) 
     <span
       className="mono shrink-0"
       style={{
-        fontSize: 9,
+        fontSize: TYPE.micro,
         letterSpacing: "0.06em",
         fontWeight: 600,
         color: "var(--term-text-muted)",
@@ -201,7 +201,7 @@ function FatigueLine({
       ) : (
         <div className="min-w-[36px] flex-1" style={{ height: 4, background: "var(--term-surface-2)", borderRadius: "var(--term-radius-bar)" }} />
       )}
-      <span className="mono shrink-0 tabular-nums" style={{ width: 30, fontSize: 13, fontWeight: 700, color: "var(--term-text)", textAlign: "right" }}>
+      <span className="mono shrink-0 tabular-nums" style={{ width: 30, fontSize: TYPE.data, fontWeight: 700, color: "var(--term-text)", textAlign: "right" }}>
         {score !== null ? score.toFixed(1) : "—"}
       </span>
       {/* Fixed-width so the two lines' chips align with each other and with the rows above and
@@ -258,7 +258,7 @@ function RestAdvCell({
             <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.02em", color: "var(--term-blue)" }}>
               {display.teamAbbreviation}
             </span>
-            <span style={{ fontSize: 18, fontWeight: 700, letterSpacing: "-0.02em", color: "var(--term-text)" }}>
+            <span style={{ fontSize: TYPE.emph, fontWeight: 700, letterSpacing: "-0.02em", color: "var(--term-text)" }}>
               {display.value}
             </span>
           </>
@@ -267,7 +267,7 @@ function RestAdvCell({
             <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.04em", color: "var(--term-text-muted)" }}>
               EVEN
             </span>
-            <span style={{ fontSize: 18, fontWeight: 700, letterSpacing: "-0.02em", color: "var(--term-text-muted)" }}>
+            <span style={{ fontSize: TYPE.emph, fontWeight: 700, letterSpacing: "-0.02em", color: "var(--term-text-muted)" }}>
               {value}
             </span>
           </>
@@ -276,7 +276,7 @@ function RestAdvCell({
 
       {/* Center-anchored differential meter: teal fill toward the rested side, ±5 scale. */}
       <div className="flex w-full items-center gap-2">
-        <span className="mono shrink-0" style={{ fontSize: 9, color: "var(--term-text-muted)", fontWeight: 600 }}>
+        <span className="mono shrink-0" style={{ fontSize: TYPE.micro, color: "var(--term-text-muted)", fontWeight: 600 }}>
           A
         </span>
         <div
@@ -301,7 +301,7 @@ function RestAdvCell({
           )}
           <span style={{ position: "absolute", left: "50%", top: 0, bottom: 0, width: 1, background: "var(--term-hairline)" }} />
         </div>
-        <span className="mono shrink-0" style={{ fontSize: 9, color: "var(--term-text-muted)", fontWeight: 600 }}>
+        <span className="mono shrink-0" style={{ fontSize: TYPE.micro, color: "var(--term-text-muted)", fontWeight: 600 }}>
           H
         </span>
       </div>

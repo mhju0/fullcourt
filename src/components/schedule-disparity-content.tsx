@@ -14,7 +14,7 @@ import {
   REST_SHARE_OF_HOME_COURT,
   REST_SPAN_PP,
 } from "@/lib/schedule-value"
-import { termCardStyle, termDashedEmptyStyle, WIDTH } from "@/lib/terminal-styles"
+import { SPACE, termCardStyle, termDashedEmptyStyle, TYPE, WIDTH } from "@/lib/terminal-styles"
 import { DataTable } from "@/components/ui/data-table"
 import type { ScheduleDisparityResponse, ScheduleDisparityTeam } from "@/types"
 import { signedNumber } from "@/lib/signed-number"
@@ -57,7 +57,7 @@ function StatCell({ label, value, sub, tone }: {
   tone?: string
 }) {
   return (
-    <div className="flex flex-col gap-[3px] bg-[var(--term-surface)] px-[13px] py-[11px]">
+    <div className="flex flex-col gap-1 bg-[var(--term-surface)] px-3 py-3">
       <span
         className="mono"
         style={{ fontSize: 10, letterSpacing: "0.09em", textTransform: "uppercase", color: "var(--term-text-muted)" }}
@@ -66,11 +66,11 @@ function StatCell({ label, value, sub, tone }: {
       </span>
       <span
         className="mono"
-        style={{ fontSize: 21, fontWeight: 700, fontVariantNumeric: "tabular-nums", color: tone ?? "var(--term-text)" }}
+        style={{ fontSize: TYPE.stat, fontWeight: 700, fontVariantNumeric: "tabular-nums", color: tone ?? "var(--term-text)" }}
       >
         {value}
       </span>
-      <span className="mono" style={{ fontSize: 10.5, color: "var(--term-text-muted)" }}>
+      <span className="mono" style={{ fontSize: TYPE.micro, color: "var(--term-text-muted)" }}>
         {sub}
       </span>
     </div>
@@ -118,7 +118,7 @@ function ColumnGuide({ countedGames, scheduledGames }: { countedGames: number; s
       </summary>
       <div
         className="flex max-w-2xl flex-col gap-3 px-4 pb-4"
-        style={{ fontSize: 15, color: "var(--term-text-muted)", lineHeight: 1.55 }}
+        style={{ fontSize: TYPE.body, color: "var(--term-text-muted)", lineHeight: 1.55 }}
       >
         <p
           style={{
@@ -127,7 +127,7 @@ function ColumnGuide({ countedGames, scheduledGames }: { countedGames: number; s
             borderRadius: "var(--term-radius-sm)",
             padding: "8px 12px",
             color: "var(--term-text)",
-            fontSize: 14,
+            fontSize: TYPE.body,
           }}
         >
           <strong>One rule for the whole table: positive is always favorable.</strong> A plus sign
@@ -206,7 +206,7 @@ export function ScheduleDisparityContent() {
         {data ? (
           <p
             className="mono"
-            style={{ marginTop: 10, fontSize: 11, color: "var(--term-text-muted)", lineHeight: 1.6 }}
+            style={{ marginTop: SPACE.md, fontSize: TYPE.label, color: "var(--term-text-muted)", lineHeight: 1.6 }}
           >
             {data.provisional ? "PROVISIONAL" : "FINAL"} ·{" "}
             {data.league.countedGames.toLocaleString()} OF{" "}
@@ -215,7 +215,7 @@ export function ScheduleDisparityContent() {
           </p>
         ) : null}
         {data?.provisional ? (
-          <p style={{ marginTop: 6, fontSize: 13, color: "var(--term-text-muted)", lineHeight: 1.55 }}>
+          <p style={{ marginTop: SPACE.sm, fontSize: TYPE.body, color: "var(--term-text-muted)", lineHeight: 1.55 }}>
             This season&rsquo;s schedule is not finished. The NBA announces only 80 of each
             team&rsquo;s 82 games before opening night and fills the rest once NBA Cup group play
             resolves in December, so these figures will revise.
@@ -328,7 +328,7 @@ export function ScheduleDisparityContent() {
             <p
               data-testid="schedule-worth-scale"
               className="mt-2"
-              style={{ fontSize: 13, color: "var(--term-text-muted)", maxWidth: WIDTH.prose, lineHeight: 1.55 }}
+              style={{ fontSize: TYPE.body, color: "var(--term-text-muted)", maxWidth: WIDTH.prose, lineHeight: 1.55 }}
             >
               {/* Explicit {" "}: JSX drops a bare space that opens a text node after an
                   element, so "Worth prices" rendered as "Worthprices". */}
@@ -431,7 +431,7 @@ export function ScheduleDisparityContent() {
               ]}
             />
 
-            <p style={{ marginTop: 12, fontSize: 13, color: "var(--term-text-muted)", lineHeight: 1.55 }}>
+            <p style={{ marginTop: SPACE.md, fontSize: TYPE.body, color: "var(--term-text-muted)", lineHeight: 1.55 }}>
               Positive is favorable in every column. Edge games are counted from the same fatigue
               scores as the Games page, so a season in progress lags until its games are played.
             </p>

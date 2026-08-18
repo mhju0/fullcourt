@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import Link from "next/link";
+import { TYPE } from "@/lib/terminal-styles";
 
 export default function Error({
   error,
@@ -15,25 +16,34 @@ export default function Error({
   }, [error]);
 
   return (
+    /* Centred and on `PageHeader`'s type scale — see the note in `not-found.tsx`, which this
+       page matches line for line. */
     <section
-      className="mx-auto max-w-2xl px-4 py-24 text-center"
+      className="mx-auto max-w-2xl px-4 py-12 text-center"
       aria-labelledby="error-title"
     >
-      <p className="mono text-xs font-semibold uppercase tracking-[0.14em] text-[var(--term-red)]">
+      <p
+        className="mono font-semibold uppercase text-[var(--term-red)]"
+        style={{ fontSize: TYPE.label, letterSpacing: "0.08em" }}
+      >
         Error · Something went wrong
       </p>
       <h1
         id="error-title"
-        className="mt-4 font-heading text-4xl font-bold text-[var(--term-text)] sm:text-5xl"
+        className="mt-4 text-[var(--term-text)]"
+        style={{ fontSize: TYPE.title, lineHeight: 1.05 }}
       >
         This page failed to load
       </h1>
-      <p className="mx-auto mt-4 max-w-lg text-sm leading-6 text-[var(--term-text-muted)]">
+      <p
+        className="mt-4 text-[var(--term-text-muted)]"
+        style={{ fontSize: TYPE.body, lineHeight: 1.55 }}
+      >
         The dashboard hit an unexpected error while rendering. Retrying often clears it; if
         it persists, the data pipeline or database may be briefly unavailable.
       </p>
       {error.digest ? (
-        <p className="mono mt-3 text-[11px] text-[var(--term-text-muted)]">
+        <p className="mono mt-3 text-[var(--term-text-muted)]" style={{ fontSize: TYPE.label }}>
           Reference: {error.digest}
         </p>
       ) : null}

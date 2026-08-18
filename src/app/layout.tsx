@@ -98,7 +98,7 @@ export default function RootLayout({
             `sr-only` until focused, so it costs the visual design nothing at rest. */}
         <a
           href="#main"
-          className="mono sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-[60] focus:rounded-[var(--term-radius)] focus:border focus:border-[var(--term-border)] focus:bg-[var(--term-surface)] focus:px-4 focus:py-2 focus:text-[13px] focus:font-semibold focus:text-[var(--term-text)]"
+          className="mono sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-[60] focus:rounded-[var(--term-radius)] focus:border focus:border-[var(--term-border)] focus:bg-[var(--term-surface)] focus:px-4 focus:py-2 focus:text-[12px] focus:font-semibold focus:text-[var(--term-text)]"
         >
           Skip to main content
         </a>

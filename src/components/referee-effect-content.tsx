@@ -2,10 +2,10 @@ import { RefereeStyleContent } from "@/components/referee-style-content"
 import type { RefereeFoulStyle } from "@/lib/referee-foul-style"
 import { readingOf, topShifters, type RefereeTiming, type Verdict } from "@/lib/referee-timing"
 import { signedNumber } from "@/lib/signed-number"
-import { termCardStyle, termInsetStyle, WIDTH } from "@/lib/terminal-styles"
+import { termCardStyle, termInsetStyle, TYPE, WIDTH } from "@/lib/terminal-styles"
 
 const BODY: React.CSSProperties = {
-  fontSize: 15,
+  fontSize: TYPE.body,
   color: "var(--term-text-muted)",
   lineHeight: 1.55,
   maxWidth: WIDTH.prose,
@@ -43,7 +43,7 @@ function VerdictTile({ label, verdict }: { label: string; verdict: Verdict }) {
       <span
         className="mono tabular-nums"
         style={{
-          fontSize: 20,
+          fontSize: TYPE.stat,
           fontWeight: 700,
           lineHeight: 1.1,
           color: lit ? "var(--term-blue)" : "var(--term-text-muted)",
@@ -128,17 +128,17 @@ export function RefereeEffectContent({
         <ul className="flex flex-col gap-2" style={{ ...termCardStyle }}>
           {shifters.map((s) => (
             <li key={s.name} className="flex items-baseline justify-between gap-3">
-              <span style={{ fontSize: 14, fontWeight: 600 }}>{s.name}</span>
+              <span style={{ fontSize: TYPE.body, fontWeight: 600 }}>{s.name}</span>
               <span
                 className="mono tabular-nums"
-                style={{ fontSize: 13, color: "var(--term-text-muted)" }}
+                style={{ fontSize: TYPE.data, color: "var(--term-text-muted)" }}
               >
                 {signedNumber(s.shift, 2)} pp · {s.games} games
               </span>
             </li>
           ))}
         </ul>
-        <p style={{ ...BODY, fontSize: 13 }}>
+        <p style={{ ...BODY }}>
           Positive means later. Percentage points of a game&rsquo;s own fouls, against the league
           average for that season, over officials with at least {timing.minGames} games. These
           game counts run slightly higher than the table above: timing is read from the play

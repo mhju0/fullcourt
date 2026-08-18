@@ -13,7 +13,7 @@ import { useGameSlate, type GameSlate } from "@/hooks/useGameSlate"
 import { currentDisplaySeason, isNbaOffSeason } from "@/lib/nba-season"
 import { MessageCard } from "@/components/ui/message-card"
 import { MethodLink } from "@/components/method-link"
-import { termCardStyle } from "@/lib/terminal-styles"
+import { SPACE, SPACE_CARD, termCardStyle, TYPE } from "@/lib/terminal-styles"
 import { cn } from "@/lib/utils"
 
 // ─── Helpers ─────────────────────────────────────────────────────
@@ -50,7 +50,7 @@ function StatCard({ label, value, accent }: { label: string; value: string; acce
       <span style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 500 }}>
         {label}
       </span>
-      <span className="tabular-nums" style={{ fontSize: 24, fontWeight: 500, letterSpacing: "-0.01em", color: "var(--term-text)", lineHeight: 1 }}>
+      <span className="tabular-nums" style={{ fontSize: TYPE.stat, fontWeight: 500, letterSpacing: "-0.01em", color: "var(--term-text)", lineHeight: 1 }}>
         {value}
       </span>
     </div>
@@ -94,8 +94,8 @@ function GroupLabel({ children }: { children: React.ReactNode }) {
         letterSpacing: "0.1em",
         fontWeight: 600,
         color: "var(--term-text-muted)",
-        paddingBottom: 8,
-        marginBottom: 14,
+        paddingBottom: SPACE.sm,
+        marginBottom: SPACE.lg,
         borderBottom: "1px solid var(--term-surface-2)",
       }}
     >
@@ -158,7 +158,7 @@ function SkeletonList() {
 function EmptyState({ label }: { label: string }) {
   return (
     <div
-      className="mono flex flex-col items-center gap-2 px-6 py-16 text-center"
+      className="mono flex flex-col items-center gap-2 px-6 py-12 text-center"
       style={{ background: "var(--term-surface)", border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }}
     >
       <p style={{ fontSize: 12, letterSpacing: "0.08em", color: "var(--term-text)", fontWeight: 700 }}>
@@ -233,7 +233,7 @@ function DateChip({
       )}
       style={{ borderRadius: "var(--term-radius)" }}
     >
-      <span className="tabular-nums" style={{ fontSize: 14, fontWeight: 700, lineHeight: 1.1 }}>
+      <span className="tabular-nums" style={{ fontSize: TYPE.data, fontWeight: 700, lineHeight: 1.1 }}>
         {day}
       </span>
       {/* #B7BBC6 is the mock's .dchip.on count line — muted light gray on the ink fill. */}
@@ -398,7 +398,7 @@ export default function HomePage() {
           {/* Filters — two labelled groups rather than three stacked rows that each
               repeated the same label treatment. Season and month answer one question
               ("which stretch of basketball"), so they share a group. */}
-          <div className="flex flex-col gap-[18px]" style={{ ...termCardStyle, padding: 16 }}>
+          <div className="flex flex-col gap-4" style={{ ...termCardStyle, padding: SPACE_CARD }}>
             <div>
               <GroupLabel>Scope</GroupLabel>
               {/* Align to the bottom, not the centre: the season block is label +

@@ -6,7 +6,7 @@ import { SeasonSelector } from "@/components/season-selector"
 import { Skeleton } from "@/components/ui/skeleton"
 import { apiFetcher, errMsg } from "@/lib/fetcher"
 import { currentDisplaySeason } from "@/lib/nba-season"
-import { termCardStyle, termInsetStyle } from "@/lib/terminal-styles"
+import { termCardStyle, termInsetStyle, TYPE } from "@/lib/terminal-styles"
 import type { ShotQualityCell, ShotQualityResponse } from "@/types"
 import { signedNumber } from "@/lib/signed-number"
 import { MessageCard } from "@/components/ui/message-card"
@@ -194,7 +194,7 @@ function HowToRead({
             left={`${(seqLo * 100).toFixed(0)}% · low value`}
             right={`${(seqHi * 100).toFixed(0)}% · high value`}
           />
-          <div className="flex min-w-0 flex-col gap-1" style={{ fontSize: 12.5, lineHeight: 1.55, color: "var(--term-text-dim)" }}>
+          <div className="flex min-w-0 flex-col gap-1" style={{ fontSize: TYPE.body, lineHeight: 1.55, color: "var(--term-text-dim)" }}>
             <p>
               Each square is a spot on the floor; bigger squares mean more shots attempted there.
             </p>
@@ -219,7 +219,7 @@ function HowToRead({
             mid="0"
             right={`+${(divD * 100).toFixed(1)} pp · GBM higher`}
           />
-          <div className="flex min-w-0 flex-col gap-1" style={{ fontSize: 12.5, lineHeight: 1.55, color: "var(--term-text-dim)" }}>
+          <div className="flex min-w-0 flex-col gap-1" style={{ fontSize: TYPE.body, lineHeight: 1.55, color: "var(--term-text-dim)" }}>
             <p>One court: where the two models disagree about a spot&apos;s value.</p>
             <p>
               <span style={{ color: "var(--term-red)", fontWeight: 600 }}>Rose: GBM rates it higher</span> than the zone

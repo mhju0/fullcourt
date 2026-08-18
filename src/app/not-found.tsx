@@ -1,21 +1,35 @@
 import Link from "next/link";
+import { TYPE } from "@/lib/terminal-styles";
 
 export default function NotFound() {
   return (
+    /* Centred, unlike every other page, and deliberately: this is a full stop rather than a
+       data surface, so there is no column of figures for a left rail to serve. Its TYPE is
+       `PageHeader`'s, though — eyebrow, title and description at the same three sizes — so it
+       reads as the same product. It carried 36/48px titles and 14px prose until 2026-08-18,
+       which is what a page reachable by no nav link and no spec drifts into.
+       `max-w-2xl` is 42rem, i.e. WIDTH.prose. */
     <section
-      className="mx-auto max-w-2xl px-4 py-24 text-center"
+      className="mx-auto max-w-2xl px-4 py-12 text-center"
       aria-labelledby="not-found-title"
     >
-      <p className="mono text-xs font-semibold uppercase tracking-[0.14em] text-[var(--term-red)]">
+      <p
+        className="mono font-semibold uppercase text-[var(--term-red)]"
+        style={{ fontSize: TYPE.label, letterSpacing: "0.08em" }}
+      >
         404 · Out of bounds
       </p>
       <h1
         id="not-found-title"
-        className="mt-4 font-heading text-4xl font-bold text-[var(--term-text)] sm:text-5xl"
+        className="mt-4 text-[var(--term-text)]"
+        style={{ fontSize: TYPE.title, lineHeight: 1.05 }}
       >
         Page not found
       </h1>
-      <p className="mx-auto mt-4 max-w-lg text-sm leading-6 text-[var(--term-text-muted)]">
+      <p
+        className="mt-4 text-[var(--term-text-muted)]"
+        style={{ fontSize: TYPE.body, lineHeight: 1.55 }}
+      >
         This route is not part of the FullCourt analytics dashboard. Return to the games board
         or explore the historical rest-advantage backtest.
       </p>

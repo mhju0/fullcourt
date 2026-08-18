@@ -5,7 +5,7 @@ import useSWR from "swr"
 import { Skeleton } from "@/components/ui/skeleton"
 import { parseSeasonStartYear } from "@/lib/nba-season"
 import { zeroRestWorkload, type PlayerRestPayload } from "@/lib/player-rest"
-import { termCardStyle, WIDTH } from "@/lib/terminal-styles"
+import { termCardStyle, TYPE, WIDTH } from "@/lib/terminal-styles"
 import { DataTable } from "@/components/ui/data-table"
 
 const ROW_LIMIT = 15
@@ -57,7 +57,7 @@ export function ZeroRestWorkload({ season }: { season: string }) {
 
   return (
     <div className="flex flex-col gap-3" ref={anchor}>
-      <p style={{ fontSize: 14, color: "var(--term-text-muted)", maxWidth: WIDTH.prose, lineHeight: 1.55 }}>
+      <p style={{ fontSize: TYPE.body, color: "var(--term-text-muted)", maxWidth: WIDTH.prose, lineHeight: 1.55 }}>
         Who took the most shots on zero days&apos; rest. This is volume, not a verdict on how well
         they shot — a single season&apos;s rest split is too small to say that.{" "}
         <a href="/shooting" style={{ color: "var(--term-blue)", fontWeight: 600 }}>

@@ -10,7 +10,7 @@ import {
   type RefereeFoulStyle,
   type RefereeStyleRow,
 } from "@/lib/referee-foul-style"
-import { termCardStyle } from "@/lib/terminal-styles"
+import { SPACE, termCardStyle, TYPE } from "@/lib/terminal-styles"
 import { signedNumber } from "@/lib/signed-number"
 import { DataTable, type DataColumn } from "@/components/ui/data-table"
 
@@ -48,8 +48,8 @@ function columnsFor(data: RefereeFoulStyle): DataColumn<RefereeStyleRow, SortKey
             <span
               title="Works as crew chief"
               style={{
-                marginLeft: 6,
-                fontSize: 8,
+                marginLeft: SPACE.sm,
+                fontSize: TYPE.micro,
                 fontWeight: 700,
                 color: "var(--term-blue)",
                 border: "1px solid var(--term-blue)",

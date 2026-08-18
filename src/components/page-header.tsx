@@ -1,5 +1,5 @@
 import { formatDataAsOf, type DataAsOf } from "@/lib/data-as-of"
-import { WIDTH } from "@/lib/terminal-styles"
+import { TYPE, WIDTH } from "@/lib/terminal-styles"
 
 /**
  * Every page heading. Two pages used to hand-copy this markup — one because its
@@ -34,20 +34,22 @@ export function PageHeader({
     <div className="flex flex-col gap-2">
       <span
         className="mono"
-        style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-accent)", fontWeight: 600 }}
+        style={{ fontSize: TYPE.label, letterSpacing: "0.08em", color: "var(--term-accent)", fontWeight: 600 }}
       >
         {eyebrow}
       </span>
-      {/* 32px is the "hero stat value" slot in terminal-styles.ts. At 24px a page title was
-          the same size as the stat numbers under it. Weight and tracking come from the base
-          h1 rule — an explicit font-bold here would override it and only on these pages. */}
-      <h1 className="text-[32px] leading-[1.05] text-[var(--term-text)]">{title}</h1>
+      {/* `TYPE.title`. At `TYPE.stat` a page title was the same size as the stat numbers under
+          it. Weight and tracking come from the base h1 rule — an explicit font-bold here would
+          override it and only on these pages. */}
+      <h1 className="text-[var(--term-text)]" style={{ fontSize: TYPE.title, lineHeight: 1.05 }}>
+        {title}
+      </h1>
       {/* Sentence case in the body face, not uppercase mono: caps remove word-shape
           cues and slow reading for anything longer than a label. */}
       <p
         style={{
           maxWidth: WIDTH.prose,
-          fontSize: 15,
+          fontSize: TYPE.body,
           color: "var(--term-text-muted)",
           lineHeight: 1.55,
         }}
@@ -60,7 +62,7 @@ export function PageHeader({
       {stamp ? (
         <p
           className="mono"
-          style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-text-muted)" }}
+          style={{ fontSize: TYPE.label, letterSpacing: "0.08em", color: "var(--term-text-muted)" }}
         >
           {stamp}
         </p>

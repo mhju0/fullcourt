@@ -1,4 +1,4 @@
-import { termCardStyle, WIDTH } from "@/lib/terminal-styles";
+import { termCardStyle, TYPE, WIDTH } from "@/lib/terminal-styles";
 
 /**
  * Shared building blocks for the reference pages, so six pages cannot drift into six
@@ -70,7 +70,7 @@ export function Section({
 
 export function Prose({ children }: { children: React.ReactNode }) {
   return (
-    <p style={{ maxWidth: WIDTH.prose, fontSize: 15, color: "var(--term-text)", lineHeight: 1.6 }}>
+    <p style={{ maxWidth: WIDTH.prose, fontSize: TYPE.body, color: "var(--term-text)", lineHeight: 1.6 }}>
       {children}
     </p>
   );
@@ -82,7 +82,7 @@ export function Note({ children }: { children: React.ReactNode }) {
     <p
       style={{
         maxWidth: WIDTH.prose,
-        fontSize: 14,
+        fontSize: TYPE.body,
         color: "var(--term-text-muted)",
         lineHeight: 1.55,
         background: GOLD_TINT,
@@ -124,7 +124,7 @@ export function LimitList({ items }: { items: readonly string[] }) {
       className="flex flex-col gap-2"
       style={{
         maxWidth: WIDTH.prose,
-        fontSize: 15,
+        fontSize: TYPE.body,
         color: "var(--term-text)",
         lineHeight: 1.55,
         background: RED_TINT,
@@ -167,7 +167,7 @@ export function ValueGrid({
         // let that border colour through, turning the whole grid grey.
         <div
           key={v.label}
-          className="flex flex-col gap-[3px] px-[13px] py-[11px]"
+          className="flex flex-col gap-1 px-3 py-3"
           style={{ background: `linear-gradient(${BLUE_TINT}, ${BLUE_TINT}), var(--term-surface)` }}
         >
           <span
@@ -180,12 +180,12 @@ export function ValueGrid({
               accent rather than sitting in the same near-black as the prose around them. */}
           <span
             className="mono"
-            style={{ fontSize: 19, fontWeight: 700, fontVariantNumeric: "tabular-nums", color: "var(--term-blue)" }}
+            style={{ fontSize: TYPE.emph, fontWeight: 700, fontVariantNumeric: "tabular-nums", color: "var(--term-blue)" }}
           >
             {v.value}
           </span>
           {v.sub && (
-            <span className="mono" style={{ fontSize: 10.5, color: "var(--term-text-muted)" }}>
+            <span className="mono" style={{ fontSize: TYPE.micro, color: "var(--term-text-muted)" }}>
               {v.sub}
             </span>
           )}

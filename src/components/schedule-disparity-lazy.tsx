@@ -20,7 +20,7 @@ export const ScheduleDisparityContentLazy = lazyContent(
         }}
       >
         {[0, 1, 2, 3].map((i) => (
-          <div key={i} className="bg-[var(--term-surface)] px-[13px] py-[11px]">
+          <div key={i} className="bg-[var(--term-surface)] px-3 py-3">
             <Bar className="h-[52px] w-full" />
           </div>
         ))}

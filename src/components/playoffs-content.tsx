@@ -10,7 +10,7 @@ import { apiFetcher, errMsg } from "@/lib/fetcher"
 import { currentDisplaySeason } from "@/lib/nba-season"
 import { grindLineLabels } from "@/lib/playoff-rest-facts"
 import { playoffModelSeasons } from "@/lib/playoff-seasons"
-import { TERM_ACCENT, termCardStyle, WIDTH } from "@/lib/terminal-styles"
+import { TERM_ACCENT, termCardStyle, TYPE, WIDTH } from "@/lib/terminal-styles"
 import type {
   PlayoffRoundGroup,
   PlayoffSeriesPredictionMethod,
@@ -117,7 +117,7 @@ function FeatureCell({ k, v }: { k: string; v: string }) {
   return (
     <div className="mono flex flex-col gap-1">
       <span style={{ fontSize: 10, color: "var(--term-text-muted)", letterSpacing: "0.06em" }}>{k}</span>
-      <span className="tabular-nums" style={{ fontSize: 14, color: "var(--term-text)", fontWeight: 700 }}>
+      <span className="tabular-nums" style={{ fontSize: TYPE.data, color: "var(--term-text)", fontWeight: 700 }}>
         {v}
       </span>
     </div>
@@ -229,7 +229,7 @@ function SeriesCard({ series }: { series: PlayoffSeriesWithPredictions }) {
               {series.homeCourtTeam.abbreviation}
               <span
                 className="mono"
-                style={{ fontSize: 8, fontWeight: 700, color: "var(--term-blue)", border: "1px solid var(--term-blue)", borderRadius: "var(--term-radius-sm)", padding: "0 4px" }}
+                style={{ fontSize: TYPE.micro, fontWeight: 700, color: "var(--term-blue)", border: "1px solid var(--term-blue)", borderRadius: "var(--term-radius-sm)", padding: "0 4px" }}
                 aria-label="Home court"
               >
                 HC

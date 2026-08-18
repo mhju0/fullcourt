@@ -6,6 +6,7 @@ import { TRAVEL_LOOKBACK_DAYS } from "@/lib/fatigue"
 import { readableTextOn } from "@/lib/nba-team-colors"
 import { NEUTRAL_REST_ADVANTAGE_THRESHOLD } from "@/lib/rest-advantage-evidence"
 import { getTeamBranding, teamLogoUrl } from "@/lib/team-history"
+import { TYPE } from "@/lib/terminal-styles"
 import type { FatigueInfo, GameResponse } from "@/types"
 
 // ─── Constants ───────────────────────────────────────────────────
@@ -167,7 +168,7 @@ export function GameStatusRow({
       <div className="mono flex items-center gap-3" style={{ fontSize: "12px" }}>
         <LiveIndicator />
         {homeScore !== null && awayScore !== null && (
-          <span className="tabular-nums" style={{ fontSize: "22px", letterSpacing: "-0.02em", color: "var(--term-text)", fontWeight: 800 }}>
+          <span className="tabular-nums" style={{ fontSize: TYPE.stat, letterSpacing: "-0.02em", color: "var(--term-text)", fontWeight: 800 }}>
             {awayScore} – {homeScore}
           </span>
         )}
@@ -179,7 +180,7 @@ export function GameStatusRow({
     return (
       <div className="mono flex items-center gap-3" style={{ fontSize: "12px" }}>
         <span style={{ color: "var(--term-text-muted)", letterSpacing: "0.08em" }}>FINAL</span>
-        <span className="tabular-nums" style={{ fontSize: "22px", letterSpacing: "-0.02em", color: "var(--term-text)", fontWeight: 800 }}>
+        <span className="tabular-nums" style={{ fontSize: TYPE.stat, letterSpacing: "-0.02em", color: "var(--term-text)", fontWeight: 800 }}>
           {awayScore} – {homeScore}
         </span>
       </div>

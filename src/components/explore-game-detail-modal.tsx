@@ -13,7 +13,7 @@ import {
 } from "@/components/matchup-parts"
 import { getTeamBranding } from "@/lib/team-history"
 import { apiFetcher, errMsg } from "@/lib/fetcher"
-import { termInsetStyle } from "@/lib/terminal-styles"
+import { termInsetStyle, TYPE } from "@/lib/terminal-styles"
 import { cn } from "@/lib/utils"
 import type {
   GameDetailResponse,
@@ -127,7 +127,7 @@ function ExploreGameDetailBody({
       />
       <p
         className="mono text-center"
-        style={{ fontSize: 18, fontWeight: 700, color: "var(--term-text)", letterSpacing: "0.04em" }}
+        style={{ fontSize: TYPE.emph, fontWeight: 700, color: "var(--term-text)", letterSpacing: "0.04em" }}
       >
         {awayBrand.abbreviation}
         <span className="mx-2" style={{ fontWeight: 400, color: "var(--term-hairline)" }}>@</span>

@@ -32,7 +32,7 @@ function OffSeasonEmptyState({ nextSeason }: { nextSeason: string }) {
       <p className="mono text-[11px] font-semibold uppercase tracking-[0.08em] text-[var(--term-text-muted)]">
         REGULAR SEASON COMPLETE
       </p>
-      <p className="mt-2 text-base font-medium text-[var(--term-text)]">See you next season.</p>
+      <p className="mt-2 text-[15px] font-medium text-[var(--term-text)]">See you next season.</p>
       <p className="mt-1 text-xs text-[var(--term-text-muted)]">
         {nextSeason} season tips off in October.
       </p>

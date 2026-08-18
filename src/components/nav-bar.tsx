@@ -10,6 +10,7 @@ import {
   OTHER_NAV_ITEMS,
   OTHER_NAV_LABEL,
 } from "@/lib/primary-navigation"
+import { TYPE } from "@/lib/terminal-styles"
 import { cn } from "@/lib/utils"
 
 /**
@@ -262,6 +263,9 @@ export function NavBar() {
             aria-label="FullCourt home"
           >
             <CourtMark size={34} className="shrink-0" />
+            {/* 22px is NOT a TYPE entry, deliberately: the wordmark is sized to the 52px
+                brand bar beside a 34px mark, not to a text role. Resizing it is a branding
+                decision (see the exemption list in terminal-styles.ts). */}
             <span
               className="font-heading"
               style={{ fontSize: "22px", fontWeight: 700, letterSpacing: "-0.015em", lineHeight: 1 }}
@@ -338,7 +342,7 @@ export function NavBar() {
               style={TAB_STYLE}
             >
               {OTHER_NAV_LABEL}
-              <span aria-hidden style={{ fontSize: "9px" }}>▼</span>
+              <span aria-hidden style={{ fontSize: TYPE.micro }}>▼</span>
             </Menu.Trigger>
             <Menu.Portal>
               <Menu.Positioner sideOffset={0} align="start">
@@ -380,7 +384,7 @@ export function NavBar() {
                         {inProgress && (
                           <span
                             style={{
-                              fontSize: 9,
+                              fontSize: TYPE.micro,
                               letterSpacing: "0.06em",
                               fontWeight: 600,
                               color: "var(--term-text-muted)",

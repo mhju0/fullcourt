@@ -33,7 +33,7 @@ import {
   toDeviation,
 } from "@/lib/analysis-claims"
 import type { DataAsOf } from "@/lib/data-as-of"
-import { MONO_FONT_STACK, termCardStyle, termDashedEmptyStyle, termInsetStyle, termTdStyle } from "@/lib/terminal-styles"
+import { MONO_FONT_STACK, SPACE, termCardStyle, termDashedEmptyStyle, termInsetStyle, termTdStyle, TYPE } from "@/lib/terminal-styles"
 import { DataTable } from "@/components/ui/data-table"
 import type { AnalysisResponse } from "@/types"
 import { signedNumber } from "@/lib/signed-number"
@@ -134,7 +134,7 @@ function StatCard({
       <span style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 600 }}>
         {label}
       </span>
-      <span className="tabular-nums" style={{ fontSize: 24, fontWeight: 600, color: "var(--term-text)", lineHeight: 1 }}>
+      <span className="tabular-nums" style={{ fontSize: TYPE.stat, fontWeight: 600, color: "var(--term-text)", lineHeight: 1 }}>
         {value}
       </span>
       {sub && (
@@ -234,17 +234,17 @@ function WinRateTooltip({ active, payload }: TooltipContentProps) {
   return (
     <div style={termTooltip}>
       <p style={{ color: "var(--term-text)", fontWeight: 700, letterSpacing: "0.04em" }}>{d.label.toUpperCase()}</p>
-      <p style={{ color: "var(--term-text-muted)", marginTop: 2 }}>RESTED TEAM AT HOME</p>
+      <p style={{ color: "var(--term-text-muted)", marginTop: SPACE.xs }}>RESTED TEAM AT HOME</p>
       {/* The bar plots the deviation, so the tooltip leads with it and carries the
           absolute win rate underneath — the axis no longer shows it anywhere. The
           baseline is named on the same line so the two can never be read apart. */}
-      <p style={{ marginTop: 2, color: deviationFill(d.deviation) }}>
+      <p style={{ marginTop: SPACE.xs, color: deviationFill(d.deviation) }}>
         <span style={{ fontWeight: 700 }}>{signedNumber(d.deviation)} PP</span> VS {d.baselinePct}% BASELINE
       </p>
-      <p style={{ color: "var(--term-text-muted)", marginTop: 2 }}>WIN RATE: {d.winPct}%</p>
-      <p style={{ color: "var(--term-text-muted)", marginTop: 2 }}>{d.games.toLocaleString()} GAMES</p>
+      <p style={{ color: "var(--term-text-muted)", marginTop: SPACE.xs }}>WIN RATE: {d.winPct}%</p>
+      <p style={{ color: "var(--term-text-muted)", marginTop: SPACE.xs }}>{d.games.toLocaleString()} GAMES</p>
       {d.threshold !== undefined && (
-        <p style={{ marginTop: 4, fontSize: 11, color: "var(--term-accent)" }}>CLICK TO EXPLORE ↓</p>
+        <p style={{ marginTop: SPACE.sm, fontSize: TYPE.label, color: "var(--term-accent)" }}>CLICK TO EXPLORE ↓</p>
       )}
     </div>
   )
@@ -267,14 +267,14 @@ function SeasonWinRateTooltip({ active, payload }: TooltipContentProps) {
   return (
     <div style={termTooltip}>
       <p style={{ color: "var(--term-text)", fontWeight: 700, letterSpacing: "0.04em" }}>{d.label}</p>
-      <p style={{ marginTop: 2, color: deviationFill(d.deviation) }}>
+      <p style={{ marginTop: SPACE.xs, color: deviationFill(d.deviation) }}>
         <span style={{ fontWeight: 700 }}>{signedNumber(d.deviation)} PP</span> VS {d.baselinePct}% BASELINE
       </p>
-      <p style={{ color: "var(--term-text-muted)", marginTop: 2 }}>WIN RATE: {d.winPct}%</p>
-      <p style={{ color: "var(--term-text-muted)", marginTop: 2 }}>
+      <p style={{ color: "var(--term-text-muted)", marginTop: SPACE.xs }}>WIN RATE: {d.winPct}%</p>
+      <p style={{ color: "var(--term-text-muted)", marginTop: SPACE.xs }}>
         {d.restedTeamWins.toLocaleString()} / {d.games.toLocaleString()} (RESTED TEAM WON)
       </p>
-      <p style={{ color: "var(--term-text-muted)", marginTop: 2 }}>
+      <p style={{ color: "var(--term-text-muted)", marginTop: SPACE.xs }}>
         HOME TEAMS WON {d.baselinePct}% THAT SEASON
       </p>
     </div>
@@ -795,7 +795,7 @@ export function AnalysisContent({ asOf }: { asOf?: DataAsOf | null }) {
         >
           NOT COUNTED
         </p>
-        <p className="text-sm leading-relaxed text-[var(--term-text-dim)]">
+        <p className="text-[var(--term-text-dim)]" style={{ fontSize: TYPE.body, lineHeight: 1.55 }}>
           In the{" "}
           <span className="mono tabular-nums">
             {claims.declinedHalf.games.toLocaleString()}
@@ -949,7 +949,7 @@ export function AnalysisContent({ asOf }: { asOf?: DataAsOf | null }) {
           <p className="mono" style={{ fontSize: 11, letterSpacing: "0.12em", color: "var(--term-accent)", fontWeight: 700 }}>
             READING THESE NUMBERS
           </p>
-          <p className="mt-2 text-sm leading-relaxed text-[var(--term-text-dim)]">
+          <p className="mt-2 text-[var(--term-text-dim)]" style={{ fontSize: TYPE.body, lineHeight: 1.55 }}>
             Every game counted here is one the more-rested team played at home, and home teams
             win{" "}
             <span className="mono font-bold" style={{ color: "var(--term-text)" }}>{claims.reading.baselinePct}%</span>{" "}

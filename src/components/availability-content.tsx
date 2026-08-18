@@ -6,11 +6,11 @@ import {
   AVAILABILITY_SAMPLE,
   AVAILABILITY_SCHEDULE_HOLDS_UP,
 } from "@/lib/availability-facts"
-import { termCardStyle, WIDTH } from "@/lib/terminal-styles"
+import { SPACE, termCardStyle, TYPE, WIDTH } from "@/lib/terminal-styles"
 import { DataTable } from "@/components/ui/data-table"
 
 const BODY: React.CSSProperties = {
-  fontSize: 15,
+  fontSize: TYPE.body,
   color: "var(--term-text-muted)",
   lineHeight: 1.55,
   maxWidth: WIDTH.prose,
@@ -55,7 +55,7 @@ function EffectBar({
       <div className="flex flex-wrap items-baseline justify-between gap-x-3">
         <span
           style={{
-            fontSize: 15,
+            fontSize: TYPE.body,
             fontWeight: lit ? 700 : 600,
             color: lit ? "var(--term-text)" : "var(--term-text-muted)",
           }}
@@ -65,7 +65,7 @@ function EffectBar({
         <span
           className="mono tabular-nums"
           style={{
-            fontSize: 22,
+            fontSize: TYPE.stat,
             fontWeight: 700,
             lineHeight: 1.1,
             color: lit ? "var(--term-blue)" : "var(--term-text)",
@@ -111,7 +111,7 @@ function ScaleSection() {
       <div style={termCardStyle}>
         <span
           className="mono tabular-nums block"
-          style={{ fontSize: 40, fontWeight: 700, color: "var(--term-blue)", lineHeight: 1.05 }}
+          style={{ fontSize: TYPE.figure, fontWeight: 700, color: "var(--term-blue)", lineHeight: 1.05 }}
         >
           {e.bestPlayerOut.points.toFixed(2)} points
         </span>
@@ -122,7 +122,7 @@ function ScaleSection() {
             letterSpacing: "0.08em",
             color: "var(--term-text-muted)",
             fontWeight: 700,
-            marginTop: 6,
+            marginTop: SPACE.sm,
           }}
         >
           WHAT A TEAM LOSES WHEN ITS BEST PLAYER SITS · POINTS OF FINAL MARGIN
@@ -165,7 +165,7 @@ function FrequencySection() {
             <div key={c.label} className="flex flex-col gap-2">
               <span
                 className="mono tabular-nums"
-                style={{ fontSize: 28, fontWeight: 700, color: "var(--term-text)", lineHeight: 1.1 }}
+                style={{ fontSize: TYPE.stat, fontWeight: 700, color: "var(--term-text)", lineHeight: 1.1 }}
               >
                 {c.value}
               </span>
