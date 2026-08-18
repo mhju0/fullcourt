@@ -36,10 +36,18 @@ Daily NBA pipeline for GitHub Actions (and local runs):
    ordering is why step 1 has to run first: this script only reads games already marked
    `final`.
 
-3. Run `pnpm exec tsx scripts/run-daily.ts <today ET>` to refresh fatigue for today's
-   slate and regenerate open predictions. It recomputes `[today, today + 14]`, so an
-   overtime game finalized in step 1 feeds the overtime penalty into the fatigue of the
-   affected teams' next games before they are played.
+3. Fill fatigue for any **scheduled** game that has none, via `scripts/project_fatigue.ts`
+   (no season argument — it resolves the season whose games are ahead). Gap-only, so an
+   ordinary night is one indexed query that returns nothing. It exists for the fixtures the
+   league adds mid-season: only 80 of each team's 82 games are published at release, and the
+   rest arrive once Cup group play resolves in December. Those rows would otherwise carry no
+   rest advantage until someone ran the projection by hand. Non-fatal.
+
+4. Run `pnpm exec tsx scripts/run-daily.ts <today ET>` to refresh fatigue for today's
+   slate and regenerate open predictions. It recomputes `[today, today + 14]` on the stricter
+   *played* basis, so an overtime game finalized in step 1 feeds the overtime penalty into the
+   fatigue of the affected teams' next games before they are played — and anything step 3
+   projected inside that window ends the night measured rather than projected.
 
 Requires DATABASE_URL in the environment (e.g. GitHub Actions secret) for the
 in-season path; the offseason gate runs without it.
@@ -151,6 +159,25 @@ def main() -> None:
         # overtime_periods from the same scoreboard, so a failure here costs tip-off times
         # and the neutral-site flag for these few games, not the fatigue model's OT term.
         print("[daily_update] WARNING: game context refresh failed; continuing.")
+
+    # Fatigue for scheduled games that have none — how a fixture added mid-season (the NBA
+    # publishes 80 of 82 at release and fills the rest once Cup group play resolves) picks up a
+    # rest advantage without anyone remembering to run it. Gap-only, so an ordinary night costs
+    # one indexed query that returns nothing.
+    #
+    # Runs BEFORE run-daily.ts, which then recomputes the next 14 days on the stricter "played"
+    # basis — so anything inside that window ends the night measured rather than projected.
+    print("[daily_update] projecting fatigue for any unscored scheduled game …")
+    proj = subprocess.run(
+        ["pnpm", "exec", "tsx", "scripts/project_fatigue.ts"],
+        cwd=str(REPO_ROOT),
+        env={**os.environ, "DATABASE_URL": database_url},
+        check=False,
+    )
+    if proj.returncode != 0:
+        # Non-fatal: a game with no fatigue row renders an em dash, which is honest. Failing the
+        # whole run over it would also cost the score sync that already succeeded.
+        print("[daily_update] WARNING: fatigue projection failed; continuing.")
 
     print(f"[daily_update] running Node pipeline for {today_str} …")
     result = subprocess.run(

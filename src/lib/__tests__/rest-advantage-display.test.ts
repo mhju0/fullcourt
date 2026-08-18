@@ -78,6 +78,7 @@ describe("formatRestAdvantageDisplay", () => {
     ).toEqual({
       kind: "neutral",
       text: "NEUTRAL",
+      projected: false,
     });
   });
 });
@@ -436,12 +437,30 @@ describe("formatRestAdvantageDisplay — projected provenance", () => {
     expect(projected.kind === "team" && projected.value).toBe("3.2");
   });
 
-  it("does not label a neutral or unmeasured cell as projected", () => {
-    // Both already say something specific about the measurement; a PROJECTED badge on top of
-    // "not measured" would be two provenance claims at once.
-    expect(
-      formatRestAdvantageDisplay({ differential: 0.1, advantageTeam: "neutral" }, "BOS", "LAL", true).kind
-    ).toBe("neutral");
-    expect(formatRestAdvantageDisplay(null, "BOS", "LAL", true).kind).toBe("unmeasured");
+  it("labels a projected neutral too, because that is a different claim from a measured one", () => {
+    // NEUTRAL is a statement about the *result* — measured, and the gap came out too small to
+    // act on. A projected gap that is currently too small can still move. Seen on the board,
+    // leaving this off showed some projected rows annotated and some not.
+    const projectedNeutral = formatRestAdvantageDisplay(
+      { differential: 0.1, advantageTeam: "neutral" },
+      "BOS",
+      "LAL",
+      true
+    );
+    expect(projectedNeutral.kind).toBe("neutral");
+    expect(projectedNeutral.kind === "neutral" && projectedNeutral.projected).toBe(true);
+
+    const measuredNeutral = formatRestAdvantageDisplay(
+      { differential: 0.1, advantageTeam: "neutral" },
+      "BOS",
+      "LAL"
+    );
+    expect(measuredNeutral.kind === "neutral" && measuredNeutral.projected).toBe(false);
+  });
+
+  it("takes no flag when there is no reading to attribute", () => {
+    const display = formatRestAdvantageDisplay(null, "BOS", "LAL", true);
+    expect(display.kind).toBe("unmeasured");
+    expect("projected" in display).toBe(false);
   });
 });

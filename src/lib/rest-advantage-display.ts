@@ -10,20 +10,29 @@ export type RestAdvantageDisplay =
       teamAbbreviation: string;
       value: string;
       text: string;
-      /**
-       * The differential was projected from the published schedule, not measured from played
-       * basketball — an unplayed game sits earlier in the season, so the prior-game overtime
-       * and blowout terms are still open. See `src/lib/fatigue-provenance.ts`.
-       *
-       * A property of this one reading rather than a fourth `kind`: the cell renders the same
-       * team and the same number either way, and only annotates where it came from. Making it
-       * a kind would have forced every consumer to handle a case that is not different.
-       */
+      /** See the note on the neutral branch below. */
       projected: boolean;
     }
   | {
       kind: "neutral";
       text: string;
+      /**
+       * The differential was projected from the published schedule, not measured from played
+       * basketball — an unplayed game sits earlier in the season, so the prior-game overtime
+       * and blowout terms are still open. See `src/lib/fatigue-provenance.ts`.
+       *
+       * A property of the reading rather than a fourth `kind`: the cell renders the same team
+       * and the same number either way and only annotates where it came from, so making it a
+       * kind would force consumers to handle a case that is not different.
+       *
+       * **Carried on `neutral` as well as `team`, and that is not redundant.** `neutral` is a
+       * claim about the *result* — measured, and the gap came out too small to act on — which
+       * is a different statement from a projected gap that is currently too small and can still
+       * move. Leaving it off meant a board full of projected rows showed some annotated and
+       * some not, with nothing marking the difference. `unmeasured` is the one branch that
+       * takes no flag: there is no reading there to attribute.
+       */
+      projected: boolean;
     }
   /**
    * No fatigue pair exists for this game, so no differential was ever computed.
@@ -53,7 +62,7 @@ export function formatRestAdvantageDisplay(
   }
 
   if (restAdvantage.advantageTeam === "neutral") {
-    return { kind: "neutral", text: "NEUTRAL" };
+    return { kind: "neutral", text: "NEUTRAL", projected };
   }
 
   const teamAbbreviation =

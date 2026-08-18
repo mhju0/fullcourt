@@ -61,7 +61,15 @@ Steps:
    This replaced a `stats.nba.com` BoxScoreSummary loop that could never have worked from
    outside the US: `overtime_periods` sat at 0 for all 49,353 games, so the fatigue model's
    overtime term never fired once. See ADR 0003 for the era limits of the ESPN source.
-4. **Run the Node modeling step** — `pnpm exec tsx scripts/run-daily.ts <today ET>`; a
+4. **Project fatigue for any unscored scheduled game** — `scripts/project_fatigue.ts` with no
+   season argument (it resolves the season whose games are ahead). Gap-only, so an ordinary
+   night is one indexed query returning nothing. It exists for the fixtures the league adds
+   mid-season: only 80 of each team's 82 games are published at release, and the rest arrive
+   once Cup group play resolves in December — those rows would otherwise carry no rest
+   advantage until someone ran the projection by hand. **Non-fatal**: a game with no fatigue
+   row renders an em dash, which is honest, and failing here would also throw away the score
+   sync that already succeeded.
+5. **Run the Node modeling step** — `pnpm exec tsx scripts/run-daily.ts <today ET>`; a
    non-zero exit fails the job. It recomputes `[today, today + 14]`, which is what carries an
    overtime finalized in step 2 into the **next** games of the teams that played it: the OT
    term reads `lastGame.overtimePeriods` (`src/lib/fatigue.ts`), and `fetchRecentGamesForTeam`
@@ -372,6 +380,9 @@ per-shot" framing.
   game comes within 14 days, `run-daily.ts` recomputes it on the default `"played"` basis, so a
   projection is always replaced by the measured value before tip-off.
 - Run for 2026-27 on 2026-08-18: 1,200 games, 2,400 fatigue rows, 633 open predictions, 0 failures.
+  **Took over 10 minutes** — 2,400 sequential Supabase round-trips. Run it backgrounded; the
+  gap-only default means an interrupted run resumes where it stopped.
+- Called with no season argument as step 4 of `daily_update.py`.
 - **Nothing marks a row as projected in the database, and nothing should.** A fatigue row belongs
   to a game, and the season's own progress decides the question — see
   `src/lib/fatigue-provenance.ts`. A stored copy could only ever disagree with it.

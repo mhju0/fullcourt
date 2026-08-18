@@ -287,7 +287,7 @@ function RestAdvCell({
       {/* Where the number came from, stated only when it is not the ordinary case. A projected
           differential is read off the published schedule: every input is already fixed except
           the previous game's overtime and margin, so it moves only where one of those lands. */}
-      {display.kind === "team" && display.projected && (
+      {display.kind !== "unmeasured" && display.projected && (
         <span
           className="mono"
           style={{

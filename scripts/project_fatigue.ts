@@ -39,7 +39,14 @@
  * As each game comes within 14 days, `run-daily.ts` recomputes it on the default `"played"` basis,
  * so a projection is always replaced by the measured value before tip-off.
  *
+ * Runs inside `daily_update.py` with no season argument — after the score sync, before
+ * `run-daily.ts` — which is what keeps a mid-season addition from going unscored: the NBA publishes only 80 of each team's 82 games at
+ * release, and the rest arrive once Cup group play resolves in December. Those rows appear via a
+ * re-seed and would otherwise carry no rest advantage until someone remembered to run this. The
+ * gap-only default makes the nightly cost one indexed query returning nothing.
+ *
  * Usage:
+ *   pnpm exec tsx scripts/project_fatigue.ts                      # current season, gaps only
  *   pnpm exec tsx scripts/project_fatigue.ts 2026-27              # games with no fatigue rows
  *   pnpm exec tsx scripts/project_fatigue.ts 2026-27 --force      # recompute every scheduled game
  *   pnpm exec tsx scripts/project_fatigue.ts 2026-27 --dry-run    # report only, write nothing
@@ -53,6 +60,7 @@ import { fatigueScores, games, predictions, teams } from "@/lib/db/schema";
 import { refreshDailyGames, type DailyRefreshPort } from "@/lib/daily-refresh";
 import { fetchRecentGamesForTeam } from "@/lib/fatigue-recent-games";
 import { loadEnvLocal } from "@/lib/load-env-local";
+import { defaultNbaSeason } from "@/lib/nba-season";
 
 type AppDb = PostgresJsDatabase<typeof Schema>;
 
@@ -62,14 +70,9 @@ async function main(): Promise<void> {
   const args = process.argv.slice(2);
   const dryRun = args.includes("--dry-run");
   const force = args.includes("--force");
-  const season = args.find((a) => /^\d{4}-\d{2}$/.test(a));
-
-  if (!season) {
-    console.error(
-      "Usage: pnpm exec tsx scripts/project_fatigue.ts <season> [--force] [--dry-run]"
-    );
-    process.exit(1);
-  }
+  // No argument means the season whose games are ahead — the same one the board opens on. That
+  // is what lets the nightly run call this with no season and still target the right one.
+  const season = args.find((a) => /^\d{4}-\d{2}$/.test(a)) ?? defaultNbaSeason();
 
   const { db } = await import("@/lib/db");
   const appDb = db as AppDb;
