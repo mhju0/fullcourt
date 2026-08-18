@@ -1,3 +1,4 @@
+import { formatDataAsOf, type DataAsOf } from "@/lib/data-as-of"
 import { WIDTH } from "@/lib/terminal-styles"
 
 /**
@@ -14,11 +15,21 @@ export function PageHeader({
   eyebrow,
   title,
   description,
+  asOf,
 }: {
   eyebrow: string
   title: string
   description: React.ReactNode
+  /**
+   * Which games the figures under this heading were computed from (2026-08-18). Optional
+   * because most surfaces have no such population: /games is a live board, and the
+   * season-scoped surfaces answer for one season, not for the final-game population this
+   * describes — a page that cannot make the claim truthfully passes nothing.
+   */
+  asOf?: DataAsOf | null
 }) {
+  const stamp = formatDataAsOf(asOf)
+
   return (
     <div className="flex flex-col gap-2">
       <span
@@ -43,6 +54,17 @@ export function PageHeader({
       >
         {description}
       </p>
+      {/* Under the description, not beside the title: it qualifies the figures on the page
+          rather than naming the page. Same mono/11px/muted treatment as the PROVISIONAL line
+          on /schedule, which is the same claim about a narrower population. */}
+      {stamp ? (
+        <p
+          className="mono"
+          style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-text-muted)" }}
+        >
+          {stamp}
+        </p>
+      ) : null}
     </div>
   )
 }

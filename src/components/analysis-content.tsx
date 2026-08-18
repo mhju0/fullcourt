@@ -32,6 +32,7 @@ import {
   buildAnalysisClaims,
   toDeviation,
 } from "@/lib/analysis-claims"
+import type { DataAsOf } from "@/lib/data-as-of"
 import { MONO_FONT_STACK, termCardStyle, termDashedEmptyStyle, termInsetStyle, termTdStyle } from "@/lib/terminal-styles"
 import { DataTable } from "@/components/ui/data-table"
 import type { AnalysisResponse } from "@/types"
@@ -680,7 +681,7 @@ function ExploreGames({
 
 // ─── Main component ───────────────────────────────────────────────
 
-export function AnalysisContent() {
+export function AnalysisContent({ asOf }: { asOf?: DataAsOf | null }) {
   const [drillSignal, setDrillSignal] = useState<DrillSignal>(null)
   const [seasonRaFilter, setSeasonRaFilter] = useState(0)
 
@@ -759,6 +760,9 @@ export function AnalysisContent() {
         eyebrow="HISTORICAL BACKTEST · WIN RATE"
         title="Model Results"
         description={claims.headerDescription}
+        // Read on the server, not from the backtest response: the same query that keys the
+        // held backtest, so the date shown and the population measured cannot diverge.
+        asOf={asOf}
       />
       <MethodLink surfaceHref="/analysis" />
 

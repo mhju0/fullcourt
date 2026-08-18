@@ -32,7 +32,7 @@ const PUBLISHING_READERS = [
   "getGameById",
   "getTeamRecentFinalResults",
   "getRegularSeasonGameDatesWithCounts",
-  "getCompletedGamesStamp",
+  "getDataAsOf",
   "getCompletedGamesWithFatigue",
   "searchRegularSeasonGames",
   "getUpcomingGamesWithRA",
@@ -65,6 +65,14 @@ describe("publishableGames", () => {
     for (const name of [...DENSITY_READERS, "getShotQualityGrid"]) {
       expect(docblock).toContain(name);
     }
+  });
+
+  it("keeps getCompletedGamesStamp on the filtered read rather than its own", () => {
+    // The stamp stopped issuing its own query on 2026-08-18, when the same count/max became
+    // a published "as of" value (`getDataAsOf`). Delegation is what keeps the key and the
+    // displayed figure describing one population — re-inlining the query here would also
+    // re-open the chance of dropping the regime filter from one of the two.
+    expect(bodyOf("getCompletedGamesStamp")).toContain("getDataAsOf()");
   });
 
   it("is the only place the predicates are written", () => {

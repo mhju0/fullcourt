@@ -98,12 +98,21 @@ with the reason.
 
 ## 5. Trust & provenance (the Korean-site strength)
 
-- [ ] **An "as of" stamp on data surfaces** — Naver/KBO record pages carry 기준 시각 ("as of
-  08.15 06:00"); it is the single strongest trust pattern in the Korean set. FullCourt has
-  the server half already (`getCompletedGamesStamp`, the stamped cache) but no surface shows
-  it. The footer's `RENDERED` stamp is deliberately *not* this — it says when the layout
-  rendered and explicitly makes no data claim. Needs an API-shape decision (carry the stamp
-  in responses?) → Michael before any code.
+- [x] **An "as of" stamp on data surfaces** — Naver/KBO record pages carry 기준 시각 ("as of
+  08.15 06:00"); it is the single strongest trust pattern in the Korean set. Shipped on
+  **/analysis** 2026-08-18, server-rendered: `getDataAsOf()` (the same count/max that keys the
+  held backtest) → `PageHeader`'s `asOf` prop → `formatDataAsOf`. The shape decision was
+  server-rendered per surface rather than a field on every API response — no route's response
+  shape or cache policy moved. **The date only:** a count in the stamp sat four lines above a
+  tile with a different count under the same noun. The footer's `RENDERED` stamp is still
+  deliberately *not* this — it says when the layout rendered and makes no data claim.
+- [ ] **The season-scoped surfaces still have no truthful stamp** (`/season`, and the table half
+  of `/schedule`). Their figures answer for one *selected* season, keyed on
+  `getSeasonGamesStamp(season)`, so the global final-game date above would be a claim about a
+  different population — which is why they were left out rather than filled in. Giving them one
+  means carrying the per-season stamp in the response, i.e. the API-shape decision the row above
+  avoided. /schedule's existing `AS OF` (shown only while provisional) is the render date, not a
+  data date. Owner: Michael (API shape).
 - [x] **Baselines named next to every rate** — the venue-baseline rule (CLAUDE.md). No
   fetched site does this. It is the site's spine; the checklist exists partly so no adoption
   ever dilutes it.

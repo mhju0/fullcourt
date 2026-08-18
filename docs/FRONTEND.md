@@ -143,11 +143,30 @@ upcoming October date at season start; else nearest / last available).
 
 ### `/analysis` — Analysis (`src/app/analysis/page.tsx`)
 
-Server wrapper just renders `<AnalysisContentLazy />`. The lazy client component
+Server wrapper renders `<AnalysisContentLazy asOf={…} />`. The lazy client component
 (`analysis-content.tsx`) renders `<PageHeader>` itself — `HISTORICAL BACKTEST` /
 `Rest Advantage Analysis` — inside the loaded branch, so the heading arrives with the data it
 describes. It used to hand-copy `PageHeader`'s markup for that; the component works fine
 inside a branch.
+
+**The `AS OF <date>` stamp** (2026-08-18, the first surface to carry one — UIUX_CHECKLIST §5).
+The wrapper is now `async` with `revalidate = 86400`, reads `getDataAsOf()` and hands it
+through the lazy boundary to `PageHeader`; `formatDataAsOf` (`src/lib/data-as-of.ts`) writes
+the line. Three rules live in that module and are asserted in its test:
+
+- **The date only, never a count.** The first version added `· 47,143 FINAL GAMES`, four lines
+  above a tile reading `27,400 GAMES` — every publishable final game versus the games the model
+  called, one noun, two populations.
+- **It is not the footer's `RENDERED`.** That says when the layout rendered and makes no data
+  claim. This says which games the figures came from.
+- **No stamp rather than an empty one.** No `DATABASE_URL`, or no final games, renders nothing —
+  the whole-element form of the `NO_FIGURE` rule.
+
+The season-scoped surfaces (`/season`, `/schedule`) deliberately **do not** take this prop: their
+figures answer for one selected season, keyed on `getSeasonGamesStamp(season)`, so the global
+final-game date would be a different claim than the page makes. /schedule already prints its own
+`AS OF` from its response, and giving those surfaces a truthful stamp means carrying the
+per-season one in the response — a different decision, still open in the checklist.
 
 **Two hero tiles, then the excluded half as a sentence** (2026-08-11). Both tiles name who won
 and over which slice — `RESTED TEAM AT HOME WON · ANY GAP` and `… · RA ≥ 5`. They led with the
