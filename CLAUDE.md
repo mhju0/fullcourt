@@ -152,6 +152,9 @@ Skipping `prepare` fails **silently**: `fatigue_model_table.csv` is already on d
 - [docs/DATA_PIPELINE.md](docs/DATA_PIPELINE.md) — every script + the full fatigue-model math
 - [docs/API.md](docs/API.md) — every route: params, response shape, DB reads
 - [docs/FRONTEND.md](docs/FRONTEND.md) — pages, components, the `--term-*` design system
+- [docs/ADDING_A_SURFACE.md](docs/ADDING_A_SURFACE.md) — the contract a new page or tab has to
+  satisfy, with the test that enforces each rule named beside it. **Start here for a new page**;
+  FRONTEND.md says why the rules are what they are
 - [docs/UIUX_CHECKLIST.md](docs/UIUX_CHECKLIST.md) — conventions measured against major US/KR
   sports properties: adopted, open, and refused-with-reasons. A UI/UX pass starts from its
   open rows, and an adoption PR flips its row in the same commit

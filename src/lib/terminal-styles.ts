@@ -4,15 +4,129 @@ import type { CSSProperties } from "react"
  * Shared "Bloomberg Terminal meets NBA stats" style tokens. Keep every page
  * pulling from here instead of re-declaring the same card/select/table shapes
  * locally — see docs/FRONTEND.md for the underlying --term-* CSS variables.
- *
- * Type scale (apply new sizes from this list, not ad hoc fontSize values):
- *   10px micro label (uppercase, tracked)   — table headers, badges, meta strips
- *   11px small label (uppercase, tracked)   — stat card labels, section eyebrows
- *   12px body / data                        — table cells, inline data
- *   13-16px emphasized inline                — team abbreviations, card titles
- *   20-24px stat value                       — StatCard-style numbers
- *   32px hero stat value                     — headline metrics (accuracy %, etc.)
  */
+
+/**
+ * The type scale. Every font size in the app is one of these eight numbers, and each one has
+ * exactly one job.
+ *
+ * This replaced a docblock that gave the same six slots as *ranges* — "13-16px emphasized
+ * inline", "20-24px stat value" — and a range is not a scale. It permitted 13, 14, 15 and 16 to
+ * mean the same thing, and measurement on 2026-08-18 found the app rendering **36 distinct
+ * sizes**, including 9.5, 10.5, 12.5, 12.8, 16.8, 17, 19, 21, 26 and 28. Sub-pixel sizes are the
+ * clearest tell: nothing chose 10.5px, it was 11 nudged by eye on one surface and nowhere else.
+ *
+ * The three label sizes ARE one step apart, and that is the ladder, not drift: a figure (12) sits
+ * above its label (11), which sits above its own sub-label (10). Read down a stat tile or a table
+ * header and each line recedes one step from the one it qualifies.
+ *
+ * New text picks the entry whose *job* matches. Rounding to the nearest number is how ranges
+ * came back last time.
+ */
+export const TYPE = {
+  /** Uppercase mono, subordinate to a label: unit lines under a column header, badges. */
+  micro: 10,
+  /** Uppercase mono label: section eyebrows, column headers, stat-tile captions. */
+  label: 11,
+  /** The data size: table cells, inline figures, chips, a team name in a dense row. */
+  data: 12,
+  /**
+   * Any sentence. Fixed by docs/FRONTEND.md §"Sentence case vs. caps" — sentences are set in
+   * the body face, sentence case, at this size, and uppercase mono is for labels of about three
+   * words or fewer. Eight paragraphs in `season-report-content.tsx` were at 14 and three in
+   * `schedule-disparity-content.tsx` at 13, so a page's own description and the prose beneath it
+   * were one pixel apart, which reads as a rendering fault rather than as a distinction.
+   */
+  body: 15,
+  /**
+   * A figure inside a dense row — a score, a rest-advantage differential. Distinct from
+   * {@link stat} because these live in the games board's 26px `TEAM_LINE_H` rows, where a tile's
+   * figure would not fit. Unifies a 17 and an 18 that sat in adjacent columns of one table.
+   */
+  emph: 18,
+  /** The figure in a stat tile. Was also 20, 21, 22 and 28 across five hand-rolled tiles. */
+  stat: 24,
+  /** Page title (`PageHeader`) and hero stat. */
+  title: 32,
+  /** The one headline figure of a module — /availability's cost, the playoff grind gap. */
+  figure: 40,
+} as const
+
+/**
+ * Sizes that are deliberately NOT type-scale entries, so a scale audit does not keep
+ * rediscovering them:
+ *
+ * - **16px on a focusable control** — the iOS input-zoom floor, and a functional value rather
+ *   than a typographic one. It must stay in the class layer to be responsive; see
+ *   {@link termSelectClass}.
+ * - **The brand wordmark** (`nav-bar.tsx`) — sized to the 52px brand bar, not to a text role.
+ *   Changing it is a branding decision, not a scale cleanup.
+ * - **`/` (the front door)** — a full-bleed editorial surface on its own fluid `clamp()` display
+ *   scale, already exempt by name from `e2e/alignment-audit.spec.ts` for the same reason.
+ * - **`opengraph-image.tsx`** — a fixed 1200×630 brand asset, not a page.
+ * - **`components/ui/button.tsx`** — vendored shadcn; its sizes live inside `has-data-*`
+ *   variant selectors.
+ */
+
+/**
+ * The tracking scale. Uppercase mono is most of this app's chrome, and tracking is what makes a
+ * cap line readable at 10px — so it is a real axis, not a garnish.
+ *
+ * Measured 2026-08-18: **18 distinct letter-spacing values** outside the exempt surfaces, of which
+ * 0.08em and 0.04em carried three quarters of the app and the rest — 0.02, 0.03, 0.05, 0.07, 0.09,
+ * 0.1, 0.12 — varied by nothing but which file the label happened to live in. Every one of those
+ * was the same kind of object: a small uppercase mono label.
+ *
+ * The steps run **more open as the type gets smaller** (a 10px cap line needs air a 12px one does
+ * not) and **tighter as it gets larger** (a 24px numeral wants closing up, not opening out). That
+ * is the typographic rule the numbers now follow, rather than five files' worth of habit.
+ */
+export const TRACK = {
+  /** The default tracked label: eyebrows, column headers, tile captions, section dividers. */
+  label: "0.08em",
+  /**
+   * A label subordinate to another label — a unit line under a column header, the qualifier under
+   * a figure. Tighter, so it recedes without needing to shrink further.
+   */
+  sub: "0.04em",
+  /**
+   * Uppercase at {@link TYPE.data} size: nav tabs, selects, chips, badges, a team abbreviation
+   * sitting in a row of figures. Less air than a label needs, because 12px caps are already open
+   * enough to read at a glance.
+   */
+  data: "0.06em",
+  /**
+   * Large tabular figures — {@link TYPE.stat} and up — which want closing rather than opening.
+   * Only slightly: a numeral column is doing tabular work, and tightening it much starts to fight
+   * the grid the figures are lining up on. The app had −0.01em and −0.02em doing this job.
+   */
+  figure: "-0.01em",
+} as const
+
+/*
+ * There is deliberately no `display` step. Page titles take their tracking from the base
+ * `h1, h2, h3` rule in `globals.css` (Tailwind's `tracking-tight`), so nothing at display size
+ * sets it inline — and a token with no consumer is a thing the next person has to work out.
+ * `/`'s display clamps and the brand wordmark are the exceptions, and both are exempt by name.
+ */
+
+/**
+ * The leading scale. Three jobs, where there were fifteen values.
+ *
+ * The tail was not a set of decisions: 1, 1.05 and 1.1 all meant "a figure needs no air above it",
+ * and 1.5, 1.55, 1.6, 1.65 and 1.7 all meant "this is a paragraph". Two exemptions are real and
+ * stay out: `/`'s display type (0.85–1.25, sized against the viewport) and the **14px line box on a
+ * badge chip**, which is box geometry — it fixes the chip's height independently of its font size,
+ * the same way a data mark's gap is drawing rather than layout.
+ */
+export const LEAD = {
+  /** A figure or a title: its own line box and nothing more. */
+  figure: 1.1,
+  /** A label long enough to wrap. */
+  label: 1.4,
+  /** Prose. */
+  body: 1.55,
+} as const
 
 /**
  * The spacing scale. Every gap, pad and margin in the app is one of these seven numbers.
@@ -107,7 +221,7 @@ export const termCardStyle: CSSProperties = {
 export const termDashedEmptyStyle: CSSProperties = {
   border: "1px dashed var(--term-border)",
   borderRadius: "var(--term-radius)",
-  fontSize: 12,
+  fontSize: TYPE.data,
   color: "var(--term-text-muted)",
 }
 
@@ -129,7 +243,7 @@ export const termInsetStyle: CSSProperties = {
 }
 
 /**
- * `text-[16px] sm:text-[12px]` is the iOS input-zoom floor, not a type-scale entry. Mobile
+ * `text-[16px] sm:text-data` is the iOS input-zoom floor, not a type-scale entry. Mobile
  * Safari zooms the whole page when a focused control's font is under 16px, and the zoom does
  * not undo itself on blur — measured worst on /analysis and /shooting (docs/ROADMAP.md,
  * 2026-08-04). ESPN, NBA.com, Naver Sports and KBL all "fix" this by disabling pinch-zoom
@@ -139,7 +253,7 @@ export const termInsetStyle: CSSProperties = {
  * The floor must stay in the CLASS layer: an inline fontSize cannot be made responsive.
  */
 export const termSelectClass =
-  "mono inline-flex items-center gap-2 bg-[var(--term-surface)] px-3 py-1.5 text-[16px] sm:text-[12px] uppercase tracking-[0.05em] text-[var(--term-text-dim)] transition-colors hover:bg-[var(--term-surface-2)] cursor-pointer appearance-none pr-8"
+  "mono inline-flex items-center gap-2 bg-[var(--term-surface)] px-3 py-2 text-[16px] sm:text-data uppercase tracking-data text-[var(--term-text-dim)] transition-colors hover:bg-[var(--term-surface-2)] cursor-pointer appearance-none pr-8"
 
 export const termSelectStyle: CSSProperties = {
   border: "1px solid var(--term-border)",
@@ -178,8 +292,8 @@ export const termThStyle: CSSProperties = {
   // with an unstyled cell drifts out of line with the column beneath it. Left is the match.
   textAlign: "left",
   fontFamily: MONO_FONT_STACK,
-  fontSize: 11,
-  letterSpacing: "0.08em",
+  fontSize: TYPE.label,
+  letterSpacing: TRACK.label,
   color: "var(--term-text-muted)",
   fontWeight: 700,
   background: "var(--term-surface-2)",
@@ -189,7 +303,7 @@ export const termThStyle: CSSProperties = {
 
 export const termTdStyle: CSSProperties = {
   borderBottom: "1px solid var(--term-border)",
-  fontSize: 12,
+  fontSize: TYPE.data,
 }
 
 /**
@@ -219,8 +333,8 @@ export const TERM_NUMERIC_TABLE_MAX_WIDTH = WIDTH.numeric;
 export const termThUnitStyle: CSSProperties = {
   display: "block",
   fontWeight: 400,
-  fontSize: 9.5,
-  letterSpacing: "0.04em",
+  fontSize: TYPE.micro,
+  letterSpacing: TRACK.sub,
   textTransform: "none",
   opacity: 0.72,
 }

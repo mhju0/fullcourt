@@ -1,18 +1,19 @@
 import { PlayoffGrindGap } from "@/components/playoff-grind-gap"
 import { PLAYOFF_EQUAL_REST } from "@/lib/playoff-rest-facts"
-import { termCardStyle, WIDTH } from "@/lib/terminal-styles"
+import { LEAD, termCardStyle, TRACK, TYPE, WIDTH } from "@/lib/terminal-styles"
+import { StatFigure } from "@/components/ui/stat-tile"
 
 const BODY: React.CSSProperties = {
-  fontSize: 15,
+  fontSize: TYPE.body,
   color: "var(--term-text-muted)",
-  lineHeight: 1.55,
+  lineHeight: LEAD.body,
   maxWidth: WIDTH.prose,
 }
-const LEAD = { color: "var(--term-text)", fontWeight: 600 } as const
+const LEAD_IN = { color: "var(--term-text)", fontWeight: 600 } as const
 
 function SectionHeading({ children }: { children: React.ReactNode }) {
   return (
-    <div className="mono flex items-center gap-3 py-1" style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-text-muted)" }}>
+    <div className="mono flex items-center gap-3 py-1" style={{ fontSize: 11, letterSpacing: TRACK.label, color: "var(--term-text-muted)" }}>
       <span style={{ fontWeight: 700 }}>{children}</span>
       <span style={{ flex: 1, height: 1, background: "var(--term-border)" }} />
     </div>
@@ -41,20 +42,20 @@ function NoRestSection() {
         {/* 360px, not less: "2,545 of 2,545" is fourteen mono characters at 40px and wraps
             below this, which splits the one figure the section exists to state. */}
         <div className="shrink-0 md:basis-[360px]">
-          <span
-            className="mono tabular-nums block whitespace-nowrap"
-            style={{ fontSize: 40, fontWeight: 700, color: "var(--term-text)", lineHeight: 1.05 }}
-          >
-            {laterEqual.toLocaleString()} of {laterGames.toLocaleString()}
-          </span>
-          <span className="mono block" style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 700, marginTop: 6 }}>
-            PLAYOFF GAMES AFTER GAME 1
-            <br />
-            BOTH TEAMS ON THE SAME REST
-          </span>
+          <StatFigure
+            value={`${laterEqual.toLocaleString()} of ${laterGames.toLocaleString()}`}
+            tone="var(--term-text)"
+            caption={
+              <>
+                PLAYOFF GAMES AFTER GAME 1
+                <br />
+                BOTH TEAMS ON THE SAME REST
+              </>
+            }
+          />
         </div>
         <p className="m-0" style={BODY}>
-          <span style={LEAD}>Every single one.</span> Once a series starts the two teams share a
+          <span style={LEAD_IN}>Every single one.</span> Once a series starts the two teams share a
           schedule, so neither can be more rested. Playoff rest has exactly one place to exist:
           the wait before Game 1 — and only {game1Equal} of {game1Games} Game 1s were even.
         </p>
@@ -69,7 +70,7 @@ function GrindTaxSection() {
     <section className="flex flex-col gap-3">
       <SectionHeading>THE GRIND TAX</SectionHeading>
       <p style={BODY}>
-        <span style={LEAD}>Beating a team that just survived a long series is easier.</span> Going
+        <span style={LEAD_IN}>Beating a team that just survived a long series is easier.</span> Going
         the distance to win one round leaves you worse off in the next.
       </p>
       <PlayoffGrindGap />

@@ -1,4 +1,4 @@
-import { termCardStyle, WIDTH } from "@/lib/terminal-styles";
+import { LEAD, SPACE, termCardStyle, TRACK, TYPE, WIDTH } from "@/lib/terminal-styles";
 import { DataTable } from "@/components/ui/data-table";
 import benchmark from "@/data/win-total-benchmark.json";
 
@@ -18,12 +18,12 @@ export function WinTotalMarketCheck() {
     <div style={termCardStyle}>
       <p
         className="mono"
-        style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 600, textTransform: "uppercase" }}
+        style={{ fontSize: 11, letterSpacing: TRACK.label, color: "var(--term-text-muted)", fontWeight: 600, textTransform: "uppercase" }}
       >
         The market check — season win totals
       </p>
 
-      <p style={{ marginTop: 8, maxWidth: WIDTH.prose, fontSize: 15, color: "var(--term-text)", lineHeight: 1.55 }}>
+      <p style={{ marginTop: SPACE.sm, maxWidth: WIDTH.prose, fontSize: TYPE.body, color: "var(--term-text)", lineHeight: LEAD.body }}>
         If a schedule edge compounded over a season, the teams at the top of this page should
         beat their preseason win-total lines. Across {benchmark.seasonsCovered}{" "}
         seasons of archived lines, they don&rsquo;t:
@@ -53,7 +53,7 @@ export function WinTotalMarketCheck() {
         ]}
       />
 
-      <p style={{ marginTop: 12, maxWidth: WIDTH.prose, fontSize: 15, color: "var(--term-text-muted)", lineHeight: 1.55 }}>
+      <p style={{ marginTop: SPACE.md, maxWidth: WIDTH.prose, fontSize: TYPE.body, color: "var(--term-text-muted)", lineHeight: LEAD.body }}>
         No gradient, in either direction. The correlation between a team&rsquo;s net edge games
         and its finish against the line is r&nbsp;=&nbsp;{benchmark.correlation.r.toFixed(2)}{" "}
         across {benchmark.correlation.n}{" "}
@@ -64,7 +64,7 @@ export function WinTotalMarketCheck() {
         not beatable from this page, and this site won&rsquo;t pretend otherwise.
       </p>
 
-      <p style={{ marginTop: 10, maxWidth: WIDTH.prose, fontSize: 12.5, color: "var(--term-text-muted)", lineHeight: 1.55 }}>
+      <p style={{ marginTop: SPACE.md, maxWidth: WIDTH.prose, fontSize: TYPE.body, color: "var(--term-text-muted)", lineHeight: LEAD.body }}>
         Lines from the {benchmark.source}, {benchmark.firstSeason} through {benchmark.lastSeason}.
         No lines were published for the 1998-99 lockout, and 2019-20 is skipped here
         because its season was suspended at 63 to 67 games — a preseason win total never got a

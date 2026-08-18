@@ -26,6 +26,7 @@ import {
   predictions,
   teams,
 } from "./schema";
+import type { DataAsOf } from "@/lib/data-as-of";
 import type { DisparityGameRow } from "@/lib/schedule-disparity";
 import type { SeasonReportRow } from "@/lib/season-report";
 import { ABNORMAL_STRETCHES } from "@/lib/season-regime";
@@ -518,12 +519,30 @@ export async function getRegularSeasonGameDatesWithCounts(
  * population than the one it keys.
  */
 export async function getCompletedGamesStamp(): Promise<string> {
+  const { finalGames, latestFinalDate } = await getDataAsOf();
+
+  return `${finalGames}@${latestFinalDate ?? "none"}`;
+}
+
+/**
+ * The same read as the stamp above, as a value a page can publish.
+ *
+ * Split out on 2026-08-18 for the "as of" surface stamp (docs/UIUX_CHECKLIST.md §5). The
+ * stamp string is a cache key — `"46201@2026-04-13"` — and parsing a cache key back into a
+ * date to print it would make the display depend on a format nothing promises to keep. One
+ * query, two readers: the key is built from this, so the figure a page shows and the key
+ * that held it can never describe different populations.
+ */
+export async function getDataAsOf(): Promise<DataAsOf> {
   const [row] = await db
     .select({ finals: count(), latest: max(games.date) })
     .from(games)
     .where(publishableGames(eq(games.status, "final")));
 
-  return `${row?.finals ?? 0}@${row?.latest ?? "none"}`;
+  return {
+    finalGames: Number(row?.finals ?? 0),
+    latestFinalDate: row?.latest ? String(row.latest) : null,
+  };
 }
 
 /**

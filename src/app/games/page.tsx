@@ -13,7 +13,8 @@ import { useGameSlate, type GameSlate } from "@/hooks/useGameSlate"
 import { currentDisplaySeason, isNbaOffSeason } from "@/lib/nba-season"
 import { MessageCard } from "@/components/ui/message-card"
 import { MethodLink } from "@/components/method-link"
-import { termCardStyle } from "@/lib/terminal-styles"
+import { StatTile } from "@/components/ui/stat-tile"
+import { LEAD, SPACE, SPACE_CARD, termCardStyle, TRACK, TYPE } from "@/lib/terminal-styles"
 import { cn } from "@/lib/utils"
 
 // ─── Helpers ─────────────────────────────────────────────────────
@@ -22,7 +23,7 @@ const HIGH_CONF_THRESHOLD = 2.0
 
 // Terminal-style flat button: white bg, 1px border, mono uppercase, 4px corners.
 const termBtn =
-  "mono inline-flex items-center gap-2 bg-[var(--term-surface)] px-3 py-2 text-[12px] uppercase tracking-[0.05em] text-[var(--term-text-dim)] transition-[background-color,border-color,transform] hover:bg-[var(--term-surface-2)]"
+  "mono inline-flex items-center gap-2 bg-[var(--term-surface)] px-3 py-2 text-data uppercase tracking-data text-[var(--term-text-dim)] transition-[background-color,border-color,transform] hover:bg-[var(--term-surface-2)]"
 const termBtnStyle: React.CSSProperties = { border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }
 
 /* The site's headline figure used to sit here, between the header and the day's controls. It
@@ -32,30 +33,6 @@ const termBtnStyle: React.CSSProperties = { border: "1px solid var(--term-border
    controls that describe one day's slate. */
 
 // ─── Stat summary row ────────────────────────────────────────────
-
-function StatCard({ label, value, accent }: { label: string; value: string; accent: string }) {
-  return (
-    <div
-      className="mono flex flex-col gap-2"
-      style={{
-        background: "var(--term-surface)",
-        border: "1px solid var(--term-border)",
-        // Top rule, not left: as a left border the tiles read as a list with coloured
-        // bullets. Along the top edge they read as a row of measures, which is what they are.
-        borderTop: `2px solid ${accent}`,
-        borderRadius: "var(--term-radius)",
-        padding: 16,
-      }}
-    >
-      <span style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 500 }}>
-        {label}
-      </span>
-      <span className="tabular-nums" style={{ fontSize: 24, fontWeight: 500, letterSpacing: "-0.01em", color: "var(--term-text)", lineHeight: 1 }}>
-        {value}
-      </span>
-    </div>
-  )
-}
 
 /* Three tiles, all of them about the slate on screen. The fourth used to carry the
    all-seasons backtest rate, which described none of these games: the historical claim
@@ -74,10 +51,10 @@ function StatSummaryRow({
     <div className="grid grid-cols-2 gap-2 md:grid-cols-3">
       {/* Not "TODAY": this is the count for the selected date, and the page deliberately
           auto-selects the most recent date with games whenever today has none. */}
-      <StatCard label="GAMES ON THIS DATE" value={String(gamesToday)} accent="var(--term-neutral)" />
-      <StatCard label="AVG REST ADV" value={avgRestAdv} accent="var(--term-neutral)" />
+      <StatTile label="GAMES ON THIS DATE" value={String(gamesToday)} accent="var(--term-neutral)" />
+      <StatTile label="AVG REST ADV" value={avgRestAdv} accent="var(--term-neutral)" />
       {/* Accent, not a data pole: HIGH CONF is confidence chrome, same as the badge. */}
-      <StatCard label="HIGH CONF GAMES" value={String(highConfGames)} accent="var(--term-accent)" />
+      <StatTile label="HIGH CONF GAMES" value={String(highConfGames)} accent="var(--term-accent)" />
     </div>
   )
 }
@@ -91,11 +68,11 @@ function GroupLabel({ children }: { children: React.ReactNode }) {
       className="mono uppercase"
       style={{
         fontSize: 10,
-        letterSpacing: "0.1em",
+        letterSpacing: TRACK.label,
         fontWeight: 600,
         color: "var(--term-text-muted)",
-        paddingBottom: 8,
-        marginBottom: 14,
+        paddingBottom: SPACE.sm,
+        marginBottom: SPACE.lg,
         borderBottom: "1px solid var(--term-surface-2)",
       }}
     >
@@ -108,7 +85,7 @@ function GroupLabel({ children }: { children: React.ReactNode }) {
 
 function SectionDivider({ label, count }: { label: string; count: number }) {
   return (
-    <div className="mono flex items-center gap-3 py-2" style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-text-muted)" }}>
+    <div className="mono flex items-center gap-3 py-2" style={{ fontSize: 11, letterSpacing: TRACK.label, color: "var(--term-text-muted)" }}>
       <span style={{ fontWeight: 700 }}>{label}</span>
       <span style={{ flex: 1, height: 1, background: "var(--term-border)" }} />
       <span style={{ fontWeight: 600 }}>
@@ -158,10 +135,10 @@ function SkeletonList() {
 function EmptyState({ label }: { label: string }) {
   return (
     <div
-      className="mono flex flex-col items-center gap-2 px-6 py-16 text-center"
+      className="mono flex flex-col items-center gap-2 px-6 py-12 text-center"
       style={{ background: "var(--term-surface)", border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }}
     >
-      <p style={{ fontSize: 12, letterSpacing: "0.08em", color: "var(--term-text)", fontWeight: 700 }}>
+      <p style={{ fontSize: 12, letterSpacing: TRACK.label, color: "var(--term-text)", fontWeight: 700 }}>
         NO GAMES SCHEDULED
       </p>
       {/* The preposition lives in the label so this reads correctly for a single
@@ -182,13 +159,13 @@ function OffSeasonBanner({ season }: { season: string }) {
         borderRadius: "var(--term-radius)",
       }}
     >
-      <span style={{ fontSize: 12, letterSpacing: "0.04em", color: "var(--term-text)", fontWeight: 600 }}>
+      <span style={{ fontSize: 12, letterSpacing: TRACK.sub, color: "var(--term-text)", fontWeight: 600 }}>
         {season} SEASON COMPLETE — SHOWING FINAL SLATE
       </span>
       <a
         href="/season"
         className="transition-colors hover:underline"
-        style={{ fontSize: 12, letterSpacing: "0.04em", color: "var(--term-accent)", fontWeight: 700 }}
+        style={{ fontSize: 12, letterSpacing: TRACK.sub, color: "var(--term-accent)", fontWeight: 700 }}
       >
         SEE THE FULL SEASON REPORT →
       </a>
@@ -233,7 +210,7 @@ function DateChip({
       )}
       style={{ borderRadius: "var(--term-radius)" }}
     >
-      <span className="tabular-nums" style={{ fontSize: 14, fontWeight: 700, lineHeight: 1.1 }}>
+      <span className="tabular-nums" style={{ fontSize: TYPE.data, fontWeight: 700, lineHeight: LEAD.figure }}>
         {day}
       </span>
       {/* #B7BBC6 is the mock's .dchip.on count line — muted light gray on the ink fill. */}
@@ -398,7 +375,7 @@ export default function HomePage() {
           {/* Filters — two labelled groups rather than three stacked rows that each
               repeated the same label treatment. Season and month answer one question
               ("which stretch of basketball"), so they share a group. */}
-          <div className="flex flex-col gap-[18px]" style={{ ...termCardStyle, padding: 16 }}>
+          <div className="flex flex-col gap-4" style={{ ...termCardStyle, padding: SPACE_CARD }}>
             <div>
               <GroupLabel>Scope</GroupLabel>
               {/* Align to the bottom, not the centre: the season block is label +
@@ -491,7 +468,7 @@ export default function HomePage() {
               </Button>
               <p
                 className="mono min-w-[12rem] text-center sm:text-left"
-                style={{ fontSize: 12, letterSpacing: "0.04em", color: "var(--term-text)", fontWeight: 600 }}
+                style={{ fontSize: 12, letterSpacing: TRACK.sub, color: "var(--term-text)", fontWeight: 600 }}
                 data-testid="selected-date-display"
               >
                 {slate.selectedLabel?.long.toUpperCase() ?? "PICK A DATE"}

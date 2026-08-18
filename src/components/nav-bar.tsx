@@ -10,6 +10,7 @@ import {
   OTHER_NAV_ITEMS,
   OTHER_NAV_LABEL,
 } from "@/lib/primary-navigation"
+import { TRACK, TYPE } from "@/lib/terminal-styles"
 import { cn } from "@/lib/utils"
 
 /**
@@ -40,7 +41,7 @@ function isActive(pathname: string, href: string): boolean {
 /** Shared by the direct tabs and the OTHER trigger so the underline reads identically. */
 const TAB_CLASS =
   "flex h-full shrink-0 items-center whitespace-nowrap border-b-2 font-semibold transition-colors"
-const TAB_STYLE = { fontSize: "12px", letterSpacing: "0.05em" } as const
+const TAB_STYLE = { fontSize: "12px", letterSpacing: TRACK.data } as const
 
 function tabTone(active: boolean): string {
   return active
@@ -262,6 +263,9 @@ export function NavBar() {
             aria-label="FullCourt home"
           >
             <CourtMark size={34} className="shrink-0" />
+            {/* 22px is NOT a TYPE entry, deliberately: the wordmark is sized to the 52px
+                brand bar beside a 34px mark, not to a text role. Resizing it is a branding
+                decision (see the exemption list in terminal-styles.ts). */}
             <span
               className="font-heading"
               style={{ fontSize: "22px", fontWeight: 700, letterSpacing: "-0.015em", lineHeight: 1 }}
@@ -276,7 +280,7 @@ export function NavBar() {
             />
             <span
               className="mono hidden sm:inline"
-              style={{ fontSize: "10px", letterSpacing: "0.12em", color: "var(--term-text-muted)" }}
+              style={{ fontSize: "10px", letterSpacing: TRACK.label, color: "var(--term-text-muted)" }}
             >
               NBA ANALYTICS PLATFORM
             </span>
@@ -338,7 +342,7 @@ export function NavBar() {
               style={TAB_STYLE}
             >
               {OTHER_NAV_LABEL}
-              <span aria-hidden style={{ fontSize: "9px" }}>▼</span>
+              <span aria-hidden style={{ fontSize: TYPE.micro }}>▼</span>
             </Menu.Trigger>
             <Menu.Portal>
               <Menu.Positioner sideOffset={0} align="start">
@@ -348,7 +352,7 @@ export function NavBar() {
                     background: "var(--term-surface)",
                     border: "1px solid var(--term-border)",
                     fontSize: "12px",
-                    letterSpacing: "0.05em",
+                    letterSpacing: TRACK.data,
                   }}
                 >
                   {OTHER_NAV_ITEMS.map((item) => {
@@ -380,8 +384,8 @@ export function NavBar() {
                         {inProgress && (
                           <span
                             style={{
-                              fontSize: 9,
-                              letterSpacing: "0.06em",
+                              fontSize: TYPE.micro,
+                              letterSpacing: TRACK.data,
                               fontWeight: 600,
                               color: "var(--term-text-muted)",
                               border: "1px solid var(--term-border)",

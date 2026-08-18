@@ -1,21 +1,35 @@
 import Link from "next/link";
+import { LEAD, TRACK, TYPE } from "@/lib/terminal-styles";
 
 export default function NotFound() {
   return (
+    /* Centred, unlike every other page, and deliberately: this is a full stop rather than a
+       data surface, so there is no column of figures for a left rail to serve. Its TYPE is
+       `PageHeader`'s, though — eyebrow, title and description at the same three sizes — so it
+       reads as the same product. It carried 36/48px titles and 14px prose until 2026-08-18,
+       which is what a page reachable by no nav link and no spec drifts into.
+       `max-w-2xl` is 42rem, i.e. WIDTH.prose. */
     <section
-      className="mx-auto max-w-2xl px-4 py-24 text-center"
+      className="mx-auto max-w-2xl px-4 py-12 text-center"
       aria-labelledby="not-found-title"
     >
-      <p className="mono text-xs font-semibold uppercase tracking-[0.14em] text-[var(--term-red)]">
+      <p
+        className="mono font-semibold uppercase text-[var(--term-red)]"
+        style={{ fontSize: TYPE.label, letterSpacing: TRACK.label }}
+      >
         404 · Out of bounds
       </p>
       <h1
         id="not-found-title"
-        className="mt-4 font-heading text-4xl font-bold text-[var(--term-text)] sm:text-5xl"
+        className="mt-4 text-[var(--term-text)]"
+        style={{ fontSize: TYPE.title, lineHeight: LEAD.figure }}
       >
         Page not found
       </h1>
-      <p className="mx-auto mt-4 max-w-lg text-sm leading-6 text-[var(--term-text-muted)]">
+      <p
+        className="mt-4 text-[var(--term-text-muted)]"
+        style={{ fontSize: TYPE.body, lineHeight: LEAD.body }}
+      >
         This route is not part of the FullCourt analytics dashboard. Return to the games board
         or explore the historical rest-advantage backtest.
       </p>
@@ -26,13 +40,13 @@ export default function NotFound() {
             promise rather than the address. */}
         <Link
           href="/games"
-          className="mono border border-[var(--term-accent)] bg-[var(--term-accent)] px-4 py-2 text-xs font-semibold uppercase tracking-[0.08em] text-[var(--term-surface)] transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--term-accent)]"
+          className="mono border border-[var(--term-accent)] bg-[var(--term-accent)] px-4 py-2 text-xs font-semibold uppercase tracking-label text-[var(--term-surface)] transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--term-accent)]"
         >
           Games
         </Link>
         <Link
           href="/analysis"
-          className="mono border border-[var(--term-border)] bg-[var(--term-surface)] px-4 py-2 text-xs font-semibold uppercase tracking-[0.08em] text-[var(--term-text)] transition-colors hover:border-[var(--term-text-muted)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--term-text)]"
+          className="mono border border-[var(--term-border)] bg-[var(--term-surface)] px-4 py-2 text-xs font-semibold uppercase tracking-label text-[var(--term-text)] transition-colors hover:border-[var(--term-text-muted)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--term-text)]"
         >
           Model results
         </Link>

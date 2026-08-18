@@ -165,15 +165,18 @@ oversight. None is a defect in what the site publishes.
   ship instead. e2e asserts the computed sizes; real-Safari behavior wants one hand check.
 - ~~No PWA / home-screen support~~ — **fixed 2026-08-15**: `manifest.webmanifest` (standalone,
   `start_url` `/games`), a generated 180×180 `apple-touch-icon` of the court mark, and
-  `appleWebApp` metadata. `docs/social-preview.png` below is the one icon-family item still
-  open, and it is a hand re-upload, not code.
+  `appleWebApp` metadata. Completed 2026-08-18 with the maskable pair — `/icon-192.png` and
+  `/icon-512.png`, route handlers over `maskableIconResponse()`, declared `purpose: "maskable"`
+  so a launcher that crops has artwork inside the spec's 80% safe circle.
 - **`/season` can serve a stale empty rollover for weeks from 1 October.**
   `getCompletedGamesStamp()` counts only final games, so between the season-list rollover and
   opening night the cache never invalidates. Two candidate fixes in
   [SEASON_ROLLOVER.md §3](SEASON_ROLLOVER.md).
-- **`docs/social-preview.png` is stale** — it bakes in "40-SEASON BACKTEST" and the pre-2026-07-30
-  logo. It is a hand export and GitHub serves it from repo settings, so it has to be re-uploaded
-  by hand; nothing in the repo will remind you. See [SEASON_ROLLOVER.md §7](SEASON_ROLLOVER.md).
+- **`docs/social-preview.png` needs one manual re-upload.** Regenerated 2026-08-18 as a render of
+  `/opengraph-image` rather than a hand export, so the stale "40-SEASON BACKTEST" card and the
+  pre-2026-07-30 logo lean are gone from the tree — but GitHub serves the preview from repo
+  settings, so the current file only becomes the live card once someone uploads it (Settings →
+  Social preview). See [SEASON_ROLLOVER.md §7](SEASON_ROLLOVER.md).
 - **2026-27 is not seeded.** Operational, not product — both NBA-owned sources are blocked from
   outside the US *and* from CI runners, so the `002…`-id path is still an open decision. Runbook
   and the two candidate paths in [SEASON_ROLLOVER.md §3](SEASON_ROLLOVER.md).

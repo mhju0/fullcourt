@@ -2,21 +2,22 @@ import { RefereeStyleContent } from "@/components/referee-style-content"
 import type { RefereeFoulStyle } from "@/lib/referee-foul-style"
 import { readingOf, topShifters, type RefereeTiming, type Verdict } from "@/lib/referee-timing"
 import { signedNumber } from "@/lib/signed-number"
-import { termCardStyle, termInsetStyle, WIDTH } from "@/lib/terminal-styles"
+import { LEAD, termCardStyle, termInsetStyle, TRACK, TYPE, WIDTH } from "@/lib/terminal-styles"
+import { StatTile } from "@/components/ui/stat-tile"
 
 const BODY: React.CSSProperties = {
-  fontSize: 15,
+  fontSize: TYPE.body,
   color: "var(--term-text-muted)",
-  lineHeight: 1.55,
+  lineHeight: LEAD.body,
   maxWidth: WIDTH.prose,
 }
-const LEAD = { color: "var(--term-text)", fontWeight: 600 } as const
+const LEAD_IN = { color: "var(--term-text)", fontWeight: 600 } as const
 
 function SectionHeading({ children }: { children: React.ReactNode }) {
   return (
     <div
       className="mono flex items-center gap-3 py-1"
-      style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-text-muted)" }}
+      style={{ fontSize: 11, letterSpacing: TRACK.label, color: "var(--term-text-muted)" }}
     >
       <span style={{ fontWeight: 700 }}>{children}</span>
       <span style={{ flex: 1, height: 1, background: "var(--term-border)" }} />
@@ -32,28 +33,17 @@ function SectionHeading({ children }: { children: React.ReactNode }) {
 function VerdictTile({ label, verdict }: { label: string; verdict: Verdict }) {
   const reading = readingOf(verdict)
   const lit = reading !== "at chance"
+  // A recessed band is the box here, so the tile draws none of its own. `termInsetStyle` is
+  // padded vertically at the call site and never horizontally — that is the whole point of it.
   return (
-    <div className="flex flex-col gap-1 py-3" style={termInsetStyle}>
-      <span
-        className="mono"
-        style={{ fontSize: 10, letterSpacing: "0.08em", color: "var(--term-text-muted)" }}
-      >
-        {label}
-      </span>
-      <span
-        className="mono tabular-nums"
-        style={{
-          fontSize: 20,
-          fontWeight: 700,
-          lineHeight: 1.1,
-          color: lit ? "var(--term-blue)" : "var(--term-text-muted)",
-        }}
-      >
-        {verdict.observed} vs {verdict.expected}
-      </span>
-      <span className="mono" style={{ fontSize: 10, color: "var(--term-text-muted)" }}>
-        {verdict.ratio}× CHANCE · {reading.toUpperCase()}
-      </span>
+    <div className="py-3" style={termInsetStyle}>
+      <StatTile
+        variant="cell"
+        label={label}
+        value={`${verdict.observed} vs ${verdict.expected}`}
+        sub={`${verdict.ratio}× CHANCE · ${reading.toUpperCase()}`}
+        tone={lit ? "var(--term-blue)" : "var(--term-text-muted)"}
+      />
     </div>
   )
 }
@@ -83,7 +73,7 @@ export function RefereeEffectContent({
   return (
     <div className="flex flex-col gap-12">
       <p style={BODY}>
-        <span style={LEAD}>Officials do not call the same game the same way.</span> Across{" "}
+        <span style={LEAD_IN}>Officials do not call the same game the same way.</span> Across{" "}
         {timing.gamesCovered.toLocaleString()} regular-season games since {timing.firstSeason},
         one thing separates them clearly, and two of the things people most often assume about
         them do not survive contact with the play-by-play. This page is about what a whistle{" "}
@@ -128,17 +118,17 @@ export function RefereeEffectContent({
         <ul className="flex flex-col gap-2" style={{ ...termCardStyle }}>
           {shifters.map((s) => (
             <li key={s.name} className="flex items-baseline justify-between gap-3">
-              <span style={{ fontSize: 14, fontWeight: 600 }}>{s.name}</span>
+              <span style={{ fontSize: TYPE.body, fontWeight: 600 }}>{s.name}</span>
               <span
                 className="mono tabular-nums"
-                style={{ fontSize: 13, color: "var(--term-text-muted)" }}
+                style={{ fontSize: TYPE.data, color: "var(--term-text-muted)" }}
               >
                 {signedNumber(s.shift, 2)} pp · {s.games} games
               </span>
             </li>
           ))}
         </ul>
-        <p style={{ ...BODY, fontSize: 13 }}>
+        <p style={{ ...BODY }}>
           Positive means later. Percentage points of a game&rsquo;s own fouls, against the league
           average for that season, over officials with at least {timing.minGames} games. These
           game counts run slightly higher than the table above: timing is read from the play
@@ -151,7 +141,7 @@ export function RefereeEffectContent({
         <SectionHeading>TWO THINGS THAT ARE NOT TRUE</SectionHeading>
 
         <p style={BODY}>
-          <span style={LEAD}>Officials do not swallow the whistle at the end.</span> It is the
+          <span style={LEAD_IN}>Officials do not swallow the whistle at the end.</span> It is the
           most repeated claim about NBA officiating, and in{" "}
           {timing.gamesCovered.toLocaleString()} games it does not happen. The league calls{" "}
           {timing.leagueLateFoulsPerGame.toFixed(2)} fouls in the last {lateMinutes} minutes of a
@@ -163,7 +153,7 @@ export function RefereeEffectContent({
         </p>
 
         <p style={BODY}>
-          <span style={LEAD}>And no official tilts the whistle home.</span> Home teams do commit
+          <span style={LEAD_IN}>And no official tilts the whistle home.</span> Home teams do commit
           fewer fouls — {Math.abs(timing.leagueHomeAwayCounts.shooting).toFixed(2)} fewer shooting
           fouls a game than visitors — but that gap belongs to the league, not to any individual
           in it. Splitting each official&rsquo;s home-minus-away gap by foul type puts them at{" "}

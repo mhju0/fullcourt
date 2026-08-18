@@ -47,12 +47,16 @@ with the reason.
   `/apple-icon`, like `/opengraph-image` — the `.png` URL 404s; measured.
 - [x] **`theme-color`** (B-Ref ships `#4d4438`). Already present before this pass —
   `viewport.themeColor` pinned to `--term-bg`, 2026-08-14.
-- [ ] **Maskable / 512px manifest icon.** Chromium's richest install prompt wants explicit
-  192/512 PNGs; the SVG covers Chrome but not every Android launcher. Worth doing only with
-  a real asset pass. Owner: Michael (brand asset).
-- [ ] **`docs/social-preview.png` is still the stale hand-export** — same icon family, still
-  a manual re-upload (SEASON_ROLLOVER §7). Unchanged by this pass; listed so the icon work
-  is seen as one family.
+- [x] **Maskable / 512px manifest icon.** Shipped 2026-08-18: `/icon-192.png` and
+  `/icon-512.png`, route handlers over one `maskableIconResponse()` renderer, declared
+  `purpose: "maskable"` only — the artwork is inset to the spec's 80% safe circle, so a
+  launcher that crops keeps the whole court and one that does not gets the SVG instead.
+  Route handlers rather than metadata routes, because the manifest has to name a stable URL
+  and a metadata route serves at a basename Next picks (`/apple-icon`).
+- [x] **`docs/social-preview.png` is no longer a hand export** — regenerated 2026-08-18 as a
+  render of `/opengraph-image`, which retires the drift (it carried "40-SEASON BACKTEST", the
+  retired ~55% claim, and the pre-2026-07-30 divider lean). **The GitHub re-upload is still
+  manual** and still Michael's: Settings → Social preview (SEASON_ROLLOVER §7).
 
 ## 3. Accessibility
 
@@ -94,12 +98,21 @@ with the reason.
 
 ## 5. Trust & provenance (the Korean-site strength)
 
-- [ ] **An "as of" stamp on data surfaces** — Naver/KBO record pages carry 기준 시각 ("as of
-  08.15 06:00"); it is the single strongest trust pattern in the Korean set. FullCourt has
-  the server half already (`getCompletedGamesStamp`, the stamped cache) but no surface shows
-  it. The footer's `RENDERED` stamp is deliberately *not* this — it says when the layout
-  rendered and explicitly makes no data claim. Needs an API-shape decision (carry the stamp
-  in responses?) → Michael before any code.
+- [x] **An "as of" stamp on data surfaces** — Naver/KBO record pages carry 기준 시각 ("as of
+  08.15 06:00"); it is the single strongest trust pattern in the Korean set. Shipped on
+  **/analysis** 2026-08-18, server-rendered: `getDataAsOf()` (the same count/max that keys the
+  held backtest) → `PageHeader`'s `asOf` prop → `formatDataAsOf`. The shape decision was
+  server-rendered per surface rather than a field on every API response — no route's response
+  shape or cache policy moved. **The date only:** a count in the stamp sat four lines above a
+  tile with a different count under the same noun. The footer's `RENDERED` stamp is still
+  deliberately *not* this — it says when the layout rendered and makes no data claim.
+- [ ] **The season-scoped surfaces still have no truthful stamp** (`/season`, and the table half
+  of `/schedule`). Their figures answer for one *selected* season, keyed on
+  `getSeasonGamesStamp(season)`, so the global final-game date above would be a claim about a
+  different population — which is why they were left out rather than filled in. Giving them one
+  means carrying the per-season stamp in the response, i.e. the API-shape decision the row above
+  avoided. /schedule's existing `AS OF` (shown only while provisional) is the render date, not a
+  data date. Owner: Michael (API shape).
 - [x] **Baselines named next to every rate** — the venue-baseline rule (CLAUDE.md). No
   fetched site does this. It is the site's spine; the checklist exists partly so no adoption
   ever dilutes it.
@@ -119,6 +132,38 @@ with the reason.
 
 ## 7. Identity & theming
 
+- [x] **One type scale, eight steps, each with one job** — `TYPE` in `terminal-styles.ts`
+  (2026-08-18). The scale had been a docblock listing *ranges*, and the app had drifted to 36
+  distinct font sizes including 9.5, 10.5, 12.5, 17, 19, 21 and 28. `scripts/audit_design_scale.mjs`
+  reports strays with `file:line`; `design-scale.test.ts` pins the steps and keeps the script's
+  copy in step. See FRONTEND.md §Type. Every major property runs a tight scale — this was
+  FullCourt's own gap, not a convention borrowed from anyone.
+- [x] **One shared stat tile** — `StatTile` / `StatFigure` (2026-08-18). Replaced eight
+  independent implementations (`StatCard` ×2, `Tile`, `RateTile`, `StatCell`, `VerdictTile`, plus
+  inline copies in `availability-content.tsx` and `playoff-*`), which had disagreed on every
+  measurable property. Two components, not one, because the reading order carries meaning — label
+  first for a row a reader scans, figure first for the one number a section states. Verified: two
+  rendered signatures across four pages, differing only by the presence of a sub-label.
+- [x] **A tracking and leading scale** — `TRACK` (4 steps) and `LEAD` (3), 2026-08-18. Was 18
+  letter-spacing values and 15 line-heights; the tails were not decisions — 1, 1.05 and 1.1 all
+  meant "a figure needs no air above it". `TRACK` follows a rule rather than a history: more open
+  as the type gets smaller, tighter as it gets larger, asserted by a test so it cannot decay into
+  four arbitrary numbers.
+- [x] **The class layer can reach the scales** — a `@theme` block generates `text-micro` …
+  `text-figure`, `tracking-label` …, `leading-body` (2026-08-18). This was the gap that made drift
+  inevitable for class-built components: a responsive step cannot be an inline style, so they wrote
+  the literal because there was nothing else to write. `text-[16px] sm:text-data` is the standing
+  case, and the 16px stays a literal — mobile Safari's threshold, not a step of ours.
+- [x] **The scales are enforced, not just documented** — `page-contract.test.ts` runs the audit
+  script and fails the gate on any stray, superseding the earlier "deliberately no lint rule"
+  stance (2026-08-18). The reason for the reversal is measured, not aesthetic: the 15px prose rule
+  sat in FRONTEND.md unenforced and was broken across the module content components. The escape
+  hatch is a **named exemption with a reason**, which is reviewable in a diff, not a disabled test.
+- [x] **A new page cannot ship off-pattern** — [docs/ADDING_A_SURFACE.md](ADDING_A_SURFACE.md) is
+  the contract, and each of its rules names the test that holds it: `PageHeader`, the `gap-12`
+  chapter column, nav registration in both directions, and presence in the alignment audit's route
+  list. Written 2026-08-18 because every rule the UI pass found broken had been documented and
+  enforced nowhere.
 - [x] **Light-only, committed** — "Broadcast" (FRONTEND.md). B-Ref ships a `theme-color` and
   no dark mode either; ESPN/NBA are dark-capable apps, and FullCourt's refusal is a recorded
   decision, not a gap. `/about` stays the one dark surface.

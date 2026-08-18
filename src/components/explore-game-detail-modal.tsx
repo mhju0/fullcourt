@@ -13,7 +13,7 @@ import {
 } from "@/components/matchup-parts"
 import { getTeamBranding } from "@/lib/team-history"
 import { apiFetcher, errMsg } from "@/lib/fetcher"
-import { termInsetStyle } from "@/lib/terminal-styles"
+import { termInsetStyle, TRACK, TYPE } from "@/lib/terminal-styles"
 import { cn } from "@/lib/utils"
 import type {
   GameDetailResponse,
@@ -48,7 +48,7 @@ function RecentResultsList({
         className="mono pb-2 text-center uppercase"
         style={{
           fontSize: 11,
-          letterSpacing: "0.08em",
+          letterSpacing: TRACK.label,
           color: "var(--term-text-muted)",
           fontWeight: 700,
           borderBottom: "1px solid var(--term-border)",
@@ -127,13 +127,13 @@ function ExploreGameDetailBody({
       />
       <p
         className="mono text-center"
-        style={{ fontSize: 18, fontWeight: 700, color: "var(--term-text)", letterSpacing: "0.04em" }}
+        style={{ fontSize: TYPE.emph, fontWeight: 700, color: "var(--term-text)", letterSpacing: TRACK.sub }}
       >
         {awayBrand.abbreviation}
         <span className="mx-2" style={{ fontWeight: 400, color: "var(--term-hairline)" }}>@</span>
         {homeBrand.abbreviation}
       </p>
-      <p className="mono text-center uppercase" style={{ fontSize: 11, color: "var(--term-text-muted)", letterSpacing: "0.04em" }}>
+      <p className="mono text-center uppercase" style={{ fontSize: 11, color: "var(--term-text-muted)", letterSpacing: TRACK.sub }}>
         {format(parseISO(game.date), "EEEE, MMMM d, yyyy")} · {game.season}
       </p>
 
@@ -150,7 +150,7 @@ function ExploreGameDetailBody({
       <div className="mt-4 py-4" style={termInsetStyle}>
         <p
           className="mono mb-3 text-center uppercase"
-          style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.08em", color: "var(--term-text-muted)" }}
+          style={{ fontSize: 11, fontWeight: 700, letterSpacing: TRACK.label, color: "var(--term-text-muted)" }}
         >
           Fatigue breakdown
         </p>
@@ -171,7 +171,7 @@ function ExploreGameDetailBody({
             someone who hasn't hovered yet, and these rows look like read-only results. */}
         <p
           className="mono mb-2 text-center uppercase"
-          style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.08em", color: "var(--term-text-muted)" }}
+          style={{ fontSize: 11, fontWeight: 700, letterSpacing: TRACK.label, color: "var(--term-text-muted)" }}
         >
           Recent Games{" "}
           <span style={{ fontWeight: 400 }}>· select a game to open it</span>
@@ -352,7 +352,7 @@ function ExploreGameDetailModalContent({
             <h2
               id={titleId}
               className={cn("mono uppercase", canGoBack && "sr-only")}
-              style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.08em", color: "var(--term-text-muted)" }}
+              style={{ fontSize: 12, fontWeight: 700, letterSpacing: TRACK.label, color: "var(--term-text-muted)" }}
             >
               Game details
             </h2>
@@ -370,12 +370,12 @@ function ExploreGameDetailModalContent({
         </div>
 
         {loading && (
-          <p className="mono py-8 text-center" style={{ fontSize: 12, color: "var(--term-text-muted)", letterSpacing: "0.06em" }}>
+          <p className="mono py-8 text-center" style={{ fontSize: 12, color: "var(--term-text-muted)", letterSpacing: TRACK.data }}>
             LOADING…
           </p>
         )}
         {error && (
-          <p className="mono py-6 text-center" style={{ fontSize: 12, color: "var(--term-red)", letterSpacing: "0.06em" }}>
+          <p className="mono py-6 text-center" style={{ fontSize: 12, color: "var(--term-red)", letterSpacing: TRACK.data }}>
             {error}
           </p>
         )}

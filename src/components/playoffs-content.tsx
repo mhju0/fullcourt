@@ -10,7 +10,7 @@ import { apiFetcher, errMsg } from "@/lib/fetcher"
 import { currentDisplaySeason } from "@/lib/nba-season"
 import { grindLineLabels } from "@/lib/playoff-rest-facts"
 import { playoffModelSeasons } from "@/lib/playoff-seasons"
-import { TERM_ACCENT, termCardStyle, WIDTH } from "@/lib/terminal-styles"
+import { LEAD, TERM_ACCENT, termCardStyle, TRACK, TYPE, WIDTH } from "@/lib/terminal-styles"
 import type {
   PlayoffRoundGroup,
   PlayoffSeriesPredictionMethod,
@@ -53,7 +53,7 @@ function CorrectnessBadge({ status, source }: { status: CorrectnessStatus; sourc
   return (
     <span
       className="mono inline-flex items-center gap-1"
-      style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.04em", color: accent }}
+      style={{ fontSize: 11, fontWeight: 700, letterSpacing: TRACK.sub, color: accent }}
     >
       {label}
       {source === "insample" && (
@@ -85,7 +85,7 @@ function MethodInline({
 }) {
   if (!method) {
     return (
-      <span className="mono inline-flex items-center gap-1" style={{ fontSize: 11, color: "var(--term-text-muted)", letterSpacing: "0.04em" }}>
+      <span className="mono inline-flex items-center gap-1" style={{ fontSize: 11, color: "var(--term-text-muted)", letterSpacing: TRACK.sub }}>
         <span style={{ fontWeight: 700, color: "var(--term-text)" }}>{label}</span>
         N/A
         <span style={{ fontSize: 10 }}>(insufficient history)</span>
@@ -94,7 +94,7 @@ function MethodInline({
   }
   const prob = methodDisplayProb(method, series)
   return (
-    <span className="mono inline-flex items-center gap-1 tabular-nums" style={{ fontSize: 11, color: "var(--term-text)", letterSpacing: "0.04em" }}>
+    <span className="mono inline-flex items-center gap-1 tabular-nums" style={{ fontSize: 11, color: "var(--term-text)", letterSpacing: TRACK.sub }}>
       <span style={{ fontWeight: 700, color: "var(--term-text-muted)" }}>{label}</span>
       {(prob * 100).toFixed(1)}% {method.predictedWinnerTeam.abbreviation}
     </span>
@@ -116,8 +116,8 @@ function MethodInline({
 function FeatureCell({ k, v }: { k: string; v: string }) {
   return (
     <div className="mono flex flex-col gap-1">
-      <span style={{ fontSize: 10, color: "var(--term-text-muted)", letterSpacing: "0.06em" }}>{k}</span>
-      <span className="tabular-nums" style={{ fontSize: 14, color: "var(--term-text)", fontWeight: 700 }}>
+      <span style={{ fontSize: 10, color: "var(--term-text-muted)", letterSpacing: TRACK.data }}>{k}</span>
+      <span className="tabular-nums" style={{ fontSize: TYPE.data, color: "var(--term-text)", fontWeight: 700 }}>
         {v}
       </span>
     </div>
@@ -136,7 +136,7 @@ function SeriesFeatureGrid({ series }: { series: PlayoffSeriesWithPredictions })
     >
       <p
         className="mono pb-2"
-        style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 700, borderBottom: "1px solid var(--term-border)" }}
+        style={{ fontSize: 11, letterSpacing: TRACK.label, color: "var(--term-text-muted)", fontWeight: 700, borderBottom: "1px solid var(--term-border)" }}
       >
         SERIES FEATURES
       </p>
@@ -150,7 +150,7 @@ function SeriesFeatureGrid({ series }: { series: PlayoffSeriesWithPredictions })
         <FeatureCell k="ENTRY REST DIFF" v={formatFeature(series.entryRestDiff)} />
         <FeatureCell k="H2H DIFF" v={formatFeature(series.h2hDiff)} />
       </div>
-      <p className="mono mt-1" style={{ fontSize: 10, color: "var(--term-text-muted)", letterSpacing: "0.04em", lineHeight: 1.4 }}>
+      <p className="mono mt-1" style={{ fontSize: 10, color: "var(--term-text-muted)", letterSpacing: TRACK.sub, lineHeight: LEAD.label }}>
         SIGN CONVENTION: POSITIVE FAVORS HOME-COURT ({series.homeCourtTeam.abbreviation}). ALL ROWS ARE
         (HOME-COURT − OPPONENT) EXCEPT PRIOR GRIND DIFF, WHICH IS (OPPONENT − HOME-COURT) SO THAT
         POSITIVE STILL MEANS THE SAME THING.
@@ -173,7 +173,7 @@ function GrindLine({
   labels: { homeCourt: string; opponent: string }
 }) {
   return (
-    <span className="mono" style={{ fontSize: 11, color: "var(--term-text-muted)", letterSpacing: "0.04em" }}>
+    <span className="mono" style={{ fontSize: 11, color: "var(--term-text-muted)", letterSpacing: TRACK.sub }}>
       <span style={{ color: "var(--term-text)", fontWeight: 700 }}>{series.homeCourtTeam.abbreviation}</span>{" "}
       {labels.homeCourt}
       <span style={{ padding: "0 8px" }}>·</span>
@@ -229,7 +229,7 @@ function SeriesCard({ series }: { series: PlayoffSeriesWithPredictions }) {
               {series.homeCourtTeam.abbreviation}
               <span
                 className="mono"
-                style={{ fontSize: 8, fontWeight: 700, color: "var(--term-blue)", border: "1px solid var(--term-blue)", borderRadius: "var(--term-radius-sm)", padding: "0 4px" }}
+                style={{ fontSize: TYPE.micro, fontWeight: 700, color: "var(--term-blue)", border: "1px solid var(--term-blue)", borderRadius: "var(--term-radius-sm)", padding: "0 4px" }}
                 aria-label="Home court"
               >
                 HC
@@ -240,7 +240,7 @@ function SeriesCard({ series }: { series: PlayoffSeriesWithPredictions }) {
               {series.opponentTeam.abbreviation}
             </span>
             {series.conference && (
-              <span className="mono" style={{ fontSize: 10, color: "var(--term-text-muted)", letterSpacing: "0.06em" }}>
+              <span className="mono" style={{ fontSize: 10, color: "var(--term-text-muted)", letterSpacing: TRACK.data }}>
                 {series.conference.toUpperCase()}
               </span>
             )}
@@ -266,7 +266,7 @@ function SeriesCard({ series }: { series: PlayoffSeriesWithPredictions }) {
             <span style={{ color: "var(--term-text)", fontWeight: 600 }}>
               {homeWins}-{oppWins}
             </span>
-            <span style={{ color: "var(--term-text-muted)", letterSpacing: "0.04em" }}>
+            <span style={{ color: "var(--term-text-muted)", letterSpacing: TRACK.sub }}>
               {series.seriesWinnerTeam ? `${series.seriesWinnerTeam.abbreviation} WON` : "PENDING"}
             </span>
           </div>
@@ -302,7 +302,7 @@ function RoundSection({ group }: { group: PlayoffRoundGroup }) {
     // `data-shot-anchor` on every round, so scripts/screenshots.mjs can end the README shot after
     // the first one by index rather than by a hand-derived pixel height.
     <div className="flex flex-col gap-2" data-shot-anchor="round-group">
-      <div className="mono flex items-center gap-3 py-1" style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-text-muted)" }}>
+      <div className="mono flex items-center gap-3 py-1" style={{ fontSize: 11, letterSpacing: TRACK.label, color: "var(--term-text-muted)" }}>
         <span style={{ fontWeight: 700 }}>
           {group.roundLabel.toUpperCase()} · {group.series.length} SERIES
         </span>

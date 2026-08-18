@@ -36,6 +36,13 @@ export default function manifest(): MetadataRoute.Manifest {
       // Measured before this line was trusted.
       { src: "/icon.svg", sizes: "any", type: "image/svg+xml" },
       { src: "/apple-icon", sizes: "180x180", type: "image/png" },
+      // The maskable pair, added 2026-08-18 (UIUX_CHECKLIST §2). `purpose: "maskable"`
+      // only: the artwork is inset to the spec's 80% safe circle, so unmasked it would
+      // read a size small — the SVG above is what a launcher that does not mask should
+      // use. These are route handlers, so the `.png` here is a real path, not a
+      // metadata-route basename.
+      { src: "/icon-192.png", sizes: "192x192", type: "image/png", purpose: "maskable" },
+      { src: "/icon-512.png", sizes: "512x512", type: "image/png", purpose: "maskable" },
     ],
   };
 }

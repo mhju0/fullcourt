@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { PageHeader } from "@/components/page-header";
 import { BEHIND_THE_DATA_SECTIONS } from "@/lib/behind-the-data-sections";
 import { cn } from "@/lib/utils";
+import { TRACK } from "@/lib/terminal-styles";
 
 /**
  * Shared chrome for the reference section: one page header plus a sub-nav across the
@@ -32,7 +33,7 @@ export function BehindTheDataShell({
       <nav
         aria-label="Reference sections"
         className="mono flex flex-wrap items-center gap-x-6 gap-y-2 border-y py-3"
-        style={{ borderColor: "var(--term-border)", fontSize: 11, letterSpacing: "0.08em" }}
+        style={{ borderColor: "var(--term-border)", fontSize: 11, letterSpacing: TRACK.label }}
       >
         {BEHIND_THE_DATA_SECTIONS.map((section) => {
           // Exact match only: /behind-the-data is the overview, and a prefix test would

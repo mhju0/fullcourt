@@ -1,9 +1,10 @@
 "use client"
 
 import { Bar, lazyContent } from "@/components/lazy-content"
+import type { DataAsOf } from "@/lib/data-as-of"
 import { termCardStyle } from "@/lib/terminal-styles"
 
-export const AnalysisContentLazy = lazyContent(
+export const AnalysisContentLazy = lazyContent<{ asOf?: DataAsOf | null }>(
   () => import("@/components/analysis-content").then((m) => m.AnalysisContent),
   () => (
     <div className="flex flex-col gap-4">

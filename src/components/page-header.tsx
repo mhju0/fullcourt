@@ -1,4 +1,5 @@
-import { WIDTH } from "@/lib/terminal-styles"
+import { formatDataAsOf, type DataAsOf } from "@/lib/data-as-of"
+import { LEAD, TRACK, TYPE, WIDTH } from "@/lib/terminal-styles"
 
 /**
  * Every page heading. Two pages used to hand-copy this markup — one because its
@@ -14,35 +15,58 @@ export function PageHeader({
   eyebrow,
   title,
   description,
+  asOf,
 }: {
   eyebrow: string
   title: string
   description: React.ReactNode
+  /**
+   * Which games the figures under this heading were computed from (2026-08-18). Optional
+   * because most surfaces have no such population: /games is a live board, and the
+   * season-scoped surfaces answer for one season, not for the final-game population this
+   * describes — a page that cannot make the claim truthfully passes nothing.
+   */
+  asOf?: DataAsOf | null
 }) {
+  const stamp = formatDataAsOf(asOf)
+
   return (
     <div className="flex flex-col gap-2">
       <span
         className="mono"
-        style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-accent)", fontWeight: 600 }}
+        style={{ fontSize: TYPE.label, letterSpacing: TRACK.label, color: "var(--term-accent)", fontWeight: 600 }}
       >
         {eyebrow}
       </span>
-      {/* 32px is the "hero stat value" slot in terminal-styles.ts. At 24px a page title was
-          the same size as the stat numbers under it. Weight and tracking come from the base
-          h1 rule — an explicit font-bold here would override it and only on these pages. */}
-      <h1 className="text-[32px] leading-[1.05] text-[var(--term-text)]">{title}</h1>
+      {/* `TYPE.title`. At `TYPE.stat` a page title was the same size as the stat numbers under
+          it. Weight and tracking come from the base h1 rule — an explicit font-bold here would
+          override it and only on these pages. */}
+      <h1 className="text-[var(--term-text)]" style={{ fontSize: TYPE.title, lineHeight: LEAD.figure }}>
+        {title}
+      </h1>
       {/* Sentence case in the body face, not uppercase mono: caps remove word-shape
           cues and slow reading for anything longer than a label. */}
       <p
         style={{
           maxWidth: WIDTH.prose,
-          fontSize: 15,
+          fontSize: TYPE.body,
           color: "var(--term-text-muted)",
-          lineHeight: 1.55,
+          lineHeight: LEAD.body,
         }}
       >
         {description}
       </p>
+      {/* Under the description, not beside the title: it qualifies the figures on the page
+          rather than naming the page. Same mono/11px/muted treatment as the PROVISIONAL line
+          on /schedule, which is the same claim about a narrower population. */}
+      {stamp ? (
+        <p
+          className="mono"
+          style={{ fontSize: TYPE.label, letterSpacing: TRACK.label, color: "var(--term-text-muted)" }}
+        >
+          {stamp}
+        </p>
+      ) : null}
     </div>
   )
 }

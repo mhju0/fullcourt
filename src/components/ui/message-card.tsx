@@ -1,4 +1,4 @@
-import { termCardStyle } from "@/lib/terminal-styles"
+import { termCardStyle, TRACK } from "@/lib/terminal-styles"
 
 /**
  * The card a surface shows instead of its data: a failure, or an empty result worth explaining.
@@ -32,7 +32,7 @@ export function MessageCard({
       style={{ ...termCardStyle, borderLeft: `2px solid ${accent}` }}
       role={tone === "error" ? "alert" : undefined}
     >
-      <p style={{ fontSize: 12, letterSpacing: "0.08em", color: accent, fontWeight: 700 }}>
+      <p style={{ fontSize: 12, letterSpacing: TRACK.label, color: accent, fontWeight: 700 }}>
         {title}
       </p>
       {body ? (

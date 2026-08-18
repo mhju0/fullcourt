@@ -11,7 +11,7 @@ import { useBacktest } from "@/hooks/useBacktest"
 import { Skeleton } from "@/components/ui/skeleton"
 import { buildRestAdvantageEvidence } from "@/lib/rest-advantage-display"
 import { signedNumber } from "@/lib/signed-number"
-import { termCardStyle, termDashedEmptyStyle } from "@/lib/terminal-styles"
+import { LEAD, termCardStyle, termDashedEmptyStyle, TRACK } from "@/lib/terminal-styles"
 import { DataTable } from "@/components/ui/data-table"
 import type { UpcomingGameWithRA } from "@/types"
 import { MessageCard } from "@/components/ui/message-card"
@@ -29,10 +29,10 @@ const RA_OPTIONS = [
 function OffSeasonEmptyState({ nextSeason }: { nextSeason: string }) {
   return (
     <div className="rounded-[4px] border border-[var(--term-border)] border-l-2 border-l-[var(--term-hardwood)] bg-[var(--term-surface)] px-6 py-12 text-center">
-      <p className="mono text-[11px] font-semibold uppercase tracking-[0.08em] text-[var(--term-text-muted)]">
+      <p className="mono text-[11px] font-semibold uppercase tracking-label text-[var(--term-text-muted)]">
         REGULAR SEASON COMPLETE
       </p>
-      <p className="mt-2 text-base font-medium text-[var(--term-text)]">See you next season.</p>
+      <p className="mt-2 text-body font-medium text-[var(--term-text)]">See you next season.</p>
       <p className="mt-1 text-xs text-[var(--term-text-muted)]">
         {nextSeason} season tips off in October.
       </p>
@@ -86,7 +86,7 @@ export function UpcomingContent() {
                 borderRadius: "var(--term-radius)",
                 padding: "4px 12px",
                 fontSize: 12,
-                letterSpacing: "0.04em",
+                letterSpacing: TRACK.sub,
                 fontWeight: 600,
                 cursor: "pointer",
               }}
@@ -99,7 +99,7 @@ export function UpcomingContent() {
 
       {/* ── Game count ────────────────────────────────────────────── */}
       {!loading && !error && games && (
-        <p className="mono mb-3" style={{ fontSize: 11, color: "var(--term-text-muted)", letterSpacing: "0.04em" }}>
+        <p className="mono mb-3" style={{ fontSize: 11, color: "var(--term-text-muted)", letterSpacing: TRACK.sub }}>
           {games.length.toLocaleString()} GAME{games.length !== 1 ? "S" : ""} FOUND
         </p>
       )}
@@ -203,7 +203,7 @@ export function UpcomingContent() {
                     fontWeight: 700,
                     padding: "4px 8px",
                     borderRadius: "var(--term-radius-sm)",
-                    letterSpacing: "0.04em",
+                    letterSpacing: TRACK.sub,
                   }}
                 >
                   {g.predictedAdvantageAbbreviation} EDGE
@@ -232,7 +232,7 @@ export function UpcomingContent() {
                 )
                 if (!evidence) return <span style={{ color: "var(--term-text-muted)" }}>—</span>
                 return (
-                  <span className="inline-flex flex-col items-end" style={{ lineHeight: 1.35 }}>
+                  <span className="inline-flex flex-col items-end" style={{ lineHeight: LEAD.label }}>
                     {/* The rate and its lift share a line: a rested road team's 42.4% standing
                         alone next to a coloured EDGE chip reads as a pick, where "42.4% +2.3"
                         reads as the measurement it is. */}
@@ -260,7 +260,7 @@ export function UpcomingContent() {
         />
           <p
             className="mt-3"
-            style={{ fontSize: 11, lineHeight: 1.5, color: "var(--term-text-muted)" }}
+            style={{ fontSize: 11, lineHeight: LEAD.body, color: "var(--term-text-muted)" }}
           >
             &ldquo;Historically&rdquo; is how often the more-rested team won across every past
             regular-season game in the matching class, next to how often that side wins from that

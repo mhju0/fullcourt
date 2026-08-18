@@ -5,6 +5,7 @@ import useSWR from "swr"
 import { ExploreGameDetailModal } from "@/components/explore-game-detail-modal"
 import { SeasonSelector } from "@/components/season-selector"
 import { Skeleton } from "@/components/ui/skeleton"
+import { StatTile } from "@/components/ui/stat-tile"
 import { ZeroRestWorkload } from "@/components/zero-rest-workload"
 import { apiFetcher } from "@/lib/fetcher"
 import { useBacktest } from "@/hooks/useBacktest"
@@ -26,7 +27,7 @@ import {
   REST_SHARE_OF_HOME_COURT,
   REST_SPAN_PP,
 } from "@/lib/schedule-value"
-import { termCardStyle, WIDTH } from "@/lib/terminal-styles"
+import { LEAD, termCardStyle, TRACK, TYPE, WIDTH } from "@/lib/terminal-styles"
 import { DataTable, type DataColumn } from "@/components/ui/data-table"
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts"
 import { signedNumber } from "@/lib/signed-number"
@@ -58,50 +59,11 @@ function median(values: number[]): number {
   return sorted.length % 2 === 0 ? (sorted[mid - 1] + sorted[mid]) / 2 : sorted[mid]
 }
 
-function Tile({
-  label,
-  value,
-  sub,
-  accent = "var(--term-neutral)",
-  testId,
-}: {
-  label: string
-  value: string
-  sub: string
-  accent?: string
-  testId?: string
-}) {
-  return (
-    <div
-      className="mono flex flex-col gap-2"
-      style={{
-        background: "var(--term-surface)",
-        border: "1px solid var(--term-border)",
-        borderTop: `2px solid ${accent}`,
-        borderRadius: "var(--term-radius)",
-        padding: 16,
-      }}
-    >
-      <span style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-text-muted)", fontWeight: 500 }}>
-        {label}
-      </span>
-      <span
-        className="tabular-nums"
-        data-testid={testId}
-        style={{ fontSize: 24, fontWeight: 500, letterSpacing: "-0.01em", color: "var(--term-text)", lineHeight: 1 }}
-      >
-        {value}
-      </span>
-      <span style={{ fontSize: 11, color: "var(--term-text-muted)" }}>{sub}</span>
-    </div>
-  )
-}
-
 /** A rate tile that refuses to print a number it cannot stand behind. */
 function RateTile({ label, rate, testId }: { label: string; rate: SeasonReportRate; testId?: string }) {
   const gated = rate.games < MIN_GAMES_FOR_INFERENCE || rate.band === null
   return (
-    <Tile
+    <StatTile
       label={label}
       value={gated ? "—" : `${rate.winPct.toFixed(1)}%`}
       sub={
@@ -112,7 +74,7 @@ function RateTile({ label, rate, testId }: { label: string; rate: SeasonReportRa
             : `TOO EARLY · ${rate.games} OF ${MIN_GAMES_FOR_INFERENCE} GAMES NEEDED`
       }
       accent={gated ? "var(--term-neutral)" : "var(--term-blue)"}
-      testId={testId}
+      valueTestId={testId}
     />
   )
 }
@@ -135,11 +97,11 @@ function AbnormalSeasonNote({ season }: { season: string }) {
     >
       <span
         className="mono"
-        style={{ fontSize: 11, letterSpacing: "0.08em", fontWeight: 700, color: "var(--term-amber)" }}
+        style={{ fontSize: 11, letterSpacing: TRACK.label, fontWeight: 700, color: "var(--term-amber)" }}
       >
         {note.label}
       </span>
-      <p style={{ fontSize: 14, color: "var(--term-text-muted)", maxWidth: WIDTH.prose, lineHeight: 1.55 }}>
+      <p style={{ fontSize: TYPE.body, color: "var(--term-text-muted)", maxWidth: WIDTH.prose, lineHeight: LEAD.body }}>
         {note.note}
       </p>
     </div>
@@ -150,7 +112,7 @@ function SectionDivider({ label, descriptor, testId }: { label: string; descript
   return (
     <div
       className="mono flex items-center gap-3 py-2"
-      style={{ fontSize: 11, letterSpacing: "0.08em", color: "var(--term-text-muted)" }}
+      style={{ fontSize: 11, letterSpacing: TRACK.label, color: "var(--term-text-muted)" }}
     >
       <span data-testid={testId} style={{ fontWeight: 700 }}>
         {label}
@@ -185,7 +147,7 @@ function VerdictLine({ verdict }: { verdict: SeasonReportVerdict }) {
             }
 
   return (
-    <p className="mono" style={{ fontSize: 12, letterSpacing: "0.04em", fontWeight: 600, color: tone }}>
+    <p className="mono" style={{ fontSize: 12, letterSpacing: TRACK.sub, fontWeight: 600, color: tone }}>
       {text}
     </p>
   )
@@ -288,7 +250,7 @@ function EdgeConversion({
   return (
     <div className="flex flex-col gap-3">
       <SectionDivider label="REST EDGE CONVERSION" descriptor="RECORDS, NOT A RANKING" />
-      <p style={{ fontSize: 14, color: "var(--term-text-muted)", maxWidth: WIDTH.prose, lineHeight: 1.55 }}>
+      <p style={{ fontSize: TYPE.body, color: "var(--term-text-muted)", maxWidth: WIDTH.prose, lineHeight: LEAD.body }}>
         {edgeConversionSentence(teams)}
       </p>
       <SwingBaselineNote baseline={swingBaseline} />
@@ -364,7 +326,7 @@ function ScheduleValue({ teams }: { teams: SeasonReportTeamLabelled[] }) {
         data-testid="rest-scale-line"
         style={{ ...termCardStyle, padding: 16, borderLeft: `2px solid var(--term-blue)` }}
       >
-        <p style={{ fontSize: 14, color: "var(--term-text)", maxWidth: WIDTH.prose, lineHeight: 1.55 }}>
+        <p style={{ fontSize: TYPE.body, color: "var(--term-text)", maxWidth: WIDTH.prose, lineHeight: LEAD.body }}>
           Being the fresher side moves a home team&rsquo;s win probability by{" "}
           <strong>{REST_SPAN_PP.toFixed(1)} points</strong>. Playing at home instead of away moves
           it by <strong>{HOME_COURT_SPAN_PP.toFixed(1)}</strong>. So a rest edge is worth about{" "}
@@ -375,7 +337,7 @@ function ScheduleValue({ teams }: { teams: SeasonReportTeamLabelled[] }) {
         </p>
       </div>
 
-      <p style={{ fontSize: 14, color: "var(--term-text-muted)", maxWidth: WIDTH.prose, lineHeight: 1.55 }}>
+      <p style={{ fontSize: TYPE.body, color: "var(--term-text-muted)", maxWidth: WIDTH.prose, lineHeight: LEAD.body }}>
         Priced at that rate, here is what each team&rsquo;s own schedule was worth: every rest edge
         it was handed, minus every one it had to face. No score is read, so this says nothing about
         how any team played. It is small for everyone, and that is the finding — the league spreads
@@ -443,7 +405,7 @@ function LoudestCalls({
   return (
     <div className="flex flex-col gap-3">
       <SectionDivider label="LOUDEST CALLS" descriptor="RANKED BY REST GAP" />
-      <p style={{ fontSize: 14, color: "var(--term-text-muted)", maxWidth: WIDTH.prose, lineHeight: 1.55 }}>
+      <p style={{ fontSize: TYPE.body, color: "var(--term-text-muted)", maxWidth: WIDTH.prose, lineHeight: LEAD.body }}>
         The games where the two teams arrived in the most different states, whether or not
         it worked out. Ranked by the size of the rest gap rather than by the final margin,
         because the two have nothing to do with each other.
@@ -518,7 +480,7 @@ function ScheduleTax({ teams }: { teams: SeasonReportTeamLabelled[] }) {
   return (
     <div className="flex flex-col gap-3">
       <SectionDivider label="SCHEDULE TAX" descriptor="COMPLETED GAMES ONLY" />
-      <p style={{ fontSize: 14, color: "var(--term-text-muted)", maxWidth: WIDTH.prose, lineHeight: 1.55 }}>
+      <p style={{ fontSize: TYPE.body, color: "var(--term-text-muted)", maxWidth: WIDTH.prose, lineHeight: LEAD.body }}>
         What the schedule asked of each team. These are counts, not estimates — nothing here is
         a claim about who won because of it.
       </p>
@@ -556,7 +518,7 @@ function FatigueCalendar({ weeks }: { weeks: SeasonReportWeek[] }) {
   return (
     <div className="flex flex-col gap-3">
       <SectionDivider label="FATIGUE CALENDAR" descriptor="LEAGUE AVERAGE BY WEEK" />
-      <p style={{ fontSize: 14, color: "var(--term-text-muted)", maxWidth: WIDTH.prose, lineHeight: 1.55 }}>
+      <p style={{ fontSize: TYPE.body, color: "var(--term-text-muted)", maxWidth: WIDTH.prose, lineHeight: LEAD.body }}>
         Average fatigue across every team in every game, week by week. The season is not evenly
         hard — density, travel and back-to-backs pile up in stretches.
       </p>
@@ -642,7 +604,7 @@ export function SeasonReportContent() {
           <div className="grid grid-cols-2 gap-2 md:grid-cols-3">
             <RateTile label="RESTED TEAM AT HOME · WIN RATE" rate={data.overall} testId="season-rest-win-rate" />
             <RateTile label="WIN RATE · RA ≥ 2" rate={data.atLeastTwo} />
-            <Tile
+            <StatTile
               label="SEASON PROGRESS"
               value={`${data.completedGames.toLocaleString()} / ${data.scheduledGames.toLocaleString()}`}
               sub={
@@ -660,7 +622,7 @@ export function SeasonReportContent() {
               testId="season-vs-history-heading"
             />
             {verdict ? <VerdictLine verdict={verdict} /> : null}
-            <p style={{ fontSize: 14, color: "var(--term-text-muted)", maxWidth: WIDTH.prose, lineHeight: 1.55 }}>
+            <p style={{ fontSize: TYPE.body, color: "var(--term-text-muted)", maxWidth: WIDTH.prose, lineHeight: LEAD.body }}>
               {countedGamesSentence(data.overall)}{" "}
               <a href="/analysis" style={{ color: "var(--term-blue)", fontWeight: 600 }}>
                 See the full backtest →
