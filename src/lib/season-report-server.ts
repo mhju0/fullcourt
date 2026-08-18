@@ -14,9 +14,10 @@ import { teamLabeller } from "@/lib/team-labels";
  * stamp is per-season rather than global, so the entry is too — one global stamp would
  * rebuild every held season each time any season's games moved.
  *
- * Unbounded because the key set is the season list, which is closed. A reader cannot
- * invent a season: `seasonParam` rejects anything outside `NBA_SEASONS` before the route
- * reaches here.
+ * Unbounded because the key set is the season list, which is closed. A reader cannot invent a
+ * season: the route validates with `browsableSeasonParam` before reaching here, so the keys are
+ * `NBA_SEASONS` plus — through August and September only — the upcoming season. Still closed,
+ * and one wider than it was before 2026-08-18.
  */
 const report = createStampedCache<string, SeasonReportResponse>({
   readStamp: (season) => getSeasonGamesStamp(season),

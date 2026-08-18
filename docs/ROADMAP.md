@@ -168,10 +168,12 @@ oversight. None is a defect in what the site publishes.
   `appleWebApp` metadata. Completed 2026-08-18 with the maskable pair — `/icon-192.png` and
   `/icon-512.png`, route handlers over `maskableIconResponse()`, declared `purpose: "maskable"`
   so a launcher that crops has artwork inside the spec's 80% safe circle.
-- **`/season` can serve a stale empty rollover for weeks from 1 October.**
-  `getCompletedGamesStamp()` counts only final games, so between the season-list rollover and
-  opening night the cache never invalidates. Two candidate fixes in
-  [SEASON_ROLLOVER.md §3](SEASON_ROLLOVER.md).
+- ~~**`/season` can serve a stale empty rollover for weeks from 1 October.**~~ — **fixed**, and
+  this entry outlived the fix. `/season` is keyed on `getSeasonGamesStamp`, not
+  `getCompletedGamesStamp`: three components (`scheduled/finals@latest`) over the same population
+  the report reads, so seeding a schedule moves the stamp even though nothing is final yet. Since
+  2026-08-18 that window also renders a real page rather than an empty one — a season with no
+  completed game reports on the `"schedule"` basis.
 - **`docs/social-preview.png` needs one manual re-upload.** Regenerated 2026-08-18 as a render of
   `/opengraph-image` rather than a hand export, so the stale "40-SEASON BACKTEST" card and the
   pre-2026-07-30 logo lean are gone from the tree — but GitHub serves the preview from repo
