@@ -66,6 +66,14 @@ features:
   keyboard — fixed once, in the module. `scripts/screenshots.mjs` was rewritten alongside it to
   end each capture on a **named element** instead of a pinned pixel height.
 
+**On 2026-08-19 the brand mark was replaced** — "Split Ink" superseded the Angled Divider
+across every cut (nav, favicon, apple icon, maskable pair, OG card, `docs/logo.svg`), drawn
+from one geometry source (`src/lib/brand/court-mark-geometry.ts`) and pinned against drift
+by test. The OG card moved to Geist (retiring Outfit entirely) and took the caps lockup and
+the operating line. The grammar, construction spec, and archived exploration record live in
+[design/BRAND_GRAMMAR.md](design/BRAND_GRAMMAR.md). `docs/social-preview.png` was
+re-rendered; **the GitHub Settings re-upload is manual and still pending.**
+
 The dependency tree is deliberately pinned; see
 [SEASON_ROLLOVER.md §8](SEASON_ROLLOVER.md) before regenerating the lockfile, and §7 for the
 season counts and frozen front-door figures that do not derive themselves. **`gsap` is the one

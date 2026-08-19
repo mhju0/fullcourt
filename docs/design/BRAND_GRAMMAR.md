@@ -39,7 +39,10 @@ Everything else answers to it.
 
 ## 2. The name
 
-**FULLCOURT** — one word, no space, set in Geist; halves separate by weight, never by face.
+**FULLCOURT** — one word, no space, set in Geist caps. The lockup is **W4** (2026-08-19):
+one weight, the halves separated by color — COURT takes the accent — one rule for the nav
+and the OG card, which had each been half-doing it differently (dimmed split vs. amber
+split). Running prose still writes "FullCourt"; wordmark and prose are different jobs.
 
 - **FULL — the sample.** The whole record: every season since 1985-86, both arms of every
   split, the nulls included. "Full" is a claim about honesty of sample — nothing
@@ -67,21 +70,30 @@ baseline, because home court has moved across four decades.
 
 ## 4. The mark
 
-The mark is a court split by a diagonal that does not land in the middle — an **uneven
-division of one floor**. It draws the thesis: two teams, one court, and a line the schedule
-tilted months ago. The indigo diagonal is the only accent the mark spends, matching the
-one-moment-per-page rule (§5).
+**"Split Ink"** (ratified 2026-08-19, superseding the 2026-07 "Angled Divider" — blue/red
+halves with an amber circle): the court from above, one half filled in the ground's ink,
+one a translucent panel of the same ink, and the indigo slash between them — "every game
+starts uneven" as figure/ground. The full exploration that replaced the old mark (palette
+compare, three system studies, six lockups, six colors, four finishes) is archived in
+[explorations/2026-08-19-mark/](explorations/2026-08-19-mark/).
 
-One logic, three scales:
+Construction — source of truth `src/lib/brand/court-mark-geometry.ts`, drift pinned by
+`court-mark-geometry.test.ts` (the old mark's seven hand copies drifted twice):
 
-| Rung | Form | Where |
-|------|------|-------|
-| Full court | both halves + the diagonal | OG card, front door, social |
-| Half court | the filled half + the diagonal | nav, app icons, favicon — the split survives the crop |
-| The line | the diagonal alone | smallest scales; **adopt only where a natural home exists** (decided 2026-08-19: never forced) |
-
-The shipped cuts (`opengraph-image.tsx`, `apple-icon.tsx`, `icon.svg`, the maskable pair)
-are audited against this ladder; drift between cuts is a bug, a missing rung is not.
+- **Grid** 60×32, integer endpoints — within 0.3% of the NBA floor's 94:50.
+- **Slash**: a parallelogram leaning 12-across / 32-down (≈20.6° from vertical), centroid
+  pinned to the court's center (30,16) so the two panels are equal-area. Its ends are cut
+  flush by the court's own top and bottom edges.
+- **Finish** — P-D "keyline material": a concentric hairline (the ground's ink at 30–35%,
+  2-unit gap, radius = court rx + 2) around top-lit panels, the slash graded down its own
+  length in C1 indigo. **The keyline drops below 24px** — the favicon is pure material.
+  P-A flat ink is the one-color reproduction fallback (print, engraving), not a second
+  identity. Satori-rendered cuts (apple, maskable) flatten the gradients to their
+  midpoints; that concession is documented in their files and is not drift.
+- **Size ramp**: hero/nav slash 6 · tile 6.5 · favicon 8 with rx 6 and deeper tones.
+- **Meaning**: the slant *is* the rest advantage — a level line would mean an even game.
+  Static cuts keep the ratified tilt; a product surface may flex the angle by a live
+  differential (adopted 2026-08-19; no surface uses it yet).
 
 ## 5. Color
 
@@ -123,7 +135,8 @@ its mechanism —
 - **Hero thesis** (front door only): *Every game starts uneven. The schedule decided that
   months ago.*
 - **Operating line** (OG card and the front-door outro, nowhere else — one moment, like the
-  accent): *Read against the baseline.*
+  accent): *Read against the baseline.* On the OG card since 2026-08-19; the front-door
+  outro lands with the narrative pass.
 
 The OG descriptor ("NBA analytics: rest, fatigue, and shot value") remains the functional
 alt text; the operating line is the brand's sign-off, not a replacement for saying what the
@@ -170,3 +183,17 @@ chosen identity rather than replacing it.
 The mocks are static pitches, not implementation specs: exact hexes, spacing, and structure
 in the app go through the normal token system (`globals.css` `--term-*`) and review, and the
 mocks' fictional slate content never ships.
+
+## 10. Direction record — the mark round (2026-08-19)
+
+The Angled Divider was audited against the Front Office grammar and found speaking a
+retired palette (blue/red halves, amber circle, plus a hue split between the nav and icon
+cuts that had drifted apart undocumented). An exploration round followed — a recolor
+compare (keep vs. restyle to the poles), three quiet-mark system studies (S1 chrome court,
+**S2 split ink — chosen**, S3 pole meridian), six lockup treatments (**W4 chosen**), six
+colors (**C1 indigo chosen**; NBA blue and red were considered and refused — the blue
+flirts with league affiliation and dies at slash weight on light ground, the red collides
+with the fatigued pole), and four finishes (**P-D keyline material chosen**, P-A kept as
+the one-color fallback). All four study pages are archived in
+[explorations/2026-08-19-mark/](explorations/2026-08-19-mark/); the implementation is one
+geometry source, `src/lib/brand/court-mark-geometry.ts`.
