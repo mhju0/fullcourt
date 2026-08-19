@@ -1,13 +1,29 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120" fill="none" role="img" aria-label="FullCourt">
-  <rect width="120" height="120" rx="26" fill="#12151A"/>
-  <g transform="translate(24 36)">
-    <clipPath id="court"><rect x="6" y="7" width="60" height="34" rx="3"/></clipPath>
+  <!-- Tile cut of the canonical mark (src/lib/brand/court-mark-geometry.ts,
+       MARK_CUTS.tile: slash 6.5, rx 4, tone 12%, keyline 1.4 @ 30%).
+       Static file, so the paths are pinned by court-mark-geometry.test.ts. -->
+  <defs>
+    <clipPath id="court"><rect x="0" y="0" width="60" height="32" rx="4"/></clipPath>
+    <linearGradient id="plate" x1="60" y1="0" x2="60" y2="120" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#171B22"/>
+      <stop offset="1" stop-color="#0F1116"/>
+    </linearGradient>
+    <linearGradient id="fill" x1="0" y1="0" x2="0" y2="32" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#E6E8ED"/>
+    </linearGradient>
+    <linearGradient id="slash" x1="36" y1="0" x2="24" y2="32" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#95A0FF"/>
+      <stop offset="1" stop-color="#6D74EE"/>
+    </linearGradient>
+  </defs>
+  <rect width="120" height="120" rx="26" fill="url(#plate)"/>
+  <g transform="translate(30 44)">
     <g clip-path="url(#court)">
-      <path d="M6 7 H39 L33 41 H6 Z" fill="#3B82F6" fill-opacity="0.55"/>
-      <path d="M39 7 H66 V41 H33 Z" fill="#E5484D" fill-opacity="0.55"/>
-      <path d="M39 7 L33 41" stroke="#F2F4F7" stroke-width="3.2"/>
+      <path d="M0 0 H32.75 L20.75 32 H0 Z" fill="url(#fill)"/>
+      <path d="M32.75 0 H39.25 L27.25 32 H20.75 Z" fill="url(#slash)"/>
+      <path d="M39.25 0 H60 V32 H27.25 Z" fill="#F2F4F7" fill-opacity="0.12"/>
     </g>
-    <rect x="6" y="7" width="60" height="34" rx="3" stroke="#F2F4F7" stroke-width="4"/>
-    <circle cx="36" cy="24" r="6" stroke="#F5A623" stroke-width="3.6"/>
+    <rect x="-2" y="-2" width="64" height="36" rx="6" stroke="#F2F4F7" stroke-opacity="0.3" stroke-width="1.4"/>
   </g>
 </svg>

@@ -1,33 +1,46 @@
 import { readFile } from "node:fs/promises";
 import { ImageResponse } from "next/og";
 
+import {
+  COURT_H,
+  COURT_W,
+  courtMarkPaths,
+  MARK_COLORS,
+  MARK_CUTS,
+} from "@/lib/brand/court-mark-geometry";
 import { NBA_SEASONS } from "@/lib/nba-season";
 
 export const alt = "FullCourt — NBA analytics: rest, fatigue, and shot value";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-// The C1 court mark, inlined as a data-URI so satori rasterizes it directly.
-const MARK = `<svg xmlns="http://www.w3.org/2000/svg" width="360" height="240" viewBox="0 0 72 48" fill="none"><defs><clipPath id="c"><rect x="6" y="7" width="60" height="34" rx="3"/></clipPath></defs><g clip-path="url(#c)"><path d="M6 7 H39 L33 41 H6 Z" fill="#3B82F6" fill-opacity="0.5"/><path d="M39 7 H66 V41 H33 Z" fill="#E5484D" fill-opacity="0.5"/><path d="M39 7 L33 41" stroke="#F2F4F7" stroke-width="2.4"/></g><rect x="6" y="7" width="60" height="34" rx="3" stroke="#F2F4F7" stroke-width="3"/><circle cx="36" cy="24" r="6" stroke="#F5A623" stroke-width="2.6"/></svg>`;
+// The hero cut of the canonical mark, inlined as a data-URI so satori hands it to
+// resvg, which rasterizes SVG gradients faithfully (unlike satori's own inline-SVG
+// path). Geometry comes from court-mark-geometry.ts — never redrawn here.
+const CUT = MARK_CUTS.hero;
+const C = MARK_COLORS.dark;
+const P = courtMarkPaths(CUT.slashW);
+const MARK = `<svg xmlns="http://www.w3.org/2000/svg" width="396" height="228" viewBox="-3 -3 ${COURT_W + 6} ${COURT_H + 6}" fill="none"><defs><clipPath id="c"><rect width="${COURT_W}" height="${COURT_H}" rx="${CUT.rx}"/></clipPath><linearGradient id="f" x1="0" y1="0" x2="0" y2="${COURT_H}" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="${C.inkTop}"/><stop offset="1" stop-color="${C.inkBottom}"/></linearGradient><linearGradient id="s" x1="${COURT_W / 2 + 6}" y1="0" x2="${COURT_W / 2 - 6}" y2="${COURT_H}" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="${C.slashTop}"/><stop offset="1" stop-color="${C.slashBottom}"/></linearGradient></defs><g clip-path="url(#c)"><path d="${P.left}" fill="url(#f)"/><path d="${P.slash}" fill="url(#s)"/><path d="${P.right}" fill="${C.ink}" fill-opacity="${CUT.tone}"/></g><rect x="-2" y="-2" width="${COURT_W + 4}" height="${COURT_H + 4}" rx="${CUT.rx + 2}" stroke="${C.keyline}" stroke-opacity="${CUT.keyline.opacity}" stroke-width="${CUT.keyline.width}"/></svg>`;
 const MARK_SRC = `data:image/svg+xml,${encodeURIComponent(MARK)}`;
 
 // satori ships no fonts and cannot use system faces, so an unloaded `fontWeight: 800`
-// silently renders regular-weight fallback. Load the real Outfit faces (ttf — satori
-// does not read woff2) so the wordmark matches the site headings and the GitHub
-// social card. Both weights are needed: with only ExtraBold loaded, every string on
-// the card would render ExtraBold.
+// silently renders regular-weight fallback. The card renders Geist (the product's one
+// type family since 2026-08-09 — Outfit was retired here 2026-08-19) from local ttf
+// files, because satori does not read woff2 and next/font exposes none. Both weights
+// are needed: with only ExtraBold loaded, every string on the card would render
+// ExtraBold.
 //
 // Read from disk rather than fetch(): the bundler leaves `import.meta.url` as a
 // file: URL here, which fetch() refuses ("not implemented"). `new URL(..., import.meta.url)`
 // stays statically analyzable so Next traces the .ttf files into the deployed bundle.
 async function loadFonts() {
   const [regular, extraBold] = await Promise.all([
-    readFile(new URL("./fonts/Outfit-Regular.ttf", import.meta.url)),
-    readFile(new URL("./fonts/Outfit-ExtraBold.ttf", import.meta.url)),
+    readFile(new URL("./fonts/Geist-Regular.ttf", import.meta.url)),
+    readFile(new URL("./fonts/Geist-ExtraBold.ttf", import.meta.url)),
   ]);
   return [
-    { name: "Outfit", data: regular, style: "normal" as const, weight: 400 as const },
-    { name: "Outfit", data: extraBold, style: "normal" as const, weight: 800 as const },
+    { name: "Geist", data: regular, style: "normal" as const, weight: 400 as const },
+    { name: "Geist", data: extraBold, style: "normal" as const, weight: 800 as const },
   ];
 }
 
@@ -46,20 +59,21 @@ export default async function OpengraphImage() {
           background: "#0A0B0D",
           padding: "72px 80px",
           color: "#F2F4F7",
-          fontFamily: "Outfit",
+          fontFamily: "Geist",
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 28 }}>
-          <img src={MARK_SRC} width={150} height={100} alt="" />
+          <img src={MARK_SRC} width={132} height={76} alt="" />
           <div style={{ display: "flex", fontSize: 32, letterSpacing: 3, color: "#8A929C" }}>
             NBA ANALYTICS PLATFORM
           </div>
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
-          <div style={{ display: "flex", fontSize: 96, fontWeight: 800, letterSpacing: -1.5 }}>
-            <span style={{ color: "#F2F4F7" }}>Full</span>
-            <span style={{ color: "#F5A623" }}>Court</span>
+          {/* The W4 lockup (2026-08-19): all caps, COURT in the brand indigo. */}
+          <div style={{ display: "flex", fontSize: 92, fontWeight: 800, letterSpacing: -1 }}>
+            <span style={{ color: "#F2F4F7" }}>FULL</span>
+            <span style={{ color: "#818CF8" }}>COURT</span>
           </div>
           <div style={{ display: "flex", fontSize: 38, color: "#B7BEC7", maxWidth: 960, lineHeight: 1.35 }}>
             {/* No figure: a static image cannot pin one, and the ~55% this carried predated
@@ -70,11 +84,13 @@ export default async function OpengraphImage() {
         </div>
 
         <div style={{ display: "flex", alignItems: "center", gap: 26, fontSize: 26, color: "#5B626C", letterSpacing: 2 }}>
-          <div style={{ display: "flex", color: "#3B82F6", fontWeight: 700 }}>REST ADVANTAGE</div>
+          {/* The operating line (BRAND_GRAMMAR §8): the brand's sign-off, here and on
+              the front-door outro only. */}
+          <div style={{ display: "flex", color: "#818CF8", fontWeight: 800 }}>
+            READ AGAINST THE BASELINE
+          </div>
           <div style={{ display: "flex" }}>·</div>
           <div style={{ display: "flex" }}>{`${NBA_SEASONS.length}-SEASON BACKTEST`}</div>
-          <div style={{ display: "flex" }}>·</div>
-          <div style={{ display: "flex" }}>SHOT QUALITY</div>
         </div>
       </div>
     ),

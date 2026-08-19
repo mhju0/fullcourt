@@ -1,13 +1,20 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="72" height="72" viewBox="0 0 72 72" fill="none">
-  <rect width="72" height="72" rx="16" fill="#12151A"/>
-  <g transform="translate(0 12)">
-    <clipPath id="court"><rect x="6" y="7" width="60" height="34" rx="3"/></clipPath>
+  <!-- Favicon cut of the canonical mark (src/lib/brand/court-mark-geometry.ts,
+       MARK_CUTS.favicon: slash 8, rx 6, tone 16%, no keyline below 24px).
+       Static file, so the paths are pinned by court-mark-geometry.test.ts. -->
+  <rect width="72" height="72" rx="18" fill="#12151A"/>
+  <defs>
+    <clipPath id="court"><rect x="0" y="0" width="60" height="32" rx="6"/></clipPath>
+    <linearGradient id="slash" x1="36" y1="0" x2="24" y2="32" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#95A0FF"/>
+      <stop offset="1" stop-color="#6D74EE"/>
+    </linearGradient>
+  </defs>
+  <g transform="translate(6 20)">
     <g clip-path="url(#court)">
-      <path d="M6 7 H39 L33 41 H6 Z" fill="#3B82F6" fill-opacity="0.55"/>
-      <path d="M39 7 H66 V41 H33 Z" fill="#E5484D" fill-opacity="0.55"/>
-      <path d="M39 7 L33 41" stroke="#F2F4F7" stroke-width="3.2"/>
+      <path d="M0 0 H32 L20 32 H0 Z" fill="#F2F4F7"/>
+      <path d="M32 0 H40 L28 32 H20 Z" fill="url(#slash)"/>
+      <path d="M40 0 H60 V32 H28 Z" fill="#F2F4F7" fill-opacity="0.16"/>
     </g>
-    <rect x="6" y="7" width="60" height="34" rx="3" stroke="#F2F4F7" stroke-width="4"/>
-    <circle cx="36" cy="24" r="6" stroke="#F5A623" stroke-width="3.6"/>
   </g>
 </svg>
