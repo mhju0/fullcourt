@@ -152,6 +152,9 @@ Skipping `prepare` fails **silently**: `fatigue_model_table.csv` is already on d
 - [docs/DATA_PIPELINE.md](docs/DATA_PIPELINE.md) — every script + the full fatigue-model math
 - [docs/API.md](docs/API.md) — every route: params, response shape, DB reads
 - [docs/FRONTEND.md](docs/FRONTEND.md) — pages, components, the `--term-*` design system
+- [docs/design/BRAND_GRAMMAR.md](docs/design/BRAND_GRAMMAR.md) — the brand grammar: premise,
+  naming, mark, voice laws, and the 2026-08-09 direction record (absorbed `design/README.md`).
+  The one place brand/design *direction* lives; FRONTEND.md stays the implementation law
 - [docs/ADDING_A_SURFACE.md](docs/ADDING_A_SURFACE.md) — the contract a new page or tab has to
   satisfy, with the test that enforces each rule named beside it. **Start here for a new page**;
   FRONTEND.md says why the rules are what they are

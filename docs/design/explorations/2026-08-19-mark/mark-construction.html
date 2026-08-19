@@ -1,0 +1,304 @@
+<title>Mark Construction</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500&display=swap">
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #26282e; color: #e9eaee; font-family: "Geist", Arial, sans-serif; font-size: 15px; line-height: 1.6; }
+  .wrap { max-width: 960px; margin: 0 auto; padding: 52px 24px 88px; }
+  h1 { font-size: 32px; font-weight: 650; letter-spacing: -0.02em; margin: 0 0 10px; }
+  .sub { color: #a6a9b4; margin: 0 0 6px; max-width: 70ch; }
+  .sub b { color: #e9eaee; }
+  h2 { font-family: "Geist Mono", monospace; font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: #8f93a0; border-top: 1px solid #3a3d46; padding-top: 14px; margin: 46px 0 12px; }
+  .mono { font-family: "Geist Mono", monospace; }
+
+  /* construction panel */
+  .spec { border: 1px solid #3a3d46; background: #101215; padding: 26px; display: grid; grid-template-columns: auto 1fr; gap: 30px; align-items: center; }
+  @media (max-width: 760px) { .spec { grid-template-columns: 1fr; } }
+  .spec-notes { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 24px; }
+  @media (max-width: 560px) { .spec-notes { grid-template-columns: 1fr; } }
+  .spec-notes div { border-top: 1px solid #3a3d46; padding-top: 8px; }
+  .spec-notes b { display: block; font-family: "Geist Mono", monospace; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: #a5b0fc; margin-bottom: 3px; font-weight: 500; }
+  .spec-notes span { font-size: 12.5px; color: #a6a9b4; }
+
+  .fixes { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 1px; background: #3a3d46; border: 1px solid #3a3d46; margin-top: 14px; }
+  .fixes div { background: #1e2025; padding: 12px 16px; }
+  .fixes b { font-size: 13.5px; display: block; }
+  .fixes span { font-size: 12.5px; color: #a6a9b4; }
+
+  /* variants */
+  .variant { border: 1px solid #3a3d46; background: #1e2025; margin-top: 20px; }
+  .v-head { padding: 14px 18px; border-bottom: 1px solid #3a3d46; display: flex; justify-content: space-between; gap: 14px; flex-wrap: wrap; align-items: baseline; }
+  .v-head b { font-size: 16px; }
+  .v-head .id { font-family: "Geist Mono", monospace; font-size: 11px; color: #a5b0fc; letter-spacing: 0.08em; }
+  .v-note { padding: 10px 18px; font-size: 13px; color: #a6a9b4; border-bottom: 1px solid #3a3d46; }
+  .v-note b { color: #e9eaee; }
+  .v-grounds { display: grid; grid-template-columns: 1.15fr 1fr 1.1fr; }
+  @media (max-width: 780px) { .v-grounds { grid-template-columns: 1fr; } }
+  .vg { border-right: 1px solid #3a3d46; }
+  .vg:last-child { border-right: none; }
+  .vglabel { font-family: "Geist Mono", monospace; font-size: 9.5px; letter-spacing: 0.12em; text-transform: uppercase; color: #8f93a0; padding: 10px 16px 4px; }
+  .vg-light { background: #fafafa; padding: 16px; display: flex; align-items: center; gap: 10px; min-height: 72px; }
+  .vg-light .word { font-weight: 700; color: #17181c; font-size: 16.5px; letter-spacing: -0.015em; }
+  .vg-light .word i { font-style: normal; color: #4F46E5; }
+  .vg-dark { background: #0e1013; padding: 16px; display: flex; align-items: center; gap: 18px; min-height: 72px; }
+  .vg-hero { background: #0b0d10; padding: 22px 18px; display: flex; flex-direction: column; gap: 12px; justify-content: center; min-height: 72px; }
+  .vg-hero .word { font-weight: 800; color: #f2f4f7; font-size: 26px; letter-spacing: -0.02em; line-height: 1; }
+  .vg-hero .word i { font-style: normal; color: #818CF8; }
+
+  table.ramp { border-collapse: collapse; width: 100%; font-size: 13px; margin-top: 12px; }
+  .ramp th { text-align: left; font-family: "Geist Mono", monospace; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: #8f93a0; font-weight: 500; padding: 8px 12px; border-bottom: 1px solid #3a3d46; }
+  .ramp td { padding: 8px 12px; border-bottom: 1px solid #2e3138; color: #a6a9b4; font-family: "Geist Mono", monospace; font-size: 12px; }
+  .ramp td:first-child { color: #e9eaee; }
+
+  .verdict { border: 1px solid #3a3d46; border-left: 3px solid #a5b0fc; background: #1e2025; padding: 18px 22px; margin-top: 34px; font-size: 14.5px; color: #a6a9b4; }
+  .verdict b { color: #e9eaee; }
+</style>
+
+<div class="wrap">
+  <h1>The mark, constructed</h1>
+  <p class="sub"><b>Locked:</b> S2 split-ink · W4 caps wordmark with COURT in the color · C1 indigo. This round is the craft. Every render below is built from one construction — no stroked lines pretending to be shapes.</p>
+
+  <div class="fixes">
+    <div><b>Slash terminals die flush</b><span>The slash is a parallelogram cut by the court's own edge — its ends are horizontal cuts along the frame, not stroke caps poking past it.</span></div>
+    <div><b>Real court proportion</b><span>The rectangle is redrawn 60×32 — the NBA court's 94×50, scaled. The mark is now literally a court, not roughly one.</span></div>
+    <div><b>Concentric corners</b><span>The tile's radius and the court's radius are never equal: outer follows the platform, inner stays tighter, so the gap reads even.</span></div>
+    <div><b>Weight ramp per size</b><span>At 16px the slash and radii fatten, tones deepen; at hero sizes they relax. One drawing, four tuned cuts — spec below.</span></div>
+    <div><b>Tone replaces outline</b><span>The empty half is a translucent panel of the ground's own ink — the border that read "MS Paint" is no longer load-bearing anywhere.</span></div>
+    <div><b>Ratified angle</b><span>The slash leans ~20.6° from vertical (12 across / 32 down on the grid) — steeper than the old 10°, the tilt you approved in S2. Dynamic surfaces may still flex it by live RA. And it is now truly centered — the centroid sits on the court's center (the imbalance you caught was inherited from the old 72-unit viewBox, not an illusion).</span></div>
+  </div>
+
+  <h2>Construction</h2>
+  <div class="spec">
+    <svg width="330" height="200" viewBox="-14 -20 88 62" fill="none">
+      <!-- grid -->
+      <g stroke="#33363e" stroke-width="0.3">
+        <path d="M0 -8 V40"/><path d="M33 -8 V0"/><path d="M39 -8 V0"/><path d="M21 32 V40"/><path d="M27 32 V40"/><path d="M30 -8 V40" stroke-dasharray="1 1"/><path d="M60 -8 V40"/>
+        <path d="M-10 0 H66"/><path d="M-10 32 H66"/>
+      </g>
+      <!-- mark -->
+      <defs><clipPath id="specclip"><rect x="0" y="0" width="60" height="32" rx="4"/></clipPath></defs>
+      <g clip-path="url(#specclip)">
+        <path d="M0 0 H33 L21 32 H0 Z" fill="#F2F4F7"/>
+        <path d="M33 0 H39 L27 32 H21 Z" fill="#818CF8"/>
+        <path d="M39 0 H60 V32 H27 Z" fill="#F2F4F7" fill-opacity="0.1"/>
+      </g>
+      <!-- dims -->
+      <g font-family="Geist Mono, monospace" font-size="3.4" fill="#8f93a0">
+        <text x="27" y="-11">60 × 32 = 94 : 50</text>
+        <text x="32" y="-3.5">33</text>
+        <text x="39.8" y="-3.5">39</text>
+        <text x="18" y="38.5">21</text>
+        <text x="27.8" y="38.5">27</text>
+        <text x="-12" y="1.5">y0</text>
+        <text x="-12" y="33.5">y32</text>
+        <text x="42" y="20" fill="#a5b0fc">20.6°</text>
+        <text x="27.2" y="-3.5" fill="#a5b0fc">c30</text>
+        <text x="-12" y="20" fill="#a5b0fc">rx4</text>
+      </g>
+      <path d="M36 4 L31.5 16" stroke="#a5b0fc" stroke-width="0.4" stroke-dasharray="1 1"/>
+      <path d="M36 4 V16" stroke="#8f93a0" stroke-width="0.3" stroke-dasharray="1 1"/>
+    </svg>
+    <div class="spec-notes">
+      <div><b>Grid</b><span>60 × 32 units, integer endpoints only — crisp at every raster size. Court proportion = the real 94 × 50 floor.</span></div>
+      <div><b>Slash</b><span>Parallelogram (33,0)→(39,0)→(27,32)→(21,32): horizontal width 6, lean 20.6° from vertical, <em>centroid pinned to the court's center (30,16)</em> — the two panels are equal-area by construction. Ends are the court's own top and bottom edges.</span></div>
+      <div><b>Halves</b><span>Filled half ends at the slash's left edge; open half starts at its right — a 0-gap three-panel construction, no strokes.</span></div>
+      <div><b>Corners</b><span>Court rx 4 (of 32 tall). In a tile: tile radius per platform, court stays rx 4 — concentric, never matched.</span></div>
+      <div><b>Color</b><span>Slash #4F46E5 on light / #818CF8 on dark. Filled half: ground's ink. Open half: ground's ink at 6–12%.</span></div>
+      <div><b>Meaning</b><span>The slant is the rest advantage — level would mean an even game. Static cuts use this ratified tilt; product surfaces may tilt by the live differential.</span></div>
+    </div>
+  </div>
+
+  <table class="ramp">
+    <tr><th>Cut</th><th>Slash width (units)</th><th>Court rx</th><th>Open-half tone</th><th>Keyline</th><th>Use</th></tr>
+    <tr><td>Hero / OG ≥ 200px</td><td>6</td><td>4</td><td>8%</td><td>1.2 @ 30%</td><td>marketing, docs</td></tr>
+    <tr><td>Nav 34px</td><td>6</td><td>4</td><td>7%</td><td>1.4 @ 35%</td><td>chrome lockup</td></tr>
+    <tr><td>Tile 64–512px</td><td>6.5</td><td>4</td><td>12%</td><td>1.4 @ 30%</td><td>app icons</td></tr>
+    <tr><td>Favicon 16px</td><td>8</td><td>6</td><td>16%</td><td>— (drops &lt; 24px)</td><td>tab</td></tr>
+  </table>
+
+  <h2>The chosen finish — and the three studies it came from</h2>
+
+  <!-- P-D : chosen -->
+  <div class="variant" style="border-color:#a5b0fc">
+    <div class="v-head"><b>Keyline Material</b><span class="id">P-D · THE CHOSEN CUT — P-C's hairline + P-B's finish</span></div>
+    <div class="v-note"><b>Technique:</b> the concentric hairline (single stroke, 30–35% of the ground's ink, 2-unit gap, radius = court rx + gap) around the material panels — top-lit filled half, the slash darkening down its own length, tonal open half. The keyline does containment, the gradients do finish, and neither shouts. <b>Ramp rule:</b> the keyline drops below 24px — at favicon size it would render as fog, so the smallest cut is pure material.</div>
+    <div class="v-grounds">
+      <div class="vg">
+        <div class="vglabel">Nav · light · 34px</div>
+        <div class="vg-light">
+          <svg width="38" height="22" viewBox="-3 -3 66 38" fill="none">
+            <defs>
+              <clipPath id="pd1"><rect x="0" y="0" width="60" height="32" rx="4"/></clipPath>
+              <linearGradient id="pd1f" x1="0" y1="0" x2="0" y2="32" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#20222a"/><stop offset="1" stop-color="#121318"/></linearGradient>
+              <linearGradient id="pd1s" x1="36" y1="0" x2="24" y2="32" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#5B54F2"/><stop offset="1" stop-color="#4238CE"/></linearGradient>
+            </defs>
+            <g clip-path="url(#pd1)"><path d="M0 0 H33 L21 32 H0 Z" fill="url(#pd1f)"/><path d="M33 0 H39 L27 32 H21 Z" fill="url(#pd1s)"/><path d="M39 0 H60 V32 H27 Z" fill="#17181c" fill-opacity="0.07"/></g>
+            <rect x="-2" y="-2" width="64" height="36" rx="6" stroke="#17181c" stroke-opacity="0.35" stroke-width="1.4"/>
+          </svg>
+          <span class="word">FULL<i>COURT</i></span>
+        </div>
+      </div>
+      <div class="vg">
+        <div class="vglabel">Tile 96px · favicon 16px (keyline drops)</div>
+        <div class="vg-dark">
+          <svg width="96" height="96" viewBox="0 0 72 72" fill="none">
+            <defs>
+              <clipPath id="pd2"><rect x="0" y="0" width="60" height="32" rx="4"/></clipPath>
+              <linearGradient id="pd2f" x1="0" y1="0" x2="0" y2="32" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#E6E8ED"/></linearGradient>
+              <linearGradient id="pd2s" x1="36" y1="0" x2="24" y2="32" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#95A0FF"/><stop offset="1" stop-color="#6D74EE"/></linearGradient>
+              <linearGradient id="pd2t" x1="36" y1="0" x2="36" y2="72" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#171B22"/><stop offset="1" stop-color="#0F1116"/></linearGradient>
+            </defs>
+            <rect width="72" height="72" rx="16" fill="url(#pd2t)"/>
+            <g transform="translate(6 20)">
+              <g clip-path="url(#pd2)"><path d="M0 0 H32.75 L20.75 32 H0 Z" fill="url(#pd2f)"/><path d="M32.75 0 H39.25 L27.25 32 H20.75 Z" fill="url(#pd2s)"/><path d="M39.25 0 H60 V32 H27.25 Z" fill="#F2F4F7" fill-opacity="0.12"/></g>
+              <rect x="-2.5" y="-2.5" width="65" height="37" rx="6.5" stroke="#F2F4F7" stroke-opacity="0.3" stroke-width="1.4"/>
+            </g>
+          </svg>
+          <svg width="16" height="16" viewBox="0 0 72 72" fill="none">
+            <defs>
+              <clipPath id="pd3"><rect x="0" y="0" width="60" height="32" rx="6"/></clipPath>
+              <linearGradient id="pd3s" x1="36" y1="0" x2="24" y2="32" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#95A0FF"/><stop offset="1" stop-color="#6D74EE"/></linearGradient>
+            </defs>
+            <rect width="72" height="72" rx="18" fill="#12151A"/>
+            <g transform="translate(6 20)"><g clip-path="url(#pd3)"><path d="M0 0 H32 L20 32 H0 Z" fill="#F2F4F7"/><path d="M32 0 H40 L28 32 H20 Z" fill="url(#pd3s)"/><path d="M40 0 H60 V32 H28 Z" fill="#F2F4F7" fill-opacity="0.16"/></g></g>
+          </svg>
+        </div>
+      </div>
+      <div class="vg">
+        <div class="vglabel">Hero · dark</div>
+        <div class="vg-hero">
+          <svg width="80" height="45" viewBox="-3 -3 66 38" fill="none">
+            <defs>
+              <clipPath id="pd4"><rect x="0" y="0" width="60" height="32" rx="4"/></clipPath>
+              <linearGradient id="pd4f" x1="0" y1="0" x2="0" y2="32" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#E4E7EC"/></linearGradient>
+              <linearGradient id="pd4s" x1="36" y1="0" x2="24" y2="32" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#98A2FF"/><stop offset="1" stop-color="#6A71EC"/></linearGradient>
+            </defs>
+            <g clip-path="url(#pd4)"><path d="M0 0 H33 L21 32 H0 Z" fill="url(#pd4f)"/><path d="M33 0 H39 L27 32 H21 Z" fill="url(#pd4s)"/><path d="M39 0 H60 V32 H27 Z" fill="#F2F4F7" fill-opacity="0.08"/></g>
+            <rect x="-2" y="-2" width="64" height="36" rx="6" stroke="#F2F4F7" stroke-opacity="0.3" stroke-width="1.2"/>
+          </svg>
+          <span class="word">FULL<i>COURT</i></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- P-A -->
+  <div class="variant">
+    <div class="v-head"><b>Flat ink</b><span class="id">P-A · the purist cut</span></div>
+    <div class="v-note"><b>Technique:</b> three flat panels, zero effects. The most "Front Office" — the instrument look. Survives print, embroidery, one-color reproduction (slash falls back to ink).</div>
+    <div class="v-grounds">
+      <div class="vg">
+        <div class="vglabel">Nav · light · 34px</div>
+        <div class="vg-light">
+          <svg width="36" height="20" viewBox="-1 -1 62 34" fill="none"><defs><clipPath id="pa1"><rect x="0" y="0" width="60" height="32" rx="4"/></clipPath></defs><g clip-path="url(#pa1)"><path d="M0 0 H33 L21 32 H0 Z" fill="#17181c"/><path d="M33 0 H39 L27 32 H21 Z" fill="#4F46E5"/><path d="M39 0 H60 V32 H27 Z" fill="#17181c" fill-opacity="0.07"/></g></svg>
+          <span class="word">FULL<i>COURT</i></span>
+        </div>
+      </div>
+      <div class="vg">
+        <div class="vglabel">Tile 96px · favicon 16px</div>
+        <div class="vg-dark">
+          <svg width="96" height="96" viewBox="0 0 72 72" fill="none"><rect width="72" height="72" rx="16" fill="#12151A"/><g transform="translate(6 20)"><defs><clipPath id="pa2"><rect x="0" y="0" width="60" height="32" rx="4"/></clipPath></defs><g clip-path="url(#pa2)"><path d="M0 0 H32.75 L20.75 32 H0 Z" fill="#F2F4F7"/><path d="M32.75 0 H39.25 L27.25 32 H20.75 Z" fill="#818CF8"/><path d="M39.25 0 H60 V32 H27.25 Z" fill="#F2F4F7" fill-opacity="0.12"/></g></g></svg>
+          <svg width="16" height="16" viewBox="0 0 72 72" fill="none"><rect width="72" height="72" rx="18" fill="#12151A"/><g transform="translate(6 20)"><defs><clipPath id="pa3"><rect x="0" y="0" width="60" height="32" rx="6"/></clipPath></defs><g clip-path="url(#pa3)"><path d="M0 0 H32 L20 32 H0 Z" fill="#F2F4F7"/><path d="M32 0 H40 L28 32 H20 Z" fill="#818CF8"/><path d="M40 0 H60 V32 H28 Z" fill="#F2F4F7" fill-opacity="0.16"/></g></g></svg>
+        </div>
+      </div>
+      <div class="vg">
+        <div class="vglabel">Hero · dark</div>
+        <div class="vg-hero">
+          <svg width="76" height="41" viewBox="-1 -1 62 34" fill="none"><defs><clipPath id="pa4"><rect x="0" y="0" width="60" height="32" rx="4"/></clipPath></defs><g clip-path="url(#pa4)"><path d="M0 0 H33 L21 32 H0 Z" fill="#F2F4F7"/><path d="M33 0 H39 L27 32 H21 Z" fill="#818CF8"/><path d="M39 0 H60 V32 H27 Z" fill="#F2F4F7" fill-opacity="0.08"/></g></svg>
+          <span class="word">FULL<i>COURT</i></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- P-B -->
+  <div class="variant">
+    <div class="v-head"><b>Material</b><span class="id">P-B · tonal depth, no chrome</span></div>
+    <div class="v-note"><b>Technique:</b> the designer moves that read as "finish" without skeuomorphism — a 4% top-light on the filled half, the slash darkening along its own length (light falling down the line), and a whisper of edge tone where the open half meets the frame. Flat from arm's length, considered up close.</div>
+    <div class="v-grounds">
+      <div class="vg">
+        <div class="vglabel">Nav · light · 34px</div>
+        <div class="vg-light">
+          <svg width="36" height="20" viewBox="-1 -1 62 34" fill="none">
+            <defs>
+              <clipPath id="pb1"><rect x="0" y="0" width="60" height="32" rx="4"/></clipPath>
+              <linearGradient id="pb1f" x1="0" y1="0" x2="0" y2="32" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#20222a"/><stop offset="1" stop-color="#121318"/></linearGradient>
+              <linearGradient id="pb1s" x1="36" y1="0" x2="24" y2="32" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#5B54F2"/><stop offset="1" stop-color="#4238CE"/></linearGradient>
+            </defs>
+            <g clip-path="url(#pb1)"><path d="M0 0 H33 L21 32 H0 Z" fill="url(#pb1f)"/><path d="M33 0 H39 L27 32 H21 Z" fill="url(#pb1s)"/><path d="M39 0 H60 V32 H27 Z" fill="#17181c" fill-opacity="0.07"/></g>
+          </svg>
+          <span class="word">FULL<i>COURT</i></span>
+        </div>
+      </div>
+      <div class="vg">
+        <div class="vglabel">Tile 96px · favicon 16px</div>
+        <div class="vg-dark">
+          <svg width="96" height="96" viewBox="0 0 72 72" fill="none">
+            <defs>
+              <clipPath id="pb2"><rect x="0" y="0" width="60" height="32" rx="4"/></clipPath>
+              <linearGradient id="pb2f" x1="0" y1="0" x2="0" y2="32" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#E6E8ED"/></linearGradient>
+              <linearGradient id="pb2s" x1="36" y1="0" x2="24" y2="32" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#95A0FF"/><stop offset="1" stop-color="#6D74EE"/></linearGradient>
+              <linearGradient id="pb2t" x1="36" y1="0" x2="36" y2="72" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#171B22"/><stop offset="1" stop-color="#0F1116"/></linearGradient>
+            </defs>
+            <rect width="72" height="72" rx="16" fill="url(#pb2t)"/>
+            <g transform="translate(6 20)"><g clip-path="url(#pb2)"><path d="M0 0 H32.75 L20.75 32 H0 Z" fill="url(#pb2f)"/><path d="M32.75 0 H39.25 L27.25 32 H20.75 Z" fill="url(#pb2s)"/><path d="M39.25 0 H60 V32 H27.25 Z" fill="#F2F4F7" fill-opacity="0.12"/></g></g>
+          </svg>
+          <svg width="16" height="16" viewBox="0 0 72 72" fill="none">
+            <defs>
+              <clipPath id="pb3"><rect x="0" y="0" width="60" height="32" rx="6"/></clipPath>
+              <linearGradient id="pb3s" x1="36" y1="0" x2="24" y2="32" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#95A0FF"/><stop offset="1" stop-color="#6D74EE"/></linearGradient>
+            </defs>
+            <rect width="72" height="72" rx="18" fill="#12151A"/>
+            <g transform="translate(6 20)"><g clip-path="url(#pb3)"><path d="M0 0 H32 L20 32 H0 Z" fill="#F2F4F7"/><path d="M32 0 H40 L28 32 H20 Z" fill="url(#pb3s)"/><path d="M40 0 H60 V32 H28 Z" fill="#F2F4F7" fill-opacity="0.16"/></g></g>
+          </svg>
+        </div>
+      </div>
+      <div class="vg">
+        <div class="vglabel">Hero · dark</div>
+        <div class="vg-hero">
+          <svg width="76" height="41" viewBox="-1 -1 62 34" fill="none">
+            <defs>
+              <clipPath id="pb4"><rect x="0" y="0" width="60" height="32" rx="4"/></clipPath>
+              <linearGradient id="pb4f" x1="0" y1="0" x2="0" y2="32" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#E4E7EC"/></linearGradient>
+              <linearGradient id="pb4s" x1="36" y1="0" x2="24" y2="32" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#98A2FF"/><stop offset="1" stop-color="#6A71EC"/></linearGradient>
+            </defs>
+            <g clip-path="url(#pb4)"><path d="M0 0 H33 L21 32 H0 Z" fill="url(#pb4f)"/><path d="M33 0 H39 L27 32 H21 Z" fill="url(#pb4s)"/><path d="M39 0 H60 V32 H27 Z" fill="#F2F4F7" fill-opacity="0.08"/></g>
+          </svg>
+          <span class="word">FULL<i>COURT</i></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- P-C -->
+  <div class="variant">
+    <div class="v-head"><b>Keyline</b><span class="id">P-C · the bordered cut, done right</span></div>
+    <div class="v-note"><b>Technique:</b> for contexts that need a contained mark on unknown grounds (avatars, partner decks, watermarks). The keyline is a single hairline at 35% ink — jewelry, not fence — and it sits <em>outside</em> the panels with a 2-unit gap, concentric radius. This is what the old white border was trying to be.</div>
+    <div class="v-grounds">
+      <div class="vg">
+        <div class="vglabel">Nav · light · 34px</div>
+        <div class="vg-light">
+          <svg width="38" height="22" viewBox="-3 -3 66 38" fill="none"><defs><clipPath id="pc1"><rect x="0" y="0" width="60" height="32" rx="4"/></clipPath></defs><g clip-path="url(#pc1)"><path d="M0 0 H33 L21 32 H0 Z" fill="#17181c"/><path d="M33 0 H39 L27 32 H21 Z" fill="#4F46E5"/><path d="M39 0 H60 V32 H27 Z" fill="#17181c" fill-opacity="0.07"/></g><rect x="-2" y="-2" width="64" height="36" rx="6" stroke="#17181c" stroke-opacity="0.35" stroke-width="1.4"/></svg>
+          <span class="word">FULL<i>COURT</i></span>
+        </div>
+      </div>
+      <div class="vg">
+        <div class="vglabel">Tile 96px · favicon 16px</div>
+        <div class="vg-dark">
+          <svg width="96" height="96" viewBox="0 0 72 72" fill="none"><defs><clipPath id="pc2"><rect x="0" y="0" width="60" height="32" rx="4"/></clipPath></defs><rect width="72" height="72" rx="16" fill="#12151A"/><g transform="translate(6 20)"><g clip-path="url(#pc2)"><path d="M0 0 H32.75 L20.75 32 H0 Z" fill="#F2F4F7"/><path d="M32.75 0 H39.25 L27.25 32 H20.75 Z" fill="#818CF8"/><path d="M39.25 0 H60 V32 H27.25 Z" fill="#F2F4F7" fill-opacity="0.12"/></g><rect x="-2.5" y="-2.5" width="65" height="37" rx="6.5" stroke="#F2F4F7" stroke-opacity="0.3" stroke-width="1.4"/></g></svg>
+          <svg width="16" height="16" viewBox="0 0 72 72" fill="none"><defs><clipPath id="pc3"><rect x="0" y="0" width="60" height="32" rx="6"/></clipPath></defs><rect width="72" height="72" rx="18" fill="#12151A"/><g transform="translate(6 20)"><g clip-path="url(#pc3)"><path d="M0 0 H32 L20 32 H0 Z" fill="#F2F4F7"/><path d="M32 0 H40 L28 32 H20 Z" fill="#818CF8"/><path d="M40 0 H60 V32 H28 Z" fill="#F2F4F7" fill-opacity="0.16"/></g></g></svg>
+        </div>
+      </div>
+      <div class="vg">
+        <div class="vglabel">Hero · dark</div>
+        <div class="vg-hero">
+          <svg width="80" height="45" viewBox="-3 -3 66 38" fill="none"><defs><clipPath id="pc4"><rect x="0" y="0" width="60" height="32" rx="4"/></clipPath></defs><g clip-path="url(#pc4)"><path d="M0 0 H33 L21 32 H0 Z" fill="#F2F4F7"/><path d="M33 0 H39 L27 32 H21 Z" fill="#818CF8"/><path d="M39 0 H60 V32 H27 Z" fill="#F2F4F7" fill-opacity="0.08"/></g><rect x="-2" y="-2" width="64" height="36" rx="6" stroke="#F2F4F7" stroke-opacity="0.3" stroke-width="1.2"/></svg>
+          <span class="word">FULL<i>COURT</i></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="verdict">
+    <b>Chosen: P-D Keyline Material, everywhere.</b> One finish, one rule set: material panels inside a concentric 30–35% hairline, keyline dropping below 24px where it would fog (the favicon is pure material and reads identically in the tray). P-A survives as the one-color fallback for print and engraving — that's a reproduction spec, not a second identity. What remains before implementation is the scope confirmation: this mark replaces the old CourtMark in the nav and all seven icon/OG cuts, drawn from <b>one <code>courtMark()</code> geometry source</b> so the copies can never drift again.
+  </div></div>
+</div>

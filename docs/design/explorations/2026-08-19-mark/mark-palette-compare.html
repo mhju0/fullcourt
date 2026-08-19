@@ -1,0 +1,197 @@
+<title>Mark Palette Compare</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap">
+<style>
+  /* Neutral studio ground, single-theme on purpose: both options must be judged on
+     their own grounds (the white nav bar, the dark icon plate), not the viewer's. */
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #26282e; color: #e9eaee; font-family: "Geist", Arial, sans-serif; font-size: 15px; line-height: 1.6; }
+  .wrap { max-width: 880px; margin: 0 auto; padding: 48px 24px 80px; }
+  h1 { font-size: 30px; font-weight: 650; letter-spacing: -0.02em; margin: 0 0 8px; }
+  .sub { color: #a6a9b4; margin: 0 0 36px; max-width: 64ch; }
+  .mono { font-family: "Geist Mono", monospace; }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  @media (max-width: 720px) { .cols { grid-template-columns: 1fr; } }
+  .option { border: 1px solid #3a3d46; background: #1e2025; }
+  .option h2 { margin: 0; padding: 14px 18px; font-size: 12px; font-family: "Geist Mono", monospace; letter-spacing: 0.13em; text-transform: uppercase; border-bottom: 1px solid #3a3d46; color: #e9eaee; }
+  .option h2 small { display: block; margin-top: 4px; color: #8f93a0; text-transform: none; letter-spacing: 0.02em; font-size: 11.5px; }
+  .ctx { padding: 0; }
+  .ctx-label { font-family: "Geist Mono", monospace; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: #8f93a0; padding: 12px 18px 6px; }
+  /* context grounds */
+  .g-light { background: #fafafa; padding: 14px 18px; display: flex; align-items: center; gap: 10px; }
+  .g-light .word { font-weight: 700; letter-spacing: -0.01em; color: #17181c; font-size: 17px; }
+  .g-dark { background: #0e1013; padding: 18px; display: flex; align-items: center; gap: 22px; }
+  .g-og { background: #0a0b0d; padding: 20px 18px; display: flex; flex-direction: column; gap: 10px; }
+  .g-og .brand { font-size: 30px; font-weight: 800; letter-spacing: -0.5px; display: flex; }
+  .g-og .tag { font-size: 12px; color: #b7bec7; }
+  .chips { display: flex; gap: 14px; padding: 14px 18px; border-top: 1px solid #3a3d46; flex-wrap: wrap; }
+  .chip { display: inline-flex; align-items: center; gap: 7px; font-family: "Geist Mono", monospace; font-size: 11px; color: #a6a9b4; }
+  .chip i { width: 12px; height: 12px; border-radius: 2px; display: inline-block; }
+  .note { margin-top: 32px; border: 1px solid #3a3d46; background: #1e2025; padding: 18px 22px; font-size: 14px; color: #a6a9b4; }
+  .note b { color: #e9eaee; }
+  .poleref { display: flex; gap: 16px; margin-top: 10px; }
+</style>
+
+<div class="wrap">
+  <h1>The mark, both ways</h1>
+  <p class="sub">Same geometry everywhere (that part is settled). Only the palette differs. Option A is what ships today; Option B redraws the halves in the Front Office data poles (teal = rested, rose = fatigued) and the circle in the accent indigo. Each shown on its real grounds.</p>
+
+  <div class="cols">
+
+    <!-- ============ OPTION A ============ -->
+    <div class="option">
+      <h2>A · Today's mark — fixed brand colors<small>blue #3B82F6 rested · red #E5484D fatigued · amber #F5A623 circle</small></h2>
+
+      <div class="ctx-label">Nav · light ground · 34px</div>
+      <div class="g-light">
+        <svg width="34" height="23" viewBox="0 0 72 48" fill="none">
+          <defs><clipPath id="a1"><rect x="6" y="7" width="60" height="34" rx="3"/></clipPath></defs>
+          <g clip-path="url(#a1)">
+            <path d="M6 7 H39 L33 41 H6 Z" fill="#3B82F6" fill-opacity="0.55"/>
+            <path d="M39 7 H66 V41 H33 Z" fill="#E5484D" fill-opacity="0.55"/>
+            <path d="M39 7 L33 41" stroke="#111318" stroke-width="3.4"/>
+          </g>
+          <rect x="6" y="7" width="60" height="34" rx="3" stroke="#111318" stroke-width="4"/>
+          <circle cx="36" cy="24" r="6" stroke="#F5A623" stroke-width="3.6"/>
+        </svg>
+        <span class="word">FULLCOURT</span>
+      </div>
+
+      <div class="ctx-label">App icon tile · 96px &nbsp;·&nbsp; favicon · 24px &amp; 16px</div>
+      <div class="g-dark">
+        <svg width="96" height="96" viewBox="0 0 72 72" fill="none">
+          <rect width="72" height="72" rx="16" fill="#12151A"/>
+          <g transform="translate(0 12)">
+            <path d="M6 7 H39 L33 41 H6 Z" fill="#3B82F6" fill-opacity="0.55"/>
+            <path d="M39 7 H66 V41 H33 Z" fill="#E5484D" fill-opacity="0.55"/>
+            <path d="M39 7 L33 41" stroke="#F2F4F7" stroke-width="3.2"/>
+            <rect x="6" y="7" width="60" height="34" rx="3" stroke="#F2F4F7" stroke-width="4"/>
+            <circle cx="36" cy="24" r="6" stroke="#F5A623" stroke-width="3.6"/>
+          </g>
+        </svg>
+        <svg width="24" height="24" viewBox="0 0 72 72" fill="none">
+          <rect width="72" height="72" rx="16" fill="#12151A"/>
+          <g transform="translate(0 12)">
+            <path d="M6 7 H39 L33 41 H6 Z" fill="#3B82F6" fill-opacity="0.55"/>
+            <path d="M39 7 H66 V41 H33 Z" fill="#E5484D" fill-opacity="0.55"/>
+            <path d="M39 7 L33 41" stroke="#F2F4F7" stroke-width="3.2"/>
+            <rect x="6" y="7" width="60" height="34" rx="3" stroke="#F2F4F7" stroke-width="4"/>
+            <circle cx="36" cy="24" r="6" stroke="#F5A623" stroke-width="3.6"/>
+          </g>
+        </svg>
+        <svg width="16" height="16" viewBox="0 0 72 72" fill="none">
+          <rect width="72" height="72" rx="16" fill="#12151A"/>
+          <g transform="translate(0 12)">
+            <path d="M6 7 H39 L33 41 H6 Z" fill="#3B82F6" fill-opacity="0.55"/>
+            <path d="M39 7 H66 V41 H33 Z" fill="#E5484D" fill-opacity="0.55"/>
+            <path d="M39 7 L33 41" stroke="#F2F4F7" stroke-width="3.2"/>
+            <rect x="6" y="7" width="60" height="34" rx="3" stroke="#F2F4F7" stroke-width="4"/>
+            <circle cx="36" cy="24" r="6" stroke="#F5A623" stroke-width="3.6"/>
+          </g>
+        </svg>
+      </div>
+
+      <div class="ctx-label">OG card header (as shipped)</div>
+      <div class="g-og">
+        <svg width="66" height="44" viewBox="0 0 72 48" fill="none">
+          <defs><clipPath id="a2"><rect x="6" y="7" width="60" height="34" rx="3"/></clipPath></defs>
+          <g clip-path="url(#a2)">
+            <path d="M6 7 H39 L33 41 H6 Z" fill="#3B82F6" fill-opacity="0.5"/>
+            <path d="M39 7 H66 V41 H33 Z" fill="#E5484D" fill-opacity="0.5"/>
+            <path d="M39 7 L33 41" stroke="#F2F4F7" stroke-width="2.4"/>
+          </g>
+          <rect x="6" y="7" width="60" height="34" rx="3" stroke="#F2F4F7" stroke-width="3"/>
+          <circle cx="36" cy="24" r="6" stroke="#F5A623" stroke-width="2.6"/>
+        </svg>
+        <div class="brand"><span style="color:#F2F4F7">Full</span><span style="color:#F5A623">Court</span></div>
+        <div class="tag">Rest, travel and shot value — measured against every NBA regular season…</div>
+      </div>
+
+      <div class="chips">
+        <span class="chip"><i style="background:#3B82F6"></i>rested</span>
+        <span class="chip"><i style="background:#E5484D"></i>fatigued</span>
+        <span class="chip"><i style="background:#F5A623"></i>circle/accent</span>
+      </div>
+    </div>
+
+    <!-- ============ OPTION B ============ -->
+    <div class="option">
+      <h2>B · Front Office restyle<small>teal #0891B2 rested · rose #E11D48 fatigued · indigo circle (#4F46E5 on light / #818CF8 on dark)</small></h2>
+
+      <div class="ctx-label">Nav · light ground · 34px</div>
+      <div class="g-light">
+        <svg width="34" height="23" viewBox="0 0 72 48" fill="none">
+          <defs><clipPath id="b1"><rect x="6" y="7" width="60" height="34" rx="3"/></clipPath></defs>
+          <g clip-path="url(#b1)">
+            <path d="M6 7 H39 L33 41 H6 Z" fill="#0891B2" fill-opacity="0.55"/>
+            <path d="M39 7 H66 V41 H33 Z" fill="#E11D48" fill-opacity="0.55"/>
+            <path d="M39 7 L33 41" stroke="#111318" stroke-width="3.4"/>
+          </g>
+          <rect x="6" y="7" width="60" height="34" rx="3" stroke="#111318" stroke-width="4"/>
+          <circle cx="36" cy="24" r="6" stroke="#4F46E5" stroke-width="3.6"/>
+        </svg>
+        <span class="word">FULLCOURT</span>
+      </div>
+
+      <div class="ctx-label">App icon tile · 96px &nbsp;·&nbsp; favicon · 24px &amp; 16px</div>
+      <div class="g-dark">
+        <svg width="96" height="96" viewBox="0 0 72 72" fill="none">
+          <rect width="72" height="72" rx="16" fill="#12151A"/>
+          <g transform="translate(0 12)">
+            <path d="M6 7 H39 L33 41 H6 Z" fill="#0891B2" fill-opacity="0.6"/>
+            <path d="M39 7 H66 V41 H33 Z" fill="#E11D48" fill-opacity="0.6"/>
+            <path d="M39 7 L33 41" stroke="#F2F4F7" stroke-width="3.2"/>
+            <rect x="6" y="7" width="60" height="34" rx="3" stroke="#F2F4F7" stroke-width="4"/>
+            <circle cx="36" cy="24" r="6" stroke="#818CF8" stroke-width="3.6"/>
+          </g>
+        </svg>
+        <svg width="24" height="24" viewBox="0 0 72 72" fill="none">
+          <rect width="72" height="72" rx="16" fill="#12151A"/>
+          <g transform="translate(0 12)">
+            <path d="M6 7 H39 L33 41 H6 Z" fill="#0891B2" fill-opacity="0.6"/>
+            <path d="M39 7 H66 V41 H33 Z" fill="#E11D48" fill-opacity="0.6"/>
+            <path d="M39 7 L33 41" stroke="#F2F4F7" stroke-width="3.2"/>
+            <rect x="6" y="7" width="60" height="34" rx="3" stroke="#F2F4F7" stroke-width="4"/>
+            <circle cx="36" cy="24" r="6" stroke="#818CF8" stroke-width="3.6"/>
+          </g>
+        </svg>
+        <svg width="16" height="16" viewBox="0 0 72 72" fill="none">
+          <rect width="72" height="72" rx="16" fill="#12151A"/>
+          <g transform="translate(0 12)">
+            <path d="M6 7 H39 L33 41 H6 Z" fill="#0891B2" fill-opacity="0.6"/>
+            <path d="M39 7 H66 V41 H33 Z" fill="#E11D48" fill-opacity="0.6"/>
+            <path d="M39 7 L33 41" stroke="#F2F4F7" stroke-width="3.2"/>
+            <rect x="6" y="7" width="60" height="34" rx="3" stroke="#F2F4F7" stroke-width="4"/>
+            <circle cx="36" cy="24" r="6" stroke="#818CF8" stroke-width="3.6"/>
+          </g>
+        </svg>
+      </div>
+
+      <div class="ctx-label">OG card header (restyled)</div>
+      <div class="g-og">
+        <svg width="66" height="44" viewBox="0 0 72 48" fill="none">
+          <defs><clipPath id="b2"><rect x="6" y="7" width="60" height="34" rx="3"/></clipPath></defs>
+          <g clip-path="url(#b2)">
+            <path d="M6 7 H39 L33 41 H6 Z" fill="#0891B2" fill-opacity="0.55"/>
+            <path d="M39 7 H66 V41 H33 Z" fill="#E11D48" fill-opacity="0.55"/>
+            <path d="M39 7 L33 41" stroke="#F2F4F7" stroke-width="2.4"/>
+          </g>
+          <rect x="6" y="7" width="60" height="34" rx="3" stroke="#F2F4F7" stroke-width="3"/>
+          <circle cx="36" cy="24" r="6" stroke="#818CF8" stroke-width="2.6"/>
+        </svg>
+        <div class="brand"><span style="color:#F2F4F7">Full</span><span style="color:#818CF8">Court</span></div>
+        <div class="tag">Rest, travel and shot value — measured against every NBA regular season…</div>
+      </div>
+
+      <div class="chips">
+        <span class="chip"><i style="background:#0891B2"></i>rested (app pole)</span>
+        <span class="chip"><i style="background:#E11D48"></i>fatigued (app pole)</span>
+        <span class="chip"><i style="background:#4F46E5"></i>circle/accent (app accent)</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="note">
+    <b>The trade, honestly.</b> A keeps every installed icon and cached social card stable, and blue/red reads instantly as "two teams" even to someone who has never seen the app — but it speaks a palette the product retired, and the grammar must carry a written exemption forever. B makes the whole identity one sentence — the mark's halves <em>are</em> the data poles you see in every chart — at the cost of a one-time visible change to icons users may already have installed, and rose/teal is a less primal "two sides" read than red/blue. Semantics note: in the app, rose marks the <em>fatigued</em> side, so in B the rested half cools down (teal) and the tired half heats up (rose) — arguably the more truthful drawing.
+    <div class="poleref"></div>
+  </div>
+</div>

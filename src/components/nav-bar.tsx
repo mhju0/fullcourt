@@ -270,8 +270,10 @@ export function NavBar() {
               className="font-heading"
               style={{ fontSize: "22px", fontWeight: 700, letterSpacing: "-0.015em", lineHeight: 1 }}
             >
+              {/* W4 lockup (2026-08-19): COURT takes the brand indigo — the same
+                  accent the mark's slash spends, one rule for nav and OG alike. */}
               <span style={{ color: "var(--term-text)" }}>FULL</span>
-              <span style={{ color: "var(--term-text-muted)" }}>COURT</span>
+              <span style={{ color: "var(--accent)" }}>COURT</span>
             </span>
             <span
               aria-hidden

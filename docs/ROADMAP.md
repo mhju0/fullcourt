@@ -39,7 +39,8 @@ Two directions were considered and **declined**, so they are not backlog:
 
 **On 2026-08-09 the interface was replaced outright — "Front Office".** Chosen from four
 light-only, data-forward directions after a first round of five wider ones; every mock and the
-reason each of the other three lost is in [design/README.md](design/README.md). It supersedes the
+reason each of the other three lost is in
+[design/BRAND_GRAMMAR.md §Direction record](design/BRAND_GRAMMAR.md). It supersedes the
 2026-07-28 pass above rather than extending it: **one type family** (Geist / Geist Mono, so titles
 separate by weight and size rather than by face — retiring Inter, Space Grotesk and IBM Plex Mono
 together), an **indigo accent** spent one moment at a time, rose/teal **data poles**, and the
@@ -64,6 +65,14 @@ features:
   descriptor and both had hung `onClick` on a bare `<th>`, so neither could be sorted from a
   keyboard — fixed once, in the module. `scripts/screenshots.mjs` was rewritten alongside it to
   end each capture on a **named element** instead of a pinned pixel height.
+
+**On 2026-08-19 the brand mark was replaced** — "Split Ink" superseded the Angled Divider
+across every cut (nav, favicon, apple icon, maskable pair, OG card, `docs/logo.svg`), drawn
+from one geometry source (`src/lib/brand/court-mark-geometry.ts`) and pinned against drift
+by test. The OG card moved to Geist (retiring Outfit entirely) and took the caps lockup and
+the operating line. The grammar, construction spec, and archived exploration record live in
+[design/BRAND_GRAMMAR.md](design/BRAND_GRAMMAR.md). `docs/social-preview.png` was
+re-rendered; **the GitHub Settings re-upload is manual and still pending.**
 
 The dependency tree is deliberately pinned; see
 [SEASON_ROLLOVER.md §8](SEASON_ROLLOVER.md) before regenerating the lockfile, and §7 for the

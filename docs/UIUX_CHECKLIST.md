@@ -127,8 +127,11 @@ with the reason.
   inside an effect. Re-verified 2026-08-13.
 - [x] **Edge caching with staleness as a *claim*** — `CACHE.historical` / `CACHE.inSeason`
   per route, policies pinned by tests (2026-08-14).
-- [ ] **Font subsetting for the OG/wordmark faces** — Outfit is bundled for the OG card
-  only; nobody has measured what it costs. Low stakes; next perf pass.
+- [x] **Font subsetting for the OG/wordmark faces** — dissolved rather than done
+  (2026-08-19): Outfit was retired from the OG card with the W4 lockup, which now renders
+  **Geist** — the same family the whole app ships — from two ~73KB ttf files traced into
+  the OG bundle only. There is no longer a face bundled for one card; a future perf pass
+  may still subset the two ttfs, but this row's premise is gone.
 
 ## 7. Identity & theming
 

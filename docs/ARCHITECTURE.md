@@ -338,7 +338,8 @@ one abbreviation map with `scripts/sync_scores_espn.ts`.
   so the CSP is unchanged.
 - **"Front Office" replaced the interface (2026-08-09), superseding the entry above.** Chosen
   from four light-only, data-forward directions after a first round of five wider ones; the
-  mocks and the reasons the other three lost are in [design/README.md](design/README.md). What
+  mocks and the reasons the other three lost are in
+  [design/BRAND_GRAMMAR.md §Direction record](design/BRAND_GRAMMAR.md). What
   changed: **one type family** — Geist and Geist Mono, so titles separate from body text by
   weight and size rather than by face, retiring Inter + Space Grotesk + IBM Plex Mono — an
   **indigo accent** spent one moment at a time, rose/teal **data poles**, and the Games slate

@@ -2,20 +2,27 @@
 
 import { useId } from "react"
 
+import {
+  COURT_H,
+  COURT_W,
+  courtMarkPaths,
+  MARK_COLORS,
+  MARK_CUTS,
+} from "@/lib/brand/court-mark-geometry"
+
 /**
- * FullCourt brand mark ("Angled Divider"): the rectangular full court from
- * above, split by a tilted center line into a blue (rested) half and a red
- * (fatigued) half — the rest-advantage differential as the shape of the court.
- * Amber center circle = the app's live/active accent.
+ * The nav cut of the brand mark ("Split Ink", ratified 2026-08-19): the court
+ * from above, one half filled, one tonal, the indigo slash between them —
+ * "every game starts uneven" as figure/ground. Keyline-material finish (P-D):
+ * a concentric hairline outside the panels, top-lit fill, the slash darkening
+ * down its own length. Geometry, ramp and colors all come from
+ * `court-mark-geometry.ts` — never redraw them here.
  *
- * The divider leans top-right to bottom-left, matching the oversized court on
- * /about (`CourtSplit` in about-content.tsx). It leaned the other way until
- * 2026-07-30, so the same mark pointed two directions depending on the surface.
- * Every copy of this geometry — `src/app/icon.svg`, `docs/logo.svg`,
- * `src/app/opengraph-image.tsx` — carries the same lean; change them together.
+ * This replaced the 2026-07 "Angled Divider" (blue/red halves, amber circle)
+ * on 2026-08-19; the exploration record is docs/design/explorations/.
  *
- * Fixed brand colors (not theme tokens) so the mark is stable wherever it
- * appears. 3:2 viewBox; pass `size` as the pixel width.
+ * The viewBox pads 3 units on every side for the keyline (2-unit gap + the
+ * stroke), so the rendered box is 66:38 — pass `size` as the pixel width.
  */
 export function CourtMark({
   size = 24,
@@ -26,31 +33,64 @@ export function CourtMark({
   className?: string
   title?: string
 }) {
-  const clip = useId()
+  const uid = useId()
+  const cut = MARK_CUTS.nav
+  const c = MARK_COLORS.light
+  const { left, slash, right } = courtMarkPaths(cut.slashW)
+  const VB_W = COURT_W + 6
+  const VB_H = COURT_H + 6
   return (
     <svg
       width={size}
-      height={(size * 48) / 72}
-      viewBox="0 0 72 48"
+      height={(size * VB_H) / VB_W}
+      viewBox={`-3 -3 ${VB_W} ${VB_H}`}
       fill="none"
       role="img"
       aria-label={title}
       className={className}
     >
       <defs>
-        <clipPath id={clip}>
-          <rect x="6" y="7" width="60" height="34" rx="3" />
+        <clipPath id={`${uid}c`}>
+          <rect width={COURT_W} height={COURT_H} rx={cut.rx} />
         </clipPath>
+        <linearGradient
+          id={`${uid}f`}
+          x1="0"
+          y1="0"
+          x2="0"
+          y2={COURT_H}
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop offset="0" stopColor={c.inkTop} />
+          <stop offset="1" stopColor={c.inkBottom} />
+        </linearGradient>
+        <linearGradient
+          id={`${uid}s`}
+          x1={COURT_W / 2 + 6}
+          y1="0"
+          x2={COURT_W / 2 - 6}
+          y2={COURT_H}
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop offset="0" stopColor={c.slashTop} />
+          <stop offset="1" stopColor={c.slashBottom} />
+        </linearGradient>
       </defs>
-      <g clipPath={`url(#${clip})`}>
-        <path d="M6 7 H39 L33 41 H6 Z" fill="rgba(37,99,235,0.55)" />
-        <path d="M39 7 H66 V41 H33 Z" fill="rgba(220,38,38,0.55)" />
-        <path d="M39 7 L33 41" stroke="#111318" strokeWidth="3.4" />
+      <g clipPath={`url(#${uid}c)`}>
+        <path d={left} fill={`url(#${uid}f)`} />
+        <path d={slash} fill={`url(#${uid}s)`} />
+        <path d={right} fill={c.ink} fillOpacity={cut.tone} />
       </g>
-      <rect x="6" y="7" width="60" height="34" rx="3" stroke="#111318" strokeWidth="4" />
-      {/* The badge amber (`#F5A623`), not the app's `--term-amber` (`#C2410C`) — at this
-          size the darker burnt orange read as a second red beside the fatigued half. */}
-      <circle cx="36" cy="24" r="6" stroke="#F5A623" strokeWidth="3.6" />
+      <rect
+        x={-2}
+        y={-2}
+        width={COURT_W + 4}
+        height={COURT_H + 4}
+        rx={cut.rx + 2}
+        stroke={c.keyline}
+        strokeOpacity={cut.keyline.opacity}
+        strokeWidth={cut.keyline.width}
+      />
     </svg>
   )
 }
