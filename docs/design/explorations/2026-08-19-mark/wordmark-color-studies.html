@@ -1,0 +1,186 @@
+<title>Wordmark &amp; Color Studies</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500&display=swap">
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #26282e; color: #e9eaee; font-family: "Geist", Arial, sans-serif; font-size: 15px; line-height: 1.6; }
+  .wrap { max-width: 940px; margin: 0 auto; padding: 52px 24px 88px; }
+  h1 { font-size: 32px; font-weight: 650; letter-spacing: -0.02em; margin: 0 0 10px; }
+  .sub { color: #a6a9b4; margin: 0 0 6px; max-width: 70ch; }
+  .sub b { color: #e9eaee; }
+  h2 { font-family: "Geist Mono", monospace; font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: #8f93a0; border-top: 1px solid #3a3d46; padding-top: 14px; margin: 46px 0 14px; }
+  .mono { font-family: "Geist Mono", monospace; }
+
+  /* wordmark rows */
+  .wm { border: 1px solid #3a3d46; background: #1e2025; margin-bottom: 14px; }
+  .wm-head { display: flex; justify-content: space-between; align-items: baseline; gap: 14px; padding: 10px 16px; border-bottom: 1px solid #3a3d46; flex-wrap: wrap; }
+  .wm-head b { font-size: 14px; }
+  .wm-head .id { font-family: "Geist Mono", monospace; font-size: 10.5px; color: #a5b0fc; letter-spacing: 0.08em; }
+  .wm-head .note { font-size: 12px; color: #8f93a0; }
+  .wm-grounds { display: grid; grid-template-columns: 1fr 1fr; }
+  @media (max-width: 700px) { .wm-grounds { grid-template-columns: 1fr; } }
+  .wm .lite { background: #fafafa; padding: 14px 18px; display: flex; align-items: center; gap: 10px; border-right: 1px solid #3a3d46; }
+  .wm .dark { background: #0e1013; padding: 14px 18px; display: flex; align-items: center; }
+  .w { font-weight: 700; letter-spacing: -0.015em; font-size: 19px; line-height: 1; }
+  .lite .w { color: #17181c; }
+  .dark .wbig { font-size: 30px; font-weight: 800; letter-spacing: -0.02em; color: #f2f4f7; line-height: 1; }
+
+  /* color grid */
+  .cgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+  .copt { border: 1px solid #3a3d46; background: #1e2025; }
+  .copt-head { padding: 10px 14px 8px; display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+  .copt-head b { font-size: 14px; }
+  .copt-head .id { font-family: "Geist Mono", monospace; font-size: 10.5px; color: #a5b0fc; }
+  .swatches { display: flex; gap: 0; }
+  .swatches > div { flex: 1; padding: 14px; display: flex; align-items: center; justify-content: center; }
+  .sw-l { background: #fafafa; }
+  .sw-d { background: #0e1013; }
+  .hexes { font-family: "Geist Mono", monospace; font-size: 10px; color: #8f93a0; padding: 8px 14px 4px; letter-spacing: 0.04em; }
+  .cnote { font-size: 12px; color: #a6a9b4; padding: 0 14px 12px; }
+  .cnote b { color: #e9eaee; }
+
+  .verdict { border: 1px solid #3a3d46; border-left: 3px solid #a5b0fc; background: #1e2025; padding: 18px 22px; margin-top: 34px; font-size: 14.5px; color: #a6a9b4; }
+  .verdict b { color: #e9eaee; }
+</style>
+
+<div class="wrap">
+  <h1>Wordmark &amp; color, before polish</h1>
+  <p class="sub"><b>Current state, verified:</b> the nav runs <b>FULLCOURT</b> in caps with FULL in ink and COURT dimmed; the OG card runs camel <b>FullCourt</b> with "Court" in amber. Two surfaces, two rules — you're right that they should match. The S2 marks below have the slash clipped to the court (the overshoot you flagged is gone); full polish — corners, optical weights, the border treatment — is the next round, after these two calls.</p>
+
+  <h2>1 · Capitalization — one rule for logo, nav, and marketing lockups</h2>
+  <p class="sub" style="margin-bottom:14px">In running prose the name stays written "FullCourt" regardless (wordmark and prose are different jobs). These decide the <b>lockup</b>.</p>
+
+  <div class="wm">
+    <div class="wm-head"><span class="id">W1</span><b>FULLCOURT · one weight, one color</b><span class="note">quietest; the mark does all the talking</span></div>
+    <div class="wm-grounds">
+      <div class="lite">
+        <svg width="30" height="20" viewBox="0 0 72 48" fill="none"><defs><clipPath id="w1c"><rect x="6" y="7" width="60" height="34" rx="4"/></clipPath></defs><g clip-path="url(#w1c)"><path d="M6 7 H42 L30 41 H6 Z" fill="#17181c"/><path d="M42 7 L30 41" stroke="#4F46E5" stroke-width="4.5"/></g><rect x="6" y="7" width="60" height="34" rx="4" stroke="#17181c" stroke-width="3"/></svg>
+        <span class="w">FULLCOURT</span>
+      </div>
+      <div class="dark"><span class="wbig">FULLCOURT</span></div>
+    </div>
+  </div>
+
+  <div class="wm">
+    <div class="wm-head"><span class="id">W2</span><b>FULLCOURT · FULL ink, COURT dimmed</b><span class="note">today's nav; reads "COURT matters less"</span></div>
+    <div class="wm-grounds">
+      <div class="lite">
+        <svg width="30" height="20" viewBox="0 0 72 48" fill="none"><defs><clipPath id="w2c"><rect x="6" y="7" width="60" height="34" rx="4"/></clipPath></defs><g clip-path="url(#w2c)"><path d="M6 7 H42 L30 41 H6 Z" fill="#17181c"/><path d="M42 7 L30 41" stroke="#4F46E5" stroke-width="4.5"/></g><rect x="6" y="7" width="60" height="34" rx="4" stroke="#17181c" stroke-width="3"/></svg>
+        <span class="w">FULL<span style="color:#7c8090">COURT</span></span>
+      </div>
+      <div class="dark"><span class="wbig">FULL<span style="color:#8f93a0">COURT</span></span></div>
+    </div>
+  </div>
+
+  <div class="wm">
+    <div class="wm-head"><span class="id">W3</span><b>FULLCOURT · weight split 500/800</b><span class="note">halves by weight — the grammar's own rule, monochrome</span></div>
+    <div class="wm-grounds">
+      <div class="lite">
+        <svg width="30" height="20" viewBox="0 0 72 48" fill="none"><defs><clipPath id="w3c"><rect x="6" y="7" width="60" height="34" rx="4"/></clipPath></defs><g clip-path="url(#w3c)"><path d="M6 7 H42 L30 41 H6 Z" fill="#17181c"/><path d="M42 7 L30 41" stroke="#4F46E5" stroke-width="4.5"/></g><rect x="6" y="7" width="60" height="34" rx="4" stroke="#17181c" stroke-width="3"/></svg>
+        <span class="w" style="font-weight:500">FULL<span style="font-weight:800">COURT</span></span>
+      </div>
+      <div class="dark"><span class="wbig" style="font-weight:500">FULL<span style="font-weight:800">COURT</span></span></div>
+    </div>
+  </div>
+
+  <div class="wm">
+    <div class="wm-head"><span class="id">W4</span><b>FULLCOURT · COURT takes the brand color</b><span class="note">unifies what nav and OG each half-do today</span></div>
+    <div class="wm-grounds">
+      <div class="lite">
+        <svg width="30" height="20" viewBox="0 0 72 48" fill="none"><defs><clipPath id="w4c"><rect x="6" y="7" width="60" height="34" rx="4"/></clipPath></defs><g clip-path="url(#w4c)"><path d="M6 7 H42 L30 41 H6 Z" fill="#17181c"/><path d="M42 7 L30 41" stroke="#4F46E5" stroke-width="4.5"/></g><rect x="6" y="7" width="60" height="34" rx="4" stroke="#17181c" stroke-width="3"/></svg>
+        <span class="w">FULL<span style="color:#4F46E5">COURT</span></span>
+      </div>
+      <div class="dark"><span class="wbig">FULL<span style="color:#818CF8">COURT</span></span></div>
+    </div>
+  </div>
+
+  <div class="wm">
+    <div class="wm-head"><span class="id">W5</span><b>FullCourt · camel, one weight</b><span class="note">today's OG/prose form as the lockup</span></div>
+    <div class="wm-grounds">
+      <div class="lite">
+        <svg width="30" height="20" viewBox="0 0 72 48" fill="none"><defs><clipPath id="w5c"><rect x="6" y="7" width="60" height="34" rx="4"/></clipPath></defs><g clip-path="url(#w5c)"><path d="M6 7 H42 L30 41 H6 Z" fill="#17181c"/><path d="M42 7 L30 41" stroke="#4F46E5" stroke-width="4.5"/></g><rect x="6" y="7" width="60" height="34" rx="4" stroke="#17181c" stroke-width="3"/></svg>
+        <span class="w" style="letter-spacing:-0.02em">FullCourt</span>
+      </div>
+      <div class="dark"><span class="wbig" style="letter-spacing:-0.025em">FullCourt</span></div>
+    </div>
+  </div>
+
+  <div class="wm">
+    <div class="wm-head"><span class="id">W6</span><b>fullcourt · lowercase</b><span class="note">modern-startup register; softest</span></div>
+    <div class="wm-grounds">
+      <div class="lite">
+        <svg width="30" height="20" viewBox="0 0 72 48" fill="none"><defs><clipPath id="w6c"><rect x="6" y="7" width="60" height="34" rx="4"/></clipPath></defs><g clip-path="url(#w6c)"><path d="M6 7 H42 L30 41 H6 Z" fill="#17181c"/><path d="M42 7 L30 41" stroke="#4F46E5" stroke-width="4.5"/></g><rect x="6" y="7" width="60" height="34" rx="4" stroke="#17181c" stroke-width="3"/></svg>
+        <span class="w" style="letter-spacing:-0.02em; text-transform:lowercase">fullcourt</span>
+      </div>
+      <div class="dark"><span class="wbig" style="letter-spacing:-0.025em">fullcourt</span></div>
+    </div>
+  </div>
+
+  <h2>2 · The color — one hue, spent everywhere the brand speaks</h2>
+  <p class="sub" style="margin-bottom:14px">One constraint matters more than taste: the app's accent is <b>indigo, spent one moment per page</b> — it's law in the token system. If the logo takes a different hue, either the brand carries two colors (the thing the grammar forbids) or the app accent migrates with it (a bigger, product-wide change). Judged with that on the table:</p>
+
+  <div class="cgrid">
+    <div class="copt">
+      <div class="copt-head"><b>Indigo — the incumbent</b><span class="id">C1</span></div>
+      <div class="swatches">
+        <div class="sw-l"><svg width="64" height="43" viewBox="0 0 72 48" fill="none"><defs><clipPath id="c1a"><rect x="6" y="7" width="60" height="34" rx="4"/></clipPath></defs><g clip-path="url(#c1a)"><path d="M6 7 H42 L30 41 H6 Z" fill="#17181c"/><path d="M42 7 L30 41" stroke="#4F46E5" stroke-width="4.5"/></g><rect x="6" y="7" width="60" height="34" rx="4" stroke="#17181c" stroke-width="3"/></svg></div>
+        <div class="sw-d"><svg width="64" height="43" viewBox="0 0 72 48" fill="none"><defs><clipPath id="c1b"><rect x="6" y="7" width="60" height="34" rx="4"/></clipPath></defs><g clip-path="url(#c1b)"><path d="M6 7 H42 L30 41 H6 Z" fill="#F2F4F7"/><path d="M42 7 L30 41" stroke="#818CF8" stroke-width="4.5"/></g><rect x="6" y="7" width="60" height="34" rx="4" stroke="#F2F4F7" stroke-opacity="0.8" stroke-width="3"/></svg></div>
+      </div>
+      <div class="hexes">#4F46E5 light · #818CF8 dark</div>
+      <div class="cnote"><b>Zero-cost coherence</b> — the logo and the app accent are one color, one grammar. Already blue-violet, already modern.</div>
+    </div>
+
+    <div class="copt">
+      <div class="copt-head"><b>Iris — a step violet</b><span class="id">C2</span></div>
+      <div class="swatches">
+        <div class="sw-l"><svg width="64" height="43" viewBox="0 0 72 48" fill="none"><defs><clipPath id="c2a"><rect x="6" y="7" width="60" height="34" rx="4"/></clipPath></defs><g clip-path="url(#c2a)"><path d="M6 7 H42 L30 41 H6 Z" fill="#17181c"/><path d="M42 7 L30 41" stroke="#5B5BD6" stroke-width="4.5"/></g><rect x="6" y="7" width="60" height="34" rx="4" stroke="#17181c" stroke-width="3"/></svg></div>
+        <div class="sw-d"><svg width="64" height="43" viewBox="0 0 72 48" fill="none"><defs><clipPath id="c2b"><rect x="6" y="7" width="60" height="34" rx="4"/></clipPath></defs><g clip-path="url(#c2b)"><path d="M6 7 H42 L30 41 H6 Z" fill="#F2F4F7"/><path d="M42 7 L30 41" stroke="#8B8BF0" stroke-width="4.5"/></g><rect x="6" y="7" width="60" height="34" rx="4" stroke="#F2F4F7" stroke-opacity="0.8" stroke-width="3"/></svg></div>
+      </div>
+      <div class="hexes">#5B5BD6 light · #8B8BF0 dark</div>
+      <div class="cnote"><b>Softer, more "product-brand"</b> — but adopting it properly means migrating the app accent too, or living with two near-identical purples.</div>
+    </div>
+
+    <div class="copt">
+      <div class="copt-head"><b>Violet</b><span class="id">C3</span></div>
+      <div class="swatches">
+        <div class="sw-l"><svg width="64" height="43" viewBox="0 0 72 48" fill="none"><defs><clipPath id="c3a"><rect x="6" y="7" width="60" height="34" rx="4"/></clipPath></defs><g clip-path="url(#c3a)"><path d="M6 7 H42 L30 41 H6 Z" fill="#17181c"/><path d="M42 7 L30 41" stroke="#7C3AED" stroke-width="4.5"/></g><rect x="6" y="7" width="60" height="34" rx="4" stroke="#17181c" stroke-width="3"/></svg></div>
+        <div class="sw-d"><svg width="64" height="43" viewBox="0 0 72 48" fill="none"><defs><clipPath id="c3b"><rect x="6" y="7" width="60" height="34" rx="4"/></clipPath></defs><g clip-path="url(#c3b)"><path d="M6 7 H42 L30 41 H6 Z" fill="#F2F4F7"/><path d="M42 7 L30 41" stroke="#A78BFA" stroke-width="4.5"/></g><rect x="6" y="7" width="60" height="34" rx="4" stroke="#F2F4F7" stroke-opacity="0.8" stroke-width="3"/></svg></div>
+      </div>
+      <div class="hexes">#7C3AED light · #A78BFA dark</div>
+      <div class="cnote"><b>Most expressive</b>, least "instrument" — drifts toward consumer-app energy the Front Office direction deliberately avoided.</div>
+    </div>
+
+    <div class="copt">
+      <div class="copt-head"><b>NBA Blue</b><span class="id">C4</span></div>
+      <div class="swatches">
+        <div class="sw-l"><svg width="64" height="43" viewBox="0 0 72 48" fill="none"><defs><clipPath id="c4a"><rect x="6" y="7" width="60" height="34" rx="4"/></clipPath></defs><g clip-path="url(#c4a)"><path d="M6 7 H42 L30 41 H6 Z" fill="#17181c"/><path d="M42 7 L30 41" stroke="#1D428A" stroke-width="4.5"/></g><rect x="6" y="7" width="60" height="34" rx="4" stroke="#17181c" stroke-width="3"/></svg></div>
+        <div class="sw-d"><svg width="64" height="43" viewBox="0 0 72 48" fill="none"><defs><clipPath id="c4b"><rect x="6" y="7" width="60" height="34" rx="4"/></clipPath></defs><g clip-path="url(#c4b)"><path d="M6 7 H42 L30 41 H6 Z" fill="#F2F4F7"/><path d="M42 7 L30 41" stroke="#5C85D6" stroke-width="4.5"/></g><rect x="6" y="7" width="60" height="34" rx="4" stroke="#F2F4F7" stroke-opacity="0.8" stroke-width="3"/></svg></div>
+      </div>
+      <div class="hexes">#1D428A light · #5C85D6 dark</div>
+      <div class="cnote"><b>The league's own blue</b> — instant basketball authority, but on light ground it's nearly black at slash weight, and the dark-ground variant has to drift far from the real hue to stay visible. Also flirts with looking league-affiliated, which an independent-honesty brand may not want.</div>
+    </div>
+
+    <div class="copt">
+      <div class="copt-head"><b>NBA Red</b><span class="id">C5</span></div>
+      <div class="swatches">
+        <div class="sw-l"><svg width="64" height="43" viewBox="0 0 72 48" fill="none"><defs><clipPath id="c5a"><rect x="6" y="7" width="60" height="34" rx="4"/></clipPath></defs><g clip-path="url(#c5a)"><path d="M6 7 H42 L30 41 H6 Z" fill="#17181c"/><path d="M42 7 L30 41" stroke="#C8102E" stroke-width="4.5"/></g><rect x="6" y="7" width="60" height="34" rx="4" stroke="#17181c" stroke-width="3"/></svg></div>
+        <div class="sw-d"><svg width="64" height="43" viewBox="0 0 72 48" fill="none"><defs><clipPath id="c5b"><rect x="6" y="7" width="60" height="34" rx="4"/></clipPath></defs><g clip-path="url(#c5b)"><path d="M6 7 H42 L30 41 H6 Z" fill="#F2F4F7"/><path d="M42 7 L30 41" stroke="#F26D7E" stroke-width="4.5"/></g><rect x="6" y="7" width="60" height="34" rx="4" stroke="#F2F4F7" stroke-opacity="0.8" stroke-width="3"/></svg></div>
+      </div>
+      <div class="hexes">#C8102E light · #F26D7E dark</div>
+      <div class="cnote"><b>Disqualifies itself in-product</b>: rose already means <em>fatigued</em> in every chart, so a red brand slash makes the logo read as a data value. Shown for completeness.</div>
+    </div>
+
+    <div class="copt">
+      <div class="copt-head"><b>Royal</b><span class="id">C6</span></div>
+      <div class="swatches">
+        <div class="sw-l"><svg width="64" height="43" viewBox="0 0 72 48" fill="none"><defs><clipPath id="c6a"><rect x="6" y="7" width="60" height="34" rx="4"/></clipPath></defs><g clip-path="url(#c6a)"><path d="M6 7 H42 L30 41 H6 Z" fill="#17181c"/><path d="M42 7 L30 41" stroke="#2563EB" stroke-width="4.5"/></g><rect x="6" y="7" width="60" height="34" rx="4" stroke="#17181c" stroke-width="3"/></svg></div>
+        <div class="sw-d"><svg width="64" height="43" viewBox="0 0 72 48" fill="none"><defs><clipPath id="c6b"><rect x="6" y="7" width="60" height="34" rx="4"/></clipPath></defs><g clip-path="url(#c6b)"><path d="M6 7 H42 L30 41 H6 Z" fill="#F2F4F7"/><path d="M42 7 L30 41" stroke="#60A5FA" stroke-width="4.5"/></g><rect x="6" y="7" width="60" height="34" rx="4" stroke="#F2F4F7" stroke-opacity="0.8" stroke-width="3"/></svg></div>
+      </div>
+      <div class="hexes">#2563EB light · #60A5FA dark</div>
+      <div class="cnote"><b>Sporty and legible</b> both grounds; it's the old mark's blue family, so it carries continuity — and the same two-brand-colors cost as C2 unless the app accent moves.</div>
+    </div>
+  </div>
+
+  <div class="verdict">
+    <b>Director's recommendation: W4 + C1.</b> All-caps FULLCOURT matches every uppercase label in the chrome (the nav tabs, REST ADVANTAGE, the stat-tile eyebrows) — the lockup joins the system instead of visiting it. The COURT half takes the brand color, which is what the nav (dimmed split) and the OG card (amber split) have each been reaching for separately — one rule replaces two accidents. And C1 indigo because the strongest color argument isn't aesthetic: <b>the brand already owns a blue-violet</b>, ratified and CVD-validated against the data poles. Choosing C2/C3/C6 is really choosing an app-wide accent migration — a fine thing to do deliberately, a bad thing to do as a logo side effect. NBA blue is the tempting outsider, and it costs the most: authority borrowed from the league, by a product whose entire voice is independence from hype. Once you call W and C, the next round is pure craft: the polished construction — optical corner geometry, slash terminals, the border treatment, exports.
+  </div>
+</div>
