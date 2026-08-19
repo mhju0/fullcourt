@@ -39,7 +39,8 @@ Two directions were considered and **declined**, so they are not backlog:
 
 **On 2026-08-09 the interface was replaced outright — "Front Office".** Chosen from four
 light-only, data-forward directions after a first round of five wider ones; every mock and the
-reason each of the other three lost is in [design/README.md](design/README.md). It supersedes the
+reason each of the other three lost is in
+[design/BRAND_GRAMMAR.md §Direction record](design/BRAND_GRAMMAR.md). It supersedes the
 2026-07-28 pass above rather than extending it: **one type family** (Geist / Geist Mono, so titles
 separate by weight and size rather than by face — retiring Inter, Space Grotesk and IBM Plex Mono
 together), an **indigo accent** spent one moment at a time, rose/teal **data poles**, and the
