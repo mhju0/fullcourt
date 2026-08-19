@@ -22,10 +22,19 @@ const DIM = "#8A8F98";
 const GRAIN =
   "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E\")";
 
-/** The brand idea as geometry: a court split unevenly, which is what the model measures. */
+/**
+ * The brand idea as geometry: a court split unevenly, which is what the model measures.
+ *
+ * Since 2026-08-19 this draws the canonical Split Ink construction (see
+ * `src/lib/brand/court-mark-geometry.ts`): the 60×32 court and the ratified 20.6° lean,
+ * with the divider drawn on the slash's *centerline* — top (36,0) to bottom (24,32),
+ * centroid on the court's center — because at background opacity a stroked line reads
+ * where the mark proper uses a filled band. The old drawing carried the pre-2026-08-19
+ * geometry (10° lean, off-3:2 court, a center circle the new mark retired).
+ */
 function CourtSplit({ className = "" }: { className?: string }) {
   return (
-    <svg viewBox="0 0 240 150" className={className} aria-hidden="true">
+    <svg viewBox="0 0 72 44" className={className} aria-hidden="true">
       {/* The divider fades out at both ends instead of stopping dead on the court's edge.
           A butt cap on a slanted line meets a horizontal border at a slant, so each end
           showed as a blunt off-angle notch sitting just past the rule — the one detail on
@@ -33,23 +42,22 @@ function CourtSplit({ className = "" }: { className?: string }) {
           (userSpaceOnUse, same endpoints), so the stroke emerges and dissolves rather than
           being cut. `round` caps clean up what little edge is left at 13% opacity. */}
       <defs>
-        <linearGradient id="fc-court-split" gradientUnits="userSpaceOnUse" x1="150" y1="8" x2="96" y2="142">
+        <linearGradient id="fc-court-split" gradientUnits="userSpaceOnUse" x1="42" y1="6" x2="30" y2="38">
           <stop offset="0" stopColor={BONE} stopOpacity="0" />
           <stop offset="0.22" stopColor={BONE} stopOpacity="0.55" />
           <stop offset="0.78" stopColor={BONE} stopOpacity="0.55" />
           <stop offset="1" stopColor={BONE} stopOpacity="0" />
         </linearGradient>
       </defs>
-      <rect x="8" y="8" width="224" height="134" rx="4" fill="none" stroke={BONE} strokeOpacity=".28" strokeWidth="2" />
-      {/* The two data poles, dark-tuned: teal = rested, rose = fatigued. Same hues the app
-          charts use, re-stepped for this ink ground (the light-tuned tokens sit outside the
-          dark lightness band) and validated as a pair against #0B0D10. */}
-      <path d="M8 8 H150 L96 142 H8 Z" fill="#0E9CBE" fillOpacity=".13" />
-      <path d="M150 8 H232 V142 H96 Z" fill="#F43F5E" fillOpacity=".08" />
-      <path d="M150 8 L96 142" stroke="url(#fc-court-split)" strokeWidth="2.5" strokeLinecap="round" />
-      {/* Quiet slate (the app's non-data chrome slot), not the retired Broadcast amber:
-          the center circle is decoration and must not read as a third data hue. */}
-      <circle cx="120" cy="75" r="22" fill="none" stroke="#4C5361" strokeOpacity=".7" strokeWidth="2" />
+      <g transform="translate(6 6)">
+        <rect x="0" y="0" width="60" height="32" rx="1.2" fill="none" stroke={BONE} strokeOpacity=".28" strokeWidth=".65" />
+        {/* The two data poles, dark-tuned: teal = rested, rose = fatigued. Same hues the app
+            charts use, re-stepped for this ink ground (the light-tuned tokens sit outside the
+            dark lightness band) and validated as a pair against #0B0D10. */}
+        <path d="M0 0 H36 L24 32 H0 Z" fill="#0E9CBE" fillOpacity=".13" />
+        <path d="M36 0 H60 V32 H24 Z" fill="#F43F5E" fillOpacity=".08" />
+      </g>
+      <path d="M42 6 L30 38" stroke="url(#fc-court-split)" strokeWidth=".8" strokeLinecap="round" />
     </svg>
   );
 }
@@ -285,7 +293,7 @@ export function AboutContent({ stats }: { stats: AboutStats | null }) {
           scrollTrigger: { trigger: ".fc-thesis", start: "top 80%", end: "top 25%", scrub: true },
         });
 
-        // ── Sections 3–7 ────────────────────────────────────────────────────────────
+        // ── Sections 3–8 ────────────────────────────────────────────────────────────
         //
         // Sections 1 and 2 each got an effect that says what that section says — the hero
         // assembles, the thesis lights word by word. Everything below them shared one generic
@@ -328,38 +336,18 @@ export function AboutContent({ stats }: { stats: AboutStats | null }) {
           });
         };
 
-        // §3 — the figures tally rather than appear. The count is driven off a proxy object and
-        // written through `signedNumber`, never hand-formatted: the sign glyph is U+2212 and a
-        // bare zero carries no sign, and a figure that formatted itself differently mid-count
-        // than at rest would be its own bug.
-        gsap.utils.toArray<HTMLElement>("[data-fc-count]").forEach((el) => {
-          const target = Number(el.dataset.fcCount);
-          if (!Number.isFinite(target)) return;
-
-          const decimals = Number(el.dataset.fcCountDecimals ?? 0);
-          const signed = el.dataset.fcCountSigned === "1";
-          const proxy = { v: 0 };
-
-          // No `immediateRender`: the tween does not run until its trigger fires, so the
-          // server-rendered figure is what shows until the reader reaches it. Writing the start
-          // value on mount would flash the real number to zero before counting.
-          gsap.to(proxy, {
-            v: target,
-            duration: 1.2,
-            ease: "power2.out",
-            scrollTrigger: { trigger: el, start: "top 85%", once: true },
-            onUpdate: () => {
-              el.textContent = signed
-                ? signedNumber(proxy.v, decimals)
-                : proxy.v.toFixed(decimals);
-            },
-          });
-        });
+        // The evidence figures do NOT count up — deliberately (killed 2026-08-19). The tally
+        // spent ~1.2s showing values that were never measured (+0.9 → … → the real figure) at
+        // 11rem, directly above the sentence naming the venue baseline — which fails the first
+        // voice law in docs/design/BRAND_GRAMMAR.md §7: a number on this site is a measurement
+        // or it does not render. The server-rendered figures simply arrive with their section.
+        const naming = root.current?.querySelector(".fc-naming");
+        if (naming) reveal(".fc-name", { y: 24, opacity: 0 }, { trigger: naming, stagger: 0.12 });
 
         const evidence = root.current?.querySelector(".fc-evidence");
         if (evidence) reveal(".fc-evidence-item", { y: 28, opacity: 0 }, { trigger: evidence, stagger: 0.12 });
 
-        // §4 — the six cards arrive in reading order. 8px and 70ms: enough to read as sequence,
+        // §7 — the six cards arrive in reading order. 8px and 70ms: enough to read as sequence,
         // not so much that the last card lands after the reader has already chosen one.
         const cards = root.current?.querySelector(".fc-cards");
         if (cards) reveal(".fc-card", { y: 8, opacity: 0 }, { trigger: cards, duration: 0.7, stagger: 0.07 });
@@ -434,7 +422,7 @@ export function AboutContent({ stats }: { stats: AboutStats | null }) {
           );
         });
 
-        // §7 — the closing line masks up, and the button follows a beat later rather than with
+        // §8 — the closing line masks up, and the button follows a beat later rather than with
         // it. The page has spent seven screens making an argument; the one thing it asks for
         // should arrive after the argument lands, not alongside it.
         const outro = root.current?.querySelector(".fc-outro");
@@ -528,7 +516,49 @@ export function AboutContent({ stats }: { stats: AboutStats | null }) {
         </p>
       </section>
 
-      {/* ── 3. What it found ──────────────────────────────────── */}
+      {/* ── 3. The name ───────────────────────────────────────── */}
+      {/* The naming anatomy from BRAND_GRAMMAR.md §2, added 2026-08-19: the page argued the
+          method for seven screens without ever explaining the word on the door. COURT takes
+          the dark-ground brand indigo — the one accent moment this page spends, the same rule
+          as the nav and OG lockups (W4). */}
+      <section className={`fc-naming mx-auto w-full max-w-5xl px-6 ${VIEW}`}>
+        {/* The wordmark is this section's h2, not decoration above one — every sibling
+            section leads with an h2, and this keeps the heading outline intact. */}
+        <h2
+          className="fc-name font-heading font-bold"
+          style={{ fontSize: "clamp(3rem,9vw,7rem)", lineHeight: 0.95, letterSpacing: "-0.03em" }}
+        >
+          FULL<span style={{ color: "#818CF8" }}>COURT</span>
+        </h2>
+        <div className="mt-14 flex flex-col">
+          {[
+            {
+              term: "FULL",
+              copy: `The whole record: every season since ${NBA_SEASONS[0]}, both arms of every split, the nulls published rather than buried.`,
+            },
+            {
+              term: "COURT",
+              copy: "The floor, and the trial. Home court is the confound the model refuses credit for — and the standard every claim is tried against.",
+            },
+            {
+              term: "FULL-COURT",
+              copy: "A full-court press covers both ends of the floor. So does the measurement: the rate and its baseline, the finding and its limit.",
+            },
+          ].map((part) => (
+            // No numbering: these are three readings of one word, not a sequence.
+            <div
+              key={part.term}
+              className="fc-name grid gap-x-8 gap-y-1 py-6 sm:grid-cols-[10rem_1fr] sm:items-baseline"
+              style={{ borderTop: "1px solid rgba(245,241,232,.12)" }}
+            >
+              <span className="mono" style={{ fontSize: 13, letterSpacing: "0.14em" }}>{part.term}</span>
+              <p className="max-w-[52ch]" style={{ color: DIM, lineHeight: 1.65 }}>{part.copy}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── 4. What it found ──────────────────────────────────── */}
       <section className={`mx-auto w-full max-w-7xl px-6 ${VIEW}`}>
         <h2 className="font-heading font-bold" style={{ fontSize: "clamp(1.9rem,4.4vw,3.2rem)", letterSpacing: "-0.03em", maxWidth: "20ch" }}>
           Evidence, not just the eye test
@@ -541,12 +571,6 @@ export function AboutContent({ stats }: { stats: AboutStats | null }) {
               // The rested pole as display text: brighter than the mark-tuned #0E9CBE so a
               // headline numeral keeps headline contrast (~8:1 on this ground).
               style={{ fontSize: "clamp(5rem,15vw,11rem)", lineHeight: 0.85, letterSpacing: "-0.04em", color: "#2CB6D9" }}
-              // Counted only when there is a figure to count to. With no stats the element
-              // holds an em dash, and a count-up would animate it to a number that was never
-              // measured.
-              {...(stats
-                ? { "data-fc-count": stats.widestEdgePp, "data-fc-count-decimals": 1, "data-fc-count-signed": "1" }
-                : {})}
             >
               {stats ? signedNumber(stats.widestEdgePp, 1) : NO_FIGURE}
             </span>
@@ -561,9 +585,7 @@ export function AboutContent({ stats }: { stats: AboutStats | null }) {
           <div className="flex flex-col gap-8">
             <div className="fc-evidence-item" style={{ borderTop: "1px solid rgba(245,241,232,.14)", paddingTop: "1.5rem" }}>
               <span className="font-heading font-bold" style={{ fontSize: "clamp(2rem,4vw,3rem)", lineHeight: 1 }}>
-                {/* The numeral is its own element so the count can write to it without
-                    rebuilding the word beside it. */}
-                <span data-fc-count={NBA_SEASONS.length}>{NBA_SEASONS.length}</span> seasons
+                {NBA_SEASONS.length} seasons
               </span>
               <p className="mt-3 max-w-[46ch]" style={{ color: DIM, lineHeight: 1.6 }}>
                 {stats ? `${stats.games.toLocaleString()} completed games` : "Every completed game"} where the model made a call. The
@@ -576,9 +598,6 @@ export function AboutContent({ stats }: { stats: AboutStats | null }) {
               <span
                 className="font-heading font-bold"
                 style={{ fontSize: "clamp(2rem,4vw,3rem)", lineHeight: 1, color: "#2CB6D9" }}
-                {...(stats
-                  ? { "data-fc-count": stats.overallEdgePp, "data-fc-count-decimals": 1, "data-fc-count-signed": "1" }
-                  : {})}
               >
                 {stats ? signedNumber(stats.overallEdgePp, 1) : NO_FIGURE}
               </span>
@@ -591,84 +610,6 @@ export function AboutContent({ stats }: { stats: AboutStats | null }) {
             </div>
           </div>
         </div>
-      </section>
-
-      {/* ── 4. Where to use it ────────────────────────────────── */}
-      <section className={`mx-auto w-full max-w-7xl px-6 ${VIEW}`}>
-        <h2 className="font-heading mb-12 font-bold" style={{ fontSize: "clamp(1.9rem,4.4vw,3.2rem)", letterSpacing: "-0.03em" }}>
-          {/* "tabs", not "surfaces": this row is the nav bar, and there are more surfaces than
-              tabs. Calling it surfaces made the page claim six while the product had nine — the
-              OTHER menu is named underneath instead, because widening this row past six squeezes
-              cards whose height is already a layout contract. */}
-          {COUNT_WORD[SURFACES.length]} tabs
-        </h2>
-        {/* A labelled landmark: this is a second, distinct set of navigation links, and
-            each one's accessible name is "<label> <copy>" because the card is one target. */}
-        <nav aria-label="Product surfaces" className="fc-cards flex flex-col gap-2 lg:h-[24rem] lg:flex-row">
-          {SURFACES.map((s, i) => (
-            <Link
-              key={s.href}
-              href={s.href}
-              // Stacked from the top, deliberately NOT `justify-between`: that distributed the
-              // slack around a text block whose height follows its copy, so a longer
-              // description silently lifted that one card's title above the other five.
-              className={`fc-card group relative flex flex-1 flex-col overflow-hidden rounded-xl border p-6 ${CARD_SKIN}`}
-            >
-              {/* The meta row's colour is a class, not inline, for the same cascade reason as
-                  CARD_SKIN: it has to brighten with the rest of the card. The arrow is the
-                  plainest "this navigates" cue available — the row is already aria-hidden, so
-                  the card's accessible name is still "<label> <copy>". */}
-              <span
-                aria-hidden="true"
-                className="mono flex items-baseline justify-between gap-2 text-[rgba(245,241,232,.34)] transition-colors duration-300 group-hover:text-[rgba(245,241,232,.62)] group-focus-visible:text-[rgba(245,241,232,.62)] motion-reduce:transition-none"
-                style={{ fontSize: 11, letterSpacing: "0.1em" }}
-              >
-                <span>{String(i + 1).padStart(2, "0")}</span>
-                <span className="flex min-w-0 items-baseline gap-1.5">
-                  <span className="truncate">{s.href}</span>
-                  <span className="transition-transform duration-300 motion-reduce:transition-none motion-safe:group-hover:translate-x-0.5 motion-safe:group-focus-visible:translate-x-0.5">
-                    &rarr;
-                  </span>
-                </span>
-              </span>
-
-              <div aria-hidden="true" className="my-5 px-1 opacity-70 transition-opacity duration-500 group-hover:opacity-100">
-                <SurfaceGlyph href={s.href} />
-              </div>
-
-              <div>
-                {/* Two lines reserved, not nowrap: the longest labels ("Player Shooting",
-                    "Season Report") cannot fit one line at a sixth of the row and were being
-                    clipped by the card's overflow. Reserving the pair keeps every card's copy
-                    starting on the same line either way. */}
-                <span className="font-heading block text-xl font-bold leading-tight lg:h-[3.5rem]">{s.name}</span>
-                <span className="mt-3 block max-w-[30rem] text-sm" style={{ color: DIM, lineHeight: 1.6 }}>
-                  {s.copy}
-                </span>
-              </div>
-            </Link>
-          ))}
-        </nav>
-
-        {/* Outside the nav landmark on purpose: e2e/home.spec.ts asserts the card row is
-            exactly six links, and these three are the bar's OTHER menu rather than tabs.
-            (That spec was `about.spec.ts` until 2026-08-12; it moved with the page.) */}
-        <p className="mt-6 text-sm" style={{ color: DIM, lineHeight: 1.7 }}>
-          Three more sit behind the bar&rsquo;s <span className="mono">OTHER</span> menu, smaller
-          in scope but finished the same way:{" "}
-          <Link href="/shot-quality" className="underline underline-offset-2">
-            Shot Value
-          </Link>
-          ,{" "}
-          <Link href="/availability" className="underline underline-offset-2">
-            Availability Cost
-          </Link>{" "}
-          and{" "}
-          <Link href="/referees" className="underline underline-offset-2">
-            Referee Effect
-          </Link>
-          .
-        </p>
       </section>
 
       {/* ── 5. What the score is made of ──────────────────────── */}
@@ -749,7 +690,85 @@ export function AboutContent({ stats }: { stats: AboutStats | null }) {
         </div>
       </section>
 
-      {/* ── 7. The way in ─────────────────────────────────────── */}
+      {/* ── 7. Where to use it ────────────────────────────────── */}
+      <section className={`mx-auto w-full max-w-7xl px-6 ${VIEW}`}>
+        <h2 className="font-heading mb-12 font-bold" style={{ fontSize: "clamp(1.9rem,4.4vw,3.2rem)", letterSpacing: "-0.03em" }}>
+          {/* "tabs", not "surfaces": this row is the nav bar, and there are more surfaces than
+              tabs. Calling it surfaces made the page claim six while the product had nine — the
+              OTHER menu is named underneath instead, because widening this row past six squeezes
+              cards whose height is already a layout contract. */}
+          {COUNT_WORD[SURFACES.length]} tabs
+        </h2>
+        {/* A labelled landmark: this is a second, distinct set of navigation links, and
+            each one's accessible name is "<label> <copy>" because the card is one target. */}
+        <nav aria-label="Product surfaces" className="fc-cards flex flex-col gap-2 lg:h-[24rem] lg:flex-row">
+          {SURFACES.map((s, i) => (
+            <Link
+              key={s.href}
+              href={s.href}
+              // Stacked from the top, deliberately NOT `justify-between`: that distributed the
+              // slack around a text block whose height follows its copy, so a longer
+              // description silently lifted that one card's title above the other five.
+              className={`fc-card group relative flex flex-1 flex-col overflow-hidden rounded-xl border p-6 ${CARD_SKIN}`}
+            >
+              {/* The meta row's colour is a class, not inline, for the same cascade reason as
+                  CARD_SKIN: it has to brighten with the rest of the card. The arrow is the
+                  plainest "this navigates" cue available — the row is already aria-hidden, so
+                  the card's accessible name is still "<label> <copy>". */}
+              <span
+                aria-hidden="true"
+                className="mono flex items-baseline justify-between gap-2 text-[rgba(245,241,232,.34)] transition-colors duration-300 group-hover:text-[rgba(245,241,232,.62)] group-focus-visible:text-[rgba(245,241,232,.62)] motion-reduce:transition-none"
+                style={{ fontSize: 11, letterSpacing: "0.1em" }}
+              >
+                <span>{String(i + 1).padStart(2, "0")}</span>
+                <span className="flex min-w-0 items-baseline gap-1.5">
+                  <span className="truncate">{s.href}</span>
+                  <span className="transition-transform duration-300 motion-reduce:transition-none motion-safe:group-hover:translate-x-0.5 motion-safe:group-focus-visible:translate-x-0.5">
+                    &rarr;
+                  </span>
+                </span>
+              </span>
+
+              <div aria-hidden="true" className="my-5 px-1 opacity-70 transition-opacity duration-500 group-hover:opacity-100">
+                <SurfaceGlyph href={s.href} />
+              </div>
+
+              <div>
+                {/* Two lines reserved, not nowrap: the longest labels ("Player Shooting",
+                    "Season Report") cannot fit one line at a sixth of the row and were being
+                    clipped by the card's overflow. Reserving the pair keeps every card's copy
+                    starting on the same line either way. */}
+                <span className="font-heading block text-xl font-bold leading-tight lg:h-[3.5rem]">{s.name}</span>
+                <span className="mt-3 block max-w-[30rem] text-sm" style={{ color: DIM, lineHeight: 1.6 }}>
+                  {s.copy}
+                </span>
+              </div>
+            </Link>
+          ))}
+        </nav>
+
+        {/* Outside the nav landmark on purpose: e2e/home.spec.ts asserts the card row is
+            exactly six links, and these three are the bar's OTHER menu rather than tabs.
+            (That spec was `about.spec.ts` until 2026-08-12; it moved with the page.) */}
+        <p className="mt-6 text-sm" style={{ color: DIM, lineHeight: 1.7 }}>
+          Three more sit behind the bar&rsquo;s <span className="mono">OTHER</span> menu, smaller
+          in scope but finished the same way:{" "}
+          <Link href="/shot-quality" className="underline underline-offset-2">
+            Shot Value
+          </Link>
+          ,{" "}
+          <Link href="/availability" className="underline underline-offset-2">
+            Availability Cost
+          </Link>{" "}
+          and{" "}
+          <Link href="/referees" className="underline underline-offset-2">
+            Referee Effect
+          </Link>
+          .
+        </p>
+      </section>
+
+      {/* ── 8. The way in ─────────────────────────────────────── */}
       <section className={`fc-outro items-center px-6 text-center ${VIEW}`}>
         <h2 className="fc-outro-title font-heading mx-auto max-w-4xl font-bold" style={{ fontSize: "clamp(2.3rem,7.5vw,6rem)", lineHeight: 0.98, letterSpacing: "-0.035em" }}>
           Read the schedule before it reads you
@@ -763,6 +782,12 @@ export function AboutContent({ stats }: { stats: AboutStats | null }) {
         >
           Open the games board
         </Link>
+        {/* The operating line (BRAND_GRAMMAR §8): the brand's sign-off, spent here and on
+            the OG card only — one moment, like the accent. It shares the CTA's reveal class
+            so the pair arrives together, after the title's argument lands. */}
+        <p className="fc-outro-cta mono mt-10" style={{ fontSize: 11, letterSpacing: "0.24em", color: "rgba(245,241,232,.42)" }}>
+          READ AGAINST THE BASELINE
+        </p>
       </section>
     </div>
   );

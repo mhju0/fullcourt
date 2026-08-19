@@ -135,8 +135,8 @@ its mechanism —
 - **Hero thesis** (front door only): *Every game starts uneven. The schedule decided that
   months ago.*
 - **Operating line** (OG card and the front-door outro, nowhere else — one moment, like the
-  accent): *Read against the baseline.* On the OG card since 2026-08-19; the front-door
-  outro lands with the narrative pass.
+  accent): *Read against the baseline.* On the OG card and the front-door outro since
+  2026-08-19 — both homes are live; do not add a third.
 
 The OG descriptor ("NBA analytics: rest, fatigue, and shot value") remains the functional
 alt text; the operating line is the brand's sign-off, not a replacement for saying what the

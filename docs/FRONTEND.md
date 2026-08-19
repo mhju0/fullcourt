@@ -435,23 +435,26 @@ in `e2e/navigation.spec.ts`. It sat in the top status bar until 2026-07-30, whic
 quiet to be found; the reference links are now the same size and weight as a tab, and the gap
 between the two groups is what says "not one of the six".
 
-Rebuilt 2026-07-30 into **seven full-viewport sections** (`calc(100svh - var(--term-chrome-h))`
+Rebuilt 2026-07-30 into full-viewport sections (`calc(100svh - var(--term-chrome-h))`
 each, the
 subtraction being the sticky chrome — without it every section overran the fold by the header's
-height). Order: the claim, the thesis, the evidence, the six surface cards, what the score is made
-of, the standard, the way in. The hero carries no buttons: they competed with the single line
-the page opens on. Evidence figures come from `getHistoricalBacktest` via the server page and
+height). **Eight sections since the 2026-08-19 narrative pass**, ordered as one argument: the
+claim, the thesis, **the name** (the FULL/COURT anatomy from
+[BRAND_GRAMMAR.md §2](design/BRAND_GRAMMAR.md), the page's one brand-indigo moment), the
+evidence, what the score is made of, the standard, the six surface cards, the way in — the
+cards moved from mid-page to just before the outro so the invitation follows the argument.
+The same pass **removed the evidence count-up** (for ~1.2s it showed values that were never
+measured, directly above the sentence naming the baseline — the first voice law rules it out;
+do not reintroduce it) and added the operating line ("READ AGAINST THE BASELINE") to the
+outro, one of its two sanctioned homes. The hero carries no buttons: they competed with the
+single line the page opens on. Evidence figures come from `getHistoricalBacktest` via the server page and
 are revalidated daily, because all three were hardcoded and all three had gone stale.
 Headings use `font-bold` (700), not extrabold: `layout.tsx` loads Geist at 400/500/600/700
 — the 700 face is carried for this page specifically — so an 800 request resolves to the
 700 face anyway.
 
-Two things on this page are easy to get wrong twice:
+Easy to get wrong twice on this page:
 
-- **The stacking method cards dim with `filter: brightness()`, never `opacity`.** They are
-  `sticky` and physically overlap, so a card at `opacity: 0.45` shows the card *beneath* it
-  straight through — card 02's heading landing on card 01's paragraph. The last card is not
-  animated at all, which is why the bug only ever showed on 01 and 02.
 - **The six surface cards keep their copy visible at rest.** It was `lg:opacity-0` until
   hover, and five tall cards showing only a label read as a loading state, not an accordion.
   Each card now carries a mono index, its route, a `SurfaceGlyph` miniature of what that page
@@ -1570,31 +1573,30 @@ broadcast aesthetic with mono metadata.
 
 ### Brand mark
 
-The FullCourt logo ("Angled Divider" court) lives in `src/components/court-mark.tsx`
-(`<CourtMark size>` — a tilted center line splitting a blue/rested half from a red/fatigued
-half, with an amber center circle; fixed brand hexes, not theme tokens). It renders in the
-brand bar, so its strokes are **near-black `#111318`** to read on the light chrome.
-
-**The divider leans top-right to bottom-left** — `M39 7 L33 41` in the 72×48 viewBox — matching
-the oversized `CourtSplit` court on the front door (`/`). It leaned the other way until 2026-07-30, so the
-same mark pointed two directions depending on which surface you were looking at. That geometry
-is duplicated in six files (`court-mark.tsx`, `src/app/icon.svg`, `docs/logo.svg`, the `MARK`
-string in `src/app/opengraph-image.tsx`, `src/app/apple-icon.tsx`, and
-`src/lib/brand/maskable-icon.tsx`); there is no shared source, so **change them together**.
-`docs/social-preview.png` is no longer in that list — since 2026-08-18 it is a render of the OG
-route rather than a hand export, so it inherits the geometry instead of copying it. The center
-circle is the badge amber `#F5A623` everywhere, including in-app: it was `--term-amber`
-(`#C2410C`) in `CourtMark` alone until 2026-07-30, which at 34px read as a second red sitting
-next to the fatigued half rather than as the live accent.
+The FullCourt logo ("Split Ink", 2026-08-19 — it replaced the "Angled Divider") has **one
+geometry source**: `src/lib/brand/court-mark-geometry.ts` — the 60×32 court (within 0.3% of
+the NBA floor's 94:50), the 20.6° slash parallelogram centered on the court, the per-size
+ramp, and the fixed brand colors. Every cut imports it — `court-mark.tsx` (the nav cut,
+keyline-material on the light chrome), `apple-icon.tsx`, `maskable-icon.tsx`, the `MARK`
+string in `opengraph-image.tsx` — except the two static SVGs (`src/app/icon.svg`,
+`docs/logo.svg`), which `court-mark-geometry.test.ts` pins to the builders' output. The
+predecessor's geometry was hand-copied across six files and drifted twice (lean direction,
+then hues); **never redraw a cut by hand — extend the geometry module.** Why each rule is
+what it is lives in [BRAND_GRAMMAR.md §4](design/BRAND_GRAMMAR.md); the wordmark lockup (W4 —
+caps, COURT in the accent) is stated there and rendered in `nav-bar.tsx` and the OG card.
+`docs/social-preview.png` is a render of the OG route rather than a hand export (2026-08-18),
+so it inherits the geometry instead of copying it. The oversized `CourtSplit` on the front
+door (`about-content.tsx`) is the one sanctioned variant: the same court and lean, with the
+divider drawn on the slash's *centerline*, because at background opacity a stroked line reads
+where the mark proper uses a filled band.
 
 > **Off-page brand assets stay dark by design.** Four assets: the favicon (`src/app/icon.svg`),
 > the social/OG card (`src/app/opengraph-image.tsx`), the README header mark (`docs/logo.svg`)
 > and the GitHub repo social preview (`docs/social-preview.png`). All are self-contained
-> badges that carry their own
-> dark ground (`#12151A` / `#0A0B0D`) and keep the pre-flip brightened palette (`#3B82F6`,
-> `#E5484D`, `#F5A623`, `#F2F4F7`). They never sit on the app's page background — a browser tab
-> and a link-preview card render on someone else's chrome — so they stay legible as-is and were
-> deliberately left untouched in the light flip. Do **not** "fix" them to match the in-app mark.
+> badges that carry their own dark ground and the mark's dark cut (`MARK_COLORS.dark`). They
+> never sit on the app's page background — a browser tab and a link-preview card render on
+> someone else's chrome — so they keep their own ground. Do **not** "fix" them onto the app's
+> light tokens.
 
 `docs/social-preview.png` is the GitHub repo social preview (Settings → Social preview). It is
 uploaded out-of-band and referenced by no code, so a dead-file sweep will read it as an orphan
