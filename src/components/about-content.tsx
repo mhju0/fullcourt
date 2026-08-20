@@ -6,7 +6,13 @@ import { NBA_SEASONS } from "@/lib/nba-season";
 import { signedNumber } from "@/lib/signed-number";
 
 /**
- * The marketing page. Deliberately unlike the app: dark, cinematic, motion-led.
+ * The marketing page. Deliberately unlike the app: dark, oversized display type — but
+ * since 2026-08-20, calm. The scroll choreography (a pinned section, scrub-tied reveals,
+ * full-viewport-per-section) was reviewed by hand and retired as one decision — see
+ * FRONTEND.md §"/ — the front door". What remains is ONE motion grammar: content arrives
+ * once, fast (350ms, 12px rise, 45ms stagger — the subtle tier), and never moves again.
+ * Sections take the height their content earns. The chosen direction was prototyped and
+ * approved against two alternatives; the record is docs/design/explorations/.
  *
  * Two constraints shaped it. Every visual is CSS or inline SVG rather than a remote
  * image, so the CSP in `next.config.ts` needs no widening and nothing can silently
@@ -29,18 +35,16 @@ const GRAIN =
  * `src/lib/brand/court-mark-geometry.ts`): the 60×32 court and the ratified 20.6° lean,
  * with the divider drawn on the slash's *centerline* — top (36,0) to bottom (24,32),
  * centroid on the court's center — because at background opacity a stroked line reads
- * where the mark proper uses a filled band. The old drawing carried the pre-2026-08-19
- * geometry (10° lean, off-3:2 court, a center circle the new mark retired).
+ * where the mark proper uses a filled band.
  */
 function CourtSplit({ className = "" }: { className?: string }) {
   return (
     <svg viewBox="0 0 72 44" className={className} aria-hidden="true">
       {/* The divider fades out at both ends instead of stopping dead on the court's edge.
           A butt cap on a slanted line meets a horizontal border at a slant, so each end
-          showed as a blunt off-angle notch sitting just past the rule — the one detail on
-          this hero that read as unfinished. The gradient runs along the line itself
-          (userSpaceOnUse, same endpoints), so the stroke emerges and dissolves rather than
-          being cut. `round` caps clean up what little edge is left at 13% opacity. */}
+          showed as a blunt off-angle notch sitting just past the rule. The gradient runs
+          along the line itself (userSpaceOnUse, same endpoints), so the stroke emerges and
+          dissolves rather than being cut. */}
       <defs>
         <linearGradient id="fc-court-split" gradientUnits="userSpaceOnUse" x1="42" y1="6" x2="30" y2="38">
           <stop offset="0" stopColor={BONE} stopOpacity="0" />
@@ -63,92 +67,8 @@ function CourtSplit({ className = "" }: { className?: string }) {
 }
 
 /**
- * A miniature of what each page actually draws — fatigue bars, a diverging ranking, the
- * backtest columns, a bracket, the arc. Inline SVG, no data, no request: it fills the
- * surface cards with a preview rather than decoration, so the glyph is wayfinding.
- */
-function SurfaceGlyph({ href }: { href: string }) {
-  // Dark-tuned data poles (teal = rested, rose = fatigued) — see CourtSplit.
-  const blue = "#0E9CBE";
-  const red = "#F43F5E";
-  const line = "rgba(245,241,232,.22)";
-  const common = { viewBox: "0 0 120 56", className: "w-full", "aria-hidden": true as const };
-
-  if (href === "/games")
-    return ( // Games — two fatigue bars, unequal
-      <svg {...common}>
-        <rect x="4" y="14" width="112" height="7" rx="3.5" fill={line} />
-        <rect x="4" y="14" width="62" height="7" rx="3.5" fill={blue} />
-        <rect x="4" y="33" width="112" height="7" rx="3.5" fill={line} />
-        <rect x="4" y="33" width="88" height="7" rx="3.5" fill={red} />
-      </svg>
-    );
-
-  if (href === "/season")
-    return ( // Season Report — season progress against the vs-history marker
-      <svg {...common}>
-        <rect x="4" y="24" width="112" height="8" rx="4" fill={line} />
-        <rect x="4" y="24" width="78" height="8" rx="4" fill={blue} />
-        <rect x="69" y="17" width="2.4" height="22" rx="1.2" fill={red} />
-      </svg>
-    );
-
-  if (href === "/schedule")
-    return ( // Schedule Edge — a ranking diverging from zero
-      <svg {...common}>
-        {[14, 9, 4, -6, -12].map((v, i) => (
-          <rect
-            key={i}
-            x={v >= 0 ? 60 : 60 + v * 3.2}
-            y={5 + i * 10}
-            width={Math.abs(v) * 3.2}
-            height="6"
-            rx="3"
-            fill={v >= 0 ? blue : red}
-          />
-        ))}
-        <rect x="59.4" y="3" width="1.2" height="52" fill={line} />
-      </svg>
-    );
-
-  if (href === "/analysis")
-    return ( // Model Results — backtest columns off a coin-flip baseline
-      <svg {...common}>
-        {[13, 18, 27, 34].map((h, i) => (
-          <rect key={i} x={12 + i * 26} y={46 - h} width="15" height={h} rx="2" fill={blue} />
-        ))}
-        <rect x="4" y="46" width="112" height="1.2" fill={line} />
-      </svg>
-    );
-
-  if (href === "/playoffs")
-    return ( // Playoff Rest — a bracket converging
-      <svg {...common} fill="none" stroke={line} strokeWidth="1.6">
-        <path d="M6 10h26v18h26M6 46h26V28" />
-        <path d="M114 10H88v18H62M114 46H88V28" />
-        <circle cx="60" cy="28" r="4.5" fill={blue} stroke="none" />
-      </svg>
-    );
-
-  return ( // Player Shooting — the same player on no rest and on three days off
-    <svg {...common}>
-      {[0, 1, 2].map((g) => (
-        <g key={g} transform={`translate(${6 + g * 40} 0)`}>
-          <rect x="0" y={48 - [22, 31, 27][g]} width="12" height={[22, 31, 27][g]} rx="2" fill={red} opacity=".75" />
-          <rect x="15" y={48 - [30, 26, 38][g]} width="12" height={[30, 26, 38][g]} rx="2" fill={blue} />
-        </g>
-      ))}
-      <rect x="4" y="48" width="112" height="1.2" fill={line} />
-    </svg>
-  );
-}
-
-/**
- * The six cards are one row of identical shapes, so every `copy` here is held to ONE OR TWO
- * sentences of 10–20 words. This is a layout contract, not a style preference: the card is a
- * fixed-height flex column, so a description that runs long grows its own text block and
- * shoves that card's title out of line with the other five. Keep them within range when
- * editing, and a new surface arrives inside the range too.
+ * Card copy is held to ONE OR TWO sentences of 10–20 words. The cards sit in a 3-across
+ * grid whose rows share a height, so one long description stretches its whole row.
  */
 const SURFACES = [
   { name: "Games", href: "/games", copy: "Every season's slate by date, with fatigue scores, rest gaps, and live scores during the season." },
@@ -166,39 +86,25 @@ const SURFACES = [
 /**
  * A surface card's resting skin and its interactive state.
  *
- * Every one of these is a utility rather than an inline `style`, and that is the fix itself.
- * The resting `borderColor` and `background` used to sit in `style={{…}}` while the hover
- * state was `hover:border-…` / `hover:bg-…` classes — and an inline declaration outranks a
- * class rule, so both hover utilities were dead. Measured 2026-08-13: computed border-color
- * and background-color were byte-identical at rest and on hover, and the only thing that moved
- * on the whole card was the glyph's opacity. Never move these back into `style`.
- *
- * Hover and focus-visible get the identical treatment, written out twice on purpose: Tailwind
- * scans source files for literal class strings, so composing `focus-visible:${…}` in a loop
- * would compile to no CSS at all.
- *
- * Nothing here touches a box metric. The row height is a layout contract (`lg:h-[24rem]`) and
- * all six cards have to stay one shape, so the lift is a transform and the elevation is a
- * shadow — neither reflows the row. The gradient stays put and the wash rides in on
- * background-color *behind* it: two `linear-gradient()` images do not interpolate, so
- * swapping the gradient would snap while the border and shadow faded.
+ * Every one of these is a utility rather than an inline `style`, and that is the fix itself:
+ * an inline declaration outranks a class rule, so resting colors in `style={{…}}` silently
+ * killed the hover utilities twice (PRs #33, #38). Never move these back into `style`.
+ * Hover and focus-visible are written out twice on purpose: Tailwind scans source for literal
+ * class strings, so composing `focus-visible:${…}` would compile to no CSS at all.
  */
 const CARD_SKIN = [
   "border-[rgba(245,241,232,.14)]",
   "bg-[image:linear-gradient(180deg,rgba(245,241,232,.05),rgba(11,13,16,.6))]",
-  "transition duration-300 motion-reduce:transition-none",
-  "hover:border-[rgba(245,241,232,.48)] hover:bg-[color:rgba(245,241,232,.10)] hover:shadow-[0_18px_38px_-16px_rgba(0,0,0,.85)]",
-  "focus-visible:border-[rgba(245,241,232,.48)] focus-visible:bg-[color:rgba(245,241,232,.10)] focus-visible:shadow-[0_18px_38px_-16px_rgba(0,0,0,.85)]",
-  "motion-safe:hover:-translate-y-1 motion-safe:focus-visible:-translate-y-1",
+  "transition duration-200 motion-reduce:transition-none",
+  "hover:border-[rgba(245,241,232,.48)] hover:bg-[color:rgba(245,241,232,.10)]",
+  "focus-visible:border-[rgba(245,241,232,.48)] focus-visible:bg-[color:rgba(245,241,232,.10)]",
+  "motion-safe:hover:-translate-y-0.5 motion-safe:focus-visible:-translate-y-0.5",
 ].join(" ");
 
 /**
  * The standard each published number has to clear, and what each rule rules out.
- *
- * These were numbered 01/02/03 in a sticky card stack. They are three principles applied
- * in parallel, not three steps in a sequence, so the numbering encoded nothing — and the
- * stack cost a viewport per card to say one sentence. The second column is the honest half:
- * a rule is only worth stating if something is given up for it.
+ * The second column is the honest half: a rule is only worth stating if something
+ * is given up for it.
  */
 const STANDARD = [
   {
@@ -225,6 +131,22 @@ const INPUTS = [
   { term: "Density", detail: "Games per window against a normal pace, not a raw count." },
 ];
 
+/** The naming anatomy from BRAND_GRAMMAR.md §2 — three readings of one word, not a sequence. */
+const NAME_READINGS = [
+  {
+    term: "FULL",
+    copy: `The whole record: every season since ${NBA_SEASONS[0]}, both arms of every split, the nulls published rather than buried.`,
+  },
+  {
+    term: "COURT",
+    copy: "The floor, and the trial. Home court is the confound the model refuses credit for — and the standard every claim is tried against.",
+  },
+  {
+    term: "FULL-COURT",
+    copy: "A full-court press covers both ends of the floor. So does the measurement: the rate and its baseline, the finding and its limit.",
+  },
+];
+
 /* The heading counts the list rather than stating a number, so adding a surface can
    never leave the page claiming a total it no longer has. Spelled out because a
    numeral reads wrong at display size next to the rest of this page's headings. */
@@ -243,22 +165,25 @@ export interface AboutStats {
 }
 
 /**
- * Every section is one viewport minus the sticky chrome, so nothing lands half-visible.
+ * Sections take the height their content earns. The full-viewport-per-section rule
+ * (min-h 100svh each) was retired 2026-08-20: with the motion calmed, the empty
+ * theater seats between content blocks *were* the awkward scrolling.
  *
- * The vertical padding is not decoration. `min-h` sets a floor, not a ceiling, so a section
- * whose content exceeds it grows — and two tall sections in a row then met with no gap at all,
- * which read as one continuous wall of text. The padding only takes effect in exactly that
- * case; where content is shorter than the viewport the section is still exactly one screen.
+ * Hairline convention (reviewed by hand, 2026-08-20): rules on this page sit BELOW
+ * text, never above — except in top-aligned row lists (the inputs grid, the naming
+ * rows, the standard's rows), where a top rule is a row separator. Stated in
+ * FRONTEND.md §"/ — the front door".
  */
-const VIEW = "flex min-h-[calc(100svh-var(--term-chrome-h))] flex-col justify-center py-24";
+const SECTION = "py-28";
 
 /** Em dash, not a zero: a figure that could not be read must not look like a measurement. */
-const NO_FIGURE = "\u2014";
+const NO_FIGURE = "—";
 
 export function AboutContent({ stats }: { stats: AboutStats | null }) {
   const root = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    // The resting CSS state is fully visible, so reduced-motion needs no effect at all.
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     let ctx: { revert: () => void } | undefined;
@@ -273,172 +198,49 @@ export function AboutContent({ stats }: { stats: AboutStats | null }) {
       gsap.registerPlugin(ScrollTrigger);
 
       ctx = gsap.context(() => {
-        gsap.from(".fc-hero-in", { y: 30, opacity: 0, duration: 1.1, stagger: 0.12, ease: "power3.out" });
-
-        // Scrubbing reveal: words brighten in sequence as the sentence is read past.
-        //
-        // Only `end` controls when the last word lands. Under scrub the whole stagger timeline
-        // is normalised across the scroll span, so raising or lowering `stagger` changes the
-        // spacing of the wave but never its finish — the final word always lights exactly at
-        // the end trigger. This previously ended on "center 55%", which resolves to the
-        // section's top reaching 5% of the viewport: the sentence only completed once it was
-        // dead centre, so the reader arrived at a paragraph that was still lighting up.
-        //
-        // "top 25%" finishes it while the sentence sits about three-quarters down the screen,
-        // so it is fully lit on arrival and centring it is the reward rather than the trigger.
-        gsap.to(".fc-word", {
-          opacity: 1,
-          stagger: 0.5,
-          ease: "none",
-          scrollTrigger: { trigger: ".fc-thesis", start: "top 80%", end: "top 25%", scrub: true },
-        });
-
-        // ── Sections 3–8 ────────────────────────────────────────────────────────────
-        //
-        // Sections 1 and 2 each got an effect that says what that section says — the hero
-        // assembles, the thesis lights word by word. Everything below them shared one generic
-        // `.fc-rise` scale-and-fade, applied identically to a headline figure, a principle row
-        // and a standards panel, and sections 4 and 7 had nothing at all. The page stopped
-        // choreographing and started decorating. These are per-section instead.
-        //
-        // All of them are entrance reveals (`once: true`), not scrubs. A scrub ties the effect
-        // to scroll position, which reads as scroll-jacking when applied to five sections in a
-        // row; the one place this page holds the reader is the pinned section, and it earns it.
+        // The hero assembles once on load. A plain `from` is safe here alone — it has no
+        // ScrollTrigger, so a refresh can never re-apply its start state.
+        gsap.from(".fc-hero-in", { y: 16, opacity: 0, duration: 0.5, stagger: 0.08, ease: "power1.out" });
 
         /**
-         * Shared entrance. `once` so a reader scrolling back up is not re-animated at.
+         * The one grammar for everything below the hero: arrive once, fast, never move
+         * again. 350ms / 12px / 45ms stagger — the subtle reveal tier; the old 900ms
+         * reveals with 120ms stagger were two to three times slower than the
+         * micro-interaction band and read as the page performing.
          *
-         * **Anything driven by a ScrollTrigger uses `fromTo`, never `from`.** (The hero tween
-         * above is a plain on-load `from` and stays one — it has no trigger, so none of what
-         * follows can reach it.) A `from` tween infers its end values from whatever the
-         * element happens to be when the tween is built, and any later `ScrollTrigger.refresh()`
-         * — which the library also performs on its own, after a resize or once webfonts land —
-         * can re-apply the start state to a trigger that is still alive. The six surface cards
-         * hit exactly that: `onEnter`, `onStart` and `onComplete` all fired and all six still
-         * held `opacity: 0; transform: translate(0px, 8px)` inline, so the section a reader is
-         * meant to click was invisible. Their trigger spans nearly a screen and had only reached
-         * 44% of it, so unlike the shorter ones it never reached its end and never killed itself.
-         * Stating both ends removes the inference and the whole failure mode with it.
+         * **Anything driven by a ScrollTrigger uses `fromTo`, never `from`.** A `from`
+         * tween infers its end values when built, and a later `ScrollTrigger.refresh()`
+         * (which the library performs on its own after a resize or once webfonts land)
+         * can re-apply the start state to a live trigger — six invisible surface cards
+         * shipped exactly that way. Stating both ends removes the failure mode, and
+         * `e2e/home.spec.ts` asserts the settled visibility.
          */
-        const reveal = (
-          targets: gsap.TweenTarget,
-          from: gsap.TweenVars,
-          vars: gsap.TweenVars & { trigger: Element }
-        ) => {
-          const { trigger, ...rest } = vars;
-          gsap.fromTo(targets, from, {
-            y: 0,
-            opacity: 1,
-            duration: 0.9,
-            ease: "power3.out",
-            scrollTrigger: { trigger, start: "top 82%", once: true },
-            ...rest,
-          });
+        const reveal = (targets: string, trigger: Element) => {
+          gsap.fromTo(
+            targets,
+            { y: 12, opacity: 0 },
+            {
+              y: 0,
+              opacity: 1,
+              duration: 0.35,
+              ease: "power1.out",
+              stagger: 0.045,
+              scrollTrigger: { trigger, start: "top 90%", once: true },
+            }
+          );
         };
 
-        // The evidence figures do NOT count up — deliberately (killed 2026-08-19). The tally
-        // spent ~1.2s showing values that were never measured (+0.9 → … → the real figure) at
-        // 11rem, directly above the sentence naming the venue baseline — which fails the first
-        // voice law in docs/design/BRAND_GRAMMAR.md §7: a number on this site is a measurement
-        // or it does not render. The server-rendered figures simply arrive with their section.
-        const naming = root.current?.querySelector(".fc-naming");
-        if (naming) reveal(".fc-name", { y: 24, opacity: 0 }, { trigger: naming, stagger: 0.12 });
-
-        const evidence = root.current?.querySelector(".fc-evidence");
-        if (evidence) reveal(".fc-evidence-item", { y: 28, opacity: 0 }, { trigger: evidence, stagger: 0.12 });
-
-        // §7 — the six cards arrive in reading order. 8px and 70ms: enough to read as sequence,
-        // not so much that the last card lands after the reader has already chosen one.
-        const cards = root.current?.querySelector(".fc-cards");
-        if (cards) reveal(".fc-card", { y: 8, opacity: 0 }, { trigger: cards, duration: 0.7, stagger: 0.07 });
-
-        // §5 — the centrepiece, and the one place the page holds the reader.
-        //
-        // The heading stays put while the six inputs light one at a time, so the method
-        // assembles in front of you rather than being listed at you: here the animation *is*
-        // the explanation, which is the only thing that justifies spending a pin on a section.
-        //
-        // Desktop only. A pin takes over the scroll for the length of its range, and on a phone
-        // that is the whole screen and the whole gesture — the section is a stacked list there
-        // anyway, with no held column to build against, so a pin buys nothing. `matchMedia` also
-        // unwinds it cleanly when a resize crosses the breakpoint, which a hand-rolled
-        // `window.innerWidth` check does not.
-        const mm = gsap.matchMedia();
-
-        mm.add("(min-width: 1024px)", () => {
-          const section = root.current?.querySelector(".fc-inputs");
-          if (!section) return;
-
-          gsap.timeline({
-            scrollTrigger: {
-              trigger: section,
-              start: "top top",
-              end: "+=110%",
-              pin: true,
-              // Smoothed rather than welded: `scrub: true` ties the build to the wheel's exact
-              // jitter, and six items lighting in lockstep with trackpad noise reads as a
-              // stutter instead of a sequence.
-              scrub: 0.6,
-              // The retracting bar reads `window.scrollY` and hides on a downward delta. Inside
-              // a pin the document really is scrolling while nothing on screen moves, so the bar
-              // would slide away for no reason the reader can see. `nav-bar.tsx` watches this.
-              onToggle: (self) => {
-                document.documentElement.dataset.fcPinned = self.isActive ? "1" : "0";
-              },
-            },
-          }).fromTo(
-            ".fc-input",
-            { opacity: 0.18, y: 16 },
-            { opacity: 1, y: 0, stagger: 0.5, ease: "none" }
-          );
-
-          return () => {
-            delete document.documentElement.dataset.fcPinned;
-          };
-        });
-
-        // Below that breakpoint the same six items simply arrive.
-        mm.add("(max-width: 1023.98px)", () => {
-          const section = root.current?.querySelector(".fc-inputs");
-          if (section) reveal(".fc-input", { y: 18, opacity: 0 }, { trigger: section, stagger: 0.08 });
-        });
-
-        // §6 — a real mask, done with `clip-path` rather than a wrapper: the rows are grid
-        // children with their own hairline borders, and wrapping each one in an overflow box to
-        // clip it would have changed the layout to animate it.
-        gsap.utils.toArray<HTMLElement>(".fc-rule").forEach((el, i) => {
-          gsap.fromTo(
-            el,
-            { clipPath: "inset(0 0 100% 0)", opacity: 0, y: 14 },
-            {
-              clipPath: "inset(0 0 0% 0)",
-              opacity: 1,
-              y: 0,
-              duration: 0.9,
-              delay: i * 0.12,
-              ease: "power3.out",
-              scrollTrigger: { trigger: el, start: "top 88%", once: true },
-            }
-          );
-        });
-
-        // §8 — the closing line masks up, and the button follows a beat later rather than with
-        // it. The page has spent seven screens making an argument; the one thing it asks for
-        // should arrive after the argument lands, not alongside it.
-        const outro = root.current?.querySelector(".fc-outro");
-        if (outro) {
-          gsap.fromTo(
-            ".fc-outro-title",
-            { clipPath: "inset(0 0 100% 0)", y: 24 },
-            {
-              clipPath: "inset(0 0 0% 0)",
-              y: 0,
-              duration: 1.1,
-              ease: "power3.out",
-              scrollTrigger: { trigger: outro, start: "top 78%", once: true },
-            }
-          );
-          reveal(".fc-outro-cta", { y: 12, opacity: 0 }, { trigger: outro, duration: 0.7, delay: 0.45 });
+        for (const [sectionSel, itemSel] of [
+          [".fc-thesis", ".fc-thesis p"],
+          [".fc-naming", ".fc-name"],
+          [".fc-evidence", ".fc-evidence-item"],
+          [".fc-inputs", ".fc-input"],
+          [".fc-standard", ".fc-rule"],
+          [".fc-cards-section", ".fc-card"],
+          [".fc-outro", ".fc-outro-item"],
+        ] as const) {
+          const section = root.current?.querySelector(sectionSel);
+          if (section) reveal(itemSel, section);
         }
       }, root);
     })();
@@ -459,96 +261,73 @@ export function AboutContent({ stats }: { stats: AboutStats | null }) {
       <div aria-hidden="true" style={{ position: "fixed", inset: 0, pointerEvents: "none", zIndex: 1, opacity: 0.15, backgroundImage: GRAIN }} />
 
       {/* ── 1. The claim ──────────────────────────────────────── */}
-      <header className={`relative items-center px-6 text-center ${VIEW}`}>
+      <header
+        className="relative flex flex-col items-center justify-center px-6 py-16 text-center"
+        style={{ minHeight: "calc(88svh - var(--term-chrome-h))" }}
+      >
         <div
           aria-hidden="true"
           className="absolute inset-0"
           style={{ background: "radial-gradient(ellipse 65% 55% at 50% 42%, rgba(14,156,190,.16) 0%, transparent 60%), radial-gradient(ellipse 50% 40% at 78% 78%, rgba(244,63,94,.12) 0%, transparent 65%)" }}
         />
-        <CourtSplit className="pointer-events-none absolute left-1/2 top-1/2 w-[min(80rem,140%)] -translate-x-1/2 -translate-y-1/2 opacity-[0.13]" />
+        <CourtSplit className="pointer-events-none absolute left-1/2 top-1/2 w-[min(76rem,130%)] -translate-x-1/2 -translate-y-1/2 opacity-[0.13]" />
 
         <div className="relative z-10 mx-auto max-w-5xl">
           <h1
             className="fc-hero-in font-heading font-bold"
-            style={{ fontSize: "clamp(2.6rem,7vw,5.6rem)", lineHeight: 0.98, letterSpacing: "-0.035em" }}
+            style={{ fontSize: "clamp(2.6rem,7vw,5.4rem)", lineHeight: 0.98, letterSpacing: "-0.035em" }}
           >
             Rest is a stat
           </h1>
           {/* Mechanism-led, to complete the headline: if the h1 asserts that rest is a stat,
-              the line under it should name what the stat is made of. "Days off" rather than
-              "rest": the headline already uses "rest" for the whole idea, so repeating it here
-              for one specific input would have the pair saying rest is a stat, and also one of
-              three ingredients in that stat.
-              The start season is derived rather than typed, and it is a start date rather
-              than a count on purpose — the evidence section already carries the season count, so
-              repeating the count here would spend the same beat twice. */}
-          <p className="fc-hero-in mx-auto mt-8 max-w-xl" style={{ color: DIM, fontSize: "1.05rem", lineHeight: 1.65 }}>
+              the line under it should name what the stat is made of. The start season is
+              derived rather than typed, and it is a start date rather than a count on
+              purpose — the evidence section already carries the season count. */}
+          <p className="fc-hero-in mx-auto mt-7 max-w-xl" style={{ color: DIM, fontSize: "1.05rem", lineHeight: 1.65 }}>
             Travel, days off and schedule density — scored for every team in every game since{" "}
             {NBA_SEASONS[0]}.
           </p>
-        </div>
-
-        {/* A scroll cue rather than buttons. With nothing to click, the page still has to say
-            that it continues — and a hairline says it without competing with the headline. */}
-        <div aria-hidden="true" className="fc-hero-in absolute bottom-10 left-1/2 flex -translate-x-1/2 flex-col items-center gap-3">
-          <span className="mono" style={{ fontSize: 10, letterSpacing: "0.22em", color: "rgba(245,241,232,.34)" }}>SCROLL</span>
-          <span style={{ width: 1, height: 44, background: "linear-gradient(rgba(245,241,232,.34), transparent)" }} />
+          {/* The early path to the product (2026-08-20): the page serves a credibility read
+              AND product visitors, and its only CTA sat five screens down. Whisper weight so
+              it does not compete with the headline; distinct wording from the outro CTA
+              because e2e pins that accessible name at exactly one element. */}
+          <Link
+            href="/games"
+            className="fc-hero-in relative mt-8 inline-block pb-0.5 text-sm opacity-55 transition-opacity hover:opacity-90 focus-visible:opacity-90 motion-reduce:transition-none"
+            style={{ color: BONE, borderBottom: "1px solid rgba(245,241,232,.3)" }}
+          >
+            Skip to the games board &rarr;
+          </Link>
         </div>
       </header>
 
       {/* ── 2. Why it matters ─────────────────────────────────── */}
-      <section className={`fc-thesis mx-auto max-w-5xl px-6 ${VIEW}`}>
-        {/* Larger than the old copy carried: at ten words this has to hold a whole screen,
-            where the previous twenty-four-word version filled it by length alone. */}
-        <p className="font-heading font-medium" style={{ fontSize: "clamp(2.1rem,5.6vw,4.4rem)", lineHeight: 1.15, letterSpacing: "-0.03em" }}>
-          {"Every game starts uneven. The schedule decided that months ago."
-            .split(" ")
-            .map((w, i) => (
-              // The resting dim is a class, never an inline style. GSAP brightens these on
-              // scroll and the whole effect block returns early under `prefers-reduced-motion`,
-              // which left the sentence at 12% forever for exactly the readers who cannot get
-              // the animation back. `motion-reduce:` restores it; an inline style could not have
-              // been overridden by any class rule, which is the same cascade trap as CARD_SKIN.
-              <span key={i} className="fc-word opacity-[0.12] motion-reduce:opacity-100">
-                {w}{" "}
-              </span>
-            ))}
+      <section className={`fc-thesis mx-auto w-full max-w-5xl px-6 ${SECTION}`}>
+        <p className="font-heading font-medium" style={{ fontSize: "clamp(1.9rem,4.6vw,3.4rem)", lineHeight: 1.16, letterSpacing: "-0.03em", maxWidth: "24ch" }}>
+          Every game starts uneven. The schedule decided that months ago.
         </p>
       </section>
 
       {/* ── 3. The name ───────────────────────────────────────── */}
-      {/* The naming anatomy from BRAND_GRAMMAR.md §2, added 2026-08-19: the page argued the
-          method for seven screens without ever explaining the word on the door. COURT takes
-          the dark-ground brand indigo — the one accent moment this page spends, the same rule
-          as the nav and OG lockups (W4). */}
-      <section className={`fc-naming mx-auto w-full max-w-5xl px-6 ${VIEW}`}>
+      {/* The naming anatomy from BRAND_GRAMMAR.md §2. COURT takes the dark-ground brand
+          indigo — the one accent moment this page spends, the same rule as the nav and OG
+          lockups (W4). */}
+      <section className={`fc-naming mx-auto w-full max-w-5xl px-6 ${SECTION}`}>
         {/* The wordmark is this section's h2, not decoration above one — every sibling
             section leads with an h2, and this keeps the heading outline intact. */}
         <h2
           className="fc-name font-heading font-bold"
-          style={{ fontSize: "clamp(3rem,9vw,7rem)", lineHeight: 0.95, letterSpacing: "-0.03em" }}
+          style={{ fontSize: "clamp(2.6rem,7vw,5.4rem)", lineHeight: 0.95, letterSpacing: "-0.03em" }}
         >
           FULL<span style={{ color: "#818CF8" }}>COURT</span>
         </h2>
-        <div className="mt-14 flex flex-col">
-          {[
-            {
-              term: "FULL",
-              copy: `The whole record: every season since ${NBA_SEASONS[0]}, both arms of every split, the nulls published rather than buried.`,
-            },
-            {
-              term: "COURT",
-              copy: "The floor, and the trial. Home court is the confound the model refuses credit for — and the standard every claim is tried against.",
-            },
-            {
-              term: "FULL-COURT",
-              copy: "A full-court press covers both ends of the floor. So does the measurement: the rate and its baseline, the finding and its limit.",
-            },
-          ].map((part) => (
-            // No numbering: these are three readings of one word, not a sequence.
+        <div className="mt-9 flex flex-col">
+          {NAME_READINGS.map((part) => (
+            // No numbering: three readings of one word, not a sequence. Top rules are row
+            // separators here — the sanctioned top-aligned-list exception.
             <div
               key={part.term}
-              className="fc-name grid gap-x-8 gap-y-1 py-6 sm:grid-cols-[10rem_1fr] sm:items-baseline"
+              className="fc-name grid gap-x-8 gap-y-1 py-5 sm:grid-cols-[9rem_1fr] sm:items-baseline"
               style={{ borderTop: "1px solid rgba(245,241,232,.12)" }}
             >
               <span className="mono" style={{ fontSize: 13, letterSpacing: "0.14em" }}>{part.term}</span>
@@ -559,18 +338,18 @@ export function AboutContent({ stats }: { stats: AboutStats | null }) {
       </section>
 
       {/* ── 4. What it found ──────────────────────────────────── */}
-      <section className={`mx-auto w-full max-w-7xl px-6 ${VIEW}`}>
-        <h2 className="font-heading font-bold" style={{ fontSize: "clamp(1.9rem,4.4vw,3.2rem)", letterSpacing: "-0.03em", maxWidth: "20ch" }}>
+      <section className={`fc-evidence mx-auto w-full max-w-7xl px-6 ${SECTION}`}>
+        <h2 className="fc-evidence-item font-heading font-bold" style={{ fontSize: "clamp(1.7rem,3.6vw,2.6rem)", letterSpacing: "-0.03em", maxWidth: "20ch" }}>
           Evidence, not just the eye test
         </h2>
 
-        <div className="fc-evidence mt-14 grid gap-10 lg:grid-cols-[1.15fr_1fr] lg:items-end lg:gap-16">
+        <div className="mt-12 grid gap-10 lg:grid-cols-[1.15fr_1fr] lg:items-end lg:gap-16">
           <div className="fc-evidence-item">
             <span
               className="font-heading block font-bold"
               // The rested pole as display text: brighter than the mark-tuned #0E9CBE so a
               // headline numeral keeps headline contrast (~8:1 on this ground).
-              style={{ fontSize: "clamp(5rem,15vw,11rem)", lineHeight: 0.85, letterSpacing: "-0.04em", color: "#2CB6D9" }}
+              style={{ fontSize: "clamp(4.4rem,12vw,9rem)", lineHeight: 0.85, letterSpacing: "-0.04em", color: "#2CB6D9" }}
             >
               {stats ? signedNumber(stats.widestEdgePp, 1) : NO_FIGURE}
             </span>
@@ -582,9 +361,11 @@ export function AboutContent({ stats }: { stats: AboutStats | null }) {
             </p>
           </div>
 
-          <div className="flex flex-col gap-8">
-            <div className="fc-evidence-item" style={{ borderTop: "1px solid rgba(245,241,232,.14)", paddingTop: "1.5rem" }}>
-              <span className="font-heading font-bold" style={{ fontSize: "clamp(2rem,4vw,3rem)", lineHeight: 1 }}>
+          <div className="flex flex-col gap-6">
+            {/* Rules BELOW the stat blocks, per the hairline convention above: a rule over a
+                stat read as clutter next to the centered blocks around it. */}
+            <div className="fc-evidence-item" style={{ borderBottom: "1px solid rgba(245,241,232,.14)", paddingBottom: "1.25rem" }}>
+              <span className="font-heading font-bold" style={{ fontSize: "clamp(1.6rem,3.2vw,2.2rem)", lineHeight: 1 }}>
                 {NBA_SEASONS.length} seasons
               </span>
               <p className="mt-3 max-w-[46ch]" style={{ color: DIM, lineHeight: 1.6 }}>
@@ -592,12 +373,12 @@ export function AboutContent({ stats }: { stats: AboutStats | null }) {
                 ones it reads as too close carry no claim at all.
               </p>
             </div>
-            <div className="fc-evidence-item" style={{ borderTop: "1px solid rgba(245,241,232,.14)", paddingTop: "1.5rem" }}>
-              {/* Same quantity as the hero figure (edge over the venue baseline), so the same
-                  rested-pole display teal — the old amber was Broadcast accent, now retired. */}
+            <div className="fc-evidence-item" style={{ borderBottom: "1px solid rgba(245,241,232,.14)", paddingBottom: "1.25rem" }}>
+              {/* Same quantity as the headline figure (edge over the venue baseline), so the
+                  same rested-pole display teal. */}
               <span
                 className="font-heading font-bold"
-                style={{ fontSize: "clamp(2rem,4vw,3rem)", lineHeight: 1, color: "#2CB6D9" }}
+                style={{ fontSize: "clamp(1.6rem,3.2vw,2.2rem)", lineHeight: 1, color: "#2CB6D9" }}
               >
                 {stats ? signedNumber(stats.overallEdgePp, 1) : NO_FIGURE}
               </span>
@@ -613,27 +394,26 @@ export function AboutContent({ stats }: { stats: AboutStats | null }) {
       </section>
 
       {/* ── 5. What the score is made of ──────────────────────── */}
-      <section className={`fc-inputs mx-auto w-full max-w-7xl px-6 ${VIEW}`}>
-        {/* 26rem, not 22: at the narrower measure the heading broke as "What the / score is
-            made / of", stranding a two-letter word on its own line. */}
-        <div className="grid gap-12 lg:grid-cols-[26rem_1fr] lg:gap-16">
-          <div className="lg:sticky lg:top-32 lg:self-start">
-            <h2 className="font-heading font-bold" style={{ fontSize: "clamp(1.9rem,4.4vw,3.2rem)", letterSpacing: "-0.03em", lineHeight: 1.05 }}>
+      {/* No pin since 2026-08-20: holding ~1.1 viewports of scroll while the screen stood
+          still was the page's one scroll-jack, and the hand review called it. The inputs
+          arrive like everything else; `nav-bar.tsx` no longer needs the pinned flag. */}
+      <section className={`fc-inputs mx-auto w-full max-w-7xl px-6 ${SECTION}`}>
+        <div className="grid gap-12 lg:grid-cols-[22rem_1fr] lg:gap-16">
+          <div>
+            <h2 className="fc-input font-heading font-bold" style={{ fontSize: "clamp(1.7rem,3.6vw,2.6rem)", letterSpacing: "-0.03em", lineHeight: 1.05 }}>
               What the score is made of
             </h2>
-            <p className="mt-6 max-w-sm" style={{ color: DIM, lineHeight: 1.65 }}>
+            <p className="fc-input mt-5 max-w-sm" style={{ color: DIM, lineHeight: 1.65 }}>
               Six measurements of the same night, combined into one number per team. Each is a
               physical fact about the schedule, not a rating of the roster.
             </p>
           </div>
 
-          {/* Two columns from sm up. Stacked, six items ran this section to 1.25 screens and
-              put two dense text blocks back to back with the rules panel below it. */}
-          <ol className="grid gap-x-12 sm:grid-cols-2">
+          <ol className="grid gap-x-10 sm:grid-cols-2">
             {INPUTS.map((input, i) => (
               <li
                 key={input.term}
-                className="fc-input grid grid-cols-[2.5rem_1fr] items-baseline gap-x-4 py-5"
+                className="fc-input grid grid-cols-[2.5rem_1fr] items-baseline gap-x-4 py-4"
                 style={{ borderTop: "1px solid rgba(245,241,232,.12)" }}
               >
                 <span className="mono" style={{ fontSize: 11, letterSpacing: "0.1em", color: "rgba(245,241,232,.3)" }}>
@@ -650,23 +430,19 @@ export function AboutContent({ stats }: { stats: AboutStats | null }) {
       </section>
 
       {/* ── 6. The standard ───────────────────────────────────── */}
-      {/* Set on a panel, unlike the plain hairline list two sections up. Both are dense and
-          both were the same body colour, so on one screen they read as one undifferentiated
-          block. Fewer words here does most of the work; the surface does the rest. */}
-      <section className={`mx-auto w-full max-w-5xl px-6 ${VIEW}`}>
-        <h2 className="font-heading font-bold" style={{ fontSize: "clamp(1.9rem,4.4vw,3.2rem)", letterSpacing: "-0.03em", maxWidth: "22ch" }}>
+      <section className={`fc-standard mx-auto w-full max-w-5xl px-6 ${SECTION}`}>
+        <h2 className="fc-rule font-heading font-bold" style={{ fontSize: "clamp(1.7rem,3.6vw,2.6rem)", letterSpacing: "-0.03em", maxWidth: "22ch" }}>
           How a number earns its place
         </h2>
-        <p className="mt-5 max-w-[46ch]" style={{ color: DIM, fontSize: "1.05rem", lineHeight: 1.6 }}>
+        <p className="fc-rule mt-4 max-w-[46ch]" style={{ color: DIM, fontSize: "1.05rem", lineHeight: 1.6 }}>
           Three rules, and what each one costs.
         </p>
 
         <div
-          className="mt-12 overflow-hidden rounded-2xl border"
+          className="mt-10 overflow-hidden rounded-2xl border"
           style={{ borderColor: "rgba(245,241,232,.14)", background: "rgba(245,241,232,.035)" }}
         >
-          {/* The label is a column header, stated once. It read "RULES OUT" above every row,
-              which is three times to say a thing that only needed saying once. */}
+          {/* The label is a column header, stated once. */}
           <div
             className="mono hidden gap-8 px-8 py-4 md:grid md:grid-cols-[1.1fr_1fr]"
             style={{ fontSize: 10, letterSpacing: "0.16em", color: "rgba(245,241,232,.4)", borderBottom: "1px solid rgba(245,241,232,.12)" }}
@@ -678,10 +454,10 @@ export function AboutContent({ stats }: { stats: AboutStats | null }) {
           {STANDARD.map((s, i) => (
             <div
               key={s.rule}
-              className="fc-rule grid gap-x-8 gap-y-2 px-8 py-7 md:grid-cols-[1.1fr_1fr] md:items-baseline"
+              className="fc-rule grid gap-x-8 gap-y-2 px-8 py-6 md:grid-cols-[1.1fr_1fr] md:items-baseline"
               style={{ borderTop: i === 0 ? undefined : "1px solid rgba(245,241,232,.12)" }}
             >
-              <p className="font-heading font-bold" style={{ fontSize: "clamp(1.15rem,2vw,1.5rem)", lineHeight: 1.25, letterSpacing: "-0.01em" }}>
+              <p className="font-heading font-bold" style={{ fontSize: "clamp(1.1rem,1.8vw,1.4rem)", lineHeight: 1.25, letterSpacing: "-0.01em" }}>
                 {s.rule}
               </p>
               <p style={{ color: DIM, lineHeight: 1.6 }}>{s.rulesOut}</p>
@@ -691,65 +467,47 @@ export function AboutContent({ stats }: { stats: AboutStats | null }) {
       </section>
 
       {/* ── 7. Where to use it ────────────────────────────────── */}
-      <section className={`mx-auto w-full max-w-7xl px-6 ${VIEW}`}>
-        <h2 className="font-heading mb-12 font-bold" style={{ fontSize: "clamp(1.9rem,4.4vw,3.2rem)", letterSpacing: "-0.03em" }}>
+      <section className={`fc-cards-section mx-auto w-full max-w-7xl px-6 ${SECTION}`}>
+        <h2 className="fc-card font-heading mb-10 font-bold" style={{ fontSize: "clamp(1.7rem,3.6vw,2.6rem)", letterSpacing: "-0.03em" }}>
           {/* "tabs", not "surfaces": this row is the nav bar, and there are more surfaces than
-              tabs. Calling it surfaces made the page claim six while the product had nine — the
-              OTHER menu is named underneath instead, because widening this row past six squeezes
-              cards whose height is already a layout contract. */}
+              tabs. The OTHER menu is named underneath instead. */}
           {COUNT_WORD[SURFACES.length]} tabs
         </h2>
         {/* A labelled landmark: this is a second, distinct set of navigation links, and
-            each one's accessible name is "<label> <copy>" because the card is one target. */}
-        <nav aria-label="Product surfaces" className="fc-cards flex flex-col gap-2 lg:h-[24rem] lg:flex-row">
+            each one's accessible name is "<label> <copy>" because the card is one target.
+            A 3-across grid since 2026-08-20 — the fixed-height single row went with the
+            full-viewport rule, and the preview glyphs went with it: at this card size they
+            read as decoration, not wayfinding (approved in the P1 prototype). */}
+        <nav aria-label="Product surfaces" className="grid gap-3.5 sm:grid-cols-2 lg:grid-cols-3">
           {SURFACES.map((s, i) => (
             <Link
               key={s.href}
               href={s.href}
-              // Stacked from the top, deliberately NOT `justify-between`: that distributed the
-              // slack around a text block whose height follows its copy, so a longer
-              // description silently lifted that one card's title above the other five.
-              className={`fc-card group relative flex flex-1 flex-col overflow-hidden rounded-xl border p-6 ${CARD_SKIN}`}
+              className={`fc-card group block rounded-xl border p-5 ${CARD_SKIN}`}
             >
-              {/* The meta row's colour is a class, not inline, for the same cascade reason as
-                  CARD_SKIN: it has to brighten with the rest of the card. The arrow is the
-                  plainest "this navigates" cue available — the row is already aria-hidden, so
-                  the card's accessible name is still "<label> <copy>". */}
               <span
                 aria-hidden="true"
-                className="mono flex items-baseline justify-between gap-2 text-[rgba(245,241,232,.34)] transition-colors duration-300 group-hover:text-[rgba(245,241,232,.62)] group-focus-visible:text-[rgba(245,241,232,.62)] motion-reduce:transition-none"
+                className="mono flex items-baseline justify-between gap-2 text-[rgba(245,241,232,.34)] transition-colors duration-200 group-hover:text-[rgba(245,241,232,.62)] group-focus-visible:text-[rgba(245,241,232,.62)] motion-reduce:transition-none"
                 style={{ fontSize: 11, letterSpacing: "0.1em" }}
               >
                 <span>{String(i + 1).padStart(2, "0")}</span>
                 <span className="flex min-w-0 items-baseline gap-1.5">
                   <span className="truncate">{s.href}</span>
-                  <span className="transition-transform duration-300 motion-reduce:transition-none motion-safe:group-hover:translate-x-0.5 motion-safe:group-focus-visible:translate-x-0.5">
+                  <span className="transition-transform duration-200 motion-reduce:transition-none motion-safe:group-hover:translate-x-0.5 motion-safe:group-focus-visible:translate-x-0.5">
                     &rarr;
                   </span>
                 </span>
               </span>
-
-              <div aria-hidden="true" className="my-5 px-1 opacity-70 transition-opacity duration-500 group-hover:opacity-100">
-                <SurfaceGlyph href={s.href} />
-              </div>
-
-              <div>
-                {/* Two lines reserved, not nowrap: the longest labels ("Player Shooting",
-                    "Season Report") cannot fit one line at a sixth of the row and were being
-                    clipped by the card's overflow. Reserving the pair keeps every card's copy
-                    starting on the same line either way. */}
-                <span className="font-heading block text-xl font-bold leading-tight lg:h-[3.5rem]">{s.name}</span>
-                <span className="mt-3 block max-w-[30rem] text-sm" style={{ color: DIM, lineHeight: 1.6 }}>
-                  {s.copy}
-                </span>
-              </div>
+              <span className="font-heading mt-3 block text-lg font-bold leading-tight">{s.name}</span>
+              <span className="mt-2 block text-sm" style={{ color: DIM, lineHeight: 1.55 }}>
+                {s.copy}
+              </span>
             </Link>
           ))}
         </nav>
 
         {/* Outside the nav landmark on purpose: e2e/home.spec.ts asserts the card row is
-            exactly six links, and these three are the bar's OTHER menu rather than tabs.
-            (That spec was `about.spec.ts` until 2026-08-12; it moved with the page.) */}
+            exactly six links, and these three are the bar's OTHER menu rather than tabs. */}
         <p className="mt-6 text-sm" style={{ color: DIM, lineHeight: 1.7 }}>
           Three more sit behind the bar&rsquo;s <span className="mono">OTHER</span> menu, smaller
           in scope but finished the same way:{" "}
@@ -769,23 +527,24 @@ export function AboutContent({ stats }: { stats: AboutStats | null }) {
       </section>
 
       {/* ── 8. The way in ─────────────────────────────────────── */}
-      <section className={`fc-outro items-center px-6 text-center ${VIEW}`}>
-        <h2 className="fc-outro-title font-heading mx-auto max-w-4xl font-bold" style={{ fontSize: "clamp(2.3rem,7.5vw,6rem)", lineHeight: 0.98, letterSpacing: "-0.035em" }}>
+      <section className="fc-outro px-6 pb-28 pt-32 text-center">
+        <h2 className="fc-outro-item font-heading mx-auto max-w-4xl font-bold" style={{ fontSize: "clamp(2.2rem,6.5vw,4.6rem)", lineHeight: 0.98, letterSpacing: "-0.035em" }}>
           Read the schedule before it reads you
         </h2>
-        {/* `/games`, not `/`. This page moved to `/` on 2026-08-12, so a CTA pointing at `/`
-            would scroll the reader back to the top of the page they are already on. */}
-        <Link
-          href="/games"
-          className="fc-outro-cta mt-12 inline-block rounded-full px-9 py-4 text-sm font-semibold transition-transform hover:-translate-y-0.5"
-          style={{ background: BONE, color: INK }}
-        >
-          Open the games board
-        </Link>
+        {/* `/games`, not `/`: a CTA pointing at `/` would scroll the reader back to the top
+            of the page they are already on. */}
+        <div className="fc-outro-item">
+          <Link
+            href="/games"
+            className="mt-10 inline-block rounded-full px-9 py-4 text-sm font-semibold transition-transform hover:-translate-y-0.5 motion-reduce:transition-none"
+            style={{ background: BONE, color: INK }}
+          >
+            Open the games board
+          </Link>
+        </div>
         {/* The operating line (BRAND_GRAMMAR §8): the brand's sign-off, spent here and on
-            the OG card only — one moment, like the accent. It shares the CTA's reveal class
-            so the pair arrives together, after the title's argument lands. */}
-        <p className="fc-outro-cta mono mt-10" style={{ fontSize: 11, letterSpacing: "0.24em", color: "rgba(245,241,232,.42)" }}>
+            the OG card only. */}
+        <p className="fc-outro-item mono mt-9" style={{ fontSize: 11, letterSpacing: "0.24em", color: "rgba(245,241,232,.42)" }}>
           READ AGAINST THE BASELINE
         </p>
       </section>

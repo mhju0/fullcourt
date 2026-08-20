@@ -1,0 +1,159 @@
+<title>P2 The Brief</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500&display=swap">
+<style>
+  /* P2 — the credibility read as a dense document. The app's Front Office grammar
+     (rails, hairlines, mono eyebrows) on the dark ground. Near-zero motion: the hero
+     fades once on load; everything else is simply there. ~3 screens total. */
+  * { box-sizing: border-box; }
+  :root { --ink:#0B0D10; --bone:#F5F1E8; --dim:#8A8F98; --teal-hi:#2CB6D9; --indigo:#818CF8; --line:rgba(245,241,232,.13); --line2:rgba(245,241,232,.3); }
+  body { margin:0; background:var(--ink); color:var(--bone); font-family:"Geist",Arial,sans-serif; font-size:15.5px; line-height:1.6; }
+  .mono { font-family:"Geist Mono",monospace; }
+  .badge { position:fixed; top:12px; right:12px; z-index:9; font-family:"Geist Mono",monospace; font-size:10px; letter-spacing:.14em; color:var(--ink); background:var(--indigo); padding:4px 10px; border-radius:3px; }
+  .wrap { max-width:980px; margin:0 auto; padding:0 32px; }
+  .eyebrow { font-family:"Geist Mono",monospace; font-size:.66rem; letter-spacing:.16em; color:rgba(245,241,232,.42); text-transform:uppercase; border-top:2px solid var(--line2); padding-top:12px; margin:0 0 18px; display:flex; justify-content:space-between; }
+  section { padding:56px 0; }
+  h2 { font-weight:700; font-size:clamp(1.4rem,2.6vw,1.9rem); letter-spacing:-.02em; margin:0 0 22px; }
+  @media (prefers-reduced-motion: no-preference) {
+    .hero-in { animation:up .5s ease-out both; } .hero-in.d1{animation-delay:.08s} .hero-in.d2{animation-delay:.16s}
+    @keyframes up { from { opacity:0; transform:translateY(10px);} to { opacity:1; transform:none;} }
+  }
+
+  /* hero — compact, document masthead */
+  header { padding:96px 0 64px; }
+  header h1 { font-size:clamp(2.4rem,6vw,4.6rem); font-weight:700; letter-spacing:-.035em; line-height:.98; margin:0 0 20px; max-width:14ch; }
+  header .sub { color:var(--dim); max-width:44rem; margin:0; }
+  header .row { display:flex; gap:26px; align-items:center; margin-top:30px; flex-wrap:wrap; }
+  header a.cta { background:var(--bone); color:var(--ink); font-weight:600; font-size:.85rem; padding:12px 26px; border-radius:99px; text-decoration:none; }
+  header a.skip { color:var(--bone); opacity:.55; font-size:.85rem; text-decoration:none; border-bottom:1px solid rgba(245,241,232,.3); padding-bottom:2px; }
+  header a.skip:hover { opacity:.9; }
+  header svg { display:block; margin-bottom:34px; }
+
+  /* thesis as pull-quote rule */
+  .thesis { border-top:1px solid var(--line); border-bottom:1px solid var(--line); padding:34px 0; }
+  .thesis p { font-size:clamp(1.4rem,3vw,2.1rem); font-weight:500; letter-spacing:-.02em; margin:0; max-width:34ch; line-height:1.3; }
+
+  /* stat band */
+  .stats { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--line); border:1px solid var(--line); }
+  .stats > div { background:var(--ink); padding:20px 22px; }
+  .stats b { font-size:clamp(1.9rem,4vw,2.9rem); font-weight:700; letter-spacing:-.03em; display:block; line-height:1; }
+  .stats b.t { color:var(--teal-hi); }
+  .stats p { color:var(--dim); font-size:.82rem; margin:10px 0 0; line-height:1.5; }
+  @media (max-width:700px){ .stats { grid-template-columns:1fr; } }
+
+  /* naming compact */
+  .nm { display:grid; grid-template-columns:minmax(14rem,22rem) 1fr; gap:40px; }
+  @media (max-width:760px){ .nm { grid-template-columns:1fr; } }
+  .nm .word { font-size:clamp(2rem,4.6vw,3.2rem); font-weight:800; letter-spacing:-.03em; line-height:1; }
+  .nm .word i { font-style:normal; color:var(--indigo); }
+  .nm dl { margin:0; }
+  .nm .row { display:grid; grid-template-columns:8rem 1fr; gap:24px; padding:12px 0; border-top:1px solid var(--line); }
+  .nm dt { font-family:"Geist Mono",monospace; font-size:.72rem; letter-spacing:.14em; }
+  .nm dd { margin:0; color:var(--dim); font-size:.9rem; max-width:56ch; }
+  @media (max-width:560px){ .nm .row { grid-template-columns:1fr; gap:4px; } }
+
+  /* inputs + standard side by side */
+  .two { display:grid; grid-template-columns:1.2fr 1fr; gap:56px; }
+  @media (max-width:860px){ .two { grid-template-columns:1fr; } }
+  .in { display:grid; grid-template-columns:8.6rem 1fr; gap:20px; padding:10px 0; border-top:1px solid var(--line); }
+  .in b { font-size:.92rem; }
+  .in p { margin:0; color:var(--dim); font-size:.85rem; }
+  .rule { padding:12px 0; border-top:1px solid var(--line); }
+  .rule b { display:block; font-size:.95rem; }
+  .rule p { margin:3px 0 0; color:var(--dim); font-size:.85rem; }
+
+  /* tabs as an index */
+  .idx a { display:grid; grid-template-columns:2.4rem 11rem 1fr auto; gap:18px; align-items:baseline; padding:13px 4px; border-top:1px solid var(--line); text-decoration:none; color:var(--bone); transition:background .15s; }
+  .idx a:hover { background:rgba(245,241,232,.05); }
+  .idx .n { font-family:"Geist Mono",monospace; font-size:.68rem; color:rgba(245,241,232,.35); }
+  .idx b { font-size:.98rem; }
+  .idx p { margin:0; color:var(--dim); font-size:.85rem; }
+  .idx .arr { font-family:"Geist Mono",monospace; color:rgba(245,241,232,.4); font-size:.8rem; }
+  @media (max-width:700px){ .idx a { grid-template-columns:2rem 1fr auto; } .idx p { display:none; } }
+  .other { color:var(--dim); font-size:.85rem; margin-top:18px; }
+  .other a { color:var(--bone); }
+
+  footer { border-top:1px solid var(--line); padding:44px 0 80px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:20px; }
+  footer .op { font-family:"Geist Mono",monospace; font-size:.68rem; letter-spacing:.24em; color:rgba(245,241,232,.42); }
+  footer a.cta { background:var(--bone); color:var(--ink); font-weight:600; font-size:.85rem; padding:12px 26px; border-radius:99px; text-decoration:none; }
+</style>
+
+<div class="badge">PROTOTYPE P2 · THE BRIEF</div>
+
+<div class="wrap">
+  <header>
+    <svg class="hero-in" width="76" height="47" viewBox="-3 -3 66 38" fill="none">
+      <defs><clipPath id="c"><rect width="60" height="32" rx="4"/></clipPath><linearGradient id="f" x1="0" y1="0" x2="0" y2="32" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#E4E7EC"/></linearGradient><linearGradient id="s" x1="36" y1="0" x2="24" y2="32" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#98A2FF"/><stop offset="1" stop-color="#6A71EC"/></linearGradient></defs>
+      <g clip-path="url(#c)"><path d="M0 0 H33 L21 32 H0 Z" fill="url(#f)"/><path d="M33 0 H39 L27 32 H21 Z" fill="url(#s)"/><path d="M39 0 H60 V32 H27 Z" fill="#F2F4F7" fill-opacity=".08"/></g>
+      <rect x="-2" y="-2" width="64" height="36" rx="6" stroke="#F2F4F7" stroke-opacity=".3" stroke-width="1.2"/>
+    </svg>
+    <h1 class="hero-in d1">Rest is a stat</h1>
+    <p class="sub hero-in d1">Travel, days off and schedule density — scored for every team in every game since 1985-86. Every rate read against the venue baseline, every null published.</p>
+    <div class="row hero-in d2">
+      <a class="cta" href="#">Open the games board</a>
+      <a class="skip" href="#">Or read how it works &darr;</a>
+    </div>
+  </header>
+
+  <div class="thesis">
+    <p>Every game starts uneven. The schedule decided that months ago.</p>
+  </div>
+
+  <section>
+    <p class="eyebrow"><span>01 · THE EVIDENCE</span><span>SNAPSHOT · DERIVES LIVE</span></p>
+    <div class="stats">
+      <div><b class="t">+6.0</b><p>Win-rate points above what a home team wins anyway (59.9%), at the widest rest gaps, across 1,108 games.</p></div>
+      <div><b>41 seasons</b><p>27,400 completed games where the model made a call. The too-close ones carry no claim at all.</p></div>
+      <div><b class="t">+1.3</b><p>Across every call it makes — measured against home court, not a coin flip, which is most of what a raw win rate here would be.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow"><span>02 · THE NAME</span></p>
+    <div class="nm">
+      <div class="word">FULL<i>COURT</i></div>
+      <dl>
+        <div class="row"><dt>FULL</dt><dd>The whole record: every season since 1985-86, both arms of every split, the nulls published rather than buried.</dd></div>
+        <div class="row"><dt>COURT</dt><dd>The floor, and the trial. Home court is the confound the model refuses credit for — and the standard every claim is tried against.</dd></div>
+        <div class="row"><dt>FULL-COURT</dt><dd>A press covers both ends of the floor. So does the measurement: the rate and its baseline, the finding and its limit.</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <section>
+    <div class="two">
+      <div>
+        <p class="eyebrow"><span>03 · WHAT THE SCORE IS MADE OF</span></p>
+        <div class="in"><b>Recent workload</b><p>Games in the last 30 days, decaying. Last night counts far more than last week.</p></div>
+        <div class="in"><b>Travel</b><p>Miles between arenas, log-scaled. No phantom trips home.</p></div>
+        <div class="in"><b>Body clock</b><p>Time zones crossed, charged harder going east, fading as the team adjusts.</p></div>
+        <div class="in"><b>Back-to-backs</b><p>Weighted by the real hours between tip-offs, not just the calendar.</p></div>
+        <div class="in"><b>Altitude</b><p>Denver, Utah and Mexico City — plus the night after.</p></div>
+        <div class="in"><b>Density</b><p>Games per window against a normal pace, not a raw count.</p></div>
+      </div>
+      <div>
+        <p class="eyebrow"><span>04 · THE STANDARD</span></p>
+        <div class="rule"><b>Every number shows its sample size</b><p>Rules out: not knowing whether a result came from three games or three hundred.</p></div>
+        <div class="rule"><b>One model, used everywhere</b><p>Rules out: a game card quietly disagreeing with the backtest behind it.</p></div>
+        <div class="rule"><b>Limits are published with results</b><p>Rules out: a small win being told as a big one.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow"><span>05 · THE SURFACES</span><span>SIX TABS</span></p>
+    <div class="idx">
+      <a href="#"><span class="n">01</span><b>Games</b><p>Every season's slate by date, with fatigue scores, rest gaps, live scores in season.</p><span class="arr">/games &rarr;</span></a>
+      <a href="#"><span class="n">02</span><b>Season Report</b><p>One season read end to end: the rest call scored, each schedule priced in wins.</p><span class="arr">/season &rarr;</span></a>
+      <a href="#"><span class="n">03</span><b>Schedule Edge</b><p>Which teams a season's schedule favoured, counted in edge games and wins.</p><span class="arr">/schedule &rarr;</span></a>
+      <a href="#"><span class="n">04</span><b>Model Results</b><p>The backtest: thresholds, season trends, and every individual game.</p><span class="arr">/analysis &rarr;</span></a>
+      <a href="#"><span class="n">05</span><b>Playoff Rest</b><p>What surviving a long series costs the round after.</p><span class="arr">/playoffs &rarr;</span></a>
+      <a href="#"><span class="n">06</span><b>Player Shooting</b><p>Every player on no rest against three days off. One season of it is noise.</p><span class="arr">/shooting &rarr;</span></a>
+    </div>
+    <p class="other">Behind the <span class="mono">OTHER</span> menu: <a href="#">Shot Value</a>, <a href="#">Availability Cost</a>, <a href="#">Referee Effect</a>.</p>
+  </section>
+
+  <footer>
+    <a class="cta" href="#">Open the games board</a>
+    <span class="op">READ AGAINST THE BASELINE</span>
+  </footer>
+</div>
