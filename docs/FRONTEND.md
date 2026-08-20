@@ -435,104 +435,79 @@ in `e2e/navigation.spec.ts`. It sat in the top status bar until 2026-07-30, whic
 quiet to be found; the reference links are now the same size and weight as a tab, and the gap
 between the two groups is what says "not one of the six".
 
-Rebuilt 2026-07-30 into full-viewport sections (`calc(100svh - var(--term-chrome-h))`
-each, the
-subtraction being the sticky chrome — without it every section overran the fold by the header's
-height). **Eight sections since the 2026-08-19 narrative pass**, ordered as one argument: the
-claim, the thesis, **the name** (the FULL/COURT anatomy from
+**Compressed to content height and calmed, 2026-08-20.** The 2026-07-30 rebuild gave every
+section a full viewport minimum and the 2026-08-14 pass gave each its own scroll effect — a
+pinned centrepiece, a word-by-word scrubbed thesis, clip-path masks. A hand review of the
+final page called the result what it was: the pin was the page's one scroll-jack, the scrubs
+stuttered with trackpad jitter, and the viewport minimums left dead screens between content.
+All three were retired together, chosen from three hand-scrolled prototypes (the record is
+`docs/design/explorations/2026-08-20-front-door-motion/`).
+
+**Eight sections, ordered as one argument** (since the 2026-08-19 narrative pass): the claim,
+the thesis, **the name** (the FULL/COURT anatomy from
 [BRAND_GRAMMAR.md §2](design/BRAND_GRAMMAR.md), the page's one brand-indigo moment), the
-evidence, what the score is made of, the standard, the six surface cards, the way in — the
-cards moved from mid-page to just before the outro so the invitation follows the argument.
-The same pass **removed the evidence count-up** (for ~1.2s it showed values that were never
-measured, directly above the sentence naming the baseline — the first voice law rules it out;
-do not reintroduce it) and added the operating line ("READ AGAINST THE BASELINE") to the
-outro, one of its two sanctioned homes. The hero carries no buttons: they competed with the
-single line the page opens on. Evidence figures come from `getHistoricalBacktest` via the server page and
-are revalidated daily, because all three were hardcoded and all three had gone stale.
-Headings use `font-bold` (700), not extrabold: `layout.tsx` loads Geist at 400/500/600/700
-— the 700 face is carried for this page specifically — so an 800 request resolves to the
-700 face anyway.
+evidence, what the score is made of, the standard, the six surface cards, the way in. Each
+section takes the height its content earns (`py-28`); only the hero holds a near-viewport
+(`88svh` minus the chrome token). The 2026-08-19 pass also **removed the evidence count-up**
+(for ~1.2s it showed values that were never measured, directly above the sentence naming the
+baseline — the first voice law rules it out; do not reintroduce it) and added the operating
+line ("READ AGAINST THE BASELINE") to the outro, one of its two sanctioned homes.
+
+**One motion grammar, stated in `about-content.tsx`:** the hero assembles once on load (a
+plain `from`, safe because it has no trigger), and everything below it arrives once —
+`fromTo`, 350ms, 12px rise, 45ms stagger, `power1.out`, `once: true` at `top 90%` — and never
+moves again. No pins, no scrubs, no masks: the subtle-tier timing replaced reveals that ran
+900ms with 120ms stagger, two to three times slower than the micro-interaction band. Since
+nothing on the page is scroll-tied, the retracting bar no longer needs to be told about a pin;
+the `fcPinned` DOM flag and its `useRetractingHeader` bail-out were removed with it.
+
+The hero carries no buttons — they competed with the single line the page opens on — but since
+2026-08-20 it does carry one **whisper-weight text link** ("Skip to the games board →"): the
+page serves a credibility read *and* product visitors, and its only CTA sat five screens down.
+Distinct wording from the outro CTA, whose accessible name `e2e/home.spec.ts` pins at exactly
+one element. Evidence figures come from `getHistoricalBacktest` via the server page and are
+revalidated daily, because all three were hardcoded and all three had gone stale. Headings use
+`font-bold` (700), not extrabold: `layout.tsx` loads Geist at 400/500/600/700 — the 700 face
+is carried for this page specifically — so an 800 request resolves to the 700 face anyway.
+
+**Hairlines sit below text, never above** — except in top-aligned row lists (the inputs grid,
+the naming rows, the standard's rows), where a top rule is a row separator (reviewed by hand,
+2026-08-20: a rule above a centered or bottom-aligned block reads as clutter).
 
 Easy to get wrong twice on this page:
 
 - **The six surface cards keep their copy visible at rest.** It was `lg:opacity-0` until
-  hover, and five tall cards showing only a label read as a loading state, not an accordion.
-  Each card now carries a mono index, its route, a `SurfaceGlyph` miniature of what that page
-  draws, and the copy. Index, route and glyph are `aria-hidden`, so the link's accessible name
-  stays `"<label> <copy>"` — which is what `e2e/home.spec.ts` anchors on.
+  hover, and cards showing only a label read as a loading state. Each card carries a mono
+  index, its route and the copy in a 3-across grid (the `SurfaceGlyph` miniatures went with
+  the fixed-height row on 2026-08-20 — at grid-card size they read as decoration). Index and
+  route are `aria-hidden`, so the link's accessible name stays `"<label> <copy>"` — which is
+  what `e2e/home.spec.ts` anchors on.
 - **Every colour the hover contests lives in `CARD_SKIN`, never in `style`** (2026-08-13). The
   cards are links with a hover state that did not paint at all: the resting border and background
   were inline styles, and an inline style beats any non-`!important` class rule, so
   `hover:border-*` and `hover:bg-*` were dead on arrival. The ticket read this as a hover that was
   too subtle; measurement showed there was none. Both resting values moved into the class layer,
   which is the only fix — dialling the hover up would have changed nothing. `focus-visible:`
-  mirrors every hover declaration so keyboard reach shows the same state, the 1px lift is
+  mirrors every hover declaration so keyboard reach shows the same state, the lift is
   `motion-safe:` only, and the meta row's colour is a class for the same reason so it brightens
   with the card.
-
-#### Scroll choreography (2026-08-14)
-
-Sections 1 and 2 always had an effect that said what the section says — the hero assembles, the
-thesis lights word by word. Everything below them shared one generic `.fc-rise` scale-and-fade,
-applied identically to a headline figure, a principle row and a standards panel, and §4 and §7
-had no motion at all. The page stopped choreographing after §2 and started decorating. Each
-section now carries its own:
-
-| § | Hook | Effect |
-|---|---|---|
-| 1 | `.fc-hero-in` | entrance stagger, on load |
-| 2 | `.fc-word` | word-by-word brighten, scrubbed |
-| 3 | `.fc-evidence-item`, `[data-fc-count]` | rise + the figures counting to their value |
-| 4 | `.fc-card` | six cards in reading order, 8px / 70ms |
-| 5 | `.fc-input` | **pinned centrepiece** — the heading holds while six inputs build |
-| 6 | `.fc-rule` | `clip-path` mask, row by row |
-| 7 | `.fc-outro-title`, `.fc-outro-cta` | headline masks up, button follows a beat later |
-
-**§5 is the only pin, and it is `lg`-only.** The heading stays put while the six inputs light one
-at a time, so the method assembles in front of the reader instead of being listed at them — the
-animation *is* the explanation, which is the one thing that justifies holding someone in place.
-Everything else is an entrance reveal, because five consecutive scrubbed sections read as
-scroll-jacking. `gsap.matchMedia()` gates the pin rather than a `window.innerWidth` check, so
-crossing the breakpoint on a resize unwinds it cleanly; below `lg` the same six items simply
-arrive, since a phone has no held column to build against and a pin would eat the whole gesture.
-`scrub: 0.6` rather than `true`, or the build follows trackpad jitter and reads as a stutter.
-
-**A pin and the retracting bar have to be told about each other.** Inside a pin the document is
-genuinely scrolling while nothing on screen moves, so `useRetractingHeader` — which hides the bar
-on a downward delta — would slide the chrome away for no reason the reader can see. The pin sets
-`document.documentElement.dataset.fcPinned` for its duration and the hook bails on it. A DOM
-attribute rather than shared state because it is one boolean crossing one boundary, and a context
-provider would put the whole app's chrome behind a re-render only one route ever triggers.
-
-Three rules hold this together, and each one is a bug that already happened:
-
-- **Anything driven by a ScrollTrigger uses `fromTo`, never `from`.** (§1's hero is a plain
-  on-load `from` and stays one — no trigger, so none of this reaches it.) A `from` tween infers
+- **Anything driven by a ScrollTrigger uses `fromTo`, never `from`.** A `from` tween infers
   its end values from whatever the element is when the tween is built, and a later
-  `ScrollTrigger.refresh()` — which the library also runs itself, after a resize or once webfonts
-  land — can re-apply the *start* state to a trigger that
-  is still alive. The six surface cards hit exactly this: `onEnter`, `onStart` and `onComplete`
-  all fired and all six still held `opacity: 0; transform: translate(0px, 8px)` inline. The one
-  section a reader is meant to click was invisible, and `lint`, `typecheck`, the unit suite and
-  `build` all passed over it. Their trigger spans nearly a screen and had reached only 44% of it,
-  so unlike the shorter ones it never reached its end and never killed itself. `e2e/home.spec.ts`
-  now asserts all six settle visible.
-- **Never park a resting state in an inline `style`.** The whole effect block returns early under
-  `prefers-reduced-motion: reduce`, correctly — these are scroll animations. Anything dimmed or
-  offset in the markup therefore *stays* that way for those readers, and an inline value cannot
-  be restored by any class rule. `.fc-word` sat at an inline `opacity: 0.12`, so the sentence the
-  page is built around rendered at 12% for exactly the audience that could not get the animation
-  back; it is `opacity-[0.12] motion-reduce:opacity-100` now. Same cascade rule as `CARD_SKIN`.
-- **Counted figures go through `signedNumber`**, never a hand-rolled format — the sign is U+2212
-  and a bare zero carries none, and a figure that formatted itself differently mid-count than at
-  rest would be its own defect. The count is driven off a proxy object, and the tween does not run
-  until its trigger fires, so the server-rendered figure is what shows until the reader arrives
-  rather than flashing to zero on load. With no `stats` the element holds an em dash and is not
-  counted at all.
+  `ScrollTrigger.refresh()` — which the library also runs itself, after a resize or once
+  webfonts land — can re-apply the *start* state to a trigger that is still alive. The six
+  surface cards hit exactly this: `onEnter`, `onStart` and `onComplete` all fired and all six
+  still held `opacity: 0` inline, while `lint`, `typecheck`, the unit suite and `build` all
+  passed over it. `e2e/home.spec.ts` asserts all six settle visible, and that the inputs
+  section scrolls freely with its six items lit.
+- **Never park a resting state in an inline `style`.** The whole effect block returns early
+  under `prefers-reduced-motion: reduce`, correctly — so anything dimmed or offset in the
+  markup *stays* that way for those readers, and an inline value cannot be restored by any
+  class rule. The thesis once rendered at a permanent inline 12% opacity for exactly the
+  audience that could not get the animation back. The resting markup is now fully visible
+  everywhere; only GSAP ever dims anything, and only when motion is allowed.
 
-Display statements on this page take **no terminal period** (`Rest is a stat`, `Five surfaces`,
-`How a number earns its place`). Body copy and the scrubbing thesis keep normal punctuation —
-they are prose, not statements.
+Display statements on this page take **no terminal period** (`Rest is a stat`, `Six tabs`,
+`How a number earns its place`). Body copy keeps normal punctuation — prose, not statements.
 
 Known rough edge: the light app header sits directly above the dark hero, with no transition.
 
@@ -1566,9 +1541,10 @@ near-black `#2A313A` for the same reason).
 ### Two-layer header
 
 Sticky header = brand bar (52px) + main nav (44px) = **96px**, published as
-`--term-chrome-h` in `globals.css`. the front door's full-viewport sections subtract that token
-rather than a literal, because they overran the fold by exactly the difference the last two
-times the chrome changed height and they did not. See `nav-bar.tsx` above. Footer mirrors the
+`--term-chrome-h` in `globals.css`. The front door's hero subtracts that token rather than a
+literal (its sections stopped being full-viewport on 2026-08-20, but the hero still is, nearly),
+because the old sections overran the fold by exactly the difference the last two times the
+chrome changed height and they did not. See `nav-bar.tsx` above. Footer mirrors the
 broadcast aesthetic with mono metadata.
 
 ### Brand mark

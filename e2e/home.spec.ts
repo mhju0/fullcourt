@@ -40,6 +40,11 @@ test.describe("Front door", () => {
     await expect(enter).toHaveCount(1);
     await expect(enter).toBeVisible();
     await expect(page.getByRole("link", { name: "See the backtest" })).toHaveCount(0);
+
+    // Plus one whisper-weight early path (2026-08-20): the page serves product visitors
+    // as well as the credibility read, and its only CTA sat five screens down. Distinct
+    // wording, so the count-of-one on the outro CTA above stays meaningful.
+    await expect(page.getByRole("link", { name: /^Skip to the games board/ })).toHaveCount(1);
   });
 
   /**
@@ -151,12 +156,12 @@ test.describe("Front door", () => {
   });
 
   /**
-   * The thesis is the one sentence this page is built around, and it is dimmed to 12% in the
-   * markup so GSAP can brighten it word by word on scroll. The whole effect block returns early
-   * under `prefers-reduced-motion: reduce` — correctly, it is a scroll animation — but nothing
-   * restored the resting opacity, so the sentence stayed at 12% permanently for exactly the
-   * readers who cannot get the animation. `globals.css` neutralises `fadeInUp` / `scoreFlash` /
-   * `pulse` for this audience and never covered this one.
+   * The thesis is the one sentence this page is built around. Its word-by-word scroll
+   * brightening once left the sentence at 12% opacity permanently under
+   * `prefers-reduced-motion: reduce` — the effect block returned early and nothing restored
+   * the resting state. The word scrub is gone (2026-08-20) and the resting markup is fully
+   * visible, which is exactly what this pins: for the reduced-motion audience the sentence
+   * must be legible with no animation ever having run.
    *
    * Asserted as legibility rather than as an exact value, so retuning the effect keeps passing
    * and only a genuinely unreadable resting state fails.
@@ -169,13 +174,10 @@ test.describe("Front door", () => {
     await expect(thesis).toBeVisible({ timeout: 30_000 });
 
     // The effect is imported dynamically; give the chunk time to land and do nothing.
-    const opacities = async () =>
-      thesis.locator(".fc-word").evaluateAll((els) =>
-        els.map((el) => Number(getComputedStyle(el).opacity))
-      );
+    const opacity = async () =>
+      thesis.locator("p").first().evaluate((el) => Number(getComputedStyle(el).opacity));
 
-    await expect.poll(async () => (await opacities()).length).toBeGreaterThan(0);
-    await expect.poll(async () => Math.min(...(await opacities()))).toBeGreaterThan(0.85);
+    await expect.poll(opacity).toBeGreaterThan(0.85);
   });
 
   /**
@@ -206,17 +208,14 @@ test.describe("Front door", () => {
   });
 
   /**
-   * The one section that holds the reader. Pinning is desktop-only, so this asserts the two
-   * things that make it a pin rather than a scroll: the section stays put while the document
-   * moves under it, and the six inputs are all lit by the time it lets go.
-   *
-   * The second half matters more than the first. A build that never completes leaves inputs at
-   * their start opacity — the same invisible-content failure the surface cards shipped with, and
-   * just as silent.
+   * The pin is gone (2026-08-20): holding the section still while the document scrolled
+   * under it was the page's one scroll-jack, and the hand review retired it. What must
+   * still hold is the invisible-content guard — a reveal that never completes leaves the
+   * six inputs at their start opacity, the same silent failure the surface cards once
+   * shipped with. So this scrolls the section into view and asserts every input settles
+   * lit, and that the document was never held (the section keeps moving with the scroll).
    */
-  test("the score section holds while its six inputs build, then releases them all lit", async ({
-    page,
-  }) => {
+  test("the score section scrolls freely and its six inputs settle lit", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto("/");
     await expect(page.getByRole("heading", { name: "Rest is a stat" })).toBeVisible({
@@ -238,14 +237,13 @@ test.describe("Front door", () => {
         )
     );
 
-    // Held: 600px of document scroll, and the section has not moved off the top of the viewport.
+    // Not held: 300px more document scroll moves the section 300px, like any content.
     await page.evaluate((y) => window.scrollTo(0, y), start);
-    await expect.poll(top).toBe(0);
-    await page.evaluate((y) => window.scrollTo(0, y), start + 600);
-    await expect.poll(top).toBe(0);
+    const atStart = await top();
+    await page.evaluate((y) => window.scrollTo(0, y), start + 300);
+    await expect.poll(top).toBe(atStart - 300);
 
-    // Released, with every input lit.
-    await page.evaluate((y) => window.scrollTo(0, y), start + 1400);
+    // And every input settles visible.
     await expect.poll(async () => Math.min(...(await opacities()))).toBeGreaterThan(0.9);
   });
 
