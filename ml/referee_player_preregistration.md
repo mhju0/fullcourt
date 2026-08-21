@@ -138,3 +138,45 @@ and adequate sample, and is where a real finding is most likely.
 
 **Publishing anything from this axis remains Michael's explicit decision**, never a side effect of
 this file existing.
+
+---
+
+# Amendment — 2026-08-21, written before these three axes were run
+
+Axes A and C landed (`ml/REFEREE_AXES_REPORT.md`), which under ADR 0007 authorises **axis B**.
+Michael's brief also asked the module to go past the axes already on the books. Three questions are
+added here, and as with everything above, **this text was committed before any of their numbers were
+computed**. Each is a belief a basketball audience already holds, which is the point: the module is
+worth publishing only if it can check the folklore rather than restate it.
+
+**B — score state.** ADR 0007's deferred axis, now authorised. Per official, the foul tilt toward
+the trailing team, and whether officials differ in it. The folk version is "referees keep games
+close."
+
+**E — does the home whistle need a crowd?** A natural experiment the corpus contains by accident.
+In **2020-21**, 560 games report no attendance at all and 483 report a median crowd of about 3,100
+— one season, one rulebook, one set of officials, with and without an audience. The 2019-20 restart
+(88 games, neutral floor, no crowd) is the second comparison, against its own season's normal games.
+Reported three ways: within 2020-21 (crowd vs none), a dose-response on attendance across all
+eleven seasons with season held fixed, and the restart against its own season.
+
+*A stated caution, fixed now:* a missing attendance field is being read as "no crowd", which is an
+inference. It is supported by 2019-20, where the 88 missing games are exactly the restart, and by
+the fact that missingness is otherwise rare (1,207 of 1,207 present in 2015-16). It is not proof.
+The within-2020-21 comparison is reported both with and without the missing-attendance games.
+
+**F — are make-up calls real?** The most repeated belief about officiating: a foul on one team is
+followed by a compensating foul on the other. Measured as the share of consecutive foul pairs that
+switch teams, against a **within-game permutation null that holds each team's foul total fixed and
+shuffles only the order** — which is what separates a real alternation from the mechanical fact
+that possession changes hands. Restricted additionally to pairs less than two minutes apart, since
+the folk claim is about *quick* compensation. Then per official.
+
+**The gate is unchanged.** Global p < 0.01 before any name is printed, effect sizes in units a
+reader owns, and every null reported. Publishing remains Michael's explicit decision.
+
+**Additionally, the D1/D2 gate is re-run properly.** The analytic per-pair null treats pairs as
+independent and they are not — one player appears in many pairs. The spread of z across pairs is
+therefore re-tested against a **full-grid permutation** that reassigns officials to games and
+recomputes every pair, which respects that dependence. The pre-registered p < 0.01 gate applies to
+that figure, not to the analytic approximation.
