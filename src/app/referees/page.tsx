@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { MethodLink } from "@/components/method-link";
 import { PageHeader } from "@/components/page-header";
 import { RefereeEffectContent } from "@/components/referee-effect-content";
 import legendsData from "@/data/referee-legends.json";
@@ -51,6 +52,8 @@ export default function RefereesPage() {
         // length in the body; this has room for the refusal only.
         description="What separates officials is the mix of fouls they call and when they arrive — not who they favour. Three work every game, so nothing here is a fairness claim."
       />
+
+      <MethodLink surfaceHref="/referees" />
 
       <RefereeEffectContent style={data} timing={timing} legends={legends} />
     </div>

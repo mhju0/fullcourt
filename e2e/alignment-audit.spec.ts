@@ -44,6 +44,7 @@ const ROUTES = [
   "/behind-the-data/player-shooting",
   "/behind-the-data/shot-value",
   "/behind-the-data/availability",
+  "/behind-the-data/referees",
   "/behind-the-data/data-and-limits",
 ];
 

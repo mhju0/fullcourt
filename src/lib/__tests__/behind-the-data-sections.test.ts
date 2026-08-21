@@ -30,11 +30,15 @@ describe("methodologyHrefFor", () => {
     expect(methodologyHrefFor("/shooting")).toBe("/behind-the-data/player-shooting");
     expect(methodologyHrefFor("/shot-quality")).toBe("/behind-the-data/shot-value");
     expect(methodologyHrefFor("/availability")).toBe("/behind-the-data/availability");
+    expect(methodologyHrefFor("/referees")).toBe("/behind-the-data/referees");
   });
 
   it("answers null for a surface nothing documents, rather than guessing", () => {
-    expect(methodologyHrefFor("/referees")).toBeNull();
+    // `/referees` was the real example here until it got a section on 2026-08-22. It is now
+    // asserted the other way in "answers for each single-surface section" above, and what is
+    // left are routes that genuinely have no method page and are not meant to.
     expect(methodologyHrefFor("/nope")).toBeNull();
+    expect(methodologyHrefFor("/")).toBeNull();
   });
 });
 
@@ -60,19 +64,17 @@ describe("the section table", () => {
   });
 
   /**
-   * Every published surface should reach its method from the page a reader doubts a number on.
+   * Every published surface reaches its method from the page a reader doubts a number on.
    *
-   * `/referees` is still the one exclusion, and as of 2026-08-22 it is **a known gap rather than a
-   * stance**: the page shipped that day and its Behind the Data section did not. The exemption is
-   * kept so the suite reports the truth rather than a failure nobody is acting on — but it is debt,
-   * it is recorded in docs/FRONTEND.md as open work, and the filter below should be deleted (not
-   * the test) once `/behind-the-data/referees` exists. Its method is written up in
-   * `ml/REFEREE_PLAYER_REPORT.md` in the meantime.
+   * There is no exemption any more. `/referees` carried one from 2026-07-30 while it was held
+   * back, and briefly as debt after it was published on 2026-08-22; `/behind-the-data/referees`
+   * closed it the same week. The filter this test used to carry is deleted rather than updated,
+   * which is the point — the exemption existed to be removed.
    */
   it("documents every published product surface", () => {
-    const undocumented = PRIMARY_NAV_ITEMS.map((item) => item.href)
-      .filter((href) => href !== "/referees")
-      .filter((href) => methodologyHrefFor(href) === null);
+    const undocumented = PRIMARY_NAV_ITEMS.map((item) => item.href).filter(
+      (href) => methodologyHrefFor(href) === null
+    );
 
     expect(undocumented).toEqual([]);
   });
