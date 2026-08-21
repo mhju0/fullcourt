@@ -1,10 +1,10 @@
 /**
  * Renders the finished Referee Effect copy, which nothing else does.
  *
- * The page is deliberately unpublished, so `RefereeEffectContent` is not mounted anywhere in the
- * app and no e2e spec reaches it. Without this, the copy could carry a runtime error, a broken
- * prop or a missing space for as long as it stays held back, and the defect would surface on the
- * day it is published — the worst possible moment.
+ * Written while the page was unpublished, when nothing else mounted `RefereeEffectContent` at all.
+ * `/referees` went live on 2026-08-22 and `e2e/referees.spec.ts` now reaches the rendered page, so
+ * this is no longer the only cover — but it stays, because it runs in the commit gate and e2e
+ * deliberately does not. A copy defect should fail before a push, not during a hand-run suite.
  *
  * `renderToStaticMarkup` needs no DOM, so this runs in the suite's existing node environment and
  * adds no dependency. Built with `createElement` rather than JSX because the suite includes

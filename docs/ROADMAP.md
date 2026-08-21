@@ -96,6 +96,21 @@ added alongside it.
   worth +1.3 points, not +11.2. See
   [ADR 0006](adr/0006-fatigue-weights-were-fitted-and-the-model-was-not-changed.md) and its
   2026-08-06 addendum.
+- **Referee Effect** — what separates NBA officials, at `/referees`. Three chapters: the **mix**
+  of fouls each one calls against the league's own seasonal mix (the real, clear finding), **when**
+  in a game they arrive (real and narrow — the ends separate officials, the middle does not), and
+  the **folklore** chapter added 2026-08-21, which tests the sport's loudest claims about
+  individual referees against 913 playoff games and 13,114 regular-season ones. Held back from
+  2026-07-30 to 2026-08-22 because a per-official table without its framing reads as the bias
+  claim the page exists to refuse. Published on Michael's explicit instruction, under the
+  pre-registrations in [ADR 0007](adr/0007-referee-analysis-axes-are-pre-registered.md) and
+  `ml/referee_player_preregistration.md`. **The famous Scott Foster / Chris Paul playoff record is
+  real (1–10 against 6.34 expected, the most lopsided of 689 pairs) and is published beside the
+  arithmetic that dissolves it** — 7 pairs clear p < 0.01 where chance predicts 6.9, and the pair
+  is not even as extreme as the maximum a grid that size produces from nothing. The page also
+  retires two beliefs: make-up calls are possession changing hands (the sign flips after an
+  offensive foul), and no official puts stars in early foul trouble more than another.
+
 - **Availability Cost** — what a missing rotation player costs, in the same points of margin as
   the schedule terms: losing a team's best player is worth 2.86, against home court's 2.82.
   Retrospective by construction, so no live lineup feed and no database table — a generated
@@ -135,26 +150,10 @@ added alongside it.
 
 ## In progress
 
-- **Referee Effect** (`/referees`, under the OTHER menu) — **built but deliberately
-  unpublished.** The ingest (`scripts/fetch_officials.ts`), both committed datasets, the
-  `RefereeStyleContent` table and its unit tests all exist and work; the e2e specs that exercised
-  the table are kept and skipped rather than deleted. What is unfinished is the writing that has
-  to sit around the numbers, and that is not cosmetic: a table of per-official foul rates without
-  it invites exactly the bias reading the surface exists to refuse, since three officials work
-  every game and the play-by-play never records which one blew the whistle, so each figure is
-  roughly a third of the real effect.
-
-  The page therefore shows an in-progress card, and the nav guide says "Still being built."
-  **This is an editorial decision, not drift** — it has been mistaken for stale documentation
-  once already. Restoring it is two edits, both named in the page's docstring.
-
-  As of 2026-08-06 the gate is stated more precisely: the writing is unfinished because the one
-  finding behind it is thinner than the surface deserves, so more of the cached corpus is being
-  asked before anything is published. What may be asked is fixed in advance by
-  [ADR 0007](adr/0007-referee-analysis-axes-are-pre-registered.md) — three named axes, the
-  |z| ≥ 2 observed-versus-expected bar the module already uses, player-level effects explicitly
-  deferred to their own decision, and the rule that a null ships the page rather than extending
-  the stub indefinitely.
+Nothing. **`/referees` was the last held-back surface and was published on 2026-08-22**, which
+empties this section for the first time since the module was built. Its history is recorded under
+Shipped modules below, and the standing rule that replaced its ban is in
+[CLAUDE.md](../CLAUDE.md) — restoring the in-progress card is now the mistake, not the safe move.
 
 ## Known and not fixed
 

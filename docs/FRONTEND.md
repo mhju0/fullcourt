@@ -536,11 +536,11 @@ from the page it explains. `BehindTheDataShell` supplies the header and the sect
 `behind-the-data-parts.tsx` supplies the shared prose primitives so seven pages cannot drift into
 seven typographic treatments of the same content.
 
-`/referees` has no section here, and is also the one product surface currently held back — its
-page shows an in-progress card rather than the foul-style table. Its method (per-season share
-baselining, the |z| ≥ 2 emphasis rule, why a call cannot be attributed to one official) is the
-writing that is unfinished, which is why the surface is unpublished; a section here would land
-with it.
+`/referees` has no section here yet, though it is published as of 2026-08-22. Its method
+(per-season share baselining, the |z| ≥ 2 emphasis rule, the 689-pair noise floor, why a call
+cannot be attributed to one official) is documented on the page itself and in
+`ml/REFEREE_PLAYER_REPORT.md`; a Behind the Data section for it is **open work**, not a deliberate
+omission.
 
 **Colour is load-bearing here** (2026-07-30). The pages were near-uniform black-on-white and
 read as one undifferentiated wall, so each primitive carries an accent and each accent means one
@@ -595,14 +595,13 @@ left to review:
 The season trend is one series, so it carries no legend and one hue, and every column holds a
 `title` — a reader gets any season's figure without the page shipping a line of JavaScript.
 
-### `/referees` — foul style, timing and folklore *(built, deliberately unpublished)*
+### `/referees` — foul style, timing and folklore *(published 2026-08-22)*
 
-**The page currently renders an in-progress card, not the surface below.** Everything described in
-this section exists and works — it is held back because publishing it is an editorial act, and one
-this repo has already got wrong once (PRs #9 → #10). Restoring it is two edits, both named in the
-docstring of `src/app/referees/page.tsx`: swap the `MessageCard` for
-`<RefereeEffectContent style={data} timing={timing} legends={legends} />`, and un-skip the table
-block in `e2e/referees.spec.ts`. Treat this as an editorial state, not stale documentation.
+**Held back from 2026-07-30 until 2026-08-22**, then published on Michael's explicit instruction.
+The direction of the hazard has flipped and the note in CLAUDE.md now says so: putting the
+in-progress `MessageCard` back would repeat the 2026-08-04 mistake (PRs #9 → #10) in reverse.
+Publishing removed the `inProgress` flag from `primary-navigation.ts` and, with it, the last user
+of the `IN PROGRESS` tag in `nav-bar.tsx`; both were deleted rather than left unused.
 
 The finished copy is `referee-effect-content.tsx`, which composes three chapters — the foul-mix
 table, the quarter-timing finding, and `referee-legends-content.tsx`, the folklore chapter added
@@ -784,12 +783,13 @@ completion of auto-triggered ones — and a modal that only survives as a footer
 nobody opens. The home page's thesis header does the site-level explaining; each page's
 `PageHeader` does the page-level explaining.
 
-**The one thing it uniquely carried had to survive it.** `/referees` was labelled
-`"Still being built."` in the guide, which is the deliberate, load-bearing stance recorded in
-CLAUDE.md. That warning now renders as an `IN PROGRESS` tag beside `REFEREE EFFECT` in the
-`OTHER` menu, driven by `inProgress: true` on its `primary-navigation.ts` entry, so navigation
-still says the surface is unfinished *before* it is opened. `e2e/referees.spec.ts` asserts it
-there. Do not drop that tag.
+**The one thing it uniquely carried outlived it by eleven days.** `/referees` was labelled
+`"Still being built."` in the guide; when the guide went, that warning moved to an `IN PROGRESS`
+tag beside `REFEREE EFFECT` in the `OTHER` menu, driven by `inProgress: true` on its
+`primary-navigation.ts` entry — navigation had to say a surface was unfinished *before* it was
+opened. **Both are gone as of 2026-08-22**, removed with the state they described when the page
+was published. The pattern is worth knowing rather than reinventing: if a surface is ever held
+back again, git history has the flag, the tag and the e2e assertion that guarded it.
 
 ### `matchup-parts.tsx` — the shared matchup pieces
 

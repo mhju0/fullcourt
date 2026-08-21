@@ -126,10 +126,13 @@ Specs (16): `e2e/home.spec.ts` (the front door), `e2e/games.spec.ts`, `e2e/align
 `e2e/alignment-law.spec.ts`, `e2e/analysis.spec.ts`, `e2e/availability.spec.ts`,
 `e2e/behind-the-data.spec.ts`, `e2e/navigation.spec.ts`, `e2e/page-headers.spec.ts`,
 `e2e/playoffs.spec.ts`, `e2e/pwa.spec.ts`, `e2e/referees.spec.ts`, `e2e/schedule-disparity.spec.ts`,
-`e2e/season.spec.ts`, `e2e/shot-quality.spec.ts`, `e2e/shooting.spec.ts` — **144 tests**
-(139 passed / 5 skipped, verified 2026-08-15; several specs generate their cases in a loop, so
-counting `test(` calls in the source undercounts). The 5 skipped are the `/referees` table
-assertions, kept rather than deleted while that surface is unpublished.
+`e2e/season.spec.ts`, `e2e/shot-quality.spec.ts`, `e2e/shooting.spec.ts` — **148 tests**
+(148 passed / 0 skipped, verified 2026-08-22; several specs generate their cases in a loop, so
+counting `test(` calls in the source undercounts). The suite has no skipped specs for the first
+time: the five that were held back with `/referees` went live when it was published, and **two of
+them had to be rewritten rather than simply un-skipped** — they asserted copy ("This is style, not
+bias.", "how much more or less often") that had been replaced while they sat skipped. A skipped
+spec is not a passing one, and un-skipping is a rewrite until proven otherwise.
 
 `e2e/behind-the-data.spec.ts` covers the reference section: that it is reachable from the
 `Reference` landmark and *not* from `Main navigation` or the `OTHER` menu, that every section is

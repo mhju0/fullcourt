@@ -153,15 +153,10 @@ Full list in [API.md](API.md).
   imported from source (`FATIGUE_CONSTANTS` and friends) so the prose cannot drift from the code,
   and measured figures carry the date they were measured.
 - `app/referees/page.tsx` — **Referee Effect** (nav label `REFEREE EFFECT`, under `OTHER`).
-  **Built but deliberately unpublished:** the page renders an in-progress `MessageCard`, not the
-  foul-style table. The home-whistle question returned a null on 2026-07-30 and the surface was
-  rebuilt on 2026-07-31 around a different one — the *mix* of fouls an official calls — but the
-  writing that makes that legible as style rather than fairness is unfinished, so it is held
-  back. The ingest, dataset, `RefereeStyleContent` and its tests are all intact; restoring is two
-  edits, named in the page's docstring. A server component with no fetch either way, the same
-  no-runtime-path shape as `/availability`.
-- Client data fetching uses SWR through `src/lib/fetcher.ts`; live updates use Supabase
-  Realtime via `src/hooks/useLiveGames.ts`.
+  **Published 2026-08-22, after being held back since 2026-07-30:** the page renders the finished
+three-chapter surface — foul mix, timing, and the folklore chapter measured under
+`ml/referee_player_preregistration.md`. Restoring the in-progress `MessageCard` is now the mistake
+rather than the safe move; see the note in CLAUDE.md where its ban used to be.
 
 Design system and component props in [FRONTEND.md](FRONTEND.md).
 

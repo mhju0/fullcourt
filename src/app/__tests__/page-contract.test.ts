@@ -97,7 +97,6 @@ const NO_PAGE_HEADER = new Map([
 /** Routes that are real pages but deliberately take no tab. */
 const NO_NAV_TAB = new Map([
   ["/", "the front door: reached by the wordmark and the footer, not by a tab"],
-  ["/referees", "built and deliberately unpublished — see the hard ban in CLAUDE.md"],
   ["/behind-the-data", "the reference section, reached by its own right-aligned link"],
 ]);
 
