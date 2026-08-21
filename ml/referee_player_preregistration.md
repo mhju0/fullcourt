@@ -180,3 +180,34 @@ independent and they are not — one player appears in many pairs. The spread of
 therefore re-tested against a **full-grid permutation** that reassigns officials to games and
 recomputes every pair, which respects that dependence. The pre-registered p < 0.01 gate applies to
 that figure, not to the analytic approximation.
+
+---
+
+# Correction and playoff extension — 2026-08-21, after the first run
+
+Two changes to the population, both recorded here rather than quietly folded into a re-run.
+
+**1. A filter bug, found and fixed.** The first run required exactly three listed officials. ESPN
+also lists a **standby fourth** at `order` 4 — on 295 regular-season games, and on 309 of the 919
+playoff games, rising to most playoff games by 2025-26. Those games were silently dropped. The
+array is always sorted by `order` (checked on a 1,200-payload sample: zero unsorted, zero missing
+an order value), so the working crew is the first three entries and the filter is now `>= 3`.
+Regular-season population 12,813 → **13,114 games**. Every figure in
+`ml/REFEREE_PLAYER_REPORT.md` is the corrected run. The pre-registered questions, thresholds and
+protocol are unchanged; this was a data-handling defect, not a change of mind.
+
+**2. The playoffs were added, and the claim list predates them.** The pre-registration above
+recorded "there are no playoff games in the corpus" as a stated limit, and named its five claims
+under it. Michael asked for the postseason on 2026-08-21, and
+`scripts/fetch_playoff_officials.ts` fetched **919 games** (2015-16 … 2025-26, 913 usable) from
+scoreboards already on disk. **The five pairs were committed in 91715b8 before that script
+existed**, which is the only reason the postseason result carries any evidential weight at all.
+
+One addition to the protocol was required and is stated before its result is read: playoff
+expectation is **opponent-aware**, from a win model fitted on all playoff team-games using each
+side's regular-season strength and home court. Senior officials draw later rounds against stronger
+teams, and the venue-split expectation used for the regular season does not remove that.
+
+The reporting rule is unchanged and matters more here than anywhere else: playoff pairs share a
+handful of games, the count that noise alone produces is printed beside every count, and a pair
+under the minimum is **untestable**, whatever its record.

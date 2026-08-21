@@ -60,7 +60,7 @@ def load():
     players = pd.read_csv(DATA_DIR / "players.csv")
     fouls = pd.read_csv(DATA_DIR / "fouls.csv")
     games = games[
-        (games.season_type == 2) & (games.n_officials == 3)
+        (games.season_type == 2) & (games.n_officials >= 3)
         & (games.n_plays > 0) & (games.n_player_rows > 0)
     ].copy()
     ids = set(games.event_id)

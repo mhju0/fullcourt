@@ -46,6 +46,8 @@ def main() -> None:
     player = load("player_axes_results.json")
     expl = load("exploratory_results.json")
     mk = load("makeup_diagnostic.json")
+    po = load("playoff_claims.json")
+    conf = load("playoff_confound.json")
 
     L: list[str] = []
     w = L.append
@@ -61,7 +63,14 @@ def main() -> None:
       f"play stream and a box score; {axes.get('n_fouls', 0):,} foul plays; "
       f"{corpus.get('player_games', 0):,} player-games. Seasons "
       f"{corpus.get('seasons', ['?'])[0]} … {corpus.get('seasons', ['?'])[-1]}. "
-      "**No playoff games** — the cache holds the regular season only.")
+      f"The postseason was added on 2026-08-21 — **{po.get('playoff_games', 0)} playoff games** over "
+      "the same seasons, fetched by `scripts/fetch_playoff_officials.ts`, and reported in its own "
+      "section below. Every regular-season figure above and below excludes it.")
+    w("")
+    w("*Correction, 2026-08-21.* An earlier run filtered on exactly three listed officials, which "
+      "silently dropped the 295 regular-season and 309 playoff games where ESPN also lists a "
+      "standby fourth. The filter is now `>= 3` and the working crew is the first three by "
+      "`order`; every figure here is the corrected run.")
     w("")
     w("Every test asks the same question first: does the official dimension carry more variance "
       "than a permutation null in which each official's games are a random draw from the same "
@@ -165,6 +174,74 @@ def main() -> None:
                   f"{e_['expected_wins']:.2f} W | {e_['wins_above_expected']:+.2f} W | {z} |")
         w("")
         w("⚠︎ = fewer than the pre-registered minimum of out-of-sample games.")
+
+    # ---------------- playoffs
+    if po and conf:
+        sw = conf.get("sweep_opponent_aware", {})
+        w("")
+        w("## The playoffs, where the legends actually live")
+        w("")
+        w(f"The five pairs were named in the pre-registration and committed **before "
+          f"`scripts/fetch_playoff_officials.ts` existed**, so the claim list could not have been "
+          f"chosen with any sight of these numbers. Expectation here is opponent-aware: a win model "
+          f"fitted on all {conf['model']['n_team_games']:,} playoff team-games from each side's "
+          f"regular-season strength and home court, because senior officials draw later rounds "
+          f"against better teams and that alone would manufacture losing records.")
+        w("")
+        w("| claim | playoff record | expected | difference | p | opponent strength with / without |")
+        w("|---|---|---|---|---|---|")
+        for c in conf["claims"]:
+            w(f"| {c['official']} × {c['player']} | {c['wins']}–{c['losses']} | "
+              f"{c['expected_wins_opponent_aware']:.2f} W | {c['wins_above_expected']:+.2f} W | "
+              f"{c['p_at_or_below']:.4f} | {c['mean_opponent_strength_with']:.3f} / "
+              f"{c['mean_opponent_strength_without']:.3f} |")
+        w("")
+        w("Four of the five are nothing, and Brothers × Durant runs the *opposite* way. The fifth "
+          "is not nothing.")
+        if sw:
+            w("")
+            cp0 = conf["claims"][0]
+            w(f"**Chris Paul's teams went {cp0['wins']}–{cp0['losses']} in playoff games Scott "
+              f"Foster worked**, against {cp0['expected_wins_opponent_aware']:.2f} "
+              f"expected. His games with Foster were not harder than his other playoff games "
+              f"(opponent strength {cp0['mean_opponent_strength_with']:.3f} against "
+              f"{cp0['mean_opponent_strength_without']:.3f}), so the assignment "
+              f"explanation does not cover it. Across every playoff pair with at least "
+              f"{sw['min_games']} shared games it ranks **#{sw['foster_paul_rank']} of "
+              f"{sw['n_pairs']:,}** — the single most lopsided official-and-player record in eleven "
+              "postseasons.")
+            w("")
+            w("**And that is exactly the problem.** Somebody has to be first:")
+            w("")
+            w(f"- The most extreme p-value {sw['n_pairs']:,} pairs of pure noise would produce is "
+              f"**{sw['expected_min_p']}**. Foster × Paul comes in at **{sw['ranked'][0]['p_two_sided']:.4f}** "
+              "— barely past what the maximum of nothing looks like.")
+            w(f"- {sw['n_p_under_01']} pairs clear p < 0.01. Chance predicts {sw['expected_under_01']}.")
+            w(f"- {sw['n_p_under_05']} clear p < 0.05. Chance predicts {sw['expected_under_05']} — "
+              "there are *fewer* than there should be.")
+            w("")
+            w("| official | player | record | expected | p |")
+            w("|---|---|---|---|---|")
+            for t in sw["ranked"][:8]:
+                w(f"| {t['official']} | {t['player']} | {t['wins']}/{t['games']} | "
+                  f"{t['expected']:.2f} | {t['p_two_sided']:.4f} |")
+            w("")
+            w("Scott Foster appears five times in that list and **four of them are teams winning** "
+              "— Miles McBride, Josh Hart, OG Anunoby and Mitchell Robinson all went roughly "
+              "ten-and-one with him. The same official is a curse for one star and a charm for four "
+              "others, which is what a large grid of coin flips looks like from close up.")
+        claims = {(c["official"], c["player"]): c for c in po.get("claims", [])}
+        cp = claims.get(("Scott Foster", "Chris Paul"))
+        if cp:
+            ins, oos = cp.get("playoffs_in_sample", {}), cp.get("playoffs_out_of_sample", {})
+            w("")
+            w("**The one test that would settle it cannot be run.** The claim was in circulation by "
+              f"2019-20. Before that split Paul was {ins.get('wins', 0)}–{ins.get('losses', 0)} with "
+              f"Foster; after it, {oos.get('wins', 0)}–{oos.get('losses', 0)}. The direction holds, "
+              "but both halves fall under the pre-registered minimum of "
+              f"{po['min_playoff_pair_games']} games, so **neither is testable** and no verdict is "
+              "drawn from either. A claim the public found by looking can only be confirmed by "
+              "games nobody had seen when they found it, and there are five of those.")
 
     # ---------------- make-up calls
     f = expl.get("axis_f", {})

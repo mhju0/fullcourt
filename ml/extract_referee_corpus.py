@@ -17,6 +17,11 @@ Three parsing rules are load-bearing and are asserted rather than assumed:
 * ``Offensive Foul Turnover`` is dropped. The NBA logs an offensive foul twice — once as
   the foul, once as the turnover — and counting both inflates fouls per game by ~3.2.
   ``scripts/fetch_officials.ts`` established this against box-score PF totals.
+* ``n_officials`` counts everyone ESPN lists, which is **not** always the working crew. Playoff
+  games — and 295 regular-season ones — list a fourth standby official at ``order`` 4, and by
+  2025-26 that is the majority of playoff games. The array is always sorted by ``order`` (checked
+  on a 1,200-payload sample: zero unsorted, zero missing an order), so ``official_1..3`` are the
+  three who worked and the filter downstream is ``n_officials >= 3``, never ``== 3``.
 * In a foul play's ``participants``, index 0 committed the foul and index 1 drew it. The
   play text ("X shooting foul (Y draws the foul)") is parsed back on a sample to check it.
 * ``header.season.type`` 2 is the regular season. Playoff payloads are kept in the table

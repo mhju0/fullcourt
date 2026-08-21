@@ -47,7 +47,7 @@ log = logging.getLogger(__name__)
 def main() -> None:
     rng = np.random.default_rng(SEED)
     games = pd.read_csv(DATA_DIR / "games.csv")
-    games = games[(games.season_type == 2) & (games.n_officials == 3) & (games.n_plays > 0)]
+    games = games[(games.season_type == 2) & (games.n_officials >= 3) & (games.n_plays > 0)]
     fouls = pd.read_csv(DATA_DIR / "fouls.csv")
     fouls = fouls[fouls.event_id.isin(set(games.event_id))]
     fouls = fouls.dropna(subset=["committing_is_home", "elapsed_sec"]).copy()
