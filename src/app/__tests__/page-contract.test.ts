@@ -138,6 +138,19 @@ describe("every page is reachable and measured", () => {
     for (const href of NAV) expect(real, `nav href ${href}`).toContain(href);
   });
 
+  it("every route with a PageHeader is in the header spec's route list", () => {
+    // The header's two-line measure is an e2e contract, and a route missing from that list is
+    // simply never measured. `/behind-the-data/referees` shipped that way on 2026-08-22 and was
+    // caught by eye rather than by the suite — the alignment audit had this guard and the header
+    // spec did not, which is the only reason one of them held and the other did not.
+    const spec = readFileSync(join(ROOT, "e2e", "page-headers.spec.ts"), "utf8");
+    const listed = [...spec.matchAll(/"(\/[a-z0-9/-]*)"/g)].map((m) => m[1]);
+    for (const { route } of ROUTES) {
+      if (NO_PAGE_HEADER.has(route)) continue;
+      expect(listed, `${route} missing from page-headers.spec.ts`).toContain(route);
+    }
+  });
+
   it("every route is in the alignment audit's route list", () => {
     // A page absent from the instrument is a page nobody measures. `/` is out on purpose and
     // says so in the spec; the error pages have no route of their own to visit.

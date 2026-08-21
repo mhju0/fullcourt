@@ -148,8 +148,9 @@ Full list in [API.md](API.md).
   `OTHER`). A pure server component with no fetch, no client bundle and no loading state: every
   figure is a published constant from `src/lib/availability-facts.ts`. Same shape as the Playoff
   Rest argument, for the same reason — it renders a finished measurement, not a query.
-- `app/behind-the-data/**` — **the reference section**, eight static routes (an index plus one per
-  model) documenting each model's terms, constants and limits. No data fetching: constants are
+- `app/behind-the-data/**` — **the reference section**, nine static routes (an index plus one per
+  model, `/behind-the-data/referees` added 2026-08-22) documenting each model's terms, constants
+  and limits. No data fetching: constants are
   imported from source (`FATIGUE_CONSTANTS` and friends) so the prose cannot drift from the code,
   and measured figures carry the date they were measured.
 - `app/referees/page.tsx` — **Referee Effect** (nav label `REFEREE EFFECT`, under `OTHER`).
@@ -597,8 +598,11 @@ COMMITTED   src/data/referee-foul-style.json   ── plus src/data/referee-whis
                  │           and src/lib/__tests__/referee-whistle.test.ts
             src/lib/referee-foul-style.ts  ── types, the |z| >= 2 emphasis rule, column set
                  │
-            app/referees/page.tsx (server component, no fetch)  →  MessageCard "IN PROGRESS"
-                                                          (RefereeStyleContent, held back)
+            src/data/referee-timing.json      ── quarter timing + home/away splits
+            src/data/referee-legends.json     ── the folklore chapter's figures + noise floor
+                 │
+            app/referees/page.tsx (server component, no fetch)
+                 └─→ RefereeEffectContent  ── mix table + timing + RefereeLegendsContent
 ```
 
 **The page asks a narrower question than its name.** The two fairness questions — does any

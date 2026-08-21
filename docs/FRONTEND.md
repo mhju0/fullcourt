@@ -35,13 +35,16 @@ the actual code (`src/app/`, `src/components/`, `src/app/globals.css`).
 
 ## Pages
 
-The product routes shipping today are `/`, `/season`, `/analysis`, `/playoffs`, `/schedule`,
-`/shot-quality`, `/shooting`, `/referees` and `/availability`, plus a branded App Router
-`not-found` page for unknown paths. (This sentence used to open with a count, which went stale
-twice — first at "five" when it omitted `/shooting`, then at "seven". The list is the fact; a
-number in front of it is a second copy of the same fact that nothing checks.)
-`/upcoming` was retired: it is a permanent redirect to `/` (`next.config.ts`), whose UPCOMING
-view now renders what it used to.
+The product routes shipping today are `/games`, `/season`, `/schedule`, `/analysis`, `/playoffs`,
+`/shooting`, `/shot-quality`, `/availability` and `/referees` — the nav's own order — plus `/`,
+the front door, which stopped being a product surface in the 2026-08-12 swap, and a branded App
+Router `not-found` page for unknown paths. (This sentence used to open with a count, which went
+stale twice — first at "five" when it omitted `/shooting`, then at "seven". The list is the fact;
+a number in front of it is a second copy of the same fact that nothing checks. The list itself
+then went stale a third way: it kept `/` in the product set and lost `/games` entirely when the
+board moved there, which is the failure a list cannot protect against on its own.)
+`/upcoming` was retired: it redirects to `/games` (`next.config.ts`), whose UPCOMING view renders
+what it used to. `/about` redirects to `/` for the same reason — the address had been shared.
 
 ### `/games` — Games (`src/app/games/page.tsx`, client component)
 
@@ -533,8 +536,8 @@ two files are line-for-line equivalents and must move together.
 `data-and-limits`. Real
 routes rather than client-side tabs, so each method is linkable, crawlable, and deep-linkable
 from the page it explains. `BehindTheDataShell` supplies the header and the section sub-nav;
-`behind-the-data-parts.tsx` supplies the shared prose primitives so seven pages cannot drift into
-seven typographic treatments of the same content.
+`behind-the-data-parts.tsx` supplies the shared prose primitives so eight pages cannot drift into
+eight typographic treatments of the same content.
 
 `/referees` has no section here yet, though it is published as of 2026-08-22. Its method
 (per-season share baselining, the |z| ≥ 2 emphasis rule, the 689-pair noise floor, why a call

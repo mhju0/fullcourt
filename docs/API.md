@@ -101,7 +101,7 @@ is per-request:
 |---|---|---|
 | `/shooting` | `public/data/player-rest.json` (committed static asset) | Its export changes once a season, so a Postgres round trip could only ever return the same numbers. `/season`'s zero-rest section reads the same file. |
 | `/availability` | `src/lib/availability-facts.ts` (constants, pinned by a test) | A finished measurement, not a query — it moves only when `ml/availability_facts.py` is re-run. The page is a server component with no fetch and no loading state. |
-| `/referees` | `src/data/referee-foul-style.json` (committed artifact written by `scripts/fetch_officials.ts`, pinned by `referee-foul-style.test.ts`) | Never a query — the artifact moves only when the ingest is re-run. **The page is currently held back** and renders an in-progress card rather than the table, so it reads only the artifact's coverage figures. Server component, no fetch, no loading state either way. |
+| `/referees` | three committed artifacts — `referee-foul-style.json` (`scripts/fetch_officials.ts`), `referee-timing.json` (`scripts/analyze_officials_splits.ts`) and `referee-legends.json` (`ml/build_referee_legends.py`), each pinned by its own test | Never a query — they move only when their generators are re-run. Published 2026-08-22; the page is a server component with no fetch and no loading state. |
 
 > **Playoff Predictor:** `GET /api/playoffs` is complete and serving live predictions —
 > `playoff_series_predictions` holds **2,098 rows** — two `model_version`s × (599 `full_insample`

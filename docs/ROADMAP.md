@@ -317,8 +317,10 @@ table had gone stale against the altitude change and was regenerated.
   page return without a re-ingest.
 - **Behind the Data** added 2026-07-30: a reference section documenting every model's terms,
   constants and limits, reached from the nav row's `Reference` landmark and from a
-  `HOW THIS IS CALCULATED` link on each product page. It grows with the product — eight routes
-  as of 2026-08-03, an index plus one per model, the newest being `/behind-the-data/availability`.
+  `HOW THIS IS CALCULATED` link on each product page. It grows with the product — nine routes
+  as of 2026-08-22, an index plus one per model, the newest being `/behind-the-data/referees`.
+  Since that one, **every published surface has a method page** and the test enforcing it carries
+  no exemptions.
 - **`/about` rebuilt** 2026-07-30 as seven full-viewport sections. Its evidence figures are now
   read from the live backtest rather than hardcoded — all three had gone stale, one of them
   citing a metric that had been retired.
