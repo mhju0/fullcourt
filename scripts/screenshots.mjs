@@ -36,7 +36,10 @@ const MEASURE_HEIGHT = 2800;
 const PAGES = [
   // Two complete matchup rows, which is what the README's alt text describes. The row group's
   // bottom is its toggle's bottom — the collapsed expansion below it has no height.
-  { file: "games", path: "/", endsAfter: '[aria-label$="game details"] >> nth=1' },
+  // `/games`, not `/`. The board moved there in the 2026-08-12 front-door swap and this target
+  // was not moved with it, so the anchor had been pointing at the marketing page ever since —
+  // which is exactly the failure the anchor rule above is meant to make loud rather than silent.
+  { file: "games", path: "/games", endsAfter: '[aria-label$="game details"] >> nth=1' },
   // Ten complete rows of WHAT THE SCHEDULE WAS WORTH. Anchored through the extremes line above it,
   // because /season renders three tables and this is not the first.
   {
@@ -68,6 +71,14 @@ const PAGES = [
     file: "availability",
     path: "/availability",
     endsAfter: '[data-shot-anchor="schedule-still-counts"]',
+  },
+  // Twelve complete rows of the foul-mix table, which is the page's identity: the deviation
+  // columns and the emphasis rule. The folklore chapter runs several thousand pixels below and
+  // is left to the live page rather than stretched into a README image.
+  {
+    file: "referees",
+    path: "/referees",
+    endsAfter: '[data-testid="referee-style-row"] >> nth=11',
   },
 ];
 
