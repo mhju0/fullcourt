@@ -595,18 +595,41 @@ left to review:
 The season trend is one series, so it carries no legend and one hue, and every column holds a
 `title` — a reader gets any season's figure without the page shipping a line of JavaScript.
 
-### `/referees` — foul style *(built, deliberately unpublished)*
+### `/referees` — foul style, timing and folklore *(built, deliberately unpublished)*
 
-**The page currently renders an in-progress card, not the table below.** Everything described in
-this section exists and works — it is held back because the writing around the numbers is not
-finished, and that framing is what stops the table reading as a bias claim. Restoring it is two
-edits, both named in the docstring of `src/app/referees/page.tsx`: swap the `MessageCard` back
-for `<RefereeStyleContent data={data} />`, and un-skip the table block in `e2e/referees.spec.ts`.
-Treat this as an editorial state, not stale documentation.
+**The page currently renders an in-progress card, not the surface below.** Everything described in
+this section exists and works — it is held back because publishing it is an editorial act, and one
+this repo has already got wrong once (PRs #9 → #10). Restoring it is two edits, both named in the
+docstring of `src/app/referees/page.tsx`: swap the `MessageCard` for
+`<RefereeEffectContent style={data} timing={timing} legends={legends} />`, and un-skip the table
+block in `e2e/referees.spec.ts`. Treat this as an editorial state, not stale documentation.
+
+The finished copy is `referee-effect-content.tsx`, which composes three chapters — the foul-mix
+table, the quarter-timing finding, and `referee-legends-content.tsx`, the folklore chapter added
+2026-08-21. `referee-parts.tsx` holds the prose measure and section rule the two content files
+share.
+
+**The folklore chapter is built around one turn, and its ordering is load-bearing.** It states a
+famous record as *real* — Chris Paul's teams lost ten of eleven playoff games Scott Foster worked,
+against an opponent-aware expectation of 6.34 — tests the assignment confound that would explain
+it, and only then shows that the same official is a ten-and-one charm for four other players, that
+a wider pair nobody has ever named sits one row below it, and that the 689-pair grid it came from
+produces exactly the extremes chance predicts. A reader told "it is noise" before seeing the number
+disbelieves the page; the sections may not be reordered.
+
+The rule that keeps it honest is enforced rather than remembered: **no extreme pair may be quoted
+without the count chance puts beside it.** `src/lib/referee-legends.ts` carries `NoiseFloor` as a
+peer of the finding rather than as context, and `referee-legends.test.ts` fails if the famous pair
+ever beats that floor, if the grid climbs above chance, or if the same official stops appearing at
+both ends of the list.
 
 Returned 2026-07-31 asking a different question. The page was stubbed on 2026-07-30 because its
 original question — does any official tilt the whistle home? — came back inside noise, and a
-table of muted cells invites readers to find names in it anyway. Crew *rest* was tested next and
+table of muted cells invites readers to find names in it anyway. **That "no" was overturned on
+2026-08-21** and the copy corrected: officials do differ in home tilt, modestly, above chance. The
+page had asserted "no official tilts the whistle home" while rendering `2.06× chance` from its own
+artifact, held in place by a test that only checked the effect was not *large*. Both are now pinned
+two-sided, at both ends of the band the prose claims. Crew *rest* was tested next and
 was also a null. What does separate officials is the **mix** of fouls they call, and that
 survives baselining per season, per arena, and on share rather than count.
 

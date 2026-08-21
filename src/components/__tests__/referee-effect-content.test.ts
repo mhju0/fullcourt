@@ -15,15 +15,18 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import { RefereeEffectContent } from "@/components/referee-effect-content";
 import styleData from "@/data/referee-foul-style.json";
+import legendsData from "@/data/referee-legends.json";
 import timingData from "@/data/referee-timing.json";
 import type { RefereeFoulStyle } from "@/lib/referee-foul-style";
+import type { RefereeLegends } from "@/lib/referee-legends";
 import type { RefereeTiming } from "@/lib/referee-timing";
 
 const style = styleData as RefereeFoulStyle;
 const timing = timingData as RefereeTiming;
+const legends = legendsData as RefereeLegends;
 
 const html = renderToStaticMarkup(
-  createElement(RefereeEffectContent, { style, timing })
+  createElement(RefereeEffectContent, { style, timing, legends })
 );
 /** Tags stripped and whitespace collapsed, so assertions read as a visitor reads the page. */
 const text = html.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
@@ -33,10 +36,19 @@ describe("RefereeEffectContent", () => {
     expect(html.length).toBeGreaterThan(1000);
   });
 
-  it("states both nulls in the visitor's words, not just in the data", () => {
-    // These are the sentences ADR 0007 committed to publishing whatever the numbers did.
+  it("states the late-game null in the visitor's words, not just in the data", () => {
+    // The sentence ADR 0007 committed to publishing whatever the number did.
     expect(text).toContain("do not swallow the whistle at the end");
-    expect(text).toContain("no official tilts the whistle home");
+  });
+
+  it("does not claim the home whistle is nothing, because its own data says otherwise", () => {
+    // This assertion used to require the page to say "no official tilts the whistle home" while
+    // rendering `2.06x chance` two clauses earlier — a claim its own artifact contradicted, held
+    // in place by the test that was supposed to catch it. Corrected 2026-08-21 along with the
+    // copy. The page may call the effect modest; it may not call it absent.
+    expect(timing.homeAway.shooting.observed).toBeGreaterThan(timing.expectedByChance);
+    expect(text).not.toContain("no official tilts the whistle home");
+    expect(text).toContain("the honest word is modest");
   });
 
   it("carries the attribution caveat no figure can express", () => {
@@ -65,6 +77,27 @@ describe("RefereeEffectContent", () => {
   it("renders the foul-mix table inside the finished page", () => {
     // Publishing swaps one component in, so the table must already be reachable through it.
     expect(html).toContain('data-testid="referee-style-row"');
+  });
+
+  it("never quotes an extreme pair without the number chance puts beside it", () => {
+    // The whole point of the folklore section. The famous record may appear; it may not appear
+    // without the count noise alone produces at the same bar.
+    expect(text).toContain(`${legends.legend.wins}\u2013${legends.legend.losses}`);
+    expect(text).toContain(String(legends.noiseFloor.mostExtremePFromNoise));
+    expect(text).toContain(`${legends.noiseFloor.clearedPoint01} vs ${legends.noiseFloor.expectedPoint01}`);
+  });
+
+  it("shows the same official at both ends of the list", () => {
+    // A curse and a charm on one whistle is the argument; losing it would leave an accusation.
+    const charms = legends.sameOfficialOtherPairs.filter((p) => p.playerWon);
+    expect(charms.length).toBeGreaterThan(1);
+    for (const pair of charms) expect(text).toContain(pair.player);
+  });
+
+  it("reports the make-up-call sign flip rather than the headline t-statistic alone", () => {
+    // Published without the offensive-foul figure, the t = 27 reads as proof of compensation.
+    expect(legends.makeupCalls.afterOffensiveFoul).toBeLessThan(0.5);
+    expect(text).toContain("BELOW CHANCE, NOT ABOVE");
   });
 
   it("never runs two words together across a JSX boundary", () => {

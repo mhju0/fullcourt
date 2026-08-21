@@ -2,28 +2,11 @@ import { RefereeStyleContent } from "@/components/referee-style-content"
 import type { RefereeFoulStyle } from "@/lib/referee-foul-style"
 import { readingOf, topShifters, type RefereeTiming, type Verdict } from "@/lib/referee-timing"
 import { signedNumber } from "@/lib/signed-number"
-import { LEAD, termCardStyle, termInsetStyle, TRACK, TYPE, WIDTH } from "@/lib/terminal-styles"
+import { BODY, LEAD_IN, SectionHeading } from "@/components/referee-parts"
+import { RefereeLegendsContent } from "@/components/referee-legends-content"
+import type { RefereeLegends } from "@/lib/referee-legends"
+import { termCardStyle, termInsetStyle, TYPE } from "@/lib/terminal-styles"
 import { StatTile } from "@/components/ui/stat-tile"
-
-const BODY: React.CSSProperties = {
-  fontSize: TYPE.body,
-  color: "var(--term-text-muted)",
-  lineHeight: LEAD.body,
-  maxWidth: WIDTH.prose,
-}
-const LEAD_IN = { color: "var(--term-text)", fontWeight: 600 } as const
-
-function SectionHeading({ children }: { children: React.ReactNode }) {
-  return (
-    <div
-      className="mono flex items-center gap-3 py-1"
-      style={{ fontSize: 11, letterSpacing: TRACK.label, color: "var(--term-text-muted)" }}
-    >
-      <span style={{ fontWeight: 700 }}>{children}</span>
-      <span style={{ flex: 1, height: 1, background: "var(--term-border)" }} />
-    </div>
-  )
-}
 
 /**
  * The one figure this page is built on, stated the same way every time: officials past the bar,
@@ -63,9 +46,11 @@ function VerdictTile({ label, verdict }: { label: string; verdict: Verdict }) {
 export function RefereeEffectContent({
   style,
   timing,
+  legends,
 }: {
   style: RefereeFoulStyle
   timing: RefereeTiming
+  legends: RefereeLegends
 }) {
   const shifters = topShifters(timing.shifters)
   const lateMinutes = timing.lateWindowSeconds / 60
@@ -153,16 +138,21 @@ export function RefereeEffectContent({
         </p>
 
         <p style={BODY}>
-          <span style={LEAD_IN}>And no official tilts the whistle home.</span> Home teams do commit
-          fewer fouls — {Math.abs(timing.leagueHomeAwayCounts.shooting).toFixed(2)} fewer shooting
-          fouls a game than visitors — but that gap belongs to the league, not to any individual
-          in it. Splitting each official&rsquo;s home-minus-away gap by foul type puts them at{" "}
-          {timing.homeAway.shooting.ratio}× chance on shooting fouls and{" "}
-          {timing.homeAway.personal.ratio}× on personals, against the {timing.expectedByChance}{" "}
-          that noise alone produces among {timing.eligibleOfficials} officials. This is the second
-          time the question has been asked here and the second time the answer has been no.
+          <span style={LEAD_IN}>And the home whistle is real but tiny.</span> Home teams commit{" "}
+          {Math.abs(timing.leagueHomeAwayCounts.shooting).toFixed(2)} fewer shooting fouls a game
+          than visitors, and officials do differ in how far they lean that way: splitting each
+          one&rsquo;s home-minus-away gap by foul type puts{" "}
+          {timing.homeAway.shooting.observed} of them past the bar on shooting fouls and{" "}
+          {timing.homeAway.personal.observed} on personals, against the{" "}
+          {timing.expectedByChance} that noise alone produces among {timing.eligibleOfficials}{" "}
+          officials. That is above chance, so the honest word is <em>modest</em>, not <em>none</em>.
+          What it is not is large enough to name anyone: the whole spread between the most and
+          least home-leaning official is about one foul a game, and a third of that is as much as
+          any individual can own.
         </p>
       </section>
+
+      <RefereeLegendsContent legends={legends} />
 
       <section className="flex flex-col gap-3">
         <SectionHeading>WHAT THESE NUMBERS CANNOT DO</SectionHeading>

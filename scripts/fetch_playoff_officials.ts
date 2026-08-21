@@ -38,6 +38,21 @@ async function pool<T>(items: T[], limit: number, fn: (item: T, i: number) => Pr
   );
 }
 
+/**
+ * The slice of ESPN's scoreboard payload this script reads. Deliberately partial and all-optional
+ * — it is a cache file written by another script, so the shape is asserted at the point of use
+ * rather than trusted wholesale.
+ */
+interface CachedScoreboard {
+  events?: {
+    id?: string | number;
+    date?: string;
+    season?: { type?: number | string; year?: number | string };
+    status?: { type?: { name?: string } };
+    competitions?: { notes?: { headline?: string }[] }[];
+  }[];
+}
+
 interface PlayoffEvent {
   id: string;
   seasonYear: number;
@@ -50,20 +65,20 @@ function enumerateFromCache(): PlayoffEvent[] {
   const seen = new Map<string, PlayoffEvent>();
   for (const file of readdirSync(CACHE_DIR)) {
     if (!file.startsWith("sb-") || !file.endsWith(".json")) continue;
-    let payload: any;
+    let payload: CachedScoreboard;
     try {
-      payload = JSON.parse(readFileSync(`${CACHE_DIR}/${file}`, "utf8"));
+      payload = JSON.parse(readFileSync(`${CACHE_DIR}/${file}`, "utf8")) as CachedScoreboard;
     } catch {
       continue; // a truncated cache entry is skipped, not fatal
     }
     for (const event of payload?.events ?? []) {
-      const season = event?.season ?? {};
+      const season = event.season ?? {};
       if (Number(season.type) !== 3) continue;
       const year = Number(season.year);
       if (!(year >= FIRST_SEASON_YEAR && year <= LAST_SEASON_YEAR)) continue;
-      if (event?.status?.type?.name !== "STATUS_FINAL") continue;
+      if (event.status?.type?.name !== "STATUS_FINAL") continue;
       const id = String(event.id);
-      const notes = event?.competitions?.[0]?.notes ?? [];
+      const notes = event.competitions?.[0]?.notes ?? [];
       seen.set(id, {
         id,
         seasonYear: year,
