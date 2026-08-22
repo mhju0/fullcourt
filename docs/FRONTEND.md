@@ -675,14 +675,9 @@ alone. It is style, not bias, and the copy says so.
    a `<CourtMark size={34}>` + the wordmark + a hairline rule + `NBA ANALYTICS PLATFORM`
    (mono 10px, muted, hidden below `sm`), wrapped in a link to `/`.
    The wordmark is **22px in the display face (Geist, 700)**, two-tone — `FULL` in
-   `var(--term-text)`, `COURT` in `var(--accent)` (the W4 lockup, 2026-08-19; it was
-   `var(--term-text-muted)` from 2026-08-09 until then). The U of COURT renders **hollow — the
-   Second Key** (2026-08-22): the word's two U's are the two keys of a full court, and the away
-   key arrives empty. The mechanism is the `.wordmark-u-hollow` class in `globals.css`
-   (text-stroke, with a ghost fallback where unsupported) with the story and the OG-card SVG
-   geometry in `src/lib/brand/wordmark-second-key.ts`; `wordmark-second-key.test.ts` pins all
-   three surfaces to it. The nav overrides the stroke to a hand-tuned `1.3px` — the em default
-   is under a device pixel at 22px. It was 11px mono until 2026-07-30, i.e. *smaller than the tabs
+   `var(--term-text)`, `COURT` in `var(--term-text-muted)`. `COURT` is **muted since
+   2026-08-09**: Front Office keeps the poles for data, so the wordmark no longer borrows the
+   fatigued hue. It was 11px mono until 2026-07-30, i.e. *smaller than the tabs
    beneath it*, so the one element naming the product read as the least important thing in the
    header; it is now sized as a logotype in the same display face as every page title. The
    `aria-label="FullCourt home"` keeps the accessible name one string across the split spans,
@@ -1595,9 +1590,7 @@ string in `opengraph-image.tsx` — except the two static SVGs (`src/app/icon.sv
 predecessor's geometry was hand-copied across six files and drifted twice (lean direction,
 then hues); **never redraw a cut by hand — extend the geometry module.** Why each rule is
 what it is lives in [BRAND_GRAMMAR.md §4](design/BRAND_GRAMMAR.md); the wordmark lockup (W4 —
-caps, COURT in the accent, the away-key U hollow since 2026-08-22) is stated there and rendered
-in `nav-bar.tsx`, the front door's naming h2, and the OG card, all pinned to
-`src/lib/brand/wordmark-second-key.ts` by its test.
+caps, COURT in the accent) is stated there and rendered in `nav-bar.tsx` and the OG card.
 `docs/social-preview.png` is a render of the OG route rather than a hand export (2026-08-18),
 so it inherits the geometry instead of copying it. The oversized `CourtSplit` on the front
 door (`about-content.tsx`) is the one sanctioned variant: the same court and lean, with the
