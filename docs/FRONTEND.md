@@ -675,9 +675,10 @@ alone. It is style, not bias, and the copy says so.
    a `<CourtMark size={34}>` + the wordmark + a hairline rule + `NBA ANALYTICS PLATFORM`
    (mono 10px, muted, hidden below `sm`), wrapped in a link to `/`.
    The wordmark is **22px in the display face (Geist, 700)**, two-tone — `FULL` in
-   `var(--term-text)`, `COURT` in `var(--term-text-muted)`. `COURT` is **muted since
-   2026-08-09**: Front Office keeps the poles for data, so the wordmark no longer borrows the
-   fatigued hue. It was 11px mono until 2026-07-30, i.e. *smaller than the tabs
+   `var(--term-text)`, `COURT` in `var(--accent)` (the W4 lockup, 2026-08-19; it was
+   `var(--term-text-muted)` from 2026-08-09 until then). All nine letters render solid —
+   the hollow away-key U ("the Second Key") shipped and was withdrawn on the same day, see
+   BRAND_GRAMMAR §2. It was 11px mono until 2026-07-30, i.e. *smaller than the tabs
    beneath it*, so the one element naming the product read as the least important thing in the
    header; it is now sized as a logotype in the same display face as every page title. The
    `aria-label="FullCourt home"` keeps the accessible name one string across the split spans,

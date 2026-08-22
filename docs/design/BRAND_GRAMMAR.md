@@ -44,6 +44,16 @@ one weight, the halves separated by color — COURT takes the accent — one rul
 and the OG card, which had each been half-doing it differently (dimmed split vs. amber
 split). Running prose still writes "FullCourt"; wordmark and prose are different jobs.
 
+**The lockup is plain on purpose — the Second Key was shipped and withdrawn (2026-08-22/23).**
+A one-point treatment rendered the second U — the away key of the full court the word's two
+U's draw — hollow (PR #51), and Michael reversed it the next day in favour of the full-color
+lockup (PR #52): the hidden-code reading was liked, the hole in the word was not. This
+paragraph exists so the idea is not "restored" from the surviving exploration artifacts or
+memory by a later pass — same rule as the `/referees` ban inversion: shipping and unshipping a
+brand move are both deliberate acts, never a tidying side effect. If the idea ever returns it
+returns through Michael, with the PR #51 implementation (geometry module, ghost fallback,
+per-surface pins) as the reference.
+
 - **FULL — the sample.** The whole record: every season since 1985-86, both arms of every
   split, the nulls included. "Full" is a claim about honesty of sample — nothing
   cherry-picked, nothing pooled to flatter a headline. The rested-visitor row is published,
