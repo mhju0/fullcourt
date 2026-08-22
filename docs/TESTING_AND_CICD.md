@@ -52,7 +52,7 @@ nothing checks. Run the command for the current figure.
 | `src/lib/__tests__/fatigue-provenance.test.ts` | The measured/projected rule: opening night is measured (nobody has played, so 0 is true), tonight's game is measured (all its priors are played), tomorrow is projected, and a finished season projects nothing. |
 | `src/lib/__tests__/fatigue-recent-games.test.ts` | The projection basis: an unplayed prior game keeps every schedule-derived field and loses exactly two (overtime, point margin) — including a **live** game's partial score, which column defaults would not have caught. |
 | `src/lib/__tests__/espn-scoreboard.test.ts` | ESPN payload parsing, status mapping, and (date, away, home) reconciliation: overtime only from a finished game, a stored `final` never walked backwards, unmatched rows reported both ways. |
-| `src/app/api/__tests__/cron-update.test.ts` | The evening score pass: cron auth, that it reads ESPN scoped to today's ET date, writes overtime from the same payload, matches an `espn-` keyed row, and 502s rather than partially writing. |
+| `src/app/api/__tests__/cron-update.test.ts` | The evening score pass: cron auth, that it reads ESPN scoped to the ET dates of the games it found, writes overtime from the same payload, matches an `espn-` keyed row, and 502s rather than partially writing. Its "after-midnight window" block pins the two-date window at both ends — last night's game is finalized, and the two nights are never pooled. |
 | `src/lib/__tests__/daily-refresh.test.ts` | Per-game failure isolation/continuation and neutral open-prediction replacement. |
 | `src/app/api/__tests__/analysis.test.ts` | `GET /api/analysis` payload shape, percentage bounds, threshold ordering `[2,3,5,7]`, `seasonMinRA=7` filtering. Mocks `@/lib/db/queries`, and gives each case a distinct stamp so the backtest cache never answers one case from another's rows. |
 | `src/app/api/__tests__/games-dates.test.ts` | `GET /api/games/dates` Zod validation (missing/invalid season, invalid month) + query delegation. Mocks `@/lib/db/queries`. Also pins the widened season rule: an upcoming season with a published schedule and no results is served, while the season after it is still refused. Mocks `browsableSeasons` to the Aug–Sep shape so the file tests the route, not the calendar. |
@@ -269,6 +269,10 @@ no code scanning does not happen twice.
   quarter and its result was missed until the following afternoon's Actions run. Hobby fires
   crons **once a day**, so the choice is "before some finals" or "after all of them", and only
   the latter leaves the board correct overnight.
+- **"After all of them" means past midnight ET, so the route reads two ET dates** — yesterday and
+  today. This was missed when the schedule moved: for four days the route still scoped to
+  `today` and therefore matched only games that had not tipped off, writing nothing at all. Fixed
+  2026-08-22; if the schedule moves again, re-derive the window with it.
 - Offseason runs early-return before any network fetch, so there is **no seasonal cadence
   switch**. `vercel.json` is the source of truth for the deployed cadence.
 - The cron hits `GET /api/cron/update` with `Authorization: Bearer <CRON_SECRET>`; the route

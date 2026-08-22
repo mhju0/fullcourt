@@ -221,8 +221,9 @@ oversight. None is a defect in what the site publishes.
 
 - Follow [SEASON_ROLLOVER.md](SEASON_ROLLOVER.md) before each new NBA season.
 - The Vercel live-score cron runs **daily, year-round** — there is no seasonal cadence to
-  switch. `/api/cron/update` early-returns before any CDN fetch when today's ET date has no
-  `scheduled|live` rows, so an off-season run costs one indexed query. See `vercel.json`.
+  switch. `/api/cron/update` early-returns before any ESPN fetch when neither of the two ET dates
+  it checks (yesterday and today — it fires at 2–3 AM ET) has a `scheduled|live` row, so an
+  off-season run costs one indexed query. See `vercel.json`.
 - Keep GitHub Actions, Vercel, Supabase environment variables, and dependency security patches
   current.
 - Re-run the documented schedule/date integrity audit after new season ingestion.

@@ -19,7 +19,8 @@ could otherwise fetch it. Written after the 2026-07 full-schedule audit; keep it
    `cdn.nba.com`, which returns **403** from Seoul *and* GitHub Actions. Seeding 2026-27 is
    a manual step (below).
 3. **Nothing to change on the Vercel cron** — it is already daily and year-round
-   (`vercel.json` `0 3 * * *`, set in 8b7888e). See Section 5.
+   (`vercel.json` `0 7 * * *`, made year-round in 8b7888e and moved 03:00 → 07:00 UTC in
+   798394a). See Section 5.
 
 ## 1. What rolls over automatically (no action)
 
@@ -166,13 +167,23 @@ later re-run self-heals any mis-dated rows (this is what fixed the 2026-04 UTC-d
 `vercel.json` runs `/api/cron/update` (live scores). JSON has no comments — the file is the
 source of truth.
 
-- `"schedule": "0 3 * * *"` (daily, 03:00 UTC) — **year-round; nothing to change at rollover.**
-  The route does not season-gate, but it early-returns before any CDN fetch when no game is
-  `scheduled`/`live` for today(ET), so an offseason run costs one indexed query.
-- 03:00 UTC = 10 PM EST / 11 PM EDT: mid-slate, and still ET **date D** in both DST regimes.
-  (`0 10 * * *` would fire 5–6 AM ET, before tip-off; `0 4 * * *` would cross midnight ET under
-  EDT and query the wrong date.) Vercel **Hobby allows one cron/day**, so this is a backstop —
-  live UX comes from Supabase Realtime and the GitHub Actions pipeline.
+- `"schedule": "0 7 * * *"` (daily, 07:00 UTC) — **year-round; nothing to change at rollover.**
+  The route does not season-gate, but it early-returns before any ESPN fetch when no game is
+  `scheduled`/`live` on either date it checks, so an offseason run costs one indexed query.
+- 07:00 UTC = 2 AM EST / 3 AM EDT: **after the last final** in both DST regimes. It moved here
+  from 03:00 UTC on 2026-08-18 (798394a) because Vercel **Hobby allows one cron/day** and 03:00
+  UTC is 10 PM EST — a west-coast game tipping then was still in its first quarter, so its result
+  was missed until the following afternoon. (`0 10 * * *` would fire 5–6 AM ET, before tip-off.)
+- **Because it runs after midnight ET, the route reads yesterday *and* today (ET), not today
+  alone.** The two are one mechanism and must not be separated. 2 AM ET is already ET date D+1
+  while the night's games carry `games.date = D`, so a today-only scope selects games that have
+  not tipped off yet: from the schedule move until 2026-08-22 this pass matched nothing and wrote
+  nothing on every night of the offseason it could have run. **If you ever move this schedule,
+  re-derive the window in `src/app/api/cron/update/route.ts` in the same change** —
+  `cron-update.test.ts` → "the after-midnight window" pins it.
+- This is a **backstop**, not the live path: live UX comes from Supabase Realtime and the GitHub
+  Actions pipeline, whose 7-day lookback (`LOOKBACK_DAYS`, `scripts/daily_update.py`) repairs
+  anything this pass misses on its next run.
 
 GitHub Actions (`.github/workflows/daily-update.yml`) runs daily **year-round** already and
 self-gates via `is_in_season`, so there is no GitHub cadence to change.

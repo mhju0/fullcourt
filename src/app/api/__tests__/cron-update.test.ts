@@ -24,10 +24,21 @@ vi.mock("@/lib/db", () => ({
   },
 }));
 
+/**
+ * Date-aware on purpose. The route asks for two ET dates — `formatEasternDateKey()` for today
+ * and `formatEasternDateKey(<24h ago>)` for yesterday — and a stub that ignored its argument
+ * would collapse them into one, hiding the whole window this file exists to pin.
+ */
 vi.mock("@/lib/nba-season", async (importOriginal) => {
   const actual = await importOriginal<typeof import("@/lib/nba-season")>();
-  return { ...actual, formatEasternDateKey: () => "2026-10-20" };
+  return {
+    ...actual,
+    formatEasternDateKey: (date?: Date) => (date ? YESTERDAY : TODAY),
+  };
 });
+
+const TODAY = "2026-10-20";
+const YESTERDAY = "2026-10-19";
 
 const { GET } = await import("../cron/update/route");
 
@@ -68,6 +79,7 @@ function event(over: {
 function storedRow(over: Record<string, unknown> = {}) {
   return {
     id: 72409,
+    date: TODAY,
     homeAbbr: "OKC",
     awayAbbr: "HOU",
     status: "scheduled",
@@ -89,6 +101,25 @@ function espnResponds(events: unknown[]) {
     "fetch",
     vi.fn().mockResolvedValue({ ok: true, json: async () => ({ events }) })
   );
+}
+
+/** Per-date scoreboards, so a two-date run can be told which night it read. */
+function espnRespondsByDate(byDate: Record<string, unknown[]>) {
+  vi.stubGlobal(
+    "fetch",
+    vi.fn().mockImplementation(async (url: string) => {
+      const dateKey = new URL(url).searchParams.get("dates") ?? "";
+      const events = byDate[dateKey] ?? [];
+      return { ok: true, json: async () => ({ events }) };
+    })
+  );
+}
+
+/** The `dates=` values the route actually asked ESPN for, in call order. */
+function fetchedDates(): string[] {
+  return vi
+    .mocked(fetch)
+    .mock.calls.map((call) => new URL(call[0] as string).searchParams.get("dates") ?? "");
 }
 
 describe("GET /api/cron/update", () => {
@@ -118,7 +149,7 @@ describe("GET /api/cron/update", () => {
     expect((await res.json()).data.gamesUpdated).toBe(0);
   });
 
-  it("reads ESPN, scoped to today's ET date", async () => {
+  it("reads ESPN, scoped to the ET date of the games it found", async () => {
     selectWhere.mockResolvedValue([storedRow()]);
     espnResponds([event()]);
 
@@ -192,5 +223,86 @@ describe("GET /api/cron/update", () => {
 
     expect(res.status).toBe(502);
     expect(updateSet).not.toHaveBeenCalled();
+  });
+
+  /**
+   * The window, pinned at both ends.
+   *
+   * The cron fires at 07:00 UTC — 2 AM EST, 3 AM EDT — so by the time it runs, the games it
+   * exists to finalize are on ET date D while "today" is already D+1. From the 2026-08-18
+   * schedule move until 2026-08-22 the route scoped to today alone and therefore matched
+   * nothing at all. These fail if the window is ever narrowed back.
+   */
+  describe("the after-midnight window", () => {
+    it("finalizes last night's game, which a today-only scope could not see", async () => {
+      selectWhere.mockResolvedValue([storedRow({ date: YESTERDAY })]);
+      espnRespondsByDate({ "20261019": [event()] });
+
+      const res = await GET(req("Bearer test-secret"));
+
+      expect(fetchedDates()).toEqual(["20261019"]);
+      expect((await res.json()).data.gamesUpdated).toBe(1);
+      expect(updateSet).toHaveBeenCalledWith({
+        status: "final",
+        homeScore: 125,
+        awayScore: 124,
+        overtimePeriods: 2,
+      });
+    });
+
+    it("reads both nights when both carry unfinished games", async () => {
+      selectWhere.mockResolvedValue([
+        storedRow({ id: 1, date: YESTERDAY }),
+        storedRow({ id: 2, date: TODAY, homeAbbr: "BOS", awayAbbr: "NYK" }),
+      ]);
+      espnRespondsByDate({
+        "20261019": [event()],
+        "20261020": [event({ homeAbbr: "BOS", awayAbbr: "NYK" })],
+      });
+
+      const res = await GET(req("Bearer test-secret"));
+      const body = await res.json();
+
+      expect(fetchedDates().sort()).toEqual(["20261019", "20261020"]);
+      expect(body.data.gamesUpdated).toBe(2);
+      expect(body.meta.espnGamesAvailable).toBe(2);
+    });
+
+    it("does not pool the two nights, so a rematch takes its own night's score", async () => {
+      // The same pairing on consecutive nights is the one case where merging both dates into
+      // a single (away, home) pool would silently cross-match.
+      selectWhere.mockResolvedValue([
+        storedRow({ id: 1, date: YESTERDAY }),
+        storedRow({ id: 2, date: TODAY }),
+      ]);
+      espnRespondsByDate({
+        "20261019": [event({ homeScore: "101", awayScore: "99", periods: 4 })],
+        "20261020": [event({ homeScore: "125", awayScore: "124", periods: 6 })],
+      });
+
+      await GET(req("Bearer test-secret"));
+
+      expect(updateSet).toHaveBeenCalledWith({
+        status: "final",
+        homeScore: 101,
+        awayScore: 99,
+        overtimePeriods: 0,
+      });
+      expect(updateSet).toHaveBeenCalledWith({
+        status: "final",
+        homeScore: 125,
+        awayScore: 124,
+        overtimePeriods: 2,
+      });
+    });
+
+    it("costs one fetch when only one of the two dates has anything to check", async () => {
+      selectWhere.mockResolvedValue([storedRow({ date: TODAY })]);
+      espnRespondsByDate({ "20261020": [event()] });
+
+      await GET(req("Bearer test-secret"));
+
+      expect(fetchedDates()).toEqual(["20261020"]);
+    });
   });
 });
