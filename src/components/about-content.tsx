@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { type CSSProperties, useEffect, useRef } from "react";
 import Link from "next/link";
 import { NBA_SEASONS } from "@/lib/nba-season";
 import { signedNumber } from "@/lib/signed-number";
@@ -319,7 +319,22 @@ export function AboutContent({ stats }: { stats: AboutStats | null }) {
           className="fc-name font-heading font-bold"
           style={{ fontSize: "clamp(2.6rem,7vw,5.4rem)", lineHeight: 0.95, letterSpacing: "-0.03em" }}
         >
-          FULL<span style={{ color: "#818CF8" }}>COURT</span>
+          {/* The Second Key (2026-08-22): the away-key U renders hollow — see
+              src/lib/brand/wordmark-second-key.ts. The stroke color is passed
+              explicitly because this dark surface uses the dark-ground indigo,
+              not var(--accent); the width stays the em default and scales with
+              the clamp. */}
+          FULL
+          <span style={{ color: "#818CF8" }}>
+            CO
+            <span
+              className="wordmark-u-hollow"
+              style={{ "--wordmark-u-ink": "#818CF8" } as CSSProperties}
+            >
+              U
+            </span>
+            RT
+          </span>
         </h2>
         <div className="mt-9 flex flex-col">
           {NAME_READINGS.map((part) => (

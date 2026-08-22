@@ -218,6 +218,26 @@
   font-family: var(--font-heading), ui-sans-serif, system-ui, sans-serif;
 }
 
+/* The Second Key (2026-08-22): the U of COURT — the away key — renders hollow; one
+   side arrives with less left. The idea and the satori rendering live in
+   src/lib/brand/wordmark-second-key.ts. The bare rule is the fallback: where
+   text-stroke is unsupported the U ghosts to a third of its ink instead — the same
+   story, told quieter, and nothing renders wrong. 0.031em is HOLLOW_STROKE_EM in
+   the brand lib; the brand test fails if the two drift. The nav overrides the
+   stroke to a hand-tuned pixel value — an em stroke at 22px is thinner than a
+   device pixel. */
+.wordmark-u-hollow {
+  opacity: 0.34;
+}
+
+@supports (-webkit-text-stroke: 1px black) {
+  .wordmark-u-hollow {
+    opacity: 1;
+    color: transparent;
+    -webkit-text-stroke: var(--wordmark-u-stroke, 0.031em) var(--wordmark-u-ink, var(--accent));
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   @keyframes fadeInUp {
     from, to {

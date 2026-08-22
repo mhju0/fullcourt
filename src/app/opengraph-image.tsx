@@ -9,6 +9,7 @@ import {
   MARK_CUTS,
 } from "@/lib/brand/court-mark-geometry";
 import { NBA_SEASONS } from "@/lib/nba-season";
+import { hollowUFor } from "@/lib/brand/wordmark-second-key";
 
 export const alt = "FullCourt — NBA analytics: rest, fatigue, and shot value";
 export const size = { width: 1200, height: 630 };
@@ -22,6 +23,9 @@ const C = MARK_COLORS.dark;
 const P = courtMarkPaths(CUT.slashW);
 const MARK = `<svg xmlns="http://www.w3.org/2000/svg" width="396" height="228" viewBox="-3 -3 ${COURT_W + 6} ${COURT_H + 6}" fill="none"><defs><clipPath id="c"><rect width="${COURT_W}" height="${COURT_H}" rx="${CUT.rx}"/></clipPath><linearGradient id="f" x1="0" y1="0" x2="0" y2="${COURT_H}" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="${C.inkTop}"/><stop offset="1" stop-color="${C.inkBottom}"/></linearGradient><linearGradient id="s" x1="${COURT_W / 2 + 6}" y1="0" x2="${COURT_W / 2 - 6}" y2="${COURT_H}" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="${C.slashTop}"/><stop offset="1" stop-color="${C.slashBottom}"/></linearGradient></defs><g clip-path="url(#c)"><path d="${P.left}" fill="url(#f)"/><path d="${P.slash}" fill="url(#s)"/><path d="${P.right}" fill="${C.ink}" fill-opacity="${CUT.tone}"/></g><rect x="-2" y="-2" width="${COURT_W + 4}" height="${COURT_H + 4}" rx="${CUT.rx + 2}" stroke="${C.keyline}" stroke-opacity="${CUT.keyline.opacity}" stroke-width="${CUT.keyline.width}"/></svg>`;
 const MARK_SRC = `data:image/svg+xml,${encodeURIComponent(MARK)}`;
+
+// The Second Key's hollow U, sized for the 92px lockup below.
+const HOLLOW_U = hollowUFor(92, "#818CF8");
 
 // satori ships no fonts and cannot use system faces, so an unloaded `fontWeight: 800`
 // silently renders regular-weight fallback. The card renders Geist (the product's one
@@ -70,10 +74,22 @@ export default async function OpengraphImage() {
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
-          {/* The W4 lockup (2026-08-19): all caps, COURT in the brand indigo. */}
+          {/* The W4 lockup (2026-08-19): all caps, COURT in the brand indigo.
+              The Second Key (2026-08-22): the away-key U renders hollow. Satori
+              draws no text-stroke, so the U is the actual Geist ExtraBold glyph
+              outline, stroked — geometry and story in wordmark-second-key.ts,
+              same data-URI pattern as MARK_SRC above. */}
           <div style={{ display: "flex", fontSize: 92, fontWeight: 800, letterSpacing: -1 }}>
             <span style={{ color: "#F2F4F7" }}>FULL</span>
-            <span style={{ color: "#818CF8" }}>COURT</span>
+            <span style={{ color: "#818CF8" }}>CO</span>
+            <img
+              src={HOLLOW_U.src}
+              width={HOLLOW_U.width}
+              height={HOLLOW_U.height}
+              style={{ marginTop: HOLLOW_U.marginTop }}
+              alt=""
+            />
+            <span style={{ color: "#818CF8" }}>RT</span>
           </div>
           <div style={{ display: "flex", fontSize: 38, color: "#B7BEC7", maxWidth: 960, lineHeight: 1.35 }}>
             {/* No figure: a static image cannot pin one, and the ~55% this carried predated
