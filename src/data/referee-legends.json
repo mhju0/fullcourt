@@ -1,0 +1,155 @@
+{
+  "source": "ESPN play-by-play and box scores",
+  "generated": "2026-08-21",
+  "preRegistration": "ml/referee_player_preregistration.md",
+  "report": "ml/REFEREE_PLAYER_REPORT.md",
+  "firstSeason": "2015-16",
+  "lastSeason": "2025-26",
+  "regularSeasonGames": 13114,
+  "playoffGames": 913,
+  "whistleVolume": {
+    "leagueFoulsPerGame": 38.98,
+    "lowest": 37.15,
+    "highest": 40.92,
+    "spreadRatio": 2.16,
+    "officialsTested": 75
+  },
+  "legend": {
+    "official": "Scott Foster",
+    "player": "Chris Paul",
+    "wins": 1,
+    "losses": 10,
+    "expectedWins": 6.34,
+    "p": 0.0016,
+    "pOneSided": 0.0006,
+    "opponentStrengthWith": 0.5993,
+    "opponentStrengthWithout": 0.6061,
+    "rank": 1,
+    "beforeClaimWasFamous": {
+      "wins": 0,
+      "losses": 6,
+      "testable": false
+    },
+    "afterClaimWasFamous": {
+      "wins": 1,
+      "losses": 4,
+      "testable": false
+    },
+    "minGamesToJudge": 10,
+    "famousBySeason": "2019-20"
+  },
+  "sameOfficialOtherPairs": [
+    {
+      "player": "OG Anunoby",
+      "wins": 11,
+      "games": 12,
+      "expectedWins": 6.36,
+      "p": 0.007,
+      "playerWon": true
+    },
+    {
+      "player": "Miles McBride",
+      "wins": 10,
+      "games": 11,
+      "expectedWins": 5.3,
+      "p": 0.005,
+      "playerWon": true
+    },
+    {
+      "player": "Josh Hart",
+      "wins": 10,
+      "games": 11,
+      "expectedWins": 5.3,
+      "p": 0.0054,
+      "playerWon": true
+    },
+    {
+      "player": "Mitchell Robinson",
+      "wins": 9,
+      "games": 10,
+      "expectedWins": 4.69,
+      "p": 0.0106,
+      "playerWon": true
+    },
+    {
+      "player": "Eric Gordon",
+      "wins": 1,
+      "games": 10,
+      "expectedWins": 4.97,
+      "p": 0.0165,
+      "playerWon": false
+    }
+  ],
+  "pairNobodyNamed": {
+    "official": "Tony Brothers",
+    "player": "Marcus Smart",
+    "wins": 2,
+    "games": 16,
+    "expectedWins": 8.06,
+    "p": 0.0026
+  },
+  "noiseFloor": {
+    "pairsTested": 689,
+    "minSharedGames": 10,
+    "mostExtremePFromNoise": 0.00145,
+    "clearedPoint01": 7,
+    "expectedPoint01": 6.9,
+    "clearedPoint05": 27,
+    "expectedPoint05": 34.5
+  },
+  "preRegisteredClaims": [
+    {
+      "official": "Scott Foster",
+      "player": "James Harden",
+      "wins": 5,
+      "losses": 11,
+      "expectedWins": 7.69,
+      "pOneSided": 0.1246
+    },
+    {
+      "official": "Tony Brothers",
+      "player": "Luka Doncic",
+      "wins": 4,
+      "losses": 5,
+      "expectedWins": 3.69,
+      "pOneSided": 0.7141
+    },
+    {
+      "official": "Tony Brothers",
+      "player": "Kevin Durant",
+      "wins": 7,
+      "losses": 3,
+      "expectedWins": 4.76,
+      "pOneSided": 0.9686
+    },
+    {
+      "official": "Marc Davis",
+      "player": "Russell Westbrook",
+      "wins": 5,
+      "losses": 8,
+      "expectedWins": 5.34,
+      "pOneSided": 0.5399
+    }
+  ],
+  "makeupCalls": {
+    "observedSwitchRate": 0.5239,
+    "shuffledNull": 0.5047,
+    "excessT": 27.4,
+    "afterDefensiveFoul": 0.5301,
+    "afterDefensiveT": 33.6,
+    "afterOffensiveFoul": 0.4853,
+    "afterOffensiveT": -6.8,
+    "afterOffensiveWithin15s": 0.2196,
+    "pairs": 498007
+  },
+  "starFoulTrouble": {
+    "starGames": 21400,
+    "twoFoulsFirstQuarterRate": 0.0615,
+    "atHome": 0.0611,
+    "onTheRoad": 0.062,
+    "minutesLost": -1.17,
+    "spreadRatio": 1.01,
+    "p": 0.4535,
+    "officialsTested": 73
+  }
+}

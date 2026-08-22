@@ -349,9 +349,6 @@ export function NavBar() {
                   {OTHER_NAV_ITEMS.map((item) => {
                     const { href, label } = item
                     const active = isActive(pathname, href)
-                    // `in` rather than a property read: OTHER_NAV_ITEMS is `as const`, so only
-                    // the entry that sets the flag has it on its type.
-                    const inProgress = "inProgress" in item && item.inProgress
                     return (
                       <Menu.Item
                         key={href}
@@ -366,28 +363,11 @@ export function NavBar() {
                           "data-[highlighted]:bg-[var(--term-surface-2)] data-[highlighted]:text-[var(--term-text)]"
                         )}
                       >
+                        {/* The IN PROGRESS tag that used to render here was removed when
+                            /referees was published on 2026-08-22 — it was this menu's only
+                            user. It marked a surface as unfinished *before* you opened it, and
+                            git history has it if another surface is ever held back. */}
                         {label}
-                        {/* The unfinished surface says so before you click it, not after.
-                            This label used to live in the first-visit guide; that guide was
-                            removed on 2026-08-11 and the warning had to survive it, because a
-                            per-official foul table presented as finished reads as the bias
-                            claim the page exists to refuse (see CLAUDE.md). */}
-                        {inProgress && (
-                          <span
-                            style={{
-                              fontSize: TYPE.micro,
-                              letterSpacing: TRACK.data,
-                              fontWeight: 600,
-                              color: "var(--term-text-muted)",
-                              border: "1px solid var(--term-border)",
-                              borderRadius: "var(--term-radius-sm)",
-                              padding: "0 4px",
-                              lineHeight: "14px",
-                            }}
-                          >
-                            IN PROGRESS
-                          </span>
-                        )}
                       </Menu.Item>
                     )
                   })}

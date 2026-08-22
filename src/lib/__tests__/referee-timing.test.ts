@@ -1,11 +1,15 @@
 /**
  * Guards the timing aggregate, and through it the sentences written against it.
  *
- * `RefereeEffectContent` states two results as **nulls** in its own prose — officials do not
- * swallow the whistle late, and no official tilts the whistle home. Those sentences are only true
- * while the data says so, and nothing else in the suite would notice if a regeneration flipped
- * one. The assertions below fail in that case, which is the point: the copy then has to be
- * rewritten rather than quietly becoming false.
+ * `RefereeEffectContent` states the late-window result as a **null** in its own prose, and calls
+ * the home tilt **modest**. Those sentences are only true while the data says so, and nothing
+ * else in the suite would notice if a regeneration flipped one. The assertions below fail in that
+ * case, which is the point: the copy then has to be rewritten rather than quietly becoming false.
+ *
+ * One of them used to be too loose to do its job. The page asserted "no official tilts the
+ * whistle home" while rendering `2.06x chance` from this very artifact, and the only guard here
+ * checked that the reading was not *clear* — which "modest" satisfies. Both were corrected on
+ * 2026-08-21; the assertion now pins the band the copy actually claims, at both ends.
  */
 import { describe, expect, it } from "vitest";
 import timingData from "@/data/referee-timing.json";
@@ -49,9 +53,11 @@ describe("referee timing — the shipped aggregate", () => {
     expect(data.lateWindow.ratio).toBeLessThan(1);
   });
 
-  it("still finds home tilt inside noise on every foul type", () => {
-    // The copy calls this the second no to the same question. `readingOf` draws the line at 3x;
-    // anything reaching it would make "no official tilts the whistle home" a false sentence.
+  it("keeps home tilt in the band the copy calls modest — above chance, well short of clear", () => {
+    // Two-sided on purpose. Falling to "at chance" would make "the honest word is modest" false;
+    // reaching "clear" would make "not large enough to name anyone" false. The copy lives between.
+    expect(readingOf(data.homeAway.shooting)).toBe("modest");
+    expect(data.homeAway.shooting.observed).toBeGreaterThan(data.expectedByChance);
     for (const k of FOUL_TYPES) {
       expect(readingOf(data.homeAway[k]), k).not.toBe("clear");
     }

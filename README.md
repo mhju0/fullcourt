@@ -45,34 +45,35 @@ FullCourt quantifies how **travel, rest, and schedule density** shape NBA outcom
 
 🔗 **Live demo:** https://fullcourt-nba.vercel.app &nbsp;·&nbsp; **Code:** https://github.com/mhju0/fullcourt
 
-> **Project status:** actively developed. **Eight of the nine product surfaces are finished and
-> published; the ninth, Referee Effect, is deliberately held back** — its ingest, dataset, table
-> and tests are all in the repo and working, but the writing around them is not done, so
-> `/referees` shows an in-progress card rather than a half-finished analysis. Everything else on
-> the site is complete: no stubs, no placeholders, no coming-soons. The live demo and scheduled
-> data pipeline are operational, and new analytics modules are built as additive, isolated slices
-> — their own scripts, tables, routes, and page — so they never destabilize the flagship
-> rest-advantage flow.
+> **Project status:** actively developed. **All nine product surfaces are published and
+> complete** — no stubs, no placeholders, no coming-soons. Referee Effect was the last one held
+> back, from 2026-07-30 until it shipped on 2026-08-22 with the writing its numbers needed; every
+> published surface now also has a method page under `/behind-the-data`. The live demo and
+> scheduled data pipeline are operational, and new analytics modules are built as additive,
+> isolated slices — their own scripts, tables, routes, and page — so they never destabilize the
+> flagship rest-advantage flow.
 >
-> **The one thing outstanding is operational, not product:** the 2026-27 season has not been
-> seeded yet, because both NBA-owned data sources are blocked from outside the US *and* from
-> CI runners, so the ingest path for real `002…` game ids is still an open decision. Until it
-> is seeded the site's newest season stays 2025-26, which every surface handles — this is a
-> scheduled chore, not a defect. The runbook and the two candidate paths are in
-> [docs/SEASON_ROLLOVER.md §3](docs/SEASON_ROLLOVER.md).
+> **2026-27 is seeded:** 1,200 games ingested from ESPN on 2026-08-18 and cross-checked against a
+> second source. Both NBA-owned endpoints remain blocked from outside the US *and* from CI, so the
+> schedule is keyed `espn-<eventId>` and the nightly score path matches on (date, away, home)
+> rather than on a league game id. One consequence is deliberate and scheduled: Shooting by Rest
+> carries no 2026-27 rows until those games are re-keyed in January, because its source joins on
+> ids that only exist for played games. See
+> [docs/SEASON_ROLLOVER.md](docs/SEASON_ROLLOVER.md) §3 and §9.
 
 ---
 
 ## Demo
 
-Eight surfaces, not nine — `/referees` is deliberately held back and has no screenshot.
+All nine surfaces are live. The screenshots below cover the ones whose layout carries the most
+information; every route is reachable from the nav.
 
 **Games — the per-matchup view.** One row per game: each team's fatigue score and the schedule
 flags behind it, the rest-advantage differential, and a confidence read. Expanding a row gives
 both teams' fatigue components and the historical hit rate and sample size of that matchup's
 class; matchups the model calls neutral get no claim at all.
 
-<img src="docs/screenshots/games.png" alt="The Games page, headed REST ADVANTAGE DASHBOARD and titled What the schedule does to a game, with the line: travel, rest and schedule density, scored for every team in every game, then checked against what actually happened in every season since 1985-86. A band below states 61.2% is how often the more-rested team wins when it is also at home, from 27,400 games, plus 1.3 against the 59.9% home teams win anyway. A BY DATE / UPCOMING toggle is set to BY DATE. Three tiles read 15 games on this date, an average rest advantage of 0.8, and 0 high-confidence games. A Scope panel holds the 2025-26 season with month buttons from October to April, April selected, and day chips for the 1st through the 10th and the 12th, each captioned with its game count, the 12th selected on Sunday, April 12, 2026. A banner reads that the 2025-26 season is complete and the final slate is showing, linking to the full season report. The slate then opens as a table under the heading MATCHUPS, 15 games, with columns for game, matchup away over home, fatigue on a 0 to 10 scale, rest advantage, and confidence. Its first row is Brooklyn Nets 101 at Toronto Raptors 136: fatigue bars of 3.3 and 4.4, each team tagged 3IN4 and 4IN6, a rest advantage of BKN 1.1 drawn on an away-to-home meter, and a MED CONF badge beside a chevron that expands the row. The second is Chicago Bulls 128 at Dallas Mavericks 149, fatigue 4.4 and 4.6 with the same tags, scored EVEN 0.2 with a NEUTRAL badge. Both rows are the same height; the historical record for each matchup lives behind the chevron rather than under the row." width="900" />
+<img src="docs/screenshots/games.png" alt="The Games board, headed GAME SLATE · REST ADVANTAGE and titled Games, with the line: what the schedule does to a game — travel, rest and density, scored for both teams in every matchup and checked against what actually happened since 1985-86. A HOW THIS IS CALCULATED link sits under it, then a BY DATE / UPCOMING toggle set to BY DATE. Three tiles read 3 games on this date, an average rest advantage of 0.0, and 0 high-confidence games. A Scope panel holds the 2026-27 season with month buttons from October to April, October selected, and day chips from the 20th to the 31st, each captioned with its game count — the 20th selected, reading Tuesday, October 20, 2026, opening night. The slate opens as a table under MATCHUPS, 3 games, with columns for game, matchup away over home, fatigue on a 0 to 10 scale, rest advantage, and confidence. Its first row is Boston Celtics at Detroit Pistons, both marked UPCOMING with empty fatigue bars reading 0.0, scored EVEN 0.0 on an away-to-home meter with a NEUTRAL badge and a chevron that expands the row. The second is Philadelphia 76ers at New York Knicks, identical. Every fatigue score is 0.0 because nobody has played or travelled yet: on opening night the schedule has done nothing to anyone, which is the correct reading rather than missing data." width="900" />
 
 **Season Report — one season end to end.** How that year's rest call scored against the
 all-season norm, **what each team's schedule was worth in wins**, and which teams converted a rest
@@ -120,6 +121,13 @@ so they can be read against each other directly. The page also answers the stand
 the whole premise — that the schedule effects are really absences in disguise.
 
 <img src="docs/screenshots/availability.png" alt="Availability Cost, headed What a missing player is worth. WHAT AN ABSENCE COSTS leads with 2.86 points — what a team loses when its best player sits — over five bars in points of final margin: best player out 2.86 highlighted in teal, playing at home 2.82, on a back-to-back 1.76, visiting altitude 1.36, and off an overtime 0.54, measured across 35,458 games with both teams' records held equal. HOW OFTEN gives three figures: 17.1% of games have one side missing its best player, 44.5% of team-games are missing nobody from the rotation, and 8.6 players in a typical rotation. THE LOAD-MANAGEMENT ERA plots one bar per season from 1996-97 at 6.0% to a highlighted 2025-26 at 19.5%, noting the climb dips in 2023-24, the season the league first required 65 games for awards eligibility. THE SCHEDULE STILL COUNTS holds who actually played fixed and re-measures each schedule term: back-to-back 1.759 to 1.641 (6.7% shift), visiting altitude 1.358 to 1.282 (5.6%), off an overtime 0.544 to 0.501 (7.9%), and schedule density 0.275 to 0.265 (3.8%) — every one under 8%, so load management does not explain the schedule away." width="900" />
+
+**Referee Effect — what actually separates officials.** The mix of fouls each one calls against
+the league's own seasonal mix, when in a game the whistle arrives, and a folklore chapter that
+tests the sport's loudest claims about named referees. Every extreme record is published with the
+record chance produces beside it — a rule enforced by a test rather than by editorial care.
+
+<img src="docs/screenshots/referees.png" alt="The Referee Effect page, headed REFEREE EFFECT · FOULS PER GAME and titled What each official calls, with the line: what separates officials is the mix of fouls they call and when they arrive — not who they favour; three work every game, so nothing here is a fairness claim. A HOW THIS IS CALCULATED link follows. The opening paragraph states that officials do not call the same game the same way, that across 12,403 regular-season games since 2015-16 one thing separates them clearly while two things people assume about them do not survive the play-by-play, and that the page is about what a whistle is rather than who it favours — three officials work every game and the record never says which made a call. Under the heading WHAT SEPARATES OFFICIALS · THE MIX, a note explains each cell is one official's share of that foul type against the league average for the same season, so an era's rule changes cannot masquerade as a personal tendency, with bold cells clearing two standard errors and muted ones left visible as noise. A CREW CHIEFS ONLY checkbox sits left of a count reading 74 of 74 officials. The table then lists officials by games worked with columns for rank, official, games as crew chief, total games, and deviation from league average for fouls, shooting, personal, loose ball, offensive and technical. Gediminas Petraitis leads with 721 games and a bolded plus 11% on technicals; Josh Tiven 630 games, plus 2% shooting and minus 5% loose ball; Zach Zarba 608 games with plus 8% loose ball against minus 14% offensive and minus 14% technical; Marc Davis 592 games at minus 12% loose ball. Most cells are muted, and the emphasised ones run in both directions." width="900" />
 
 ---
 
@@ -194,20 +202,27 @@ with no time words — the pattern every mainstream NBA nav uses — while the p
   was played, so this measures what an absence cost and never forecasts who will be available
   tonight — and a 13.64-point margin standard deviation against a 12.44 residual says everything
   here, team strength included, explains a small share of a basketball game.
-- **Referee Effect** (`/referees`, under **OTHER**) — **in progress, and deliberately
-  unpublished.** The subject is how each official's *mix* of foul calls differs from the league's
-  own seasonal mix, across every collected game since 2015-16. The ingest, the dataset, the table
-  component and its tests are all in the repo and working; what is not finished is the writing
-  that has to sit around them. A table of per-official numbers without that framing invites
-  exactly the bias reading the page exists to refuse — three officials work every game and the
-  play-by-play never records which one blew the whistle, so each figure is roughly a third of the
-  real effect. Rather than ship that half-finished, the page shows an in-progress card and the
-  nav says so.
+- **Referee Effect** (`/referees`, under **OTHER**) — what separates officials, in three
+  chapters. The **mix** of foul calls each one makes against the league's own seasonal mix; **when**
+  in a game the whistle arrives (officials differ at the ends of a game, not the middle); and a
+  **folklore** chapter that tests the sport's loudest claims about named referees against 13,114
+  regular-season and 913 playoff games. Held back from 2026-07-30 to 2026-08-22 precisely because
+  a table of per-official numbers without its framing invites the bias reading the page exists to
+  refuse — three officials work every game and the play-by-play never records which one blew the
+  whistle, so each figure is roughly a third of the real effect. Published under two
+  pre-registrations that fixed what could be asked *before* it was asked
+  ([ADR 0007](docs/adr/0007-referee-analysis-axes-are-pre-registered.md),
+  `ml/referee_player_preregistration.md`), and every null is published alongside the findings.
+  The headline is one: **the most famous referee-and-player record in basketball is real, is the
+  most lopsided of 689 pairs, and is still not more extreme than the maximum a grid that size
+  produces from nothing.** No extreme pair is ever quoted without that number beside it, and a
+  test fails if one is.
 
 Each analytics module is **additive and isolated** — its own scripts, tables, routes, and page — so new modules never destabilize the flagship rest-advantage flow.
 
 Two routes sit outside that set: **`/`**, the front door, which explains what the product
-measures, and **`/behind-the-data`**, the method pages behind each module. Neither is a tab —
+measures, and **`/behind-the-data`**, the method pages behind each module — one per published
+surface, with no exceptions since 2026-08-22. Neither is a tab —
 `/` is reached from the wordmark and the footer, `/behind-the-data` from a reference link
 right-aligned in the nav row. `/` reads its three evidence figures from the same backtest
 `/analysis` renders. It lived at `/about` until 2026-08-12, which still redirects here.
@@ -245,9 +260,9 @@ table, no migration and no ingest — it derives everything from the existing `g
 entirely from a committed static asset (`public/data/player-rest.json`) built offline from
 [hoopR](docs/adr/0002-shooting-source-hoopr.md), Availability Cost ships as a generated constants
 module (`src/lib/availability-facts.ts`) pinned by a test against the artifact that produced it,
-and Referee Effect reads a committed JSON artifact (`src/data/referee-foul-style.json`) written by
-its ingest script — currently only for the two coverage figures on its in-progress card, since the
-table itself is held back. Those three add nothing to the runtime query path.
+and Referee Effect reads three committed JSON artifacts (`referee-foul-style.json`,
+`referee-timing.json`, `referee-legends.json`) written by its ingest and analysis scripts. Those
+three add nothing to the runtime query path.
 
 ---
 
@@ -368,9 +383,11 @@ src/
     db/           # Drizzle schema, queries, client
   hooks/          # Supabase Realtime + the game-slate controller
 scripts/          # Python ingest + TypeScript modeling + Shot Quality / Shooting pipelines
-ml/               # Playoff Predictor series modeling, the Availability Cost measurement, and the
-                  # fatigue weight-fitting harness (isolated venv, scikit-learn) + gitignored cache
-src/data/         # bundled analytics artifacts (referee whistle + foul style, win-total benchmark)
+ml/               # Playoff Predictor series modeling, the Availability Cost measurement, the
+                  # referee analyses + their pre-registrations, and the fatigue weight-fitting
+                  # harness (isolated venv, scikit-learn) + gitignored cache
+src/data/         # bundled analytics artifacts (referee whistle / foul style / timing / legends,
+                  # win-total benchmark)
 src/lib/          # availability-facts.ts and playoff-rest-facts.ts — generated figures pinned by tests
 public/data/      # the static asset /shooting fetches at runtime (player-rest.json)
 drizzle/          # SQL migrations (RLS, grants, indexes)
@@ -394,10 +411,10 @@ docs/             # architecture, database, pipeline, API, frontend, ADRs
       and what the schedule cost each of them, at `/season`
 - [x] **Availability Cost** — what a missing rotation player costs in points of margin, at
       `/availability`
-- [ ] **Referee Effect** — each official's foul mix against the league's own, at `/referees`.
-      **In progress and deliberately unpublished:** the ingest, dataset, table component and
-      its tests are all in the repo and working, but the writing around them is not finished,
-      so the page shows an in-progress card instead of the table.
+- [x] **Referee Effect** — what separates officials, at `/referees`: the foul mix, when in a game
+      the whistle arrives, and a folklore chapter testing the sport's loudest claims about named
+      referees against 913 playoff games. Published 2026-08-22 after being deliberately held back
+      for three weeks, under two pre-registrations that fixed the questions before they were asked.
 
 ---
 
@@ -408,10 +425,12 @@ loaded through `next/font/google` — no font files are committed for them. One 
 whole UI: titles separate from body text by weight and size rather than by face, which is the
 "Front Office" direction adopted on 2026-08-09. It replaced Inter + Space Grotesk + IBM Plex Mono.
 
-The bundled [Outfit](https://github.com/Outfitio/Outfit-Fonts) font faces in
-`src/app/fonts/` are © 2021 The Outfit Project Authors and licensed separately under the
-[SIL Open Font License 1.1](src/app/fonts/OFL.txt). They render the social/OG card only — a
-logotype is a fixed asset and does not have to track the UI's display face.
+The bundled [Geist](https://github.com/vercel/geist-font) font faces in `src/app/fonts/` are
+© 2023 Vercel, Inc. and licensed separately under the
+[SIL Open Font License 1.1](src/app/fonts/OFL.txt). They render the social/OG card, which is
+generated at the edge and cannot use `next/font`, so its faces have to be committed. Outfit was
+bundled here for the same purpose until 2026-08-19, when the card moved onto the product's one
+type family and Outfit was retired.
 
 ---
 

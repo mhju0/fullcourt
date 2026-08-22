@@ -31,8 +31,9 @@ test hold what replaced them.
 
 ## Module status
 
-**Nine product routes. Eight are published and complete; `/referees` is deliberately held back**
-(see the hard ban below). Status and phase history live in committed docs, not here:
+**Nine product routes, all nine published.** `/referees` was the last one held back and went live
+on 2026-08-22 (see the note where its ban used to be). Status and phase history live in committed
+docs, not here:
 
 - [docs/ROADMAP.md](docs/ROADMAP.md) — project status, shipped modules, ongoing operational work
 - [docs/PLAYOFF_PREDICTOR_DESIGN.md](docs/PLAYOFF_PREDICTOR_DESIGN.md) — Playoff Predictor design
@@ -53,13 +54,18 @@ while touching branding.
 
 ## Hard bans
 
-- **Never publish `/referees`, and never "correct" its in-progress copy.** The page renders an
-  in-progress `MessageCard` and the nav guide says `"Still being built."` **on purpose** — the
-  data, `RefereeStyleContent` and its tests all work, but the writing around them is unfinished,
-  and a per-official foul table without it reads as the bias claim the surface exists to refuse.
-  A doc-currency pass will keep flagging this as stale drift; it is not. **This exact mistake was
-  made and shipped on 2026-08-04 and had to be reverted** (PRs #9 → #10). Publishing it is a
-  deliberate edit by Michael, never a side effect of tidying docs.
+- **`/referees` is PUBLISHED as of 2026-08-22 — do not "restore" the in-progress card.** This ban
+  used to read "never publish `/referees`", and it held from 2026-07-30 until Michael published it
+  explicitly. It is inverted here rather than deleted, because the failure mode simply changed
+  direction: an agent that finds the old wording in a stale doc and helpfully puts the
+  `MessageCard` back would be repeating the 2026-08-04 mistake (PRs #9 → #10) in reverse.
+  **Unpublishing is as deliberate an act as publishing was, and neither is a docs-tidying side
+  effect.** What made publication defensible is enforced, not remembered — `referee-legends.test.ts`
+  fails if a named pair ever loses the noise floor printed beside it, if the 689-pair grid climbs
+  above chance, or if the same official stops appearing as both a curse and a charm; and
+  `referee-timing.test.ts` pins the home-tilt band at both ends. Never quote a per-official figure
+  without the count chance produces at the same bar, and never drop the caveat that three officials
+  work every game so each figure is about a third of the effect it names.
 - **Never rename rest-advantage identifiers.** See above.
 - **Never run `drizzle-kit push` or `drizzle-kit generate`.** `schema.ts` intentionally lags the
   live DB — `shot_grid` and `shot_value_surface` are read via raw SQL and are absent from it on

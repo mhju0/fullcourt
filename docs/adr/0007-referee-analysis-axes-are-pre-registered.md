@@ -2,7 +2,8 @@
 
 Status: accepted (2026-08-06)
 
-`/referees` is built and deliberately unpublished. The ingest, `src/data/referee-foul-style.json`
+`/referees` was built and deliberately unpublished when this ADR was accepted; it went live on
+2026-08-22, and the addendum at the foot of this file records what the axes returned. The ingest, `src/data/referee-foul-style.json`
 (11,952 games, 684 excluded, 128 officials, 2015-16 → 2025-26, generated 2026-07-31),
 `RefereeStyleContent` and its unit tests all exist and work; the page renders an in-progress
 `MessageCard` instead, and `e2e/referees.spec.ts` keeps the table block as `describe.skip`.
@@ -182,3 +183,36 @@ named in the pre-registration and is therefore outstanding rather than dismissed
   against circularity, aimed at model coefficients rather than at hypothesis selection.
 - `docs/GLOSSARY.md` — REFEREE EFFECT, and why the page is not called Referee Bias.
 - `src/lib/referee-foul-style.ts` — the |z| ≥ 2 emphasis rule and the 200-game bar, already shipped.
+
+## Addendum, 2026-08-22 — the axes were run, and the page shipped
+
+The remaining axes were run on 2026-08-21 against a corpus rebuilt by
+`ml/extract_referee_corpus.py`, and `/referees` was published on 2026-08-22. What this ADR fixed
+in advance held: every axis it named was run, every result was published, and the two it declared
+gated stayed gated until their gate opened.
+
+- **Axis A (foul type × home/away)** — landed, weakly. Between-official spread is 1.35× the
+  permutation null (p < 0.0001) on the total, driven by shooting fouls. **This overturns the
+  2026-07-31 null**, and the page's copy was corrected with it: it had asserted "no official tilts
+  the whistle home" while rendering `2.06× chance` from its own artifact, held in place by a test
+  that only checked the effect was not *large*. Both are now pinned two-sided.
+- **Axis C (timing)** — landed on the coarse question and nowhere else. Q1 share separates
+  officials (1.24×, p = 0.008) and is uncorrelated with whistle volume (r = +0.01), so it is a
+  second dimension of style rather than the first one restated. **The Q4 final-2:00 cut, which
+  this ADR gated behind the coarse test, returned a null** (1.05×, p = 0.27) — the gate worked
+  exactly as designed, spending the coarse sample first.
+- **Axis B (score state)** — authorised by A and C landing, and run. Fouls tilt hard toward
+  whoever leads (49.6% at a 1–5 lead → 58.3% at 21+). Published as **basketball, not bias**: a
+  trailing team attacks and a leading team protects.
+- **Axis D (player-level)** — this ADR refused to run it as one more column of a sweep and
+  required its own decision and its own pre-registration. Michael opened it on 2026-08-21 and
+  `ml/referee_player_preregistration.md` was written and committed **before any player-level
+  figure was computed** — and, as it turned out, before the playoff data that would test it
+  existed at all. That ordering is the only reason the postseason result carries any weight.
+
+The rule that "a null still ships the page" was the one that mattered most. Most of what was
+asked came back empty — player-level foul rates, player-level win records, star foul trouble,
+crowd effects, make-up calls — and the page publishes all of it. The finished surface is built
+around the emptiest result of all: the sport's most famous referee grudge is real, is the most
+extreme of 689 pairs, and is still not more extreme than the maximum a grid that size produces
+from nothing.

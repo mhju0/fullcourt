@@ -62,6 +62,12 @@ export const BEHIND_THE_DATA_SECTIONS = [
     surfaceHrefs: ["/availability"],
   },
   {
+    href: "/behind-the-data/referees",
+    label: "REFEREE EFFECT",
+    title: "Referee effect",
+    surfaceHrefs: ["/referees"],
+  },
+  {
     href: "/behind-the-data/data-and-limits",
     label: "DATA & LIMITS",
     title: "Data and limits",

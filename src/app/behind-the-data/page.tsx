@@ -45,6 +45,8 @@ const BLURB: Record<ModelSectionHref, string> = {
     "Expected shooting value by court location, and the defender data public sources do not have.",
   "/behind-the-data/availability":
     "What counts as a missing rotation player, why an absence is priced above replacement, and why the schedule terms survive the control.",
+  "/behind-the-data/referees":
+    "Why a figure belongs to a crew rather than a person, what the permutation null is doing, and why an extreme referee-and-player record is not evidence on its own.",
   "/behind-the-data/data-and-limits":
     "Where the data comes from, which seasons carry which fields, and what is excluded on purpose.",
 };
@@ -54,7 +56,7 @@ export default function BehindTheDataPage() {
     <BehindTheDataShell
       eyebrow="BEHIND THE DATA"
       title="Behind the data"
-      description="Every model with a section here, written out: the terms, the constants, the thresholds, and the measured results. Referee Effect has no section because that surface is still being built."
+      description="Every model with a section here, written out: the terms, the constants, the thresholds, and the measured results. Every published surface now has one."
     >
       <Section label="HOW TO READ ANY NUMBER HERE" descriptor="THREE RULES">
         <Prose>

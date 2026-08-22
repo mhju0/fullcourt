@@ -35,13 +35,16 @@ the actual code (`src/app/`, `src/components/`, `src/app/globals.css`).
 
 ## Pages
 
-The product routes shipping today are `/`, `/season`, `/analysis`, `/playoffs`, `/schedule`,
-`/shot-quality`, `/shooting`, `/referees` and `/availability`, plus a branded App Router
-`not-found` page for unknown paths. (This sentence used to open with a count, which went stale
-twice — first at "five" when it omitted `/shooting`, then at "seven". The list is the fact; a
-number in front of it is a second copy of the same fact that nothing checks.)
-`/upcoming` was retired: it is a permanent redirect to `/` (`next.config.ts`), whose UPCOMING
-view now renders what it used to.
+The product routes shipping today are `/games`, `/season`, `/schedule`, `/analysis`, `/playoffs`,
+`/shooting`, `/shot-quality`, `/availability` and `/referees` — the nav's own order — plus `/`,
+the front door, which stopped being a product surface in the 2026-08-12 swap, and a branded App
+Router `not-found` page for unknown paths. (This sentence used to open with a count, which went
+stale twice — first at "five" when it omitted `/shooting`, then at "seven". The list is the fact;
+a number in front of it is a second copy of the same fact that nothing checks. The list itself
+then went stale a third way: it kept `/` in the product set and lost `/games` entirely when the
+board moved there, which is the failure a list cannot protect against on its own.)
+`/upcoming` was retired: it redirects to `/games` (`next.config.ts`), whose UPCOMING view renders
+what it used to. `/about` redirects to `/` for the same reason — the address had been shared.
 
 ### `/games` — Games (`src/app/games/page.tsx`, client component)
 
@@ -533,14 +536,14 @@ two files are line-for-line equivalents and must move together.
 `data-and-limits`. Real
 routes rather than client-side tabs, so each method is linkable, crawlable, and deep-linkable
 from the page it explains. `BehindTheDataShell` supplies the header and the section sub-nav;
-`behind-the-data-parts.tsx` supplies the shared prose primitives so seven pages cannot drift into
-seven typographic treatments of the same content.
+`behind-the-data-parts.tsx` supplies the shared prose primitives so eight pages cannot drift into
+eight typographic treatments of the same content.
 
-`/referees` has no section here, and is also the one product surface currently held back — its
-page shows an in-progress card rather than the foul-style table. Its method (per-season share
-baselining, the |z| ≥ 2 emphasis rule, why a call cannot be attributed to one official) is the
-writing that is unfinished, which is why the surface is unpublished; a section here would land
-with it.
+`/referees` has no section here yet, though it is published as of 2026-08-22. Its method
+(per-season share baselining, the |z| ≥ 2 emphasis rule, the 689-pair noise floor, why a call
+cannot be attributed to one official) is documented on the page itself and in
+`ml/REFEREE_PLAYER_REPORT.md`; a Behind the Data section for it is **open work**, not a deliberate
+omission.
 
 **Colour is load-bearing here** (2026-07-30). The pages were near-uniform black-on-white and
 read as one undifferentiated wall, so each primitive carries an accent and each accent means one
@@ -595,18 +598,40 @@ left to review:
 The season trend is one series, so it carries no legend and one hue, and every column holds a
 `title` — a reader gets any season's figure without the page shipping a line of JavaScript.
 
-### `/referees` — foul style *(built, deliberately unpublished)*
+### `/referees` — foul style, timing and folklore *(published 2026-08-22)*
 
-**The page currently renders an in-progress card, not the table below.** Everything described in
-this section exists and works — it is held back because the writing around the numbers is not
-finished, and that framing is what stops the table reading as a bias claim. Restoring it is two
-edits, both named in the docstring of `src/app/referees/page.tsx`: swap the `MessageCard` back
-for `<RefereeStyleContent data={data} />`, and un-skip the table block in `e2e/referees.spec.ts`.
-Treat this as an editorial state, not stale documentation.
+**Held back from 2026-07-30 until 2026-08-22**, then published on Michael's explicit instruction.
+The direction of the hazard has flipped and the note in CLAUDE.md now says so: putting the
+in-progress `MessageCard` back would repeat the 2026-08-04 mistake (PRs #9 → #10) in reverse.
+Publishing removed the `inProgress` flag from `primary-navigation.ts` and, with it, the last user
+of the `IN PROGRESS` tag in `nav-bar.tsx`; both were deleted rather than left unused.
+
+The finished copy is `referee-effect-content.tsx`, which composes three chapters — the foul-mix
+table, the quarter-timing finding, and `referee-legends-content.tsx`, the folklore chapter added
+2026-08-21. `referee-parts.tsx` holds the prose measure and section rule the two content files
+share.
+
+**The folklore chapter is built around one turn, and its ordering is load-bearing.** It states a
+famous record as *real* — Chris Paul's teams lost ten of eleven playoff games Scott Foster worked,
+against an opponent-aware expectation of 6.34 — tests the assignment confound that would explain
+it, and only then shows that the same official is a ten-and-one charm for four other players, that
+a wider pair nobody has ever named sits one row below it, and that the 689-pair grid it came from
+produces exactly the extremes chance predicts. A reader told "it is noise" before seeing the number
+disbelieves the page; the sections may not be reordered.
+
+The rule that keeps it honest is enforced rather than remembered: **no extreme pair may be quoted
+without the count chance puts beside it.** `src/lib/referee-legends.ts` carries `NoiseFloor` as a
+peer of the finding rather than as context, and `referee-legends.test.ts` fails if the famous pair
+ever beats that floor, if the grid climbs above chance, or if the same official stops appearing at
+both ends of the list.
 
 Returned 2026-07-31 asking a different question. The page was stubbed on 2026-07-30 because its
 original question — does any official tilt the whistle home? — came back inside noise, and a
-table of muted cells invites readers to find names in it anyway. Crew *rest* was tested next and
+table of muted cells invites readers to find names in it anyway. **That "no" was overturned on
+2026-08-21** and the copy corrected: officials do differ in home tilt, modestly, above chance. The
+page had asserted "no official tilts the whistle home" while rendering `2.06× chance` from its own
+artifact, held in place by a test that only checked the effect was not *large*. Both are now pinned
+two-sided, at both ends of the band the prose claims. Crew *rest* was tested next and
 was also a null. What does separate officials is the **mix** of fouls they call, and that
 survives baselining per season, per arena, and on share rather than count.
 
@@ -761,12 +786,13 @@ completion of auto-triggered ones — and a modal that only survives as a footer
 nobody opens. The home page's thesis header does the site-level explaining; each page's
 `PageHeader` does the page-level explaining.
 
-**The one thing it uniquely carried had to survive it.** `/referees` was labelled
-`"Still being built."` in the guide, which is the deliberate, load-bearing stance recorded in
-CLAUDE.md. That warning now renders as an `IN PROGRESS` tag beside `REFEREE EFFECT` in the
-`OTHER` menu, driven by `inProgress: true` on its `primary-navigation.ts` entry, so navigation
-still says the surface is unfinished *before* it is opened. `e2e/referees.spec.ts` asserts it
-there. Do not drop that tag.
+**The one thing it uniquely carried outlived it by eleven days.** `/referees` was labelled
+`"Still being built."` in the guide; when the guide went, that warning moved to an `IN PROGRESS`
+tag beside `REFEREE EFFECT` in the `OTHER` menu, driven by `inProgress: true` on its
+`primary-navigation.ts` entry — navigation had to say a surface was unfinished *before* it was
+opened. **Both are gone as of 2026-08-22**, removed with the state they described when the page
+was published. The pattern is worth knowing rather than reinventing: if a surface is ever held
+back again, git history has the flag, the tag and the e2e assertion that guarded it.
 
 ### `matchup-parts.tsx` — the shared matchup pieces
 

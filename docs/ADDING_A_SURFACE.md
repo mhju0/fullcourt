@@ -205,5 +205,8 @@ What is already exempt, and why — so these are not rediscovered every pass:
 no test reaches, and it is the part this project cares about most: a venue baseline rather than a
 coin flip, a published null where the result is null, no figure typed into prose that a generated
 artifact could pin instead. [FRONTEND.md](FRONTEND.md), [ARCHITECTURE.md](ARCHITECTURE.md) and the
-[ADRs](adr/) carry those rules. `/referees` is the standing example: the data, the component and
-the tests all work, and it stays unpublished because the writing around them is unfinished.
+[ADRs](adr/) carry those rules. `/referees` is the standing example, and it is now the whole arc:
+the data, the component and the tests all worked for three weeks while the page stayed unpublished,
+because the writing around them was unfinished. It shipped on 2026-08-22 once that writing existed
+— and what the writing had to do was carry the numbers chance produces beside the ones a reader
+wants to believe. The gap between "the tests pass" and "this is publishable" was the entire point.

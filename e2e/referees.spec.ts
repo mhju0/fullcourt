@@ -1,49 +1,24 @@
 import { test, expect } from "@playwright/test";
 
 /**
- * `/referees` is deliberately held back — see the docstring in `src/app/referees/page.tsx`.
+ * `/referees` — **published 2026-08-22**, after being deliberately held back since 2026-07-30.
  *
- * The table specs below are kept and skipped rather than deleted, so restoring the page is two
- * edits and no rewriting: swap the card for `<RefereeEffectContent style={data} timing={timing} />`
- * — which renders the same table inside the finished copy — and turn `test.describe.skip` back
- * into `test.describe`.
+ * The specs that used to assert the in-progress card are gone with it. What replaced them is not
+ * a coverage exercise: this page names real officials beside real records, and the assertions
+ * below guard the sentences that make that defensible. If the noise floor, the same-official
+ * counterexamples or the bias refusal ever stop rendering, the page becomes an accusation and
+ * these fail.
+ *
+ * Two of the old skipped specs asserted copy that no longer exists — "This is style, not bias."
+ * and "how much more or less often" — both written for a 2026-08-03 version of the table and
+ * never re-run. They are rewritten here against what the finished page actually says, which is
+ * the reason a skipped spec is not the same thing as a passing one.
  */
-test.describe("Referee Effect — held back", () => {
-  test("shows an in-progress card rather than the table", async ({ page }) => {
-    await page.goto("/referees");
-    await expect(
-      page.getByRole("heading", { name: "What each official calls" })
-    ).toBeVisible();
-    await expect(page.getByText("IN PROGRESS").first()).toBeVisible();
-    // The guard that matters: the data must not reach the page while it is held back.
-    await expect(page.getByTestId("referee-style-row")).toHaveCount(0);
-  });
-
-  test("says the data exists, so the state reads as unfinished rather than broken", async ({
-    page,
-  }) => {
-    await page.goto("/referees");
-    await expect(page.getByText(/data behind this is collected/)).toBeVisible();
-  });
-
-  // Moved off the first-visit guide on 2026-08-11, when that guide was removed. The stance it
-  // guards is unchanged: navigation must say this surface is unfinished BEFORE you open it.
-  test("is still labelled as unfinished in the nav, before you open it", async ({ page }) => {
-    await page.goto("/");
-    await page.getByRole("button", { name: /^OTHER/ }).click();
-    await expect(
-      page.getByRole("menuitem", { name: /REFEREE EFFECT IN PROGRESS/ })
-    ).toBeVisible();
-  });
-});
-
-// ─── Restore with the page ────────────────────────────────────────
-// Every assertion below passed against the real table on 2026-08-03. They are skipped, not
-// removed, because the component and dataset they exercise are untouched.
-test.describe.skip("Referee Effect — the published table", () => {
-  test("renders the foul-style table", async ({ page }) => {
+test.describe("Referee Effect — the published page", () => {
+  test("renders the foul-style table rather than an in-progress card", async ({ page }) => {
     await page.goto("/referees");
     await expect(page.getByRole("heading", { name: "What each official calls" })).toBeVisible();
+    await expect(page.getByText("IN PROGRESS")).toHaveCount(0);
     const rows = page.getByTestId("referee-style-row");
     await expect(rows.first()).toBeVisible();
     expect(await rows.count()).toBeGreaterThan(30);
@@ -80,14 +55,57 @@ test.describe.skip("Referee Effect — the published table", () => {
     await expect(rows.first().getByText("CC", { exact: true })).toBeVisible();
   });
 
-
-  test("explains the number in plain terms rather than as a deviation", async ({ page }) => {
+  test("refuses the bias reading in the visitor's own words", async ({ page }) => {
     await page.goto("/referees");
-    await expect(page.getByText(/how much more or less often/)).toBeVisible();
+    await expect(page.getByText(/nothing here can be read as bias/)).toBeVisible();
+    await expect(page.getByText(/None of this is a fairness claim/)).toBeVisible();
   });
 
-  test("states that it is style rather than bias", async ({ page }) => {
+  test("no longer announces itself as unfinished in the nav", async ({ page }) => {
+    await page.goto("/");
+    await page.getByRole("button", { name: /^OTHER/ }).click();
+    await expect(page.getByRole("menuitem", { name: /REFEREE EFFECT/ })).toBeVisible();
+    await expect(page.getByText("IN PROGRESS")).toHaveCount(0);
+  });
+});
+
+/**
+ * The folklore chapter. Every assertion here exists because dropping the thing it guards would
+ * leave a named official beside a losing record with nothing qualifying it.
+ */
+test.describe("Referee Effect — the folklore chapter", () => {
+  test("states the famous record and the noise floor on the same page", async ({ page }) => {
     await page.goto("/referees");
-    await expect(page.getByText("This is style, not bias.")).toBeVisible();
+    await expect(page.getByText("THE MOST FEARED REFEREE IN BASKETBALL")).toBeVisible();
+    // The record...
+    await expect(page.getByText(/PLAYOFF RECORD IN GAMES/)).toBeVisible();
+    // ...and the count chance puts beside it, which may never be separated from it.
+    await expect(page.getByText("SOMEBODY HAS TO FINISH FIRST")).toBeVisible();
+    await expect(page.getByText(/OBSERVED VS EXPECTED BY CHANCE/)).toBeVisible();
+  });
+
+  test("shows the same official as a charm as well as a curse", async ({ page }) => {
+    await page.goto("/referees");
+    await expect(page.getByText(/best thing that ever happened to/)).toBeVisible();
+    await expect(page.getByText(/curse and a charm on the same whistle/)).toBeVisible();
+  });
+
+  test("publishes the pair nobody named, which is the argument", async ({ page }) => {
+    await page.goto("/referees");
+    await expect(page.getByText("AND THE PAIR NOBODY EVER NAMED")).toBeVisible();
+    await expect(page.getByText(/somebody went looking for the famous one/)).toBeVisible();
+  });
+
+  test("kills the make-up call with the offensive-foul sign flip", async ({ page }) => {
+    await page.goto("/referees");
+    // Published without this tile, the t = 27 above it reads as proof of compensation.
+    // `exact` because the late-window paragraph above also contains "below chance, not above".
+    await expect(page.getByText("BELOW CHANCE, NOT ABOVE", { exact: true })).toBeVisible();
+    await expect(page.getByText(/there is a ball, and it keeps changing hands/)).toBeVisible();
+  });
+
+  test("carries the attribution caveat no figure can express", async ({ page }) => {
+    await page.goto("/referees");
+    await expect(page.getByText(/roughly a third/).first()).toBeVisible();
   });
 });

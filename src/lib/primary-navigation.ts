@@ -72,16 +72,13 @@ export const OTHER_NAV_ITEMS = [
   {
     href: "/referees",
     label: "REFEREE EFFECT",
-    // DELIBERATE, NOT STALE. The foul-style data and table exist and are wired up, but the
-    // page's content is not finished to the standard the rest of the site is held to, so the
-    // nav says so rather than presenting it as a completed surface. Do not "correct" this to
-    // describe the table — that is the mistake, and it has been made once already.
-    // Restore-to-finished is a deliberate edit by Michael, not a doc-currency fix.
+    // Published 2026-08-22 on Michael's explicit instruction, after being held back since
+    // 2026-07-30. The `inProgress: true` flag that used to sit here — and the "Still being
+    // built." guide text before it — are gone with the state they described.
     //
-    // `inProgress` renders an IN PROGRESS tag beside the label in the OTHER menu. It replaced
-    // the first-visit guide's "Still being built." on 2026-08-11, when that guide was removed:
-    // the warning had to keep a home in navigation rather than disappear with its old one.
-    inProgress: true,
+    // This entry was the only user of the `inProgress` flag and of the IN PROGRESS tag in
+    // nav-bar.tsx; both were removed with it rather than left unused. Git history carries the
+    // mechanism if another surface is ever held back this way.
   },
 ] as const;
 

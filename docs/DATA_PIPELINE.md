@@ -753,10 +753,9 @@ JSON and re-sync the TypeScript constants. The suite tells you if you forget the
 
 One script, run by hand: **`scripts/fetch_officials.ts`** (`npx tsx scripts/fetch_officials.ts`).
 
-> **The page this feeds is deliberately unpublished.** The pipeline below is complete and its
-> artifacts are committed and pinned; `/referees` renders an in-progress card instead of the
-> table while the writing around it is unfinished. Keep running this as documented — restoring
-> the page is a front-end edit, not a re-ingest. See `src/app/referees/page.tsx`.
+> **The page this feeds went live on 2026-08-22.** The pipeline below is complete and its output
+> is now rendered at `/referees`, alongside the playoff extension added the same week by
+> `scripts/fetch_playoff_officials.ts` and the analyses in `ml/REFEREE_PLAYER_REPORT.md`.
 
 **Source is ESPN, and not by preference.** `cdn.nba.com` 403s and `stats.nba.com` times out from
 both Seoul and GitHub's runners (§ SEASON_ROLLOVER 2), while ESPN game summaries carry named
