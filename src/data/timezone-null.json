@@ -1,0 +1,38 @@
+{
+  "generatedBy": "ml/timezone_test.py",
+  "preRegistration": "ml/timezone_preregistration.md",
+  "report": "ml/TIMEZONE_REPORT.md",
+  "adr": "docs/adr/0006-fatigue-weights-were-fitted-and-the-model-was-not-changed.md",
+  "measuredOn": "2026-08-18",
+  "protocol": {
+    "folds": 16,
+    "heldOutGames": 19118,
+    "gamesInEra": 28876,
+    "baselineHomeWinPct": 58.39,
+    "thresholdHours": 3
+  },
+  "rawSplit": [
+    { "trip": "all games in the era", "games": 28876, "homeWinPct": 58.39, "strengthEdgeToHome": null },
+    { "trip": "east ≥ 3h", "games": 1643, "homeWinPct": 54.41, "strengthEdgeToHome": -0.0281 },
+    { "trip": "east ≥ 3h, short rest", "games": 458, "homeWinPct": 53.49, "strengthEdgeToHome": null },
+    { "trip": "west ≥ 3h", "games": 1635, "homeWinPct": 61.96, "strengthEdgeToHome": 0.0218 },
+    { "trip": "west ≥ 3h, short rest", "games": 428, "homeWinPct": 66.59, "strengthEdgeToHome": null },
+    { "trip": "no long shift either way", "games": 25598, "homeWinPct": 58.41, "strengthEdgeToHome": -0.0021 }
+  ],
+  "logLoss": {
+    "strengthOnly": 0.62381,
+    "baseline": 0.62124,
+    "withCandidates": 0.62126,
+    "baselineWorth": 0.00258,
+    "candidatesWorth": -0.00003,
+    "everyFatigueFactorCombined": 0.00245,
+    "strengthAlone": 0.06
+  },
+  "terms": [
+    { "term": "d_east3_short", "meanWeight": 0.0, "cv": null, "foldsNonZero": 0, "verdict": "pinned at zero by the clamp — nothing", "aloneVsBaseline": 0.0, "games": 458, "alsoAltitudePct": 0.0, "alsoBackToBackPct": 76.2 },
+    { "term": "d_west3_short", "meanWeight": 0.0997, "cv": 0.4, "foldsNonZero": 16, "verdict": "stable", "aloneVsBaseline": -0.00002, "games": 428, "alsoAltitudePct": 0.0, "alsoBackToBackPct": 86.4 },
+    { "term": "d_east3", "meanWeight": 0.0069, "cv": 1.77, "foldsNonZero": 6, "verdict": "unstable", "aloneVsBaseline": -0.00002, "games": 1643, "alsoAltitudePct": 0.0, "alsoBackToBackPct": 21.2 },
+    { "term": "d_west3", "meanWeight": 0.0435, "cv": 0.65, "foldsNonZero": 14, "verdict": "stable", "aloneVsBaseline": 0.00003, "games": 1635, "alsoAltitudePct": 0.0, "alsoBackToBackPct": 22.6 }
+  ],
+  "primaryTerm": "d_east3_short"
+}

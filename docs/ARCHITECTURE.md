@@ -148,8 +148,9 @@ Full list in [API.md](API.md).
   `OTHER`). A pure server component with no fetch, no client bundle and no loading state: every
   figure is a published constant from `src/lib/availability-facts.ts`. Same shape as the Playoff
   Rest argument, for the same reason — it renders a finished measurement, not a query.
-- `app/behind-the-data/**` — **the reference section**, nine static routes (an index plus one per
-  model, `/behind-the-data/referees` added 2026-08-22) documenting each model's terms, constants
+- `app/behind-the-data/**` — **the reference section**, ten static routes (an index, one per
+  model, and `/behind-the-data/time-zones` for a measured null; `referees` and `time-zones` both
+  added 2026-08-22) documenting each model's terms, constants
   and limits. No data fetching: constants are
   imported from source (`FATIGUE_CONSTANTS` and friends) so the prose cannot drift from the code,
   and measured figures carry the date they were measured.

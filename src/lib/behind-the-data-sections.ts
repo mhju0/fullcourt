@@ -7,7 +7,8 @@
  *
  * `surfaceHrefs` lists the product pages this section documents, and is what those contextual
  * links are derived from. Empty where a section explains something cross-cutting rather than any
- * one surface.
+ * one surface — the overview, the shared sources page, and TIME ZONES, which documents a question
+ * that was measured and came back empty and therefore has no surface to point at.
  *
  * A list rather than a single route, since 2026-08-12. It was one route, and the cost was silent:
  * `MethodLink` renders nothing when it finds no match, so GAMES passed `surfaceHref="/"`, matched
@@ -66,6 +67,16 @@ export const BEHIND_THE_DATA_SECTIONS = [
     label: "REFEREE EFFECT",
     title: "Referee effect",
     surfaceHrefs: ["/referees"],
+  },
+  {
+    href: "/behind-the-data/time-zones",
+    label: "TIME ZONES",
+    title: "Time zones",
+    /* No surface. This documents a measured null rather than anything the site publishes a
+       number from — see the note on `surfaceHrefs` above. It earns a section because the
+       result is only safe to state alongside the confound that makes the raw split look
+       like the opposite finding. */
+    surfaceHrefs: [],
   },
   {
     href: "/behind-the-data/data-and-limits",

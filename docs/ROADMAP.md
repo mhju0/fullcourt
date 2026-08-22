@@ -182,13 +182,6 @@ oversight. None is a defect in what the site publishes.
   the report reads, so seeding a schedule moves the stamp even though nothing is final yet. Since
   2026-08-18 that window also renders a real page rather than an empty one — a season with no
   completed game reports on the `"schedule"` basis.
-- **The time-zone null is kept but deliberately unpublished, and where it goes is undecided.**
-  Measured 2026-08-18 (pre-registered; the 2026-08-18 addendum to
-  [ADR 0006](adr/0006-fatigue-weights-were-fitted-and-the-model-was-not-changed.md), snapshot at
-  `ml/TIMEZONE_REPORT.md`). Nothing on the site refers to it **by decision** — Michael asked to
-  keep it and choose a home later, so `/behind-the-data`, an `/analysis` note, and nowhere are all
-  still live options. **Do not publish it as part of a docs-currency or unused-finding pass.** The
-  absence is the decision, not drift; that is the mistake made with `/referees` on 2026-08-04.
 - **`docs/social-preview.png` needs one manual re-upload.** Regenerated 2026-08-18 as a render of
   `/opengraph-image` rather than a hand export, so the stale "40-SEASON BACKTEST" card and the
   pre-2026-07-30 logo lean are gone from the tree — but GitHub serves the preview from repo
