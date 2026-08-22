@@ -44,16 +44,15 @@ one weight, the halves separated by color — COURT takes the accent — one rul
 and the OG card, which had each been half-doing it differently (dimmed split vs. amber
 split). Running prose still writes "FullCourt"; wordmark and prose are different jobs.
 
-**The Second Key** (2026-08-22) is the lockup's one deliberate irregularity: the word's two
-U's are the two keys at either end of a full court, and the second — the away key — renders
-**hollow**: one side arrives with less left. It is a hidden code (nothing announces it; a
-reader finds it), and it draws the thesis with the name's own letters. Exactly one letter
-moves, ever — a second irregularity would be noise, and the alternatives (both mirrors, a
-free-throw arc, a flipped U, a sagging U) were mocked and rejected on 2026-08-22 before this
-one was chosen. Where the stroke cannot render (satori draws no text-stroke; old engines),
-the U falls back to a ghost at a third of its ink — the same statement, quieter, never an
-invisible or broken letter. Geometry, fallback contract and the per-surface pins live in
-`src/lib/brand/wordmark-second-key.ts` and its test.
+**The lockup is plain on purpose — the Second Key was shipped and withdrawn (2026-08-22/23).**
+A one-point treatment rendered the second U — the away key of the full court the word's two
+U's draw — hollow (PR #51), and Michael reversed it the next day in favour of the full-color
+lockup (PR #52): the hidden-code reading was liked, the hole in the word was not. This
+paragraph exists so the idea is not "restored" from the surviving exploration artifacts or
+memory by a later pass — same rule as the `/referees` ban inversion: shipping and unshipping a
+brand move are both deliberate acts, never a tidying side effect. If the idea ever returns it
+returns through Michael, with the PR #51 implementation (geometry module, ghost fallback,
+per-surface pins) as the reference.
 
 - **FULL — the sample.** The whole record: every season since 1985-86, both arms of every
   split, the nulls included. "Full" is a claim about honesty of sample — nothing

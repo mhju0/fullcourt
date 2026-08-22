@@ -3,7 +3,7 @@
 import { Menu } from "@base-ui/react/menu"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { type CSSProperties, useCallback, useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { CourtMark } from "@/components/court-mark"
 import {
   DIRECT_NAV_ITEMS,
@@ -260,22 +260,9 @@ export function NavBar() {
               style={{ fontSize: "22px", fontWeight: 700, letterSpacing: "-0.015em", lineHeight: 1 }}
             >
               {/* W4 lockup (2026-08-19): COURT takes the brand indigo — the same
-                  accent the mark's slash spends, one rule for nav and OG alike.
-                  The Second Key (2026-08-22): the U of COURT — the away key —
-                  renders hollow (src/lib/brand/wordmark-second-key.ts). The stroke
-                  is a hand-tuned 1.3px here, not the em default: 0.031em of 22px
-                  is under a device pixel and shimmers. */}
+                  accent the mark's slash spends, one rule for nav and OG alike. */}
               <span style={{ color: "var(--term-text)" }}>FULL</span>
-              <span style={{ color: "var(--accent)" }}>
-                CO
-                <span
-                  className="wordmark-u-hollow"
-                  style={{ "--wordmark-u-stroke": "1.3px" } as CSSProperties}
-                >
-                  U
-                </span>
-                RT
-              </span>
+              <span style={{ color: "var(--accent)" }}>COURT</span>
             </span>
             <span
               aria-hidden
