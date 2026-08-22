@@ -150,10 +150,35 @@ added alongside it.
 
 ## In progress
 
-Nothing. **`/referees` was the last held-back surface and was published on 2026-08-22**, which
-empties this section for the first time since the module was built. Its history is recorded under
-Shipped modules below, and the standing rule that replaced its ban is in
-[CLAUDE.md](../CLAUDE.md) — restoring the in-progress card is now the mistake, not the safe move.
+Two items added 2026-08-23, both discussed with and scoped by Michael. Before them this section
+had been empty since `/referees` published on 2026-08-22 (its history is under Shipped modules;
+the standing rule that replaced its ban is in [CLAUDE.md](../CLAUDE.md) — restoring the
+in-progress card is now the mistake, not the safe move).
+
+- **Referee careers are unequal, and the table should say so — an exploration, not a promise.**
+  The per-official table ranks a 700-game crew chief beside a 200-game newcomer with nothing but
+  the raw `G` column to separate them, and the |z| ≥ 2 bolding quietly favors veterans: at
+  n=700 a tiny real quirk clears the bar that an identical quirk at n=200 cannot. Scoped
+  2026-08-23: **(1)** add a seasons-active span per official (needs `firstSeason`/`lastSeason`
+  per row from the pipeline — presentation, do regardless); **(2)** pre-register and measure an
+  **equal-window comparison** — every official scored on their last N games (~200), same sample,
+  same noise floor, answers "what is this official like now"; **(3)** a literal per-season split
+  is assessed *inside* that pre-registration and is expected to fail — an official works ~65
+  games a season, and at that n the |z| ≥ 2 rule blanks nearly every cell. If the exploration
+  beats nothing, ship it; **status quo is the accepted fallback**, recorded with the measurement.
+  Standing rule applies: any new referee number goes through a written pre-registration first.
+
+- **Schedule Edge vs Season Report — content audit, then a decision with Michael.** The overlap
+  is real but narrower than it feels: `/season`'s WHAT THE SCHEDULE WAS WORTH table is a strict
+  subset of `/schedule`'s full breakdown (two independent implementations of the same figure),
+  and the rest-vs-home-court scale paragraph exists in three copies across the two files. Scoped
+  2026-08-23 as **audit first, no direction pre-chosen**: inventory every block on both pages,
+  mark what is duplicated, near-duplicated (B2B/3-in-4 appear as opponent-relative *edges* on
+  one page and raw *counts* on the other — different facts that read as the same), and unique.
+  Candidate outcomes to weigh at the decision gate, none pre-selected: give each fact one home
+  and sharpen the two pages' identities (dealt-hand vs as-played); or merge into one route and
+  give back a nav tab. The decision is Michael's, made on the audit, and either way the shared
+  figures collapse into one implementation so the two-files-must-agree comments can retire.
 
 ## Known and not fixed
 
