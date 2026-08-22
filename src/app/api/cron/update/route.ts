@@ -5,7 +5,7 @@ import { getPublicApiErrorMessage } from "@/lib/api-errors";
 import { db } from "@/lib/db";
 import { games, teams } from "@/lib/db/schema";
 import { alias } from "drizzle-orm/pg-core";
-import { parseScoreboard, reconcileScores } from "@/lib/espn-scoreboard";
+import { parseScoreboard, reconcileScores, type ScoreUpdate } from "@/lib/espn-scoreboard";
 import { formatEasternDateKey } from "@/lib/nba-season";
 
 /**
@@ -36,8 +36,11 @@ export const dynamic = "force-dynamic";
  * GET /api/cron/update
  *
  * Vercel Cron-compatible endpoint that updates live NBA game scores. Checks for games currently
- * "live" or scheduled for today (ET), reads that date's ESPN scoreboard, and writes back status,
- * scores and overtime.
+ * "live" or scheduled on **yesterday or today (ET)**, reads each of those dates' ESPN
+ * scoreboards, and writes back status, scores and overtime.
+ *
+ * Two dates because the cron fires at 07:00 UTC, which is 2-3 AM ET — past midnight, so the
+ * games this pass is for are already "yesterday". See the window comment in the handler.
  *
  * **Reads ESPN, and matches on (away, home), because the previous design could not work.** It
  * fetched `cdn.nba.com`, which 403s — from this region and from GitHub's US runners alike, a
@@ -94,6 +97,18 @@ export async function GET(request: Request) {
     // is already "tomorrow" in UTC — the old server-local date missed late games.
     const today = formatEasternDateKey();
 
+    // Yesterday *and* today, because this pass runs after midnight ET.
+    //
+    // The cron fires at 07:00 UTC — 2 AM EST, 3 AM EDT — which is already ET date D+1, while
+    // the finals this route exists to capture carry `games.date = D`. Scoped to `today` alone,
+    // as it was from the 2026-08-18 schedule move until 2026-08-22, the `where` below selected
+    // only games that had not tipped off yet: the evening pass matched nothing and wrote
+    // nothing, and every night's result waited for the Actions 7-day lookback the following
+    // afternoon. The schedule is right — 07:00 UTC is after the last west-coast final — so the
+    // window is what moves. Two dates also make a late or retried run self-healing.
+    const yesterday = formatEasternDateKey(new Date(Date.now() - 24 * 60 * 60 * 1000));
+    const dateKeys = yesterday === today ? [today] : [yesterday, today];
+
     // Abbreviations, not ids: the pairing is what this route matches on.
     const homeTeam = alias(teams, "home_team");
     const awayTeam = alias(teams, "away_team");
@@ -101,6 +116,7 @@ export async function GET(request: Request) {
     const gamesToCheck = await db
       .select({
         id: games.id,
+        date: games.date,
         homeAbbr: homeTeam.abbreviation,
         awayAbbr: awayTeam.abbreviation,
         status: games.status,
@@ -113,7 +129,7 @@ export async function GET(request: Request) {
       .innerJoin(awayTeam, eq(games.awayTeamId, awayTeam.id))
       .where(
         and(
-          eq(games.date, today),
+          inArray(games.date, dateKeys),
           inArray(games.status, ["scheduled", "live"])
         )
       );
@@ -126,38 +142,68 @@ export async function GET(request: Request) {
       });
     }
 
+    // Grouped by date and reconciled per date, never pooled. ESPN's feed is grouped by ET
+    // calendar date and `reconcileScores` matches on the (away, home) pairing alone, so two
+    // nights merged into one pool would let a consecutive-night rematch of the same two teams
+    // take the wrong night's score.
+    const pending = new Map<string, typeof gamesToCheck>();
+    for (const game of gamesToCheck) {
+      const bucket = pending.get(game.date);
+      if (bucket) bucket.push(game);
+      else pending.set(game.date, [game]);
+    }
+    // Only the dates that actually have something to update, so a one-date night still costs
+    // one fetch.
+    const dates = dateKeys.filter((dateKey) => pending.has(dateKey));
+
     // The date-scoped scoreboard rather than a "today" endpoint: ESPN groups this feed by ET
     // calendar date, which is exactly what `games.date` stores, so the two agree by construction.
-    const scoreboardUrl =
-      "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard" +
-      `?dates=${today.replaceAll("-", "")}`;
-
+    //
     // The User-Agent is load-bearing in an unobvious way: ESPN's edge fingerprints the whole
     // header set. A browser UA sent by curl with none of a browser's other headers gets a 403,
     // while the same UA through a fetch implementation gets a 200. Measured both ways from a
     // GitHub runner on 2026-08-18; see .github/workflows/probe-data-sources.yml.
-    const response = await fetch(scoreboardUrl, {
-      headers: { "User-Agent": "Mozilla/5.0" },
-      next: { revalidate: 0 },
-      signal: AbortSignal.timeout(SCOREBOARD_TIMEOUT_MS),
-    });
+    const responses = await Promise.all(
+      dates.map((dateKey) =>
+        fetch(
+          "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard" +
+            `?dates=${dateKey.replaceAll("-", "")}`,
+          {
+            headers: { "User-Agent": "Mozilla/5.0" },
+            next: { revalidate: 0 },
+            signal: AbortSignal.timeout(SCOREBOARD_TIMEOUT_MS),
+          }
+        )
+      )
+    );
 
-    if (!response.ok) {
-      console.error("[cron/update] ESPN scoreboard HTTP", response.status);
+    // One bad date fails the whole pass rather than half of it: a partial write here would
+    // leave the two nights in different states with nothing recording which.
+    const failed = responses.find((response) => !response.ok);
+    if (failed) {
+      console.error("[cron/update] ESPN scoreboard HTTP", failed.status);
       return NextResponse.json(
         {
           data: { gamesUpdated: 0 },
           error:
             process.env.NODE_ENV === "production"
               ? "Live score feed unavailable"
-              : `ESPN returned ${response.status}`,
+              : `ESPN returned ${failed.status}`,
         },
         { status: 502 }
       );
     }
 
-    const espnGames = parseScoreboard(await response.json());
-    const { updates, refusedDowngrades } = reconcileScores(gamesToCheck, espnGames);
+    const updates: ScoreUpdate[] = [];
+    const refusedDowngrades: number[] = [];
+    let espnGamesAvailable = 0;
+    for (const [index, dateKey] of dates.entries()) {
+      const espnGames = parseScoreboard(await responses[index].json());
+      espnGamesAvailable += espnGames.length;
+      const reconciled = reconcileScores(pending.get(dateKey)!, espnGames);
+      updates.push(...reconciled.updates);
+      refusedDowngrades.push(...reconciled.refusedDowngrades);
+    }
 
     // One round-trip per game, issued together rather than in series. `reconcileScores` returns
     // at most one update per distinct game id, so these never contend for the same row.
@@ -185,7 +231,8 @@ export async function GET(request: Request) {
       error: null,
       meta: {
         checkedGames: gamesToCheck.length,
-        espnGamesAvailable: espnGames.length,
+        checkedDates: dates,
+        espnGamesAvailable,
         refusedDowngrades: refusedDowngrades.length,
       },
     });

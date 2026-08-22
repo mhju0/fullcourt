@@ -320,10 +320,13 @@ prior expectation (null) and the three conditions a finding had to clear. Run by
 `ml/timezone_test.py`; report at `ml/data/timezone_report.txt`, with a committed snapshot at
 `ml/TIMEZONE_REPORT.md` since `ml/data/` is gitignored.
 
-**None of this is published on the site, by decision.** It is kept so the question does not get
-re-asked from scratch, and where it belongs is Michael's call — see ROADMAP, "Known and not
-fixed". Do not surface it as part of a tidying pass. Same protocol, same folds:
-walk-forward, 16 blind seasons, 19,118 held-out games, sign-clamped, strength control in.
+**Published at `/behind-the-data/time-zones` since 2026-08-22.** It was held back from the site
+between 2026-08-18 and then — kept, but deliberately not surfaced, because where a null belongs
+was Michael's call and not a tidying decision. He chose the method page; the open question that
+choice closed is gone from ROADMAP's "known and not fixed" rather than marked done. The figures on
+that page are pinned to `src/data/timezone-null.json` and guarded by
+`src/lib/__tests__/timezone-null.test.ts`. Same protocol, same folds: walk-forward, 16 blind
+seasons, 19,118 held-out games, sign-clamped, strength control in.
 
 Direction was not separable from the exported columns before this: `zones_crossed` is
 `Math.abs(shift)` and `jetlag_units` folds the east/west multiplier together with the

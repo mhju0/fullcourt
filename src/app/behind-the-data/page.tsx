@@ -47,6 +47,8 @@ const BLURB: Record<ModelSectionHref, string> = {
     "What counts as a missing rotation player, why an absence is priced above replacement, and why the schedule terms survive the control.",
   "/behind-the-data/referees":
     "Why a figure belongs to a crew rather than a person, what the permutation null is doing, and why an extreme referee-and-player record is not evidence on its own.",
+  "/behind-the-data/time-zones":
+    "Whether a long eastward flight on short rest costs anything — it does not — and why the large east/west split in the raw data is team strength rather than jet lag.",
   "/behind-the-data/data-and-limits":
     "Where the data comes from, which seasons carry which fields, and what is excluded on purpose.",
 };

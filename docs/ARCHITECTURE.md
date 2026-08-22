@@ -148,8 +148,9 @@ Full list in [API.md](API.md).
   `OTHER`). A pure server component with no fetch, no client bundle and no loading state: every
   figure is a published constant from `src/lib/availability-facts.ts`. Same shape as the Playoff
   Rest argument, for the same reason — it renders a finished measurement, not a query.
-- `app/behind-the-data/**` — **the reference section**, nine static routes (an index plus one per
-  model, `/behind-the-data/referees` added 2026-08-22) documenting each model's terms, constants
+- `app/behind-the-data/**` — **the reference section**, ten static routes (an index, one per
+  model, and `/behind-the-data/time-zones` for a measured null; `referees` and `time-zones` both
+  added 2026-08-22) documenting each model's terms, constants
   and limits. No data fetching: constants are
   imported from source (`FATIGUE_CONSTANTS` and friends) so the prose cannot drift from the code,
   and measured figures carry the date they were measured.
@@ -185,11 +186,15 @@ Details in [TESTING_AND_CICD.md](TESTING_AND_CICD.md).
 `fatigue_scores`, computes `restAdvantage`) → `MatchupTable` rows → `useLiveGames`
 subscribes to `games` UPDATE events and merges score/status changes.
 
-**Live score cron:** Vercel → `GET /api/cron/update` (Bearer `CRON_SECRET`) → query today's
-scheduled/live games **with their team abbreviations** → fetch that ET date's ESPN scoreboard →
-`reconcileScores` (`src/lib/espn-scoreboard.ts`) matches on **(away, home)** and returns only
-changed rows → `UPDATE games` → Supabase Realtime pushes the row change → connected clients
-update in place.
+**Live score cron:** Vercel → `GET /api/cron/update` (Bearer `CRON_SECRET`) → query
+**yesterday's and today's** (ET) scheduled/live games **with their team abbreviations** → fetch
+each of those ET dates' ESPN scoreboards → `reconcileScores` (`src/lib/espn-scoreboard.ts`)
+matches on **(away, home)**, **per date rather than pooled**, and returns only changed rows →
+`UPDATE games` → Supabase Realtime pushes the row change → connected clients update in place.
+
+The window is two dates because the cron fires at 07:00 UTC, which is 2–3 AM ET: the games it
+finalizes are already "yesterday". Pooling the dates would let a consecutive-night rematch of the
+same two teams take the wrong night's score, so each date is reconciled against its own feed.
 
 Repointed from the NBA CDN to ESPN on 2026-08-18. The CDN 403s from every environment this
 project runs in, and the old matcher paired rows by normalized stats game id, which cannot

@@ -529,21 +529,26 @@ two files are line-for-line equivalents and must move together.
 
 ## Components
 
-### `/behind-the-data/*` — the reference section (8 routes)
+### `/behind-the-data/*` — the reference section
 
 `/behind-the-data` plus one route per model (`rest-advantage`, `schedule-edge`,
-`playoff-predictions`, `player-shooting`, `shot-value`, `availability`) and a shared
-`data-and-limits`. Real
+`playoff-predictions`, `player-shooting`, `shot-value`, `availability`, `referees`), one for a
+measured null (`time-zones`), and a shared `data-and-limits`. Real
 routes rather than client-side tabs, so each method is linkable, crawlable, and deep-linkable
 from the page it explains. `BehindTheDataShell` supplies the header and the section sub-nav;
-`behind-the-data-parts.tsx` supplies the shared prose primitives so eight pages cannot drift into
-eight typographic treatments of the same content.
+`behind-the-data-parts.tsx` supplies the shared prose primitives so the pages cannot drift into
+that many typographic treatments of the same content.
 
-`/referees` has no section here yet, though it is published as of 2026-08-22. Its method
-(per-season share baselining, the |z| ≥ 2 emphasis rule, the 689-pair noise floor, why a call
-cannot be attributed to one official) is documented on the page itself and in
-`ml/REFEREE_PLAYER_REPORT.md`; a Behind the Data section for it is **open work**, not a deliberate
-omission.
+**`src/lib/behind-the-data-sections.ts` is the list**, and a count written here would go stale
+the way this heading's did — it said "8 routes" and named `/referees` as missing a section for
+five days after `/behind-the-data/referees` shipped. `behind-the-data-sections.test.ts` asserts
+every published product surface resolves to one, and `page-contract.test.ts` asserts every route
+reaches the e2e header spec.
+
+Two sections claim no surface on purpose: the overview, and `time-zones`, which documents a
+question that was pre-registered, measured, and came back empty. A null gets a method page when
+its *raw* numbers look like a finding — the east/west split is 7.5 points wide and points the
+wrong way for jet lag — because the only safe way to state the result is beside the confound.
 
 **Colour is load-bearing here** (2026-07-30). The pages were near-uniform black-on-white and
 read as one undifferentiated wall, so each primitive carries an accent and each accent means one

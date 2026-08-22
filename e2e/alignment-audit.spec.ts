@@ -45,6 +45,7 @@ const ROUTES = [
   "/behind-the-data/shot-value",
   "/behind-the-data/availability",
   "/behind-the-data/referees",
+  "/behind-the-data/time-zones",
   "/behind-the-data/data-and-limits",
 ];
 

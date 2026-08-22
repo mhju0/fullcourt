@@ -806,7 +806,7 @@ like the `ml/` artifacts; it covers a fixed archive range rather than tracking t
 | Scheduler | File | Schedule | Notes |
 |-----------|------|----------|-------|
 | GitHub Actions | `.github/workflows/daily-update.yml` | `0 21 * * *` (daily, 21:00 UTC, **year-round**) | `daily_update.py` self-gates on the season (`season_window.is_in_season`) and exits 0 in the offseason — **no cadence switch needed**. |
-| Vercel cron | `vercel.json` | `0 3 * * *` (daily, 03:00 UTC, **year-round**) | 03:00 UTC = 10 PM EST / 11 PM EDT — mid-slate, and still ET date D under both DST regimes. The `/api/cron/update` route does **not** season-gate, but it early-returns before any CDN fetch when no game is `scheduled`/`live` for today, so offseason runs are a no-op — **no cadence switch needed**. |
+| Vercel cron | `vercel.json` | `0 7 * * *` (daily, 07:00 UTC, **year-round**) | 07:00 UTC = 2 AM EST / 3 AM EDT — after the last west-coast final under both DST regimes, which is also **past midnight ET**, so the route reads **yesterday and today** (ET), not today alone. It does **not** season-gate, but it early-returns before any ESPN fetch when neither date has a `scheduled`/`live` row, so offseason runs are a no-op — **no cadence switch needed**. |
 
 The GitHub job also supports `workflow_dispatch` (manual run). The Vercel cron calls
 `GET /api/cron/update`, which refreshes live scores and lets Supabase Realtime push changes
