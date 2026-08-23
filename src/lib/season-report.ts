@@ -21,6 +21,7 @@ import { addDays, differenceInCalendarDays, format, parseISO } from "date-fns";
 import { classifyRestAdvantage, isCalledSide, winPct } from "@/lib/rest-advantage-evidence";
 import {
   netEdgeGames,
+  restStatePair,
   scheduleValueWins,
   type RestStateCounts,
 } from "@/lib/schedule-value";
@@ -405,12 +406,9 @@ export function buildSeasonReport(
     // Both sides' rest state, recorded before the call filter below. A game the model declines
     // to call is still a game the schedule handed both teams, and schedule value is a statement
     // about the calendar rather than about the model's record on it.
-    const homeState =
-      advantageTeam === "home" ? "restedHome" : advantageTeam === "away" ? "tiredHome" : "neutralHome";
-    const awayState =
-      advantageTeam === "away" ? "restedRoad" : advantageTeam === "home" ? "tiredRoad" : "neutralRoad";
-    teamEntry(teams, row.homeTeamId).restStates[homeState]++;
-    teamEntry(teams, row.awayTeamId).restStates[awayState]++;
+    const states = restStatePair(advantageTeam);
+    teamEntry(teams, row.homeTeamId).restStates[states.home]++;
+    teamEntry(teams, row.awayTeamId).restStates[states.away]++;
 
     // The same boundary /analysis uses, from the same function — this page reports how the
     // rest *call* scored, so a game the model declines is not one of its calls and does not

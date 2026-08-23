@@ -26,6 +26,7 @@ import {
   REST_SPLIT_BASELINE,
   REST_SPLIT_SAMPLE,
 } from "@/lib/rest-split-facts";
+import type { RestAdvantage } from "@/types";
 
 /**
  * The six states a team can be in for one game: which side of the rest gap it was on, at which
@@ -107,6 +108,28 @@ export const HOME_COURT_SPAN_PP =
  * and playing at home land within 0.04 points of each other.
  */
 export const REST_SHARE_OF_HOME_COURT = REST_SPAN_PP / HOME_COURT_SPAN_PP;
+
+/**
+ * The bucket one game adds for each side, given which side the rest edge favours.
+ *
+ * One mapping for both pages that price a schedule. Until 2026-08-23 Schedule Edge and the
+ * Season Report each classified games themselves — the same boundary and the same
+ * advantage-to-state mapping written twice, kept identical by comments alone
+ * (`rest-state-agreement.test.ts` is what those comments were standing in for). The boundary
+ * itself stays in `classifyRestAdvantage`; callers classify once and map here, so neither
+ * half can fork.
+ */
+export function restStatePair(advantageTeam: RestAdvantage["advantageTeam"]): {
+  home: "restedHome" | "neutralHome" | "tiredHome";
+  away: "restedRoad" | "neutralRoad" | "tiredRoad";
+} {
+  return {
+    home:
+      advantageTeam === "home" ? "restedHome" : advantageTeam === "away" ? "tiredHome" : "neutralHome",
+    away:
+      advantageTeam === "away" ? "restedRoad" : advantageTeam === "home" ? "tiredRoad" : "neutralRoad",
+  };
+}
 
 /**
  * Games where this team held a rest edge, minus games where it faced one, across both venues.
