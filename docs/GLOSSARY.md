@@ -128,8 +128,10 @@ _Avoid_: rest advantage, season fatigue
 **Schedule value**:
 What a season's rest edges were worth to a team, in **wins** — each game priced at the win
 probability its rest state is measured to carry against that venue's own baseline, then summed.
-Published on both `/season` and `/schedule` from one conversion (`src/lib/schedule-value.ts`), over
-one population: every scored game a team played, at the venue it played it. Reads no score, so a
+Its per-team table has **one home, `/schedule`** (since 2026-08-23; `/season` states the season's
+two extremes and links there), and both pages compute through one conversion
+(`src/lib/schedule-value.ts`), over one population: every scored game a team played, at the venue
+it played it — agreement pinned by `rest-state-agreement.test.ts`. Reads no score, so a
 64-win team and a 17-win team handed the same schedule get the same number, and the league total
 is zero by construction. It is small for every team — no season's schedule has reached half a win
 either way — and that is a fact about the **calendar**, not about fatigue: the league distributes

@@ -145,14 +145,15 @@ function ColumnGuide({ countedGames, scheduledGames }: { countedGames: number; s
           calling an edge, on the Games page and in the backtest. Every unit is one nameable game,
           not a season average.
         </p>
+        {/* No third copy of the scale sentence: the paragraph above the table states the rate
+            (3.6 points against 19.8), and two hand-written variants on one page is how prose
+            drifts. This entry defines the column and defers to that line for the numbers. */}
         <p>
-          {term("Worth")} — the net edge priced in wins, at what a rest edge is measured to be
-          worth. Being the fresher side moves a home team&rsquo;s win probability{" "}
-          {REST_SPAN_PP.toFixed(1)} points against {HOME_COURT_SPAN_PP.toFixed(1)} for playing at
-          home at all, so an edge is about {Math.round(REST_SHARE_OF_HOME_COURT * 100)}% of home
-          court. It is small for every team because the league spreads edges out evenly, not
-          because rest does nothing — the per-game effect is the same either way. The Season Report
-          publishes the identical figure.
+          {term("Worth")} — the net edge priced in wins, at the measured rate the paragraph above
+          the table states. It is small for every team because the league spreads edges out
+          evenly, not because rest does nothing — the per-game effect is the same either way.
+          This table is the figure&rsquo;s one home; the Season Report states each season&rsquo;s
+          extremes from the same conversion and links here.
         </p>
         <p>
           {term("Fav / Unfav")} — the two counts behind the net: games with the edge, and games
