@@ -295,11 +295,17 @@ function EdgeConversion({
 /**
  * What the schedule was worth.
  *
- * The section leads with the per-game effect and only then gives the season total, and that
- * order is the whole design. Four-tenths of a win, read cold, invites a first-time reader to
- * conclude rest is nothing. Read after "a rest edge is worth just under a fifth of home court",
- * the same number says what is true: the effect is real and the schedule never lets it
+ * The section leads with the per-game effect and only then gives the season's extremes, and
+ * that order is the whole design. Four-tenths of a win, read cold, invites a first-time reader
+ * to conclude rest is nothing. Read after "a rest edge is worth just under a fifth of home
+ * court", the same number says what is true: the effect is real and the schedule never lets it
  * accumulate, because the league hands out edges close to evenly.
+ *
+ * The scale, the finding and this season's two extremes — no table. The full per-team pricing
+ * had its 30 rows here until 2026-08-23, a strict subset of Schedule Edge's breakdown, which
+ * meant a reader crossing the two pages met the same table twice and this page's own results
+ * sections sat five screens deep. The figure's one home is Schedule Edge, beside the edge
+ * counts it is priced from; this section states the season in two lines and points there.
  *
  * Deliberately no result data. Every figure here is a property of the calendar, so a 64-win
  * team and a 17-win team handed the same schedule get the same number — which is what makes it
@@ -321,7 +327,7 @@ function ScheduleValue({ teams }: { teams: SeasonReportTeamLabelled[] }) {
       />
 
       {/* The scale line. Rendered as a callout rather than as body copy because it is the
-          sentence the table underneath cannot be read honestly without. */}
+          sentence no wins figure on this page can be read honestly without. */}
       <div
         data-testid="rest-scale-line"
         style={{ ...termCardStyle, padding: 16, borderLeft: `2px solid var(--term-blue)` }}
@@ -338,10 +344,10 @@ function ScheduleValue({ teams }: { teams: SeasonReportTeamLabelled[] }) {
       </div>
 
       <p style={{ fontSize: TYPE.body, color: "var(--term-text-muted)", maxWidth: WIDTH.prose, lineHeight: LEAD.body }}>
-        Priced at that rate, here is what each team&rsquo;s own schedule was worth: every rest edge
-        it was handed, minus every one it had to face. No score is read, so this says nothing about
-        how any team played. It is small for everyone, and that is the finding — the league spreads
-        rest around evenly enough that no schedule is worth half a game either way.{" "}
+        Priced at that rate, every rest edge a team was handed, minus every one it had to face,
+        is small for everyone — the league spreads rest around evenly enough that no schedule is
+        worth half a game either way, and that is the finding. No score is read, so none of it
+        says how any team played.{" "}
         {/* The figure is derived, so it owes the reader its method. Schedule Edge publishes the
             identical number and its method page documents the conversion. */}
         <a href="/behind-the-data/schedule-edge" style={{ color: "var(--term-blue)", fontWeight: 600 }}>
@@ -356,33 +362,17 @@ function ScheduleValue({ teams }: { teams: SeasonReportTeamLabelled[] }) {
         </p>
       ) : null}
 
-      <DataTable
-        width="numeric"
-        minWidth={420}
-        rows={ranked}
-        rowKey={(t) => t.teamId}
-        rowAttrs={() => ({ "data-testid": "schedule-value-row" })}
-        columns={[
-          { label: "TEAM", cell: (t) => t.abbreviation },
-          {
-            label: "NET REST EDGE",
-            unit: "GAMES",
-            numeric: true,
-            cell: (t) => signedNumber(t.netEdgeGames),
-          },
-          {
-            label: "WORTH",
-            unit: "WINS",
-            numeric: true,
-            style: { fontWeight: 700 },
-            cell: (t) => (
-              <span style={{ color: swingColor(t.scheduleValueWins, 0) }}>
-                {signedNumber(t.scheduleValueWins, 1)}
-              </span>
-            ),
-          },
-        ]}
-      />
+      {/* The one home of the per-team table. Not a season deep link on purpose: Schedule Edge
+          keeps its own season state, and it withholds the one season (2019-20) this selector
+          can show. */}
+      <a
+        data-testid="schedule-value-crosslink"
+        href="/schedule"
+        className="mono w-fit"
+        style={{ fontSize: 12, letterSpacing: TRACK.sub, fontWeight: 700, color: "var(--term-blue)" }}
+      >
+        EVERY TEAM, PRICED AND RANKED — SCHEDULE EDGE →
+      </a>
     </div>
   )
 }
