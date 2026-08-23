@@ -175,7 +175,11 @@ function ColumnGuide({ countedGames, scheduledGames }: { countedGames: number; s
         <p>
           {term("B2B edge")} and {term("3-in-4 edge")} — back-to-backs, and third-nights-in-four,
           avoided relative to opponents. Positive means the team arrived rested more often than the
-          teams across from it.
+          teams across from it. These are comparisons, not counts: how many back-to-backs each team
+          actually played is a different fact, and it lives on the{" "}
+          <a href="/season" style={{ color: "var(--term-blue)", fontWeight: 600 }}>
+            Season Report&rsquo;s schedule tax →
+          </a>
         </p>
         <p>
           Every team plays a full schedule. Every column except <em>Worth</em> compares the{" "}

@@ -484,7 +484,14 @@ function ScheduleTax({
       />
       <p style={{ fontSize: TYPE.body, color: "var(--term-text-muted)", maxWidth: WIDTH.prose, lineHeight: LEAD.body }}>
         What the schedule asked of each team. These are counts, not estimates — nothing here is
-        a claim about who won because of it.
+        a claim about who won because of it. They count what a team <em>played</em>: whether it
+        faced more back-to-backs than it inflicted is a different fact, answered by the B2B and
+        3-in-4 edge columns on{" "}
+        {/* Same words, different facts: 17 back-to-backs played can coexist with a positive B2B
+            edge. Each page states its own and names the other, so neither reads as the both. */}
+        <a href="/schedule" style={{ color: "var(--term-blue)", fontWeight: 600 }}>
+          Schedule Edge →
+        </a>
       </p>
       {most && least ? (
         <p className="mono" style={{ fontSize: 11, color: "var(--term-text-muted)" }}>
