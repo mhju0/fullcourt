@@ -208,16 +208,20 @@ rate" leaves whose unsaid.
 ### `/season` — Season Report (`src/app/season/page.tsx`)
 
 Server wrapper; metadata title `"Season Report"`; renders a `<PageHeader>` (eyebrow
-`ONE SEASON, DEEP`) plus `<SeasonReportContentLazy />`. **No season in the `<h1>`** — the
+`ONE SEASON · AS PLAYED`) plus `<SeasonReportContentLazy />`. **No season in the `<h1>`** — the
 selector below it reaches back to 1985-86, so a title naming one would be wrong the moment it
-moved; the sections carry the label instead.
+moved; the sections carry the label instead. The header's identity words pair with
+`/schedule`'s: this page is the season **as played**, Schedule Edge is **the hand dealt** —
+both answer "was my team's schedule unfair", and the pairing is what lets a reader pick the
+right tab before clicking (2026-08-23).
 
 The lazy client component (`season-report-content.tsx`) fetches `/api/season-report?season=…`
 and renders, in order: three rate tiles (rest-advantage win rate, win rate at RA ≥ 2, season
 progress) against an all-season marker, then `WHAT THE SCHEDULE WAS WORTH` (schedule luck, not
-results), `REST EDGE CONVERSION` (records, not a ranking), `LOUDEST CALLS` (ranked by rest gap),
-`SCHEDULE TAX` (completed games only), `FATIGUE CALENDAR` (league average by week) and
-`ZERO-REST WORKLOAD` (volume, not effect).
+results — the scale callout, the season's two extremes and a crosslink; the per-team table's
+one home is `/schedule`, see below), `REST EDGE CONVERSION` (records, not a ranking),
+`LOUDEST CALLS` (ranked by rest gap), `SCHEDULE TAX` (completed games only),
+`FATIGUE CALENDAR` (league average by week) and `ZERO-REST WORKLOAD` (volume, not effect).
 
 **A season with no completed game reports on a different basis** (`SeasonReportResponse.basis`
 `=== "schedule"`, since 2026-08-18). The selector offers `browsableSeasons()`, so a released
@@ -244,11 +248,14 @@ a specific misreading, and `e2e/season.spec.ts` guards both:
 
 - `WHAT THE SCHEDULE WAS WORTH` opens with a callout stating the per-game effect — a rest edge
   moves a home team 3.6 points against home court's 19.8, so about 18% of home court — **before**
-  the per-team wins table underneath it. That order is the design. The wins figure never leaves
-  ±0.4 for any team, and read cold it invites the conclusion that rest is nothing; read after the
-  scale line it says what is true, which is that the effect is real and the league distributes
-  edges evenly enough that it never accumulates. Never reorder these two, and never publish the
-  wins figure on a surface that does not carry the scale beside it.
+  the season's extremes line underneath it. That order is the design. The wins figure never
+  leaves ±0.4 for any team, and read cold it invites the conclusion that rest is nothing; read
+  after the scale line it says what is true, which is that the effect is real and the league
+  distributes edges evenly enough that it never accumulates. Never reorder these two, and never
+  publish the wins figure on a surface that does not carry the scale beside it. The full
+  per-team table lived here until 2026-08-23 and now has its one home on `/schedule` — this
+  section points there, and `e2e/season.spec.ts` pins the table's absence as deliberately as it
+  used to pin its 30 rows.
 - `REST EDGE CONVERSION` prints `swingBaseline` above its table and diverges the `SWING` column's
   colour around it rather than around zero. The rested arm is every game played as the fresher
   side *at home* and the tired arm every game played as the tireder side *on the road* —
@@ -340,11 +347,15 @@ Worth keeping: adding that column made the divergence the module exists to show 
 row — in 2025-26 Portland is −1 in edge games and **+15 in rest days**, Utah is +21 and −3. Days
 off and arriving fresh are not the same thing, and travel is the gap between them.
 
-The breakdown table's **Worth (wins)** column is the same figure `/season` publishes, from the
-same conversion (`src/lib/schedule-value.ts`) and the same population — the two pages must never
-show a team different values. It carries the scale sentence directly above it for the reason
-`/season` does: a wins figure without the per-game effect beside it gets misread as the size of
-the effect rather than the size of the schedule's imbalance.
+The breakdown table's **Worth (wins)** column is **the one home of the per-team pricing**
+(2026-08-23): `/season` publishes the same figure only as its season extremes line and links
+here for the table it used to duplicate. Both pages classify and price through
+`src/lib/schedule-value.ts` (`restStatePair` + `scheduleValueWins`), and
+`rest-state-agreement.test.ts` runs both reducers over one fixture and fails naming the team if
+they ever file a game differently — the agreement is enforced, not remembered. The column
+carries the scale sentence directly above it for the reason `/season` does: a wins figure
+without the per-game effect beside it gets misread as the size of the effect rather than the
+size of the schedule's imbalance.
 
 **Horizontal, not vertical.** The ranked list is 30 CSS rows, not a Recharts `BarChart` — the
 bars *are* the leaderboard, so team codes sit upright and rank reads top to bottom. The

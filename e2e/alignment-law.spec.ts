@@ -116,19 +116,26 @@ test.describe("A table's cells sit on one inset, edges included", () => {
  * `TERM_NUMERIC_TABLE_MAX_WIDTH` is a ceiling, not a target. With `w-full` beside it a
  * three-column table still took the full 760, which ran the season report's middle column to
  * 390px to hold `+21` — 528px of nothing between a team and its own number.
+ *
+ * Measured on the schedule-tax table since 2026-08-23 — the worth table this check was written
+ * against moved to its one home on Schedule Edge, and the regression it pins (`w-full` beside
+ * the cap) is a property of the shared table module, visible on any numeric table below it.
  */
 test("a few-column numeric table sizes to its content, not to the cap", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto("/season", { waitUntil: "networkidle" });
 
-  const worth = page.locator('[data-testid="schedule-value-extremes"] ~ div table.fc-table').first();
-  await expect(worth).toBeVisible();
+  const tax = page
+    .locator("table.fc-table")
+    .filter({ has: page.locator('[data-testid="schedule-tax-row"]') })
+    .first();
+  await expect(tax).toBeVisible();
 
-  const box = await worth.boundingBox();
+  const box = await tax.boundingBox();
   expect(box).not.toBeNull();
-  // Its own `minWidth` is 420 and the shared cap is 760. Landing at the cap means `w-full`
-  // came back; landing at the floor means the columns are sized by their content.
-  expect(box!.width, `the three-column table is ${box!.width}px wide`).toBeLessThan(560);
+  // Its own `minWidth` is 520 and the shared cap is 760. Landing at the cap means `w-full`
+  // came back; landing near the floor means the columns are sized by their content.
+  expect(box!.width, `the five-column table is ${box!.width}px wide`).toBeLessThan(700);
 });
 
 test("expanding a /shooting player does not shift its row sideways", async ({ page }) => {

@@ -145,14 +145,15 @@ function ColumnGuide({ countedGames, scheduledGames }: { countedGames: number; s
           calling an edge, on the Games page and in the backtest. Every unit is one nameable game,
           not a season average.
         </p>
+        {/* No third copy of the scale sentence: the paragraph above the table states the rate
+            (3.6 points against 19.8), and two hand-written variants on one page is how prose
+            drifts. This entry defines the column and defers to that line for the numbers. */}
         <p>
-          {term("Worth")} — the net edge priced in wins, at what a rest edge is measured to be
-          worth. Being the fresher side moves a home team&rsquo;s win probability{" "}
-          {REST_SPAN_PP.toFixed(1)} points against {HOME_COURT_SPAN_PP.toFixed(1)} for playing at
-          home at all, so an edge is about {Math.round(REST_SHARE_OF_HOME_COURT * 100)}% of home
-          court. It is small for every team because the league spreads edges out evenly, not
-          because rest does nothing — the per-game effect is the same either way. The Season Report
-          publishes the identical figure.
+          {term("Worth")} — the net edge priced in wins, at the measured rate the paragraph above
+          the table states. It is small for every team because the league spreads edges out
+          evenly, not because rest does nothing — the per-game effect is the same either way.
+          This table is the figure&rsquo;s one home; the Season Report states each season&rsquo;s
+          extremes from the same conversion and links here.
         </p>
         <p>
           {term("Fav / Unfav")} — the two counts behind the net: games with the edge, and games
@@ -175,7 +176,11 @@ function ColumnGuide({ countedGames, scheduledGames }: { countedGames: number; s
         <p>
           {term("B2B edge")} and {term("3-in-4 edge")} — back-to-backs, and third-nights-in-four,
           avoided relative to opponents. Positive means the team arrived rested more often than the
-          teams across from it.
+          teams across from it. These are comparisons, not counts: how many back-to-backs each team
+          actually played is a different fact, and it lives on the{" "}
+          <a href="/season" style={{ color: "var(--term-blue)", fontWeight: 600 }}>
+            Season Report&rsquo;s schedule tax →
+          </a>
         </p>
         <p>
           Every team plays a full schedule. Every column except <em>Worth</em> compares the{" "}
@@ -449,7 +454,11 @@ export function ScheduleDisparityContent() {
                   cell: (t) => (
                     <span
                       data-testid="schedule-value-wins"
-                      style={{ fontWeight: 700, color: edgeColor(t.netEdgeGames) }}
+                      // Colored by its own value, not by netEdgeGames: the two can differ —
+                      // null netEdgeGames beside a priced worth (opener-only-scored team), and
+                      // in principle sign, since the home and road lifts are weighted
+                      // differently. /season's table always colored worth by worth.
+                      style={{ fontWeight: 700, color: edgeColor(t.scheduleValueWins) }}
                     >
                       {signedOrDash(t.scheduleValueWins, 1)}
                     </span>

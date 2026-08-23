@@ -11,10 +11,13 @@ export const metadata: Metadata = {
 export default function SchedulePage() {
   return (
     <div className="flex flex-col gap-12">
+      {/* "The hand each team was dealt" against Season Report's "as played" — see the note
+          there. "Not a prediction" and "much of the gap is structural" are load-bearing and
+          pinned by e2e; reword around them, never out of them. */}
       <PageHeader
         eyebrow="SCHEDULE DISPARITY · NET EDGE GAMES"
         title="Schedule Edge"
-        description="Which teams a season's schedule favored, counted in games with a real rest edge and priced in wins. Not a prediction — much of the gap is structural, and each season stands alone."
+        description="The hand each team was dealt: a season's rest edges counted game by game and priced in wins. Not a prediction — much of the gap is structural, and each season stands alone."
       />
       <MethodLink surfaceHref="/schedule" />
 

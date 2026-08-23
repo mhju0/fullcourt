@@ -40,12 +40,13 @@ const PAGES = [
   // was not moved with it, so the anchor had been pointing at the marketing page ever since —
   // which is exactly the failure the anchor rule above is meant to make loud rather than silent.
   { file: "games", path: "/games", endsAfter: '[aria-label$="game details"] >> nth=1' },
-  // Ten complete rows of WHAT THE SCHEDULE WAS WORTH. Anchored through the extremes line above it,
-  // because /season renders three tables and this is not the first.
+  // Through the slimmed WHAT THE SCHEDULE WAS WORTH (callout, extremes, crosslink — the table's
+  // one home is /schedule since 2026-08-23) and ten rows into REST EDGE CONVERSION, the section
+  // that move lifted up the page.
   {
     file: "season",
     path: "/season",
-    endsAfter: '[data-testid="schedule-value-extremes"] ~ div table.fc-table tbody tr >> nth=9',
+    endsAfter: '[data-testid="edge-conversion-row"] >> nth=9',
   },
   // The whole WIN RATE BY SEASON card. The next block (READING THESE NUMBERS) is the "how to read
   // this" essay, which the README states in prose anyway.

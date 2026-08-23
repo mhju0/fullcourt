@@ -26,8 +26,8 @@
 
 import { NBA_SEASONS } from "@/lib/nba-season";
 import { differenceInCalendarDays, parseISO } from "date-fns";
-import { NEUTRAL_REST_ADVANTAGE_THRESHOLD } from "./rest-advantage-evidence";
-import { scheduleValueWins, type RestStateCounts } from "./schedule-value";
+import { classifyRestAdvantage, NEUTRAL_REST_ADVANTAGE_THRESHOLD } from "./rest-advantage-evidence";
+import { restStatePair, scheduleValueWins, type RestStateCounts } from "./schedule-value";
 
 /**
  * A game is a "big edge" at this fatigue gap or more. One tier above the app-wide call
@@ -371,18 +371,12 @@ function restStates(games: readonly DisparityGameRow[]): Map<number, RestStateCo
     const away = toFatigue(g.awayFatigueScore);
     if (home === null || away === null) continue;
 
-    // Positive means the home side is the fresher one — the orientation the whole app uses.
-    const differential = away - home;
-    if (differential >= NEUTRAL_REST_ADVANTAGE_THRESHOLD) {
-      entry(g.homeTeamId).restedHome++;
-      entry(g.awayTeamId).tiredRoad++;
-    } else if (differential <= -NEUTRAL_REST_ADVANTAGE_THRESHOLD) {
-      entry(g.homeTeamId).tiredHome++;
-      entry(g.awayTeamId).restedRoad++;
-    } else {
-      entry(g.homeTeamId).neutralHome++;
-      entry(g.awayTeamId).neutralRoad++;
-    }
+    // One classification and one state mapping, shared with the Season Report — the two pages
+    // price the same games and must file each one into the same bucket.
+    const { advantageTeam } = classifyRestAdvantage(home, away);
+    const states = restStatePair(advantageTeam);
+    entry(g.homeTeamId)[states.home]++;
+    entry(g.awayTeamId)[states.away]++;
   }
 
   return byTeam;
@@ -569,18 +563,23 @@ export function computeScheduleDisparity(
       backToBackEdge,
       threeInFourEdge,
       fourInSixEdge,
-      // Every figure below is a fatigue reading, so all of them answer "not measured" together
-      // rather than one field at a time. `fatiguePairs` is the single gate: it is 0 exactly when
-      // no counted game had both fatigue scores, which is the whole of a published-but-unplayed
-      // season. `restStates` is skipped by the same condition inside its own helper, so pricing
-      // it in wins would return a confident 0.00 from six zero counts.
+      // The gated fatigue figures answer "not measured" together: `fatiguePairs` is 0 exactly
+      // when no counted game had both fatigue scores, which is the whole of a
+      // published-but-unplayed season.
       favorableGames: fatiguePairs > 0 ? favorableGames : null,
       unfavorableGames: fatiguePairs > 0 ? unfavorableGames : null,
       netEdgeGames: fatiguePairs > 0 ? favorableGames - unfavorableGames : null,
       restStates: teamRestStates,
+      // Gated on its OWN population, not on `fatiguePairs`: rest states deliberately include
+      // each side's opener, which the counted games above exclude. Gating here on the narrower
+      // set nulled a team whose only scored fatigue game was an opener while the Season Report
+      // priced the same team — found by `rest-state-agreement.test.ts`, 2026-08-23. Six zero
+      // counts still price to null, never to a confident 0.00.
       // Two decimals held, one displayed — the same reason the Season Report holds two.
       scheduleValueWins:
-        fatiguePairs > 0 ? Math.round(scheduleValueWins(teamRestStates) * 100) / 100 : null,
+        Object.values(teamRestStates).reduce((a, b) => a + b, 0) > 0
+          ? Math.round(scheduleValueWins(teamRestStates) * 100) / 100
+          : null,
       bigFavorableGames: fatiguePairs > 0 ? bigFavorableGames : null,
       bigUnfavorableGames: fatiguePairs > 0 ? bigUnfavorableGames : null,
       gamesWithEdge,

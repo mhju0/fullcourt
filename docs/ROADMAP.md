@@ -168,17 +168,20 @@ in-progress card is now the mistake, not the safe move).
   beats nothing, ship it; **status quo is the accepted fallback**, recorded with the measurement.
   Standing rule applies: any new referee number goes through a written pre-registration first.
 
-- **Schedule Edge vs Season Report — content audit, then a decision with Michael.** The overlap
-  is real but narrower than it feels: `/season`'s WHAT THE SCHEDULE WAS WORTH table is a strict
-  subset of `/schedule`'s full breakdown (two independent implementations of the same figure),
-  and the rest-vs-home-court scale paragraph exists in three copies across the two files. Scoped
-  2026-08-23 as **audit first, no direction pre-chosen**: inventory every block on both pages,
-  mark what is duplicated, near-duplicated (B2B/3-in-4 appear as opponent-relative *edges* on
-  one page and raw *counts* on the other — different facts that read as the same), and unique.
-  Candidate outcomes to weigh at the decision gate, none pre-selected: give each fact one home
-  and sharpen the two pages' identities (dealt-hand vs as-played); or merge into one route and
-  give back a nav tab. The decision is Michael's, made on the audit, and either way the shared
-  figures collapse into one implementation so the two-files-must-agree comments can retire.
+- **Schedule Edge vs Season Report — RESOLVED 2026-08-23: one home per fact, both pages kept.**
+  The audit ran first as scoped (inventory in the decision artifact; both candidate outcomes
+  weighed from a casual-fan and an NBA-junkie walk of the live pages), and Michael chose the
+  user-experience recommendation over the merge: a merged page would run ~10 screens serving
+  two different questions, and the reclaimed nav tab solved nothing. Shipped, see
+  [ADR 0008](adr/0008-schedule-pricing-has-one-home.md): the per-team Worth table's one home is
+  `/schedule` (`/season` keeps the scale callout and its extremes line and links over, which
+  also lifts its own results sections from five screens deep); the two headers now carry the
+  identity pair (**as played** vs **the hand dealt**); B2B/3-in-4 counts and edges name each
+  other as different facts; and the rest-state classification collapsed into one implementation
+  (`restStatePair`, `schedule-value.ts`) with `rest-state-agreement.test.ts` running both
+  reducers over one fixture — the two-files-must-agree comments retired into an enforced test,
+  which promptly caught a real divergence (the `scheduleValueWins` null gate read the
+  opener-gated population instead of its own).
 
 ## Known and not fixed
 

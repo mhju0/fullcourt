@@ -21,7 +21,13 @@ test.describe("Season Report", () => {
     await expect(page.getByTestId("edge-conversion-row")).toHaveCount(30);
     await expect(page.getByTestId("schedule-tax-row")).toHaveCount(30);
 
-    await expect(page.getByTestId("schedule-value-row")).toHaveCount(30);
+    // The per-team pricing table has ONE home, on Schedule Edge (2026-08-23). This page states
+    // the season's extremes and points there — a returning table is the regression, not a gap.
+    await expect(page.getByTestId("schedule-value-row")).toHaveCount(0);
+    await expect(page.getByTestId("schedule-value-extremes")).toBeVisible();
+    const crosslink = page.getByTestId("schedule-value-crosslink");
+    await expect(crosslink).toBeVisible();
+    await expect(crosslink).toHaveAttribute("href", "/schedule");
 
     // Section 4 caps at ten however many decidable games a season holds.
     await expect(page.getByTestId("loudest-call-row")).toHaveCount(10);
