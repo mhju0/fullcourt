@@ -260,7 +260,12 @@ function FatigueDetailRow({
   return (
     <div className="mono flex justify-between gap-2" style={{ fontSize: 12 }}>
       <span style={{ color: "var(--term-text-muted)", letterSpacing: TRACK.sub }}>{k}</span>
-      <span className="tabular-nums" style={{ color: highlight ? "var(--term-red)" : "var(--term-text)", fontWeight: 600 }}>
+      {/* A value never breaks across lines — "15 / 4" split after its slash reads as two
+          values. The label keeps its ability to wrap as the narrow-space fallback. */}
+      <span
+        className="shrink-0 whitespace-nowrap tabular-nums"
+        style={{ color: highlight ? "var(--term-red)" : "var(--term-text)", fontWeight: 600 }}
+      >
         {v}
       </span>
     </div>

@@ -324,7 +324,10 @@ function ExploreGameDetailModalContent({
         aria-modal="true"
         aria-labelledby={titleId}
         className={cn(
-          "relative z-[101] max-h-[min(90vh,720px)] w-full max-w-lg overflow-y-auto p-4 shadow-2xl",
+          // 2xl, not lg: at 512px the two fatigue columns squeezed to ~230px each, which
+          // wrapped "GAMES, LAST 30 / 7 DAYS" onto two lines and broke values like "15 / 4"
+          // across a line. 672px gives each column ~300px, one line per row.
+          "relative z-[101] max-h-[min(90vh,720px)] w-full max-w-2xl overflow-y-auto p-4 shadow-2xl",
           "sm:p-6"
         )}
         style={{
