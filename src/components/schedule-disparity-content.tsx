@@ -454,7 +454,11 @@ export function ScheduleDisparityContent() {
                   cell: (t) => (
                     <span
                       data-testid="schedule-value-wins"
-                      style={{ fontWeight: 700, color: edgeColor(t.netEdgeGames) }}
+                      // Colored by its own value, not by netEdgeGames: the two can differ —
+                      // null netEdgeGames beside a priced worth (opener-only-scored team), and
+                      // in principle sign, since the home and road lifts are weighted
+                      // differently. /season's table always colored worth by worth.
+                      style={{ fontWeight: 700, color: edgeColor(t.scheduleValueWins) }}
                     >
                       {signedOrDash(t.scheduleValueWins, 1)}
                     </span>
