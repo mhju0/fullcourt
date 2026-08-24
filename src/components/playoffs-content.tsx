@@ -47,8 +47,15 @@ function correctnessAccent(status: CorrectnessStatus): string {
   return TERM_ACCENT.neutral
 }
 
+/** The same statuses at text grade — the 11px badge needs 4.5:1, the card's border does not. */
+function correctnessTextAccent(status: CorrectnessStatus): string {
+  if (status === "correct") return TERM_ACCENT.blueText
+  if (status === "incorrect") return TERM_ACCENT.redText
+  return TERM_ACCENT.neutral
+}
+
 function CorrectnessBadge({ status, source }: { status: CorrectnessStatus; source: CorrectnessSource }) {
-  const accent = correctnessAccent(status)
+  const accent = correctnessTextAccent(status)
   const label = status === "correct" ? "✓ CORRECT" : status === "incorrect" ? "✗ UPSET" : "—"
   return (
     <span
@@ -229,7 +236,7 @@ function SeriesCard({ series }: { series: PlayoffSeriesWithPredictions }) {
               {series.homeCourtTeam.abbreviation}
               <span
                 className="mono"
-                style={{ fontSize: TYPE.micro, fontWeight: 700, color: "var(--term-blue)", border: "1px solid var(--term-blue)", borderRadius: "var(--term-radius-sm)", padding: "0 4px" }}
+                style={{ fontSize: TYPE.micro, fontWeight: 700, color: "var(--term-blue-text)", border: "1px solid var(--term-blue-text)", borderRadius: "var(--term-radius-sm)", padding: "0 4px" }}
                 aria-label="Home court"
               >
                 HC

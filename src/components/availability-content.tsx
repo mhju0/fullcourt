@@ -216,7 +216,7 @@ function TrendSection() {
             </span>
             <span
               className="mono tabular-nums"
-              style={{ fontSize: 11, letterSpacing: TRACK.sub, color: "var(--term-blue)", fontWeight: 700 }}
+              style={{ fontSize: 11, letterSpacing: TRACK.sub, color: "var(--term-blue-text)", fontWeight: 700 }}
             >
               {last.season} · {(last.rate * 100).toFixed(1)}%
             </span>

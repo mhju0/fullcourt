@@ -1170,8 +1170,10 @@ touch every consumer for zero rendered change.
 | `--term-text #16181D` | primary text (ink) — also the selected-chrome fill |
 | `--term-text-muted #5D6470` | muted / label text |
 | `--term-text-dim #333845` | secondary text (darker than muted) |
-| `--term-red #E11D48` | **data pole** — rose, "more fatigued"; LOST result text |
-| `--term-blue #0891B2` | **data pole** — teal, "more rested"; RA chips/meters, chart marks |
+| `--term-red #E11D48` | **data pole** — rose, "more fatigued"; fills, bars, borders, ≥24px figures |
+| `--term-blue #0891B2` | **data pole** — teal, "more rested"; fills, meters, chart marks |
+| `--term-red-text #BE123C` | the fatigued pole at **text grade** — pole-coloured small text (cells, verdicts, LOST) |
+| `--term-blue-text #0D6F8A` | the rested pole at **text grade** — pole-coloured small text, and the ground of white-text RA/EDGE chips |
 | `--term-accent #4F46E5` | **the one accent** — eyebrows, live markers, HIGH CONF, in-page links/CTAs, callout rails |
 | `--term-amber` | aliases `--term-accent` — the historical slot name its consumers still read |
 | `--term-hardwood #4C5361` | **non-data chrome only** — off-season banners, quiet CTA hover |
@@ -1196,6 +1198,18 @@ touch every consumer for zero rendered change.
 > (worst-adjacent CVD and normal-vision ΔE figures are recorded in the token block comment in
 > `globals.css`, measured on white), which is why the fatigue / rest-advantage semantics stay
 > on exactly those two and nothing is added alongside them.
+
+**The two-grade pole rule (2026-08-24).** The poles were validated at WCAG's 3:1 *graphics*
+bar; as small text they sit at 3.0–4.4:1 against AA's 4.5, which is what the first full axe
+pass reduced to. The resolution is two grades of the same hue, not a new pair: `color:` at
+small sizes takes the `-text` token (`TERM_ACCENT.redText` / `.blueText`), while fills, bars,
+borders, `accentColor` and figures ≥24px keep the pole. A chip that grounds small white text
+(RA, EDGE) also takes the `-text` token, because the pair being measured is the white text on
+it. The `-text` pair is validated ≥4.5:1 on white, `--term-surface-2` and the composited row
+washes, with CVD separation ΔE 92/66/40 (normal/deutan/protan); the ratios are pinned by
+`src/lib/__tests__/design-contrast.test.ts` — a palette change starts there. De-emphasis is
+never an opacity on text (`/shooting`'s noisy rows learned this: 0.48 composited to 2.06:1) —
+use `--term-text-muted`, which passes on every ground.
 
 ### Typography
 

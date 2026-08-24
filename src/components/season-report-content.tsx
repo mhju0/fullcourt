@@ -143,7 +143,7 @@ function VerdictLine({ verdict }: { verdict: SeasonReportVerdict }) {
             }
           : {
               text: `${verdict.kind === "above" ? "ABOVE" : "BELOW"} THE NORM — ${verdict.winPct.toFixed(1)}% ±${verdict.band.toFixed(1)} VS ${verdict.norm.toFixed(1)}%`,
-              tone: verdict.kind === "above" ? "var(--term-blue)" : "var(--term-red)",
+              tone: verdict.kind === "above" ? "var(--term-blue-text)" : "var(--term-red-text)",
             }
 
   return (
@@ -165,7 +165,7 @@ function swingColor(swing: number | null, baseline: number | null): string {
   if (swing === null) return "var(--term-neutral)"
   const zero = baseline ?? 0
   if (swing === zero) return "var(--term-neutral)"
-  return swing > zero ? "var(--term-blue)" : "var(--term-red)"
+  return swing > zero ? "var(--term-blue-text)" : "var(--term-red-text)"
 }
 
 /**
@@ -354,7 +354,7 @@ function ScheduleValue({ teams }: { teams: SeasonReportTeamLabelled[] }) {
         says how any team played.{" "}
         {/* The figure is derived, so it owes the reader its method. Schedule Edge publishes the
             identical number and its method page documents the conversion. */}
-        <a href="/behind-the-data/schedule-edge" style={{ color: "var(--term-blue)", fontWeight: 600 }}>
+        <a href="/behind-the-data/schedule-edge" style={{ color: "var(--term-blue-text)", fontWeight: 600 }}>
           How this is priced →
         </a>
       </p>
@@ -373,7 +373,7 @@ function ScheduleValue({ teams }: { teams: SeasonReportTeamLabelled[] }) {
         data-testid="schedule-value-crosslink"
         href="/schedule"
         className="mono w-fit"
-        style={{ fontSize: 12, letterSpacing: TRACK.sub, fontWeight: 700, color: "var(--term-blue)" }}
+        style={{ fontSize: 12, letterSpacing: TRACK.sub, fontWeight: 700, color: "var(--term-blue-text)" }}
       >
         EVERY TEAM, PRICED AND RANKED — SCHEDULE EDGE →
       </a>
@@ -446,7 +446,7 @@ function LoudestCalls({
                 minWidth: 72,
                 textAlign: "right",
                 fontWeight: 700,
-                color: c.restedTeamWon ? "var(--term-blue)" : "var(--term-red)",
+                color: c.restedTeamWon ? "var(--term-blue-text)" : "var(--term-red-text)",
               }}
             >
               {c.restedTeamWon ? "HIT" : "MISS"} {signedNumber(c.restedMargin, 1).replace(".0", "")}
@@ -493,7 +493,7 @@ function ScheduleTax({
         3-in-4 edge columns on{" "}
         {/* Same words, different facts: 17 back-to-backs played can coexist with a positive B2B
             edge. Each page states its own and names the other, so neither reads as the both. */}
-        <a href="/schedule" style={{ color: "var(--term-blue)", fontWeight: 600 }}>
+        <a href="/schedule" style={{ color: "var(--term-blue-text)", fontWeight: 600 }}>
           Schedule Edge →
         </a>
       </p>
@@ -706,7 +706,7 @@ export function SeasonReportContent() {
               No {data.season} game has been played. What the schedule hands each team is already
               decided, so the sections below that read the calendar are complete; the ones that
               read a scoreboard stay empty until games are played rather than showing a zero.{" "}
-              <a href="/analysis" style={{ color: "var(--term-blue)", fontWeight: 600 }}>
+              <a href="/analysis" style={{ color: "var(--term-blue-text)", fontWeight: 600 }}>
                 See the full backtest →
               </a>
             </p>
@@ -720,7 +720,7 @@ export function SeasonReportContent() {
               {verdict ? <VerdictLine verdict={verdict} /> : null}
               <p style={{ fontSize: TYPE.body, color: "var(--term-text-muted)", maxWidth: WIDTH.prose, lineHeight: LEAD.body }}>
                 {countedGamesSentence(data.overall)}{" "}
-                <a href="/analysis" style={{ color: "var(--term-blue)", fontWeight: 600 }}>
+                <a href="/analysis" style={{ color: "var(--term-blue-text)", fontWeight: 600 }}>
                   See the full backtest →
                 </a>
               </p>

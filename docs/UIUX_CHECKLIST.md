@@ -71,14 +71,17 @@ with the reason.
   2026-08-14).
 - [x] **Focus states mirror hover** — `focus-visible:` carries every hover declaration on the
   surface cards; the retracting bar reveals on keyboard entry (`onFocus={reveal}`).
-- [ ] **A full axe/VoiceOver pass** — the axe half ran 2026-08-24 (all 20 routes, wcag2a/aa +
-  21a/aa + best-practice; report in `docs/audit/2026-08-24-axe-pass.md`, local-only). Two
-  discrete defects found and fixed (an unnamed `FatigueBar` progressbar, an empty availability
-  table header); everything else is one systemic question — the pole hues and the 10px unit
-  slot as *small text* sit at 3.0–4.4:1 against AA's 4.5:1, because the palette was validated
-  at the 3:1 graphics threshold. That is a ratified-palette decision, recorded with options in
-  the audit report. Owner: Michael (the contrast decision, and the VoiceOver walkthrough —
-  still never run; an automated pass cannot hear focus order).
+- [x] **The axe half of the a11y pass is CLEAN** — first run 2026-08-24 (all 20 routes,
+  wcag2a/aa + 21a/aa + best-practice; report in `docs/audit/2026-08-24-axe-pass.md`,
+  local-only) found two discrete defects (fixed same day) and one systemic finding: pole hues
+  and the 10px unit slot as *small text* at 3.0–4.4:1 against AA's 4.5:1. Michael chose full
+  compliance; the resolution is the two-grade pole rule in `docs/FRONTEND.md` (text-grade
+  tokens `--term-red-text`/`--term-blue-text`, the unit slot undimmed, `/shooting`'s noisy
+  rows de-emphasized by colour instead of opacity, the front-door ghost numerals painted as
+  CSS counters). All 20 routes re-audit with **zero violations**; the token ratios are pinned
+  by `design-contrast.test.ts`.
+- [ ] **The VoiceOver walkthrough** — still never run; an automated pass cannot hear focus
+  order, table navigation, or how the twin-landmark nav reads. Owner: Michael.
 
 ## 4. Tables & data density
 

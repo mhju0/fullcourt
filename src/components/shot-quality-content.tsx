@@ -222,8 +222,8 @@ function HowToRead({
           <div className="flex min-w-0 flex-col gap-1" style={{ fontSize: TYPE.body, lineHeight: LEAD.body, color: "var(--term-text-dim)" }}>
             <p>One court: where the two models disagree about a spot&apos;s value.</p>
             <p>
-              <span style={{ color: "var(--term-red)", fontWeight: 600 }}>Rose: GBM rates it higher</span> than the zone
-              average, <span style={{ color: "var(--term-blue)", fontWeight: 600 }}>teal: lower</span>; pale squares mean
+              <span style={{ color: "var(--term-red-text)", fontWeight: 600 }}>Rose: GBM rates it higher</span> than the zone
+              average, <span style={{ color: "var(--term-blue-text)", fontWeight: 600 }}>teal: lower</span>; pale squares mean
               the models agree.
             </p>
             <p style={{ color: "var(--term-text-muted)" }}>

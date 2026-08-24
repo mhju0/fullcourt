@@ -51,7 +51,7 @@ function signedOrDash(value: number | null, decimals?: number): string {
 
 function edgeColor(value: number | null): string {
   if (value === null || value === 0) return "var(--term-neutral)"
-  return value > 0 ? "var(--term-blue)" : "var(--term-red)"
+  return value > 0 ? "var(--term-blue-text)" : "var(--term-red-text)"
 }
 
 /**
@@ -178,7 +178,7 @@ function ColumnGuide({ countedGames, scheduledGames }: { countedGames: number; s
           avoided relative to opponents. Positive means the team arrived rested more often than the
           teams across from it. These are comparisons, not counts: how many back-to-backs each team
           actually played is a different fact, and it lives on the{" "}
-          <a href="/season" style={{ color: "var(--term-blue)", fontWeight: 600 }}>
+          <a href="/season" style={{ color: "var(--term-blue-text)", fontWeight: 600 }}>
             Season Report&rsquo;s schedule tax →
           </a>
         </p>
@@ -322,7 +322,7 @@ export function ScheduleDisparityContent() {
             className="mono mt-3 flex h-40 items-center justify-center"
             style={{
               ...termDashedEmptyStyle,
-              color: error ? "var(--term-red)" : "var(--term-text-muted)",
+              color: error ? "var(--term-red-text)" : "var(--term-text-muted)",
             }}
           >
             {error ? "COULD NOT LOAD SCHEDULE DISPARITY" : "NO SCHEDULE DATA FOR THIS SEASON"}

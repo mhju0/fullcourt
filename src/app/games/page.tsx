@@ -441,7 +441,7 @@ export default function HomePage() {
             {slate.calendar.kind === "loading" ? (
               <Skeleton className="h-16 w-full max-w-md bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)" }} />
             ) : slate.calendar.kind === "error" ? (
-              <p className="mono" style={{ fontSize: 12, color: "var(--term-red)" }} role="alert">
+              <p className="mono" style={{ fontSize: 12, color: "var(--term-red-text)" }} role="alert">
                 {slate.calendar.message}
               </p>
             ) : slate.calendar.kind === "empty" ? (

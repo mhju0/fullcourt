@@ -87,7 +87,7 @@ function RecentResultsList({
                 <span style={{ fontWeight: 700, color: "var(--term-text)" }}>{g.opponentAbbreviation}</span>
               </span>
               <span className="tabular-nums" style={{ color: "var(--term-text-muted)" }}>
-                <span style={{ color: g.won ? "var(--term-pos)" : "var(--term-red)", fontWeight: 700 }}>
+                <span style={{ color: g.won ? "var(--term-pos)" : "var(--term-red-text)", fontWeight: 700 }}>
                   {g.won ? "W" : "L"}
                 </span>{" "}
                 {g.teamScore}–{g.opponentScore}
@@ -378,7 +378,7 @@ function ExploreGameDetailModalContent({
           </p>
         )}
         {error && (
-          <p className="mono py-6 text-center" style={{ fontSize: 12, color: "var(--term-red)", letterSpacing: TRACK.data }}>
+          <p className="mono py-6 text-center" style={{ fontSize: 12, color: "var(--term-red-text)", letterSpacing: TRACK.data }}>
             {error}
           </p>
         )}

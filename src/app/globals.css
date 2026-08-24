@@ -157,9 +157,18 @@
   --term-text: #16181D;
   --term-text-muted: #5D6470;
   --term-text-dim: #333845;
-  /* data poles — validated on white */
+  /* data poles — validated on white at the 3:1 GRAPHICS bar. Fills, bars, borders and
+     >=24px figures only: as running text these sit at 3.0-4.4:1 against AA's 4.5, which is
+     what the whole 2026-08-24 axe pass reduced to. */
   --term-red: #E11D48;     /* rose — more fatigued */
   --term-blue: #0891B2;    /* teal — more rested   */
+  /* The same poles at TEXT grade — one step darker, same hue family, for any pole-coloured
+     SMALL text (cells, links, verdicts, badges). Validated 2026-08-24: >=4.5:1 on white,
+     --term-surface-2 and the /shooting amber wash; CVD separation dE 92/66/40
+     (normal/deutan/protan) against the original pair's accepted 16.4 bar. Pinned by
+     design-contrast.test.ts — change them there first. */
+  --term-red-text: #BE123C;
+  --term-blue-text: #0D6F8A;
   --term-hardwood: #4C5361; /* non-data chrome slot (banners, quiet CTA hover) */
   /* The one accent. --term-amber is the historical slot name every consumer
      already reads (live dot, active tab, /shooting group tint); --term-accent
@@ -374,4 +383,35 @@
 }
 .fc-rest-table tbody tr:not(.fc-sub):not(.fc-open):hover > td {
   background: var(--term-surface-2);
+}
+
+/* Front door (/) ghost index numerals. Painted as a counter pseudo-element rather than a
+   text node: the <ol> already numbers the list semantically, and at 30% bone on near-black
+   the numeral composites to #515151 (2.45:1) — pure decoration under WCAG 1.4.3's
+   "incidental" exception, but a text node keeps tripping automated contrast checks that
+   cannot judge decoration. A ::before makes the decorative status structural. */
+.fc-ghost-ol {
+  counter-reset: fc-ghost;
+}
+.fc-ghost-ol > li::before {
+  counter-increment: fc-ghost;
+  content: counter(fc-ghost, decimal-leading-zero);
+  font-family: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-variant-numeric: tabular-nums;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: rgba(245, 241, 232, 0.3);
+}
+
+/* Under-evidenced (/shooting "noisy") rows, de-emphasized without an opacity dim: any
+   opacity low enough to read as dimmed pushes the composited text below AA's 4.5:1 (the
+   old 0.48 measured 2.06–3.19 in the 2026-08-24 axe pass). Every cell flattens to the
+   muted text colour instead — 5.9:1 on white — and only the effect bar fades, since a
+   graphic restating the number beside it carries no text-contrast requirement. */
+.fc-rest-table tbody tr.fc-noisy > td,
+.fc-rest-table tbody tr.fc-noisy > td span {
+  color: var(--term-text-muted) !important;
+}
+.fc-rest-table tbody tr.fc-noisy > td span[aria-hidden] {
+  opacity: 0.4;
 }

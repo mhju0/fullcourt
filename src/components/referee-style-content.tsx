@@ -19,7 +19,7 @@ type SortKey = keyof RefereeStyleRow
 /** Blue above the league mix, red below, muted when the gap is inside noise. */
 function toneFor(value: number, z: number): string {
   if (!isNotable(z)) return "var(--term-text-muted)"
-  return value > 0 ? "var(--term-blue)" : "var(--term-red)"
+  return value > 0 ? "var(--term-blue-text)" : "var(--term-red-text)"
 }
 
 /** A relative-to-league cell: emphasis carries the scan, tone carries the direction. */
@@ -51,8 +51,8 @@ function columnsFor(data: RefereeFoulStyle): DataColumn<RefereeStyleRow, SortKey
                 marginLeft: SPACE.sm,
                 fontSize: TYPE.micro,
                 fontWeight: 700,
-                color: "var(--term-blue)",
-                border: "1px solid var(--term-blue)",
+                color: "var(--term-blue-text)",
+                border: "1px solid var(--term-blue-text)",
                 borderRadius: "var(--term-radius-sm)",
                 padding: "0 4px",
               }}

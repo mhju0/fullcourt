@@ -51,7 +51,7 @@ export function Section({
           <span
             style={{
               fontWeight: 700,
-              color: "var(--term-red)",
+              color: "var(--term-red-text)",
               background: RED_TINT,
               border: "1px solid rgba(220, 38, 38, 0.18)",
               borderRadius: "var(--term-radius-sm)",
@@ -135,7 +135,7 @@ export function LimitList({ items }: { items: readonly string[] }) {
     >
       {items.map((item) => (
         <li key={item} className="flex gap-3">
-          <span className="mono" style={{ color: "var(--term-red)", flexShrink: 0 }}>
+          <span className="mono" style={{ color: "var(--term-red-text)", flexShrink: 0 }}>
             —
           </span>
           <span>{item}</span>
@@ -180,7 +180,7 @@ export function ValueGrid({
               accent rather than sitting in the same near-black as the prose around them. */}
           <span
             className="mono"
-            style={{ fontSize: TYPE.emph, fontWeight: 700, fontVariantNumeric: "tabular-nums", color: "var(--term-blue)" }}
+            style={{ fontSize: TYPE.emph, fontWeight: 700, fontVariantNumeric: "tabular-nums", color: "var(--term-blue-text)" }}
           >
             {v.value}
           </span>

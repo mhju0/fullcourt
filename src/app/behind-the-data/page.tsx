@@ -132,7 +132,7 @@ export default function BehindTheDataPage() {
               className="group flex flex-col gap-1 py-4 pl-0 transition-[box-shadow,transform,background-color,padding-left] duration-200 hover:translate-x-0.5 hover:bg-[var(--term-surface-2)] hover:pl-3 hover:shadow-[inset_2px_0_0_var(--term-red)] motion-reduce:transition-none motion-reduce:hover:translate-x-0"
               style={{ borderTop: i === 0 ? undefined : "1px solid var(--term-border)" }}
             >
-              <span className="mono flex items-center gap-2 text-[var(--term-text)] transition-colors group-hover:text-[var(--term-red)]"
+              <span className="mono flex items-center gap-2 text-[var(--term-text)] transition-colors group-hover:text-[var(--term-red-text)]"
                 style={{ fontSize: 12, fontWeight: 700, letterSpacing: TRACK.data }}
               >
                 {section.label}
@@ -168,7 +168,7 @@ export default function BehindTheDataPage() {
               style={{ borderTop: i === 0 ? undefined : "1px solid var(--term-border)" }}
             >
               <span
-                className="mono flex items-center gap-2 text-[var(--term-text)] transition-colors group-hover:text-[var(--term-red)]"
+                className="mono flex items-center gap-2 text-[var(--term-text)] transition-colors group-hover:text-[var(--term-red-text)]"
                 style={{ fontSize: 12, fontWeight: 700, letterSpacing: TRACK.data }}
               >
                 {item.label}

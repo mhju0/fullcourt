@@ -14,7 +14,7 @@ export default function NotFound() {
       aria-labelledby="not-found-title"
     >
       <p
-        className="mono font-semibold uppercase text-[var(--term-red)]"
+        className="mono font-semibold uppercase text-[var(--term-red-text)]"
         style={{ fontSize: TYPE.label, letterSpacing: TRACK.label }}
       >
         404 · Out of bounds
