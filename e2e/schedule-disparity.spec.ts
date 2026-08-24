@@ -83,6 +83,20 @@ test.describe("Schedule Disparity page", () => {
     expect(body).not.toMatch(/largest since|most since|all[- ]time|record for any season/i);
   });
 
+  test("keeps the market-check sentry but not the table it guards", async ({ page }) => {
+    await page.goto("/schedule");
+
+    // ADR 0009: the leaderboard invites exactly one misuse — betting season over/unders — so
+    // the claim that closes that door stays on this page, while the bucket table's one home
+    // is the method page. The sentry's r comes from the same committed JSON as the table, so
+    // asserting the claim here and the table there pins both halves of the split.
+    await expect(page.getByText(/null result, published on purpose/i)).toBeVisible();
+    await expect(page.getByText("Went over")).toHaveCount(0);
+
+    await page.getByTestId("market-check-crosslink").click();
+    await expect(page).toHaveURL(/\/behind-the-data\/schedule-edge$/);
+  });
+
   test("is reachable from the primary navigation", async ({ page }) => {
     await page.goto("/");
 

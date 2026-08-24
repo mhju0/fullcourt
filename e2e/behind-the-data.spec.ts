@@ -81,6 +81,38 @@ test.describe("Behind the Data", () => {
       page.getByText("giving up 5,994 winning predictions", { exact: false })
     ).toBeVisible();
   });
+
+  test("the market check's one home is the Schedule Edge method page", async ({ page }) => {
+    await page.goto("/behind-the-data/schedule-edge");
+
+    // The full evidence — the bucket table and the archive prose — moved here whole from the
+    // foot of /schedule on 2026-08-24 (ADR 0009); /schedule keeps a one-paragraph sentry.
+    // Asserted on the table's own column header and on the sentence that names it a null, so
+    // dropping either the evidence or the claim fails.
+    await expect(page.getByText("THE MARKET CHECK", { exact: true })).toBeVisible();
+    await expect(page.getByText("Went over")).toBeVisible();
+    await expect(page.getByText(/null result, published on purpose/i)).toBeVisible();
+  });
+
+  test("the index collects the measured nulls, each linking to its evidence", async ({ page }) => {
+    await page.goto("/behind-the-data");
+
+    // A second index over the same pages, keyed by question. Every row must point at a page
+    // that actually publishes the empty result — the list carries no figure of its own.
+    const nulls = page.getByTestId("null-results");
+    await expect(nulls.getByRole("link")).toHaveCount(4);
+    for (const label of [
+      "SEASON WIN TOTALS",
+      "TIME ZONES",
+      "REFEREE FOLKLORE",
+      "OUT-PICKING THE PLAYOFF FAVOURITE",
+    ]) {
+      await expect(nulls.getByRole("link", { name: new RegExp(label) })).toBeVisible();
+    }
+
+    await nulls.getByRole("link", { name: /SEASON WIN TOTALS/ }).click();
+    await expect(page).toHaveURL(/\/behind-the-data\/schedule-edge$/);
+  });
 });
 
 test.describe("Status bar", () => {

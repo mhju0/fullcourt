@@ -795,11 +795,13 @@ each figure is roughly a third of the real effect.
 
 ## Win-total market check — `/schedule`'s published null
 
-**`scripts/fetch_win_totals.ts`** writes `src/data/win-total-benchmark.json`, rendered by
-`WinTotalMarketCheck` at the foot of `/schedule` and pinned by `win-total-benchmark.test.ts`.
-It benchmarks a season's schedule edge against the preseason win-total market and publishes the
-**null** it found (r ≈ −0.016 across 884 team-seasons) rather than dropping it. Run by hand,
-like the `ml/` artifacts; it covers a fixed archive range rather than tracking the live season.
+**`scripts/fetch_win_totals.ts`** writes `src/data/win-total-benchmark.json`, pinned by
+`win-total-benchmark.test.ts` and rendered twice from the one file: the full table and method
+prose in the MARKET CHECK section of `/behind-the-data/schedule-edge`, and a one-paragraph
+sentry (`WinTotalGuardrail`) at the foot of `/schedule` — the split is ADR 0009. It benchmarks
+a season's schedule edge against the preseason win-total market and publishes the **null** it
+found (r ≈ −0.016 across 884 team-seasons) rather than dropping it. Run by hand, like the
+`ml/` artifacts; it covers a fixed archive range rather than tracking the live season.
 
 ## Cron cadence
 
