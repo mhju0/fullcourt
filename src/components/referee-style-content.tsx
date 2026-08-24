@@ -81,6 +81,20 @@ function columnsFor(data: RefereeFoulStyle): DataColumn<RefereeStyleRow, SortKey
       cell: (row) => row.games,
     },
     {
+      // Beside G because it explains G: a 700-game row and a 200-game row differ in when the
+      // official's tenure reaches into this data, not in how much style they have — the
+      // |z| >= 2 bolding bar an identical quirk clears at n = 700 is out of reach at n = 200.
+      // "In this data": the corpus opens at the dataset's first season, so most veterans'
+      // spans are left-censored to it (the legend line says so).
+      label: "Since",
+      unit: "in this data",
+      sortKey: "firstSeason",
+      numeric: true,
+      width: "88px",
+      style: { color: "var(--term-text-muted)" },
+      cell: (row) => row.firstSeason,
+    },
+    {
       // Relative like every column beside it. The underlying figure is a count of fouls per
       // game rather than a share, so it is scaled against the league's own fouls per game
       // instead of a share baseline.
@@ -161,7 +175,7 @@ export function RefereeStyleContent({ data }: { data: RefereeFoulStyle }) {
         <DataTable
           wrapperClassName="overflow-x-auto"
           className="table-fixed text-[12px]"
-          minWidth={940}
+          minWidth={1030}
           columns={columns}
           rows={rows}
           rowKey={(row) => row.name}
@@ -173,7 +187,8 @@ export function RefereeStyleContent({ data }: { data: RefereeFoulStyle }) {
 
       <p className="mono" style={{ fontSize: 11, color: "var(--term-text-muted)", letterSpacing: TRACK.sub }}>
         BOLD = BEYOND TWO STANDARD ERRORS · MUTED = INSIDE NOISE · CC = WORKS AS CREW CHIEF ·{" "}
-        {chiefCount} OF {publishable(data.officials).length} DO
+        {chiefCount} OF {publishable(data.officials).length} DO · SINCE = FIRST SEASON IN THIS
+        DATA ({data.firstSeason} AT THE EARLIEST), NOT A HIRE DATE
       </p>
     </div>
   )

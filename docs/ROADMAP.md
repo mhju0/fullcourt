@@ -167,6 +167,16 @@ in-progress card is now the mistake, not the safe move).
   games a season, and at that n the |z| ≥ 2 rule blanks nearly every cell. If the exploration
   beats nothing, ship it; **status quo is the accepted fallback**, recorded with the measurement.
   Standing rule applies: any new referee number goes through a written pre-registration first.
+  **MEASURED 2026-08-24** (`ml/referee_career_preregistration.md` →
+  `ml/REFEREE_CAREER_REPORT.md`): the replication gate first caught a real pipeline defect —
+  ESPN's duplicate officials entries were double-credited (one official's G read 721 for 604
+  real games) and the order-4 standby was counted; fixed, artifacts regenerated. Then: **(1)**
+  the SINCE span column shipped with its censoring caveat; **(2)** drift is real — 11.9% of
+  recent-vs-earlier cells beyond |zΔ| ≥ 2 against 4.6% chance, and 32 of 74 officials change
+  leading trait — so the equal-window table is **with Michael for adoption**; **(3)** the
+  per-season split passed *both* its declared bars against expectation (11.8% of season cells
+  clear the veteran-grade bar; 75.2% sign agreement) and is likewise **Michael's design call**
+  rather than refused.
 
 - **Schedule Edge vs Season Report — RESOLVED 2026-08-23: one home per fact, both pages kept.**
   The audit ran first as scoped (inventory in the decision artifact; both candidate outcomes

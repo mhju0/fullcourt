@@ -665,6 +665,20 @@ league's own seasonal mix, per foul type, each with a z-score at that official's
 `referee-style-content.tsx` renders it as a sortable table; `src/lib/referee-foul-style.ts` owns
 the types, the |z| ≥ 2 emphasis rule and the 200-game publication bar.
 
+**The crediting rule was corrected on 2026-08-24, and the table carries a SINCE column.** A
+pre-registered replication gate (`ml/referee_career_preregistration.md`, M0) found the
+pipeline crediting ESPN's duplicate officials entries — the same name listed twice in 228
+payloads, overwhelmingly one official whose G read 721 for 604 real appearances with his
+z-scores inflated ~9% — and the order-4 standby who did not work the game. `parseSummary`
+now takes the sorted, deduplicated first three, and both artifacts were regenerated. The
+SINCE column (`firstSeason`, sortable) separates a 200-game newcomer from a 700-game
+veteran, whose bolding bars differ mechanically; it reads "in this data" because the corpus
+opens at 2015-16, so most veterans' spans are left-censored to it — the legend line under
+the table says so, and `referee-foul-style.test.ts` bounds every row's span by the
+dataset's. The equal-window and per-season measurements that followed (both crossed their
+pre-declared bars — see `ml/REFEREE_CAREER_REPORT.md`) are decisions with Michael, not
+shipped surfaces.
+
 **Three things were built and removed, all for the same reason — this is a page to browse, not
 to study.** A leaderboard strip naming the most and fewest of each type said only what sorting a
 column already says. Per-column rank printed inline as `+23% #1` put two competing figures in

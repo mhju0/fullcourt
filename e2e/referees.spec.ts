@@ -24,6 +24,17 @@ test.describe("Referee Effect — the published page", () => {
     expect(await rows.count()).toBeGreaterThan(30);
   });
 
+  test("the span column ships with its censoring caveat", async ({ page }) => {
+    await page.goto("/referees");
+    await expect(page.getByTestId("referee-style-row").first()).toBeVisible();
+
+    // SINCE separates a 200-game newcomer from a 700-game veteran — but the corpus opens at
+    // 2015-16, so most veterans' spans are left-censored to it. The column may never render
+    // without the legend saying so: a bare "2015-16" beside a name reads as a hire date.
+    await expect(page.getByRole("columnheader", { name: /Since/ })).toBeVisible();
+    await expect(page.getByText(/NOT A HIRE DATE/)).toBeVisible();
+  });
+
   test("sorting a column reorders the table and marks the header", async ({ page }) => {
     await page.goto("/referees");
     const first = () => page.getByTestId("referee-style-row").first();

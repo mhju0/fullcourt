@@ -32,6 +32,14 @@ export interface RefereeStyleRow {
   games: number;
   /** Games as crew chief, countable only from `crewChiefFirstSeason` on. */
   chiefGames: number;
+  /**
+   * Seasons worked IN THIS DATA — the corpus opens at the dataset's `firstSeason`, so a
+   * tenure that began earlier reads as starting there (57 of the 74 published officials
+   * are left-censored this way). The span separates a 200-game newcomer from a 700-game
+   * veteran, which the bare `G` invites misreading as a difference in style.
+   */
+  firstSeason: string;
+  lastSeason: string;
   /** Fouls per game against the season average — a count, unlike every column below. */
   fouls: number;
   foulsZ: number;

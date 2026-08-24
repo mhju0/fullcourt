@@ -430,7 +430,14 @@ function buildFoulStyle(collected: GameWhistle[], seasons: string[]) {
   // Per official, the per-game deviations from that game's own season baseline.
   const per = new Map<
     string,
-    { games: number; chiefGames: number; foulDev: number[]; dev: Record<FoulKey, number[]> }
+    {
+      games: number;
+      chiefGames: number;
+      firstSeason: string;
+      lastSeason: string;
+      foulDev: number[];
+      dev: Record<FoulKey, number[]>;
+    }
   >();
   for (const g of games) {
     const base = seasonMean.get(g.season)!;
@@ -441,6 +448,8 @@ function buildFoulStyle(collected: GameWhistle[], seasons: string[]) {
         r = {
           games: 0,
           chiefGames: 0,
+          firstSeason: g.season,
+          lastSeason: g.season,
           foulDev: [],
           dev: Object.fromEntries(FOUL_KEYS.map((k) => [k, [] as number[]])) as Record<
             FoulKey,
@@ -450,6 +459,10 @@ function buildFoulStyle(collected: GameWhistle[], seasons: string[]) {
         per.set(name, r);
       }
       r.games++;
+      // The span in THIS data, not a career: the corpus opens at FIRST_SEASON, so a tenure
+      // that began earlier reads as starting there. The column guide carries the caveat.
+      if (g.season < r.firstSeason) r.firstSeason = g.season;
+      if (g.season > r.lastSeason) r.lastSeason = g.season;
       if (isChiefSeason && g.crewChief === name) r.chiefGames++;
       r.foulDev.push(g.totalFouls - base.fouls);
       for (const k of FOUL_KEYS) r.dev[k].push(shareOf(g, k) - base.shares[k]);
@@ -471,6 +484,8 @@ function buildFoulStyle(collected: GameWhistle[], seasons: string[]) {
         name,
         games: r.games,
         chiefGames: r.chiefGames,
+        firstSeason: r.firstSeason,
+        lastSeason: r.lastSeason,
         fouls: round(fouls.mean, 2),
         foulsZ: round(fouls.z, 1),
       };
