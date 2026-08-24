@@ -742,7 +742,12 @@ alone. It is style, not bias, and the copy says so.
    beneath it*, so the one element naming the product read as the least important thing in the
    header; it is now sized as a logotype in the same display face as every page title. The
    `aria-label="FullCourt home"` keeps the accessible name one string across the split spans,
-   which is what `e2e/behind-the-data.spec.ts` clicks. The wordmark was inert until 2026-07-30, the
+   which is what `e2e/behind-the-data.spec.ts` clicks. Since 2026-08-24 the letters are
+   individually kerned: `src/lib/brand/wordmark-kern.ts` is the one table (the same
+   one-source rule as the mark's geometry), consumed by all three lockup renderers — nav,
+   the front door's naming h2, and the OG card — as per-letter margins on top of each
+   site's base tracking. `wordmark-kern.test.ts` pins the preset and fails any renderer
+   that types the word as a literal again. The wordmark was inert until 2026-07-30, the
    one piece of chrome people reflexively click. It points at `/`, the front door. That
    inverted on 2026-08-12: while `/` WAS the games board this doc said "home is `GAMES`, not
    `/about`: a logo landing on an explainer breaks the take-me-back-to-the-product contract",

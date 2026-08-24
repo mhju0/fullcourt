@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import Link from "next/link";
+import { wordmarkLetters } from "@/lib/brand/wordmark-kern";
 import { NBA_SEASONS } from "@/lib/nba-season";
 import { signedNumber } from "@/lib/signed-number";
 
@@ -319,7 +320,19 @@ export function AboutContent({ stats }: { stats: AboutStats | null }) {
           className="fc-name font-heading font-bold"
           style={{ fontSize: "clamp(2.6rem,7vw,5.4rem)", lineHeight: 0.95, letterSpacing: "-0.03em" }}
         >
-          FULL<span style={{ color: "#818CF8" }}>COURT</span>
+          {/* Per-letter kerns from wordmark-kern.ts (2026-08-24), margins on top of the
+              base tracking — same table as the nav and OG lockups. */}
+          {wordmarkLetters().map((l, i) => (
+            <span
+              key={i}
+              style={{
+                color: l.accent ? "#818CF8" : undefined,
+                marginLeft: l.kernEm === 0 ? undefined : `${l.kernEm}em`,
+              }}
+            >
+              {l.char}
+            </span>
+          ))}
         </h2>
         <div className="mt-9 flex flex-col">
           {NAME_READINGS.map((part) => (

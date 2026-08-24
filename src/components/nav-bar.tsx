@@ -5,6 +5,7 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useCallback, useEffect, useRef, useState } from "react"
 import { CourtMark } from "@/components/court-mark"
+import { wordmarkLetters } from "@/lib/brand/wordmark-kern"
 import {
   DIRECT_NAV_ITEMS,
   OTHER_NAV_ITEMS,
@@ -260,9 +261,20 @@ export function NavBar() {
               style={{ fontSize: "22px", fontWeight: 700, letterSpacing: "-0.015em", lineHeight: 1 }}
             >
               {/* W4 lockup (2026-08-19): COURT takes the brand indigo — the same
-                  accent the mark's slash spends, one rule for nav and OG alike. */}
-              <span style={{ color: "var(--term-text)" }}>FULL</span>
-              <span style={{ color: "var(--accent)" }}>COURT</span>
+                  accent the mark's slash spends, one rule for nav and OG alike.
+                  Per-letter kerns from wordmark-kern.ts (2026-08-24), as margins so
+                  the container's base tracking stays what it was. */}
+              {wordmarkLetters().map((l, i) => (
+                <span
+                  key={i}
+                  style={{
+                    color: l.accent ? "var(--accent)" : "var(--term-text)",
+                    marginLeft: l.kernEm === 0 ? undefined : `${l.kernEm}em`,
+                  }}
+                >
+                  {l.char}
+                </span>
+              ))}
             </span>
             <span
               aria-hidden

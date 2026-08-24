@@ -8,6 +8,7 @@ import {
   MARK_COLORS,
   MARK_CUTS,
 } from "@/lib/brand/court-mark-geometry";
+import { wordmarkLetters } from "@/lib/brand/wordmark-kern";
 import { NBA_SEASONS } from "@/lib/nba-season";
 
 export const alt = "FullCourt — NBA analytics: rest, fatigue, and shot value";
@@ -70,10 +71,22 @@ export default async function OpengraphImage() {
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
-          {/* The W4 lockup (2026-08-19): all caps, COURT in the brand indigo. */}
+          {/* The W4 lockup (2026-08-19): all caps, COURT in the brand indigo.
+              Per-letter kerns from wordmark-kern.ts (2026-08-24) as px margins on the
+              92px size — satori may not apply Geist's own GPOS kerns the way a browser
+              does, so the deployed card gets one manual eyeball after this ships. */}
           <div style={{ display: "flex", fontSize: 92, fontWeight: 800, letterSpacing: -1 }}>
-            <span style={{ color: "#F2F4F7" }}>FULL</span>
-            <span style={{ color: "#818CF8" }}>COURT</span>
+            {wordmarkLetters().map((l, i) => (
+              <span
+                key={i}
+                style={{
+                  color: l.accent ? "#818CF8" : "#F2F4F7",
+                  marginLeft: l.kernEm === 0 ? 0 : l.kernEm * 92,
+                }}
+              >
+                {l.char}
+              </span>
+            ))}
           </div>
           <div style={{ display: "flex", fontSize: 38, color: "#B7BEC7", maxWidth: 960, lineHeight: 1.35 }}>
             {/* No figure: a static image cannot pin one, and the ~55% this carried predated
