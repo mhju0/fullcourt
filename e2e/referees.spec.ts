@@ -35,6 +35,17 @@ test.describe("Referee Effect — the published page", () => {
     await expect(page.getByText(/NOT A HIRE DATE/)).toBeVisible();
   });
 
+  test("names the equal window everywhere the numbers are read", async ({ page }) => {
+    await page.goto("/referees");
+    await expect(page.getByTestId("referee-style-row").first()).toBeVisible();
+
+    // The displayed basis is each official's last 200 games (2026-08-24, adopted on the
+    // pre-registered drift test). A windowed number under a career-looking table is the
+    // misreading this pins against: the legend and the intro both have to say the basis.
+    await expect(page.getByText(/LAST 200 GAMES, THE SAME SAMPLE FOR EVERY ROW/)).toBeVisible();
+    await expect(page.getByText(/most recent 200\s*games/).first()).toBeVisible();
+  });
+
   test("the officials table pins its header against its own scrollport", async ({ page }) => {
     await page.goto("/referees");
     const rows = page.getByTestId("referee-style-row");

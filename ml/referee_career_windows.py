@@ -121,9 +121,11 @@ def main() -> None:
 
     # The JSON carries every official; the published set is the >= MIN_GAMES slice the page
     # renders (src/lib/referee-foul-style.ts publishable()), and the pre-registration scopes
-    # every measurement to it.
+    # every measurement to it. Since the equal window shipped (2026-08-24) the row's own
+    # columns are the last-200 window and the full-span figures live under `career` — M0
+    # replicates the career math, so it reads that block when present.
     published = {
-        o["name"]: o
+        o["name"]: {**(o.get("career") or o), "games": o["games"], "name": o["name"]}
         for o in json.loads(PUBLISHED.read_text())["officials"]
         if o["games"] >= MIN_GAMES
     }
@@ -279,6 +281,35 @@ def main() -> None:
 
     OUT.write_text(json.dumps(results, indent=2))
     log.info("written: %s", OUT)
+
+    # The committed facts file the method page renders its drift figures from — the same
+    # pattern as ml/availability_facts.json: prose never types a measured number, it imports
+    # this. Written only when M0 passed, so a stale replication can never publish.
+    facts = {
+        "measuredOn": "2026-08-24",
+        "windowGames": WINDOW,
+        "minCareerForSplit": SPLIT_MIN_CAREER,
+        "publishedOfficials": len(published),
+        "drift": {
+            "officialsTested": len(per_official_drift),
+            "cells": drift_cells,
+            "beyond": drift_beyond,
+            "sharePct": round(100 * drift_share, 1),
+            "chancePct": 4.6,
+            "careerBoldCells": career_bold,
+            "windowBoldCells": window_bold,
+            "leadingTraitChanges": lead_changes,
+        },
+        "seasonSplit": {
+            "cells": season_cells,
+            "beyond": season_beyond,
+            "sharePct": round(100 * season_share, 1),
+            "signAgreementPct": round(100 * mean_agreement, 1),
+        },
+    }
+    facts_path = ROOT / "src/data/referee-career-drift.json"
+    facts_path.write_text(json.dumps(facts, indent=2) + "\n")
+    log.info("written: %s", facts_path)
 
 
 if __name__ == "__main__":

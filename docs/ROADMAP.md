@@ -173,10 +173,13 @@ in-progress card is now the mistake, not the safe move).
   games actually worked) and the order-4 standby was counted; fixed, artifacts regenerated. Then: **(1)**
   the SINCE span column shipped with its censoring caveat; **(2)** drift is real — 11.9% of
   recent-vs-earlier cells beyond |zΔ| ≥ 2 against 4.6% chance, and 32 of 74 officials change
-  leading trait — so the equal-window table is **with Michael for adoption**; **(3)** the
+  leading trait — and Michael **adopted the equal window as the table's displayed basis**
+  (shipped 2026-08-24; every published row scored on its last 200 games, career figures kept
+  in the artifact, drift facts pinned to `src/data/referee-career-drift.json`); **(3)** the
   per-season split passed *both* its declared bars against expectation (11.8% of season cells
-  clear the veteran-grade bar; 75.2% sign agreement) and is likewise **Michael's design call**
-  rather than refused.
+  clear the veteran-grade bar; 75.2% sign agreement) and was **declined as a surface by
+  design** — the refusal is recorded, with its numbers, on the method page's THE WINDOW
+  section.
 
 - **Schedule Edge vs Season Report — RESOLVED 2026-08-23: one home per fact, both pages kept.**
   The audit ran first as scoped (inventory in the decision artifact; both candidate outcomes
