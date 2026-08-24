@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { MethodLink } from "@/components/method-link";
 import { PageHeader } from "@/components/page-header";
 import { ScheduleDisparityContentLazy } from "@/components/schedule-disparity-lazy";
-import { WinTotalMarketCheck } from "@/components/win-total-market-check";
+import { WinTotalGuardrail } from "@/components/win-total-market-check";
 
 export const metadata: Metadata = {
   title: "Schedule Disparity",
@@ -23,8 +23,9 @@ export default function SchedulePage() {
 
       <ScheduleDisparityContentLazy />
 
-      {/* Static and season-independent, so it lives outside the season selector's data flow. */}
-      <WinTotalMarketCheck />
+      {/* Static and season-independent, so it lives outside the season selector's data flow.
+          The sentry only — the full market check lives on the method page (ADR 0009). */}
+      <WinTotalGuardrail />
     </div>
   );
 }
