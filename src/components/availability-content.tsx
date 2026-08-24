@@ -274,7 +274,9 @@ function ScheduleHoldsUpSection() {
           rows={rows}
           rowKey={(r) => r.label}
           columns={[
-            { label: "", cell: (r) => r.label },
+            // Named on 2026-08-24 (axe pass): an empty header leaves the row-label column
+            // anonymous to a screen reader, which announces four situations as untitled cells.
+            { label: "SITUATION", cell: (r) => r.label },
             {
               label: "SCHEDULE ONLY",
               unit: "PTS",
