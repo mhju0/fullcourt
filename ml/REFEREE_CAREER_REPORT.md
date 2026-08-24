@@ -13,9 +13,10 @@ pipeline**, not in the replication:
 
 - **ESPN lists the same official twice in one game's officials array in 228 payloads** —
   overwhelmingly Gediminas Petraitis, duplicated at the same `order`. `fetch_officials.ts`
-  credited every entry, so the page's #1 row by G carried **721 games for 604 real
-  appearances**, with those games double-weighted in his means and his z-scores inflated ~9% —
-  his TECHNICAL cell bolded at z = 2.1 and stops bolding at the corrected 1.6.
+  credited every entry, so the page's #1 row by G carried **721 credited entries for 600 games
+  actually worked** — 117 duplicate listings plus 4 standby appearances — with those games
+  double-weighted in his means and his z-scores inflated ~10% (√(721/600)) — his TECHNICAL
+  cell bolded at z = 2.1 and stops bolding at the corrected 1.6.
 - The same loop credited the **order-4 standby** listed in ~72 regular-season games — an
   official the extractor's own rule (`official_1..3`) excludes because they did not work the
   game.

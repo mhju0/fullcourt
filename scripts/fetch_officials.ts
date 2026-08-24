@@ -139,7 +139,7 @@ function parseSummary(summary: any): {
   // broke this file's own contract ("every game credits all three") two ways, both found by
   // the 2026-08-24 replication gate (ml/referee_career_preregistration.md, M0): ESPN lists
   // the same name twice at one order in 228 payloads — overwhelmingly Gediminas Petraitis,
-  // whose published G read 721 for 604 real games with his z inflated ~9% by the double
+  // whose published G read 721 for 600 games worked, his z inflated ~10% by the double
   // weighting — and playoff-style payloads carry a standby at order 4 who did not work the
   // game (the rule ml/extract_referee_corpus.py already enforces).
   const officials: string[] = [

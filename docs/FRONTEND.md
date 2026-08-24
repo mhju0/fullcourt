@@ -668,8 +668,8 @@ the types, the |z| ≥ 2 emphasis rule and the 200-game publication bar.
 **The crediting rule was corrected on 2026-08-24, and the table carries a SINCE column.** A
 pre-registered replication gate (`ml/referee_career_preregistration.md`, M0) found the
 pipeline crediting ESPN's duplicate officials entries — the same name listed twice in 228
-payloads, overwhelmingly one official whose G read 721 for 604 real appearances with his
-z-scores inflated ~9% — and the order-4 standby who did not work the game. `parseSummary`
+payloads, overwhelmingly one official whose G read 721 for 600 games actually worked, his
+z-scores inflated ~10% — and the order-4 standby who did not work the game. `parseSummary`
 now takes the sorted, deduplicated first three, and both artifacts were regenerated. The
 SINCE column (`firstSeason`, sortable) separates a 200-game newcomer from a 700-game
 veteran, whose bolding bars differ mechanically; it reads "in this data" because the corpus

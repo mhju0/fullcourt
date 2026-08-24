@@ -96,7 +96,7 @@ export function publishable(rows: RefereeStyleRow[]): RefereeStyleRow[] {
  * and the largest effect in the data against offensive fouls at 6.1%.
  *
  * The trade it makes, worth knowing before reading the table: relative change flatters the
- * rare types. Officials span ±5% on shooting and ±26% on technicals, but in fouls a viewer
+ * rare types. Officials span ±4% on shooting and ±26% on technicals, but in fouls a viewer
  * would actually notice that is ±0.5 a game against ±0.2. Big relative, small absolute.
  */
 export function relativePct(deviation: number, leagueShare: number): number {
