@@ -53,6 +53,38 @@ const BLURB: Record<ModelSectionHref, string> = {
     "Where the data comes from, which seasons carry which fields, and what is excluded on purpose.",
 };
 
+/**
+ * The measured nulls, each linking to the section that holds its evidence. An entry earns its
+ * row only once the empty result is actually published on the linked page — this list points
+ * at evidence, it never carries a figure of its own.
+ */
+const NULL_RESULTS = [
+  {
+    label: "SEASON WIN TOTALS",
+    href: "/behind-the-data/schedule-edge",
+    finding:
+      "If a schedule edge compounded, the favoured teams should beat their preseason win-total lines. Across three decades of archived lines they don't — no gradient in either direction.",
+  },
+  {
+    label: "TIME ZONES",
+    href: "/behind-the-data/time-zones",
+    finding:
+      "A long eastward flight on short rest costs nothing measurable, and the large east/west split in the raw data is team strength rather than jet lag.",
+  },
+  {
+    label: "REFEREE FOLKLORE",
+    href: "/behind-the-data/referees",
+    finding:
+      "Most of what was asked of the officiating record came back empty: named-pair curses and charms sit at their noise floors, and the home tilt stays inside chance. Whistle volume is the one real difference.",
+  },
+  {
+    label: "OUT-PICKING THE PLAYOFF FAVOURITE",
+    href: "/behind-the-data/playoff-predictions",
+    finding:
+      "On accuracy, the series model is no better than always taking the home-court side. Its whole measured edge is calibration — the probabilities are honest, the picks are not sharper.",
+  },
+] as const;
+
 export default function BehindTheDataPage() {
   return (
     <BehindTheDataShell
@@ -111,6 +143,42 @@ export default function BehindTheDataPage() {
               </span>
               <span style={{ fontSize: TYPE.body, color: "var(--term-text-muted)", lineHeight: LEAD.body, maxWidth: WIDTH.prose }}>
                 {BLURB[section.href]}
+              </span>
+            </Link>
+          ))}
+        </div>
+      </Section>
+
+      {/* A second index over the same pages, keyed by question rather than by model. Every
+          entry is a measurement that came back empty and was published anyway (ADR 0009) —
+          collected here because a null filed only under its model's section reads as buried,
+          and these are the site's credibility, not its footnotes. */}
+      <Section label="MEASURED, AND FOUND NOTHING" descriptor="THE NULLS">
+        <Prose>
+          Some of the most useful measurements here came back empty, and each one is published
+          with the same care as a finding — stated beside the noise floor that makes it a
+          result rather than an absence. The questions that found nothing:
+        </Prose>
+        <div className="flex flex-col" data-testid="null-results">
+          {NULL_RESULTS.map((item, i) => (
+            <Link
+              key={item.href + item.label}
+              href={item.href}
+              className="group flex flex-col gap-1 py-4 pl-0 transition-[box-shadow,transform,background-color,padding-left] duration-200 hover:translate-x-0.5 hover:bg-[var(--term-surface-2)] hover:pl-3 hover:shadow-[inset_2px_0_0_var(--term-red)] motion-reduce:transition-none motion-reduce:hover:translate-x-0"
+              style={{ borderTop: i === 0 ? undefined : "1px solid var(--term-border)" }}
+            >
+              <span
+                className="mono flex items-center gap-2 text-[var(--term-text)] transition-colors group-hover:text-[var(--term-red)]"
+                style={{ fontSize: 12, fontWeight: 700, letterSpacing: TRACK.data }}
+              >
+                {item.label}
+                <ChevronRight
+                  className="size-3.5 -translate-x-1 opacity-0 transition-[opacity,transform] duration-200 group-hover:translate-x-0 group-hover:opacity-100 motion-reduce:transition-none"
+                  aria-hidden
+                />
+              </span>
+              <span style={{ fontSize: TYPE.body, color: "var(--term-text-muted)", lineHeight: LEAD.body, maxWidth: WIDTH.prose }}>
+                {item.finding}
               </span>
             </Link>
           ))}

@@ -8,6 +8,8 @@ import {
   Section,
   ValueGrid,
 } from "@/components/behind-the-data-parts";
+import { DataTable } from "@/components/ui/data-table";
+import benchmark from "@/data/win-total-benchmark.json";
 import {
   BIG_EDGE_FATIGUE_THRESHOLD,
   REST_DAYS_CAP,
@@ -23,8 +25,13 @@ import {
 export const metadata: Metadata = {
   title: "Schedule Edge — Behind the Data",
   description:
-    "How a season's schedule is scored for and against each team: net edge games, what one edge is worth in wins, the two thresholds, and why the count is games rather than days of rest.",
+    "How a season's schedule is scored for and against each team: net edge games, what one edge is worth in wins, the two thresholds, why the count is games rather than days of rest, and the market check that came back null.",
 };
+
+/** Percent with one decimal from an over count — 47.9% styling, tabular in the table. */
+function pct(overs: number, n: number): string {
+  return `${((overs / n) * 100).toFixed(1)}%`;
+}
 
 export default function ScheduleEdgeMethodPage() {
   return (
@@ -102,6 +109,60 @@ big edge      the ≥ ${BIG_EDGE_FATIGUE_THRESHOLD} subset of either side`}
           has no previous game and so no rest-<em>days</em> differential, which is why the counts
           above exclude it — but a fatigue score exists for it, so the rest gap is measured. Leaving
           it out made this page and the Season Report disagree by a tenth of a win on the same team.
+        </Note>
+      </Section>
+
+      {/* Moved here whole from the foot of /schedule on 2026-08-24 (ADR 0009); the page keeps
+          a one-paragraph sentry with the r. Both render the same committed benchmark JSON. */}
+      <Section label="THE MARKET CHECK" descriptor="A NULL, PUBLISHED ON PURPOSE">
+        <Prose>
+          If a schedule edge compounded over a season, the teams at the top of the Schedule
+          Edge leaderboard should beat their preseason win-total lines. Across{" "}
+          {benchmark.seasonsCovered}{" "}
+          seasons of archived lines, they don&rsquo;t:
+        </Prose>
+        <DataTable
+          wrapperClassName="overflow-x-auto"
+          width="numeric"
+          minWidth={360}
+          rows={benchmark.buckets}
+          rowKey={(b) => b.label}
+          columns={[
+            { label: "Net edge games", cell: (b) => b.label },
+            {
+              label: "Went over",
+              unit: "percent of the bucket",
+              numeric: true,
+              style: { fontWeight: 700 },
+              cell: (b) => pct(b.overs, b.n),
+            },
+            {
+              label: "Team-seasons",
+              numeric: true,
+              style: { color: "var(--term-text-muted)" },
+              cell: (b) => b.n,
+            },
+          ]}
+        />
+        <Prose>
+          No gradient, in either direction. The correlation between a team&rsquo;s net edge
+          games and its finish against the line is r&nbsp;=&nbsp;
+          {benchmark.correlation.r.toFixed(2)} across {benchmark.correlation.n}{" "}
+          team-seasons — statistically zero. The rest edge is real game to game, and that
+          record lives on the Model Results page. But over a full season it amounts to a few
+          possessions here and there, and the market&rsquo;s win totals already price the
+          schedule. This is a null result, published on purpose: season over/unders are not
+          beatable from a schedule leaderboard, and this site won&rsquo;t pretend otherwise.
+        </Prose>
+        <Note>
+          Lines from the {benchmark.source}, {benchmark.firstSeason} through{" "}
+          {benchmark.lastSeason}. No lines were published for the 1998-99 lockout, and 2019-20
+          is skipped here because its season was suspended at 63 to 67 games — a preseason win
+          total never got a full schedule to resolve against. {benchmark.pushes} pushes are
+          excluded from the rates; overs hit {pct(benchmark.overall.overs, benchmark.overall.n)}{" "}
+          overall — win totals lean under league-wide, edge or no edge. The archive&rsquo;s win
+          count matched this site&rsquo;s own game records for every one of the{" "}
+          {benchmark.teamSeasons} team-seasons before anything was computed.
         </Note>
       </Section>
 

@@ -338,6 +338,17 @@
   max-height: 74vh;
 }
 
+/* The same scrollport for any other long table adopting a sticky header (UIUX checklist,
+   2026-08-24). A header pinned against the page scroll slides under the 96px chrome — the
+   collision FRONTEND.md records — so a sticky table header always gets its own scroll box.
+   Adopted where a table measured ≥ ~2 viewports (the /referees officials table, 74 rows at
+   ~2,640px); the 30-row league tables measured ~1.2 viewports and do not earn an internal
+   scrollbar. `.fc-rest-table` keeps its own copy of the height because it also carries the
+   /shooting group styling — this class is the bare scrollport. */
+.fc-scrollport {
+  max-height: 74vh;
+}
+
 .fc-rest-table tbody tr.fc-open > td {
   background: color-mix(in srgb, var(--term-amber) 14%, var(--term-surface));
   border-top: 1px solid var(--term-rail);

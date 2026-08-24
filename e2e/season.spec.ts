@@ -1,6 +1,22 @@
 import { expect, test } from "@playwright/test";
 
 test.describe("Season Report", () => {
+  test("the verdict line settles on a real verdict, never the transient 'unavailable'", async ({ page }) => {
+    await page.goto("/season");
+
+    // The verdict is gated on the all-season baseline request (2026-08-24): while that
+    // request is in flight the line renders nothing, because a pending norm and a missing
+    // norm are both null and the page used to flash "ALL-SEASON NORM UNAVAILABLE" on every
+    // load. The risk the gate introduces is the opposite failure — the line never settling —
+    // so this waits for a real verdict and then asserts the transient claim is not on the page.
+    // Matches all four settled states: ABOVE/BELOW THE NORM, IN LINE WITH THE ALL-SEASON
+    // NORM (both carry "NORM — " with figures after it), and TOO EARLY TO CALL.
+    await expect(
+      page.getByText(/NORM — |TOO EARLY TO CALL/).first()
+    ).toBeVisible({ timeout: 15_000 });
+    await expect(page.getByText("ALL-SEASON NORM UNAVAILABLE")).toHaveCount(0);
+  });
+
   test("renders the scorecard and switches season", async ({ page }) => {
     await page.goto("/season");
 

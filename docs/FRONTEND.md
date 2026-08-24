@@ -329,11 +329,17 @@ version at `/behind-the-data/playoff-predictions`.
 ### `/schedule` — Schedule Disparity (`src/app/schedule/page.tsx`)
 
 Server component; metadata title `"Schedule Disparity"`; renders a `<PageHeader>`, a
-`<MethodLink>`, `<ScheduleDisparityContentLazy />` and `<WinTotalMarketCheck />`. That last one
+`<MethodLink>`, `<ScheduleDisparityContentLazy />` and `<WinTotalGuardrail />`. That last one
 is static and season-independent, which is why it sits outside the season selector's data flow:
 it reads the committed `src/data/win-total-benchmark.json` (guarded by
-`win-total-benchmark.test.ts`) and publishes a deliberate **null** — a season's schedule edge
-does not correlate with the preseason win-total market. The lazy client component
+`win-total-benchmark.test.ts`) and states a deliberate **null** — a season's schedule edge
+does not correlate with the preseason win-total market. Since 2026-08-24 it is a sentry, not
+the evidence: a leaderboard of schedule edges invites exactly one misuse (betting season
+over/unders), so the one-paragraph claim with the r stays here where the temptation arises,
+while the bucket table and the archive's method prose live in the MARKET CHECK section of
+`/behind-the-data/schedule-edge` ([ADR 0009](adr/0009-nulls-live-behind-the-data.md)). Both
+render the same JSON, so the two surfaces cannot drift; `schedule-disparity.spec.ts` pins the
+sentry-without-table split and `behind-the-data.spec.ts` pins the table's home. The lazy client component
 (`schedule-disparity-content.tsx`) fetches `/api/schedule-disparity?season=…` via SWR and
 renders, in order: a `<SeasonSelector>` over `browsableSeasons()`, a four-cell summary strip
 (most favored / least favored / spread / games with an edge), the ranked **net rest edge**
@@ -569,6 +575,14 @@ question that was pre-registered, measured, and came back empty. A null gets a m
 its *raw* numbers look like a finding — the east/west split is 7.5 points wide and points the
 wrong way for jet lag — because the only safe way to state the result is beside the confound.
 
+**The index carries a second list, "MEASURED, AND FOUND NOTHING"** (2026-08-24,
+[ADR 0009](adr/0009-nulls-live-behind-the-data.md)): the site's published nulls, keyed by
+question rather than by model, each row linking to the section that holds its evidence. The
+list carries no figure of its own — a row may only ship once the empty result is actually
+published on the page it points at — and `behind-the-data.spec.ts` asserts the four rows
+resolve. When a null guards a specific product page's claim (the win-total market check on
+`/schedule`), that page keeps a one-paragraph sentry; the evidence still lives here.
+
 **Colour is load-bearing here** (2026-07-30). The pages were near-uniform black-on-white and
 read as one undifferentiated wall, so each primitive carries an accent and each accent means one
 thing: **red** for the `Section` header band (a tinted strip with a red inset rail and a red
@@ -663,7 +677,12 @@ survives baselining per season, per arena, and on share rather than count.
 `referee-whistle.json`) holds one row per official: deviation in percentage points from the
 league's own seasonal mix, per foul type, each with a z-score at that official's sample size.
 `referee-style-content.tsx` renders it as a sortable table; `src/lib/referee-foul-style.ts` owns
-the types, the |z| ≥ 2 emphasis rule and the 200-game publication bar.
+the types, the |z| ≥ 2 emphasis rule and the 200-game publication bar. The table pins its
+header (2026-08-24): ~74 published officials run to about three viewports, so it adopts the
+`/shooting` mechanism — `stickyHeader` against its own `.fc-scrollport` scroll box, never the
+page scroll, which would slide the header under the 96px chrome. The site-wide measurement
+that admitted this table and refused the 30-row league tables is recorded on the
+UIUX_CHECKLIST row it closes; `referees.spec.ts` pins both halves of the mechanism.
 
 **The crediting rule was corrected on 2026-08-24, and the table carries a SINCE column.** A
 pre-registered replication gate (`ml/referee_career_preregistration.md`, M0) found the
@@ -1643,4 +1662,8 @@ where the mark proper uses a filled band.
 uploaded out-of-band and referenced by no code, so a dead-file sweep will read it as an orphan
 — it is not. Since 2026-08-18 it is **a render of `/opengraph-image`**, not a hand match: refresh
 it with `curl -o docs/social-preview.png http://localhost:3000/opengraph-image` against a running
-dev server, then re-upload it in GitHub's settings — the upload is the only manual half.
+dev server, then re-upload it in GitHub's settings — the upload is the only manual half. One
+processing step since 2026-08-24: the render is **flattened RGBA → RGB**
+(`Image.open(...).convert("RGB").save(..., optimize=True)` — the route's alpha channel is
+uniformly 255, so the pixels are untouched) after GitHub's uploader failed repeatedly on the
+RGBA original. Keep the flatten when re-rendering.

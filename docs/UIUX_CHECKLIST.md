@@ -71,8 +71,14 @@ with the reason.
   2026-08-14).
 - [x] **Focus states mirror hover** — `focus-visible:` carries every hover declaration on the
   surface cards; the retracting bar reveals on keyboard entry (`onFocus={reveal}`).
-- [ ] **A full axe/VoiceOver pass has never been run.** The wins above are structural, not a
-  certification. Owner: next audit round (tooling), Michael (VoiceOver).
+- [ ] **A full axe/VoiceOver pass** — the axe half ran 2026-08-24 (all 20 routes, wcag2a/aa +
+  21a/aa + best-practice; report in `docs/audit/2026-08-24-axe-pass.md`, local-only). Two
+  discrete defects found and fixed (an unnamed `FatigueBar` progressbar, an empty availability
+  table header); everything else is one systemic question — the pole hues and the 10px unit
+  slot as *small text* sit at 3.0–4.4:1 against AA's 4.5:1, because the palette was validated
+  at the 3:1 graphics threshold. That is a ratified-palette decision, recorded with options in
+  the audit report. Owner: Michael (the contrast decision, and the VoiceOver walkthrough —
+  still never run; an automated pass cannot hear focus order).
 
 ## 4. Tables & data density
 
@@ -87,11 +93,14 @@ with the reason.
   full-bleed stretch — a 2026-08-11 decision with its reasoning in `terminal-styles.ts`.
 - [x] **Row hover highlight on interactive rows** — the slate row carries `hover:bg`; rows
   that do nothing get nothing, which is the honest version of B-Ref's everywhere-highlight.
-- [ ] **Sticky `<thead>` on long scrolling tables** (B-Ref, Baseball Savant). `/shooting`
-  already pins its header against `.fc-rest-table`'s own scrollport; the open question is
-  whether any *other* table runs long enough to deserve one. Measure before adopting —
-  FRONTEND.md records a real collision between a table's own sticky header and the page
-  chrome on this exact page.
+- [x] **Sticky `<thead>` on long scrolling tables** (B-Ref, Baseball Savant) — measured and
+  adopted 2026-08-24. Every `fc-table` on the site was measured at 1440×900: the `/referees`
+  officials table ran 74 rows / ~2,640px (~3 viewports) and adopted the `/shooting` mechanism
+  (`stickyHeader` against its own `.fc-scrollport` scroll box, never the page scroll — the
+  chrome collision FRONTEND.md records). Everything else measured at or under ~1.2 viewports
+  (the 30-row league tables on `/season` and `/schedule` at ~1,100px, `/analysis` at ~880px)
+  and was refused: a header off-screen for the last few rows does not earn an internal
+  scrollbar. Re-measure only if a table's population grows, not on principle.
 - [—] **Zebra striping** (STATIZ-dense tables). The hairline-border row rhythm is the house
   style; stripes on top of it read as a second, competing rhythm. Revisit only if a table
   ever drops its row borders.

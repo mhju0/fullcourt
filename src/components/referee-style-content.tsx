@@ -172,10 +172,14 @@ export function RefereeStyleContent({ data }: { data: RefereeFoulStyle }) {
       </div>
 
       <div style={{ ...termCardStyle, padding: 0 }}>
+        {/* 74 officials run to ~3 viewports, so the header pins — against the table's own
+            scrollport (`.fc-scrollport`), never the page scroll, which would slide it under
+            the sticky chrome. Same mechanism as /shooting's 500-row table. */}
         <DataTable
-          wrapperClassName="overflow-x-auto"
+          wrapperClassName="fc-scrollport overflow-auto"
           className="table-fixed text-[12px]"
           minWidth={1030}
+          stickyHeader
           columns={columns}
           rows={rows}
           rowKey={(row) => row.name}
