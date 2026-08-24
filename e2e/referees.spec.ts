@@ -60,7 +60,6 @@ test.describe("Referee Effect — the published page", () => {
     expect(measured!.thPosition).toBe("sticky");
     expect(measured!.wrapperScrolls).toBe(true);
     expect(measured!.tableTallerThanPort).toBe(true);
->>>>>>> origin/main
   });
 
   test("sorting a column reorders the table and marks the header", async ({ page }) => {
