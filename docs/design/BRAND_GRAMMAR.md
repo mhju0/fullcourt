@@ -44,6 +44,13 @@ one weight, the halves separated by color — COURT takes the accent — one rul
 and the OG card, which had each been half-doing it differently (dimmed split vs. amber
 split). Running prose still writes "FullCourt"; wordmark and prose are different jobs.
 
+**The lockup is optically kerned (2026-08-24).** Measured in Geist 700 with the font's own
+kerns applied, the inter-letter ink area spread 2.7:1, and the widest gap was L·C — exactly
+the color seam, so the compound read as two words touching. The ratified per-pair preset
+(spread → 2.1:1, width −1.5%) lives in `src/lib/brand/wordmark-kern.ts`, the one table all
+three renderers consume; its test pins the values. Changing a kern is a brand decision,
+Michael's. The exploration record is the 2026-08-22 kerning bench artifact.
+
 **The lockup is plain on purpose — the Second Key was shipped and withdrawn (2026-08-22/23).**
 A one-point treatment rendered the second U — the away key of the full court the word's two
 U's draw — hollow (PR #51), and Michael reversed it the next day in favour of the full-color
