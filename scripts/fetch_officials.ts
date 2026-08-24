@@ -135,7 +135,21 @@ function parseSummary(summary: any): {
   periods: number;
 } | null {
   const raw: any[] = summary?.gameInfo?.officials ?? [];
-  const officials: string[] = raw.map((o: any) => String(o.displayName));
+  // The WORKING crew: sorted by `order`, deduplicated, first three. Taking the array as-is
+  // broke this file's own contract ("every game credits all three") two ways, both found by
+  // the 2026-08-24 replication gate (ml/referee_career_preregistration.md, M0): ESPN lists
+  // the same name twice at one order in 228 payloads — overwhelmingly Gediminas Petraitis,
+  // whose published G read 721 for 600 games worked, his z inflated ~10% by the double
+  // weighting — and playoff-style payloads carry a standby at order 4 who did not work the
+  // game (the rule ml/extract_referee_corpus.py already enforces).
+  const officials: string[] = [
+    ...new Set(
+      raw
+        .slice()
+        .sort((a: any, b: any) => (Number(a?.order) || 99) - (Number(b?.order) || 99))
+        .map((o: any) => String(o.displayName))
+    ),
+  ].slice(0, 3);
   // ESPN sometimes omits `order`; without it there is no slot 1 to read a role from.
   const first = raw.find((o: any) => Number(o?.order) === 1);
   const crewChief = first ? String(first.displayName) : null;
@@ -416,7 +430,14 @@ function buildFoulStyle(collected: GameWhistle[], seasons: string[]) {
   // Per official, the per-game deviations from that game's own season baseline.
   const per = new Map<
     string,
-    { games: number; chiefGames: number; foulDev: number[]; dev: Record<FoulKey, number[]> }
+    {
+      games: number;
+      chiefGames: number;
+      firstSeason: string;
+      lastSeason: string;
+      foulDev: number[];
+      dev: Record<FoulKey, number[]>;
+    }
   >();
   for (const g of games) {
     const base = seasonMean.get(g.season)!;
@@ -427,6 +448,8 @@ function buildFoulStyle(collected: GameWhistle[], seasons: string[]) {
         r = {
           games: 0,
           chiefGames: 0,
+          firstSeason: g.season,
+          lastSeason: g.season,
           foulDev: [],
           dev: Object.fromEntries(FOUL_KEYS.map((k) => [k, [] as number[]])) as Record<
             FoulKey,
@@ -436,6 +459,10 @@ function buildFoulStyle(collected: GameWhistle[], seasons: string[]) {
         per.set(name, r);
       }
       r.games++;
+      // The span in THIS data, not a career: the corpus opens at FIRST_SEASON, so a tenure
+      // that began earlier reads as starting there. The column guide carries the caveat.
+      if (g.season < r.firstSeason) r.firstSeason = g.season;
+      if (g.season > r.lastSeason) r.lastSeason = g.season;
       if (isChiefSeason && g.crewChief === name) r.chiefGames++;
       r.foulDev.push(g.totalFouls - base.fouls);
       for (const k of FOUL_KEYS) r.dev[k].push(shareOf(g, k) - base.shares[k]);
@@ -457,6 +484,8 @@ function buildFoulStyle(collected: GameWhistle[], seasons: string[]) {
         name,
         games: r.games,
         chiefGames: r.chiefGames,
+        firstSeason: r.firstSeason,
+        lastSeason: r.lastSeason,
         fouls: round(fouls.mean, 2),
         foulsZ: round(fouls.z, 1),
       };

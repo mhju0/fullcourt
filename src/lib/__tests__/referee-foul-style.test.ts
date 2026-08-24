@@ -30,6 +30,21 @@ describe("referee foul style — the shipped aggregate", () => {
     }
   });
 
+  it("carries a within-corpus span on every row, bounded by the dataset's own", () => {
+    // The SINCE column ships with a censoring caveat ("in this data, not a hire date"), and
+    // this is the fact the caveat rests on: no row may claim a season outside the corpus,
+    // and a span must run forward. A regeneration that dropped the fields would render an
+    // empty column silently.
+    const seasonShape = /^\d{4}-\d{2}$/;
+    for (const row of data.officials) {
+      expect(row.firstSeason, `${row.name}.firstSeason`).toMatch(seasonShape);
+      expect(row.lastSeason, `${row.name}.lastSeason`).toMatch(seasonShape);
+      expect(row.firstSeason >= data.firstSeason, `${row.name} predates the corpus`).toBe(true);
+      expect(row.lastSeason <= data.lastSeason, `${row.name} outlives the corpus`).toBe(true);
+      expect(row.firstSeason <= row.lastSeason, `${row.name} span runs backwards`).toBe(true);
+    }
+  });
+
   it("publishes deviations, so every column is zero-centred once weighted by games", () => {
     // Each game contributes its deviation to all three of its officials, and within a season
     // those deviations sum to zero by construction — so the GAME-WEIGHTED mean is zero, to
