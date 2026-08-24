@@ -618,16 +618,21 @@ export function SeasonReportContent() {
 
   // The all-season baseline. Season-independent, so it does not refetch when the
   // selector moves.
-  const { data: analysis } = useBacktest()
+  const { data: analysis, loading: normLoading } = useBacktest()
 
   const norm = useMemo(
     () => (analysis ? allSeasonNormExcluding(analysis.seasonWinRates, season) : null),
     [analysis, season]
   )
 
+  // Held back while the baseline request is in flight: a pending norm and a missing norm
+  // are both `null`, and passing the pending one through flashed "ALL-SEASON NORM
+  // UNAVAILABLE" on every load — a claim about the data that was really a claim about the
+  // network. The line renders nothing until the verdict is actually known; if the request
+  // fails, `loading` settles false with no payload and `noNorm` shows for real.
   const verdict = useMemo(
-    () => (data ? seasonReportVerdict(data.overall, norm) : null),
-    [data, norm]
+    () => (data && !normLoading ? seasonReportVerdict(data.overall, norm) : null),
+    [data, norm, normLoading]
   )
 
   const abbrById = useMemo(
