@@ -117,25 +117,31 @@ test.describe("A table's cells sit on one inset, edges included", () => {
  * three-column table still took the full 760, which ran the season report's middle column to
  * 390px to hold `+21` — 528px of nothing between a team and its own number.
  *
- * Measured on the schedule-tax table since 2026-08-23 — the worth table this check was written
- * against moved to its one home on Schedule Edge, and the regression it pins (`w-full` beside
- * the cap) is a property of the shared table module, visible on any numeric table below it.
+ * Measured on the zero-rest workload table since 2026-08-23: the worth table this check was
+ * written against moved to Schedule Edge, and the league tables that followed it deliberately
+ * fill the season page's wide column. The zero-rest player list is the surviving compact
+ * numeric table on the page, and the regression this pins (`w-full` beside the cap) is a
+ * property of the shared table module, visible on any numeric table.
  */
 test("a few-column numeric table sizes to its content, not to the cap", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto("/season", { waitUntil: "networkidle" });
 
-  const tax = page
-    .locator("table.fc-table")
-    .filter({ has: page.locator('[data-testid="schedule-tax-row"]') })
-    .first();
-  await expect(tax).toBeVisible();
+  // The section is IntersectionObserver-gated: it fetches its payload only once scrolled
+  // near, so the table does not exist until the divider has been brought into view.
+  await page.getByText("ZERO-REST WORKLOAD", { exact: true }).scrollIntoViewIfNeeded();
 
-  const box = await tax.boundingBox();
+  const workload = page
+    .locator("table.fc-table")
+    .filter({ has: page.locator('[data-testid="zero-rest-row"]') })
+    .first();
+  await expect(workload).toBeVisible({ timeout: 15_000 });
+
+  const box = await workload.boundingBox();
   expect(box).not.toBeNull();
-  // Its own `minWidth` is 520 and the shared cap is 760. Landing at the cap means `w-full`
+  // Its own `minWidth` is 460 and the shared cap is 760. Landing at the cap means `w-full`
   // came back; landing near the floor means the columns are sized by their content.
-  expect(box!.width, `the five-column table is ${box!.width}px wide`).toBeLessThan(700);
+  expect(box!.width, `the numeric table is ${box!.width}px wide`).toBeLessThan(700);
 });
 
 test("expanding a /shooting player does not shift its row sideways", async ({ page }) => {

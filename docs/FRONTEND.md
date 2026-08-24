@@ -223,6 +223,14 @@ one home is `/schedule`, see below), `REST EDGE CONVERSION` (records, not a rank
 `LOUDEST CALLS` (ranked by rest gap), `SCHEDULE TAX` (completed games only),
 `FATIGUE CALENDAR` (league average by week) and `ZERO-REST WORKLOAD` (volume, not effect).
 
+**The whole column runs on the wide track** (`WIDTH.wide`, 1040 — the same cap `/availability`
+and `/playoffs` already use), and the two league tables (`REST EDGE CONVERSION`,
+`SCHEDULE TAX`) are `width="full"` within it (2026-08-23). Uncapped, the page's dividers and
+call rows spanned the full 1280 while its content-sized tables stopped near 600 — the
+imbalance was between blocks on the *same page*. The zero-rest player list stays `numeric`
+on purpose: a compact lookup, not a league table, and it is the table
+`e2e/alignment-law.spec.ts` now measures for the sizes-to-content rule.
+
 **A season with no completed game reports on a different basis** (`SeasonReportResponse.basis`
 `=== "schedule"`, since 2026-08-18). The selector offers `browsableSeasons()`, so a released
 schedule can be chosen before its season starts — but the initial value stays the newest season

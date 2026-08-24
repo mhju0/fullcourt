@@ -254,8 +254,12 @@ function EdgeConversion({
         {edgeConversionSentence(teams)}
       </p>
       <SwingBaselineNote baseline={swingBaseline} />
+      {/* Full within the wide track, not content-sized: a 30-team league table is this page's
+          widest kind of block, and at ~600px inside the 1040 column it read as lost rather
+          than compact. Ten columns fill 1040 without the empty-gap stretch the numeric cap
+          exists to prevent. */}
       <DataTable
-        width="numeric"
+        width="full"
         minWidth={560}
         rows={teams}
         rowKey={(t) => t.teamId}
@@ -499,8 +503,11 @@ function ScheduleTax({
           {least.abbreviation} THE LEAST AT {least.travelMiles.toLocaleString()}
         </p>
       ) : null}
+      {/* Full for the same reason as the conversion table above: one row per team, the page's
+          column is the measure. The zero-rest player list below stays numeric — a compact
+          lookup, not a league table. */}
       <DataTable
-        width="numeric"
+        width="full"
         minWidth={520}
         rows={byMiles}
         rowKey={(t) => t.teamId}
@@ -633,7 +640,11 @@ export function SeasonReportContent() {
   }
 
   return (
-    <div className="flex flex-col gap-12">
+    // The wide track (1040), the same cap /availability and /playoffs already run at. Uncapped,
+    // this page's dividers and call rows spanned the full 1280 while its content-sized tables
+    // stopped near 600, leaving half the container empty on every wide screen — the imbalance
+    // was between blocks on the SAME page, not between the page and the viewport (2026-08-23).
+    <div className="flex flex-col gap-12" style={{ maxWidth: WIDTH.wide }}>
       <div style={{ ...termCardStyle, padding: 16 }}>
         {/* The browsable list, so a released-but-unplayed season can be chosen. The initial
             value stays the newest season WITH data: this page's results half is its point, and
