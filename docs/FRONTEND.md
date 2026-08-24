@@ -677,7 +677,12 @@ survives baselining per season, per arena, and on share rather than count.
 `referee-whistle.json`) holds one row per official: deviation in percentage points from the
 league's own seasonal mix, per foul type, each with a z-score at that official's sample size.
 `referee-style-content.tsx` renders it as a sortable table; `src/lib/referee-foul-style.ts` owns
-the types, the |z| ≥ 2 emphasis rule and the 200-game publication bar.
+the types, the |z| ≥ 2 emphasis rule and the 200-game publication bar. The table pins its
+header (2026-08-24): ~74 published officials run to about three viewports, so it adopts the
+`/shooting` mechanism — `stickyHeader` against its own `.fc-scrollport` scroll box, never the
+page scroll, which would slide the header under the 96px chrome. The site-wide measurement
+that admitted this table and refused the 30-row league tables is recorded on the
+UIUX_CHECKLIST row it closes; `referees.spec.ts` pins both halves of the mechanism.
 
 **Three things were built and removed, all for the same reason — this is a page to browse, not
 to study.** A leaderboard strip naming the most and fewest of each type said only what sorting a
