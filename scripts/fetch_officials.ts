@@ -135,7 +135,21 @@ function parseSummary(summary: any): {
   periods: number;
 } | null {
   const raw: any[] = summary?.gameInfo?.officials ?? [];
-  const officials: string[] = raw.map((o: any) => String(o.displayName));
+  // The WORKING crew: sorted by `order`, deduplicated, first three. Taking the array as-is
+  // broke this file's own contract ("every game credits all three") two ways, both found by
+  // the 2026-08-24 replication gate (ml/referee_career_preregistration.md, M0): ESPN lists
+  // the same name twice at one order in 228 payloads — overwhelmingly Gediminas Petraitis,
+  // whose published G read 721 for 604 real games with his z inflated ~9% by the double
+  // weighting — and playoff-style payloads carry a standby at order 4 who did not work the
+  // game (the rule ml/extract_referee_corpus.py already enforces).
+  const officials: string[] = [
+    ...new Set(
+      raw
+        .slice()
+        .sort((a: any, b: any) => (Number(a?.order) || 99) - (Number(b?.order) || 99))
+        .map((o: any) => String(o.displayName))
+    ),
+  ].slice(0, 3);
   // ESPN sometimes omits `order`; without it there is no slot 1 to read a role from.
   const first = raw.find((o: any) => Number(o?.order) === 1);
   const crewChief = first ? String(first.displayName) : null;
