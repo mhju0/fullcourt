@@ -73,8 +73,11 @@ export function RefereeEffectContent({
           Give two officials the same game and they will call a different <em>kind</em> of foul.
           Each cell below is one official&rsquo;s share of that foul type against the league
           average for the same season, so an era&rsquo;s rule changes cannot masquerade as a
-          personal tendency. Bold cells clear two standard errors; muted ones are noise, and the
-          page says so rather than letting you find a pattern in them.
+          personal tendency — and every official is scored on their <strong>most recent 200
+          games</strong>, the same sample for every row, because whistles measurably change
+          across a career and a fair bolding bar has to mean the same thing on every line.
+          Bold cells clear two standard errors; muted ones are noise, and the page says so
+          rather than letting you find a pattern in them.
         </p>
         <RefereeStyleContent data={style} />
       </section>

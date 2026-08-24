@@ -1,0 +1,22 @@
+{
+  "measuredOn": "2026-08-24",
+  "windowGames": 200,
+  "minCareerForSplit": 350,
+  "publishedOfficials": 74,
+  "drift": {
+    "officialsTested": 52,
+    "cells": 312,
+    "beyond": 37,
+    "sharePct": 11.9,
+    "chancePct": 4.6,
+    "careerBoldCells": 119,
+    "windowBoldCells": 83,
+    "leadingTraitChanges": 32
+  },
+  "seasonSplit": {
+    "cells": 2070,
+    "beyond": 245,
+    "sharePct": 11.8,
+    "signAgreementPct": 75.2
+  }
+}

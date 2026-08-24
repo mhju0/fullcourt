@@ -8,6 +8,7 @@ import {
   ValueGrid,
 } from "@/components/behind-the-data-parts";
 import { BehindTheDataShell } from "@/components/behind-the-data-shell";
+import driftData from "@/data/referee-career-drift.json";
 import legendsData from "@/data/referee-legends.json";
 import styleData from "@/data/referee-foul-style.json";
 import timingData from "@/data/referee-timing.json";
@@ -110,6 +111,39 @@ published only for officials with ≥ ${MIN_GAMES} games`}
           alone — so a cell being bold is not a finding, and the page never leads with a name on
           that basis. Muted cells are shown rather than hidden, because a table of only the
           significant ones invites the reader to find a pattern that was selected for them.
+        </Note>
+      </Section>
+
+      <Section label="THE WINDOW" descriptor="EVERY OFFICIAL'S LAST 200 GAMES">
+        <Prose>
+          Careers in this data run from {MIN_GAMES} games to more than 600, and a z-score bar
+          moves with sample size: an identical quirk that clears |z| ≥ {NOTABLE_Z} at n = 700
+          is out of reach at n = 200. Worse, whistles measurably <em>change</em>. A
+          pre-registered drift test split every official with ≥{" "}
+          {driftData.minCareerForSplit} games into their most recent{" "}
+          {driftData.windowGames} games and everything earlier:{" "}
+          {driftData.drift.beyond} of {driftData.drift.cells} cells sat beyond |zΔ| ≥{" "}
+          {NOTABLE_Z} ({driftData.drift.sharePct}%), where chance produces about{" "}
+          {driftData.drift.chancePct}% — careers are not stationary, and a career average
+          smears real change.
+        </Prose>
+        <Prose>
+          So since 2026-08-24 the table scores every official on their{" "}
+          <strong>most recent {driftData.windowGames} games</strong> — the publication bar, so
+          every published row is a full window, the same n and the same bolding bar on every
+          line, answering &ldquo;what is this official like now&rdquo;. The price is stated
+          rather than hidden: at n = {driftData.windowGames} the bar is harder to clear, so
+          the table bolds {driftData.drift.windowBoldCells} type cells where the career basis
+          bolded {driftData.drift.careerBoldCells}. The full-span figures ship alongside in
+          the same artifact for anyone comparing.
+        </Prose>
+        <Note>
+          The per-season split was measured in the same pre-registration and, against
+          expectation, cleared its declared bars ({driftData.seasonSplit.sharePct}% of
+          official-season cells beyond |z| ≥ {NOTABLE_Z};{" "}
+          {driftData.seasonSplit.signAgreementPct}% within-official sign agreement). It still
+          has no surface — a 74-official-by-season grid outweighs a browse page — and that is
+          a design refusal recorded here, not a power failure.
         </Note>
       </Section>
 

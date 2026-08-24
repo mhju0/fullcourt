@@ -27,19 +27,8 @@ export const FOUL_COLUMNS = [
 
 export type FoulColumnKey = (typeof FOUL_COLUMNS)[number]["key"];
 
-export interface RefereeStyleRow {
-  name: string;
-  games: number;
-  /** Games as crew chief, countable only from `crewChiefFirstSeason` on. */
-  chiefGames: number;
-  /**
-   * Seasons worked IN THIS DATA — the corpus opens at the dataset's `firstSeason`, so a
-   * tenure that began earlier reads as starting there (57 of the 74 published officials
-   * are left-censored this way). The span separates a 200-game newcomer from a 700-game
-   * veteran, which the bare `G` invites misreading as a difference in style.
-   */
-  firstSeason: string;
-  lastSeason: string;
+/** The six measured columns over one run of games — fouls/game plus the five type shares. */
+export interface FoulStyleColumns {
   /** Fouls per game against the season average — a count, unlike every column below. */
   fouls: number;
   foulsZ: number;
@@ -53,6 +42,32 @@ export interface RefereeStyleRow {
   offensiveZ: number;
   technical: number;
   technicalZ: number;
+}
+
+export interface RefereeStyleRow extends FoulStyleColumns {
+  name: string;
+  games: number;
+  /**
+   * How many games the row's own measured columns cover: each official's most recent 200
+   * (= `MIN_GAMES`, so every published row is a full window and the |z| bar means the same
+   * thing on every line). The equal window is the displayed basis since 2026-08-24 — the
+   * pre-registered drift test showed careers are not stationary (11.9% of recent-vs-earlier
+   * cells beyond |zΔ| ≥ 2 against ~4.6% chance), so a career average smears real change.
+   * See ml/REFEREE_CAREER_REPORT.md; the career figures ride along under `career`.
+   */
+  windowGames: number;
+  /** Games as crew chief, countable only from `crewChiefFirstSeason` on. */
+  chiefGames: number;
+  /**
+   * Seasons worked IN THIS DATA — the corpus opens at the dataset's `firstSeason`, so a
+   * tenure that began earlier reads as starting there (57 of the 74 published officials
+   * are left-censored this way). The span separates a 200-game newcomer from a 700-game
+   * veteran, which the bare `G` invites misreading as a difference in style.
+   */
+  firstSeason: string;
+  lastSeason: string;
+  /** The same columns over the official's whole span in this data, for the method page. */
+  career: FoulStyleColumns;
 }
 
 export interface RefereeFoulStyle {
@@ -96,8 +111,9 @@ export function publishable(rows: RefereeStyleRow[]): RefereeStyleRow[] {
  * and the largest effect in the data against offensive fouls at 6.1%.
  *
  * The trade it makes, worth knowing before reading the table: relative change flatters the
- * rare types. Officials span ±4% on shooting and ±26% on technicals, but in fouls a viewer
- * would actually notice that is ±0.5 a game against ±0.2. Big relative, small absolute.
+ * rare types. Officials span roughly ±5% on shooting against ±26% and beyond on technicals,
+ * but in fouls a viewer would actually notice that is ±0.5 a game against ±0.2. Big
+ * relative, small absolute.
  */
 export function relativePct(deviation: number, leagueShare: number): number {
   return Math.round((100 * deviation) / leagueShare);

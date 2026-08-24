@@ -406,6 +406,7 @@ async function main() {
 function buildFoulStyle(collected: GameWhistle[], seasons: string[]) {
   const round = (v: number, d: number) => Number(v.toFixed(d));
   const MIN_FOULS = 20; // a game whose play stream is too thin to trust a mix from
+  const WINDOW_GAMES = 200; // = the publication bar, so every published window is full
   const games = collected.filter((g) => g.periods === 4 && g.totalFouls >= MIN_FOULS);
 
   const shareOf = (g: GameWhistle, k: FoulKey) => (100 * g.fouls[k]) / g.totalFouls;
@@ -427,16 +428,16 @@ function buildFoulStyle(collected: GameWhistle[], seasons: string[]) {
     });
   }
 
-  // Per official, the per-game deviations from that game's own season baseline.
+  // Per official, the per-game deviations from that game's own season baseline — dated, so
+  // the recency window can be cut chronologically.
+  type DevEntry = { date: string; foulDev: number; dev: Record<FoulKey, number> };
   const per = new Map<
     string,
     {
-      games: number;
       chiefGames: number;
       firstSeason: string;
       lastSeason: string;
-      foulDev: number[];
-      dev: Record<FoulKey, number[]>;
+      entries: DevEntry[];
     }
   >();
   for (const g of games) {
@@ -445,27 +446,21 @@ function buildFoulStyle(collected: GameWhistle[], seasons: string[]) {
     for (const name of g.officials) {
       let r = per.get(name);
       if (!r) {
-        r = {
-          games: 0,
-          chiefGames: 0,
-          firstSeason: g.season,
-          lastSeason: g.season,
-          foulDev: [],
-          dev: Object.fromEntries(FOUL_KEYS.map((k) => [k, [] as number[]])) as Record<
-            FoulKey,
-            number[]
-          >,
-        };
+        r = { chiefGames: 0, firstSeason: g.season, lastSeason: g.season, entries: [] };
         per.set(name, r);
       }
-      r.games++;
       // The span in THIS data, not a career: the corpus opens at FIRST_SEASON, so a tenure
       // that began earlier reads as starting there. The column guide carries the caveat.
       if (g.season < r.firstSeason) r.firstSeason = g.season;
       if (g.season > r.lastSeason) r.lastSeason = g.season;
       if (isChiefSeason && g.crewChief === name) r.chiefGames++;
-      r.foulDev.push(g.totalFouls - base.fouls);
-      for (const k of FOUL_KEYS) r.dev[k].push(shareOf(g, k) - base.shares[k]);
+      r.entries.push({
+        date: g.date,
+        foulDev: g.totalFouls - base.fouls,
+        dev: Object.fromEntries(
+          FOUL_KEYS.map((k) => [k, shareOf(g, k) - base.shares[k]])
+        ) as Record<FoulKey, number>,
+      });
     }
   }
 
@@ -477,24 +472,41 @@ function buildFoulStyle(collected: GameWhistle[], seasons: string[]) {
     return { mean, z: sd > 0 ? mean / (sd / Math.sqrt(n)) : 0 };
   };
 
+  /** One set of measured columns (fouls/game + the five shares) over a run of games. */
+  const columnsOver = (entries: DevEntry[]) => {
+    const fouls = meanAndZ(entries.map((e) => e.foulDev));
+    const cols: Record<string, number> = {
+      fouls: round(fouls.mean, 2),
+      foulsZ: round(fouls.z, 1),
+    };
+    for (const k of FOUL_KEYS) {
+      const { mean, z } = meanAndZ(entries.map((e) => e.dev[k]));
+      cols[k] = round(mean, 2);
+      cols[`${k}Z`] = round(z, 1);
+    }
+    return cols;
+  };
+
   const officials = [...per.entries()]
     .map(([name, r]) => {
-      const fouls = meanAndZ(r.foulDev);
-      const row: Record<string, unknown> = {
+      // The displayed basis is the equal window — each official's most recent
+      // WINDOW_GAMES, so every published row is measured at the same n and the |z| bar
+      // means the same thing on every line (adopted 2026-08-24 after the drift test in
+      // ml/REFEREE_CAREER_REPORT.md crossed its pre-declared bar; the pre-registration is
+      // ml/referee_career_preregistration.md). The career figures ride along under
+      // `career` for the method page — they are the same games, windowed vs not.
+      const entries = [...r.entries].sort((a, b) => a.date.localeCompare(b.date));
+      const window = entries.slice(-WINDOW_GAMES);
+      return {
         name,
-        games: r.games,
+        games: entries.length,
+        windowGames: window.length,
         chiefGames: r.chiefGames,
         firstSeason: r.firstSeason,
         lastSeason: r.lastSeason,
-        fouls: round(fouls.mean, 2),
-        foulsZ: round(fouls.z, 1),
-      };
-      for (const k of FOUL_KEYS) {
-        const { mean, z } = meanAndZ(r.dev[k]);
-        row[k] = round(mean, 2);
-        row[`${k}Z`] = round(z, 1);
-      }
-      return row;
+        ...columnsOver(window),
+        career: columnsOver(entries),
+      } as Record<string, unknown>;
     })
     .sort((a, b) => (b.games as number) - (a.games as number));
 

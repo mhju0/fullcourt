@@ -694,9 +694,17 @@ SINCE column (`firstSeason`, sortable) separates a 200-game newcomer from a 700-
 veteran, whose bolding bars differ mechanically; it reads "in this data" because the corpus
 opens at 2015-16, so most veterans' spans are left-censored to it — the legend line under
 the table says so, and `referee-foul-style.test.ts` bounds every row's span by the
-dataset's. The equal-window and per-season measurements that followed (both crossed their
-pre-declared bars — see `ml/REFEREE_CAREER_REPORT.md`) are decisions with Michael, not
-shipped surfaces.
+dataset's. **The equal window is the table's displayed basis since 2026-08-24** (Michael
+adopted it on the drift result): every official's measured cells cover their most recent 200
+games — the publication bar, so every published row is a full window and the |z| bar means
+the same thing on every line. The intro, the column units ("last 200, vs league") and the
+legend all name the basis, `referees.spec.ts` pins that they do, and the full-span figures
+ride along under each row's `career` block for the method page. The drift figures the
+decision rests on are pinned to `src/data/referee-career-drift.json` (written by
+`ml/referee_career_windows.py` only after its replication gate passes), rendered in the
+method page's THE WINDOW section. The per-season split cleared its bars too and was
+**declined as a surface by design** — the refusal and its numbers are recorded on the method
+page, not just in the local report.
 
 **Three things were built and removed, all for the same reason — this is a page to browse, not
 to study.** A leaderboard strip naming the most and fewest of each type said only what sorting a

@@ -45,11 +45,15 @@ describe("referee foul style — the shipped aggregate", () => {
     }
   });
 
-  it("publishes deviations, so every column is zero-centred once weighted by games", () => {
+  it("publishes deviations, so every CAREER column is zero-centred once weighted by games", () => {
     // Each game contributes its deviation to all three of its officials, and within a season
     // those deviations sum to zero by construction — so the GAME-WEIGHTED mean is zero, to
     // three decimals. Drift here means the baseline was pooled across seasons instead of taken
     // within them, which would let an era's foul mix leak in as an official's tendency.
+    //
+    // Asserted on the `career` figures since 2026-08-24: the row's own columns are each
+    // official's last-200 window, and windows do not partition the corpus — recent seasons
+    // are over-represented — so the invariant only holds on the full-span figures.
     //
     // The unweighted mean across officials is deliberately NOT the assertion: 54 of them carry
     // a median of 29 games, and giving those rows equal weight moves loose ball to +0.24 with
@@ -57,20 +61,44 @@ describe("referee foul style — the shipped aggregate", () => {
     const totalGames = data.officials.reduce((a, r) => a + r.games, 0);
     for (const col of FOUL_COLUMNS) {
       const weighted =
-        data.officials.reduce((a, r) => a + r[col.key] * r.games, 0) / totalGames;
-      expect(Math.abs(weighted), `${col.key} game-weighted mean`).toBeLessThan(0.01);
+        data.officials.reduce((a, r) => a + r.career[col.key] * r.games, 0) / totalGames;
+      expect(Math.abs(weighted), `${col.key} game-weighted career mean`).toBeLessThan(0.01);
     }
   });
 
-  it("keeps published officials close to zero-centred too", () => {
+  it("keeps published officials close to zero-centred too, on both bases", () => {
     // Above the publication bar the sample sizes are even enough that the unweighted mean is
     // also near zero. If this drifts while the weighted test still passes, the bar is letting
-    // through officials too thin for the z-scores beside them.
+    // through officials too thin for the z-scores beside them. The window mean gets a looser
+    // bound: 74 windows of 200 games cover mostly-recent seasons, so exact centring is not
+    // guaranteed — but a large drift would mean the window is measuring the era, not the
+    // official.
+    const rows = publishable(data.officials);
     for (const col of FOUL_COLUMNS) {
-      const rows = publishable(data.officials);
-      const mean = rows.reduce((a, r) => a + r[col.key], 0) / rows.length;
-      expect(Math.abs(mean), `${col.key} mean over published officials`).toBeLessThan(0.1);
+      const careerMean = rows.reduce((a, r) => a + r.career[col.key], 0) / rows.length;
+      expect(Math.abs(careerMean), `${col.key} career mean over published`).toBeLessThan(0.1);
+      const windowMean = rows.reduce((a, r) => a + r[col.key], 0) / rows.length;
+      expect(Math.abs(windowMean), `${col.key} window mean over published`).toBeLessThan(0.25);
     }
+  });
+
+  it("measures every published row on a full equal window, distinct from its career", () => {
+    // The displayed basis is each official's most recent 200 games — the publication bar —
+    // so every published row is a full window and the |z| bar means the same thing on every
+    // line. And the window must actually BE a window: if every long-career official's window
+    // figures equalled their career figures, the slice silently stopped slicing.
+    const rows = publishable(data.officials);
+    for (const r of rows) {
+      expect(r.windowGames, `${r.name} windowGames`).toBe(MIN_GAMES);
+    }
+    const veterans = rows.filter((r) => r.games >= 400);
+    const differing = veterans.filter((r) =>
+      FOUL_COLUMNS.some((c) => r[c.key] !== r.career[c.key])
+    );
+    expect(veterans.length).toBeGreaterThan(10);
+    expect(differing.length, "veterans whose window differs from career").toBeGreaterThan(
+      veterans.length * 0.8
+    );
   });
 
   it("excludes the offensive-foul duplicate from fouls per game", () => {

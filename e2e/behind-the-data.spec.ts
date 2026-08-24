@@ -161,6 +161,12 @@ test.describe("Prose spacing", () => {
     "/behind-the-data/playoff-predictions",
     "/behind-the-data/player-shooting",
     "/behind-the-data/shot-value",
+    // The three below joined on 2026-08-24 — the sweep predates them, and the window
+    // section added to the referees page that day is exactly the seam-heavy prose it exists
+    // to catch.
+    "/behind-the-data/availability",
+    "/behind-the-data/referees",
+    "/behind-the-data/time-zones",
     "/behind-the-data/data-and-limits",
     // "/" is the front door (the marketing page, formerly /about); "/games" is the board.
     "/",

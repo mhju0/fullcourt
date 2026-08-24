@@ -99,10 +99,10 @@ function columnsFor(data: RefereeFoulStyle): DataColumn<RefereeStyleRow, SortKey
       // game rather than a share, so it is scaled against the league's own fouls per game
       // instead of a share baseline.
       label: "Fouls",
-      unit: "vs league avg",
+      unit: "last 200 vs avg",
       sortKey: "fouls",
       numeric: true,
-      width: "96px",
+      width: "112px",
       cell: (row) => (
         <span style={relStyle(row.fouls, row.foulsZ)}>
           {signedNumber(relativePct(row.fouls, data.foulsPerGame))}%
@@ -111,7 +111,7 @@ function columnsFor(data: RefereeFoulStyle): DataColumn<RefereeStyleRow, SortKey
     },
     ...FOUL_COLUMNS.map((c): DataColumn<RefereeStyleRow, SortKey> => ({
       label: c.label,
-      unit: "vs league avg",
+      unit: "last 200 vs avg",
       sortKey: c.key as SortKey,
       numeric: true,
       width: "112px",
@@ -178,7 +178,7 @@ export function RefereeStyleContent({ data }: { data: RefereeFoulStyle }) {
         <DataTable
           wrapperClassName="fc-scrollport overflow-auto"
           className="table-fixed text-[12px]"
-          minWidth={1030}
+          minWidth={1046}
           stickyHeader
           columns={columns}
           rows={rows}
@@ -190,6 +190,7 @@ export function RefereeStyleContent({ data }: { data: RefereeFoulStyle }) {
       </div>
 
       <p className="mono" style={{ fontSize: 11, color: "var(--term-text-muted)", letterSpacing: TRACK.sub }}>
+        EVERY MEASURED CELL = THE OFFICIAL&rsquo;S LAST 200 GAMES, THE SAME SAMPLE FOR EVERY ROW ·
         BOLD = BEYOND TWO STANDARD ERRORS · MUTED = INSIDE NOISE · CC = WORKS AS CREW CHIEF ·{" "}
         {chiefCount} OF {publishable(data.officials).length} DO · SINCE = FIRST SEASON IN THIS
         DATA ({data.firstSeason} AT THE EARLIEST), NOT A HIRE DATE
