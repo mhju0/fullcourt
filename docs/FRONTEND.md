@@ -1643,4 +1643,8 @@ where the mark proper uses a filled band.
 uploaded out-of-band and referenced by no code, so a dead-file sweep will read it as an orphan
 — it is not. Since 2026-08-18 it is **a render of `/opengraph-image`**, not a hand match: refresh
 it with `curl -o docs/social-preview.png http://localhost:3000/opengraph-image` against a running
-dev server, then re-upload it in GitHub's settings — the upload is the only manual half.
+dev server, then re-upload it in GitHub's settings — the upload is the only manual half. One
+processing step since 2026-08-24: the render is **flattened RGBA → RGB**
+(`Image.open(...).convert("RGB").save(..., optimize=True)` — the route's alpha channel is
+uniformly 255, so the pixels are untouched) after GitHub's uploader failed repeatedly on the
+RGBA original. Keep the flatten when re-rendering.
