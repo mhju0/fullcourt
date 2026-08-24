@@ -24,6 +24,33 @@ test.describe("Referee Effect — the published page", () => {
     expect(await rows.count()).toBeGreaterThan(30);
   });
 
+  test("the officials table pins its header against its own scrollport", async ({ page }) => {
+    await page.goto("/referees");
+    const rows = page.getByTestId("referee-style-row");
+    await expect(rows.first()).toBeVisible();
+
+    // ~74 officials run to about three viewports (measured 2026-08-24, UIUX checklist), so
+    // the header pins — against the table's own scroll box, never the page scroll, which
+    // would slide it under the 96px sticky chrome. Asserted on the mechanism's two halves:
+    // the header cell is sticky, and its scroll container is the wrapper, not the page.
+    const measured = await rows.first().evaluate((row) => {
+      const table = row.closest("table");
+      const wrapper = table?.parentElement;
+      const th = table?.querySelector("thead th");
+      if (!table || !wrapper || !th) return null;
+      const wrapStyle = getComputedStyle(wrapper);
+      return {
+        thPosition: getComputedStyle(th).position,
+        wrapperScrolls: wrapStyle.overflowY === "auto" && wrapStyle.maxHeight !== "none",
+        tableTallerThanPort: table.scrollHeight > wrapper.clientHeight,
+      };
+    });
+    expect(measured).not.toBeNull();
+    expect(measured!.thPosition).toBe("sticky");
+    expect(measured!.wrapperScrolls).toBe(true);
+    expect(measured!.tableTallerThanPort).toBe(true);
+  });
+
   test("sorting a column reorders the table and marks the header", async ({ page }) => {
     await page.goto("/referees");
     const first = () => page.getByTestId("referee-style-row").first();
