@@ -71,8 +71,14 @@ with the reason.
   2026-08-14).
 - [x] **Focus states mirror hover** — `focus-visible:` carries every hover declaration on the
   surface cards; the retracting bar reveals on keyboard entry (`onFocus={reveal}`).
-- [ ] **A full axe/VoiceOver pass has never been run.** The wins above are structural, not a
-  certification. Owner: next audit round (tooling), Michael (VoiceOver).
+- [ ] **A full axe/VoiceOver pass** — the axe half ran 2026-08-24 (all 20 routes, wcag2a/aa +
+  21a/aa + best-practice; report in `docs/audit/2026-08-24-axe-pass.md`, local-only). Two
+  discrete defects found and fixed (an unnamed `FatigueBar` progressbar, an empty availability
+  table header); everything else is one systemic question — the pole hues and the 10px unit
+  slot as *small text* sit at 3.0–4.4:1 against AA's 4.5:1, because the palette was validated
+  at the 3:1 graphics threshold. That is a ratified-palette decision, recorded with options in
+  the audit report. Owner: Michael (the contrast decision, and the VoiceOver walkthrough —
+  still never run; an automated pass cannot hear focus order).
 
 ## 4. Tables & data density
 
