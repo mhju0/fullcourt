@@ -168,7 +168,7 @@ function signed(v: number | null): string {
 function EffectValue({ value, cap }: { value: number | null; cap: number }) {
   if (value === null) return <span style={{ color: "var(--term-text-muted)" }}>—</span>
   const width = Math.min(Math.abs(value) / cap, 1) * 46
-  const tone = value < 0 ? "var(--term-red)" : "var(--term-blue)"
+  const tone = value < 0 ? "var(--term-red-text)" : "var(--term-blue-text)"
   return (
     <span className="flex items-center justify-end gap-2">
       <span
@@ -467,11 +467,16 @@ export function PlayerRestContent() {
           rowAttrs={(row) => ({
             "data-player": String(row.player),
             "data-testid": "player-row",
-            className: openPlayer === row.player ? "fc-open" : undefined,
-            style: {
-              cursor: "pointer",
-              opacity: row.underEvidenced && openPlayer !== row.player ? 0.48 : 1,
-            },
+            // De-emphasis is a class, not an opacity: any dim low enough to read pushed the
+            // composited text below AA's 4.5:1 (0.48 measured 2.06–3.19 in the 2026-08-24
+            // axe pass). .fc-noisy flattens the row to the muted colour instead.
+            className:
+              openPlayer === row.player
+                ? "fc-open"
+                : row.underEvidenced
+                  ? "fc-noisy"
+                  : undefined,
+            style: { cursor: "pointer" },
             onClick: () => toggle(row.player),
           })}
           rowExtras={(row) =>

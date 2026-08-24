@@ -409,17 +409,18 @@ export function AboutContent({ stats }: { stats: AboutStats | null }) {
             </p>
           </div>
 
-          <ol className="grid gap-x-10 sm:grid-cols-2">
-            {INPUTS.map((input, i) => (
+          {/* The ghost index is a ::before counter (.fc-ghost-ol in globals.css), not a text
+              node: the <ol> already numbers the list semantically, and at 30% bone on
+              near-black the numeral composites to #515151 (2.45:1) — decorative under WCAG
+              1.4.3, but a text node kept tripping the 2026-08-24 axe pass anyway. */}
+          <ol className="fc-ghost-ol grid gap-x-10 sm:grid-cols-2">
+            {INPUTS.map((input) => (
               <li
                 key={input.term}
                 className="fc-input grid grid-cols-[2.5rem_1fr] items-baseline gap-x-4 py-4"
                 style={{ borderTop: "1px solid rgba(245,241,232,.12)" }}
               >
-                <span className="mono" style={{ fontSize: 11, letterSpacing: "0.1em", color: "rgba(245,241,232,.3)" }}>
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                <div>
+                <div className="col-start-2">
                   <h3 className="font-heading text-lg font-bold">{input.term}</h3>
                   <p className="mt-1.5 max-w-[38ch] text-sm" style={{ color: DIM, lineHeight: 1.6 }}>{input.detail}</p>
                 </div>
@@ -442,10 +443,12 @@ export function AboutContent({ stats }: { stats: AboutStats | null }) {
           className="mt-10 overflow-hidden rounded-2xl border"
           style={{ borderColor: "rgba(245,241,232,.14)", background: "rgba(245,241,232,.035)" }}
         >
-          {/* The label is a column header, stated once. */}
+          {/* The label is a column header, stated once. 52% bone, not 40: these are real
+              headers, and on this card ground 40% composites to 3.5:1 against AA's 4.5
+              (2026-08-24 axe pass). 52% reads 5.1:1. */}
           <div
             className="mono hidden gap-8 px-8 py-4 md:grid md:grid-cols-[1.1fr_1fr]"
-            style={{ fontSize: 10, letterSpacing: "0.16em", color: "rgba(245,241,232,.4)", borderBottom: "1px solid rgba(245,241,232,.12)" }}
+            style={{ fontSize: 10, letterSpacing: "0.16em", color: "rgba(245,241,232,.52)", borderBottom: "1px solid rgba(245,241,232,.12)" }}
           >
             <span>THE RULE</span>
             <span>WHAT IT RULES OUT</span>
@@ -543,8 +546,9 @@ export function AboutContent({ stats }: { stats: AboutStats | null }) {
           </Link>
         </div>
         {/* The operating line (BRAND_GRAMMAR §8): the brand's sign-off, spent here and on
-            the OG card only. */}
-        <p className="fc-outro-item mono mt-9" style={{ fontSize: 11, letterSpacing: "0.24em", color: "rgba(245,241,232,.42)" }}>
+            the OG card only. 52% bone, not 42: it is real text, and 42% composited to
+            3.75:1 against AA's 4.5 (2026-08-24 axe pass). */}
+        <p className="fc-outro-item mono mt-9" style={{ fontSize: 11, letterSpacing: "0.24em", color: "rgba(245,241,232,.52)" }}>
           READ AGAINST THE BASELINE
         </p>
       </section>

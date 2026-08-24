@@ -336,7 +336,10 @@ export const termThUnitStyle: CSSProperties = {
   fontSize: TYPE.micro,
   letterSpacing: TRACK.sub,
   textTransform: "none",
-  opacity: 0.72,
+  // De-emphasis comes from the smaller size alone. This carried `opacity: 0.72`, which put
+  // the unit line at an effective 3.0:1 on the header band — the single most repeated
+  // failure of the 2026-08-24 axe pass, in every table on the site. Even 0.9 measures 4.28;
+  // there is no opacity that both reads dimmer and passes 4.5, so the dimming is retired.
 }
 
 /**
@@ -347,6 +350,9 @@ export const termThUnitStyle: CSSProperties = {
 export const TERM_ACCENT = {
   red: "var(--term-red)",
   blue: "var(--term-blue)",
+  /** The poles at text grade — for pole-coloured SMALL text; see the tokens in globals.css. */
+  redText: "var(--term-red-text)",
+  blueText: "var(--term-blue-text)",
   neutral: "var(--term-neutral)",
   /** The Front Office indigo — chrome emphasis (confidence, active states), never a data pole. */
   accent: "var(--term-accent)",

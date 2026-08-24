@@ -265,7 +265,7 @@ function RestAdvCell({
         ) : display.kind === "team" ? (
           <>
             {/* The named team is the more-rested side, so it wears the rested pole. */}
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: TRACK.data, color: "var(--term-blue)" }}>
+            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: TRACK.data, color: "var(--term-blue-text)" }}>
               {display.teamAbbreviation}
             </span>
             <span style={{ fontSize: TYPE.emph, fontWeight: 700, letterSpacing: TRACK.figure, color: "var(--term-text)" }}>

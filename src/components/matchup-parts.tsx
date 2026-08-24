@@ -240,7 +240,7 @@ function PenaltyMark({ active }: { active: boolean }) {
   return (
     <span
       className="mono tabular-nums"
-      style={{ fontSize: 12, fontWeight: 700, color: active ? "var(--term-red)" : "var(--term-pos)" }}
+      style={{ fontSize: 12, fontWeight: 700, color: active ? "var(--term-red-text)" : "var(--term-pos)" }}
       aria-label={active ? "Yes" : "No"}
     >
       {active ? "Y" : "N"}
@@ -264,7 +264,7 @@ function FatigueDetailRow({
           values. The label keeps its ability to wrap as the narrow-space fallback. */}
       <span
         className="shrink-0 whitespace-nowrap tabular-nums"
-        style={{ color: highlight ? "var(--term-red)" : "var(--term-text)", fontWeight: 600 }}
+        style={{ color: highlight ? "var(--term-red-text)" : "var(--term-text)", fontWeight: 600 }}
       >
         {v}
       </span>
@@ -374,7 +374,8 @@ export function RaBadge({
         padding: "4px 8px",
         borderRadius: "var(--term-radius-sm)",
         // Always the rested pole: the named team is the more-rested side, whichever side it is.
-        background: "var(--term-blue)",
+        // Text grade, not the pole hue: the chip grounds 10px white text, which needs 4.5:1.
+        background: "var(--term-blue-text)",
         color: "var(--term-surface)",
         fontWeight: 700,
       }}

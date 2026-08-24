@@ -247,7 +247,8 @@ export function UpcomingContent() {
                     // Always the rested pole: the named team is the more-rested side, whichever
                     // side it is. Side-coloring painted a rested visitor in the fatigued hue —
                     // backwards under two-pole semantics (see RaBadge in matchup-parts.tsx).
-                    background: "var(--term-blue)",
+                    // Text grade, not the pole hue: 11px white text on the chip needs 4.5:1.
+                    background: "var(--term-blue-text)",
                     color: "var(--term-surface)",
                     fontSize: 11,
                     fontWeight: 700,
@@ -292,7 +293,7 @@ export function UpcomingContent() {
                         style={{
                           fontSize: 10,
                           fontWeight: 600,
-                          color: evidence.lift >= 0 ? "var(--term-blue)" : "var(--term-red)",
+                          color: evidence.lift >= 0 ? "var(--term-blue-text)" : "var(--term-red-text)",
                         }}
                       >
                         {signedNumber(evidence.lift)}

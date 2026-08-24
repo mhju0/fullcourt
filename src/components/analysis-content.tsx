@@ -144,6 +144,12 @@ export function deviationFill(deviation: number): string {
   return deviation < 0 ? "var(--term-red)" : "var(--term-blue)"
 }
 
+/** The same poles at text grade — tooltip prose is small text and needs 4.5:1, chart fills do not. */
+export function deviationText(deviation: number): string {
+  if (deviation === 0) return "var(--term-neutral)"
+  return deviation < 0 ? "var(--term-red-text)" : "var(--term-blue-text)"
+}
+
 /**
  * A dead-even slice has zero length, so without this it draws nothing at all and
  * reads as missing data rather than as "exactly a coin flip". Give it a 2px stub;
@@ -200,7 +206,7 @@ function WinRateTooltip({ active, payload }: TooltipContentProps) {
       {/* The bar plots the deviation, so the tooltip leads with it and carries the
           absolute win rate underneath — the axis no longer shows it anywhere. The
           baseline is named on the same line so the two can never be read apart. */}
-      <p style={{ marginTop: SPACE.xs, color: deviationFill(d.deviation) }}>
+      <p style={{ marginTop: SPACE.xs, color: deviationText(d.deviation) }}>
         <span style={{ fontWeight: 700 }}>{signedNumber(d.deviation)} PP</span> VS {d.baselinePct}% BASELINE
       </p>
       <p style={{ color: "var(--term-text-muted)", marginTop: SPACE.xs }}>WIN RATE: {d.winPct}%</p>
@@ -229,7 +235,7 @@ function SeasonWinRateTooltip({ active, payload }: TooltipContentProps) {
   return (
     <div style={termTooltip}>
       <p style={{ color: "var(--term-text)", fontWeight: 700, letterSpacing: TRACK.sub }}>{d.label}</p>
-      <p style={{ marginTop: SPACE.xs, color: deviationFill(d.deviation) }}>
+      <p style={{ marginTop: SPACE.xs, color: deviationText(d.deviation) }}>
         <span style={{ fontWeight: 700 }}>{signedNumber(d.deviation)} PP</span> VS {d.baselinePct}% BASELINE
       </p>
       <p style={{ color: "var(--term-text-muted)", marginTop: SPACE.xs }}>WIN RATE: {d.winPct}%</p>
@@ -537,7 +543,9 @@ function ExploreGames({
               <span
                 className="mono inline-flex items-center"
                 style={{
-                  background: "var(--term-blue)",
+                  // Text grade, not the pole: the chip is the GROUND under 11px white text,
+                  // so the pair needs 4.5:1 — white on the pole teal is 3.68.
+                  background: "var(--term-blue-text)",
                   color: "var(--term-surface)",
                   fontSize: 11,
                   fontWeight: 700,
@@ -566,7 +574,7 @@ function ExploreGames({
               <span
                 className="mono inline-flex items-center"
                 style={{
-                  color: g.restedTeamWon ? "var(--term-pos)" : "var(--term-red)",
+                  color: g.restedTeamWon ? "var(--term-pos)" : "var(--term-red-text)",
                   fontSize: 11,
                   fontWeight: 700,
                   letterSpacing: TRACK.data,
@@ -591,7 +599,7 @@ function ExploreGames({
           ))
         ) : error ? (
           <tr>
-            <td colSpan={7} style={{ ...termTdStyle, textAlign: "center", color: "var(--term-red)", padding: 24 }}>
+            <td colSpan={7} style={{ ...termTdStyle, textAlign: "center", color: "var(--term-red-text)", padding: 24 }}>
               {error}
             </td>
           </tr>
@@ -767,7 +775,7 @@ export function AnalysisContent({ asOf }: { asOf?: DataAsOf | null }) {
           <span className="mono font-bold" style={{ color: "var(--term-text)" }}>{claims.declinedHalf.homeWinPct}%</span>.
           The model does not count them, because the home side keeps winning them — but it wins
           them by{" "}
-          <span className="mono font-bold" style={{ color: "var(--term-blue)" }}>
+          <span className="mono font-bold" style={{ color: "var(--term-blue-text)" }}>
             {signedNumber(claims.declinedHalf.lift)}
           </span>{" "}
           points against the{" "}
@@ -917,7 +925,7 @@ export function AnalysisContent({ asOf }: { asOf?: DataAsOf | null }) {
             <span className="mono font-bold" style={{ color: "var(--term-text)" }}>{claims.reading.baselinePct}%</span>{" "}
             of all games regardless of rest. So the rate to read is not{" "}
             <span className="mono tabular-nums">{claims.reading.overallWinPct}%</span> but the{" "}
-            <span className="mono font-bold" style={{ color: "var(--term-blue)" }}>
+            <span className="mono font-bold" style={{ color: "var(--term-blue-text)" }}>
               {signedNumber(claims.reading.overallLift)}
             </span>{" "}
             points above that baseline — the part rest accounts for.{" "}
@@ -926,8 +934,8 @@ export function AnalysisContent({ asOf }: { asOf?: DataAsOf | null }) {
               RA ≥ {claims.reading.ra5.threshold}
             </span>{" "}
             the rested team wins{" "}
-            <span className="mono font-bold" style={{ color: "var(--term-blue)" }}>{claims.reading.ra5.winPct}%</span>,{" "}
-            <span className="mono font-bold" style={{ color: "var(--term-blue)" }}>
+            <span className="mono font-bold" style={{ color: "var(--term-blue-text)" }}>{claims.reading.ra5.winPct}%</span>,{" "}
+            <span className="mono font-bold" style={{ color: "var(--term-blue-text)" }}>
               {signedNumber(claims.reading.ra5.lift)}
             </span>{" "}
             over baseline across{" "}

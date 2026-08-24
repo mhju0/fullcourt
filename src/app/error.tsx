@@ -23,7 +23,7 @@ export default function Error({
       aria-labelledby="error-title"
     >
       <p
-        className="mono font-semibold uppercase text-[var(--term-red)]"
+        className="mono font-semibold uppercase text-[var(--term-red-text)]"
         style={{ fontSize: TYPE.label, letterSpacing: TRACK.label }}
       >
         Error · Something went wrong

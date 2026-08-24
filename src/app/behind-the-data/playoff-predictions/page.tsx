@@ -188,7 +188,7 @@ export default function PlayoffPredictionsMethodPage() {
               cell: (r) => (
                 <span
                   style={
-                    "lead" in r ? { color: "var(--term-blue)", fontWeight: 700 } : undefined
+                    "lead" in r ? { color: "var(--term-blue-text)", fontWeight: 700 } : undefined
                   }
                 >
                   {r.winPct.toFixed(1)}
@@ -313,7 +313,7 @@ export default function PlayoffPredictionsMethodPage() {
             },
             {
               label: "VERDICT",
-              style: { color: "var(--term-blue)", fontWeight: 700 },
+              style: { color: "var(--term-blue-text)", fontWeight: 700 },
               cell: (m) => `${m.improvementPct}% BETTER`,
             },
           ]}
@@ -400,7 +400,7 @@ export default function PlayoffPredictionsMethodPage() {
                 <span
                   style={
                     r.winner === "model"
-                      ? { color: "var(--term-blue)", fontWeight: 700 }
+                      ? { color: "var(--term-blue-text)", fontWeight: 700 }
                       : undefined
                   }
                 >

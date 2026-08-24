@@ -25,7 +25,7 @@ export function MessageCard({
   title: string
   body?: string
 }) {
-  const accent = tone === "error" ? "var(--term-red)" : "var(--term-text-muted)"
+  const accent = tone === "error" ? "var(--term-red-text)" : "var(--term-text-muted)"
   return (
     <div
       className="mono px-6 py-12 text-center"

@@ -60,13 +60,13 @@ export function ZeroRestWorkload({ season }: { season: string }) {
       <p style={{ fontSize: TYPE.body, color: "var(--term-text-muted)", maxWidth: WIDTH.prose, lineHeight: LEAD.body }}>
         Who took the most shots on zero days&apos; rest. This is volume, not a verdict on how well
         they shot — a single season&apos;s rest split is too small to say that.{" "}
-        <a href="/shooting" style={{ color: "var(--term-blue)", fontWeight: 600 }}>
+        <a href="/shooting" style={{ color: "var(--term-blue-text)", fontWeight: 600 }}>
           Career rest splits live on Player Shooting →
         </a>
       </p>
 
       {error ? (
-        <p className="mono" role="alert" style={{ fontSize: 12, color: "var(--term-red)" }}>
+        <p className="mono" role="alert" style={{ fontSize: 12, color: "var(--term-red-text)" }}>
           FAILED TO LOAD PLAYER DATA.
         </p>
       ) : !data ? (

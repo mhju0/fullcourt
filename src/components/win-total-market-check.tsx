@@ -34,7 +34,7 @@ export function WinTotalGuardrail() {
         data-testid="market-check-crosslink"
         href="/behind-the-data/schedule-edge"
         className="mono mt-4 block w-fit"
-        style={{ fontSize: 12, letterSpacing: TRACK.sub, fontWeight: 700, color: "var(--term-blue)" }}
+        style={{ fontSize: 12, letterSpacing: TRACK.sub, fontWeight: 700, color: "var(--term-blue-text)" }}
       >
         THE FULL MARKET CHECK, BEHIND THE DATA &rarr;
       </a>
