@@ -128,8 +128,8 @@ Specs (16): `e2e/home.spec.ts` (the front door), `e2e/games.spec.ts`, `e2e/align
 `e2e/alignment-law.spec.ts`, `e2e/analysis.spec.ts`, `e2e/availability.spec.ts`,
 `e2e/behind-the-data.spec.ts`, `e2e/navigation.spec.ts`, `e2e/page-headers.spec.ts`,
 `e2e/playoffs.spec.ts`, `e2e/pwa.spec.ts`, `e2e/referees.spec.ts`, `e2e/schedule-disparity.spec.ts`,
-`e2e/season.spec.ts`, `e2e/shot-quality.spec.ts`, `e2e/shooting.spec.ts` — **149 tests**
-(149 passed / 0 skipped, verified 2026-08-22; several specs generate their cases in a loop, so
+`e2e/season.spec.ts`, `e2e/shot-quality.spec.ts`, `e2e/shooting.spec.ts` — **163 tests**
+(163 passed / 0 skipped, verified 2026-08-27; several specs generate their cases in a loop, so
 counting `test(` calls in the source undercounts). The suite has no skipped specs for the first
 time: the five that were held back with `/referees` went live when it was published, and **two of
 them had to be rewritten rather than simply un-skipped** — they asserted copy ("This is style, not
@@ -195,6 +195,13 @@ back on expand.
 >   and "WIN RATE BY SEASON" (no `text-7xl` hero). It also guards the **frame**: both
 >   zero-line legends, and that the page nowhere says `COIN FLIP` — a regression to a 50%
 >   baseline would credit the model with roughly ten points of home court it did not produce.
+>   Its paging test carries the suite's one recorded flake and the rule that came out of it
+>   (2026-08-27): the range line reads `LOADING…` while a page is in flight, so a locator
+>   matched on `/SHOWING …/` **resolves to nothing mid-fetch** and the assertion fails as
+>   "element(s) not found" rather than waiting. It failed in the full suite and passed in the
+>   spec alone, which is the signature. **Locate an element whose text changes by test id, never
+>   by that text** — `data-testid="explore-range"`. Raising the timeout alone would have left the
+>   same trap for the next state that unmounts it.
 > - **`alignment-law.spec.ts`** — the absolute parts of the alignment law: the page title sits on
 >   the container gutter, a `.fc-table` first and last cell pad like their neighbours (compared,
 >   never pinned to a literal — and asserted *not* to be zero, so the rule reverted on
