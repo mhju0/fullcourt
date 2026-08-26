@@ -170,6 +170,9 @@ Skipping `prepare` fails **silently**: `fatigue_model_table.csv` is already on d
 - [docs/TESTING_AND_CICD.md](docs/TESTING_AND_CICD.md) — Vitest/Playwright, CI, data workflow
 - [docs/GLOSSARY.md](docs/GLOSSARY.md) — domain language and the nav-label rationale
 - [docs/SEASON_ROLLOVER.md](docs/SEASON_ROLLOVER.md) — rollover runbook and data-source matrix
+- [docs/LAUNCH_DAY.md](docs/LAUNCH_DAY.md) — the first live slate (2026-10-20): the two writers
+  and their hours, what a good in-season run looks like line by line, the three greens that are
+  not green, and which probe row to believe about ESPN
 
 Two more directories exist locally but are **gitignored**, so they are absent from a fresh clone
 and are deliberately not linked above: `docs/agents/` (agent-facing conventions — domain-doc
