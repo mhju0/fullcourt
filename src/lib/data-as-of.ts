@@ -29,6 +29,11 @@ export type DataAsOf = {
 /**
  * The stamp as one line, or `null` when there is nothing honest to say.
  *
+ * Takes the date alone rather than a whole {@link DataAsOf}: the season-scoped surfaces
+ * (2026-08-27) derive their date from the rows they already reduce and have no `finalGames`
+ * count to hand over, and inventing a zero to satisfy a parameter this function does not read
+ * would be a number in the code that means nothing.
+ *
  * Null rather than a placeholder: with no games there is no "as of", and a surface that
  * prints `AS OF —` has spent a line to say nothing. The caller renders nothing instead —
  * the same rule as `NO_FIGURE` for an unmeasured number, applied to a whole element.
@@ -44,7 +49,9 @@ export type DataAsOf = {
  * credibility instead of building it. /schedule's existing stamp prints a bare date for the
  * same reason.
  */
-export function formatDataAsOf(asOf: DataAsOf | null | undefined): string | null {
+export function formatDataAsOf(
+  asOf: { latestFinalDate: string | null; finalGames?: number } | null | undefined
+): string | null {
   if (!asOf?.latestFinalDate) return null;
 
   return `AS OF ${asOf.latestFinalDate}`;

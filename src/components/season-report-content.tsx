@@ -7,6 +7,7 @@ import { SeasonSelector } from "@/components/season-selector"
 import { Skeleton } from "@/components/ui/skeleton"
 import { StatTile } from "@/components/ui/stat-tile"
 import { ZeroRestWorkload } from "@/components/zero-rest-workload"
+import { formatDataAsOf } from "@/lib/data-as-of"
 import { apiFetcher } from "@/lib/fetcher"
 import { useBacktest } from "@/hooks/useBacktest"
 import { browsableSeasons, NBA_SEASONS } from "@/lib/nba-season"
@@ -27,7 +28,7 @@ import {
   REST_SHARE_OF_HOME_COURT,
   REST_SPAN_PP,
 } from "@/lib/schedule-value"
-import { LEAD, termCardStyle, termDashedEmptyStyle, TRACK, TYPE, WIDTH } from "@/lib/terminal-styles"
+import { LEAD, SPACE, termCardStyle, termDashedEmptyStyle, TRACK, TYPE, WIDTH } from "@/lib/terminal-styles"
 import { DataTable, type DataColumn } from "@/components/ui/data-table"
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts"
 import { signedNumber } from "@/lib/signed-number"
@@ -640,6 +641,11 @@ export function SeasonReportContent() {
     [data]
   )
 
+  // Season-scoped, so it is read from the response rather than from the page's server half:
+  // the season is chosen in this component, and a stamp rendered above it could only ever
+  // describe the season the page opened on.
+  const stamp = formatDataAsOf(data)
+
   if (error) {
     return <MessageCard tone="error" title="FAILED TO LOAD THE SEASON REPORT." />
   }
@@ -660,6 +666,20 @@ export function SeasonReportContent() {
           onSeasonChange={setSeason}
           seasons={browsableSeasons()}
         />
+        {/* The season's own data date, in the same place and treatment /schedule puts its
+            status line — under the selector that chose the season, because that is what it
+            qualifies. Nothing renders before the season's first final game: a page reporting
+            on a published schedule has no "as of" to give, and `AS OF —` would spend a line
+            to say nothing. */}
+        {stamp ? (
+          <p
+            className="mono"
+            data-testid="season-as-of"
+            style={{ marginTop: SPACE.md, fontSize: TYPE.label, letterSpacing: TRACK.label, color: "var(--term-text-muted)" }}
+          >
+            {stamp}
+          </p>
+        ) : null}
       </div>
 
       <AbnormalSeasonNote season={season} />

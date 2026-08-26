@@ -24,6 +24,32 @@ test.describe("Schedule Disparity page", () => {
     await expect(page.getByText(/much of the gap is structural/i)).toBeVisible();
   });
 
+  /**
+   * The season-scoped "as of" stamp (2026-08-27, docs/UIUX_CHECKLIST.md §5).
+   *
+   * The discriminating assertion is the last one: this line used to print the date the
+   * response was *built* — today — under the same `AS OF` label /analysis wears for a data
+   * date. A finished season's data date is months old, so a stamp that reads as today has
+   * regressed to the old meaning, whatever it says.
+   */
+  test("stamps the selected season with its own data date, not today's", async ({ page }) => {
+    await page.goto("/schedule");
+
+    const status = page.getByText(/GAMES COMPARED/);
+    await expect(status).toBeVisible({ timeout: 20_000 });
+    await expect(status).toContainText(/AS OF \d{4}-\d{2}-\d{2}/);
+
+    const stamp = (await status.textContent())?.match(/AS OF (\d{4}-\d{2}-\d{2})/)?.[1];
+    expect(stamp).toBeTruthy();
+
+    // The page opens on the newest RANKABLE season, which is a completed one, so its last
+    // final game cannot be today. Computed in ET, the timezone `games.date` is stored in.
+    const todayEt = new Intl.DateTimeFormat("en-CA", { timeZone: "America/New_York" }).format(
+      new Date()
+    );
+    expect(stamp).not.toBe(todayEt);
+  });
+
   test("ranks 30 teams and prints a signed value on every row", async ({ page }) => {
     await page.goto("/schedule");
 

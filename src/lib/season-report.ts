@@ -237,6 +237,22 @@ export interface SeasonReport {
   basis: "played" | "schedule";
   /** Every regular-season game in the season — the progress tile's denominator. */
   scheduledGames: number;
+  /**
+   * The ET calendar date of the most recent **final** game in this season — the page's
+   * "as of" stamp (2026-08-27, docs/UIUX_CHECKLIST.md §5).
+   *
+   * Season-scoped on purpose. `/analysis` stamps the global final-game population through
+   * `getDataAsOf()`, and printing that date here would be a claim about a different
+   * population than the figures under it: this page answers for one *selected* season. So it
+   * is derived here, from the rows this report is already built from — no second query, and
+   * no way for the stamp and the figures to describe different reads.
+   *
+   * Final games only, and counted **before** the fatigue filter below: the stamp says how
+   * current the data is, not which games survived into an aggregate. Null when the season has
+   * no final game yet, which is what stops an unplayed season printing a stamp — there is no
+   * "as of" before the first result.
+   */
+  latestFinalDate: string | null;
   /** Games with a final score and both fatigue sides — every aggregate's denominator. */
   completedGames: number;
   overall: SeasonReportRate;
@@ -370,8 +386,16 @@ export function buildSeasonReport(
   const buckets = new Map<number, { games: number; fatigueSum: number }>();
   // Rows arrive date-ascending from the query, so the first completed game dates the calendar.
   let firstDate: string | null = null;
+  let latestFinalDate: string | null = null;
 
   for (const row of rows) {
+    // The stamp, before every filter below it. A max rather than "the last row wins": the
+    // query orders by date, but a stamp that silently depends on caller ordering is a stamp
+    // that goes wrong the day someone reorders the read. ISO dates compare lexically.
+    if (row.status === "final" && (latestFinalDate === null || row.date > latestFinalDate)) {
+      latestFinalDate = row.date;
+    }
+
     // Both fatigue sides are required on either basis — they are what every figure below is
     // computed from, and a game missing one cannot contribute to anything.
     if (row.home === null || row.away === null) continue;
@@ -513,6 +537,7 @@ export function buildSeasonReport(
     season,
     basis,
     scheduledGames: rows.length,
+    latestFinalDate,
     completedGames,
     overall: rate(overallWins, overallGames),
     atLeastTwo: rate(tierWins, tierGames),

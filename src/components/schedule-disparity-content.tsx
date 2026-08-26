@@ -5,6 +5,7 @@ import useSWR from "swr"
 import { ChevronDown } from "lucide-react"
 import { SeasonSelector } from "@/components/season-selector"
 import { Skeleton } from "@/components/ui/skeleton"
+import { formatDataAsOf } from "@/lib/data-as-of"
 import { apiFetcher } from "@/lib/fetcher"
 import { NEUTRAL_REST_ADVANTAGE_THRESHOLD } from "@/lib/rest-advantage-evidence"
 import { browsableSeasons } from "@/lib/nba-season"
@@ -222,6 +223,11 @@ export function ScheduleDisparityContent() {
   const most = teams[0]
   const least = teams[teams.length - 1]
 
+  // Season-scoped, so it is read from the response rather than from the page's server half:
+  // the season is chosen here, and a stamp rendered above this component could only ever
+  // describe the season it opened on.
+  const stamp = formatDataAsOf(data)
+
   return (
     <div className="flex flex-col gap-12">
       <div style={termCardStyle}>
@@ -239,7 +245,11 @@ export function ScheduleDisparityContent() {
             {data.provisional ? "PROVISIONAL" : "FINAL"} ·{" "}
             {data.league.measuredGames.toLocaleString()} OF{" "}
             {data.scheduledGames.toLocaleString()} GAMES COMPARED
-            {data.provisional ? ` · AS OF ${data.asOf}` : ""}
+            {/* The season's own data date, and on every season rather than only a provisional
+                one: a finished season's stamp is the more useful of the two, because it is the
+                one a reader checks months later. Nothing renders before the first final game —
+                there is no "as of" then. */}
+            {stamp ? ` · ${stamp}` : ""}
           </p>
         ) : null}
         {data?.provisional ? (

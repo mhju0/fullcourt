@@ -427,8 +427,16 @@ export interface ScheduleDisparityResponse {
   season: string;
   /** True when any game in the season is not final, so figures may still revise. */
   provisional: boolean;
-  /** ET date the figures were computed, for the as-of line on provisional seasons. */
-  asOf: string;
+  /**
+   * ET date of the most recent final game in this season — the surface's "as of" stamp.
+   *
+   * Replaced `asOf` on 2026-08-27, which carried the date the *response was built* under a
+   * label identical to `/analysis`'s data stamp: two lines that looked like the same claim
+   * and were not. A stamp on a season-scoped page has to be that season's data date or it is
+   * a claim about a different population. Null before the season's first final game — no
+   * stamp is rendered then, the whole-element form of the `NO_FIGURE` rule.
+   */
+  latestFinalDate: string | null;
   /** Every regular-season game in the season — the denominator `league.countedGames` sits in. */
   scheduledGames: number;
   teams: ScheduleDisparityTeam[];
