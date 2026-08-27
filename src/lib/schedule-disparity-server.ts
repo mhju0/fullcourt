@@ -4,7 +4,6 @@ import {
   getSeasonGamesStamp,
   getTeamDirectory,
 } from "@/lib/db/queries";
-import { formatEasternDateKey } from "@/lib/nba-season";
 import { computeScheduleDisparity, seasonRankability } from "@/lib/schedule-disparity";
 import { createStampedCache } from "@/lib/stamped-cache";
 import { teamLabeller } from "@/lib/team-labels";
@@ -88,11 +87,12 @@ async function buildScheduleDisparity(
   return {
     season: result.season,
     provisional: result.provisional,
-    // Stamped when the figures are computed, so a held response keeps the date it was built
-    // on rather than the date it was served. That is what the field claims to mean, and it is
-    // the honest reading: re-stamping today onto a held value would assert a computation that
-    // did not happen. The stamp guarantees the inputs have not moved since.
-    asOf: formatEasternDateKey(new Date()),
+    // The season's own data date, read off the same games every figure above came from — not
+    // the date this response was built, which is what used to sit here under the same `AS OF`
+    // label the /analysis data stamp wears. Nothing about freshness is lost by the change:
+    // the held response is keyed on `getSeasonGamesStamp(season)`, so a held value is proof
+    // the inputs have not moved, which is the guarantee the build date was standing in for.
+    latestFinalDate: result.latestFinalDate,
     scheduledGames: result.scheduledGames,
     teams,
     league: {

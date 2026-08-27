@@ -52,6 +52,32 @@ test.describe("Season Report", () => {
   });
 
   /**
+   * The season-scoped "as of" stamp (2026-08-27, docs/UIUX_CHECKLIST.md §5). This page had no
+   * stamp at all before it: the global one /analysis carries would have been a claim about a
+   * different population than the season selected here.
+   *
+   * The stamp has to MOVE with the selector, which is the property that separates a real
+   * season-scoped stamp from a page-level one rendered once above the selector.
+   */
+  test("stamps the selected season, and re-stamps when the season changes", async ({ page }) => {
+    await page.goto("/season");
+
+    const stamp = page.getByTestId("season-as-of");
+    await expect(stamp).toBeVisible({ timeout: 20_000 });
+    await expect(stamp).toHaveText(/^AS OF \d{4}-\d{2}-\d{2}$/);
+
+    const opened = await stamp.textContent();
+
+    await page.getByLabel("SEASON").selectOption("2015-16");
+    await expect(page.getByTestId("season-vs-history-heading")).toHaveText("2015-16 VS HISTORY");
+
+    // 2015-16 ended in April 2016, so the stamp must land in that season's window — and must
+    // not still be the one the page opened on.
+    await expect(stamp).toHaveText(/^AS OF 2016-0[45]-\d{2}$/);
+    expect(await stamp.textContent()).not.toBe(opened);
+  });
+
+  /**
    * Copy guards, not layout checks. Both sentences exist to stop a specific misreading, and
    * both are the kind of prose a tidying pass deletes as redundant.
    */

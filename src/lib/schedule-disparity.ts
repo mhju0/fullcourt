@@ -223,6 +223,19 @@ export interface ScheduleDisparityResult {
    * (50 games in 1998-99, 66 in 2011-12, 72 in 2020-21) provisional forever.
    */
   provisional: boolean;
+  /**
+   * The ET calendar date of the most recent **final** game in the season — the page's "as of"
+   * stamp (2026-08-27, docs/UIUX_CHECKLIST.md §5).
+   *
+   * It replaced a stamp that printed the date the response was *built*, which was labelled
+   * `AS OF` beside `/analysis`'s data stamp and so read as the same claim while meaning
+   * something else. Season-scoped and derived from the games this result is already computed
+   * from: one read, so the stamp and the figures can never describe different populations.
+   *
+   * Null before the season's first final game, which is what stops an unplayed season
+   * printing a stamp at all.
+   */
+  latestFinalDate: string | null;
   /** Every regular-season game in the season, counted or not — the honest denominator. */
   scheduledGames: number;
   /** Games scheduled per team, min and max across teams. Equal unless the schedule is uneven. */
@@ -607,9 +620,19 @@ export function computeScheduleDisparity(
 
   const scheduledPerTeam = [...byTeam.values()].map((list) => list.length);
 
+  // A max rather than the last row: this module never promises its input is date-ordered, and
+  // a stamp that quietly depends on caller ordering goes wrong the day someone reorders the
+  // read. ISO dates compare lexically.
+  const latestFinalDate = games.reduce<string | null>(
+    (latest, g) =>
+      g.status === "final" && (latest === null || g.date > latest) ? g.date : latest,
+    null
+  );
+
   return {
     season,
     provisional: games.some((g) => g.status !== "final"),
+    latestFinalDate,
     scheduledGames: games.length,
     gamesPerTeamMin: scheduledPerTeam.length ? Math.min(...scheduledPerTeam) : 0,
     gamesPerTeamMax: scheduledPerTeam.length ? Math.max(...scheduledPerTeam) : 0,

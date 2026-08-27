@@ -663,4 +663,67 @@ describe("buildSeasonReport — the schedule basis", () => {
     expect(after.basis).toBe("played");
     expect(after.teams.find((t) => t.teamId === 1)!.restStates.restedHome).toBe(1);
   });
+
+});
+
+/**
+ * The season's own "as of" stamp (2026-08-27, docs/UIUX_CHECKLIST.md §5). `/analysis` stamps
+ * the global final-game population; this page answers for one selected season, so its date has
+ * to come from that season or it is a claim about a different population.
+ */
+describe("buildSeasonReport — the as-of stamp", () => {
+  it("names the most recent final game in the season", () => {
+    const report = buildSeasonReport("2025-26", [
+      game({ gameId: 1, date: "2025-10-21" }),
+      game({ gameId: 2, date: "2026-04-12" }),
+      game({ gameId: 3, date: "2026-01-05" }),
+    ]);
+
+    expect(report.latestFinalDate).toBe("2026-04-12");
+  });
+
+  it("does not depend on the order the rows arrive in", () => {
+    // The query orders by date, but a stamp that silently relies on caller ordering goes wrong
+    // the day someone reorders the read — and nothing else in the report would notice.
+    const rows = [
+      game({ gameId: 1, date: "2026-04-12" }),
+      game({ gameId: 2, date: "2025-10-21" }),
+    ];
+
+    expect(buildSeasonReport("2025-26", rows).latestFinalDate).toBe("2026-04-12");
+    expect(buildSeasonReport("2025-26", [...rows].reverse()).latestFinalDate).toBe("2026-04-12");
+  });
+
+  it("ignores a scheduled game dated after the last final one", () => {
+    // The stamp says how current the DATA is. A published fixture two weeks out is not data.
+    const report = buildSeasonReport("2025-26", [
+      game({ gameId: 1, date: "2026-04-12" }),
+      game({ gameId: 2, date: "2026-04-26", status: "scheduled", homeScore: null, awayScore: null }),
+    ]);
+
+    expect(report.latestFinalDate).toBe("2026-04-12");
+  });
+
+  it("counts a final game the aggregates skip for want of a fatigue side", () => {
+    // Read before the fatigue filter on purpose: the stamp describes the data, not which games
+    // survived into an average. A game played is a game played.
+    const report = buildSeasonReport("2025-26", [
+      game({ gameId: 1, date: "2026-04-10" }),
+      game({ gameId: 2, date: "2026-04-12", home: null }),
+    ]);
+
+    expect(report.completedGames).toBe(1);
+    expect(report.latestFinalDate).toBe("2026-04-12");
+  });
+
+  it("is null before the season's first final game", () => {
+    // No stamp is rendered then — there is no "as of" before a result, and `AS OF —` spends a
+    // line to say nothing.
+    const report = buildSeasonReport("2026-27", [
+      game({ gameId: 1, status: "scheduled", homeScore: null, awayScore: null }),
+    ]);
+
+    expect(report.basis).toBe("schedule");
+    expect(report.latestFinalDate).toBeNull();
+  });
 });

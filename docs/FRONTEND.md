@@ -181,11 +181,24 @@ schedule rather than measured (`GameResponse.projectedFatigue`; `PROJ` in the `/
 table). That is not "the game has not been played" — see `src/lib/fatigue-provenance.ts` and
 docs/API.md.
 
-The season-scoped surfaces (`/season`, `/schedule`) deliberately **do not** take this prop: their
-figures answer for one selected season, keyed on `getSeasonGamesStamp(season)`, so the global
-final-game date would be a different claim than the page makes. /schedule already prints its own
-`AS OF` from its response, and giving those surfaces a truthful stamp means carrying the
-per-season one in the response — a different decision, still open in the checklist.
+The season-scoped surfaces (`/season`, `/schedule`) still **do not** take this prop, and they now
+carry their own stamp instead (2026-08-27). Their figures answer for one *selected* season, so
+the global final-game date would be a different claim than the page makes — and the selection
+happens **inside** the client content, below the server-rendered `PageHeader`, so a prop passed
+down from the page shell could only ever describe the season the page opened on. Each content
+component reads `latestFinalDate` off its own response and writes the line with the same
+`formatDataAsOf`, so all three surfaces print one stamp meaning one thing.
+
+Two things are worth keeping in view:
+
+- **The cost this was waiting on was imaginary.** The row sat open on "carrying the per-season
+  stamp in the response, i.e. an API-shape decision". Both reducers already read every game in
+  the season, so the date is derived from rows in memory — no second query, no new read, no
+  cache-policy change, and the stamp cannot describe a different population from the figures.
+- **`/schedule`'s old `AS OF` was the render date.** It printed the day the response was *built*,
+  under the label this page uses for a data date. Replacing it, and showing it on finished
+  seasons as well as provisional ones, is the actual fix; `e2e/schedule-disparity.spec.ts`
+  asserts the stamp is **not** today's ET date, which fails if the old meaning returns.
 
 **Two hero tiles, then the excluded half as a sentence** (2026-08-11). Both tiles name who won
 and over which slice — `RESTED TEAM AT HOME WON · ANY GAP` and `… · RA ≥ 5`. They led with the

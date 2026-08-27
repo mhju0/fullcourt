@@ -118,13 +118,21 @@ with the reason.
   shape or cache policy moved. **The date only:** a count in the stamp sat four lines above a
   tile with a different count under the same noun. The footer's `RENDERED` stamp is still
   deliberately *not* this — it says when the layout rendered and makes no data claim.
-- [ ] **The season-scoped surfaces still have no truthful stamp** (`/season`, and the table half
-  of `/schedule`). Their figures answer for one *selected* season, keyed on
-  `getSeasonGamesStamp(season)`, so the global final-game date above would be a claim about a
-  different population — which is why they were left out rather than filled in. Giving them one
-  means carrying the per-season stamp in the response, i.e. the API-shape decision the row above
-  avoided. /schedule's existing `AS OF` (shown only while provisional) is the render date, not a
-  data date. Owner: Michael (API shape).
+- [x] **The season-scoped surfaces carry their own stamp** — shipped 2026-08-27, Michael's call.
+  `/season` and `/schedule` answer for one *selected* season, so the global final-game date
+  above would have been a claim about a different population; each now prints **that season's**
+  most recent final game as `AS OF <ET date>`, in the same mono/muted treatment. **The API-shape
+  cost this row had been waiting on turned out not to exist:** both reducers already read every
+  game in the season, so `latestFinalDate` is derived from rows in memory — no second query, no
+  new read, no cache-policy change, and no way for the stamp and the figures to describe
+  different populations. Null before a season's first final game, and nothing renders then (the
+  whole-element form of the `NO_FIGURE` rule).
+  The same change closed a live defect: `/schedule`'s old `AS OF` printed the date the
+  **response was built** — today — under the label `/analysis` uses for a data date, so two
+  identical-looking lines meant different things. It is now the data date, and shown on every
+  season rather than only a provisional one, because a finished season's stamp is the one a
+  reader checks months later. `e2e/schedule-disparity.spec.ts` asserts the stamp is **not**
+  today's ET date, which is what fails if the old meaning returns.
 - [x] **Baselines named next to every rate** — the venue-baseline rule (CLAUDE.md). No
   fetched site does this. It is the site's spine; the checklist exists partly so no adoption
   ever dilutes it.

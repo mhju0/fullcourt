@@ -338,6 +338,14 @@ Which teams a season's schedule favored, ranked by net edge games. Powers `/sche
   from the existing `games` and `fatigue_scores` reads.
 - **Success:** `{ data: ScheduleDisparityResponse, error: null }` — the 30 ranked teams, the
   summary strip figures, and a provisional flag for a season still in progress.
+  - **`latestFinalDate`** — the ET date of that season's most recent final game, rendered as
+    the page's `AS OF` stamp. It **replaced `asOf`** on 2026-08-27, which carried the date the
+    response was *built*: today's date, under the identical `AS OF` label `/analysis` wears for
+    a data date, so two lines looked like the same claim and were not. Derived from the games
+    the figures are already computed from, so the stamp and the figures cannot describe
+    different reads, and `null` before a season's first final game (nothing is rendered then).
+    Nothing about cache freshness is lost — the response is keyed on
+    `getSeasonGamesStamp(season)`, so a held value already proves its inputs have not moved.
   - **Every fatigue-derived field is `number | null`, and `null` means *not measured*** (added
     2026-08-18): `favorableGames`, `unfavorableGames`, `netEdgeGames`, `scheduleValueWins`,
     `bigFavorableGames`, `bigUnfavorableGames`, and on the league row `delta`,
@@ -386,6 +394,12 @@ One season, reported through the site's rest-advantage lens. Powers `/season`.
 - **Success:** `{ data: SeasonReportResponse, error: null }`:
   - `season`, `scheduledGames` (every regular-season game), `completedGames` (final, scored,
     both fatigue sides present)
+  - `latestFinalDate` — the ET date of the season's most recent final game, rendered as the
+    page's `AS OF` stamp (2026-08-27). Season-scoped on purpose: `/analysis` stamps the global
+    final-game population through `getDataAsOf()`, and printing that date here would describe a
+    different population from the figures under it. Read off the same rows the report reduces,
+    **before** the fatigue filter — the stamp says how current the data is, not which games
+    survived into an average — and `null` until the season's first final game.
   - `overall` / `atLeastTwo: SeasonReportRate` — `{ games, restedTeamWins, winPct, band }`,
     the rest-advantage win rate overall and for RA ≥ 2 (the only per-season threshold this
     page publishes; RA ≥ 5 and ≥ 7 run too thin at one season's sample size)

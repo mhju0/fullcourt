@@ -206,6 +206,32 @@ describe("computeScheduleDisparity — provisional seasons", () => {
     const live = [...FIXTURE.slice(0, 3), game("2024-01-10", 1, 2, { status: "live" })];
     expect(computeScheduleDisparity("2023-24", live).provisional).toBe(true);
   });
+
+  /**
+   * The as-of stamp (2026-08-27, docs/UIUX_CHECKLIST.md §5). It replaced a field carrying the
+   * date the response was *built* — today's date, under the same `AS OF` label /analysis wears
+   * for a data date. A regression to that meaning fails every case here.
+   */
+  it("stamps the season's most recent final game", () => {
+    expect(computeScheduleDisparity("2023-24", FIXTURE).latestFinalDate).toBe("2024-01-10");
+  });
+
+  it("stamps from a max, not from the last row handed in", () => {
+    // Nothing promises this module's input is date-ordered, and no other figure it produces
+    // would notice if that changed.
+    const shuffled = [FIXTURE[3], FIXTURE[0], FIXTURE[2], FIXTURE[1]];
+    expect(computeScheduleDisparity("2023-24", shuffled).latestFinalDate).toBe("2024-01-10");
+  });
+
+  it("ignores a scheduled game dated after the last final one", () => {
+    const withFixture = [...FIXTURE, game("2024-02-01", 1, 3, { status: "scheduled" })];
+    expect(computeScheduleDisparity("2023-24", withFixture).latestFinalDate).toBe("2024-01-10");
+  });
+
+  it("has no stamp before the season's first final game", () => {
+    const unplayed = FIXTURE.map((g) => ({ ...g, status: "scheduled" }));
+    expect(computeScheduleDisparity("2026-27", unplayed).latestFinalDate).toBeNull();
+  });
 });
 
 describe("computeScheduleDisparity — edge games (ratified 2026-07-29)", () => {

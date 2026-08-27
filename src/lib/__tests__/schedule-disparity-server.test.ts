@@ -251,11 +251,16 @@ describe("getScheduleDisparity — holding", () => {
   });
 
   /**
-   * `asOf` is documented as the date the figures were computed, and the page prints it
-   * only on a provisional season. A held response keeps its build date rather than being
-   * re-stamped on each serve — re-stamping would assert a computation that did not happen.
+   * These two used to assert on `asOf`, the date the response was *built*, which was the only
+   * clock-dependent field in the payload. It was replaced on 2026-08-27 by `latestFinalDate`,
+   * the season's own data date — so the passage of time no longer changes the payload at all,
+   * and the wall clock cannot stand in for "was this rebuilt?" any more.
+   *
+   * That is a better test rather than a weaker one: what these ever meant to assert is the
+   * cache's behaviour, and the cache is observed directly through the loader's call count.
+   * A date that happened to differ was always circumstantial evidence for it.
    */
-  it("keeps the date the figures were built, not the date they were served", async () => {
+  it("serves a held response without re-reading the games", async () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date("2026-08-06T12:00:00Z"));
     mockGames.mockResolvedValue(RANKABLE);
@@ -266,13 +271,13 @@ describe("getScheduleDisparity — holding", () => {
     vi.setSystemTime(new Date("2026-08-09T12:00:00Z"));
     const served = await getScheduleDisparity("2024-25");
 
-    expect(served.asOf).toBe(built.asOf);
+    // The same object, not an equal one: a rebuild that happened to produce identical figures
+    // would pass a deep-equality check and fail this.
+    expect(served).toBe(built);
     expect(mockGames).toHaveBeenCalledTimes(1);
   });
 
-  it("restamps asOf when the games move and the figures are rebuilt", async () => {
-    vi.useFakeTimers();
-    vi.setSystemTime(new Date("2026-08-06T12:00:00Z"));
+  it("rebuilds when the season's games move", async () => {
     mockGames.mockResolvedValue(RANKABLE);
     mockStamp
       .mockResolvedValueOnce("1230/1200@2025-04-10")
@@ -280,10 +285,41 @@ describe("getScheduleDisparity — holding", () => {
     const { getScheduleDisparity } = await loadModule();
 
     const first = await getScheduleDisparity("2024-25");
-
-    vi.setSystemTime(new Date("2026-08-09T12:00:00Z"));
     const rebuilt = await getScheduleDisparity("2024-25");
 
-    expect(rebuilt.asOf).not.toBe(first.asOf);
+    expect(rebuilt).not.toBe(first);
+    expect(mockGames).toHaveBeenCalledTimes(2);
+  });
+
+  /**
+   * The stamp itself: the season's most recent final game, not today, and not a scheduled
+   * game dated later. The two are only ever the same date by coincidence, and the field it
+   * replaced was today's — so a regression to the old meaning fails here.
+   */
+  it("stamps the season's last final game, ignoring later scheduled ones", async () => {
+    mockGames.mockResolvedValue([
+      ...RANKABLE,
+      { ...game("2025-04-14", 1, 2), status: "scheduled" },
+    ]);
+    const { getScheduleDisparity } = await loadModule();
+
+    const result = await getScheduleDisparity("2024-25");
+
+    const lastFinal = RANKABLE.filter((g) => g.status === "final")
+      .map((g) => g.date)
+      .sort()
+      .at(-1);
+    expect(result.latestFinalDate).toBe(lastFinal);
+  });
+
+  it("has no stamp at all before the season's first final game", async () => {
+    mockGames.mockResolvedValue(
+      RANKABLE.map((g) => ({ ...g, status: "scheduled" }))
+    );
+    const { getScheduleDisparity } = await loadModule();
+
+    const result = await getScheduleDisparity("2024-25");
+
+    expect(result.latestFinalDate).toBeNull();
   });
 });
