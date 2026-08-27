@@ -1602,6 +1602,25 @@ single chart. It is wrapped as `tickFormatter={(v) => signedNumber(v)}` rather t
 reference: Recharts types the prop as `(value, index) => string`, so a bare reference feeds the
 tick index into `decimals` and renders `+10`, `+20.0`, `+30.00` down one axis.
 
+**`plottableSeasonRates()` withholds a season still being played** (2026-08-27). Because
+`deviationScale()` derives the axis *from the data*, a season whose sample is a fraction of its
+peers' does not merely draw a noisy bar — it rescales every other one. Measured over 200
+simulated openings at a 59% home rate: four days into a season the young bar sits a median
+17.1 pp off its own baseline (p90 35.7), widening the axis from 6 pp to a median 25 pp and
+compressing 41 historical bars to a quarter of their height; 153 of 200 trials at least doubled
+the span. By ~100 called games — mid-November — it is 17 of 200. The gate is therefore
+`MIN_GAMES_FOR_INFERENCE` (`src/lib/season-report.ts`), the same figure `/season` already uses to
+call a rate "too early", reused rather than invented; the measurement lands on it independently.
+
+**Maturity is counted on the unfiltered population, never on the row being drawn.** The threshold
+views re-count each season over a rare subset — at RA ≥ 7 a *complete* season yields 9 to 46
+called games — so gating on a row's own count would empty that chart entirely and hide 22 of 41
+seasons at RA ≥ 5. `MIN_GAMES_FOR_INFERENCE` is calibrated against the whole-season population
+(~688 called games a season, fewest 382), where all 41 clear it and only a season still being
+played does not. `AnalysisContent` holds both responses — `data` is always the unfiltered
+backtest — so the decision is made once there and applied to whichever view is showing.
+`analysis-deviation.test.ts` fails if it is ever read off the plotted row instead.
+
 `minPointSize={minBarSize}` gives a **dead-even** slice a 2px stub. Its true height is 0px, so
 without it the bar vanishes and reads as missing data — and it is real: RA ≥ 7 in 2011-12 went
 17/34. Tooltips lead with the plotted deviation and carry the absolute win rate underneath,

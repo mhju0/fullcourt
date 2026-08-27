@@ -26,6 +26,7 @@ import { useExploreGames, type DrillSignal } from "@/hooks/useExploreGames"
 import type { ExploreResult } from "@/lib/explore-games-machine"
 import { apiFetcher } from "@/lib/fetcher"
 import { NBA_SEASONS } from "@/lib/nba-season"
+import { MIN_GAMES_FOR_INFERENCE } from "@/lib/season-report"
 import {
   BEYOND_CLAUSE,
   WIDER_GAP_CLAUSE,
@@ -168,6 +169,39 @@ const MAX_TICK_INTERVALS = 6
  * an orphan 70), and a hardcoded ceiling silently clips — the RA ≥ 7 season
  * series runs −11.0 to +25.0 pp.
  */
+/**
+ * Which seasons the by-season chart is allowed to plot.
+ *
+ * The chart shares one y-axis across every season, and `deviationScale` derives that axis
+ * from the data, so a season whose sample is a fraction of its peers' does not merely draw a
+ * noisy bar — it rescales all the others. Measured over 200 simulated openings at a 59% home
+ * rate: four days into a season the young bar sits a median 17.1pp off its own baseline
+ * (p90 35.7), which widens the axis from 6pp to a median 25pp and compresses every historical
+ * bar to a quarter of its height. 153 of 200 trials at least doubled the span. By the time the
+ * season reaches ~100 called games — mid-November — it is 17 of 200.
+ *
+ * The gate is `MIN_GAMES_FOR_INFERENCE`, the same figure /season already uses to decide when a
+ * season's rate stops being "too early". Reused rather than invented, and the measurement lands
+ * on it independently.
+ *
+ * **Counted on the unfiltered population, not on the row being plotted.** The threshold views
+ * re-count each season over a rare subset — at RA >= 7 a *complete* season yields 9 to 46 games
+ * — so gating on a row's own count would hide every season in that view and 22 of 41 at RA >= 5.
+ * `MIN_GAMES_FOR_INFERENCE` is calibrated against the whole-season population (~688 called games
+ * a season, fewest 382), where all 41 seasons clear it and only a season still being played does
+ * not. So maturity is decided once, on the unfiltered counts, and applied to whichever view is
+ * showing.
+ */
+export function plottableSeasonRates<T extends { season: string }>(
+  displayed: readonly T[],
+  unfiltered: readonly { season: string; games: number }[]
+): T[] {
+  const mature = new Set(
+    unfiltered.filter((s) => s.games >= MIN_GAMES_FOR_INFERENCE).map((s) => s.season)
+  )
+  return displayed.filter((s) => mature.has(s.season))
+}
+
 export function deviationScale(values: readonly number[]): { domain: [number, number]; ticks: number[] } {
   const peak = values.length > 0 ? Math.max(...values, 0) : 0
   const trough = values.length > 0 ? Math.min(...values, 0) : 0
@@ -671,9 +705,14 @@ export function AnalysisContent({ asOf }: { asOf?: DataAsOf | null }) {
     { revalidateOnFocus: false }
   )
 
-  const displayedSeasonRates = seasonRaFilter > 0
-    ? (seasonData?.seasonWinRates ?? [])
-    : (data?.seasonWinRates ?? [])
+  // Both responses are in scope here and only here: `data` is always the unfiltered backtest,
+  // which is what decides whether a season is mature enough to plot at all.
+  const displayedSeasonRates = plottableSeasonRates(
+    seasonRaFilter > 0
+      ? (seasonData?.seasonWinRates ?? [])
+      : (data?.seasonWinRates ?? []),
+    data?.seasonWinRates ?? []
+  )
 
   const handleSeasonFilterChange = useCallback(
     (threshold: number) => {

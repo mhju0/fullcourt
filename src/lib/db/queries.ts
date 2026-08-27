@@ -540,18 +540,57 @@ export async function getRegularSeasonGameDatesWithCounts(
 /**
  * A cheap stand-in for "has the backtest input changed?".
  *
- * The backtest reads every final regular-season game, so its answer can only
- * move when one more game goes final or a score is corrected. Both show up in
- * this pair, and reading it costs an index scan rather than ~46k joined rows.
+ * The backtest reads every final regular-season game, so its answer can only move when one
+ * more game goes final or a score is corrected. Reading this costs one aggregate over an
+ * index scan rather than ~46k joined rows.
+ *
+ * **The third term is the score correction, and it was missing until 2026-08-27.** The stamp
+ * was `count@maxDate`, and its docblock claimed both causes "show up in this pair" — they do
+ * not. A corrected score on a game that is already final moves neither term, and
+ * `diffScoreboard` writes exactly that: it refuses a status *downgrade*
+ * (`src/lib/espn-scoreboard.ts`) and writes everything else, corrections included. In season
+ * the next night's games move the count and mask it; a correction to a season's last games
+ * has nothing behind it, so the held backtest survived until October. Found by rehearsing the
+ * 2026-27 boundary rather than by anything going wrong.
+ *
+ * `home * 1000 + away` rather than a plain sum, so that a correction which swaps the two
+ * scores still moves the term. It is a checksum and not a hash: two corrections that offset
+ * exactly would hide each other. That is a far narrower hole than the one it closes, and
+ * closing it completely needs an `updated_at` column, which is a schema change.
  *
  * Filtered by the same rule as the query it stands in for. It counted 88 bubble games the
  * backtest never reads, which did not make the stamp wrong — only a description of a different
  * population than the one it keys.
  */
 export async function getCompletedGamesStamp(): Promise<string> {
-  const { finalGames, latestFinalDate } = await getDataAsOf();
+  const { finalGames, latestFinalDate, scoreChecksum } = await readFinalGamesFacts();
 
-  return `${finalGames}@${latestFinalDate ?? "none"}`;
+  return `${finalGames}@${latestFinalDate ?? "none"}#${scoreChecksum}`;
+}
+
+/**
+ * The one read behind both the stamp above and the published figure below.
+ *
+ * Kept as a single function rather than two queries for the reason the delegation always
+ * existed: the key and the figure must describe one population, and two queries can drift.
+ * The stamp needs a term the page must never print, so the split is here — at what each
+ * caller takes from the row — instead of at the database.
+ */
+async function readFinalGamesFacts(): Promise<DataAsOf & { scoreChecksum: string }> {
+  const [row] = await db
+    .select({
+      finals: count(),
+      latest: max(games.date),
+      checksum: sql<string>`coalesce(sum(${games.homeScore}::bigint * 1000 + ${games.awayScore}), 0)::text`,
+    })
+    .from(games)
+    .where(publishableGames(eq(games.status, "final")));
+
+  return {
+    finalGames: Number(row?.finals ?? 0),
+    latestFinalDate: row?.latest ? String(row.latest) : null,
+    scoreChecksum: String(row?.checksum ?? "0"),
+  };
 }
 
 /**
@@ -564,15 +603,9 @@ export async function getCompletedGamesStamp(): Promise<string> {
  * that held it can never describe different populations.
  */
 export async function getDataAsOf(): Promise<DataAsOf> {
-  const [row] = await db
-    .select({ finals: count(), latest: max(games.date) })
-    .from(games)
-    .where(publishableGames(eq(games.status, "final")));
+  const { finalGames, latestFinalDate } = await readFinalGamesFacts();
 
-  return {
-    finalGames: Number(row?.finals ?? 0),
-    latestFinalDate: row?.latest ? String(row.latest) : null,
-  };
+  return { finalGames, latestFinalDate };
 }
 
 /**
@@ -1325,10 +1358,17 @@ export async function getTeamDirectory(): Promise<
  * roughly three weeks later, nothing is final, so a freshly-seeded schedule never moved it
  * and `/season` served `0 / 0` off a cache that could not invalidate.
  *
- * Three components, because three different things change the report. The row count moves
- * when a season is seeded, the final count as it is played, and the latest date when a game
- * is rescheduled. Same population as `getSeasonReportRows` below — a stamp that keys a
- * different set of rows than the query it stands in for is the bug this replaces.
+ * Four components, because four different things change the report. The row count moves when a
+ * season is seeded, the final count as it is played, the latest date when a game is rescheduled,
+ * and the checksum when a score is corrected on a game that was already final — which moves none
+ * of the other three. See `getCompletedGamesStamp` for why that last one is not hypothetical.
+ *
+ * A game going *live* deliberately moves nothing. `buildSeasonReport` and
+ * `computeScheduleDisparity` both treat a live game as incomplete even when it already carries
+ * both scores, so the held value is still the right answer and rebuilding it would be waste.
+ *
+ * Same population as `getSeasonReportRows` below — a stamp that keys a different set of rows
+ * than the query it stands in for is the bug this replaces.
  */
 export async function getSeasonGamesStamp(season: string): Promise<string> {
   const [row] = await db
@@ -1336,11 +1376,15 @@ export async function getSeasonGamesStamp(season: string): Promise<string> {
       scheduled: count(),
       finals: sql<number>`count(*) filter (where ${games.status} = 'final')`,
       latest: max(games.date),
+      checksum: sql<string>`coalesce(sum(${games.homeScore}::bigint * 1000 + ${games.awayScore}), 0)::text`,
     })
     .from(games)
     .where(publishableGames(eq(games.season, season)));
 
-  return `${row?.scheduled ?? 0}/${Number(row?.finals ?? 0)}@${row?.latest ?? "none"}`;
+  return (
+    `${row?.scheduled ?? 0}/${Number(row?.finals ?? 0)}` +
+    `@${row?.latest ?? "none"}#${row?.checksum ?? "0"}`
+  );
 }
 
 /**

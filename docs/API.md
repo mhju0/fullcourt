@@ -232,8 +232,10 @@ the `predictions` table.**
 - **Held until a game goes final.** The read has no `LIMIT` — it is every final regular-season
   game with fatigue on both sides — so `getHistoricalBacktest`
   (`src/lib/rest-advantage-evidence-server.ts`) keeps its answer keyed by `seasonMinRA` and
-  discards it when `getCompletedGamesStamp()` (a `count` + `max(date)` over the publishable
-  final games — the same population the backtest reads) changes. Three client surfaces request this payload; without that, each request
+  discards it when `getCompletedGamesStamp()` (a `count`, a `max(date)` and a score checksum
+  over the publishable final games — the same population the backtest reads) changes. The
+  checksum was added 2026-08-27: a corrected score on a game that is already final moves
+  neither of the other two, and `diffScoreboard` writes exactly that. Three client surfaces request this payload; without that, each request
   re-read and re-reduced the whole set. The cache is per server instance and bounded, because
   `seasonMinRA` arrives from a query string.
 - **Success:** `{ data: AnalysisResponse, error: null }`:

@@ -148,6 +148,16 @@ wrong population. Verified against the live DB on 2026-08-06: `2025-26 → 1230/
 Pinned by `src/lib/__tests__/season-report-server.test.ts`, which asserts the stamp keys the
 same predicate as the query it stands in for — an in-memory fixture cannot see that drift.
 
+**Extended 2026-08-27 to a fourth component, `#scoreChecksum`.** The three above cannot see a
+score corrected on a game that is *already* final — the count, the final count and the max date
+all sit still — and `diffScoreboard` writes exactly that, refusing only a status downgrade. In
+season the next night's games move the count and mask it; a correction to a season's last games
+has nothing behind it, so the held value survived until October. Found by rehearsing the 2026-27
+boundary, not by anything going wrong. Verified against the live DB on 2026-08-27:
+`2025-26 → 1230/1230@2026-04-12#143407129`, `2026-27 → 1200/0@2027-04-11#0` (seeded, unplayed —
+the checksum is 0 until the first score lands). A game going **live** still moves nothing, which
+is correct: both reducers treat a live game as incomplete even when it already carries scores.
+
 ## 4. Seeding the new schedule (manual)
 
 From a reachable environment with `DATABASE_URL` set, run from the repo root:
