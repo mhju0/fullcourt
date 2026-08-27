@@ -4,10 +4,12 @@ import {
   deviationFill,
   deviationScale,
   minBarSize,
+  plottableSeasonRates,
 } from "@/components/analysis-content"
 // The lift is claim vocabulary before it is a plotted value, so it lives with the claims.
 // The three helpers above are drawing alone and stay beside the chart.
 import { toDeviation } from "@/lib/analysis-claims"
+import { MIN_GAMES_FOR_INFERENCE } from "@/lib/season-report"
 
 /**
  * The /analysis win-rate charts plot `winPct - baseline` as signed deviation columns.
@@ -127,5 +129,77 @@ describe("deviationScale", () => {
     const { domain, ticks } = deviationScale([])
     expect(domain[0]).toBeLessThan(domain[1])
     expect(ticks).toContain(0)
+  })
+})
+
+/**
+ * The by-season chart shares one y-axis, derived from the data, so a season whose sample is a
+ * fraction of its peers' rescales every other bar rather than merely drawing a noisy one.
+ *
+ * Every figure below was read off the live database on 2026-08-27, when 2026-27 was seeded
+ * (1,200 games, none played) and the chart held 41 completed seasons.
+ */
+describe("plottableSeasonRates", () => {
+  /** Unfiltered per-season called games, live: fewest 382, median 688, most 775. */
+  const UNFILTERED = [
+    { season: "1998-99", games: 382 },
+    { season: "2024-25", games: 703 },
+    { season: "2025-26", games: 605 },
+  ]
+
+  it("plots every completed season", () => {
+    expect(plottableSeasonRates(UNFILTERED, UNFILTERED).map((s) => s.season)).toEqual([
+      "1998-99",
+      "2024-25",
+      "2025-26",
+    ])
+  })
+
+  /**
+   * Four days into 2026-27 the season has ~5 called games and sits a median 17.1pp off its own
+   * baseline — which widened the axis from 6pp to 25pp in 153 of 200 simulated openings.
+   */
+  it("withholds a season still being played", () => {
+    const opening = [...UNFILTERED, { season: "2026-27", games: 5 }]
+    expect(plottableSeasonRates(opening, opening).map((s) => s.season)).not.toContain("2026-27")
+  })
+
+  it("admits it once it reaches the gate, and not one game before", () => {
+    const below = [{ season: "2026-27", games: MIN_GAMES_FOR_INFERENCE - 1 }]
+    const at = [{ season: "2026-27", games: MIN_GAMES_FOR_INFERENCE }]
+    expect(plottableSeasonRates(below, below)).toHaveLength(0)
+    expect(plottableSeasonRates(at, at)).toHaveLength(1)
+  })
+
+  /**
+   * The case that fails if maturity is ever read off the row being drawn instead of the
+   * unfiltered population. The threshold views re-count each season over a rare subset: at
+   * RA >= 7 a *complete* season yields 9 to 46 called games, and all 41 sit below the gate.
+   * Gating on those counts would empty the chart — and hide 22 of 41 seasons at RA >= 5.
+   */
+  it("keeps completed seasons in the threshold views, where every count is small", () => {
+    const atRa7 = [
+      { season: "1998-99", games: 25 },
+      { season: "2024-25", games: 14 },
+      { season: "2025-26", games: 12 },
+    ]
+    expect(plottableSeasonRates(atRa7, UNFILTERED).map((s) => s.season)).toEqual([
+      "1998-99",
+      "2024-25",
+      "2025-26",
+    ])
+  })
+
+  it("withholds the young season in those views too", () => {
+    const atRa7 = [
+      { season: "2025-26", games: 12 },
+      { season: "2026-27", games: 1 },
+    ]
+    const unfiltered = [...UNFILTERED, { season: "2026-27", games: 5 }]
+    expect(plottableSeasonRates(atRa7, unfiltered).map((s) => s.season)).toEqual(["2025-26"])
+  })
+
+  it("drops a season the unfiltered population cannot vouch for", () => {
+    expect(plottableSeasonRates([{ season: "2026-27", games: 900 }], UNFILTERED)).toHaveLength(0)
   })
 })

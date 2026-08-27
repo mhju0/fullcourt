@@ -32,7 +32,7 @@ const PUBLISHING_READERS = [
   "getGameById",
   "getTeamRecentFinalResults",
   "getRegularSeasonGameDatesWithCounts",
-  "getDataAsOf",
+  "readFinalGamesFacts",
   "getCompletedGamesWithFatigue",
   "searchRegularSeasonGames",
   "getUpcomingGamesWithRA",
@@ -67,12 +67,32 @@ describe("publishableGames", () => {
     }
   });
 
-  it("keeps getCompletedGamesStamp on the filtered read rather than its own", () => {
+  it("keeps the stamp and the published figure on one read", () => {
     // The stamp stopped issuing its own query on 2026-08-18, when the same count/max became
-    // a published "as of" value (`getDataAsOf`). Delegation is what keeps the key and the
-    // displayed figure describing one population — re-inlining the query here would also
-    // re-open the chance of dropping the regime filter from one of the two.
-    expect(bodyOf("getCompletedGamesStamp")).toContain("getDataAsOf()");
+    // a published "as of" value. Delegation is what keeps the key and the displayed figure
+    // describing one population — re-inlining a query in either would re-open the chance of
+    // dropping the regime filter from one of the two.
+    //
+    // The shared read moved into `readFinalGamesFacts` on 2026-08-27, when the stamp gained a
+    // score checksum the page must never print. Both callers still take their fields from one
+    // row, so the invariant is unchanged; only where the two readings diverge moved.
+    for (const caller of ["getCompletedGamesStamp", "getDataAsOf"]) {
+      expect(bodyOf(caller)).toContain("readFinalGamesFacts()");
+      expect(bodyOf(caller)).not.toContain("db\n    .select");
+    }
+  });
+
+  it("keeps a score correction from surviving in a held cache", () => {
+    // A corrected score on an already-final game moves neither the count nor the max date, and
+    // `diffScoreboard` writes exactly that — it refuses only a status downgrade. Both stamps
+    // carry a checksum so the correction cannot hide behind an unchanged pair.
+    for (const stamp of ["readFinalGamesFacts", "getSeasonGamesStamp"]) {
+      expect(bodyOf(stamp)).toContain("games.homeScore");
+      expect(bodyOf(stamp)).toContain("games.awayScore");
+    }
+    // Weighted, so that a correction which swaps the two scores still moves the term.
+    expect(bodyOf("readFinalGamesFacts")).toContain("* 1000 +");
+    expect(bodyOf("getSeasonGamesStamp")).toContain("* 1000 +");
   });
 
   it("is the only place the predicates are written", () => {

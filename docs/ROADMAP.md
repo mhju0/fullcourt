@@ -219,7 +219,7 @@ oversight. None is a defect in what the site publishes.
   so a launcher that crops has artwork inside the spec's 80% safe circle.
 - ~~**`/season` can serve a stale empty rollover for weeks from 1 October.**~~ — **fixed**, and
   this entry outlived the fix. `/season` is keyed on `getSeasonGamesStamp`, not
-  `getCompletedGamesStamp`: three components (`scheduled/finals@latest`) over the same population
+  `getCompletedGamesStamp`: four components (`scheduled/finals@latest#checksum`) over the same population
   the report reads, so seeding a schedule moves the stamp even though nothing is final yet. Since
   2026-08-18 that window also renders a real page rather than an empty one — a season with no
   completed game reports on the `"schedule"` basis.
