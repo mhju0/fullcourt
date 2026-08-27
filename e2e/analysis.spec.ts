@@ -50,14 +50,20 @@ test.describe("Analysis page", () => {
     await expect(page.getByLabel("Rest advantage filter")).toBeVisible({ timeout: 60_000 });
 
     // Page forward, then confirm the range moved rather than the page number alone.
-    const range = page.getByText(/SHOWING [\d,]+–[\d,]+ OF [\d,]+/);
+    //
+    // Located by test id, not by its own text: paging and filtering both re-fetch, and this
+    // line reads LOADING… while that is in flight. A /SHOWING …/ text locator resolves to
+    // nothing during the fetch, so the assertion fails as "element(s) not found" the moment
+    // the round trip outlasts the 5s expect timeout — which it does under the full suite's
+    // parallel load, and never in this spec alone. The element is stable; its text is not.
+    const range = page.getByTestId("explore-range");
     await expect(range).toContainText("SHOWING 1–20");
     await page.getByLabel("Next page").click();
-    await expect(range).toContainText("SHOWING 21–40");
+    await expect(range).toContainText("SHOWING 21–40", { timeout: 15_000 });
 
     // Any filter change returns to page 1 — the old page indexes a different set.
     await page.getByLabel("Team filter").selectOption("BOS");
-    await expect(range).toContainText("SHOWING 1–20");
+    await expect(range).toContainText("SHOWING 1–20", { timeout: 15_000 });
     await expect(page.getByRole("button", { name: /Open details:/ }).first()).toHaveAttribute(
       "aria-label",
       /BOS/

@@ -115,10 +115,13 @@ not for live scoring). **Prefer a stats-ID source (`stats.nba.com`) for a live s
 - [ ] Confirm the app shows 2026-27 in the season dropdown (automatic).
 - [ ] Confirm `vercel.json` still reads `"0 7 * * *"` (changed from `0 3` on 2026-08-18 so the
       one daily run lands after the last final — Section 5).
-- [ ] **On the first game day, check the Actions run actually wrote scores** (it is the first
-      in-season run of the rewritten pipeline). Every in-season run from 2026-05-11 to the end
-      of 2025-26 failed at the old CDN call; the rewrite is verified against historical data
-      but has never executed on a live slate.
+- [ ] **Check the Actions run actually wrote scores — on the day *after* the first game day**
+      (2026-10-21, not 2026-10-20: the Actions cron fires at 21:00 UTC = 5 PM ET, before opening
+      night tips off, so that run correctly writes nothing). It is the first in-season run of the
+      rewritten pipeline: every in-season run from 2026-05-11 to the end of 2025-26 failed at the
+      old CDN call, and the rewrite is verified against historical data but has never executed on
+      a live slate. **[LAUNCH_DAY.md](LAUNCH_DAY.md) is the step-by-step** — what a good run
+      looks like line by line, the greens that are not green, and the repair order.
 - [ ] Bump the hardcoded season counts that cannot derive (Section 7).
 
 **~January of the new season:**

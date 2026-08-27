@@ -649,7 +649,12 @@ function ExploreGames({
       {/* Pagination */}
       {total > 0 && (
         <div className="mono mt-3 flex items-center justify-between" style={{ fontSize: 11, color: "var(--term-text-muted)", letterSpacing: TRACK.sub }}>
-          <p>
+          {/*
+            Test id rather than the text itself: this line says LOADING… while a page is in
+            flight, so a locator matched on /SHOWING …/ resolves to nothing mid-fetch and the
+            assertion fails as "element not found" instead of waiting for the range to settle.
+          */}
+          <p data-testid="explore-range">
             {loading
               ? "LOADING…"
               : `SHOWING ${start.toLocaleString()}–${end.toLocaleString()} OF ${total.toLocaleString()}`}

@@ -74,6 +74,21 @@ the operating line. The grammar, construction spec, and archived exploration rec
 [design/BRAND_GRAMMAR.md](design/BRAND_GRAMMAR.md). `docs/social-preview.png` was
 re-rendered; **the GitHub Settings re-upload is manual and still pending.**
 
+**On 2026-08-24 the palette took a second grade, and the wordmark took a kerning table.** The
+first full axe pass over all 20 routes (2026-08-24) found two discrete defects and one systemic
+question: the rose/teal poles were validated at the 3:1 graphics bar but were also carrying
+**small text**, at 3.0–4.4:1 against AA's 4.5. Michael chose full compliance rather than a
+scoped exception, so `--term-red-text` / `--term-blue-text` were added as text-grade cuts of the
+same two hues — the poles themselves are unchanged and still paint fills and figures. Two
+findings are worth remembering rather than rediscovering: **no dimming opacity on text can pass
+AA** (`/shooting`'s noisy rows are de-emphasized by colour instead), and **`aria-hidden` does not
+exempt text from the color-contrast rule** (the front door's ghost numerals became CSS counters).
+The re-audit is clean on all 20 routes and `design-contrast.test.ts` pins the ratios. The same
+day, the FULLCOURT lockup's optical kerning moved into one table
+(`src/lib/brand/wordmark-kern.ts`) consumed by the nav, the front-door h2 and the OG card, on the
+same one-source rule as the mark geometry. **The VoiceOver walkthrough is still owed** — an
+automated pass cannot hear focus order.
+
 The dependency tree is deliberately pinned; see
 [SEASON_ROLLOVER.md §8](SEASON_ROLLOVER.md) before regenerating the lockfile, and §7 for the
 season counts and frozen front-door figures that do not derive themselves. **`gsap` is the one
@@ -149,6 +164,11 @@ added alongside it.
   season's split is noise; see [ADR 0002](adr/0002-shooting-source-hoopr.md).
 
 ## In progress
+
+**Both of the two items below closed on 2026-08-24, so nothing is actually in progress** — they
+are kept here as the record of how each resolved, and the section is empty again in the sense
+that matters. The open work that remains is not code: the social-preview upload, the VoiceOver
+walkthrough, the real-device checks, and the launch-day hand-check (Known and not fixed, below).
 
 Two items added 2026-08-23, both discussed with and scoped by Michael. Before them this section
 had been empty since `/referees` published on 2026-08-22 (its history is under Shipped modules;
@@ -249,11 +269,15 @@ oversight. None is a defect in what the site publishes.
   showed green from the season gate. Rewritten onto ESPN on 2026-08-18 and verified against
   historical data (0 writes needed over dates whose values were already correct; a perturbed
   row correctly repaired). It cannot be exercised against a real slate until 2026-10-20 —
-  **check the first in-season run by hand.**
+  **check the first in-season run by hand**, following [LAUNCH_DAY.md](LAUNCH_DAY.md), which
+  was written 2026-08-27 for exactly this check. Read it before opening night, not during: it
+  records that the Actions run *on* 2026-10-20 fires before tip-off and correctly writes
+  nothing, so the run to check is 2026-10-21's.
 
 ## Maintenance responsibilities
 
-- Follow [SEASON_ROLLOVER.md](SEASON_ROLLOVER.md) before each new NBA season.
+- Follow [SEASON_ROLLOVER.md](SEASON_ROLLOVER.md) before each new NBA season, and
+  [LAUNCH_DAY.md](LAUNCH_DAY.md) on the first live slate of one.
 - The Vercel live-score cron runs **daily, year-round** — there is no seasonal cadence to
   switch. `/api/cron/update` early-returns before any ESPN fetch when neither of the two ET dates
   it checks (yesterday and today — it fires at 2–3 AM ET) has a `scheduled|live` row, so an
