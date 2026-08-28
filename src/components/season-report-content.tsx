@@ -29,6 +29,8 @@ import {
   REST_SPAN_PP,
 } from "@/lib/schedule-value"
 import { LEAD, SPACE, termCardStyle, termDashedEmptyStyle, TRACK, TYPE, WIDTH } from "@/lib/terminal-styles"
+import { competitionRanks } from "@/lib/rank"
+import { RankBadge } from "@/components/ui/rank-badge"
 import { DataTable, type DataColumn } from "@/components/ui/data-table"
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts"
 import { signedNumber } from "@/lib/signed-number"
@@ -61,12 +63,36 @@ function median(values: number[]): number {
 }
 
 /** A rate tile that refuses to print a number it cannot stand behind. */
-function RateTile({ label, rate, testId }: { label: string; rate: SeasonReportRate; testId?: string }) {
+function RateTile({
+  label,
+  rate,
+  venueBaseline,
+  testId,
+}: {
+  label: string
+  rate: SeasonReportRate
+  /**
+   * This season's own home win rate (`seasonWinRates[].homeBaselinePct`), for the tile's E1
+   * slot — per-season because home court ran from 67.9% to 54.3%, so the all-season 59.9 would
+   * mis-size any single season's rate. `null` while the backtest is in flight or for a season
+   * it does not carry; the slot then simply does not render, same posture as the verdict line.
+   */
+  venueBaseline: number | null
+  testId?: string
+}) {
   const gated = rate.games < MIN_GAMES_FOR_INFERENCE || rate.band === null
   return (
     <StatTile
       label={label}
       value={gated ? "—" : `${rate.winPct.toFixed(1)}%`}
+      baseline={
+        !gated && venueBaseline !== null
+          ? {
+              delta: Math.round((rate.winPct - venueBaseline) * 10) / 10,
+              label: `VS ${venueBaseline}% · THIS SEASON'S HOME BASELINE`,
+            }
+          : undefined
+      }
       sub={
         !gated
           ? `±${rate.band!.toFixed(1)} · ${rate.games.toLocaleString()} GAMES`
@@ -477,6 +503,8 @@ function ScheduleTax({
   const byMiles = [...teams].sort((a, b) => b.travelMiles - a.travelMiles || a.teamId - b.teamId)
   const most = byMiles[0]
   const least = byMiles[byMiles.length - 1]
+  const b2bRanks = competitionRanks(byMiles, (t) => t.backToBacks)
+  const threeInFourRanks = competitionRanks(byMiles, (t) => t.threeInFours)
 
   return (
     <div className="flex flex-col gap-3">
@@ -506,7 +534,14 @@ function ScheduleTax({
       ) : null}
       {/* Full for the same reason as the conversion table above: one row per team, the page's
           column is the measure. The zero-rest player list below stays numeric — a compact
-          lookup, not a league table. */}
+          lookup, not a league table.
+
+          The rank riders (ADR 0010, D1) sit on the two density columns and only those: the
+          table is sorted by miles, so a rank there restates the row number, and JET LAG is a
+          sibling measure rather than a key one. B2B and 3-IN-4 are the two figures a reader
+          looks their own team up for, and they arrive out of sort order — the rider is what
+          says "14 back-to-backs" is 3rd-most without making the reader re-sort by eye. Counts,
+          not proportions, so ties are common and share a rank by construction. */}
       <DataTable
         width="full"
         minWidth={520}
@@ -516,8 +551,32 @@ function ScheduleTax({
         columns={[
           { label: "TEAM", cell: (t) => t.abbreviation },
           { label: "MILES FLOWN", numeric: true, cell: (t) => t.travelMiles.toLocaleString() },
-          { label: "BACK-TO-BACKS", unit: "GAMES", numeric: true, cell: (t) => t.backToBacks },
-          { label: "3-IN-4", unit: "GAMES", numeric: true, cell: (t) => t.threeInFours },
+          {
+            label: "BACK-TO-BACKS",
+            unit: "GAMES · 1ST = MOST",
+            numeric: true,
+            cell: (t, i) => (
+              <>
+                {t.backToBacks}
+                {b2bRanks[i] !== null ? (
+                  <RankBadge rank={b2bRanks[i]} of={byMiles.length} population="teams" />
+                ) : null}
+              </>
+            ),
+          },
+          {
+            label: "3-IN-4",
+            unit: "GAMES · 1ST = MOST",
+            numeric: true,
+            cell: (t, i) => (
+              <>
+                {t.threeInFours}
+                {threeInFourRanks[i] !== null ? (
+                  <RankBadge rank={threeInFourRanks[i]} of={byMiles.length} population="teams" />
+                ) : null}
+              </>
+            ),
+          },
           { label: "JET LAG", unit: "GAMES", numeric: true, cell: (t) => t.jetLagGames },
         ]}
       />
@@ -626,6 +685,15 @@ export function SeasonReportContent() {
     [analysis, season]
   )
 
+  // The displayed season's own home win rate, for the tiles' E1 baseline slot. Read from the
+  // same response as the norm — no second request — and per-season on purpose: reading one
+  // season's rate against the pooled 59.9 would hand the 1980s tiles home court they did not
+  // produce and dock the modern ones.
+  const seasonVenueBaseline = useMemo(
+    () => analysis?.seasonWinRates.find((r) => r.season === season)?.homeBaselinePct ?? null,
+    [analysis, season]
+  )
+
   // Held back while the baseline request is in flight: a pending norm and a missing norm
   // are both `null`, and passing the pending one through flashed "ALL-SEASON NORM
   // UNAVAILABLE" on every load — a claim about the data that was really a claim about the
@@ -706,8 +774,13 @@ export function SeasonReportContent() {
               </>
             ) : (
               <>
-                <RateTile label="RESTED TEAM AT HOME · WIN RATE" rate={data.overall} testId="season-rest-win-rate" />
-                <RateTile label="WIN RATE · RA ≥ 2" rate={data.atLeastTwo} />
+                <RateTile
+                  label="RESTED TEAM AT HOME · WIN RATE"
+                  rate={data.overall}
+                  venueBaseline={seasonVenueBaseline}
+                  testId="season-rest-win-rate"
+                />
+                <RateTile label="WIN RATE · RA ≥ 2" rate={data.atLeastTwo} venueBaseline={seasonVenueBaseline} />
               </>
             )}
             <StatTile

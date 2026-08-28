@@ -1,6 +1,5 @@
 import type { AnalysisResponse } from "@/types"
 import { homeWinRateWhenVisitorRested } from "@/lib/rest-advantage-display"
-import { signedNumber } from "@/lib/signed-number"
 
 /**
  * What `/analysis` claims about the historical backtest, as values rather than JSX.
@@ -101,9 +100,12 @@ export type ClaimTile = {
   /** The rate as rendered, with its unit. */
   value: string
   /**
-   * Denominator and lift, as one line. Built here rather than in JSX so "no rate without its
-   * count, and none read against a coin flip" is a property of the claim a unit test can
-   * assert — the same reason `buildRestAdvantageEvidence` returns finished sentences.
+   * The denominator, as one line. Built here rather than in JSX so "no rate without its
+   * count" is a property of the claim a unit test can assert — the same reason
+   * `buildRestAdvantageEvidence` returns finished sentences. The lift used to ride in this
+   * string too; since the E1 house slot (ADR 0010) it travels as {@link lift} +
+   * {@link baselineLabel} so the tile renders it structurally, and the unit test asserts the
+   * pair instead of a substring.
    */
   detail: string
   winPct: number
@@ -111,6 +113,12 @@ export type ClaimTile = {
   games: number
   /** Points against the venue baseline. The part rest accounts for. */
   lift: number
+  /**
+   * Names the baseline {@link lift} is read against, for the tile's E1 slot. The leading tile
+   * states the number outright; the ones after it do not repeat it — same posture the detail
+   * string always took.
+   */
+  baselineLabel: string
   /** The RA floor this tile covers; `null` for the any-gap cut. */
   threshold: number | null
 }
@@ -259,12 +267,13 @@ export function buildAnalysisClaims(
     {
       label: "RESTED TEAM AT HOME WON · ANY GAP",
       value: `${data.overallWinRate}%`,
-      // The leading tile names the baseline outright; the one below it does not repeat the
-      // number, because by then the reader has met it.
-      detail: `${data.totalGames.toLocaleString()} GAMES · ${signedNumber(overallLift)} VS ${baselinePct}% BASELINE`,
+      detail: `${data.totalGames.toLocaleString()} GAMES`,
       winPct: data.overallWinRate,
       games: data.totalGames,
       lift: overallLift,
+      // The leading tile names the baseline outright; the one below it does not repeat the
+      // number, because by then the reader has met it.
+      baselineLabel: `VS ${baselinePct}% VENUE BASELINE`,
       threshold: null,
     },
   ]
@@ -275,10 +284,11 @@ export function buildAnalysisClaims(
     tiles.push({
       label: `RESTED TEAM AT HOME WON · RA ≥ ${ra5.threshold}`,
       value: `${ra5.winPct}%`,
-      detail: `${ra5.games.toLocaleString()} GAMES · ${signedNumber(ra5Lift)} VS BASELINE`,
+      detail: `${ra5.games.toLocaleString()} GAMES`,
       winPct: ra5.winPct,
       games: ra5.games,
       lift: ra5Lift,
+      baselineLabel: "VS VENUE BASELINE",
       threshold: ra5.threshold,
     })
   }

@@ -1,4 +1,5 @@
 import type { CSSProperties, ReactNode } from "react"
+import { signedNumber } from "@/lib/signed-number"
 import { LEAD, SPACE, SPACE_CARD, TRACK, TYPE } from "@/lib/terminal-styles"
 
 /**
@@ -36,6 +37,7 @@ export function StatTile({
   label,
   value,
   sub,
+  baseline,
   accent = "var(--term-neutral)",
   tone,
   variant = "card",
@@ -45,6 +47,20 @@ export function StatTile({
   value: string
   /** The qualifier under the figure — a confidence band, a sample size, what the units are. */
   sub?: string
+  /**
+   * The E1 house slot (ADR 0010): how far the figure sits from its venue baseline. A rate on
+   * this site is only readable as an effect of rest once the venue's own contribution is
+   * subtracted, so the tile carries the subtraction as a first-class line rather than a clause
+   * a caller may or may not remember to write into `sub`.
+   *
+   * `delta` is in the figure's own units (percentage points for a rate); formatting and tone
+   * are decided here — teal above the baseline, rose below, muted on it — so eight call sites
+   * cannot drift the way the eight hand-rolled tiles once did. `label` names the baseline
+   * being read against and stays at the call site, because *which* baseline is a per-surface
+   * claim ("59.9% venue baseline", "this season's own"). Omit the prop where no venue-baseline
+   * comparison exists in the data — an invented baseline is worse than none.
+   */
+  baseline?: { delta: number; label: string }
   /**
    * The 2px top rule on the `card` variant. Ignored by `cell`, which has no edges of its own.
    * A **top** rule, not a left one: down the left edge a row of tiles reads as a list with
@@ -105,6 +121,33 @@ export function StatTile({
       >
         {value}
       </span>
+      {/* The baseline line sits directly under the figure it qualifies, before the free-text
+          qualifier: the subtraction is what makes the figure readable, the qualifier is what
+          sizes it. Sign colour follows the page precedent (/analysis colours its lift with the
+          text-grade poles); an exact zero is bare and muted, because "on the baseline" points
+          nowhere. */}
+      {baseline ? (
+        <span
+          className="tabular-nums"
+          data-testid={valueTestId ? `${valueTestId}-baseline` : undefined}
+          style={{ fontSize: TYPE.micro, letterSpacing: TRACK.sub, color: "var(--term-text-muted)" }}
+        >
+          <span
+            style={{
+              fontWeight: 700,
+              color:
+                baseline.delta > 0
+                  ? "var(--term-blue-text)"
+                  : baseline.delta < 0
+                    ? "var(--term-red-text)"
+                    : "var(--term-text-muted)",
+            }}
+          >
+            {signedNumber(baseline.delta, 1)}
+          </span>{" "}
+          {baseline.label}
+        </span>
+      ) : null}
       {/* The qualifier is NOT uppercased, deliberately: unlike the label it may be a phrase
           ("edge games, best to worst") rather than a label, and caps cost word-shape cues. */}
       {sub ? (
