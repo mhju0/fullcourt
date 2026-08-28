@@ -144,7 +144,7 @@ test.describe("Primary navigation", () => {
     const bar = page.getByRole("banner");
     const height = (await bar.boundingBox())!.height;
 
-    // The 96px band never travels the screen; it is simply not where it was.
+    // The bar-height band never travels the screen; it is simply not where it was.
     expect(await bar.evaluate((el) => getComputedStyle(el).transitionDuration)).toBe("0s");
 
     await wheel(page, 1400);
@@ -270,42 +270,100 @@ test.describe("Primary navigation", () => {
     await expect(other).toHaveAttribute("data-active-surface", "true");
   });
 
-  test("on a phone the nav scrolls itself rather than the page", async ({ page }) => {
-    // Eight links do not fit a 390px line. They used to overflow the row and take the whole
-    // document with them: measured 238px of horizontal page scroll, with the labels squeezed
-    // (SCHEDULE EDGE down to 62px, wrapping inside a 44px box) and the reference links off
-    // screen entirely. The row is its own scroll strip now, so the page itself must not move.
+  test("on a phone the dock is primary navigation, and the page never scrolls sideways", async ({
+    page,
+  }) => {
+    // The 2026-08-29 shell merge: below `lg` the top bar is brand-only and a docked bottom
+    // nav carries the four most-visited surfaces plus a search slot. The tabs are not hidden
+    // under a hamburger — the ones off the dock are one search away through the palette.
     await page.setViewportSize({ width: 390, height: 700 });
     await page.goto("/analysis");
+    await expect(page.getByRole("heading", { name: "Model Results" })).toBeVisible({
+      timeout: 60_000,
+    });
 
+    // The old strip's guarantee survives the merge: the page itself never scrolls sideways.
     const pageOverflow = await page.evaluate(
       () => document.documentElement.scrollWidth - document.documentElement.clientWidth
     );
     expect(pageOverflow).toBe(0);
 
-    // …and the strip is what carries the overflow instead, so nothing was solved by hiding it.
-    const strip = page.locator(".fc-nav-scroll");
-    const { scrollW, clientW } = await strip.evaluate((el) => ({
-      scrollW: el.scrollWidth,
-      clientW: el.clientWidth,
-    }));
-    expect(scrollW).toBeGreaterThan(clientW);
+    const dock = page.getByRole("navigation", { name: "Bottom navigation" });
+    await expect(dock).toBeVisible();
+    await expect(dock.getByRole("link")).toHaveCount(4);
+    // Short labels carry full accessible names, and the active slot says where you are.
+    await expect(dock.getByRole("link", { name: "MODEL RESULTS" })).toHaveAttribute(
+      "aria-current",
+      "page"
+    );
 
-    // The far end of the strip is still reachable — a swipe away, not gone.
-    await page.getByRole("link", { name: "BEHIND THE DATA", exact: true }).click();
+    // Every surface off the dock is reachable through the palette — asserted on the one that
+    // used to end the strip, so "a swipe away" becomes "a search away", not "gone".
+    await dock.getByRole("button", { name: /Search/ }).click();
+    const palette = page.getByRole("dialog", { name: "Command palette" });
+    await expect(palette).toBeVisible();
+    await palette.getByPlaceholder("Jump to a surface…").fill("behind");
+    await page.getByRole("option", { name: /BEHIND THE DATA/ }).click();
     await expect(page).toHaveURL(/\/behind-the-data$/);
+  });
+
+  test("the dock never covers the page's last line", async ({ page }) => {
+    // `body` reserves the dock's height below `lg` (globals.css) — without that, the fixed
+    // dock sits over the footer and the page's last line is unreadable and unclickable.
+    await page.setViewportSize({ width: 390, height: 700 });
+    await page.goto("/games");
+    await expect(page.getByRole("heading", { level: 1, name: "Games" })).toBeVisible();
+
+    await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+    const footer = await page.locator("footer").boundingBox();
+    const dock = await page
+      .getByRole("navigation", { name: "Bottom navigation" })
+      .boundingBox();
+    expect(footer!.y + footer!.height).toBeLessThanOrEqual(dock!.y + 1);
+  });
+
+  test("the dock does not exist on desktop", async ({ page }) => {
+    await page.goto("/games");
+    await expect(page.getByRole("heading", { level: 1, name: "Games" })).toBeVisible();
+    await expect(page.getByRole("navigation", { name: "Bottom navigation" })).toBeHidden();
+  });
+
+  test("the SEARCH button and ⌘K both open the palette, and it reaches every group", async ({
+    page,
+  }) => {
+    await page.goto("/games");
+    await expect(page.getByRole("heading", { level: 1, name: "Games" })).toBeVisible();
+
+    // The visible door first — the GitHub lesson is that a keyboard-only palette is a
+    // feature nobody finds. Ten options when unfiltered: six tabs, three OTHER, one reference.
+    await page.getByRole("button", { name: "SEARCH" }).click();
+    const palette = page.getByRole("dialog", { name: "Command palette" });
+    await expect(palette).toBeVisible();
+    await expect(palette.getByRole("option")).toHaveCount(10);
+    await page.keyboard.press("Escape");
+    await expect(palette).toBeHidden();
+
+    // The accelerator second.
+    await page.keyboard.press("ControlOrMeta+k");
+    await expect(palette).toBeVisible();
+    await palette.getByPlaceholder("Jump to a surface…").fill("referee");
+    await page.getByRole("option", { name: /REFEREE EFFECT/ }).click();
+    await expect(page).toHaveURL(/\/referees$/);
   });
 
   /**
    * The strip has to *say* it scrolls. The 2026-08-04 measurement found the OTHER menu
-   * entirely off-screen at phone widths with nothing signalling that the row continues —
+   * entirely off-screen at narrow widths with nothing signalling that the row continues —
    * the scrollbar is hidden on purpose, so it cannot be the signal. An edge fade is how
    * Naver Sports' tab strips and ESPN's mobile subnavs carry this, and each side shows
    * only while there is actually content under it: a fade over a row that fits would dim
    * the last tab for no reason.
    */
-  test("the phone strip fades the edge that still has content under it", async ({ page }) => {
-    await page.setViewportSize({ width: 390, height: 700 });
+  test("a squeezed desktop strip fades the edge that still has content under it", async ({ page }) => {
+    // 1024 is the narrowest width that still shows the strip (`lg`), and the single bar
+    // leaves the tabs less room than the old full-width row had — so this is where the
+    // fade affordance earns its keep after the shell merge.
+    await page.setViewportSize({ width: 1024, height: 700 });
     await page.goto("/analysis");
     await expect(page.getByRole("navigation", { name: "Main navigation" })).toBeVisible();
 
@@ -378,7 +436,10 @@ test.describe("Primary navigation", () => {
     // clickable-looking before React has hydrated it — and a click that lands mid-hydration hits
     // a node that is being replaced, so the navigation is simply dropped. Waiting on a control
     // the client tree owns proves hydration finished.
-    await expect(page.getByLabel("Season")).toBeVisible();
+    // `exact` (and the label's own casing) since the shell merge: the dock's SEASON REPORT
+    // slot also answers a substring "Season" query, and strict mode counts hidden elements
+    // when resolving the locator.
+    await expect(page.getByLabel("SEASON", { exact: true })).toBeVisible();
     await page.waitForLoadState("networkidle");
     await behind.click();
 
