@@ -261,7 +261,7 @@ export function NavBar() {
           borderBottom: "1px solid var(--term-border)",
         }}
       >
-        <div className="mx-auto flex h-full max-w-7xl items-center gap-4 px-4 sm:px-6 lg:gap-5">
+        <div className="mx-auto flex h-full max-w-7xl items-center gap-4 px-4 sm:px-6">
           {/* The wordmark goes home, which is what every visitor already expects a logo to
               do. Sized as a logotype rather than as chrome text (2026-07-30): 22px in the
               display face beside the 34px mark — the standard analytics-site header shape,
@@ -315,9 +315,9 @@ export function NavBar() {
           <div className="relative hidden h-full min-w-0 flex-1 lg:block">
             <div
               ref={stripRef}
-              className="fc-nav-scroll mono flex h-full items-center gap-5 overflow-x-auto"
+              className="fc-nav-scroll mono flex h-full items-center gap-4 overflow-x-auto"
             >
-              <nav aria-label="Main navigation" className="flex h-full shrink-0 items-center gap-5">
+              <nav aria-label="Main navigation" className="flex h-full shrink-0 items-center gap-4">
                 {DIRECT_NAV_ITEMS.map(({ href, label }) => {
                   const active = isActiveRoute(pathname, href)
                   return (
@@ -388,7 +388,7 @@ export function NavBar() {
                 </Menu.Root>
               </nav>
 
-              <nav aria-label="Reference" className="ml-auto flex h-full shrink-0 items-center gap-5">
+              <nav aria-label="Reference" className="ml-auto flex h-full shrink-0 items-center gap-4">
                 {SECONDARY_LINKS.map(({ href, label }) => {
                   const active = isActiveRoute(pathname, href)
                   return (
