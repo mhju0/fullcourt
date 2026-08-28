@@ -253,11 +253,22 @@ export function AboutContent({ stats }: { stats: AboutStats | null }) {
   }, []);
 
   return (
-    // Full-bleed escape from the app's max-w-7xl / py-8 container.
+    // Full-bleed escape from the app's max-w-7xl / py-8 container. The top margin also
+    // swallows the sticky chrome's flow box and pads the same height back inside, so the
+    // dark ground runs under the header — that is what the transparent-at-top chrome
+    // (nav-bar's fc-chrome-clear, 2026-08-28) shows through. The two cancel exactly:
+    // every fold equation below ("88svh - chrome") is unchanged by the pair.
     <div
       ref={root}
       className="-my-8"
-      style={{ marginInline: "calc(50% - 50vw)", background: INK, color: BONE, overflowX: "clip" }}
+      style={{
+        marginInline: "calc(50% - 50vw)",
+        marginTop: "calc(-1 * var(--term-chrome-h) - 2rem)",
+        paddingTop: "var(--term-chrome-h)",
+        background: INK,
+        color: BONE,
+        overflowX: "clip",
+      }}
     >
       <div aria-hidden="true" style={{ position: "fixed", inset: 0, pointerEvents: "none", zIndex: 1, opacity: 0.15, backgroundImage: GRAIN }} />
 

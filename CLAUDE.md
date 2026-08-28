@@ -124,8 +124,10 @@ Skipping `prepare` fails **silently**: `fatigue_model_table.csv` is already on d
   cannot be pinned should be rewritten so it cannot age (`"every season since 1985-86"`, not a
   count).
 - **The app is light-only** ("Broadcast"). It went light → dark → light once; do not reintroduce a
-  dark token set without reading [docs/FRONTEND.md](docs/FRONTEND.md). `/about` is the one
-  deliberately dark surface and is scoped to itself.
+  dark token set without reading [docs/FRONTEND.md](docs/FRONTEND.md). `/` (the front door — it
+  absorbed the old `/about`) is the one deliberately dark surface and is scoped to itself; since
+  2026-08-28 the header joins that dark on `/` only, via the scoped `fc-chrome-front` class,
+  never a global re-theme.
 
 ## Evidence discipline
 

@@ -191,6 +191,39 @@
   --term-chrome-h: 96px;
 }
 
+/* ── Front-door chrome ───────────────────────────────────────────────── */
+
+/* On `/` — the one dark surface — the header re-resolves its tokens to dark-ground
+   values, so the same markup paints dark chrome instead of the light bar that used to
+   sit on the hero with a hard seam. Scoped to the header element by class, never a
+   global re-theme: the light-only law holds everywhere else. Values come from the
+   sanctioned dark sets — MARK_COLORS.dark's plates (court-mark-geometry.ts) and the
+   front door's own INK/BONE/DIM (about-content.tsx) — not a new palette. The OTHER
+   popup renders through a Portal and deliberately stays a light raised card. */
+.fc-chrome-front {
+  --term-surface: #12151A;
+  --term-surface-2: #0F1116;
+  --term-border: rgba(245, 241, 232, 0.14);
+  --term-hairline: rgba(245, 241, 232, 0.22);
+  --term-text: #F2F4F7;
+  --term-text-muted: #8A8F98;
+  --term-accent: #818CF8;
+  /* The alias resolves at :root, so overriding --term-accent alone would leave
+     var(--term-amber) light inside this scope. No consumer hits it on `/` today
+     (no tab is ever active there) — this is the defensive close, not a fix. */
+  --term-amber: #818CF8;
+  --accent: #818CF8;
+}
+
+/* At the top of the front door the chrome disappears entirely and the hero's flat
+   #0B0D10 shows through; the surfaces come back the moment the reader scrolls. Only
+   grounds go transparent — text tokens stay, because the letters still sit on dark. */
+.fc-chrome-front.fc-chrome-clear {
+  --term-surface: transparent;
+  --term-surface-2: transparent;
+  --term-border: transparent;
+}
+
 /* ── Animations ─────────────────────────────────────────────────── */
 
 @keyframes fadeInUp {

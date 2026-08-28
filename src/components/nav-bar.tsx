@@ -61,6 +61,13 @@ const BAR_HEIGHT_PX = 96
 const SCROLL_NOISE_PX = 6
 
 /**
+ * How far down the front door still counts as "the top", where the chrome is fully
+ * transparent over the hero. Small on purpose: the surfaces should be back before the
+ * first line of the argument reaches them.
+ */
+const CHROME_CLEAR_PX = 8
+
+/**
  * Retract the bar on scroll down and bring it back on scroll up — on the front door only.
  *
  * `/` became a marketing page rather than a product surface in the 2026-08-12 front-door swap,
@@ -76,6 +83,7 @@ const SCROLL_NOISE_PX = 6
  */
 function useRetractingHeader(enabled: boolean) {
   const [retracted, setRetracted] = useState(false)
+  const [atTop, setAtTop] = useState(true)
   const [wasEnabled, setWasEnabled] = useState(enabled)
   const reveal = useCallback(() => setRetracted(false), [])
 
@@ -86,6 +94,7 @@ function useRetractingHeader(enabled: boolean) {
   if (wasEnabled !== enabled) {
     setWasEnabled(enabled)
     setRetracted(false)
+    setAtTop(true)
   }
 
   useEffect(() => {
@@ -98,6 +107,11 @@ function useRetractingHeader(enabled: boolean) {
       frame = 0
       const y = window.scrollY
       const delta = y - last
+
+      // Before the noise floor, not after: within a few pixels of the top the retract state
+      // can wait, but the transparent↔solid chrome swap cannot — it is anchored to a position,
+      // not to a direction of travel.
+      setAtTop(y <= CHROME_CLEAR_PX)
 
       // Under the noise floor `last` is deliberately NOT updated, so a slow deliberate scroll
       // accumulates until it clears the threshold rather than being discarded a pixel at a time.
@@ -124,6 +138,12 @@ function useRetractingHeader(enabled: boolean) {
       if (!frame) frame = requestAnimationFrame(measure)
     }
 
+    // One scheduled measure on mount: a browser-restored scroll position would otherwise
+    // paint transparent chrome over mid-page content until the first scroll event. The
+    // noise floor lets this first pass through untouched (delta is 0), so it can only
+    // correct `atTop`, never flap the retract state.
+    onScroll()
+
     window.addEventListener("scroll", onScroll, { passive: true })
     return () => {
       window.removeEventListener("scroll", onScroll)
@@ -133,7 +153,7 @@ function useRetractingHeader(enabled: boolean) {
 
   // Derived, so a route that does not retract can never inherit a stale `true` from one that
   // does — the reset above and this guard cover the two directions independently.
-  return { hidden: enabled && retracted, reveal }
+  return { hidden: enabled && retracted, clear: enabled && atTop, reveal }
 }
 
 /**
@@ -200,7 +220,7 @@ export function NavBar() {
 
   // The front door only. Every other surface keeps the bar pinned.
   const retractable = pathname === "/"
-  const { hidden, reveal } = useRetractingHeader(retractable)
+  const { hidden, clear, reveal } = useRetractingHeader(retractable)
 
   return (
     <header
@@ -212,6 +232,12 @@ export function NavBar() {
         // itself is not, and withholding that would leave the page's chrome behaving
         // differently for those readers rather than merely more quietly.
         retractable && "motion-safe:transition-transform motion-safe:duration-300",
+        // On the front door the chrome re-resolves its tokens to the dark set, and at the
+        // very top the grounds go transparent so the bar dissolves into the hero — the
+        // classes live in globals.css beside the tokens they override. Route-scoped by
+        // this condition; the light-only law holds on every other surface.
+        retractable && "fc-chrome-front",
+        retractable && clear && "fc-chrome-clear",
         hidden && "-translate-y-full"
       )}
       // A retracted bar still holds six focusable tabs. Tabbing into one has to bring it back,
@@ -220,6 +246,7 @@ export function NavBar() {
     >
       {/* BRAND BAR */}
       <div
+        className="motion-safe:transition-colors motion-safe:duration-200"
         style={{
           height: "52px",
           background: "var(--term-surface-2)",
@@ -252,7 +279,9 @@ export function NavBar() {
             className="flex items-center gap-3 transition-opacity hover:opacity-80"
             aria-label="FullCourt home"
           >
-            <CourtMark size={34} className="shrink-0" />
+            {/* The one piece of chrome that cannot follow the token scope: the mark's colors
+                are SVG fills, so it selects its sanctioned dark cut by prop on the front door. */}
+            <CourtMark size={34} className="shrink-0" tone={retractable ? "dark" : "light"} />
             {/* 22px is NOT a TYPE entry, deliberately: the wordmark is sized to the 52px
                 brand bar beside a 34px mark, not to a text role. Resizing it is a branding
                 decision (see the exemption list in terminal-styles.ts). */}
@@ -293,7 +322,7 @@ export function NavBar() {
 
       {/* MAIN NAV BAR */}
       <div
-        className="mono relative"
+        className="mono relative motion-safe:transition-colors motion-safe:duration-200"
         style={{
           height: "44px",
           background: "var(--term-surface)",

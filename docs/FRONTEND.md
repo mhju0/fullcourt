@@ -550,7 +550,14 @@ Easy to get wrong twice on this page:
 Display statements on this page take **no terminal period** (`Rest is a stat`, `Six tabs`,
 `How a number earns its place`). Body copy keeps normal punctuation — prose, not statements.
 
-Known rough edge: the light app header sits directly above the dark hero, with no transition.
+The chrome joins the dark here (2026-08-28, stage ① of the redesign round): on `/` — and only
+on `/` — the header carries `fc-chrome-front`, which re-resolves the `--term-*` surface and text
+tokens to dark-ground values, and at the very top of the page `fc-chrome-clear` makes the grounds
+transparent so the bar dissolves into the hero. The hero's wrapper pulls itself up by
+`--term-chrome-h` and pads the same height back inside, so the dark ground actually runs under
+the sticky header and the fold equations below are unchanged. Both classes live in `globals.css`
+beside the tokens they override; the mark alone cannot follow a token scope (SVG fills), so
+`CourtMark` takes `tone="dark"` on this route.
 
 ### Unknown routes — `src/app/not-found.tsx`
 
@@ -833,7 +840,7 @@ and a tab bar pinned over a long-scrolling argument competes with it rather than
 Every other route keeps the bar pinned, gated on the pathname the component already had, so no
 layout restructure was needed.
 
-Five things about it are load-bearing:
+Six things about it are load-bearing:
 
 - **It is a `transform`, never a height or `display` change.** The header sits in normal flow
   above `<main>`; collapsing it would reflow the page under the reader and fight the alignment
@@ -851,6 +858,13 @@ Five things about it are load-bearing:
   cascades a second render to reach the same state and trips `react-hooks/set-state-in-effect`;
   doing it during render means the bar never paints a frame in the wrong state. `hidden` is
   *derived* (`enabled && retracted`) so a pinned route can never inherit a stale `true`.
+- **The chrome swap is position-anchored, the retraction direction-anchored** (2026-08-28). The
+  same hook also reports `clear` — whether the reader is within `CHROME_CLEAR_PX` (8) of the top —
+  computed *before* the noise floor, because a position threshold cannot wait out a 6px
+  accumulation window the way a direction change can. One scheduled measure runs on mount so a
+  browser-restored scroll position never paints transparent chrome over mid-page content. On `/`
+  this drives `fc-chrome-front` / `fc-chrome-clear` (see the front-door section); every other
+  route ignores it.
 
 The listener is `{ passive: true }` and rAF-throttled, and its cleanup removes the listener *and*
 cancels any pending frame. Keyboard reach is preserved by `onFocus={reveal}` — tabbing into a
@@ -1171,7 +1185,9 @@ toggles, month tabs, day chips and filter pills invert to `--term-text` backgrou
 `--term-surface` text when active, never a data pole. `<html>` carries **no** `dark` class and
 `globals.css` sets `color-scheme: light`. Every color flows through the `--term-*` CSS tokens,
 so reskinning the tokens in `globals.css` re-themes the whole app; component code should read
-tokens, never hard-code hexes.
+tokens, never hard-code hexes. The one chrome exception is scoped, not a theme: on `/` the header
+re-resolves its tokens to the front door's own dark values via `fc-chrome-front` (2026-08-28) —
+it rides the token system rather than forking it, and no other surface may borrow the class.
 
 > **Theme lineage:** "Bloomberg Terminal" (light) → "Broadcast" (dark) → "Broadcast" (light,
 > flipped 2026-07-17 for legibility) → **"Front Office" (light, current — adopted 2026-08-09
@@ -1687,8 +1703,10 @@ Sticky header = brand bar (52px) + main nav (44px) = **96px**, published as
 `--term-chrome-h` in `globals.css`. The front door's hero subtracts that token rather than a
 literal (its sections stopped being full-viewport on 2026-08-20, but the hero still is, nearly),
 because the old sections overran the fold by exactly the difference the last two times the
-chrome changed height and they did not. See `nav-bar.tsx` above. Footer mirrors the
-broadcast aesthetic with mono metadata.
+chrome changed height and they did not. On `/` the same header re-resolves its tokens dark and
+sits transparent at the top of the hero (2026-08-28) — height and structure identical, colors
+route-scoped. See `nav-bar.tsx` above. Footer mirrors the broadcast aesthetic with mono
+metadata.
 
 ### Brand mark
 
@@ -1715,7 +1733,9 @@ where the mark proper uses a filled band.
 > badges that carry their own dark ground and the mark's dark cut (`MARK_COLORS.dark`). They
 > never sit on the app's page background — a browser tab and a link-preview card render on
 > someone else's chrome — so they keep their own ground. Do **not** "fix" them onto the app's
-> light tokens.
+> light tokens. Since 2026-08-28 the header on `/` also renders the mark's dark cut
+> (`CourtMark tone="dark"`) — that is an on-page use of the same sanctioned palette, governed
+> by the front-door chrome rules above, not a fifth member of this list.
 
 `docs/social-preview.png` is the GitHub repo social preview (Settings → Social preview). It is
 uploaded out-of-band and referenced by no code, so a dead-file sweep will read it as an orphan

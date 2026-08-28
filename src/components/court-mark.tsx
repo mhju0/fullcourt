@@ -28,14 +28,17 @@ export function CourtMark({
   size = 24,
   className,
   title = "FullCourt",
+  tone = "light",
 }: {
   size?: number
   className?: string
   title?: string
+  /** Which sanctioned color cut to render — SVG fills cannot follow a CSS token scope. */
+  tone?: keyof typeof MARK_COLORS
 }) {
   const uid = useId()
   const cut = MARK_CUTS.nav
-  const c = MARK_COLORS.light
+  const c = MARK_COLORS[tone]
   const { left, slash, right } = courtMarkPaths(cut.slashW)
   const VB_W = COURT_W + 6
   const VB_H = COURT_H + 6
