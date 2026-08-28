@@ -1,7 +1,7 @@
 "use client"
 
 import { Activity, BarChart3, Calendar, CalendarRange, Search } from "lucide-react"
-import Link from "next/link"
+import { TransitionLink as Link } from "@/components/transition-link"
 import { usePathname } from "next/navigation"
 import { isActiveRoute, PALETTE_OPEN_EVENT } from "@/lib/primary-navigation"
 import { TRACK, TYPE } from "@/lib/terminal-styles"

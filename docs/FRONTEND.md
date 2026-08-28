@@ -1720,6 +1720,28 @@ solve never arises. Regression tests: `src/components/__tests__/analysis-deviati
 - Animations (`globals.css`): `fadeInUp` (card entrance, staggered by `index * 40ms`),
   `scoreFlash` (live-update glow).
 
+### Motion — five moments, and that is the law (G5, ADR 0010, 2026-08-29)
+
+The site owns exactly **five** motion moments. A sixth must replace one of these or be
+refused — scattered micro-animation is how a data site stops feeling like an instrument:
+
+1. **The route cross-fade** — 200ms, `document.startViewTransition` via the manual wrapper in
+   `route-transition.ts` (never Next's experimental flag). Chrome navigation only: the tabs,
+   the dock, the OTHER menu, the palette and the wordmark travel through `TransitionLink`;
+   in-content links deliberately do not.
+2. **The live cell flash** — `scoreFlash`, 500ms, once per change, scoped to the cell that
+   changed (the slate's score cell), never the whole row.
+3. **The Skim ↔ Deep-Dive morph** — a same-document view transition in `useSlateDensity`
+   (`flushSync` inside the callback is what lands React's update inside the snapshot window).
+4. **The chrome retract/reveal** — the front door's bar, 300ms transform, `motion-safe:` only.
+5. **The front door's one reveal pass** — the GSAP assembly in `about-content.tsx`, played once.
+
+Every moment is skipped — state kept, travel removed — under `prefers-reduced-motion`, guarded
+in JS where a transition is started programmatically AND in CSS
+(`::view-transition-*` gets `animation: none` under the media query in `globals.css`). The
+`fadeInUp` card entrance predates this law and rides inside moment 5's budget; it does not
+license a sixth.
+
 ### Shot chart / court geometry (`shot-quality-content.tsx`)
 
 The API returns an **unfolded**, rim-origin grid (`cellX = floor(LOC_X/10)`, `cellY =

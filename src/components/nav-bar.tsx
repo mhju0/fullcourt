@@ -2,11 +2,12 @@
 
 import { Menu } from "@base-ui/react/menu"
 import { Search } from "lucide-react"
-import Link from "next/link"
+import { TransitionLink as Link } from "@/components/transition-link"
 import { usePathname } from "next/navigation"
 import { useCallback, useEffect, useRef, useState } from "react"
 import { CourtMark } from "@/components/court-mark"
 import { wordmarkLetters } from "@/lib/brand/wordmark-kern"
+import { useSettleRouteTransition } from "@/lib/route-transition"
 import {
   DIRECT_NAV_ITEMS,
   isActiveRoute,
@@ -218,6 +219,8 @@ function useEdgeFades() {
 }
 
 export function NavBar() {
+  // Resolves the route cross-fade when the new route actually lands (G1).
+  useSettleRouteTransition()
   const pathname = usePathname()
   const otherActive = OTHER_NAV_ITEMS.some((item) => isActiveRoute(pathname, item.href))
   const { ref: stripRef, fades } = useEdgeFades()

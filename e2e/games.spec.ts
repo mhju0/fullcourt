@@ -17,7 +17,7 @@ test.describe("Home page", () => {
     // property of that slate.
     await expect(page.getByText(/is how often the more-rested team wins/)).toHaveCount(0);
 
-    await expect(page.getByLabel("Season")).toBeVisible();
+    await expect(page.getByLabel("SEASON", { exact: true })).toBeVisible();
     await expect(page.getByRole("button", { name: /^OCT$/ })).toBeVisible();
     await expect(page.getByRole("button", { name: /^DEC$/ })).toBeVisible();
   });
@@ -97,7 +97,7 @@ test.describe("Home page", () => {
   }) => {
     await page.goto("/games");
 
-    await page.getByLabel("Season").selectOption("2024-25");
+    await page.getByLabel("SEASON", { exact: true }).selectOption("2024-25");
     await page.getByRole("button", { name: /^DEC$/ }).click();
 
     const dec25 = page.getByRole("button", { name: /December 25, 2024/ });
@@ -137,7 +137,7 @@ test.describe("Home page", () => {
   test("crossing a month boundary with the arrows moves the month tab", async ({ page }) => {
     await page.goto("/games");
 
-    await page.getByLabel("Season").selectOption("2024-25");
+    await page.getByLabel("SEASON", { exact: true }).selectOption("2024-25");
     await page.getByRole("button", { name: /^DEC$/ }).click();
 
     const display = page.getByTestId("selected-date-display");
@@ -162,7 +162,7 @@ test.describe("Home page", () => {
   test("previous day from an early season date can reach a day with no games", async ({ page }) => {
     await page.goto("/games");
 
-    await page.getByLabel("Season").selectOption("2024-25");
+    await page.getByLabel("SEASON", { exact: true }).selectOption("2024-25");
 
     // One dates request per season, with no `month` param — a month click now resolves
     // from the in-memory day list instead of a round trip. Asserted negatively too, so
