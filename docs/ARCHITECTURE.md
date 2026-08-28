@@ -127,9 +127,10 @@ Full list in [API.md](API.md).
   footer, metadata. One family across the UI since 2026-08-09; see the Front Office entry in the
   decision log below.
 - `app/page.tsx` — **Games** (client, nav label `GAMES`): season/month/day pickers → `/api/games/dates`
-  then `/api/games/[date]`, with live merges from `useLiveGames`. Its UPCOMING view mounts
-  `upcoming-content.tsx`, absorbed from the retired `/upcoming` route (now a redirect
-  to `/games` in `next.config.ts`). The browsing state machine lives in `hooks/useGameSlate.ts` over
+  then `/api/games/[date]`, with live merges from `useLiveGames`. One board since 2026-08-29
+  (redesign stage ②): the UPCOMING view and `upcoming-content.tsx` were retired, the cross-date
+  edge question lives in the EDGES AHEAD strip (`/api/games/upcoming`), and `/upcoming` remains
+  a redirect (`next.config.ts`). The browsing state machine lives in `hooks/useGameSlate.ts` over
   the pure reducer `lib/game-slate-machine.ts` — see the decision entry below.
 - `app/analysis/page.tsx` / `app/playoffs/page.tsx` /
   `app/schedule/page.tsx` / `app/shot-quality/page.tsx` / `app/shooting/page.tsx` /

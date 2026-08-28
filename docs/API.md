@@ -125,9 +125,11 @@ Games for one calendar date.
   `is4In6` and games-in-last-30 in JS, then builds `homeFatigue`/`awayFatigue`
   (`FatigueInfo`) and `restAdvantage`.
 
-`GameResponse` (`src/types/index.ts`): `id, externalId, date, season, status,
+`GameResponse` (`src/types/index.ts`): `id, externalId, date, season, status, tipOffEt,
 homeTeam/awayTeam (TeamInfo), homeScore, awayScore, homeFatigue, awayFatigue,
-restAdvantage`. `FatigueInfo` includes `score, isBackToBack, is3In4, travelDistanceMiles,
+restAdvantage`. `tipOffEt` (2026-08-29) is the ET clock string ("7:30 PM ET") formatted
+server-side by `formatEasternTipTime` from `games.tip_off_utc` — null pre-2002 and for all
+of 2019-20, complete otherwise (docs/DATABASE.md), and the slate falls back to the date. `FatigueInfo` includes `score, isBackToBack, is3In4, travelDistanceMiles,
 altitudePenalty, altitudeArenaLabel, daysRest, gamesInLast7Days, gamesInLast30Days, is4In6,
 isOvertimePenalty, roadTripConsecutiveAway, hasCoastToCoastRoadSwing`. `RestAdvantage` =
 `{ differential, advantageTeam: "home" | "away" | "neutral" }`.
@@ -188,8 +190,9 @@ Games" table.
 ## `GET /api/games/upcoming`
 
 Scheduled regular-season games from today onward, with their open-prediction edge. Powers the
-UPCOMING view on `/` (formerly the standalone `/upcoming` route, now a redirect — the endpoint
-itself is unchanged). `runtime = "nodejs"`, `dynamic = "force-dynamic"`.
+EDGES AHEAD strip on `/games` (2026-08-29) — the three biggest upcoming rest gaps. It powered
+the UPCOMING view until that view was retired in redesign stage ② (one board, one card; the
+old `/upcoming` route remains a redirect). `runtime = "nodejs"`, `dynamic = "force-dynamic"`.
 
 - **Query (Zod):** `minRA` (finite nonnegative number), `season` (must be in
   `NBA_SEASONS`; defaults through `currentDisplaySeason()`). Invalid input → `400`.

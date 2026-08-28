@@ -188,6 +188,14 @@ export function slateReducer(state: SlateState, event: SlateEvent): SlateState {
       if (event.days.length === 0) {
         return { ...state, status: "noDays", days: [], selectedDate: null, games: [], message: null };
       }
+      // A date the user already chose survives the day list arriving. Without this, a
+      // deep jump (the EDGES AHEAD strip sends SEASON_SELECTED then DATE_SELECTED while
+      // the season's days are still in flight) would be silently reverted to the default
+      // date a moment later. Only a date the list actually contains is kept — anything
+      // else falls through to the default pick.
+      if (state.selectedDate && event.days.some((d) => d.date === state.selectedDate)) {
+        return { ...state, days: event.days };
+      }
       const next = pickDefaultGamesDate(state.todayKey, event.days);
       if (!next) {
         return { ...state, status: "noDays", days: event.days, selectedDate: null, games: [], message: null };
