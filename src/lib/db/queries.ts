@@ -35,6 +35,7 @@ import type { SeasonReportRow } from "@/lib/season-report";
 import { ABNORMAL_STRETCHES } from "@/lib/season-regime";
 import {
   formatEasternDateKey,
+  formatEasternTipTime,
   monthCalendarBounds,
 } from "@/lib/nba-season";
 import {
@@ -246,6 +247,7 @@ function selectGamesWithFatigue(where: SQL | undefined) {
       date: games.date,
       season: games.season,
       status: games.status,
+      tipOffUtc: games.tipOffUtc,
       homeScore: games.homeScore,
       awayScore: games.awayScore,
       homeTeamId: games.homeTeamId,
@@ -400,6 +402,7 @@ function mapJoinedRowToGameResponse(
     date: String(row.date),
     season: row.season,
     status: row.status,
+    tipOffEt: formatEasternTipTime(row.tipOffUtc),
     homeTeam: {
       id: row.homeTeamId,
       name: row.homeTeamName,

@@ -158,6 +158,22 @@ describe("DAYS_RESOLVED / DAYS_REJECTED", () => {
     expect(next.selectedDate).toBeNull();
   });
 
+  it("keeps a date the user already chose instead of reverting to the default", () => {
+    // The EDGES AHEAD strip's deep jump: DATE_SELECTED lands before the season's day
+    // list resolves. The day list must not steamroll the user's position.
+    const state = base({ status: "loadingSlate", selectedDate: "2024-12-31" });
+    const next = slateReducer(state, { type: "DAYS_RESOLVED", days: DAYS });
+    expect(next.selectedDate).toBe("2024-12-31");
+    expect(next.status).toBe("loadingSlate");
+    expect(next.days).toBe(DAYS);
+  });
+
+  it("falls back to the default pick when the chosen date is not in the day list", () => {
+    const state = base({ status: "loadingSlate", selectedDate: "1999-01-01" });
+    const next = slateReducer(state, { type: "DAYS_RESOLVED", days: DAYS });
+    expect(next.selectedDate).toBe("2024-12-25");
+  });
+
   it("surfaces the failure message and clears the day list", () => {
     const next = slateReducer(base({ days: DAYS }), {
       type: "DAYS_REJECTED",

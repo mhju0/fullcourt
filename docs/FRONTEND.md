@@ -43,8 +43,8 @@ stale twice — first at "five" when it omitted `/shooting`, then at "seven". Th
 a number in front of it is a second copy of the same fact that nothing checks. The list itself
 then went stale a third way: it kept `/` in the product set and lost `/games` entirely when the
 board moved there, which is the failure a list cannot protect against on its own.)
-`/upcoming` was retired: it redirects to `/games` (`next.config.ts`), whose UPCOMING view renders
-what it used to. `/about` redirects to `/` for the same reason — the address had been shared.
+`/upcoming` was retired: it redirects to `/games` (`next.config.ts`) — since 2026-08-29 onto
+the one board (the UPCOMING view it used to land on was itself retired in redesign stage ②). `/about` redirects to `/` for the same reason — the address had been shared.
 
 ### `/games` — Games (`src/app/games/page.tsx`, client component)
 
@@ -61,11 +61,21 @@ selected day, and a forty-one-season result sitting in that row would read as an
 of today's slate. Every figure in it is read from `rest-split-facts.ts`, never typed, and the
 season span is stated as "since 1985-86" rather than as a count so it cannot age.
 
-Two views behind a toggle (`role="group"`, `aria-label="Games view"`), held in local `view`
-state rather than a query param — the nav no longer links to `/upcoming`, so the only inbound
-deep link is an old bookmark, which the redirect lands on the default BY DATE view.
-**BY DATE** is the state machine below; **UPCOMING** renders `<UpcomingContentLazy />` in place
-of the stat row, filter panel and matchup list.
+**One board, one card — the view toggle died in redesign stage ② (2026-08-29, ADR 0010).**
+The honest inventory that killed it: the date chips already reach every future date, the
+upcoming table's edge/historical columns said nothing the RA cell and the expansion's evidence
+sentence do not, and its one real capability — cutting across dates by rest advantage — became
+the **EDGES AHEAD strip** (`edges-ahead.tsx`): the three biggest upcoming gaps, silent in every
+state that is not "here are edges", each jumping the board to its date through the same reducer
+the date chips drive (`DAYS_RESOLVED` now preserves an already-chosen date so the jump cannot
+be steamrolled by the day list arriving). The slate itself has a **density dial**
+(`useSlateDensity`, C5): **SKIM** by default — game, matchup, rest advantage, storyline —
+with **DEEP DIVE** adding per-team days rest, the fatigue bars and CONF; remembered per viewer,
+addressable as `?view=`, and rendered by the same `MatchupTable` from one of two column
+templates. The **storyline line** (`game-storyline.ts`, C4) says in words what the schedule did
+to a game — only when a team actually carries a story, in both densities; it is game-level and
+distinct per row, which is exactly why it may sit in the open where the class-level evidence
+sentence could not.
 
 **The board opens on the newest *browsable* season** (2026-08-18), not the newest one with
 data. `defaultNbaSeason()` now reads the last entry of `browsableSeasons()`, and the
@@ -109,8 +119,8 @@ no loading flags of its own.
 Initial day selection still uses `pickDefaultGamesDate` (today if it has games; else the first
 upcoming October date at season start; else nearest / last available).
 - Pieces: heading eyebrow `REST ADVANTAGE DASHBOARD` + `<h1>What the schedule does to a game</h1>`
-  and the `ThesisFigure` band beneath it; the BY DATE/UPCOMING
-  toggle;
+  and the `ThesisFigure` band beneath it; the EDGES AHEAD strip;
+  the SKIM / DEEP DIVE dial on the MATCHUPS divider;
   `StatSummaryRow` (GAMES ON THIS DATE, AVG REST ADV, HIGH CONF GAMES where
   `HIGH_CONF_THRESHOLD = 2.0` — three tiles, all scoped to the slate on screen; a fourth
   once carried the full-history backtest rate, which described none of the games shown and is
@@ -177,7 +187,7 @@ the line. Three rules live in that module and are asserted in its test:
   the whole-element form of the `NO_FIGURE` rule.
 
 The Games board annotates a rest advantage with `PROJECTED` when it was read off the published
-schedule rather than measured (`GameResponse.projectedFatigue`; `PROJ` in the `/games` UPCOMING
+schedule rather than measured (`GameResponse.projectedFatigue`; `PROJ` in the EDGES AHEAD strip
 table). That is not "the game has not been played" — see `src/lib/fatigue-provenance.ts` and
 docs/API.md.
 
@@ -293,11 +303,12 @@ the API — the second surface to serve from that static asset, after `/shooting
 
 ### `/upcoming` — retired
 
-Folded into `/` as its UPCOMING view when the nav dropped to five tabs; the route is now a
-permanent redirect (`next.config.ts`). Only the route and the tab went — `/api/games/upcoming`,
-`upcoming-content.tsx` and their tests are unchanged. A sixth tab was the wrong price for it:
-the page and `/` render the same object (games carrying a rest edge) under different filters,
-and three of the five labels would otherwise have ended in "EDGES".
+Folded into the board as its UPCOMING view when the nav dropped to five tabs; the route is a
+permanent redirect (`next.config.ts`). On 2026-08-29 (redesign stage ②) the view itself was
+retired too — `upcoming-content.tsx` and `upcoming-lazy.tsx` are deleted, and the redirect now
+lands on the one board. `/api/games/upcoming` survives with a new consumer: the EDGES AHEAD
+strip, which is the view's one non-duplicative capability (cutting across dates by rest
+advantage) at three rows' cost instead of a whole second table shape.
 
 ### `/playoffs` — Playoff Predictor, tab renamed PLAYOFF REST (`src/app/playoffs/page.tsx`)
 
@@ -901,7 +912,7 @@ with `MatchupTable` on 2026-08-09, and `MatchupCard` had rendered nowhere since 
 halved the file from 766 lines to ~380, and what is left is named for what it actually is: the
 pieces every matchup surface draws — `TeamLogo`, `ConfidenceBadge`, `GameStatusRow`,
 `FatigueDetailColumn`, `RaBadge`, `getConfidence`, `teamGameFlags`, and the `Confidence` type.
-`matchup-table.tsx`, `explore-game-detail-modal.tsx` and `upcoming-content.tsx` import from here.
+`matchup-table.tsx` and `explore-game-detail-modal.tsx` import from here (`upcoming-content.tsx` did too, until its 2026-08-29 retirement).
 
 **One `TeamLogo`, not two.** `upcoming-content.tsx` carried a private copy until the same day — a
 second adapter at a seam that already existed, and one that took only an abbreviation, so it
@@ -943,7 +954,7 @@ Confidence tiers:
 The pieces, and who draws them:
 - `TeamLogo` — season-aware logo via `getTeamBranding` when given a `season`, plain
   `teamLogoUrl` without one; falls back to an abbreviation chip on error. Drawn by the slate
-  table, the detail modal and `/upcoming`.
+  table, the detail modal and the EDGES AHEAD strip.
 - `GameStatusRow` — LIVE / FINAL / UPCOMING plus the score.
 - `ConfidenceBadge` — the ladder above.
 - `FatigueDetailColumn` — GP (30D/7D), back-to-back, 3-in-4, 4-in-6, road streak, travel
@@ -990,17 +1001,14 @@ Loaded via `lazyContent` (see below). Uses SWR:
   place. Same shape as `game-slate-machine.ts`, and tested the same way —
   `src/lib/__tests__/explore-games-machine.test.ts`, no DOM.
 
-### `upcoming-content.tsx` (+ `upcoming-lazy.tsx`)
+### `upcoming-content.tsx` (+ `upcoming-lazy.tsx`) — deleted 2026-08-29
 
-Loaded via `lazyContent` (see below). Mounted by `/`'s UPCOMING view since `/upcoming` was
-retired. SWR `/api/games/upcoming?season=<currentDisplaySeason()>&minRA=…`,
-plus a second SWR call to `/api/analysis` for the historical column.
-RA filter pills, an off-season empty state (`OffSeasonEmptyState`), and a table of upcoming
-games with an "edge" badge naming the more-rested side — **always the rested-pole teal**
-(2026-08-09), whichever venue that side plays at; it was side-colored (home blue / away red),
-which dressed a rested visitor in the fatigued hue. Rendered in the standard card style
-(`var(--term-surface)` fill, `1px solid var(--term-border)`, `.mono` labels) — consistent
-with Games / Model Results.
+Retired with the UPCOMING view in redesign stage ② (see `/games` above); both files are gone.
+What it pioneered lives on elsewhere: the "always the rested-pole teal" edge-badge rule
+(2026-08-09 — the named side is the more-rested side, whichever venue it plays at; it was
+side-colored once, which dressed a rested visitor in the fatigued hue) is now carried by the
+EDGES AHEAD strip (`edges-ahead.tsx`) and the RA cell, and its historical column's evidence
+pairing is the row expansion's sentence. Git history holds the component.
 
 ### `explore-game-detail-modal.tsx`
 

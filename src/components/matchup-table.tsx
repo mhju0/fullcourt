@@ -10,6 +10,7 @@ import {
   teamGameFlags,
   getConfidence,
 } from "@/components/matchup-parts"
+import { buildGameStoryline } from "@/lib/game-storyline"
 import { getTeamColors } from "@/lib/nba-team-colors"
 import {
   buildRestAdvantageEvidence,
@@ -38,13 +39,27 @@ import type { GameResponse } from "@/types"
  * "Small screens") — the page itself never scrolls sideways.
  */
 
-// Column template shared by the header row and every game row, so the header can
+/**
+ * The slate's two densities (2026-08-28 redesign, C5): SKIM is the default schedule-site
+ * glance — game, matchup, rest advantage, and the storyline line when a game has one;
+ * DEEP DIVE adds per-team days rest, the fatigue bars with their flag chips, and the
+ * confidence badge. One card, two column sets; the dial lives on the /games page.
+ */
+export type SlateDensity = "skim" | "deep"
+
+// Column templates shared by the header row and every game row, so the header can
 // never drift out of line with the cells beneath it.
-const GRID_COLS =
-  "minmax(96px,120px) minmax(210px,1.3fr) minmax(232px,1.1fr) minmax(190px,220px) minmax(118px,132px)"
-// Raised from 880 with the fatigue column, which now carries each team's schedule flags beside
-// its score. Sum of the column minimums plus four 16px gaps is 900, so this clears it.
-const GRID_MIN_WIDTH = 920
+const DEEP_COLS =
+  "minmax(96px,120px) minmax(210px,1.3fr) minmax(64px,80px) minmax(232px,1.1fr) minmax(190px,220px) minmax(96px,116px)"
+const SKIM_COLS =
+  "minmax(96px,120px) minmax(210px,1.5fr) minmax(190px,240px) 32px"
+// Sum of each template's column minimums plus its 16px gaps, rounded up with room.
+const DEEP_MIN_WIDTH = 980
+const SKIM_MIN_WIDTH = 600
+
+const gridCols = (density: SlateDensity) => (density === "deep" ? DEEP_COLS : SKIM_COLS)
+const gridMinWidth = (density: SlateDensity) =>
+  density === "deep" ? DEEP_MIN_WIDTH : SKIM_MIN_WIDTH
 
 /**
  * Width reserved for a line's flag chips, so the strip is identical on every line and the
@@ -61,11 +76,13 @@ const FLAG_STRIP_W = 104
 function StatusCell({
   status,
   date,
+  tipOffEt,
   homeScore,
   awayScore,
 }: {
   status: string
   date: string
+  tipOffEt: string | null
   homeScore: number | null
   awayScore: number | null
 }) {
@@ -94,8 +111,11 @@ function StatusCell({
           {awayScore} – {homeScore}
         </span>
       ) : (
+        // The ET tip time when the schedule carries one — what a schedule site puts
+        // here. The date is the fallback for the rows whose feeds carried no clock
+        // (pre-2002, and all of 2019-20 — docs/DATABASE.md), and never a guess.
         <span className="tabular-nums" style={{ fontSize: 11, color: "var(--term-text-muted)" }}>
-          {date}
+          {tipOffEt ?? date}
         </span>
       )}
     </div>
@@ -214,6 +234,24 @@ function FatigueLine({
           <FlagChip key={flag} label={flag} />
         ))}
         {hidden > 0 && <FlagChip label={`+${hidden}`} muted />}
+      </span>
+    </div>
+  )
+}
+
+/**
+ * Per-team days rest, promoted from the expansion (2026-08-28): two aligned lines that
+ * answer "which rest is whose" in the same read order as the team names beside them.
+ * A null is a season opener — printed as the em dash every unmeasured cell uses.
+ */
+function RestDaysLine({ daysRest }: { daysRest: number | null | undefined }) {
+  return (
+    <div className="flex items-center justify-end" style={{ height: TEAM_LINE_H }}>
+      <span
+        className="mono tabular-nums"
+        style={{ fontSize: TYPE.data, fontWeight: 700, color: "var(--term-text)" }}
+      >
+        {daysRest ?? "—"}
       </span>
     </div>
   )
@@ -343,11 +381,13 @@ function RestAdvCell({
 function GameRow({
   game,
   index,
+  density,
   isScoreFlashing,
   evidenceSource,
 }: {
   game: GameResponse
   index: number
+  density: SlateDensity
   isScoreFlashing: boolean
   evidenceSource: RestAdvantageEvidenceSource | null
 }) {
@@ -372,6 +412,7 @@ function GameRow({
   const flags = teamGameFlags(game)
   const tones = fatigueTones(game.awayFatigue?.score ?? null, game.homeFatigue?.score ?? null)
   const isLive = game.status === "live"
+  const storyline = useMemo(() => buildGameStoryline(game), [game])
 
   const toggle = useCallback(() => setExpanded((e) => !e), [])
   const onKeyDown = useCallback(
@@ -409,9 +450,15 @@ function GameRow({
           "grid cursor-pointer items-center gap-x-4 transition-colors hover:bg-[var(--term-surface-2)] focus-visible:ring-2 focus-visible:ring-[var(--term-accent)]/40",
           isScoreFlashing && "animate-[scoreFlash_0.5s_ease-out]"
         )}
-        style={{ gridTemplateColumns: GRID_COLS, padding: "12px 16px" }}
+        style={{ gridTemplateColumns: gridCols(density), padding: "12px 16px" }}
       >
-        <StatusCell status={game.status} date={game.date} homeScore={game.homeScore} awayScore={game.awayScore} />
+        <StatusCell
+          status={game.status}
+          date={game.date}
+          tipOffEt={game.tipOffEt}
+          homeScore={game.homeScore}
+          awayScore={game.awayScore}
+        />
 
         <div className="flex min-w-0 flex-col gap-1">
           <TeamLine
@@ -432,10 +479,19 @@ function GameRow({
           />
         </div>
 
-        <div className="flex flex-col gap-1">
-          <FatigueLine score={game.awayFatigue?.score ?? null} tone={tones.away} flags={flags.away} />
-          <FatigueLine score={game.homeFatigue?.score ?? null} tone={tones.home} flags={flags.home} />
-        </div>
+        {density === "deep" && (
+          <div className="flex flex-col gap-1">
+            <RestDaysLine daysRest={game.awayFatigue?.daysRest} />
+            <RestDaysLine daysRest={game.homeFatigue?.daysRest} />
+          </div>
+        )}
+
+        {density === "deep" && (
+          <div className="flex flex-col gap-1">
+            <FatigueLine score={game.awayFatigue?.score ?? null} tone={tones.away} flags={flags.away} />
+            <FatigueLine score={game.homeFatigue?.score ?? null} tone={tones.home} flags={flags.home} />
+          </div>
+        )}
 
         <RestAdvCell
           restAdvantage={game.restAdvantage}
@@ -445,13 +501,31 @@ function GameRow({
         />
 
         <div className="flex items-center justify-end gap-2">
-          <ConfidenceBadge confidence={confidence} />
+          {density === "deep" && <ConfidenceBadge confidence={confidence} />}
           <ChevronDown
             className={cn("size-4 shrink-0 text-[var(--term-text-muted)] transition-transform duration-200", expanded && "rotate-180")}
             aria-hidden
           />
         </div>
       </div>
+
+      {/* The storyline line (C4): what the schedule did to this game, in words, only when
+          there is a story to tell. Per-game and distinct — unlike the class-level evidence
+          sentence this never repeats byte-identical across a slate, which is why it may sit
+          in the open where that sentence could not (see the expansion note below). */}
+      {storyline && (
+        <p
+          className="m-0"
+          style={{
+            fontSize: 11,
+            lineHeight: LEAD.body,
+            color: "var(--term-text-muted)",
+            padding: "0 16px 12px",
+          }}
+        >
+          {storyline}
+        </p>
+      )}
 
       {/* Expanded detail — the evidence sentence, then the two-column fatigue breakdown.
           The sentence was an always-on tinted sub-row until 2026-08-11, and it moved in here for
@@ -514,9 +588,11 @@ function GameRow({
 export interface MatchupTableProps {
   games: readonly (GameResponse & { isScoreFlashing?: boolean })[]
   evidenceSource?: RestAdvantageEvidenceSource | null
+  /** SKIM (default) is the schedule-site glance; DEEP DIVE adds rest, fatigue and CONF. */
+  density?: SlateDensity
 }
 
-export function MatchupTable({ games, evidenceSource = null }: MatchupTableProps) {
+export function MatchupTable({ games, evidenceSource = null, density = "skim" }: MatchupTableProps) {
   return (
     <div
       style={{
@@ -527,12 +603,12 @@ export function MatchupTable({ games, evidenceSource = null }: MatchupTableProps
       }}
     >
       <div className="overflow-x-auto">
-        <div style={{ minWidth: GRID_MIN_WIDTH }}>
+        <div style={{ minWidth: gridMinWidth(density) }}>
           {/* Column header — same template as the rows, so it cannot drift. */}
           <div
             className="mono grid items-center gap-x-4"
             style={{
-              gridTemplateColumns: GRID_COLS,
+              gridTemplateColumns: gridCols(density),
               padding: "8px 16px",
               background: "var(--term-surface-2)",
               borderBottom: "1px solid var(--term-border)",
@@ -544,9 +620,10 @@ export function MatchupTable({ games, evidenceSource = null }: MatchupTableProps
           >
             <span>GAME</span>
             <span>MATCHUP · AWAY / HOME</span>
-            <span>FATIGUE · 0–10</span>
+            {density === "deep" && <span className="text-right">REST · DAYS</span>}
+            {density === "deep" && <span>FATIGUE · 0–10</span>}
             <span>REST ADVANTAGE</span>
-            <span className="text-right">CONF</span>
+            {density === "deep" ? <span className="text-right">CONF</span> : <span aria-hidden />}
           </div>
 
           {games.map((game, i) => (
@@ -554,6 +631,7 @@ export function MatchupTable({ games, evidenceSource = null }: MatchupTableProps
               key={game.id}
               game={game}
               index={i}
+              density={density}
               isScoreFlashing={game.isScoreFlashing ?? false}
               evidenceSource={evidenceSource ?? null}
             />

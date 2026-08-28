@@ -118,6 +118,27 @@ export function formatEasternDateKey(date = new Date()): string {
   return EASTERN_DATE_FMT.format(date);
 }
 
+const EASTERN_TIP_FMT = new Intl.DateTimeFormat("en-US", {
+  timeZone: "America/New_York",
+  hour: "numeric",
+  minute: "2-digit",
+  hour12: true,
+});
+
+/**
+ * A tip-off instant as the ET clock the league schedules by — "7:30 PM ET".
+ * Same timezone law as {@link formatEasternDateKey}: never the viewer's clock,
+ * never server UTC. Null in, null out — `tip_off_utc` is null pre-2002 and for all
+ * of 2019-20 (docs/DATABASE.md), and a missing time must render as its absence,
+ * not as a guess.
+ */
+export function formatEasternTipTime(instant: Date | string | null): string | null {
+  if (instant === null) return null;
+  const date = typeof instant === "string" ? new Date(instant) : instant;
+  if (Number.isNaN(date.getTime())) return null;
+  return `${EASTERN_TIP_FMT.format(date)} ET`;
+}
+
 export function seasonLabelForDateKey(dateKey: string): string {
   const year = Number(dateKey.slice(0, 4));
   const month = Number(dateKey.slice(5, 7));
