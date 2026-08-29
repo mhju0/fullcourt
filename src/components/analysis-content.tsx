@@ -789,6 +789,7 @@ export function AnalysisContent({ asOf }: { asOf?: DataAsOf | null }) {
             key={tile.label}
             label={tile.label}
             value={tile.value}
+            baseline={{ delta: tile.lift, label: tile.baselineLabel }}
             sub={tile.detail}
             accent="var(--term-blue)"
           />

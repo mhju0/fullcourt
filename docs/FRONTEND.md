@@ -204,7 +204,9 @@ Two things are worth keeping in view:
 and over which slice — `RESTED TEAM AT HOME WON · ANY GAP` and `… · RA ≥ 5`. They led with the
 measure until this pass (`OVERALL WIN RATE`, `WIN RATE · RA ≥ 5`), which named neither: *overall*
 has no referent on a page whose finding is that the rate is **not** overall, and a bare "win
-rate" leaves whose unsaid.
+rate" leaves whose unsaid. Since 2026-08-29 the lift renders through the tile's E1 baseline slot
+(`ClaimTile.lift` + `baselineLabel`, derived and tested in `analysis-claims.ts`) rather than as
+a clause inside the detail string — same invariant, now structural.
 
 - **Do not add a third tile.** RA ≥ 7 is the obvious candidate and the wrong one — the rate is
   flat from RA ≥ 5 upward, which the `READING THESE NUMBERS` callout says outright, so a third
@@ -230,11 +232,17 @@ right tab before clicking (2026-08-23).
 
 The lazy client component (`season-report-content.tsx`) fetches `/api/season-report?season=…`
 and renders, in order: three rate tiles (rest-advantage win rate, win rate at RA ≥ 2, season
-progress) against an all-season marker, then `WHAT THE SCHEDULE WAS WORTH` (schedule luck, not
+progress) against an all-season marker — since 2026-08-29 the two rate tiles also carry the E1
+baseline slot, fed the displayed season's own `homeBaselinePct` from the backtest response the
+page already holds for the norm (per-season on purpose; see the stat-tile section) — then
+`WHAT THE SCHEDULE WAS WORTH` (schedule luck, not
 results — the scale callout, the season's two extremes and a crosslink; the per-team table's
 one home is `/schedule`, see below), `REST EDGE CONVERSION` (records, not a ranking),
-`LOUDEST CALLS` (ranked by rest gap), `SCHEDULE TAX` (completed games only),
-`FATIGUE CALENDAR` (league average by week) and `ZERO-REST WORKLOAD` (volume, not effect).
+`LOUDEST CALLS` (ranked by rest gap), `SCHEDULE TAX` (completed games only — its
+`BACK-TO-BACKS` and `3-IN-4` columns carry D1 rank riders, `1ST = MOST`, because the table is
+sorted by miles and those two arrive out of order; `REST EDGE CONVERSION` deliberately carries
+none, its own divider being the reason), `FATIGUE CALENDAR` (league average by week) and
+`ZERO-REST WORKLOAD` (volume, not effect).
 
 **The whole column runs on the wide track** (`WIDTH.wide`, 1040 — the same cap `/availability`
 and `/playoffs` already use), and the two league tables (`REST EDGE CONVERSION`,
@@ -430,6 +438,11 @@ own header, which the page's sticky header then floats over and collides with. O
 one header, one column grid, and each season landing under the column that describes it. The
 group is closed by a `Career` row summed from those same seasons; it is never read from a
 separate career record, because a total printed under a column has to equal that column.
+
+The `eFG%` column carries the one D1 rank rider on this page (`1ST = BEST IN VIEW`,
+2026-08-29): rank within the rows as filtered right now, recomputed with every filter, because
+the `#` column only ranks whatever the reader sorted by. `Rest effect` is deliberately unranked —
+it would crown the noise the volume filter exists to warn about.
 
 The player's own row renders through `DataTable`'s `columns` like every other table's; the
 seasons, the `Career` line and the closing note come from `rowExtras`, which can add rows after a
@@ -1407,6 +1420,28 @@ signatures, differing only by whether a sub-label is present.
 
 The rendered side was checked once by hand on 2026-08-18: **18 of 19 routes paint only these
 eight sizes**, and the 19th is `/`.
+
+**The tile's baseline slot (E1, ADR 0010, 2026-08-29).** `StatTile` takes an optional
+`baseline: { delta, label }` — the E1 house slot for how far a figure sits from its venue
+baseline. Formatting and tone are the component's (signed via `signedNumber`, teal above / rose
+below at text grade, muted on zero); *which* baseline is the caller's, named in `label`, because
+that is a per-surface claim. `/analysis` feeds it from `ClaimTile.lift` + `baselineLabel`
+(derived and tested in `analysis-claims.ts` — the lift used to be a substring of the detail
+line); `/season` feeds it the displayed season's own `homeBaselinePct`. A tile whose figure has
+no venue-baseline comparison in the data omits the prop — `/schedule`'s four cells (extremes,
+spread, edge counts) are calendar measures with nothing to subtract, and stay slotless on
+purpose.
+
+**The rank rider (D1, ADR 0010, 2026-08-29).** `RankBadge` (`src/components/ui/rank-badge.tsx`)
++ `competitionRanks` (`src/lib/rank.ts`, tested): a value's standing rides after the value,
+micro and muted, with a visually-hidden sentence for screen readers. Three laws, each earned on
+a surface that refused it: **key columns only** (every-cell ranks are CTG's density, not ours);
+**the unit line names the direction** (`1ST = MOST`, `1ST = BEST IN VIEW`) because a bare
+ordinal on an ambiguous measure makes the reader guess; **rank within the population on
+screen**, recomputed with filters, never a league constant. Where it deliberately is NOT:
+`/season`'s conversion table (its own divider says RECORDS, NOT A RANKING — twelve points of
+standard error per swing), `/shooting`'s rest effect (ranking would crown the noise the page's
+own filter warns about), `/schedule`'s league table (already a ranking, `#` column).
 
 ### Alignment: two rails, one scale
 
