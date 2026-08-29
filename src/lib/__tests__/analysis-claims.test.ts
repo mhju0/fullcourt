@@ -85,28 +85,33 @@ describe("the hero tiles", () => {
     }
   });
 
-  it("carries a denominator and a lift on every tile, never a bare rate", () => {
+  it("carries a denominator and a baseline read on every tile, never a bare rate", () => {
     const claims = buildAnalysisClaims(response());
 
     expect(claims?.tiles.length).toBe(2);
     for (const tile of claims?.tiles ?? []) {
       expect(tile.games).toBeGreaterThan(0);
       expect(Number.isFinite(tile.lift)).toBe(true);
-      // The rendered line has to say both, not merely carry them as fields a caller may drop.
-      expect(tile.detail).toMatch(/^[\d,]+ GAMES · /);
-      expect(tile.detail).toMatch(/BASELINE$/);
+      // Since ADR 0010 the lift travels structurally (lift + baselineLabel feed the tile's E1
+      // slot) and the detail line carries the count alone — but the invariant is unchanged:
+      // both halves must exist on every tile, and neither may read against a coin flip.
+      expect(tile.detail).toMatch(/^[\d,]+ GAMES$/);
+      expect(tile.baselineLabel).toMatch(/BASELINE$/);
       expect(tile.detail).not.toMatch(/coin.?flip/i);
+      expect(tile.baselineLabel).not.toMatch(/coin.?flip|50/i);
     }
   });
 
-  it("signs the lift with the site's minus sign rather than a hyphen", () => {
+  it("carries a negative lift as a signed value the tile can render", () => {
     const claims = buildAnalysisClaims(
       response({ overallWinRate: 57.4, thresholds: THRESHOLDS.filter((t) => t.threshold !== 5) })
     );
 
-    // 57.4 − 59.9 = −2.5, and `signedNumber` emits U+2212, not "-".
-    expect(claims?.tiles[0].detail).toContain("−2.5");
-    expect(claims?.tiles[0].detail).not.toContain("-2.5");
+    // 57.4 − 59.9 = −2.5. The U+2212 rendering itself now happens in StatTile through
+    // `signedNumber`, which owns that rule for the whole app — this asserts the value the
+    // slot receives, since a lift folded into prose is what this module exists to prevent.
+    expect(claims?.tiles[0].lift).toBe(-2.5);
+    expect(claims?.tiles[0].detail).not.toContain("2.5");
   });
 
   it("renders the denominator with thousands separators", () => {

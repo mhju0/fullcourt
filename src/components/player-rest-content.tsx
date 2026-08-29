@@ -19,6 +19,8 @@ import {
   type SortKey,
 } from "@/lib/player-rest"
 import { LEAD, MONO_FONT_STACK, SPACE_NESTED_ROW, termCardStyle, termSelectClass, termSelectStyle, termTdStyle, WIDTH } from "@/lib/terminal-styles"
+import { competitionRanks } from "@/lib/rank"
+import { RankBadge } from "@/components/ui/rank-badge"
 import { signedNumber } from "@/lib/signed-number"
 import { MessageCard } from "@/components/ui/message-card"
 import { errMsg } from "@/lib/fetcher"
@@ -64,12 +66,21 @@ const SEASON_CAP = 10
  * verbatim by one of the rows below — the browsed season, or Career — so the row drops to a
  * name plate over the group.
  */
-function playerColumns(cap: number, isOpen: (row: BrowseRow) => boolean): DataColumn<BrowseRow, SortKey>[] {
+function playerColumns(
+  cap: number,
+  isOpen: (row: BrowseRow) => boolean,
+  /**
+   * eFG% standing within the rows as filtered right now (ADR 0010, D1) — positional, aligned
+   * with the rows the table renders. In view, not league-wide: a rank that ignored the volume
+   * floor and filters would crown someone the reader cannot even see.
+   */
+  efgRanks: (number | null)[]
+): DataColumn<BrowseRow, SortKey>[] {
   /** Blanks while open. The first two columns keep theirs; the other eight are the repeat. */
   const whenClosed =
-    <T,>(render: (row: BrowseRow) => T) =>
-    (row: BrowseRow) =>
-      isOpen(row) ? null : render(row)
+    <T,>(render: (row: BrowseRow, index: number) => T) =>
+    (row: BrowseRow, index: number) =>
+      isOpen(row) ? null : render(row, index)
 
   return [
     { label: "#", align: "right", width: "44px", style: DIM_TD, cell: (_row, i) => i + 1 },
@@ -114,12 +125,25 @@ function playerColumns(cap: number, isOpen: (row: BrowseRow) => boolean): DataCo
       cell: whenClosed((row) => row.fga.toLocaleString()),
     },
     {
+      // The one ranked column here, and rank-in-view on purpose. The "#" column already ranks
+      // whatever the reader sorted by; this rider keeps the page's core metric's standing
+      // visible while the table is sorted by anything else. "Rest effect" is deliberately NOT
+      // ranked — a difference of two ~30-attempt arms carries the error bars this page spends
+      // a whole filter warning about, and a rank would crown exactly that noise.
       label: "eFG%",
+      unit: "1ST = BEST IN VIEW",
       sortKey: "efg",
       numeric: true,
-      width: "68px",
+      width: "128px",
       style: NUM_TD,
-      cell: whenClosed((row) => fmt(row.efg)),
+      cell: whenClosed((row, i) => (
+        <>
+          {fmt(row.efg)}
+          {efgRanks[i] !== null && efgRanks[i] !== undefined ? (
+            <RankBadge rank={efgRanks[i]} of={efgRanks.length} population="players in view" />
+          ) : null}
+        </>
+      )),
     },
     {
       label: "No rest",
@@ -298,9 +322,11 @@ export function PlayerRestContent() {
 
   // Season swings run far past a career's, so the two bar scales differ.
   const cap = activeYear === "career" ? CAREER_CAP : SEASON_CAP
+  // Recomputed with every filter change, because the rank is a claim about the current view.
+  const efgRanks = useMemo(() => competitionRanks(rows, (r) => r.efg), [rows])
   const columns = useMemo(
-    () => playerColumns(cap, (row) => openPlayer === row.player),
-    [cap, openPlayer]
+    () => playerColumns(cap, (row) => openPlayer === row.player, efgRanks),
+    [cap, openPlayer, efgRanks]
   )
 
   if (error) {
