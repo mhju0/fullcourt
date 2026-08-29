@@ -22,21 +22,58 @@ test.describe("Home page", () => {
     await expect(page.getByRole("button", { name: /^DEC$/ })).toBeVisible();
   });
 
-  // The old /upcoming route was folded into this page as its UPCOMING view. Both halves
-  // are asserted: the redirect (so old links still land) and the toggle actually swapping
-  // the body (so a broken branch can't pass by leaving the date browser mounted).
-  test("absorbs the retired /upcoming route as a view toggle", async ({ page }) => {
+  // The UPCOMING view toggle died in redesign stage ② (2026-08-29, ADR 0010): one board,
+  // one card. Both halves of its retirement are asserted — the old /upcoming links still
+  // land here, and the toggle is actually gone rather than left mounted and broken.
+  test("/upcoming lands on the one board, and the view toggle is gone", async ({ page }) => {
     await page.goto("/upcoming");
     await expect(page).toHaveURL(/\/games$/);
 
-    const views = page.getByRole("group", { name: "Games view" });
     await expect(page.getByRole("button", { name: "Previous day" })).toBeVisible();
+    await expect(page.getByRole("group", { name: "Games view" })).toHaveCount(0);
+  });
 
-    await views.getByRole("button", { name: "UPCOMING" }).click();
-    await expect(page.getByRole("button", { name: "Previous day" })).toBeHidden();
+  // The density dial (C5): SKIM is the default glance — no fatigue column — and DEEP DIVE
+  // brings the numbers. The choice is URL-addressable so a shared link shows what its
+  // sender saw.
+  test("the slate opens on SKIM and the dial deepens it", async ({ page }) => {
+    await page.goto("/games");
 
-    await views.getByRole("button", { name: "BY DATE" }).click();
-    await expect(page.getByRole("button", { name: "Previous day" })).toBeVisible();
+    const dial = page.getByRole("group", { name: "Slate density" });
+    await expect(dial.getByRole("button", { name: "SKIM" })).toHaveAttribute(
+      "aria-pressed",
+      "true"
+    );
+    await expect(page.getByText("FATIGUE · 0–10")).toHaveCount(0);
+    await expect(page.getByText("REST ADVANTAGE").first()).toBeVisible();
+
+    await dial.getByRole("button", { name: "DEEP DIVE" }).click();
+    await expect(page.getByText("FATIGUE · 0–10")).toBeVisible();
+    await expect(page.getByText("REST · DAYS")).toBeVisible();
+    await expect(page).toHaveURL(/view=deep/);
+  });
+
+  // The EDGES AHEAD strip — what survived the UPCOMING view. It exists only when the
+  // schedule actually holds future games with an edge to rank, so the test asks the API
+  // first rather than failing on an off-season database.
+  test("an edge in the strip jumps the board to its date", async ({ page, request }) => {
+    // No season param: the route defaults to `defaultNbaSeason()` — the same query the
+    // strip itself makes — so this probe matches it by construction and cannot age.
+    const res = await request.get("/api/games/upcoming");
+    const body = (await res.json()) as { data: { date: string }[] | null };
+    test.skip(!body.data || body.data.length === 0, "no upcoming games in this database");
+
+    await page.goto("/games");
+    const strip = page.getByText("EDGES AHEAD", { exact: false });
+    await expect(strip).toBeVisible({ timeout: 60_000 });
+
+    const display = page.getByTestId("selected-date-display");
+    await expect(display).not.toHaveText("PICK A DATE", { timeout: 60_000 });
+
+    await page.getByRole("button", { name: /^Jump to / }).first().click();
+    // The jump drives the same reducer the date chips do; the display re-renders with
+    // the target date, whatever it is.
+    await expect(display).not.toHaveText("PICK A DATE");
   });
 
   test("previous-day control moves the selected date display backward", async ({ page }) => {
@@ -71,6 +108,13 @@ test.describe("Home page", () => {
       (res) =>
         res.url().includes("/api/games/2024-12-25") && res.status() === 200
     );
+
+    // Fatigue decimals live in DEEP DIVE — the default SKIM glance deliberately
+    // hides them, so the dial is part of what this asserts.
+    await page
+      .getByRole("group", { name: "Slate density" })
+      .getByRole("button", { name: "DEEP DIVE" })
+      .click();
 
     // MatchupCard's toggle row is role="button" with an "Expand/Collapse game
     // details" aria-label (src/components/matchup-table.tsx) — there's

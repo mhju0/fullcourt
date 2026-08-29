@@ -9,6 +9,7 @@ import {
   NBA_SEASONS,
   nextSeasonLabel,
   pickDefaultGamesDate,
+  formatEasternTipTime,
 } from "../nba-season";
 import type { GameDateCount } from "@/types";
 
@@ -235,5 +236,25 @@ describe("defaultNbaSeason", () => {
     for (const todayKey of ["2026-07-31", "2026-08-18", "2026-10-01", "2027-02-01"]) {
       expect(browsableSeasons(todayKey)).toContain(defaultNbaSeason(todayKey));
     }
+  });
+});
+
+describe("formatEasternTipTime", () => {
+  it("formats a winter tip in EST", () => {
+    // 2025-01-15 00:30 UTC = 2025-01-14 19:30 EST.
+    expect(formatEasternTipTime("2025-01-15T00:30:00Z")).toBe("7:30 PM ET");
+  });
+
+  it("formats an autumn tip in EDT — the DST side of the same clock", () => {
+    // 2024-10-23 23:00 UTC = 19:00 EDT.
+    expect(formatEasternTipTime("2024-10-23T23:00:00Z")).toBe("7:00 PM ET");
+  });
+
+  it("returns null for null — a missing time renders as its absence, never a guess", () => {
+    expect(formatEasternTipTime(null)).toBeNull();
+  });
+
+  it("returns null for an unparseable instant", () => {
+    expect(formatEasternTipTime("not-a-date")).toBeNull();
   });
 });

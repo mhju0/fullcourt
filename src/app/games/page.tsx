@@ -1,15 +1,16 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { useMemo } from "react"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
-import { MatchupTable } from "@/components/matchup-table"
+import { EdgesAhead } from "@/components/edges-ahead"
+import { MatchupTable, type SlateDensity } from "@/components/matchup-table"
 import { PageHeader } from "@/components/page-header"
 import { SeasonSelector } from "@/components/season-selector"
-import { UpcomingContentLazy } from "@/components/upcoming-lazy"
 import { useBacktest } from "@/hooks/useBacktest"
 import { useGameSlate, type GameSlate } from "@/hooks/useGameSlate"
+import { useSlateDensity } from "@/hooks/useSlateDensity"
 import { browsableSeasons, currentDisplaySeason, isNbaOffSeason } from "@/lib/nba-season"
 import { MessageCard } from "@/components/ui/message-card"
 import { MethodLink } from "@/components/method-link"
@@ -83,14 +84,67 @@ function GroupLabel({ children }: { children: React.ReactNode }) {
 
 // ─── Section divider ─────────────────────────────────────────────
 
-function SectionDivider({ label, count }: { label: string; count: number }) {
+function SectionDivider({
+  label,
+  count,
+  action,
+}: {
+  label: string
+  count: number
+  action?: React.ReactNode
+}) {
   return (
     <div className="mono flex items-center gap-3 py-2" style={{ fontSize: 11, letterSpacing: TRACK.label, color: "var(--term-text-muted)" }}>
       <span style={{ fontWeight: 700 }}>{label}</span>
       <span style={{ flex: 1, height: 1, background: "var(--term-border)" }} />
+      {action}
       <span style={{ fontWeight: 600 }}>
         {count} {count === 1 ? "GAME" : "GAMES"}
       </span>
+    </div>
+  )
+}
+
+/**
+ * The density dial (C5, 2026-08-28): SKIM is the schedule-site glance and the default;
+ * DEEP DIVE adds days rest, the fatigue bars and CONF. It sits on the MATCHUPS divider —
+ * a control about the table, on the table's own rail.
+ */
+function DensityDial({
+  density,
+  onChange,
+}: {
+  density: SlateDensity
+  onChange: (d: SlateDensity) => void
+}) {
+  return (
+    <div className="flex gap-1" role="group" aria-label="Slate density">
+      {([
+        { id: "skim", label: "SKIM" },
+        { id: "deep", label: "DEEP DIVE" },
+      ] as const).map(({ id, label }) => (
+        <button
+          key={id}
+          type="button"
+          onClick={() => onChange(id)}
+          aria-pressed={density === id}
+          className={cn(
+            "mono shrink-0 px-2 py-1 transition-[background-color,border-color,transform] active:scale-[0.97]",
+            density === id
+              ? "bg-[var(--term-text)] text-[var(--term-surface)]"
+              : "bg-[var(--term-surface)] text-[var(--term-text)] hover:bg-[var(--term-surface-2)]"
+          )}
+          style={{
+            fontSize: 10,
+            letterSpacing: TRACK.label,
+            fontWeight: 700,
+            border: `1px solid ${density === id ? "var(--term-text)" : "var(--term-border)"}`,
+            borderRadius: "var(--term-radius-sm)",
+          }}
+        >
+          {label}
+        </button>
+      ))}
     </div>
   )
 }
@@ -232,9 +286,11 @@ function DateChip({
 function Matchups({
   slate,
   evidenceSource,
+  density,
 }: {
   slate: GameSlate
   evidenceSource: React.ComponentProps<typeof MatchupTable>["evidenceSource"]
+  density: SlateDensity
 }) {
   switch (slate.status) {
     case "loadingDays":
@@ -254,7 +310,7 @@ function Matchups({
     case "slateReady":
       // The Front Office table spine: one continuous grid-table for the whole slate
       // (docs/design/mocks/08-front-office.html) instead of a stack of cards.
-      return <MatchupTable games={slate.games} evidenceSource={evidenceSource} />
+      return <MatchupTable games={slate.games} evidenceSource={evidenceSource} density={density} />
 
     default: {
       const exhaustive: never = slate.status
@@ -267,14 +323,19 @@ export default function HomePage() {
   const showOffSeasonBanner = isNbaOffSeason()
   const offSeasonLabel = currentDisplaySeason()
 
-  // The two views the old /upcoming tab and this page used to split between. Local state,
-  // not a query param: the nav no longer links to /upcoming, so the only inbound deep link
-  // is an old bookmark, and that redirects here and lands on the date browser.
-  const [view, setView] = useState<"date" | "upcoming">("date")
+  /* The BY DATE / UPCOMING view toggle died here on 2026-08-29 (redesign stage ②,
+     ADR 0010). The honest inventory that killed it: the date chips already reach every
+     future date, the upcoming table's edge and historical columns said nothing the RA
+     cell and the expansion's evidence sentence do not, and its one real capability —
+     cutting across dates by rest advantage — is the EDGES AHEAD strip below. One board,
+     one card. The /upcoming redirect still lands here, now on the only view there is. */
 
   // Season/month/day browsing, the two fetches and the Realtime overlay all live in
   // the hook; its decisions live in a pure reducer that is unit-tested without a DOM.
   const slate = useGameSlate()
+
+  // SKIM or DEEP DIVE — remembered per viewer, addressable via ?view=.
+  const [density, setDensity] = useSlateDensity()
 
   // The backtest, read only to denominate the matchup rows' evidence sentences.
   // Deliberately outside the slate: it is season-independent and must not gate the
@@ -337,182 +398,159 @@ export default function HomePage() {
           description="What the schedule does to a game. Travel, rest and density, scored for both teams in every matchup and checked against what actually happened since 1985-86."
         />
         <MethodLink surfaceHref="/games" />
+      </div>
+      {/* Stat summary row */}
+      <StatSummaryRow
+        gamesToday={slate.games.length}
+        avgRestAdv={avgRestAdv}
+        highConfGames={highConfGames}
+      />
 
+      {/* The cross-date edge question, three rows tall — what survived the UPCOMING
+          view's retirement. A click drives the same reducer the date chips do. */}
+      <EdgesAhead
+        onJump={(season, date) => {
+          slate.send({ type: "SEASON_SELECTED", season })
+          slate.send({ type: "DATE_SELECTED", date })
+        }}
+      />
 
-      {/* View toggle — absorbed the old /upcoming route, which is now a redirect here. */}
-      <div className="flex flex-wrap gap-2" role="group" aria-label="Games view">
-        {([
-          { id: "date", label: "BY DATE" },
-          { id: "upcoming", label: "UPCOMING" },
-        ] as const).map(({ id, label }) => (
-          <button
-            key={id}
-            type="button"
-            onClick={() => setView(id)}
-            aria-pressed={view === id}
-            className={cn(
-              termBtn,
-              "shrink-0 active:scale-[0.97]",
-              view === id
-                ? "bg-[var(--term-text)] text-[var(--term-surface)] hover:bg-[var(--term-text)]"
-                : "text-[var(--term-text)]"
-            )}
-            style={{
-              ...termBtnStyle,
-              borderColor: view === id ? "var(--term-text)" : "var(--term-border)",
-            }}
+      {/* Filters — two labelled groups rather than three stacked rows that each
+          repeated the same label treatment. Season and month answer one question
+          ("which stretch of basketball"), so they share a group. */}
+      <div className="flex flex-col gap-4" style={{ ...termCardStyle, padding: SPACE_CARD }}>
+        <div>
+          <GroupLabel>Scope</GroupLabel>
+          {/* Align to the bottom, not the centre: the season block is label +
+              select stacked, so centring it against 32px-tall month buttons put
+              the select below their midline. Both controls are the same height,
+              so sharing a bottom edge lines their tops up too. */}
+          <div className="flex flex-wrap items-end gap-x-4 gap-y-3">
+            {/* Matches the month strip's `pb-1` scrollbar clearance. Without it that
+                padding sits inside only one of the two flex items, so aligning their
+                bottoms still left the buttons 4px above the select. */}
+            <div className="pb-1">
+              {/* The browsable list, so a released-but-unplayed schedule is selectable
+                  here and not only on Schedule Disparity. `defaultNbaSeason()` already
+                  opens the board on it; without this the dropdown could not name it. */}
+              <SeasonSelector
+                id="nba-season"
+                season={slate.season}
+                onSeasonChange={(season) => slate.send({ type: "SEASON_SELECTED", season })}
+                seasons={browsableSeasons()}
+              />
+            </div>
+            <div className="-mx-1 min-w-0 flex-1 overflow-x-auto overflow-y-hidden pb-1 [scrollbar-width:thin]">
+              <div className="flex min-w-min gap-2 px-1">
+              {slate.months.map(({ value, label, dayCount, isSelected }) => (
+                <button
+                  key={value}
+                  type="button"
+                  onClick={() => slate.send({ type: "MONTH_SELECTED", month: value })}
+                  aria-pressed={isSelected}
+                  // A season-wide day list means we know which months were never
+                  // played (the 1998-99 and 2011-12 lockouts), so these disable
+                  // instead of round-tripping to an empty result.
+                  disabled={dayCount === 0}
+                  className={cn(
+                    termBtn,
+                    "shrink-0 active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-40 disabled:active:scale-100",
+                    isSelected
+                      ? "bg-[var(--term-text)] text-[var(--term-surface)] hover:bg-[var(--term-text)]"
+                      : "text-[var(--term-text)]"
+                  )}
+                  style={{
+                    ...termBtnStyle,
+                    borderColor: isSelected ? "var(--term-text)" : "var(--term-border)",
+                  }}
+                >
+                  {label.toUpperCase()}
+                </button>
+              ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <GroupLabel>Day</GroupLabel>
+        {slate.calendar.kind === "loading" ? (
+          <Skeleton className="h-16 w-full max-w-md bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)" }} />
+        ) : slate.calendar.kind === "error" ? (
+          <p className="mono" style={{ fontSize: 12, color: "var(--term-red-text)" }} role="alert">
+            {slate.calendar.message}
+          </p>
+        ) : slate.calendar.kind === "empty" ? (
+          <p className="mono" style={{ fontSize: 12, color: "var(--term-text-muted)" }}>
+            NO GAMES IN THIS MONTH.
+          </p>
+        ) : (
+          // The old "DAYS WITH GAMES" caption is gone: the group is already labelled
+          // "Day", and every chip states its own game count.
+          <div className="flex flex-wrap gap-2">
+            {slate.days.map((d) => (
+              <DateChip
+                key={d.date}
+                day={d.dayOfMonth}
+                count={d.gameCount}
+                selected={d.isSelected}
+                onClick={() => slate.send({ type: "DATE_SELECTED", date: d.date })}
+                ariaLabel={d.ariaLabel}
+              />
+            ))}
+          </div>
+        )}
+
+        <div className="mt-4 flex flex-wrap items-center gap-2">
+          <Button
+            variant="outline"
+            size="icon-sm"
+            onClick={() => slate.send({ type: "DAY_SHIFTED", delta: -1 })}
+            disabled={!slate.selectedDate}
+            aria-label="Previous day"
+            className="bg-[var(--term-surface)] active:scale-95"
+            style={{ border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }}
           >
-            {label}
-          </button>
-        ))}
+            <ChevronLeft />
+          </Button>
+          <p
+            className="mono min-w-[12rem] text-center sm:text-left"
+            style={{ fontSize: 12, letterSpacing: TRACK.sub, color: "var(--term-text)", fontWeight: 600 }}
+            data-testid="selected-date-display"
+          >
+            {slate.selectedLabel?.long.toUpperCase() ?? "PICK A DATE"}
+          </p>
+          <Button
+            variant="outline"
+            size="icon-sm"
+            onClick={() => slate.send({ type: "DAY_SHIFTED", delta: 1 })}
+            disabled={!slate.selectedDate}
+            aria-label="Next day"
+            className="bg-[var(--term-surface)] active:scale-95"
+            style={{ border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }}
+          >
+            <ChevronRight />
+          </Button>
+          </div>
         </div>
       </div>
 
-      {view === "upcoming" ? (
-        <UpcomingContentLazy />
-      ) : (
-        <>
-          {/* Stat summary row */}
-          <StatSummaryRow
-            gamesToday={slate.games.length}
-            avgRestAdv={avgRestAdv}
-            highConfGames={highConfGames}
-          />
-
-          {/* Filters — two labelled groups rather than three stacked rows that each
-              repeated the same label treatment. Season and month answer one question
-              ("which stretch of basketball"), so they share a group. */}
-          <div className="flex flex-col gap-4" style={{ ...termCardStyle, padding: SPACE_CARD }}>
-            <div>
-              <GroupLabel>Scope</GroupLabel>
-              {/* Align to the bottom, not the centre: the season block is label +
-                  select stacked, so centring it against 32px-tall month buttons put
-                  the select below their midline. Both controls are the same height,
-                  so sharing a bottom edge lines their tops up too. */}
-              <div className="flex flex-wrap items-end gap-x-4 gap-y-3">
-                {/* Matches the month strip's `pb-1` scrollbar clearance. Without it that
-                    padding sits inside only one of the two flex items, so aligning their
-                    bottoms still left the buttons 4px above the select. */}
-                <div className="pb-1">
-                  {/* The browsable list, so a released-but-unplayed schedule is selectable
-                      here and not only on Schedule Disparity. `defaultNbaSeason()` already
-                      opens the board on it; without this the dropdown could not name it. */}
-                  <SeasonSelector
-                    id="nba-season"
-                    season={slate.season}
-                    onSeasonChange={(season) => slate.send({ type: "SEASON_SELECTED", season })}
-                    seasons={browsableSeasons()}
-                  />
-                </div>
-                <div className="-mx-1 min-w-0 flex-1 overflow-x-auto overflow-y-hidden pb-1 [scrollbar-width:thin]">
-                  <div className="flex min-w-min gap-2 px-1">
-                  {slate.months.map(({ value, label, dayCount, isSelected }) => (
-                    <button
-                      key={value}
-                      type="button"
-                      onClick={() => slate.send({ type: "MONTH_SELECTED", month: value })}
-                      aria-pressed={isSelected}
-                      // A season-wide day list means we know which months were never
-                      // played (the 1998-99 and 2011-12 lockouts), so these disable
-                      // instead of round-tripping to an empty result.
-                      disabled={dayCount === 0}
-                      className={cn(
-                        termBtn,
-                        "shrink-0 active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-40 disabled:active:scale-100",
-                        isSelected
-                          ? "bg-[var(--term-text)] text-[var(--term-surface)] hover:bg-[var(--term-text)]"
-                          : "text-[var(--term-text)]"
-                      )}
-                      style={{
-                        ...termBtnStyle,
-                        borderColor: isSelected ? "var(--term-text)" : "var(--term-border)",
-                      }}
-                    >
-                      {label.toUpperCase()}
-                    </button>
-                  ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div>
-              <GroupLabel>Day</GroupLabel>
-            {slate.calendar.kind === "loading" ? (
-              <Skeleton className="h-16 w-full max-w-md bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)" }} />
-            ) : slate.calendar.kind === "error" ? (
-              <p className="mono" style={{ fontSize: 12, color: "var(--term-red-text)" }} role="alert">
-                {slate.calendar.message}
-              </p>
-            ) : slate.calendar.kind === "empty" ? (
-              <p className="mono" style={{ fontSize: 12, color: "var(--term-text-muted)" }}>
-                NO GAMES IN THIS MONTH.
-              </p>
-            ) : (
-              // The old "DAYS WITH GAMES" caption is gone: the group is already labelled
-              // "Day", and every chip states its own game count.
-              <div className="flex flex-wrap gap-2">
-                {slate.days.map((d) => (
-                  <DateChip
-                    key={d.date}
-                    day={d.dayOfMonth}
-                    count={d.gameCount}
-                    selected={d.isSelected}
-                    onClick={() => slate.send({ type: "DATE_SELECTED", date: d.date })}
-                    ariaLabel={d.ariaLabel}
-                  />
-                ))}
-              </div>
-            )}
-
-            <div className="mt-4 flex flex-wrap items-center gap-2">
-              <Button
-                variant="outline"
-                size="icon-sm"
-                onClick={() => slate.send({ type: "DAY_SHIFTED", delta: -1 })}
-                disabled={!slate.selectedDate}
-                aria-label="Previous day"
-                className="bg-[var(--term-surface)] active:scale-95"
-                style={{ border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }}
-              >
-                <ChevronLeft />
-              </Button>
-              <p
-                className="mono min-w-[12rem] text-center sm:text-left"
-                style={{ fontSize: 12, letterSpacing: TRACK.sub, color: "var(--term-text)", fontWeight: 600 }}
-                data-testid="selected-date-display"
-              >
-                {slate.selectedLabel?.long.toUpperCase() ?? "PICK A DATE"}
-              </p>
-              <Button
-                variant="outline"
-                size="icon-sm"
-                onClick={() => slate.send({ type: "DAY_SHIFTED", delta: 1 })}
-                disabled={!slate.selectedDate}
-                aria-label="Next day"
-                className="bg-[var(--term-surface)] active:scale-95"
-                style={{ border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }}
-              >
-                <ChevronRight />
-              </Button>
-              </div>
-            </div>
-          </div>
-
-          {/* Only over the season it describes. The board now opens on the upcoming season
-              once its schedule is released, and this banner sat above that slate announcing
-              that a *different* season was complete and that these were its final results. */}
-          {showOffSeasonBanner && slate.season === offSeasonLabel && (
-            <OffSeasonBanner season={offSeasonLabel} />
-          )}
-
-          {/* Matchups section */}
-          <div className="flex flex-col gap-2">
-            <SectionDivider label="MATCHUPS" count={slate.games.length} />
-            <Matchups slate={slate} evidenceSource={evidenceSource} />
-          </div>
-        </>
+      {/* Only over the season it describes. The board now opens on the upcoming season
+          once its schedule is released, and this banner sat above that slate announcing
+          that a *different* season was complete and that these were its final results. */}
+      {showOffSeasonBanner && slate.season === offSeasonLabel && (
+        <OffSeasonBanner season={offSeasonLabel} />
       )}
+
+      {/* Matchups section */}
+      <div className="flex flex-col gap-2">
+        <SectionDivider
+          label="MATCHUPS"
+          count={slate.games.length}
+          action={<DensityDial density={density} onChange={setDensity} />}
+        />
+        <Matchups slate={slate} evidenceSource={evidenceSource} density={density} />
+      </div>
     </div>
   )
 }
