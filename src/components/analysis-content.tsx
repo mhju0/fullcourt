@@ -423,8 +423,11 @@ function HeadlineDotPlot({
             <span
               className="mono tabular-nums absolute"
               style={{
-                left: `${pos(baselinePct)}%`,
-                transform: "translateX(-50%)",
+                // Anchored by its right edge: backing off half the label's own ~25.6ch
+                // width centers it on the tick when the row has room, and the max() pins
+                // it inside the scale when it hasn't — on a phone the caption bleeds left
+                // over the empty label cell, never off the page's right edge.
+                right: `max(0px, calc(${100 - pos(baselinePct)}% - 12.8ch))`,
                 fontSize: 10,
                 letterSpacing: TRACK.sub,
                 fontWeight: 600,
