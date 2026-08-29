@@ -10,6 +10,7 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
+  ReferenceDot,
   ReferenceLine,
   LabelList,
 } from "recharts"
@@ -293,6 +294,156 @@ const RA_THRESHOLD_OPTIONS = [
   { label: "RA ≥ 7", value: 7 },
 ]
 
+/**
+ * F2 (2026-08-29, ADR 0010 — build-to-decide): the headline pair as a dot plot instead of
+ * bars. 61.2 against 59.9 drawn as bars from zero is an axis crime — the bars would be
+ * near-identical and the whole finding lives in their sliver of difference. Dots on one
+ * shared win-rate scale show the finding as *distance*: both halves of the result, called
+ * and declined, displaced in opposite directions from the same home-court baseline.
+ *
+ * Every number arrives through `buildAnalysisClaims` — nothing here is typed in.
+ */
+function HeadlineDotPlot({
+  calledLabel,
+  calledPct,
+  declinedPct,
+  baselinePct,
+}: {
+  calledLabel: string
+  calledPct: number
+  declinedPct: number
+  baselinePct: number
+}) {
+  const values = [calledPct, declinedPct, baselinePct]
+  const pad = 1.5
+  const min = Math.min(...values) - pad
+  const max = Math.max(...values) + pad
+  const pos = (v: number) => ((v - min) / (max - min)) * 100
+
+  const rows = [
+    {
+      label: calledLabel,
+      value: calledPct,
+      tone: toDeviation(calledPct, baselinePct) >= 0 ? "var(--term-blue)" : "var(--term-red)",
+      text:
+        toDeviation(calledPct, baselinePct) >= 0
+          ? "var(--term-blue-text)"
+          : "var(--term-red-text)",
+    },
+    {
+      label: "RESTED VISITOR · HOME STILL WON",
+      value: declinedPct,
+      tone: toDeviation(declinedPct, baselinePct) >= 0 ? "var(--term-blue)" : "var(--term-red)",
+      text:
+        toDeviation(declinedPct, baselinePct) >= 0
+          ? "var(--term-blue-text)"
+          : "var(--term-red-text)",
+    },
+  ]
+
+  return (
+    <figure
+      className="m-0"
+      role="img"
+      aria-label={`Home teams win ${baselinePct}% of all games. With the rest edge at home they won ${calledPct}%; with a rested visitor they still won ${declinedPct}%. Both read as distance from the same home-court baseline.`}
+    >
+      <div aria-hidden className="flex flex-col" style={{ gap: SPACE.md }}>
+        {rows.map((row) => {
+          const left = Math.min(pos(row.value), pos(baselinePct))
+          const width = Math.abs(pos(row.value) - pos(baselinePct))
+          return (
+            <div key={row.label} className="grid items-center gap-x-4" style={{ gridTemplateColumns: "minmax(150px, 220px) 1fr" }}>
+              <span
+                className="mono"
+                style={{ fontSize: 10, letterSpacing: TRACK.label, fontWeight: 600, color: "var(--term-text-muted)" }}
+              >
+                {row.label}
+              </span>
+              <div className="relative" style={{ height: 32 }}>
+                {/* the scale */}
+                <span className="absolute inset-x-0" style={{ top: "50%", height: 1, background: "var(--term-border)" }} />
+                {/* the shared baseline tick */}
+                <span
+                  className="absolute"
+                  style={{ left: `${pos(baselinePct)}%`, top: 4, bottom: 4, width: 1, background: "var(--term-hairline)" }}
+                />
+                {/* the gap — the finding itself */}
+                <span
+                  className="absolute"
+                  style={{ left: `${left}%`, width: `${width}%`, top: "calc(50% - 1px)", height: 2, background: row.tone }}
+                />
+                {/* baseline dot: hollow — it is the ground, not a result */}
+                <span
+                  className="absolute"
+                  style={{
+                    left: `${pos(baselinePct)}%`,
+                    top: "50%",
+                    transform: "translate(-50%, -50%)",
+                    width: 8,
+                    height: 8,
+                    borderRadius: "50%",
+                    background: "var(--term-surface)",
+                    border: "1.5px solid var(--term-text-muted)",
+                  }}
+                />
+                {/* the result dot */}
+                <span
+                  className="absolute"
+                  style={{
+                    left: `${pos(row.value)}%`,
+                    top: "50%",
+                    transform: "translate(-50%, -50%)",
+                    width: 10,
+                    height: 10,
+                    borderRadius: "50%",
+                    background: row.tone,
+                  }}
+                />
+                <span
+                  className="mono tabular-nums absolute"
+                  style={{
+                    left: `${pos(row.value)}%`,
+                    transform: "translateX(-50%)",
+                    top: -4,
+                    fontSize: 11,
+                    fontWeight: 700,
+                    color: row.text,
+                  }}
+                >
+                  {row.value}%
+                </span>
+              </div>
+            </div>
+          )
+        })}
+        {/* the scale's one caption: what the shared tick is */}
+        <div className="grid gap-x-4" style={{ gridTemplateColumns: "minmax(150px, 220px) 1fr" }}>
+          <span />
+          <div className="relative" style={{ height: 14 }}>
+            <span
+              className="mono tabular-nums absolute"
+              style={{
+                // Anchored by its right edge: backing off half the label's own ~25.6ch
+                // width centers it on the tick when the row has room, and the max() pins
+                // it inside the scale when it hasn't — on a phone the caption bleeds left
+                // over the empty label cell, never off the page's right edge.
+                right: `max(0px, calc(${100 - pos(baselinePct)}% - 12.8ch))`,
+                fontSize: 10,
+                letterSpacing: TRACK.sub,
+                fontWeight: 600,
+                color: "var(--term-text-muted)",
+                whiteSpace: "nowrap",
+              }}
+            >
+              {baselinePct}% · HOME COURT ALONE
+            </span>
+          </div>
+        </div>
+      </div>
+    </figure>
+  )
+}
+
 function SeasonWinRateBySeasonChart({
   seasonWinRates,
   loading,
@@ -314,8 +465,18 @@ function SeasonWinRateBySeasonChart({
   }))
   const { domain, ticks } = deviationScale(chartData.map((d) => d.deviation))
 
+  // F4 (2026-08-29, ADR 0010 — build-to-decide): the chart points at its own headline.
+  // One ringed season — the widest gap against its era's home court — and one derived
+  // caption; forty-one bars otherwise leave the reader to find the story alone. Derived
+  // from the data on every render, never typed, so it can never age.
+  const highlight = chartData.reduce<SeasonWinRateDatum | null>(
+    (top, d) => (top === null || Math.abs(d.deviation) > Math.abs(top.deviation) ? d : top),
+    null
+  )
+
   return (
-    <div className="mt-4 h-72 min-w-0">
+    <div className="mt-4 min-w-0">
+      <div className="h-72 min-w-0">
       {loading ? (
         <Skeleton className="h-full w-full bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)" }} />
       ) : chartData.length === 0 ? (
@@ -368,8 +529,36 @@ function SeasonWinRateBySeasonChart({
                 decoration, so it is solid ink at full weight — the one rule on the chart
                 that is allowed to be assertive. */}
             <ReferenceLine y={0} stroke="var(--term-text)" strokeWidth={1.5} />
+            {/* The one highlight (F4): a quiet ring, with its caption below the chart —
+                on-chart text among 41 bars would collide with its neighbours. */}
+            {highlight && (
+              <ReferenceDot
+                x={highlight.label}
+                y={highlight.deviation}
+                r={5}
+                fill="none"
+                stroke="var(--term-text)"
+                strokeWidth={1.5}
+              />
+            )}
           </BarChart>
         </ResponsiveContainer>
+      )}
+      </div>
+      {!loading && highlight && (
+        <p
+          className="mono m-0"
+          style={{
+            fontSize: 11,
+            letterSpacing: TRACK.sub,
+            color: "var(--term-text-muted)",
+            marginTop: SPACE.sm,
+          }}
+        >
+          ○ {highlight.label}: <span style={{ fontWeight: 700, color: deviationText(highlight.deviation) }}>{signedNumber(highlight.deviation)} PP</span>{" "}
+          VS ITS OWN {highlight.baselinePct}% HOME COURT — THE WIDEST GAP OF THE{" "}
+          {chartData.length} SEASONS SHOWN.
+        </p>
       )}
     </div>
   )
@@ -794,6 +983,21 @@ export function AnalysisContent({ asOf }: { asOf?: DataAsOf | null }) {
             accent="var(--term-blue)"
           />
         ))}
+      </div>
+
+      {/* F2 (build-to-decide): the same headline as distance on one scale — the called half
+          and the declined half displaced in opposite directions from the same baseline. The
+          tiles above state the numbers; this is what the numbers look like. */}
+      <div style={termCardStyle}>
+        <SectionDivider label="THE HEADLINE, AS DISTANCE FROM HOME COURT" />
+        <div className="mt-4">
+          <HeadlineDotPlot
+            calledLabel="RESTED TEAM AT HOME · WON"
+            calledPct={claims.tiles[0].winPct}
+            declinedPct={claims.declinedHalf.homeWinPct}
+            baselinePct={homeBaseline}
+          />
+        </div>
       </div>
 
       {/* The excluded half. Why it is a band rather than a tile, and why it is stated as the
