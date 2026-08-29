@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from "next";
 import { Analytics } from "@vercel/analytics/next";
 import Link from "next/link";
 import { Geist, Geist_Mono } from "next/font/google";
+import { BottomNav } from "@/components/bottom-nav";
+import { CommandPalette } from "@/components/command-palette";
 import { NavBar } from "@/components/nav-bar";
 import "./globals.css";
 import { TRACK } from "@/lib/terminal-styles";
@@ -171,6 +173,12 @@ export default function RootLayout({
             </span>
           </div>
         </footer>
+
+        {/* The phone dock and the ⌘K palette (2026-08-29 shell merge). Both are chrome, not
+            page content: the dock is fixed below `lg` (body reserves its height in
+            globals.css), and the palette mounts once here so ⌘K works on every route. */}
+        <BottomNav />
+        <CommandPalette />
 
         <Analytics />
       </body>

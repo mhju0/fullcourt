@@ -185,10 +185,117 @@
   --term-radius: 8px;
   --term-radius-sm: 4px;
   --term-radius-bar: 1px;
-  /* Height of the sticky chrome: brand bar (52px) + main nav (44px). /about's
-     full-viewport sections subtract it, and they overran the fold by exactly this
-     much the last two times it changed and they did not. One number, one place. */
-  --term-chrome-h: 96px;
+  /* Height of the sticky chrome: ONE 56px bar since the 2026-08-29 shell merge
+     (ADR 0010; it replaced the 52px brand bar + 44px tab row). The front door's
+     full-viewport sections subtract it — and its dark wrapper pulls up by it —
+     and they overran the fold by exactly this much the last two times it changed
+     and they did not. One number, one place; BAR_HEIGHT_PX in nav-bar.tsx is the
+     same number for the retract logic, and the two move together. */
+  --term-chrome-h: 56px;
+  /* The phone dock's height (bottom-nav.tsx). `body` reserves it below `lg` so the
+     dock never covers a page's last line; the safe-area inset pads inside the nav. */
+  --term-bottom-nav-h: 56px;
+}
+
+/* Below `lg` the bottom nav is primary navigation, and the page has to end above it. */
+@media (max-width: 1023px) {
+  body {
+    padding-bottom: calc(var(--term-bottom-nav-h) + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+/* The dock pads the safe-area inset inside itself, so a home-indicator phone taps the
+   slots and not the gesture bar. A class rather than an inline style only because the
+   scale audit's inline parser cannot read env()'s comma fallback — the value is as
+   static as the inline ones beside it. */
+.fc-bottom-nav {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* ── Command palette (cmdk) ─────────────────────────────────────── */
+
+/* Styling for the parts cmdk stamps with its own attributes (command-palette.tsx).
+   Tokens only, sizes on the type scale, spacing on the space scale. No entry
+   animation at all — nothing to guard for reduced motion. The light card floats
+   over every surface including the dark front door, the same deliberate contrast
+   as the OTHER menu's popup. */
+[cmdk-overlay] {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  background: rgba(22, 24, 29, 0.45);
+}
+[cmdk-dialog] {
+  position: fixed;
+  z-index: 71;
+  left: 50%;
+  top: 16svh;
+  transform: translateX(-50%);
+  width: min(560px, calc(100vw - 32px));
+}
+[cmdk-root] {
+  overflow: hidden;
+  background: var(--term-surface);
+  border: 1px solid var(--term-border);
+  border-radius: var(--term-radius);
+  box-shadow: 0 12px 40px rgba(22, 24, 29, 0.18);
+}
+[cmdk-input] {
+  width: 100%;
+  padding: 16px;
+  border: 0;
+  border-bottom: 1px solid var(--term-border);
+  outline: none;
+  background: transparent;
+  color: var(--term-text);
+  font-family: inherit;
+  font-size: 15px;
+}
+[cmdk-input]::placeholder {
+  color: var(--term-text-muted);
+}
+[cmdk-list] {
+  max-height: min(360px, 50svh);
+  overflow-y: auto;
+  padding: 4px;
+}
+[cmdk-group-heading] {
+  padding: 8px 8px 4px;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--term-text-muted);
+}
+[cmdk-item] {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px;
+  border-radius: var(--term-radius-sm);
+  cursor: pointer;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--term-text);
+}
+[cmdk-item][data-selected="true"] {
+  background: var(--term-surface-2);
+}
+[cmdk-fc-hint] {
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  color: var(--term-text-muted);
+}
+[cmdk-empty] {
+  padding: 12px 8px;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 12px;
+  color: var(--term-text-muted);
 }
 
 /* ── Front-door chrome ───────────────────────────────────────────────── */

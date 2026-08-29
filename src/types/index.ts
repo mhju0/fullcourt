@@ -53,6 +53,12 @@ export interface GameResponse {
   date: string;
   season: string;
   status: string;
+  /**
+   * Tip-off as the ET clock string ("7:30 PM ET"), or null — `tip_off_utc` is null
+   * pre-2002 and for all of 2019-20, complete otherwise (docs/DATABASE.md), and an
+   * absent time renders as its absence.
+   */
+  tipOffEt: string | null;
   homeTeam: TeamInfo;
   awayTeam: TeamInfo;
   homeScore: number | null;

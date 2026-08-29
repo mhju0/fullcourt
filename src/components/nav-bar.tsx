@@ -1,6 +1,7 @@
 "use client"
 
 import { Menu } from "@base-ui/react/menu"
+import { Search } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useCallback, useEffect, useRef, useState } from "react"
@@ -8,8 +9,10 @@ import { CourtMark } from "@/components/court-mark"
 import { wordmarkLetters } from "@/lib/brand/wordmark-kern"
 import {
   DIRECT_NAV_ITEMS,
+  isActiveRoute,
   OTHER_NAV_ITEMS,
   OTHER_NAV_LABEL,
+  PALETTE_OPEN_EVENT,
 } from "@/lib/primary-navigation"
 import { TRACK, TYPE } from "@/lib/terminal-styles"
 import { cn } from "@/lib/utils"
@@ -20,7 +23,8 @@ import { cn } from "@/lib/utils"
  * and weight as tabs, because the top status strip proved too quiet to be found.
  *
  * Kept here rather than in primary-navigation.ts on purpose: that module enumerates product
- * surfaces, and this is documentation about the product rather than a surface of it.
+ * surfaces, and this is documentation about the product rather than a surface of it. The
+ * command palette imports it for the same reason — its Reference group is this list.
  *
  * ABOUT left on 2026-08-12, when the page it pointed at became `/`. A link from the front door
  * to itself is not a reference; the wordmark already goes there, and that is the convention a
@@ -28,16 +32,9 @@ import { cn } from "@/lib/utils"
  * DATA explains the product rather than being a surface of it, which is exactly what this
  * landmark separates.
  */
-const SECONDARY_LINKS = [
+export const SECONDARY_LINKS = [
   { href: "/behind-the-data", label: "BEHIND THE DATA" },
 ] as const
-
-function isActive(pathname: string, href: string): boolean {
-  // `/` is the marketing page and no tab points at it, so the exact-match branch this used to
-  // need for GAMES is gone. Kept as a guard: a prefix match on "/" would light every tab.
-  if (href === "/") return pathname === "/"
-  return pathname === href || pathname.startsWith(href + "/")
-}
 
 /** Shared by the direct tabs and the OTHER trigger so the underline reads identically. */
 const TAB_CLASS =
@@ -51,11 +48,14 @@ function tabTone(active: boolean): string {
 }
 
 /**
- * The bar's own height: the 52px brand bar plus the 44px tab row. Two things key off it — the
- * bar never retracts until the reader is at least its own height down the page, and a document
- * with less scroll room than that never retracts at all.
+ * The bar's own height — one 56px bar since the 2026-08-29 shell merge (stage ③ of the
+ * redesign round, ADR 0010; it replaced the 52px brand bar + 44px tab row). Two things key
+ * off it — the bar never retracts until the reader is at least its own height down the page,
+ * and a document with less scroll room than that never retracts at all. `--term-chrome-h`
+ * in globals.css is the same number for CSS consumers; the two move together or the front
+ * door's fold math breaks.
  */
-const BAR_HEIGHT_PX = 96
+const BAR_HEIGHT_PX = 56
 
 /** Scroll jitter and trackpad momentum wobble, which otherwise flap the bar open and shut. */
 const SCROLL_NOISE_PX = 6
@@ -162,9 +162,13 @@ function useRetractingHeader(enabled: boolean) {
  * The 2026-08-04 pass found the OTHER menu sitting entirely off-screen at 360px "with no
  * scroll affordance", so the tabs past the fold were unreachable in practice: nothing said
  * the row continues. The scrollbar cannot be that signal — it is hidden on purpose, because
- * at 44px tall it lands on the active tab's underline. A fade at the overflowing edge is how
+ * on the active tab's underline it lands exactly. A fade at the overflowing edge is how
  * Naver Sports' tab strips and ESPN's mobile subnavs say "more this way", and it costs no
  * height.
+ *
+ * Since the 2026-08-29 shell merge the strip is a desktop element (below `lg` the bottom nav
+ * carries primary navigation), but the affordance problem is unchanged: between `lg` and
+ * roughly 1250px the tabs still overflow the room the single bar leaves them.
  *
  * State, not CSS alone: a static gradient would also sit over the row when the content fits,
  * dimming the last tab for no reason. Each fade shows only while there is actually content
@@ -215,7 +219,7 @@ function useEdgeFades() {
 
 export function NavBar() {
   const pathname = usePathname()
-  const otherActive = OTHER_NAV_ITEMS.some((item) => isActive(pathname, item.href))
+  const otherActive = OTHER_NAV_ITEMS.some((item) => isActiveRoute(pathname, item.href))
   const { ref: stripRef, fades } = useEdgeFades()
 
   // The front door only. Every other surface keeps the bar pinned.
@@ -227,9 +231,9 @@ export function NavBar() {
       className={cn(
         "sticky top-0 z-50",
         // motion-safe: under `prefers-reduced-motion` the bar still retracts, it just stops
-        // sliding to get there. A 96px band travelling the screen on every change of scroll
-        // direction is precisely the motion the preference asks to remove; the state change
-        // itself is not, and withholding that would leave the page's chrome behaving
+        // sliding to get there. A bar-height band travelling the screen on every change of
+        // scroll direction is precisely the motion the preference asks to remove; the state
+        // change itself is not, and withholding that would leave the page's chrome behaving
         // differently for those readers rather than merely more quietly.
         retractable && "motion-safe:transition-transform motion-safe:duration-300",
         // On the front door the chrome re-resolves its tokens to the dark set, and at the
@@ -244,46 +248,35 @@ export function NavBar() {
       // or the focus ring lands on a control sitting off the top of the screen.
       onFocus={reveal}
     >
-      {/* BRAND BAR */}
+      {/* THE BAR — one 56px layer since the 2026-08-29 shell merge. The brand zone sits left,
+          the tab strip takes the middle (desktop only — below `lg` the bottom nav is primary
+          navigation and this bar is brand-only), and the palette's SEARCH affordance sits
+          right. The "NBA ANALYTICS PLATFORM" tagline retired to the front door with the merge:
+          a slim bar carries the name, the front door carries the story. */}
       <div
         className="motion-safe:transition-colors motion-safe:duration-200"
         style={{
-          height: "52px",
+          height: "56px",
           background: "var(--term-surface-2)",
           borderBottom: "1px solid var(--term-border)",
         }}
       >
-        <div className="mx-auto flex h-full max-w-7xl items-center justify-between px-4 sm:px-6">
+        <div className="mx-auto flex h-full max-w-7xl items-center gap-4 px-4 sm:px-6">
           {/* The wordmark goes home, which is what every visitor already expects a logo to
-              do. It was previously inert — the one piece of chrome people reflexively click
-              and nothing happened.
-
-              It used to read "home is GAMES, not /about: a logo that lands you on a marketing
-              page breaks the 'take me back to the product' contract." That held while `/` WAS
-              the games board, so home and the product were one page. They split on 2026-08-12
-              and the rule inverts: `/` is now the front door, a wordmark pointing anywhere else
-              is the surprising choice, and "take me back to the product" is served by the GAMES
-              tab sitting first in the row directly below this.
-
-              Sized as a logotype rather than as chrome text (2026-07-30). At 11px mono it was
-              smaller than the tabs beneath it, so the one element that names the product read
-              as the least important thing in the header. It is now 22px in the display face
-              (the same face as every page title) with the descriptor demoted to
-              a mono tagline behind a hairline rule — the standard analytics-site header shape:
-              one mark, one large name, one small qualifier. Two tones, FULL near-black and
-              COURT muted (Front Office keeps the poles for data, so the wordmark no longer
-              borrows the fatigued hue); `aria-label` keeps the accessible name a single
-              "FullCourt home". */}
+              do. Sized as a logotype rather than as chrome text (2026-07-30): 22px in the
+              display face beside the 34px mark — the standard analytics-site header shape,
+              one mark, one large name. Two tones, FULL near-black and COURT in the accent;
+              `aria-label` keeps the accessible name a single "FullCourt home". */}
           <Link
             href="/"
-            className="flex items-center gap-3 transition-opacity hover:opacity-80"
+            className="flex shrink-0 items-center gap-3 transition-opacity hover:opacity-80"
             aria-label="FullCourt home"
           >
             {/* The one piece of chrome that cannot follow the token scope: the mark's colors
                 are SVG fills, so it selects its sanctioned dark cut by prop on the front door. */}
             <CourtMark size={34} className="shrink-0" tone={retractable ? "dark" : "light"} />
-            {/* 22px is NOT a TYPE entry, deliberately: the wordmark is sized to the 52px
-                brand bar beside a 34px mark, not to a text role. Resizing it is a branding
+            {/* 22px is NOT a TYPE entry, deliberately: the wordmark is sized to the brand
+                zone beside a 34px mark, not to a text role. Resizing it is a branding
                 decision (see the exemption list in terminal-styles.ts). */}
             <span
               className="font-heading"
@@ -305,158 +298,156 @@ export function NavBar() {
                 </span>
               ))}
             </span>
-            <span
-              aria-hidden
-              className="hidden sm:block"
-              style={{ width: 1, height: 18, background: "var(--term-hairline)" }}
-            />
-            <span
-              className="mono hidden sm:inline"
-              style={{ fontSize: "10px", letterSpacing: TRACK.label, color: "var(--term-text-muted)" }}
-            >
-              NBA ANALYTICS PLATFORM
-            </span>
           </Link>
-        </div>
-      </div>
 
-      {/* MAIN NAV BAR */}
-      <div
-        className="mono relative motion-safe:transition-colors motion-safe:duration-200"
-        style={{
-          height: "44px",
-          background: "var(--term-surface)",
-          borderBottom: "1px solid var(--term-border)",
-        }}
-      >
-        {/* Below ~900px the nine links do not fit a line, and the row was clipping them: on a
-            390px phone the fifth tab wrapped inside a 44px box and the reference links were
-            simply not on screen. It is now one horizontally scrollable strip — links keep their
-            full size and `ml-auto` still right-aligns the reference group whenever the content
-            does fit, so the desktop row is unchanged. A scroll strip over a drawer because the
-            whole nav is nine short labels: a hamburger would hide all nine behind a tap to
-            solve a problem that a swipe already solves. The OTHER menu is unaffected — it
-            renders through a Portal, so this container cannot clip its popup. */}
-        <div ref={stripRef} className="fc-nav-scroll mx-auto flex h-full max-w-7xl items-center gap-6 overflow-x-auto px-4 sm:px-6">
-          {/* Two landmarks in one row. The product tabs keep the "Main navigation" name and
-              its asserted six-link count; the reference links are a separate landmark so
-              they never inflate that count and so screen readers announce them as what they
-              are. Visually they are the same size and weight as a tab — the gap is what says
-              "not one of the six", not a smaller type size. */}
-          <nav aria-label="Main navigation" className="flex h-full shrink-0 items-center gap-6">
-          {DIRECT_NAV_ITEMS.map(({ href, label }) => {
-            const active = isActive(pathname, href)
-            return (
-              <Link
-                key={href}
-                href={href}
-                aria-current={active ? "page" : undefined}
-                className={cn(TAB_CLASS, tabTone(active))}
-                style={TAB_STYLE}
-              >
-                {label}
-              </Link>
-            )
-          })}
+          <span
+            aria-hidden
+            className="hidden lg:block"
+            style={{ width: 1, height: 18, background: "var(--term-hairline)" }}
+          />
 
-          {/* The trigger reads active whenever any page inside it is open, so the bar never
-              loses track of where you are while the menu itself is shut. */}
-          <Menu.Root>
-            <Menu.Trigger
-              // The active state is exposed as data rather than left to a class name, so
-              // e2e can assert "you are inside OTHER" without pinning the styling.
-              data-active-surface={otherActive ? "true" : "false"}
-              className={cn(
-                TAB_CLASS,
-                "gap-2 outline-none focus-visible:text-[var(--term-text)]",
-                tabTone(otherActive)
-              )}
-              style={TAB_STYLE}
+          {/* The tab strip — desktop only. Below `lg` primary navigation is the bottom nav
+              (bottom-nav.tsx) and every route stays reachable through the palette, so the
+              strip leaves the DOM entirely rather than hiding under a hamburger. Within the
+              strip nothing changed in the merge: two landmarks in one row, the product tabs
+              keeping the "Main navigation" name and its asserted six-link count, the
+              reference links in their own landmark so they never inflate that count. */}
+          <div className="relative hidden h-full min-w-0 flex-1 lg:block">
+            <div
+              ref={stripRef}
+              className="fc-nav-scroll mono flex h-full items-center gap-4 overflow-x-auto"
             >
-              {OTHER_NAV_LABEL}
-              <span aria-hidden style={{ fontSize: TYPE.micro }}>▼</span>
-            </Menu.Trigger>
-            <Menu.Portal>
-              <Menu.Positioner sideOffset={0} align="start">
-                <Menu.Popup
-                  className="mono min-w-[13rem] py-1 shadow-lg outline-none"
-                  style={{
-                    background: "var(--term-surface)",
-                    border: "1px solid var(--term-border)",
-                    fontSize: "12px",
-                    letterSpacing: TRACK.data,
-                  }}
-                >
-                  {OTHER_NAV_ITEMS.map((item) => {
-                    const { href, label } = item
-                    const active = isActive(pathname, href)
-                    return (
-                      <Menu.Item
-                        key={href}
-                        // `render` keeps this a real <a>, so the item is still a link to
-                        // middle-click, copy, or crawl — not a button that navigates.
-                        render={<Link href={href} aria-current={active ? "page" : undefined} />}
-                        className={cn(
-                          "flex cursor-pointer items-center gap-2 px-4 py-2 font-semibold outline-none transition-colors",
-                          active
-                            ? "text-[var(--term-text)]"
-                            : "text-[var(--term-text-muted)]",
-                          "data-[highlighted]:bg-[var(--term-surface-2)] data-[highlighted]:text-[var(--term-text)]"
-                        )}
+              <nav aria-label="Main navigation" className="flex h-full shrink-0 items-center gap-4">
+                {DIRECT_NAV_ITEMS.map(({ href, label }) => {
+                  const active = isActiveRoute(pathname, href)
+                  return (
+                    <Link
+                      key={href}
+                      href={href}
+                      aria-current={active ? "page" : undefined}
+                      className={cn(TAB_CLASS, tabTone(active))}
+                      style={TAB_STYLE}
+                    >
+                      {label}
+                    </Link>
+                  )
+                })}
+
+                {/* The trigger reads active whenever any page inside it is open, so the bar never
+                    loses track of where you are while the menu itself is shut. */}
+                <Menu.Root>
+                  <Menu.Trigger
+                    // The active state is exposed as data rather than left to a class name, so
+                    // e2e can assert "you are inside OTHER" without pinning the styling.
+                    data-active-surface={otherActive ? "true" : "false"}
+                    className={cn(
+                      TAB_CLASS,
+                      "gap-2 outline-none focus-visible:text-[var(--term-text)]",
+                      tabTone(otherActive)
+                    )}
+                    style={TAB_STYLE}
+                  >
+                    {OTHER_NAV_LABEL}
+                    <span aria-hidden style={{ fontSize: TYPE.micro }}>▼</span>
+                  </Menu.Trigger>
+                  <Menu.Portal>
+                    <Menu.Positioner sideOffset={0} align="start">
+                      <Menu.Popup
+                        className="mono min-w-[13rem] py-1 shadow-lg outline-none"
+                        style={{
+                          background: "var(--term-surface)",
+                          border: "1px solid var(--term-border)",
+                          fontSize: "12px",
+                          letterSpacing: TRACK.data,
+                        }}
                       >
-                        {/* The IN PROGRESS tag that used to render here was removed when
-                            /referees was published on 2026-08-22 — it was this menu's only
-                            user. It marked a surface as unfinished *before* you opened it, and
-                            git history has it if another surface is ever held back. */}
-                        {label}
-                      </Menu.Item>
-                    )
-                  })}
-                </Menu.Popup>
-              </Menu.Positioner>
-            </Menu.Portal>
-          </Menu.Root>
-          </nav>
+                        {OTHER_NAV_ITEMS.map((item) => {
+                          const { href, label } = item
+                          const active = isActiveRoute(pathname, href)
+                          return (
+                            <Menu.Item
+                              key={href}
+                              // `render` keeps this a real <a>, so the item is still a link to
+                              // middle-click, copy, or crawl — not a button that navigates.
+                              render={<Link href={href} aria-current={active ? "page" : undefined} />}
+                              className={cn(
+                                "flex cursor-pointer items-center gap-2 px-4 py-2 font-semibold outline-none transition-colors",
+                                active
+                                  ? "text-[var(--term-text)]"
+                                  : "text-[var(--term-text-muted)]",
+                                "data-[highlighted]:bg-[var(--term-surface-2)] data-[highlighted]:text-[var(--term-text)]"
+                              )}
+                            >
+                              {label}
+                            </Menu.Item>
+                          )
+                        })}
+                      </Menu.Popup>
+                    </Menu.Positioner>
+                  </Menu.Portal>
+                </Menu.Root>
+              </nav>
 
-          <nav aria-label="Reference" className="ml-auto flex h-full shrink-0 items-center gap-6">
-            {SECONDARY_LINKS.map(({ href, label }) => {
-              const active = isActive(pathname, href)
-              return (
-                <Link
-                  key={href}
-                  href={href}
-                  aria-current={active ? "page" : undefined}
-                  className={cn(TAB_CLASS, tabTone(active))}
-                  style={TAB_STYLE}
-                >
-                  {label}
-                </Link>
-              )
-            })}
-          </nav>
+              <nav aria-label="Reference" className="ml-auto flex h-full shrink-0 items-center gap-4">
+                {SECONDARY_LINKS.map(({ href, label }) => {
+                  const active = isActiveRoute(pathname, href)
+                  return (
+                    <Link
+                      key={href}
+                      href={href}
+                      aria-current={active ? "page" : undefined}
+                      className={cn(TAB_CLASS, tabTone(active))}
+                      style={TAB_STYLE}
+                    >
+                      {label}
+                    </Link>
+                  )
+                })}
+              </nav>
+            </div>
+
+            {/* The overflow affordance. Decorative overlays, never interactive:
+                `pointer-events-none` so they cannot eat a tap on the tab under them, and the
+                *dynamic* half (opacity) is a class while the static gradient is inline —
+                nothing contests either, per the cascade rule in docs/FRONTEND.md. Gradient
+                from the bar's own surface so the fade reads as the row continuing, not as a
+                shadow cast over it. */}
+            <div
+              aria-hidden="true"
+              className={cn(
+                "fc-nav-fade-left pointer-events-none absolute inset-y-0 left-0 w-8 transition-opacity duration-200 motion-reduce:transition-none",
+                fades.left ? "opacity-100" : "opacity-0"
+              )}
+              style={{ background: "linear-gradient(to right, var(--term-surface-2), transparent)" }}
+            />
+            <div
+              aria-hidden="true"
+              className={cn(
+                "fc-nav-fade-right pointer-events-none absolute inset-y-0 right-0 w-8 transition-opacity duration-200 motion-reduce:transition-none",
+                fades.right ? "opacity-100" : "opacity-0"
+              )}
+              style={{ background: "linear-gradient(to left, var(--term-surface-2), transparent)" }}
+            />
+          </div>
+
+          {/* The palette's visible affordance — the GitHub lesson is that a keyboard-only
+              palette is a feature nobody finds, so the word stays on the button. The ⌘K chip
+              was measured off it (2026-08-29): the bar's inner width is a constant 1232px on
+              every desktop (max-w-7xl minus padding), and with the chip the six tabs could not
+              fit beside the brand zone — the shortcut is taught by `title` and by the palette
+              itself instead. Desktop only: the bottom nav carries its own search slot. */}
+          <button
+            type="button"
+            onClick={() => window.dispatchEvent(new Event(PALETTE_OPEN_EVENT))}
+            className="mono hidden h-8 shrink-0 items-center gap-2 border border-[var(--term-border)] px-2 font-semibold text-[var(--term-text-muted)] outline-none transition-colors hover:text-[var(--term-text)] focus-visible:text-[var(--term-text)] lg:flex"
+            style={{ fontSize: "12px", letterSpacing: TRACK.data, borderRadius: "var(--term-radius-sm)" }}
+            title="⌘K"
+            aria-keyshortcuts="Meta+K Control+K"
+          >
+            <Search size={13} aria-hidden />
+            SEARCH
+          </button>
         </div>
-
-        {/* The overflow affordance. Decorative overlays, never interactive: `pointer-events-none`
-            so they cannot eat a tap on the tab under them, and the *dynamic* half (opacity) is a
-            class while the static gradient is inline — nothing contests either, per the cascade
-            rule in docs/FRONTEND.md. Gradient from the row's own surface so the fade reads as the
-            row continuing, not as a shadow cast over it. */}
-        <div
-          aria-hidden="true"
-          className={cn(
-            "fc-nav-fade-left pointer-events-none absolute inset-y-0 left-0 w-8 transition-opacity duration-200 motion-reduce:transition-none",
-            fades.left ? "opacity-100" : "opacity-0"
-          )}
-          style={{ background: "linear-gradient(to right, var(--term-surface), transparent)" }}
-        />
-        <div
-          aria-hidden="true"
-          className={cn(
-            "fc-nav-fade-right pointer-events-none absolute inset-y-0 right-0 w-8 transition-opacity duration-200 motion-reduce:transition-none",
-            fades.right ? "opacity-100" : "opacity-0"
-          )}
-          style={{ background: "linear-gradient(to left, var(--term-surface), transparent)" }}
-        />
       </div>
     </header>
   )

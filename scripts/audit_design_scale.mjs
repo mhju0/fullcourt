@@ -62,7 +62,7 @@ const EXEMPT = [
   // Vendored shadcn; its sizes live inside has-data-* variant selectors.
   { match: /^src\/components\/ui\/button\.tsx$/, why: "vendored shadcn" },
   // Line-level: everything else in this file is on the scale, so exempting the whole file would
-  // hide real drift. The wordmark is sized to the 52px brand bar beside a 34px mark, not to a
+  // hide real drift. The wordmark is sized to the brand zone beside a 34px mark, not to a
   // text role; resizing it is a branding decision.
   {
     match: /^src\/components\/nav-bar\.tsx$/,

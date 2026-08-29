@@ -27,7 +27,7 @@ test.describe("Season Report", () => {
     await expect(rate).toBeVisible();
     await expect(rate).not.toHaveText("");
 
-    const selector = page.getByLabel("SEASON");
+    const selector = page.getByLabel("SEASON", { exact: true });
     await expect(selector).toHaveValue(/^\d{4}-\d{2}$/);
 
     await selector.selectOption("2015-16");
@@ -68,7 +68,7 @@ test.describe("Season Report", () => {
 
     const opened = await stamp.textContent();
 
-    await page.getByLabel("SEASON").selectOption("2015-16");
+    await page.getByLabel("SEASON", { exact: true }).selectOption("2015-16");
     await expect(page.getByTestId("season-vs-history-heading")).toHaveText("2015-16 VS HISTORY");
 
     // 2015-16 ended in April 2016, so the stamp must land in that season's window — and must
@@ -83,7 +83,7 @@ test.describe("Season Report", () => {
    */
   test("gives the wins figure its scale and the swing column its baseline", async ({ page }) => {
     await page.goto("/season");
-    await page.getByLabel("SEASON").selectOption("2015-16");
+    await page.getByLabel("SEASON", { exact: true }).selectOption("2015-16");
 
     // Without this line, four-tenths of a win reads as "rest is nothing".
     const scale = page.getByTestId("rest-scale-line");
@@ -105,7 +105,7 @@ test.describe("Season Report", () => {
     await page.goto("/season");
 
     const note = page.getByTestId("abnormal-season-note");
-    const selector = page.getByLabel("SEASON");
+    const selector = page.getByLabel("SEASON", { exact: true });
 
     // 2015-16 ran 82 games for all 30 teams, so there is nothing to disclaim.
     await selector.selectOption("2015-16");

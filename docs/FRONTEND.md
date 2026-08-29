@@ -43,8 +43,8 @@ stale twice — first at "five" when it omitted `/shooting`, then at "seven". Th
 a number in front of it is a second copy of the same fact that nothing checks. The list itself
 then went stale a third way: it kept `/` in the product set and lost `/games` entirely when the
 board moved there, which is the failure a list cannot protect against on its own.)
-`/upcoming` was retired: it redirects to `/games` (`next.config.ts`), whose UPCOMING view renders
-what it used to. `/about` redirects to `/` for the same reason — the address had been shared.
+`/upcoming` was retired: it redirects to `/games` (`next.config.ts`) — since 2026-08-29 onto
+the one board (the UPCOMING view it used to land on was itself retired in redesign stage ②). `/about` redirects to `/` for the same reason — the address had been shared.
 
 ### `/games` — Games (`src/app/games/page.tsx`, client component)
 
@@ -61,11 +61,21 @@ selected day, and a forty-one-season result sitting in that row would read as an
 of today's slate. Every figure in it is read from `rest-split-facts.ts`, never typed, and the
 season span is stated as "since 1985-86" rather than as a count so it cannot age.
 
-Two views behind a toggle (`role="group"`, `aria-label="Games view"`), held in local `view`
-state rather than a query param — the nav no longer links to `/upcoming`, so the only inbound
-deep link is an old bookmark, which the redirect lands on the default BY DATE view.
-**BY DATE** is the state machine below; **UPCOMING** renders `<UpcomingContentLazy />` in place
-of the stat row, filter panel and matchup list.
+**One board, one card — the view toggle died in redesign stage ② (2026-08-29, ADR 0010).**
+The honest inventory that killed it: the date chips already reach every future date, the
+upcoming table's edge/historical columns said nothing the RA cell and the expansion's evidence
+sentence do not, and its one real capability — cutting across dates by rest advantage — became
+the **EDGES AHEAD strip** (`edges-ahead.tsx`): the three biggest upcoming gaps, silent in every
+state that is not "here are edges", each jumping the board to its date through the same reducer
+the date chips drive (`DAYS_RESOLVED` now preserves an already-chosen date so the jump cannot
+be steamrolled by the day list arriving). The slate itself has a **density dial**
+(`useSlateDensity`, C5): **SKIM** by default — game, matchup, rest advantage, storyline —
+with **DEEP DIVE** adding per-team days rest, the fatigue bars and CONF; remembered per viewer,
+addressable as `?view=`, and rendered by the same `MatchupTable` from one of two column
+templates. The **storyline line** (`game-storyline.ts`, C4) says in words what the schedule did
+to a game — only when a team actually carries a story, in both densities; it is game-level and
+distinct per row, which is exactly why it may sit in the open where the class-level evidence
+sentence could not.
 
 **The board opens on the newest *browsable* season** (2026-08-18), not the newest one with
 data. `defaultNbaSeason()` now reads the last entry of `browsableSeasons()`, and the
@@ -109,8 +119,8 @@ no loading flags of its own.
 Initial day selection still uses `pickDefaultGamesDate` (today if it has games; else the first
 upcoming October date at season start; else nearest / last available).
 - Pieces: heading eyebrow `REST ADVANTAGE DASHBOARD` + `<h1>What the schedule does to a game</h1>`
-  and the `ThesisFigure` band beneath it; the BY DATE/UPCOMING
-  toggle;
+  and the `ThesisFigure` band beneath it; the EDGES AHEAD strip;
+  the SKIM / DEEP DIVE dial on the MATCHUPS divider;
   `StatSummaryRow` (GAMES ON THIS DATE, AVG REST ADV, HIGH CONF GAMES where
   `HIGH_CONF_THRESHOLD = 2.0` — three tiles, all scoped to the slate on screen; a fourth
   once carried the full-history backtest rate, which described none of the games shown and is
@@ -177,7 +187,7 @@ the line. Three rules live in that module and are asserted in its test:
   the whole-element form of the `NO_FIGURE` rule.
 
 The Games board annotates a rest advantage with `PROJECTED` when it was read off the published
-schedule rather than measured (`GameResponse.projectedFatigue`; `PROJ` in the `/games` UPCOMING
+schedule rather than measured (`GameResponse.projectedFatigue`; `PROJ` in the EDGES AHEAD strip
 table). That is not "the game has not been played" — see `src/lib/fatigue-provenance.ts` and
 docs/API.md.
 
@@ -301,11 +311,12 @@ the API — the second surface to serve from that static asset, after `/shooting
 
 ### `/upcoming` — retired
 
-Folded into `/` as its UPCOMING view when the nav dropped to five tabs; the route is now a
-permanent redirect (`next.config.ts`). Only the route and the tab went — `/api/games/upcoming`,
-`upcoming-content.tsx` and their tests are unchanged. A sixth tab was the wrong price for it:
-the page and `/` render the same object (games carrying a rest edge) under different filters,
-and three of the five labels would otherwise have ended in "EDGES".
+Folded into the board as its UPCOMING view when the nav dropped to five tabs; the route is a
+permanent redirect (`next.config.ts`). On 2026-08-29 (redesign stage ②) the view itself was
+retired too — `upcoming-content.tsx` and `upcoming-lazy.tsx` are deleted, and the redirect now
+lands on the one board. `/api/games/upcoming` survives with a new consumer: the EDGES AHEAD
+strip, which is the view's one non-duplicative capability (cutting across dates by rest
+advantage) at three rows' cost instead of a whole second table shape.
 
 ### `/playoffs` — Playoff Predictor, tab renamed PLAYOFF REST (`src/app/playoffs/page.tsx`)
 
@@ -713,7 +724,7 @@ league's own seasonal mix, per foul type, each with a z-score at that official's
 the types, the |z| ≥ 2 emphasis rule and the 200-game publication bar. The table pins its
 header (2026-08-24): ~74 published officials run to about three viewports, so it adopts the
 `/shooting` mechanism — `stickyHeader` against its own `.fc-scrollport` scroll box, never the
-page scroll, which would slide the header under the 96px chrome. The site-wide measurement
+page scroll, which would slide the header under the sticky chrome (`--term-chrome-h`). The site-wide measurement
 that admitted this table and refused the 30-row league tables is recorded on the
 UIUX_CHECKLIST row it closes; `referees.spec.ts` pins both halves of the mechanism.
 
@@ -762,11 +773,18 @@ arena was tested as a confound and found orthogonal. And **crew chief is only ma
 10/10 in 2024-25 and 2025-26 but fails earlier, so the *As chief* column counts those seasons
 alone. It is style, not bias, and the copy says so.
 
-### `nav-bar.tsx` — two-layer header (sticky, `z-50`, retracting on `/` only)
+### `nav-bar.tsx` — the app bar (one 56px layer, sticky, `z-50`, retracting on `/` only)
 
-1. **Brand bar** (52px, `var(--term-surface-2)`, bottom border `var(--term-border)`):
-   a `<CourtMark size={34}>` + the wordmark + a hairline rule + `NBA ANALYTICS PLATFORM`
-   (mono 10px, muted, hidden below `sm`), wrapped in a link to `/`.
+**One bar since the 2026-08-29 shell merge** (stage ③ of ADR 0010; it replaced the 52px brand
+bar + 44px tab row). Ground `var(--term-surface-2)`, bottom border `var(--term-border)`, height
+published as `--term-chrome-h` and mirrored by `BAR_HEIGHT_PX`. Left to right: the brand zone,
+a vertical hairline (`lg`+), the tab strip (desktop only), and the palette's `SEARCH` button.
+Below `lg` the bar is **brand-only** — primary navigation moves to the dock (`bottom-nav.tsx`,
+below) and every route stays reachable through the palette (`command-palette.tsx`).
+
+1. **Brand zone**: a `<CourtMark size={34}>` + the wordmark, wrapped in a link to `/`.
+   The `NBA ANALYTICS PLATFORM` tagline retired with the merge — a slim bar carries the name
+   and the front door carries the story; git history holds the mono-10px treatment.
    The wordmark is **22px in the display face (Geist, 700)**, two-tone — `FULL` in
    `var(--term-text)`, `COURT` in `var(--accent)` (the W4 lockup, 2026-08-19; it was
    `var(--term-text-muted)` from 2026-08-09 until then). All nine letters render solid —
@@ -792,8 +810,8 @@ alone. It is style, not bias, and the copy says so.
    There is **no LIVE dot** — it was gated by
    a `HAS_LIVE_GAMES` constant hardcoded to `false`, so it never rendered in any state; the
    dead branch was removed. Per-game LIVE status is shown in the slate row instead (`matchup-table.tsx`).
-2. **Main nav** (44px, `var(--term-surface)`, bottom border `var(--term-border)`) holds **two
-   navigation landmarks in one row**. Left, `aria-label="Main navigation"`: the six direct tabs
+2. **The tab strip** (`hidden lg:block`, `flex-1` in the same bar) holds **two navigation
+   landmarks in one row**. Left, `aria-label="Main navigation"`: the six direct tabs
    from `DIRECT_NAV_ITEMS` (`src/lib/primary-navigation.ts`) — `GAMES → /games`,
    `SEASON REPORT → /season`, `SCHEDULE EDGE → /schedule`, `MODEL RESULTS → /analysis`,
    `PLAYOFF REST → /playoffs`, `PLAYER SHOOTING → /shooting` — followed by the `OTHER`
@@ -812,19 +830,17 @@ alone. It is style, not bias, and the copy says so.
    correctly absent from it only because someone left it out on purpose, not because the list
    knows it belongs to `OTHER_NAV_ITEMS`.
 
-   **Below ~900px the row is a horizontal scroll strip** (`.fc-nav-scroll`, `overflow-x-auto`,
-   `shrink-0` + `whitespace-nowrap` on every link), added 2026-07-30. Eight links do not fit a
-   390px line and they used to take the whole document sideways with them: measured 238px of
-   horizontal page scroll, `SCHEDULE EDGE` squeezed to 62px and wrapping inside a 44px box, and
-   both reference links off screen. `ml-auto` still right-aligns the reference group whenever
-   the content fits, so the desktop row is byte-for-byte what it was. A strip rather than a
-   drawer because the whole nav is eight short labels — a hamburger would hide all eight behind
-   a tap to solve what a swipe solves. The scrollbar is hidden in `globals.css`: at 44px tall it
-   would land on the active tab's underline, which is the only state the row carries. The
-   `OTHER` popup is unaffected — `Menu.Portal` renders it outside this container, so the
-   `overflow` cannot clip it. `e2e/navigation.spec.ts` asserts the page does not scroll
-   sideways at 390px, that the strip is what overflows instead, and that `BEHIND THE DATA` is
-   still clickable at that width.
+   **The strip is a horizontal scroll strip** (`.fc-nav-scroll`, `overflow-x-auto`,
+   `shrink-0` + `whitespace-nowrap` on every link; the mechanism dates to 2026-07-30). Since
+   the shell merge it exists only at `lg`+ — below that the dock is primary navigation and the
+   strip leaves the DOM entirely, still never a hamburger — but the affordance problem is
+   unchanged in kind: between `lg` and roughly 1250px the single bar leaves the tabs less room
+   than the old full-width row had, and the strip is what carries the overflow rather than the
+   page. The scrollbar is hidden in `globals.css`: it would land on the active tab's underline,
+   which is the only state the row carries. The `OTHER` popup is unaffected — `Menu.Portal`
+   renders it outside this container, so the `overflow` cannot clip it. `e2e/navigation.spec.ts`
+   asserts the page never scrolls sideways at 390px, that a squeezed desktop strip overflows
+   itself, and that everything off the dock stays reachable through the palette.
    **The strip fades the edge that still has content under it** (2026-08-15, `useEdgeFades`).
    The 2026-08-04 measurement found the OTHER menu entirely off-screen at 360px with nothing
    saying the row continues — the scrollbar cannot say it, being hidden for the underline's
@@ -833,8 +849,8 @@ alone. It is style, not bias, and the copy says so.
    pair swaps at the far end. One measurement gotcha is recorded in the hook: ResizeObserver
    watches the border box and therefore **cannot see `scrollWidth`**, so the webfont landing —
    exactly the moment overflow appears — is re-checked via `document.fonts.ready`. The fades
-   are `pointer-events-none` and `aria-hidden`; e2e asserts both phone states and that a
-   desktop row that fits shows neither.
+   are `pointer-events-none` and `aria-hidden`; e2e asserts both squeezed-strip states and
+   that a desktop row that fits shows neither.
    Bare noun phrases, no time words: mainstream NBA navs (ESPN, CBS) name the thing and
    leave time to a date picker, and NN/g's category-name guidance rules out both jargon
    (`EDGES`) and generic labels (`ANALYSIS`, `DATA`). Labels are also checked against *borrowed*
@@ -860,8 +876,8 @@ Six things about it are load-bearing:
   law. Translating it leaves the flow box where it was.
 - **The tabs stay mounted while hidden.** `navigation.spec.ts` asserts six links and zero
   `aria-current` on `/`; unmounting them to hide them would take that invariant with it.
-- **Two guards keep the bar reachable.** It never retracts above `BAR_HEIGHT_PX` (96 — the 52px
-  brand bar plus the 44px tab row), and a document with less scroll room than that never
+- **Two guards keep the bar reachable.** It never retracts above `BAR_HEIGHT_PX` (56 — the
+  single bar of the 2026-08-29 shell merge), and a document with less scroll room than that never
   retracts at all: a page that barely scrolls has nowhere to scroll back *from*, so the bar
   would hide with no way left to ask for it.
 - **`SCROLL_NOISE_PX` (6) is a floor, not a filter.** Under it, `last` is deliberately *not*
@@ -882,6 +898,36 @@ Six things about it are load-bearing:
 The listener is `{ passive: true }` and rAF-throttled, and its cleanup removes the listener *and*
 cancels any pending frame. Keyboard reach is preserved by `onFocus={reveal}` — tabbing into a
 retracted bar brings it back. The transition is `motion-safe:` only.
+
+### `bottom-nav.tsx` — the phone dock (2026-08-29)
+
+Fixed below `lg`, `z-50`, ground `var(--term-surface-2)` over a top border — the thumb-first
+pattern every major sports property ships on phones, adopted in the stage ③ shell merge
+(ADR 0010) in place of the phone-width scroll strip. Four route slots (`GAMES`, `SEASON`,
+`SCHEDULE`, `MODEL` — short labels whose `aria-label`s carry the full tab names, keeping the
+visible label a substring of the accessible one) plus a search slot that opens the palette.
+Active slot: amber top border + ink text + `aria-current="page"`, the same grammar as the
+tabs' underline. Its own landmark name (`Bottom navigation`) so it never collides with the
+strip's asserted six-link count; the two are never displayed at the same width. The safe-area
+inset pads *inside* the nav (`.fc-bottom-nav`, globals.css — a class only because the scale
+audit's inline parser cannot read `env()`'s comma fallback), and `body` reserves the dock's
+height below `lg`. On `/` it joins the dark via `fc-chrome-front`, solid rather than
+transparent — a dock is furniture, and a light dock on the dark front door would be the same
+seam stage ① removed from the top.
+
+### `command-palette.tsx` — the ⌘K palette (2026-08-29)
+
+`cmdk`, mounted once in the root layout. v1 is navigation-only: the nine product routes plus
+`BEHIND THE DATA`, grouped the way the bar groups them (Surfaces / Other / Reference), each
+row showing label + href so typing either matches. Summoned by the bar's `SEARCH` button, the
+dock's search slot (both dispatch `PALETTE_OPEN_EVENT` from `primary-navigation.ts`) and
+⌘K / Ctrl+K — the shortcut is the accelerator, never the door, which is the GitHub lesson
+about palette discoverability. Styling lives in `globals.css` under the `[cmdk-*]` attribute
+selectors, tokens only, sizes on the type scale, with no entry animation at all (nothing to
+guard for reduced motion). The light card floats over every surface including the dark front
+door — the same deliberate contrast as the `OTHER` popup. Entities (teams, officials,
+players) are deliberately absent until entity destinations exist; the one URL-addressable
+filter in the app (`/shooting?player=`) is entity territory and waits with them.
 
 ### First-visit orientation — *(removed 2026-08-11)*
 
@@ -914,7 +960,7 @@ with `MatchupTable` on 2026-08-09, and `MatchupCard` had rendered nowhere since 
 halved the file from 766 lines to ~380, and what is left is named for what it actually is: the
 pieces every matchup surface draws — `TeamLogo`, `ConfidenceBadge`, `GameStatusRow`,
 `FatigueDetailColumn`, `RaBadge`, `getConfidence`, `teamGameFlags`, and the `Confidence` type.
-`matchup-table.tsx`, `explore-game-detail-modal.tsx` and `upcoming-content.tsx` import from here.
+`matchup-table.tsx` and `explore-game-detail-modal.tsx` import from here (`upcoming-content.tsx` did too, until its 2026-08-29 retirement).
 
 **One `TeamLogo`, not two.** `upcoming-content.tsx` carried a private copy until the same day — a
 second adapter at a seam that already existed, and one that took only an abbreviation, so it
@@ -956,7 +1002,7 @@ Confidence tiers:
 The pieces, and who draws them:
 - `TeamLogo` — season-aware logo via `getTeamBranding` when given a `season`, plain
   `teamLogoUrl` without one; falls back to an abbreviation chip on error. Drawn by the slate
-  table, the detail modal and `/upcoming`.
+  table, the detail modal and the EDGES AHEAD strip.
 - `GameStatusRow` — LIVE / FINAL / UPCOMING plus the score.
 - `ConfidenceBadge` — the ladder above.
 - `FatigueDetailColumn` — GP (30D/7D), back-to-back, 3-in-4, 4-in-6, road streak, travel
@@ -1003,17 +1049,14 @@ Loaded via `lazyContent` (see below). Uses SWR:
   place. Same shape as `game-slate-machine.ts`, and tested the same way —
   `src/lib/__tests__/explore-games-machine.test.ts`, no DOM.
 
-### `upcoming-content.tsx` (+ `upcoming-lazy.tsx`)
+### `upcoming-content.tsx` (+ `upcoming-lazy.tsx`) — deleted 2026-08-29
 
-Loaded via `lazyContent` (see below). Mounted by `/`'s UPCOMING view since `/upcoming` was
-retired. SWR `/api/games/upcoming?season=<currentDisplaySeason()>&minRA=…`,
-plus a second SWR call to `/api/analysis` for the historical column.
-RA filter pills, an off-season empty state (`OffSeasonEmptyState`), and a table of upcoming
-games with an "edge" badge naming the more-rested side — **always the rested-pole teal**
-(2026-08-09), whichever venue that side plays at; it was side-colored (home blue / away red),
-which dressed a rested visitor in the fatigued hue. Rendered in the standard card style
-(`var(--term-surface)` fill, `1px solid var(--term-border)`, `.mono` labels) — consistent
-with Games / Model Results.
+Retired with the UPCOMING view in redesign stage ② (see `/games` above); both files are gone.
+What it pioneered lives on elsewhere: the "always the rested-pole teal" edge-badge rule
+(2026-08-09 — the named side is the more-rested side, whichever venue it plays at; it was
+side-colored once, which dressed a rested visitor in the fatigued hue) is now carried by the
+EDGES AHEAD strip (`edges-ahead.tsx`) and the RA cell, and its historical column's evidence
+pairing is the row expansion's sentence. Git history holds the component.
 
 ### `explore-game-detail-modal.tsx`
 
@@ -1344,7 +1387,7 @@ audit stops rediscovering them:
 
 - **16px on a focusable control** — the iOS input-zoom floor, a functional value rather than a
   typographic one, and it must stay in the class layer to be responsive.
-- **The brand wordmark** (`nav-bar.tsx`, 22px) — sized to the 52px brand bar beside a 34px mark,
+- **The brand wordmark** (`nav-bar.tsx`, 22px) — sized to the brand zone beside a 34px mark,
   not to a text role. Resizing it is a branding decision.
 - **`/`** — a full-bleed editorial surface on its own fluid `clamp()` display scale, already
   exempt by name from `alignment-audit.spec.ts` for the same reason. Its seven clamps each do a
@@ -1732,10 +1775,13 @@ tan→blue value ramp put two competing hues on one scale. The diff-neutral is
 near-white so "models agree" cells recede *into* the court (on the dark theme it was a
 near-black `#2A313A` for the same reason).
 
-### Two-layer header
+### The app bar and the dock
 
-Sticky header = brand bar (52px) + main nav (44px) = **96px**, published as
-`--term-chrome-h` in `globals.css`. The front door's hero subtracts that token rather than a
+Sticky header = **one 56px bar** (2026-08-29 shell merge; previously 52px brand bar + 44px
+main nav = 96px), published as `--term-chrome-h` in `globals.css`. Below `lg` a fixed
+**bottom dock** (`bottom-nav.tsx`, `--term-bottom-nav-h`) carries primary navigation —
+four route slots and a search slot — and `body` reserves its height in `globals.css` so no
+page's last line hides under it. The front door's hero subtracts that token rather than a
 literal (its sections stopped being full-viewport on 2026-08-20, but the hero still is, nearly),
 because the old sections overran the fold by exactly the difference the last two times the
 chrome changed height and they did not. On `/` the same header re-resolves its tokens dark and

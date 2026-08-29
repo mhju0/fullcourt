@@ -83,6 +83,23 @@ export const OTHER_NAV_ITEMS = [
 ] as const;
 
 /**
+ * One active-state rule for every navigation chrome — the top bar's tabs, the OTHER trigger,
+ * the bottom nav's slots. Exact match for `/`, prefix match for everything else; `/` must stay
+ * exact because a prefix match on it would light every tab on every route.
+ */
+export function isActiveRoute(pathname: string, href: string): boolean {
+  if (href === "/") return pathname === "/";
+  return pathname === href || pathname.startsWith(href + "/");
+}
+
+/**
+ * The command palette is summoned from two chromes (the bar's SEARCH button, the bottom nav's
+ * search slot) without either importing the palette component: they dispatch this window event
+ * and the mounted palette listens. ⌘K / Ctrl+K reach the same listener directly.
+ */
+export const PALETTE_OPEN_EVENT = "fc:open-palette";
+
+/**
  * Every primary surface, direct tabs first, for consumers that want the whole set rather than
  * the bar's split of it.
  *

@@ -170,6 +170,10 @@ back on expand.
 >   bar. Since the 2026-08-12 front-door swap that landmark holds one link — `ABOUT` left when
 >   the page it pointed at became `/` — and `navigation.spec.ts` also asserts that **no tab
 >   carries `aria-current` on `/`**, which is what stops a tab being wired back to the root.
+>   Since the 2026-08-29 shell merge it also pins the phone contract — the bottom dock is
+>   primary navigation at 390px (four slots + search, active slot `aria-current`, never
+>   covering the page's last line, absent on desktop) — and the ⌘K palette: the visible
+>   `SEARCH` button and the shortcut both open it, ten options unfiltered, and it navigates.
 > - **`home.spec.ts`** — the front door renders its hero, its single call to action (pointing at
 >   `/games`, not itself), and a
 >   `Product surfaces` nav of exactly six links carrying the six direct nav labels, so a
