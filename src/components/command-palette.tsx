@@ -2,6 +2,7 @@
 
 import { Command } from "cmdk"
 import { useRouter } from "next/navigation"
+import { navigateWithViewTransition } from "@/lib/route-transition"
 import { useCallback, useEffect, useState } from "react"
 import { SECONDARY_LINKS } from "@/components/nav-bar"
 import {
@@ -49,7 +50,8 @@ export function CommandPalette() {
   const go = useCallback(
     (href: string) => {
       setOpen(false)
-      router.push(href)
+      // Through the route cross-fade (G1) — the palette is chrome navigation like a tab.
+      navigateWithViewTransition(router, href)
     },
     [router]
   )

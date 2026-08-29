@@ -79,17 +79,22 @@ function StatusCell({
   tipOffEt,
   homeScore,
   awayScore,
+  flashing,
 }: {
   status: string
   date: string
   tipOffEt: string | null
   homeScore: number | null
   awayScore: number | null
+  flashing: boolean
 }) {
   const hasScore = homeScore !== null && awayScore !== null
 
   return (
-    <div className="mono flex flex-col justify-center gap-1">
+    // The flash is scoped to this cell (G3, ADR 0010): the score is what changed, so the
+    // score is what flashes — once, 500ms. A whole row lighting up reads as "something
+    // happened somewhere on this line"; the cell says what.
+    <div className={cn("mono flex flex-col justify-center gap-1", flashing && "animate-[scoreFlash_0.5s_ease-out]")}>
       {status === "live" ? (
         <span
           className="inline-flex items-center gap-2"
@@ -446,10 +451,7 @@ function GameRow({
         aria-label={expanded ? "Collapse game details" : "Expand game details"}
         onClick={toggle}
         onKeyDown={onKeyDown}
-        className={cn(
-          "grid cursor-pointer items-center gap-x-4 transition-colors hover:bg-[var(--term-surface-2)] focus-visible:ring-2 focus-visible:ring-[var(--term-accent)]/40",
-          isScoreFlashing && "animate-[scoreFlash_0.5s_ease-out]"
-        )}
+        className="grid cursor-pointer items-center gap-x-4 transition-colors hover:bg-[var(--term-surface-2)] focus-visible:ring-2 focus-visible:ring-[var(--term-accent)]/40"
         style={{ gridTemplateColumns: gridCols(density), padding: "12px 16px" }}
       >
         <StatusCell
@@ -458,6 +460,7 @@ function GameRow({
           tipOffEt={game.tipOffEt}
           homeScore={game.homeScore}
           awayScore={game.awayScore}
+          flashing={isScoreFlashing}
         />
 
         <div className="flex min-w-0 flex-col gap-1">

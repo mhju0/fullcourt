@@ -1,6 +1,7 @@
 "use client"
 
 import { useCallback, useEffect, useState } from "react"
+import { flushSync } from "react-dom"
 import type { SlateDensity } from "@/components/matchup-table"
 
 const STORAGE_KEY = "fc-slate-density"
@@ -43,7 +44,18 @@ export function useSlateDensity(): [SlateDensity, (d: SlateDensity) => void] {
   }, [])
 
   const setDensity = useCallback((d: SlateDensity) => {
-    setDensityState(d)
+    // The dial morph (G moment 3, ADR 0010): a same-document view transition, so the
+    // rows visibly grow and the columns fade rather than the layout snapping. flushSync
+    // inside the callback is what makes React's update land within the snapshot window.
+    // Reduced motion and unsupporting browsers take the plain state change.
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    if (reduceMotion || typeof document.startViewTransition !== "function") {
+      setDensityState(d)
+    } else {
+      document.startViewTransition(() => {
+        flushSync(() => setDensityState(d))
+      })
+    }
     try {
       localStorage.setItem(STORAGE_KEY, d)
     } catch {}

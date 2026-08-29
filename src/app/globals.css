@@ -331,6 +331,24 @@
   --term-border: transparent;
 }
 
+/* ── Route cross-fade (G1, ADR 0010) ─────────────────────────────── */
+
+/* The default view-transition fade, shortened to chrome speed. The JS side
+   (route-transition.ts, useSlateDensity) already skips transitions under reduced
+   motion and on unsupporting browsers; the media query below is the belt to that
+   suspender, so even a transition started elsewhere cannot animate for those readers. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 200ms;
+}
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(root),
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none !important;
+  }
+}
+
 /* ── Animations ─────────────────────────────────────────────────── */
 
 @keyframes fadeInUp {
