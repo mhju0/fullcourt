@@ -32,9 +32,18 @@ with the reason.
   FullCourt keeps the default viewport and fixes the trigger instead.
 - [—] **KBO's `width=1200` fixed viewport** — no responsive layout at all; the phone gets a
   desktop page to pinch around. Listed because it is what "just don't do RWD" looks like.
-- [x] **Touch targets ≥ 44px in the chrome.** The tab row is 44px tall by construction.
-- [ ] **Hand-measure the strip on a real device** — fade visibility over the actual OTHER
-  trigger at 360px, and the 16px floor against real Safari. Owner: Michael (device).
+- [x] **Touch targets ≥ 44px in the chrome.** Was "the tab row is 44px tall by construction";
+  after the 2026-08-29 shell merge (PR #70) the two-tier bar is **one 56px bar**
+  (`nav-bar.tsx`), and the phone dock is `--term-bottom-nav-h: 56px` (`globals.css`). Both clear
+  the floor by construction; the dock's slot height still wants one hand check (row below).
+- [ ] **Hand-measure the phone chrome on a real device.** **Rewritten 2026-08-30: the original
+  row asked for fade visibility over the OTHER trigger at 360px, and that is no longer
+  measurable** — PR #70 put the tab strip behind `hidden lg:block`, so at 360px there is no strip
+  and no OTHER trigger; the edge fades now only ever run at `lg` and above, where they were
+  already verified in the browser. What actually needs hardware after the redesign: the **docked
+  bottom nav** (`lg:hidden`) — its safe-area padding against a home-indicator phone, and its
+  slots against the 44px floor — plus the 16px input floor against real Safari, which the e2e
+  can only assert as a computed size. Owner: Michael (device).
 
 ## 2. Install & platform surface
 
@@ -80,8 +89,18 @@ with the reason.
   rows de-emphasized by colour instead of opacity, the front-door ghost numerals painted as
   CSS counters). All 20 routes re-audit with **zero violations**; the token ratios are pinned
   by `design-contrast.test.ts`.
-- [ ] **The VoiceOver walkthrough** — still never run; an automated pass cannot hear focus
-  order, table navigation, or how the twin-landmark nav reads. Owner: Michael.
+- [—] **The VoiceOver walkthrough.** Carried as open from 2026-08-15 and never run; **refused
+  2026-08-30** by Michael as out of scope for this project. The reason it is a defensible cut
+  rather than a gap: the structural work a screen reader depends on is shipped and enforced —
+  axe is clean on all 20 routes, the contrast ratios are pinned by `design-contrast.test.ts`,
+  the three landmarks are distinctly named (`Main navigation` / `Reference` / `Bottom
+  navigation`), decorative icons are `aria-hidden`, every dock slot carries its full accessible
+  name, and `focus-visible` mirrors hover. What the walkthrough alone would have caught is
+  second-order — focus order across a view transition, how a long table reads cell by cell,
+  whether the twin-landmark nav is heard as the same routes twice — and an untrained pass
+  yields impressions more than actionable defects. **Do not silently reopen this row**; it is a
+  decision, not an oversight. The cheap partial substitute, if it is ever wanted, is a
+  keyboard-only Tab pass through one page — offered 2026-08-30 and not adopted.
 
 ## 4. Tables & data density
 

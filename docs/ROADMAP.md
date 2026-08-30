@@ -72,7 +72,9 @@ from one geometry source (`src/lib/brand/court-mark-geometry.ts`) and pinned aga
 by test. The OG card moved to Geist (retiring Outfit entirely) and took the caps lockup and
 the operating line. The grammar, construction spec, and archived exploration record live in
 [design/BRAND_GRAMMAR.md](design/BRAND_GRAMMAR.md). `docs/social-preview.png` was
-re-rendered; **the GitHub Settings re-upload is manual and still pending.**
+re-rendered, and **the GitHub Settings re-upload landed on 2026-08-30** — the repo's `og:image`
+now resolves to `repository-images.githubusercontent.com` and serves that exact file. It was
+manual because it had to be: the REST API exposes no field for the social preview.
 
 **On 2026-08-24 the palette took a second grade, and the wordmark took a kerning table.** The
 first full axe pass over all 20 routes (2026-08-24) found two discrete defects and one systemic
@@ -86,8 +88,37 @@ exempt text from the color-contrast rule** (the front door's ghost numerals beca
 The re-audit is clean on all 20 routes and `design-contrast.test.ts` pins the ratios. The same
 day, the FULLCOURT lockup's optical kerning moved into one table
 (`src/lib/brand/wordmark-kern.ts`) consumed by the nav, the front-door h2 and the OG card, on the
-same one-source rule as the mark geometry. **The VoiceOver walkthrough is still owed** — an
-automated pass cannot hear focus order.
+same one-source rule as the mark geometry. **The VoiceOver walkthrough was refused on 2026-08-30**
+as out of scope — the row in [UIUX_CHECKLIST.md](UIUX_CHECKLIST.md) carries the reasoning and the
+evidence that the structural a11y work it would have sat on top of is shipped and tested.
+
+**On 2026-08-28 design was pulled to the front of the roadmap, and the whole UI was redesigned in
+six stages** — merged as PRs #68 through #73 over 2026-08-28/29. The complaints were a hard seam
+where the light header met the dark front door, and a shell that felt static ("click a tab, go to
+the tab"). A five-lane research pass and three grilling rounds turned that into decisions rather
+than taste, and **[ADR 0010](adr/0010-the-ui-redesign-was-decided-at-the-bench.md) is the ledger**
+— read it before reopening any of them. Two research findings shaped everything: no credible
+data-sports property runs a left rail as primary navigation, and "modern" in 2026 is motion
+between states rather than relocated chrome.
+
+What shipped, by stage: the front-door chrome joins the dark on `/` alone, scoped by
+`fc-chrome-front` (#68); every big rate now carries its venue-baseline read and the key columns
+their standing (#69); the two-tier bar merged into one slim bar, **a docked bottom nav took the
+phones** (four routes plus search, `lg:hidden`, while the desktop tab strip is `hidden lg:block`
+— the two never coexist), and ⌘K reaches everything through a `cmdk` palette backed by
+`/api/games/search` (#70); the slate became one board with a **density dial** (#71); the headline
+became a distance-from-baseline dot plot and the season chart points at its own story (#72); and
+motion became five moments of law (#73). The route cross-fade is a **manual
+`document.startViewTransition` wrapper** (`src/lib/route-transition.ts`), deliberately not Next's
+experimental `viewTransition` flag, so production carries no experimental surface; reduced motion
+and unsupporting browsers take the plain state change.
+
+One decision inside the round was Michael's alone and is recorded here because a later reader
+will otherwise try to resolve it: **both the dot plot and the season-chart highlight were kept**
+(#72), not one or the other. The round was verified as a unit rather than per PR — the merge
+order was rehearsed in a throwaway worktree and the full suite run against the union, which is
+what caught two cross-PR e2e breaks that no single stage could see. Final state on `main`:
+911 unit tests, **170 e2e passed / 0 skipped** against a production build, gate green.
 
 The dependency tree is deliberately pinned; see
 [SEASON_ROLLOVER.md §8](SEASON_ROLLOVER.md) before regenerating the lockfile, and §7 for the
@@ -167,8 +198,10 @@ added alongside it.
 
 **Both of the two items below closed on 2026-08-24, so nothing is actually in progress** — they
 are kept here as the record of how each resolved, and the section is empty again in the sense
-that matters. The open work that remains is not code: the social-preview upload, the VoiceOver
-walkthrough, the real-device checks, and the launch-day hand-check (Known and not fixed, below).
+that matters. The open work that remains is not code: the real-device checks and the launch-day
+hand-check (Known and not fixed, below). The social-preview upload landed 2026-08-30, and the
+VoiceOver walkthrough was refused the same day (see UIUX_CHECKLIST.md — a decision, not an
+oversight).
 
 Two items added 2026-08-23, both discussed with and scoped by Michael. Before them this section
 had been empty since `/referees` published on 2026-08-22 (its history is under Shipped modules;
