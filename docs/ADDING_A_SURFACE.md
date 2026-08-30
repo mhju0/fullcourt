@@ -148,7 +148,10 @@ Three lists, and a page missing from any of them is a page nobody sees or measur
 1. **`src/lib/primary-navigation.ts`** — `DIRECT_NAV_ITEMS` for a tab in the bar,
    `OTHER_NAV_ITEMS` for the OTHER menu. Write the label's *reason* in a comment beside it, the way
    every existing entry does: the labels are the site's vocabulary and collisions between them
-   misroute clicks. See [GLOSSARY.md](GLOSSARY.md).
+   misroute clicks. See [GLOSSARY.md](GLOSSARY.md). **The ⌘K palette derives from these same two
+   lists** (`command-palette.tsx`), so registering here covers it. **The phone dock does not** —
+   `bottom-nav.tsx` holds its own fixed `SLOTS` (four routes plus search, per ADR 0010), and a
+   new surface is not meant to join it. Do not "fix" that by wiring the dock to these lists.
 2. **`e2e/alignment-audit.spec.ts`** — add the route to `ROUTES`.
 3. **`docs/FRONTEND.md`** — a `### /route` section, in the same PR. Docs ship with the change.
 
@@ -190,8 +193,9 @@ What is already exempt, and why — so these are not rediscovered every pass:
   scale. It is the one page that deliberately does not look like the product, because its job is to
   argue for it. Exempt from the type scale, the alignment audit and the page contract.
 - **16px on a focusable control** — the iOS input-zoom floor. A threshold, not a step.
-- **The brand wordmark** — sized to the 52px brand bar, not to a text role. Exempt by *line*, so
-  the rest of `nav-bar.tsx` stays on the scale.
+- **The brand wordmark** — sized to the chrome bar (one 56px bar since the 2026-08-29 shell
+  merge; it was a 52px brand bar before), not to a text role. Exempt by *line*, so the rest of
+  `nav-bar.tsx` stays on the scale.
 - **`opengraph-image.tsx`** and `src/lib/brand/` — fixed-size brand assets, not pages.
 - **`components/ui/button.tsx`** — vendored shadcn; its sizes live inside `has-data-*` variants.
 - **A badge chip's `lineHeight: "14px"`** — box geometry, fixing the chip's height independently of

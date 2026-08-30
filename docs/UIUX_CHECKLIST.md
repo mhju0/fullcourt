@@ -32,9 +32,18 @@ with the reason.
   FullCourt keeps the default viewport and fixes the trigger instead.
 - [—] **KBO's `width=1200` fixed viewport** — no responsive layout at all; the phone gets a
   desktop page to pinch around. Listed because it is what "just don't do RWD" looks like.
-- [x] **Touch targets ≥ 44px in the chrome.** The tab row is 44px tall by construction.
-- [ ] **Hand-measure the strip on a real device** — fade visibility over the actual OTHER
-  trigger at 360px, and the 16px floor against real Safari. Owner: Michael (device).
+- [x] **Touch targets ≥ 44px in the chrome.** Was "the tab row is 44px tall by construction";
+  after the 2026-08-29 shell merge (PR #70) the two-tier bar is **one 56px bar**
+  (`nav-bar.tsx`), and the phone dock is `--term-bottom-nav-h: 56px` (`globals.css`). Both clear
+  the floor by construction; the dock's slot height still wants one hand check (row below).
+- [ ] **Hand-measure the phone chrome on a real device.** **Rewritten 2026-08-30: the original
+  row asked for fade visibility over the OTHER trigger at 360px, and that is no longer
+  measurable** — PR #70 put the tab strip behind `hidden lg:block`, so at 360px there is no strip
+  and no OTHER trigger; the edge fades now only ever run at `lg` and above, where they were
+  already verified in the browser. What actually needs hardware after the redesign: the **docked
+  bottom nav** (`lg:hidden`) — its safe-area padding against a home-indicator phone, and its
+  slots against the 44px floor — plus the 16px input floor against real Safari, which the e2e
+  can only assert as a computed size. Owner: Michael (device).
 
 ## 2. Install & platform surface
 
