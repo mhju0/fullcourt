@@ -80,8 +80,18 @@ with the reason.
   rows de-emphasized by colour instead of opacity, the front-door ghost numerals painted as
   CSS counters). All 20 routes re-audit with **zero violations**; the token ratios are pinned
   by `design-contrast.test.ts`.
-- [ ] **The VoiceOver walkthrough** — still never run; an automated pass cannot hear focus
-  order, table navigation, or how the twin-landmark nav reads. Owner: Michael.
+- [—] **The VoiceOver walkthrough.** Carried as open from 2026-08-15 and never run; **refused
+  2026-08-30** by Michael as out of scope for this project. The reason it is a defensible cut
+  rather than a gap: the structural work a screen reader depends on is shipped and enforced —
+  axe is clean on all 20 routes, the contrast ratios are pinned by `design-contrast.test.ts`,
+  the three landmarks are distinctly named (`Main navigation` / `Reference` / `Bottom
+  navigation`), decorative icons are `aria-hidden`, every dock slot carries its full accessible
+  name, and `focus-visible` mirrors hover. What the walkthrough alone would have caught is
+  second-order — focus order across a view transition, how a long table reads cell by cell,
+  whether the twin-landmark nav is heard as the same routes twice — and an untrained pass
+  yields impressions more than actionable defects. **Do not silently reopen this row**; it is a
+  decision, not an oversight. The cheap partial substitute, if it is ever wanted, is a
+  keyboard-only Tab pass through one page — offered 2026-08-30 and not adopted.
 
 ## 4. Tables & data density
 

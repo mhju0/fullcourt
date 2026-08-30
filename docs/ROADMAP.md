@@ -86,8 +86,9 @@ exempt text from the color-contrast rule** (the front door's ghost numerals beca
 The re-audit is clean on all 20 routes and `design-contrast.test.ts` pins the ratios. The same
 day, the FULLCOURT lockup's optical kerning moved into one table
 (`src/lib/brand/wordmark-kern.ts`) consumed by the nav, the front-door h2 and the OG card, on the
-same one-source rule as the mark geometry. **The VoiceOver walkthrough is still owed** — an
-automated pass cannot hear focus order.
+same one-source rule as the mark geometry. **The VoiceOver walkthrough was refused on 2026-08-30**
+as out of scope — the row in [UIUX_CHECKLIST.md](UIUX_CHECKLIST.md) carries the reasoning and the
+evidence that the structural a11y work it would have sat on top of is shipped and tested.
 
 The dependency tree is deliberately pinned; see
 [SEASON_ROLLOVER.md §8](SEASON_ROLLOVER.md) before regenerating the lockfile, and §7 for the
@@ -167,8 +168,10 @@ added alongside it.
 
 **Both of the two items below closed on 2026-08-24, so nothing is actually in progress** — they
 are kept here as the record of how each resolved, and the section is empty again in the sense
-that matters. The open work that remains is not code: the social-preview upload, the VoiceOver
-walkthrough, the real-device checks, and the launch-day hand-check (Known and not fixed, below).
+that matters. The open work that remains is not code: the real-device checks and the launch-day
+hand-check (Known and not fixed, below). The social-preview upload landed 2026-08-30, and the
+VoiceOver walkthrough was refused the same day (see UIUX_CHECKLIST.md — a decision, not an
+oversight).
 
 Two items added 2026-08-23, both discussed with and scoped by Michael. Before them this section
 had been empty since `/referees` published on 2026-08-22 (its history is under Shipped modules;
