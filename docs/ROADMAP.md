@@ -247,6 +247,28 @@ code, so each fix had something to prove itself against.
   suite's 250 tests. Both ran red on the unfixed code first: axe on 13 routes, the scroll
   assertion on exactly the two the audit named, by exactly the amounts it measured.
 
+**Two of the audit's three notes are also closed**, both cheap and both recorded rather than
+scheduled when the audit filed them.
+
+- **[x] `pnpm audit --prod` gates CI.** Open since 2026-08-13. `--prod` and not a bare audit:
+  the dev tree carries 55 advisories that never reach a user, **38 of them from `shadcn`
+  alone**, and a noisy gate is one everybody learns to skip. Production has been at zero since
+  the 2026-08-13 postcss fix, so a red step here is a regression, not a backlog.
+- **[x] The ⌘K palette is fetched on first summon.** `cmdk` and the sixteen `@radix-ui/*`
+  packages behind `@radix-ui/react-dialog` were in the chunk that loads on **all twenty routes**,
+  rendering nothing until somebody pressed a key. `command-palette-mount.tsx` is the doorbell
+  that stays (~1KB, the three summon handlers); the palette is a `next/dynamic` import.
+  Measured on a production build: the chunk is **48,507 bytes raw / 16,325 gzipped**, it is
+  absent from the 23 JS files a cold `/games` loads, and it arrives on ⌘K. The palette's own
+  e2e — SEARCH button, ⌘K, the dock slot, navigation through it — passes unchanged.
+
+**The third note is deliberately still open**, because it is not an agent's call to make:
+`/api/games/search` reads 39,016 rows to return 20 (it paginates in memory, and is the only
+heavy read route with no `Cache-Control`), and `games` carries no index on `season`. The index
+is a schema change, which means **manual SQL applied by Michael** — never applied by an agent —
+and the pagination fix is a query-shape change on a published route. Latency is fine today; this
+is a note for the season where it is not.
+
 > **One trap worth carrying forward.** Both P0 fixes were correct and axe still reported them,
 > because Turbopack served the *previous* `globals.css` across a dev-server restart; `rm -rf
 > .next` was what actually cleared it. Before believing a CSS fix did not work, fetch the served

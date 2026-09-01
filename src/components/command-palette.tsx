@@ -3,13 +3,9 @@
 import { Command } from "cmdk"
 import { useRouter } from "next/navigation"
 import { navigateWithViewTransition } from "@/lib/route-transition"
-import { useCallback, useEffect, useState } from "react"
+import { useCallback } from "react"
 import { SECONDARY_LINKS } from "@/components/nav-bar"
-import {
-  DIRECT_NAV_ITEMS,
-  OTHER_NAV_ITEMS,
-  PALETTE_OPEN_EVENT,
-} from "@/lib/primary-navigation"
+import { DIRECT_NAV_ITEMS, OTHER_NAV_ITEMS } from "@/lib/primary-navigation"
 
 /**
  * The ⌘K palette (2026-08-29 shell merge, ADR 0010). v1 is deliberately navigation-only: the
@@ -23,37 +19,34 @@ import {
  * a keyboard-only palette is a feature nobody finds, so the shortcut (⌘K / Ctrl+K) is the
  * accelerator, never the door.
  *
- * Mounted once in the root layout. Styling lives in globals.css under the `[cmdk-*]`
- * attribute selectors cmdk stamps on its parts — tokens only, on the type scale, and with no
- * entry animation at all, so there is nothing to guard for reduced motion.
+ * Styling lives in globals.css under the `[cmdk-*]` attribute selectors cmdk stamps on its
+ * parts — tokens only, on the type scale, and with no entry animation at all, so there is
+ * nothing to guard for reduced motion.
+ *
+ * **Controlled, and mounted by `CommandPaletteMount` rather than by the layout directly.** It
+ * used to own its own `open` state and its own ⌘K listener, which meant the root layout
+ * imported it statically and `cmdk` — plus the sixteen `@radix-ui/*` packages it pulls in
+ * behind `@radix-ui/react-dialog` — shipped on all twenty routes to render nothing until
+ * someone pressed a key. The listener now lives in the mount, which is ~1KB and is the only
+ * part that has to be there from the start; this file arrives on first summon. Keep the state
+ * up there: an inner component cannot hear the event that decided to load it.
  */
-export function CommandPalette() {
-  const [open, setOpen] = useState(false)
+export function CommandPalette({
+  open,
+  onOpenChange,
+}: {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+}) {
   const router = useRouter()
-
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
-        e.preventDefault()
-        setOpen((prev) => !prev)
-      }
-    }
-    const onSummon = () => setOpen(true)
-    window.addEventListener("keydown", onKey)
-    window.addEventListener(PALETTE_OPEN_EVENT, onSummon)
-    return () => {
-      window.removeEventListener("keydown", onKey)
-      window.removeEventListener(PALETTE_OPEN_EVENT, onSummon)
-    }
-  }, [])
 
   const go = useCallback(
     (href: string) => {
-      setOpen(false)
+      onOpenChange(false)
       // Through the route cross-fade (G1) — the palette is chrome navigation like a tab.
       navigateWithViewTransition(router, href)
     },
-    [router]
+    [router, onOpenChange]
   )
 
   // `value` carries label AND href so typing either ("referee", "/referees") matches.
@@ -65,7 +58,7 @@ export function CommandPalette() {
   )
 
   return (
-    <Command.Dialog open={open} onOpenChange={setOpen} label="Command palette">
+    <Command.Dialog open={open} onOpenChange={onOpenChange} label="Command palette">
       <Command.Input placeholder="Jump to a surface…" />
       <Command.List>
         <Command.Empty>No surface matches.</Command.Empty>

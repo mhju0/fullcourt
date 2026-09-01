@@ -917,7 +917,7 @@ seam stage ① removed from the top.
 
 ### `command-palette.tsx` — the ⌘K palette (2026-08-29)
 
-`cmdk`, mounted once in the root layout. v1 is navigation-only: the nine product routes plus
+`cmdk`, mounted **lazily** by `command-palette-mount.tsx` (2026-09-01). v1 is navigation-only: the nine product routes plus
 `BEHIND THE DATA`, grouped the way the bar groups them (Surfaces / Other / Reference), each
 row showing label + href so typing either matches. Summoned by the bar's `SEARCH` button, the
 dock's search slot (both dispatch `PALETTE_OPEN_EVENT` from `primary-navigation.ts`) and
@@ -928,6 +928,22 @@ guard for reduced motion). The light card floats over every surface including th
 door — the same deliberate contrast as the `OTHER` popup. Entities (teams, officials,
 players) are deliberately absent until entity destinations exist; the one URL-addressable
 filter in the app (`/shooting?player=`) is entity territory and waits with them.
+
+**How it is mounted, and why it changed.** The layout used to import `CommandPalette` directly,
+so `cmdk` — and the sixteen `@radix-ui/*` packages it pulls in behind `@radix-ui/react-dialog`,
+none of which are named in `package.json` — shipped in the chunk that loads on **all twenty
+routes**, to render nothing at all until somebody pressed a key (audit, 2026-09-01). Nothing was
+wrong with the palette; the wrong part was *when* it arrived. `CommandPaletteMount` is the
+doorbell that stays: two booleans and the three summon handlers, ~1KB, small enough to carry
+everywhere honestly. The palette itself is a `next/dynamic` import fetched on first summon and
+kept after (`loaded` never returns to false — closing a dialog is not a reason to discard its
+code). Measured on a production build: the chunk is **48,507 bytes raw / 16,325 gzipped**, it is
+absent from the 23 JS files a cold `/games` loads, and it arrives on ⌘K.
+
+> **The state has to live in the mount, not in the palette.** A component that mounts *because*
+> of an event cannot also be the thing that heard it — it would arrive a tick late and the first
+> ⌘K would do nothing. So `open` is owned by the mount and `CommandPalette` is controlled
+> (`open` / `onOpenChange`). Any future lazy chrome summoned by an event has the same shape.
 
 ### First-visit orientation — *(removed 2026-08-11)*
 

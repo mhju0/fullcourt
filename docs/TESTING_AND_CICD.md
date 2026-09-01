@@ -243,10 +243,21 @@ back on expand.
 ### GitHub Actions — `.github/workflows/ci.yml`
 
 Pushes to `main` and pull requests run a non-DB quality gate on Node 22 and Python 3.11 with
-the repository's pinned pnpm: frozen install → lint → type-check → Vitest → Python schedule
-contract tests → production build. The workflow uses read-only repository permissions and
-cancels superseded runs. Playwright remains local because its integration-style specs require
-a populated database.
+the repository's pinned pnpm: frozen install → **`pnpm audit --prod`** → lint → type-check →
+Vitest → Python schedule contract tests → production build. The workflow uses read-only
+repository permissions and cancels superseded runs. Playwright remains local because its
+integration-style specs require a populated database.
+
+**`--prod`, not a bare audit** (added 2026-09-01). The dev tree carries 55 advisories that never
+reach a user — **38 of them from `shadcn` alone**, a scaffolding CLI that ships nothing — so an
+unscoped audit is noise, and a noisy gate is one everybody learns to skip. Production has sat at
+**zero** since the 2026-08-13 postcss fix, which is precisely what makes it worth gating: at
+zero, a red step is a real regression rather than a backlog to triage. If it goes red after a
+lockfile change, check the four CVE pins in `pnpm-workspace.yaml` under `overrides:` first —
+[SEASON_ROLLOVER.md §8](SEASON_ROLLOVER.md) explains why each exists and how one can vanish
+silently. The gap this closes was found by the 2026-09-01 audit and had been open since
+2026-08-13, whose own finding — a pin that had aged into *holding* a vulnerable version — is the
+argument for it.
 
 ### GitHub Actions — `.github/workflows/daily-update.yml`
 
