@@ -61,6 +61,13 @@ for (const viewport of VIEWPORTS) {
         await page.setViewportSize({ width: viewport.width, height: viewport.height });
         await page.goto(route, { waitUntil: "networkidle" });
 
+        // Readiness gate. `networkidle` proves the network went quiet, not that React painted —
+        // and the defects both new guards exist for live inside table rows, so a scan that ran
+        // against an unhydrated shell would pass having measured nothing. The repo's rule
+        // (docs/TESTING_AND_CICD.md) is a readiness gate wherever a spec needs one; every route
+        // in the list above renders an `h1`.
+        await expect(page.locator("h1").first()).toBeVisible();
+
         const results = await new AxeBuilder({ page }).withTags(TAGS).analyze();
 
         // Report the rule, the count and one selector per violation. A bare "3 violations"

@@ -131,7 +131,11 @@ Specs (18): `e2e/home.spec.ts` (the front door), `e2e/games.spec.ts`, `e2e/acces
 `e2e/referees.spec.ts`, `e2e/schedule-disparity.spec.ts`, `e2e/season.spec.ts`,
 `e2e/shot-quality.spec.ts`, `e2e/shooting.spec.ts` — **250 tests**
 (250 passed / 0 skipped, verified 2026-09-01; several specs generate their cases in a loop, so
-counting `test(` calls in the source undercounts). The suite has no skipped specs for the first
+counting `test(` calls in the source undercounts). **The jump does not read as 80 against the
+figure this line used to carry, and the old figure is the reason.** It said 163, verified
+2026-08-27, and the redesign round took the suite to 170 without updating it; 170 + 80 = 250.
+A hand-typed count drifts silently between the run that set it and the next one to notice —
+re-run the suite before trusting this number, and re-type it when you do. The suite has no skipped specs for the first
 time: the five that were held back with `/referees` went live when it was published, and **two of
 them had to be rewritten rather than simply un-skipped** — they asserted copy ("This is style, not
 bias.", "how much more or less often") that had been replaced while they sat skipped. A skipped
@@ -243,14 +247,23 @@ back on expand.
 ### GitHub Actions — `.github/workflows/ci.yml`
 
 Pushes to `main` and pull requests run a non-DB quality gate on Node 22 and Python 3.11 with
-the repository's pinned pnpm: frozen install → **`pnpm audit --prod`** → lint → type-check →
-Vitest → Python schedule contract tests → production build. The workflow uses read-only
+the repository's pinned pnpm: frozen install → lint → type-check → Vitest → Python schedule
+contract tests → production build → **`pnpm audit --prod`**. The workflow uses read-only
 repository permissions and cancels superseded runs. Playwright remains local because its
 integration-style specs require a populated database.
 
 **`--prod`, not a bare audit** (added 2026-09-01). The dev tree carries 55 advisories that never
 reach a user, **38 of them reachable only through `shadcn`** — so an unscoped audit is noise, and
 a noisy gate is one everybody learns to skip.
+
+**It runs last, and that is deliberate** (2026-09-02, from the review of the PR that added it).
+It went in first, which meant a CVE disclosed overnight against a transitive dependency would
+redden every open PR *and* abort the job before lint, type-check, Vitest, the Python contract
+tests or the build had run — so nobody could verify any change until an override landed. The
+advisory is real information, but it is not a fact about the diff, and it must not be able to
+stop the gate that is. Last keeps the job red without taking the correctness gates down with it;
+the registry call is also a network dependency with no retry, and a blip there should not read
+as a regression.
 
 > **Those 38 are not removable, and the attempt is instructive.** `shadcn` reads as a scaffolding
 > CLI — nothing in `package.json`'s scripts runs it, and the two components it seeded
@@ -259,8 +272,10 @@ a noisy gate is one everybody learns to skip.
 > `globals.css` line 2 is `@import "shadcn/tailwind.css"`, which makes it a build input, not a
 > tool; removing it ends in `Can't resolve 'shadcn/tailwind.css'` from the Tailwind PostCSS
 > plugin. A grep for a dependency that skips `*.css` will tell you it is unused. Measured and
-> reverted 2026-09-01. Production has sat at
-**zero** since the 2026-08-13 postcss fix, which is precisely what makes it worth gating: at
+> reverted 2026-09-01.
+
+Production has sat at **zero** since the 2026-08-13 postcss fix, which is precisely what makes it
+worth gating: at
 zero, a red step is a real regression rather than a backlog to triage. If it goes red after a
 lockfile change, check the four CVE pins in `pnpm-workspace.yaml` under `overrides:` first —
 [SEASON_ROLLOVER.md §8](SEASON_ROLLOVER.md) explains why each exists and how one can vanish

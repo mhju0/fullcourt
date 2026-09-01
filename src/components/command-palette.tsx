@@ -15,7 +15,9 @@ import { DIRECT_NAV_ITEMS, OTHER_NAV_ITEMS } from "@/lib/primary-navigation"
  * finding is recorded in the stage ③ PR, not wired here.
  *
  * Summoned three ways, and two of them are visible — the bar's SEARCH button and the bottom
- * nav's search slot both dispatch {@link PALETTE_OPEN_EVENT}. The GitHub lesson stands:
+ * nav's search slot both dispatch `PALETTE_OPEN_EVENT` (`@/lib/primary-navigation`), which
+ * `CommandPaletteMount` listens for; this component no longer imports it, and is controlled by
+ * that mount rather than owning `open` itself. The GitHub lesson stands:
  * a keyboard-only palette is a feature nobody finds, so the shortcut (⌘K / Ctrl+K) is the
  * accelerator, never the door.
  *

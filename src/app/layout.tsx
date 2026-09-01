@@ -176,7 +176,10 @@ export default function RootLayout({
 
         {/* The phone dock and the ⌘K palette (2026-08-29 shell merge). Both are chrome, not
             page content: the dock is fixed below `lg` (body reserves its height in
-            globals.css), and the palette mounts once here so ⌘K works on every route. */}
+            globals.css). What mounts here is the palette's *doorbell*, not the palette — ~1KB of
+            listeners, so ⌘K works on every route, while `cmdk` and the sixteen `@radix-ui/*`
+            packages behind it are fetched on the first summon (2026-09-01). Do not collapse this
+            back into a static `CommandPalette` import: that is the thing that was removed. */}
         <BottomNav />
         <CommandPaletteMount />
 

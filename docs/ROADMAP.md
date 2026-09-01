@@ -268,11 +268,17 @@ a fix and a refusal. Each was taken up the day it was filed rather than schedule
   Measured on a production build: the chunk is **48,507 bytes raw / 16,325 gzipped**, it is
   absent from the 23 JS files a cold `/games` loads, and it arrives on ⌘K. The palette's own
   e2e — SEARCH button, ⌘K, the dock slot, navigation through it — passes unchanged.
-- **[x] `/api/games/search` is cached, at the policy its own data already implied.** It was the
-  only heavy read route with no `Cache-Control` at all, so nothing absorbed the repeat of a read
-  that costs the same for `page=1` and `page=999999`. It now takes `CACHE.historical`
-  (`s-maxage=3600`), pinned by a test, because the seasons it searches are settled and the
-  in-memory pagination is exactly what makes an edge hit worth having.
+- **[x] `/api/games/search` is cached — at `inSeason`, after the first answer was wrong.** It was
+  the only heavy read route with no `Cache-Control` at all, so nothing absorbed the repeat of a
+  read that costs the same for `page=1` and `page=999999`. It first took `CACHE.historical` on
+  the reasoning that it reads the same settled backtest population `/api/analysis` does — same
+  population, and still the wrong policy. `/api/analysis` returns a forty-one-season aggregate
+  where last night is invisible among ~39,000 games; this route is `orderBy(desc(games.date))`
+  and paginated, so **page 1 is last night**, and `seasonParam` admits the season in progress as
+  soon as it has one final game. An hour of `s-maxage` over a day of `stale-while-revalidate`
+  would open the explorer on a list missing the most recent slate. `CACHE.inSeason`, pinned by a
+  test. **The population does not pick the policy; the ordering does** — which is the test
+  `/api/games/dates` and `/api/season-report` had already applied and written down.
 - **[—] `games` gets no index on `season` — measured, and the index would not have helped.** The
   audit recommended one and the measurement retired the recommendation, so it is recorded rather
   than deleted. A season-scoped scan of all 51,695 rows costs **8.418 ms with `Buffers: shared
@@ -288,6 +294,44 @@ a fix and a refusal. Each was taken up the day it was filed rather than schedule
 the caching half shipped, and the schema half was measured and declined. **Declining is a
 result, not a deferral** — a schema change is still manual SQL applied by Michael and never by an
 agent, which is exactly why the measurement had to come before the handoff rather than after it.
+
+### The review round, 2026-09-02
+
+PR #75 went through `/code-review` before merge rather than after, and the choice of the plain
+review over the multi-agent one was made on the shape of the diff: ~100 lines of source under
+665 insertions, already carrying 250 e2e and 912 unit tests. It returned 14 findings. **Ten were
+real and are fixed in the same PR**; the split is recorded because the ratio is the useful part,
+not the total.
+
+- **The one that mattered was the cache policy above** — a defect introduced *by the audit's own
+  fix*, argued from a true premise (same population as `/api/analysis`) to a wrong conclusion.
+  Both sibling routes had already written down the correct test and the reasoning did not consult
+  them. **A justification that reads well is not the same as one that was checked against the
+  neighbours.**
+- **Three stale comments, all in code this PR wrote.** `layout.tsx` still said "the palette mounts
+  once here", which is exactly what the commit stopped being true and exactly what a future agent
+  would read before collapsing the doorbell back into a static import; a `{@link}` pointing at an
+  import the same commit deleted; and `data-table.tsx` giving overflow as the reason for an
+  unconditional `tabIndex` when overflow is not what axe's rule tests. The code stays — the rule
+  is a floor, not the goal — but the stated reason was wrong and is now the true one.
+- **Two defects in the new guards themselves.** `layout-integrity.spec.ts` asserted a 0px
+  tolerance while its own offender scan used 1px, so a sub-pixel rounding failure would go red
+  and name nothing; and neither guard had a readiness gate, so both could in principle scan an
+  unhydrated shell and pass having measured nothing. **The guards written to stop vacuous passes
+  could produce one.**
+- **`docs/API.md` was the one doc that did not ship with the code** — the declared source of
+  truth for route cache policy, still reading "Six routes", while four other docs were updated.
+  That is [the standing rule](CLAUDE.md) failing in the same PR that quotes it.
+- **`pnpm audit --prod` now runs last.** First meant an overnight CVE against a transitive
+  dependency would redden every open PR *and* abort the job before lint, type-check, Vitest or
+  the build ran. An advisory is real information but it is not a fact about the diff.
+- **Four were declined, with reasons**: consolidating six duplicated route lists in `e2e/` and
+  merging the two guards into one navigation pass are both real, both pre-existing patterns, and
+  both scope this PR does not own. Moving the `sr-only` fix into `DataTable`'s wrapper as
+  `position: relative` would make the bug class impossible — and would also change the containing
+  block for every absolutely-positioned descendant in every table, which is a larger blast radius
+  than the defect. The e2e count arithmetic reads wrong because the figure it replaced (163) had
+  itself gone stale at 170; the doc now says so.
 
 > **One trap worth carrying forward.** Both P0 fixes were correct and axe still reported them,
 > because Turbopack served the *previous* `globals.css` across a dev-server restart; `rm -rf

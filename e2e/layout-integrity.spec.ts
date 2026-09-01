@@ -54,6 +54,13 @@ for (const viewport of VIEWPORTS) {
         await page.setViewportSize({ width: viewport.width, height: viewport.height });
         await page.goto(route, { waitUntil: "networkidle" });
 
+        // Readiness gate. `networkidle` proves the network went quiet, not that React painted —
+        // and the defects both new guards exist for live inside table rows, so a scan that ran
+        // against an unhydrated shell would pass having measured nothing. The repo's rule
+        // (docs/TESTING_AND_CICD.md) is a readiness gate wherever a spec needs one; every route
+        // in the list above renders an `h1`.
+        await expect(page.locator("h1").first()).toBeVisible();
+
         const measured = await page.evaluate(() => {
           const root = document.documentElement;
           const overflow = root.scrollWidth - root.clientWidth;
@@ -81,11 +88,18 @@ for (const viewport of VIEWPORTS) {
           return { overflow, widest: offenders.slice(0, 5) };
         });
 
+        // 1px, not 0, and it has to be the *same* 1px the offender scan above uses. Both
+        // `scrollWidth` and `clientWidth` are rounded integers, so a page laying out at 390.4
+        // reports 391 vs 390 — a failure of exactly 1px whose culprit list would come back
+        // empty, because the scan only reports elements past `clientWidth + 1`. A red gate that
+        // names nothing is worse than no gate. `navigation.spec.ts` took the same 1px for the
+        // same reason ("half a pixel is layout rounding, not coverage"); the defects this was
+        // written for were +57px and +47px, so nothing real hides under the tolerance.
         expect(
           measured.overflow,
           `${route} at ${viewport.width}px overflows by ${measured.overflow}px. ` +
             `Widest: ${JSON.stringify(measured.widest)}`,
-        ).toBeLessThanOrEqual(0);
+        ).toBeLessThanOrEqual(1);
       });
     }
   });

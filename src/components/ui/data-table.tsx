@@ -281,11 +281,19 @@ export function DataTable<Row, K extends string = string>({
     // `tabIndex` is the whole fix for axe's `scrollable-region-focusable`, which fired on 35
     // nodes across 12 of the 20 routes at phone width (audit, 2026-09-01): a table that scrolls
     // sideways but takes no focus holds its off-screen columns where a keyboard alone cannot
-    // reach them. It is unconditional on purpose — whether a table actually overflows is a
-    // measurement no server render can make, and a scroll wrapper that is focusable when empty
-    // costs one tab stop, while one that is focusable only sometimes costs a reader the columns.
-    // No `role` goes with it: an unnamed `region` announces less than the table's own semantics,
-    // and the app-wide `:focus-visible` outline already paints the stop.
+    // reach them.
+    //
+    // Unconditional, and the honest reason is not the one first written here. That said the
+    // condition was overflow, "a measurement no server render can make" — true, but it is not
+    // what the rule tests. axe is satisfied by a scrollable region that *contains* focusable
+    // content, so the sortable tables, whose `th`s render real buttons, were already passing and
+    // the 35 nodes were the tables without them. Gating on `onSortToggle` would therefore match
+    // axe exactly. It stays unconditional anyway, because the rule is a floor and not the goal:
+    // reaching a wide table's far columns by tabbing through every sort button is not equivalent
+    // to scrolling it with the arrow keys, and a focus stop that appears on some tables and not
+    // others is the kind of inconsistency a keyboard reader has to learn per page. The cost is
+    // one unlabelled stop before each table. No `role` goes with it: an unnamed `region`
+    // announces less than the table's own semantics, and `:focus-visible` already paints it.
     <div className={wrapperClassName ?? "overflow-x-auto"} tabIndex={0}>
       <table
         // `fc-table` is applied here and nowhere else. It used to be the caller's job, and
