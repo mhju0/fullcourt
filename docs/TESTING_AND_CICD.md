@@ -124,17 +124,45 @@ asserting, and that dialog was removed on 2026-08-11. `e2e/onboarding.spec.ts` w
 replaced the coupling is a readiness gate where a spec needs one — `navigation.spec.ts` waits for
 a client-owned control before clicking a header link, because a click landing mid-hydration hits a
 node React is replacing and the navigation is dropped.
-Specs (16): `e2e/home.spec.ts` (the front door), `e2e/games.spec.ts`, `e2e/alignment-audit.spec.ts`,
-`e2e/alignment-law.spec.ts`, `e2e/analysis.spec.ts`, `e2e/availability.spec.ts`,
-`e2e/behind-the-data.spec.ts`, `e2e/navigation.spec.ts`, `e2e/page-headers.spec.ts`,
-`e2e/playoffs.spec.ts`, `e2e/pwa.spec.ts`, `e2e/referees.spec.ts`, `e2e/schedule-disparity.spec.ts`,
-`e2e/season.spec.ts`, `e2e/shot-quality.spec.ts`, `e2e/shooting.spec.ts` — **163 tests**
-(163 passed / 0 skipped, verified 2026-08-27; several specs generate their cases in a loop, so
-counting `test(` calls in the source undercounts). The suite has no skipped specs for the first
+Specs (18): `e2e/home.spec.ts` (the front door), `e2e/games.spec.ts`, `e2e/accessibility.spec.ts`,
+`e2e/alignment-audit.spec.ts`, `e2e/alignment-law.spec.ts`, `e2e/analysis.spec.ts`,
+`e2e/availability.spec.ts`, `e2e/behind-the-data.spec.ts`, `e2e/layout-integrity.spec.ts`,
+`e2e/navigation.spec.ts`, `e2e/page-headers.spec.ts`, `e2e/playoffs.spec.ts`, `e2e/pwa.spec.ts`,
+`e2e/referees.spec.ts`, `e2e/schedule-disparity.spec.ts`, `e2e/season.spec.ts`,
+`e2e/shot-quality.spec.ts`, `e2e/shooting.spec.ts` — **250 tests**
+(250 passed / 0 skipped, verified 2026-09-01; several specs generate their cases in a loop, so
+counting `test(` calls in the source undercounts). **The jump does not read as 80 against the
+figure this line used to carry, and the old figure is the reason.** It said 163, verified
+2026-08-27, and the redesign round took the suite to 170 without updating it; 170 + 80 = 250.
+A hand-typed count drifts silently between the run that set it and the next one to notice —
+re-run the suite before trusting this number, and re-type it when you do. The suite has no skipped specs for the first
 time: the five that were held back with `/referees` went live when it was published, and **two of
 them had to be rewritten rather than simply un-skipped** — they asserted copy ("This is style, not
 bias.", "how much more or less often") that had been replaced while they sat skipped. A skipped
 spec is not a passing one, and un-skipping is a rewrite until proven otherwise.
+
+**`e2e/accessibility.spec.ts` and `e2e/layout-integrity.spec.ts` are the 2026-09-01 audit's two
+guards**, and they exist because of what they replace. There *was* an a11y pass on 2026-08-24 —
+real work, two defects fixed, the text-grade pole tokens forced — ending in "zero violations on
+all 20 routes". Four days later the redesign round merged and that sentence was false, and
+**nothing in the repo could say so**: the pass was a one-off local script, its report lived in
+the gitignored `docs/audit/`, and `axe-core` was not a dependency. A pass that cannot fail is a
+claim, not a test. `@axe-core/playwright` is a devDependency now, and both specs walk all 20
+routes at **two viewports** — 40 assertions each, 80 tests of the 250.
+
+Two properties of that pair are the point, not the coverage. **They run at phone width**, which
+no a11y or layout pass had ever done: of the twelve routes failing when they were written,
+eleven failed *only* at 390px. And **axe reads composited colour**, where
+`design-contrast.test.ts` pins the ratios of the *tokens* — which is exactly how an `opacity:
+0.4` inherited by 10px text sailed past the gate at 1.8:1. `layout-integrity.spec.ts` asserts
+`documentElement.scrollWidth <= clientWidth` and, on failure, names the elements that reach the
+document's right edge rather than the ones that merely look wide — a table inside `overflow-auto`
+sticks out to 881px and sets no document extent, so reporting it would send the reader hunting.
+
+> **A cached stylesheet will lie to you here.** Both defects were fixed and axe still reported
+> them, because Turbopack served the *previous* `globals.css` across a dev-server restart —
+> `rm -rf .next` was what actually cleared it. Before believing a CSS fix "didn't work", fetch
+> the served stylesheet and grep it for the rule you just wrote.
 
 `e2e/behind-the-data.spec.ts` covers the reference section: that it is reachable from the
 `Reference` landmark and *not* from `Main navigation` or the `OTHER` menu, that every section is
@@ -220,9 +248,40 @@ back on expand.
 
 Pushes to `main` and pull requests run a non-DB quality gate on Node 22 and Python 3.11 with
 the repository's pinned pnpm: frozen install → lint → type-check → Vitest → Python schedule
-contract tests → production build. The workflow uses read-only repository permissions and
-cancels superseded runs. Playwright remains local because its integration-style specs require
-a populated database.
+contract tests → production build → **`pnpm audit --prod`**. The workflow uses read-only
+repository permissions and cancels superseded runs. Playwright remains local because its
+integration-style specs require a populated database.
+
+**`--prod`, not a bare audit** (added 2026-09-01). The dev tree carries 55 advisories that never
+reach a user, **38 of them reachable only through `shadcn`** — so an unscoped audit is noise, and
+a noisy gate is one everybody learns to skip.
+
+**It runs last, and that is deliberate** (2026-09-02, from the review of the PR that added it).
+It went in first, which meant a CVE disclosed overnight against a transitive dependency would
+redden every open PR *and* abort the job before lint, type-check, Vitest, the Python contract
+tests or the build had run — so nobody could verify any change until an override landed. The
+advisory is real information, but it is not a fact about the diff, and it must not be able to
+stop the gate that is. Last keeps the job red without taking the correctness gates down with it;
+the registry call is also a network dependency with no retry, and a blip there should not read
+as a regression.
+
+> **Those 38 are not removable, and the attempt is instructive.** `shadcn` reads as a scaffolding
+> CLI — nothing in `package.json`'s scripts runs it, and the two components it seeded
+> (`ui/button.tsx`, `ui/message-card.tsx`) are vendored into the repo — so the obvious cleanup is
+> to drop it and call `pnpm dlx shadcn` when a component is needed. **It fails the build.**
+> `globals.css` line 2 is `@import "shadcn/tailwind.css"`, which makes it a build input, not a
+> tool; removing it ends in `Can't resolve 'shadcn/tailwind.css'` from the Tailwind PostCSS
+> plugin. A grep for a dependency that skips `*.css` will tell you it is unused. Measured and
+> reverted 2026-09-01.
+
+Production has sat at **zero** since the 2026-08-13 postcss fix, which is precisely what makes it
+worth gating: at
+zero, a red step is a real regression rather than a backlog to triage. If it goes red after a
+lockfile change, check the four CVE pins in `pnpm-workspace.yaml` under `overrides:` first —
+[SEASON_ROLLOVER.md §8](SEASON_ROLLOVER.md) explains why each exists and how one can vanish
+silently. The gap this closes was found by the 2026-09-01 audit and had been open since
+2026-08-13, whose own finding — a pin that had aged into *holding* a vulnerable version — is the
+argument for it.
 
 ### GitHub Actions — `.github/workflows/daily-update.yml`
 

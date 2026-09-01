@@ -64,13 +64,13 @@ authored `"Live score feed unavailable"` 502. That 502 path was unreachable in p
 
 `force-dynamic` leaves `Cache-Control: max-age=0, must-revalidate`, so until 2026-08-07 every
 visit executed a function. With traffic too low to keep a lambda warm, 7.8% of invocations hit
-the execution-time limit. Six routes now opt into a policy via `jsonRoute`'s fourth argument
+the execution-time limit. Seven routes now opt into a policy via `jsonRoute`'s fourth argument
 (`CACHE` in `src/lib/api-route.ts`):
 
 | Policy | Value | Routes |
 |---|---|---|
 | `CACHE.historical` | `public, s-maxage=3600, stale-while-revalidate=86400` | `/api/analysis`, `/api/shot-quality`, `/api/schedule-disparity` |
-| `CACHE.inSeason` | `public, s-maxage=300, stale-while-revalidate=3600` | `/api/season-report`, `/api/playoffs`, `/api/games/dates` |
+| `CACHE.inSeason` | `public, s-maxage=300, stale-while-revalidate=3600` | `/api/season-report`, `/api/playoffs`, `/api/games/dates`, `/api/games/search` |
 
 - **`stale-while-revalidate` is the half that fixed it.** The edge serves the stale copy
   immediately and refreshes behind it, so a cold start costs a background refresh rather than a
@@ -81,6 +81,14 @@ the execution-time limit. Six routes now opt into a policy via `jsonRoute`'s fou
   `/api/game/[id]`. They are read alongside a Supabase Realtime subscription (`useLiveGames.ts`),
   and an edge-cached score would fight the subscription that corrects it. `/api/health` is not a
   `jsonRoute` and must never be cached.
+- **The population does not pick the policy; the ordering does** (2026-09-01). `/api/games/search`
+  reads the same settled backtest rows as `/api/analysis`, through the same
+  `searchRegularSeasonGames`, and the first draft of its policy took `historical` on exactly that
+  reasoning. It was wrong: `/api/analysis` returns a forty-one-season aggregate where last night
+  is invisible among ~39,000 games, while the search route is date-descending and paginated, so
+  **page 1 is last night** and `seasonParam` admits the season in progress once it has one final
+  game. An hour of `s-maxage` over a day of `stale-while-revalidate` would open the explorer on a
+  list missing the most recent slate. Ask what the surface shows, not how big the table is.
 - **`/api/games/dates` is the exception inside that family, and joined the list on 2026-08-14.**
   It sits under `/api/games/*` but returns only which dates have games and how many — no score,
   so no subscription touches it and nothing moves it but a pipeline run. It was exempted by the
@@ -184,6 +192,11 @@ Games" table.
   { games: GameSearchResult[], total, page, limit }`. `GameSearchResult` carries
   `gameId, date, season, home/away abbreviations + scores + fatigue, restAdvantageDifferential
   (absolute), advantageTeam, restedTeamWon`.
+- **Cache:** `CACHE.inSeason` since 2026-09-01. It was the last heavy read route with no policy
+  at all — and the in-memory pagination is what makes an edge hit worth having, since
+  `page=999999` costs what `page=1` costs (0.58s against 0.55s, measured over ~39,000 rows to
+  return 20). `inSeason` rather than `historical` because the rows come back newest-first; see
+  the caching section above.
 
 ---
 

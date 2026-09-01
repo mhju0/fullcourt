@@ -565,11 +565,17 @@
    opacity low enough to read as dimmed pushes the composited text below AA's 4.5:1 (the
    old 0.48 measured 2.06–3.19 in the 2026-08-24 axe pass). Every cell flattens to the
    muted text colour instead — 5.9:1 on white — and only the effect bar fades, since a
-   graphic restating the number beside it carries no text-contrast requirement. */
+   graphic restating the number beside it carries no text-contrast requirement.
+
+   The fade names the bar's own class, and must keep naming it. It was written as
+   `td span[aria-hidden]`, which meant "the bar" only for as long as the bar was the only
+   aria-hidden span in a cell — RankBadge shipped a second one into these cells on
+   2026-08-29 and it is 10px *text*. It inherited the fade and composited to 1.8:1 against
+   AA's 4.5. A selector that says "any hidden span" is one that waits for the next one. */
 .fc-rest-table tbody tr.fc-noisy > td,
 .fc-rest-table tbody tr.fc-noisy > td span {
   color: var(--term-text-muted) !important;
 }
-.fc-rest-table tbody tr.fc-noisy > td span[aria-hidden] {
+.fc-rest-table tbody tr.fc-noisy > td span.fc-effect-bar {
   opacity: 0.4;
 }

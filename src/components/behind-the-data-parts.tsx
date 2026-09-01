@@ -100,6 +100,11 @@ export function Note({ children }: { children: React.ReactNode }) {
 export function Formula({ children }: { children: React.ReactNode }) {
   return (
     <pre
+      // Focusable for the same reason the table scroll wrapper is (see data-table.tsx): a
+      // formula wider than a phone scrolls sideways, and without a tab stop the right-hand half
+      // of the arithmetic is unreachable from a keyboard. Eight of the nine method pages tripped
+      // axe's `scrollable-region-focusable` on this one element at 390px (audit, 2026-09-01).
+      tabIndex={0}
       className="mono overflow-x-auto"
       style={{
         background: BLUE_TINT,
