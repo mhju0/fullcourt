@@ -40,13 +40,15 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      # --prod, not a bare audit. The dev tree carries 55 advisories that never reach a user —
-      # 38 of them from `shadcn` alone, a scaffolding CLI — so an unscoped audit is noise that
-      # teaches everyone to ignore this step. Production has sat at zero since the 2026-08-13
-      # postcss fix, which is exactly why it is worth gating: at zero, any failure here is a
-      # real regression rather than a backlog. The four CVE pins that keep it there live in
-      # `pnpm-workspace.yaml` under `overrides:` — if this step goes red after a lockfile
-      # change, check those first (SEASON_ROLLOVER.md §8).
+      # --prod, not a bare audit. The dev tree carries 55 advisories that never reach a user,
+      # 38 of them reachable only through `shadcn` — so an unscoped audit is noise that teaches
+      # everyone to ignore this step. Those 38 are not removable: `shadcn` looks like a
+      # scaffolding CLI but `globals.css` line 2 imports `shadcn/tailwind.css`, so it is a build
+      # input and dropping it to `pnpm dlx` fails the build (measured 2026-09-01). Production has
+      # sat at zero since the 2026-08-13 postcss fix, which is exactly why it is worth gating: at
+      # zero, any failure here is a real regression rather than a backlog. The four CVE pins that
+      # keep it there live in `pnpm-workspace.yaml` under `overrides:` — if this step goes red
+      # after a lockfile change, check those first (SEASON_ROLLOVER.md §8).
       - name: Audit production dependencies
         run: pnpm audit --prod
 

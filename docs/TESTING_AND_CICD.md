@@ -249,8 +249,17 @@ repository permissions and cancels superseded runs. Playwright remains local bec
 integration-style specs require a populated database.
 
 **`--prod`, not a bare audit** (added 2026-09-01). The dev tree carries 55 advisories that never
-reach a user — **38 of them from `shadcn` alone**, a scaffolding CLI that ships nothing — so an
-unscoped audit is noise, and a noisy gate is one everybody learns to skip. Production has sat at
+reach a user, **38 of them reachable only through `shadcn`** — so an unscoped audit is noise, and
+a noisy gate is one everybody learns to skip.
+
+> **Those 38 are not removable, and the attempt is instructive.** `shadcn` reads as a scaffolding
+> CLI — nothing in `package.json`'s scripts runs it, and the two components it seeded
+> (`ui/button.tsx`, `ui/message-card.tsx`) are vendored into the repo — so the obvious cleanup is
+> to drop it and call `pnpm dlx shadcn` when a component is needed. **It fails the build.**
+> `globals.css` line 2 is `@import "shadcn/tailwind.css"`, which makes it a build input, not a
+> tool; removing it ends in `Can't resolve 'shadcn/tailwind.css'` from the Tailwind PostCSS
+> plugin. A grep for a dependency that skips `*.css` will tell you it is unused. Measured and
+> reverted 2026-09-01. Production has sat at
 **zero** since the 2026-08-13 postcss fix, which is precisely what makes it worth gating: at
 zero, a red step is a real regression rather than a backlog to triage. If it goes red after a
 lockfile change, check the four CVE pins in `pnpm-workspace.yaml` under `overrides:` first —

@@ -251,9 +251,16 @@ code, so each fix had something to prove itself against.
 scheduled when the audit filed them.
 
 - **[x] `pnpm audit --prod` gates CI.** Open since 2026-08-13. `--prod` and not a bare audit:
-  the dev tree carries 55 advisories that never reach a user, **38 of them from `shadcn`
-  alone**, and a noisy gate is one everybody learns to skip. Production has been at zero since
-  the 2026-08-13 postcss fix, so a red step here is a regression, not a backlog.
+  the dev tree carries 55 advisories that never reach a user, **38 of them reachable only
+  through `shadcn`**, and a noisy gate is one everybody learns to skip. Production has been at
+  zero since the 2026-08-13 postcss fix, so a red step here is a regression, not a backlog.
+- **[—] Dropping `shadcn` to `pnpm dlx` — tried, and it is wrong.** The audit recommended it as
+  a way to take 38 advisories out of the tree, on the reading that a scaffolding CLI ships
+  nothing. It ships a stylesheet: `globals.css` line 2 is `@import "shadcn/tailwind.css"`, so
+  removing the package fails the build with `Can't resolve 'shadcn/tailwind.css'`. Measured,
+  reverted, and recorded here rather than deleted, because the recommendation reads as sound
+  and the next person will have the same idea. **A grep that skips `*.css` will call a build
+  input unused.**
 - **[x] The ⌘K palette is fetched on first summon.** `cmdk` and the sixteen `@radix-ui/*`
   packages behind `@radix-ui/react-dialog` were in the chunk that loads on **all twenty routes**,
   rendering nothing until somebody pressed a key. `command-palette-mount.tsx` is the doorbell
@@ -411,11 +418,14 @@ routes, 214 TS/TSX files, ~36.8k lines under `src`; a 317 MB database holding 51
 production-reachable dependency advisories.** `pnpm audit` reports 55, and every one of them is
 dev-only — verified by splitting the advisory JSON on the `dev` flag rather than by reading
 paths. The 2026-08-13 postcss pin fix has held. Two things follow from the same measurement:
-**38 of the 55 come from `shadcn` alone**, a scaffolding CLI that never ships and would leave
-the tree entirely if it were invoked with `pnpm dlx`; and there is still **no `pnpm audit --prod`
-gate in CI**, carried open since 2026-08-13, whose own finding — a pin that had quietly aged
-into *holding* a vulnerable version — remains the argument for adding one. It is cheap now,
-because production is at zero.
+**38 of the 55 are reachable only through `shadcn`** — which reads as a scaffolding CLI and is
+not one: `globals.css` line 2 imports `shadcn/tailwind.css`, so it is a build input, and dropping
+it to `pnpm dlx` fails the build. *(That correction is the audit's own: the recommendation here
+originally said to drop it, and it was tried and reverted on 2026-09-01 — a grep that skips
+`*.css` will call a build input unused.)* And there was **no `pnpm audit --prod` gate in CI**,
+carried open since 2026-08-13, whose own finding — a pin that had quietly aged into *holding* a
+vulnerable version — was the argument for adding one. Cheap, because production is at zero; added
+the same day.
 
 The rest of the security surface re-verified clean and is recorded so the next pass can skip
 it: all 12 routes are `GET`; 10 go through `jsonRoute`'s Zod envelope and the two that do not

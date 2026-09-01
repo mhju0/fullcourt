@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { NextRequest } from "next/server";
 import { GET } from "../games/search/route";
+import { CACHE } from "@/lib/api-route";
 import { searchRegularSeasonGames } from "@/lib/db/queries";
 
 vi.mock("@/lib/db/queries", () => ({
@@ -67,5 +68,16 @@ describe("GET /api/games/search", () => {
     });
     const body = (await res.json()) as { data: { page: number; limit: number } };
     expect(body.data).toMatchObject({ page: 2, limit: 50 });
+  });
+
+  // `jsonRoute`'s own tests prove the header mechanism; nothing proved this route asks for it,
+  // which is how it stayed uncached through the 2026-08-07 pass and the 2026-08-14 audit alike.
+  // `historical` and not `inSeason`: this is the settled backtest population, the same rows
+  // `/api/analysis` serves under the same claim, and they move only when the pipeline runs.
+  it("lets the edge hold a search over settled seasons", async () => {
+    mockSearchGames.mockResolvedValueOnce([]);
+
+    const res = await GET(req("?season=1995-96"));
+    expect(res.headers.get("cache-control")).toBe(CACHE.historical);
   });
 });
