@@ -124,17 +124,41 @@ asserting, and that dialog was removed on 2026-08-11. `e2e/onboarding.spec.ts` w
 replaced the coupling is a readiness gate where a spec needs one — `navigation.spec.ts` waits for
 a client-owned control before clicking a header link, because a click landing mid-hydration hits a
 node React is replacing and the navigation is dropped.
-Specs (16): `e2e/home.spec.ts` (the front door), `e2e/games.spec.ts`, `e2e/alignment-audit.spec.ts`,
-`e2e/alignment-law.spec.ts`, `e2e/analysis.spec.ts`, `e2e/availability.spec.ts`,
-`e2e/behind-the-data.spec.ts`, `e2e/navigation.spec.ts`, `e2e/page-headers.spec.ts`,
-`e2e/playoffs.spec.ts`, `e2e/pwa.spec.ts`, `e2e/referees.spec.ts`, `e2e/schedule-disparity.spec.ts`,
-`e2e/season.spec.ts`, `e2e/shot-quality.spec.ts`, `e2e/shooting.spec.ts` — **163 tests**
-(163 passed / 0 skipped, verified 2026-08-27; several specs generate their cases in a loop, so
+Specs (18): `e2e/home.spec.ts` (the front door), `e2e/games.spec.ts`, `e2e/accessibility.spec.ts`,
+`e2e/alignment-audit.spec.ts`, `e2e/alignment-law.spec.ts`, `e2e/analysis.spec.ts`,
+`e2e/availability.spec.ts`, `e2e/behind-the-data.spec.ts`, `e2e/layout-integrity.spec.ts`,
+`e2e/navigation.spec.ts`, `e2e/page-headers.spec.ts`, `e2e/playoffs.spec.ts`, `e2e/pwa.spec.ts`,
+`e2e/referees.spec.ts`, `e2e/schedule-disparity.spec.ts`, `e2e/season.spec.ts`,
+`e2e/shot-quality.spec.ts`, `e2e/shooting.spec.ts` — **250 tests**
+(250 passed / 0 skipped, verified 2026-09-01; several specs generate their cases in a loop, so
 counting `test(` calls in the source undercounts). The suite has no skipped specs for the first
 time: the five that were held back with `/referees` went live when it was published, and **two of
 them had to be rewritten rather than simply un-skipped** — they asserted copy ("This is style, not
 bias.", "how much more or less often") that had been replaced while they sat skipped. A skipped
 spec is not a passing one, and un-skipping is a rewrite until proven otherwise.
+
+**`e2e/accessibility.spec.ts` and `e2e/layout-integrity.spec.ts` are the 2026-09-01 audit's two
+guards**, and they exist because of what they replace. There *was* an a11y pass on 2026-08-24 —
+real work, two defects fixed, the text-grade pole tokens forced — ending in "zero violations on
+all 20 routes". Four days later the redesign round merged and that sentence was false, and
+**nothing in the repo could say so**: the pass was a one-off local script, its report lived in
+the gitignored `docs/audit/`, and `axe-core` was not a dependency. A pass that cannot fail is a
+claim, not a test. `@axe-core/playwright` is a devDependency now, and both specs walk all 20
+routes at **two viewports** — 40 assertions each, 80 tests of the 250.
+
+Two properties of that pair are the point, not the coverage. **They run at phone width**, which
+no a11y or layout pass had ever done: of the twelve routes failing when they were written,
+eleven failed *only* at 390px. And **axe reads composited colour**, where
+`design-contrast.test.ts` pins the ratios of the *tokens* — which is exactly how an `opacity:
+0.4` inherited by 10px text sailed past the gate at 1.8:1. `layout-integrity.spec.ts` asserts
+`documentElement.scrollWidth <= clientWidth` and, on failure, names the elements that reach the
+document's right edge rather than the ones that merely look wide — a table inside `overflow-auto`
+sticks out to 881px and sets no document extent, so reporting it would send the reader hunting.
+
+> **A cached stylesheet will lie to you here.** Both defects were fixed and axe still reported
+> them, because Turbopack served the *previous* `globals.css` across a dev-server restart —
+> `rm -rf .next` was what actually cleared it. Before believing a CSS fix "didn't work", fetch
+> the served stylesheet and grep it for the rule you just wrote.
 
 `e2e/behind-the-data.spec.ts` covers the reference section: that it is reachable from the
 `Reference` landmark and *not* from `Main navigation` or the `OTHER` menu, that every section is

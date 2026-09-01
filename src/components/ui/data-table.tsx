@@ -278,7 +278,15 @@ export function DataTable<Row, K extends string = string>({
   }
 
   return (
-    <div className={wrapperClassName ?? "overflow-x-auto"}>
+    // `tabIndex` is the whole fix for axe's `scrollable-region-focusable`, which fired on 35
+    // nodes across 12 of the 20 routes at phone width (audit, 2026-09-01): a table that scrolls
+    // sideways but takes no focus holds its off-screen columns where a keyboard alone cannot
+    // reach them. It is unconditional on purpose — whether a table actually overflows is a
+    // measurement no server render can make, and a scroll wrapper that is focusable when empty
+    // costs one tab stop, while one that is focusable only sometimes costs a reader the columns.
+    // No `role` goes with it: an unnamed `region` announces less than the table's own semantics,
+    // and the app-wide `:focus-visible` outline already paints the stop.
+    <div className={wrapperClassName ?? "overflow-x-auto"} tabIndex={0}>
       <table
         // `fc-table` is applied here and nowhere else. It used to be the caller's job, and
         // omitting it dropped every cell's padding — a contract enforced by a sentence in

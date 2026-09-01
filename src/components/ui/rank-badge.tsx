@@ -24,7 +24,14 @@ export function RankBadge({
   population: string
 }) {
   return (
-    <>
+    // `relative` is load-bearing, not cosmetic. `.sr-only` is `position: absolute`, so it
+    // resolves against the nearest positioned ancestor — and with none inside the table's
+    // scroll container it reached the page, took its static position from inside a table far
+    // wider than a phone, and planted its 1x1 box past the viewport edge. That scrolled the
+    // *document* 57px on /season and 47px on /shooting at 390px (audit, 2026-09-01): one pixel
+    // of element, a page that slides sideways. Positioned here, the scroller clips it.
+    // `layout-integrity.spec.ts` fails if this comes off.
+    <span className="relative">
       <span
         aria-hidden="true"
         className="mono"
@@ -40,6 +47,6 @@ export function RankBadge({
         {ordinal(rank)}
       </span>
       <span className="sr-only">{` ranked ${rank} of ${of} ${population}`}</span>
-    </>
+    </span>
   )
 }

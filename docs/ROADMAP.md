@@ -122,11 +122,20 @@ what caught two cross-PR e2e breaks that no single stage could see. Final state 
 
 The dependency tree is deliberately pinned; see
 [SEASON_ROLLOVER.md §8](SEASON_ROLLOVER.md) before regenerating the lockfile, and §7 for the
-season counts and frozen front-door figures that do not derive themselves. **`gsap` is the one
-runtime dependency added since the freeze** (2026-07-28, for `/about` only; still the only
-one as of 2026-07-30). It is imported
-inside an effect so it stays out of the shared bundle, and `@gsap/react` was deliberately not
-added alongside it.
+season counts and frozen front-door figures that do not derive themselves. **Two runtime
+dependencies have been added since the freeze**, and the second one costs more than it looks:
+
+- `gsap` (2026-07-28, for `/about` only). Imported inside an effect so it stays out of the
+  shared bundle, and `@gsap/react` was deliberately not added alongside it.
+- `cmdk` (2026-08-29, PR #70, for the ⌘K palette). Its own runtime is small — 11 KB raw,
+  4.3 KB gzipped — but it declares `@radix-ui/react-dialog` as a **runtime** dependency, so
+  **16 `@radix-ui/*` packages entered the tree transitively**, none of them named in
+  `package.json`. The app therefore carries **two headless-UI libraries**: `@base-ui/react`,
+  which is declared and which `nav-bar.tsx` (the `OTHER` menu) and `ui/button.tsx` use, and
+  Radix, which arrived behind `cmdk`. Both land in the same 202.9 KB / **66.2 KB gzipped**
+  chunk that ships on **every one of the 20 routes**, because `CommandPalette` is imported
+  statically in `src/app/layout.tsx` and the palette renders nothing until ⌘K is pressed.
+  Measured 2026-09-01 — see the audit checkpoint below.
 
 ## Shipped modules
 
@@ -196,12 +205,52 @@ added alongside it.
 
 ## In progress
 
-**Both of the two items below closed on 2026-08-24, so nothing is actually in progress** — they
-are kept here as the record of how each resolved, and the section is empty again in the sense
-that matters. The open work that remains is not code: the real-device checks and the launch-day
-hand-check (Known and not fixed, below). The social-preview upload landed 2026-08-30, and the
-VoiceOver walkthrough was refused the same day (see UIUX_CHECKLIST.md — a decision, not an
-oversight).
+**All four items the 2026-09-01 checkpoint audit opened are closed** (measurements and method in
+the dated section below). Two were defects the redesign round shipped and no gate could see; two
+were the guards that would have caught them — and the guards landed first, failing on the unfixed
+code, so each fix had something to prove itself against.
+
+- **[x] P0 · `/shooting`'s rank rider rendered at 1.8:1.** `src/app/globals.css` faded
+  `.fc-rest-table tbody tr.fc-noisy > td span[aria-hidden]` to `opacity: 0.4`. That rule was
+  written on 2026-08-24 to fade **the effect bar** — the only `aria-hidden` span in a cell at
+  the time, and a graphic, which carries no text-contrast requirement. PR #69's `RankBadge`
+  then added a *second* `aria-hidden` span in the same cells that is **10px text**, and it
+  inherited the fade: `--term-text-muted` `#5D6470` at 0.4 over white composited to `#BEC1C6`,
+  **1.8:1** against AA's 4.5:1, on 10 nodes. **Fixed** by giving the bar its own class,
+  `.fc-effect-bar`, and pointing the fade at that. The durable rule, now in FRONTEND.md: *a
+  selector that says "any hidden span" is one that is waiting for the next one.*
+- **[x] P0 · `/season` and `/shooting` scrolled sideways on a phone.** `RankBadge`'s sibling
+  `<span class="sr-only">` is `position: absolute` and had no positioned ancestor **inside** the
+  table's scroll container, so it laid out against a containing block outside the scroller and
+  extended the document past the viewport. Measured at 390px: `documentElement.scrollWidth`
+  447 and 437 against a 390 viewport, and `window.scrollTo(400, 0)` really moved `scrollX` to
+  57 and 47. At 360px it was +87 and +77, and `/playoffs` picked up +3. Confirmed by bisect —
+  hiding `.sr-only` dropped both back to exactly 390 — and by exclusion: the two affected routes
+  were precisely the two `RankBadge` pages, while `/games` and `/analysis` were 0. **Fixed** by
+  wrapping the badge in a `position: relative` span, which puts the containing block inside the
+  scroller and lets it clip.
+- **[x] P1 · every horizontally scrolling region is reachable from a keyboard now.** A wrapper
+  that scrolls sideways but takes no focus holds its off-screen columns where a keyboard alone
+  cannot reach them — axe `scrollable-region-focusable`, serious, **35 nodes across 12 routes**
+  at 390px. Two shared components carried all of it and both now take `tabIndex={0}`:
+  `ui/data-table.tsx` (every table on the site) and `behind-the-data-parts.tsx`'s `Formula`,
+  the `<pre>` on eight of the nine method pages — which the first fix uncovered rather than the
+  audit, since it only became the top offender once the tables stopped being.
+- **[x] P1 · the a11y pass is a guard now, which is why the three above could ship.** `axe-core`
+  was **not a dependency**; the 2026-08-24 pass was a one-off local script whose report lives in
+  the gitignored `docs/audit/`. `design-contrast.test.ts` pins **token** ratios and cannot see a
+  *composited* one, which is exactly the gap the `opacity: 0.4` finding fell through. The
+  checklist's "all 20 routes re-audit with zero violations" was true when written and stopped
+  being true four days later, with nothing able to say so. **Closed** by
+  `e2e/accessibility.spec.ts` (`@axe-core/playwright`, now a devDependency) and
+  `e2e/layout-integrity.spec.ts`, each walking all 20 routes at **two viewports** — 80 of the
+  suite's 250 tests. Both ran red on the unfixed code first: axe on 13 routes, the scroll
+  assertion on exactly the two the audit named, by exactly the amounts it measured.
+
+> **One trap worth carrying forward.** Both P0 fixes were correct and axe still reported them,
+> because Turbopack served the *previous* `globals.css` across a dev-server restart; `rm -rf
+> .next` was what actually cleared it. Before believing a CSS fix did not work, fetch the served
+> stylesheet and grep it for the rule you just wrote.
 
 Two items added 2026-08-23, both discussed with and scoped by Michael. Before them this section
 had been empty since `/referees` published on 2026-08-22 (its history is under Shipped modules;
@@ -276,11 +325,13 @@ oversight. None is a defect in what the site publishes.
   the report reads, so seeding a schedule moves the stamp even though nothing is final yet. Since
   2026-08-18 that window also renders a real page rather than an empty one — a season with no
   completed game reports on the `"schedule"` basis.
-- **`docs/social-preview.png` needs one manual re-upload.** Regenerated 2026-08-18 as a render of
-  `/opengraph-image` rather than a hand export, so the stale "40-SEASON BACKTEST" card and the
-  pre-2026-07-30 logo lean are gone from the tree — but GitHub serves the preview from repo
-  settings, so the current file only becomes the live card once someone uploads it (Settings →
-  Social preview). See [SEASON_ROLLOVER.md §7](SEASON_ROLLOVER.md).
+- ~~**`docs/social-preview.png` needs one manual re-upload.**~~ — **uploaded and verified
+  2026-08-30**, and this entry outlived the fix by one audit (found stale 2026-09-01: the
+  In progress section above already recorded the upload while this row still asked for it).
+  Regenerated 2026-08-18 as a render of `/opengraph-image` rather than a hand export; GitHub
+  now serves it from repo settings, and the live `og:image` resolves to
+  `repository-images.githubusercontent.com` with a PNG byte-identical to the committed file.
+  See [SEASON_ROLLOVER.md §7](SEASON_ROLLOVER.md).
 - ~~**2026-27 is not seeded.**~~ — **seeded 2026-08-18**: 1,200 games from ESPN, keyed
   `espn-<eventId>`, cross-checked against Fox Sports. Both NBA-owned sources remain blocked from
   outside the US *and* from CI runners (re-probed the same day), so the `002…`-id path was not
@@ -320,6 +371,89 @@ oversight. None is a defect in what the site publishes.
 - Re-run the documented schedule/date integrity audit after new season ingestion.
 - Preserve the isolation of each analytics module and the existing rest-advantage naming
   contract.
+
+## 2026-09-01 — the checkpoint audit
+
+A full four-track audit — security, UI/UX, performance, architecture — run against `main` at
+`cb590e0` plus the two docs commits after it, to answer "where is this project" rather than to
+close a ticket. Everything below was measured this session, against a production build served
+locally and against the live deployment; nothing is carried forward from a previous pass
+unverified.
+
+**Every gate is green.** 911 unit tests / 67 files, `typecheck`, `lint`, `build`, and the full
+**170 e2e / 0 failed** against a production build. Scale, for the record: 20 routes, 12 API
+routes, 214 TS/TSX files, ~36.8k lines under `src`; a 317 MB database holding 51,695 games,
+103,390 fatigue scores and 1,029,098 shot-grid cells.
+
+**Security is in good shape, and one number is worth stating plainly: zero
+production-reachable dependency advisories.** `pnpm audit` reports 55, and every one of them is
+dev-only — verified by splitting the advisory JSON on the `dev` flag rather than by reading
+paths. The 2026-08-13 postcss pin fix has held. Two things follow from the same measurement:
+**38 of the 55 come from `shadcn` alone**, a scaffolding CLI that never ships and would leave
+the tree entirely if it were invoked with `pnpm dlx`; and there is still **no `pnpm audit --prod`
+gate in CI**, carried open since 2026-08-13, whose own finding — a pin that had quietly aged
+into *holding* a vulnerable version — remains the argument for adding one. It is cheap now,
+because production is at zero.
+
+The rest of the security surface re-verified clean and is recorded so the next pass can skip
+it: all 12 routes are `GET`; 10 go through `jsonRoute`'s Zod envelope and the two that do not
+are the documented pair (`/api/health` takes no input, `/api/cron/update` is the only
+authenticated route and compares its bearer token with `timingSafeEqual`, failing closed with a
+503 when `CRON_SECRET` is required but unset). No injection sink exists in `src` — every
+Drizzle `sql` template is parameterised, the one `sql.raw` (`scripts/backfill_fatigue.ts:50`)
+interpolates a module constant, and the two Python f-string queries interpolate
+`ABNORMAL_STRETCHES` and a caller-supplied table name in hand-run scripts with no HTTP surface.
+Only `.env.example` is tracked and no `.env*` file has ever been committed. Live headers were
+read off production, not assumed: HSTS `max-age=63072000; includeSubDomains; preload`, the CSP
+correctly without `unsafe-eval`, `nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy`,
+`Permissions-Policy`, and Brotli doing real work — the largest API payload compresses
+636,661 → 51,277 bytes at the edge with `x-vercel-cache: HIT`.
+
+**The two defects the audit found are both in `RankBadge`, and both are in the In progress
+section above.** They are worth one sentence here about *why* they got through: neither is
+visible to any gate the project has. A contrast test that reads token hexes cannot see an
+`opacity` composited over white, and an e2e suite that asserts alignment rails does not ask
+whether the document scrolls sideways. The pattern is the one already recorded for inline
+styles beating hover classes — **a rule written for the only element that matched it at the
+time, meeting a new element that also matches it.**
+
+**Performance: the shared bundle is the finding.** Every route loads 878 KB raw / **270 KB
+gzipped**, of which 38.5 KB is the `noModule` polyfill chunk that modern browsers skip — so the
+real figure is **231.7 KB gzipped on every page, including pure prose pages**. A single
+202.9 KB / 66.2 KB-gz chunk holding `@base-ui/react` + `cmdk` + Radix accounts for more than a
+quarter of it; the dependency note above says how the second headless-UI library got there.
+`@base-ui` is legitimately global (the `OTHER` menu is in the chrome), so the recoverable slice
+is the palette's, not the whole chunk — but the palette renders nothing until ⌘K and is
+imported statically in `layout.tsx`, which is the wrong default for a surface nobody has
+opened. Everything else that could have been wrong is right: no N+1 anywhere; recharts
+(2 × 353 KB) route-scoped behind `*-lazy.tsx`; GSAP loaded inside an effect; supabase-js
+(56 KB gz) scoped to `/games`.
+
+Two data-layer notes, neither urgent. **`/api/games/search` reads 39,016 rows to return 20** —
+`searchRegularSeasonGames` fetches the whole matching population and `buildHistoricalGameSearch`
+slices it in memory, so `page=999999` costs exactly what `page=1` costs (measured: 0.58 s and
+0.55 s). It is the only heavy read route not behind `createStampedCache` and the only one with
+no `Cache-Control`, so nothing absorbs a repeat. And **`games` has no index on `season`** —
+verified against the live database, which carries `date`, `status`, `home_team_id`,
+`away_team_id`, `external_id` and the primary key — so every season-scoped read scans 51,695
+rows. Latency is fine today; this is a note for the season where it is not.
+
+**Architecture held up.** Module isolation is real at the surface layer — nine modules, each
+with its own route, page, `*-server.ts` and facts module — but it stops at the query layer:
+`src/lib/db/queries.ts` is **1,465 lines** carrying every module's queries in one file, banner-
+sectioned rather than split. It is also the only large module with no unit test file, which is
+defensible (it is DB-bound and covered through `src/app/api/__tests__`). `analysis-content.tsx`
+is the largest component at 1,209 lines with 71 inline `style` blocks. The ~80 exported-but-
+unimported symbols are mostly types that are legitimately part of a module's surface; the
+genuinely internal-only functions are unchanged from the 2026-08-12 scan and are still
+deliberately undeleted. `createStampedCache` remains the best abstraction in the codebase — its
+one invariant is written down *and* enforced by pairing the stamp with its loader.
+
+One process result is worth keeping. **The docs shipped with the code this round**, and it is
+checkable: `FRONTEND.md` carries the dock, the 56px bar, view transitions, the density dial,
+`RankBadge` and `cmdk`, and ADR 0010 is committed. The audit found exactly one stale row — the
+social-preview upload, still listed as pending under Known and not fixed while the section
+above it recorded the upload landing — and it is struck through now.
 
 ## 2026-07-29 → 30 — the fatigue overhaul
 

@@ -1486,6 +1486,20 @@ screen**, recomputed with filters, never a league constant. Where it deliberatel
 standard error per swing), `/shooting`'s rest effect (ranking would crown the noise the page's
 own filter warns about), `/schedule`'s league table (already a ranking, `#` column).
 
+> **Two things about the rider are load-bearing, and both shipped broken (fixed 2026-09-01).**
+>
+> - **The wrapper is `position: relative`, and must stay.** `.sr-only` is `position: absolute`,
+>   so it resolves against the nearest positioned ancestor. With none inside the table's scroll
+>   container it reached the page, took its static position from inside a table far wider than a
+>   phone, and planted its 1×1 box past the viewport edge — scrolling the *whole document* 57px
+>   on `/season` and 47px on `/shooting` at 390px. One pixel of element, a page that slides
+>   sideways. `e2e/layout-integrity.spec.ts` fails if the wrapper comes off.
+> - **The rider is text, and inherits whatever a row does to text.** `/shooting`'s noisy-row
+>   fade was written as `td span[aria-hidden]` when the effect bar was the only such span in a
+>   cell; the rider became the second one and composited to **1.8:1**. The fade names
+>   `.fc-effect-bar` now. The general rule: **a selector that says "any hidden span" is one that
+>   is waiting for the next one** — name the element you actually mean.
+
 ### Alignment: two rails, one scale
 
 *(Established 2026-08-11. Before it, the app used twelve gap steps, about twenty distinct inline
@@ -1525,6 +1539,15 @@ deliberately only what varies.
 
 Three things the module settled that are easy to get wrong again:
 
+- **The scroll wrapper is focusable (`tabIndex={0}`), unconditionally.** A wrapper that scrolls
+  sideways but takes no focus holds its off-screen columns where a keyboard alone cannot reach
+  them — axe `scrollable-region-focusable`, 35 nodes across 12 of 20 routes at phone width until
+  2026-09-01. It is unconditional because whether a given table overflows is a measurement no
+  server render can make, and a wrapper that is focusable when empty costs one tab stop, while
+  one that is focusable only sometimes costs a reader the columns. No `role` goes with it: an
+  unnamed `region` announces less than the table's own semantics, and the app-wide
+  `:focus-visible` outline already paints the stop. `behind-the-data-parts.tsx`'s `Formula`
+  (`<pre>`) carries the same `tabIndex` for the same reason.
 - **A column's `style` is body-only.** `headStyle` is the header. A cell style that reached the
   heading shrank a rank column's own label out of line with the eight beside it.
 - **A sortable heading is a real `<button>` inside the `<th>`.** `role="button"` on the `<th>`

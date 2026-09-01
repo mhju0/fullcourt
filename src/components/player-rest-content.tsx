@@ -202,7 +202,11 @@ function EffectValue({ value, cap }: { value: number | null; cap: number }) {
       </span>
       <span
         aria-hidden
-        className="relative block flex-none"
+        // `fc-effect-bar` is what the noisy-row fade in globals.css targets. It used to target
+        // `td span[aria-hidden]`, which meant "the bar" only for as long as the bar was the
+        // only aria-hidden span in a cell — RankBadge added a second one on 2026-08-29 and it
+        // is 10px *text*, which the fade dropped to 1.8:1. The rule names the graphic now.
+        className="fc-effect-bar relative block flex-none"
         style={{ width: 92, height: 8, background: "var(--term-surface-2)", borderRadius: "var(--term-radius-bar)" }}
       >
         <span

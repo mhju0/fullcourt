@@ -87,8 +87,30 @@ with the reason.
   compliance; the resolution is the two-grade pole rule in `docs/FRONTEND.md` (text-grade
   tokens `--term-red-text`/`--term-blue-text`, the unit slot undimmed, `/shooting`'s noisy
   rows de-emphasized by colour instead of opacity, the front-door ghost numerals painted as
-  CSS counters). All 20 routes re-audit with **zero violations**; the token ratios are pinned
-  by `design-contrast.test.ts`.
+  CSS counters). All 20 routes re-audited with **zero violations** — *on 2026-08-24, at
+  1440×900*. Both halves of that sentence expired; see the two rows below.
+- [x] **axe is a guard now, not a pass.** The 08-24 run was a one-off local script (`axe-core`
+  was **not a dependency**; its report lived in the gitignored `docs/audit/`), so its "zero
+  violations" could not fail when the redesign landed four days later — and it did not.
+  `@axe-core/playwright` is now a devDependency and `e2e/accessibility.spec.ts` walks all 20
+  routes at **two viewports** on the same tag set, so the claim is re-made on every run instead
+  of being remembered. Its companion `e2e/layout-integrity.spec.ts` asserts the document never
+  scrolls sideways — the check that would have caught the second regression below outright.
+  **40 + 40 assertions, all green.**
+- [x] **`scrollable-region-focusable` — was 35 nodes across 12 routes, phone only.** A wrapper
+  that scrolls sideways but takes no focus holds its off-screen columns where a keyboard alone
+  cannot reach them. Two shared components carried all of it: `ui/data-table.tsx` (every table)
+  and `behind-the-data-parts.tsx`'s `Formula` (the `<pre>` on eight of nine method pages). Both
+  take `tabIndex={0}`; the app-wide `:focus-visible` outline already paints the stop, and no
+  `role` goes with it because an unnamed `region` announces less than the table's own semantics.
+- [x] **Two `RankBadge` regressions (PR #69), both fixed.** The rank rider composited to
+  **1.8:1** because it inherited a `.fc-noisy` `opacity: 0.4` written when the effect bar was
+  the only `aria-hidden` span in a cell — the rule now names the bar's own class,
+  `.fc-effect-bar`. Its `sr-only` sibling escaped the table's scroll container and scrolled the
+  whole page sideways (`/season` +57px, `/shooting` +47px at 390px); it now has a positioned
+  ancestor inside the scroller. **The durable lesson for this checklist:**
+  `design-contrast.test.ts` pins **token** ratios and cannot see a **composited** one, and no
+  desktop-only pass can see either defect.
 - [—] **The VoiceOver walkthrough.** Carried as open from 2026-08-15 and never run; **refused
   2026-08-30** by Michael as out of scope for this project. The reason it is a defensible cut
   rather than a gap: the structural work a screen reader depends on is shipped and enforced —
