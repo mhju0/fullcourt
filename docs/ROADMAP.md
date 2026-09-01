@@ -247,8 +247,8 @@ code, so each fix had something to prove itself against.
   suite's 250 tests. Both ran red on the unfixed code first: axe on 13 routes, the scroll
   assertion on exactly the two the audit named, by exactly the amounts it measured.
 
-**Two of the audit's three notes are also closed**, both cheap and both recorded rather than
-scheduled when the audit filed them.
+**All three of the audit's notes are closed too** — four rows, because the third one split into
+a fix and a refusal. Each was taken up the day it was filed rather than scheduled.
 
 - **[x] `pnpm audit --prod` gates CI.** Open since 2026-08-13. `--prod` and not a bare audit:
   the dev tree carries 55 advisories that never reach a user, **38 of them reachable only
@@ -268,13 +268,26 @@ scheduled when the audit filed them.
   Measured on a production build: the chunk is **48,507 bytes raw / 16,325 gzipped**, it is
   absent from the 23 JS files a cold `/games` loads, and it arrives on ⌘K. The palette's own
   e2e — SEARCH button, ⌘K, the dock slot, navigation through it — passes unchanged.
+- **[x] `/api/games/search` is cached, at the policy its own data already implied.** It was the
+  only heavy read route with no `Cache-Control` at all, so nothing absorbed the repeat of a read
+  that costs the same for `page=1` and `page=999999`. It now takes `CACHE.historical`
+  (`s-maxage=3600`), pinned by a test, because the seasons it searches are settled and the
+  in-memory pagination is exactly what makes an edge hit worth having.
+- **[—] `games` gets no index on `season` — measured, and the index would not have helped.** The
+  audit recommended one and the measurement retired the recommendation, so it is recorded rather
+  than deleted. A season-scoped scan of all 51,695 rows costs **8.418 ms with `Buffers: shared
+  hit=1123`** — every page already in cache, no disk read to save. It sits inside a
+  `searchRegularSeasonGames({season})` that runs **113 ms and returns 993 rows**, so the index
+  targets 7% of the fastest case. The *slow* case is the unfiltered search — **38,955 rows,
+  ~600 ms** — and it has no season predicate for an index to use. **An index on the selective
+  filter cannot speed up the query that omits it.** Should this be reopened, the cost is the two
+  `latestFatigueSubquery` joins that dedupe all of `fatigue_scores`, not the scan on `games`; the
+  `latestFatigueLateral` shape beside it is the other half of that trade (`queries.ts:84-108`).
 
-**The third note is deliberately still open**, because it is not an agent's call to make:
-`/api/games/search` reads 39,016 rows to return 20 (it paginates in memory, and is the only
-heavy read route with no `Cache-Control`), and `games` carries no index on `season`. The index
-is a schema change, which means **manual SQL applied by Michael** — never applied by an agent —
-and the pagination fix is a query-shape change on a published route. Latency is fine today; this
-is a note for the season where it is not.
+**Nothing in the audit is left open.** The third note closed as two rows above rather than one:
+the caching half shipped, and the schema half was measured and declined. **Declining is a
+result, not a deferral** — a schema change is still manual SQL applied by Michael and never by an
+agent, which is exactly why the measurement had to come before the handoff rather than after it.
 
 > **One trap worth carrying forward.** Both P0 fixes were correct and axe still reported them,
 > because Turbopack served the *previous* `globals.css` across a dev-server restart; `rm -rf
@@ -468,7 +481,10 @@ slices it in memory, so `page=999999` costs exactly what `page=1` costs (measure
 no `Cache-Control`, so nothing absorbs a repeat. And **`games` has no index on `season`** —
 verified against the live database, which carries `date`, `status`, `home_team_id`,
 `away_team_id`, `external_id` and the primary key — so every season-scoped read scans 51,695
-rows. Latency is fine today; this is a note for the season where it is not.
+rows. Latency is fine today; this is a note for the season where it is not. *(Both were taken up
+the same day. The caching half shipped; the index was measured and declined — that scan costs
+8.418 ms fully cached, and the slow search has no season filter to index. See the checkpoint
+section above before acting on this paragraph.)*
 
 **Architecture held up.** Module isolation is real at the surface layer — nine modules, each
 with its own route, page, `*-server.ts` and facts module — but it stops at the query layer:
