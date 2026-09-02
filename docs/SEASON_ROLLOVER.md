@@ -232,16 +232,18 @@ The tree is deliberately frozen (Next 16.2.12 / React 19.2.4). Note that
 `eslint-config-next` is intentionally left at 16.2.10: it is a lint package, not part of the
 runtime, so it was not moved by the 2026-07-30 security patch.
 
-**Four** security overrides are pinned in `pnpm-workspace.yaml` under `overrides:` (lines 7-14):
+**Five** security overrides are pinned in `pnpm-workspace.yaml` under `overrides:`:
 
 ```
-'@babel/core@<=7.29.0': 7.29.6     ·   postcss@<8.5.18: 8.5.18
-sharp@<0.35.0: '>=0.35.0'          ·   ws@>=8.0.0 <8.21.0: '>=8.21.0'
+'@babel/core@<=7.29.0': 7.29.6     ·   browserslist@<4.28.7: 4.28.7
+postcss@<8.5.23: 8.5.23            ·   sharp@<0.35.0: '>=0.35.0'
+ws@>=8.0.0 <8.21.0: '>=8.21.0'
 ```
 
-Each is a CVE pin, not a preference — `postcss` sits at 8.5.18 rather than the older 8.5.10
-because that only covered an earlier advisory, and `sharp` is pinned for libvips CVEs inherited
-through Next's image optimizer.
+Each is a CVE pin, not a preference — `postcss` sits at 8.5.23 because each earlier pin was
+overtaken by a later advisory (see the comment beside it), `sharp` is pinned for libvips CVEs
+inherited through Next's image optimizer, and `browserslist` was added 2026-09-02 after two
+overnight advisories turned the `pnpm audit --prod` gate red on a docs-only push.
 
 **The migration this section used to warn about is done.** `packageManager` is now
 `pnpm@11.8.0`, which reads `pnpm-workspace.yaml` directly, and `package.json` no longer has a
@@ -252,8 +254,8 @@ the `allowBuilds:` map (lines 19-23).
 
 The standing rule is now just this: **keep the overrides in `pnpm-workspace.yaml`, and re-check
 each pin against its advisory before regenerating `pnpm-lock.yaml`.** After any regeneration,
-confirm the four still resolve — they appear in the lockfile's own `overrides:` block at lines
-7-11. Skip that check and a CVE pin can vanish silently, with no error and no failing test.
+confirm the five still resolve — they appear in the lockfile's own `overrides:` block near the
+top of the file. Skip that check and a CVE pin can vanish silently, with no error and no failing test.
 
 ## 9. Re-key an ESPN-seeded season to canonical `002…` ids (January of that season)
 

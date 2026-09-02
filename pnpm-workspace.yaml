@@ -6,6 +6,10 @@ packages: []
 # motivated them — ws is a CVE pin, not a preference.
 overrides:
   '@babel/core@<=7.29.0': 7.29.6
+  # Two 2026-09-01 advisories against <=4.28.6 (GHSA-c83g-rgw3-j3cx unbounded cache growth,
+  # GHSA-73wf-gq98-2v4g crash via untrusted browserslist-stats.json). Reached only through
+  # next → styled-jsx → @babel/core at build time, but the --prod audit gate is zero-tolerance.
+  browserslist@<4.28.7: 4.28.7
   # 8.5.10 pinned an earlier advisory; 8.5.18 covered the 2026-07 pair (arbitrary file
   # read <=8.5.11, source-map path traversal <=8.5.17). Raised to 8.5.23 on 2026-08-13:
   # the incomplete-fix advisory for GHSA-6g55-p6wh-862q reaches <=8.5.22, so the old pin
