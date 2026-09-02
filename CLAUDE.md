@@ -1,9 +1,7 @@
 # FullCourt
 
-These notes moved here from a local-only `AGENTS.md` on 2026-08-01, and only the durable rules
-came with them. Anything with a real source of truth — versions, counts, model figures, env vars —
-was dropped rather than copied, because that file had drifted from the code on every one of them.
-**Trust the code over this file, and fix this file when they disagree.**
+Versions, counts, model figures, and env vars have a source of truth in the code and are kept
+out of this file. Trust the code over this file, and fix this file when they disagree.
 
 ## What this is
 
@@ -45,7 +43,7 @@ docs, not here:
 New analytics modules are built as **additive, isolated slices** — their own scripts, tables,
 routes and page — so they never destabilize the rest-advantage flow.
 
-## Brand vs. metric (critical)
+## Brand vs. metric
 
 "FullCourt" is the product. "Rest advantage" is a **metric**: `restAdvantage`,
 `restAdvantageDifferential`, `rest_advantage_differential`, `RestAdvCell`,
@@ -54,18 +52,11 @@ while touching branding.
 
 ## Hard bans
 
-- **`/referees` is PUBLISHED as of 2026-08-22 — do not "restore" the in-progress card.** This ban
-  used to read "never publish `/referees`", and it held from 2026-07-30 until Michael published it
-  explicitly. It is inverted here rather than deleted, because the failure mode simply changed
-  direction: an agent that finds the old wording in a stale doc and helpfully puts the
-  `MessageCard` back would be repeating the 2026-08-04 mistake (PRs #9 → #10) in reverse.
-  **Unpublishing is as deliberate an act as publishing was, and neither is a docs-tidying side
-  effect.** What made publication defensible is enforced, not remembered — `referee-legends.test.ts`
-  fails if a named pair ever loses the noise floor printed beside it, if the 689-pair grid climbs
-  above chance, or if the same official stops appearing as both a curse and a charm; and
-  `referee-timing.test.ts` pins the home-tilt band at both ends. Never quote a per-official figure
-  without the count chance produces at the same bar, and never drop the caveat that three officials
-  work every game so each figure is about a third of the effect it names.
+- **`/referees` is published.** Publishing or unpublishing a route is a deliberate product act,
+  never a side effect of a docs change — if a stale doc says otherwise, the doc is wrong. Its
+  guarantees are enforced by `referee-legends.test.ts` and `referee-timing.test.ts`. Quote a
+  per-official figure only beside the count chance produces at the same bar, and keep the caveat
+  that three officials work every game, so each figure is about a third of the effect it names.
 - **Never rename rest-advantage identifiers.** See above.
 - **Never run `drizzle-kit push` or `drizzle-kit generate`.** `schema.ts` intentionally lags the
   live DB — `shot_grid` and `shot_value_surface` are read via raw SQL and are absent from it on
@@ -128,11 +119,6 @@ Skipping `prepare` fails **silently**: `fatigue_model_table.csv` is already on d
   absorbed the old `/about`) is the one deliberately dark surface and is scoped to itself; since
   2026-08-28 the header joins that dark on `/` only, via the scoped `fc-chrome-front` class,
   never a global re-theme.
-
-## Evidence discipline
-
-- This environment has masked numeric digits in Bash stdout before. **Never trust grep/stdout for
-  a number that matters.** Write it to a file and re-read it with the Read tool.
 
 ## Dev environment
 
