@@ -325,6 +325,17 @@ not the total.
 - **`pnpm audit --prod` now runs last.** First meant an overnight CVE against a transitive
   dependency would redden every open PR *and* abort the job before lint, type-check, Vitest or
   the build ran. An advisory is real information but it is not a fact about the diff.
+  **That ordering earned its keep the same day.** The next push to `main` was docs-only
+  (`282e3ba`, CLAUDE.md alone) and CI went red anyway: two high advisories against
+  `browserslist <=4.28.6` (GHSA-c83g-rgw3-j3cx, GHSA-73wf-gq98-2v4g) were published twenty
+  minutes after the previous green run, reached only through `next → styled-jsx →
+  @babel/core → @babel/helper-compilation-targets` at build time. Because the audit ran last,
+  every correctness gate still reported green above it, and the failure read as what it was.
+  **Closed by PR #76** (merged 2026-09-02): a fifth `pnpm-workspace.yaml` override,
+  `browserslist@<4.28.7: 4.28.7`, a lockfile regen that moved only browserslist and its three
+  data dependencies, and [SEASON_ROLLOVER.md §8](SEASON_ROLLOVER.md) corrected from "four"
+  overrides to five — it had also still quoted the pre-2026-08-13 postcss pin. A red `main` on
+  a commit that touched nothing runnable is a reason to read the step list before the logs.
 - **Four were declined, with reasons**: consolidating six duplicated route lists in `e2e/` and
   merging the two guards into one navigation pass are both real, both pre-existing patterns, and
   both scope this PR does not own. Moving the `sr-only` fix into `DataTable`'s wrapper as
