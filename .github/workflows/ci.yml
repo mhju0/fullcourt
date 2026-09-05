@@ -52,6 +52,11 @@ jobs:
       - name: Run schedule contract tests
         run: python -m unittest discover -s scripts/tests -p 'test_*.py' -v
 
+      - name: Run playoff grind contract tests
+        run: |
+          python -m pip install --constraint ml/requirements.txt psycopg2-binary
+          python -m unittest discover -s ml/tests -p 'test_*.py' -v
+
       - name: Build production app
         run: pnpm build
 
@@ -62,7 +67,7 @@ jobs:
       # a build input and dropping it to `pnpm dlx` fails the build (measured 2026-09-01).
       # Production has sat at zero since the 2026-08-13 postcss fix, which is exactly why it is
       # worth gating: at zero, any failure here is a real regression rather than a backlog. The
-      # four CVE pins that keep it there live in `pnpm-workspace.yaml` under `overrides:` — if
+      # CVE pins that keep it there live in `pnpm-workspace.yaml` under `overrides:` — if
       # this step goes red after a lockfile change, check those first (SEASON_ROLLOVER.md §8).
       #
       # It ran first until 2026-09-02. A CVE disclosed overnight against a transitive dependency

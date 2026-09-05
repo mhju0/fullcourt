@@ -1,8 +1,9 @@
 # ML environment — Playoff Predictor series-grain modeling (Phase 3).
 #
 # ISOLATED from the data-pipeline requirements. This file is NOT the root
-# requirements.txt and NOT scripts/requirements.txt (which CI installs); those
-# stay untouched. Install into the project venv:
+# requirements.txt and NOT scripts/requirements.txt (used by the daily workflow).
+# CI uses this file only to constrain psycopg2-binary for ml/tests; it does not
+# install the modeling stack. Install the full environment into the project venv:
 #
 #     ./venv/bin/python -m pip install -r ml/requirements.txt
 #

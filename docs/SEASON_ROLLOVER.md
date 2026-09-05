@@ -123,11 +123,11 @@ not for live scoring). **Prefer a stats-ID source (`stats.nba.com`) for a live s
       a live slate. **[LAUNCH_DAY.md](LAUNCH_DAY.md) is the step-by-step** — what a good run
       looks like line by line, the greens that are not green, and the repair order.
 - [ ] Bump the hardcoded season counts that cannot derive (Section 7).
+- [ ] After the first week, run the data-integrity re-audit (Section 6) to catch date drift early.
 
-**~January of the new season:**
+**January of the new season, monthly thereafter, and once after the regular season ends:**
 - [ ] **Re-key the season's `espn-` ids to canonical `002…` ids** (Section 9). Until this runs,
       Shooting by Rest carries no data for it. Nothing else is affected.
-- [ ] After the first week, run the data-integrity re-audit (Section 6) to catch date drift early.
 
 **Fixed 2026-08-06 — was: `/season` could serve a stale empty rollover for weeks.**
 `getSeasonReport()` (`src/lib/season-report-server.ts`) used to key its cache on
@@ -257,7 +257,7 @@ each pin against its advisory before regenerating `pnpm-lock.yaml`.** After any 
 confirm the five still resolve — they appear in the lockfile's own `overrides:` block near the
 top of the file. Skip that check and a CVE pin can vanish silently, with no error and no failing test.
 
-## 9. Re-key an ESPN-seeded season to canonical `002…` ids (January of that season)
+## 9. Re-key an ESPN-seeded season to canonical `002…` ids (January onward)
 
 A season seeded before it was played carries `espn-<eventId>` external ids, because no reachable
 source has the canonical ones for a schedule that has not happened yet (§4). 2026-27 is the first
@@ -287,9 +287,10 @@ pnpm exec tsx scripts/rekey_season_from_hoopr.ts 2026-27 --apply
 uniqueness guard on `games`. Read the dry run before applying: it prints how many rows matched,
 which ones did not, and aborts outright if any target id already belongs to another row.
 
-**Expect to run it more than once.** Only `final` games can be matched — the key includes both
-final scores — so a January run converts what has been played and leaves the rest. Re-run after
-the season ends to finish the job. A season with mixed `002…` and `espn-` keys is a valid
+**Approved cadence: monthly from January, plus a final pass after the regular season ends.**
+Refresh the cache and review a dry run before every application. Only `final` games can be
+matched — the key includes both final scores — so each pass converts what has been played and
+leaves the rest. A season with mixed `002…` and `espn-` keys is a valid
 intermediate state; nothing breaks, and the shooting pipeline simply sees the games that have
 been converted, which are exactly the ones it can use.
 

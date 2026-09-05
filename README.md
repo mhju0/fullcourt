@@ -247,7 +247,7 @@ flowchart TD
     vercel["Vercel cron — live scores"] --> api
 ```
 
-- **Ingest (Python + TypeScript):** `nba_api` and the NBA CDN feed schedules and scores into Postgres; ESPN supplies overtime periods, tip-off times and neutral-site venues (`stats.nba.com` is unreachable from outside the US). A daily GitHub Actions job **self-gates on the NBA season** — it runs year-round on a fixed schedule but exits cleanly during the offseason (before touching the database or any API), so there is no cron cadence to toggle.
+- **Ingest (Python + TypeScript):** ESPN supplies upcoming schedules, daily scores, overtime periods, tip-off times and neutral-site venues; hoopR supplies historical box scores. The NBA-owned ingest paths remain in the repository but were blocked from both Seoul and CI at the last probe. A daily GitHub Actions job **self-gates on the NBA season**: the gate first tries the NBA CDN schedule and falls back to an October–April calendar window if it fails. Offseason runs exit before database access or score ingestion, with no cron cadence to toggle.
 - **Model (TypeScript):** one fatigue engine (`src/lib/fatigue.ts`) with exactly two production callers, both writers — the nightly refresh (`run-daily.ts`) and the bulk backfill (`backfill_fatigue.ts`). A score is computed once, written to `fatigue_scores`, and every read serves that stored row, so there is no second copy of the math on the read path to drift from.
 - **Store:** Supabase PostgreSQL with Row-Level Security; reads run as type-safe Drizzle queries.
 - **Serve:** Next.js App Router route handlers (Zod-validated, `{ data, error }` envelope) feed a React 19 frontend using SWR and Supabase Realtime.
@@ -333,7 +333,7 @@ so the question is not reopened from scratch.
 
 - **End-to-end type safety** — Drizzle ORM + Zod + strict TypeScript, from DB column to API response.
 - **Single source of truth** — one fatigue engine with two callers, both on the write path: a score is computed once and stored, and every read serves that row. No read-path copy of the model math exists to drift from the write path.
-- **Self-gating pipeline** — the daily GitHub Actions job checks whether the NBA season is active and exits cleanly in the offseason (before touching the DB or any API), so it runs year-round with no manual cron changes.
+- **Self-gating pipeline** — the daily GitHub Actions job checks the NBA CDN schedule, with a calendar fallback, and exits in the offseason before database access or score ingestion. It runs year-round with no manual cron changes.
 - **Query performance** — hot read paths use `LEFT JOIN LATERAL … ORDER BY … LIMIT 1` against a composite index to fetch the latest fatigue row per team, replacing full-table `DISTINCT ON` scans — verified byte-for-byte identical output before/after.
 - **Data integrity** — the 40 seasons audited to date are reconciled against an independent source (Basketball-Reference, 340 monthly pages, cross-checked with ESPN); 2019-20 was admitted after that audit and is queued for the next run to catch timezone date-shift bugs a sampled check would miss; game dates are stored in US/Eastern end-to-end with a self-healing upsert (`date = EXCLUDED.date`), so a re-run repairs any mis-dated row.
 - **Security** — Supabase RLS with explicit Data API grants (anon read, service-role writes); a Content-Security-Policy + `X-Frame-Options: DENY`, and a constant-time comparison on the cron bearer token.
