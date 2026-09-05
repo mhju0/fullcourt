@@ -155,6 +155,14 @@ an idea.
 
 ## COMPLETED RECENTLY
 
+**2026-09-05 — verified maintenance pass.** Concurrent reads now share the same stamped-cache
+load, with retry and stale-completion guards. A four-request cold-cache benchmark against the
+real database reduced full loads from four to one with identical output. Removed forwarding
+wrappers and a redundant source assertion; the assertion-free alignment report now runs only
+via `pnpm audit:alignment`. Browser checks support explicit production/preview URLs and isolated
+ports. The empty PR/issue queue and old branches were audited; already-landed branch history
+was archived before retirement. No stuck product implementation remained to recover.
+
 **2026-09-05 — clean-slate takeover.** Minimal `AGENTS.md` and corrected handoff documents are
 tracked; the Claude inventory remains archival and no harness configuration was migrated.
 Local `main` was fast-forwarded to `f93c9e0`; reviewer-only commit `51588c4` was abandoned.

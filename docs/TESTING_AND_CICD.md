@@ -114,9 +114,17 @@ needed. The tests exercise pure functions and do not call the database-writing e
 
 ## End-to-end tests — Playwright
 
-Config (`playwright.config.ts`): `testDir: ./e2e`, `baseURL: http://localhost:3000`,
-`chromium` only, reporters `list` + `html` (no auto-open). `webServer` runs
-`pnpm dev` (reuses an existing server unless `CI`); in CI `retries: 2` and `forbidOnly`.
+Config (`playwright.config.ts`): `testDir: ./e2e`, default `baseURL: http://localhost:3000`,
+`chromium` only, reporters `list` + `html` (no auto-open). `webServer` starts this checkout's
+`pnpm dev`; an occupied port fails instead of silently testing another checkout. In CI,
+`retries: 2` and `forbidOnly`.
+
+- Another worktree or occupied default port: `PLAYWRIGHT_PORT=3101 pnpm test:e2e`.
+- Existing production build: run `pnpm build` and `pnpm start --port 3100`, then
+  `PLAYWRIGHT_BASE_URL=http://localhost:3100 pnpm test:e2e` in another terminal.
+- An explicit `PLAYWRIGHT_BASE_URL` also supports a reachable deployment preview and disables
+  automatic server startup. The target needs a populated database.
+
 **`workers: 1` everywhere**, not only in CI: the suite drives one dev server, so parallel
 workers race for cold Turbopack compiles rather than for CPU. Measured, at the 18-test suite of
 the time, 16.8s serially against 26s *and* readiness-gate failures on `/schedule` at the default
@@ -127,22 +135,19 @@ asserting, and that dialog was removed on 2026-08-11. `e2e/onboarding.spec.ts` w
 replaced the coupling is a readiness gate where a spec needs one — `navigation.spec.ts` waits for
 a client-owned control before clicking a header link, because a click landing mid-hydration hits a
 node React is replacing and the navigation is dropped.
-Specs (18): `e2e/home.spec.ts` (the front door), `e2e/games.spec.ts`, `e2e/accessibility.spec.ts`,
-`e2e/alignment-audit.spec.ts`, `e2e/alignment-law.spec.ts`, `e2e/analysis.spec.ts`,
+Specs (17): `e2e/home.spec.ts` (the front door), `e2e/games.spec.ts`, `e2e/accessibility.spec.ts`,
+`e2e/alignment-law.spec.ts`, `e2e/analysis.spec.ts`,
 `e2e/availability.spec.ts`, `e2e/behind-the-data.spec.ts`, `e2e/layout-integrity.spec.ts`,
 `e2e/navigation.spec.ts`, `e2e/page-headers.spec.ts`, `e2e/playoffs.spec.ts`, `e2e/pwa.spec.ts`,
 `e2e/referees.spec.ts`, `e2e/schedule-disparity.spec.ts`, `e2e/season.spec.ts`,
-`e2e/shot-quality.spec.ts`, `e2e/shooting.spec.ts` — **250 tests**
-(250 passed / 0 skipped, verified 2026-09-01; several specs generate their cases in a loop, so
-counting `test(` calls in the source undercounts). **The jump does not read as 80 against the
-figure this line used to carry, and the old figure is the reason.** It said 163, verified
-2026-08-27, and the redesign round took the suite to 170 without updating it; 170 + 80 = 250.
-A hand-typed count drifts silently between the run that set it and the next one to notice —
-re-run the suite before trusting this number, and re-type it when you do. The suite has no skipped specs for the first
-time: the five that were held back with `/referees` went live when it was published, and **two of
-them had to be rewritten rather than simply un-skipped** — they asserted copy ("This is style, not
-bias.", "how much more or less often") that had been replaced while they sat skipped. A skipped
-spec is not a passing one, and un-skipping is a rewrite until proven otherwise.
+`e2e/shot-quality.spec.ts`, `e2e/shooting.spec.ts` — **249 checks**.
+Use `pnpm exec playwright test --list` for the current count; several specs generate cases in loops.
+
+`pnpm audit:alignment` separately runs `e2e/alignment-audit.spec.ts` via
+`playwright.alignment.config.ts`, using the same server/URL options. It writes
+`test-results/alignment/report.txt` for before/after spacing comparisons. It makes no assertions
+and is excluded from routine verification; its 57 page/viewport measurements are a diagnostic,
+not an additional passing check.
 
 **`e2e/accessibility.spec.ts` and `e2e/layout-integrity.spec.ts` are the 2026-09-01 audit's two
 guards**, and they exist because of what they replace. There *was* an a11y pass on 2026-08-24 —

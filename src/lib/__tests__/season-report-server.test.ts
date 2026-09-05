@@ -79,10 +79,6 @@ describe("getSeasonReport", () => {
 });
 
 const QUERIES = readFileSync(join(process.cwd(), "src", "lib", "db", "queries.ts"), "utf8");
-const SERVER = readFileSync(
-  join(process.cwd(), "src", "lib", "season-report-server.ts"),
-  "utf8"
-);
 
 /** Source of a top-level function, from its declaration to the closing brace in column 0. */
 function bodyOf(name: string): string {
@@ -110,10 +106,5 @@ describe("getSeasonGamesStamp", () => {
     const body = bodyOf("getSeasonGamesStamp");
     expect(body).not.toContain('eq(games.status, "final")');
     expect(body).toContain("final");
-  });
-
-  it("is the stamp the Season Report reads", () => {
-    expect(SERVER).toContain("getSeasonGamesStamp");
-    expect(SERVER).not.toContain("getCompletedGamesStamp");
   });
 });

@@ -6,6 +6,7 @@ import { searchRegularSeasonGames } from "@/lib/db/queries";
 
 vi.mock("@/lib/db/queries", () => ({
   searchRegularSeasonGames: vi.fn(),
+  getCompletedGamesStamp: vi.fn(),
 }));
 
 const mockSearchGames = vi.mocked(searchRegularSeasonGames);

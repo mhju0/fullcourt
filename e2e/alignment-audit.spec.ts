@@ -3,30 +3,18 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 
 /**
- * The alignment instrument.
+ * On-demand alignment report; this makes no assertions.
  *
- * "Spacing looks awkward" is not a reviewable claim, so this turns it into one: it walks every
- * layout-significant box on every in-scope page and reports where their left and right edges
- * actually land. A page is aligned when its edges cluster on a few shared rails; it looks
- * awkward when an edge sits a handful of pixels off a rail that most of the page uses, which
- * reads as a mistake rather than as a distinction.
+ * Walks layout-significant boxes and reports edges that nearly align with shared rails.
+ * Actual regression checks live in alignment-law.spec.ts and layout-integrity.spec.ts.
  *
- * This is a REPORTER, not an assertion. It writes a file and always passes. The numbers are the
- * output — deliberately written to disk rather than logged, because this environment has masked
- * numeric digits in stdout before (see CLAUDE.md, Evidence discipline) and a spacing audit read
- * off a corrupted stdout is worse than no audit.
- *
- *   pnpm exec playwright test alignment-audit
+ *   pnpm audit:alignment
  *   → test-results/alignment/report.txt
  *
  * Run it once before a spacing change and once after, and diff the two.
  */
 
-/** In scope per the alignment pass: the eight published routes, the reference section, and
- *  `/referees` (mechanically maintained, never published). The front door `/` is deliberately
- *  absent — it is a full-bleed, self-scoped surface that does not play by the shared grid. It
- *  was at `/about` when this list was written; the swap on 2026-08-12 moved it to `/` and the
- *  games board it displaced to `/games`, so the exemption follows the page, not the address. */
+/** Published routes using the shared grid. The full-bleed front door has its own layout. */
 const ROUTES = [
   "/games",
   "/season",
@@ -78,9 +66,7 @@ type Measured = { left: Edge[]; right: Edge[] };
 
 test.describe.configure({ mode: "serial" });
 
-// 51 page loads (17 routes × 3 viewports), the first pass of which pays for a cold Turbopack
-// compile of every route. The default 30s is a per-*test* budget, and this is deliberately one
-// test so the whole sweep lands in one report file.
+// The whole sweep shares one budget and report, including cold route compiles in dev mode.
 test.setTimeout(20 * 60 * 1000);
 
 test("measure every rail on every page", async ({ page }) => {

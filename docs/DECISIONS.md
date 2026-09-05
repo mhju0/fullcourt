@@ -437,12 +437,23 @@ roadmap changes, and PROJECT_HANDOFF.md for material high-level state/architectu
 routine implementation details do not belong in these documents.
 *Evidence:* owner's takeover approval, 2026-09-05.
 
+**Completed 2026-09-05:** pre-existing local skill ports and the reviewer configuration were
+archived outside agent discovery; no replacement harness was installed.
+
 ### D-49 · Existing playoff grind contracts run in CI — **ACTIVE**
 **Approved 2026-09-05.** Retain `ml/tests/test_compute_prior_grind.py` and run it in a separate
 unittest discovery step. The previous assumption that it required the full modeling stack was
 wrong: only `psycopg2-binary` is imported eagerly. CI constrains that dependency using
 `ml/requirements.txt`; the tests use pure functions without database credentials or writes.
 *Evidence:* `.github/workflows/ci.yml`, `ml/tests/test_compute_prior_grind.py`.
+
+### D-50 · Verified agent merges — **ACTIVE**
+**Approved 2026-09-05.** The owner authorized maintenance audits, fixes, branch cleanup and
+verified merges. Vercel deploys `main` directly to production; there is no separate staging gate.
+For this flow, check CI and the PR preview before merging, then verify the production deployment.
+This does not change the manual schema boundary or authorize model coefficient changes.
+*Evidence:* owner's six-part maintenance request; Vercel production and preview deployments
+inspected on 2026-09-05.
 
 ---
 

@@ -60,19 +60,7 @@ jobs:
       - name: Build production app
         run: pnpm build
 
-      # Last on purpose. --prod, not a bare audit: the dev tree carries 55 advisories that never
-      # reach a user, 38 of them reachable only through `shadcn` — an unscoped audit is noise
-      # that teaches everyone to ignore this step. Those 38 are not removable: `shadcn` looks
-      # like a scaffolding CLI but `globals.css` line 2 imports `shadcn/tailwind.css`, so it is
-      # a build input and dropping it to `pnpm dlx` fails the build (measured 2026-09-01).
-      # Production has sat at zero since the 2026-08-13 postcss fix, which is exactly why it is
-      # worth gating: at zero, any failure here is a real regression rather than a backlog. The
-      # CVE pins that keep it there live in `pnpm-workspace.yaml` under `overrides:` — if
-      # this step goes red after a lockfile change, check those first (SEASON_ROLLOVER.md §8).
-      #
-      # It ran first until 2026-09-02. A CVE disclosed overnight against a transitive dependency
-      # would then redden every open PR and abort the job before a single correctness gate ran,
-      # so no change could be verified until an override landed. An advisory is real information
-      # but it is not a fact about the diff, and it must not take down the gates that are.
+      # Run last so new advisories cannot mask correctness failures. Production-only scope
+      # and the override policy are recorded in docs/DECISIONS.md D-47.
       - name: Audit production dependencies
         run: pnpm audit --prod
