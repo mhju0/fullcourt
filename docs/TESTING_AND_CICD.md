@@ -12,6 +12,9 @@ pnpm typecheck    # strict TypeScript without emitting files
 pnpm build        # next build (type-checks as part of the build)
 python3 -m unittest discover -s scripts/tests -p 'test_*.py' -v
                    # import-light Python ingestion contract tests
+python3 -m pip install --constraint ml/requirements.txt psycopg2-binary
+python3 -m unittest discover -s ml/tests -p 'test_*.py' -v
+                   # playoff grind contracts; no database or credentials needed
 ```
 
 > **Build without a database before pushing.** `/` (the front door) is a server component that reads the
@@ -103,11 +106,11 @@ the intentional source-authority split between CDN schedule rows and Stats API r
 It imports only `schedule_upsert_contract.py`, so CI does not need pipeline dependencies or a
 database for this check.
 
-**`ml/tests/test_compute_prior_grind.py` is run by nothing.** `ci.yml` discovers only
-`-s scripts/tests`, so this file executes only when someone runs it by hand. That is a coverage
-gap rather than a decision, and it is not free to close: `ml/` needs its own dependency stack
-(`ml/requirements.txt` — scipy, scikit-learn), which `ci.yml` deliberately does not install,
-so wiring it up means a second discover step **and** a pip install in the CI job.
+`ml/tests/test_compute_prior_grind.py` runs in CI through a separate `-s ml/tests` discovery
+step. Its 14 tests cover series format, sign direction, round-one zeroes and unresolved prior
+series. Only `psycopg2-binary` is needed at import time, pinned by the existing
+`ml/requirements.txt` constraint; neither the modeling stack nor database credentials are
+needed. The tests exercise pure functions and do not call the database-writing entry point.
 
 ## End-to-end tests — Playwright
 
@@ -248,7 +251,7 @@ back on expand.
 
 Pushes to `main` and pull requests run a non-DB quality gate on Node 22 and Python 3.11 with
 the repository's pinned pnpm: frozen install → lint → type-check → Vitest → Python schedule
-contract tests → production build → **`pnpm audit --prod`**. The workflow uses read-only
+contracts → playoff grind contracts → production build → **`pnpm audit --prod`**. The workflow uses read-only
 repository permissions and cancels superseded runs. Playwright remains local because its
 integration-style specs require a populated database.
 
@@ -277,7 +280,7 @@ as a regression.
 Production has sat at **zero** since the 2026-08-13 postcss fix, which is precisely what makes it
 worth gating: at
 zero, a red step is a real regression rather than a backlog to triage. If it goes red after a
-lockfile change, check the four CVE pins in `pnpm-workspace.yaml` under `overrides:` first —
+lockfile change, check the CVE pins in `pnpm-workspace.yaml` under `overrides:` first —
 [SEASON_ROLLOVER.md §8](SEASON_ROLLOVER.md) explains why each exists and how one can vanish
 silently. The gap this closes was found by the 2026-09-01 audit and had been open since
 2026-08-13, whose own finding — a pin that had aged into *holding* a vulnerable version — is the

@@ -66,7 +66,6 @@ ml/shot_value/*.pkl
 # agent / local project memory
 # Agent notes, editor tooling, and installed skills are local-only and may contain
 # machine-specific context. Kept on disk, out of the published index.
-AGENTS.md
 /.agents/
 /.claude/*
 # Exceptions: the shared agent contract. `settings.json` carries the `deny` rules that enforce
