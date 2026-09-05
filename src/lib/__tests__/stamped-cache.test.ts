@@ -9,7 +9,95 @@
 import { describe, expect, it, vi } from "vitest";
 import { createStampedCache } from "@/lib/stamped-cache";
 
+function deferred<T>() {
+  let resolve!: (value: T) => void;
+  let reject!: (reason: Error) => void;
+  const promise = new Promise<T>((res, rej) => {
+    resolve = res;
+    reject = rej;
+  });
+  return { promise, resolve, reject };
+}
+
 describe("createStampedCache", () => {
+  it("shares an in-flight load for concurrent reads of the same key and stamp", async () => {
+    const pending = deferred<object>();
+    const load = vi.fn(() => pending.promise);
+    const read = createStampedCache({ readStamp: async () => "a", load });
+    const reads = Array.from({ length: 4 }, () => read("k"));
+    await Promise.resolve();
+    const calls = load.mock.calls.length;
+    const value = {};
+    pending.resolve(value);
+
+    expect(await Promise.all(reads)).toEqual([value, value, value, value]);
+    expect(calls).toBe(1);
+  });
+
+  it("does not let a late old load replace a newer stamp's value", async () => {
+    const old = deferred<number>();
+    let stamp = "a";
+    const load = vi.fn<() => Promise<number>>()
+      .mockImplementationOnce(() => old.promise)
+      .mockResolvedValue(2);
+    const read = createStampedCache({ readStamp: async () => stamp, load });
+    const first = read("k");
+    await Promise.resolve();
+    stamp = "b";
+    expect(await read("k")).toBe(2);
+    old.resolve(1);
+    expect(await first).toBe(1);
+
+    expect(await read("k")).toBe(2);
+    expect(load).toHaveBeenCalledTimes(2);
+  });
+
+  it("keeps the newer value when an older load rejects", async () => {
+    const old = deferred<number>();
+    let stamp = "a";
+    const load = vi.fn<() => Promise<number>>()
+      .mockImplementationOnce(() => old.promise)
+      .mockResolvedValue(2);
+    const read = createStampedCache({ readStamp: async () => stamp, load });
+    const first = read("k");
+    const rejected = expect(first).rejects.toThrow("old read failed");
+    await Promise.resolve();
+    stamp = "b";
+    expect(await read("k")).toBe(2);
+    old.reject(new Error("old read failed"));
+    await rejected;
+
+    expect(await read("k")).toBe(2);
+    expect(load).toHaveBeenCalledTimes(2);
+  });
+
+  it("shares failures without caching them, so the next read can recover", async () => {
+    const load = vi.fn<() => Promise<number>>()
+      .mockRejectedValueOnce(new Error("temporary failure"))
+      .mockResolvedValue(7);
+    const read = createStampedCache({ readStamp: async () => "a", load });
+    const results = await Promise.allSettled([read("k"), read("k")]);
+
+    expect(results.map((result) => result.status)).toEqual(["rejected", "rejected"]);
+    expect(await read("k")).toBe(7);
+    expect(load).toHaveBeenCalledTimes(2);
+  });
+
+  it("refreshes an existing key at capacity without evicting another key", async () => {
+    const stamps: Record<string, string> = { a: "1", b: "1" };
+    const load = vi.fn(async () => ({}));
+    const read = createStampedCache({
+      readStamp: async (key: string) => stamps[key], load, maxEntries: 2,
+    });
+    await read("a");
+    const second = await read("b");
+    stamps.a = "2";
+    await read("a");
+
+    expect(await read("b")).toBe(second);
+    expect(load).toHaveBeenCalledTimes(3);
+  });
+
   it("loads once while the stamp is unchanged", async () => {
     const load = vi.fn(async (key: string) => ({ key }));
     const read = createStampedCache({ readStamp: async () => "a", load });

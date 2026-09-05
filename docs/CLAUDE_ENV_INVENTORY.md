@@ -5,6 +5,10 @@ around this project consisted of on 2026-09-04. **The classifications and recomm
 the historical sections below are not current instructions.** The owner approved a clean-slate
 takeover on 2026-09-05; nothing here may be migrated without an explicit request.
 
+The pre-existing local skill ports and Codex reviewer configuration were moved outside agent
+discovery on 2026-09-05, into `~/.local/share/fullcourt-handoff-archive/20260905T051330Z/`.
+They remain recoverable archives, not active project configuration.
+
 **Takeover assessment (2026-09-05):**
 
 | Classification | Important entries |

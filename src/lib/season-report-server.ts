@@ -19,8 +19,8 @@ import { teamLabeller } from "@/lib/team-labels";
  * `NBA_SEASONS` plus — through August and September only — the upcoming season. Still closed,
  * and one wider than it was before 2026-08-18.
  */
-const report = createStampedCache<string, SeasonReportResponse>({
-  readStamp: (season) => getSeasonGamesStamp(season),
+export const getSeasonReport = createStampedCache<string, SeasonReportResponse>({
+  readStamp: getSeasonGamesStamp,
   load: async (season) => {
     const [rows, directory] = await Promise.all([
       getSeasonReportRows(season),
@@ -36,8 +36,3 @@ const report = createStampedCache<string, SeasonReportResponse>({
     };
   },
 });
-
-/** Complete server-side Season Report operation, including retrieval. */
-export function getSeasonReport(season: string): Promise<SeasonReportResponse> {
-  return report(season);
-}

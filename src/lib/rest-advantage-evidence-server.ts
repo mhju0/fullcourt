@@ -35,19 +35,12 @@ export type HistoricalGameSearchRequest = HistoricalGameSearchFilters &
  */
 const MAX_CACHED_THRESHOLDS = 16;
 
-const backtest = createStampedCache<number, AnalysisResponse>({
-  readStamp: () => getCompletedGamesStamp(),
+export const getHistoricalBacktest = createStampedCache<number, AnalysisResponse>({
+  readStamp: getCompletedGamesStamp,
   load: async (seasonMinRA) =>
     buildHistoricalBacktest(await getCompletedGamesWithFatigue(), seasonMinRA),
   maxEntries: MAX_CACHED_THRESHOLDS,
 });
-
-/** Complete server-side historical backtest operation, including retrieval. */
-export function getHistoricalBacktest(
-  seasonMinRA: number
-): Promise<AnalysisResponse> {
-  return backtest(seasonMinRA);
-}
 
 /**
  * Complete server-side game-explorer operation, including retrieval.

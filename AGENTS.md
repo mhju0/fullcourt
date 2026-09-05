@@ -4,7 +4,8 @@ Evidence order: source/tests → Git → docs/DECISIONS.md → docs/ROADMAP.md �
 
 - From the repository root: `pnpm install --frozen-lockfile`, `pnpm dev`, `pnpm build`, `pnpm start`. CI uses Node 22 and Python 3.11; pnpm is pinned in package.json. Root dependency additions require `pnpm add -w`.
 - Checks: `pnpm lint`, `pnpm typecheck`, `pnpm test:run`, `pnpm build`, `pnpm audit --prod`. CI also runs Python contracts in scripts/tests and ml/tests; commands and dependencies are in docs/TESTING_AND_CICD.md.
-- `pnpm test:e2e` starts or reuses localhost:3000 through Playwright and needs a populated database. It is not run in CI.
+- `pnpm test:e2e` starts its own server and needs a populated database. Set PLAYWRIGHT_PORT for another port, or PLAYWRIGHT_BASE_URL to test an existing server. It is not run in CI.
+- Merging to `main` deploys directly to Vercel production; verify the PR preview before merging.
 - Environment: .env.example. Database pages need DATABASE_URL and populated data. Python requirements: requirements.txt for local pipelines, scripts/requirements.txt for the daily workflow, ml/requirements.txt for modeling.
 - src/lib/db/schema.ts is deliberately incomplete: shot_grid and shot_value_surface are queried with raw SQL. drizzle/ contains manual SQL records, not an automatic bootstrap. Do not run drizzle-kit push/generate or reconcile the database to the ORM schema. Prepare schema changes as SQL for the owner to apply manually.
 - src/lib/fatigue.ts contains ratified coefficients. Coefficient changes require an explicit owner decision; preserve the evaluation protocol in docs/adr/0006-fatigue-weights-were-fitted-and-the-model-was-not-changed.md, including its amendments.

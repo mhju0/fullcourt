@@ -326,7 +326,7 @@ A gotcha that cost real time: **a Mozilla user-agent trips Akamai** on some of t
 
 | Thing | Config | Schedule |
 | --- | --- | --- |
-| Hosting | Vercel, region **`hnd1`**; intended branch `main` | exact current deployed commit / auto-deploy link not verified in the takeover audit |
+| Hosting | Vercel, region **`hnd1`**; `main` deploys directly to production | Branch previews and production auto-deployment verified in Vercel on 2026-09-05; no separate staging gate |
 | Live-score cron | `vercel.json` → `/api/cron/update` | `0 7 * * *`, daily year-round |
 | Nightly pipeline | `.github/workflows/daily-update.yml` → `scripts/daily_update.py` | `0 21 * * *` |
 | CI | `.github/workflows/ci.yml` | on PR / push |
@@ -360,7 +360,7 @@ All nine product surfaces are published. The validation table above records the 
 handoff's checks; live-slate behavior and real-device observations remain unproven below.
 
 - All **nine product modules**, plus the front door and nine `/behind-the-data` method pages.
-- **912 unit tests** across 67 files; **18 Playwright specs** (~250 tests) including
+- **916 unit tests** across 67 files; **17 Playwright specs** (249 checks) including
   `accessibility.spec.ts` (`@axe-core/playwright`) and `layout-integrity.spec.ts`, each walking
   all 20 routes at two viewports.
 - The **2026-27 season is seeded** — 1,200 games from ESPN on 2026-08-18, keyed `espn-<eventId>`,
@@ -463,6 +463,10 @@ Snapshot independently checked on 2026-09-05, before publishing the takeover wor
 documentation was preserved on `chore/codex-takeover`, based on that commit. The owner chose to
 abandon reviewer-only `51588c4`; its predecessor's roadmap note was already squash-merged as
 PR #77. No product implementation was left behind.
+
+**Maintenance follow-up, 2026-09-05:** PR #78 completed the takeover on `main`. The remaining
+old branches were checked against merged PR heads and current patches, then archived outside
+the repository and retired. No unshipped product implementation or open PR/issue queue remained.
 
 **On git history:** the repository was rewritten with `filter-branch` on 2026-07-27 to strip
 `Co-Authored-By: Claude` trailers. The mechanism remains **conversation-only**; the associated

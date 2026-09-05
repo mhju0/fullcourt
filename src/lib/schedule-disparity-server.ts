@@ -25,14 +25,10 @@ import type { ScheduleDisparityResponse, ScheduleDisparityTeam } from "@/types";
  * Unbounded because the key set is closed — the route validates against
  * `rankableSeasons(browsableSeasons())`, so a reader cannot invent a season.
  */
-const disparity = createStampedCache<string, ScheduleDisparityResponse>({
-  readStamp: (season) => getSeasonGamesStamp(season),
+export const getScheduleDisparity = createStampedCache<string, ScheduleDisparityResponse>({
+  readStamp: getSeasonGamesStamp,
   load: buildScheduleDisparity,
 });
-
-export function getScheduleDisparity(season: string): Promise<ScheduleDisparityResponse> {
-  return disparity(season);
-}
 
 async function buildScheduleDisparity(
   season: string
