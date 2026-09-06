@@ -20,9 +20,9 @@ import {
 } from "@/lib/timezone-null";
 
 export const metadata: Metadata = {
-  title: "Time Zones — Behind the Data",
+  title: "Time Zones · Behind the Data",
   description:
-    "A pre-registered test of whether a long eastward flight on short rest costs anything. It does not. The large east/west split in the raw data is team strength, not jet lag — and this page shows the arithmetic that separates them.",
+    "A pre-registered test of travel direction and short rest found no added predictive value after controlling for team strength and other schedule factors.",
 };
 
 const data = timeZoneData as TimeZoneNull;
@@ -42,20 +42,20 @@ export default function TimeZonesMethodPage() {
     <BehindTheDataShell
       eyebrow="BEHIND THE DATA · TIME ZONES"
       title="Time zones"
-      description="Whether a long eastward flight on short rest costs anything. Pre-registered, measured once, answered no — while the raw numbers say otherwise, loudly."
+      description="Does eastward travel on short rest help explain game outcomes? The pre-registered test found no improvement in held-out predictions."
     >
       <Section label="WHAT WAS ASKED" descriptor="A NARROWER QUESTION THAN THE MODEL HAD TESTED">
         <Prose>
           The fatigue model already carries time-zone travel, and the weight-fitting work
           recorded in <strong>ADR 0006</strong> measured it as a{" "}
-          <em>main effect across every game</em> and found it carried nothing.
-          That is not the claim sleep research actually makes. The claim is narrower: a long{" "}
+          <em>main effect across every game</em> and found no added predictive value.
+          This test asks a narrower question: a long{" "}
           <strong>eastward</strong> shift arriving on <strong>short rest</strong>, where the body
-          clock has had no chance to re-entrain before tip-off.
+          clock may have less time to adjust before tip-off.
         </Prose>
         <Prose>
-          So it was asked again, properly scoped, and written down before anything was run.
-          Four candidate terms, one of them named in advance as the term that would decide it.
+          The protocol specified four candidate terms before the analysis ran, including one
+          primary term for evaluating the hypothesis.
         </Prose>
         <ValueGrid
           values={[
@@ -68,17 +68,17 @@ export default function TimeZonesMethodPage() {
           Direction was not recoverable from the model&rsquo;s features before this. The stored
           zone count is an absolute value and the jet-lag term multiplies direction by a
           re-entrainment fraction, so &ldquo;east&rdquo; and &ldquo;west&rdquo; had to be added as
-          a signed field first. It is <strong>reported and never scored</strong> — no term reads
+          a signed field first. It is <strong>reported and never scored</strong>: no term reads
           it, and no fatigue score anywhere on this site changed because it exists.
         </Note>
       </Section>
 
       <Section label="THE RAW SPLIT" descriptor="READ IT FOR THE DENOMINATORS, NOT THE EFFECT">
         <Prose>
-          With no controls at all, the split looks enormous. A visitor who flew{" "}
+          Before controlling for team strength, a visitor with an inferred clock shift of{" "}
           {protocol.thresholdHours} hours or more <strong>west</strong> loses{" "}
-          {west.homeWinPct.toFixed(2)}% of the time; one who flew the same distance{" "}
-          <strong>east</strong> loses only {east.homeWinPct.toFixed(2)}% — a{" "}
+          {west.homeWinPct.toFixed(2)}% of the time; one with that shift{" "}
+          <strong>east</strong> loses {east.homeWinPct.toFixed(2)}%, a{" "}
           {rawSwingPoints(data).toFixed(1)}-point swing around a{" "}
           {protocol.baselineHomeWinPct.toFixed(2)}% baseline.
         </Prose>
@@ -96,16 +96,17 @@ no long shift either way   ${neither.games.toLocaleString().padStart(6)}       $
           Before reading that as jet lag, notice that it points the <strong>wrong way</strong>.
           Circadian disruption is supposed to punish <em>eastward</em> travel hardest, and here the
           eastward visitors do <em>better</em> than everyone else while the westward ones do worse.
-          A finding that contradicts its own mechanism is a warning, not a discovery.
+          This is a reason to examine which teams make each kind of trip before attributing
+          the difference to jet lag.
         </Note>
       </Section>
 
-      <Section label="WHY THE SPLIT IS NOT JET LAG" descriptor="GEOGRAPHY DECIDES WHO FLIES WHICH WAY">
+      <Section label="TEAM STRENGTH AND GEOGRAPHY" descriptor="DIFFERENT TEAMS IN EACH GROUP">
         <Prose>
           A {protocol.thresholdHours}-hour <strong>westward</strong> trip is, almost by definition,
           an Eastern-conference team visiting the Pacific coast. A {protocol.thresholdHours}-hour{" "}
           <strong>eastward</strong> trip is the reverse. The two cells are not two treatments of a
-          comparable population — they are two different sets of teams, and the home sides differ
+          comparable population. They are different sets of teams, and the home sides differ
           in quality accordingly.
         </Prose>
         <Formula>
@@ -118,21 +119,21 @@ no long shift   ${signedNumber(neither.strengthEdgeToHome ?? 0, 4)}      home wi
         </Formula>
         <Prose>
           The strength edge <strong>flips sign with the direction of travel</strong>, and the win
-          rate follows it. That is the entire {rawSwingPoints(data).toFixed(1)}-point swing. Nothing
-          is left over for the body clock to explain.
+          rate follows it. Team strength is therefore a confound in the raw{" "}
+          {rawSwingPoints(data).toFixed(1)}-point swing. The held-out test below asks whether
+          direction adds predictive information after those differences are accounted for.
         </Prose>
         <Note>
-          Altitude was the confound to suspect, and it is not this one. Denver and Utah are
-          Mountain time — about two hours from Eastern — so a {protocol.thresholdHours}-hour
+          Denver and Utah are in Mountain time, about two hours from Eastern, so a {protocol.thresholdHours}-hour
           threshold excludes them by construction. Overlap between these terms and the model&rsquo;s
           visiting-altitude term is {primary.alsoAltitudePct.toFixed(1)}%.
         </Note>
       </Section>
 
-      <Section label="THE TEST THAT CARRIES THE VERDICT" descriptor="SIXTEEN SEASONS IT HAD NOT SEEN">
+      <Section label="HELD-OUT EVALUATION" descriptor="SIXTEEN SEASONS OUTSIDE TRAINING">
         <Prose>
-          The verdict is not the raw split with a control bolted on. It is whether adding these
-          terms helps predict games the fit never saw, season by season, on the same walk-forward
+          The test asks whether adding these terms improves predictions for held-out games,
+          season by season, using the same walk-forward
           protocol ADR 0006 used.
         </Prose>
         <Formula>
@@ -143,14 +144,14 @@ strength only                    ${logLoss.strengthOnly.toFixed(5)}
 + east/west × short rest         ${logLoss.withCandidates.toFixed(5)}     ${signedNumber(logLoss.candidatesWorth, 5)}`}
         </Formula>
         <Prose>
-          All four candidates together are worth{" "}
-          <strong>{signedNumber(logLoss.candidatesWorth, 5)}</strong> — not a small
-          gain, a small <em>loss</em>. And the deciding term did not merely fail to help: the
+          Adding all four candidates changes held-out log loss by{" "}
+          <strong>{signedNumber(logLoss.candidatesWorth, 5)}</strong>, a small deterioration.
+          The
           sign-clamped fit pinned <code>{data.primaryTerm}</code> at zero in{" "}
           <strong>
             {protocol.folds - primary.foldsNonZero} of {protocol.folds}
           </strong>{" "}
-          folds, because the unconstrained fit wanted to push it the other way — toward an
+          folds, because the unconstrained estimate pointed toward an
           eastward flight on short rest being an <em>advantage</em>.
         </Prose>
         <ValueGrid
@@ -162,10 +163,9 @@ strength only                    ${logLoss.strengthOnly.toFixed(5)}
         />
       </Section>
 
-      <Section label="THE TRAP INSIDE THE RESULT" descriptor="A STABLE WEIGHT IS NOT A CONTRIBUTION">
+      <Section label="OVERLAP WITH EXISTING TERMS" descriptor="STABILITY AND ADDED VALUE">
         <Prose>
-          One candidate does look alive. <code>{westShortTerm.term}</code> — a long westward flight
-          on short rest — holds a weight of {westShortTerm.meanWeight.toFixed(4)} in{" "}
+          The westward short-rest term, <code>{westShortTerm.term}</code>, has a mean weight of {westShortTerm.meanWeight.toFixed(4)} in{" "}
           {westShortTerm.foldsNonZero} of {protocol.folds} folds, with a coefficient of variation
           of {westShortTerm.cv?.toFixed(2)}. By the stability standard ADR 0006 set, that is a
           stable term.
@@ -180,24 +180,22 @@ strength only                    ${logLoss.strengthOnly.toFixed(5)}
                     ${westShortTerm.alsoAltitudePct.toFixed(1)}% are also visiting altitude`}
         </Formula>
         <Prose>
-          The term is mostly a second name for the back-to-back the model already carries. It
-          holds a steady weight because it is describing something real — just not something new.
-          This is the identical misreading ADR 0006 had to correct itself for, which is why the
-          test here is always &ldquo;what does it add when added alone?&rdquo; and never &ldquo;is
-          its weight stable?&rdquo;
+          Most of these games are already covered by the back-to-back term. A stable coefficient
+          does not establish an independent contribution. The single-term comparison measures
+          what the candidate adds beyond the existing baseline, as required by ADR 0006.
         </Prose>
       </Section>
 
       <Section label="WHAT THIS DOES NOT SAY" descriptor="INCLUDING ABOUT THE MODEL THAT SHIPPED">
         <Prose>
-          No constant in <code>fatigue.ts</code> moved because of this. That is worth stating
-          precisely, because it would be easy to read a null as a confirmation.
+          This test did not change any constant in <code>fatigue.ts</code>. It also did not
+          validate the existing directional multipliers.
         </Prose>
         <Formula>
           {`shipped today:   eastward multiplier   ${FATIGUE_CONSTANTS.eastwardMultiplier}
                  westward multiplier   ${FATIGUE_CONSTANTS.westwardMultiplier}
 
-this test found: no directional effect at all`}
+this test found: no added predictive value from direction`}
         </Formula>
         <Prose>
           The model treats an eastward shift as{" "}
@@ -205,27 +203,24 @@ this test found: no directional effect at all`}
             FATIGUE_CONSTANTS.eastwardMultiplier / FATIGUE_CONSTANTS.westwardMultiplier
           ).toFixed(2)}
           × as costly as a westward one. This measurement is <strong>not evidence that asymmetry
-          is right.</strong> It found no directional effect for an asymmetry to be about. The
-          constants are ratified and stay as they are; what changed is that the site now says
-          plainly that they are unverified rather than measured.
+          is right.</strong> The test found no added predictive value from the directional terms.
+          The ratified constants remain in the model, but this analysis does not verify them.
         </Prose>
         <Note>
-          A null is published here for the same reason every other null on this site is: the
-          question was asked in writing before the answer was known, and the answer ships either
-          way. A site that only published the questions that worked would not be reporting a
-          model — it would be reporting a search.
+          The question and evaluation rule were written down before the analysis ran. The result
+          is published even though the tested terms did not improve predictions.
         </Note>
       </Section>
 
-      <Section label="WHAT THIS CANNOT SEE" descriptor="THE HONEST LIMITS">
+      <Section label="WHAT THIS CANNOT SEE" descriptor="LIMITATIONS">
         <LimitList
           items={[
-            `It cannot separate direction from geography beyond what strength controls. The control here is a team-strength term, not a matched design — a ${protocol.thresholdHours}-hour eastward trip will always mostly be a Western team, and no amount of held-out testing changes who plays whom.`,
+            `Direction remains tied to geography. The analysis controls for team strength but does not match otherwise identical trips: a ${protocol.thresholdHours}-hour eastward trip usually involves a Western team.`,
             `It cannot see rest and direction as anything but a schedule fact. Nothing here observes a flight, a departure time, a hotel, or a minute of anyone's sleep. "Short rest" is a gap between dates on a calendar.`,
-            "It cannot rule out an effect smaller than the model can measure. A null on 16 held-out seasons means the effect is not large enough to help predict a game — not that it is biologically zero.",
+            "It cannot rule out smaller effects. The test found no predictive improvement across 16 held-out seasons; that does not establish that the biological effect is zero.",
             "It cannot speak to the playoffs. The protocol is regular-season walk-forward, and a postseason series has travel patterns and rest gaps this population does not contain.",
-            `It cannot test altitude and time zones together, which is the combination anyone would most want. The ${protocol.thresholdHours}-hour threshold excludes Denver and Utah by construction, so the overlap is ${primary.alsoAltitudePct.toFixed(1)}% and there is no sample to ask the joint question from.`,
-            "It cannot be re-run cheaply against a new idea without becoming a search. The corpus makes one more question nearly free, which is exactly why the next one has to be written down before it is asked.",
+            `It cannot test the joint effect of altitude and these long shifts. The ${protocol.thresholdHours}-hour threshold excludes Denver and Utah, and overlap with the altitude term is ${primary.alsoAltitudePct.toFixed(1)}%.`,
+            "Testing additional ideas on the same corpus increases the risk of selecting a chance result. New questions need a declared evaluation protocol.",
           ]}
         />
       </Section>

@@ -30,7 +30,7 @@ function NoRestSection() {
   const { laterGames, laterEqual, game1Games, game1Equal } = PLAYOFF_EQUAL_REST
   return (
     <section className="flex flex-col gap-3">
-      <SectionHeading>THE POSTSEASON HAS NO REST</SectionHeading>
+      <SectionHeading>REST BETWEEN SERIES</SectionHeading>
       {/* The figure and its explanation sit side by side rather than stacked.
           Stacked, the card ran the full 1040 column while its prose was capped at the 42rem
           measure, so the right ~336px of it was empty on every card — the number was the
@@ -55,9 +55,9 @@ function NoRestSection() {
           />
         </div>
         <p className="m-0" style={BODY}>
-          <span style={LEAD_IN}>Every single one.</span> Once a series starts the two teams share a
-          schedule, so neither can be more rested. Playoff rest has exactly one place to exist:
-          the wait before Game 1 — and only {game1Equal} of {game1Games} Game 1s were even.
+          <span style={LEAD_IN}>Both teams share the same dates within a series.</span> Calendar
+          rest can differ before Game 1, when {game1Equal} of {game1Games} games had equal rest.
+          Equal days off do not imply equal minutes played, travel, or recovery.
         </p>
       </div>
     </section>
@@ -70,8 +70,8 @@ function GrindTaxSection() {
     <section className="flex flex-col gap-3">
       <SectionHeading>THE GRIND TAX</SectionHeading>
       <p style={BODY}>
-        <span style={LEAD_IN}>Beating a team that just survived a long series is easier.</span> Going
-        the distance to win one round leaves you worse off in the next.
+        <span style={LEAD_IN}>Teams won more often against opponents coming off a long series.</span>{" "}
+        The comparison below is historical; it does not separate fatigue from team quality.
       </p>
       <PlayoffGrindGap />
     </section>

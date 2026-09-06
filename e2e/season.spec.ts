@@ -12,7 +12,7 @@ test.describe("Season Report", () => {
     // Matches all four settled states: ABOVE/BELOW THE NORM, IN LINE WITH THE ALL-SEASON
     // NORM (both carry "NORM — " with figures after it), and TOO EARLY TO CALL.
     await expect(
-      page.getByText(/NORM — |TOO EARLY TO CALL/).first()
+      page.getByText(/NORM · |TOO EARLY TO CALL/).first()
     ).toBeVisible({ timeout: 15_000 });
     await expect(page.getByText("ALL-SEASON NORM UNAVAILABLE")).toHaveCount(0);
   });
@@ -88,7 +88,7 @@ test.describe("Season Report", () => {
     // Without this line, four-tenths of a win reads as "rest is nothing".
     const scale = page.getByTestId("rest-scale-line");
     await expect(scale).toContainText("of home court");
-    await expect(scale).toContainText("far smaller");
+    await expect(scale).toContainText("group comparisons, not causal estimates");
 
     // The swing column's arms differ by venue, so its zero line is not zero.
     const baseline = page.getByTestId("swing-baseline-note");

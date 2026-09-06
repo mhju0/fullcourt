@@ -22,7 +22,7 @@ test.describe("Playoff Rest page", () => {
 
     // Both sections are server-rendered constants, so they are present without any DB round
     // trip. This is what makes the page useful when the API is slow or empty.
-    await expect(page.getByText("THE POSTSEASON HAS NO REST")).toBeVisible();
+    await expect(page.getByText("REST BETWEEN SERIES")).toBeVisible();
     await expect(page.getByText("THE GRIND TAX")).toBeVisible();
 
     // The argument itself moved to Behind the Data on 2026-08-01; the product page carries the

@@ -20,7 +20,7 @@ export default function AvailabilityPage() {
       <PageHeader
         eyebrow="ROTATION ABSENCE · POINTS OF MARGIN"
         title="Availability Cost"
-        description="Losing your best player costs about what playing at home is worth. Measured in points of final margin, on the same scale as the schedule effects the rest of this site is built on."
+        description="Compare the estimated association between missing rotation players and final margin with home-court and schedule terms, using completed games."
       />
       <MethodLink surfaceHref="/availability" />
       <AvailabilityContent />

@@ -24,7 +24,7 @@ import { DataTable } from "@/components/ui/data-table";
 import { signedNumber } from "@/lib/signed-number";
 
 export const metadata: Metadata = {
-  title: "Rest Advantage — Behind the Data",
+  title: "Rest Advantage · Behind the Data",
   description:
     "The fatigue score in full: its eight terms, every constant, and single-term ablations showing which of them actually carry the result.",
 };
@@ -330,14 +330,13 @@ export default function RestAdvantageMethodPage() {
     <BehindTheDataShell
       eyebrow="BEHIND THE DATA · REST ADVANTAGE"
       title="Rest advantage"
-      description="Every number on the Games and Model Results pages comes out of one function. This states what it does, what each piece of it is worth, and what it cannot see."
+      description="The fatigue score: inputs, constants, historical comparisons, and limitations."
     >
       <Section label="THE SCORE" descriptor="ONE FUNCTION, EIGHT TERMS">
         <Prose>
-          Each team carries a fatigue score for each game. It is not a rating of the team — it
-          is a reading of what the schedule did to them before tip-off. Higher is more tired.
-          The difference between the two teams&rsquo; scores is the <strong>rest advantage</strong>,
-          and that single number drives every claim on the site.
+          Each team receives a fatigue score based on its schedule before tip-off. A higher
+          score represents more estimated fatigue. The difference between the two teams&rsquo;
+          scores is the <strong>rest advantage</strong>, used to group games in the backtest.
         </Prose>
         <Formula>
           {`baseLoad   = recentWorkload + travel + roadSegment
@@ -345,7 +344,7 @@ score      = max(0, baseLoad × backToBack × altitude × density + freshness + 
 restEdge   = awayScore − homeScore     (positive ⇒ the home side is fresher)`}
         </Formula>
         <Note>
-          A difference under 0.5 is treated as no gap at all — {NEUTRAL_GAMES} games, about one
+          A difference under 0.5 is treated as neutral: {NEUTRAL_GAMES} games, about one
           in six, that carry no rest claim in either direction.
         </Note>
       </Section>
@@ -356,52 +355,47 @@ restEdge   = awayScore − homeScore     (positive ⇒ the home side is fresher)
           has travelled by definition, so the fresher side is the home side in{" "}
           {RESTED_AT_HOME.games.toLocaleString()} of the{" "}
           {REST_SPLIT_SAMPLE.decided.toLocaleString()} games with a measurable gap. Two of the
-          eight terms above — body clock and altitude — can only ever charge the visitor, and
+          eight terms, body clock and visiting altitude, are tied to playing away from home, and
           the schedule pushes the same way on its own: the visiting side is playing a second
           night in a row roughly twice as often as the home side, and nothing in that term knows
           which team is at home.
         </Prose>
         <Prose>
-          The obvious objection is that this only holds when the home team slept in its own bed.
-          It does not. In about half the schedule the home team had travelled in too, and there
-          the average rest edge falls by three quarters — while the home team still won 59.7% of
+          In about half the schedule the home team had travelled in too. In those games,
+          the average rest edge falls by three quarters, while the home team still won 59.7% of
           those games, 60.0% of the ones where it had flown farther than its opponent, and 58.0%
-          of the ones where it ended a road trip on a back-to-back. Playing at home is worth
-          about the same whatever the home team did to get there.
+          of the ones where it ended a road trip on a back-to-back. These groups all retain
+          a substantial home win rate.
         </Prose>
         <Note>
           So a rest advantage cannot be read on its own. It has to be read against the venue it
           arrived with. Home teams win {REST_SPLIT_BASELINE.homeWinPct}% of all{" "}
           {REST_SPLIT_BASELINE.games.toLocaleString()} games and road teams{" "}
-          {REST_SPLIT_BASELINE.roadWinPct}%. Against those, a rest advantage is worth{" "}
+          {REST_SPLIT_BASELINE.roadWinPct}%. The corresponding rested groups sit{" "}
           {signedNumber(liftOverBaseline(RESTED_AT_HOME.winPct, REST_SPLIT_BASELINE.homeWinPct))}{" "}
-          points to a rested home team and{" "}
+          percentage points above baseline at home and{" "}
           {signedNumber(liftOverBaseline(RESTED_ON_ROAD.winPct, REST_SPLIT_BASELINE.roadWinPct))}{" "}
-          to a rested road team. It is a small effect on both sides, and on neither does it come
+          on the road. These associations are small on both sides, and neither comes
           near the twenty points between the two baselines.
         </Note>
 
         <RestRowTable />
 
         <Note>
-          The published rate is the home row. Not because the road row gains less — measured
-          against its own baseline it gains slightly more — but because every game in the home
-          row is also a home game, so one number carries both facts at once, and because a
-          rested road team at {RESTED_ON_ROAD.winPct}% is still losing more often than it wins.
-          A gain over a baseline is a measurement; a pick has to clear 50%.
+          The headline counts the rested home team. Rested visitors are reported separately:
+          their pooled win rate is {RESTED_ON_ROAD.winPct}%, below 50% despite exceeding the
+          road baseline. The headline therefore includes home-court advantage as well as rest.
         </Note>
         <RoadLadderTable />
         <Note>
           The last two rungs are {RESTED_ON_ROAD.ladder[4].games} and{" "}
           {RESTED_ON_ROAD.ladder[5].games} games in {REST_SPLIT_SAMPLE.seasons} seasons. Read
-          them as the schedule running out of examples, not as a signal turning on. The gaps that
-          large happen a few dozen times a decade.
+          those rates with caution because very large gaps have few examples.
         </Note>
 
         <Prose>
-          That ladder pools forty-one seasons, and home court has not held still across them —
-          so it is worth asking whether the road row looks the same now as it did in 1987. It
-          does not, and the reason matters more than the movement.
+          The pooled ladder spans changes in home-court advantage. The era table compares
+          rested visitors with the road baseline from the same period.
         </Prose>
 
         <RoadEraTable />
@@ -412,20 +406,16 @@ restEdge   = awayScore − homeScore     (positive ⇒ the home side is fresher)
           of it is not: the road baseline rose from {RESTED_ON_ROAD_BY_ERA[0].roadBaselinePct}%
           to {RESTED_ON_ROAD_BY_ERA[2].roadBaselinePct}% over the same span, because home-court
           advantage has weakened league-wide. What is left after subtracting that is the last
-          column, and it has moved much less —{" "}
+          column, and it has moved much less:{" "}
           {signedNumber(RESTED_ON_ROAD_BY_ERA[0].liftPp)} to{" "}
           {signedNumber(RESTED_ON_ROAD_BY_ERA[2].liftPp)} points.
         </Note>
         <Note>
-          This is also why two sentences that used to sit on this page are gone. One said rest
-          never outweighs home court at any magnitude the schedule produces; the other said no
-          threshold rescues a rested road team. Both were absolutes drawn from the pooled rate,
-          and in the last ten seasons a gap of 4 or more puts the road row above even —{" "}
+          In the last ten seasons, rested visitors with a gap of 4 or more won{" "}
           {RESTED_ON_ROAD_BY_ERA[1].ladder[2].winPct}% across{" "}
-          {RESTED_ON_ROAD_BY_ERA[1].ladder[2].games} games. That is a real sample, not a tail.
-          It does not make a rested road team a pick, because it still needs a gap the schedule
-          produces rarely and it is measured after the fact — but the absolutes were not true as
-          written, so they are not published.
+          {RESTED_ON_ROAD_BY_ERA[1].ladder[2].games} games. That subgroup exceeds 50%, so the
+          pooled road rate cannot support a claim that rested visitors always lose more often.
+          This retrospective threshold comparison has not established a new prediction rule.
         </Note>
 
         <Note>
@@ -435,8 +425,8 @@ restEdge   = awayScore − homeScore     (positive ⇒ the home side is fresher)
           {HOME_BAR_COUNTERFACTUAL.accuracyPct}%, which is below simply picking the home team in
           every one of the {REST_SPLIT_BASELINE.games.toLocaleString()}. It also makes{" "}
           {HOME_BAR_COUNTERFACTUAL.roadCalls.toLocaleString()} road picks and loses{" "}
-          {HOME_BAR_COUNTERFACTUAL.roadLosses.toLocaleString()} of them. Adding a constant to
-          both sides does not create information.
+          {HOME_BAR_COUNTERFACTUAL.roadLosses.toLocaleString()} of them. This tested rule did
+          not outperform the all-home baseline.
         </Note>
       </Section>
 
@@ -450,8 +440,8 @@ restEdge   = awayScore − homeScore     (positive ⇒ the home side is fresher)
               <strong>Recent workload.</strong> Every game in the last{" "}
               {K.decayLookbackDays}-day window adds load that decays exponentially, so last
               night matters far more than last week. Each game&rsquo;s cost is scaled down when it was
-              a blowout — a 30-point rout rests the starters, and overtime used to be the only
-              way the model knew a game was hard.
+              a blowout, using final margin as a proxy for reduced workload. The score does
+              not observe whether individual starters actually rested.
             </Prose>
             <div className="mt-2">
               <Formula>
@@ -464,9 +454,9 @@ blowout   = 1 − ${K.blowoutMaxDiscount} × clamp((|margin| − ${K.blowoutFloo
           <div>
             <Prose>
               <strong>Travel.</strong> Great-circle miles between consecutive venues over a{" "}
-              {K.travelLookbackDays}-day window, log-scaled so the tenth thousand miles hurts
-              less than the first. A team only flies home when its <em>next</em> game is at home —
-              no phantom round trips between two road games.
+              {K.travelLookbackDays}-day window, log-scaled so additional miles add progressively
+              less to the score. The itinerary assumes a trip home only when the <em>next</em>{" "}
+              game is at home.
             </Prose>
             <div className="mt-2">
               <Formula>{`travel = ${K.travelScale} × ln(1 + miles / ${K.travelReferenceMiles})`}</Formula>
@@ -477,10 +467,9 @@ blowout   = 1 − ${K.blowoutMaxDiscount} × clamp((|margin| − ${K.blowoutFloo
             <Prose>
               <strong>Body clock.</strong> A charge for playing at least a{" "}
               {K.displacementMinHours}-hour clock shift from home, resolved from each
-              venue&rsquo;s real UTC offset rather than from raw longitude. Travelling east
-              advances the body clock, which is harder than delaying it, so east and west are
-              not charged equally. The charge then decays as the team re-entrains, at roughly a
-              day per zone crossed — night six of an east-coast trip is not night one.
+              venue&rsquo;s UTC offset. The model assigns a larger multiplier eastward and
+              reduces the charge with nights in the new zone. These are retained assumptions;
+              the Time Zones analysis did not validate their predictive value.
             </Prose>
             <div className="mt-2">
               <Formula>
@@ -532,7 +521,7 @@ direction    = ${K.eastwardMultiplier} eastward, ${K.westwardMultiplier} westwar
         descriptor={`MEASURED ${ABLATIONS_MEASURED_ON}`}
       >
         <Prose>
-          Removing a term no longer changes <em>which</em> team gets picked — a called game is
+          Removing a term does not change <em>which</em> team gets picked: a called game is
           always a pick of the home side. What it changes is which games get called at all. So
           each term was neutralised in turn, the call re-derived, and the published win rate
           re-measured against a baseline of{" "}
@@ -542,11 +531,10 @@ direction    = ${K.eastwardMultiplier} eastward, ${K.westwardMultiplier} westwar
           .
         </Prose>
         <Prose>
-          <strong>Every term finds winners.</strong> They differ in how they do it. Back-to-backs
-          and recent workload are the <em>sharpest</em> — the games only they flag win at over
-          63%. Travel is the <em>widest</em>: it alone accounts for{" "}
+          Games selected by back-to-back and recent-workload terms but lost when each is
+          removed have win rates above 63%. Removing travel drops{" "}
           {ABLATIONS[0].found.toLocaleString()}{" "}
-          of the model&rsquo;s calls, more than twice any other term, at{" "}
+          of the model&rsquo;s calls, more than twice any other term. Those games won at{" "}
           {ABLATIONS[0].foundWinPct}%.
         </Prose>
         <DataTable
@@ -587,49 +575,42 @@ direction    = ${K.eastwardMultiplier} eastward, ${K.westwardMultiplier} westwar
           ]}
         />
         <Note>
-          The last column is a trap, and it is shown because hiding it would be worse. Travel
-          and road segment are the two terms whose removal <em>raises</em>{" "}
-          the published rate, which reads like an argument for deleting them. It is not. Both find winners at a rate
-          below the model&rsquo;s own {ABLATION_BASELINE.winPct}% average, so including them
-          pulls the average down while pushing the number of games won up. Travel gives the
-          model {ABLATIONS[0].edgeLost} more correct calls than a coin flip — the largest
-          contribution of any single term — and deleting it would buy a prettier headline by
-          giving up {ABLATIONS[0].found.toLocaleString()} winning predictions. A batting average
-          rises when you stop taking the harder at-bats.
+          Removing travel or road segment <em>raises</em>{" "}the published rate while reducing
+          coverage. The games they add win less often than the model&rsquo;s overall{" "}
+          {ABLATION_BASELINE.winPct}% rate. Removing travel reduces net correct calls above
+          a coin flip by {ABLATIONS[0].edgeLost} and drops{" "}
+          {ABLATIONS[0].found.toLocaleString()} called games. Those are all dropped calls,
+          including losses, not a count of winning predictions.
         </Note>
         <Note>
           The whole model sits at {ABLATION_BASELINE.edge.toLocaleString()} correct calls above a
           coin flip across {ABLATION_BASELINE.called.toLocaleString()} games. Freshness is the
-          only term that gives back more than it brings, and it does so by ten calls. The others
-          are kept because they are physically real, correctly computed <em>and</em> additive.
+          only term whose removal improves this net count, by ten calls. The ratified terms
+          remain in place under the evaluation protocol in ADR 0006.
           Terms interact multiplicatively, so these figures do not sum to the total.
         </Note>
         <Note>
           The counts in this section are stated against a coin flip rather than against the{" "}
           {REST_SPLIT_BASELINE.homeWinPct}% home baseline used everywhere else on the site. That
-          is deliberate: this table compares the terms with <em>each other</em>, and a common
-          reference that both share cancels out of that comparison. It is not the model&rsquo;s
-          edge over home court — that figure is{" "}
+          measures accuracy and coverage together, but it gives credit for home-court
+          advantage too. It does not measure the model&rsquo;s improvement over home court;
+          the rested home group sits{" "}
           {signedNumber(liftOverBaseline(RESTED_AT_HOME.winPct, REST_SPLIT_BASELINE.homeWinPct))}{" "}
-          points, and it is the one the Model Results page publishes.
+          points above that baseline, as shown on Model Results.
         </Note>
         <Note>
           A separate out-of-sample fit found travel adds little <em>independent</em> information
-          once the other schedule terms are known, which is unsurprising — a team deep in a road
-          trip already scores high on workload and road segment, so the terms partly restate one
-          another. That is a narrower claim than it sounds, and it is not in tension with the
-          table above: travel is the tie-breaker that pushes those genuinely worn-down teams over
-          the line, and the games it pushes over do win.
+          once the other schedule terms are known. The ablation table answers a different
+          question: which games cross the fixed call threshold when travel is included.
+          Changing coverage is not evidence that travel improves an independently fitted model.
         </Note>
       </Section>
 
       <Section label="WHERE THE DATA COMES FROM" descriptor="1985-86 TO PRESENT">
         <Prose>
           Schedules, scores and results come from the NBA&rsquo;s own feeds. Overtime periods,
-          tip-off times and neutral-site venues come from ESPN, because the NBA endpoint that
-          serves them is not reachable from outside the United States — a failure that went
-          unnoticed long enough that the overtime term sat dormant across every game in the
-          dataset before it was found and fixed on {MEASURED_ON}.
+          tip-off times and neutral-site venues come from ESPN. The missing overtime input was
+          restored on {MEASURED_ON}; earlier model runs had treated it as zero throughout.
         </Prose>
         <Prose>
           Arena coordinates are era-correct: Sonics games resolve to Seattle, not Oklahoma City,
@@ -646,18 +627,18 @@ direction    = ${K.eastwardMultiplier} eastward, ${K.westwardMultiplier} westwar
         </Note>
       </Section>
 
-      <Section label="WHAT THIS CANNOT SEE" descriptor="THE HONEST LIMITS">
+      <Section label="WHAT THIS CANNOT SEE" descriptor="LIMITATIONS">
         <Prose>
           The model reads schedules. It knows nothing about the teams playing.
         </Prose>
         <LimitList
           items={[
             "No injuries, rotations or minutes played. A rested team missing two starters scores the same as a healthy one.",
-            "No team quality. Rest advantage is not a prediction of who is better, and a rested visitor is often a good team midway through a road trip — which is why these win rates are associational, not causal.",
+            "No team quality. The historical groups can differ in strength as well as rest, so their win rates do not isolate a causal rest effect.",
             "No actual itineraries. Teams are assumed to fly venue to venue and only home when the next game is home. No public source records what they really did.",
             "No load management. A star sitting a back-to-back is exactly the effect this model would want to capture, and it is invisible here.",
             "Playoffs are excluded entirely. A fixed two-team series breaks the travel assumptions.",
-            "The 2019-20 Orlando bubble is excluded — one site, no travel, no crowd. The roughly 970 games that season played before the March 2020 suspension are ordinary and are included. 2020-21 is included too, but it is a condensed 72-game season, so its schedule density runs hotter than the anchors were set against.",
+            "The 2019-20 Orlando bubble is excluded because it had one site, no travel, and no crowd. Pre-suspension games remain included. The condensed 72-game 2020-21 season is included, with greater density than the model's normal-pace anchors.",
           ]}
         />
       </Section>
@@ -665,21 +646,21 @@ direction    = ${K.eastwardMultiplier} eastward, ${K.westwardMultiplier} westwar
       <Section label="HOW THE MODEL IS SCORED" descriptor="NO TUNING AGAINST THE BACKTEST">
         <Prose>
           Every constant above was set by reasoning about the physical effect and reviewed
-          before the backtest was run — none was fitted to maximise a win rate. That is the
-          only reason the historical numbers mean anything: a model tuned against its own test
-          set would report whatever accuracy it was asked for. One constant has since moved on
+          before the backtest was run; none was fitted to maximise this win rate. Reusing
+          evaluation results to choose constants can overstate performance. One constant has moved on
           measured evidence: the altitude multiplier was raised from 1.15 to 1.29 on 2026-08-02
           to match altitude&rsquo;s measured size against a back-to-back on final margin. That
           is a different target from the win rates on this page, and the change is recorded in
-          ADR 0006 rather than folded in quietly.
+          ADR 0006. Using a different target does not make the shared historical games an
+          independent test set.
         </Prose>
         <Note>
-          The most recent overhaul is a fair illustration of why that discipline matters. Nine
-          fixes landed together and the published hit rates rose about a point — but on games
+          In the overhaul recorded on {MEASURED_ON}, nine fixes landed together and the published
+          hit rates rose about a point. On games
           both the old and new model called, accuracy moved 0.15pp and the two picked the same
           team 98.8% of the time. The gain was almost entirely the new model declining 2,661
-          games the old one had called at below a coin flip. Better selectivity, not better
-          prediction. The distinction is easy to lose and worth keeping.
+          games the old one had called at below a coin flip. Most of the reported improvement
+          came from selecting a different set of games.
         </Note>
       </Section>
     </BehindTheDataShell>

@@ -553,7 +553,7 @@ function SeasonWinRateBySeasonChart({
           }}
         >
           ○ {highlight.label}: <span style={{ fontWeight: 700, color: deviationText(highlight.deviation) }}>{signedNumber(highlight.deviation)} PP</span>{" "}
-          VS ITS OWN {highlight.baselinePct}% HOME COURT — THE WIDEST GAP OF THE{" "}
+          VS ITS OWN {highlight.baselinePct}% HOME COURT · THE WIDEST GAP OF THE{" "}
           {chartData.length} SEASONS SHOWN.
         </p>
       )}
@@ -711,7 +711,7 @@ function ExploreGames({
       />
       <SectionDivider label="EXPLORE GAMES" descriptor={`${total.toLocaleString()} TOTAL`} />
       <p className="mono mt-1" style={{ fontSize: 11, color: "var(--term-text-muted)", letterSpacing: TRACK.sub }}>
-        FILTER AND BROWSE INDIVIDUAL MATCHUPS — CLICK A ROW FOR DETAILS.
+          FILTER AND BROWSE INDIVIDUAL MATCHUPS · CLICK A ROW FOR DETAILS.
       </p>
 
       {/* Filters */}
@@ -1072,21 +1072,19 @@ export function AnalysisContent({ asOf }: { asOf?: DataAsOf | null }) {
           games where the rested team was the <strong className="font-semibold text-[var(--term-text)]">visitor</strong>,
           the home team won{" "}
           <span className="mono font-bold" style={{ color: "var(--term-text)" }}>{claims.declinedHalf.homeWinPct}%</span>.
-          The model does not count them, because the home side keeps winning them — but it wins
-          them by{" "}
+          These games are excluded from the headline. Their home win rate differs by{" "}
           <span className="mono font-bold" style={{ color: "var(--term-blue-text)" }}>
             {signedNumber(claims.declinedHalf.lift)}
           </span>{" "}
           points against the{" "}
-          <span className="mono tabular-nums">{homeBaseline}%</span> it takes across all games,
-          which is the rest effect showing up on the side this page will not call.
+          <span className="mono tabular-nums">{homeBaseline}%</span> home baseline across all games.
         </p>
       </div>
 
       {/* Bar chart — win rate by threshold */}
       <div style={termCardStyle}>
         <SectionDivider
-          label="WIN RATE BY RA THRESHOLD — RESTED TEAM AT HOME"
+          label="WIN RATE BY RA THRESHOLD · RESTED TEAM AT HOME"
           descriptor="CLICK A BAR TO EXPLORE"
         />
         <div className="mt-2 h-72">
@@ -1185,7 +1183,7 @@ export function AnalysisContent({ asOf }: { asOf?: DataAsOf | null }) {
             <span className="mono font-bold" style={{ color: "var(--term-blue-text)" }}>
               {signedNumber(claims.reading.overallLift)}
             </span>{" "}
-            points above that baseline — the part rest accounts for.{" "}
+            percentage points above that baseline. This is an association, not a causal estimate.{" "}
             {WIDER_GAP_CLAUSE[claims.reading.ra5.relationToAnyGap]} at{" "}
             <span className="font-semibold text-[var(--term-text)]">
               RA ≥ {claims.reading.ra5.threshold}

@@ -21,7 +21,7 @@ export function MethodLink({ surfaceHref }: { surfaceHref: string }) {
       // declaration outranks a class rule — so `hover:text-` never painted, on all eight surfaces
       // this renders on. Measured: computed colour identical at rest and on hover. The rest of
       // the style object stays inline; none of it is contested by a utility.
-      className="mono inline-flex w-fit items-center gap-2 transition-colors text-[var(--term-text-muted)] hover:text-[var(--term-text)]"
+      className="mono inline-flex min-h-11 w-fit items-center gap-2 transition-colors text-[var(--term-text-muted)] hover:text-[var(--term-text)] lg:min-h-0"
       style={{
         fontSize: 11,
         letterSpacing: TRACK.label,

@@ -32,10 +32,11 @@ with the reason.
   FullCourt keeps the default viewport and fixes the trigger instead.
 - [—] **KBO's `width=1200` fixed viewport** — no responsive layout at all; the phone gets a
   desktop page to pinch around. Listed because it is what "just don't do RWD" looks like.
-- [x] **Touch targets ≥ 44px in the chrome.** Was "the tab row is 44px tall by construction";
-  after the 2026-08-29 shell merge (PR #70) the two-tier bar is **one 56px bar**
-  (`nav-bar.tsx`), and the phone dock is `--term-bottom-nav-h: 56px` (`globals.css`). Both clear
-  the floor by construction; the dock's slot height still wants one hand check (row below).
+- [x] **Mobile controls and navigation targets ≥ 44px.** The 2026-09-06 antislop audit found
+  that a 56px header did not guarantee the link inside it was tall enough: the home link was
+  22px. Shared CSS now sets the target floor below `lg`, including palette options, reference
+  links, table sort buttons, and checkbox labels. `e2e/control-accessibility.spec.ts` measures
+  targets at 360px and 768px. Real-device safe-area and keyboard checks remain below.
 - [ ] **Hand-measure the phone chrome on a real device.** **Rewritten 2026-08-30: the original
   row asked for fade visibility over the OTHER trigger at 360px, and that is no longer
   measurable** — PR #70 put the tab strip behind `hidden lg:block`, so at 360px there is no strip

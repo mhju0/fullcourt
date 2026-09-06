@@ -23,7 +23,7 @@ import {
 } from "@/lib/schedule-value";
 
 export const metadata: Metadata = {
-  title: "Schedule Edge — Behind the Data",
+  title: "Schedule Edge · Behind the Data",
   description:
     "How a season's schedule is scored for and against each team: net edge games, what one edge is worth in wins, the two thresholds, why the count is games rather than days of rest, and the market check that came back null.",
 };
@@ -38,12 +38,12 @@ export default function ScheduleEdgeMethodPage() {
     <BehindTheDataShell
       eyebrow="BEHIND THE DATA · SCHEDULE EDGE"
       title="Schedule edge"
-      description="Which teams a season's schedule favoured, counted in games where the rest gap was large enough to matter. Scoped to one season at a time, always."
+      description="A within-season comparison of favourable and unfavourable rest gaps, with a win-equivalent estimate based on historical rates."
     >
       <Section label="THE HEADLINE" descriptor="NET EDGE GAMES">
         <Prose>
           For every game a team played, the fatigue gap against that night&rsquo;s opponent is
-          already known — it is the same rest advantage the rest of the site uses. A game counts
+          the same rest advantage the rest of the site uses. A game counts
           as <strong>favourable</strong> when the opponent was the more tired side by at least{" "}
           {NEUTRAL_REST_ADVANTAGE_THRESHOLD}, and <strong>unfavourable</strong> when the team
           itself was. The season total is the difference.
@@ -68,7 +68,7 @@ big edge      the ≥ ${BIG_EDGE_FATIGUE_THRESHOLD} subset of either side`}
           <strong>Worth</strong>{" "}
           column prices each game at the win probability its rest state is
           measured to carry, against that venue&rsquo;s own baseline, and adds them up. Nothing is
-          fitted here and no score is read — a 64-win team and a 17-win team handed the same
+          fitted here and no result is read: two teams with different win totals but the same
           schedule get the same number.
         </Prose>
         <ValueGrid
@@ -91,23 +91,20 @@ big edge      the ≥ ${BIG_EDGE_FATIGUE_THRESHOLD} subset of either side`}
           ]}
         />
         <Prose>
-          Note the asymmetry, which is real: facing a fresher opponent costs about twice what
-          being the fresher one pays. And note the scale. Swapping which side is rested moves a
-          home team {REST_SPAN_PP.toFixed(1)} points; swapping the venue moves it{" "}
+          The two rest groups sit at different distances from the home baseline. The gap
+          between them is {REST_SPAN_PP.toFixed(1)} percentage points; the home-road gap is{" "}
           {HOME_COURT_SPAN_PP.toFixed(1)}. Rest is roughly{" "}
-          {Math.round(REST_SHARE_OF_HOME_COURT * 100)}% of home court — real, and much smaller
-          than the thing every fan already accounts for.
+          {Math.round(REST_SHARE_OF_HOME_COURT * 100)}% of that home-road gap. These comparisons
+          describe historical groups rather than causal effects.
         </Prose>
         <Note>
-          The resulting figure is small for every team — no season&rsquo;s schedule has been worth
-          half a win either way — and the reason is the calendar, not fatigue. The league hands out
-          rest edges evenly enough that the per-game effect never accumulates. Quoting the wins
-          figure without the per-game one beside it invites the opposite reading.
+          Net season values are small because favourable and unfavourable games partly
+          offset each other, and each game is priced at a small difference from its venue baseline.
         </Note>
         <Note>
           Unlike every other column, this one counts each team&rsquo;s season opener. The opener
           has no previous game and so no rest-<em>days</em> differential, which is why the counts
-          above exclude it — but a fatigue score exists for it, so the rest gap is measured. Leaving
+          above exclude it. A fatigue score exists for it, so the rest gap is measured. Leaving
           it out made this page and the Season Report disagree by a tenth of a win on the same team.
         </Note>
       </Section>
@@ -145,22 +142,20 @@ big edge      the ≥ ${BIG_EDGE_FATIGUE_THRESHOLD} subset of either side`}
           ]}
         />
         <Prose>
-          No gradient, in either direction. The correlation between a team&rsquo;s net edge
+          The correlation between a team&rsquo;s net edge
           games and its finish against the line is r&nbsp;=&nbsp;
           {benchmark.correlation.r.toFixed(2)} across {benchmark.correlation.n}{" "}
-          team-seasons — statistically zero. The rest edge is real game to game, and that
-          record lives on the Model Results page. But over a full season it amounts to a few
-          possessions here and there, and the market&rsquo;s win totals already price the
-          schedule. This is a null result, published on purpose: season over/unders are not
-          beatable from a schedule leaderboard, and this site won&rsquo;t pretend otherwise.
+          team-seasons. This is a null result, published on purpose: the archive does not show
+          a consistent relationship between net edge and beating the line. It does not prove
+          that markets fully price the schedule or rule out every possible betting strategy.
         </Prose>
         <Note>
           Lines from the {benchmark.source}, {benchmark.firstSeason} through{" "}
           {benchmark.lastSeason}. No lines were published for the 1998-99 lockout, and 2019-20
-          is skipped here because its season was suspended at 63 to 67 games — a preseason win
+          is skipped here because its season was suspended at 63 to 67 games; a preseason win
           total never got a full schedule to resolve against. {benchmark.pushes} pushes are
           excluded from the rates; overs hit {pct(benchmark.overall.overs, benchmark.overall.n)}{" "}
-          overall — win totals lean under league-wide, edge or no edge. The archive&rsquo;s win
+          overall in this archive. The archive&rsquo;s win
           count matched this site&rsquo;s own game records for every one of the{" "}
           {benchmark.teamSeasons} team-seasons before anything was computed.
         </Note>
@@ -187,7 +182,7 @@ big edge      the ≥ ${BIG_EDGE_FATIGUE_THRESHOLD} subset of either side`}
           ]}
         />
         <Prose>
-          The {NEUTRAL_REST_ADVANTAGE_THRESHOLD} threshold is not chosen for this page — it is
+          The {NEUTRAL_REST_ADVANTAGE_THRESHOLD} threshold is
           the same line the whole site uses to decide whether a game is worth calling at all.
           Using a different one here would let a game count as a schedule edge while the Games
           page called it too close to matter.
@@ -206,8 +201,7 @@ big edge      the ≥ ${BIG_EDGE_FATIGUE_THRESHOLD} subset of either side`}
         <Prose>
           Alongside the headline, each team&rsquo;s season carries the raw structural burdens:
           back-to-backs played, games that were the third in four nights, and the fourth in six.
-          These are facts about the schedule rather than model output — they need no threshold
-          and carry no judgement.
+          These counts follow the dates on the schedule and do not use fatigue-score thresholds.
         </Prose>
         <Note>
           A dense-window flag describes the game that <em>closes</em> the window, not every game
@@ -215,15 +209,15 @@ big edge      the ≥ ${BIG_EDGE_FATIGUE_THRESHOLD} subset of either side`}
         </Note>
       </Section>
 
-      <Section label="WHAT THIS CANNOT SEE" descriptor="THE HONEST LIMITS">
+      <Section label="WHAT THIS CANNOT SEE" descriptor="LIMITATIONS">
         <LimitList
           items={[
-            "2019-20 is the one season this page will not rank, and the only place on the site that withholds a whole season. It was suspended with teams having played between 63 and 67 games, and a team with four fewer games has four fewer chances to accumulate an edge — its total would move without the schedule having favoured anyone. Every other season is within a single game of even.",
-            "No cross-era ranking. A season's totals are only comparable within that season — schedule structure, travel norms and the number of back-to-backs have all changed enormously across four decades.",
+            "2019-20 is excluded from this ranking because teams stopped with 63 to 67 games played. Unequal schedule lengths give teams different numbers of opportunities to accumulate an edge.",
+            "Rankings compare teams within a season. Schedule length, travel patterns, and back-to-back frequency change across eras.",
             "The NBA publishes only 80 of each team's 82 games before the season. The last two are added in December once NBA Cup group play resolves, so a forward-looking total is provisionally two games short.",
             "It inherits every limit of the fatigue model it is built on, including no injuries, no rotations and no knowledge of team quality.",
             "A favourable schedule is not a prediction. It says the calendar handed a team more rested nights than tired ones, not that they were good.",
-            "The Worth column prices edges at their long-run rate across every season since 1985-86, not at the rate the displayed season happened to produce. Individual seasons swing hard around that rate — 2025-26's own rested-at-home games actually landed slightly below its home baseline — so a season-specific price would report noise as schedule luck, and would flip signs from year to year.",
+            "The Worth column uses pooled historical rates since 1985-86. A displayed season's observed rates can differ, so this estimate does not explain that season's actual wins and losses.",
           ]}
         />
       </Section>

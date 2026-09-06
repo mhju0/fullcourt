@@ -20,10 +20,10 @@ import type { MetadataRoute } from "next";
  */
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "FullCourt — NBA Analytics",
+    name: "FullCourt · NBA Analytics",
     short_name: "FullCourt",
     description:
-      "FullCourt models what the NBA schedule does to a game — rest, travel, and schedule density, checked against every season since 1985-86.",
+      "NBA analytics for rest, travel, and schedule density, checked against games since 1985-86.",
     start_url: "/games",
     display: "standalone",
     background_color: "#F6F7F9",

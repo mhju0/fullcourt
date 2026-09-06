@@ -6,48 +6,17 @@ the discrepancy is called out.
 
 ## High-level flow
 
-```
-        DATA SOURCES                         INGEST (Python)                 STORE
-┌──────────────────────────┐      ┌──────────────────────────────┐   ┌──────────────────┐
-│ NBA CDN schedule JSON     │─────▶│ fetch_nba_schedule_cdn.py    │   │ Supabase         │
-│ (scheduleLeagueV2.json)   │      │  → future/current slate      │   │ PostgreSQL       │
-│ NBA CDN live scoreboard   │      │ fetch_schedule.py            │──▶│  teams           │
-│ (todaysScoreboard_00.json)│      │  → historical seasons        │   │  games           │
-│ nba_api / stats.nba.com   │─────▶│ seed_teams.py → 30 teams     │   │  fatigue_scores  │
-│  (LeagueGameFinder)       │      │                              │   │  predictions     │
-│ ESPN site.api scoreboard  │─────▶│ fetch_game_context.ts        │   └──────────────────┘
-│  (overtime, tip-off,      │      │  → overtime / tip / neutral  │
-│   neutral site)           │      │                              │
-└──────────────────────────┘      └──────────────┬───────────────┘             │
-                                                  │ orchestrated by             │
-                                                  │ daily_update.py             │
-                                                  ▼                             │
-                                   ┌──────────────────────────────┐            │
-        MODELING (TypeScript via tsx)│ run-daily.ts                │            │
-                                   │  → recompute fatigue_scores  │◀───────────┘
-                                   │  → (re)generate predictions  │
-                                   │ backfill_fatigue.ts (bulk)   │
-                                   │ backfill_predictions.ts      │
-                                   │ uses src/lib/fatigue.ts      │
-                                   └──────────────┬───────────────┘
-                                                  ▼
-        SERVE (Next.js 16 on Vercel)
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│ src/lib/db (Drizzle + postgres-js, lazy singleton)                                 │
-│   └─ src/lib/db/queries.ts  ── typed, aliased multi-table joins                    │
-│        ▲                                                                            │
-│ app/api/**/route.ts  ── schema + operation, via jsonRoute (src/lib/api-route.ts)   │
-│        ▲                                                                            │
-│ Server pages (analysis/page.tsx, playoffs/page.tsx) → dynamic client components   │
-│ Client page app/page.tsx + SWR (src/lib/fetcher.ts) + Supabase Realtime hook       │
-└─────────────────────────────────────────────────────────────────────────────────┘
-                                                  ▲
-                                   ┌──────────────┴───────────────┐
-        CI/CD                      │ GitHub Actions cron → daily_update.py            │
-                                   │ Vercel cron → GET /api/cron/update (live scores) │
-                                   │ Vercel deploy from main                          │
-                                   └──────────────────────────────────────────────────┘
-```
+1. ESPN schedule and scoreboard reads seed fixtures, update scores, and supply game context.
+   Historical NBA and hoopR paths support backfills and offline analyses.
+2. `daily_update.py` coordinates score sync, context refresh, missing projections, and
+   `run-daily.ts`. TypeScript writers compute fatigue before storing it in PostgreSQL.
+3. API routes read stored results through `queries.ts`; client pages use SWR. Supabase
+   Realtime sends game-table changes to the browser, which refreshes the displayed data.
+4. Separate Python analyses produce playoff predictions, shot-value surfaces, and committed
+   player, availability, and referee artifacts. Their publication paths are described below.
+
+GitHub Actions runs the daily pipeline. Vercel cron updates live scores. Merging `main`
+deploys the application to Vercel; verify the PR preview first.
 
 ## Layers
 
@@ -55,10 +24,10 @@ the discrepancy is called out.
 
 | Source | URL / library | Used for |
 |--------|---------------|----------|
-| NBA CDN schedule | `https://cdn.nba.com/static/json/staticData/scheduleLeagueV2.json` | Current-season + future games (`fetch_nba_schedule_cdn.py`). No auth. |
+| NBA CDN schedule | `https://cdn.nba.com/static/json/staticData/scheduleLeagueV2.json` | Retained fetcher and season-window probe. Current fixture seeding uses `seed_upcoming_season_espn.ts`; the daily pipeline does not seed from the CDN. |
 | ~~NBA CDN live scoreboard~~ | ~~`todaysScoreboard_00.json`~~ | **Retired 2026-08-18** as the live-score source: 403 from every environment. Replaced by the ESPN scoreboard below. |
 | ESPN scoreboard | `https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=YYYYMMDD` | Scores, status, overtime, tip-off, neutral site (`sync_scores_espn.ts`, `fetch_game_context.ts`, `/api/cron/update`). Grouped by **ET** date, matching `games.date`. No auth. |
-| nba_api (stats.nba.com) | `LeagueGameFinder` | Historical + windowed schedules and final scores (`fetch_schedule.py`, `daily_update.py`, `backfill_historical.py`). |
+| nba_api (stats.nba.com) | `LeagueGameFinder` | Retained historical paths (`fetch_schedule.py`, `backfill_historical.py`); absent from the daily score-sync path. |
 | ESPN site.api | `/scoreboard?dates=` | Overtime periods, tip-off times, neutral-site venues (`fetch_game_context.ts`), 2002-03 on. One call per game date returns all three. |
 | ~~nba_api (stats.nba.com)~~ | ~~`BoxScoreSummaryV2`~~ | **Retired 2026-07-30** as the overtime source. `stats.nba.com` is unreachable from outside the US, so `nba_ot_periods.py` silently returned 0 for every game and the fatigue model's overtime term never fired. Still imported by `fetch_schedule.py`; no longer used by `daily_update.py`. |
 | ESPN logos | `https://a.espncdn.com/i/teamlogos/nba/500/{slug}.png` | Every team logo, current and historical (`src/lib/team-history.ts`). Dark-on-light for all 30; the NBA CDN ships no light-background mark for BKN or SAS, and 403s from Seoul and CI. |
@@ -66,11 +35,12 @@ the discrepancy is called out.
 
 ### 2. Ingestion (Python, `scripts/`)
 
-Python pulls schedules/scores/OT and writes rows into `games` (and `teams`). The
-orchestrator `daily_update.py` is the GitHub Actions entry point; it seeds the CDN
-schedule, upserts a rolling `[today−7, today+60]` window from `nba_api`, refreshes OT for
-recent finals, then shells out to the TypeScript modeling step. Full per-script detail in
-[DATA_PIPELINE.md](DATA_PIPELINE.md). `schedule_upsert_contract.py` explicitly records the
+The Python orchestrator `daily_update.py` is the GitHub Actions entry point. After its season
+gate, it invokes TypeScript scripts to sync ESPN scores over `[today−7, today]`, refresh
+context for recent finals, fill missing scheduled-game projections, and recompute the daily
+fatigue window. Fixture seeding is separate. Full details are in
+[DATA_PIPELINE.md](DATA_PIPELINE.md). For the retained historical ingest paths,
+`schedule_upsert_contract.py` records the
 two source-authority policies: CDN data may repair ET game dates while preserving final
 results; Stats API data refreshes scores/status/OT/game type without moving game dates.
 

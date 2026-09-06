@@ -37,8 +37,8 @@ describe("RefereeEffectContent", () => {
   });
 
   it("states the late-game null in the visitor's words, not just in the data", () => {
-    // The sentence ADR 0007 committed to publishing whatever the number did.
-    expect(text).toContain("do not swallow the whistle at the end");
+    expect(text).toContain("Late-game variation does not exceed the chance expectation");
+    expect(text).toContain("cannot determine whether officials collectively pass up calls");
   });
 
   it("does not claim the home whistle is nothing, because its own data says otherwise", () => {
@@ -48,12 +48,13 @@ describe("RefereeEffectContent", () => {
     // copy. The page may call the effect modest; it may not call it absent.
     expect(timing.homeAway.shooting.observed).toBeGreaterThan(timing.expectedByChance);
     expect(text).not.toContain("no official tilts the whistle home");
-    expect(text).toContain("the honest word is modest");
+    expect(text).toContain("These counts exceed the chance expectation");
   });
 
   it("carries the attribution caveat no figure can express", () => {
-    expect(text).toContain("one of three officials");
-    expect(text).toMatch(/wider/);
+    expect(text).toContain("Every game credits all three officials");
+    expect(text).toContain("cannot isolate an individual");
+    expect(text).not.toContain("the true spread is wider");
   });
 
   it("refuses the bias reading explicitly", () => {

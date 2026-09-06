@@ -486,6 +486,45 @@ one. Reduced motion and unsupported browsers retain normal navigation.
 
 ---
 
+### D-54 · Antislop setup and shared interaction floors · ACTIVE
+
+Date: 2026-09-06.
+
+The owner requested an audit followed by fixes and installation of all five antislop skills.
+The project-local core and companions live in `anti-slop/`, routed by the appended `AGENTS.md`
+block. Existing owner decisions and the Front Office brand direction take precedence over
+generic skill defaults. This installs no Claude harness configuration.
+
+The audit found keyboard focus resets and mobile targets smaller than 44px despite passing
+axe and document-overflow checks. Keep the shared focus indicator outside CSS layers so
+component utilities cannot erase it; apply the touch target floor below the mobile navigation
+breakpoint. The new browser checks measure the actual focused controls and target boxes.
+See `anti-slop/audit-001-2026-09-06.md` and `e2e/control-accessibility.spec.ts`.
+
+---
+
+### D-55 · Explanations state the scope of the evidence · ACTIVE
+
+Date: 2026-09-06.
+
+The owner requested an antislop audit and revisions across GitHub description, README, and
+all explanations, especially Behind the Data. Existing prose is in scope for this pass.
+
+Use plain descriptions of the measured population and comparison. Distinguish associations
+from causal estimates, held-out predictions from in-sample fit, and null tests from proof of
+zero effect. Crew records do not identify individual calls or imply an exact one-third effect.
+The ablation's 5,994 travel-dependent calls include losses; they are not 5,994 winning predictions.
+
+The public copy, metadata, glossary, and brand voice examples are synchronized. Historical
+ADRs, pre-registrations, analysis reports, and design explorations remain records of their
+original decisions. This clarification governs current explanations without changing model
+coefficients, thresholds, generated analytics, or publication eligibility.
+
+Evidence: `anti-slop/audit-002-2026-09-06.md`, `src/app/behind-the-data/`,
+`src/components/referee-effect-content.tsx`, `ml/ablate_fatigue_terms.py`.
+
+---
+
 ## Standing decisions with no single date
 
 | Decision | Status | Note |

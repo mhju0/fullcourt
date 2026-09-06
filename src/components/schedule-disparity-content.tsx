@@ -142,42 +142,35 @@ function ColumnGuide({ countedGames, scheduledGames }: { countedGames: number; s
           means the schedule treated this team better than the teams it played.
         </p>
         <p>
-          {term("Net edge games")} — games where this team arrived with a real rest edge, minus
-          games where its opponent did. &ldquo;Real&rdquo; means a fatigue gap of at least{" "}
-          {NEUTRAL_REST_ADVANTAGE_THRESHOLD.toFixed(1)} — the same bar the whole site uses before
-          calling an edge, on the Games page and in the backtest. Every unit is one nameable game,
-          not a season average.
+          {term("Net edge games")}: favourable games minus unfavourable games. An edge requires
+          a fatigue gap of at least {NEUTRAL_REST_ADVANTAGE_THRESHOLD.toFixed(1)}, the threshold
+          used on Games and Model Results.
         </p>
         {/* No third copy of the scale sentence: the paragraph above the table states the rate
             (3.6 points against 19.8), and two hand-written variants on one page is how prose
             drifts. This entry defines the column and defers to that line for the numbers. */}
         <p>
-          {term("Worth")} — the net edge priced in wins, at the measured rate the paragraph above
-          the table states. It is small for every team because the league spreads edges out
-          evenly, not because rest does nothing — the per-game effect is the same either way.
-          This table is the figure&rsquo;s one home; the Season Report states each season&rsquo;s
-          extremes from the same conversion and links here.
+          {term("Worth")}: rest states converted to win equivalents using historical rates
+          relative to venue baselines. Favourable and unfavourable games partly offset each
+          other. Season Report uses the same conversion.
         </p>
         <p>
-          {term("Fav / Unfav")} — the two counts behind the net: games with the edge, and games
+          {term("Fav / Unfav")}: the two counts behind the net: games with the edge, and games
           against it. Fatigue folds in rest, travel, altitude and schedule density, so these counts
-          can disagree with a bare day count — a team can have more rest days and still arrive more
-          tired, because it flew further to get there.
+          can disagree with days off alone. More travel can increase the score even when a
+          team has had more rest days.
         </p>
         <p>
-          {term("Big edge")} — the same net, counting only gaps of 1.5 or more. Fewer games, louder
-          signal.
+          {term("Big edge")}: the same net, counting only fatigue gaps of 1.5 or more.
         </p>
         <p>
-          {term("Rest days")} — the same comparison in bare days off, own minus opponent, capped at
-          five a side before differencing so the All-Star break cannot swamp a season. This is the
-          only edge column that comes from the calendar alone, which makes it the one that is final
-          the day the schedule is published: the fatigue columns need games to have been played and
-          read &mdash; until they have. It is also why the two can disagree — a team can bank rest
-          days and still arrive more tired, because it flew further to get there.
+          {term("Rest days")}: days off for the team minus its opponent, capped at five per
+          side before differencing to limit long breaks. This uses published dates, as do
+          B2B and 3-in-4 counts. Totals can change when games are added or rescheduled.
+          Unmeasured fatigue columns show a dash.
         </p>
         <p>
-          {term("B2B edge")} and {term("3-in-4 edge")} — back-to-backs, and third-nights-in-four,
+          {term("B2B edge")} and {term("3-in-4 edge")}: back-to-backs, and third-nights-in-four,
           avoided relative to opponents. Positive means the team arrived rested more often than the
           teams across from it. These are comparisons, not counts: how many back-to-backs each team
           actually played is a different fact, and it lives on the{" "}
@@ -188,7 +181,7 @@ function ColumnGuide({ countedGames, scheduledGames }: { countedGames: number; s
         <p>
           Every team plays a full schedule. Every column except <em>Worth</em> compares the{" "}
           {countedGames.toLocaleString()} of {scheduledGames.toLocaleString()} games where{" "}
-          <em>both</em> sides had a previous game to rest from — a season opener has no rest days
+          <em>both</em> sides had a previous game to rest from. A season opener has no rest days
           to measure. <em>Worth</em> deliberately counts the openers too: a fatigue score exists for
           them, so the rest gap is measured even where the day count is not, and leaving them out
           put this page a tenth of a win away from the Season Report on the same team. Edge games
@@ -251,9 +244,9 @@ export function ScheduleDisparityContent() {
             {data.league.measuredGames === 0 ? (
               <>
                 {" "}
-                None of it has been played yet, so the fatigue columns read &mdash; rather than
+                None of it has been played yet, so the fatigue columns show a dash rather than
                 zero: rest advantage is scored from games already played. Rest days, back-to-backs
-                and three-in-fours come from the calendar and are final now.
+                and three-in-fours use the currently published calendar.
               </>
             ) : null}
           </p>
@@ -305,8 +298,8 @@ export function ScheduleDisparityContent() {
           style={{ fontSize: 11, letterSpacing: TRACK.label, color: "var(--term-text-muted)", fontWeight: 600, textTransform: "uppercase" }}
         >
           {rankedByFatigue
-            ? "Net edge games — games with a real rest edge, minus games against one"
-            : "Net rest edge — days off this team banked, minus days off its opponents did"}
+            ? "Net edge games: favourable games minus unfavourable games"
+            : "Net rest edge: this team's days off minus its opponents'"}
         </p>
 
         {rankedByFatigue && ranking.rows.some((row) => row.rank === null) ? (
@@ -386,11 +379,11 @@ export function ScheduleDisparityContent() {
               {/* Explicit {" "}: JSX drops a bare space that opens a text node after an
                   element, so "Worth prices" rendered as "Worthprices". */}
               <strong>Worth</strong>{" "}
-              prices each edge at what it is measured to be: being the
-              fresher side moves a home team&rsquo;s win probability {REST_SPAN_PP.toFixed(1)}{" "}
-              points, against {HOME_COURT_SPAN_PP.toFixed(1)} for playing at home at all — about{" "}
-              {Math.round(REST_SHARE_OF_HOME_COURT * 100)}% of home court. Spread across a season
-              the league keeps close to even, no schedule is worth half a game either way.
+              uses historical rest groups separated by {REST_SPAN_PP.toFixed(1)} percentage
+              points for home teams, compared with a {HOME_COURT_SPAN_PP.toFixed(1)}-point
+              home-road gap. The rest-group difference is about{" "}
+              {Math.round(REST_SHARE_OF_HOME_COURT * 100)}% of the venue gap. This is a descriptive
+              conversion, not an estimate of wins caused by the schedule.
             </p>
             <DataTable
               wrapperClassName="mt-3 overflow-x-auto"

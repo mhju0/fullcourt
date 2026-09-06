@@ -106,7 +106,7 @@ test.describe("Referee Effect — the published page", () => {
 
   test("refuses the bias reading in the visitor's own words", async ({ page }) => {
     await page.goto("/referees");
-    await expect(page.getByText(/nothing here can be read as bias/)).toBeVisible();
+    await expect(page.getByText(/cannot establish an official's bias/)).toBeVisible();
     await expect(page.getByText(/None of this is a fairness claim/)).toBeVisible();
   });
 
@@ -125,36 +125,36 @@ test.describe("Referee Effect — the published page", () => {
 test.describe("Referee Effect — the folklore chapter", () => {
   test("states the famous record and the noise floor on the same page", async ({ page }) => {
     await page.goto("/referees");
-    await expect(page.getByText("THE MOST FEARED REFEREE IN BASKETBALL")).toBeVisible();
+    await expect(page.getByText("THE FEATURED PLAYOFF RECORD")).toBeVisible();
     // The record...
     await expect(page.getByText(/PLAYOFF RECORD IN GAMES/)).toBeVisible();
     // ...and the count chance puts beside it, which may never be separated from it.
-    await expect(page.getByText("SOMEBODY HAS TO FINISH FIRST")).toBeVisible();
+    await expect(page.getByText("EXTREMES EXPECTED FROM MANY COMPARISONS")).toBeVisible();
     await expect(page.getByText(/OBSERVED VS EXPECTED BY CHANCE/)).toBeVisible();
   });
 
-  test("shows the same official as a charm as well as a curse", async ({ page }) => {
+  test("shows positive and negative records for the same official", async ({ page }) => {
     await page.goto("/referees");
-    await expect(page.getByText(/best thing that ever happened to/)).toBeVisible();
-    await expect(page.getByText(/curse and a charm on the same whistle/)).toBeVisible();
+    await expect(page.getByText(/other players finished above their expected wins/)).toBeVisible();
+    await expect(page.getByText(/both positive and negative extremes/)).toBeVisible();
   });
 
   test("publishes the pair nobody named, which is the argument", async ({ page }) => {
     await page.goto("/referees");
-    await expect(page.getByText("AND THE PAIR NOBODY EVER NAMED")).toBeVisible();
-    await expect(page.getByText(/somebody went looking for the famous one/)).toBeVisible();
+    await expect(page.getByText("ANOTHER LARGE GAP")).toBeVisible();
+    await expect(page.getByText(/sample size and expected wins also differ/)).toBeVisible();
   });
 
-  test("kills the make-up call with the offensive-foul sign flip", async ({ page }) => {
+  test("reports the offensive-foul reversal with its limitation", async ({ page }) => {
     await page.goto("/referees");
     // Published without this tile, the t = 27 above it reads as proof of compensation.
     // `exact` because the late-window paragraph above also contains "below chance, not above".
     await expect(page.getByText("BELOW CHANCE, NOT ABOVE", { exact: true })).toBeVisible();
-    await expect(page.getByText(/there is a ball, and it keeps changing hands/)).toBeVisible();
+    await expect(page.getByText(/cannot rule out individual make-up calls/)).toBeVisible();
   });
 
   test("carries the attribution caveat no figure can express", async ({ page }) => {
     await page.goto("/referees");
-    await expect(page.getByText(/roughly a third/).first()).toBeVisible();
+    await expect(page.getByText(/cannot isolate an individual official's contribution/)).toBeVisible();
   });
 });

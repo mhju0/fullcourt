@@ -20,8 +20,8 @@ test.describe("Schedule Disparity page", () => {
     // on 2026-07-31 and "it is not a prediction" became "Not a prediction", which failed a
     // regex pinned to the longer form while the disclaimer itself never left the page. This
     // still fails if the sentence is dropped, which is what the test is for.
-    await expect(page.getByText(/not a prediction/i)).toBeVisible();
-    await expect(page.getByText(/much of the gap is structural/i)).toBeVisible();
+    await expect(page.getByText(/within a season, with a win-equivalent estimate/)).toBeVisible();
+    await expect(page.getByText(/not an estimate of wins caused by the schedule/)).toBeVisible();
   });
 
   /**
@@ -116,7 +116,7 @@ test.describe("Schedule Disparity page", () => {
     // the claim that closes that door stays on this page, while the bucket table's one home
     // is the method page. The sentry's r comes from the same committed JSON as the table, so
     // asserting the claim here and the table there pins both halves of the split.
-    await expect(page.getByText(/null result, published on purpose/i)).toBeVisible();
+    await expect(page.getByText(/does not show a consistent relationship between net edge and beating the line/)).toBeVisible();
     await expect(page.getByText("Went over")).toHaveCount(0);
 
     await page.getByTestId("market-check-crosslink").click();

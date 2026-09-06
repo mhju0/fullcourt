@@ -31,18 +31,7 @@ function VerdictTile({ label, verdict }: { label: string; verdict: Verdict }) {
   )
 }
 
-/**
- * Referee Effect, finished copy.
- *
- * Two of the three sections below are **nulls, published on purpose**, and the page is built so
- * they read as the point rather than as an apology. The site has done this once before with the
- * win-total market check on `/schedule`.
- *
- * Every figure comes from `referee-timing.json` or `referee-foul-style.json`. Nothing is typed
- * into the prose — regenerate the artifacts and the sentences move with them, which is what the
- * pinning rule in `CLAUDE.md` is for. The one thing prose must keep saying in its own words is
- * the attribution caveat, because no number carries it.
- */
+/** Keep the crew-attribution caveat beside figures derived from the published artifacts. */
 export function RefereeEffectContent({
   style,
   timing,
@@ -58,26 +47,19 @@ export function RefereeEffectContent({
   return (
     <div className="flex flex-col gap-12">
       <p style={BODY}>
-        <span style={LEAD_IN}>Officials do not call the same game the same way.</span> Across{" "}
+        <span style={LEAD_IN}>Foul patterns vary across officials&apos; games.</span> Across{" "}
         {timing.gamesCovered.toLocaleString()} regular-season games since {timing.firstSeason},
-        one thing separates them clearly, and two of the things people most often assume about
-        them do not survive contact with the play-by-play. This page is about what a whistle{" "}
-        <em>is</em>, not about who it favours — three officials work every game and the record
-        never says which of them made a call, so nothing here can be read as bias, and none of it
-        is meant to be.
+        the analysis compares foul mix, timing, and home-away differences. Because the data
+        records crews rather than individual calls, it cannot establish an official&apos;s bias.
       </p>
 
       <section className="flex flex-col gap-4">
         <SectionHeading>WHAT SEPARATES OFFICIALS · THE MIX</SectionHeading>
         <p style={BODY}>
-          Give two officials the same game and they will call a different <em>kind</em> of foul.
-          Each cell below is one official&rsquo;s share of that foul type against the league
-          average for the same season, so an era&rsquo;s rule changes cannot masquerade as a
-          personal tendency — and every official is scored on their <strong>most recent 200
-          games</strong>, the same sample for every row, because whistles measurably change
-          across a career and a fair bolding bar has to mean the same thing on every line.
-          Bold cells clear two standard errors; muted ones are noise, and the page says so
-          rather than letting you find a pattern in them.
+          Each cell compares a foul type&apos;s share in an official&rsquo;s games with the league
+          average for those seasons. Every row uses the official&apos;s <strong>most recent 200
+          games</strong>. Bold cells exceed two standard errors; muted cells do not. Some
+          cells will cross that threshold by chance when many are compared.
         </p>
         <RefereeStyleContent data={style} />
       </section>
@@ -85,7 +67,7 @@ export function RefereeEffectContent({
       <section className="flex flex-col gap-4">
         <SectionHeading>WHEN THE FOULS COME · A REAL, NARROW EFFECT</SectionHeading>
         <p style={BODY}>
-          Fouls are not spread evenly through a game — the league calls{" "}
+          In this sample, the league calls{" "}
           {timing.leagueQuarterShares.q1.toFixed(1)}% of them in the first quarter and{" "}
           {timing.leagueQuarterShares.q4.toFixed(1)}% in the fourth. Officials differ in how far
           they lean that way, and they differ at the <em>ends</em> of a game rather than through
@@ -98,10 +80,9 @@ export function RefereeEffectContent({
           <VerdictTile label="4TH QUARTER" verdict={timing.byQuarter.q4} />
         </div>
         <p style={BODY}>
-          The four shares add to a whole game, so this is one habit rather than two: an official
-          light in the first quarter has to be heavy somewhere later. Read the column below as a
-          single number — how much of a game&rsquo;s fouls an official moves from its start toward
-          its finish.
+          The four quarter shares sum to a whole game, so they are dependent: a lower share
+          in one quarter requires a higher share elsewhere. The measure below summarises the
+          shift toward later fouls in each official&apos;s games.
         </p>
         <ul className="flex flex-col gap-2" style={{ ...termCardStyle }}>
           {shifters.map((s) => (
@@ -126,32 +107,30 @@ export function RefereeEffectContent({
       </section>
 
       <section className="flex flex-col gap-4">
-        <SectionHeading>TWO THINGS THAT ARE NOT TRUE</SectionHeading>
+        <SectionHeading>LATE-GAME AND HOME-AWAY COMPARISONS</SectionHeading>
 
         <p style={BODY}>
-          <span style={LEAD_IN}>Officials do not swallow the whistle at the end.</span> It is the
-          most repeated claim about NBA officiating, and in{" "}
-          {timing.gamesCovered.toLocaleString()} games it does not happen. The league calls{" "}
+          <span style={LEAD_IN}>Late-game variation does not exceed the chance expectation.</span> Across{" "}
+          {timing.gamesCovered.toLocaleString()} games, the league calls{" "}
           {timing.leagueLateFoulsPerGame.toFixed(2)} fouls in the last {lateMinutes} minutes of a
-          fourth quarter — {timing.leagueLateShareOfQ4.toFixed(1)}% of that quarter&rsquo;s fouls
-          — and the number of officials who differ from each other there is{" "}
+          fourth quarter, {timing.leagueLateShareOfQ4.toFixed(1)}% of that quarter&rsquo;s fouls.
+          The number of officials crossing the comparison threshold is{" "}
           <strong>{timing.lateWindow.observed} against {timing.lateWindow.expected} expected by
-          chance</strong>. Below chance, not above it. The quarter-level habit above is real and
-          has nothing to do with the closing minutes.
+          chance</strong>. This test compares officials; it cannot determine whether officials
+          collectively pass up calls or whether any individual call was correct.
         </p>
 
         <p style={BODY}>
-          <span style={LEAD_IN}>And the home whistle is real but tiny.</span> Home teams commit{" "}
-          {Math.abs(timing.leagueHomeAwayCounts.shooting).toFixed(2)} fewer shooting fouls a game
+          <span style={LEAD_IN}>Home-away foul counts differ modestly.</span> Home teams are called for{" "}
+          {Math.abs(timing.leagueHomeAwayCounts.shooting).toFixed(2)}{" "}fewer shooting fouls a game
           than visitors, and officials do differ in how far they lean that way: splitting each
           one&rsquo;s home-minus-away gap by foul type puts{" "}
           {timing.homeAway.shooting.observed} of them past the bar on shooting fouls and{" "}
           {timing.homeAway.personal.observed} on personals, against the{" "}
           {timing.expectedByChance} that noise alone produces among {timing.eligibleOfficials}{" "}
-          officials. That is above chance, so the honest word is <em>modest</em>, not <em>none</em>.
-          What it is not is large enough to name anyone: the whole spread between the most and
-          least home-leaning official is about one foul a game, and a third of that is as much as
-          any individual can own.
+          officials. These counts exceed the chance expectation, but the home-away spread
+          is about one foul per game across officials. Crew assignment and team behaviour
+          limit what can be attributed to an individual.
         </p>
       </section>
 
@@ -160,16 +139,14 @@ export function RefereeEffectContent({
       <section className="flex flex-col gap-3">
         <SectionHeading>WHAT THESE NUMBERS CANNOT DO</SectionHeading>
         <p style={BODY}>
-          A call belongs to one of three officials and the play-by-play never records which, so
-          every game credits all three and each figure here is roughly a third of the real
-          individual effect — the true spread is <em>wider</em> than what is shown, not narrower.
-          What makes that survivable is that crews barely repeat: partners are effectively
-          reshuffled across a career, so they wash out as noise instead of accumulating as bias.
+          Every game credits all three officials because the play-by-play does not identify
+          who made each call. Changing crewmates may reduce the influence of any one partner,
+          but the analysis cannot isolate an individual official&apos;s contribution.
         </p>
         <p style={BODY}>
           None of this is a fairness claim. Calling more offensive fouls says nothing about whom
           an official favours, and no measurement on this page distinguishes a correct call from
-          an incorrect one — only how often a kind of call is made.
+          an incorrect one. It measures how often each kind of call is recorded.
         </p>
       </section>
     </div>

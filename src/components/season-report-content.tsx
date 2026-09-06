@@ -155,7 +155,7 @@ function VerdictLine({ verdict }: { verdict: SeasonReportVerdict }) {
   const { text, tone } =
     verdict.kind === "tooEarly"
       ? {
-          text: `TOO EARLY TO CALL — ${verdict.games.toLocaleString()} GAMES SO FAR`,
+          text: `TOO EARLY TO CALL · ${verdict.games.toLocaleString()} GAMES SO FAR`,
           tone: "var(--term-text-muted)",
         }
       : verdict.kind === "noNorm"
@@ -165,11 +165,11 @@ function VerdictLine({ verdict }: { verdict: SeasonReportVerdict }) {
           }
         : verdict.kind === "inLine"
           ? {
-              text: `IN LINE WITH THE ALL-SEASON NORM — ${verdict.winPct.toFixed(1)}% ±${verdict.band.toFixed(1)} VS ${verdict.norm.toFixed(1)}%`,
+              text: `IN LINE WITH THE ALL-SEASON NORM · ${verdict.winPct.toFixed(1)}% ±${verdict.band.toFixed(1)} VS ${verdict.norm.toFixed(1)}%`,
               tone: "var(--term-text)",
             }
           : {
-              text: `${verdict.kind === "above" ? "ABOVE" : "BELOW"} THE NORM — ${verdict.winPct.toFixed(1)}% ±${verdict.band.toFixed(1)} VS ${verdict.norm.toFixed(1)}%`,
+              text: `${verdict.kind === "above" ? "ABOVE" : "BELOW"} THE NORM · ${verdict.winPct.toFixed(1)}% ±${verdict.band.toFixed(1)} VS ${verdict.norm.toFixed(1)}%`,
               tone: verdict.kind === "above" ? "var(--term-blue-text)" : "var(--term-red-text)",
             }
 
@@ -364,21 +364,20 @@ function ScheduleValue({ teams }: { teams: SeasonReportTeamLabelled[] }) {
         style={{ ...termCardStyle, padding: 16, borderLeft: `2px solid var(--term-blue)` }}
       >
         <p style={{ fontSize: TYPE.body, color: "var(--term-text)", maxWidth: WIDTH.prose, lineHeight: LEAD.body }}>
-          Being the fresher side moves a home team&rsquo;s win probability by{" "}
-          <strong>{REST_SPAN_PP.toFixed(1)} points</strong>. Playing at home instead of away moves
-          it by <strong>{HOME_COURT_SPAN_PP.toFixed(1)}</strong>. So a rest edge is worth about{" "}
+          Historical home win rates differ by{" "}
+          <strong>{REST_SPAN_PP.toFixed(1)} points</strong> between rest groups. The home-road
+          gap is <strong>{HOME_COURT_SPAN_PP.toFixed(1)}</strong> points. The rest gap is about{" "}
           <strong>
             {Math.round(REST_SHARE_OF_HOME_COURT * 100)}% of home court
           </strong>{" "}
-          — real, and far smaller than the thing every fan already accounts for.
+          in size. These are group comparisons, not causal estimates.
         </p>
       </div>
 
       <p style={{ fontSize: TYPE.body, color: "var(--term-text-muted)", maxWidth: WIDTH.prose, lineHeight: LEAD.body }}>
-        Priced at that rate, every rest edge a team was handed, minus every one it had to face,
-        is small for everyone — the league spreads rest around evenly enough that no schedule is
-        worth half a game either way, and that is the finding. No score is read, so none of it
-        says how any team played.{" "}
+        The win-equivalent estimate adds each game&apos;s historical rest-state difference from
+        its venue baseline. Favourable and unfavourable games partly cancel over a season.
+        The displayed team&apos;s results do not enter this calculation.{" "}
         {/* The figure is derived, so it owes the reader its method. Schedule Edge publishes the
             identical number and its method page documents the conversion. */}
         <a href="/behind-the-data/schedule-edge" style={{ color: "var(--term-blue-text)", fontWeight: 600 }}>
@@ -402,7 +401,7 @@ function ScheduleValue({ teams }: { teams: SeasonReportTeamLabelled[] }) {
         className="mono w-fit"
         style={{ fontSize: 12, letterSpacing: TRACK.sub, fontWeight: 700, color: "var(--term-blue-text)" }}
       >
-        EVERY TEAM, PRICED AND RANKED — SCHEDULE EDGE →
+        EVERY TEAM, PRICED AND RANKED · SCHEDULE EDGE →
       </a>
     </div>
   )
@@ -516,8 +515,7 @@ function ScheduleTax({
         descriptor={basis === "schedule" ? "FULL PUBLISHED SCHEDULE" : "COMPLETED GAMES ONLY"}
       />
       <p style={{ fontSize: TYPE.body, color: "var(--term-text-muted)", maxWidth: WIDTH.prose, lineHeight: LEAD.body }}>
-        What the schedule asked of each team. These are counts, not estimates — nothing here is
-        a claim about who won because of it. They count what a team <em>played</em>: whether it
+        Counts of back-to-backs and dense stretches, alongside estimated travel. Whether a team
         faced more back-to-backs than it inflicted is a different fact, answered by the B2B and
         3-in-4 edge columns on{" "}
         {/* Same words, different facts: 17 back-to-backs played can coexist with a positive B2B
@@ -637,8 +635,8 @@ function FatigueCalendar({ weeks }: { weeks: SeasonReportWeek[] }) {
     <div className="flex flex-col gap-3">
       <SectionDivider label="FATIGUE CALENDAR" descriptor="LEAGUE AVERAGE BY WEEK" />
       <p style={{ fontSize: TYPE.body, color: "var(--term-text-muted)", maxWidth: WIDTH.prose, lineHeight: LEAD.body }}>
-        Average fatigue across every team in every game, week by week. The season is not evenly
-        hard — density, travel and back-to-backs pile up in stretches.
+        Average fatigue score across teams and games each week. Peaks show stretches with
+        higher combined workload, travel, and schedule density.
       </p>
       {peak ? (
         <p className="mono" style={{ fontSize: 11, color: "var(--term-text-muted)" }}>

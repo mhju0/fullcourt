@@ -47,7 +47,7 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-/* ── The scales, in the class layer ───────────────────────────────
+/* The scales, in the class layer.
    `TYPE`, `TRACK` and `LEAD` in `src/lib/terminal-styles.ts` are the source of truth, and an
    inline style should read them from there. But a responsive step cannot be written inline —
    `text-[16px] sm:text-[12px]`, the iOS input-zoom floor, is the standing example — and a
@@ -78,7 +78,7 @@
   --leading-body: 1.55;
 }
 
-/* ── FullCourt "Front Office" theme — LIGHT ──────────────────────
+/* FullCourt "Front Office" light theme.
    Single light theme, always-on. The daylight pro instrument
    (docs/design/mocks/08-front-office.html, selected 2026-08-09):
    cool porcelain ground, white panels on hairline borders, near-black
@@ -212,7 +212,7 @@
   padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
-/* ── Command palette (cmdk) ─────────────────────────────────────── */
+/* Command palette (cmdk). */
 
 /* Styling for the parts cmdk stamps with its own attributes (command-palette.tsx).
    Tokens only, sizes on the type scale, spacing on the space scale. No entry
@@ -298,7 +298,7 @@
   color: var(--term-text-muted);
 }
 
-/* ── Front-door chrome ───────────────────────────────────────────────── */
+/* Front-door chrome. */
 
 /* On `/` — the one dark surface — the header re-resolves its tokens to dark-ground
    values, so the same markup paints dark chrome instead of the light bar that used to
@@ -331,7 +331,7 @@
   --term-border: transparent;
 }
 
-/* ── Route cross-fade (G1, ADR 0010) ─────────────────────────────── */
+/* Route cross-fade (G1, ADR 0010). */
 
 /* The default view-transition fade, shortened to chrome speed. The JS side
    (route-transition.ts, useSlateDensity) already skips transitions under reduced
@@ -349,7 +349,7 @@
   }
 }
 
-/* ── Animations ─────────────────────────────────────────────────── */
+/* Animations. */
 
 @keyframes fadeInUp {
   from {
@@ -402,19 +402,44 @@
   }
 }
 
-/* ── Base layer ─────────────────────────────────────────────────── */
+/* Unlayered so component outline resets cannot erase keyboard focus. */
+:focus-visible {
+  outline: 2px solid var(--term-accent);
+  outline-offset: 2px;
+}
+
+/* The palette clips its children; keep the input's indicator inside its box. */
+[cmdk-input]:focus-visible {
+  outline-offset: -3px;
+}
+
+/* Match the mobile navigation breakpoint, including touch tablets. Labels own
+   checkbox targets; inline prose links keep their text flow. */
+@media (max-width: 1023px) {
+  :where(main, header, footer, nav, [cmdk-dialog]) :where(
+    button, select, input[type="search"], input[type="text"], [cmdk-input],
+    [role="button"], [cmdk-item], label:has(input[type="checkbox"])
+  ),
+  :where(header, nav, footer) a {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  footer a {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  [cmdk-input] {
+    font-size: 16px;
+  }
+}
+
+/* Base layer. */
 
 @layer base {
   * {
     @apply border-border;
-  }
-
-  /* One app-wide keyboard focus indicator. Components may reinforce it with a ring or
-     a background tint, but must not replace it — a background change alone measured
-     1.16:1 against the row it replaced. */
-  :focus-visible {
-    outline: 2px solid var(--term-accent);
-    outline-offset: 2px;
   }
 
   html {
@@ -446,7 +471,7 @@
   font-variant-numeric: tabular-nums;
 }
 
-/* ── Tables ──────────────────────────────────────────────────────
+/* Tables.
    Cell padding lives here rather than in `termThStyle` / `termTdStyle` so all 21 tables in the
    app pad identically without 21 call sites having to agree.
 
@@ -478,7 +503,7 @@
   border-top: 1px solid var(--term-border);
 }
 
-/* ── Player rest database (/shooting) ────────────────────────────
+/* Player rest database (/shooting).
    An expanded player's seasons are rows of the browse table itself, so there is
    one header and one column grid and nothing for the sticky header to collide
    with. The group needs to be findable at a glance without shouting: a tinted

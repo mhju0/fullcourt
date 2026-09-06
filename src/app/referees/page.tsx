@@ -16,7 +16,7 @@ const legends = legendsData as RefereeLegends;
 export const metadata: Metadata = {
   title: "Referee Effect",
   description:
-    "How NBA officials differ in the kinds of foul they call and when they call them — and what eleven seasons say about the beliefs that attach to individual referees.",
+    "Foul types, timing, and official-player records compared with season averages and chance expectations.",
 };
 
 /**
@@ -50,7 +50,7 @@ export default function RefereesPage() {
         // Two lines at 1440px is a contract, not a preference — e2e/page-headers.spec.ts
         // measures the wrapped line boxes. The population and the caveat both get said at
         // length in the body; this has room for the refusal only.
-        description="What separates officials is the mix of fouls they call and when they arrive — not who they favour. Three work every game, so nothing here is a fairness claim."
+        description="Compare foul patterns in the games each official worked. Three officials share every game, and these records do not identify who made a call or whether it was correct."
       />
 
       <MethodLink surfaceHref="/referees" />

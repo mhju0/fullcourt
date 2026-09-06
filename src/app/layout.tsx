@@ -41,7 +41,7 @@ const SITE_URL = "https://fullcourt-nba.vercel.app";
 // Cost and Referee Effect shipped. Names the subjects instead, which a new module extends
 // rather than invalidates.
 const SITE_DESC =
-  "FullCourt models what the NBA schedule does to a game — rest advantage, schedule edge, playoff series rest, player shooting by rest, shot value, the cost of a missing player, and referee foul style — checked against every season since 1985-86.";
+  "NBA analytics for rest, travel, and schedule density, checked against games since 1985-86. Explore shooting, playoff series, availability, and officiating with methods and limitations.";
 
 // The app is committed light-only (globals.css sets color-scheme: light), so pin the
 // mobile browser chrome to --term-bg instead of letting Safari/Chrome pick a default.
@@ -52,7 +52,7 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "FullCourt — NBA Analytics",
+    default: "FullCourt · NBA Analytics",
     template: "%s · FullCourt",
   },
   description: SITE_DESC,
@@ -60,12 +60,12 @@ export const metadata: Metadata = {
     type: "website",
     siteName: "FullCourt",
     url: SITE_URL,
-    title: "FullCourt — NBA Analytics",
+    title: "FullCourt · NBA Analytics",
     description: SITE_DESC,
   },
   twitter: {
     card: "summary_large_image",
-    title: "FullCourt — NBA Analytics",
+    title: "FullCourt · NBA Analytics",
     description: SITE_DESC,
   },
   // The other half of the install surface (app/manifest.ts): `capable` is what lets a
@@ -122,14 +122,12 @@ export default function RootLayout({
             borderTop: "1px solid var(--term-border)",
           }}
         >
-          <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-2 sm:px-6">
+          <div className="mx-auto flex max-w-7xl flex-col items-start justify-between gap-x-6 px-4 py-2 sm:px-6 lg:flex-row lg:items-center">
             <span style={{ fontSize: "11px", color: "var(--term-text-muted)", letterSpacing: TRACK.sub }}>
               RENDERED: {renderedAt} ·{" "}
               <a
                 href="/api/health"
-                // Colour is a class, not an inline `style`. It was inline until 2026-08-13, and
-                // an inline declaration outranks a class rule — so `hover:text-` never painted on
-                // any of these four links. Measured: computed colour identical at rest and hover.
+                // Keep link colors in classes so hover styles can override them.
                 className="underline transition-colors text-[var(--term-text-muted)] hover:text-[var(--term-text)]"
               >
                 SYSTEM STATUS
@@ -141,9 +139,6 @@ export default function RootLayout({
                   `<a>`: this is an internal route now, and `no-html-link-for-pages` enforces it. */}
               <Link
                 href="/"
-                // Colour is a class, not an inline `style`. It was inline until 2026-08-13, and
-                // an inline declaration outranks a class rule — so `hover:text-` never painted on
-                // any of these four links. Measured: computed colour identical at rest and hover.
                 className="underline transition-colors text-[var(--term-text-muted)] hover:text-[var(--term-text)]"
               >
                 WHAT THIS MEASURES
@@ -153,9 +148,6 @@ export default function RootLayout({
                 href="https://github.com/mhju0"
                 target="_blank"
                 rel="noopener noreferrer"
-                // Colour is a class, not an inline `style`. It was inline until 2026-08-13, and
-                // an inline declaration outranks a class rule — so `hover:text-` never painted on
-                // any of these four links. Measured: computed colour identical at rest and hover.
                 className="underline transition-colors text-[var(--term-text-muted)] hover:text-[var(--term-text)]"
               >
                 BUILT BY MJ
@@ -165,9 +157,6 @@ export default function RootLayout({
                 href="https://github.com/mhju0/fullcourt"
                 target="_blank"
                 rel="noopener noreferrer"
-                // Colour is a class, not an inline `style`. It was inline until 2026-08-13, and
-                // an inline declaration outranks a class rule — so `hover:text-` never painted on
-                // any of these four links. Measured: computed colour identical at rest and hover.
                 className="underline transition-colors text-[var(--term-text-muted)] hover:text-[var(--term-text)]"
               >
                 SOURCE

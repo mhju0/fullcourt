@@ -53,7 +53,7 @@ export const MIN_GAMES_FOR_INFERENCE = 100;
 export const ABNORMAL_SEASON_NOTES: Readonly<Record<string, { label: string; note: string }>> = {
   "1998-99": {
     label: "LOCKOUT SEASON · 50 GAMES PER TEAM",
-    note: "A labour dispute cut the season to 50 games per team, all of them played between 5 February and 5 May 1999. Travel and crowds were ordinary; the calendar was not. Fifty games in 89 days is denser than usual, so back-to-backs and 3-in-4s run heavier here — and every count below is drawn from a season three-fifths the usual length, so totals are smaller and the win rates carry a wider band.",
+    note: "The lockout season contained 50 games per team, played from 5 February to 5 May 1999. Its compressed calendar affects back-to-back and 3-in-4 counts. Compare totals with that shorter schedule length and read win rates with their smaller samples.",
   },
   "2011-12": {
     label: "LOCKOUT SEASON · 66 GAMES PER TEAM",
@@ -61,11 +61,11 @@ export const ABNORMAL_SEASON_NOTES: Readonly<Record<string, { label: string; not
   },
   "2019-20": {
     label: "SUSPENDED SEASON · 63–67 GAMES PER TEAM",
-    note: "COVID-19 suspended the season on 11 March 2020, with teams having played between 63 and 67 games. This report covers those 971 games and nothing else. The 88 games that restarted the season inside the Orlando bubble are excluded here and everywhere on the site — one site, no travel, no home crowd, nothing a rest model can read. Because teams stopped at different game counts, per-team totals below are not strictly comparable to one another.",
+    note: "COVID-19 suspended the season on 11 March 2020, with teams having played 63 to 67 games. This report covers the 971 pre-suspension games and excludes the Orlando bubble, which had no venue-to-venue travel or home crowd. Unequal game counts limit comparisons of team totals.",
   },
   "2020-21": {
     label: "CONDENSED SEASON · 72 GAMES PER TEAM",
-    note: "The season after the bubble was shortened to 72 games per team and run from 22 December 2020 to 16 May 2021 — ten fewer games in about four weeks less time, following a 71-day off-season. The games themselves are ordinary and are included in full, but most were played in empty or capacity-limited arenas, so home crowd is weaker here than in any other season while schedule density runs slightly hotter.",
+    note: "The 72-game season ran from 22 December 2020 to 16 May 2021 after a 71-day off-season. It is included in full. The compressed schedule and empty or capacity-limited arenas distinguish it from a typical season; the fatigue score does not model crowd attendance.",
   },
 };
 

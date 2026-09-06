@@ -12,3 +12,16 @@ Evidence order: source/tests → Git → docs/DECISIONS.md → docs/ROADMAP.md �
 - Game dates are America/New_York calendar dates; use formatEasternDateKey(). Published regular-season game reads use publishableGames() in queries.ts. The headline counts isCalledSide() games (rested home team), keeps rested visitors separate, and compares rates with venue baselines.
 - FullCourt is the product; rest advantage is the metric. Preserve rest-advantage identifiers when changing branding.
 - Generated analytics artifacts in src/data/, public/data/, and the model-facts files must stay aligned with their producing scripts and pinning tests; do not hand-edit published figures. shadcn is a build dependency: globals.css imports shadcn/tailwind.css.
+
+<!-- antislop:start -->
+## antislop
+
+For UI, copy, accessibility, mobile layout, or code comments work, read `anti-slop/antislop.md`, then the relevant skill:
+- UI / visual: `anti-slop/skills/antislop-ui/SKILL.md`
+- Copy & text: `anti-slop/skills/antislop-copywriting/SKILL.md`
+- Accessibility: `anti-slop/skills/antislop-human/SKILL.md`
+- Mobile / responsive: `anti-slop/skills/antislop-layoutmobile/SKILL.md`
+- Code comments: `anti-slop/skills/antislop-code/SKILL.md`
+
+Use `docs/design/BRAND_GRAMMAR.md` for existing design direction. Before UI work, ask whether antislop applies during the work or as an audit afterward, unless the session already establishes the mode. Explicit user instructions and existing owner decisions take precedence over skill defaults.
+<!-- antislop:end -->

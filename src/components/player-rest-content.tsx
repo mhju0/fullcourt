@@ -459,12 +459,10 @@ export function PlayerRestContent() {
       </div>
 
       <p style={{ fontSize: 12, color: "var(--term-text-muted)", lineHeight: LEAD.body, maxWidth: WIDTH.prose, margin: 0 }}>
-        <strong style={{ color: "var(--term-text-dim)" }}>No rest</strong> — he played yesterday.{" "}
+        <strong style={{ color: "var(--term-text-dim)" }}>No rest</strong>: played yesterday.{" "}
         <strong style={{ color: "var(--term-text-dim)" }}>3+ days rest</strong>{" "}
-        {/* Explicit: a literal space before the dash here is swallowed when the text
-            node wraps to the next source line, which closed the gap after the label. */}
-        — at least three days since his last game. Both are counted from the games he actually played, not his
-        team&rsquo;s schedule, so a night off for load management is never credited to him.{" "}
+        means at least three days since the player&apos;s last appearance. Both categories use
+        personal appearances, so sitting out a team game extends the player&apos;s rest interval.{" "}
         <strong style={{ color: "var(--term-text-dim)" }}>Rest effect</strong> is the right column minus the left:{" "}
         <strong style={{ color: "var(--term-text-dim)" }}>positive</strong> means he shoots better with more rest,{" "}
         <strong style={{ color: "var(--term-text-dim)" }}>negative</strong> that he shoots better on short rest.
@@ -520,11 +518,11 @@ export function PlayerRestContent() {
       <p style={{ fontSize: 12, color: "var(--term-text-muted)", lineHeight: LEAD.body, maxWidth: WIDTH.prose, margin: 0 }}>
         {index.names.length.toLocaleString()} players · 1996-97 through{" "}
         {seasonLabel(index.years[0])}, regular season. 2019-20 covers only the games played before the March 2020
-        suspension — its Orlando bubble games are left out, because a player&rsquo;s first game back sat about
-        141 days after his last one and that is a pause, not rest. eFG% counts a three as 1.5 makes. A single
+        suspension. Orlando bubble games are excluded because the long shutdown changes the meaning
+        of time between appearances. eFG% counts a three as 1.5 makes. A single
         season&rsquo;s rest split carries a standard error near 7 pp and correlates with the player&rsquo;s own next
-        season at roughly zero, so a season describes what happened rather than what he is; the career line is the
-        number that supports a claim.
+        season at roughly zero. Career estimates pool more attempts and shrink uncertain gaps
+        toward the player-pool mean, but still do not isolate a causal effect of rest.
       </p>
     </div>
   )
@@ -604,8 +602,8 @@ function PlayerExpansion({
                 4 points, so the extremes of a raw ranking are mostly noise — but it now says
                 why in words rather than naming the method. */}
             Raw career gap: {signed(estimate.delta)} percentage points, give or take{" "}
-            {estimate.se.toFixed(2)}. Small shot counts make gaps look bigger than they really
-            are, so {signed(estimate.shrunk)} is the fairer estimate.
+            {estimate.se.toFixed(2)} as one standard error. The estimate shrunk toward the player-pool mean is{" "}
+            {signed(estimate.shrunk)}, which reduces the influence of uncertain extremes.
           </td>
         </tr>
       )}
@@ -613,7 +611,7 @@ function PlayerExpansion({
         <tr className="fc-sub fc-groupend">
           <td style={termTdStyle} />
           <td colSpan={9} style={{ ...termTdStyle, whiteSpace: "normal", fontSize: 12, color: "var(--term-text-muted)" }}>
-            No career estimate — he has not taken 150 shots both on no rest and on three or more
+            No career estimate: fewer than 150 shots on no rest or on three or more
             days rest, so only his seasons are shown.
           </td>
         </tr>
@@ -621,4 +619,3 @@ function PlayerExpansion({
     </>
   )
 }
-

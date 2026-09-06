@@ -28,9 +28,9 @@ test.describe("Availability Cost page", () => {
     // without the second it reads as though the model explains games. Both have to survive
     // any copy edit, which is why they are asserted rather than reviewed.
     await expect(
-      page.getByText("This measures what an absence cost, not who will play tonight.")
+      page.getByText("Availability is measured after the game.")
     ).toBeVisible();
-    await expect(page.getByText("And a basketball game is mostly noise.")).toBeVisible();
+    await expect(page.getByText("Much of the margin remains unexplained.")).toBeVisible();
   });
 
   test("draws one column per season, on a track that starts at zero", async ({ page }) => {
