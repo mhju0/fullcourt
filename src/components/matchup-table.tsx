@@ -546,6 +546,7 @@ function GameRow({
           badge already carry that far, and the home page's thesis band states the headline rate
           against its baseline before the slate begins. */}
       <div
+        inert={!expanded}
         className={cn(
           "sticky left-0 grid max-w-[calc(100vw-40px)] transition-[grid-template-rows] duration-300 ease-out",
           expanded ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
