@@ -525,7 +525,22 @@ Evidence: `anti-slop/audit-002-2026-09-06.md`, `src/app/behind-the-data/`,
 
 ---
 
+### D-56 · Matchup comparisons explain the venue baseline · ACTIVE
+
+Date: 2026-09-06.
+
+At the owner's request, expanded Games matchups show two labelled historical win rates:
+the rested group and all teams at the same venue. A short explanation states why home or
+road is the comparison. Cumulative home thresholds use plain `7+` wording; road rates
+continue to pool all rest gaps. These are historical group records, not matchup probabilities.
+Sample counts remain in the evidence data and reference analysis, with a method link replacing
+inline `n = …`. This supersedes the earlier requirement to print a denominator on every card.
+Threshold selection, rate calculations, and model coefficients are unchanged.
+
+---
+
 ## Standing decisions with no single date
+
 
 | Decision | Status | Note |
 | --- | --- | --- |

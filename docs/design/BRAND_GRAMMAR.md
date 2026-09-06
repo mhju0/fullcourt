@@ -22,7 +22,7 @@ places — see the hard ban in `CLAUDE.md` and the glossary's `_Avoid_` lines.
 The category default for sports analytics is a dark UI, neon accents, and a headline win
 rate with no denominator. FullCourt's founding refusals are the brand:
 
-- every rate carries its sample size;
+- every rate has an accessible sample size; matchup comparisons link to the method instead of printing the count inline (D-56);
 - every claim carries its baseline;
 - the nulls are published (the win-total null, the fitted-weights null, the pre-registered
   referee axes in [ADR 0007](../adr/0007-referee-analysis-axes-are-pre-registered.md));
@@ -143,7 +143,7 @@ The following conventions have implementation or review checks:
 | Law | Enforced by |
 |-----|-------------|
 | A rate never appears without its baseline; no 50% zero lines | derived claims + tests on `/analysis` (PR #21); `venueBaseline` in `AnalysisResponse` |
-| Every number shows its sample size | matchup cards + Upcoming Edges (closeout #4) |
+| Sample sizes are available with the analysis | matchup comparisons link to Behind the Data (D-56) |
 | Limits publish with results; nulls ship | ADRs 0006/0007; the pre-registration pattern |
 | Counts that cannot derive are phrased to never age ("every season since 1985-86", never "41 seasons") | copy convention + [SEASON_ROLLOVER.md §7](../SEASON_ROLLOVER.md) |
 | Signed numbers use U+2212, bare zero, units at the call site | `signedNumber()` (`src/lib/signed-number.ts`) |

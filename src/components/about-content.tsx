@@ -109,7 +109,7 @@ const CARD_SKIN = [
  */
 const STANDARD = [
   {
-    rule: "Every number shows its sample size",
+    rule: "Sample sizes are available with the analysis",
     rulesOut: "Not knowing whether a result came from three games or three hundred.",
   },
   {

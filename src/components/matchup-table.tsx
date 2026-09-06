@@ -1,6 +1,7 @@
 "use client"
 
 import { useCallback, useMemo, useState, type KeyboardEvent } from "react"
+import Link from "next/link"
 import { ChevronDown } from "lucide-react"
 import { FatigueBar, type FatigueBarTone } from "@/components/fatigue-bar"
 import {
@@ -546,7 +547,7 @@ function GameRow({
           against its baseline before the slate begins. */}
       <div
         className={cn(
-          "grid transition-[grid-template-rows] duration-300 ease-out",
+          "sticky left-0 grid max-w-[calc(100vw-40px)] transition-[grid-template-rows] duration-300 ease-out",
           expanded ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
         )}
       >
@@ -561,10 +562,9 @@ function GameRow({
             }}
           >
             {evidence && (
-              <p
-                className="m-0"
+              <div
                 style={{
-                  fontSize: 12,
+                  fontSize: TYPE.body,
                   lineHeight: LEAD.body,
                   color: "var(--term-text-muted)",
                   paddingBottom: SPACE.md,
@@ -572,8 +572,32 @@ function GameRow({
                   borderBottom: "1px solid var(--term-border)",
                 }}
               >
-                {evidence.sentence}
-              </p>
+                <p className="m-0 mb-3 font-medium" style={{ color: "var(--term-text)" }}>
+                  {game.restAdvantage?.advantageTeam === "home" ? "Home" : "Road"} win rate in past games
+                </p>
+                <dl className="m-0 grid grid-cols-2 gap-4" style={{ maxWidth: 440 }}>
+                  <div className="flex min-w-0 flex-col-reverse gap-1">
+                    <dt>{evidence.comparisonLabel}</dt>
+                    <dd className="m-0 font-mono text-2xl font-semibold tabular-nums" style={{ color: "var(--term-text)" }}>
+                      {evidence.winPct.toFixed(1)}%
+                    </dd>
+                  </div>
+                  <div className="flex min-w-0 flex-col-reverse gap-1">
+                    <dt>All {game.restAdvantage?.advantageTeam === "home" ? "home" : "road"} teams</dt>
+                    <dd className="m-0 font-mono text-2xl font-semibold tabular-nums" style={{ color: "var(--term-text)" }}>
+                      {evidence.baselinePct.toFixed(1)}%
+                    </dd>
+                  </div>
+                </dl>
+                <p className="mb-0 mt-3">
+                  {game.restAdvantage?.advantageTeam === "home"
+                    ? "Home court already helps, so we compare against home teams overall."
+                    : "Playing on the road is harder, so we compare against road teams overall."}
+                </p>
+                <Link className="mt-1 inline-flex items-center underline underline-offset-4" href="/behind-the-data/rest-advantage">
+                  Sample sizes and method
+                </Link>
+              </div>
             )}
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <FatigueDetailColumn label={`AWAY · ${awayBrand.abbreviation}`} fatigue={game.awayFatigue} />
