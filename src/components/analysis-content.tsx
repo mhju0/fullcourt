@@ -25,7 +25,8 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { useBacktest } from "@/hooks/useBacktest"
 import { useExploreGames, type DrillSignal } from "@/hooks/useExploreGames"
 import type { ExploreResult } from "@/lib/explore-games-machine"
-import { apiFetcher } from "@/lib/fetcher"
+import { apiFetcher, errMsg } from "@/lib/fetcher"
+import { Button } from "@/components/ui/button"
 import { NBA_SEASONS } from "@/lib/nba-season"
 import { MIN_GAMES_FOR_INFERENCE } from "@/lib/season-report"
 import {
@@ -446,10 +447,8 @@ function HeadlineDotPlot({
 
 function SeasonWinRateBySeasonChart({
   seasonWinRates,
-  loading,
 }: {
   seasonWinRates: AnalysisResponse["seasonWinRates"]
-  loading: boolean
 }) {
   // Each season against its OWN home baseline. A single zero line across 41 seasons would
   // be wrong at both ends: home teams won 67.9% in 1987-88 and 54.3% in 2023-24, so a fixed
@@ -477,9 +476,7 @@ function SeasonWinRateBySeasonChart({
   return (
     <div className="mt-4 min-w-0">
       <div className="h-72 min-w-0">
-      {loading ? (
-        <Skeleton className="h-full w-full bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)" }} />
-      ) : chartData.length === 0 ? (
+      {chartData.length === 0 ? (
         <div
           className="mono flex h-full items-center justify-center"
           style={termDashedEmptyStyle}
@@ -545,7 +542,7 @@ function SeasonWinRateBySeasonChart({
         </ResponsiveContainer>
       )}
       </div>
-      {!loading && highlight && (
+      {highlight && (
         <p
           className="mono m-0"
           style={{
@@ -561,6 +558,85 @@ function SeasonWinRateBySeasonChart({
         </p>
       )}
     </div>
+  )
+}
+
+/**
+ * Own the season comparison from its threshold controls through the displayed claim.
+ * The page supplies its canonical backtest; callers never prepare admitted rows or
+ * combine request flags. Maturity always comes from that unfiltered population.
+ *
+ * A failed threshold read is not an empty measurement. Keep the failure local and let
+ * the reader retry or select another threshold, without replacing the rest of the page.
+ */
+function SeasonComparison({ backtest, zeroLabel }: { backtest: AnalysisResponse; zeroLabel: string }) {
+  const [seasonRaFilter, setSeasonRaFilter] = useState(0)
+  const { data: seasonData, error: seasonError, isLoading: seasonRateLoading, isValidating, mutate: retry } =
+    useSWR<AnalysisResponse>(
+      seasonRaFilter > 0 ? `/api/analysis?seasonMinRA=${seasonRaFilter}` : null,
+      apiFetcher,
+      { revalidateOnFocus: false, shouldRetryOnError: false }
+    )
+
+  const displayedSeasonRates = plottableSeasonRates(
+    seasonRaFilter > 0 ? (seasonData?.seasonWinRates ?? []) : backtest.seasonWinRates,
+    backtest.seasonWinRates
+  )
+
+  // Screenshot tooling measures this section through data-shot-anchor.
+  return (
+    <section aria-label="Win rate by season" style={termCardStyle} data-shot-anchor="win-rate-by-season">
+      <SectionDivider
+        label="WIN RATE BY SEASON"
+        descriptor="VS THAT SEASON'S HOME BASELINE"
+      />
+      <div className="mt-2 flex flex-wrap gap-2">
+        {RA_THRESHOLD_OPTIONS.map((opt) => {
+          const active = seasonRaFilter === opt.value
+          return (
+            <button
+              key={opt.value}
+              type="button"
+              aria-pressed={active}
+              onClick={() => setSeasonRaFilter(opt.value)}
+              className="mono transition-[background-color,border-color,transform] active:scale-[0.97]"
+              style={{
+                // Solid ink when active, never the rested-pole teal: the pill selects a
+                // view of the chart, and only the marks inside it may wear a data pole.
+                background: active ? "var(--term-text)" : "var(--term-surface)",
+                color: active ? "var(--term-surface)" : "var(--term-text)",
+                border: `1px solid ${active ? "var(--term-text)" : "var(--term-border)"}`,
+                borderRadius: "var(--term-radius)",
+                padding: "4px 12px",
+                fontSize: 12,
+                letterSpacing: TRACK.sub,
+                fontWeight: 600,
+                cursor: "pointer",
+              }}
+            >
+              {opt.label.toUpperCase()}
+            </button>
+          )
+        })}
+      </div>
+
+      {seasonRateLoading || (seasonError && isValidating) ? (
+        <div className="mt-4 h-72" role="status">
+          <span className="sr-only">Loading season comparison</span>
+          <Skeleton className="h-full w-full bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)" }} />
+        </div>
+      ) : seasonError ? (
+        <div className="mt-4">
+          <MessageCard tone="error" title="FAILED TO LOAD SEASON COMPARISON" body={errMsg(seasonError)} />
+          <Button className="mt-3" variant="outline" size="sm" onClick={() => void retry().catch(() => undefined)}>
+            Retry season comparison
+          </Button>
+        </div>
+      ) : (
+        <SeasonWinRateBySeasonChart seasonWinRates={displayedSeasonRates} />
+      )}
+      <BaselineLegend zeroLabel={zeroLabel} />
+    </section>
   )
 }
 
@@ -881,7 +957,6 @@ function ExploreGames({
 
 export function AnalysisContent({ asOf }: { asOf?: DataAsOf | null }) {
   const [drillSignal, setDrillSignal] = useState<DrillSignal>(null)
-  const [seasonRaFilter, setSeasonRaFilter] = useState(0)
 
   const exploreRef = useRef<HTMLDivElement>(null)
   const drillTokenRef = useRef(0)
@@ -889,31 +964,6 @@ export function AnalysisContent({ asOf }: { asOf?: DataAsOf | null }) {
   // The one surface whose subject *is* the backtest, so it is also the only one that
   // renders the failure rather than degrading around it.
   const { data, error, loading } = useBacktest()
-
-  const seasonSwrKey = seasonRaFilter > 0
-    ? `/api/analysis?seasonMinRA=${seasonRaFilter}`
-    : null
-  const { data: seasonData, isLoading: seasonRateLoading } = useSWR<AnalysisResponse>(
-    seasonSwrKey,
-    apiFetcher,
-    { revalidateOnFocus: false }
-  )
-
-  // Both responses are in scope here and only here: `data` is always the unfiltered backtest,
-  // which is what decides whether a season is mature enough to plot at all.
-  const displayedSeasonRates = plottableSeasonRates(
-    seasonRaFilter > 0
-      ? (seasonData?.seasonWinRates ?? [])
-      : (data?.seasonWinRates ?? []),
-    data?.seasonWinRates ?? []
-  )
-
-  const handleSeasonFilterChange = useCallback(
-    (threshold: number) => {
-      setSeasonRaFilter(threshold)
-    },
-    []
-  )
 
   const handleBarClick = useCallback(
     (datum: unknown) => {
@@ -1105,49 +1155,7 @@ export function AnalysisContent({ asOf }: { asOf?: DataAsOf | null }) {
           is still live, in the stat tile above; the argument is one click away under the
           method link. */}
 
-      {/* Win rate by season */}
-      {/* `data-shot-anchor` marks where the README's screenshot of this page ends. It is read by
-          scripts/screenshots.mjs, which measures this element's bottom edge instead of carrying a
-          hand-derived pixel height — see the header of that file. */}
-      <div style={termCardStyle} data-shot-anchor="win-rate-by-season">
-        <SectionDivider
-          label="WIN RATE BY SEASON"
-          descriptor="VS THAT SEASON'S HOME BASELINE"
-        />
-        <div className="mt-2 flex flex-wrap gap-2">
-          {RA_THRESHOLD_OPTIONS.map((opt) => {
-            const active = seasonRaFilter === opt.value
-            return (
-              <button
-                key={opt.value}
-                onClick={() => handleSeasonFilterChange(opt.value)}
-                className="mono transition-[background-color,border-color,transform] active:scale-[0.97]"
-                style={{
-                  // Solid ink when active, never the rested-pole teal: the pill selects a
-                  // view of the chart, and only the marks inside it may wear a data pole.
-                  background: active ? "var(--term-text)" : "var(--term-surface)",
-                  color: active ? "var(--term-surface)" : "var(--term-text)",
-                  border: `1px solid ${active ? "var(--term-text)" : "var(--term-border)"}`,
-                  borderRadius: "var(--term-radius)",
-                  padding: "4px 12px",
-                  fontSize: 12,
-                  letterSpacing: TRACK.sub,
-                  fontWeight: 600,
-                  cursor: "pointer",
-                }}
-              >
-                {opt.label.toUpperCase()}
-              </button>
-            )
-          })}
-        </div>
-
-        <SeasonWinRateBySeasonChart
-          seasonWinRates={displayedSeasonRates}
-          loading={seasonRateLoading}
-        />
-        <BaselineLegend zeroLabel={claims.seasonZeroLabel} />
-      </div>
+      <SeasonComparison backtest={data} zeroLabel={claims.seasonZeroLabel} />
 
       {/* Key insight callout. Both comparisons in this paragraph — whether a bigger gap is
           worth more, and whether the gain keeps climbing past RA ≥ 5 — are read off

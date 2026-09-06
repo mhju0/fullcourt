@@ -336,7 +336,8 @@ Expected Shot Value (xeFG%) grid + model surface for one season. `runtime = "nod
 
 ## `GET /api/schedule-disparity`
 
-Which teams a season's schedule favored, ranked by net edge games. Powers `/schedule`.
+Which teams a season's schedule favored, ranked by net edge games where measured, with
+unmeasured teams last. A wholly unmeasured season ranks by net rest edge. Powers `/schedule`.
 `runtime = "nodejs"`, `dynamic = "force-dynamic"`.
 
 - **Query (Zod):** `season?` — validated against **`rankableSeasons(browsableSeasons())`**, not
@@ -352,7 +353,7 @@ Which teams a season's schedule favored, ranked by net edge games. Powers `/sche
 - **Query fn:** `getScheduleDisparity(season)` → `getRegularSeasonScheduleForDisparity(season)`
   + `getTeamDirectory()`. Read-only: no table, no migration, no ingest — it derives everything
   from the existing `games` and `fatigue_scores` reads.
-- **Success:** `{ data: ScheduleDisparityResponse, error: null }` — the 30 ranked teams, the
+- **Success:** `{ data: ScheduleDisparityResponse, error: null }` — the teams in ranking order (unmeasured teams last), the
   summary strip figures, and a provisional flag for a season still in progress.
   - **`latestFinalDate`** — the ET date of that season's most recent final game, rendered as
     the page's `AS OF` stamp. It **replaced `asOf`** on 2026-08-27, which carried the date the

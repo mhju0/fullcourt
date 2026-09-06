@@ -648,3 +648,20 @@ describe("schedule value in wins", () => {
     }
   });
 });
+
+
+describe("computeScheduleDisparity — mixed measurement ranking", () => {
+  it("keeps priced openers below measured teams without changing their pricing population", () => {
+    const { teams, league } = computeScheduleDisparity("2023-24", [
+      game("2024-01-01", 1, 2),
+      game("2024-01-03", 1, 2, { homeFatigueScore: "1", awayFatigueScore: "4" }),
+      game("2024-01-04", 3, 4, { homeFatigueScore: "1", awayFatigueScore: "4" }),
+    ]);
+    expect(teams.map((t) => [t.teamId, t.netEdgeGames])).toEqual([
+      [1, 1], [2, -1], [3, null], [4, null],
+    ]);
+    expect(teams[2].scheduleValueWins).not.toBeNull();
+    expect(teams[3].scheduleValueWins).not.toBeNull();
+    expect(league.delta).toBe(2);
+  });
+});

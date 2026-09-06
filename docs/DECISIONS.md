@@ -455,6 +455,35 @@ This does not change the manual schema boundary or authorize model coefficient c
 *Evidence:* owner's six-part maintenance request; Vercel production and preview deployments
 inspected on 2026-09-05.
 
+### D-51 · Season comparison owns its request lifecycle — **ACTIVE**
+**2026-09-06.** Following the owner's instruction to implement architecture-review candidate 1,
+Model Results keeps threshold selection, filtered acquisition, admission and chart state inside
+`SeasonComparison`. The page passes its canonical backtest; the comparison reads maturity from
+that unfiltered population. A failed filtered request shows a local failure and explicit retry,
+never an empty-measurement claim. Threshold changes remain available while a read fails.
+Existing venue baselines, maturity threshold and publication rules are preserved.
+*Evidence:* `src/components/analysis-content.tsx`,
+`e2e/analysis-season-comparison.spec.ts`.
+
+### D-52 · Missing fatigue measurements are unranked — **ACTIVE**
+**Approved 2026-09-06.** In a mixed season, Schedule Edge places unmeasured teams below all
+measured teams with no ordinal or bar and a dash for the ranking value. Measured zero is a
+real result and remains ranked. A wholly unmeasured season still ranks by net rest edge.
+`rankScheduleTeams` owns basis, ordering, values and extremes for the reducer and display;
+team-id tie ordering and opener-inclusive schedule value remain unchanged.
+*Evidence:* owner's approval of architecture-review candidate 2; `src/lib/schedule-ranking.ts`,
+`src/lib/__tests__/schedule-ranking.test.ts`, `e2e/architecture-contracts.spec.ts`.
+
+### D-53 · Same-path navigation skips the cross-fade — **ACTIVE**
+**Approved 2026-09-06.** Selecting the current pathname, including query-only or hash-only
+changes, navigates normally. Different pathnames retain chrome-only cross-fades and the
+one-second fail-open guard. The route-transition module owns pending navigation and observes
+completion from the persistent root layout, independently of the navigation display.
+Replacement releases the old transition; unrelated or late completion cannot settle a new
+one. Reduced motion and unsupported browsers retain normal navigation.
+*Evidence:* owner's approval of architecture-review candidate 3; `src/lib/route-transition.ts`,
+`src/lib/__tests__/route-transition.test.ts`, `e2e/architecture-contracts.spec.ts`.
+
 ---
 
 ## Standing decisions with no single date

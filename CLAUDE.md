@@ -162,10 +162,26 @@ Skipping `prepare` fails **silently**: `fatigue_model_table.csv` is already on d
   and their hours, what a good in-season run looks like line by line, the three greens that are
   not green, and which probe row to believe about ESPN
 
-Two more directories exist locally but are **gitignored**, so they are absent from a fresh clone
-and are deliberately not linked above: `docs/agents/` (agent-facing conventions — domain-doc
-rules, the `gh` issue-tracker rule, triage labels) and `docs/audit/` (the one directory an audit
-pass may write to). Do not add a link to either from a committed file.
+Two more directories exist locally but are **gitignored**, so they are absent from a fresh clone:
+`docs/agents/` holds the local skill configuration referenced below, and `docs/audit/` holds
+local audit output. The skill configuration can be edited directly in this checkout.
+
+## Agent skills
+
+### Issue tracker
+
+For issue operations, use GitHub Issues in `mhju0/fullcourt`.
+Read `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Before triaging, read the five default role mappings in
+`docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context: `docs/GLOSSARY.md` and `docs/adr/`.
+Before domain exploration, read `docs/agents/domain.md`.
 
 ## Final report
 
