@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Geist, Geist_Mono } from "next/font/google";
 import { BottomNav } from "@/components/bottom-nav";
 import { CommandPaletteMount } from "@/components/command-palette-mount";
+import { RouteTransitionLifecycle } from "@/lib/route-transition";
 import { NavBar } from "@/components/nav-bar";
 import "./globals.css";
 import { TRACK } from "@/lib/terminal-styles";
@@ -105,6 +106,7 @@ export default function RootLayout({
         >
           Skip to main content
         </a>
+        <RouteTransitionLifecycle />
         <NavBar />
 
         {/* tabIndex -1 so the skip link's fragment navigation actually moves focus here —

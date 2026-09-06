@@ -24,6 +24,7 @@
  * thing. See the design spec, §6.
  */
 
+import { rankScheduleTeams } from "@/lib/schedule-ranking";
 import { NBA_SEASONS } from "@/lib/nba-season";
 import { differenceInCalendarDays, parseISO } from "date-fns";
 import { classifyRestAdvantage, NEUTRAL_REST_ADVANTAGE_THRESHOLD } from "./rest-advantage-evidence";
@@ -600,17 +601,7 @@ export function computeScheduleDisparity(
     });
   }
 
-  // Ranked by the fatigue headline where a season has one, and by net rest edge where it does
-  // not. Decided once for the season rather than per row so the comparator never mixes two
-  // scales. Leaving an unmeasured season in team-id order under a "most favoured first" heading
-  // would present an arbitrary list as a ranking; net rest edge is this module's namesake, is
-  // derived from dates alone, and so is defined for exactly the seasons the fatigue figure is not.
-  const rankedByFatigue = teams.some((t) => t.netEdgeGames !== null);
-  teams.sort((a, b) =>
-    rankedByFatigue
-      ? (b.netEdgeGames ?? 0) - (a.netEdgeGames ?? 0) || a.teamId - b.teamId
-      : b.netRestEdge - a.netRestEdge || a.teamId - b.teamId
-  );
+  const rankedTeams = rankScheduleTeams(teams).rows.map((row) => row.team);
 
   const edges = teams
     .map((t) => t.netEdgeGames)
@@ -636,7 +627,7 @@ export function computeScheduleDisparity(
     scheduledGames: games.length,
     gamesPerTeamMin: scheduledPerTeam.length ? Math.min(...scheduledPerTeam) : 0,
     gamesPerTeamMax: scheduledPerTeam.length ? Math.max(...scheduledPerTeam) : 0,
-    teams,
+    teams: rankedTeams,
     league: {
       largestEdge,
       largestDisadvantage,

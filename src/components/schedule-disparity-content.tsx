@@ -20,6 +20,7 @@ import { StatTile } from "@/components/ui/stat-tile"
 import { DataTable } from "@/components/ui/data-table"
 import type { ScheduleDisparityResponse, ScheduleDisparityTeam } from "@/types"
 import { signedNumber } from "@/lib/signed-number"
+import { rankScheduleTeams } from "@/lib/schedule-ranking"
 
 // Rankable rather than browsable: this is the one module that ranks teams against each other
 // inside a season, so a season whose teams played unequal numbers of games is withheld here and
@@ -84,7 +85,8 @@ function StatCell(props: { label: string; value: string; sub: string; tone?: str
 }
 
 /** Diverging bar on a zero rule. Shared by the ranked list and the table's inline column. */
-function EdgeBar({ value, bound, height }: { value: number; bound: number; height: number }) {
+function EdgeBar({ value, bound, height }: { value: number | null; bound: number; height: number }) {
+  if (value === null) return <div style={{ height }}><span className="sr-only">Not measured</span></div>
   const geo = barGeometry(value, bound)
   return (
     <div
@@ -205,23 +207,12 @@ export function ScheduleDisparityContent() {
     apiFetcher
   )
 
-  const teams: ScheduleDisparityTeam[] = data?.teams ?? []
-
-  // Which figure this season is ranked by, decided once for the whole table. Fatigue is scored
-  // from games already played, so a published-but-unplayed season has no `netEdgeGames` at all
-  // and the bars would all draw at zero. Net rest edge is derived from dates alone and is the
-  // module's namesake, so it stands in — and the column headings follow it, because a bar
-  // measured in rest days must not sit under a heading that says games.
-  const rankedByFatigue = teams.some((t) => t.netEdgeGames !== null)
-  const rankValue = (t: ScheduleDisparityTeam) =>
-    rankedByFatigue ? (t.netEdgeGames ?? 0) : t.netRestEdge
-  const rankUnit = rankedByFatigue ? "games" : "rest days"
-  const bound = teams.length
-    ? Math.max(5, Math.ceil(Math.max(...teams.map((t) => Math.abs(rankValue(t)))) / 5) * 5)
-    : 5
-
-  const most = teams[0]
-  const least = teams[teams.length - 1]
+  const ranking = rankScheduleTeams(data?.teams ?? [])
+  const teams = ranking.rows.map(({ team, value, rank }) => ({ ...team, rankValue: value, rank }))
+  const rankedByFatigue = ranking.basis === "fatigue"
+  const rankUnit = ranking.unit
+  const bound = Math.max(5, Math.ceil(Math.max(0, ...ranking.rows.map((row) => Math.abs(row.value ?? 0))) / 5) * 5)
+  const { most, least } = ranking
 
   // Season-scoped, so it is read from the response rather than from the page's server half:
   // the season is chosen here, and a stamp rendered above this component could only ever
@@ -281,23 +272,19 @@ export function ScheduleDisparityContent() {
         >
           <StatCell
             label="Most favored"
-            value={signedNumber(rankValue(most))}
-            sub={`${most.abbreviation} · ${most.name}`}
-            tone={edgeColor(rankValue(most))}
+            value={signedNumber(most.value)}
+            sub={`${most.team.abbreviation} · ${most.team.name}`}
+            tone={edgeColor(most.value)}
           />
           <StatCell
             label="Least favored"
-            value={signedNumber(rankValue(least))}
-            sub={`${least.abbreviation} · ${least.name}`}
-            tone={edgeColor(rankValue(least))}
+            value={signedNumber(least.value)}
+            sub={`${least.team.abbreviation} · ${least.team.name}`}
+            tone={edgeColor(least.value)}
           />
           <StatCell
             label="Spread"
-            value={
-              rankedByFatigue
-                ? String(data.league.delta ?? UNMEASURED)
-                : String(rankValue(most) - rankValue(least))
-            }
+            value={String(ranking.spread ?? UNMEASURED)}
             sub={`${rankUnit}, best to worst`}
           />
           <StatCell
@@ -322,6 +309,12 @@ export function ScheduleDisparityContent() {
             : "Net rest edge — days off this team banked, minus days off its opponents did"}
         </p>
 
+        {rankedByFatigue && ranking.rows.some((row) => row.rank === null) ? (
+          <p className="mt-2" style={{ fontSize: TYPE.body, color: "var(--term-text-muted)" }}>
+            Teams without a fatigue measurement appear below the ranking with a dash.
+          </p>
+        ) : null}
+
         {isLoading ? (
           <Skeleton
             className="mt-3 h-[420px] w-full bg-[var(--term-surface-2)]"
@@ -339,7 +332,7 @@ export function ScheduleDisparityContent() {
           </div>
         ) : (
           <ol className="mt-3 flex list-none flex-col gap-[2px] p-0">
-            {teams.map((t, i) => (
+            {teams.map((t) => (
               <li
                 key={t.teamId}
                 className="grid items-center gap-2"
@@ -349,22 +342,22 @@ export function ScheduleDisparityContent() {
                   className="mono text-right"
                   style={{ fontSize: 10, color: "var(--term-text-muted)", fontVariantNumeric: "tabular-nums" }}
                 >
-                  {i + 1}
+                  {t.rank ?? UNMEASURED}
                 </span>
                 <span className="mono" style={{ fontSize: 12, fontWeight: 700, color: "var(--term-text)" }}>
                   {t.abbreviation}
                 </span>
-                <EdgeBar value={rankValue(t)} bound={bound} height={15} />
+                <EdgeBar value={t.rankValue} bound={bound} height={15} />
                 <span
                   className="mono text-right"
                   style={{
                     fontSize: 12,
                     fontWeight: 700,
                     fontVariantNumeric: "tabular-nums",
-                    color: edgeColor(rankValue(t)),
+                    color: edgeColor(t.rankValue),
                   }}
                 >
-                  {signedNumber(rankValue(t))}
+                  {signedOrDash(t.rankValue)}
                 </span>
               </li>
             ))}
@@ -408,7 +401,7 @@ export function ScheduleDisparityContent() {
                   label: "#",
                   align: "right",
                   style: { fontSize: 10, color: "var(--term-text-muted)" },
-                  cell: (_t, i) => i + 1,
+                  cell: (t) => t.rank ?? UNMEASURED,
                 },
                 {
                   label: "Team",
@@ -423,7 +416,7 @@ export function ScheduleDisparityContent() {
                 {
                   label: rankedByFatigue ? "Edge games" : "Rest edge",
                   style: { width: "30%", minWidth: 150 },
-                  cell: (t) => <EdgeBar value={rankValue(t)} bound={bound} height={11} />,
+                  cell: (t) => <EdgeBar value={t.rankValue} bound={bound} height={11} />,
                 },
                 {
                   // The ranking figure, whichever one this season has. Its unit moves with it:
@@ -432,8 +425,8 @@ export function ScheduleDisparityContent() {
                   unit: rankUnit,
                   numeric: true,
                   cell: (t) => (
-                    <span style={{ fontWeight: 700, color: edgeColor(rankValue(t)) }}>
-                      {signedNumber(rankValue(t))}
+                    <span style={{ fontWeight: 700, color: edgeColor(t.rankValue) }}>
+                      {signedOrDash(t.rankValue)}
                     </span>
                   ),
                 },

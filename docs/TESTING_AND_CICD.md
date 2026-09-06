@@ -114,6 +114,26 @@ needed. The tests exercise pure functions and do not call the database-writing e
 
 ## End-to-end tests — Playwright
 
+The focused season-comparison contract uses intercepted browser responses and can run without
+a populated database (clear `DATABASE_URL` to skip the server-rendered data stamp):
+
+```bash
+DATABASE_URL='' PLAYWRIGHT_PORT=3107 pnpm exec playwright test e2e/analysis-season-comparison.spec.ts
+```
+
+It exercises filtered failure and retry, successful emptiness, returning to All Games, late
+responses after threshold changes, unfiltered maturity, and per-season venue baselines.
+
+`e2e/architecture-contracts.spec.ts` also uses controlled data and the same no-database command.
+It checks mixed versus wholly unmeasured Schedule Edge rankings in both displays, including
+priced but unranked teams, plus current-tab/palette navigation, real route cross-fades and
+reduced-motion navigation. Focused Vitest contracts in `schedule-ranking.test.ts` and
+`route-transition.test.ts` cover ranking meaning and transition completion, replacement,
+timeouts and disposal; the schedule reducer test exercises opener-inclusive pricing alongside
+unranked fatigue measurements.
+
+
+
 Config (`playwright.config.ts`): `testDir: ./e2e`, default `baseURL: http://localhost:3000`,
 `chromium` only, reporters `list` + `html` (no auto-open). `webServer` starts this checkout's
 `pnpm dev`; an occupied port fails instead of silently testing another checkout. In CI,

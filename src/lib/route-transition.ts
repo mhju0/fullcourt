@@ -3,62 +3,83 @@
 import { useEffect } from "react"
 import { usePathname } from "next/navigation"
 
-/**
- * Route-level View Transitions (G1, ADR 0010): the cure for "click a tab, teleport".
- * A manual wrapper, NOT Next's experimental `viewTransition` flag — the flag was the
- * escalation path and the wrapper works, so prod carries no experimental surface.
- *
- * The mechanics: `document.startViewTransition` snapshots the page, runs the update
- * callback, and cross-fades to the result — but `router.push` returns before the new
- * route commits, so the callback returns a promise that {@link useSettleRouteTransition}
- * resolves when the pathname actually changes. A 1s guard settles it regardless, so a
- * failed navigation can never freeze the page mid-snapshot (browsers would eventually
- * skip the transition themselves; the guard just makes the bound explicit).
- *
- * Reduced motion and unsupporting browsers take the plain push — the state change is
- * kept, only the travel is removed, the same posture as the retracting header.
- */
+/** Route cross-fades own their completion, replacement and fail-open lifecycle. */
+export function createRouteTransitions() {
+  let pending: {
+    pathname: string
+    resolve: () => void
+    timer?: ReturnType<typeof setTimeout>
+  } | null = null
 
-let settle: (() => void) | null = null
+  function release() {
+    const previous = pending
+    pending = null
+    if (previous) {
+      clearTimeout(previous.timer)
+      previous.resolve()
+    }
+  }
 
-function resolvePending() {
-  settle?.()
-  settle = null
+  return {
+    navigate(
+      router: { push: (href: string) => void },
+      href: string,
+      currentUrl: string,
+      startTransition?: (update: () => Promise<void>) => unknown
+    ) {
+      // Even a plain navigation supersedes an outstanding animated one.
+      release()
+      const current = new URL(currentUrl)
+      const destination = new URL(href, current)
+      if (!startTransition || destination.origin !== current.origin || destination.pathname === current.pathname) {
+        router.push(href)
+        return
+      }
+
+      let resolve!: () => void
+      const completed = new Promise<void>((done) => { resolve = done })
+      const entry = { pathname: destination.pathname, resolve, timer: undefined as ReturnType<typeof setTimeout> | undefined }
+      pending = entry
+      startTransition(() => {
+        // The browser may invoke an old update after a newer navigation began.
+        if (pending !== entry) return completed
+        entry.timer = setTimeout(() => {
+          if (pending === entry) release()
+        }, 1000)
+        try {
+          router.push(href)
+        } catch (error) {
+          if (pending === entry) release()
+          throw error
+        }
+        return completed
+      })
+    },
+    committed(pathname: string) {
+      // A late commit from a superseded destination cannot release the current one.
+      if (pending?.pathname === pathname) release()
+    },
+    dispose: release,
+  }
 }
 
+const transitions = createRouteTransitions()
+
+/** Chrome navigation only; reduced motion and unsupported browsers keep plain navigation. */
 export function navigateWithViewTransition(
   router: { push: (href: string) => void },
   href: string
 ): void {
-  const reduceMotion =
-    typeof window !== "undefined" &&
-    window.matchMedia("(prefers-reduced-motion: reduce)").matches
-
-  if (reduceMotion || typeof document.startViewTransition !== "function") {
-    router.push(href)
-    return
-  }
-
-  // A click while a previous navigation is still settling: release the old one first.
-  resolvePending()
-
-  document.startViewTransition(() => {
-    router.push(href)
-    return new Promise<void>((resolve) => {
-      settle = resolve
-      setTimeout(resolve, 1000)
-    })
-  })
+  const animate = !window.matchMedia("(prefers-reduced-motion: reduce)").matches &&
+    typeof document.startViewTransition === "function"
+  transitions.navigate(router, href, window.location.href,
+    animate ? (update) => document.startViewTransition(update) : undefined)
 }
 
-/**
- * Mounted once in the shell (nav-bar). Resolves the pending transition when the route
- * actually lands, which is what lets the cross-fade capture the *new* page rather than
- * a loading frame.
- */
-export function useSettleRouteTransition(): void {
+/** Mounted explicitly in the persistent root shell, independent of any navigation display. */
+export function RouteTransitionLifecycle(): null {
   const pathname = usePathname()
-  useEffect(() => {
-    resolvePending()
-  }, [pathname])
+  useEffect(() => { transitions.committed(pathname) }, [pathname])
+  useEffect(() => () => transitions.dispose(), [])
+  return null
 }

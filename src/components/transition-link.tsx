@@ -25,7 +25,9 @@ export function TransitionLink({
     if (e.defaultPrevented) return
     // Anything but a plain left-click keeps the browser's own behaviour.
     if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return
-    if (typeof href !== "string" || !href.startsWith("/")) return
+    if (rest.target && rest.target !== "_self") return
+    if (rest.download !== undefined && rest.download !== false) return
+    if (typeof href !== "string" || !href.startsWith("/") || href.startsWith("//")) return
     e.preventDefault()
     navigateWithViewTransition(router, href)
   }

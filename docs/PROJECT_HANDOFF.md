@@ -101,6 +101,11 @@ Size: `src/` is **37,472 lines** of `.ts` / `.tsx` / `.css`. The three largest f
 `src/lib/db/queries.ts` (1,465), `src/components/analysis-content.tsx` (1,209) and
 `src/lib/fatigue.ts` (1,141).
 
+Client ownership after the 2026-09-06 architecture review: `SeasonComparison` owns filtered
+comparison state inside Model Results; `rankScheduleTeams` owns Schedule Edge's ranking
+meaning for both reducer and display; `RouteTransitionLifecycle` observes navigation completion
+from the persistent root layout. See D-51–D-53 in `docs/DECISIONS.md` for the behavior choices.
+
 ### 2.3 The nine product modules
 
 All nine are **published**. `/referees` was the last one held back and went live 2026-08-22

@@ -373,14 +373,17 @@ while the bucket table and the archive's method prose live in the MARKET CHECK s
 render the same JSON, so the two surfaces cannot drift; `schedule-disparity.spec.ts` pins the
 sentry-without-table split and `behind-the-data.spec.ts` pins the table's home. The lazy client component
 (`schedule-disparity-content.tsx`) fetches `/api/schedule-disparity?season=…` via SWR and
-renders, in order: a `<SeasonSelector>` over `browsableSeasons()`, a four-cell summary strip
-(most favored / least favored / spread / games with an edge), the ranked **net rest edge**
-list, the column guide, and the full breakdown table.
+renders, in order: a `<SeasonSelector>` over rankable browsable seasons, a four-cell summary
+strip (most favored / least favored / spread / games with an edge), the ranking, the full
+breakdown table, and the column guide.
 
-**The page ranks on whichever figure the selected season has** (2026-08-18). `rankedByFatigue`
-is decided once per season — `teams.some(t => t.netEdgeGames !== null)` — and drives the bars,
-the summary strip, the leaderboard heading and the Net column's unit together. A
-published-but-unplayed season has no fatigue reading at all, so it ranks on `netRestEdge`
+**The page ranks on whichever figure the selected season has.** `rankScheduleTeams()` in
+`src/lib/schedule-ranking.ts` owns the basis, order, values, ordinals and extremes. Both the
+reducer and display use it; the bars, summary strip, heading and Net unit consume its result.
+In a mixed season, unmeasured teams appear after every measured team with no ordinal or bar
+and a dash for Net. Measured zero remains ranked; ties retain team-id order. The summary's
+extremes and spread consider ranked teams only. Opener-inclusive schedule value is independent
+of this admission rule. A published-but-unplayed season has no fatigue reading at all, so it ranks on `netRestEdge`
 instead: date-derived, the module's namesake, and defined for exactly the seasons the fatigue
 figure is not. Everything downstream moves with the flag, because a bar measured in rest days
 under a heading that says "net edge games" is a different claim than the one being made. The
@@ -1767,6 +1770,15 @@ played does not. `AnalysisContent` holds both responses — `data` is always the
 backtest — so the decision is made once there and applied to whichever view is showing.
 `analysis-deviation.test.ts` fails if it is ever read off the plotted row instead.
 
+`SeasonComparison` in `analysis-content.tsx` owns the threshold controls, filtered request,
+maturity gate and chart state. Its caller supplies the canonical backtest and legend text.
+A failed filtered request renders a local `MessageCard` with an explicit retry; automatic
+error retries are disabled for this read. Loading and failure never render the empty-data
+claim, and changing back to All Games uses the canonical backtest. Request ordering, recovery,
+maturity and per-season baseline rendering are exercised by
+`e2e/analysis-season-comparison.spec.ts` with controlled responses.
+
+
 `minPointSize={minBarSize}` gives a **dead-even** slice a 2px stub. Its true height is 0px, so
 without it the bar vanishes and reads as missing data — and it is real: RA ≥ 7 in 2011-12 went
 17/34. Tooltips lead with the plotted deviation and carry the absolute win rate underneath,
@@ -1801,8 +1813,12 @@ refused — scattered micro-animation is how a data site stops feeling like an i
 
 1. **The route cross-fade** — 200ms, `document.startViewTransition` via the manual wrapper in
    `route-transition.ts` (never Next's experimental flag). Chrome navigation only: the tabs,
-   the dock, the OTHER menu, the palette and the wordmark travel through `TransitionLink`;
-   in-content links deliberately do not.
+   the dock, the OTHER menu and the wordmark use `TransitionLink`; the palette calls the same
+   navigation module. In-content links deliberately do not. `RouteTransitionLifecycle` mounts
+   in the persistent root layout and settles only a matching destination pathname. Same-path
+   navigation (including query or hash changes) pushes normally without a cross-fade.
+   Replacement releases the old transition and its timer; late callbacks cannot push an old
+   destination. A one-second guard remains for failed navigation or redirects to another path.
 2. **The live cell flash** — `scoreFlash`, 500ms, once per change, scoped to the cell that
    changed (the slate's score cell), never the whole row.
 3. **The Skim ↔ Deep-Dive morph** — a same-document view transition in `useSlateDensity`
