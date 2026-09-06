@@ -8,7 +8,6 @@ import { EdgesAhead } from "@/components/edges-ahead"
 import { MatchupTable, type SlateDensity } from "@/components/matchup-table"
 import { PageHeader } from "@/components/page-header"
 import { SeasonSelector } from "@/components/season-selector"
-import { useBacktest } from "@/hooks/useBacktest"
 import { useGameSlate, type GameSlate } from "@/hooks/useGameSlate"
 import { useSlateDensity } from "@/hooks/useSlateDensity"
 import { browsableSeasons, currentDisplaySeason, isNbaOffSeason } from "@/lib/nba-season"
@@ -285,11 +284,9 @@ function DateChip({
  */
 function Matchups({
   slate,
-  evidenceSource,
   density,
 }: {
   slate: GameSlate
-  evidenceSource: React.ComponentProps<typeof MatchupTable>["evidenceSource"]
   density: SlateDensity
 }) {
   switch (slate.status) {
@@ -310,7 +307,7 @@ function Matchups({
     case "slateReady":
       // The Front Office table spine: one continuous grid-table for the whole slate
       // (docs/design/mocks/08-front-office.html) instead of a stack of cards.
-      return <MatchupTable games={slate.games} evidenceSource={evidenceSource} density={density} />
+      return <MatchupTable games={slate.games} density={density} />
 
     default: {
       const exhaustive: never = slate.status
@@ -323,12 +320,7 @@ export default function HomePage() {
   const showOffSeasonBanner = isNbaOffSeason()
   const offSeasonLabel = currentDisplaySeason()
 
-  /* The BY DATE / UPCOMING view toggle died here on 2026-08-29 (redesign stage ②,
-     ADR 0010). The honest inventory that killed it: the date chips already reach every
-     future date, the upcoming table's edge and historical columns said nothing the RA
-     cell and the expansion's evidence sentence do not, and its one real capability —
-     cutting across dates by rest advantage — is the EDGES AHEAD strip below. One board,
-     one card. The /upcoming redirect still lands here, now on the only view there is. */
+  // ADR 0010: one date board; EDGES AHEAD finds rest advantages across future dates.
 
   // Season/month/day browsing, the two fetches and the Realtime overlay all live in
   // the hook; its decisions live in a pure reducer that is unit-tested without a DOM.
@@ -336,11 +328,6 @@ export default function HomePage() {
 
   // SKIM or DEEP DIVE — remembered per viewer, addressable via ?view=.
   const [density, setDensity] = useSlateDensity()
-
-  // The backtest, read only to denominate the matchup rows' evidence sentences.
-  // Deliberately outside the slate: it is season-independent and must not gate the
-  // date browser.
-  const { evidenceSource } = useBacktest()
 
   // Summary metrics for the stat row. Page policy, not slate policy — the threshold
   // is this page's editorial call, so it stays here rather than inside the hook.
@@ -549,7 +536,7 @@ export default function HomePage() {
           count={slate.games.length}
           action={<DensityDial density={density} onChange={setDensity} />}
         />
-        <Matchups slate={slate} evidenceSource={evidenceSource} density={density} />
+        <Matchups slate={slate} density={density} />
       </div>
     </div>
   )

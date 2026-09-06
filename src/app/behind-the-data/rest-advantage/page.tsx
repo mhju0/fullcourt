@@ -383,10 +383,10 @@ restEdge   = awayScore − homeScore     (positive ⇒ the home side is fresher)
         <RestRowTable />
 
         <Prose>
-          Matchup comparisons show historical win rates, not the chance of winning that
-          particular game. A rest advantage of 7+ means all games with a score gap of at least
+          Model Results shows historical win rates, not the chance of winning a particular
+          game. A rest advantage of 7+ means all games with a score gap of at least
           seven, not seven days of rest. Home teams are grouped by this minimum gap; road
-          teams are pooled across all rest gaps. The matchup rates use the current backtest;
+          teams are pooled across all rest gaps. These rates use the current backtest;
           its group counts and threshold results are available in{" "}
           <Link href="/analysis" className="underline underline-offset-4">Model Results</Link>.
           The tables on this reference page retain their dated analysis samples.

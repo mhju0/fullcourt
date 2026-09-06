@@ -1,7 +1,6 @@
 "use client"
 
 import { useCallback, useMemo, useState, type KeyboardEvent } from "react"
-import Link from "next/link"
 import { ChevronDown } from "lucide-react"
 import { FatigueBar, type FatigueBarTone } from "@/components/fatigue-bar"
 import {
@@ -14,9 +13,7 @@ import {
 import { buildGameStoryline } from "@/lib/game-storyline"
 import { getTeamColors } from "@/lib/nba-team-colors"
 import {
-  buildRestAdvantageEvidence,
   formatRestAdvantageDisplay,
-  type RestAdvantageEvidenceSource,
 } from "@/lib/rest-advantage-display"
 import { getTeamBranding } from "@/lib/team-history"
 import { LEAD, SPACE, SPACE_CARD, TRACK, TYPE } from "@/lib/terminal-styles"
@@ -26,8 +23,8 @@ import type { GameResponse } from "@/types"
 /**
  * The Front Office table spine (docs/design/mocks/08-front-office.html, adopted
  * 2026-08-09): the slate as one continuous grid-table — rows, not cards — with
- * inline fatigue bars, a center-anchored REST ADVANTAGE meter, and the evidence
- * sentence as a quiet sub-row. Each game still expands in place to the same
+ * inline fatigue bars and a center-anchored REST ADVANTAGE meter.
+ * Each game expands in place to the same
  * two-column fatigue detail the cards used.
  *
  * A grid of divs rather than a <table> for the same reason the cards were divs:
@@ -382,20 +379,18 @@ function RestAdvCell({
   )
 }
 
-// ─── One game: main row + evidence sub-row + expansion ───────────
+// ─── One game: main row + schedule context + expansion ───────────
 
 function GameRow({
   game,
   index,
   density,
   isScoreFlashing,
-  evidenceSource,
 }: {
   game: GameResponse
   index: number
   density: SlateDensity
   isScoreFlashing: boolean
-  evidenceSource: RestAdvantageEvidenceSource | null
 }) {
   const [expanded, setExpanded] = useState(false)
 
@@ -411,10 +406,6 @@ function GameRow({
   const awayBrand = getTeamBranding(game.awayTeam.abbreviation, game.season, awayFallback)
 
   const confidence = getConfidence(game.restAdvantage?.differential ?? null)
-  const evidence = useMemo(
-    () => buildRestAdvantageEvidence(game.restAdvantage, evidenceSource),
-    [game.restAdvantage, evidenceSource]
-  )
   const flags = teamGameFlags(game)
   const tones = fatigueTones(game.awayFatigue?.score ?? null, game.homeFatigue?.score ?? null)
   const isLive = game.status === "live"
@@ -513,10 +504,7 @@ function GameRow({
         </div>
       </div>
 
-      {/* The storyline line (C4): what the schedule did to this game, in words, only when
-          there is a story to tell. Per-game and distinct — unlike the class-level evidence
-          sentence this never repeats byte-identical across a slate, which is why it may sit
-          in the open where that sentence could not (see the expansion note below). */}
+      {/* Schedule context belongs to this matchup and stays visible when details are collapsed. */}
       {storyline && (
         <p
           className="m-0"
@@ -531,20 +519,6 @@ function GameRow({
         </p>
       )}
 
-      {/* Expanded detail — the evidence sentence, then the two-column fatigue breakdown.
-          The sentence was an always-on tinted sub-row until 2026-08-11, and it moved in here for
-          two reasons. The visible one: it renders only above the 0.5 call threshold, so a slate
-          gets a grey band under some rows and not others, and the ragged stripe read as damage
-          rather than as a signal. The load-bearing one: the sentence is not about the game. It
-          names the historical CLASS the matchup falls into, so a slate holds at most a couple of
-          distinct strings — on the 15-game date this was re-cut against, four rows carried a band
-          and three of them were byte-identical. Repeating a class-level fact once per row asserts
-          it is per-game, which is the one thing it is not.
-          It leads the expansion rather than trailing it because the click it answers came from the
-          REST ADVANTAGE cell: "is 1.1 a lot?" is the first question, the fatigue components are
-          the second. Nothing replaces it on the collapsed row — the RA figure and the confidence
-          badge already carry that far, and the home page's thesis band states the headline rate
-          against its baseline before the slate begins. */}
       <div
         inert={!expanded}
         className={cn(
@@ -562,44 +536,6 @@ function GameRow({
               padding: `${SPACE.md}px ${SPACE_CARD}px`,
             }}
           >
-            {evidence && (
-              <div
-                style={{
-                  fontSize: TYPE.body,
-                  lineHeight: LEAD.body,
-                  color: "var(--term-text-muted)",
-                  paddingBottom: SPACE.md,
-                  marginBottom: SPACE.md,
-                  borderBottom: "1px solid var(--term-border)",
-                }}
-              >
-                <p className="m-0 mb-3 font-medium" style={{ color: "var(--term-text)" }}>
-                  {game.restAdvantage?.advantageTeam === "home" ? "Home" : "Road"} win rate in past games
-                </p>
-                <dl className="m-0 grid grid-cols-2 gap-4" style={{ maxWidth: 440 }}>
-                  <div className="flex min-w-0 flex-col-reverse gap-1">
-                    <dt>{evidence.comparisonLabel}</dt>
-                    <dd className="m-0 font-mono text-2xl font-semibold tabular-nums" style={{ color: "var(--term-text)" }}>
-                      {evidence.winPct.toFixed(1)}%
-                    </dd>
-                  </div>
-                  <div className="flex min-w-0 flex-col-reverse gap-1">
-                    <dt>All {game.restAdvantage?.advantageTeam === "home" ? "home" : "road"} teams</dt>
-                    <dd className="m-0 font-mono text-2xl font-semibold tabular-nums" style={{ color: "var(--term-text)" }}>
-                      {evidence.baselinePct.toFixed(1)}%
-                    </dd>
-                  </div>
-                </dl>
-                <p className="mb-0 mt-3">
-                  {game.restAdvantage?.advantageTeam === "home"
-                    ? "Home court already helps, so we compare against home teams overall."
-                    : "Playing on the road is harder, so we compare against road teams overall."}
-                </p>
-                <Link className="mt-1 inline-flex items-center underline underline-offset-4" href="/behind-the-data/rest-advantage">
-                  Sample sizes and method
-                </Link>
-              </div>
-            )}
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <FatigueDetailColumn label={`AWAY · ${awayBrand.abbreviation}`} fatigue={game.awayFatigue} />
               <FatigueDetailColumn label={`HOME · ${homeBrand.abbreviation}`} fatigue={game.homeFatigue} />
@@ -615,12 +551,11 @@ function GameRow({
 
 export interface MatchupTableProps {
   games: readonly (GameResponse & { isScoreFlashing?: boolean })[]
-  evidenceSource?: RestAdvantageEvidenceSource | null
   /** SKIM (default) is the schedule-site glance; DEEP DIVE adds rest, fatigue and CONF. */
   density?: SlateDensity
 }
 
-export function MatchupTable({ games, evidenceSource = null, density = "skim" }: MatchupTableProps) {
+export function MatchupTable({ games, density = "skim" }: MatchupTableProps) {
   return (
     <div
       style={{
@@ -661,7 +596,6 @@ export function MatchupTable({ games, evidenceSource = null, density = "skim" }:
               index={i}
               density={density}
               isScoreFlashing={game.isScoreFlashing ?? false}
-              evidenceSource={evidenceSource ?? null}
             />
           ))}
         </div>

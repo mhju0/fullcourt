@@ -525,7 +525,7 @@ Evidence: `anti-slop/audit-002-2026-09-06.md`, `src/app/behind-the-data/`,
 
 ---
 
-### D-56 · Matchup comparisons explain the venue baseline · ACTIVE
+### D-56 · Matchup comparisons explain the venue baseline · SUPERSEDED BY D-57
 
 Date: 2026-09-06.
 
@@ -539,7 +539,21 @@ Threshold selection, rate calculations, and model coefficients are unchanged.
 
 ---
 
+### D-57 · Historical win rates belong in Model Results · ACTIVE
+
+Date: 2026-09-06.
+
+The owner requested removing matchup win-rate comparisons entirely because repeating them
+and their method links cluttered the Games page. Expanded matchups retain the fatigue
+breakdown without a replacement footnote. Rest advantage and schedule context remain visible;
+the page-level method link remains available. Games no longer requests the historical backtest.
+Model Results retains win rates, venue baselines, and sample sizes; Behind the Data retains
+methodology and limitations. This supersedes D-56 without changing any analytics calculations.
+
+---
+
 ## Standing decisions with no single date
+
 
 
 | Decision | Status | Note |
