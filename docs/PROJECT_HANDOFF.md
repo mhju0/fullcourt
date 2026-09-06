@@ -56,6 +56,10 @@ walk-forward predictions are distinct from in-sample hindsight. These distinctio
 to the README, metadata, product explanations, and Behind the Data pages. See
 `anti-slop/audit-002-2026-09-06.md`; the model coefficients and generated figures are unchanged.
 
+**Matchup reading (D-56).** Expanded Games rows pair the historical rested-group rate with
+the matching home or road baseline and explain that comparison. Sample counts are available
+through the method link instead of inline `n = …` notation.
+
 ---
 
 ## 2. Stack and architecture

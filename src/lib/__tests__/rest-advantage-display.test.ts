@@ -229,6 +229,7 @@ describe("buildRestAdvantageEvidence", () => {
     // Because the buckets are cumulative, 4.1 belongs to "3 or more".
     const ev = buildRestAdvantageEvidence(homeRested(4.1), source);
     expect(ev?.classLabel).toBe("at home · gap ≥ 3");
+    expect(ev?.comparisonLabel).toBe("Rest advantage of 3+");
     expect(ev?.winPct).toBe(57.2);
     expect(ev?.games).toBe(12481);
     expect(ev?.sentence).not.toContain("61.1");
@@ -365,6 +366,7 @@ describe("buildRestAdvantageEvidence", () => {
     const ev = buildRestAdvantageEvidence(awayRested(4.1), source)!;
 
     expect(ev.classLabel).toBe("on the road · all gaps");
+    expect(ev.comparisonLabel).toBe("With a rest advantage");
     expect(ev.winPct).toBe(42.4);
     expect(ev.baselinePct).toBe(40.1);
     expect(ev.lift).toBe(2.3);

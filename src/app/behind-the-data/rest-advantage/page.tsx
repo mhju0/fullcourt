@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { BehindTheDataShell } from "@/components/behind-the-data-shell";
 import {
   Formula,
@@ -380,6 +381,16 @@ restEdge   = awayScore − homeScore     (positive ⇒ the home side is fresher)
         </Note>
 
         <RestRowTable />
+
+        <Prose>
+          Matchup comparisons show historical win rates, not the chance of winning that
+          particular game. A rest advantage of 7+ means all games with a score gap of at least
+          seven, not seven days of rest. Home teams are grouped by this minimum gap; road
+          teams are pooled across all rest gaps. The matchup rates use the current backtest;
+          its group counts and threshold results are available in{" "}
+          <Link href="/analysis" className="underline underline-offset-4">Model Results</Link>.
+          The tables on this reference page retain their dated analysis samples.
+        </Prose>
 
         <Note>
           The headline counts the rested home team. Rested visitors are reported separately:

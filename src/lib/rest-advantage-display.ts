@@ -83,9 +83,8 @@ export function formatRestAdvantageDisplay(
 /**
  * The backtest slice a live matchup is measured against.
  *
- * House rule: no number appears without its denominator and its counterfactual, so
- * every field needed to state both is carried here rather than recomputed at the
- * call site.
+ * Retains the sample count and venue baseline. Matchup comparisons show the two rates
+ * and link to the method; the detailed sentence includes the count.
  */
 export type RestAdvantageEvidence = {
   /**
@@ -98,6 +97,8 @@ export type RestAdvantageEvidence = {
    * against the *home* team's rate, which states the opposite of the truth.
    */
   classLabel: string;
+  /** Plain-language label for the historical group on the matchup comparison. */
+  comparisonLabel: string;
   /**
    * The **more-rested team's** win rate in that class (0–100, 1 decimal), on both branches.
    *
@@ -117,7 +118,7 @@ export type RestAdvantageEvidence = {
    * badge reads as an endorsement of a losing side; 42.4% against 40.1% does not.
    */
   baselinePct: number;
-  /** `winPct − baselinePct`, signed. The part rest accounts for. */
+  /** `winPct − baselinePct`, signed. A historical difference, not a causal estimate. */
   lift: number;
   /** The denominator. Never zero — a class with no games yields no evidence at all. */
   games: number;
@@ -227,6 +228,7 @@ export function buildRestAdvantageEvidence(
 
     return {
       classLabel: "on the road · all gaps",
+      comparisonLabel: "With a rest advantage",
       winPct: onRoad.winPct,
       baselinePct: baseline.roadWinPct,
       lift: liftPoints(onRoad.winPct, baseline.roadWinPct),
@@ -252,6 +254,7 @@ export function buildRestAdvantageEvidence(
 
   return {
     classLabel: `at home · ${gapLabel}`,
+    comparisonLabel: cleared ? `Rest advantage of ${cleared.threshold}+` : "With a rest advantage",
     winPct: rate,
     baselinePct: baseline.homeWinPct,
     lift: liftPoints(rate, baseline.homeWinPct),
