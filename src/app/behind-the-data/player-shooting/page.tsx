@@ -10,7 +10,7 @@ import {
 } from "@/components/behind-the-data-parts";
 
 export const metadata: Metadata = {
-  title: "Player Shooting — Behind the Data",
+  title: "Player Shooting · Behind the Data",
   description:
     "How the no-rest against three-days-rest shooting split is built: the rest definition, effective field goal percentage, the attempt floor, and how much of any split is noise.",
 };
@@ -20,12 +20,12 @@ export default function PlayerShootingMethodPage() {
     <BehindTheDataShell
       eyebrow="BEHIND THE DATA · PLAYER SHOOTING"
       title="Player shooting"
-      description="Every player's shooting on no rest against three days off, season by season. The honest headline is that one season of it is mostly noise, and the page is built to say so."
+      description="Player shooting on no rest compared with three or more days of rest, with attempt counts and uncertainty shown for each split."
     >
       <Section label="THE SPLIT" descriptor="TWO REST STATES">
         <Prose>
           Each of a player&rsquo;s games is labelled by how long <em>he</em>{" "}
-          had rested — counted
+          had rested, counted
           from the games he actually played, not his team&rsquo;s schedule. A player returning
           from injury into a team back-to-back is rested; the team is not.
         </Prose>
@@ -35,9 +35,8 @@ export default function PlayerShootingMethodPage() {
 rest effect   eFG% on 3+ days − eFG% on no rest`}
         </Formula>
         <Note>
-          The two buckets deliberately do not cover everything. One and two days of rest are
-          the overwhelming majority of games and sit between the two states being contrasted;
-          including them would blur exactly the comparison the page exists to make.
+          Games with one or two days of rest are excluded from this comparison. The two
+          buckets isolate the shortest and longest rest categories used on the page.
         </Note>
       </Section>
 
@@ -55,16 +54,15 @@ rest effect   eFG% on 3+ days − eFG% on no rest`}
         <Prose>
           A rest effect is a difference of two percentages, each from a limited number of
           attempts, so it carries real uncertainty. The page computes the standard error of
-          that difference and uses it to decide what is worth bolding — a split inside the
-          noise is drawn muted rather than left to look like a discovery.
+          that difference and uses it to decide which splits to emphasise. Smaller splits
+          relative to their uncertainty are muted.
         </Prose>
         <Formula>{`standard error ≈ √( 2500 / noRestFGA + 2500 / restedFGA )`}</Formula>
         <Prose>
-          The 2500 is a deliberate simplification: it treats every shot as a coin flip at 50%,
-          which is close enough to real eFG% to give an honest scale and avoids implying more
-          precision than the data supports. The practical consequence is the important part —
-          a player with 60 no-rest attempts needs an enormous split before it means anything,
-          and most players never clear it in a single season.
+          The 2500 comes from a binary outcome with a 50% make probability, expressed in
+          percentage points. It is an approximation: eFG% weights three-pointers differently,
+          and attempts within a game are not necessarily independent. Fewer attempts produce
+          a larger uncertainty estimate.
         </Prose>
         <ValueGrid
           values={[
@@ -74,20 +72,28 @@ rest effect   eFG% on 3+ days − eFG% on no rest`}
           ]}
         />
         <Note>
-          The attempt floor is adjustable on the page. Lowering it surfaces more players and
-          more extreme-looking effects, almost all of which are small samples rather than real
-          differences — which is the lesson the control is there to teach.
+          Lowering the adjustable attempt floor includes more players, but their splits
+          generally have fewer attempts and greater uncertainty.
         </Note>
       </Section>
 
-      <Section label="WHAT THIS CANNOT SEE" descriptor="THE HONEST LIMITS">
+      <Section label="CAREER ESTIMATES" descriptor="SHRINKAGE TOWARD THE POOL MEAN">
+        <Prose>
+          Career estimates require at least 150 attempts in each rest group. The export
+          shrinks each raw gap toward the mean gap among eligible players, with more shrinkage
+          when its standard error is larger. This reduces uncertain extremes; it does not
+          remove differences in opponents, shot selection, or reasons for missing games.
+        </Prose>
+      </Section>
+
+      <Section label="WHAT THIS CANNOT SEE" descriptor="LIMITATIONS">
         <LimitList
           items={[
             "Shot difficulty. A rested player taking harder shots against a set defence can shoot worse while playing better.",
-            "Why a player was rested. Games missed through injury look identical to games missed for load management, and a player returning from injury is not 'rested' in any useful sense.",
+            "Why a player missed games. An injury and planned rest can produce the same gap between appearances without providing the same recovery.",
             "Opponent quality and defensive scheme.",
             "Minutes and fatigue within a game. This is about rest before tip-off, not late-game legs.",
-            "One season of any single player's split is mostly noise. The page shows season-by-season precisely so a reader can see how much a supposed effect moves year to year.",
+            "A single season can contain too few attempts to distinguish a rest association from sampling variation. Compare the uncertainty and season-by-season results before interpreting a split.",
           ]}
         />
       </Section>

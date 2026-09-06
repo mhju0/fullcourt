@@ -1716,6 +1716,21 @@ One app-wide indicator, defined once in `globals.css`:
 :focus-visible { outline: 2px solid var(--term-accent); outline-offset: 2px; }
 ```
 
+The rule is unlayered (2026-09-06). In the base layer, component `outline-none` utilities
+erased it on SEARCH and OTHER; the palette input's own reset did the same. The palette
+input uses an inset outline so its clipping container cannot hide the indicator.
+`e2e/control-accessibility.spec.ts` checks the computed indicator with keyboard focus.
+
+Below the mobile navigation breakpoint, controls and navigation links have a 44px minimum
+target. Checkbox labels own the hit area; inline prose links retain text flow. The footer
+stacks its groups, and the date arrows stay beside a wrapping date label. The command input
+uses 16px text in this range, matching the existing input zoom floor. Browser checks cover
+360px and 768px; actual iOS keyboard behavior still needs a device.
+
+`StatFigure` headline values scale from 24px to 40px on narrow screens. The long equal-rest
+count on `/playoffs` stays on one line without overflowing its card at 320px. The layout
+suite includes this width and waits for fonts before measuring the document.
+
 `--ring` is a **solid** `#4F46E5`. It was `rgba(37, 99, 235, 0.45)` and further halved by an
 `outline-ring/50` applied to `*`, which composited to 1.97:1 on white — under the 3:1 non-text
 minimum. Components may **reinforce** focus with a ring or a background tint but must not

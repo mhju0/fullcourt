@@ -370,7 +370,7 @@ describe("buildRestAdvantageEvidence", () => {
     expect(ev.lift).toBe(2.3);
     expect(ev.games).toBe(11548);
     expect(ev.sentence).toBe(
-      "Rested team on the road: won 42.4% — road teams win 40.1% overall (n = 11,548)."
+      "Rested team on the road: won 42.4%; road teams win 40.1% overall (n = 11,548)."
     );
   });
 

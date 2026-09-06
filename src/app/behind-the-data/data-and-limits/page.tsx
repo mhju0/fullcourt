@@ -11,7 +11,7 @@ import { NBA_SEASONS } from "@/lib/nba-season";
 import { DataTable } from "@/components/ui/data-table";
 
 export const metadata: Metadata = {
-  title: "Data & Limits — Behind the Data",
+  title: "Data & Limits · Behind the Data",
   description:
     "Where FullCourt's data comes from, which seasons carry which fields, what is excluded on purpose, what the site does not model, and the known gaps.",
 };
@@ -27,7 +27,7 @@ const COVERAGE = [
     field: "Overtime periods",
     from: "~2002",
     source: "ESPN",
-    note: "Earlier seasons read 0, which means unknown — not 'no overtime'.",
+    note: "Earlier seasons read 0 because overtime is unknown.",
   },
   {
     field: "Tip-off times",
@@ -45,7 +45,7 @@ const COVERAGE = [
     field: "Shot locations",
     from: "1996-97",
     source: "hoopR / play-by-play",
-    note: "Shot Value only. No defender or tracking fields exist in public data.",
+    note: "Shot Value only. These records do not include defender or tracking fields.",
   },
 ] as const;
 
@@ -54,7 +54,7 @@ export default function DataAndLimitsPage() {
     <BehindTheDataShell
       eyebrow="BEHIND THE DATA · DATA & LIMITS"
       title="Data and limits"
-      description="Where the numbers come from, which seasons carry which fields, and what is left out on purpose. The gaps are stated because a model is only as good as the reader's ability to check it."
+      description="Data sources, season coverage, exclusions, and known gaps in FullCourt's analyses."
     >
       <Section label="COVERAGE" descriptor={`${NBA_SEASONS.length} SEASONS`}>
         {/* Deliberately says nothing about *why* three fields come from ESPN. The reason is
@@ -79,9 +79,8 @@ export default function DataAndLimitsPage() {
           ]}
         />
         <Note>
-          The consequence, plainly: the fatigue model is a slightly different model before and
-          after 2002. Terms are applied where their data exists rather than back-filled with
-          guesses, so a 1994 score and a 2024 score are not built from identical information.
+          Input coverage changes around 2002. The same formula uses the fields available for
+          each game, so a 1994 score and a 2024 score are not built from identical information.
         </Note>
       </Section>
 
@@ -95,7 +94,7 @@ export default function DataAndLimitsPage() {
         />
         <Prose>
           Playoff games are excluded from the regular-season fatigue model because a fixed
-          two-team series breaks its travel assumptions — the opponent never changes and the
+          two-team series breaks its travel assumptions: the opponent never changes and the
           itinerary is known weeks ahead. They are modelled separately, at series grain, on the
           Playoff Rest page.
         </Prose>
@@ -109,18 +108,17 @@ export default function DataAndLimitsPage() {
         <Note>
           <strong>This is narrower than it used to be.</strong> Until 30 July 2026 the whole of
           2019-20 was absent, and those ~970 ordinary games went with it. The rule was written as
-          a calendar window — October to April — which caught the bubble only by coincidence of
+          an October-to-April calendar window, which caught the bubble only by coincidence of
           dates, and along the way dropped 179 legitimate games from seasons that did not run
           October to April: 135 from 2020-21, which ran to 16 May, and 44 from the 1998-99
-          lockout season. Naming the abnormal stretch excludes exactly what it means to.
+          lockout season. The exclusion now uses the bubble dates directly.
         </Note>
         <Prose>
           One surface still withholds the season in full. <strong>Schedule Edge</strong> ranks
           teams against each other within a single season, and 2019-20 stopped with teams having
           played between 63 and 67 games. A team with four fewer games has four fewer chances to
           accumulate an edge, so its total would move without the schedule having favoured
-          anyone. That is a different objection from the bubble one — not how the games were
-          played, but that there are unequal numbers of them — and it applies to no other
+          anyone. This exclusion addresses unequal schedule lengths and applies to no other
           season on record, where the widest spread is a single game.
         </Prose>
         <Note>
@@ -132,16 +130,15 @@ export default function DataAndLimitsPage() {
 
       <Section label="ACCURACY OF THE TRAVEL FIGURE" descriptor="AN ESTIMATE WITH EXACT INPUTS">
         <Prose>
-          Which cities a team played in, in what order, on what dates, is exact — it comes from
-          the game log. What is assumed is the itinerary between them: teams are modelled as
+          The game log records cities, dates, and game order. The model assumes the itinerary between them:
+          teams are modelled as
           flying venue to venue, returning home only when the next game is at home. No public
-          source records what they actually did.
+          itinerary data is used to verify those assumptions.
         </Prose>
         <Note>
-          The error is one-sided and bounded. A team that really did fly home mid-trip flew
-          extra miles, but also slept at home — so the unmodelled distance arrives with
-          unmodelled recovery, and the two partly cancel. Distances are great-circle rather
-          than routed, and this is the same convention published travel studies use.
+          Distances use great-circle routes. Actual flight paths, stops at home, and recovery
+          time can differ from this estimate. The data here cannot quantify how those
+          differences affect a team&rsquo;s fatigue.
         </Note>
       </Section>
 
@@ -151,18 +148,14 @@ export default function DataAndLimitsPage() {
           is. Filing them as gaps read as an apology for a choice. */}
       <Section label="WHAT THIS SITE DOES NOT DO" descriptor="A CHOICE, NOT A GAP">
         <Prose>
-          FullCourt measures what the schedule does to teams. It is not a prediction service, so
-          nothing here takes opponent strength, betting lines, or favourites and underdogs as an
-          input to a pick, and it never forecasts who will be available tonight. Availability is
-          measured only after the fact, once the box score says who actually played — see
-          Availability cost, which prices an absence against the same schedule terms and uses
-          team strength as a control rather than a signal.
+          The regular-season fatigue score uses schedule inputs and excludes team strength,
+          betting lines, and expected lineups. Playoff Rest uses a separate series model that
+          includes regular-season team records. Availability cost uses team strength as a
+          control and identifies missing players from completed games.
         </Prose>
         <Note>
-          Those inputs are what a forecast is built from, and adding them would make this a
-          tipping site that happens to track rest. The historical win rates here are
-          associational for the same reason: they describe what has followed a rest gap, not what
-          causes a team to win.
+          Historical rest splits describe associations. They do not isolate the causal
+          effect of rest or account for every factor needed to forecast a game.
         </Note>
       </Section>
 

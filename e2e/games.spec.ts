@@ -10,7 +10,7 @@ test.describe("Home page", () => {
     await expect(
       page.getByRole("heading", { level: 1, name: "Games" })
     ).toBeVisible();
-    await expect(page.getByText(/What the schedule does to a game/)).toBeVisible();
+    await expect(page.getByText(/Compare each team's rest, travel, and schedule density/)).toBeVisible();
 
     // The site's headline figure moved to `/` with the front door. It must not come back here:
     // a forty-one-season result among controls that describe one day's slate reads as a

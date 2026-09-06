@@ -13,7 +13,7 @@ export default function ShotQualityPage() {
       <PageHeader
         eyebrow="EXPECTED SHOT VALUE · xeFG%"
         title="Expected Shot Value"
-        description="Location-based expected field-goal efficiency by court zone. No defender distance or shot clock — public NBA data captures where a shot came from, not how contested it was."
+        description="Expected shooting efficiency by court location. This model uses shot coordinates; it does not observe defenders, shot clock, or how contested a shot was."
       />
       <MethodLink surfaceHref="/shot-quality" />
 

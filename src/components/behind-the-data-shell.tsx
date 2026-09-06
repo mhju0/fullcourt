@@ -48,7 +48,7 @@ export function BehindTheDataShell({
               // already-bold mono labels is close to no signal at all. It now carries the
               // same red underline the main nav uses for "you are here".
               className={cn(
-                "border-b-2 py-1 font-semibold transition-colors",
+                "inline-flex items-center border-b-2 py-1 font-semibold transition-colors",
                 active
                   ? "border-[var(--term-red)] text-[var(--term-text)]"
                   : "border-transparent text-[var(--term-text-muted)] hover:text-[var(--term-text)]"

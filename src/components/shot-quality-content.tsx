@@ -205,8 +205,8 @@ function HowToRead({
               <span style={{ color: "#065F74", fontWeight: 600 }}>deep teal is high-value</span> (rim, corner threes), pale teal is low-value (long mid-range).
             </p>
             <p style={{ color: "var(--term-text-muted)" }}>
-              Both courts show the same shots: BASELINE averages by zone, so it looks blocky; GBM smooths the
-              same data into a continuous surface.
+              Both courts use the same locations. BASELINE assigns zone averages;
+              GBM uses coordinates to estimate differences within zones.
             </p>
           </div>
         </>
@@ -227,7 +227,8 @@ function HowToRead({
               the models agree.
             </p>
             <p style={{ color: "var(--term-text-muted)" }}>
-              Disagreement concentrates along zone borders, which is exactly what a smooth surface fixes.
+              Differences near zone borders show where location estimates depart from zone
+              averages. A difference alone does not establish which estimate is better.
             </p>
           </div>
         </>
@@ -506,7 +507,7 @@ export function ShotQualityContent() {
                 getColor={seqColorFor}
                 formatValue={fmtEfg}
                 title="GBM"
-                subtitle="LOCATION MODEL (SMOOTH SURFACE)"
+                subtitle="LOCATION MODEL (COURT COORDINATES)"
               />
             </div>
           ) : (
@@ -518,7 +519,7 @@ export function ShotQualityContent() {
                 getColor={diffColorFor}
                 formatValue={fmtDiff}
                 title="GBM − BASELINE"
-                subtitle="Δ EXPECTED eFG% — WHERE THE SMOOTH SURFACE DISAGREES WITH THE ZONE STEPS"
+                subtitle="Δ EXPECTED eFG% · LOCATION MODEL MINUS ZONE AVERAGE"
               />
             </div>
           )}

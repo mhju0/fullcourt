@@ -75,11 +75,11 @@ test.describe("Behind the Data", () => {
     await expect(page.getByText("59.14%", { exact: true })).toBeVisible();
     await expect(page.getByText("+0.32pp", { exact: true })).toBeVisible();
 
-    // The sentence that stops that row being read as "travel makes the model worse". Without
-    // it the table's most important number is also its most misleading one.
+    // The count is dropped calls, not all winners. Preserve that distinction alongside the rate.
     await expect(
-      page.getByText("giving up 5,994 winning predictions", { exact: false })
+      page.getByText("5,994 called games", { exact: false })
     ).toBeVisible();
+    await expect(page.getByText("including losses, not a count of winning predictions", { exact: false })).toBeVisible();
   });
 
   test("the market check's one home is the Schedule Edge method page", async ({ page }) => {

@@ -45,7 +45,7 @@ export function PlayoffGrindGap() {
     <div style={termCardStyle}>
       <StatFigure
         value={`+${GAP_PTS.toFixed(1)} points`}
-        caption="BETTER YOUR ODDS WHEN THE OTHER TEAM ARRIVES OFF A LONG SERIES · ROUNDS 2+"
+        caption="WIN-RATE GAP BY OPPONENT'S PRIOR ROUND · ROUNDS 2+"
       />
 
       <div className="mt-6 flex flex-col gap-4">
@@ -54,8 +54,8 @@ export function PlayoffGrindGap() {
       </div>
 
       <p className="mt-4" style={{ fontSize: TYPE.body, color: "var(--term-text-muted)", lineHeight: LEAD.body, maxWidth: WIDTH.prose }}>
-        Both bars are teams that closed their own last round early, so the only thing changing is
-        the opponent. When you went the distance too, the edge reverses —{" "}
+        Both bars include teams that closed their own last round early, grouped by their
+        opponent&apos;s series length. For teams that went the distance themselves, the rates reverse:{" "}
         {ownHighOppLow.winPct.toFixed(1)}% against a fresh opponent,{" "}
         {ownHighOppHigh.winPct.toFixed(1)}% against a tired one.
       </p>

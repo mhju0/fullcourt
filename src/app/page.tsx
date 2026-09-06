@@ -6,7 +6,7 @@ import { getHistoricalBacktest } from "@/lib/rest-advantage-evidence-server";
 export const metadata: Metadata = {
   title: "What FullCourt measures",
   description:
-    "FullCourt measures what the schedule does to a team before the ball is tipped — travel, rest and density, across four decades of evidence.",
+    "Explore NBA rest, travel, and schedule density through historical game results, with venue baselines and published methods.",
 };
 
 /**

@@ -10,9 +10,9 @@ import {
 } from "@/components/behind-the-data-parts";
 
 export const metadata: Metadata = {
-  title: "Shot Value — Behind the Data",
+  title: "Shot Value · Behind the Data",
   description:
-    "Expected shot value (xeFG%) by court location: the model, the zone baseline it is measured against, and the defender data public sources do not have.",
+    "Expected shot value (xeFG%) by court location, its zone baseline, and the shooting context the model does not observe.",
 };
 
 const MEASURED_ON = "2026-07-02";
@@ -22,13 +22,13 @@ export default function ShotValueMethodPage() {
     <BehindTheDataShell
       eyebrow="BEHIND THE DATA · SHOT VALUE"
       title="Shot value"
-      description="What a shot from a given spot on the floor is worth, league-wide. This is shot location value — not shot quality, and the difference matters."
+      description="The average value of a shot from each court location, measured across the league. Defender position and shooter skill are outside this model."
     >
       <Section label="WHAT IS COMPUTED" descriptor="xeFG% PER CELL">
         <Prose>
           The half court is divided into a grid of one-foot cells. For each cell, the model
           estimates the probability a shot from there goes in, and converts that to an expected
-          effective field goal percentage — so a cell behind the arc is credited at 1.5 times a
+          effective field goal percentage, so a cell behind the arc is credited at 1.5 times a
           cell inside it.
         </Prose>
         <Formula>
@@ -37,24 +37,22 @@ export default function ShotValueMethodPage() {
         <Prose>
           Expected eFG% is what an average shooter converts from a given spot. The gap between
           what a team actually shot and what the surface expected from those same spots is{" "}
-          <strong>shots above expected</strong> — shot-making measured against shot selection,
-          rather than mixed in with it.
+          <strong>shots above expected</strong>. It compares shooting results with the value
+          expected from those locations.
         </Prose>
         <Note>
-          Because the value is expressed as eFG%, the long mid-range reads as the worst real
-          estate on the floor even though its make probability beats a three. That is the
-          well-known result the metric exists to make visible, not a quirk of this
-          implementation.
+          A three-pointer can have a lower make probability and still have a higher expected
+          value than a two-pointer. The eFG% scale accounts for the extra point.
         </Note>
       </Section>
 
       <Section label="TWO SURFACES" descriptor={`MEASURED ${MEASURED_ON}`}>
         <Prose>
-          The page renders two models side by side, on purpose. The{" "}
+          The page compares two models. The{" "}
           <strong>zone baseline</strong> assigns every cell the average of its official zone,
           so its colour changes in blocky steps at zone boundaries. The{" "}
-          <strong>gradient-boosted model</strong> reads location continuously, so its surface
-          varies smoothly.
+          <strong>gradient-boosted model</strong> uses court coordinates, so its estimates
+          can vary within a zone.
         </Prose>
         <ValueGrid
           values={[
@@ -64,27 +62,23 @@ export default function ShotValueMethodPage() {
           ]}
         />
         <Prose>
-          The baseline is not a straw man — it is genuinely hard to beat, because zones were
-          drawn around real differences in the first place. The location model wins by roughly
-          one percent on log-loss and Brier score, which is a{" "}
-          <strong>calibration improvement, not an accuracy jump</strong>. It is stated that way
-          on the page rather than dressed up. Inside any one zone a single shot stays close to a
-          coin flip, and no reordering of the surface changes that.
+          The location model improves log-loss and Brier score by roughly one percent over
+          the zone baseline. Those metrics assess its probability estimates; the improvement
+          does not mean it predicts one percent more makes and misses correctly.
         </Prose>
         <Note>
           Both surfaces are trained on prior seasons under an expanding window, so a season is
           never scored by a model that has seen it. Shot efficiency drifts upward over time,
-          which means the most recent season&rsquo;s expected values can run slightly low —
+          which means the most recent season&rsquo;s expected values can run slightly low;
           shots above expected for the current season are therefore biased a little high.
         </Note>
       </Section>
 
       <Section label="WHAT THIS IS NOT" descriptor="THE NAME IS DELIBERATE">
         <Prose>
-          Real shot quality models use defender distance, shot clock, touch time and dribbles —
-          the tracking data that decides whether a shot was open. None of that is in public NBA
-          data. A wide-open corner three and a contested one off the dribble are the same shot
-          to this model, because from the floor plan alone they are indistinguishable.
+          Defender distance, shot clock, touch time, and dribbles can help describe a shot.
+          Those inputs are absent from the location data used here. A wide-open corner three
+          and a contested one off the dribble receive the same expected value at the same location.
         </Prose>
         <Prose>
           That is why it is called <strong>shot value</strong>{" "}
@@ -94,12 +88,12 @@ export default function ShotValueMethodPage() {
         </Prose>
       </Section>
 
-      <Section label="WHAT THIS CANNOT SEE" descriptor="THE HONEST LIMITS">
+      <Section label="WHAT THIS CANNOT SEE" descriptor="LIMITATIONS">
         <LimitList
           items={[
-            "Defender distance and contest level — the single biggest determinant of whether a shot goes in.",
+            "Defender distance and contest level.",
             "Shot clock, touch time, dribbles, and whether the shot was assisted.",
-            "Who took it. This is a league-wide surface, so a career 42% shooter and a career 30% shooter get the same expected value from the same cell.",
+            "Shooter skill. Players with different shooting records receive the same expected value from the same cell.",
             "Game context: score, period, and whether the possession was a scramble or a set play.",
             "Cells with few attempts are noisy by construction. The corners of the chart carry far less data than the paint.",
           ]}

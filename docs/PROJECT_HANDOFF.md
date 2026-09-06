@@ -26,8 +26,8 @@ not a guarantee about a later checkout. Current commands are in `docs/TESTING_AN
 
 ## 1. What this project is
 
-FullCourt models how **NBA travel, rest, and schedule density** affect game outcomes, and
-publishes the measurement — including the parts that came back null.
+FullCourt studies associations between **NBA travel, rest, schedule density**, and game
+outcomes. It publishes results together with comparisons and limitations.
 
 The core chain: each team in a matchup gets a **fatigue score** from a weighted-decay model;
 the difference between the two is the **rest advantage**; a backtest over every regular-season
@@ -48,12 +48,13 @@ the project:
 
 The site is live at <https://fullcourt-nba.vercel.app>; repo <https://github.com/mhju0/fullcourt>.
 
-**Editorial stance — a product decision, not a style note.** The project publishes negative
-results. Several shipped surfaces exist specifically to say "we measured this and it is
-nothing": the win-total market check (r = −0.016 across 884 team-seasons), the time-zone /
-circadian test, the fitted-weights experiment. ADR 0009 makes this a rule — nulls live behind
-the data rather than being deleted. An agent that "improves" a null into a positive claim is
-damaging the product, not fixing it.
+**Editorial policy, clarified 2026-09-06 (D-55).** Publish null results with their tested
+question, baseline, and limits. A test finding no predictive improvement does not establish
+that the effect is zero. Observational differences are not causal estimates. Referee figures
+describe games worked by an official, with calls attributed to all three crewmates. Playoff
+walk-forward predictions are distinct from in-sample hindsight. These distinctions now apply
+to the README, metadata, product explanations, and Behind the Data pages. See
+`anti-slop/audit-002-2026-09-06.md`; the model coefficients and generated figures are unchanged.
 
 ---
 

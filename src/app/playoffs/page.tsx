@@ -14,7 +14,7 @@ export default function PlayoffsPage() {
       <PageHeader
         eyebrow="PRIOR-ROUND GRIND · SERIES WIN RATE"
         title="Playoff Rest"
-        description="The round before decides the round after. How a long series taxes the team that survived it, and what that costs the model's picks in the bracket below."
+        description="Compare prior-round workload and series results, then explore probabilities from a model using team records and playoff history."
       />
       <MethodLink surfaceHref="/playoffs" />
 

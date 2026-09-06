@@ -58,8 +58,8 @@ export function ZeroRestWorkload({ season }: { season: string }) {
   return (
     <div className="flex flex-col gap-3" ref={anchor}>
       <p style={{ fontSize: TYPE.body, color: "var(--term-text-muted)", maxWidth: WIDTH.prose, lineHeight: LEAD.body }}>
-        Who took the most shots on zero days&apos; rest. This is volume, not a verdict on how well
-        they shot — a single season&apos;s rest split is too small to say that.{" "}
+        Players ranked by shot attempts on zero days&apos; rest. Attempt counts measure
+        workload; compare shooting rates with their sample sizes on Player Shooting.{" "}
         <a href="/shooting" style={{ color: "var(--term-blue-text)", fontWeight: 600 }}>
           Career rest splits live on Player Shooting →
         </a>

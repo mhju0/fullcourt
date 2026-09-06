@@ -31,11 +31,11 @@ rate with no denominator. FullCourt's founding refusals are the brand:
 Even the palette argues: the category goes dark, FullCourt is **daylight, light-only** —
 with one deliberately dark surface, the front door (`/`), where the story is told.
 
-The thesis sentence, and the best line the brand owns, is the front door's hero:
+The front-page hero is **Rest is a stat**. Its supporting example is:
 
-> **Every game starts uneven. The schedule decided that months ago.**
+> One team played last night. The other had three days off.
 
-Everything else answers to it.
+This describes the schedule comparison without claiming it determines the result.
 
 ## 2. The name
 
@@ -132,8 +132,13 @@ below. The four enforced type scales live in [FRONTEND.md](../FRONTEND.md).
 
 ## 7. Voice
 
-The unusual asset: most of the voice is **enforced by the test suite**. The laws, each with
-its mechanism —
+Use plain language tied to the evidence. Describe the population and comparison before
+interpreting a result. Avoid claims of honesty, personified models, and dramatic null-result
+headlines. “No predictive improvement in this test” does not mean “no effect.” Explain
+crew-level attribution and observational confounding wherever they affect interpretation.
+The owner's 2026-09-06 copy pass applies the local antislop rules to existing prose (D-55).
+
+The following conventions have implementation or review checks:
 
 | Law | Enforced by |
 |-----|-------------|
@@ -149,13 +154,13 @@ its mechanism —
 
 ## 8. The lines
 
-- **Hero thesis** (front door only): *Every game starts uneven. The schedule decided that
-  months ago.*
+- **Hero**: *Rest is a stat.* Supporting example: *One team played last night. The other
+  had three days off.*
 - **Operating line** (OG card and the front-door outro, nowhere else — one moment, like the
   accent): *Read against the baseline.* On the OG card and the front-door outro since
   2026-08-19 — both homes are live; do not add a third.
 
-The OG descriptor ("NBA analytics: rest, fatigue, and shot value") remains the functional
+The OG descriptor ("NBA analytics for rest, travel, and shooting") remains the functional
 alt text; the operating line is the brand's sign-off, not a replacement for saying what the
 product is.
 

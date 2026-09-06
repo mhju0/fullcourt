@@ -10,7 +10,7 @@ import { LEAD, TRACK, TYPE, WIDTH } from "@/lib/terminal-styles";
 export const metadata: Metadata = {
   title: "Behind the Data",
   description:
-    "How every FullCourt number is calculated — the fatigue model, schedule edge, playoff predictions, player shooting, shot value and availability cost, with their sources, their limits, and where each has no measurable edge.",
+    "Methods, data sources, results, and limitations for FullCourt's schedule, shooting, availability, playoff, and referee analyses.",
 };
 
 /** Every section but the overview itself, for the index list below. */
@@ -34,21 +34,21 @@ const MODEL_SECTIONS = BEHIND_THE_DATA_SECTIONS.filter(
  */
 const BLURB: Record<ModelSectionHref, string> = {
   "/behind-the-data/rest-advantage":
-    "The fatigue score: eight terms, what each constant is, and which of them actually carry the result.",
+    "The fatigue score's terms and constants, how it is evaluated, and what changes when each term is removed.",
   "/behind-the-data/schedule-edge":
     "How a season's schedule is scored for and against a team, what one rest edge is worth in wins, and why the count is games rather than days.",
   "/behind-the-data/playoff-predictions":
-    "The grind tax and whether it is just the better team, the series model's features, and why its edge is calibration rather than accuracy.",
+    "Previous-round workload, the role of team strength, and how the series model's probabilities compare with its picks.",
   "/behind-the-data/player-shooting":
     "No rest against three days off, and how much of any player's split is noise.",
   "/behind-the-data/shot-value":
-    "Expected shooting value by court location, and the defender data public sources do not have.",
+    "Expected shooting value by court location, and the shot context the model omits.",
   "/behind-the-data/availability":
-    "What counts as a missing rotation player, why an absence is priced above replacement, and why the schedule terms survive the control.",
+    "What counts as a missing rotation player, how absence cost is estimated, and how the schedule estimates change after controlling for it.",
   "/behind-the-data/referees":
-    "Why a figure belongs to a crew rather than a person, what the permutation null is doing, and why an extreme referee-and-player record is not evidence on its own.",
+    "How crew-level records are compared with random assignments, and why an extreme referee-and-player record needs a chance baseline.",
   "/behind-the-data/time-zones":
-    "Whether a long eastward flight on short rest costs anything — it does not — and why the large east/west split in the raw data is team strength rather than jet lag.",
+    "A test of eastward travel on short rest found no added predictive value after controlling for team strength and other schedule factors.",
   "/behind-the-data/data-and-limits":
     "Where the data comes from, which seasons carry which fields, and what is excluded on purpose.",
 };
@@ -63,25 +63,25 @@ const NULL_RESULTS = [
     label: "SEASON WIN TOTALS",
     href: "/behind-the-data/schedule-edge",
     finding:
-      "If a schedule edge compounded, the favoured teams should beat their preseason win-total lines. Across three decades of archived lines they don't — no gradient in either direction.",
+      "Teams with more favorable schedules did not consistently beat their preseason win-total lines in the archived sample.",
   },
   {
     label: "TIME ZONES",
     href: "/behind-the-data/time-zones",
     finding:
-      "A long eastward flight on short rest costs nothing measurable, and the large east/west split in the raw data is team strength rather than jet lag.",
+      "Adding travel direction and short-rest terms did not improve held-out predictions. Team strength differs across the eastward and westward samples.",
   },
   {
     label: "REFEREE FOLKLORE",
     href: "/behind-the-data/referees",
     finding:
-      "Most of what was asked of the officiating record came back empty: named-pair curses and charms sit at their noise floors, and the home tilt stays inside chance. Whistle volume is the one real difference.",
+      "The named-pair records and home-favoring patterns tested here did not exceed their chance comparisons. Foul volume differed between officials' games.",
   },
   {
     label: "OUT-PICKING THE PLAYOFF FAVOURITE",
     href: "/behind-the-data/playoff-predictions",
     finding:
-      "On accuracy, the series model is no better than always taking the home-court side. Its whole measured edge is calibration — the probabilities are honest, the picks are not sharper.",
+      "Overall accuracy was close to always choosing the home-court team. Log loss and Brier score improved, indicating more useful probability estimates.",
   },
 ] as const;
 
@@ -90,31 +90,31 @@ export default function BehindTheDataPage() {
     <BehindTheDataShell
       eyebrow="BEHIND THE DATA"
       title="Behind the data"
-      description="Every model with a section here, written out: the terms, the constants, the thresholds, and the measured results. Every published surface now has one."
+      description="Data sources, calculations, evaluation methods, and limits for each analysis."
     >
       <Section label="HOW TO READ ANY NUMBER HERE" descriptor="THREE RULES">
         <Prose>
-          <strong>Sample size travels with the claim.</strong> A rate without an n attached is
-          not evidence, so every rate on the site carries the count it came from. Where a split
-          is inside the noise, it is drawn muted rather than left to look like a finding.
+          <strong>Read the sample size with the rate.</strong> The count shows how many games or
+          attempts support a percentage. Differences that do not clear the stated uncertainty
+          threshold appear in muted text.
         </Prose>
         <Prose>
-          <strong>Nothing is tuned against its own backtest.</strong>{" "}
+          <strong>Check how the model was evaluated.</strong>{" "}
           The fatigue model&rsquo;s constants were set by reasoning about the physical effect
           rather than fitted to the win rates this site publishes. One has since moved: the
           altitude multiplier was raised on 2026-08-02 to match altitude&rsquo;s measured size
-          against a back-to-back on final margin — a different target from these win rates, and
-          recorded as such. A model fitted to maximise its own reported accuracy would report
-          whatever accuracy it was asked for.
+          against a back-to-back on final margin, a different target from these win rates.
+          The separate fitted models document their training samples and held-out tests.
+          Performance on data used to fit a model can overstate its predictive value.
         </Prose>
         <Prose>
-          <strong>Limits are published beside results.</strong> Each section ends with what its
-          model cannot see. Those lists are the most useful part of this reference: they are the
-          conditions under which the number on the product page is wrong.
+          <strong>Read the limitations.</strong> Each section describes missing inputs,
+          assumptions, and questions the analysis cannot answer. They determine how far a
+          result can reasonably be generalized.
         </Prose>
         <Note>
           Data spans {`${NBA_SEASONS.length} seasons`}, 1985-86 to the present. Not every field
-          reaches back that far — see Data &amp; limits for which seasons carry what.
+          reaches back that far. See Data &amp; limits for coverage by field.
         </Note>
       </Section>
 
@@ -153,11 +153,11 @@ export default function BehindTheDataPage() {
           entry is a measurement that came back empty and was published anyway (ADR 0009) —
           collected here because a null filed only under its model's section reads as buried,
           and these are the site's credibility, not its footnotes. */}
-      <Section label="MEASURED, AND FOUND NOTHING" descriptor="THE NULLS">
+      <Section label="TESTS WITHOUT A CONFIRMED EFFECT" descriptor="NULL RESULTS">
         <Prose>
-          Some of the most useful measurements here came back empty, and each one is published
-          with the same care as a finding — stated beside the noise floor that makes it a
-          result rather than an absence. The questions that found nothing:
+          These tests did not establish the effects they examined. Each page reports the
+          comparison, uncertainty, and limitations. A null result does not prove that an effect
+          is exactly zero.
         </Prose>
         <div className="flex flex-col" data-testid="null-results">
           {NULL_RESULTS.map((item, i) => (

@@ -16,18 +16,16 @@ export function WinTotalGuardrail() {
         className="mono"
         style={{ fontSize: 11, letterSpacing: TRACK.label, color: "var(--term-text-muted)", fontWeight: 600, textTransform: "uppercase" }}
       >
-        The market check — season win totals
+        The market check · season win totals
       </p>
 
       <p style={{ marginTop: SPACE.sm, maxWidth: WIDTH.prose, fontSize: TYPE.body, color: "var(--term-text)", lineHeight: LEAD.body }}>
-        If a schedule edge compounded over a season, the teams at the top of this page should
-        beat their preseason win-total lines. Across {benchmark.seasonsCovered}{" "}
-        seasons of archived lines, they don&rsquo;t: the correlation between net edge games and
+        Across {benchmark.seasonsCovered}{" "}
+        seasons of archived lines, the correlation between net edge games and
         a team&rsquo;s finish against the line is r&nbsp;=&nbsp;
         {benchmark.correlation.r.toFixed(2)} across {benchmark.correlation.n}{" "}
-        team-seasons — statistically zero. A null result, published on purpose: season
-        over/unders are not beatable from this page, and this site won&rsquo;t pretend
-        otherwise.
+        team-seasons. This archive does not show a consistent relationship between net edge
+        and beating the line. It does not establish a betting advantage from this ranking.
       </p>
 
       <a

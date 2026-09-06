@@ -17,7 +17,7 @@ import type { RefereeLegends } from "@/lib/referee-legends";
 import type { RefereeTiming } from "@/lib/referee-timing";
 
 export const metadata: Metadata = {
-  title: "Referee Effect — Behind the Data",
+  title: "Referee Effect · Behind the Data",
   description:
     "How officiating tendencies are measured: why a figure belongs to a crew rather than a person, what a permutation null is doing, and why an extreme referee-and-player record is not evidence on its own.",
 };
@@ -32,19 +32,16 @@ export default function RefereeMethodPage() {
     <BehindTheDataShell
       eyebrow="BEHIND THE DATA · REFEREE EFFECT"
       title="Referee effect"
-      description="How officials are compared to one another without turning a difference in style into an accusation. Every figure describes a crew's game, never one person's judgement."
+      description="How foul patterns are compared across officials' games, with season adjustments, sample thresholds, and tests against random assignments. Calls are recorded at crew level."
     >
-      <Section label="WHERE THE NUMBERS COME FROM" descriptor="THREE POPULATIONS, ON PURPOSE">
+      <Section label="WHERE THE NUMBERS COME FROM" descriptor="THREE DATA SAMPLES">
         <Prose>
-          Everything here is read from ESPN&rsquo;s play-by-play and box scores, cached game by
-          game so a question can be re-asked without re-fetching. The NBA&rsquo;s own endpoints are
-          unreachable from where this site is built, which is why ESPN is the source rather than
-          the fallback.
+          The analysis uses cached ESPN play-by-play and box scores, so each test can use the
+          same game records.
         </Prose>
         <Prose>
-          The page quotes <strong>three different game counts</strong>, and the difference is not
-          an error. Each measurement keeps the games it can actually make its own claim from, and
-          a page that silently pooled them would be quoting a denominator it did not have.
+          The <strong>three game counts</strong> reflect different input requirements and
+          extraction dates. Each analysis reports its own denominator.
         </Prose>
         <ValueGrid
           values={[
@@ -57,7 +54,7 @@ export default function RefereeMethodPage() {
           Timing covers more games than the foul mix because a play stream survives in games whose
           box score does not. The folklore chapter covers more than either because it was rebuilt
           later, on a filter that admits the games where ESPN lists a <em>standby fourth</em>{" "}
-          official alongside the three who worked — a case the earlier extracts silently dropped.
+          official alongside the three who worked, a case the earlier extracts dropped.
           Playoff games are counted only there, and only for the questions that are about the
           postseason.
         </Note>
@@ -65,20 +62,18 @@ export default function RefereeMethodPage() {
 
       <Section label="THE UNIT IS A CREW'S GAME" descriptor="NOT A PERSON'S JUDGEMENT">
         <Prose>
-          This is the constraint every other decision on the page follows from.{" "}
-          <strong>Three officials work every NBA game, and the play-by-play never records which
-          one blew the whistle.</strong> A foul can be attributed to the crew and no further.
+          <strong>Three officials work each game, but the play-by-play used here does not
+          identify who made a call.</strong> Each foul is attributed to the crew.
         </Prose>
         <Formula>
           {`a game credits all three officials equally
-     ⇒ each published figure ≈ ⅓ of the real individual effect
-     ⇒ the true spread between officials is WIDER than shown, never narrower`}
+     ⇒ an official's rate includes calls made by their crewmates
+     ⇒ it does not isolate that official's individual effect`}
         </Formula>
         <Prose>
-          What makes that survivable is that crews barely repeat. Partners are effectively
-          reshuffled across a career, so a colleague&rsquo;s tendencies wash out as noise instead
-          of accumulating as a shared signature. It is the reason a per-official figure means
-          anything at all — and the reason it can never mean as much as it appears to.
+          Officials work with different partners over time. That can reduce the influence of
+          any one crewmate, but it does not establish random assignments or remove all
+          confounding. The figures describe games an official worked, not calls they made.
         </Prose>
       </Section>
 
@@ -101,14 +96,14 @@ published only for officials with ≥ ${MIN_GAMES} games`}
         <ValueGrid
           values={[
             { label: "Emphasis bar", value: `|z| ≥ ${NOTABLE_Z}`, sub: "two standard errors" },
-            { label: "Publication bar", value: `${MIN_GAMES} games`, sub: "below it, a rate is noise" },
+            { label: "Publication bar", value: `${MIN_GAMES} games`, sub: "minimum sample shown" },
             { label: "Officials shown", value: String(timing.eligibleOfficials), sub: `of ${style.officials.length} in the data` },
           ]}
         />
         <Note>
           The bar cuts both ways and is meant to. At |z| ≥ {NOTABLE_Z}, about{" "}
           {timing.expectedByChance} of {timing.eligibleOfficials} officials clear it from noise
-          alone — so a cell being bold is not a finding, and the page never leads with a name on
+          alone, so a bold cell does not establish an individual tendency. The page does not lead with a name on
           that basis. Muted cells are shown rather than hidden, because a table of only the
           significant ones invites the reader to find a pattern that was selected for them.
         </Note>
@@ -124,15 +119,14 @@ published only for officials with ≥ ${MIN_GAMES} games`}
           {driftData.windowGames} games and everything earlier:{" "}
           {driftData.drift.beyond} of {driftData.drift.cells} cells sat beyond |zΔ| ≥{" "}
           {NOTABLE_Z} ({driftData.drift.sharePct}%), where chance produces about{" "}
-          {driftData.drift.chancePct}% — careers are not stationary, and a career average
-          smears real change.
+          {driftData.drift.chancePct}%. This suggests that career averages can obscure changes
+          over time.
         </Prose>
         <Prose>
           So since 2026-08-24 the table scores every official on their{" "}
-          <strong>most recent {driftData.windowGames} games</strong> — the publication bar, so
+          <strong>most recent {driftData.windowGames} games</strong>, the publication bar, so
           every published row is a full window, the same n and the same bolding bar on every
-          line, answering &ldquo;what is this official like now&rdquo;. The price is stated
-          rather than hidden: at n = {driftData.windowGames} the bar is harder to clear, so
+          line. At n = {driftData.windowGames} the bar is harder to clear, so
           the table bolds {driftData.drift.windowBoldCells} type cells where the career basis
           bolded {driftData.drift.careerBoldCells}. The full-span figures ship alongside in
           the same artifact for anyone comparing.
@@ -142,8 +136,8 @@ published only for officials with ≥ ${MIN_GAMES} games`}
           expectation, cleared its declared bars ({driftData.seasonSplit.sharePct}% of
           official-season cells beyond |z| ≥ {NOTABLE_Z};{" "}
           {driftData.seasonSplit.signAgreementPct}% within-official sign agreement). It still
-          has no surface — a 74-official-by-season grid outweighs a browse page — and that is
-          a design refusal recorded here, not a power failure.
+          is not shown in the browse table because adding a season axis would make it much
+          larger. The published artifact retains those results.
         </Note>
       </Section>
 
@@ -166,16 +160,15 @@ verdict:   how often the null's spread reaches the observed one`}
           Holding games-per-season fixed is what stops an era doing the work: two officials who
           worked different decades cannot be made to differ by the league&rsquo;s foul rate
           changing between them. And because it is <em>one</em> test rather than one per official,
-          there is no multiplicity to correct — which is exactly what a count of extreme names
-          cannot say for itself.
+          the test does not select an individual official from many comparisons. Other
+          questions on the page still need their own treatment of multiple testing.
         </Prose>
       </Section>
 
-      <Section label="WHY AN EXTREME PAIR PROVES NOTHING" descriptor="THE NOISE FLOOR">
+      <Section label="INTERPRETING AN EXTREME PAIR" descriptor="THE CHANCE COMPARISON">
         <Prose>
-          The folklore chapter puts named officials beside named players, which is the most
-          dangerous thing on this site. The safeguard is arithmetic rather than caution: every
-          extreme record is published with the record chance produces at the same bar.
+          The folklore chapter compares official-player records with the extremes expected
+          from checking many pairs. An unusual record alone does not establish bias.
         </Prose>
         <Formula>
           {`pairs examined                       ${floor.pairsTested.toLocaleString()}
@@ -188,14 +181,13 @@ cleared p < 0.01                    ${floor.clearedPoint01}   (chance predicts $
 cleared p < 0.05                    ${floor.clearedPoint05}   (chance predicts ${floor.expectedPoint05})`}
         </Formula>
         <Prose>
-          Line up {floor.pairsTested.toLocaleString()} pairs of coin flips and one of them finishes
-          first. The most extreme p-value that process yields is about{" "}
-          {floor.mostExtremePFromNoise} — so a real pair has to beat <em>that</em>, not 0.05, before
-          it means anything. The sport&rsquo;s most famous referee grudge does not.
+          Across {floor.pairsTested.toLocaleString()} pairs, the expected minimum p-value under
+          the chance calculation is about {floor.mostExtremePFromNoise}. This is a reference
+          for the scale of extremes, not a corrected significance threshold. The featured
+          pair&rsquo;s result is less extreme than that reference.
         </Prose>
         <Note>
-          One-sided and two-sided p-values are not interchangeable here, and mixing them is how
-          this page nearly shipped a claim twice as strong as its evidence. The noise floor is the
+          One-sided and two-sided p-values are not interchangeable. The noise floor is the
           expected minimum of a <strong>two-sided</strong> sweep, so every pair compared against it
           is quoted two-sided too. A test fails if that ever stops being true.
         </Note>
@@ -203,9 +195,9 @@ cleared p < 0.05                    ${floor.clearedPoint05}   (chance predicts $
 
       <Section label="FIXED BEFORE ANYTHING WAS RUN" descriptor="THE PRE-REGISTRATIONS">
         <Prose>
-          The cached corpus makes asking one more question nearly free, which is precisely the
-          hazard: a sweep across officials will always return something writeable. So what could
-          be asked was written down and committed <strong>before</strong> any of it was run.
+          Testing many questions and reporting only favourable results can exaggerate the
+          evidence. The questions and decision rules were committed <strong>before</strong>{" "}
+          the analyses ran.
         </Prose>
         <ValueGrid
           values={[
@@ -217,27 +209,26 @@ cleared p < 0.05                    ${floor.clearedPoint05}   (chance predicts $
         <Prose>
           Two consequences are visible on the surface. The Q4 &ldquo;clutch&rdquo; question was{" "}
           <em>gated</em> behind a coarser per-quarter test, so the narrow window was only allowed
-          to spend the sample if the broad one earned it — it did not, and the null is published.
+          to proceed if the broad test passed. It did not, and that result is published.
           And the five famous claims were named in writing before the postseason was even fetched,
-          which is the only reason the one that came back lopsided carries any weight at all.
+          reducing the risk of choosing claims after seeing their results.
         </Prose>
         <Note>
-          The rule that mattered most was the least glamorous: <strong>a null still ships the
-          page.</strong> Most of what was asked came back empty — player foul rates, player win
-          records, star foul trouble, crowd effects, make-up calls — and all of it is published.
-          The finished surface is built around the emptiest result of the lot.
+          The protocol required publishing null results. The reported tests include player
+          foul rates, player win records, star foul trouble, crowd effects, and make-up calls,
+          including those that did not meet their declared evidence thresholds.
         </Note>
       </Section>
 
-      <Section label="WHAT THIS CANNOT SEE" descriptor="THE HONEST LIMITS">
+      <Section label="WHAT THIS CANNOT SEE" descriptor="LIMITATIONS">
         <LimitList
           items={[
-            "It cannot attribute a call. Three officials work every game and the record never says which one made it, so every figure is roughly a third of the individual effect and none of it names a person's judgement.",
-            "It cannot tell a correct call from an incorrect one. Nothing here is a measurement of accuracy — only of how often a kind of call is made.",
+            "It cannot attribute a call to an individual. Each figure describes the games an official worked with two crewmates.",
+            "It cannot judge whether a call was correct. The figures measure call frequency, not accuracy.",
             `It cannot see before ${style.firstSeason}. Named officials are available further back, but the play-by-play detail these measures need is not.`,
             "It cannot test the playoff legends properly. A pair shares a handful of postseason games in a lifetime; both eras of the most famous claim fall below the minimum this page requires before it will judge a pair at all.",
             "It cannot undo how a claim was found. A record the public discovered by scanning outcomes can only be confirmed on games nobody had seen when they found it, and there are rarely enough of those.",
-            "It cannot separate a whistle from the basketball. Fouls tilt hard toward whoever is leading, but a trailing team attacks and a leading team protects — the page publishes the gradient and refuses the causal reading.",
+            "It cannot separate officiating from changes in how teams play while leading or trailing. The score-state gradient is an association, not a causal estimate.",
           ]}
         />
       </Section>

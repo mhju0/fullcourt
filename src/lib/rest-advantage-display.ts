@@ -233,7 +233,7 @@ export function buildRestAdvantageEvidence(
       games: onRoad.games,
       sentence: `Rested team on the road: won ${onRoad.winPct.toFixed(
         1
-      )}% — road teams win ${baseline.roadWinPct.toFixed(
+      )}%; road teams win ${baseline.roadWinPct.toFixed(
         1
       )}% overall (n = ${onRoad.games.toLocaleString("en-US")}).`,
     };
@@ -260,7 +260,7 @@ export function buildRestAdvantageEvidence(
     // can be read against each other rather than only against themselves.
     sentence: `Rested team at home, ${gapLabel}: won ${rate.toFixed(
       1
-    )}% — home teams win ${baseline.homeWinPct.toFixed(
+    )}%; home teams win ${baseline.homeWinPct.toFixed(
       1
     )}% overall (n = ${games.toLocaleString("en-US")}).`,
   };

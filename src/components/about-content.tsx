@@ -76,8 +76,8 @@ const SURFACES = [
   { name: "Season Report", href: "/season", copy: "One season read end to end: how the rest call scored, and what each schedule was worth in wins." },
   { name: "Schedule Edge", href: "/schedule", copy: "Which teams a season's schedule favoured, counted in games with a real rest edge and priced in wins." },
   { name: "Model Results", href: "/analysis", copy: "The backtest that scores the model against history: thresholds, season trends, and every individual game." },
-  { name: "Playoff Rest", href: "/playoffs", copy: "What surviving a long series costs the round after, and the bracket picks that price it in." },
-  { name: "Player Shooting", href: "/shooting", copy: "Every player's shooting on no rest against three days off. One season of it is noise." },
+  { name: "Playoff Rest", href: "/playoffs", copy: "Series probabilities and historical results grouped by prior-round workload, with team strength included in the model." },
+  { name: "Player Shooting", href: "/shooting", copy: "Shooting on no rest compared with three or more days off, with sample sizes and career estimates." },
 ];
 
 // Shot Value is intentionally absent: this list names the six tabs in the nav bar, and Shot
@@ -113,7 +113,7 @@ const STANDARD = [
     rulesOut: "Not knowing whether a result came from three games or three hundred.",
   },
   {
-    rule: "One model, used everywhere",
+    rule: "One fatigue score across Games and Model Results",
     rulesOut: "A game card quietly disagreeing with the backtest behind it.",
   },
   {
@@ -125,10 +125,10 @@ const STANDARD = [
 /** What the fatigue score is assembled from, in the order the model applies it. */
 const INPUTS = [
   { term: "Recent workload", detail: "Games in the last 30 days, decaying. Last night counts for far more than last week." },
-  { term: "Travel", detail: "Miles between arenas, log-scaled. No phantom trips home." },
-  { term: "Body clock", detail: "Time zones crossed, charged harder going east, fading as the team adjusts." },
+  { term: "Travel", detail: "Estimated venue-to-venue miles, with progressively smaller additions to the score." },
+  { term: "Body clock", detail: "A time-zone penalty with assumed direction and adjustment rates, not validated by the held-out test." },
   { term: "Back-to-backs", detail: "Weighted by the real hours between tip-offs, not just the calendar." },
-  { term: "Altitude", detail: "Denver, Utah and Mexico City — plus the night after." },
+  { term: "Altitude", detail: "Denver, Utah and Mexico City, plus a carryover term the following night." },
   { term: "Density", detail: "Games per window against a normal pace, not a raw count." },
 ];
 
@@ -136,15 +136,15 @@ const INPUTS = [
 const NAME_READINGS = [
   {
     term: "FULL",
-    copy: `The whole record: every season since ${NBA_SEASONS[0]}, both arms of every split, the nulls published rather than buried.`,
+    copy: `Regular-season results since ${NBA_SEASONS[0]}, with comparison groups and sample sizes.`,
   },
   {
     term: "COURT",
-    copy: "The floor, and the trial. Home court is the confound the model refuses credit for — and the standard every claim is tried against.",
+    copy: "Home court provides the baseline for reading a rest advantage. It accounts for much of the raw win rate.",
   },
   {
     term: "FULL-COURT",
-    copy: "A full-court press covers both ends of the floor. So does the measurement: the rate and its baseline, the finding and its limit.",
+    copy: "The basketball name connects the schedule analysis with shooting, playoff, and officiating studies.",
   },
 ];
 
@@ -296,7 +296,7 @@ export function AboutContent({ stats }: { stats: AboutStats | null }) {
               derived rather than typed, and it is a start date rather than a count on
               purpose — the evidence section already carries the season count. */}
           <p className="fc-hero-in mx-auto mt-7 max-w-xl" style={{ color: DIM, fontSize: "1.05rem", lineHeight: 1.65 }}>
-            Travel, days off and schedule density — scored for every team in every game since{" "}
+            Travel, days off and schedule density, checked against regular-season games since{" "}
             {NBA_SEASONS[0]}.
           </p>
           {/* The early path to the product (2026-08-20): the page serves a credibility read
@@ -305,7 +305,7 @@ export function AboutContent({ stats }: { stats: AboutStats | null }) {
               because e2e pins that accessible name at exactly one element. */}
           <Link
             href="/games"
-            className="fc-hero-in relative mt-8 inline-block pb-0.5 text-sm opacity-55 transition-opacity hover:opacity-90 focus-visible:opacity-90 motion-reduce:transition-none"
+            className="fc-hero-in relative mt-8 inline-flex min-h-11 items-center pb-0.5 text-sm opacity-55 transition-opacity hover:opacity-90 focus-visible:opacity-90 motion-reduce:transition-none lg:min-h-0"
             style={{ color: BONE, borderBottom: "1px solid rgba(245,241,232,.3)" }}
           >
             Skip to the games board &rarr;
@@ -316,7 +316,7 @@ export function AboutContent({ stats }: { stats: AboutStats | null }) {
       {/* ── 2. Why it matters ─────────────────────────────────── */}
       <section className={`fc-thesis mx-auto w-full max-w-5xl px-6 ${SECTION}`}>
         <p className="font-heading font-medium" style={{ fontSize: "clamp(1.9rem,4.6vw,3.4rem)", lineHeight: 1.16, letterSpacing: "-0.03em", maxWidth: "24ch" }}>
-          Every game starts uneven. The schedule decided that months ago.
+          One team played last night. The other had three days off.
         </p>
       </section>
 
@@ -407,10 +407,9 @@ export function AboutContent({ stats }: { stats: AboutStats | null }) {
                 {stats ? signedNumber(stats.overallEdgePp, 1) : NO_FIGURE}
               </span>
               <p className="mt-3 max-w-[46ch]" style={{ color: DIM, lineHeight: 1.6 }}>
-                Across every call it makes, not only the strongest — and measured against home
-                court rather than a coin flip, which is most of what a raw win rate here would
-                be. Much of the underlying gap is structural — geography and broadcast windows,
-                not favouritism.
+                Percentage points above the home baseline across all called games. This
+                compares historical groups; it does not isolate rest from team strength or
+                other differences between those groups.
               </p>
             </div>
           </div>
@@ -428,8 +427,8 @@ export function AboutContent({ stats }: { stats: AboutStats | null }) {
               What the score is made of
             </h2>
             <p className="fc-input mt-5 max-w-sm" style={{ color: DIM, lineHeight: 1.65 }}>
-              Six measurements of the same night, combined into one number per team. Each is a
-              physical fact about the schedule, not a rating of the roster.
+              Six main inputs to the fatigue score. The full formula also accounts for
+              extended rest and overtime. Its weights turn schedule records into an estimate.
             </p>
           </div>
 
@@ -460,7 +459,7 @@ export function AboutContent({ stats }: { stats: AboutStats | null }) {
           How a number earns its place
         </h2>
         <p className="fc-rule mt-4 max-w-[46ch]" style={{ color: DIM, fontSize: "1.05rem", lineHeight: 1.6 }}>
-          Three rules, and what each one costs.
+              Sample sizes, shared calculations, and limitations make the results easier to check.
         </p>
 
         <div
@@ -536,8 +535,7 @@ export function AboutContent({ stats }: { stats: AboutStats | null }) {
         {/* Outside the nav landmark on purpose: e2e/home.spec.ts asserts the card row is
             exactly six links, and these three are the bar's OTHER menu rather than tabs. */}
         <p className="mt-6 text-sm" style={{ color: DIM, lineHeight: 1.7 }}>
-          Three more sit behind the bar&rsquo;s <span className="mono">OTHER</span> menu, smaller
-          in scope but finished the same way:{" "}
+          The <span className="mono">OTHER</span> menu also contains{" "}
           <Link href="/shot-quality" className="underline underline-offset-2">
             Shot Value
           </Link>
@@ -556,7 +554,7 @@ export function AboutContent({ stats }: { stats: AboutStats | null }) {
       {/* ── 8. The way in ─────────────────────────────────────── */}
       <section className="fc-outro px-6 pb-28 pt-32 text-center">
         <h2 className="fc-outro-item font-heading mx-auto max-w-4xl font-bold" style={{ fontSize: "clamp(2.2rem,6.5vw,4.6rem)", lineHeight: 0.98, letterSpacing: "-0.035em" }}>
-          Read the schedule before it reads you
+          See the rest gap in each matchup
         </h2>
         {/* `/games`, not `/`: a CTA pointing at `/` would scroll the reader back to the top
             of the page they are already on. */}

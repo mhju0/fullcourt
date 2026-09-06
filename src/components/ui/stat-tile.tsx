@@ -183,13 +183,12 @@ export function StatFigure({
 }) {
   return (
     <div className="mono flex flex-col" style={{ gap: SPACE.sm }}>
-      {/* A figure never wraps. At 40px, "2,545 of 2,545" is fourteen mono characters and breaking
-          it splits the one number the section exists to state — so the rule lives here rather than
-          being remembered at three call sites. */}
+      {/* Keep counts such as "2,545 of 2,545" together. Scale headline type down on
+          narrow screens so the text fits inside the card's padding. */}
       <span
         className="tabular-nums whitespace-nowrap"
         style={{
-          fontSize: size === "figure" ? TYPE.figure : TYPE.stat,
+          fontSize: size === "figure" ? `clamp(${TYPE.stat}px, 8vw, ${TYPE.figure}px)` : TYPE.stat,
           fontWeight: 700,
           letterSpacing: TRACK.figure,
           color: tone,

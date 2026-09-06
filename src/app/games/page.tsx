@@ -214,7 +214,7 @@ function OffSeasonBanner({ season }: { season: string }) {
       }}
     >
       <span style={{ fontSize: 12, letterSpacing: TRACK.sub, color: "var(--term-text)", fontWeight: 600 }}>
-        {season} SEASON COMPLETE — SHOWING FINAL SLATE
+        {season} SEASON COMPLETE · SHOWING FINAL SLATE
       </span>
       <a
         href="/season"
@@ -395,7 +395,7 @@ export default function HomePage() {
         <PageHeader
           eyebrow="GAME SLATE · REST ADVANTAGE"
           title="Games"
-          description="What the schedule does to a game. Travel, rest and density, scored for both teams in every matchup and checked against what actually happened since 1985-86."
+          description="Compare each team's rest, travel, and schedule density before tip-off. Browse matchups and historical results since 1985-86."
         />
         <MethodLink surfaceHref="/games" />
       </div>
@@ -501,7 +501,7 @@ export default function HomePage() {
           </div>
         )}
 
-        <div className="mt-4 flex flex-wrap items-center gap-2">
+        <div className="mt-4 grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2 sm:flex sm:flex-wrap">
           <Button
             variant="outline"
             size="icon-sm"
@@ -514,7 +514,7 @@ export default function HomePage() {
             <ChevronLeft />
           </Button>
           <p
-            className="mono min-w-[12rem] text-center sm:text-left"
+            className="mono min-w-0 text-center sm:min-w-[12rem] sm:text-left"
             style={{ fontSize: 12, letterSpacing: TRACK.sub, color: "var(--term-text)", fontWeight: 600 }}
             data-testid="selected-date-display"
           >

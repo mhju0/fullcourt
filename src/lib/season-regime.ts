@@ -37,7 +37,7 @@ export const ABNORMAL_STRETCHES: readonly AbnormalStretch[] = [
     season: "2019-20",
     from: "2020-07-30",
     to: "2020-10-11",
-    why: "Orlando bubble — every game at a single site, so there is no travel to measure and no home crowd. The 63-67 games each team played before the 2020-03-11 suspension are ordinary and are not excluded.",
+    why: "Orlando bubble: games at one site, with no venue-to-venue travel or home crowd. Each team's 63-67 pre-suspension games remain included.",
   },
 ];
 

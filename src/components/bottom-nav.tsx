@@ -85,7 +85,7 @@ export function BottomNav() {
             "border-transparent text-[var(--term-text-muted)] outline-none focus-visible:text-[var(--term-text)]"
           )}
           style={SLOT_STYLE}
-          aria-label="Search — open the command palette"
+          aria-label="Search: open the command palette"
         >
           <Search size={16} aria-hidden />
           SEARCH

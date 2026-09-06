@@ -14,7 +14,7 @@ import { test, expect } from "@playwright/test";
  * static position from inside a table wider than the phone, and planted a 1x1 box out past the
  * viewport edge. One pixel of element, 57px of document.
  *
- * Both viewports run deliberately. Desktop was already clean when this was written and is here
+ * Phone and desktop viewports run deliberately. Desktop was already clean when this was written and is here
  * to stay that way; the phone width is where the defects were, and where nothing had looked.
  */
 
@@ -43,6 +43,7 @@ const ROUTES = [
 ];
 
 const VIEWPORTS = [
+  { name: "narrow phone 320", width: 320, height: 800 },
   { name: "phone 390", width: 390, height: 844 },
   { name: "desktop 1440", width: 1440, height: 900 },
 ];
@@ -60,6 +61,7 @@ for (const viewport of VIEWPORTS) {
         // (docs/TESTING_AND_CICD.md) is a readiness gate wherever a spec needs one; every route
         // in the list above renders an `h1`.
         await expect(page.locator("h1").first()).toBeVisible();
+        await page.evaluate(() => document.fonts.ready);
 
         const measured = await page.evaluate(() => {
           const root = document.documentElement;

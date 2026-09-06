@@ -11,7 +11,7 @@ import {
 import { wordmarkLetters } from "@/lib/brand/wordmark-kern";
 import { NBA_SEASONS } from "@/lib/nba-season";
 
-export const alt = "FullCourt — NBA analytics: rest, fatigue, and shot value";
+export const alt = "FullCourt · NBA analytics for rest, travel, and shooting";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -91,7 +91,7 @@ export default async function OpengraphImage() {
           <div style={{ display: "flex", fontSize: 38, color: "#B7BEC7", maxWidth: 960, lineHeight: 1.35 }}>
             {/* No figure: a static image cannot pin one, and the ~55% this carried predated
                 the 2026-08-02 rule change entirely. */}
-            Rest, travel and shot value — measured against every NBA regular season since
+            Rest, travel and schedule density, checked against NBA games since
             1985-86.
           </div>
         </div>

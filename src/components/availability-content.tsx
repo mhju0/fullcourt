@@ -124,11 +124,11 @@ function ScaleSection() {
         </div>
 
         <p className="mt-4" style={BODY}>
-          <span style={LEAD_IN}>Losing your best player costs about what playing at home is worth.</span>{" "}
-          Every bar is points of final margin, measured across{" "}
+          <span style={LEAD_IN}>The best-player-out estimate is similar in size to the home-court estimate.</span>{" "}
+          Every bar is measured in points of final margin across{" "}
           {AVAILABILITY_SAMPLE.games.toLocaleString()}{" "}
-          games with both teams&apos; records held equal, so they can be read against one another
-          directly.
+          games, controlling for both teams&apos; prior records. These are regression
+          associations, not isolated causal effects.
         </p>
       </div>
     </section>
@@ -254,11 +254,10 @@ function ScheduleHoldsUpSection() {
       <div style={termCardStyle}>
         <p style={BODY}>
           <span style={LEAD_IN}>
-            A back-to-back is not just teams resting their stars.
+            Measured absences change the schedule estimates little.
           </span>{" "}
-          The obvious objection to measuring the schedule at all is that its effects are really
-          absences in disguise. Holding who actually played fixed moves every schedule effect by
-          under {Math.ceil(worst)}%.
+          Adding absence value to the regression moves every schedule coefficient by
+          under {Math.ceil(worst)}%. Unmeasured absences and changes in minutes can still matter.
         </p>
 
         {/* Ported to DataTable on 2026-08-11. It carried `fc-table` but overrode every style
@@ -311,16 +310,15 @@ function LimitsSection() {
       <SectionHeading>WHAT THIS IS NOT</SectionHeading>
       <div style={termCardStyle}>
         <p style={BODY}>
-          <span style={LEAD_IN}>This measures what an absence cost, not who will play tonight.</span>{" "}
+          <span style={LEAD_IN}>Availability is measured after the game.</span>{" "}
           Every figure here is worked out after the fact, from who actually took the floor. Lineups
           are not settled until shortly before tip, so none of this forecasts a game.
         </p>
         <p className="mt-3" style={BODY}>
-          <span style={LEAD_IN}>And a basketball game is mostly noise.</span> Final margins vary by{" "}
+          <span style={LEAD_IN}>Much of the margin remains unexplained.</span> Final margins have a standard deviation of{" "}
           {n.marginStdDev.toFixed(1)}{" "}
-          points; knowing both teams&apos; records, their schedule and who was missing still leaves{" "}
-          {n.rmseWithAbsence.toFixed(1)}. These effects are real and precisely measured. They are
-          not a large share of what happens.
+          points; the model&apos;s error after including team records, schedule, and absences is{" "}
+          {n.rmseWithAbsence.toFixed(1)} points.
         </p>
         <p className="mt-3" style={BODY}>
           Absence is inferred from the rotation a team had actually been using, because a
