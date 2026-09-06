@@ -124,9 +124,8 @@ upcoming October date at season start; else nearest / last available).
   `StatSummaryRow` (GAMES ON THIS DATE, AVG REST ADV, HIGH CONF GAMES where
   `HIGH_CONF_THRESHOLD = 2.0` — three tiles, all scoped to the slate on screen; a fourth
   once carried the full-history backtest rate, which described none of the games shown and is
-  stated per matchup and on /analysis instead); `useSWR("/api/analysis")` stays, since the
-  matchup rows' evidence sentences are denominated from it; the shared
-  a two-group control panel — **Scope** (`<SeasonSelector>` + month tabs from `slate.months`,
+  stated on /analysis instead). Games does not request `/api/analysis` (D-57).
+  A two-group control panel: **Scope** (`<SeasonSelector>` + month tabs from `slate.months`,
   disabled at `dayCount === 0`) and **Day** (`DateChip`s pre-formatted by the hook, plus the
   prev/next arrows). The old "DAYS WITH GAMES" caption is gone: the group is labelled, and each
   chip states its own count;
@@ -145,16 +144,10 @@ upcoming October date at season start; else nearest / last available).
   a sentence and no flags** — so the two-up layout only ever served the "both" case, while 43%
   of rows paid a 32px band to right-align three chips against 901px of nothing. That empty space
   under the team names is what this removed.
-- **The evidence sentence leads the expansion; it is not a sub-row** (2026-08-11). It renders
-  only above the 0.5 call threshold, so as an always-on band it striped a slate grey under some
-  rows and not others — and the sentence is not about the game anyway. It names the historical
-  **class** the matchup falls into, so a slate holds at most a couple of distinct strings: on the
-  15-game date it was re-cut against, four rows carried a band and three were byte-identical.
-  Repeating a class-level fact once per row asserts it is per-game. Inside the expansion it sits
-  above the two fatigue columns — the click came from the REST ADVANTAGE cell, so "is 1.1 a lot?"
-  is the first question and the components are the second. Every collapsed row is now the same
-  81px, and the expansion insets on the row's own 16px rail rather than the 12px it used to use,
-  so the detail cards start on the status cell's line.
+- **Expanded matchups show the fatigue breakdown** (D-57, 2026-09-06). Historical win-rate
+  comparisons and repeated method links have been removed without a replacement footnote.
+  Model Results holds the historical rates and sample sizes; the Games page-level method
+  link leads to Behind the Data. The expansion retains the row's 16px inset and mobile width.
 - The first tile is **"GAMES ON THIS DATE"**, not "GAMES TODAY": its value is
   `mergedGames.length` for the *selected* day, and `pickDefaultGamesDate` deliberately selects
   a non-today date whenever today has no games (the normal case in the off-season).
