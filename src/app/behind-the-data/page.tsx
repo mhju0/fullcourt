@@ -42,9 +42,9 @@ const BLURB: Record<ModelSectionHref, string> = {
   "/behind-the-data/player-shooting":
     "No rest against three days off, and how much of any player's split is noise.",
   "/behind-the-data/shot-value":
-    "Expected shooting value by court location, and the defender data public sources do not have.",
+    "Expected shooting value by court location, and the shot context the model omits.",
   "/behind-the-data/availability":
-    "What counts as a missing rotation player, why an absence is priced above replacement, and why the schedule terms survive the control.",
+    "What counts as a missing rotation player, how absence cost is estimated, and how the schedule estimates change after controlling for it.",
   "/behind-the-data/referees":
     "How crew-level records are compared with random assignments, and why an extreme referee-and-player record needs a chance baseline.",
   "/behind-the-data/time-zones":
