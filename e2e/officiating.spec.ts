@@ -122,7 +122,7 @@ for (const historical of [data.seasons[0], data.seasons[2], data.seasons[4]]) {
     await page.setViewportSize({ width: 390, height: 844 });
     const game = historical.games.find(g => g.missed + g.wrong > 0)!;
     await page.goto(`/officiating?season=${historical.season}&game=${game.id}`);
-    await expect(page.getByLabel("SEASON", { exact: true }).locator("option")).toHaveCount(12);
+    await expect(page.getByLabel("SEASON", { exact: true }).locator("option")).toHaveCount(data.seasons.length);
     await expect(page.locator("blockquote").first()).toBeVisible();
     await expect(page.getByRole("link", { name: "Source: NBA L2M report ↗" }).first()).toHaveAttribute("href", game.source);
     await page.evaluate(() => window.scrollTo(0, 0));

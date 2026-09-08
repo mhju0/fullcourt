@@ -10,7 +10,7 @@ import {
 describe("officiating evidence and browsing", () => {
   it("pins the reviewed regular-season populations", () => {
     expect(
-      data.seasons.map((s) => [s.season, s.games.length, s.missed, s.wrong]),
+      data.seasons.filter((s) => s.season <= "2025-26").map((s) => [s.season, s.games.length, s.missed, s.wrong]),
     ).toEqual([
       ["2014-15", 113, 184, 21],
       ["2015-16", 410, 585, 105],
