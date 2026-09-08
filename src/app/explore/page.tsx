@@ -1,38 +1,50 @@
 import type { Metadata } from "next";
 import { PageHeader } from "@/components/page-header";
 import { TransitionLink } from "@/components/transition-link";
-import { LEAD, TYPE, WIDTH } from "@/lib/terminal-styles";
+import { ArrowRight } from "lucide-react";
+import { StudyLink } from "@/components/study-link";
+import { LEAD, TYPE } from "@/lib/terminal-styles";
 
 export const metadata: Metadata = { title: "Explore" };
 
 const GROUPS = [
   { title: "Rest and fatigue", links: [
-    { href: "/shooting", title: "Player Shooting", question: "Do players shoot differently with more rest?" },
-    { href: "/playoffs", title: "Playoff Rest", question: "How does prior-round workload relate to a series?" },
-    { href: "/analysis", title: "Model Results", question: "How does the rest model compare with history?" },
+    { href: "/shooting", title: "Player Shooting", question: "Do players shoot differently with more rest?", action: "Compare shooting splits" },
+    { href: "/playoffs", title: "Playoff Rest", question: "How does prior-round workload relate to a series?", action: "Compare playoff workload" },
+    { href: "/analysis", title: "Model Results", question: "How does the rest model compare with history?", action: "See historical results" },
   ] },
   { title: "Other studies", links: [
-    { href: "/availability", title: "Availability Cost", question: "What do historical absences tell us?" },
-    { href: "/officiating", title: "Officiating", question: "What did the NBA identify in close-game endings?" },
-    { href: "/shot-quality", title: "Shot Value", question: "How does expected efficiency vary around the court?" },
+    { href: "/availability", title: "Availability Cost", question: "What do historical absences tell us?", action: "Examine availability" },
+    { href: "/officiating", title: "Officiating", question: "What did the NBA identify in close-game endings?", action: "Browse reviewed games" },
+    { href: "/shot-quality", title: "Shot Value", question: "How does expected efficiency vary around the court?", action: "View the shot map" },
   ] },
-  { title: "Research", links: [
+];
+
+const RESEARCH = [
     { href: "/behind-the-data", title: "Behind the Data", question: "Sources, calculations and limitations." },
     { href: "/behind-the-data/referees/archive", title: "Referee research archive", question: "Historical foul patterns and folklore comparisons." },
-  ] },
 ];
 
 export default function ExplorePage() {
   return <div className="flex flex-col gap-12">
-    <PageHeader eyebrow="FINDINGS & EVIDENCE" title="Explore" description="Browse shooting by rest, playoff workload and other basketball studies. Each page links to the sources, calculations and limitations behind its findings." />
-    {GROUPS.map((group) => <section key={group.title} className="flex flex-col gap-4" style={{ maxWidth: WIDTH.prose }}>
-      <h2 style={{ fontSize: TYPE.stat }}>{group.title}</h2>
-      <ul>{group.links.map((link) => <li key={link.href} className="border-t border-[var(--term-border)]">
-        <TransitionLink href={link.href} className="group flex min-h-11 flex-col gap-1 py-4 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--term-text)]">
-          <span className="font-semibold group-hover:underline" style={{ fontSize: TYPE.emph }}>{link.title}</span>
-          <span style={{ fontSize: TYPE.body, lineHeight: LEAD.body, color: "var(--term-text-muted)" }}>{link.question}</span>
-        </TransitionLink>
-      </li>)}</ul>
-    </section>)}
+    <PageHeader eyebrow="FINDINGS & EVIDENCE" title="Explore" description="How rest shapes the game, and what else the numbers reveal. Pick a study to see the findings and the evidence behind them." />
+    <ul aria-label="Basketball studies" className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+      {GROUPS.flatMap((group) => group.links.map((link) => (
+        <li key={link.href}><StudyLink {...link} category={group.title} /></li>
+      )))}
+    </ul>
+    <section className="flex flex-col gap-3 border-t border-[var(--term-border)] pt-6">
+      <h2 style={{ fontSize: TYPE.body }}>Research &amp; sources</h2>
+      <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+        {RESEARCH.map((link) => <li key={link.href}>
+          <TransitionLink href={link.href} className="flex min-h-16 items-center justify-between gap-4 rounded-lg border border-[var(--term-neutral)] bg-[var(--term-surface)] px-4 py-3 hover:border-[var(--term-accent)] active:bg-[var(--term-surface-2)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--term-accent)]">
+            <span><span className="font-semibold" style={{ fontSize: TYPE.body }}>{link.title}</span>
+              <span className="mt-1 block" style={{ fontSize: TYPE.body, lineHeight: LEAD.body, color: "var(--term-text-muted)" }}>{link.question}</span>
+            </span>
+            <ArrowRight className="shrink-0" size={18} aria-hidden="true" />
+          </TransitionLink>
+        </li>)}
+      </ul>
+    </section>
   </div>;
 }
