@@ -49,9 +49,9 @@ def validate_report(data, game_id):
     if not isinstance(events, list) or not events:
         raise ValueError(f"Missing reviewed events: {game_id}")
     for row in events:
-        if row.get("CallRatingName") not in ("CC", "CNC", "IC", "INC", "", None):
+        if str(row.get("CallRatingName") or "").strip() not in ("CC", "CNC", "IC", "INC", "", "Undetectable", "NCI", "NCC"):
             raise ValueError(f"Unknown grade: {row.get('CallRatingName')}")
-        if not row.get("PeriodName") or not row.get("CallType"):
+        if not row.get("PeriodName") or (not row.get("CallType") and not data.get("sourcePdf")):
             raise ValueError(f"Missing event fields: {game_id}")
 
 

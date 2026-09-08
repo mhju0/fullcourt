@@ -1,0 +1,186 @@
+{
+  "0021500310": {
+    "source_sha256": "1c6afb0ba1853b1e4c6b8c08c91b88551079c449a691a1b5c096aac8d3e48639",
+    "pairs": [
+      [
+        2,
+        3
+      ]
+    ],
+    "source_url": "https://ak-static.cms.nba.com/wp-content/uploads/sites/4/2015/12/L2M-POR-MIL-12-7-15.pdf",
+    "season": "2015-16",
+    "reason": "The original NBA source contains these separate assessment rows at the same clock. Preserve each published assessment; matching projected fields do not establish one physical play. Both INC rows for the free-throw time limit are printed in the source PDF; the count is of NBA assessments, not independently deduplicated incidents."
+  },
+  "0021500306": {
+    "source_sha256": "983ec130e83afa01c4ad4f58988ec1d24074182bc9ddd89632483235c975bccf",
+    "pairs": [
+      [
+        10,
+        11
+      ]
+    ],
+    "source_url": "https://ak-static.cms.nba.com/wp-content/uploads/sites/4/2015/12/L2M-WAS-MIA-12-7-15.pdf",
+    "season": "2015-16",
+    "reason": "The original NBA source contains these separate assessment rows at the same clock. Preserve each published assessment; matching projected fields do not establish one physical play. These matching rows are correct or ungraded, so retaining them does not increase identified-error totals."
+  },
+  "0021501131": {
+    "source_sha256": "3b70c735d0bce5cbae6cf29982b2deb630096224e1aead37534c8d1ed9600130",
+    "pairs": [
+      [
+        16,
+        17
+      ]
+    ],
+    "source_url": "https://ak-static.cms.nba.com/wp-content/uploads/sites/4/2016/04/L2M-CLE-ATL-4-1-16.pdf",
+    "season": "2015-16",
+    "reason": "The original NBA source contains these separate assessment rows at the same clock. Preserve each published assessment; matching projected fields do not establish one physical play. These matching rows are correct or ungraded, so retaining them does not increase identified-error totals."
+  },
+  "0021600370": {
+    "source_sha256": "b8761589ff2fe5918694ce6769787c7592c22a2d5c50234ea5e85cb9cbdfa8f9",
+    "pairs": [
+      [
+        11,
+        12
+      ]
+    ],
+    "source_url": "https://ak-static.cms.nba.com/wp-content/uploads/sites/4/2015/10/L2M-MIN-CHI-12-13-16.pdf",
+    "season": "2016-17",
+    "reason": "The original NBA source contains these separate assessment rows at the same clock. Preserve each published assessment; matching projected fields do not establish one physical play. These matching rows are correct or ungraded, so retaining them does not increase identified-error totals."
+  },
+  "0021600192": {
+    "source_sha256": "24ea5351fa9d501fe0a697cdfad3d2ff90fd5e644f2c2175c3b1191950c42996",
+    "pairs": [
+      [
+        16,
+        17
+      ]
+    ],
+    "source_url": "https://ak-static.cms.nba.com/wp-content/uploads/sites/4/2016/11/L2M-CHI-LAC-11-19-16.pdf",
+    "season": "2016-17",
+    "reason": "The original NBA source contains these separate assessment rows at the same clock. Preserve each published assessment; matching projected fields do not establish one physical play. These matching rows are correct or ungraded, so retaining them does not increase identified-error totals."
+  },
+  "0021600831": {
+    "source_sha256": "41513ac1e456fd8dd543a0eb51ddd84ea601bd4564823a42f99145e71ccf1e6c",
+    "pairs": [
+      [
+        14,
+        15
+      ]
+    ],
+    "source_url": "https://ak-static.cms.nba.com/wp-content/uploads/sites/4/2017/02/L2M-TOR-CHI-02-14-2017-1.pdf",
+    "season": "2016-17",
+    "reason": "The original NBA source contains these separate assessment rows at the same clock. Preserve each published assessment; matching projected fields do not establish one physical play. These matching rows are correct or ungraded, so retaining them does not increase identified-error totals."
+  },
+  "0021700695": {
+    "source_sha256": "907adf6ef63006430defb0751a7bb49cd37bae72e541a77103115e86ce7c91ab",
+    "pairs": [
+      [
+        19,
+        20
+      ]
+    ],
+    "source_url": "https://ak-static.cms.nba.com/wp-content/uploads/sites/4/2018/01/L2M-MIN-LAC-01-22-2018.pdf",
+    "season": "2017-18",
+    "reason": "The original NBA source contains these separate assessment rows at the same clock. Preserve each published assessment; matching projected fields do not establish one physical play. These matching rows are correct or ungraded, so retaining them does not increase identified-error totals."
+  },
+  "0021700639": {
+    "source_sha256": "f49a8b6f6a6635e74b6182f993492260d20cd4d75ec1b4f618b291dd34292176",
+    "pairs": [
+      [
+        17,
+        18
+      ]
+    ],
+    "source_url": "https://ak-static.cms.nba.com/wp-content/uploads/sites/4/2018/01/L2M-TOR-PHI-01-15-2018.pdf",
+    "season": "2017-18",
+    "reason": "The original NBA source contains these separate assessment rows at the same clock. Preserve each published assessment; matching projected fields do not establish one physical play. These matching rows are correct or ungraded, so retaining them does not increase identified-error totals."
+  },
+  "0021700782": {
+    "source_sha256": "b140d16a1985b1475478a303e78e85c89e614c06e673da0aae1f6023bd144682",
+    "pairs": [
+      [
+        9,
+        10
+      ]
+    ],
+    "source_url": "https://ak-static.cms.nba.com/wp-content/uploads/sites/4/2018/02/L2M-GSW-DEN-02-03-2018.pdf",
+    "season": "2017-18",
+    "reason": "The original NBA source contains these separate assessment rows at the same clock. Preserve each published assessment; matching projected fields do not establish one physical play. These matching rows are correct or ungraded, so retaining them does not increase identified-error totals."
+  },
+  "0021701046": {
+    "source_sha256": "4c9d2554b857300b4c9e2c21c8321cb11ea3e85959d005b6cda8f75870f1032b",
+    "pairs": [
+      [
+        26,
+        27
+      ],
+      [
+        26,
+        28
+      ]
+    ],
+    "source_url": "https://ak-static.cms.nba.com/wp-content/uploads/sites/4/2018/03/L2M-OKC-TOR-03-18-2018.pdf",
+    "season": "2017-18",
+    "reason": "The original NBA source contains these separate assessment rows at the same clock. Preserve each published assessment; matching projected fields do not establish one physical play. These matching rows are correct or ungraded, so retaining them does not increase identified-error totals."
+  },
+  "0021800996": {
+    "source_sha256": "62d14ffd4906889de1bc5df9a9435b4c2c4ac5c28d1dec49430eefffa64fd73d",
+    "pairs": [
+      [
+        22,
+        23
+      ]
+    ],
+    "source_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0021800996",
+    "season": "2018-19",
+    "reason": "The original NBA source contains these separate assessment rows at the same clock. Preserve each published assessment; matching projected fields do not establish one physical play. These matching rows are correct or ungraded, so retaining them does not increase identified-error totals."
+  },
+  "0022000443": {
+    "source_sha256": "c09930e9c4b1837a16a6c8636760bb09e4e2fb9fd818e1290020c91b5d54baf4",
+    "pairs": [
+      [
+        18,
+        19
+      ]
+    ],
+    "source_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022000443",
+    "season": "2020-21",
+    "reason": "The original NBA source contains these separate assessment rows at the same clock. Preserve each published assessment; matching projected fields do not establish one physical play. These matching rows are correct or ungraded, so retaining them does not increase identified-error totals."
+  },
+  "0022000459": {
+    "source_sha256": "adad9d5b1dbb15b1dcf46b8885db97e34521ad92dade4794fcc9772a193c1d9b",
+    "pairs": [
+      [
+        18,
+        19
+      ]
+    ],
+    "source_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022000459",
+    "season": "2020-21",
+    "reason": "The original NBA source contains these separate assessment rows at the same clock. Preserve each published assessment; matching projected fields do not establish one physical play. These matching rows are correct or ungraded, so retaining them does not increase identified-error totals."
+  },
+  "0022100105": {
+    "source_sha256": "0e3c20dd2650ade1e27fd70fca757f21b30710b2fa5f506698a1c7c3d2332870",
+    "pairs": [
+      [
+        20,
+        21
+      ]
+    ],
+    "source_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022100105",
+    "season": "2021-22",
+    "reason": "The original NBA source contains these separate assessment rows at the same clock. Preserve each published assessment; matching projected fields do not establish one physical play. These matching rows are correct or ungraded, so retaining them does not increase identified-error totals."
+  },
+  "0022100852": {
+    "source_sha256": "50f2a8891d306e1f697fa6eacca384aa207a7343d316dfbdf1b88285669052f3",
+    "pairs": [
+      [
+        10,
+        11
+      ]
+    ],
+    "source_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022100852",
+    "season": "2021-22",
+    "reason": "The original NBA source contains these separate assessment rows at the same clock. Preserve each published assessment; matching projected fields do not establish one physical play. These matching rows are correct or ungraded, so retaining them does not increase identified-error totals."
+  }
+}

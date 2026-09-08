@@ -17,7 +17,7 @@ import { browsableSeasons, currentDisplaySeason, isNbaOffSeason, nextSeasonLabel
 import { MessageCard } from "@/components/ui/message-card"
 import { MethodLink } from "@/components/method-link"
 import { StatTile } from "@/components/ui/stat-tile"
-import { LEAD, SPACE, SPACE_CARD, termCardStyle, TRACK, TYPE } from "@/lib/terminal-styles"
+import { LEAD, SPACE_CARD, termCardStyle, TRACK, TYPE } from "@/lib/terminal-styles"
 import { cn } from "@/lib/utils"
 
 // ─── Helpers ─────────────────────────────────────────────────────
@@ -74,8 +74,7 @@ function GroupLabel({ children }: { children: React.ReactNode }) {
         letterSpacing: TRACK.label,
         fontWeight: 600,
         color: "var(--term-text-muted)",
-        paddingBottom: SPACE.sm,
-        marginBottom: SPACE.lg,
+        paddingBottom: 4,
         borderBottom: "1px solid var(--term-surface-2)",
       }}
     >
@@ -258,7 +257,7 @@ function DateChip({
         // so a minimum let the wider chips grow and the row came out at three
         // different widths. 15 is the most games a 30-team league can play in a day,
         // and that longest line measures 55px, so 60px fits every case with room.
-        "mono flex w-[3.75rem] flex-col items-center border border-[var(--term-border)] px-2 py-2 transition-[transform,background-color,border-color] active:scale-[0.97]",
+        "mono flex shrink-0 w-[3.75rem] flex-col items-center border border-[var(--term-border)] px-2 py-2 transition-[transform,background-color,border-color] active:scale-[0.97]",
         // Selected = a solid ink block (the 08-front-office mock's .dchip.on), not the
         // rested-pole teal: teal is a data color, and a chip is chrome.
         selected
@@ -330,12 +329,14 @@ export default function GamesPage() {
   // the hook; its decisions live in a pure reducer that is unit-tested without a DOM.
   const slate = useGameSlate()
   const monthStrip = useRef<HTMLDivElement>(null)
+  const dateStrip = useRef<HTMLDivElement>(null)
   const revealMonth = () => {
-    const strip = monthStrip.current
-    const active = strip?.querySelector<HTMLElement>('[aria-pressed="true"]')
-    if (strip && active) strip.scrollLeft += active.getBoundingClientRect().left - strip.getBoundingClientRect().left
+    for (const strip of [monthStrip.current, dateStrip.current]) {
+      const active = strip?.querySelector<HTMLElement>('[aria-pressed="true"], [aria-current="date"]')
+      if (strip && active) strip.scrollLeft += active.getBoundingClientRect().left - strip.getBoundingClientRect().left
+    }
   }
-  useEffect(revealMonth, [slate.selectedDate])
+  useEffect(revealMonth, [slate.selectedDate, slate.calendar.kind])
 
   const upcomingSeason = nextSeasonLabel(offSeasonLabel)
   const { data: upcomingDays } = useSWR<GameDateCount[]>(
@@ -381,7 +382,7 @@ export default function GamesPage() {
 
   return (
     // The compact entry keeps a complete matchup above the mobile dock.
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-2 sm:gap-6">
       {/* Heading + view toggle: one chapter, so they sit close together. */}
       <div className="page-intro">
         {/* "Games", and the reasoning is worth keeping because it reversed twice.
@@ -403,26 +404,9 @@ export default function GamesPage() {
         />
         <MethodLink surfaceHref="/games" />
       </div>
-      <div className="grid items-start gap-8 xl:grid-cols-[minmax(0,1fr)_260px]">
-      <div className="flex min-w-0 flex-col gap-6" data-testid="games-main">
-      {/* Filters — two labelled groups rather than three stacked rows that each
-          repeated the same label treatment. Season and month answer one question
-          ("which stretch of basketball"), so they share a group. */}
-      <div className="flex flex-col gap-2" style={{ ...termCardStyle, padding: SPACE_CARD }}>
-        <details className="games-calendar" onToggle={revealMonth}>
-          <summary>Change season or date · {slate.season}</summary>
-        <div>
-          <GroupLabel>Scope</GroupLabel>
-          {/* Align to the bottom, not the centre: the season block is label +
-              select stacked, so centring it against 32px-tall month buttons put
-              the select below their midline. Both controls are the same height,
-              so sharing a bottom edge lines their tops up too. */}
-          <div className="flex flex-wrap items-end gap-x-4 gap-y-3">
-            {/* Matches the month strip's `pb-1` scrollbar clearance. Without it that
-                padding sits inside only one of the two flex items, so aligning their
-                bottoms still left the buttons 4px above the select. */}
-            <div className="pb-1">
-              {/* Offer the upcoming season only after its schedule is available. */}
+      <div className={cn("grid items-start gap-8", density === "skim" && "xl:grid-cols-[minmax(0,1fr)_260px]")}>
+      <div className="flex min-w-0 flex-col gap-2 sm:gap-6" data-testid="games-main">
+      <section aria-label="Choose a game date" className="flex flex-col gap-2" style={{ ...termCardStyle, padding: SPACE_CARD }}>
               <SeasonSelector
                 id="nba-season"
                 season={slate.season}
@@ -430,9 +414,10 @@ export default function GamesPage() {
                 onSeasonChange={(season) => slate.send({ type: "SEASON_SELECTED", season })}
                 seasons={browsableSeasons().filter((season) => season !== upcomingSeason || Boolean(upcomingDays?.length) || season === slate.season)}
               />
-            </div>
-            <div ref={monthStrip} className="-mx-1 min-w-0 flex-1 overflow-x-auto overflow-y-hidden pb-1 [scrollbar-width:thin]">
-              <div className="flex min-w-min gap-2 px-1">
+        <div>
+          <GroupLabel>Month</GroupLabel>
+          <div ref={monthStrip} className="overflow-x-auto pb-1" role="group" aria-label="Month">
+            <div className="flex w-max gap-2">
               {slate.months.map(({ value, label, dayCount, isSelected }) => (
                 <button
                   key={value}
@@ -458,13 +443,11 @@ export default function GamesPage() {
                   {label.toUpperCase()}
                 </button>
               ))}
-              </div>
             </div>
           </div>
         </div>
-
         <div>
-          <GroupLabel>Day</GroupLabel>
+          <div className="hidden sm:block"><GroupLabel>Date</GroupLabel></div>
         {slate.calendar.kind === "loading" ? (
           <Skeleton className="h-16 w-full max-w-md bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)" }} />
         ) : slate.calendar.kind === "error" ? (
@@ -476,9 +459,7 @@ export default function GamesPage() {
             NO GAMES IN THIS MONTH.
           </p>
         ) : (
-          // The old "DAYS WITH GAMES" caption is gone: the group is already labelled
-          // "Day", and every chip states its own game count.
-          <div className="flex flex-wrap gap-2">
+          <div ref={dateStrip} className="flex gap-2 overflow-x-auto pb-1" role="group" aria-label="Date">
             {slate.days.map((d) => (
               <DateChip
                 key={d.date}
@@ -493,7 +474,6 @@ export default function GamesPage() {
         )}
 
         </div>
-        </details>
         <div className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2 sm:flex sm:flex-wrap">
           <Button
             variant="outline"
@@ -511,7 +491,8 @@ export default function GamesPage() {
             style={{ fontSize: 12, letterSpacing: TRACK.sub, color: "var(--term-text)", fontWeight: 600 }}
             data-testid="selected-date-display"
           >
-            {slate.selectedLabel?.long.toUpperCase() ?? "PICK A DATE"}
+            <span className="sm:hidden">{slate.selectedLabel ? `DATE · ${slate.selectedLabel.short.toUpperCase()}` : "PICK A DATE"}</span>
+            <span className="hidden sm:inline">{slate.selectedLabel?.long.toUpperCase() ?? "PICK A DATE"}</span>
           </p>
           <Button
             variant="outline"
@@ -525,12 +506,7 @@ export default function GamesPage() {
             <ChevronRight />
           </Button>
           </div>
-      </div>
-
-      {/* Completion describes the selected season; the final-slate label follows the selected date. */}
-      {showOffSeasonBanner && slate.season === offSeasonLabel && (
-        <OffSeasonBanner season={offSeasonLabel} finalSlate={slate.selectedDate === slate.lastDate} onUpcoming={upcomingDays?.length ? () => slate.send({ type: "SEASON_SELECTED", season: upcomingSeason }) : undefined} />
-      )}
+      </section>
 
       {/* Matchups section */}
       <div className="flex flex-col gap-2">
@@ -543,6 +519,12 @@ export default function GamesPage() {
       </div>
       </div>
       <aside aria-label="Slate summary and upcoming edges" className="flex min-w-0 flex-col gap-6">
+      {/* Completion describes the selected season; the final-slate label follows the selected date. */}
+      {showOffSeasonBanner && slate.season === offSeasonLabel && (
+        <OffSeasonBanner season={offSeasonLabel} finalSlate={slate.selectedDate === slate.lastDate} onUpcoming={upcomingDays?.length ? () => slate.send({ type: "SEASON_SELECTED", season: upcomingSeason }) : undefined} />
+      )}
+
+
         <StatSummaryRow
           gamesToday={slate.status === "slateReady" || slate.status === "slateEmpty" ? slate.games.length : null}
           avgRestAdv={avgRestAdv}

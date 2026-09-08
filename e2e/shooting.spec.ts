@@ -22,7 +22,7 @@ test.describe("Shooting by Rest", () => {
    * every select that shares the mechanism. The desktop half pins that the floor is a
    * phone-width override, not a site-wide size change.
    */
-  test("phone controls sit on the 16px iOS zoom floor, desktop keeps the 12px scale", async ({ page }) => {
+  test("season stays consistent at 16px; secondary desktop controls keep the compact scale", async ({ page }) => {
     const fontOf = (sel: string) =>
       page.locator(sel).first().evaluate((el) => getComputedStyle(el).fontSize);
 
@@ -33,7 +33,8 @@ test.describe("Shooting by Rest", () => {
     expect(await fontOf("input[type=search]")).toBe("16px");
 
     await page.setViewportSize({ width: 1440, height: 900 });
-    expect(await fontOf("select")).toBe("12px");
+    expect(await fontOf("#pr-season")).toBe("16px");
+    expect(await fontOf("#pr-team")).toBe("12px");
     expect(await fontOf("input[type=search]")).toBe("12px");
   });
 
@@ -183,7 +184,7 @@ test("shooting filter and player links restore the same view", async ({ page }) 
   await expect(page.locator("#pr-season")).toHaveValue("2024");
   await expect(page.getByRole("searchbox")).toHaveValue("jokic");
   await expect(page.locator("tr.fc-open")).toHaveCount(1);
-  await page.getByLabel("Season", { exact: true }).selectOption("2023");
+  await page.getByLabel("SEASON", { exact: true }).selectOption("2023");
   await page.goBack();
   await expect(page.locator("#pr-season")).toHaveValue("2024");
 });

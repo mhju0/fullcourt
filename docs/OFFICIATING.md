@@ -1,10 +1,10 @@
 # Officiating operations
 
-The release contains the three-season Officiating page and its publication pipeline. No database migration or new service credentials are needed to render it. Release verification is recorded in `docs/design/redesign-release-review.md`.
+The release contains 12 regular seasons of Officiating reports (2014–15 through 2025–26) and its publication pipeline. No database migration or new service credentials are needed to render it. Release verification is recorded in `docs/design/redesign-release-review.md`.
 
 ## Published data
 
-`ml/publish_officiating.py` consumes complete immutable snapshots made by `ml/collect_l2m_season.py`. It validates identity, source hashes, known grades, duplicate assessments, and continuity of published report IDs before writing anything. Only regular-season (`002`) games enter v1. All three original seasons total 1,152 regular-season reports. Snapshot boundaries and corrections remain documented in `docs/research/`.
+`ml/publish_officiating.py` consumes complete immutable snapshots made by `ml/collect_l2m_season.py`. It validates identity, source hashes, known grades, duplicate assessments, and continuity of published report IDs before writing anything. Only regular-season (`002`) games enter v1. The 12 published seasons total 4,546 regular-season reports; the original three seasons retain their 1,152 reports. Snapshot boundaries and corrections remain documented in `docs/research/`.
 
 Output:
 
@@ -20,9 +20,11 @@ python3 ml/publish_officiating.py \
   ml/data/l2m-research/2025-26/20260906T143154961791Z
 ```
 
-The initial three-season count baseline is pinned in `src/lib/__tests__/officiating.test.ts`. If a verified source revision changes those archived counts, update that baseline in the reviewed data PR. New seasons are checked against their report evidence by the Python contracts.
+The 12-season count baseline is pinned in `src/lib/__tests__/officiating.test.ts`. If a verified source revision changes those archived counts, update that baseline in the reviewed data PR. New seasons are checked against their report evidence by the Python contracts.
 
 Do not edit published JSON manually. Source revisions produce a different report filename; retain old versions so a previously loaded index can still fetch its report. This is source-content addressing, not a cryptographic signature. Crew associations use previously verified joins when game metadata matches; new games say Assignment unavailable until their assignments are verified.
+
+Historical PDF/JSON collection, normalization, independent grade checks, and source provenance are documented in the [archive publication record](research/2026-09-09-l2m-archive.md). The first season is partial and review criteria changed in 2017–18. Historical PDF video links remain unresolved; their original reports remain accessible.
 
 ## Refresh workflow
 

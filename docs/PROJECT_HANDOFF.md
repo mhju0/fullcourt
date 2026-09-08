@@ -1,6 +1,6 @@
 # Project handoff
 
-Reconciled 2026-09-08. Source/tests and Git take precedence. This is a current-state summary;
+Reconciled 2026-09-09. Source/tests and Git take precedence. This is a current-state summary;
 update these sections in place. Rationale belongs in [Decisions](DECISIONS.md).
 
 ## Product and release
@@ -14,6 +14,11 @@ The rest-focused redesign shipped in PR #84 (`776683e`). Its first verified Offi
 and release record shipped in PR #85 (`34b8961`). Production: https://fullcourt-nba.vercel.app.
 The [dated release review](design/redesign-release-review.md) records verification; use GitHub
 and Vercel for subsequent deployment status.
+
+Games now exposes Season → Month → Date controls, with shared season selectors across studies.
+Deep Dive uses the full desktop width. Playoff Rest explains between-round recovery directly.
+Officiating covers 12 regular seasons and 4,546 reports, including the partial 2014–15 season;
+[archive evidence](research/2026-09-09-l2m-archive.md) records source checks and historical limits.
 
 ## Architecture and safeguards
 

@@ -1,5 +1,6 @@
 "use client";
 
+import { SeasonSelector } from "@/components/season-selector";
 import { Fragment, useCallback, useMemo } from "react";
 import { usePageQuery } from "@/hooks/useSeasonUrl";
 import { ZeroRestWorkload } from "@/components/zero-rest-workload";
@@ -430,7 +431,7 @@ export function PlayerRestContent() {
   }
 
   return (
-    <div className={`flex flex-col gap-4 ${styles.page}`}>
+    <div className={`flex flex-col gap-3 sm:gap-4 ${styles.page}`}>
       {error ? (
         <p role="status">
           Refresh unavailable. Showing the last loaded player export.
@@ -442,34 +443,13 @@ export function PlayerRestContent() {
           row two is find-a-name plus the count it produces. Each label/select pair is its own
           flex box so a wrap can never separate a label from the control it names. */}
       <div className="flex flex-col gap-3">
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-          <span className="flex items-center gap-2">
-            <label className={FILTER_LABEL} htmlFor="pr-season">
-              Season
-            </label>
-            <select
-              id="pr-season"
-              className={termSelectClass}
-              style={termSelectStyle}
-              value={String(activeYear)}
-              onChange={(e) =>
-                setYear(
-                  e.target.value === "career"
-                    ? "career"
-                    : Number(e.target.value),
-                )
-              }
-            >
-              {/* "Career (all seasons)" sized this select to its widest option and pushed the
-                  whole row over the line. The option list is seasons; "Career" is unambiguous. */}
-              <option value="career">Career</option>
-              {index.years.map((y) => (
-                <option key={y} value={y}>
-                  {seasonLabel(y)}
-                </option>
-              ))}
-            </select>
-          </span>
+        <div className="flex flex-wrap items-end gap-x-4 gap-y-2">
+          <SeasonSelector
+            id="pr-season"
+            season={String(activeYear)}
+            onSeasonChange={(value) => setYear(value === "career" ? "career" : Number(value))}
+            options={[{ value: "career", label: "Career" }, ...index.years.map(y => ({ value: String(y), label: seasonLabel(y) }))]}
+          />
 
           <span className="flex items-center gap-2">
             <label className={FILTER_LABEL} htmlFor="pr-team">
@@ -544,7 +524,7 @@ export function PlayerRestContent() {
           </details>
         </div>
 
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+        <div className="flex flex-wrap items-end gap-x-4 gap-y-2">
           <input
             type="search"
             value={query}

@@ -116,3 +116,23 @@ for (const width of [390, 1280])
     const result = await new AxeBuilder({ page }).include("main").analyze();
     expect(result.violations).toEqual([]);
   });
+
+for (const historical of [data.seasons[0], data.seasons[2], data.seasons[4]]) {
+  test(`archived ${historical.season} report opens with source evidence on mobile`, async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    const game = historical.games.find(g => g.missed + g.wrong > 0)!;
+    await page.goto(`/officiating?season=${historical.season}&game=${game.id}`);
+    await expect(page.getByLabel("SEASON", { exact: true }).locator("option")).toHaveCount(data.seasons.length);
+    await expect(page.locator("blockquote").first()).toBeVisible();
+    await expect(page.getByRole("link", { name: "Source: NBA L2M report ↗" }).first()).toHaveAttribute("href", game.source);
+    await page.evaluate(() => window.scrollTo(0, 0));
+    const selected = page.locator('[data-active="true"]');
+    await selected.scrollIntoViewIfNeeded();
+    await expect(selected).toBeInViewport();
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    if (historical.season === "2014-15") {
+      await expect(page.getByText(/Partial season: reports begin/)).toBeVisible();
+      await expect(page.getByText("Video unavailable").first()).toBeVisible();
+    }
+  });
+}

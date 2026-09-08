@@ -42,18 +42,18 @@ to that walkthrough in the application.
 | [Shooting by Rest](https://fullcourt-nba.vercel.app/shooting) | Effective field goal percentage on no rest versus three or more days off. Rest comes from each player's appearances. Single-season splits are noisy; career estimates use shrinkage toward the league mean. |
 | [Expected Shot Value](https://fullcourt-nba.vercel.app/shot-quality) | Expected shooting value by court location. The model does not observe defender distance, shot-clock pressure, or shot difficulty beyond location. |
 | [Availability Cost](https://fullcourt-nba.vercel.app/availability) | The estimated margin associated with a missing rotation player, controlling for team strength and schedule factors. Absences are identified after games, so this is not a lineup forecast. |
-| [Officiating](https://fullcourt-nba.vercel.app/officiating) | NBA Last Two Minute report findings by season, team, and call type, with the NBA’s verdicts inside each game. Covers selected close-game endings; earlier referee studies remain in the research archive. |
+| [Officiating](https://fullcourt-nba.vercel.app/officiating) | NBA Last Two Minute findings across 12 regular seasons (2014–15 through 2025–26), by team and call type, with the NBA’s verdicts inside each game. Covers selected close-game endings; earlier referee studies remain in the research archive. |
 
 ## Screenshots
 
-Captured from the deployed application; [capture provenance](docs/screenshots/manifest.json).
+Captured from a production build; [capture provenance](docs/screenshots/manifest.json).
 Live pages carry the latest data.
 
 <img src="docs/screenshots/games.png" alt="Games board with season and date controls above the matchup table." width="900" />
 
 <img src="docs/screenshots/shooting.png" alt="Compact player shooting table with both rest splits, attempt counts, and signed difference cells." width="900" />
 
-<img src="docs/screenshots/officiating.png" alt="Officiating page showing the missed-call share, three-season context, and a games-first report browser." width="900" />
+<img src="docs/screenshots/officiating.png" alt="Officiating page showing the missed-call share, season context and a link to game reviews." width="900" />
 
 ## How the fatigue score works
 

@@ -21,7 +21,7 @@ const reportSchema = z.object({
       period: z.string(),
       clock: z.string().nullable(),
       category: z.string(),
-      grade: z.enum(["IC", "INC", "CC", "CNC", ""]),
+      grade: z.enum(["IC", "INC", "CC", "CNC", "Undetectable", "NCI", "NCC", ""]),
       verdict: z.string(),
       video: z.string().url().nullable(),
     }),
@@ -127,7 +127,7 @@ export function OfficiatingReport({
       </p>
       {game.ungraded > 0 && (
         <p className={styles.muted}>
-          {game.ungraded} assessment(s) were not graded. These are not counted
+          {game.ungraded} assessment(s) have no classified correctness verdict. These are not counted
           as correct.
         </p>
       )}

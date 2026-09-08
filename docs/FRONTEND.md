@@ -82,6 +82,9 @@ negative, bounded at ±10 percentage points; uncertain estimates stay muted. Off
 blue for missed calls and gray for incorrect whistles, with direct text labels. Color never
 replaces the number, sign, category, or uncertainty text.
 
+Games exposes Season → Month → Date selection. Selected chips scroll horizontally into view without
+moving the page vertically. Season selectors share one labeled component across studies. Deep Dive uses
+the full desktop width; narrower desktop/tablet tables scroll in a keyboard-focusable region.
 Mobile Games shows teams, status, and rest advantage without sideways scrolling. Shooting keeps
 identity, both splits, and samples available in compact rows. Shooting keeps a short signed-value interpretation key visible; rest definitions, uncertainty
 explanation and coverage expand on demand. Officiating initially offers the common call types

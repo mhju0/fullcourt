@@ -1,5 +1,6 @@
 "use client"
 
+import { SeasonSelector } from "@/components/season-selector";
 import { useCallback, useRef, useState } from "react"
 import {
   BarChart,
@@ -714,7 +715,7 @@ function ExploreGames({
       </p>
 
       {/* Filters */}
-      <div className="mt-3 flex flex-wrap gap-2">
+      <div className="mt-3 flex flex-wrap items-end gap-2">
         <select
           value={raFilter}
           onChange={(e) => send({ type: "MIN_RA_SELECTED", minRA: Number(e.target.value) })}
@@ -736,16 +737,13 @@ function ExploreGames({
           <option value="">All Teams</option>
           {NBA_TEAMS.map((t) => <option key={t} value={t}>{t}</option>)}
         </select>
-        <select
-          value={seasonFilter}
-          onChange={(e) => send({ type: "SEASON_SELECTED", season: e.target.value })}
-          className={EXPLORE_SELECT_CLASS}
-          style={exploreSelectStyle}
-          aria-label="Season filter"
-        >
-          <option value="">All Seasons</option>
-          {EXPLORE_SEASON_OPTIONS.map((s) => <option key={s} value={s}>{s}</option>)}
-        </select>
+        <SeasonSelector
+          id="analysis-season-filter"
+          ariaLabel="Season filter"
+          season={seasonFilter}
+          onSeasonChange={(season) => send({ type: "SEASON_SELECTED", season })}
+          options={[{ value: "", label: "All Seasons" }, ...EXPLORE_SEASON_OPTIONS.map(s => ({ value: s, label: s }))]}
+        />
         <select
           value={resultFilter}
           onChange={(e) => send({ type: "RESULT_SELECTED", result: e.target.value as ExploreResult })}

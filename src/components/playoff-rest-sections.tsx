@@ -1,7 +1,5 @@
 import { PlayoffGrindGap } from "@/components/playoff-grind-gap"
-import { PLAYOFF_EQUAL_REST } from "@/lib/playoff-rest-facts"
-import { LEAD, termCardStyle, TYPE, WIDTH } from "@/lib/terminal-styles"
-import { StatFigure } from "@/components/ui/stat-tile"
+import { LEAD, TYPE, WIDTH } from "@/lib/terminal-styles"
 
 const BODY: React.CSSProperties = {
   fontSize: TYPE.body,
@@ -20,46 +18,15 @@ function SectionHeading({ children }: { children: React.ReactNode }) {
   )
 }
 
-/**
- * Section A — the fact that justifies this page existing separately from /analysis.
- *
- * One number and one sentence. The claim is exact rather than rounded, which is why the facts
- * test asserts equality rather than a threshold.
- */
 function NoRestSection() {
-  const { laterGames, laterEqual, game1Games, game1Equal } = PLAYOFF_EQUAL_REST
   return (
-    <section className="flex flex-col gap-3">
-      <SectionHeading>When calendar rest differs</SectionHeading>
-      {/* The figure and its explanation sit side by side rather than stacked.
-          Stacked, the card ran the full 1040 column while its prose was capped at the 42rem
-          measure, so the right ~336px of it was empty on every card — the number was the
-          feature but got a third of the width, and the paragraph under it looked like it had
-          been cut short. Side by side, the number keeps its own column and the prose keeps a
-          readable line length, and the card is full because both columns are doing work.
-          Stacks below `md`, where there is only room for one column anyway. */}
-      <div className="flex flex-col gap-4 md:flex-row md:items-center md:gap-8" style={termCardStyle}>
-        {/* 360px, not less: "2,545 of 2,545" is fourteen mono characters at 40px and wraps
-            below this, which splits the one figure the section exists to state. */}
-        <div className="shrink-0 md:basis-[360px]">
-          <StatFigure
-            value={`${laterEqual.toLocaleString()} of ${laterGames.toLocaleString()}`}
-            tone="var(--term-text)"
-            caption={
-              <>
-                PLAYOFF GAMES AFTER GAME 1
-                <br />
-                BOTH TEAMS ON THE SAME REST
-              </>
-            }
-          />
-        </div>
-        <p className="m-0" style={BODY}>
-          <span style={LEAD_IN}>Both teams share the same dates within a series.</span> Calendar
-          rest can differ before Game 1, when {game1Equal} of {game1Games} games had equal rest.
-          Equal days off do not imply equal minutes played, travel, or recovery.
-        </p>
-      </div>
+    <section className="flex flex-col gap-2">
+      <SectionHeading>An early finish can mean more days off</SectionHeading>
+      <p style={BODY}>
+        A team that finishes its series early can get more days off before the next round.
+        Once two teams start playing each other, they have the same days between games.
+        Their minutes played, travel and recovery can still differ.
+      </p>
     </section>
   )
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { PageHeader } from "@/components/page-header";
 import { SeasonSelector } from "@/components/season-selector";
@@ -27,6 +27,12 @@ export function OfficiatingContent({ seasons }: { seasons: ReviewSeason[] }) {
   const requested = params.get("season");
   const season =
     seasons.find((s) => s.season === requested) ?? seasons[seasons.length - 1];
+  const stripRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const strip = stripRef.current;
+    const active = strip?.querySelector<HTMLElement>('[data-active="true"]');
+    if (strip && active) strip.scrollLeft += active.getBoundingClientRect().left - strip.getBoundingClientRect().left;
+  }, [season.season]);
   const team = params.get("team") ?? "";
   const category = params.get("type") ?? "";
   const gameId = params.get("game") ?? "";
@@ -101,6 +107,11 @@ export function OfficiatingContent({ seasons }: { seasons: ReviewSeason[] }) {
         </div>
       </div>
       <div>
+        <p className="mb-4 text-body text-[var(--term-text-muted)]">
+          {season.season === "2014-15" ? "Partial season: reports begin with March 1, 2015 games. " : ""}
+          {season.season < "2017-18" ? "These reports used the earlier five-point review rule. " : ""}
+          Review criteria changed in 2017–18. <a className="underline" href="/behind-the-data/officiating">How coverage differs</a>
+        </p>
         <section className={styles.hero} aria-label="Season finding">
           <a className="fc-text-link mb-4 inline-block min-h-11 content-center" href="#game-reviews">Jump to game reviews ↓</a>
           <div className={styles.heroTop}>
@@ -146,24 +157,25 @@ export function OfficiatingContent({ seasons }: { seasons: ReviewSeason[] }) {
                 </div>
                 <div
                   className={styles.strip}
+                  ref={stripRef}
                   tabIndex={0}
                   role="region"
                   aria-label="Season comparison; scroll for more seasons"
                 >
-                  {seasons.map((s, i) => {
+                  {seasons.map((s) => {
                     const share =
                       s.missed + s.wrong
                         ? (s.missed / (s.missed + s.wrong)) * 100
                         : null;
                     return (
-                      <div className={styles.seasonColumn} key={s.season}>
+                      <div className={styles.seasonColumn} key={s.season} data-active={s.season === season.season}>
                         <span className={styles.seasonValue}>
                           {share === null ? "—" : `${share.toFixed(1)}%`}
                         </span>
                         <div className={styles.plot}>
                           <div
                             className={
-                              i === seasons.length - 1
+                              s.season === season.season
                                 ? styles.latestBar
                                 : styles.priorBar
                             }
@@ -197,7 +209,7 @@ export function OfficiatingContent({ seasons }: { seasons: ReviewSeason[] }) {
             </p>
           </div>
           <div>
-            <p className={styles.stripLabel}>Errors per reviewed game</p>
+            <p className={styles.stripLabel}>Errors per reviewed game · latest three seasons</p>
             <div className={styles.trendValues}>
               {recent.map((s) => (
                 <div key={s.season}>

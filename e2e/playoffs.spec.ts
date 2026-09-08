@@ -22,7 +22,7 @@ test.describe("Playoff Rest page", () => {
 
     // Both sections are server-rendered constants, so they are present without any DB round
     // trip. This is what makes the page useful when the API is slow or empty.
-    await expect(page.getByText("When calendar rest differs")).toBeVisible();
+    await expect(page.getByText("An early finish can mean more days off")).toBeVisible();
     await expect(page.getByText("Does the opponent’s prior round matter?")).toBeVisible();
 
     // The argument itself moved to Behind the Data on 2026-08-01; the product page carries the

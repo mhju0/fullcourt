@@ -57,7 +57,7 @@ const DEEP_COLS =
 const SKIM_COLS =
   "minmax(96px,120px) minmax(210px,1.5fr) minmax(190px,240px) 32px";
 // Sum of each template's column minimums plus its 16px gaps, rounded up with room.
-const DEEP_MIN_WIDTH = 980;
+const DEEP_MIN_WIDTH = 1000;
 const SKIM_MIN_WIDTH = 600;
 
 const gridCols = (density: SlateDensity) =>
@@ -781,7 +781,7 @@ export function MatchupTable({ games, density = "skim" }: MatchupTableProps) {
         overflow: "hidden",
       }}
     >
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[var(--term-accent)]" tabIndex={0} role="region" aria-label="Matchups table; scroll horizontally for all columns">
         <div
           className="fc-game-table"
           style={{ minWidth: gridMinWidth(density) }}
@@ -808,7 +808,7 @@ export function MatchupTable({ games, density = "skim" }: MatchupTableProps) {
             {density === "deep" && <span>FATIGUE · 0–10</span>}
             <span>REST ADVANTAGE</span>
             {density === "deep" ? (
-              <span className="text-right">CONF</span>
+              <span className="text-right">GAP SIZE</span>
             ) : (
               <span aria-hidden />
             )}

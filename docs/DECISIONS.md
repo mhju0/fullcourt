@@ -683,8 +683,8 @@ largest rest gap with the rested team at home. Games exposes exact four-night de
 separates altitude carryover from the current venue; gap labels describe magnitude, not win
 confidence. These are read-path and presentation corrections, not coefficient changes.
 
-Mobile Games keeps date stepping visible and places the calendar in a disclosure that reveals
-the selected month. Shooting keeps its primary comparison visible earlier, with optional
+Mobile Games originally kept date stepping visible and placed the calendar in a disclosure.
+D-66 supersedes that calendar presentation with visible Season → Month → Date controls. Shooting keeps its primary comparison visible earlier, with optional
 filtering, definitions and coverage below a short interpretation key. Study introductions name
 their question, units and scope; causal and intentional-rest implications are removed where the
 data only establishes association. Explore adds artifact-derived previews. Officiating initially
@@ -696,3 +696,27 @@ walkthrough. It describes verified system behavior without inventing adoption, p
 boundaries or collaboration claims. A single footer makes Methods, About, the walkthrough and
 source discoverable. No new motion is introduced. First-time participant and physical-device
 validation remain open. See [implementation review](design/usability-audit-review.md).
+
+
+### D-66 · Visible season navigation and complete public L2M season coverage — ACTIVE
+
+Owner requested Season → Month → Date as the Games hierarchy on 2026-09-09. These controls
+remain visible, restore from URLs, and scroll their selected month/date into the horizontal
+viewport without moving the page vertically. Previous/next day actions remain available.
+Season controls share one labeled component, sizing and typography across analytical pages;
+page-specific all-season and career choices remain available.
+
+Deep Dive uses the full desktop content width; supplementary content follows the table. At
+narrower widths the table scrolls horizontally in a keyboard-focusable region. No columns are
+silently cut off. The compact mobile rows retain their expansion behavior.
+
+Playoff Rest replaces the equal-calendar-rest headline with “An early finish can mean more days off.”
+The 2,545/2,545 post-Game-1 equality count was verified from the producing read query, but it
+mostly described the shared series schedule. The underlying evidence and coefficients are unchanged.
+
+Officiating adds all nine earlier seasons linked in the NBA's regular-season archive, yielding
+12 seasons and 4,546 reports. The first season is partial; review criteria and grading changed
+across eras. PDF extraction preserves source URLs/hashes and passes an independent IC/INC
+column census. Ambiguous historical grades stay unclassified; missing text, video and crew
+information is labeled. See the [archive evidence](research/2026-09-09-l2m-archive.md) and
+[interface review](design/season-navigation-review.md). No motion was added.
