@@ -1,59 +1,28 @@
 import { expect, test, type Locator, type Page } from "@playwright/test";
 
 test.describe("Primary navigation", () => {
-  test("exposes core routes with an active-state treatment", async ({ page }) => {
-    // `/games`, not `/`. Since 2026-08-12 `/` is the marketing page and no tab points at it,
-    // so starting here is what makes the first `aria-current` assertion below mean something.
+  test("exposes the four core routes with active states", async ({ page }) => {
     await page.goto("/games");
-
     const nav = page.getByRole("navigation", { name: "Main navigation" });
-    // Labels are uppercase strings in PRIMARY_NAV_ITEMS, and `exact` matching is
-    // case-sensitive — so these must be spelled the way the source spells them.
-    const games = nav.getByRole("link", { name: "GAMES", exact: true });
-    const modelResults = nav.getByRole("link", { name: "MODEL RESULTS", exact: true });
-    const scheduleEdge = nav.getByRole("link", { name: "SCHEDULE EDGE", exact: true });
-    const playerShooting = nav.getByRole("link", { name: "PLAYER SHOOTING", exact: true });
-
-    await expect(games).toBeVisible();
-    await expect(modelResults).toBeVisible();
-    await expect(scheduleEdge).toBeVisible();
-    await expect(playerShooting).toBeVisible();
-
-    // The exact tab count is asserted so that a stray tab, or a resurrected Upcoming
-    // Edges, fails here rather than silently appearing. Adding a surface is a
-    // deliberate edit to DIRECT_NAV_ITEMS or OTHER_NAV_ITEMS, the front door's SURFACES, and
-    // this line. Six direct links; SHOT VALUE lives behind the OTHER menu and only
-    // enters the DOM once that menu opens, which the next test covers.
-    await expect(nav.getByRole("link")).toHaveCount(6);
-    await expect(nav.getByRole("link", { name: "SHOT VALUE", exact: true })).toHaveCount(0);
-
-    // The active route carries aria-current="page" (rendered as the amber underline).
-    // Assert inactive links lack it too, so the check actually discriminates.
-    await expect(games).toHaveAttribute("aria-current", "page");
-    await expect(modelResults).not.toHaveAttribute("aria-current", "page");
-
-    await modelResults.click();
-    await expect(page).toHaveURL(/\/analysis$/);
-    await expect(modelResults).toHaveAttribute("aria-current", "page");
-    await expect(games).not.toHaveAttribute("aria-current", "page");
-
-    await scheduleEdge.click();
-    await expect(page).toHaveURL(/\/schedule$/);
-    await expect(scheduleEdge).toHaveAttribute("aria-current", "page");
-
-    await games.click();
-    await expect(page).toHaveURL(/\/games$/);
-    await expect(games).toHaveAttribute("aria-current", "page");
+    await expect(nav.getByRole("link")).toHaveCount(4);
+    for (const [label, route] of [["GAMES", "/games"], ["SEASON REPORT", "/season"], ["SCHEDULE EDGE", "/schedule"], ["EXPLORE", "/explore"]]) {
+      const link = nav.getByRole("link", { name: label, exact: true });
+      await expect(link).toHaveAttribute("href", new RegExp("^" + route + "(?:\\?|$)"));
+      await link.click();
+      await expect(page).toHaveURL(new RegExp(route + "(?:\\?|$)"));
+      await expect(link).toHaveAttribute("aria-current", "page");
+      await expect(nav.locator('[aria-current="page"]')).toHaveCount(1);
+    }
   });
 
   test("the front door is not a tab, and no tab claims it", async ({ page }) => {
     await page.goto("/");
 
-    // The marketing page renders the same chrome, so the six tabs are all still here — but
+    // The marketing page renders the same chrome, so the four tabs are all still here — but
     // none of them is active, because none of them points at `/`. This is the assertion that
     // fails if a tab is ever wired back to the root.
     const nav = page.getByRole("navigation", { name: "Main navigation" });
-    await expect(nav.getByRole("link")).toHaveCount(6);
+    await expect(nav.getByRole("link")).toHaveCount(4);
     await expect(nav.locator("[aria-current='page']")).toHaveCount(0);
 
     // The wordmark points at the front door, which is the convention once `/` stops being the
@@ -107,11 +76,11 @@ test.describe("Primary navigation", () => {
     await expect.poll(async () => await barTop(page)).toBeLessThanOrEqual(-height + 1);
     expect(await mainTop()).toBe(mainBefore);
 
-    // Retracted, NOT unmounted. `the front door is not a tab` above asserts six links and zero
+    // Retracted, NOT unmounted. `the front door is not a tab` above asserts four links and zero
     // aria-current on this route; hiding the bar by dropping it from the DOM would take that
     // invariant with it and this is what fails first if anyone tries.
     const nav = page.getByRole("navigation", { name: "Main navigation" });
-    await expect(nav.getByRole("link")).toHaveCount(6);
+    await expect(nav.getByRole("link")).toHaveCount(4);
     await expect(nav.locator("[aria-current='page']")).toHaveCount(0);
 
     await wheel(page, -400);
@@ -128,7 +97,7 @@ test.describe("Primary navigation", () => {
     await wheel(page, 1400);
     await expect.poll(async () => await barTop(page)).toBeLessThanOrEqual(-height + 1);
 
-    // A retracted bar still holds six focusable tabs. Landing a focus ring on a control sitting
+    // A retracted bar still holds four focusable tabs. Landing a focus ring on a control sitting
     // off the top of the screen is the serious half of this feature going wrong.
     await page.getByRole("link", { name: "GAMES", exact: true }).focus();
     await expect.poll(async () => await barTop(page)).toBe(0);
@@ -218,19 +187,16 @@ test.describe("Primary navigation", () => {
     await answersThePointer(page, page.locator("main").locator('a[href^="/behind-the-data"]').first());
   });
 
-  test("the old /about address still resolves to the front door", async ({ page }) => {
+  test("/about now contains the brand story", async ({ page }) => {
     await page.goto("/about");
-
-    // A 307 in next.config.ts. The address is in the footer history, in shared links and in
-    // anything anyone bookmarked, so it has to keep working.
-    await expect(page).toHaveURL(/\/$/);
-    await expect(page.getByRole("heading", { level: 1 })).toContainText("Rest is a stat");
+    await expect(page).toHaveURL(/\/about$/);
+    await expect(page.getByRole("heading", { level: 1, name: "About FullCourt" })).toBeVisible();
   });
 
   test("/upcoming follows the games board to /games", async ({ page }) => {
     await page.goto("/upcoming");
 
-    await expect(page).toHaveURL(/\/games$/);
+    await expect(page).toHaveURL(/\/games(?:\?|$)/);
   });
 
   test("the 404's Games button lands on the games board, not the front door", async ({ page }) => {
@@ -245,66 +211,32 @@ test.describe("Primary navigation", () => {
     await expect(games).toHaveAttribute("href", "/games");
 
     await games.click();
-    await expect(page).toHaveURL(/\/games$/);
+    await expect(page).toHaveURL(/\/games(?:\?|$)/);
   });
 
-  test("reaches SHOT VALUE through the OTHER menu and marks the trigger active", async ({
-    page,
-  }) => {
+  test("Explore reaches Shot Value and remains marked as its parent", async ({ page }) => {
     await page.goto("/");
-
-    const nav = page.getByRole("navigation", { name: "Main navigation" });
-    const other = nav.getByRole("button", { name: /OTHER/ });
-    await expect(other).toBeVisible();
-
-    await other.click();
-    // The item is a real link, not a button that navigates — asserted by role, so a
-    // regression to a click-handler-only menu item fails here.
-    const shotValue = page.getByRole("menuitem", { name: "SHOT VALUE", exact: true });
-    await expect(shotValue).toBeVisible();
-
-    await shotValue.click();
+    const explore = page.getByRole("navigation", { name: "Main navigation" }).getByRole("link", { name: "EXPLORE", exact: true });
+    await explore.click();
+    await page.locator("main").getByRole("link", { name: /^Shot Value/ }).click();
     await expect(page).toHaveURL(/\/shot-quality$/);
-
-    // The trigger has to keep showing where you are once the menu closes behind you.
-    await expect(other).toHaveAttribute("data-active-surface", "true");
+    await expect(explore).toHaveAttribute("aria-current", "location");
   });
 
-  test("on a phone the dock is primary navigation, and the page never scrolls sideways", async ({
-    page,
-  }) => {
-    // The 2026-08-29 shell merge: below `lg` the top bar is brand-only and a docked bottom
-    // nav carries the four most-visited surfaces plus a search slot. The tabs are not hidden
-    // under a hamburger — the ones off the dock are one search away through the palette.
+  test("phone navigation mirrors desktop and reaches the research directory", async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 700 });
     await page.goto("/analysis");
-    await expect(page.getByRole("heading", { name: "Model Results" })).toBeVisible({
-      timeout: 60_000,
-    });
-
-    // The old strip's guarantee survives the merge: the page itself never scrolls sideways.
-    const pageOverflow = await page.evaluate(
-      () => document.documentElement.scrollWidth - document.documentElement.clientWidth
-    );
-    expect(pageOverflow).toBe(0);
-
     const dock = page.getByRole("navigation", { name: "Bottom navigation" });
-    await expect(dock).toBeVisible();
     await expect(dock.getByRole("link")).toHaveCount(4);
-    // Short labels carry full accessible names, and the active slot says where you are.
-    await expect(dock.getByRole("link", { name: "MODEL RESULTS" })).toHaveAttribute(
-      "aria-current",
-      "page"
-    );
-
-    // Every surface off the dock is reachable through the palette — asserted on the one that
-    // used to end the strip, so "a swipe away" becomes "a search away", not "gone".
-    await dock.getByRole("button", { name: /Search/ }).click();
-    const palette = page.getByRole("dialog", { name: "Command palette" });
-    await expect(palette).toBeVisible();
-    await palette.getByPlaceholder("Jump to a surface…").fill("behind");
-    await page.getByRole("option", { name: /BEHIND THE DATA/ }).click();
+    const explore = dock.getByRole("link", { name: "EXPLORE", exact: true });
+    await expect(explore).toHaveAttribute("aria-current", "location");
+    await explore.click();
+    await expect(page).toHaveURL(/\/explore$/);
+    await expect(explore).toHaveAttribute("aria-current", "page");
+    await page.locator("main").getByRole("link", { name: /^Behind the Data/ }).click();
     await expect(page).toHaveURL(/\/behind-the-data$/);
+    await expect(explore).not.toHaveAttribute("aria-current");
+    expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBe(0);
   });
 
   test("the dock never covers the page's last line", async ({ page }) => {
@@ -331,18 +263,18 @@ test.describe("Primary navigation", () => {
     await expect(page.getByRole("navigation", { name: "Bottom navigation" })).toBeHidden();
   });
 
-  test("the SEARCH button and ⌘K both open the palette, and it reaches every group", async ({
+  test("the footer button and ⌘K both open the palette, and it reaches every group", async ({
     page,
   }) => {
     await page.goto("/games");
     await expect(page.getByRole("heading", { level: 1, name: "Games" })).toBeVisible();
 
     // The visible door first — the GitHub lesson is that a keyboard-only palette is a
-    // feature nobody finds. Ten options when unfiltered: six tabs, three OTHER, one reference.
-    await page.getByRole("button", { name: "SEARCH" }).click();
+    // feature nobody finds. Ten options when unfiltered: four tabs, three OTHER, one reference.
+    await page.getByRole("button", { name: "JUMP TO PAGE" }).click();
     const palette = page.getByRole("dialog", { name: "Command palette" });
     await expect(palette).toBeVisible();
-    await expect(palette.getByRole("option")).toHaveCount(10);
+    await expect(palette.getByRole("option")).toHaveCount(12);
     await page.keyboard.press("Escape");
     await expect(palette).toBeHidden();
 
@@ -350,8 +282,8 @@ test.describe("Primary navigation", () => {
     await page.keyboard.press("ControlOrMeta+k");
     await expect(palette).toBeVisible();
     await palette.getByPlaceholder("Jump to a surface…").fill("referee");
-    await page.getByRole("option", { name: /REFEREE EFFECT/ }).click();
-    await expect(page).toHaveURL(/\/referees$/);
+    await page.getByRole("option", { name: /OFFICIATING/ }).click();
+    await expect(page).toHaveURL(/\/officiating$/);
   });
 
   /**
@@ -362,34 +294,19 @@ test.describe("Primary navigation", () => {
    * only while there is actually content under it: a fade over a row that fits would dim
    * the last tab for no reason.
    */
-  test("a squeezed desktop strip fades the edge that still has content under it", async ({ page }) => {
-    // 1024 is the narrowest width that still shows the strip (`lg`), and the single bar
-    // leaves the tabs less room than the old full-width row had — so this is where the
-    // fade affordance earns its keep after the shell merge.
+  test("the four destinations fit at the narrowest desktop width", async ({ page }) => {
     await page.setViewportSize({ width: 1024, height: 700 });
-    await page.goto("/analysis");
-    await expect(page.getByRole("navigation", { name: "Main navigation" })).toBeVisible();
-
+    await page.goto("/explore");
+    const nav = page.getByRole("navigation", { name: "Main navigation" });
+    await expect(nav.getByRole("link")).toHaveCount(4);
     const strip = page.locator(".fc-nav-scroll");
-    const left = page.locator(".fc-nav-fade-left");
-    const right = page.locator(".fc-nav-fade-right");
-    const opacity = (loc: typeof left) => loc.evaluate((el) => getComputedStyle(el).opacity);
-
-    // At rest: content continues to the right and only to the right.
-    await expect.poll(() => opacity(right)).toBe("1");
-    await expect.poll(() => opacity(left)).toBe("0");
-
-    // Scrolled to the far end: the signals swap sides.
-    await strip.evaluate((el) => {
-      el.scrollLeft = el.scrollWidth;
-    });
-    await expect.poll(() => opacity(right)).toBe("0");
-    await expect.poll(() => opacity(left)).toBe("1");
+    expect(await strip.evaluate((el) => el.scrollWidth <= el.clientWidth)).toBe(true);
+    await expect(page.locator(".fc-nav-fade-right")).toHaveCSS("opacity", "0");
   });
 
   /**
    * The skip link is the first tab stop on every page — the pattern ESPN carries and Naver
-   * ships as 본문 바로가기. Without it a keyboard visitor walks the brand link, six tabs, the
+   * ships as 본문 바로가기. Without it a keyboard visitor walks the brand link, four tabs, the
    * OTHER menu and the reference landmark before any page's content, on every page.
    */
   test("the first Tab lands on a skip link that reaches the content", async ({ page }) => {

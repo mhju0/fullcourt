@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { PageHeader } from "@/components/page-header";
@@ -25,6 +26,23 @@ export function BehindTheDataShell({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+  const bodyRef = useRef<HTMLDivElement>(null);
+  const [contents, setContents] = useState<{ id: string; title: string }[]>([]);
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => {
+      setContents(
+        Array.from(
+          bodyRef.current?.querySelectorAll("section[id]") ?? [],
+        ).flatMap((section) => {
+          const heading = section.querySelector("h2");
+          return heading
+            ? [{ id: section.id, title: heading.textContent ?? section.id }]
+            : [];
+        }),
+      );
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [pathname]);
 
   return (
     <div className="flex flex-col gap-8">
@@ -32,8 +50,12 @@ export function BehindTheDataShell({
 
       <nav
         aria-label="Reference sections"
-        className="mono flex flex-wrap items-center gap-x-6 gap-y-2 border-y py-3"
-        style={{ borderColor: "var(--term-border)", fontSize: 11, letterSpacing: TRACK.label }}
+        className="mono flex flex-nowrap items-center gap-x-6 gap-y-2 overflow-x-auto border-y py-3 sm:flex-wrap"
+        style={{
+          borderColor: "var(--term-border)",
+          fontSize: 11,
+          letterSpacing: TRACK.label,
+        }}
       >
         {BEHIND_THE_DATA_SECTIONS.map((section) => {
           // Exact match only: /behind-the-data is the overview, and a prefix test would
@@ -48,10 +70,10 @@ export function BehindTheDataShell({
               // already-bold mono labels is close to no signal at all. It now carries the
               // same red underline the main nav uses for "you are here".
               className={cn(
-                "inline-flex items-center border-b-2 py-1 font-semibold transition-colors",
+                "inline-flex min-h-11 shrink-0 items-center whitespace-nowrap border-b-2 py-1 font-semibold transition-colors",
                 active
-                  ? "border-[var(--term-red)] text-[var(--term-text)]"
-                  : "border-transparent text-[var(--term-text-muted)] hover:text-[var(--term-text)]"
+                  ? "border-[var(--term-text)] text-[var(--term-text)]"
+                  : "border-transparent text-[var(--term-text-muted)] hover:text-[var(--term-text)]",
               )}
             >
               {section.label}
@@ -60,7 +82,25 @@ export function BehindTheDataShell({
         })}
       </nav>
 
-      <div className="flex flex-col gap-12">{children}</div>
+      {contents.length > 0 ? (
+        <nav
+          aria-label="On this page"
+          className="flex flex-wrap gap-x-6 gap-y-1 text-[15px]"
+        >
+          {contents.map((item) => (
+            <a
+              className="min-h-11 content-center text-[var(--term-text-muted)] hover:text-[var(--term-text)]"
+              href={`#${item.id}`}
+              key={item.id}
+            >
+              {item.title}
+            </a>
+          ))}
+        </nav>
+      ) : null}
+      <div ref={bodyRef} className="flex flex-col gap-12">
+        {children}
+      </div>
     </div>
   );
 }

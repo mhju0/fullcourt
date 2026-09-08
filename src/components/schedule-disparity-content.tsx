@@ -1,6 +1,7 @@
 "use client"
 
-import { useState } from "react"
+import { useSeasonUrl } from "@/hooks/useSeasonUrl"
+import { ScheduleWorkload } from "@/components/schedule-workload"
 import useSWR from "swr"
 import { ChevronDown } from "lucide-react"
 import { SeasonSelector } from "@/components/season-selector"
@@ -193,7 +194,7 @@ function ColumnGuide({ countedGames, scheduledGames }: { countedGames: number; s
 }
 
 export function ScheduleDisparityContent() {
-  const [season, setSeason] = useState<string>(LATEST_SEASON)
+  const { season, setSeason, fallbackNote } = useSeasonUrl(LATEST_SEASON, SEASON_OPTIONS)
 
   const { data, error, isLoading } = useSWR<ScheduleDisparityResponse>(
     `/api/schedule-disparity?season=${season}`,
@@ -214,6 +215,8 @@ export function ScheduleDisparityContent() {
 
   return (
     <div className="flex flex-col gap-12">
+      {fallbackNote ? <p role="status">{fallbackNote}</p> : null}
+      {error && data ? <p role="status">Refresh unavailable. Showing the last loaded schedule.</p> : null}
       <div style={termCardStyle}>
         <SeasonSelector
           id="schedule-disparity-season"
@@ -253,6 +256,7 @@ export function ScheduleDisparityContent() {
         ) : null}
       </div>
 
+      <p className="text-[15px] text-[var(--term-text-muted)]">This ranking describes schedule differences; it does not predict results. Schedule worth is a historical group comparison, not a causal estimate.</p>
       {data && most && least ? (
         <div
           className="grid gap-px overflow-hidden"
@@ -313,7 +317,7 @@ export function ScheduleDisparityContent() {
             className="mt-3 h-[420px] w-full bg-[var(--term-surface-2)]"
             style={{ borderRadius: "var(--term-radius)" }}
           />
-        ) : error || teams.length === 0 ? (
+        ) : teams.length === 0 ? (
           <div
             className="mono mt-3 flex h-40 items-center justify-center"
             style={{
@@ -360,13 +364,8 @@ export function ScheduleDisparityContent() {
 
       {data && teams.length > 0 ? (
         <>
-          <div style={termCardStyle}>
-            <p
-              className="mono"
-              style={{ fontSize: 11, letterSpacing: TRACK.label, color: "var(--term-text-muted)", fontWeight: 600, textTransform: "uppercase" }}
-            >
-              Full breakdown
-            </p>
+          <details className="fc-disclosure">
+            <summary>Show full breakdown</summary>
             {/* The scale the "worth" column cannot be read without. A rest edge is a real
                 per-game effect and a small one; the column is small because the league hands
                 edges out evenly, not because the effect is nothing. Stating only one of those
@@ -386,7 +385,7 @@ export function ScheduleDisparityContent() {
               conversion, not an estimate of wins caused by the schedule.
             </p>
             <DataTable
-              wrapperClassName="mt-3 overflow-x-auto"
+              wrapperClassName="fc-schedule-breakdown mt-3 overflow-x-auto"
               rows={teams}
               rowKey={(t) => t.teamId}
               columns={[
@@ -510,7 +509,7 @@ export function ScheduleDisparityContent() {
               Positive is favorable in every column. Edge games are counted from the same fatigue
               scores as the Games page, so a season in progress lags until its games are played.
             </p>
-          </div>
+          </details>
 
           <ColumnGuide
             countedGames={data.league.countedGames}
@@ -518,6 +517,7 @@ export function ScheduleDisparityContent() {
           />
         </>
       ) : null}
+      <ScheduleWorkload key={season} season={season} />
     </div>
   )
 }

@@ -26,12 +26,8 @@ the actual code (`src/app/`, `src/components/`, `src/app/globals.css`).
   that does not move focus skips nothing. e2e asserts the focus handoff, not just presence.
 - Layout: `<NavBar />` (sticky), `<main>` with a centered `max-w-7xl` container
   (`px-4 py-8 sm:px-6`), and a footer (`var(--term-surface-2)` bg, top border
-  `var(--term-border)`) showing `RENDERED: <ts> UTC · SYSTEM STATUS` (the latter a link to
-  `/api/health`) and `GUIDE · BUILT BY MJ · SOURCE` (two links → the author's GitHub and the
-  repo).
-  `renderedAt` is `new Date().toISOString()` truncated to the minute at render time — the
-  **render** time, explicitly **not** data/pipeline freshness (live health lives behind the
-  SYSTEM STATUS link).
+  `var(--term-border)`) linking System Status, the homepage, About, Explore, author and source.
+  The render timestamp was removed under D-61; data coverage belongs beside its analysis.
 
 ## Pages
 
@@ -44,7 +40,7 @@ a number in front of it is a second copy of the same fact that nothing checks. T
 then went stale a third way: it kept `/` in the product set and lost `/games` entirely when the
 board moved there, which is the failure a list cannot protect against on its own.)
 `/upcoming` was retired: it redirects to `/games` (`next.config.ts`) — since 2026-08-29 onto
-the one board (the UPCOMING view it used to land on was itself retired in redesign stage ②). `/about` redirects to `/` for the same reason — the address had been shared.
+the one board (the UPCOMING view it used to land on was itself retired in redesign stage ②). `/about` now serves the relocated brand story (D-61); its former temporary redirect is removed.
 
 ### `/games` — Games (`src/app/games/page.tsx`, client component)
 
@@ -174,8 +170,7 @@ the line. Three rules live in that module and are asserted in its test:
 - **The date only, never a count.** The first version added `· 47,143 FINAL GAMES`, four lines
   above a tile reading `27,400 GAMES` — every publishable final game versus the games the model
   called, one noun, two populations.
-- **It is not the footer's `RENDERED`.** That says when the layout rendered and makes no data
-  claim. This says which games the figures came from.
+- **It describes the data, not the render.** The old footer render timestamp was removed under D-61. This date says which games the figures came from.
 - **No stamp rather than an empty one.** No `DATABASE_URL`, or no final games, renders nothing —
   the whole-element form of the `NO_FIGURE` rule.
 
@@ -233,74 +228,26 @@ moved; the sections carry the label instead. The header's identity words pair wi
 both answer "was my team's schedule unfair", and the pairing is what lets a reader pick the
 right tab before clicking (2026-08-23).
 
-The lazy client component (`season-report-content.tsx`) fetches `/api/season-report?season=…`
-and renders, in order: three rate tiles (rest-advantage win rate, win rate at RA ≥ 2, season
-progress) against an all-season marker — since 2026-08-29 the two rate tiles also carry the E1
-baseline slot, fed the displayed season's own `homeBaselinePct` from the backtest response the
-page already holds for the norm (per-season on purpose; see the stat-tile section) — then
-`WHAT THE SCHEDULE WAS WORTH` (schedule luck, not
-results — the scale callout, the season's two extremes and a crosslink; the per-team table's
-one home is `/schedule`, see below), `REST EDGE CONVERSION` (records, not a ranking),
-`LOUDEST CALLS` (ranked by rest gap), `SCHEDULE TAX` (completed games only — its
-`BACK-TO-BACKS` and `3-IN-4` columns carry D1 rank riders, `1ST = MOST`, because the table is
-sorted by miles and those two arrive out of order; `REST EDGE CONVERSION` deliberately carries
-none, its own divider being the reason), `FATIGUE CALENDAR` (league average by week) and
-`ZERO-REST WORKLOAD` (volume, not effect).
+The client fetches `/api/season-report?season=…` and the shared backtest. It renders three
+outcome sections: the rested-at-home record against that season's home baseline and concise
+historical context; team records under different rest conditions; and five completed games
+with the largest called rest gaps, including wins and losses. Each game links to its expanded
+Games row. Headline rates retain the 100-game inference gate and interval. Team differences
+retain their league comparison and venue caveat; no fatigue-management ranking is implied.
 
-**The whole column runs on the wide track** (`WIDTH.wide`, 1040 — the same cap `/availability`
-and `/playoffs` already use), and the two league tables (`REST EDGE CONVERSION`,
-`SCHEDULE TAX`) are `width="full"` within it (2026-08-23). Uncapped, the page's dividers and
-call rows spanned the full 1280 while its content-sized tables stopped near 600 — the
-imbalance was between blocks on the *same page*. The zero-rest player list stays `numeric`
-on purpose: a compact lookup, not a league table, and it is the table
-`e2e/alignment-law.spec.ts` now measures for the sizes-to-content rule.
+The wide track remains 1040px. Six team rows are initially visible, with the remaining teams
+under a native disclosure. Both groups print wins/games and rates, with a labeled difference;
+small samples use text rather than low-contrast opacity. Before scored results exist, one
+awaiting-results state links to the previous season and the selected season's Schedule Edge.
 
-**A season with no completed game reports on a different basis** (`SeasonReportResponse.basis`
-`=== "schedule"`, since 2026-08-18). The selector offers `browsableSeasons()`, so a released
-schedule can be chosen before its season starts — but the initial value stays the newest season
-*with data*, because this page's results half is its point and opening on a season that has none
-would bury a complete report behind a choice.
+`/schedule` owns schedule worth, travel/workload, and the fatigue calendar. Workload continues
+to use the original report API's whole-season basis: published schedule before the first scored
+final, completed games afterward. The weekly fatigue calendar uses completed games only.
+`/shooting` owns the zero-rest player workload disclosure and its generated-data stamp.
 
-On that basis the sections split by what they need. `WHAT THE SCHEDULE WAS WORTH` and
-`SCHEDULE TAX` are properties of the calendar and render in full — `SCHEDULE TAX`'s descriptor
-moves to `FULL PUBLISHED SCHEDULE`, because "COMPLETED GAMES ONLY" over a season with none
-describes an empty set rather than what is shown. The four that read a scoreboard —
-`REST EDGE CONVERSION`, `LOUDEST CALLS`, `FATIGUE CALENDAR`, `ZERO-REST WORKLOAD` — render an
-`AWAITING GAMES` card naming what they are waiting for, and the two rate tiles read an em dash.
-**Never render these as an empty version of themselves:** a win-rate table of zeros claims the
-rested team won none of its games, and a 0.0 swing claims rest made no difference. Neither has
-been measured. It is the same distinction the Games board draws between `—` and `0`, at section
-scale.
-
-The basis is decided once per season, never per row, and **reverts to `"played"` the moment one
-game is final** — "so far" and "projected" are different claims and the page must not blend them.
-
-**Two sentences in this page are load-bearing and read as redundant prose.** Both exist to stop
-a specific misreading, and `e2e/season.spec.ts` guards both:
-
-- `WHAT THE SCHEDULE WAS WORTH` opens with a callout stating the per-game effect — a rest edge
-  moves a home team 3.6 points against home court's 19.8, so about 18% of home court — **before**
-  the season's extremes line underneath it. That order is the design. The wins figure never
-  leaves ±0.4 for any team, and read cold it invites the conclusion that rest is nothing; read
-  after the scale line it says what is true, which is that the effect is real and the league
-  distributes edges evenly enough that it never accumulates. Never reorder these two, and never
-  publish the wins figure on a surface that does not carry the scale beside it. The full
-  per-team table lived here until 2026-08-23 and now has its one home on `/schedule` — this
-  section points there, and `e2e/season.spec.ts` pins the table's absence as deliberately as it
-  used to pin its 30 rows.
-- `REST EDGE CONVERSION` prints `swingBaseline` above its table and diverges the `SWING` column's
-  colour around it rather than around zero. The rested arm is every game played as the fresher
-  side *at home* and the tired arm every game played as the tireder side *on the road* —
-  `isCalledSide` admits no other pairing — so a team with no rest-conversion skill still posts
-  about +10. Colouring from zero painted twenty-odd teams blue for having home-court advantage,
-  which is the same error the venue baseline was introduced to stop `/analysis` making.
-
-**Every rate tile is gated on sample size.** `MIN_GAMES_FOR_INFERENCE` is 100
-(`src/lib/season-report.ts`); below it a tile reads `TOO EARLY · N OF 100 GAMES NEEDED` rather
-than printing a rate a single season cannot support.
-
-Its last section, `ZeroRestWorkload`, reads `public/data/player-rest.json` directly rather than
-the API — the second surface to serve from that static asset, after `/shooting`.
+Season selection is URL-addressable through `useSeasonUrl`; primary links carry it to Games,
+Season Report, and Schedule Edge. A destination that cannot support a requested season states
+its fallback visibly. Refresh errors retain previously loaded evidence with a status message.
 
 ### `/upcoming` — retired
 
@@ -482,102 +429,44 @@ A `?player=<name>` query parameter opens that player directly, and expanding one
 via `history.replaceState`, so a view can be linked and shared without the route ever leaving
 `/shooting`.
 
-### `/` — the front door / explainer (`src/app/page.tsx`)
+### `/` — rest and schedule findings (`src/app/page.tsx`)
 
-Deliberately unlike the rest of the app: dark ground, oversized display type, GSAP scroll
-work. It explains what the product measures rather than serving data, which is why it is
-**not** one of the product surfaces. Visuals are CSS and inline SVG only — no remote images —
-so `img-src` in `next.config.ts` did not have to widen; GSAP is imported inside `useEffect`
-so it stays out of the shared bundle.
+D-61 homepage integration, 2026-09-07: the dark front door is a short, server-rendered page.
+`home-content.tsx` and `home.module.css` replace the eight-section client-only explainer.
+The order is hero + Games action, one historical rest comparison, supporting schedule and
+shooting previews, then Explore and methodology/About links. The six-card directory, formula
+exposition, grain overlay and decorative court background are retired from this page.
 
-Reachable from an `ABOUT` link in the nav row's **`Reference` landmark** and from
-`WHAT THIS MEASURES` in the footer — not from the main nav, whose six-link count is asserted
-in `e2e/navigation.spec.ts`. It sat in the top status bar until 2026-07-30, which proved too
-quiet to be found; the reference links are now the same size and weight as a tab, and the gap
-between the two groups is what says "not one of the six".
+The historical finding comes from `getHistoricalBacktest(0)`: RA ≥ 7 home-rested games,
+read against the full scored home baseline. Both rates and populations are printed; bars use
+0–100% and the observational limitation stays beside them. A missing bucket is unavailable,
+never zero. `getScheduleDisparity(defaultRankableSeason())` supplies measured net-edge extremes,
+coverage and result date; ties are labeled. Calendar-only future schedules do not acquire
+measured fatigue counts. The shooting preview derives its coverage from the same exported
+player data as `/shooting`, without picking a noisy player to headline.
 
-**Compressed to content height and calmed, 2026-08-20.** The 2026-07-30 rebuild gave every
-section a full viewport minimum and the 2026-08-14 pass gave each its own scroll effect — a
-pinned centrepiece, a word-by-word scrubbed thesis, clip-path masks. A hand review of the
-final page called the result what it was: the pin was the page's one scroll-jack, the scrubs
-stuttered with trackpad jitter, and the viewport minimums left dead screens between content.
-All three were retired together, chosen from three hand-scrolled prototypes (the record is
-`docs/design/explorations/2026-08-20-front-door-motion/`).
+The page revalidates daily. Missing database configuration withholds those numerical previews;
+configured infrastructure failures remain errors. An intentionally withheld unequal-schedule
+ranking does not take down the historical finding. The player export is read server-side, so
+it is not serialized into the homepage client bundle.
 
-**Eight sections, ordered as one argument** (since the 2026-08-19 narrative pass): the claim,
-the thesis, **the name** (the FULL/COURT anatomy from
-[BRAND_GRAMMAR.md §2](design/BRAND_GRAMMAR.md), the page's one brand-indigo moment), the
-evidence, what the score is made of, the standard, the six surface cards, the way in. Each
-section takes the height its content earns (`py-28`); only the hero holds a near-viewport
-(`88svh` minus the chrome token). The 2026-08-19 pass also **removed the evidence count-up**
-(for ~1.2s it showed values that were never measured, directly above the sentence naming the
-baseline — the first voice law rules it out; do not reintroduce it) and added the operating
-line ("READ AGAINST THE BASELINE") to the outro, one of its two sanctioned homes.
+There is one CSS hero entrance: 450ms, opacity and 8px translation, with no stagger.
+Reduced motion disables it completely. All other content is visible without scroll triggers;
+links have static hover/focus feedback. No GSAP dependency remains on this route. The existing
+five-moment budget is unchanged; there is no count-up or replacement decorative motion.
 
-**One motion grammar, stated in `about-content.tsx`:** the hero assembles once on load (a
-plain `from`, safe because it has no trigger), and everything below it arrives once —
-`fromTo`, 350ms, 12px rise, 45ms stagger, `power1.out`, `once: true` at `top 90%` — and never
-moves again. No pins, no scrubs, no masks: the subtle-tier timing replaced reveals that ran
-900ms with 120ms stagger, two to three times slower than the micro-interaction band. Since
-nothing on the page is scroll-tied, the retracting bar no longer needs to be told about a pin;
-the `fcPinned` DOM flag and its `useRetractingHeader` bail-out were removed with it.
+The header continues to use its existing dark scope on `/`. The full-bleed wrapper offsets
+and restores `--term-chrome-h` so the dark ground extends under the chrome. Geist and Geist
+Mono remain the typefaces; the fluid display scale is exempted by the CSS module's exact path.
+The app's other pages stay light.
 
-The hero carries no buttons — they competed with the single line the page opens on — but since
-2026-08-20 it does carry one **whisper-weight text link** ("Skip to the games board →"): the
-page serves a credibility read *and* product visitors, and its only CTA sat five screens down.
-Distinct wording from the outro CTA, whose accessible name `e2e/home.spec.ts` pins at exactly
-one element. Evidence figures come from `getHistoricalBacktest` via the server page and are
-revalidated daily, because all three were hardcoded and all three had gone stale. Headings use
-`font-bold` (700), not extrabold: `layout.tsx` loads Geist at 400/500/600/700 — the 700 face
-is carried for this page specifically — so an 800 request resolves to the 700 face anyway.
+### `/about` and `/explore`
 
-**Hairlines sit below text, never above** — except in top-aligned row lists (the inputs grid,
-the naming rows, the standard's rows), where a top rule is a row separator (reviewed by hand,
-2026-08-20: a rule above a centered or bottom-aligned block reads as clutter).
-
-Easy to get wrong twice on this page:
-
-- **The six surface cards keep their copy visible at rest.** It was `lg:opacity-0` until
-  hover, and cards showing only a label read as a loading state. Each card carries a mono
-  index, its route and the copy in a 3-across grid (the `SurfaceGlyph` miniatures went with
-  the fixed-height row on 2026-08-20 — at grid-card size they read as decoration). Index and
-  route are `aria-hidden`, so the link's accessible name stays `"<label> <copy>"` — which is
-  what `e2e/home.spec.ts` anchors on.
-- **Every colour the hover contests lives in `CARD_SKIN`, never in `style`** (2026-08-13). The
-  cards are links with a hover state that did not paint at all: the resting border and background
-  were inline styles, and an inline style beats any non-`!important` class rule, so
-  `hover:border-*` and `hover:bg-*` were dead on arrival. The ticket read this as a hover that was
-  too subtle; measurement showed there was none. Both resting values moved into the class layer,
-  which is the only fix — dialling the hover up would have changed nothing. `focus-visible:`
-  mirrors every hover declaration so keyboard reach shows the same state, the lift is
-  `motion-safe:` only, and the meta row's colour is a class for the same reason so it brightens
-  with the card.
-- **Anything driven by a ScrollTrigger uses `fromTo`, never `from`.** A `from` tween infers
-  its end values from whatever the element is when the tween is built, and a later
-  `ScrollTrigger.refresh()` — which the library also runs itself, after a resize or once
-  webfonts land — can re-apply the *start* state to a trigger that is still alive. The six
-  surface cards hit exactly this: `onEnter`, `onStart` and `onComplete` all fired and all six
-  still held `opacity: 0` inline, while `lint`, `typecheck`, the unit suite and `build` all
-  passed over it. `e2e/home.spec.ts` asserts all six settle visible, and that the inputs
-  section scrolls freely with its six items lit.
-- **Never park a resting state in an inline `style`.** The whole effect block returns early
-  under `prefers-reduced-motion: reduce`, correctly — so anything dimmed or offset in the
-  markup *stays* that way for those readers, and an inline value cannot be restored by any
-  class rule. The thesis once rendered at a permanent inline 12% opacity for exactly the
-  audience that could not get the animation back. The resting markup is now fully visible
-  everywhere; only GSAP ever dims anything, and only when motion is allowed.
-
-Display statements on this page take **no terminal period** (`Rest is a stat`, `Six tabs`,
-`How a number earns its place`). Body copy keeps normal punctuation — prose, not statements.
-
-The chrome joins the dark here (2026-08-28, stage ① of the redesign round): on `/` — and only
-on `/` — the header carries `fc-chrome-front`, which re-resolves the `--term-*` surface and text
-tokens to dark-ground values, and at the very top of the page `fc-chrome-clear` makes the grounds
-transparent so the bar dissolves into the hero. The hero's wrapper pulls itself up by
-`--term-chrome-h` and pads the same height back inside, so the dark ground actually runs under
-the sticky header and the fold equations below are unchanged. Both classes live in `globals.css`
-beside the tokens they override; the mark alone cannot follow a token scope (SVG fills), so
-`CourtMark` takes `tone="dark"` on this route.
+`/about` now serves the relocated naming story and short explanation of the research standards;
+it no longer redirects to `/`. Its wordmark reads the canonical kerning table. `/explore`
+groups rest/fatigue pages, other basketball studies, and methodology/archive links in a plain
+list. Both use `PageHeader`, the shared page grid, and 15px explanatory text. About is linked
+from the homepage and footer; Explore is a shared primary destination. The four-item primary navigation is implemented locally.
 
 ### Unknown routes — `src/app/not-found.tsx`
 
@@ -792,7 +681,7 @@ below) and every route stays reachable through the palette (`command-palette.tsx
    which is what `e2e/behind-the-data.spec.ts` clicks. Since 2026-08-24 the letters are
    individually kerned: `src/lib/brand/wordmark-kern.ts` is the one table (the same
    one-source rule as the mark's geometry), consumed by all three lockup renderers — nav,
-   the front door's naming h2, and the OG card — as per-letter margins on top of each
+   the About page's naming h2, and the OG card — as per-letter margins on top of each
    site's base tracking. `wordmark-kern.test.ts` pins the preset and fails any renderer
    that types the word as a literal again. The wordmark was inert until 2026-07-30, the
    one piece of chrome people reflexively click. It points at `/`, the front door. That
@@ -806,71 +695,20 @@ below) and every route stays reachable through the palette (`command-palette.tsx
    There is **no LIVE dot** — it was gated by
    a `HAS_LIVE_GAMES` constant hardcoded to `false`, so it never rendered in any state; the
    dead branch was removed. Per-game LIVE status is shown in the slate row instead (`matchup-table.tsx`).
-2. **The tab strip** (`hidden lg:block`, `flex-1` in the same bar) holds **two navigation
-   landmarks in one row**. Left, `aria-label="Main navigation"`: the six direct tabs
-   from `DIRECT_NAV_ITEMS` (`src/lib/primary-navigation.ts`) — `GAMES → /games`,
-   `SEASON REPORT → /season`, `SCHEDULE EDGE → /schedule`, `MODEL RESULTS → /analysis`,
-   `PLAYOFF REST → /playoffs`, `PLAYER SHOOTING → /shooting` — followed by the `OTHER`
-   menu holding `SHOT VALUE → /shot-quality`, `AVAILABILITY COST → /availability` and
-   `REFEREE EFFECT → /referees`. Right,
-   `ml-auto` and `aria-label="Reference"`: `BEHIND THE DATA → /behind-the-data` alone.
-   `ABOUT` left on 2026-08-12 when the page it pointed at became `/` — a chrome link to the
-   front door duplicates the wordmark. Two landmarks rather than one so the reference links
-   never inflate the asserted six-link count, and so screen readers announce them as what they
-   are.
-   **The surface list on `/` is *not* derived from `DIRECT_NAV_ITEMS`** — `SURFACES` in
-   `src/components/about-content.tsx` is a separate, hand-maintained array. An earlier version
-   of this doc claimed the two were linked, which was false and let a tab addition on this
-   branch ship without the front door in sync for a time. There is no shared source: adding or
-   renaming a direct tab requires a matching hand edit to `SURFACES`, and `SHOT VALUE` is
-   correctly absent from it only because someone left it out on purpose, not because the list
-   knows it belongs to `OTHER_NAV_ITEMS`.
+2. **The tab strip** (`hidden lg:block`) shares the four primary routes with the phone dock:
+   Games, Season Report, Schedule Edge and Explore. Behind the Data remains in the separate
+   Reference landmark. The OTHER menu and header search button are removed under D-61.
+   The strip fits at 1024px; its existing overflow/fade fallback remains for constrained layouts.
+   `primaryNavCurrent()` returns `page` for the current route, or `location` for Explore while
+   viewing an analysis it contains. Reference pages keep their own active link.
 
-   **The strip is a horizontal scroll strip** (`.fc-nav-scroll`, `overflow-x-auto`,
-   `shrink-0` + `whitespace-nowrap` on every link; the mechanism dates to 2026-07-30). Since
-   the shell merge it exists only at `lg`+ — below that the dock is primary navigation and the
-   strip leaves the DOM entirely, still never a hamburger — but the affordance problem is
-   unchanged in kind: between `lg` and roughly 1250px the single bar leaves the tabs less room
-   than the old full-width row had, and the strip is what carries the overflow rather than the
-   page. The scrollbar is hidden in `globals.css`: it would land on the active tab's underline,
-   which is the only state the row carries. The `OTHER` popup is unaffected — `Menu.Portal`
-   renders it outside this container, so the `overflow` cannot clip it. `e2e/navigation.spec.ts`
-   asserts the page never scrolls sideways at 390px, that a squeezed desktop strip overflows
-   itself, and that everything off the dock stays reachable through the palette.
-   **The strip fades the edge that still has content under it** (2026-08-15, `useEdgeFades`).
-   The 2026-08-04 measurement found the OTHER menu entirely off-screen at 360px with nothing
-   saying the row continues — the scrollbar cannot say it, being hidden for the underline's
-   sake. The fades are state-driven, not static CSS, because a fixed gradient would also dim
-   the last tab of a row that fits; each side shows only while content is under it and the
-   pair swaps at the far end. One measurement gotcha is recorded in the hook: ResizeObserver
-   watches the border box and therefore **cannot see `scrollWidth`**, so the webfont landing —
-   exactly the moment overflow appears — is re-checked via `document.fonts.ready`. The fades
-   are `pointer-events-none` and `aria-hidden`; e2e asserts both squeezed-strip states and
-   that a desktop row that fits shows neither.
-   Bare noun phrases, no time words: mainstream NBA navs (ESPN, CBS) name the thing and
-   leave time to a date picker, and NN/g's category-name guidance rules out both jargon
-   (`EDGES`) and generic labels (`ANALYSIS`, `DATA`). Labels are also checked against *borrowed*
-   meaning — bare `SCHEDULE` means a game list on every other sports site, which is this site's
-   `GAMES`, so the disparity tab keeps its qualifier; bare `SHOOTING` means shot location on
-   Basketball-Reference and NBA.com, which is `SHOT VALUE`, so the player tab keeps its own. Precise terms (`xeFG%`, `SCHEDULE
-   DISPARITY · NET REST EDGE`) stay in the page eyebrows, where context decodes them.
-   The active link gets an accent
-   bottom border (`border-[var(--term-amber)]` — the historical slot, aliasing
-   `--term-accent`) + `text-[var(--term-text)]` and carries
-   `aria-current="page"`; inactive links are muted with a hover-to-text transition.
-
-**The bar retracts on scroll down and returns on scroll up — on `/` and nowhere else**
-(`useRetractingHeader`, 2026-08-13). `/` stopped being a product surface in the front-door swap,
-and a tab bar pinned over a long-scrolling argument competes with it rather than serving it.
-Every other route keeps the bar pinned, gated on the pathname the component already had, so no
-layout restructure was needed.
-
-Six things about it are load-bearing:
+The homepage header retracts on downward scroll and returns on upward scroll or keyboard focus.
+Other routes keep it pinned. These behavior constraints remain:
 
 - **It is a `transform`, never a height or `display` change.** The header sits in normal flow
   above `<main>`; collapsing it would reflow the page under the reader and fight the alignment
   law. Translating it leaves the flow box where it was.
-- **The tabs stay mounted while hidden.** `navigation.spec.ts` asserts six links and zero
+- **The tabs stay mounted while hidden.** `navigation.spec.ts` asserts four links and zero
   `aria-current` on `/`; unmounting them to hide them would take that invariant with it.
 - **Two guards keep the bar reachable.** It never retracts above `BAR_HEIGHT_PX` (56 — the
   single bar of the 2026-08-29 shell merge), and a document with less scroll room than that never
@@ -895,35 +733,21 @@ The listener is `{ passive: true }` and rAF-throttled, and its cleanup removes t
 cancels any pending frame. Keyboard reach is preserved by `onFocus={reveal}` — tabbing into a
 retracted bar brings it back. The transition is `motion-safe:` only.
 
-### `bottom-nav.tsx` — the phone dock (2026-08-29)
+### `bottom-nav.tsx` — four shared destinations (D-61, 2026-09-07)
 
-Fixed below `lg`, `z-50`, ground `var(--term-surface-2)` over a top border — the thumb-first
-pattern every major sports property ships on phones, adopted in the stage ③ shell merge
-(ADR 0010) in place of the phone-width scroll strip. Four route slots (`GAMES`, `SEASON`,
-`SCHEDULE`, `MODEL` — short labels whose `aria-label`s carry the full tab names, keeping the
-visible label a substring of the accessible one) plus a search slot that opens the palette.
-Active slot: amber top border + ink text + `aria-current="page"`, the same grammar as the
-tabs' underline. Its own landmark name (`Bottom navigation`) so it never collides with the
-strip's asserted six-link count; the two are never displayed at the same width. The safe-area
-inset pads *inside* the nav (`.fc-bottom-nav`, globals.css — a class only because the scale
-audit's inline parser cannot read `env()`'s comma fallback), and `body` reserves the dock's
-height below `lg`. On `/` it joins the dark via `fc-chrome-front`, solid rather than
-transparent — a dock is furniture, and a light dock on the dark front door would be the same
-seam stage ① removed from the top.
+The mobile dock reads `DIRECT_NAV_ITEMS`, exactly like the desktop bar. Visible labels shorten
+Season Report and Schedule Edge; accessible names remain complete. Explore replaces the old
+Model/Search slots and stays highlighted while viewing one of its analyses. `aria-current`
+distinguishes the exact page from the parent location. All four targets retain the dock's
+height and visible keyboard outlines. Existing safe-area padding and body space prevent the
+fixed dock from covering the footer. No new motion was added.
 
-### `command-palette.tsx` — the ⌘K palette (2026-08-29)
+### `command-palette.tsx` — page navigation
 
-`cmdk`, mounted **lazily** by `command-palette-mount.tsx` (2026-09-01). v1 is navigation-only: the nine product routes plus
-`BEHIND THE DATA`, grouped the way the bar groups them (Surfaces / Other / Reference), each
-row showing label + href so typing either matches. Summoned by the bar's `SEARCH` button, the
-dock's search slot (both dispatch `PALETTE_OPEN_EVENT` from `primary-navigation.ts`) and
-⌘K / Ctrl+K — the shortcut is the accelerator, never the door, which is the GitHub lesson
-about palette discoverability. Styling lives in `globals.css` under the `[cmdk-*]` attribute
-selectors, tokens only, sizes on the type scale, with no entry animation at all (nothing to
-guard for reduced motion). The light card floats over every surface including the dark front
-door — the same deliberate contrast as the `OTHER` popup. Entities (teams, officials,
-players) are deliberately absent until entity destinations exist; the one URL-addressable
-filter in the app (`/shooting?player=`) is entity territory and waits with them.
+The lazy `cmdk` palette remains available through ⌘K / Ctrl+K and the footer's Jump to page
+button. It includes the four primary destinations, six Explore analyses, Behind the Data and
+About. Search aliases preserve referee/L2M lookup. Keyboard selection bypasses route animation;
+the dialog itself has no entrance animation. It remains navigation-only, without entity search.
 
 **How it is mounted, and why it changed.** The layout used to import `CommandPalette` directly,
 so `cmdk` — and the sixteen `@radix-ui/*` packages it pulls in behind `@radix-ui/react-dialog`,
@@ -1196,14 +1020,10 @@ rather than escaping, which is the invariant to protect when adding a table or a
 Three deliberate horizontal scrollers carry that load, and each is a **content-discoverability**
 question rather than a layout bug:
 
-- **The nav bar** (`nav-bar.tsx`, `.fc-nav-scroll … overflow-x-auto`). The six direct tabs plus
-  the `OTHER` trigger total ~610pt of targets in a 360pt viewport, so at rest the bar shows
-  roughly three and a half tabs and clips mid-word — the clip itself is affordance (a cut word
-  says "more"), and **since 2026-08-15 the overflowing edge also fades** (`useEdgeFades`, §nav
-  above), which is the signal the 2026-08-04 measurement found missing when it put `OTHER`
-  entirely off-screen with nothing inviting the swipe. Re-measure discoverability on a real
-  device before calling this closed — the fade is the standard affordance (Naver, ESPN mobile),
-  not yet a measured outcome.
+- **Primary navigation** uses four dock targets below `lg` and four desktop links above it.
+  The desktop strip retains overflow handling as a fallback; the current labels fit at 1024px.
+  Explore makes the remaining analytical destinations reachable without a mobile search slot.
+
 - **The Games month/day chip rows** — same pattern; April is off-screen at rest in a full season.
 - **The wide data tables** (`/shooting`, `/schedule`, `/season`), each inside its own
   `overflow-x-auto`. This is why the page itself does not overflow.
@@ -1821,7 +1641,7 @@ refused — scattered micro-animation is how a data site stops feeling like an i
 
 1. **The route cross-fade** — 200ms, `document.startViewTransition` via the manual wrapper in
    `route-transition.ts` (never Next's experimental flag). Chrome navigation only: the tabs,
-   the dock, the OTHER menu and the wordmark use `TransitionLink`; the palette calls the same
+   the dock, Explore links and the wordmark use `TransitionLink`; the palette calls the same
    navigation module. In-content links deliberately do not. `RouteTransitionLifecycle` mounts
    in the persistent root layout and settles only a matching destination pathname. Same-path
    navigation (including query or hash changes) pushes normally without a cross-fade.
@@ -1832,7 +1652,7 @@ refused — scattered micro-animation is how a data site stops feeling like an i
 3. **The Skim ↔ Deep-Dive morph** — a same-document view transition in `useSlateDensity`
    (`flushSync` inside the callback is what lands React's update inside the snapshot window).
 4. **The chrome retract/reveal** — the front door's bar, 300ms transform, `motion-safe:` only.
-5. **The front door's one reveal pass** — the GSAP assembly in `about-content.tsx`, played once.
+5. **The front door's hero entrance** — 450ms in `home.module.css`, once per page entry; no scroll reveals.
 
 Every moment is skipped — state kept, travel removed — under `prefers-reduced-motion`, guarded
 in JS where a transition is started programmatically AND in CSS
@@ -1865,7 +1685,7 @@ near-black `#2A313A` for the same reason).
 Sticky header = **one 56px bar** (2026-08-29 shell merge; previously 52px brand bar + 44px
 main nav = 96px), published as `--term-chrome-h` in `globals.css`. Below `lg` a fixed
 **bottom dock** (`bottom-nav.tsx`, `--term-bottom-nav-h`) carries primary navigation —
-four route slots and a search slot — and `body` reserves its height in `globals.css` so no
+four shared route slots — and `body` reserves its height in `globals.css` so no
 page's last line hides under it. The front door's hero subtracts that token rather than a
 literal (its sections stopped being full-viewport on 2026-08-20, but the hero still is, nearly),
 because the old sections overran the fold by exactly the difference the last two times the
@@ -1912,3 +1732,71 @@ processing step since 2026-08-24: the render is **flattened RGBA → RGB**
 (`Image.open(...).convert("RGB").save(..., optimize=True)` — the route's alpha channel is
 uniformly 255, so the pixels are untouched) after GitHub's uploader failed repeatedly on the
 RGBA original. Keep the flatten when re-rendering.
+
+### `/officiating` — seasonal NBA L2M reports (2026-09-07 implementation)
+
+`OfficiatingContent` renders a build-time index from `src/data/officiating.json`. Native history
+updates preserve season, team, call category and open game without route animation or scroll
+reset. Report details load on demand through SWR from content-addressed public JSON files and
+validate identity, schema and source hash. The default is errors-only; all assessments remain
+available. Pagination reveals 20 games at a time and includes a deep-linked game automatically.
+
+The owner-approved big-stat hero is the single named type-scale exception (D-59). Blue means
+missed calls and gray means incorrect whistles. Other sizes use the existing CSS type tokens.
+The strip keeps explicit values and a labeled 50–100% scale; long horizons scroll. No new motion.
+
+`/referees` redirects permanently. `/behind-the-data/officiating` documents the new sample and
+links to `/behind-the-data/referees/archive`, which retains the original table and comparisons.
+`/behind-the-data/referees` retains their original methodology. See `OFFICIATING.md` for publishing.
+
+### D-61 defect-pass implementation (2026-09-07)
+
+Games and Playoff Rest detail grids and chevrons change instantly; playoff hover lift is
+removed. Keyboard-triggered TransitionLink and command-palette navigation bypass cross-fades;
+pointer chrome navigation retains the existing lifecycle. Method sections expose anchored h2
+headings and wrapping descriptors. Player Shooting reserves a 1120px table minimum so fixed
+numeric columns cannot collapse player identity; the compact mobile comparison remains planned.
+Season-comparison chart ticks are thinned to at most six candidates; chart data is unchanged.
+Shot Value supports nearest measured-location pointer selection and one native range input per
+court for keyboard inspection, with a visible zone/attempt/value/coordinate readout. No per-cell
+tab stops. The later homepage and navigation redesign remains subject to representative mockups.
+
+
+### Games layout update (2026-09-07)
+
+Games uses a main-first responsive grid: date controls and matchups, then a summary/Edges Ahead
+aside. At xl the aside is 260px wide. The Games seed uses currentDisplaySeason; future edge
+discovery still uses defaultNbaSeason. Upcoming season availability is checked against the dates
+endpoint before offering it. useSlateDensity reads view from the URL only and skips the existing
+view transition for keyboard activation. Season/date URL state is not yet integrated.
+
+
+### Games URL integration — 2026-09-08
+
+Games now shares `season`, `date`, and `view` in the URL. Explicit links take precedence over
+season defaults; date-only links infer a season. Invalid dates fall back safely, while valid
+no-game dates remain selected. User navigation creates history entries; automatic date selection
+replaces the current entry. Back/forward restores the slate without scrolling or animation.
+The season control waits for URL initialization before accepting input, preventing an early
+selection from being overwritten. Aborted calendar responses cannot replace the current season.
+
+Next: implement the approved Season Report / Schedule Edge content separation. Local only.
+
+
+## Rest-focused redesign integration — 2026-09-08
+
+The approved page ownership is implemented: Season Report owns completed results, team records,
+and five largest completed rest gaps (wins and losses); Schedule Edge owns the ranking, worth,
+travel/workload disclosure, and completed-game fatigue calendar. Zero-rest player workload now
+belongs to Shooting. Six team records are shown initially, with the remaining teams expandable.
+
+Shared season links and fallback notices preserve valid context across Games, Season, and
+Schedule. Shooting URLs preserve year, volume, team, position, uncertainty, sort, query, and
+expanded player. Mobile Games exposes rest advantage without horizontal scrolling. Model Results
+has answer/explorer anchors, Availability collapses coefficients, mobile Shot Value offers one
+court plus Compare models, Officiating links directly to game reviews, and methodology pages
+have compact topic navigation and local contents. No accounts or stored personal preferences.
+
+See [the release review](design/redesign-release-review.md) for design rationale and scope.
+The owner authorized verification and deployment on 2026-09-08. Exportable graphics, universal
+search, and new analytics remain separate future scope, as agreed. No coefficient or schema change.

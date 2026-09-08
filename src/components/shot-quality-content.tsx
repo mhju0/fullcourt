@@ -332,6 +332,16 @@ function ShotCourt({
     return arr
   }, [cells, scaleFga])
 
+  const [selectedIndex, setSelectedIndex] = useState(0)
+  const locations = useMemo(() => markers.filter((m) => getValue(m.c) !== null)
+    .sort((a, b) => a.c.cellY - b.c.cellY || a.c.cellX - b.c.cellX), [markers, getValue])
+  const activeIndex = Math.min(selectedIndex, Math.max(0, locations.length - 1))
+  const selected = locations[activeIndex]
+  const selectedValue = selected ? getValue(selected.c) : null
+  const description = selected && selectedValue !== null
+    ? `${selected.c.zoneBasic ?? "Unclassified zone"} · ${selected.c.fga.toLocaleString()} attempts · ${formatValue(selectedValue)} · ${selected.c.cellX + 0.5} ft across, ${selected.c.cellY + 0.5} ft upcourt from the rim`
+    : "No measured locations for this view."
+
   return (
     <figure className="flex flex-col gap-2">
       <figcaption className="flex flex-col gap-1">
@@ -343,6 +353,18 @@ function ShotCourt({
         </span>
       </figcaption>
       <svg
+        onPointerDown={(event) => {
+          const bounds = event.currentTarget.getBoundingClientRect()
+          const x = (event.clientX - bounds.left) * VB_W / bounds.width
+          const y = (event.clientY - bounds.top) * VB_H / bounds.height
+          let nearest = 0
+          let distance = Infinity
+          locations.forEach((m, i) => {
+            const d = (m.cx - x) ** 2 + (m.cy - y) ** 2
+            if (d < distance) { distance = d; nearest = i }
+          })
+          setSelectedIndex(nearest)
+        }}
         viewBox={`0 0 ${VB_W} ${VB_H}`}
         width="100%"
         role="img"
@@ -370,7 +392,24 @@ function ShotCourt({
           })}
         </g>
         <CourtLines />
+        {selected && <circle cx={selected.cx} cy={selected.cy} r={9} fill="none" stroke="var(--term-text)" strokeWidth={3} pointerEvents="none" />}
       </svg>
+      <label className="flex flex-col gap-2" style={{ fontSize: TYPE.body }}>
+        Inspect a location · {title}
+        <input
+          type="range"
+          min={0}
+          max={Math.max(0, locations.length - 1)}
+          step={1}
+          value={activeIndex}
+          disabled={!locations.length}
+          aria-label={`Inspect location on ${title} court`}
+          aria-valuetext={description}
+          onChange={(event) => setSelectedIndex(Number(event.target.value))}
+          style={{ width: "100%", minHeight: 44, accentColor: "var(--term-accent)" }}
+        />
+      </label>
+      <p role="status" style={{ margin: 0, fontSize: TYPE.body, minHeight: "3em" }}>{description}</p>
     </figure>
   )
 }
@@ -394,6 +433,7 @@ function CourtSkeleton() {
 export function ShotQualityContent() {
   const [season, setSeason] = useState<string>(currentDisplaySeason())
   const [mode, setMode] = useState<ColorMode>("value")
+  const [compareModels, setCompareModels] = useState(false)
 
   const { data, error: swrError, isLoading } = useSWR<ShotQualityResponse>(
     `/api/shot-quality?season=${season}`,
@@ -490,7 +530,9 @@ export function ShotQualityContent() {
           <HowToRead mode={mode} seqLo={stats.seqLo} seqHi={stats.seqHi} divD={stats.divD} />
 
           {mode === "value" ? (
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+              <button type="button" className="min-h-11 text-left text-[15px] font-semibold lg:hidden" aria-pressed={compareModels} onClick={() => setCompareModels(value => !value)}>{compareModels ? "Hide model comparison" : "Compare models"}</button>
+              <div className={compareModels ? "" : "hidden lg:block"}>
               <ShotCourt
                 cells={cells}
                 scaleFga={stats.scaleFga}
@@ -500,6 +542,7 @@ export function ShotQualityContent() {
                 title="BASELINE"
                 subtitle="ZONE-AVERAGE (STEP SURFACE)"
               />
+              </div>
               <ShotCourt
                 cells={cells}
                 scaleFga={stats.scaleFga}
@@ -525,7 +568,7 @@ export function ShotQualityContent() {
           )}
 
           <p className="mono mt-3" style={{ fontSize: 10, color: "var(--term-text-muted)", letterSpacing: TRACK.sub, lineHeight: LEAD.body }}>
-            MARKER SIZE = SHOT ATTEMPTS (FGA) FROM THAT CELL. HOVER A CELL FOR ITS ZONE, VOLUME, AND VALUE.
+            Marker size shows shot attempts. Tap the court to inspect the nearest measured location, or use the location slider and arrow keys. Locations run left to right from the baseline upcourt.
           </p>
         </div>
       )}

@@ -16,6 +16,8 @@ import { dirname, resolve } from "node:path";
 
 /** Published routes using the shared grid. The full-bleed front door has its own layout. */
 const ROUTES = [
+  "/about",
+  "/explore",
   "/games",
   "/season",
   "/schedule",
@@ -25,6 +27,9 @@ const ROUTES = [
   "/shot-quality",
   "/availability",
   "/referees",
+  "/officiating",
+  "/behind-the-data/officiating",
+  "/behind-the-data/referees/archive",
   "/behind-the-data",
   "/behind-the-data/rest-advantage",
   "/behind-the-data/schedule-edge",

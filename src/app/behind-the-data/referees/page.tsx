@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import {
   Formula,
   LimitList,
@@ -34,6 +35,7 @@ export default function RefereeMethodPage() {
       title="Referee effect"
       description="How foul patterns are compared across officials' games, with season adjustments, sample thresholds, and tests against random assignments. Calls are recorded at crew level."
     >
+      <Prose><Link href="/behind-the-data/referees/archive" className="underline">Open the archived foul-pattern table and research ↗</Link></Prose>
       <Section label="WHERE THE NUMBERS COME FROM" descriptor="THREE DATA SAMPLES">
         <Prose>
           The analysis uses cached ESPN play-by-play and box scores, so each test can use the

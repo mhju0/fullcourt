@@ -25,6 +25,7 @@ async function openSchedule(page: Page, teams = mixed) {
 
 test("mixed-season ranking leaves missing measurements unranked in both displays", async ({ page }, testInfo) => {
   await openSchedule(page);
+  await page.getByText("Show full breakdown", { exact: true }).click();
   const rows = page.getByRole("listitem");
   await expect(rows).toHaveText([/1\s*BOS\s*\+2/, /2\s*CHI\s*0/, /3\s*DEN\s*−3/, /—\s*ATL\s*Not measured\s*—/]);
   const atl = page.getByRole("row").filter({ hasText: "ATL team" });
@@ -39,8 +40,9 @@ test("mixed-season ranking leaves missing measurements unranked in both displays
 test("an entirely unmeasured season keeps net-rest-days ranking and units", async ({ page }) => {
   await openSchedule(page, [team(1, "ATL", null, -2), team(2, "BOS", null, 4)]);
   await expect(page.getByRole("listitem")).toHaveText([/1\s*BOS\s*\+4/, /2\s*ATL\s*−2/]);
+  await page.getByText("Show full breakdown", { exact: true }).click();
   await expect(page.getByRole("columnheader", { name: "Net rest days" })).toBeVisible();
-  await expect(page.getByText("6", { exact: true })).toBeVisible();
+  await expect(page.getByText("Spread", { exact: true }).locator("..").getByText("6", { exact: true })).toBeVisible();
   await expect(page.getByText("Teams without a fatigue measurement appear below the ranking with a dash.")).toHaveCount(0);
 });
 
@@ -69,7 +71,7 @@ test("current tab and palette destination skip motion; a different pathname cros
   await current.click();
   await expect(current).toHaveAttribute("aria-current", "page");
   expect((await transitions(page)).started).toBe(0);
-  await page.getByRole("button", { name: "SEARCH", exact: true }).click();
+  await page.getByRole("button", { name: "JUMP TO PAGE", exact: true }).click();
   const palette = page.getByRole("dialog", { name: "Command palette" });
   await palette.getByRole("option").filter({ hasText: "SCHEDULE EDGE" }).click();
   await expect(palette).toBeHidden();

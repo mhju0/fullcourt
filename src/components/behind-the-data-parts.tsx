@@ -31,32 +31,33 @@ export function Section({
   children: React.ReactNode;
 }) {
   return (
-    <div style={{ ...termCardStyle, padding: 0, overflow: "hidden" }}>
+    <section id={label.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")} style={{ ...termCardStyle, padding: 0, overflow: "hidden", scrollMarginTop: 80 }}>
       {/* A tinted header band with a red rail down its left edge, rather than a label
           floating on the same white as the body. Each card now has a visible top edge, which
           is what makes a page of six of them scan as six things. */}
       <div
-        className="mono flex items-center gap-3 px-4 py-3"
+        className="mono flex flex-wrap items-center gap-3 px-4 py-3"
         style={{
           fontSize: 11,
           letterSpacing: TRACK.label,
           background: "var(--term-surface-2)",
           borderBottom: "1px solid var(--term-border)",
-          boxShadow: "inset 3px 0 0 var(--term-red)",
+          boxShadow: "inset 3px 0 0 var(--term-neutral)",
         }}
       >
-        <span style={{ fontWeight: 700, color: "var(--term-text)" }}>{label}</span>
+        <h2 style={{ margin: 0, fontSize: TYPE.label, fontWeight: 700, color: "var(--term-text)" }}>{label}</h2>
         <span style={{ flex: 1, height: 1, background: "var(--term-border)" }} />
         {descriptor && (
           <span
             style={{
               fontWeight: 700,
-              color: "var(--term-red-text)",
-              background: RED_TINT,
-              border: "1px solid rgba(220, 38, 38, 0.18)",
+              color: "var(--term-text-muted)",
+              background: "var(--term-surface)",
+              border: "1px solid var(--term-border)",
               borderRadius: "var(--term-radius-sm)",
               padding: "4px 8px",
-              whiteSpace: "nowrap",
+              whiteSpace: "normal",
+              maxWidth: "100%",
             }}
           >
             {descriptor}
@@ -64,7 +65,7 @@ export function Section({
         )}
       </div>
       <div className="flex flex-col gap-4 px-4 py-4">{children}</div>
-    </div>
+    </section>
   );
 }
 

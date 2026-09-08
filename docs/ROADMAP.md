@@ -25,6 +25,12 @@ the first live slate on **2026-10-20**.
 
 Active this week.
 
+- **Officiating preview and release.** The owner approved the games-first, regular-season
+  implementation and preservation of the previous research in an archive. Local source now
+  includes the three-season page, report browser, generator, and daily data-update PR workflow.
+  Review a populated preview before merging; confirm Actions can create PRs and Vercel previews
+  run for bot updates. The live site has not been changed. Operations: `docs/OFFICIATING.md`.
+
 - **Keep the CI audit gate green.** `pnpm audit --prod` runs last and can go red overnight on a
   new advisory even with no code change. The recipe is an override in `pnpm-workspace.yaml` plus a
   lockfile regeneration (PR #76 is the worked example).
@@ -248,3 +254,87 @@ Recurring work, not roadmap items.
 - Preserve the isolation of each analytics module and the rest-advantage naming contract.
 - Run `pnpm test:e2e` by hand whenever a route moves or header copy changes — it is deliberately
   outside the commit gate and out of CI.
+
+## Approved UI/UX refinement — planned, 2026-09-07 (D-61)
+
+Follow [the reconciled decision record](design/fullcourt-decision-record.md): specifications and
+motion policy, confirmed defects, representative mockup review, hierarchy/content moves, then
+verification and preview review. Homepage remains rest-focused. Season Report and Schedule Edge
+remain separate; the previously proposed future merger is not planned. Preserve measured versus
+published-schedule versus projected data scope during moves. No account/personalization work.
+This entry records planned work; it does not change the shipped-state inventory above.
+
+**D-61 progress, 2026-09-07:** initial defect fixes are implemented and checked locally;
+see the decision record checkpoint. Next: representative mockups, including compact mobile
+comparisons. No homepage/nav/content relocation is implemented by this defect pass.
+
+**D-61 mockups, 2026-09-07:** seven responsive representative pages are ready for owner review
+in `docs/design/rest-focused-mockups/review.html`. Desktop/mobile renders and interaction checks
+are complete for the documented sample scope. Integration follows composition review.
+
+
+**D-61 Shooting integration, 2026-09-07:** The selected dense table and A difference-cell
+colors are now implemented locally in `/shooting`. Mobile preserves player/team, both split
+rates and attempt counts, and signed differences; desktop retains the secondary columns.
+Season/career filters, player history and shareable URLs remain. Player buttons now support
+keyboard expansion; empty search results explain how to recover. No new motion or data changes.
+Other page compositions remain in the mockup review/integration phase. This is not deployed.
+
+
+**D-61 homepage integration, 2026-09-07:** Implemented locally: shortened dark homepage with
+historical rest evidence and schedule/shooting previews, server-rendered from destination data
+sources; brand story at `/about`; working `/explore` research directory; footer render timestamp
+removed. One 450ms hero entrance replaces the old GSAP scroll reveals, with no motion under
+reduced motion. The old `/about` redirect is removed. Next: shared Games / Season Report /
+Schedule Edge / Explore navigation, then the remaining page hierarchy/content moves. No deployment.
+
+
+**D-61 navigation integration, 2026-09-07:** The four shared primary destinations are implemented
+locally on desktop/mobile. Explore replaces the OTHER menu and mobile Model/Search slots;
+the palette remains available via shortcut and footer button. Analytical pages mark Explore as
+the parent location; reference pages retain their own active link. Next: Games hierarchy/off-season
+behavior and the approved Season Report/Schedule Edge content separation. No deployment.
+
+Terminal cleanup: stopped the stale FullCourt production server on 3107 and static mockup
+server on 3112. The current app dev server on 3110 remains for meaningful local verification.
+Unrelated project processes were left alone.
+
+
+### Games integration checkpoint — 2026-09-07
+
+Date controls and matchups now precede summaries in document/mobile order; desktop uses a right
+summary column. The off-season default is the completed regular season, and the upcoming season
+is offered after confirming its schedule exists. Density is URL-only, with instant keyboard
+changes. Season/date URL restoration was completed on 2026-09-08; Season Report / Schedule Edge
+content separation is next. Local changes only; see design decision record section 11.
+
+
+### Games URL integration — 2026-09-08
+
+Games now shares `season`, `date`, and `view` in the URL. Explicit links take precedence over
+season defaults; date-only links infer a season. Invalid dates fall back safely, while valid
+no-game dates remain selected. User navigation creates history entries; automatic date selection
+replaces the current entry. Back/forward restores the slate without scrolling or animation.
+The season control waits for URL initialization before accepting input, preventing an early
+selection from being overwritten. Aborted calendar responses cannot replace the current season.
+
+Next: implement the approved Season Report / Schedule Edge content separation. Local only.
+
+
+## Rest-focused redesign integration — 2026-09-08
+
+The approved page ownership is implemented: Season Report owns completed results, team records,
+and five largest completed rest gaps (wins and losses); Schedule Edge owns the ranking, worth,
+travel/workload disclosure, and completed-game fatigue calendar. Zero-rest player workload now
+belongs to Shooting. Six team records are shown initially, with the remaining teams expandable.
+
+Shared season links and fallback notices preserve valid context across Games, Season, and
+Schedule. Shooting URLs preserve year, volume, team, position, uncertainty, sort, query, and
+expanded player. Mobile Games exposes rest advantage without horizontal scrolling. Model Results
+has answer/explorer anchors, Availability collapses coefficients, mobile Shot Value offers one
+court plus Compare models, Officiating links directly to game reviews, and methodology pages
+have compact topic navigation and local contents. No accounts or stored personal preferences.
+
+See [the release review](design/redesign-release-review.md) for design rationale and scope.
+The owner authorized verification and deployment on 2026-09-08. Exportable graphics, universal
+search, and new analytics remain separate future scope, as agreed. No coefficient or schema change.

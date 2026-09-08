@@ -1,11 +1,14 @@
-"use client"
+"use client";
 
-import { Fragment, useCallback, useMemo, useState } from "react"
-import useSWR from "swr"
-import { Skeleton } from "@/components/ui/skeleton"
+import { Fragment, useCallback, useMemo } from "react";
+import { usePageQuery } from "@/hooks/useSeasonUrl";
+import { ZeroRestWorkload } from "@/components/zero-rest-workload";
+import useSWR from "swr";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   buildRows,
   careerTotals,
+  effectSe,
   franchiseOptions,
   indexPayload,
   S,
@@ -17,31 +20,36 @@ import {
   type PlayerRestIndex,
   type PlayerRestPayload,
   type SortKey,
-} from "@/lib/player-rest"
-import { LEAD, MONO_FONT_STACK, SPACE_NESTED_ROW, termCardStyle, termSelectClass, termSelectStyle, termTdStyle, WIDTH } from "@/lib/terminal-styles"
-import { competitionRanks } from "@/lib/rank"
-import { RankBadge } from "@/components/ui/rank-badge"
-import { signedNumber } from "@/lib/signed-number"
-import { MessageCard } from "@/components/ui/message-card"
-import { errMsg } from "@/lib/fetcher"
-import { DataTable, type DataColumn } from "@/components/ui/data-table"
+} from "@/lib/player-rest";
+import {
+  LEAD,
+  MONO_FONT_STACK,
+  SPACE_NESTED_ROW,
+  termCardStyle,
+  termSelectClass,
+  termSelectStyle,
+  termTdStyle,
+  WIDTH,
+} from "@/lib/terminal-styles";
+import { competitionRanks } from "@/lib/rank";
+import { RankBadge } from "@/components/ui/rank-badge";
+import { signedNumber } from "@/lib/signed-number";
+import { MessageCard } from "@/components/ui/message-card";
+import { errMsg } from "@/lib/fetcher";
+import { DataTable, type DataColumn } from "@/components/ui/data-table";
+import styles from "./player-rest.module.css";
 
 /**
  * Static asset, not an API route: this export changes once a season, so there is
  * nothing for a round trip to Postgres to discover. See scripts/export_player_rest.py.
  */
-const DATA_URL = "/data/player-rest.json"
-
-/** Client-only by construction: this component is loaded with `ssr: false`. */
-function readPlayerParam(): string {
-  if (typeof window === "undefined") return ""
-  return new URLSearchParams(window.location.search).get("player") ?? ""
-}
+const DATA_URL = "/data/player-rest.json";
 
 async function payloadFetcher(url: string): Promise<PlayerRestPayload> {
-  const res = await fetch(url)
-  if (!res.ok) throw new Error(`Could not load the player database (${res.status})`)
-  return (await res.json()) as PlayerRestPayload
+  const res = await fetch(url);
+  if (!res.ok)
+    throw new Error(`Could not load the player database (${res.status})`);
+  return (await res.json()) as PlayerRestPayload;
 }
 
 const VOLUME_OPTIONS = [
@@ -49,11 +57,7 @@ const VOLUME_OPTIONS = [
   { value: 300, label: "300+ attempts" },
   { value: 600, label: "600+ attempts" },
   { value: 900, label: "900+ attempts" },
-]
-
-/** Widest bar. Season swings run far past a career's, so the two scale differently. */
-const CAREER_CAP = 4
-const SEASON_CAP = 10
+];
 
 /**
  * `width` drives a <colgroup>. Auto layout hands leftover table width to whichever
@@ -67,29 +71,48 @@ const SEASON_CAP = 10
  * name plate over the group.
  */
 function playerColumns(
-  cap: number,
+  toggle: (player: number) => void,
   isOpen: (row: BrowseRow) => boolean,
   /**
    * eFG% standing within the rows as filtered right now (ADR 0010, D1) — positional, aligned
    * with the rows the table renders. In view, not league-wide: a rank that ignored the volume
    * floor and filters would crown someone the reader cannot even see.
    */
-  efgRanks: (number | null)[]
+  efgRanks: (number | null)[],
 ): DataColumn<BrowseRow, SortKey>[] {
   /** Blanks while open. The first two columns keep theirs; the other eight are the repeat. */
   const whenClosed =
     <T,>(render: (row: BrowseRow, index: number) => T) =>
     (row: BrowseRow, index: number) =>
-      isOpen(row) ? null : render(row, index)
+      isOpen(row) ? null : render(row, index);
 
   return [
-    { label: "#", align: "right", width: "44px", style: DIM_TD, cell: (_row, i) => i + 1 },
+    {
+      label: "#",
+      align: "right",
+      width: "44px",
+      style: DIM_TD,
+      cell: (_row, i) => i + 1,
+    },
     {
       label: "Player",
       sortKey: "name",
       width: "auto",
       style: { fontWeight: 500 },
-      cell: (row) => row.name,
+      cell: (row) => (
+        <button
+          type="button"
+          className={styles.player}
+          aria-expanded={isOpen(row)}
+          onClick={(event) => {
+            event.stopPropagation();
+            toggle(row.player);
+          }}
+        >
+          <span>{row.name}</span>
+          <small>{row.context}</small>
+        </button>
+      ),
     },
     {
       label: "Team",
@@ -140,7 +163,11 @@ function playerColumns(
         <>
           {fmt(row.efg)}
           {efgRanks[i] !== null && efgRanks[i] !== undefined ? (
-            <RankBadge rank={efgRanks[i]} of={efgRanks.length} population="players in view" />
+            <RankBadge
+              rank={efgRanks[i]}
+              of={efgRanks.length}
+              population="players in view"
+            />
           ) : null}
         </>
       )),
@@ -152,85 +179,94 @@ function playerColumns(
       numeric: true,
       width: "128px",
       style: { fontFamily: MONO_FONT_STACK },
-      cell: whenClosed((row) => <ArmValue efg={row.noRestEfg} fga={row.noRestFga} />),
+      cell: whenClosed((row) => (
+        <ArmValue efg={row.noRestEfg} fga={row.noRestFga} />
+      )),
     },
     {
-      label: "3+ days rest",
+      label: "3+ days",
       unit: "eFG% · attempts",
       sortKey: "restedEfg",
       numeric: true,
       width: "128px",
       style: { fontFamily: MONO_FONT_STACK },
-      cell: whenClosed((row) => <ArmValue efg={row.restedEfg} fga={row.restedFga} />),
+      cell: whenClosed((row) => (
+        <ArmValue efg={row.restedEfg} fga={row.restedFga} />
+      )),
     },
     {
-      label: "Rest effect",
-      unit: "3+ days − no rest",
+      label: (
+        <>
+          <span className={styles.longLabel}>Difference</span>
+          <span className={styles.shortLabel}>Diff.</span>
+        </>
+      ),
+      unit: "pp",
       sortKey: "effect",
       align: "right",
-      width: "176px",
-      cell: whenClosed((row) => <EffectValue value={row.effect} cap={cap} />),
+      width: "108px",
+      cell: whenClosed((row) => (
+        <EffectValue value={row.effect} quiet={row.underEvidenced} />
+      )),
     },
-  ]
+  ];
 }
 
 function fmt(v: number | null | undefined, digits = 1): string {
-  return v === null || v === undefined ? "—" : v.toFixed(digits)
+  return v === null || v === undefined ? "—" : v.toFixed(digits);
 }
 
 function signed(v: number | null): string {
-  return v === null ? "—" : signedNumber(v, 2)
+  return v === null ? "—" : signedNumber(v, 2);
 }
 
-/**
- * Number plus a bar, so magnitude reads before the digits do.
- *
- * These two render cell *content*, not a `<td>` — the main row's cells come from `DataTable`,
- * which owns the element. The expansion rows below still write their own `<td>`, because they
- * are extra rows outside the column model, and wrap these the same way.
- */
-function EffectValue({ value, cap }: { value: number | null; cap: number }) {
-  if (value === null) return <span style={{ color: "var(--term-text-muted)" }}>—</span>
-  const width = Math.min(Math.abs(value) / cap, 1) * 46
-  const tone = value < 0 ? "var(--term-red-text)" : "var(--term-blue-text)"
+function EffectValue({
+  value,
+  quiet = false,
+}: {
+  value: number | null;
+  quiet?: boolean;
+}) {
+  if (value === null)
+    return (
+      <span className={styles.effect} aria-label="Difference unavailable">
+        —
+      </span>
+    );
+  const strength = Math.min(Math.abs(value) / 10, 1);
+  const positive = value > 0;
+  const alpha = value === 0 ? 0 : (0.05 + 0.2 * strength) * (quiet ? 0.45 : 1);
   return (
-    <span className="flex items-center justify-end gap-2">
-      <span
-        style={{ fontFamily: MONO_FONT_STACK, fontVariantNumeric: "tabular-nums", color: tone, minWidth: 52, textAlign: "right" }}
-      >
-        {signed(value)}
-      </span>
-      <span
-        aria-hidden
-        // `fc-effect-bar` is what the noisy-row fade in globals.css targets. It used to target
-        // `td span[aria-hidden]`, which meant "the bar" only for as long as the bar was the
-        // only aria-hidden span in a cell — RankBadge added a second one on 2026-08-29 and it
-        // is 10px *text*, which the fade dropped to 1.8:1. The rule names the graphic now.
-        className="fc-effect-bar relative block flex-none"
-        style={{ width: 92, height: 8, background: "var(--term-surface-2)", borderRadius: "var(--term-radius-bar)" }}
-      >
-        <span
-          className="absolute top-0 block"
-          style={{
-            height: 8,
-            width,
-            background: tone,
-            borderRadius: "var(--term-radius-bar)",
-            ...(value < 0 ? { right: "50%" } : { left: "50%" }),
-          }}
-        />
-      </span>
+    <span
+      className={styles.effect}
+      aria-describedby="pr-color-note"
+      style={{
+        background: `rgba(${positive ? "22,101,52" : "180,35,24"},${alpha})`,
+        color:
+          quiet || value === 0 ? "#59616c" : positive ? "#166534" : "#991b1b",
+      }}
+    >
+      {signedNumber(value, 1)}
+      {quiet && (
+        <sup aria-label="difference smaller than estimated standard error">
+          †
+        </sup>
+      )}
     </span>
-  )
+  );
 }
 
 function ArmValue({ efg, fga }: { efg: number | null; fga: number }) {
-  if (efg === null || !fga) return <span style={{ color: "var(--term-text-muted)" }}>—</span>
+  if (efg === null || !fga)
+    return <span style={{ color: "var(--term-text-muted)" }}>—</span>;
   return (
-    <>
-      {fmt(efg)} <span style={{ color: "var(--term-text-muted)" }}>· {fga.toLocaleString()}</span>
-    </>
-  )
+    <span className={styles.arm}>
+      <span>{fmt(efg)}%</span>
+      <small>
+        {fga.toLocaleString()} <span className={styles.attemptLabel}>att.</span>
+      </small>
+    </span>
+  );
 }
 
 /** The `<td>` the expansion rows wrap `ArmValue` in — the column model's own styling, by hand. */
@@ -239,79 +275,107 @@ const ARM_TD: React.CSSProperties = {
   textAlign: "right",
   fontFamily: MONO_FONT_STACK,
   fontVariantNumeric: "tabular-nums",
-}
+};
 
 const FILTER_LABEL =
-  "mono text-[10px] uppercase tracking-label text-[var(--term-text-muted)]"
+  "mono text-[10px] uppercase tracking-label text-[var(--term-text-muted)]";
 
 const NUM_TD: React.CSSProperties = {
   ...termTdStyle,
   textAlign: "right",
   fontFamily: MONO_FONT_STACK,
   fontVariantNumeric: "tabular-nums",
-}
-const DIM_TD: React.CSSProperties = { ...NUM_TD, color: "var(--term-text-muted)" }
+};
+const DIM_TD: React.CSSProperties = {
+  ...NUM_TD,
+  color: "var(--term-text-muted)",
+};
 
 export function PlayerRestContent() {
-  const { data, error, isLoading } = useSWR<PlayerRestPayload>(DATA_URL, payloadFetcher, {
-    revalidateOnFocus: false,
-  })
+  const { data, error, isLoading } = useSWR<PlayerRestPayload>(
+    DATA_URL,
+    payloadFetcher,
+    {
+      revalidateOnFocus: false,
+    },
+  );
 
-  const index = useMemo(() => (data ? indexPayload(data) : null), [data])
+  const index = useMemo(() => (data ? indexPayload(data) : null), [data]);
 
-  const teamOptions = useMemo(() => (index ? franchiseOptions(index.teams) : []), [index])
+  const teamOptions = useMemo(
+    () => (index ? franchiseOptions(index.teams) : []),
+    [index],
+  );
 
-  // The ?player= link, read once at mount. Held separately from `query` so that
-  // typing in the search box never re-opens a player behind the user's back.
-  const [linkedName] = useState(() => readPlayerParam())
-  const [year, setYear] = useState<number | "career" | null>(null)
-  const [minFga, setMinFga] = useState(300)
-  const [team, setTeam] = useState("")          // "" = all teams
-  const [pos, setPos] = useState("")            // "" = all positions
-  const [evidencedOnly, setEvidencedOnly] = useState(false)
-  const [query, setQuery] = useState(linkedName)
-  // Key and direction are one piece of state, not two. Held apart, flipping a
-  // direction meant calling setDir from inside setSort's updater — and React may
-  // invoke an updater twice, which toggled the direction back to where it started.
-  const [sort, setSort] = useState<{ key: SortKey; dir: -1 | 1 }>({ key: "fga", dir: -1 })
-  // `undefined` means untouched, so a deep link can supply the default without an
-  // effect, while an explicit close (`null`) still sticks.
-  const [open, setOpen] = useState<number | null | undefined>(undefined)
-
-  // Both of these are derived during render rather than written by an effect: an
-  // effect that only computes a default causes a second render for no reason, and
-  // it is the state itself that is derivable, not a side effect.
-  const activeYear = year ?? index?.years[0] ?? null
-  const linkedPlayer = useMemo(() => {
-    if (!index || !linkedName) return null
-    const key = searchKey(linkedName)
-    const found = index.searchKeys.indexOf(key)
-    return found >= 0 ? found : null
-  }, [index, linkedName])
-  const openPlayer = open === undefined ? linkedPlayer : open
-
-  /** Keep the URL pointing at whoever is open, so the view can be linked and shared.
-      The history write stays OUT of the updater: updaters must be pure. */
+  const { params, update } = usePageQuery();
+  const linkedName = params.get("player") ?? "";
+  const rawYear = params.get("year");
+  const activeYear =
+    rawYear === "career"
+      ? "career"
+      : rawYear && index?.years.includes(Number(rawYear))
+        ? Number(rawYear)
+        : (index?.years[0] ?? null);
+  const volume = params.has("volume") ? Number(params.get("volume")) : 300;
+  const minFga = VOLUME_OPTIONS.some((option) => option.value === volume)
+    ? volume
+    : 300;
+  const team = params.get("team") ?? "";
+  const pos = params.get("position") ?? "";
+  const evidencedOnly = params.get("certain") === "1";
+  const query = params.get("q") ?? linkedName;
+  const sortKey = params.get("sort") as SortKey | null;
+  const sort = {
+    key:
+      sortKey &&
+      [
+        "name",
+        "age",
+        "games",
+        "fga",
+        "efg",
+        "noRestEfg",
+        "restedEfg",
+        "effect",
+      ].includes(sortKey)
+        ? sortKey
+        : ("fga" as SortKey),
+    dir: params.get("dir") === "asc" ? (1 as const) : (-1 as const),
+  };
+  const linkedIndex =
+    index && linkedName ? index.searchKeys.indexOf(searchKey(linkedName)) : -1;
+  const openPlayer = linkedIndex < 0 ? null : linkedIndex;
+  const setYear = (value: number | "career") => update({ year: String(value) });
+  const setMinFga = (value: number) => update({ volume: String(value) });
+  const setTeam = (value: string) => update({ team: value || null });
+  const setPos = (value: string) => update({ position: value || null });
+  const setEvidencedOnly = (value: boolean) =>
+    update({ certain: value ? "1" : null });
+  const setQuery = (value: string) => update({ q: value }, true);
   const toggle = useCallback(
     (player: number) => {
-      const next = openPlayer === player ? null : player
-      setOpen(next)
-      const url = new URL(window.location.href)
-      if (next === null) url.searchParams.delete("player")
-      else url.searchParams.set("player", index?.names[next] ?? "")
-      window.history.replaceState(null, "", url)
+      update({
+        player: openPlayer === player ? null : (index?.names[player] ?? null),
+        q: query,
+      });
     },
-    [openPlayer, index]
-  )
-
-  const sortBy = useCallback((key: SortKey) => {
-    setSort((s) =>
-      s.key === key ? { key, dir: s.dir === -1 ? 1 : -1 } : { key, dir: key === "name" ? 1 : -1 }
-    )
-  }, [])
+    [openPlayer, index, query, update],
+  );
+  const sortBy = (key: SortKey) =>
+    update({
+      sort: key,
+      dir:
+        sort.key === key
+          ? sort.dir === -1
+            ? "asc"
+            : "desc"
+          : key === "name"
+            ? "asc"
+            : "desc",
+    });
 
   const rows = useMemo(() => {
-    if (!index || activeYear === null) return []
+    if (!index || activeYear === null) return [];
     return buildRows(index, {
       year: activeYear,
       minFga,
@@ -321,38 +385,57 @@ export function PlayerRestContent() {
       team: team || null,
       pos: (pos || null) as BuildOptions["pos"],
       evidencedOnly,
-    })
-  }, [index, activeYear, minFga, query, sort, team, pos, evidencedOnly])
+    });
+  }, [
+    index,
+    activeYear,
+    minFga,
+    query,
+    sort.key,
+    sort.dir,
+    team,
+    pos,
+    evidencedOnly,
+  ]);
 
-  // Season swings run far past a career's, so the two bar scales differ.
-  const cap = activeYear === "career" ? CAREER_CAP : SEASON_CAP
   // Recomputed with every filter change, because the rank is a claim about the current view.
-  const efgRanks = useMemo(() => competitionRanks(rows, (r) => r.efg), [rows])
+  const efgRanks = useMemo(() => competitionRanks(rows, (r) => r.efg), [rows]);
   const columns = useMemo(
-    () => playerColumns(cap, (row) => openPlayer === row.player, efgRanks),
-    [cap, openPlayer, efgRanks]
-  )
+    () => playerColumns(toggle, (row) => openPlayer === row.player, efgRanks),
+    [toggle, openPlayer, efgRanks],
+  );
 
-  if (error) {
+  if (error && !data) {
     return (
       <MessageCard
         tone="error"
         title="FAILED TO LOAD THE PLAYER DATABASE"
         body={errMsg(error)}
       />
-    )
+    );
   }
   if (isLoading || !index || activeYear === null) {
     return (
       <div style={termCardStyle}>
-        <Skeleton className="mb-3 h-3 w-48 bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)" }} />
-        <Skeleton className="h-96 w-full bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)" }} />
+        <Skeleton
+          className="mb-3 h-3 w-48 bg-[var(--term-surface-2)]"
+          style={{ borderRadius: "var(--term-radius)" }}
+        />
+        <Skeleton
+          className="h-96 w-full bg-[var(--term-surface-2)]"
+          style={{ borderRadius: "var(--term-radius)" }}
+        />
       </div>
-    )
+    );
   }
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className={`flex flex-col gap-4 ${styles.page}`}>
+      {error ? (
+        <p role="status">
+          Refresh unavailable. Showing the last loaded player export.
+        </p>
+      ) : null}
       {/* Two rows, not one wrapping row. Six controls plus the result count could not fit a
           1440px line, so the count — the one thing that answers "did my filter do anything" —
           was the piece that wrapped away from everything else. Row one is the four filters;
@@ -361,40 +444,37 @@ export function PlayerRestContent() {
       <div className="flex flex-col gap-3">
         <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
           <span className="flex items-center gap-2">
-            <label className={FILTER_LABEL} htmlFor="pr-season">Season</label>
+            <label className={FILTER_LABEL} htmlFor="pr-season">
+              Season
+            </label>
             <select
               id="pr-season"
               className={termSelectClass}
               style={termSelectStyle}
               value={String(activeYear)}
-              onChange={(e) => setYear(e.target.value === "career" ? "career" : Number(e.target.value))}
+              onChange={(e) =>
+                setYear(
+                  e.target.value === "career"
+                    ? "career"
+                    : Number(e.target.value),
+                )
+              }
             >
               {/* "Career (all seasons)" sized this select to its widest option and pushed the
                   whole row over the line. The option list is seasons; "Career" is unambiguous. */}
               <option value="career">Career</option>
               {index.years.map((y) => (
-                <option key={y} value={y}>{seasonLabel(y)}</option>
+                <option key={y} value={y}>
+                  {seasonLabel(y)}
+                </option>
               ))}
             </select>
           </span>
 
           <span className="flex items-center gap-2">
-            <label className={FILTER_LABEL} htmlFor="pr-volume">Volume</label>
-            <select
-              id="pr-volume"
-              className={termSelectClass}
-              style={termSelectStyle}
-              value={minFga}
-              onChange={(e) => setMinFga(Number(e.target.value))}
-            >
-              {VOLUME_OPTIONS.map((o) => (
-                <option key={o.value} value={o.value}>{o.label}</option>
-              ))}
-            </select>
-          </span>
-
-          <span className="flex items-center gap-2">
-            <label className={FILTER_LABEL} htmlFor="pr-team">Team</label>
+            <label className={FILTER_LABEL} htmlFor="pr-team">
+              Team
+            </label>
             <select
               id="pr-team"
               className={termSelectClass}
@@ -404,26 +484,55 @@ export function PlayerRestContent() {
             >
               <option value="">All teams</option>
               {teamOptions.map((o) => (
-                <option key={o.value} value={o.value}>{o.label}</option>
+                <option key={o.value} value={o.value}>
+                  {o.label}
+                </option>
               ))}
             </select>
           </span>
 
-          <span className="flex items-center gap-2">
-            <label className={FILTER_LABEL} htmlFor="pr-pos">Position</label>
-            <select
-              id="pr-pos"
-              className={termSelectClass}
-              style={termSelectStyle}
-              value={pos}
-              onChange={(e) => setPos(e.target.value)}
-            >
-              <option value="">All positions</option>
-              <option value="G">Guards</option>
-              <option value="F">Forwards</option>
-              <option value="C">Centers</option>
-            </select>
-          </span>
+          <details className="fc-disclosure">
+            <summary>
+              Filters ({Number(minFga > 0) + Number(Boolean(pos))})
+            </summary>
+            <div className="flex flex-wrap gap-4 py-3">
+              <span className="flex items-center gap-2">
+                <label className={FILTER_LABEL} htmlFor="pr-volume">
+                  Volume
+                </label>
+                <select
+                  id="pr-volume"
+                  className={termSelectClass}
+                  style={termSelectStyle}
+                  value={minFga}
+                  onChange={(e) => setMinFga(Number(e.target.value))}
+                >
+                  {VOLUME_OPTIONS.map((o) => (
+                    <option key={o.value} value={o.value}>
+                      {o.label}
+                    </option>
+                  ))}
+                </select>
+              </span>{" "}
+              <span className="flex items-center gap-2">
+                <label className={FILTER_LABEL} htmlFor="pr-pos">
+                  Position
+                </label>
+                <select
+                  id="pr-pos"
+                  className={termSelectClass}
+                  style={termSelectStyle}
+                  value={pos}
+                  onChange={(e) => setPos(e.target.value)}
+                >
+                  <option value="">All positions</option>
+                  <option value="G">Guards</option>
+                  <option value="F">Forwards</option>
+                  <option value="C">Centers</option>
+                </select>
+              </span>
+            </div>
+          </details>
         </div>
 
         <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
@@ -438,35 +547,63 @@ export function PlayerRestContent() {
             /* 16px at phone widths is the iOS input-zoom floor, not a type-scale choice —
                see termSelectClass in terminal-styles.ts for the whole reasoning. */
             className="mono w-full max-w-[260px] bg-[var(--term-surface)] px-3 py-2 text-[16px] sm:text-data text-[var(--term-text)] placeholder:text-[var(--term-text-muted)]"
-            style={{ border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }}
+            style={{
+              border: "1px solid var(--term-border)",
+              borderRadius: "var(--term-radius)",
+            }}
           />
 
-          <label className="mono flex cursor-pointer items-center gap-2 text-[10px] uppercase tracking-label text-[var(--term-text-muted)]">
+          <label className="flex min-h-11 cursor-pointer items-center gap-2 text-[15px] text-[var(--term-text-muted)]">
             <input
               type="checkbox"
               checked={evidencedOnly}
               onChange={(e) => setEvidencedOnly(e.target.checked)}
               style={{ accentColor: "var(--term-blue)" }}
             />
-            Hide noisy rows
+            Hide uncertain differences
           </label>
 
           <span className="mono ml-auto text-[10px] uppercase tracking-label text-[var(--term-text-muted)]">
             {rows.length.toLocaleString()}{" "}
-            {activeYear === "career" ? "players" : `players in ${seasonLabel(activeYear)}`}
+            {activeYear === "career"
+              ? "players"
+              : `players in ${seasonLabel(activeYear)}`}
           </span>
         </div>
       </div>
 
-      <p style={{ fontSize: 12, color: "var(--term-text-muted)", lineHeight: LEAD.body, maxWidth: WIDTH.prose, margin: 0 }}>
-        <strong style={{ color: "var(--term-text-dim)" }}>No rest</strong>: played yesterday.{" "}
+      <p
+        style={{
+          fontSize: 15,
+          color: "var(--term-text-muted)",
+          lineHeight: LEAD.body,
+          maxWidth: WIDTH.prose,
+          margin: 0,
+        }}
+      >
+        <strong style={{ color: "var(--term-text-dim)" }}>No rest</strong>:
+        played yesterday.{" "}
         <strong style={{ color: "var(--term-text-dim)" }}>3+ days rest</strong>{" "}
-        means at least three days since the player&apos;s last appearance. Both categories use
-        personal appearances, so sitting out a team game extends the player&apos;s rest interval.{" "}
-        <strong style={{ color: "var(--term-text-dim)" }}>Rest effect</strong> is the right column minus the left:{" "}
-        <strong style={{ color: "var(--term-text-dim)" }}>positive</strong> means he shoots better with more rest,{" "}
-        <strong style={{ color: "var(--term-text-dim)" }}>negative</strong> that he shoots better on short rest.
+        means at least three days since the player&apos;s last appearance. Both
+        categories use personal appearances, so sitting out a team game extends
+        the player&apos;s rest interval.{" "}
+        <strong style={{ color: "var(--term-text-dim)" }}>Difference</strong> is
+        the right column minus the left:{" "}
+        <strong style={{ color: "var(--term-text-dim)" }}>positive</strong>{" "}
+        means he shoots better with more rest,{" "}
+        <strong style={{ color: "var(--term-text-dim)" }}>negative</strong> that
+        he shoots better on short rest.
       </p>
+
+      <div className={styles.legend} id="pr-color-note">
+        <span style={{ color: "#991b1b" }}>− Lower with rest</span>
+        <span style={{ color: "#166534" }}>+ Higher with rest</span>
+        <span>
+          Color scale: −10 pp to +10 pp; numbers are not capped. † Below one
+          estimated standard error; quieter tint. These differences do not
+          isolate the effect of rest.
+        </span>
+      </div>
 
       <div style={{ ...termCardStyle, padding: 0 }}>
         {/* `table-fixed` so the browser sizes columns from the colgroup below instead of
@@ -485,7 +622,7 @@ export function PlayerRestContent() {
             top. Do not add it back on this table. */}
         <DataTable
           className="table-fixed text-[12px]"
-          wrapperClassName="fc-rest-table overflow-auto"
+          wrapperClassName={`fc-rest-table overflow-auto ${styles.table}`}
           stickyHeader
           columns={columns}
           rows={rows}
@@ -495,37 +632,55 @@ export function PlayerRestContent() {
           rowAttrs={(row) => ({
             "data-player": String(row.player),
             "data-testid": "player-row",
-            // De-emphasis is a class, not an opacity: any dim low enough to read pushed the
-            // composited text below AA's 4.5:1 (0.48 measured 2.06–3.19 in the 2026-08-24
-            // axe pass). .fc-noisy flattens the row to the muted colour instead.
-            className:
-              openPlayer === row.player
-                ? "fc-open"
-                : row.underEvidenced
-                  ? "fc-noisy"
-                  : undefined,
+            className: openPlayer === row.player ? "fc-open" : undefined,
             style: { cursor: "pointer" },
             onClick: () => toggle(row.player),
           })}
           rowExtras={(row) =>
             openPlayer === row.player ? (
-              <PlayerExpansion row={row} index={index} browsedYear={activeYear} />
+              <PlayerExpansion
+                row={row}
+                index={index}
+                browsedYear={activeYear}
+              />
             ) : null
           }
         />
+        {rows.length === 0 && (
+          <p role="status" className={styles.empty}>
+            No players match these filters. Try another name, lower the attempt
+            minimum, or clear the team and position filters.
+          </p>
+        )}
       </div>
 
-      <p style={{ fontSize: 12, color: "var(--term-text-muted)", lineHeight: LEAD.body, maxWidth: WIDTH.prose, margin: 0 }}>
+      <p
+        style={{
+          fontSize: 15,
+          color: "var(--term-text-muted)",
+          lineHeight: LEAD.body,
+          maxWidth: WIDTH.prose,
+          margin: 0,
+        }}
+      >
         {index.names.length.toLocaleString()} players · 1996-97 through{" "}
-        {seasonLabel(index.years[0])}, regular season. 2019-20 covers only the games played before the March 2020
-        suspension. Orlando bubble games are excluded because the long shutdown changes the meaning
-        of time between appearances. eFG% counts a three as 1.5 makes. A single
-        season&rsquo;s rest split carries a standard error near 7 pp and correlates with the player&rsquo;s own next
-        season at roughly zero. Career estimates pool more attempts and shrink uncertain gaps
-        toward the player-pool mean, but still do not isolate a causal effect of rest.
+        {seasonLabel(index.years[0])}, regular season. 2019-20 covers only the
+        games played before the March 2020 suspension. Orlando bubble games are
+        excluded because the long shutdown changes the meaning of time between
+        appearances. eFG% counts a three as 1.5 makes. A single season&rsquo;s
+        rest split carries a standard error near 7 pp and correlates with the
+        player&rsquo;s own next season at roughly zero. Career estimates pool
+        more attempts and shrink uncertain gaps toward the player-pool mean, but
+        still do not isolate a causal effect of rest.
       </p>
+      {activeYear !== "career" ? (
+        <details className="fc-disclosure">
+          <summary>Show zero-rest player workload</summary>
+          <ZeroRestWorkload season={seasonLabel(activeYear)} />
+        </details>
+      ) : null}
     </div>
-  )
+  );
 }
 
 /**
@@ -542,80 +697,149 @@ function PlayerExpansion({
   index,
   browsedYear,
 }: {
-  row: BrowseRow
-  index: PlayerRestIndex
-  browsedYear: number | "career"
+  row: BrowseRow;
+  index: PlayerRestIndex;
+  browsedYear: number | "career";
 }) {
-  const seasons = [...(index.seasonsByPlayer.get(row.player) ?? [])].reverse()
-  const totals = careerTotals(index.seasonsByPlayer.get(row.player) ?? [])
-  const estimate = index.career.get(row.player)
+  const seasons = [...(index.seasonsByPlayer.get(row.player) ?? [])].reverse();
+  const totals = careerTotals(index.seasonsByPlayer.get(row.player) ?? []);
+  const estimate = index.career.get(row.player);
 
   return (
     <>
       {seasons.map((s) => {
-          const sr = seasonRow(index, s)
-          return (
-            <Fragment key={s[S.YEAR]}>
-              <tr className={`fc-sub${s[S.YEAR] === browsedYear ? " fc-here" : ""}`} data-testid="season-row">
-                <td style={termTdStyle} />
-                <td style={{ ...termTdStyle, paddingLeft: SPACE_NESTED_ROW, fontFamily: MONO_FONT_STACK, color: "var(--term-text-dim)" }}>
-                  {seasonLabel(s[S.YEAR])}
-                </td>
-                <td style={{ ...termTdStyle, fontFamily: MONO_FONT_STACK, color: "var(--term-text-muted)" }}>{sr.context}</td>
-                <td style={DIM_TD}>{sr.age}</td>
-                <td style={DIM_TD}>{sr.games}</td>
-                <td style={NUM_TD}>{sr.fga.toLocaleString()}</td>
-                <td style={NUM_TD}>{fmt(sr.efg)}</td>
-                <td style={ARM_TD}><ArmValue efg={sr.noRestEfg} fga={sr.noRestFga} /></td>
-                <td style={ARM_TD}><ArmValue efg={sr.restedEfg} fga={sr.restedFga} /></td>
-                <td style={termTdStyle}><EffectValue value={sr.effect} cap={SEASON_CAP} /></td>
-              </tr>
-            </Fragment>
-          )
-        })}
+        const sr = seasonRow(index, s);
+        return (
+          <Fragment key={s[S.YEAR]}>
+            <tr
+              className={`fc-sub${s[S.YEAR] === browsedYear ? " fc-here" : ""}`}
+              data-testid="season-row"
+            >
+              <td style={termTdStyle} />
+              <td
+                style={{
+                  ...termTdStyle,
+                  paddingLeft: SPACE_NESTED_ROW,
+                  fontFamily: MONO_FONT_STACK,
+                  color: "var(--term-text-dim)",
+                }}
+              >
+                {seasonLabel(s[S.YEAR])}
+              </td>
+              <td
+                style={{
+                  ...termTdStyle,
+                  fontFamily: MONO_FONT_STACK,
+                  color: "var(--term-text-muted)",
+                }}
+              >
+                {sr.context}
+              </td>
+              <td style={DIM_TD}>{sr.age}</td>
+              <td style={DIM_TD}>{sr.games}</td>
+              <td style={NUM_TD}>{sr.fga.toLocaleString()}</td>
+              <td style={NUM_TD}>{fmt(sr.efg)}</td>
+              <td style={ARM_TD}>
+                <ArmValue efg={sr.noRestEfg} fga={sr.noRestFga} />
+              </td>
+              <td style={ARM_TD}>
+                <ArmValue efg={sr.restedEfg} fga={sr.restedFga} />
+              </td>
+              <td style={termTdStyle}>
+                <EffectValue value={sr.effect} quiet={sr.underEvidenced} />
+              </td>
+            </tr>
+          </Fragment>
+        );
+      })}
 
       {totals && (
         <tr className="fc-sub fc-total" data-testid="career-row">
           <td style={termTdStyle} />
-          <td style={{ ...termTdStyle, paddingLeft: SPACE_NESTED_ROW, fontFamily: MONO_FONT_STACK, fontWeight: 600 }}>Career</td>
+          <td
+            style={{
+              ...termTdStyle,
+              paddingLeft: SPACE_NESTED_ROW,
+              fontFamily: MONO_FONT_STACK,
+              fontWeight: 600,
+            }}
+          >
+            Career
+          </td>
           <td style={termTdStyle} />
           <td style={{ ...NUM_TD, fontWeight: 600 }}>
-            {totals.ageLo && totals.ageHi ? `${totals.ageLo}–${totals.ageHi}` : "—"}
+            {totals.ageLo && totals.ageHi
+              ? `${totals.ageLo}–${totals.ageHi}`
+              : "—"}
           </td>
-          <td style={{ ...NUM_TD, fontWeight: 600 }}>{totals.games.toLocaleString()}</td>
-          <td style={{ ...NUM_TD, fontWeight: 600 }}>{totals.fga.toLocaleString()}</td>
+          <td style={{ ...NUM_TD, fontWeight: 600 }}>
+            {totals.games.toLocaleString()}
+          </td>
+          <td style={{ ...NUM_TD, fontWeight: 600 }}>
+            {totals.fga.toLocaleString()}
+          </td>
           <td style={{ ...NUM_TD, fontWeight: 600 }}>{fmt(totals.efg)}</td>
-          <td style={ARM_TD}><ArmValue efg={totals.noRestEfg} fga={totals.noRestFga} /></td>
-          <td style={ARM_TD}><ArmValue efg={totals.restedEfg} fga={totals.restedFga} /></td>
-          <td style={termTdStyle}><EffectValue value={totals.effect} cap={SEASON_CAP} /></td>
+          <td style={ARM_TD}>
+            <ArmValue efg={totals.noRestEfg} fga={totals.noRestFga} />
+          </td>
+          <td style={ARM_TD}>
+            <ArmValue efg={totals.restedEfg} fga={totals.restedFga} />
+          </td>
+          <td style={termTdStyle}>
+            <EffectValue
+              value={totals.effect}
+              quiet={
+                totals.effect !== null &&
+                Math.abs(totals.effect) <
+                  (effectSe(totals.noRestFga, totals.restedFga) ?? Infinity)
+              }
+            />
+          </td>
         </tr>
       )}
 
       {estimate && (
         <tr className="fc-sub fc-groupend">
           <td style={termTdStyle} />
-          <td colSpan={9} style={{ ...termTdStyle, whiteSpace: "normal", fontSize: 12, color: "var(--term-text-muted)" }}>
+          <td
+            colSpan={9}
+            style={{
+              ...termTdStyle,
+              whiteSpace: "normal",
+              fontSize: 12,
+              color: "var(--term-text-muted)",
+            }}
+          >
             {/* Was: "…give or take X pp of standard error — Y once shrunk toward the league",
                 which stacked three pieces of jargon in one line and was misread in testing as
                 "one strong toward the lead". The shrunk figure stays because it is the honest
                 one — a raw career gap off ~250 attempts per side carries a standard error near
                 4 points, so the extremes of a raw ranking are mostly noise — but it now says
                 why in words rather than naming the method. */}
-            Raw career gap: {signed(estimate.delta)} percentage points, give or take{" "}
-            {estimate.se.toFixed(2)} as one standard error. The estimate shrunk toward the player-pool mean is{" "}
-            {signed(estimate.shrunk)}, which reduces the influence of uncertain extremes.
+            Raw career gap: {signed(estimate.delta)} percentage points, give or
+            take {estimate.se.toFixed(2)} as one standard error. The estimate
+            shrunk toward the player-pool mean is {signed(estimate.shrunk)},
+            which reduces the influence of uncertain extremes.
           </td>
         </tr>
       )}
       {!estimate && (
         <tr className="fc-sub fc-groupend">
           <td style={termTdStyle} />
-          <td colSpan={9} style={{ ...termTdStyle, whiteSpace: "normal", fontSize: 12, color: "var(--term-text-muted)" }}>
-            No career estimate: fewer than 150 shots on no rest or on three or more
-            days rest, so only his seasons are shown.
+          <td
+            colSpan={9}
+            style={{
+              ...termTdStyle,
+              whiteSpace: "normal",
+              fontSize: 12,
+              color: "var(--term-text-muted)",
+            }}
+          >
+            No career estimate: fewer than 150 shots on no rest or on three or
+            more days rest, so only his seasons are shown.
           </td>
         </tr>
       )}
     </>
-  )
+  );
 }

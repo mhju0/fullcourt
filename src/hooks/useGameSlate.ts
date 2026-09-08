@@ -1,8 +1,10 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useReducer, useState } from "react";
+import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from "react";
 import { format, parseISO } from "date-fns";
 import { useLiveGames } from "@/hooks/useLiveGames";
+import { LOCATION_CHANGE } from "@/hooks/useSeasonUrl";
+import { readSlateUrl, slateUrl } from "@/lib/game-slate-url";
 import { errMsg } from "@/lib/fetcher";
 import {
   calendarView,
@@ -20,18 +22,13 @@ import {
 } from "@/lib/game-slate-machine";
 import {
   defaultNbaCalendarMonth,
-  defaultNbaSeason,
+  currentDisplaySeason,
   formatEasternDateKey,
 } from "@/lib/nba-season";
 import type { ApiResponse, GameDateCount, GameResponse } from "@/types";
 
-/**
- * React shell over {@link slateReducer}. It owns exactly three things the reducer
- * cannot: the two fetches, the Realtime overlay, and date formatting. Every
- * decision about *what the state becomes* lives in the reducer, which is why the
- * logic is unit-tested without a DOM.
- */
 export interface GameSlate {
+  urlReady: boolean;
   season: string;
   /** Derived from the selected date. Drives which month tab is active. */
   month: number;
@@ -41,6 +38,7 @@ export interface GameSlate {
   /** Which of the four chip-region renderings applies. */
   calendar: CalendarView;
   selectedDate: string | null;
+  lastDate: string | null;
   selectedLabel: { long: string; short: string } | null;
   /** The selected day's games, with the Realtime overlay applied. */
   games: readonly SlateGame[];
@@ -65,32 +63,64 @@ export function useGameSlate(): GameSlate {
   // Both frozen at mount: "today" in the NBA's Eastern calendar, and the month to
   // show before any date exists. Constants, so nothing can drift out of sync.
   const [seed] = useState(() => ({
-    season: defaultNbaSeason(),
+    season: currentDisplaySeason(),
     fallbackMonth: defaultNbaCalendarMonth(),
     todayKey: formatEasternDateKey(),
   }));
 
   const [state, dispatch] = useReducer(slateReducer, seed, initSlate);
   const { season, selectedDate } = state;
+  const [urlReady, setUrlReady] = useState(false);
+  const historyMode = useRef<"push" | "replace">("replace");
+
+  useEffect(() => {
+    const restore = () => {
+      const location = readSlateUrl(window.location.search, seed.season, seed.todayKey);
+      historyMode.current = "replace";
+      dispatch({ type: "LOCATION_RESTORED", ...location });
+      setUrlReady(true);
+    };
+    let active = true;
+    queueMicrotask(() => { if (active) restore(); });
+    window.addEventListener("popstate", restore);
+    return () => {
+      active = false;
+      window.removeEventListener("popstate", restore);
+    };
+  }, [seed]);
+
+  useEffect(() => {
+    if (!urlReady) return;
+    const url = slateUrl(window.location.href, season, selectedDate);
+    if (url.href !== window.location.href) {
+      if (historyMode.current === "push") window.history.pushState(null, "", url);
+      else window.history.replaceState(null, "", url);
+    }
+    window.dispatchEvent(new Event(LOCATION_CHANGE));
+    historyMode.current = "replace";
+  }, [season, selectedDate, urlReady]);
 
   // One fetch per season, no `month` param. That is what lets a month click
   // resolve from memory instead of racing a round trip.
   useEffect(() => {
+    if (!urlReady) return;
     const controller = new AbortController();
     readEnvelope<GameDateCount[]>(
       `/api/games/dates?season=${encodeURIComponent(season)}`,
       controller.signal
     )
-      .then((days) => dispatch({ type: "DAYS_RESOLVED", days }))
+      .then((days) => {
+        if (!controller.signal.aborted) dispatch({ type: "DAYS_RESOLVED", days });
+      })
       .catch((err: unknown) => {
-        if (isAbort(err)) return;
+        if (controller.signal.aborted || isAbort(err)) return;
         dispatch({
           type: "DAYS_REJECTED",
           message: errMsg(err),
         });
       });
     return () => controller.abort();
-  }, [season]);
+  }, [season, urlReady]);
 
   // The reducer drops responses for a date that is no longer selected, so a slow
   // reply cannot overwrite a newer one even if its abort loses the race.
@@ -100,7 +130,7 @@ export function useGameSlate(): GameSlate {
     readEnvelope<GameResponse[]>(`/api/games/${selectedDate}`, controller.signal)
       .then((games) => dispatch({ type: "SLATE_RESOLVED", date: selectedDate, games }))
       .catch((err: unknown) => {
-        if (isAbort(err)) return;
+        if (controller.signal.aborted || isAbort(err)) return;
         dispatch({
           type: "SLATE_REJECTED",
           date: selectedDate,
@@ -155,15 +185,20 @@ export function useGameSlate(): GameSlate {
     [state.selectedDate]
   );
 
-  const send = useCallback((intent: SlateIntent) => dispatch(intent), []);
+  const send = useCallback((intent: SlateIntent) => {
+    historyMode.current = "push";
+    dispatch(intent);
+  }, []);
 
   return {
+    urlReady,
     season,
     month: slateMonth(state),
     months: monthTabs(state),
     days,
     calendar: calendarView(state),
     selectedDate,
+    lastDate: state.days.reduce<string | null>((last, day) => !last || day.date > last ? day.date : last, null),
     selectedLabel,
     games,
     status: state.status,

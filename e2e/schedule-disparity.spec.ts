@@ -21,6 +21,8 @@ test.describe("Schedule Disparity page", () => {
     // regex pinned to the longer form while the disclaimer itself never left the page. This
     // still fails if the sentence is dropped, which is what the test is for.
     await expect(page.getByText(/within a season, with a win-equivalent estimate/)).toBeVisible();
+    await expect(page.getByText(/does not predict results/)).toBeVisible();
+    await page.getByText("Show full breakdown", { exact: true }).click();
     await expect(page.getByText(/not an estimate of wins caused by the schedule/)).toBeVisible();
   });
 
@@ -138,4 +140,17 @@ test.describe("Schedule Disparity page", () => {
     await expect(page).toHaveURL(/\/schedule$/);
     await expect(schedule).toHaveAttribute("aria-current", "page");
   });
+});
+
+
+test("schedule owns workload and offers exact weekly values", async ({ page }) => {
+  await page.goto("/schedule?season=2024-25");
+  await page.getByText("Show travel and workload", { exact: true }).click();
+  await expect(page.getByTestId("schedule-tax-row")).toHaveCount(30);
+  await expect(page.getByTestId("fatigue-calendar")).toBeVisible();
+  const week = page.getByRole("slider", { name: "Inspect fatigue week" });
+  await week.focus();
+  await page.keyboard.press("ArrowRight");
+  await expect(week).toHaveValue("1");
+  await expect(page.getByText(/Inspect week 2:/)).toBeVisible();
 });

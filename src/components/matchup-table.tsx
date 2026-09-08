@@ -1,24 +1,29 @@
-"use client"
+"use client";
 
-import { useCallback, useMemo, useState, type KeyboardEvent } from "react"
-import { ChevronDown } from "lucide-react"
-import { FatigueBar, type FatigueBarTone } from "@/components/fatigue-bar"
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  type KeyboardEvent,
+} from "react";
+import { usePageQuery } from "@/hooks/useSeasonUrl";
+import { ChevronDown } from "lucide-react";
+import { FatigueBar, type FatigueBarTone } from "@/components/fatigue-bar";
 import {
   ConfidenceBadge,
   FatigueDetailColumn,
   TeamLogo,
   teamGameFlags,
   getConfidence,
-} from "@/components/matchup-parts"
-import { buildGameStoryline } from "@/lib/game-storyline"
-import { getTeamColors } from "@/lib/nba-team-colors"
-import {
-  formatRestAdvantageDisplay,
-} from "@/lib/rest-advantage-display"
-import { getTeamBranding } from "@/lib/team-history"
-import { LEAD, SPACE, SPACE_CARD, TRACK, TYPE } from "@/lib/terminal-styles"
-import { cn } from "@/lib/utils"
-import type { GameResponse } from "@/types"
+} from "@/components/matchup-parts";
+import { buildGameStoryline } from "@/lib/game-storyline";
+import { getTeamColors } from "@/lib/nba-team-colors";
+import { formatRestAdvantageDisplay } from "@/lib/rest-advantage-display";
+import { getTeamBranding } from "@/lib/team-history";
+import { LEAD, SPACE, SPACE_CARD, TRACK, TYPE } from "@/lib/terminal-styles";
+import { cn } from "@/lib/utils";
+import type { GameResponse } from "@/types";
 
 /**
  * The Front Office table spine (docs/design/mocks/08-front-office.html, adopted
@@ -43,21 +48,22 @@ import type { GameResponse } from "@/types"
  * DEEP DIVE adds per-team days rest, the fatigue bars with their flag chips, and the
  * confidence badge. One card, two column sets; the dial lives on the /games page.
  */
-export type SlateDensity = "skim" | "deep"
+export type SlateDensity = "skim" | "deep";
 
 // Column templates shared by the header row and every game row, so the header can
 // never drift out of line with the cells beneath it.
 const DEEP_COLS =
-  "minmax(96px,120px) minmax(210px,1.3fr) minmax(64px,80px) minmax(232px,1.1fr) minmax(190px,220px) minmax(96px,116px)"
+  "minmax(96px,120px) minmax(210px,1.3fr) minmax(64px,80px) minmax(232px,1.1fr) minmax(190px,220px) minmax(96px,116px)";
 const SKIM_COLS =
-  "minmax(96px,120px) minmax(210px,1.5fr) minmax(190px,240px) 32px"
+  "minmax(96px,120px) minmax(210px,1.5fr) minmax(190px,240px) 32px";
 // Sum of each template's column minimums plus its 16px gaps, rounded up with room.
-const DEEP_MIN_WIDTH = 980
-const SKIM_MIN_WIDTH = 600
+const DEEP_MIN_WIDTH = 980;
+const SKIM_MIN_WIDTH = 600;
 
-const gridCols = (density: SlateDensity) => (density === "deep" ? DEEP_COLS : SKIM_COLS)
+const gridCols = (density: SlateDensity) =>
+  density === "deep" ? DEEP_COLS : SKIM_COLS;
 const gridMinWidth = (density: SlateDensity) =>
-  density === "deep" ? DEEP_MIN_WIDTH : SKIM_MIN_WIDTH
+  density === "deep" ? DEEP_MIN_WIDTH : SKIM_MIN_WIDTH;
 
 /**
  * Width reserved for a line's flag chips, so the strip is identical on every line and the
@@ -67,7 +73,7 @@ const gridMinWidth = (density: SlateDensity) =>
  * and their gaps (~98px). A single "JET LAG" is wider than one 4-char chip but never shares
  * the strip — it sorts fifth, so it only ever appears alone or beside "ALT".
  */
-const FLAG_STRIP_W = 104
+const FLAG_STRIP_W = 104;
 
 // ─── Status cell ─────────────────────────────────────────────────
 
@@ -79,55 +85,89 @@ function StatusCell({
   awayScore,
   flashing,
 }: {
-  status: string
-  date: string
-  tipOffEt: string | null
-  homeScore: number | null
-  awayScore: number | null
-  flashing: boolean
+  status: string;
+  date: string;
+  tipOffEt: string | null;
+  homeScore: number | null;
+  awayScore: number | null;
+  flashing: boolean;
 }) {
-  const hasScore = homeScore !== null && awayScore !== null
+  const hasScore = homeScore !== null && awayScore !== null;
 
   return (
     // The flash is scoped to this cell (G3, ADR 0010): the score is what changed, so the
     // score is what flashes — once, 500ms. A whole row lighting up reads as "something
     // happened somewhere on this line"; the cell says what.
-    <div className={cn("mono flex flex-col justify-center gap-1", flashing && "animate-[scoreFlash_0.5s_ease-out]")}>
+    <div
+      className={cn(
+        "mono flex flex-col justify-center gap-1",
+        flashing && "animate-[scoreFlash_0.5s_ease-out]",
+      )}
+    >
       {status === "live" ? (
         <span
           className="inline-flex items-center gap-2"
-          style={{ fontSize: 10, letterSpacing: TRACK.label, color: "var(--term-accent)", fontWeight: 700 }}
+          style={{
+            fontSize: 10,
+            letterSpacing: TRACK.label,
+            color: "var(--term-accent)",
+            fontWeight: 700,
+          }}
         >
           <span
             className="animate-[pulse_1.7s_ease-in-out_infinite]"
-            style={{ display: "inline-block", width: 6, height: 6, borderRadius: "50%", background: "var(--term-accent)" }}
+            style={{
+              display: "inline-block",
+              width: 6,
+              height: 6,
+              borderRadius: "50%",
+              background: "var(--term-accent)",
+            }}
           />
           LIVE
         </span>
       ) : (
-        <span style={{ fontSize: 10, letterSpacing: TRACK.label, color: "var(--term-text-muted)", fontWeight: 600 }}>
+        <span
+          style={{
+            fontSize: 10,
+            letterSpacing: TRACK.label,
+            color: "var(--term-text-muted)",
+            fontWeight: 600,
+          }}
+        >
           {status === "final" ? "FINAL" : "UPCOMING"}
         </span>
       )}
       {hasScore ? (
-        <span className="tabular-nums" style={{ fontSize: TYPE.emph, fontWeight: 700, letterSpacing: TRACK.figure, color: "var(--term-text)", lineHeight: LEAD.figure }}>
-          {awayScore} – {homeScore}
+        <span
+          className="fc-game-score tabular-nums"
+          style={{
+            fontWeight: 700,
+            letterSpacing: TRACK.figure,
+            color: "var(--term-text)",
+            lineHeight: LEAD.figure,
+          }}
+        >
+          {awayScore}–{homeScore}
         </span>
       ) : (
         // The ET tip time when the schedule carries one — what a schedule site puts
         // here. The date is the fallback for the rows whose feeds carried no clock
         // (pre-2002, and all of 2019-20 — docs/DATABASE.md), and never a guess.
-        <span className="tabular-nums" style={{ fontSize: 11, color: "var(--term-text-muted)" }}>
+        <span
+          className="tabular-nums"
+          style={{ fontSize: 11, color: "var(--term-text-muted)" }}
+        >
           {tipOffEt ?? date}
         </span>
       )}
     </div>
-  )
+  );
 }
 
 // ─── Matchup + fatigue cells (two aligned 26px lines each) ───────
 
-const TEAM_LINE_H = 26
+const TEAM_LINE_H = 26;
 
 function TeamLine({
   abbreviation,
@@ -137,21 +177,40 @@ function TeamLine({
   fallback,
   isHome,
 }: {
-  abbreviation: string
-  name: string
-  city: string
-  season: string
-  fallback: { name: string; city: string }
-  isHome: boolean
+  abbreviation: string;
+  name: string;
+  city: string;
+  season: string;
+  fallback: { name: string; city: string };
+  isHome: boolean;
 }) {
-  const colors = getTeamColors(abbreviation)
+  const colors = getTeamColors(abbreviation);
   return (
-    <div className="flex min-w-0 items-center gap-2" style={{ height: TEAM_LINE_H }}>
-      <TeamLogo abbreviation={abbreviation} season={season} fallback={fallback} size={20} color={colors.primary} />
-      <span className="truncate" style={{ fontSize: TYPE.data, fontWeight: 600, color: "var(--term-text)" }}>
+    <div
+      className="flex min-w-0 items-center gap-2"
+      style={{ height: TEAM_LINE_H }}
+    >
+      <TeamLogo
+        abbreviation={abbreviation}
+        season={season}
+        fallback={fallback}
+        size={20}
+        color={colors.primary}
+      />
+      <span
+        className="truncate"
+        style={{
+          fontSize: TYPE.data,
+          fontWeight: 600,
+          color: "var(--term-text)",
+        }}
+      >
         {name}
       </span>
-      <span className="hidden truncate lg:inline" style={{ fontSize: TYPE.micro, color: "var(--term-text-muted)" }}>
+      <span
+        className="hidden truncate lg:inline"
+        style={{ fontSize: TYPE.micro, color: "var(--term-text-muted)" }}
+      >
         {city}
       </span>
       {isHome && (
@@ -172,7 +231,7 @@ function TeamLine({
         </span>
       )}
     </div>
-  )
+  );
 }
 
 /**
@@ -182,10 +241,16 @@ function TeamLine({
  * wrap the row to a second line, and a row whose height depends on its flag count is the
  * problem this replaced.
  */
-const MAX_INLINE_FLAGS = 2
+const MAX_INLINE_FLAGS = 2;
 
 /** The schedule flag chip — the fatigue score's reason, sitting next to the score. */
-function FlagChip({ label, muted = false }: { label: string; muted?: boolean }) {
+function FlagChip({
+  label,
+  muted = false,
+}: {
+  label: string;
+  muted?: boolean;
+}) {
   return (
     <span
       className="mono shrink-0"
@@ -202,7 +267,7 @@ function FlagChip({ label, muted = false }: { label: string; muted?: boolean }) 
     >
       {label}
     </span>
-  )
+  );
 }
 
 function FatigueLine({
@@ -210,21 +275,37 @@ function FatigueLine({
   tone,
   flags,
 }: {
-  score: number | null
-  tone: FatigueBarTone
-  flags: string[]
+  score: number | null;
+  tone: FatigueBarTone;
+  flags: string[];
 }) {
-  const shown = flags.slice(0, MAX_INLINE_FLAGS)
-  const hidden = flags.length - shown.length
+  const shown = flags.slice(0, MAX_INLINE_FLAGS);
+  const hidden = flags.length - shown.length;
 
   return (
     <div className="flex items-center gap-2" style={{ height: TEAM_LINE_H }}>
       {score !== null ? (
         <FatigueBar score={score} tone={tone} className="min-w-[36px] flex-1" />
       ) : (
-        <div className="min-w-[36px] flex-1" style={{ height: 4, background: "var(--term-surface-2)", borderRadius: "var(--term-radius-bar)" }} />
+        <div
+          className="min-w-[36px] flex-1"
+          style={{
+            height: 4,
+            background: "var(--term-surface-2)",
+            borderRadius: "var(--term-radius-bar)",
+          }}
+        />
       )}
-      <span className="mono shrink-0 tabular-nums" style={{ width: 30, fontSize: TYPE.data, fontWeight: 700, color: "var(--term-text)", textAlign: "right" }}>
+      <span
+        className="mono shrink-0 tabular-nums"
+        style={{
+          width: 30,
+          fontSize: TYPE.data,
+          fontWeight: 700,
+          color: "var(--term-text)",
+          textAlign: "right",
+        }}
+      >
         {score !== null ? score.toFixed(1) : "—"}
       </span>
       {/* Fixed-width so the two lines' chips align with each other and with the rows above and
@@ -232,14 +313,17 @@ function FatigueLine({
           left edge rather than filling from its right: a list that grows rightward keeps its
           first item on one rail, so a team with one flag lines up with the first flag of the
           team above it instead of with that team's second. */}
-      <span className="flex shrink-0 items-center justify-start gap-1" style={{ width: FLAG_STRIP_W }}>
+      <span
+        className="flex shrink-0 items-center justify-start gap-1"
+        style={{ width: FLAG_STRIP_W }}
+      >
         {shown.map((flag) => (
           <FlagChip key={flag} label={flag} />
         ))}
         {hidden > 0 && <FlagChip label={`+${hidden}`} muted />}
       </span>
     </div>
-  )
+  );
 }
 
 /**
@@ -249,27 +333,34 @@ function FatigueLine({
  */
 function RestDaysLine({ daysRest }: { daysRest: number | null | undefined }) {
   return (
-    <div className="flex items-center justify-end" style={{ height: TEAM_LINE_H }}>
+    <div
+      className="flex items-center justify-end"
+      style={{ height: TEAM_LINE_H }}
+    >
       <span
         className="mono tabular-nums"
-        style={{ fontSize: TYPE.data, fontWeight: 700, color: "var(--term-text)" }}
+        style={{
+          fontSize: TYPE.data,
+          fontWeight: 700,
+          color: "var(--term-text)",
+        }}
       >
         {daysRest ?? "—"}
       </span>
     </div>
-  )
+  );
 }
 
 /** Which team's fatigue reads "higher" (more tired, rose) vs "lower" (teal). */
 function fatigueTones(
   awayScore: number | null,
-  homeScore: number | null
+  homeScore: number | null,
 ): { away: FatigueBarTone; home: FatigueBarTone } {
   if (awayScore !== null && homeScore !== null) {
-    if (awayScore > homeScore) return { away: "higher", home: "lower" }
-    if (homeScore > awayScore) return { away: "lower", home: "higher" }
+    if (awayScore > homeScore) return { away: "higher", home: "lower" };
+    if (homeScore > awayScore) return { away: "lower", home: "higher" };
   }
-  return { away: "neutral", home: "neutral" }
+  return { away: "neutral", home: "neutral" };
 }
 
 // ─── Rest-advantage cell ─────────────────────────────────────────
@@ -280,45 +371,89 @@ function RestAdvCell({
   awayAbbr,
   projectedFatigue,
 }: {
-  restAdvantage: GameResponse["restAdvantage"]
-  homeAbbr: string
-  awayAbbr: string
-  projectedFatigue: boolean
+  restAdvantage: GameResponse["restAdvantage"];
+  homeAbbr: string;
+  awayAbbr: string;
+  projectedFatigue: boolean;
 }) {
-  const display = formatRestAdvantageDisplay(restAdvantage, homeAbbr, awayAbbr, projectedFatigue)
-  const advantageTeam = restAdvantage?.advantageTeam ?? "neutral"
-  const isHomeAdv = advantageTeam === "home"
-  const isAwayAdv = advantageTeam === "away"
-  const value = Math.abs(restAdvantage?.differential ?? 0).toFixed(1)
-  const fillPercent = Math.min(Math.abs(restAdvantage?.differential ?? 0) / 5, 1) * 50
+  const display = formatRestAdvantageDisplay(
+    restAdvantage,
+    homeAbbr,
+    awayAbbr,
+    projectedFatigue,
+  );
+  const advantageTeam = restAdvantage?.advantageTeam ?? "neutral";
+  const isHomeAdv = advantageTeam === "home";
+  const isAwayAdv = advantageTeam === "away";
+  const value = Math.abs(restAdvantage?.differential ?? 0).toFixed(1);
+  const fillPercent =
+    Math.min(Math.abs(restAdvantage?.differential ?? 0) / 5, 1) * 50;
   // Not measured is not a dead heat, and this cell used to print them the same way: a game
   // with no fatigue pair read as "EVEN 0.0". The distinction lives in the formatter, so it
   // is unit-tested rather than asserted from the shape of `restAdvantage` here.
-  const measured = display.kind !== "unmeasured"
+  const measured = display.kind !== "unmeasured";
 
   return (
     <div className="flex flex-col justify-center gap-2">
-      <div className="mono flex items-baseline gap-2 tabular-nums" style={{ lineHeight: LEAD.figure }}>
+      <div
+        className="mono flex items-baseline gap-2 tabular-nums"
+        style={{ lineHeight: LEAD.figure }}
+      >
         {display.kind === "unmeasured" ? (
-          <span style={{ fontSize: TYPE.emph, fontWeight: 700, letterSpacing: TRACK.figure, color: "var(--term-text-muted)" }}>
+          <span
+            style={{
+              fontSize: TYPE.emph,
+              fontWeight: 700,
+              letterSpacing: TRACK.figure,
+              color: "var(--term-text-muted)",
+            }}
+          >
             {display.text}
           </span>
         ) : display.kind === "team" ? (
           <>
             {/* The named team is the more-rested side, so it wears the rested pole. */}
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: TRACK.data, color: "var(--term-blue-text)" }}>
+            <span
+              style={{
+                fontSize: 12,
+                fontWeight: 700,
+                letterSpacing: TRACK.data,
+                color: "var(--term-blue-text)",
+              }}
+            >
               {display.teamAbbreviation}
             </span>
-            <span style={{ fontSize: TYPE.emph, fontWeight: 700, letterSpacing: TRACK.figure, color: "var(--term-text)" }}>
+            <span
+              style={{
+                fontSize: TYPE.emph,
+                fontWeight: 700,
+                letterSpacing: TRACK.figure,
+                color: "var(--term-text)",
+              }}
+            >
               {display.value}
             </span>
           </>
         ) : (
           <>
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: TRACK.sub, color: "var(--term-text-muted)" }}>
+            <span
+              style={{
+                fontSize: 12,
+                fontWeight: 700,
+                letterSpacing: TRACK.sub,
+                color: "var(--term-text-muted)",
+              }}
+            >
               EVEN
             </span>
-            <span style={{ fontSize: TYPE.emph, fontWeight: 700, letterSpacing: TRACK.figure, color: "var(--term-text-muted)" }}>
+            <span
+              style={{
+                fontSize: TYPE.emph,
+                fontWeight: 700,
+                letterSpacing: TRACK.figure,
+                color: "var(--term-text-muted)",
+              }}
+            >
               {value}
             </span>
           </>
@@ -344,18 +479,38 @@ function RestAdvCell({
 
       {/* Center-anchored differential meter: teal fill toward the rested side, ±5 scale. */}
       <div className="flex w-full items-center gap-2">
-        <span className="mono shrink-0" style={{ fontSize: TYPE.micro, color: "var(--term-text-muted)", fontWeight: 600 }}>
+        <span
+          className="mono shrink-0"
+          style={{
+            fontSize: TYPE.micro,
+            color: "var(--term-text-muted)",
+            fontWeight: 600,
+          }}
+        >
           A
         </span>
         <div
           className="relative min-w-0 flex-1 overflow-hidden"
-          style={{ height: 8, background: "var(--term-surface-2)", borderRadius: "var(--term-radius-sm)" }}
+          style={{
+            height: 8,
+            background: "var(--term-surface-2)",
+            borderRadius: "var(--term-radius-sm)",
+          }}
           aria-hidden
         >
           {/* An empty track, not the neutral marker: that marker means "measured, and the two
               sides came out level", which is a different statement from having no measurement. */}
           {!measured ? null : advantageTeam === "neutral" ? (
-            <span style={{ position: "absolute", left: "47.5%", top: 0, bottom: 0, width: "5%", background: "var(--term-hairline)" }} />
+            <span
+              style={{
+                position: "absolute",
+                left: "47.5%",
+                top: 0,
+                bottom: 0,
+                width: "5%",
+                background: "var(--term-hairline)",
+              }}
+            />
           ) : (
             <span
               style={{
@@ -369,14 +524,30 @@ function RestAdvCell({
               }}
             />
           )}
-          <span style={{ position: "absolute", left: "50%", top: 0, bottom: 0, width: 1, background: "var(--term-hairline)" }} />
+          <span
+            style={{
+              position: "absolute",
+              left: "50%",
+              top: 0,
+              bottom: 0,
+              width: 1,
+              background: "var(--term-hairline)",
+            }}
+          />
         </div>
-        <span className="mono shrink-0" style={{ fontSize: TYPE.micro, color: "var(--term-text-muted)", fontWeight: 600 }}>
+        <span
+          className="mono shrink-0"
+          style={{
+            fontSize: TYPE.micro,
+            color: "var(--term-text-muted)",
+            fontWeight: 600,
+          }}
+        >
           H
         </span>
       </div>
     </div>
-  )
+  );
 }
 
 // ─── One game: main row + schedule context + expansion ───────────
@@ -387,50 +558,74 @@ function GameRow({
   density,
   isScoreFlashing,
 }: {
-  game: GameResponse
-  index: number
-  density: SlateDensity
-  isScoreFlashing: boolean
+  game: GameResponse;
+  index: number;
+  density: SlateDensity;
+  isScoreFlashing: boolean;
 }) {
-  const [expanded, setExpanded] = useState(false)
+  const { params, update } = usePageQuery();
+  const expanded = params.get("game") === String(game.id);
+  const rowRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (window.location.hash === `#game-${game.id}`)
+      rowRef.current?.scrollIntoView({ block: "nearest", behavior: "instant" });
+  }, [game.id]);
 
   const homeFallback = useMemo(
     () => ({ name: game.homeTeam.name, city: game.homeTeam.city }),
-    [game.homeTeam.name, game.homeTeam.city]
-  )
+    [game.homeTeam.name, game.homeTeam.city],
+  );
   const awayFallback = useMemo(
     () => ({ name: game.awayTeam.name, city: game.awayTeam.city }),
-    [game.awayTeam.name, game.awayTeam.city]
-  )
-  const homeBrand = getTeamBranding(game.homeTeam.abbreviation, game.season, homeFallback)
-  const awayBrand = getTeamBranding(game.awayTeam.abbreviation, game.season, awayFallback)
+    [game.awayTeam.name, game.awayTeam.city],
+  );
+  const homeBrand = getTeamBranding(
+    game.homeTeam.abbreviation,
+    game.season,
+    homeFallback,
+  );
+  const awayBrand = getTeamBranding(
+    game.awayTeam.abbreviation,
+    game.season,
+    awayFallback,
+  );
 
-  const confidence = getConfidence(game.restAdvantage?.differential ?? null)
-  const flags = teamGameFlags(game)
-  const tones = fatigueTones(game.awayFatigue?.score ?? null, game.homeFatigue?.score ?? null)
-  const isLive = game.status === "live"
-  const storyline = useMemo(() => buildGameStoryline(game), [game])
+  const confidence = getConfidence(game.restAdvantage?.differential ?? null);
+  const flags = teamGameFlags(game);
+  const tones = fatigueTones(
+    game.awayFatigue?.score ?? null,
+    game.homeFatigue?.score ?? null,
+  );
+  const isLive = game.status === "live";
+  const storyline = useMemo(() => buildGameStoryline(game), [game]);
 
-  const toggle = useCallback(() => setExpanded((e) => !e), [])
+  const toggle = useCallback(
+    () => update({ game: expanded ? null : String(game.id) }),
+    [expanded, game.id, update],
+  );
   const onKeyDown = useCallback(
     (ev: KeyboardEvent<HTMLDivElement>) => {
       if (ev.key === "Enter" || ev.key === " ") {
-        ev.preventDefault()
-        toggle()
+        ev.preventDefault();
+        toggle();
       }
     },
-    [toggle]
-  )
+    [toggle],
+  );
 
   return (
     <div
-      className="animate-[fadeInUp_0.4s_ease-out_forwards]"
+      id={`game-${game.id}`}
+      ref={rowRef}
+      className="fc-game-row scroll-mt-20"
       style={{
-        animationDelay: `${index * 30}ms`,
         borderTop: index === 0 ? undefined : "1px solid var(--term-border)",
         // One accent at a time (Front Office): only HIGH CONF earns the indigo edge,
         // and a live game gets a whisper of the same tint so the eye finds it.
-        borderLeft: confidence === "high" ? "3px solid var(--term-accent)" : "3px solid transparent",
+        borderLeft:
+          confidence === "high"
+            ? "3px solid var(--term-accent)"
+            : "3px solid transparent",
         background: isLive
           ? "color-mix(in srgb, var(--term-accent) 3%, var(--term-surface))"
           : undefined,
@@ -443,19 +638,21 @@ function GameRow({
         aria-label={expanded ? "Collapse game details" : "Expand game details"}
         onClick={toggle}
         onKeyDown={onKeyDown}
-        className="grid cursor-pointer items-center gap-x-4 transition-colors hover:bg-[var(--term-surface-2)] focus-visible:ring-2 focus-visible:ring-[var(--term-accent)]/40"
+        className="fc-game-grid grid cursor-pointer items-center gap-x-4 transition-colors hover:bg-[var(--term-surface-2)] focus-visible:ring-2 focus-visible:ring-[var(--term-accent)]/40"
         style={{ gridTemplateColumns: gridCols(density), padding: "12px 16px" }}
       >
-        <StatusCell
-          status={game.status}
-          date={game.date}
-          tipOffEt={game.tipOffEt}
-          homeScore={game.homeScore}
-          awayScore={game.awayScore}
-          flashing={isScoreFlashing}
-        />
+        <div className="fc-game-status">
+          <StatusCell
+            status={game.status}
+            date={game.date}
+            tipOffEt={game.tipOffEt}
+            homeScore={game.homeScore}
+            awayScore={game.awayScore}
+            flashing={isScoreFlashing}
+          />
+        </div>
 
-        <div className="flex min-w-0 flex-col gap-1">
+        <div className="fc-game-teams flex min-w-0 flex-col gap-1">
           <TeamLine
             abbreviation={awayBrand.abbreviation}
             name={awayBrand.name}
@@ -475,30 +672,43 @@ function GameRow({
         </div>
 
         {density === "deep" && (
-          <div className="flex flex-col gap-1">
+          <div className="fc-game-extra flex flex-col gap-1">
             <RestDaysLine daysRest={game.awayFatigue?.daysRest} />
             <RestDaysLine daysRest={game.homeFatigue?.daysRest} />
           </div>
         )}
 
         {density === "deep" && (
-          <div className="flex flex-col gap-1">
-            <FatigueLine score={game.awayFatigue?.score ?? null} tone={tones.away} flags={flags.away} />
-            <FatigueLine score={game.homeFatigue?.score ?? null} tone={tones.home} flags={flags.home} />
+          <div className="fc-game-extra flex flex-col gap-1">
+            <FatigueLine
+              score={game.awayFatigue?.score ?? null}
+              tone={tones.away}
+              flags={flags.away}
+            />
+            <FatigueLine
+              score={game.homeFatigue?.score ?? null}
+              tone={tones.home}
+              flags={flags.home}
+            />
           </div>
         )}
 
-        <RestAdvCell
-          restAdvantage={game.restAdvantage}
-          homeAbbr={homeBrand.abbreviation}
-          awayAbbr={awayBrand.abbreviation}
-          projectedFatigue={game.projectedFatigue}
-        />
+        <div className="fc-game-edge">
+          <RestAdvCell
+            restAdvantage={game.restAdvantage}
+            homeAbbr={homeBrand.abbreviation}
+            awayAbbr={awayBrand.abbreviation}
+            projectedFatigue={game.projectedFatigue}
+          />
+        </div>
 
-        <div className="flex items-center justify-end gap-2">
+        <div className="fc-game-chevron flex items-center justify-end gap-2">
           {density === "deep" && <ConfidenceBadge confidence={confidence} />}
           <ChevronDown
-            className={cn("size-4 shrink-0 text-[var(--term-text-muted)] transition-transform duration-200", expanded && "rotate-180")}
+            className={cn(
+              "size-4 shrink-0 text-[var(--term-text-muted)]",
+              expanded && "rotate-180",
+            )}
             aria-hidden
           />
         </div>
@@ -522,8 +732,8 @@ function GameRow({
       <div
         inert={!expanded}
         className={cn(
-          "sticky left-0 grid max-w-[calc(100vw-40px)] transition-[grid-template-rows] duration-300 ease-out",
-          expanded ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
+          "sticky left-0 grid max-w-[calc(100vw-40px)]",
+          expanded ? "grid-rows-[1fr]" : "grid-rows-[0fr]",
         )}
       >
         <div className="overflow-hidden">
@@ -537,22 +747,28 @@ function GameRow({
             }}
           >
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-              <FatigueDetailColumn label={`AWAY · ${awayBrand.abbreviation}`} fatigue={game.awayFatigue} />
-              <FatigueDetailColumn label={`HOME · ${homeBrand.abbreviation}`} fatigue={game.homeFatigue} />
+              <FatigueDetailColumn
+                label={`AWAY · ${awayBrand.abbreviation}`}
+                fatigue={game.awayFatigue}
+              />
+              <FatigueDetailColumn
+                label={`HOME · ${homeBrand.abbreviation}`}
+                fatigue={game.homeFatigue}
+              />
             </div>
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 // ─── The table ───────────────────────────────────────────────────
 
 export interface MatchupTableProps {
-  games: readonly (GameResponse & { isScoreFlashing?: boolean })[]
+  games: readonly (GameResponse & { isScoreFlashing?: boolean })[];
   /** SKIM (default) is the schedule-site glance; DEEP DIVE adds rest, fatigue and CONF. */
-  density?: SlateDensity
+  density?: SlateDensity;
 }
 
 export function MatchupTable({ games, density = "skim" }: MatchupTableProps) {
@@ -566,10 +782,13 @@ export function MatchupTable({ games, density = "skim" }: MatchupTableProps) {
       }}
     >
       <div className="overflow-x-auto">
-        <div style={{ minWidth: gridMinWidth(density) }}>
+        <div
+          className="fc-game-table"
+          style={{ minWidth: gridMinWidth(density) }}
+        >
           {/* Column header — same template as the rows, so it cannot drift. */}
           <div
-            className="mono grid items-center gap-x-4"
+            className="fc-game-header mono grid items-center gap-x-4"
             style={{
               gridTemplateColumns: gridCols(density),
               padding: "8px 16px",
@@ -583,10 +802,16 @@ export function MatchupTable({ games, density = "skim" }: MatchupTableProps) {
           >
             <span>GAME</span>
             <span>MATCHUP · AWAY / HOME</span>
-            {density === "deep" && <span className="text-right">REST · DAYS</span>}
+            {density === "deep" && (
+              <span className="text-right">REST · DAYS</span>
+            )}
             {density === "deep" && <span>FATIGUE · 0–10</span>}
             <span>REST ADVANTAGE</span>
-            {density === "deep" ? <span className="text-right">CONF</span> : <span aria-hidden />}
+            {density === "deep" ? (
+              <span className="text-right">CONF</span>
+            ) : (
+              <span aria-hidden />
+            )}
           </div>
 
           {games.map((game, i) => (
@@ -601,5 +826,5 @@ export function MatchupTable({ games, density = "skim" }: MatchupTableProps) {
         </div>
       </div>
     </div>
-  )
+  );
 }

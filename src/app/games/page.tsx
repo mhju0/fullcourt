@@ -1,6 +1,9 @@
 "use client"
 
 import { useMemo } from "react"
+import useSWR from "swr"
+import { apiFetcher } from "@/lib/fetcher"
+import type { GameDateCount } from "@/types"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -10,7 +13,7 @@ import { PageHeader } from "@/components/page-header"
 import { SeasonSelector } from "@/components/season-selector"
 import { useGameSlate, type GameSlate } from "@/hooks/useGameSlate"
 import { useSlateDensity } from "@/hooks/useSlateDensity"
-import { browsableSeasons, currentDisplaySeason, isNbaOffSeason } from "@/lib/nba-season"
+import { browsableSeasons, currentDisplaySeason, isNbaOffSeason, nextSeasonLabel } from "@/lib/nba-season"
 import { MessageCard } from "@/components/ui/message-card"
 import { MethodLink } from "@/components/method-link"
 import { StatTile } from "@/components/ui/stat-tile"
@@ -43,15 +46,15 @@ function StatSummaryRow({
   avgRestAdv,
   highConfGames,
 }: {
-  gamesToday: number
+  gamesToday: number | null
   avgRestAdv: string
   highConfGames: string
 }) {
   return (
-    <div className="grid grid-cols-2 gap-2 md:grid-cols-3">
+    <div className="grid grid-cols-1 gap-2 sm:grid-cols-3 xl:grid-cols-1">
       {/* Not "TODAY": this is the count for the selected date, and the page deliberately
           auto-selects the most recent date with games whenever today has none. */}
-      <StatTile label="GAMES ON THIS DATE" value={String(gamesToday)} accent="var(--term-neutral)" />
+      <StatTile label="GAMES ON THIS DATE" value={gamesToday === null ? "—" : String(gamesToday)} accent="var(--term-neutral)" />
       <StatTile label="AVG REST ADV" value={avgRestAdv} accent="var(--term-neutral)" />
       {/* Accent, not a data pole: HIGH CONF is confidence chrome, same as the badge. */}
       <StatTile label="HIGH CONF GAMES" value={highConfGames} accent="var(--term-accent)" />
@@ -89,7 +92,7 @@ function SectionDivider({
   action,
 }: {
   label: string
-  count: number
+  count: number | null
   action?: React.ReactNode
 }) {
   return (
@@ -98,7 +101,7 @@ function SectionDivider({
       <span style={{ flex: 1, height: 1, background: "var(--term-border)" }} />
       {action}
       <span style={{ fontWeight: 600 }}>
-        {count} {count === 1 ? "GAME" : "GAMES"}
+        {count === null ? "—" : count} {count === 1 ? "GAME" : "GAMES"}
       </span>
     </div>
   )
@@ -114,7 +117,7 @@ function DensityDial({
   onChange,
 }: {
   density: SlateDensity
-  onChange: (d: SlateDensity) => void
+  onChange: (d: SlateDensity, instant?: boolean) => void
 }) {
   return (
     <div className="flex gap-1" role="group" aria-label="Slate density">
@@ -125,10 +128,10 @@ function DensityDial({
         <button
           key={id}
           type="button"
-          onClick={() => onChange(id)}
+          onClick={(event) => onChange(id, event.detail === 0)}
           aria-pressed={density === id}
           className={cn(
-            "mono shrink-0 px-2 py-1 transition-[background-color,border-color,transform] active:scale-[0.97]",
+            "mono min-h-11 shrink-0 px-2 py-1",
             density === id
               ? "bg-[var(--term-text)] text-[var(--term-surface)]"
               : "bg-[var(--term-surface)] text-[var(--term-text)] hover:bg-[var(--term-surface-2)]"
@@ -201,7 +204,7 @@ function EmptyState({ label }: { label: string }) {
   )
 }
 
-function OffSeasonBanner({ season }: { season: string }) {
+function OffSeasonBanner({ season, finalSlate, onUpcoming }: { season: string; finalSlate: boolean; onUpcoming?: () => void }) {
   return (
     <div
       className="mono flex flex-wrap items-center justify-between gap-2 px-4 py-3"
@@ -213,11 +216,12 @@ function OffSeasonBanner({ season }: { season: string }) {
       }}
     >
       <span style={{ fontSize: 12, letterSpacing: TRACK.sub, color: "var(--term-text)", fontWeight: 600 }}>
-        {season} SEASON COMPLETE · SHOWING FINAL SLATE
+        {season} REGULAR SEASON COMPLETE{finalSlate ? " · SHOWING FINAL SLATE" : ""}
       </span>
+      {onUpcoming && <button type="button" onClick={onUpcoming} className="min-h-11 text-left text-xs underline">VIEW {nextSeasonLabel(season)} SCHEDULE →</button>}
       <a
         href="/season"
-        className="transition-colors hover:underline"
+        className="inline-flex min-h-11 items-center hover:underline"
         style={{ fontSize: 12, letterSpacing: TRACK.sub, color: "var(--term-accent)", fontWeight: 700 }}
       >
         SEE THE FULL SEASON REPORT →
@@ -236,7 +240,7 @@ function DateChip({
   ariaLabel,
 }: {
   day: string
-  count: number
+  count: number | null
   selected: boolean
   onClick: () => void
   ariaLabel: string
@@ -316,7 +320,7 @@ function Matchups({
   }
 }
 
-export default function HomePage() {
+export default function GamesPage() {
   const showOffSeasonBanner = isNbaOffSeason()
   const offSeasonLabel = currentDisplaySeason()
 
@@ -326,7 +330,15 @@ export default function HomePage() {
   // the hook; its decisions live in a pure reducer that is unit-tested without a DOM.
   const slate = useGameSlate()
 
-  // SKIM or DEEP DIVE — remembered per viewer, addressable via ?view=.
+  const upcomingSeason = nextSeasonLabel(offSeasonLabel)
+  const { data: upcomingDays } = useSWR<GameDateCount[]>(
+    showOffSeasonBanner && browsableSeasons().includes(upcomingSeason)
+      ? `/api/games/dates?season=${upcomingSeason}` : null,
+    apiFetcher,
+    { revalidateOnFocus: false, shouldRetryOnError: false }
+  )
+
+  // Density belongs to the current URL, not a saved personal preference.
   const [density, setDensity] = useSlateDensity()
 
   // Summary metrics for the stat row. Page policy, not slate policy — the threshold
@@ -386,22 +398,8 @@ export default function HomePage() {
         />
         <MethodLink surfaceHref="/games" />
       </div>
-      {/* Stat summary row */}
-      <StatSummaryRow
-        gamesToday={slate.games.length}
-        avgRestAdv={avgRestAdv}
-        highConfGames={highConfGames}
-      />
-
-      {/* The cross-date edge question, three rows tall — what survived the UPCOMING
-          view's retirement. A click drives the same reducer the date chips do. */}
-      <EdgesAhead
-        onJump={(season, date) => {
-          slate.send({ type: "SEASON_SELECTED", season })
-          slate.send({ type: "DATE_SELECTED", date })
-        }}
-      />
-
+      <div className="grid items-start gap-8 xl:grid-cols-[minmax(0,1fr)_260px]">
+      <div className="flex min-w-0 flex-col gap-6" data-testid="games-main">
       {/* Filters — two labelled groups rather than three stacked rows that each
           repeated the same label treatment. Season and month answer one question
           ("which stretch of basketball"), so they share a group. */}
@@ -417,14 +415,13 @@ export default function HomePage() {
                 padding sits inside only one of the two flex items, so aligning their
                 bottoms still left the buttons 4px above the select. */}
             <div className="pb-1">
-              {/* The browsable list, so a released-but-unplayed schedule is selectable
-                  here and not only on Schedule Disparity. `defaultNbaSeason()` already
-                  opens the board on it; without this the dropdown could not name it. */}
+              {/* Offer the upcoming season only after its schedule is available. */}
               <SeasonSelector
                 id="nba-season"
                 season={slate.season}
+                disabled={!slate.urlReady}
                 onSeasonChange={(season) => slate.send({ type: "SEASON_SELECTED", season })}
-                seasons={browsableSeasons()}
+                seasons={browsableSeasons().filter((season) => season !== upcomingSeason || Boolean(upcomingDays?.length) || season === slate.season)}
               />
             </div>
             <div className="-mx-1 min-w-0 flex-1 overflow-x-auto overflow-y-hidden pb-1 [scrollbar-width:thin]">
@@ -522,21 +519,32 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* Only over the season it describes. The board now opens on the upcoming season
-          once its schedule is released, and this banner sat above that slate announcing
-          that a *different* season was complete and that these were its final results. */}
+      {/* Completion describes the selected season; the final-slate label follows the selected date. */}
       {showOffSeasonBanner && slate.season === offSeasonLabel && (
-        <OffSeasonBanner season={offSeasonLabel} />
+        <OffSeasonBanner season={offSeasonLabel} finalSlate={slate.selectedDate === slate.lastDate} onUpcoming={upcomingDays?.length ? () => slate.send({ type: "SEASON_SELECTED", season: upcomingSeason }) : undefined} />
       )}
 
       {/* Matchups section */}
       <div className="flex flex-col gap-2">
         <SectionDivider
           label="MATCHUPS"
-          count={slate.games.length}
+          count={slate.status === "slateReady" || slate.status === "slateEmpty" ? slate.games.length : null}
           action={<DensityDial density={density} onChange={setDensity} />}
         />
         <Matchups slate={slate} density={density} />
+      </div>
+      </div>
+      <aside aria-label="Slate summary and upcoming edges" className="flex min-w-0 flex-col gap-6">
+        <StatSummaryRow
+          gamesToday={slate.status === "slateReady" || slate.status === "slateEmpty" ? slate.games.length : null}
+          avgRestAdv={avgRestAdv}
+          highConfGames={highConfGames}
+        />
+        <EdgesAhead onJump={(season, date) => {
+          slate.send({ type: "SEASON_SELECTED", season })
+          slate.send({ type: "DATE_SELECTED", date })
+        }} />
+      </aside>
       </div>
     </div>
   )

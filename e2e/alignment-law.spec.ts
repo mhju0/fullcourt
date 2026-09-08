@@ -125,11 +125,11 @@ test.describe("A table's cells sit on one inset, edges included", () => {
  */
 test("a few-column numeric table sizes to its content, not to the cap", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
-  await page.goto("/season", { waitUntil: "networkidle" });
+  await page.goto("/shooting", { waitUntil: "networkidle" });
 
   // The section is IntersectionObserver-gated: it fetches its payload only once scrolled
   // near, so the table does not exist until the divider has been brought into view.
-  await page.getByText("ZERO-REST WORKLOAD", { exact: true }).scrollIntoViewIfNeeded();
+  await page.getByText("Show zero-rest player workload", { exact: true }).click();
 
   const workload = page
     .locator("table.fc-table")

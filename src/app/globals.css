@@ -305,7 +305,7 @@
    sit on the hero with a hard seam. Scoped to the header element by class, never a
    global re-theme: the light-only law holds everywhere else. Values come from the
    sanctioned dark sets — MARK_COLORS.dark's plates (court-mark-geometry.ts) and the
-   front door's own INK/BONE/DIM (about-content.tsx) — not a new palette. The OTHER
+   front door's dark ink/text palette (home.module.css) — not a new palette. The OTHER
    popup renders through a Portal and deliberately stays a light raised card. */
 .fc-chrome-front {
   --term-surface: #12151A;
@@ -603,4 +603,36 @@
 }
 .fc-rest-table tbody tr.fc-noisy > td span.fc-effect-bar {
   opacity: 0.4;
+}
+
+/* Disclosures keep secondary evidence available without repeating full tables. */
+.fc-disclosure { border-block: 1px solid var(--term-border); padding-block: 8px; }
+.fc-disclosure > summary { cursor: pointer; min-height: 44px; align-content: center; font-size: 15px; font-weight: 600; }
+.fc-disclosure > summary:focus-visible { outline: 2px solid var(--term-text); outline-offset: 3px; }
+.fc-disclosure > summary:hover { background: var(--term-surface-2); }
+.fc-text-link { color: var(--term-blue-text); font-weight: 600; }
+
+.fc-game-score { font-size: 18px; }
+@media (max-width: 639px) {
+  .fc-game-table { min-width: 0 !important; }
+  .fc-game-header { display: none; }
+  .fc-game-grid { grid-template-columns: 76px minmax(0, 1fr) !important; gap: 12px; padding: 12px !important; }
+  .fc-game-score { font-size: 15px; white-space: nowrap; }
+  .fc-game-status { grid-column: 1; grid-row: 1; }
+  .fc-game-teams { grid-column: 2; grid-row: 1; }
+  .fc-game-edge { grid-column: 2; grid-row: 2; }
+  .fc-game-edge::before { content: "Rest advantage"; display: block; margin-bottom: 4px; font-size: 12px; color: var(--term-text-muted); }
+  .fc-game-extra { display: none; }
+  .fc-game-chevron { grid-column: 1; grid-row: 2; }
+}
+
+.fc-detail-table, .fc-schedule-breakdown {
+  background: linear-gradient(to left, var(--term-surface), transparent) right / 16px 100% no-repeat;
+}
+.fc-detail-table :is(th, td):first-child,
+.fc-schedule-breakdown :is(th, td):nth-child(2) {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background: var(--term-surface);
 }

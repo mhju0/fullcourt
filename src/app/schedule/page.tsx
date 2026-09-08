@@ -5,7 +5,7 @@ import { ScheduleDisparityContentLazy } from "@/components/schedule-disparity-la
 import { WinTotalGuardrail } from "@/components/win-total-market-check";
 
 export const metadata: Metadata = {
-  title: "Schedule Disparity",
+  title: "Schedule Edge",
 };
 
 export default function SchedulePage() {

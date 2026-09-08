@@ -1,0 +1,36 @@
+{
+  "0052400121": {
+    "officials": [
+      "Josh Tiven",
+      "Bill Kennedy",
+      "Nick Buchert"
+    ],
+    "espn_event_id": "401766459",
+    "source_urls": [
+      "https://statsdmz.nba.com/pdfs/20250415/20250415_MEMGSW_book.pdf"
+    ],
+    "reason": "NBA official scorer gamebook first-page officials list confirms the active trio; ESPN missing from corpus or has incomplete/nonconsecutive order labels.",
+    "expected_date": "2025-04-15",
+    "expected_home": "GSW",
+    "expected_away": "MEM",
+    "source_file": "ml/data/l2m-research/assignment-validation-earlier-20260906/20250415_MEMGSW_book.pdf",
+    "source_sha256": "619096f4af43915f56f95fdb1d23a47cf22c0a224df4e17d5e706ae7bdccb464"
+  },
+  "0052400201": {
+    "officials": [
+      "James Capers",
+      "Ed Malloy",
+      "Mitchell Ervin"
+    ],
+    "espn_event_id": "401766462",
+    "source_urls": [
+      "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/summary?event=401766462"
+    ],
+    "reason": "Play-in absent from original corpus; fresh ESPN summary confirms matching date, teams, final scores and active orders 1-3; any fourth standby excluded.",
+    "expected_date": "2025-04-18",
+    "expected_home": "ATL",
+    "expected_away": "MIA",
+    "source_file": "ml/data/l2m-research/assignment-validation-earlier-20260906/401766462-summary.json",
+    "source_sha256": "7ddc75d89fa1e275ae5b49b3b0edc366a3684683a2c233aca72a259a2f139e7d"
+  }
+}

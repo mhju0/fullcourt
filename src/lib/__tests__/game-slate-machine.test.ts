@@ -168,10 +168,10 @@ describe("DAYS_RESOLVED / DAYS_REJECTED", () => {
     expect(next.days).toBe(DAYS);
   });
 
-  it("falls back to the default pick when the chosen date is not in the day list", () => {
-    const state = base({ status: "loadingSlate", selectedDate: "1999-01-01" });
+  it("preserves an explicitly selected no-game day", () => {
+    const state = base({ status: "loadingSlate", selectedDate: "2024-12-24" });
     const next = slateReducer(state, { type: "DAYS_RESOLVED", days: DAYS });
-    expect(next.selectedDate).toBe("2024-12-25");
+    expect(next.selectedDate).toBe("2024-12-24");
   });
 
   it("surfaces the failure message and clears the day list", () => {
@@ -287,5 +287,21 @@ describe("calendarView is total — the region can never render nothing", () => 
   it("reports empty for a loaded month that holds no days", () => {
     // Reachable by shifting off the end of a month's games, e.g. into November.
     expect(calendarView(ready({ selectedDate: "2024-11-05" })).kind).toBe("empty");
+  });
+});
+
+
+describe("LOCATION_RESTORED", () => {
+  it("keeps loaded games when only density or unrelated URL state changed", () => {
+    const state = ready();
+    expect(slateReducer(state, { type: "LOCATION_RESTORED", season: state.season, date: state.selectedDate })).toBe(state);
+  });
+
+  it("restores another season and preserves an empty date through its calendar response", () => {
+    const state = slateReducer(ready(), { type: "LOCATION_RESTORED", season: "2023-24", date: "2023-12-24" });
+    const next = slateReducer(state, { type: "DAYS_RESOLVED", days: [] });
+    expect(next.season).toBe("2023-24");
+    expect(next.selectedDate).toBe("2023-12-24");
+    expect(next.status).toBe("loadingSlate");
   });
 });

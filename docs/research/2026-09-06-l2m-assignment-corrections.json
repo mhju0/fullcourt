@@ -1,0 +1,88 @@
+{
+  "0022500392": {
+    "officials": [
+      "Pat Fraher",
+      "Scott Twardoski",
+      "Suyash Mehta"
+    ],
+    "espn_event_id": "401810247",
+    "source_urls": [
+      "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/summary?event=401810247",
+      "https://www.nba.com/game/phx-vs-gsw-0022500392/box-score"
+    ],
+    "reason": "L2M metadata lists away score 114; NBA box score and ESPN agree 116, with identical NBA game ID/date/teams. Explicit exception preserves raw mismatch.",
+    "expected_date": "2025-12-20",
+    "expected_home": "GSW",
+    "expected_away": "PHX",
+    "source_file": "ml/data/l2m-research/assignment-validation-20260906/401810247-summary.json",
+    "source_sha256": "6ce86091ad0c745b308c096c2509ab2aa910a4b6768b9a381c486978f2b049d9"
+  },
+  "0022500672": {
+    "officials": [
+      "Brian Forte",
+      "Rodney Mott",
+      "Robert Hussey"
+    ],
+    "espn_event_id": "401810527",
+    "source_urls": [
+      "https://statsdmz.nba.com/pdfs/20260128/20260128_CHIIND_book.pdf"
+    ],
+    "reason": "ESPN officials absent; NBA official scorer gamebook page 1 explicitly names these three officials.",
+    "expected_date": "2026-01-28",
+    "expected_home": "IND",
+    "expected_away": "CHI",
+    "source_file": "ml/data/l2m-research/assignment-validation-20260906/20260128_CHIIND_book.pdf",
+    "source_sha256": "1041f16e30fa111f8771fe0d6e17f56df253f26d281c6fb7dac6402af4444123"
+  },
+  "0052500111": {
+    "officials": [
+      "Zach Zarba",
+      "Curtis Blair",
+      "Gediminas Petraitis"
+    ],
+    "espn_event_id": "401866755",
+    "source_urls": [
+      "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/summary?event=401866755"
+    ],
+    "reason": "Play-in missing from original corpus; fresh ESPN summary matches date/teams/final score. Explicit orders 1-3; order 4 standby excluded.",
+    "expected_date": "2026-04-14",
+    "expected_home": "CHA",
+    "expected_away": "MIA",
+    "source_file": "ml/data/l2m-research/assignment-validation-20260906/401866755-summary.json",
+    "source_sha256": "c23885aad4f4b1768a18f2457a688458d434ae0dade3a3c0ade1b2ae7afc20c8"
+  },
+  "0052500121": {
+    "officials": [
+      "James Capers",
+      "Eric Dalen",
+      "Nick Buchert"
+    ],
+    "espn_event_id": "401866754",
+    "source_urls": [
+      "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/summary?event=401866754"
+    ],
+    "reason": "Play-in missing from original corpus; fresh ESPN summary matches date/teams/final score. Explicit orders 1-3; order 4 standby excluded.",
+    "expected_date": "2026-04-14",
+    "expected_home": "PHX",
+    "expected_away": "POR",
+    "source_file": "ml/data/l2m-research/assignment-validation-20260906/401866754-summary.json",
+    "source_sha256": "09ce91e1c81b5a98b3aaa37a1f45cc202f6ea5607d5b5afa688f464afd28380d"
+  },
+  "0052500131": {
+    "officials": [
+      "James Williams",
+      "Sean Corbin",
+      "Karl Lane"
+    ],
+    "espn_event_id": "401866756",
+    "source_urls": [
+      "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/summary?event=401866756"
+    ],
+    "reason": "Play-in missing from original corpus; fresh ESPN summary matches date/teams/final score. Explicit orders 1-3; order 4 standby excluded.",
+    "expected_date": "2026-04-15",
+    "expected_home": "LAC",
+    "expected_away": "GSW",
+    "source_file": "ml/data/l2m-research/assignment-validation-20260906/401866756-summary.json",
+    "source_sha256": "3c239339befe56c944eddce8476f1f7953332dce4c39be38c5f1c7f066d6420b"
+  }
+}

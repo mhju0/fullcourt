@@ -1,7 +1,5 @@
 "use client"
 
-import { Menu } from "@base-ui/react/menu"
-import { Search } from "lucide-react"
 import { TransitionLink as Link } from "@/components/transition-link"
 import { usePathname } from "next/navigation"
 import { useCallback, useEffect, useRef, useState } from "react"
@@ -10,11 +8,9 @@ import { wordmarkLetters } from "@/lib/brand/wordmark-kern"
 import {
   DIRECT_NAV_ITEMS,
   isActiveRoute,
-  OTHER_NAV_ITEMS,
-  OTHER_NAV_LABEL,
-  PALETTE_OPEN_EVENT,
+  primaryNavCurrent,
 } from "@/lib/primary-navigation"
-import { TRACK, TYPE } from "@/lib/terminal-styles"
+import { TRACK } from "@/lib/terminal-styles"
 import { cn } from "@/lib/utils"
 
 /**
@@ -36,7 +32,7 @@ export const SECONDARY_LINKS = [
   { href: "/behind-the-data", label: "BEHIND THE DATA" },
 ] as const
 
-/** Shared by the direct tabs and the OTHER trigger so the underline reads identically. */
+/** Shared by primary and reference links. */
 const TAB_CLASS =
   "flex h-full shrink-0 items-center whitespace-nowrap border-b-2 font-semibold transition-colors"
 const TAB_STYLE = { fontSize: "12px", letterSpacing: TRACK.data } as const
@@ -78,7 +74,7 @@ const CHROME_CLEAR_PX = 8
  * Retraction is a transform, never a height or a `display` change. The header sits in normal
  * flow above `<main>`, so collapsing it would reflow the page under the reader and fight the
  * alignment law; translating it leaves its flow box exactly where it was. The tabs also stay
- * mounted — `navigation.spec.ts` asserts six links and zero `aria-current` on `/`, and
+ * mounted — `navigation.spec.ts` asserts four links and zero `aria-current` on `/`, and
  * unmounting them to hide them would take that invariant with it.
  */
 function useRetractingHeader(enabled: boolean) {
@@ -219,7 +215,6 @@ function useEdgeFades() {
 
 export function NavBar() {
   const pathname = usePathname()
-  const otherActive = OTHER_NAV_ITEMS.some((item) => isActiveRoute(pathname, item.href))
   const { ref: stripRef, fades } = useEdgeFades()
 
   // The front door only. Every other surface keeps the bar pinned.
@@ -244,15 +239,11 @@ export function NavBar() {
         retractable && clear && "fc-chrome-clear",
         hidden && "-translate-y-full"
       )}
-      // A retracted bar still holds six focusable tabs. Tabbing into one has to bring it back,
+      // A retracted bar still holds four focusable tabs. Tabbing into one has to bring it back,
       // or the focus ring lands on a control sitting off the top of the screen.
       onFocus={reveal}
     >
-      {/* THE BAR — one 56px layer since the 2026-08-29 shell merge. The brand zone sits left,
-          the tab strip takes the middle (desktop only — below `lg` the bottom nav is primary
-          navigation and this bar is brand-only), and the palette's SEARCH affordance sits
-          right. The "NBA ANALYTICS PLATFORM" tagline retired to the front door with the merge:
-          a slim bar carries the name, the front door carries the story. */}
+      {/* The phone header holds the brand; primary destinations live in the bottom dock. */}
       <div
         className="motion-safe:transition-colors motion-safe:duration-200"
         style={{
@@ -306,12 +297,7 @@ export function NavBar() {
             style={{ width: 1, height: 18, background: "var(--term-hairline)" }}
           />
 
-          {/* The tab strip — desktop only. Below `lg` primary navigation is the bottom nav
-              (bottom-nav.tsx) and every route stays reachable through the palette, so the
-              strip leaves the DOM entirely rather than hiding under a hamburger. Within the
-              strip nothing changed in the merge: two landmarks in one row, the product tabs
-              keeping the "Main navigation" name and its asserted six-link count, the
-              reference links in their own landmark so they never inflate that count. */}
+          {/* Reference links retain their own landmark, separate from the four primary routes. */}
           <div className="relative hidden h-full min-w-0 flex-1 lg:block">
             <div
               ref={stripRef}
@@ -319,13 +305,13 @@ export function NavBar() {
             >
               <nav aria-label="Main navigation" className="flex h-full shrink-0 items-center gap-4">
                 {DIRECT_NAV_ITEMS.map(({ href, label }) => {
-                  const active = isActiveRoute(pathname, href)
+                  const current = primaryNavCurrent(pathname, href)
                   return (
                     <Link
                       key={href}
                       href={href}
-                      aria-current={active ? "page" : undefined}
-                      className={cn(TAB_CLASS, tabTone(active))}
+                      aria-current={current}
+                      className={cn(TAB_CLASS, tabTone(Boolean(current)))}
                       style={TAB_STYLE}
                     >
                       {label}
@@ -333,59 +319,6 @@ export function NavBar() {
                   )
                 })}
 
-                {/* The trigger reads active whenever any page inside it is open, so the bar never
-                    loses track of where you are while the menu itself is shut. */}
-                <Menu.Root>
-                  <Menu.Trigger
-                    // The active state is exposed as data rather than left to a class name, so
-                    // e2e can assert "you are inside OTHER" without pinning the styling.
-                    data-active-surface={otherActive ? "true" : "false"}
-                    className={cn(
-                      TAB_CLASS,
-                      "gap-2 outline-none focus-visible:text-[var(--term-text)]",
-                      tabTone(otherActive)
-                    )}
-                    style={TAB_STYLE}
-                  >
-                    {OTHER_NAV_LABEL}
-                    <span aria-hidden style={{ fontSize: TYPE.micro }}>▼</span>
-                  </Menu.Trigger>
-                  <Menu.Portal>
-                    <Menu.Positioner sideOffset={0} align="start">
-                      <Menu.Popup
-                        className="mono min-w-[13rem] py-1 shadow-lg outline-none"
-                        style={{
-                          background: "var(--term-surface)",
-                          border: "1px solid var(--term-border)",
-                          fontSize: "12px",
-                          letterSpacing: TRACK.data,
-                        }}
-                      >
-                        {OTHER_NAV_ITEMS.map((item) => {
-                          const { href, label } = item
-                          const active = isActiveRoute(pathname, href)
-                          return (
-                            <Menu.Item
-                              key={href}
-                              // `render` keeps this a real <a>, so the item is still a link to
-                              // middle-click, copy, or crawl — not a button that navigates.
-                              render={<Link href={href} aria-current={active ? "page" : undefined} />}
-                              className={cn(
-                                "flex cursor-pointer items-center gap-2 px-4 py-2 font-semibold outline-none transition-colors",
-                                active
-                                  ? "text-[var(--term-text)]"
-                                  : "text-[var(--term-text-muted)]",
-                                "data-[highlighted]:bg-[var(--term-surface-2)] data-[highlighted]:text-[var(--term-text)]"
-                              )}
-                            >
-                              {label}
-                            </Menu.Item>
-                          )
-                        })}
-                      </Menu.Popup>
-                    </Menu.Positioner>
-                  </Menu.Portal>
-                </Menu.Root>
               </nav>
 
               <nav aria-label="Reference" className="ml-auto flex h-full shrink-0 items-center gap-4">
@@ -430,23 +363,6 @@ export function NavBar() {
             />
           </div>
 
-          {/* The palette's visible affordance — the GitHub lesson is that a keyboard-only
-              palette is a feature nobody finds, so the word stays on the button. The ⌘K chip
-              was measured off it (2026-08-29): the bar's inner width is a constant 1232px on
-              every desktop (max-w-7xl minus padding), and with the chip the six tabs could not
-              fit beside the brand zone — the shortcut is taught by `title` and by the palette
-              itself instead. Desktop only: the bottom nav carries its own search slot. */}
-          <button
-            type="button"
-            onClick={() => window.dispatchEvent(new Event(PALETTE_OPEN_EVENT))}
-            className="mono hidden h-8 shrink-0 items-center gap-2 border border-[var(--term-border)] px-2 font-semibold text-[var(--term-text-muted)] outline-none transition-colors hover:text-[var(--term-text)] focus-visible:text-[var(--term-text)] lg:flex"
-            style={{ fontSize: "12px", letterSpacing: TRACK.data, borderRadius: "var(--term-radius-sm)" }}
-            title="⌘K"
-            aria-keyshortcuts="Meta+K Control+K"
-          >
-            <Search size={13} aria-hidden />
-            SEARCH
-          </button>
         </div>
       </div>
     </header>

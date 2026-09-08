@@ -50,6 +50,7 @@ test.describe("Shooting by Rest", () => {
     await expect(page.locator("#pr-volume")).toHaveValue("300");
     // The floor has to bite, or "best eFG%" is a list of 180-attempt centres.
     const floored = await page.getByTestId("player-row").count();
+    await page.getByText(/^Filters \(/).click();
     await page.selectOption("#pr-volume", "0");
     expect(await page.getByTestId("player-row").count()).toBeGreaterThan(floored);
   });
@@ -96,7 +97,7 @@ test.describe("Shooting by Rest", () => {
     await page.goto("/shooting");
     await page.getByTestId("player-row").first().waitFor(READY);
 
-    const header = page.getByRole("columnheader", { name: /Rest effect/ });
+    const header = page.getByRole("columnheader", { name: /Difference/ });
     await header.click();
     await expect(header).toHaveAttribute("aria-sort", "descending");
     const top = await page.getByTestId("player-row").first().textContent();
@@ -111,6 +112,7 @@ test.describe("Shooting by Rest", () => {
     await page.getByTestId("player-row").first().waitFor(READY);
 
     await page.selectOption("#pr-season", "career");
+    await page.getByText(/^Filters \(/).click();
     await page.selectOption("#pr-volume", "0");
     // Every listed player carries an effect; nobody is ranked on a number we lack.
     const dashes = await page
@@ -147,4 +149,40 @@ test.describe("Shooting by Rest", () => {
       expect(cell).toMatch(/OKC|SEA/);
     }
   });
+});
+
+ test("compact mobile rows preserve samples and keyboard expansion", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/shooting");
+  const row = page.getByTestId("player-row").first();
+  await row.waitFor(READY);
+  for (const column of [2, 8, 9, 10]) {
+    await expect(row.locator(`td:nth-child(${column})`)).toBeVisible();
+  }
+  for (const column of [8, 9]) await expect(row.locator(`td:nth-child(${column})`)).toContainText("att.");
+  const control = row.getByRole("button");
+  await control.focus();
+  await page.keyboard.press("Enter");
+  await expect(control).toHaveAttribute("aria-expanded", "true");
+  await expect(page.getByTestId("season-row").first()).toBeVisible();
+  await page.keyboard.press("Space");
+  await expect(control).toHaveAttribute("aria-expanded", "false");
+  await page.getByRole("searchbox").fill("zzzzzzzz");
+  await expect(page.getByRole("status")).toContainText("No players match these filters");
+ });
+
+test("shooting filter and player links restore the same view", async ({ page }) => {
+  await page.goto("/shooting?year=2024&volume=0&q=jokic&certain=1&sort=effect&dir=asc");
+  await expect(page.locator("#pr-season")).toHaveValue("2024");
+  await expect(page.locator("#pr-volume")).toHaveValue("0");
+  await expect(page.getByLabel("Hide uncertain differences")).toBeChecked();
+  await page.getByLabel("Hide uncertain differences").uncheck();
+  await page.getByTestId("player-row").first().click();
+  await page.reload();
+  await expect(page.locator("#pr-season")).toHaveValue("2024");
+  await expect(page.getByRole("searchbox")).toHaveValue("jokic");
+  await expect(page.locator("tr.fc-open")).toHaveCount(1);
+  await page.getByLabel("Season", { exact: true }).selectOption("2023");
+  await page.goBack();
+  await expect(page.locator("#pr-season")).toHaveValue("2024");
 });

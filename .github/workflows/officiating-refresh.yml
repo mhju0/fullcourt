@@ -1,0 +1,82 @@
+name: Refresh officiating reports
+on:
+  schedule:
+    - cron: "30 20 * * *"
+  workflow_dispatch:
+    inputs:
+      season:
+        description: "Optional season (YYYY-YY); defaults to the current NBA season"
+        required: false
+        type: string
+permissions:
+  contents: write
+  pull-requests: write
+concurrency:
+  group: officiating-refresh
+  cancel-in-progress: false
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+      - name: Select season
+        env:
+          REQUESTED_SEASON: ${{ inputs.season }}
+        run: |
+          python - <<'PY'
+          from datetime import datetime
+          from zoneinfo import ZoneInfo
+          import os, re
+          now = datetime.now(ZoneInfo('America/New_York'))
+          year = now.year if now.month >= 10 else now.year - 1
+          season = os.environ.get('REQUESTED_SEASON') or f'{year}-{str(year+1)[-2:]}'
+          if not re.fullmatch(r'20\d{2}-\d{2}', season): raise SystemExit('Invalid season')
+          active = not (os.environ.get('GITHUB_EVENT_NAME') == 'schedule' and now.month in (7, 8, 9))
+          with open(os.environ['GITHUB_ENV'], 'a') as f:
+              f.write(f'REVIEW_SEASON={season}\nOFFICIATING_ACTIVE={str(active).lower()}\n')
+          if not active: print('Offseason: scheduled refresh skipped; manual refresh remains available.')
+          PY
+      - name: Collect complete source snapshot
+        if: env.OFFICIATING_ACTIVE == 'true'
+        run: python ml/collect_l2m_season.py --season "$REVIEW_SEASON" --out /tmp/officiating-sources
+      - name: Retain source evidence
+        if: always() && env.OFFICIATING_ACTIVE == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: officiating-sources-${{ github.run_id }}
+          path: /tmp/officiating-sources
+          retention-days: 90
+          if-no-files-found: warn
+      - name: Generate publication files
+        if: env.OFFICIATING_ACTIVE == 'true'
+        run: |
+          snapshot=$(find "/tmp/officiating-sources/$REVIEW_SEASON" -name manifest.json -print -quit)
+          python ml/publish_officiating.py "$(dirname "$snapshot")"
+          python -m unittest discover -s ml/tests -p 'test_officiating_publish.py'
+      - name: Prepare data update for preview review
+        if: env.OFFICIATING_ACTIVE == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          branch="data/officiating-${GITHUB_RUN_ID}"
+          git switch -c "$branch"
+          git add src/data/officiating.json public/data/officiating
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'Refresh NBA officiating reports'
+          git push origin "$branch"
+          cat > /tmp/pr-body.md <<'BODY'
+          Refresh the selected season from a complete NBA L2M snapshot, including revisions to previously collected reports. Incomplete snapshots and removed game IDs block publication.
+
+          Validation: publication contracts passed. Raw sources and manifests are attached to the workflow run for 90 days. Review the Vercel preview and merge to publish; this workflow never merges or writes to main.
+          BODY
+          if ! gh pr create --title "Refresh officiating reports: $REVIEW_SEASON" --body-file /tmp/pr-body.md --base main --head "$branch"; then
+            echo "::notice::Data branch is ready; repository policy may prevent Actions from creating pull requests."
+            echo "## Validated data update" >> "$GITHUB_STEP_SUMMARY"
+            echo "Open a pull request from [$branch](https://github.com/$GITHUB_REPOSITORY/compare/main...$branch?expand=1), then verify its preview before merging." >> "$GITHUB_STEP_SUMMARY"
+          fi

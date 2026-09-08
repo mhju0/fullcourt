@@ -63,10 +63,16 @@ export const BEHIND_THE_DATA_SECTIONS = [
     surfaceHrefs: ["/availability"],
   },
   {
+    href: "/behind-the-data/officiating",
+    label: "OFFICIATING",
+    title: "Officiating",
+    surfaceHrefs: ["/officiating"],
+  },
+  {
     href: "/behind-the-data/referees",
     label: "REFEREE EFFECT",
     title: "Referee effect",
-    surfaceHrefs: ["/referees"],
+    surfaceHrefs: [],
   },
   {
     href: "/behind-the-data/time-zones",

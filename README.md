@@ -31,14 +31,14 @@ explains the calculations and publishes results that did not support a measurabl
 | Page | What it shows |
 | --- | --- |
 | [Games](https://fullcourt-nba.vercel.app/games) | Browse matchups by season and date, switch between summary and detailed views, and expand a game to inspect its schedule load. Edges Ahead jumps to upcoming games with large rest gaps. |
-| [Season Report](https://fullcourt-nba.vercel.app/season) | One season's rest results, schedule value in wins, and team records when rested or tired. Small samples are labeled as too early to assess. |
-| [Schedule Edge](https://fullcourt-nba.vercel.app/schedule) | Teams ranked within a season by net rest-edge games, with schedule value in wins. This describes the schedule, not team performance. |
+| [Season Report](https://fullcourt-nba.vercel.app/season) | Completed-season results against their home baseline, team rest records, and five notable completed games. Small samples are labeled. |
+| [Schedule Edge](https://fullcourt-nba.vercel.app/schedule) | Within-season rest-edge ranking, schedule worth, travel and workload, and the completed-game fatigue calendar. Details expand on demand. |
 | [Model Results](https://fullcourt-nba.vercel.app/analysis) | Rested-home and rested-visitor win rates by rest gap and season, compared with venue baselines, plus a searchable game record. |
 | [Playoff Rest](https://fullcourt-nba.vercel.app/playoffs) | Previous-round workload and a separate series probability model. Its probabilities improve on the historical base rate, while its overall accuracy is close to always choosing the home-court team. |
 | [Player Shooting](https://fullcourt-nba.vercel.app/shooting) | Effective field goal percentage on no rest versus three or more days off. Rest comes from each player's appearances. Single-season splits are noisy; career estimates use shrinkage toward the league mean. |
 | [Shot Value](https://fullcourt-nba.vercel.app/shot-quality) | Expected shooting value by court location. The model does not observe defender distance, shot-clock pressure, or shot difficulty beyond location. |
 | [Availability Cost](https://fullcourt-nba.vercel.app/availability) | The estimated margin associated with a missing rotation player, controlling for team strength and schedule factors. Absences are identified after games, so this is not a lineup forecast. |
-| [Referee Effect](https://fullcourt-nba.vercel.app/referees) | Foul mix, timing, and tests of referee/player records. The data identifies crews, not the official who made each call; extreme records are compared with what chance produces. |
+| [Officiating](https://fullcourt-nba.vercel.app/officiating) | NBA Last Two Minute report findings by season, team, and call type, with the NBA’s verdicts inside each game. Covers selected close-game endings; earlier referee studies remain in the research archive. |
 
 ## Screenshots
 
@@ -49,7 +49,7 @@ current data and controls.
 
 <img src="docs/screenshots/analysis.png" alt="Rest-advantage results compared with venue baselines, with sample sizes and threshold charts." width="900" />
 
-<img src="docs/screenshots/referees.png" alt="Officials' foul-type rates compared with the league average, with uncertain differences shown in muted text." width="900" />
+<img src="docs/screenshots/officiating.png" alt="Officiating page showing the missed-call share, three-season context, and a games-first report browser." width="900" />
 
 ## How the fatigue score works
 

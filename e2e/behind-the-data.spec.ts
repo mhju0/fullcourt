@@ -7,7 +7,7 @@ test.describe("Behind the Data", () => {
     // Two landmarks share the nav row. The product tabs keep their asserted six-link count;
     // the reference links are a separate landmark so they read as utility, not product.
     const mainNav = page.getByRole("navigation", { name: "Main navigation" });
-    await expect(mainNav.getByRole("link")).toHaveCount(6);
+    await expect(mainNav.getByRole("link")).toHaveCount(4);
     await expect(
       mainNav.getByRole("link", { name: "BEHIND THE DATA", exact: true })
     ).toHaveCount(0);
