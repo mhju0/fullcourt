@@ -97,7 +97,7 @@ def main():
         lines.append(f'| {row["season"]} | {row["games"]} | {row["fouls_per_game"]:.2f} | {row["technicals_per_game"]:.3f} |')
     lines += ["", "These ESPN regulation counts cover a different population from L2M and are not possession-adjusted or a measure of correctness.", ""]
     (RESEARCH / "2026-09-06-l2m-three-season-comparison.md").write_text("\n".join(lines))
-    print(json.dumps({"reports": output["total_reports"], "integrity": integrity}))
+    print("Wrote three-season comparison files to docs/research.")
 
 
 if __name__ == "__main__":
