@@ -72,9 +72,10 @@ Interior pages use `PageHeader`: eyebrow, plain title, concise description, then
 | Player Shooting | `/shooting` | Shooting by Rest |
 | Shot Value | `/shot-quality` | Expected Shot Value |
 | Availability Cost | `/availability` | Availability Cost |
-| Referee Effect | `/referees` | What each official calls |
+| Officiating | `/officiating` | Officiating |
+| Explore | `/explore` | Explore |
 | Behind the Data | `/behind-the-data` | Behind the data |
 
-The first six are direct tabs. Shot Value, Availability Cost, and Referee Effect use OTHER. Behind the Data has a separate Reference landmark. The wordmark and footer reach `/`; no tab points there. `/about` redirects to `/`.
+Games, Season Report, Schedule Edge, and Explore are the four primary destinations on desktop and mobile. Other analyses are reached through Explore. Behind the Data has a separate Reference landmark. The wordmark reaches `/`; `/about` contains the brand story. `/referees` redirects to Officiating; historical referee research remains in the methodology archive.
 
 FullCourt is the product; rest advantage is the metric. Internal module names such as Playoff Predictor, Shot Quality, and Schedule Disparity remain unchanged.

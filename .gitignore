@@ -1,98 +1,64 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
-# dependencies
-/node_modules
-/.pnp
+# JavaScript dependencies and package-manager caches
+node_modules/
+.pnpm-store/
 .pnp.*
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/versions
+.yarn/
 package-lock.json
-
-# testing
-/coverage
-
-# next.js
-/.next/
-/out/
-
-# production
-/build
-
-# misc
-.DS_Store
-*.pem
-
-# debug
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
-.env
-.env*.local
-scripts/.env
-
-# vercel
-.vercel
-
-# typescript
+# Build outputs and generated type metadata
+/.next/
+/out/
+/build/
+/dist/
 *.tsbuildinfo
 next-env.d.ts
+.vercel/
 
-# python
-venv/
-scripts/venv/
-ml/.venv/
-__pycache__/
-scripts/__pycache__/
-ml/__pycache__/
-
-# ml artifacts (large binaries / data — keep out of git)
-ml/data/
-ml/shot_value/*.pkl
-
-# playwright
+# Test and local screenshot output (curated docs/screenshots remains tracked)
+/coverage/
 /playwright-report/
 /test-results/
 
-# local caches
-.pnpm-store/
-.serena/
+# Credentials and machine settings; templates are safe to track
+.env
+.env.*
+!.env.example
+!.env.*.example
+*.pem
+.DS_Store
 
-# agent / local project memory
-# Agent notes, editor tooling, and installed skills are local-only and may contain
-# machine-specific context. Kept on disk, out of the published index.
+# Python environments and caches
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Local research source caches and model binaries, not published analytical artifacts
+/ml/data/
+/ml/shot_value/
+/ml/phase3_results.txt
+/ml/predict_series_dryrun.txt
+/ml/shot_data_probe.txt
+/ml/shot_defend_probe.txt
+
+# Local agent/editor state; existing shared Claude contracts remain tracked
 /.agents/
+/.codex/
 /.claude/*
-# Exceptions: the shared agent contract. `settings.json` carries the `deny` rules that enforce
-# the CLAUDE.md hard bans; `skills/` and `agents/` must be tracked because git worktrees do not
-# inherit untracked files, so an untracked skill set leaves every new worktree with no skills
-# at all. These are team contracts, not machine-specific context.
 !/.claude/settings.json
 !/.claude/skills/
 !/.claude/agents/
-# Still local-only: machine-specific overrides, plugin scratch state, and vendored third-party
-# skills (react-best-practices is Vercel Engineering content, re-installable, and ships no
-# license of its own — it is not ours to redistribute from a public repo).
-/.claude/settings.local.json
-/.claude/skill-stats.json
 /.claude/skills/react-best-practices/
-/.codex/
-/docs/agents/
+.serena/
 .tokensave/
-# Internal analysis kept on disk and deliberately unpublished: design/UX audit working
-# files, the docs/audit reports, and raw model probe/metric dumps from the ml pipeline.
+.superpowers/
+/docs/agents/
 /design-audit/
 /docs/audit/
-ml/phase3_results.txt
-ml/predict_series_dryrun.txt
-ml/shot_data_probe.txt
-ml/shot_defend_probe.txt
-ml/shot_value/
-
-# Claude SDD scratch workspaces (ledgers, briefs, review packages)
-.superpowers/

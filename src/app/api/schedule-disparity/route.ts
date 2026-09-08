@@ -23,8 +23,8 @@ const seasonSchema = z
   .refine((s) => RANKABLE().includes(s), { message: "Unknown season" })
   .default(defaultRankableSeason());
 
-// `historical`, not `inSeason`, because the season list is narrowed to the rankable ones: a
-// truncated season cannot be ranked, so this never serves a season still in progress.
+// Rankings can include the current season. Cache policy remains historical; do not confuse
+// rankable-season exclusions with a completed-season-only contract.
 export const GET = jsonRoute(
   "api/schedule-disparity",
   z.object({ season: seasonSchema }),

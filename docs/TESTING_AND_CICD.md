@@ -1,418 +1,86 @@
-# Testing & CI/CD
+# Testing and CI/CD
 
-## Test commands
+Use the pnpm version pinned in `package.json`. GitHub CI uses Node 22 and Python 3.11;
+workflow files are the authority for exact commands and versions.
 
-```bash
-pnpm test         # Vitest watch
-pnpm test:run     # Vitest once (CI-style)
-pnpm test:e2e     # Playwright (auto-starts `pnpm dev`)
-pnpm test:e2e:ui  # Playwright UI mode
-pnpm lint         # eslint (flat config: next/core-web-vitals + next/typescript)
-pnpm typecheck    # strict TypeScript without emitting files
-pnpm build        # next build (type-checks as part of the build)
+## Local checks
+
+```sh
+pnpm install --frozen-lockfile
+pnpm lint
+pnpm typecheck
+pnpm test:run
+pnpm build
+pnpm audit --prod
 python3 -m unittest discover -s scripts/tests -p 'test_*.py' -v
-                   # import-light Python ingestion contract tests
-python3 -m pip install --constraint ml/requirements.txt psycopg2-binary
-python3 -m unittest discover -s ml/tests -p 'test_*.py' -v
-                   # playoff grind contracts; no database or credentials needed
 ```
 
-> **Build without a database before pushing.** `/` (the front door) is a server component that reads the
-> live backtest, so it is data-dependent at build time — and a local `pnpm build` passes on
-> `.env.local` while CI, which has no `DATABASE_URL`, fails at prerender. That gap went
-> unnoticed for three pushes on 2026-07-30. The page now withholds its three evidence figures
-> when no database is configured rather than failing, but the way to catch this class of
-> problem is to build the way CI does:
->
-> ```
-> mv .env.local .env.local.bak && pnpm build; mv .env.local.bak .env.local
-> ```
+For ML contracts, use a virtual environment with `psycopg2-binary` installed under the
+`ml/requirements.txt` constraints, then run:
 
-## Unit tests — Vitest
-
-Config (`vitest.config.ts`): `environment: "node"`, `include: ["src/**/*.test.ts"]`,
-`passWithNoTests: false`, alias `@ → ./src`. There is **no** React plugin and no Testing
-Library — neither is in `package.json`, and nothing renders a component. Every test is a
-node-environment unit or route test; the two that import from a component module import
-only exported pure functions.
-
-**53 test files, 676 tests** (`pnpm test:run`, verified 2026-08-15). The table below names what
-each file covers; it is not a per-file count, because a count per row is a second copy of a fact
-nothing checks. Run the command for the current figure.
-
-| File | Covers |
-|------|--------|
-| `src/lib/__tests__/fatigue.test.ts` | `calculateFatigue` / `calculateRestAdvantage`: opener baseline, freshness curve, back-to-back, 3-in-4, density, travel windows + the travel-leg contract, road-trip streak, altitude and its carryover, overtime, combined compounding. Since 2026-07-30 also: real time zones vs the retired 26° longitude proxy (including Phoenix's missing DST), neutral-site venues, turnaround-hour sharpening of the back-to-back multiplier, circadian direction and acclimation decay, and the blowout discount. **Every one of those was proven to fail against the unfixed model before being accepted** — `git stash push src/lib/fatigue.ts`, re-run, pop. |
-| `src/lib/__tests__/haversine.test.ts` | Great-circle distances (LA↔Boston ≈2,591mi, NY↔SF, Dallas↔Denver), symmetry, identical-point = 0. |
-| `src/lib/__tests__/nba-season.test.ts` | `pickDefaultGamesDate` (today/postseason/October-start cases), `formatLocalDateKey` and `formatEasternDateKey` (US/Eastern, viewer-timezone-independent), `currentDisplaySeason`, `isNbaOffSeason`, `browsableSeasons`, and `defaultNbaSeason` — that the board opens on the upcoming season inside the Aug–Sep window, on the newest season with data outside it, and **never on a season the selector cannot offer** (default and dropdown read the same list). |
-| `src/lib/__tests__/rest-advantage-display.test.ts` | `formatRestAdvantageDisplay` team/neutral labeling + one-decimal formatting, the `unmeasured` kind (a `null` rest advantage is **not** `neutral` — the distinction that stops an unplayed season printing `EVEN 0.0`), and `buildRestAdvantageEvidence`: cumulative-bucket selection (a 4.1 gap resolves to "3 or more", **not** the RA≥5 rate), threshold boundaries, the sub-2 overall fallback, the 0.5 call boundary, zero-denominator refusal, and signed counterfactual wording. Discriminating: sorting the cleared buckets ascending fails exactly the two selection tests. |
-| `src/lib/__tests__/game-slate-machine.test.ts` | The game-slate reducer (25 cases): the month deriving from `selectedDate` across month and year boundaries, `MONTH_SELECTED` resolving from memory without re-entering `loadingDays`, stale slate responses being dropped, `slateEmpty` vs `slateError` separation, season invalidation, no-op events returning the same state **by identity**, `monthTabs` counting never-played months as `dayCount: 0`, and `calendarView` being total over all seven statuses — the property the old `errorGames ?? errorDates` bug violated. Discriminating: removing the stale-response guard fails 1 test; storing the month instead of deriving it fails 6. Runs in the `node` environment with no DOM, because the reducer has no React in it. |
-| `src/lib/__tests__/explore-games-machine.test.ts` | The Explore Games reducer and selectors (19 cases): every filter change returning to page 1, `FILTERS_CLEARED` clearing all four at once, the drill signal applying **once per token** so a stale signal cannot fight a later change while a repeat click on the same bar still applies, page clamping in both directions and against an empty result set, `pageWindow` reporting the 1-based inclusive range (and nothing at all rather than "1–0 of 0"), `exploreSearchKey` omitting inactive filters, and the detail modal's id/open pair moving together. No DOM — the machine has no React in it. |
-| `src/lib/__tests__/rest-advantage-evidence-server.test.ts` | The backtest cache: the expensive read happening once while `getCompletedGamesStamp()` is unchanged, repeating as soon as it moves, keyed per `seasonMinRA`, and bounded against arbitrary thresholds from the query string. Discriminating: removing the cache read fails two cases, removing the stamp comparison fails the third. |
-| `src/lib/__tests__/timezone-null.test.ts` | The published time-zone null. Every bounded claim `/behind-the-data/time-zones` makes, pinned at **both** ends: the deciding term stays at exactly zero in every fold, the four candidates stay worth nothing *and* not accidentally worth something, no candidate earns its place added alone, the raw split stays wide enough that the page still has to explain it, and the strength edge keeps flipping sign with direction — which is the confound the whole page rests on. Both-ended on purpose: a guard that only checked the effect was not *large* would certify prose claiming it is *absent* (the `referee-timing.test.ts` lesson). |
-| `src/lib/__tests__/team-history.test.ts` | `getTeamBranding` historical eras (SEA/NJN/VAN/NOH/Bobcats/Bullets), current-era logos, fallback behavior. |
-| `src/lib/__tests__/fetcher.test.ts` | `apiFetcher` success envelopes, safe API errors, non-JSON HTTP failures, malformed envelopes. |
-| `src/lib/__tests__/rest-advantage-evidence.test.ts` | Canonical neutral boundary, historical backtest aggregation, game-explorer outcome filtering/pagination. |
-| `src/lib/__tests__/fatigue-provenance.test.ts` | The measured/projected rule: opening night is measured (nobody has played, so 0 is true), tonight's game is measured (all its priors are played), tomorrow is projected, and a finished season projects nothing. |
-| `src/lib/__tests__/fatigue-recent-games.test.ts` | The projection basis: an unplayed prior game keeps every schedule-derived field and loses exactly two (overtime, point margin) — including a **live** game's partial score, which column defaults would not have caught. |
-| `src/lib/__tests__/espn-scoreboard.test.ts` | ESPN payload parsing, status mapping, and (date, away, home) reconciliation: overtime only from a finished game, a stored `final` never walked backwards, unmatched rows reported both ways. |
-| `src/app/api/__tests__/cron-update.test.ts` | The evening score pass: cron auth, that it reads ESPN scoped to the ET dates of the games it found, writes overtime from the same payload, matches an `espn-` keyed row, and 502s rather than partially writing. Its "after-midnight window" block pins the two-date window at both ends — last night's game is finalized, and the two nights are never pooled. |
-| `src/lib/__tests__/daily-refresh.test.ts` | Per-game failure isolation/continuation and neutral open-prediction replacement. |
-| `src/app/api/__tests__/analysis.test.ts` | `GET /api/analysis` payload shape, percentage bounds, threshold ordering `[2,3,5,7]`, `seasonMinRA=7` filtering. Mocks `@/lib/db/queries`, and gives each case a distinct stamp so the backtest cache never answers one case from another's rows. |
-| `src/app/api/__tests__/games-dates.test.ts` | `GET /api/games/dates` Zod validation (missing/invalid season, invalid month) + query delegation. Mocks `@/lib/db/queries`. Also pins the widened season rule: an upcoming season with a published schedule and no results is served, while the season after it is still refused. Mocks `browsableSeasons` to the Aug–Sep shape so the file tests the route, not the calendar. |
-| `src/app/api/__tests__/games.test.ts` | `GET /api/games/[date]` valid/invalid dates, empty results, `GameResponse` shape. Mocks `@/lib/db/queries`. |
-| `src/app/api/__tests__/games-search.test.ts` | `GET /api/games/search` defaults, validation, and query delegation. |
-| `src/app/api/__tests__/games-upcoming.test.ts` | `GET /api/games/upcoming` season/threshold validation and query delegation. |
-| `src/app/api/__tests__/health.test.ts` | `GET /api/health` liveness up/down, via a mocked `db.execute`. |
-| `src/app/api/__tests__/playoffs.test.ts` | `GET /api/playoffs` response shape + season validation. |
-| `src/lib/__tests__/api-errors.test.ts` | `getPublicApiErrorMessage`: `PublicApiError` passthrough vs. the generic fallback for unknown throwables. |
-| `src/lib/__tests__/nba-team-colors.test.ts` | `readableTextOn` luminance-based chip text — guards the light-theme fix where a pale primary (SAS `#C4CED4`) rendered white-on-white. |
-| `src/components/__tests__/analysis-deviation.test.ts` | Deviation-column encoding: `deviationFill` sign mapping, `deviationScale` tick derivation, the `minPointSize` zero-stub, and `plottableSeasonRates` withholding a season still being played. Discriminating: reading maturity off the plotted row instead of the unfiltered population fails three cases — that is the shape that would empty the RA ≥ 7 chart. |
-| `src/components/__tests__/matchup-parts-confidence.test.ts` | **Invariant:** anything `classifyRestAdvantage` calls for a team is never labelled `NEUTRAL` by `getConfidence`. Sweeps −3.0…3.0 in 0.1 steps and asserts the contradiction set is empty, plus the tier boundaries (0.5 `low` / 1.0 `med` / 2.0 `high`). Discriminating: with the pre-fix tiers it fails listing exactly `[-0.9…-0.5, 0.5…0.9]`. |
-| `src/lib/__tests__/schedule-disparity.test.ts` | **Unmeasured ≠ zero**: with no counted game carrying a fatigue pair, all six fatigue figures and the league spread come back `null` while the date-derived `netRestEdge` / `countedGames` still report — and the paired test proves a part-way-through season keeps reporting numbers, so `null` cannot leak into a live season. Plus `computeScheduleDisparity` over in-memory rows, grouped by property: `restDaysBeforeGames` returning null for the opener; counted games excluding any game where **either** side is opening; the 5-day cap applied per side *before* differencing (with capped and uncapped totals both returned so the cap stays auditable); the invariants — nets to zero league-wide, orders most-favored first, and is independent of the order games arrive in; league figures (spread, games with a non-zero edge, scheduled per team including uneven schedules); provisional derived from **any non-final game** rather than a game count, so a short season is not misreported and a live game counts as provisional; and fatigue edge summed opponent-minus-own, reported per game, null-safe with no divide-by-zero. Since 2026-08-27 also the **as-of stamp**: the season's most recent final game, taken as a max rather than from the last row handed in, ignoring a scheduled game dated later, and null before the season's first final game. Discriminating — dropping the status filter fails two, last-row-wins fails two others. |
-| `src/app/api/__tests__/schedule-disparity.test.ts` | `GET /api/schedule-disparity`: unknown and malformed seasons rejected **without querying**, the `{ data, error }` envelope, and a 500 carrying a public message when the query throws. Also pins the two-season-list behaviour — an upcoming season with no data yet is accepted, a season beyond the browsable list is not, and the no-parameter default resolves to the newest season *with data* rather than the empty upcoming one. Mocks `@/lib/db/queries`. |
-| `src/lib/__tests__/signed-number.test.ts` | `signedNumber`: a plus on favorable values, a typographic U+2212 rather than the ASCII hyphen — pinning the two regressions the consolidation fixed, since the /playoffs series features and the model-coefficient table both rendered `toFixed`'s own sign — an exact zero left bare in both the as-is and fixed-decimal forms, decimal padding kept at zero (`season-report-content` strips `.0` off the result), and the documented edge that a value which only *rounds* to zero still carries its sign. Consolidated from the two formatters that had tests; nine others had none. |
-| `src/app/__tests__/page-contract.test.ts` | The contract a new page must satisfy, enforced rather than documented (2026-08-18): every `src/app/**/page.tsx` renders `<PageHeader>` and builds a `gap-12` column, every route is registered in `primary-navigation.ts` **and** every nav href resolves to a real page (the direction that actually shipped broken after the front-door swap), and every route appears in `alignment-audit.spec.ts`'s list — a page absent from the instrument is a page nobody measures. Also runs `scripts/audit_design_scale.mjs` and fails if anything is off the type, spacing, tracking or leading scales; this is what gates the commit, and it supersedes the earlier "no lint rule" stance. Follows only the components a page actually renders, including through a lazy `import()`, because `/analysis` is two hops from its own heading. Discriminating: **the first version was not** — a transitive text search passed with `/availability`'s `PageHeader` deleted, since some file in a three-hop neighbourhood mentioned the word; it now fails per page, verified on three of them. |
-| `src/lib/__tests__/design-scale.test.ts` | Pins `TYPE`, `SPACE`, `TRACK` and `LEAD`: the eight type steps by name (a diff shows which one moved), that no step is fractional, that the label ladder `micro < label < data` cannot invert, and that the shared table styles are built from the tokens rather than literals — those three reach all 21 tables through `DataTable`. Also asserts `TRACK` opens up as the type shrinks and tightens as it grows, so the scale cannot decay into four arbitrary numbers. Then pins the **two other copies** of the scales against the tokens — the `@theme` block in `globals.css` (which exists because a responsive step cannot be an inline style) and `scripts/audit_design_scale.mjs`'s own list (plain node, so it cannot import the module). A stale copy would report a clean sheet while the app drifted. Discriminating in both directions, verified: drifting `--text-body` to 14px fails the CSS guard, smuggling a 14 into `TYPE_SCALE` fails the script guard. |
-| `src/lib/__tests__/publishable-games.test.ts` | Reads `src/lib/db/queries.ts` and asserts every publishing reader routes through `publishableGames`, that the two density helpers deliberately do not, that each exception is named in the helper's docblock, and that the two predicates appear exactly once in the file — a second hand-written copy is how four readers lost the regime filter. Also pins that `getCompletedGamesStamp` and `getDataAsOf` take their fields from one read (`readFinalGamesFacts`), and that both stamps carry a weighted score checksum so a correction on an already-final game cannot hide behind an unchanged count and date. |
-| `src/lib/__tests__/season-regime.test.ts` | `ABNORMAL_STRETCHES`: the Orlando bubble excluded, 2019-20's pre-suspension games kept, seasons whose calendar does not run October–April kept, a no-op for unnamed seasons, and every stretch carrying a stated reason so the list stays auditable. Written for the regression where an Oct 1–Apr 30 date rule reached the right answer for the bubble by coincidence and silently dropped 135 real 2020-21 games and 44 from 1998-99. |
-| `src/lib/__tests__/season-report.test.ts` | `buildSeasonReport` and `winRateBand`: the 95% Wald half-width (null rather than NaN on zero games), the sign rule (lower fatigue is the rested side, a rested loss counts as a loss, **and a game is not counted at all when the rested side is the visitor** — the 2026-08-02 rule), what is excluded (the neutral band, missing score or fatigue side, live games), the RA ≥ 2 tier split, `MIN_GAMES_FOR_INFERENCE` gating, and an empty season rendering without throwing. Since 2026-08-27 also the **as-of stamp**, in five cases that each fail a different wrong implementation: the max final date, independence from row order, a later *scheduled* game ignored, a final game counted even though the aggregates skip it for a missing fatigue side (the stamp describes the data, not the average), and null before the first final game. |
-| `src/lib/__tests__/availability-facts.test.ts` | Pins `src/lib/availability-facts.ts` against the generated `ml/availability_facts.json`, block by block, so a figure edited in a component and nowhere else fails. Also guards the claims the copy rests on: every published effect clears \|t\| ≥ 2, best-player-out and home court stay within 0.5 points of each other (the headline sentence), no schedule term shifts more than 15% once absence is controlled (the load-management defence), the season trend runs rare → common by more than 3×, and the residual stays above 85% of the raw margin spread so the page cannot imply it explains games. |
-| `src/lib/__tests__/playoff-rest-facts.test.ts` | The same arrangement for `playoff-rest-facts.ts` against `ml/playoff_rest_report.py`'s output: equal-rest counts, the grind matrix, the exogenous block, entry-rest buckets, best-of-five context, the round split, the paired record, model coefficients, the pooled win/tie/loss record and accuracy, and the calibration table — plus that each `improvementPct` really is the relative reduction against its baseline. |
-| `src/lib/__tests__/playoff-prior-games.test.ts` | `priorRoundGamesLabel` and `grindLineLabels`: naming a sweep, a best-of-five sweep, an early close and going the distance in either format; returning null in Round 1 where no prior round exists; and reading a pre-2002-03 round-2 card under the **prior** round's best-of-five format rather than today's. |
-| `src/lib/__tests__/playoff-seasons.test.ts` | `playoffModelSeasons` withholds exactly the excluded seasons and no others, names only seasons that exist, keeps 2019-20 available to surfaces that are not the playoff model, and **agrees with the Python builder that owns the exclusion** — the check that stops the two lists drifting. |
-| `src/lib/__tests__/player-rest.test.ts` | The `/shooting` payload helpers: `seasonLabel` formatting, `searchKey` stripping diacritics so accented names stay findable, `restEffect` as rested minus no-rest (null when either arm is missing), `effectSe` shrinking as either arm grows, and `careerTotals` equalling the sum of the seasons printed beneath it while weighting eFG% by attempts rather than averaging season rates. |
-| `src/lib/__tests__/team-era-coordinates.test.ts` | `eraCoordinates` historical geography: Sonics-era OKC games in Seattle through 2007-08, Grizzlies in Vancouver through 2000-01, the Katrina-era Hornets in Oklahoma City for 2005-07 only, and pass-through for franchises that never moved. This is what stops a relocated team's travel being measured from the wrong city. |
-| `src/lib/__tests__/referee-whistle.test.ts` | Guards the regenerated `src/data/referee-whistle.json`: every collected game counted exactly once in the league block, each game assigned to about three officials, each official's home-FTA z computed from the league sd at their own sample size, and the rates/orderings the page relies on. A regeneration that broke the z arithmetic would otherwise silently bold noise. |
-| `src/lib/__tests__/referee-foul-style.test.ts` | Guards the shipped `referee-foul-style.json` aggregate rather than the arithmetic behind it: every column the page renders is present, deviations are zero-centred once weighted by games, the offensive-foul duplicate is excluded from fouls per game, crew-chief games are counted only in seasons where the role was validated, league shares sum to less than a whole game's fouls, and the helpers mark a deviation notable only at two standard errors and sort numerically with a total tie-break. |
-| `src/lib/__tests__/referee-timing.test.ts` | Guards the timing aggregate and the sentences written against it: the late-window null the copy states in as many words, and the band the home-tilt paragraph claims. That second assertion is two-sided on purpose — it used to check only that the effect was not *large*, which let the page assert "no official tilts the whistle home" beside `2.06× chance` from this very file. Corrected 2026-08-21 along with the copy. |
-| `src/lib/__tests__/referee-legends.test.ts` | Guards the folklore artifact and, through it, an argument that is only safe while three things hold at once: the famous record is real, the 689-pair grid is at chance, and the famous record does **not** beat that grid's noise floor. It also pins the two-sided/one-sided distinction that bug lived in — the legend was quoted one-sided against a two-sided floor, which made it read twice as extreme as it is. |
-| `src/app/__tests__/page-contract.test.ts` (route-list guards) | Two of its assertions are about the *instruments* rather than the pages: every route must appear in `alignment-audit.spec.ts` and, since 2026-08-22, in `page-headers.spec.ts`. A page absent from either list is simply never measured by it, silently. The second guard exists because `/behind-the-data/referees` shipped missing from the header spec and was caught by eye — the audit had a guard, the header spec did not, and that asymmetry was the whole difference. |
-| `src/components/__tests__/referee-effect-content.test.ts` | Renders the whole Referee Effect surface in the commit gate, which e2e deliberately does not run in. Written while the page was unpublished and nothing else mounted the component at all; kept after publication because a copy defect should fail before a push, not during a hand-run suite. Asserts the attribution caveat, the make-up-call sign flip (published without it, `t = 27` reads as proof of compensation), and that no extreme pair appears without the chance count beside it. |
-| `src/lib/__tests__/win-total-benchmark.test.ts` | Guards the regenerated `src/data/win-total-benchmark.json` against the invariants the market check states in prose — since 2026-08-24 (ADR 0009) rendered from the one file in two places, the full section on `/behind-the-data/schedule-edge` and the sentry on `/schedule`: buckets partition the decided team-seasons exactly, over-counts stay within their bucket sizes, the correlation is a real `r` computed over every team-season, and the file covers the archive's full published range. |
-| `src/app/__tests__/not-found.test.ts` | The 404 page's links, asserted **href and label together** so the pair cannot drift: exactly `/games` and `/analysis`, the Games button pointing at the board rather than the front door, and the prose still naming the destination the buttons open. Covers a blind spot rather than duplicating e2e — `not-found.tsx` is reachable by no routing, so nothing in the commit gate rendered it, which is how a button labelled "Games" shipped pointing at `/` after the front-door swap. |
-| `src/app/__tests__/error-boundary.test.ts` | The other half of that blind spot: `error.tsx` rendered with its real props, its single link asserted as `/games` with the matching label, and the reference digest shown only when the error carries one. Both files render through `renderToStaticMarkup` + `createElement` — the repo has no jsdom and no Testing Library (see above), so this is how an unrouted component gets asserted without adding either, and `createElement` keeps the suite's `src/**` + `*.test.ts` include unchanged. It does not exercise Next's boundary wiring, only the defect class that actually occurred. |
-| `src/app/__tests__/manifest.test.ts` | The web app manifest's promises — standalone display, `/games` as the start URL, both colors on the committed light `--term-bg`, and both icon forms present, plus the maskable pair (2026-08-18): the 192/512 PNGs, `purpose: "maskable"`, extension-bearing paths, and at least one non-maskable icon left for consumers that do not crop. Same blind-spot family as the two rows above: nothing else in the gate renders `app/manifest.ts`. The served half (route answers, real PNGs including `/icon-192.png` and `/icon-512.png`, advertised from every page) lives in `e2e/pwa.spec.ts`. |
-
-API route tests `vi.mock("@/lib/db/queries")`, so they exercise validation + response
-shaping without a real database. They call the route's exported `GET` with a real
-`NextRequest`, because `jsonRoute` (`src/lib/api-route.ts`) reads `req.nextUrl` — one parsing
-path for every route, rather than each test faking whichever shape its route happened to use.
-A 4xx/5xx now carries `data: null`, not an empty value of `T`. These should pass against the
-current code.
-
-The stdlib `unittest` suite at `scripts/tests/test_schedule_upsert_contract.py` characterizes
-the intentional source-authority split between CDN schedule rows and Stats API result rows.
-It imports only `schedule_upsert_contract.py`, so CI does not need pipeline dependencies or a
-database for this check.
-
-`ml/tests/test_compute_prior_grind.py` runs in CI through a separate `-s ml/tests` discovery
-step. Its 14 tests cover series format, sign direction, round-one zeroes and unresolved prior
-series. Only `psycopg2-binary` is needed at import time, pinned by the existing
-`ml/requirements.txt` constraint; neither the modeling stack nor database credentials are
-needed. The tests exercise pure functions and do not call the database-writing entry point.
-
-## End-to-end tests — Playwright
-
-The focused season-comparison contract uses intercepted browser responses and can run without
-a populated database (clear `DATABASE_URL` to skip the server-rendered data stamp):
-
-```bash
-DATABASE_URL='' PLAYWRIGHT_PORT=3107 pnpm exec playwright test e2e/analysis-season-comparison.spec.ts
+```sh
+python -m unittest discover -s ml/tests -p 'test_*.py' -v
 ```
 
-It exercises filtered failure and retry, successful emptiness, returning to All Games, late
-responses after threshold changes, unfiltered maturity, and per-season venue baselines.
+The Python contracts do not need a live database. Production dependency audit runs last in CI
+so advisories do not hide correctness failures. Never change model figures merely to satisfy a test.
 
-`e2e/architecture-contracts.spec.ts` also uses controlled data and the same no-database command.
-It checks mixed versus wholly unmeasured Schedule Edge rankings in both displays, including
-priced but unranked teams, plus current-tab/palette navigation, real route cross-fades and
-reduced-motion navigation. Focused Vitest contracts in `schedule-ranking.test.ts` and
-`route-transition.test.ts` cover ranking meaning and transition completion, replacement,
-timeouts and disposal; the schedule reducer test exercises opener-inclusive pricing alongside
-unranked fatigue measurements.
+Vitest covers domain logic, API contracts, caches, data pinning, and source/design conventions.
+See `vitest.config.ts` and the tests themselves for the current inventory. Avoid copying test
+counts into this guide; dated release records may report counts observed at a specific commit.
 
+## Browser verification
 
-
-Config (`playwright.config.ts`): `testDir: ./e2e`, default `baseURL: http://localhost:3000`,
-`chromium` only, reporters `list` + `html` (no auto-open). `webServer` starts this checkout's
-`pnpm dev`; an occupied port fails instead of silently testing another checkout. In CI,
-`retries: 2` and `forbidOnly`.
-
-- Another worktree or occupied default port: `PLAYWRIGHT_PORT=3101 pnpm test:e2e`.
-- Existing production build: run `pnpm build` and `pnpm start --port 3100`, then
-  `PLAYWRIGHT_BASE_URL=http://localhost:3100 pnpm test:e2e` in another terminal.
-- An explicit `PLAYWRIGHT_BASE_URL` also supports a reachable deployment preview and disables
-  automatic server startup. The target needs a populated database.
-
-**`workers: 1` everywhere**, not only in CI: the suite drives one dev server, so parallel
-workers race for cold Turbopack compiles rather than for CPU. Measured, at the 18-test suite of
-the time, 16.8s serially against 26s *and* readiness-gate failures on `/schedule` at the default
-worker count — parallelism bought negative time here. (`fullyParallel` is left on; with one
-worker it only affects ordering.) Specs no longer receive any `storageState`: they used to boot
-with a completed-onboarding flag so the first-visit dialog could not open over whatever they were
-asserting, and that dialog was removed on 2026-08-11. `e2e/onboarding.spec.ts` went with it. What
-replaced the coupling is a readiness gate where a spec needs one — `navigation.spec.ts` waits for
-a client-owned control before clicking a header link, because a click landing mid-hydration hits a
-node React is replacing and the navigation is dropped.
-Specs (17): `e2e/home.spec.ts` (the front door), `e2e/games.spec.ts`, `e2e/accessibility.spec.ts`,
-`e2e/alignment-law.spec.ts`, `e2e/analysis.spec.ts`,
-`e2e/availability.spec.ts`, `e2e/behind-the-data.spec.ts`, `e2e/layout-integrity.spec.ts`,
-`e2e/navigation.spec.ts`, `e2e/page-headers.spec.ts`, `e2e/playoffs.spec.ts`, `e2e/pwa.spec.ts`,
-`e2e/referees.spec.ts`, `e2e/schedule-disparity.spec.ts`, `e2e/season.spec.ts`,
-`e2e/shot-quality.spec.ts`, `e2e/shooting.spec.ts` — **249 checks**.
-Use `pnpm exec playwright test --list` for the current count; several specs generate cases in loops.
-
-`pnpm audit:alignment` separately runs `e2e/alignment-audit.spec.ts` via
-`playwright.alignment.config.ts`, using the same server/URL options. It writes
-`test-results/alignment/report.txt` for before/after spacing comparisons. It makes no assertions
-and is excluded from routine verification; its 57 page/viewport measurements are a diagnostic,
-not an additional passing check.
-
-**`e2e/accessibility.spec.ts` and `e2e/layout-integrity.spec.ts` are the 2026-09-01 audit's two
-guards**, and they exist because of what they replace. There *was* an a11y pass on 2026-08-24 —
-real work, two defects fixed, the text-grade pole tokens forced — ending in "zero violations on
-all 20 routes". Four days later the redesign round merged and that sentence was false, and
-**nothing in the repo could say so**: the pass was a one-off local script, its report lived in
-the gitignored `docs/audit/`, and `axe-core` was not a dependency. A pass that cannot fail is a
-claim, not a test. `@axe-core/playwright` is a devDependency now, and both specs walk all 20
-routes at **two viewports** — 40 assertions each, 80 tests of the 250.
-
-Two properties of that pair are the point, not the coverage. **They run at phone width**, which
-no a11y or layout pass had ever done: of the twelve routes failing when they were written,
-eleven failed *only* at 390px. And **axe reads composited colour**, where
-`design-contrast.test.ts` pins the ratios of the *tokens* — which is exactly how an `opacity:
-0.4` inherited by 10px text sailed past the gate at 1.8:1. `layout-integrity.spec.ts` asserts
-`documentElement.scrollWidth <= clientWidth` and, on failure, names the elements that reach the
-document's right edge rather than the ones that merely look wide — a table inside `overflow-auto`
-sticks out to 881px and sets no document extent, so reporting it would send the reader hunting.
-
-> **A cached stylesheet will lie to you here.** Both defects were fixed and axe still reported
-> them, because Turbopack served the *previous* `globals.css` across a dev-server restart —
-> `rm -rf .next` was what actually cleared it. Before believing a CSS fix "didn't work", fetch
-> the served stylesheet and grep it for the rule you just wrote.
-
-`e2e/behind-the-data.spec.ts` covers the reference section: that it is reachable from the
-`Reference` landmark and *not* from `Main navigation` or the `OTHER` menu, that every section is
-its own addressable route, and that each product page's `HOW THIS IS CALCULATED` link lands on
-the right one. It also carries a **rendered prose-spacing sweep** over all nine pages — a JSX
-text node that wraps to the next line silently loses its leading space ("30days",
-"backtest.The"), which review cannot catch because the source looks correct. Formula blocks are
-excluded, since camelCase inside them is code.
-
-`e2e/shooting.spec.ts` covers the `/shooting` player database: that the volume floor actually
-reduces the row count, that an expanded player's seasons carry the same cell count as the single
-table header (the property that makes layout A work at all), that the `Career` row equals the
-games and attempts summed from the season rows above it, that an accent-free query finds an
-accented name, that the rest-effect header toggles `aria-sort` both ways, that the career view
-ranks nobody it lacks an estimate for, and that `?player=` both opens a player and is written
-back on expand.
-
-> **The e2e specs target the current terminal UI** (they are **not** stale — they assert the live
-> markup, including the `Games` / `Rest Advantage Analysis` headings and the
-> `GAMES`/`MODEL RESULTS`/`SCHEDULE EDGE` nav; none reference a removed `/tracker` or
-> `/upcoming` route).
-> They still
-> need a running server **and** a populated database to pass — the suite drives real
-> `/api/games/*` and `/api/analysis` responses, so it is not a build-time check, and it runs only
-> on demand (`pnpm test:e2e`), never in CI.
->
-> - **`navigation.spec.ts`** — nav links `GAMES` / `MODEL RESULTS` / `SCHEDULE EDGE` →
->   `/` / `/analysis` / `/schedule`. The active link is asserted via its `aria-current="page"`
->   attribute (the amber-underline active state), and inactive links are checked to lack it.
->   The link count is pinned at **6** (`SEASON REPORT` joined the bar with `/season`), so a
->   resurrected seventh tab fails here. `BEHIND THE DATA` sits in a separate `Reference`
->   landmark in the same row, which is exactly why that count still holds: two landmarks, one
->   bar. Since the 2026-08-12 front-door swap that landmark holds one link — `ABOUT` left when
->   the page it pointed at became `/` — and `navigation.spec.ts` also asserts that **no tab
->   carries `aria-current` on `/`**, which is what stops a tab being wired back to the root.
->   Since the 2026-08-29 shell merge it also pins the phone contract — the bottom dock is
->   primary navigation at 390px (four slots + search, active slot `aria-current`, never
->   covering the page's last line, absent on desktop) — and the ⌘K palette: the visible
->   `SEARCH` button and the shortcut both open it, ten options unfiltered, and it navigates.
-> - **`home.spec.ts`** — the front door renders its hero, its single call to action (pointing at
->   `/games`, not itself), and a
->   `Product surfaces` nav of exactly six links carrying the six direct nav labels, so a
->   future nav rename that misses this page fails here instead of drifting quietly. It also
->   asserts the hero's old pair of buttons is **gone** (`See the backtest` at count 0). A second test re-pins
->   the six-tab count from `/games` and follows the footer's `WHAT THIS MEASURES` link. The hero
->   assertion allows 30s: the page is `ssr: false`, so a cold Turbopack compile is on the path.
-> - **`games.spec.ts`** — the heading is the `<h1>` **"Games"** (`GAME SLATE · REST
->   ADVANTAGE` is an eyebrow `<span>`); controls use `getByLabel("Season")`, the
->   `selected-date-display` placeholder `PICK A DATE`, and the empty state `NO GAMES SCHEDULED`.
->   One spec covers the retired `/upcoming` route: it asserts the redirect lands on `/games` **and**
->   that the view toggle swaps the body (the `Previous day` control disappears under UPCOMING
->   and returns under BY DATE) — a redirect-only assertion would pass on a broken toggle.
->   Two specs pin the season-wide day fetch introduced with `useGameSlate`: one waits for a
->   `/api/games/dates` response carrying `season=` and asserts the **absence** of `month=`, so a
->   regression to per-month fetching fails rather than passing quietly; the other steps the
->   arrows past the end of December and asserts the `JAN` tab takes `aria-pressed="true"`,
->   covering the derived month across a boundary.
-> - **`analysis.spec.ts`** — terminal markup: heading "Rest Advantage Analysis", the two hero
->   tiles "RESTED TEAM AT HOME WON · ANY GAP" and "… · RA ≥ 5" — asserted as **exactly two**, so
->   a third cut cannot appear quietly — the `NOT COUNTED` band that carries the excluded half,
->   and the section dividers "WIN RATE BY RA THRESHOLD …"
->   and "WIN RATE BY SEASON" (no `text-7xl` hero). It also guards the **frame**: both
->   zero-line legends, and that the page nowhere says `COIN FLIP` — a regression to a 50%
->   baseline would credit the model with roughly ten points of home court it did not produce.
->   Its paging test carries the suite's one recorded flake and the rule that came out of it
->   (2026-08-27): the range line reads `LOADING…` while a page is in flight, so a locator
->   matched on `/SHOWING …/` **resolves to nothing mid-fetch** and the assertion fails as
->   "element(s) not found" rather than waiting. It failed in the full suite and passed in the
->   spec alone, which is the signature. **Locate an element whose text changes by test id, never
->   by that text** — `data-testid="explore-range"`. Raising the timeout alone would have left the
->   same trap for the next state that unmounts it.
-> - **`alignment-law.spec.ts`** — the absolute parts of the alignment law: the page title sits on
->   the container gutter, a `.fc-table` first and last cell pad like their neighbours (compared,
->   never pinned to a literal — and asserted *not* to be zero, so the rule reverted on
->   2026-08-11 cannot come back unnoticed), and expanding a
->   `/shooting` row does not shift it sideways. `alignment-audit.spec.ts` beside it only reports,
->   writing every near-miss edge to `test-results/alignment/report.txt`; its count has a floor it
->   cannot reach, so do not tune the instrument to improve it.
-
-## CI/CD
-
-### GitHub Actions — `.github/workflows/ci.yml`
-
-Pushes to `main` and pull requests run a non-DB quality gate on Node 22 and Python 3.11 with
-the repository's pinned pnpm: frozen install → lint → type-check → Vitest → Python schedule
-contracts → playoff grind contracts → production build → **`pnpm audit --prod`**. The workflow uses read-only
-repository permissions and cancels superseded runs. Playwright remains local because its
-integration-style specs require a populated database.
-
-**`--prod`, not a bare audit** (added 2026-09-01). The dev tree carries 55 advisories that never
-reach a user, **38 of them reachable only through `shadcn`** — so an unscoped audit is noise, and
-a noisy gate is one everybody learns to skip.
-
-**It runs last, and that is deliberate** (2026-09-02, from the review of the PR that added it).
-It went in first, which meant a CVE disclosed overnight against a transitive dependency would
-redden every open PR *and* abort the job before lint, type-check, Vitest, the Python contract
-tests or the build had run — so nobody could verify any change until an override landed. The
-advisory is real information, but it is not a fact about the diff, and it must not be able to
-stop the gate that is. Last keeps the job red without taking the correctness gates down with it;
-the registry call is also a network dependency with no retry, and a blip there should not read
-as a regression.
-
-> **Those 38 are not removable, and the attempt is instructive.** `shadcn` reads as a scaffolding
-> CLI — nothing in `package.json`'s scripts runs it, and the two components it seeded
-> (`ui/button.tsx`, `ui/message-card.tsx`) are vendored into the repo — so the obvious cleanup is
-> to drop it and call `pnpm dlx shadcn` when a component is needed. **It fails the build.**
-> `globals.css` line 2 is `@import "shadcn/tailwind.css"`, which makes it a build input, not a
-> tool; removing it ends in `Can't resolve 'shadcn/tailwind.css'` from the Tailwind PostCSS
-> plugin. A grep for a dependency that skips `*.css` will tell you it is unused. Measured and
-> reverted 2026-09-01.
-
-Production has sat at **zero** since the 2026-08-13 postcss fix, which is precisely what makes it
-worth gating: at
-zero, a red step is a real regression rather than a backlog to triage. If it goes red after a
-lockfile change, check the CVE pins in `pnpm-workspace.yaml` under `overrides:` first —
-[SEASON_ROLLOVER.md §8](SEASON_ROLLOVER.md) explains why each exists and how one can vanish
-silently. The gap this closes was found by the 2026-09-01 audit and had been open since
-2026-08-13, whose own finding — a pin that had aged into *holding* a vulnerable version — is the
-argument for it.
-
-### GitHub Actions — `.github/workflows/daily-update.yml`
-
-- **Name:** "Daily NBA update". **Triggers:** `schedule` cron **`0 21 * * *`** (daily, 21:00
-  UTC, **year-round**) and manual `workflow_dispatch`. `daily_update.py` self-gates on the NBA
-  season (`season_window.is_in_season`) and exits 0 in the offseason, so the daily cron needs no
-  seasonal cadence switch.
-- **Job `update`** (`ubuntu-latest`): checkout (`actions/checkout@v5`) → install pnpm
-  (`pnpm/action-setup@v5`) → Node **22** (`actions/setup-node@v5`, with pnpm cache) → Python
-  **3.11** (`actions/setup-python@v6`) → `pnpm install --frozen-lockfile` →
-  `pip install -r scripts/requirements.txt` → `python scripts/daily_update.py`.
-- **Secret:** `DATABASE_URL` (the only one the workflow uses, and only the in-season path needs
-  it). `daily_update.py` shells out to `pnpm exec tsx scripts/run-daily.ts`, so both Node and
-  Python toolchains are required in the runner.
-
-The data workflow is independent from `.github/workflows/ci.yml`; failures in ingestion do not
-disable the code-quality gate. Playwright, Playoff Predictor scripts, and the `ml/` pipeline are
-still verified on demand rather than in CI.
-
-### GitHub Actions — `.github/workflows/probe-data-sources.yml`
-
-- **Name:** "Probe NBA data sources". **Trigger:** `workflow_dispatch` only — **never
-  scheduled**, so it costs nothing until someone asks a question with it.
-- **What it does:** requests `cdn.nba.com`, `stats.nba.com`, ESPN and basketball-reference from
-  a US runner and reports each result plus the runner's egress region. That is the only way to
-  separate a *geo* block from a *datacenter* block, which is exactly the distinction that
-  decides how a new season can be seeded.
-- **ESPN is probed three ways, and the difference is the point.** Akamai fingerprints the whole
-  header set, not the User-Agent alone: `curl -A '<Chrome UA>'` sends a browser UA with none of
-  a browser's other headers and gets a **403**, while the same UA through `fetch` gets a **200**.
-  The probe reported ESPN as blocked on that basis for three weeks while the pipeline read it
-  successfully; the `node fetch` row is the one that speaks for the pipeline, since that is how
-  `sync_scores_espn.ts`, `fetch_game_context.ts` and `/api/cron/update` all call it.
-- **`permissions: {}`, no checkout, no secrets.** It reads nothing and writes nothing.
-- **Record the result in [SEASON_ROLLOVER.md §2](SEASON_ROLLOVER.md) with the date.** Its
-  2026-07-27 run is what established there is no clean `002…`-ID path, and §3's rollover
-  checklist asks for a re-run before relying on that, since Akamai policy can change. Re-run
-  **2026-08-18**: unchanged for the NBA-owned sources, and it confirmed ESPN answers a runner.
-
-### Code scanning — CodeQL (no file in this repo)
-
-CodeQL runs on every push to `main` and appears in `gh run list` as workflow "CodeQL", event
-`dynamic`. It is GitHub's **default setup**, configured in repository settings rather than in
-`.github/workflows/`. Noted here so that auditing the workflow directory and concluding there is
-no code scanning does not happen twice.
-
-### Vercel cron — `vercel.json`
-
-```json
-{ "regions": ["hnd1"], "crons": [ { "path": "/api/cron/update", "schedule": "0 7 * * *" } ] }
+```sh
+pnpm test:e2e
+PLAYWRIGHT_BASE_URL=http://localhost:3110 pnpm test:e2e e2e/games.spec.ts
 ```
 
-- Schedule **`0 7 * * *`** = 07:00 UTC daily, **year-round** — 2 AM EST / 3 AM EDT, i.e. after
-  the last final of the night under both DST regimes. **Moved from `0 3 * * *` on 2026-08-18:**
-  03:00 UTC is 10 PM EST, so a west-coast game tipping at 10 PM ET was still in its first
-  quarter and its result was missed until the following afternoon's Actions run. Hobby fires
-  crons **once a day**, so the choice is "before some finals" or "after all of them", and only
-  the latter leaves the board correct overnight.
-- **"After all of them" means past midnight ET, so the route reads two ET dates** — yesterday and
-  today. This was missed when the schedule moved: for four days the route still scoped to
-  `today` and therefore matched only games that had not tipped off, writing nothing at all. Fixed
-  2026-08-22; if the schedule moves again, re-derive the window with it.
-- Offseason runs early-return before any network fetch, so there is **no seasonal cadence
-  switch**. `vercel.json` is the source of truth for the deployed cadence.
-- The cron hits `GET /api/cron/update` with `Authorization: Bearer <CRON_SECRET>`; the route
-  refreshes scores from **ESPN** (the NBA CDN 403s from every environment) and updates `games`,
-  which Supabase Realtime pushes to clients.
+Without `PLAYWRIGHT_BASE_URL`, Playwright starts its own dev server; use `PLAYWRIGHT_PORT` to
+choose another port. Database-backed checks require a populated database. An explicit base URL
+tests an existing local production server or hosted preview. Keep runs serial against a shared
+server. Do not run `pnpm build` while a dev-server browser run is active: they share `.next`.
 
-### Function region — `"regions": ["hnd1"]` (2026-08-07)
+The suites cover routes, keyboard controls, source/error states, URL/history restoration,
+responsive layout, motion, and axe accessibility scans. Run relevant checks after changes and
+review rendered screenshots. Physical-device and human screen-reader testing remain separate.
 
-**Functions must run in the same region as the database.** `hnd1` is Tokyo; the Supabase host is
-`aws-1-ap-northeast-1`. JSON has no comments, so the reasoning is here.
+`pnpm audit:alignment` is an advisory measurement report, not an assertion gate. Long-lived
+polling can prevent network idle. Regression assertions are in `alignment-law.spec.ts` and
+`layout-integrity.spec.ts`; do not report an unfinished advisory sweep as a pass.
 
-Before this was set, functions took Vercel's default `iad1` (Washington DC) while the database
-sat in Tokyo, so **every query crossed the Pacific** and connection setup cost several round
-trips before the first one ran. Vercel emailed on 2026-08-07 that 36 invocations had hit the
-execution-time limit in 7 days — **7.8% of all invocations**. Measured against the live site that
-day: `/api/analysis` cold **4.55 s**, warm **0.82 s**, and 1.6–4.0 s across 18 forced cache
-misses. The same query from Seoul (a short hop to Tokyo) ran in ~1 s.
+## Workflows and deployment
 
-Read this together with the two things that made the tail worse, both since fixed: no response
-was CDN-cached, and traffic is low enough (~66 invocations/day) that lambdas are usually cold, so
-the in-memory `createStampedCache` rarely hit.
+| Workflow | Purpose |
+| --- | --- |
+| `.github/workflows/ci.yml` | Frozen install, lint, types, unit/Python contracts, production build, dependency audit |
+| `.github/workflows/daily-update.yml` | Season-gated daily NBA ingest; manual schedule resync or historical seed |
+| `.github/workflows/probe-data-sources.yml` | Provider reachability diagnostics; not proof of successful data ingestion |
+| `.github/workflows/officiating-refresh.yml` | Complete L2M source snapshot and reviewable publication update |
+| GitHub CodeQL configuration | Code scanning managed on GitHub; not a checked-in workflow |
+| `vercel.json` | Vercel region and `/api/cron/update` schedule |
 
-- **Do not "optimize" this to a US region to sit closer to readers.** These functions are
-  latency-bound on the database, not on the reader; the CDN already terminates close to the
-  reader. Moving them away from Tokyo re-creates the timeouts.
-- **Hobby allows exactly one region, and honours `vercel.json`** — verified in production on
-  2026-08-07, so no dashboard setting is required. Should that ever change, the same value goes
-  in Project Settings → Functions → Function Region. Verify with
-  `curl -sD - .../api/health -o /dev/null | grep x-vercel-id` — the **second** field is the
-  execution region (`icn1::hnd1::…` is correct; `icn1::iad1::…` means it did not take).
+Merging main deploys production. Before merging, verify CI/CodeQL and the actual populated
+Vercel preview. Preview protection may require authenticated Vercel access. Do not disable
+protection to run tests. Vercel commit-status reporting is disabled in this project; inspect
+its deployment readiness and commit directly if no GitHub deployment check appears.
 
-**Measured after the move** (same forced-cache-miss method as before it, `/api/analysis`):
-**0.55–1.02 s in `hnd1`, against 1.6–3.97 s in `iad1`.** Edge hits serve in ~0.05 s.
+After merging, verify the deployment commit and production alias, `/api/health`, and the changed
+user flow. A successful build does not establish database health. Record results in the release
+PR, synchronize local main without force-pushing, and stop temporary servers when finished.
 
-### Deployment
+The normal CI build has no database credentials. Local builds may have `.env.local`, so the CI
+build is a necessary independent gate; do not rename credential files around an unguarded shell
+command. Schema changes are manual SQL and require a separate owner application step.
 
-Vercel auto-deploys from `main`. DB-backed routes are `force-dynamic` + `runtime = "nodejs"`
-so the build doesn't require `DATABASE_URL` and queries never run on Edge. `next.config.ts`
-allow-lists the remote image host (`a.espncdn.com/i/teamlogos/nba/**`)
-and sets security headers: `Content-Security-Policy` (default-src `'self'`, `frame-ancestors
-'none'`, `object-src 'none'`, connect-src scoped to Supabase, img-src to the logo CDN;
-`'unsafe-eval'` is dev-only), `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`,
-`Referrer-Policy: strict-origin-when-cross-origin`, and `Permissions-Policy: camera=(),
-microphone=(), geolocation=()`.
+## Documentation captures
+
+```sh
+SCREENSHOT_BASE_URL=http://localhost:3110 node scripts/screenshots.mjs
+SCREENSHOT_BASE_URL=https://fullcourt-nba.vercel.app node scripts/screenshots.mjs games
+node scripts/check-doc-links.mjs
+```
+
+The screenshot manifest records the source URL, route, viewport, and capture time. Keep one
+current capture per selected route; Git contains old captures. The documentation-link check
+catches missing local Markdown targets. Neither command verifies the correctness of a finding.

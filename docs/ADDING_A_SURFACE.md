@@ -145,15 +145,13 @@ moves every rail in it at once.*
 
 Three lists, and a page missing from any of them is a page nobody sees or measures.
 
-1. **`src/lib/primary-navigation.ts`** — `DIRECT_NAV_ITEMS` for a tab in the bar,
-   `OTHER_NAV_ITEMS` for the OTHER menu. Write the label's *reason* in a comment beside it, the way
-   every existing entry does: the labels are the site's vocabulary and collisions between them
-   misroute clicks. See [GLOSSARY.md](GLOSSARY.md). **The ⌘K palette derives from these same two
-   lists** (`command-palette.tsx`), so registering here covers it. **The phone dock does not** —
-   `bottom-nav.tsx` holds its own fixed `SLOTS` (four routes plus search, per ADR 0010), and a
-   new surface is not meant to join it. Do not "fix" that by wiring the dock to these lists.
-2. **`e2e/alignment-audit.spec.ts`** — add the route to `ROUTES`.
-3. **`docs/FRONTEND.md`** — a `### /route` section, in the same PR. Docs ship with the change.
+1. **`src/lib/primary-navigation.ts`** — keep the four approved `DIRECT_NAV_ITEMS` stable;
+   register secondary analyses in `EXPLORE_NAV_ITEMS`. Desktop, mobile, and the palette share
+   this vocabulary. Changing primary navigation is a product decision, not an automatic step
+   when adding a page. See [GLOSSARY.md](GLOSSARY.md).
+2. **Browser route inventories** — register the route in alignment, page-header, accessibility,
+   and responsive-layout coverage. The page-contract tests guard the required inventories.
+3. **`docs/FRONTEND.md`** — update the page-ownership table and relevant behavior in the same PR.
 
 *Enforced: `page-contract.test.ts` → "is in the nav or exempt with a reason", "every nav href
 points at a page that exists", "every route is in the alignment audit's route list".*

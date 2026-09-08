@@ -1,509 +1,62 @@
 # API reference
 
-Twelve route handlers live under `src/app/api/`, all **`GET`**. Product-data routes return the
-`{ data, error }` envelope (`/api/cron/update` also adds `meta`); `/api/health` intentionally
-uses a dedicated liveness shape. `getPublicApiErrorMessage` (`src/lib/api-errors.ts`) exposes
-only explicit `PublicApiError` messages in production and otherwise returns a generic error;
-development mode may include the raw `Error.message`. Client code unwraps product envelopes via
-`apiFetcher` (`src/lib/fetcher.ts`), which throws when `error` is non-null. `errMsg(error)`
-ships beside it — the message a surface renders for a thrown value, and what
-`components/ui/message-card.tsx` is given. It replaced eight per-surface copies of the same
-ternary, every one of whose fallbacks was unreachable: `apiFetcher` only ever throws an
-`Error`, and SWR rethrows it unchanged.
-
-Response envelope (`ApiResponse<T>` in `src/types/index.ts`) — a discriminated union, so a
-failed request carries no `data` at all:
-
-```ts
-| { data: T;    error: null;   meta?: Record<string, unknown> }
-| { data: null; error: string; meta?: Record<string, unknown> }
-```
-
-Every product route is built by `jsonRoute` (`src/lib/api-route.ts`), which owns the whole
-envelope: it merges search params and dynamic segments into one record (empty strings read as
-absent), validates them against the route's Zod schema, returns `400` with the first issue's
-message, and maps a thrown error to `500` — or, for a `PublicApiError`, to that error's own
-status and message. A route supplies only its schema and its operation. `season` and `minRA`
-are validated by the shared `seasonParam` / `minRAParam`.
-
-| Route | Params | Returns (`data`) | DB query |
-|-------|--------|------------------|----------|
-| `GET /api/games/[date]` | path `date` | `GameResponse[]` | `getGamesByDate` |
-| `GET /api/games/dates` | `season`, `month?` | `GameDateCount[]` | `getRegularSeasonGameDatesWithCounts` |
-| `GET /api/games/search` | `minRA?`,`team?`,`season?`,`result?`,`page?`,`limit?` | `GameSearchResponse` | `searchRegularSeasonGames` |
-| `GET /api/games/upcoming` | `minRA?`,`season?` | `UpcomingGameWithRA[]` | `getUpcomingGamesWithRA` |
-| `GET /api/game/[id]` | path `id` | `GameDetailResponse \| null` | `getGameDetailById` |
-| `GET /api/analysis` | `seasonMinRA?` | `AnalysisResponse` | `getCompletedGamesWithFatigue` |
-| `GET /api/playoffs` | `season?` | `PlayoffsResponse` | `getPlayoffSeriesWithPredictions` |
-| `GET /api/shot-quality` | `season`, `model?` | `ShotQualityResponse` | `getShotQualityGrid` |
-| `GET /api/schedule-disparity` | `season?` | `ScheduleDisparityResponse` | `getScheduleDisparity` |
-| `GET /api/season-report` | `season?` | `SeasonReportResponse` | `getSeasonReportRows` |
-| `GET /api/cron/update` | (Bearer auth) | `{ gamesUpdated }` | reads/updates `games` |
-| `GET /api/health` | none | dedicated `{ status, db, timestamp }` | `select 1` |
-
-Routes that touch the DB declare `export const runtime = "nodejs"` and (where applicable)
-`dynamic = "force-dynamic"` so they aren't prerendered at build (no `DATABASE_URL` needed
-during `next build`) and don't run on Edge (postgres-js needs Node).
-
-### Execution ceiling — `maxDuration` (2026-08-07)
-
-Stated per route rather than inherited. **Vercel Hobby defaults to 10s and caps at 60s.**
-
-| Route | `maxDuration` | Why |
-|---|---|---|
-| `/api/analysis`, `/api/playoffs`, `/api/schedule-disparity`, `/api/season-report`, `/api/shot-quality` | `30` | Worst observed cold read was 4.6s. Headroom for a slow refresh, not a budget to grow into. |
-| `/api/cron/update` | `60` | Has an external dependency it does not control (ESPN) and runs once a day, so a slow run costs nothing. |
-| everything else | unset (10s) | Light reads and the liveness probe, which should fail fast. |
-
-**`/api/cron/update` carries an invariant: `SCOREBOARD_TIMEOUT_MS` must stay strictly below
-`maxDuration`.** It was equal to it — a 10s fetch timeout inside an inherited 10s budget — so the
-`AbortSignal` could never fire and a slow feed killed the function instead of returning the
-authored `"Live score feed unavailable"` 502. That 502 path was unreachable in production.
-
-### Edge caching (2026-08-07)
-
-`force-dynamic` leaves `Cache-Control: max-age=0, must-revalidate`, so until 2026-08-07 every
-visit executed a function. With traffic too low to keep a lambda warm, 7.8% of invocations hit
-the execution-time limit. Seven routes now opt into a policy via `jsonRoute`'s fourth argument
-(`CACHE` in `src/lib/api-route.ts`):
-
-| Policy | Value | Routes |
-|---|---|---|
-| `CACHE.historical` | `public, s-maxage=3600, stale-while-revalidate=86400` | `/api/analysis`, `/api/shot-quality`, `/api/schedule-disparity` |
-| `CACHE.inSeason` | `public, s-maxage=300, stale-while-revalidate=3600` | `/api/season-report`, `/api/playoffs`, `/api/games/dates`, `/api/games/search` |
-
-- **`stale-while-revalidate` is the half that fixed it.** The edge serves the stale copy
-  immediately and refreshes behind it, so a cold start costs a background refresh rather than a
-  spinner. `s-maxage` alone would not have done that.
-- **A policy is applied to 2xx only.** A cached 500 would outlive the outage that produced it by
-  up to the `stale-while-revalidate` window. `api-route.test.ts` pins this for 400, 404 and 500.
-- **The live-score routes deliberately have none** — `/api/games/[date]`, `/api/games/upcoming`,
-  `/api/game/[id]`. They are read alongside a Supabase Realtime subscription (`useLiveGames.ts`),
-  and an edge-cached score would fight the subscription that corrects it. `/api/health` is not a
-  `jsonRoute` and must never be cached.
-- **The population does not pick the policy; the ordering does** (2026-09-01). `/api/games/search`
-  reads the same settled backtest rows as `/api/analysis`, through the same
-  `searchRegularSeasonGames`, and the first draft of its policy took `historical` on exactly that
-  reasoning. It was wrong: `/api/analysis` returns a forty-one-season aggregate where last night
-  is invisible among ~39,000 games, while the search route is date-descending and paginated, so
-  **page 1 is last night** and `seasonParam` admits the season in progress once it has one final
-  game. An hour of `s-maxage` over a day of `stale-while-revalidate` would open the explorer on a
-  list missing the most recent slate. Ask what the surface shows, not how big the table is.
-- **`/api/games/dates` is the exception inside that family, and joined the list on 2026-08-14.**
-  It sits under `/api/games/*` but returns only which dates have games and how many — no score,
-  so no subscription touches it and nothing moves it but a pipeline run. It was exempted by the
-  shape of its path rather than by what it serves, and `useGameSlate` fetches it on every arrival
-  at `/games`, so the busiest surface on the site paid a database round trip for a calendar.
-- **Which policy each route asks for is pinned by that route's test** (2026-08-14). `api-route.test.ts`
-  proves the header mechanism, but until then nothing proved a route still requested one — deleting
-  a policy left the whole suite green. `/api/season-report` and `/api/shot-quality` have no
-  route-level test at all, so their policies remain unpinned.
-- **Adding a policy to a route is a claim about what its data is**, not a performance knob.
-  A route serving a season in progress takes `inSeason`; `historical` is for tables only a
-  pipeline run can move.
-
-**Three product surfaces deliberately have no route in this table**, because nothing about them
-is per-request:
-
-| Surface | Served from | Why not a route |
-|---|---|---|
-| `/shooting` | `public/data/player-rest.json` (committed static asset) | Its export changes once a season, so a Postgres round trip could only ever return the same numbers. `/season`'s zero-rest section reads the same file. |
-| `/availability` | `src/lib/availability-facts.ts` (constants, pinned by a test) | A finished measurement, not a query — it moves only when `ml/availability_facts.py` is re-run. The page is a server component with no fetch and no loading state. |
-| `/referees` | three committed artifacts — `referee-foul-style.json` (`scripts/fetch_officials.ts`), `referee-timing.json` (`scripts/analyze_officials_splits.ts`) and `referee-legends.json` (`ml/build_referee_legends.py`), each pinned by its own test | Never a query — they move only when their generators are re-run. Published 2026-08-22; the page is a server component with no fetch and no loading state. |
-
-> **Playoff Predictor:** `GET /api/playoffs` is complete and serving live predictions —
-> `playoff_series_predictions` holds **2,098 rows** — two `model_version`s × (599 `full_insample`
-> + 450 `walk_forward_oos`). `logistic_grind_v2` superseded `logistic_unreg_v1` on 2026-07-31 and
-> the v1 rows were retained rather than overwritten, so the row count is per version, not total
-> [Verified, live DB SELECT, 2026-07-31]. See
-> [ml/PHASE3_REPORT.md](../ml/PHASE3_REPORT.md) for the model's walk-forward accuracy/log-loss/Brier
-> numbers and the honest calibration-vs-accuracy framing.
-
----
-
-## `GET /api/games/[date]`
-
-Games for one calendar date.
-
-- **Path param:** `date` — validated by Zod `^\d{4}-\d{2}-\d{2}$`.
-- **Success:** `200` `{ data: GameResponse[], error: null }`.
-- **Errors:** `400` invalid date; `500` on failure. Both send `data: null`.
-- **Query:** `getGamesByDate(date)` — joins `games` + home/away `teams` + latest
-  `fatigue_scores` per side, filtered to `game_type = 'regular'`; also computes per-team
-  `is4In6` and games-in-last-30 in JS, then builds `homeFatigue`/`awayFatigue`
-  (`FatigueInfo`) and `restAdvantage`.
-
-`GameResponse` (`src/types/index.ts`): `id, externalId, date, season, status, tipOffEt,
-homeTeam/awayTeam (TeamInfo), homeScore, awayScore, homeFatigue, awayFatigue,
-restAdvantage`. `tipOffEt` (2026-08-29) is the ET clock string ("7:30 PM ET") formatted
-server-side by `formatEasternTipTime` from `games.tip_off_utc` — null pre-2002 and for all
-of 2019-20, complete otherwise (docs/DATABASE.md), and the slate falls back to the date. `FatigueInfo` includes `score, isBackToBack, is3In4, travelDistanceMiles,
-altitudePenalty, altitudeArenaLabel, daysRest, gamesInLast7Days, gamesInLast30Days, is4In6,
-isOvertimePenalty, roadTripConsecutiveAway, hasCoastToCoastRoadSwing`. `RestAdvantage` =
-`{ differential, advantageTeam: "home" | "away" | "neutral" }`.
-
----
-
-## `GET /api/games/dates`
-
-Days in a season (optionally one month) that have regular-season games, with counts. Powers the
-day chips on `/games` — the games board, which has been `/games` rather than `/` since the
-2026-08-12 front-door swap.
-
-- **Query (Zod):** `season` — validated with **`browsableSeasonParam`** (`browsableSeasons()`),
-  not `seasonParam` (`NBA_SEASONS`) — plus `month?` (int 1–12). Missing/invalid → `400`.
-  - Widened on 2026-08-18, when the 2026-27 schedule was ingested. This route answers *which
-    dates have games*, which is exactly the thing that exists before any game is played, and
-    the board now opens on the released-but-unplayed season (`defaultNbaSeason()`), so
-    `NBA_SEASONS` would have 400'd the page's own default until October 1.
-  - `browsableSeasonParam` evaluates the list **per request** rather than at module load: the
-    Aug–Sep window closes on October 1 and a warm serverless instance would otherwise keep
-    answering for the old one.
-- **Success:** `{ data: GameDateCount[], error: null }` where
-  `GameDateCount = { date, gameCount }`.
-- **Cache:** `CACHE.inSeason` since 2026-08-14 — see the caching section above for why this one
-  route in `/api/games/*` takes a policy.
-- **Query:** `getRegularSeasonGameDatesWithCounts(season, month?)` — filters through
-  `publishableGames()` (`game_type = 'regular'` **and** the abnormal-stretch regime filter),
-  groups by date, orders ascending. **There is no season-wide date window**: `games.season`
-  already scopes the rows, and clipping them to an October–April calendar on top of that only
-  ever removed real games — it hid all 135 of 2020-21's May games and every 2019-20 game from
-  July onward. `monthCalendarBounds(season, month)` is applied only when `month` is given.
-
----
-
-## `GET /api/games/search`
-
-Filtered, paginated search over **final, regular** games. Powers the Analysis "Explore
-Games" table.
-
-- **Query params** (Zod; invalid input → `400` without querying):
-  - `minRA` — finite nonnegative number; only `> 0` applies
-    (`abs(awayFatigue − homeFatigue) ≥ minRA` in SQL).
-  - `team` — uppercase 2–3 letter abbreviation; matches home **or** away.
-  - `season` — must be in `NBA_SEASONS`.
-  - `result` — `all` (default) / `correct` (rested team won) / `incorrect`.
-  - `page` — default `1` (min 1).
-  - `limit` — default `20` (`DEFAULT_LIMIT`), capped at `100` (`MAX_LIMIT`).
-- **Logic:** `searchRegularSeasonGames` returns final-regular rows; the handler computes
-  `diff = awayFatigue − homeFatigue`, **excludes neutral** (`|diff| < 0.5`), derives
-  `advantageTeam`/`restedTeamWon`, filters by `result`, then paginates in JS.
-- **Success:** `{ data: GameSearchResponse, error: null }` where `GameSearchResponse =
-  { games: GameSearchResult[], total, page, limit }`. `GameSearchResult` carries
-  `gameId, date, season, home/away abbreviations + scores + fatigue, restAdvantageDifferential
-  (absolute), advantageTeam, restedTeamWon`.
-- **Cache:** `CACHE.inSeason` since 2026-09-01. It was the last heavy read route with no policy
-  at all — and the in-memory pagination is what makes an edge hit worth having, since
-  `page=999999` costs what `page=1` costs (0.58s against 0.55s, measured over ~39,000 rows to
-  return 20). `inSeason` rather than `historical` because the rows come back newest-first; see
-  the caching section above.
-
----
-
-## `GET /api/games/upcoming`
-
-Scheduled regular-season games from today onward, with their open-prediction edge. Powers the
-EDGES AHEAD strip on `/games` (2026-08-29) — the three biggest upcoming rest gaps. It powered
-the UPCOMING view until that view was retired in redesign stage ② (one board, one card; the
-old `/upcoming` route remains a redirect). `runtime = "nodejs"`, `dynamic = "force-dynamic"`.
-
-- **Query (Zod):** `minRA` (finite nonnegative number), `season` (must be in
-  `NBA_SEASONS`; defaults through `currentDisplaySeason()`). Invalid input → `400`.
-- **Query fn:** `getUpcomingGamesWithRA(season, minRA)` — scheduled regular games with an
-  open prediction, `date ≥ today`, within the regular-season calendar, optionally filtered
-  to `|differential| ≥ minRA`.
-- **Success:** `{ data: UpcomingGameWithRA[], error: null }`:
-  `gameId, date, season, homeTeam/awayTeam, homeFatigueScore, awayFatigueScore,
-  restAdvantageDifferential, predictedAdvantageAbbreviation`.
-
----
-
-## `GET /api/game/[id]`
-
-Single game detail for the explore modal (game card + last-5 results for both teams).
-
-- **Path param:** `id` — Zod `coerce.number().int().positive()`. Invalid → `400`
-  (`"Invalid game id"`).
-- **Query:** `getGameDetailById(id)` = `getGameById` + `getTeamRecentFinalResults` (last 5
-  finals before the game date) for each team. Both filter through `publishableGames` — regular
-  season *and* normally played — so a 2019-20 bubble game is a `404` here rather than a served
-  rest advantage, and the recent-results strip no longer links into one.
-- **Success:** `{ data: GameDetailResponse, error: null }` where `GameDetailResponse =
-  { game: GameResponse, homeRecentWeek: TeamRecentResultGame[], awayRecentWeek:
-  TeamRecentResultGame[] }`. **Not found** → `404` `{ data: null, error: "Game not found" }`.
-
----
-
-## `GET /api/analysis`
-
-Historical backtest over **final, regular** games that have fatigue for both teams.
-`runtime = "nodejs"`, `dynamic = "force-dynamic"`. **Reads game outcomes — it does not read
-the `predictions` table.**
-
-- **Query (Zod):** `seasonMinRA` (finite nonnegative number; default `0`) — when `> 0.5`, the season win-rate
-  breakdown uses `|differential| ≥ seasonMinRA` instead of the default decidable set.
-- **Constants:** `NEUTRAL_THRESHOLD = 0.5`, `THRESHOLDS = [2, 3, 5, 7]`.
-- **Computation:** for each game `differential = awayFatigue − homeFatigue`, rested side =
-  home if `≥ 0` else away, `restedTeamWon` from the final score. "Decidable" = `|diff| ≥ 0.5`.
-- **Held until a game goes final.** The read has no `LIMIT` — it is every final regular-season
-  game with fatigue on both sides — so `getHistoricalBacktest`
-  (`src/lib/rest-advantage-evidence-server.ts`) keeps its answer keyed by `seasonMinRA` and
-  discards it when `getCompletedGamesStamp()` (a `count`, a `max(date)` and a score checksum
-  over the publishable final games — the same population the backtest reads) changes. The
-  checksum was added 2026-08-27: a corrected score on a game that is already final moves
-  neither of the other two, and `diffScoreboard` writes exactly that. Three client surfaces request this payload; without that, each request
-  re-read and re-reduced the whole set. The cache is per server instance and bounded, because
-  `seasonMinRA` arrives from a query string.
-- **Success:** `{ data: AnalysisResponse, error: null }`:
-  - `totalGames`, `overallWins`, `overallWinRate` — the games where the rested team was **also
-    at home**, which is narrower than the population on both counts
-  - `thresholds: ThresholdBucket[]` (one per `[2,3,5,7]`: `threshold, games, restedTeamWins,
-    winPct`)
-  - `homeAwayBreakdown` (`homeTeamMoreRested` / `awayTeamMoreRested`: `games, restedTeamWins,
-    winPct`)
-  - `venueBaseline` (`games, homeWins, homeWinPct, roadWinPct`)
-  - `seasonWinRates` (per season: `season, games, restedTeamWins, winPct, homeBaselinePct`)
-- All `winPct` values are 0–100 with one decimal.
-- **`venueBaseline` counts a wider population than everything else in the payload** (added
-  2026-08-06). It is tallied over every scored game — including the neutral ones the rest
-  figures drop and the road-rested ones the headline does not publish — because it answers
-  "what does this side win *anyway*", and a baseline drawn from the same games as the numerator
-  would already carry the effect it exists to subtract. `roadWinPct` comes from the counts, not
-  from `100 − homeWinPct`. `seasonWinRates[].homeBaselinePct` is the same figure per season,
-  which is not a constant: it runs from 67.9% in 1987-88 to 54.3% in 2023-24.
-  Every rate on `/analysis` is rendered against these rather than against 50%.
-
----
-
-## `GET /api/playoffs`
-
-Playoff Predictor bracket + predictions for one season. `runtime = "nodejs"`,
-`dynamic = "force-dynamic"`. Backend is complete and live (see caution above for verified
-row counts).
-
-- **Query:** `season` (must be in `NBA_SEASONS`; defaults to `currentDisplaySeason()`
-  (`src/lib/nba-season.ts`) if omitted). Invalid
-  season → `400`.
-- **Query fn:** `getPlayoffSeriesWithPredictions(season)` — joins `playoff_series` to
-  `playoff_series_predictions` (aliased self-joins for the two prediction methods) and to
-  `teams` for home-court/opponent/winner display names.
-- **Success:** `{ data: PlayoffsResponse, error: null }`:
-  - `season`
-  - `rounds: PlayoffRoundGroup[]` — series grouped by `round` (ascending), each with a
-    `roundLabel` (`"First Round"` / `"Conference Semifinals"` / `"Conference Finals"` /
-    `"Finals"`) and the series list (`PlayoffSeriesWithPredictions[]`: teams, `isBestOf7`,
-    win counts, the four raw features `seedDiff`/`winPctDiff`/`entryRestDiff`/`h2hDiff`, plus
-    `priorGrindDiff` (the model's current feature — `entryRestDiff` is retained but no longer
-    fed to it) and `homeCourtPriorGames`/`opponentPriorGames` (each side's prior-round game
-    count, `null` in Round 1) beside `homeCourtPriorIsBestOf7`/`opponentPriorIsBestOf7` (that
-    prior series' own format — Round 1 was best-of-five through 2001-02, so a game count is
-    unreadable without it, and it is **not** the same as this series' `isBestOf7`), and a
-    `predictions` object with `fullInsample` /
-    `walkForwardOos` — either may be `null` for a given series).
-  - `summary: { fullInsample, walkForwardOos }` — each a `PlayoffMethodSummary`
-    (`knownWinnerGames`, `predictedCorrect`, `accuracy` 0–100) computed only over series that
-    have both a known winner and a non-null prediction for that method. **Per-season and
-    therefore small** (~15 series), which is why the UI presents these as one bracket's result
-    rather than as a model metric — `walkForwardOos.knownWinnerGames === 0` is also how the page
-    detects a season too early to have any honest forecast. The model's published metrics are
-    pooled constants in `src/lib/playoff-model-metrics.ts`, not derived from this response.
-- **Errors:** `500` + `getPublicApiErrorMessage` on failure.
-
-## `GET /api/shot-quality`
-
-Expected Shot Value (xeFG%) grid + model surface for one season. `runtime = "nodejs"`,
-`dynamic = "force-dynamic"`.
-
-- **Query (Zod):** `season` (required; must be in `NBA_SEASONS`) — invalid/missing → `400`.
-  `model?` — `"gbm-v1"` or `"baseline-zone-v1"`, default `"gbm-v1"` (`DEFAULT_MODEL`); a
-  **display hint only** — both model surfaces are always returned per cell, not just the
-  requested one.
-- **Query fn:** `getShotQualityGrid(season)` — reads league-wide (`team_id IS NULL`)
-  `shot_grid` rows LEFT JOINed twice to `shot_value_surface` (once per `model_version`) on
-  `(season, cell_x, cell_y, model_version)`. Raw SQL, not Drizzle — `shot_grid` /
-  `shot_value_surface` aren't in `schema.ts` (see [DATABASE.md](DATABASE.md)).
-- **Success:** `{ data: ShotQualityResponse, error: null }`:
-  - `season`, `activeModel` (echoes the requested `model`)
-  - `cells: ShotQualityCell[]` — per cell: `cellX`, `cellY`, `zoneBasic`/`zoneRange`/
-    `zoneArea`, `fga`/`fgm`/`fg3a`/`fg3m` (atomic counts), and `gbm`/`baseline`
-    (`{ pMake, expectedEfg, xpps } | null` — `null` when that model has no surface row for
-    the cell).
-  - `meta: { cellCount, totalFga }` — computed in the handler from `cells`.
-- **Errors:** `500` + `getPublicApiErrorMessage` on failure. An unknown/future season with no
-  grid rows returns `{ cells: [], meta: { cellCount: 0, totalFga: 0 } }`, not an error.
-
----
-
-## `GET /api/schedule-disparity`
-
-Which teams a season's schedule favored, ranked by net edge games where measured, with
-unmeasured teams last. A wholly unmeasured season ranks by net rest edge. Powers `/schedule`.
-`runtime = "nodejs"`, `dynamic = "force-dynamic"`.
-
-- **Query (Zod):** `season?` — validated against **`rankableSeasons(browsableSeasons())`**, not
-  `NBA_SEASONS`, and this is the one route where that distinction is load-bearing:
-  - `browsableSeasons()` admits an **upcoming** season, so a schedule can be requested before
-    the season starts;
-  - `rankableSeasons()` then removes the **truncated** ones, because this module ranks teams
-    *against each other within a season* and a 63-to-67-game spread gives one team fewer
-    chances to accumulate an edge (see [ADR 0004](adr/0004-season-exclusions-belong-to-modules-not-ingest.md)).
-  - The default is `defaultRankableSeason()` — the newest season **with data**, so a bare
-    request never lands on an empty upcoming season.
-  - A season beyond the browsable list → `400 Unknown season`.
-- **Query fn:** `getScheduleDisparity(season)` → `getRegularSeasonScheduleForDisparity(season)`
-  + `getTeamDirectory()`. Read-only: no table, no migration, no ingest — it derives everything
-  from the existing `games` and `fatigue_scores` reads.
-- **Success:** `{ data: ScheduleDisparityResponse, error: null }` — the teams in ranking order (unmeasured teams last), the
-  summary strip figures, and a provisional flag for a season still in progress.
-  - **`latestFinalDate`** — the ET date of that season's most recent final game, rendered as
-    the page's `AS OF` stamp. It **replaced `asOf`** on 2026-08-27, which carried the date the
-    response was *built*: today's date, under the identical `AS OF` label `/analysis` wears for
-    a data date, so two lines looked like the same claim and were not. Derived from the games
-    the figures are already computed from, so the stamp and the figures cannot describe
-    different reads, and `null` before a season's first final game (nothing is rendered then).
-    Nothing about cache freshness is lost — the response is keyed on
-    `getSeasonGamesStamp(season)`, so a held value already proves its inputs have not moved.
-  - **Every fatigue-derived field is `number | null`, and `null` means *not measured*** (added
-    2026-08-18): `favorableGames`, `unfavorableGames`, `netEdgeGames`, `scheduleValueWins`,
-    `bigFavorableGames`, `bigUnfavorableGames`, and on the league row `delta`,
-    `gamesWithAnyEdge`, `gamesWithLargeEdge`. Fatigue is scored from games already *played*
-    (`fetchRecentGamesForTeam` selects `status = 'final'`), so a season whose schedule is
-    published but unplayed has no reading at all. These returned `0` until the 2026-27 ingest
-    made that visible — thirty rows of "0 edge games / 0.00 wins", which reads as a measured
-    dead-even season rather than one that has not started. Null is emitted only when *nothing*
-    was measured; a season part-way through keeps reporting.
-  - `league.measuredGames` — counted games that actually carried a fatigue pair, and so were
-    genuinely compared. Distinct from `countedGames` (which only excludes each side's opener):
-    an unplayed season is `countedGames: 1184, measuredGames: 0`, and the page quotes the
-    second under the word "COMPARED".
-  - `netRestEdge` — the season's capped own-minus-opponent rest-days sum, per team. Derived
-    from game dates alone, so it is the one edge figure that is final the day a schedule is
-    published; it is what `/schedule` ranks and plots when the fatigue headline is null.
-  - Each team also carries `scheduleValueWins`: its net edge priced in wins through
-    `src/lib/schedule-value.ts`, the same conversion `/api/season-report` uses.
-    **The two routes must return the same value for the same team** — they are counted over the
-    same population (every scored game a team played, at the venue it played it), which is
-    deliberately *wider* than the opener-gated population `netEdgeGames` uses on this route. Put
-    it back behind that gate and the two pages disagree by a tenth of a win on a figure whose
-    whole range is about eight tenths.
-- **Errors:** `500` + `getPublicApiErrorMessage` on failure.
-
-`src/app/api/__tests__/schedule-disparity.test.ts` pins the two-season-list rule directly.
-
----
-
-## `GET /api/season-report`
-
-One season, reported through the site's rest-advantage lens. Powers `/season`.
-`runtime = "nodejs"`, `dynamic = "force-dynamic"`.
-
-- **Query (Zod):** `season?` — must be in `NBA_SEASONS`; defaults to the newest season with
-  data (`NBA_SEASONS[NBA_SEASONS.length - 1]`), since this page reports games that were
-  played rather than the browsable-including-upcoming list.
-- **Query fn:** `getSeasonReportRows(season)` — every regular-season game in the season with
-  both sides' latest fatigue row (LEFT joined, so unplayed games are included for the
-  progress tile), reduced by the pure `buildSeasonReport` in `src/lib/season-report.ts`.
-  Completion is decided once, in that reducer: a row counts toward every aggregate only when
-  `status === "final"` and both scores and both fatigue sides are present — not in the query,
-  so the same fixture tests that cover the rest of the module cover it too.
-- **Held until a game goes final**, same stamp trick as `/api/analysis`
-  (`src/lib/season-report-server.ts`, keyed per season).
-- **Success:** `{ data: SeasonReportResponse, error: null }`:
-  - `season`, `scheduledGames` (every regular-season game), `completedGames` (final, scored,
-    both fatigue sides present)
-  - `latestFinalDate` — the ET date of the season's most recent final game, rendered as the
-    page's `AS OF` stamp (2026-08-27). Season-scoped on purpose: `/analysis` stamps the global
-    final-game population through `getDataAsOf()`, and printing that date here would describe a
-    different population from the figures under it. Read off the same rows the report reduces,
-    **before** the fatigue filter — the stamp says how current the data is, not which games
-    survived into an average — and `null` until the season's first final game.
-  - `overall` / `atLeastTwo: SeasonReportRate` — `{ games, restedTeamWins, winPct, band }`,
-    the rest-advantage win rate overall and for RA ≥ 2 (the only per-season threshold this
-    page publishes; RA ≥ 5 and ≥ 7 run too thin at one season's sample size)
-  - `swingBaseline` — the swing a team with no rest-conversion skill still posts this season,
-    in percentage points, and the zero line for the `swing` field below. Non-zero (≈ +10) because
-    the rested arm is played at home and the tired arm on the road. Null when no game carried a
-    called rest edge.
-  - `teams: SeasonReportTeamLabelled[]` — per team: rested/tired games+wins+winPct, `swing`
-    (rested − tired, null if either arm is empty — read against `swingBaseline`, never zero),
-    `restStates` (games per venue × rest state, over every completed game), `netEdgeGames`,
-    `scheduleValueWins` (those edges priced through `src/lib/schedule-value.ts`), and the
-    schedule facts (`travelMiles`, `backToBacks`, `threeInFours`, `jetLagGames`)
-  - `loudestCalls: SeasonReportCall[]` — the ten games with the largest rest gap, ranked by
-    gap rather than margin, each tagged hit/miss
-  - `weeks: SeasonReportWeek[]` — league-average fatigue in seven-day buckets from the
-    season's first game
-- **Errors:** `500` + `getPublicApiErrorMessage` on failure.
-
----
-
-## Projected vs measured fatigue
-
-`GameResponse.projectedFatigue` and `UpcomingGameWithRA.projectedFatigue` say whether a game's
-rest advantage was **projected from the published schedule** or **measured from played
-basketball**. `SeasonReportResponse.basis` says the same thing for a whole season
-(`"played"` | `"schedule"`).
-
-It is **not** "has this game been played". A game tipping tonight has not been played, yet every
-input its fatigue rests on is already a fact. What makes fatigue projected is an unplayed game
-*earlier in the same season* — those are the rows the `"scheduled"` basis admits, and the two
-inputs it neutralises (prior-game overtime, prior-game margin) are the only ones still open. The
-rule reduces to one scalar per season, the date of its first unplayed game
-(`getFirstUnplayedDate`), because games are only played in date order. See
-`src/lib/fatigue-provenance.ts`.
-
-Opening night lands on the *measured* side, correctly: nobody has played, so nobody is more
-rested, and 0 is the true answer rather than a missing one.
-
-`/api/games/upcoming` and `/api/season-report` validate their `season` with
-**`browsableSeasonParam`**, not `seasonParam`: a released-but-unplayed season is exactly the one
-whose games are upcoming, and `seasonParam` excludes it until October by design. `/api/season-report`
-still *defaults* to the newest season with data — accepting an upcoming season is what lets a
-reader ask for it, while defaulting to it would open the page on a report whose results half is
-empty in preference to a complete one.
-
-## `GET /api/cron/update`
-
-Vercel-cron live-score refresh. `runtime = "nodejs"`, `dynamic = "force-dynamic"`.
-
-- **Auth:** required when `VERCEL` is set **or** `CRON_SECRET` is present. Then the request
-  must send `Authorization: Bearer <CRON_SECRET>`; mismatch → `401`. If auth is required but
-  `CRON_SECRET` is unset → `503` (misconfiguration). Without `VERCEL`/`CRON_SECRET` (local)
-  the route is open.
-- **Behavior:** find **yesterday's and today's** (ET) `scheduled`/`live` games with their team
-  abbreviations → fetch each of those dates' **ESPN** scoreboards with a 10-second timeout each →
-  match on **(away, home)**, per date → compare status, both scores and overtime through
-  `reconcileScores` (`src/lib/espn-scoreboard.ts`) → `UPDATE games` only for changed rows.
-  Unchanged rows do not generate redundant Supabase Realtime events. A date with no rows to
-  check is not fetched, so a one-date night still costs one request.
-- **Source changed 2026-08-18.** It read `cdn.nba.com` and matched by normalized 10-digit
-  `external_id`. The CDN 403s from every environment this project runs in, *and* an id matcher
-  cannot pair an `espn-<eventId>` row, so it could never have updated a 2026-27 game. Matching
-  on the pairing makes the route blind to the key, so `espn-` and `002…` rows are maintained
-  identically.
-- **The window is two ET dates, and that is load-bearing (2026-08-22).** The cron fires at
-  07:00 UTC — 2 AM EST, 3 AM EDT — which is already ET date D+1 while the night's games carry
-  `games.date = D`. Scoped to today alone, as it was from the 2026-08-18 schedule move until
-  this fix, the query selected only games that had not tipped off and the pass wrote nothing.
-  Reconciliation stays **per date**: the matcher keys on the pairing alone, so one pooled set
-  would cross-match a consecutive-night rematch. Pinned by `cron-update.test.ts` →
-  "the after-midnight window".
-- **A stored `final` is never walked backwards**; such rows are counted in
-  `meta.refusedDowngrades` and left alone. `overtime_periods` is written only for a game ESPN
-  reports as finished — a live game reports the periods played so far, and period 5 mid-game is
-  not an overtime yet. A scheduled game's score is `null`, not ESPN's placeholder `0`.
-- **Success:** `{ data: { gamesUpdated }, error: null, meta: { checkedGames, checkedDates,
-  espnGamesAvailable, refusedDowngrades } }` — `checkedDates` is the ET dates actually fetched. With nothing to do: `gamesUpdated: 0` + a
-  `meta.message`. ESPN non-200 → `502`; other failures → `500`.
-- Updates propagate to browsers via Supabase Realtime (`useLiveGames`).
-
----
-
-## `GET /api/health`
-
-Public DB-liveness probe for uptime monitors. It intentionally does not use `ApiResponse<T>`.
-
-- **Behavior:** runs `select 1` against the live database.
-- **Success:** `200` `{ status: "ok", db: "up", timestamp }`.
-- **Failure:** `503` `{ status: "error", db: "down", timestamp }`; the raw DB error is logged
-  server-side and never included in the response.
+Read routes are defined in `src/app/api/`. `src/lib/api-route.ts` validates inputs with Zod,
+formats the `{ data, error }` envelope, and applies explicit cache policies. Response types live
+in `src/types/index.ts`; Season Report also uses its domain module types. Those definitions
+are authoritative for individual fields, optional values, and units.
+
+## Read endpoints
+
+| GET endpoint | Input | Result | Cache policy |
+| --- | --- | --- | --- |
+| `/api/games/[date]` | Path date in `YYYY-MM-DD` form, interpreted as Eastern calendar date | Games, teams, stored fatigue and scores for that date | No explicit edge-cache policy |
+| `/api/games/dates` | Required browsable `season`; optional integer `month` 1–12 | Date/count index for Games | `inSeason` |
+| `/api/games/upcoming` | Optional browsable `season`, nonnegative `minRA` | Upcoming rest-advantage games | No explicit edge-cache policy |
+| `/api/game/[id]` | Positive integer database ID | Game and contextual detail; 404 if absent | No explicit edge-cache policy |
+| `/api/analysis` | Optional nonnegative `seasonMinRA` | Historical backtest and venue baselines | `historical` |
+| `/api/games/search` | Optional `season`, 2–3 letter uppercase `team`, nonnegative `minRA`, `result` (`all`, `correct`, `incorrect`), `page`, `limit` | Paginated historical game evidence; page defaults to 1, limit to 20 and caps at 100 | `inSeason` |
+| `/api/season-report` | Optional browsable `season` | Completed results, team records, notable games, and schedule/workload data with source-basis labels | `inSeason` |
+| `/api/schedule-disparity` | Optional rankable `season` | Relative team schedule measures and pricing | `historical` |
+| `/api/playoffs` | Optional `season` | Bracket, series, and prediction records | `inSeason` |
+| `/api/shot-quality` | Required `season`; optional `model` (`gbm-v1`, `baseline-zone-v1`) | Grid cells and display-model hint | `historical` |
+
+Shared numeric rest-advantage parameters default to zero. Season validation uses the calendar
+helpers in `src/lib/nba-season.ts`; browsable seasons include a released-but-unplayed season
+when allowed by that helper. Schedule Edge applies its own rankable-season exclusions.
+`CACHE.inSeason` and `CACHE.historical` define exact TTLs in source; the names do not mean that
+all returned games have been played.
+
+Games and upcoming-game endpoints preserve live-score behavior instead of serving a long-lived
+edge snapshot. Heavy domain reads also use the stamped server cache, including coalesced
+in-flight requests. Do not infer an endpoint's cache semantics from the page's navigation group.
+
+## Response semantics
+
+A failed query is an error, not an empty successful dataset. Missing fatigue stays null and must
+not rank as zero. Before completed data exists, Season Report can return schedule-based workload
+while result-derived fields remain empty; the fatigue calendar remains completed-game evidence.
+The UI gives schedule workload to Schedule Edge, despite sharing this server response.
+
+The rest-advantage headline counts `isCalledSide()` games (rested home teams) against venue
+baselines. Rested visitors are reported separately. Game dates use America/New_York, and
+published regular-season reads obey `publishableGames()`.
+
+## Artifact-backed surfaces
+
+Shooting uses `public/data/player-rest.json`; Availability uses pinned generated facts; the
+historical referee archive uses committed referee artifacts. Officiating imports
+`src/data/officiating.json` and loads `/data/officiating/<season>/<report>.json` on expansion.
+These are static publication assets, not database-query endpoints. `/referees` redirects to
+`/officiating`; the old analysis lives at `/behind-the-data/referees/archive`.
+
+## Operational endpoints
+
+`GET /api/health` executes `select 1` and returns its own shape, outside the data/error envelope:
+`{ status: "ok", db: "up", timestamp }` with HTTP 200, or `error`/`down` with HTTP 503. It does
+not verify source freshness, row coverage, or scheduled ingest.
+
+`GET /api/cron/update` is an authenticated write operation despite its HTTP method. It requires
+the configured cron secret and updates recent scores/status from ESPN. Never use it as a
+read-only health probe. Its implementation owns authorization, time windows, timeout, and
+stored-final reconciliation rules. See [Data pipeline](DATA_PIPELINE.md) and
+[live-season verification](LAUNCH_DAY.md).

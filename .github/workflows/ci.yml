@@ -43,6 +43,9 @@ jobs:
       - name: Lint
         run: pnpm lint
 
+      - name: Check documentation links
+        run: pnpm docs:check
+
       - name: Type-check
         run: pnpm typecheck
 
