@@ -658,6 +658,18 @@ and immediate interaction feedback. Research and the referee archive remain comp
 below. Implementation uses the existing type and spacing scales. This pattern serves topic
 navigation; it does not replace analytical tables or the rest-focused homepage hierarchy.
 
-A separate [Behind the Data audit](../anti-slop/audit-001-2026-09-08.md) proposes similar topic
-navigation and shorter article introductions with accessible technical detail. Those changes
-remain recommendations pending owner review.
+The [Behind the Data audit](../anti-slop/audit-001-2026-09-08.md) was subsequently approved in full; see D-64.
+
+
+### D-64 · Methods start with the explanation — ACTIVE
+
+Owner approved the full design and humanizer audit on 2026-09-08. Behind the Data uses seven
+compact topic tiles, a coverage link, four visible qualified null findings, and compact archive
+links. Each of the ten articles has a current-topic disclosure, local contents, a visible scope
+limit, and sentence-case headings. Technical evidence remains in native disclosures, with
+expand/collapse controls, hash-link opening, and print expansion. Formulas, research tables,
+source links, and stable section anchors remain available. Definitions use compact tables
+where comparison is easier than prose. The referee archive retains its dense research table.
+
+The shell is server-rendered; a small client enhancement handles deep links and printing.
+No motion, accounts, analytical coefficient changes, or generated-data edits are introduced.

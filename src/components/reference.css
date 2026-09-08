@@ -1,0 +1,45 @@
+.reference-button, .reference-related a {
+  display: inline-flex; align-items: center; min-height: 44px; padding: 8px 16px;
+  border: 1px solid var(--term-hairline); border-radius: 8px; background: var(--term-surface);
+  color: var(--term-text); font-size: 15px;
+}
+.reference-button { cursor: pointer; }
+.reference-actions { padding: 8px 16px 16px; }
+.reference-finding.reference-button { align-items: flex-start; }
+.reference-topics { width: min(100%, 440px); }
+.reference-topics summary, .reference-contents summary { min-height: 44px; padding: 12px 16px; cursor: pointer; font-size: 15px; }
+.reference-topics, .reference-contents { border: 1px solid var(--term-hairline); border-radius: 8px; background: var(--term-surface); }
+.reference-topics nav, .reference-contents nav { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px; padding: 8px; border-top: 1px solid var(--term-border); }
+.reference-topics a, .reference-contents a { display: flex; align-items: center; min-height: 44px; padding: 8px; font-size: 15px; border-radius: 4px; }
+.reference-topics a[aria-current] { font-weight: 700; background: var(--term-surface-2); text-decoration: underline; text-underline-offset: 4px; }
+.reference-limit { max-width: 75ch; font-size: 15px; line-height: 1.55; color: var(--term-text-muted); }
+.reference-limit strong { display: block; margin-bottom: 4px; color: var(--term-text); }
+.reference-related { display: flex; flex-wrap: wrap; gap: 12px; border-top: 1px solid var(--term-border); padding-top: 24px; }
+.reference-section { min-width: 0; border: 1px solid var(--term-hairline); border-radius: 8px; background: var(--term-surface); }
+.reference-section h2 { font-size: 18px; line-height: 1.4; margin: 0; }
+.reference-section > header, .reference-section summary { padding: 16px 24px; }
+.reference-section summary { cursor: pointer; }
+.reference-section summary h2 { display: inline; }
+.reference-section .reference-section-body { display: flex; flex-direction: column; gap: 16px; padding: 8px 24px 24px; }
+.reference-descriptor { display: block; color: var(--term-text-muted); font-size: 12px; margin-top: 8px; }
+.reference-section summary::marker { color: var(--term-accent); }
+.reference-definitions { overflow-x: auto; }
+.reference-definitions td { font-family: var(--font-geist), sans-serif; font-size: 15px; line-height: 1.55; }
+.reference-page :is(a, button, summary):focus-visible { outline: 3px solid var(--term-accent); outline-offset: 3px; }
+@media (hover: hover) and (pointer: fine) {
+  .reference-page :is(summary, .reference-button, .reference-related a):hover, .reference-topics a:hover, .reference-contents a:hover { background: var(--term-surface-2); }
+}
+@media (max-width: 639px) {
+  .reference-topics { width: 100%; }
+  .reference-topics nav, .reference-contents nav { grid-template-columns: 1fr; }
+  .reference-section > header, .reference-section summary { padding: 16px; }
+  .reference-section .reference-section-body { padding: 8px 16px 16px; }
+}
+@media print {
+  .reference-navigation, .reference-actions, .reference-contents, .reference-related { display: none; }
+  .reference-section { border: 0; }
+  .reference-section details::details-content { display: block; content-visibility: visible; }
+  .reference-section details > * { display: block; }
+  .reference-section .reference-section-body { overflow: visible; }
+  .reference-section pre { white-space: pre-wrap; overflow: visible; }
+}

@@ -36,11 +36,12 @@ function pct(overs: number, n: number): string {
 export default function ScheduleEdgeMethodPage() {
   return (
     <BehindTheDataShell
+      topic="schedule-edge"
       eyebrow="BEHIND THE DATA · SCHEDULE EDGE"
       title="Schedule edge"
       description="A within-season comparison of favourable and unfavourable rest gaps, with a win-equivalent estimate based on historical rates."
     >
-      <Section label="THE HEADLINE" descriptor="NET EDGE GAMES">
+      <Section label="THE HEADLINE" title="Counting favorable and unfavorable games">
         <Prose>
           For every game a team played, the fatigue gap against that night&rsquo;s opponent is
           the same rest advantage the rest of the site uses. A game counts
@@ -62,14 +63,12 @@ big edge      the ≥ ${BIG_EDGE_FATIGUE_THRESHOLD} subset of either side`}
         </Note>
       </Section>
 
-      <Section label="WHAT AN EDGE IS WORTH" descriptor="THE SAME COUNT, IN WINS">
+      <Section label="WHAT AN EDGE IS WORTH" title="What Worth means" disclosure>
         <Prose>
-          A count of games answers &ldquo;how often&rdquo;, not &ldquo;how much&rdquo;. The{" "}
-          <strong>Worth</strong>{" "}
-          column prices each game at the win probability its rest state is
-          measured to carry, against that venue&rsquo;s own baseline, and adds them up. Nothing is
-          fitted here and no result is read: two teams with different win totals but the same
-          schedule get the same number.
+          <strong>Worth</strong>{" "}adds each game&rsquo;s historical rest-state win-rate difference
+          from its venue baseline. This calculation does not fit a new model or use the
+          team&rsquo;s results. Teams with the same schedule conditions receive the same
+          estimate even if their win totals differ.
         </Prose>
         <ValueGrid
           values={[
@@ -102,21 +101,18 @@ big edge      the ≥ ${BIG_EDGE_FATIGUE_THRESHOLD} subset of either side`}
           offset each other, and each game is priced at a small difference from its venue baseline.
         </Note>
         <Note>
-          Unlike every other column, this one counts each team&rsquo;s season opener. The opener
-          has no previous game and so no rest-<em>days</em> differential, which is why the counts
-          above exclude it. A fatigue score exists for it, so the rest gap is measured. Leaving
-          it out made this page and the Season Report disagree by a tenth of a win on the same team.
+          Worth includes season openers because a fatigue score exists for them. Rest-day
+          comparisons exclude openers because there is no previous game.
         </Note>
+        <details className="fc-disclosure"><summary>Season-opener revision</summary><Prose>Excluding openers previously made this page and Season Report disagree by a tenth of a win for the same team.</Prose></details>
       </Section>
 
       {/* Moved here whole from the foot of /schedule on 2026-08-24 (ADR 0009); the page keeps
           a one-paragraph sentry with the r. Both render the same committed benchmark JSON. */}
-      <Section label="THE MARKET CHECK" descriptor="A NULL, PUBLISHED ON PURPOSE">
+      <Section label="THE MARKET CHECK" title="Preseason win totals: no consistent relationship" disclosure>
         <Prose>
-          If a schedule edge compounded over a season, the teams at the top of the Schedule
-          Edge leaderboard should beat their preseason win-total lines. Across{" "}
-          {benchmark.seasonsCovered}{" "}
-          seasons of archived lines, they don&rsquo;t:
+          Across {benchmark.seasonsCovered} seasons of archived lines, teams with more
+          favorable schedules did not consistently beat their preseason win-total lines:
         </Prose>
         <DataTable
           wrapperClassName="overflow-x-auto"
@@ -145,7 +141,7 @@ big edge      the ≥ ${BIG_EDGE_FATIGUE_THRESHOLD} subset of either side`}
           The correlation between a team&rsquo;s net edge
           games and its finish against the line is r&nbsp;=&nbsp;
           {benchmark.correlation.r.toFixed(2)} across {benchmark.correlation.n}{" "}
-          team-seasons. This is a null result, published on purpose: the archive does not show
+          team-seasons. The archive does not show
           a consistent relationship between net edge and beating the line. It does not prove
           that markets fully price the schedule or rule out every possible betting strategy.
         </Prose>
@@ -161,7 +157,7 @@ big edge      the ≥ ${BIG_EDGE_FATIGUE_THRESHOLD} subset of either side`}
         </Note>
       </Section>
 
-      <Section label="THE THRESHOLDS" descriptor="WHY THESE NUMBERS">
+      <Section label="THE THRESHOLDS" title="Thresholds and rest-day limits" disclosure>
         <ValueGrid
           values={[
             {
@@ -197,7 +193,7 @@ big edge      the ≥ ${BIG_EDGE_FATIGUE_THRESHOLD} subset of either side`}
         </Prose>
       </Section>
 
-      <Section label="WHAT ELSE IS COUNTED" descriptor="THE SUPPORTING COLUMNS">
+      <Section label="WHAT ELSE IS COUNTED" title="Back-to-backs and dense stretches" disclosure>
         <Prose>
           Alongside the headline, each team&rsquo;s season carries the raw structural burdens:
           back-to-backs played, games that were the third in four nights, and the fourth in six.
@@ -209,7 +205,7 @@ big edge      the ≥ ${BIG_EDGE_FATIGUE_THRESHOLD} subset of either side`}
         </Note>
       </Section>
 
-      <Section label="WHAT THIS CANNOT SEE" descriptor="LIMITATIONS">
+      <Section label="WHAT THIS CANNOT SEE" title="Coverage and limitations" disclosure>
         <LimitList
           items={[
             "2019-20 is excluded from this ranking because teams stopped with 63 to 67 games played. Unequal schedule lengths give teams different numbers of opportunities to accumulate an edge.",

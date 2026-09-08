@@ -1,106 +1,58 @@
-"use client";
-
-import { useEffect, useRef, useState } from "react";
+import { Children, isValidElement, type ReactNode } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { PageHeader } from "@/components/page-header";
 import { BEHIND_THE_DATA_SECTIONS } from "@/lib/behind-the-data-sections";
-import { cn } from "@/lib/utils";
-import { TRACK } from "@/lib/terminal-styles";
+import { ReferenceDetails } from "@/components/reference-details";
+import { sectionId } from "@/components/behind-the-data-parts";
+import "./reference.css";
 
-/**
- * Shared chrome for the reference section: one page header plus a sub-nav across the
- * sections. The sub-nav is a real list of links (not a tab widget) so every section is
- * addressable, back/forward works, and a reader can send someone a URL that lands on the
- * exact method being argued about.
- */
-export function BehindTheDataShell({
-  eyebrow,
-  title,
-  description,
-  children,
-}: {
+const LIMITS: Record<string, string> = {
+  "rest-advantage": "Historical rest groups also differ in home court and team strength. Their win rates do not isolate the effect of rest or predict an individual game.",
+  "schedule-edge": "Worth uses pooled historical rates relative to venue baselines. It estimates schedule conditions, not the wins a team actually gained.",
+  "playoff-predictions": "The tests support better probability estimates more clearly than better winner selection. Injuries and in-series adjustments are not included.",
+  "player-shooting": "A positive difference means higher shooting efficiency with more rest. Opponents, shot selection and reasons for missed games can also affect the split.",
+  "shot-value": "Two shots from the same location receive the same expected value, even when the shooters and defenders differ.",
+  availability: "Absences are identified after games are played. These estimates cannot tell you who will be available tonight, and separate absence effects must not be added together.",
+  officiating: "These are the NBA's assessments of selected close-game endings. They cannot measure whole-game accuracy or identify which official made an error.",
+  referees: "This is archived research on foul frequency in games each official worked. It cannot identify who made a call or whether the call was correct.",
+  "time-zones": "The tested travel-direction terms did not improve predictions. That does not establish that the biological effect is zero or validate the model's retained directional multipliers.",
+  "data-and-limits": "Coverage differs by field and season. An unavailable input is not evidence that no overtime, travel or other event occurred.",
+};
+
+export function BehindTheDataShell({ eyebrow, title, description, topic, children }: {
   eyebrow: string;
   title: string;
-  description: React.ReactNode;
-  children: React.ReactNode;
+  description: ReactNode;
+  topic: string;
+  children: ReactNode;
 }) {
-  const pathname = usePathname();
-  const bodyRef = useRef<HTMLDivElement>(null);
-  const [contents, setContents] = useState<{ id: string; title: string }[]>([]);
-  useEffect(() => {
-    const frame = requestAnimationFrame(() => {
-      setContents(
-        Array.from(
-          bodyRef.current?.querySelectorAll("section[id]") ?? [],
-        ).flatMap((section) => {
-          const heading = section.querySelector("h2");
-          return heading
-            ? [{ id: section.id, title: heading.textContent ?? section.id }]
-            : [];
-        }),
-      );
-    });
-    return () => cancelAnimationFrame(frame);
-  }, [pathname]);
-
-  return (
-    <div className="flex flex-col gap-8">
-      <PageHeader eyebrow={eyebrow} title={title} description={description} />
-
-      <nav
-        aria-label="Reference sections"
-        className="mono flex flex-nowrap items-center gap-x-6 gap-y-2 overflow-x-auto border-y py-3 sm:flex-wrap"
-        style={{
-          borderColor: "var(--term-border)",
-          fontSize: 11,
-          letterSpacing: TRACK.label,
-        }}
-      >
-        {BEHIND_THE_DATA_SECTIONS.map((section) => {
-          // Exact match only: /behind-the-data is the overview, and a prefix test would
-          // light it up on every child route.
-          const active = pathname === section.href;
-          return (
-            <Link
-              key={section.href}
-              href={section.href}
-              aria-current={active ? "page" : undefined}
-              // The active section was bolder text and nothing else, which on a row of
-              // already-bold mono labels is close to no signal at all. It now carries the
-              // same red underline the main nav uses for "you are here".
-              className={cn(
-                "inline-flex min-h-11 shrink-0 items-center whitespace-nowrap border-b-2 py-1 font-semibold transition-colors",
-                active
-                  ? "border-[var(--term-text)] text-[var(--term-text)]"
-                  : "border-transparent text-[var(--term-text-muted)] hover:text-[var(--term-text)]",
-              )}
-            >
-              {section.label}
-            </Link>
-          );
-        })}
-      </nav>
-
-      {contents.length > 0 ? (
-        <nav
-          aria-label="On this page"
-          className="flex flex-wrap gap-x-6 gap-y-1 text-[15px]"
-        >
-          {contents.map((item) => (
-            <a
-              className="min-h-11 content-center text-[var(--term-text-muted)] hover:text-[var(--term-text)]"
-              href={`#${item.id}`}
-              key={item.id}
-            >
-              {item.title}
-            </a>
-          ))}
+  const current = BEHIND_THE_DATA_SECTIONS.find((item) => item.href === `/behind-the-data/${topic}`);
+  const contents = Children.toArray(children).flatMap((child) => {
+    if (!isValidElement<{ label?: string; title?: string }>(child) || !child.props.label) return [];
+    return [{ id: sectionId(child.props.label), title: child.props.title ?? child.props.label }];
+  });
+  return <div className="reference-page flex flex-col gap-8">
+    <div className="reference-navigation flex flex-wrap items-center justify-between gap-4">
+      <Link className="reference-button" href="/behind-the-data">← All methods</Link>
+      <details className="reference-topics">
+        <summary>Change topic: {current?.title ?? title}</summary>
+        <nav aria-label="Reference sections">
+          {BEHIND_THE_DATA_SECTIONS.map((item) => <Link key={item.href} href={item.href} aria-current={current?.href === item.href ? "page" : undefined}>{item.title}</Link>)}
         </nav>
-      ) : null}
-      <div ref={bodyRef} className="flex flex-col gap-12">
-        {children}
-      </div>
+      </details>
     </div>
-  );
+    <PageHeader eyebrow={eyebrow} title={title} description={description} />
+    <p className="reference-limit"><strong>Keep in mind</strong>{" "}{LIMITS[topic]}</p>
+    <details className="reference-contents">
+      <summary>On this page</summary>
+      <nav aria-label="On this page">{contents.map((item) => <Link key={item.id} href={`#${item.id}`}>{item.title}</Link>)}</nav>
+      <ReferenceDetails scope={topic} />
+    </details>
+    <div id="reference-body" className="flex flex-col gap-4">{children}</div>
+    <nav className="reference-related" aria-label="Related pages">
+      {current?.surfaceHrefs.map((href) => <Link key={href} href={href}>{({ "/analysis": "View Model Results", "/games": "Browse Games", "/season": "Read Season Report", "/schedule": "Compare Schedule Edge", "/playoffs": "View Playoff Rest", "/shooting": "Compare Player Shooting", "/availability": "View Availability Cost", "/shot-quality": "View Shot Value", "/officiating": "Browse Officiating" } as Record<string, string>)[href]} →</Link>)}
+      {topic === "referees" && <Link href="/behind-the-data/referees/archive">Open referee research archive →</Link>}
+      <Link href={topic === "data-and-limits" ? "/behind-the-data" : "/behind-the-data/data-and-limits"}>{topic === "data-and-limits" ? "All methods" : "Data sources and coverage"} →</Link>
+    </nav>
+  </div>;
 }

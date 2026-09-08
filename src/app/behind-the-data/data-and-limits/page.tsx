@@ -5,10 +5,11 @@ import {
   Note,
   Prose,
   Section,
-  ValueGrid,
 } from "@/components/behind-the-data-parts";
 import { NBA_SEASONS } from "@/lib/nba-season";
 import { DataTable } from "@/components/ui/data-table";
+import { AVAILABILITY_SAMPLE } from "@/lib/availability-facts";
+import officiatingData from "@/data/officiating.json";
 
 export const metadata: Metadata = {
   title: "Data & Limits · Behind the Data",
@@ -17,6 +18,18 @@ export const metadata: Metadata = {
 };
 
 const COVERAGE = [
+  {
+    field: "Player box scores",
+    from: AVAILABILITY_SAMPLE.firstSeason,
+    source: "NBA / hoopR",
+    note: "Player-level shooting and availability inputs; each analysis applies its own filters.",
+  },
+  {
+    field: "Last Two Minute reports",
+    from: officiatingData.seasons[0].season,
+    source: "NBA Official",
+    note: `Published regular-season reports through ${officiatingData.seasons.at(-1)?.season}; selected close-game endings only.`,
+  },
   {
     field: "Schedules, scores, results",
     from: "1985-86",
@@ -52,19 +65,21 @@ const COVERAGE = [
 export default function DataAndLimitsPage() {
   return (
     <BehindTheDataShell
+      topic="data-and-limits"
       eyebrow="BEHIND THE DATA · DATA & LIMITS"
       title="Data and limits"
       description="Data sources, season coverage, exclusions, and known gaps in FullCourt's analyses."
     >
-      <Section label="COVERAGE" descriptor={`${NBA_SEASONS.length} SEASONS`}>
+      <Section label="COVERAGE" title="Data sources and coverage" descriptor={`${NBA_SEASONS.length} seasons; coverage varies by field`}>
         {/* Deliberately says nothing about *why* three fields come from ESPN. The reason is
             operational, it identifies where this is run from, and no reader of this page is
             served by it. The sources themselves are the answer, and the table lists them. */}
         <Prose>
-          Not every field reaches back as far as the schedule does. Three inputs come from ESPN
-          rather than the NBA feeds, and the table says which seasons carry which.
+          Coverage depends on the field. The table lists each source and the earliest
+          coverage used here; individual studies apply further sample filters.
         </Prose>
         <DataTable
+          wrapperClassName="reference-definitions"
           rows={COVERAGE}
           rowKey={(row) => row.field}
           columns={[
@@ -84,18 +99,20 @@ export default function DataAndLimitsPage() {
         </Note>
       </Section>
 
-      <Section label="EXCLUDED ON PURPOSE" descriptor="AND WHY">
-        <ValueGrid
-          values={[
-            { label: "Playoff games", value: "Excluded", sub: "from the fatigue model" },
-            { label: "Orlando bubble", value: "Excluded", sub: "Jul–Oct 2020, every model" },
-            { label: "Preseason", value: "Excluded", sub: "rotations are not real" },
-          ]}
-        />
+      <Section label="EXCLUDED ON PURPOSE" title="Exclusion rules and their history" disclosure>
+        <DataTable wrapperClassName="reference-definitions" rows={[
+          { games: "Playoffs", rule: "Excluded from regular-season fatigue analysis; modeled separately in Playoff Rest." },
+          { games: "Orlando bubble", rule: "Excluded; the pre-suspension part of 2019-20 remains in regular-season analysis." },
+          { games: "2019-20 in Schedule Edge", rule: "Entire season excluded from rankings because teams played unequal schedules." },
+          { games: "Preseason", rule: "Excluded; rotations do not represent regular-season play." },
+        ]} rowKey={(row) => row.games} columns={[
+          { label: "Games", cell: (row) => row.games },
+          { label: "Rule", cell: (row) => row.rule },
+        ]} />
         <Prose>
           Playoff games are excluded from the regular-season fatigue model because a fixed
           two-team series breaks its travel assumptions: the opponent never changes and the
-          itinerary is known weeks ahead. They are modelled separately, at series grain, on the
+          itinerary is known weeks ahead. They are modeled as whole series on the
           Playoff Rest page.
         </Prose>
         <Prose>
@@ -105,14 +122,14 @@ export default function DataAndLimitsPage() {
           season. The 971 games that season played before the 11 March suspension were reached by
           flying to them, and they are in.
         </Prose>
-        <Note>
-          <strong>This is narrower than it used to be.</strong> Until 30 July 2026 the whole of
+        <details className="fc-disclosure"><summary>Exclusion correction: July 2026</summary><Note>
+          Until 30 July 2026 the whole of
           2019-20 was absent, and those ~970 ordinary games went with it. The rule was written as
           an October-to-April calendar window, which caught the bubble only by coincidence of
           dates, and along the way dropped 179 legitimate games from seasons that did not run
           October to April: 135 from 2020-21, which ran to 16 May, and 44 from the 1998-99
           lockout season. The exclusion now uses the bubble dates directly.
-        </Note>
+        </Note></details>
         <Prose>
           One surface still withholds the season in full. <strong>Schedule Edge</strong> ranks
           teams against each other within a single season, and 2019-20 stopped with teams having
@@ -128,7 +145,7 @@ export default function DataAndLimitsPage() {
         </Note>
       </Section>
 
-      <Section label="ACCURACY OF THE TRAVEL FIGURE" descriptor="AN ESTIMATE WITH EXACT INPUTS">
+      <Section label="ACCURACY OF THE TRAVEL FIGURE" title="How travel is estimated" disclosure>
         <Prose>
           The game log records cities, dates, and game order. The model assumes the itinerary between them:
           teams are modelled as
@@ -146,7 +163,7 @@ export default function DataAndLimitsPage() {
           something this site tried to have and does not. What follows is the opposite — inputs
           it could add and has decided against, because adding them would change what the site
           is. Filing them as gaps read as an apology for a choice. */}
-      <Section label="WHAT THIS SITE DOES NOT DO" descriptor="A CHOICE, NOT A GAP">
+      <Section label="WHAT THIS SITE DOES NOT DO" title="What each model includes" disclosure>
         <Prose>
           The regular-season fatigue score uses schedule inputs and excludes team strength,
           betting lines, and expected lineups. Playoff Rest uses a separate series model that
@@ -159,7 +176,7 @@ export default function DataAndLimitsPage() {
         </Note>
       </Section>
 
-      <Section label="KNOWN GAPS" descriptor="NOT YET FIXED">
+      <Section label="KNOWN GAPS" title="Known data gaps" disclosure>
         <LimitList
           items={[
             "Pre-2002 overtime is unknown rather than zero. Basketball-Reference carries it and could close this gap; it has not been done.",

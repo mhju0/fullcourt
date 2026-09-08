@@ -49,3 +49,12 @@ when the season resumes; an offseason skip is not evidence that the ingest path 
 
 [Roadmap](ROADMAP.md) contains the remaining maintenance work and deferred ideas. No coefficient
 refit, database migration, accounts, or new analytics are implied by repository cleanup.
+
+
+## Methodology presentation
+
+Behind the Data now follows the approved design and writing audit (D-64): seven compact topic
+tiles, visible null findings, shorter article openings and native technical disclosures across
+all ten methods. Stable deep links and print expansion preserve access to evidence. The referee
+archive remains a dense table with clearer return links. See FRONTEND.md for the shared shell
+and reading controls; the audit retains the dated before-state evidence.

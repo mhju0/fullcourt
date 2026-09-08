@@ -34,11 +34,12 @@ const WORST_SHIFT = Math.max(
 export default function AvailabilityMethodPage() {
   return (
     <BehindTheDataShell
+      topic="availability"
       eyebrow="BEHIND THE DATA · AVAILABILITY COST"
       title="Availability cost"
       description="How missing rotation players are associated with final margin. Availability is measured from completed games, so these results do not forecast tonight's lineup."
     >
-      <Section label="WHAT COUNTS AS MISSING" descriptor="THE ROTATION, NOT THE ROSTER">
+      <Section label="WHAT COUNTS AS MISSING" title="Who counts as a missing player">
         <Prose>
           A missing player belongs to the team&rsquo;s recent rotation but records no minutes
           in the game. Rotation membership comes from <strong>prior participation</strong>,
@@ -64,7 +65,7 @@ missing    a rotation member who recorded no minutes tonight`}
         </Note>
       </Section>
 
-      <Section label="WHAT AN ABSENCE IS WORTH" descriptor="VALUE ABOVE REPLACEMENT">
+      <Section label="WHAT AN ABSENCE IS WORTH" title="Estimating a player's missing contribution" disclosure>
         <Prose>
           Each absence is weighted by <strong>Game Score</strong>, a summary of box-score
           production measured over a longer history than rotation membership.
@@ -91,10 +92,10 @@ value = max(0, player's GmSc − the team's own rotation median)`}
         </Note>
       </Section>
 
-      <Section label="TURNING THAT INTO POINTS" descriptor="THE REGRESSION">
+      <Section label="TURNING THAT INTO POINTS" title="Estimating the association with final margin" disclosure>
         <Prose>
-          Every figure on the surface is a coefficient from a regression on{" "}
-          <strong>final margin</strong>. Margin retains the size of each result and expresses
+          Each estimate comes from a regression model of the <strong>final score margin</strong>.
+          Margin retains the size of each result and expresses
           the estimated associations in points.
         </Prose>
         <Formula>
@@ -128,7 +129,7 @@ value = max(0, player's GmSc − the team's own rotation median)`}
         </Note>
       </Section>
 
-      <Section label="WHY THE SCHEDULE STILL COUNTS" descriptor="THE CONTROL THAT MATTERED">
+      <Section label="WHY THE SCHEDULE STILL COUNTS" title="Schedule results after accounting for absences" disclosure>
         <Prose>
           Teams may rest players on the second night of a back-to-back. Adding measured
           absences to the regression checks how much of the schedule association those
@@ -149,7 +150,7 @@ value = max(0, player's GmSc − the team's own rotation median)`}
         </Prose>
       </Section>
 
-      <Section label="WHAT THIS CANNOT SEE" descriptor="LIMITATIONS">
+      <Section label="WHAT THIS CANNOT SEE" title="Full limitations" disclosure>
         <LimitList
           items={[
             "It is not a forecast. Who sat is known only because the game was played. Lineups are not settled until shortly before tip, so nothing here says who will be available tonight.",

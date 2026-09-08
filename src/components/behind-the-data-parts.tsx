@@ -1,72 +1,32 @@
-import { LEAD, termCardStyle, TRACK, TYPE, WIDTH } from "@/lib/terminal-styles";
+import { LEAD, TRACK, TYPE, WIDTH } from "@/lib/terminal-styles";
 
-/**
- * Shared building blocks for the reference pages, so six pages cannot drift into six
- * different typographic treatments of the same kinds of content.
- *
- * Colour is load-bearing here, not decoration (2026-07-30). The pages were near-uniform
- * black-on-white and read as one undifferentiated wall, so each register now carries its
- * own accent and each register means one thing:
- *
- *   red    — the section header rail, and the limits list. What the model cannot do.
- *   blue   — the arithmetic: formulas and measured values. What the model is.
- *   gold   — asides and caveats attached to a claim above them.
- *
- * The accents are hairline rails and 4–6% tints, never filled blocks: the body text stays
- * the highest-contrast thing on the page, which is the point of a reference.
- */
-
-/** The tints. Kept as literals rather than tokens — they exist only in this file. */
 const RED_TINT = "rgba(220, 38, 38, 0.04)";
 const BLUE_TINT = "rgba(37, 99, 235, 0.045)";
 const GOLD_TINT = "rgba(161, 98, 7, 0.07)";
 
 export function Section({
   label,
+  title,
+  disclosure = false,
   descriptor,
   children,
 }: {
   label: string;
+  title?: string;
+  disclosure?: boolean;
   descriptor?: string;
   children: React.ReactNode;
 }) {
-  return (
-    <section id={label.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")} style={{ ...termCardStyle, padding: 0, overflow: "hidden", scrollMarginTop: 80 }}>
-      {/* A tinted header band with a red rail down its left edge, rather than a label
-          floating on the same white as the body. Each card now has a visible top edge, which
-          is what makes a page of six of them scan as six things. */}
-      <div
-        className="mono flex flex-wrap items-center gap-3 px-4 py-3"
-        style={{
-          fontSize: 11,
-          letterSpacing: TRACK.label,
-          background: "var(--term-surface-2)",
-          borderBottom: "1px solid var(--term-border)",
-          boxShadow: "inset 3px 0 0 var(--term-neutral)",
-        }}
-      >
-        <h2 style={{ margin: 0, fontSize: TYPE.label, fontWeight: 700, color: "var(--term-text)" }}>{label}</h2>
-        <span style={{ flex: 1, height: 1, background: "var(--term-border)" }} />
-        {descriptor && (
-          <span
-            style={{
-              fontWeight: 700,
-              color: "var(--term-text-muted)",
-              background: "var(--term-surface)",
-              border: "1px solid var(--term-border)",
-              borderRadius: "var(--term-radius-sm)",
-              padding: "4px 8px",
-              whiteSpace: "normal",
-              maxWidth: "100%",
-            }}
-          >
-            {descriptor}
-          </span>
-        )}
-      </div>
-      <div className="flex flex-col gap-4 px-4 py-4">{children}</div>
-    </section>
-  );
+  const heading = <><h2>{title ?? label}</h2>{descriptor && <span className="reference-descriptor">{descriptor}</span>}</>;
+  return <section id={sectionId(label)} className="reference-section" style={{ scrollMarginTop: 80 }}>
+    {disclosure ? <details><summary>{heading}</summary><div className="reference-section-body">{children}</div></details>
+      : <><header>{heading}</header><div className="reference-section-body">{children}</div></>}
+  </section>;
+}
+
+export function sectionId(label: string) {
+  // Labels remain stable URL anchors when the visible title changes.
+  return label.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 }
 
 export function Prose({ children }: { children: React.ReactNode }) {

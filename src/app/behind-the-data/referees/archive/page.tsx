@@ -31,9 +31,11 @@ export default function RefereesPage() {
         description="Compare foul patterns in the games each official worked. Three officials share every game, and these records do not identify who made a call or whether it was correct."
       />
 
-      <Link href="/behind-the-data/referees" className="underline">
-        Research methods ↗
-      </Link>
+      <nav aria-label="Archive navigation" className="flex flex-wrap gap-3">
+        <Link href="/behind-the-data" className="inline-flex min-h-11 items-center rounded-lg border border-[var(--term-hairline)] bg-[var(--term-surface)] px-4">← All methods</Link>
+        <Link href="/behind-the-data/referees" className="inline-flex min-h-11 items-center rounded-lg border border-[var(--term-hairline)] bg-[var(--term-surface)] px-4">Archived referee methods →</Link>
+        <Link href="/officiating" className="inline-flex min-h-11 items-center rounded-lg border border-[var(--term-hairline)] bg-[var(--term-surface)] px-4">Current Officiating reports →</Link>
+      </nav>
 
       <RefereeEffectContent style={data} timing={timing} legends={legends} />
     </div>

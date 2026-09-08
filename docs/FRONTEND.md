@@ -20,7 +20,7 @@ Dependency versions live in `package.json` and `pnpm-lock.yaml`. The shared visu
 | `/playoffs` | Previous-round workload and the separate series model |
 | `/officiating` | Selected NBA L2M findings and games-first report browser; source verdicts, clean games, shareable filters |
 | `/about` | Brand story |
-| `/behind-the-data/*` | Methods and limitations, compact topic navigation, local contents |
+| `/behind-the-data/*` | Seven-topic overview; ten method articles with visible scope limits, compact topic/contents disclosures and expandable evidence |
 | `/behind-the-data/referees/archive` | Earlier referee research and its historical table |
 
 `/referees` redirects to `/officiating`; `/upcoming` redirects to `/games`. They remain for
@@ -100,3 +100,14 @@ validation. [UI/UX checklist](UIUX_CHECKLIST.md) lists the remaining manual chec
 `node scripts/screenshots.mjs` updates the README captures and their manifest from a running,
 populated application. The generator waits for actual content and fails on missing anchors.
 See [Testing and CI/CD](TESTING_AND_CICD.md) for release steps.
+
+
+## Methodology reading controls
+
+The shared method shell is server-rendered. Native disclosures work without JavaScript;
+optional client controls expand or collapse technical sections. Existing section IDs remain
+stable when visible headings change. Hash navigation opens the linked evidence, and printing
+temporarily opens every technical disclosure before restoring the reading state. Related links
+return to the relevant study or coverage page. Definition tables scroll within their own
+keyboard-focusable region on narrow screens. The overview retains four qualified null findings
+and compact archive links; technical tables and generated analytics retain their existing data.

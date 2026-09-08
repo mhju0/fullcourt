@@ -118,7 +118,9 @@ describe("every page states what it is", () => {
     if (NO_PAGE_HEADER.has(route)) return;
     // `gap-12` (SPACE.chapter) between chapters — heading, controls, results. A uniform gap-4
     // gave a heading the same separation as two halves of one control panel.
-    expect(renders(file, /flex flex-col gap-12/), `${route} has no gap-12 column`).toBe(true);
+    // Method articles use the approved compact 32px reading rhythm (D-64).
+    const column = route.startsWith("/behind-the-data/") ? /flex flex-col gap-(8|12)/ : /flex flex-col gap-12/;
+    expect(renders(file, column), `${route} has no page column`).toBe(true);
   });
 });
 

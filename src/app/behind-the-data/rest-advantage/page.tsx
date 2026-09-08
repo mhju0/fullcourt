@@ -329,11 +329,12 @@ function RoadEraTable() {
 export default function RestAdvantageMethodPage() {
   return (
     <BehindTheDataShell
+      topic="rest-advantage"
       eyebrow="BEHIND THE DATA · REST ADVANTAGE"
       title="Rest advantage"
       description="The fatigue score: inputs, constants, historical comparisons, and limitations."
     >
-      <Section label="THE SCORE" descriptor="ONE FUNCTION, EIGHT TERMS">
+      <Section label="THE SCORE" title="How the score works">
         <Prose>
           Each team receives a fatigue score based on its schedule before tip-off. A higher
           score represents more estimated fatigue. The difference between the two teams&rsquo;
@@ -350,7 +351,7 @@ restEdge   = awayScore − homeScore     (positive ⇒ the home side is fresher)
         </Note>
       </Section>
 
-      <Section label="HOME COURT AND REST" descriptor="WHY THE TWO ARE COUNTED SEPARATELY">
+      <Section label="HOME COURT AND REST" title="Home court and rest: comparisons and baselines" disclosure>
         <Prose>
           Rest and home court are entangled, and the entanglement is structural. A visiting team
           has travelled by definition, so the fresher side is the home side in{" "}
@@ -441,7 +442,20 @@ restEdge   = awayScore − homeScore     (positive ⇒ the home side is fresher)
         </Note>
       </Section>
 
-      <Section label="THE TERMS" descriptor="WITH THE CONSTANTS THE CODE USES">
+      <Section label="THE TERMS" title="Full formula and constants" disclosure>
+        <DataTable rows={[
+          { term: "Recent workload", meaning: "Previous games, weighted by recency and final margin." },
+          { term: "Travel", meaning: "Distance between venues and estimated body-clock displacement." },
+          { term: "Road segment", meaning: "Consecutive road games beyond the initial allowance." },
+          { term: "Back-to-back", meaning: "A load multiplier based on time between tip-offs." },
+          { term: "Altitude", meaning: "Visiting altitude and next-night carryover." },
+          { term: "Schedule density", meaning: "Games across five windows compared with a normal pace." },
+          { term: "Freshness", meaning: "A discount for extended rest." },
+          { term: "Overtime", meaning: "Additional load from overtime in the previous game." },
+        ]} rowKey={(row) => row.term} columns={[
+          { label: "Term", cell: (row) => row.term },
+          { label: "What it measures", cell: (row) => row.meaning },
+        ]} />
         <div className="flex flex-col gap-6">
           <div>
             <Prose>
@@ -505,7 +519,7 @@ direction    = ${K.eastwardMultiplier} eastward, ${K.westwardMultiplier} westwar
 
           <div>
             <Prose>
-              <strong>The rest.</strong> Consecutive road games add{" "}
+              <strong>Road segments, altitude, density, extended rest and overtime.</strong> Consecutive road games add{" "}
               {K.roadStreakPerGame} each after the first {K.roadStreakFree} are free. Visiting
               altitude (Denver, Utah, and Mexico City at 7,350 ft) multiplies by{" "}
               {K.altitudeMultiplier}, and the following night at normal elevation by{" "}
@@ -529,13 +543,14 @@ direction    = ${K.eastwardMultiplier} eastward, ${K.westwardMultiplier} westwar
 
       <Section
         label="WHAT EACH TERM IS WORTH"
-        descriptor={`MEASURED ${ABLATIONS_MEASURED_ON}`}
+        title="What changes when each term is removed"
+        descriptor={`Measured ${ABLATIONS_MEASURED_ON}`}
+        disclosure
       >
         <Prose>
-          Removing a term does not change <em>which</em> team gets picked: a called game is
-          always a pick of the home side. What it changes is which games get called at all. So
-          each term was neutralised in turn, the call re-derived, and the published win rate
-          re-measured against a baseline of{" "}
+          The model always selects the home side when it identifies a rested-home game.
+          Removing a term changes which games meet that threshold. Each term was neutralized
+          in turn and the win rate recalculated against a baseline of{" "}
           <strong>
             {ABLATION_BASELINE.winPct}% across {ABLATION_BASELINE.called.toLocaleString()} games
           </strong>
@@ -617,7 +632,7 @@ direction    = ${K.eastwardMultiplier} eastward, ${K.westwardMultiplier} westwar
         </Note>
       </Section>
 
-      <Section label="WHERE THE DATA COMES FROM" descriptor="1985-86 TO PRESENT">
+      <Section label="WHERE THE DATA COMES FROM" title="Data sources and revisions" disclosure>
         <Prose>
           Schedules, scores and results come from the NBA&rsquo;s own feeds. Overtime periods,
           tip-off times and neutral-site venues come from ESPN. The missing overtime input was
@@ -638,7 +653,7 @@ direction    = ${K.eastwardMultiplier} eastward, ${K.westwardMultiplier} westwar
         </Note>
       </Section>
 
-      <Section label="WHAT THIS CANNOT SEE" descriptor="LIMITATIONS">
+      <Section label="WHAT THIS CANNOT SEE" title="Full limitations" disclosure>
         <Prose>
           The model reads schedules. It knows nothing about the teams playing.
         </Prose>
@@ -654,7 +669,7 @@ direction    = ${K.eastwardMultiplier} eastward, ${K.westwardMultiplier} westwar
         />
       </Section>
 
-      <Section label="HOW THE MODEL IS SCORED" descriptor="NO TUNING AGAINST THE BACKTEST">
+      <Section label="HOW THE MODEL IS SCORED" title="Evaluation protocol and model history" disclosure>
         <Prose>
           Every constant above was set by reasoning about the physical effect and reviewed
           before the backtest was run; none was fitted to maximise this win rate. Reusing

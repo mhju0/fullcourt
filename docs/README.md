@@ -11,7 +11,7 @@ Start with the topic you need; do not use old release notes as setup instruction
 | How is the application structured? | [Architecture](ARCHITECTURE.md) |
 | How do pages, controls, and motion work? | [Frontend](FRONTEND.md) |
 | What are the product and design rules? | [Brand grammar](design/BRAND_GRAMMAR.md), [design decisions](design/fullcourt-decision-record.md) |
-| What could improve Behind the Data? | [Design and writing audit](../anti-slop/audit-001-2026-09-08.md) (recommendations, not approved changes) |
+| Why was Behind the Data redesigned? | [Design and writing audit](../anti-slop/audit-001-2026-09-08.md) (approved and implemented; pre-change observations) |
 | How do I add a page? | [Surface contract](ADDING_A_SURFACE.md) |
 | What can each endpoint return? | [API](API.md) and `src/types/` |
 | How is data stored? | [Database](DATABASE.md) |

@@ -29,20 +29,13 @@ test.describe("Behind the Data", () => {
 
     // Real routes rather than client-side tabs, so each method is linkable and crawlable.
     const sections = page.getByRole("navigation", { name: "Reference sections" });
-    for (const label of [
-      "REST ADVANTAGE",
-      "SCHEDULE EDGE",
-      "PLAYOFF REST",
-      "PLAYER SHOOTING",
-      "SHOT VALUE",
-      "DATA & LIMITS",
-    ]) {
-      await expect(sections.getByRole("link", { name: label, exact: true })).toBeVisible();
+    for (const slug of ["rest-advantage", "schedule-edge", "playoff-predictions", "player-shooting", "shot-value", "availability", "officiating"]) {
+      await expect(sections.locator(`a[href="/behind-the-data/${slug}"]`)).toBeVisible();
     }
 
-    await sections.getByRole("link", { name: "SHOT VALUE", exact: true }).click();
+    await sections.locator('a[href="/behind-the-data/shot-value"]').click();
     await expect(page).toHaveURL(/\/behind-the-data\/shot-value$/);
-    await expect(page.getByRole("heading", { name: "Shot value" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Shot value", level: 1 })).toBeVisible();
   });
 
   test("each product page links into the section that explains it", async ({ page }) => {
@@ -60,9 +53,11 @@ test.describe("Behind the Data", () => {
 
     // The three sections that carry the page's reason for existing. Asserted by section
     // label so a reword does not fail, but deleting a section does.
-    for (const label of ["THE SCORE", "WHAT EACH TERM IS WORTH", "WHAT THIS CANNOT SEE"]) {
-      await expect(page.getByText(label, { exact: true })).toBeVisible();
+    for (const id of ["the-score", "what-each-term-is-worth", "what-this-cannot-see"]) {
+      await expect(page.locator(`#${id}`)).toBeVisible();
     }
+    await page.locator("#the-terms > details > summary").click();
+    await page.locator("#what-each-term-is-worth > details > summary").click();
 
     // Constants are read from FATIGUE_CONSTANTS, so this doubles as a guard that the
     // export is still wired to the model rather than to hardcoded prose.
@@ -89,9 +84,9 @@ test.describe("Behind the Data", () => {
     // foot of /schedule on 2026-08-24 (ADR 0009); /schedule keeps a one-paragraph sentry.
     // Asserted on the table's own column header and on the sentence that names it a null, so
     // dropping either the evidence or the claim fails.
-    await expect(page.getByText("THE MARKET CHECK", { exact: true })).toBeVisible();
+    await page.locator("#the-market-check > details > summary").click();
     await expect(page.getByText("Went over")).toBeVisible();
-    await expect(page.getByText(/null result, published on purpose/i)).toBeVisible();
+    await expect(page.getByText(/archive does not show a consistent relationship/i)).toBeVisible();
   });
 
   test("the index collects the measured nulls, each linking to its evidence", async ({ page }) => {
@@ -102,16 +97,17 @@ test.describe("Behind the Data", () => {
     const nulls = page.getByTestId("null-results");
     await expect(nulls.getByRole("link")).toHaveCount(4);
     for (const label of [
-      "SEASON WIN TOTALS",
-      "TIME ZONES",
-      "REFEREE FOLKLORE",
-      "OUT-PICKING THE PLAYOFF FAVOURITE",
+      "Season win totals",
+      "Time zones",
+      "Referee folklore",
+      "Playoff winner selection",
     ]) {
       await expect(nulls.getByRole("link", { name: new RegExp(label) })).toBeVisible();
     }
 
-    await nulls.getByRole("link", { name: /SEASON WIN TOTALS/ }).click();
-    await expect(page).toHaveURL(/\/behind-the-data\/schedule-edge$/);
+    await nulls.getByRole("link", { name: /Season win totals/ }).click();
+    await expect(page).toHaveURL(/\/behind-the-data\/schedule-edge#the-market-check$/);
+    await expect(page.locator("#the-market-check details")).toHaveAttribute("open", "");
   });
 });
 
@@ -213,4 +209,64 @@ test.describe("Prose spacing", () => {
       expect(seams, `lost space: ${seams.join(", ")}`).toEqual([]);
     });
   }
+});
+
+const METHOD_ROUTES = ["rest-advantage", "schedule-edge", "playoff-predictions", "player-shooting", "shot-value", "availability", "officiating", "referees", "time-zones", "data-and-limits"];
+
+for (const topic of METHOD_ROUTES) {
+  test(`${topic}: mobile topic, technical details and deep links`, async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto(`/behind-the-data/${topic}`);
+    await expect(page.locator(".reference-topics > summary")).toBeInViewport();
+    await page.locator(".reference-topics > summary").click();
+    await expect(page.locator('.reference-topics [aria-current="page"]')).toBeVisible();
+    await page.locator(".reference-topics > summary").click();
+    const section = page.locator("#reference-body > section").filter({ has: page.locator(":scope > details") }).last();
+    const id = await section.getAttribute("id");
+    expect(id).toBeTruthy();
+    await page.goto("about:blank");
+    await page.goto(`/behind-the-data/${topic}#${id}`);
+    await expect(section.locator(":scope > details")).toHaveAttribute("open", "");
+    await section.locator(":scope > details > summary").focus();
+    await page.keyboard.press("Enter");
+    await expect(section.locator(":scope > details")).not.toHaveAttribute("open", "");
+    await page.locator(".reference-contents > summary").click();
+    await page.getByRole("button", { name: "Expand technical detail", exact: true }).click();
+    await expect(page.locator("#reference-body details:not([open])")).toHaveCount(0);
+    await page.getByRole("button", { name: "Collapse technical detail", exact: true }).click();
+    await expect(page.locator("#reference-body details[open]")).toHaveCount(0);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth)).toBe(false);
+    await page.locator(`.reference-contents a[href="#${id}"]`).click();
+    await expect(section.locator(":scope > details")).toHaveAttribute("open", "");
+    await page.getByRole("link", { name: "← All methods", exact: true }).click();
+    await expect(page).toHaveURL(/\/behind-the-data$/);
+    await expect(page.getByRole("heading", { name: "Behind the Data", exact: true, level: 1 })).toBeVisible();
+    await page.goBack();
+    await expect(page).toHaveURL(new RegExp(`/behind-the-data/${topic}#${id}$`));
+    await expect(page.locator(`#${id} > details`)).toHaveAttribute("open", "");
+  });
+}
+
+test("technical evidence remains readable without JavaScript", async ({ browser, baseURL, extraHTTPHeaders }) => {
+  const context = await browser.newContext({ javaScriptEnabled: false, baseURL, extraHTTPHeaders });
+  try {
+    const page = await context.newPage();
+    await page.goto("/behind-the-data/rest-advantage");
+    await page.locator("#the-terms > details > summary").click();
+    await expect(page.locator("#the-terms").getByText("2.65", { exact: false }).first()).toBeVisible();
+    await page.locator(".reference-contents > summary").click();
+    await expect(page.getByRole("navigation", { name: "On this page" }).getByRole("link")).not.toHaveCount(0);
+  } finally { await context.close(); }
+});
+
+test("printing reveals evidence and restores the reading state", async ({ page }) => {
+  await page.goto("/behind-the-data/rest-advantage");
+  await page.waitForFunction(() => document.querySelector(".reference-actions button"));
+  await page.evaluate(() => dispatchEvent(new Event("beforeprint")));
+  await expect(page.locator("#reference-body details:not([open])")).toHaveCount(0);
+  await page.emulateMedia({ media: "print" });
+  await expect(page.getByText("5,994", { exact: true })).toBeVisible();
+  await page.emulateMedia({ media: "screen" });
+  await page.evaluate(() => dispatchEvent(new Event("afterprint")));
+  await expect(page.locator("#reference-body details[open]")).toHaveCount(0);
 });

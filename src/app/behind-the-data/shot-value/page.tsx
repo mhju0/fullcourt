@@ -20,11 +20,12 @@ const MEASURED_ON = "2026-07-02";
 export default function ShotValueMethodPage() {
   return (
     <BehindTheDataShell
+      topic="shot-value"
       eyebrow="BEHIND THE DATA · SHOT VALUE"
       title="Shot value"
       description="The average value of a shot from each court location, measured across the league. Defender position and shooter skill are outside this model."
     >
-      <Section label="WHAT IS COMPUTED" descriptor="xeFG% PER CELL">
+      <Section label="WHAT IS COMPUTED" title="Expected value by court location">
         <Prose>
           The half court is divided into a grid of one-foot cells. For each cell, the model
           estimates the probability a shot from there goes in, and converts that to an expected
@@ -46,7 +47,7 @@ export default function ShotValueMethodPage() {
         </Note>
       </Section>
 
-      <Section label="TWO SURFACES" descriptor={`MEASURED ${MEASURED_ON}`}>
+      <Section label="TWO SURFACES" title="Comparing the two location models" descriptor={`Measured ${MEASURED_ON}`} disclosure>
         <Prose>
           The page compares two models. The{" "}
           <strong>zone baseline</strong> assigns every cell the average of its official zone,
@@ -74,21 +75,19 @@ export default function ShotValueMethodPage() {
         </Note>
       </Section>
 
-      <Section label="WHAT THIS IS NOT" descriptor="THE NAME IS DELIBERATE">
+      <Section label="WHAT THIS IS NOT" title="Shot context the model cannot see" disclosure>
         <Prose>
           Defender distance, shot clock, touch time, and dribbles can help describe a shot.
           Those inputs are absent from the location data used here. A wide-open corner three
           and a contested one off the dribble receive the same expected value at the same location.
         </Prose>
         <Prose>
-          That is why it is called <strong>shot value</strong>{" "}
-          rather than shot quality: it
-          answers &ldquo;what is a shot from here worth on average&rdquo;, never &ldquo;was
-          this a good shot&rdquo;.
+          <strong>Shot value</strong> estimates what a shot from this location is worth on
+          average. It cannot judge whether a particular attempt was a good shot.
         </Prose>
       </Section>
 
-      <Section label="WHAT THIS CANNOT SEE" descriptor="LIMITATIONS">
+      <Section label="WHAT THIS CANNOT SEE" title="Full limitations" disclosure>
         <LimitList
           items={[
             "Defender distance and contest level.",
