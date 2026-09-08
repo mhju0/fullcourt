@@ -30,7 +30,7 @@ describe("methodologyHrefFor", () => {
     expect(methodologyHrefFor("/shooting")).toBe("/behind-the-data/player-shooting");
     expect(methodologyHrefFor("/shot-quality")).toBe("/behind-the-data/shot-value");
     expect(methodologyHrefFor("/availability")).toBe("/behind-the-data/availability");
-    expect(methodologyHrefFor("/referees")).toBe("/behind-the-data/referees");
+    expect(methodologyHrefFor("/officiating")).toBe("/behind-the-data/officiating");
   });
 
   it("answers null for a surface nothing documents, rather than guessing", () => {

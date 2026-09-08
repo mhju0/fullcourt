@@ -10,9 +10,9 @@ export const SeasonReportContentLazy = lazyContent(
       <div style={termCardStyle}>
         <Bar className="h-4 w-32" />
       </div>
-      <div className="grid grid-cols-2 gap-2 md:grid-cols-3">
-        {[0, 1, 2].map((i) => (
-          <Bar key={i} className="h-[92px] w-full" />
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+        {[0, 1].map((i) => (
+          <Bar key={i} className="h-52 w-full" />
         ))}
       </div>
     </div>

@@ -51,8 +51,7 @@ export function CommandPaletteMount() {
         setOpen((prev) => !prev)
       }
     }
-    // The two visible doors — the bar's SEARCH button and the dock's search slot. The GitHub
-    // lesson stands: a keyboard-only palette is a feature nobody finds.
+    // The footer button uses the same listener as the keyboard shortcut.
     const onSummon = () => {
       loadedRef.current = true
       setLoaded(true)

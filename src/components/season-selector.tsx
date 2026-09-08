@@ -15,10 +15,12 @@ export function SeasonSelector({
    * `browsableSeasons()` so an upcoming schedule can be browsed before its season starts.
    */
   seasons,
+  disabled = false,
 }: {
   id: string
   season: string
   onSeasonChange: (season: string) => void
+  disabled?: boolean
   seasons?: readonly string[]
 }) {
   const options = seasons ? [...seasons].reverse() : SEASON_OPTIONS
@@ -33,6 +35,7 @@ export function SeasonSelector({
       </label>
       <select
         id={id}
+        disabled={disabled}
         value={season}
         onChange={(e) => onSeasonChange(e.target.value)}
         className={cn(termSelectClass, "max-w-xs")}

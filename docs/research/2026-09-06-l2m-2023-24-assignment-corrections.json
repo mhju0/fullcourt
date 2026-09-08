@@ -1,0 +1,70 @@
+{
+  "0022300085": {
+    "officials": [
+      "David Guthrie",
+      "Kevin Cutler",
+      "Jason Goldenberg"
+    ],
+    "espn_event_id": "401584713",
+    "source_urls": [
+      "https://statsdmz.nba.com/pdfs/20231027/20231027_LACUTA_book.pdf"
+    ],
+    "reason": "NBA official scorer gamebook first-page officials list confirms the active trio; ESPN missing from corpus or has incomplete/nonconsecutive order labels.",
+    "expected_date": "2023-10-27",
+    "expected_home": "UTA",
+    "expected_away": "LAC",
+    "source_file": "ml/data/l2m-research/assignment-validation-earlier-20260906/20231027_LACUTA_book.pdf",
+    "source_sha256": "0a8fc18270d39412bcc838c2174571514cb4cb619ec28b518c3500e3b638c82b"
+  },
+  "0022300478": {
+    "officials": [
+      "Sean Wright",
+      "Ashley Moyer-Gleich",
+      "J.T. Orr"
+    ],
+    "espn_event_id": "401585106",
+    "source_urls": [
+      "https://statsdmz.nba.com/pdfs/20240104/20240104_DENGSW_book.pdf"
+    ],
+    "reason": "NBA official scorer gamebook first-page officials list confirms the active trio; ESPN missing from corpus or has incomplete/nonconsecutive order labels.",
+    "expected_date": "2024-01-04",
+    "expected_home": "GSW",
+    "expected_away": "DEN",
+    "source_file": "ml/data/l2m-research/assignment-validation-earlier-20260906/20240104_DENGSW_book.pdf",
+    "source_sha256": "e91972557340531b75f7b399403ec922ad4bc8041860a6439a6f023d40beb04a"
+  },
+  "0052300101": {
+    "officials": [
+      "Tony Brothers",
+      "Bill Kennedy",
+      "Mitchell Ervin"
+    ],
+    "espn_event_id": "401654659",
+    "source_urls": [
+      "https://statsdmz.nba.com/pdfs/20240417/20240417_MIAPHI_book.pdf"
+    ],
+    "reason": "NBA official scorer gamebook first-page officials list confirms the active trio; ESPN missing from corpus or has incomplete/nonconsecutive order labels.",
+    "expected_date": "2024-04-17",
+    "expected_home": "PHI",
+    "expected_away": "MIA",
+    "source_file": "ml/data/l2m-research/assignment-validation-earlier-20260906/20240417_MIAPHI_book.pdf",
+    "source_sha256": "3704920b76da5f93c9fc4f5184e6ade590794698d49006a94e49a69dd58c2aef"
+  },
+  "0052300121": {
+    "officials": [
+      "Eric Dalen",
+      "Curtis Blair",
+      "Scott Foster"
+    ],
+    "espn_event_id": "401654655",
+    "source_urls": [
+      "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/summary?event=401654655"
+    ],
+    "reason": "Play-in absent from original corpus; fresh ESPN summary confirms matching date, teams, final scores and active orders 1-3; any fourth standby excluded.",
+    "expected_date": "2024-04-16",
+    "expected_home": "NOP",
+    "expected_away": "LAL",
+    "source_file": "ml/data/l2m-research/assignment-validation-earlier-20260906/401654655-summary.json",
+    "source_sha256": "d28cfee8385a3e97d9adb6002dd3f47688a237ddc7c91872559c6d7dcd178246"
+  }
+}

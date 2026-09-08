@@ -2,7 +2,7 @@ import { execFileSync } from "node:child_process";
 import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
 import { describe, expect, it } from "vitest";
-import { DIRECT_NAV_ITEMS, OTHER_NAV_ITEMS } from "@/lib/primary-navigation";
+import { DIRECT_NAV_ITEMS, EXPLORE_NAV_ITEMS } from "@/lib/primary-navigation";
 
 /**
  * The contract a new page or tab has to satisfy, enforced rather than written down.
@@ -91,11 +91,14 @@ function renders(file: string, pattern: RegExp, depth = 4, seen = new Set<string
  * that deliberately does not look like the product, because its job is to argue for it.
  */
 const NO_PAGE_HEADER = new Map([
+  ["/referees", "permanent redirect to /officiating"],
   ["/", "the front door — a self-scoped editorial surface, exempt everywhere else too"],
 ]);
 
 /** Routes that are real pages but deliberately take no tab. */
 const NO_NAV_TAB = new Map([
+  ["/about", "brand story, reached from the homepage and footer"],
+  ["/referees", "legacy redirect; Officiating owns the navigation entry"],
   ["/", "the front door: reached by the wordmark and the footer, not by a tab"],
   ["/behind-the-data", "the reference section, reached by its own right-aligned link"],
 ]);
@@ -120,7 +123,7 @@ describe("every page states what it is", () => {
 });
 
 describe("every page is reachable and measured", () => {
-  const NAV = [...DIRECT_NAV_ITEMS, ...OTHER_NAV_ITEMS].map((i) => i.href);
+  const NAV = [...DIRECT_NAV_ITEMS, ...EXPLORE_NAV_ITEMS].map((i) => i.href);
 
   it.each(ROUTES)("$route is in the nav or exempt with a reason", ({ route }) => {
     if (route.startsWith("/behind-the-data/")) return; // reached from the section's own index

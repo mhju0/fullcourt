@@ -15,6 +15,8 @@ import { test, expect } from "@playwright/test";
 const ROUTES = [
   // Not "/": since 2026-08-12 that is the marketing page, which sets its own hero type rather
   // than using PageHeader. The games board it replaced now lives at /games.
+  "/about",
+  "/explore",
   "/games",
   "/season",
   "/schedule",
@@ -23,6 +25,9 @@ const ROUTES = [
   "/shooting",
   "/shot-quality",
   "/referees",
+  "/officiating",
+  "/behind-the-data/officiating",
+  "/behind-the-data/referees/archive",
   "/availability",
   "/behind-the-data",
   "/behind-the-data/rest-advantage",

@@ -1,0 +1,3014 @@
+{
+  "protocol": "ml/l2m_three_season_extension.md",
+  "inputs": [
+    {
+      "path": "docs/research/2026-09-06-l2m-2023-24-results.json",
+      "sha256": "49774de2969881b4c0f5f999e46e472e530e3db917f7c3096098352e74a5cffb"
+    },
+    {
+      "path": "docs/research/2026-09-06-l2m-2024-25-results.json",
+      "sha256": "0821caefcee65b2a2acb18e79b9ad05094943b842fec03aedcb120351c2cec3d"
+    },
+    {
+      "path": "docs/research/2026-09-06-l2m-season-results.json",
+      "sha256": "dc0b0f7350ba4193cf4d7451220cb7f8be5675807f6dab565065b1ed7002c2d6"
+    },
+    {
+      "path": "docs/research/2026-09-06-referee-season-secondary.json",
+      "sha256": "8564861a89b1d74676c9144621b86358f224a0573fb3fbdb75a05fa27e005a07"
+    }
+  ],
+  "total_reports": 1239,
+  "phase_comparisons": [
+    {
+      "season": "2023-24",
+      "phase": "play_in",
+      "games": 2,
+      "reviewed_periods": 2,
+      "assessments": 50,
+      "grades": {
+        "CC": 13,
+        "CNC": 36,
+        "INC": 1
+      },
+      "errors": 1,
+      "games_with_error": 1,
+      "errors_per_game": 0.5,
+      "errors_per_reviewed_period": 0.5,
+      "missed_share_pct": 100.0,
+      "games_with_error_pct": 50.0,
+      "assessments_per_represented_period": 25.0
+    },
+    {
+      "season": "2023-24",
+      "phase": "playoffs",
+      "games": 25,
+      "reviewed_periods": 28,
+      "assessments": 573,
+      "grades": {
+        "CC": 129,
+        "CNC": 403,
+        "IC": 7,
+        "INC": 34
+      },
+      "errors": 41,
+      "games_with_error": 20,
+      "errors_per_game": 1.64,
+      "errors_per_reviewed_period": 1.4643,
+      "missed_share_pct": 82.93,
+      "games_with_error_pct": 80.0,
+      "assessments_per_represented_period": 20.4643
+    },
+    {
+      "season": "2023-24",
+      "phase": "regular_season",
+      "games": 367,
+      "reviewed_periods": 422,
+      "assessments": 7249,
+      "grades": {
+        "CC": 1753,
+        "CNC": 5057,
+        "IC": 66,
+        "INC": 363,
+        "ungraded": 10
+      },
+      "errors": 429,
+      "games_with_error": 246,
+      "errors_per_game": 1.1689,
+      "errors_per_reviewed_period": 1.0166,
+      "missed_share_pct": 84.62,
+      "games_with_error_pct": 67.03,
+      "assessments_per_represented_period": 17.1777
+    },
+    {
+      "season": "2024-25",
+      "phase": "play_in",
+      "games": 2,
+      "reviewed_periods": 3,
+      "assessments": 53,
+      "grades": {
+        "CC": 13,
+        "CNC": 35,
+        "IC": 2,
+        "INC": 3
+      },
+      "errors": 5,
+      "games_with_error": 2,
+      "errors_per_game": 2.5,
+      "errors_per_reviewed_period": 1.6667,
+      "missed_share_pct": 60.0,
+      "games_with_error_pct": 100.0,
+      "assessments_per_represented_period": 17.6667
+    },
+    {
+      "season": "2024-25",
+      "phase": "playoffs",
+      "games": 29,
+      "reviewed_periods": 33,
+      "assessments": 560,
+      "grades": {
+        "CC": 132,
+        "CNC": 405,
+        "IC": 5,
+        "INC": 18
+      },
+      "errors": 23,
+      "games_with_error": 17,
+      "errors_per_game": 0.7931,
+      "errors_per_reviewed_period": 0.697,
+      "missed_share_pct": 78.26,
+      "games_with_error_pct": 58.62,
+      "assessments_per_represented_period": 16.9697
+    },
+    {
+      "season": "2024-25",
+      "phase": "regular_season",
+      "games": 399,
+      "reviewed_periods": 451,
+      "assessments": 6710,
+      "grades": {
+        "CC": 1929,
+        "CNC": 4474,
+        "IC": 61,
+        "INC": 244,
+        "ungraded": 2
+      },
+      "errors": 305,
+      "games_with_error": 211,
+      "errors_per_game": 0.7644,
+      "errors_per_reviewed_period": 0.6763,
+      "missed_share_pct": 80.0,
+      "games_with_error_pct": 52.88,
+      "assessments_per_represented_period": 14.878
+    },
+    {
+      "season": "2025-26",
+      "phase": "play_in",
+      "games": 3,
+      "reviewed_periods": 4,
+      "assessments": 80,
+      "grades": {
+        "CC": 15,
+        "CNC": 64,
+        "INC": 1
+      },
+      "errors": 1,
+      "games_with_error": 1,
+      "errors_per_game": 0.3333,
+      "errors_per_reviewed_period": 0.25,
+      "missed_share_pct": 100.0,
+      "games_with_error_pct": 33.33,
+      "assessments_per_represented_period": 20.0
+    },
+    {
+      "season": "2025-26",
+      "phase": "playoffs",
+      "games": 26,
+      "reviewed_periods": 31,
+      "assessments": 637,
+      "grades": {
+        "CC": 122,
+        "CNC": 482,
+        "IC": 6,
+        "INC": 26,
+        "ungraded": 1
+      },
+      "errors": 32,
+      "games_with_error": 14,
+      "errors_per_game": 1.2308,
+      "errors_per_reviewed_period": 1.0323,
+      "missed_share_pct": 81.25,
+      "games_with_error_pct": 53.85,
+      "assessments_per_represented_period": 20.5484
+    },
+    {
+      "season": "2025-26",
+      "phase": "regular_season",
+      "games": 386,
+      "reviewed_periods": 438,
+      "assessments": 7366,
+      "grades": {
+        "CC": 1828,
+        "CNC": 5160,
+        "IC": 68,
+        "INC": 308,
+        "ungraded": 2
+      },
+      "errors": 376,
+      "games_with_error": 234,
+      "errors_per_game": 0.9741,
+      "errors_per_reviewed_period": 0.8584,
+      "missed_share_pct": 81.91,
+      "games_with_error_pct": 60.62,
+      "assessments_per_represented_period": 16.8174
+    }
+  ],
+  "coverage_and_integrity": [
+    {
+      "season": "2023-24",
+      "indexed_reports": 394,
+      "joined_reports": 394,
+      "errors_all_phases": 471,
+      "assessments_all_phases": 7872,
+      "beneficiary_mismatched_games": 22,
+      "explicit_error_beneficiaries": 0,
+      "summary_beneficiaries": 448,
+      "reviewed_duplicate_pairs": 0,
+      "regular_season_trios": 364,
+      "trios_seen_once": 361,
+      "max_trio_games": 2,
+      "officials": 79
+    },
+    {
+      "season": "2024-25",
+      "indexed_reports": 430,
+      "joined_reports": 430,
+      "errors_all_phases": 333,
+      "assessments_all_phases": 7323,
+      "beneficiary_mismatched_games": 25,
+      "explicit_error_beneficiaries": 0,
+      "summary_beneficiaries": 308,
+      "reviewed_duplicate_pairs": 2,
+      "regular_season_trios": 393,
+      "trios_seen_once": 387,
+      "max_trio_games": 2,
+      "officials": 76
+    },
+    {
+      "season": "2025-26",
+      "indexed_reports": 415,
+      "joined_reports": 415,
+      "errors_all_phases": 409,
+      "assessments_all_phases": 8083,
+      "beneficiary_mismatched_games": 20,
+      "explicit_error_beneficiaries": 0,
+      "summary_beneficiaries": 388,
+      "reviewed_duplicate_pairs": 0,
+      "regular_season_trios": 382,
+      "trios_seen_once": 378,
+      "max_trio_games": 2,
+      "officials": 78
+    }
+  ],
+  "call_categories": [
+    {
+      "season": "2023-24",
+      "phase": "play_in",
+      "call_type": "Foul: Away from Play",
+      "assessments": 1,
+      "grades": {
+        "CC": 1
+      },
+      "errors": 0
+    },
+    {
+      "season": "2023-24",
+      "phase": "play_in",
+      "call_type": "Foul: Loose Ball",
+      "assessments": 3,
+      "grades": {
+        "CNC": 2,
+        "CC": 1
+      },
+      "errors": 0
+    },
+    {
+      "season": "2023-24",
+      "phase": "play_in",
+      "call_type": "Foul: Offensive",
+      "assessments": 10,
+      "grades": {
+        "CNC": 10
+      },
+      "errors": 0
+    },
+    {
+      "season": "2023-24",
+      "phase": "play_in",
+      "call_type": "Foul: Personal",
+      "assessments": 16,
+      "grades": {
+        "CC": 4,
+        "CNC": 11,
+        "INC": 1
+      },
+      "errors": 1
+    },
+    {
+      "season": "2023-24",
+      "phase": "play_in",
+      "call_type": "Foul: Shooting",
+      "assessments": 14,
+      "grades": {
+        "CNC": 9,
+        "CC": 5
+      },
+      "errors": 0
+    },
+    {
+      "season": "2023-24",
+      "phase": "play_in",
+      "call_type": "Turnover: 5 Second Violation",
+      "assessments": 2,
+      "grades": {
+        "CNC": 2
+      },
+      "errors": 0
+    },
+    {
+      "season": "2023-24",
+      "phase": "play_in",
+      "call_type": "Turnover: Backcourt Turnover",
+      "assessments": 1,
+      "grades": {
+        "CC": 1
+      },
+      "errors": 0
+    },
+    {
+      "season": "2023-24",
+      "phase": "play_in",
+      "call_type": "Turnover: Lost Ball Out of Bounds",
+      "assessments": 1,
+      "grades": {
+        "CNC": 1
+      },
+      "errors": 0
+    },
+    {
+      "season": "2023-24",
+      "phase": "play_in",
+      "call_type": "Turnover: Traveling",
+      "assessments": 1,
+      "grades": {
+        "CNC": 1
+      },
+      "errors": 0
+    },
+    {
+      "season": "2023-24",
+      "phase": "play_in",
+      "call_type": "Violation: Kicked Ball",
+      "assessments": 1,
+      "grades": {
+        "CC": 1
+      },
+      "errors": 0
+    },
+    {
+      "season": "2023-24",
+      "phase": "playoffs",
+      "call_type": "Foul: Away from Play",
+      "assessments": 5,
+      "grades": {
+        "CC": 3,
+        "CNC": 2
+      },
+      "errors": 0
+    },
+    {
+      "season": "2023-24",
+      "phase": "playoffs",
+      "call_type": "Foul: Defense 3 Second",
+      "assessments": 11,
+      "grades": {
+        "INC": 6,
+        "CNC": 5
+      },
+      "errors": 6
+    },
+    {
+      "season": "2023-24",
+      "phase": "playoffs",
+      "call_type": "Foul: Flagrant Type 1",
+      "assessments": 1,
+      "grades": {
+        "CC": 1
+      },
+      "errors": 0
+    },
+    {
+      "season": "2023-24",
+      "phase": "playoffs",
+      "call_type": "Foul: Loose Ball",
+      "assessments": 47,
+      "grades": {
+        "CNC": 39,
+        "INC": 2,
+        "CC": 6
+      },
+      "errors": 2
+    },
+    {
+      "season": "2023-24",
+      "phase": "playoffs",
+      "call_type": "Foul: Offensive",
+      "assessments": 103,
+      "grades": {
+        "CNC": 97,
+        "CC": 3,
+        "INC": 3
+      },
+      "errors": 3
+    },
+    {
+      "season": "2023-24",
+      "phase": "playoffs",
+      "call_type": "Foul: Personal",
+      "assessments": 190,
+      "grades": {
+        "CNC": 119,
+        "CC": 62,
+        "INC": 8,
+        "IC": 1
+      },
+      "errors": 9
+    },
+    {
+      "season": "2023-24",
+      "phase": "playoffs",
+      "call_type": "Foul: Shooting",
+      "assessments": 149,
+      "grades": {
+        "CC": 26,
+        "CNC": 118,
+        "INC": 4,
+        "IC": 1
+      },
+      "errors": 5
+    },
+    {
+      "season": "2023-24",
+      "phase": "playoffs",
+      "call_type": "Stoppage: Clock",
+      "assessments": 1,
+      "grades": {
+        "CC": 1
+      },
+      "errors": 0
+    },
+    {
+      "season": "2023-24",
+      "phase": "playoffs",
+      "call_type": "Stoppage: Inadvertent Whistle",
+      "assessments": 3,
+      "grades": {
+        "CNC": 3
+      },
+      "errors": 0
+    },
+    {
+      "season": "2023-24",
+      "phase": "playoffs",
+      "call_type": "Stoppage: Out-of-Bounds",
+      "assessments": 14,
+      "grades": {
+        "CC": 12,
+        "INC": 1,
+        "IC": 1
+      },
+      "errors": 2
+    },
+    {
+      "season": "2023-24",
+      "phase": "playoffs",
+      "call_type": "Stoppage: TimeOut",
+      "assessments": 1,
+      "grades": {
+        "CC": 1
+      },
+      "errors": 0
+    },
+    {
+      "season": "2023-24",
+      "phase": "playoffs",
+      "call_type": "Turnover:  Out of Bounds - Bad Pass Turn",
+      "assessments": 5,
+      "grades": {
+        "CC": 5
+      },
+      "errors": 0
+    },
+    {
+      "season": "2023-24",
+      "phase": "playoffs",
+      "call_type": "Turnover: 5 Second Violation",
+      "assessments": 4,
+      "grades": {
+        "CNC": 4
+      },
+      "errors": 0
+    },
+    {
+      "season": "2023-24",
+      "phase": "playoffs",
+      "call_type": "Turnover: 8 Second Violation",
+      "assessments": 1,
+      "grades": {
+        "CNC": 1
+      },
+      "errors": 0
+    },
+    {
+      "season": "2023-24",
+      "phase": "playoffs",
+      "call_type": "Turnover: Backcourt Turnover",
+      "assessments": 1,
+      "grades": {
+        "INC": 1
+      },
+      "errors": 1
+    },
+    {
+      "season": "2023-24",
+      "phase": "playoffs",
+      "call_type": "Turnover: Double Dribble",
+      "assessments": 1,
+      "grades": {
+        "CNC": 1
+      },
+      "errors": 0
+    },
+    {
+      "season": "2023-24",
+      "phase": "playoffs",
+      "call_type": "Turnover: Lost Ball Out of Bounds",
+      "assessments": 6,
+      "grades": {
+        "CC": 4,
+        "IC": 2
+      },
+      "errors": 2
+    },
+    {
+      "season": "2023-24",
+      "phase": "playoffs",
+      "call_type": "Turnover: Offensive Goaltending",
+      "assessments": 1,
+      "grades": {
+        "CC": 1
+      },
+      "errors": 0
+    },
+    {
+      "season": "2023-24",
+      "phase": "playoffs",
+      "call_type": "Turnover: Palming",
+      "assessments": 2,
+      "grades": {
+        "CNC": 1,
+        "INC": 1
+      },
+      "errors": 1
+    },
+    {
+      "season": "2023-24",
+      "phase": "playoffs",
+      "call_type": "Turnover: Stepped out of Bounds",
+      "assessments": 4,
+      "grades": {
+        "CC": 1,
+        "CNC": 2,
+        "INC": 1
+      },
+      "errors": 1
+    },
+    {
+      "season": "2023-24",
+      "phase": "playoffs",
+      "call_type": "Turnover: Traveling",
+      "assessments": 16,
+      "grades": {
+        "INC": 6,
+        "CNC": 9,
+        "CC": 1
+      },
+      "errors": 6
+    },
+    {
+      "season": "2023-24",
+      "phase": "playoffs",
+      "call_type": "Violation: Defensive Goaltending",
+      "assessments": 3,
+      "grades": {
+        "CC": 2,
+        "CNC": 1
+      },
+      "errors": 0
+    },
+    {
+      "season": "2023-24",
+      "phase": "playoffs",
+      "call_type": "Violation: Jump Ball",
+      "assessments": 1,
+      "grades": {
+        "IC": 1
+      },
+      "errors": 1
+    },
+    {
+      "season": "2023-24",
+      "phase": "playoffs",
+      "call_type": "Violation: Kicked Ball",
+      "assessments": 2,
+      "grades": {
+        "CNC": 1,
+        "IC": 1
+      },
+      "errors": 1
+    },
+    {
+      "season": "2023-24",
+      "phase": "playoffs",
+      "call_type": "Violation: Lane",
+      "assessments": 1,
+      "grades": {
+        "INC": 1
+      },
+      "errors": 1
+    },
+    {
+      "season": "2023-24",
+      "phase": "regular_season",
+      "call_type": "Foul: Away from Play",
+      "assessments": 44,
+      "grades": {
+        "CNC": 33,
+        "CC": 7,
+        "INC": 2,
+        "IC": 2
+      },
+      "errors": 4
+    },
+    {
+      "season": "2023-24",
+      "phase": "regular_season",
+      "call_type": "Foul: Clear Path",
+      "assessments": 5,
+      "grades": {
+        "CNC": 1,
+        "CC": 4
+      },
+      "errors": 0
+    },
+    {
+      "season": "2023-24",
+      "phase": "regular_season",
+      "call_type": "Foul: Defense 3 Second",
+      "assessments": 99,
+      "grades": {
+        "INC": 53,
+        "CNC": 46
+      },
+      "errors": 53
+    },
+    {
+      "season": "2023-24",
+      "phase": "regular_season",
+      "call_type": "Foul: Double Technical",
+      "assessments": 7,
+      "grades": {
+        "CC": 7
+      },
+      "errors": 0
+    },
+    {
+      "season": "2023-24",
+      "phase": "regular_season",
+      "call_type": "Foul: Flagrant Type 1",
+      "assessments": 3,
+      "grades": {
+        "CC": 3
+      },
+      "errors": 0
+    },
+    {
+      "season": "2023-24",
+      "phase": "regular_season",
+      "call_type": "Foul: Hanging Technical",
+      "assessments": 2,
+      "grades": {
+        "CC": 2
+      },
+      "errors": 0
+    },
+    {
+      "season": "2023-24",
+      "phase": "regular_season",
+      "call_type": "Foul: Loose Ball",
+      "assessments": 620,
+      "grades": {
+        "CNC": 509,
+        "CC": 81,
+        "INC": 29,
+        "IC": 1
+      },
+      "errors": 30
+    },
+    {
+      "season": "2023-24",
+      "phase": "regular_season",
+      "call_type": "Foul: Non-Unsportsmanlike Tech Flopping",
+      "assessments": 1,
+      "grades": {
+        "CC": 1
+      },
+      "errors": 0
+    },
+    {
+      "season": "2023-24",
+      "phase": "regular_season",
+      "call_type": "Foul: Offensive",
+      "assessments": 1308,
+      "grades": {
+        "CNC": 1227,
+        "INC": 33,
+        "CC": 45,
+        "IC": 2,
+        "ungraded": 1
+      },
+      "errors": 35
+    },
+    {
+      "season": "2023-24",
+      "phase": "regular_season",
+      "call_type": "Foul: Personal",
+      "assessments": 2258,
+      "grades": {
+        "INC": 56,
+        "CNC": 1424,
+        "CC": 762,
+        "IC": 16
+      },
+      "errors": 72
+    },
+    {
+      "season": "2023-24",
+      "phase": "regular_season",
+      "call_type": "Foul: Personal Take",
+      "assessments": 6,
+      "grades": {
+        "CC": 6
+      },
+      "errors": 0
+    },
+    {
+      "season": "2023-24",
+      "phase": "regular_season",
+      "call_type": "Foul: Shooting",
+      "assessments": 1916,
+      "grades": {
+        "CNC": 1461,
+        "CC": 350,
+        "INC": 82,
+        "IC": 23
+      },
+      "errors": 105
+    },
+    {
+      "season": "2023-24",
+      "phase": "regular_season",
+      "call_type": "Foul: Technical",
+      "assessments": 17,
+      "grades": {
+        "CC": 17
+      },
+      "errors": 0
+    },
+    {
+      "season": "2023-24",
+      "phase": "regular_season",
+      "call_type": "Instant Replay: Overturn Ruling",
+      "assessments": 2,
+      "grades": {
+        "ungraded": 1,
+        "CC": 1
+      },
+      "errors": 0
+    },
+    {
+      "season": "2023-24",
+      "phase": "regular_season",
+      "call_type": "Instant Replay: Support Ruling",
+      "assessments": 10,
+      "grades": {
+        "CC": 8,
+        "ungraded": 1,
+        "CNC": 1
+      },
+      "errors": 0
+    },
+    {
+      "season": "2023-24",
+      "phase": "regular_season",
+      "call_type": "N/A",
+      "assessments": 1,
+      "grades": {
+        "CNC": 1
+      },
+      "errors": 0
+    },
+    {
+      "season": "2023-24",
+      "phase": "regular_season",
+      "call_type": "Stoppage: Clock",
+      "assessments": 4,
+      "grades": {
+        "CC": 1,
+        "CNC": 3
+      },
+      "errors": 0
+    },
+    {
+      "season": "2023-24",
+      "phase": "regular_season",
+      "call_type": "Stoppage: Inadvertent Whistle",
+      "assessments": 30,
+      "grades": {
+        "CNC": 26,
+        "CC": 3,
+        "ungraded": 1
+      },
+      "errors": 0
+    },
+    {
+      "season": "2023-24",
+      "phase": "regular_season",
+      "call_type": "Stoppage: Out-of-Bounds",
+      "assessments": 207,
+      "grades": {
+        "CC": 181,
+        "IC": 11,
+        "CNC": 13,
+        "ungraded": 2
+      },
+      "errors": 11
+    },
+    {
+      "season": "2023-24",
+      "phase": "regular_season",
+      "call_type": "Stoppage: TimeOut",
+      "assessments": 16,
+      "grades": {
+        "CNC": 4,
+        "ungraded": 4,
+        "INC": 1,
+        "CC": 7
+      },
+      "errors": 1
+    },
+    {
+      "season": "2023-24",
+      "phase": "regular_season",
+      "call_type": "Turnover:  Out of Bounds - Bad Pass Turn",
+      "assessments": 53,
+      "grades": {
+        "CC": 52,
+        "IC": 1
+      },
+      "errors": 1
+    },
+    {
+      "season": "2023-24",
+      "phase": "regular_season",
+      "call_type": "Turnover: 10 Second Violation",
+      "assessments": 1,
+      "grades": {
+        "INC": 1
+      },
+      "errors": 1
+    },
+    {
+      "season": "2023-24",
+      "phase": "regular_season",
+      "call_type": "Turnover: 24 Second Violation",
+      "assessments": 48,
+      "grades": {
+        "CC": 48
+      },
+      "errors": 0
+    },
+    {
+      "season": "2023-24",
+      "phase": "regular_season",
+      "call_type": "Turnover: 3 Second Violation",
+      "assessments": 42,
+      "grades": {
+        "CNC": 23,
+        "INC": 19
+      },
+      "errors": 19
+    },
+    {
+      "season": "2023-24",
+      "phase": "regular_season",
+      "call_type": "Turnover: 5 Second Inbound",
+      "assessments": 9,
+      "grades": {
+        "CNC": 4,
+        "CC": 2,
+        "INC": 3
+      },
+      "errors": 3
+    },
+    {
+      "season": "2023-24",
+      "phase": "regular_season",
+      "call_type": "Turnover: 5 Second Violation",
+      "assessments": 47,
+      "grades": {
+        "CNC": 39,
+        "CC": 3,
+        "INC": 5
+      },
+      "errors": 5
+    },
+    {
+      "season": "2023-24",
+      "phase": "regular_season",
+      "call_type": "Turnover: 8 Second Violation",
+      "assessments": 13,
+      "grades": {
+        "CNC": 9,
+        "INC": 2,
+        "CC": 2
+      },
+      "errors": 2
+    },
+    {
+      "season": "2023-24",
+      "phase": "regular_season",
+      "call_type": "Turnover: Backcourt Turnover",
+      "assessments": 13,
+      "grades": {
+        "CNC": 9,
+        "CC": 3,
+        "IC": 1
+      },
+      "errors": 1
+    },
+    {
+      "season": "2023-24",
+      "phase": "regular_season",
+      "call_type": "Turnover: Discontinue Dribble",
+      "assessments": 4,
+      "grades": {
+        "CNC": 4
+      },
+      "errors": 0
+    },
+    {
+      "season": "2023-24",
+      "phase": "regular_season",
+      "call_type": "Turnover: Double Dribble",
+      "assessments": 25,
+      "grades": {
+        "CNC": 19,
+        "INC": 3,
+        "CC": 3
+      },
+      "errors": 3
+    },
+    {
+      "season": "2023-24",
+      "phase": "regular_season",
+      "call_type": "Turnover: Illegal Screen",
+      "assessments": 1,
+      "grades": {
+        "INC": 1
+      },
+      "errors": 1
+    },
+    {
+      "season": "2023-24",
+      "phase": "regular_season",
+      "call_type": "Turnover: Inbound Turnover",
+      "assessments": 6,
+      "grades": {
+        "INC": 1,
+        "CNC": 3,
+        "CC": 2
+      },
+      "errors": 1
+    },
+    {
+      "season": "2023-24",
+      "phase": "regular_season",
+      "call_type": "Turnover: Jump Ball Violation",
+      "assessments": 2,
+      "grades": {
+        "CNC": 2
+      },
+      "errors": 0
+    },
+    {
+      "season": "2023-24",
+      "phase": "regular_season",
+      "call_type": "Turnover: Kicked Ball Violation",
+      "assessments": 1,
+      "grades": {
+        "CNC": 1
+      },
+      "errors": 0
+    },
+    {
+      "season": "2023-24",
+      "phase": "regular_season",
+      "call_type": "Turnover: Lane Violation",
+      "assessments": 3,
+      "grades": {
+        "CC": 3
+      },
+      "errors": 0
+    },
+    {
+      "season": "2023-24",
+      "phase": "regular_season",
+      "call_type": "Turnover: Lost Ball Out of Bounds",
+      "assessments": 54,
+      "grades": {
+        "CC": 49,
+        "IC": 5
+      },
+      "errors": 5
+    },
+    {
+      "season": "2023-24",
+      "phase": "regular_season",
+      "call_type": "Turnover: Offensive Goaltending",
+      "assessments": 12,
+      "grades": {
+        "CNC": 7,
+        "INC": 2,
+        "CC": 3
+      },
+      "errors": 2
+    },
+    {
+      "season": "2023-24",
+      "phase": "regular_season",
+      "call_type": "Turnover: Out of Bounds",
+      "assessments": 15,
+      "grades": {
+        "CNC": 9,
+        "CC": 5,
+        "IC": 1
+      },
+      "errors": 1
+    },
+    {
+      "season": "2023-24",
+      "phase": "regular_season",
+      "call_type": "Turnover: Palming",
+      "assessments": 14,
+      "grades": {
+        "INC": 1,
+        "CNC": 12,
+        "CC": 1
+      },
+      "errors": 1
+    },
+    {
+      "season": "2023-24",
+      "phase": "regular_season",
+      "call_type": "Turnover: Stepped out of Bounds",
+      "assessments": 53,
+      "grades": {
+        "CNC": 26,
+        "CC": 20,
+        "INC": 7
+      },
+      "errors": 7
+    },
+    {
+      "season": "2023-24",
+      "phase": "regular_season",
+      "call_type": "Turnover: Traveling",
+      "assessments": 169,
+      "grades": {
+        "CNC": 95,
+        "INC": 50,
+        "IC": 2,
+        "CC": 22
+      },
+      "errors": 52
+    },
+    {
+      "season": "2023-24",
+      "phase": "regular_season",
+      "call_type": "Violation: Defensive Goaltending",
+      "assessments": 55,
+      "grades": {
+        "CNC": 33,
+        "CC": 18,
+        "INC": 4
+      },
+      "errors": 4
+    },
+    {
+      "season": "2023-24",
+      "phase": "regular_season",
+      "call_type": "Violation: Delay of Game",
+      "assessments": 7,
+      "grades": {
+        "CC": 6,
+        "CNC": 1
+      },
+      "errors": 0
+    },
+    {
+      "season": "2023-24",
+      "phase": "regular_season",
+      "call_type": "Violation: Double Lane",
+      "assessments": 1,
+      "grades": {
+        "CC": 1
+      },
+      "errors": 0
+    },
+    {
+      "season": "2023-24",
+      "phase": "regular_season",
+      "call_type": "Violation: Jump Ball",
+      "assessments": 5,
+      "grades": {
+        "CC": 5
+      },
+      "errors": 0
+    },
+    {
+      "season": "2023-24",
+      "phase": "regular_season",
+      "call_type": "Violation: Kicked Ball",
+      "assessments": 25,
+      "grades": {
+        "CNC": 12,
+        "CC": 10,
+        "IC": 1,
+        "INC": 2
+      },
+      "errors": 3
+    },
+    {
+      "season": "2023-24",
+      "phase": "regular_season",
+      "call_type": "Violation: Lane",
+      "assessments": 15,
+      "grades": {
+        "CC": 9,
+        "INC": 6
+      },
+      "errors": 6
+    },
+    {
+      "season": "2024-25",
+      "phase": "play_in",
+      "call_type": "Foul: Away from Play",
+      "assessments": 2,
+      "grades": {
+        "CNC": 2
+      },
+      "errors": 0
+    },
+    {
+      "season": "2024-25",
+      "phase": "play_in",
+      "call_type": "Foul: Loose Ball",
+      "assessments": 5,
+      "grades": {
+        "CC": 1,
+        "CNC": 4
+      },
+      "errors": 0
+    },
+    {
+      "season": "2024-25",
+      "phase": "play_in",
+      "call_type": "Foul: Offensive",
+      "assessments": 4,
+      "grades": {
+        "CNC": 3,
+        "INC": 1
+      },
+      "errors": 1
+    },
+    {
+      "season": "2024-25",
+      "phase": "play_in",
+      "call_type": "Foul: Personal",
+      "assessments": 22,
+      "grades": {
+        "CNC": 13,
+        "CC": 9
+      },
+      "errors": 0
+    },
+    {
+      "season": "2024-25",
+      "phase": "play_in",
+      "call_type": "Foul: Shooting",
+      "assessments": 12,
+      "grades": {
+        "INC": 1,
+        "IC": 1,
+        "CNC": 10
+      },
+      "errors": 2
+    },
+    {
+      "season": "2024-25",
+      "phase": "play_in",
+      "call_type": "Stoppage: Out-of-Bounds",
+      "assessments": 3,
+      "grades": {
+        "IC": 1,
+        "CC": 2
+      },
+      "errors": 1
+    },
+    {
+      "season": "2024-25",
+      "phase": "play_in",
+      "call_type": "Turnover: 24 Second Violation",
+      "assessments": 1,
+      "grades": {
+        "CNC": 1
+      },
+      "errors": 0
+    },
+    {
+      "season": "2024-25",
+      "phase": "play_in",
+      "call_type": "Turnover: 5 Second Inbound",
+      "assessments": 1,
+      "grades": {
+        "CC": 1
+      },
+      "errors": 0
+    },
+    {
+      "season": "2024-25",
+      "phase": "play_in",
+      "call_type": "Turnover: Offensive Goaltending",
+      "assessments": 1,
+      "grades": {
+        "INC": 1
+      },
+      "errors": 1
+    },
+    {
+      "season": "2024-25",
+      "phase": "play_in",
+      "call_type": "Turnover: Out of Bounds",
+      "assessments": 2,
+      "grades": {
+        "CNC": 2
+      },
+      "errors": 0
+    },
+    {
+      "season": "2024-25",
+      "phase": "playoffs",
+      "call_type": "Foul: Away from Play",
+      "assessments": 3,
+      "grades": {
+        "CNC": 1,
+        "CC": 2
+      },
+      "errors": 0
+    },
+    {
+      "season": "2024-25",
+      "phase": "playoffs",
+      "call_type": "Foul: Defense 3 Second",
+      "assessments": 2,
+      "grades": {
+        "INC": 2
+      },
+      "errors": 2
+    },
+    {
+      "season": "2024-25",
+      "phase": "playoffs",
+      "call_type": "Foul: Loose Ball",
+      "assessments": 52,
+      "grades": {
+        "INC": 2,
+        "CNC": 43,
+        "CC": 7
+      },
+      "errors": 2
+    },
+    {
+      "season": "2024-25",
+      "phase": "playoffs",
+      "call_type": "Foul: Offensive",
+      "assessments": 66,
+      "grades": {
+        "CNC": 62,
+        "INC": 2,
+        "CC": 2
+      },
+      "errors": 2
+    },
+    {
+      "season": "2024-25",
+      "phase": "playoffs",
+      "call_type": "Foul: Personal",
+      "assessments": 181,
+      "grades": {
+        "CNC": 121,
+        "CC": 56,
+        "INC": 2,
+        "IC": 2
+      },
+      "errors": 4
+    },
+    {
+      "season": "2024-25",
+      "phase": "playoffs",
+      "call_type": "Foul: Personal Take",
+      "assessments": 2,
+      "grades": {
+        "CC": 2
+      },
+      "errors": 0
+    },
+    {
+      "season": "2024-25",
+      "phase": "playoffs",
+      "call_type": "Foul: Shooting",
+      "assessments": 181,
+      "grades": {
+        "CNC": 149,
+        "CC": 23,
+        "INC": 7,
+        "IC": 2
+      },
+      "errors": 9
+    },
+    {
+      "season": "2024-25",
+      "phase": "playoffs",
+      "call_type": "Instant Replay: Overturn Ruling",
+      "assessments": 1,
+      "grades": {
+        "CC": 1
+      },
+      "errors": 0
+    },
+    {
+      "season": "2024-25",
+      "phase": "playoffs",
+      "call_type": "Instant Replay: Support Ruling",
+      "assessments": 2,
+      "grades": {
+        "CC": 2
+      },
+      "errors": 0
+    },
+    {
+      "season": "2024-25",
+      "phase": "playoffs",
+      "call_type": "Stoppage: Inadvertent Whistle",
+      "assessments": 2,
+      "grades": {
+        "CNC": 2
+      },
+      "errors": 0
+    },
+    {
+      "season": "2024-25",
+      "phase": "playoffs",
+      "call_type": "Stoppage: Out-of-Bounds",
+      "assessments": 17,
+      "grades": {
+        "CC": 16,
+        "IC": 1
+      },
+      "errors": 1
+    },
+    {
+      "season": "2024-25",
+      "phase": "playoffs",
+      "call_type": "Stoppage: TimeOut",
+      "assessments": 3,
+      "grades": {
+        "CNC": 3
+      },
+      "errors": 0
+    },
+    {
+      "season": "2024-25",
+      "phase": "playoffs",
+      "call_type": "Turnover: 24 Second Violation",
+      "assessments": 3,
+      "grades": {
+        "CC": 3
+      },
+      "errors": 0
+    },
+    {
+      "season": "2024-25",
+      "phase": "playoffs",
+      "call_type": "Turnover: 5 Second Violation",
+      "assessments": 7,
+      "grades": {
+        "CNC": 7
+      },
+      "errors": 0
+    },
+    {
+      "season": "2024-25",
+      "phase": "playoffs",
+      "call_type": "Turnover: Backcourt Turnover",
+      "assessments": 2,
+      "grades": {
+        "CNC": 2
+      },
+      "errors": 0
+    },
+    {
+      "season": "2024-25",
+      "phase": "playoffs",
+      "call_type": "Turnover: Inbound Turnover",
+      "assessments": 2,
+      "grades": {
+        "INC": 1,
+        "CNC": 1
+      },
+      "errors": 1
+    },
+    {
+      "season": "2024-25",
+      "phase": "playoffs",
+      "call_type": "Turnover: Lost Ball Out of Bounds",
+      "assessments": 8,
+      "grades": {
+        "CC": 8
+      },
+      "errors": 0
+    },
+    {
+      "season": "2024-25",
+      "phase": "playoffs",
+      "call_type": "Turnover: Offensive Goaltending",
+      "assessments": 1,
+      "grades": {
+        "CNC": 1
+      },
+      "errors": 0
+    },
+    {
+      "season": "2024-25",
+      "phase": "playoffs",
+      "call_type": "Turnover: Out of Bounds",
+      "assessments": 1,
+      "grades": {
+        "CNC": 1
+      },
+      "errors": 0
+    },
+    {
+      "season": "2024-25",
+      "phase": "playoffs",
+      "call_type": "Turnover: Out of Bounds \u2013 Bad Pass Turn",
+      "assessments": 6,
+      "grades": {
+        "CC": 6
+      },
+      "errors": 0
+    },
+    {
+      "season": "2024-25",
+      "phase": "playoffs",
+      "call_type": "Turnover: Stepped out of Bounds",
+      "assessments": 6,
+      "grades": {
+        "CNC": 5,
+        "CC": 1
+      },
+      "errors": 0
+    },
+    {
+      "season": "2024-25",
+      "phase": "playoffs",
+      "call_type": "Turnover: Traveling",
+      "assessments": 8,
+      "grades": {
+        "CNC": 7,
+        "CC": 1
+      },
+      "errors": 0
+    },
+    {
+      "season": "2024-25",
+      "phase": "playoffs",
+      "call_type": "Violation: Defensive Goaltending",
+      "assessments": 1,
+      "grades": {
+        "CC": 1
+      },
+      "errors": 0
+    },
+    {
+      "season": "2024-25",
+      "phase": "playoffs",
+      "call_type": "Violation: Double Lane",
+      "assessments": 3,
+      "grades": {
+        "INC": 2,
+        "CC": 1
+      },
+      "errors": 2
+    },
+    {
+      "season": "2024-25",
+      "phase": "regular_season",
+      "call_type": "Foul: Away from Play",
+      "assessments": 25,
+      "grades": {
+        "CNC": 17,
+        "CC": 7,
+        "INC": 1
+      },
+      "errors": 1
+    },
+    {
+      "season": "2024-25",
+      "phase": "regular_season",
+      "call_type": "Foul: Defense 3 Second",
+      "assessments": 53,
+      "grades": {
+        "INC": 32,
+        "CNC": 21
+      },
+      "errors": 32
+    },
+    {
+      "season": "2024-25",
+      "phase": "regular_season",
+      "call_type": "Foul: Double Personal",
+      "assessments": 2,
+      "grades": {
+        "CC": 1,
+        "CNC": 1
+      },
+      "errors": 0
+    },
+    {
+      "season": "2024-25",
+      "phase": "regular_season",
+      "call_type": "Foul: Double Technical",
+      "assessments": 10,
+      "grades": {
+        "CC": 10
+      },
+      "errors": 0
+    },
+    {
+      "season": "2024-25",
+      "phase": "regular_season",
+      "call_type": "Foul: Flagrant Type 1",
+      "assessments": 2,
+      "grades": {
+        "CC": 2
+      },
+      "errors": 0
+    },
+    {
+      "season": "2024-25",
+      "phase": "regular_season",
+      "call_type": "Foul: Flagrant Type 2",
+      "assessments": 2,
+      "grades": {
+        "CC": 2
+      },
+      "errors": 0
+    },
+    {
+      "season": "2024-25",
+      "phase": "regular_season",
+      "call_type": "Foul: Loose Ball",
+      "assessments": 530,
+      "grades": {
+        "CC": 80,
+        "INC": 19,
+        "CNC": 428,
+        "IC": 3
+      },
+      "errors": 22
+    },
+    {
+      "season": "2024-25",
+      "phase": "regular_season",
+      "call_type": "Foul: Offensive",
+      "assessments": 889,
+      "grades": {
+        "INC": 26,
+        "CNC": 807,
+        "CC": 55,
+        "IC": 1
+      },
+      "errors": 27
+    },
+    {
+      "season": "2024-25",
+      "phase": "regular_season",
+      "call_type": "Foul: Personal",
+      "assessments": 1975,
+      "grades": {
+        "CNC": 1139,
+        "CC": 793,
+        "IC": 10,
+        "INC": 33
+      },
+      "errors": 43
+    },
+    {
+      "season": "2024-25",
+      "phase": "regular_season",
+      "call_type": "Foul: Personal Take",
+      "assessments": 17,
+      "grades": {
+        "CC": 17
+      },
+      "errors": 0
+    },
+    {
+      "season": "2024-25",
+      "phase": "regular_season",
+      "call_type": "Foul: Shooting",
+      "assessments": 2226,
+      "grades": {
+        "CNC": 1712,
+        "CC": 439,
+        "INC": 53,
+        "IC": 22
+      },
+      "errors": 75
+    },
+    {
+      "season": "2024-25",
+      "phase": "regular_season",
+      "call_type": "Foul: Technical",
+      "assessments": 14,
+      "grades": {
+        "CC": 13,
+        "INC": 1
+      },
+      "errors": 1
+    },
+    {
+      "season": "2024-25",
+      "phase": "regular_season",
+      "call_type": "Free Throw Technical",
+      "assessments": 1,
+      "grades": {
+        "CC": 1
+      },
+      "errors": 0
+    },
+    {
+      "season": "2024-25",
+      "phase": "regular_season",
+      "call_type": "Instant Replay: Overturn Ruling",
+      "assessments": 4,
+      "grades": {
+        "CC": 4
+      },
+      "errors": 0
+    },
+    {
+      "season": "2024-25",
+      "phase": "regular_season",
+      "call_type": "Instant Replay: Support Ruling",
+      "assessments": 12,
+      "grades": {
+        "CC": 8,
+        "CNC": 3,
+        "ungraded": 1
+      },
+      "errors": 0
+    },
+    {
+      "season": "2024-25",
+      "phase": "regular_season",
+      "call_type": "N/A",
+      "assessments": 4,
+      "grades": {
+        "CNC": 3,
+        "CC": 1
+      },
+      "errors": 0
+    },
+    {
+      "season": "2024-25",
+      "phase": "regular_season",
+      "call_type": "Stoppage: Clock",
+      "assessments": 7,
+      "grades": {
+        "CNC": 4,
+        "CC": 3
+      },
+      "errors": 0
+    },
+    {
+      "season": "2024-25",
+      "phase": "regular_season",
+      "call_type": "Stoppage: Inadvertent Whistle",
+      "assessments": 34,
+      "grades": {
+        "CC": 3,
+        "CNC": 30,
+        "ungraded": 1
+      },
+      "errors": 0
+    },
+    {
+      "season": "2024-25",
+      "phase": "regular_season",
+      "call_type": "Stoppage: Out-of-Bounds",
+      "assessments": 245,
+      "grades": {
+        "CNC": 15,
+        "CC": 213,
+        "IC": 16,
+        "INC": 1
+      },
+      "errors": 17
+    },
+    {
+      "season": "2024-25",
+      "phase": "regular_season",
+      "call_type": "Stoppage: TimeOut",
+      "assessments": 13,
+      "grades": {
+        "CNC": 9,
+        "CC": 4
+      },
+      "errors": 0
+    },
+    {
+      "season": "2024-25",
+      "phase": "regular_season",
+      "call_type": "Turnover: 10 Second Violation",
+      "assessments": 2,
+      "grades": {
+        "INC": 1,
+        "CNC": 1
+      },
+      "errors": 1
+    },
+    {
+      "season": "2024-25",
+      "phase": "regular_season",
+      "call_type": "Turnover: 24 Second Violation",
+      "assessments": 47,
+      "grades": {
+        "CC": 43,
+        "CNC": 3,
+        "INC": 1
+      },
+      "errors": 1
+    },
+    {
+      "season": "2024-25",
+      "phase": "regular_season",
+      "call_type": "Turnover: 3 Second Violation",
+      "assessments": 22,
+      "grades": {
+        "INC": 9,
+        "CNC": 13
+      },
+      "errors": 9
+    },
+    {
+      "season": "2024-25",
+      "phase": "regular_season",
+      "call_type": "Turnover: 5 Second Inbound",
+      "assessments": 3,
+      "grades": {
+        "CNC": 1,
+        "CC": 1,
+        "INC": 1
+      },
+      "errors": 1
+    },
+    {
+      "season": "2024-25",
+      "phase": "regular_season",
+      "call_type": "Turnover: 5 Second Violation",
+      "assessments": 56,
+      "grades": {
+        "CNC": 45,
+        "INC": 7,
+        "CC": 4
+      },
+      "errors": 7
+    },
+    {
+      "season": "2024-25",
+      "phase": "regular_season",
+      "call_type": "Turnover: 8 Second Violation",
+      "assessments": 14,
+      "grades": {
+        "CNC": 8,
+        "CC": 5,
+        "INC": 1
+      },
+      "errors": 1
+    },
+    {
+      "season": "2024-25",
+      "phase": "regular_season",
+      "call_type": "Turnover: Backcourt Turnover",
+      "assessments": 20,
+      "grades": {
+        "CNC": 11,
+        "CC": 7,
+        "INC": 2
+      },
+      "errors": 2
+    },
+    {
+      "season": "2024-25",
+      "phase": "regular_season",
+      "call_type": "Turnover: Discontinue Dribble",
+      "assessments": 6,
+      "grades": {
+        "CNC": 4,
+        "INC": 2
+      },
+      "errors": 2
+    },
+    {
+      "season": "2024-25",
+      "phase": "regular_season",
+      "call_type": "Turnover: Double Dribble",
+      "assessments": 9,
+      "grades": {
+        "CNC": 7,
+        "INC": 2
+      },
+      "errors": 2
+    },
+    {
+      "season": "2024-25",
+      "phase": "regular_season",
+      "call_type": "Turnover: Inbound Turnover",
+      "assessments": 4,
+      "grades": {
+        "CNC": 3,
+        "CC": 1
+      },
+      "errors": 0
+    },
+    {
+      "season": "2024-25",
+      "phase": "regular_season",
+      "call_type": "Turnover: Lane Violation",
+      "assessments": 1,
+      "grades": {
+        "IC": 1
+      },
+      "errors": 1
+    },
+    {
+      "season": "2024-25",
+      "phase": "regular_season",
+      "call_type": "Turnover: Lost Ball Out of Bounds",
+      "assessments": 64,
+      "grades": {
+        "CC": 62,
+        "IC": 1,
+        "CNC": 1
+      },
+      "errors": 1
+    },
+    {
+      "season": "2024-25",
+      "phase": "regular_season",
+      "call_type": "Turnover: Offensive Goaltending",
+      "assessments": 12,
+      "grades": {
+        "CNC": 9,
+        "CC": 2,
+        "INC": 1
+      },
+      "errors": 1
+    },
+    {
+      "season": "2024-25",
+      "phase": "regular_season",
+      "call_type": "Turnover: Out of Bounds",
+      "assessments": 12,
+      "grades": {
+        "CNC": 9,
+        "INC": 3
+      },
+      "errors": 3
+    },
+    {
+      "season": "2024-25",
+      "phase": "regular_season",
+      "call_type": "Turnover: Out of Bounds ? Bad Pass Turn",
+      "assessments": 17,
+      "grades": {
+        "CC": 17
+      },
+      "errors": 0
+    },
+    {
+      "season": "2024-25",
+      "phase": "regular_season",
+      "call_type": "Turnover: Out of Bounds \u2013 Bad Pass Turn",
+      "assessments": 47,
+      "grades": {
+        "CC": 46,
+        "IC": 1
+      },
+      "errors": 1
+    },
+    {
+      "season": "2024-25",
+      "phase": "regular_season",
+      "call_type": "Turnover: Palming",
+      "assessments": 12,
+      "grades": {
+        "CNC": 10,
+        "INC": 1,
+        "CC": 1
+      },
+      "errors": 1
+    },
+    {
+      "season": "2024-25",
+      "phase": "regular_season",
+      "call_type": "Turnover: Stepped out of Bounds",
+      "assessments": 61,
+      "grades": {
+        "CNC": 44,
+        "CC": 10,
+        "INC": 7
+      },
+      "errors": 7
+    },
+    {
+      "season": "2024-25",
+      "phase": "regular_season",
+      "call_type": "Turnover: Traveling",
+      "assessments": 129,
+      "grades": {
+        "CNC": 80,
+        "INC": 30,
+        "CC": 15,
+        "IC": 4
+      },
+      "errors": 34
+    },
+    {
+      "season": "2024-25",
+      "phase": "regular_season",
+      "call_type": "Violation: Defensive Goaltending",
+      "assessments": 36,
+      "grades": {
+        "CNC": 24,
+        "CC": 10,
+        "INC": 2
+      },
+      "errors": 2
+    },
+    {
+      "season": "2024-25",
+      "phase": "regular_season",
+      "call_type": "Violation: Delay of Game",
+      "assessments": 11,
+      "grades": {
+        "CNC": 2,
+        "CC": 9
+      },
+      "errors": 0
+    },
+    {
+      "season": "2024-25",
+      "phase": "regular_season",
+      "call_type": "Violation: Double Lane",
+      "assessments": 2,
+      "grades": {
+        "CC": 2
+      },
+      "errors": 0
+    },
+    {
+      "season": "2024-25",
+      "phase": "regular_season",
+      "call_type": "Violation: Jump Ball",
+      "assessments": 6,
+      "grades": {
+        "CNC": 1,
+        "CC": 5
+      },
+      "errors": 0
+    },
+    {
+      "season": "2024-25",
+      "phase": "regular_season",
+      "call_type": "Violation: Kicked Ball",
+      "assessments": 35,
+      "grades": {
+        "IC": 2,
+        "CC": 25,
+        "CNC": 7,
+        "INC": 1
+      },
+      "errors": 3
+    },
+    {
+      "season": "2024-25",
+      "phase": "regular_season",
+      "call_type": "Violation: Lane",
+      "assessments": 17,
+      "grades": {
+        "INC": 7,
+        "CC": 8,
+        "CNC": 2
+      },
+      "errors": 7
+    },
+    {
+      "season": "2025-26",
+      "phase": "play_in",
+      "call_type": "Foul: Loose Ball",
+      "assessments": 2,
+      "grades": {
+        "CNC": 2
+      },
+      "errors": 0
+    },
+    {
+      "season": "2025-26",
+      "phase": "play_in",
+      "call_type": "Foul: Offensive",
+      "assessments": 10,
+      "grades": {
+        "CNC": 10
+      },
+      "errors": 0
+    },
+    {
+      "season": "2025-26",
+      "phase": "play_in",
+      "call_type": "Foul: Personal",
+      "assessments": 31,
+      "grades": {
+        "CC": 7,
+        "CNC": 24
+      },
+      "errors": 0
+    },
+    {
+      "season": "2025-26",
+      "phase": "play_in",
+      "call_type": "Foul: Shooting",
+      "assessments": 26,
+      "grades": {
+        "CNC": 21,
+        "CC": 5
+      },
+      "errors": 0
+    },
+    {
+      "season": "2025-26",
+      "phase": "play_in",
+      "call_type": "Stoppage: Out-of-Bounds",
+      "assessments": 2,
+      "grades": {
+        "CNC": 1,
+        "CC": 1
+      },
+      "errors": 0
+    },
+    {
+      "season": "2025-26",
+      "phase": "play_in",
+      "call_type": "Turnover: 24 Second Violation",
+      "assessments": 1,
+      "grades": {
+        "CC": 1
+      },
+      "errors": 0
+    },
+    {
+      "season": "2025-26",
+      "phase": "play_in",
+      "call_type": "Turnover: 5 Second Inbound",
+      "assessments": 3,
+      "grades": {
+        "CNC": 2,
+        "INC": 1
+      },
+      "errors": 1
+    },
+    {
+      "season": "2025-26",
+      "phase": "play_in",
+      "call_type": "Turnover: Backcourt Turnover",
+      "assessments": 1,
+      "grades": {
+        "CNC": 1
+      },
+      "errors": 0
+    },
+    {
+      "season": "2025-26",
+      "phase": "play_in",
+      "call_type": "Turnover: Palming",
+      "assessments": 1,
+      "grades": {
+        "CNC": 1
+      },
+      "errors": 0
+    },
+    {
+      "season": "2025-26",
+      "phase": "play_in",
+      "call_type": "Turnover: Traveling",
+      "assessments": 1,
+      "grades": {
+        "CNC": 1
+      },
+      "errors": 0
+    },
+    {
+      "season": "2025-26",
+      "phase": "play_in",
+      "call_type": "Violation: Defensive Goaltending",
+      "assessments": 2,
+      "grades": {
+        "CNC": 1,
+        "CC": 1
+      },
+      "errors": 0
+    },
+    {
+      "season": "2025-26",
+      "phase": "playoffs",
+      "call_type": "Foul: Away from Play",
+      "assessments": 1,
+      "grades": {
+        "INC": 1
+      },
+      "errors": 1
+    },
+    {
+      "season": "2025-26",
+      "phase": "playoffs",
+      "call_type": "Foul: Defense 3 Second",
+      "assessments": 10,
+      "grades": {
+        "CNC": 4,
+        "INC": 6
+      },
+      "errors": 6
+    },
+    {
+      "season": "2025-26",
+      "phase": "playoffs",
+      "call_type": "Foul: Loose Ball",
+      "assessments": 56,
+      "grades": {
+        "CNC": 52,
+        "CC": 3,
+        "INC": 1
+      },
+      "errors": 1
+    },
+    {
+      "season": "2025-26",
+      "phase": "playoffs",
+      "call_type": "Foul: Offensive",
+      "assessments": 106,
+      "grades": {
+        "CNC": 101,
+        "CC": 1,
+        "INC": 4
+      },
+      "errors": 4
+    },
+    {
+      "season": "2025-26",
+      "phase": "playoffs",
+      "call_type": "Foul: Personal",
+      "assessments": 177,
+      "grades": {
+        "CC": 49,
+        "CNC": 122,
+        "INC": 5,
+        "IC": 1
+      },
+      "errors": 6
+    },
+    {
+      "season": "2025-26",
+      "phase": "playoffs",
+      "call_type": "Foul: Shooting",
+      "assessments": 203,
+      "grades": {
+        "CC": 34,
+        "CNC": 167,
+        "INC": 2
+      },
+      "errors": 2
+    },
+    {
+      "season": "2025-26",
+      "phase": "playoffs",
+      "call_type": "Foul: Technical",
+      "assessments": 1,
+      "grades": {
+        "CC": 1
+      },
+      "errors": 0
+    },
+    {
+      "season": "2025-26",
+      "phase": "playoffs",
+      "call_type": "Stoppage: Clock",
+      "assessments": 1,
+      "grades": {
+        "ungraded": 1
+      },
+      "errors": 0
+    },
+    {
+      "season": "2025-26",
+      "phase": "playoffs",
+      "call_type": "Stoppage: Inadvertent Whistle",
+      "assessments": 1,
+      "grades": {
+        "CNC": 1
+      },
+      "errors": 0
+    },
+    {
+      "season": "2025-26",
+      "phase": "playoffs",
+      "call_type": "Stoppage: Out-of-Bounds",
+      "assessments": 18,
+      "grades": {
+        "CC": 15,
+        "IC": 3
+      },
+      "errors": 3
+    },
+    {
+      "season": "2025-26",
+      "phase": "playoffs",
+      "call_type": "Stoppage: TimeOut",
+      "assessments": 3,
+      "grades": {
+        "CC": 1,
+        "CNC": 2
+      },
+      "errors": 0
+    },
+    {
+      "season": "2025-26",
+      "phase": "playoffs",
+      "call_type": "Turnover: 24 Second Violation",
+      "assessments": 7,
+      "grades": {
+        "CC": 7
+      },
+      "errors": 0
+    },
+    {
+      "season": "2025-26",
+      "phase": "playoffs",
+      "call_type": "Turnover: 3 Second Violation",
+      "assessments": 1,
+      "grades": {
+        "CNC": 1
+      },
+      "errors": 0
+    },
+    {
+      "season": "2025-26",
+      "phase": "playoffs",
+      "call_type": "Turnover: 5 Second Inbound",
+      "assessments": 6,
+      "grades": {
+        "INC": 2,
+        "CNC": 4
+      },
+      "errors": 2
+    },
+    {
+      "season": "2025-26",
+      "phase": "playoffs",
+      "call_type": "Turnover: 8 Second Violation",
+      "assessments": 2,
+      "grades": {
+        "CC": 1,
+        "CNC": 1
+      },
+      "errors": 0
+    },
+    {
+      "season": "2025-26",
+      "phase": "playoffs",
+      "call_type": "Turnover: Backcourt Turnover",
+      "assessments": 3,
+      "grades": {
+        "CNC": 3
+      },
+      "errors": 0
+    },
+    {
+      "season": "2025-26",
+      "phase": "playoffs",
+      "call_type": "Turnover: Discontinue Dribble",
+      "assessments": 2,
+      "grades": {
+        "INC": 1,
+        "CNC": 1
+      },
+      "errors": 1
+    },
+    {
+      "season": "2025-26",
+      "phase": "playoffs",
+      "call_type": "Turnover: Inbound Turnover",
+      "assessments": 1,
+      "grades": {
+        "INC": 1
+      },
+      "errors": 1
+    },
+    {
+      "season": "2025-26",
+      "phase": "playoffs",
+      "call_type": "Turnover: Kicked Ball Violation",
+      "assessments": 1,
+      "grades": {
+        "CNC": 1
+      },
+      "errors": 0
+    },
+    {
+      "season": "2025-26",
+      "phase": "playoffs",
+      "call_type": "Turnover: Lost Ball Out of Bounds",
+      "assessments": 1,
+      "grades": {
+        "CC": 1
+      },
+      "errors": 0
+    },
+    {
+      "season": "2025-26",
+      "phase": "playoffs",
+      "call_type": "Turnover: Offensive Goaltending",
+      "assessments": 2,
+      "grades": {
+        "CNC": 2
+      },
+      "errors": 0
+    },
+    {
+      "season": "2025-26",
+      "phase": "playoffs",
+      "call_type": "Turnover: Out of Bounds",
+      "assessments": 2,
+      "grades": {
+        "CC": 2
+      },
+      "errors": 0
+    },
+    {
+      "season": "2025-26",
+      "phase": "playoffs",
+      "call_type": "Turnover: Out of Bounds \u2013 Bad Pass Turn",
+      "assessments": 4,
+      "grades": {
+        "CC": 4
+      },
+      "errors": 0
+    },
+    {
+      "season": "2025-26",
+      "phase": "playoffs",
+      "call_type": "Turnover: Stepped out of Bounds",
+      "assessments": 10,
+      "grades": {
+        "CNC": 7,
+        "IC": 2,
+        "INC": 1
+      },
+      "errors": 3
+    },
+    {
+      "season": "2025-26",
+      "phase": "playoffs",
+      "call_type": "Turnover: Traveling",
+      "assessments": 9,
+      "grades": {
+        "CNC": 8,
+        "CC": 1
+      },
+      "errors": 0
+    },
+    {
+      "season": "2025-26",
+      "phase": "playoffs",
+      "call_type": "Violation: Defensive Goaltending",
+      "assessments": 2,
+      "grades": {
+        "CNC": 1,
+        "CC": 1
+      },
+      "errors": 0
+    },
+    {
+      "season": "2025-26",
+      "phase": "playoffs",
+      "call_type": "Violation: Delay of Game",
+      "assessments": 1,
+      "grades": {
+        "CC": 1
+      },
+      "errors": 0
+    },
+    {
+      "season": "2025-26",
+      "phase": "playoffs",
+      "call_type": "Violation: Kicked Ball",
+      "assessments": 4,
+      "grades": {
+        "CNC": 4
+      },
+      "errors": 0
+    },
+    {
+      "season": "2025-26",
+      "phase": "playoffs",
+      "call_type": "Violation: Lane",
+      "assessments": 2,
+      "grades": {
+        "INC": 2
+      },
+      "errors": 2
+    },
+    {
+      "season": "2025-26",
+      "phase": "regular_season",
+      "call_type": "Foul: Away from Play",
+      "assessments": 21,
+      "grades": {
+        "CNC": 10,
+        "CC": 8,
+        "INC": 2,
+        "IC": 1
+      },
+      "errors": 3
+    },
+    {
+      "season": "2025-26",
+      "phase": "regular_season",
+      "call_type": "Foul: Defense 3 Second",
+      "assessments": 58,
+      "grades": {
+        "CNC": 18,
+        "INC": 37,
+        "CC": 3
+      },
+      "errors": 37
+    },
+    {
+      "season": "2025-26",
+      "phase": "regular_season",
+      "call_type": "Foul: Delay Technical",
+      "assessments": 1,
+      "grades": {
+        "CC": 1
+      },
+      "errors": 0
+    },
+    {
+      "season": "2025-26",
+      "phase": "regular_season",
+      "call_type": "Foul: Flagrant Type 1",
+      "assessments": 4,
+      "grades": {
+        "CC": 4
+      },
+      "errors": 0
+    },
+    {
+      "season": "2025-26",
+      "phase": "regular_season",
+      "call_type": "Foul: Loose Ball",
+      "assessments": 630,
+      "grades": {
+        "CNC": 527,
+        "CC": 71,
+        "IC": 4,
+        "INC": 28
+      },
+      "errors": 32
+    },
+    {
+      "season": "2025-26",
+      "phase": "regular_season",
+      "call_type": "Foul: Offensive",
+      "assessments": 1096,
+      "grades": {
+        "CNC": 1029,
+        "INC": 20,
+        "CC": 46,
+        "IC": 1
+      },
+      "errors": 21
+    },
+    {
+      "season": "2025-26",
+      "phase": "regular_season",
+      "call_type": "Foul: Offensive Charge",
+      "assessments": 1,
+      "grades": {
+        "CC": 1
+      },
+      "errors": 0
+    },
+    {
+      "season": "2025-26",
+      "phase": "regular_season",
+      "call_type": "Foul: Personal",
+      "assessments": 2119,
+      "grades": {
+        "CNC": 1269,
+        "CC": 780,
+        "INC": 54,
+        "IC": 16
+      },
+      "errors": 70
+    },
+    {
+      "season": "2025-26",
+      "phase": "regular_season",
+      "call_type": "Foul: Personal Take",
+      "assessments": 41,
+      "grades": {
+        "CC": 40,
+        "IC": 1
+      },
+      "errors": 1
+    },
+    {
+      "season": "2025-26",
+      "phase": "regular_season",
+      "call_type": "Foul: Shooting",
+      "assessments": 2543,
+      "grades": {
+        "INC": 74,
+        "CNC": 2018,
+        "CC": 423,
+        "IC": 28
+      },
+      "errors": 102
+    },
+    {
+      "season": "2025-26",
+      "phase": "regular_season",
+      "call_type": "Foul: Technical",
+      "assessments": 8,
+      "grades": {
+        "CC": 8
+      },
+      "errors": 0
+    },
+    {
+      "season": "2025-26",
+      "phase": "regular_season",
+      "call_type": "Instant Replay: Overturn Ruling",
+      "assessments": 4,
+      "grades": {
+        "CNC": 4
+      },
+      "errors": 0
+    },
+    {
+      "season": "2025-26",
+      "phase": "regular_season",
+      "call_type": "Instant Replay: Support Ruling",
+      "assessments": 7,
+      "grades": {
+        "CC": 6,
+        "CNC": 1
+      },
+      "errors": 0
+    },
+    {
+      "season": "2025-26",
+      "phase": "regular_season",
+      "call_type": "N/A",
+      "assessments": 1,
+      "grades": {
+        "INC": 1
+      },
+      "errors": 1
+    },
+    {
+      "season": "2025-26",
+      "phase": "regular_season",
+      "call_type": "Stoppage: Clock",
+      "assessments": 3,
+      "grades": {
+        "ungraded": 2,
+        "CNC": 1
+      },
+      "errors": 0
+    },
+    {
+      "season": "2025-26",
+      "phase": "regular_season",
+      "call_type": "Stoppage: Inadvertent Whistle",
+      "assessments": 28,
+      "grades": {
+        "CNC": 27,
+        "CC": 1
+      },
+      "errors": 0
+    },
+    {
+      "season": "2025-26",
+      "phase": "regular_season",
+      "call_type": "Stoppage: Out-of-Bounds",
+      "assessments": 222,
+      "grades": {
+        "CC": 199,
+        "CNC": 11,
+        "IC": 10,
+        "INC": 2
+      },
+      "errors": 12
+    },
+    {
+      "season": "2025-26",
+      "phase": "regular_season",
+      "call_type": "Stoppage: TimeOut",
+      "assessments": 8,
+      "grades": {
+        "INC": 1,
+        "CNC": 6,
+        "CC": 1
+      },
+      "errors": 1
+    },
+    {
+      "season": "2025-26",
+      "phase": "regular_season",
+      "call_type": "Turnover: 24 Second Violation",
+      "assessments": 38,
+      "grades": {
+        "CC": 36,
+        "CNC": 2
+      },
+      "errors": 0
+    },
+    {
+      "season": "2025-26",
+      "phase": "regular_season",
+      "call_type": "Turnover: 3 Second Violation",
+      "assessments": 30,
+      "grades": {
+        "CNC": 7,
+        "INC": 23
+      },
+      "errors": 23
+    },
+    {
+      "season": "2025-26",
+      "phase": "regular_season",
+      "call_type": "Turnover: 5 Second Inbound",
+      "assessments": 43,
+      "grades": {
+        "CNC": 32,
+        "CC": 1,
+        "INC": 10
+      },
+      "errors": 10
+    },
+    {
+      "season": "2025-26",
+      "phase": "regular_season",
+      "call_type": "Turnover: 5 Second Violation",
+      "assessments": 4,
+      "grades": {
+        "CC": 4
+      },
+      "errors": 0
+    },
+    {
+      "season": "2025-26",
+      "phase": "regular_season",
+      "call_type": "Turnover: 8 Second Violation",
+      "assessments": 14,
+      "grades": {
+        "CC": 2,
+        "CNC": 10,
+        "INC": 1,
+        "IC": 1
+      },
+      "errors": 2
+    },
+    {
+      "season": "2025-26",
+      "phase": "regular_season",
+      "call_type": "Turnover: Backcourt Turnover",
+      "assessments": 20,
+      "grades": {
+        "CNC": 13,
+        "INC": 3,
+        "IC": 1,
+        "CC": 3
+      },
+      "errors": 4
+    },
+    {
+      "season": "2025-26",
+      "phase": "regular_season",
+      "call_type": "Turnover: Discontinue Dribble",
+      "assessments": 3,
+      "grades": {
+        "CNC": 2,
+        "INC": 1
+      },
+      "errors": 1
+    },
+    {
+      "season": "2025-26",
+      "phase": "regular_season",
+      "call_type": "Turnover: Double Dribble",
+      "assessments": 12,
+      "grades": {
+        "CNC": 11,
+        "INC": 1
+      },
+      "errors": 1
+    },
+    {
+      "season": "2025-26",
+      "phase": "regular_season",
+      "call_type": "Turnover: Inbound Turnover",
+      "assessments": 4,
+      "grades": {
+        "CC": 3,
+        "INC": 1
+      },
+      "errors": 1
+    },
+    {
+      "season": "2025-26",
+      "phase": "regular_season",
+      "call_type": "Turnover: Jump Ball Violation",
+      "assessments": 1,
+      "grades": {
+        "CC": 1
+      },
+      "errors": 0
+    },
+    {
+      "season": "2025-26",
+      "phase": "regular_season",
+      "call_type": "Turnover: Kicked Ball Violation",
+      "assessments": 2,
+      "grades": {
+        "CNC": 2
+      },
+      "errors": 0
+    },
+    {
+      "season": "2025-26",
+      "phase": "regular_season",
+      "call_type": "Turnover: Lane Violation",
+      "assessments": 2,
+      "grades": {
+        "CC": 1,
+        "INC": 1
+      },
+      "errors": 1
+    },
+    {
+      "season": "2025-26",
+      "phase": "regular_season",
+      "call_type": "Turnover: Lost Ball Out of Bounds",
+      "assessments": 51,
+      "grades": {
+        "CC": 50,
+        "CNC": 1
+      },
+      "errors": 0
+    },
+    {
+      "season": "2025-26",
+      "phase": "regular_season",
+      "call_type": "Turnover: Offensive Goaltending",
+      "assessments": 23,
+      "grades": {
+        "CNC": 17,
+        "CC": 5,
+        "INC": 1
+      },
+      "errors": 1
+    },
+    {
+      "season": "2025-26",
+      "phase": "regular_season",
+      "call_type": "Turnover: Out of Bounds",
+      "assessments": 15,
+      "grades": {
+        "INC": 1,
+        "CNC": 4,
+        "CC": 10
+      },
+      "errors": 1
+    },
+    {
+      "season": "2025-26",
+      "phase": "regular_season",
+      "call_type": "Turnover: Out of Bounds \u2013 Bad Pass Turn",
+      "assessments": 48,
+      "grades": {
+        "CC": 47,
+        "IC": 1
+      },
+      "errors": 1
+    },
+    {
+      "season": "2025-26",
+      "phase": "regular_season",
+      "call_type": "Turnover: Palming",
+      "assessments": 4,
+      "grades": {
+        "CNC": 3,
+        "INC": 1
+      },
+      "errors": 1
+    },
+    {
+      "season": "2025-26",
+      "phase": "regular_season",
+      "call_type": "Turnover: Stepped out of Bounds",
+      "assessments": 53,
+      "grades": {
+        "CNC": 35,
+        "CC": 17,
+        "INC": 1
+      },
+      "errors": 1
+    },
+    {
+      "season": "2025-26",
+      "phase": "regular_season",
+      "call_type": "Turnover: Traveling",
+      "assessments": 105,
+      "grades": {
+        "CNC": 59,
+        "CC": 9,
+        "INC": 34,
+        "IC": 3
+      },
+      "errors": 37
+    },
+    {
+      "season": "2025-26",
+      "phase": "regular_season",
+      "call_type": "Violation: Defensive Goaltending",
+      "assessments": 50,
+      "grades": {
+        "CNC": 32,
+        "CC": 17,
+        "INC": 1
+      },
+      "errors": 1
+    },
+    {
+      "season": "2025-26",
+      "phase": "regular_season",
+      "call_type": "Violation: Delay of Game",
+      "assessments": 5,
+      "grades": {
+        "INC": 2,
+        "CC": 2,
+        "CNC": 1
+      },
+      "errors": 2
+    },
+    {
+      "season": "2025-26",
+      "phase": "regular_season",
+      "call_type": "Violation: Double Lane",
+      "assessments": 1,
+      "grades": {
+        "INC": 1
+      },
+      "errors": 1
+    },
+    {
+      "season": "2025-26",
+      "phase": "regular_season",
+      "call_type": "Violation: Jump Ball",
+      "assessments": 6,
+      "grades": {
+        "CC": 4,
+        "CNC": 2
+      },
+      "errors": 0
+    },
+    {
+      "season": "2025-26",
+      "phase": "regular_season",
+      "call_type": "Violation: Kicked Ball",
+      "assessments": 22,
+      "grades": {
+        "CC": 14,
+        "IC": 1,
+        "INC": 2,
+        "CNC": 5
+      },
+      "errors": 3
+    },
+    {
+      "season": "2025-26",
+      "phase": "regular_season",
+      "call_type": "Violation: Lane",
+      "assessments": 15,
+      "grades": {
+        "CC": 10,
+        "CNC": 1,
+        "INC": 4
+      },
+      "errors": 4
+    }
+  ],
+  "secondary_regular_season_context": [
+    {
+      "season": "2023-24",
+      "games": 1212,
+      "regulation_fouls": 44938,
+      "away_fouls": 22522,
+      "fouls_without_drawer": 44850,
+      "shooting_fouls": 23665,
+      "home_fouls": 22412,
+      "technicals": 875,
+      "unidentified_team_fouls": 4,
+      "first_date": "2023-10-24",
+      "last_date": "2024-04-14",
+      "games_with_technical": 560,
+      "fouls_per_game": 37.0776,
+      "technicals_per_game": 0.7219,
+      "away_minus_home_per_game": 0.0908
+    },
+    {
+      "season": "2024-25",
+      "games": 1230,
+      "regulation_fouls": 45414,
+      "home_fouls": 22689,
+      "shooting_fouls": 23932,
+      "fouls_without_drawer": 45309,
+      "away_fouls": 22725,
+      "technicals": 814,
+      "first_date": "2024-10-22",
+      "last_date": "2025-04-13",
+      "games_with_technical": 531,
+      "fouls_per_game": 36.922,
+      "technicals_per_game": 0.6618,
+      "away_minus_home_per_game": 0.0293
+    },
+    {
+      "season": "2025-26",
+      "games": 1223,
+      "regulation_fouls": 48319,
+      "away_fouls": 24338,
+      "shooting_fouls": 25362,
+      "fouls_without_drawer": 48184,
+      "home_fouls": 23947,
+      "technicals": 813,
+      "unidentified_team_fouls": 34,
+      "first_date": "2025-10-21",
+      "last_date": "2026-04-12",
+      "games_with_technical": 521,
+      "fouls_per_game": 39.5086,
+      "technicals_per_game": 0.6648,
+      "away_minus_home_per_game": 0.3197
+    }
+  ],
+  "limits": [
+    "Indexed selected L2M samples, not full-game officiating accuracy.",
+    "Changes in replay scope and game mix prevent causal interpretation.",
+    "Two 2024-25 identical CC row pairs retained with reviewed source exceptions.",
+    "Beneficiary summaries fail integrity checks in all three seasons."
+  ]
+}

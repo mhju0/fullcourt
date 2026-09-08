@@ -68,9 +68,10 @@ const transitions = createRouteTransitions()
 /** Chrome navigation only; reduced motion and unsupported browsers keep plain navigation. */
 export function navigateWithViewTransition(
   router: { push: (href: string) => void },
-  href: string
+  href: string,
+  options: { instant?: boolean } = {}
 ): void {
-  const animate = !window.matchMedia("(prefers-reduced-motion: reduce)").matches &&
+  const animate = !options.instant && !window.matchMedia("(prefers-reduced-motion: reduce)").matches &&
     typeof document.startViewTransition === "function"
   transitions.navigate(router, href, window.location.href,
     animate ? (update) => document.startViewTransition(update) : undefined)

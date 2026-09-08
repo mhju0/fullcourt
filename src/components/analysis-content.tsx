@@ -496,10 +496,9 @@ function SeasonWinRateBySeasonChart({
               tick={{ fontSize: 11, fill: "var(--term-text-muted)", fontFamily: MONO_FONT_STACK }}
               tickLine={false}
               axisLine={false}
-              interval={0}
-              angle={-32}
-              textAnchor="end"
-              height={52}
+              ticks={chartData.filter((_, i) => i % Math.max(1, Math.ceil((chartData.length - 1) / 5)) === 0 || i === chartData.length - 1).map((row) => row.label)}
+              minTickGap={16}
+              height={32}
             />
             <YAxis
               domain={domain}
@@ -1018,6 +1017,12 @@ export function AnalysisContent({ asOf }: { asOf?: DataAsOf | null }) {
         asOf={asOf}
       />
       <MethodLink surfaceHref="/analysis" />
+      <nav aria-label="Model Results sections" className="flex gap-6 text-[15px]">
+        <a href="#answer" className="fc-text-link min-h-11 content-center">The answer</a>
+        <a href="#explorer" className="fc-text-link min-h-11 content-center">The explorer</a>
+      </nav>
+      <section id="answer" className="flex scroll-mt-20 flex-col gap-8" aria-labelledby="answer-heading">
+        <h2 id="answer-heading" className="text-2xl font-semibold">The answer</h2>
 
       {/* Hero stat row. Which tiles exist, what each is named, which slice it covers and the
           rule that a third cut never appears are all decided by `buildAnalysisClaims` and
@@ -1208,8 +1213,11 @@ export function AnalysisContent({ asOf }: { asOf?: DataAsOf | null }) {
         </div>
       )}
 
-      {/* Explore Games */}
-      <ExploreGames exploreRef={exploreRef} drillSignal={drillSignal} />
+      </section>
+      <section id="explorer" className="flex scroll-mt-20 flex-col gap-6" aria-labelledby="explorer-heading">
+        <h2 id="explorer-heading" className="text-2xl font-semibold">The explorer</h2>
+        <ExploreGames exploreRef={exploreRef} drillSignal={drillSignal} />
+      </section>
     </div>
   )
 }

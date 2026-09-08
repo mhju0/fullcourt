@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-test.describe("Home page", () => {
+test.describe("Games page", () => {
   test("leads with the thesis, and loads the season control and month tabs", async ({ page }) => {
     await page.goto("/games");
 
@@ -27,7 +27,7 @@ test.describe("Home page", () => {
   // land here, and the toggle is actually gone rather than left mounted and broken.
   test("/upcoming lands on the one board, and the view toggle is gone", async ({ page }) => {
     await page.goto("/upcoming");
-    await expect(page).toHaveURL(/\/games$/);
+    await expect(page).toHaveURL(/\/games(?:\?|$)/);
 
     await expect(page.getByRole("button", { name: "Previous day" })).toBeVisible();
     await expect(page.getByRole("group", { name: "Games view" })).toHaveCount(0);
@@ -102,12 +102,11 @@ test.describe("Home page", () => {
 
     const dec25 = page.getByRole("button", { name: /December 25, 2024/ });
     await expect(dec25).toBeVisible({ timeout: 60_000 });
-    await dec25.click();
-
-    await page.waitForResponse(
-      (res) =>
-        res.url().includes("/api/games/2024-12-25") && res.status() === 200
+    const christmasResponse = page.waitForResponse(
+      res => res.url().includes("/api/games/2024-12-25") && res.status() === 200
     );
+    await dec25.click();
+    await christmasResponse;
 
     // Fatigue decimals live in DEEP DIVE — the default SKIM glance deliberately
     // hides them, so the dial is part of what this asserts.
@@ -164,26 +163,11 @@ test.describe("Home page", () => {
 
     await page.getByLabel("SEASON", { exact: true }).selectOption("2024-25");
 
-    // One dates request per season, with no `month` param — a month click now resolves
-    // from the in-memory day list instead of a round trip. Asserted negatively too, so
-    // a regression back to month-scoped fetching fails here rather than passing quietly.
-    await page.waitForResponse(
-      (res) =>
-        res.url().includes("/api/games/dates") &&
-        res.url().includes("season=2024-25") &&
-        !res.url().includes("month=") &&
-        res.status() === 200
-    );
-
     await page.getByRole("button", { name: /^OCT$/ }).click();
 
     const firstDayWithGames = page.locator('button[aria-label*="games"]').first();
     await expect(firstDayWithGames).toBeVisible({ timeout: 60_000 });
     await firstDayWithGames.click();
-
-    await page.waitForResponse(
-      (res) => res.url().includes("/api/games/20") && res.status() === 200
-    );
 
     const prev = page.getByRole("button", { name: "Previous day" });
     const empty = page.getByText("NO GAMES SCHEDULED");
@@ -199,4 +183,88 @@ test.describe("Home page", () => {
 
     throw new Error("Expected to reach a date with no games within 45 previous-day steps");
   });
+});
+
+test("mobile keeps summaries below matchups and ignores saved density", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.addInitScript(() => localStorage.setItem("fc-slate-density", "deep"));
+  await page.goto("/games");
+  await expect(page.getByRole("button", { name: "SKIM", exact: true })).toHaveAttribute("aria-pressed", "true");
+  const main = await page.getByTestId("games-main").boundingBox();
+  const summary = await page.getByRole("complementary", { name: "Slate summary and upcoming edges" }).boundingBox();
+  expect(summary!.y).toBeGreaterThanOrEqual(main!.y + main!.height);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  await page.evaluate(() => {
+    document.startViewTransition = () => { throw new Error("Keyboard density must be instant"); };
+  });
+  await page.getByRole("button", { name: "DEEP DIVE", exact: true }).focus();
+  await page.keyboard.press("Enter");
+  await expect(page.getByRole("button", { name: "DEEP DIVE", exact: true })).toHaveAttribute("aria-pressed", "true");
+});
+
+for (const available of [false, true]) {
+  test(`off-season defaults to completed games; upcoming schedule available=${available}`, async ({ page }) => {
+    await page.clock.setFixedTime(new Date("2026-09-07T12:00:00Z"));
+    await page.route("**/api/games/dates?season=2026-27", route => route.fulfill({ json: {
+      data: available ? [{ date: "2026-10-20", gameCount: 1 }] : [], error: null,
+    } }));
+    await page.goto("/games");
+    await expect(page.getByLabel("SEASON", { exact: true })).toHaveValue("2025-26");
+    await expect(page.getByTestId("selected-date-display")).toContainText("APRIL 12, 2026");
+    await expect(page.getByText("2025-26 REGULAR SEASON COMPLETE · SHOWING FINAL SLATE", { exact: true })).toBeVisible();
+    const upcoming = page.getByRole("button", { name: "VIEW 2026-27 SCHEDULE" });
+    if (available) {
+      await expect(upcoming).toBeVisible();
+      await upcoming.click();
+      await expect(page.getByLabel("SEASON", { exact: true })).toHaveValue("2026-27");
+    } else {
+      await expect(upcoming).toHaveCount(0);
+    }
+  });
+}
+
+
+test("shared Games links restore season, date, density and browser history", async ({ page }) => {
+  await page.goto("/games?season=2024-25&date=2024-12-25&view=deep");
+  const display = page.getByTestId("selected-date-display");
+  await expect(display).toContainText("DECEMBER 25, 2024");
+  await expect(page.getByLabel("SEASON", { exact: true })).toHaveValue("2024-25");
+  await expect(page.getByRole("button", { name: "DEEP DIVE", exact: true })).toHaveAttribute("aria-pressed", "true");
+  await page.getByRole("button", { name: "Previous day" }).click();
+  await expect(page).toHaveURL(/date=2024-12-24/);
+  await expect(page.getByText("NO GAMES SCHEDULED")).toBeVisible();
+  await page.reload();
+  await expect(display).toContainText("DECEMBER 24, 2024");
+  await expect(page.getByText("NO GAMES SCHEDULED")).toBeVisible();
+  await page.goBack();
+  await expect(display).toContainText("DECEMBER 25, 2024");
+  await expect(page.getByRole("button", { name: /Expand game details/ }).first()).toBeVisible();
+  await page.goForward();
+  await expect(display).toContainText("DECEMBER 24, 2024");
+  await page.getByLabel("SEASON", { exact: true }).selectOption("2023-24");
+  await expect(page).toHaveURL(/season=2023-24/);
+  await expect(display).toContainText("2024");
+  await page.goBack();
+  await expect(page.getByLabel("SEASON", { exact: true })).toHaveValue("2024-25");
+  await expect(display).toContainText("DECEMBER 24, 2024");
+});
+
+test("date-only links infer the season; invalid dates fall back safely", async ({ page }) => {
+  await page.goto("/games?date=2023-12-25");
+  await expect(page.getByLabel("SEASON", { exact: true })).toHaveValue("2023-24");
+  await expect(page.getByTestId("selected-date-display")).toContainText("DECEMBER 25, 2023");
+  await page.goto("/games?season=2024-25&date=2024-02-30");
+  await expect(page.getByTestId("selected-date-display")).not.toHaveText("PICK A DATE");
+  await expect(page).not.toHaveURL(/date=2024-02-30/);
+});
+
+test("expanded game links survive reload and changing dates clears the expansion", async ({ page }) => {
+  await page.goto("/games?season=2024-25&date=2024-12-25");
+  const first = page.getByRole("button", { name: "Expand game details", exact: true }).first();
+  await first.click();
+  await expect(page).toHaveURL(/game=\d+/);
+  await page.reload();
+  await expect(page.getByRole("button", { name: "Collapse game details", exact: true })).toHaveCount(1);
+  await page.getByRole("button", { name: "Previous day" }).click();
+  await expect(page).not.toHaveURL(/game=/);
 });

@@ -214,10 +214,7 @@ function SeriesCard({ series }: { series: PlayoffSeriesWithPredictions }) {
 
   return (
     <div
-      // The same 2px lift the retired MatchupCard had; the shadow was already here. Kept when
-      // that component went (2026-08-11) because a bracket card is still a card — the Games
-      // slate is what became a table, not every surface.
-      className="flex flex-col transition-[box-shadow,transform] duration-200 hover:-translate-y-0.5 hover:shadow-[0_2px_10px_rgba(23,64,139,0.08)] motion-reduce:transition-none motion-reduce:hover:translate-y-0"
+      className="flex flex-col"
       style={{ background: "var(--term-surface)", border: "1px solid var(--term-border)", borderLeft: `2px solid ${accent}`, borderRadius: "var(--term-radius)", overflow: "hidden" }}
     >
       <div
@@ -254,7 +251,7 @@ function SeriesCard({ series }: { series: PlayoffSeriesWithPredictions }) {
           </div>
 
           <ChevronDown
-            className={cn("size-4 shrink-0 text-[var(--term-text-muted)] transition-transform duration-200", expanded && "rotate-180")}
+            className={cn("size-4 shrink-0 text-[var(--term-text-muted)]", expanded && "rotate-180")}
             aria-hidden
           />
         </div>
@@ -288,7 +285,7 @@ function SeriesCard({ series }: { series: PlayoffSeriesWithPredictions }) {
 
       <div
         className={cn(
-          "grid transition-[grid-template-rows] duration-300 ease-out",
+          "grid",
           expanded ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
         )}
       >

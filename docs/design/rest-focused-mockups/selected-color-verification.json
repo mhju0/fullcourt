@@ -1,0 +1,22 @@
+[
+  {
+    "kind": "cell",
+    "width": 1280,
+    "overflow": false,
+    "rows": 20,
+    "cells": [],
+    "rowHeight": 52.5,
+    "colored": 20,
+    "violations": []
+  },
+  {
+    "kind": "cell",
+    "width": 390,
+    "overflow": false,
+    "rows": 20,
+    "cells": [],
+    "rowHeight": 52.5,
+    "colored": 20,
+    "violations": []
+  }
+]

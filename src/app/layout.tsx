@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Analytics } from "@vercel/analytics/next";
 import Link from "next/link";
 import { Geist, Geist_Mono } from "next/font/google";
+import { PageSearchButton } from "@/components/page-search-button";
 import { BottomNav } from "@/components/bottom-nav";
 import { CommandPaletteMount } from "@/components/command-palette-mount";
 import { RouteTransitionLifecycle } from "@/lib/route-transition";
@@ -84,12 +85,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // The time this layout was rendered — NOT data freshness. Labeled "RENDERED"
-  // so it makes no claim about pipeline/DB liveness. Live health lives behind
-  // the SYSTEM STATUS link (/api/health), which this footer never calls.
-  const renderedAt =
-    new Date().toISOString().replace("T", " ").slice(0, 16) + " UTC";
-
   return (
     <html
       lang="en"
@@ -98,7 +93,7 @@ export default function RootLayout({
       <body className="flex min-h-full flex-col font-sans text-foreground">
         {/* First tab stop on every page (ESPN carries the same link; Naver's equivalent is
             본문 바로가기). A keyboard or screen-reader visitor otherwise walks the full nav —
-            brand link, six tabs, a menu, a reference landmark — before every page's content.
+            brand link, four tabs and a reference landmark — before every page's content.
             `sr-only` until focused, so it costs the visual design nothing at rest. */}
         <a
           href="#main"
@@ -124,7 +119,6 @@ export default function RootLayout({
         >
           <div className="mx-auto flex max-w-7xl flex-col items-start justify-between gap-x-6 px-4 py-2 sm:px-6 lg:flex-row lg:items-center">
             <span style={{ fontSize: "11px", color: "var(--term-text-muted)", letterSpacing: TRACK.sub }}>
-              RENDERED: {renderedAt} ·{" "}
               <a
                 href="/api/health"
                 // Keep link colors in classes so hover styles can override them.
@@ -134,15 +128,16 @@ export default function RootLayout({
               </a>
             </span>
             <span style={{ fontSize: "11px", color: "var(--term-text-muted)", letterSpacing: TRACK.sub }}>
-              {/* `/` since 2026-08-12, when that page became the front door. `/about` still
-                  redirects here, but pointing straight at it saves the hop. `Link` rather than
-                  `<a>`: this is an internal route now, and `no-html-link-for-pages` enforces it. */}
               <Link
                 href="/"
                 className="underline transition-colors text-[var(--term-text-muted)] hover:text-[var(--term-text)]"
               >
                 WHAT THIS MEASURES
               </Link>
+              {" · "}
+              <Link href="/about" className="underline text-[var(--term-text-muted)] hover:text-[var(--term-text)]">ABOUT FULLCOURT</Link>
+              {" · "}
+              <PageSearchButton />
               {" · "}
               <a
                 href="https://github.com/mhju0"

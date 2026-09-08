@@ -29,7 +29,7 @@ rate with no denominator. FullCourt's founding refusals are the brand:
 - limits ship beside results.
 
 Even the palette argues: the category goes dark, FullCourt is **daylight, light-only** —
-with one deliberately dark surface, the front door (`/`), where the story is told.
+with one deliberately dark surface, the front door (`/`), where the rest and schedule findings lead.
 
 The front-page hero is **Rest is a stat**. Its supporting example is:
 
@@ -219,3 +219,13 @@ with the fatigued pole), and four finishes (**P-D keyline material chosen**, P-A
 the one-color fallback). All four study pages are archived in
 [explorations/2026-08-19-mark/](explorations/2026-08-19-mark/); the implementation is one
 geometry source, `src/lib/brand/court-mark-geometry.ts`.
+
+
+## 11. Homepage refinement — 2026-09-07
+
+D-61 keeps the dark homepage and its rest/fatigue premise, with one historical result and
+short schedule/shooting previews. The name readings now live at `/about`; `/explore` preserves
+other basketball studies and the compact referee archive link. The former decorative court,
+grain, long formula explanation and six-card directory are removed from the homepage. The
+operating line remains in its short closing row. The only content entrance is the 450ms hero;
+all other content is visible at rest, and reduced motion removes that entrance.

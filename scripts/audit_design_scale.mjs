@@ -53,9 +53,10 @@ const SPACE_OK = new Set([...SPACE_SCALE, 0, 28]);
  * — a report that always shows the same twenty known lines is a report nobody reads.
  */
 const EXEMPT = [
+  { match: /^src\/components\/officiating\.module\.css$/, raw: /font-size:\s*clamp\(80px,\s*8vw,\s*112px\)/, why: "D-59 owner-approved big-stat Officiating hero; remaining styles use the shared scale" },
   // A full-bleed editorial surface on its own fluid clamp() display scale. Exempt by name from
   // e2e/alignment-audit.spec.ts for the same reason.
-  { match: /^src\/components\/about-content\.tsx$/, why: "the front door: fluid clamp() display scale" },
+  { match: /^src\/components\/home\.module\.css$/, why: "the front door: fluid clamp() display scale" },
   // A fixed 1200×630 brand asset, not a page.
   { match: /^src\/app\/opengraph-image\.tsx$/, why: "brand asset, not a page" },
   { match: /^src\/lib\/brand\//, why: "brand asset, not a page" },
@@ -171,6 +172,8 @@ for (const file of walk(SRC).sort()) {
     if (isCss) {
       for (const m of line.matchAll(/font-size:\s*([^;]+);/g)) {
         const px = toPx(m[1]);
+        // These named CSS tokens are pinned against TYPE by design-scale.test.ts.
+        if (/^var\(--text-(micro|label|data|body|emph|stat|title|figure)\)$/.test(m[1].trim())) continue;
         add("type", px ?? `computed(${m[1].trim()})`, { ...loc, kind: "css font-size" });
       }
       for (const m of line.matchAll(/\b(padding|margin|gap|row-gap|column-gap)(-top|-right|-bottom|-left)?:\s*([^;]+);/g)) {

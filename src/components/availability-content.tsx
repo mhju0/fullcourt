@@ -24,7 +24,7 @@ function SectionHeading({ children }: { children: React.ReactNode }) {
       className="mono flex items-center gap-3 py-1"
       style={{ fontSize: 11, letterSpacing: TRACK.label, color: "var(--term-text-muted)" }}
     >
-      <span style={{ fontWeight: 700 }}>{children}</span>
+      <h2 style={{ fontWeight: 700 }}>{children}</h2>
       <span style={{ flex: 1, height: 1, background: "var(--term-border)" }} />
     </div>
   )
@@ -260,13 +260,8 @@ function ScheduleHoldsUpSection() {
           under {Math.ceil(worst)}%. Unmeasured absences and changes in minutes can still matter.
         </p>
 
-        {/* Ported to DataTable on 2026-08-11. It carried `fc-table` but overrode every style
-            that class and `termThStyle`/`termTdStyle` supply — 10px headers with no band,
-            14px body cells, its own padding — so it opted into the convention and then opted
-            out of all of it, which meant it looked like nothing else on the site while still
-            picking up whatever `.fc-table` changed underneath it. It now reads as one of the
-            twenty-one. The two units moved out of the labels and into the unit slot, which is
-            the house rule every other numeric column already follows. */}
+        <details className="fc-disclosure mt-4">
+          <summary>Show coefficient comparison</summary>
         <DataTable
           wrapperClassName="mt-4 overflow-x-auto"
           minWidth={420}
@@ -291,6 +286,7 @@ function ScheduleHoldsUpSection() {
             { label: "SHIFT", unit: "%", numeric: true, cell: (r) => r.shiftPct.toFixed(1) },
           ]}
         />
+        </details>
       </div>
     </section>
   )

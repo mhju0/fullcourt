@@ -45,6 +45,8 @@ const BLURB: Record<ModelSectionHref, string> = {
     "Expected shooting value by court location, and the shot context the model omits.",
   "/behind-the-data/availability":
     "What counts as a missing rotation player, how absence cost is estimated, and how the schedule estimates change after controlling for it.",
+  "/behind-the-data/officiating":
+    "What the NBA reviewed, how missed calls and incorrect whistles are counted, and why the findings describe selected close-game endings.",
   "/behind-the-data/referees":
     "How crew-level records are compared with random assignments, and why an extreme referee-and-player record needs a chance baseline.",
   "/behind-the-data/time-zones":

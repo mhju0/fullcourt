@@ -105,7 +105,8 @@ export type SlateResolution =
   | { type: "SLATE_RESOLVED"; date: string; games: readonly GameResponse[] }
   | { type: "SLATE_REJECTED"; date: string; message: string };
 
-export type SlateEvent = SlateIntent | SlateResolution;
+export type SlateEvent = SlateIntent | SlateResolution
+  | { type: "LOCATION_RESTORED"; season: string; date: string | null };
 
 // ─── Init ────────────────────────────────────────────────────────
 
@@ -150,6 +151,15 @@ function shiftDateKey(dateKey: string, delta: number): string {
  */
 export function slateReducer(state: SlateState, event: SlateEvent): SlateState {
   switch (event.type) {
+    case "LOCATION_RESTORED": {
+      const next = initSlate({ ...state, season: event.season });
+      const restored = event.date ? selectDate(next, event.date) : next;
+      if (event.season !== state.season) return restored;
+      const resolved = state.days.length > 0 || state.status === "noDays"
+        ? slateReducer(restored, { type: "DAYS_RESOLVED", days: state.days }) : restored;
+      return resolved.selectedDate === state.selectedDate ? state : resolved;
+    }
+
     case "SEASON_SELECTED": {
       if (event.season === state.season) return state;
       // A new season invalidates the day list, so there is nothing to keep.
@@ -185,16 +195,10 @@ export function slateReducer(state: SlateState, event: SlateEvent): SlateState {
     }
 
     case "DAYS_RESOLVED": {
+      // Explicit selections include no-game days and survive late calendar responses.
+      if (state.selectedDate) return { ...state, days: event.days };
       if (event.days.length === 0) {
         return { ...state, status: "noDays", days: [], selectedDate: null, games: [], message: null };
-      }
-      // A date the user already chose survives the day list arriving. Without this, a
-      // deep jump (the EDGES AHEAD strip sends SEASON_SELECTED then DATE_SELECTED while
-      // the season's days are still in flight) would be silently reverted to the default
-      // date a moment later. Only a date the list actually contains is kept — anything
-      // else falls through to the default pick.
-      if (state.selectedDate && event.days.some((d) => d.date === state.selectedDate)) {
-        return { ...state, days: event.days };
       }
       const next = pickDefaultGamesDate(state.todayKey, event.days);
       if (!next) {

@@ -60,7 +60,7 @@ test.describe("Availability Cost page", () => {
     await expect(page.getByRole("heading", { name: "Availability cost" })).toBeVisible();
   });
 
-  test("is reachable through the OTHER menu and is not a direct tab", async ({ page }) => {
+  test("is reachable through Explore and is not a direct tab", async ({ page }) => {
     await page.goto("/");
 
     const nav = page.getByRole("navigation", { name: "Main navigation" });
@@ -70,10 +70,10 @@ test.describe("Availability Cost page", () => {
       nav.getByRole("link", { name: "AVAILABILITY COST", exact: true })
     ).toHaveCount(0);
 
-    await nav.getByRole("button", { name: /OTHER/ }).click();
+    await nav.getByRole("link", { name: "EXPLORE", exact: true }).click();
     // A real link inside the menu, not a click-handler — asserted by role, so a regression to
     // a button that navigates fails here rather than silently losing middle-click and crawling.
-    const item = page.getByRole("menuitem", { name: "AVAILABILITY COST", exact: true });
+    const item = page.locator("main").getByRole("link", { name: /^Availability Cost/ });
     await expect(item).toBeVisible();
     await item.click();
     await expect(page).toHaveURL(/\/availability$/);

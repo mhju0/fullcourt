@@ -18,7 +18,7 @@ export default function SeasonPage() {
       <PageHeader
         eyebrow="ONE SEASON · AS PLAYED"
         title="Season Report"
-        description="One NBA season as it was actually played: how the rest-advantage call scored against its own history, and which teams converted the rest edges they were dealt."
+        description="What happened when teams arrived with different rest conditions: season results, team records, and the widest completed-game rest gaps."
       />
       <MethodLink surfaceHref="/season" />
 

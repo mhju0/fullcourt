@@ -1,0 +1,32 @@
+{
+  "0022400587": {
+    "source_sha256": "1bafc99176c3b9627e6761bb89f8d2d0ba0b3787eabbd582787d1b68103155e4",
+    "pairs": [
+      [
+        14,
+        15
+      ]
+    ],
+    "reason": "Retain source rows: identical CC entries share timestamp and video, but the official NBA gamebook confirms two separate take fouls by this player near these times. One-to-one L2M row identity remains ambiguous. Do not remove a potential real assessment solely from JSON equality. This affects CC/assessment count, not IC/INC totals.",
+    "source_urls": [
+      "https://official.nba.com/l2m/json/0022400587.json",
+      "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/summary?event=401705153",
+      "https://statsdmz.nba.com/pdfs/20250118/20250118_ATLBOS_book.pdf"
+    ]
+  },
+  "0022400931": {
+    "source_sha256": "e39a77243d5c0dcb09e9011c663d05caa032b0bec4ea62fed9e5770cdeb49b26",
+    "pairs": [
+      [
+        13,
+        14
+      ]
+    ],
+    "reason": "Retain source rows: identical CC entries share timestamp and video, but the official NBA gamebook confirms two separate take fouls by this player near these times. One-to-one L2M row identity remains ambiguous. Do not remove a potential real assessment solely from JSON equality. This affects CC/assessment count, not IC/INC totals.",
+    "source_urls": [
+      "https://official.nba.com/l2m/json/0022400931.json",
+      "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/summary?event=401705497",
+      "https://statsdmz.nba.com/pdfs/20250310/20250310_CHAMIA_book.pdf"
+    ]
+  }
+}

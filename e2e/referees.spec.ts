@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 
 /**
- * `/referees` — **published 2026-08-22**, after being deliberately held back since 2026-07-30.
+ * The former `/referees` page, preserved at `/behind-the-data/referees/archive` (D-60).
  *
  * The specs that used to assert the in-progress card are gone with it. What replaced them is not
  * a coverage exercise: this page names real officials beside real records, and the assertions
@@ -14,10 +14,10 @@ import { test, expect } from "@playwright/test";
  * never re-run. They are rewritten here against what the finished page actually says, which is
  * the reason a skipped spec is not the same thing as a passing one.
  */
-test.describe("Referee Effect — the published page", () => {
+test.describe("Referee Effect — the research archive", () => {
   test("renders the foul-style table rather than an in-progress card", async ({ page }) => {
-    await page.goto("/referees");
-    await expect(page.getByRole("heading", { name: "What each official calls" })).toBeVisible();
+    await page.goto("/behind-the-data/referees/archive");
+    await expect(page.getByRole("heading", { name: "Referee research archive" })).toBeVisible();
     await expect(page.getByText("IN PROGRESS")).toHaveCount(0);
     const rows = page.getByTestId("referee-style-row");
     await expect(rows.first()).toBeVisible();
@@ -25,7 +25,7 @@ test.describe("Referee Effect — the published page", () => {
   });
 
   test("the span column ships with its censoring caveat", async ({ page }) => {
-    await page.goto("/referees");
+    await page.goto("/behind-the-data/referees/archive");
     await expect(page.getByTestId("referee-style-row").first()).toBeVisible();
 
     // SINCE separates a 200-game newcomer from a 700-game veteran — but the corpus opens at
@@ -36,7 +36,7 @@ test.describe("Referee Effect — the published page", () => {
   });
 
   test("names the equal window everywhere the numbers are read", async ({ page }) => {
-    await page.goto("/referees");
+    await page.goto("/behind-the-data/referees/archive");
     await expect(page.getByTestId("referee-style-row").first()).toBeVisible();
 
     // The displayed basis is each official's last 200 games (2026-08-24, adopted on the
@@ -47,7 +47,7 @@ test.describe("Referee Effect — the published page", () => {
   });
 
   test("the officials table pins its header against its own scrollport", async ({ page }) => {
-    await page.goto("/referees");
+    await page.goto("/behind-the-data/referees/archive");
     const rows = page.getByTestId("referee-style-row");
     await expect(rows.first()).toBeVisible();
 
@@ -74,7 +74,7 @@ test.describe("Referee Effect — the published page", () => {
   });
 
   test("sorting a column reorders the table and marks the header", async ({ page }) => {
-    await page.goto("/referees");
+    await page.goto("/behind-the-data/referees/archive");
     const first = () => page.getByTestId("referee-style-row").first();
     const before = await first().innerText();
 
@@ -91,7 +91,7 @@ test.describe("Referee Effect — the published page", () => {
   });
 
   test("the crew-chief filter narrows to officials who have chiefed", async ({ page }) => {
-    await page.goto("/referees");
+    await page.goto("/behind-the-data/referees/archive");
     const rows = page.getByTestId("referee-style-row");
     const all = await rows.count();
 
@@ -105,15 +105,15 @@ test.describe("Referee Effect — the published page", () => {
   });
 
   test("refuses the bias reading in the visitor's own words", async ({ page }) => {
-    await page.goto("/referees");
+    await page.goto("/behind-the-data/referees/archive");
     await expect(page.getByText(/cannot establish an official's bias/)).toBeVisible();
     await expect(page.getByText(/None of this is a fairness claim/)).toBeVisible();
   });
 
   test("no longer announces itself as unfinished in the nav", async ({ page }) => {
     await page.goto("/");
-    await page.getByRole("button", { name: /^OTHER/ }).click();
-    await expect(page.getByRole("menuitem", { name: /REFEREE EFFECT/ })).toBeVisible();
+    await page.getByRole("navigation", { name: "Main navigation" }).getByRole("link", { name: "EXPLORE" }).click();
+    await expect(page.locator("main").getByRole("link", { name: /^Officiating/ })).toBeVisible();
     await expect(page.getByText("IN PROGRESS")).toHaveCount(0);
   });
 });
@@ -124,7 +124,7 @@ test.describe("Referee Effect — the published page", () => {
  */
 test.describe("Referee Effect — the folklore chapter", () => {
   test("states the famous record and the noise floor on the same page", async ({ page }) => {
-    await page.goto("/referees");
+    await page.goto("/behind-the-data/referees/archive");
     await expect(page.getByText("THE FEATURED PLAYOFF RECORD")).toBeVisible();
     // The record...
     await expect(page.getByText(/PLAYOFF RECORD IN GAMES/)).toBeVisible();
@@ -134,19 +134,19 @@ test.describe("Referee Effect — the folklore chapter", () => {
   });
 
   test("shows positive and negative records for the same official", async ({ page }) => {
-    await page.goto("/referees");
+    await page.goto("/behind-the-data/referees/archive");
     await expect(page.getByText(/other players finished above their expected wins/)).toBeVisible();
     await expect(page.getByText(/both positive and negative extremes/)).toBeVisible();
   });
 
   test("publishes the pair nobody named, which is the argument", async ({ page }) => {
-    await page.goto("/referees");
+    await page.goto("/behind-the-data/referees/archive");
     await expect(page.getByText("ANOTHER LARGE GAP")).toBeVisible();
     await expect(page.getByText(/sample size and expected wins also differ/)).toBeVisible();
   });
 
   test("reports the offensive-foul reversal with its limitation", async ({ page }) => {
-    await page.goto("/referees");
+    await page.goto("/behind-the-data/referees/archive");
     // Published without this tile, the t = 27 above it reads as proof of compensation.
     // `exact` because the late-window paragraph above also contains "below chance, not above".
     await expect(page.getByText("BELOW CHANCE, NOT ABOVE", { exact: true })).toBeVisible();
@@ -154,7 +154,7 @@ test.describe("Referee Effect — the folklore chapter", () => {
   });
 
   test("carries the attribution caveat no figure can express", async ({ page }) => {
-    await page.goto("/referees");
+    await page.goto("/behind-the-data/referees/archive");
     await expect(page.getByText(/cannot isolate an individual official's contribution/)).toBeVisible();
   });
 });

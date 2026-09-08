@@ -7,10 +7,8 @@
  * set. FullCourt had the server half since the stamped caches shipped, and no surface showed
  * it.
  *
- * **This is not the footer's `RENDERED` stamp**, and the distinction is the whole point.
- * `RENDERED` says when the layout was built and deliberately makes no claim about the data
- * (`src/app/layout.tsx`). This says which games the figures above it were computed from. A
- * reader who cannot tell those apart has been told nothing by either.
+ * This names the data population's latest result, not the page's render time.
+ * The former global render timestamp was removed under D-61.
  *
  * The presentation matches the one that already existed on /schedule — `AS OF <ET date>` in
  * mono, muted, uppercase — so the pattern reads as one convention rather than two.

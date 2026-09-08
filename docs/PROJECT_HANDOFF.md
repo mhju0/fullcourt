@@ -4,6 +4,28 @@ Written 2026-09-04; reconciled with source and Git during the approved clean-sla
 2026-09-05. Product architecture is unchanged. Current source/tests and Git take precedence over
 this summary; the full evidence and document-maintenance policy is in DECISIONS.md D-48.
 
+**2026-09-06 research update:** The owner opened seasonal officiating research, prioritizing
+NBA Last Two Minute reports before selecting product highlights (D-58). The 2025–26 baseline,
+source-integrity findings and reproduction commands are in
+[`research/2026-09-06-l2m-season-study.md`](research/2026-09-06-l2m-season-study.md).
+The owner expanded the baseline to 2023–24 and 2024–25; the
+[`three-season study`](research/2026-09-06-l2m-three-season-study.md) records the comparison.
+**2026-09-08 release implementation:** The approved Officiating page is implemented
+from these snapshots (1,152 regular-season reports). `/referees` redirects to `/officiating`;
+the previous page remains at `/behind-the-data/referees/archive`, linked from the new methodology.
+The generator writes a compact index and content-addressed report JSON. The new daily workflow
+collects source revisions and prepares reviewable data branches. Repository policy currently
+blocks bot-created PRs, so a comparison-link fallback preserves manual preview review.
+The release verification record is `docs/design/redesign-release-review.md`.
+Team-beneficiary rankings remain unsupported. See `docs/OFFICIATING.md` for operation and limits.
+
+**2026-09-07 design direction (D-61):** Owner approved a rest/fatigue-focused homepage and
+separate page ownership: Games for matchups, Schedule Edge for demands/advantages, Season Report
+for completed-season outcomes, Model Results for historical evaluation. The complete planned
+scope and sequencing are in [the decision record](design/fullcourt-decision-record.md).
+No redesign product changes were made by this documentation pass; no accounts or personalization
+are planned. The earlier potential season-hub merger is superseded by keeping the pages separate.
+
 **How to read the evidence markers.** Claims carry their source inline:
 `path/to/file.ts` (read while writing this), `commit abc1234`, `PR #75`, or
 **(conversation-only)** where the fact exists nowhere in the repo and came from prior working
@@ -154,7 +176,7 @@ SWR → page components → DataTable / StatTile / Recharts
 ```
 
 Three surfaces have **no API route at all** and read at build/render time: `/shooting`,
-`/availability`, `/referees`. They use the "facts JSON" pattern (§2.6).
+`/availability`, `/officiating`. The referee archive also retains static research JSON. These use the "facts JSON" pattern (§2.6).
 
 ### 2.5 The `publishableGames()` seam — the easiest thing to get wrong
 
@@ -553,3 +575,105 @@ ADRs 0006 and 0007.
 | Playoff Predictor design record | [PLAYOFF_PREDICTOR_DESIGN.md](PLAYOFF_PREDICTOR_DESIGN.md) |
 | Shot Quality design record | [SHOT_QUALITY_DESIGN.md](SHOT_QUALITY_DESIGN.md) |
 | What the Claude harness used to be | [CLAUDE_ENV_INVENTORY.md](CLAUDE_ENV_INVENTORY.md) |
+
+## 2026-09-07 D-61 defect pass — local implementation
+
+Player table collapse, expansion motion, keyboard route cross-fades, method headings/clipping,
+season-chart tick density, and shot-court touch/keyboard inspection are addressed locally.
+No homepage/nav restructuring or page-content moves were made. Next phase is representative
+mockups; the full compact mobile Shooting layout remains planned. Verification is recorded in
+`docs/design/fullcourt-decision-record.md`. No push, merge, or deployment in this pass.
+
+**D-61 composition review:** the rest-focused homepage and six other representative mockups are
+available at `docs/design/rest-focused-mockups/review.html`, with real bundled snapshots and
+explicit limitations in NOTES.md. These are standalone artifacts; no product routes were replaced.
+Next action is owner review of page hierarchy before application integration.
+
+
+**D-61 Shooting integration, 2026-09-07:** The selected dense table and A difference-cell
+colors are now implemented locally in `/shooting`. Mobile preserves player/team, both split
+rates and attempt counts, and signed differences; desktop retains the secondary columns.
+Season/career filters, player history and shareable URLs remain. Player buttons now support
+keyboard expansion; empty search results explain how to recover. No new motion or data changes.
+Other page compositions remain in the mockup review/integration phase. This is not deployed.
+
+Validation for this integration: 945 unit tests, 13 targeted Shooting/mobile browser tests,
+lint, typecheck, production build and production dependency audit passed. Browser checks at
+1280/390/375px found no page overflow or clipped table cells and no axe violations. Reviewed
+collapsed and expanded screenshots. Existing mockup files and downloadable bundle remain
+available as the approved design reference.
+
+
+**D-61 homepage integration, 2026-09-07:** Implemented locally: shortened dark homepage with
+historical rest evidence and schedule/shooting previews, server-rendered from destination data
+sources; brand story at `/about`; working `/explore` research directory; footer render timestamp
+removed. One 450ms hero entrance replaces the old GSAP scroll reveals, with no motion under
+reduced motion. The old `/about` redirect is removed. Next: shared Games / Season Report /
+Schedule Edge / Explore navigation, then the remaining page hierarchy/content moves. No deployment.
+
+Validation: 957 unit tests passed; nine homepage browser tests passed, plus the About route
+and both new page-header checks. Automated axe scans at 1280px and 390px found no violations
+on Home, About or Explore; screenshots were inspected and no content clipping or horizontal
+overflow was found. Home also passed its 375px fit check. Lint, typecheck, production build and
+production dependency audit passed. The homepage is about 1,630px tall at 1280px width.
+Screenshots: `docs/screenshots/home-rest-focused-{desktop,mobile}.png`.
+
+
+**D-61 navigation integration, 2026-09-07:** The four shared primary destinations are implemented
+locally on desktop/mobile. Explore replaces the OTHER menu and mobile Model/Search slots;
+the palette remains available via shortcut and footer button. Analytical pages mark Explore as
+the parent location; reference pages retain their own active link. Next: Games hierarchy/off-season
+behavior and the approved Season Report/Schedule Edge content separation. No deployment.
+
+Terminal cleanup: stopped the stale FullCourt production server on 3107 and static mockup
+server on 3112. The current app dev server on 3110 remains for meaningful local verification.
+Unrelated project processes were left alone.
+
+Navigation verification: 959 unit tests, 34 navigation/control browser tests and two additional
+Explore reachability tests passed. Six desktop/mobile axe scans found no violations. Lint,
+typecheck, production build and dependency audit passed. Only the current FullCourt server on
+3110 remains listening; obsolete 3107 and 3112 servers are stopped.
+
+
+### Games integration checkpoint — 2026-09-07
+
+Date controls and matchups now precede summaries in document/mobile order; desktop uses a right
+summary column. The off-season default is the completed regular season, and the upcoming season
+is offered after confirming its schedule exists. Density is URL-only, with instant keyboard
+changes. Season/date URL restoration was completed on 2026-09-08; Season Report / Schedule Edge
+content separation is next. Local changes only; see design decision record section 11.
+
+
+### Games URL integration — 2026-09-08
+
+Games now shares `season`, `date`, and `view` in the URL. Explicit links take precedence over
+season defaults; date-only links infer a season. Invalid dates fall back safely, while valid
+no-game dates remain selected. User navigation creates history entries; automatic date selection
+replaces the current entry. Back/forward restores the slate without scrolling or animation.
+The season control waits for URL initialization before accepting input, preventing an early
+selection from being overwritten. Aborted calendar responses cannot replace the current season.
+
+Next: implement the approved Season Report / Schedule Edge content separation. Local only.
+
+
+## Rest-focused redesign integration — 2026-09-08
+
+The approved page ownership is implemented: Season Report owns completed results, team records,
+and five largest completed rest gaps (wins and losses); Schedule Edge owns the ranking, worth,
+travel/workload disclosure, and completed-game fatigue calendar. Zero-rest player workload now
+belongs to Shooting. Six team records are shown initially, with the remaining teams expandable.
+
+Shared season links and fallback notices preserve valid context across Games, Season, and
+Schedule. Shooting URLs preserve year, volume, team, position, uncertainty, sort, query, and
+expanded player. Mobile Games exposes rest advantage without horizontal scrolling. Model Results
+has answer/explorer anchors, Availability collapses coefficients, mobile Shot Value offers one
+court plus Compare models, Officiating links directly to game reviews, and methodology pages
+have compact topic navigation and local contents. No accounts or stored personal preferences.
+
+See [the release review](design/redesign-release-review.md) for design rationale and scope.
+The owner authorized verification and deployment on 2026-09-08. Exportable graphics, universal
+search, and new analytics remain separate future scope, as agreed. No coefficient or schema change.
+
+
+See [the release review](design/redesign-release-review.md) for the final local verification,
+including 969 unit tests, production-browser checks, and desktop/mobile screenshots.
