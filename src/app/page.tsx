@@ -23,15 +23,16 @@ async function loadFindings(): Promise<HomeFindings> {
   const shootingCoverage = shootingHomeCoverage(shooting);
   // CI can build without a database. Configured database failures still reach the error boundary.
   if (!process.env.DATABASE_URL) return { historical: null, schedule: null, shootingCoverage };
-  const [history, schedule, report] = await Promise.all([
+  const [history, schedule] = await Promise.all([
     getHistoricalBacktest(0),
     getScheduleDisparity(defaultRankableSeason()).catch((error: unknown) => {
       // An unequal schedule is an expected withheld ranking, not a failure of the historical evidence.
       if (error instanceof PublicApiError && error.status === 422) return null;
       throw error;
     }),
-    getSeasonReport(defaultRankableSeason()),
   ]);
+  // The hosted single-connection pool stalls when this joins the two loaders above.
+  const report = await getSeasonReport(defaultRankableSeason());
   const example = report.loudestCalls[0] ? await getGameById(report.loudestCalls[0].gameId) : null;
   return { example, historical: historicalHomeFinding(history), schedule: schedule ? scheduleHomeFinding(schedule) : null, shootingCoverage };
 }

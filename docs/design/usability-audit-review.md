@@ -47,3 +47,11 @@ Automated browser inspection does not establish usability with people, device pe
 physical Safari behavior or screen-reader comprehension. Those remain in [Roadmap](../ROADMAP.md).
 The engineering walkthrough describes the system; personal ownership and collaboration wording
 requires the owner's account before further elaboration.
+
+### Preview build follow-up
+
+The first two hosted previews timed out during homepage prerendering. The three concurrent
+homepage loaders reproduced a stalled season-report read through the hosted database connection;
+the same loaders completed in about two seconds when the season report followed the other two.
+The homepage now uses that sequence, preserving its data, example selection and error handling.
+This avoids the observed stall without changing database configuration or increasing build timeouts.
