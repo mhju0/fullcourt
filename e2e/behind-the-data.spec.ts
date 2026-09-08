@@ -35,14 +35,14 @@ test.describe("Behind the Data", () => {
 
     await sections.locator('a[href="/behind-the-data/shot-value"]').click();
     await expect(page).toHaveURL(/\/behind-the-data\/shot-value$/);
-    await expect(page.getByRole("heading", { name: "Shot value", level: 1 })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Expected Shot Value", level: 1 })).toBeVisible();
   });
 
   test("each product page links into the section that explains it", async ({ page }) => {
     // The reference is most wanted at the moment a number is doubted, which is on the
     // product page — so the door is there too, not only in the nav.
     await page.goto("/schedule");
-    await page.getByRole("link", { name: /HOW THIS IS CALCULATED/ }).click();
+    await page.getByRole("link", { name: /How this is calculated/ }).click();
     await expect(page).toHaveURL(/\/behind-the-data\/schedule-edge$/);
   });
 

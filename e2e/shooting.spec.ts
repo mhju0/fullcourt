@@ -176,6 +176,7 @@ test("shooting filter and player links restore the same view", async ({ page }) 
   await expect(page.locator("#pr-season")).toHaveValue("2024");
   await expect(page.locator("#pr-volume")).toHaveValue("0");
   await expect(page.getByLabel("Hide uncertain differences")).toBeChecked();
+  await page.locator("summary").filter({ hasText: /^Filters/ }).click();
   await page.getByLabel("Hide uncertain differences").uncheck();
   await page.getByTestId("player-row").first().click();
   await page.reload();

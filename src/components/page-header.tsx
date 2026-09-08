@@ -49,6 +49,7 @@ export function PageHeader({
       <p
         style={{
           maxWidth: WIDTH.prose,
+          textWrap: "balance",
           fontSize: TYPE.body,
           color: "var(--term-text-muted)",
           lineHeight: LEAD.body,

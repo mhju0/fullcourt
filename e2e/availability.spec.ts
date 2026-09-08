@@ -17,7 +17,7 @@ test.describe("Availability Cost page", () => {
     await expect(
       page.getByText(`${AVAILABILITY_EFFECTS.bestPlayerOut.points.toFixed(2)} points`)
     ).toBeVisible();
-    await expect(page.getByText("WHAT AN ABSENCE COSTS")).toBeVisible();
+    await expect(page.getByText("Missing a top player")).toBeVisible();
   });
 
   test("keeps the two disclaimers the numbers depend on", async ({ page }) => {
@@ -55,7 +55,7 @@ test.describe("Availability Cost page", () => {
     // MethodLink renders nothing until a matching section exists, so this also catches the
     // section being removed from BEHIND_THE_DATA_SECTIONS — which would silently drop the
     // link rather than break the build.
-    await page.getByRole("link", { name: /HOW THIS IS CALCULATED/ }).click();
+    await page.getByRole("link", { name: /How this is calculated/ }).click();
     await expect(page).toHaveURL(/\/behind-the-data\/availability$/);
     await expect(page.getByRole("heading", { name: "Availability cost" })).toBeVisible();
   });
@@ -73,7 +73,7 @@ test.describe("Availability Cost page", () => {
     await nav.getByRole("link", { name: "EXPLORE", exact: true }).click();
     // A real link inside the menu, not a click-handler — asserted by role, so a regression to
     // a button that navigates fails here rather than silently losing middle-click and crawling.
-    const item = page.locator("main").getByRole("link", { name: /^Availability Cost/ });
+    const item = page.locator("main").getByRole("link", { name: /Availability Cost/ });
     await expect(item).toBeVisible();
     await item.click();
     await expect(page).toHaveURL(/\/availability$/);

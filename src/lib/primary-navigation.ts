@@ -8,12 +8,12 @@ export const DIRECT_NAV_ITEMS = [
 
 /** Product analyses reached through Explore and the page palette. */
 export const EXPLORE_NAV_ITEMS = [
-  { href: "/shooting", label: "PLAYER SHOOTING" },
+  { href: "/shooting", label: "SHOOTING BY REST" },
   { href: "/playoffs", label: "PLAYOFF REST" },
   { href: "/analysis", label: "MODEL RESULTS" },
   { href: "/availability", label: "AVAILABILITY COST" },
   { href: "/officiating", label: "OFFICIATING", keywords: ["referee", "referees", "L2M"] },
-  { href: "/shot-quality", label: "SHOT VALUE" },
+  { href: "/shot-quality", label: "EXPECTED SHOT VALUE" },
 ] as const;
 
 export function isActiveRoute(pathname: string, href: string): boolean {

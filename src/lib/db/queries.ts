@@ -29,6 +29,7 @@ import {
   teams,
 } from "./schema";
 import type { DataAsOf } from "@/lib/data-as-of";
+import { neutralVenueCoordinates } from "@/lib/neutral-venues";
 import { isProjectedFatigue } from "@/lib/fatigue-provenance";
 import type { DisparityGameRow } from "@/lib/schedule-disparity";
 import type { SeasonReportRow } from "@/lib/season-report";
@@ -139,7 +140,7 @@ const gameIsNormallyPlayed =
  * abnormal stretches are its one universal rule, and this is where it lives.
  *
  * Deliberately NOT applied by:
- * - `getTeamGameCountsInDaysBefore` and `computeIs4In6Map` — they count physical schedule load,
+ * - `getTeamGameCountsInDaysBefore` and `computeScheduleDensityMap` — they count physical schedule load,
  *   not publishable rows, and must stay consistent with `fatigue-recent-games.ts`, which is also
  *   unfiltered. Filtering one side would put two contradictory density figures on the same card.
  * - `getShotQualityGrid` — reads `shot_grid`, never joins `games`. Shot Value keeps the bubble on
@@ -188,16 +189,18 @@ async function getTeamGameCountsInDaysBefore(
   return out;
 }
 
-/** True when the team plays its 4th+ game in a rolling 6-day window ending on `gameDate`. */
-async function computeIs4In6Map(
+/** Counts completed prior games plus the selected game in an exact calendar window. */
+async function computeScheduleDensityMap(
   gameDate: string,
-  teamIds: number[]
+  teamIds: number[],
+  nights: number,
+  minimumGames: number
 ): Promise<Map<number, boolean>> {
   const unique = [...new Set(teamIds)];
   const counts = new Map(unique.map((id) => [id, 0]));
   if (unique.length === 0) return new Map();
 
-  const start = format(subDays(parseISO(gameDate), 5), "yyyy-MM-dd");
+  const start = format(subDays(parseISO(gameDate), nights - 1), "yyyy-MM-dd");
   const rows = await db
     .select({
       homeTeamId: games.homeTeamId,
@@ -225,7 +228,7 @@ async function computeIs4In6Map(
     }
   }
 
-  return new Map(unique.map((id) => [id, (counts.get(id) ?? 0) >= 4]));
+  return new Map(unique.map((id) => [id, (counts.get(id) ?? 0) >= minimumGames]));
 }
 
 /**
@@ -248,6 +251,8 @@ function selectGamesWithFatigue(where: SQL | undefined) {
       season: games.season,
       status: games.status,
       tipOffUtc: games.tipOffUtc,
+      neutralSite: games.neutralSite,
+      neutralVenueCity: games.neutralVenueCity,
       homeScore: games.homeScore,
       awayScore: games.awayScore,
       homeTeamId: games.homeTeamId,
@@ -327,15 +332,16 @@ async function toGameResponses(rows: GameFatigueJoinRow[]): Promise<GameResponse
   const date = String(rows[0].date);
   const teamIds = rows.flatMap((r) => [r.homeTeamId, r.awayTeamId]);
   // Every row here shares one date, so it shares one season, so one scalar covers them all.
-  const [is4In6Map, games30Map, firstUnplayed] = await Promise.all([
-    computeIs4In6Map(date, teamIds),
+  const [is4In6Map, is3In4Map, games30Map, firstUnplayed] = await Promise.all([
+    computeScheduleDensityMap(date, teamIds, 6, 4),
+    computeScheduleDensityMap(date, teamIds, 4, 3),
     getTeamGameCountsInDaysBefore(date, teamIds, 30),
     getFirstUnplayedDate(String(rows[0].season)),
   ]);
   const projectedFatigue = isProjectedFatigue(date, firstUnplayed);
 
   return rows.map((row) => ({
-    ...mapJoinedRowToGameResponse(row, is4In6Map, games30Map),
+    ...mapJoinedRowToGameResponse(row, is4In6Map, is3In4Map, games30Map),
     projectedFatigue,
   }));
 }
@@ -362,6 +368,7 @@ export async function getGamesByDate(date: string): Promise<GameResponse[]> {
 function mapJoinedRowToGameResponse(
   row: GameFatigueJoinRow,
   is4In6Map: Map<number, boolean>,
+  is3In4Map: Map<number, boolean>,
   games30Map: Map<number, number>
 ): Omit<GameResponse, "projectedFatigue"> {
   const homeFatigueData = buildFatigueInfo(
@@ -369,6 +376,7 @@ function mapJoinedRowToGameResponse(
     {
       gamesInLast30Days: games30Map.get(row.homeTeamId) ?? 0,
       is4In6: is4In6Map.get(row.homeTeamId) ?? false,
+      is3In4: is3In4Map.get(row.homeTeamId) ?? false,
       roadTripConsecutiveAway: row.homeRoadTripConsecutiveAway ?? 0,
       hasTimeZoneDisplacement: row.homeHasTimeZoneDisplacement ?? false,
     },
@@ -376,6 +384,7 @@ function mapJoinedRowToGameResponse(
       side: "home",
       homeTeamCity: row.homeTeamCity,
       homeAltitudeFlag: row.homeTeamAltitude,
+      neutralCity: row.neutralSite ? row.neutralVenueCity : null,
     }
   );
 
@@ -384,6 +393,7 @@ function mapJoinedRowToGameResponse(
     {
       gamesInLast30Days: games30Map.get(row.awayTeamId) ?? 0,
       is4In6: is4In6Map.get(row.awayTeamId) ?? false,
+      is3In4: is3In4Map.get(row.awayTeamId) ?? false,
       roadTripConsecutiveAway: row.awayRoadTripConsecutiveAway ?? 0,
       hasTimeZoneDisplacement: row.awayHasTimeZoneDisplacement ?? false,
     },
@@ -391,6 +401,7 @@ function mapJoinedRowToGameResponse(
       side: "away",
       homeTeamCity: row.homeTeamCity,
       homeAltitudeFlag: row.homeTeamAltitude,
+      neutralCity: row.neutralSite ? row.neutralVenueCity : null,
     }
   );
 
@@ -726,9 +737,11 @@ type FatigueInfoContext = {
   side: "home" | "away";
   homeTeamCity: string;
   homeAltitudeFlag: boolean;
+  neutralCity: string | null;
 };
 
 type FatigueScheduleExtras = {
+  is3In4: boolean;
   gamesInLast30Days: number;
   is4In6: boolean;
   roadTripConsecutiveAway: number;
@@ -791,20 +804,18 @@ function buildFatigueInfo(
   if (score === null) return null;
 
   const g7 = gamesInLast7Days ?? 0;
-  const dRest = daysSinceLastGame;
-  const is3In4Approx =
-    g7 >= 3 && dRest !== null && dRest <= 2;
 
   const altitudePenalty = fatigue.altitudeMultiplier > 1.0;
-  const altitudeArenaLabel =
-    ctx.side === "away" && altitudePenalty && ctx.homeAltitudeFlag
-      ? `${ctx.homeTeamCity} (altitude)`
-      : null;
+  const neutral = neutralVenueCoordinates(ctx.neutralCity);
+  const atAltitude = neutral ? neutral.altitude : ctx.side === "away" && ctx.homeAltitudeFlag;
+  const altitudeArenaLabel = altitudePenalty && atAltitude
+    ? `${ctx.neutralCity ?? ctx.homeTeamCity} (altitude)`
+    : null;
 
   return {
     score,
     isBackToBack: isBackToBack ?? false,
-    is3In4: is3In4Approx,
+    is3In4: extras.is3In4,
     travelDistanceMiles: fatigue.travelDistanceMiles,
     altitudePenalty,
     altitudeArenaLabel,

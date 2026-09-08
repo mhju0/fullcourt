@@ -5,7 +5,7 @@ test.describe("Rest-focused front door", () => {
     await page.goto("/");
     const home = page.getByTestId("home-findings");
     await expect(home.getByRole("heading", { level: 1, name: "Rest is a stat" })).toBeVisible();
-    await expect(home.getByRole("link", { name: "Explore games" })).toHaveAttribute("href", "/games");
+    await expect(home.getByRole("link", { name: "Find a game" })).toHaveAttribute("href", "/games");
     await expect(home.getByRole("link", { name: "Read the model results" })).toHaveAttribute("href", "/analysis");
     await expect(home.getByRole("link", { name: "Compare team schedules" })).toHaveAttribute("href", "/schedule");
     await expect(home.getByRole("link", { name: "Look up a player" })).toHaveAttribute("href", "/shooting");
@@ -51,21 +51,21 @@ test.describe("Rest-focused front door", () => {
     await expect(root.getByRole("heading", { name: "Rest is a stat" })).toBeVisible();
   });
 
-  test("research and the brand story have their own working destinations", async ({ page }) => {
+  test("research and the author introduction have their own working destinations", async ({ page }) => {
     await page.goto("/");
     await page.getByTestId("home-findings").getByRole("link", { name: "Explore the research" }).click();
     await expect(page).toHaveURL(/\/explore$/);
-    await expect(page.getByRole("heading", { name: "Other studies" })).toBeVisible();
-    await expect(page.locator("main").getByRole("link", { name: /^Officiating/ })).toHaveAttribute("href", "/officiating");
+    await expect(page.getByRole("heading", { name: "Explore", level: 1 })).toBeVisible();
+    await expect(page.locator("main").getByRole("link", { name: /Officiating/ })).toHaveAttribute("href", "/officiating");
     await page.goto("/about");
     await expect(page.getByRole("heading", { level: 1, name: "About FullCourt" })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "What FullCourt means" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Created by Michael Ju" })).toBeVisible();
     await expect(page.locator("footer")).not.toContainText("RENDERED:");
   });
 
   test("the primary action opens Games", async ({ page }) => {
     await page.goto("/");
-    await page.getByRole("link", { name: "Explore games", exact: true }).click();
+    await page.getByRole("link", { name: "Find a game", exact: true }).click();
     await expect(page).toHaveURL(/\/games(?:\?|$)/);
     await expect(page.getByRole("heading", { level: 1, name: "Games" })).toBeVisible();
   });

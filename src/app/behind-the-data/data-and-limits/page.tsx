@@ -58,7 +58,7 @@ const COVERAGE = [
     field: "Shot locations",
     from: "1996-97",
     source: "hoopR / play-by-play",
-    note: "Shot Value only. These records do not include defender or tracking fields.",
+    note: "Expected Shot Value only. These records do not include defender or tracking fields.",
   },
 ] as const;
 
@@ -134,7 +134,7 @@ export default function DataAndLimitsPage() {
           One surface still withholds the season in full. <strong>Schedule Edge</strong> ranks
           teams against each other within a single season, and 2019-20 stopped with teams having
           played between 63 and 67 games. A team with four fewer games has four fewer chances to
-          accumulate an edge, so its total would move without the schedule having favoured
+          accumulate an edge, so its total would move without the schedule having favored
           anyone. This exclusion addresses unequal schedule lengths and applies to no other
           season on record, where the widest spread is a single game.
         </Prose>

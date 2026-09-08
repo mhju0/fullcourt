@@ -1,6 +1,6 @@
 import { PlayoffGrindGap } from "@/components/playoff-grind-gap"
 import { PLAYOFF_EQUAL_REST } from "@/lib/playoff-rest-facts"
-import { LEAD, termCardStyle, TRACK, TYPE, WIDTH } from "@/lib/terminal-styles"
+import { LEAD, termCardStyle, TYPE, WIDTH } from "@/lib/terminal-styles"
 import { StatFigure } from "@/components/ui/stat-tile"
 
 const BODY: React.CSSProperties = {
@@ -13,7 +13,7 @@ const LEAD_IN = { color: "var(--term-text)", fontWeight: 600 } as const
 
 function SectionHeading({ children }: { children: React.ReactNode }) {
   return (
-    <div className="mono flex items-center gap-3 py-1" style={{ fontSize: 11, letterSpacing: TRACK.label, color: "var(--term-text-muted)" }}>
+    <div className="flex items-center gap-3 py-1" style={{ fontSize: 18, color: "var(--term-text)" }}>
       <span style={{ fontWeight: 700 }}>{children}</span>
       <span style={{ flex: 1, height: 1, background: "var(--term-border)" }} />
     </div>
@@ -30,7 +30,7 @@ function NoRestSection() {
   const { laterGames, laterEqual, game1Games, game1Equal } = PLAYOFF_EQUAL_REST
   return (
     <section className="flex flex-col gap-3">
-      <SectionHeading>REST BETWEEN SERIES</SectionHeading>
+      <SectionHeading>When calendar rest differs</SectionHeading>
       {/* The figure and its explanation sit side by side rather than stacked.
           Stacked, the card ran the full 1040 column while its prose was capped at the 42rem
           measure, so the right ~336px of it was empty on every card — the number was the
@@ -68,7 +68,7 @@ function NoRestSection() {
 function GrindTaxSection() {
   return (
     <section className="flex flex-col gap-3">
-      <SectionHeading>THE GRIND TAX</SectionHeading>
+      <SectionHeading>Does the opponent’s prior round matter?</SectionHeading>
       <p style={BODY}>
         <span style={LEAD_IN}>Teams won more often against opponents coming off a long series.</span>{" "}
         The comparison below is historical; it does not separate fatigue from team quality.

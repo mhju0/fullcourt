@@ -346,7 +346,7 @@ export function buildAnalysisClaims(
     // Kept to two lines at 1440px, which `page-headers.spec.ts` enforces. The legend under each
     // chart carries the fuller "how often the home team wins anyway" gloss, so this line does
     // not repeat it.
-    headerDescription: `Among completed regular-season games, did the more-rested team win? Counted only where that team was also at home, and measured against the ${baselinePct}% home teams win anyway.`,
+    headerDescription: `Across completed regular-season games, compare more-rested teams also at home with the ${baselinePct}% home baseline. Rested visitors are shown separately.`,
     tiles,
     declinedHalf: {
       games: declinedGames.games,

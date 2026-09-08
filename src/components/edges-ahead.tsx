@@ -53,11 +53,11 @@ export function EdgesAhead({
         className="mono uppercase"
         style={{ fontSize: 10, letterSpacing: TRACK.label, fontWeight: 700, color: "var(--term-text-muted)" }}
       >
-        EDGES AHEAD · BIGGEST REST GAPS ON THE SCHEDULE
+        EDGES AHEAD · UPCOMING {season} · PROJECTED REST GAPS
       </span>
       <div className="flex flex-wrap gap-2">
         {top.map((g) => {
-          const dateLabel = format(new Date(g.date + "T00:00:00"), "MMM d")
+          const dateLabel = format(new Date(g.date + "T00:00:00"), "MMM d, yyyy")
           const value = Math.abs(g.restAdvantageDifferential).toFixed(1)
           return (
             <button

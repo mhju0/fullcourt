@@ -95,11 +95,11 @@ export function ConfidenceBadge({ confidence }: { confidence: Confidence }) {
 
   const label =
     confidence === "high"
-      ? "HIGH CONF"
+      ? "LARGE GAP"
       : confidence === "med"
-        ? "MED CONF"
+        ? "MEDIUM GAP"
         : confidence === "low"
-          ? "LOW CONF"
+          ? "SMALL GAP"
           : "NEUTRAL"
 
   const baseStyle: React.CSSProperties = {
@@ -223,12 +223,13 @@ export function teamGameFlags(game: GameResponse): { away: string[]; home: strin
   if (game.awayFatigue?.isBackToBack) away.push("B2B")
   if (game.awayFatigue?.is3In4) away.push("3IN4")
   if (game.awayFatigue?.is4In6) away.push("4IN6")
-  if (game.awayFatigue?.altitudePenalty) away.push("ALT")
-  if (game.awayFatigue?.hasTimeZoneDisplacement) away.push("JET LAG")
+  if (game.awayFatigue?.altitudePenalty) away.push(game.awayFatigue.altitudeArenaLabel ? "ALT" : "ALT TRIP")
+  if (game.awayFatigue?.hasTimeZoneDisplacement) away.push("TIME ZONES")
   if (game.awayFatigue?.isOvertimePenalty) away.push("OT")
   if (game.homeFatigue?.isBackToBack) home.push("B2B")
   if (game.homeFatigue?.is3In4) home.push("3IN4")
   if (game.homeFatigue?.is4In6) home.push("4IN6")
+  if (game.homeFatigue?.altitudePenalty) home.push(game.homeFatigue.altitudeArenaLabel ? "ALT" : "ALT TRIP")
   if (game.homeFatigue?.isOvertimePenalty) home.push("OT")
   return { away, home }
 }

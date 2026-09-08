@@ -13,9 +13,9 @@ const METHODS = [
   { href: "/behind-the-data/rest-advantage", title: "Rest Advantage", category: "Rest and fatigue", question: "What goes into the fatigue score?", action: "Read rest methods" },
   { href: "/behind-the-data/schedule-edge", title: "Schedule Edge", category: "Rest and fatigue", question: "How are favorable schedules compared?", action: "Read schedule methods" },
   { href: "/behind-the-data/playoff-predictions", title: "Playoff Rest", category: "Rest and fatigue", question: "How does prior-round workload enter the model?", action: "Read playoff methods" },
-  { href: "/behind-the-data/player-shooting", title: "Player Shooting", category: "Rest and fatigue", question: "How are rest splits and uncertainty measured?", action: "Read shooting methods" },
+  { href: "/behind-the-data/player-shooting", title: "Shooting by Rest", category: "Rest and fatigue", question: "How are rest splits and uncertainty measured?", action: "Read shooting methods" },
   { href: "/behind-the-data/availability", title: "Availability Cost", category: "Other studies", question: "How is a missing player's contribution estimated?", action: "Read availability methods" },
-  { href: "/behind-the-data/shot-value", title: "Shot Value", category: "Other studies", question: "What is a shot from each location worth?", action: "Read shot-value methods" },
+  { href: "/behind-the-data/shot-value", title: "Expected Shot Value", category: "Other studies", question: "What is a shot from each location worth?", action: "Read shot-value methods" },
   { href: "/behind-the-data/officiating", title: "Officiating", category: "Other studies", question: "What counts as an error in the NBA's reports?", action: "Read officiating methods" },
 ];
 

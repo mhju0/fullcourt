@@ -25,7 +25,7 @@ function teamClauses(fatigue: FatigueInfo | null): string[] {
   // 4-in-6 subsumes 3-in-4 — saying both counts the same nights twice.
   if (fatigue.is4In6) clauses.push("4th game in 6 nights");
   else if (fatigue.is3In4) clauses.push("3rd game in 4 nights");
-  if (fatigue.altitudePenalty) clauses.push("at altitude");
+  if (fatigue.altitudePenalty) clauses.push(fatigue.altitudeArenaLabel ? "playing at altitude" : "after an altitude trip");
   if (fatigue.roadTripConsecutiveAway >= 4)
     clauses.push(`${ordinal(fatigue.roadTripConsecutiveAway)} straight road game`);
   if (fatigue.isOvertimePenalty) clauses.push("coming off overtime");

@@ -46,7 +46,7 @@ export function CommandPalette({
         <Command.Empty>No surface matches.</Command.Empty>
         <Command.Group heading="Surfaces">{DIRECT_NAV_ITEMS.map(item)}</Command.Group>
         <Command.Group heading="Explore">{EXPLORE_NAV_ITEMS.map(item)}</Command.Group>
-        <Command.Group heading="Reference">{[...SECONDARY_LINKS, { href: "/about", label: "ABOUT FULLCOURT" }].map(item)}</Command.Group>
+        <Command.Group heading="Reference">{[...SECONDARY_LINKS, { href: "/about", label: "ABOUT FULLCOURT" }, { href: "/how-it-was-built", label: "HOW IT WAS BUILT", keywords: ["engineering", "Michael", "case study"] }].map(item)}</Command.Group>
       </Command.List>
     </Command.Dialog>
   )

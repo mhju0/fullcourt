@@ -59,9 +59,9 @@ export function ZeroRestWorkload({ season }: { season: string }) {
     <div className="flex flex-col gap-3" ref={anchor}>
       <p style={{ fontSize: TYPE.body, color: "var(--term-text-muted)", maxWidth: WIDTH.prose, lineHeight: LEAD.body }}>
         Players ranked by shot attempts on zero days&apos; rest. Attempt counts measure
-        workload; compare shooting rates with their sample sizes on Player Shooting.{" "}
+        workload; compare shooting rates with their sample sizes on Shooting by Rest.{" "}
         <a href="/shooting" style={{ color: "var(--term-blue-text)", fontWeight: 600 }}>
-          Career rest splits live on Player Shooting →
+          Career rest splits live on Shooting by Rest →
         </a>
       </p>
 

@@ -11,28 +11,39 @@ function RateBar({ label, value, rested = false }: { label: string; value: numbe
 }
 
 export function HomeContent({ findings }: { findings: HomeFindings }) {
-  const { historical, schedule, shootingCoverage } = findings;
+  const { historical, schedule, shootingCoverage, example } = findings;
   return <div className={styles.home} data-testid="home-findings">
     <div className={styles.container}>
       <header className={styles.hero}>
         <div>
           <p className={styles.eyebrow}>NBA rest · travel · schedule</p>
           <h1>Rest is a stat</h1>
-          <p>Days off, miles traveled, and games played close together. See how teams arrive and what the results say.</p>
-          <TransitionLink href="/games" className={styles.primary}>Explore games <span aria-hidden="true">→</span></TransitionLink>
+          <p>Understand the schedule behind an NBA game. Compare rest and travel, then check what happened.</p>
+          <TransitionLink href="/games" className={styles.primary}>Find a game <span aria-hidden="true">→</span></TransitionLink>
         </div>
-        <p className={styles.scenario}>One team played <strong>last night.</strong><br />The other had <strong>three days off.</strong></p>
+        {example ? <article className={styles.example}>
+          <p className={styles.eyebrow}>A real game · {example.date}</p>
+          <h2>{example.awayTeam.name} at {example.homeTeam.name}</h2>
+          <dl>
+            {[{ team: example.awayTeam, load: example.awayFatigue }, { team: example.homeTeam, load: example.homeFatigue }].map(({ team, load }) => <div key={team.id}>
+              <dt>{team.name}</dt><dd>{load?.daysRest == null ? "Rest unavailable" : load.daysRest === 1 ? "Played the day before" : `${load.daysRest} days since last game`}</dd>
+            </div>)}
+          </dl>
+          <p>Final: {example.awayTeam.abbreviation} {example.awayScore} · {example.homeTeam.abbreviation} {example.homeScore}. Different rest conditions do not decide the winner.</p>
+          <TransitionLink className={styles.textLink} href={`/games?season=${example.season}&date=${example.date}&game=${example.id}#game-${example.id}`}>Inspect this matchup →</TransitionLink>
+          <p className={styles.metadata}>Largest completed rest gap with the rested team at home in {example.season}.</p>
+        </article> : <p className={styles.scenario}>Choose a game to see each team&apos;s rest and recent schedule.</p>}
       </header>
 
       <section className={styles.finding} aria-labelledby="rest-finding">
         <div>
           <p className={styles.eyebrow}>{historical?.coverage ? `Regular season · ${historical.coverage}` : "Historical rest comparison"}</p>
-          <h2 id="rest-finding">A rest gap, measured against home court.</h2>
+          <h2 id="rest-finding">Widest rest gaps · historical home teams</h2>
           {historical ? <>
             <p className={`${styles.big} ${historical.edgePp < 0 ? styles.tired : styles.rested}`} data-testid="home-rest-edge">
               {signedNumber(historical.edgePp, 1)}<span> pp</span>
             </p>
-            <p>Win-rate difference from the home baseline in {historical.games.toLocaleString()} games with the widest modeled rest gaps (RA ≥ 7).</p>
+            <p>Percentage-point difference from the home baseline in {historical.games.toLocaleString()} games with the widest rest gaps (model score ≥ 7).</p>
           </> : <p>The historical comparison is unavailable. Model Results has the underlying evidence and data status.</p>}
         </div>
         <div>
@@ -74,7 +85,7 @@ export function HomeContent({ findings }: { findings: HomeFindings }) {
         <div><h2>More questions from the court.</h2><p>Playoff workload and other basketball studies.</p></div>
         <TransitionLink href="/explore" className={styles.textLink}>Explore the research <span aria-hidden="true">→</span></TransitionLink>
       </aside>
-      <div className={styles.end}><TransitionLink href="/behind-the-data">Behind the Data</TransitionLink><TransitionLink href="/about">About FullCourt</TransitionLink><span>Read against the baseline.</span></div>
+
     </div>
   </div>;
 }

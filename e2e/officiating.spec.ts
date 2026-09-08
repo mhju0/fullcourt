@@ -16,9 +16,10 @@ test("legacy route redirects and archive keeps the original table", async ({
     "Officiating",
   );
   await page.goto("/behind-the-data/officiating");
+  await page.getByRole("heading", { name: "Earlier referee research", exact: true }).click();
   await page
     .getByRole("link", {
-      name: /Referee foul patterns and historical research/,
+      name: /Open referee research archive/,
     })
     .click();
   await expect(page.getByRole("heading", { level: 1 })).toHaveText(

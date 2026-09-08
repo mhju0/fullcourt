@@ -145,7 +145,7 @@ export function RefereeEffectContent({
         </p>
         <p style={BODY}>
           None of this is a fairness claim. Calling more offensive fouls says nothing about whom
-          an official favours, and no measurement on this page distinguishes a correct call from
+          an official favors, and no measurement on this page distinguishes a correct call from
           an incorrect one. It measures how often each kind of call is recorded.
         </p>
       </section>

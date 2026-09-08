@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo } from "react"
+import { useMemo, useEffect, useRef } from "react"
 import useSWR from "swr"
 import { apiFetcher } from "@/lib/fetcher"
 import type { GameDateCount } from "@/types"
@@ -22,7 +22,7 @@ import { cn } from "@/lib/utils"
 
 // ─── Helpers ─────────────────────────────────────────────────────
 
-const HIGH_CONF_THRESHOLD = 2.0
+const LARGE_GAP_THRESHOLD = 2.0
 
 // Terminal-style flat button: white bg, 1px border, mono uppercase, 4px corners.
 const termBtn =
@@ -55,9 +55,9 @@ function StatSummaryRow({
       {/* Not "TODAY": this is the count for the selected date, and the page deliberately
           auto-selects the most recent date with games whenever today has none. */}
       <StatTile label="GAMES ON THIS DATE" value={gamesToday === null ? "—" : String(gamesToday)} accent="var(--term-neutral)" />
-      <StatTile label="AVG REST ADV" value={avgRestAdv} accent="var(--term-neutral)" />
-      {/* Accent, not a data pole: HIGH CONF is confidence chrome, same as the badge. */}
-      <StatTile label="HIGH CONF GAMES" value={highConfGames} accent="var(--term-accent)" />
+      <StatTile label="AVG REST GAP · SCORE" value={avgRestAdv} accent="var(--term-neutral)" />
+      {/* Gap magnitude uses the interface accent, independent of the favored side. */}
+      <StatTile label="LARGE REST GAPS · 2+" value={highConfGames} accent="var(--term-accent)" />
     </div>
   )
 }
@@ -216,15 +216,15 @@ function OffSeasonBanner({ season, finalSlate, onUpcoming }: { season: string; f
       }}
     >
       <span style={{ fontSize: 12, letterSpacing: TRACK.sub, color: "var(--term-text)", fontWeight: 600 }}>
-        {season} REGULAR SEASON COMPLETE{finalSlate ? " · SHOWING FINAL SLATE" : ""}
+        {season} complete{finalSlate ? " · final games" : ""}
       </span>
-      {onUpcoming && <button type="button" onClick={onUpcoming} className="min-h-11 text-left text-xs underline">VIEW {nextSeasonLabel(season)} SCHEDULE →</button>}
+      {onUpcoming && <button type="button" onClick={onUpcoming} className="min-h-11 text-left text-xs underline">View {nextSeasonLabel(season)} →</button>}
       <a
         href="/season"
         className="inline-flex min-h-11 items-center hover:underline"
         style={{ fontSize: 12, letterSpacing: TRACK.sub, color: "var(--term-accent)", fontWeight: 700 }}
       >
-        SEE THE FULL SEASON REPORT →
+        Season report →
       </a>
     </div>
   )
@@ -329,6 +329,13 @@ export default function GamesPage() {
   // Season/month/day browsing, the two fetches and the Realtime overlay all live in
   // the hook; its decisions live in a pure reducer that is unit-tested without a DOM.
   const slate = useGameSlate()
+  const monthStrip = useRef<HTMLDivElement>(null)
+  const revealMonth = () => {
+    const strip = monthStrip.current
+    const active = strip?.querySelector<HTMLElement>('[aria-pressed="true"]')
+    if (strip && active) strip.scrollLeft += active.getBoundingClientRect().left - strip.getBoundingClientRect().left
+  }
+  useEffect(revealMonth, [slate.selectedDate])
 
   const upcomingSeason = nextSeasonLabel(offSeasonLabel)
   const { data: upcomingDays } = useSWR<GameDateCount[]>(
@@ -360,7 +367,7 @@ export default function GamesPage() {
         sum += diff
         counted += 1
       }
-      if (diff >= HIGH_CONF_THRESHOLD) highConf += 1
+      if (diff >= LARGE_GAP_THRESHOLD) highConf += 1
     }
     // An em dash, not "0.0" and not "0". A slate whose games carry no fatigue pair — every date
     // of a released-but-unplayed season — has no average to report, and printing zero states a
@@ -373,12 +380,10 @@ export default function GamesPage() {
   }, [slate.games])
 
   return (
-    // gap-12 sets the distance between chapters — heading, controls, results — while
-    // elements that belong together carry their own tighter spacing. The previous uniform
-    // gap-6 gave a heading the same separation as two halves of one control panel.
-    <div className="flex flex-col gap-12">
+    // The compact entry keeps a complete matchup above the mobile dock.
+    <div className="flex flex-col gap-6">
       {/* Heading + view toggle: one chapter, so they sit close together. */}
-      <div className="flex flex-col gap-6">
+      <div className="page-intro">
         {/* "Games", and the reasoning is worth keeping because it reversed twice.
 
             This read "Games" until 2026-08-11, when it became a claim — the largest type on the
@@ -394,7 +399,7 @@ export default function GamesPage() {
         <PageHeader
           eyebrow="GAME SLATE · REST ADVANTAGE"
           title="Games"
-          description="Compare each team's rest, travel, and schedule density before tip-off. Browse matchups and historical results since 1985-86."
+          description="Compare each team’s schedule. Rest gap is a model-score difference, not a win probability."
         />
         <MethodLink surfaceHref="/games" />
       </div>
@@ -403,7 +408,9 @@ export default function GamesPage() {
       {/* Filters — two labelled groups rather than three stacked rows that each
           repeated the same label treatment. Season and month answer one question
           ("which stretch of basketball"), so they share a group. */}
-      <div className="flex flex-col gap-4" style={{ ...termCardStyle, padding: SPACE_CARD }}>
+      <div className="flex flex-col gap-2" style={{ ...termCardStyle, padding: SPACE_CARD }}>
+        <details className="games-calendar" onToggle={revealMonth}>
+          <summary>Change season or date · {slate.season}</summary>
         <div>
           <GroupLabel>Scope</GroupLabel>
           {/* Align to the bottom, not the centre: the season block is label +
@@ -424,7 +431,7 @@ export default function GamesPage() {
                 seasons={browsableSeasons().filter((season) => season !== upcomingSeason || Boolean(upcomingDays?.length) || season === slate.season)}
               />
             </div>
-            <div className="-mx-1 min-w-0 flex-1 overflow-x-auto overflow-y-hidden pb-1 [scrollbar-width:thin]">
+            <div ref={monthStrip} className="-mx-1 min-w-0 flex-1 overflow-x-auto overflow-y-hidden pb-1 [scrollbar-width:thin]">
               <div className="flex min-w-min gap-2 px-1">
               {slate.months.map(({ value, label, dayCount, isSelected }) => (
                 <button
@@ -485,7 +492,9 @@ export default function GamesPage() {
           </div>
         )}
 
-        <div className="mt-4 grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2 sm:flex sm:flex-wrap">
+        </div>
+        </details>
+        <div className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2 sm:flex sm:flex-wrap">
           <Button
             variant="outline"
             size="icon-sm"
@@ -516,7 +525,6 @@ export default function GamesPage() {
             <ChevronRight />
           </Button>
           </div>
-        </div>
       </div>
 
       {/* Completion describes the selected season; the final-slate label follows the selected date. */}

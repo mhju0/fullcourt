@@ -19,7 +19,8 @@ Dependency versions live in `package.json` and `pnpm-lock.yaml`. The shared visu
 | `/availability` | Missing-player associations, trends, and expandable coefficient comparison |
 | `/playoffs` | Previous-round workload and the separate series model |
 | `/officiating` | Selected NBA L2M findings and games-first report browser; source verdicts, clean games, shareable filters |
-| `/about` | Brand story |
+| `/about` | Product purpose, author and engineering walkthrough entry |
+| `/how-it-was-built` | Problem, data flow, implementation tradeoffs, verification and limits |
 | `/behind-the-data/*` | Seven-topic overview; ten method articles with visible scope limits, compact topic/contents disclosures and expandable evidence |
 | `/behind-the-data/referees/archive` | Earlier referee research and its historical table |
 
@@ -35,14 +36,23 @@ from the footer or keyboard shortcut; it is navigation, not universal data searc
 
 Explore uses six equal navigation tiles, in two columns on desktop and one on mobile.
 `StudyLink` supplies a full-surface link with a visible arrow, descriptive action, and immediate
-interaction feedback. Research and archive links remain compact. This pattern is for choosing
+interaction feedback. Artifact-derived previews identify Officiating and Availability findings; other tiles use less empty height. Research and archive links remain compact. This pattern is for choosing
 a destination; tables retain their existing density. See D-63 for the owner selection.
+
+Standard study pages pair `PageHeader` and the compact `MethodLink` in `.page-intro`.
+Games and Shooting use a 24px entry gap so the first complete row clears the mobile dock.
+About and the engineering walkthrough share purpose-first typography and source links.
+One footer exposes Methods, About, How it was built, Source, Status and Find a page.
 
 Use `PageHeader`, `MethodLink`, `SeasonSelector`, `DataTable`, `StatTile`, `StatFigure`, and
 `MessageCard` where their contracts fit. The homepage and Officiating have approved presentation
 exceptions. See [Adding a surface](ADDING_A_SURFACE.md) and its source tests before extending them.
 
 ## State and data
+
+Games keeps previous/next-day stepping visible. The optional season/date calendar scrolls its
+selected month into view when opened or changed. Exact four-night and six-night counts use
+completed prior games plus the selected game. Altitude venue and carryover labels are separate.
 
 Games shares `season`, `date`, `view`, and expanded `game`. Explicit historical selection wins
 over offseason defaults. Invalid dates fall back; valid no-game dates remain selected. A date
@@ -73,7 +83,9 @@ blue for missed calls and gray for incorrect whistles, with direct text labels. 
 replaces the number, sign, category, or uncertainty text.
 
 Mobile Games shows teams, status, and rest advantage without sideways scrolling. Shooting keeps
-identity, both splits, and samples available in compact rows. Advanced filters and secondary
+identity, both splits, and samples available in compact rows. Shooting keeps a short signed-value interpretation key visible; rest definitions, uncertainty
+explanation and coverage expand on demand. Officiating initially offers the common call types
+plus an All call types control, and always includes a selected rare category. Advanced filters and secondary
 tables use native disclosures. Wide detail tables retain sticky identity columns. Officiating
 chips scroll horizontally; expanded reports fill the row width. All interactive targets and
 focus states follow the accessibility contracts, including reduced motion.

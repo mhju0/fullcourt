@@ -8,7 +8,6 @@ import { CommandPaletteMount } from "@/components/command-palette-mount";
 import { RouteTransitionLifecycle } from "@/lib/route-transition";
 import { NavBar } from "@/components/nav-bar";
 import "./globals.css";
-import { TRACK } from "@/lib/terminal-styles";
 
 // One family for body AND headings — the Front Office direction (docs/design/
 // mocks/08-front-office.html, adopted 2026-08-09) separates titles from prose by
@@ -118,45 +117,14 @@ export default function RootLayout({
           }}
         >
           <div className="mx-auto flex max-w-7xl flex-col items-start justify-between gap-x-6 px-4 py-2 sm:px-6 lg:flex-row lg:items-center">
-            <span style={{ fontSize: "11px", color: "var(--term-text-muted)", letterSpacing: TRACK.sub }}>
-              <a
-                href="/api/health"
-                // Keep link colors in classes so hover styles can override them.
-                className="underline transition-colors text-[var(--term-text-muted)] hover:text-[var(--term-text)]"
-              >
-                SYSTEM STATUS
-              </a>
-            </span>
-            <span style={{ fontSize: "11px", color: "var(--term-text-muted)", letterSpacing: TRACK.sub }}>
-              <Link
-                href="/"
-                className="underline transition-colors text-[var(--term-text-muted)] hover:text-[var(--term-text)]"
-              >
-                WHAT THIS MEASURES
-              </Link>
-              {" · "}
-              <Link href="/about" className="underline text-[var(--term-text-muted)] hover:text-[var(--term-text)]">ABOUT FULLCOURT</Link>
-              {" · "}
+            <nav aria-label="Footer" className="site-footer-links">
+              <Link href="/about">About FullCourt</Link>
+              <Link href="/behind-the-data">Methods</Link>
+              <Link href="/how-it-was-built">How it was built</Link>
+              <a href="https://github.com/mhju0/fullcourt">Source ↗</a>
+              <a href="/api/health">System status ↗</a>
               <PageSearchButton />
-              {" · "}
-              <a
-                href="https://github.com/mhju0"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="underline transition-colors text-[var(--term-text-muted)] hover:text-[var(--term-text)]"
-              >
-                BUILT BY MJ
-              </a>
-              {" · "}
-              <a
-                href="https://github.com/mhju0/fullcourt"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="underline transition-colors text-[var(--term-text-muted)] hover:text-[var(--term-text)]"
-              >
-                SOURCE
-              </a>
-            </span>
+            </nav>
           </div>
         </footer>
 

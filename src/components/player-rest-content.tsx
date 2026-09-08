@@ -493,7 +493,7 @@ export function PlayerRestContent() {
 
           <details className="fc-disclosure">
             <summary>
-              Filters ({Number(minFga > 0) + Number(Boolean(pos))})
+              Filters ({Number(minFga > 0) + Number(Boolean(pos)) + Number(evidencedOnly)})
             </summary>
             <div className="flex flex-wrap gap-4 py-3">
               <span className="flex items-center gap-2">
@@ -532,6 +532,15 @@ export function PlayerRestContent() {
                 </select>
               </span>
             </div>
+          <label className="flex min-h-11 cursor-pointer items-center gap-2 text-[15px] text-[var(--term-text-muted)]">
+            <input
+              type="checkbox"
+              checked={evidencedOnly}
+              onChange={(e) => setEvidencedOnly(e.target.checked)}
+              style={{ accentColor: "var(--term-blue)" }}
+            />
+            Hide uncertain differences
+          </label>
           </details>
         </div>
 
@@ -553,15 +562,7 @@ export function PlayerRestContent() {
             }}
           />
 
-          <label className="flex min-h-11 cursor-pointer items-center gap-2 text-[15px] text-[var(--term-text-muted)]">
-            <input
-              type="checkbox"
-              checked={evidencedOnly}
-              onChange={(e) => setEvidencedOnly(e.target.checked)}
-              style={{ accentColor: "var(--term-blue)" }}
-            />
-            Hide uncertain differences
-          </label>
+
 
           <span className="mono ml-auto text-[10px] uppercase tracking-label text-[var(--term-text-muted)]">
             {rows.length.toLocaleString()}{" "}
@@ -572,38 +573,16 @@ export function PlayerRestContent() {
         </div>
       </div>
 
-      <p
-        style={{
-          fontSize: 15,
-          color: "var(--term-text-muted)",
-          lineHeight: LEAD.body,
-          maxWidth: WIDTH.prose,
-          margin: 0,
-        }}
-      >
-        <strong style={{ color: "var(--term-text-dim)" }}>No rest</strong>:
-        played yesterday.{" "}
-        <strong style={{ color: "var(--term-text-dim)" }}>3+ days rest</strong>{" "}
-        means at least three days since the player&apos;s last appearance. Both
-        categories use personal appearances, so sitting out a team game extends
-        the player&apos;s rest interval.{" "}
-        <strong style={{ color: "var(--term-text-dim)" }}>Difference</strong> is
-        the right column minus the left:{" "}
-        <strong style={{ color: "var(--term-text-dim)" }}>positive</strong>{" "}
-        means he shoots better with more rest,{" "}
-        <strong style={{ color: "var(--term-text-dim)" }}>negative</strong> that
-        he shoots better on short rest.
-      </p>
-
-      <div className={styles.legend} id="pr-color-note">
-        <span style={{ color: "#991b1b" }}>− Lower with rest</span>
-        <span style={{ color: "#166534" }}>+ Higher with rest</span>
-        <span>
-          Color scale: −10 pp to +10 pp; numbers are not capped. † Below one
-          estimated standard error; quieter tint. These differences do not
-          isolate the effect of rest.
-        </span>
-      </div>
+      <p className={styles.readingKey}>Shooting rate (eFG%) gives extra credit for threes. + means higher with more rest; − means lower. pp = percentage points. These comparisons do not isolate the effect of rest.</p>
+      <details className="fc-disclosure">
+        <summary>Rest definitions and uncertainty</summary>
+        <p>No rest means played yesterday. 3+ days means at least three days since the player&apos;s last appearance, including games the player sat out. The difference is 3+ days minus no rest, in percentage points.</p>
+        <div className={styles.legend} id="pr-color-note">
+          <span style={{ color: "#991b1b" }}>− Lower with rest</span>
+          <span style={{ color: "#166534" }}>+ Higher with rest</span>
+          <span>Color scale: −10 pp to +10 pp; numbers are not capped. † Below one estimated standard error: the difference is small relative to its uncertainty. This is not a 95% significance threshold.</span>
+        </div>
+      </details>
 
       <div style={{ ...termCardStyle, padding: 0 }}>
         {/* `table-fixed` so the browser sizes columns from the colgroup below instead of
@@ -654,6 +633,7 @@ export function PlayerRestContent() {
         )}
       </div>
 
+      <details className="fc-disclosure"><summary>Coverage and how to read small samples</summary>
       <p
         style={{
           fontSize: 15,
@@ -673,6 +653,7 @@ export function PlayerRestContent() {
         more attempts and shrink uncertain gaps toward the player-pool mean, but
         still do not isolate a causal effect of rest.
       </p>
+      </details>
       {activeYear !== "career" ? (
         <details className="fc-disclosure">
           <summary>Show zero-rest player workload</summary>

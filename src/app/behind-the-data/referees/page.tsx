@@ -188,7 +188,7 @@ cleared p < 0.05                    ${floor.clearedPoint05}   (chance predicts $
 
       <Section label="FIXED BEFORE ANYTHING WAS RUN" title="Preregistered questions and decision rules" disclosure>
         <Prose>
-          Testing many questions and reporting only favourable results can exaggerate the
+          Testing many questions and reporting only favorable results can exaggerate the
           evidence. The questions and decision rules were committed <strong>before</strong>{" "}
           the analyses ran.
         </Prose>

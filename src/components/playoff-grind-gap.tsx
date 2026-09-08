@@ -45,17 +45,17 @@ export function PlayoffGrindGap() {
     <div style={termCardStyle}>
       <StatFigure
         value={`+${GAP_PTS.toFixed(1)} points`}
-        caption="WIN-RATE GAP BY OPPONENT'S PRIOR ROUND · ROUNDS 2+"
+        caption="HOME-COURT TEAM WIN-RATE GAP · ROUNDS 2+"
       />
 
+      <p className="mt-4 text-[15px]">Among home-court teams that finished their own prior round early:</p>
       <div className="mt-6 flex flex-col gap-4">
-        <Bar label="They closed their last round early" winPct={ownLowOppLow.winPct} n={ownLowOppLow.n} />
-        <Bar label="They went the distance" winPct={ownLowOppHigh.winPct} n={ownLowOppHigh.n} lit />
+        <Bar label="Opponent finished early" winPct={ownLowOppLow.winPct} n={ownLowOppLow.n} />
+        <Bar label="Opponent played a long series" winPct={ownLowOppHigh.winPct} n={ownLowOppHigh.n} lit />
       </div>
 
       <p className="mt-4" style={{ fontSize: TYPE.body, color: "var(--term-text-muted)", lineHeight: LEAD.body, maxWidth: WIDTH.prose }}>
-        Both bars include teams that closed their own last round early, grouped by their
-        opponent&apos;s series length. For teams that went the distance themselves, the rates reverse:{" "}
+        Early means at most one game beyond a sweep; long means two or three beyond a sweep. Both bars show the home-court team. When that team also played a long series, the rates reverse:{" "}
         {ownHighOppLow.winPct.toFixed(1)}% against a fresh opponent,{" "}
         {ownHighOppHigh.winPct.toFixed(1)}% against a tired one.
       </p>

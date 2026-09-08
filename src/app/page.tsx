@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { PublicApiError } from "@/lib/api-errors";
+import { getSeasonReport } from "@/lib/season-report-server";
+import { getGameById } from "@/lib/db/queries";
 import { HomeContent } from "@/components/home-content";
 import { getHistoricalBacktest } from "@/lib/rest-advantage-evidence-server";
 import { getScheduleDisparity } from "@/lib/schedule-disparity-server";
@@ -29,7 +31,10 @@ async function loadFindings(): Promise<HomeFindings> {
       throw error;
     }),
   ]);
-  return { historical: historicalHomeFinding(history), schedule: schedule ? scheduleHomeFinding(schedule) : null, shootingCoverage };
+  // The hosted single-connection pool stalls when this joins the two loaders above.
+  const report = await getSeasonReport(defaultRankableSeason());
+  const example = report.loudestCalls[0] ? await getGameById(report.loudestCalls[0].gameId) : null;
+  return { example, historical: historicalHomeFinding(history), schedule: schedule ? scheduleHomeFinding(schedule) : null, shootingCoverage };
 }
 
 export default async function HomePage() {
