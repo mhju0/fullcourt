@@ -33,6 +33,11 @@ existing links. No active page uses the retired OTHER menu or onboarding dialog.
 header and mobile dock. Explore stays marked for its child analyses. The page palette opens
 from the footer or keyboard shortcut; it is navigation, not universal data search.
 
+Explore uses six equal navigation tiles, in two columns on desktop and one on mobile.
+`StudyLink` supplies a full-surface link with a visible arrow, descriptive action, and immediate
+interaction feedback. Research and archive links remain compact. This pattern is for choosing
+a destination; tables retain their existing density. See D-63 for the owner selection.
+
 Use `PageHeader`, `MethodLink`, `SeasonSelector`, `DataTable`, `StatTile`, `StatFigure`, and
 `MessageCard` where their contracts fit. The homepage and Officiating have approved presentation
 exceptions. See [Adding a surface](ADDING_A_SURFACE.md) and its source tests before extending them.

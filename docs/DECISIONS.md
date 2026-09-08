@@ -649,3 +649,15 @@ behavior and ratified coefficients do not change.
 The redesign shipped via PR #84 (`776683e`), followed by the verified Officiating refresh in
 PR #85 (`34b8961`). Current scope: [Frontend](FRONTEND.md); release evidence:
 [redesign review](design/redesign-release-review.md).
+
+### D-63 · Explore uses large navigation tiles — ACTIVE
+
+Owner selected option A on 2026-09-08: six equally weighted study links in two columns on
+desktop and one on mobile. The whole tile is a link, with a visible arrow, descriptive action
+and immediate interaction feedback. Research and the referee archive remain compact links
+below. Implementation uses the existing type and spacing scales. This pattern serves topic
+navigation; it does not replace analytical tables or the rest-focused homepage hierarchy.
+
+A separate [Behind the Data audit](../anti-slop/audit-001-2026-09-08.md) proposes similar topic
+navigation and shorter article introductions with accessible technical detail. Those changes
+remain recommendations pending owner review.
