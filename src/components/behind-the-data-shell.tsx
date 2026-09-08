@@ -45,7 +45,7 @@ export function BehindTheDataShell({ eyebrow, title, description, topic, childre
     <p className="reference-limit"><strong>Keep in mind</strong>{" "}{LIMITS[topic]}</p>
     <details className="reference-contents">
       <summary>On this page</summary>
-      <nav aria-label="On this page">{contents.map((item) => <Link key={item.id} href={`#${item.id}`}>{item.title}</Link>)}</nav>
+      <nav aria-label="On this page">{contents.map((item) => <a key={item.id} href={`/behind-the-data/${topic}#${item.id}`}>{item.title}</a>)}</nav>
       <ReferenceDetails scope={topic} />
     </details>
     <div id="reference-body" className="flex flex-col gap-4">{children}</div>

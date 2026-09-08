@@ -19,8 +19,15 @@ export function ReferenceDetails({ scope }: { scope: string }) {
       target.scrollIntoView({ behavior: "instant", block: "start" });
     };
     const onClick = (event: MouseEvent) => {
-      const link = (event.target as Element).closest?.('a[href^="#"]');
-      if (link) requestAnimationFrame(reveal);
+      if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      const link = (event.target as Element).closest?.(".reference-contents a[href]");
+      if (!link) return;
+      const destination = new URL(link.getAttribute("href")!, location.href);
+      if (destination.origin !== location.origin || destination.pathname !== location.pathname) return;
+      event.preventDefault();
+      // Keep the router's history entry intact for Back after an in-page jump.
+      if (destination.hash !== location.hash) history.pushState(history.state, "", destination);
+      reveal();
     };
     let printState: [HTMLDetailsElement, boolean][] = [];
     const beforePrint = () => {
@@ -30,11 +37,13 @@ export function ReferenceDetails({ scope }: { scope: string }) {
     const afterPrint = () => printState.forEach(([item, open]) => { item.open = open; });
     reveal();
     window.addEventListener("hashchange", reveal);
+    window.addEventListener("popstate", reveal);
     document.addEventListener("click", onClick);
     window.addEventListener("beforeprint", beforePrint);
     window.addEventListener("afterprint", afterPrint);
     return () => {
       window.removeEventListener("hashchange", reveal);
+      window.removeEventListener("popstate", reveal);
       document.removeEventListener("click", onClick);
       window.removeEventListener("beforeprint", beforePrint);
       window.removeEventListener("afterprint", afterPrint);

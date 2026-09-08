@@ -236,7 +236,11 @@ for (const topic of METHOD_ROUTES) {
     await page.getByRole("button", { name: "Collapse technical detail", exact: true }).click();
     await expect(page.locator("#reference-body details[open]")).toHaveCount(0);
     expect(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth)).toBe(false);
-    await page.locator(`.reference-contents a[href="#${id}"]`).click();
+    await page.locator(`.reference-contents a[href$="#${id}"]`).click();
+    await expect(section.locator(":scope > details")).toHaveAttribute("open", "");
+    await page.locator(".reference-contents a").first().click();
+    await page.goBack();
+    await expect(page).toHaveURL(new RegExp(`/behind-the-data/${topic}#${id}$`));
     await expect(section.locator(":scope > details")).toHaveAttribute("open", "");
     await page.getByRole("link", { name: "← All methods", exact: true }).click();
     await expect(page).toHaveURL(/\/behind-the-data$/);
