@@ -33,7 +33,7 @@ def verdict(value):
 
 
 def category(raw):
-    return re.sub(r"\s+", " ", raw.strip())
+    return re.sub(r"\s+", " ", raw.strip()) or "Category not supplied"
 
 
 def build(snapshot, previous=None, crews=None, duplicates=None):
@@ -62,6 +62,12 @@ def build(snapshot, previous=None, crews=None, duplicates=None):
             raise ValueError("Report hash mismatch")
         data = json.loads(raw.decode("utf-8-sig"))
         validate_report(data, gid)
+        if data.get("sourcePdf"):
+            source_hash = hashlib.sha256((snapshot / f"{gid}.pdf").read_bytes()).hexdigest()
+            if source_hash != record.get("source_pdf_sha256") or source_hash != data["sourcePdf"]["sha256"]:
+                raise ValueError("PDF source hash mismatch")
+            if data["sourcePdf"]["url"] != record["report_url"]:
+                raise ValueError("PDF source URL mismatch")
         if not gid.startswith("002"):
             continue
         audit_duplicates(
@@ -79,7 +85,7 @@ def build(snapshot, previous=None, crews=None, duplicates=None):
                     "period": e["PeriodName"],
                     "clock": e["PCTime"],
                     "category": category(e["CallType"]),
-                    "grade": e["CallRatingName"] or "",
+                    "grade": str(e["CallRatingName"] or "").strip(),
                     "verdict": verdict(e.get("Comment")),
                     "video": (
                         f"https://official.nba.com/last-two-minute-report/?gameNo={gid}&eventNum={video}"
@@ -106,7 +112,7 @@ def build(snapshot, previous=None, crews=None, duplicates=None):
             "awayName": meta["Away_team"],
             "missed": sum(e["grade"] == "INC" for e in events),
             "wrong": sum(e["grade"] == "IC" for e in events),
-            "ungraded": sum(not e["grade"] for e in events),
+            "ungraded": sum(e["grade"] in ("", "Undetectable", "NCI", "NCC") for e in events),
             "categories": dict(Counter(e["category"] for e in errors)),
             "source": record["report_url"],
             "sha256": record["sha256"],
@@ -118,6 +124,7 @@ def build(snapshot, previous=None, crews=None, duplicates=None):
             "sha256": record["sha256"],
             "crew": crew,
             "events": events,
+            **({"sourcePdf": data["sourcePdf"]} if data.get("sourcePdf") else {}),
         }
     if not games:
         raise ValueError("No regular-season reports; retain existing published data")
@@ -147,6 +154,7 @@ def build(snapshot, previous=None, crews=None, duplicates=None):
 def main():
     p = argparse.ArgumentParser()
     p.add_argument("snapshots", type=Path, nargs="+")
+    p.add_argument("--duplicate-review", type=Path)
     p.add_argument("--root", type=Path, default=Path("."))
     args = p.parse_args()
     index = args.root / "src/data/officiating.json"
@@ -169,6 +177,8 @@ def main():
             / f"2026-09-06-l2m-{season}-reviewed-duplicates.json"
         )
         duplicates = json.loads(review.read_text()) if review.exists() else {}
+        if args.duplicate_review:
+            duplicates.update(json.loads(args.duplicate_review.read_text()))
         result, details = build(snapshot, seasons.get(season), crews, duplicates)
         seasons[season] = result
         for gid, detail in details.items():

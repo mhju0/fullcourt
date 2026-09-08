@@ -1,4 +1,4 @@
-export type ReviewGrade = "IC" | "INC" | "CC" | "CNC" | "";
+export type ReviewGrade = "IC" | "INC" | "CC" | "CNC" | "Undetectable" | "NCI" | "NCC" | "";
 export interface ReviewGame {
   id: string;
   date: string;
@@ -30,6 +30,9 @@ export const GRADE_LABELS: Record<ReviewGrade, string> = {
   CC: "Correct call",
   CNC: "Correct non-call",
   "": "Not graded",
+  NCC: "NCC (unclassified NBA assessment)",
+  NCI: "NCI (unclassified NBA assessment)",
+  Undetectable: "Undetectable (NBA assessment)",
 };
 export function categoryLabel(category: string) {
   return (

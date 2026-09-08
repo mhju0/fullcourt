@@ -112,6 +112,28 @@ class PublisherTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "hash mismatch"):
                 build(p)
 
+    def test_pdf_evidence_hash_and_url_are_verified(self):
+        with tempfile.TemporaryDirectory() as temp:
+            p = Path(temp)
+            g, raw, manifest = self.fixture(p)
+            pdf = p / f'{g["id"]}.pdf'
+            pdf.write_bytes(b"source fixture")
+            digest = hashlib.sha256(pdf.read_bytes()).hexdigest()
+            raw["sourcePdf"] = {"url": g["source"], "sha256": digest, "parser": "fixture"}
+            body = json.dumps(raw).encode()
+            (p / f'{g["id"]}.json').write_bytes(body)
+            manifest["reports"][0].update(sha256=hashlib.sha256(body).hexdigest(), source_pdf_sha256=digest)
+            (p / "manifest.json").write_text(json.dumps(manifest))
+            build(p)
+            pdf.write_bytes(b"changed source")
+            with self.assertRaisesRegex(ValueError, "PDF source hash mismatch"):
+                build(p)
+            pdf.write_bytes(b"source fixture")
+            manifest["reports"][0]["report_url"] = "https://example.test/changed.pdf"
+            (p / "manifest.json").write_text(json.dumps(manifest))
+            with self.assertRaisesRegex(ValueError, "PDF source URL mismatch"):
+                build(p)
+
     def test_duplicate_assessments_require_review(self):
         with tempfile.TemporaryDirectory() as temp:
             p = Path(temp)

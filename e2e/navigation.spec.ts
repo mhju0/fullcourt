@@ -359,7 +359,6 @@ test.describe("Primary navigation", () => {
     // `exact` (and the label's own casing) since the shell merge: the dock's SEASON REPORT
     // slot also answers a substring "Season" query, and strict mode counts hidden elements
     // when resolving the locator.
-    await page.locator(".games-calendar > summary").click();
     await expect(page.getByLabel("SEASON", { exact: true })).toBeVisible();
     await page.waitForLoadState("networkidle");
     await behind.click();

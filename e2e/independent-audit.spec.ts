@@ -30,7 +30,7 @@ test("schedule facts distinguish four nights and altitude carryover", async ({ r
   await expect(page.getByText(/DET 3rd game in 4 nights/)).toHaveCount(0);
 });
 
-test("mobile games show the first matchup and reveal the selected month", async ({ page }) => {
+test("mobile games keep season, month and date visible", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/games?season=2025-26&date=2026-04-12");
   const first = page.getByRole("button", { name: "Expand game details" }).first();
@@ -38,7 +38,7 @@ test("mobile games show the first matchup and reveal the selected month", async 
   const row = await first.boundingBox();
   const dock = await page.getByRole("navigation", { name: "Bottom navigation" }).boundingBox();
   expect(row!.y + row!.height).toBeLessThanOrEqual(dock!.y);
-  await page.getByText("Change season or date · 2025-26", { exact: true }).click();
+  await expect(page.getByLabel("SEASON", { exact: true })).toBeVisible();
   const april = page.getByRole("button", { name: "APR", exact: true });
   await expect(april).toHaveAttribute("aria-pressed", "true");
   await expect(april).toBeInViewport();

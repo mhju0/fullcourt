@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 export default function ShootingPage() {
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-3 sm:gap-6">
       <header className="page-intro"><PageHeader
         eyebrow="SHOOTING BY REST · eFG%"
         title="Shooting by Rest"
