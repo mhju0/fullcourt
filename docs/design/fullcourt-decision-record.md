@@ -1,9 +1,9 @@
-# FullCourt redesign — decision record and phased brief
+# FullCourt design decisions
 
 Date: 2026-09-07. Source: UI/UX audit (70 questions) + live-site review of fullcourt-nba.vercel.app.
 Owner-approved working direction, reconciled on 2026-09-07 after the follow-up review. These decisions remain revisable by the owner. Approval records design intent, not implementation or deployment completion.
 
-Deployment status was not rechecked for this revision. Officiating is implemented locally; release still requires preview verification. The current implementation checkpoints are recorded below; uncompleted page changes remain planned.
+Implemented and deployed through PRs #84 and #85 on 2026-09-08. The current page map and interaction behavior are in [Frontend](../FRONTEND.md); evidence is in [the release review](redesign-release-review.md). The numbered entries retain the owner's decisions, not a new backlog.
 
 ## 1. Decision record
 
@@ -37,7 +37,7 @@ Deployment status was not rechecked for this revision. Officiating is implemente
 | 17 | Destination organization | By fan question, destination name attached ("Who's rested tonight? → Games") | Audit rec | Home | — |
 | 18 | Changing data on home | All displayed findings derive from the same versioned/generated sources as their destination pages. Print coverage period, denominator, and necessary limitation; do not hand-maintain figures. | Owner-approved follow-up | Home | — |
 | 19 | Primary CTA **[owner]** | Games. During the off-season, the last completed regular-season day has a clear regular-season-complete label and prominent View upcoming season action when available. Explicit URL selection wins. | Owner-approved follow-up | Home | — |
-| — | Finding selection **[owner]** | Historical rest finding + schedule comparison + shooting-by-rest finding. Select defensible results, not the largest noisy player split. | Rest/fatigue identity | Exact figures and copy to validate in mockups |
+| — | Finding selection **[owner]** | Historical rest finding + schedule comparison + shooting-by-rest finding. Select defensible results, not the largest noisy player split. | Rest/fatigue identity | Derived from published sources in `home-findings.ts` |
 
 ### D. Visual
 | # | Decision | Chosen direction | Reason |
@@ -84,7 +84,7 @@ Deployment status was not rechecked for this revision. Officiating is implemente
 | # | Decision | Chosen direction | Still unresolved |
 |---|---|---|---|
 | 49 | Five-moment budget | Remains governing | — |
-| 50 | Keyboard bypass | Keyboard-initiated navigation skips cross-fade. Preserve native semantics: Enter activates links; Space activates buttons, not ordinary links. | Policy doc update |
+| 50 | Keyboard bypass | Keyboard-initiated navigation skips cross-fade. Preserve native semantics: Enter activates links; Space activates buttons, not ordinary links. | Implemented |
 | 51 | Detail expansion | Instant (Games, Playoff Rest); fixes reduced-motion defect | — |
 | 52 | Playoff hover lift | Removed; bg/border change instead | — |
 | 53 | Homepage reveal | One brief hero entrance, at most 600ms total; remaining homepage content visible without scroll reveals. No motion under reduced motion. No first-visit tracking. | — |
@@ -114,193 +114,14 @@ Deployment status was not rechecked for this revision. Officiating is implemente
 | 69 | Sharing | Stable links only; exportable graphics later |
 | 70 | Success evidence | New reader: find a game, explain the main metric, name its limitation, reach the source — unaided |
 
-## 2. Page ownership and homepage structure
 
-Each analysis has one home. Shared controls, essential baselines and samples, contextual links,
-and short homepage previews are allowed; duplicate analytical sections and tables are not.
+## Implementation refinements
 
-| Content | Owner | Treatment |
-| --- | --- | --- |
-| Individual matchups, rest gaps, status, workload breakdown | Games | Date controls and matchup information first |
-| Net edge ranking, favorable/unfavorable games, schedule worth | Schedule Edge | Relative advantages; full breakdown behind a deliberate action |
-| Schedule Tax: travel, back-to-backs, dense stretches, modeled time-zone penalties | Schedule Edge | Move from Season Report; call section Schedule demands or Travel and workload |
-| Weekly fatigue calendar | Schedule Edge | Workload over time, clearly separated from outcomes and projections |
-| Season rest results and comparison with history | Season Report | Completed regular-season games only; venue baseline and uncertainty visible |
-| Team rest-conversion records | Season Report | Descriptive records, not rankings of fatigue management |
-| Largest completed rest gaps and actual results | Season Report | Small transparent selection, losses included; link to Games for details |
-| Zero-rest player workload | Player Shooting | Supporting player context; remove duplicated Season Report leaderboard |
-| Full historical thresholds, season charts, backtest | Model Results | Historical evaluation owns its full presentation |
+Shooting uses the owner-selected option A: signed red/green tint on difference cells only,
+bounded at ±10 percentage points; uncertain estimates stay muted. Full-row color and bar
+variants were rejected. Season Report initially shows six team records and five largest
+completed rest gaps including losses. Schedule Edge owns travel/workload and the completed-game
+fatigue calendar; Shooting owns the zero-rest player workload disclosure.
 
-Schedule burden and relative advantage are distinct: playing a back-to-back is a demand;
-playing it against a rested opponent creates a relative disadvantage. Avoid stacking two full
-30-team tables by default. Do not assume every moved metric is already exposed by Schedule Edge.
-Published fixtures, measured-to-date fatigue, and projections must retain separate labels and
-provenance. A moved chart does not acquire future coverage. Before games begin, Season Report
-shows one awaiting-results state and links to the previous report and upcoming schedule.
-
-Homepage order: Rest is a stat hero + Games CTA; one historical rest finding against its venue
-baseline; two supporting schedule and shooting-by-rest findings; compact Explore further link;
-footer. No repeated formula exposition. Brand story moves to About. Playoff workload is an
-eligible seasonal rest-related feature. Availability is adjacent context; Officiating, shot-location
-value, and referee folklore stay in Explore/other studies, outside the main homepage findings.
-
-## 3. Phased implementation brief
-
-### Phase 0 — Reconcile specifications and prepare release
-- Preserve `/referees` redirect to `/officiating`; archive remains `/behind-the-data/referees/archive`.
-- Rename product-facing references selectively; preserve distinct historical research titles.
-- Verify the Officiating preview before any production merge; no deployment is implied here.
-- Ratify motion rules before implementation: instant keyboard actions and detail expansion,
-  no playoff hover lift, brief hero entrance only, complete reduced-motion suppression.
-
-### Phase 1 — Repair confirmed defects
-- Player-name column collapse; methodology semantic headings and badge clipping.
-- Games and playoff expansion/reduced-motion compliance; crowded chart tick labels.
-- Touch/keyboard shot-value inspection with a selected-value readout.
-- Keep changes scoped; verify actual content, not only document overflow.
-
-### Phase 2 — Approve representative mockups
-- Homepage, Games, Season Report, Schedule Edge, Player Shooting, Shot Value, Behind the Data.
-- Confirm first-screen priorities, readable mobile comparisons and samples, navigation, filters,
-  and data scope before site-wide changes. Officiating is a reference, not a universal template.
-
-### Phase 3 — Implement approved hierarchy and shared patterns
-- Navigation and Explore; shortened homepage and About; content moves according to ownership.
-- Games desktop/mobile hierarchy and off-season actions; Schedule Edge breakdown expansion.
-- Model Results answer/explorer sections; Availability technical-detail expansion; Officiating jump link.
-- Typography, three spacing densities, neutral reference headers, semantic control states,
-  recognizable team marks, URL state, contextual freshness, and footer timestamp removal.
-- Apply motion policy during component changes, not as a late cleanup phase.
-
-### Phase 4 — Verify and release
-- Desktop/mobile, keyboard, reduced motion, rapid actions, Back/reload/share, loading/error/empty,
-  future-season scope, and data samples/baselines. Review preview before merge.
-
-### Separate future scope
-- Exportable graphics and universal search only if separately requested.
-- Upcoming rest-edge projections require verified data support; existing schedule navigation is
-  part of this redesign, not a deferred new feature.
-- No account/personalization work and no planned Season Report/Schedule Edge merger.
-
-## 4. Implementation checkpoint — 2026-09-07
-
-The initial defect pass is implemented locally: Player Shooting table minimum width prevents
-name/team overlap; Games and playoff details/chevrons are instant; playoff hover lift is removed;
-keyboard links and palette choices skip cross-fades; methodology sections have anchored h2
-headings and wrapping descriptors; season-chart tick candidates are limited to six; Shot Value
-has pointer selection, one native keyboard slider per court, and a visible measured-value readout.
-The compact mobile Shooting comparison, homepage/navigation changes and page-content moves remain
-in the representative-mockup/hierarchy phases. Nothing was pushed, merged or deployed.
-
-Validation: 945 unit tests passed; targeted browser suites passed (60-test run plus 11-test
-follow-up, with overlap); lint and typecheck passed; production build and production dependency
-audit passed. Mobile screenshots were inspected. Browser tests cover player-column geometry,
-reduced-motion expansion, methodology heading/clipping, shot inspection, and keyboard navigation.
-Physical-device and screen-reader testing remain release checks; automation does not replace them.
-
-## 5. Representative mockups — ready for review, 2026-09-07
-
-Seven responsive mockups plus supporting navigation are in `docs/design/rest-focused-mockups/`.
-Open `review.html` for explicit 1280px/390px viewing or `index.html` for individual pages.
-The homepage is 1,428px tall at the checked desktop width. Data snapshots, scope notes,
-screenshots, and verification results accompany the artifacts. Mockup composition has not yet
-been owner-reviewed; product route restructuring remains unimplemented. No deployment occurred.
-
-## 6. Shooting density amendment — 2026-09-07
-
-Owner requested a denser Shooting by Rest data table; the other mockups looked good at a glance.
-Use aligned compact rows, with player/team, both rest-split rates and attempt counts, and the
-percentage-point difference visible on mobile. Desktop can include games, total attempts and
-overall eFG%. Do not use vertically spacious player blocks. The revised standalone mockup has
-20 real sample rows, sorting and search. This is a composition revision, not application integration
-or final approval of every other page. Other mockups are unchanged.
-
-## 7. Shooting color selection — 2026-09-07
-
-Owner selected A: tinted difference cells, with green for positive differences and red for
-negative. Color intensity follows magnitude; near-zero differences are very light. Preserve
-signed numbers and the quieter uncertainty marker, with player identity, shooting rates and
-attempt counts neutral. B (centered bars) is rejected; C (row gradient) is not selected.
-This palette exception applies to Shooting by Rest, not Officiating or other site surfaces.
-The main standalone mockup now uses A; application integration remains separate.
-
-
-## 8. Shooting application integration — 2026-09-07
-
-Implemented locally after “let’s keep going”: dense responsive table, A tinted difference
-cells, fixed ±10 pp color cap, quieter uncertainty markers, keyboard player expansion and
-filter-empty guidance. Existing season/career data, filters and player URLs are preserved.
-This integrates `/shooting` only; the remaining page compositions are still mockups. No deployment.
-
-
-## 9. Homepage and research destinations — 2026-09-07
-
-Implemented locally after the owner's request to continue: short rest-focused homepage,
-real-source historical and schedule previews, player-coverage preview, `/about` brand story,
-and `/explore` research directory. Removed the `/about` redirect and footer render timestamp.
-The homepage is server-rendered with one 450ms hero entrance and no scroll reveals; reduced
-motion is static. Shared navigation and the remaining page-content moves are next. Not deployed.
-
-Validation: 957 unit tests, nine homepage browser tests, About navigation and both new
-page-header checks passed. Desktop/mobile axe scans for all three pages found no violations.
-Lint, typecheck, production build and production dependency audit passed. Desktop homepage
-height is approximately 1,630px. Screenshots are in `docs/screenshots/home-rest-focused-*.png`.
-
-
-## 10. Shared navigation — 2026-09-07
-
-Implemented locally: Games / Season Report / Schedule Edge / Explore on both desktop and
-mobile, with shorter visible mobile labels and full accessible names. Explore carries parent
-selection on its analyses. The former OTHER menu and mobile Model/Search slots are removed.
-Jump to page in the footer and ⌘K / Ctrl+K open the lazy palette. No new motion or personalization.
-Next: Games hierarchy and off-season behavior, then the remaining page-content moves. Not deployed.
-
-Navigation verification: 959 unit tests, 34 navigation/control browser tests and two additional
-Explore reachability tests passed. Six desktop/mobile axe scans found no violations. Lint,
-typecheck, production build and dependency audit passed. Only the current FullCourt server on
-3110 remains listening; obsolete 3107 and 3112 servers are stopped.
-
-
-## 11. Games hierarchy integration — 2026-09-07
-
-Implemented locally: date controls and matchups lead; selected-slate summaries and Edges Ahead
-sit in a 260px right column on wide desktop and follow matchups on mobile. Games defaults to the
-current/completed evidence season, while upcoming edge discovery retains its schedule-facing
-season. The upcoming season is offered only after its date endpoint returns games. Completion
-copy explicitly says regular season; the final-slate label appears only on the final date.
-Loading counts use a dash. Density is URL-addressable without localStorage; keyboard changes
-are instant and pointer changes retain the existing reduced-motion-aware transition.
-
-Pending: season/date URL restoration and browser-history behavior, followed by the Season Report /
-Schedule Edge content separation. No deployment.
-
-
-## 12. Games URL integration — 2026-09-08
-
-Games now shares `season`, `date`, and `view` in the URL. Explicit links take precedence over
-season defaults; date-only links infer a season. Invalid dates fall back safely, while valid
-no-game dates remain selected. User navigation creates history entries; automatic date selection
-replaces the current entry. Back/forward restores the slate without scrolling or animation.
-The season control waits for URL initialization before accepting input, preventing an early
-selection from being overwritten. Aborted calendar responses cannot replace the current season.
-
-Next: implement the approved Season Report / Schedule Edge content separation. Local only.
-
-
-## 13. Completed hierarchy integration — 2026-09-08
-
-The approved page ownership is implemented: Season Report owns completed results, team records,
-and five largest completed rest gaps (wins and losses); Schedule Edge owns the ranking, worth,
-travel/workload disclosure, and completed-game fatigue calendar. Zero-rest player workload now
-belongs to Shooting. Six team records are shown initially, with the remaining teams expandable.
-
-Shared season links and fallback notices preserve valid context across Games, Season, and
-Schedule. Shooting URLs preserve year, volume, team, position, uncertainty, sort, query, and
-expanded player. Mobile Games exposes rest advantage without horizontal scrolling. Model Results
-has answer/explorer anchors, Availability collapses coefficients, mobile Shot Value offers one
-court plus Compare models, Officiating links directly to game reviews, and methodology pages
-have compact topic navigation and local contents. No accounts or stored personal preferences.
-
-See [the release review](redesign-release-review.md) for design rationale and scope.
-The owner authorized verification and deployment on 2026-09-08. Exportable graphics, universal
-search, and new analytics remain separate future scope, as agreed. No coefficient or schema change.
+The final page map and source paths live in [Frontend](../FRONTEND.md). Old mockups and phased
+checkpoints were removed after delivery; Git snapshot `34b8961` preserves the exploration.

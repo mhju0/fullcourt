@@ -1,0 +1,23 @@
+{
+  "games": {
+    "source": "https://fullcourt-nba.vercel.app",
+    "route": "/games?season=2024-25&date=2024-12-25",
+    "width": 1280,
+    "height": 1033,
+    "capturedAt": "2026-09-08T06:02:18.602Z"
+  },
+  "shooting": {
+    "source": "https://fullcourt-nba.vercel.app",
+    "route": "/shooting",
+    "width": 1280,
+    "height": 1490,
+    "capturedAt": "2026-09-08T06:02:19.208Z"
+  },
+  "officiating": {
+    "source": "https://fullcourt-nba.vercel.app",
+    "route": "/officiating",
+    "width": 1280,
+    "height": 1384,
+    "capturedAt": "2026-09-08T06:02:19.730Z"
+  }
+}

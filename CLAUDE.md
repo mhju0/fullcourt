@@ -1,4 +1,8 @@
-# FullCourt
+# FullCourt — historical Claude project brief
+
+> Historical harness material. The active repository contract is [AGENTS.md](AGENTS.md);
+> current implementation guidance starts at [docs/README.md](docs/README.md).
+> This retained brief is not an up-to-date product inventory. Harness migration is separate work.
 
 Versions, counts, model figures, and env vars have a source of truth in the code and are kept
 out of this file. Trust the code over this file, and fix this file when they disagree.
@@ -34,9 +38,9 @@ on 2026-08-22 (see the note where its ban used to be). Status and phase history 
 docs, not here:
 
 - [docs/ROADMAP.md](docs/ROADMAP.md) — project status, shipped modules, ongoing operational work
-- [docs/PLAYOFF_PREDICTOR_DESIGN.md](docs/PLAYOFF_PREDICTOR_DESIGN.md) — Playoff Predictor design
+- [docs/PLAYOFF_PREDICTOR_DESIGN.md](docs/archive/PLAYOFF_PREDICTOR_DESIGN.md) — Playoff Predictor design
   and build record, the single source of truth for that module
-- [docs/SHOT_QUALITY_DESIGN.md](docs/SHOT_QUALITY_DESIGN.md) — Shot Quality, SQ-0 … SQ-7
+- [docs/SHOT_QUALITY_DESIGN.md](docs/archive/SHOT_QUALITY_DESIGN.md) — Shot Quality, SQ-0 … SQ-7
 - [docs/adr/](docs/adr/) — the accepted decisions. Read the relevant one before reopening a
   question it already settled.
 

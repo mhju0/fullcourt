@@ -64,7 +64,7 @@ playoff entry rest; they are not series-model targets.
 **Result:** it **lost to the zone baseline** — an honest negative, recorded rather than buried.
 **Superseded (SQ-4b):** a GBM beat the zone baseline by 0.81% log-loss and became the shipped
 model.
-*Evidence:* `docs/SHOT_QUALITY_DESIGN.md`; **(conversation-only)** for the SQ-4 loss.
+*Evidence:* `docs/archive/SHOT_QUALITY_DESIGN.md`; **(conversation-only)** for the SQ-4 loss.
 
 ### D-07 · Git history was reportedly rewritten to strip Claude trailers — **SUPERSEDED**
 The historical record describes a `filter-branch` rewrite on 2026-07-27. The procedure itself
@@ -424,7 +424,7 @@ when additional context is needed. Formal ADRs retain detailed rationale, interp
 current source, tests and Git evidence.
 
 Track a minimal root `AGENTS.md` and the handoff documents. `CLAUDE.md` is historical evidence;
-`CLAUDE_ENV_INVENTORY.md` is an archive. Do not inherit or migrate Claude global instructions,
+`docs/archive/CLAUDE_ENV_INVENTORY.md` is an archive. Do not inherit or migrate Claude global instructions,
 skills, MCP servers, hooks, subagents or preferences without an explicit owner request. The
 reviewer-only commit `51588c4` is abandoned; takeover work starts from `origin/main` on a fresh
 branch, preserving the local documentation.
@@ -499,7 +499,7 @@ The audit found keyboard focus resets and mobile targets smaller than 44px despi
 axe and document-overflow checks. Keep the shared focus indicator outside CSS layers so
 component utilities cannot erase it; apply the touch target floor below the mobile navigation
 breakpoint. The new browser checks measure the actual focused controls and target boxes.
-See `anti-slop/audit-001-2026-09-06.md` and `e2e/control-accessibility.spec.ts`.
+See `34b8961:anti-slop/audit-001-2026-09-06.md` and `e2e/control-accessibility.spec.ts`.
 
 ---
 
@@ -520,7 +520,7 @@ ADRs, pre-registrations, analysis reports, and design explorations remain record
 original decisions. This clarification governs current explanations without changing model
 coefficients, thresholds, generated analytics, or publication eligibility.
 
-Evidence: `anti-slop/audit-002-2026-09-06.md`, `src/app/behind-the-data/`,
+Evidence: `34b8961:anti-slop/audit-002-2026-09-06.md`, `src/app/behind-the-data/`,
 `src/components/referee-effect-content.tsx`, `ml/ablate_fatigue_terms.py`.
 
 ---
@@ -577,97 +577,40 @@ This expands the evidence base without committing to a product presentation.
 
 ---
 
-### D-59 · Officiating v1 mockup direction — APPROVED FOR DESIGN
+### D-59 · Officiating presentation — ACTIVE
 
-**2026-09-07.** Owner approved standalone desktop (1280px) and mobile (390px) mockups:
-league-wide missed-error share hero, split bar, scrollable season strip, subordinate three-season
-errors-per-reviewed-game context, games-first browser with call-type and team filters, in-place
-report detail, and NBA verdict quotations. Blue denotes missed calls; gray denotes incorrect
-whistles. The existing referee foul-pattern table is excluded from v1. No new motion.
+Owner approved the games-first L2M explorer, a league-wide missed-call-share hero, directly
+labeled blue/gray split, subordinate season comparison, and source verdicts inside each game.
+The claim is share of identified errors, never whistle accuracy. Filters do not alter the
+league-wide hero. Team-only filters retain clean games; error-category filters select matching
+errors. Future seasons need real data, not invented bar heights. No new animation.
 
-The hero states only the share of identified errors, not whistle accuracy. Browser filters do
-not alter league-wide figures. Clean games remain under team-only filters, but specific error
-categories exclude them. More than six seasons keep visible labels in a scrollable strip;
-unsupplied seasons have empty slots, never invented heights. Mockup edge states sit in a
-separate gallery. Expansion preserves the selected row and filters while later rows reflow.
+### D-60 · Officiating publication and research archive — ACTIVE
 
-Deliverables: `docs/design/officiating-mockups/{desktop.html,mobile.html,NOTES.md}`.
-All unsupplied game content is explicitly placeholder content. This decision authorizes mockups,
-not replacement of the live `/referees` page or deployment of an `/officiating` route.
+The implementation publishes validated regular-season source snapshots and loads individual
+reports on expansion. Failed or incomplete collection cannot replace published data. Previous
+referee studies remain at `/behind-the-data/referees/archive`; `/referees` redirects to
+`/officiating`. Review a preview before publication. Actions prepares a comparison link when
+repository policy blocks bot-created PRs. See [Officiating operations](OFFICIATING.md).
 
----
+### D-61 · Rest-focused homepage and distinct page ownership — ACTIVE
 
-### D-60 · Officiating implementation and research archive — APPROVED
+Homepage findings concern rest/fatigue/schedule; brand story lives at About and secondary
+studies at Explore. Games owns matchups, Season Report completed outcomes, Schedule Edge
+schedule demands and advantages, and Model Results historical evaluation. Desktop and mobile
+share Games / Season Report / Schedule Edge / Explore. The page palette remains in the footer
+and keyboard shortcut. There are no accounts or stored personal preferences; URLs retain
+exploration context.
 
-**2026-09-07.** Owner approved replacing `/referees` with `/officiating`, regular-season-only
-v1, daily collection including source revisions, errors-first details with all assessed plays
-available, external NBA video links, share URLs retaining all filters and the selected game,
-and a compact archive link preserving the earlier research. `/referees` permanently redirects;
-`/behind-the-data/referees/archive` preserves the former page and its facts.
+Shooting uses dense comparison rows with attempt counts and option A's signed red/green tint
+in difference cells only, capped visually at ±10 percentage points. Uncertain differences
+stay muted. The homepage has one 450ms CSS hero entrance; other content needs no scroll reveal.
+Keyboard and repeated interactions are immediate. The full numbered owner decisions are in
+[the design record](design/fullcourt-decision-record.md).
 
-The implementation uses generated static data, not a new database schema. The daily workflow
-prepares update PRs rather than bypassing the existing preview-before-main deployment rule.
-It rejects incomplete snapshots and removed previously published IDs, retains source hashes,
-and labels unavailable assignments. Raw refresh evidence is retained as workflow artifacts for
-90 days. Collection and publication dates are distinguished in the UI and method page.
-No live publication, push, or merge was performed by this implementation pass.
-
----
-
-### D-61 · Rest-focused homepage and separate page ownership — APPROVED DIRECTION
-
-**2026-09-07.** Owner approved the reconciled design direction in
-[`design/fullcourt-decision-record.md`](design/fullcourt-decision-record.md).
-Homepage focuses on rest, fatigue, schedule comparisons, and shooting by rest; other basketball
-studies remain in Explore. Retain separate Games, Season Report, Schedule Edge, and Model Results.
-Schedule Edge owns calendar demands, schedule worth and the fatigue calendar; Season Report owns
-completed regular-season outcomes, team rest-condition records and notable completed games.
-Player Shooting owns zero-rest player workload. Each analysis has one home; contextual links,
-essential baselines and short homepage previews are allowed. No planned season-hub merger.
-
-No accounts or personalization; meaningful URL state remains supported. Retain recognizable team
-marks in daily tools and monochrome Officiating. Apply readable mobile samples and inputs,
-instant keyboard actions and expansions, no playoff lift, and only a brief homepage hero entrance.
-Preserve the five-moment ceiling: removing motion does not authorize replacement decoration.
-Mockup review precedes site-wide hierarchy changes. These are approved plans, not claims of
-implementation or deployment. D-60 route/archive contracts remain unchanged.
-
----
-
-**D-61 amendment, 2026-09-07:** Owner prefers a dense Shooting by Rest table over spaced
-player blocks. Compact mobile rows must preserve player identity, both split percentages and
-attempt counts, and their difference; desktop retains secondary statistical columns. The revised
-mockup demonstrates this direction. Other mockups received positive first impressions, not a
-request to change them or a claim of production integration.
-
----
-
-**D-61 color amendment, 2026-09-07:** Owner selected A for Shooting by Rest: magnitude-based
-green/red tint in difference cells only, signed values and quiet uncertainty markers preserved.
-Names, rates and samples remain neutral. Centered bars and full-row gradients are not selected.
-The main standalone mockup uses this approved direction. Following the owner’s “keep going,”
-the dense table and A treatment are integrated locally into `/shooting` (2026-09-07),
-including season/career browsing, responsive samples and keyboard expansion. The tint uses
-one fixed ±10 pp cap across season and career views; numbers are not capped. Not deployed.
-Other surface palettes, including Officiating blue/gray, remain as approved.
-
----
-
-**D-61 homepage integration, 2026-09-07:** Following the owner's request to continue,
-the rest-focused homepage is implemented locally with live-source historical and schedule
-previews. Brand content moves to `/about` (temporary redirect removed), and `/explore` becomes
-a working research directory. The homepage is server-rendered, with a single 450ms hero
-entrance and no scroll reveals. The global render timestamp is removed; coverage remains
-beside findings. Existing shared navigation remains unchanged pending its separate integration.
-Nothing is deployed. Numerical comparisons preserve missing-vs-zero and measured-vs-calendar scope.
-
----
-
-**D-61 navigation integration, 2026-09-07:** Desktop and mobile now share Games, Season Report,
-Schedule Edge and Explore. The OTHER menu and mobile Model/Search slots are removed. Explore
-remains marked as the parent location on its analytical pages; methodology keeps the Reference
-link. The lazy page palette remains reachable through the keyboard shortcut and a footer button,
-including all analyses and About. No new motion or personal state. Implemented locally, not deployed.
+These decisions shipped in PR #84 (`776683e`), followed by the verified source refresh in
+PR #85 (`34b8961`). [Release review](design/redesign-release-review.md) records validation.
+Original exploration and intermediate checkpoints remain in Git snapshot `34b8961`.
 
 ---
 
@@ -687,45 +630,22 @@ including all analyses and About. No new motion or personal state. Implemented l
 | **Playwright stays outside the commit gate and out of CI** | ACTIVE | Needs a server and a populated DB. Run by hand when a route or header copy moves. |
 | **No LICENSE file; `"license": "UNLICENSED"`** | ACTIVE | Owner's standing rule. Do not raise licensing unprompted. |
 | **Month/day chip fade on `/games`** | DEFERRED | Adopt only if the nav's edge fade proves itself on a real device. |
-| **The `seed-season` path in `daily-update.yml`** | ABANDONED (retained) | Known broken; kept because it costs nothing. |
-| **`docs/PLAYOFF_PREDICTOR_DESIGN.md` §7's seven "open questions"** | UNKNOWN | Most were answered by the build and the section was never updated. Design history, not a backlog — do not promote into the roadmap. |
+| **The legacy `seed-season` path in `daily-update.yml`** | RETAINED | Depends on NBA API reachability; historical failures are not proof of present reachability. Prefer the documented hoopR/ESPN paths and verify the chosen provider before writing. |
+| **`docs/archive/PLAYOFF_PREDICTOR_DESIGN.md` §7's seven "open questions"** | UNKNOWN | Most were answered by the build and the section was never updated. Design history, not a backlog — do not promote into the roadmap. |
 
 
-### Games integration checkpoint — 2026-09-07
 
-Date controls and matchups now precede summaries in document/mobile order; desktop uses a right
-summary column. The off-season default is the completed regular season, and the upcoming season
-is offered after confirming its schedule exists. Density is URL-only, with instant keyboard
-changes. Season/date URL restoration was completed on 2026-09-08; Season Report / Schedule Edge
-content separation is next. Local changes only; see design decision record section 11.
+### D-62 · Current documentation has one home — ACTIVE
 
+Owner requested a repository-wide cleanup after deployment on 2026-09-08. Current references
+are updated in place; roadmaps contain remaining work, handoffs summarize present state, and
+this ledger preserves rationale. Research artifacts and ADR amendments remain reproducible.
+Superseded UI mockups, completed task plans, intermediate audits, and duplicate screenshots
+are removed from the working tree and remain in Git. Historical model/harness designs live in
+`docs/archive/` with explicit status labels. `.gitignore` separates local caches and credentials
+from reproducibility inputs and published data. The unused GSAP dependency is removed; runtime
+behavior and ratified coefficients do not change.
 
-### Games URL integration — 2026-09-08
-
-Games now shares `season`, `date`, and `view` in the URL. Explicit links take precedence over
-season defaults; date-only links infer a season. Invalid dates fall back safely, while valid
-no-game dates remain selected. User navigation creates history entries; automatic date selection
-replaces the current entry. Back/forward restores the slate without scrolling or animation.
-The season control waits for URL initialization before accepting input, preventing an early
-selection from being overwritten. Aborted calendar responses cannot replace the current season.
-
-Next: implement the approved Season Report / Schedule Edge content separation. Local only.
-
-
-## Rest-focused redesign integration — 2026-09-08
-
-The approved page ownership is implemented: Season Report owns completed results, team records,
-and five largest completed rest gaps (wins and losses); Schedule Edge owns the ranking, worth,
-travel/workload disclosure, and completed-game fatigue calendar. Zero-rest player workload now
-belongs to Shooting. Six team records are shown initially, with the remaining teams expandable.
-
-Shared season links and fallback notices preserve valid context across Games, Season, and
-Schedule. Shooting URLs preserve year, volume, team, position, uncertainty, sort, query, and
-expanded player. Mobile Games exposes rest advantage without horizontal scrolling. Model Results
-has answer/explorer anchors, Availability collapses coefficients, mobile Shot Value offers one
-court plus Compare models, Officiating links directly to game reviews, and methodology pages
-have compact topic navigation and local contents. No accounts or stored personal preferences.
-
-See [the release review](design/redesign-release-review.md) for design rationale and scope.
-The owner authorized verification and deployment on 2026-09-08. Exportable graphics, universal
-search, and new analytics remain separate future scope, as agreed. No coefficient or schema change.
+The redesign shipped via PR #84 (`776683e`), followed by the verified Officiating refresh in
+PR #85 (`34b8961`). Current scope: [Frontend](FRONTEND.md); release evidence:
+[redesign review](design/redesign-release-review.md).

@@ -13,9 +13,9 @@ PostgreSQL column** (with the Drizzle field name in parentheses where they diffe
 ## Conventions
 
 - Engine: **Supabase PostgreSQL**, accessed two ways:
-  - server/pipeline via **postgres-js + Drizzle** using `DATABASE_URL` (service role);
+  - server/pipeline via **postgres-js + Drizzle** using the server credentials in `DATABASE_URL`;
   - browser via **supabase-js** Realtime using the anon key.
-- All four app tables use a `serial` integer **primary key** named `id`.
+- The four original base tables use a `serial` integer **primary key** named `id`.
 - `date` columns are SQL `date` (stored/queried as `YYYY-MM-DD` strings).
 - `decimal` columns come back from postgres-js as **strings** and are `parseFloat`-ed in
   `queries.ts` (e.g. `score`, `latitude`, multipliers).
@@ -214,7 +214,7 @@ row per game (`selectDistinctOn` on `game_id`).
 ## Table: `playoff_series` (Playoff Predictor)
 
 One row per playoff **series** — the modeling unit for the Playoff Predictor module (design:
-[PLAYOFF_PREDICTOR_DESIGN.md](PLAYOFF_PREDICTOR_DESIGN.md); status: [ROADMAP.md](ROADMAP.md)).
+[PLAYOFF_PREDICTOR_DESIGN.md](archive/PLAYOFF_PREDICTOR_DESIGN.md); status: [ROADMAP.md](ROADMAP.md)).
 **Additive and isolated:** no regular-season query reads it. Per-game playoff rows still live in
 `games` (tagged `playoffs`/`finals`/`play_in`); this table is **derived** from them in two passes —
 the series skeleton (`ml/build_series_dataset.py`, round/winner/`is_best_of_7`/conference) and the
@@ -332,7 +332,7 @@ Model-output surface: predicted make probability / expected efficiency per grid 
 per `(season, cell_x, cell_y, model_version)`. **Not declared in `schema.ts`**; created by
 `drizzle/0008_shot_quality_grid.sql`; written by `scripts/sq5_write_surface.py` (SQ-5) from a
 model trained on the **full** season range (not a single walk-forward fold — see
-[SHOT_QUALITY_DESIGN.md](SHOT_QUALITY_DESIGN.md) §8); read by
+[SHOT_QUALITY_DESIGN.md](archive/SHOT_QUALITY_DESIGN.md) §8); read by
 `src/lib/db/queries.ts::getShotQualityGrid`, which LEFT JOINs this table twice (once per
 `model_version`) onto `shot_grid`.
 

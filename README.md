@@ -4,7 +4,7 @@
 
 # FullCourt
 
-NBA analytics for rest, travel, and schedule density, checked against games since 1985-86.
+NBA rest and schedule findings, player shooting splits, and source-linked officiating reports.
 
 [![CI](https://github.com/mhju0/fullcourt/actions/workflows/ci.yml/badge.svg)](https://github.com/mhju0/fullcourt/actions/workflows/ci.yml)
 [![Daily NBA Update](https://github.com/mhju0/fullcourt/actions/workflows/daily-update.yml/badge.svg)](https://github.com/mhju0/fullcourt/actions/workflows/daily-update.yml)
@@ -42,12 +42,12 @@ explains the calculations and publishes results that did not support a measurabl
 
 ## Screenshots
 
-These captures illustrate the interface at the time they were taken. Use the live pages for
-current data and controls.
+Captured from the deployed application; [capture provenance](docs/screenshots/manifest.json).
+Live pages carry the latest data.
 
 <img src="docs/screenshots/games.png" alt="Games board with season and date controls above the matchup table." width="900" />
 
-<img src="docs/screenshots/analysis.png" alt="Rest-advantage results compared with venue baselines, with sample sizes and threshold charts." width="900" />
+<img src="docs/screenshots/shooting.png" alt="Compact player shooting table with both rest splits, attempt counts, and signed difference cells." width="900" />
 
 <img src="docs/screenshots/officiating.png" alt="Officiating page showing the missed-call share, three-season context, and a games-first report browser." width="900" />
 
@@ -85,18 +85,18 @@ flowchart TD
 
 The fatigue engine in `src/lib/fatigue.ts` computes scores on the write path. Pages read the
 stored results. Other analyses use dedicated queries or generated artifacts; player shooting,
-availability, and referee results do not require their own runtime database queries.
+availability, and Officiating use published artifacts. Officiating loads report details on demand.
 
 | Layer | Implementation |
 | --- | --- |
-| Interface | Next.js 16, React 19, TypeScript, Tailwind CSS v4, Base UI, Recharts, SWR; GSAP on the front page |
+| Interface | Next.js, React, TypeScript, Tailwind CSS, Base UI, Recharts, SWR; CSS motion |
 | Data access | Next.js route handlers, Zod, Drizzle ORM, postgres-js, Supabase PostgreSQL |
 | Ingest and analysis | Python and TypeScript scripts; scikit-learn models run offline |
 | Checks | Vitest, Playwright, Python contracts |
 | Hosting and scheduled jobs | Vercel and GitHub Actions |
 
-See [Architecture](docs/ARCHITECTURE.md), [Data Pipeline](docs/DATA_PIPELINE.md), and
-[Testing and CI/CD](docs/TESTING_AND_CICD.md) for implementation details.
+Start at the [documentation index](docs/README.md) for architecture, operations, reproducibility,
+and release verification. No accounts or login are needed; selected views can be shared by URL.
 
 ## Run locally
 
@@ -140,8 +140,8 @@ server, set `PLAYWRIGHT_BASE_URL`. Python requirements and contract-test command
 | `ml/` | Offline analyses, reports, and pre-registrations |
 | `src/data/`, `public/data/` | Generated analytics artifacts |
 | `drizzle/` | SQL for manual application |
-| `docs/` | Current documentation, decisions, and historical design records |
-| `anti-slop/` | Project-local review skills and audit reports |
+| `docs/` | [Current documentation index](docs/README.md), decisions, and clearly labeled research history |
+| `anti-slop/` | Project-local review guidance; completed intermediate audits are retained in Git |
 
 ## Credits and license
 
