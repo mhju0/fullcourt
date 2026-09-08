@@ -1,23 +1,26 @@
 {
   "games": {
-    "source": "https://fullcourt-nba.vercel.app",
-    "route": "/games?season=2024-25&date=2024-12-25",
-    "width": 1280,
-    "height": 1033,
-    "capturedAt": "2026-09-08T06:02:18.602Z"
+    "source": "local production build",
+    "commit": "866c586b9ff9f06a47663ffb9242959a911c2f04",
+    "route": "/games?season=2025-26&date=2026-04-12&view=deep",
+    "width": 1440,
+    "height": 900,
+    "capturedAt": "2026-09-08T16:41:37.247099+00:00"
   },
   "shooting": {
-    "source": "https://fullcourt-nba.vercel.app",
+    "source": "local production build",
+    "commit": "866c586b9ff9f06a47663ffb9242959a911c2f04",
     "route": "/shooting",
-    "width": 1280,
-    "height": 1490,
-    "capturedAt": "2026-09-08T06:02:19.208Z"
+    "width": 1440,
+    "height": 900,
+    "capturedAt": "2026-09-08T16:41:38.912079+00:00"
   },
   "officiating": {
-    "source": "https://fullcourt-nba.vercel.app",
+    "source": "local production build",
+    "commit": "866c586b9ff9f06a47663ffb9242959a911c2f04",
     "route": "/officiating",
-    "width": 1280,
-    "height": 1384,
-    "capturedAt": "2026-09-08T06:02:19.730Z"
+    "width": 1440,
+    "height": 900,
+    "capturedAt": "2026-09-08T16:41:37.708158+00:00"
   }
 }

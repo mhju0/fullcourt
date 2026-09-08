@@ -64,7 +64,7 @@ study, exclusions, amendments, and authorization boundary are in
 | Previous-round workload | `ml/compute_prior_grind.py`, `playoff_rest_report.py` | Published playoff facts |
 | Shot Value | `collect_shot_data.py` → `aggregate_shot_grid.py` → `sq4_train_shot_value.py` / `sq4b_train_gbm.py` → `sq5_write_surface.py` | Manual-schema shot tables and `/api/shot-quality` |
 | Historical referee studies | `fetch_officials.ts`, `fetch_playoff_officials.ts`, `analyze_officials_splits.ts`, `ml/referee_*.py`, `build_referee_legends.py` | Committed exports, rendered at `/behind-the-data/referees/archive` |
-| Officiating | `ml/collect_l2m_season.py` → `publish_officiating.py` | Compact season index and content-addressed public report JSON |
+| Officiating | `ml/collect_l2m_season.py` → `publish_officiating.py`; historical PDF/JSON archive normalization described in [operations](OFFICIATING.md) | Compact season index and content-addressed public report JSON |
 
 Paths without a prefix in the producer column are under `scripts/`. Do not run all these tools
 on every update: they have different data dependencies, validation protocols, and write scopes.
