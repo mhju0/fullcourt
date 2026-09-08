@@ -18,16 +18,15 @@ export const metadata: Metadata = {
 export default function PlayerShootingMethodPage() {
   return (
     <BehindTheDataShell
+      topic="player-shooting"
       eyebrow="BEHIND THE DATA · PLAYER SHOOTING"
       title="Player shooting"
       description="Player shooting on no rest compared with three or more days of rest, with attempt counts and uncertainty shown for each split."
     >
-      <Section label="THE SPLIT" descriptor="TWO REST STATES">
+      <Section label="THE SPLIT" title="The two rest groups">
         <Prose>
-          Each of a player&rsquo;s games is labelled by how long <em>he</em>{" "}
-          had rested, counted
-          from the games he actually played, not his team&rsquo;s schedule. A player returning
-          from injury into a team back-to-back is rested; the team is not.
+          Rest is measured from the player&rsquo;s own appearances. A player returning after
+          several days away can be rested even when the team played the night before.
         </Prose>
         <Formula>
           {`no rest      played again the very next day
@@ -40,17 +39,16 @@ rest effect   eFG% on 3+ days − eFG% on no rest`}
         </Note>
       </Section>
 
-      <Section label="THE METRIC" descriptor="EFFECTIVE FIELD GOAL %">
+      <Section label="THE METRIC" title="Shooting efficiency: eFG%">
         <Prose>
           Shooting is measured as <strong>effective field goal percentage</strong>, which credits
-          a three-pointer at 1.5 times a two because it is worth 1.5 times as much. Raw field
-          goal percentage would punish a high-volume three-point shooter for taking the more
-          valuable shot.
+          a three-pointer at 1.5 times a two-pointer to account for the extra point. Raw field
+          goal percentage counts every made shot equally.
         </Prose>
         <Formula>{`eFG% = (FGM + 0.5 × 3PM) / FGA`}</Formula>
       </Section>
 
-      <Section label="HOW MUCH IS NOISE" descriptor="THE STANDARD ERROR">
+      <Section label="HOW MUCH IS NOISE" title="Attempts and uncertainty" disclosure>
         <Prose>
           A rest effect is a difference of two percentages, each from a limited number of
           attempts, so it carries real uncertainty. The page computes the standard error of
@@ -77,7 +75,7 @@ rest effect   eFG% on 3+ days − eFG% on no rest`}
         </Note>
       </Section>
 
-      <Section label="CAREER ESTIMATES" descriptor="SHRINKAGE TOWARD THE POOL MEAN">
+      <Section label="CAREER ESTIMATES" title="How career estimates are adjusted" disclosure>
         <Prose>
           Career estimates require at least 150 attempts in each rest group. The export
           shrinks each raw gap toward the mean gap among eligible players, with more shrinkage
@@ -86,7 +84,7 @@ rest effect   eFG% on 3+ days − eFG% on no rest`}
         </Prose>
       </Section>
 
-      <Section label="WHAT THIS CANNOT SEE" descriptor="LIMITATIONS">
+      <Section label="WHAT THIS CANNOT SEE" title="Full limitations" disclosure>
         <LimitList
           items={[
             "Shot difficulty. A rested player taking harder shots against a set defence can shoot worse while playing better.",

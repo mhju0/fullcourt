@@ -40,11 +40,12 @@ const westShortTerm = termRow(data, "d_west3_short");
 export default function TimeZonesMethodPage() {
   return (
     <BehindTheDataShell
+      topic="time-zones"
       eyebrow="BEHIND THE DATA · TIME ZONES"
       title="Time zones"
       description="Does eastward travel on short rest help explain game outcomes? The pre-registered test found no improvement in held-out predictions."
     >
-      <Section label="WHAT WAS ASKED" descriptor="A NARROWER QUESTION THAN THE MODEL HAD TESTED">
+      <Section label="WHAT WAS ASKED" title="The question tested">
         <Prose>
           The fatigue model already carries time-zone travel, and the weight-fitting work
           recorded in <strong>ADR 0006</strong> measured it as a{" "}
@@ -64,16 +65,16 @@ export default function TimeZonesMethodPage() {
             { label: "Deciding term", value: data.primaryTerm, sub: `${primary.games} games` },
           ]}
         />
-        <Note>
+        <details className="fc-disclosure"><summary>How travel direction was recorded</summary><Note>
           Direction was not recoverable from the model&rsquo;s features before this. The stored
           zone count is an absolute value and the jet-lag term multiplies direction by a
           re-entrainment fraction, so &ldquo;east&rdquo; and &ldquo;west&rdquo; had to be added as
           a signed field first. It is <strong>reported and never scored</strong>: no term reads
           it, and no fatigue score anywhere on this site changed because it exists.
-        </Note>
+        </Note></details>
       </Section>
 
-      <Section label="THE RAW SPLIT" descriptor="READ IT FOR THE DENOMINATORS, NOT THE EFFECT">
+      <Section label="THE RAW SPLIT" title="Raw travel-direction comparisons" disclosure>
         <Prose>
           Before controlling for team strength, a visitor with an inferred clock shift of{" "}
           {protocol.thresholdHours} hours or more <strong>west</strong> loses{" "}
@@ -101,7 +102,7 @@ no long shift either way   ${neither.games.toLocaleString().padStart(6)}       $
         </Note>
       </Section>
 
-      <Section label="TEAM STRENGTH AND GEOGRAPHY" descriptor="DIFFERENT TEAMS IN EACH GROUP">
+      <Section label="TEAM STRENGTH AND GEOGRAPHY" title="Differences in team strength and geography" disclosure>
         <Prose>
           A {protocol.thresholdHours}-hour <strong>westward</strong> trip is, almost by definition,
           an Eastern-conference team visiting the Pacific coast. A {protocol.thresholdHours}-hour{" "}
@@ -130,7 +131,7 @@ no long shift   ${signedNumber(neither.strengthEdgeToHome ?? 0, 4)}      home wi
         </Note>
       </Section>
 
-      <Section label="HELD-OUT EVALUATION" descriptor="SIXTEEN SEASONS OUTSIDE TRAINING">
+      <Section label="HELD-OUT EVALUATION" title="Testing on seasons excluded from training" disclosure>
         <Prose>
           The test asks whether adding these terms improves predictions for held-out games,
           season by season, using the same walk-forward
@@ -163,7 +164,7 @@ strength only                    ${logLoss.strengthOnly.toFixed(5)}
         />
       </Section>
 
-      <Section label="OVERLAP WITH EXISTING TERMS" descriptor="STABILITY AND ADDED VALUE">
+      <Section label="OVERLAP WITH EXISTING TERMS" title="Overlap with existing schedule factors" disclosure>
         <Prose>
           The westward short-rest term, <code>{westShortTerm.term}</code>, has a mean weight of {westShortTerm.meanWeight.toFixed(4)} in{" "}
           {westShortTerm.foldsNonZero} of {protocol.folds} folds, with a coefficient of variation
@@ -186,7 +187,7 @@ strength only                    ${logLoss.strengthOnly.toFixed(5)}
         </Prose>
       </Section>
 
-      <Section label="WHAT THIS DOES NOT SAY" descriptor="INCLUDING ABOUT THE MODEL THAT SHIPPED">
+      <Section label="WHAT THIS DOES NOT SAY" title="What this means for the current model" disclosure>
         <Prose>
           This test did not change any constant in <code>fatigue.ts</code>. It also did not
           validate the existing directional multipliers.
@@ -212,7 +213,7 @@ this test found: no added predictive value from direction`}
         </Note>
       </Section>
 
-      <Section label="WHAT THIS CANNOT SEE" descriptor="LIMITATIONS">
+      <Section label="WHAT THIS CANNOT SEE" title="Full limitations" disclosure>
         <LimitList
           items={[
             `Direction remains tied to geography. The analysis controls for team strength but does not match otherwise identical trips: a ${protocol.thresholdHours}-hour eastward trip usually involves a Western team.`,

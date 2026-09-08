@@ -41,7 +41,7 @@ export const BEHIND_THE_DATA_SECTIONS = [
   {
     href: "/behind-the-data/playoff-predictions",
     label: "PLAYOFF REST",
-    title: "Playoff predictions",
+    title: "Playoff Rest",
     surfaceHrefs: ["/playoffs"],
   },
   {
@@ -70,8 +70,8 @@ export const BEHIND_THE_DATA_SECTIONS = [
   },
   {
     href: "/behind-the-data/referees",
-    label: "REFEREE EFFECT",
-    title: "Referee effect",
+    label: "ARCHIVED REFEREE METHODS",
+    title: "Archived referee methods",
     surfaceHrefs: [],
   },
   {

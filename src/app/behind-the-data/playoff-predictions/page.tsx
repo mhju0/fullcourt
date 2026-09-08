@@ -78,11 +78,12 @@ const FEATURES = [
 export default function PlayoffPredictionsMethodPage() {
   return (
     <BehindTheDataShell
+      topic="playoff-predictions"
       eyebrow="BEHIND THE DATA · PLAYOFF REST"
-      title="Playoff predictions"
+      title="Playoff Rest"
       description="A separate model for playoff series, using team records and prior-round workload. It is evaluated on probability quality and winner accuracy."
     >
-      <Section label="WHAT IS PREDICTED" descriptor="SERIES GRAIN">
+      <Section label="WHAT IS PREDICTED" title="What the model predicts">
         <Prose>
           One row per playoff series. The model outputs the probability that the{" "}
           <strong>home-court team</strong> wins the series. That reference side comes from the
@@ -98,7 +99,7 @@ export default function PlayoffPredictionsMethodPage() {
         </Note>
       </Section>
 
-      <Section label="THE FEATURES" descriptor={`${FEATURES.length} INPUTS · BY WEIGHT`}>
+      <Section label="THE FEATURES" title="Model inputs and weights" descriptor={`${FEATURES.length} inputs`} disclosure>
         <DataTable
           rows={FEATURES}
           rowKey={(f) => f.name}
@@ -146,7 +147,7 @@ export default function PlayoffPredictionsMethodPage() {
         </Note>
       </Section>
 
-      <Section label="&ldquo;ISN&rsquo;T THAT JUST THE BETTER TEAM?&rdquo;" descriptor="THE CONFOUND TEST">
+      <Section label="&ldquo;ISN&rsquo;T THAT JUST THE BETTER TEAM?&rdquo;" title="Accounting for team strength" disclosure>
         <Prose>
           A short prior series can indicate team strength as well as less workload. The first
           comparison keeps only teams that closed their own previous round early, then groups
@@ -266,7 +267,7 @@ export default function PlayoffPredictionsMethodPage() {
         </Note>
       </Section>
 
-      <Section label="WHAT THE MODEL ACTUALLY WINS AT" descriptor="CALIBRATION, NOT ACCURACY">
+      <Section label="WHAT THE MODEL ACTUALLY WINS AT" title="Probability quality and winner accuracy" disclosure>
         <Prose>
           In walk-forward evaluation over{" "}
           {PLAYOFF_MODEL_EVAL.folds} held-out seasons ({PLAYOFF_MODEL_EVAL.series}{" "}
@@ -315,18 +316,17 @@ export default function PlayoffPredictionsMethodPage() {
               {(PLAYOFF_MODEL_ACCURACY.baseline * 100).toFixed(1)}%
             </td>
             <td style={{ ...termTdStyle, color: "var(--term-text-muted)", fontWeight: 700 }}>
-              NO REAL EDGE
+              NO CLEAR ACCURACY EDGE
             </td>
           </tr>
         </DataTable>
         <Prose>
           Log loss and Brier score are both lower-is-better measures of whether a stated
-          probability matches the outcome. Both penalise confident errors. The base rate uses{" "}
-          {PLAYOFF_MODEL_ACCURACY.baselineName}, at the
-          historical rate they win.
+          probability matches the outcome. Both penalise confident errors. The baseline always
+          picks the home-court team and assigns its historical win rate as the probability.
         </Prose>
         <Prose>
-          On <strong>accuracy</strong> that competitor is just as good. Across the same seasons
+          The tests did not establish better <strong>winner accuracy</strong>. Across the same seasons
           the model beat it, tied it, and lost to it {PLAYOFF_MODEL_ACCURACY.winTieLoss}{" "}
           times, and the confidence interval around the model&rsquo;s accuracy contains the base rate
           outright. The evaluation provides stronger support for improved probability
@@ -338,7 +338,7 @@ export default function PlayoffPredictionsMethodPage() {
         </Note>
       </Section>
 
-      <Section label="THE ROUND SPLIT" descriptor="WHERE THE ACCURACY EDGE ACTUALLY LIVES">
+      <Section label="THE ROUND SPLIT" title="Accuracy by playoff round" disclosure>
         <Prose>
           Accuracy differs by round in this sample. In Round 1, <strong>prior_grind_diff</strong>{" "}
           is always 0 because there is no prior round. The model still uses its other features,
@@ -417,7 +417,14 @@ export default function PlayoffPredictionsMethodPage() {
         </Note>
       </Section>
 
-      <Section label="FORECAST VERSUS HINDSIGHT" descriptor="WHICH NUMBER IS REAL">
+      <Section label="FORECAST VERSUS HINDSIGHT" title="Forecast and hindsight estimates" disclosure>
+        <DataTable wrapperClassName="reference-definitions" rows={[
+          { label: "Forecast", meaning: "Trained only on earlier seasons. The target season is excluded from training." },
+          { label: "Hindsight", meaning: "Fitted across all covered seasons, including the target. This cannot establish predictive performance." },
+        ]} rowKey={(row) => row.label} columns={[
+          { label: "Estimate", cell: (row) => row.label },
+          { label: "Training data", cell: (row) => row.meaning },
+        ]} />
         <Prose>
           A series&rsquo; <strong>pick</strong> comes from a model trained only on seasons that
           had already finished when that series was played. Historical picks are walk-forward
@@ -437,7 +444,7 @@ export default function PlayoffPredictionsMethodPage() {
         </Note>
       </Section>
 
-      <Section label="WHAT THIS CANNOT SEE" descriptor="LIMITATIONS">
+      <Section label="WHAT THIS CANNOT SEE" title="Full limitations" disclosure>
         <LimitList
           items={[
             "Injuries and expected player availability.",

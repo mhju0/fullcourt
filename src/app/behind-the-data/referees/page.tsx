@@ -31,12 +31,20 @@ const floor = legends.noiseFloor;
 export default function RefereeMethodPage() {
   return (
     <BehindTheDataShell
-      eyebrow="BEHIND THE DATA · REFEREE EFFECT"
-      title="Referee effect"
+      topic="referees"
+      eyebrow="BEHIND THE DATA · ARCHIVE"
+      title="Archived referee methods"
       description="How foul patterns are compared across officials' games, with season adjustments, sample thresholds, and tests against random assignments. Calls are recorded at crew level."
     >
-      <Prose><Link href="/behind-the-data/referees/archive" className="underline">Open the archived foul-pattern table and research ↗</Link></Prose>
-      <Section label="WHERE THE NUMBERS COME FROM" descriptor="THREE DATA SAMPLES">
+      <Link href="/behind-the-data/referees/archive" className="reference-button w-fit">Open the archived foul-pattern table →</Link>
+      <Section label="THE UNIT IS A CREW'S GAME" title="What an official's row represents">
+        <Prose>Three officials work each game, but the play-by-play does not identify who made a call. Each foul is attributed to the crew.</Prose>
+        <Formula>{`a game credits all three officials equally
+     ⇒ an official's rate includes calls made by their crewmates
+     ⇒ it does not isolate that official's individual effect`}</Formula>
+        <Prose>Officials work with different partners over time. This can reduce the influence of one crewmate, but it does not establish random assignments or remove all confounding. The figures describe games an official worked, not calls they made.</Prose>
+      </Section>
+      <Section label="WHERE THE NUMBERS COME FROM" title="The research samples" disclosure>
         <Prose>
           The analysis uses cached ESPN play-by-play and box scores, so each test can use the
           same game records.
@@ -62,24 +70,7 @@ export default function RefereeMethodPage() {
         </Note>
       </Section>
 
-      <Section label="THE UNIT IS A CREW'S GAME" descriptor="NOT A PERSON'S JUDGEMENT">
-        <Prose>
-          <strong>Three officials work each game, but the play-by-play used here does not
-          identify who made a call.</strong> Each foul is attributed to the crew.
-        </Prose>
-        <Formula>
-          {`a game credits all three officials equally
-     ⇒ an official's rate includes calls made by their crewmates
-     ⇒ it does not isolate that official's individual effect`}
-        </Formula>
-        <Prose>
-          Officials work with different partners over time. That can reduce the influence of
-          any one crewmate, but it does not establish random assignments or remove all
-          confounding. The figures describe games an official worked, not calls they made.
-        </Prose>
-      </Section>
-
-      <Section label="HOW A TENDENCY IS MEASURED" descriptor="AGAINST THE LEAGUE'S OWN SEASON">
+      <Section label="HOW A TENDENCY IS MEASURED" title="Comparing foul shares within each season" disclosure>
         <Prose>
           Officiating changes with the rulebook. The league called a different game in{" "}
           {style.firstSeason} than in {style.lastSeason}, so comparing an official&rsquo;s raw
@@ -111,7 +102,7 @@ published only for officials with ≥ ${MIN_GAMES} games`}
         </Note>
       </Section>
 
-      <Section label="THE WINDOW" descriptor="EVERY OFFICIAL'S LAST 200 GAMES">
+      <Section label="THE WINDOW" title="Why each row uses the latest 200 games" disclosure>
         <Prose>
           Careers in this data run from {MIN_GAMES} games to more than 600, and a z-score bar
           moves with sample size: an identical quirk that clears |z| ≥ {NOTABLE_Z} at n = 700
@@ -143,7 +134,7 @@ published only for officials with ≥ ${MIN_GAMES} games`}
         </Note>
       </Section>
 
-      <Section label="THE TEST THAT CARRIES THE VERDICT" descriptor="ONE QUESTION, NO MULTIPLICITY">
+      <Section label="THE TEST THAT CARRIES THE VERDICT" title="Comparing officials with random assignments" disclosure>
         <Prose>
           Counting how many officials clear a bar is not enough to say officials differ, because
           some always will. The verdict comes instead from a single question asked once:{" "}
@@ -167,7 +158,7 @@ verdict:   how often the null's spread reaches the observed one`}
         </Prose>
       </Section>
 
-      <Section label="INTERPRETING AN EXTREME PAIR" descriptor="THE CHANCE COMPARISON">
+      <Section label="INTERPRETING AN EXTREME PAIR" title="Unusual official-player records and chance" disclosure>
         <Prose>
           The folklore chapter compares official-player records with the extremes expected
           from checking many pairs. An unusual record alone does not establish bias.
@@ -195,7 +186,7 @@ cleared p < 0.05                    ${floor.clearedPoint05}   (chance predicts $
         </Note>
       </Section>
 
-      <Section label="FIXED BEFORE ANYTHING WAS RUN" descriptor="THE PRE-REGISTRATIONS">
+      <Section label="FIXED BEFORE ANYTHING WAS RUN" title="Preregistered questions and decision rules" disclosure>
         <Prose>
           Testing many questions and reporting only favourable results can exaggerate the
           evidence. The questions and decision rules were committed <strong>before</strong>{" "}
@@ -222,7 +213,7 @@ cleared p < 0.05                    ${floor.clearedPoint05}   (chance predicts $
         </Note>
       </Section>
 
-      <Section label="WHAT THIS CANNOT SEE" descriptor="LIMITATIONS">
+      <Section label="WHAT THIS CANNOT SEE" title="Full limitations" disclosure>
         <LimitList
           items={[
             "It cannot attribute a call to an individual. Each figure describes the games an official worked with two crewmates.",

@@ -43,6 +43,8 @@
 }
 
 .tile:active { border-color: var(--term-accent); background: color-mix(in srgb, var(--term-accent) 10%, var(--term-surface)); box-shadow: none; }
+.compact { min-height: 192px; }
+.compact .category { margin-bottom: 16px; }
 
 @media (max-width: 639px) {
   .tile { min-height: 202px; padding: 24px; }
