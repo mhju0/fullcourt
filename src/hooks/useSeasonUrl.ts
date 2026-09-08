@@ -1,6 +1,7 @@
 "use client";
 
-import { useCallback, useSyncExternalStore } from "react";
+import { useCallback, useEffect, useSyncExternalStore } from "react";
+import { useSearchParams } from "next/navigation";
 
 export const LOCATION_CHANGE = "fc:location-change";
 const subscribe = (notify: () => void) => {
@@ -18,8 +19,16 @@ export function useLocationSearch() {
   return useSyncExternalStore(subscribe, snapshot, serverSnapshot);
 }
 
+function useRouteSearch() {
+  const search = useSearchParams().toString();
+  useEffect(() => {
+    window.dispatchEvent(new Event(LOCATION_CHANGE));
+  }, [search]);
+  return search;
+}
+
 export function useSeasonUrl(fallback: string, seasons: readonly string[]) {
-  const search = useLocationSearch();
+  const search = useRouteSearch();
   const requested = new URLSearchParams(search).get("season");
   const season =
     requested && seasons.includes(requested) ? requested : fallback;
@@ -28,7 +37,6 @@ export function useSeasonUrl(fallback: string, seasons: readonly string[]) {
     url.searchParams.set("season", value);
     url.searchParams.delete("date");
     window.history.pushState(null, "", url);
-    window.dispatchEvent(new Event(LOCATION_CHANGE));
   }, []);
   return {
     season,
@@ -41,7 +49,7 @@ export function useSeasonUrl(fallback: string, seasons: readonly string[]) {
 }
 
 export function usePageQuery() {
-  const search = useLocationSearch();
+  const search = useRouteSearch();
   const update = useCallback(
     (values: Record<string, string | null>, replace = false) => {
       const url = new URL(window.location.href);
@@ -51,7 +59,6 @@ export function usePageQuery() {
       }
       if (replace) window.history.replaceState(null, "", url);
       else window.history.pushState(null, "", url);
-      window.dispatchEvent(new Event(LOCATION_CHANGE));
     },
     [],
   );

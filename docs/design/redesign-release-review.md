@@ -40,12 +40,21 @@ Physical-device and human screen-reader testing are not claimed by browser autom
   accessibility scans. Ten expectations tied to the previous page layout were updated.
   The affected 86-case sweep passed 85; a final eight-case run passed the narrowed schedule
   assertion and all four new release interactions. No browser failure remains unresolved.
-- A production-server run passed 40 of 41 cases. The Shooting history case passed unchanged
-  on all three repeat runs; an instrumented reproduction also restored the correct URL and
-  season. This was an intermittent browser-navigation check, not a reproduced product defect.
+- Production and hosted preview testing exposed an intermittent Shooting history race. The
+  shared query hook now reads Next.js's committed search parameters and notifies navigation
+  after that commit, avoiding a competing synchronous URL snapshot during Back navigation.
+- GitHub CodeQL flagged research-support code. Mockup destinations are now a fixed allowlist;
+  the comparison generator logs completion without dumping intermediate records. Regeneration
+  left the published comparison files unchanged; CodeQL passed after these changes.
+- The advisory network-idle alignment sweep was stopped when polling prevented useful progress.
+  The assertion-based alignment and responsive-layout suites passed in the browser sweeps.
 - Production screenshots at 390px and 1280px confirm that Season Report, Games, Schedule Edge,
   Shot Value, and reference content fit without page-level horizontal overflow. Evidence is
   in `docs/screenshots/redesign-*`. Games expansion URLs survive reload; changing dates clears
   the previous game selection. Filters and expansions remain instantaneous.
 
 Hosted preview and post-merge production verification are recorded with the release PR.
+
+After the history fix: ten consecutive production-mode repetitions passed, followed by all
+39 checks covering Shooting, Games, Season Report, schedule contracts, and release interactions.
+Lint, typecheck, all 969 unit tests, and the production build also passed on the corrected code.
