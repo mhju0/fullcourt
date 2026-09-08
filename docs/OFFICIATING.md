@@ -32,14 +32,14 @@ The workflow uploads raw source evidence and its manifest as a run artifact reta
 
 Successful refreshes prepare a data-update branch and attempt to open a PR, never merge to main. When repository policy blocks bot-created PRs, the job summary links to the validated branch comparison so an owner can open it. This implements the existing preview-review requirement. Public freshness advances only after review, merge and deployment, not merely when a scheduled job runs. Daily timestamps may create a PR even when counts are unchanged. Close superseded pending updates rather than merging stale snapshots after newer ones.
 
-Activation checks before release:
+Operational checks:
 
 - Workflow is on the default branch; Actions are enabled.
 - Repository settings currently block Actions-created PRs; the validated-branch comparison link is the supported fallback.
 - Confirm whether the Vercel integration builds previews for bot-created PRs. GITHUB_TOKEN-created events do not automatically trigger other GitHub workflows; do not assume CI ran. Run the required checks and verify the preview before merging an update.
-- Confirm `official.nba.com` is reachable from Actions. Local collection previously succeeded, but runner reachability has not been verified in this implementation pass.
+- `official.nba.com` was reachable from Actions in the successful manual run on 2026-09-08. Complete collection, evidence upload, publication contracts, and the review-branch fallback passed.
 
-The initial implementation did not dispatch the remote workflow. Record runner reachability with the first manual refresh after the workflow reaches the default branch.
+First remote verification: [run 34179954451](https://github.com/mhju0/fullcourt/actions/runs/34179954451). The 2025–26 refresh changed only the source-index hash and successful-refresh timestamp; report content and all counts were unchanged.
 
 ## UI behavior
 

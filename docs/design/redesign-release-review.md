@@ -58,3 +58,15 @@ Hosted preview and post-merge production verification are recorded with the rele
 After the history fix: ten consecutive production-mode repetitions passed, followed by all
 39 checks covering Shooting, Games, Season Report, schedule contracts, and release interactions.
 Lint, typecheck, all 969 unit tests, and the production build also passed on the corrected code.
+
+
+### Hosted release
+
+PR #84 merged as `776683e` after all 54 hosted-preview browser checks and GitHub CI/CodeQL
+passed on `d47b718`. Vercel production deployment `dpl_B7Sf1Mwy4YYUAqubU2JtqqVoHRTw` reached
+READY for that merge commit on 2026-09-08. The public alias is https://fullcourt-nba.vercel.app.
+
+The first manual Officiating refresh, Actions run `34179954451`, passed complete collection,
+evidence retention, publication contracts, and the comparison-link fallback. Only the source
+index hash and successful-refresh timestamp changed; report content and counts did not.
+This refresh is reviewed separately from the application release.

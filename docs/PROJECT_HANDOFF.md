@@ -677,3 +677,9 @@ search, and new analytics remain separate future scope, as agreed. No coefficien
 
 See [the release review](design/redesign-release-review.md) for the final local verification,
 including 969 unit tests, production-browser checks, and desktop/mobile screenshots.
+
+
+**2026-09-08 deployed:** PR #84 merged as `776683e` after 54 hosted browser checks and
+CI/CodeQL passed. Vercel confirmed the production deployment ready. The first manual
+Officiating refresh succeeded on GitHub Actions; its data-only update preserves every
+report and count. See the release review and `OFFICIATING.md` for the evidence.

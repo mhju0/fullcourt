@@ -338,3 +338,8 @@ have compact topic navigation and local contents. No accounts or stored personal
 See [the release review](design/redesign-release-review.md) for design rationale and scope.
 The owner authorized verification and deployment on 2026-09-08. Exportable graphics, universal
 search, and new analytics remain separate future scope, as agreed. No coefficient or schema change.
+
+
+**Release checkpoint — 2026-09-08:** The approved redesign is deployed via PR #84 (`776683e`).
+Hosted preview checks and CI/CodeQL passed. Officiating collection and review-branch preparation
+are verified on GitHub Actions. The remaining ideas listed above are future scope.
