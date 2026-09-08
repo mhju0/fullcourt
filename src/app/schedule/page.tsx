@@ -14,12 +14,12 @@ export default function SchedulePage() {
       {/* "The hand each team was dealt" against Season Report's "as played" — see the note
           there. "Not a prediction" and "much of the gap is structural" are load-bearing and
           pinned by e2e; reword around them, never out of them. */}
-      <PageHeader
+      <header className="page-intro"><PageHeader
         eyebrow="SCHEDULE DISPARITY · NET EDGE GAMES"
         title="Schedule Edge"
-        description="Compare each team's favourable and unfavourable rest gaps within a season, with a win-equivalent estimate based on historical rates."
+        description="Who had the more favorable schedule? Rank teams by favorable minus unfavorable rest-gap games. This ranking does not predict wins."
       />
-      <MethodLink surfaceHref="/schedule" />
+      <MethodLink surfaceHref="/schedule" /></header>
 
       <ScheduleDisparityContentLazy />
 

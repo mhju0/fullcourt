@@ -46,7 +46,7 @@ const PUBLISHING_READERS = [
  * unfiltered to agree with `fatigue-recent-games.ts`, which is also unfiltered — filtering one
  * side would render two contradictory density figures on the same card.
  */
-const DENSITY_READERS = ["getTeamGameCountsInDaysBefore", "computeIs4In6Map"] as const;
+const DENSITY_READERS = ["getTeamGameCountsInDaysBefore", "computeScheduleDensityMap"] as const;
 
 describe("publishableGames", () => {
   it.each(PUBLISHING_READERS)("%s applies the rule", (name) => {

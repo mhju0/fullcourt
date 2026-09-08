@@ -1,4 +1,4 @@
-import type { AnalysisResponse, ScheduleDisparityResponse } from "@/types";
+import type { AnalysisResponse, ScheduleDisparityResponse, GameResponse } from "@/types";
 import { rankScheduleTeams } from "@/lib/schedule-ranking";
 import { S, seasonLabel, type PlayerRestPayload } from "@/lib/player-rest";
 
@@ -44,6 +44,7 @@ export function shootingHomeCoverage(data: Pick<PlayerRestPayload, "seasons">) {
 }
 
 export interface HomeFindings {
+  example?: GameResponse | null;
   historical: ReturnType<typeof historicalHomeFinding>;
   schedule: ReturnType<typeof scheduleHomeFinding> | null;
   shootingCoverage: string | null;

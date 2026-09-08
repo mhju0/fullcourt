@@ -50,7 +50,7 @@ export function BehindTheDataShell({ eyebrow, title, description, topic, childre
     </details>
     <div id="reference-body" className="flex flex-col gap-4">{children}</div>
     <nav className="reference-related" aria-label="Related pages">
-      {current?.surfaceHrefs.map((href) => <Link key={href} href={href}>{({ "/analysis": "View Model Results", "/games": "Browse Games", "/season": "Read Season Report", "/schedule": "Compare Schedule Edge", "/playoffs": "View Playoff Rest", "/shooting": "Compare Player Shooting", "/availability": "View Availability Cost", "/shot-quality": "View Shot Value", "/officiating": "Browse Officiating" } as Record<string, string>)[href]} →</Link>)}
+      {current?.surfaceHrefs.map((href) => <Link key={href} href={href}>{({ "/analysis": "View Model Results", "/games": "Browse Games", "/season": "Read Season Report", "/schedule": "Compare Schedule Edge", "/playoffs": "View Playoff Rest", "/shooting": "Compare Shooting by Rest", "/availability": "View Availability Cost", "/shot-quality": "View Expected Shot Value", "/officiating": "Browse Officiating" } as Record<string, string>)[href]} →</Link>)}
       {topic === "referees" && <Link href="/behind-the-data/referees/archive">Open referee research archive →</Link>}
       <Link href={topic === "data-and-limits" ? "/behind-the-data" : "/behind-the-data/data-and-limits"}>{topic === "data-and-limits" ? "All methods" : "Data sources and coverage"} →</Link>
     </nav>

@@ -21,8 +21,8 @@ const LEAD_IN = { color: "var(--term-text)", fontWeight: 600 } as const
 function SectionHeading({ children }: { children: React.ReactNode }) {
   return (
     <div
-      className="mono flex items-center gap-3 py-1"
-      style={{ fontSize: 11, letterSpacing: TRACK.label, color: "var(--term-text-muted)" }}
+      className="flex items-center gap-3 py-1"
+      style={{ fontSize: 18, color: "var(--term-text)" }}
     >
       <h2 style={{ fontWeight: 700 }}>{children}</h2>
       <span style={{ flex: 1, height: 1, background: "var(--term-border)" }} />
@@ -108,11 +108,11 @@ function ScaleSection() {
   const e = AVAILABILITY_EFFECTS
   return (
     <section className="flex flex-col gap-3">
-      <SectionHeading>WHAT AN ABSENCE COSTS</SectionHeading>
+      <SectionHeading>Missing a top player</SectionHeading>
       <div style={termCardStyle}>
         <StatFigure
           value={`${e.bestPlayerOut.points.toFixed(2)} points`}
-          caption="WHAT A TEAM LOSES WHEN ITS BEST PLAYER SITS · POINTS OF FINAL MARGIN"
+          caption="LOWER FINAL MARGIN WITH A TOP PLAYER ABSENT · ASSOCIATION"
         />
 
         <div className="mt-6 flex flex-col gap-4">
@@ -125,7 +125,7 @@ function ScaleSection() {
 
         <p className="mt-4" style={BODY}>
           <span style={LEAD_IN}>The best-player-out estimate is similar in size to the home-court estimate.</span>{" "}
-          Every bar is measured in points of final margin across{" "}
+          Bars compare the size of associations, not their direction: home court is associated with a higher margin, while the other conditions are associated with a lower margin. All are measured in points across{" "}
           {AVAILABILITY_SAMPLE.games.toLocaleString()}{" "}
           games, controlling for both teams&apos; prior records. These are regression
           associations, not isolated causal effects.
@@ -145,7 +145,7 @@ function FrequencySection() {
   ]
   return (
     <section className="flex flex-col gap-3">
-      <SectionHeading>HOW OFTEN</SectionHeading>
+      <SectionHeading>How often players are absent</SectionHeading>
       <div style={termCardStyle}>
         <div className="grid gap-6 sm:grid-cols-3">
           {cells.map((c) => (
@@ -174,11 +174,11 @@ function TrendSection() {
 
   return (
     <section className="flex flex-col gap-3">
-      <SectionHeading>THE LOAD-MANAGEMENT ERA</SectionHeading>
+      <SectionHeading>Top-player absences over time</SectionHeading>
       <div style={termCardStyle}>
         <p style={BODY}>
           <span style={LEAD_IN}>
-            Teams sit their best player more than three times as often as they did in{" "}
+            Top-player absences are more than three times as common as in{" "}
             {first.season}.
           </span>{" "}
           That is context for every figure above: the same absence was a rare event across most of
@@ -250,7 +250,7 @@ function ScheduleHoldsUpSection() {
   return (
     // `data-shot-anchor`: where the README shot of this page ends (scripts/screenshots.mjs).
     <section className="flex flex-col gap-3" data-shot-anchor="schedule-still-counts">
-      <SectionHeading>THE SCHEDULE STILL COUNTS</SectionHeading>
+      <SectionHeading>Schedule estimates after accounting for absences</SectionHeading>
       <div style={termCardStyle}>
         <p style={BODY}>
           <span style={LEAD_IN}>
@@ -303,7 +303,7 @@ function LimitsSection() {
   const n = AVAILABILITY_NOISE
   return (
     <section className="flex flex-col gap-3">
-      <SectionHeading>WHAT THIS IS NOT</SectionHeading>
+      <SectionHeading>Limits of the comparison</SectionHeading>
       <div style={termCardStyle}>
         <p style={BODY}>
           <span style={LEAD_IN}>Availability is measured after the game.</span>{" "}

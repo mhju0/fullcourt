@@ -10,7 +10,7 @@ The wordmark is FULLCOURT, one word, in Geist capitals. Running prose uses FullC
 COURT takes the accent color. The shared optical kerning lives in
 `src/lib/brand/wordmark-kern.ts`; do not recreate the lockup with independent letter spacing.
 The previously explored hollow-U treatment was withdrawn; PRs #51/#52 and DECISIONS.md retain
-that decision. The homepage statement is “Rest is a stat.” Brand story belongs at `/about`.
+that decision. The homepage statement is “Rest is a stat.” `/about` explains purpose and author; `/how-it-was-built` explains engineering decisions.
 
 The application is light, with dark text, hairline rules, aligned data, and whitespace between
 sections. The homepage is the deliberately dark exception. Geist carries text; Geist Mono

@@ -16,6 +16,7 @@ const ROUTES = [
   // Not "/": since 2026-08-12 that is the marketing page, which sets its own hero type rather
   // than using PageHeader. The games board it replaced now lives at /games.
   "/about",
+  "/how-it-was-built",
   "/explore",
   "/games",
   "/season",

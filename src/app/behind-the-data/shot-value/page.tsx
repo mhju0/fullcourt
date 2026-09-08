@@ -10,7 +10,7 @@ import {
 } from "@/components/behind-the-data-parts";
 
 export const metadata: Metadata = {
-  title: "Shot Value · Behind the Data",
+  title: "Expected Shot Value · Behind the Data",
   description:
     "Expected shot value (xeFG%) by court location, its zone baseline, and the shooting context the model does not observe.",
 };
@@ -22,7 +22,7 @@ export default function ShotValueMethodPage() {
     <BehindTheDataShell
       topic="shot-value"
       eyebrow="BEHIND THE DATA · SHOT VALUE"
-      title="Shot value"
+      title="Expected Shot Value"
       description="The average value of a shot from each court location, measured across the league. Defender position and shooter skill are outside this model."
     >
       <Section label="WHAT IS COMPUTED" title="Expected value by court location">

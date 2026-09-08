@@ -17,12 +17,12 @@ export const metadata: Metadata = {
 export default function AvailabilityPage() {
   return (
     <div className="flex flex-col gap-12">
-      <PageHeader
+      <header className="page-intro"><PageHeader
         eyebrow="ROTATION ABSENCE · POINTS OF MARGIN"
         title="Availability Cost"
-        description="Compare the estimated association between missing rotation players and final margin with home-court and schedule terms, using completed games."
+        description="How do missing players relate to the final score margin? Compare historical associations, measured after games."
       />
-      <MethodLink surfaceHref="/availability" />
+      <MethodLink surfaceHref="/availability" /></header>
       <AvailabilityContent />
     </div>
   );

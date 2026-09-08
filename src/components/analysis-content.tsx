@@ -1008,7 +1008,7 @@ export function AnalysisContent({ asOf }: { asOf?: DataAsOf | null }) {
   return (
     <div className="flex flex-col gap-12">
       {/* Inside the loaded branch, so the heading arrives with the data it describes. */}
-      <PageHeader
+      <header className="page-intro"><PageHeader
         eyebrow="HISTORICAL BACKTEST · WIN RATE"
         title="Model Results"
         description={claims.headerDescription}
@@ -1016,7 +1016,7 @@ export function AnalysisContent({ asOf }: { asOf?: DataAsOf | null }) {
         // held backtest, so the date shown and the population measured cannot diverge.
         asOf={asOf}
       />
-      <MethodLink surfaceHref="/analysis" />
+      <MethodLink surfaceHref="/analysis" /></header>
       <nav aria-label="Model Results sections" className="flex gap-6 text-[15px]">
         <a href="#answer" className="fc-text-link min-h-11 content-center">The answer</a>
         <a href="#explorer" className="fc-text-link min-h-11 content-center">The explorer</a>

@@ -143,7 +143,7 @@ function ColumnGuide({ countedGames, scheduledGames }: { countedGames: number; s
           means the schedule treated this team better than the teams it played.
         </p>
         <p>
-          {term("Net edge games")}: favourable games minus unfavourable games. An edge requires
+          {term("Net edge games")}: favorable games minus unfavorable games. An edge requires
           a fatigue gap of at least {NEUTRAL_REST_ADVANTAGE_THRESHOLD.toFixed(1)}, the threshold
           used on Games and Model Results.
         </p>
@@ -152,7 +152,7 @@ function ColumnGuide({ countedGames, scheduledGames }: { countedGames: number; s
             drifts. This entry defines the column and defers to that line for the numbers. */}
         <p>
           {term("Worth")}: rest states converted to win equivalents using historical rates
-          relative to venue baselines. Favourable and unfavourable games partly offset each
+          relative to venue baselines. Favorable and unfavorable games partly offset each
           other. Season Report uses the same conversion.
         </p>
         <p>
@@ -302,7 +302,7 @@ export function ScheduleDisparityContent() {
           style={{ fontSize: 11, letterSpacing: TRACK.label, color: "var(--term-text-muted)", fontWeight: 600, textTransform: "uppercase" }}
         >
           {rankedByFatigue
-            ? "Net edge games: favourable games minus unfavourable games"
+            ? "Net edge games: favorable games minus unfavorable games"
             : "Net rest edge: this team's days off minus its opponents'"}
         </p>
 

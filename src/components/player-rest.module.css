@@ -49,3 +49,5 @@
   .longLabel { display: none; }
   .shortLabel { display: inline; }
 }
+
+.readingKey { font-size: 15px; line-height: 1.5; max-width: 75ch; color: var(--term-text-muted); }

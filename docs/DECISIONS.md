@@ -673,3 +673,26 @@ where comparison is easier than prose. The referee archive retains its dense res
 
 The shell is server-rendered; a small client enhancement handles deep links and printing.
 No motion, accounts, analytical coefficient changes, or generated-data edits are introduced.
+
+
+### D-65 · First-use clarity and an inspectable engineering story — APPROVED
+
+Owner accepted the independent whole-service audit on 2026-09-08 and requested implementation
+with a before/after review. The homepage demonstrates one real completed matchup, selected by
+largest rest gap with the rested team at home. Games exposes exact four-night density and
+separates altitude carryover from the current venue; gap labels describe magnitude, not win
+confidence. These are read-path and presentation corrections, not coefficient changes.
+
+Mobile Games keeps date stepping visible and places the calendar in a disclosure that reveals
+the selected month. Shooting keeps its primary comparison visible earlier, with optional
+filtering, definitions and coverage below a short interpretation key. Study introductions name
+their question, units and scope; causal and intentional-rest implications are removed where the
+data only establishes association. Explore adds artifact-derived previews. Officiating initially
+shows the common categories while keeping every category and shared rare-category selection
+available.
+
+About explains the purpose and author; `/how-it-was-built` provides a source-linked engineering
+walkthrough. It describes verified system behavior without inventing adoption, personal ownership
+boundaries or collaboration claims. A single footer makes Methods, About, the walkthrough and
+source discoverable. No new motion is introduced. First-time participant and physical-device
+validation remain open. See [implementation review](design/usability-audit-review.md).

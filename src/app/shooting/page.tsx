@@ -9,13 +9,13 @@ export const metadata: Metadata = {
 
 export default function ShootingPage() {
   return (
-    <div className="flex flex-col gap-12">
-      <PageHeader
+    <div className="flex flex-col gap-6">
+      <header className="page-intro"><PageHeader
         eyebrow="SHOOTING BY REST · eFG%"
         title="Shooting by Rest"
-        description="Compare a player's shooting on no rest with three or more days of rest, for a season or career. Rest is counted from the player's own appearances."
+        description="Compare a player’s shooting with and without rest, across seasons."
       />
-      <MethodLink surfaceHref="/shooting" />
+      <MethodLink surfaceHref="/shooting" /></header>
 
       <PlayerRestContentLazy />
     </div>

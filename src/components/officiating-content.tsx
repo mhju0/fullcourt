@@ -31,6 +31,7 @@ export function OfficiatingContent({ seasons }: { seasons: ReviewSeason[] }) {
   const category = params.get("type") ?? "";
   const gameId = params.get("game") ?? "";
   const [pageSize, setPageSize] = useState(20);
+  const [showAllTypes, setShowAllTypes] = useState(false);
   const games = filterReviews(season.games, team, category);
   const total = season.missed + season.wrong;
   const percent = total ? (season.missed / total) * 100 : null;
@@ -228,7 +229,7 @@ export function OfficiatingContent({ seasons }: { seasons: ReviewSeason[] }) {
               >
                 All <span>{total}</span>
               </button>
-              {categories.map(([name, count]) => (
+              {categories.filter(([name], index) => showAllTypes || index < 5 || name === category).map(([name, count]) => (
                 <button
                   aria-pressed={category === name}
                   key={name}
@@ -242,6 +243,7 @@ export function OfficiatingContent({ seasons }: { seasons: ReviewSeason[] }) {
               ))}
             </div>
           </div>
+          <button type="button" aria-expanded={showAllTypes} onClick={() => setShowAllTypes(!showAllTypes)} className="min-h-11 px-3 text-xs underline">{showAllTypes ? "Fewer call types" : `All ${categories.length} call types`}</button>
           <label className={styles.teamLabel}>
             Team
             <select

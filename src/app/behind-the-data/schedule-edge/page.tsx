@@ -39,21 +39,21 @@ export default function ScheduleEdgeMethodPage() {
       topic="schedule-edge"
       eyebrow="BEHIND THE DATA · SCHEDULE EDGE"
       title="Schedule edge"
-      description="A within-season comparison of favourable and unfavourable rest gaps, with a win-equivalent estimate based on historical rates."
+      description="A within-season comparison of favorable and unfavorable rest gaps, with a win-equivalent estimate based on historical rates."
     >
       <Section label="THE HEADLINE" title="Counting favorable and unfavorable games">
         <Prose>
           For every game a team played, the fatigue gap against that night&rsquo;s opponent is
           the same rest advantage the rest of the site uses. A game counts
-          as <strong>favourable</strong> when the opponent was the more tired side by at least{" "}
-          {NEUTRAL_REST_ADVANTAGE_THRESHOLD}, and <strong>unfavourable</strong> when the team
+          as <strong>favorable</strong> when the opponent was the more tired side by at least{" "}
+          {NEUTRAL_REST_ADVANTAGE_THRESHOLD}, and <strong>unfavorable</strong> when the team
           itself was. The season total is the difference.
         </Prose>
         <Formula>
-          {`netEdgeGames = favourableGames − unfavourableGames
+          {`netEdgeGames = favorableGames − unfavorableGames
 
-favourable    fatigue gap ≥ +${NEUTRAL_REST_ADVANTAGE_THRESHOLD} in the team's favour
-unfavourable  fatigue gap ≥ ${NEUTRAL_REST_ADVANTAGE_THRESHOLD} against
+favorable    fatigue gap ≥ +${NEUTRAL_REST_ADVANTAGE_THRESHOLD} in the team's favor
+unfavorable  fatigue gap ≥ ${NEUTRAL_REST_ADVANTAGE_THRESHOLD} against
 big edge      the ≥ ${BIG_EDGE_FATIGUE_THRESHOLD} subset of either side`}
         </Formula>
         <Note>
@@ -97,7 +97,7 @@ big edge      the ≥ ${BIG_EDGE_FATIGUE_THRESHOLD} subset of either side`}
           describe historical groups rather than causal effects.
         </Prose>
         <Note>
-          Net season values are small because favourable and unfavourable games partly
+          Net season values are small because favorable and unfavorable games partly
           offset each other, and each game is priced at a small difference from its venue baseline.
         </Note>
         <Note>
@@ -212,7 +212,7 @@ big edge      the ≥ ${BIG_EDGE_FATIGUE_THRESHOLD} subset of either side`}
             "Rankings compare teams within a season. Schedule length, travel patterns, and back-to-back frequency change across eras.",
             "The NBA publishes only 80 of each team's 82 games before the season. The last two are added in December once NBA Cup group play resolves, so a forward-looking total is provisionally two games short.",
             "It inherits every limit of the fatigue model it is built on, including no injuries, no rotations and no knowledge of team quality.",
-            "A favourable schedule is not a prediction. It says the calendar handed a team more rested nights than tired ones, not that they were good.",
+            "A favorable schedule is not a prediction. It says the calendar handed a team more rested nights than tired ones, not that they were good.",
             "The Worth column uses pooled historical rates since 1985-86. A displayed season's observed rates can differ, so this estimate does not explain that season's actual wins and losses.",
           ]}
         />

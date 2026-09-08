@@ -1,3 +1,5 @@
+import officiating from "@/data/officiating.json";
+import { AVAILABILITY_EFFECTS } from "@/lib/availability-facts";
 import type { Metadata } from "next";
 import { PageHeader } from "@/components/page-header";
 import { TransitionLink } from "@/components/transition-link";
@@ -9,14 +11,14 @@ export const metadata: Metadata = { title: "Explore" };
 
 const GROUPS = [
   { title: "Rest and fatigue", links: [
-    { href: "/shooting", title: "Player Shooting", question: "Do players shoot differently with more rest?", action: "Compare shooting splits" },
+    { href: "/shooting", title: "Shooting by Rest", question: "Do players shoot differently with more rest?", action: "Compare shooting splits" },
     { href: "/playoffs", title: "Playoff Rest", question: "How does prior-round workload relate to a series?", action: "Compare playoff workload" },
     { href: "/analysis", title: "Model Results", question: "How does the rest model compare with history?", action: "See historical results" },
   ] },
   { title: "Other studies", links: [
     { href: "/availability", title: "Availability Cost", question: "What do historical absences tell us?", action: "Examine availability" },
     { href: "/officiating", title: "Officiating", question: "What did the NBA identify in close-game endings?", action: "Browse reviewed games" },
-    { href: "/shot-quality", title: "Shot Value", question: "How does expected efficiency vary around the court?", action: "View the shot map" },
+    { href: "/shot-quality", title: "Expected Shot Value", question: "How does expected efficiency vary around the court?", action: "View the shot map" },
   ] },
 ];
 
@@ -25,12 +27,21 @@ const RESEARCH = [
     { href: "/behind-the-data/referees/archive", title: "Referee research archive", question: "Historical foul patterns and folklore comparisons." },
 ];
 
+const latestOfficiating = officiating.seasons.at(-1)!;
+const missedShare = Math.round(100 * latestOfficiating.missed / (latestOfficiating.missed + latestOfficiating.wrong));
+
+function studyPreview(href: string) {
+  if (href === "/officiating") return <><strong>{missedShare}%</strong>of identified errors were missed calls · {latestOfficiating.season}</>;
+  if (href === "/availability") return <><strong>{AVAILABILITY_EFFECTS.bestPlayerOut.points.toFixed(2)}</strong>points lower with a top player absent · adjusted association</>;
+  return undefined;
+}
+
 export default function ExplorePage() {
   return <div className="flex flex-col gap-12">
-    <PageHeader eyebrow="FINDINGS & EVIDENCE" title="Explore" description="How rest shapes the game, and what else the numbers reveal. Pick a study to see the findings and the evidence behind them." />
+    <PageHeader eyebrow="FINDINGS & EVIDENCE" title="Explore" description="Pick a basketball question. Compare players, inspect games, or follow a finding back to its evidence." />
     <ul aria-label="Basketball studies" className="grid grid-cols-1 gap-4 sm:grid-cols-2">
       {GROUPS.flatMap((group) => group.links.map((link) => (
-        <li key={link.href}><StudyLink {...link} category={group.title} /></li>
+        <li key={link.href}><StudyLink {...link} category={group.title} preview={studyPreview(link.href)} /></li>
       )))}
     </ul>
     <section className="flex flex-col gap-3 border-t border-[var(--term-border)] pt-6">

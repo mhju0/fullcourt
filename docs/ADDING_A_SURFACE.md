@@ -17,10 +17,10 @@ says *what to do*.
 ## The short version
 
 1. Give it a `PageHeader`.
-2. Make its root `<div className="flex flex-col gap-12">`.
+2. Use the standard `gap-12` root; approved exceptions are method articles (`gap-8`, D-64) and the Games/Shooting entries (`gap-6`, D-65).
 3. Use `TYPE` / `SPACE` / `TRACK` / `LEAD` — never a literal.
 4. Use `DataTable` for a table, `StatTile` / `StatFigure` for a figure, `MessageCard` for a failure.
-5. Register it in `primary-navigation.ts` and add its route to `e2e/alignment-audit.spec.ts`.
+5. Register its navigation role and add its route to `e2e/alignment-audit.spec.ts`. The engineering walkthrough is a footer/palette reference route, with an explicit no-primary-tab contract.
 6. Run `pnpm test:run`. The contract is enforced, so it will tell you what you missed.
 
 ---
@@ -51,7 +51,9 @@ export default function Page() {
 - **`gap-12` is the chapter gap** between heading, controls and results. Tighter spacing goes
   *inside* a chapter. A uniform `gap-4` gave a heading the same separation as two halves of one
   control panel. Loading and error branches carry the same `gap-12`, so the layout does not shift
-  when data lands. *Enforced: same file, "builds its column on the chapter gap".*
+  when data lands. The method shell uses `gap-8`; Games and Shooting use `gap-6` between their
+  introductions and lookup controls so a complete primary row is visible above the phone dock.
+  These exceptions are explicit route contracts, not a new default. *Enforced: same file, "builds its column on the chapter gap".*
 - **Do not add a container, a gutter, or vertical page padding.** `layout.tsx` owns
   `mx-auto max-w-7xl px-4 py-8 sm:px-6`, and the brand bar, nav row and footer match it exactly.
   A page that adds its own gutter puts its title off the rail every other page's title is on.

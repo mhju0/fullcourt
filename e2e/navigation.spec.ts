@@ -171,8 +171,8 @@ test.describe("Primary navigation", () => {
     await page.goto("/games");
 
     // The footer is on every page, so a dead hover here is dead everywhere.
-    await answersThePointer(page, page.getByRole("link", { name: "SYSTEM STATUS" }));
-    await answersThePointer(page, page.getByRole("link", { name: "WHAT THIS MEASURES" }));
+    await answersThePointer(page, page.getByRole("link", { name: /System status/ }));
+    await answersThePointer(page, page.getByRole("link", { name: "Methods", exact: true }));
   });
 
   test("the method link visibly answers the pointer", async ({ page }) => {
@@ -218,7 +218,7 @@ test.describe("Primary navigation", () => {
     await page.goto("/");
     const explore = page.getByRole("navigation", { name: "Main navigation" }).getByRole("link", { name: "EXPLORE", exact: true });
     await explore.click();
-    await page.locator("main").getByRole("link", { name: /^Shot Value/ }).click();
+    await page.locator("main").getByRole("link", { name: /Expected Shot Value/ }).click();
     await expect(page).toHaveURL(/\/shot-quality$/);
     await expect(explore).toHaveAttribute("aria-current", "location");
   });
@@ -233,7 +233,7 @@ test.describe("Primary navigation", () => {
     await explore.click();
     await expect(page).toHaveURL(/\/explore$/);
     await expect(explore).toHaveAttribute("aria-current", "page");
-    await page.locator("main").getByRole("link", { name: /^Behind the Data/ }).click();
+    await page.locator("main").getByRole("link", { name: /Behind the Data/ }).click();
     await expect(page).toHaveURL(/\/behind-the-data$/);
     await expect(explore).not.toHaveAttribute("aria-current");
     expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBe(0);
@@ -271,10 +271,10 @@ test.describe("Primary navigation", () => {
 
     // The visible door first — the GitHub lesson is that a keyboard-only palette is a
     // feature nobody finds. Ten options when unfiltered: four tabs, three OTHER, one reference.
-    await page.getByRole("button", { name: "JUMP TO PAGE" }).click();
+    await page.getByRole("button", { name: "Find a page" }).click();
     const palette = page.getByRole("dialog", { name: "Command palette" });
     await expect(palette).toBeVisible();
-    await expect(palette.getByRole("option")).toHaveCount(12);
+    await expect(palette.getByRole("option")).toHaveCount(13);
     await page.keyboard.press("Escape");
     await expect(palette).toBeHidden();
 
@@ -359,6 +359,7 @@ test.describe("Primary navigation", () => {
     // `exact` (and the label's own casing) since the shell merge: the dock's SEASON REPORT
     // slot also answers a substring "Season" query, and strict mode counts hidden elements
     // when resolving the locator.
+    await page.locator(".games-calendar > summary").click();
     await expect(page.getByLabel("SEASON", { exact: true })).toBeVisible();
     await page.waitForLoadState("networkidle");
     await behind.click();

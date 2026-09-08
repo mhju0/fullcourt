@@ -10,7 +10,7 @@ import {
 } from "@/components/behind-the-data-parts";
 
 export const metadata: Metadata = {
-  title: "Player Shooting · Behind the Data",
+  title: "Shooting by Rest · Behind the Data",
   description:
     "How the no-rest against three-days-rest shooting split is built: the rest definition, effective field goal percentage, the attempt floor, and how much of any split is noise.",
 };
@@ -19,8 +19,8 @@ export default function PlayerShootingMethodPage() {
   return (
     <BehindTheDataShell
       topic="player-shooting"
-      eyebrow="BEHIND THE DATA · PLAYER SHOOTING"
-      title="Player shooting"
+      eyebrow="BEHIND THE DATA · SHOOTING BY REST"
+      title="Shooting by Rest"
       description="Player shooting on no rest compared with three or more days of rest, with attempt counts and uncertainty shown for each split."
     >
       <Section label="THE SPLIT" title="The two rest groups">

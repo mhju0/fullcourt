@@ -55,7 +55,7 @@ describe("buildGameStoryline", () => {
         restedFatigue({ is4In6: true })
       )
     );
-    expect(s).toBe("DEN on a back-to-back and at altitude; LAL 4th game in 6 nights.");
+    expect(s).toBe("DEN on a back-to-back and after an altitude trip; LAL 4th game in 6 nights.");
   });
 
   it("never says 3-in-4 and 4-in-6 together — the same nights would be counted twice", () => {
@@ -79,7 +79,7 @@ describe("buildGameStoryline", () => {
         restedFatigue()
       )
     );
-    expect(s).toBe("DEN on a back-to-back, 4th game in 6 nights and at altitude.");
+    expect(s).toBe("DEN on a back-to-back, 4th game in 6 nights and after an altitude trip.");
   });
 
   it("says a long road trip with a real ordinal", () => {
@@ -94,4 +94,8 @@ describe("buildGameStoryline", () => {
       buildGameStoryline(game(restedFatigue({ roadTripConsecutiveAway: 3 }), restedFatigue()))
     ).toBeNull();
   });
+});
+
+it("distinguishes tonight's altitude venue from carryover", () => {
+  expect(buildGameStoryline(game(restedFatigue({ altitudePenalty: true, altitudeArenaLabel: "Denver (altitude)" }), restedFatigue()))).toBe("DEN playing at altitude.");
 });

@@ -69,7 +69,7 @@ function mix(a: RGB, b: RGB, t: number): string {
 //   high end is the theme's deep teal.
 // - The GBM−baseline diff is a polarity, so it diverges through a neutral near-white
 //   midpoint (kept, so "no difference" cells recede into the court): rose for GBM
-//   higher, teal for GBM lower — the app's two data-pole hues.
+//   higher, teal for location model lower — the app's two data-pole hues.
 const TEAL_LOW: RGB = hexToRgb("#79BDD1") // sequential low end (pale teal)
 const TEAL_HIGH: RGB = hexToRgb("#065F74") // sequential high end (deep teal)
 const ROSE: RGB = hexToRgb("#E11D48") // "gbm higher" in diff view (= --term-red)
@@ -95,14 +95,14 @@ function EncodingToggle({
 }) {
   const options: { key: ColorMode; label: string }[] = [
     { key: "value", label: "EXPECTED eFG%" },
-    { key: "diff", label: "GBM − BASELINE" },
+    { key: "diff", label: "MODEL DIFFERENCE" },
   ]
   return (
     <div className="flex flex-col gap-2">
       <span className="mono" style={{ fontSize: 11, letterSpacing: TRACK.label, color: "var(--term-text-muted)", fontWeight: 600 }}>
-        COLOR ENCODING
+        MAP VIEW
       </span>
-      <div className="inline-flex" role="group" aria-label="Color encoding">
+      <div className="inline-flex" role="group" aria-label="Map view">
         {options.map((o, i) => {
           const active = mode === o.key
           return (
@@ -205,24 +205,24 @@ function HowToRead({
               <span style={{ color: "#065F74", fontWeight: 600 }}>deep teal is high-value</span> (rim, corner threes), pale teal is low-value (long mid-range).
             </p>
             <p style={{ color: "var(--term-text-muted)" }}>
-              Both courts use the same locations. BASELINE assigns zone averages;
-              GBM uses coordinates to estimate differences within zones.
+              Both courts use the same locations. The zone model assigns averages;
+              the location model uses coordinates to estimate differences within zones.
             </p>
           </div>
         </>
       ) : (
         <>
           <BigLegend
-            caption="GBM − BASELINE"
+            caption="MODEL DIFFERENCE"
             gradient={`linear-gradient(90deg, ${divColor(-1)}, ${divColor(0)}, ${divColor(1)})`}
-            left={`−${(divD * 100).toFixed(1)} pp · GBM lower`}
+            left={`−${(divD * 100).toFixed(1)} pp · location model lower`}
             mid="0"
-            right={`+${(divD * 100).toFixed(1)} pp · GBM higher`}
+            right={`+${(divD * 100).toFixed(1)} pp · location model higher`}
           />
           <div className="flex min-w-0 flex-col gap-1" style={{ fontSize: TYPE.body, lineHeight: LEAD.body, color: "var(--term-text-dim)" }}>
             <p>One court: where the two models disagree about a spot&apos;s value.</p>
             <p>
-              <span style={{ color: "var(--term-red-text)", fontWeight: 600 }}>Rose: GBM rates it higher</span> than the zone
+              <span style={{ color: "var(--term-red-text)", fontWeight: 600 }}>Rose: location model rates it higher</span> than the zone
               average, <span style={{ color: "var(--term-blue-text)", fontWeight: 600 }}>teal: lower</span>; pale squares mean
               the models agree.
             </p>
@@ -539,7 +539,7 @@ export function ShotQualityContent() {
                 getValue={seqValue("baseline")}
                 getColor={seqColorFor}
                 formatValue={fmtEfg}
-                title="BASELINE"
+                title="Zone average"
                 subtitle="ZONE-AVERAGE (STEP SURFACE)"
               />
               </div>
@@ -549,7 +549,7 @@ export function ShotQualityContent() {
                 getValue={seqValue("gbm")}
                 getColor={seqColorFor}
                 formatValue={fmtEfg}
-                title="GBM"
+                title="Location model"
                 subtitle="LOCATION MODEL (COURT COORDINATES)"
               />
             </div>
@@ -561,7 +561,7 @@ export function ShotQualityContent() {
                 getValue={diffValue}
                 getColor={diffColorFor}
                 formatValue={fmtDiff}
-                title="GBM − BASELINE"
+                title="MODEL DIFFERENCE"
                 subtitle="Δ EXPECTED eFG% · LOCATION MODEL MINUS ZONE AVERAGE"
               />
             </div>

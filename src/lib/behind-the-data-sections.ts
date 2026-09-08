@@ -46,14 +46,14 @@ export const BEHIND_THE_DATA_SECTIONS = [
   },
   {
     href: "/behind-the-data/player-shooting",
-    label: "PLAYER SHOOTING",
-    title: "Player shooting",
+    label: "SHOOTING BY REST",
+    title: "Shooting by Rest",
     surfaceHrefs: ["/shooting"],
   },
   {
     href: "/behind-the-data/shot-value",
-    label: "SHOT VALUE",
-    title: "Shot value",
+    label: "EXPECTED SHOT VALUE",
+    title: "Expected Shot Value",
     surfaceHrefs: ["/shot-quality"],
   },
   {

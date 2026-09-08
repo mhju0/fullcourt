@@ -15,12 +15,12 @@ export default function SeasonPage() {
       {/* "As played" against Schedule Edge's "the hand dealt" — the two tabs overlap in
           subject, and the identity words are what let a reader pick the right one before
           clicking. Sharpened 2026-08-23 when the per-team pricing table moved there. */}
-      <PageHeader
+      <header className="page-intro"><PageHeader
         eyebrow="ONE SEASON · AS PLAYED"
         title="Season Report"
-        description="What happened when teams arrived with different rest conditions: season results, team records, and the widest completed-game rest gaps."
+        description="What happened this season? Compare completed-game results with the same season’s home-court baseline."
       />
-      <MethodLink surfaceHref="/season" />
+      <MethodLink surfaceHref="/season" /></header>
 
       <SeasonReportContentLazy />
     </div>

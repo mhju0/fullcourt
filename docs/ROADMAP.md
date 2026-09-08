@@ -16,6 +16,14 @@ rationale in [Decisions](DECISIONS.md), not another running implementation log.
 - Re-key ESPN-seeded games to canonical hoopR IDs once played-game data is available. Review a dry
   run before applying; see [season rollover](SEASON_ROLLOVER.md). This enables shooting-data joins.
 
+## First-use validation
+
+- Observe first-time visitors finding a game, interpreting a player difference, and locating a
+  source. Include a non-NBA recruiter reading the engineering walkthrough. Record completion,
+  hesitation and incorrect interpretations; automated checks do not substitute for this.
+- Confirm personal ownership and collaboration wording with the owner before expanding the
+  engineering walkthrough beyond repository-verifiable behavior.
+
 ## Deferred ideas
 
 Exportable graphics, universal search, new analytical findings, and additional season reports

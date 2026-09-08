@@ -10,13 +10,14 @@ test.describe("Games page", () => {
     await expect(
       page.getByRole("heading", { level: 1, name: "Games" })
     ).toBeVisible();
-    await expect(page.getByText(/Compare each team's rest, travel, and schedule density/)).toBeVisible();
+    await expect(page.getByText(/Rest gap is a model-score difference/)).toBeVisible();
 
     // The site's headline figure moved to `/` with the front door. It must not come back here:
     // a forty-one-season result among controls that describe one day's slate reads as a
     // property of that slate.
     await expect(page.getByText(/is how often the more-rested team wins/)).toHaveCount(0);
 
+    await page.locator(".games-calendar > summary").click();
     await expect(page.getByLabel("SEASON", { exact: true })).toBeVisible();
     await expect(page.getByRole("button", { name: /^OCT$/ })).toBeVisible();
     await expect(page.getByRole("button", { name: /^DEC$/ })).toBeVisible();
@@ -97,6 +98,7 @@ test.describe("Games page", () => {
   }) => {
     await page.goto("/games");
 
+    if (await page.locator(".games-calendar").evaluate(el => !(el as HTMLDetailsElement).open)) await page.locator(".games-calendar > summary").click();
     await page.getByLabel("SEASON", { exact: true }).selectOption("2024-25");
     await page.getByRole("button", { name: /^DEC$/ }).click();
 
@@ -136,6 +138,7 @@ test.describe("Games page", () => {
   test("crossing a month boundary with the arrows moves the month tab", async ({ page }) => {
     await page.goto("/games");
 
+    if (await page.locator(".games-calendar").evaluate(el => !(el as HTMLDetailsElement).open)) await page.locator(".games-calendar > summary").click();
     await page.getByLabel("SEASON", { exact: true }).selectOption("2024-25");
     await page.getByRole("button", { name: /^DEC$/ }).click();
 
@@ -161,6 +164,7 @@ test.describe("Games page", () => {
   test("previous day from an early season date can reach a day with no games", async ({ page }) => {
     await page.goto("/games");
 
+    if (await page.locator(".games-calendar").evaluate(el => !(el as HTMLDetailsElement).open)) await page.locator(".games-calendar > summary").click();
     await page.getByLabel("SEASON", { exact: true }).selectOption("2024-25");
 
     await page.getByRole("button", { name: /^OCT$/ }).click();
@@ -211,8 +215,8 @@ for (const available of [false, true]) {
     await page.goto("/games");
     await expect(page.getByLabel("SEASON", { exact: true })).toHaveValue("2025-26");
     await expect(page.getByTestId("selected-date-display")).toContainText("APRIL 12, 2026");
-    await expect(page.getByText("2025-26 REGULAR SEASON COMPLETE · SHOWING FINAL SLATE", { exact: true })).toBeVisible();
-    const upcoming = page.getByRole("button", { name: "VIEW 2026-27 SCHEDULE" });
+    await expect(page.getByText("2025-26 complete · final games", { exact: true })).toBeVisible();
+    const upcoming = page.getByRole("button", { name: "View 2026-27 →" });
     if (available) {
       await expect(upcoming).toBeVisible();
       await upcoming.click();
@@ -241,7 +245,8 @@ test("shared Games links restore season, date, density and browser history", asy
   await expect(page.getByRole("button", { name: /Expand game details/ }).first()).toBeVisible();
   await page.goForward();
   await expect(display).toContainText("DECEMBER 24, 2024");
-  await page.getByLabel("SEASON", { exact: true }).selectOption("2023-24");
+  if (await page.locator(".games-calendar").evaluate(el => !(el as HTMLDetailsElement).open)) await page.locator(".games-calendar > summary").click();
+    await page.getByLabel("SEASON", { exact: true }).selectOption("2023-24");
   await expect(page).toHaveURL(/season=2023-24/);
   await expect(display).toContainText("2024");
   await page.goBack();

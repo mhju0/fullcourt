@@ -45,7 +45,6 @@ describe("every renderer consumes the one table", () => {
   // has stopped reading the kerns — these fail before the drift ships.
   const renderers = [
     "src/components/nav-bar.tsx",
-    "src/components/about-content.tsx",
     "src/app/opengraph-image.tsx",
   ];
 

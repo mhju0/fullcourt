@@ -58,3 +58,13 @@ tiles, visible null findings, shorter article openings and native technical disc
 all ten methods. Stable deep links and print expansion preserve access to evidence. The referee
 archive remains a dense table with clearer return links. See FRONTEND.md for the shared shell
 and reading controls; the audit retains the dated before-state evidence.
+
+
+## Approved usability audit implementation
+
+D-65 adds a real homepage matchup, earlier mobile game/player rows, accurate schedule-density
+and altitude wording, clearer study scopes, common-first Officiating filters and an engineering
+walkthrough. The owner approved the before/after implementation for publication on 2026-09-09.
+CI and hosted-preview verification precede the production merge. [Implementation review](design/usability-audit-review.md)
+records the scope and verification. The new walkthrough makes system decisions inspectable;
+personal contribution and collaboration details require the owner's account.

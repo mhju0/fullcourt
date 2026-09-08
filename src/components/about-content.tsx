@@ -1,36 +1,22 @@
-import { TransitionLink } from "@/components/transition-link";
-import { wordmarkLetters } from "@/lib/brand/wordmark-kern";
-import { NBA_SEASONS } from "@/lib/nba-season";
-import { LEAD, TYPE, WIDTH } from "@/lib/terminal-styles";
-
-const NAME_READINGS = [
-  { term: "Full", copy: `Regular-season results since ${NBA_SEASONS[0]}, with comparison groups and sample sizes.` },
-  { term: "Court", copy: "Home court provides the baseline for reading a rest advantage. It accounts for much of the raw win rate." },
-  { term: "Full-court", copy: "The basketball name connects the schedule analysis with shooting, playoff, and officiating studies." },
-];
-
+import Link from "next/link";
 export function AboutContent() {
-  return <div className="flex flex-col gap-12" style={{ maxWidth: WIDTH.prose, fontSize: TYPE.body, lineHeight: LEAD.body }}>
-    <section>
-      <h2 aria-label="What FullCourt means" style={{ fontSize: TYPE.title, marginBottom: 24 }}>
-        <span aria-hidden="true">{wordmarkLetters().map((letter, i) => <span key={i} style={{ color: letter.accent ? "var(--term-accent)" : undefined, marginLeft: `${letter.kernEm}em` }}>{letter.char}</span>)}</span>
-      </h2>
-      <dl className="flex flex-col gap-4">
-        {NAME_READINGS.map((part) => <div key={part.term} className="grid gap-2 border-t border-[var(--term-border)] pt-4 sm:grid-cols-[8rem_1fr]">
-          <dt className="font-semibold">{part.term}</dt><dd style={{ color: "var(--term-text-dim)" }}>{part.copy}</dd>
-        </div>)}
-      </dl>
+  return <div className="flex flex-col gap-12">
+    <section className="build-section">
+      <h2>Look at the schedule behind the game</h2>
+      <p>FullCourt helps NBA fans compare rest, travel and workload, then examine what happened. Start with a game or a player, and follow a finding back to its sample and sources.</p>
+      <p>Home court and team strength matter too. These historical comparisons describe patterns; they do not establish that rest caused a win.</p>
+      <div className="flex flex-wrap gap-3"><Link className="build-action" href="/games">Find a game</Link><Link className="build-action" href="/shooting">Look up a player</Link></div>
     </section>
-    <section className="flex flex-col gap-4">
-      <h2 style={{ fontSize: TYPE.stat }}>What the project measures</h2>
-      <p>Rest, travel and schedule density are FullCourt&apos;s central questions. Compare how teams arrive at a game, then check the results against their venue baselines.</p>
-      <p>The fatigue score summarizes recent workload, travel, time zones, back-to-backs, altitude and schedule density. Its weights are estimates; a relationship in historical results does not establish a causal effect.</p>
-      <TransitionLink href="/behind-the-data" className="inline-flex min-h-11 items-center underline underline-offset-4">Read the sources and calculations</TransitionLink>
+    <section className="build-section">
+      <h2>Created by Michael Ju</h2>
+      <p>FullCourt is a public research and software project. The engineering walkthrough explains how the application collects data, serves findings and checks its results, with links to the implementation.</p>
+      <Link className="build-case-link" href="/how-it-was-built"><strong>How FullCourt was built</strong><span>Data flow, implementation decisions, tradeoffs and verification →</span></Link>
+      <a className="method-link" href="https://github.com/mhju0">Michael on GitHub ↗</a>
     </section>
-    <section className="flex flex-col gap-4">
-      <h2 style={{ fontSize: TYPE.stat }}>How to read a finding</h2>
-      <p>Look for the comparison group and sample size beside each result. Games and Model Results use the same fatigue calculation. Limitations and null results remain available with the analysis.</p>
-      <TransitionLink href="/" className="inline-flex min-h-11 items-center underline underline-offset-4">Back to the rest and schedule findings</TransitionLink>
+    <section className="build-section">
+      <h2>Follow the evidence</h2>
+      <p>Every result needs a sample and a comparison. Behind the Data explains the methods, coverage and limitations, including research that found no clear effect.</p>
+      <Link className="method-link" href="/behind-the-data">Sources, calculations and limitations ↗</Link>
     </section>
   </div>;
 }

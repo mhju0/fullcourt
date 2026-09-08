@@ -1,37 +1,7 @@
 import Link from "next/link";
 import { methodologyHrefFor } from "@/lib/behind-the-data-sections";
-import { TRACK } from "@/lib/terminal-styles";
 
-/**
- * The link from a product surface to the page explaining it.
- *
- * Discoverability for a reference section is not really a navigation problem — a reader
- * wants the method at the moment they doubt a number, which is while they are looking at it.
- * This puts the door there. Renders nothing when a surface has no documented section, so
- * adding one to `BEHIND_THE_DATA_SECTIONS` is all it takes to light this up.
- */
 export function MethodLink({ surfaceHref }: { surfaceHref: string }) {
   const href = methodologyHrefFor(surfaceHref);
-  if (!href) return null;
-
-  return (
-    <Link
-      href={href}
-      // Colour is a class, not an inline `style`. It was inline until 2026-08-13, and an inline
-      // declaration outranks a class rule — so `hover:text-` never painted, on all eight surfaces
-      // this renders on. Measured: computed colour identical at rest and on hover. The rest of
-      // the style object stays inline; none of it is contested by a utility.
-      className="mono inline-flex min-h-11 w-fit items-center gap-2 transition-colors text-[var(--term-text-muted)] hover:text-[var(--term-text)] lg:min-h-0"
-      style={{
-        fontSize: 11,
-        letterSpacing: TRACK.label,
-        fontWeight: 600,
-        borderBottom: "1px solid var(--term-border)",
-        paddingBottom: 4,
-      }}
-    >
-      HOW THIS IS CALCULATED
-      <span aria-hidden>→</span>
-    </Link>
-  );
+  return href ? <Link href={href} className="method-link">How this is calculated <span aria-hidden="true">↗</span></Link> : null;
 }
