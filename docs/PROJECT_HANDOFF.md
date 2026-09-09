@@ -21,7 +21,9 @@ Officiating covers 12 regular seasons and 4,546 reports, including the partial 2
 [archive evidence](research/2026-09-09-l2m-archive.md) records source checks and historical limits.
 
 The homepage hero now contains only the headline, original description and primary action.
-The one-game example and its supporting reads were removed under D-67.
+The one-game example and its supporting reads were removed under D-67. Next.js and its ESLint
+config are pinned to 16.3.4; the lockfile resolves Sharp 0.35.4, clearing the September 9 production
+dependency audit. See [verification](design/home-hero-release-review.md).
 
 ## Architecture and safeguards
 

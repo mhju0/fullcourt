@@ -5,11 +5,6 @@ rationale in [Decisions](DECISIONS.md), not another running implementation log.
 
 ## Maintenance
 
-- Resolve the production dependency audit before the next release: the September 9 check flags
-  existing Next.js 16.2.12 and Sharp dependencies. See the [Next.js advisory](https://github.com/advisories/GHSA-2xp9-vwfh-vxw4)
-  and [Sharp advisory](https://github.com/advisories/GHSA-rgj7-g3m4-5g8c). The homepage simplification
-  passes its build and browser checks, but dependency remediation remains a release blocker.
-
 - Keep correctness, dependency audit, and CodeQL checks passing. Review dependency overrides
   when upstream fixes become available; the current overrides live in `pnpm-workspace.yaml`.
 - Review Officiating refresh branches and their source evidence before publication. The workflow
