@@ -20,6 +20,9 @@ Deep Dive uses the full desktop width. Playoff Rest explains between-round recov
 Officiating covers 12 regular seasons and 4,546 reports, including the partial 2014–15 season;
 [archive evidence](research/2026-09-09-l2m-archive.md) records source checks and historical limits.
 
+The homepage hero now contains only the headline, original description and primary action.
+The one-game example and its supporting reads were removed under D-67.
+
 ## Architecture and safeguards
 
 - Next.js serves pages and API routes. Database reads use Drizzle/postgres-js against Supabase

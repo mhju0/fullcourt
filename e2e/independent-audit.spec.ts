@@ -61,12 +61,10 @@ test("mobile shooting exposes a player before optional definitions", async ({ pa
   await expect(page.getByText(/not a 95% significance threshold/)).toBeVisible();
 });
 
-test("homepage example opens the matching game and builder walkthrough is reachable", async ({ page }) => {
+test("homepage introduction stays concise and builder walkthrough is reachable", async ({ page }) => {
   await page.goto("/");
-  const example = page.getByRole("link", { name: "Inspect this matchup" });
-  await expect(example).toBeVisible();
-  await example.click();
-  await expect(page.getByRole("button", { name: "Collapse game details" })).toBeVisible();
+  await expect(page.getByText("Understand the schedule behind an NBA game. Compare rest and travel, then check what happened.", { exact: true })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Inspect this matchup" })).toHaveCount(0);
   await page.getByRole("navigation", { name: "Footer", exact: true }).getByRole("link", { name: "How it was built" }).click();
   await expect(page.getByRole("heading", { name: "Three implementation decisions" })).toBeVisible();
 });
