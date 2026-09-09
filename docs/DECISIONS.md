@@ -720,3 +720,14 @@ across eras. PDF extraction preserves source URLs/hashes and passes an independe
 column census. Ambiguous historical grades stay unclassified; missing text, video and crew
 information is labeled. See the [archive evidence](research/2026-09-09-l2m-archive.md) and
 [interface review](design/season-navigation-review.md). No motion was added.
+
+
+### D-67 · A quieter homepage introduction — ACTIVE
+
+On September 9, 2026 the owner chose to remove the complete hero matchup example rather than
+select one of the three explored alternatives. Keep “Rest is a stat” and the existing description
+exactly: “Understand the schedule behind an NBA game. Compare rest and travel, then check what happened.”
+The description grows to 24px on desktop and 20px on mobile, with a readable line length. The hero
+uses a single content column and intentional whitespace; the primary action and aggregate findings
+remain. This supersedes D-65's homepage example decision. The example-only report and game reads
+are removed from the homepage loader. No new motion is introduced.

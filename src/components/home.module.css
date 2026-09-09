@@ -18,12 +18,10 @@
 .home a { text-underline-offset: 4px; }
 .home a:focus-visible { outline: 2px solid var(--home-text); outline-offset: 4px; }
 .home a:hover { text-decoration: underline; }
-.hero { display: grid; grid-template-columns: 1.4fr 1fr; align-items: center; gap: 48px; padding: 80px 0; }
-.hero > div > p:not(.eyebrow) { max-width: 48ch; margin: 24px 0; font-size: 18px; }
+.hero { padding: 80px 0; }
+.hero > div > p:not(.eyebrow) { max-width: 48ch; margin: 24px 0; font-size: 24px; }
 .home .eyebrow { font-family: var(--font-geist-mono), monospace; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 16px; }
 .primary { display: inline-flex; align-items: center; gap: 24px; min-height: 48px; padding: 12px 24px; border-radius: 4px; background: var(--home-text); color: var(--home-ink); font-size: 15px; font-weight: 600; }
-.home .scenario { font-size: 24px; line-height: 1.55; }
-.scenario strong { color: var(--home-text); font-weight: 500; }
 .finding { display: grid; grid-template-columns: 1.1fr 1fr; gap: 64px; align-items: center; padding: 64px 0; border-top: 1px solid var(--home-rule); }
 .home .big { font-family: var(--font-geist-mono), monospace; font-size: clamp(64px, 8vw, 96px); line-height: 1.1; letter-spacing: -.04em; margin: 24px 0 16px; }
 .big > span { font-size: 24px; letter-spacing: 0; }
@@ -57,8 +55,8 @@
 @keyframes hero-enter { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
 @media (max-width: 700px) {
   .container { padding: 0 16px; }
-  .hero { grid-template-columns: 1fr; gap: 32px; padding: 48px 0; }
-  .home .scenario { font-size: 18px; }
+  .hero { padding: 48px 0; }
+  .hero > div > p:not(.eyebrow) { font-size: 20px; }
   .finding, .support { grid-template-columns: 1fr; gap: 32px; padding: 32px 0; }
   .home h2 { font-size: 24px; }
   .support article + article { border-top: 1px solid var(--home-rule); padding-top: 32px; }
@@ -66,10 +64,3 @@
   .discover h2 { font-size: 18px; }
   .end span { flex-basis: 100%; margin-left: 0; }
 }
-
-.example { padding: 24px; border: 1px solid var(--home-rule); border-radius: 8px; }
-.home .example h2 { font-size: 24px; }
-.example dl { margin: 16px 0; }
-.example dl > div { display: flex; justify-content: space-between; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--home-rule); font-size: 15px; }
-.example dd { text-align: right; color: var(--home-muted); }
-.home .example .eyebrow { font-size: 11px; }

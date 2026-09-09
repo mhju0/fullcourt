@@ -11,7 +11,7 @@ function RateBar({ label, value, rested = false }: { label: string; value: numbe
 }
 
 export function HomeContent({ findings }: { findings: HomeFindings }) {
-  const { historical, schedule, shootingCoverage, example } = findings;
+  const { historical, schedule, shootingCoverage } = findings;
   return <div className={styles.home} data-testid="home-findings">
     <div className={styles.container}>
       <header className={styles.hero}>
@@ -21,18 +21,6 @@ export function HomeContent({ findings }: { findings: HomeFindings }) {
           <p>Understand the schedule behind an NBA game. Compare rest and travel, then check what happened.</p>
           <TransitionLink href="/games" className={styles.primary}>Find a game <span aria-hidden="true">→</span></TransitionLink>
         </div>
-        {example ? <article className={styles.example}>
-          <p className={styles.eyebrow}>A real game · {example.date}</p>
-          <h2>{example.awayTeam.name} at {example.homeTeam.name}</h2>
-          <dl>
-            {[{ team: example.awayTeam, load: example.awayFatigue }, { team: example.homeTeam, load: example.homeFatigue }].map(({ team, load }) => <div key={team.id}>
-              <dt>{team.name}</dt><dd>{load?.daysRest == null ? "Rest unavailable" : load.daysRest === 1 ? "Played the day before" : `${load.daysRest} days since last game`}</dd>
-            </div>)}
-          </dl>
-          <p>Final: {example.awayTeam.abbreviation} {example.awayScore} · {example.homeTeam.abbreviation} {example.homeScore}. Different rest conditions do not decide the winner.</p>
-          <TransitionLink className={styles.textLink} href={`/games?season=${example.season}&date=${example.date}&game=${example.id}#game-${example.id}`}>Inspect this matchup →</TransitionLink>
-          <p className={styles.metadata}>Largest completed rest gap with the rested team at home in {example.season}.</p>
-        </article> : <p className={styles.scenario}>Choose a game to see each team&apos;s rest and recent schedule.</p>}
       </header>
 
       <section className={styles.finding} aria-labelledby="rest-finding">

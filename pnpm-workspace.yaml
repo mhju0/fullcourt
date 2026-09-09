@@ -17,8 +17,6 @@ overrides:
   # version. A pin is only as good as the advisory that motivated it — re-read both
   # before assuming this line is still doing its job.
   postcss@<8.5.23: 8.5.23
-  # libvips CVEs inherited by sharp <0.35.0 (next's image optimizer).
-  sharp@<0.35.0: '>=0.35.0'
   ws@>=8.0.0 <8.21.0: '>=8.21.0'
 
 # Carries forward the previous policy verbatim: .npmrc allowed esbuild alone to run its
