@@ -76,4 +76,3 @@ Destination cards keep their larger dimensions. Inline prose links retain their 
 | Keyboard and behavior | PASS: focus, command palette and filter interaction checks |
 | Color and motion | PASS: measured control boundary contrast; existing semantic colors; no added motion |
 | React review | PASS: presentation changes only; no new effects, requests, dependencies or state |
-
