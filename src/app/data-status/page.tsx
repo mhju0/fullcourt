@@ -26,22 +26,15 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
-function resultValue<T>(result: PromiseSettledResult<T>, label: string): T | null {
-  if (result.status === "fulfilled") return result.value;
-  console.error(`[data-status/${label}]`, result.reason);
-  return null;
-}
-
-async function timedStatusRead<T>(label: string, operation: () => Promise<T>): Promise<T> {
-  const startedAt = Date.now();
-  console.info(`[DEBUG-data-status-timing/${label}] start`);
+async function readStatusValue<T>(
+  label: string,
+  operation: () => PromiseLike<T>
+): Promise<T | null> {
   try {
-    const value = await operation();
-    console.info(`[DEBUG-data-status-timing/${label}] fulfilled in ${Date.now() - startedAt}ms`);
-    return value;
+    return await operation();
   } catch (error) {
-    console.info(`[DEBUG-data-status-timing/${label}] rejected in ${Date.now() - startedAt}ms`);
-    throw error;
+    console.error(`[data-status/${label}]`, error);
+    return null;
   }
 }
 
@@ -93,32 +86,30 @@ function StatusCard({
 }
 
 export default async function DataStatusPage() {
-  console.info("[DEBUG-data-status-timing/page] start");
   const playerPayload = JSON.parse(
-    await timedStatusRead("artifacts", () =>
-      readFile(join(process.cwd(), "public/data/player-rest.json"), "utf8")
-    )
+    await readFile(join(process.cwd(), "public/data/player-rest.json"), "utf8")
   ) as PlayerRestPayload;
   const officiatingSeasons = data.seasons as ReviewSeason[];
   const latestOfficiating = [...officiatingSeasons].sort((a, b) => a.season.localeCompare(b.season)).at(-1)!;
   const shootingCoverage = shootingHomeCoverage(playerPayload);
 
-  const [connectionResult, gameResult, scheduleResult, analysisResult, playoffResult, shotResult] = await Promise.allSettled([
-    timedStatusRead("database", () => db.execute(sql`select 1`)),
-    timedStatusRead("games", () => getDataAsOf()),
-    timedStatusRead("schedule", () => getPublishedScheduleCoverage()),
-    timedStatusRead("analysis", () => getHistoricalBacktest(0)),
-    timedStatusRead("playoffs", () => getLatestPublishedPlayoffSeason()),
-    timedStatusRead("shot-quality", () => getLatestPublishedShotQualitySeason()),
-  ]);
-  const databaseReachable = connectionResult.status === "fulfilled";
-  if (!databaseReachable) console.error("[data-status/database]", connectionResult.reason);
-  const game = resultValue(gameResult, "games");
-  const schedule = resultValue(scheduleResult, "schedule");
-  const analysis = resultValue(analysisResult, "analysis");
-  const playoffSeason = resultValue(playoffResult, "playoffs");
-  const shotSeason = resultValue(shotResult, "shot-quality");
-  console.info("[DEBUG-data-status-timing/page] ready");
+  const connection = await readStatusValue("database", () => db.execute(sql`select 1`));
+  const databaseReachable = connection !== null;
+
+  let game = null;
+  let schedule = null;
+  let analysis = null;
+  let playoffSeason = null;
+  let shotSeason = null;
+  if (databaseReachable) {
+    // Vercel uses one connection per function. These reads can stall that slot when queued
+    // together, so keep their independent failure states while issuing them one at a time.
+    game = await readStatusValue("games", getDataAsOf);
+    schedule = await readStatusValue("schedule", getPublishedScheduleCoverage);
+    analysis = await readStatusValue("analysis", () => getHistoricalBacktest(0));
+    playoffSeason = await readStatusValue("playoffs", getLatestPublishedPlayoffSeason);
+    shotSeason = await readStatusValue("shot-quality", getLatestPublishedShotQualitySeason);
+  }
 
   return (
     <div className="flex flex-col gap-12" style={{ maxWidth: WIDTH.wide }}>

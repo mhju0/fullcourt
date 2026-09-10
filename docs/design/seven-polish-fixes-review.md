@@ -56,3 +56,12 @@ Local verification on September 11, 2026:
 Hosted preview and production verification are recorded in the release PR. Physical-device
 and human screen-reader testing remain separate from browser automation; no such testing is
 claimed here.
+
+## Hosted status-page follow-up
+
+The first preview exposed a serverless status-page timeout that did not reproduce in the local
+production build or a one-connection local harness. Temporary stage timing showed that bundled
+data and the small database reads completed within 152ms, while the overlapping analysis and
+shot-publication reads did not settle. Their separate cache-miss API requests completed normally.
+The final page sequences its database reads while preserving independent failure reporting.
+Database pool settings and timeouts are unchanged; temporary timing logs are removed before release.
