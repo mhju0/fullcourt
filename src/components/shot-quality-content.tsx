@@ -5,11 +5,13 @@ import useSWR from "swr"
 import { SeasonSelector } from "@/components/season-selector"
 import { Skeleton } from "@/components/ui/skeleton"
 import { apiFetcher, errMsg } from "@/lib/fetcher"
-import { currentDisplaySeason } from "@/lib/nba-season"
+import { NBA_SEASONS } from "@/lib/nba-season"
 import { LEAD, termCardStyle, termInsetStyle, TRACK, TYPE } from "@/lib/terminal-styles"
 import type { ShotQualityCell, ShotQualityResponse } from "@/types"
 import { signedNumber } from "@/lib/signed-number"
 import { MessageCard } from "@/components/ui/message-card"
+import { CopyFindingButton } from "@/components/copy-finding-button"
+import { usePageQuery } from "@/hooks/useSeasonUrl"
 
 // ─── Court geometry ────────────────────────────────────────────────
 // The API grid is UNFOLDED, origin = the rim, in 1-ft cells:
@@ -431,16 +433,37 @@ function CourtSkeleton() {
 // ─── Main component ────────────────────────────────────────────────
 
 export function ShotQualityContent() {
-  const [season, setSeason] = useState<string>(currentDisplaySeason())
-  const [mode, setMode] = useState<ColorMode>("value")
-  const [compareModels, setCompareModels] = useState(false)
+  const { params, update } = usePageQuery()
+  const requestedSeason = params.get("season")
+  const validRequestedSeason = requestedSeason && NBA_SEASONS.includes(requestedSeason)
+    ? requestedSeason
+    : null
+  const requestedMode = params.get("mode")
+  const mode: ColorMode = requestedMode === "diff" ? "diff" : "value"
+  const compareModels = mode === "value" && params.get("compare") === "1"
 
   const { data, error: swrError, isLoading } = useSWR<ShotQualityResponse>(
-    `/api/shot-quality?season=${season}`,
+    validRequestedSeason ? `/api/shot-quality?season=${validRequestedSeason}` : "/api/shot-quality",
     apiFetcher,
     { revalidateOnFocus: false, keepPreviousData: true }
   )
   const error = swrError ? errMsg(swrError) : null
+  const season = validRequestedSeason ?? data?.season ?? NBA_SEASONS.at(-1)!
+  const dataMatchesSelection = Boolean(data && data.season === season)
+  const setSeason = (value: string) => update({ season: value })
+  const setMode = (value: ColorMode) => update({
+    mode: value === "diff" ? "diff" : null,
+    compare: value === "diff" ? null : compareModels ? "1" : null,
+  })
+  const setCompareModels = (value: boolean) => update({ compare: value ? "1" : null })
+  const fallbackNotes = [
+    requestedSeason && !validRequestedSeason && data
+      ? `${requestedSeason} is unavailable on this page. Showing ${data.season}.`
+      : null,
+    requestedMode && requestedMode !== "value" && requestedMode !== "diff"
+      ? `${requestedMode} is not a supported map view. Showing expected eFG%.`
+      : null,
+  ].filter(Boolean)
 
   const cells = useMemo(() => data?.cells ?? [], [data])
 
@@ -482,26 +505,35 @@ export function ShotQualityContent() {
   const diffColorFor = (v: number): string => divColor(v / stats.divD)
 
   const controls = (
-    <div className="flex flex-wrap items-end gap-4">
+    <div className="flex flex-wrap items-end justify-between gap-4">
+      <div className="flex flex-wrap items-end gap-4">
       <SeasonSelector id="shot-quality-season" season={season} onSeasonChange={setSeason} />
       <EncodingToggle mode={mode} onModeChange={setMode} />
+      </div>
+      {dataMatchesSelection ? (
+        <CopyFindingButton
+          key={`${season}-${mode}-${compareModels}`}
+          text={`${season} Expected Shot Value · ${mode === "diff" ? "location model minus zone average, in percentage points" : "expected effective field-goal percentage"}. Model estimates describe shot locations, not guaranteed outcomes.`}
+          query={{ season, mode: mode === "diff" ? "diff" : null, compare: compareModels ? "1" : null }}
+        />
+      ) : null}
     </div>
   )
 
-  if (isLoading && !data) {
+  if (error) {
     return (
       <div className="flex flex-col gap-12">
         {controls}
-        <CourtSkeleton />
+        <MessageCard tone="error" title="FAILED TO LOAD SHOT DATA" body={error} />
       </div>
     )
   }
 
-  if (error || !data) {
+  if ((isLoading && !data) || !data || !dataMatchesSelection) {
     return (
       <div className="flex flex-col gap-12">
         {controls}
-        <MessageCard tone="error" title="FAILED TO LOAD SHOT DATA" body={error ?? "UNKNOWN ERROR"} />
+        <CourtSkeleton />
       </div>
     )
   }
@@ -511,13 +543,27 @@ export function ShotQualityContent() {
   return (
     <div className="flex flex-col gap-12">
       {controls}
+      {fallbackNotes.map((note) => <p key={note} role="status" className="mono text-xs text-[var(--term-text-muted)]">{note}</p>)}
 
       {isEmpty ? (
-        <MessageCard
-          tone="muted"
-          title="NO SHOT DATA FOR THIS SEASON"
-          body="SHOT-LOCATION COORDINATES ONLY REACH BACK TO 1996-97."
-        />
+        <div className="flex flex-col gap-3">
+          <MessageCard
+            tone="muted"
+            title="NO SHOT DATA FOR THIS SEASON"
+            body={season < "1996-97"
+              ? "Shot-location coordinates begin in 1996-97."
+              : season > data.latestPublishedSeason
+                ? `The ${season} expected shot value surface has not been published yet.`
+                : `No expected shot value surface is published for ${season}.`}
+          />
+          <button
+            type="button"
+            onClick={() => setSeason(data.latestPublishedSeason)}
+            className="mono min-h-11 self-start text-xs font-bold text-[var(--term-accent)] underline underline-offset-4"
+          >
+            View latest results · {data.latestPublishedSeason}
+          </button>
+        </div>
       ) : (
         // `data-shot-anchor`: where the README shot of this page ends (scripts/screenshots.mjs).
         <div style={termCardStyle} data-shot-anchor="two-court">
@@ -531,7 +577,7 @@ export function ShotQualityContent() {
 
           {mode === "value" ? (
             <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-              <button type="button" className="min-h-11 text-left text-[15px] font-semibold lg:hidden" aria-pressed={compareModels} onClick={() => setCompareModels(value => !value)}>{compareModels ? "Hide model comparison" : "Compare models"}</button>
+              <button type="button" className="min-h-11 text-left text-[15px] font-semibold lg:hidden" aria-pressed={compareModels} onClick={() => setCompareModels(!compareModels)}>{compareModels ? "Hide model comparison" : "Compare models"}</button>
               <div className={compareModels ? "" : "hidden lg:block"}>
               <ShotCourt
                 cells={cells}

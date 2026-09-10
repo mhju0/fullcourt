@@ -33,7 +33,7 @@ test("schedule facts distinguish four nights and altitude carryover", async ({ r
 test("mobile games keep season, month and date visible", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/games?season=2025-26&date=2026-04-12");
-  const first = page.getByRole("button", { name: "Expand game details" }).first();
+  const first = page.getByRole("button", { name: /^Expand .* at .* on \d{4}-\d{2}-\d{2} game details$/ }).first();
   await expect(first).toBeInViewport({ ratio: 1 });
   const row = await first.boundingBox();
   const dock = await page.getByRole("navigation", { name: "Bottom navigation" }).boundingBox();

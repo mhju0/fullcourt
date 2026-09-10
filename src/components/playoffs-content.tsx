@@ -7,7 +7,6 @@ import { SeasonSelector } from "@/components/season-selector"
 import { Skeleton } from "@/components/ui/skeleton"
 import { cn } from "@/lib/utils"
 import { apiFetcher, errMsg } from "@/lib/fetcher"
-import { currentDisplaySeason } from "@/lib/nba-season"
 import { grindLineLabels } from "@/lib/playoff-rest-facts"
 import { playoffModelSeasons } from "@/lib/playoff-seasons"
 import { LEAD, TERM_ACCENT, termCardStyle, TRACK, TYPE, WIDTH } from "@/lib/terminal-styles"
@@ -19,6 +18,8 @@ import type {
 } from "@/types"
 import { signedNumber } from "@/lib/signed-number"
 import { MessageCard } from "@/components/ui/message-card"
+import { CopyFindingButton } from "@/components/copy-finding-button"
+import { usePageQuery } from "@/hooks/useSeasonUrl"
 
 // ─── Series correctness ─────────────────────────────────────────────
 
@@ -348,28 +349,53 @@ function PlayoffsSkeleton() {
 const PLAYOFF_SEASONS = playoffModelSeasons()
 
 export function PlayoffsContent() {
-  const [season, setSeason] = useState<string>(currentDisplaySeason())
+  const { params, update } = usePageQuery()
+  const requestedSeason = params.get("season")
+  const validRequestedSeason = requestedSeason && PLAYOFF_SEASONS.includes(requestedSeason)
+    ? requestedSeason
+    : null
 
   const { data, error: swrError, isLoading: loading } = useSWR<PlayoffsResponse>(
-    `/api/playoffs?season=${season}`,
+    validRequestedSeason ? `/api/playoffs?season=${validRequestedSeason}` : "/api/playoffs",
     apiFetcher,
     { revalidateOnFocus: false, keepPreviousData: true }
   )
   const error = swrError ? errMsg(swrError) : null
+  const season = validRequestedSeason ?? data?.season ?? PLAYOFF_SEASONS.at(-1)!
+  const dataMatchesSelection = Boolean(data && data.season === season)
+  const setSeason = (value: string) => update({ season: value })
+  const fallbackNote = requestedSeason && !validRequestedSeason && data
+    ? `${requestedSeason} is unavailable on this page. Showing ${data.season}.`
+    : null
 
-  if (loading) return <PlayoffsSkeleton />
+  const controls = (
+    <div className="flex flex-wrap items-end justify-between gap-3">
+      <SeasonSelector id="playoffs-season" season={season} onSeasonChange={setSeason} seasons={PLAYOFF_SEASONS} />
+      {dataMatchesSelection ? (
+        <CopyFindingButton
+          key={season}
+          text={`${season} NBA Playoff Rest. Pick values are model probabilities, not guarantees.`}
+          query={{ season }}
+        />
+      ) : null}
+    </div>
+  )
 
-  if (error || !data) {
+  if (error) {
     return (
       <div className="flex flex-col gap-12">
-        <SeasonSelector id="playoffs-season" season={season} onSeasonChange={setSeason} seasons={PLAYOFF_SEASONS} />
+        {controls}
         <MessageCard
           tone="error"
           title="FAILED TO LOAD THE BRACKET"
-          body={error ?? "UNKNOWN ERROR"}
+          body={error}
         />
       </div>
     )
+  }
+
+  if ((loading && !data) || !data || !dataMatchesSelection) {
+    return <div className="flex flex-col gap-12">{controls}<PlayoffsSkeleton /></div>
   }
 
   return (
@@ -379,15 +405,27 @@ export function PlayoffsContent() {
     // worse — it gave the page two different right edges — so the whole column comes in
     // together and everything stays aligned.
     <div className="flex flex-col gap-12" style={{ maxWidth: WIDTH.wide }}>
-      <SeasonSelector id="playoffs-season" season={season} onSeasonChange={setSeason} seasons={PLAYOFF_SEASONS} />
+      {controls}
+      {fallbackNote ? <p role="status" className="mono text-xs text-[var(--term-text-muted)]">{fallbackNote}</p> : null}
 
       {/* Reachable whenever a season's playoffs have not been played yet. */}
       {data.rounds.length === 0 ? (
-        <MessageCard
-          tone="muted"
-          title="NO BRACKET FOR THIS SEASON"
-          body="These playoffs have not been played yet."
-        />
+        <div className="flex flex-col gap-3">
+          <MessageCard
+            tone="muted"
+            title="NO PUBLISHED BRACKET FOR THIS SEASON"
+            body={season > data.latestPublishedSeason
+              ? `The ${season} playoffs have not been published yet.`
+              : `No playoff bracket is published for ${season}.`}
+          />
+          <button
+            type="button"
+            onClick={() => setSeason(data.latestPublishedSeason)}
+            className="mono min-h-11 self-start text-xs font-bold text-[var(--term-accent)] underline underline-offset-4"
+          >
+            View latest results · {data.latestPublishedSeason}
+          </button>
+        </div>
       ) : (
         <>{data.rounds.map((group) => <RoundSection key={group.round} group={group} />)}</>
       )}

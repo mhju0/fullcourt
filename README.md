@@ -30,6 +30,10 @@ The [engineering walkthrough source](src/app/how-it-was-built/page.tsx) explains
 data flow, implementation tradeoffs and verification. About identifies the author and links
 to that walkthrough in the application.
 
+[Data status](https://fullcourt-nba.vercel.app/data-status) separates coverage and available
+refresh dates from database connectivity. Playoff Rest and Expected Shot Value open their latest
+published results and preserve selected views in shareable links.
+
 ## What you can examine
 
 | Page | What it shows |

@@ -8,6 +8,7 @@ const season = (label: string, games: number, winPct = 60, homeBaselinePct = 55)
   season: label, games, restedTeamWins: Math.round(games * winPct / 100), winPct, homeBaselinePct,
 });
 const backtest: AnalysisResponse = {
+  latestEvidenceDate: "2026-04-12",
   totalGames: 1000, overallWins: 600, overallWinRate: 60,
   thresholds: [2, 3, 5, 7].map((threshold) => ({ threshold, games: 100, restedTeamWins: 60, winPct: 60 })),
   homeAwayBreakdown: {

@@ -1,7 +1,10 @@
 import { z } from "zod";
 import { CACHE, jsonRoute, seasonParam } from "@/lib/api-route";
-import { getPlayoffSeriesWithPredictions } from "@/lib/db/queries";
-import { currentDisplaySeason } from "@/lib/nba-season";
+import {
+  getLatestPublishedPlayoffSeason,
+  getPlayoffSeriesWithPredictions,
+} from "@/lib/db/queries";
+import { PublicApiError } from "@/lib/api-errors";
 import { buildPlayoffBracket } from "@/lib/playoff-bracket";
 import type { PlayoffsResponse } from "@/types";
 
@@ -19,7 +22,19 @@ export const maxDuration = 30;
 export const GET = jsonRoute(
   "api/playoffs",
   z.object({ season: seasonParam.optional() }),
-  async ({ season = currentDisplaySeason() }): Promise<PlayoffsResponse> =>
-    buildPlayoffBracket(season, await getPlayoffSeriesWithPredictions(season)),
+  async ({ season }): Promise<PlayoffsResponse> => {
+    const latestPublishedSeason = await getLatestPublishedPlayoffSeason();
+    if (!latestPublishedSeason) {
+      throw new PublicApiError("Playoff data is not available yet.", 503);
+    }
+    const selectedSeason = season ?? latestPublishedSeason;
+    return {
+      ...buildPlayoffBracket(
+        selectedSeason,
+        await getPlayoffSeriesWithPredictions(selectedSeason)
+      ),
+      latestPublishedSeason,
+    };
+  },
   CACHE.inSeason
 );

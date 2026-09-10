@@ -119,7 +119,7 @@ test.describe("Games page", () => {
     // details" aria-label (src/components/matchup-table.tsx) — there's
     // no combined "TEAM @ TEAM" text node in the current markup.
     const firstCard = page
-      .getByRole("button", { name: /Expand game details|Collapse game details/ })
+      .getByRole("button", { name: /^(Expand|Collapse) .* game details$/ })
       .first();
     await expect(firstCard).toBeVisible({ timeout: 60_000 });
 
@@ -205,13 +205,18 @@ test("mobile keeps summaries below matchups and ignores saved density", async ({
 for (const available of [false, true]) {
   test(`off-season defaults to completed games; upcoming schedule available=${available}`, async ({ page }) => {
     await page.clock.setFixedTime(new Date("2026-09-07T12:00:00Z"));
+    await page.setViewportSize({ width: 390, height: 844 });
     await page.route("**/api/games/dates?season=2026-27", route => route.fulfill({ json: {
       data: available ? [{ date: "2026-10-20", gameCount: 1 }] : [], error: null,
     } }));
     await page.goto("/games");
     await expect(page.getByLabel("SEASON", { exact: true })).toHaveValue("2025-26");
     await expect(page.getByTestId("selected-date-display")).toContainText("APRIL 12, 2026");
-    await expect(page.getByText("2025-26 complete · final games", { exact: true })).toBeVisible();
+    const seasonNotice = page.getByText("2025-26 complete · final games", { exact: true }).filter({ visible: true });
+    await expect(seasonNotice).toBeVisible();
+    const noticeBox = await seasonNotice.boundingBox();
+    const matchupsBox = await page.getByText("MATCHUPS", { exact: true }).boundingBox();
+    expect(noticeBox!.y).toBeLessThan(matchupsBox!.y);
     const upcoming = page.getByRole("button", { name: "View 2026-27 →" });
     if (available) {
       await expect(upcoming).toBeVisible();
@@ -238,7 +243,7 @@ test("shared Games links restore season, date, density and browser history", asy
   await expect(page.getByText("NO GAMES SCHEDULED")).toBeVisible();
   await page.goBack();
   await expect(display).toContainText("DECEMBER 25, 2024");
-  await expect(page.getByRole("button", { name: /Expand game details/ }).first()).toBeVisible();
+  await expect(page.getByRole("button", { name: /^Expand .* game details$/ }).first()).toBeVisible();
   await page.goForward();
   await expect(display).toContainText("DECEMBER 24, 2024");
     await page.getByLabel("SEASON", { exact: true }).selectOption("2023-24");
@@ -260,11 +265,11 @@ test("date-only links infer the season; invalid dates fall back safely", async (
 
 test("expanded game links survive reload and changing dates clears the expansion", async ({ page }) => {
   await page.goto("/games?season=2024-25&date=2024-12-25");
-  const first = page.getByRole("button", { name: "Expand game details", exact: true }).first();
+  const first = page.getByRole("button", { name: /^Expand .* game details$/ }).first();
   await first.click();
   await expect(page).toHaveURL(/game=\d+/);
   await page.reload();
-  await expect(page.getByRole("button", { name: "Collapse game details", exact: true })).toHaveCount(1);
+  await expect(page.getByRole("button", { name: /^Collapse .* game details$/ })).toHaveCount(1);
   await page.getByRole("button", { name: "Previous day" }).click();
   await expect(page).not.toHaveURL(/game=/);
 });

@@ -20,6 +20,7 @@ const ROUTES = [
   "/how-it-was-built",
   "/explore",
   "/games",
+  "/data-status",
   "/season",
   "/schedule",
   "/analysis",

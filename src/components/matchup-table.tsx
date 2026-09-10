@@ -635,7 +635,7 @@ function GameRow({
         role="button"
         tabIndex={0}
         aria-expanded={expanded}
-        aria-label={expanded ? "Collapse game details" : "Expand game details"}
+        aria-label={`${expanded ? "Collapse" : "Expand"} ${awayBrand.name} at ${homeBrand.name} on ${game.date} game details`}
         onClick={toggle}
         onKeyDown={onKeyDown}
         className="fc-game-grid grid cursor-pointer items-center gap-x-4 transition-colors hover:bg-[var(--term-surface-2)] focus-visible:ring-2 focus-visible:ring-[var(--term-accent)]/40"

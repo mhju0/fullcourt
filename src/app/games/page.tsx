@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo, useEffect, useRef } from "react"
+import { useCallback, useMemo, useEffect, useRef } from "react"
 import useSWR from "swr"
 import { apiFetcher } from "@/lib/fetcher"
 import type { GameDateCount } from "@/types"
@@ -203,10 +203,10 @@ function EmptyState({ label }: { label: string }) {
   )
 }
 
-function OffSeasonBanner({ season, finalSlate, onUpcoming }: { season: string; finalSlate: boolean; onUpcoming?: () => void }) {
+function OffSeasonBanner({ season, finalSlate, onUpcoming, className }: { season: string; finalSlate: boolean; onUpcoming?: () => void; className?: string }) {
   return (
     <div
-      className="mono flex flex-wrap items-center justify-between gap-2 px-4 py-3"
+      className={cn("mono flex flex-wrap items-center justify-between gap-2 px-4 py-3", className)}
       style={{
         background: "var(--term-surface)",
         border: "1px solid var(--term-border)",
@@ -330,13 +330,26 @@ export default function GamesPage() {
   const slate = useGameSlate()
   const monthStrip = useRef<HTMLDivElement>(null)
   const dateStrip = useRef<HTMLDivElement>(null)
-  const revealMonth = () => {
+  const revealSelectedDateControls = useCallback(() => {
     for (const strip of [monthStrip.current, dateStrip.current]) {
       const active = strip?.querySelector<HTMLElement>('[aria-pressed="true"], [aria-current="date"]')
-      if (strip && active) strip.scrollLeft += active.getBoundingClientRect().left - strip.getBoundingClientRect().left
+      if (!strip || !active) continue
+      const stripRect = strip.getBoundingClientRect()
+      const activeRect = active.getBoundingClientRect()
+      if (activeRect.left < stripRect.left) {
+        strip.scrollLeft += activeRect.left - stripRect.left
+      } else if (activeRect.right > stripRect.right) {
+        strip.scrollLeft += activeRect.right - stripRect.right
+      }
     }
-  }
-  useEffect(revealMonth, [slate.selectedDate, slate.calendar.kind])
+  }, [])
+  useEffect(() => {
+    revealSelectedDateControls()
+    const observer = new ResizeObserver(revealSelectedDateControls)
+    if (monthStrip.current) observer.observe(monthStrip.current)
+    if (dateStrip.current) observer.observe(dateStrip.current)
+    return () => observer.disconnect()
+  }, [revealSelectedDateControls, slate.selectedDate, slate.calendar.kind])
 
   const upcomingSeason = nextSeasonLabel(offSeasonLabel)
   const { data: upcomingDays } = useSWR<GameDateCount[]>(
@@ -506,6 +519,14 @@ export default function GamesPage() {
             <ChevronRight />
           </Button>
           </div>
+          {showOffSeasonBanner && slate.season === offSeasonLabel ? (
+            <OffSeasonBanner
+              season={offSeasonLabel}
+              finalSlate={slate.selectedDate === slate.lastDate}
+              onUpcoming={upcomingDays?.length ? () => slate.send({ type: "SEASON_SELECTED", season: upcomingSeason }) : undefined}
+              className="xl:hidden"
+            />
+          ) : null}
       </section>
 
       {/* Matchups section */}
@@ -519,12 +540,16 @@ export default function GamesPage() {
       </div>
       </div>
       <aside aria-label="Slate summary and upcoming edges" className="flex min-w-0 flex-col gap-6">
-      {/* Completion describes the selected season; the final-slate label follows the selected date. */}
-      {showOffSeasonBanner && slate.season === offSeasonLabel && (
-        <OffSeasonBanner season={offSeasonLabel} finalSlate={slate.selectedDate === slate.lastDate} onUpcoming={upcomingDays?.length ? () => slate.send({ type: "SEASON_SELECTED", season: upcomingSeason }) : undefined} />
-      )}
-
-
+      {/* At desktop widths this stays in the summary rail. The duplicate above is display-none
+          there and places the same context before the long matchup list on narrower screens. */}
+      {showOffSeasonBanner && slate.season === offSeasonLabel ? (
+        <OffSeasonBanner
+          season={offSeasonLabel}
+          finalSlate={slate.selectedDate === slate.lastDate}
+          onUpcoming={upcomingDays?.length ? () => slate.send({ type: "SEASON_SELECTED", season: upcomingSeason }) : undefined}
+          className="hidden xl:flex"
+        />
+      ) : null}
         <StatSummaryRow
           gamesToday={slate.status === "slateReady" || slate.status === "slateEmpty" ? slate.games.length : null}
           avgRestAdv={avgRestAdv}

@@ -32,6 +32,7 @@ export function HomeContent({ findings }: { findings: HomeFindings }) {
               {signedNumber(historical.edgePp, 1)}<span> pp</span>
             </p>
             <p>Percentage-point difference from the home baseline in {historical.games.toLocaleString()} games with the widest rest gaps (model score ≥ 7).</p>
+            {historical.latestEvidenceDate ? <p className={styles.metadata}>Rest evidence through {historical.latestEvidenceDate}</p> : null}
           </> : <p>The historical comparison is unavailable. Model Results has the underlying evidence and data status.</p>}
         </div>
         <div>

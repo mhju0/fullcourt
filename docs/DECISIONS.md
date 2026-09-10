@@ -743,3 +743,23 @@ roles. Season Report separates the result and interpretation with a rule and con
 then frames team records and notable games as separate sections. About, engineering and Playoff
 Rest use chapter dividers. Existing semantic data colors and motion policy remain unchanged.
 See the [control and section audit](design/control-and-section-audit.md).
+
+
+### D-69 · Publication-aware defaults and inspectable data status — ACTIVE
+
+On September 11, 2026 the owner approved all seven findings in the
+[recruiter and user audit](research/2026-09-11-recruiter-user-polish-audit.md).
+Playoff Rest and Expected Shot Value default to their latest usable publication, while explicit
+season selections remain authoritative. URL state preserves research selections and map controls;
+copy actions include interpretive context. Loading or failed requests cannot display the previous
+season's results under a new label.
+
+The human-readable data-status page distinguishes database connectivity, data coverage and known
+refresh evidence. Unknown refresh times stay unknown. The homepage historical date follows the
+analysis evidence rather than the latest ingested score. The machine health endpoint is unchanged.
+
+Games places its offseason notice with date controls on mobile, gives matchup controls distinct
+accessible names, and reveals selected date controls after container resizing without moving
+focus. Games has a specific page title, and player-count labels use the correct singular/plural.
+The existing homepage hero and model outputs remain unchanged. See the
+[implementation and verification record](design/seven-polish-fixes-review.md).

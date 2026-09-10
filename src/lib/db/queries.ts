@@ -622,6 +622,24 @@ export async function getDataAsOf(): Promise<DataAsOf> {
   return { finalGames, latestFinalDate };
 }
 
+/** Published regular-season schedule coverage, independent of game completion. */
+export async function getPublishedScheduleCoverage(): Promise<{
+  games: number;
+  firstDate: string | null;
+  lastDate: string | null;
+}> {
+  const [row] = await db
+    .select({ total: count(), first: min(games.date), last: max(games.date) })
+    .from(games)
+    .where(publishableGames());
+
+  return {
+    games: Number(row?.total ?? 0),
+    firstDate: row?.first ? String(row.first) : null,
+    lastDate: row?.last ? String(row.last) : null,
+  };
+}
+
 /**
  * Returns all final games that have fatigue scores computed for both teams.
  * Only the fields needed for analysis are selected to keep the payload lean.
@@ -1192,6 +1210,15 @@ export async function getPlayoffSeriesWithPredictions(
   return rows.map((row) => mapRowToPlayoffSeriesWithPredictions(row, priorGames));
 }
 
+/** Newest season that can render a bracket, derived from the publication table itself. */
+export async function getLatestPublishedPlayoffSeason(): Promise<string | null> {
+  const [row] = await db
+    .select({ latest: max(playoffSeries.season) })
+    .from(playoffSeries);
+
+  return row?.latest ? String(row.latest) : null;
+}
+
 // ─── Shot Quality: Expected Shot Value (xeFG%) surface ──────────
 //
 // Reads the league-grain shot_grid cells (team_id IS NULL) joined to the two
@@ -1292,6 +1319,34 @@ export async function getShotQualityGrid(season: string): Promise<ShotQualityCel
   `)) as unknown as ShotQualityGridRow[];
 
   return rows.map(mapShotQualityRow);
+}
+
+/**
+ * Newest season with a league grid and both surfaces needed by the comparison view.
+ * `shot_grid` and `shot_value_surface` deliberately remain raw SQL tables in this app.
+ */
+export async function getLatestPublishedShotQualitySeason(): Promise<string | null> {
+  const rows = (await db.execute(sql`
+    SELECT max(g.season) AS latest
+    FROM shot_grid g
+    WHERE g.team_id IS NULL
+      AND EXISTS (
+        SELECT 1 FROM shot_value_surface s
+        WHERE s.season = g.season
+          AND s.cell_x = g.cell_x
+          AND s.cell_y = g.cell_y
+          AND s.model_version = ${SHOT_MODEL_GBM}
+      )
+      AND EXISTS (
+        SELECT 1 FROM shot_value_surface s
+        WHERE s.season = g.season
+          AND s.cell_x = g.cell_x
+          AND s.cell_y = g.cell_y
+          AND s.model_version = ${SHOT_MODEL_BASELINE}
+      )
+  `)) as unknown as { latest: string | null }[];
+
+  return rows[0]?.latest ? String(rows[0].latest) : null;
 }
 
 // ─── Schedule Disparity query ───────────────────────────────────

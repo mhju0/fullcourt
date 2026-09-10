@@ -128,6 +128,8 @@ export interface VenueBaseline {
 
 /** Historical backtest stats (final games with fatigue data, |RA| >= 0.5). */
 export interface AnalysisResponse {
+  /** ET date of the newest final game that has both teams' fatigue evidence. */
+  latestEvidenceDate: string | null;
   /**
    * Games counted in every headline figure below: |RA| >= 0.5 **and** the more-rested team
    * was also at home. Narrower than `venueBaseline.games` on both counts.
@@ -303,6 +305,8 @@ export interface PlayoffMethodSummary {
 
 export interface PlayoffsResponse {
   season: string;
+  /** Newest season with at least one published playoff-series row. */
+  latestPublishedSeason: string;
   rounds: PlayoffRoundGroup[];
   summary: {
     fullInsample: PlayoffMethodSummary;
@@ -343,6 +347,8 @@ export interface ShotQualityCell {
 
 export interface ShotQualityResponse {
   season: string;
+  /** Newest season with league cells and both published model surfaces. */
+  latestPublishedSeason: string;
   /** The requested `model` (default "gbm-v1"); a display hint — both surfaces are always returned. */
   activeModel: ShotQualityModelVersion;
   cells: ShotQualityCell[];

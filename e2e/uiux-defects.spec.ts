@@ -16,10 +16,10 @@ for (const route of ["games", "playoffs"]) {
   test(`${route} details change immediately under reduced motion`, async ({ page }) => {
     await page.emulateMedia({ reducedMotion: "reduce" });
     await page.goto(`/${route}`);
-    const control = page.getByRole("button", { name: route === "games" ? "Expand game details" : "Expand series details" }).first();
+    const control = page.getByRole("button", { name: route === "games" ? /^Expand .* game details$/ : "Expand series details" }).first();
     await expect(control).toBeVisible({ timeout: 45000 });
     await control.click();
-    await expect(page.getByRole("button", { name: route === "games" ? "Collapse game details" : "Collapse series details" }).first()).toHaveAttribute("aria-expanded", "true");
+    await expect(page.getByRole("button", { name: route === "games" ? /^Collapse .* game details$/ : "Collapse series details" }).first()).toHaveAttribute("aria-expanded", "true");
     const moving = await page.evaluate(() => document.getAnimations().filter((a) =>
       a.playState === "running" && a instanceof CSSTransition &&
       ["grid-template-rows", "rotate", "transform", "translate"].includes(a.transitionProperty)

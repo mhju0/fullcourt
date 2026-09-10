@@ -10,14 +10,16 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { NextRequest } from "next/server";
 import { GET } from "../playoffs/route";
 import { CACHE } from "@/lib/api-route";
-import { getPlayoffSeriesWithPredictions } from "@/lib/db/queries";
+import { getLatestPublishedPlayoffSeason, getPlayoffSeriesWithPredictions } from "@/lib/db/queries";
 import type { PlayoffsResponse, PlayoffSeriesWithPredictions } from "@/types";
 
 vi.mock("@/lib/db/queries", () => ({
+  getLatestPublishedPlayoffSeason: vi.fn(),
   getPlayoffSeriesWithPredictions: vi.fn(),
 }));
 
 const mockGetPlayoffSeries = vi.mocked(getPlayoffSeriesWithPredictions);
+const mockLatestSeason = vi.mocked(getLatestPublishedPlayoffSeason);
 
 function team(id: number, abbreviation: string, name: string) {
   return { id, abbreviation, name };
@@ -70,6 +72,8 @@ function makeReq(search = "") {
 describe("GET /api/playoffs", () => {
   beforeEach(() => {
     mockGetPlayoffSeries.mockReset();
+    mockLatestSeason.mockReset();
+    mockLatestSeason.mockResolvedValue("2025-26");
   });
 
   it("returns 200 with the { data, error } envelope", async () => {
@@ -88,6 +92,7 @@ describe("GET /api/playoffs", () => {
 
     expect(body.error).toBeNull();
     expect(body.data.season).toBe("2025-26");
+    expect(body.data.latestPublishedSeason).toBe("2025-26");
     expect(body.data.rounds.map((r) => r.round)).toEqual([1, 2]);
     expect(body.data.summary.fullInsample.knownWinnerGames).toBe(2);
   });
@@ -98,6 +103,26 @@ describe("GET /api/playoffs", () => {
     await GET(makeReq());
 
     expect(mockGetPlayoffSeries).toHaveBeenCalledWith("2025-26");
+  });
+
+  it("defaults to the latest season in the publication table", async () => {
+    mockLatestSeason.mockResolvedValueOnce("2024-25");
+    mockGetPlayoffSeries.mockResolvedValueOnce([]);
+
+    await GET(makeReq());
+
+    expect(mockGetPlayoffSeries).toHaveBeenCalledWith("2024-25");
+  });
+
+  it("reports a missing publication without querying a made-up season", async () => {
+    mockLatestSeason.mockResolvedValueOnce(null);
+
+    const res = await GET(makeReq());
+    const body = (await res.json()) as { error: string };
+
+    expect(res.status).toBe(503);
+    expect(body.error).toBe("Playoff data is not available yet.");
+    expect(mockGetPlayoffSeries).not.toHaveBeenCalled();
   });
 
   it("reads the season it was asked for", async () => {

@@ -113,10 +113,12 @@ export function buildHistoricalBacktest(
   // the effect it exists to subtract.
   let baselineGames = 0;
   let baselineHomeWins = 0;
+  let latestEvidenceDate: string | null = null;
   const baselineBySeason = new Map<string, { games: number; homeWins: number }>();
 
   for (const row of rows) {
     if (row.homeScore === null || row.awayScore === null) continue;
+    if (latestEvidenceDate === null || row.date > latestEvidenceDate) latestEvidenceDate = row.date;
 
     const homeWon = row.homeScore > row.awayScore;
 
@@ -213,6 +215,7 @@ export function buildHistoricalBacktest(
   };
 
   return {
+    latestEvidenceDate,
     totalGames: called.length,
     overallWins,
     overallWinRate: winPct(overallWins, called.length),

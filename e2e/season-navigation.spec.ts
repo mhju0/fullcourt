@@ -24,11 +24,27 @@ test("season, month and date stay visible and restore from the URL", async ({ pa
   await expect(month.getByRole("button").first()).toBeFocused();
 });
 
+test("selected month and date recover after a desktop-to-phone resize without moving focus", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/games?season=2025-26&date=2026-04-12");
+  const season = page.getByLabel("SEASON", { exact: true });
+  const selectedMonth = page.getByRole("group", { name: "Month", exact: true }).locator('[aria-pressed="true"]');
+  const selectedDate = page.getByRole("group", { name: "Date", exact: true }).locator('[aria-current="date"]');
+  await expect(selectedDate).toBeVisible({ timeout: 60_000 });
+  await season.focus();
+
+  await page.setViewportSize({ width: 390, height: 844 });
+
+  await expect(selectedMonth).toBeInViewport();
+  await expect(selectedDate).toBeInViewport();
+  await expect(season).toBeFocused();
+});
+
 for (const width of [1440, 1280, 1024, 768, 390]) {
   test(`Deep Dive keeps every column reachable at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 900 });
     await page.goto("/games?season=2026-27&date=2027-03-22&view=deep");
-    await expect(page.getByRole("button", { name: "Expand game details" }).first()).toBeVisible();
+    await expect(page.getByRole("button", { name: /^Expand .* game details$/ }).first()).toBeVisible();
     const region = page.getByRole("region", { name: "Matchups table; scroll horizontally for all columns" });
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
     if (width >= 1280) {
@@ -44,8 +60,8 @@ for (const width of [1440, 1280, 1024, 768, 390]) {
       await region.evaluate(el => { el.scrollLeft = el.scrollWidth; });
       await expect(page.getByText("GAP SIZE", { exact: true })).toBeInViewport();
     }
-    await page.getByRole("button", { name: "Expand game details" }).first().click();
-    await expect(page.getByRole("button", { name: "Collapse game details" })).toBeVisible();
+    await page.getByRole("button", { name: /^Expand .* game details$/ }).first().click();
+    await expect(page.getByRole("button", { name: /^Collapse .* game details$/ })).toBeVisible();
   });
 }
 
