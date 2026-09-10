@@ -547,8 +547,8 @@ export function PlayerRestContent() {
           <span className="mono ml-auto text-[10px] uppercase tracking-label text-[var(--term-text-muted)]">
             {rows.length.toLocaleString()}{" "}
             {activeYear === "career"
-              ? "players"
-              : `players in ${seasonLabel(activeYear)}`}
+              ? rows.length === 1 ? "player" : "players"
+              : `${rows.length === 1 ? "player" : "players"} in ${seasonLabel(activeYear)}`}
           </span>
         </div>
       </div>

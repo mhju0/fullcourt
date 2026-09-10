@@ -122,7 +122,7 @@ export default function RootLayout({
               <Link href="/behind-the-data">Methods</Link>
               <Link href="/how-it-was-built">How it was built</Link>
               <a href="https://github.com/mhju0/fullcourt">Source ↗</a>
-              <a href="/api/health">System status ↗</a>
+              <Link href="/data-status">Data status</Link>
               <PageSearchButton />
             </nav>
           </div>

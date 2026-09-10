@@ -13,6 +13,7 @@ export function historicalHomeFinding(data: AnalysisResponse) {
     baselineGames: data.venueBaseline.games,
     edgePp: Math.round((widest.winPct - data.venueBaseline.homeWinPct) * 10) / 10,
     coverage: seasons.length ? `${seasons[0]} to ${seasons.at(-1)}` : null,
+    latestEvidenceDate: data.latestEvidenceDate,
   };
 }
 

@@ -29,7 +29,11 @@ async function loadFindings(): Promise<HomeFindings> {
       throw error;
     }),
   ]);
-  return { historical: historicalHomeFinding(history), schedule: schedule ? scheduleHomeFinding(schedule) : null, shootingCoverage };
+  return {
+    historical: historicalHomeFinding(history),
+    schedule: schedule ? scheduleHomeFinding(schedule) : null,
+    shootingCoverage,
+  };
 }
 
 export default async function HomePage() {

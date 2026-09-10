@@ -42,5 +42,9 @@ and an owner decision; [Decisions](DECISIONS.md) retains those reasons.
 
 ## Completed release
 
+The seven approved recruiter/user polish findings are recorded in
+[D-69](DECISIONS.md) and the [verification record](design/seven-polish-fixes-review.md).
+The separate feature suggestions remain proposals; this work does not expand the deferred scope.
+
 The approved rest-focused redesign and three-season Officiating explorer were deployed through
 PRs #84 and #85 on 2026-09-08. See [release verification](design/redesign-release-review.md).

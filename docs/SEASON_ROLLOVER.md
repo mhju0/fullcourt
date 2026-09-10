@@ -11,6 +11,11 @@ an upcoming season before it has completed games. Games defaults to the complete
 during the offseason and offers the upcoming season only when its schedule exists. Explicit URL
 selection wins. Other pages validate season support and show a fallback when necessary.
 
+Playoff Rest and Expected Shot Value default to their latest usable database publication,
+independently of the October calendar transition. Their explicit season selections remain
+shareable; an unpublished selected season explains the missing data and offers the latest
+results. `/data-status` separates schedule coverage, result evidence and recorded refresh dates.
+
 The daily pipeline season-gates; Vercel cron remains scheduled year-round and has its own
 no-work behavior. Neither needs an annual cron-expression edit. Officiating defaults to the
 latest published season, not a guessed empty source season.

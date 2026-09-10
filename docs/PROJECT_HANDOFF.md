@@ -1,6 +1,6 @@
 # Project handoff
 
-Reconciled 2026-09-10. Source/tests and Git take precedence. This is a current-state summary;
+Reconciled 2026-09-11. Source/tests and Git take precedence. This is a current-state summary;
 update these sections in place. Rationale belongs in [Decisions](DECISIONS.md).
 
 ## Product and release
@@ -28,6 +28,13 @@ dependency audit. See [verification](design/home-hero-release-review.md).
 Shared filters now use 44px targets and 16px text. Analysis uses equal-width filter columns;
 Season Report uses bordered sections with a separate interpretation surface. The
 [control and section audit](design/control-and-section-audit.md) records route coverage and rationale.
+
+D-69 makes Playoff Rest and Expected Shot Value default to their latest usable publication.
+Their selected views are shareable through URLs and copy actions. `/data-status` separates
+coverage, refresh evidence and database connectivity; the homepage historical date comes from
+the analysis population. Games moves offseason context beside mobile date controls, names
+matchup controls distinctly, and restores selected-chip visibility after resizing. See the
+[seven-fix review](design/seven-polish-fixes-review.md) for verification and release evidence.
 
 ## Architecture and safeguards
 

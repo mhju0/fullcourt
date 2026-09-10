@@ -17,14 +17,19 @@ are authoritative for individual fields, optional values, and units.
 | `/api/games/search` | Optional `season`, 2–3 letter uppercase `team`, nonnegative `minRA`, `result` (`all`, `correct`, `incorrect`), `page`, `limit` | Paginated historical game evidence; page defaults to 1, limit to 20 and caps at 100 | `inSeason` |
 | `/api/season-report` | Optional browsable `season` | Completed results, team records, notable games, and schedule/workload data with source-basis labels | `inSeason` |
 | `/api/schedule-disparity` | Optional rankable `season` | Relative team schedule measures and pricing | `historical` |
-| `/api/playoffs` | Optional `season` | Bracket, series, and prediction records | `inSeason` |
-| `/api/shot-quality` | Required `season`; optional `model` (`gbm-v1`, `baseline-zone-v1`) | Grid cells and display-model hint | `historical` |
+| `/api/playoffs` | Optional `season` | Bracket, series, prediction records, and latest published season | `inSeason` |
+| `/api/shot-quality` | Optional `season`; optional `model` (`gbm-v1`, `baseline-zone-v1`) | Grid cells, display-model hint, and latest published season | `historical` |
 
 Shared numeric rest-advantage parameters default to zero. Season validation uses the calendar
 helpers in `src/lib/nba-season.ts`; browsable seasons include a released-but-unplayed season
 when allowed by that helper. Schedule Edge applies its own rankable-season exclusions.
 `CACHE.inSeason` and `CACHE.historical` define exact TTLs in source; the names do not mean that
 all returned games have been played.
+
+Without an explicit season, Playoff Rest and Expected Shot Value resolve their latest usable
+publication from database records. They do not advance to an empty research season merely
+because the calendar changed. A valid explicit season remains authoritative, including an
+empty result; a failed publication lookup remains an error. See [season rollover](SEASON_ROLLOVER.md).
 
 Games and upcoming-game endpoints preserve live-score behavior instead of serving a long-lived
 edge snapshot. Heavy domain reads also use the stamped server cache, including coalesced
@@ -54,6 +59,10 @@ These are static publication assets, not database-query endpoints. `/referees` r
 `GET /api/health` executes `select 1` and returns its own shape, outside the data/error envelope:
 `{ status: "ok", db: "up", timestamp }` with HTTP 200, or `error`/`down` with HTTP 503. It does
 not verify source freshness, row coverage, or scheduled ingest.
+
+The human-readable `/data-status` page presents coverage and available refresh evidence.
+Unknown producer refresh times remain unknown; a successful database check is not a publication
+timestamp. The footer links to this page while the machine probe retains its existing contract.
 
 `GET /api/cron/update` is an authenticated write operation despite its HTTP method. It requires
 the configured cron secret and updates recent scores/status from ESPN. Never use it as a

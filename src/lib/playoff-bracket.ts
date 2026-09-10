@@ -89,7 +89,7 @@ function groupByRound(
 export function buildPlayoffBracket(
   season: string,
   series: readonly PlayoffSeriesWithPredictions[]
-): PlayoffsResponse {
+): Omit<PlayoffsResponse, "latestPublishedSeason"> {
   return {
     season,
     rounds: groupByRound(series),

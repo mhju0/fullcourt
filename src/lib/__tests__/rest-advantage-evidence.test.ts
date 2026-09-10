@@ -65,6 +65,11 @@ describe("buildHistoricalBacktest — venue baseline", () => {
     expect(result.totalGames).toBe(2);
   });
 
+  it("dates the evidence from the newest measured row, independent of later score-only data", () => {
+    const result = buildHistoricalBacktest([...MIXED]);
+    expect(result.latestEvidenceDate).toBe("2024-01-05");
+  });
+
   it("counts home wins irrespective of which side was rested", () => {
     const result = buildHistoricalBacktest([...MIXED]);
 

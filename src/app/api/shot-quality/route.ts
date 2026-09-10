@@ -1,6 +1,10 @@
 import { z } from "zod";
 import { CACHE, jsonRoute, seasonParam } from "@/lib/api-route";
-import { getShotQualityGrid } from "@/lib/db/queries";
+import {
+  getLatestPublishedShotQualitySeason,
+  getShotQualityGrid,
+} from "@/lib/db/queries";
+import { PublicApiError } from "@/lib/api-errors";
 import type { ShotQualityModelVersion, ShotQualityResponse } from "@/types";
 
 export const runtime = "nodejs";
@@ -17,15 +21,21 @@ const DEFAULT_MODEL: ShotQualityModelVersion = "gbm-v1";
 export const GET = jsonRoute(
   "api/shot-quality",
   z.object({
-    season: seasonParam,
+    season: seasonParam.optional(),
     /** An optional display hint; the grid itself is model-agnostic. */
     model: z.enum(["gbm-v1", "baseline-zone-v1"]).default(DEFAULT_MODEL),
   }),
   async ({ season, model }): Promise<ShotQualityResponse> => {
-    const cells = await getShotQualityGrid(season);
+    const latestPublishedSeason = await getLatestPublishedShotQualitySeason();
+    if (!latestPublishedSeason) {
+      throw new PublicApiError("Expected shot value data is not available yet.", 503);
+    }
+    const selectedSeason = season ?? latestPublishedSeason;
+    const cells = await getShotQualityGrid(selectedSeason);
 
     return {
-      season,
+      season: selectedSeason,
+      latestPublishedSeason,
       activeModel: model,
       cells,
       meta: {
