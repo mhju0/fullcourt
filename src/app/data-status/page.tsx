@@ -32,6 +32,19 @@ function resultValue<T>(result: PromiseSettledResult<T>, label: string): T | nul
   return null;
 }
 
+async function timedStatusRead<T>(label: string, operation: () => Promise<T>): Promise<T> {
+  const startedAt = Date.now();
+  console.info(`[DEBUG-data-status-timing/${label}] start`);
+  try {
+    const value = await operation();
+    console.info(`[DEBUG-data-status-timing/${label}] fulfilled in ${Date.now() - startedAt}ms`);
+    return value;
+  } catch (error) {
+    console.info(`[DEBUG-data-status-timing/${label}] rejected in ${Date.now() - startedAt}ms`);
+    throw error;
+  }
+}
+
 function formatUtcTimestamp(value: string): string {
   return new Intl.DateTimeFormat("en-US", {
     month: "short",
@@ -80,20 +93,23 @@ function StatusCard({
 }
 
 export default async function DataStatusPage() {
+  console.info("[DEBUG-data-status-timing/page] start");
   const playerPayload = JSON.parse(
-    await readFile(join(process.cwd(), "public/data/player-rest.json"), "utf8")
+    await timedStatusRead("artifacts", () =>
+      readFile(join(process.cwd(), "public/data/player-rest.json"), "utf8")
+    )
   ) as PlayerRestPayload;
   const officiatingSeasons = data.seasons as ReviewSeason[];
   const latestOfficiating = [...officiatingSeasons].sort((a, b) => a.season.localeCompare(b.season)).at(-1)!;
   const shootingCoverage = shootingHomeCoverage(playerPayload);
 
   const [connectionResult, gameResult, scheduleResult, analysisResult, playoffResult, shotResult] = await Promise.allSettled([
-    db.execute(sql`select 1`),
-    getDataAsOf(),
-    getPublishedScheduleCoverage(),
-    getHistoricalBacktest(0),
-    getLatestPublishedPlayoffSeason(),
-    getLatestPublishedShotQualitySeason(),
+    timedStatusRead("database", () => db.execute(sql`select 1`)),
+    timedStatusRead("games", () => getDataAsOf()),
+    timedStatusRead("schedule", () => getPublishedScheduleCoverage()),
+    timedStatusRead("analysis", () => getHistoricalBacktest(0)),
+    timedStatusRead("playoffs", () => getLatestPublishedPlayoffSeason()),
+    timedStatusRead("shot-quality", () => getLatestPublishedShotQualitySeason()),
   ]);
   const databaseReachable = connectionResult.status === "fulfilled";
   if (!databaseReachable) console.error("[data-status/database]", connectionResult.reason);
@@ -102,6 +118,7 @@ export default async function DataStatusPage() {
   const analysis = resultValue(analysisResult, "analysis");
   const playoffSeason = resultValue(playoffResult, "playoffs");
   const shotSeason = resultValue(shotResult, "shot-quality");
+  console.info("[DEBUG-data-status-timing/page] ready");
 
   return (
     <div className="flex flex-col gap-12" style={{ maxWidth: WIDTH.wide }}>
