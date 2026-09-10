@@ -27,7 +27,7 @@ for (const route of ["/", "/games"]) {
     await explore.focus();
     await expectFocusIndicator(explore);
 
-    const search = page.getByRole("button", { name: "JUMP TO PAGE", exact: true });
+    const search = page.getByRole("button", { name: "Find a page", exact: true });
     await search.focus();
     await expectFocusIndicator(search);
     await page.keyboard.press("Enter");
@@ -45,7 +45,7 @@ for (const width of [360, 768]) {
     await page.setViewportSize({ width, height: 900 });
     await page.goto("/games", { waitUntil: "networkidle" });
     await page.keyboard.press("Tab");
-    const search = page.getByRole("button", { name: "JUMP TO PAGE" });
+    const search = page.getByRole("button", { name: "Find a page" });
     await search.focus();
     await expectFocusIndicator(search);
     await page.keyboard.press("Enter");
@@ -53,7 +53,7 @@ for (const width of [360, 768]) {
     const input = palette.getByPlaceholder("Jump to a surface…");
     await expectFocusIndicator(input);
     await expect(input).toHaveCSS("font-size", "16px");
-    await expect(palette.getByRole("option")).toHaveCount(12);
+    await expect(palette.getByRole("option")).toHaveCount(13);
     for (const option of await palette.getByRole("option").all()) {
       const box = await option.boundingBox();
       expect(box!.height).toBeGreaterThanOrEqual(44);

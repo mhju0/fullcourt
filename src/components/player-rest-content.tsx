@@ -535,9 +535,9 @@ export function PlayerRestContent() {
                someone will type, which is an intrinsic cap on a control. */
             /* 16px at phone widths is the iOS input-zoom floor, not a type-scale choice —
                see termSelectClass in terminal-styles.ts for the whole reasoning. */
-            className="mono w-full max-w-[260px] bg-[var(--term-surface)] px-3 py-2 text-[16px] sm:text-data text-[var(--term-text)] placeholder:text-[var(--term-text-muted)]"
+            className="fc-control mono w-full max-w-[260px] placeholder:text-[var(--term-text-muted)]"
             style={{
-              border: "1px solid var(--term-border)",
+              border: "1px solid var(--term-control-border)",
               borderRadius: "var(--term-radius)",
             }}
           />

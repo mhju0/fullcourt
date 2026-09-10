@@ -1,6 +1,6 @@
 # Project handoff
 
-Reconciled 2026-09-09. Source/tests and Git take precedence. This is a current-state summary;
+Reconciled 2026-09-10. Source/tests and Git take precedence. This is a current-state summary;
 update these sections in place. Rationale belongs in [Decisions](DECISIONS.md).
 
 ## Product and release
@@ -24,6 +24,10 @@ The homepage hero now contains only the headline, original description and prima
 The one-game example and its supporting reads were removed under D-67. Next.js and its ESLint
 config are pinned to 16.3.4; the lockfile resolves Sharp 0.35.4, clearing the September 9 production
 dependency audit. See [verification](design/home-hero-release-review.md).
+
+Shared filters now use 44px targets and 16px text. Analysis uses equal-width filter columns;
+Season Report uses bordered sections with a separate interpretation surface. The
+[control and section audit](design/control-and-section-audit.md) records route coverage and rationale.
 
 ## Architecture and safeguards
 

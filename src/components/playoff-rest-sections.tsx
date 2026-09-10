@@ -58,7 +58,7 @@ function GrindTaxSection() {
  */
 export function PlayoffRestArgument() {
   return (
-    <div className="flex flex-col gap-12" style={{ maxWidth: WIDTH.wide }}>
+    <div className="fc-report-chapters flex flex-col gap-12" style={{ maxWidth: WIDTH.wide }}>
       <NoRestSection />
       <GrindTaxSection />
     </div>

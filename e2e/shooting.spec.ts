@@ -19,10 +19,9 @@ test.describe("Shooting by Rest", () => {
    * all ship, and it disables pinch-zoom for everyone to solve a styling problem.
    *
    * Asserted on this page because it carries both control kinds; termSelectClass covers
-   * every select that shares the mechanism. The desktop half pins that the floor is a
-   * phone-width override, not a site-wide size change.
+   * every select that shares the mechanism. The desktop half keeps secondary filters aligned with the season selector.
    */
-  test("season stays consistent at 16px; secondary desktop controls keep the compact scale", async ({ page }) => {
+  test("season and secondary controls share 16px text across viewports", async ({ page }) => {
     const fontOf = (sel: string) =>
       page.locator(sel).first().evaluate((el) => getComputedStyle(el).fontSize);
 
@@ -34,8 +33,8 @@ test.describe("Shooting by Rest", () => {
 
     await page.setViewportSize({ width: 1440, height: 900 });
     expect(await fontOf("#pr-season")).toBe("16px");
-    expect(await fontOf("#pr-team")).toBe("12px");
-    expect(await fontOf("input[type=search]")).toBe("12px");
+    expect(await fontOf("#pr-team")).toBe("16px");
+    expect(await fontOf("input[type=search]")).toBe("16px");
   });
 
   test("renders the heading and eyebrow", async ({ page }) => {

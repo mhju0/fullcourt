@@ -11,8 +11,8 @@
 }
 .page button,
 .page select {
-  border: 1px solid #858b91;
-  border-radius: 3px;
+  border: 1px solid var(--term-control-border);
+  border-radius: var(--term-radius);
   padding: 8px 12px;
   background: transparent;
   font: inherit;

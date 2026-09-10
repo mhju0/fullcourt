@@ -72,8 +72,9 @@ distinct. Report files load on expansion and expose retry/source links on failur
 ## Visual and mobile rules
 
 Geist carries prose; Geist Mono and tabular numerals carry values. Use tokens from
-`src/lib/terminal-styles.ts` and `globals.css`. Explanation text is 15px; mobile form controls
-have a 16px floor. Short structural labels may use compact uppercase mono. Hairline dividers
+`src/lib/terminal-styles.ts` and `globals.css`. Explanation text is 15px; shared filters use 16px text and a 44px minimum height at all
+viewport sizes. Analysis filters use equal-width columns. Season Report separates its result
+and interpretation with contrasting surfaces and a responsive divider. Short structural labels may use compact uppercase mono. Hairline dividers
 and section spacing provide hierarchy without a card around every paragraph.
 
 The app is light; the homepage is deliberately dark. Fatigue/rest semantics retain their existing
