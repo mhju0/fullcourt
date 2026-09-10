@@ -663,3 +663,48 @@
 @media (hover: hover) { .build-action:hover, .build-case-link:hover { background: var(--term-surface-2); } }
 
 @media (hover: hover) { .method-link:hover, .site-footer-links :is(a, button):hover { color: var(--term-accent); text-decoration-thickness: 2px; } }
+
+/* Filters share geometry; labels remain above their own controls when wrapping. */
+:root { --term-control-height: 44px; --term-control-border: #858B91; }
+.fc-control {
+  min-height: var(--term-control-height);
+  max-width: 100%;
+  padding: 8px 12px;
+  border: 1px solid var(--term-control-border);
+  border-radius: var(--term-radius);
+  background-color: var(--term-surface);
+  color: var(--term-text-dim);
+  font-size: 16px;
+  line-height: 1.5;
+}
+select.fc-control { padding-right: 32px; }
+.fc-control-button { min-height: var(--term-control-height); min-width: var(--term-control-height); }
+.fc-control:disabled { opacity: 0.5; cursor: not-allowed; }
+.fc-control-label {
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--term-text-muted);
+}
+.fc-filter-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; align-items: end; }
+.fc-filter-field { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.fc-filter-grid select { width: 100%; min-width: 0; }
+@media (min-width: 640px) { .fc-filter-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1024px) { .fc-filter-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+@media (hover: hover) and (pointer: fine) {
+  .fc-control:not(:disabled):hover { background-color: var(--term-surface-2); border-color: var(--term-text-muted); }
+}
+
+/* The measured result and its interpretation share a frame, with separate surfaces. */
+.fc-report-summary { display: grid; grid-template-columns: minmax(0, 1fr); border: 1px solid var(--term-hairline); border-radius: var(--term-radius); background: var(--term-surface); }
+.fc-report-summary > div { min-width: 0; padding: 16px; }
+.fc-report-interpretation { border-top: 1px solid var(--term-hairline); background: var(--term-surface-2); border-radius: 0 0 var(--term-radius) var(--term-radius); }
+.fc-report-section { min-width: 0; padding: 16px; border: 1px solid var(--term-hairline); border-radius: var(--term-radius); background: var(--term-surface); }
+.fc-report-section > h2 { padding-bottom: 16px; border-bottom: 1px solid var(--term-hairline); }
+.fc-report-chapters > section + section, .build-section + .build-section { padding-top: 24px; border-top: 1px solid var(--term-hairline); }
+@media (min-width: 768px) {
+  .fc-report-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .fc-report-interpretation { border-top: 0; border-left: 1px solid var(--term-hairline); border-radius: 0 var(--term-radius) var(--term-radius) 0; }
+}

@@ -731,3 +731,15 @@ The description grows to 24px on desktop and 20px on mobile, with a readable lin
 uses a single content column and intentional whitespace; the primary action and aggregate findings
 remain. This supersedes D-65's homepage example decision. The example-only report and game reads
 are removed from the homepage loader. No new motion is introduced.
+
+
+### D-68 · Consistent controls and visible report sections — ACTIVE
+
+On September 10, 2026 the owner requested consistent boxed controls across tabs and stronger
+separation in text-heavy reports. Shared filters use 44px minimum height and 16px text. Analysis
+uses equal-width labeled filters with season first; standalone actions and day/pagination arrows
+use 44px targets. Dense desktop sort labels and multiline destination cards retain their distinct
+roles. Season Report separates the result and interpretation with a rule and contrasting surfaces,
+then frames team records and notable games as separate sections. About, engineering and Playoff
+Rest use chapter dividers. Existing semantic data colors and motion policy remain unchanged.
+See the [control and section audit](design/control-and-section-audit.md).

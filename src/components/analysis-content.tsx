@@ -37,7 +37,7 @@ import {
   toDeviation,
 } from "@/lib/analysis-claims"
 import type { DataAsOf } from "@/lib/data-as-of"
-import { LEAD, MONO_FONT_STACK, SPACE, termCardStyle, termDashedEmptyStyle, termInsetStyle, termTdStyle, TRACK, TYPE } from "@/lib/terminal-styles"
+import { LEAD, MONO_FONT_STACK, SPACE, termSelectClass, termSelectStyle, termCardStyle, termDashedEmptyStyle, termInsetStyle, termTdStyle, TRACK, TYPE } from "@/lib/terminal-styles"
 import { DataTable } from "@/components/ui/data-table"
 import type { AnalysisResponse } from "@/types"
 import { signedNumber } from "@/lib/signed-number"
@@ -55,20 +55,8 @@ const termTooltip: React.CSSProperties = {
   fontSize: 12,
 }
 
-// No fontSize here. The size is the responsive class below (`EXPLORE_SELECT_CLASS`), because
-// the iOS input-zoom floor needs 16px at phone widths and 12px above — and an inline fontSize
-// cannot be responsive, nor overridden by any class. See termSelectClass in terminal-styles.ts.
-const exploreSelectStyle: React.CSSProperties = {
-  background: "var(--term-surface)",
-  border: "1px solid var(--term-border)",
-  borderRadius: "var(--term-radius)",
-  padding: "8px 12px",
-  fontFamily: MONO_FONT_STACK,
-  color: "var(--term-text)",
-  letterSpacing: TRACK.sub,
-}
-
-const EXPLORE_SELECT_CLASS = "text-[16px] sm:text-data"
+const exploreSelectStyle = termSelectStyle
+const EXPLORE_SELECT_CLASS = termSelectClass
 
 // ─── Section divider ──────────────────────────────────────────────
 
@@ -599,7 +587,7 @@ function SeasonComparison({ backtest, zeroLabel }: { backtest: AnalysisResponse;
               type="button"
               aria-pressed={active}
               onClick={() => setSeasonRaFilter(opt.value)}
-              className="mono transition-[background-color,border-color,transform] active:scale-[0.97]"
+              className="fc-control-button mono"
               style={{
                 // Solid ink when active, never the rested-pole teal: the pill selects a
                 // view of the chart, and only the marks inside it may wear a data pole.
@@ -715,28 +703,7 @@ function ExploreGames({
       </p>
 
       {/* Filters */}
-      <div className="mt-3 flex flex-wrap items-end gap-2">
-        <select
-          value={raFilter}
-          onChange={(e) => send({ type: "MIN_RA_SELECTED", minRA: Number(e.target.value) })}
-          className={EXPLORE_SELECT_CLASS}
-          style={exploreSelectStyle}
-          aria-label="Rest advantage filter"
-        >
-          {RA_OPTIONS.map((o) => (
-            <option key={o.value} value={o.value}>{o.label}</option>
-          ))}
-        </select>
-        <select
-          value={teamFilter}
-          onChange={(e) => send({ type: "TEAM_SELECTED", team: e.target.value })}
-          className={EXPLORE_SELECT_CLASS}
-          style={exploreSelectStyle}
-          aria-label="Team filter"
-        >
-          <option value="">All Teams</option>
-          {NBA_TEAMS.map((t) => <option key={t} value={t}>{t}</option>)}
-        </select>
+      <div className="fc-filter-grid mt-3" aria-label="Explore game filters">
         <SeasonSelector
           id="analysis-season-filter"
           ariaLabel="Season filter"
@@ -744,24 +711,57 @@ function ExploreGames({
           onSeasonChange={(season) => send({ type: "SEASON_SELECTED", season })}
           options={[{ value: "", label: "All Seasons" }, ...EXPLORE_SEASON_OPTIONS.map(s => ({ value: s, label: s }))]}
         />
-        <select
-          value={resultFilter}
-          onChange={(e) => send({ type: "RESULT_SELECTED", result: e.target.value as ExploreResult })}
-          className={EXPLORE_SELECT_CLASS}
-          style={exploreSelectStyle}
-          aria-label="Result filter"
-        >
-          <option value="all">All Results</option>
-          <option value="correct">Rested Team Won</option>
-          <option value="incorrect">Rested Team Lost</option>
-        </select>
+        <label className="fc-filter-field" htmlFor="analysis-rest-filter">
+          <span className="fc-control-label">Rest advantage</span>
+          <select
+            id="analysis-rest-filter"
+            value={raFilter}
+            onChange={(e) => send({ type: "MIN_RA_SELECTED", minRA: Number(e.target.value) })}
+            className={EXPLORE_SELECT_CLASS}
+            style={exploreSelectStyle}
+            aria-label="Rest advantage filter"
+          >
+            {RA_OPTIONS.map((o) => (
+              <option key={o.value} value={o.value}>{o.label}</option>
+            ))}
+          </select>
+        </label>
+        <label className="fc-filter-field" htmlFor="analysis-team-filter">
+          <span className="fc-control-label">Team</span>
+          <select
+            id="analysis-team-filter"
+            value={teamFilter}
+            onChange={(e) => send({ type: "TEAM_SELECTED", team: e.target.value })}
+            className={EXPLORE_SELECT_CLASS}
+            style={exploreSelectStyle}
+            aria-label="Team filter"
+          >
+            <option value="">All Teams</option>
+            {NBA_TEAMS.map((t) => <option key={t} value={t}>{t}</option>)}
+          </select>
+        </label>
+
+        <label className="fc-filter-field" htmlFor="analysis-result-filter">
+          <span className="fc-control-label">Result</span>
+          <select
+            id="analysis-result-filter"
+            value={resultFilter}
+            onChange={(e) => send({ type: "RESULT_SELECTED", result: e.target.value as ExploreResult })}
+            className={EXPLORE_SELECT_CLASS}
+            style={exploreSelectStyle}
+            aria-label="Result filter"
+          >
+            <option value="all">All Results</option>
+            <option value="correct">Rested Team Won</option>
+            <option value="incorrect">Rested Team Lost</option>
+          </select>
+        </label>
 
         {hasFilters && (
           <button
             onClick={() => send({ type: "FILTERS_CLEARED" })}
-            className="mono"
+            className="fc-control mono"
             style={{
-              ...exploreSelectStyle,
               // Accent: an in-page action, not the fatigued data pole.
               color: "var(--term-accent)",
               cursor: "pointer",
@@ -925,7 +925,7 @@ function ExploreGames({
             <button
               onClick={() => send({ type: "PAGE_SHIFTED", delta: -1, totalPages })}
               disabled={page === 1 || loading}
-              className="flex size-7 items-center justify-center bg-[var(--term-surface)] text-[var(--term-text-dim)] transition-colors hover:bg-[var(--term-surface-2)] disabled:opacity-40"
+              className="fc-control-button flex size-11 items-center justify-center bg-[var(--term-surface)] text-[var(--term-text-dim)] transition-colors hover:bg-[var(--term-surface-2)] disabled:opacity-40"
               style={{ border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }}
               aria-label="Previous page"
             >
@@ -937,7 +937,7 @@ function ExploreGames({
             <button
               onClick={() => send({ type: "PAGE_SHIFTED", delta: 1, totalPages })}
               disabled={page >= totalPages || loading}
-              className="flex size-7 items-center justify-center bg-[var(--term-surface)] text-[var(--term-text-dim)] transition-colors hover:bg-[var(--term-surface-2)] disabled:opacity-40"
+              className="fc-control-button flex size-11 items-center justify-center bg-[var(--term-surface)] text-[var(--term-text-dim)] transition-colors hover:bg-[var(--term-surface-2)] disabled:opacity-40"
               style={{ border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }}
               aria-label="Next page"
             >

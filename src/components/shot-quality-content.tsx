@@ -111,7 +111,7 @@ function EncodingToggle({
               type="button"
               aria-pressed={active}
               onClick={() => onModeChange(o.key)}
-              className={`mono px-3 py-2 transition-colors ${active ? "" : "hover:bg-[var(--term-surface-2)]"}`}
+              className={`fc-control-button mono px-3 py-2 ${active ? "" : "hover:bg-[var(--term-surface-2)]"}`}
               style={{
                 fontSize: 12,
                 letterSpacing: TRACK.data,

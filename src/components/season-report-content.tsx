@@ -122,7 +122,7 @@ export function SeasonReportContent() {
       ) : data ? (
         <>
           <section
-            className="grid gap-6 border-b border-[var(--term-border)] pb-8 md:grid-cols-2"
+            className="fc-report-summary"
             aria-labelledby="season-result-heading"
           >
             <div>
@@ -160,7 +160,7 @@ export function SeasonReportContent() {
                 completed with scored fatigue pairs.
               </p>
             </div>
-            <div className="flex flex-col gap-3">
+            <div className="fc-report-interpretation flex flex-col gap-3">
               <h3 className="text-lg font-semibold">
                 {delta !== null && Math.abs(delta) <= (data.overall.band ?? 0)
                   ? "The result is close to home court alone."
@@ -188,7 +188,7 @@ export function SeasonReportContent() {
             </div>
           </section>
           <section
-            className="flex flex-col gap-4"
+            className="fc-report-section flex flex-col gap-4"
             aria-labelledby="season-team-heading"
           >
             <h2 id="season-team-heading" className="text-2xl font-semibold">
@@ -212,7 +212,7 @@ export function SeasonReportContent() {
             ) : null}
           </section>
           <section
-            className="flex flex-col gap-3"
+            className="fc-report-section flex flex-col gap-3"
             aria-labelledby="season-notable-heading"
           >
             <h2 id="season-notable-heading" className="text-2xl font-semibold">
@@ -275,7 +275,7 @@ function TeamRecords({ teams }: { teams: SeasonReportResponse["teams"] }) {
           <col style={{ width: "28%" }} />
           <col style={{ width: "28%" }} />
         </colgroup>
-        <thead className={muted}>
+        <thead className={`bg-[var(--term-surface-2)] ${muted}`}>
           <tr className="border-b border-[var(--term-border)]">
             <th className="px-2 py-3" scope="col">
               Team

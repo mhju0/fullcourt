@@ -65,7 +65,7 @@ export function EdgesAhead({
               type="button"
               onClick={() => onJump(g.season, g.date)}
               aria-label={`Jump to ${dateLabel}: ${g.awayTeam.abbreviation} at ${g.homeTeam.abbreviation}, rest edge ${g.predictedAdvantageAbbreviation} ${value}`}
-              className="mono flex items-center gap-3 bg-[var(--term-surface)] px-3 py-2 transition-[background-color,border-color,transform] hover:bg-[var(--term-surface-2)] active:scale-[0.97]"
+              className="fc-control-button mono flex items-center gap-3 bg-[var(--term-surface)] px-3 py-2 transition-[background-color,border-color,transform] hover:bg-[var(--term-surface-2)] active:scale-[0.97]"
               style={{ border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }}
             >
               <span
