@@ -39,6 +39,8 @@ a chart for patterns and a table for lookup. Secondary tables and methods can ex
 mobile comparisons must be visible without sideways page scrolling. No decorative imagery or
 new motion is implied by a cleanup.
 
+Explore uses equal-height study cards with the same category, title, question, and action structure. Keep numerical findings on the destination study rather than adding a second card format. Its reading order is Home-court Advantage, Shooting by Rest, Playoff Rest, Availability Cost, Expected Shot Value, Officiating, then Model Results: core basketball questions first, related studies next, technical validation last.
+
 The homepage has one short CSS hero entrance. Repeated controls, keyboard actions, and record
 expansions are immediate. Respect reduced motion. [Frontend](../FRONTEND.md) and
 [the design decision record](fullcourt-decision-record.md) hold the current implementation and
