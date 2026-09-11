@@ -34,6 +34,8 @@ Performance changes should begin with a measured query or interaction problem.
 
 No accounts or persisted personal preferences. Games owns matchups, Season Report owns completed
 outcomes, Schedule Edge owns demands and advantages, and Model Results owns historical evaluation.
+The Home-court advantage study provides venue-baseline history through Explore; Season Report
+shows the selected season's corresponding comparison. See [D-70](DECISIONS.md).
 Officiating stays focused; prior referee studies remain in the research archive.
 
 Fatigue coefficients require an explicit owner decision under ADR 0006. Schema changes require

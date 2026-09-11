@@ -2,16 +2,25 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { NextRequest } from "next/server";
 import { GET } from "../analysis/route";
 import { CACHE } from "@/lib/api-route";
-import { getCompletedGamesStamp, getCompletedGamesWithFatigue } from "@/lib/db/queries";
+import {
+  getCompletedGamesStamp,
+  getCompletedGamesWithFatigue,
+  getIncompleteRegularSeasonSeasons,
+  getIncompleteRegularSeasonSeasonsStamp,
+} from "@/lib/db/queries";
 import type { AnalysisResponse } from "@/types";
 
 vi.mock("@/lib/db/queries", () => ({
   getCompletedGamesWithFatigue: vi.fn(),
   getCompletedGamesStamp: vi.fn(),
+  getIncompleteRegularSeasonSeasons: vi.fn(),
+  getIncompleteRegularSeasonSeasonsStamp: vi.fn(),
 }));
 
 const mockGetCompleted = vi.mocked(getCompletedGamesWithFatigue);
 const mockStamp = vi.mocked(getCompletedGamesStamp);
+const mockIncomplete = vi.mocked(getIncompleteRegularSeasonSeasons);
+const mockIncompleteStamp = vi.mocked(getIncompleteRegularSeasonSeasonsStamp);
 
 /** A distinct stamp per case, so the backtest cache never answers one case from another's rows. */
 let stampSeq = 0;
@@ -43,6 +52,8 @@ describe("GET /api/analysis", () => {
     mockGetCompleted.mockReset();
     mockStamp.mockReset();
     mockStamp.mockResolvedValue(`stamp-${++stampSeq}`);
+    mockIncomplete.mockResolvedValue(new Set());
+    mockIncompleteStamp.mockResolvedValue("");
   });
 
   it.each(["?seasonMinRA=banana", "?seasonMinRA=-1", "?seasonMinRA=Infinity"])(
@@ -179,10 +190,14 @@ describe("GET /api/analysis", () => {
     expect(body.data.seasonWinRates).toEqual([
       {
         season: "2016-17",
+        homeGames: 4,
+        homeWins: 3,
+        latestEvidenceDate: "2017-01-04",
         games: 1,
         restedTeamWins: 1,
         winPct: 100,
         homeBaselinePct: 75,
+        isComplete: true,
       },
     ]);
 

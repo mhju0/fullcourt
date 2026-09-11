@@ -27,6 +27,8 @@ keeps a direct number, sign, or label; color alone never explains a finding.
 Every headline needs its denominator, baseline where applicable, and a visible limitation.
 Report null findings honestly. “Rest advantage” does not mean a causal effect or a complete win
 forecast. Games shows matchup conditions; historical win rates belong in Model Results.
+The Home-court advantage study also shows historical venue baselines beside rested-home
+rates under D-70; Season Report keeps that comparison specific to the selected season.
 Officiating reports cannot establish whole-game accuracy, individual-official culpability, or
 team helped/hurt rankings.
 

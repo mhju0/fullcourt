@@ -675,6 +675,27 @@ export async function getCompletedGamesWithFatigue(): Promise<HistoricalGameEvid
     );
 }
 
+/**
+ * Seasons with at least one published regular-season game that has not reached final status.
+ *
+ * The historical chart uses this data state instead of guessing from the season label or the
+ * calendar. It also avoids treating a partially assigned NBA Cup schedule as complete merely
+ * because the current row count is below an assumed full-season total.
+ */
+export async function getIncompleteRegularSeasonSeasons(): Promise<Set<string>> {
+  const rows = await db
+    .selectDistinct({ season: games.season })
+    .from(games)
+    .where(publishableGames(ne(games.status, "final")));
+
+  return new Set(rows.map((row) => String(row.season)));
+}
+
+/** Cache-key form of the pending-season state used by the historical study. */
+export async function getIncompleteRegularSeasonSeasonsStamp(): Promise<string> {
+  return [...(await getIncompleteRegularSeasonSeasons())].sort().join(",");
+}
+
 // ─── Game search query ────────────────────────────────────────────
 
 /**

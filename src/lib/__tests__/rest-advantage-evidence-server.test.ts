@@ -6,6 +6,8 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
   getCompletedGamesStamp,
   getCompletedGamesWithFatigue,
+  getIncompleteRegularSeasonSeasons,
+  getIncompleteRegularSeasonSeasonsStamp,
   searchRegularSeasonGames,
 } from "@/lib/db/queries";
 import type { HistoricalGameEvidenceRow } from "@/lib/rest-advantage-evidence";
@@ -13,11 +15,15 @@ import type { HistoricalGameEvidenceRow } from "@/lib/rest-advantage-evidence";
 vi.mock("@/lib/db/queries", () => ({
   getCompletedGamesStamp: vi.fn(),
   getCompletedGamesWithFatigue: vi.fn(),
+  getIncompleteRegularSeasonSeasons: vi.fn(),
+  getIncompleteRegularSeasonSeasonsStamp: vi.fn(),
   searchRegularSeasonGames: vi.fn(),
 }));
 
 const mockStamp = vi.mocked(getCompletedGamesStamp);
 const mockRows = vi.mocked(getCompletedGamesWithFatigue);
+const mockIncomplete = vi.mocked(getIncompleteRegularSeasonSeasons);
+const mockIncompleteStamp = vi.mocked(getIncompleteRegularSeasonSeasonsStamp);
 const mockSearch = vi.mocked(searchRegularSeasonGames);
 
 const ROWS: HistoricalGameEvidenceRow[] = [
@@ -42,6 +48,8 @@ describe("getHistoricalBacktest", () => {
     mockStamp.mockReset();
     mockRows.mockReset();
     mockRows.mockResolvedValue(ROWS);
+    mockIncomplete.mockResolvedValue(new Set());
+    mockIncompleteStamp.mockResolvedValue("");
   });
 
   it("reads the games once while the stamp is unchanged", async () => {
@@ -60,6 +68,22 @@ describe("getHistoricalBacktest", () => {
     mockStamp
       .mockResolvedValueOnce("1230@2025-04-13")
       .mockResolvedValueOnce("1231@2025-04-14");
+    const { getHistoricalBacktest } = await loadModule();
+
+    await getHistoricalBacktest(0);
+    await getHistoricalBacktest(0);
+
+    expect(mockRows).toHaveBeenCalledTimes(2);
+  });
+
+  it("re-reads when a season becomes pending or complete", async () => {
+    mockStamp.mockResolvedValue("1230@2025-04-13");
+    mockIncompleteStamp
+      .mockResolvedValueOnce("")
+      .mockResolvedValueOnce("2026-27");
+    mockIncomplete
+      .mockResolvedValueOnce(new Set())
+      .mockResolvedValueOnce(new Set(["2026-27"]));
     const { getHistoricalBacktest } = await loadModule();
 
     await getHistoricalBacktest(0);

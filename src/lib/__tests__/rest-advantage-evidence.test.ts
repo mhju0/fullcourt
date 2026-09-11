@@ -105,6 +105,24 @@ describe("buildHistoricalBacktest — venue baseline", () => {
     expect(byName.get("2023-24")?.homeBaselinePct).toBe(50);
   });
 
+  it("keeps a home-rate season even before a rested-home game qualifies", () => {
+    const result = buildHistoricalBacktest([
+      { date: "2026-10-20", season: "2026-27", homeScore: 110, awayScore: 100, homeFatigueScore: "5", awayFatigueScore: "5.2" },
+    ], 0, new Set(["2026-27"]));
+
+    expect(result.seasonWinRates).toEqual([{
+      season: "2026-27",
+      homeGames: 1,
+      homeWins: 1,
+      latestEvidenceDate: "2026-10-20",
+      games: 0,
+      restedTeamWins: 0,
+      winPct: 0,
+      homeBaselinePct: 100,
+      isComplete: false,
+    }]);
+  });
+
   it("keeps each season's baseline on all its games, not only its published ones", () => {
     const result = buildHistoricalBacktest([
       // Published: home rested, home won.

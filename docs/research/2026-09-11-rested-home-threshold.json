@@ -1,0 +1,273 @@
+{
+  "generatedAt": "2026-09-11T08:52:26.385Z",
+  "definition": "Elapsed calendar days from first FullCourt eligible game date to date of 100th rested-home game; opening date is day 0. Canonical classification, final regular-season query, both fatigue records required.",
+  "all": {
+    "seasons": 41,
+    "mean": 25.536585365853657,
+    "median": 25,
+    "min": 21,
+    "max": 33
+  },
+  "last10": {
+    "seasons": 10,
+    "mean": 27.2,
+    "median": 27,
+    "min": 24,
+    "max": 31
+  },
+  "last5": {
+    "seasons": 5,
+    "mean": 27.6,
+    "median": 27,
+    "min": 26,
+    "max": 31
+  },
+  "perSeason": [
+    {
+      "season": "1985-86",
+      "firstEligibleGame": "1985-10-25",
+      "thresholdDate": "1985-11-27",
+      "elapsedDays": 33
+    },
+    {
+      "season": "1986-87",
+      "firstEligibleGame": "1986-10-31",
+      "thresholdDate": "1986-11-28",
+      "elapsedDays": 28
+    },
+    {
+      "season": "1987-88",
+      "firstEligibleGame": "1987-11-06",
+      "thresholdDate": "1987-12-09",
+      "elapsedDays": 33
+    },
+    {
+      "season": "1988-89",
+      "firstEligibleGame": "1988-11-04",
+      "thresholdDate": "1988-12-02",
+      "elapsedDays": 28
+    },
+    {
+      "season": "1989-90",
+      "firstEligibleGame": "1989-11-03",
+      "thresholdDate": "1989-11-29",
+      "elapsedDays": 26
+    },
+    {
+      "season": "1990-91",
+      "firstEligibleGame": "1990-11-02",
+      "thresholdDate": "1990-11-28",
+      "elapsedDays": 26
+    },
+    {
+      "season": "1991-92",
+      "firstEligibleGame": "1991-11-01",
+      "thresholdDate": "1991-11-27",
+      "elapsedDays": 26
+    },
+    {
+      "season": "1992-93",
+      "firstEligibleGame": "1992-11-06",
+      "thresholdDate": "1992-12-08",
+      "elapsedDays": 32
+    },
+    {
+      "season": "1993-94",
+      "firstEligibleGame": "1993-11-05",
+      "thresholdDate": "1993-12-01",
+      "elapsedDays": 26
+    },
+    {
+      "season": "1994-95",
+      "firstEligibleGame": "1994-11-04",
+      "thresholdDate": "1994-12-01",
+      "elapsedDays": 27
+    },
+    {
+      "season": "1995-96",
+      "firstEligibleGame": "1995-11-03",
+      "thresholdDate": "1995-11-26",
+      "elapsedDays": 23
+    },
+    {
+      "season": "1996-97",
+      "firstEligibleGame": "1996-11-01",
+      "thresholdDate": "1996-11-25",
+      "elapsedDays": 24
+    },
+    {
+      "season": "1997-98",
+      "firstEligibleGame": "1997-10-31",
+      "thresholdDate": "1997-11-23",
+      "elapsedDays": 23
+    },
+    {
+      "season": "1998-99",
+      "firstEligibleGame": "1999-02-05",
+      "thresholdDate": "1999-03-02",
+      "elapsedDays": 25
+    },
+    {
+      "season": "1999-00",
+      "firstEligibleGame": "1999-11-02",
+      "thresholdDate": "1999-11-24",
+      "elapsedDays": 22
+    },
+    {
+      "season": "2000-01",
+      "firstEligibleGame": "2000-10-31",
+      "thresholdDate": "2000-11-22",
+      "elapsedDays": 22
+    },
+    {
+      "season": "2001-02",
+      "firstEligibleGame": "2001-10-30",
+      "thresholdDate": "2001-11-23",
+      "elapsedDays": 24
+    },
+    {
+      "season": "2002-03",
+      "firstEligibleGame": "2002-10-29",
+      "thresholdDate": "2002-11-22",
+      "elapsedDays": 24
+    },
+    {
+      "season": "2003-04",
+      "firstEligibleGame": "2003-10-28",
+      "thresholdDate": "2003-11-23",
+      "elapsedDays": 26
+    },
+    {
+      "season": "2004-05",
+      "firstEligibleGame": "2004-11-02",
+      "thresholdDate": "2004-11-24",
+      "elapsedDays": 22
+    },
+    {
+      "season": "2005-06",
+      "firstEligibleGame": "2005-11-01",
+      "thresholdDate": "2005-11-25",
+      "elapsedDays": 24
+    },
+    {
+      "season": "2006-07",
+      "firstEligibleGame": "2006-10-31",
+      "thresholdDate": "2006-11-25",
+      "elapsedDays": 25
+    },
+    {
+      "season": "2007-08",
+      "firstEligibleGame": "2007-10-30",
+      "thresholdDate": "2007-11-23",
+      "elapsedDays": 24
+    },
+    {
+      "season": "2008-09",
+      "firstEligibleGame": "2008-10-28",
+      "thresholdDate": "2008-11-21",
+      "elapsedDays": 24
+    },
+    {
+      "season": "2009-10",
+      "firstEligibleGame": "2009-10-27",
+      "thresholdDate": "2009-11-17",
+      "elapsedDays": 21
+    },
+    {
+      "season": "2010-11",
+      "firstEligibleGame": "2010-10-26",
+      "thresholdDate": "2010-11-19",
+      "elapsedDays": 24
+    },
+    {
+      "season": "2011-12",
+      "firstEligibleGame": "2011-12-25",
+      "thresholdDate": "2012-01-17",
+      "elapsedDays": 23
+    },
+    {
+      "season": "2012-13",
+      "firstEligibleGame": "2012-10-30",
+      "thresholdDate": "2012-11-20",
+      "elapsedDays": 21
+    },
+    {
+      "season": "2013-14",
+      "firstEligibleGame": "2013-10-29",
+      "thresholdDate": "2013-11-20",
+      "elapsedDays": 22
+    },
+    {
+      "season": "2014-15",
+      "firstEligibleGame": "2014-10-28",
+      "thresholdDate": "2014-11-19",
+      "elapsedDays": 22
+    },
+    {
+      "season": "2015-16",
+      "firstEligibleGame": "2015-10-27",
+      "thresholdDate": "2015-11-21",
+      "elapsedDays": 25
+    },
+    {
+      "season": "2016-17",
+      "firstEligibleGame": "2016-10-25",
+      "thresholdDate": "2016-11-18",
+      "elapsedDays": 24
+    },
+    {
+      "season": "2017-18",
+      "firstEligibleGame": "2017-10-17",
+      "thresholdDate": "2017-11-10",
+      "elapsedDays": 24
+    },
+    {
+      "season": "2018-19",
+      "firstEligibleGame": "2018-10-16",
+      "thresholdDate": "2018-11-12",
+      "elapsedDays": 27
+    },
+    {
+      "season": "2019-20",
+      "firstEligibleGame": "2019-10-22",
+      "thresholdDate": "2019-11-21",
+      "elapsedDays": 30
+    },
+    {
+      "season": "2020-21",
+      "firstEligibleGame": "2020-12-22",
+      "thresholdDate": "2021-01-20",
+      "elapsedDays": 29
+    },
+    {
+      "season": "2021-22",
+      "firstEligibleGame": "2021-10-19",
+      "thresholdDate": "2021-11-14",
+      "elapsedDays": 26
+    },
+    {
+      "season": "2022-23",
+      "firstEligibleGame": "2022-10-18",
+      "thresholdDate": "2022-11-14",
+      "elapsedDays": 27
+    },
+    {
+      "season": "2023-24",
+      "firstEligibleGame": "2023-10-24",
+      "thresholdDate": "2023-11-21",
+      "elapsedDays": 28
+    },
+    {
+      "season": "2024-25",
+      "firstEligibleGame": "2024-10-22",
+      "thresholdDate": "2024-11-17",
+      "elapsedDays": 26
+    },
+    {
+      "season": "2025-26",
+      "firstEligibleGame": "2025-10-21",
+      "thresholdDate": "2025-11-21",
+      "elapsedDays": 31
+    }
+  ]
+}

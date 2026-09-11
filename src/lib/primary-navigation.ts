@@ -8,6 +8,7 @@ export const DIRECT_NAV_ITEMS = [
 
 /** Product analyses reached through Explore and the page palette. */
 export const EXPLORE_NAV_ITEMS = [
+  { href: "/home-court", label: "HOME-COURT ADVANTAGE", keywords: ["home win rate", "home court", "season history"] },
   { href: "/shooting", label: "SHOOTING BY REST" },
   { href: "/playoffs", label: "PLAYOFF REST" },
   { href: "/analysis", label: "MODEL RESULTS" },

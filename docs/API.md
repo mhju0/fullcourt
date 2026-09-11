@@ -13,7 +13,7 @@ are authoritative for individual fields, optional values, and units.
 | `/api/games/dates` | Required browsable `season`; optional integer `month` 1–12 | Date/count index for Games | `inSeason` |
 | `/api/games/upcoming` | Optional browsable `season`, nonnegative `minRA` | Upcoming rest-advantage games | No explicit edge-cache policy |
 | `/api/game/[id]` | Positive integer database ID | Game and contextual detail; 404 if absent | No explicit edge-cache policy |
-| `/api/analysis` | Optional nonnegative `seasonMinRA` | Historical backtest and venue baselines | `historical` |
+| `/api/analysis` | Optional nonnegative `seasonMinRA` | Historical backtest, per-season home counts, venue baselines, evidence dates and completion state | `historical` |
 | `/api/games/search` | Optional `season`, 2–3 letter uppercase `team`, nonnegative `minRA`, `result` (`all`, `correct`, `incorrect`), `page`, `limit` | Paginated historical game evidence; page defaults to 1, limit to 20 and caps at 100 | `inSeason` |
 | `/api/season-report` | Optional browsable `season` | Completed results, team records, notable games, and schedule/workload data with source-basis labels | `inSeason` |
 | `/api/schedule-disparity` | Optional rankable `season` | Relative team schedule measures and pricing | `historical` |
@@ -41,6 +41,17 @@ A failed query is an error, not an empty successful dataset. Missing fatigue sta
 not rank as zero. Before completed data exists, Season Report can return schedule-based workload
 while result-derived fields remain empty; the fatigue calendar remains completed-game evidence.
 The UI gives schedule workload to Schedule Edge, despite sharing this server response.
+
+Unfiltered analysis retains a season's home baseline even when no rested-home games qualify.
+Each season's `isComplete` is false while a published game remains unfinished; this describes
+the recorded schedule, not independent proof that the league dataset is exhaustive. Pending
+season state participates in the historical cache stamp. Reads remain sequential.
+
+Season Report returns `homeRate` from the same eligible finals before rest filtering, so its
+selected-season baseline does not depend on the all-history endpoint. Its `seasonComplete`
+field describes the recorded season rows. The 100-game rested-home threshold is a presentation
+rule; underlying observed counts remain available. Versioned query URLs on the new displays
+avoid consuming older edge-cached response shapes during deployment.
 
 The rest-advantage headline counts `isCalledSide()` games (rested home teams) against venue
 baselines. Rested visitors are reported separately. Game dates use America/New_York, and

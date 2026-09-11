@@ -25,14 +25,11 @@ export function SeasonReportContent() {
     browsableSeasons(),
   );
   const { data, error, isLoading } = useSWR<SeasonReportResponse>(
-    `/api/season-report?season=${season}`,
+    `/api/season-report?season=${season}&schema=home-court-v1`,
     apiFetcher,
     { revalidateOnFocus: false },
   );
   const { data: analysis, loading: normLoading } = useBacktest();
-  const baseline =
-    analysis?.seasonWinRates.find((row) => row.season === season)
-      ?.homeBaselinePct ?? null;
   const norm = analysis
     ? allSeasonNormExcluding(analysis.seasonWinRates, season)
     : null;
@@ -45,8 +42,15 @@ export function SeasonReportContent() {
     data &&
     data.overall.games >= MIN_GAMES_FOR_INFERENCE &&
     data.overall.band !== null;
+  const homeRate = data?.homeRate;
   const delta =
-    enough && baseline !== null ? data.overall.winPct - baseline : null;
+    enough && homeRate && homeRate.games > 0
+      ? Math.round(
+          ((data.overall.restedTeamWins / data.overall.games) -
+            (homeRate.homeWins / homeRate.games)) *
+            1000
+        ) / 10
+      : null;
 
   return (
     <div
@@ -90,7 +94,9 @@ export function SeasonReportContent() {
           aria-label="Loading season results"
         />
       ) : null}
-      {data && data.completedGames === 0 ? (
+      {data && !homeRate ? (
+        <p role="status">The updated season comparison is unavailable right now. Please try again.</p>
+      ) : data && data.completedGames === 0 ? (
         <section
           className="flex flex-col gap-3 border-y border-[var(--term-border)] py-8"
           data-testid="season-awaiting-results"
@@ -126,45 +132,55 @@ export function SeasonReportContent() {
             aria-labelledby="season-result-heading"
           >
             <div>
+              <p className={`mono text-xs ${muted}`}>
+                {data.seasonComplete ? "FINAL SEASON RECORD" : "SEASON TO DATE"}
+              </p>
               <h2
                 id="season-result-heading"
-                className="text-base font-semibold"
+                className="mt-2 text-2xl font-semibold"
               >
-                Rested team at home · win rate
+                Home court and rest
               </h2>
-              <p
-                data-testid="season-rest-win-rate"
-                className="mono my-3 text-[40px] font-semibold tabular-nums text-[var(--term-blue-text)]"
-              >
-                {enough ? `${data.overall.winPct.toFixed(1)}%` : "—"}
+              <div className="mt-4 grid grid-cols-1 border-y border-[var(--term-hairline)] sm:grid-cols-3">
+                <div className="py-4 sm:pr-4">
+                  <p className="fc-control-label sm:min-h-10">Home win rate</p>
+                  <p className="mono mt-2 text-2xl font-semibold tabular-nums">
+                    {data.homeRate.games > 0 ? `${data.homeRate.winPct.toFixed(1)}%` : "Awaiting results"}
+                  </p>
+                  <p className={`mt-1 text-xs ${muted}`}>{data.homeRate.homeWins.toLocaleString()} wins / {data.homeRate.games.toLocaleString()} eligible games</p>
+                </div>
+                <div className="border-t border-[var(--term-hairline)] py-4 sm:border-l sm:border-t-0 sm:px-4">
+                  <p className="fc-control-label sm:min-h-10">Rested-at-home win rate</p>
+                  <p data-testid="season-rest-win-rate" className="mono mt-2 text-2xl font-semibold tabular-nums text-[var(--term-blue-text)]">
+                    {enough ? `${data.overall.winPct.toFixed(1)}%` : "Too early"}
+                  </p>
+                  <p className={`mt-1 text-xs ${muted}`}>{data.overall.restedTeamWins.toLocaleString()} wins / {data.overall.games.toLocaleString()} eligible games</p>
+                </div>
+                <div className="border-t border-[var(--term-hairline)] py-4 sm:border-l sm:border-t-0 sm:pl-4">
+                  <p className="fc-control-label sm:min-h-10">Gap from home rate</p>
+                  <p className="mono mt-2 text-2xl font-semibold tabular-nums">
+                    {delta === null ? "Too early" : `${signedNumber(delta, 1)} pp`}
+                  </p>
+                  <p className={`mt-1 text-xs ${muted}`}>Rested at home versus all designated-home games</p>
+                </div>
+              </div>
+              {!enough ? (
+                <p className="mt-4">The rested-at-home comparison appears after {MIN_GAMES_FOR_INFERENCE} eligible games. {data.overall.games} recorded so far.</p>
+              ) : null}
+              <p className={`mt-4 ${muted}`}>
+                {data.completedGames.toLocaleString()} / {data.scheduledGames.toLocaleString()} published regular-season games completed with scored fatigue pairs.
               </p>
-              <p>
-                {delta !== null
-                  ? `${signedNumber(delta, 1)} percentage points versus this season’s ${baseline?.toFixed(1)}% home baseline.`
-                  : normLoading
-                    ? "Loading this season’s home baseline…"
-                    : !enough
-                      ? `Too early: ${data.overall.games} of ${MIN_GAMES_FOR_INFERENCE} games needed.`
-                      : "This season’s home baseline is unavailable."}
-              </p>
-              <p className={`mt-3 ${muted}`}>
-                {data.overall.games.toLocaleString()} games
-                {data.overall.band !== null
-                  ? ` · uncertainty ±${data.overall.band.toFixed(1)} percentage points (95% interval)`
-                  : ""}
-                .
-              </p>
-              <p className={muted}>
-                {data.completedGames.toLocaleString()} /{" "}
-                {data.scheduledGames.toLocaleString()} regular-season games
-                completed with scored fatigue pairs.
-              </p>
+              <a className="fc-text-link mt-3 inline-block min-h-11 content-center" href="/home-court">
+                See home-court history →
+              </a>
             </div>
             <div className="fc-report-interpretation flex flex-col gap-3">
               <h3 className="text-lg font-semibold">
-                {delta !== null && Math.abs(delta) <= (data.overall.band ?? 0)
+                {delta === null
+                  ? "The home baseline is available before the rest comparison."
+                  : Math.abs(delta) <= (data.overall.band ?? 0)
                   ? "The result is close to home court alone."
-                  : "Rest and home court both matter to this comparison."}
+                  : "The rested-at-home record differs from the home baseline."}
               </h3>
               <p className={muted}>
                 This is a record of completed games. Team strength, venue, and
@@ -179,6 +195,11 @@ export function SeasonReportContent() {
                     ? "Loading historical comparison…"
                     : "Historical comparison unavailable."}
               </p>
+              {enough && data.overall.band !== null ? (
+                <p className={muted}>
+                  Rested-at-home uncertainty: ±{data.overall.band.toFixed(1)} percentage points (95% interval).
+                </p>
+              ) : null}
               <a
                 className="fc-text-link min-h-11 content-center"
                 href="/analysis"

@@ -117,6 +117,13 @@ export interface SeasonReportRate {
   band: number | null;
 }
 
+/** The selected season's designated-home record over every eligible completed game. */
+export interface SeasonHomeRate {
+  games: number;
+  homeWins: number;
+  winPct: number;
+}
+
 /**
  * One team's season, at the only grain both per-team sections need.
  *
@@ -253,8 +260,12 @@ export interface SeasonReport {
    * "as of" before the first result.
    */
   latestFinalDate: string | null;
+  /** True only when the season has rows and every published row is final. */
+  seasonComplete: boolean;
   /** Games with a final score and both fatigue sides — every aggregate's denominator. */
   completedGames: number;
+  /** Home win rate before the rest-advantage filter, available from the first eligible final. */
+  homeRate: SeasonHomeRate;
   overall: SeasonReportRate;
   atLeastTwo: SeasonReportRate;
   /**
@@ -377,6 +388,8 @@ export function buildSeasonReport(
   const basis: SeasonReport["basis"] = hasCompletedGame ? "played" : "schedule";
 
   let completedGames = 0;
+  let homeGames = 0;
+  let homeWins = 0;
   let overallGames = 0;
   let overallWins = 0;
   let tierGames = 0;
@@ -408,6 +421,13 @@ export function buildSeasonReport(
         : null;
     if (basis === "played" && scores === null) continue;
     if (scores !== null) completedGames++;
+
+    // The venue baseline is wider than the rested-home subset below. Keep it before the neutral
+    // and called-side filters so it remains available even when no rest row qualifies.
+    if (scores !== null) {
+      homeGames++;
+      if (scores.home > scores.away) homeWins++;
+    }
 
     const homeFatigue = Number.parseFloat(row.home.fatigueScore);
     const awayFatigue = Number.parseFloat(row.away.fatigueScore);
@@ -538,7 +558,13 @@ export function buildSeasonReport(
     basis,
     scheduledGames: rows.length,
     latestFinalDate,
+    seasonComplete: rows.length > 0 && rows.every((row) => row.status === "final"),
     completedGames,
+    homeRate: {
+      games: homeGames,
+      homeWins,
+      winPct: winPct(homeWins, homeGames),
+    },
     overall: rate(overallWins, overallGames),
     atLeastTwo: rate(tierWins, tierGames),
     swingBaseline:

@@ -763,3 +763,26 @@ accessible names, and reveals selected date controls after container resizing wi
 focus. Games has a specific page title, and player-count labels use the correct singular/plural.
 The existing homepage hero and model outputs remain unchanged. See the
 [implementation and verification record](design/seven-polish-fixes-review.md).
+
+### D-70 · Home win-rate history and season context — ACTIVE
+
+The owner approved a Home-court advantage study reached through Explore and a visible
+home-baseline comparison in Season Report. Home win rate names the observed percentage;
+home-court advantage names the broader topic. Neither the raw rested-home rate nor its gap
+above baseline isolates a causal rest effect.
+
+The study shows annual home and rested-home win rates together, with straight segments and
+no fitted trend or smoothing. Exact counts, rates and gaps are available through season
+inspection and an expandable newest-first table linking to Season Report. An unfinished
+season is marked season to date; historical summaries use completed seasons only.
+
+Season Report keeps its selected-season focus: home win rate, rested-home win rate and gap,
+plus a study link, without repeating the historical chart. Home win rate appears from the
+first eligible completed result. Rested-home rate and gap retain the 100-game display threshold
+across both surfaces; historical measurement places that threshold roughly four weeks into
+the season. No-results, insufficient-data and unavailable states remain distinct.
+
+Use the existing Front Office design system and apply antislop during implementation. This
+extends the venue-baseline reasoning in D-22 without changing the fatigue model or database
+schema. The owner approved implementation after the publishing discussion; see
+[research and agreed behavior](research/2026-09-11-home-advantage-trend.md).

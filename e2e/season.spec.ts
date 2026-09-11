@@ -29,7 +29,7 @@ test.describe("Season Report", () => {
 
   test("upcoming season has one awaiting-results state", async ({ page }) => {
     await page.clock.setFixedTime(new Date("2026-09-08T12:00:00Z"));
-    await page.route("**/api/season-report?season=2026-27", route => route.fulfill({json:{data:{season:"2026-27",basis:"schedule",completedGames:0,scheduledGames:1200,latestFinalDate:null,overall:{games:0,winPct:0,band:null},teams:[],weeks:[],loudestCalls:[]},error:null}}));
+    await page.route("**/api/season-report?season=2026-27*", route => route.fulfill({json:{data:{season:"2026-27",basis:"schedule",completedGames:0,scheduledGames:1200,latestFinalDate:null,seasonComplete:false,homeRate:{games:0,homeWins:0,winPct:0},overall:{games:0,restedTeamWins:0,winPct:0,band:null},teams:[],weeks:[],loudestCalls:[]},error:null}}));
     await page.goto("/season?season=2026-27");
     await expect(page.getByTestId("season-awaiting-results")).toHaveCount(1);
     await expect(page.getByRole("link", { name: "View 2025-26 report" })).toBeVisible();

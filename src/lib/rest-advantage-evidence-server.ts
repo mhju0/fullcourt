@@ -1,6 +1,8 @@
 import {
   getCompletedGamesStamp,
   getCompletedGamesWithFatigue,
+  getIncompleteRegularSeasonSeasons,
+  getIncompleteRegularSeasonSeasonsStamp,
   searchRegularSeasonGames,
 } from "@/lib/db/queries";
 import {
@@ -22,6 +24,12 @@ import type { AnalysisResponse, GameSearchResponse } from "@/types";
 export type HistoricalGameSearchRequest = HistoricalGameSearchFilters &
   HistoricalGameSearchOptions;
 
+async function getHistoricalBacktestStamp(): Promise<string> {
+  const completed = await getCompletedGamesStamp();
+  const incomplete = await getIncompleteRegularSeasonSeasonsStamp();
+  return `${completed}|pending=${incomplete}`;
+}
+
 /**
  * The backtest is expensive and rarely different: it reads every final
  * regular-season game with fatigue on both sides — tens of thousands of rows,
@@ -36,9 +44,14 @@ export type HistoricalGameSearchRequest = HistoricalGameSearchFilters &
 const MAX_CACHED_THRESHOLDS = 16;
 
 export const getHistoricalBacktest = createStampedCache<number, AnalysisResponse>({
-  readStamp: getCompletedGamesStamp,
-  load: async (seasonMinRA) =>
-    buildHistoricalBacktest(await getCompletedGamesWithFatigue(), seasonMinRA),
+  readStamp: getHistoricalBacktestStamp,
+  load: async (seasonMinRA) => {
+    const rows = await getCompletedGamesWithFatigue();
+    // Keep the cheap completion read sequential. Hosted production has one database connection
+    // slot, so two reads in parallel can turn healthy queries into a timeout.
+    const incompleteSeasons = await getIncompleteRegularSeasonSeasons();
+    return buildHistoricalBacktest(rows, seasonMinRA, incompleteSeasons);
+  },
   maxEntries: MAX_CACHED_THRESHOLDS,
 });
 
