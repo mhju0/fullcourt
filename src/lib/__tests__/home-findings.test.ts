@@ -8,7 +8,10 @@ const historical: AnalysisResponse = {
   homeAwayBreakdown: { homeTeamMoreRested: { games: 60, restedTeamWins: 39, winPct: 65 }, awayTeamMoreRested: { games: 10, restedTeamWins: 4, winPct: 40 } },
   thresholds: [{ threshold: 7, games: 20, restedTeamWins: 13, winPct: 65 }],
   venueBaseline: { games: 100, homeWins: 65, homeWinPct: 65, roadWinPct: 35 },
-  seasonWinRates: [{ season: "2024-25", games: 20, restedTeamWins: 13, winPct: 65, homeBaselinePct: 65 }, { season: "2023-24", games: 40, restedTeamWins: 26, winPct: 65, homeBaselinePct: 65 }],
+  seasonWinRates: [
+    { season: "2024-25", homeGames: 30, homeWins: 20, latestEvidenceDate: "2025-04-13", games: 20, restedTeamWins: 13, winPct: 65, homeBaselinePct: 65, isComplete: true },
+    { season: "2023-24", homeGames: 60, homeWins: 39, latestEvidenceDate: "2024-04-14", games: 40, restedTeamWins: 26, winPct: 65, homeBaselinePct: 65, isComplete: true },
+  ],
 };
 
 function team(id: number, edge: number | null): ScheduleDisparityTeam {

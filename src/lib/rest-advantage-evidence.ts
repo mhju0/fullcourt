@@ -103,7 +103,8 @@ export function winPct(wins: number, total: number): number {
 /** Builds the complete historical backtest from final games with both fatigue scores. */
 export function buildHistoricalBacktest(
   rows: readonly HistoricalGameEvidenceRow[],
-  seasonMinRA = 0
+  seasonMinRA = 0,
+  incompleteSeasons: ReadonlySet<string> = new Set()
 ): AnalysisResponse {
   const decidable: ProcessedHistoricalGame[] = [];
 
@@ -114,7 +115,10 @@ export function buildHistoricalBacktest(
   let baselineGames = 0;
   let baselineHomeWins = 0;
   let latestEvidenceDate: string | null = null;
-  const baselineBySeason = new Map<string, { games: number; homeWins: number }>();
+  const baselineBySeason = new Map<
+    string,
+    { games: number; homeWins: number; latestEvidenceDate: string }
+  >();
 
   for (const row of rows) {
     if (row.homeScore === null || row.awayScore === null) continue;
@@ -124,9 +128,14 @@ export function buildHistoricalBacktest(
 
     baselineGames++;
     if (homeWon) baselineHomeWins++;
-    const seasonBaseline = baselineBySeason.get(row.season) ?? { games: 0, homeWins: 0 };
+    const seasonBaseline = baselineBySeason.get(row.season) ?? {
+      games: 0,
+      homeWins: 0,
+      latestEvidenceDate: row.date,
+    };
     seasonBaseline.games++;
     if (homeWon) seasonBaseline.homeWins++;
+    if (row.date > seasonBaseline.latestEvidenceDate) seasonBaseline.latestEvidenceDate = row.date;
     baselineBySeason.set(row.season, seasonBaseline);
 
     const restAdvantage = classifyRestAdvantage(
@@ -192,16 +201,24 @@ export function buildHistoricalBacktest(
     if (row.restedTeamWon) aggregate.wins++;
     bySeason.set(row.season, aggregate);
   }
-  const seasonWinRates = Array.from(bySeason.entries())
-    .sort(([left], [right]) => left.localeCompare(right))
-    .map(([season, aggregate]) => {
+  const seasonKeys = seasonMinRA > NEUTRAL_REST_ADVANTAGE_THRESHOLD
+    ? [...bySeason.keys()]
+    : [...baselineBySeason.keys()];
+  const seasonWinRates = seasonKeys
+    .sort((left, right) => left.localeCompare(right))
+    .map((season) => {
+      const aggregate = bySeason.get(season) ?? { games: 0, wins: 0 };
       const baseline = baselineBySeason.get(season);
       return {
         season,
+        homeGames: baseline?.games ?? 0,
+        homeWins: baseline?.homeWins ?? 0,
+        latestEvidenceDate: baseline?.latestEvidenceDate ?? "",
         games: aggregate.games,
         restedTeamWins: aggregate.wins,
         winPct: winPct(aggregate.wins, aggregate.games),
         homeBaselinePct: baseline ? winPct(baseline.homeWins, baseline.games) : 0,
+        isComplete: !incompleteSeasons.has(season),
       };
     });
 

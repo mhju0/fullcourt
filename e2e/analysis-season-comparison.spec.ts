@@ -5,7 +5,15 @@ import { MIN_GAMES_FOR_INFERENCE } from "../src/lib/season-report";
 // Synthetic evidence: intentionally different era baselines, plus seasons on each side
 // of the maturity gate. Requests are controlled; no populated database is needed.
 const season = (label: string, games: number, winPct = 60, homeBaselinePct = 55) => ({
-  season: label, games, restedTeamWins: Math.round(games * winPct / 100), winPct, homeBaselinePct,
+  season: label,
+  homeGames: 1000,
+  homeWins: Math.round(1000 * homeBaselinePct / 100),
+  latestEvidenceDate: "2026-04-12",
+  games,
+  restedTeamWins: Math.round(games * winPct / 100),
+  winPct,
+  homeBaselinePct,
+  isComplete: true,
 });
 const backtest: AnalysisResponse = {
   latestEvidenceDate: "2026-04-12",

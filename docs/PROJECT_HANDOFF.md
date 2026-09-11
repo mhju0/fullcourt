@@ -36,6 +36,13 @@ the analysis population. Games moves offseason context beside mobile date contro
 matchup controls distinctly, and restores selected-chip visibility after resizing. See the
 [seven-fix review](design/seven-polish-fixes-review.md) for verification and release evidence.
 
+D-70 adds `/home-court`, reached through Explore, for annual home and rested-home win-rate
+history with an expandable count table. Season Report exposes the selected home baseline
+alongside the rested-home result and gap. Both retain the 100-game rested-home display gate;
+ongoing seasons are labeled explicitly and excluded from completed-history summaries.
+The [research record](research/2026-09-11-home-advantage-trend.md) retains data, sources, and
+owner decisions. See the [release review](design/home-court-study-review.md) and Git for verification and deployment status.
+
 ## Architecture and safeguards
 
 - Next.js serves pages and API routes. Database reads use Drizzle/postgres-js against Supabase

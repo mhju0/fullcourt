@@ -149,6 +149,11 @@ export interface AnalysisResponse {
    */
   seasonWinRates: {
     season: string;
+    /** Every eligible final designated-home game in the season. */
+    homeGames: number;
+    homeWins: number;
+    /** ET date of the newest eligible final game in this season. */
+    latestEvidenceDate: string;
     games: number;
     restedTeamWins: number;
     winPct: number;
@@ -160,6 +165,8 @@ export interface AnalysisResponse {
      * read as a rest effect when they are league-wide home court.
      */
     homeBaselinePct: number;
+    /** False while any published regular-season game remains unfinished. */
+    isComplete: boolean;
   }[];
 }
 

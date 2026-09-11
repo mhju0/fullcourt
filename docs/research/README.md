@@ -5,6 +5,7 @@ coverage. Current officiating figures come from the [publication pipeline](../OF
 
 | Question | Record |
 | --- | --- |
+| Is NBA home advantage shrinking over time? | [Home advantage trend, data and research](2026-09-11-home-advantage-trend.md) |
 | What fan questions motivated Officiating? | [Fan questions](2026-09-06-referee-fan-questions.md) |
 | What did the initial season show? | [Season study](2026-09-06-l2m-season-study.md), [validation](2026-09-06-l2m-validation.md) |
 | Does the result hold across three seasons? | [Three-season study](2026-09-06-l2m-three-season-study.md), [generated comparison](2026-09-06-l2m-three-season-comparison.md), [earlier-season validation](2026-09-06-l2m-earlier-seasons-validation.md) |

@@ -30,7 +30,7 @@ export const BEHIND_THE_DATA_SECTIONS = [
     /* The fatigue score, which the games board, MODEL RESULTS and SEASON REPORT all render.
        MODEL RESULTS leads the list because it is where a reader is most likely to want the
        method, but the order carries no meaning — a surface belongs to exactly one section. */
-    surfaceHrefs: ["/analysis", "/games", "/season"],
+    surfaceHrefs: ["/analysis", "/games", "/season", "/home-court"],
   },
   {
     href: "/behind-the-data/schedule-edge",

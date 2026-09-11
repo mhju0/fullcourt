@@ -26,6 +26,12 @@ FullCourt studies NBA schedule conditions and historical results. Use these term
 
 **Baseline**: The win rate for a venue side regardless of rest. Compare rested home teams with the home rate and rested visitors with the road rate. Season charts use that season's own baseline. The home-road difference is distinct from either baseline itself. Read current values from data rather than copying them into prose.
 
+**Home win rate**: The percentage of eligible games won by the designated home team, regardless of rest. This is the canonical label for the percentage; avoid describing a 55% home win rate as a “55% advantage.”
+
+**Home-court advantage**: The broader topic of how playing at home relates to results. Home win rate describes observed outcomes; it does not isolate the causal effect of the venue.
+
+**Rested-home gap**: The rested-at-home win rate minus the home win rate for the same season or stated period, expressed in percentage points. This is a descriptive comparison, not an isolated causal effect of rest.
+
 **Claim**: A statement about a result or comparison. State the population, denominator, reference, and material limitations. Derive comparisons over live figures using `rest-advantage-display.ts` or `analysis-claims.ts`. A rate above baseline is an association; it does not by itself measure a causal rest effect.
 
 **Historical backtest**: Evaluation of the fixed regular-season rest rule on past games. The headline asks whether the rested home team won. It includes pre-suspension 2019-20 games, 2020-21, and both lockout seasons, but excludes the Orlando bubble. It is distinct from the playoff model's walk-forward evaluation.
@@ -68,6 +74,7 @@ Interior pages use `PageHeader`: eyebrow, plain title, concise description, then
 | Season Report | `/season` | Season Report |
 | Schedule Edge | `/schedule` | Schedule Edge |
 | Model Results | `/analysis` | Model Results |
+| Home-court advantage | `/home-court` | Home-court advantage |
 | Playoff Rest | `/playoffs` | Playoff Rest |
 | Player Shooting | `/shooting` | Shooting by Rest |
 | Shot Value | `/shot-quality` | Expected Shot Value |

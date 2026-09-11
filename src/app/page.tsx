@@ -1,11 +1,8 @@
 import type { Metadata } from "next";
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
-import { PublicApiError } from "@/lib/api-errors";
 import { HomeContent } from "@/components/home-content";
-import { getHistoricalBacktest } from "@/lib/rest-advantage-evidence-server";
-import { getScheduleDisparity } from "@/lib/schedule-disparity-server";
-import { defaultRankableSeason } from "@/lib/schedule-disparity";
+import { loadHomepageDatabaseEvidence } from "@/lib/home-findings-server";
 import { historicalHomeFinding, scheduleHomeFinding, shootingHomeCoverage, type HomeFindings } from "@/lib/home-findings";
 import type { PlayerRestPayload } from "@/lib/player-rest";
 
@@ -21,14 +18,7 @@ async function loadFindings(): Promise<HomeFindings> {
   const shootingCoverage = shootingHomeCoverage(shooting);
   // CI can build without a database. Configured database failures still reach the error boundary.
   if (!process.env.DATABASE_URL) return { historical: null, schedule: null, shootingCoverage };
-  const [history, schedule] = await Promise.all([
-    getHistoricalBacktest(0),
-    getScheduleDisparity(defaultRankableSeason()).catch((error: unknown) => {
-      // An unequal schedule is an expected withheld ranking, not a failure of the historical evidence.
-      if (error instanceof PublicApiError && error.status === 422) return null;
-      throw error;
-    }),
-  ]);
+  const { history, schedule } = await loadHomepageDatabaseEvidence();
   return {
     historical: historicalHomeFinding(history),
     schedule: schedule ? scheduleHomeFinding(schedule) : null,

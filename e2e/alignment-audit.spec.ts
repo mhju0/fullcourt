@@ -24,6 +24,7 @@ const ROUTES = [
   "/season",
   "/schedule",
   "/analysis",
+  "/home-court",
   "/playoffs",
   "/shooting",
   "/shot-quality",

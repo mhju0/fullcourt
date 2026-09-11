@@ -11,6 +11,7 @@ export const metadata: Metadata = { title: "Explore" };
 
 const GROUPS = [
   { title: "Rest and fatigue", links: [
+    { href: "/home-court", title: "Home-court Advantage", question: "Are home teams winning less often?", action: "See the season history" },
     { href: "/shooting", title: "Shooting by Rest", question: "Do players shoot differently with more rest?", action: "Compare shooting splits" },
     { href: "/playoffs", title: "Playoff Rest", question: "How does prior-round workload relate to a series?", action: "Compare playoff workload" },
     { href: "/analysis", title: "Model Results", question: "How does the rest model compare with history?", action: "See historical results" },

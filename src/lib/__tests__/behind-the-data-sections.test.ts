@@ -18,6 +18,7 @@ describe("methodologyHrefFor", () => {
     expect(methodologyHrefFor("/games")).toBe("/behind-the-data/rest-advantage");
     expect(methodologyHrefFor("/analysis")).toBe("/behind-the-data/rest-advantage");
     expect(methodologyHrefFor("/season")).toBe("/behind-the-data/rest-advantage");
+    expect(methodologyHrefFor("/home-court")).toBe("/behind-the-data/rest-advantage");
   });
 
   it("claims no section for the front door, which documents itself", () => {

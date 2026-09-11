@@ -87,6 +87,26 @@ describe("buildSeasonReport — the sign rule", () => {
 });
 
 describe("buildSeasonReport — what counts", () => {
+  it("publishes the home baseline before any game qualifies as rested at home", () => {
+    const report = buildSeasonReport("2025-26", [
+      game({ gameId: 1, home: side(4), away: side(1) }),
+    ]);
+
+    expect(report.homeRate).toEqual({ games: 1, homeWins: 1, winPct: 100 });
+    expect(report.overall.games).toBe(0);
+  });
+
+  it("derives completion from recorded statuses rather than the season label", () => {
+    const complete = buildSeasonReport("2025-26", [game({ gameId: 1 })]);
+    const ongoing = buildSeasonReport("1998-99", [
+      game({ gameId: 1 }),
+      game({ gameId: 2, status: "scheduled", homeScore: null, awayScore: null }),
+    ]);
+
+    expect(complete.seasonComplete).toBe(true);
+    expect(ongoing.seasonComplete).toBe(false);
+  });
+
   it("excludes games inside the neutral band from every rate", () => {
     const report = buildSeasonReport("2025-26", [
       game({ gameId: 1, home: side(1), away: side(1.4) }), // 0.4 → neutral

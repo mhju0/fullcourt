@@ -16,9 +16,9 @@ export interface Backtest {
 }
 
 /** Returns failures so each surface can choose how to present missing historical data. */
-export function useBacktest(): Backtest {
+export function useBacktest(endpoint = "/api/analysis"): Backtest {
   const { data, error: swrError, isLoading } = useSWR<AnalysisResponse>(
-    "/api/analysis",
+    endpoint,
     apiFetcher,
     { revalidateOnFocus: false }
   )

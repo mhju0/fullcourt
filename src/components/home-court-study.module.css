@@ -1,0 +1,79 @@
+.chartFrame {
+  border-block: 1px solid var(--term-hairline);
+  padding-block: 12px 4px;
+}
+
+.chart {
+  display: block;
+  width: 100%;
+  min-height: 260px;
+}
+
+.tableScroll {
+  position: relative;
+}
+
+.seasonCell {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background: var(--term-surface);
+  box-shadow: 1px 0 0 var(--term-hairline);
+}
+
+thead .seasonCell {
+  background: var(--term-surface-2);
+}
+
+@media (max-width: 767px) {
+  .tableScroll::after {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 20px;
+    content: "";
+    pointer-events: none;
+    background: linear-gradient(to right, transparent, rgba(22, 24, 29, 0.1));
+  }
+}
+
+.point {
+  cursor: pointer;
+  outline: none;
+}
+
+.point:focus-visible circle:first-of-type {
+  stroke: var(--term-accent);
+  stroke-width: 3;
+}
+
+.inspection {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border-top: 1px solid var(--term-hairline);
+}
+
+.inspection > div {
+  min-width: 0;
+  padding: 12px 0;
+}
+
+.inspection > div:nth-child(even) {
+  padding-left: 12px;
+  border-left: 1px solid var(--term-hairline);
+}
+
+@media (min-width: 640px) {
+  .inspection {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .inspection > div {
+    padding-inline: 16px;
+  }
+
+  .inspection > div:first-child {
+    padding-left: 0;
+  }
+}
