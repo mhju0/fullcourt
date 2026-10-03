@@ -22,6 +22,27 @@ test.describe("Games page", () => {
     await expect(page.getByRole("button", { name: /^DEC$/ })).toBeVisible();
   });
 
+  // Games writes its season and date into the URL once the season's dates arrive. That write
+  // used to land on top of a tab press made in the meantime and cancel it: about one press in
+  // three, in the first second after load, left the visitor on Games.
+  test("a tab pressed while the dates are still loading is not cancelled", async ({ page }) => {
+    let release!: () => void;
+    const gate = new Promise<void>((resolve) => { release = resolve; });
+    await page.route("**/api/games/dates*", async (route) => { await gate; await route.continue(); });
+    // Hold the destination back so the dates always arrive before it commits.
+    await page.route(/\/season\?.*_rsc=/, async (route) => {
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      await route.continue();
+    });
+    await page.goto("/games");
+    await expect(page.getByLabel("SEASON", { exact: true })).not.toHaveValue("");
+
+    await page.getByRole("navigation", { name: "Main navigation" }).getByRole("link", { name: "SEASON REPORT" }).click();
+    release();
+
+    await expect(page).toHaveURL(/\/season(?:\?|$)/, { timeout: 20_000 });
+  });
+
   // The page is prerendered, so the HTML a visitor receives was built on an earlier date. On
   // 2026-10-01 the season rolled over under a three-week-old build and every load threw React
   // #418: the season, the selected month and the offseason note were all rendered from "today".

@@ -111,7 +111,8 @@ a comment containing backticks, an apostrophe and `#` caused the build to drop t
 The existing route transition, homepage navigation retraction, live-score feedback, and their
 exceptions are governed by `src/lib/route-transition.ts`, `globals.css`, the component modules,
 and [ADR 0010](adr/0010-the-ui-redesign-was-decided-at-the-bench.md), as amended by the design
-record. Do not add decorative or per-row entry animation during routine maintenance.
+record. A page that writes its own URL after load asks `isLeavingPage()` first: a history
+write from the page being left cancels a navigation that has not committed yet. Do not add decorative or per-row entry animation during routine maintenance.
 
 ## Verification and screenshots
 

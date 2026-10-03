@@ -6,6 +6,7 @@ import { useLiveGames } from "@/hooks/useLiveGames";
 import { LOCATION_CHANGE } from "@/hooks/useSeasonUrl";
 import { readSlateUrl, slateUrl } from "@/lib/game-slate-url";
 import { errMsg } from "@/lib/fetcher";
+import { isLeavingPage } from "@/lib/route-transition";
 import {
   calendarView,
   daysInMonth,
@@ -107,6 +108,9 @@ export function useGameSlate(): GameSlate {
 
   useEffect(() => {
     if (!urlReady) return;
+    // The visitor is already on their way to another page; writing this one's URL now would
+    // cancel that navigation.
+    if (isLeavingPage()) return;
     const url = slateUrl(window.location.href, season, selectedDate);
     if (url.href !== window.location.href) {
       if (historyMode.current === "push") window.history.pushState(null, "", url);
