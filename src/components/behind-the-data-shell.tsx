@@ -37,7 +37,7 @@ export function BehindTheDataShell({ eyebrow, title, description, topic, childre
       <details className="reference-topics">
         <summary>Change topic: {current?.title ?? title}</summary>
         <nav aria-label="Reference sections">
-          {BEHIND_THE_DATA_SECTIONS.map((item) => <Link key={item.href} href={item.href} aria-current={current?.href === item.href ? "page" : undefined}>{item.title}</Link>)}
+          {BEHIND_THE_DATA_SECTIONS.filter((item) => item.href !== "/behind-the-data").map((item) => <Link key={item.href} href={item.href} aria-current={current?.href === item.href ? "page" : undefined}>{item.title}</Link>)}
         </nav>
       </details>
     </div>
@@ -51,8 +51,7 @@ export function BehindTheDataShell({ eyebrow, title, description, topic, childre
     <div id="reference-body" className="flex flex-col gap-4">{children}</div>
     <nav className="reference-related" aria-label="Related pages">
       {current?.surfaceHrefs.map((href) => <Link key={href} href={href}>{({ "/analysis": "View Model Results", "/games": "Browse Games", "/season": "Read Season Report", "/schedule": "Compare Schedule Edge", "/playoffs": "View Playoff Rest", "/shooting": "Compare Shooting by Rest", "/availability": "View Availability Cost", "/shot-quality": "View Expected Shot Value", "/officiating": "Browse Officiating" } as Record<string, string>)[href]} →</Link>)}
-      {topic === "referees" && <Link href="/behind-the-data/referees/archive">Open referee research archive →</Link>}
-      <Link href={topic === "data-and-limits" ? "/behind-the-data" : "/behind-the-data/data-and-limits"}>{topic === "data-and-limits" ? "All methods" : "Data sources and coverage"} →</Link>
+      {topic !== "data-and-limits" && <Link href="/behind-the-data/data-and-limits">Data sources and coverage →</Link>}
     </nav>
   </div>;
 }

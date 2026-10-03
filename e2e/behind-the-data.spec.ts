@@ -211,6 +211,22 @@ test.describe("Prose spacing", () => {
   }
 });
 
+test("the topic list opens over the article and closes like an overlay", async ({ page }) => {
+  await page.goto("/behind-the-data/player-shooting");
+  const topics = page.locator(".reference-topics");
+  const heading = page.getByRole("heading", { level: 1 });
+  const before = await heading.boundingBox();
+  await topics.locator("summary").click();
+  await expect(topics.locator('[aria-current="page"]')).toBeVisible();
+  // In the flow, the open list pushed the title and the whole article down the page.
+  expect((await heading.boundingBox())!.y).toBe(before!.y);
+  await page.keyboard.press("Escape");
+  await expect(topics).not.toHaveAttribute("open");
+  await topics.locator("summary").click();
+  await page.locator(".reference-limit").click();
+  await expect(topics).not.toHaveAttribute("open");
+});
+
 const METHOD_ROUTES = ["rest-advantage", "schedule-edge", "playoff-predictions", "player-shooting", "shot-value", "availability", "officiating", "referees", "time-zones", "data-and-limits"];
 
 for (const topic of METHOD_ROUTES) {
