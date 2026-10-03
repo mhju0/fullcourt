@@ -3,6 +3,7 @@
 import { useSeasonUrl } from "@/hooks/useSeasonUrl"
 import { ScheduleWorkload } from "@/components/schedule-workload"
 import useSWR from "swr"
+import type { CSSProperties } from "react"
 import { ChevronDown } from "lucide-react"
 import { SeasonSelector } from "@/components/season-selector"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -67,6 +68,15 @@ function barGeometry(value: number, bound: number) {
     ? { left: "50%", width: `${pct}%` }
     : { right: "50%", width: `${pct}%` }
 }
+
+const STAT_GRID_STYLE: CSSProperties = {
+  gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))",
+  background: "var(--term-border)",
+  border: "1px solid var(--term-border)",
+  borderRadius: "var(--term-radius)",
+}
+
+const STAT_LABELS = ["Most favored", "Least favored", "Spread", "Games with an edge"] as const
 
 /**
  * One cell of the divided grid below.
@@ -238,6 +248,11 @@ export function ScheduleDisparityContent() {
                 there is no "as of" then. */}
             {stamp ? ` · ${stamp}` : ""}
           </p>
+        ) : isLoading ? (
+          /* Holds the stamp's line while the season loads, so nothing below it moves. */
+          <p aria-hidden className="mono" style={{ marginTop: SPACE.md, fontSize: TYPE.label, lineHeight: LEAD.body }}>
+            &nbsp;
+          </p>
         ) : null}
         {data?.provisional ? (
           <p style={{ marginTop: SPACE.sm, fontSize: TYPE.body, color: "var(--term-text-muted)", lineHeight: LEAD.body }}>
@@ -257,15 +272,7 @@ export function ScheduleDisparityContent() {
       </div>
 
       {data && most && least ? (
-        <div
-          className="grid gap-px overflow-hidden"
-          style={{
-            gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))",
-            background: "var(--term-border)",
-            border: "1px solid var(--term-border)",
-            borderRadius: "var(--term-radius)",
-          }}
-        >
+        <div className="grid gap-px overflow-hidden" style={STAT_GRID_STYLE}>
           <StatCell
             label="Most favored"
             value={signedNumber(most.value)}
@@ -293,6 +300,14 @@ export function ScheduleDisparityContent() {
             }
           />
         </div>
+      ) : isLoading ? (
+        /* The same grid with empty cells: it reserves the tiles' height at every width, which a
+           fixed-height block cannot, because the column count follows the container. */
+        <div aria-hidden className="grid gap-px overflow-hidden" style={STAT_GRID_STYLE}>
+          {STAT_LABELS.map((label) => (
+            <StatCell key={label} label={label} value={"\u00a0"} sub={"\u00a0"} />
+          ))}
+        </div>
       ) : null}
       {/* Under the figures it qualifies, not above them: on a phone this sentence and the
           provisional note together pushed every number below the first screen. */}
@@ -316,7 +331,8 @@ export function ScheduleDisparityContent() {
 
         {isLoading ? (
           <Skeleton
-            className="mt-3 h-[420px] w-full bg-[var(--term-surface-2)]"
+            // Thirty rows: the height of the list it stands in for, so the sections below hold still.
+            className="mt-3 h-[598px] w-full bg-[var(--term-surface-2)]"
             style={{ borderRadius: "var(--term-radius)" }}
           />
         ) : teams.length === 0 ? (

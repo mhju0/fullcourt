@@ -108,7 +108,11 @@ one automatic retry. Season Report opens on the latest season with results. `rob
 draw are CSS only; ADR 0010 carries the amendment.
 
 Open: the cause of one production API 500 seen during the audit is unknown (log access was
-refused). Schedule Edge shifts layout on load (CLS 0.123 measured in production). Stat-tile
+refused). Schedule Edge reserves its loading space (layout shift 0.123 → 0.016 desktop, 0.173 →
+0.054 phone, measured locally); the remainder is the provisional-season note arriving with the
+data. Thirteen e2e specs fail on `main` independently of this pass (palette option count,
+Schedule Edge header copy and stamp, shot-court slider names, reference contents, Officiating
+nav link, cross-fade specs); e2e is outside CI, so they went unnoticed. Stat-tile
 unification and table column widths are deferred. `next dev` 16.3.8 appends an agent-rules
 block to `AGENTS.md`; it is uncommitted pending an owner decision. Owner actions: require CI
 before merging to `main`, tag `v1.0.0` at launch, and announce only after a verified live
