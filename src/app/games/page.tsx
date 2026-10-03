@@ -299,7 +299,23 @@ function Matchups({
 
     case "daysError":
     case "slateError":
-      return <MessageCard tone="error" title="FAILED TO LOAD GAMES" body={slate.message ?? "Something went wrong"} />
+      return (
+        <MessageCard
+          tone="error"
+          title="FAILED TO LOAD GAMES"
+          body={slate.message ?? "Something went wrong"}
+          action={
+            <button
+              type="button"
+              onClick={() => slate.send({ type: "RETRY_REQUESTED" })}
+              className={cn(termBtn, "active:scale-[0.97]")}
+              style={termBtnStyle}
+            >
+              TRY AGAIN
+            </button>
+          }
+        />
+      )
 
     case "noDays":
       return <EmptyState label={`in the ${slate.season} season`} />
@@ -319,8 +335,12 @@ function Matchups({
   }
 }
 
+// The select's one option before mount. This page is prerendered, so anything derived from
+// "today" — the season, the selected month, the offseason note — is held back until
+// `slate.urlReady`; the served HTML can be weeks older than the visitor's date.
+const PENDING_SEASON = [{ value: "", label: "—" }] as const
+
 export default function GamesPage() {
-  const showOffSeasonBanner = isNbaOffSeason()
   const offSeasonLabel = currentDisplaySeason()
 
   // ADR 0010: one date board; EDGES AHEAD finds rest advantages across future dates.
@@ -328,6 +348,7 @@ export default function GamesPage() {
   // Season/month/day browsing, the two fetches and the Realtime overlay all live in
   // the hook; its decisions live in a pure reducer that is unit-tested without a DOM.
   const slate = useGameSlate()
+  const showOffSeasonBanner = slate.urlReady && isNbaOffSeason()
   const monthStrip = useRef<HTMLDivElement>(null)
   const dateStrip = useRef<HTMLDivElement>(null)
   const revealSelectedDateControls = useCallback(() => {
@@ -422,7 +443,8 @@ export default function GamesPage() {
       <section aria-label="Choose a game date" className="flex flex-col gap-2" style={{ ...termCardStyle, padding: SPACE_CARD }}>
               <SeasonSelector
                 id="nba-season"
-                season={slate.season}
+                season={slate.urlReady ? slate.season : ""}
+                options={slate.urlReady ? undefined : PENDING_SEASON}
                 disabled={!slate.urlReady}
                 onSeasonChange={(season) => slate.send({ type: "SEASON_SELECTED", season })}
                 seasons={browsableSeasons().filter((season) => season !== upcomingSeason || Boolean(upcomingDays?.length) || season === slate.season)}
@@ -431,7 +453,9 @@ export default function GamesPage() {
           <GroupLabel>Month</GroupLabel>
           <div ref={monthStrip} className="overflow-x-auto pb-1" role="group" aria-label="Month">
             <div className="flex w-max gap-2">
-              {slate.months.map(({ value, label, dayCount, isSelected }) => (
+              {slate.months.map(({ value, label, dayCount, isSelected: isSeasonMonth }) => {
+                const isSelected = slate.urlReady && isSeasonMonth
+                return (
                 <button
                   key={value}
                   type="button"
@@ -455,7 +479,8 @@ export default function GamesPage() {
                 >
                   {label.toUpperCase()}
                 </button>
-              ))}
+                )
+              })}
             </div>
           </div>
         </div>
@@ -464,8 +489,9 @@ export default function GamesPage() {
         {slate.calendar.kind === "loading" ? (
           <Skeleton className="h-16 w-full max-w-md bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)" }} />
         ) : slate.calendar.kind === "error" ? (
-          <p className="mono" style={{ fontSize: 12, color: "var(--term-red-text)" }} role="alert">
-            {slate.calendar.message}
+          // Quiet on purpose: the MATCHUPS card below carries the alert and the retry.
+          <p className="mono" style={{ fontSize: 12, color: "var(--term-text-muted)" }}>
+            DATES DID NOT LOAD.
           </p>
         ) : slate.calendar.kind === "empty" ? (
           <p className="mono" style={{ fontSize: 12, color: "var(--term-text-muted)" }}>

@@ -305,3 +305,27 @@ describe("LOCATION_RESTORED", () => {
     expect(next.status).toBe("loadingSlate");
   });
 });
+
+describe("RETRY_REQUESTED — a failed load can be asked for again", () => {
+  it("returns a failed day list to loading and asks for a new fetch", () => {
+    const failed = base({ status: "daysError", message: "boom" });
+    const next = slateReducer(failed, { type: "RETRY_REQUESTED" });
+    expect(next.status).toBe("loadingDays");
+    expect(next.message).toBeNull();
+    expect(next.attempt).toBe(failed.attempt + 1);
+  });
+
+  it("returns a failed slate to loading on the same date", () => {
+    const failed = ready({ status: "slateError", games: [], message: "boom" });
+    const next = slateReducer(failed, { type: "RETRY_REQUESTED" });
+    expect(next.status).toBe("loadingSlate");
+    expect(next.selectedDate).toBe("2024-12-25");
+    expect(next.message).toBeNull();
+    expect(next.attempt).toBe(failed.attempt + 1);
+  });
+
+  it("is ignored when nothing failed, so a stray click cannot refetch a good slate", () => {
+    const state = ready();
+    expect(slateReducer(state, { type: "RETRY_REQUESTED" })).toBe(state);
+  });
+});

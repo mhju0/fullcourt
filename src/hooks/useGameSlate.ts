@@ -27,6 +27,8 @@ import {
 } from "@/lib/nba-season";
 import type { ApiResponse, GameDateCount, GameResponse } from "@/types";
 
+const isAbort = (err: unknown) => err instanceof Error && err.name === "AbortError";
+
 export interface GameSlate {
   urlReady: boolean;
   season: string;
@@ -49,14 +51,28 @@ export interface GameSlate {
 }
 
 /** Both endpoints answer in the `{ data, error }` envelope. */
-async function readEnvelope<T>(url: string, signal: AbortSignal): Promise<T> {
+async function readEnvelopeOnce<T>(url: string, signal: AbortSignal): Promise<T> {
   const res = await fetch(url, { signal });
   const body = (await res.json()) as ApiResponse<T>;
   if (body.error !== null) throw new Error(body.error);
   return body.data;
 }
 
-const isAbort = (err: unknown) => err instanceof Error && err.name === "AbortError";
+const RETRY_DELAY_MS = 800;
+
+/**
+ * One quiet second attempt before the failure card. A production 500 on 2026-10-03 succeeded on
+ * the next three requests; a visitor should not have to know to reload for that.
+ */
+async function readEnvelope<T>(url: string, signal: AbortSignal): Promise<T> {
+  try {
+    return await readEnvelopeOnce<T>(url, signal);
+  } catch (err) {
+    if (signal.aborted || isAbort(err)) throw err;
+    await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY_MS));
+    return readEnvelopeOnce<T>(url, signal);
+  }
+}
 const noon = (dateKey: string) => parseISO(`${dateKey}T12:00:00`);
 
 export function useGameSlate(): GameSlate {
@@ -69,7 +85,7 @@ export function useGameSlate(): GameSlate {
   }));
 
   const [state, dispatch] = useReducer(slateReducer, seed, initSlate);
-  const { season, selectedDate } = state;
+  const { season, selectedDate, attempt } = state;
   const [urlReady, setUrlReady] = useState(false);
   const historyMode = useRef<"push" | "replace">("replace");
 
@@ -120,7 +136,7 @@ export function useGameSlate(): GameSlate {
         });
       });
     return () => controller.abort();
-  }, [season, urlReady]);
+  }, [season, urlReady, attempt]);
 
   // The reducer drops responses for a date that is no longer selected, so a slow
   // reply cannot overwrite a newer one even if its abort loses the race.
@@ -138,7 +154,7 @@ export function useGameSlate(): GameSlate {
         });
       });
     return () => controller.abort();
-  }, [selectedDate]);
+  }, [selectedDate, attempt]);
 
   const gameIds = useMemo(() => state.games.map((g) => g.id), [state.games]);
   const { liveUpdates, recentlyUpdated } = useLiveGames(gameIds);
