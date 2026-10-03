@@ -812,3 +812,14 @@ after launch.
 its own description. Stat-tile unification and table column widths are deferred until after
 launch. Playoff Rest keeps its section order. The public announcement waits for a verified
 live pipeline run on 2026-10-20 or 21.
+
+### D-72 · Turbopack build cache is off for production builds — ACTIVE
+
+After PR #99 merged on 2026-10-03, production served a global stylesheet that matched the
+previous `globals.css`: the new heading balance, description wrap and hover rules were absent,
+while the page markup and the CSS modules from the same commit were live. A clean local build
+of that commit emitted the rules, and building old then new over one local cache did not
+reproduce the fault. The cause is inferred, not proven: build logs were not readable.
+`experimental.turbopackFileSystemCacheForBuild` is `false` so every deploy compiles from
+source. Revisit only with a build log that names a different cause. The agent-rules block
+`next dev` appends to `AGENTS.md` is committed, as the block itself advises.

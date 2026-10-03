@@ -116,6 +116,9 @@ defect: Games wrote its URL after the season's dates arrived, which cancelled a 
 in the meantime. `route-transition.ts` now reports a navigation in flight and Games holds its
 write until the destination commits. The full suite passes locally (393 specs). Stat-tile
 unification and table column widths are deferred. `next dev` 16.3.8 appends an agent-rules
-block to `AGENTS.md`; it is uncommitted pending an owner decision. Owner actions: require CI
-before merging to `main`, tag `v1.0.0` at launch, and announce only after a verified live
-pipeline run.
+block to `AGENTS.md`; it is committed. Owner actions: tag `v1.0.0` at launch, and announce only
+after a verified live pipeline run.
+
+After the merge of #99, production served a stylesheet built from the older `globals.css`
+(D-72). The Turbopack build cache is now off in `next.config.ts`. After any change to
+`globals.css`, confirm a new rule is present in the stylesheet production serves.
