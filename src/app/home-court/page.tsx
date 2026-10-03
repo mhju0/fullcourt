@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 export default function HomeCourtPage() {
   return (
     <div className="flex flex-col gap-12">
-      <header>
+      <header className="page-intro">
         <PageHeader
           eyebrow="HOME-COURT ADVANTAGE"
           title="Are home teams winning less often?"

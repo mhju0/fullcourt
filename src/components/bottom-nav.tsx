@@ -1,6 +1,6 @@
 "use client"
 
-import { BarChart3, Calendar, CalendarRange, Compass } from "lucide-react"
+import { BarChart3, Calendar, Compass, Scale } from "lucide-react"
 import { TransitionLink as Link } from "@/components/transition-link"
 import { usePathname } from "next/navigation"
 import { DIRECT_NAV_ITEMS, primaryNavCurrent } from "@/lib/primary-navigation"
@@ -11,7 +11,8 @@ import { cn } from "@/lib/utils"
 const SLOT_DETAILS = {
   "/games": { label: "GAMES", Icon: Calendar },
   "/season": { label: "SEASON", Icon: BarChart3 },
-  "/schedule": { label: "SCHEDULE", Icon: CalendarRange },
+  // A balance, not a second calendar: Games is the date board, Schedule Edge is who was favored.
+  "/schedule": { label: "SCHEDULE", Icon: Scale },
   "/explore": { label: "EXPLORE", Icon: Compass },
 } as const
 

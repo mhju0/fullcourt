@@ -240,6 +240,9 @@ export function DataTable<Row, K extends string = string>({
           <button
             type="button"
             onClick={toggle}
+            // Hover and focus paint come from `.fc-sort` (globals.css). The colour is not set
+            // inline here, because an inline `color` would outrank the hover rule.
+            className="fc-sort"
             style={{
               display: "block",
               width: "100%",
@@ -251,7 +254,6 @@ export function DataTable<Row, K extends string = string>({
               padding: 0,
               margin: 0,
               font: "inherit",
-              color: "inherit",
               letterSpacing: "inherit",
               textTransform: "inherit",
               textAlign: "inherit",

@@ -153,7 +153,7 @@ export function HomeCourtStudy() {
                 return (
                   <tr key={row.season} className="border-b border-[var(--term-border)]">
                     <th scope="row" className={styles.seasonCell}>
-                      <a className="fc-text-link" href={`/season?season=${row.season}`}>{row.season}</a>
+                      <a className="fc-text-link inline-flex min-h-11 items-center" href={`/season?season=${row.season}`}>{row.season}</a>
                       {!row.isComplete ? <span className={`block text-xs font-normal ${muted}`}>Season to date</span> : null}
                     </th>
                     <td className="mono text-right tabular-nums">{row.homeWins.toLocaleString()} / {row.homeGames.toLocaleString()}</td>

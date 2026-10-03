@@ -256,7 +256,6 @@ export function ScheduleDisparityContent() {
         ) : null}
       </div>
 
-      <p className="text-[15px] text-[var(--term-text-muted)]">This ranking describes schedule differences; it does not predict results. Schedule worth is a historical group comparison, not a causal estimate.</p>
       {data && most && least ? (
         <div
           className="grid gap-px overflow-hidden"
@@ -295,6 +294,9 @@ export function ScheduleDisparityContent() {
           />
         </div>
       ) : null}
+      {/* Under the figures it qualifies, not above them: on a phone this sentence and the
+          provisional note together pushed every number below the first screen. */}
+      <p className="text-[15px] text-[var(--term-text-muted)]">This ranking describes schedule differences; it does not predict results. Schedule worth is a historical group comparison, not a causal estimate.</p>
 
       <div style={termCardStyle}>
         <p
