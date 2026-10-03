@@ -828,3 +828,19 @@ cache of the deploy before it (`71b0da7`, whose `globals.css` was the old one) a
 stylesheet. That fits a stale cache entry; why Turbopack kept it for a changed file is not
 known. Vercel still restores and uploads its own cache; only Turbopack's part is unused. The agent-rules block
 `next dev` appends to `AGENTS.md` is committed, as the block itself advises.
+
+### D-73 · Reading pages are structured, and the topic list is an overlay — ACTIVE
+
+The owner found About and the engineering walkthrough too plain: paragraphs of one text colour.
+Both now carry their content in structure, with no new claim added: numbered
+chapters, a lead sentence, tinted scope notes, labelled rows and the Explore study card. The
+walkthrough has a section rail that follows the reader. There is no hover decoration on prose.
+The ten method articles keep their layout.
+
+The method topic list used to open in the flow and push the article down. It now opens over the
+page. `/data-status` has a loading state, because it reads the database on every request and a
+press on its footer link showed nothing until the reads returned. Links that appeared twice on
+one page were reduced to one: the index entry inside the topic list, the second link to the
+archived referee methods, the second archive link, and the second link back to all methods.
+
+The footer keeps `Find a page`. It is the only visible door to the page finder.

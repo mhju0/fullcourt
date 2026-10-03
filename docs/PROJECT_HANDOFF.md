@@ -122,3 +122,23 @@ after a verified live pipeline run.
 After the merge of #99, production served a stylesheet built from the older `globals.css`
 (D-72). The Turbopack build cache is now off in `next.config.ts`. After any change to
 `globals.css`, confirm a new rule is present in the stylesheet production serves.
+
+## Reading pages and data audit (2026-10-04)
+
+About and How it was built were rebuilt on `reading.module.css` with a section rail (D-73). The
+method topic list is an overlay, `/data-status` has a loading state, and four duplicate links
+were removed. A crawl of 139 pages on production found no broken link, no blank page and no
+missing anchor.
+
+Data audit, by independent SQL against the database: the Model Results totals, all four
+thresholds, every one of the 41 season rows, and the 2025-26 Season Report figures match what
+production serves. Two stored errors were found, and neither is fixed, because data writes belong
+to the owner:
+
+- Game `0021900894` (GSW at PHX) is dated 2020-03-01. It was played on 2020-02-29. ESPN carries
+  the same wrong date. Stored fatigue for GSW and PHX in that game, and for GSW on 2020-03-01,
+  misses two back-to-backs.
+- Playoff series 18 (1986-87 West Finals, Lakers over the franchise now in Oklahoma City) is
+  stored as 3-1 with no winner. The four stored games are a 4-0 sweep. It has no predictions.
+
+Open: whether `Find a page` leaves the footer. Removing it leaves the page finder keyboard-only.
