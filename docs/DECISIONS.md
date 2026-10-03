@@ -819,7 +819,12 @@ After PR #99 merged on 2026-10-03, production served a global stylesheet that ma
 previous `globals.css`: the new heading balance, description wrap and hover rules were absent,
 while the page markup and the CSS modules from the same commit were live. A clean local build
 of that commit emitted the rules, and building old then new over one local cache did not
-reproduce the fault. The cause is inferred, not proven: build logs were not readable.
-`experimental.turbopackFileSystemCacheForBuild` is `false` so every deploy compiles from
-source. Revisit only with a build log that names a different cause. The agent-rules block
+reproduce the fault. `experimental.turbopackFileSystemCacheForBuild` is `false` so every deploy
+compiles from source.
+
+The build logs were read later the same day. The stale deploy (`afeb463`) restored the build
+cache of the deploy before it (`71b0da7`, whose `globals.css` was the old one) and compiled in
+12.7s. The first deploy with the flag off (`5058e98`) compiled in 17.7s and served the correct
+stylesheet. That fits a stale cache entry; why Turbopack kept it for a changed file is not
+known. Vercel still restores and uploads its own cache; only Turbopack's part is unused. The agent-rules block
 `next dev` appends to `AGENTS.md` is committed, as the block itself advises.
