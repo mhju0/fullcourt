@@ -96,3 +96,20 @@ walkthrough. The owner approved the before/after implementation for publication 
 CI and hosted-preview verification precede the production merge. [Implementation review](design/usability-audit-review.md)
 records the scope and verification. The new walkthrough makes system decisions inspectable;
 personal contribution and collaboration details require the owner's account.
+
+
+## Release-readiness pass (2026-10-03)
+
+D-71 records the approved pre-launch audit. Three local branches hold it: `fix/next-16.3.8`,
+`fix/officiating-preseason-skip`, and `feat/release-polish` (stacked on the Next.js branch).
+Games no longer renders date-derived content before the URL is read and offers TRY AGAIN after
+one automatic retry. Season Report opens on the latest season with results. `robots.txt`,
+`sitemap.xml` and per-page descriptions exist. Hover and press feedback and one homepage bar
+draw are CSS only; ADR 0010 carries the amendment.
+
+Open: the cause of one production API 500 seen during the audit is unknown (log access was
+refused). Schedule Edge shifts layout on load (CLS 0.123 measured in production). Stat-tile
+unification and table column widths are deferred. `next dev` 16.3.8 appends an agent-rules
+block to `AGENTS.md`; it is uncommitted pending an owner decision. Owner actions: require CI
+before merging to `main`, tag `v1.0.0` at launch, and announce only after a verified live
+pipeline run.
