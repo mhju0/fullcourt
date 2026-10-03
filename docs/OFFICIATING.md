@@ -28,7 +28,7 @@ Historical PDF/JSON collection, normalization, independent grade checks, and sou
 
 ## Refresh workflow
 
-`.github/workflows/officiating-refresh.yml` runs daily at 20:30 UTC from October through June, or manually for a supplied season. Scheduled runs skip July through September; manual collection remains available. It re-fetches the entire current season so earlier revisions are eligible for publication. Missing indexes, failed requests, duplicate anomalies, and removed published IDs fail the refresh; they never overwrite the live site with partial totals. Before the first report in a new season the job may fail while the published previous season remains available.
+`.github/workflows/officiating-refresh.yml` runs daily at 20:30 UTC from October through June, or manually for a supplied season. Scheduled runs skip July through September; manual collection remains available. It re-fetches the entire current season so earlier revisions are eligible for publication. Missing indexes, failed requests, duplicate anomalies, and removed published IDs fail the refresh; they never overwrite the live site with partial totals. Before the NBA publishes the first report of a season this site has never published, the season index is missing or empty; the collector exits 3 and the job ends green with a notice while the previous season remains available. Once a season has been published, a missing or empty index fails the refresh again.
 
 The workflow uploads raw source evidence and its manifest as a run artifact retained for 90 days. Download evidence before expiration if permanent offline archival is required. Published sources remain externally linked and their hashes are retained in Git.
 

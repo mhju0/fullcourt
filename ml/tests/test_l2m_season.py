@@ -1,11 +1,16 @@
 import copy
+import json
+import subprocess
 import sys
+import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from analyze_l2m_season import abbr, audit_duplicates, exposure, phase_for
+import collect_l2m_season
 from collect_l2m_season import ReportLinks, validate_report
 
 
@@ -28,6 +33,26 @@ class L2MSeasonTests(unittest.TestCase):
                     '<a href="https://official.nba.com/l2m/L2MReport.html?gameId=0022500001">again</a>'
                     '<a href="https://example.com/l2m/L2MReport.html?gameId=0022500002">foreign</a>')
         self.assertEqual(list(parser.links), ["0022500001"])
+
+    def test_missing_index_is_distinguished_from_other_request_failures(self):
+        missing = subprocess.CalledProcessError(22, ["curl"], stderr=b"curl: (22) The requested URL returned error: 404")
+        with mock.patch.object(collect_l2m_season, "fetch", side_effect=missing):
+            self.assertIsNone(collect_l2m_season.fetch_index("https://official.nba.com/x/"))
+        for failure in (
+            subprocess.CalledProcessError(22, ["curl"], stderr=b"curl: (22) The requested URL returned error: 503"),
+            subprocess.CalledProcessError(28, ["curl"], stderr=b"curl: (28) Operation timed out"),
+        ):
+            with mock.patch.object(collect_l2m_season, "fetch", side_effect=failure):
+                with self.assertRaises(subprocess.CalledProcessError):
+                    collect_l2m_season.fetch_index("https://official.nba.com/x/")
+
+    def test_only_a_never_published_season_may_be_awaiting_reports(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            published = Path(tmp) / "officiating.json"
+            published.write_text(json.dumps({"seasons": [{"season": "2025-26"}]}))
+            self.assertTrue(collect_l2m_season.awaiting_first_reports("2026-27", published))
+            self.assertFalse(collect_l2m_season.awaiting_first_reports("2025-26", published))
+            self.assertFalse(collect_l2m_season.awaiting_first_reports("2026-27", None))
 
     def test_unknown_grades_and_wrong_games_are_rejected(self):
         data = {"game": [{"GameId": "0022500001"}], "l2m": [
