@@ -142,3 +142,26 @@ to the owner:
   stored as 3-1 with no winner. The four stored games are a 4-0 sweep. It has no predictions.
 
 Open: whether `Find a page` leaves the footer. Removing it leaves the page finder keyboard-only.
+
+## Cross-source data audit (2026-10-04)
+
+All 50,495 stored final games were matched by date and teams against basketball-reference
+schedule pages for all 41 seasons, and every disagreement was read a third time on the nba.com
+game page. Nothing is fixed; the SQL is with the owner.
+
+- Four 2019-20 games are stored one day late; nba.com and basketball-reference agree on the
+  earlier date: `0021900848` (2020-02-23), `0021900886` (2020-02-28), `0021900888` (2020-02-29),
+  `0021900894` (2020-02-29). Stored back-to-back flags around them are wrong for POR, DET, LAC,
+  DEN, ATL, PHX and GSW.
+- Eight stored scores are wrong, both sources agreeing: `0048500304` home 98, `0028700066` home
+  109, `0028800100` away 107 (the stored winner is wrong), `0028800140` home 113, `0028800234`
+  away 104, `0028800269` away 91, `0049300052` home 98, `0029800661` away 93.
+- `0029600070` (1996-11-10 CLE–DEN): the database and nba.com say 108–79, basketball-reference
+  says 101–86. Unresolved; same winner.
+- `0020200464` (2003-01-04) went to double overtime; stored as one.
+- 2019-20 has no overtime stored: 75 games, 61 of them regular-season games before the
+  suspension. The published coverage note covers only seasons before 2002.
+- Not in the database by design: three NBA Cup finals and the 2020 play-in game.
+
+Next step after the owner applies the SQL: `scripts/fetch_game_context.ts 2019-10-01 2020-10-31`,
+then a fatigue recompute for 2019-20 and the neighbours of the corrected games.
