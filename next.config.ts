@@ -24,6 +24,12 @@ const contentSecurityPolicy = [
 ].join("; ");
 
 const nextConfig: NextConfig = {
+  // Production served a stylesheet built from an older globals.css after a merge on
+  // 2026-10-03, while a clean local build of the same commit was correct. A cold build
+  // costs seconds; a stale one ships the wrong page. Keep the build cache off.
+  experimental: {
+    turbopackFileSystemCacheForBuild: false,
+  },
   images: {
     remotePatterns: [
       {
