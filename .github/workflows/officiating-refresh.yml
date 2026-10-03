@@ -42,7 +42,16 @@ jobs:
           PY
       - name: Collect complete source snapshot
         if: env.OFFICIATING_ACTIVE == 'true'
-        run: python ml/collect_l2m_season.py --season "$REVIEW_SEASON" --out /tmp/officiating-sources
+        run: |
+          status=0
+          python ml/collect_l2m_season.py --season "$REVIEW_SEASON" --out /tmp/officiating-sources \
+            --published-data src/data/officiating.json || status=$?
+          if [ "$status" -eq 3 ]; then
+            echo "OFFICIATING_ACTIVE=false" >> "$GITHUB_ENV"
+            echo "::notice::The NBA has not published $REVIEW_SEASON Last Two Minute reports yet; nothing to refresh."
+            exit 0
+          fi
+          exit "$status"
       - name: Retain source evidence
         if: always() && env.OFFICIATING_ACTIVE == 'true'
         uses: actions/upload-artifact@v4

@@ -41,6 +41,27 @@ def fetch(url):
     return result.stdout
 
 
+AWAITING_FIRST_REPORTS_EXIT = 3
+
+
+def fetch_index(url):
+    """Return the season index, or None when the NBA has not created the page (HTTP 404)."""
+    try:
+        return fetch(url)
+    except subprocess.CalledProcessError as exc:
+        if exc.returncode == 22 and b"error: 404" in (exc.stderr or b""):
+            return None
+        raise
+
+
+def awaiting_first_reports(season, published_data):
+    """True only for a season this site has never published; a published season must keep failing."""
+    if published_data is None:
+        return False
+    seasons = json.loads(Path(published_data).read_text())["seasons"]
+    return all(row["season"] != season for row in seasons)
+
+
 def validate_report(data, game_id):
     games = data.get("game", [])
     if len(games) != 1 or games[0].get("GameId") != game_id:
@@ -59,6 +80,8 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--season", default="2025-26")
     parser.add_argument("--out", type=Path, default=Path("ml/data/l2m-research"))
+    parser.add_argument("--published-data", type=Path, default=None,
+                        help="officiating.json; lets a never-published season exit 3 while the NBA has no reports yet")
     args = parser.parse_args()
     if not re.fullmatch(r"20\d{2}-\d{2}", args.season):
         parser.error("Expected season YYYY-YY")
@@ -66,11 +89,17 @@ def main():
     dest = args.out / args.season / stamp
     dest.mkdir(parents=True)
     index_url = f"https://official.nba.com/{args.season}-nba-officiating-last-two-minute-reports/"
-    raw = fetch(index_url)
-    (dest / "index.html").write_bytes(raw)
+    raw = fetch_index(index_url)
     links = ReportLinks()
-    links.feed(raw.decode("utf-8-sig"))
+    if raw is not None:
+        (dest / "index.html").write_bytes(raw)
+        links.feed(raw.decode("utf-8-sig"))
     if not links.links:
+        if awaiting_first_reports(args.season, args.published_data):
+            print(json.dumps({"season": args.season, "status": "awaiting_first_reports", "index_url": index_url}))
+            raise SystemExit(AWAITING_FIRST_REPORTS_EXIT)
+        if raw is None:
+            raise ValueError(f"Season index not found: {index_url}")
         raise ValueError("No report links; do not treat an empty index as a completed season")
     expected_year = args.season[2:4]
     if any(gid[3:5] != expected_year for gid in links.links):
