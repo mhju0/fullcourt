@@ -176,7 +176,7 @@ function playerColumns(
     },
     {
       label: "No rest",
-      unit: "eFG% · attempts",
+      unit: "eFG% and attempts",
       sortKey: "noRestEfg",
       numeric: true,
       width: "128px",
@@ -187,7 +187,7 @@ function playerColumns(
     },
     {
       label: "3+ days",
-      unit: "eFG% · attempts",
+      unit: "eFG% and attempts",
       sortKey: "restedEfg",
       numeric: true,
       width: "128px",

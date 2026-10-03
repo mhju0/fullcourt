@@ -67,7 +67,7 @@ function StatusCard({
   return (
     <article className="flex flex-col gap-3" style={termCardStyle}>
       <h2 style={{ fontSize: TYPE.emph, fontWeight: 700, color: "var(--term-text)" }}>
-        <a href={href} className="underline decoration-[var(--term-border)] underline-offset-4 hover:decoration-[var(--term-accent)]">{title}</a>
+        <a href={href} className="inline-flex min-h-11 items-center underline decoration-[var(--term-border)] underline-offset-4 hover:decoration-[var(--term-accent)]">{title}</a>
       </h2>
       <dl className="grid gap-3 sm:grid-cols-[11rem_minmax(0,1fr)]">
         {[
