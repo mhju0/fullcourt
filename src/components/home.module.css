@@ -23,7 +23,9 @@
 .home .eyebrow { font-family: var(--font-geist-mono), monospace; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 16px; }
 .primary { display: inline-flex; align-items: center; gap: 24px; min-height: 48px; padding: 12px 24px; border-radius: 4px; background: var(--home-text); color: var(--home-ink); font-size: 15px; font-weight: 600; }
 .finding { display: grid; grid-template-columns: 1.1fr 1fr; gap: 64px; align-items: center; padding: 64px 0; border-top: 1px solid var(--home-rule); }
-.home .big { font-family: var(--font-geist-mono), monospace; font-size: clamp(64px, 8vw, 96px); line-height: 1.1; letter-spacing: -.04em; margin: 24px 0 16px; }
+/* The body face with tabular figures, not mono: at this size mono's fixed advance set "+6.0" as
+   four separate characters. */
+.home .big { font-variant-numeric: tabular-nums; font-weight: 500; font-size: clamp(64px, 8vw, 96px); line-height: 1.1; letter-spacing: -.03em; margin: 24px 0 16px; }
 .big > span { font-size: 24px; letter-spacing: 0; }
 .home .rested { color: #2cb6d9; }
 .home .tired { color: #fb7185; }

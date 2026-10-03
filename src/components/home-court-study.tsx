@@ -97,8 +97,8 @@ export function HomeCourtStudy() {
             <p className="mono text-xs text-[var(--term-text-muted)]">COMPLETED SEASONS · FIVE-SEASON ENDPOINTS</p>
             <h2 id="home-court-finding" className="mt-2 text-2xl font-semibold">
               {summary.latest.winPct < summary.first.winPct
-                ? "Home teams win less often than they used to."
-                : "Home win rate has changed across the historical record."}
+                ? "Home teams win less often than they used to"
+                : "Home win rate has changed across the historical record"}
             </h2>
             <p className="mt-3">
               Home teams won {formatRate(summary.first.winPct)} across {summary.first.games.toLocaleString()} games from {summary.first.from} through {summary.first.to},
@@ -106,7 +106,7 @@ export function HomeCourtStudy() {
             </p>
           </div>
           <div className="fc-report-interpretation flex flex-col gap-3">
-            <h3 className="text-lg font-semibold">Use each season’s home rate as the baseline.</h3>
+            <h3 className="text-lg font-semibold">Use each season’s home rate as the baseline</h3>
             <p className={muted}>
               Annual results rise and fall. These records describe a long-run pattern; they do not show a steady decline every year or explain what caused it.
             </p>

@@ -49,7 +49,9 @@ export function PageHeader({
       <p
         style={{
           maxWidth: WIDTH.prose,
-          textWrap: "balance",
+          // `pretty`, not `balance`: balance evens a paragraph's lines by narrowing them, which
+          // set a one-and-a-half-line description as three short lines broken at hyphens.
+          textWrap: "pretty",
           fontSize: TYPE.body,
           color: "var(--term-text-muted)",
           lineHeight: LEAD.body,

@@ -455,6 +455,8 @@
   h3 {
     font-family: var(--font-heading), ui-sans-serif, system-ui, sans-serif;
     @apply font-semibold tracking-tight;
+    /* Balanced so a heading never strands its last word on a line of its own. */
+    text-wrap: balance;
   }
 
   html, body {

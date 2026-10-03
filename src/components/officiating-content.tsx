@@ -121,12 +121,12 @@ export function OfficiatingContent({ seasons }: { seasons: ReviewSeason[] }) {
               </div>
               <h2 className={styles.heroSub}>
                 {percent === null ? (
-                  "No identified errors in these reports."
+                  "No identified errors in these reports"
                 ) : (
                   <>
                     of identified errors
                     <br />
-                    were missed calls.
+                    were missed calls
                   </>
                 )}
               </h2>

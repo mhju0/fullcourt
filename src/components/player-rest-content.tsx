@@ -37,6 +37,7 @@ import { RankBadge } from "@/components/ui/rank-badge";
 import { signedNumber } from "@/lib/signed-number";
 import { MessageCard } from "@/components/ui/message-card";
 import { errMsg } from "@/lib/fetcher";
+import { cn } from "@/lib/utils";
 import { DataTable, type DataColumn } from "@/components/ui/data-table";
 import styles from "./player-rest.module.css";
 
@@ -279,7 +280,7 @@ const ARM_TD: React.CSSProperties = {
 };
 
 const FILTER_LABEL =
-  "mono text-[10px] uppercase tracking-label text-[var(--term-text-muted)]";
+  "mono text-[11px] font-semibold uppercase tracking-label text-[var(--term-text-muted)]";
 
 const NUM_TD: React.CSSProperties = {
   ...termTdStyle,
@@ -443,7 +444,10 @@ export function PlayerRestContent() {
           row two is find-a-name plus the count it produces. Each label/select pair is its own
           flex box so a wrap can never separate a label from the control it names. */}
       <div className="flex flex-col gap-3">
-        <div className="flex flex-wrap items-end gap-x-4 gap-y-2">
+        {/* Season and Team share one baseline: both labels sit above their control, and at
+            phone widths the pair is two equal columns. The Filters disclosure is its own row,
+            so its hairlines run the full width rather than boxing one word mid-row. */}
+        <div className="grid grid-cols-2 items-end gap-x-4 gap-y-2 sm:flex sm:flex-wrap">
           <SeasonSelector
             id="pr-season"
             season={String(activeYear)}
@@ -451,13 +455,13 @@ export function PlayerRestContent() {
             options={[{ value: "career", label: "Career" }, ...index.years.map(y => ({ value: String(y), label: seasonLabel(y) }))]}
           />
 
-          <span className="flex items-center gap-2">
+          <span className="flex min-w-0 flex-col gap-2">
             <label className={FILTER_LABEL} htmlFor="pr-team">
               Team
             </label>
             <select
               id="pr-team"
-              className={termSelectClass}
+              className={cn(termSelectClass, "min-h-11 w-full sm:w-auto")}
               style={termSelectStyle}
               value={team}
               onChange={(e) => setTeam(e.target.value)}
@@ -470,13 +474,14 @@ export function PlayerRestContent() {
               ))}
             </select>
           </span>
+        </div>
 
           <details className="fc-disclosure">
             <summary>
               Filters ({Number(minFga > 0) + Number(Boolean(pos)) + Number(evidencedOnly)})
             </summary>
             <div className="flex flex-wrap gap-4 py-3">
-              <span className="flex items-center gap-2">
+              <span className="flex flex-col gap-2">
                 <label className={FILTER_LABEL} htmlFor="pr-volume">
                   Volume
                 </label>
@@ -494,7 +499,7 @@ export function PlayerRestContent() {
                   ))}
                 </select>
               </span>{" "}
-              <span className="flex items-center gap-2">
+              <span className="flex flex-col gap-2">
                 <label className={FILTER_LABEL} htmlFor="pr-pos">
                   Position
                 </label>
@@ -522,7 +527,6 @@ export function PlayerRestContent() {
             Hide uncertain differences
           </label>
           </details>
-        </div>
 
         <div className="flex flex-wrap items-end gap-x-4 gap-y-2">
           <input

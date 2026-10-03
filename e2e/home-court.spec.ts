@@ -39,7 +39,7 @@ async function mockStudy(page: Page, rows = [...completed, partial()]) {
 
 test('study excludes an ongoing season from endpoint summaries and exposes exact season lookup', async ({ page }) => {
   await mockStudy(page);
-  const finding = page.getByRole('region', { name: 'Home teams win less often than they used to.' });
+  const finding = page.getByRole('region', { name: 'Home teams win less often than they used to' });
   await expect(finding).toContainText('70.0%');
   await expect(finding).toContainText('55.0%');
   await expect(finding).toContainText('2024-25');
