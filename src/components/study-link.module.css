@@ -17,6 +17,10 @@
   padding-right: 48px;
   color: var(--term-text-muted);
   font-size: 11px;
+  font-weight: 600;
+  /* The house eyebrow: uppercase and tracked, like every page header's. */
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
 }
 
 .arrow {

@@ -13,6 +13,29 @@ function harness() {
 afterEach(() => { vi.useRealTimers(); vi.unstubAllGlobals() })
 
 describe("route transitions", () => {
+  it("reports a navigation to another pathname as leaving until it commits", () => {
+    const h = harness()
+    expect(h.transitions.isLeaving("/games")).toBe(false)
+    h.navigate("/games?season=2025-26")
+    expect(h.transitions.isLeaving("/games")).toBe(false)
+    h.navigate("/season")
+    expect(h.transitions.isLeaving("/games")).toBe(true)
+    // The destination must not read itself as being left.
+    expect(h.transitions.isLeaving("/season")).toBe(false)
+    h.transitions.committed("/analysis")
+    expect(h.transitions.isLeaving("/games")).toBe(true)
+    h.transitions.committed("/season")
+    expect(h.transitions.isLeaving("/games")).toBe(false)
+  })
+
+  it("stops reporting leaving when the destination never commits", () => {
+    vi.useFakeTimers()
+    const h = harness()
+    h.navigate("/season")
+    vi.advanceTimersByTime(15000)
+    expect(h.transitions.isLeaving("/games")).toBe(false)
+  })
+
   it.each(["/games", "/games?season=2025-26", "/games#main"])("pushes %s normally without waiting for a pathname change", (href) => {
     const h = harness()
     h.navigate(href)
@@ -77,6 +100,8 @@ describe("route transitions", () => {
     await vi.advanceTimersByTimeAsync(500)
     await second
     expect(settled).toHaveBeenCalledOnce()
+    // The leaving flag outlives the cross-fade on purpose; the destination's commit ends it.
+    h.transitions.committed("/analysis")
     expect(vi.getTimerCount()).toBe(0)
   })
 

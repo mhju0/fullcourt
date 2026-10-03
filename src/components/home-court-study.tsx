@@ -97,8 +97,8 @@ export function HomeCourtStudy() {
             <p className="mono text-xs text-[var(--term-text-muted)]">COMPLETED SEASONS · FIVE-SEASON ENDPOINTS</p>
             <h2 id="home-court-finding" className="mt-2 text-2xl font-semibold">
               {summary.latest.winPct < summary.first.winPct
-                ? "Home teams win less often than they used to."
-                : "Home win rate has changed across the historical record."}
+                ? "Home teams win less often than they used to"
+                : "Home win rate has changed across the historical record"}
             </h2>
             <p className="mt-3">
               Home teams won {formatRate(summary.first.winPct)} across {summary.first.games.toLocaleString()} games from {summary.first.from} through {summary.first.to},
@@ -106,7 +106,7 @@ export function HomeCourtStudy() {
             </p>
           </div>
           <div className="fc-report-interpretation flex flex-col gap-3">
-            <h3 className="text-lg font-semibold">Use each season’s home rate as the baseline.</h3>
+            <h3 className="text-lg font-semibold">Use each season’s home rate as the baseline</h3>
             <p className={muted}>
               Annual results rise and fall. These records describe a long-run pattern; they do not show a steady decline every year or explain what caused it.
             </p>
@@ -153,7 +153,7 @@ export function HomeCourtStudy() {
                 return (
                   <tr key={row.season} className="border-b border-[var(--term-border)]">
                     <th scope="row" className={styles.seasonCell}>
-                      <a className="fc-text-link" href={`/season?season=${row.season}`}>{row.season}</a>
+                      <a className="fc-text-link inline-flex min-h-11 items-center" href={`/season?season=${row.season}`}>{row.season}</a>
                       {!row.isComplete ? <span className={`block text-xs font-normal ${muted}`}>Season to date</span> : null}
                     </th>
                     <td className="mono text-right tabular-nums">{row.homeWins.toLocaleString()} / {row.homeGames.toLocaleString()}</td>

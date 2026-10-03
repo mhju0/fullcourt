@@ -84,6 +84,8 @@ export interface SlateState {
   readonly fallbackMonth: number;
   /** "Today" in the NBA's Eastern calendar, frozen at init. */
   readonly todayKey: string;
+  /** Counts retries. The fetch effects depend on it, so the same season or date can be asked for again. */
+  attempt: number;
 }
 
 // ─── Events ──────────────────────────────────────────────────────
@@ -93,7 +95,8 @@ export type SlateIntent =
   | { type: "SEASON_SELECTED"; season: string }
   | { type: "MONTH_SELECTED"; month: number }
   | { type: "DATE_SELECTED"; date: string }
-  | { type: "DAY_SHIFTED"; delta: -1 | 1 };
+  | { type: "DAY_SHIFTED"; delta: -1 | 1 }
+  | { type: "RETRY_REQUESTED" };
 
 /**
  * Load outcomes. Deliberately kept out of {@link SlateIntent} so the UI cannot
@@ -124,6 +127,7 @@ export function initSlate(args: {
     message: null,
     fallbackMonth: args.fallbackMonth,
     todayKey: args.todayKey,
+    attempt: 0,
   };
 }
 
@@ -192,6 +196,16 @@ export function slateReducer(state: SlateState, event: SlateEvent): SlateState {
       // Crossing a month boundary needs no special handling: the month is derived
       // from this date, so the tab strip follows on the next render by definition.
       return selectDate(state, shiftDateKey(state.selectedDate, event.delta));
+    }
+
+    case "RETRY_REQUESTED": {
+      if (state.status === "daysError") {
+        return { ...state, status: "loadingDays", message: null, attempt: state.attempt + 1 };
+      }
+      if (state.status === "slateError") {
+        return { ...state, status: "loadingSlate", message: null, attempt: state.attempt + 1 };
+      }
+      return state;
     }
 
     case "DAYS_RESOLVED": {

@@ -22,6 +22,60 @@ test.describe("Games page", () => {
     await expect(page.getByRole("button", { name: /^DEC$/ })).toBeVisible();
   });
 
+  // Games writes its season and date into the URL once the season's dates arrive. That write
+  // used to land on top of a tab press made in the meantime and cancel it: about one press in
+  // three, in the first second after load, left the visitor on Games.
+  test("a tab pressed while the dates are still loading is not cancelled", async ({ page }) => {
+    let release!: () => void;
+    const gate = new Promise<void>((resolve) => { release = resolve; });
+    await page.route("**/api/games/dates*", async (route) => { await gate; await route.continue(); });
+    // Hold the destination back so the dates always arrive before it commits.
+    await page.route(/\/season\?.*_rsc=/, async (route) => {
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      await route.continue();
+    });
+    await page.goto("/games");
+    await expect(page.getByLabel("SEASON", { exact: true })).not.toHaveValue("");
+
+    await page.getByRole("navigation", { name: "Main navigation" }).getByRole("link", { name: "SEASON REPORT" }).click();
+    release();
+
+    await expect(page).toHaveURL(/\/season(?:\?|$)/, { timeout: 20_000 });
+  });
+
+  // The page is prerendered, so the HTML a visitor receives was built on an earlier date. On
+  // 2026-10-01 the season rolled over under a three-week-old build and every load threw React
+  // #418: the season, the selected month and the offseason note were all rendered from "today".
+  test("hydrates cleanly when the visitor's date is not the build's date", async ({ page }) => {
+    const errors: string[] = [];
+    page.on("pageerror", (e) => errors.push(String(e)));
+    page.on("console", (m) => { if (m.type() === "error") errors.push(m.text()); });
+    await page.clock.setFixedTime(new Date("2027-01-15T17:00:00Z"));
+    await page.goto("/games");
+    await expect(page.getByLabel("SEASON", { exact: true })).toBeEnabled();
+    expect(errors.filter((e) => /hydrat|#418/i.test(e))).toEqual([]);
+  });
+
+  // One failed response used to leave a dead page: no retry, and the same red sentence twice.
+  test("a failed load says so once and recovers from TRY AGAIN", async ({ page }) => {
+    let failing = true;
+    await page.route("**/api/games/dates**", (route) =>
+      failing
+        ? route.fulfill({ status: 500, contentType: "application/json", body: JSON.stringify({ data: null, error: "Something went wrong. Please try again later." }) })
+        : route.continue()
+    );
+    await page.goto("/games?season=2025-26");
+    // Scoped to the page: Next's route announcer is an (empty) alert of its own.
+    const alerts = page.locator("#main").getByRole("alert");
+    await expect(alerts).toHaveCount(1);
+    await expect(alerts).toContainText("FAILED TO LOAD GAMES");
+
+    failing = false;
+    await page.getByRole("button", { name: "TRY AGAIN" }).click();
+    await expect(alerts).toHaveCount(0);
+    await expect(page.getByRole("group", { name: "Date" })).toBeVisible();
+  });
+
   // The UPCOMING view toggle died in redesign stage ② (2026-08-29, ADR 0010): one board,
   // one card. Both halves of its retirement are asserted — the old /upcoming links still
   // land here, and the toggle is actually gone rather than left mounted and broken.
@@ -230,6 +284,9 @@ for (const available of [false, true]) {
 
 
 test("shared Games links restore season, date, density and browser history", async ({ page }) => {
+  // Pinned outside October: in October a past season opens on its own opening night
+  // (pickDefaultGamesDate), and the "2024" expectation below is the last-date rule.
+  await page.clock.setFixedTime(new Date("2026-09-15T17:00:00Z"));
   await page.goto("/games?season=2024-25&date=2024-12-25&view=deep");
   const display = page.getByTestId("selected-date-display");
   await expect(display).toContainText("DECEMBER 25, 2024");

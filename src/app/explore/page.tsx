@@ -5,7 +5,10 @@ import { ArrowRight } from "lucide-react";
 import { StudyLink } from "@/components/study-link";
 import { LEAD, TYPE } from "@/lib/terminal-styles";
 
-export const metadata: Metadata = { title: "Explore" };
+export const metadata: Metadata = {
+  title: "Explore",
+  description: "Pick a basketball question: home court, shooting by rest, playoff workload, missing players, shot value and officiating, each traced back to its evidence.",
+};
 
 const STUDIES = [
   { href: "/home-court", title: "Home-court Advantage", question: "Are home teams winning less often?", action: "See the season history", category: "Rest and fatigue" },

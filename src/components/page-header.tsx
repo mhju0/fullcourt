@@ -47,9 +47,9 @@ export function PageHeader({
       {/* Sentence case in the body face, not uppercase mono: caps remove word-shape
           cues and slow reading for anything longer than a label. */}
       <p
+        className="page-description"
         style={{
           maxWidth: WIDTH.prose,
-          textWrap: "balance",
           fontSize: TYPE.body,
           color: "var(--term-text-muted)",
           lineHeight: LEAD.body,

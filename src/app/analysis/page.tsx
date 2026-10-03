@@ -5,6 +5,7 @@ import { getDataAsOf } from "@/lib/db/queries";
 
 export const metadata: Metadata = {
   title: "Model Results",
+  description: "How often the more-rested NBA team won at home, read against the home-court baseline, for every regular season since 1985-86.",
 };
 
 /**

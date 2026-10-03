@@ -171,7 +171,7 @@ test.describe("Primary navigation", () => {
     await page.goto("/games");
 
     // The footer is on every page, so a dead hover here is dead everywhere.
-    await answersThePointer(page, page.getByRole("link", { name: /System status/ }));
+    await answersThePointer(page, page.getByRole("link", { name: "Data status", exact: true }));
     await answersThePointer(page, page.getByRole("link", { name: "Methods", exact: true }));
   });
 
@@ -270,11 +270,11 @@ test.describe("Primary navigation", () => {
     await expect(page.getByRole("heading", { level: 1, name: "Games" })).toBeVisible();
 
     // The visible door first — the GitHub lesson is that a keyboard-only palette is a
-    // feature nobody finds. Ten options when unfiltered: four tabs, three OTHER, one reference.
+    // feature nobody finds. Fourteen options when unfiltered; Home-court advantage was the last added.
     await page.getByRole("button", { name: "Find a page" }).click();
     const palette = page.getByRole("dialog", { name: "Command palette" });
     await expect(palette).toBeVisible();
-    await expect(palette.getByRole("option")).toHaveCount(13);
+    await expect(palette.getByRole("option")).toHaveCount(14);
     await page.keyboard.press("Escape");
     await expect(palette).toBeHidden();
 

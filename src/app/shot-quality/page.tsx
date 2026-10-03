@@ -5,6 +5,7 @@ import { ShotQualityContentLazy } from "@/components/shot-quality-lazy";
 
 export const metadata: Metadata = {
   title: "Expected Shot Value",
+  description: "Expected NBA shooting efficiency by court location, from a model that uses shot coordinates only.",
 };
 
 export default function ShotQualityPage() {

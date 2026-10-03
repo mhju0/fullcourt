@@ -27,6 +27,17 @@ test.describe("Season Report", () => {
     await expect(page.getByRole("status")).toContainText("2019-20 is unavailable on this page");
   });
 
+  // Before opening night the newest season has nothing to report, and the SEASON tab used to
+  // open on that empty state. An explicit ?season= still reaches it (next test).
+  test("without a chosen season, opens on the latest season that has results", async ({ page }) => {
+    await page.route("**/api/season-report?season=2026-27*", route => route.fulfill({json:{data:{season:"2026-27",basis:"schedule",completedGames:0,scheduledGames:1200,latestFinalDate:null,seasonComplete:false,homeRate:{games:0,homeWins:0,winPct:0},overall:{games:0,restedTeamWins:0,winPct:0,band:null},teams:[],weeks:[],loudestCalls:[]},error:null}}));
+    await page.goto("/season");
+    await expect(page.getByLabel("SEASON", { exact: true })).toHaveValue("2025-26");
+    await expect(page.getByTestId("season-default-note")).toContainText("2026-27");
+    await expect(page.getByTestId("season-vs-history-heading")).toHaveText("2025-26 vs history");
+    await expect(page.getByTestId("season-awaiting-results")).toHaveCount(0);
+  });
+
   test("upcoming season has one awaiting-results state", async ({ page }) => {
     await page.clock.setFixedTime(new Date("2026-09-08T12:00:00Z"));
     await page.route("**/api/season-report?season=2026-27*", route => route.fulfill({json:{data:{season:"2026-27",basis:"schedule",completedGames:0,scheduledGames:1200,latestFinalDate:null,seasonComplete:false,homeRate:{games:0,homeWins:0,winPct:0},overall:{games:0,restedTeamWins:0,winPct:0,band:null},teams:[],weeks:[],loudestCalls:[]},error:null}}));

@@ -17,15 +17,27 @@ import { signedNumber } from "@/lib/signed-number";
 import { WIDTH } from "@/lib/terminal-styles";
 
 const LATEST_SEASON = NBA_SEASONS[NBA_SEASONS.length - 1];
+const PRIOR_SEASON = NBA_SEASONS[NBA_SEASONS.length - 2];
+const reportKey = (season: string) => `/api/season-report?season=${season}&schema=home-court-v1`;
 const muted = "text-[var(--term-text-muted)]";
 
 export function SeasonReportContent() {
-  const { season, setSeason, fallbackNote } = useSeasonUrl(
+  const { season: urlSeason, explicit, setSeason, fallbackNote } = useSeasonUrl(
     LATEST_SEASON,
     browsableSeasons(),
   );
+  // With no season chosen, open on the latest season that has results. Decided from the newest
+  // season's own report rather than the calendar, so it flips on the first final, not on a date.
+  // A chosen season is never replaced: ?season=2026-27 still reaches the awaiting state.
+  const { data: latest } = useSWR<SeasonReportResponse>(
+    explicit ? null : reportKey(LATEST_SEASON),
+    apiFetcher,
+    { revalidateOnFocus: false },
+  );
+  const awaitingLatest = !explicit && latest?.completedGames === 0;
+  const season = awaitingLatest ? PRIOR_SEASON : urlSeason;
   const { data, error, isLoading } = useSWR<SeasonReportResponse>(
-    `/api/season-report?season=${season}&schema=home-court-v1`,
+    reportKey(season),
     apiFetcher,
     { revalidateOnFocus: false },
   );
@@ -72,6 +84,14 @@ export function SeasonReportContent() {
         ) : null}
       </div>
       {fallbackNote ? <p role="status">{fallbackNote}</p> : null}
+      {awaitingLatest ? (
+        <p role="status" className={muted} data-testid="season-default-note">
+          {LATEST_SEASON} has no completed games yet. Showing {PRIOR_SEASON}.{" "}
+          <a className="fc-text-link" href={`/schedule?season=${LATEST_SEASON}`}>
+            View the {LATEST_SEASON} schedule →
+          </a>
+        </p>
+      ) : null}
       {note ? (
         <aside
           data-testid="abnormal-season-note"

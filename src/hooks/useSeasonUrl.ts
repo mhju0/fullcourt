@@ -40,6 +40,8 @@ export function useSeasonUrl(fallback: string, seasons: readonly string[]) {
   }, []);
   return {
     season,
+    /** True when the URL names a season this page offers; false when `season` is the fallback. */
+    explicit: season === requested,
     setSeason,
     fallbackNote:
       requested && requested !== season

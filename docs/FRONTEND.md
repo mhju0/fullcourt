@@ -98,13 +98,21 @@ focus states follow the accessibility contracts, including reduced motion.
 
 Repeated controls and record expansions are immediate. Keyboard navigation and same-path
 navigation bypass the route cross-fade. Reduced motion suppresses movement while retaining
-static feedback. The homepage has one 450ms CSS hero entrance; the remaining content is visible
-without scroll reveals. No GSAP runtime is used.
+static feedback. The homepage has one 450ms CSS hero entrance and one 500ms draw on the two
+finding bars; the remaining content is visible without scroll reveals. Figures never count up.
+No GSAP runtime or animation library is used.
+
+Hover and press feedback is separate from motion moments. `.fc-control-button` shows an inset
+ring on hover and scales to 0.97 while pressed; `.fc-sort` headers and `.fc-text-link` underline;
+`.fc-table` rows tint. These rules use `box-shadow` and `transform` because several controls set
+colors inline, which outranks a hover class. Keep comments in that block to plain words:
+a comment containing backticks, an apostrophe and `#` caused the build to drop the block.
 
 The existing route transition, homepage navigation retraction, live-score feedback, and their
 exceptions are governed by `src/lib/route-transition.ts`, `globals.css`, the component modules,
 and [ADR 0010](adr/0010-the-ui-redesign-was-decided-at-the-bench.md), as amended by the design
-record. Do not add decorative or per-row entry animation during routine maintenance.
+record. A page that writes its own URL after load asks `isLeavingPage()` first: a history
+write from the page being left cancels a navigation that has not committed yet. Do not add decorative or per-row entry animation during routine maintenance.
 
 ## Verification and screenshots
 

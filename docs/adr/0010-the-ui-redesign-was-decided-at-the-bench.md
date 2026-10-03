@@ -74,3 +74,14 @@ four-command gate stays green at every stage; the Oct 5 content freeze applies.
 - The 2026-08-04 lesson stands in reverse: options *not* taken here (left rail, hamburger,
   every-cell ranks, bento grids) were refused on evidence recorded at the bench — restoring one
   "because it looks modern" repeats the mistake this process exists to prevent.
+
+## Amendment — 2026-10-03
+
+The motion budget gains one moment: the two bars in the homepage finding draw once from the
+left on load (500ms, CSS only, inside `prefers-reduced-motion: no-preference`). The figures
+beside them do not count up; a server-rendered measurement never displays a value that was not
+measured. No animation library is added before opening night.
+
+Hover and press feedback on controls, sortable headers, text links and table rows is state
+feedback, not a moment, and sits outside the budget. It is CSS in `globals.css` and uses
+`box-shadow` and `transform`, which inline colors cannot override. See D-71.

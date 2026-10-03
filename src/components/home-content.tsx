@@ -26,7 +26,9 @@ export function HomeContent({ findings }: { findings: HomeFindings }) {
       <section className={styles.finding} aria-labelledby="rest-finding">
         <div>
           <p className={styles.eyebrow}>{historical?.coverage ? `Regular season · ${historical.coverage}` : "Historical rest comparison"}</p>
-          <h2 id="rest-finding">Widest rest gaps · historical home teams</h2>
+          {/* Two lines on purpose. The column is never wide enough for one, and a wrapped
+              separator left "·" hanging at the end of the first. */}
+          <h2 id="rest-finding">Widest rest gaps<span className="sr-only"> · </span><br />historical home teams</h2>
           {historical ? <>
             <p className={`${styles.big} ${historical.edgePp < 0 ? styles.tired : styles.rested}`} data-testid="home-rest-edge">
               {signedNumber(historical.edgePp, 1)}<span> pp</span>
@@ -48,7 +50,7 @@ export function HomeContent({ findings }: { findings: HomeFindings }) {
       <section className={styles.support} aria-label="Schedule and player findings">
         <article>
           <p className={styles.eyebrow}>The schedule{schedule ? ` · ${schedule.season}` : ""}</p>
-          <h2>Compare the rest gaps teams face.</h2>
+          <h2>Compare the rest gaps teams face</h2>
           {schedule?.most && schedule.least ? <>
             {schedule.uniform ? <p>Every measured team has the same net edge: {signedNumber(schedule.most.value, 0)} games.</p> : <dl className={styles.teams}>
               {[{ row: schedule.most, label: "Highest" }, { row: schedule.least, label: "Lowest" }].map(({ row, label }) => <div key={label}>
@@ -71,7 +73,7 @@ export function HomeContent({ findings }: { findings: HomeFindings }) {
       </section>
 
       <aside className={styles.discover}>
-        <div><h2>More questions from the court.</h2><p>Playoff workload and other basketball studies.</p></div>
+        <div><h2>More questions from the court</h2><p>Playoff workload and other basketball studies.</p></div>
         <TransitionLink href="/explore" className={styles.textLink}>Explore the research <span aria-hidden="true">→</span></TransitionLink>
       </aside>
 

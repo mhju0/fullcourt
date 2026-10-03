@@ -31,7 +31,7 @@ import { LEAD, SPACE, SPACE_CARD, TRACK, TYPE } from "@/lib/terminal-styles"
  *
  * Everything a caller may decide is a prop, and nothing else varies — the same posture as
  * `DataTable`. Type comes from `TYPE`, so the ladder holds: the figure (24) sits above its label
- * (11), which sits above its own sub-label (10).
+ * (11), which sits above its qualifier (12, in the body face and muted, because it is a phrase).
  */
 export function StatTile({
   label,
@@ -149,9 +149,15 @@ export function StatTile({
         </span>
       ) : null}
       {/* The qualifier is NOT uppercased, deliberately: unlike the label it may be a phrase
-          ("edge games, best to worst") rather than a label, and caps cost word-shape cues. */}
+          ("edge games, best to worst") rather than a label, and caps cost word-shape cues.
+          For the same reason it is set in the body face at `TYPE.data`: at 10px mono a lowercase
+          i and l read as 1, so "DET · Pistons" came out as "P1stons". Figures inside it keep
+          tabular widths. */}
       {sub ? (
-        <span style={{ fontSize: TYPE.micro, letterSpacing: TRACK.sub, color: "var(--term-text-muted)" }}>
+        <span
+          className="font-sans tabular-nums"
+          style={{ fontSize: TYPE.data, lineHeight: LEAD.label, color: "var(--term-text-muted)" }}
+        >
           {sub}
         </span>
       ) : null}

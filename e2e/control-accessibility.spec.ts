@@ -53,7 +53,7 @@ for (const width of [360, 768]) {
     const input = palette.getByPlaceholder("Jump to a surface…");
     await expectFocusIndicator(input);
     await expect(input).toHaveCSS("font-size", "16px");
-    await expect(palette.getByRole("option")).toHaveCount(13);
+    await expect(palette.getByRole("option")).toHaveCount(14);
     for (const option of await palette.getByRole("option").all()) {
       const box = await option.boundingBox();
       expect(box!.height).toBeGreaterThanOrEqual(44);

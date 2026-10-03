@@ -42,16 +42,17 @@ test("method sections expose headings and mobile descriptors stay inside their c
 test("shot locations can be inspected by keyboard and pointer", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/shot-quality");
-  const slider = page.getByRole("slider", { name: "Inspect location on GBM court", exact: true });
+  const slider = page.getByRole("slider", { name: "Inspect location on Location model court", exact: true });
   await expect(slider).toBeVisible({ timeout: 45000 });
   const before = await slider.getAttribute("aria-valuetext");
   await slider.focus();
   await page.keyboard.press("ArrowRight");
   await expect(slider).not.toHaveAttribute("aria-valuetext", before!);
-  const court = page.getByRole("img", { name: /^GBM: half-court/ });
+  const court = page.getByRole("img", { name: /^Location model: half-court/ });
   await court.click({ position: { x: 100, y: 100 } });
   await expect(slider).not.toHaveValue("1");
-  await expect(page.getByRole("status").first()).toContainText("attempts");
+  // Not `.first()`: the Copy this view control has its own, empty, status region ahead of this one.
+  await expect(page.getByRole("status").filter({ hasText: "attempts" })).toBeVisible();
 });
 
 test("keyboard navigation and palette selection skip cross-fades", async ({ page }) => {

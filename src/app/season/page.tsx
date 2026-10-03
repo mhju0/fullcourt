@@ -5,6 +5,7 @@ import { SeasonReportContentLazy } from "@/components/season-report-lazy";
 
 export const metadata: Metadata = {
   title: "Season Report",
+  description: "One NBA season as played: results for more-rested teams at home, compared with that season’s own home-court baseline.",
 };
 
 export default function SeasonPage() {

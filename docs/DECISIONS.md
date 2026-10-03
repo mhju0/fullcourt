@@ -786,3 +786,29 @@ Use the existing Front Office design system and apply antislop during implementa
 extends the venue-baseline reasoning in D-22 without changing the fatigue model or database
 schema. The owner approved implementation after the publishing discussion; see
 [research and agreed behavior](research/2026-09-11-home-advantage-trend.md).
+
+### D-71 · Release-readiness pass before opening night — ACTIVE
+
+The owner approved all thirteen decisions of the 2026-10-03 pre-launch audit at their
+recommended options.
+
+Next.js moves to 16.3.8 for GHSA-vcvr-r3jv-pc5j, in its own change. The Officiating collector
+exits with a distinct status when the league has not yet published a season's first reports
+and that season has never been published; the workflow ends cleanly. Any other failure, and a
+missing index for a season already published, still fails the run.
+
+Games renders nothing derived from today's date until the URL is read, because the page is
+prerendered and the build's date is not the visitor's. A failed load retries once, then shows
+one error with a TRY AGAIN control. Season Report opens on the latest season with completed
+games and says so; an explicit `?season=` is always honoured.
+
+Descriptions wrap with `text-wrap: pretty` and headings balance; headings carry no closing
+period. Words are set in the body face and figures in tabular numerals; stat-tile qualifiers
+follow that rule. Controls, sortable headers, text links and table rows gain hover and press
+feedback. ADR 0010 is amended for one homepage bar draw; a motion library is deferred until
+after launch.
+
+`robots.txt` and `sitemap.xml` are generated from the route list, and every primary page has
+its own description. Stat-tile unification and table column widths are deferred until after
+launch. Playoff Rest keeps its section order. The public announcement waits for a verified
+live pipeline run on 2026-10-20 or 21.

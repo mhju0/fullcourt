@@ -1,3 +1,4 @@
+import type { ReactNode } from "react"
 import { termCardStyle, TRACK } from "@/lib/terminal-styles"
 
 /**
@@ -20,10 +21,13 @@ export function MessageCard({
   tone,
   title,
   body,
+  action,
 }: {
   tone: "muted" | "error"
   title: string
   body?: string
+  /** A way out, when the surface has one: a retry on a failed load. */
+  action?: ReactNode
 }) {
   const accent = tone === "error" ? "var(--term-red-text)" : "var(--term-text-muted)"
   return (
@@ -40,6 +44,7 @@ export function MessageCard({
           {body}
         </p>
       ) : null}
+      {action ? <div className="mt-4 flex justify-center">{action}</div> : null}
     </div>
   )
 }
