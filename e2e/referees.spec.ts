@@ -113,7 +113,7 @@ test.describe("Referee Effect — the research archive", () => {
   test("no longer announces itself as unfinished in the nav", async ({ page }) => {
     await page.goto("/");
     await page.getByRole("navigation", { name: "Main navigation" }).getByRole("link", { name: "EXPLORE" }).click();
-    await expect(page.locator("main").getByRole("link", { name: /^Officiating/ })).toBeVisible();
+    await expect(page.locator('main a[href="/officiating"]')).toBeVisible();
     await expect(page.getByText("IN PROGRESS")).toHaveCount(0);
   });
 });

@@ -17,11 +17,12 @@ test("mobile Games exposes the complete rest comparison without sideways scrolli
 test("mobile shot comparison is optional and keyboard accessible", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/shot-quality");
-  await expect(page.getByRole("slider", { name: "Inspect location on GBM court", exact: true })).toBeVisible();
-  await expect(page.getByRole("slider", { name: "Inspect location on BASELINE court", exact: true })).toHaveCount(0);
+  // The season's shot grid is a large payload; uiux-defects.spec.ts waits as long for this control.
+  await expect(page.getByRole("slider", { name: "Inspect location on Location model court", exact: true })).toBeVisible({ timeout: 45_000 });
+  await expect(page.getByRole("slider", { name: "Inspect location on Zone average court", exact: true })).toHaveCount(0);
   await page.getByRole("button", { name: "Compare models", exact: true }).focus();
   await page.keyboard.press("Enter");
-  await expect(page.getByRole("slider", { name: "Inspect location on BASELINE court", exact: true })).toBeVisible();
+  await expect(page.getByRole("slider", { name: "Inspect location on Zone average court", exact: true })).toBeVisible();
 });
 
 test("availability keeps coefficient detail behind a native disclosure", async ({ page }) => {
@@ -35,8 +36,11 @@ test("availability keeps coefficient detail behind a native disclosure", async (
 
 test("reference contents links resolve to semantic sections", async ({ page }) => {
   await page.goto("/behind-the-data/rest-advantage");
+  // The contents sit in a native disclosure, closed until asked for.
+  await page.locator("details.reference-contents > summary").click();
   const contents = page.getByRole("navigation", { name: "On this page", exact: true });
   await expect(contents.getByRole("link").first()).toBeVisible();
   const href = await contents.getByRole("link").first().getAttribute("href");
-  await expect(page.locator(href!).getByRole("heading", { level: 2 })).toHaveCount(1);
+  // The link carries the page's path; the fragment is the section's id.
+  await expect(page.locator(href!.slice(href!.indexOf("#"))).getByRole("heading", { level: 2 })).toHaveCount(1);
 });

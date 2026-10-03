@@ -20,7 +20,7 @@ test.describe("Schedule Disparity page", () => {
     // on 2026-07-31 and "it is not a prediction" became "Not a prediction", which failed a
     // regex pinned to the longer form while the disclaimer itself never left the page. This
     // still fails if the sentence is dropped, which is what the test is for.
-    await expect(page.getByText(/within a season, with a win-equivalent estimate/)).toBeVisible();
+    await expect(page.getByText(/This ranking does not predict wins/)).toBeVisible();
     await expect(page.getByText(/does not predict results/)).toBeVisible();
     await page.getByText("Show full breakdown", { exact: true }).click();
     await expect(page.getByText(/not an estimate of wins caused by the schedule/)).toBeVisible();
@@ -35,7 +35,9 @@ test.describe("Schedule Disparity page", () => {
    * regressed to the old meaning, whatever it says.
    */
   test("stamps the selected season with its own data date, not today's", async ({ page }) => {
-    await page.goto("/schedule");
+    // A finished season, named: the page now opens on the upcoming one, which is ranked on
+    // projected rest before any game is final and so carries no stamp yet.
+    await page.goto("/schedule?season=2025-26");
 
     const status = page.getByText(/GAMES COMPARED/);
     await expect(status).toBeVisible({ timeout: 20_000 });
@@ -44,8 +46,7 @@ test.describe("Schedule Disparity page", () => {
     const stamp = (await status.textContent())?.match(/AS OF (\d{4}-\d{2}-\d{2})/)?.[1];
     expect(stamp).toBeTruthy();
 
-    // The page opens on the newest RANKABLE season, which is a completed one, so its last
-    // final game cannot be today. Computed in ET, the timezone `games.date` is stored in.
+    // The season is complete, so its last final game cannot be today. Computed in ET, the timezone `games.date` is stored in.
     const todayEt = new Intl.DateTimeFormat("en-CA", { timeZone: "America/New_York" }).format(
       new Date()
     );

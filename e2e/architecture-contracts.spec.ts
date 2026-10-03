@@ -71,7 +71,7 @@ test("current tab and palette destination skip motion; a different pathname cros
   await current.click();
   await expect(current).toHaveAttribute("aria-current", "page");
   expect((await transitions(page)).started).toBe(0);
-  await page.getByRole("button", { name: "JUMP TO PAGE", exact: true }).click();
+  await page.getByRole("button", { name: "Find a page", exact: true }).click();
   const palette = page.getByRole("dialog", { name: "Command palette" });
   await palette.getByRole("option").filter({ hasText: "SCHEDULE EDGE" }).click();
   await expect(palette).toBeHidden();
