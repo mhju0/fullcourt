@@ -8,6 +8,7 @@ import { CommandPaletteMount } from "@/components/command-palette-mount";
 import { RouteTransitionLifecycle } from "@/lib/route-transition";
 import { NavBar } from "@/components/nav-bar";
 import "./globals.css";
+import { SITE_URL } from "@/lib/site-url";
 
 // One family for body AND headings — the Front Office direction (docs/design/
 // mocks/08-front-office.html, adopted 2026-08-09) separates titles from prose by
@@ -35,7 +36,6 @@ const geistMono = Geist_Mono({
   weight: ["400", "600", "700"],
 });
 
-const SITE_URL = "https://fullcourt-nba.vercel.app";
 // No route count and no "completed": both aged. This named three surfaces while the site
 // carried nine, because it was written before Schedule Edge, Season Report, Availability
 // Cost and Referee Effect shipped. Names the subjects instead, which a new module extends

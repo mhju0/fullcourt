@@ -6,6 +6,7 @@ import { WinTotalGuardrail } from "@/components/win-total-market-check";
 
 export const metadata: Metadata = {
   title: "Schedule Edge",
+  description: "Which NBA teams had the more favorable schedule? Teams ranked by favorable minus unfavorable rest-gap games. Not a prediction of wins.",
 };
 
 export default function SchedulePage() {

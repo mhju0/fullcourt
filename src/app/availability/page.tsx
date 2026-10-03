@@ -5,6 +5,7 @@ import { PageHeader } from "@/components/page-header";
 
 export const metadata: Metadata = {
   title: "Availability Cost",
+  description: "How missing players relate to the final score margin in NBA games: historical associations, measured after games.",
 };
 
 /**

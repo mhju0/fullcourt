@@ -6,6 +6,7 @@ import { PlayoffsContentLazy } from "@/components/playoffs-lazy";
 
 export const metadata: Metadata = {
   title: "Playoff Rest",
+  description: "Compare prior-round workload with NBA playoff series results, and explore probabilities from a model using team records and playoff history.",
 };
 
 export default function PlayoffsPage() {

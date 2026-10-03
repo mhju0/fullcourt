@@ -5,6 +5,7 @@ import { PlayerRestContentLazy } from "@/components/player-rest-lazy";
 
 export const metadata: Metadata = {
   title: "Shooting by Rest",
+  description: "Compare an NBA player’s shooting with and without rest, across seasons, with sample sizes and uncertainty shown.",
 };
 
 export default function ShootingPage() {
