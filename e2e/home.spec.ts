@@ -35,9 +35,9 @@ test.describe("Rest-focused front door", () => {
       duration: parseFloat(getComputedStyle(el).animationDuration),
       delay: parseFloat(getComputedStyle(el).animationDelay),
     })));
-    expect(motion).toHaveLength(1);
-    expect(motion[0].tag).toBe("HEADER");
-    expect(motion[0].duration + motion[0].delay).toBeLessThanOrEqual(.6);
+    // The hero entrance, plus the two finding bars drawing once (ADR 0010, amended 2026-10-03).
+    expect(motion.map((m) => m.tag)).toEqual(["HEADER", "SPAN", "SPAN"]);
+    for (const m of motion) expect(m.duration + m.delay).toBeLessThanOrEqual(.6);
     const hidden = await page.getByTestId("home-findings").locator("section, aside").evaluateAll((els) => els.some((el) => getComputedStyle(el).opacity !== "1"));
     expect(hidden).toBe(false);
   });

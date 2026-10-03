@@ -733,3 +733,11 @@ button:not(:disabled), [role="button"], summary, select:not(:disabled) { cursor:
   .fc-control-button { transition: none; }
   .fc-control-button:not(:disabled):active { transform: none; }
 }
+
+/* Page header descriptions. On a phone the text runs to three or more lines and balancing
+   narrows all of them, so only the last line is protected there. From the sm breakpoint up
+   the description is at most two lines and they are evened, which page-headers.spec.ts pins. */
+.page-description { text-wrap: pretty; }
+@media (min-width: 640px) {
+  .page-description { text-wrap: balance; }
+}
