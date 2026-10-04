@@ -1,43 +1,43 @@
 {
   "counterfactual": {
     "homeBar": 3,
-    "calls": 45507,
+    "calls": 45508,
     "coveragePct": 96.5,
-    "correct": 27177,
+    "correct": 27179,
     "accuracyPct": 59.7,
-    "roadCalls": 1385,
+    "roadCalls": 1386,
     "roadLosses": 752,
     "alwaysHomePct": 59.9
   },
   "sample": {
     "scoredGames": 47143,
-    "neutral": 8195,
-    "decided": 38948,
+    "neutral": 8193,
+    "decided": 38950,
     "firstSeason": "1985-86",
     "lastSeason": "2025-26",
     "seasons": 41
   },
   "baseline": {
     "games": 47143,
-    "homeWins": 28248,
+    "homeWins": 28247,
     "homeWinPct": 59.9,
     "roadWinPct": 40.1
   },
   "restedAtHome": {
-    "games": 27400,
-    "wins": 16761,
+    "games": 27404,
+    "wins": 16765,
     "winPct": 61.2,
     "ladder": [
       {
         "gap": 2,
-        "games": 16078,
-        "wins": 9947,
+        "games": 16073,
+        "wins": 9945,
         "winPct": 61.9
       },
       {
         "gap": 3,
-        "games": 10524,
-        "wins": 6639,
+        "games": 10526,
+        "wins": 6640,
         "winPct": 63.1
       },
       {
@@ -48,52 +48,52 @@
       },
       {
         "gap": 5,
-        "games": 3782,
+        "games": 3781,
         "wins": 2469,
         "winPct": 65.3
       },
       {
         "gap": 6,
-        "games": 2153,
-        "wins": 1404,
+        "games": 2151,
+        "wins": 1403,
         "winPct": 65.2
       },
       {
         "gap": 7,
-        "games": 1108,
-        "wins": 730,
+        "games": 1105,
+        "wins": 728,
         "winPct": 65.9
       }
     ]
   },
   "restedOnRoad": {
-    "games": 11548,
-    "wins": 4894,
+    "games": 11546,
+    "wins": 4892,
     "winPct": 42.4,
     "ladder": [
       {
         "gap": 2,
-        "games": 4351,
-        "wins": 1889,
+        "games": 4354,
+        "wins": 1891,
         "winPct": 43.4
       },
       {
         "gap": 3,
         "games": 2056,
-        "wins": 897,
-        "winPct": 43.6
+        "wins": 899,
+        "winPct": 43.7
       },
       {
         "gap": 4,
-        "games": 949,
-        "wins": 443,
-        "winPct": 46.7
+        "games": 952,
+        "wins": 447,
+        "winPct": 47
       },
       {
         "gap": 5,
-        "games": 342,
-        "wins": 158,
-        "winPct": 46.2
+        "games": 341,
+        "wins": 157,
+        "winPct": 46
       },
       {
         "gap": 6,
@@ -113,70 +113,70 @@
     {
       "label": "All seasons",
       "seasons": 41,
-      "games": 11548,
-      "wins": 4894,
+      "games": 11546,
+      "wins": 4892,
       "winPct": 42.4,
       "roadBaselinePct": 40.1,
       "liftPp": 2.3,
       "ladder": [
         {
           "gap": 2,
-          "games": 4351,
-          "wins": 1889,
+          "games": 4354,
+          "wins": 1891,
           "winPct": 43.4
         },
         {
           "gap": 3,
           "games": 2056,
-          "wins": 897,
-          "winPct": 43.6
+          "wins": 899,
+          "winPct": 43.7
         },
         {
           "gap": 4,
-          "games": 949,
-          "wins": 443,
-          "winPct": 46.7
+          "games": 952,
+          "wins": 447,
+          "winPct": 47
         },
         {
           "gap": 5,
-          "games": 342,
-          "wins": 158,
-          "winPct": 46.2
+          "games": 341,
+          "wins": 157,
+          "winPct": 46
         }
       ]
     },
     {
       "label": "Last 10 seasons",
       "seasons": 10,
-      "games": 3085,
-      "wins": 1470,
+      "games": 3084,
+      "wins": 1469,
       "winPct": 47.6,
       "roadBaselinePct": 43.8,
       "liftPp": 3.8,
       "ladder": [
         {
           "gap": 2,
-          "games": 1131,
-          "wins": 564,
+          "games": 1134,
+          "wins": 566,
           "winPct": 49.9
         },
         {
           "gap": 3,
           "games": 522,
-          "wins": 258,
-          "winPct": 49.4
+          "wins": 260,
+          "winPct": 49.8
         },
         {
           "gap": 4,
-          "games": 228,
-          "wins": 117,
-          "winPct": 51.3
+          "games": 231,
+          "wins": 121,
+          "winPct": 52.4
         },
         {
           "gap": 5,
-          "games": 68,
-          "wins": 34,
-          "winPct": 50
+          "games": 67,
+          "wins": 33,
+          "winPct": 49.3
         }
       ]
     },

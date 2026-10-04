@@ -35,12 +35,12 @@ describe("the lift table derives from the pinned measurement", () => {
     const published = liftOverBaseline(RESTED_AT_HOME.winPct, REST_SPLIT_BASELINE.homeWinPct);
 
     expect(published).toBe(1.3);
-    expect(REST_STATE_LIFT_PP.restedHome).toBeCloseTo(1.25, 2);
+    expect(REST_STATE_LIFT_PP.restedHome).toBeCloseTo(1.26, 2);
     expect(Math.abs(REST_STATE_LIFT_PP.restedHome - published)).toBeLessThan(0.1);
   });
 
   it("reads the home-tired row off the rested-visitor row, since they are the same games", () => {
-    expect(REST_STATE_LIFT_PP.tiredHome).toBeCloseTo(-2.3, 2);
+    expect(REST_STATE_LIFT_PP.tiredHome).toBeCloseTo(-2.29, 2);
     expect(REST_STATE_LIFT_PP.restedRoad).toBeCloseTo(
       liftOverBaseline(RESTED_ON_ROAD.winPct, REST_SPLIT_BASELINE.roadWinPct),
       1
@@ -175,7 +175,7 @@ describe("scheduleValueWins", () => {
     };
 
     expect(netEdgeGames(phoenix)).toBe(-5);
-    expect(scheduleValueWins(phoenix)).toBeCloseTo(-0.076, 3);
+    expect(scheduleValueWins(phoenix)).toBeCloseTo(-0.074, 3);
     expect(Math.round(scheduleValueWins(phoenix) * 10) / 10).toBe(-0.1);
   });
 
