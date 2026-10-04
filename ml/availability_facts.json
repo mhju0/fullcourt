@@ -22,7 +22,7 @@
       "t": 42.3
     },
     "backToBack": {
-      "points": 1.759,
+      "points": 1.761,
       "t": 13.4
     },
     "visitingAltitude": {
@@ -30,8 +30,8 @@
       "t": 5.1
     },
     "priorOvertime": {
-      "points": 0.544,
-      "t": 2.9
+      "points": 0.577,
+      "t": 3.2
     },
     "missValuePerPoint": {
       "points": 0.26,
@@ -46,8 +46,8 @@
   },
   "scheduleHoldsUp": {
     "backToBack": {
-      "scheduleOnly": 1.759,
-      "absenceControlled": 1.641,
+      "scheduleOnly": 1.761,
+      "absenceControlled": 1.642,
       "shiftPct": 6.7
     },
     "visitingAltitude": {
@@ -56,9 +56,9 @@
       "shiftPct": 5.6
     },
     "priorOvertime": {
-      "scheduleOnly": 0.544,
-      "absenceControlled": 0.501,
-      "shiftPct": 7.9
+      "scheduleOnly": 0.577,
+      "absenceControlled": 0.534,
+      "shiftPct": 7.4
     },
     "scheduleDensity": {
       "scheduleOnly": 0.275,

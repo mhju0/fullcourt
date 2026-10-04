@@ -52,26 +52,26 @@ const MEASURED_ON = "2026-07-30";
  * neutralises one term and re-derives the call under the shipped rule.
  *
  * `found` / `foundWinPct` are the load-bearing columns, and `delta` is the trap. A term
- * that finds extra winners at a rate below the model's own 61.17% average *lowers* the
+ * that finds extra winners at a rate below the model's own 61.18% average *lowers* the
  * headline while *raising* the number of games won. Travel is exactly that: it is the
- * single largest contributor of correct calls (+404 above a coin flip, more than any other
- * term) and it still moves the headline +0.32pp when removed, because its 5,994 games win
- * at 59.14% rather than 61.17%. Reading `delta` alone says delete it. Deleting it would
+ * single largest contributor of correct calls (+398 above a coin flip, more than any other
+ * term) and it still moves the headline +0.34pp when removed, because its 5,992 games win
+ * at 59.10% rather than 61.18%. Reading `delta` alone says delete it. Deleting it would
  * give up more winning predictions than any other change available.
  *
  * Ordered by wins-above-a-coin-flip surrendered, not by delta.
  */
-const ABLATIONS_MEASURED_ON = "2026-08-02";
-const ABLATION_BASELINE = { winPct: 61.17, called: 27400, edge: 3061 };
+const ABLATIONS_MEASURED_ON = "2026-10-04";
+const ABLATION_BASELINE = { winPct: 61.18, called: 27404, edge: 3063 };
 const ABLATIONS = [
-  { term: "Travel", delta: 0.32, found: 5994, foundWinPct: 59.14, edgeLost: 404 },
-  { term: "Recent workload (decay)", delta: -0.68, found: 3437, foundWinPct: 63.37, edgeLost: 336 },
-  { term: "Back-to-back", delta: -0.31, found: 1743, foundWinPct: 63.57, edgeLost: 210 },
-  { term: "Road segment", delta: 0.24, found: 2784, foundWinPct: 58.94, edgeLost: 209 },
-  { term: "Altitude", delta: -0.03, found: 616, foundWinPct: 62.34, edgeLost: 71 },
-  { term: "Schedule density", delta: -0.08, found: 707, foundWinPct: 60.54, edgeLost: 41 },
-  { term: "Overtime", delta: -0.07, found: 148, foundWinPct: 64.86, edgeLost: 20 },
-  { term: "Freshness", delta: 0.02, found: 148, foundWinPct: 60.14, edgeLost: -10 },
+  { term: "Travel", delta: 0.34, found: 5992, foundWinPct: 59.1, edgeLost: 398 },
+  { term: "Recent workload (decay)", delta: -0.68, found: 3434, foundWinPct: 63.34, edgeLost: 334 },
+  { term: "Back-to-back", delta: -0.32, found: 1742, foundWinPct: 63.61, edgeLost: 212 },
+  { term: "Road segment", delta: 0.24, found: 2785, foundWinPct: 58.92, edgeLost: 208 },
+  { term: "Altitude", delta: -0.04, found: 617, foundWinPct: 62.4, edgeLost: 72 },
+  { term: "Schedule density", delta: -0.07, found: 709, foundWinPct: 60.37, edgeLost: 39 },
+  { term: "Overtime", delta: -0.08, found: 154, foundWinPct: 64.29, edgeLost: 21 },
+  { term: "Freshness", delta: 0.01, found: 148, foundWinPct: 60.14, edgeLost: -10 },
 ] as const;
 
 
