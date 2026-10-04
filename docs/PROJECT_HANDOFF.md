@@ -122,3 +122,61 @@ after a verified live pipeline run.
 After the merge of #99, production served a stylesheet built from the older `globals.css`
 (D-72). The Turbopack build cache is now off in `next.config.ts`. After any change to
 `globals.css`, confirm a new rule is present in the stylesheet production serves.
+
+## Reading pages and data audit (2026-10-04)
+
+About and How it was built were rebuilt on `reading.module.css` with a section rail (D-73). The
+method topic list is an overlay, `/data-status` has a loading state, and four duplicate links
+were removed. A crawl of 139 pages on production found no broken link, no blank page and no
+missing anchor.
+
+Data audit, by independent SQL against the database: the Model Results totals, all four
+thresholds, every one of the 41 season rows, and the 2025-26 Season Report figures match what
+production serves. Two stored errors were found, and neither is fixed, because data writes belong
+to the owner:
+
+- Game `0021900894` (GSW at PHX) is dated 2020-03-01. It was played on 2020-02-29. ESPN carries
+  the same wrong date. Stored fatigue for GSW and PHX in that game, and for GSW on 2020-03-01,
+  misses two back-to-backs.
+- Playoff series 18 (1986-87 West Finals, Lakers over the franchise now in Oklahoma City) is
+  stored as 3-1 with no winner. The four stored games are a 4-0 sweep. It has no predictions.
+
+Open: whether `Find a page` leaves the footer. Removing it leaves the page finder keyboard-only.
+
+## Cross-source data audit (2026-10-04)
+
+All 50,495 stored final games were matched by date and teams against basketball-reference
+schedule pages for all 41 seasons, and every disagreement was read a third time on the nba.com
+game page. The row corrections below were applied in the Supabase SQL editor on 2026-10-04 at the
+owner's instruction (four dates, eight scores, one overtime count, series 18). The recompute that
+follows from them has not been run.
+
+- Four 2019-20 games are stored one day late; nba.com and basketball-reference agree on the
+  earlier date: `0021900848` (2020-02-23), `0021900886` (2020-02-28), `0021900888` (2020-02-29),
+  `0021900894` (2020-02-29). Stored back-to-back flags around them are wrong for POR, DET, LAC,
+  DEN, ATL, PHX and GSW.
+- Eight stored scores are wrong, both sources agreeing: `0048500304` home 98, `0028700066` home
+  109, `0028800100` away 107 (the stored winner is wrong), `0028800140` home 113, `0028800234`
+  away 104, `0028800269` away 91, `0049300052` home 98, `0029800661` away 93.
+- `0029600070` (1996-11-10 CLE–DEN): the database and nba.com say 108–79, basketball-reference
+  says 101–86. Unresolved; same winner.
+- `0020200464` (2003-01-04) went to double overtime; stored as one.
+- 2019-20 has no overtime stored: 75 games, 61 of them regular-season games before the
+  suspension. The published coverage note covers only seasons before 2002.
+- Not in the database by design: three NBA Cup finals and the 2020 play-in game.
+
+Follow-up, done on 2026-10-04 at the owner's instruction: `scripts/fetch_game_context.ts
+2019-10-01 2020-10-31` filled 75 overtime games; `fatigue_scores` and `predictions` were deleted
+and rebuilt for 2019-20 and for the two games after `0020200464`; `ml/predict_series.py --write`
+added series 18. Row counts: fatigue 103,390, predictions 28,037. PR #104 regenerates the
+rest-split and playoff facts. A re-run of the comparison leaves only the 1996 score dispute, the
+four games absent by design, and overtime before 2002-03.
+
+Later the same day: the four re-dated games got `tip_off_utc` from nba.com (basketball-reference
+start times agree; ESPN's are wrong for them). `0029600070` was settled at 101-86 by ESPN,
+basketball-reference, Stats Crew, Land of Basketball and nba.com's own quarter line, and corrected.
+`scripts/export_fatigue_features.ts` found 23 stored fatigue rows made stale by the score fixes
+(blowout discount); they were rebuilt and the fidelity check now reports 0 mismatches. PR #104 also
+regenerates the ablation, time-zone, availability, win-total and shooting artifacts.
+
+After any stored score or date fix, run the export's fidelity check: it lists every stale row.

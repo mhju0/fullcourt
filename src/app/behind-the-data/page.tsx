@@ -45,7 +45,6 @@ export default function BehindTheDataPage() {
     </section>
     <nav className="reference-related" aria-label="Research archive">
       <Link href="/behind-the-data/referees/archive">Referee research archive →</Link>
-      <Link href="/behind-the-data/referees">Archived referee methods →</Link>
     </nav>
   </div>;
 }

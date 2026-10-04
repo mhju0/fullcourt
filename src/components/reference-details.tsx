@@ -29,6 +29,16 @@ export function ReferenceDetails({ scope }: { scope: string }) {
       if (destination.hash !== location.hash) history.pushState(history.state, "", destination);
       reveal();
     };
+    // The topic list is an overlay, so it closes like one: Escape, or a press anywhere else.
+    const topics = document.querySelector<HTMLDetailsElement>(".reference-topics");
+    const dismissPress = (event: MouseEvent) => {
+      if (topics?.open && !topics.contains(event.target as Node)) topics.open = false;
+    };
+    const dismissKey = (event: KeyboardEvent) => {
+      if (event.key !== "Escape" || !topics?.open) return;
+      topics.open = false;
+      topics.querySelector("summary")?.focus();
+    };
     let printState: [HTMLDetailsElement, boolean][] = [];
     const beforePrint = () => {
       printState = Array.from(body?.querySelectorAll<HTMLDetailsElement>("details") ?? [], (item) => [item, item.open]);
@@ -39,12 +49,16 @@ export function ReferenceDetails({ scope }: { scope: string }) {
     window.addEventListener("hashchange", reveal);
     window.addEventListener("popstate", reveal);
     document.addEventListener("click", onClick);
+    document.addEventListener("click", dismissPress);
+    document.addEventListener("keydown", dismissKey);
     window.addEventListener("beforeprint", beforePrint);
     window.addEventListener("afterprint", afterPrint);
     return () => {
       window.removeEventListener("hashchange", reveal);
       window.removeEventListener("popstate", reveal);
       document.removeEventListener("click", onClick);
+      document.removeEventListener("click", dismissPress);
+      document.removeEventListener("keydown", dismissKey);
       window.removeEventListener("beforeprint", beforePrint);
       window.removeEventListener("afterprint", afterPrint);
     };

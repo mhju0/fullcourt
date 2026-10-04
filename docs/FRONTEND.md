@@ -41,7 +41,10 @@ a destination; tables retain their existing density. See D-63 for the owner sele
 
 Standard study pages pair `PageHeader` and the compact `MethodLink` in `.page-intro`.
 Games and Shooting use a 24px entry gap so the first complete row clears the mobile dock.
-About and the engineering walkthrough share purpose-first typography and source links.
+About and the engineering walkthrough share `reading.module.css`: numbered chapters, a lead
+sentence on an accent rule, tinted notes, labelled Problem / Built / Tradeoff rows and study cards.
+The walkthrough adds `ReadingRail`, a sticky section list from 1024px that marks the section being
+read. A method article's topic list opens over the page and closes on Escape or an outside press.
 One footer exposes Methods, About, How it was built, Source, Status and Find a page.
 
 Use `PageHeader`, `MethodLink`, `SeasonSelector`, `DataTable`, `StatTile`, `StatFigure`, and
