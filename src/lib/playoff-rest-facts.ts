@@ -40,7 +40,7 @@ export const PLAYOFF_EQUAL_REST = Object.freeze({
  */
 export const PLAYOFF_GRIND_MATRIX = Object.freeze({
   ownLowOppLow: Object.freeze({ winPct: 68.9, n: 74 }) as GrindCell,
-  ownLowOppHigh: Object.freeze({ winPct: 85.4, n: 89 }) as GrindCell,
+  ownLowOppHigh: Object.freeze({ winPct: 85.6, n: 90 }) as GrindCell,
   ownHighOppLow: Object.freeze({ winPct: 65.9, n: 44 }) as GrindCell,
   ownHighOppHigh: Object.freeze({ winPct: 59.7, n: 72 }) as GrindCell,
 });
@@ -56,7 +56,7 @@ export const PLAYOFF_GRIND_MATRIX = Object.freeze({
  */
 export const PLAYOFF_GRIND_EXOGENOUS = Object.freeze({
   oppClosedEarly: Object.freeze({ winPct: 68.9, n: 74, meanWinPctDiff: 0.0891 }),
-  oppWentLong: Object.freeze({ winPct: 85.4, n: 89, meanWinPctDiff: 0.1079 }),
+  oppWentLong: Object.freeze({ winPct: 85.6, n: 90, meanWinPctDiff: 0.1102 }),
   closeMatchupOppClosedEarly: Object.freeze({ winPct: 53.2, n: 62 }) as GrindCell,
   closeMatchupOppWentLong: Object.freeze({ winPct: 67.9, n: 78 }) as GrindCell,
   /** Holding own grind high and varying the opponent's: the effect goes the wrong way. */
@@ -67,7 +67,7 @@ export const PLAYOFF_GRIND_EXOGENOUS = Object.freeze({
 export const PLAYOFF_ENTRY_REST_BUCKETS = Object.freeze([
   Object.freeze({ label: "2 or more days short", n: 67, winPct: 65.7 }),
   Object.freeze({ label: "within a day either way", n: 92, winPct: 59.8 }),
-  Object.freeze({ label: "2 or more days rested", n: 120, winPct: 83.3 }),
+  Object.freeze({ label: "2 or more days rested", n: 121, winPct: 83.5 }),
 ]);
 
 /**
@@ -100,14 +100,14 @@ export const PLAYOFF_ROUND_SPLIT = Object.freeze({
     n: 210,
     model: 73.3,
     baseline: 69.5,
-    logLoss: 0.5658,
+    logLoss: 0.5657,
     baselineLogLoss: 0.6148,
   }) as RoundSplitSlice,
   roundOne: Object.freeze({
     n: 240,
     model: 77.1,
     baseline: 78.8,
-    logLoss: 0.4311,
+    logLoss: 0.431,
     baselineLogLoss: 0.5173,
   }) as RoundSplitSlice,
 });
@@ -118,13 +118,13 @@ export const PLAYOFF_ROUND_SPLIT = Object.freeze({
  * reorder in `ml/train_series_model.py` cannot silently mismatch this page's table.
  */
 export const PLAYOFF_MODEL_COEFFICIENTS = Object.freeze({
-  seed_diff: 0.4026,
-  win_pct_diff: 0.7141,
-  prior_grind_diff: 0.2822,
-  h2h_diff: 0.1233,
+  seed_diff: 0.4028,
+  win_pct_diff: 0.7182,
+  prior_grind_diff: 0.2823,
+  h2h_diff: 0.1232,
 });
 
-export const PLAYOFF_MODEL_INTERCEPT = 1.3724;
+export const PLAYOFF_MODEL_INTERCEPT = 1.3775;
 
 /**
  * Per-season paired record against the always-home-court rule in rounds 2+.

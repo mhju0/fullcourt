@@ -11,7 +11,7 @@
  * **This file exists because the alternative failed.** The page hand-typed
  * "44.4% across 7,224 games" for the rested-road row. That figure was never wrong — it
  * described the `ml/` harness slice, which floors at 2002-03 — but the site publishes from
- * 1985-86, where the same measurement is 42.4% across 11,548. Nothing tied the sentence to a
+ * 1985-86, where the same measurement is 42.4% across 11,546. Nothing tied the sentence to a
  * population, so nothing caught it. Two neighbouring claims went stale the same way.
  *
  * The live `/analysis` figures are NOT here: they come from `AnalysisResponse` and are
@@ -39,8 +39,8 @@ export interface RestRow {
 export const REST_SPLIT_SAMPLE = Object.freeze({
   scoredGames: 47143,
   /** |RA| < 0.5 — no side is the rested one. About one game in six. */
-  neutral: 8195,
-  decided: 38948,
+  neutral: 8193,
+  decided: 38950,
   firstSeason: "1985-86",
   lastSeason: "2025-26",
   seasons: 41,
@@ -55,23 +55,23 @@ export const REST_SPLIT_SAMPLE = Object.freeze({
  */
 export const REST_SPLIT_BASELINE = Object.freeze({
   games: 47143,
-  homeWins: 28248,
+  homeWins: 28247,
   homeWinPct: 59.9,
   roadWinPct: 40.1,
 });
 
 /** The published row: the more-rested team was also at home. */
 export const RESTED_AT_HOME: RestRow = Object.freeze({
-  games: 27400,
-  wins: 16761,
+  games: 27404,
+  wins: 16765,
   winPct: 61.2,
   ladder: Object.freeze([
-    Object.freeze({ gap: 2, games: 16078, wins: 9947, winPct: 61.9 }),
-    Object.freeze({ gap: 3, games: 10524, wins: 6639, winPct: 63.1 }),
+    Object.freeze({ gap: 2, games: 16073, wins: 9945, winPct: 61.9 }),
+    Object.freeze({ gap: 3, games: 10526, wins: 6640, winPct: 63.1 }),
     Object.freeze({ gap: 4, games: 6389, wins: 4078, winPct: 63.8 }),
-    Object.freeze({ gap: 5, games: 3782, wins: 2469, winPct: 65.3 }),
-    Object.freeze({ gap: 6, games: 2153, wins: 1404, winPct: 65.2 }),
-    Object.freeze({ gap: 7, games: 1108, wins: 730, winPct: 65.9 }),
+    Object.freeze({ gap: 5, games: 3781, wins: 2469, winPct: 65.3 }),
+    Object.freeze({ gap: 6, games: 2151, wins: 1403, winPct: 65.2 }),
+    Object.freeze({ gap: 7, games: 1105, wins: 728, winPct: 65.9 }),
   ]),
 });
 
@@ -83,14 +83,14 @@ export const RESTED_AT_HOME: RestRow = Object.freeze({
  * Any copy quoting them has to say so.
  */
 export const RESTED_ON_ROAD: RestRow = Object.freeze({
-  games: 11548,
-  wins: 4894,
+  games: 11546,
+  wins: 4892,
   winPct: 42.4,
   ladder: Object.freeze([
-    Object.freeze({ gap: 2, games: 4351, wins: 1889, winPct: 43.4 }),
-    Object.freeze({ gap: 3, games: 2056, wins: 897, winPct: 43.6 }),
-    Object.freeze({ gap: 4, games: 949, wins: 443, winPct: 46.7 }),
-    Object.freeze({ gap: 5, games: 342, wins: 158, winPct: 46.2 }),
+    Object.freeze({ gap: 2, games: 4354, wins: 1891, winPct: 43.4 }),
+    Object.freeze({ gap: 3, games: 2056, wins: 899, winPct: 43.7 }),
+    Object.freeze({ gap: 4, games: 952, wins: 447, winPct: 47 }),
+    Object.freeze({ gap: 5, games: 341, wins: 157, winPct: 46 }),
     Object.freeze({ gap: 6, games: 108, wins: 54, winPct: 50 }),
     Object.freeze({ gap: 7, games: 26, wins: 16, winPct: 61.5 }),
   ]),
@@ -128,31 +128,31 @@ export const RESTED_ON_ROAD_BY_ERA: readonly RestEraRow[] = Object.freeze([
   Object.freeze({
     label: "All seasons",
     seasons: 41,
-    games: 11548,
-    wins: 4894,
+    games: 11546,
+    wins: 4892,
     winPct: 42.4,
     roadBaselinePct: 40.1,
     liftPp: 2.3,
     ladder: Object.freeze([
-      Object.freeze({ gap: 2, games: 4351, wins: 1889, winPct: 43.4 }),
-      Object.freeze({ gap: 3, games: 2056, wins: 897, winPct: 43.6 }),
-      Object.freeze({ gap: 4, games: 949, wins: 443, winPct: 46.7 }),
-      Object.freeze({ gap: 5, games: 342, wins: 158, winPct: 46.2 }),
+      Object.freeze({ gap: 2, games: 4354, wins: 1891, winPct: 43.4 }),
+      Object.freeze({ gap: 3, games: 2056, wins: 899, winPct: 43.7 }),
+      Object.freeze({ gap: 4, games: 952, wins: 447, winPct: 47 }),
+      Object.freeze({ gap: 5, games: 341, wins: 157, winPct: 46 }),
     ]),
   }),
   Object.freeze({
     label: "Last 10 seasons",
     seasons: 10,
-    games: 3085,
-    wins: 1470,
+    games: 3084,
+    wins: 1469,
     winPct: 47.6,
     roadBaselinePct: 43.8,
     liftPp: 3.8,
     ladder: Object.freeze([
-      Object.freeze({ gap: 2, games: 1131, wins: 564, winPct: 49.9 }),
-      Object.freeze({ gap: 3, games: 522, wins: 258, winPct: 49.4 }),
-      Object.freeze({ gap: 4, games: 228, wins: 117, winPct: 51.3 }),
-      Object.freeze({ gap: 5, games: 68, wins: 34, winPct: 50 }),
+      Object.freeze({ gap: 2, games: 1134, wins: 566, winPct: 49.9 }),
+      Object.freeze({ gap: 3, games: 522, wins: 260, winPct: 49.8 }),
+      Object.freeze({ gap: 4, games: 231, wins: 121, winPct: 52.4 }),
+      Object.freeze({ gap: 5, games: 67, wins: 33, winPct: 49.3 }),
     ]),
   }),
   Object.freeze({
@@ -175,7 +175,7 @@ export const RESTED_ON_ROAD_BY_ERA: readonly RestEraRow[] = Object.freeze([
 /**
  * Below this, a rung is printed muted and never quoted in prose.
  *
- * Set at 200 rather than higher on purpose. The last-ten rung at a gap of 4 is 228 games and
+ * Set at 200 rather than higher on purpose. The last-ten rung at a gap of 4 is 231 games and
  * sits above even — it is the single observation that refutes "no threshold rescues it" in the
  * modern game, so a cut that hid it would be the same omission that let the claim stand. The
  * last-five rungs at gaps of 4 and 5 are 117 and 36 games: they read as the most dramatic
@@ -194,11 +194,11 @@ export const THIN_SAMPLE_GAMES = 200;
 export const HOME_BAR_COUNTERFACTUAL = Object.freeze({
   /** Points of home court added to every rest edge before the call is made. */
   homeBar: 3,
-  calls: 45507,
+  calls: 45508,
   coveragePct: 96.5,
-  correct: 27177,
+  correct: 27179,
   accuracyPct: 59.7,
-  roadCalls: 1385,
+  roadCalls: 1386,
   roadLosses: 752,
   /** Picking the home team in every scored game — the bar this has to clear, and does not. */
   alwaysHomePct: 59.9,

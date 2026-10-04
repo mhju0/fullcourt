@@ -12,8 +12,8 @@
       "n": 74
     },
     "ownLowOppHigh": {
-      "winPct": 85.4,
-      "n": 89
+      "winPct": 85.6,
+      "n": 90
     },
     "ownHighOppLow": {
       "winPct": 65.9,
@@ -31,9 +31,9 @@
       "meanWinPctDiff": 0.0891
     },
     "oppWentLong": {
-      "winPct": 85.4,
-      "n": 89,
-      "meanWinPctDiff": 0.1079
+      "winPct": 85.6,
+      "n": 90,
+      "meanWinPctDiff": 0.1102
     },
     "closeMatchupOppClosedEarly": {
       "winPct": 53.2,
@@ -58,8 +58,8 @@
     },
     {
       "label": "2 or more days rested",
-      "n": 120,
-      "winPct": 83.3
+      "n": 121,
+      "winPct": 83.5
     }
   ],
   "bestOfFiveRound1Series": 136,

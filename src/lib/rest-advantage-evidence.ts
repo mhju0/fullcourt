@@ -41,8 +41,8 @@ export function classifyRestAdvantage(
  * on that", and the answer for a rested visitor is no.
  *
  * The evidence, over every decidable game the site publishes (1985-86 on, re-measured
- * 2026-08-06 by `scripts/measure_uncalled_half.ts`): backing the more rested team when that
- * team is the visitor won 42.4% of 11,548 games. Home teams win 59.9% of everything and road
+ * 2026-10-04 by `scripts/measure_uncalled_half.ts`): backing the more rested team when that
+ * team is the visitor won 42.4% of 11,546 games. Home teams win 59.9% of everything and road
  * teams 40.1%, so that row does gain against its own baseline — but a gain over a baseline is
  * a measurement, and a pick has to clear 50%.
  *

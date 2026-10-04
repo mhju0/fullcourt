@@ -55,7 +55,7 @@ export interface RestStateCounts {
  * `RESTED_ON_ROAD` *is* the home-tired row, read from the road.
  *
  * Note the asymmetry, which is real and survives into every figure below: being the fresher
- * side at home is worth +1.25, while facing a fresher visitor costs 2.30. Rest hurts the tired
+ * side at home is worth +1.26, while facing a fresher visitor costs 2.29. Rest hurts the tired
  * team about twice as much as it helps the rested one.
  */
 export const REST_STATE_LIFT_PP: Readonly<Record<keyof RestStateCounts, number>> = (() => {

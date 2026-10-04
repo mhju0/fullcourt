@@ -10,14 +10,14 @@
     "n": 210,
     "model": 73.3,
     "baseline": 69.5,
-    "logLoss": 0.5658,
+    "logLoss": 0.5657,
     "baselineLogLoss": 0.6148
   },
   "roundOne": {
     "n": 240,
     "model": 77.1,
     "baseline": 78.8,
-    "logLoss": 0.4311,
+    "logLoss": 0.431,
     "baselineLogLoss": 0.5173
   },
   "roundsTwoPlusRecord": {
@@ -40,10 +40,10 @@
     "baselineBrier": 0.1907
   },
   "coefficients": {
-    "seed_diff": 0.4026,
-    "win_pct_diff": 0.7141,
-    "prior_grind_diff": 0.2822,
-    "h2h_diff": 0.1233
+    "seed_diff": 0.4028,
+    "win_pct_diff": 0.7182,
+    "prior_grind_diff": 0.2823,
+    "h2h_diff": 0.1232
   },
-  "intercept": 1.3724
+  "intercept": 1.3775
 }
