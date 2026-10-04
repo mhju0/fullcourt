@@ -62,9 +62,9 @@ export const AVAILABILITY_DEFINITION = Object.freeze({
 export const AVAILABILITY_EFFECTS = Object.freeze({
   bestPlayerOut: Object.freeze({ points: 2.863, t: 17.9 }) as AvailabilityEffect,
   homeCourt: Object.freeze({ points: 2.824, t: 42.3 }) as AvailabilityEffect,
-  backToBack: Object.freeze({ points: 1.759, t: 13.4 }) as AvailabilityEffect,
+  backToBack: Object.freeze({ points: 1.761, t: 13.4 }) as AvailabilityEffect,
   visitingAltitude: Object.freeze({ points: 1.358, t: 5.1 }) as AvailabilityEffect,
-  priorOvertime: Object.freeze({ points: 0.544, t: 2.9 }) as AvailabilityEffect,
+  priorOvertime: Object.freeze({ points: 0.577, t: 3.2 }) as AvailabilityEffect,
   missValuePerPoint: Object.freeze({ points: 0.26, t: 21.9 }) as AvailabilityEffect,
 });
 
@@ -85,9 +85,9 @@ export const AVAILABILITY_FREQUENCY = Object.freeze({
  * what a back-to-back costs.
  */
 export const AVAILABILITY_SCHEDULE_HOLDS_UP = Object.freeze({
-  backToBack: Object.freeze({ scheduleOnly: 1.759, absenceControlled: 1.641, shiftPct: 6.7 }),
+  backToBack: Object.freeze({ scheduleOnly: 1.761, absenceControlled: 1.642, shiftPct: 6.7 }),
   visitingAltitude: Object.freeze({ scheduleOnly: 1.358, absenceControlled: 1.282, shiftPct: 5.6 }),
-  priorOvertime: Object.freeze({ scheduleOnly: 0.544, absenceControlled: 0.501, shiftPct: 7.9 }),
+  priorOvertime: Object.freeze({ scheduleOnly: 0.577, absenceControlled: 0.534, shiftPct: 7.4 }),
   scheduleDensity: Object.freeze({ scheduleOnly: 0.275, absenceControlled: 0.265, shiftPct: 3.8 }),
 });
 

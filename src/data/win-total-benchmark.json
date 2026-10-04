@@ -1,6 +1,6 @@
 {
   "source": "sportsoddshistory.com archive (hosted at covers.com)",
-  "generated": "2026-07-29",
+  "generated": "2026-10-04",
   "firstSeason": "1993-94",
   "lastSeason": "2025-26",
   "seasonsCovered": 31,
@@ -11,34 +11,34 @@
     "n": 881
   },
   "correlation": {
-    "r": -0.0157,
+    "r": -0.015,
     "n": 884
   },
   "buckets": [
     {
       "label": "+10 or better",
-      "overs": 49,
-      "n": 102
+      "overs": 57,
+      "n": 110
     },
     {
       "label": "+5 to +9",
-      "overs": 67,
-      "n": 144
+      "overs": 61,
+      "n": 142
     },
     {
       "label": "−4 to +4",
-      "overs": 191,
-      "n": 386
+      "overs": 184,
+      "n": 376
     },
     {
       "label": "−9 to −5",
-      "overs": 74,
-      "n": 163
+      "overs": 73,
+      "n": 154
     },
     {
       "label": "−10 or worse",
-      "overs": 41,
-      "n": 86
+      "overs": 47,
+      "n": 99
     }
   ]
 }

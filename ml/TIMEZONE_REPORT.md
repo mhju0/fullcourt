@@ -38,7 +38,7 @@ No controls at all. Read it for the denominators, not for the effect.
 |---|---:|---:|
 | all games in the era | 28,876 | 58.39 |
 | east ≥ 3h | 1,643 | 54.41 |
-| east ≥ 3h, short rest | 458 | 53.49 |
+| east ≥ 3h, short rest | 457 | 53.61 |
 | west ≥ 3h | 1,635 | 61.96 |
 | west ≥ 3h, short rest | 428 | 66.59 |
 | no long shift either way | 25,598 | 58.41 |
@@ -48,8 +48,8 @@ No controls at all. Read it for the denominators, not for the effect.
 | model | log loss | vs the layer above |
 |---|---:|---:|
 | strength only | 0.62381 | — |
-| four-term + strength (the baseline) | 0.62124 | +0.00258 |
-| + east/west × short rest | 0.62126 | -0.00003 |
+| four-term + strength (the baseline) | 0.62116 | +0.00265 |
+| + east/west × short rest | 0.62119 | -0.00003 |
 
 The four candidate terms together are worth **-0.00003** log loss.
 
@@ -64,8 +64,8 @@ such. `cv` is the coefficient of variation across folds; ADR 0006 called cv > 1 
 | term | mean weight | cv | folds non-zero | verdict |
 |---|---:|---:|---:|---|
 | `d_east3_short` | 0.0000 | — | 0/16 | pinned at zero by the clamp — nothing |
-| `d_west3_short` | 0.0997 | 0.40 | 16/16 | stable |
-| `d_east3` | 0.0069 | 1.77 | 6/16 | unstable |
+| `d_west3_short` | 0.0993 | 0.41 | 16/16 | stable |
+| `d_east3` | 0.0069 | 1.76 | 6/16 | unstable |
 | `d_west3` | 0.0435 | 0.65 | 14/16 | stable |
 
 ## Does any candidate earn its place on its own?
@@ -75,10 +75,10 @@ A stable weight is not evidence of value — ADR 0006 corrected exactly that rea
 
 | term | log loss added alone | vs baseline |
 |---|---:|---:|
-| `d_east3_short` | 0.62124 | -0.00000 |
-| `d_west3_short` | 0.62126 | -0.00002 |
-| `d_east3` | 0.62125 | -0.00002 |
-| `d_west3` | 0.62121 | +0.00003 |
+| `d_east3_short` | 0.62116 | -0.00000 |
+| `d_west3_short` | 0.62118 | -0.00002 |
+| `d_east3` | 0.62118 | -0.00002 |
+| `d_west3` | 0.62114 | +0.00003 |
 
 ## Why the raw split looks like an effect
 
@@ -99,7 +99,7 @@ both western and both high, so a westward term partly restates the altitude term
 
 | term | games | also visiting altitude | also back-to-back |
 |---|---:|---:|---:|
-| `d_east3_short` | 458 | 0.0% | 76.2% |
+| `d_east3_short` | 457 | 0.0% | 76.1% |
 | `d_west3_short` | 428 | 0.0% | 86.4% |
 | `d_east3` | 1,643 | 0.0% | 21.2% |
 | `d_west3` | 1,635 | 0.0% | 22.6% |

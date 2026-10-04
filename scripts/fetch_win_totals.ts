@@ -103,6 +103,8 @@ function parseSeasonPage(html: string, season: string): LineRow[] {
     if (cells.length < 7) continue;
     const [team, line, , , , actual, result] = cells;
     if (line === "N/A") continue;
+    // The archive voids every 2019-20 line: the season stopped before the totals could settle.
+    if (result === "VOID") continue;
     const abbr = NAME_TO_ABBR[team];
     if (!abbr) throw new Error(`${season}: unmapped team name "${team}"`);
     if (result !== "Over" && result !== "Under" && result !== "Push")
