@@ -165,8 +165,13 @@ follows from them has not been run.
   suspension. The published coverage note covers only seasons before 2002.
 - Not in the database by design: three NBA Cup finals and the 2020 play-in game.
 
-Next step, awaiting the owner's go-ahead: `scripts/fetch_game_context.ts 2019-10-01 2020-10-31`
-(dry run: 75 overtime games found, 4 games unmatched because ESPN carries the old dates), then
-delete and rebuild `fatigue_scores` and `predictions` for 2019-20 and for the two games after
-`0020200464`, and predictions for series 18. Until then stored fatigue for 2019-20 reflects the
-old dates.
+Follow-up, done on 2026-10-04 at the owner's instruction: `scripts/fetch_game_context.ts
+2019-10-01 2020-10-31` filled 75 overtime games; `fatigue_scores` and `predictions` were deleted
+and rebuilt for 2019-20 and for the two games after `0020200464`; `ml/predict_series.py --write`
+added series 18. Row counts: fatigue 103,390, predictions 28,037. PR #104 regenerates the
+rest-split and playoff facts. A re-run of the comparison leaves only the 1996 score dispute, the
+four games absent by design, and overtime before 2002-03.
+
+Open: the four re-dated games have no `tip_off_utc` (ESPN carries their old dates), so their
+back-to-back multiplier uses the flat value. Availability, time-zone, win-total and player-rest
+artifacts and the term ablation table were not regenerated.
