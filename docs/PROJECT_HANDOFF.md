@@ -172,6 +172,11 @@ added series 18. Row counts: fatigue 103,390, predictions 28,037. PR #104 regene
 rest-split and playoff facts. A re-run of the comparison leaves only the 1996 score dispute, the
 four games absent by design, and overtime before 2002-03.
 
-Open: the four re-dated games have no `tip_off_utc` (ESPN carries their old dates), so their
-back-to-back multiplier uses the flat value. Availability, time-zone, win-total and player-rest
-artifacts and the term ablation table were not regenerated.
+Later the same day: the four re-dated games got `tip_off_utc` from nba.com (basketball-reference
+start times agree; ESPN's are wrong for them). `0029600070` was settled at 101-86 by ESPN,
+basketball-reference, Stats Crew, Land of Basketball and nba.com's own quarter line, and corrected.
+`scripts/export_fatigue_features.ts` found 23 stored fatigue rows made stale by the score fixes
+(blowout discount); they were rebuilt and the fidelity check now reports 0 mismatches. PR #104 also
+regenerates the ablation, time-zone, availability, win-total and shooting artifacts.
+
+After any stored score or date fix, run the export's fidelity check: it lists every stale row.
