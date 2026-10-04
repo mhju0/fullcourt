@@ -147,7 +147,9 @@ Open: whether `Find a page` leaves the footer. Removing it leaves the page finde
 
 All 50,495 stored final games were matched by date and teams against basketball-reference
 schedule pages for all 41 seasons, and every disagreement was read a third time on the nba.com
-game page. Nothing is fixed; the SQL is with the owner.
+game page. The row corrections below were applied in the Supabase SQL editor on 2026-10-04 at the
+owner's instruction (four dates, eight scores, one overtime count, series 18). The recompute that
+follows from them has not been run.
 
 - Four 2019-20 games are stored one day late; nba.com and basketball-reference agree on the
   earlier date: `0021900848` (2020-02-23), `0021900886` (2020-02-28), `0021900888` (2020-02-29),
@@ -163,5 +165,8 @@ game page. Nothing is fixed; the SQL is with the owner.
   suspension. The published coverage note covers only seasons before 2002.
 - Not in the database by design: three NBA Cup finals and the 2020 play-in game.
 
-Next step after the owner applies the SQL: `scripts/fetch_game_context.ts 2019-10-01 2020-10-31`,
-then a fatigue recompute for 2019-20 and the neighbours of the corrected games.
+Next step, awaiting the owner's go-ahead: `scripts/fetch_game_context.ts 2019-10-01 2020-10-31`
+(dry run: 75 overtime games found, 4 games unmatched because ESPN carries the old dates), then
+delete and rebuild `fatigue_scores` and `predictions` for 2019-20 and for the two games after
+`0020200464`, and predictions for series 18. Until then stored fatigue for 2019-20 reflects the
+old dates.
