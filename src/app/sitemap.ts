@@ -22,6 +22,7 @@ const SURFACES = [
   "/about",
   "/how-it-was-built",
   "/data-status",
+  "/privacy",
 ] as const;
 
 export default function sitemap(): MetadataRoute.Sitemap {

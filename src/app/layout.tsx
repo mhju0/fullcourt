@@ -9,6 +9,7 @@ import { RouteTransitionLifecycle } from "@/lib/route-transition";
 import { NavBar } from "@/components/nav-bar";
 import "./globals.css";
 import { SITE_URL } from "@/lib/site-url";
+import { REPORT_ERROR_HREF } from "@/lib/contact";
 
 // One family for body AND headings — the Front Office direction (docs/design/
 // mocks/08-front-office.html, adopted 2026-08-09) separates titles from prose by
@@ -123,9 +124,14 @@ export default function RootLayout({
               <Link href="/how-it-was-built">How it was built</Link>
               <a href="https://github.com/mhju0/fullcourt">Source ↗</a>
               <Link href="/data-status">Data status</Link>
+              <Link href="/privacy">Privacy</Link>
+              <a href={REPORT_ERROR_HREF}>Report an error</a>
               <PageSearchButton />
             </nav>
           </div>
+          <p className="site-footer-notice mx-auto max-w-7xl px-4 pb-4 sm:px-6">
+            FullCourt is an independent project. It is not affiliated with or endorsed by the NBA or its teams. Team names and logos belong to their owners.
+          </p>
         </footer>
 
         {/* The phone dock and the ⌘K palette (2026-08-29 shell merge). Both are chrome, not

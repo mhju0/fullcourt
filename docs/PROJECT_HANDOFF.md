@@ -180,3 +180,14 @@ basketball-reference, Stats Crew, Land of Basketball and nba.com's own quarter l
 regenerates the ablation, time-zone, availability, win-total and shooting artifacts.
 
 After any stored score or date fix, run the export's fidelity check: it lists every stale row.
+
+## Launch-readiness program (2026-10-05)
+
+The owner asked for ten pre-launch items. Done in this entry: the footer non-affiliation notice,
+`/privacy`, and the `Report an error` mail link (D-74). The footer notice is 12px sans, below the
+15px sentence rule, as fine print; the owner has not ruled on that size.
+
+Open, in order: error monitoring, uptime and freshness monitor, scheduled database backup with one
+test restore, a quota plan, a firewall rate limit, the phone and accessibility pass (including
+Instagram's in-app browser), and the custom domain. The domain name is not chosen;
+`src/lib/site-url.ts` is the one place the origin is written.

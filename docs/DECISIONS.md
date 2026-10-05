@@ -844,3 +844,19 @@ one page were reduced to one: the index entry inside the topic list, the second 
 archived referee methods, the second archive link, and the second link back to all methods.
 
 The footer keeps `Find a page`. It is the only visible door to the page finder.
+
+### D-74 · Public-launch notices: privacy page, non-affiliation notice, contact address — ACTIVE
+
+Decided by the owner on 2026-10-05, ahead of the first public promotion.
+
+- `/privacy` states what a visit records. The site has no sign-in, sets no cookies and writes
+  nothing to browser storage; page views are counted by Vercel Web Analytics. The page names the
+  three outside services a browser contacts: Vercel, Supabase (the live-score connection on Games)
+  and ESPN (team logos). A change that adds a cookie, browser storage, a tracker or another outside
+  host must update this page in the same PR.
+- Team logos stay hotlinked from ESPN. The footer on every page says FullCourt is independent and
+  not affiliated with or endorsed by the NBA or its teams.
+- The public contact address lives in `src/lib/contact.ts`. The footer carries a `Report an error`
+  mail link and a `Privacy` link.
+- The database stays on the Supabase Free plan through opening night. Size on 2026-10-05: 318 MB of
+  500 MB, of which `shot_grid` is 227 MB.

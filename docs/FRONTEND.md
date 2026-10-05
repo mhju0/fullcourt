@@ -21,6 +21,7 @@ Dependency versions live in `package.json` and `pnpm-lock.yaml`. The shared visu
 | `/officiating` | Selected NBA L2M findings and games-first report browser; source verdicts, clean games, shareable filters |
 | `/about` | Product purpose, author and engineering walkthrough entry |
 | `/how-it-was-built` | Problem, data flow, implementation tradeoffs, verification and limits |
+| `/privacy` | What a visit records, the three outside services that receive a request, the non-affiliation notice and the contact address |
 | `/behind-the-data/*` | Seven-topic overview; ten method articles with visible scope limits, compact topic/contents disclosures and expandable evidence |
 | `/behind-the-data/referees/archive` | Earlier referee research and its historical table |
 
