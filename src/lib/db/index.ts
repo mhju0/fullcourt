@@ -1,5 +1,6 @@
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
+import { dbReconnectDelaySeconds } from "./reconnect";
 import * as schema from "./schema";
 
 type DbInstance = ReturnType<typeof drizzle<typeof schema>>;
@@ -44,6 +45,7 @@ function getOrCreateDb(): DbInstance {
       // request behind it. 5s leaves headroom for pooler cold-starts while
       // halving how long a down DB is waited on.
       connect_timeout: 5,
+      backoff: dbReconnectDelaySeconds,
     });
     state.dbInstance = drizzle(state.sqlClient, { schema });
   }

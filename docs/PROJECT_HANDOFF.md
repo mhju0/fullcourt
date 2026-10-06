@@ -192,6 +192,16 @@ test restore, a quota plan, a firewall rate limit, the phone and accessibility p
 Instagram's in-app browser), and the custom domain. The domain name is not chosen;
 `src/lib/site-url.ts` is the one place the origin is written.
 
+Later on 2026-10-05: PR #106 merged. A backup of the public schema was taken with `pg_dump` 18
+(the server is 17.6; the Homebrew 16 client refuses it) to `~/Backups/fullcourt/` and restored into
+a scratch database with matching row counts; the ten restore errors are Supabase `auth` policies.
+The reconnect wait is capped (D-75). Still open: scheduled backups, Sentry, an uptime monitor, the
+firewall rate limit, the phone pass and the domain.
+
+2026-10-06: a Vercel firewall rule, `Rate limit API`, is live: paths starting `/api/`, 100 requests
+per 60 seconds per IP, answered with 429. It was set in the dashboard, so it is not in the repo.
+Checked from outside: 115 requests to `/api/health` returned 100 × 200 then 15 × 429, with pages
+unaffected. Hobby allows one rate-limit rule. PR #108 pins `source-map-js` for an overnight advisory.
 ## Error monitoring (2026-10-06)
 
 Sentry is wired in (D-76). A local production build sent one browser error and one server error
@@ -199,3 +209,8 @@ Sentry is wired in (D-76). A local production build sent one browser error and o
 `javascript-nextjs` under org `michael-ju-46`. The DSN is not in the repo: it is read from
 `NEXT_PUBLIC_SENTRY_DSN`, which must be set in Vercel before the deploy that should report.
 Open: source-map upload; the Sentry project's own setting that stops it storing IP addresses.
+
+Later on 2026-10-06: PRs #107 and #108 merged. A weekly backup job is installed on the owner's Mac,
+outside the repo: `~/Backups/fullcourt/backup.sh`, run by the LaunchAgent
+`com.michaelju.fullcourt-backup` on Sundays at 11:00, keeping the newest eight dumps. Its first run
+wrote a 17 MB dump. The owner chose `fullcourt.fyi`; it is not bought yet.

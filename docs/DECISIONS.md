@@ -861,6 +861,13 @@ Decided by the owner on 2026-10-05, ahead of the first public promotion.
 - The database stays on the Supabase Free plan through opening night. Size on 2026-10-05: 318 MB of
   500 MB, of which `shot_grid` is 227 MB.
 
+### D-75 · The database reconnect wait is capped at two seconds — ACTIVE
+
+Approved by the owner on 2026-10-05. A rehearsal with the database unreachable showed every page
+still opening and each failed read reaching its error card, but the driver's reconnect wait climbs
+to 20 seconds, so from the seventh failed request each error took 6–18 seconds to appear.
+`src/lib/db/reconnect.ts` caps the wait at 2 seconds. The same rehearsal after the change: every
+request answers within 2 seconds.
 ### D-76 · Errors are reported to Sentry — ACTIVE
 
 Set up with the owner on 2026-10-06. `@sentry/nextjs` reports errors only: no tracing, no session
