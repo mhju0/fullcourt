@@ -3,9 +3,11 @@ import {
   calendarView,
   daysInMonth,
   initSlate,
+  monthCalendar,
   monthTabs,
   slateMonth,
   slateReducer,
+  weekDays,
   type SlateState,
   type SlateStatus,
 } from "@/lib/game-slate-machine";
@@ -327,5 +329,70 @@ describe("RETRY_REQUESTED — a failed load can be asked for again", () => {
   it("is ignored when nothing failed, so a stray click cannot refetch a good slate", () => {
     const state = ready();
     expect(slateReducer(state, { type: "RETRY_REQUESTED" })).toBe(state);
+  });
+});
+
+describe("the phone week strip and month grid", () => {
+  it("lists the Sunday-to-Saturday week around the selected date, with 0 for days without games", () => {
+    // 2024-12-25 is a Wednesday.
+    expect(weekDays(ready())).toEqual([
+      { date: "2024-12-22", gameCount: 0 },
+      { date: "2024-12-23", gameCount: 0 },
+      { date: "2024-12-24", gameCount: 0 },
+      { date: "2024-12-25", gameCount: 11 },
+      { date: "2024-12-26", gameCount: 0 },
+      { date: "2024-12-27", gameCount: 0 },
+      { date: "2024-12-28", gameCount: 0 },
+    ]);
+  });
+
+  it("crosses a year boundary inside one week", () => {
+    const week = weekDays(ready({ selectedDate: "2024-12-31" }));
+    expect(week.map((d) => d.date)).toEqual([
+      "2024-12-29", "2024-12-30", "2024-12-31", "2025-01-01", "2025-01-02", "2025-01-03", "2025-01-04",
+    ]);
+    expect(week[2].gameCount).toBe(4);
+    expect(week[3].gameCount).toBe(3);
+  });
+
+  it("has no week before a date is selected", () => {
+    expect(weekDays(base())).toEqual([]);
+    expect(monthCalendar(base())).toEqual({ leadingBlanks: 0, days: [] });
+  });
+
+  it("lays the month out Sunday-first with every calendar day", () => {
+    // December 2024 starts on a Sunday; January 2025 on a Wednesday.
+    const december = monthCalendar(ready());
+    expect(december.leadingBlanks).toBe(0);
+    expect(december.days).toHaveLength(31);
+    expect(december.days[24]).toEqual({ date: "2024-12-25", gameCount: 11 });
+    expect(december.days[0]).toEqual({ date: "2024-12-01", gameCount: 0 });
+
+    const january = monthCalendar(ready({ selectedDate: "2025-01-15" }));
+    expect(january.leadingBlanks).toBe(3);
+    expect(january.days).toHaveLength(31);
+  });
+
+  it("a week step keeps the weekday when that day has games", () => {
+    const days = [...DAYS, day("2025-01-08", 6)];
+    const next = slateReducer(ready({ days, selectedDate: "2025-01-01" }), { type: "WEEK_SHIFTED", delta: 1 });
+    expect(next.selectedDate).toBe("2025-01-08");
+    expect(next.status).toBe("loadingSlate");
+  });
+
+  it("a week step lands on the first day with games when the same weekday has none", () => {
+    const next = slateReducer(ready({ selectedDate: "2025-01-06" }), { type: "WEEK_SHIFTED", delta: -1 });
+    // Target is Mon 2024-12-30 (no games); its week runs Dec 29 to Jan 4, first slate Dec 31.
+    expect(next.selectedDate).toBe("2024-12-31");
+  });
+
+  it("a week step into a week with no games still moves seven days", () => {
+    const next = slateReducer(ready(), { type: "WEEK_SHIFTED", delta: -1 });
+    expect(next.selectedDate).toBe("2024-12-18");
+  });
+
+  it("a week step does nothing before a date exists", () => {
+    const state = base();
+    expect(slateReducer(state, { type: "WEEK_SHIFTED", delta: 1 })).toBe(state);
   });
 });

@@ -1,10 +1,10 @@
 "use client"
 
-import { useCallback, useMemo, useEffect, useRef } from "react"
+import { useMemo, useRef, useState } from "react"
 import useSWR from "swr"
 import { apiFetcher } from "@/lib/fetcher"
 import type { GameDateCount } from "@/types"
-import { ChevronLeft, ChevronRight } from "lucide-react"
+import { CalendarDays, ChevronLeft, ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import { EdgesAhead } from "@/components/edges-ahead"
@@ -17,6 +17,7 @@ import { browsableSeasons, currentDisplaySeason, isNbaOffSeason, nextSeasonLabel
 import { MessageCard } from "@/components/ui/message-card"
 import { MethodLink } from "@/components/method-link"
 import { StatTile } from "@/components/ui/stat-tile"
+import type { SlateDay } from "@/lib/game-slate-machine"
 import { LEAD, SPACE_CARD, termCardStyle, TRACK, TYPE } from "@/lib/terminal-styles"
 import { cn } from "@/lib/utils"
 
@@ -45,13 +46,15 @@ function StatSummaryRow({
   gamesToday,
   avgRestAdv,
   highConfGames,
+  className,
 }: {
   gamesToday: number | null
   avgRestAdv: string
   highConfGames: string
+  className?: string
 }) {
   return (
-    <div className="grid grid-cols-1 gap-2 sm:grid-cols-3 xl:grid-cols-1">
+    <div className={cn("grid-cols-1 gap-2", className)}>
       {/* Not "TODAY": this is the count for the selected date, and the page deliberately
           auto-selects the most recent date with games whenever today has none. */}
       <StatTile label="GAMES ON THIS DATE" value={gamesToday === null ? "—" : String(gamesToday)} accent="var(--term-neutral)" />
@@ -59,6 +62,48 @@ function StatSummaryRow({
       {/* Gap magnitude uses the interface accent, independent of the favored side. */}
       <StatTile label="LARGE REST GAPS · 2+" value={highConfGames} accent="var(--term-accent)" />
     </div>
+  )
+}
+
+/**
+ * The same three measures as one line, for every width without the summary rail. The tiles sit
+ * after the whole matchup list there, which on an eleven-game slate is three screens down; this
+ * line answers "is this slate worth reading" before the list instead (D-78).
+ */
+function SlateSummaryLine({
+  gamesToday,
+  avgRestAdv,
+  highConfGames,
+  className,
+}: {
+  gamesToday: number | null
+  avgRestAdv: string
+  highConfGames: string
+  className?: string
+}) {
+  const items = [
+    { label: "GAMES", value: gamesToday === null ? "—" : String(gamesToday) },
+    { label: "AVG REST GAP", value: avgRestAdv },
+    { label: "GAPS OF 2+", value: highConfGames },
+  ]
+  return (
+    <dl
+      aria-label="Slate summary"
+      data-testid="slate-summary-line"
+      className={cn("mono grid-cols-3", className)}
+      style={{ ...termCardStyle, padding: 0 }}
+    >
+      {items.map(({ label, value }) => (
+        <div key={label} className="min-w-0 border-l border-[var(--term-border)] px-3 py-1 first:border-l-0">
+          <dt style={{ fontSize: TYPE.micro, letterSpacing: TRACK.label, fontWeight: 600, color: "var(--term-text-muted)" }}>
+            {label}
+          </dt>
+          <dd className="tabular-nums" style={{ fontSize: TYPE.emph, fontWeight: 700, lineHeight: LEAD.figure, color: "var(--term-text)" }}>
+            {value}
+          </dd>
+        </div>
+      ))}
+    </dl>
   )
 }
 
@@ -277,6 +322,42 @@ function DateChip({
   )
 }
 
+// ─── Phone day cell ──────────────────────────────────────────────
+
+const WEEKDAYS = ["S", "M", "T", "W", "T", "F", "S"] as const
+
+/**
+ * One day in the phone's week strip and month grid. Seven share a row with no gap, so each
+ * stays a 44px target on a 360px screen; the date chips above cannot, at 60px apiece.
+ * Days without games stay pressable, because the day arrows already reach them.
+ */
+function DayCell({ day, weekday, onClick }: { day: SlateDay; weekday?: string; onClick: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label={day.ariaLabel}
+      aria-current={day.isSelected ? "date" : undefined}
+      className={cn(
+        "mono -ml-px -mt-px flex min-h-12 min-w-0 flex-col items-center justify-center border border-[var(--term-border)] py-1 transition-[background-color,border-color] active:bg-[var(--term-surface-2)]",
+        day.isSelected
+          ? "relative border-[var(--term-text)] bg-[var(--term-text)] text-[var(--term-surface)] active:bg-[var(--term-text)]"
+          : day.gameCount === 0
+            ? "bg-[var(--term-surface-2)] text-[var(--term-text-muted)]"
+            : "bg-[var(--term-surface)] text-[var(--term-text)]"
+      )}
+    >
+      {weekday ? <span aria-hidden="true" style={{ fontSize: TYPE.micro, color: day.isSelected ? "#B7BBC6" : "var(--term-text-muted)" }}>{weekday}</span> : null}
+      <span className="tabular-nums" style={{ fontSize: TYPE.data, fontWeight: 700, lineHeight: LEAD.figure }}>
+        {day.dayOfMonth}
+      </span>
+      <span className="tabular-nums" style={{ fontSize: TYPE.micro, color: day.isSelected ? "#B7BBC6" : "var(--term-text-muted)" }}>
+        {day.gameCount}
+      </span>
+    </button>
+  )
+}
+
 // ─── Page ────────────────────────────────────────────────────────
 
 
@@ -349,28 +430,9 @@ export default function GamesPage() {
   // the hook; its decisions live in a pure reducer that is unit-tested without a DOM.
   const slate = useGameSlate()
   const showOffSeasonBanner = slate.urlReady && isNbaOffSeason()
-  const monthStrip = useRef<HTMLDivElement>(null)
-  const dateStrip = useRef<HTMLDivElement>(null)
-  const revealSelectedDateControls = useCallback(() => {
-    for (const strip of [monthStrip.current, dateStrip.current]) {
-      const active = strip?.querySelector<HTMLElement>('[aria-pressed="true"], [aria-current="date"]')
-      if (!strip || !active) continue
-      const stripRect = strip.getBoundingClientRect()
-      const activeRect = active.getBoundingClientRect()
-      if (activeRect.left < stripRect.left) {
-        strip.scrollLeft += activeRect.left - stripRect.left
-      } else if (activeRect.right > stripRect.right) {
-        strip.scrollLeft += activeRect.right - stripRect.right
-      }
-    }
-  }, [])
-  useEffect(() => {
-    revealSelectedDateControls()
-    const observer = new ResizeObserver(revealSelectedDateControls)
-    if (monthStrip.current) observer.observe(monthStrip.current)
-    if (dateStrip.current) observer.observe(dateStrip.current)
-    return () => observer.disconnect()
-  }, [revealSelectedDateControls, slate.selectedDate, slate.calendar.kind])
+  // Phones show one week and keep the month controls behind this toggle (D-78).
+  const [calendarOpen, setCalendarOpen] = useState(false)
+  const calendarToggle = useRef<HTMLButtonElement>(null)
 
   const upcomingSeason = nextSeasonLabel(offSeasonLabel)
   const { data: upcomingDays } = useSWR<GameDateCount[]>(
@@ -438,9 +500,10 @@ export default function GamesPage() {
         />
         <MethodLink surfaceHref="/games" />
       </div>
-      <div className={cn("grid items-start gap-8", density === "skim" && "xl:grid-cols-[minmax(0,1fr)_260px]")}>
+      <div className={cn("grid items-start gap-8", density === "skim" && "lg:grid-cols-[minmax(0,1fr)_260px]")}>
       <div className="flex min-w-0 flex-col gap-2 sm:gap-6" data-testid="games-main">
       <section aria-label="Choose a game date" className="flex flex-col gap-2" style={{ ...termCardStyle, padding: SPACE_CARD }}>
+        <div className="flex items-end justify-between gap-2">
               <SeasonSelector
                 id="nba-season"
                 season={slate.urlReady ? slate.season : ""}
@@ -449,10 +512,31 @@ export default function GamesPage() {
                 onSeasonChange={(season) => slate.send({ type: "SEASON_SELECTED", season })}
                 seasons={browsableSeasons().filter((season) => season !== upcomingSeason || Boolean(upcomingDays?.length) || season === slate.season)}
               />
+          <button
+            ref={calendarToggle}
+            type="button"
+            onClick={() => setCalendarOpen((open) => !open)}
+            aria-expanded={calendarOpen}
+            aria-controls="games-calendar"
+            className={cn(
+              termBtn,
+              "sm:hidden",
+              calendarOpen
+                ? "border-[var(--term-text)] bg-[var(--term-text)] text-[var(--term-surface)] hover:bg-[var(--term-text)]"
+                : "border-[var(--term-border)] text-[var(--term-text)]"
+            )}
+            style={{ borderWidth: 1, borderStyle: "solid", borderRadius: "var(--term-radius)" }}
+          >
+            <CalendarDays aria-hidden="true" className="size-4" />
+            Calendar
+          </button>
+        </div>
+        {/* From `sm` up this is the page's month and date rows, always shown. On a phone it is the
+            panel the Calendar button opens: the same month buttons, then the month as a grid. */}
+        <div id="games-calendar" className={cn(calendarOpen ? "flex" : "hidden", "flex-col gap-2 sm:flex")}>
         <div>
           <GroupLabel>Month</GroupLabel>
-          <div ref={monthStrip} className="overflow-x-auto pb-1" role="group" aria-label="Month">
-            <div className="flex w-max gap-2">
+          <div className="flex flex-wrap gap-2 pt-2" role="group" aria-label="Month">
               {slate.months.map(({ value, label, dayCount, isSelected: isSeasonMonth }) => {
                 const isSelected = slate.urlReady && isSeasonMonth
                 return (
@@ -481,24 +565,49 @@ export default function GamesPage() {
                 </button>
                 )
               })}
-            </div>
           </div>
         </div>
-        <div>
-          <div className="hidden sm:block"><GroupLabel>Date</GroupLabel></div>
+        {slate.monthGrid.days.length > 0 ? (
+          <div className="sm:hidden">
+            <GroupLabel>Date · games per day</GroupLabel>
+            <div aria-hidden="true" className="mono -mx-2 grid grid-cols-7 pt-2 text-center" style={{ fontSize: TYPE.micro, color: "var(--term-text-muted)" }}>
+              {WEEKDAYS.map((letter, i) => <span key={i}>{letter}</span>)}
+            </div>
+            <div className="-mx-2 grid grid-cols-7 pl-px pt-px" role="group" aria-label="Date">
+              {Array.from({ length: slate.monthGrid.leadingBlanks }).map((_, i) => <span key={i} />)}
+              {slate.monthGrid.days.map((d) => (
+                <DayCell
+                  key={d.date}
+                  day={d}
+                  onClick={() => {
+                    slate.send({ type: "DATE_SELECTED", date: d.date })
+                    // The panel closes on a pick, which hides the pressed cell; focus goes
+                    // back to the button that opened it rather than to the top of the page.
+                    setCalendarOpen(false)
+                    calendarToggle.current?.focus()
+                  }}
+                />
+              ))}
+            </div>
+          </div>
+        ) : null}
+        <div className="hidden sm:block">
+          <GroupLabel>Date</GroupLabel>
         {slate.calendar.kind === "loading" ? (
-          <Skeleton className="h-16 w-full max-w-md bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)" }} />
+          <Skeleton className="mt-2 h-16 w-full max-w-md bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)" }} />
         ) : slate.calendar.kind === "error" ? (
           // Quiet on purpose: the MATCHUPS card below carries the alert and the retry.
-          <p className="mono" style={{ fontSize: 12, color: "var(--term-text-muted)" }}>
+          <p className="mono pt-2" style={{ fontSize: 12, color: "var(--term-text-muted)" }}>
             DATES DID NOT LOAD.
           </p>
         ) : slate.calendar.kind === "empty" ? (
-          <p className="mono" style={{ fontSize: 12, color: "var(--term-text-muted)" }}>
+          <p className="mono pt-2" style={{ fontSize: 12, color: "var(--term-text-muted)" }}>
             NO GAMES IN THIS MONTH.
           </p>
         ) : (
-          <div ref={dateStrip} className="flex gap-2 overflow-x-auto pb-1" role="group" aria-label="Date">
+          // Wraps instead of scrolling: a full month is thirty chips, which no screen holds in
+          // one row, and a row that scrolls hid most of the month behind a swipe.
+          <div className="flex flex-wrap gap-2 pt-2" role="group" aria-label="Date">
             {slate.days.map((d) => (
               <DateChip
                 key={d.date}
@@ -513,14 +622,49 @@ export default function GamesPage() {
         )}
 
         </div>
+        </div>
+        {/* The phone's date control: one week, every day a full-size target, no sideways scroll.
+            The open calendar already shows this week inside its month, so the strip steps aside. */}
+        <div className={cn("sm:hidden", calendarOpen && "hidden")}>
+          <GroupLabel>Week · games per day</GroupLabel>
+          {slate.calendar.kind === "loading" ? (
+            <Skeleton className="mt-2 h-12 w-full bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)" }} />
+          ) : slate.calendar.kind === "error" ? (
+            <p className="mono pt-2" style={{ fontSize: 12, color: "var(--term-text-muted)" }}>
+              DATES DID NOT LOAD.
+            </p>
+          ) : slate.week.length === 0 ? (
+            <p className="mono pt-2" style={{ fontSize: 12, color: "var(--term-text-muted)" }}>
+              NO GAMES IN THIS SEASON.
+            </p>
+          ) : (
+            <div className="-mx-2 grid grid-cols-7 pl-px pt-px" role="group" aria-label="Week">
+              {slate.week.map((d, i) => (
+                <DayCell key={d.date} day={d} weekday={WEEKDAYS[i]} onClick={() => slate.send({ type: "DATE_SELECTED", date: d.date })} />
+              ))}
+            </div>
+          )}
+        </div>
         <div className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2 sm:flex sm:flex-wrap">
+          {/* A phone steps by week, since its strip is a week; wider screens step by day. */}
+          <Button
+            variant="outline"
+            size="icon-sm"
+            onClick={() => slate.send({ type: "WEEK_SHIFTED", delta: -1 })}
+            disabled={!slate.selectedDate}
+            aria-label="Previous week"
+            className="bg-[var(--term-surface)] active:scale-95 sm:hidden"
+            style={{ border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }}
+          >
+            <ChevronLeft />
+          </Button>
           <Button
             variant="outline"
             size="icon-sm"
             onClick={() => slate.send({ type: "DAY_SHIFTED", delta: -1 })}
             disabled={!slate.selectedDate}
             aria-label="Previous day"
-            className="bg-[var(--term-surface)] active:scale-95"
+            className="hidden bg-[var(--term-surface)] active:scale-95 sm:inline-flex"
             style={{ border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }}
           >
             <ChevronLeft />
@@ -536,10 +680,21 @@ export default function GamesPage() {
           <Button
             variant="outline"
             size="icon-sm"
+            onClick={() => slate.send({ type: "WEEK_SHIFTED", delta: 1 })}
+            disabled={!slate.selectedDate}
+            aria-label="Next week"
+            className="bg-[var(--term-surface)] active:scale-95 sm:hidden"
+            style={{ border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }}
+          >
+            <ChevronRight />
+          </Button>
+          <Button
+            variant="outline"
+            size="icon-sm"
             onClick={() => slate.send({ type: "DAY_SHIFTED", delta: 1 })}
             disabled={!slate.selectedDate}
             aria-label="Next day"
-            className="bg-[var(--term-surface)] active:scale-95"
+            className="hidden bg-[var(--term-surface)] active:scale-95 sm:inline-flex"
             style={{ border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }}
           >
             <ChevronRight />
@@ -550,10 +705,18 @@ export default function GamesPage() {
               season={offSeasonLabel}
               finalSlate={slate.selectedDate === slate.lastDate}
               onUpcoming={upcomingDays?.length ? () => slate.send({ type: "SEASON_SELECTED", season: upcomingSeason }) : undefined}
-              className="xl:hidden"
+              className={density === "skim" ? "lg:hidden" : undefined}
             />
           ) : null}
       </section>
+
+      {/* Shown wherever the summary rail is not: below `lg`, and in Deep Dive at any width. */}
+      <SlateSummaryLine
+        gamesToday={slate.status === "slateReady" || slate.status === "slateEmpty" ? slate.games.length : null}
+        avgRestAdv={avgRestAdv}
+        highConfGames={highConfGames}
+        className={density === "skim" ? "grid lg:hidden" : "grid"}
+      />
 
       {/* Matchups section */}
       <div className="flex flex-col gap-2">
@@ -566,20 +729,21 @@ export default function GamesPage() {
       </div>
       </div>
       <aside aria-label="Slate summary and upcoming edges" className="flex min-w-0 flex-col gap-6">
-      {/* At desktop widths this stays in the summary rail. The duplicate above is display-none
+      {/* With the rail showing this stays in it. The duplicate above is display-none
           there and places the same context before the long matchup list on narrower screens. */}
       {showOffSeasonBanner && slate.season === offSeasonLabel ? (
         <OffSeasonBanner
           season={offSeasonLabel}
           finalSlate={slate.selectedDate === slate.lastDate}
           onUpcoming={upcomingDays?.length ? () => slate.send({ type: "SEASON_SELECTED", season: upcomingSeason }) : undefined}
-          className="hidden xl:flex"
+          className={density === "skim" ? "hidden lg:flex" : "hidden"}
         />
       ) : null}
         <StatSummaryRow
           gamesToday={slate.status === "slateReady" || slate.status === "slateEmpty" ? slate.games.length : null}
           avgRestAdv={avgRestAdv}
           highConfGames={highConfGames}
+          className={density === "skim" ? "hidden lg:grid" : "hidden"}
         />
         <EdgesAhead onJump={(season, date) => {
           slate.send({ type: "SEASON_SELECTED", season })

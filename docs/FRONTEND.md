@@ -54,8 +54,9 @@ exceptions. See [Adding a surface](ADDING_A_SURFACE.md) and its source tests bef
 
 ## State and data
 
-Games keeps previous/next-day stepping visible. The optional season/date calendar scrolls its
-selected month into view when opened or changed. Exact four-night and six-night counts use
+Games keeps previous/next-day stepping visible from the `sm` breakpoint; a phone steps by week
+(`WEEK_SHIFTED`), landing on the same weekday when it has games and otherwise on the week's
+first slate. Exact four-night and six-night counts use
 completed prior games plus the selected game. Altitude venue and carryover labels are separate.
 
 Games shares `season`, `date`, `view`, and expanded `game`. Explicit historical selection wins
@@ -87,14 +88,25 @@ negative, bounded at ±10 percentage points; uncertain estimates stay muted. Off
 blue for missed calls and gray for incorrect whistles, with direct text labels. Color never
 replaces the number, sign, category, or uncertainty text.
 
-Games exposes Season → Month → Date selection. Selected chips scroll horizontally into view without
-moving the page vertically. Season selectors share one labeled component across studies. Deep Dive uses
+Games exposes Season → Month → Date selection, and none of it scrolls sideways (D-78). From `sm`
+the month buttons and date chips wrap, so a whole month shows at once. Below `sm` the page shows
+one Sunday-to-Saturday week of seven 44px cells, with days that have no games at a count of 0;
+the Calendar button opens the month buttons and a month grid, and a pick there closes the panel
+and returns focus to the button. The three slate measures are one line above the matchups
+wherever the summary rail is absent: below `lg`, and in Deep Dive at any width. The rail starts
+at `lg` because the matchup table needs about 600px beside it. Season selectors share one labeled component across studies. Deep Dive uses
 the full desktop width; narrower desktop/tablet tables scroll in a keyboard-focusable region.
 Mobile Games shows teams, status, and rest advantage without sideways scrolling. Shooting keeps
 identity, both splits, and samples available in compact rows. Shooting keeps a short signed-value interpretation key visible; rest definitions, uncertainty
 explanation and coverage expand on demand. Officiating initially offers the common call types
 plus an All call types control, and always includes a selected rare category. Advanced filters and secondary
-tables use native disclosures. Wide detail tables retain sticky identity columns. Officiating
+tables use native disclosures. Wide detail tables retain sticky identity columns. Every
+`DataTable` and the Deep Dive matchup table scroll inside `ScrollCue`
+(`src/components/ui/scroll-cue.tsx`): the edge that hides content fades, a hint line follows a
+table while it is wider than its box, and touch screens get no scrollbar. A new sideways
+scroller uses `ScrollCue` rather than a bare `overflow-x-auto`. Schedule Edge's full breakdown
+drops its rank and bar columns below `lg` and the team name below `sm`, since the chart above
+it already draws them; it fits a tablet without scrolling. Officiating
 chips scroll horizontally; expanded reports fill the row width. All interactive targets and
 focus states follow the accessibility contracts, including reduced motion.
 

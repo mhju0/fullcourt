@@ -408,9 +408,12 @@ export function ScheduleDisparityContent() {
               rows={teams}
               rowKey={(t) => t.teamId}
               columns={[
+                // Rank and the bar repeat the chart above this table. Below `lg` they are what
+                // pushed the figures off the screen, so they give way to the figures there.
                 {
                   label: "#",
                   align: "right",
+                  className: "hidden lg:table-cell",
                   style: { fontSize: 10, color: "var(--term-text-muted)" },
                   cell: (t) => t.rank ?? UNMEASURED,
                 },
@@ -420,12 +423,13 @@ export function ScheduleDisparityContent() {
                   cell: (t) => (
                     <>
                       <span style={{ fontWeight: 700 }}>{t.abbreviation}</span>{" "}
-                      <span style={{ color: "var(--term-text-muted)" }}>{t.name}</span>
+                      <span className="hidden sm:inline" style={{ color: "var(--term-text-muted)" }}>{t.name}</span>
                     </>
                   ),
                 },
                 {
                   label: rankedByFatigue ? "Edge games" : "Rest edge",
+                  className: "hidden lg:table-cell",
                   style: { width: "30%", minWidth: 150 },
                   cell: (t) => <EdgeBar value={t.rankValue} bound={bound} height={11} />,
                 },

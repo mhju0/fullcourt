@@ -39,9 +39,10 @@ test("mobile games keep season, month and date visible", async ({ page }) => {
   const dock = await page.getByRole("navigation", { name: "Bottom navigation" }).boundingBox();
   expect(row!.y + row!.height).toBeLessThanOrEqual(dock!.y);
   await expect(page.getByLabel("SEASON", { exact: true })).toBeVisible();
-  const april = page.getByRole("button", { name: "APR", exact: true });
-  await expect(april).toHaveAttribute("aria-pressed", "true");
-  await expect(april).toBeInViewport();
+  await expect(page.getByRole("group", { name: "Week" }).getByRole("button", { name: /April 12, 2026/ })).toHaveAttribute("aria-current", "date");
+  // On a phone the months sit behind the Calendar button.
+  await page.getByRole("button", { name: "Calendar", exact: true }).click();
+  await expect(page.getByRole("button", { name: "APR", exact: true })).toHaveAttribute("aria-pressed", "true");
   await page.getByRole("button", { name: "MAR", exact: true }).click();
   await expect(page.getByRole("button", { name: "MAR", exact: true })).toHaveAttribute("aria-pressed", "true");
 });

@@ -197,7 +197,7 @@ test.describe("Games page", () => {
     await expect(display).toContainText("DECEMBER", { timeout: 60_000 });
 
     // Land on the last December day with games, then step past it.
-    await page.locator('button[aria-label*="December"]').last().click();
+    await page.getByRole("group", { name: "Date", exact: true }).locator('button[aria-label*="December"]').last().click();
     await expect(display).toContainText("DECEMBER");
 
     const next = page.getByRole("button", { name: "Next day" });
@@ -219,7 +219,7 @@ test.describe("Games page", () => {
 
     await page.getByRole("button", { name: /^OCT$/ }).click();
 
-    const firstDayWithGames = page.locator('button[aria-label*="games"]').first();
+    const firstDayWithGames = page.getByRole("group", { name: "Date", exact: true }).locator('button[aria-label*="games"]').first();
     await expect(firstDayWithGames).toBeVisible({ timeout: 60_000 });
     await firstDayWithGames.click();
 
@@ -239,11 +239,19 @@ test.describe("Games page", () => {
   });
 });
 
-test("mobile keeps summaries below matchups and ignores saved density", async ({ page }) => {
+// D-78: the three slate measures are one line above the matchups wherever the rail is absent;
+// Edges Ahead stays after the list.
+test("mobile reads the slate summary before the matchups and ignores saved density", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.addInitScript(() => localStorage.setItem("fc-slate-density", "deep"));
-  await page.goto("/games");
+  await page.goto("/games?season=2024-25&date=2024-12-25");
   await expect(page.getByRole("button", { name: "SKIM", exact: true })).toHaveAttribute("aria-pressed", "true");
+  const line = page.getByTestId("slate-summary-line");
+  await expect(line).toContainText("GAMES");
+  await expect(page.getByText("GAMES ON THIS DATE")).toBeHidden();
+  const lineBox = await line.boundingBox();
+  const dial = await page.getByRole("group", { name: "Slate density" }).boundingBox();
+  expect(lineBox!.y + lineBox!.height).toBeLessThanOrEqual(dial!.y);
   const main = await page.getByTestId("games-main").boundingBox();
   const summary = await page.getByRole("complementary", { name: "Slate summary and upcoming edges" }).boundingBox();
   expect(summary!.y).toBeGreaterThanOrEqual(main!.y + main!.height);

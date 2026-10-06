@@ -23,7 +23,7 @@ Officiating covers 12 regular seasons and 4,546 reports, including the partial 2
 The homepage hero now contains only the headline, original description and primary action.
 The one-game example and its supporting reads were removed under D-67. Next.js and its ESLint
 config are pinned to 16.3.8 (raised from 16.3.4 on 2026-10-03 for GHSA-vcvr-r3jv-pc5j); the
-lockfile resolves Sharp 0.35.4, clearing the production dependency audit. See [verification](design/home-hero-release-review.md).
+lockfile resolves Sharp 0.35.5 (pinned on 2026-10-07 for GHSA-wq5f-xc86-pv6w), clearing the production dependency audit. See [verification](design/home-hero-release-review.md).
 
 Shared filters now use 44px targets and 16px text. Analysis uses equal-width filter columns;
 Season Report uses bordered sections with a separate interpretation surface. The
@@ -156,16 +156,31 @@ The owner tested on a phone inside Instagram. Two fixes followed: the Edge games
 longer paints over the pinned team column in the Schedule breakdown, and the error-report mail
 subject is `FullCourt error or suggestion`.
 
+## Phone and tablet layout (2026-10-07)
+
+PR #111 merged. D-78 is built: on a phone Games shows one week and a Calendar button instead of
+two sideways rows, the slate summary is one line above the matchups, sideways scrollers fade the
+edge that hides content, the Schedule breakdown drops its duplicate columns on small screens,
+and the summary rail starts at 1024px. Row 30 of the design record is amended. The survey behind
+it is a private artifact the owner holds, not a file in the repo.
+
+Dev served a stale stylesheet for the new rules (the D-72 behaviour); the work was verified
+against `pnpm build` and `pnpm start`. Local `main` had one unpushed commit from 2026-09-19 whose
+content origin already had; it is kept on the local branch `backup/local-main-2026-10-07` and
+local `main` now matches origin.
+
 Open:
 
-- Phone layout. The owner asked for a survey of how data sites handle phones and tablets, and for
-  layout options before any rebuild. Named problems: the Games month and date strips scroll
-  sideways, the Games summary tiles sit below the matchups, and wide tables give no sign that
-  they scroll.
-- `DATABASE_URL` in Vercel is not stored as a Sensitive variable. Vercel suggests rotating the
-  database password and saving it again as Sensitive; that also means updating the GitHub secret,
-  `.env.local` and the backup script. Owner action.
+- Owner will do later, by their own choice: store `DATABASE_URL` in Vercel as Sensitive (rotate
+  the database password in Supabase, save the new value as Sensitive, then update the GitHub
+  secret, `.env.local` and `~/Backups/fullcourt/backup.sh`); and create a Sentry auth token for
+  source-map upload, after which the build-side change can be written.
+- Season Report, Analysis, Playoff Rest and Officiating have not had a phone pass table by
+  table. A reader-picked number column for the Schedule breakdown (the survey's C1) is unbuilt.
+- The new phone controls have not been used on a physical phone.
+- Two `e2e/behind-the-data.spec.ts` tests expect 5,994 travel-dependent calls; the page and
+  production show 5,992 since the 2026-10-04 data corrections. The spec and the figure quoted in
+  DECISIONS.md and ADR 0006 need the owner's ruling, not a silent edit.
 - Sentry issue `JAVASCRIPT-NEXTJS-3`: a blocked `eval` on `/playoffs` from one iOS 15 client, with
   no first-party frame. Not reproduced.
-- Source-map upload to Sentry needs an auth token the owner creates.
 - The footer notice size (12px) is not ruled on. A second backup copy off the Mac is not set up.

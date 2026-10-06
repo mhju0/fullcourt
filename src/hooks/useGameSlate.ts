@@ -11,9 +11,11 @@ import {
   calendarView,
   daysInMonth,
   initSlate,
+  monthCalendar,
   monthTabs,
   slateMonth,
   slateReducer,
+  weekDays,
   type CalendarView,
   type MonthTab,
   type SlateDay,
@@ -38,6 +40,10 @@ export interface GameSlate {
   months: readonly MonthTab[];
   /** Day chips for `month`, pre-formatted. */
   days: readonly SlateDay[];
+  /** The Sunday-to-Saturday week around the selected date, days without games included. */
+  week: readonly SlateDay[];
+  /** Every calendar day of the selected month, Sunday-first. */
+  monthGrid: { leadingBlanks: number; days: readonly SlateDay[] };
   /** Which of the four chip-region renderings applies. */
   calendar: CalendarView;
   selectedDate: string | null;
@@ -194,6 +200,26 @@ export function useGameSlate(): GameSlate {
     [state]
   );
 
+  const toSlateDay = useCallback(
+    ({ date, gameCount }: GameDateCount): SlateDay => {
+      const label = format(noon(date), "MMMM d, yyyy");
+      return {
+        date,
+        gameCount,
+        label,
+        dayOfMonth: format(noon(date), "d"),
+        ariaLabel: `${format(noon(date), "EEEE")}, ${label}, ${gameCount} ${gameCount === 1 ? "game" : "games"}`,
+        isSelected: date === state.selectedDate,
+      };
+    },
+    [state.selectedDate]
+  );
+  const week = useMemo(() => weekDays(state).map(toSlateDay), [state, toSlateDay]);
+  const monthGrid = useMemo(() => {
+    const { leadingBlanks, days: all } = monthCalendar(state);
+    return { leadingBlanks, days: all.map(toSlateDay) };
+  }, [state, toSlateDay]);
+
   const selectedLabel = useMemo(
     () =>
       state.selectedDate
@@ -216,6 +242,8 @@ export function useGameSlate(): GameSlate {
     month: slateMonth(state),
     months: monthTabs(state),
     days,
+    week,
+    monthGrid,
     calendar: calendarView(state),
     selectedDate,
     lastDate: state.days.reduce<string | null>((last, day) => !last || day.date > last ? day.date : last, null),

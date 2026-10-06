@@ -1,5 +1,6 @@
 import { Fragment } from "react"
 import type { CSSProperties, HTMLAttributes, ReactNode } from "react"
+import { ScrollCue } from "@/components/ui/scroll-cue"
 import {
   termTdStyle,
   termThStyle,
@@ -296,7 +297,8 @@ export function DataTable<Row, K extends string = string>({
     // others is the kind of inconsistency a keyboard reader has to learn per page. The cost is
     // one unlabelled stop before each table. No `role` goes with it: an unnamed `region`
     // announces less than the table's own semantics, and `:focus-visible` already paints it.
-    <div className={wrapperClassName ?? "overflow-x-auto"} tabIndex={0}>
+    <>
+    <ScrollCue className={wrapperClassName ?? "overflow-x-auto"} tabIndex={0}>
       <table
         // `fc-table` is applied here and nowhere else. It used to be the caller's job, and
         // omitting it dropped every cell's padding — a contract enforced by a sentence in
@@ -376,6 +378,10 @@ export function DataTable<Row, K extends string = string>({
           {children}
         </tbody>
       </table>
-    </div>
+    </ScrollCue>
+    {/* Shown by CSS only while the table is wider than its box. Decoration for the eye: the
+        columns are all in the table, so a screen reader has nothing to be told. */}
+    <p className="fc-scroll-hint" aria-hidden="true">Scroll sideways for more columns.</p>
+    </>
   )
 }

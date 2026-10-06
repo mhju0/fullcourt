@@ -56,7 +56,7 @@ Implemented and deployed through PRs #84 and #85 on 2026-09-08. The current page
 ### E. Page-specific
 | # | Decision | Chosen direction | Still unresolved |
 |---|---|---|---|
-| 30 | Games order | Date controls + matchups first; summary metrics + Edges Ahead below list on mobile, right rail on desktop | — |
+| 30 | Games order **[owner, amended 2026-10-07, D-78]** | Date controls, then a one-line slate summary, then matchups; Edges Ahead below the list. Right rail from 1024px. Was: summary metrics below the list on mobile | — |
 | 31 | Games mobile row | Teams · time/status · rest-advantage value in first view; workload under expansion | — |
 | 32 | Season top three | Three sections: season result against its venue baseline with concise historical context; team records under different rest conditions; a short, transparently selected set of notable completed games. No repeated Schedule Edge headline or chart. | — |
 | 33 | Schedule Edge | Ranking visible; full breakdown behind "Show full breakdown" | — |

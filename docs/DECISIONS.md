@@ -893,3 +893,42 @@ Production domain, without the `www` redirect, so the bare name is the address. 
 `src/lib/site-url.ts` now names it, which moves the canonical metadata, robots and the sitemap.
 `fullcourt-nba.vercel.app` stays attached and keeps serving the site; it does not redirect.
 Names containing "NBA" were set aside because a league mark in a domain invites a dispute.
+
+Amended 2026-10-06: `fullcourt-nba.vercel.app`, `nba-rest-advantage.vercel.app` and
+`www.fullcourt.fyi` now answer 308 to `fullcourt.fyi` with the path kept. The owner wants one
+address; the redirects stay so links already shared keep working.
+
+### D-78 · Phones and tablets get their own Games controls, and a scroller says it scrolls — ACTIVE
+
+The owner tested on a phone on 2026-10-06 and named four faults: the Games month and date rows
+scrolled sideways, the slate summary sat below the whole matchup list, wide tables gave no sign
+that they scroll, and a mark painted over the pinned team column (fixed in PR #111). The owner
+asked for a survey of other data sites, then approved every recommendation in it.
+
+Measured at 390px before the change: the October date row was 808px of content in 309px, the
+Schedule breakdown 778px in 343px, and the summary tiles began 2,571px down an eleven-game slate.
+
+What changed:
+
+- **Games dates.** Below `sm` the page shows one week of seven cells, steps by week, and keeps
+  the month buttons and a month grid behind a Calendar button. From `sm` the month and date
+  rows wrap instead of scrolling. Wrapping was not in the survey; it follows from the same
+  measurement, because a full month is thirty chips and no desktop holds them in one row.
+- **Slate summary.** One line of three figures above the matchups wherever the rail is absent.
+  This amends row 30 of the design record, which had put the summary below the list on mobile.
+- **Scroll cue.** `ScrollCue` fades the edge that hides content and a hint follows a table
+  wider than its box. It replaces a 16px surface gradient that sat behind the cells.
+- **Schedule breakdown.** Below `lg` it drops the rank and bar columns, which the chart above
+  already draws, and fits a tablet outright.
+- **Tablet.** The summary rail starts at `lg` (1024px) instead of `xl` (1280px).
+
+Two departures from what the survey proposed, both on measurement:
+
+- The rail starts at 1024px, not 768px. Beside a 260px rail the matchup table has 428px at
+  768px and it needs about 600px.
+- The Schedule table kept sideways scrolling with a cue on phones (the survey's C2). Letting
+  the reader pick the number column (C1) was offered for after launch and is not built.
+
+Not covered: Season Report, Analysis, Playoff Rest and Officiating were not gone through table
+by table. Their `DataTable`s inherit the cue; their own layouts are unchanged. The survey of
+other sites was at phone width only.

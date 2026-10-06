@@ -23,6 +23,7 @@ import { formatRestAdvantageDisplay } from "@/lib/rest-advantage-display";
 import { getTeamBranding } from "@/lib/team-history";
 import { LEAD, SPACE, SPACE_CARD, TRACK, TYPE } from "@/lib/terminal-styles";
 import { cn } from "@/lib/utils";
+import { ScrollCue } from "@/components/ui/scroll-cue";
 import type { GameResponse } from "@/types";
 
 /**
@@ -781,7 +782,7 @@ export function MatchupTable({ games, density = "skim" }: MatchupTableProps) {
         overflow: "hidden",
       }}
     >
-      <div className="overflow-x-auto focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[var(--term-accent)]" tabIndex={0} role="region" aria-label="Matchups table; scroll horizontally for all columns">
+      <ScrollCue className="overflow-x-auto focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[var(--term-accent)]" tabIndex={0} role="region" aria-label="Matchups table; scroll horizontally for all columns">
         <div
           className="fc-game-table"
           style={{ minWidth: gridMinWidth(density) }}
@@ -824,7 +825,7 @@ export function MatchupTable({ games, density = "skim" }: MatchupTableProps) {
             />
           ))}
         </div>
-      </div>
+      </ScrollCue>
     </div>
   );
 }

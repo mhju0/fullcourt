@@ -155,3 +155,35 @@ test("schedule owns workload and offers exact weekly values", async ({ page }) =
   await expect(week).toHaveValue("1");
   await expect(page.getByText(/Inspect week 2:/)).toBeVisible();
 });
+
+// D-78: a table wider than its box has to say so. On a phone the breakdown drops the two
+// columns the chart above already draws, fades its far edge while columns are hidden, and
+// prints a hint; on a tablet it fits outright.
+test("the full breakdown shows that it scrolls on a phone", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/schedule");
+  await page.getByText("Show full breakdown", { exact: true }).click();
+  const table = page.locator(".fc-schedule-breakdown");
+  await expect(table.getByRole("columnheader", { name: "Team" })).toBeVisible();
+  await expect(table.getByRole("columnheader", { name: "#" })).toBeHidden();
+  await expect(table.getByRole("columnheader", { name: "Edge games", exact: true })).toBeHidden();
+  await expect(table).toHaveAttribute("data-more-end", "");
+  expect(await table.evaluate((el) => getComputedStyle(el).maskImage)).toContain("linear-gradient");
+  const hint = table.locator("+ .fc-scroll-hint");
+  await expect(hint).toBeVisible();
+
+  await table.evaluate((el) => { el.scrollLeft = el.scrollWidth; });
+  await expect(table).not.toHaveAttribute("data-more-end", "");
+  expect(await table.evaluate((el) => getComputedStyle(el).maskImage)).toBe("none");
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+});
+
+test("the full breakdown fits a tablet without scrolling", async ({ page }) => {
+  await page.setViewportSize({ width: 820, height: 1180 });
+  await page.goto("/schedule");
+  await page.getByText("Show full breakdown", { exact: true }).click();
+  const table = page.locator(".fc-schedule-breakdown");
+  await expect(table.getByRole("columnheader", { name: "Team" })).toBeVisible();
+  expect(await table.evaluate((el) => el.scrollWidth <= el.clientWidth)).toBe(true);
+  await expect(table.locator("+ .fc-scroll-hint")).toBeHidden();
+});
