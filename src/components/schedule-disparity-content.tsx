@@ -104,11 +104,12 @@ function EdgeBar({ value, bound, height }: { value: number | null; bound: number
       className="relative w-full"
       style={{ height, background: "var(--term-surface-2)", borderRadius: "var(--term-radius-bar)" }}
     >
-      <div className="absolute inset-y-0 z-[2]" style={{ left: "50%", width: 1.5, background: "var(--term-text)" }} />
       <div
         className="absolute"
         style={{ ...geo, top: 2, bottom: 2, background: edgeColor(value), borderRadius: "var(--term-radius-bar)" }}
       />
+      {/* Drawn last so it sits over the bar without a z-index, which would lift it over the pinned team column. */}
+      <div className="absolute inset-y-0" style={{ left: "50%", width: 1.5, background: "var(--term-text)" }} />
     </div>
   )
 }
