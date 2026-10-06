@@ -197,3 +197,8 @@ Later on 2026-10-05: PR #106 merged. A backup of the public schema was taken wit
 a scratch database with matching row counts; the ten restore errors are Supabase `auth` policies.
 The reconnect wait is capped (D-75). Still open: scheduled backups, Sentry, an uptime monitor, the
 firewall rate limit, the phone pass and the domain.
+
+2026-10-06: a Vercel firewall rule, `Rate limit API`, is live: paths starting `/api/`, 100 requests
+per 60 seconds per IP, answered with 429. It was set in the dashboard, so it is not in the repo.
+Checked from outside: 115 requests to `/api/health` returned 100 × 200 then 15 × 429, with pages
+unaffected. Hobby allows one rate-limit rule. PR #108 pins `source-map-js` for an overnight advisory.
