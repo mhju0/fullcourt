@@ -628,9 +628,25 @@
   .fc-game-chevron { grid-column: 1; grid-row: 2; }
 }
 
-.fc-detail-table, .fc-schedule-breakdown {
-  background: linear-gradient(to left, var(--term-surface), transparent) right / 16px 100% no-repeat;
+/* A sideways scroller says so (D-78). `ScrollCue` marks which edges hide content and the mask
+   fades them, which cuts the last visible column or chip in two. The 16px surface gradient this
+   replaces sat behind the cells and could not be seen. A table with a pinned first column fades
+   only its far edge: the pinned column sliding over the rest already marks the near one. */
+.fc-scroll-cue { overflow-x: auto; }
+.fc-scroll-cue[data-more-end] { mask-image: linear-gradient(to left, transparent, #000 40px); }
+.fc-scroll-cue[data-more-start]:not(.fc-detail-table, .fc-schedule-breakdown) { mask-image: linear-gradient(to right, transparent, #000 40px); }
+.fc-scroll-cue[data-more-start][data-more-end]:not(.fc-detail-table, .fc-schedule-breakdown) {
+  mask-image: linear-gradient(to right, transparent, #000 40px, #000 calc(100% - 40px), transparent);
 }
+/* The fade would take the focus ring with it, and a keyboard reader is about to scroll anyway. */
+.fc-scroll-cue:focus-visible { mask-image: none; }
+/* Touch screens draw no useful scrollbar here; a mouse still needs one to drag. */
+@media (pointer: coarse) {
+  .fc-scroll-cue { scrollbar-width: none; }
+  .fc-scroll-cue::-webkit-scrollbar { display: none; }
+}
+.fc-scroll-hint { display: none; margin-top: 8px; font-size: 12px; color: var(--term-text-muted); }
+.fc-scroll-cue[data-overflow] + .fc-scroll-hint { display: block; }
 .fc-detail-table :is(th, td):first-child,
 .fc-schedule-breakdown :is(th, td):nth-child(2) {
   position: sticky;

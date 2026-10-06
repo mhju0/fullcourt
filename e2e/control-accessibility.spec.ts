@@ -83,8 +83,10 @@ for (const width of [360, 768]) {
       expect(small).toEqual([]);
       expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(1);
       if (route === "/games") {
-        const previous = await page.getByRole("button", { name: "Previous day" }).boundingBox();
-        const next = await page.getByRole("button", { name: "Next day", exact: true }).boundingBox();
+        // A phone steps by week, because its date control is a week strip (D-78).
+        const step = width < 640 ? "week" : "day";
+        const previous = await page.getByRole("button", { name: `Previous ${step}` }).boundingBox();
+        const next = await page.getByRole("button", { name: `Next ${step}`, exact: true }).boundingBox();
         expect(Math.abs(previous!.y - next!.y)).toBeLessThanOrEqual(1);
       }
     });

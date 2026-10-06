@@ -96,6 +96,7 @@ export type SlateIntent =
   | { type: "MONTH_SELECTED"; month: number }
   | { type: "DATE_SELECTED"; date: string }
   | { type: "DAY_SHIFTED"; delta: -1 | 1 }
+  | { type: "WEEK_SHIFTED"; delta: -1 | 1 }
   | { type: "RETRY_REQUESTED" };
 
 /**
@@ -198,6 +199,18 @@ export function slateReducer(state: SlateState, event: SlateEvent): SlateState {
       return selectDate(state, shiftDateKey(state.selectedDate, event.delta));
     }
 
+    case "WEEK_SHIFTED": {
+      if (!state.selectedDate) return state;
+      // Same weekday when it has games; otherwise the first day of that week that does, so a
+      // week step lands on a slate rather than on an empty day whenever the week has one.
+      const target = shiftDateKey(state.selectedDate, event.delta * 7);
+      const played = new Set(state.days.map((d) => d.date));
+      const next = played.has(target)
+        ? target
+        : weekDateKeys(target).find((date) => played.has(date)) ?? target;
+      return selectDate(state, next);
+    }
+
     case "RETRY_REQUESTED": {
       if (state.status === "daysError") {
         return { ...state, status: "loadingDays", message: null, attempt: state.attempt + 1 };
@@ -261,6 +274,39 @@ export function slateMonth(state: SlateState): number {
 export function daysInMonth(state: SlateState): readonly GameDateCount[] {
   const month = slateMonth(state);
   return state.days.filter((d) => monthOf(d.date) === month);
+}
+
+/** The Sunday-to-Saturday week holding `dateKey`, as seven date keys. */
+function weekDateKeys(dateKey: string): string[] {
+  const weekday = new Date(`${dateKey}T12:00:00Z`).getUTCDay();
+  return Array.from({ length: 7 }, (_, i) => shiftDateKey(dateKey, i - weekday));
+}
+
+function withCounts(state: SlateState, dates: readonly string[]): GameDateCount[] {
+  const counts = new Map(state.days.map((d) => [d.date, d.gameCount]));
+  return dates.map((date) => ({ date, gameCount: counts.get(date) ?? 0 }));
+}
+
+/**
+ * The week strip a phone shows instead of the full date row: seven days around the selected
+ * date. Unlike {@link daysInMonth} it includes days with no games, at a count of 0, because a
+ * week with holes in it cannot be read as a week.
+ */
+export function weekDays(state: SlateState): readonly GameDateCount[] {
+  return state.selectedDate ? withCounts(state, weekDateKeys(state.selectedDate)) : [];
+}
+
+/**
+ * Every calendar day of the selected date's month, for the phone's month grid. `leadingBlanks`
+ * is how many cells precede the 1st in a Sunday-first grid.
+ */
+export function monthCalendar(state: SlateState): { leadingBlanks: number; days: readonly GameDateCount[] } {
+  if (!state.selectedDate) return { leadingBlanks: 0, days: [] };
+  const prefix = state.selectedDate.slice(0, 8);
+  const first = `${prefix}01`;
+  const dates: string[] = [];
+  for (let date = first; date.startsWith(prefix); date = shiftDateKey(date, 1)) dates.push(date);
+  return { leadingBlanks: new Date(`${first}T12:00:00Z`).getUTCDay(), days: withCounts(state, dates) };
 }
 
 /**
