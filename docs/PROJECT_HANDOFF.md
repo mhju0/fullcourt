@@ -79,107 +79,33 @@ when the season resumes; an offseason skip is not evidence that the ingest path 
 refit, database migration, accounts, or new analytics are implied by repository cleanup.
 
 
-## Methodology presentation
+## Summary of entries before 2026-10-05
 
-Behind the Data now follows the approved design and writing audit (D-64): seven compact topic
-tiles, visible null findings, shorter article openings and native technical disclosures across
-all ten methods. Stable deep links and print expansion preserve access to evidence. The referee
-archive remains a dense table with clearer return links. See FRONTEND.md for the shared shell
-and reading controls; the audit retains the dated before-state evidence.
+Condensed on 2026-10-06 from five entries; DECISIONS.md holds the detail.
 
+- **Methodology and usability (D-64, D-65).** Behind the Data follows the approved design and
+  writing audit; the usability audit shipped on 2026-09-09. See FRONTEND.md and
+  [the implementation review](design/usability-audit-review.md).
+- **Release-readiness pass, 2026-10-03 (D-71, D-72).** Games holds its URL write while a
+  navigation is in flight (`route-transition.ts`). The Turbopack build cache is off: after any
+  change to `globals.css`, confirm the new rule is in the stylesheet production serves. e2e is
+  outside CI, so stale specs are found only by running it.
+- **Reading pages, 2026-10-04 (D-73).** About and How it was built use `reading.module.css`.
+- **Data audits, 2026-10-04.** An SQL recompute matched what production serves. A comparison of
+  all 50,495 final games against basketball-reference and nba.com led to corrections the owner
+  applied: four 2019-20 dates, nine scores, one overtime count, 75 missing 2019-20 overtime
+  games and playoff series 18. Fatigue and predictions were rebuilt for the affected games
+  (PR #104). After any stored score or date fix, run the fidelity check in
+  `scripts/export_fatigue_features.ts`: it lists every stale row.
 
-## Approved usability audit implementation
+Still open from those entries:
 
-D-65 adds a real homepage matchup, earlier mobile game/player rows, accurate schedule-density
-and altitude wording, clearer study scopes, common-first Officiating filters and an engineering
-walkthrough. The owner approved the before/after implementation for publication on 2026-09-09.
-CI and hosted-preview verification precede the production merge. [Implementation review](design/usability-audit-review.md)
-records the scope and verification. The new walkthrough makes system decisions inspectable;
-personal contribution and collaboration details require the owner's account.
-
-
-## Release-readiness pass (2026-10-03)
-
-D-71 records the approved pre-launch audit. Three local branches hold it: `fix/next-16.3.8`,
-`fix/officiating-preseason-skip`, and `feat/release-polish` (stacked on the Next.js branch).
-Games no longer renders date-derived content before the URL is read and offers TRY AGAIN after
-one automatic retry. Season Report opens on the latest season with results. `robots.txt`,
-`sitemap.xml` and per-page descriptions exist. Hover and press feedback and one homepage bar
-draw are CSS only; ADR 0010 carries the amendment.
-
-Open: the cause of one production API 500 seen during the audit is unknown (log access was
-refused). Schedule Edge reserves its loading space (layout shift 0.123 → 0.016 desktop, 0.173 →
-0.054 phone, measured locally); the remainder is the provisional-season note arriving with the
-data. Thirteen e2e specs had gone stale on `main` after copy changes in PRs #81, #89 and #93;
-e2e is outside CI, so nothing reported them. Twelve were spec updates. The thirteenth was a real
-defect: Games wrote its URL after the season's dates arrived, which cancelled a tab press made
-in the meantime. `route-transition.ts` now reports a navigation in flight and Games holds its
-write until the destination commits. The full suite passes locally (393 specs). Stat-tile
-unification and table column widths are deferred. `next dev` 16.3.8 appends an agent-rules
-block to `AGENTS.md`; it is committed. Owner actions: tag `v1.0.0` at launch, and announce only
-after a verified live pipeline run.
-
-After the merge of #99, production served a stylesheet built from the older `globals.css`
-(D-72). The Turbopack build cache is now off in `next.config.ts`. After any change to
-`globals.css`, confirm a new rule is present in the stylesheet production serves.
-
-## Reading pages and data audit (2026-10-04)
-
-About and How it was built were rebuilt on `reading.module.css` with a section rail (D-73). The
-method topic list is an overlay, `/data-status` has a loading state, and four duplicate links
-were removed. A crawl of 139 pages on production found no broken link, no blank page and no
-missing anchor.
-
-Data audit, by independent SQL against the database: the Model Results totals, all four
-thresholds, every one of the 41 season rows, and the 2025-26 Season Report figures match what
-production serves. Two stored errors were found, and neither is fixed, because data writes belong
-to the owner:
-
-- Game `0021900894` (GSW at PHX) is dated 2020-03-01. It was played on 2020-02-29. ESPN carries
-  the same wrong date. Stored fatigue for GSW and PHX in that game, and for GSW on 2020-03-01,
-  misses two back-to-backs.
-- Playoff series 18 (1986-87 West Finals, Lakers over the franchise now in Oklahoma City) is
-  stored as 3-1 with no winner. The four stored games are a 4-0 sweep. It has no predictions.
-
-Open: whether `Find a page` leaves the footer. Removing it leaves the page finder keyboard-only.
-
-## Cross-source data audit (2026-10-04)
-
-All 50,495 stored final games were matched by date and teams against basketball-reference
-schedule pages for all 41 seasons, and every disagreement was read a third time on the nba.com
-game page. The row corrections below were applied in the Supabase SQL editor on 2026-10-04 at the
-owner's instruction (four dates, eight scores, one overtime count, series 18). The recompute that
-follows from them has not been run.
-
-- Four 2019-20 games are stored one day late; nba.com and basketball-reference agree on the
-  earlier date: `0021900848` (2020-02-23), `0021900886` (2020-02-28), `0021900888` (2020-02-29),
-  `0021900894` (2020-02-29). Stored back-to-back flags around them are wrong for POR, DET, LAC,
-  DEN, ATL, PHX and GSW.
-- Eight stored scores are wrong, both sources agreeing: `0048500304` home 98, `0028700066` home
-  109, `0028800100` away 107 (the stored winner is wrong), `0028800140` home 113, `0028800234`
-  away 104, `0028800269` away 91, `0049300052` home 98, `0029800661` away 93.
-- `0029600070` (1996-11-10 CLE–DEN): the database and nba.com say 108–79, basketball-reference
-  says 101–86. Unresolved; same winner.
-- `0020200464` (2003-01-04) went to double overtime; stored as one.
-- 2019-20 has no overtime stored: 75 games, 61 of them regular-season games before the
-  suspension. The published coverage note covers only seasons before 2002.
-- Not in the database by design: three NBA Cup finals and the 2020 play-in game.
-
-Follow-up, done on 2026-10-04 at the owner's instruction: `scripts/fetch_game_context.ts
-2019-10-01 2020-10-31` filled 75 overtime games; `fatigue_scores` and `predictions` were deleted
-and rebuilt for 2019-20 and for the two games after `0020200464`; `ml/predict_series.py --write`
-added series 18. Row counts: fatigue 103,390, predictions 28,037. PR #104 regenerates the
-rest-split and playoff facts. A re-run of the comparison leaves only the 1996 score dispute, the
-four games absent by design, and overtime before 2002-03.
-
-Later the same day: the four re-dated games got `tip_off_utc` from nba.com (basketball-reference
-start times agree; ESPN's are wrong for them). `0029600070` was settled at 101-86 by ESPN,
-basketball-reference, Stats Crew, Land of Basketball and nba.com's own quarter line, and corrected.
-`scripts/export_fatigue_features.ts` found 23 stored fatigue rows made stale by the score fixes
-(blowout discount); they were rebuilt and the fidelity check now reports 0 mismatches. PR #104 also
-regenerates the ablation, time-zone, availability, win-total and shooting artifacts.
-
-After any stored score or date fix, run the export's fidelity check: it lists every stale row.
+- The cause of one production API 500 seen during the 2026-10-03 audit is unknown.
+- Stat-tile unification and table column widths are deferred.
+- Whether `Find a page` leaves the footer; removing it leaves the page finder keyboard-only.
+- Overtime before 2002-03 is not stored. Three NBA Cup finals and the 2020 play-in game are
+  absent by design.
+- Owner actions: tag `v1.0.0` at launch, and announce only after a verified live pipeline run.
 
 ## Launch-readiness program (2026-10-05)
 
@@ -202,6 +128,7 @@ firewall rate limit, the phone pass and the domain.
 per 60 seconds per IP, answered with 429. It was set in the dashboard, so it is not in the repo.
 Checked from outside: 115 requests to `/api/health` returned 100 × 200 then 15 × 429, with pages
 unaffected. Hobby allows one rate-limit rule. PR #108 pins `source-map-js` for an overnight advisory.
+
 ## Error monitoring (2026-10-06)
 
 Sentry is wired in (D-76). A local production build sent one browser error and one server error
@@ -217,5 +144,28 @@ wrote a 17 MB dump. The owner chose `fullcourt.fyi`; it is not bought yet.
 
 Later on 2026-10-06: PR #109 merged with `NEXT_PUBLIC_SENTRY_DSN` set in Vercel for Production and
 Preview; the Sentry project has IP storage off. `fullcourt.fyi` is attached to the project (D-77).
-Open: `www.fullcourt.fyi` is not attached; the old `vercel.app` address does not redirect; the
-social preview and any external links still name the old address.
+The GitHub social preview and any external links may still name the old address.
+
+Later on 2026-10-06: PR #110 merged and `https://fullcourt.fyi` is the production address. In the
+Vercel dashboard, `www.fullcourt.fyi`, `fullcourt-nba.vercel.app` and
+`nba-rest-advantage.vercel.app` each answer 308 to `fullcourt.fyi` with the path kept. UptimeRobot
+checks `https://fullcourt.fyi/` and `https://fullcourt.fyi/api/health` every five minutes and
+mails the owner. Sentry received a production event from `fullcourt.fyi`. PR #100 (urllib3) merged.
+
+The owner tested on a phone inside Instagram. Two fixes followed: the Edge games zero rule no
+longer paints over the pinned team column in the Schedule breakdown, and the error-report mail
+subject is `FullCourt error or suggestion`.
+
+Open:
+
+- Phone layout. The owner asked for a survey of how data sites handle phones and tablets, and for
+  layout options before any rebuild. Named problems: the Games month and date strips scroll
+  sideways, the Games summary tiles sit below the matchups, and wide tables give no sign that
+  they scroll.
+- `DATABASE_URL` in Vercel is not stored as a Sensitive variable. Vercel suggests rotating the
+  database password and saving it again as Sensitive; that also means updating the GitHub secret,
+  `.env.local` and the backup script. Owner action.
+- Sentry issue `JAVASCRIPT-NEXTJS-3`: a blocked `eval` on `/playoffs` from one iOS 15 client, with
+  no first-party frame. Not reproduced.
+- Source-map upload to Sentry needs an auth token the owner creates.
+- The footer notice size (12px) is not ruled on. A second backup copy off the Mac is not set up.
