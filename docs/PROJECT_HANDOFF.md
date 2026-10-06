@@ -202,3 +202,15 @@ firewall rate limit, the phone pass and the domain.
 per 60 seconds per IP, answered with 429. It was set in the dashboard, so it is not in the repo.
 Checked from outside: 115 requests to `/api/health` returned 100 × 200 then 15 × 429, with pages
 unaffected. Hobby allows one rate-limit rule. PR #108 pins `source-map-js` for an overnight advisory.
+## Error monitoring (2026-10-06)
+
+Sentry is wired in (D-76). A local production build sent one browser error and one server error
+(`/api/analysis` with the database unreachable); both appeared in the Sentry project
+`javascript-nextjs` under org `michael-ju-46`. The DSN is not in the repo: it is read from
+`NEXT_PUBLIC_SENTRY_DSN`, which must be set in Vercel before the deploy that should report.
+Open: source-map upload; the Sentry project's own setting that stops it storing IP addresses.
+
+Later on 2026-10-06: PRs #107 and #108 merged. A weekly backup job is installed on the owner's Mac,
+outside the repo: `~/Backups/fullcourt/backup.sh`, run by the LaunchAgent
+`com.michaelju.fullcourt-backup` on Sundays at 11:00, keeping the newest eight dumps. Its first run
+wrote a 17 MB dump. The owner chose `fullcourt.fyi`; it is not bought yet.
