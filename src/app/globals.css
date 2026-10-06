@@ -646,6 +646,7 @@
 .method-link:focus-visible { outline: 2px solid var(--term-accent); outline-offset: 4px; }
 .site-footer-links { display: flex; flex-wrap: wrap; gap: 8px 24px; align-items: center; }
 .site-footer-links :is(a, button) { display: inline-flex; align-items: center; min-height: 44px; font-size: 12px; text-decoration: underline; text-underline-offset: 4px; }
+.site-footer-notice { font-family: var(--font-sans); font-size: 12px; line-height: 1.55; color: var(--term-text-muted); }
 
 .build-action { display: inline-flex; align-items: center; min-height: 44px; padding: 8px 16px; border: 1px solid var(--term-hairline); border-radius: 8px; background: var(--term-surface); color: var(--term-text); font-size: 15px; }
 .build-action:focus-visible { outline: 2px solid var(--term-accent); outline-offset: 4px; }

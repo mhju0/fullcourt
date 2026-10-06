@@ -103,6 +103,7 @@ const NO_NAV_TAB = new Map([
   ["/", "the front door: reached by the wordmark and the footer, not by a tab"],
   ["/behind-the-data", "the reference section, reached by its own right-aligned link"],
   ["/data-status", "coverage reference reached from the footer on every page"],
+  ["/privacy", "privacy notice reached from the footer on every page"],
 ]);
 
 describe("every page states what it is", () => {

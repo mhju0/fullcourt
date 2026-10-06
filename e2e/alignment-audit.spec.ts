@@ -21,6 +21,7 @@ const ROUTES = [
   "/explore",
   "/games",
   "/data-status",
+  "/privacy",
   "/season",
   "/schedule",
   "/analysis",
