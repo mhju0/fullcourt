@@ -23,6 +23,9 @@ overrides:
   # GHSA-68fv-2mgg-jv7q (2026-10-05): event-loop denial of service through indexed source-map
   # section offsets, <1.2.2. Reached through next → postcss.
   source-map-js@<1.2.2: 1.2.2
+  # GHSA-wq5f-xc86-pv6w (2026-10-06): a flaw in the librsvg that sharp bundles, <0.35.5.
+  # Reached through next, for image optimisation.
+  sharp@<0.35.5: 0.35.5
   ws@>=8.0.0 <8.21.0: '>=8.21.0'
 
 # Carries forward the previous policy verbatim: .npmrc allowed esbuild alone to run its
