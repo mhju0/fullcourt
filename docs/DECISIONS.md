@@ -860,3 +860,21 @@ Decided by the owner on 2026-10-05, ahead of the first public promotion.
   mail link and a `Privacy` link.
 - The database stays on the Supabase Free plan through opening night. Size on 2026-10-05: 318 MB of
   500 MB, of which `shot_grid` is 227 MB.
+
+### D-76 · Errors are reported to Sentry — ACTIVE
+
+Set up with the owner on 2026-10-06. `@sentry/nextjs` reports errors only: no tracing, no session
+replay, `sendDefaultPii` off. Settings live in `src/lib/sentry-options.ts`. The SDK is on only in a
+production build with `NEXT_PUBLIC_SENTRY_DSN` set, so CI and an unconfigured clone send nothing.
+
+- Browser errors: `src/instrumentation-client.ts`, plus `error.tsx`.
+- Server errors: `src/instrumentation.ts`. API routes catch their own failures and log them with
+  `console.error` before answering 500, so the server reports `console.error` lines; a thrown
+  render error arrives through `onRequestError`.
+- `next.config.ts` is not wrapped with `withSentryConfig`. Source maps are not uploaded, so browser
+  stack traces are minified. Uploading them needs a Sentry auth token in the build.
+- The CSP `connect-src` names `https://*.ingest.us.sentry.io`. `/privacy` lists Sentry as a fourth
+  outside service, which supersedes the count of three in D-74.
+- Installing the SDK brought `brace-expansion` 5.0.5 through its build plugin; an override pins 5.0.12.
+
+Measured cost: `.next/static/chunks` grew from 2,120 KB to 2,384 KB on disk, uncompressed.

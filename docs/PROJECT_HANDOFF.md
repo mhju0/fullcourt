@@ -191,3 +191,11 @@ Open, in order: error monitoring, uptime and freshness monitor, scheduled databa
 test restore, a quota plan, a firewall rate limit, the phone and accessibility pass (including
 Instagram's in-app browser), and the custom domain. The domain name is not chosen;
 `src/lib/site-url.ts` is the one place the origin is written.
+
+## Error monitoring (2026-10-06)
+
+Sentry is wired in (D-76). A local production build sent one browser error and one server error
+(`/api/analysis` with the database unreachable); both appeared in the Sentry project
+`javascript-nextjs` under org `michael-ju-46`. The DSN is not in the repo: it is read from
+`NEXT_PUBLIC_SENTRY_DSN`, which must be set in Vercel before the deploy that should report.
+Open: source-map upload; the Sentry project's own setting that stops it storing IP addresses.
