@@ -214,3 +214,8 @@ Later on 2026-10-06: PRs #107 and #108 merged. A weekly backup job is installed 
 outside the repo: `~/Backups/fullcourt/backup.sh`, run by the LaunchAgent
 `com.michaelju.fullcourt-backup` on Sundays at 11:00, keeping the newest eight dumps. Its first run
 wrote a 17 MB dump. The owner chose `fullcourt.fyi`; it is not bought yet.
+
+Later on 2026-10-06: PR #109 merged with `NEXT_PUBLIC_SENTRY_DSN` set in Vercel for Production and
+Preview; the Sentry project has IP storage off. `fullcourt.fyi` is attached to the project (D-77).
+Open: `www.fullcourt.fyi` is not attached; the old `vercel.app` address does not redirect; the
+social preview and any external links still name the old address.

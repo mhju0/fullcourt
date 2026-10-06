@@ -885,3 +885,11 @@ production build with `NEXT_PUBLIC_SENTRY_DSN` set, so CI and an unconfigured cl
 - Installing the SDK brought `brace-expansion` 5.0.5 through its build plugin; an override pins 5.0.12.
 
 Measured cost: `.next/static/chunks` grew from 2,120 KB to 2,384 KB on disk, uncompressed.
+
+### D-77 · The site's address is fullcourt.fyi — ACTIVE
+
+The owner bought `fullcourt.fyi` on 2026-10-06 and it is attached to the Vercel project as a
+Production domain, without the `www` redirect, so the bare name is the address. `SITE_URL` in
+`src/lib/site-url.ts` now names it, which moves the canonical metadata, robots and the sitemap.
+`fullcourt-nba.vercel.app` stays attached and keeps serving the site; it does not redirect.
+Names containing "NBA" were set aside because a league mark in a domain invites a dispute.

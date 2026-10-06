@@ -77,7 +77,7 @@ command. Schema changes are manual SQL and require a separate owner application 
 
 ```sh
 SCREENSHOT_BASE_URL=http://localhost:3110 node scripts/screenshots.mjs
-SCREENSHOT_BASE_URL=https://fullcourt-nba.vercel.app node scripts/screenshots.mjs games
+SCREENSHOT_BASE_URL=https://fullcourt.fyi node scripts/screenshots.mjs games
 node scripts/check-doc-links.mjs
 ```
 
