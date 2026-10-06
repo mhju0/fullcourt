@@ -17,7 +17,7 @@ it has.
 
 ## Scope
 
-- Production site: `fullcourt-nba.vercel.app`
+- Production site: `fullcourt.fyi`
 - This repository (application code, data pipeline scripts, CI workflows)
 
 Out of scope: denial-of-service volume testing against the live site, and findings that

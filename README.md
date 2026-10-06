@@ -9,7 +9,7 @@ NBA rest and schedule findings, player shooting splits, and source-linked offici
 [![CI](https://github.com/mhju0/fullcourt/actions/workflows/ci.yml/badge.svg)](https://github.com/mhju0/fullcourt/actions/workflows/ci.yml)
 [![Daily NBA Update](https://github.com/mhju0/fullcourt/actions/workflows/daily-update.yml/badge.svg)](https://github.com/mhju0/fullcourt/actions/workflows/daily-update.yml)
 
-[Open FullCourt](https://fullcourt-nba.vercel.app) · [Read the methods](https://fullcourt-nba.vercel.app/behind-the-data)
+[Open FullCourt](https://fullcourt.fyi) · [Read the methods](https://fullcourt.fyi/behind-the-data)
 
 </div>
 
@@ -22,15 +22,15 @@ more-rested team is at home; rested visitors are reported separately. Both win r
 compared with their venue baselines. These are historical associations, not estimates of what
 rest alone caused or a complete forecast of who will win.
 
-The [Model Results page](https://fullcourt-nba.vercel.app/analysis) carries the current rates,
-sample sizes, and season comparisons. [Behind the Data](https://fullcourt-nba.vercel.app/behind-the-data)
+The [Model Results page](https://fullcourt.fyi/analysis) carries the current rates,
+sample sizes, and season comparisons. [Behind the Data](https://fullcourt.fyi/behind-the-data)
 explains the calculations and publishes results that did not support a measurable effect.
 
 The [engineering walkthrough source](src/app/how-it-was-built/page.tsx) explains the problem,
 data flow, implementation tradeoffs and verification. About identifies the author and links
 to that walkthrough in the application.
 
-[Data status](https://fullcourt-nba.vercel.app/data-status) separates coverage and available
+[Data status](https://fullcourt.fyi/data-status) separates coverage and available
 refresh dates from database connectivity. Playoff Rest and Expected Shot Value open their latest
 published results and preserve selected views in shareable links.
 
@@ -38,15 +38,15 @@ published results and preserve selected views in shareable links.
 
 | Page | What it shows |
 | --- | --- |
-| [Games](https://fullcourt-nba.vercel.app/games) | Browse matchups by season and date, switch between summary and detailed views, and expand a game to inspect its schedule load. Edges Ahead jumps to upcoming games with large rest gaps. |
-| [Season Report](https://fullcourt-nba.vercel.app/season) | Completed-season results against their home baseline, team rest records, and five notable completed games. Small samples are labeled. |
-| [Schedule Edge](https://fullcourt-nba.vercel.app/schedule) | Within-season rest-edge ranking, schedule worth, travel and workload, and the completed-game fatigue calendar. Details expand on demand. |
-| [Model Results](https://fullcourt-nba.vercel.app/analysis) | Rested-home and rested-visitor win rates by rest gap and season, compared with venue baselines, plus a searchable game record. |
-| [Playoff Rest](https://fullcourt-nba.vercel.app/playoffs) | Previous-round workload and a separate series probability model. Its probabilities improve on the historical base rate, while its overall accuracy is close to always choosing the home-court team. |
-| [Shooting by Rest](https://fullcourt-nba.vercel.app/shooting) | Effective field goal percentage on no rest versus three or more days off. Rest comes from each player's appearances. Single-season splits are noisy; career estimates use shrinkage toward the league mean. |
-| [Expected Shot Value](https://fullcourt-nba.vercel.app/shot-quality) | Expected shooting value by court location. The model does not observe defender distance, shot-clock pressure, or shot difficulty beyond location. |
-| [Availability Cost](https://fullcourt-nba.vercel.app/availability) | The estimated margin associated with a missing rotation player, controlling for team strength and schedule factors. Absences are identified after games, so this is not a lineup forecast. |
-| [Officiating](https://fullcourt-nba.vercel.app/officiating) | NBA Last Two Minute findings across 12 regular seasons (2014–15 through 2025–26), by team and call type, with the NBA’s verdicts inside each game. Covers selected close-game endings; earlier referee studies remain in the research archive. |
+| [Games](https://fullcourt.fyi/games) | Browse matchups by season and date, switch between summary and detailed views, and expand a game to inspect its schedule load. Edges Ahead jumps to upcoming games with large rest gaps. |
+| [Season Report](https://fullcourt.fyi/season) | Completed-season results against their home baseline, team rest records, and five notable completed games. Small samples are labeled. |
+| [Schedule Edge](https://fullcourt.fyi/schedule) | Within-season rest-edge ranking, schedule worth, travel and workload, and the completed-game fatigue calendar. Details expand on demand. |
+| [Model Results](https://fullcourt.fyi/analysis) | Rested-home and rested-visitor win rates by rest gap and season, compared with venue baselines, plus a searchable game record. |
+| [Playoff Rest](https://fullcourt.fyi/playoffs) | Previous-round workload and a separate series probability model. Its probabilities improve on the historical base rate, while its overall accuracy is close to always choosing the home-court team. |
+| [Shooting by Rest](https://fullcourt.fyi/shooting) | Effective field goal percentage on no rest versus three or more days off. Rest comes from each player's appearances. Single-season splits are noisy; career estimates use shrinkage toward the league mean. |
+| [Expected Shot Value](https://fullcourt.fyi/shot-quality) | Expected shooting value by court location. The model does not observe defender distance, shot-clock pressure, or shot difficulty beyond location. |
+| [Availability Cost](https://fullcourt.fyi/availability) | The estimated margin associated with a missing rotation player, controlling for team strength and schedule factors. Absences are identified after games, so this is not a lineup forecast. |
+| [Officiating](https://fullcourt.fyi/officiating) | NBA Last Two Minute findings across 12 regular seasons (2014–15 through 2025–26), by team and call type, with the NBA’s verdicts inside each game. Covers selected close-game endings; earlier referee studies remain in the research archive. |
 
 ## Screenshots
 
@@ -71,7 +71,7 @@ games played before that season's suspension remain included. Schedule Edge excl
 whole interrupted season from its team ranking because teams played unequal numbers of games.
 Some inputs, including overtime and tip-off times, are unavailable in earlier seasons.
 
-The [rest-advantage method](https://fullcourt-nba.vercel.app/behind-the-data/rest-advantage)
+The [rest-advantage method](https://fullcourt.fyi/behind-the-data/rest-advantage)
 documents the terms, coefficients, and tests. A weight-fitting study did not establish enough
 improvement to replace the ratified model; its protocol and amendments are preserved in
 [ADR 0006](docs/adr/0006-fatigue-weights-were-fitted-and-the-model-was-not-changed.md).

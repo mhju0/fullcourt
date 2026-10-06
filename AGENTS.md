@@ -62,7 +62,7 @@ outweighs home court at any magnitude"* and *"no threshold rescues it"*. Both we
 resting on a pooled 41-season rate. Do not restate either; `src/lib/rest-split-facts.ts` and its
 test hold what replaced them.
 
-- Live: https://fullcourt-nba.vercel.app · Repo: https://github.com/mhju0/fullcourt
+- Live: https://fullcourt.fyi · Repo: https://github.com/mhju0/fullcourt
 - Headline figures are computed live from the database and rendered on the site. Do not hand-type
   one into prose — see the pinning rules below.
 
