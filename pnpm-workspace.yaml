@@ -17,6 +17,9 @@ overrides:
   # version. A pin is only as good as the advisory that motivated it — re-read both
   # before assuming this line is still doing its job.
   postcss@<8.5.23: 8.5.23
+  # GHSA-68fv-2mgg-jv7q (2026-10-05): event-loop denial of service through indexed source-map
+  # section offsets, <1.2.2. Reached through next → postcss.
+  source-map-js@<1.2.2: 1.2.2
   ws@>=8.0.0 <8.21.0: '>=8.21.0'
 
 # Carries forward the previous policy verbatim: .npmrc allowed esbuild alone to run its
