@@ -43,28 +43,13 @@ import type { GameResponse } from "@/types";
  * "Small screens") — the page itself never scrolls sideways.
  */
 
-/**
- * The slate's two densities (2026-08-28 redesign, C5): SKIM is the default schedule-site
- * glance — game, matchup, rest advantage, and the storyline line when a game has one;
- * DEEP DIVE adds per-team days rest, the fatigue bars with their flag chips, and the
- * confidence badge. One card, two column sets; the dial lives on the /games page.
- */
-export type SlateDensity = "skim" | "deep";
-
-// Column templates shared by the header row and every game row, so the header can
-// never drift out of line with the cells beneath it.
-const DEEP_COLS =
+// One column template shared by the header row and every game row, so the header can never
+// drift out of line with the cells beneath it. Below 640px `globals.css` swaps it for the
+// two-column phone row, which drops the rest-days and fatigue columns (D-79).
+const GRID_COLS =
   "minmax(96px,120px) minmax(210px,1.3fr) minmax(64px,80px) minmax(232px,1.1fr) minmax(190px,220px) minmax(96px,116px)";
-const SKIM_COLS =
-  "minmax(96px,120px) minmax(210px,1.5fr) minmax(190px,240px) 32px";
-// Sum of each template's column minimums plus its 16px gaps, rounded up with room.
-const DEEP_MIN_WIDTH = 1000;
-const SKIM_MIN_WIDTH = 600;
-
-const gridCols = (density: SlateDensity) =>
-  density === "deep" ? DEEP_COLS : SKIM_COLS;
-const gridMinWidth = (density: SlateDensity) =>
-  density === "deep" ? DEEP_MIN_WIDTH : SKIM_MIN_WIDTH;
+// Sum of the column minimums plus the 16px gaps, rounded up with room.
+const GRID_MIN_WIDTH = 1000;
 
 /**
  * Width reserved for a line's flag chips, so the strip is identical on every line and the
@@ -556,12 +541,10 @@ function RestAdvCell({
 function GameRow({
   game,
   index,
-  density,
   isScoreFlashing,
 }: {
   game: GameResponse;
   index: number;
-  density: SlateDensity;
   isScoreFlashing: boolean;
 }) {
   const { params, update } = usePageQuery();
@@ -640,7 +623,7 @@ function GameRow({
         onClick={toggle}
         onKeyDown={onKeyDown}
         className="fc-game-grid grid cursor-pointer items-center gap-x-4 transition-colors hover:bg-[var(--term-surface-2)] focus-visible:ring-2 focus-visible:ring-[var(--term-accent)]/40"
-        style={{ gridTemplateColumns: gridCols(density), padding: "12px 16px" }}
+        style={{ gridTemplateColumns: GRID_COLS, padding: "12px 16px" }}
       >
         <div className="fc-game-status">
           <StatusCell
@@ -672,15 +655,12 @@ function GameRow({
           />
         </div>
 
-        {density === "deep" && (
-          <div className="fc-game-extra flex flex-col gap-1">
+        <div className="fc-game-extra flex flex-col gap-1">
             <RestDaysLine daysRest={game.awayFatigue?.daysRest} />
             <RestDaysLine daysRest={game.homeFatigue?.daysRest} />
-          </div>
-        )}
+        </div>
 
-        {density === "deep" && (
-          <div className="fc-game-extra flex flex-col gap-1">
+        <div className="fc-game-extra flex flex-col gap-1">
             <FatigueLine
               score={game.awayFatigue?.score ?? null}
               tone={tones.away}
@@ -691,8 +671,7 @@ function GameRow({
               tone={tones.home}
               flags={flags.home}
             />
-          </div>
-        )}
+        </div>
 
         <div className="fc-game-edge">
           <RestAdvCell
@@ -704,7 +683,7 @@ function GameRow({
         </div>
 
         <div className="fc-game-chevron flex items-center justify-end gap-2">
-          {density === "deep" && <ConfidenceBadge confidence={confidence} />}
+          <span className="hidden sm:contents"><ConfidenceBadge confidence={confidence} /></span>
           <ChevronDown
             className={cn(
               "size-4 shrink-0 text-[var(--term-text-muted)]",
@@ -768,11 +747,9 @@ function GameRow({
 
 export interface MatchupTableProps {
   games: readonly (GameResponse & { isScoreFlashing?: boolean })[];
-  /** SKIM (default) is the schedule-site glance; DEEP DIVE adds rest, fatigue and CONF. */
-  density?: SlateDensity;
 }
 
-export function MatchupTable({ games, density = "skim" }: MatchupTableProps) {
+export function MatchupTable({ games }: MatchupTableProps) {
   return (
     <div
       style={{
@@ -785,13 +762,13 @@ export function MatchupTable({ games, density = "skim" }: MatchupTableProps) {
       <ScrollCue className="overflow-x-auto focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[var(--term-accent)]" tabIndex={0} role="region" aria-label="Matchups table; scroll horizontally for all columns">
         <div
           className="fc-game-table"
-          style={{ minWidth: gridMinWidth(density) }}
+          style={{ minWidth: GRID_MIN_WIDTH }}
         >
           {/* Column header — same template as the rows, so it cannot drift. */}
           <div
             className="fc-game-header mono grid items-center gap-x-4"
             style={{
-              gridTemplateColumns: gridCols(density),
+              gridTemplateColumns: GRID_COLS,
               padding: "8px 16px",
               background: "var(--term-surface-2)",
               borderBottom: "1px solid var(--term-border)",
@@ -803,16 +780,10 @@ export function MatchupTable({ games, density = "skim" }: MatchupTableProps) {
           >
             <span>GAME</span>
             <span>MATCHUP · AWAY / HOME</span>
-            {density === "deep" && (
-              <span className="text-right">REST · DAYS</span>
-            )}
-            {density === "deep" && <span>FATIGUE · 0–10</span>}
+            <span className="text-right">REST · DAYS</span>
+            <span>FATIGUE · 0–10</span>
             <span>REST ADVANTAGE</span>
-            {density === "deep" ? (
-              <span className="text-right">GAP SIZE</span>
-            ) : (
-              <span aria-hidden />
-            )}
+            <span className="text-right">GAP SIZE</span>
           </div>
 
           {games.map((game, i) => (
@@ -820,7 +791,6 @@ export function MatchupTable({ games, density = "skim" }: MatchupTableProps) {
               key={game.id}
               game={game}
               index={i}
-              density={density}
               isScoreFlashing={game.isScoreFlashing ?? false}
             />
           ))}

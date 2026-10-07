@@ -76,7 +76,7 @@ Interior pages use `PageHeader`: eyebrow, plain title, concise description, then
 | Model Results | `/analysis` | Model Results |
 | Home-court advantage | `/home-court` | Home-court advantage |
 | Playoff Rest | `/playoffs` | Playoff Rest |
-| Player Shooting | `/shooting` | Shooting by Rest |
+| Player Shooting | `/shooting` | Player Shooting by Rest |
 | Shot Value | `/shot-quality` | Expected Shot Value |
 | Availability Cost | `/availability` | Availability Cost |
 | Officiating | `/officiating` | Officiating |

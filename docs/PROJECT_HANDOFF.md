@@ -16,7 +16,7 @@ The [dated release review](design/redesign-release-review.md) records verificati
 and Vercel for subsequent deployment status.
 
 Games now exposes Season → Month → Date controls, with shared season selectors across studies.
-Deep Dive uses the full desktop width. Playoff Rest explains between-round recovery directly.
+Games has one layout at every width, in tip-off order (D-79). Playoff Rest explains between-round recovery directly.
 Officiating covers 12 regular seasons and 4,546 reports, including the partial 2014–15 season;
 [archive evidence](research/2026-09-09-l2m-archive.md) records source checks and historical limits.
 
@@ -161,13 +161,12 @@ subject is `FullCourt error or suggestion`.
 PR #111 merged. D-78 is built: on a phone Games shows one week and a Calendar button instead of
 two sideways rows, the slate summary is one line above the matchups, sideways scrollers fade the
 edge that hides content, the Schedule breakdown drops its duplicate columns on small screens,
-and the summary rail starts at 1024px. Row 30 of the design record is amended. The survey behind
+and the summary rail started at 1024px (removed by D-79). Row 30 of the design record is amended. The survey behind
 it is a private artifact the owner holds, not a file in the repo.
 
 Dev served a stale stylesheet for the new rules (the D-72 behaviour); the work was verified
 against `pnpm build` and `pnpm start`. Local `main` had one unpushed commit from 2026-09-19 whose
-content origin already had; it is kept on the local branch `backup/local-main-2026-10-07` and
-local `main` now matches origin.
+content origin already had; local `main` now matches origin and the backup branch is gone.
 
 Open:
 
@@ -191,3 +190,10 @@ table and Officiating's season strip and call-type row now use `ScrollCue`, the 
 is 10px, not 9.6px. The two stale `behind-the-data.spec.ts` assertions follow the page. Two e2e
 tests (`games.spec.ts:294`, `navigation.spec.ts:54`) failed once in a full run and passed six of
 six alone; treat them as load-sensitive. Season Report, Analysis and Playoff Rest needed no change.
+
+Phone review round, 2026-10-07 (D-79): the Skim/Deep Dive toggle and the Games side rail are
+gone, matchups are in tip-off order (`slateOrder()`), the two line tokens are darker, Season
+Report and Officiating plays use bordered blocks with title bands, the fatigue chart is League
+fatigue by week, the column guide sits inside the breakdown, and Shooting by Rest is Player
+Shooting by Rest. Open: the ESPN tie-break is inferred from one day; Home Court inherits the
+section band and was checked by screenshot only; nothing here has been seen on a physical phone.

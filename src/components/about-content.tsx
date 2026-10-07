@@ -3,7 +3,7 @@ import styles from "./reading.module.css";
 
 const START = [
   { href: "/games", category: "Start with a game", title: "Games", question: "Which team comes in with more rest, travel or workload?", action: "Find a game" },
-  { href: "/shooting", category: "Start with a player", title: "Shooting by Rest", question: "Do players shoot differently with more rest?", action: "Look up a player" },
+  { href: "/shooting", category: "Start with a player", title: "Player Shooting by Rest", question: "Do players shoot differently with more rest?", action: "Look up a player" },
 ];
 
 const READ = [

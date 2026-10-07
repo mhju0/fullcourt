@@ -229,7 +229,7 @@
 .filterRow {
   display: flex;
   gap: 16px;
-  align-items: end;
+  align-items: center;
 }
 .chipShell {
   flex: 1;
@@ -240,7 +240,7 @@
   display: flex;
   gap: 8px;
   overflow-x: auto;
-  padding: 4px 24px 8px 4px;
+  padding: 4px 24px 4px 4px;
 }
 .page .chips button {
   flex-shrink: 0;
@@ -251,11 +251,14 @@
 .chips span {
   margin-left: 8px;
 }
+.page .allTypes {
+  flex-shrink: 0;
+  white-space: nowrap;
+  font-size: var(--text-data);
+  font-family: var(--font-geist-mono), monospace;
+}
 .teamLabel {
   display: flex;
-  flex-direction: column;
-  gap: 8px;
-  font-size: var(--text-label);
 }
 .page .teamLabel select {
   min-width: 140px;
@@ -325,7 +328,9 @@
   transform: rotate(90deg);
 }
 .game[open] {
-  background: var(--term-surface-2);
+  background: var(--term-surface);
+  outline: 1px solid var(--term-hairline);
+  outline-offset: -1px;
 }
 .game[open] > .gameRow {
   box-shadow: inset 3px 0 var(--missed);
@@ -352,16 +357,29 @@
   gap: 12px;
   font-size: var(--text-data);
 }
+/* Each play is its own bordered block with the clock and call type in a tinted strip, so a
+   report reads as separate plays rather than one run of text (D-79). */
 .play {
-  padding: 24px 0;
-  border-bottom: 1px solid var(--term-border);
+  margin-top: 12px;
+  padding-bottom: 16px;
+  border: 1px solid var(--term-border);
+  border-radius: var(--term-radius);
+  overflow: hidden;
+}
+.play > :not(.playMeta) {
+  margin-left: 16px;
+  margin-right: 16px;
 }
 .playMeta {
   display: flex;
   flex-wrap: wrap;
-  gap: 16px;
+  gap: 4px 16px;
   font-size: var(--text-data);
+  font-weight: 600;
   margin-bottom: 12px;
+  padding: 8px 16px;
+  background: var(--term-surface-2);
+  border-bottom: 1px solid var(--term-border);
 }
 .verdict {
   border-left: 2px solid #89949f;
@@ -429,7 +447,8 @@
   .chipShell {
     flex-basis: 100%;
   }
-  .teamLabel {
+  .teamLabel,
+  .page .teamLabel select {
     width: 100%;
   }
   .filterLabel {

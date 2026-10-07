@@ -9,9 +9,6 @@ test("mobile Games exposes the complete rest comparison without sideways scrolli
   expect(box!.x).toBeGreaterThanOrEqual(0);
   expect(box!.x + box!.width).toBeLessThanOrEqual(390);
   await expect(page.locator(".fc-game-header")).toBeHidden();
-  await page.getByRole("button", { name: "DEEP DIVE", exact: true }).click();
-  const deepBox = await edge.boundingBox();
-  expect(deepBox!.x + deepBox!.width).toBeLessThanOrEqual(390);
 });
 
 test("mobile shot comparison is optional and keyboard accessible", async ({ page }) => {

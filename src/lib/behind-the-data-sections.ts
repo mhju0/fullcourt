@@ -46,8 +46,8 @@ export const BEHIND_THE_DATA_SECTIONS = [
   },
   {
     href: "/behind-the-data/player-shooting",
-    label: "SHOOTING BY REST",
-    title: "Shooting by Rest",
+    label: "PLAYER SHOOTING BY REST",
+    title: "Player Shooting by Rest",
     surfaceHrefs: ["/shooting"],
   },
   {

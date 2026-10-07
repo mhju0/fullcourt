@@ -1,6 +1,7 @@
 "use client";
 
 import useSWR from "swr";
+import { TeamLogo } from "@/components/matchup-parts";
 import { SeasonSelector } from "@/components/season-selector";
 import { useBacktest } from "@/hooks/useBacktest";
 import { useSeasonUrl } from "@/hooks/useSeasonUrl";
@@ -232,23 +233,23 @@ export function SeasonReportContent() {
             className="fc-report-section flex flex-col gap-4"
             aria-labelledby="season-team-heading"
           >
-            <h2 id="season-team-heading" className="text-2xl font-semibold">
+            <h2 id="season-team-heading" className="text-lg font-semibold">
               Team results under different rest conditions
             </h2>
             <p className={muted}>
               Rested-at-home and tired-on-the-road records. These are records,
               not a ranking of fatigue management.
             </p>
-            <p data-testid="swing-baseline-note" className={muted}>
+            <p data-testid="swing-baseline-note" className={`fc-report-note ${muted}`}>
               {data.swingBaseline === null
                 ? "No league comparison is available yet."
                 : `Read each difference against the league’s ${signedNumber(data.swingBaseline, 1)}-point comparison, not zero. Venue differs between the two groups.`}
             </p>
-            <TeamRecords teams={data.teams.slice(0, 6)} />
+            <TeamRecords teams={data.teams.slice(0, 6)} season={season} />
             {data.teams.length > 6 ? (
               <details className="fc-disclosure">
                 <summary>Show the other {data.teams.length - 6} teams</summary>
-                <TeamRecords teams={data.teams.slice(6)} />
+                <TeamRecords teams={data.teams.slice(6)} season={season} />
               </details>
             ) : null}
           </section>
@@ -256,7 +257,7 @@ export function SeasonReportContent() {
             className="fc-report-section flex flex-col gap-3"
             aria-labelledby="season-notable-heading"
           >
-            <h2 id="season-notable-heading" className="text-2xl font-semibold">
+            <h2 id="season-notable-heading" className="text-lg font-semibold">
               When the rest gap was widest
             </h2>
             <p className={muted}>
@@ -264,7 +265,10 @@ export function SeasonReportContent() {
               home, regardless of outcome. Rest advantage is a model-score
               difference.
             </p>
-            {data.loudestCalls.slice(0, 5).map((call) => (
+            {data.loudestCalls.slice(0, 5).map((call) => {
+              const away = data.teams.find((t) => t.teamId === call.awayTeamId)?.abbreviation;
+              const home = data.teams.find((t) => t.teamId === call.homeTeamId)?.abbreviation;
+              return (
               <a
                 key={call.gameId}
                 data-testid="loudest-call-row"
@@ -272,22 +276,25 @@ export function SeasonReportContent() {
                 className="grid min-h-16 grid-cols-2 items-center gap-2 border-b border-[var(--term-border)] py-3 hover:bg-[var(--term-surface-2)] sm:grid-cols-4"
               >
                 <span className={`mono text-xs ${muted}`}>{call.date}</span>
-                <strong>
-                  {data.teams.find((t) => t.teamId === call.awayTeamId)
-                    ?.abbreviation ?? "—"}{" "}
-                  @{" "}
-                  {data.teams.find((t) => t.teamId === call.homeTeamId)
-                    ?.abbreviation ?? "—"}
+                <strong className="flex items-center gap-1">
+                  {away ? <TeamLogo abbreviation={away} season={season} size={20} /> : null}
+                  {away ?? "—"} @
+                  {home ? <TeamLogo abbreviation={home} season={season} size={20} /> : null}
+                  {home ?? "—"}
                 </strong>
                 <span className="mono text-[15px] tabular-nums">
                   {call.awayScore}–{call.homeScore} · RA{" "}
                   {call.restAdvantage.toFixed(2)}
                 </span>
-                <span className="text-right text-[15px]">
-                  Rested team {call.restedTeamWon ? "won" : "lost"} →
+                <span className="whitespace-nowrap text-right text-[15px]">
+                  <span className="fc-outcome mono" data-won={call.restedTeamWon ? "" : undefined}>
+                    RESTED TEAM {call.restedTeamWon ? "WON" : "LOST"}
+                  </span>{" "}
+                  →
                 </span>
               </a>
-            ))}
+              );
+            })}
           </section>
           <p className="border-t border-[var(--term-border)] pt-6">
             Looking for travel, dense stretches, or favorable schedules?{" "}
@@ -301,7 +308,7 @@ export function SeasonReportContent() {
   );
 }
 
-function TeamRecords({ teams }: { teams: SeasonReportResponse["teams"] }) {
+function TeamRecords({ teams, season }: { teams: SeasonReportResponse["teams"]; season: string }) {
   return (
     <div
       className="overflow-x-auto"
@@ -311,10 +318,10 @@ function TeamRecords({ teams }: { teams: SeasonReportResponse["teams"] }) {
     >
       <table className="fc-table w-full table-fixed text-left text-xs sm:text-[15px]">
         <colgroup>
-          <col style={{ width: "16%" }} />
-          <col style={{ width: "28%" }} />
-          <col style={{ width: "28%" }} />
-          <col style={{ width: "28%" }} />
+          <col style={{ width: "22%" }} />
+          <col style={{ width: "26%" }} />
+          <col style={{ width: "26%" }} />
+          <col style={{ width: "26%" }} />
         </colgroup>
         <thead className={`bg-[var(--term-surface-2)] ${muted}`}>
           <tr className="border-b border-[var(--term-border)]">
@@ -344,7 +351,10 @@ function TeamRecords({ teams }: { teams: SeasonReportResponse["teams"] }) {
               className="border-b border-[var(--term-border)]"
             >
               <th scope="row" className="mono px-2 py-3">
-                {team.abbreviation}
+                <span className="flex items-center gap-2">
+                  <TeamLogo abbreviation={team.abbreviation} season={season} size={20} />
+                  {team.abbreviation}
+                </span>
               </th>
               <td className="mono px-2 text-right tabular-nums">
                 {team.restedWins}/{team.restedGames}

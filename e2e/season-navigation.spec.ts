@@ -69,29 +69,24 @@ test("the selected date stays on screen after a desktop-to-phone resize without 
   await expect(season).toBeFocused();
 });
 
-// D-78: the summary rail starts at `lg`, so a landscape tablet gets the desktop arrangement.
-for (const [width, rail] of [[1024, true], [820, false]] as const) {
-  test(`the summary rail is ${rail ? "beside" : "absent from"} the matchups at ${width}px`, async ({ page }) => {
+// D-79: one frame at every width. The summary line sits above the matchups and Edges Ahead
+// follows them; nothing moves into a side rail.
+for (const width of [1280, 1024, 820]) {
+  test(`the slate summary is above the matchups and Edges Ahead below at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 900 });
     await page.goto("/games?season=2024-25&date=2024-12-25");
     const main = await page.getByTestId("games-main").boundingBox();
-    const aside = await page.getByRole("complementary", { name: "Slate summary and upcoming edges" }).boundingBox();
-    if (rail) {
-      expect(aside!.x).toBeGreaterThanOrEqual(main!.x + main!.width);
-      await expect(page.getByTestId("slate-summary-line")).toBeHidden();
-      await expect(page.getByText("GAMES ON THIS DATE")).toBeVisible();
-    } else {
-      expect(aside!.y).toBeGreaterThanOrEqual(main!.y + main!.height);
-      await expect(page.getByTestId("slate-summary-line")).toBeVisible();
-    }
+    const aside = await page.getByRole("complementary", { name: "Upcoming edges" }).boundingBox();
+    expect(aside!.y).toBeGreaterThanOrEqual(main!.y + main!.height);
+    await expect(page.getByTestId("slate-summary-line")).toBeVisible();
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   });
 }
 
 for (const width of [1440, 1280, 1024, 768, 390]) {
-  test(`Deep Dive keeps every column reachable at ${width}px`, async ({ page }) => {
+  test(`the matchup table keeps every column reachable at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 900 });
-    await page.goto("/games?season=2026-27&date=2027-03-22&view=deep");
+    await page.goto("/games?season=2026-27&date=2027-03-22");
     await expect(page.getByRole("button", { name: /^Expand .* game details$/ }).first()).toBeVisible();
     const region = page.getByRole("region", { name: "Matchups table; scroll horizontally for all columns" });
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);

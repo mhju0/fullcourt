@@ -932,3 +932,39 @@ Two departures from what the survey proposed, both on measurement:
 Not covered: Season Report, Analysis, Playoff Rest and Officiating were not gone through table
 by table. Their `DataTable`s inherit the cue; their own layouts are unchanged. The survey of
 other sites was at phone width only.
+
+### D-79 · One Games layout, tip-off order, and blocks that read as blocks — ACTIVE
+
+The owner reviewed the site on a phone on 2026-10-07, left nine comments, and ruled on the
+five open choices after seeing each one before and after.
+
+- **No Skim/Deep Dive.** On a phone the toggle added one badge; on a desktop it changed the
+  page frame. It is removed at every width. Desktop always shows the rest-days, fatigue and
+  gap-size columns; a phone shows the compact row and keeps the rest under expansion. The
+  summary rail goes with it: the one-line summary sits above the matchups and Edges Ahead
+  below. This reverses decision 5 (C5, the density dial) of ADR 0010 and the Deep Dive
+  paragraph of D-66, and it supersedes the rail breakpoint in D-78. A `view` parameter in an
+  old link is ignored.
+- **Games order.** Matchups were ordered by away team id, which read as random. They are now
+  ordered by tip-off time, then by the source event id. The tie-break was read from one ESPN
+  scoreboard day (2026-10-21) and matched it; it is an inference, not a documented ESPN rule.
+  How ESPN reorders live and finished games was not examined, and FullCourt does not reorder.
+  Games before about 2002 have no stored tip-off and fall back to the id.
+- **Dividers.** `--term-border` and `--term-hairline` were about 1.2:1 against the page ground
+  and are a step darker. A page made of unlike text blocks gives each block a border and a
+  tinted title band: the owner chose option D of four for Officiating plays on a phone, and
+  the nearest equivalent for desktop, which is the same block at full width. This amends the
+  hairlines-without-cards rule in FRONTEND.md rather than replacing it.
+- **Season Report.** Team logos in the records table and the widest-gap rows, section title
+  bands, a boxed caveat above the table, and an outcome label that is teal when the rested
+  team won and gray when it lost (the owner's "try coloured").
+- **Fatigue calendar.** It stays on Schedule Edge; placement was not the fault. It is renamed
+  League fatigue by week and says what a bar is, with a dated axis and a week readout.
+- **Column guide.** WHAT THESE COLUMNS MEAN is inside Show full breakdown.
+- **Name.** Shooting by Rest is Player Shooting by Rest, chosen from the phrases offered. ADRs
+  and earlier decision entries keep the old name as history. The route is unchanged.
+- **Officiating filter row.** The chips, the All call types button and the team select share
+  one centre line. The select still reads All teams.
+
+Not covered: the band and table treatment also reach Home Court, which uses the same section
+class and was checked only by screenshot. None of this has been seen on a physical phone.

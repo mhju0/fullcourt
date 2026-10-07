@@ -152,8 +152,10 @@
   --term-bg: #F6F7F9;
   --term-surface: #FFFFFF;
   --term-surface-2: #EFF1F4;
-  --term-border: #E4E6EB;
-  --term-hairline: #D6DAE1;
+  /* Both lines were a step lighter until 2026-10-07 and read as no line at all on the
+     page ground, on a phone most of all (D-79). */
+  --term-border: #CED3DB;
+  --term-hairline: #C4CAD3;
   --term-text: #16181D;
   --term-text-muted: #5D6470;
   --term-text-dim: #333845;
@@ -707,8 +709,16 @@ select.fc-control { padding-right: 32px; }
 .fc-report-summary { display: grid; grid-template-columns: minmax(0, 1fr); border: 1px solid var(--term-hairline); border-radius: var(--term-radius); background: var(--term-surface); }
 .fc-report-summary > div { min-width: 0; padding: 16px; }
 .fc-report-interpretation { border-top: 1px solid var(--term-hairline); background: var(--term-surface-2); border-radius: 0 0 var(--term-radius) var(--term-radius); }
-.fc-report-section { min-width: 0; padding: 16px; border: 1px solid var(--term-hairline); border-radius: var(--term-radius); background: var(--term-surface); }
-.fc-report-section > h2 { padding-bottom: 16px; border-bottom: 1px solid var(--term-hairline); }
+/* A section is a bordered block whose title sits in a tinted band, so the start of each one is
+   visible while scrolling a long page (D-79). */
+.fc-report-section { min-width: 0; padding: 0 0 16px; overflow: hidden; border: 1px solid var(--term-hairline); border-radius: var(--term-radius); background: var(--term-surface); }
+.fc-report-section > :not(h2) { margin-inline: 16px; }
+.fc-report-section > h2 { padding: 12px 16px; background: var(--term-surface-2); border-bottom: 1px solid var(--term-hairline); }
+.fc-report-section thead th { border-bottom: 2px solid var(--term-text); }
+.fc-report-section tbody tr:nth-child(even) { background: var(--term-bg); }
+.fc-report-note { padding: 8px 12px; border: 1px solid var(--term-border); border-radius: var(--term-radius-sm); background: var(--term-bg); }
+.fc-outcome { display: inline-block; padding: 3px 8px; border-radius: var(--term-radius-sm); background: var(--term-surface-2); color: var(--term-text-dim); font-size: 11px; font-weight: 600; letter-spacing: 0.02em; }
+.fc-outcome[data-won] { background: color-mix(in srgb, var(--term-blue) 14%, var(--term-surface)); color: var(--term-blue-text); }
 .fc-report-chapters > section + section { padding-top: 24px; border-top: 1px solid var(--term-hairline); }
 @media (min-width: 768px) {
   .fc-report-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
