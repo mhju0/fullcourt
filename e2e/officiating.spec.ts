@@ -136,3 +136,19 @@ for (const historical of [data.seasons[0], data.seasons[2], data.seasons[4]]) {
     }
   });
 }
+
+// Both sideways rows on a phone fade the edge that hides content, and stop once it is reached.
+test("the season strip and call-type row show that they scroll on a phone", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/officiating");
+  for (const name of [/Season comparison/, "Call-type filters"]) {
+    const row = page.getByLabel(name);
+    await expect(row).toHaveAttribute("data-overflow", "");
+    expect(await row.evaluate((el) => getComputedStyle(el).maskImage)).toContain("linear-gradient");
+    await row.evaluate((el) => { el.scrollLeft = el.scrollWidth; });
+    await expect(row).not.toHaveAttribute("data-more-end", "");
+    await row.evaluate((el) => { el.scrollLeft = 0; });
+    await expect(row).not.toHaveAttribute("data-more-start", "");
+  }
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+});

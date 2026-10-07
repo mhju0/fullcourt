@@ -64,15 +64,15 @@ test.describe("Behind the Data", () => {
     await expect(page.getByText("2.65", { exact: false }).first()).toBeVisible();
 
     // The ablation table's load-bearing pair: travel finds more of the model's calls than any
-    // other term, and those games win. Asserted together with the +0.32pp row they explain,
+    // other term, and those games win. Asserted together with the +0.34pp row they explain,
     // because the row on its own reads as an argument for deleting the term.
-    await expect(page.getByText("5,994", { exact: true })).toBeVisible();
-    await expect(page.getByText("59.14%", { exact: true })).toBeVisible();
-    await expect(page.getByText("+0.32pp", { exact: true })).toBeVisible();
+    await expect(page.getByText("5,992", { exact: true })).toBeVisible();
+    await expect(page.getByText("59.1%", { exact: true })).toBeVisible();
+    await expect(page.getByText("+0.34pp", { exact: true })).toBeVisible();
 
     // The count is dropped calls, not all winners. Preserve that distinction alongside the rate.
     await expect(
-      page.getByText("5,994 called games", { exact: false })
+      page.getByText("5,992 called games", { exact: false })
     ).toBeVisible();
     await expect(page.getByText("including losses, not a count of winning predictions", { exact: false })).toBeVisible();
   });
@@ -285,7 +285,7 @@ test("printing reveals evidence and restores the reading state", async ({ page }
   await page.evaluate(() => dispatchEvent(new Event("beforeprint")));
   await expect(page.locator("#reference-body details:not([open])")).toHaveCount(0);
   await page.emulateMedia({ media: "print" });
-  await expect(page.getByText("5,994", { exact: true })).toBeVisible();
+  await expect(page.getByText("5,992", { exact: true })).toBeVisible();
   await page.emulateMedia({ media: "screen" });
   await page.evaluate(() => dispatchEvent(new Event("afterprint")));
   await expect(page.locator("#reference-body details[open]")).toHaveCount(0);

@@ -12,8 +12,9 @@ import { cn } from "@/lib/utils"
  * The state is written as attributes, straight to the element, so scrolling re-renders nothing:
  * `data-more-start`, `data-more-end`, and `data-overflow` while the content is wider than the box.
  * The fade and the hint line that follows a table are CSS on those (`.fc-scroll-cue`, globals.css).
+ * Pass `data-pinned` when the first column is sticky, so the start edge never fades over it.
  */
-export function ScrollCue({ className, children, ...rest }: ComponentProps<"div">) {
+export function ScrollCue({ className, children, ref: outerRef, ...rest }: ComponentProps<"div">) {
   const ref = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -39,7 +40,15 @@ export function ScrollCue({ className, children, ...rest }: ComponentProps<"div"
   }, [])
 
   return (
-    <div ref={ref} className={cn("fc-scroll-cue", className)} {...rest}>
+    <div
+      ref={(el) => {
+        ref.current = el
+        if (typeof outerRef === "function") outerRef(el)
+        else if (outerRef) outerRef.current = el
+      }}
+      className={cn("fc-scroll-cue", className)}
+      {...rest}
+    >
       {children}
     </div>
   )

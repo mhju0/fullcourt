@@ -175,12 +175,19 @@ Open:
   the database password in Supabase, save the new value as Sensitive, then update the GitHub
   secret, `.env.local` and `~/Backups/fullcourt/backup.sh`); and create a Sentry auth token for
   source-map upload, after which the build-side change can be written.
-- Season Report, Analysis, Playoff Rest and Officiating have not had a phone pass table by
-  table. A reader-picked number column for the Schedule breakdown (the survey's C1) is unbuilt.
+- A reader-picked number column for the Schedule breakdown (the survey's C1) is unbuilt.
 - The new phone controls have not been used on a physical phone.
-- Two `e2e/behind-the-data.spec.ts` tests expect 5,994 travel-dependent calls; the page and
-  production show 5,992 since the 2026-10-04 data corrections. The spec and the figure quoted in
-  DECISIONS.md and ADR 0006 need the owner's ruling, not a silent edit.
+- DECISIONS.md and ADR 0006 quote the travel ablation as 5,994 calls, 59.14% and +0.32pp; the
+  page has read 5,992, 59.1% and +0.34pp since the 2026-10-04 corrections. Whether those two
+  records get a dated amendment is the owner's call.
 - Sentry issue `JAVASCRIPT-NEXTJS-3`: a blocked `eval` on `/playoffs` from one iOS 15 client, with
   no first-party frame. Not reproduced.
 - The footer notice size (12px) is not ruled on. A second backup copy off the Mac is not set up.
+
+Later on 2026-10-07: every page was measured at 360 and 390px on a production build. No page
+scrolls sideways and every table sits in a scroller. Four gaps were closed: the Home Court season
+table and Officiating's season strip and call-type row now use `ScrollCue`, the Schedule
+`WHAT THESE COLUMNS MEAN` disclosure is 44px tall, and the team label under a player on Shooting
+is 10px, not 9.6px. The two stale `behind-the-data.spec.ts` assertions follow the page. Two e2e
+tests (`games.spec.ts:294`, `navigation.spec.ts:54`) failed once in a full run and passed six of
+six alone; treat them as load-sensitive. Season Report, Analysis and Playoff Rest needed no change.

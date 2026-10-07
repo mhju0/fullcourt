@@ -129,3 +129,20 @@ test('mobile chart and expanded table stay within the page and support keyboard 
   expect(accessibility.violations).toEqual([]);
   await page.screenshot({ path: info.outputPath('home-court-mobile.png'), fullPage: true });
 });
+
+// The season table is 760px wide with its season column pinned, so a phone shows that more
+// columns exist: the far edge fades and a hint follows, and the pinned edge never fades.
+test("the season table shows that it scrolls on a phone", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/home-court");
+  await page.getByText("View season data", { exact: true }).click();
+  const table = page.getByRole("region", { name: /Home-court season data/ });
+  await expect(table).toHaveAttribute("data-more-end", "");
+  expect(await table.evaluate((el) => getComputedStyle(el).maskImage)).toContain("linear-gradient");
+  await expect(table.locator("+ .fc-scroll-hint")).toBeVisible();
+
+  await table.evaluate((el) => { el.scrollLeft = el.scrollWidth; });
+  await expect(table).not.toHaveAttribute("data-more-end", "");
+  expect(await table.evaluate((el) => getComputedStyle(el).maskImage)).toBe("none");
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+});

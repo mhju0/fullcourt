@@ -236,16 +236,6 @@
   min-width: 0;
   position: relative;
 }
-.chipShell::after {
-  content: "";
-  position: absolute;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  width: 24px;
-  pointer-events: none;
-  background: linear-gradient(90deg, transparent, var(--term-bg));
-}
 .chips {
   display: flex;
   gap: 8px;

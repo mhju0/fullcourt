@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 
 import styles from "@/components/home-court-study.module.css";
+import { ScrollCue } from "@/components/ui/scroll-cue";
 import { useBacktest } from "@/hooks/useBacktest";
 import {
   homeCourtEraSummary,
@@ -135,7 +136,7 @@ export function HomeCourtStudy() {
 
       <details className="fc-disclosure">
         <summary>View season data</summary>
-        <div className={`overflow-x-auto focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[var(--term-accent)] ${styles.tableScroll}`} role="region" aria-label="Home-court season data; scroll horizontally for all columns" tabIndex={0}>
+        <ScrollCue data-pinned="" className="focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[var(--term-accent)]" role="region" aria-label="Home-court season data; scroll horizontally for all columns" tabIndex={0}>
           <table className="fc-table w-full min-w-[760px] text-left">
             <thead className="bg-[var(--term-surface-2)] text-[var(--term-text-muted)]">
               <tr>
@@ -166,7 +167,8 @@ export function HomeCourtStudy() {
               })}
             </tbody>
           </table>
-        </div>
+        </ScrollCue>
+        <p className="fc-scroll-hint" aria-hidden="true">Scroll sideways for more columns.</p>
       </details>
 
       <section className="fc-report-section flex flex-col gap-4" aria-labelledby="home-court-context">

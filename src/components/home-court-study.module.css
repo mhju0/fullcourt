@@ -9,10 +9,6 @@
   min-height: 260px;
 }
 
-.tableScroll {
-  position: relative;
-}
-
 .seasonCell {
   position: sticky;
   left: 0;
@@ -23,19 +19,6 @@
 
 thead .seasonCell {
   background: var(--term-surface-2);
-}
-
-@media (max-width: 767px) {
-  .tableScroll::after {
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    width: 20px;
-    content: "";
-    pointer-events: none;
-    background: linear-gradient(to right, transparent, rgba(22, 24, 29, 0.1));
-  }
 }
 
 .point {
