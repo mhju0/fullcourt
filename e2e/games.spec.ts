@@ -91,10 +91,37 @@ test.describe("Games page", () => {
   // columns; the width decides how much shows, not a mode.
   test("the slate shows every column on a desktop and offers no view toggle", async ({ page }) => {
     await page.goto("/games?season=2024-25&date=2024-12-25&view=skim");
-    await expect(page.getByText("FATIGUE · 0–10")).toBeVisible();
-    await expect(page.getByText("REST · DAYS")).toBeVisible();
+    await expect(page.getByText("FATIGUE (0–10)")).toBeVisible();
+    await expect(page.getByText("REST (DAYS)")).toBeVisible();
     await expect(page.getByText("GAP SIZE", { exact: true })).toBeVisible();
     await expect(page.getByRole("button", { name: /^(SKIM|DEEP DIVE)$/ })).toHaveCount(0);
+  });
+
+  // Owner review, 2026-10-07: the header sat 3px left of the first four columns, because a
+  // row reserves a 3px accent edge the header did not, and GAP SIZE ended over the chevron
+  // rather than the badge it names. Each header now starts or ends where its cells do.
+  test("each column header lines up with the cells under it", async ({ page }) => {
+    await page.goto("/games?season=2024-25&date=2024-12-25");
+    await expect(page.getByText("REST (DAYS)")).toBeVisible();
+    const edges = await page.evaluate(() => {
+      const ink = (el: Element) => {
+        const range = document.createRange();
+        range.selectNodeContents(el);
+        return range.getBoundingClientRect();
+      };
+      const heads = [...document.querySelectorAll(".fc-game-header > span")].map(ink);
+      const row = document.querySelector(".fc-game-grid")!;
+      const cells = [...row.children].map((c) => c.getBoundingClientRect());
+      const badge = row.querySelector(".fc-game-chevron > span > *")!.getBoundingClientRect();
+      return {
+        left: [0, 1, 3, 4].map((i) => heads[i].left - cells[i].left),
+        restRight: heads[2].right - cells[2].right,
+        gapRight: heads[5].right - badge.right,
+      };
+    });
+    for (const delta of [...edges.left, edges.restRight, edges.gapRight]) {
+      expect(Math.abs(delta)).toBeLessThanOrEqual(1);
+    }
   });
 
   // The EDGES AHEAD strip — what survived the UPCOMING view. It exists only when the

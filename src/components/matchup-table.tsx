@@ -770,6 +770,9 @@ export function MatchupTable({ games }: MatchupTableProps) {
             style={{
               gridTemplateColumns: GRID_COLS,
               padding: "8px 16px",
+              // A row reserves 3px on its left for the accent edge; the header reserves the
+              // same, or every label sits 3px left of its column.
+              borderLeft: "3px solid transparent",
               background: "var(--term-surface-2)",
               borderBottom: "1px solid var(--term-border)",
               fontSize: 10,
@@ -779,11 +782,12 @@ export function MatchupTable({ games }: MatchupTableProps) {
             }}
           >
             <span>GAME</span>
-            <span>MATCHUP · AWAY / HOME</span>
-            <span className="text-right">REST · DAYS</span>
-            <span>FATIGUE · 0–10</span>
+            <span>MATCHUP (AWAY / HOME)</span>
+            <span className="text-right">REST (DAYS)</span>
+            <span>FATIGUE (0–10)</span>
             <span>REST ADVANTAGE</span>
-            <span className="text-right">GAP SIZE</span>
+            {/* Ends over the badge, not over the chevron beside it (16px icon, 8px gap). */}
+            <span className="pr-6 text-right">GAP SIZE</span>
           </div>
 
           {games.map((game, i) => (
