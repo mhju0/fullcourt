@@ -90,8 +90,12 @@ test.describe("Schedule Disparity page", () => {
   test("explains its columns behind a disclosure that opens on click", async ({ page }) => {
     await page.goto("/schedule");
 
-    const guide = page.getByRole("group").filter({ hasText: "WHAT THESE COLUMNS MEAN" });
-    await expect(guide).toBeVisible({ timeout: 20_000 });
+    // The guide explains the breakdown's columns, so it is not on screen until the
+    // breakdown is open (D-79).
+    const breakdown = page.getByText("Show full breakdown", { exact: true });
+    await expect(breakdown).toBeVisible({ timeout: 20_000 });
+    await expect(page.getByText("WHAT THESE COLUMNS MEAN")).toBeHidden();
+    await breakdown.click();
 
     // Closed by default, so it costs no vertical space until asked for.
     const rule = page.getByText(/positive is always favorable/i);
@@ -149,11 +153,12 @@ test("schedule owns workload and offers exact weekly values", async ({ page }) =
   await page.getByText("Show travel and workload", { exact: true }).click();
   await expect(page.getByTestId("schedule-tax-row")).toHaveCount(30);
   await expect(page.getByTestId("fatigue-calendar")).toBeVisible();
-  const week = page.getByRole("slider", { name: "Inspect fatigue week" });
-  await week.focus();
-  await page.keyboard.press("ArrowRight");
-  await expect(week).toHaveValue("1");
-  await expect(page.getByText(/Inspect week 2:/)).toBeVisible();
+  // The readout opens on the season's peak week and the step buttons walk from there.
+  const readout = page.getByTestId("fatigue-week-readout");
+  await expect(readout).toHaveText(/^Week of [A-Z][a-z]{2} \d+, \d{4} · \d\.\d{2} · \d+ games$/);
+  const before = await readout.textContent();
+  await page.getByRole("button", { name: "Previous week" }).click();
+  await expect(readout).not.toHaveText(before ?? "");
 });
 
 // D-78: a table wider than its box has to say so. On a phone the breakdown drops the two

@@ -10,7 +10,7 @@ async function open(page: import("@playwright/test").Page, name: string) {
   await page.getByTestId("player-row").first().click();
 }
 
-test.describe("Shooting by Rest", () => {
+test.describe("Player Shooting by Rest", () => {
   /**
    * The iOS input-zoom floor. Mobile Safari zooms the page when a focused control's font
    * is under 16px and does not zoom back out on blur — this page and /analysis measured
@@ -39,8 +39,8 @@ test.describe("Shooting by Rest", () => {
 
   test("renders the heading and eyebrow", async ({ page }) => {
     await page.goto("/shooting");
-    await expect(page.getByRole("heading", { name: "Shooting by Rest" })).toBeVisible();
-    await expect(page.getByText("SHOOTING BY REST · eFG%")).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Player Shooting by Rest" })).toBeVisible();
+    await expect(page.getByText("PLAYERS · eFG% BY REST")).toBeVisible();
   });
 
   test("opens on the newest season with a volume floor already applied", async ({ page }) => {

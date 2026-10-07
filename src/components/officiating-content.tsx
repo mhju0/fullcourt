@@ -256,9 +256,9 @@ export function OfficiatingContent({ seasons }: { seasons: ReviewSeason[] }) {
               ))}
             </ScrollCue>
           </div>
-          <button type="button" aria-expanded={showAllTypes} onClick={() => setShowAllTypes(!showAllTypes)} className="min-h-11 px-3 text-xs underline">{showAllTypes ? "Fewer call types" : `All ${categories.length} call types`}</button>
+          <button type="button" aria-expanded={showAllTypes} onClick={() => setShowAllTypes(!showAllTypes)} className={styles.allTypes}>{showAllTypes ? "Fewer call types" : `All ${categories.length} call types`}</button>
           <label className={styles.teamLabel}>
-            Team
+            <span className="sr-only">Team</span>
             <select
               aria-label="Team"
               value={team}

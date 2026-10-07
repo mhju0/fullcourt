@@ -532,12 +532,14 @@ export function ScheduleDisparityContent() {
               Positive is favorable in every column. Edge games are counted from the same fatigue
               scores as the Games page, so a season in progress lags until its games are played.
             </p>
+            {/* Inside the breakdown: the guide explains columns that only exist once it is open. */}
+            <div style={{ marginTop: SPACE.md }}>
+              <ColumnGuide
+                countedGames={data.league.countedGames}
+                scheduledGames={data.scheduledGames}
+              />
+            </div>
           </details>
-
-          <ColumnGuide
-            countedGames={data.league.countedGames}
-            scheduledGames={data.scheduledGames}
-          />
         </>
       ) : null}
       <ScheduleWorkload key={season} season={season} />

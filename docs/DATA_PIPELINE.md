@@ -58,7 +58,7 @@ study, exclusions, amendments, and authorization boundary are in
 
 | Publication | Producers | Serving path |
 | --- | --- | --- |
-| Shooting by Rest | `fetch_shooting_data.py` → `analyze_player_shooting.py` → `export_player_rest.py` | `public/data/player-rest.json`, consumed by Shooting and its zero-rest workload disclosure |
+| Player Shooting by Rest | `fetch_shooting_data.py` → `analyze_player_shooting.py` → `export_player_rest.py` | `public/data/player-rest.json`, consumed by Shooting and its zero-rest workload disclosure |
 | Availability | `ml/availability_cost.py`, `availability_quality.py`, `availability_facts.py` | Generated facts and pinned TypeScript mirror |
 | Playoff series | `fetch_playoffs.py`, `fetch_play_in.py` → `ml/build_series_dataset.py`, `compute_series_features.py`, `train_series_model.py`, `predict_series.py` | Series/prediction tables and `/api/playoffs` |
 | Previous-round workload | `ml/compute_prior_grind.py`, `playoff_rest_report.py` | Published playoff facts |

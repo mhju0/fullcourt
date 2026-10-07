@@ -9,12 +9,12 @@ Dependency versions live in `package.json` and `pnpm-lock.yaml`. The shared visu
 | Route | Main question and presentation |
 | --- | --- |
 | `/` | Rest and schedule findings, derived from existing data sources; dark front door, Games primary action |
-| `/games` | Matchup rest/schedule conditions; controls and games first, summaries beside them on desktop and below on mobile |
+| `/games` | Matchup rest/schedule conditions in tip-off order; controls, a one-line slate summary, the matchups, then Edges Ahead, in the same order at every width |
 | `/season` | Completed results against the season's venue baseline, six initial team records with remaining teams expandable, five largest completed rest gaps including losses |
-| `/schedule` | Relative schedule ranking and worth; breakdown and travel/workload in disclosures; completed-game fatigue calendar |
+| `/schedule` | Relative schedule ranking and worth; breakdown (with its column guide inside) and travel/workload in disclosures; league fatigue by week for completed games |
 | `/explore` | Directory for the secondary basketball studies |
 | `/analysis` | Historical model evaluation: The answer and The explorer |
-| `/shooting` | Dense player comparisons with no-rest/3+ days eFG%, attempt counts, uncertainty, and expandable seasons; zero-rest workload disclosure |
+| `/shooting` | Player Shooting by Rest: dense player comparisons with no-rest/3+ days eFG%, attempt counts, uncertainty, and expandable seasons; zero-rest workload disclosure |
 | `/shot-quality` | Expected shot value by location; one mobile court with Compare models, two desktop courts |
 | `/availability` | Missing-player associations, trends, and expandable coefficient comparison |
 | `/playoffs` | Previous-round workload and the separate series model |
@@ -59,7 +59,7 @@ Games keeps previous/next-day stepping visible from the `sm` breakpoint; a phone
 first slate. Exact four-night and six-night counts use
 completed prior games plus the selected game. Altitude venue and carryover labels are separate.
 
-Games shares `season`, `date`, `view`, and expanded `game`. Explicit historical selection wins
+Games shares `season`, `date`, and expanded `game`; an old `view` parameter is ignored. Explicit historical selection wins
 over offseason defaults. Invalid dates fall back; valid no-game dates remain selected. A date
 change clears the previous expanded game. Upcoming seasons are offered only when schedule data
 is available.
@@ -80,7 +80,12 @@ Geist carries prose; Geist Mono and tabular numerals carry values. Use tokens fr
 `src/lib/terminal-styles.ts` and `globals.css`. Explanation text is 15px; shared filters use 16px text and a 44px minimum height at all
 viewport sizes. Analysis filters use equal-width columns. Season Report separates its result
 and interpretation with contrasting surfaces and a responsive divider. Short structural labels may use compact uppercase mono. Hairline dividers
-and section spacing provide hierarchy without a card around every paragraph.
+and section spacing provide hierarchy without a card around every paragraph. Where a page is
+several unlike blocks of text, each block is one bordered unit with its title in a tinted band
+(D-79): `.fc-report-section` on Season Report and Home Court, and each play in an open
+Officiating report. A table inside such a block has a 2px header rule and alternate-row tint;
+a caveat that must be read with a table sits in `.fc-report-note`. `--term-border` and
+`--term-hairline` are dark enough to show on the page ground; do not lighten them.
 
 The app is light; the homepage is deliberately dark. Fatigue/rest semantics retain their existing
 palette. Shooting's approved option A colors only signed difference cells: green positive, red
@@ -93,15 +98,21 @@ the month buttons and date chips wrap, so a whole month shows at once. Below `sm
 one Sunday-to-Saturday week of seven 44px cells, with days that have no games at a count of 0;
 the Calendar button opens the month buttons and a month grid, and a pick there closes the panel
 and returns focus to the button. The three slate measures are one line above the matchups
-wherever the summary rail is absent: below `lg`, and in Deep Dive at any width. The rail starts
-at `lg` because the matchup table needs about 600px beside it. Season selectors share one labeled component across studies. Deep Dive uses
-the full desktop width; narrower desktop/tablet tables scroll in a keyboard-focusable region.
-Mobile Games shows teams, status, and rest advantage without sideways scrolling. Shooting keeps
+at every width, and Edges Ahead follows the list. There is no Skim/Deep Dive toggle and no
+side rail (D-79): from `sm` the matchup table always carries the rest-days, fatigue and
+gap-size columns at the full content width, and narrower desktop/tablet tables scroll in a
+keyboard-focusable region. Matchups are ordered by tip-off time, then by the source event id
+(`slateOrder()` in `src/lib/db/slate-order.ts`). Season selectors share one labeled component across studies.
+Mobile Games shows teams, status, and rest advantage without sideways scrolling; the other
+columns are under each row's expansion. Shooting keeps
 identity, both splits, and samples available in compact rows. Shooting keeps a short signed-value interpretation key visible; rest definitions, uncertainty
 explanation and coverage expand on demand. Officiating initially offers the common call types
-plus an All call types control, and always includes a selected rare category. Advanced filters and secondary
-tables use native disclosures. Wide detail tables retain sticky identity columns. Every
-`DataTable` and the Deep Dive matchup table scroll inside `ScrollCue`
+plus an All call types control, and always includes a selected rare category. Its filter row centers the chips, the All call types button and the
+team select on one line, and the select fills the row on a phone. Advanced filters and secondary
+tables use native disclosures. The Schedule Edge fatigue chart is the whole league by week:
+dated axis, a readout for the selected week with Previous/Next buttons, and lighter bars for
+weeks well below the median. Wide detail tables retain sticky identity columns. Every
+`DataTable` and the matchup table scroll inside `ScrollCue`
 (`src/components/ui/scroll-cue.tsx`): the edge that hides content fades, a hint line follows a
 table while it is wider than its box, and touch screens get no scrollbar. A new sideways
 scroller uses `ScrollCue` rather than a bare `overflow-x-auto`, with `data-pinned` when its

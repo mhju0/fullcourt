@@ -20,6 +20,7 @@ import {
 } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
 import { db } from "./index";
+import { slateOrder } from "./slate-order";
 import {
   fatigueScores,
   games,
@@ -293,11 +294,7 @@ function selectGamesWithFatigue(where: SQL | undefined) {
     .leftJoinLateral(homeFatigue, sql`true`)
     .leftJoinLateral(awayFatigue, sql`true`)
     .where(where)
-    // The pre-LATERAL query had no ORDER BY, but its plan happened to emit rows in
-    // away-team-id order and the home page renders cards in array order. Pin that
-    // order so the rewrite is response-identical. A team plays at most one game per
-    // date, so away_team_id is a unique sort key here.
-    .orderBy(asc(games.awayTeamId));
+    .orderBy(...slateOrder());
 }
 
 /** Derived, not re-declared: a third copy of the column list could drift from the query. */

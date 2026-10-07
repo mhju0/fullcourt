@@ -8,15 +8,13 @@ import { CalendarDays, ChevronLeft, ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import { EdgesAhead } from "@/components/edges-ahead"
-import { MatchupTable, type SlateDensity } from "@/components/matchup-table"
+import { MatchupTable } from "@/components/matchup-table"
 import { PageHeader } from "@/components/page-header"
 import { SeasonSelector } from "@/components/season-selector"
 import { useGameSlate, type GameSlate } from "@/hooks/useGameSlate"
-import { useSlateDensity } from "@/hooks/useSlateDensity"
 import { browsableSeasons, currentDisplaySeason, isNbaOffSeason, nextSeasonLabel } from "@/lib/nba-season"
 import { MessageCard } from "@/components/ui/message-card"
 import { MethodLink } from "@/components/method-link"
-import { StatTile } from "@/components/ui/stat-tile"
 import type { SlateDay } from "@/lib/game-slate-machine"
 import { LEAD, SPACE_CARD, termCardStyle, TRACK, TYPE } from "@/lib/terminal-styles"
 import { cn } from "@/lib/utils"
@@ -36,39 +34,9 @@ const termBtnStyle: React.CSSProperties = { border: "1px solid var(--term-border
    which is the more honest form. Repeating it here would put a forty-one-season result among
    controls that describe one day's slate. */
 
-// ─── Stat summary row ────────────────────────────────────────────
-
-/* Three tiles, all of them about the slate on screen. The fourth used to carry the
-   all-seasons backtest rate, which described none of these games: the historical claim
-   belongs in each matchup row, where it is stated for that game's own rest gap, and
-   on /analysis, which exists to prove it. */
-function StatSummaryRow({
-  gamesToday,
-  avgRestAdv,
-  highConfGames,
-  className,
-}: {
-  gamesToday: number | null
-  avgRestAdv: string
-  highConfGames: string
-  className?: string
-}) {
-  return (
-    <div className={cn("grid-cols-1 gap-2", className)}>
-      {/* Not "TODAY": this is the count for the selected date, and the page deliberately
-          auto-selects the most recent date with games whenever today has none. */}
-      <StatTile label="GAMES ON THIS DATE" value={gamesToday === null ? "—" : String(gamesToday)} accent="var(--term-neutral)" />
-      <StatTile label="AVG REST GAP · SCORE" value={avgRestAdv} accent="var(--term-neutral)" />
-      {/* Gap magnitude uses the interface accent, independent of the favored side. */}
-      <StatTile label="LARGE REST GAPS · 2+" value={highConfGames} accent="var(--term-accent)" />
-    </div>
-  )
-}
-
 /**
- * The same three measures as one line, for every width without the summary rail. The tiles sit
- * after the whole matchup list there, which on an eleven-game slate is three screens down; this
- * line answers "is this slate worth reading" before the list instead (D-78).
+ * The three slate measures as one line above the matchups. It answers "is this slate worth
+ * reading" before the list, which on an eleven-game slate is three phone screens long (D-78).
  */
 function SlateSummaryLine({
   gamesToday,
@@ -133,64 +101,17 @@ function GroupLabel({ children }: { children: React.ReactNode }) {
 function SectionDivider({
   label,
   count,
-  action,
 }: {
   label: string
   count: number | null
-  action?: React.ReactNode
 }) {
   return (
     <div className="mono flex items-center gap-3 py-2" style={{ fontSize: 11, letterSpacing: TRACK.label, color: "var(--term-text-muted)" }}>
       <span style={{ fontWeight: 700 }}>{label}</span>
       <span style={{ flex: 1, height: 1, background: "var(--term-border)" }} />
-      {action}
       <span style={{ fontWeight: 600 }}>
         {count === null ? "—" : count} {count === 1 ? "GAME" : "GAMES"}
       </span>
-    </div>
-  )
-}
-
-/**
- * The density dial (C5, 2026-08-28): SKIM is the schedule-site glance and the default;
- * DEEP DIVE adds days rest, the fatigue bars and CONF. It sits on the MATCHUPS divider —
- * a control about the table, on the table's own rail.
- */
-function DensityDial({
-  density,
-  onChange,
-}: {
-  density: SlateDensity
-  onChange: (d: SlateDensity, instant?: boolean) => void
-}) {
-  return (
-    <div className="flex gap-1" role="group" aria-label="Slate density">
-      {([
-        { id: "skim", label: "SKIM" },
-        { id: "deep", label: "DEEP DIVE" },
-      ] as const).map(({ id, label }) => (
-        <button
-          key={id}
-          type="button"
-          onClick={(event) => onChange(id, event.detail === 0)}
-          aria-pressed={density === id}
-          className={cn(
-            "mono min-h-11 shrink-0 px-2 py-1",
-            density === id
-              ? "bg-[var(--term-text)] text-[var(--term-surface)]"
-              : "bg-[var(--term-surface)] text-[var(--term-text)] hover:bg-[var(--term-surface-2)]"
-          )}
-          style={{
-            fontSize: 10,
-            letterSpacing: TRACK.label,
-            fontWeight: 700,
-            border: `1px solid ${density === id ? "var(--term-text)" : "var(--term-border)"}`,
-            borderRadius: "var(--term-radius-sm)",
-          }}
-        >
-          {label}
-        </button>
-      ))}
     </div>
   )
 }
@@ -368,10 +289,8 @@ function DayCell({ day, weekday, onClick }: { day: SlateDay; weekday?: string; o
  */
 function Matchups({
   slate,
-  density,
 }: {
   slate: GameSlate
-  density: SlateDensity
 }) {
   switch (slate.status) {
     case "loadingDays":
@@ -407,7 +326,7 @@ function Matchups({
     case "slateReady":
       // The Front Office table spine: one continuous grid-table for the whole slate
       // (docs/design/mocks/08-front-office.html) instead of a stack of cards.
-      return <MatchupTable games={slate.games} density={density} />
+      return <MatchupTable games={slate.games} />
 
     default: {
       const exhaustive: never = slate.status
@@ -442,14 +361,11 @@ export default function GamesPage() {
     { revalidateOnFocus: false, shouldRetryOnError: false }
   )
 
-  // Density belongs to the current URL, not a saved personal preference.
-  const [density, setDensity] = useSlateDensity()
-
   // Summary metrics for the stat row. Page policy, not slate policy — the threshold
   // is this page's editorial call, so it stays here rather than inside the hook.
   //
   // One pass, memoized on the slate: this used to run map + filter + reduce + a second
-  // filter on every render — including renders driven by `view`, the season selector and
+  // filter on every render — including renders driven by the season selector and
   // the Realtime score overlay, none of which change the answer.
   const { avgRestAdv, highConfGames } = useMemo(() => {
     let sum = 0
@@ -479,7 +395,6 @@ export default function GamesPage() {
   return (
     // The compact entry keeps a complete matchup above the mobile dock.
     <div className="flex flex-col gap-2 sm:gap-6">
-      {/* Heading + view toggle: one chapter, so they sit close together. */}
       <div className="page-intro">
         {/* "Games", and the reasoning is worth keeping because it reversed twice.
 
@@ -500,7 +415,7 @@ export default function GamesPage() {
         />
         <MethodLink surfaceHref="/games" />
       </div>
-      <div className={cn("grid items-start gap-8", density === "skim" && "lg:grid-cols-[minmax(0,1fr)_260px]")}>
+      <div className="grid items-start gap-8">
       <div className="flex min-w-0 flex-col gap-2 sm:gap-6" data-testid="games-main">
       <section aria-label="Choose a game date" className="flex flex-col gap-2" style={{ ...termCardStyle, padding: SPACE_CARD }}>
         <div className="flex items-end justify-between gap-2">
@@ -705,17 +620,15 @@ export default function GamesPage() {
               season={offSeasonLabel}
               finalSlate={slate.selectedDate === slate.lastDate}
               onUpcoming={upcomingDays?.length ? () => slate.send({ type: "SEASON_SELECTED", season: upcomingSeason }) : undefined}
-              className={density === "skim" ? "lg:hidden" : undefined}
             />
           ) : null}
       </section>
 
-      {/* Shown wherever the summary rail is not: below `lg`, and in Deep Dive at any width. */}
       <SlateSummaryLine
         gamesToday={slate.status === "slateReady" || slate.status === "slateEmpty" ? slate.games.length : null}
         avgRestAdv={avgRestAdv}
         highConfGames={highConfGames}
-        className={density === "skim" ? "grid lg:hidden" : "grid"}
+        className="grid"
       />
 
       {/* Matchups section */}
@@ -723,28 +636,11 @@ export default function GamesPage() {
         <SectionDivider
           label="MATCHUPS"
           count={slate.status === "slateReady" || slate.status === "slateEmpty" ? slate.games.length : null}
-          action={<DensityDial density={density} onChange={setDensity} />}
         />
-        <Matchups slate={slate} density={density} />
+        <Matchups slate={slate} />
       </div>
       </div>
-      <aside aria-label="Slate summary and upcoming edges" className="flex min-w-0 flex-col gap-6">
-      {/* With the rail showing this stays in it. The duplicate above is display-none
-          there and places the same context before the long matchup list on narrower screens. */}
-      {showOffSeasonBanner && slate.season === offSeasonLabel ? (
-        <OffSeasonBanner
-          season={offSeasonLabel}
-          finalSlate={slate.selectedDate === slate.lastDate}
-          onUpcoming={upcomingDays?.length ? () => slate.send({ type: "SEASON_SELECTED", season: upcomingSeason }) : undefined}
-          className={density === "skim" ? "hidden lg:flex" : "hidden"}
-        />
-      ) : null}
-        <StatSummaryRow
-          gamesToday={slate.status === "slateReady" || slate.status === "slateEmpty" ? slate.games.length : null}
-          avgRestAdv={avgRestAdv}
-          highConfGames={highConfGames}
-          className={density === "skim" ? "hidden lg:grid" : "hidden"}
-        />
+      <aside aria-label="Upcoming edges" className="flex min-w-0 flex-col gap-6">
         <EdgesAhead onJump={(season, date) => {
           slate.send({ type: "SEASON_SELECTED", season })
           slate.send({ type: "DATE_SELECTED", date })

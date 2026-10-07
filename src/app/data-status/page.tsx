@@ -170,7 +170,7 @@ export default async function DataStatusPage() {
           refresh="Not recorded."
         />
         <StatusCard
-          title="Shooting by Rest"
+          title="Player Shooting by Rest"
           href="/shooting"
           coverage={shootingCoverage ?? "Unavailable"}
           through={shootingCoverage?.split(" to ").at(-1) ?? "Unknown"}
