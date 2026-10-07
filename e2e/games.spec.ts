@@ -91,11 +91,58 @@ test.describe("Games page", () => {
   // columns; the width decides how much shows, not a mode.
   test("the slate shows every column on a desktop and offers no view toggle", async ({ page }) => {
     await page.goto("/games?season=2024-25&date=2024-12-25&view=skim");
-    await expect(page.getByText("FATIGUE · 0–10")).toBeVisible();
-    await expect(page.getByText("REST · DAYS")).toBeVisible();
+    await expect(page.getByText("FATIGUE (0–10)")).toBeVisible();
+    await expect(page.getByText("REST (DAYS)")).toBeVisible();
     await expect(page.getByText("GAP SIZE", { exact: true })).toBeVisible();
     await expect(page.getByRole("button", { name: /^(SKIM|DEEP DIVE)$/ })).toHaveCount(0);
   });
+
+  // Owner review, 2026-10-07: the header sat 3px left of the first four columns, because a
+  // row reserves a 3px accent edge the header did not, and GAP SIZE ended over the chevron
+  // rather than the badge it names. Each header now starts or ends where its cells do.
+  test("each column header lines up with the cells under it", async ({ page }) => {
+    await page.goto("/games?season=2024-25&date=2024-12-25");
+    await expect(page.getByText("REST (DAYS)")).toBeVisible();
+    const edges = await page.evaluate(() => {
+      const ink = (el: Element) => {
+        const range = document.createRange();
+        range.selectNodeContents(el);
+        return range.getBoundingClientRect();
+      };
+      const heads = [...document.querySelectorAll(".fc-game-header > span")].map(ink);
+      const row = document.querySelector(".fc-game-grid")!;
+      const cells = [...row.children].map((c) => c.getBoundingClientRect());
+      const badge = row.querySelector(".fc-game-chevron > span > *")!.getBoundingClientRect();
+      return {
+        left: [0, 1, 3, 4].map((i) => heads[i].left - cells[i].left),
+        restRight: heads[2].right - cells[2].right,
+        gapRight: heads[5].right - badge.right,
+      };
+    });
+    for (const delta of [...edges.left, edges.restRight, edges.gapRight]) {
+      expect(Math.abs(delta)).toBeLessThanOrEqual(1);
+    }
+  });
+
+  // Owner review, 2026-10-07: every game row is the same height. The schedule sentence
+  // ("BKN on a back-to-back.") added a line to some rows and PROJECTED added one to others;
+  // the sentence now lives in the expansion and PROJECTED shares the figure's line. An
+  // upcoming game shows its tip time without an UPCOMING label.
+  for (const date of ["2027-01-14", "2026-01-17"]) {
+    for (const width of [1280, 390]) {
+      test(`every game row is the same height on ${date} at ${width}px`, async ({ page }) => {
+        await page.setViewportSize({ width, height: 900 });
+        await page.goto(`/games?season=${date < "2026-07" ? "2025-26" : "2026-27"}&date=${date}`);
+        const rows = page.locator(".fc-game-grid");
+        await expect(rows.first()).toBeVisible();
+        const heights = await rows.evaluateAll((els) => els.map((el) => el.getBoundingClientRect().height));
+        expect(heights.length).toBeGreaterThan(1);
+        expect(Math.max(...heights) - Math.min(...heights)).toBeLessThanOrEqual(1);
+        await expect(page.locator(".fc-game-status").filter({ hasText: "UPCOMING" })).toHaveCount(0);
+        await expect(rows.filter({ hasText: /back-to-back/ })).toHaveCount(0);
+      });
+    }
+  }
 
   // The EDGES AHEAD strip — what survived the UPCOMING view. It exists only when the
   // schedule actually holds future games with an edge to rank, so the test asks the API
