@@ -127,7 +127,7 @@ function ColumnGuide({ countedGames, scheduledGames }: { countedGames: number; s
   return (
     <details className="mono group" style={{ ...termCardStyle, padding: 0 }}>
       <summary
-        className="flex cursor-pointer items-center justify-between rounded-[var(--term-radius)] px-4 py-3 transition-colors hover:bg-[var(--term-surface-2)]"
+        className="flex min-h-11 cursor-pointer items-center justify-between rounded-[var(--term-radius)] px-4 py-3 transition-colors hover:bg-[var(--term-surface-2)]"
         style={{ fontSize: 11, letterSpacing: TRACK.label, color: "var(--term-text)", fontWeight: 700 }}
       >
         WHAT THESE COLUMNS MEAN

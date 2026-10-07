@@ -1,6 +1,6 @@
 .page { --shooting-row-height: 53px; }
 .player { display: flex; flex-direction: column; justify-content: center; min-height: 44px; width: 100%; text-align: left; white-space: normal; font-family: var(--font-geist), sans-serif; cursor: pointer; }
-.player small { display: none; color: var(--term-text-muted); font-family: var(--font-geist-mono), monospace; font-weight: 400; }
+.player small { display: none; color: var(--term-text-muted); font-family: var(--font-geist-mono), monospace; font-size: 10px; font-weight: 400; }
 .arm { display: flex; flex-direction: column; line-height: 1.5; }
 .arm small { color: var(--term-text-muted); font-size: 10px; }
 .effect { display: flex; min-height: var(--shooting-row-height); align-items: center; justify-content: flex-end; padding: 8px; font-family: var(--font-geist-mono), monospace; font-variant-numeric: tabular-nums; }

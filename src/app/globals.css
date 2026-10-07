@@ -634,8 +634,8 @@
    only its far edge: the pinned column sliding over the rest already marks the near one. */
 .fc-scroll-cue { overflow-x: auto; }
 .fc-scroll-cue[data-more-end] { mask-image: linear-gradient(to left, transparent, #000 40px); }
-.fc-scroll-cue[data-more-start]:not(.fc-detail-table, .fc-schedule-breakdown) { mask-image: linear-gradient(to right, transparent, #000 40px); }
-.fc-scroll-cue[data-more-start][data-more-end]:not(.fc-detail-table, .fc-schedule-breakdown) {
+.fc-scroll-cue[data-more-start]:not(.fc-detail-table, .fc-schedule-breakdown, [data-pinned]) { mask-image: linear-gradient(to right, transparent, #000 40px); }
+.fc-scroll-cue[data-more-start][data-more-end]:not(.fc-detail-table, .fc-schedule-breakdown, [data-pinned]) {
   mask-image: linear-gradient(to right, transparent, #000 40px, #000 calc(100% - 40px), transparent);
 }
 /* The fade would take the focus ring with it, and a keyboard reader is about to scroll anyway. */

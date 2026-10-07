@@ -12,6 +12,7 @@ import {
   reviewUrl,
   type ReviewSeason,
 } from "@/lib/officiating";
+import { ScrollCue } from "@/components/ui/scroll-cue";
 import styles from "./officiating.module.css";
 
 function displayDate(date: string) {
@@ -155,7 +156,7 @@ export function OfficiatingContent({ seasons }: { seasons: ReviewSeason[] }) {
                   <span>100%</span>
                   <span>50%</span>
                 </div>
-                <div
+                <ScrollCue
                   className={styles.strip}
                   ref={stripRef}
                   tabIndex={0}
@@ -191,7 +192,7 @@ export function OfficiatingContent({ seasons }: { seasons: ReviewSeason[] }) {
                       </div>
                     );
                   })}
-                </div>
+                </ScrollCue>
               </div>
             </div>
           </div>
@@ -231,7 +232,7 @@ export function OfficiatingContent({ seasons }: { seasons: ReviewSeason[] }) {
         </div>
         <div className={styles.filterRow}>
           <div className={styles.chipShell}>
-            <div className={styles.chips} aria-label="Call-type filters">
+            <ScrollCue className={styles.chips} role="group" aria-label="Call-type filters">
               <button
                 aria-pressed={!category}
                 onClick={() => {
@@ -253,7 +254,7 @@ export function OfficiatingContent({ seasons }: { seasons: ReviewSeason[] }) {
                   {categoryLabel(name)} <span>{count}</span>
                 </button>
               ))}
-            </div>
+            </ScrollCue>
           </div>
           <button type="button" aria-expanded={showAllTypes} onClick={() => setShowAllTypes(!showAllTypes)} className="min-h-11 px-3 text-xs underline">{showAllTypes ? "Fewer call types" : `All ${categories.length} call types`}</button>
           <label className={styles.teamLabel}>

@@ -104,7 +104,9 @@ tables use native disclosures. Wide detail tables retain sticky identity columns
 `DataTable` and the Deep Dive matchup table scroll inside `ScrollCue`
 (`src/components/ui/scroll-cue.tsx`): the edge that hides content fades, a hint line follows a
 table while it is wider than its box, and touch screens get no scrollbar. A new sideways
-scroller uses `ScrollCue` rather than a bare `overflow-x-auto`. Schedule Edge's full breakdown
+scroller uses `ScrollCue` rather than a bare `overflow-x-auto`, with `data-pinned` when its
+first column is sticky so the start edge never fades over it. The Home Court season table and
+Officiating's season strip and call-type row use it too. Schedule Edge's full breakdown
 drops its rank and bar columns below `lg` and the team name below `sm`, since the chart above
 it already draws them; it fits a tablet without scrolling. Officiating
 chips scroll horizontally; expanded reports fill the row width. All interactive targets and
