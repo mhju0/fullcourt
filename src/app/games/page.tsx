@@ -62,7 +62,7 @@ function SlateSummaryLine({
       style={{ ...termCardStyle, padding: 0 }}
     >
       {items.map(({ label, value }) => (
-        <div key={label} className="min-w-0 border-l border-[var(--term-border)] px-3 py-1 first:border-l-0">
+        <div key={label} className="flex min-w-0 flex-col gap-1 border-l border-[var(--term-border)] px-3 py-2 first:border-l-0 sm:px-4 sm:py-3">
           <dt style={{ fontSize: TYPE.micro, letterSpacing: TRACK.label, fontWeight: 600, color: "var(--term-text-muted)" }}>
             {label}
           </dt>

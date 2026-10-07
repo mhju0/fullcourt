@@ -112,7 +112,7 @@ function StatusCell({
           />
           LIVE
         </span>
-      ) : (
+      ) : status === "final" ? (
         <span
           style={{
             fontSize: 10,
@@ -121,9 +121,9 @@ function StatusCell({
             fontWeight: 600,
           }}
         >
-          {status === "final" ? "FINAL" : "UPCOMING"}
+          FINAL
         </span>
-      )}
+      ) : null}
       {hasScore ? (
         <span
           className="fc-game-score tabular-nums"
@@ -444,24 +444,23 @@ function RestAdvCell({
             </span>
           </>
         )}
+        {/* Where the number came from, stated only when it is not the ordinary case. A projected
+            differential is read off the published schedule: every input is already fixed except
+            the previous game's overtime and margin, so it moves only where one of those lands.
+            It shares the figure's line, so a projected row is no taller than a measured one. */}
+        {display.kind !== "unmeasured" && display.projected && (
+          <span
+            style={{
+              fontSize: TYPE.micro,
+              fontWeight: 600,
+              letterSpacing: TRACK.sub,
+              color: "var(--term-text-muted)",
+            }}
+          >
+            PROJECTED
+          </span>
+        )}
       </div>
-
-      {/* Where the number came from, stated only when it is not the ordinary case. A projected
-          differential is read off the published schedule: every input is already fixed except
-          the previous game's overtime and margin, so it moves only where one of those lands. */}
-      {display.kind !== "unmeasured" && display.projected && (
-        <span
-          className="mono"
-          style={{
-            fontSize: TYPE.micro,
-            fontWeight: 600,
-            letterSpacing: TRACK.sub,
-            color: "var(--term-text-muted)",
-          }}
-        >
-          PROJECTED
-        </span>
-      )}
 
       {/* Center-anchored differential meter: teal fill toward the rested side, ±5 scale. */}
       <div className="flex w-full items-center gap-2">
@@ -694,20 +693,6 @@ function GameRow({
         </div>
       </div>
 
-      {/* Schedule context belongs to this matchup and stays visible when details are collapsed. */}
-      {storyline && (
-        <p
-          className="m-0"
-          style={{
-            fontSize: 11,
-            lineHeight: LEAD.body,
-            color: "var(--term-text-muted)",
-            padding: "0 16px 12px",
-          }}
-        >
-          {storyline}
-        </p>
-      )}
 
       <div
         inert={!expanded}
@@ -726,6 +711,22 @@ function GameRow({
               padding: `${SPACE.md}px ${SPACE_CARD}px`,
             }}
           >
+            {/* The schedule sentence sits in the expansion, never in the row: a row that grew
+                a line when one team was on a back-to-back made the list uneven, and the flag
+                chip beside the fatigue score already says it (owner review, 2026-10-07). */}
+            {storyline && (
+              <p
+                className="m-0"
+                style={{
+                  fontSize: TYPE.data,
+                  lineHeight: LEAD.body,
+                  color: "var(--term-text-muted)",
+                  paddingBottom: SPACE.md,
+                }}
+              >
+                {storyline}
+              </p>
+            )}
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <FatigueDetailColumn
                 label={`AWAY · ${awayBrand.abbreviation}`}

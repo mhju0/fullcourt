@@ -101,7 +101,7 @@ and returns focus to the button. The three slate measures are one line above the
 at every width, and Edges Ahead follows the list. There is no Skim/Deep Dive toggle and no
 side rail (D-79): from `sm` the matchup table always carries the rest-days, fatigue and
 gap-size columns at the full content width, and narrower desktop/tablet tables scroll in a
-keyboard-focusable region. The header row reserves the same 3px accent edge as a row, so each label starts or ends where its cells do; a unit goes in parentheses, as in REST (DAYS) and FATIGUE (0–10). Matchups are ordered by tip-off time, then by the source event id
+keyboard-focusable region. The header row reserves the same 3px accent edge as a row, so each label starts or ends where its cells do; a unit goes in parentheses, as in REST (DAYS) and FATIGUE (0–10). Every game row is one height: the schedule sentence sits in the expansion, PROJECTED shares the figure line, and an upcoming game shows its tip time with no status label. Matchups are ordered by tip-off time, then by the source event id
 (`slateOrder()` in `src/lib/db/slate-order.ts`). Season selectors share one labeled component across studies.
 Mobile Games shows teams, status, and rest advantage without sideways scrolling; the other
 columns are under each row's expansion. Shooting keeps
