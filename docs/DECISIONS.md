@@ -968,3 +968,19 @@ five open choices after seeing each one before and after.
 
 Not covered: the band and table treatment also reach Home Court, which uses the same section
 class and was checked only by screenshot. None of this has been seen on a physical phone.
+
+### D-80 · Change freeze from 2026-10-17 until the first slate is verified — ACTIVE
+
+The owner asked on 2026-10-10 for a freeze date before the first game of 2026-27. The first
+game is BOS at DET on 2026-10-20 at 3:00 PM ET; the stored schedule and ESPN agree.
+
+The freeze starts 2026-10-17 at 00:00 ET, three days before that tip, so a late change has two
+full days to show a fault before anyone depends on the site. It ends when the first completed
+slate has passed the [live-season checklist](LAUNCH_DAY.md), no earlier than 2026-10-21.
+
+During the freeze, `main` takes only: a fix for something broken on the live site, a repair to
+the data pipeline, and a dependency pin for a security advisory. Each still needs the owner's
+approval to merge. Layout, copy, naming and new features wait. Scheduled workflows keep running.
+
+Nothing enforces this; branch protection cannot read a date. It is a rule for the owner and for
+any agent working in the repo.
