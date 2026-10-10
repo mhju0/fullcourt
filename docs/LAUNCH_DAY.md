@@ -47,7 +47,7 @@ registered and that the early ones ran. Twelve entries on one path had not been 
    before repairing data; the script inventory distinguishes maintenance from publication.
 6. Check `/api/health` and the public Games page. Verify the completed slate, details, and
    projected-versus-measured labels. During the games, a row should read LIVE after its tip
-   time, FINAL over "Pending" three hours later, and the score once a cron run has stored it. Provider probes alone cannot prove these paths work.
+   time, PENDING three hours later, and FINAL over the score once a cron run has stored it. Provider probes alone cannot prove these paths work.
 7. Record the run, date window, actual write counts, and remaining anomalies in the issue or PR.
 
 If a provider is unavailable, retain published data and surface the failure. Do not manufacture

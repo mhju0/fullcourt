@@ -179,7 +179,7 @@ all 200, none scrolls sideways, no console errors.
 Game status, 2026-10-10 (D-81): the stale-LIVE risk above was larger than first written. GitHub
 starts the daily job two and a half to five hours late, so it lands mid-evening and would have
 frozen a score on about half the season's games. Resolved by storing finals only: a row reads
-LIVE from its tip time, then FINAL over "Pending", then the score. `vercel.json` now holds
+LIVE from its tip time, then PENDING, then FINAL over the score. LIVE is a label with a still dot and no row tint, and the row's accessible name carries the state and score. `vercel.json` now holds
 twelve hourly cron entries (21:00 to 08:00 UTC) so finals land the same night, the Games board
 holds a game day until 6 AM ET, and EDGES AHEAD drops a game once it tips.
 

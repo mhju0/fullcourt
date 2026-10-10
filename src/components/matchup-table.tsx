@@ -18,7 +18,7 @@ import {
   teamGameFlags,
   getConfidence,
 } from "@/components/matchup-parts";
-import { gamePhase, type GamePhase } from "@/lib/game-phase";
+import { gamePhase, spokenGameState, type GamePhase } from "@/lib/game-phase";
 import { buildGameStoryline } from "@/lib/game-storyline";
 import { getTeamColors } from "@/lib/nba-team-colors";
 import { formatRestAdvantageDisplay } from "@/lib/rest-advantage-display";
@@ -102,8 +102,9 @@ function StatusCell({
             fontWeight: 700,
           }}
         >
+          {/* Still, not pulsing: most of an evening slate is live at once, and the label is
+              read from the schedule, not from a feed. */}
           <span
-            className="animate-[pulse_1.7s_ease-in-out_infinite]"
             style={{
               display: "inline-block",
               width: 6,
@@ -123,7 +124,8 @@ function StatusCell({
             fontWeight: 600,
           }}
         >
-          FINAL
+          {/* PENDING: over by the clock, and the score writer has not run yet. */}
+          {phase === "final" ? "FINAL" : "PENDING"}
         </span>
       ) : null}
       {hasScore ? (
@@ -138,9 +140,6 @@ function StatusCell({
         >
           {awayScore}–{homeScore}
         </span>
-      ) : phase === "awaitingFinal" ? (
-        // The game is over by the clock and the score writer has not run yet.
-        <span style={{ fontSize: 11, color: "var(--term-text-muted)" }}>Pending</span>
       ) : (
         // The ET tip time when the schedule carries one — what a schedule site puts
         // here. The date is the fallback for the rows whose feeds carried no clock
@@ -586,7 +585,6 @@ function GameRow({
     game.awayFatigue?.score ?? null,
     game.homeFatigue?.score ?? null,
   );
-  const isLive = phase === "live";
   const storyline = useMemo(() => buildGameStoryline(game), [game]);
 
   const toggle = useCallback(
@@ -610,22 +608,19 @@ function GameRow({
       className="fc-game-row scroll-mt-20"
       style={{
         borderTop: index === 0 ? undefined : "1px solid var(--term-border)",
-        // One accent at a time (Front Office): only HIGH CONF earns the indigo edge,
-        // and a live game gets a whisper of the same tint so the eye finds it.
+        // One accent at a time (Front Office): only HIGH CONF earns the indigo edge.
+        // A live row is not tinted, since most of an evening slate is live at once.
         borderLeft:
           confidence === "high"
             ? "3px solid var(--term-accent)"
             : "3px solid transparent",
-        background: isLive
-          ? "color-mix(in srgb, var(--term-accent) 3%, var(--term-surface))"
-          : undefined,
       }}
     >
       <div
         role="button"
         tabIndex={0}
         aria-expanded={expanded}
-        aria-label={`${expanded ? "Collapse" : "Expand"} ${awayBrand.name} at ${homeBrand.name} on ${game.date} game details`}
+        aria-label={`${expanded ? "Collapse" : "Expand"} ${awayBrand.name} at ${homeBrand.name}${spokenGameState(phase, game.awayScore, game.homeScore)} on ${game.date} game details`}
         onClick={toggle}
         onKeyDown={onKeyDown}
         className="fc-game-grid grid cursor-pointer items-center gap-x-4 transition-colors hover:bg-[var(--term-surface-2)] focus-visible:ring-2 focus-visible:ring-[var(--term-accent)]/40"
@@ -758,7 +753,7 @@ export interface MatchupTableProps {
 }
 
 export function MatchupTable({ games }: MatchupTableProps) {
-  // One clock for the table: every row's LIVE and Pending label is read against it.
+  // One clock for the table: every row's LIVE and PENDING label is read against it.
   const now = useNow();
   return (
     <div

@@ -362,8 +362,8 @@ test("expanded game links survive reload and changing dates clears the expansion
   await expect(page).not.toHaveURL(/game=/);
 });
 
-// D-81: no in-game score is stored. A row reads LIVE from its tip time, FINAL over "Pending"
-// once three hours have passed, and the score when the writer stores it. The slate is served
+// D-81: no in-game score is stored. A row reads LIVE from its tip time, PENDING once three
+// hours have passed, and FINAL over the score when the writer stores it. The slate is served
 // as unplayed here whatever the database holds, so these keep working after opening night.
 test.describe("game status from the clock", () => {
   const unplayed = async (page: import("@playwright/test").Page) => {
@@ -389,9 +389,23 @@ test.describe("game status from the clock", () => {
 
       const rows = page.locator(".fc-game-grid");
       await expect(rows).toHaveCount(3);
-      await expect(status(page, 0)).toHaveText(/FINAL\s*Pending/);
+      // The top line is the state and the bottom line is the data, in every state.
+      await expect(status(page, 0)).toHaveText(/PENDING\s*3:00 PM ET/);
       await expect(status(page, 1)).toHaveText(/LIVE\s*7:00 PM ET/);
       await expect(status(page, 2)).toHaveText("9:30 PM ET");
+      await expect(page.locator(".fc-game-status").filter({ hasText: "FINAL" })).toHaveCount(0);
+
+      // LIVE is a label only: the dot is still and the row carries no tint, so the accent
+      // edge of a large rest gap stays the one accent on the table.
+      const live = rows.nth(1);
+      expect(await status(page, 1).locator("span span").first().evaluate((el) => getComputedStyle(el).animationName)).toBe("none");
+      expect(await live.evaluate((el) => getComputedStyle(el.parentElement!).backgroundColor))
+        .toBe(await rows.nth(2).evaluate((el) => getComputedStyle(el.parentElement!).backgroundColor));
+
+      // A button's name replaces its contents for a screen reader, so the state is in the name.
+      await expect(rows.nth(0)).toHaveAccessibleName(/^Expand .* at .*, result pending, on 2026-10-20 game details$/);
+      await expect(live).toHaveAccessibleName(/^Expand .* at .*, live, on 2026-10-20 game details$/);
+      await expect(rows.nth(2)).toHaveAccessibleName(/^Expand [^,]* on 2026-10-20 game details$/);
 
       const heights = await rows.evaluateAll((els) => els.map((el) => el.getBoundingClientRect().height));
       expect(Math.max(...heights) - Math.min(...heights)).toBeLessThanOrEqual(1);
@@ -404,7 +418,7 @@ test.describe("game status from the clock", () => {
     await unplayed(page);
     await page.goto("/games?season=2026-27&date=2026-10-20");
     await expect(page.locator(".fc-game-grid")).toHaveCount(3);
-    await expect(page.locator(".fc-game-status").filter({ hasText: /LIVE|FINAL/ })).toHaveCount(0);
+    await expect(page.locator(".fc-game-status").filter({ hasText: /LIVE|FINAL|PENDING/ })).toHaveCount(0);
   });
 
   test("the board stays on the game day past midnight ET and moves on at 6 AM", async ({ page }) => {
@@ -413,10 +427,16 @@ test.describe("game status from the clock", () => {
     await unplayed(page);
     await page.goto("/games");
     await expect(page).toHaveURL(/date=2026-10-20/);
-    await expect(status(page, 2)).toHaveText(/FINAL\s*Pending|LIVE/);
+    await expect(status(page, 2)).toHaveText(/PENDING|LIVE/);
 
     await page.clock.setFixedTime(new Date("2026-10-21T10:30:00Z"));
     await page.goto("/games");
     await expect(page).toHaveURL(/date=2026-10-21/);
   });
+});
+
+test("a finished game's row says its score to a screen reader", async ({ page }) => {
+  await page.goto("/games?season=2024-25&date=2024-12-25");
+  await expect(page.locator(".fc-game-grid").first())
+    .toHaveAccessibleName(/^Expand .* at .*, final \d+ to \d+, on 2024-12-25 game details$/);
 });

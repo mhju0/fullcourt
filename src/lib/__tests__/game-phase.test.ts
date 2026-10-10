@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { gamePhase, hasNotTipped } from "@/lib/game-phase";
+import { gamePhase, hasNotTipped, spokenGameState } from "@/lib/game-phase";
 
 const TIP = "2026-10-20T23:00:00.000Z"; // 7:00 PM ET
 const at = (hours: number) => Date.parse(TIP) + hours * 3_600_000;
@@ -51,5 +51,24 @@ describe("hasNotTipped", () => {
 
   it("keeps a game whose tip time is unknown", () => {
     expect(hasNotTipped(null, at(0))).toBe(true);
+  });
+});
+
+describe("spokenGameState", () => {
+  it("says nothing for a game that has not tipped", () => {
+    expect(spokenGameState("upcoming", null, null)).toBe("");
+  });
+
+  it("names the live and pending states", () => {
+    expect(spokenGameState("live", null, null)).toBe(", live,");
+    expect(spokenGameState("awaitingFinal", null, null)).toBe(", result pending,");
+  });
+
+  it("reads a final score in the order the row shows it, away then home", () => {
+    expect(spokenGameState("final", 112, 104)).toBe(", final 112 to 104,");
+  });
+
+  it("says final without a score when none is stored", () => {
+    expect(spokenGameState("final", null, 104)).toBe(", final,");
   });
 });

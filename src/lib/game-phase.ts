@@ -36,3 +36,29 @@ export function gamePhase(
 export function hasNotTipped(tipOffUtc: string | Date | null, nowMs: number): boolean {
   return tipOffUtc === null || new Date(tipOffUtc).getTime() > nowMs;
 }
+
+/**
+ * The phase as a clause for a row's accessible name, or "" before the tip.
+ *
+ * The Games row is one button and a button's name replaces its contents for a screen reader,
+ * so the state and the score have to be in the name to be heard at all. Away score first,
+ * the order the row prints it.
+ */
+export function spokenGameState(
+  phase: GamePhase,
+  awayScore: number | null,
+  homeScore: number | null
+): string {
+  switch (phase) {
+    case "live":
+      return ", live,";
+    case "awaitingFinal":
+      return ", result pending,";
+    case "final":
+      return awayScore !== null && homeScore !== null
+        ? `, final ${awayScore} to ${homeScore},`
+        : ", final,";
+    case "upcoming":
+      return "";
+  }
+}

@@ -1001,10 +1001,16 @@ Decided by the owner:
 
 - The writers store finished games only. `reconcileScores` skips a game ESPN reports as in
   progress, for the daily job and the Vercel route alike.
-- A row reads LIVE from its tip time for three hours, then FINAL over "Pending" until the score
+- A row reads LIVE from its tip time for three hours, then PENDING until the score
   is stored, and returns to its plain tip time if no score arrives within twelve hours
   (`src/lib/game-phase.ts`). The labels come from the stored tip instant and the viewer's
   clock, so they are the same in every time zone.
+- The status cell keeps one pattern: the top line is the state in capitals (LIVE, PENDING,
+  FINAL) and the bottom line is the data (tip time or score). PENDING matches the word Playoff
+  Rest already uses, and FINAL only ever sits over a score. LIVE is a label with a still dot
+  and no row tint: most of an evening slate is live at once, so a pulse or a tint would cover
+  the table and the large-gap accent edge would stop standing out. The row button's name
+  carries the state and score for screen readers.
 - Final scores are written about hourly. Vercel Hobby allows 100 cron entries, each once a
   day, each fired inside its hour, so `vercel.json` lists twelve, 21:00 to 08:00 UTC, on the
   existing route. A GitHub schedule cannot do this job.
