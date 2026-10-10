@@ -161,15 +161,17 @@ describe("reconcileScores", () => {
     expect(update.overtimePeriods).toBe(2);
   });
 
-  it("never writes overtime from a game still in progress", () => {
-    // A live game reports the periods played SO FAR. Period 5 mid-game must not be read as an
-    // overtime that has not happened; that would feed a phantom OT penalty into tonight's fatigue.
-    const [update] = reconcileScores(
-      [row()],
+  it("leaves a game still in progress alone and reports it", () => {
+    // The writers run a few times a night, so a score written mid-game would sit on the page
+    // unchanged until the next run. Only a finished game is written.
+    const stored = row();
+    const result = reconcileScores(
+      [stored],
       [espn({ status: "live", periods: 5, homeScore: 90, awayScore: 88 })]
-    ).updates;
-    expect(update.status).toBe("live");
-    expect(update.overtimePeriods).toBeNull();
+    );
+    expect(result.updates).toEqual([]);
+    expect(result.inProgress).toEqual([stored.id]);
+    expect(result.unmatchedStored).toEqual([]);
   });
 
   it("refuses to walk a stored final backwards and reports it instead", () => {

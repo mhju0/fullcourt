@@ -73,6 +73,12 @@ export type ScoreReconciliation = {
    * or by a re-run over old dates whose scoreboard has been recycled.
    */
   refusedDowngrades: number[];
+  /**
+   * Stored rows ESPN reported as being played. Never written: the writers run about hourly,
+   * so a mid-game score would sit on the page unchanged until the next run. The Games page
+   * marks a game live from its tip time instead (`src/lib/game-phase.ts`).
+   */
+  inProgress: number[];
 };
 
 /**
@@ -194,6 +200,7 @@ export function reconcileScores(
   const updates: ScoreUpdate[] = [];
   const unmatchedStored: StoredGameRow[] = [];
   const refusedDowngrades: number[] = [];
+  const inProgress: number[] = [];
 
   for (const row of stored) {
     const key = gameKey(row.awayAbbr, row.homeAbbr);
@@ -209,9 +216,13 @@ export function reconcileScores(
       continue;
     }
 
-    // Only from a line score, and only once the game is over: a game in progress reports the
-    // periods played SO FAR, so period 5 mid-game would otherwise write one overtime onto a
-    // game that has not had one yet.
+    if (espn.status === "live") {
+      inProgress.push(row.id);
+      continue;
+    }
+
+    // Only from a line score, and only from a finished game: anything else would report the
+    // periods played so far.
     const overtimePeriods =
       espn.status === "final" && espn.periods !== null && espn.periods >= 4
         ? espn.periods - 4
@@ -241,5 +252,6 @@ export function reconcileScores(
     ),
     unmatchedStored,
     refusedDowngrades,
+    inProgress,
   };
 }

@@ -21,6 +21,7 @@ import {
 import { alias } from "drizzle-orm/pg-core";
 import { db } from "./index";
 import { slateOrder } from "./slate-order";
+import { hasNotTipped } from "@/lib/game-phase";
 import {
   fatigueScores,
   games,
@@ -411,6 +412,7 @@ function mapJoinedRowToGameResponse(
     season: row.season,
     status: row.status,
     tipOffEt: formatEasternTipTime(row.tipOffUtc),
+    tipOffUtc: row.tipOffUtc ? new Date(row.tipOffUtc).toISOString() : null,
     homeTeam: {
       id: row.homeTeamId,
       name: row.homeTeamName,
@@ -939,6 +941,7 @@ export async function getUpcomingGamesWithRA(
       differential: latestOpen.differential,
       homeFatigueScore: homeFatigue.score,
       awayFatigueScore: awayFatigue.score,
+      tipOffUtc: games.tipOffUtc,
     })
     .from(latestOpen)
     .innerJoin(games, eq(games.id, latestOpen.gameId))
@@ -956,7 +959,10 @@ export async function getUpcomingGamesWithRA(
     .where(and(...conditions))
     .orderBy(asc(games.date), asc(games.id));
 
-  return rows.map((r) => ({
+  // A game stays `scheduled` until its final is written, so the status alone would list a
+  // game that is being played as still ahead.
+  const now = Date.now();
+  return rows.filter((r) => hasNotTipped(r.tipOffUtc, now)).map((r) => ({
     gameId: r.gameId,
     date: String(r.date),
     season: r.season,

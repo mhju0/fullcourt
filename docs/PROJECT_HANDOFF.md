@@ -176,7 +176,15 @@ production with a mocked response (one final, one live, one upcoming): rows stay
 on desktop and iPhone WebKit, with no page errors. Seventeen pages were loaded in iPhone WebKit:
 all 200, none scrolls sideways, no console errors.
 
-Open: `scripts/sync_scores_espn.ts` writes an in-progress game as `live` with its score at that
-moment, and the two writers run at 21:00 and 07:00 UTC. A game under way at 21:00 UTC (the
-opening 3:00 PM ET game, and weekend matinees) would read LIVE with a stale score until the next
-run. Not reproduced; read from the code. The fix is the owner's choice and is not built.
+Game status, 2026-10-10 (D-81): the stale-LIVE risk above was larger than first written. GitHub
+starts the daily job two and a half to five hours late, so it lands mid-evening and would have
+frozen a score on about half the season's games. Resolved by storing finals only: a row reads
+LIVE from its tip time, then FINAL over "Pending", then the score. `vercel.json` now holds
+twelve hourly cron entries (21:00 to 08:00 UTC) so finals land the same night, the Games board
+holds a game day until 6 AM ET, and EDGES AHEAD drops a game once it tips.
+
+Open: twelve cron entries on one path have not been deployed before; check the Vercel cron list
+after the first deploy and on opening night. A postponed game reads LIVE for three hours;
+recording postponements needs a new stored status. The daily job's lateness is unaddressed and
+only delays the fatigue refresh. Every state was tested with a mocked clock, none against a
+real slate.

@@ -59,6 +59,11 @@ export interface GameResponse {
    * absent time renders as its absence.
    */
   tipOffEt: string | null;
+  /**
+   * The same tip-off as an ISO instant, or null. The Games row reads a game's phase from it
+   * against the viewer's clock (`src/lib/game-phase.ts`), which a formatted ET string cannot do.
+   */
+  tipOffUtc: string | null;
   homeTeam: TeamInfo;
   awayTeam: TeamInfo;
   homeScore: number | null;

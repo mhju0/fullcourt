@@ -984,3 +984,34 @@ approval to merge. Layout, copy, naming and new features wait. Scheduled workflo
 
 Nothing enforces this; branch protection cannot read a date. It is a rule for the owner and for
 any agent working in the repo.
+
+## D-81 — No in-game score; LIVE is read from the clock (2026-10-10)
+
+The site does not show a score while a game is being played. Live scores are not what the
+product is for, and the score writers cannot keep one current.
+
+What was measured: GitHub starts both scheduled workflows two and a half to five hours after
+their configured time (the last ten daily-update runs began between 23:38 and 01:41 UTC against
+a 21:00 schedule). The daily job therefore lands in the middle of the evening games, and it
+used to write an in-progress game as `live` with the score at that moment. On that timing
+roughly half of the 1,200 games of 2026-27 would have shown a frozen score until the overnight
+run.
+
+Decided by the owner:
+
+- The writers store finished games only. `reconcileScores` skips a game ESPN reports as in
+  progress, for the daily job and the Vercel route alike.
+- A row reads LIVE from its tip time for three hours, then FINAL over "Pending" until the score
+  is stored, and returns to its plain tip time if no score arrives within twelve hours
+  (`src/lib/game-phase.ts`). The labels come from the stored tip instant and the viewer's
+  clock, so they are the same in every time zone.
+- Final scores are written about hourly. Vercel Hobby allows 100 cron entries, each once a
+  day, each fired inside its hour, so `vercel.json` lists twelve, 21:00 to 08:00 UTC, on the
+  existing route. A GitHub schedule cannot do this job.
+- The Games board holds a game day until 6 AM ET (`slateDateKey`), because 182 games on 107
+  dates are still being played at midnight ET.
+- EDGES AHEAD drops a game once its tip time has passed.
+
+Known limits: a postponed game reads LIVE for three hours, since nothing stored says it did not
+start; a listed tip time is a few minutes before the real one; none of this has been seen
+against a real slate.

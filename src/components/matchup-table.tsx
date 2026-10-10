@@ -7,6 +7,7 @@ import {
   useRef,
   type KeyboardEvent,
 } from "react";
+import { useNow } from "@/hooks/useNow";
 import { usePageQuery } from "@/hooks/useSeasonUrl";
 import { ChevronDown } from "lucide-react";
 import { FatigueBar, type FatigueBarTone } from "@/components/fatigue-bar";
@@ -17,6 +18,7 @@ import {
   teamGameFlags,
   getConfidence,
 } from "@/components/matchup-parts";
+import { gamePhase, type GamePhase } from "@/lib/game-phase";
 import { buildGameStoryline } from "@/lib/game-storyline";
 import { getTeamColors } from "@/lib/nba-team-colors";
 import { formatRestAdvantageDisplay } from "@/lib/rest-advantage-display";
@@ -64,21 +66,21 @@ const FLAG_STRIP_W = 104;
 // ─── Status cell ─────────────────────────────────────────────────
 
 function StatusCell({
-  status,
+  phase,
   date,
   tipOffEt,
   homeScore,
   awayScore,
   flashing,
 }: {
-  status: string;
+  phase: GamePhase;
   date: string;
   tipOffEt: string | null;
   homeScore: number | null;
   awayScore: number | null;
   flashing: boolean;
 }) {
-  const hasScore = homeScore !== null && awayScore !== null;
+  const hasScore = phase === "final" && homeScore !== null && awayScore !== null;
 
   return (
     // The flash is scoped to this cell (G3, ADR 0010): the score is what changed, so the
@@ -90,7 +92,7 @@ function StatusCell({
         flashing && "animate-[scoreFlash_0.5s_ease-out]",
       )}
     >
-      {status === "live" ? (
+      {phase === "live" ? (
         <span
           className="inline-flex items-center gap-2"
           style={{
@@ -112,7 +114,7 @@ function StatusCell({
           />
           LIVE
         </span>
-      ) : status === "final" ? (
+      ) : phase === "final" || phase === "awaitingFinal" ? (
         <span
           style={{
             fontSize: 10,
@@ -136,6 +138,9 @@ function StatusCell({
         >
           {awayScore}–{homeScore}
         </span>
+      ) : phase === "awaitingFinal" ? (
+        // The game is over by the clock and the score writer has not run yet.
+        <span style={{ fontSize: 11, color: "var(--term-text-muted)" }}>Pending</span>
       ) : (
         // The ET tip time when the schedule carries one — what a schedule site puts
         // here. The date is the fallback for the rows whose feeds carried no clock
@@ -541,10 +546,12 @@ function GameRow({
   game,
   index,
   isScoreFlashing,
+  phase,
 }: {
   game: GameResponse;
   index: number;
   isScoreFlashing: boolean;
+  phase: GamePhase;
 }) {
   const { params, update } = usePageQuery();
   const expanded = params.get("game") === String(game.id);
@@ -579,7 +586,7 @@ function GameRow({
     game.awayFatigue?.score ?? null,
     game.homeFatigue?.score ?? null,
   );
-  const isLive = game.status === "live";
+  const isLive = phase === "live";
   const storyline = useMemo(() => buildGameStoryline(game), [game]);
 
   const toggle = useCallback(
@@ -626,7 +633,7 @@ function GameRow({
       >
         <div className="fc-game-status">
           <StatusCell
-            status={game.status}
+            phase={phase}
             date={game.date}
             tipOffEt={game.tipOffEt}
             homeScore={game.homeScore}
@@ -751,6 +758,8 @@ export interface MatchupTableProps {
 }
 
 export function MatchupTable({ games }: MatchupTableProps) {
+  // One clock for the table: every row's LIVE and Pending label is read against it.
+  const now = useNow();
   return (
     <div
       style={{
@@ -797,6 +806,7 @@ export function MatchupTable({ games }: MatchupTableProps) {
               game={game}
               index={i}
               isScoreFlashing={game.isScoreFlashing ?? false}
+              phase={gamePhase(game.status, game.tipOffUtc, now)}
             />
           ))}
         </div>

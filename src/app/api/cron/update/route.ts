@@ -24,23 +24,25 @@ export const runtime = "nodejs";
  * The ceiling, stated rather than inherited. Vercel Hobby defaults to 10s and caps at 60s.
  *
  * Set to the cap because this route has an external dependency it does not control — one DB
- * read, a `cdn.nba.com` fetch, then one write per live game — and it runs once a day, so a slow
- * run costs nothing. See `SCOREBOARD_TIMEOUT_MS` above for the invariant between the two.
+ * read, an ESPN fetch per date, then one write per finished game — and it runs about hourly,
+ * so a slow run costs nothing. See `SCOREBOARD_TIMEOUT_MS` above for the invariant between the two.
  */
 export const maxDuration = 60;
 
-/** Never prerender — uses DB and live NBA feed. */
+/** Never prerender — reads the DB and ESPN's scoreboard. */
 export const dynamic = "force-dynamic";
 
 /**
  * GET /api/cron/update
  *
- * Vercel Cron-compatible endpoint that updates live NBA game scores. Checks for games currently
- * "live" or scheduled on **yesterday or today (ET)**, reads each of those dates' ESPN
- * scoreboards, and writes back status, scores and overtime.
+ * Vercel Cron-compatible endpoint that writes finished NBA games. Checks for games not yet
+ * final on **yesterday or today (ET)**, reads each of those dates' ESPN scoreboards, and writes
+ * back the final status, score and overtime. A game still being played is left alone
+ * (`reconcileScores`): the Games page marks it live from its tip time, and a score written
+ * mid-game would sit unchanged until the next run.
  *
- * Two dates because the cron fires at 07:00 UTC, which is 2-3 AM ET — past midnight, so the
- * games this pass is for are already "yesterday". See the window comment in the handler.
+ * Two dates because the later runs fire after midnight ET, when the games they are for are
+ * already "yesterday". See the window comment in the handler.
  *
  * **Reads ESPN, and matches on (away, home), because the previous design could not work.** It
  * fetched `cdn.nba.com`, which 403s — from this region and from GitHub's US runners alike, a
@@ -49,10 +51,10 @@ export const dynamic = "force-dynamic";
  * removed by sharing `@/lib/espn-scoreboard` with `scripts/sync_scores_espn.ts`: one matcher,
  * one abbreviation map, and a writer that cannot tell an `espn-` row from an `002…` one.
  *
- * This is the *evening* pass. The GitHub Actions pipeline (`scripts/daily_update.py`) runs at
- * 21:00 UTC — before tip-off — so without this route a night's finals would not appear until the
- * following afternoon. This route does not recompute fatigue; the Actions run does that, reading
- * whatever this has already finalized.
+ * This route is what puts a night's finals on the site. The GitHub Actions pipeline
+ * (`scripts/daily_update.py`) is scheduled for 21:00 UTC and in practice starts hours late, so it
+ * cannot be relied on for scores. This route does not recompute fatigue; the Actions run does
+ * that, reading whatever this has already finalized.
  *
  * The Supabase Realtime subscription will automatically push changes
  * to all connected clients when the `games` table is updated.
@@ -62,15 +64,13 @@ export const dynamic = "force-dynamic";
  * Unauthenticated access is rejected when `VERCEL=1` or when
  * `CRON_SECRET` is set (so local/staging can lock the route too).
  *
- * On Vercel Hobby, crons are limited to once per day. `vercel.json` is the source of truth
- * for the cadence and the time — restating the time here is what let this comment drift to
- * 10:00 UTC, the value that was considered and rejected for firing before tip-off.
+ * On Vercel Hobby each cron entry may run once a day and fires at some point inside its hour.
+ * `vercel.json` therefore lists one entry per hour from 21:00 to 08:00 UTC, all calling this
+ * route, so a final lands within about two hours of the game ending. `vercel.json` is the
+ * source of truth for the hours — restating them here is what let this comment drift once.
  *
- * That one run has to land after the last final of the night. It used to fire at 03:00 UTC,
- * which is 22:00 ET in the winter — a west-coast game tipping at 22:00 ET was still in its
- * first quarter, so its result was missed and the site carried a stale slate until the Actions
- * run the following afternoon. One run per day means the choice is "before some finals" or
- * "after all of them", and after is the only one that leaves the board correct overnight.
+ * The last entry has to land after the last final of the night. The latest tip of 2026-27 is
+ * 04:00 UTC (11 PM ET in winter), so 08:00 UTC leaves four hours for it.
  */
 export async function GET(request: Request) {
   const authHeader = request.headers.get("authorization");
@@ -99,13 +99,13 @@ export async function GET(request: Request) {
 
     // Yesterday *and* today, because this pass runs after midnight ET.
     //
-    // The cron fires at 07:00 UTC — 2 AM EST, 3 AM EDT — which is already ET date D+1, while
-    // the finals this route exists to capture carry `games.date = D`. Scoped to `today` alone,
+    // The runs from 04:00 or 05:00 UTC on fall on ET date D+1, while the finals this route
+    // exists to capture carry `games.date = D`. Scoped to `today` alone,
     // as it was from the 2026-08-18 schedule move until 2026-08-22, the `where` below selected
     // only games that had not tipped off yet: the evening pass matched nothing and wrote
     // nothing, and every night's result waited for the Actions 7-day lookback the following
-    // afternoon. The schedule is right — 07:00 UTC is after the last west-coast final — so the
-    // window is what moves. Two dates also make a late or retried run self-healing.
+    // afternoon. The schedule was right, so the window is what moved. Two dates also make a
+    // late or retried run self-healing.
     const yesterday = formatEasternDateKey(new Date(Date.now() - 24 * 60 * 60 * 1000));
     const dateKeys = yesterday === today ? [today] : [yesterday, today];
 
@@ -138,7 +138,7 @@ export async function GET(request: Request) {
       return NextResponse.json({
         data: { gamesUpdated: 0 },
         error: null,
-        meta: { message: "No live or scheduled games to update" },
+        meta: { message: "No unfinished games to update" },
       });
     }
 

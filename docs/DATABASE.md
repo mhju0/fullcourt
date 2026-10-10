@@ -102,7 +102,7 @@ No secondary indexes beyond the PK and the unique `abbreviation`.
 | `away_team_id` (`awayTeamId`) | integer | no | — | **FK → teams.id** |
 | `home_score` (`homeScore`) | integer | yes | — | null until final |
 | `away_score` (`awayScore`) | integer | yes | — | null until final |
-| `status` | varchar | no | `'scheduled'` | `scheduled` / `live` / `final` |
+| `status` | varchar | no | `'scheduled'` | `scheduled` / `final`. `live` is still accepted but no writer stores it (D-81) |
 | `game_type` (`gameType`) | varchar(16) | no | `'regular'` | `regular` / `playoffs` / `finals`. App filters to `regular`. |
 | `overtime_periods` (`overtimePeriods`) | integer | no | `0` | 0 = regulation, 1 = one OT, … Populated from ESPN by `fetch_game_context.ts` (2002-03+); **0 for earlier seasons means unknown, not "no OT"**. |
 | `tip_off_utc` (`tipOffUtc`) | timestamptz | yes | — | Real tip instant (migration 0011). Null pre-2002; the b2b multiplier falls back to a flat 1.38. |
