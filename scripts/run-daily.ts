@@ -1,7 +1,8 @@
 /**
  * Daily pipeline (invoked from `scripts/daily_update.py` in GitHub Actions):
- * 1. Recompute fatigue_scores for all games on the target date (usually "today" ET).
- * 2. Replace unresolved predictions for scheduled games on that date.
+ * 1. Recompute fatigue_scores for all games from the target date (usually "today" ET) through
+ *    the next 14 days.
+ * 2. Replace unresolved predictions for scheduled games in that window.
  *
  * Usage: pnpm exec tsx scripts/run-daily.ts YYYY-MM-DD
  */
@@ -57,8 +58,12 @@ async function main(): Promise<void> {
   }
 
   const port: DailyRefreshPort = {
+    // Prior games come from the schedule, played or not. Counting only finals dropped last
+    // night's game (still in progress when this runs) and every game between today and the
+    // row's own date, so a back-to-back read as rested. A final prior game keeps its real
+    // overtime and margin; an unplayed one contributes neither.
     loadRecentGames(teamId, gameDate) {
-      return fetchRecentGamesForTeam(appDb, teamId, gameDate);
+      return fetchRecentGamesForTeam(appDb, teamId, gameDate, "scheduled");
     },
     async replaceGameRefresh(write) {
       await appDb.transaction(async (tx) => {

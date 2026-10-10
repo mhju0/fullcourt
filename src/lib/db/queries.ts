@@ -35,6 +35,7 @@ import { neutralVenueCoordinates } from "@/lib/neutral-venues";
 import { isProjectedFatigue } from "@/lib/fatigue-provenance";
 import type { DisparityGameRow } from "@/lib/schedule-disparity";
 import type { SeasonReportRow } from "@/lib/season-report";
+import { seasonTravelLegs, travelLegKey } from "@/lib/season-travel";
 import { ABNORMAL_STRETCHES } from "@/lib/season-regime";
 import {
   formatEasternDateKey,
@@ -173,7 +174,6 @@ async function getTeamGameCountsInDaysBefore(
     .where(
       and(
         or(inArray(games.homeTeamId, unique), inArray(games.awayTeamId, unique)),
-        eq(games.status, "final"),
         gte(games.date, start),
         lt(games.date, gameDateYmd)
       )
@@ -191,7 +191,13 @@ async function getTeamGameCountsInDaysBefore(
   return out;
 }
 
-/** Counts completed prior games plus the selected game in an exact calendar window. */
+/**
+ * Counts prior games plus the selected game in an exact calendar window.
+ *
+ * Prior games count whether or not they have been played, which is what the stored fatigue row
+ * was scored against: with a finals-only filter every date still ahead read "no 3-in-4" beside a
+ * score that had charged for one.
+ */
 async function computeScheduleDensityMap(
   gameDate: string,
   teamIds: number[],
@@ -213,11 +219,7 @@ async function computeScheduleDensityMap(
       and(
         or(inArray(games.homeTeamId, unique), inArray(games.awayTeamId, unique)),
         gte(games.date, start),
-        lte(games.date, gameDate),
-        or(
-          eq(games.date, gameDate),
-          and(lt(games.date, gameDate), eq(games.status, "final"))
-        )
+        lte(games.date, gameDate)
       )
     );
 
@@ -1494,6 +1496,8 @@ export async function getSeasonGamesStamp(season: string): Promise<string> {
 export async function getSeasonReportRows(season: string): Promise<SeasonReportRow[]> {
   const homeFatigue = latestFatigueLateral(games.homeTeamId, "home_fatigue_season_report");
   const awayFatigue = latestFatigueLateral(games.awayTeamId, "away_fatigue_season_report");
+  const homeTeam = alias(teams, "home_team_season_report");
+  const awayTeam = alias(teams, "away_team_season_report");
 
   const rows = await db
     .select({
@@ -1504,24 +1508,55 @@ export async function getSeasonReportRows(season: string): Promise<SeasonReportR
       awayTeamId: games.awayTeamId,
       homeScore: games.homeScore,
       awayScore: games.awayScore,
+      homeAbbr: homeTeam.abbreviation,
+      homeLat: homeTeam.latitude,
+      homeLon: homeTeam.longitude,
+      awayAbbr: awayTeam.abbreviation,
+      awayLat: awayTeam.latitude,
+      awayLon: awayTeam.longitude,
+      neutralSite: games.neutralSite,
+      neutralVenueCity: games.neutralVenueCity,
       homeFatigueScore: homeFatigue.score,
-      homeTravelDistanceMiles: homeFatigue.travelDistanceMiles,
       homeIsBackToBack: homeFatigue.isBackToBack,
       homeIsThreeInFour: homeFatigue.isThreeInFour,
       homeHasTimeZoneDisplacement: homeFatigue.hasTimeZoneDisplacement,
       awayFatigueScore: awayFatigue.score,
-      awayTravelDistanceMiles: awayFatigue.travelDistanceMiles,
       awayIsBackToBack: awayFatigue.isBackToBack,
       awayIsThreeInFour: awayFatigue.isThreeInFour,
       awayHasTimeZoneDisplacement: awayFatigue.hasTimeZoneDisplacement,
     })
     .from(games)
+    .innerJoin(homeTeam, eq(games.homeTeamId, homeTeam.id))
+    .innerJoin(awayTeam, eq(games.awayTeamId, awayTeam.id))
     .leftJoinLateral(homeFatigue, sql`true`)
     .leftJoinLateral(awayFatigue, sql`true`)
     .where(publishableGames(eq(games.season, season)))
     // Date-ascending is a contract, not a convenience: the reducer dates its fatigue
     // calendar from the first row it accepts.
     .orderBy(asc(games.date), asc(games.id));
+
+  // The stored travel figure is a rolling 7-day window, so it cannot be summed across a season
+  // without counting each flight several times. The report adds up single legs instead.
+  const legs = seasonTravelLegs(
+    rows.map((r) => ({
+      gameId: Number(r.gameId),
+      date: String(r.date),
+      homeTeamId: Number(r.homeTeamId),
+      awayTeamId: Number(r.awayTeamId),
+      homeAbbr: r.homeAbbr,
+      awayAbbr: r.awayAbbr,
+      homeLat: r.homeLat,
+      homeLon: r.homeLon,
+      homeAltitude: false,
+      awayLat: r.awayLat,
+      awayLon: r.awayLon,
+      awayAltitude: false,
+      overtimePeriods: 0,
+      neutralSite: r.neutralSite,
+      neutralVenueCity: r.neutralVenueCity,
+    }))
+  );
+  const legMiles = (gameId: number, teamId: number) => legs.get(travelLegKey(gameId, teamId)) ?? 0;
 
   return rows.map((r) => ({
     gameId: Number(r.gameId),
@@ -1536,7 +1571,7 @@ export async function getSeasonReportRows(season: string): Promise<SeasonReportR
         ? null
         : {
             fatigueScore: String(r.homeFatigueScore),
-            travelDistanceMiles: String(r.homeTravelDistanceMiles),
+            travelLegMiles: legMiles(Number(r.gameId), Number(r.homeTeamId)),
             isBackToBack: Boolean(r.homeIsBackToBack),
             isThreeInFour: Boolean(r.homeIsThreeInFour),
             hasTimeZoneDisplacement: Boolean(r.homeHasTimeZoneDisplacement),
@@ -1546,7 +1581,7 @@ export async function getSeasonReportRows(season: string): Promise<SeasonReportR
         ? null
         : {
             fatigueScore: String(r.awayFatigueScore),
-            travelDistanceMiles: String(r.awayTravelDistanceMiles),
+            travelLegMiles: legMiles(Number(r.gameId), Number(r.awayTeamId)),
             isBackToBack: Boolean(r.awayIsBackToBack),
             isThreeInFour: Boolean(r.awayIsThreeInFour),
             hasTimeZoneDisplacement: Boolean(r.awayHasTimeZoneDisplacement),

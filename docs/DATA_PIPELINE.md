@@ -17,7 +17,9 @@ The in-season sequence is:
 2. `fetch_game_context.ts` refreshes context for completed games, including tip-off and neutral
    site information, before fatigue calculation.
 3. `project_fatigue.ts` fills unscored scheduled-game projections.
-4. `run-daily.ts` refreshes the configured date window's games, fatigue, and predictions.
+4. `run-daily.ts` refreshes the configured date window's games, fatigue, and predictions. Prior
+   games are read from the schedule, played or not (D-82); a finished one brings its real
+   overtime and margin, an unplayed one neither.
 
 Failure in required steps fails the workflow. Database credentials come from the process
 environment or local environment files; never print their values. The workflow also offers manual

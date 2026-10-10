@@ -12,7 +12,7 @@ import {
 function side(score: number, extra: Partial<SeasonReportSide> = {}): SeasonReportSide {
   return {
     fatigueScore: String(score),
-    travelDistanceMiles: "0",
+    travelLegMiles: 0,
     isBackToBack: false,
     isThreeInFour: false,
     hasTimeZoneDisplacement: false,
@@ -335,8 +335,8 @@ describe("buildSeasonReport — schedule tax", () => {
         homeTeamId: 1,
         awayTeamId: 2,
         // Neutral, so this game contributes to no rate at all.
-        home: side(1, { travelDistanceMiles: "500.4", isBackToBack: true }),
-        away: side(1.2, { travelDistanceMiles: "1200.6", isThreeInFour: true, hasTimeZoneDisplacement: true }),
+        home: side(1, { travelLegMiles: 500.4, isBackToBack: true }),
+        away: side(1.2, { travelLegMiles: 1200.6, isThreeInFour: true, hasTimeZoneDisplacement: true }),
       }),
     ];
 
@@ -362,14 +362,14 @@ describe("buildSeasonReport — schedule tax", () => {
     // Once a season is underway its figures describe what happened, so a fixture still ahead
     // contributes no miles. The 999 below must not appear anywhere in the total.
     const rows: SeasonReportRow[] = [
-      game({ gameId: 1, homeTeamId: 1, home: side(1, { travelDistanceMiles: "100" }) }),
+      game({ gameId: 1, homeTeamId: 1, home: side(1, { travelLegMiles: 100 }) }),
       game({
         gameId: 2,
         homeTeamId: 1,
         status: "scheduled",
         homeScore: null,
         awayScore: null,
-        home: side(1, { travelDistanceMiles: "999" }),
+        home: side(1, { travelLegMiles: 999 }),
       }),
     ];
 
