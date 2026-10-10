@@ -11,7 +11,7 @@ navigation. Explore contains the other basketball studies. There are no accounts
 personal preferences; exploration state is shareable through URLs and browser history.
 
 The rest-focused redesign shipped in PR #84 (`776683e`). Its first verified Officiating refresh
-and release record shipped in PR #85 (`34b8961`). Production: https://fullcourt-nba.vercel.app.
+and release record shipped in PR #85 (`34b8961`). Production: https://fullcourt.fyi.
 The [dated release review](design/redesign-release-review.md) records verification; use GitHub
 and Vercel for subsequent deployment status.
 
@@ -107,54 +107,26 @@ Still open from those entries:
   absent by design.
 - Owner actions: tag `v1.0.0` at launch, and announce only after a verified live pipeline run.
 
-## Launch-readiness program (2026-10-05)
+## Summary of the launch-readiness entries, 2026-10-05 and 2026-10-06
 
-The owner asked for ten pre-launch items. Done in this entry: the footer non-affiliation notice,
-`/privacy`, and the `Report an error` mail link (D-74). The footer notice is 12px sans, below the
-15px sentence rule, as fine print; the owner has not ruled on that size.
+Condensed on 2026-10-10 from two entries; DECISIONS.md D-74 to D-77 hold the detail.
 
-Open, in order: error monitoring, uptime and freshness monitor, scheduled database backup with one
-test restore, a quota plan, a firewall rate limit, the phone and accessibility pass (including
-Instagram's in-app browser), and the custom domain. The domain name is not chosen;
-`src/lib/site-url.ts` is the one place the origin is written.
+- **Site.** Footer non-affiliation notice, `/privacy` and the `Report an error` mail link.
+  Production is `https://fullcourt.fyi`; `www.fullcourt.fyi`, `fullcourt-nba.vercel.app` and
+  `nba-rest-advantage.vercel.app` answer 308 to it. `src/lib/site-url.ts` holds the origin.
+- **Monitoring.** Sentry project `javascript-nextjs` (org `michael-ju-46`) reads its DSN from
+  `NEXT_PUBLIC_SENTRY_DSN`, set in Vercel; IP storage is off. UptimeRobot checks `/` and
+  `/api/health` every five minutes.
+- **Outside the repo.** A Vercel firewall rule limits `/api/` to 100 requests per 60 seconds
+  per IP (Hobby allows one rule). A weekly backup runs on the owner's Mac
+  (`~/Backups/fullcourt/backup.sh`, Sundays 11:00, newest eight kept); it needs `pg_dump` 18,
+  and one test restore matched row counts.
+- **Phone test inside Instagram.** Two fixes: the Schedule breakdown zero rule no longer paints
+  over the pinned column, and the error-report subject is `FullCourt error or suggestion`.
 
-Later on 2026-10-05: PR #106 merged. A backup of the public schema was taken with `pg_dump` 18
-(the server is 17.6; the Homebrew 16 client refuses it) to `~/Backups/fullcourt/` and restored into
-a scratch database with matching row counts; the ten restore errors are Supabase `auth` policies.
-The reconnect wait is capped (D-75). Still open: scheduled backups, Sentry, an uptime monitor, the
-firewall rate limit, the phone pass and the domain.
-
-2026-10-06: a Vercel firewall rule, `Rate limit API`, is live: paths starting `/api/`, 100 requests
-per 60 seconds per IP, answered with 429. It was set in the dashboard, so it is not in the repo.
-Checked from outside: 115 requests to `/api/health` returned 100 × 200 then 15 × 429, with pages
-unaffected. Hobby allows one rate-limit rule. PR #108 pins `source-map-js` for an overnight advisory.
-
-## Error monitoring (2026-10-06)
-
-Sentry is wired in (D-76). A local production build sent one browser error and one server error
-(`/api/analysis` with the database unreachable); both appeared in the Sentry project
-`javascript-nextjs` under org `michael-ju-46`. The DSN is not in the repo: it is read from
-`NEXT_PUBLIC_SENTRY_DSN`, which must be set in Vercel before the deploy that should report.
-Open: source-map upload; the Sentry project's own setting that stops it storing IP addresses.
-
-Later on 2026-10-06: PRs #107 and #108 merged. A weekly backup job is installed on the owner's Mac,
-outside the repo: `~/Backups/fullcourt/backup.sh`, run by the LaunchAgent
-`com.michaelju.fullcourt-backup` on Sundays at 11:00, keeping the newest eight dumps. Its first run
-wrote a 17 MB dump. The owner chose `fullcourt.fyi`; it is not bought yet.
-
-Later on 2026-10-06: PR #109 merged with `NEXT_PUBLIC_SENTRY_DSN` set in Vercel for Production and
-Preview; the Sentry project has IP storage off. `fullcourt.fyi` is attached to the project (D-77).
-The GitHub social preview and any external links may still name the old address.
-
-Later on 2026-10-06: PR #110 merged and `https://fullcourt.fyi` is the production address. In the
-Vercel dashboard, `www.fullcourt.fyi`, `fullcourt-nba.vercel.app` and
-`nba-rest-advantage.vercel.app` each answer 308 to `fullcourt.fyi` with the path kept. UptimeRobot
-checks `https://fullcourt.fyi/` and `https://fullcourt.fyi/api/health` every five minutes and
-mails the owner. Sentry received a production event from `fullcourt.fyi`. PR #100 (urllib3) merged.
-
-The owner tested on a phone inside Instagram. Two fixes followed: the Edge games zero rule no
-longer paints over the pinned team column in the Schedule breakdown, and the error-report mail
-subject is `FullCourt error or suggestion`.
+Still open from those entries: Sentry source-map upload; the footer notice size (12px); the
+GitHub social preview and outside links may still name the old address; the quota plan
+from the ten-item list was not recorded as done.
 
 ## Phone and tablet layout (2026-10-07)
 
@@ -197,3 +169,14 @@ Report and Officiating plays use bordered blocks with title bands, the fatigue c
 fatigue by week, the column guide sits inside the breakdown, and Shooting by Rest is Player
 Shooting by Rest. Open: the ESPN tie-break is inferred from one day; Home Court inherits the
 section band and was checked by screenshot only; nothing here has been seen on a physical phone.
+
+Launch preparation, 2026-10-10 (D-80): the change freeze starts 2026-10-17 at 00:00 ET, three
+days before the first game (BOS at DET, 2026-10-20, 3:00 PM ET). A mixed slate was rehearsed on
+production with a mocked response (one final, one live, one upcoming): rows stayed one height
+on desktop and iPhone WebKit, with no page errors. Seventeen pages were loaded in iPhone WebKit:
+all 200, none scrolls sideways, no console errors.
+
+Open: `scripts/sync_scores_espn.ts` writes an in-progress game as `live` with its score at that
+moment, and the two writers run at 21:00 and 07:00 UTC. A game under way at 21:00 UTC (the
+opening 3:00 PM ET game, and weekend matinees) would read LIVE with a stale score until the next
+run. Not reproduced; read from the code. The fix is the owner's choice and is not built.

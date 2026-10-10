@@ -3,6 +3,9 @@
 Use when completed games resume. The calendar and available feed data determine the date;
 do not treat an old seeded schedule snapshot as a current announcement.
 
+A change freeze covers this period: from 2026-10-17 until the first completed slate passes the
+checklist below ([D-80](DECISIONS.md)).
+
 ## What must be demonstrated
 
 An in-season run must match actual completed games, write their scores/status, and refresh the
