@@ -192,7 +192,9 @@ real slate.
 Season audit, 2026-10-11 (D-82): all 1,200 games of 2026-27 match ESPN and basketball-reference.
 Three faults fixed in code: the nightly job dropped unplayed prior games (upcoming fatigue read
 low or zero), the 3-in-4, 4-in-6 and 30-day figures were blank on future dates, and Season
-Report travel miles were about four times too high in every season. Open: the 28 games of 20 to
-24 October hold zeroed rows until `run-daily.ts` is rerun after the merge (a production write);
-a game-day row lacks the previous night's overtime and margin until the evening run; past
-seasons' scores were not rechecked in this pass.
+Report travel miles were about four times too high in every season. The zeroed rows of 20 to 24
+October were repaired by a rerun on 2026-10-10. A second pass recomputed all 103,390 fatigue rows
+and 27,404 resolved picks of 1985-86 to 2025-26 with no difference, and regenerated every
+fatigue-derived artifact unchanged; one typed figure on the rest-advantage method page and the
+2026-09-11 home-court research record predated the 2026-10-04 corrections and were updated.
+Open: a game-day row lacks the previous night's overtime and margin until the evening run.

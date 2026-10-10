@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-11T06:27:27.460Z",
+  "generatedAt": "2026-10-10T15:45:23.916Z",
   "script": "scripts/research_home_advantage_trend.ts",
   "outputs": [
     "docs/research/2026-09-11-home-advantage-trend.json",
@@ -13,9 +13,9 @@
     "lastGameDate": "2026-04-12",
     "seasons": 41,
     "games": 47143,
-    "homeWins": 28248,
-    "homeRestedGames": 27400,
-    "homeRestedWins": 16761,
+    "homeWins": 28247,
+    "homeRestedGames": 27404,
+    "homeRestedWins": 16765,
     "classification": "Home-rested means classifyRestAdvantage() returns home at |RA| >= 0.5, then isCalledSide() admits it.",
     "inclusions": [
       "Regular-season games in the local database from 1985-86 through 2025-26.",
@@ -58,8 +58,8 @@
       "available": true,
       "path": "ml/data/rest_eras_report.txt",
       "population": 47143,
-      "homeRestedGames": 27400,
-      "homeRestedWins": 16761,
+      "homeRestedGames": 27404,
+      "homeRestedWins": 16765,
       "populationGamesMatch": true,
       "homeRestedGamesMatch": true,
       "homeRestedWinsMatch": true
@@ -72,14 +72,14 @@
     "lastSeason": "2025-26",
     "seasons": 41,
     "allGames": 47143,
-    "homeWins": 28248,
-    "homeWinPct": 59.919818,
-    "avgHomeMargin": 3.187663,
-    "homeRestedGames": 27400,
-    "homeRestedWins": 16761,
-    "homeRestedWinPct": 61.171533,
-    "homeRestedAvgHomeMargin": 3.657482,
-    "homeRestedLiftVsEraBaselinePp": 1.251714
+    "homeWins": 28247,
+    "homeWinPct": 59.917697,
+    "avgHomeMargin": 3.187324,
+    "homeRestedGames": 27404,
+    "homeRestedWins": 16765,
+    "homeRestedWinPct": 61.1772,
+    "homeRestedAvgHomeMargin": 3.659502,
+    "homeRestedLiftVsEraBaselinePp": 1.259503
   },
   "eras": [
     {
@@ -89,14 +89,14 @@
       "lastSeason": "1989-90",
       "seasons": 5,
       "allGames": 4961,
-      "homeWins": 3292,
-      "homeWinPct": 66.357589,
-      "avgHomeMargin": 5.231808,
+      "homeWins": 3291,
+      "homeWinPct": 66.337432,
+      "avgHomeMargin": 5.230599,
       "homeRestedGames": 2938,
       "homeRestedWins": 1956,
       "homeRestedWinPct": 66.575902,
-      "homeRestedAvgHomeMargin": 5.534377,
-      "homeRestedLiftVsEraBaselinePp": 0.218313
+      "homeRestedAvgHomeMargin": 5.530974,
+      "homeRestedLiftVsEraBaselinePp": 0.23847
     },
     {
       "key": "last_five",
@@ -124,11 +124,11 @@
       "homeWins": 6683,
       "homeWinPct": 56.20217,
       "avgHomeMargin": 2.095955,
-      "homeRestedGames": 6394,
-      "homeRestedWins": 3717,
-      "homeRestedWinPct": 58.132624,
-      "homeRestedAvgHomeMargin": 2.728808,
-      "homeRestedLiftVsEraBaselinePp": 1.930455
+      "homeRestedGames": 6398,
+      "homeRestedWins": 3721,
+      "homeRestedWinPct": 58.1588,
+      "homeRestedAvgHomeMargin": 2.741794,
+      "homeRestedLiftVsEraBaselinePp": 1.95663
     },
     {
       "key": "pre_covid",
@@ -137,14 +137,14 @@
       "lastSeason": "2018-19",
       "seasons": 34,
       "allGames": 38942,
-      "homeWins": 23724,
-      "homeWinPct": 60.92137,
-      "avgHomeMargin": 3.470983,
+      "homeWins": 23723,
+      "homeWinPct": 60.918802,
+      "avgHomeMargin": 3.470572,
       "homeRestedGames": 23051,
       "homeRestedWins": 14271,
       "homeRestedWinPct": 61.910546,
-      "homeRestedAvgHomeMargin": 3.870505,
-      "homeRestedLiftVsEraBaselinePp": 0.989176
+      "homeRestedAvgHomeMargin": 3.869463,
+      "homeRestedLiftVsEraBaselinePp": 0.991744
     },
     {
       "key": "recent_after_disruption",
@@ -175,9 +175,9 @@
           "nSeasons": 41,
           "firstSeason": "1985-86",
           "lastSeason": "2025-26",
-          "slopePerDecade": -2.473832,
-          "pearsonR": -0.850359,
-          "rSquared": 0.723111
+          "slopePerDecade": -2.470942,
+          "pearsonR": -0.850678,
+          "rSquared": 0.723653
         },
         "avgHomeMargin": {
           "metric": "avgHomeMargin",
@@ -186,9 +186,9 @@
           "nSeasons": 41,
           "firstSeason": "1985-86",
           "lastSeason": "2025-26",
-          "slopePerDecade": -0.772508,
-          "pearsonR": -0.862957,
-          "rSquared": 0.744695
+          "slopePerDecade": -0.772226,
+          "pearsonR": -0.862716,
+          "rSquared": 0.74428
         },
         "homeRestedWinPct": {
           "metric": "homeRestedWinPct",
@@ -197,9 +197,9 @@
           "nSeasons": 41,
           "firstSeason": "1985-86",
           "lastSeason": "2025-26",
-          "slopePerDecade": -2.107057,
-          "pearsonR": -0.811643,
-          "rSquared": 0.658765
+          "slopePerDecade": -2.09896,
+          "pearsonR": -0.811752,
+          "rSquared": 0.658941
         },
         "homeRestedAvgHomeMargin": {
           "metric": "homeRestedAvgHomeMargin",
@@ -208,9 +208,9 @@
           "nSeasons": 41,
           "firstSeason": "1985-86",
           "lastSeason": "2025-26",
-          "slopePerDecade": -0.688421,
-          "pearsonR": -0.831264,
-          "rSquared": 0.690999
+          "slopePerDecade": -0.683739,
+          "pearsonR": -0.829606,
+          "rSquared": 0.688246
         },
         "homeRestedLiftVsSeasonBaselinePp": {
           "metric": "homeRestedLiftVsSeasonBaselinePp",
@@ -219,9 +219,9 @@
           "nSeasons": 41,
           "firstSeason": "1985-86",
           "lastSeason": "2025-26",
-          "slopePerDecade": 0.366775,
-          "pearsonR": 0.367099,
-          "rSquared": 0.134762
+          "slopePerDecade": 0.371982,
+          "pearsonR": 0.3716,
+          "rSquared": 0.138086
         }
       }
     },
@@ -236,9 +236,9 @@
           "nSeasons": 39,
           "firstSeason": "1985-86",
           "lastSeason": "2025-26",
-          "slopePerDecade": -2.371423,
-          "pearsonR": -0.837095,
-          "rSquared": 0.700728
+          "slopePerDecade": -2.368429,
+          "pearsonR": -0.837461,
+          "rSquared": 0.701342
         },
         "avgHomeMargin": {
           "metric": "avgHomeMargin",
@@ -247,9 +247,9 @@
           "nSeasons": 39,
           "firstSeason": "1985-86",
           "lastSeason": "2025-26",
-          "slopePerDecade": -0.739348,
-          "pearsonR": -0.858119,
-          "rSquared": 0.736369
+          "slopePerDecade": -0.739059,
+          "pearsonR": -0.857848,
+          "rSquared": 0.735903
         },
         "homeRestedWinPct": {
           "metric": "homeRestedWinPct",
@@ -269,9 +269,9 @@
           "nSeasons": 39,
           "firstSeason": "1985-86",
           "lastSeason": "2025-26",
-          "slopePerDecade": -0.66715,
-          "pearsonR": -0.817327,
-          "rSquared": 0.668024
+          "slopePerDecade": -0.666332,
+          "pearsonR": -0.817066,
+          "rSquared": 0.667597
         },
         "homeRestedLiftVsSeasonBaselinePp": {
           "metric": "homeRestedLiftVsSeasonBaselinePp",
@@ -280,9 +280,9 @@
           "nSeasons": 39,
           "firstSeason": "1985-86",
           "lastSeason": "2025-26",
-          "slopePerDecade": 0.347798,
-          "pearsonR": 0.341369,
-          "rSquared": 0.116533
+          "slopePerDecade": 0.344804,
+          "pearsonR": 0.338463,
+          "rSquared": 0.114557
         }
       }
     },
@@ -319,9 +319,9 @@
           "nSeasons": 10,
           "firstSeason": "2016-17",
           "lastSeason": "2025-26",
-          "slopePerDecade": -4.068216,
-          "pearsonR": -0.59664,
-          "rSquared": 0.35598
+          "slopePerDecade": -4.128572,
+          "pearsonR": -0.613255,
+          "rSquared": 0.376082
         },
         "homeRestedAvgHomeMargin": {
           "metric": "homeRestedAvgHomeMargin",
@@ -330,9 +330,9 @@
           "nSeasons": 10,
           "firstSeason": "2016-17",
           "lastSeason": "2025-26",
-          "slopePerDecade": -1.008958,
-          "pearsonR": -0.582028,
-          "rSquared": 0.338756
+          "slopePerDecade": -1.03788,
+          "pearsonR": -0.599052,
+          "rSquared": 0.358863
         },
         "homeRestedLiftVsSeasonBaselinePp": {
           "metric": "homeRestedLiftVsSeasonBaselinePp",
@@ -341,9 +341,9 @@
           "nSeasons": 10,
           "firstSeason": "2016-17",
           "lastSeason": "2025-26",
-          "slopePerDecade": -0.024668,
-          "pearsonR": -0.007073,
-          "rSquared": 0.00005
+          "slopePerDecade": -0.085025,
+          "pearsonR": -0.024703,
+          "rSquared": 0.00061
         }
       }
     },
@@ -453,7 +453,7 @@
       "homeWins": 640,
       "awayWins": 303,
       "homeWinPct": 67.868505,
-      "avgHomeMargin": 5.83351,
+      "avgHomeMargin": 5.835631,
       "homeRestedGames": 549,
       "homeRestedWins": 373,
       "homeRestedLosses": 176,
@@ -467,16 +467,16 @@
       "firstGameDate": "1988-11-04",
       "lastGameDate": "1989-04-23",
       "allGames": 1025,
-      "homeWins": 695,
-      "awayWins": 330,
-      "homeWinPct": 67.804878,
-      "avgHomeMargin": 5.604878,
+      "homeWins": 694,
+      "awayWins": 331,
+      "homeWinPct": 67.707317,
+      "avgHomeMargin": 5.597073,
       "homeRestedGames": 596,
       "homeRestedWins": 410,
       "homeRestedLosses": 186,
       "homeRestedWinPct": 68.791946,
-      "homeRestedAvgHomeMargin": 5.812081,
-      "homeRestedLiftVsSeasonBaselinePp": 0.987068
+      "homeRestedAvgHomeMargin": 5.795302,
+      "homeRestedLiftVsSeasonBaselinePp": 1.084629
     },
     {
       "season": "1989-90",
@@ -606,12 +606,12 @@
       "homeWins": 684,
       "awayWins": 505,
       "homeWinPct": 57.527334,
-      "avgHomeMargin": 2.57275,
+      "avgHomeMargin": 2.560976,
       "homeRestedGames": 720,
       "homeRestedWins": 438,
       "homeRestedLosses": 282,
       "homeRestedWinPct": 60.833333,
-      "homeRestedAvgHomeMargin": 3.616667,
+      "homeRestedAvgHomeMargin": 3.597222,
       "homeRestedLiftVsSeasonBaselinePp": 3.305999
     },
     {
@@ -640,7 +640,7 @@
       "homeWins": 452,
       "awayWins": 273,
       "homeWinPct": 62.344828,
-      "avgHomeMargin": 3.434483,
+      "avgHomeMargin": 3.44,
       "homeRestedGames": 382,
       "homeRestedWins": 242,
       "homeRestedLosses": 140,
@@ -998,12 +998,12 @@
       "awayWins": 436,
       "homeWinPct": 55.097837,
       "avgHomeMargin": 2.174047,
-      "homeRestedGames": 521,
-      "homeRestedWins": 294,
+      "homeRestedGames": 525,
+      "homeRestedWins": 298,
       "homeRestedLosses": 227,
-      "homeRestedWinPct": 56.429942,
-      "homeRestedAvgHomeMargin": 2.621881,
-      "homeRestedLiftVsSeasonBaselinePp": 1.332105
+      "homeRestedWinPct": 56.761905,
+      "homeRestedAvgHomeMargin": 2.780952,
+      "homeRestedLiftVsSeasonBaselinePp": 1.664067
     },
     {
       "season": "2020-21",
