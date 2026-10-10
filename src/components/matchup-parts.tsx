@@ -195,11 +195,8 @@ export function GameStatusRow({
     )
   }
 
-  return (
-    <span className="mono" style={{ fontSize: "11px", letterSpacing: TRACK.label, color: "var(--term-text-muted)" }}>
-      UPCOMING
-    </span>
-  )
+  // An unplayed game prints no status: the label said nothing the missing score did not.
+  return null
 }
 
 // ─── Schedule flags ──────────────────────────────────────────────
