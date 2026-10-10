@@ -21,6 +21,10 @@ The in-season sequence is:
    games are read from the schedule, played or not (D-82); a finished one brings its real
    overtime and margin, an unplayed one neither.
 
+The score route also rescores fatigue, narrowly: once it stores a night's finals, the next game
+of each finalized team is rescored if it is today or tomorrow (ET) and has not tipped off, so
+that night's overtime and margin are in the row before the game (D-83).
+
 Failure in required steps fails the workflow. Database credentials come from the process
 environment or local environment files; never print their values. The workflow also offers manual
 schedule resync and historical-season seeding; inspect the chosen input before dispatching it.

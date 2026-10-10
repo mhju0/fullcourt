@@ -1,9 +1,13 @@
 import { timingSafeEqual } from "node:crypto";
 import { NextResponse } from "next/server";
-import { eq, and, inArray } from "drizzle-orm";
+import { eq, and, inArray, or } from "drizzle-orm";
+import type { PostgresJsDatabase } from "drizzle-orm/postgres-js";
 import { getPublicApiErrorMessage } from "@/lib/api-errors";
 import { db } from "@/lib/db";
+import type * as Schema from "@/lib/db/schema";
 import { games, teams } from "@/lib/db/schema";
+import { refreshDailyGames, type DailyRefreshSummary } from "@/lib/daily-refresh";
+import { createDailyRefreshPort, gamesToRescoreAfterFinals } from "@/lib/daily-refresh-port";
 import { alias } from "drizzle-orm/pg-core";
 import { parseScoreboard, reconcileScores, type ScoreUpdate } from "@/lib/espn-scoreboard";
 import { formatEasternDateKey } from "@/lib/nba-season";
@@ -53,8 +57,9 @@ export const dynamic = "force-dynamic";
  *
  * This route is what puts a night's finals on the site. The GitHub Actions pipeline
  * (`scripts/daily_update.py`) is scheduled for 21:00 UTC and in practice starts hours late, so it
- * cannot be relied on for scores. This route does not recompute fatigue; the Actions run does
- * that, reading whatever this has already finalized.
+ * cannot be relied on for scores. That run still rewrites the next fortnight of fatigue rows.
+ * This route rescores one thing: the next game of each team it has just finalized, so a night's
+ * overtime and margin reach tomorrow's row before tip-off (`rescoreNextGames`).
  *
  * The Supabase Realtime subscription will automatically push changes
  * to all connected clients when the `games` table is updated.
@@ -117,6 +122,8 @@ export async function GET(request: Request) {
       .select({
         id: games.id,
         date: games.date,
+        homeTeamId: games.homeTeamId,
+        awayTeamId: games.awayTeamId,
         homeAbbr: homeTeam.abbreviation,
         awayAbbr: awayTeam.abbreviation,
         status: games.status,
@@ -226,6 +233,26 @@ export async function GET(request: Request) {
       )
     );
 
+    // After the score writes and never part of them: a failure here must not cost a final.
+    const byId = new Map(gamesToCheck.map((game) => [game.id, game]));
+    const finalizedTeamIds = new Set(
+      updates.flatMap((update) => {
+        const game = byId.get(update.gameId);
+        return game ? [game.homeTeamId, game.awayTeamId] : [];
+      })
+    );
+    let fatigueRescored: number | null = 0;
+    try {
+      const summary = await rescoreNextGames(finalizedTeamIds, today);
+      fatigueRescored = summary.gamesRefreshed;
+      for (const failure of summary.failedGames) {
+        console.error("[cron/update] rescore kept game", failure.gameId, failure.reason);
+      }
+    } catch (err) {
+      console.error("[cron/update] rescore failed:", err);
+      fatigueRescored = null;
+    }
+
     return NextResponse.json({
       data: { gamesUpdated: updates.length },
       error: null,
@@ -234,6 +261,7 @@ export async function GET(request: Request) {
         checkedDates: dates,
         espnGamesAvailable,
         refusedDowngrades: refusedDowngrades.length,
+        fatigueRescored,
       },
     });
   } catch (err) {
@@ -246,6 +274,56 @@ export async function GET(request: Request) {
       { status: 500 }
     );
   }
+}
+
+/**
+ * Rescores the next game of each team that has just gone final.
+ *
+ * Today and tomorrow (ET) are enough: this route runs on the game's own evening or after
+ * midnight, and a next game further out is rewritten by the nightly job before it is played.
+ */
+async function rescoreNextGames(
+  finalizedTeamIds: ReadonlySet<number>,
+  today: string
+): Promise<DailyRefreshSummary> {
+  const none = { gamesRefreshed: 0, fatigueRowsWritten: 0, predictionRowsWritten: 0, failedGames: [] };
+  if (finalizedTeamIds.size === 0) return none;
+
+  const appDb = db as PostgresJsDatabase<typeof Schema>;
+  const teamIds = [...finalizedTeamIds];
+  const tomorrow = formatEasternDateKey(new Date(Date.now() + 24 * 60 * 60 * 1000));
+  const upcoming = await appDb
+    .select({
+      id: games.id,
+      date: games.date,
+      homeTeamId: games.homeTeamId,
+      awayTeamId: games.awayTeamId,
+      status: games.status,
+      tipOffUtc: games.tipOffUtc,
+      neutralSite: games.neutralSite,
+      neutralVenueCity: games.neutralVenueCity,
+    })
+    .from(games)
+    .where(
+      and(
+        inArray(games.date, today === tomorrow ? [today] : [today, tomorrow]),
+        eq(games.status, "scheduled"),
+        or(inArray(games.homeTeamId, teamIds), inArray(games.awayTeamId, teamIds))
+      )
+    );
+
+  const toRescore = gamesToRescoreAfterFinals({
+    finalizedTeamIds,
+    upcoming: upcoming.map((game) => ({ ...game, date: String(game.date) })),
+    now: new Date(),
+  });
+  if (toRescore.length === 0) return none;
+
+  return refreshDailyGames({
+    games: toRescore,
+    teams: await appDb.select().from(teams),
+    port: createDailyRefreshPort(appDb),
+  });
 }
 
 /**
