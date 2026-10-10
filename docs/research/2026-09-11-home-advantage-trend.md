@@ -1,7 +1,9 @@
 # Is NBA home advantage shrinking?
 
 Research and publishing discussion, 2026-09-11. The initial exploration and subsequent owner
-decisions are retained below. Deployment evidence belongs in the release review.
+decisions are retained below. The figures, JSON and CSV were regenerated on 2026-10-11, after the
+stored score and date corrections of 2026-10-04; the chart image was not redrawn, and no value in
+it moved by more than a tenth of a point. Deployment evidence belongs in the release review.
 
 ## Fresh measurement
 
@@ -9,15 +11,15 @@ The database read returned 47,143 eligible games across 41 seasons, dated 1985-1
 
 | Pooled period | Games | Home win rate | Rested-home wins / games | Rested-home win rate | Gap above period baseline | Mean home margin |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| 1985-86 through 1989-90 | 4,961 | 66.36% | 1,956 / 2,938 | 66.58% | +0.22 pp | +5.23 points |
-| 2016-17 through 2025-26 | 11,891 | 56.20% | 3,717 / 6,394 | 58.13% | +1.93 pp | +2.10 points |
+| 1985-86 through 1989-90 | 4,961 | 66.34% | 1,956 / 2,938 | 66.58% | +0.24 pp | +5.23 points |
+| 2016-17 through 2025-26 | 11,891 | 56.20% | 3,721 / 6,398 | 58.16% | +1.96 pp | +2.10 points |
 | 2021-22 through 2025-26 | 6,150 | 55.32% | 1,873 / 3,261 | 57.44% | +2.12 pp | +1.95 points |
 
-The first-to-last five-season comparison falls 11.04 percentage points for home win rate and 9.14 points for rested-home win rate. These periods were chosen as equal-length endpoint summaries, not as a fitted change-point model.
+The first-to-last five-season comparison falls 11.02 percentage points for home win rate and 9.14 points for rested-home win rate. These periods were chosen as equal-length endpoint summaries, not as a fitted change-point model.
 
-Across all 41 seasons, the home-rate OLS slope is -2.47 percentage points per decade (year/rate correlation -0.850). Excluding 2019-20 and 2020-21 leaves -2.37 points per decade (-0.837). Home scoring margin also falls, at -0.77 points per decade in the full sample.
+Across all 41 seasons, the home-rate OLS slope is -2.47 percentage points per decade (year/rate correlation -0.851). Excluding 2019-20 and 2020-21 leaves -2.37 points per decade (-0.837). Home scoring margin also falls, at -0.77 points per decade in the full sample.
 
-The rest-related gap tells a different story. Over the last ten seasons its slope is -0.025 percentage points per decade, with correlation -0.007: almost no linear temporal association in this window. Removing the COVID seasons leaves a similarly small slope of -0.076. This is not a test proving that the rest effect is constant. Across the full history, the gap's descriptive slope is mildly positive (+0.37 points per decade).
+The rest-related gap tells a different story. Over the last ten seasons its slope is -0.085 percentage points per decade, with correlation -0.025: almost no linear temporal association in this window. Removing the COVID seasons leaves a similarly small slope of -0.076. This is not a test proving that the rest effect is constant. Across the full history, the gap's descriptive slope is mildly positive (+0.37 points per decade).
 
 Recent home rates also show why “decreasing every season” would be misleading: 54.4%, 58.0%, 54.3%, 54.4%, and 55.4% from 2021-22 through 2025-26.
 
@@ -25,7 +27,7 @@ Recent home rates also show why “decreasing every season” would be misleadin
 
 Reproduce the data with `pnpm exec tsx scripts/research_home_advantage_trend.ts` (configured database required), then the figure with `python3 scripts/plot_home_advantage_trend.py` (Matplotlib required). The [JSON](2026-09-11-home-advantage-trend.json) includes methodology, all annual observations, era summaries, slopes and validation. The [CSV](2026-09-11-home-advantage-trend.csv) contains the annual counts and outcomes.
 
-Validation: the new calculation matches `buildHistoricalBacktest()` totals and all 41 season rows. It also matches the previous local era report's 47,143 games, 27,400 rested-home games and 16,761 rested-home wins. An independent Python calculation checked annual rates from counts and reproduced the full-period slope with NumPy. These establish calculation consistency, not independent verification of every provider game record.
+Validation: the new calculation matches `buildHistoricalBacktest()` totals and all 41 season rows. It also matches the previous local era report's 47,143 games, 27,404 rested-home games and 16,765 rested-home wins. An independent Python calculation checked annual rates from counts and reproduced the full-period slope with NumPy. These establish calculation consistency, not independent verification of every provider game record.
 
 ## What to measure
 

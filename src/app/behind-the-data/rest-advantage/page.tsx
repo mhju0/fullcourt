@@ -365,7 +365,7 @@ restEdge   = awayScore − homeScore     (positive ⇒ the home side is fresher)
         <Prose>
           In about half the schedule the home team had travelled in too. In those games,
           the average rest edge falls by three quarters, while the home team still won 59.7% of
-          those games, 60.0% of the ones where it had flown farther than its opponent, and 58.0%
+          those games, 59.9% of the ones where it had flown farther than its opponent, and 58.0%
           of the ones where it ended a road trip on a back-to-back. These groups all retain
           a substantial home win rate.
         </Prose>
