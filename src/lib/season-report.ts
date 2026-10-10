@@ -73,7 +73,11 @@ export const ABNORMAL_SEASON_NOTES: Readonly<Record<string, { label: string; not
 export interface SeasonReportSide {
   /** Postgres `decimal`, so a string. */
   fatigueScore: string;
-  travelDistanceMiles: string;
+  /**
+   * Miles flown into this game from the team's previous one: a single leg, so a season's legs
+   * add up to its travel. Not the stored `travel_distance_miles`, which is a rolling 7-day sum.
+   */
+  travelLegMiles: number;
   isBackToBack: boolean;
   isThreeInFour: boolean;
   hasTimeZoneDisplacement: boolean;
@@ -354,7 +358,7 @@ function teamEntry(teams: Map<number, TeamAccumulator>, teamId: number): TeamAcc
 
 /** The schedule facts, which are true of a game whether or not its rest gap was decidable. */
 function accumulateScheduleTax(entry: TeamAccumulator, side: SeasonReportSide): void {
-  entry.travelMiles += Number.parseFloat(side.travelDistanceMiles);
+  entry.travelMiles += side.travelLegMiles;
   if (side.isBackToBack) entry.backToBacks++;
   if (side.isThreeInFour) entry.threeInFours++;
   if (side.hasTimeZoneDisplacement) entry.jetLagGames++;

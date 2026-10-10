@@ -188,3 +188,11 @@ after the first deploy and on opening night. A postponed game reads LIVE for thr
 recording postponements needs a new stored status. The daily job's lateness is unaddressed and
 only delays the fatigue refresh. Every state was tested with a mocked clock, none against a
 real slate.
+
+Season audit, 2026-10-11 (D-82): all 1,200 games of 2026-27 match ESPN and basketball-reference.
+Three faults fixed in code: the nightly job dropped unplayed prior games (upcoming fatigue read
+low or zero), the 3-in-4, 4-in-6 and 30-day figures were blank on future dates, and Season
+Report travel miles were about four times too high in every season. Open: the 28 games of 20 to
+24 October hold zeroed rows until `run-daily.ts` is rerun after the merge (a production write);
+a game-day row lacks the previous night's overtime and margin until the evening run; past
+seasons' scores were not rechecked in this pass.

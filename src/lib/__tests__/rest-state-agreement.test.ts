@@ -49,7 +49,7 @@ const disparityRows: DisparityGameRow[] = GAMES.map((g) => ({
 
 const side = (fatigue: string) => ({
   fatigueScore: fatigue,
-  travelDistanceMiles: "0",
+  travelLegMiles: 0,
   isBackToBack: false,
   isThreeInFour: false,
   hasTimeZoneDisplacement: false,

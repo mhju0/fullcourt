@@ -44,10 +44,10 @@ Daily NBA pipeline for GitHub Actions (and local runs):
    rest advantage until someone ran the projection by hand. Non-fatal.
 
 4. Run `pnpm exec tsx scripts/run-daily.ts <today ET>` to refresh fatigue for today's
-   slate and regenerate open predictions. It recomputes `[today, today + 14]` on the stricter
-   *played* basis, so an overtime game finalized in step 1 feeds the overtime penalty into the
-   fatigue of the affected teams' next games before they are played — and anything step 3
-   projected inside that window ends the night measured rather than projected.
+   slate and regenerate open predictions. It recomputes `[today, today + 14]` against the
+   schedule: a prior game counts whether or not it has been played, and a finished one brings
+   its real overtime and margin. So an overtime game finalized in step 1 reaches the affected
+   teams' next games, and a game still ahead is not dropped from anyone's rest count.
 
 Requires DATABASE_URL in the environment (e.g. GitHub Actions secret) for the
 in-season path; the offseason gate runs without it.
@@ -165,8 +165,8 @@ def main() -> None:
     # rest advantage without anyone remembering to run it. Gap-only, so an ordinary night costs
     # one indexed query that returns nothing.
     #
-    # Runs BEFORE run-daily.ts, which then recomputes the next 14 days on the stricter "played"
-    # basis — so anything inside that window ends the night measured rather than projected.
+    # Runs BEFORE run-daily.ts, which then recomputes the next 14 days so finished games bring
+    # their real overtime and margin into the rows that follow them.
     print("[daily_update] projecting fatigue for any unscored scheduled game …")
     proj = subprocess.run(
         ["pnpm", "exec", "tsx", "scripts/project_fatigue.ts"],

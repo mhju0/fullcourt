@@ -33,8 +33,10 @@ export interface PriorGameRow {
 /**
  * What a prior game is allowed to be.
  *
- * `"played"` is the default and the only thing the in-season pipeline uses: a prior game counts
- * only once it is `final`, because its rest, travel and overtime are then facts.
+ * `"played"` is the default: a prior game counts only once it is `final`, because its rest,
+ * travel and overtime are then facts. It is right for a game that has itself been played, such
+ * as a historical backfill, and wrong for one still ahead, where it silently drops every game
+ * between the last final and tip-off. The nightly job used it until 2026-10-11.
  *
  * `"scheduled"` additionally accepts games that have not been played, and is how a published
  * schedule is projected forward before its season starts. It is not a looser version of the

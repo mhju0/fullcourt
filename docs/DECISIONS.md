@@ -1021,3 +1021,30 @@ Decided by the owner:
 Known limits: a postponed game reads LIVE for three hours, since nothing stored says it did not
 start; a listed tip time is a few minutes before the real one; none of this has been seen
 against a real slate.
+
+## D-82 — Upcoming fatigue counts scheduled games; season travel is summed by leg (2026-10-11)
+
+A read-only audit of 2026-27 found the schedule correct against ESPN and basketball-reference
+(1,200 of 1,200 games) and three faults in what the site showed for games still ahead.
+
+- **The nightly job scored upcoming games against finished games only.** `run-daily.ts`
+  rewrites the next 14 days, and a prior game that was not `final` was dropped. Before opening
+  night that overwrote projections with zeros, one more date each night (26 rows on 22 and 23
+  October when measured). In season, the row shown on game day is written the evening before,
+  while that evening's games are still being played, so a back-to-back was not counted until
+  the next evening's run: about 330 to 365 of 1,197 game days in a replay of the season. The
+  job now reads prior games from the schedule, the same basis `project_fatigue.ts` uses. No
+  coefficient or scoring term changed.
+- **3-in-4, 4-in-6 and the 30-day game count were recounted from finished games at request
+  time**, so every date still ahead showed none beside a score that had charged for them.
+  They now count prior games whether or not they have been played.
+- **Season Report travel miles added up the stored 7-day rolling figure**, which counts each
+  flight once for every game in the following week, about four times over (SAS read 217,826
+  miles for 2026-27; leg by leg it is 54,043). `src/lib/season-travel.ts` charges each flight
+  once, to the game it arrives at, using the fatigue model's own leg rule. This changes the
+  column for every season. The stored `travel_distance_miles` and the fatigue score are
+  untouched.
+
+Known limit: a row shown on game day is still written the evening before, so the previous
+night's overtime or blowout reaches it only at that evening's run. Rest days, back-to-backs,
+density and travel are right from the start.

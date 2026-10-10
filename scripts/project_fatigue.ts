@@ -36,8 +36,10 @@
  * makes re-running cheap and idempotent — that is what lets it run after a mid-season re-seed
  * (NBA Cup fixtures resolving in December) without recomputing the season.
  *
- * As each game comes within 14 days, `run-daily.ts` recomputes it on the default `"played"` basis,
- * so a projection is always replaced by the measured value before tip-off.
+ * As each game comes within 14 days, `run-daily.ts` recomputes it nightly on the same
+ * `"scheduled"` basis, so each finished prior game adds its real overtime and margin as it lands.
+ * It used the `"played"` basis until 2026-10-11, which dropped every unplayed prior game and
+ * overwrote these rows with zeros before opening night.
  *
  * Runs inside `daily_update.py` with no season argument — after the score sync, before
  * `run-daily.ts` — which is what keeps a mid-season addition from going unscored: the NBA publishes only 80 of each team's 82 games at
