@@ -1,4 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 
 /**
  * The evening score pass. It cannot be exercised against a real slate until the season starts,
@@ -142,7 +144,7 @@ describe("GET /api/cron/update", () => {
     expect(selectWhere).not.toHaveBeenCalled();
   });
 
-  it("does nothing when no game is scheduled or live today", async () => {
+  it("does nothing when every game on the two dates is already final", async () => {
     selectWhere.mockResolvedValue([]);
     const res = await GET(req("Bearer test-secret"));
     expect(res.status).toBe(200);
@@ -186,19 +188,16 @@ describe("GET /api/cron/update", () => {
     expect((await res.json()).data.gamesUpdated).toBe(1);
   });
 
-  it("leaves overtime alone for a game still in progress", async () => {
-    // A live game reports the periods played so far, so period 5 must not be written as an
-    // overtime that has not finished happening.
+  it("writes nothing for a game still in progress", async () => {
+    // A mid-game score would sit on the page unchanged until the next run, and period 5
+    // mid-game is not yet an overtime. The Games page marks the game live from its tip time.
     selectWhere.mockResolvedValue([storedRow()]);
     espnResponds([event({ state: "in", completed: false, periods: 5, homeScore: "90", awayScore: "88" })]);
 
-    await GET(req("Bearer test-secret"));
+    const res = await GET(req("Bearer test-secret"));
 
-    expect(updateSet).toHaveBeenCalledWith({
-      status: "live",
-      homeScore: 90,
-      awayScore: 88,
-    });
+    expect((await res.json()).data.gamesUpdated).toBe(0);
+    expect(updateSet).not.toHaveBeenCalled();
   });
 
   it("refuses to walk a stored final backwards and reports the refusal", async () => {
@@ -228,8 +227,8 @@ describe("GET /api/cron/update", () => {
   /**
    * The window, pinned at both ends.
    *
-   * The cron fires at 07:00 UTC — 2 AM EST, 3 AM EDT — so by the time it runs, the games it
-   * exists to finalize are on ET date D while "today" is already D+1. From the 2026-08-18
+   * The late runs fire after midnight ET (vercel.json), so by the time they run, the games
+   * they exist to finalize are on ET date D while "today" is already D+1. From the 2026-08-18
    * schedule move until 2026-08-22 the route scoped to today alone and therefore matched
    * nothing at all. These fail if the window is ever narrowed back.
    */
@@ -304,5 +303,29 @@ describe("GET /api/cron/update", () => {
 
       expect(fetchedDates()).toEqual(["20261020"]);
     });
+  });
+});
+
+/**
+ * The schedule, pinned. Vercel Hobby rejects the deploy if any entry would run more than once
+ * a day, and the hours are what make a final appear the same night.
+ */
+describe("vercel.json cron schedule", () => {
+  const crons = (
+    JSON.parse(readFileSync(join(process.cwd(), "vercel.json"), "utf8")) as {
+      crons: { path: string; schedule: string }[];
+    }
+  ).crons;
+
+  it("runs every entry once a day, on this route", () => {
+    for (const cron of crons) {
+      expect(cron.path).toBe("/api/cron/update");
+      expect(cron.schedule).toMatch(/^0 \d{1,2} \* \* \*$/);
+    }
+  });
+
+  it("covers every hour from 21:00 to 08:00 UTC exactly once", () => {
+    const hours = crons.map((cron) => Number(cron.schedule.split(" ")[1]));
+    expect([...hours].sort((a, b) => a - b)).toEqual([0, 1, 2, 3, 4, 5, 6, 7, 8, 21, 22, 23]);
   });
 });

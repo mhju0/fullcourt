@@ -361,3 +361,82 @@ test("expanded game links survive reload and changing dates clears the expansion
   await page.getByRole("button", { name: "Previous day" }).click();
   await expect(page).not.toHaveURL(/game=/);
 });
+
+// D-81: no in-game score is stored. A row reads LIVE from its tip time, PENDING once three
+// hours have passed, and FINAL over the score when the writer stores it. The slate is served
+// as unplayed here whatever the database holds, so these keep working after opening night.
+test.describe("game status from the clock", () => {
+  const unplayed = async (page: import("@playwright/test").Page) => {
+    await page.route("**/api/games/2026-10-20", async (route) => {
+      const res = await route.fetch();
+      const body = (await res.json()) as { data: Record<string, unknown>[] };
+      body.data = body.data.map((g) => ({ ...g, status: "scheduled", homeScore: null, awayScore: null }));
+      await route.fulfill({ response: res, json: body });
+    });
+  };
+  // Rows come in tip-off order: BOS at DET 3:00 PM, PHI at NYK 7:00 PM, OKC at SAS 9:30 PM.
+  const status = (page: import("@playwright/test").Page, row: number) =>
+    page.locator(".fc-game-grid").nth(row).locator(".fc-game-status");
+
+  for (const width of [1280, 390]) {
+    test(`an evening slate shows each phase at one row height at ${width}px`, async ({ page }) => {
+      // 7:30 PM ET on opening night: the 3 PM game is over, the 7 PM game is being played,
+      // the 9:30 PM game has not tipped.
+      await page.clock.setFixedTime(new Date("2026-10-20T23:30:00Z"));
+      await page.setViewportSize({ width, height: 900 });
+      await unplayed(page);
+      await page.goto("/games?season=2026-27&date=2026-10-20");
+
+      const rows = page.locator(".fc-game-grid");
+      await expect(rows).toHaveCount(3);
+      // The top line is the state and the bottom line is the data, in every state.
+      await expect(status(page, 0)).toHaveText(/PENDING\s*3:00 PM ET/);
+      await expect(status(page, 1)).toHaveText(/LIVE\s*7:00 PM ET/);
+      await expect(status(page, 2)).toHaveText("9:30 PM ET");
+      await expect(page.locator(".fc-game-status").filter({ hasText: "FINAL" })).toHaveCount(0);
+
+      // LIVE is a label only: the dot is still and the row carries no tint, so the accent
+      // edge of a large rest gap stays the one accent on the table.
+      const live = rows.nth(1);
+      expect(await status(page, 1).locator("span span").first().evaluate((el) => getComputedStyle(el).animationName)).toBe("none");
+      expect(await live.evaluate((el) => getComputedStyle(el.parentElement!).backgroundColor))
+        .toBe(await rows.nth(2).evaluate((el) => getComputedStyle(el.parentElement!).backgroundColor));
+
+      // A button's name replaces its contents for a screen reader, so the state is in the name.
+      await expect(rows.nth(0)).toHaveAccessibleName(/^Expand .* at .*, result pending, on 2026-10-20 game details$/);
+      await expect(live).toHaveAccessibleName(/^Expand .* at .*, live, on 2026-10-20 game details$/);
+      await expect(rows.nth(2)).toHaveAccessibleName(/^Expand [^,]* on 2026-10-20 game details$/);
+
+      const heights = await rows.evaluateAll((els) => els.map((el) => el.getBoundingClientRect().height));
+      expect(Math.max(...heights) - Math.min(...heights)).toBeLessThanOrEqual(1);
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    });
+  }
+
+  test("before the first tip every row shows only its tip time", async ({ page }) => {
+    await page.clock.setFixedTime(new Date("2026-10-20T15:00:00Z"));
+    await unplayed(page);
+    await page.goto("/games?season=2026-27&date=2026-10-20");
+    await expect(page.locator(".fc-game-grid")).toHaveCount(3);
+    await expect(page.locator(".fc-game-status").filter({ hasText: /LIVE|FINAL|PENDING/ })).toHaveCount(0);
+  });
+
+  test("the board stays on the game day past midnight ET and moves on at 6 AM", async ({ page }) => {
+    // 12:30 AM ET on Oct 21: the 9:30 PM game is still being played.
+    await page.clock.setFixedTime(new Date("2026-10-21T04:30:00Z"));
+    await unplayed(page);
+    await page.goto("/games");
+    await expect(page).toHaveURL(/date=2026-10-20/);
+    await expect(status(page, 2)).toHaveText(/PENDING|LIVE/);
+
+    await page.clock.setFixedTime(new Date("2026-10-21T10:30:00Z"));
+    await page.goto("/games");
+    await expect(page).toHaveURL(/date=2026-10-21/);
+  });
+});
+
+test("a finished game's row says its score to a screen reader", async ({ page }) => {
+  await page.goto("/games?season=2024-25&date=2024-12-25");
+  await expect(page.locator(".fc-game-grid").first())
+    .toHaveAccessibleName(/^Expand .* at .*, final \d+ to \d+, on 2024-12-25 game details$/);
+});

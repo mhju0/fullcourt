@@ -26,7 +26,7 @@
  *
  * ── What it writes ──────────────────────────────────────────────────────────────────────────
  *
- *   status              scheduled | live | final
+ *   status              scheduled | final (a game in progress is left alone, never written)
  *   home_score / away_score
  *   overtime_periods    from the same payload, so a finalized game carries its overtime in the
  *                       same write. `fetch_game_context.ts` also sets this, but it runs after
@@ -149,6 +149,7 @@ async function main() {
   const unmatchedEspn: Array<{ date: string; game: EspnScoreboardGame }> = [];
   let unmatchedStored = 0;
   let refusedDowngrades = 0;
+  let inProgress = 0;
   let dateErrors = 0;
 
   await pool(dateKeys, CONCURRENCY, async (dateKey) => {
@@ -167,14 +168,15 @@ async function main() {
     updates.push(...result.updates);
     unmatchedStored += result.unmatchedStored.length;
     refusedDowngrades += result.refusedDowngrades.length;
+    inProgress += result.inProgress.length;
     for (const game of result.unmatchedEspn) unmatchedEspn.push({ date: dateKey, game });
   });
 
   const finals = updates.filter((u) => u.status === "final");
   const overtime = updates.filter((u) => (u.overtimePeriods ?? 0) > 0);
   console.log(
-    `[sync-scores] ${updates.length} row(s) to write — ${finals.length} final, ` +
-      `${updates.filter((u) => u.status === "live").length} live\n` +
+    `[sync-scores] ${updates.length} row(s) to write — ${finals.length} final\n` +
+      `[sync-scores]   games in progress (left alone): ${inProgress}\n` +
       `[sync-scores]   overtime games: ${overtime.length}\n` +
       `[sync-scores]   stored rows ESPN did not carry: ${unmatchedStored}\n` +
       `[sync-scores]   stored finals ESPN contradicted (refused): ${refusedDowngrades}\n` +

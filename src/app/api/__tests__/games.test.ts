@@ -17,6 +17,7 @@ const sampleGame: GameResponse = {
   season: "2024-25",
   status: "scheduled",
   tipOffEt: "5:00 PM ET",
+  tipOffUtc: "2024-12-25T22:00:00.000Z",
   homeScore: null,
   awayScore: null,
   homeTeam: {

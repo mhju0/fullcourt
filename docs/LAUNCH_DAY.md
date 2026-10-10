@@ -16,13 +16,22 @@ historical games does not establish this. Preserve the relevant run ID and write
 
 | Writer | Configured UTC schedule | Responsibility |
 | --- | --- | --- |
-| Daily NBA update | `0 21 * * *` | Recent score/status/overtime sync, game context, projection gaps, fatigue and predictions |
-| Vercel `/api/cron/update` | `0 7 * * *` | Recent score/status updates; separate from the full modeling pipeline |
+| Daily NBA update | `0 21 * * *` | Recent final score/status/overtime sync, game context, projection gaps, fatigue and predictions |
+| Vercel `/api/cron/update` | Twelve entries, one per hour from 21:00 to 08:00 UTC | Final scores for yesterday and today (ET); separate from the full modeling pipeline |
+
+Both store finished games only ([D-81](DECISIONS.md)). A game in progress is left as
+`scheduled` and reported as "in progress (left alone)"; the Games page marks it LIVE from its
+tip time. Two timing facts: GitHub has been starting the daily job two and a half to five hours
+late, and Vercel fires each cron entry at some point inside its hour, so a final appears between
+a few minutes and about two hours after the game ends.
 
 See `.github/workflows/daily-update.yml`, `scripts/daily_update.py`, `scripts/run-daily.ts`,
 and `src/app/api/cron/update/route.ts` for exact windows and behavior. Convert UTC to Eastern
-for the date being checked; daylight-saving offsets change. An afternoon run before tip-off
-correctly has no final scores for that night's games.
+for the date being checked; daylight-saving offsets change. A run before tip-off correctly has
+no final scores for that night's games.
+
+On the first night also confirm, in the Vercel project's cron list, that all twelve entries
+registered and that the early ones ran. Twelve entries on one path had not been deployed before.
 
 ## Checklist
 
@@ -37,7 +46,8 @@ correctly has no final scores for that night's games.
 5. Run the relevant read-only data and prediction audits. Review any write command's scope
    before repairing data; the script inventory distinguishes maintenance from publication.
 6. Check `/api/health` and the public Games page. Verify the completed slate, details, and
-   projected-versus-measured labels. Provider probes alone cannot prove these paths work.
+   projected-versus-measured labels. During the games, a row should read LIVE after its tip
+   time, PENDING three hours later, and FINAL over the score once a cron run has stored it. Provider probes alone cannot prove these paths work.
 7. Record the run, date window, actual write counts, and remaining anomalies in the issue or PR.
 
 If a provider is unavailable, retain published data and surface the failure. Do not manufacture

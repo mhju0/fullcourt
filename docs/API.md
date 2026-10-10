@@ -9,9 +9,9 @@ are authoritative for individual fields, optional values, and units.
 
 | GET endpoint | Input | Result | Cache policy |
 | --- | --- | --- | --- |
-| `/api/games/[date]` | Path date in `YYYY-MM-DD` form, interpreted as Eastern calendar date | Games, teams, stored fatigue and scores for that date | No explicit edge-cache policy |
+| `/api/games/[date]` | Path date in `YYYY-MM-DD` form, interpreted as Eastern calendar date | Games, teams, stored fatigue and scores for that date; each game carries `tipOffEt` (clock string) and `tipOffUtc` (ISO instant) | No explicit edge-cache policy |
 | `/api/games/dates` | Required browsable `season`; optional integer `month` 1–12 | Date/count index for Games | `inSeason` |
-| `/api/games/upcoming` | Optional browsable `season`, nonnegative `minRA` | Upcoming rest-advantage games | No explicit edge-cache policy |
+| `/api/games/upcoming` | Optional browsable `season`, nonnegative `minRA` | Rest-advantage games that are not final and have not tipped off | No explicit edge-cache policy |
 | `/api/game/[id]` | Positive integer database ID | Game and contextual detail; 404 if absent | No explicit edge-cache policy |
 | `/api/analysis` | Optional nonnegative `seasonMinRA` | Historical backtest, per-season home counts, venue baselines, evidence dates and completion state | `historical` |
 | `/api/games/search` | Optional `season`, 2–3 letter uppercase `team`, nonnegative `minRA`, `result` (`all`, `correct`, `incorrect`), `page`, `limit` | Paginated historical game evidence; page defaults to 1, limit to 20 and caps at 100 | `inSeason` |
@@ -31,8 +31,9 @@ publication from database records. They do not advance to an empty research seas
 because the calendar changed. A valid explicit season remains authoritative, including an
 empty result; a failed publication lookup remains an error. See [season rollover](SEASON_ROLLOVER.md).
 
-Games and upcoming-game endpoints preserve live-score behavior instead of serving a long-lived
-edge snapshot. Heavy domain reads also use the stamped server cache, including coalesced
+Games and upcoming-game endpoints are read fresh instead of from a long-lived edge snapshot, so a
+final score appears as soon as it is stored. No in-game score is stored; a game's `status` is
+`scheduled` until it is `final`. Heavy domain reads also use the stamped server cache, including coalesced
 in-flight requests. Do not infer an endpoint's cache semantics from the page's navigation group.
 
 ## Response semantics

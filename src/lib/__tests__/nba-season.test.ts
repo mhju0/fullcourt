@@ -9,6 +9,7 @@ import {
   NBA_SEASONS,
   nextSeasonLabel,
   pickDefaultGamesDate,
+  slateDateKey,
   formatEasternTipTime,
 } from "../nba-season";
 import type { GameDateCount } from "@/types";
@@ -256,5 +257,23 @@ describe("formatEasternTipTime", () => {
 
   it("returns null for an unparseable instant", () => {
     expect(formatEasternTipTime("not-a-date")).toBeNull();
+  });
+});
+
+describe("slateDateKey", () => {
+  it("keeps the game day until 6 AM ET, so late games stay on the board past midnight", () => {
+    // 12:30 AM ET on Oct 21 (EDT): the 10 PM ET games of Oct 20 are still being played.
+    expect(slateDateKey(new Date("2026-10-21T04:30:00Z"))).toBe("2026-10-20");
+    expect(slateDateKey(new Date("2026-10-21T09:59:00Z"))).toBe("2026-10-20");
+  });
+
+  it("moves to the new day at 6 AM ET", () => {
+    expect(slateDateKey(new Date("2026-10-21T10:00:00Z"))).toBe("2026-10-21");
+  });
+
+  it("holds the same hour after the clocks change", () => {
+    // EST: 6 AM ET is 11:00 UTC.
+    expect(slateDateKey(new Date("2026-12-02T10:59:00Z"))).toBe("2026-12-01");
+    expect(slateDateKey(new Date("2026-12-02T11:00:00Z"))).toBe("2026-12-02");
   });
 });

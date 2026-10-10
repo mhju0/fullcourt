@@ -26,7 +26,7 @@ import {
 import {
   defaultNbaCalendarMonth,
   currentDisplaySeason,
-  formatEasternDateKey,
+  slateDateKey,
 } from "@/lib/nba-season";
 import type { ApiResponse, GameDateCount, GameResponse } from "@/types";
 
@@ -85,10 +85,11 @@ const noon = (dateKey: string) => parseISO(`${dateKey}T12:00:00`);
 export function useGameSlate(): GameSlate {
   // Both frozen at mount: "today" in the NBA's Eastern calendar, and the month to
   // show before any date exists. Constants, so nothing can drift out of sync.
+  // "Today" holds until 6 AM ET so late games stay on the board past midnight.
   const [seed] = useState(() => ({
     season: currentDisplaySeason(),
     fallbackMonth: defaultNbaCalendarMonth(),
-    todayKey: formatEasternDateKey(),
+    todayKey: slateDateKey(),
   }));
 
   const [state, dispatch] = useReducer(slateReducer, seed, initSlate);

@@ -118,6 +118,19 @@ export function formatEasternDateKey(date = new Date()): string {
   return EASTERN_DATE_FMT.format(date);
 }
 
+/** The Games board keeps showing a game day until this hour (ET) the next morning. */
+const SLATE_ROLLOVER_HOUR_ET = 6;
+
+/**
+ * The game day the Games board opens on: the Eastern date, held until 6 AM.
+ *
+ * West-coast games are still being played at midnight ET, so a board that moved on at
+ * midnight would open on tomorrow's slate while tonight's was unfinished.
+ */
+export function slateDateKey(now = new Date()): string {
+  return formatEasternDateKey(new Date(now.getTime() - SLATE_ROLLOVER_HOUR_ET * 60 * 60 * 1000));
+}
+
 const EASTERN_TIP_FMT = new Intl.DateTimeFormat("en-US", {
   timeZone: "America/New_York",
   hour: "numeric",
