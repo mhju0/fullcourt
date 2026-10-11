@@ -1,0 +1,22 @@
+{
+  "browser": "actual Chrome connected CUA",
+  "mobile": {
+    "viewport": 390,
+    "client": 375,
+    "documentScroll": 375,
+    "tableWidth": 740,
+    "table": "internal horizontal scroll with focusable region"
+  },
+  "desktop": {
+    "viewport": 1440,
+    "client": 1425,
+    "documentScroll": 1425
+  },
+  "launchRows": 28,
+  "brokenImages": 0,
+  "consoleErrors": 0,
+  "brokenLocalReferences": 0,
+  "duplicateIDs": 0,
+  "section": "generator-guards",
+  "status": "new section rendered and visually inspected at both widths"
+}

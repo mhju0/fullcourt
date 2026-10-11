@@ -46,7 +46,15 @@ and Python7+42 contracts passed. Initial pnpm auto-install failed against a shar
 symlink; a frozen install into this worktree resolved it and all gates reran successfully.
 No product E2E repeat for this script-only change; PR124's419 tests remain historical evidence.
 [Checks](../reports/2026-10-11-remediation/evidence/generator-guards/verification.json).
-Exact-candidate independent review is pending; no merge or deployment of this batch.
+[Verified] Independent read-only Astra review accepted exact code candidate
+`edd31eb0591bb5f58e7d248892da5797aacb7a83`, independently executing37 referee and13 publisher
+tests with no blocking findings. [Review](../reports/2026-10-11-remediation/evidence/generator-guards/independent-review.md).
+CI passes. Exact-SHA preview is READY; browser home and Officiating mobile/desktop/detail
+checks and authenticated CLI health200/db-up pass. Anonymous API/Chrome access failures and
+the CLI flag retry are retained in [preview evidence](../reports/2026-10-11-remediation/evidence/generator-guards/preview.json).
+The HTML report was rendered at390/1440 without page overflow, broken images/references or
+console errors, and all28 launch rows remain present.
+PR #126 awaits an explicit owner yes to merge; no production writer or new publication.
 
 ## Remaining limits
 

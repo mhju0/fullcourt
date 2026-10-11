@@ -110,7 +110,7 @@
   "artifactFollowupMergeCommit": "3445fcdbf3444a938460830990116ae4f8db1489",
   "artifactFollowupProductionVerified": true,
   "generatorGuards": {
-    "status": "local CLI and commit gates passed; exact-candidate review pending",
+    "status": "local verified, exact code candidate independently accepted, CI and preview verified; owner merge approval pending",
     "baseline": "3445fcdbf3444a938460830990116ae4f8db1489",
     "refereeMatched": 13209,
     "refereeCollected": 12636,
@@ -125,6 +125,12 @@
       "passed": 1148
     },
     "pythonScripts": 7,
-    "pythonML": 42
+    "pythonML": 42,
+    "candidate": "edd31eb0591bb5f58e7d248892da5797aacb7a83",
+    "pullRequest": "https://github.com/mhju0/fullcourt/pull/126",
+    "independentReview": "accepted exact code candidate;37 referee +13 publisher independently run",
+    "previewVerified": true,
+    "previewDeployment": "https://fullcourt-ehl16ltkm-mhju0s-projects.vercel.app",
+    "reportBrowserVerified": true
   }
 }

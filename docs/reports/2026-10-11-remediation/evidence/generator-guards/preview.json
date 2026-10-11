@@ -1,0 +1,48 @@
+{
+  "candidate": "edd31eb0591bb5f58e7d248892da5797aacb7a83",
+  "deployment": "https://fullcourt-ehl16ltkm-mhju0s-projects.vercel.app",
+  "ready": true,
+  "target": "preview",
+  "exactSHA": true,
+  "home": {
+    "heading": "Rest is a stat",
+    "client": 1705,
+    "scroll": 1705
+  },
+  "officiatingMobile": {
+    "viewport": 390,
+    "client": 375,
+    "scroll": 375,
+    "season": "2025-26",
+    "reviewedGames": 386
+  },
+  "officiatingDesktop": {
+    "viewport": 1440,
+    "client": 1425,
+    "scroll": 1425
+  },
+  "detail": {
+    "game": "0022501186",
+    "plays": 24,
+    "visibleIncorrectNonCalls": 2,
+    "crew": true,
+    "NBAReportAndVideoLinks": true
+  },
+  "consoleErrors": 0,
+  "health": {
+    "HTTP": 200,
+    "body": {
+      "status": "ok",
+      "db": "up"
+    },
+    "method": "authenticated Vercel curl"
+  },
+  "accessFailures": [
+    "Anonymous urllib JSON parse failed after redirect to Vercel HTML login (not a health response).",
+    "Chrome direct API navigation: net::ERR_BLOCKED_BY_CLIENT.",
+    "Vercel CLI forwarded explicit --non-interactive to curl twice: unknown option. Retried without that redundant flag; authenticated request succeeded."
+  ],
+  "CI": "all required checks passed; Supabase Preview skipped",
+  "productionWrites": false,
+  "limitations": "Preview browser/read-only smoke; generator is verified locally, not a production scheduled execution."
+}
