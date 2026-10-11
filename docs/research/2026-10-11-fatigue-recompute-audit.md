@@ -86,3 +86,22 @@ All reads were read-only. Stored rows were compared with fresh results to nine d
 - When this audit ran, a game-day row lacked the previous night's overtime and margin until
   that evening's run. D-83 rescores it when the finals are stored.
 - Overtime before 2002-03 is unknown and reads 0, as documented in Data sources and coverage.
+
+## Follow-up checks after D-83
+
+Run the same day against a local restore of the backup taken after the repairs. Nothing was
+written to production.
+
+- **The backup restores.** All eight tables load with production's row counts (51,695 games,
+  103,390 fatigue rows, 28,037 predictions).
+- **The score route's rescore works end to end.** A scheduled Detroit at Washington row was moved
+  to 2026-10-10, where ESPN listed a preseason final between the two (114-108, one overtime), and
+  each team's next game was moved to the following two days. The route stored the final and
+  returned `fatigueRescored: 2`. Detroit's next score went from 3.59 to 4.09 and Washington's from
+  0.94 to 1.44, the overtime term in both, and all four rows equal what `scripts/run-daily.ts`
+  writes from the same data. A second call wrote nothing.
+- **The daily job on `main` reproduces the stored rows.** `scripts/run-daily.ts 2026-10-11` on an
+  unmodified restore rewrote 86 fatigue rows and 11 predictions, all identical to production's.
+- **Preseason games cannot reach a stored row.** Neither writer filters ESPN's season type; both
+  match on date and pairing and never insert. ESPN's last 2026 preseason date is 16 October and
+  the first stored game is 20 October, so no preseason final has a row to match.
