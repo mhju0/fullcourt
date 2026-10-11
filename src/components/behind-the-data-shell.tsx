@@ -1,7 +1,7 @@
 import { Children, isValidElement, type ReactNode } from "react";
 import Link from "next/link";
 import { PageHeader } from "@/components/page-header";
-import { BEHIND_THE_DATA_SECTIONS } from "@/lib/behind-the-data-sections";
+import { BEHIND_THE_DATA_SECTIONS, RELATED_SURFACE_LABELS } from "@/lib/behind-the-data-sections";
 import { ReferenceDetails } from "@/components/reference-details";
 import { sectionId } from "@/components/behind-the-data-parts";
 import "./reference.css";
@@ -50,7 +50,7 @@ export function BehindTheDataShell({ eyebrow, title, description, topic, childre
     </details>
     <div id="reference-body" className="flex flex-col gap-4">{children}</div>
     <nav className="reference-related" aria-label="Related pages">
-      {current?.surfaceHrefs.map((href) => <Link key={href} href={href}>{({ "/analysis": "View Model Results", "/games": "Browse Games", "/season": "Read Season Report", "/schedule": "Compare Schedule Edge", "/playoffs": "View Playoff Rest", "/shooting": "Compare Player Shooting by Rest", "/availability": "View Availability Cost", "/shot-quality": "View Expected Shot Value", "/officiating": "Browse Officiating" } as Record<string, string>)[href]} →</Link>)}
+      {current?.surfaceHrefs.map((href) => <Link key={href} href={href}>{RELATED_SURFACE_LABELS[href]} →</Link>)}
       {topic !== "data-and-limits" && <Link href="/behind-the-data/data-and-limits">Data sources and coverage →</Link>}
     </nav>
   </div>;

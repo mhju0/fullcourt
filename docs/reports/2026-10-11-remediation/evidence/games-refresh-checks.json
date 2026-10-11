@@ -1,0 +1,26 @@
+{
+  "environment": "Final local Node22 production build; HTTP proxy injects 1.5s delay/503 in slate endpoint; real restored database reads; not production incident or Supabase event",
+  "duringRefresh": {
+    "ariaDisabled": "true",
+    "expanded": "true",
+    "focus": "Refreshing…",
+    "tag": "BUTTON"
+  },
+  "failedRefresh": {
+    "expanded": "true",
+    "focus": "Try again",
+    "rows": 3,
+    "scroll": 375,
+    "tag": "BUTTON",
+    "url": "http://localhost:3104/games?date=2026-10-20&season=2026-27&game=118696",
+    "warning": "Could not refresh this view. Showing the last fetched games.",
+    "width": 375
+  },
+  "recoveredRefresh": {
+    "expanded": "true",
+    "focus": "Refresh view",
+    "scroll": 375,
+    "warning": null,
+    "width": 375
+  }
+}

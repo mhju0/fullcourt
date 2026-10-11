@@ -30,7 +30,7 @@ import type { GameDateCount, GameResponse } from "@/types";
 
 // ─── Value types ─────────────────────────────────────────────────
 
-/** A game with the Realtime overlay already applied. */
+/** An authoritative game response with an optional score-change flash. */
 export type SlateGame = GameResponse & { isScoreFlashing: boolean };
 
 /** One day chip. Formatting is done here so callers never touch date-fns. */
@@ -86,6 +86,10 @@ export interface SlateState {
   readonly todayKey: string;
   /** Counts retries. The fetch effects depend on it, so the same season or date can be asked for again. */
   attempt: number;
+  generation: number;
+  refreshStatus: "idle" | "refreshing" | "error";
+  refreshMessage: string | null;
+  checkedAt: number | null;
 }
 
 // ─── Events ──────────────────────────────────────────────────────
@@ -106,10 +110,11 @@ export type SlateIntent =
 export type SlateResolution =
   | { type: "DAYS_RESOLVED"; days: readonly GameDateCount[] }
   | { type: "DAYS_REJECTED"; message: string }
-  | { type: "SLATE_RESOLVED"; date: string; games: readonly GameResponse[] }
-  | { type: "SLATE_REJECTED"; date: string; message: string };
+  | { type: "SLATE_RESOLVED"; date: string; games: readonly GameResponse[]; generation?: number; checkedAt?: number }
+  | { type: "SLATE_REJECTED"; date: string; message: string; generation?: number; background?: boolean };
 
 export type SlateEvent = SlateIntent | SlateResolution
+  | { type: "SLATE_REFRESH_STARTED"; date: string; generation: number }
   | { type: "LOCATION_RESTORED"; season: string; date: string | null };
 
 // ─── Init ────────────────────────────────────────────────────────
@@ -129,6 +134,10 @@ export function initSlate(args: {
     fallbackMonth: args.fallbackMonth,
     todayKey: args.todayKey,
     attempt: 0,
+    generation: 0,
+    refreshStatus: "idle",
+    refreshMessage: null,
+    checkedAt: null,
   };
 }
 
@@ -138,7 +147,7 @@ const monthOf = (dateKey: string) => Number(dateKey.slice(5, 7));
 
 /** Selecting a date always means "load that day", so both paths share this. */
 function selectDate(state: SlateState, date: string): SlateState {
-  return { ...state, status: "loadingSlate", selectedDate: date, games: [], message: null };
+  return { ...state, status: "loadingSlate", selectedDate: date, games: [], message: null, generation: state.generation + 1, refreshStatus: "idle", refreshMessage: null, checkedAt: null };
 }
 
 function shiftDateKey(dateKey: string, delta: number): string {
@@ -157,7 +166,7 @@ function shiftDateKey(dateKey: string, delta: number): string {
 export function slateReducer(state: SlateState, event: SlateEvent): SlateState {
   switch (event.type) {
     case "LOCATION_RESTORED": {
-      const next = initSlate({ ...state, season: event.season });
+      const next = { ...initSlate({ ...state, season: event.season }), generation: state.generation + 1 };
       const restored = event.date ? selectDate(next, event.date) : next;
       if (event.season !== state.season) return restored;
       const resolved = state.days.length > 0 || state.status === "noDays"
@@ -172,6 +181,10 @@ export function slateReducer(state: SlateState, event: SlateEvent): SlateState {
         ...state,
         status: "loadingDays",
         season: event.season,
+        generation: state.generation + 1,
+        refreshStatus: "idle",
+        refreshMessage: null,
+        checkedAt: null,
         days: [],
         selectedDate: null,
         games: [],
@@ -213,10 +226,10 @@ export function slateReducer(state: SlateState, event: SlateEvent): SlateState {
 
     case "RETRY_REQUESTED": {
       if (state.status === "daysError") {
-        return { ...state, status: "loadingDays", message: null, attempt: state.attempt + 1 };
+        return { ...state, status: "loadingDays", message: null, attempt: state.attempt + 1, generation: state.generation + 1 };
       }
       if (state.status === "slateError") {
-        return { ...state, status: "loadingSlate", message: null, attempt: state.attempt + 1 };
+        return { ...state, status: "loadingSlate", message: null, attempt: state.attempt + 1, generation: state.generation + 1 };
       }
       return state;
     }
@@ -244,20 +257,29 @@ export function slateReducer(state: SlateState, event: SlateEvent): SlateState {
         message: event.message,
       };
 
+    case "SLATE_REFRESH_STARTED": {
+      if (event.date !== state.selectedDate || event.generation !== state.generation) return state;
+      return { ...state, refreshStatus: "refreshing" };
+    }
+
     case "SLATE_RESOLVED": {
       // Out-of-order guard the old code lacked: an in-flight response for a date
       // the user has already navigated away from is dropped, not rendered.
-      if (event.date !== state.selectedDate) return state;
+      if (event.date !== state.selectedDate || (event.generation !== undefined && event.generation !== state.generation)) return state;
       return {
         ...state,
         status: event.games.length > 0 ? "slateReady" : "slateEmpty",
         games: event.games,
         message: null,
+        refreshStatus: "idle",
+        refreshMessage: null,
+        checkedAt: event.checkedAt ?? state.checkedAt,
       };
     }
 
     case "SLATE_REJECTED": {
-      if (event.date !== state.selectedDate) return state;
+      if (event.date !== state.selectedDate || (event.generation !== undefined && event.generation !== state.generation)) return state;
+      if (event.background) return { ...state, refreshStatus: "error", refreshMessage: event.message };
       return { ...state, status: "slateError", games: [], message: event.message };
     }
   }

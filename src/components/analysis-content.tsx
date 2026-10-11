@@ -1015,10 +1015,13 @@ export function AnalysisContent({ asOf }: { asOf?: DataAsOf | null }) {
         asOf={asOf}
       />
       <MethodLink surfaceHref="/analysis" /></header>
-      <nav aria-label="Model Results sections" className="flex gap-6 text-[15px]">
-        <a href="#answer" className="fc-text-link min-h-11 content-center">The answer</a>
-        <a href="#explorer" className="fc-text-link min-h-11 content-center">The explorer</a>
-      </nav>
+      <div className="flex flex-col gap-2">
+        <p className="text-[15px] text-[var(--term-text-muted)]">On this page</p>
+        <nav aria-label="Model Results sections" className="flex flex-wrap gap-x-6 gap-y-2 text-[15px]">
+          <a href="#answer" className="fc-text-link inline-flex min-h-11 items-center">The answer</a>
+          <a href="#explorer" className="fc-text-link inline-flex min-h-11 items-center">The explorer</a>
+        </nav>
+      </div>
       <section id="answer" className="flex scroll-mt-20 flex-col gap-8" aria-labelledby="answer-heading">
         <h2 id="answer-heading" className="text-2xl font-semibold">The answer</h2>
 

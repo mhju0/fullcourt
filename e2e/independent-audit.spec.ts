@@ -35,6 +35,11 @@ test("mobile games keep season, month and date visible", async ({ page }) => {
   await page.goto("/games?season=2025-26&date=2026-04-12");
   const first = page.getByRole("button", { name: /^Expand .* at .* on \d{4}-\d{2}-\d{2} game details$/ }).first();
   await expect(first).toBeInViewport({ ratio: 1 });
+  const header = page.getByTestId("matchups-heading-controls");
+  await expect(header.getByRole("button", { name: "Refresh view" })).toBeVisible();
+  const headingRow = await header.boundingBox();
+  const refresh = await header.getByRole("button", { name: "Refresh view" }).boundingBox();
+  expect(refresh!.y + refresh!.height).toBeLessThanOrEqual(headingRow!.y + headingRow!.height);
   const row = await first.boundingBox();
   const dock = await page.getByRole("navigation", { name: "Bottom navigation" }).boundingBox();
   expect(row!.y + row!.height).toBeLessThanOrEqual(dock!.y);

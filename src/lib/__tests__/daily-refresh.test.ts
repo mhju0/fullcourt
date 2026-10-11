@@ -161,3 +161,14 @@ describe("refreshDailyGames", () => {
     expect(homeAtHome.hasTimeZoneDisplacement).toBe(false);
   });
 });
+
+
+it("counts a deadline reached inside the transaction as deferred, rather than a harmless skip", async () => {
+  const { refreshProspectiveGames } = await import("@/lib/daily-refresh");
+  const summary = await refreshProspectiveGames({
+    gameIds: [10, 11],
+    port: { refreshGame: async () => ({ status: "deferred", reason: "budget exhausted" }) },
+  });
+  expect(summary.deferredGames).toEqual([10, 11]);
+  expect(summary.skippedGames).toEqual([]);
+});

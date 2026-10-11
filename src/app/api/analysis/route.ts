@@ -17,5 +17,5 @@ export const GET = jsonRoute(
   "api/analysis",
   z.object({ seasonMinRA: minRAParam }),
   ({ seasonMinRA }) => getHistoricalBacktest(seasonMinRA),
-  CACHE.historical
+  CACHE.inSeason
 );

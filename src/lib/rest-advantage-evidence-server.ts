@@ -11,7 +11,7 @@ import {
   type HistoricalGameSearchFilters,
   type HistoricalGameSearchOptions,
 } from "@/lib/rest-advantage-evidence";
-import { createStampedCache } from "@/lib/stamped-cache";
+import { createStampedCache, ORIGIN_CACHE_MAX_AGE } from "@/lib/stamped-cache";
 import type { AnalysisResponse, GameSearchResponse } from "@/types";
 
 /**
@@ -36,7 +36,8 @@ async function getHistoricalBacktestStamp(): Promise<string> {
  * no LIMIT — and reduces them in JS. Its interface hid that, so callers treated
  * it as a getter and asked for it once per surface.
  *
- * The result is held until a game goes final. `getCompletedGamesStamp` ignores the
+ * Finals move the stamp; max age bounds fatigue/correction changes it misses.
+ * `getCompletedGamesStamp` ignores the
  * key because the population does not depend on it — one stamp covers every
  * threshold. Entries are per `seasonMinRA` because that is the only input, and the
  * cache is bounded because that input arrives from a query string.
@@ -45,6 +46,7 @@ const MAX_CACHED_THRESHOLDS = 16;
 
 export const getHistoricalBacktest = createStampedCache<number, AnalysisResponse>({
   readStamp: getHistoricalBacktestStamp,
+  maxAgeMs: ORIGIN_CACHE_MAX_AGE.inSeason,
   load: async (seasonMinRA) => {
     const rows = await getCompletedGamesWithFatigue();
     // Keep the cheap completion read sequential. Hosted production has one database connection

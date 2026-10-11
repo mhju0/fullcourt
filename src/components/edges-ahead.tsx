@@ -1,8 +1,10 @@
 "use client"
 
-import { useMemo } from "react"
+import { useEffect, useMemo, useRef } from "react"
 import useSWR from "swr"
 import { format } from "date-fns"
+import { useNow } from "@/hooks/useNow"
+import { hasNotTipped } from "@/lib/game-phase"
 import { apiFetcher } from "@/lib/fetcher"
 import { defaultNbaSeason } from "@/lib/nba-season"
 import { TRACK, TYPE, termCardStyle } from "@/lib/terminal-styles"
@@ -20,6 +22,7 @@ import type { UpcomingGameWithRA } from "@/types"
  */
 
 const STRIP_SIZE = 3
+const RESERVE_SIZE = 6
 
 export function EdgesAhead({
   onJump,
@@ -27,15 +30,17 @@ export function EdgesAhead({
   onJump: (season: string, date: string) => void
 }) {
   const season = defaultNbaSeason()
-  const { data: games } = useSWR<UpcomingGameWithRA[]>(
-    `/api/games/upcoming?${new URLSearchParams({ season })}`,
+  const now = useNow()
+  const refilled = useRef<string | null>(null)
+  const { data: games, mutate } = useSWR<UpcomingGameWithRA[]>(
+    `/api/games/upcoming?${new URLSearchParams({ season, limit: String(RESERVE_SIZE) })}`,
     apiFetcher,
-    { revalidateOnFocus: false }
+    { refreshInterval: 60_000, revalidateOnFocus: true, revalidateOnReconnect: true, refreshWhenHidden: false, refreshWhenOffline: false }
   )
 
   const top = useMemo(() => {
     if (!games || games.length === 0) return []
-    return [...games]
+    return games.filter((game) => hasNotTipped(game.tipOffUtc, now))
       .sort(
         (a, b) =>
           Math.abs(b.restAdvantageDifferential) - Math.abs(a.restAdvantageDifferential) ||
@@ -43,7 +48,15 @@ export function EdgesAhead({
           a.gameId - b.gameId
       )
       .slice(0, STRIP_SIZE)
-  }, [games])
+  }, [games, now])
+
+  useEffect(() => {
+    if (!games || games.length < RESERVE_SIZE || top.length >= STRIP_SIZE) return
+    const signature = games.map((game) => game.gameId).join(",")
+    if (refilled.current === signature || document.visibilityState !== "visible" || !navigator.onLine) return
+    refilled.current = signature
+    void mutate().catch(() => {})
+  }, [games, top.length, mutate])
 
   if (top.length === 0) return null
 

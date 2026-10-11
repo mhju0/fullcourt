@@ -1,0 +1,173 @@
+[
+  {
+    "check": "Home Court keyboard related link",
+    "url": "http://127.0.0.1:3101/home-court",
+    "viewport": 390,
+    "result": "Named link Enter navigates to /home-court"
+  },
+  {
+    "check": "Shot Value rendered guidance 390",
+    "client": 375,
+    "guidance": [
+      {
+        "color": "rgb(93, 100, 112)",
+        "fontFamily": "Geist, \"Geist Fallback\", ui-sans-serif, system-ui, sans-serif",
+        "fontSize": "15px",
+        "width": 309
+      }
+    ],
+    "scroll": 375,
+    "viewport": 390
+  },
+  {
+    "check": "Shot Value 360 overflow",
+    "client": 345,
+    "scroll": 345,
+    "viewport": 360
+  },
+  {
+    "check": "Playoffs latest 360",
+    "client": 345,
+    "copy": [
+      "Pick: trained only on earlier seasons. Hindsight: fitted with the target season included; it is not evidence of predictive performance.",
+      "Probabilities are for the named team. Picks remain N/A when earlier history is insufficient."
+    ],
+    "scroll": 345,
+    "viewport": 360
+  },
+  {
+    "check": "Playoffs earliest insufficient history",
+    "client": 345,
+    "naCount": 16,
+    "scroll": 345,
+    "url": "http://localhost:3101/playoffs?season=1985-86",
+    "viewport": 360
+  },
+  {
+    "check": "Playoffs unpublished",
+    "url": "http://localhost:3101/playoffs?season=2026-27",
+    "result": "NO PUBLISHED BRACKET visible; latest-results action preserved"
+  },
+  {
+    "check": "Model nav 360",
+    "anchors": [
+      {
+        "height": 44,
+        "href": "#answer",
+        "text": "The answer"
+      },
+      {
+        "height": 44,
+        "href": "#explorer",
+        "text": "The explorer"
+      }
+    ],
+    "client": 345,
+    "scroll": 345,
+    "viewport": 360
+  },
+  {
+    "check": "Model explorer anchor",
+    "url": "http://localhost:3101/analysis#explorer"
+  },
+  {
+    "check": "Model anchor browser back",
+    "url": "http://localhost:3101/analysis"
+  },
+  {
+    "check": "Chrome 200% zoom confirmed native AX",
+    "client": 712,
+    "devicePixelRatio": 2,
+    "scroll": 712,
+    "viewport": 720
+  },
+  {
+    "check": "Shot Value 200% page zoom",
+    "client": 712,
+    "devicePixelRatio": 2,
+    "guidance": "Marker size shows shot attempts. Tap the court to inspect the nearest measured location, or use the location slider and arrow keys. Locations run left to right from the baseline upcourt.",
+    "scroll": 712,
+    "viewport": 720
+  },
+  {
+    "check": "Schedule 390 layout",
+    "client": 375,
+    "copy": [
+      "This ranking describes schedule differences; it does not predict results. Schedule worth converts historical rest-group rates into win equivalents, not wins a team actually gained or a causal estimate."
+    ],
+    "scroll": 375,
+    "scrollRegions": [],
+    "viewport": 390
+  },
+  {
+    "check": "Schedule full breakdown internal scroll",
+    "client": 375,
+    "cue": [
+      "Scroll sideways for more columns."
+    ],
+    "scroll": 375,
+    "scrollers": [
+      {
+        "class": "fc-scroll-cue fc-schedule-breakdown mt-3 overflow-x-auto",
+        "scroll": 500,
+        "tabindex": "0",
+        "width": 343
+      },
+      {
+        "class": "fc-scroll-cue fc-detail-table overflow-x-auto",
+        "scroll": 520,
+        "tabindex": "0",
+        "width": 343
+      }
+    ],
+    "viewport": 390
+  },
+  {
+    "check": "Data Status honest absence 360",
+    "client": 345,
+    "explanation": "“Not recorded” means this view has no durable record of a successful refresh. Coverage dates and a reachable database do not confirm score sync or fatigue refresh.",
+    "notRecorded": 6,
+    "scroll": 345,
+    "viewport": 360
+  },
+  {
+    "check": "Tab console errors/warnings",
+    "logs": [
+      {
+        "level": "warn",
+        "message": "The width(-1) and height(-1) of chart should be greater than 0,\n       please check the style of container, or the props width(100%) and height(100%),\n       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the\n       height and width.",
+        "timestamp": "2026-10-11T07:38:28.455Z",
+        "url": "http://localhost:3101/_next/static/chunks/0sty_next_dist_0e79x3l._.js"
+      },
+      {
+        "level": "warn",
+        "message": "The width(-1) and height(-1) of chart should be greater than 0,\n       please check the style of container, or the props width(100%) and height(100%),\n       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the\n       height and width.",
+        "timestamp": "2026-10-11T07:38:28.455Z",
+        "url": "http://localhost:3101/_next/static/chunks/0sty_next_dist_0e79x3l._.js"
+      },
+      {
+        "level": "warn",
+        "message": "The width(-1) and height(-1) of chart should be greater than 0,\n       please check the style of container, or the props width(100%) and height(100%),\n       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the\n       height and width.",
+        "timestamp": "2026-10-11T07:38:28.459Z",
+        "url": "http://localhost:3101/_next/static/chunks/0sty_next_dist_0e79x3l._.js"
+      },
+      {
+        "level": "warn",
+        "message": "The width(-1) and height(-1) of chart should be greater than 0,\n       please check the style of container, or the props width(100%) and height(100%),\n       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the\n       height and width.",
+        "timestamp": "2026-10-11T07:38:28.459Z",
+        "url": "http://localhost:3101/_next/static/chunks/0sty_next_dist_0e79x3l._.js"
+      }
+    ]
+  },
+  {
+    "check": "Home Court keyboard link loaded localhost",
+    "url": "http://localhost:3101/home-court",
+    "client": 1440,
+    "scroll": 1440,
+    "viewport": 1440
+  },
+  {
+    "check": "Zoom screenshot limitation",
+    "result": "Native Chrome AX confirmed200%; DOM no overflow, but extension screenshot crops at zoom. Native screenshot follow-up stopped when user switched Chrome tabs; no further native input."
+  }
+]

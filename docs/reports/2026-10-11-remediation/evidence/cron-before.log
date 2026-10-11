@@ -1,0 +1,30 @@
+
+ RUN  v4.1.11 /Users/michaelju/Workspace/Projects/fullcourt-remediation
+
+(node:99496) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+ ❯ src/app/api/__tests__/cron-update.test.ts (17 tests | 1 failed | 16 skipped) 10ms
+     × recovers stored-final fatigue when there are no unfinished score rows 9ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/app/api/__tests__/cron-update.test.ts > GET /api/cron/update > recovers stored-final fatigue when there are no unfinished score rows
+AssertionError: expected "vi.fn()" to be called with arguments: [ 99, ObjectContaining{…} ]
+
+Number of calls: 0
+
+ ❯ src/app/api/__tests__/cron-update.test.ts:167:25
+    165|     recoveryIds.mockResolvedValue([99]);
+    166|     const res = await GET(req("Bearer test-secret"));
+    167|     expect(refreshGame).toHaveBeenCalledWith(99, expect.objectContaini…
+       |                         ^
+    168|     expect((await res.json()).meta.fatigueRescored).toBe(1);
+    169|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 16 skipped (17)
+   Start at  16:38:09
+   Duration  1.50s (transform 109ms, setup 0ms, import 1.35s, tests 10ms, environment 0ms)

@@ -81,22 +81,12 @@ refit, database migration, accounts, or new analytics are implied by repository 
 
 ## Summary of entries before 2026-10-05
 
-Condensed on 2026-10-06 from five entries; DECISIONS.md holds the detail.
+Condensed again on 2026-10-11; DECISIONS.md and dated review records retain detail.
 
-- **Methodology and usability (D-64, D-65).** Behind the Data follows the approved design and
-  writing audit; the usability audit shipped on 2026-09-09. See FRONTEND.md and
-  [the implementation review](design/usability-audit-review.md).
-- **Release-readiness pass, 2026-10-03 (D-71, D-72).** Games holds its URL write while a
-  navigation is in flight (`route-transition.ts`). The Turbopack build cache is off: after any
-  change to `globals.css`, confirm the new rule is in the stylesheet production serves. e2e is
-  outside CI, so stale specs are found only by running it.
-- **Reading pages, 2026-10-04 (D-73).** About and How it was built use `reading.module.css`.
-- **Data audits, 2026-10-04.** An SQL recompute matched what production serves. A comparison of
-  all 50,495 final games against basketball-reference and nba.com led to corrections the owner
-  applied: four 2019-20 dates, nine scores, one overtime count, 75 missing 2019-20 overtime
-  games and playoff series 18. Fatigue and predictions were rebuilt for the affected games
-  (PR #104). After any stored score or date fix, run the fidelity check in
-  `scripts/export_fatigue_features.ts`: it lists every stale row.
+- **Methodology/usability (D-64, D-65).** Behind the Data audit shipped on 2026-09-09; see FRONTEND.md and [review](design/usability-audit-review.md).
+- **Release checks, 2026-10-03 (D-71, D-72).** Games avoids URL writes during navigation (`route-transition.ts`). Turbopack build cache is off; after globals.css changes verify production CSS. e2e is outside CI and needed to discover stale specs.
+- **Reading pages, 2026-10-04 (D-73).** About/How it was built use `reading.module.css`.
+- **Data audit, 2026-10-04.** SQL recompute matched production; all 50,495 finals were compared with basketball-reference/nba.com. Owner corrected four 2019-20 dates, nine scores, one OT count, 75 missing OT games and playoff series 18; fatigue/predictions rebuilt (PR #104). After score/date fixes run `scripts/export_fatigue_features.ts` fidelity check for stale rows.
 
 Still open from those entries:
 
@@ -197,3 +187,11 @@ October were repaired on 2026-10-10. A second pass recomputed all 103,390 fatigu
 resolved picks with no difference; one typed rate and the 2026-09-11 home-court record were stale
 (PR #121). Method and results: [recompute audit](research/2026-10-11-fatigue-recompute-audit.md).
 The score route now rescores each finalized team's next game (D-83); rehearsed on a local restore on 2026-10-11, unseen in production. LAUNCH_DAY.md says how to check it.
+
+Comprehensive read-only audit, 2026-10-11: local HTML report `docs/audit/2026-10-11-comprehensive/index.html` (local only) (gitignored), fixed candidate debb8cc. [Verified] Browser review covered 28 distinct pages at mobile/desktop widths; lint/typecheck/1,053 Vitest tests/build/dependency audit passed, Python contracts 2+35 passed after a temporary ML dependency fix. No product edits, merge, deploy or production data write.
+Open: [Verified source] post-final rescore retry gap, Games/EDGES AHEAD refresh gaps, incomplete cache stamps, and score-sync failure signaling; [Verified browser] arrow-only Home Court method link. [Inferred] concurrent refresh freshness risk needs isolated PostgreSQL reproduction and independent integrity review; no production incident asserted. Physical iPhone, load, full E2E/axe and first live slate remain unverified.
+Launch record: owner answered “none” for items 2–10; 17/19/20/21 read-only investigations done with limits in report, 18 blocked on odds-feed intent, 1/11–16/22/27/28 waiting, 23–26 not started. Next: inspect Oct 12 nightly log, select bounded fixes with failing tests, retain owner yes for every merge/production write and D-80 freeze.
+
+Proposed fixes and before/after, 2026-10-11: local HTML proposal `docs/audit/2026-10-11-fix-proposals/index.html` (local only), seven designs plus nine UI comparisons and four backend fixture walkthroughs. No product implementation. Independent design review recommends C6 transaction-bound fresh read/compute/replace across cron/run-daily/project_fatigue before C1 reconciliation; C3 TTL is mitigation, C5 degraded exit, C2 full-slate invalidation and C4 clock filtering. Pre-tip policy, null-tip handling, budgets and exact freshness remain proposed decisions; real PostgreSQL and future product regression/browser checks are still required. All 28 launch statuses unchanged; owner yes remains required for merge/production writes.
+
+Audit implementation, 2026-10-11 (D-84): [remediation report](reports/2026-10-11-remediation/index.html). [Verified] C1/C6 share prospective lock-before-read transactions across all three regular writers; C3 has absolute cache age, C5 propagates degraded failure, and Games/Edges refetch authoritative data with clock filtering. U1 and proposed UI polish applied; coefficients/artifacts/schema unchanged. Local PostgreSQL 18 reproduces the original stale overwrite; 16 protected integrity contracts pass, including actual CLI paths and restored foreign keys. Production remains unchanged pending owner merge approval. Full E2E/independent candidate review in progress; all 28 launch statuses remain in the report, owner-only items unanswered beyond “none”.

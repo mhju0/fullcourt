@@ -21,7 +21,7 @@ Dependency versions live in `package.json` and `pnpm-lock.yaml`. The shared visu
 | `/officiating` | Selected NBA L2M findings and games-first report browser; source verdicts, clean games, shareable filters |
 | `/about` | Product purpose, author and engineering walkthrough entry |
 | `/how-it-was-built` | Problem, data flow, implementation tradeoffs, verification and limits |
-| `/privacy` | What a visit records, the three outside services that receive a request, the non-affiliation notice and the contact address |
+| `/privacy` | What a visit records, the four outside services that receive a request, the non-affiliation notice and the contact address |
 | `/behind-the-data/*` | Seven-topic overview; ten method articles with visible scope limits, compact topic/contents disclosures and expandable evidence |
 | `/behind-the-data/referees/archive` | Earlier referee research and its historical table |
 
@@ -35,9 +35,9 @@ existing links. No active page uses the retired OTHER menu or onboarding dialog.
 header and mobile dock. Explore stays marked for its child analyses. The page palette opens
 from the footer or keyboard shortcut; it is navigation, not universal data search.
 
-Explore uses six equal navigation tiles, in two columns on desktop and one on mobile.
+Explore uses seven equal navigation tiles, in two columns on desktop and one on mobile.
 `StudyLink` supplies a full-surface link with a visible arrow, descriptive action, and immediate
-interaction feedback. Artifact-derived previews identify Officiating and Availability findings; other tiles use less empty height. Research and archive links remain compact. This pattern is for choosing
+interaction feedback. Each tile uses the same category, question, and action structure; numerical findings stay on the destination page. Research and archive links remain compact. This pattern is for choosing
 a destination; tables retain their existing density. See D-63 for the owner selection.
 
 Standard study pages pair `PageHeader` and the compact `MethodLink` in `.page-intro`.

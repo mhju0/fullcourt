@@ -80,3 +80,15 @@ describe("gamesToRescoreAfterFinals", () => {
     ).toEqual([]);
   });
 });
+
+ it("skips a null tip because pre-tip cannot be established", () => {
+   expect(gamesToRescoreAfterFinals({ finalizedTeamIds: new Set([1]), upcoming: [game(61, "2026-10-21", 1, 2, null)], now: NOW })).toEqual([]);
+ });
+
+it("moves ET calendar keys across DST without adding or subtracting 24 hours", async () => {
+  const { adjacentEasternDateKey } = await import("@/lib/daily-refresh-port");
+  expect(adjacentEasternDateKey("2026-11-01", 1)).toBe("2026-11-02");
+  expect(adjacentEasternDateKey("2026-11-01", -1)).toBe("2026-10-31");
+  expect(adjacentEasternDateKey("2026-03-08", 1)).toBe("2026-03-09");
+  expect(adjacentEasternDateKey("2026-03-08", -1)).toBe("2026-03-07");
+});

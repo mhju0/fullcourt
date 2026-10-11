@@ -15,7 +15,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { getPublicApiErrorMessage, PublicApiError } from "@/lib/api-errors";
-import { browsableSeasons, NBA_SEASONS } from "@/lib/nba-season";
+import { browsableSeasons, currentDisplaySeason, NBA_SEASONS } from "@/lib/nba-season";
 import type { ApiResponse } from "@/types";
 
 /** The one season rule. Routes that need a different list say so explicitly. */
@@ -55,17 +55,20 @@ export const minRAParam = z.coerce.number().finite().min(0).default(0);
  * hit the execution-time limit. See `docs/TESTING_AND_CICD.md`.
  *
  * A policy is opt-in per route, because the right staleness is a claim about what the data is,
- * not a default. Live-score routes deliberately have none: they are read through Supabase
- * Realtime, and an edge-cached score would fight the subscription that corrects it.
+ * not a default. Live-score routes deliberately have none so edge caching cannot delay finals.
  */
 export const CACHE = {
-  /** Finished tables that only a pipeline run can move — the backtest, a settled season's grid. */
-  historical: "public, s-maxage=3600, stale-while-revalidate=86400",
+  /** Settled-season tables and generated historical artifacts. */
+  historical: "public, s-maxage=3600, stale-while-revalidate=300",
   /** Includes the season in progress, where an hour of drift would be visible. */
-  inSeason: "public, s-maxage=300, stale-while-revalidate=3600",
+  inSeason: "public, s-maxage=60, stale-while-revalidate=60",
 } as const;
 
 export type CachePolicy = (typeof CACHE)[keyof typeof CACHE];
+
+export function seasonCachePolicy(season: string): CachePolicy {
+  return season >= currentDisplaySeason() ? CACHE.inSeason : CACHE.historical;
+}
 
 /** Next passes dynamic segments here; a route with no segments gets nothing. */
 type SegmentContext<P> = { params: Promise<P> };
@@ -100,7 +103,7 @@ export function jsonRoute<Schema extends z.ZodType, Data>(
   name: string,
   schema: Schema,
   operation: (input: z.output<Schema>) => Promise<Data>,
-  cache?: CachePolicy
+  cache?: CachePolicy | ((input: z.output<Schema>) => CachePolicy)
 ) {
   return async function GET(
     req: NextRequest,
@@ -116,9 +119,10 @@ export function jsonRoute<Schema extends z.ZodType, Data>(
     }
 
     try {
+      const policy = typeof cache === "function" ? cache(parsed.data) : cache;
       return NextResponse.json(
         { data: await operation(parsed.data), error: null },
-        cache ? { headers: { "Cache-Control": cache } } : undefined
+        policy ? { headers: { "Cache-Control": policy } } : undefined
       );
     } catch (err) {
       if (err instanceof PublicApiError) {

@@ -1,0 +1,43 @@
+
+ RUN  v4.1.11 /Users/michaelju/Workspace/Projects/fullcourt-remediation
+
+(node:94262) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+ ❯ src/lib/__tests__/daily-refresh-port.test.ts (7 tests | 1 failed) 25ms
+   × skips a null tip because pre-tip cannot be established 6ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/lib/__tests__/daily-refresh-port.test.ts > skips a null tip because pre-tip cannot be established
+AssertionError: expected [ Array(1) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   {
++     "awayTeamId": 2,
++     "date": "2026-10-21",
++     "homeTeamId": 1,
++     "id": 61,
++     "status": "scheduled",
++     "tipOffUtc": null,
++   },
++ ]
+
+ ❯ src/lib/__tests__/daily-refresh-port.test.ts:85:132
+     83|
+     84|  it("skips a null tip because pre-tip cannot be established", () => {
+     85|    expect(gamesToRescoreAfterFinals({ finalizedTeamIds: new Set([1]), …
+       |                                                                                                                                    ^
+     86|  });
+     87|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 6 passed (7)
+   Start at  16:35:39
+   Duration  1.66s (transform 97ms, setup 0ms, import 1.45s, tests 25ms, environment 0ms)

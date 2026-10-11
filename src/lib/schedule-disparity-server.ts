@@ -5,7 +5,7 @@ import {
   getTeamDirectory,
 } from "@/lib/db/queries";
 import { computeScheduleDisparity, seasonRankability } from "@/lib/schedule-disparity";
-import { createStampedCache } from "@/lib/stamped-cache";
+import { createStampedCache, seasonCacheMaxAgeMs } from "@/lib/stamped-cache";
 import { teamLabeller } from "@/lib/team-labels";
 import type { ScheduleDisparityResponse, ScheduleDisparityTeam } from "@/types";
 
@@ -15,7 +15,7 @@ import type { ScheduleDisparityResponse, ScheduleDisparityTeam } from "@/types";
  *
  * Read-only — this module writes nothing and no other query reads anything it produces.
  *
- * Held until that season's games change, for the same reason the Season Report is: this reads
+ * Held until the stamp moves or max age expires, like the Season Report: this reads
  * every game in a season with no LIMIT and reduces them in JS. `getSeasonGamesStamp` is the
  * right stamp without a new query — it counts `publishableGames(eq(games.season, season))`,
  * which is exactly the population `getRegularSeasonScheduleForDisparity` reads. It also has to
@@ -27,6 +27,7 @@ import type { ScheduleDisparityResponse, ScheduleDisparityTeam } from "@/types";
  */
 export const getScheduleDisparity = createStampedCache<string, ScheduleDisparityResponse>({
   readStamp: getSeasonGamesStamp,
+  maxAgeMs: seasonCacheMaxAgeMs,
   load: buildScheduleDisparity,
 });
 

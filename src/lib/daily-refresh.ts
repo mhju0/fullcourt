@@ -71,8 +71,8 @@ export type DailyRefreshSummary = {
 };
 
 /**
- * Computes and replaces each game independently, preserving the last-known-good
- * rows whenever calculation or the game-level transaction fails.
+ * Pure historical/replay orchestration. Automated database writers use the ID-only
+ * prospective port; this interface accepts snapshots and cannot provide its freshness guarantee.
  */
 export async function refreshDailyGames(input: {
   games: readonly DailyRefreshGame[];
@@ -147,7 +147,7 @@ function requireTeam(
   return team;
 }
 
-function toFatigueScoreWrite(
+export function toFatigueScoreWrite(
   teamId: number,
   result: FatigueResult
 ): FatigueScoreWrite {
@@ -173,7 +173,7 @@ function toFatigueScoreWrite(
   };
 }
 
-function buildPrediction(
+export function buildPrediction(
   game: DailyRefreshGame,
   homeFatigueScore: number,
   awayFatigueScore: number
@@ -182,9 +182,7 @@ function buildPrediction(
     homeFatigueScore,
     awayFatigueScore
   );
-  // Neutral means no edge to call. Not-called means there is an edge and it points at the
-  // visitor, where rest has never been enough to outweigh home court — `isCalledSide` carries
-  // the evidence.
+  // Open predictions use the ratified rested-home call policy.
   if (!isCalledSide(restAdvantage.advantageTeam)) return null;
 
   return {
@@ -193,4 +191,51 @@ function buildPrediction(
       Math.round(restAdvantage.differential * 100) / 100
     ),
   };
+}
+
+export type ProspectiveRefreshResult =
+  | { status: "refreshed"; predictionRowsWritten: number }
+  | { status: "skipped"; reason: string }
+  | { status: "deferred"; reason: string };
+
+export interface ProspectiveRefreshPort {
+  refreshGame(gameId: number, options?: { onlyIfMissing?: boolean; deadlineMs?: number }): Promise<ProspectiveRefreshResult>;
+}
+
+export type ProspectiveRefreshSummary = DailyRefreshSummary & {
+  skippedGames: Array<{ gameId: number; reason: string }>;
+  deferredGames: number[];
+};
+
+export async function refreshProspectiveGames(input: {
+  gameIds: readonly number[];
+  port: ProspectiveRefreshPort;
+  onlyIfMissing?: boolean;
+  deadlineMs?: number;
+}): Promise<ProspectiveRefreshSummary> {
+  const summary: ProspectiveRefreshSummary = {
+    gamesRefreshed: 0, fatigueRowsWritten: 0, predictionRowsWritten: 0,
+    failedGames: [], skippedGames: [], deferredGames: [],
+  };
+  for (const gameId of input.gameIds) {
+    if (input.deadlineMs !== undefined && Date.now() >= input.deadlineMs) {
+      summary.deferredGames.push(gameId);
+      continue;
+    }
+    try {
+      const result = await input.port.refreshGame(gameId, {
+        onlyIfMissing: input.onlyIfMissing, deadlineMs: input.deadlineMs,
+      });
+      if (result.status === "skipped") summary.skippedGames.push({ gameId, reason: result.reason });
+      else if (result.status === "deferred") summary.deferredGames.push(gameId);
+      else {
+        summary.gamesRefreshed++;
+        summary.fatigueRowsWritten += 2;
+        summary.predictionRowsWritten += result.predictionRowsWritten;
+      }
+    } catch (error) {
+      summary.failedGames.push({ gameId, reason: error instanceof Error ? error.message : "Unknown refresh error" });
+    }
+  }
+  return summary;
 }

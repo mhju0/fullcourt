@@ -1,0 +1,14 @@
+/Users/michaelju/.nvm/versions/node/v22.13.0/lib/node_modules/corepack/dist/lib/corepack.cjs:21535
+  if (key == null || signature == null) throw new Error(`Cannot find matching keyid: ${JSON.stringify({ signatures, keys })}`);
+                                              ^
+
+Error: Cannot find matching keyid: {"signatures":[{"sig":"MEQCIB50ShhYkSG+UEW1b+h9yw6b+No7xp7Vexi6XZ3wNTBsAiBJc34TpE2uQN8gHPS/Q2mrBPe5NAB6km/M/7uSQevjqg==","keyid":"SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"}],"keys":[{"expires":null,"keyid":"SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA","keytype":"ecdsa-sha2-nistp256","scheme":"ecdsa-sha2-nistp256","key":"MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE1Olb3zMAFFxXKHiIkQO5cJ3Yhl5i6UPp+IhuteBJbuHcA5UogKo0EWtlWwW6KSaKoTNEYL7JlCQiVnkhBktUgg=="}]}
+    at verifySignature (/Users/michaelju/.nvm/versions/node/v22.13.0/lib/node_modules/corepack/dist/lib/corepack.cjs:21535:47)
+    at fetchLatestStableVersion (/Users/michaelju/.nvm/versions/node/v22.13.0/lib/node_modules/corepack/dist/lib/corepack.cjs:21553:5)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async fetchLatestStableVersion2 (/Users/michaelju/.nvm/versions/node/v22.13.0/lib/node_modules/corepack/dist/lib/corepack.cjs:21672:14)
+    at async Engine.getDefaultVersion (/Users/michaelju/.nvm/versions/node/v22.13.0/lib/node_modules/corepack/dist/lib/corepack.cjs:22298:23)
+    at async Engine.executePackageManagerRequest (/Users/michaelju/.nvm/versions/node/v22.13.0/lib/node_modules/corepack/dist/lib/corepack.cjs:22396:47)
+    at async Object.runMain (/Users/michaelju/.nvm/versions/node/v22.13.0/lib/node_modules/corepack/dist/lib/corepack.cjs:23102:5)
+
+Node.js v22.13.0

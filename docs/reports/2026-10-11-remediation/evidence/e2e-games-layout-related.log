@@ -1,0 +1,33 @@
+(node:49331) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+
+Running 17 tests using 1 worker
+
+[1A[2K(node:49357) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1A[2K(node:49357) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+
+[1A[2K(node:49357) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1A[2K[1/17] [chromium] › e2e/independent-audit.spec.ts:3:5 › schedule facts distinguish four nights and altitude carryover
+[1A[2K[2/17] [chromium] › e2e/independent-audit.spec.ts:33:5 › mobile games keep season, month and date visible
+[1A[2K[3/17] [chromium] › e2e/independent-audit.spec.ts:55:5 › mobile shooting exposes a player before optional definitions
+[1A[2K[4/17] [chromium] › e2e/independent-audit.spec.ts:70:5 › homepage introduction stays concise and builder walkthrough is reachable
+[1A[2K[5/17] [chromium] › e2e/independent-audit.spec.ts:78:5 › rare officiating categories stay accessible and shareable
+[1A[2K[6/17] [chromium] › e2e/season-navigation.spec.ts:4:5 › a phone picks a date from the week strip or the calendar, and restores it from the URL
+[1A[2K[7/17] [chromium] › e2e/season-navigation.spec.ts:41:5 › from the sm breakpoint every month and date shows at once, with no sideways scroll
+[1A[2K[8/17] [chromium] › e2e/season-navigation.spec.ts:58:5 › the selected date stays on screen after a desktop-to-phone resize without moving focus
+[1A[2K[9/17] [chromium] › e2e/season-navigation.spec.ts:75:7 › the slate summary is above the matchups and Edges Ahead below at 1280px
+[1A[2K[10/17] [chromium] › e2e/season-navigation.spec.ts:75:7 › the slate summary is above the matchups and Edges Ahead below at 1024px
+[1A[2K[11/17] [chromium] › e2e/season-navigation.spec.ts:75:7 › the slate summary is above the matchups and Edges Ahead below at 820px
+[1A[2K[12/17] [chromium] › e2e/season-navigation.spec.ts:90:7 › the matchup table keeps every column reachable at 1440px
+[1A[2K[13/17] [chromium] › e2e/season-navigation.spec.ts:90:7 › the matchup table keeps every column reachable at 1280px
+[1A[2K[14/17] [chromium] › e2e/season-navigation.spec.ts:90:7 › the matchup table keeps every column reachable at 1024px
+[1A[2K[15/17] [chromium] › e2e/season-navigation.spec.ts:90:7 › the matchup table keeps every column reachable at 768px
+[1A[2K[16/17] [chromium] › e2e/season-navigation.spec.ts:90:7 › the matchup table keeps every column reachable at 390px
+[1A[2K[17/17] [chromium] › e2e/season-navigation.spec.ts:114:5 › season controls share dimensions and typography across studies
+[1A[2K  17 passed (9.4s)

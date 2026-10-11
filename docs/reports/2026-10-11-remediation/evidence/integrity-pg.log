@@ -1,0 +1,70 @@
+(node:49780) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+FOREIGN KEYS [{"table_name":"fatigue_scores","constraint_name":"fatigue_scores_game_id_games_id_fk","definition":"FOREIGN KEY (game_id) REFERENCES fullcourt_integrity_test.games(id)","reference_schema":"fullcourt_integrity_test"},{"table_name":"fatigue_scores","constraint_name":"fatigue_scores_team_id_teams_id_fk","definition":"FOREIGN KEY (team_id) REFERENCES fullcourt_integrity_test.teams(id)","reference_schema":"fullcourt_integrity_test"},{"table_name":"games","constraint_name":"games_away_team_id_teams_id_fk","definition":"FOREIGN KEY (away_team_id) REFERENCES fullcourt_integrity_test.teams(id)","reference_schema":"fullcourt_integrity_test"},{"table_name":"games","constraint_name":"games_home_team_id_teams_id_fk","definition":"FOREIGN KEY (home_team_id) REFERENCES fullcourt_integrity_test.teams(id)","reference_schema":"fullcourt_integrity_test"},{"table_name":"predictions","constraint_name":"predictions_actual_winner_id_teams_id_fk","definition":"FOREIGN KEY (actual_winner_id) REFERENCES fullcourt_integrity_test.teams(id)","reference_schema":"fullcourt_integrity_test"},{"table_name":"predictions","constraint_name":"predictions_game_id_games_id_fk","definition":"FOREIGN KEY (game_id) REFERENCES fullcourt_integrity_test.games(id)","reference_schema":"fullcourt_integrity_test"},{"table_name":"predictions","constraint_name":"predictions_predicted_advantage_team_id_teams_id_fk","definition":"FOREIGN KEY (predicted_advantage_team_id) REFERENCES fullcourt_integrity_test.teams(id)","reference_schema":"fullcourt_integrity_test"}]
+PASS all seven authentic foreign keys copied to isolated schema; orphan prediction rejected
+PASS initial prospective pair committed
+BASELINE REPRODUCED authentic original port: stale precomputed writer overwrote newer OT pair
+PASS two-client target barrier: post-lock snapshot sees newly committed OT; both scores match pure calculation
+PASS resolved prediction preserved exactly; no open prediction created
+PASS prediction-stage lock timeout rolls back both fatigue rows and unresolved prediction
+PASS gap mode checks both sides under lock and repairs missing away row
+PASS null tip and non-scheduled target are conservatively skipped
+PASS fresh target status after lock wait rejects a concurrent final
+PASS actual DB clock after target lock wait rejects crossed tip
+PASS tip crossing during atomic pair insert rolls back post-write
+PASS independent recovery chooses current next game, requires stored FINAL within model window
+PASS gap decision is rechecked after a waiting target lock
+PASS scheduled and live prior results are neutralized on the real writer path
+(node:49897) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+[project-fatigue] 2026-27: projecting 3 scheduled game(s), 2026-10-11 → 2026-10-12
+[project-fatigue] 2026-27: games projected=2, fatigue rows=4, predictions=2, failures=0, skipped=1, deferred=0
+[project-fatigue] 2026-27 now has fatigue on 2 game(s).
+PASS actual project_fatigue CLI selects missing away side and preserves null-tip gap
+(node:49900) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+[run-daily] 2026-10-11–2026-10-25: games refreshed=2, fatigue rows written=4, predictions written=2, failures=0, skipped=1, deferred=0
+PASS actual run-daily CLI uses prospective writer and reports unknown-tip skips
+PASS actual cron stale read + row-lock wait: current final preserved/refusal counted
+PASS actual cron stale read + row-lock wait: final correction committed/count accurate
+[dotenv@17.3.1] injecting env (0) from .env.local -- tip: ⚡️ secrets for agents: https://dotenvx.com/as2
+(node:49925) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+[sync-scores] 2 stored games across 1 dates
+[sync-scores] 1 row(s) to write — 0 final
+[sync-scores]   games in progress (left alone): 0
+[sync-scores]   overtime games: 0
+[sync-scores]   stored rows ESPN did not carry: 1
+[sync-scores]   stored finals ESPN contradicted (refused): 0
+[sync-scores]   date fetch errors: 0
+[sync-scores] done — 0 row(s) updated
+[sync-scores] write-time final downgrades refused: 1
+PASS actual score-sync CLI stale read + row-lock wait: current final preserved/refusal counted
+[dotenv@17.3.1] injecting env (0) from .env.local -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+(node:49928) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+[sync-scores] 2 stored games across 1 dates
+[sync-scores] 1 row(s) to write — 1 final
+[sync-scores]   games in progress (left alone): 0
+[sync-scores]   overtime games: 1
+[sync-scores]   stored rows ESPN did not carry: 1
+[sync-scores]   stored finals ESPN contradicted (refused): 0
+[sync-scores]   date fetch errors: 0
+[sync-scores] done — 1 row(s) updated
+[sync-scores] write-time final downgrades refused: 0
+PASS actual score-sync CLI stale read + row-lock wait: final correction committed/count accurate
+PASS budget exhaustion reports every deferred ID
+20 real PostgreSQL contracts passed
+{
+  severity_local: 'NOTICE',
+  severity: 'NOTICE',
+  code: '00000',
+  message: 'drop cascades to 4 other objects',
+  detail: 'drop cascades to table fullcourt_integrity_test.teams\n' +
+    'drop cascades to table fullcourt_integrity_test.games\n' +
+    'drop cascades to table fullcourt_integrity_test.fatigue_scores\n' +
+    'drop cascades to table fullcourt_integrity_test.predictions',
+  file: 'dependency.c',
+  line: '1171',
+  routine: 'reportDependentObjects'
+}

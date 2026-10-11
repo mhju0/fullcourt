@@ -49,12 +49,20 @@ function joinClauses(clauses: string[]): string {
 }
 
 export function buildGameStoryline(
-  game: Pick<GameResponse, "homeTeam" | "awayTeam" | "homeFatigue" | "awayFatigue">
+  game: Pick<GameResponse, "homeTeam" | "awayTeam" | "homeFatigue" | "awayFatigue" | "seasonOpeners">
 ): string | null {
   const away = teamClauses(game.awayFatigue);
   const home = teamClauses(game.homeFatigue);
 
   const parts: string[] = [];
+  if (game.seasonOpeners?.away && game.seasonOpeners?.home) {
+    parts.push("Season opener for both teams. No earlier regular-season game this season; preseason is not included");
+  } else if (game.seasonOpeners?.away || game.seasonOpeners?.home) {
+    const team = game.seasonOpeners.away ? game.awayTeam : game.homeTeam;
+    parts.push(`${team.abbreviation} season opener. No earlier regular-season game this season; preseason is not included`);
+  }
+  if (game.seasonOpeners?.away && !game.awayFatigue) parts.push(`${game.awayTeam.abbreviation} fatigue data is unavailable`);
+  if (game.seasonOpeners?.home && !game.homeFatigue) parts.push(`${game.homeTeam.abbreviation} fatigue data is unavailable`);
   if (away.length > 0) parts.push(`${game.awayTeam.abbreviation} ${joinClauses(away)}`);
   if (home.length > 0) parts.push(`${game.homeTeam.abbreviation} ${joinClauses(home)}`);
 

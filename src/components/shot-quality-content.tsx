@@ -613,7 +613,7 @@ export function ShotQualityContent() {
             </div>
           )}
 
-          <p className="mono mt-3" style={{ fontSize: 10, color: "var(--term-text-muted)", letterSpacing: TRACK.sub, lineHeight: LEAD.body }}>
+          <p className="mt-3" style={{ fontSize: TYPE.body, color: "var(--term-text-muted)", lineHeight: LEAD.body }}>
             Marker size shows shot attempts. Tap the court to inspect the nearest measured location, or use the location slider and arrow keys. Locations run left to right from the baseline upcourt.
           </p>
         </div>

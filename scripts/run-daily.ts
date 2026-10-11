@@ -1,8 +1,9 @@
 /**
  * Daily pipeline (invoked from `scripts/daily_update.py` in GitHub Actions):
- * 1. Recompute fatigue_scores for all games from the target date (usually "today" ET) through
- *    the next 14 days.
- * 2. Replace unresolved predictions for scheduled games in that window.
+ * 1. Recompute prospective fatigue_scores for scheduled games with a known future tip from
+ *    the requested date through the next 14 days.
+ * 2. Replace unresolved predictions in that window. Played/unknown-tip rows are skipped;
+ *    historical repair remains the separate manual backfill.
  *
  * Usage: pnpm exec tsx scripts/run-daily.ts YYYY-MM-DD
  */
@@ -11,8 +12,8 @@ import { and, asc, gte, lte } from "drizzle-orm";
 import { addDays, format, parseISO } from "date-fns";
 import type { PostgresJsDatabase } from "drizzle-orm/postgres-js";
 import type * as Schema from "@/lib/db/schema";
-import { games, teams } from "@/lib/db/schema";
-import { refreshDailyGames } from "@/lib/daily-refresh";
+import { games } from "@/lib/db/schema";
+import { refreshProspectiveGames } from "@/lib/daily-refresh";
 import { createDailyRefreshPort } from "@/lib/daily-refresh-port";
 import { loadEnvLocal } from "@/lib/load-env-local";
 
@@ -29,8 +30,6 @@ async function main(): Promise<void> {
 
   const { db } = await import("@/lib/db");
   const appDb = db as AppDb;
-
-  const teamRows = await appDb.select().from(teams);
 
   const endDate = format(addDays(parseISO(dateArg), 14), "yyyy-MM-dd");
   const todaysGames = await appDb
@@ -56,9 +55,8 @@ async function main(): Promise<void> {
 
   const port = createDailyRefreshPort(appDb);
 
-  const summary = await refreshDailyGames({
-    games: todaysGames.map((game) => ({ ...game, date: String(game.date) })),
-    teams: teamRows,
+  const summary = await refreshProspectiveGames({
+    gameIds: todaysGames.map(game => game.id),
     port,
   });
 
@@ -69,9 +67,9 @@ async function main(): Promise<void> {
   }
 
   console.log(
-    `[run-daily] ${dateArg}–${endDate}: games refreshed=${summary.gamesRefreshed}, fatigue rows written=${summary.fatigueRowsWritten}, predictions written=${summary.predictionRowsWritten}, failures=${summary.failedGames.length}`
+    `[run-daily] ${dateArg}–${endDate}: games refreshed=${summary.gamesRefreshed}, fatigue rows written=${summary.fatigueRowsWritten}, predictions written=${summary.predictionRowsWritten}, failures=${summary.failedGames.length}, skipped=${summary.skippedGames.length}, deferred=${summary.deferredGames.length}`
   );
-  if (summary.failedGames.length > 0) process.exitCode = 1;
+  if (summary.failedGames.length > 0 || summary.deferredGames.length > 0) process.exitCode = 1;
 }
 
 main().catch((err) => {

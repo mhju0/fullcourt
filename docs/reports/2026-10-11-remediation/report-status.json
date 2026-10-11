@@ -1,0 +1,100 @@
+{
+  "date": "2026-10-11",
+  "environment": "isolated local worktree; restored PostgreSQL18; Node22 builds",
+  "baseline": "debb8cc4bf9dac9c0bdbfc5b6b6881999d473e78",
+  "fixes": [
+    "C1",
+    "C2",
+    "C3",
+    "C4",
+    "C5",
+    "C6",
+    "U1"
+  ],
+  "uiRecommendationCount": 9,
+  "unit": {
+    "files": 89,
+    "passed": 1111
+  },
+  "postgresContracts": 20,
+  "pythonScripts": 7,
+  "pythonML": 35,
+  "e2e": {
+    "passed": 413,
+    "failed": 2,
+    "status": "initial two failures fixed; focused 6 and related 17 pass; final full suite running"
+  },
+  "independentReview": "pending",
+  "committed": false,
+  "merged": false,
+  "deployed": false,
+  "productionWrites": false,
+  "limits": [
+    "actual Supabase Realtime",
+    "production CDN freshness/capacity",
+    "physical iPhone",
+    "200 percent visual clipping and text-only scaling",
+    "real NBA slate lifecycle",
+    "Actions email delivery"
+  ],
+  "screenshots": {
+    "before": "original actual production audit captures, filenames preserved",
+    "after": "actual local connected restore, some states/dates/widths differ",
+    "gamesBeforeMobileWidth": 360,
+    "gamesAfterMobileNominalWidth": 390
+  },
+  "launchStatuses": {
+    "done": [
+      17,
+      19,
+      20,
+      21
+    ],
+    "blocked": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      18
+    ],
+    "waiting": [
+      1,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      22,
+      27,
+      28
+    ],
+    "not_started": [
+      23,
+      24,
+      25,
+      26
+    ]
+  },
+  "reportVerification": {
+    "viewport390": {
+      "client": 375,
+      "scroll": 375
+    },
+    "browser": "Chrome connected CUA",
+    "brokenLocalReferences": 0,
+    "duplicateIds": 0,
+    "status": "draft browser inspected; final product results pending root",
+    "viewport1440": {
+      "client": 1425,
+      "scroll": 1425
+    },
+    "screensAnchor": "clicked actual Chrome nav to #screens",
+    "beforeSha256Matches": 13
+  }
+}

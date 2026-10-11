@@ -165,10 +165,22 @@ describe("GET /api/schedule-disparity — upcoming seasons", () => {
 
   // Pins which policy this route asks for. `api-route.test.ts` proves the header mechanism, but
   // nothing proved any route still requests one — a deleted policy failed no test.
-  it("lets the edge hold a settled schedule for the historical span", async () => {
+  it("uses the in-season policy for the latest current schedule", async () => {
     mockGet.mockResolvedValueOnce(payload());
 
     const res = await GET(makeReq());
+    expect(res.headers.get("cache-control")).toBe(CACHE.inSeason);
+  });
+
+  it("uses the historical policy for a settled season", async () => {
+    mockGet.mockResolvedValueOnce(payload({ season: "2024-25" }));
+    const res = await GET(makeReq("?season=2024-25"));
     expect(res.headers.get("cache-control")).toBe(CACHE.historical);
+  });
+
+  it("uses the in-season policy for an upcoming schedule", async () => {
+    mockGet.mockResolvedValueOnce(payload({ season: UPCOMING }));
+    const res = await GET(makeReq(`?season=${UPCOMING}`));
+    expect(res.headers.get("cache-control")).toBe(CACHE.inSeason);
   });
 });
