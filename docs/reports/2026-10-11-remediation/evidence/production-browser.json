@@ -1,0 +1,39 @@
+{
+  "mergeCommit": "0e9f60dabdaf2f41f69c0c4348e778a676c0d7cd",
+  "productionUrl": "https://fullcourt.fyi",
+  "homeMobile": {
+    "client": 375,
+    "left": 0,
+    "right": 375,
+    "scroll": 375,
+    "title": "Rest is a stat"
+  },
+  "homeDesktop": {
+    "client": 1425,
+    "scroll": 1425
+  },
+  "gamesMobile": {
+    "client": 375,
+    "scroll": 375
+  },
+  "gamesDesktop": {
+    "client": 1425,
+    "focus": "Refresh view",
+    "opener": true,
+    "receipt": "7:56 PM",
+    "scroll": 1425
+  },
+  "analysis": {
+    "client": 375,
+    "heading": "Model Results",
+    "onThisPage": true,
+    "scroll": 375
+  },
+  "dataStatus": {
+    "client": 375,
+    "heading": "Data Status",
+    "notRecorded": 6,
+    "scroll": 375
+  },
+  "consoleErrors": []
+}

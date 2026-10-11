@@ -25,3 +25,18 @@ Never edit a published figure directly; regenerate and review its tests and corr
 [Verified] The new career-drift guard checks the rendered denominators, percentages and the
 claims about changing careers. It does not prove that ESPN supplied correct inputs or replace
 the producer's replication gate. Ignored caches and historical research remain intact.
+
+## 2026-10-11 regeneration follow-up
+
+[Verified] The historical home-advantage PNG is produced by
+`scripts/plot_home_advantage_trend.py` from the committed
+`docs/research/2026-09-11-home-advantage-trend.json`; Matplotlib is required.
+The figure was redrawn without changing its data or producer.
+[Follow-up](research/2026-10-11-artifact-regeneration.md) records the checks.
+
+[Verified] Current referee regeneration is not a no-difference refresh: four corrected dates
+fail cached ESPN matching, and `fetch_officials.ts` takes coverage labels from the season list
+rather than collected games. Do not publish the diagnostic outputs without resolving and
+reviewing those differences. The initial three-snapshot Officiating command above is not a
+full12-season/current-provenance rebuild; older snapshots can regress the latest index hash
+and refresh metadata. Preserve current publication until exact source provenance is available.

@@ -1,0 +1,33 @@
+[
+  {
+    "path": "/api/health",
+    "status": 200,
+    "bytes": 64,
+    "shape": [
+      "status",
+      "db",
+      "timestamp"
+    ],
+    "rows": 0
+  },
+  {
+    "path": "/api/games/2026-10-20",
+    "status": 200,
+    "bytes": 3253,
+    "shape": [
+      "data",
+      "error"
+    ],
+    "rows": 3
+  },
+  {
+    "path": "/api/games/upcoming?season=2026-27&limit=6",
+    "status": 200,
+    "bytes": 2380,
+    "shape": [
+      "data",
+      "error"
+    ],
+    "rows": 6
+  }
+]

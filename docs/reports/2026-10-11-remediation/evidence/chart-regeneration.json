@@ -1,0 +1,16 @@
+{
+  "figure": "docs/research/2026-09-11-home-advantage-trend.png",
+  "producer": "scripts/plot_home_advantage_trend.py (unchanged)",
+  "inputSha256": "4aebc2c3e7ce9ffeda8cbd34d07e6e5510e850470fabf7c7158679e71f9be178",
+  "matplotlib": "3.10.8",
+  "seasons": 41,
+  "games": 47143,
+  "numericChecks": 164,
+  "rateRoundingTolerance": 5.01e-07,
+  "beforeSha256": "e632232731a2544d72b27825f36ffc9222239526236781951f883e10afeead5e",
+  "afterSha256": "ed9beea8529811b66eaa5166f0ff6b1bb19a6cfd8f934684208cc7817496c20b",
+  "notes": [
+    "Initial check with 1e-9 tolerance failed because producer rounds rates to six decimal places; rerun with producer precision passed.",
+    "No input data, coefficients or producer changes; PNG visually inspected."
+  ]
+}
