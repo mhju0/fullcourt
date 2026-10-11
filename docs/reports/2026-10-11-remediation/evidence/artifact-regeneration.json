@@ -1,0 +1,107 @@
+{
+  "baseline": "0e9f60dabdaf2f41f69c0c4348e778a676c0d7cd",
+  "publishedFilesCompared": 4553,
+  "differences": [
+    {
+      "path": "src/data/referee-whistle.json",
+      "beforeSha256": "8b8db674143535ba2fe171c3d20b538776f582bbe7320f067c2930cfd14a46fb",
+      "regeneratedSha256": "95cca28ff909596d8601d8d6b56a9b9a177f5eca8ebda79028976023084bce5d",
+      "topLevelDifferences": [
+        "gamesCovered",
+        "gamesSkipped",
+        "generated",
+        "lastSeason",
+        "league",
+        "officials",
+        "seasonsCovered"
+      ]
+    },
+    {
+      "path": "src/data/referee-foul-style.json",
+      "beforeSha256": "1908242ed1ce96fd874312172b50306663a67a2cbac08d21954cd3d20c701fb7",
+      "regeneratedSha256": "2079b54af0a2eecb39060503e5e77394ef94d20ec51933f58107fdf9c5506ff2",
+      "topLevelDifferences": [
+        "gamesCovered",
+        "generated",
+        "lastSeason",
+        "officials"
+      ]
+    },
+    {
+      "path": "src/data/referee-timing.json",
+      "beforeSha256": "fd799f1bd7349fd457731ebd54b0eeca6e4f577e0c64d04c8efca54f673ac862",
+      "regeneratedSha256": "d0bdddcbc515bcc13da1c75fadea75f5782b2115e90af92b5f21c2ec4201abe0",
+      "topLevelDifferences": [
+        "generated"
+      ]
+    },
+    {
+      "path": "src/data/referee-career-drift.json",
+      "beforeSha256": "3b8b9f501895f3116ff57cea066a07de6aa07d780ade6e19e4a7dcfefd852442",
+      "regeneratedSha256": "3c6bc60f45f6f88ba9e354b8e2c4d1d6074124d660a55e3a16b26d1a909df4e9",
+      "topLevelDifferences": [
+        "drift"
+      ]
+    },
+    {
+      "path": "public/data/player-rest.json",
+      "beforeSha256": "a369ee49b36e95650aed12c8b60781f6c0070ec84c574fe90e715192726a6d67",
+      "regeneratedSha256": "94e93487afd5a4b203a433841f21eb8824205abf817fd637ccaa66dcae57a37e",
+      "topLevelDifferences": [
+        "generated"
+      ]
+    },
+    {
+      "path": "src/data/officiating.json",
+      "beforeSha256": "309572da102ff54dfa5e63aefaf08695f8f01bf78825d0aa0b7c0df0e63e9173",
+      "regeneratedSha256": "5964574fa7628c6ec3f60d3c29af3a454bb1a429c9b11cf08d6a9626cf84a675",
+      "topLevelDifferences": [
+        "seasons"
+      ],
+      "nestedDifferences": {
+        "refreshedAt": {
+          "published": "2026-09-08T02:25:02.193726+00:00",
+          "olderSnapshotRegenerated": "2026-09-06T14:32:33.925512+00:00"
+        },
+        "indexSha256": {
+          "published": "31aecf3dd0b0b685dd4f9987ec4dc4dbf556d1db2d63050576a630f69a4373cb",
+          "olderSnapshotRegenerated": "bb8adece4aa760f948d1c016cca5826777f169a232f3581907c97d4fba0c8760"
+        }
+      },
+      "preservedOriginal": true
+    }
+  ],
+  "preservedPublishedArtifacts": true,
+  "localDB": "PostgreSQL18 restored backup; code read-only",
+  "providerNetwork": "fetch overridden to throw; all cached calls; zero fetch errors",
+  "referee": {
+    "beforeWhistleGames": 12636,
+    "regeneratedWhistleGames": 12632,
+    "beforeFoulStyleGames": 11952,
+    "regeneratedFoulStyleGames": 11948,
+    "unmatched": [
+      "2020-02-23 DET@POR",
+      "2020-02-28 DEN@LAC",
+      "2020-02-29 POR@ATL",
+      "2020-02-29 GSW@PHX"
+    ],
+    "cachedMissingSummaries": 573,
+    "generatorErrors": 0,
+    "newSeasonLabel": "2026-27 despite no completed results"
+  },
+  "shooting": {
+    "figuresUnchanged": true,
+    "onlyDifference": "generated date2026-10-04\u21922026-10-11"
+  },
+  "officiating": {
+    "reportFilesReproduced": 1152,
+    "publishedSeasonCount": 12,
+    "onlyIndexChanges": [
+      "2025-26 indexSha256",
+      "2025-26 refreshedAt Sep8\u2192Sep6"
+    ],
+    "latestSnapshotUnavailable": true,
+    "otherNineSeasonsNotRepublished": true
+  },
+  "legends": "byte-identical from existing research intermediates; not a full upstream research recomputation"
+}

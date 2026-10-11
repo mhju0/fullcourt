@@ -2,8 +2,11 @@
 
 Research and publishing discussion, 2026-09-11. The initial exploration and subsequent owner
 decisions are retained below. The figures, JSON and CSV were regenerated on 2026-10-11, after the
-stored score and date corrections of 2026-10-04; the chart image was not redrawn, and no value in
-it moved by more than a tenth of a point. Deployment evidence belongs in the release review.
+stored score and date corrections of 2026-10-04. The chart was redrawn later on 2026-10-11 with
+the unchanged Matplotlib producer and that committed JSON. [Verified] All 41 annual counts,
+rates and gaps reconcile at the producer’s six-decimal precision; no input or model change.
+The [regeneration record](2026-10-11-artifact-regeneration.md) records evidence and limits.
+Deployment evidence belongs in the release review.
 
 ## Fresh measurement
 

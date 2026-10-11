@@ -1,0 +1,7 @@
+2026-10-11 20:10:27,271 INFO collected games in the pipeline intermediate: 12632
+2026-10-11 20:10:27,286 INFO after regulation + >=20 fouls filter: 11948
+2026-10-11 20:10:27,367 INFO M0: 444/444 cells within tolerance (100.0%), 0 game-count mismatches -> PASS
+2026-10-11 20:10:27,389 INFO M2: 52 officials >= 350 games; 37/312 cells |zDelta|>=2 (11.9%, chance ~4.6%) -> DRIFT REAL, present window
+2026-10-11 20:10:27,451 INFO M3: 2070 cells, 245 beyond |z|>=2 (11.8%); mean sign agreement 75.2% -> SHIPS
+2026-10-11 20:10:27,453 INFO written: /Users/michaelju/Workspace/Projects/fullcourt-remediation/ml/data/referee/career_window_results.json
+2026-10-11 20:10:27,453 INFO written: /Users/michaelju/Workspace/Projects/fullcourt-remediation/src/data/referee-career-drift.json

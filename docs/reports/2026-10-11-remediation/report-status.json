@@ -26,8 +26,8 @@
   },
   "independentReview": "Class 3 accepted d5faec2 and final product candidate 542af17",
   "committed": true,
-  "merged": false,
-  "deployed": false,
+  "merged": true,
+  "deployed": true,
   "productionWrites": false,
   "limits": [
     "actual Supabase Realtime",
@@ -48,7 +48,8 @@
       17,
       19,
       20,
-      21
+      21,
+      23
     ],
     "blocked": [
       2,
@@ -60,7 +61,8 @@
       8,
       9,
       10,
-      18
+      18,
+      24
     ],
     "waiting": [
       1,
@@ -75,8 +77,6 @@
       28
     ],
     "not_started": [
-      23,
-      24,
       25,
       26
     ]
@@ -100,7 +100,10 @@
   "candidate": "542af172b09e1ff06db2792d411a0132419238b6",
   "pullRequest": "https://github.com/mhju0/fullcourt/pull/124",
   "previewVerified": true,
-  "productionDeployed": false,
+  "productionDeployed": true,
   "additionalFix": "homepage classic-scrollbar width; four regression cases; actual Chrome 390/1440 verified",
-  "deploymentState": "preview verified; production unchanged; explicit owner merge approval pending"
+  "deploymentState": "production READY for exact merge SHA; live browser/read-only API smoke verified",
+  "mergeCommit": "0e9f60dabdaf2f41f69c0c4348e778a676c0d7cd",
+  "postMergeEvidence": "local follow-up; not included in merged PR",
+  "followup": "item23 regenerated; item24 partial/blocked; exact published JSON preserved"
 }

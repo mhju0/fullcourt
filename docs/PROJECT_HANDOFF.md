@@ -120,15 +120,10 @@ from the ten-item list was not recorded as done.
 
 ## Phone and tablet layout (2026-10-07)
 
-PR #111 merged. D-78 is built: on a phone Games shows one week and a Calendar button instead of
-two sideways rows, the slate summary is one line above the matchups, sideways scrollers fade the
-edge that hides content, the Schedule breakdown drops its duplicate columns on small screens,
-and the summary rail started at 1024px (removed by D-79). Row 30 of the design record is amended. The survey behind
-it is a private artifact the owner holds, not a file in the repo.
-
-Dev served a stale stylesheet for the new rules (the D-72 behaviour); the work was verified
-against `pnpm build` and `pnpm start`. Local `main` had one unpushed commit from 2026-09-19 whose
-content origin already had; local `main` now matches origin and the backup branch is gone.
+Condensed 2026-10-11: PR #111 shipped D-78 phone calendar/week controls, one-line slate summary,
+scroll cues and smaller Schedule columns; D-79 removed its summary rail. The owner holds the
+private survey; row30 was amended. Stale dev CSS was checked with build/start (D-72).
+The duplicated local history was reconciled with origin; the backup branch was removed.
 
 Open:
 
@@ -198,3 +193,8 @@ Audit implementation, 2026-10-11 (D-84): [remediation report](reports/2026-10-11
 
 Final remediation verification, 2026-10-11: [Verified] product542af17: lint/typecheck/build,1,111 unit,20 PostgreSQL,7+35 Python,419/419 connected E2E; independent Class3 review accepted. Exact SHA preview ready; native Chrome mobile/desktop and connected Games refresh verified. Scoped homepage classic-scrollbar overflow fixed with failing regression evidence.
 Next: PR #124 awaits explicit owner yes to merge/deploy; production data untouched. Conditional performance/schema proposals, owner checks, physical device and opening-night checks remain open; all28 statuses retained in remediation report.
+
+Production merge follow-up, 2026-10-11: owner explicitly approved PR #124; merged0e9f60d at10:54:30UTC. [Verified] exact SHA Vercel production READY; live home390/1440, Games refresh/focus/opener, analysis anchors, Data Status and read-only APIs checked. No direct production data writes. Local remediation report updated; first real slate/owner/conditional checks retain existing28 statuses.
+
+Artifact follow-up, 2026-10-11: [Verified] item23 chart regenerated from committed JSON; 164 count/rate/CSV checks passed. Item24 partial: shooting figures and1152 Officiating details reproduce, legends byte-identical; referee regeneration loses4 matched games and labels unplayed2026-27 coverage. Published JSON preserved; older Officiating index provenance rejected. See [record](research/2026-10-11-artifact-regeneration.md).
+Next: review scope for referee matching/coverage before implementation; obtain latest Officiating snapshot before claiming full regeneration. Item1 target Oct12 run unavailable; owner/future checks unchanged. No production writes or additional merge.
