@@ -75,10 +75,13 @@ for (const width of [1280, 1024, 820]) {
   test(`the slate summary is above the matchups and Edges Ahead below at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 900 });
     await page.goto("/games?season=2024-25&date=2024-12-25");
-    const main = await page.getByTestId("games-main").boundingBox();
-    const aside = await page.getByRole("complementary", { name: "Upcoming edges" }).boundingBox();
-    expect(aside!.y).toBeGreaterThanOrEqual(main!.y + main!.height);
     await expect(page.getByTestId("slate-summary-line")).toBeVisible();
+    // Two separate reads straddle the slate loading in, so retry until one pair agrees.
+    await expect(async () => {
+      const main = await page.getByTestId("games-main").boundingBox();
+      const aside = await page.getByRole("complementary", { name: "Upcoming edges" }).boundingBox();
+      expect(aside!.y).toBeGreaterThanOrEqual(main!.y + main!.height);
+    }).toPass({ timeout: 10_000 });
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   });
 }
