@@ -1048,3 +1048,25 @@ A read-only audit of 2026-27 found the schedule correct against ESPN and basketb
 Known limit: a row shown on game day is still written the evening before, so the previous
 night's overtime or blowout reaches it only at that evening's run. Rest days, back-to-backs,
 density and travel are right from the start.
+
+## D-83 — The score route rescores each finalized team's next game; method-page rates are pinned (2026-10-11)
+
+D-82 left one limit: a game-day fatigue row is written the evening before, so the previous
+night's overtime and margin reached it only at that evening's run, after most games had tipped.
+`/api/cron/update` now closes it. After it stores a night's finals it rescores the next game of
+each team that has just gone final, when that game is today or tomorrow (ET) and has not tipped
+off (`gamesToRescoreAfterFinals`). It uses `refreshDailyGames` and the same database port as
+`run-daily.ts` (`createDailyRefreshPort`), so both paths read prior games on one basis. The
+rescore runs after the score writes and inside its own guard: a failure is logged, reported as
+`meta.fatigueRescored: null`, and costs no final. The nightly job is unchanged and still
+rewrites the following fortnight.
+
+A game that has tipped off is never rescored, so a row does not change under a game in
+progress. Not exercised against a real slate; the selector is unit-tested and the scoring path
+is the one the nightly job already uses.
+
+The three home win rates on the rest-advantage method page (both teams travelled in, home flew
+farther, home ended a road trip on a back-to-back) were typed prose, and one went stale after
+the 2026-10-04 corrections. `scripts/measure_home_rest_confound.ts` now writes
+`ml/home_rest_confound_facts.json`, mirrored in `src/lib/home-rest-confound-facts.ts`, printed
+by the page and pinned by `home-rest-confound-facts.test.ts`.

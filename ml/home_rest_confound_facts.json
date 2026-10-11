@@ -1,0 +1,15 @@
+{
+  "population": 47143,
+  "bothTravelledIn": {
+    "games": 23076,
+    "homeWinPct": 59.7
+  },
+  "homeFlewFarther": {
+    "games": 12492,
+    "homeWinPct": 59.9
+  },
+  "homeTravelledInOnBackToBack": {
+    "games": 5948,
+    "homeWinPct": 58
+  }
+}

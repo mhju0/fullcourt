@@ -196,4 +196,4 @@ Report travel miles were about four times too high in every season. The zeroed r
 October were repaired on 2026-10-10. A second pass recomputed all 103,390 fatigue rows and 27,404
 resolved picks with no difference; one typed rate and the 2026-09-11 home-court record were stale
 (PR #121). Method and results: [recompute audit](research/2026-10-11-fatigue-recompute-audit.md).
-Open: a game-day row lacks the previous night's overtime and margin until the evening run.
+The score route now rescores each finalized team's next game (D-83); unseen on a real slate.

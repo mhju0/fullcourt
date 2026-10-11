@@ -16,8 +16,8 @@ import { describe, expect, it } from "vitest";
  */
 const read = (...parts: string[]) => readFileSync(join(process.cwd(), ...parts), "utf8");
 
-describe("the nightly fatigue refresh", () => {
-  const source = read("scripts", "run-daily.ts");
+describe("the fatigue refresh port", () => {
+  const source = read("src", "lib", "daily-refresh-port.ts");
 
   it("counts scheduled games as prior games", () => {
     expect(source).toMatch(
@@ -27,6 +27,15 @@ describe("the nightly fatigue refresh", () => {
 
   it("never falls back to the finals-only default", () => {
     expect(source).not.toMatch(/fetchRecentGamesForTeam\(\s*appDb,\s*teamId,\s*gameDate\s*\)/);
+  });
+
+  it.each([
+    ["the nightly script", ["scripts", "run-daily.ts"]],
+    ["the score route", ["src", "app", "api", "cron", "update", "route.ts"]],
+  ])("is the only way %s loads prior games", (_name, parts) => {
+    const caller = read(...parts);
+    expect(caller).toContain("createDailyRefreshPort(");
+    expect(caller).not.toContain("fetchRecentGamesForTeam(");
   });
 });
 

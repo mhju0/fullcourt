@@ -54,6 +54,8 @@ import { eraCoordinates } from "@/lib/team-era-coordinates";
 type AppDb = PostgresJsDatabase<typeof Schema>;
 
 const OUT_PATH = path.join(process.cwd(), "docs", "audit", "home-rest-confound.txt");
+/** The three rates the method page prints, committed so `home-rest-confound-facts.test.ts` can pin them. */
+const FACTS_PATH = path.join(process.cwd(), "ml", "home_rest_confound_facts.json");
 
 /** Same threshold `fatigue.ts` uses to decide two arenas are the same building. */
 const SAME_ARENA_MILES = 1;
@@ -662,6 +664,19 @@ async function main(): Promise<void> {
   await mkdir(path.dirname(OUT_PATH), { recursive: true });
   await writeFile(OUT_PATH, report, "utf8");
   console.log(`[measure] report written to ${OUT_PATH}`);
+
+  const cut = (rows: PopulationGame[]) => ({
+    games: rows.length,
+    homeWinPct: Math.round((rows.filter((g) => g.homeWon).length / rows.length) * 1000) / 10,
+  });
+  const facts = {
+    population: population.length,
+    bothTravelledIn: cut(bothTravelled),
+    homeFlewFarther: cut(homeFurtherThanVisitor),
+    homeTravelledInOnBackToBack: cut(homeTravelledB2b),
+  };
+  await writeFile(FACTS_PATH, JSON.stringify(facts, null, 2) + "\n", "utf8");
+  console.log(`[measure] wrote ${FACTS_PATH}`);
 }
 
 main().catch((err) => {

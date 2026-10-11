@@ -80,8 +80,9 @@ All reads were read-only. Stored rows were compared with fresh results to nine d
   (dates, scores, overtime) were last compared with basketball-reference and nba.com on
   2026-10-04 and were not compared again here.
 - Referee, officiating and shooting figures do not use fatigue scores and were not regenerated.
-- The typed rates from `measure_home_rest_confound.ts` are not pinned by a test. After any
-  stored-row correction, rerun that script and `research_home_advantage_trend.ts`.
-- A game-day row is written the evening before, so the previous night's overtime and margin
-  reach it at that evening's run.
+- After any stored-row correction, rerun `measure_home_rest_confound.ts` and
+  `research_home_advantage_trend.ts`. The first has been pinned by a test since D-83; the
+  second is a dated record with no test.
+- When this audit ran, a game-day row lacked the previous night's overtime and margin until
+  that evening's run. D-83 rescores it when the finals are stored.
 - Overtime before 2002-03 is unknown and reads 0, as documented in Data sources and coverage.

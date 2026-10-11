@@ -7,16 +7,13 @@
  * Usage: pnpm exec tsx scripts/run-daily.ts YYYY-MM-DD
  */
 
-import { and, asc, eq, gte, isNull, lte } from "drizzle-orm";
+import { and, asc, gte, lte } from "drizzle-orm";
 import { addDays, format, parseISO } from "date-fns";
 import type { PostgresJsDatabase } from "drizzle-orm/postgres-js";
 import type * as Schema from "@/lib/db/schema";
-import { fatigueScores, games, predictions, teams } from "@/lib/db/schema";
-import {
-  refreshDailyGames,
-  type DailyRefreshPort,
-} from "@/lib/daily-refresh";
-import { fetchRecentGamesForTeam } from "@/lib/fatigue-recent-games";
+import { games, teams } from "@/lib/db/schema";
+import { refreshDailyGames } from "@/lib/daily-refresh";
+import { createDailyRefreshPort } from "@/lib/daily-refresh-port";
 import { loadEnvLocal } from "@/lib/load-env-local";
 
 type AppDb = PostgresJsDatabase<typeof Schema>;
@@ -57,46 +54,7 @@ async function main(): Promise<void> {
     return;
   }
 
-  const port: DailyRefreshPort = {
-    // Prior games come from the schedule, played or not. Counting only finals dropped last
-    // night's game (still in progress when this runs) and every game between today and the
-    // row's own date, so a back-to-back read as rested. A final prior game keeps its real
-    // overtime and margin; an unplayed one contributes neither.
-    loadRecentGames(teamId, gameDate) {
-      return fetchRecentGamesForTeam(appDb, teamId, gameDate, "scheduled");
-    },
-    async replaceGameRefresh(write) {
-      await appDb.transaction(async (tx) => {
-        await tx
-          .delete(fatigueScores)
-          .where(eq(fatigueScores.gameId, write.gameId));
-        await tx.insert(fatigueScores).values(
-          write.fatigueRows.map((row) => ({
-            gameId: write.gameId,
-            ...row,
-          }))
-        );
-
-        if (write.replaceUnresolvedPrediction) {
-          await tx
-            .delete(predictions)
-            .where(
-              and(
-                eq(predictions.gameId, write.gameId),
-                isNull(predictions.actualWinnerId)
-              )
-            );
-          if (write.prediction !== null) {
-            await tx.insert(predictions).values({
-              gameId: write.gameId,
-              ...write.prediction,
-              actualWinnerId: null,
-            });
-          }
-        }
-      });
-    },
-  };
+  const port = createDailyRefreshPort(appDb);
 
   const summary = await refreshDailyGames({
     games: todaysGames.map((game) => ({ ...game, date: String(game.date) })),
