@@ -50,3 +50,16 @@ Evidence: `docs/reports/2026-10-11-remediation/evidence/ui-polish/checks.json` a
 Viewport override reset after checks. No deployment or production verification claimed. 200% visual clipping (capture limitation), text-only 200% scaling, physical mobile browser and exhaustive court tapping/share behavior remain unverified.
 
 Typecheck recheck during sibling work: only cron update DailyRefreshPort missing methods and sync-scores-espn test object.includes errors remained. Root must recheck after those implementations settle.
+
+
+## Home full-bleed scrollbar correction
+
+Native Chrome reproduced the same pre-existing homepage overflow on local 3102 and unchanged production (`fullcourt-nba.vercel.app` redirected to `fullcourt.fyi`). At a 390px viewport the classic scrollbar reserves 15px: document clientWidth 375px, home left -7.5px/right 382.5px/width 390px, document scrollWidth 383px. `margin-inline: calc(50% - 50vw)` used the scrollbar-inclusive viewport width, shifting both content rails by half the gutter.
+
+Bounded fix: `src/components/home.module.css` makes only `#main:has(.home)` an inline-size query container and uses `50cqw` in the existing breakout margin. Background/theme, vertical geometry, max-width 1152px, type, motion and markup remain unchanged. Header and bottom nav are outside main, as is the command palette mount.
+
+Regression tests in `e2e/home.spec.ts` remove Chromium's default `--hide-scrollbars` only for this test file. Four cases use auto/stable gutter at 390/1440px and compare document scrollWidth with **clientWidth**, assert full-bleed bounds (left 0/right clientWidth), actual main width, and nearest query ancestor. The existing Games action test also checks that main's containerType returns to normal outside home.
+
+Test-first evidence against old built 3101: initial stable-only injection did not reproduce the real bug. With Chromium's hidden-scrollbar flag removed, stable itself changed viewport-unit geometry so the old CSS passed those two cases. The added default-auto cases reproduced the observed bug: **390px scrollWidth 383 > clientWidth 375; 1440px scrollWidth 1433 > clientWidth 1425**. Both auto cases failed before CSS modification; both stable cases passed. This distinction is retained rather than treating emulation setup failures as regression evidence.
+
+Source ready for root-coordinated fresh build, affected homepage checks and native Chrome confirmation. No source candidate or deployed acceptance is inferred from the old build.

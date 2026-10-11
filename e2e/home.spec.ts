@@ -1,5 +1,7 @@
 import { expect, test } from "@playwright/test";
 
+test.use({ launchOptions: { ignoreDefaultArgs: ["--hide-scrollbars"] } });
+
 test.describe("Rest-focused front door", () => {
   test("keeps the main finding and the routes into its evidence", async ({ page }) => {
     await page.goto("/");
@@ -68,6 +70,46 @@ test.describe("Rest-focused front door", () => {
     await page.getByRole("link", { name: "Find a game", exact: true }).click();
     await expect(page).toHaveURL(/\/games(?:\?|$)/);
     await expect(page.getByRole("heading", { level: 1, name: "Games" })).toBeVisible();
+    expect(await page.locator("#main").evaluate((main) => getComputedStyle(main).containerType)).toBe("normal");
+  });
+
+  test.describe("classic scrollbar width", () => {
+    for (const width of [390, 1440]) {
+      for (const gutter of ["auto", "stable"]) {
+        test(`full-bleed home fits the available width with ${gutter} scrollbar gutter at ${width}px`, async ({ page }) => {
+          await page.setViewportSize({ width, height: 900 });
+          await page.goto("/");
+          await page.addStyleTag({ content: `html { scrollbar-gutter: ${gutter}; }` });
+          const geometry = await page.getByTestId("home-findings").evaluate((home) => {
+            const rect = home.getBoundingClientRect();
+            const documentRoot = document.documentElement;
+            let queryAncestor = home.parentElement;
+            while (queryAncestor && getComputedStyle(queryAncestor).containerType === "normal") {
+              queryAncestor = queryAncestor.parentElement;
+            }
+            const main = document.querySelector("#main")!;
+            return {
+              viewportWidth: innerWidth,
+              availableWidth: documentRoot.clientWidth,
+              scrollWidth: documentRoot.scrollWidth,
+              homeLeft: rect.left,
+              homeRight: rect.right,
+              homeWidth: rect.width,
+              mainWidth: main.getBoundingClientRect().width,
+              mainContainerType: getComputedStyle(main).containerType,
+              queryAncestorId: queryAncestor?.id,
+            };
+          });
+          expect(geometry.availableWidth).toBeLessThan(geometry.viewportWidth);
+          expect(geometry.scrollWidth).toBeLessThanOrEqual(geometry.availableWidth);
+          expect(geometry.homeLeft).toBeCloseTo(0, 1);
+          expect(geometry.homeRight).toBeCloseTo(geometry.availableWidth, 1);
+          expect(geometry.homeWidth).toBeCloseTo(geometry.mainWidth, 1);
+          expect(geometry.mainContainerType).toBe("inline-size");
+          expect(geometry.queryAncestorId).toBe("main");
+        });
+      }
+    }
   });
 
   for (const width of [1280, 390, 375]) {

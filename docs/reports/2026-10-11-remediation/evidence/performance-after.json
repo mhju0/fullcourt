@@ -1,10 +1,10 @@
 {
   "environment": "Local Node22 production builds / same isolated PostgreSQL18 restore",
   "scriptCount": 16,
-  "scriptDecodedBytes": 1224908,
-  "scriptGzipBytes": 375154,
+  "scriptDecodedBytes": 1225202,
+  "scriptGzipBytes": 375200,
   "baselineScriptGzipBytes": 374140,
-  "scriptDeltaPct": 0.2710215427380147,
+  "scriptDeltaPct": 0.2833164056235571,
   "upcoming": {
     "beforeDefaultBytes": 225124,
     "afterDefaultBytes": 249811,
@@ -80,9 +80,9 @@
       "gzip": 9554
     },
     {
-      "path": "/_next/static/chunks/2g4-qougkiuwt.js",
-      "bytes": 230210,
-      "gzip": 60515
+      "path": "/_next/static/chunks/13yfzs3t2lijo.js",
+      "bytes": 230504,
+      "gzip": 60561
     },
     {
       "path": "/_next/static/chunks/0cz1d0mv5g_q7.js",
@@ -95,5 +95,6 @@
       "gzip": 5538
     }
   ],
-  "limits": "Small ordinary local requests. gzip sizes computed offline, not deployed CDN transfer. No p95, field LCP/INP or capacity claim."
+  "limits": "Small ordinary local requests. gzip sizes computed offline, not deployed CDN transfer. No p95, field LCP/INP or capacity claim.",
+  "candidate": "d5faec2a09b48f45a916dae0747709fc1f6b0e90"
 }

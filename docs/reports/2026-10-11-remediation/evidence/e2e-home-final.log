@@ -1,0 +1,18 @@
+
+Running 13 tests using 1 worker
+
+  ✓   1 [chromium] › e2e/home.spec.ts:6:7 › Rest-focused front door › keeps the main finding and the routes into its evidence (506ms)
+  ✓   2 [chromium] › e2e/home.spec.ts:19:7 › Rest-focused front door › headline rates and samples agree with Model Results (396ms)
+  ✓   3 [chromium] › e2e/home.spec.ts:32:7 › Rest-focused front door › the hero entrance stays brief and lower content needs no scroll trigger (163ms)
+  ✓   4 [chromium] › e2e/home.spec.ts:47:7 › Rest-focused front door › reduced motion leaves every finding visible without an entrance (144ms)
+  ✓   5 [chromium] › e2e/home.spec.ts:56:7 › Rest-focused front door › research and the author introduction have their own working destinations (317ms)
+  ✓   6 [chromium] › e2e/home.spec.ts:68:7 › Rest-focused front door › the primary action opens Games (1.1s)
+  ✓   7 [chromium] › e2e/home.spec.ts:79:13 › Rest-focused front door › classic scrollbar width › full-bleed home fits the available width with auto scrollbar gutter at 390px (153ms)
+  ✓   8 [chromium] › e2e/home.spec.ts:79:13 › Rest-focused front door › classic scrollbar width › full-bleed home fits the available width with stable scrollbar gutter at 390px (155ms)
+  ✓   9 [chromium] › e2e/home.spec.ts:79:13 › Rest-focused front door › classic scrollbar width › full-bleed home fits the available width with auto scrollbar gutter at 1440px (180ms)
+  ✓  10 [chromium] › e2e/home.spec.ts:79:13 › Rest-focused front door › classic scrollbar width › full-bleed home fits the available width with stable scrollbar gutter at 1440px (161ms)
+  ✓  11 [chromium] › e2e/home.spec.ts:116:9 › Rest-focused front door › findings fit at 1280px without sideways scrolling (149ms)
+  ✓  12 [chromium] › e2e/home.spec.ts:116:9 › Rest-focused front door › findings fit at 390px without sideways scrolling (153ms)
+  ✓  13 [chromium] › e2e/home.spec.ts:116:9 › Rest-focused front door › findings fit at 375px without sideways scrolling (159ms)
+
+  13 passed (5.1s)

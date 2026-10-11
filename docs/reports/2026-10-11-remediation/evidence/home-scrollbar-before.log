@@ -1,0 +1,51 @@
+Captured tool output from the pre-fix run, 2026-10-11. ANSI formatting omitted.
+Command:
+PLAYWRIGHT_BASE_URL=http://localhost:3101 node node_modules/@playwright/test/cli.js test e2e/home.spec.ts --grep 'full-bleed home' --reporter=list
+
+Running 4 tests using 1 worker
+
+  ✘  1 [chromium] › e2e/home.spec.ts:78:9 › Rest-focused front door › classic scrollbar width › full-bleed home fits the available width with auto scrollbar gutter at 390px (203ms)
+  ✓  2 [chromium] › e2e/home.spec.ts:78:9 › Rest-focused front door › classic scrollbar width › full-bleed home fits the available width with stable scrollbar gutter at 390px (213ms)
+  ✘  3 [chromium] › e2e/home.spec.ts:78:9 › Rest-focused front door › classic scrollbar width › full-bleed home fits the available width with auto scrollbar gutter at 1440px (162ms)
+  ✓  4 [chromium] › e2e/home.spec.ts:78:9 › Rest-focused front door › classic scrollbar width › full-bleed home fits the available width with stable scrollbar gutter at 1440px (228ms)
+
+  1) [chromium] › e2e/home.spec.ts:78:9 › Rest-focused front door › classic scrollbar width › full-bleed home fits the available width with auto scrollbar gutter at 390px
+
+    Error: expect(received).toBeLessThanOrEqual(expected)
+
+    Expected: <= 375
+    Received:    383
+
+      94 |       });
+      95 |       expect(geometry.availableWidth).toBeLessThan(geometry.viewportWidth);
+    > 96 |       expect(geometry.scrollWidth).toBeLessThanOrEqual(geometry.availableWidth);
+         |                                    ^
+      97 |       expect(geometry.homeLeft).toBeCloseTo(0, 1);
+      98 |       expect(geometry.homeRight).toBeCloseTo(geometry.availableWidth, 1);
+      99 |       expect(geometry.homeWidth).toBeCloseTo(geometry.mainWidth, 1);
+        at /Users/michaelju/Workspace/Projects/fullcourt-remediation/e2e/home.spec.ts:96:36
+
+    Error Context: test-results/home-Rest-focused-front-do-d9e23-o-scrollbar-gutter-at-390px-chromium/error-context.md
+
+  2) [chromium] › e2e/home.spec.ts:78:9 › Rest-focused front door › classic scrollbar width › full-bleed home fits the available width with auto scrollbar gutter at 1440px
+
+    Error: expect(received).toBeLessThanOrEqual(expected)
+
+    Expected: <= 1425
+    Received:    1433
+
+      94 |       });
+      95 |       expect(geometry.availableWidth).toBeLessThan(geometry.viewportWidth);
+    > 96 |       expect(geometry.scrollWidth).toBeLessThanOrEqual(geometry.availableWidth);
+         |                                    ^
+      97 |       expect(geometry.homeLeft).toBeCloseTo(0, 1);
+      98 |       expect(geometry.homeRight).toBeCloseTo(geometry.availableWidth, 1);
+      99 |       expect(geometry.homeWidth).toBeCloseTo(geometry.mainWidth, 1);
+        at /Users/michaelju/Workspace/Projects/fullcourt-remediation/e2e/home.spec.ts:96:36
+
+    Error Context: test-results/home-Rest-focused-front-do-3b3b3--scrollbar-gutter-at-1440px-chromium/error-context.md
+
+  2 failed
+    [chromium] › e2e/home.spec.ts:78:9 › Rest-focused front door › classic scrollbar width › full-bleed home fits the available width with auto scrollbar gutter at 390px
+    [chromium] › e2e/home.spec.ts:78:9 › Rest-focused front door › classic scrollbar width › full-bleed home fits the available width with auto scrollbar gutter at 1440px
+  2 passed (4.5s)

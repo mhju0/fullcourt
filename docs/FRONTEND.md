@@ -164,3 +164,5 @@ temporarily opens every technical disclosure before restoring the reading state.
 return to the relevant study or coverage page. Definition tables scroll within their own
 keyboard-focusable region on narrow screens. The overview retains four qualified null findings
 and compact archive links; technical tables and generated analytics retain their existing data.
+
+[Verified] The homepage full-bleed width uses `50cqw` from a query container scoped to `#main:has(.home)` in `src/components/home.module.css`. It measures available content width with classic scrollbars; other routes retain normal containment. `e2e/home.spec.ts` covers auto/stable gutters at 390/1440px.

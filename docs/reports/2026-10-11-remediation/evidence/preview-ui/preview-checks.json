@@ -1,0 +1,146 @@
+{
+  "candidate": "d5faec2",
+  "baseUrl": "https://fullcourt-d01av62dg-mhju0s-projects.vercel.app",
+  "startedAt": "2026-10-11T08:11:02.435Z",
+  "finishedAt": "2026-10-11T08:12:10.638Z",
+  "checks": [
+    {
+      "check": "Home Court related named link Enter",
+      "url": "https://fullcourt-d01av62dg-mhju0s-projects.vercel.app/home-court",
+      "client": 375,
+      "scroll": 375,
+      "text": "HOME-COURT ADVANTAGE\nAre home teams winning less often?\n\nCompare each season’s home win rate with the record of teams that were also more rested at home.\n\nHow this is calculated\n↗\n\nCOMPLETED SEASONS · FIVE-SEASON ENDPOINTS\n\nHome teams win less often than they used to\n\nHome teams won 66.3% across 4,961 games from 1985-86 through 1989-90, compared with 55.3% across 6,150 games from 2021-22 through 2025-26.\n\nUse each season’s home rate as the baseline\n\nAnnual results rise and fall. These records describe a long-run pattern; they do not show a steady decline every year or explain what caused it.\n\nHome win rate by season\n\nFullCourt-eligible regular-season games, using the designated home team. The Orlando bubble is excluded.\n\nHome win rate\nRested-at-home win rate\n\nUse the chart button’s left and right arrow keys to inspect adjacent seasons. Use Home or End to jump to the first or latest season.\n\n50%\n55%\n60%\n65%\n70%\n75%\n1985-86\n1998-99\n2012-13\n2025-26\nINSPECT SEASON\n2025-26\n2024-25\n2023-24\n2022-23\n2021-22\n2020-21\n2019-20\n2018-19\n2017-18\n2016-17\n2015-16\n2014-15\n2013-14\n2012-13\n2011-12\n2010-11\n2009-10\n2008-09\n2007-08\n2006-07\n2005-06\n2004-05\n2003-04\n2002-03\n2001-02\n2000-01\n1999-00\n1998-99\n1997-98\n1996-97\n1995-96\n1994-95\n1993-94\n1992-93\n1991-92\n1990-91\n1989-90\n1988-89\n1987-88\n1986-87\n1985-86\n\nSEASON\n\n2025-26\n\nHOME\n\n55.4%\n\n682 / 1,230 games\n\nRESTED AT HOME\n\n55.2%\n\n334 / 605 games\n\nGAP\n\n−0.2 pp\n\nversus that season’s home rate\n\nThe rested-at-home rate appears after 100 eligible games. Str",
+      "viewport": 390
+    },
+    {
+      "check": "Shot Value guidance390",
+      "client": 375,
+      "guidance": [
+        {
+          "color": "rgb(93, 100, 112)",
+          "fontFamily": "Geist, \"Geist Fallback\", ui-sans-serif, system-ui, sans-serif",
+          "fontSize": "15px",
+          "text": "Marker size shows shot attempts. Tap the court to inspect the nearest measured location, or use the location slider and arrow keys. Locations run left to right from the baseline upcourt."
+        }
+      ],
+      "scroll": 375,
+      "viewport": 390
+    },
+    {
+      "check": "Playoff scope/named-team copy390",
+      "client": 375,
+      "copy": [
+        "Pick: trained only on earlier seasons. Hindsight: fitted with the target season included; it is not evidence of predictive performance.",
+        "Probabilities are for the named team. Picks remain N/A when earlier history is insufficient."
+      ],
+      "scroll": 375,
+      "series": [],
+      "viewport": 390
+    },
+    {
+      "check": "Model nav390",
+      "anchors": [
+        {
+          "height": 44,
+          "href": "#answer",
+          "text": "The answer"
+        },
+        {
+          "height": 44,
+          "href": "#explorer",
+          "text": "The explorer"
+        }
+      ],
+      "client": 375,
+      "copy": "HISTORICAL BACKTEST · WIN RATE\nModel Results\n\nAcross completed regular-season games, compare more-rested teams also at home with the 59.9% home baseline. Rested visitors are shown separately.\n\nAS OF 2026-04-12\n\nHow this is calculated\n↗\n\nOn this page\n\nThe answer\nThe explorer\nThe answer\nRESTED TEAM AT HOME WON · ANY GAP\n61.2%\n+1.3 VS 59.9% VENUE BASELINE\n27,404 GAMES\nRESTED TEAM AT HOME WON · RA ≥ 5\n65.3%\n+5.4 VS VENUE BASELINE\n3,781 GAMES\nTHE HEADLINE, AS DISTANCE FROM HOME COURT\nRESTED TEAM AT HOME · WON\n61.2%\nRESTED VISITOR · HOME STILL WON\n57",
+      "scroll": 375,
+      "viewport": 390
+    },
+    {
+      "check": "Model explorer navigation",
+      "url": "https://fullcourt-d01av62dg-mhju0s-projects.vercel.app/analysis#explorer"
+    },
+    {
+      "check": "Model anchor back",
+      "url": "https://fullcourt-d01av62dg-mhju0s-projects.vercel.app/analysis"
+    },
+    {
+      "check": "Schedule copy/internalcue390",
+      "client": 375,
+      "copy": [
+        "This ranking describes schedule differences; it does not predict results. Schedule worth converts historical rest-group rates into win equivalents, not wins a team actually gained or a causal estimate."
+      ],
+      "cue": [
+        "Scroll sideways for more columns."
+      ],
+      "headers": [
+        "#",
+        "TEAM",
+        "Edge games",
+        "NET\ngames",
+        "REST DAYS\nnet",
+        "WORTH\nwins",
+        "FAV / UNFAV\ngames",
+        "BIG EDGE\ngames",
+        "B2B EDGE\ngames",
+        "3-IN-4 EDGE\ngames",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "scroll": 375,
+      "scrollers": [
+        {
+          "class": "fc-scroll-cue fc-schedule-breakdown mt-3 overflow-x-auto",
+          "scroll": 500,
+          "tabindex": "0",
+          "width": 343
+        },
+        {
+          "class": "fc-scroll-cue fc-detail-table overflow-x-auto",
+          "scroll": 520,
+          "tabindex": "0",
+          "width": 343
+        }
+      ],
+      "viewport": 390
+    },
+    {
+      "check": "DataStatus absence390",
+      "client": 375,
+      "explanation": "“Not recorded” means this view has no durable record of a successful refresh. Coverage dates and a reachable database do not confirm score sync or fatigue refresh.",
+      "fields": [
+        "Game results\nCOVERAGE\n47,143 final regular-season games\nDATA THROUGH\n2026-04-12\nLAST SUCCESSFUL REFRESH\nNot recorded."
+      ],
+      "notRecorded": 6,
+      "scroll": 375,
+      "viewport": 390
+    },
+    {
+      "check": "DataStatus desktop1440",
+      "client": 1425,
+      "scroll": 1425,
+      "viewport": 1440
+    }
+  ],
+  "console": [
+    {
+      "level": "warn",
+      "message": "The width(-1) and height(-1) of chart should be greater than 0,\n       please check the style of container, or the props width(100%) and height(100%),\n       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the\n       height and width.",
+      "timestamp": "2026-10-11T08:11:39.266Z",
+      "url": "https://fullcourt-d01av62dg-mhju0s-projects.vercel.app/_next/static/immutable/chunks/2xyktnv99-r7u.js"
+    },
+    {
+      "level": "warn",
+      "message": "The width(-1) and height(-1) of chart should be greater than 0,\n       please check the style of container, or the props width(100%) and height(100%),\n       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the\n       height and width.",
+      "timestamp": "2026-10-11T08:11:39.269Z",
+      "url": "https://fullcourt-d01av62dg-mhju0s-projects.vercel.app/_next/static/immutable/chunks/2xyktnv99-r7u.js"
+    }
+  ],
+  "limitations": [
+    "Representative 390px mobile and 1440px desktop checks; no text zoom, physical mobile, cron/writer invocation, or production verification",
+    "Two readiness locator waits timed out while connected content was still loading; subsequent DOM verified content loaded"
+  ]
+}
