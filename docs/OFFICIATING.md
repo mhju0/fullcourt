@@ -6,12 +6,14 @@ The release contains 12 regular seasons of Officiating reports (2014–15 throug
 
 `ml/publish_officiating.py` consumes complete immutable snapshots made by `ml/collect_l2m_season.py`. It validates identity, source hashes, known grades, duplicate assessments, and continuity of published report IDs before writing anything. Only regular-season (`002`) games enter v1. The 12 published seasons total 4,546 regular-season reports; the original three seasons retain their 1,152 reports. Snapshot boundaries and corrections remain documented in `docs/research/`.
 
+Publication also requires a valid timezone-aware `finished_at` on each snapshot. For an already published season, `refreshedAt` must be valid and timezone-aware, and the incoming instant cannot be older. Equal instants are allowed only when the index hash and report ID/hash/source-URL sets match; verified crew normalization is separate from source freshness. All snapshots in a CLI batch pass validation before any output is written, including repeated seasons checked against the preceding staged result. Missing, malformed or timezone-free timestamps stop publication.
+
 Output:
 
 - `src/data/officiating.json`: season index, source provenance, game metadata and error counts.
 - `public/data/officiating/<season>/<game>-<source-hash-prefix>.json`: every assessed play, NBA verdict text, video-page links, and available verified crew assignments.
 
-Regenerate all initial data:
+The initial-release snapshot recipe below is historical. It cannot replace a season published from a newer snapshot. To reconstruct it, use `--root` with a separate output directory that has no newer publication:
 
 ```sh
 python3 ml/publish_officiating.py \

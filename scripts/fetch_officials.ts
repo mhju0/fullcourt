@@ -21,9 +21,19 @@
  * Usage: npx tsx scripts/fetch_officials.ts
  */
 import { config } from "dotenv";
-config({ path: ".env.local" });
 
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { pathToFileURL } from "node:url";
+import publishedWhistle from "../src/data/referee-whistle.json";
+import publishedFoulStyle from "../src/data/referee-foul-style.json";
+import {
+  matchRefereeEvent,
+  refereeProviderDate,
+  toOurAbbr,
+  validateRefereeSummary,
+  type RefereeInputGame,
+} from "./referee-event-identity";
+export type { RefereeInputGame } from "./referee-event-identity";
 
 const FIRST_SEASON = "2015-16";
 const CACHE_DIR = "ml/data/officials";
@@ -68,17 +78,6 @@ const DUPLICATE_OF_OFFENSIVE = "Offensive Foul Turnover";
  * in 2015-16. Widening this without new validation would invent a role.
  */
 const CREW_CHIEF_FIRST_SEASON = "2024-25";
-
-/** ESPN scoreboard abbreviation → this site's abbreviation, where they differ. */
-const ESPN_ABBR: Record<string, string> = {
-  GS: "GSW",
-  NO: "NOP",
-  NY: "NYK",
-  SA: "SAS",
-  UTAH: "UTA",
-  WSH: "WAS",
-};
-const toOurAbbr = (espn: string) => ESPN_ABBR[espn] ?? espn;
 
 /** Run fn over items with at most `limit` in flight. Results keep item order. */
 async function pool<T, R>(items: T[], limit: number, fn: (item: T, i: number) => Promise<R>): Promise<R[]> {
@@ -182,6 +181,7 @@ function parseSummary(summary: any): {
 /* eslint-enable @typescript-eslint/no-explicit-any */
 
 async function main() {
+  config({ path: ".env.local" });
   mkdirSync(CACHE_DIR, { recursive: true });
 
   const { db } = await import("../src/lib/db");
@@ -192,9 +192,10 @@ async function main() {
   const teamRows = await db.select({ id: teams.id, abbr: teams.abbreviation }).from(teams);
   const abbrById = new Map(teamRows.map((t) => [t.id, t.abbr]));
 
-  const seasons = NBA_SEASONS.filter((s) => s >= FIRST_SEASON);
   const rows = await db
     .select({
+      externalId: games.externalId,
+      gameType: games.gameType,
       season: games.season,
       date: games.date,
       homeTeamId: games.homeTeamId,
@@ -205,21 +206,57 @@ async function main() {
     .from(games)
     .where(and(gte(games.season, FIRST_SEASON), eq(games.gameType, "regular")));
 
+  const seasons = NBA_SEASONS.filter(s => s >= FIRST_SEASON);
   const playable = rows.filter(
-    (g) => seasons.includes(g.season) && g.homeScore != null && g.awayScore != null
+    g => seasons.includes(g.season) && g.homeScore != null && g.awayScore != null
   );
+  await generateRefereeArtifacts(playable.map((g) => ({
+    externalId: g.externalId,
+    gameType: g.gameType,
+    season: g.season,
+    date: String(g.date),
+    home: abbrById.get(g.homeTeamId)!,
+    away: abbrById.get(g.awayTeamId)!,
+    homeScore: g.homeScore!,
+    awayScore: g.awayScore!,
+  })), seasons);
+  process.exit(0);
+}
+
+interface RefereeGeneratorIO {
+  loadJson: typeof fetchJsonCached;
+  writeOutput: (path: string, contents: string) => void;
+  log: (message: string) => void;
+  minimumCoverage: { whistle: number; foulStyle: number };
+}
+
+export async function generateRefereeArtifacts(
+  playable: RefereeInputGame[],
+  seasons: string[],
+  io: RefereeGeneratorIO = {
+    loadJson: fetchJsonCached,
+    writeOutput: writeFileSync,
+    log: console.log,
+    minimumCoverage: { whistle: publishedWhistle.gamesCovered, foulStyle: publishedFoulStyle.gamesCovered },
+  }
+) {
+  const { loadJson, writeOutput, log } = io;
+  if (playable.length === 0) throw new Error("Refusing referee publication: empty input population");
   const byDate = new Map<string, typeof playable>();
+  const externalIds = new Set<string>();
   for (const g of playable) {
-    const date = String(g.date);
+    if (externalIds.has(g.externalId)) throw new Error(`Duplicate stored game ${g.externalId}`);
+    externalIds.add(g.externalId);
+    const date = refereeProviderDate(g);
     if (!byDate.has(date)) byDate.set(date, []);
     byDate.get(date)!.push(g);
   }
   const dates = [...byDate.keys()].sort();
-  console.log(
+  log(
     `${playable.length} games across ${dates.length} dates, seasons ${seasons[0]}–${seasons[seasons.length - 1]}`
   );
 
-  // Phase A: scoreboards — one per date, matched to our games by away@home.
+  // The date crosswalk is restricted to four independently identified NBA games.
   let sbErrors = 0;
   let sbDone = 0;
   const matched: Array<{ game: (typeof playable)[number]; eventId: string }> = [];
@@ -227,38 +264,28 @@ async function main() {
   await pool(dates, CONCURRENCY, async (date) => {
     const compact = date.replaceAll("-", "");
     try {
-      /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-      const sb: any = await fetchJsonCached(
+      const sb = await loadJson(
         `https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=${compact}`,
         `sb-${compact}.json`
       );
-      const events = new Map<string, string>();
-      for (const ev of sb?.events ?? []) {
-        const comp = ev?.competitions?.[0];
-        const home = comp?.competitors?.find((c: { homeAway: string }) => c.homeAway === "home");
-        const away = comp?.competitors?.find((c: { homeAway: string }) => c.homeAway === "away");
-        if (!home || !away) continue;
-        events.set(
-          `${toOurAbbr(String(away.team.abbreviation))}@${toOurAbbr(String(home.team.abbreviation))}`,
-          String(ev.id)
-        );
-      }
       for (const g of byDate.get(date)!) {
-        const key = `${abbrById.get(g.awayTeamId)}@${abbrById.get(g.homeTeamId)}`;
-        const eventId = events.get(key);
-        if (eventId) matched.push({ game: g, eventId });
-        else {
+        try {
+          matched.push({ game: g, eventId: matchRefereeEvent(g, sb) });
+        } catch (e) {
           unmatched++;
-          console.log(`[UNMATCHED] ${date} ${key}`);
+          log(`[UNMATCHED] ${e instanceof Error ? e.message : e}`);
         }
       }
     } catch (e) {
       sbErrors++;
-      console.log(`[ERROR] scoreboard ${date}: ${e instanceof Error ? e.message : e}`);
+      log(`[ERROR] scoreboard ${date}: ${e instanceof Error ? e.message : e}`);
     }
-    if (++sbDone % 200 === 0) console.log(`  ${sbDone}/${dates.length} scoreboards done`);
+    if (++sbDone % 200 === 0) log(`  ${sbDone}/${dates.length} scoreboards done`);
   });
-  console.log(`matched ${matched.length} events, unmatched ${unmatched}, scoreboard errors ${sbErrors}`);
+  log(`matched ${matched.length} events, unmatched ${unmatched}, scoreboard errors ${sbErrors}`);
+  if (unmatched || sbErrors) throw new Error("Refusing referee publication: scoreboard matching failed");
+  const eventIds = matched.map(m => m.eventId);
+  if (new Set(eventIds).size !== eventIds.length) throw new Error("Refusing referee publication: reused ESPN event");
 
   // Phase B: summaries — officials + FTA per matched event.
   const collected: GameWhistle[] = [];
@@ -266,19 +293,20 @@ async function main() {
   let sumErrors = 0;
   let sumDone = 0;
   await pool(matched, CONCURRENCY, async ({ game: g, eventId }) => {
-    const home = abbrById.get(g.homeTeamId)!;
-    const away = abbrById.get(g.awayTeamId)!;
+    const home = g.home;
+    const away = g.away;
     try {
-      const summary = await fetchJsonCached(
+      const summary = await loadJson(
         `https://site.api.espn.com/apis/site/v2/sports/basketball/nba/summary?event=${eventId}`,
         `ev-${eventId}.json`
       );
+      validateRefereeSummary(g, eventId, summary);
       const parsed = parseSummary(summary);
       const homeFta = parsed?.fta[home];
       const awayFta = parsed?.fta[away];
       if (!parsed || homeFta == null || awayFta == null || Number.isNaN(homeFta) || Number.isNaN(awayFta)) {
         missingData++;
-        console.log(`[MISSING] ${g.date} ${away}@${home} event=${eventId}`);
+        log(`[MISSING] ${g.date} ${away}@${home} event=${eventId}`);
         return;
       }
       collected.push({
@@ -297,16 +325,20 @@ async function main() {
       });
     } catch (e) {
       sumErrors++;
-      console.log(`[ERROR] summary ${g.date} ${away}@${home}: ${e instanceof Error ? e.message : e}`);
+      log(`[ERROR] summary ${g.date} ${away}@${home}: ${e instanceof Error ? e.message : e}`);
     }
-    if (++sumDone % 500 === 0) console.log(`  ${sumDone}/${matched.length} summaries done`);
+    if (++sumDone % 500 === 0) log(`  ${sumDone}/${matched.length} summaries done`);
   });
 
-  console.log(
+  log(
     `collected ${collected.length}, unmatched ${unmatched}, missing ${missingData}, errors ${sbErrors + sumErrors}`
   );
+  if (sumErrors) throw new Error("Refusing referee publication: summary fetching or identity failed");
+  if (!collected.length || collected.length < io.minimumCoverage.whistle) {
+    throw new Error(`Refusing referee publication: whistle population ${collected.length} below current ${io.minimumCoverage.whistle}`);
+  }
   collected.sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : 0));
-  writeFileSync(`${CACHE_DIR}/officials-games.json`, JSON.stringify(collected));
+  const coveredSeasons = [...new Set(collected.map(g => g.season))].sort();
 
   // Aggregate. A game counts once per assigned official — whistles cannot be
   // attributed to individuals within a three-person crew, and the page says so.
@@ -360,9 +392,9 @@ async function main() {
   const out = {
     source: "ESPN game summaries",
     generated: new Date().toISOString().slice(0, 10),
-    firstSeason: seasons[0],
-    lastSeason: seasons[seasons.length - 1],
-    seasonsCovered: seasons.length,
+    firstSeason: coveredSeasons[0],
+    lastSeason: coveredSeasons[coveredSeasons.length - 1],
+    seasonsCovered: coveredSeasons.length,
     gamesCovered: collected.length,
     gamesSkipped: unmatched + missingData,
     league: {
@@ -375,13 +407,21 @@ async function main() {
     },
     officials,
   };
-  writeFileSync(OUT_PATH, JSON.stringify(out, null, 2) + "\n");
-  console.log(`wrote ${OUT_PATH} — ${officials.length} officials`);
+  const style = buildFoulStyle(collected);
+  if (style.gamesCovered < io.minimumCoverage.foulStyle) {
+    throw new Error(`Refusing referee publication: foul-style population ${style.gamesCovered} below current ${io.minimumCoverage.foulStyle}`);
+  }
+  // Validate and serialize every generated output before overwriting the corpus or either publication.
+  const corpusJson = JSON.stringify(collected);
+  const whistleJson = JSON.stringify(out, null, 2) + "\n";
+  const styleJson = JSON.stringify(style, null, 2) + "\n";
+  writeOutput(`${CACHE_DIR}/officials-games.json`, corpusJson);
+  writeOutput(OUT_PATH, whistleJson);
+  log(`wrote ${OUT_PATH} — ${officials.length} officials`);
 
-  writeFileSync(STYLE_OUT_PATH, JSON.stringify(buildFoulStyle(collected, seasons), null, 2) + "\n");
-  console.log(`wrote ${STYLE_OUT_PATH}`);
-  console.log("Officials pipeline complete");
-  process.exit(0);
+  writeOutput(STYLE_OUT_PATH, styleJson);
+  log(`wrote ${STYLE_OUT_PATH}`);
+  log("Officials pipeline complete");
 }
 
 /**
@@ -403,11 +443,13 @@ async function main() {
  * 87% of trios in this data occur exactly once — so an official's partners are effectively
  * randomised across their career and wash out as noise rather than bias.
  */
-function buildFoulStyle(collected: GameWhistle[], seasons: string[]) {
+function buildFoulStyle(collected: GameWhistle[]) {
   const round = (v: number, d: number) => Number(v.toFixed(d));
   const MIN_FOULS = 20; // a game whose play stream is too thin to trust a mix from
   const WINDOW_GAMES = 200; // = the publication bar, so every published window is full
   const games = collected.filter((g) => g.periods === 4 && g.totalFouls >= MIN_FOULS);
+  if (games.length === 0) throw new Error("Refusing referee publication: empty foul-style population");
+  const seasons = [...new Set(games.map(g => g.season))].sort();
 
   const shareOf = (g: GameWhistle, k: FoulKey) => (100 * g.fouls[k]) / g.totalFouls;
 
@@ -535,7 +577,9 @@ function buildFoulStyle(collected: GameWhistle[], seasons: string[]) {
   };
 }
 
-main().catch((e) => {
-  console.error(e);
-  process.exit(1);
-});
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  main().catch((e) => {
+    console.error(e);
+    process.exit(1);
+  });
+}

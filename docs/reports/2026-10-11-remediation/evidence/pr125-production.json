@@ -1,0 +1,16 @@
+{
+  "mergeCommit": "3445fcdbf3444a938460830990116ae4f8db1489",
+  "mergedAt": "2026-10-11T11:29:00Z",
+  "productionDeployment": "fullcourt-8ugicr95l-mhju0s-projects.vercel.app",
+  "state": "READY",
+  "target": "production",
+  "healthStatus": 200,
+  "health": {
+    "status": "ok",
+    "db": "up",
+    "timestamp": "2026-10-11T11:31:25.437Z"
+  },
+  "browser": "live homepage rendered; client/scroll1705/1705",
+  "researchPng": "merged commit raw PNG SHA matches verified regenerated PNG",
+  "directProductionWrites": false
+}

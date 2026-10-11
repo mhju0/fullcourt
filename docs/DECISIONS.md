@@ -1108,3 +1108,31 @@ Deployment remains pending an explicit owner yes to merge; no production data re
 
 Verification and remaining limits are recorded in the remediation report and the three focused
 implementation notes. Actual opening-night checks and all owner-only launch items remain open.
+
+## D-85 — Generated publication uses observed coverage, exact identities and monotonic source time (2026-10-12)
+
+Michael approved the three generator safeguards after the item24 source differences were
+reported. This is source-code protection; it does not authorize publication of new figures
+or production data writes. A separate owner yes remains required for this PR's main merge.
+
+- Referee whistle coverage comes from collected games; foul-style coverage comes from its
+  own eligible regulation/full-stream population. Configured input seasons do not establish
+  observed coverage. Empty populations and collected counts below each existing published
+  population stop generation before corpus or product output writes. Existing incomplete
+  summaries remain distinct from provider failures and unmatched identities.
+- Four corrected 2019–20 dates have an explicit NBA-game-to-ESPN-event crosswalk, checked
+  against stored date/season/teams/final scores and authentic summary identity. NBA source
+  evidence is retained in the generator verification record. Ordinary matching keeps its
+  same-date rule; no generic adjacent-day fallback is introduced. Known exceptions whose
+  required identity cannot be verified stop generation. Scoring/aggregation terms stay intact.
+- Officiating snapshots require timezone-aware finished_at. Existing published refreshedAt
+  must also be valid. Compare instants, reject older input, and permit equal-time retries only
+  for the same index hash and report ID/hash/source sets. Crew normalization is separate from
+  source time. The whole CLI batch validates before writing, including repeated seasons
+  compared with preceding staged results. Existing ID/hash/grade validation remains required.
+- A count floor is a loss guard, not proof of complete corpus membership continuity or fresh
+  provider accuracy. The latest 2025–26 Officiating snapshot and full upstream Legends
+  regeneration remain unavailable; item24 stays partial. Published JSON remains unchanged.
+
+[Verification record](research/2026-10-12-generator-publication-guards.md) distinguishes local
+regeneration, regression tests, independent review and any later deployment.

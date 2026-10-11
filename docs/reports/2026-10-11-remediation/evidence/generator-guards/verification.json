@@ -1,0 +1,18 @@
+{
+  "runtime": "Node22.13.0 / Python3.11",
+  "lint": "passed",
+  "typecheck": "passed",
+  "unitFiles": 90,
+  "unitPassed": 1148,
+  "build": "passed with explicit local restored database",
+  "auditProd": "No known vulnerabilities found",
+  "pythonScripts": 7,
+  "pythonML": 42,
+  "refereeFocused": 37,
+  "officiatingFocused": 13,
+  "cli": "passed; authentic cache, no network, isolated outputs",
+  "publishedJSONByteUnchanged": 4555,
+  "productionWrites": false,
+  "setupFailure": "Initial pnpm commands aborted auto-install against shared node_modules symlink. Removed only isolated symlink; frozen local install passed and all gates reran successfully.",
+  "notRun": "Product E2E not repeated for script-only change; previous PR124419/419 retained as historical evidence."
+}

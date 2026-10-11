@@ -1,0 +1,24 @@
+{
+  "interface": "actual scripts/fetch_officials.ts CLI",
+  "database": "local PostgreSQL18 restored backup, SELECT-only path",
+  "network": "global fetch throws; retained cache only",
+  "exitCode": 0,
+  "collected": 12636,
+  "canonicalCorrectionsVerified": 4,
+  "publishedJSONFilesByteUnchanged": 4555,
+  "outputs": "isolated temporary working directory",
+  "differences": {
+    "referee-whistle.json": {
+      "generated": {
+        "before": "2026-08-24",
+        "after": "2026-10-11"
+      }
+    },
+    "referee-foul-style.json": {
+      "generated": {
+        "before": "2026-08-24",
+        "after": "2026-10-11"
+      }
+    }
+  }
+}

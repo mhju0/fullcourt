@@ -1,0 +1,344 @@
+
+ RUN  v4.1.11 /Users/michaelju/Workspace/Projects/fullcourt-generator-guards
+
+(node:51152) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+stdout | src/lib/__tests__/referee-generator.test.ts
+[dotenv@17.3.1] injecting env (0) from .env.local -- tip: ⚙️  override existing env vars with { override: true }
+
+ ❯ src/lib/__tests__/referee-generator.test.ts (2 tests | 2 failed) 21ms
+     × derives whistle coverage from collected games, excluding the unplayed configured season 18ms
+     × derives foul-style coverage from its usable games 2ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/lib/__tests__/referee-generator.test.ts > referee generator publication > derives whistle coverage from collected games, excluding the unplayed configured season
+AssertionError: expected [ '2015-16', '2026-27', 3 ] to deeply equal [ '2019-20', '2019-20', 1 ]
+
+- Expected
++ Received
+
+  [
+-   "2019-20",
+-   "2019-20",
+-   1,
++   "2015-16",
++   "2026-27",
++   3,
+  ]
+
+ ❯ src/lib/__tests__/referee-generator.test.ts:38:79
+     36|     const whistle = JSON.parse(outputs.get("src/data/referee-whistle.j…
+     37|     expect(whistle.gamesCovered).toBe(4);
+     38|     expect([whistle.firstSeason, whistle.lastSeason, whistle.seasonsCo…
+       |                                                                               ^
+     39|       "2019-20", "2019-20", 1,
+     40|     ]);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  src/lib/__tests__/referee-generator.test.ts > referee generator publication > derives foul-style coverage from its usable games
+AssertionError: expected [ '2015-16', '2026-27' ] to deeply equal [ '2019-20', '2019-20' ]
+
+- Expected
++ Received
+
+  [
+-   "2019-20",
+-   "2019-20",
++   "2015-16",
++   "2026-27",
+  ]
+
+ ❯ src/lib/__tests__/referee-generator.test.ts:48:51
+     46|     const style = JSON.parse(outputs.get("src/data/referee-foul-style.…
+     47|     expect(style.gamesCovered).toBe(4);
+     48|     expect([style.firstSeason, style.lastSeason]).toEqual(["2019-20", …
+       |                                                   ^
+     49|   });
+     50| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed (2)
+   Start at  01:49:38
+   Duration  308ms (transform 86ms, setup 0ms, import 114ms, tests 21ms, environment 0ms)
+
+
+ RUN  v4.1.11 /Users/michaelju/Workspace/Projects/fullcourt-generator-guards
+
+(node:55979) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+ ❯ src/lib/__tests__/referee-generator.test.ts (26 tests | 25 failed) 48ms
+     × derives whistle coverage from collected games, excluding the unplayed configured season 23ms
+     × derives foul-style coverage from its usable games 1ms
+     × recovers exactly the four corrections and retains canonical stored dates 2ms
+     × refuses an unknown missing date instead of trying the adjacent date 1ms
+     × refuses a known crosswalk whose stored date changed 1ms
+     × refuses a known crosswalk whose stored season changed 1ms
+     × refuses a known crosswalk whose stored home changed 1ms
+     × refuses a known crosswalk whose stored away changed 1ms
+     × refuses a known crosswalk whose stored homeScore changed 1ms
+     × refuses a known crosswalk whose stored awayScore changed 1ms
+     × refuses a known crosswalk whose stored gameType changed 1ms
+     × refuses a summary with invalid id before overwriting any output 1ms
+     × refuses a summary with invalid competitionId before overwriting any output 1ms
+     × refuses a summary with invalid season before overwriting any output 1ms
+     × refuses a summary with invalid seasonType before overwriting any output 1ms
+     × refuses a summary with invalid home before overwriting any output 1ms
+     × refuses a summary with invalid score before overwriting any output 1ms
+     × refuses a summary with invalid completed before overwriting any output 1ms
+     × refuses a summary with invalid state before overwriting any output 1ms
+     × refuses a summary with invalid date before overwriting any output 1ms
+     × refuses ambiguous same-pair events 1ms
+     × refuses a scoreboard fetch error 1ms
+     × refuses a summary fetch error 1ms
+     × refuses empty input 1ms
+     × refuses a population below either current publication floor 1ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 25 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/lib/__tests__/referee-generator.test.ts > referee generator publication > derives whistle coverage from collected games, excluding the unplayed configured season
+AssertionError: expected [ '2015-16', '2026-27', 3 ] to deeply equal [ '2019-20', '2019-20', 1 ]
+
+- Expected
++ Received
+
+  [
+-   "2019-20",
+-   "2019-20",
+-   1,
++   "2015-16",
++   "2026-27",
++   3,
+  ]
+
+ ❯ src/lib/__tests__/referee-generator.test.ts:54:79
+     52|     const whistle = JSON.parse(outputs.get("src/data/referee-whistle.j…
+     53|     expect(whistle.gamesCovered).toBe(4);
+     54|     expect([whistle.firstSeason, whistle.lastSeason, whistle.seasonsCo…
+       |                                                                               ^
+     55|       "2019-20", "2019-20", 1,
+     56|     ]);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/25]⎯
+
+ FAIL  src/lib/__tests__/referee-generator.test.ts > referee generator publication > derives foul-style coverage from its usable games
+AssertionError: expected [ '2015-16', '2026-27' ] to deeply equal [ '2019-20', '2019-20' ]
+
+- Expected
++ Received
+
+  [
+-   "2019-20",
+-   "2019-20",
++   "2015-16",
++   "2026-27",
+  ]
+
+ ❯ src/lib/__tests__/referee-generator.test.ts:64:51
+     62|     const style = JSON.parse(outputs.get("src/data/referee-foul-style.…
+     63|     expect(style.gamesCovered).toBe(4);
+     64|     expect([style.firstSeason, style.lastSeason]).toEqual(["2019-20", …
+       |                                                   ^
+     65|   });
+     66|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/25]⎯
+
+ FAIL  src/lib/__tests__/referee-generator.test.ts > referee generator publication > recovers exactly the four corrections and retains canonical stored dates
+AssertionError: expected [] to have a length of 4 but got +0
+
+- Expected
++ Received
+
+- 4
++ 0
+
+ ❯ src/lib/__tests__/referee-generator.test.ts:71:20
+     69|     await generateRefereeArtifacts(correctedGames, ["2019-20"], io);
+     70|     const corpus = JSON.parse(outputs.get("ml/data/officials/officials…
+     71|     expect(corpus).toHaveLength(4);
+       |                    ^
+     72|     expect(corpus.map((g: { date: string }) => g.date).sort()).toEqual…
+     73|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/25]⎯
+
+ FAIL  src/lib/__tests__/referee-generator.test.ts > referee generator publication > refuses an unknown missing date instead of trying the adjacent date
+AssertionError: promise resolved "undefined" instead of rejecting
+
+- Expected:
+Error {
+  "message": "rejected promise",
+}
+
++ Received:
+undefined
+
+ ❯ expectRefusal src/lib/__tests__/referee-generator.test.ts:44:67
+     42|   const before = [...h.outputs];
+     43|   alter(h);
+     44|   await expect(generateRefereeArtifacts(games, ["2019-20"], h.io)).rej…
+       |                                                                   ^
+     45|   expect([...h.outputs]).toEqual(before);
+     46| }
+ ❯ src/lib/__tests__/referee-generator.test.ts:76:11
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/25]⎯
+
+ FAIL  src/lib/__tests__/referee-generator.test.ts > referee generator publication > refuses a known crosswalk whose stored date changed
+ FAIL  src/lib/__tests__/referee-generator.test.ts > referee generator publication > refuses a known crosswalk whose stored season changed
+ FAIL  src/lib/__tests__/referee-generator.test.ts > referee generator publication > refuses a known crosswalk whose stored home changed
+ FAIL  src/lib/__tests__/referee-generator.test.ts > referee generator publication > refuses a known crosswalk whose stored away changed
+ FAIL  src/lib/__tests__/referee-generator.test.ts > referee generator publication > refuses a known crosswalk whose stored homeScore changed
+ FAIL  src/lib/__tests__/referee-generator.test.ts > referee generator publication > refuses a known crosswalk whose stored awayScore changed
+ FAIL  src/lib/__tests__/referee-generator.test.ts > referee generator publication > refuses a known crosswalk whose stored gameType changed
+AssertionError: promise resolved "undefined" instead of rejecting
+
+- Expected:
+Error {
+  "message": "rejected promise",
+}
+
++ Received:
+undefined
+
+ ❯ expectRefusal src/lib/__tests__/referee-generator.test.ts:44:67
+     42|   const before = [...h.outputs];
+     43|   alter(h);
+     44|   await expect(generateRefereeArtifacts(games, ["2019-20"], h.io)).rej…
+       |                                                                   ^
+     45|   expect([...h.outputs]).toEqual(before);
+     46| }
+ ❯ src/lib/__tests__/referee-generator.test.ts:82:13
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/25]⎯
+
+ FAIL  src/lib/__tests__/referee-generator.test.ts > referee generator publication > refuses a summary with invalid id before overwriting any output
+ FAIL  src/lib/__tests__/referee-generator.test.ts > referee generator publication > refuses a summary with invalid competitionId before overwriting any output
+ FAIL  src/lib/__tests__/referee-generator.test.ts > referee generator publication > refuses a summary with invalid season before overwriting any output
+ FAIL  src/lib/__tests__/referee-generator.test.ts > referee generator publication > refuses a summary with invalid seasonType before overwriting any output
+ FAIL  src/lib/__tests__/referee-generator.test.ts > referee generator publication > refuses a summary with invalid home before overwriting any output
+ FAIL  src/lib/__tests__/referee-generator.test.ts > referee generator publication > refuses a summary with invalid score before overwriting any output
+ FAIL  src/lib/__tests__/referee-generator.test.ts > referee generator publication > refuses a summary with invalid completed before overwriting any output
+ FAIL  src/lib/__tests__/referee-generator.test.ts > referee generator publication > refuses a summary with invalid state before overwriting any output
+ FAIL  src/lib/__tests__/referee-generator.test.ts > referee generator publication > refuses a summary with invalid date before overwriting any output
+AssertionError: promise resolved "undefined" instead of rejecting
+
+- Expected:
+Error {
+  "message": "rejected promise",
+}
+
++ Received:
+undefined
+
+ ❯ expectRefusal src/lib/__tests__/referee-generator.test.ts:44:67
+     42|   const before = [...h.outputs];
+     43|   alter(h);
+     44|   await expect(generateRefereeArtifacts(games, ["2019-20"], h.io)).rej…
+       |                                                                   ^
+     45|   expect([...h.outputs]).toEqual(before);
+     46| }
+ ❯ src/lib/__tests__/referee-generator.test.ts:88:13
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/25]⎯
+
+ FAIL  src/lib/__tests__/referee-generator.test.ts > referee generator publication > refuses ambiguous same-pair events
+AssertionError: promise resolved "undefined" instead of rejecting
+
+- Expected:
+Error {
+  "message": "rejected promise",
+}
+
++ Received:
+undefined
+
+ ❯ expectRefusal src/lib/__tests__/referee-generator.test.ts:44:67
+     42|   const before = [...h.outputs];
+     43|   alter(h);
+     44|   await expect(generateRefereeArtifacts(games, ["2019-20"], h.io)).rej…
+       |                                                                   ^
+     45|   expect([...h.outputs]).toEqual(before);
+     46| }
+ ❯ src/lib/__tests__/referee-generator.test.ts:105:11
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/25]⎯
+
+ FAIL  src/lib/__tests__/referee-generator.test.ts > referee generator publication > refuses a scoreboard fetch error
+ FAIL  src/lib/__tests__/referee-generator.test.ts > referee generator publication > refuses a summary fetch error
+AssertionError: promise resolved "undefined" instead of rejecting
+
+- Expected:
+Error {
+  "message": "rejected promise",
+}
+
++ Received:
+undefined
+
+ ❯ expectRefusal src/lib/__tests__/referee-generator.test.ts:44:67
+     42|   const before = [...h.outputs];
+     43|   alter(h);
+     44|   await expect(generateRefereeArtifacts(games, ["2019-20"], h.io)).rej…
+       |                                                                   ^
+     45|   expect([...h.outputs]).toEqual(before);
+     46| }
+ ❯ src/lib/__tests__/referee-generator.test.ts:112:11
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/25]⎯
+
+ FAIL  src/lib/__tests__/referee-generator.test.ts > referee generator publication > refuses empty input
+AssertionError: promise resolved "undefined" instead of rejecting
+
+- Expected:
+Error {
+  "message": "rejected promise",
+}
+
++ Received:
+undefined
+
+ ❯ expectRefusal src/lib/__tests__/referee-generator.test.ts:44:67
+     42|   const before = [...h.outputs];
+     43|   alter(h);
+     44|   await expect(generateRefereeArtifacts(games, ["2019-20"], h.io)).rej…
+       |                                                                   ^
+     45|   expect([...h.outputs]).toEqual(before);
+     46| }
+ ❯ src/lib/__tests__/referee-generator.test.ts:121:49
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/25]⎯
+
+ FAIL  src/lib/__tests__/referee-generator.test.ts > referee generator publication > refuses a population below either current publication floor
+AssertionError: promise resolved "undefined" instead of rejecting
+
+- Expected:
+Error {
+  "message": "rejected promise",
+}
+
++ Received:
+undefined
+
+ ❯ expectRefusal src/lib/__tests__/referee-generator.test.ts:44:67
+     42|   const before = [...h.outputs];
+     43|   alter(h);
+     44|   await expect(generateRefereeArtifacts(games, ["2019-20"], h.io)).rej…
+       |                                                                   ^
+     45|   expect([...h.outputs]).toEqual(before);
+     46| }
+ ❯ src/lib/__tests__/referee-generator.test.ts:124:11
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/25]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  25 failed | 1 passed (26)
+   Start at  01:52:23
+   Duration  275ms (transform 46ms, setup 0ms, import 63ms, tests 48ms, environment 0ms)
+

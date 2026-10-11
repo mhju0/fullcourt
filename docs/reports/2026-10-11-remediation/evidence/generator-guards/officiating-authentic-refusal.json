@@ -1,0 +1,10 @@
+{
+  "case": "authentic Sep6 snapshot against published Sep8 season",
+  "exitCode": 1,
+  "beforeSha256": "309572da102ff54dfa5e63aefaf08695f8f01bf78825d0aa0b7c0df0e63e9173",
+  "afterSha256": "309572da102ff54dfa5e63aefaf08695f8f01bf78825d0aa0b7c0df0e63e9173",
+  "filesAfter": [
+    "src/data/officiating.json"
+  ],
+  "stderr": "Traceback (most recent call last):\n  File \"/Users/michaelju/Workspace/Projects/fullcourt-generator-guards/ml/publish_officiating.py\", line 231, in <module>\n    main()\n  File \"/Users/michaelju/Workspace/Projects/fullcourt-generator-guards/ml/publish_officiating.py\", line 206, in main\n    result, details = build(snapshot, seasons.get(season), crews, duplicates)\n                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/michaelju/Workspace/Projects/fullcourt-generator-guards/ml/publish_officiating.py\", line 166, in build\n    raise ValueError(\"Snapshot is older than the published season; retain existing data\")\nValueError: Snapshot is older than the published season; retain existing data"
+}
