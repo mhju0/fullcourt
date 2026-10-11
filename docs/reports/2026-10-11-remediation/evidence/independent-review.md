@@ -8,3 +8,7 @@ Checked commit-time FINAL protection in actual cron/CLI UPDATE predicates and RE
 Initial review found FINAL downgrade and malformed-envelope gaps. Both received failing regression tests before their fixes and were re-reviewed in this frozen candidate.
 
 Limits: final full E2E still running at review time. Production pool queue, source ordering between final corrections, cron gaps, actual CDN/Supabase delivery and opening-night behavior remain unverified. Documentation-only follow-up approval can retain this acceptance after confirming there is no product diff.
+
+## Final product candidate
+
+Candidate: 542af172b09e1ff06db2792d411a0132419238b6. Independent read-only Astra review accepted the additional scoped homepage container-width fix and four classic-scrollbar regression cases with no additional blockers. Integrity and other product code remain identical to d5faec2. Final root verification subsequently passed all 419 connected Playwright tests and checked the exact SHA Vercel preview on mobile/desktop and Games refresh. Production remains unchanged.

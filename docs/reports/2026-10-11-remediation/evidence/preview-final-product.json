@@ -1,0 +1,24 @@
+{
+  "candidate": "542af172b09e1ff06db2792d411a0132419238b6",
+  "url": "https://fullcourt-peu2eoh4a-mhju0s-projects.vercel.app/games?date=2026-10-20&season=2026-27",
+  "homeMobile": {
+    "client": 375,
+    "home": {
+      "left": 0,
+      "right": 375
+    },
+    "scroll": 375
+  },
+  "homeDesktop": {
+    "client": 1425,
+    "scroll": 1425
+  },
+  "games": {
+    "client": 1705,
+    "focus": "Refresh view",
+    "opener": true,
+    "receipt": "5:29 PM",
+    "scroll": 1705
+  },
+  "gameDetailsButtons": 3
+}

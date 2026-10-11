@@ -20,11 +20,11 @@
   "pythonScripts": 7,
   "pythonML": 35,
   "e2e": {
-    "passed": 413,
-    "failed": 2,
-    "status": "initial layout failures fixed; second412/3 homepage failures caused by no-DB build; populated build home9 pass; final full suite running"
+    "passed": 419,
+    "failed": 0,
+    "status": "final populated Node22 production build; 5.1 minutes"
   },
-  "independentReview": "Class 3 accepted frozen product candidate; 62 independent focused tests",
+  "independentReview": "Class 3 accepted d5faec2 and final product candidate 542af17",
   "committed": true,
   "merged": false,
   "deployed": false,
@@ -89,7 +89,7 @@
     "browser": "Chrome connected CUA",
     "brokenLocalReferences": 0,
     "duplicateIds": 0,
-    "status": "draft browser inspected; final product results pending root",
+    "status": "final report inspected at 390 and 1440",
     "viewport1440": {
       "client": 1425,
       "scroll": 1425
@@ -97,8 +97,10 @@
     "screensAnchor": "clicked actual Chrome nav to #screens",
     "beforeSha256Matches": 13
   },
-  "candidate": "d5faec2a09b48f45a916dae0747709fc1f6b0e90",
+  "candidate": "542af172b09e1ff06db2792d411a0132419238b6",
   "pullRequest": "https://github.com/mhju0/fullcourt/pull/124",
   "previewVerified": true,
-  "productionDeployed": false
+  "productionDeployed": false,
+  "additionalFix": "homepage classic-scrollbar width; four regression cases; actual Chrome 390/1440 verified",
+  "deploymentState": "preview verified; production unchanged; explicit owner merge approval pending"
 }
