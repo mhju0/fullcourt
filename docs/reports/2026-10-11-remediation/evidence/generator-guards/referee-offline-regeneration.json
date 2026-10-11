@@ -1,0 +1,43 @@
+{
+  "baseline": "3445fcdbf3444a938460830990116ae4f8db1489",
+  "inputGames": 13209,
+  "matched": 13209,
+  "collected": 12636,
+  "foulStyleGames": 11952,
+  "unmatched": 0,
+  "missingData": 573,
+  "providerErrors": 0,
+  "cacheReads": 14974,
+  "providerRequests": 0,
+  "observedSeasons": 11,
+  "canonicalCorrectionsRecovered": 4,
+  "publishedJSONFilesByteUnchanged": 4555,
+  "comparison": [
+    {
+      "file": "referee-whistle.json",
+      "gamesCovered": 12636,
+      "firstSeason": "2015-16",
+      "lastSeason": "2025-26",
+      "differences": {
+        "generated": {
+          "published": "2026-08-24",
+          "regenerated": "2026-10-11"
+        }
+      }
+    },
+    {
+      "file": "referee-foul-style.json",
+      "gamesCovered": 11952,
+      "firstSeason": "2015-16",
+      "lastSeason": "2025-26",
+      "differences": {
+        "generated": {
+          "published": "2026-08-24",
+          "regenerated": "2026-10-11"
+        }
+      }
+    }
+  ],
+  "outputsPublished": false,
+  "outputs": "isolated temporary directory"
+}

@@ -1,0 +1,11 @@
+(node:62187) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+
+ RUN  v4.1.11 /Users/michaelju/Workspace/Projects/fullcourt-generator-guards
+
+
+ Test Files  3 passed (3)
+      Tests  54 passed (54)
+   Start at  01:57:14
+   Duration  1.07s (transform 198ms, setup 0ms, import 1.05s, tests 64ms, environment 0ms)
+

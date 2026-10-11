@@ -34,9 +34,32 @@ the producer's replication gate. Ignored caches and historical research remain i
 The figure was redrawn without changing its data or producer.
 [Follow-up](research/2026-10-11-artifact-regeneration.md) records the checks.
 
-[Verified] Current referee regeneration is not a no-difference refresh: four corrected dates
-fail cached ESPN matching, and `fetch_officials.ts` takes coverage labels from the season list
+[Verified] The Oct11 referee regeneration was not a no-difference refresh: four corrected dates
+failed cached ESPN matching, and `fetch_officials.ts` took coverage labels from the season list
 rather than collected games. Do not publish the diagnostic outputs without resolving and
 reviewing those differences. The initial three-snapshot Officiating command above is not a
 full12-season/current-provenance rebuild; older snapshots can regress the latest index hash
 and refresh metadata. Preserve current publication until exact source provenance is available.
+
+## Referee generation guards — 2026-10-12
+
+`scripts/fetch_officials.ts` retains its existing configured-season input selection and analytic
+filters. Whistle coverage comes from collected valid games; foul-style coverage comes from
+its regulation games that clear the existing foul-count floor. Neither output claims an
+unplayed configured season. Empty input or an empty eligible population refuses publication.
+
+The four corrected 2019–20 dates use an explicit NBA external-ID → ESPN event-ID crosswalk in
+`scripts/referee-event-identity.ts`, with canonical stored dates, teams and final scores pinned
+to the [research record](research/2026-10-11-artifact-regeneration.md) and independently checked
+NBA identities. This is the only date exception. Both scoreboard and summary must agree on
+event/competition ID, regular-season identity, teams, final scores, completed status and the
+expected provider date. An unknown missing or ambiguous match, a changed exception identity,
+or a fetch/summary identity error refuses generation.
+
+Validated summaries that lack officials or usable free-throw statistics remain counted as
+skipped data. Collected whistle and eligible foul-style game counts must each meet the current
+committed publication's count. Every refusal and all output serialization happen before
+writing `officials-games.json` or either published JSON. The count floor detects aggregate
+loss; it does not prove membership continuity or fresh provider fidelity. The boundary tests
+use field projections of retained ESPN responses with their original cache hashes, and check
+that refusal preserves existing outputs. Published figures are unchanged by this guard work.

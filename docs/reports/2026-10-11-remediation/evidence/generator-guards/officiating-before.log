@@ -1,0 +1,13 @@
+...F...
+======================================================================
+FAIL: test_older_snapshot_cannot_replace_published_season (test_officiating_publish.PublisherTests.test_older_snapshot_cannot_replace_published_season)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/michaelju/Workspace/Projects/fullcourt-generator-guards/ml/tests/test_officiating_publish.py", line 124, in test_older_snapshot_cannot_replace_published_season
+    with self.assertRaisesRegex(ValueError, "older"):
+AssertionError: ValueError not raised
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.573s
+
+FAILED (failures=1)

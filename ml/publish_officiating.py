@@ -3,6 +3,7 @@
 from __future__ import annotations
 import argparse
 from collections import Counter
+from datetime import datetime
 import hashlib
 from html import unescape
 from html.parser import HTMLParser
@@ -36,8 +37,19 @@ def category(raw):
     return re.sub(r"\s+", " ", raw.strip()) or "Category not supplied"
 
 
+def publication_time(value, label):
+    try:
+        parsed = datetime.fromisoformat(value)
+    except (TypeError, ValueError):
+        raise ValueError(f"{label} must be a valid timezone-aware timestamp") from None
+    if parsed.utcoffset() is None:
+        raise ValueError(f"{label} must be a valid timezone-aware timestamp")
+    return parsed
+
+
 def build(snapshot, previous=None, crews=None, duplicates=None):
     manifest = json.loads((snapshot / "manifest.json").read_text())
+    finished_at = publication_time(manifest.get("finished_at"), "Snapshot finished_at")
     records = manifest["reports"]
     if (
         manifest["failed_reports"]
@@ -148,6 +160,18 @@ def build(snapshot, previous=None, crews=None, duplicates=None):
         "categories": dict(counts.most_common()),
         "games": sorted(games, key=lambda g: (g["date"], g["id"]), reverse=True),
     }
+    if previous is not None:
+        refreshed_at = publication_time(previous.get("refreshedAt"), "Published refreshedAt")
+        if finished_at < refreshed_at:
+            raise ValueError("Snapshot is older than the published season; retain existing data")
+        if finished_at == refreshed_at:
+            def source_identity(season):
+                return (
+                    season.get("indexSha256"),
+                    {(g["id"], g.get("sha256"), g.get("source")) for g in season["games"]},
+                )
+            if source_identity(result) != source_identity(previous):
+                raise ValueError("Different source provenance at the same timestamp; review before publication")
     return result, details
 
 

@@ -1,0 +1,3401 @@
+{
+  "provenance": {
+    "sb-20200224.json": "cf9eff9db25dd89bfd7f836d0a5a2dfa65f82772652df09279f198a438a9c0f0",
+    "sb-20200229.json": "be9c157a12141d3a7e1933a4232afb20fff36c34628a3d3f25c236332bf17280",
+    "sb-20200301.json": "20279431d34d0d9f4e2e920378ed0fc5fbd652b86af6258c3298a2e459ac1118",
+    "ev-401161490.json": "0c02687c3cc2740f8cbbd27a36133ab56ae4dc371b0fd52b886d7d266e108999",
+    "ev-401161528.json": "d0473b080e2b5b706c64d1e618046d658bd8fd5816cbf441ebf83767c7891d86",
+    "ev-401161530.json": "854149a97a53da097f48958f5ff8b07365c87ad6443dc956584c6ef35d9bb359",
+    "ev-401161536.json": "6d1a4969a1d44f634c127ce1c65da8e9636e999cb173bbf9e5a45d5baea6d5df"
+  },
+  "scoreboards": {
+    "20200224": {
+      "events": [
+        {
+          "id": "401161490",
+          "date": "2020-02-24T12:00Z",
+          "season": {
+            "year": 2020,
+            "type": 2,
+            "slug": "regular-season"
+          },
+          "competitions": [
+            {
+              "id": "401161490",
+              "date": "2020-02-24T12:00Z",
+              "type": {
+                "id": "1",
+                "abbreviation": "STD"
+              },
+              "status": {
+                "clock": 0.0,
+                "displayClock": "0.0",
+                "period": 4,
+                "type": {
+                  "id": "3",
+                  "name": "STATUS_FINAL",
+                  "state": "post",
+                  "completed": true,
+                  "description": "Final",
+                  "detail": "Final",
+                  "shortDetail": "Final"
+                }
+              },
+              "competitors": [
+                {
+                  "homeAway": "home",
+                  "score": "107",
+                  "team": {
+                    "abbreviation": "POR"
+                  }
+                },
+                {
+                  "homeAway": "away",
+                  "score": "104",
+                  "team": {
+                    "abbreviation": "DET"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "401161491",
+          "date": "2020-02-25T00:00Z",
+          "season": {
+            "year": 2020,
+            "type": 2,
+            "slug": "regular-season"
+          },
+          "competitions": [
+            {
+              "id": "401161491",
+              "date": "2020-02-25T00:00Z",
+              "type": {
+                "id": "1",
+                "abbreviation": "STD"
+              },
+              "status": {
+                "clock": 0.0,
+                "displayClock": "0.0",
+                "period": 5,
+                "type": {
+                  "id": "3",
+                  "name": "STATUS_FINAL",
+                  "state": "post",
+                  "completed": true,
+                  "description": "Final",
+                  "detail": "Final/OT",
+                  "shortDetail": "Final/OT",
+                  "altDetail": "OT"
+                }
+              },
+              "competitors": [
+                {
+                  "homeAway": "home",
+                  "score": "125",
+                  "team": {
+                    "abbreviation": "CLE"
+                  }
+                },
+                {
+                  "homeAway": "away",
+                  "score": "119",
+                  "team": {
+                    "abbreviation": "MIA"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "401161492",
+          "date": "2020-02-25T00:00Z",
+          "season": {
+            "year": 2020,
+            "type": 2,
+            "slug": "regular-season"
+          },
+          "competitions": [
+            {
+              "id": "401161492",
+              "date": "2020-02-25T00:00Z",
+              "type": {
+                "id": "1",
+                "abbreviation": "STD"
+              },
+              "status": {
+                "clock": 0.0,
+                "displayClock": "0.0",
+                "period": 4,
+                "type": {
+                  "id": "3",
+                  "name": "STATUS_FINAL",
+                  "state": "post",
+                  "completed": true,
+                  "description": "Final",
+                  "detail": "Final",
+                  "shortDetail": "Final"
+                }
+              },
+              "competitors": [
+                {
+                  "homeAway": "home",
+                  "score": "129",
+                  "team": {
+                    "abbreviation": "PHI"
+                  }
+                },
+                {
+                  "homeAway": "away",
+                  "score": "112",
+                  "team": {
+                    "abbreviation": "ATL"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "401161493",
+          "date": "2020-02-25T00:00Z",
+          "season": {
+            "year": 2020,
+            "type": 2,
+            "slug": "regular-season"
+          },
+          "competitions": [
+            {
+              "id": "401161493",
+              "date": "2020-02-25T00:00Z",
+              "type": {
+                "id": "1",
+                "abbreviation": "STD"
+              },
+              "status": {
+                "clock": 0.0,
+                "displayClock": "0.0",
+                "period": 5,
+                "type": {
+                  "id": "3",
+                  "name": "STATUS_FINAL",
+                  "state": "post",
+                  "completed": true,
+                  "description": "Final",
+                  "detail": "Final/OT",
+                  "shortDetail": "Final/OT",
+                  "altDetail": "OT"
+                }
+              },
+              "competitors": [
+                {
+                  "homeAway": "home",
+                  "score": "134",
+                  "team": {
+                    "abbreviation": "WSH"
+                  }
+                },
+                {
+                  "homeAway": "away",
+                  "score": "137",
+                  "team": {
+                    "abbreviation": "MIL"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "401161494",
+          "date": "2020-02-25T00:30Z",
+          "season": {
+            "year": 2020,
+            "type": 2,
+            "slug": "regular-season"
+          },
+          "competitions": [
+            {
+              "id": "401161494",
+              "date": "2020-02-25T00:30Z",
+              "type": {
+                "id": "1",
+                "abbreviation": "STD"
+              },
+              "status": {
+                "clock": 0.0,
+                "displayClock": "0.0",
+                "period": 4,
+                "type": {
+                  "id": "3",
+                  "name": "STATUS_FINAL",
+                  "state": "post",
+                  "completed": true,
+                  "description": "Final",
+                  "detail": "Final",
+                  "shortDetail": "Final"
+                }
+              },
+              "competitors": [
+                {
+                  "homeAway": "home",
+                  "score": "113",
+                  "team": {
+                    "abbreviation": "BKN"
+                  }
+                },
+                {
+                  "homeAway": "away",
+                  "score": "115",
+                  "team": {
+                    "abbreviation": "ORL"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "401161495",
+          "date": "2020-02-25T01:00Z",
+          "season": {
+            "year": 2020,
+            "type": 2,
+            "slug": "regular-season"
+          },
+          "competitions": [
+            {
+              "id": "401161495",
+              "date": "2020-02-25T01:00Z",
+              "type": {
+                "id": "1",
+                "abbreviation": "STD"
+              },
+              "status": {
+                "clock": 0.0,
+                "displayClock": "0.0",
+                "period": 4,
+                "type": {
+                  "id": "3",
+                  "name": "STATUS_FINAL",
+                  "state": "post",
+                  "completed": true,
+                  "description": "Final",
+                  "detail": "Final",
+                  "shortDetail": "Final"
+                }
+              },
+              "competitors": [
+                {
+                  "homeAway": "home",
+                  "score": "123",
+                  "team": {
+                    "abbreviation": "HOU"
+                  }
+                },
+                {
+                  "homeAway": "away",
+                  "score": "112",
+                  "team": {
+                    "abbreviation": "NY"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "401161496",
+          "date": "2020-02-25T01:30Z",
+          "season": {
+            "year": 2020,
+            "type": 2,
+            "slug": "regular-season"
+          },
+          "competitions": [
+            {
+              "id": "401161496",
+              "date": "2020-02-25T01:30Z",
+              "type": {
+                "id": "1",
+                "abbreviation": "STD"
+              },
+              "status": {
+                "clock": 0.0,
+                "displayClock": "0.0",
+                "period": 4,
+                "type": {
+                  "id": "3",
+                  "name": "STATUS_FINAL",
+                  "state": "post",
+                  "completed": true,
+                  "description": "Final",
+                  "detail": "Final",
+                  "shortDetail": "Final"
+                }
+              },
+              "competitors": [
+                {
+                  "homeAway": "home",
+                  "score": "139",
+                  "team": {
+                    "abbreviation": "DAL"
+                  }
+                },
+                {
+                  "homeAway": "away",
+                  "score": "123",
+                  "team": {
+                    "abbreviation": "MIN"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "401161497",
+          "date": "2020-02-25T02:00Z",
+          "season": {
+            "year": 2020,
+            "type": 2,
+            "slug": "regular-season"
+          },
+          "competitions": [
+            {
+              "id": "401161497",
+              "date": "2020-02-25T02:00Z",
+              "type": {
+                "id": "1",
+                "abbreviation": "STD"
+              },
+              "status": {
+                "clock": 0.0,
+                "displayClock": "0.0",
+                "period": 4,
+                "type": {
+                  "id": "3",
+                  "name": "STATUS_FINAL",
+                  "state": "post",
+                  "completed": true,
+                  "description": "Final",
+                  "detail": "Final",
+                  "shortDetail": "Final"
+                }
+              },
+              "competitors": [
+                {
+                  "homeAway": "home",
+                  "score": "111",
+                  "team": {
+                    "abbreviation": "UTAH"
+                  }
+                },
+                {
+                  "homeAway": "away",
+                  "score": "131",
+                  "team": {
+                    "abbreviation": "PHX"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "401161498",
+          "date": "2020-02-25T03:30Z",
+          "season": {
+            "year": 2020,
+            "type": 2,
+            "slug": "regular-season"
+          },
+          "competitions": [
+            {
+              "id": "401161498",
+              "date": "2020-02-25T03:30Z",
+              "type": {
+                "id": "1",
+                "abbreviation": "STD"
+              },
+              "status": {
+                "clock": 0.0,
+                "displayClock": "0.0",
+                "period": 4,
+                "type": {
+                  "id": "3",
+                  "name": "STATUS_FINAL",
+                  "state": "post",
+                  "completed": true,
+                  "description": "Final",
+                  "detail": "Final",
+                  "shortDetail": "Final"
+                }
+              },
+              "competitors": [
+                {
+                  "homeAway": "home",
+                  "score": "124",
+                  "team": {
+                    "abbreviation": "LAC"
+                  }
+                },
+                {
+                  "homeAway": "away",
+                  "score": "97",
+                  "team": {
+                    "abbreviation": "MEM"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "20200229": {
+      "events": [
+        {
+          "id": "401161528",
+          "date": "2020-02-29T13:30Z",
+          "season": {
+            "year": 2020,
+            "type": 2,
+            "slug": "regular-season"
+          },
+          "competitions": [
+            {
+              "id": "401161528",
+              "date": "2020-02-29T13:30Z",
+              "type": {
+                "id": "1",
+                "abbreviation": "STD"
+              },
+              "status": {
+                "clock": 0.0,
+                "displayClock": "0.0",
+                "period": 4,
+                "type": {
+                  "id": "3",
+                  "name": "STATUS_FINAL",
+                  "state": "post",
+                  "completed": true,
+                  "description": "Final",
+                  "detail": "Final",
+                  "shortDetail": "Final"
+                }
+              },
+              "competitors": [
+                {
+                  "homeAway": "home",
+                  "score": "132",
+                  "team": {
+                    "abbreviation": "LAC"
+                  }
+                },
+                {
+                  "homeAway": "away",
+                  "score": "103",
+                  "team": {
+                    "abbreviation": "DEN"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "401161529",
+          "date": "2020-02-29T22:00Z",
+          "season": {
+            "year": 2020,
+            "type": 2,
+            "slug": "regular-season"
+          },
+          "competitions": [
+            {
+              "id": "401161529",
+              "date": "2020-02-29T22:00Z",
+              "type": {
+                "id": "1",
+                "abbreviation": "STD"
+              },
+              "status": {
+                "clock": 0.0,
+                "displayClock": "0.0",
+                "period": 4,
+                "type": {
+                  "id": "3",
+                  "name": "STATUS_FINAL",
+                  "state": "post",
+                  "completed": true,
+                  "description": "Final",
+                  "detail": "Final",
+                  "shortDetail": "Final"
+                }
+              },
+              "competitors": [
+                {
+                  "homeAway": "home",
+                  "score": "125",
+                  "team": {
+                    "abbreviation": "NY"
+                  }
+                },
+                {
+                  "homeAway": "away",
+                  "score": "115",
+                  "team": {
+                    "abbreviation": "CHI"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "401161531",
+          "date": "2020-03-01T00:30Z",
+          "season": {
+            "year": 2020,
+            "type": 2,
+            "slug": "regular-season"
+          },
+          "competitions": [
+            {
+              "id": "401161531",
+              "date": "2020-03-01T00:30Z",
+              "type": {
+                "id": "1",
+                "abbreviation": "STD"
+              },
+              "status": {
+                "clock": 0.0,
+                "displayClock": "0.0",
+                "period": 4,
+                "type": {
+                  "id": "3",
+                  "name": "STATUS_FINAL",
+                  "state": "post",
+                  "completed": true,
+                  "description": "Final",
+                  "detail": "Final",
+                  "shortDetail": "Final"
+                }
+              },
+              "competitors": [
+                {
+                  "homeAway": "home",
+                  "score": "116",
+                  "team": {
+                    "abbreviation": "MIA"
+                  }
+                },
+                {
+                  "homeAway": "away",
+                  "score": "113",
+                  "team": {
+                    "abbreviation": "BKN"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "401161532",
+          "date": "2020-03-01T01:00Z",
+          "season": {
+            "year": 2020,
+            "type": 2,
+            "slug": "regular-season"
+          },
+          "competitions": [
+            {
+              "id": "401161532",
+              "date": "2020-03-01T01:00Z",
+              "type": {
+                "id": "1",
+                "abbreviation": "STD"
+              },
+              "status": {
+                "clock": 0.0,
+                "displayClock": "0.0",
+                "period": 4,
+                "type": {
+                  "id": "3",
+                  "name": "STATUS_FINAL",
+                  "state": "post",
+                  "completed": true,
+                  "description": "Final",
+                  "detail": "Final",
+                  "shortDetail": "Final"
+                }
+              },
+              "competitors": [
+                {
+                  "homeAway": "home",
+                  "score": "104",
+                  "team": {
+                    "abbreviation": "CLE"
+                  }
+                },
+                {
+                  "homeAway": "away",
+                  "score": "113",
+                  "team": {
+                    "abbreviation": "IND"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "401161533",
+          "date": "2020-03-01T01:00Z",
+          "season": {
+            "year": 2020,
+            "type": 2,
+            "slug": "regular-season"
+          },
+          "competitions": [
+            {
+              "id": "401161533",
+              "date": "2020-03-01T01:00Z",
+              "type": {
+                "id": "1",
+                "abbreviation": "STD"
+              },
+              "status": {
+                "clock": 0.0,
+                "displayClock": "0.0",
+                "period": 4,
+                "type": {
+                  "id": "3",
+                  "name": "STATUS_FINAL",
+                  "state": "post",
+                  "completed": true,
+                  "description": "Final",
+                  "detail": "Final",
+                  "shortDetail": "Final"
+                }
+              },
+              "competitors": [
+                {
+                  "homeAway": "home",
+                  "score": "105",
+                  "team": {
+                    "abbreviation": "MEM"
+                  }
+                },
+                {
+                  "homeAway": "away",
+                  "score": "88",
+                  "team": {
+                    "abbreviation": "LAL"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "401161534",
+          "date": "2020-03-01T01:30Z",
+          "season": {
+            "year": 2020,
+            "type": 2,
+            "slug": "regular-season"
+          },
+          "competitions": [
+            {
+              "id": "401161534",
+              "date": "2020-03-01T01:30Z",
+              "type": {
+                "id": "1",
+                "abbreviation": "STD"
+              },
+              "status": {
+                "clock": 0.0,
+                "displayClock": "0.0",
+                "period": 5,
+                "type": {
+                  "id": "3",
+                  "name": "STATUS_FINAL",
+                  "state": "post",
+                  "completed": true,
+                  "description": "Final",
+                  "detail": "Final/OT",
+                  "shortDetail": "Final/OT",
+                  "altDetail": "OT"
+                }
+              },
+              "competitors": [
+                {
+                  "homeAway": "home",
+                  "score": "110",
+                  "team": {
+                    "abbreviation": "BOS"
+                  }
+                },
+                {
+                  "homeAway": "away",
+                  "score": "111",
+                  "team": {
+                    "abbreviation": "HOU"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "401161535",
+          "date": "2020-03-01T01:30Z",
+          "season": {
+            "year": 2020,
+            "type": 2,
+            "slug": "regular-season"
+          },
+          "competitions": [
+            {
+              "id": "401161535",
+              "date": "2020-03-01T01:30Z",
+              "type": {
+                "id": "1",
+                "abbreviation": "STD"
+              },
+              "status": {
+                "clock": 0.0,
+                "displayClock": "0.0",
+                "period": 4,
+                "type": {
+                  "id": "3",
+                  "name": "STATUS_FINAL",
+                  "state": "post",
+                  "completed": true,
+                  "description": "Final",
+                  "detail": "Final",
+                  "shortDetail": "Final"
+                }
+              },
+              "competitors": [
+                {
+                  "homeAway": "home",
+                  "score": "114",
+                  "team": {
+                    "abbreviation": "SA"
+                  }
+                },
+                {
+                  "homeAway": "away",
+                  "score": "113",
+                  "team": {
+                    "abbreviation": "ORL"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "20200301": {
+      "events": [
+        {
+          "id": "401161530",
+          "date": "2020-03-01T11:00Z",
+          "season": {
+            "year": 2020,
+            "type": 2,
+            "slug": "regular-season"
+          },
+          "competitions": [
+            {
+              "id": "401161530",
+              "date": "2020-03-01T11:00Z",
+              "type": {
+                "id": "1",
+                "abbreviation": "STD"
+              },
+              "status": {
+                "clock": 0.0,
+                "displayClock": "0.0",
+                "period": 4,
+                "type": {
+                  "id": "3",
+                  "name": "STATUS_FINAL",
+                  "state": "post",
+                  "completed": true,
+                  "description": "Final",
+                  "detail": "Final",
+                  "shortDetail": "Final"
+                }
+              },
+              "competitors": [
+                {
+                  "homeAway": "home",
+                  "score": "129",
+                  "team": {
+                    "abbreviation": "ATL"
+                  }
+                },
+                {
+                  "homeAway": "away",
+                  "score": "117",
+                  "team": {
+                    "abbreviation": "POR"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "401161536",
+          "date": "2020-03-01T12:30Z",
+          "season": {
+            "year": 2020,
+            "type": 2,
+            "slug": "regular-season"
+          },
+          "competitions": [
+            {
+              "id": "401161536",
+              "date": "2020-03-01T12:30Z",
+              "type": {
+                "id": "1",
+                "abbreviation": "STD"
+              },
+              "status": {
+                "clock": 0.0,
+                "displayClock": "0.0",
+                "period": 4,
+                "type": {
+                  "id": "3",
+                  "name": "STATUS_FINAL",
+                  "state": "post",
+                  "completed": true,
+                  "description": "Final",
+                  "detail": "Final",
+                  "shortDetail": "Final"
+                }
+              },
+              "competitors": [
+                {
+                  "homeAway": "home",
+                  "score": "99",
+                  "team": {
+                    "abbreviation": "PHX"
+                  }
+                },
+                {
+                  "homeAway": "away",
+                  "score": "115",
+                  "team": {
+                    "abbreviation": "GS"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "401161537",
+          "date": "2020-03-01T18:00Z",
+          "season": {
+            "year": 2020,
+            "type": 2,
+            "slug": "regular-season"
+          },
+          "competitions": [
+            {
+              "id": "401161537",
+              "date": "2020-03-01T18:00Z",
+              "type": {
+                "id": "1",
+                "abbreviation": "STD"
+              },
+              "status": {
+                "clock": 0.0,
+                "displayClock": "0.0",
+                "period": 4,
+                "type": {
+                  "id": "3",
+                  "name": "STATUS_FINAL",
+                  "state": "post",
+                  "completed": true,
+                  "description": "Final",
+                  "detail": "Final",
+                  "shortDetail": "Final"
+                }
+              },
+              "competitors": [
+                {
+                  "homeAway": "home",
+                  "score": "85",
+                  "team": {
+                    "abbreviation": "CHA"
+                  }
+                },
+                {
+                  "homeAway": "away",
+                  "score": "93",
+                  "team": {
+                    "abbreviation": "MIL"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "401161538",
+          "date": "2020-03-01T20:30Z",
+          "season": {
+            "year": 2020,
+            "type": 2,
+            "slug": "regular-season"
+          },
+          "competitions": [
+            {
+              "id": "401161538",
+              "date": "2020-03-01T20:30Z",
+              "type": {
+                "id": "1",
+                "abbreviation": "STD"
+              },
+              "status": {
+                "clock": 0.0,
+                "displayClock": "0.0",
+                "period": 4,
+                "type": {
+                  "id": "3",
+                  "name": "STATUS_FINAL",
+                  "state": "post",
+                  "completed": true,
+                  "description": "Final",
+                  "detail": "Final",
+                  "shortDetail": "Final"
+                }
+              },
+              "competitors": [
+                {
+                  "homeAway": "home",
+                  "score": "91",
+                  "team": {
+                    "abbreviation": "MIN"
+                  }
+                },
+                {
+                  "homeAway": "away",
+                  "score": "111",
+                  "team": {
+                    "abbreviation": "DAL"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "401161539",
+          "date": "2020-03-01T20:30Z",
+          "season": {
+            "year": 2020,
+            "type": 2,
+            "slug": "regular-season"
+          },
+          "competitions": [
+            {
+              "id": "401161539",
+              "date": "2020-03-01T20:30Z",
+              "type": {
+                "id": "1",
+                "abbreviation": "STD"
+              },
+              "status": {
+                "clock": 0.0,
+                "displayClock": "0.0",
+                "period": 4,
+                "type": {
+                  "id": "3",
+                  "name": "STATUS_FINAL",
+                  "state": "post",
+                  "completed": true,
+                  "description": "Final",
+                  "detail": "Final",
+                  "shortDetail": "Final"
+                }
+              },
+              "competitors": [
+                {
+                  "homeAway": "home",
+                  "score": "136",
+                  "team": {
+                    "abbreviation": "LAC"
+                  }
+                },
+                {
+                  "homeAway": "away",
+                  "score": "130",
+                  "team": {
+                    "abbreviation": "PHI"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "401161540",
+          "date": "2020-03-01T23:00Z",
+          "season": {
+            "year": 2020,
+            "type": 2,
+            "slug": "regular-season"
+          },
+          "competitions": [
+            {
+              "id": "401161540",
+              "date": "2020-03-01T23:00Z",
+              "type": {
+                "id": "1",
+                "abbreviation": "STD"
+              },
+              "status": {
+                "clock": 0.0,
+                "displayClock": "0.0",
+                "period": 4,
+                "type": {
+                  "id": "3",
+                  "name": "STATUS_FINAL",
+                  "state": "post",
+                  "completed": true,
+                  "description": "Final",
+                  "detail": "Final",
+                  "shortDetail": "Final"
+                }
+              },
+              "competitors": [
+                {
+                  "homeAway": "home",
+                  "score": "133",
+                  "team": {
+                    "abbreviation": "DEN"
+                  }
+                },
+                {
+                  "homeAway": "away",
+                  "score": "118",
+                  "team": {
+                    "abbreviation": "TOR"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "401161541",
+          "date": "2020-03-01T23:00Z",
+          "season": {
+            "year": 2020,
+            "type": 2,
+            "slug": "regular-season"
+          },
+          "competitions": [
+            {
+              "id": "401161541",
+              "date": "2020-03-01T23:00Z",
+              "type": {
+                "id": "1",
+                "abbreviation": "STD"
+              },
+              "status": {
+                "clock": 0.0,
+                "displayClock": "0.0",
+                "period": 4,
+                "type": {
+                  "id": "3",
+                  "name": "STATUS_FINAL",
+                  "state": "post",
+                  "completed": true,
+                  "description": "Final",
+                  "detail": "Final",
+                  "shortDetail": "Final"
+                }
+              },
+              "competitors": [
+                {
+                  "homeAway": "home",
+                  "score": "106",
+                  "team": {
+                    "abbreviation": "SAC"
+                  }
+                },
+                {
+                  "homeAway": "away",
+                  "score": "100",
+                  "team": {
+                    "abbreviation": "DET"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "401161542",
+          "date": "2020-03-02T01:00Z",
+          "season": {
+            "year": 2020,
+            "type": 2,
+            "slug": "regular-season"
+          },
+          "competitions": [
+            {
+              "id": "401161542",
+              "date": "2020-03-02T01:00Z",
+              "type": {
+                "id": "1",
+                "abbreviation": "STD"
+              },
+              "status": {
+                "clock": 0.0,
+                "displayClock": "0.0",
+                "period": 4,
+                "type": {
+                  "id": "3",
+                  "name": "STATUS_FINAL",
+                  "state": "post",
+                  "completed": true,
+                  "description": "Final",
+                  "detail": "Final",
+                  "shortDetail": "Final"
+                }
+              },
+              "competitors": [
+                {
+                  "homeAway": "home",
+                  "score": "114",
+                  "team": {
+                    "abbreviation": "NO"
+                  }
+                },
+                {
+                  "homeAway": "away",
+                  "score": "122",
+                  "team": {
+                    "abbreviation": "LAL"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "401161543",
+          "date": "2020-03-02T01:30Z",
+          "season": {
+            "year": 2020,
+            "type": 2,
+            "slug": "regular-season"
+          },
+          "competitions": [
+            {
+              "id": "401161543",
+              "date": "2020-03-02T01:30Z",
+              "type": {
+                "id": "1",
+                "abbreviation": "STD"
+              },
+              "status": {
+                "clock": 0.0,
+                "displayClock": "0.0",
+                "period": 4,
+                "type": {
+                  "id": "3",
+                  "name": "STATUS_FINAL",
+                  "state": "post",
+                  "completed": true,
+                  "description": "Final",
+                  "detail": "Final",
+                  "shortDetail": "Final"
+                }
+              },
+              "competitors": [
+                {
+                  "homeAway": "home",
+                  "score": "110",
+                  "team": {
+                    "abbreviation": "GS"
+                  }
+                },
+                {
+                  "homeAway": "away",
+                  "score": "124",
+                  "team": {
+                    "abbreviation": "WSH"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "summaries": {
+    "401161490": {
+      "header": {
+        "id": "401161490",
+        "season": {
+          "year": 2020,
+          "current": false,
+          "type": 2
+        },
+        "competitions": [
+          {
+            "id": "401161490",
+            "date": "2020-02-24T12:00Z",
+            "status": {
+              "type": {
+                "id": "3",
+                "name": "STATUS_FINAL",
+                "state": "post",
+                "completed": true,
+                "description": "Final",
+                "detail": "Final",
+                "shortDetail": "Final"
+              }
+            },
+            "competitors": [
+              {
+                "homeAway": "home",
+                "score": "107",
+                "team": {
+                  "abbreviation": "POR"
+                }
+              },
+              {
+                "homeAway": "away",
+                "score": "104",
+                "team": {
+                  "abbreviation": "DET"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gameInfo": {
+        "officials": [
+          {
+            "displayName": "John Goble",
+            "order": 1
+          },
+          {
+            "displayName": "Ben Taylor",
+            "order": 2
+          },
+          {
+            "displayName": "Justin Van Duyne",
+            "order": 3
+          }
+        ]
+      },
+      "boxscore": {
+        "teams": [
+          {
+            "team": {
+              "abbreviation": "DET"
+            },
+            "statistics": [
+              {
+                "name": "freeThrowsMade-freeThrowsAttempted",
+                "displayValue": "19-20",
+                "label": "FT"
+              }
+            ]
+          },
+          {
+            "team": {
+              "abbreviation": "POR"
+            },
+            "statistics": [
+              {
+                "name": "freeThrowsMade-freeThrowsAttempted",
+                "displayValue": "12-19",
+                "label": "FT"
+              }
+            ]
+          }
+        ]
+      },
+      "plays": [
+        {
+          "period": {
+            "number": 1,
+            "displayValue": "1st Quarter"
+          },
+          "type": {
+            "id": "45",
+            "text": "Personal Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 1,
+            "displayValue": "1st Quarter"
+          },
+          "type": {
+            "id": "44",
+            "text": "Shooting Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 1,
+            "displayValue": "1st Quarter"
+          },
+          "type": {
+            "id": "45",
+            "text": "Personal Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 1,
+            "displayValue": "1st Quarter"
+          },
+          "type": {
+            "id": "45",
+            "text": "Personal Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 1,
+            "displayValue": "1st Quarter"
+          },
+          "type": {
+            "id": "44",
+            "text": "Shooting Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 1,
+            "displayValue": "1st Quarter"
+          },
+          "type": {
+            "id": "45",
+            "text": "Personal Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 1,
+            "displayValue": "1st Quarter"
+          },
+          "type": {
+            "id": "44",
+            "text": "Shooting Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 2,
+            "displayValue": "2nd Quarter"
+          },
+          "type": {
+            "id": "44",
+            "text": "Shooting Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 2,
+            "displayValue": "2nd Quarter"
+          },
+          "type": {
+            "id": "44",
+            "text": "Shooting Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 2,
+            "displayValue": "2nd Quarter"
+          },
+          "type": {
+            "id": "45",
+            "text": "Personal Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 2,
+            "displayValue": "2nd Quarter"
+          },
+          "type": {
+            "id": "44",
+            "text": "Shooting Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 2,
+            "displayValue": "2nd Quarter"
+          },
+          "type": {
+            "id": "45",
+            "text": "Personal Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 2,
+            "displayValue": "2nd Quarter"
+          },
+          "type": {
+            "id": "43",
+            "text": "Loose Ball Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 2,
+            "displayValue": "2nd Quarter"
+          },
+          "type": {
+            "id": "45",
+            "text": "Personal Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 2,
+            "displayValue": "2nd Quarter"
+          },
+          "type": {
+            "id": "45",
+            "text": "Personal Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 2,
+            "displayValue": "2nd Quarter"
+          },
+          "type": {
+            "id": "43",
+            "text": "Loose Ball Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 2,
+            "displayValue": "2nd Quarter"
+          },
+          "type": {
+            "id": "44",
+            "text": "Shooting Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 2,
+            "displayValue": "2nd Quarter"
+          },
+          "type": {
+            "id": "44",
+            "text": "Shooting Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 3,
+            "displayValue": "3rd Quarter"
+          },
+          "type": {
+            "id": "44",
+            "text": "Shooting Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 3,
+            "displayValue": "3rd Quarter"
+          },
+          "type": {
+            "id": "44",
+            "text": "Shooting Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 3,
+            "displayValue": "3rd Quarter"
+          },
+          "type": {
+            "id": "45",
+            "text": "Personal Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 3,
+            "displayValue": "3rd Quarter"
+          },
+          "type": {
+            "id": "44",
+            "text": "Shooting Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 3,
+            "displayValue": "3rd Quarter"
+          },
+          "type": {
+            "id": "44",
+            "text": "Shooting Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 3,
+            "displayValue": "3rd Quarter"
+          },
+          "type": {
+            "id": "44",
+            "text": "Shooting Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 3,
+            "displayValue": "3rd Quarter"
+          },
+          "type": {
+            "id": "22",
+            "text": "Personal Take Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 4,
+            "displayValue": "4th Quarter"
+          },
+          "type": {
+            "id": "45",
+            "text": "Personal Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 4,
+            "displayValue": "4th Quarter"
+          },
+          "type": {
+            "id": "45",
+            "text": "Personal Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 4,
+            "displayValue": "4th Quarter"
+          },
+          "type": {
+            "id": "45",
+            "text": "Personal Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 4,
+            "displayValue": "4th Quarter"
+          },
+          "type": {
+            "id": "44",
+            "text": "Shooting Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 4,
+            "displayValue": "4th Quarter"
+          },
+          "type": {
+            "id": "45",
+            "text": "Personal Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 4,
+            "displayValue": "4th Quarter"
+          },
+          "type": {
+            "id": "44",
+            "text": "Shooting Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 4,
+            "displayValue": "4th Quarter"
+          },
+          "type": {
+            "id": "44",
+            "text": "Shooting Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 4,
+            "displayValue": "4th Quarter"
+          },
+          "type": {
+            "id": "22",
+            "text": "Personal Take Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 4,
+            "displayValue": "4th Quarter"
+          },
+          "type": {
+            "id": "22",
+            "text": "Personal Take Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 4,
+            "displayValue": "4th Quarter"
+          },
+          "type": {
+            "id": "22",
+            "text": "Personal Take Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 4,
+            "displayValue": "4th Quarter"
+          },
+          "type": {
+            "id": "402",
+            "text": "End Game"
+          }
+        }
+      ]
+    },
+    "401161528": {
+      "header": {
+        "id": "401161528",
+        "season": {
+          "year": 2020,
+          "current": false,
+          "type": 2
+        },
+        "competitions": [
+          {
+            "id": "401161528",
+            "date": "2020-02-29T13:30Z",
+            "status": {
+              "type": {
+                "id": "3",
+                "name": "STATUS_FINAL",
+                "state": "post",
+                "completed": true,
+                "description": "Final",
+                "detail": "Final",
+                "shortDetail": "Final"
+              }
+            },
+            "competitors": [
+              {
+                "homeAway": "home",
+                "score": "132",
+                "team": {
+                  "abbreviation": "LAC"
+                }
+              },
+              {
+                "homeAway": "away",
+                "score": "103",
+                "team": {
+                  "abbreviation": "DEN"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gameInfo": {
+        "officials": [
+          {
+            "displayName": "Matt Boland",
+            "order": 1
+          },
+          {
+            "displayName": "Zach Zarba",
+            "order": 2
+          },
+          {
+            "displayName": "Mark Lindsay",
+            "order": 3
+          }
+        ]
+      },
+      "boxscore": {
+        "teams": [
+          {
+            "team": {
+              "abbreviation": "DEN"
+            },
+            "statistics": [
+              {
+                "name": "freeThrowsMade-freeThrowsAttempted",
+                "displayValue": "12-16",
+                "label": "FT"
+              }
+            ]
+          },
+          {
+            "team": {
+              "abbreviation": "LAC"
+            },
+            "statistics": [
+              {
+                "name": "freeThrowsMade-freeThrowsAttempted",
+                "displayValue": "18-20",
+                "label": "FT"
+              }
+            ]
+          }
+        ]
+      },
+      "plays": [
+        {
+          "period": {
+            "number": 1,
+            "displayValue": "1st Quarter"
+          },
+          "type": {
+            "id": "45",
+            "text": "Personal Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 1,
+            "displayValue": "1st Quarter"
+          },
+          "type": {
+            "id": "45",
+            "text": "Personal Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 1,
+            "displayValue": "1st Quarter"
+          },
+          "type": {
+            "id": "45",
+            "text": "Personal Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 1,
+            "displayValue": "1st Quarter"
+          },
+          "type": {
+            "id": "44",
+            "text": "Shooting Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 1,
+            "displayValue": "1st Quarter"
+          },
+          "type": {
+            "id": "45",
+            "text": "Personal Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 1,
+            "displayValue": "1st Quarter"
+          },
+          "type": {
+            "id": "44",
+            "text": "Shooting Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 1,
+            "displayValue": "1st Quarter"
+          },
+          "type": {
+            "id": "44",
+            "text": "Shooting Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 2,
+            "displayValue": "2nd Quarter"
+          },
+          "type": {
+            "id": "44",
+            "text": "Shooting Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 2,
+            "displayValue": "2nd Quarter"
+          },
+          "type": {
+            "id": "44",
+            "text": "Shooting Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 2,
+            "displayValue": "2nd Quarter"
+          },
+          "type": {
+            "id": "45",
+            "text": "Personal Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 2,
+            "displayValue": "2nd Quarter"
+          },
+          "type": {
+            "id": "44",
+            "text": "Shooting Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 2,
+            "displayValue": "2nd Quarter"
+          },
+          "type": {
+            "id": "44",
+            "text": "Shooting Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 2,
+            "displayValue": "2nd Quarter"
+          },
+          "type": {
+            "id": "45",
+            "text": "Personal Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 2,
+            "displayValue": "2nd Quarter"
+          },
+          "type": {
+            "id": "44",
+            "text": "Shooting Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 3,
+            "displayValue": "3rd Quarter"
+          },
+          "type": {
+            "id": "22",
+            "text": "Personal Take Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 3,
+            "displayValue": "3rd Quarter"
+          },
+          "type": {
+            "id": "22",
+            "text": "Personal Take Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 3,
+            "displayValue": "3rd Quarter"
+          },
+          "type": {
+            "id": "44",
+            "text": "Shooting Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 3,
+            "displayValue": "3rd Quarter"
+          },
+          "type": {
+            "id": "44",
+            "text": "Shooting Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 3,
+            "displayValue": "3rd Quarter"
+          },
+          "type": {
+            "id": "45",
+            "text": "Personal Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 3,
+            "displayValue": "3rd Quarter"
+          },
+          "type": {
+            "id": "43",
+            "text": "Loose Ball Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 3,
+            "displayValue": "3rd Quarter"
+          },
+          "type": {
+            "id": "45",
+            "text": "Personal Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 3,
+            "displayValue": "3rd Quarter"
+          },
+          "type": {
+            "id": "44",
+            "text": "Shooting Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 3,
+            "displayValue": "3rd Quarter"
+          },
+          "type": {
+            "id": "45",
+            "text": "Personal Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 3,
+            "displayValue": "3rd Quarter"
+          },
+          "type": {
+            "id": "44",
+            "text": "Shooting Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 3,
+            "displayValue": "3rd Quarter"
+          },
+          "type": {
+            "id": "45",
+            "text": "Personal Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 3,
+            "displayValue": "3rd Quarter"
+          },
+          "type": {
+            "id": "44",
+            "text": "Shooting Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 3,
+            "displayValue": "3rd Quarter"
+          },
+          "type": {
+            "id": "44",
+            "text": "Shooting Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 3,
+            "displayValue": "3rd Quarter"
+          },
+          "type": {
+            "id": "44",
+            "text": "Shooting Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 4,
+            "displayValue": "4th Quarter"
+          },
+          "type": {
+            "id": "45",
+            "text": "Personal Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 4,
+            "displayValue": "4th Quarter"
+          },
+          "type": {
+            "id": "84",
+            "text": "Offensive Foul Turnover"
+          }
+        },
+        {
+          "period": {
+            "number": 4,
+            "displayValue": "4th Quarter"
+          },
+          "type": {
+            "id": "45",
+            "text": "Personal Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 4,
+            "displayValue": "4th Quarter"
+          },
+          "type": {
+            "id": "84",
+            "text": "Offensive Foul Turnover"
+          }
+        },
+        {
+          "period": {
+            "number": 4,
+            "displayValue": "4th Quarter"
+          },
+          "type": {
+            "id": "45",
+            "text": "Personal Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 4,
+            "displayValue": "4th Quarter"
+          },
+          "type": {
+            "id": "84",
+            "text": "Offensive Foul Turnover"
+          }
+        },
+        {
+          "period": {
+            "number": 4,
+            "displayValue": "4th Quarter"
+          },
+          "type": {
+            "id": "45",
+            "text": "Personal Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 4,
+            "displayValue": "4th Quarter"
+          },
+          "type": {
+            "id": "44",
+            "text": "Shooting Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 4,
+            "displayValue": "4th Quarter"
+          },
+          "type": {
+            "id": "42",
+            "text": "Offensive Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 4,
+            "displayValue": "4th Quarter"
+          },
+          "type": {
+            "id": "84",
+            "text": "Offensive Foul Turnover"
+          }
+        },
+        {
+          "period": {
+            "number": 4,
+            "displayValue": "4th Quarter"
+          },
+          "type": {
+            "id": "402",
+            "text": "End Game"
+          }
+        }
+      ]
+    },
+    "401161530": {
+      "header": {
+        "id": "401161530",
+        "season": {
+          "year": 2020,
+          "current": false,
+          "type": 2
+        },
+        "competitions": [
+          {
+            "id": "401161530",
+            "date": "2020-03-01T11:00Z",
+            "status": {
+              "type": {
+                "id": "3",
+                "name": "STATUS_FINAL",
+                "state": "post",
+                "completed": true,
+                "description": "Final",
+                "detail": "Final",
+                "shortDetail": "Final"
+              }
+            },
+            "competitors": [
+              {
+                "homeAway": "home",
+                "score": "129",
+                "team": {
+                  "abbreviation": "ATL"
+                }
+              },
+              {
+                "homeAway": "away",
+                "score": "117",
+                "team": {
+                  "abbreviation": "POR"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gameInfo": {
+        "officials": [
+          {
+            "displayName": "Kane Fitzgerald",
+            "order": 1
+          },
+          {
+            "displayName": "Ben Taylor",
+            "order": 2
+          },
+          {
+            "displayName": "Nate  Green",
+            "order": 3
+          }
+        ]
+      },
+      "boxscore": {
+        "teams": [
+          {
+            "team": {
+              "abbreviation": "POR"
+            },
+            "statistics": [
+              {
+                "name": "freeThrowsMade-freeThrowsAttempted",
+                "displayValue": "15-21",
+                "label": "FT"
+              }
+            ]
+          },
+          {
+            "team": {
+              "abbreviation": "ATL"
+            },
+            "statistics": [
+              {
+                "name": "freeThrowsMade-freeThrowsAttempted",
+                "displayValue": "19-22",
+                "label": "FT"
+              }
+            ]
+          }
+        ]
+      },
+      "plays": [
+        {
+          "period": {
+            "number": 1,
+            "displayValue": "1st Quarter"
+          },
+          "type": {
+            "id": "44",
+            "text": "Shooting Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 1,
+            "displayValue": "1st Quarter"
+          },
+          "type": {
+            "id": "45",
+            "text": "Personal Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 1,
+            "displayValue": "1st Quarter"
+          },
+          "type": {
+            "id": "45",
+            "text": "Personal Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 1,
+            "displayValue": "1st Quarter"
+          },
+          "type": {
+            "id": "46",
+            "text": "No Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 1,
+            "displayValue": "1st Quarter"
+          },
+          "type": {
+            "id": "35",
+            "text": "Technical Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 1,
+            "displayValue": "1st Quarter"
+          },
+          "type": {
+            "id": "44",
+            "text": "Shooting Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 1,
+            "displayValue": "1st Quarter"
+          },
+          "type": {
+            "id": "45",
+            "text": "Personal Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 1,
+            "displayValue": "1st Quarter"
+          },
+          "type": {
+            "id": "45",
+            "text": "Personal Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 1,
+            "displayValue": "1st Quarter"
+          },
+          "type": {
+            "id": "44",
+            "text": "Shooting Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 2,
+            "displayValue": "2nd Quarter"
+          },
+          "type": {
+            "id": "44",
+            "text": "Shooting Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 2,
+            "displayValue": "2nd Quarter"
+          },
+          "type": {
+            "id": "45",
+            "text": "Personal Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 2,
+            "displayValue": "2nd Quarter"
+          },
+          "type": {
+            "id": "44",
+            "text": "Shooting Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 2,
+            "displayValue": "2nd Quarter"
+          },
+          "type": {
+            "id": "42",
+            "text": "Offensive Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 2,
+            "displayValue": "2nd Quarter"
+          },
+          "type": {
+            "id": "84",
+            "text": "Offensive Foul Turnover"
+          }
+        },
+        {
+          "period": {
+            "number": 2,
+            "displayValue": "2nd Quarter"
+          },
+          "type": {
+            "id": "43",
+            "text": "Loose Ball Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 2,
+            "displayValue": "2nd Quarter"
+          },
+          "type": {
+            "id": "42",
+            "text": "Offensive Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 2,
+            "displayValue": "2nd Quarter"
+          },
+          "type": {
+            "id": "84",
+            "text": "Offensive Foul Turnover"
+          }
+        },
+        {
+          "period": {
+            "number": 2,
+            "displayValue": "2nd Quarter"
+          },
+          "type": {
+            "id": "45",
+            "text": "Personal Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 2,
+            "displayValue": "2nd Quarter"
+          },
+          "type": {
+            "id": "43",
+            "text": "Loose Ball Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 2,
+            "displayValue": "2nd Quarter"
+          },
+          "type": {
+            "id": "44",
+            "text": "Shooting Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 2,
+            "displayValue": "2nd Quarter"
+          },
+          "type": {
+            "id": "44",
+            "text": "Shooting Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 2,
+            "displayValue": "2nd Quarter"
+          },
+          "type": {
+            "id": "44",
+            "text": "Shooting Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 2,
+            "displayValue": "2nd Quarter"
+          },
+          "type": {
+            "id": "42",
+            "text": "Offensive Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 2,
+            "displayValue": "2nd Quarter"
+          },
+          "type": {
+            "id": "84",
+            "text": "Offensive Foul Turnover"
+          }
+        },
+        {
+          "period": {
+            "number": 2,
+            "displayValue": "2nd Quarter"
+          },
+          "type": {
+            "id": "42",
+            "text": "Offensive Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 2,
+            "displayValue": "2nd Quarter"
+          },
+          "type": {
+            "id": "84",
+            "text": "Offensive Foul Turnover"
+          }
+        },
+        {
+          "period": {
+            "number": 3,
+            "displayValue": "3rd Quarter"
+          },
+          "type": {
+            "id": "45",
+            "text": "Personal Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 3,
+            "displayValue": "3rd Quarter"
+          },
+          "type": {
+            "id": "44",
+            "text": "Shooting Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 3,
+            "displayValue": "3rd Quarter"
+          },
+          "type": {
+            "id": "44",
+            "text": "Shooting Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 3,
+            "displayValue": "3rd Quarter"
+          },
+          "type": {
+            "id": "44",
+            "text": "Shooting Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 3,
+            "displayValue": "3rd Quarter"
+          },
+          "type": {
+            "id": "35",
+            "text": "Technical Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 3,
+            "displayValue": "3rd Quarter"
+          },
+          "type": {
+            "id": "45",
+            "text": "Personal Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 3,
+            "displayValue": "3rd Quarter"
+          },
+          "type": {
+            "id": "45",
+            "text": "Personal Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 3,
+            "displayValue": "3rd Quarter"
+          },
+          "type": {
+            "id": "44",
+            "text": "Shooting Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 3,
+            "displayValue": "3rd Quarter"
+          },
+          "type": {
+            "id": "32",
+            "text": "Flagrant Foul Type 1"
+          }
+        },
+        {
+          "period": {
+            "number": 3,
+            "displayValue": "3rd Quarter"
+          },
+          "type": {
+            "id": "35",
+            "text": "Technical Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 3,
+            "displayValue": "3rd Quarter"
+          },
+          "type": {
+            "id": "44",
+            "text": "Shooting Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 3,
+            "displayValue": "3rd Quarter"
+          },
+          "type": {
+            "id": "44",
+            "text": "Shooting Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 3,
+            "displayValue": "3rd Quarter"
+          },
+          "type": {
+            "id": "43",
+            "text": "Loose Ball Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 3,
+            "displayValue": "3rd Quarter"
+          },
+          "type": {
+            "id": "37",
+            "text": "Clear Path Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 3,
+            "displayValue": "3rd Quarter"
+          },
+          "type": {
+            "id": "44",
+            "text": "Shooting Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 3,
+            "displayValue": "3rd Quarter"
+          },
+          "type": {
+            "id": "44",
+            "text": "Shooting Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 3,
+            "displayValue": "3rd Quarter"
+          },
+          "type": {
+            "id": "44",
+            "text": "Shooting Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 3,
+            "displayValue": "3rd Quarter"
+          },
+          "type": {
+            "id": "84",
+            "text": "Offensive Foul Turnover"
+          }
+        },
+        {
+          "period": {
+            "number": 4,
+            "displayValue": "4th Quarter"
+          },
+          "type": {
+            "id": "43",
+            "text": "Loose Ball Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 4,
+            "displayValue": "4th Quarter"
+          },
+          "type": {
+            "id": "45",
+            "text": "Personal Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 4,
+            "displayValue": "4th Quarter"
+          },
+          "type": {
+            "id": "45",
+            "text": "Personal Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 4,
+            "displayValue": "4th Quarter"
+          },
+          "type": {
+            "id": "45",
+            "text": "Personal Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 4,
+            "displayValue": "4th Quarter"
+          },
+          "type": {
+            "id": "45",
+            "text": "Personal Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 4,
+            "displayValue": "4th Quarter"
+          },
+          "type": {
+            "id": "44",
+            "text": "Shooting Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 4,
+            "displayValue": "4th Quarter"
+          },
+          "type": {
+            "id": "44",
+            "text": "Shooting Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 4,
+            "displayValue": "4th Quarter"
+          },
+          "type": {
+            "id": "22",
+            "text": "Personal Take Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 4,
+            "displayValue": "4th Quarter"
+          },
+          "type": {
+            "id": "402",
+            "text": "End Game"
+          }
+        }
+      ]
+    },
+    "401161536": {
+      "header": {
+        "id": "401161536",
+        "season": {
+          "year": 2020,
+          "current": false,
+          "type": 2
+        },
+        "competitions": [
+          {
+            "id": "401161536",
+            "date": "2020-03-01T12:30Z",
+            "status": {
+              "type": {
+                "id": "3",
+                "name": "STATUS_FINAL",
+                "state": "post",
+                "completed": true,
+                "description": "Final",
+                "detail": "Final",
+                "shortDetail": "Final"
+              }
+            },
+            "competitors": [
+              {
+                "homeAway": "home",
+                "score": "99",
+                "team": {
+                  "abbreviation": "PHX"
+                }
+              },
+              {
+                "homeAway": "away",
+                "score": "115",
+                "team": {
+                  "abbreviation": "GS"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gameInfo": {
+        "officials": [
+          {
+            "displayName": "Mark Ayotte",
+            "order": 1
+          },
+          {
+            "displayName": "J.T. Orr",
+            "order": 2
+          },
+          {
+            "displayName": "Nick Buchert",
+            "order": 3
+          }
+        ]
+      },
+      "boxscore": {
+        "teams": [
+          {
+            "team": {
+              "abbreviation": "GS"
+            },
+            "statistics": [
+              {
+                "name": "freeThrowsMade-freeThrowsAttempted",
+                "displayValue": "24-32",
+                "label": "FT"
+              }
+            ]
+          },
+          {
+            "team": {
+              "abbreviation": "PHX"
+            },
+            "statistics": [
+              {
+                "name": "freeThrowsMade-freeThrowsAttempted",
+                "displayValue": "19-23",
+                "label": "FT"
+              }
+            ]
+          }
+        ]
+      },
+      "plays": [
+        {
+          "period": {
+            "number": 1,
+            "displayValue": "1st Quarter"
+          },
+          "type": {
+            "id": "45",
+            "text": "Personal Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 1,
+            "displayValue": "1st Quarter"
+          },
+          "type": {
+            "id": "44",
+            "text": "Shooting Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 1,
+            "displayValue": "1st Quarter"
+          },
+          "type": {
+            "id": "44",
+            "text": "Shooting Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 1,
+            "displayValue": "1st Quarter"
+          },
+          "type": {
+            "id": "45",
+            "text": "Personal Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 1,
+            "displayValue": "1st Quarter"
+          },
+          "type": {
+            "id": "43",
+            "text": "Loose Ball Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 1,
+            "displayValue": "1st Quarter"
+          },
+          "type": {
+            "id": "44",
+            "text": "Shooting Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 1,
+            "displayValue": "1st Quarter"
+          },
+          "type": {
+            "id": "44",
+            "text": "Shooting Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 1,
+            "displayValue": "1st Quarter"
+          },
+          "type": {
+            "id": "44",
+            "text": "Shooting Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 1,
+            "displayValue": "1st Quarter"
+          },
+          "type": {
+            "id": "45",
+            "text": "Personal Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 1,
+            "displayValue": "1st Quarter"
+          },
+          "type": {
+            "id": "44",
+            "text": "Shooting Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 2,
+            "displayValue": "2nd Quarter"
+          },
+          "type": {
+            "id": "45",
+            "text": "Personal Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 2,
+            "displayValue": "2nd Quarter"
+          },
+          "type": {
+            "id": "44",
+            "text": "Shooting Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 2,
+            "displayValue": "2nd Quarter"
+          },
+          "type": {
+            "id": "44",
+            "text": "Shooting Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 2,
+            "displayValue": "2nd Quarter"
+          },
+          "type": {
+            "id": "44",
+            "text": "Shooting Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 2,
+            "displayValue": "2nd Quarter"
+          },
+          "type": {
+            "id": "45",
+            "text": "Personal Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 2,
+            "displayValue": "2nd Quarter"
+          },
+          "type": {
+            "id": "44",
+            "text": "Shooting Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 2,
+            "displayValue": "2nd Quarter"
+          },
+          "type": {
+            "id": "45",
+            "text": "Personal Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 2,
+            "displayValue": "2nd Quarter"
+          },
+          "type": {
+            "id": "44",
+            "text": "Shooting Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 2,
+            "displayValue": "2nd Quarter"
+          },
+          "type": {
+            "id": "43",
+            "text": "Loose Ball Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 2,
+            "displayValue": "2nd Quarter"
+          },
+          "type": {
+            "id": "44",
+            "text": "Shooting Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 2,
+            "displayValue": "2nd Quarter"
+          },
+          "type": {
+            "id": "43",
+            "text": "Loose Ball Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 3,
+            "displayValue": "3rd Quarter"
+          },
+          "type": {
+            "id": "44",
+            "text": "Shooting Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 3,
+            "displayValue": "3rd Quarter"
+          },
+          "type": {
+            "id": "43",
+            "text": "Loose Ball Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 3,
+            "displayValue": "3rd Quarter"
+          },
+          "type": {
+            "id": "35",
+            "text": "Technical Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 3,
+            "displayValue": "3rd Quarter"
+          },
+          "type": {
+            "id": "45",
+            "text": "Personal Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 3,
+            "displayValue": "3rd Quarter"
+          },
+          "type": {
+            "id": "42",
+            "text": "Offensive Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 3,
+            "displayValue": "3rd Quarter"
+          },
+          "type": {
+            "id": "84",
+            "text": "Offensive Foul Turnover"
+          }
+        },
+        {
+          "period": {
+            "number": 3,
+            "displayValue": "3rd Quarter"
+          },
+          "type": {
+            "id": "44",
+            "text": "Shooting Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 3,
+            "displayValue": "3rd Quarter"
+          },
+          "type": {
+            "id": "45",
+            "text": "Personal Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 3,
+            "displayValue": "3rd Quarter"
+          },
+          "type": {
+            "id": "44",
+            "text": "Shooting Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 4,
+            "displayValue": "4th Quarter"
+          },
+          "type": {
+            "id": "45",
+            "text": "Personal Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 4,
+            "displayValue": "4th Quarter"
+          },
+          "type": {
+            "id": "45",
+            "text": "Personal Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 4,
+            "displayValue": "4th Quarter"
+          },
+          "type": {
+            "id": "42",
+            "text": "Offensive Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 4,
+            "displayValue": "4th Quarter"
+          },
+          "type": {
+            "id": "84",
+            "text": "Offensive Foul Turnover"
+          }
+        },
+        {
+          "period": {
+            "number": 4,
+            "displayValue": "4th Quarter"
+          },
+          "type": {
+            "id": "45",
+            "text": "Personal Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 4,
+            "displayValue": "4th Quarter"
+          },
+          "type": {
+            "id": "44",
+            "text": "Shooting Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 4,
+            "displayValue": "4th Quarter"
+          },
+          "type": {
+            "id": "44",
+            "text": "Shooting Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 4,
+            "displayValue": "4th Quarter"
+          },
+          "type": {
+            "id": "44",
+            "text": "Shooting Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 4,
+            "displayValue": "4th Quarter"
+          },
+          "type": {
+            "id": "42",
+            "text": "Offensive Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 4,
+            "displayValue": "4th Quarter"
+          },
+          "type": {
+            "id": "84",
+            "text": "Offensive Foul Turnover"
+          }
+        },
+        {
+          "period": {
+            "number": 4,
+            "displayValue": "4th Quarter"
+          },
+          "type": {
+            "id": "45",
+            "text": "Personal Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 4,
+            "displayValue": "4th Quarter"
+          },
+          "type": {
+            "id": "44",
+            "text": "Shooting Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 4,
+            "displayValue": "4th Quarter"
+          },
+          "type": {
+            "id": "44",
+            "text": "Shooting Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 4,
+            "displayValue": "4th Quarter"
+          },
+          "type": {
+            "id": "45",
+            "text": "Personal Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 4,
+            "displayValue": "4th Quarter"
+          },
+          "type": {
+            "id": "44",
+            "text": "Shooting Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 4,
+            "displayValue": "4th Quarter"
+          },
+          "type": {
+            "id": "44",
+            "text": "Shooting Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 4,
+            "displayValue": "4th Quarter"
+          },
+          "type": {
+            "id": "45",
+            "text": "Personal Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 4,
+            "displayValue": "4th Quarter"
+          },
+          "type": {
+            "id": "45",
+            "text": "Personal Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 4,
+            "displayValue": "4th Quarter"
+          },
+          "type": {
+            "id": "44",
+            "text": "Shooting Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 4,
+            "displayValue": "4th Quarter"
+          },
+          "type": {
+            "id": "44",
+            "text": "Shooting Foul"
+          }
+        },
+        {
+          "period": {
+            "number": 4,
+            "displayValue": "4th Quarter"
+          },
+          "type": {
+            "id": "402",
+            "text": "End Game"
+          }
+        }
+      ]
+    }
+  }
+}

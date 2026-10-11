@@ -105,5 +105,26 @@
   "deploymentState": "production READY for exact merge SHA; live browser/read-only API smoke verified",
   "mergeCommit": "0e9f60dabdaf2f41f69c0c4348e778a676c0d7cd",
   "postMergeEvidence": "local follow-up; not included in merged PR",
-  "followup": "item23 regenerated; item24 partial/blocked; exact published JSON preserved"
+  "followup": "item23 regenerated; item24 partial/blocked; exact published JSON preserved",
+  "artifactFollowupMerged": true,
+  "artifactFollowupMergeCommit": "3445fcdbf3444a938460830990116ae4f8db1489",
+  "artifactFollowupProductionVerified": true,
+  "generatorGuards": {
+    "status": "local CLI and commit gates passed; exact-candidate review pending",
+    "baseline": "3445fcdbf3444a938460830990116ae4f8db1489",
+    "refereeMatched": 13209,
+    "refereeCollected": 12636,
+    "foulStyleGames": 11952,
+    "missingData": 573,
+    "providerErrors": 0,
+    "publishedJSONByteUnchanged": 4555,
+    "merged": false,
+    "productionWrites": false,
+    "unit": {
+      "files": 90,
+      "passed": 1148
+    },
+    "pythonScripts": 7,
+    "pythonML": 42
+  }
 }

@@ -1,0 +1,10 @@
+$ vitest run
+
+ RUN  v4.1.11 /Users/michaelju/Workspace/Projects/fullcourt-generator-guards
+
+
+ Test Files  90 passed (90)
+      Tests  1148 passed (1148)
+   Start at  01:58:16
+   Duration  4.57s (transform 4.79s, setup 0ms, import 19.84s, tests 3.02s, environment 6ms)
+
