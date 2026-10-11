@@ -1,0 +1,27 @@
+{
+  "environment": "Native Chrome classic15px scrollbar, actual connected local Node22 build",
+  "before": {
+    "width": 375,
+    "scroll": 383,
+    "left": -7.5,
+    "right": 382.5
+  },
+  "afterMobile": {
+    "left": 0,
+    "main": "inline-size",
+    "right": 375,
+    "scroll": 375,
+    "width": 375
+  },
+  "afterDesktop": {
+    "left": 0,
+    "right": 1425,
+    "scroll": 1425,
+    "width": 1425
+  },
+  "homeToGames": {
+    "main": "normal",
+    "scroll": 1425,
+    "width": 1425
+  }
+}

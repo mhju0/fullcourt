@@ -255,6 +255,20 @@ function selectGamesWithFatigue(where: SQL | undefined) {
       season: games.season,
       status: games.status,
       tipOffUtc: games.tipOffUtc,
+      // Schedule metadata asks for the first stored regular game, including excluded regimes.
+      // It does not publish a new game row or infer an opener from a missing fatigue row.
+      homeSeasonOpener: sql<boolean>`not exists (
+        select 1 from games opener_schedule
+        where opener_schedule.season = ${games.season} and opener_schedule.game_type = 'regular'
+          and (opener_schedule.home_team_id = ${games.homeTeamId} or opener_schedule.away_team_id = ${games.homeTeamId})
+          and (opener_schedule.date < ${games.date} or (opener_schedule.date = ${games.date} and opener_schedule.id < ${games.id}))
+      )`,
+      awaySeasonOpener: sql<boolean>`not exists (
+        select 1 from games opener_schedule
+        where opener_schedule.season = ${games.season} and opener_schedule.game_type = 'regular'
+          and (opener_schedule.home_team_id = ${games.awayTeamId} or opener_schedule.away_team_id = ${games.awayTeamId})
+          and (opener_schedule.date < ${games.date} or (opener_schedule.date = ${games.date} and opener_schedule.id < ${games.id}))
+      )`,
       neutralSite: games.neutralSite,
       neutralVenueCity: games.neutralVenueCity,
       homeScore: games.homeScore,
@@ -413,6 +427,7 @@ function mapJoinedRowToGameResponse(
     date: String(row.date),
     season: row.season,
     status: row.status,
+    seasonOpeners: { home: row.homeSeasonOpener, away: row.awaySeasonOpener },
     tipOffEt: formatEasternTipTime(row.tipOffUtc),
     tipOffUtc: row.tipOffUtc ? new Date(row.tipOffUtc).toISOString() : null,
     homeTeam: {
@@ -889,7 +904,8 @@ function buildRestAdvantage(
  */
 export async function getUpcomingGamesWithRA(
   season: string,
-  minRA: number
+  minRA: number,
+  limit?: number
 ): Promise<UpcomingGameWithRA[]> {
   const homeTeam = alias(teams, "ht");
   const awayTeam = alias(teams, "at");
@@ -964,10 +980,16 @@ export async function getUpcomingGamesWithRA(
   // A game stays `scheduled` until its final is written, so the status alone would list a
   // game that is being played as still ahead.
   const now = Date.now();
-  return rows.filter((r) => hasNotTipped(r.tipOffUtc, now)).map((r) => ({
+  const candidates = rows.filter((r) => hasNotTipped(r.tipOffUtc, now));
+  const selected = limit === undefined ? candidates : candidates.sort((a, b) =>
+    Math.abs(Number(b.differential)) - Math.abs(Number(a.differential)) ||
+    String(a.date).localeCompare(String(b.date)) || a.gameId - b.gameId
+  ).slice(0, limit);
+  return selected.map((r) => ({
     gameId: r.gameId,
     date: String(r.date),
     season: r.season,
+    tipOffUtc: r.tipOffUtc ? new Date(r.tipOffUtc).toISOString() : null,
     homeTeam: {
       id: r.homeTeamId,
       abbreviation: r.homeTeamAbbreviation,

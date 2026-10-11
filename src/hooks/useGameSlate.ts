@@ -6,6 +6,7 @@ import { useLiveGames } from "@/hooks/useLiveGames";
 import { LOCATION_CHANGE } from "@/hooks/useSeasonUrl";
 import { readSlateUrl, slateUrl } from "@/lib/game-slate-url";
 import { errMsg } from "@/lib/fetcher";
+import { createSlateRefresh, shouldRefreshSlate } from "@/lib/slate-refresh";
 import { isLeavingPage } from "@/lib/route-transition";
 import {
   calendarView,
@@ -49,11 +50,15 @@ export interface GameSlate {
   selectedDate: string | null;
   lastDate: string | null;
   selectedLabel: { long: string; short: string } | null;
-  /** The selected day's games, with the Realtime overlay applied. */
+  /** The selected day's authoritative games. */
   games: readonly SlateGame[];
   status: SlateStatus;
   /** Non-null only for the two error statuses. */
   message: string | null;
+  refreshStatus: "idle" | "refreshing" | "error";
+  refreshMessage: string | null;
+  checkedAt: number | null;
+  retryRefresh: () => void;
   send: (intent: SlateIntent) => void;
 }
 
@@ -93,7 +98,13 @@ export function useGameSlate(): GameSlate {
   }));
 
   const [state, dispatch] = useReducer(slateReducer, seed, initSlate);
-  const { season, selectedDate, attempt } = state;
+  const { season, selectedDate, attempt, generation } = state;
+  const refreshRef = useRef<(() => void) | null>(null);
+  const latestState = useRef(state);
+  useEffect(() => { latestState.current = state; }, [state]);
+  const invalidate = useCallback(() => {
+    if (document.visibilityState === "visible" && navigator.onLine) refreshRef.current?.();
+  }, []);
   const [urlReady, setUrlReady] = useState(false);
   const historyMode = useRef<"push" | "replace">("replace");
 
@@ -149,40 +160,39 @@ export function useGameSlate(): GameSlate {
     return () => controller.abort();
   }, [season, urlReady, attempt]);
 
-  // The reducer drops responses for a date that is no longer selected, so a slow
-  // reply cannot overwrite a newer one even if its abort loses the race.
   useEffect(() => {
     if (!selectedDate) return;
-    const controller = new AbortController();
-    readEnvelope<GameResponse[]>(`/api/games/${selectedDate}`, controller.signal)
-      .then((games) => dispatch({ type: "SLATE_RESOLVED", date: selectedDate, games }))
-      .catch((err: unknown) => {
-        if (controller.signal.aborted || isAbort(err)) return;
-        dispatch({
-          type: "SLATE_REJECTED",
-          date: selectedDate,
-          message: errMsg(err),
-        });
-      });
-    return () => controller.abort();
-  }, [selectedDate, attempt]);
+    const loader = createSlateRefresh({
+      load: (signal) => readEnvelope<GameResponse[]>(`/api/games/${selectedDate}`, signal),
+      hasData: latestState.current.status === "slateReady" || latestState.current.status === "slateEmpty",
+      started: (background) => { if (background) dispatch({ type: "SLATE_REFRESH_STARTED", date: selectedDate, generation }); },
+      resolved: (games) => dispatch({ type: "SLATE_RESOLVED", date: selectedDate, generation, games, checkedAt: Date.now() }),
+      rejected: (err, background) => dispatch({ type: "SLATE_REJECTED", date: selectedDate, generation, background, message: errMsg(err) }),
+    });
+    refreshRef.current = loader.refresh;
+    const refreshVisible = () => {
+      if (shouldRefreshSlate({ selectedDate, today: slateDateKey(), games: latestState.current.games,
+        visible: document.visibilityState === "visible", online: navigator.onLine })) invalidate();
+    };
+    const interval = setInterval(refreshVisible, 60_000);
+    window.addEventListener("focus", refreshVisible);
+    window.addEventListener("online", refreshVisible);
+    document.addEventListener("visibilitychange", refreshVisible);
+    return () => {
+      refreshRef.current = null;
+      loader.dispose();
+      clearInterval(interval);
+      window.removeEventListener("focus", refreshVisible);
+      window.removeEventListener("online", refreshVisible);
+      document.removeEventListener("visibilitychange", refreshVisible);
+    };
+  }, [selectedDate, attempt, generation, invalidate]);
 
   const gameIds = useMemo(() => state.games.map((g) => g.id), [state.games]);
-  const { liveUpdates, recentlyUpdated } = useLiveGames(gameIds);
-
+  useLiveGames(gameIds, invalidate);
   const games = useMemo<readonly SlateGame[]>(
-    () =>
-      state.games.map((g) => {
-        const update = liveUpdates[g.id];
-        return {
-          ...g,
-          homeScore: update?.homeScore ?? g.homeScore,
-          awayScore: update?.awayScore ?? g.awayScore,
-          status: update?.status ?? g.status,
-          isScoreFlashing: recentlyUpdated.has(g.id),
-        };
-      }),
-    [state.games, liveUpdates, recentlyUpdated]
+    () => state.games.map((game) => ({ ...game, isScoreFlashing: false })),
+    [state.games]
   );
 
   const days = useMemo<readonly SlateDay[]>(
@@ -232,6 +242,8 @@ export function useGameSlate(): GameSlate {
     [state.selectedDate]
   );
 
+  const retryRefresh = useCallback(() => refreshRef.current?.(), []);
+
   const send = useCallback((intent: SlateIntent) => {
     historyMode.current = "push";
     dispatch(intent);
@@ -252,6 +264,10 @@ export function useGameSlate(): GameSlate {
     games,
     status: state.status,
     message: state.message,
+    refreshStatus: state.refreshStatus,
+    refreshMessage: state.refreshMessage,
+    checkedAt: state.checkedAt,
+    retryRefresh,
     send,
   };
 }

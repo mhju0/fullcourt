@@ -8,6 +8,7 @@ import { CalendarDays, ChevronLeft, ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import { EdgesAhead } from "@/components/edges-ahead"
+import { GameSlateFetchTime, GameSlateRefreshNotice, GameSlateRefreshWarning } from "@/components/game-slate-refresh-notice"
 import { MatchupTable } from "@/components/matchup-table"
 import { PageHeader } from "@/components/page-header"
 import { SeasonSelector } from "@/components/season-selector"
@@ -633,11 +634,16 @@ export default function GamesPage() {
 
       {/* Matchups section */}
       <div className="flex flex-col gap-2">
-        <SectionDivider
-          label="MATCHUPS"
-          count={slate.status === "slateReady" || slate.status === "slateEmpty" ? slate.games.length : null}
-        />
+        <div data-testid="matchups-heading-controls" className="flex min-h-11 items-center justify-between gap-3">
+          <SectionDivider
+            label="MATCHUPS"
+            count={slate.status === "slateReady" || slate.status === "slateEmpty" ? slate.games.length : null}
+          />
+          <GameSlateRefreshNotice slate={slate} />
+        </div>
+        <GameSlateRefreshWarning message={slate.refreshMessage} />
         <Matchups slate={slate} />
+        <GameSlateFetchTime checkedAt={slate.checkedAt} />
       </div>
       </div>
       <aside aria-label="Upcoming edges" className="flex min-w-0 flex-col gap-6">

@@ -65,6 +65,7 @@ import {
 
 const CACHE_DIR = "ml/data/officials";
 const CONCURRENCY = 6;
+const FETCH_TIMEOUT_MS = 25_000;
 
 /** Run fn over items with at most `limit` in flight. */
 async function pool<T>(items: T[], limit: number, fn: (item: T) => Promise<void>): Promise<void> {
@@ -88,11 +89,12 @@ async function fetchScoreboard(dateKey: string): Promise<unknown> {
   const compact = dateKey.replaceAll("-", "");
   const res = await fetch(
     `https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=${compact}`,
-    { headers: { "User-Agent": "Mozilla/5.0" } }
+    { headers: { "User-Agent": "Mozilla/5.0" }, signal: AbortSignal.timeout(FETCH_TIMEOUT_MS) }
   );
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   const body = await res.text();
   const parsed = JSON.parse(body); // never cache a non-JSON error page
+  if (!Array.isArray(parsed?.events)) throw new Error("Invalid scoreboard: events must be an array");
   if (!existsSync(CACHE_DIR)) mkdirSync(CACHE_DIR, { recursive: true });
   writeFileSync(`${CACHE_DIR}/sb-${compact}.json`, body);
   return parsed;
@@ -110,7 +112,14 @@ async function main() {
   }
 
   const sql = postgres(process.env.DATABASE_URL!, { max: 4 });
+  try {
+    await syncScores(sql, from, to, dryRun);
+  } finally {
+    await sql.end();
+  }
+}
 
+async function syncScores(sql: ReturnType<typeof postgres>, from: string, to: string, dryRun: boolean) {
   // ::text is load-bearing: postgres.js hydrates date columns as JS Date objects, so
   // String(row.date) would yield "Sun Dec 21 2014 09:00:00 GMT+0900", not "2014-12-21".
   const rows = await sql<
@@ -132,7 +141,6 @@ async function main() {
 
   if (rows.length === 0) {
     console.log(`[sync-scores] no games stored in ${from}..${to}; nothing to do.`);
-    await sql.end();
     return;
   }
 
@@ -200,7 +208,7 @@ async function main() {
 
   if (dryRun) {
     console.log("[sync-scores] --dry-run: no rows written");
-    await sql.end();
+    if (dateErrors > 0) process.exitCode = 2;
     return;
   }
 
@@ -208,6 +216,7 @@ async function main() {
   // game leaves the stored value alone rather than zeroing it.
   const CHUNK = 500;
   let written = 0;
+  let writeTimeRefusedDowngrades = 0;
   for (let i = 0; i < updates.length; i += CHUNK) {
     const chunk = updates.slice(i, i + CHUNK);
     const res = await sql`
@@ -221,15 +230,20 @@ async function main() {
           (u) => [u.gameId, u.status, u.homeScore, u.awayScore, u.overtimePeriods] as const
         )
       )}) as v(id, status, home_score, away_score, ot)
-      where g.id = v.id::int`;
-    written += res.count ?? chunk.length;
+      where g.id = v.id::int
+        and (v.status::varchar = 'final' or g.status <> 'final')
+      returning g.id`;
+    written += res.length;
+    const writtenIds = new Set(res.map(row => Number(row.id)));
+    writeTimeRefusedDowngrades += chunk.filter(update => update.status !== "final" && !writtenIds.has(update.gameId)).length;
   }
 
   console.log(`[sync-scores] done — ${written} row(s) updated`);
-  await sql.end();
+  console.log(`[sync-scores] write-time final downgrades refused: ${writeTimeRefusedDowngrades}`);
+  if (dateErrors > 0) process.exitCode = 2;
 }
 
 main().catch((err) => {
   console.error(err);
-  process.exit(1);
+  process.exitCode = 1;
 });

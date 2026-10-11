@@ -720,7 +720,7 @@ function GameRow({
               <p
                 className="m-0"
                 style={{
-                  fontSize: TYPE.data,
+                  fontSize: TYPE.body,
                   lineHeight: LEAD.body,
                   color: "var(--term-text-muted)",
                   paddingBottom: SPACE.md,

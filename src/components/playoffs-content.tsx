@@ -427,7 +427,13 @@ export function PlayoffsContent() {
           </button>
         </div>
       ) : (
-        <>{data.rounds.map((group) => <RoundSection key={group.round} group={group} />)}</>
+        <>
+          <div className="flex flex-col gap-2" style={{ fontSize: TYPE.body, lineHeight: LEAD.body, color: "var(--term-text-muted)", maxWidth: WIDTH.prose }}>
+            <p><strong>Pick:</strong> trained only on earlier seasons. <strong>Hindsight:</strong> fitted with the target season included; it is not evidence of predictive performance.</p>
+            <p>Probabilities are for the named team. Picks remain N/A when earlier history is insufficient.</p>
+          </div>
+          {data.rounds.map((group) => <RoundSection key={group.round} group={group} />)}
+        </>
       )}
     </div>
   )

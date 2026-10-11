@@ -133,6 +133,10 @@ export default async function DataStatusPage() {
         ) : null}
       </section>
 
+      <p style={{ fontSize: TYPE.body, color: "var(--term-text-muted)", maxWidth: WIDTH.prose }}>
+        “Not recorded” means this view has no durable record of a successful refresh. Coverage dates and a reachable database do not confirm score sync or fatigue refresh.
+      </p>
+
       <div className="grid gap-4">
         <StatusCard
           title="Game results"

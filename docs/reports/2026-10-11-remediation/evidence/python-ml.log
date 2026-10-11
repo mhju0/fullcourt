@@ -1,0 +1,43 @@
+test_best_of_five_prior_round_uses_its_own_format (test_compute_prior_grind.BuildPriorGrindTests.test_best_of_five_prior_round_uses_its_own_format) ... ok
+test_losing_team_prior_round_still_resolves (test_compute_prior_grind.BuildPriorGrindTests.test_losing_team_prior_round_still_resolves)
+A team's prior series is found whether it was that series' home-court side or not. ... ok
+test_prior_series_with_null_wins_is_unresolvable (test_compute_prior_grind.BuildPriorGrindTests.test_prior_series_with_null_wins_is_unresolvable) ... ok
+test_resolves_prior_round_for_both_teams (test_compute_prior_grind.BuildPriorGrindTests.test_resolves_prior_round_for_both_teams) ... ok
+test_unresolvable_prior_series_yields_none (test_compute_prior_grind.BuildPriorGrindTests.test_unresolvable_prior_series_yields_none) ... ok
+test_best_of_5_full_distance_is_two (test_compute_prior_grind.GrindBeyondSweepTests.test_best_of_5_full_distance_is_two) ... ok
+test_best_of_5_sweep_is_zero (test_compute_prior_grind.GrindBeyondSweepTests.test_best_of_5_sweep_is_zero) ... ok
+test_best_of_7_full_distance_is_three (test_compute_prior_grind.GrindBeyondSweepTests.test_best_of_7_full_distance_is_three) ... ok
+test_best_of_7_sweep_is_zero (test_compute_prior_grind.GrindBeyondSweepTests.test_best_of_7_sweep_is_zero) ... ok
+test_five_games_means_opposite_things_by_format (test_compute_prior_grind.GrindBeyondSweepTests.test_five_games_means_opposite_things_by_format)
+The whole reason this function exists: same games played, opposite grind. ... ok
+test_negative_when_home_court_ground_down_more (test_compute_prior_grind.PriorGrindDiffTests.test_negative_when_home_court_ground_down_more) ... ok
+test_positive_favors_home_court (test_compute_prior_grind.PriorGrindDiffTests.test_positive_favors_home_court)
+Opponent ground down more (3) than home court (0) -> positive. ... ok
+test_round_one_is_zero_not_null (test_compute_prior_grind.PriorGrindDiffTests.test_round_one_is_zero_not_null) ... ok
+test_unresolved_prior_series_is_none_not_zero (test_compute_prior_grind.PriorGrindDiffTests.test_unresolved_prior_series_is_none_not_zero) ... ok
+test_detached_grades_are_not_mistaken_for_ungraded_plays (test_l2m_archive.ArchiveTests.test_detached_grades_are_not_mistaken_for_ungraded_plays) ... ok
+test_historical_source_grades_are_preserved_not_guessed (test_l2m_archive.ArchiveTests.test_historical_source_grades_are_preserved_not_guessed) ... ok
+test_missing_pdf_category_and_empty_verdict_remain_missing (test_l2m_archive.ArchiveTests.test_missing_pdf_category_and_empty_verdict_remain_missing) ... ok
+test_missing_row_cannot_be_silently_skipped (test_l2m_archive.ArchiveTests.test_missing_row_cannot_be_silently_skipped) ... ok
+test_overtime_and_clock_punctuation_do_not_drop_plays (test_l2m_archive.ArchiveTests.test_overtime_and_clock_punctuation_do_not_drop_plays) ... ok
+test_pdf_identity_uses_both_teams_and_game_date (test_l2m_archive.ArchiveTests.test_pdf_identity_uses_both_teams_and_game_date) ... ok
+test_regular_season_links_exclude_playoffs_and_footer (test_l2m_archive.ArchiveTests.test_regular_season_links_exclude_playoffs_and_footer) ... ok
+test_split_rows_and_verdicts_stay_attached_across_pages (test_l2m_archive.ArchiveTests.test_split_rows_and_verdicts_stay_attached_across_pages) ... ok
+test_duplicate_exception_is_bound_to_exact_source_and_rows (test_l2m_season.L2MSeasonTests.test_duplicate_exception_is_bound_to_exact_source_and_rows) ... ok
+test_duplicate_index_links_do_not_duplicate_games (test_l2m_season.L2MSeasonTests.test_duplicate_index_links_do_not_duplicate_games) ... ok
+test_missing_index_is_distinguished_from_other_request_failures (test_l2m_season.L2MSeasonTests.test_missing_index_is_distinguished_from_other_request_failures) ... ok
+test_only_a_never_published_season_may_be_awaiting_reports (test_l2m_season.L2MSeasonTests.test_only_a_never_published_season_may_be_awaiting_reports) ... ok
+test_phase_and_abbreviation_normalization (test_l2m_season.L2MSeasonTests.test_phase_and_abbreviation_normalization) ... ok
+test_unknown_grades_and_wrong_games_are_rejected (test_l2m_season.L2MSeasonTests.test_unknown_grades_and_wrong_games_are_rejected) ... ok
+test_zero_error_games_and_overtime_remain_in_denominators (test_l2m_season.L2MSeasonTests.test_zero_error_games_and_overtime_remain_in_denominators) ... ok
+test_changed_source_hash_and_disappeared_report_are_rejected (test_officiating_publish.PublisherTests.test_changed_source_hash_and_disappeared_report_are_rejected) ... ok
+test_duplicate_assessments_require_review (test_officiating_publish.PublisherTests.test_duplicate_assessments_require_review) ... ok
+test_incomplete_snapshot_rejected (test_officiating_publish.PublisherTests.test_incomplete_snapshot_rejected) ... ok
+test_pdf_evidence_hash_and_url_are_verified (test_officiating_publish.PublisherTests.test_pdf_evidence_hash_and_url_are_verified) ... ok
+test_published_counts_match_detail_evidence (test_officiating_publish.PublisherTests.test_published_counts_match_detail_evidence) ... ok
+test_verdict_html_becomes_text_not_markup (test_officiating_publish.PublisherTests.test_verdict_html_becomes_text_not_markup) ... ok
+
+----------------------------------------------------------------------
+Ran 35 tests in 1.181s
+
+OK

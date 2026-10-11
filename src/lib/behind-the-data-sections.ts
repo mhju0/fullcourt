@@ -100,3 +100,19 @@ export function methodologyHrefFor(surfaceHref: string): string | null {
     )?.href ?? null
   );
 }
+
+
+type DocumentedSurfaceHref = typeof BEHIND_THE_DATA_SECTIONS[number]["surfaceHrefs"][number];
+
+export const RELATED_SURFACE_LABELS = {
+  "/analysis": "View Model Results",
+  "/games": "Browse Games",
+  "/season": "Read Season Report",
+  "/home-court": "View Home Court",
+  "/schedule": "Compare Schedule Edge",
+  "/playoffs": "View Playoff Rest",
+  "/shooting": "Compare Player Shooting by Rest",
+  "/availability": "View Availability Cost",
+  "/shot-quality": "View Expected Shot Value",
+  "/officiating": "Browse Officiating",
+} satisfies Record<DocumentedSurfaceHref, string>;

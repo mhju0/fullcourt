@@ -17,7 +17,7 @@ historical games does not establish this. Preserve the relevant run ID and write
 | Writer | Configured UTC schedule | Responsibility |
 | --- | --- | --- |
 | Daily NBA update | `0 21 * * *` | Recent final score/status/overtime sync, game context, projection gaps, fatigue and predictions |
-| Vercel `/api/cron/update` | Twelve entries, one per hour from 21:00 to 08:00 UTC | Final scores for yesterday and today (ET), then fatigue and prediction rows for the next game of each team it has just finalized ([D-83](DECISIONS.md)); separate from the full modeling pipeline |
+| Vercel `/api/cron/update` | Twelve entries, one per hour from 21:00 to 08:00 UTC | Final scores for yesterday and today (ET), then independent prospective fatigue/prediction reconciliation for current next games today/tomorrow ET with recent stored finals ([D-84](DECISIONS.md)); separate from the full modeling pipeline |
 
 Both store finished games only ([D-81](DECISIONS.md)). A game in progress is left as
 `scheduled` and reported as "in progress (left alone)"; the Games page marks it LIVE from its
@@ -37,9 +37,12 @@ The rescore was rehearsed on 2026-10-11 against a local restore of that day's ba
 run in production. A cron invocation's response is not kept, so check it by its effects:
 
 - The run's JSON carries `meta.fatigueRescored`: the number of games rescored, or `null` when the
-  rescore failed. A failure never costs a final score, and the daily job rewrites the same rows.
+  recovery stage failed. `fatigueFailed`, `fatigueSkipped`, and `fatigueDeferred` distinguish partial
+  failure, safe exclusions, and budget exhaustion. A degraded score/refresh returns non-2XX.
+  A failure never costs a completed final write. The daily job now refreshes only pre-tip games
+  with known tip times; historical repair is separate.
   Only a manual call with the cron secret shows this.
-- A failure logs `[cron/update] rescore failed` or `rescore kept game` in the Vercel function logs.
+- A failure logs `[cron/update] recovery stage failed` or `refresh kept game` in the Vercel function logs.
 - For a team that played the night before, `fatigue_scores.computed_at` on its next game is later
   than the final, and `is_overtime_penalty` is true when that game went to overtime.
 
@@ -63,3 +66,13 @@ run in production. A cron invocation's response is not kept, so check it by its 
 If a provider is unavailable, retain published data and surface the failure. Do not manufacture
 scores or replace missing measurements with zero. Never overwrite a stored final blindly, apply
 schema migrations automatically, or refit coefficients as an ingest repair.
+
+## Recovery limits after D-84
+
+Reconciliation runs even if no unfinished rows remain or a feed date fails. Same-target
+writers share a parent-row lock and a fresh input snapshot; prior finals can still change after
+that snapshot, so a later run supplies convergence. Known-null tips are excluded from automatic
+refresh. Review skipped IDs/reasons in nightly/projection logs rather than accepting write
+counts alone. The hourly cron ends at 08:00 UTC and resumes at 21:00 UTC; this gap can leave
+a failed refresh unrecovered before an early tip. Check the next-game rows and logs, and scope
+any manual repair explicitly with the owner. Client “View fetched at” is not pipeline evidence.

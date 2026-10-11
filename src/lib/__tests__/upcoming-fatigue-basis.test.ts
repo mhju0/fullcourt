@@ -20,9 +20,8 @@ describe("the fatigue refresh port", () => {
   const source = read("src", "lib", "daily-refresh-port.ts");
 
   it("counts scheduled games as prior games", () => {
-    expect(source).toMatch(
-      /fetchRecentGamesForTeam\(\s*appDb,\s*teamId,\s*gameDate,\s*"scheduled"\s*\)/
-    );
+    expect(source).toContain("p.status in ('final', 'scheduled', 'live')");
+    expect(source).toContain(".map(neutralizeIfUnplayed)");
   });
 
   it("never falls back to the finals-only default", () => {
@@ -32,6 +31,7 @@ describe("the fatigue refresh port", () => {
   it.each([
     ["the nightly script", ["scripts", "run-daily.ts"]],
     ["the score route", ["src", "app", "api", "cron", "update", "route.ts"]],
+    ["the season projection", ["scripts", "project_fatigue.ts"]],
   ])("is the only way %s loads prior games", (_name, parts) => {
     const caller = read(...parts);
     expect(caller).toContain("createDailyRefreshPort(");

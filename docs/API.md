@@ -9,14 +9,14 @@ are authoritative for individual fields, optional values, and units.
 
 | GET endpoint | Input | Result | Cache policy |
 | --- | --- | --- | --- |
-| `/api/games/[date]` | Path date in `YYYY-MM-DD` form, interpreted as Eastern calendar date | Games, teams, stored fatigue and scores for that date; each game carries `tipOffEt` (clock string) and `tipOffUtc` (ISO instant) | No explicit edge-cache policy |
+| `/api/games/[date]` | Path date in `YYYY-MM-DD` form, interpreted as Eastern calendar date | Games, teams, stored fatigue and scores for that date; each game carries `tipOffEt` (clock string), `tipOffUtc` (ISO instant), and per-team `seasonOpeners` from the regular-season schedule | No explicit edge-cache policy |
 | `/api/games/dates` | Required browsable `season`; optional integer `month` 1–12 | Date/count index for Games | `inSeason` |
-| `/api/games/upcoming` | Optional browsable `season`, nonnegative `minRA` | Rest-advantage games that are not final and have not tipped off | No explicit edge-cache policy |
+| `/api/games/upcoming` | Optional browsable `season`, nonnegative `minRA`, integer `limit` 3–30 | Rest-advantage games that are not final and have not tipped off | No explicit edge-cache policy |
 | `/api/game/[id]` | Positive integer database ID | Game and contextual detail; 404 if absent | No explicit edge-cache policy |
-| `/api/analysis` | Optional nonnegative `seasonMinRA` | Historical backtest, per-season home counts, venue baselines, evidence dates and completion state | `historical` |
+| `/api/analysis` | Optional nonnegative `seasonMinRA` | Historical backtest, per-season home counts, venue baselines, evidence dates and completion state | `inSeason` (the population includes current finals) |
 | `/api/games/search` | Optional `season`, 2–3 letter uppercase `team`, nonnegative `minRA`, `result` (`all`, `correct`, `incorrect`), `page`, `limit` | Paginated historical game evidence; page defaults to 1, limit to 20 and caps at 100 | `inSeason` |
 | `/api/season-report` | Optional browsable `season` | Completed results, team records, notable games, and schedule/workload data with source-basis labels | `inSeason` |
-| `/api/schedule-disparity` | Optional rankable `season` | Relative team schedule measures and pricing | `historical` |
+| `/api/schedule-disparity` | Optional rankable `season` | Relative team schedule measures and pricing | Current/upcoming: `inSeason`; historical: `historical` |
 | `/api/playoffs` | Optional `season` | Bracket, series, prediction records, and latest published season | `inSeason` |
 | `/api/shot-quality` | Optional `season`; optional `model` (`gbm-v1`, `baseline-zone-v1`) | Grid cells, display-model hint, and latest published season | `historical` |
 
@@ -32,9 +32,14 @@ because the calendar changed. A valid explicit season remains authoritative, inc
 empty result; a failed publication lookup remains an error. See [season rollover](SEASON_ROLLOVER.md).
 
 Games and upcoming-game endpoints are read fresh instead of from a long-lived edge snapshot, so a
-final score appears as soon as it is stored. No in-game score is stored; a game's `status` is
+an authoritative fetch can show a stored final score. No in-game score is stored; a game's `status` is
 `scheduled` until it is `final`. Heavy domain reads also use the stamped server cache, including coalesced
-in-flight requests. Do not infer an endpoint's cache semantics from the page's navigation group.
+in-flight requests and absolute loader-start maximum ages. The default upcoming response
+retains its date ordering; `limit` selects strongest absolute rest gaps after tip filtering,
+with date and game ID ties. Each candidate includes nullable `tipOffUtc` for client clock filtering.
+Current/upcoming origin max age is 300 seconds, historical 3,600 seconds. CDN policies add
+60+60 seconds (current) or 3,600+300 seconds (historical TTL+SWR) separately; provider/query
+failures and an already-open client can extend observed staleness. Do not infer an endpoint's cache semantics from the page's navigation group.
 
 ## Response semantics
 

@@ -1,0 +1,12 @@
+{
+  "name": "fullcourt",
+  "url": "fullcourt-d01av62dg-mhju0s-projects.vercel.app",
+  "state": "READY",
+  "target": null,
+  "createdAt": 1791706123169,
+  "sha": "d5faec2a09b48f45a916dae0747709fc1f6b0e90",
+  "branch": "fix/launch-audit-remediation",
+  "team": "team_08qLkjiBxr3mLTWKYyqCXIpI",
+  "project": "prj_RyvHNQJBgEJboa8cgebACWdx00i7",
+  "method": "Vercel CLI list scoped explicitly; connector403 fallback"
+}

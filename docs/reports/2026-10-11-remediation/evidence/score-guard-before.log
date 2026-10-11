@@ -1,0 +1,102 @@
+(node:43944) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+
+ RUN  v4.1.11 /Users/michaelju/Workspace/Projects/fullcourt-remediation
+
+ ❯ src/lib/__tests__/sync-scores-espn.test.ts (10 tests | 1 failed | 9 skipped) 89ms
+     × reports zero committed rows and the refused downgrade returned by the write guard 88ms
+ ❯ src/app/api/__tests__/cron-update.test.ts (21 tests | 3 failed | 17 skipped) 18ms
+     × rejects malformed feed envelopes but still recovers: {} 10ms
+     × rejects malformed feed envelopes but still recovers: {"events":null} 1ms
+     × counts a write-time final guard refusal instead of a successful update 2ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/lib/__tests__/sync-scores-espn.test.ts > score sync process status > reports zero committed rows and the refused downgrade returned by the write guard
+AssertionError: expected "log" to be called with arguments: [ StringContaining{…} ]
+
+Received:
+
+  1st log call:
+
+  [
+-   StringContaining "done — 0 row(s) updated",
++   "[sync-scores] 1 stored games across 1 dates",
+  ]
+
+  2nd log call:
+
+  [
+-   StringContaining "done — 0 row(s) updated",
++   "[sync-scores] 1 row(s) to write — 0 final
++ [sync-scores]   games in progress (left alone): 0
++ [sync-scores]   overtime games: 0
++ [sync-scores]   stored rows ESPN did not carry: 0
++ [sync-scores]   stored finals ESPN contradicted (refused): 0
++ [sync-scores]   date fetch errors: 0",
+  ]
+
+  3rd log call:
+
+  [
+-   StringContaining "done — 0 row(s) updated",
++   "[sync-scores] done — 1 row(s) updated",
+  ]
+
+
+Number of calls: 3
+
+ ❯ src/lib/__tests__/sync-scores-espn.test.ts:81:25
+     79|     vi.stubGlobal("fetch",vi.fn().mockResolvedValue(new Response(JSON.…
+     80|     await run();
+     81|     expect(console.log).toHaveBeenCalledWith(expect.stringContaining("…
+       |                         ^
+     82|     expect(console.log).toHaveBeenCalledWith(expect.stringContaining("…
+     83|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  src/app/api/__tests__/cron-update.test.ts > GET /api/cron/update > rejects malformed feed envelopes but still recovers: {}
+ FAIL  src/app/api/__tests__/cron-update.test.ts > GET /api/cron/update > rejects malformed feed envelopes but still recovers: {"events":null}
+AssertionError: expected 200 to be 502 // Object.is equality
+
+- Expected
++ Received
+
+- 502
++ 200
+
+ ❯ src/app/api/__tests__/cron-update.test.ts:207:24
+    205|     vi.stubGlobal("fetch",vi.fn().mockResolvedValue({ok:true,json:asyn…
+    206|     const res=await GET(req("Bearer test-secret"));
+    207|     expect(res.status).toBe(502);
+       |                        ^
+    208|     expect(updateSet).not.toHaveBeenCalled();
+    209|     expect(refreshGame).toHaveBeenCalledWith(99,expect.any(Object));
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  src/app/api/__tests__/cron-update.test.ts > GET /api/cron/update > counts a write-time final guard refusal instead of a successful update
+AssertionError: expected 1 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ src/app/api/__tests__/cron-update.test.ts:218:36
+    216|     const res=await GET(req("Bearer test-secret"));
+    217|     const body=await res.json();
+    218|     expect(body.data.gamesUpdated).toBe(0);
+       |                                    ^
+    219|     expect(body.meta.refusedDowngrades).toBe(1);
+    220|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  4 failed | 1 passed | 26 skipped (31)
+   Start at  17:02:50
+   Duration  1.42s (transform 168ms, setup 0ms, import 1.34s, tests 107ms, environment 0ms)

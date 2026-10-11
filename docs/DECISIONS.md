@@ -1070,3 +1070,41 @@ farther, home ended a road trip on a back-to-back) were typed prose, and one wen
 the 2026-10-04 corrections. `scripts/measure_home_rest_confound.ts` now writes
 `ml/home_rest_confound_facts.json`, mirrored in `src/lib/home-rest-confound-facts.ts`, printed
 by the page and pinned by `home-rest-confound-facts.test.ts`.
+
+## D-84 — Audit remediation uses prospective transaction-bound refresh and bounded freshness (2026-10-11)
+
+Michael approved implementing the proposed audit report changes on 2026-10-11. This decision
+supersedes D-83's event-only recovery and the daily script's all-status refresh selection.
+Deployment remains pending an explicit owner yes to merge; no production data repair is implied.
+
+- Automated cron, nightly and projection writers pass a game ID to one transaction boundary.
+  It acquires the parent game lock before reading a fresh single-statement input snapshot,
+  computes unchanged fatigue coefficients, and replaces both fatigue rows and open prediction
+  atomically. A resolved prediction is retained without introducing another open pick.
+- Automated refresh is prospective only: scheduled with a known future tip. Unknown tips are
+  skipped conservatively. Actual database-clock checks protect the write and roll back if tip
+  passes during it. This is not an exact guarantee about the instant a commit becomes visible.
+  Historical repair remains a distinct manually scoped operation; it must not overlap regular
+  writers. No schema migration is part of this decision.
+- Cron recovery runs independently of this call's new finals or feed success. It finds each
+  team's current next eligible game today/tomorrow ET when a prior final is in the model window.
+  Completed score writes survive refresh failure. Failures and budget deferrals are explicit;
+  oldest refreshed targets receive priority. The 08–21 UTC cron gap remains a recovery limit.
+- Score-sync date fetch failures produce a degraded nonzero result. The daily parent may run
+  safe downstream steps against retained stored data while keeping its final failure status.
+- Held analytics have absolute loader-start age limits: five minutes for current/upcoming
+  season data and one hour for historical data, with bounded single-flight waiting. CDN
+  freshness is separate (current: 60 seconds plus 60 seconds SWR; historical: one hour plus
+  five minutes SWR). This bounds previously indefinite cache reuse, not every dependency's
+  immediate invalidation or freshness while providers fail.
+- Games invalidates and refetches a complete slate instead of permanently overlaying score
+  changes on old fatigue. Visible online refresh has a one-minute fallback. Client check time
+  means successful page fetch, not pipeline success. Edges Ahead also filters on its local
+  clock and requests a small ranked reserve; the default full upcoming API remains compatible.
+- UI polish keeps the existing brand, evidence baselines and information hierarchy: named
+  method links, schedule-derived opener explanation, readable Shot Value guidance, explicit
+  Pick/Hindsight interpretation and discoverable Model section links. Generated values stay
+  unchanged. Conditional performance redesigns require measurements before changing architecture.
+
+Verification and remaining limits are recorded in the remediation report and the three focused
+implementation notes. Actual opening-night checks and all owner-only launch items remain open.

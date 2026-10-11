@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   BEHIND_THE_DATA_SECTIONS,
   methodologyHrefFor,
+  RELATED_SURFACE_LABELS,
 } from "@/lib/behind-the-data-sections";
 import { PRIMARY_NAV_ITEMS } from "@/lib/primary-navigation";
 
@@ -78,5 +79,17 @@ describe("the section table", () => {
     );
 
     expect(undocumented).toEqual([]);
+  });
+});
+
+
+describe("related surface labels", () => {
+  it("gives every documented product route a readable related-link label", () => {
+    for (const section of BEHIND_THE_DATA_SECTIONS) {
+      for (const href of section.surfaceHrefs) {
+        expect(RELATED_SURFACE_LABELS[href]).toMatch(/[A-Za-z]/);
+      }
+    }
+    expect(RELATED_SURFACE_LABELS["/home-court"]).toBe("View Home Court");
   });
 });

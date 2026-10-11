@@ -7,7 +7,7 @@
  * hand-rolled this each carried that harness, and the comment explaining it, verbatim.
  */
 import { describe, expect, it, vi } from "vitest";
-import { createStampedCache } from "@/lib/stamped-cache";
+import { createStampedCache, ORIGIN_CACHE_MAX_AGE, seasonCacheMaxAgeMs } from "@/lib/stamped-cache";
 
 function deferred<T>() {
   let resolve!: (value: T) => void;
@@ -20,6 +20,96 @@ function deferred<T>() {
 }
 
 describe("createStampedCache", () => {
+  it("assigns current/upcoming seasons five minutes and historical seasons one hour", () => {
+    vi.useFakeTimers();
+    try {
+      vi.setSystemTime(new Date("2026-10-11T12:00:00Z"));
+      expect(seasonCacheMaxAgeMs("2025-26")).toBe(ORIGIN_CACHE_MAX_AGE.historical);
+      expect(seasonCacheMaxAgeMs("2026-27")).toBe(ORIGIN_CACHE_MAX_AGE.inSeason);
+      expect(seasonCacheMaxAgeMs("2027-28")).toBe(ORIGIN_CACHE_MAX_AGE.inSeason);
+    } finally { vi.useRealTimers(); }
+  });
+
+  it("does not let an older deadline evict a new stamp's entry", async () => {
+    vi.useFakeTimers();
+    try {
+      let stamp = "a";
+      const old = deferred<number>();
+      const load = vi.fn<() => Promise<number>>()
+        .mockImplementationOnce(() => old.promise).mockResolvedValue(2);
+      const read = createStampedCache({ readStamp: async () => stamp, load, loadTimeoutMs: 100 });
+      const first = Promise.allSettled([read("k")]);
+      await Promise.resolve();
+      stamp = "b";
+      expect(await read("k")).toBe(2);
+      await vi.advanceTimersByTimeAsync(100);
+      expect((await first)[0].status).toBe("rejected");
+      old.resolve(1);
+      expect(await read("k")).toBe(2);
+      expect(load).toHaveBeenCalledTimes(2);
+    } finally { vi.useRealTimers(); }
+  });
+
+  it("single-flights concurrent reads at absolute expiry", async () => {
+    let time = 0;
+    const load = vi.fn(async () => ({}));
+    const read = createStampedCache({ readStamp: async () => "a", load,
+      maxAgeMs: 100, now: () => time });
+    await read("k");
+    time = 100;
+    const [a, b] = await Promise.all([read("k"), read("k")]);
+    expect(a).toBe(b);
+    expect(load).toHaveBeenCalledTimes(2);
+  });
+
+  it("expires unchanged stamps from loader start without sliding on hits", async () => {
+    let time = 0;
+    const load = vi.fn(async () => ({}));
+    const read = createStampedCache({
+      readStamp: async () => "a", load, maxAgeMs: 100, now: () => time,
+    });
+    const first = await read("k");
+    time = 60;
+    expect(await read("k")).toBe(first);
+    time = 100;
+    expect(await read("k")).not.toBe(first);
+    expect(load).toHaveBeenCalledTimes(2);
+  });
+
+  it("does not give a slow load a new lifetime when it completes", async () => {
+    let time = 0;
+    const pending = deferred<number>();
+    const load = vi.fn<() => Promise<number>>()
+      .mockImplementationOnce(() => pending.promise).mockResolvedValue(2);
+    const read = createStampedCache({
+      readStamp: async () => "a", load, maxAgeMs: 100, now: () => time,
+    });
+    const first = read("k");
+    await Promise.resolve();
+    time = 101;
+    pending.resolve(1);
+    expect(await first).toBe(1);
+    expect(await read("k")).toBe(2);
+  });
+
+  it("bounds pending loads and lets a later request retry", async () => {
+    vi.useFakeTimers();
+    try {
+      const load = vi.fn<() => Promise<number>>()
+        .mockImplementationOnce(() => new Promise(() => {})).mockResolvedValue(2);
+      const read = createStampedCache({
+        readStamp: async () => "a", load, loadTimeoutMs: 100,
+      });
+      const results = Promise.allSettled([read("k"), read("k")]);
+      await vi.advanceTimersByTimeAsync(100);
+      expect((await results).map((result) => result.status)).toEqual(["rejected", "rejected"]);
+      expect(await read("k")).toBe(2);
+      expect(load).toHaveBeenCalledTimes(2);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
   it("shares an in-flight load for concurrent reads of the same key and stamp", async () => {
     const pending = deferred<object>();
     const load = vi.fn(() => pending.promise);

@@ -77,6 +77,8 @@ export interface GameResponse {
    * `src/lib/fatigue-provenance.ts`; it is NOT the same as "this game has not been played".
    */
   projectedFatigue: boolean;
+  /** First regular-season schedule game for each side, independent of fatigue availability. */
+  seasonOpeners?: { home: boolean; away: boolean };
 }
 
 /**
@@ -225,6 +227,7 @@ export interface UpcomingGameWithRA {
   gameId: number;
   date: string;
   season: string;
+  tipOffUtc: string | null;
   homeTeam: Pick<TeamInfo, "id" | "abbreviation" | "name" | "city">;
   awayTeam: Pick<TeamInfo, "id" | "abbreviation" | "name" | "city">;
   homeFatigueScore: number | null;

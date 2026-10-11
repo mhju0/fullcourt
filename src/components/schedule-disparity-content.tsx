@@ -312,7 +312,7 @@ export function ScheduleDisparityContent() {
       ) : null}
       {/* Under the figures it qualifies, not above them: on a phone this sentence and the
           provisional note together pushed every number below the first screen. */}
-      <p className="text-[15px] text-[var(--term-text-muted)]">This ranking describes schedule differences; it does not predict results. Schedule worth is a historical group comparison, not a causal estimate.</p>
+      <p className="text-[15px] text-[var(--term-text-muted)]">This ranking describes schedule differences; it does not predict results. Schedule worth converts historical rest-group rates into win equivalents, not wins a team actually gained or a causal estimate.</p>
 
       <div style={termCardStyle}>
         <p

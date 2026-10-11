@@ -1,0 +1,100 @@
+{
+  "environment": "Local Node22 production builds / same isolated PostgreSQL18 restore",
+  "scriptCount": 16,
+  "scriptDecodedBytes": 1225202,
+  "scriptGzipBytes": 375200,
+  "baselineScriptGzipBytes": 374140,
+  "scriptDeltaPct": 0.2833164056235571,
+  "upcoming": {
+    "beforeDefaultBytes": 225124,
+    "afterDefaultBytes": 249811,
+    "stripSixBytes": 2380,
+    "stripSavedPct": 98.94280485421368,
+    "gzipEstimateBefore": 14359,
+    "gzipEstimateSix": 612
+  },
+  "scripts": [
+    {
+      "path": "/_next/static/chunks/3xbmsphmn6aio.js",
+      "bytes": 32132,
+      "gzip": 8631
+    },
+    {
+      "path": "/_next/static/chunks/3kuq8jpjowm4z.js",
+      "bytes": 447129,
+      "gzip": 139319
+    },
+    {
+      "path": "/_next/static/chunks/3j4k067ra061_.js",
+      "bytes": 45062,
+      "gzip": 15877
+    },
+    {
+      "path": "/_next/static/chunks/3998pbibabx7l.js",
+      "bytes": 155998,
+      "gzip": 42859
+    },
+    {
+      "path": "/_next/static/chunks/turbopack-3u7hot4sgk0lh.js",
+      "bytes": 10980,
+      "gzip": 4320
+    },
+    {
+      "path": "/_next/static/chunks/3-7oqvt-xdo13.js",
+      "bytes": 249,
+      "gzip": 217
+    },
+    {
+      "path": "/_next/static/chunks/0s0mkgqsezokm.js",
+      "bytes": 29599,
+      "gzip": 10782
+    },
+    {
+      "path": "/_next/static/chunks/3563ao2g063b7.js",
+      "bytes": 26524,
+      "gzip": 8337
+    },
+    {
+      "path": "/_next/static/chunks/2mk8r7d8t725v.js",
+      "bytes": 13980,
+      "gzip": 3595
+    },
+    {
+      "path": "/_next/static/chunks/1vebbe9oak7o_.js",
+      "bytes": 2052,
+      "gzip": 897
+    },
+    {
+      "path": "/_next/static/chunks/2q9_bmkoi5k-l.js",
+      "bytes": 32441,
+      "gzip": 11218
+    },
+    {
+      "path": "/_next/static/chunks/3es29zmifbmk5.js",
+      "bytes": 40508,
+      "gzip": 14122
+    },
+    {
+      "path": "/_next/static/chunks/2e9ww0dys5-lx.js",
+      "bytes": 26983,
+      "gzip": 9554
+    },
+    {
+      "path": "/_next/static/chunks/13yfzs3t2lijo.js",
+      "bytes": 230504,
+      "gzip": 60561
+    },
+    {
+      "path": "/_next/static/chunks/0cz1d0mv5g_q7.js",
+      "bytes": 112594,
+      "gzip": 39373
+    },
+    {
+      "path": "/_next/static/chunks/2x8prnk1cukbc.js",
+      "bytes": 18467,
+      "gzip": 5538
+    }
+  ],
+  "limits": "Small ordinary local requests. gzip sizes computed offline, not deployed CDN transfer. No p95, field LCP/INP or capacity claim.",
+  "candidate": "542af172b09e1ff06db2792d411a0132419238b6"
+}

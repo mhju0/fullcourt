@@ -4,11 +4,11 @@ import {
   getTeamDirectory,
 } from "@/lib/db/queries";
 import { buildSeasonReport, type SeasonReportResponse } from "@/lib/season-report";
-import { createStampedCache } from "@/lib/stamped-cache";
+import { createStampedCache, seasonCacheMaxAgeMs } from "@/lib/stamped-cache";
 import { teamLabeller } from "@/lib/team-labels";
 
 /**
- * One season's report, held until that season's games change.
+ * One season's report, invalidated by its game stamp or absolute max age.
  *
  * Same reason as the backtest: this reads every game in a season with no LIMIT. The
  * stamp is per-season rather than global, so the entry is too — one global stamp would
@@ -21,6 +21,7 @@ import { teamLabeller } from "@/lib/team-labels";
  */
 export const getSeasonReport = createStampedCache<string, SeasonReportResponse>({
   readStamp: getSeasonGamesStamp,
+  maxAgeMs: seasonCacheMaxAgeMs,
   load: async (season) => {
     const [rows, directory] = await Promise.all([
       getSeasonReportRows(season),

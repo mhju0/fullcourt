@@ -2,11 +2,11 @@ import { NextRequest } from "next/server";
 import { z } from "zod";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { PublicApiError } from "@/lib/api-errors";
-import { CACHE, jsonRoute } from "@/lib/api-route";
+import { CACHE, jsonRoute, seasonCachePolicy } from "@/lib/api-route";
 
 /**
- * The cache policy is the reason this file exists. `s-maxage` is measured in minutes and
- * `stale-while-revalidate` in hours, so a response that is cached when it should not be stays
+ * The cache policy is the reason this file exists. Fresh and stale edge lifetimes compose,
+ * so a response that is cached when it should not be stays
  * wrong long after the condition that produced it is over. These pin which responses may carry
  * the header, not only that the header can be set.
  */
@@ -97,12 +97,24 @@ describe("the cache policies themselves", () => {
     expect(policy).toMatch(/\bstale-while-revalidate=\d+/);
   });
 
-  it("lets the edge serve stale for longer than it serves fresh", () => {
-    for (const policy of Object.values(CACHE)) {
-      const fresh = Number(/s-maxage=(\d+)/.exec(policy)![1]);
-      const stale = Number(/stale-while-revalidate=(\d+)/.exec(policy)![1]);
+  it("bounds both edge freshness and stale revalidation", () => {
+    expect(CACHE.inSeason).toBe("public, s-maxage=60, stale-while-revalidate=60");
+    expect(CACHE.historical).toBe("public, s-maxage=3600, stale-while-revalidate=300");
+  });
 
-      expect(stale).toBeGreaterThan(fresh);
+  it("selects a shorter policy for current and upcoming seasons per request", async () => {
+    vi.useFakeTimers();
+    try {
+      vi.setSystemTime(new Date("2026-10-11T12:00:00Z"));
+      expect(seasonCachePolicy("2025-26")).toBe(CACHE.historical);
+      expect(seasonCachePolicy("2026-27")).toBe(CACHE.inSeason);
+      expect(seasonCachePolicy("2027-28")).toBe(CACHE.inSeason);
+      const route = jsonRoute("test/per-season", z.object({ season: z.string() }),
+        async () => 1, ({ season }) => seasonCachePolicy(season));
+      expect((await route(req("https://example.test/api?season=2026-27")))
+        .headers.get("cache-control")).toBe(CACHE.inSeason);
+    } finally {
+      vi.useRealTimers();
     }
   });
 

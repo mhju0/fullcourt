@@ -11,7 +11,8 @@ import { join } from "node:path";
 
 const selectWhere = vi.fn();
 const updateSet = vi.fn();
-const updateWhere = vi.fn().mockResolvedValue(undefined);
+const updateWhere = vi.fn();
+const updateReturning = vi.fn();
 
 vi.mock("@/lib/db", () => ({
   db: {
@@ -41,6 +42,21 @@ vi.mock("@/lib/nba-season", async (importOriginal) => {
 
 const TODAY = "2026-10-20";
 const YESTERDAY = "2026-10-19";
+
+const recoveryIds = vi.fn();
+const refreshGame = vi.fn();
+vi.mock("@/lib/daily-refresh-port", async importOriginal => {
+  const actual = await importOriginal<typeof import("@/lib/daily-refresh-port")>();
+  return {
+    ...actual,
+    selectRecoveryGameIds: recoveryIds,
+    withCronDbDeadline: (_db: unknown, _deadline: number, work: (tx: unknown) => Promise<unknown>) => work({
+      select: () => ({ from: () => ({ innerJoin: () => ({ innerJoin: () => ({ where: selectWhere }) }) }) }),
+      update: () => ({ set: updateSet }),
+    }),
+    createDailyRefreshPort: () => ({ refreshGame }),
+  };
+});
 
 const { GET } = await import("../cron/update/route");
 
@@ -127,8 +143,11 @@ function fetchedDates(): string[] {
 describe("GET /api/cron/update", () => {
   beforeEach(() => {
     selectWhere.mockReset();
+    recoveryIds.mockReset().mockResolvedValue([]);
+    refreshGame.mockReset().mockResolvedValue({ status: "refreshed", predictionRowsWritten: 0 });
     updateSet.mockReset().mockReturnValue({ where: updateWhere });
-    updateWhere.mockClear();
+    updateWhere.mockReset().mockReturnValue({ returning: updateReturning });
+    updateReturning.mockReset().mockResolvedValue([{ id: 1 }]);
     process.env.CRON_SECRET = "test-secret";
     delete process.env.VERCEL;
   });
@@ -149,6 +168,55 @@ describe("GET /api/cron/update", () => {
     const res = await GET(req("Bearer test-secret"));
     expect(res.status).toBe(200);
     expect((await res.json()).data.gamesUpdated).toBe(0);
+  });
+
+  it("recovers stored-final fatigue when there are no unfinished score rows", async () => {
+    selectWhere.mockResolvedValue([]);
+    recoveryIds.mockResolvedValue([99]);
+    const res = await GET(req("Bearer test-secret"));
+    expect(refreshGame).toHaveBeenCalledWith(99, expect.objectContaining({ deadlineMs: expect.any(Number) }));
+    expect((await res.json()).meta.fatigueRescored).toBe(1);
+  });
+
+  it("runs recovery after an ESPN failure and exposes a sanitized degraded result", async () => {
+    selectWhere.mockResolvedValue([storedRow()]);
+    recoveryIds.mockResolvedValue([99]);
+    vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new Error("postgresql://secret@private")));
+    const res = await GET(req("Bearer test-secret"));
+    expect(refreshGame).toHaveBeenCalled();
+    expect(res.status).toBe(502);
+    expect(JSON.stringify(await res.json())).not.toContain("secret@private");
+  });
+
+  it("keeps good date finals when the other date feed fails", async () => {
+    selectWhere.mockResolvedValue([storedRow({ id: 1, date: YESTERDAY }), storedRow({ id: 2 })]);
+    vi.stubGlobal("fetch", vi.fn().mockImplementation(async (url: string) => url.includes("20261019")
+      ? { ok: true, json: async () => ({ events: [event()] }) }
+      : { ok: false, status: 403 }));
+    const res = await GET(req("Bearer test-secret"));
+    expect(res.status).toBe(502);
+    expect((await res.json()).data.gamesUpdated).toBe(1);
+    expect(updateSet).toHaveBeenCalledTimes(1);
+  });
+
+  it.each([{}, { events: null }, { events: {} }])("rejects malformed feed envelopes but still recovers: %j", async payload => {
+    selectWhere.mockResolvedValue([storedRow()]);
+    recoveryIds.mockResolvedValue([99]);
+    vi.stubGlobal("fetch",vi.fn().mockResolvedValue({ok:true,json:async()=>payload}));
+    const res=await GET(req("Bearer test-secret"));
+    expect(res.status).toBe(502);
+    expect(updateSet).not.toHaveBeenCalled();
+    expect(refreshGame).toHaveBeenCalledWith(99,expect.any(Object));
+  });
+
+  it("counts a write-time final guard refusal instead of a successful update", async () => {
+    selectWhere.mockResolvedValue([storedRow({status:"live",homeScore:80,awayScore:79})]);
+    updateReturning.mockResolvedValue([]);
+    espnResponds([event({state:"pre",completed:false,periods:0})]);
+    const res=await GET(req("Bearer test-secret"));
+    const body=await res.json();
+    expect(body.data.gamesUpdated).toBe(0);
+    expect(body.meta.refusedDowngrades).toBe(1);
   });
 
   it("reads ESPN, scoped to the ET date of the games it found", async () => {

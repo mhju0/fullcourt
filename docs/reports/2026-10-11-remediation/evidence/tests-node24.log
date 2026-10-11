@@ -1,0 +1,9 @@
+$ vitest run
+
+ RUN  v4.1.11 /Users/michaelju/Workspace/Projects/fullcourt-remediation
+
+
+ Test Files  89 passed (89)
+      Tests  1100 passed (1100)
+   Start at  16:40:34
+   Duration  22.72s (transform 10.93s, setup 0ms, import 150.79s, tests 17.50s, environment 11ms)

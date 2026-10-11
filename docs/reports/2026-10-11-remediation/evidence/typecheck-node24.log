@@ -1,0 +1,19 @@
+$ tsc --noEmit --incremental false
+scripts/tests/prospective-refresh.pg.ts(28,27): error TS2349: This expression is not callable.
+  Type 'TransactionSql<{}>' has no call signatures.
+scripts/tests/prospective-refresh.pg.ts(50,11): error TS2349: This expression is not callable.
+  Type 'TransactionSql<{}>' has no call signatures.
+scripts/tests/prospective-refresh.pg.ts(53,11): error TS2349: This expression is not callable.
+  Type 'TransactionSql<{}>' has no call signatures.
+scripts/tests/prospective-refresh.pg.ts(80,11): error TS2349: This expression is not callable.
+  Type 'TransactionSql<{}>' has no call signatures.
+scripts/tests/prospective-refresh.pg.ts(83,28): error TS2349: This expression is not callable.
+  Type 'TransactionSql<{}>' has no call signatures.
+scripts/tests/prospective-refresh.pg.ts(105,11): error TS2349: This expression is not callable.
+  Type 'TransactionSql<{}>' has no call signatures.
+scripts/tests/prospective-refresh.pg.ts(135,11): error TS2349: This expression is not callable.
+  Type 'TransactionSql<{}>' has no call signatures.
+scripts/tests/prospective-refresh.pg.ts(138,11): error TS2349: This expression is not callable.
+  Type 'TransactionSql<{}>' has no call signatures.
+src/lib/__tests__/sync-scores-espn.test.ts(12,54): error TS2339: Property 'includes' does not exist on type 'never'.
+[ELIFECYCLE] Command failed with exit code 2.

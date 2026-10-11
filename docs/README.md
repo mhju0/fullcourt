@@ -39,3 +39,5 @@ Screenshots have one generator and capture manifest in `docs/screenshots/`.
 
 The active contributor contract is [AGENTS.md](../AGENTS.md). Historical Claude material is
 identified as such and does not override it. This cleanup does not migrate agent harnesses.
+
+- [Generated analytics ownership](GENERATED_ARTIFACTS.md) — producers, inputs, consumers, guards, and regeneration boundaries

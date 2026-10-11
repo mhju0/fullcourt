@@ -214,6 +214,6 @@ describe("GET /api/analysis", () => {
     mockGetCompleted.mockResolvedValueOnce([row("2024-01-02", 4, 9, 110, 100)]);
 
     const res = await GET(makeReq());
-    expect(res.headers.get("cache-control")).toBe(CACHE.historical);
+    expect(res.headers.get("cache-control")).toBe(CACHE.inSeason);
   });
 });

@@ -125,8 +125,8 @@ def main() -> None:
         f"window={start_str}..{today_str}"
     )
 
-    # Scores, status and overtime from ESPN. Fatal on failure: this is the step the run
-    # exists for, and a silent skip would leave the site showing an unplayed slate.
+    # Exit 2 retains successful date writes, so downstream may safely use those finals.
+    # Other nonzero statuses mean the database/write stage failed and stop the run.
     print(f"[daily_update] syncing scores for {start_str}..{today_str} …")
     scores = subprocess.run(
         ["pnpm", "exec", "tsx", "scripts/sync_scores_espn.ts", start_str, today_str],
@@ -134,7 +134,10 @@ def main() -> None:
         env={**os.environ, "DATABASE_URL": database_url},
         check=False,
     )
-    if scores.returncode != 0:
+    degraded = scores.returncode == 2
+    if degraded:
+        print("[daily_update] WARNING: score sync degraded; continuing, final status will fail.")
+    elif scores.returncode != 0:
         print("[daily_update] ERROR: score sync failed.", file=sys.stderr)
         sys.exit(scores.returncode)
 
@@ -189,6 +192,9 @@ def main() -> None:
     if result.returncode != 0:
         sys.exit(result.returncode)
 
+    if degraded:
+        print("[daily_update] completed downstream work; score sync remains degraded.", file=sys.stderr)
+        sys.exit(2)
     print("[daily_update] completed successfully.")
 
 

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { CACHE, jsonRoute } from "@/lib/api-route";
+import { jsonRoute, seasonCachePolicy } from "@/lib/api-route";
 import { browsableSeasons } from "@/lib/nba-season";
 import { defaultRankableSeason, rankableSeasons } from "@/lib/schedule-disparity";
 import { getScheduleDisparity } from "@/lib/schedule-disparity-server";
@@ -23,11 +23,9 @@ const seasonSchema = z
   .refine((s) => RANKABLE().includes(s), { message: "Unknown season" })
   .default(defaultRankableSeason());
 
-// Rankings can include the current season. Cache policy remains historical; do not confuse
-// rankable-season exclusions with a completed-season-only contract.
 export const GET = jsonRoute(
   "api/schedule-disparity",
   z.object({ season: seasonSchema }),
   ({ season }) => getScheduleDisparity(season),
-  CACHE.historical
+  ({ season }) => seasonCachePolicy(season)
 );

@@ -1,0 +1,73 @@
+$ next build
+▲ Next.js 16.3.8 (Turbopack)
+✓ Running next.config.ts took 85ms
+- Experiments (use with caution):
+  ⨯ turbopackFileSystemCacheForBuild
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 11.3s
+  Running TypeScript ...
+  Finished TypeScript in 4.0s ...
+  Collecting page data using 9 workers ...
+  Generating static pages using 9 workers (0/40) ...
+  Generating static pages using 9 workers (10/40)
+  Generating static pages using 9 workers (20/40)
+  Generating static pages using 9 workers (30/40)
+✓ Generating static pages using 9 workers (40/40) in 1358ms
+  Finalizing page optimization ...
+
+Route (app)                               Revalidate  Expire
+┌ ○ /                                             1d      1y
+├ ○ /_not-found
+├ ○ /about
+├ ○ /analysis                                     1d      1y
+├ ƒ /api/analysis
+├ ƒ /api/cron/update
+├ ƒ /api/game/[id]
+├ ƒ /api/games/[date]
+├ ƒ /api/games/dates
+├ ƒ /api/games/search
+├ ƒ /api/games/upcoming
+├ ƒ /api/health
+├ ƒ /api/playoffs
+├ ƒ /api/schedule-disparity
+├ ƒ /api/season-report
+├ ƒ /api/shot-quality
+├ ○ /apple-icon
+├ ○ /availability
+├ ○ /behind-the-data
+├ ○ /behind-the-data/availability
+├ ○ /behind-the-data/data-and-limits
+├ ○ /behind-the-data/officiating
+├ ○ /behind-the-data/player-shooting
+├ ○ /behind-the-data/playoff-predictions
+├ ○ /behind-the-data/referees
+├ ○ /behind-the-data/referees/archive
+├ ○ /behind-the-data/rest-advantage
+├ ○ /behind-the-data/schedule-edge
+├ ○ /behind-the-data/shot-value
+├ ○ /behind-the-data/time-zones
+├ ƒ /data-status
+├ ○ /explore
+├ ○ /games
+├ ○ /home-court
+├ ○ /how-it-was-built
+├ ○ /icon-192.png
+├ ○ /icon-512.png
+├ ○ /icon.svg
+├ ○ /manifest.webmanifest
+├ ○ /officiating
+├ ○ /opengraph-image
+├ ○ /playoffs
+├ ○ /privacy
+├ ○ /referees
+├ ○ /robots.txt
+├ ○ /schedule
+├ ○ /season
+├ ○ /shooting
+├ ○ /shot-quality
+└ ○ /sitemap.xml
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand

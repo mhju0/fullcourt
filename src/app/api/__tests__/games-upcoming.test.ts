@@ -28,7 +28,14 @@ describe("GET /api/games/upcoming", () => {
     expect(await res.json()).toEqual({ data: [], error: null });
   });
 
-  it.each(["?season=2099-00", "?season=2025-26&minRA=-1", "?season=2025-26&minRA=all"])(
+  it("passes the bounded reserve only when explicitly requested", async () => {
+    mockGetUpcoming.mockResolvedValueOnce([]);
+    const res = await GET(req("?season=2025-26&limit=6"));
+    expect(res.status).toBe(200);
+    expect(mockGetUpcoming).toHaveBeenCalledWith("2025-26", 0, 6);
+  });
+
+  it.each(["?season=2099-00", "?season=2025-26&minRA=-1", "?season=2025-26&minRA=all", "?limit=0", "?limit=2", "?limit=31", "?limit=3.5", "?limit=no"])(
     "returns 400 without querying for invalid parameters: %s",
     async (search) => {
       const res = await GET(req(search));

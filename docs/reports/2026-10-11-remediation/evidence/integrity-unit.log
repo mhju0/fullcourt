@@ -1,0 +1,10 @@
+(node:51429) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+
+ RUN  v4.1.11 /Users/michaelju/Workspace/Projects/fullcourt-remediation
+
+
+ Test Files  5 passed (5)
+      Tests  50 passed (50)
+   Start at  17:07:42
+   Duration  1.79s (transform 421ms, setup 0ms, import 4.62s, tests 528ms, environment 0ms)

@@ -84,3 +84,18 @@ node scripts/check-doc-links.mjs
 The screenshot manifest records the source URL, route, viewport, and capture time. Keep one
 current capture per selected route; Git contains old captures. The documentation-link check
 catches missing local Markdown targets. Neither command verifies the correctness of a finding.
+
+## Prospective refresh integrity replay
+
+`scripts/tests/prospective-refresh.pg.ts` uses two independent connections and a private test
+schema copied from an isolated backup restore. It never loads `.env.local`; its explicit local
+URL guard rejects production. Restore PostgreSQL 18 at port 55432 with database
+`fullcourt_remediation`, then run:
+
+```sh
+FULLCOURT_TEST_DATABASE_URL=postgresql://michaelju@127.0.0.1:55432/fullcourt_remediation corepack pnpm exec tsx scripts/tests/prospective-refresh.pg.ts
+```
+
+The named local database must be disposable. The harness creates/drops only its own test schema.
+It verifies parent-lock ordering, atomic rollback, resolved-pick protection, missing-side repair
+and actual-clock eligibility. It is not a production load test or an opening-night verification.

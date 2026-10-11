@@ -1,9 +1,11 @@
+:global(#main):has(.home) { container-type: inline-size; }
+
 .home {
   --home-ink: #0b0d10;
   --home-text: #f5f1e8;
   --home-muted: #a1a6ae;
   --home-rule: #34373c;
-  margin-inline: calc(50% - 50vw);
+  margin-inline: calc(50% - 50cqw);
   margin-top: calc(-1 * var(--term-chrome-h) - 2rem);
   margin-bottom: -2rem;
   padding-top: var(--term-chrome-h);
