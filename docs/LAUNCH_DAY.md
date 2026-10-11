@@ -17,7 +17,7 @@ historical games does not establish this. Preserve the relevant run ID and write
 | Writer | Configured UTC schedule | Responsibility |
 | --- | --- | --- |
 | Daily NBA update | `0 21 * * *` | Recent final score/status/overtime sync, game context, projection gaps, fatigue and predictions |
-| Vercel `/api/cron/update` | Twelve entries, one per hour from 21:00 to 08:00 UTC | Final scores for yesterday and today (ET); separate from the full modeling pipeline |
+| Vercel `/api/cron/update` | Twelve entries, one per hour from 21:00 to 08:00 UTC | Final scores for yesterday and today (ET), then fatigue and prediction rows for the next game of each team it has just finalized ([D-83](DECISIONS.md)); separate from the full modeling pipeline |
 
 Both store finished games only ([D-81](DECISIONS.md)). A game in progress is left as
 `scheduled` and reported as "in progress (left alone)"; the Games page marks it LIVE from its
@@ -32,6 +32,16 @@ no final scores for that night's games.
 
 On the first night also confirm, in the Vercel project's cron list, that all twelve entries
 registered and that the early ones ran. Twelve entries on one path had not been deployed before.
+
+The rescore was rehearsed on 2026-10-11 against a local restore of that day's backup and has not
+run in production. A cron invocation's response is not kept, so check it by its effects:
+
+- The run's JSON carries `meta.fatigueRescored`: the number of games rescored, or `null` when the
+  rescore failed. A failure never costs a final score, and the daily job rewrites the same rows.
+  Only a manual call with the cron secret shows this.
+- A failure logs `[cron/update] rescore failed` or `rescore kept game` in the Vercel function logs.
+- For a team that played the night before, `fatigue_scores.computed_at` on its next game is later
+  than the final, and `is_overtime_penalty` is true when that game went to overtime.
 
 ## Checklist
 
