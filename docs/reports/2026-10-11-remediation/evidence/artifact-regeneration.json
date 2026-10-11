@@ -50,6 +50,25 @@
       "topLevelDifferences": [
         "generated"
       ]
+    },
+    {
+      "path": "src/data/officiating.json",
+      "beforeSha256": "309572da102ff54dfa5e63aefaf08695f8f01bf78825d0aa0b7c0df0e63e9173",
+      "regeneratedSha256": "5964574fa7628c6ec3f60d3c29af3a454bb1a429c9b11cf08d6a9626cf84a675",
+      "topLevelDifferences": [
+        "seasons"
+      ],
+      "nestedDifferences": {
+        "refreshedAt": {
+          "published": "2026-09-08T02:25:02.193726+00:00",
+          "olderSnapshotRegenerated": "2026-09-06T14:32:33.925512+00:00"
+        },
+        "indexSha256": {
+          "published": "31aecf3dd0b0b685dd4f9987ec4dc4dbf556d1db2d63050576a630f69a4373cb",
+          "olderSnapshotRegenerated": "bb8adece4aa760f948d1c016cca5826777f169a232f3581907c97d4fba0c8760"
+        }
+      },
+      "preservedOriginal": true
     }
   ],
   "preservedPublishedArtifacts": true,
