@@ -1,4 +1,8 @@
 import type { NextConfig } from "next";
+import { PHASE_PRODUCTION_BUILD } from "next/constants";
+import { withSentryConfig } from "@sentry/nextjs/config";
+import { readdir } from "node:fs/promises";
+import { join } from "node:path";
 
 // Content-Security-Policy. The app is a read-only dashboard with no user-authored
 // HTML, so 'unsafe-inline' for script/style (required by Next's hydration bootstrap
@@ -67,4 +71,60 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+export default function config(phase: string): NextConfig {
+  if (phase !== PHASE_PRODUCTION_BUILD) return nextConfig;
+
+  const authToken = process.env.SENTRY_AUTH_TOKEN?.trim();
+  const isVercelDeployment = ["production", "preview"].includes(
+    process.env.VERCEL_ENV ?? "",
+  );
+  if (!authToken) {
+    if (isVercelDeployment) {
+      throw new Error("SENTRY_AUTH_TOKEN is required for Vercel source-map uploads.");
+    }
+    console.info("Sentry source-map upload skipped: SENTRY_AUTH_TOKEN is unset (local/CI build).");
+    return nextConfig;
+  }
+
+  const sentryConfig = withSentryConfig({ ...nextConfig, experimental: { ...nextConfig.experimental } }, {
+    org: "michael-ju-46",
+    project: "javascript-nextjs",
+    authToken,
+    telemetry: false,
+    silent: false,
+    useRunAfterProductionCompileHook: true,
+    sourcemaps: { deleteSourcemapsAfterUpload: true },
+    widenClientFileUpload: true,
+    // Existing instrumentation owns error capture; this change only adds build artifacts.
+    buildTimeInstrumentation: false,
+    routeManifestInjection: false,
+    release: { create: false, finalize: false },
+    webpack: {
+      autoInstrumentServerFunctions: false,
+      autoInstrumentMiddleware: false,
+      autoInstrumentAppDirectory: false,
+      automaticVercelMonitors: false,
+    },
+    errorHandler() {
+      throw new Error("Sentry source-map upload failed; refusing to ship this build.");
+    },
+  });
+  const upload = sentryConfig.compiler?.runAfterProductionCompile;
+  if (!upload) throw new Error("Sentry did not register its source-map upload hook.");
+  sentryConfig.compiler = {
+    ...sentryConfig.compiler,
+    async runAfterProductionCompile(context) {
+      const publicDir = join(context.distDir, "static");
+      const publicFiles = await readdir(publicDir, { recursive: true });
+      const serverFiles = await readdir(join(context.distDir, "server"), { recursive: true });
+      if (![publicFiles, serverFiles].every((files) => files.some((file) => file.endsWith(".js.map")))) {
+        throw new Error("Sentry source-map upload requires both client and server maps.");
+      }
+      await upload(context);
+      if ((await readdir(publicDir, { recursive: true })).some((file) => file.endsWith(".map"))) {
+        throw new Error("Public source maps remain after upload; refusing to ship this build.");
+      }
+    },
+  };
+  return sentryConfig;
+}
