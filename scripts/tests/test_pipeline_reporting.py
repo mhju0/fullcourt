@@ -13,9 +13,11 @@ import daily_update
 
 
 class ReportingTests(unittest.TestCase):
-    def pipeline(self, codes, payload=None):
+    def pipeline(self, codes, payload=None, initial=None, environment=None):
         with tempfile.TemporaryDirectory() as directory:
             summary = Path(directory) / 'summary.json'
+            if initial is not None:
+                summary.write_text(json.dumps(initial))
             def child(*args, **kwargs):
                 Path(kwargs['env']['DAILY_STAGE_SUMMARY_DIR'], 'freshness.json').write_text(json.dumps({
                     'status': 'estimated', 'session_timezone': 'UTC', 'eligible_games': 1,
@@ -31,7 +33,8 @@ class ReportingTests(unittest.TestCase):
                     target.write_text(json.dumps(payload))
                 return SimpleNamespace(returncode=next(values))
             values = iter(codes)
-            with patch.dict(os.environ, {'DAILY_SUMMARY_PATH': str(summary)}, clear=False), \
+            with patch.dict(os.environ, {'DAILY_SUMMARY_PATH': str(summary), 'GITHUB_ACTIONS': 'false',
+                                          'GITHUB_EVENT_NAME': 'local', **(environment or {})}, clear=False), \
                  patch.object(daily_update, 'is_in_season', return_value=True), \
                  patch.object(daily_update, 'resolve_database_url', return_value='postgres://secret'), \
                  patch.object(daily_update.subprocess, 'run', side_effect=child) as run:
@@ -41,6 +44,60 @@ class ReportingTests(unittest.TestCase):
                 except SystemExit as error:
                     code = error.code
             return code, run.call_count, json.loads(summary.read_text())
+
+    def test_interrupted_local_retry_clears_prior_success_before_score_failure(self):
+        from pipeline_summary import new_summary
+        old = new_summary(event='local', start=datetime(2026, 1, 1, tzinfo=timezone.utc))
+        for stage in ('context', 'projection', 'fatigue', 'predictions'):
+            old['stages'][stage] = {'status': 'success', 'exit_code': 0, 'counts': {'rows_written': 123}}
+        old['providers'] = {'espn_context': 'success'}
+        old['data_freshness'] = {'status': 'estimated', 'present_rows': 123}
+        old['data_window_et'] = {'scores_from': '2026-01-01', 'scores_to': '2026-01-08'}
+        code, calls, result = self.pipeline([1], initial=old)
+        self.assertEqual((code, calls), (1, 1))
+        self.assertEqual(result['status'], 'failed')
+        for stage in ('context', 'projection', 'fatigue', 'predictions'):
+            self.assertEqual(result['stages'][stage], {'status': 'not_run', 'exit_code': None, 'counts': {}})
+        self.assertEqual(result['providers'], {'espn_scores': 'failed'})
+        self.assertEqual(result['data_freshness'], {'status': 'unknown'})
+        self.assertNotEqual(result['started_at'], old['started_at'])
+        self.assertNotEqual(result['data_window_et'], old['data_window_et'])
+
+    def initialized_workflow(self):
+        from pipeline_summary import new_summary
+        environment = {'GITHUB_ACTIONS': 'true', 'GITHUB_EVENT_NAME': 'schedule',
+                       'GITHUB_RUN_ID': '12345', 'GITHUB_RUN_ATTEMPT': '2'}
+        with patch.dict(os.environ, environment):
+            old = new_summary(start=datetime(2026, 1, 1, 22, 0, tzinfo=timezone.utc),
+                              created=datetime(2026, 1, 1, 21, 17, tzinfo=timezone.utc))
+        old['workflow_initialized'] = True
+        return old, environment
+
+    def test_fresh_matching_workflow_initialization_preserves_only_timing(self):
+        old, environment = self.initialized_workflow()
+        old['stages']['context'] = {'status': 'success', 'exit_code': 0, 'counts': {'rows_written': 123}}
+        _, _, result = self.pipeline([1], initial=old, environment=environment)
+        for key in ('started_at', 'expected_at', 'lateness_seconds', 'timing_status'):
+            self.assertEqual(result[key], old[key])
+        self.assertEqual(result['stages']['context']['status'], 'not_run')
+        self.assertEqual(result['stages']['context']['counts'], {})
+        self.assertFalse(result['workflow_initialized'])
+        self.assertEqual(result['workflow_identity'], {'run_id': '12345', 'run_attempt': '2'})
+
+    def test_previous_workflow_attempt_cannot_supply_timing_to_rerun(self):
+        old, environment = self.initialized_workflow()
+        environment['GITHUB_RUN_ATTEMPT'] = '3'
+        _, _, result = self.pipeline([1], initial=old, environment=environment)
+        self.assertNotEqual(result['started_at'], old['started_at'])
+        self.assertIsNone(result['expected_at'])
+        self.assertEqual(result['timing_status'], 'unknown')
+
+    def test_already_started_workflow_cannot_supply_initialization_timing_again(self):
+        old, environment = self.initialized_workflow()
+        old['pipeline_started_at'] = old['started_at']
+        _, _, result = self.pipeline([1], initial=old, environment=environment)
+        self.assertNotEqual(result['started_at'], old['started_at'])
+        self.assertIsNone(result['expected_at'])
 
     def test_optional_partial_context_is_visible_and_preserves_downstream(self):
         code, calls, result = self.pipeline([0, 2, 0, 0])

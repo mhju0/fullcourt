@@ -22,12 +22,23 @@ def expected_schedule_time(start, created=None):
     return expected if expected <= anchor else expected - timedelta(days=1)
 
 
+def workflow_identity():
+    if os.environ.get('GITHUB_ACTIONS') != 'true':
+        return None
+    identity = {key: os.environ.get(env, '') for key, env in
+                (('run_id', 'GITHUB_RUN_ID'), ('run_attempt', 'GITHUB_RUN_ATTEMPT'))}
+    if not all(value.isascii() and value.isdigit() for value in identity.values()):
+        return None
+    return identity
+
+
 def new_summary(event=None, start=None, created=None):
     start = start or utc_now()
     event = event or os.environ.get('GITHUB_EVENT_NAME', 'local')
     expected = expected_schedule_time(start, created) if event == 'schedule' and created is not None else None
     return {
         'schema_version': 1, 'status': 'running',
+        'workflow_identity': workflow_identity(), 'workflow_initialized': False,
         'event': event if event in ('schedule', 'workflow_dispatch', 'local') else 'unknown',
         'timing_status': 'unknown' if event == 'schedule' and created is None else 'available',
         'expected_at': expected.isoformat() if expected else None,
@@ -56,6 +67,21 @@ def load_or_new():
     if summary_path().exists():
         return json.loads(summary_path().read_text())
     return new_summary()
+
+
+def start_invocation():
+    previous = load_or_new()
+    fresh = new_summary()
+    if (fresh['workflow_identity'] is not None
+            and previous.get('workflow_identity') == fresh['workflow_identity']
+            and previous.get('workflow_initialized') is True
+            and previous.get('status') == 'running'
+            and previous.get('pipeline_started_at') is None
+            and previous.get('event') == fresh['event']):
+        for key in ('timing_status', 'expected_at', 'started_at', 'lateness_seconds'):
+            if key in previous:
+                fresh[key] = previous[key]
+    return fresh
 
 
 def stage_result(directory, name, code, status):
@@ -137,7 +163,9 @@ def main():
         created, started = timing.get('created_at'), timing.get('run_started_at')
         parsed = datetime.fromisoformat(created.replace('Z', '+00:00')) if created else None
         actual = datetime.fromisoformat(started.replace('Z', '+00:00')) if started else None
-        save(new_summary(created=parsed, start=actual))
+        summary = new_summary(created=parsed, start=actual)
+        summary['workflow_initialized'] = True
+        save(summary)
     else:
         summary = load_or_new()
         if summary['completed_at'] is None or os.environ.get('WORKFLOW_JOB_STATUS') == 'failure':

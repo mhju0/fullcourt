@@ -70,7 +70,7 @@ if _SCRIPTS_DIR not in sys.path:
 # season_window is stdlib-only by design: the offseason gate runs before DATABASE_URL is
 # resolved and before any third-party import, so an offseason run needs no secret and no deps.
 from season_window import is_in_season
-from pipeline_summary import complete, load_or_new, new_summary, read_freshness, save, stage_result
+from pipeline_summary import complete, read_freshness, save, stage_result, start_invocation
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 
@@ -107,9 +107,7 @@ def resolve_database_url() -> str:
 
 
 def main() -> None:
-    summary = load_or_new()
-    if summary["status"] != "running":
-        summary = new_summary()
+    summary = start_invocation()
     summary["pipeline_started_at"] = datetime.now(ZoneInfo("UTC")).isoformat()
     now_et = datetime.now(ZoneInfo("America/New_York"))
     today = now_et.date()
