@@ -21,6 +21,7 @@ next-env.d.ts
 # Test and local screenshot output (curated docs/screenshots remains tracked)
 /coverage/
 /playwright-report/
+/playwright-smoke-report/
 /test-results/
 
 # Credentials and machine settings; templates are safe to track

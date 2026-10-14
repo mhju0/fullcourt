@@ -53,14 +53,16 @@ polling can prevent network idle. Regression assertions are in `alignment-law.sp
 
 | Workflow | Purpose |
 | --- | --- |
-| `.github/workflows/ci.yml` | Frozen install, lint, types, unit/Python contracts, production build, dependency audit |
-| `.github/workflows/daily-update.yml` | Season-gated daily NBA ingest; manual schedule resync or historical seed |
+| `.github/workflows/ci.yml` | Correctness/build checks, secret-free browser smoke, real disposable PostgreSQL contracts; required `verify` aggregates all three |
+| `.github/workflows/daily-update.yml` | Season-gated daily ingest at 21:17 UTC; blocked manual sources reject before secret use |
 | `.github/workflows/probe-data-sources.yml` | Provider reachability diagnostics; not proof of successful data ingestion |
 | `.github/workflows/officiating-refresh.yml` | Complete L2M source snapshot and reviewable publication update |
+| `.github/workflows/maintenance-health.yml` | Daily scheduled-run completion monitor; weekly full dependency audit |
 | GitHub CodeQL configuration | Code scanning managed on GitHub; not a checked-in workflow |
 | `vercel.json` | Vercel region and `/api/cron/update` schedule |
 
-Merging main deploys production. Before merging, verify CI/CodeQL and the actual populated
+Merging main builds production; the imported GitHub `verify` check now blocks production-domain
+assignment until it passes. This is a check gate, not an owner-approval gate. Before merging, verify CI/CodeQL and the actual populated
 Vercel preview. Preview protection may require authenticated Vercel access. Do not disable
 protection to run tests. Vercel commit-status reporting is disabled in this project; inspect
 its deployment readiness and commit directly if no GitHub deployment check appears.
@@ -99,3 +101,48 @@ FULLCOURT_TEST_DATABASE_URL=postgresql://michaelju@127.0.0.1:55432/fullcourt_rem
 The named local database must be disposable. The harness creates/drops only its own test schema.
 It verifies parent-lock ordering, atomic rollback, resolved-pick protection, missing-side repair
 and actual-clock eligibility. It is not a production load test or an opening-night verification.
+
+## Bounded CI gates and operational summaries
+
+`pnpm exec playwright test --config playwright.smoke.config.ts` exercises a built application
+at loopback ports 3100/3101 with deterministic API fixtures. It covers Games filters and opened
+matchup details, desktop/mobile calendar, opened-state axe, reduced motion, command palette
+Escape/shortcut focus return and rapid close/reopen. It aborts non-loopback browser requests.
+It does not prove hosted preview connectivity, provider data, physical-device behavior or
+accessibility outside those flows. The fixture spec is excluded from the full connected suite.
+
+CI transfers only its credential-free `.next` build to the browser job, excluding cache; test
+failure reports are retained seven days. The disposable PostgreSQL 18 service uses fixed
+loopback port 55433 and `fullcourt_ci_disposable`. Test-only SQL initializes an empty service;
+it is never a production schema migration. The legacy restore replay URL guard is preserved.
+`verify` rejects failed, cancelled, skipped and missing prerequisites. No PR job receives
+production secrets; checkout credentials are not persisted. Third-party Actions use reviewed
+commit pins, maintained by weekly Dependabot updates. Keep the Next build cache disabled.
+
+Main requires up-to-date `verify` results and enforces the check for administrators. A second
+human review is not made impossible for the solo owner; independent agent review, exact-SHA
+preview verification and explicit merge approval remain the release procedure. CodeQL default
+setup remains active and must be inspected before release; this change does not add separate
+CodeQL required contexts or weaken its configuration.
+
+Daily writers share a non-cancelling GitHub concurrency group and a 25-minute job deadline.
+They still rely on existing database locks for overlap with Vercel. The normal Python wrapper
+uses stdlib, so no pipeline pip installation is needed. Disabled manual source tasks cannot
+reach dependency installation or database-secret steps; follow the
+[pipeline operations record](research/2026-10-15-pipeline-operations.md).
+
+Daily artifacts distinguish critical failure, optional degraded stages, attempted ET date
+windows, row counts and provider fallback. Scoped row-age estimates include missing-row counts
+and the timestamp interpretation caveat; they are not proof of global database freshness.
+Future timestamps and non-UTC observations cannot look perfectly fresh. Metadata API failure
+leaves timing unknown and data work continues with a degraded summary.
+
+The scheduled-run monitor checks the due scheduled main run (not a manual substitute) and
+actual job-completion timestamps against a six-hour deadline. It fails for missing, late,
+unfinished or failed executions and invalid API evidence. It shares GitHub's scheduler;
+workflow notifications do not prove email delivery. No production data query is made by it.
+
+The full dependency audit is weekly/manual and advisory for known development findings; audit
+transport/parsing failures fail the workflow. The production audit remains required. JSON and
+counts retain scope, commit and pnpm version. Do not blanket-override all transitive findings.
+All these workflows require integration into main before scheduled behavior can be observed.

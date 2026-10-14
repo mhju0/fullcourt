@@ -58,6 +58,7 @@ from __future__ import annotations
 import os
 import subprocess
 import sys
+import tempfile
 from datetime import datetime, timedelta
 from pathlib import Path
 from zoneinfo import ZoneInfo
@@ -69,6 +70,7 @@ if _SCRIPTS_DIR not in sys.path:
 # season_window is stdlib-only by design: the offseason gate runs before DATABASE_URL is
 # resolved and before any third-party import, so an offseason run needs no secret and no deps.
 from season_window import is_in_season
+from pipeline_summary import complete, load_or_new, new_summary, read_freshness, save, stage_result
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 
@@ -85,6 +87,9 @@ def resolve_database_url() -> str:
     url = (os.environ.get("DATABASE_URL") or "").strip()
     if url:
         return url
+    if os.environ.get("GITHUB_ACTIONS") == "true":
+        print("ERROR: DATABASE_URL is not set for the in-season workflow.", file=sys.stderr)
+        sys.exit(1)
     from dotenv import load_dotenv  # lazy: only the local .env fallback needs it
 
     load_dotenv(REPO_ROOT / ".env.local")
@@ -102,100 +107,76 @@ def resolve_database_url() -> str:
 
 
 def main() -> None:
-    et = ZoneInfo("America/New_York")
-    now_et = datetime.now(et)
+    summary = load_or_new()
+    if summary["status"] != "running":
+        summary = new_summary()
+    summary["pipeline_started_at"] = datetime.now(ZoneInfo("UTC")).isoformat()
+    now_et = datetime.now(ZoneInfo("America/New_York"))
     today = now_et.date()
-
-    # ── Season gate ──────────────────────────────────────────────────────────
-    # Skip cleanly during the offseason BEFORE resolving DATABASE_URL, importing
-    # DB-coupled modules, or hitting any NBA API. An offseason skip is a success
-    # (exit 0); genuine in-season failures below still exit non-zero.
     if not is_in_season(today):
         print(f"[daily_update] Offseason ({today.isoformat()} ET) — skipping daily update.")
-        sys.exit(0)
-
-    database_url = resolve_database_url()
+        for stage in summary["stages"].values():
+            stage["status"] = "skipped"
+        complete(summary, "skipped")
+        return
 
     window_start = today - timedelta(days=LOOKBACK_DAYS)
-    start_str = window_start.isoformat()
-    today_str = today.isoformat()
+    start_str, today_str = window_start.isoformat(), today.isoformat()
+    summary["data_window_et"] = {"scores_from": start_str, "scores_to": today_str,
+                                  "prospective_from": today_str,
+                                  "prospective_to": (today + timedelta(days=14)).isoformat()}
+    save(summary)
+    final_code = 0
+    try:
+        database_url = resolve_database_url()
+        with tempfile.TemporaryDirectory(prefix="fullcourt-stages-") as directory:
+            env = {**os.environ, "DATABASE_URL": database_url, "DAILY_STAGE_SUMMARY_DIR": directory}
 
-    print(
-        f"[daily_update] ET now={now_et.isoformat(timespec='seconds')} "
-        f"window={start_str}..{today_str}"
-    )
+            def run(name, args, optional=False, optional_partial=False):
+                nonlocal final_code
+                try:
+                    result = subprocess.run(["pnpm", "exec", "tsx", *args],
+                                            cwd=str(REPO_ROOT), env=env, check=False)
+                    code = result.returncode
+                except OSError:
+                    code = 1
+                status = "success" if code == 0 else "degraded" if (optional or code == 2) else "failed"
+                summary["stages"][name] = stage_result(directory, name, code, status)
+                if name in ("scores", "context"):
+                    summary["providers"][f"espn_{name}"] = status
+                save(summary)
+                print(f"[daily_update] {name}: {status} (exit {code})")
+                if code and not optional and not (optional_partial and code == 2):
+                    final_code = 1 if code != 2 else (final_code or 2)
+                return code
 
-    # Exit 2 retains successful date writes, so downstream may safely use those finals.
-    # Other nonzero statuses mean the database/write stage failed and stop the run.
-    print(f"[daily_update] syncing scores for {start_str}..{today_str} …")
-    scores = subprocess.run(
-        ["pnpm", "exec", "tsx", "scripts/sync_scores_espn.ts", start_str, today_str],
-        cwd=str(REPO_ROOT),
-        env={**os.environ, "DATABASE_URL": database_url},
-        check=False,
-    )
-    degraded = scores.returncode == 2
-    if degraded:
-        print("[daily_update] WARNING: score sync degraded; continuing, final status will fail.")
-    elif scores.returncode != 0:
-        print("[daily_update] ERROR: score sync failed.", file=sys.stderr)
-        sys.exit(scores.returncode)
+            scores = run("scores", ["scripts/sync_scores_espn.ts", start_str, today_str])
+            if scores not in (0, 2):
+                complete(summary, "failed")
+                sys.exit(final_code)
 
-    # Game context (overtime periods, tip-off, neutral site) for the lookback window.
-    # Must follow the score sync — it only reads games already marked 'final' — and must
-    # precede run-daily.ts, which reads overtime_periods when scoring fatigue.
-    # --refresh because a scoreboard cached mid-game carries no final line score.
-    print(f"[daily_update] refreshing game context for the {LOOKBACK_DAYS}d lookback …")
-    ctx = subprocess.run(
-        [
-            "pnpm", "exec", "tsx", "scripts/fetch_game_context.ts",
-            (today - timedelta(days=LOOKBACK_DAYS)).isoformat(),
-            today_str,
-            "--refresh",
-        ],
-        cwd=str(REPO_ROOT),
-        env={**os.environ, "DATABASE_URL": database_url},
-        check=False,
-    )
-    if ctx.returncode != 0:
-        # Non-fatal, and cheaper to lose than it used to be: step 1 already wrote
-        # overtime_periods from the same scoreboard, so a failure here costs tip-off times
-        # and the neutral-site flag for these few games, not the fatigue model's OT term.
-        print("[daily_update] WARNING: game context refresh failed; continuing.")
+            # Score sync supplied overtime; missing context remains optional, DB failure does not.
+            run("context", ["scripts/fetch_game_context.ts", start_str, today_str, "--refresh"], optional_partial=True)
+            run("projection", ["scripts/project_fatigue.ts"], optional=True)
+            run("fatigue", ["scripts/run-daily.ts", today_str])
+            fatigue = summary["stages"]["fatigue"]
+            summary["stages"]["predictions"] = stage_result(directory, "predictions",
+                                                            fatigue["exit_code"], fatigue["status"])
+            summary["data_freshness"] = read_freshness(directory)
+    except SystemExit:
+        complete(summary, "failed")
+        raise
+    except Exception:
+        # Exception text can contain connection URLs. Only the status goes into the artifact.
+        complete(summary, "failed")
+        raise
 
-    # Fatigue for scheduled games that have none — how a fixture added mid-season (the NBA
-    # publishes 80 of 82 at release and fills the rest once Cup group play resolves) picks up a
-    # rest advantage without anyone remembering to run it. Gap-only, so an ordinary night costs
-    # one indexed query that returns nothing.
-    #
-    # Runs BEFORE run-daily.ts, which then recomputes the next 14 days so finished games bring
-    # their real overtime and margin into the rows that follow them.
-    print("[daily_update] projecting fatigue for any unscored scheduled game …")
-    proj = subprocess.run(
-        ["pnpm", "exec", "tsx", "scripts/project_fatigue.ts"],
-        cwd=str(REPO_ROOT),
-        env={**os.environ, "DATABASE_URL": database_url},
-        check=False,
-    )
-    if proj.returncode != 0:
-        # Non-fatal: a game with no fatigue row renders an em dash, which is honest. Failing the
-        # whole run over it would also cost the score sync that already succeeded.
-        print("[daily_update] WARNING: fatigue projection failed; continuing.")
-
-    print(f"[daily_update] running Node pipeline for {today_str} …")
-    result = subprocess.run(
-        ["pnpm", "exec", "tsx", "scripts/run-daily.ts", today_str],
-        cwd=str(REPO_ROOT),
-        env={**os.environ, "DATABASE_URL": database_url},
-        check=False,
-    )
-    if result.returncode != 0:
-        sys.exit(result.returncode)
-
-    if degraded:
-        print("[daily_update] completed downstream work; score sync remains degraded.", file=sys.stderr)
-        sys.exit(2)
-    print("[daily_update] completed successfully.")
+    status = "failed" if final_code else "degraded" if any(
+        stage["status"] == "degraded" for stage in summary["stages"].values()
+    ) or summary["data_freshness"]["status"] in ("unknown", "incomplete") or summary["timing_status"] == "unknown" else "success"
+    complete(summary, status)
+    if final_code:
+        sys.exit(final_code)
 
 
 if __name__ == "__main__":

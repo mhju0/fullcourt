@@ -15,20 +15,23 @@ import { DIRECT_NAV_ITEMS, EXPLORE_NAV_ITEMS } from "@/lib/primary-navigation"
 export function CommandPalette({
   open,
   onOpenChange,
+  onNavigate,
 }: {
   open: boolean
   onOpenChange: (open: boolean) => void
+  onNavigate: () => void
 }) {
   const router = useRouter()
   const keyboardSelection = useRef(true)
 
   const go = useCallback(
     (href: string) => {
+      onNavigate()
       onOpenChange(false)
       // Keyboard selection stays immediate; pointer selection uses chrome navigation.
       navigateWithViewTransition(router, href, { instant: keyboardSelection.current })
     },
-    [router, onOpenChange]
+    [router, onOpenChange, onNavigate]
   )
 
   // Search aliases preserve familiar terms when a surface is renamed.

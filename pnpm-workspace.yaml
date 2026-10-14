@@ -5,6 +5,8 @@ packages: []
 # with the allowBuilds map below. Keep the overrides in step with whatever advisory
 # motivated them — ws is a CVE pin, not a preference.
 overrides:
+  # GHSA-jqcg-44mw-7w3h: shadcn tooling reaches this through Express.
+  proxy-addr@<2.0.8: 2.0.8
   '@babel/core@<=7.29.0': 7.29.6
   # Two 2026-09-01 advisories against <=4.28.6 (GHSA-c83g-rgw3-j3cx unbounded cache growth,
   # GHSA-73wf-gq98-2v4g crash via untrusted browserslist-stats.json). Reached only through

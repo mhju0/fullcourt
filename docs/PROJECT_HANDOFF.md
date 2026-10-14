@@ -1,50 +1,39 @@
 # Project handoff
-
 Reconciled 2026-09-11. Source/tests and Git take precedence. This is a current-state summary;
 update these sections in place. Rationale belongs in [Decisions](DECISIONS.md).
-
 ## Product and release
-
 FullCourt studies NBA rest, travel, schedule density, and outcomes. The homepage leads with
 rest and schedule findings; Games, Season Report, Schedule Edge, and Explore are the primary
 navigation. Explore contains the other basketball studies. There are no accounts or persisted
 personal preferences; exploration state is shareable through URLs and browser history.
-
 The rest-focused redesign shipped in PR #84 (`776683e`). Its first verified Officiating refresh
 and release record shipped in PR #85 (`34b8961`). Production: https://fullcourt.fyi.
 The [dated release review](design/redesign-release-review.md) records verification; use GitHub
 and Vercel for subsequent deployment status.
-
 Games now exposes Season → Month → Date controls, with shared season selectors across studies.
 Games has one layout at every width, in tip-off order (D-79). Playoff Rest explains between-round recovery directly.
 Officiating covers 12 regular seasons and 4,546 reports, including the partial 2014–15 season;
 [archive evidence](research/2026-09-09-l2m-archive.md) records source checks and historical limits.
-
 The homepage hero now contains only the headline, original description and primary action.
 The one-game example and its supporting reads were removed under D-67. Next.js and its ESLint
 config are pinned to 16.3.8 (raised from 16.3.4 on 2026-10-03 for GHSA-vcvr-r3jv-pc5j); the
 lockfile resolves Sharp 0.35.5 (pinned on 2026-10-07 for GHSA-wq5f-xc86-pv6w), clearing the production dependency audit. See [verification](design/home-hero-release-review.md).
-
 Shared filters now use 44px targets and 16px text. Analysis uses equal-width filter columns;
 Season Report uses bordered sections with a separate interpretation surface. The
 [control and section audit](design/control-and-section-audit.md) records route coverage and rationale.
-
 D-69 makes Playoff Rest and Expected Shot Value default to their latest usable publication.
 Their selected views are shareable through URLs and copy actions. `/data-status` separates
 coverage, refresh evidence and database connectivity; the homepage historical date comes from
 the analysis population. Games moves offseason context beside mobile date controls, names
 matchup controls distinctly, and restores selected-chip visibility after resizing. See the
 [seven-fix review](design/seven-polish-fixes-review.md) for verification and release evidence.
-
 D-70 adds `/home-court`, reached through Explore, for annual home and rested-home win-rate
 history with an expandable count table. Season Report exposes the selected home baseline
 alongside the rested-home result and gap. Both retain the 100-game rested-home display gate;
 ongoing seasons are labeled explicitly and excluded from completed-history summaries.
 The [research record](research/2026-09-11-home-advantage-trend.md) retains data, sources, and
 owner decisions. See the [release review](design/home-court-study-review.md) and Git for verification and deployment status.
-
 ## Architecture and safeguards
-
 - Next.js serves pages and API routes. Database reads use Drizzle/postgres-js against Supabase
   PostgreSQL. Offline Python analyses also publish committed artifacts.
 - `src/lib/fatigue.ts` computes scores on the write path. The coefficients are ratified;
@@ -203,3 +192,6 @@ Owner approved merging3058478, but credential rotation is still unconfirmed. [Ve
 Closeout: independent report review approved HTML SHA256 d93b936ae708037d272cf32c66c2f16e79c42d321b4b8c5539185d86e60d97ce after endpoint/backup-consumer corrections. Static artifact/doc checks pass; local app and initially-stopped PostgreSQL services were stopped again. Audit documents remain local and uncommitted.
 
 Release preparation, 2026-10-14: the owner requested main integration of reviewed motion3058478 and the three audit documents. The release branch prepares that exact scope; recommendations F1–F9 remain unimplemented. Owner merge approval is recorded, while the credential-rotation gate awaits their response; no push, PR, merge or deployment has occurred in this preparation step. [Verified] Node22 lint/typecheck/build,1,148 unit tests and doc/diff checks pass for the prepared scope.
+
+CI/CD hardening,2026-10-15: owner approved F1–F7. [Verified] local secret-free browser/real-PG gates feed required verify; dependency SDK/proxy pins,21:17 schedule, safe stage/freshness estimates, blocked manual sources and maintenance monitoring implemented. Main strict/admin enforcement and Vercel blocking GitHub verify applied/read back; no production data writes.
+[Report](reports/2026-10-15-ci-cd-implementation.html) retains all28 launch statuses and owner instructions. Node22 gates/1157unit,15automation,20+42Python,12rendered,25PG pass; independent exact-candidate review pending. No push/preview/merge/deploy: credential rotation unconfirmed. Next: owner confirms all credential locations, then exact-SHA preview and authorized release; scheduled/Dependabot/failed-promotion evidence follows. Broad UI suggestions and physical/opening-night checks remain open; D-80 freeze still applies. JOBKOREA queued separately.

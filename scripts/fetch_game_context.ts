@@ -34,8 +34,9 @@
 import { config } from "dotenv";
 config({ path: ".env.local" });
 
-import { existsSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import postgres from "postgres";
+import { contextExitCode, writeStageSummary } from "./pipeline-stage-summary";
 
 // Shared with scripts/sync_scores_espn.ts, which matches ESPN events to stored rows on the
 // same (date, away, home) key. Two copies of this map would silently match two different
@@ -63,13 +64,19 @@ async function fetchJsonCached(
   refresh: boolean
 ): Promise<unknown> {
   const path = `${CACHE_DIR}/${cacheFile}`;
-  if (!refresh && existsSync(path)) return JSON.parse(readFileSync(path, "utf8"));
-  const res = await fetch(url, { headers: { "User-Agent": "Mozilla/5.0" } });
-  if (!res.ok) throw new Error(`HTTP ${res.status} for ${url}`);
+  if (!refresh && existsSync(path)) {
+    const cached = JSON.parse(readFileSync(path, "utf8"));
+    if (!Array.isArray(cached?.events)) throw new Error("Invalid cached scoreboard");
+    return cached;
+  }
+  const res = await fetch(url, { headers: { "User-Agent": "Mozilla/5.0" }, signal: AbortSignal.timeout(25_000) });
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
   const body = await res.text();
-  JSON.parse(body); // never cache a non-JSON error page
+  const parsed = JSON.parse(body);
+  if (!Array.isArray(parsed?.events)) throw new Error("Invalid scoreboard: events must be an array");
+  mkdirSync(CACHE_DIR, { recursive: true });
   writeFileSync(path, body);
-  return JSON.parse(body);
+  return parsed;
 }
 
 interface Context {
@@ -116,99 +123,111 @@ async function main() {
   const [from, to] = dates_;
   const sql = postgres(process.env.DATABASE_URL!, { max: 4 });
 
-  const rows = await sql<
-    { id: number; date: string; season: string; home: string; away: string }[]
-  >`
-    -- ::text is load-bearing: postgres.js hydrates date columns as JS Date objects,
-    -- so String(row.date) yields "Sun Dec 21 2014 09:00:00 GMT+0900", not "2014-12-21".
-    select g.id, g.date::text as date, g.season, ht.abbreviation home, at.abbreviation away
-    from games g
-    join teams ht on ht.id = g.home_team_id
-    join teams at on at.id = g.away_team_id
-    where g.status = 'final' and g.season >= ${FIRST_SEASON}
-      ${from ? sql`and g.date >= ${from}` : sql``}
-      ${to ? sql`and g.date <= ${to}` : sql``}
-    order by g.date`;
+  try {
+    const rows = await sql<
+      { id: number; date: string; season: string; home: string; away: string }[]
+    >`
+      -- ::text is load-bearing: postgres.js hydrates date columns as JS Date objects,
+      -- so String(row.date) yields "Sun Dec 21 2014 09:00:00 GMT+0900", not "2014-12-21".
+      select g.id, g.date::text as date, g.season, ht.abbreviation home, at.abbreviation away
+      from games g
+      join teams ht on ht.id = g.home_team_id
+      join teams at on at.id = g.away_team_id
+      where g.status = 'final' and g.season >= ${FIRST_SEASON}
+        ${from ? sql`and g.date >= ${from}` : sql``}
+        ${to ? sql`and g.date <= ${to}` : sql``}
+      order by g.date`;
 
-  const byDate = new Map<string, typeof rows>();
-  for (const g of rows) {
-    const d = String(g.date);
-    if (!byDate.has(d)) byDate.set(d, [] as unknown as typeof rows);
-    byDate.get(d)!.push(g);
-  }
-  const dates = [...byDate.keys()].sort();
-  console.log(`${rows.length} final games across ${dates.length} dates, ${FIRST_SEASON}+`);
-
-  const updates: Array<{ id: number } & Context> = [];
-  let unmatched = 0;
-  let errors = 0;
-  let done = 0;
-
-  await pool(dates, CONCURRENCY, async (date) => {
-    const compact = date.replaceAll("-", "");
-    try {
-      /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-      const sb: any = await fetchJsonCached(
-        `https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=${compact}`,
-        `sb-${compact}.json`,
-        refresh
-      );
-      const events = new Map<string, Context>();
-      for (const ev of sb?.events ?? []) {
-        const parsed = parseEvent(ev?.competitions?.[0]);
-        if (parsed) events.set(parsed.key, parsed.ctx);
-      }
-      for (const g of byDate.get(date)!) {
-        const ctx = events.get(`${g.away}@${g.home}`);
-        if (ctx) updates.push({ id: g.id, ...ctx });
-        else unmatched++;
-      }
-    } catch (e) {
-      errors++;
-      console.log(`[ERROR] ${date}: ${e instanceof Error ? e.message : e}`);
+    const byDate = new Map<string, typeof rows>();
+    for (const g of rows) {
+      const d = String(g.date);
+      if (!byDate.has(d)) byDate.set(d, [] as unknown as typeof rows);
+      byDate.get(d)!.push(g);
     }
-    if (++done % 250 === 0) console.log(`  ${done}/${dates.length} dates`);
-  });
+    const dates = [...byDate.keys()].sort();
+    console.log(`${rows.length} final games across ${dates.length} dates, ${FIRST_SEASON}+`);
 
-  const withOt = updates.filter((u) => (u.overtimePeriods ?? 0) > 0);
-  const noLine = updates.filter((u) => u.overtimePeriods === null);
-  console.log(
-    `matched ${updates.length}, unmatched ${unmatched}, date errors ${errors}\n` +
-      `  overtime games: ${withOt.length} (max ${Math.max(0, ...withOt.map((u) => u.overtimePeriods!))} OT)\n` +
-      `  no line score (OT left as-is): ${noLine.length}\n` +
-      `  neutral-site games: ${updates.filter((u) => u.neutralSite).length}\n` +
-      `  tip-off times: ${updates.filter((u) => u.tipOffUtc).length}`
-  );
+    const updates: Array<{ id: number } & Context> = [];
+    let unmatched = 0;
+    let errors = 0;
+    let done = 0;
 
-  if (dryRun) {
-    console.log("--dry-run: no rows written");
+    await pool(dates, CONCURRENCY, async (date) => {
+      const compact = date.replaceAll("-", "");
+      try {
+        /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+        const sb: any = await fetchJsonCached(
+          `https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=${compact}`,
+          `sb-${compact}.json`,
+          refresh
+        );
+        const events = new Map<string, Context>();
+        for (const ev of sb?.events ?? []) {
+          const parsed = parseEvent(ev?.competitions?.[0]);
+          if (parsed) events.set(parsed.key, parsed.ctx);
+        }
+        for (const g of byDate.get(date)!) {
+          const ctx = events.get(`${g.away}@${g.home}`);
+          if (ctx) updates.push({ id: g.id, ...ctx });
+          else unmatched++;
+        }
+      } catch (e) {
+        errors++;
+        console.log(`[ERROR] ${date}: ${e instanceof Error ? e.message : e}`);
+      }
+      if (++done % 250 === 0) console.log(`  ${done}/${dates.length} dates`);
+    });
+
+    const withOt = updates.filter((u) => (u.overtimePeriods ?? 0) > 0);
+    const noLine = updates.filter((u) => u.overtimePeriods === null);
+    console.log(
+      `matched ${updates.length}, unmatched ${unmatched}, date errors ${errors}\n` +
+        `  overtime games: ${withOt.length} (max ${Math.max(0, ...withOt.map((u) => u.overtimePeriods!))} OT)\n` +
+        `  no line score (OT left as-is): ${noLine.length}\n` +
+        `  neutral-site games: ${updates.filter((u) => u.neutralSite).length}\n` +
+        `  tip-off times: ${updates.filter((u) => u.tipOffUtc).length}`
+    );
+
+    const report = (written: number) => {
+      writeStageSummary("context", { rows_written: written, matched: updates.length,
+        unmatched, date_errors: errors, no_line_score: noLine.length });
+      process.exitCode = contextExitCode({ dateErrors: errors, unmatched });
+    };
+    if (dryRun) {
+      console.log("--dry-run: no rows written");
+      report(0);
+      return;
+    }
+
+    // Chunked UPDATE ... FROM (values …); OT is left untouched where ESPN had no line score.
+    const CHUNK = 500;
+    let written = 0;
+    for (let i = 0; i < updates.length; i += CHUNK) {
+      const chunk = updates.slice(i, i + CHUNK);
+      const res = await sql`
+        update games g set
+          overtime_periods = coalesce(v.ot::int, g.overtime_periods),
+          tip_off_utc = v.tip::timestamptz,
+          neutral_site = v.neutral::boolean,
+          neutral_venue_city = v.city::varchar
+        from (values ${sql(
+          chunk.map(
+            (u) =>
+              [u.id, u.overtimePeriods, u.tipOffUtc, u.neutralSite, u.neutralVenueCity] as const
+          )
+        )}) as v(id, ot, tip, neutral, city)
+        where g.id = v.id::int`;
+      written += res.count ?? chunk.length;
+      if (i % (CHUNK * 10) === 0) console.log(`  wrote ${written}/${updates.length}`);
+    }
+    console.log(`done — ${written} rows updated`);
+    report(written);
+  } finally {
     await sql.end();
-    return;
   }
-
-  // Chunked UPDATE ... FROM (values …); OT is left untouched where ESPN had no line score.
-  const CHUNK = 500;
-  let written = 0;
-  for (let i = 0; i < updates.length; i += CHUNK) {
-    const chunk = updates.slice(i, i + CHUNK);
-    const res = await sql`
-      update games g set
-        overtime_periods = coalesce(v.ot::int, g.overtime_periods),
-        tip_off_utc = v.tip::timestamptz,
-        neutral_site = v.neutral::boolean,
-        neutral_venue_city = v.city::varchar
-      from (values ${sql(
-        chunk.map(
-          (u) =>
-            [u.id, u.overtimePeriods, u.tipOffUtc, u.neutralSite, u.neutralVenueCity] as const
-        )
-      )}) as v(id, ot, tip, neutral, city)
-      where g.id = v.id::int`;
-    written += res.count ?? chunk.length;
-    if (i % (CHUNK * 10) === 0) console.log(`  wrote ${written}/${updates.length}`);
-  }
-  console.log(`done — ${written} rows updated`);
-  await sql.end();
 }
 
-main();
+main().catch(() => {
+  console.error("[game-context] database or processing failure");
+  process.exitCode = 1;
+});

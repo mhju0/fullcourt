@@ -8,6 +8,8 @@
  * Usage: pnpm exec tsx scripts/run-daily.ts YYYY-MM-DD
  */
 
+import { reportDailyFreshness } from "./daily-freshness";
+import { writeStageSummary } from "./pipeline-stage-summary";
 import { and, asc, gte, lte } from "drizzle-orm";
 import { addDays, format, parseISO } from "date-fns";
 import type { PostgresJsDatabase } from "drizzle-orm/postgres-js";
@@ -49,6 +51,9 @@ async function main(): Promise<void> {
     .orderBy(asc(games.date), asc(games.id));
 
   if (todaysGames.length === 0) {
+    writeStageSummary("fatigue", { rows_written: 0, games_refreshed: 0 });
+    writeStageSummary("predictions", { rows_written: 0 });
+    await reportDailyFreshness(appDb, dateArg, endDate);
     console.log(`[run-daily] No games in DB for ${dateArg}–${endDate}; skipping fatigue & predictions.`);
     return;
   }
@@ -60,6 +65,11 @@ async function main(): Promise<void> {
     port,
   });
 
+  writeStageSummary("fatigue", { rows_written: summary.fatigueRowsWritten,
+    games_refreshed: summary.gamesRefreshed, failed_games: summary.failedGames.length,
+    skipped_games: summary.skippedGames.length, deferred_games: summary.deferredGames.length });
+  writeStageSummary("predictions", { rows_written: summary.predictionRowsWritten,
+    failed_games: summary.failedGames.length, deferred_games: summary.deferredGames.length });
   for (const failure of summary.failedGames) {
     console.warn(
       `[run-daily] preserved game ${failure.gameId} after refresh failure: ${failure.reason}`
@@ -69,6 +79,7 @@ async function main(): Promise<void> {
   console.log(
     `[run-daily] ${dateArg}–${endDate}: games refreshed=${summary.gamesRefreshed}, fatigue rows written=${summary.fatigueRowsWritten}, predictions written=${summary.predictionRowsWritten}, failures=${summary.failedGames.length}, skipped=${summary.skippedGames.length}, deferred=${summary.deferredGames.length}`
   );
+  await reportDailyFreshness(appDb, dateArg, endDate);
   if (summary.failedGames.length > 0 || summary.deferredGames.length > 0) process.exitCode = 1;
 }
 

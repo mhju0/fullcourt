@@ -171,12 +171,13 @@ Skipping `prepare` fails **silently**: `fatigue_model_table.csv` is already on d
   resolve the repo root relative to the file, and the `tsx` scripts rely on the `@/*` alias.
 - **Python: three requirements files, and they are not interchangeable.** Activate a virtualenv,
   then `requirements.txt` (root, pinned) or `scripts/requirements.txt` (loose; what the
-  **daily-update** workflow installs — `ci.yml` installs no Python deps, since its one unittest is
-  stdlib-only). The `ml/` harness needs its own stack: `pip install -r ml/requirements.txt`
+  **manual pipeline** tools use — normal daily execution is stdlib-only; CI installs
+  constrained psycopg2-binary for ML contracts). The `ml/` harness needs its own stack: `pip install -r ml/requirements.txt`
   (scipy + scikit-learn), deliberately isolated from the pipeline pins. Running the fatigue
   harness without it is an `ImportError`.
 - Env vars are documented with descriptions in the committed `.env.example`.
-- Playwright is **not** run in CI — its specs need a running server and a populated database.
+- The bounded Playwright smoke gate runs in CI against a built app and deterministic API fixtures.
+  The full database-backed E2E suite remains a separate release check.
 
 ## Documentation index
 

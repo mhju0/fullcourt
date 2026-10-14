@@ -1,0 +1,77 @@
+name: Maintenance health
+
+on:
+  schedule:
+    - cron: "43 7 * * *"
+    - cron: "43 9 * * 1"
+  workflow_dispatch:
+    inputs:
+      task:
+        type: choice
+        description: Read-only monitor or full dependency audit
+        default: monitor
+        options: [monitor, dependencies]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: maintenance-${{ github.event.schedule || inputs.task }}
+  cancel-in-progress: false
+
+jobs:
+  monitor:
+    if: github.event.schedule == '43 7 * * *' || (github.event_name == 'workflow_dispatch' && inputs.task == 'monitor')
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+        with:
+          node-version: "22"
+      - name: Check due daily scheduled run
+        run: node scripts/check-daily-run.mjs
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        if: always()
+        with:
+          name: daily-schedule-monitor
+          path: daily-watchdog.json
+          if-no-files-found: warn
+          retention-days: 14
+
+  dependencies:
+    if: github.event.schedule == '43 9 * * 1' || (github.event_name == 'workflow_dispatch' && inputs.task == 'dependencies')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+        with:
+          node-version: "22"
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Audit all dependencies and validate result
+        shell: bash
+        run: |
+          set +e
+          pnpm audit --json > dependency-audit.json
+          audit_exit=$?
+          set -e
+          AUDIT_EXIT_CODE="$audit_exit" node scripts/summarize-dependency-audit.mjs
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        if: always()
+        with:
+          name: full-dependency-audit
+          path: dependency-audit.json
+          if-no-files-found: error
+          retention-days: 14
