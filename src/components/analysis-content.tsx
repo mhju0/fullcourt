@@ -499,6 +499,7 @@ function SeasonWinRateBySeasonChart({
               width={40}
             />
             <Tooltip
+              isAnimationActive={false}
               cursor={{ fill: "rgba(23,64,139,0.06)" }}
               content={(props: TooltipContentProps) => <SeasonWinRateTooltip {...props} />}
             />
@@ -969,7 +970,10 @@ export function AnalysisContent({ asOf }: { asOf?: DataAsOf | null }) {
       drillTokenRef.current += 1
       setDrillSignal({ threshold, token: drillTokenRef.current })
       setTimeout(() => {
-        exploreRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
+        exploreRef.current?.scrollIntoView({
+          behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth",
+          block: "start",
+        })
       }, 60)
     },
     []
@@ -1117,6 +1121,7 @@ export function AnalysisContent({ asOf }: { asOf?: DataAsOf | null }) {
                 width={40}
               />
               <Tooltip
+                isAnimationActive={false}
                 cursor={{ fill: "rgba(23,64,139,0.06)" }}
                 content={winRateTooltipRenderer}
               />

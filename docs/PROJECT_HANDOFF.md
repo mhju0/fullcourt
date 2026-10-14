@@ -101,18 +101,9 @@ Still open from those entries:
 
 Condensed on 2026-10-10 from two entries; DECISIONS.md D-74 to D-77 hold the detail.
 
-- **Site.** Footer non-affiliation notice, `/privacy` and the `Report an error` mail link.
-  Production is `https://fullcourt.fyi`; `www.fullcourt.fyi`, `fullcourt-nba.vercel.app` and
-  `nba-rest-advantage.vercel.app` answer 308 to it. `src/lib/site-url.ts` holds the origin.
-- **Monitoring.** Sentry project `javascript-nextjs` (org `michael-ju-46`) reads its DSN from
-  `NEXT_PUBLIC_SENTRY_DSN`, set in Vercel; IP storage is off. UptimeRobot checks `/` and
-  `/api/health` every five minutes.
-- **Outside the repo.** A Vercel firewall rule limits `/api/` to 100 requests per 60 seconds
-  per IP (Hobby allows one rule). A weekly backup runs on the owner's Mac
-  (`~/Backups/fullcourt/backup.sh`, Sundays 11:00, newest eight kept); it needs `pg_dump` 18,
-  and one test restore matched row counts.
-- **Phone test inside Instagram.** Two fixes: the Schedule breakdown zero rule no longer paints
-  over the pinned column, and the error-report subject is `FullCourt error or suggestion`.
+Condensed 2026-10-14: D-74–D-77 shipped the footer non-affiliation notice, `/privacy`, and report mail link. `src/lib/site-url.ts` holds `https://fullcourt.fyi`; the www/fullcourt-nba/nba-rest-advantage domains redirect with 308.
+Sentry `javascript-nextjs` / `michael-ju-46` uses Vercel `NEXT_PUBLIC_SENTRY_DSN` with IP storage off; UptimeRobot checks `/` and `/api/health` every five minutes. Vercel's one Hobby firewall rule limits `/api/` to 100 requests per 60 seconds per IP.
+The owner's Mac runs `~/Backups/fullcourt/backup.sh` Sundays 11:00, retaining eight backups; it needs pg_dump 18 and one restore matched counts. Instagram review fixed the Schedule pinned-column zero rule and report subject `FullCourt error or suggestion`.
 
 Still open from those entries: Sentry source-map upload; the footer notice size (12px); the
 GitHub social preview and outside links may still name the old address; the quota plan
@@ -202,3 +193,7 @@ Artifact merge follow-up, 2026-10-11: owner approved PR #125; merged3445fcd at11
 Generator safeguards, 2026-10-12 (D-85): owner approved observed referee coverage, exact4-game corrected-date crosswalk and monotonic Officiating publication. [Verified] both pure boundary and actual CLI cached runs match13,209 events, collect12,636 whistle/11,952 style,573 missing,0 errors; analytical fields identical to publication. Authentic older snapshot refused before any write;4,555 published JSON remain byte-identical.
 [Record](research/2026-10-12-generator-publication-guards.md); [HTML before/after](reports/2026-10-11-remediation/index.html#generator-guards). [Verified] Node22 gates/1148 unit/Python7+42, independent edd31eb review, CI and exact-SHA connected preview pass. PR #126 awaits owner merge yes; no production writer or merge.
 Open: latest Officiating snapshot/full upstream Legends unavailable, item24 stays partial. Oct12 nightly unavailable; all owner/future checks and unresolved prior issues preserved. Next: owner-approved PR merge only after preview/review; opening-night runbook remains separate.
+
+Selected motion fixes, 2026-10-14: [plans and verification](../plans/README.md) record the five owner-selected fixes: immediate Analysis tooltips/fatigue fills, shared Games controls, reduced-motion drill scrolling and Schedule guide rotation. [Verified locally] corrected baseline reproduces all five defects; built Chromium passes 98 checks, including 20 selected-fix cases at 390/1440px in normal/reduced motion; lint/typecheck/build, 1,148 unit tests, production dependency audit and doc links pass.
+No model/schema/data/dependency changes. Existing homepage, route and record motion is preserved. Early invalid reduced-motion harness results were rejected and replaced with asserted viewport/media evidence.
+Open/next: independent root review; deployment remains pending the owner's credential rotation and explicit merge yes. No push, PR, merge or production write; physical-device and opening-night checks and all prior unresolved issues remain open.

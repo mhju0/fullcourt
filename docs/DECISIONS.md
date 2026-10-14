@@ -1136,3 +1136,14 @@ or production data writes. A separate owner yes remains required for this PR's m
 
 [Verification record](research/2026-10-12-generator-publication-guards.md) distinguishes local
 regeneration, regression tests, independent review and any later deployment.
+
+## Selected motion audit fixes — 2026-10-14
+
+The owner selected all five corrective findings: immediate Analysis tooltips, shared Games
+control feedback, reduced-motion-safe threshold drill scrolling, immediate fatigue fills,
+and reduced-motion-safe Schedule guide rotation. These align repeated reading and
+accessibility with the existing Motion contract; no new motion moment or dependency is added.
+Homepage entrances, bar drawing, route crossfades, record expansion, analytics and model
+semantics remain unchanged. The numbered [plans](../plans/README.md) record baseline and
+verification. Local completion does not authorize deployment: credential rotation is pending,
+and each main merge still requires explicit owner yes.
