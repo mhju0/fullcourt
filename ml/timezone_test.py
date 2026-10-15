@@ -22,7 +22,9 @@ Usage:
 
 from __future__ import annotations
 
+import json
 import logging
+from datetime import date
 from pathlib import Path
 
 import numpy as np
@@ -37,6 +39,8 @@ DATA = ROOT / "ml" / "data"
 FEATURES_CSV = DATA / "fatigue_features.csv"
 TABLE_CSV = DATA / "fatigue_model_table.csv"
 REPORT = DATA / "timezone_report.txt"
+#: The committed snapshot the method page reads. Written here, never by hand.
+PUBLISHED_JSON = ROOT / "src" / "data" / "timezone-null.json"
 
 # Both from ADR 0006, so the folds are the same ones its table was built on.
 TRAIN_FLOOR = 2002
@@ -54,8 +58,16 @@ CANDIDATES = ["d_east3_short", "d_west3_short", "d_east3", "d_west3"]
 #: Hours of clock shift that counts as "long". Pre-registered at 3 — the question was asked about
 #: 3+ zone movement, and it is the point past which a single night cannot re-entrain.
 LONG_SHIFT_HOURS = 3.0
-#: Days of rest that counts as "short". 1 or fewer: tonight is a back-to-back or one day after.
+#: "Short rest", pre-registered as "≤ 1 day of rest". `rest_days` counts days since the previous
+#: game, so 1 is a back-to-back and this is the visitor playing on consecutive nights.
 SHORT_REST_DAYS = 1.0
+#: The wider reading of the same words, "≤ 1 day off" (days since ≤ 2). Run as a sensitivity
+#: check and published beside the result; it does not replace the pre-registered definition.
+SENSITIVITY_SHORT_REST_DAYS = 2.0
+
+# For scale, from ADR 0006 — not measured here.
+EVERY_FATIGUE_FACTOR_COMBINED = 0.00245
+STRENGTH_ALONE = 0.06
 
 
 def fit_clamped(x: np.ndarray, y: np.ndarray, clamp: list[bool]) -> tuple[np.ndarray, float]:
@@ -92,7 +104,7 @@ def log_loss(y: np.ndarray, p: np.ndarray) -> float:
     return float(-np.mean(y * np.log(p) + (1 - y) * np.log(1 - p)))
 
 
-def build_terms() -> pd.DataFrame:
+def build_terms(short_rest_days: float) -> pd.DataFrame:
     """Per-game `d_` columns for the four candidates, from the per-side feature export.
 
     A home team crosses zero zones, so its value on every one of these is 0 and the difference
@@ -110,7 +122,8 @@ def build_terms() -> pd.DataFrame:
     shift = df["zone_shift_hours"].fillna(0.0)
     # NaN rest is a season opener — a long break, so not short rest. Filled rather than dropped:
     # dropping would silently remove every opener from the population.
-    short = df["rest_days"].fillna(99.0) <= SHORT_REST_DAYS
+    short = df["rest_days"].fillna(99.0) <= short_rest_days
+    df["b2b"] = (df["rest_days"] == 1).astype(float)
 
     df["east3"] = (shift >= LONG_SHIFT_HOURS).astype(float)
     df["west3"] = (shift <= -LONG_SHIFT_HOURS).astype(float)
@@ -125,6 +138,8 @@ def build_terms() -> pd.DataFrame:
     out = pd.DataFrame(index=common)
     for c in cols:
         out[f"d_{c}"] = away.loc[common, c].to_numpy() - home.loc[common, c].to_numpy()
+    # Not a model term: whether the visitor itself played the night before, for the overlap table.
+    out["away_b2b"] = away.loc[common, "b2b"].to_numpy()
     return out.reset_index()
 
 
@@ -161,8 +176,9 @@ def describe(df: pd.DataFrame, lines: list[str]) -> None:
     a("")
 
 
-def main() -> None:
-    terms = build_terms()
+def measure(short_rest_days: float) -> dict:
+    """Every figure the test produces under one definition of short rest."""
+    terms = build_terms(short_rest_days)
 
     log.info("reading %s", TABLE_CSV)
     table = pd.read_csv(TABLE_CSV, low_memory=False)
@@ -213,11 +229,12 @@ def main() -> None:
         mask = df[term].to_numpy() > 0
         n = int(mask.sum())
         if n == 0:
-            overlap_rows.append((term, 0, float("nan"), float("nan")))
+            overlap_rows.append((term, 0, float("nan"), float("nan"), float("nan")))
             continue
         alt = 100.0 * (df.loc[mask, "d_alt_visit"].to_numpy() > 0).mean()
         b2b = 100.0 * (df.loc[mask, "d_is_b2b"].to_numpy() > 0).mean()
-        overlap_rows.append((term, n, alt, b2b))
+        visitor_b2b = 100.0 * (df.loc[mask, "away_b2b"].to_numpy() > 0).mean()
+        overlap_rows.append((term, n, alt, b2b, visitor_b2b))
 
     solo: dict[str, float] = {}
     for term in CANDIDATES:
@@ -234,6 +251,35 @@ def main() -> None:
             preds.append(1.0 / (1.0 + np.exp(-eta)))
             actuals.append(test["home_won"].to_numpy(int))
         solo[term] = log_loss(np.concatenate(actuals), np.concatenate(preds))
+
+    fw = pd.DataFrame(fold_weights["+ east/west × short rest"])
+    weights = {}
+    for term in CANDIDATES:
+        vals = fw[term].to_numpy(float)
+        mean = vals.mean()
+        cv = float(vals.std() / abs(mean)) if abs(mean) > 1e-12 else float("inf")
+        nonzero = int((vals > 1e-9).sum())
+        if mean < 1e-6:
+            verdict = "pinned at zero by the clamp — nothing"
+        elif cv > 1.0:
+            verdict = "unstable"
+        else:
+            verdict = "stable"
+        weights[term] = {"mean": mean, "cv": cv, "nonzero": nonzero, "folds": len(vals), "verdict": verdict}
+
+    return {
+        "df": df,
+        "seasons": seasons,
+        "models": models,
+        "results": results,
+        "weights": weights,
+        "overlap": overlap_rows,
+        "solo": solo,
+    }
+
+
+def report_lines(m: dict) -> list[str]:
+    df, seasons, models, results, solo = m["df"], m["seasons"], m["models"], m["results"], m["solo"]
 
     lines: list[str] = []
     a = lines.append
@@ -273,20 +319,10 @@ def main() -> None:
     a("")
     a("| term | mean weight | cv | folds non-zero | verdict |")
     a("|---|---:|---:|---:|---|")
-    fw = pd.DataFrame(fold_weights["+ east/west × short rest"])
     for term in CANDIDATES:
-        vals = fw[term].to_numpy(float)
-        mean = vals.mean()
-        cv = float(vals.std() / abs(mean)) if abs(mean) > 1e-12 else float("inf")
-        nonzero = int((vals > 1e-9).sum())
-        if mean < 1e-6:
-            verdict = "pinned at zero by the clamp — nothing"
-        elif cv > 1.0:
-            verdict = "unstable"
-        else:
-            verdict = "stable"
-        cv_s = "—" if not np.isfinite(cv) else f"{cv:.2f}"
-        a(f"| `{term}` | {mean:.4f} | {cv_s} | {nonzero}/{len(vals)} | {verdict} |")
+        w = m["weights"][term]
+        cv_s = "—" if not np.isfinite(w["cv"]) else f"{w['cv']:.2f}"
+        a(f"| `{term}` | {w['mean']:.4f} | {cv_s} | {w['nonzero']}/{w['folds']} | {w['verdict']} |")
     a("")
 
     a("## Does any candidate earn its place on its own?")
@@ -326,16 +362,132 @@ def main() -> None:
     a("The baseline already carries visiting altitude and back-to-back. Denver and Utah are")
     a("both western and both high, so a westward term partly restates the altitude term.")
     a("")
-    a("| term | games | also visiting altitude | also back-to-back |")
-    a("|---|---:|---:|---:|")
-    for term, n, alt, b2b in overlap_rows:
+    a("`d_is_b2b` is a difference: it is non-zero when the visitor is on a back-to-back and the")
+    a("home team is not. Where both are, the term is zero, so the two columns differ.")
+    a("")
+    a("| term | games | also visiting altitude | back-to-back term non-zero | visitor on a back-to-back |")
+    a("|---|---:|---:|---:|---:|")
+    for term, n, alt, b2b, visitor_b2b in m["overlap"]:
         alt_s = "—" if n == 0 else f"{alt:.1f}%"
         b2b_s = "—" if n == 0 else f"{b2b:.1f}%"
-        a(f"| `{term}` | {n:,} | {alt_s} | {b2b_s} |")
+        v_s = "—" if n == 0 else f"{visitor_b2b:.1f}%"
+        a(f"| `{term}` | {n:,} | {alt_s} | {b2b_s} | {v_s} |")
     a("")
+
+    return lines
+
+
+def raw_split(df: pd.DataFrame) -> list[dict]:
+    y = df["home_won"].to_numpy(int)
+    east, west = df["d_east3"].to_numpy() > 0, df["d_west3"].to_numpy() > 0
+    neither = ~east & ~west
+    cells = [
+        ("all games in the era", np.ones(len(df), bool), False),
+        ("east ≥ 3h", east, True),
+        ("east ≥ 3h, short rest", df["d_east3_short"].to_numpy() > 0, False),
+        ("west ≥ 3h", west, True),
+        ("west ≥ 3h, short rest", df["d_west3_short"].to_numpy() > 0, False),
+        ("no long shift either way", neither, True),
+    ]
+    return [
+        {
+            "trip": label,
+            "games": int(mask.sum()),
+            "homeWinPct": round(100.0 * y[mask].mean(), 2),
+            "strengthEdgeToHome": round(float(df.loc[mask, STRENGTH].mean()), 4) if edge else None,
+        }
+        for label, mask, edge in cells
+    ]
+
+
+def published(m: dict, sens: dict) -> dict:
+    """The snapshot `src/data/timezone-null.json`, from the pre-registered run plus the check."""
+    df, results = m["df"], m["results"]
+    strength = results["strength only"]["log_loss"]
+    base = results["four-term + strength (the baseline)"]["log_loss"]
+    full = results["+ east/west × short rest"]["log_loss"]
+    overlap = {row[0]: row for row in m["overlap"]}
+
+    def term_row(term: str) -> dict:
+        w, (_, n, alt, b2b, visitor_b2b) = m["weights"][term], overlap[term]
+        return {
+            "term": term,
+            "meanWeight": round(w["mean"], 4),
+            "cv": round(w["cv"], 2) if np.isfinite(w["cv"]) else None,
+            "foldsNonZero": w["nonzero"],
+            "verdict": w["verdict"],
+            "aloneVsBaseline": round(base - m["solo"][term], 5) + 0.0,
+            "games": n,
+            "alsoAltitudePct": round(alt, 1),
+            "backToBackTermPct": round(b2b, 1),
+            "visitorBackToBackPct": round(visitor_b2b, 1),
+        }
+
+    s_results = sens["results"]
+    s_base = s_results["four-term + strength (the baseline)"]["log_loss"]
+    s_full = s_results["+ east/west × short rest"]["log_loss"]
+    s_east = sens["weights"]["d_east3_short"]
+    s_split = {r["trip"]: r for r in raw_split(sens["df"])}
+    return {
+        "generatedBy": "ml/timezone_test.py",
+        "preRegistration": "ml/timezone_preregistration.md",
+        "report": "ml/TIMEZONE_REPORT.md",
+        "adr": "docs/adr/0006-fatigue-weights-were-fitted-and-the-model-was-not-changed.md",
+        "measuredOn": date.today().isoformat(),
+        "protocol": {
+            "folds": len(m["seasons"]),
+            "heldOutGames": results["strength only"]["n"],
+            "gamesInEra": len(df),
+            "baselineHomeWinPct": round(100.0 * df["home_won"].mean(), 2),
+            "thresholdHours": int(LONG_SHIFT_HOURS),
+            "shortRest": "visitor played the previous night (days since its last game ≤ 1)",
+        },
+        "rawSplit": raw_split(df),
+        "logLoss": {
+            "strengthOnly": round(strength, 5),
+            "baseline": round(base, 5),
+            "withCandidates": round(full, 5),
+            "baselineWorth": round(strength - base, 5),
+            "candidatesWorth": round(base - full, 5),
+            "everyFatigueFactorCombined": EVERY_FATIGUE_FACTOR_COMBINED,
+            "strengthAlone": STRENGTH_ALONE,
+        },
+        "terms": [term_row(t) for t in CANDIDATES],
+        "primaryTerm": "d_east3_short",
+        "sensitivity": {
+            "shortRest": "visitor on at most one day off (days since its last game ≤ 2)",
+            "eastShortGames": s_split["east ≥ 3h, short rest"]["games"],
+            "westShortGames": s_split["west ≥ 3h, short rest"]["games"],
+            "candidatesWorth": round(s_base - s_full, 5),
+            "primaryFoldsNonZero": s_east["nonzero"],
+        },
+    }
+
+
+def main() -> None:
+    primary = measure(SHORT_REST_DAYS)
+    sens = measure(SENSITIVITY_SHORT_REST_DAYS)
+
+    lines = report_lines(primary)
+    snapshot = published(primary, sens)
+    s = snapshot["sensitivity"]
+    lines += [
+        "## Sensitivity: short rest read as at most one day off",
+        "",
+        "Not the pre-registered definition. The same words can be read as days off rather than",
+        "days since, which also admits a visitor with one night between games. Reported beside",
+        "the result, never in place of it.",
+        "",
+        f"- short-rest games: east {s['eastShortGames']:,}, west {s['westShortGames']:,}",
+        f"- the four candidates are worth {s['candidatesWorth']:+.5f} log loss",
+        f"- `d_east3_short` non-zero in {s['primaryFoldsNonZero']}/{snapshot['protocol']['folds']} folds",
+        "",
+    ]
 
     REPORT.write_text("\n".join(lines) + "\n", encoding="utf-8")
     log.info("wrote %s", REPORT)
+    PUBLISHED_JSON.write_text(json.dumps(snapshot, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    log.info("wrote %s", PUBLISHED_JSON)
     print("\n".join(lines))
 
 

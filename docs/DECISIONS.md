@@ -1227,3 +1227,16 @@ were not taken, since choosing among them by the effect they leave is choosing b
 Rested attempts 1,551,764 → 1,453,771; the pooled league difference +0.57 → +0.69 points and
 the career mean +0.26 → +0.36. No career estimate flips beyond its own standard error. The
 site prints no league figure, so the change reaches readers through every player row.
+
+## D-90 — The time-zone null keeps its definition and publishes a sensitivity check (2026-10-15)
+
+The pre-registration says short rest is "≤ 1 day of rest"; the test counts it as the visitor
+playing the previous night (days since ≤ 1), which matches the repo's units when it was
+written, while a code comment described the wider reading. The pre-registered definition
+stands. The wider one (at most one day off) is now run in the same script and published
+beside it: the four candidates are worth +0.00005 instead of −0.00003 and the primary term is
+still zero in every fold, so the null holds under both. `ml/timezone_test.py` now writes
+`src/data/timezone-null.json` itself instead of the figures being transcribed. The overlap
+figure the page printed as "86.4% are ALSO back-to-backs" measured the model's
+back-to-back difference term; every short-rest visitor is on a back-to-back, and the page now
+shows both.

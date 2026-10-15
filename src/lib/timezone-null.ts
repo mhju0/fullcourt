@@ -6,9 +6,8 @@
  * arriving on *short rest*, where there is no time to re-entrain. That was pre-registered
  * (`ml/timezone_preregistration.md`), run once, and came back empty.
  *
- * The figures are read from `src/data/timezone-null.json`, a committed snapshot of
- * `ml/timezone_test.py`'s output — `ml/data/` is gitignored, so a generated report does not
- * survive a clean checkout. Nothing here is hand-typed into prose; see the pinning rule in
+ * The figures are read from `src/data/timezone-null.json`, which `ml/timezone_test.py` writes
+ * directly — `ml/data/` is gitignored, so a generated report does not survive a clean checkout. Nothing here is hand-typed into prose; see the pinning rule in
  * CLAUDE.md and the guards in `__tests__/timezone-null.test.ts`.
  *
  * **This is a published null, and the null is the finding.** The raw east/west split looks large
@@ -35,7 +34,13 @@ export type TimeZoneTerm = {
   aloneVsBaseline: number;
   games: number;
   alsoAltitudePct: number;
-  alsoBackToBackPct: number;
+  /**
+   * Share of these games where the model's back-to-back term is already non-zero. That term is
+   * a difference, visitor minus home, so it is zero when both teams played the night before.
+   */
+  backToBackTermPct: number;
+  /** Share where the visitor itself played the night before, whatever the home team did. */
+  visitorBackToBackPct: number;
 };
 
 export type TimeZoneNull = {
@@ -50,6 +55,8 @@ export type TimeZoneNull = {
     gamesInEra: number;
     baselineHomeWinPct: number;
     thresholdHours: number;
+    /** The pre-registered "≤ 1 day of rest", in plain words. */
+    shortRest: string;
   };
   rawSplit: TimeZoneTrip[];
   logLoss: {
@@ -67,6 +74,18 @@ export type TimeZoneNull = {
   terms: TimeZoneTerm[];
   /** The term the pre-registration named as the one that would decide the question. */
   primaryTerm: string;
+  /**
+   * The same test with short rest read as at most one day off. Published beside the result,
+   * not in place of it: the definition was fixed before the run, and swapping it afterwards
+   * would be choosing the specification by its outcome.
+   */
+  sensitivity: {
+    shortRest: string;
+    eastShortGames: number;
+    westShortGames: number;
+    candidatesWorth: number;
+    primaryFoldsNonZero: number;
+  };
 };
 
 /** One row of the raw split, by its label. Throws rather than render a blank. */

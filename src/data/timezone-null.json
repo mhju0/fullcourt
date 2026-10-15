@@ -3,36 +3,118 @@
   "preRegistration": "ml/timezone_preregistration.md",
   "report": "ml/TIMEZONE_REPORT.md",
   "adr": "docs/adr/0006-fatigue-weights-were-fitted-and-the-model-was-not-changed.md",
-  "measuredOn": "2026-10-04",
+  "measuredOn": "2026-10-15",
   "protocol": {
     "folds": 16,
     "heldOutGames": 19118,
     "gamesInEra": 28876,
     "baselineHomeWinPct": 58.39,
-    "thresholdHours": 3
+    "thresholdHours": 3,
+    "shortRest": "visitor played the previous night (days since its last game ≤ 1)"
   },
   "rawSplit": [
-    { "trip": "all games in the era", "games": 28876, "homeWinPct": 58.39, "strengthEdgeToHome": null },
-    { "trip": "east ≥ 3h", "games": 1643, "homeWinPct": 54.41, "strengthEdgeToHome": -0.0281 },
-    { "trip": "east ≥ 3h, short rest", "games": 457, "homeWinPct": 53.61, "strengthEdgeToHome": null },
-    { "trip": "west ≥ 3h", "games": 1635, "homeWinPct": 61.96, "strengthEdgeToHome": 0.0218 },
-    { "trip": "west ≥ 3h, short rest", "games": 428, "homeWinPct": 66.59, "strengthEdgeToHome": null },
-    { "trip": "no long shift either way", "games": 25598, "homeWinPct": 58.41, "strengthEdgeToHome": -0.0021 }
+    {
+      "trip": "all games in the era",
+      "games": 28876,
+      "homeWinPct": 58.39,
+      "strengthEdgeToHome": null
+    },
+    {
+      "trip": "east ≥ 3h",
+      "games": 1643,
+      "homeWinPct": 54.41,
+      "strengthEdgeToHome": -0.0281
+    },
+    {
+      "trip": "east ≥ 3h, short rest",
+      "games": 457,
+      "homeWinPct": 53.61,
+      "strengthEdgeToHome": null
+    },
+    {
+      "trip": "west ≥ 3h",
+      "games": 1635,
+      "homeWinPct": 61.96,
+      "strengthEdgeToHome": 0.0218
+    },
+    {
+      "trip": "west ≥ 3h, short rest",
+      "games": 428,
+      "homeWinPct": 66.59,
+      "strengthEdgeToHome": null
+    },
+    {
+      "trip": "no long shift either way",
+      "games": 25598,
+      "homeWinPct": 58.41,
+      "strengthEdgeToHome": -0.0021
+    }
   ],
   "logLoss": {
     "strengthOnly": 0.62381,
     "baseline": 0.62116,
     "withCandidates": 0.62119,
     "baselineWorth": 0.00265,
-    "candidatesWorth": -0.00003,
+    "candidatesWorth": -3e-05,
     "everyFatigueFactorCombined": 0.00245,
     "strengthAlone": 0.06
   },
   "terms": [
-    { "term": "d_east3_short", "meanWeight": 0.0, "cv": null, "foldsNonZero": 0, "verdict": "pinned at zero by the clamp — nothing", "aloneVsBaseline": 0.0, "games": 457, "alsoAltitudePct": 0.0, "alsoBackToBackPct": 76.1 },
-    { "term": "d_west3_short", "meanWeight": 0.0993, "cv": 0.41, "foldsNonZero": 16, "verdict": "stable", "aloneVsBaseline": -0.00002, "games": 428, "alsoAltitudePct": 0.0, "alsoBackToBackPct": 86.4 },
-    { "term": "d_east3", "meanWeight": 0.0069, "cv": 1.76, "foldsNonZero": 6, "verdict": "unstable", "aloneVsBaseline": -0.00002, "games": 1643, "alsoAltitudePct": 0.0, "alsoBackToBackPct": 21.2 },
-    { "term": "d_west3", "meanWeight": 0.0435, "cv": 0.65, "foldsNonZero": 14, "verdict": "stable", "aloneVsBaseline": 0.00003, "games": 1635, "alsoAltitudePct": 0.0, "alsoBackToBackPct": 22.6 }
+    {
+      "term": "d_east3_short",
+      "meanWeight": 0.0,
+      "cv": null,
+      "foldsNonZero": 0,
+      "verdict": "pinned at zero by the clamp — nothing",
+      "aloneVsBaseline": 0.0,
+      "games": 457,
+      "alsoAltitudePct": 0.0,
+      "backToBackTermPct": 76.1,
+      "visitorBackToBackPct": 100.0
+    },
+    {
+      "term": "d_west3_short",
+      "meanWeight": 0.0993,
+      "cv": 0.41,
+      "foldsNonZero": 16,
+      "verdict": "stable",
+      "aloneVsBaseline": -2e-05,
+      "games": 428,
+      "alsoAltitudePct": 0.0,
+      "backToBackTermPct": 86.4,
+      "visitorBackToBackPct": 100.0
+    },
+    {
+      "term": "d_east3",
+      "meanWeight": 0.0069,
+      "cv": 1.76,
+      "foldsNonZero": 6,
+      "verdict": "unstable",
+      "aloneVsBaseline": -2e-05,
+      "games": 1643,
+      "alsoAltitudePct": 0.0,
+      "backToBackTermPct": 21.2,
+      "visitorBackToBackPct": 27.8
+    },
+    {
+      "term": "d_west3",
+      "meanWeight": 0.0435,
+      "cv": 0.65,
+      "foldsNonZero": 14,
+      "verdict": "stable",
+      "aloneVsBaseline": 3e-05,
+      "games": 1635,
+      "alsoAltitudePct": 0.0,
+      "backToBackTermPct": 22.6,
+      "visitorBackToBackPct": 26.2
+    }
   ],
-  "primaryTerm": "d_east3_short"
+  "primaryTerm": "d_east3_short",
+  "sensitivity": {
+    "shortRest": "visitor on at most one day off (days since its last game ≤ 2)",
+    "eastShortGames": 1472,
+    "westShortGames": 1347,
+    "candidatesWorth": 5e-05,
+    "primaryFoldsNonZero": 0
+  }
 }
