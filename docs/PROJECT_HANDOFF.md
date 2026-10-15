@@ -120,39 +120,14 @@ Open:
   no first-party frame. Not reproduced.
 - The footer notice size (12px) is not ruled on. A second backup copy off the Mac is not set up.
 
-Later on 2026-10-07: every page was measured at 360 and 390px on a production build. No page
-scrolls sideways and every table sits in a scroller. Four gaps were closed: the Home Court season
-table and Officiating's season strip and call-type row now use `ScrollCue`, the Schedule
-`WHAT THESE COLUMNS MEAN` disclosure is 44px tall, and the team label under a player on Shooting
-is 10px, not 9.6px. The two stale `behind-the-data.spec.ts` assertions follow the page. Two e2e
-tests (`games.spec.ts:294`, `navigation.spec.ts:54`) failed once in a full run and passed six of
-six alone; treat them as load-sensitive. Season Report, Analysis and Playoff Rest needed no change.
-
-Phone review round, 2026-10-07 (D-79): the Skim/Deep Dive toggle and the Games side rail are
-gone, matchups are in tip-off order (`slateOrder()`), the two line tokens are darker, Season
-Report and Officiating plays use bordered blocks with title bands, the fatigue chart is League
-fatigue by week, the column guide sits inside the breakdown, and Shooting by Rest is Player
-Shooting by Rest. Open: the ESPN tie-break is inferred from one day; Home Court inherits the
-section band and was checked by screenshot only; nothing here has been seen on a physical phone.
-
-Launch preparation, 2026-10-10 (D-80): the change freeze starts 2026-10-17 at 00:00 ET, three
-days before the first game (BOS at DET, 2026-10-20, 3:00 PM ET). A mixed slate was rehearsed on
-production with a mocked response (one final, one live, one upcoming): rows stayed one height
-on desktop and iPhone WebKit, with no page errors. Seventeen pages were loaded in iPhone WebKit:
-all 200, none scrolls sideways, no console errors.
-
-Game status, 2026-10-10 (D-81): the stale-LIVE risk above was larger than first written. GitHub
-starts the daily job two and a half to five hours late, so it lands mid-evening and would have
-frozen a score on about half the season's games. Resolved by storing finals only: a row reads
-LIVE from its tip time, then PENDING, then FINAL over the score. LIVE is a label with a still dot and no row tint, and the row's accessible name carries the state and score. `vercel.json` now holds
-twelve hourly cron entries (21:00 to 08:00 UTC) so finals land the same night, the Games board
-holds a game day until 6 AM ET, and EDGES AHEAD drops a game once it tips.
-
-Open: twelve cron entries on one path have not been deployed before; check the Vercel cron list
-after the first deploy and on opening night. A postponed game reads LIVE for three hours;
-recording postponements needs a new stored status. The daily job's lateness is unaddressed and
-only delays the fatigue refresh. Every state was tested with a mocked clock, none against a
-real slate.
+Condensed 2026-10-15 (entries of 2026-10-07 to 2026-10-10): every page measured at 360/390px
+with no sideways scroll; D-79 removed Skim/Deep Dive and the side rail and ordered matchups by
+tip-off; D-80 set the change freeze from 2026-10-17 00:00 ET; D-81 stores finals only, so a row
+reads LIVE, then PENDING, then FINAL, with twelve hourly cron entries (all twelve seen enabled
+on 2026-10-15). Still open: `games.spec.ts:294` and `navigation.spec.ts:54` are load-sensitive;
+the ESPN tie-break is inferred from one day; nothing has been seen on a physical phone; a
+postponed game reads LIVE for three hours (needs a stored status); the daily job's lateness is
+unaddressed; game status has been tested with a mocked clock, never a real slate.
 
 Season audit, 2026-10-11 (D-82): all 1,200 games of 2026-27 match ESPN and basketball-reference.
 Three faults fixed in code: the nightly job dropped unplayed prior games (upcoming fatigue read
@@ -210,3 +185,23 @@ Node-only workflow follow-up,2026-10-15: PR129 owner-approved/mergedc3b2be7; exa
 Next 16.4.0, 2026-10-15: PR #134 (`0fbcb62`) moved `next` and `eslint-config-next` to 16.4.0 together with the dev-tooling group, superseding Dependabot #130/#132 (Dependabot ships them in separate PRs; either alone left lint red or the versions apart). `TransitionLink` now derives its season href instead of reassigning the prop (new `react-hooks/immutability` rule). [Verified] Node 22 gate, 1157 unit, 12 smoke, preview and production READY. Open: first scheduled run of the rewritten nightly at 21:17 UTC tonight is unobserved; this file is past ~200 lines and due for condensing.
 
 Days off + storyline names, 2026-10-15: PR #136 (D-86). `daysRest` is now full days off (b2b = 0, "0 days") via `src/lib/days-off.ts`; the model keeps `daysSinceLastGame`. The storyline uses season-correct nicknames with a verb on every clause; the player-shooting rested bucket is relabelled "2+ days off" (threshold unchanged; a true 3+ cut halves the effect and splits the age bands). [Verified] unit/typecheck/lint/build, smoke 12, games+audit e2e 32. Open: Schedule Edge "days off" label over a days-since count (owner's site-wide audit); `shooting.spec.ts` 4 local failures pre-date this PR; merge before the 10-17 freeze.
+
+Label and data fixes, 2026-10-15: branch `fix/labels-audit`, stacked on PR #136 (D-87 to D-91).
+Rest gaps compare and print at two decimals (headline 27,404 → 27,409 games, 61.2%); the
+availability rotation window resets each season (best player out 2.86 → 2.97 pts); the
+shooting rested arm is 2–29 days off; the time-zone null publishes the wider short-rest reading
+beside the pre-registered one; neutral-site games name the host city; labels follow the computation.
+Every regenerated artifact first reproduced its published baseline exactly. [Verified] unit
+1,170, typecheck, lint, build, affected e2e specs. Open: owner runs
+`scripts/backfill_predictions.ts` (5 called games have no prediction row; `verify_predictions`
+reads MISMATCH until then); altitude carryover applies to the next game at any gap while every
+written source says the next night. That fix needs an ADR, a ~2,349-row production recompute
+and owner approval, and waits for the D-80 freeze to lift. `shooting.spec.ts:46/:110/:138/:174`
+fail on `main` too: a filter picked right after load sometimes does not stick (6 of 12 repeats
+on both builds), which looks like a real product race, not only a test one.
+A second scan (local `docs/audit/2026-10-15-labels-and-data/rescan/`) found no data drift and
+fixed its own copy findings; still open for the owner: whether a neutral host counts as the
+called side (9 of 34 neutral games carry predictions), the explorer team filter listing current
+codes over historical rows, the /home-court gap computed from counts (0.1 off the printed rates
+in 9 seasons, by a tested choice), `win-total-benchmark.json` predating D-87, the referee splits
+script crediting every listed official, and a stale docstring in ratified `fatigue.ts:307`.
