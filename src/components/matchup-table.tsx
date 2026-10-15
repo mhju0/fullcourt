@@ -15,6 +15,7 @@ import {
   ConfidenceBadge,
   FatigueDetailColumn,
   TeamLogo,
+  inlineFlags,
   teamGameFlags,
   getConfidence,
 } from "@/components/matchup-parts";
@@ -61,9 +62,8 @@ const GRID_MIN_WIDTH = 1000;
  * Width reserved for a line's flag chips, so the strip is identical on every line and the
  * fatigue numbers stay in one column however many flags a team carries.
  *
- * Sized for the widest thing it can hold: two four-character chips plus a `+N` overflow chip
- * and their gaps (~98px). A single "JET LAG" is wider than one 4-char chip but never shares
- * the strip — it sorts fifth, so it only ever appears alone or beside "ALT".
+ * Sized for two four-character chips plus a `+N` overflow chip and their gaps (~98px). Longer
+ * chips ("ALT TRIP", "TIME ZONES") show fewer inline: `inlineFlags` fits the strip by width.
  */
 const FLAG_STRIP_W = 104;
 
@@ -169,14 +169,15 @@ function TeamLine({
   city,
   season,
   fallback,
-  isHome,
+  venueTag,
 }: {
   abbreviation: string;
   name: string;
   city: string;
   season: string;
   fallback: { name: string; city: string };
-  isHome: boolean;
+  /** HOME on the host's line; NEUTRAL there instead when the game is away from its arena. */
+  venueTag: "HOME" | "NEUTRAL" | null;
 }) {
   const colors = getTeamColors(abbreviation);
   return (
@@ -207,7 +208,7 @@ function TeamLine({
       >
         {city}
       </span>
-      {isHome && (
+      {venueTag && (
         <span
           className="mono shrink-0"
           style={{
@@ -221,7 +222,7 @@ function TeamLine({
             lineHeight: "14px",
           }}
         >
-          HOME
+          {venueTag}
         </span>
       )}
     </div>
@@ -231,7 +232,7 @@ function TeamLine({
 /**
  * How many flags a line shows before collapsing the rest into a count. Measured over 79 games
  * across ten dates: 84% of team-lines carry two or fewer, but a visiting team can stack five
- * (B2B + 3IN4 + 4IN6 + ALT + JET LAG). Rendering all of them would either blow the column or
+ * (B2B + 3IN4 + 4IN6 + ALT + TIME ZONES). Rendering all of them would either blow the column or
  * wrap the row to a second line, and a row whose height depends on its flag count is the
  * problem this replaced.
  */
@@ -273,8 +274,7 @@ function FatigueLine({
   tone: FatigueBarTone;
   flags: string[];
 }) {
-  const shown = flags.slice(0, MAX_INLINE_FLAGS);
-  const hidden = flags.length - shown.length;
+  const { shown, hidden } = inlineFlags(flags, FLAG_STRIP_W, MAX_INLINE_FLAGS);
 
   return (
     <div className="flex items-center gap-2" style={{ height: TEAM_LINE_H }}>
@@ -624,7 +624,7 @@ function GameRow({
         role="button"
         tabIndex={0}
         aria-expanded={expanded}
-        aria-label={`${expanded ? "Collapse" : "Expand"} ${awayBrand.name} at ${homeBrand.name}${spokenGameState(phase, game.awayScore, game.homeScore)} on ${game.date} game details`}
+        aria-label={`${expanded ? "Collapse" : "Expand"} ${awayBrand.name} ${game.neutralCity ? `versus ${homeBrand.name} in ${game.neutralCity}` : `at ${homeBrand.name}`}${spokenGameState(phase, game.awayScore, game.homeScore)} on ${game.date} game details`}
         onClick={toggle}
         onKeyDown={onKeyDown}
         className="fc-game-grid grid cursor-pointer items-center gap-x-4 transition-colors hover:bg-[var(--term-surface-2)] focus-visible:ring-2 focus-visible:ring-[var(--term-accent)]/40"
@@ -648,7 +648,7 @@ function GameRow({
             city={awayBrand.city ?? game.awayTeam.city}
             season={game.season}
             fallback={awayFallback}
-            isHome={false}
+            venueTag={null}
           />
           <TeamLine
             abbreviation={homeBrand.abbreviation}
@@ -656,7 +656,7 @@ function GameRow({
             city={homeBrand.city ?? game.homeTeam.city}
             season={game.season}
             fallback={homeFallback}
-            isHome
+            venueTag={game.neutralCity ? "NEUTRAL" : "HOME"}
           />
         </div>
 
@@ -739,7 +739,7 @@ function GameRow({
                 fatigue={game.awayFatigue}
               />
               <FatigueDetailColumn
-                label={`HOME · ${homeBrand.abbreviation}`}
+                label={`${game.neutralCity ? `HOST · ${game.neutralCity.toUpperCase()}` : "HOME"} · ${homeBrand.abbreviation}`}
                 fatigue={game.homeFatigue}
               />
             </div>

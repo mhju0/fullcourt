@@ -11,6 +11,7 @@ import {
   GameStatusRow,
   RaBadge,
 } from "@/components/matchup-parts"
+import { seasonLabelForDateKey } from "@/lib/nba-season"
 import { getTeamBranding } from "@/lib/team-history"
 import { apiFetcher, errMsg } from "@/lib/fetcher"
 import { termInsetStyle, TRACK, TYPE } from "@/lib/terminal-styles"
@@ -62,7 +63,10 @@ function RecentResultsList({
         </p>
       ) : (
         <ul className="mt-2 flex flex-col gap-1">
-          {items.map((g) => (
+          {items.map((g) => {
+            // The opponent as it was branded on that date, matching the modal header.
+            const opponent = getTeamBranding(g.opponentAbbreviation, seasonLabelForDateKey(g.date)).abbreviation
+            return (
             <li
               key={g.gameId}
               role="button"
@@ -79,12 +83,12 @@ function RecentResultsList({
               // `inset` avoids the layout shift a border-left would cause on hover.
               className="mono flex cursor-pointer flex-wrap items-center justify-between gap-x-2 px-2 py-1 transition-[box-shadow,transform,background-color] duration-200 hover:translate-x-0.5 hover:bg-[var(--term-surface-2)] hover:shadow-[inset_2px_0_0_var(--term-blue)] focus-visible:bg-[var(--term-surface-2)] focus-visible:shadow-[inset_2px_0_0_var(--term-blue)] motion-reduce:transition-none motion-reduce:hover:translate-x-0"
               style={{ fontSize: 12, color: "var(--term-text)", borderRadius: "var(--term-radius-sm)" }}
-              aria-label={`View game details: ${format(parseISO(g.date), "MMM d")} vs ${g.opponentAbbreviation}`}
+              aria-label={`View game details: ${format(parseISO(g.date), "MMM d")} vs ${opponent}`}
             >
               <span style={{ color: "var(--term-text-muted)" }}>
                 {format(parseISO(g.date), "MMM d")}
                 {g.isHome ? " vs " : " @ "}
-                <span style={{ fontWeight: 700, color: "var(--term-text)" }}>{g.opponentAbbreviation}</span>
+                <span style={{ fontWeight: 700, color: "var(--term-text)" }}>{opponent}</span>
               </span>
               <span className="tabular-nums" style={{ color: "var(--term-text-muted)" }}>
                 <span style={{ color: g.won ? "var(--term-pos)" : "var(--term-red-text)", fontWeight: 700 }}>
@@ -93,7 +97,8 @@ function RecentResultsList({
                 {g.teamScore}–{g.opponentScore}
               </span>
             </li>
-          ))}
+            )
+          })}
         </ul>
       )}
     </div>
@@ -160,7 +165,7 @@ function ExploreGameDetailBody({
             fatigue={game.awayFatigue}
           />
           <FatigueDetailColumn
-            label={`Home · ${homeBrand.abbreviation}`}
+            label={`${game.neutralCity ? `Host · ${game.neutralCity}` : "Home"} · ${homeBrand.abbreviation}`}
             fatigue={game.homeFatigue}
           />
         </div>

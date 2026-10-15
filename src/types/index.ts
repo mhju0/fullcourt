@@ -30,8 +30,8 @@ export interface FatigueInfo {
   /** Prior game went to overtime (extra fatigue in the model). */
   isOvertimePenalty: boolean;
   /**
-   * Consecutive away games including tonight when this team is away; 0 when playing at home
-   * or with no road streak into this game.
+   * Consecutive away games including tonight when this team is away (a neutral site is away for
+   * both teams); 0 when playing in its own arena or with no road streak into this game.
    */
   roadTripConsecutiveAway: number;
   /**
@@ -85,6 +85,12 @@ export interface GameResponse {
   projectedFatigue: boolean;
   /** First regular-season schedule game for each side, independent of fatigue availability. */
   seasonOpeners?: { home: boolean; away: boolean };
+  /**
+   * The city of a neutral-site game (London, Paris, Mexico City, Las Vegas, …), or null for a
+   * game in the home team's own arena. At a neutral site the model scores the nominal host as a
+   * road team (`currentGameIsHome: !neutral`, `fatigue.ts`), so the board must not label it HOME.
+   */
+  neutralCity: string | null;
 }
 
 /**

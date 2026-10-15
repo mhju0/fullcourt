@@ -77,7 +77,9 @@ function currentBranding(
 ): TeamBranding {
   const defaults = CURRENT_TEAM_DEFAULTS[abbrev];
   const name = fallback?.name ?? defaults?.name ?? abbrev;
-  const city = fallback?.city ?? defaults?.city ?? "";
+  // The brand's place name wins over `teams.city`, which is a coordinate anchor: it reads
+  // "San Francisco" for Golden State and "Salt Lake City" for Utah.
+  const city = defaults?.city ?? fallback?.city ?? "";
   return {
     abbreviation: abbrev,
     name,
@@ -89,7 +91,8 @@ function currentBranding(
 /**
  * Returns display abbreviation, name, city, and logo for `currentAbbreviation` in `season`
  * (e.g. `"2005-06"`). Uses historical labels where the franchise rebranded or relocated;
- * otherwise current branding. Optional `fallback` overrides name/city for the current-era path only.
+ * otherwise current branding. Optional `fallback` overrides the name on the current-era path, and
+ * supplies the city only for an abbreviation with no brand entry.
  *
  * Every logo is an ESPN PNG (see `espnLogo`).
  */

@@ -102,14 +102,20 @@ describe("getTeamBranding", () => {
     );
   });
 
-  it("optional fallback overrides current-era name and city only", () => {
+  it("optional fallback overrides the current-era name, not the brand's place name", () => {
     const b = getTeamBranding("LAL", "2024-25", {
       name: "Lakers Custom",
       city: "LA",
     });
     expect(b.name).toBe("Lakers Custom");
-    expect(b.city).toBe("LA");
+    expect(b.city).toBe("Los Angeles");
     expect(b.logoUrl).toContain("/lal.png");
+  });
+
+  it("names the brand's place, not the coordinate city stored in teams.city", () => {
+    expect(getTeamBranding("GSW", "1995-96", { name: "Warriors", city: "San Francisco" }).city).toBe("Golden State");
+    expect(getTeamBranding("UTA", "2024-25", { name: "Jazz", city: "Salt Lake City" }).city).toBe("Utah");
+    expect(getTeamBranding("XYZ", "2024-25", { name: "Test", city: "Somewhere" }).city).toBe("Somewhere");
   });
 
   it("uses ESPN's own slug where it is not the abbreviation we store", () => {

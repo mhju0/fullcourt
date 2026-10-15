@@ -448,6 +448,7 @@ function mapJoinedRowToGameResponse(
     homeFatigue: homeFatigueData,
     awayFatigue: awayFatigueData,
     restAdvantage,
+    neutralCity: row.neutralSite ? row.neutralVenueCity : null,
   };
 }
 
@@ -880,9 +881,10 @@ function buildFatigueInfo(
     gamesInLast30Days: extras.gamesInLast30Days,
     is4In6: extras.is4In6,
     isOvertimePenalty: isOvertimePenalty ?? false,
-    // Road-trip streak is only shown for the visiting team (type contract).
+    // Zero only for a host in its own arena. At a neutral site the host is on the road too,
+    // and the model counts tonight in its streak.
     roadTripConsecutiveAway:
-      ctx.side === "home" ? 0 : extras.roadTripConsecutiveAway,
+      ctx.side === "home" && ctx.neutralCity === null ? 0 : extras.roadTripConsecutiveAway,
     hasTimeZoneDisplacement: extras.hasTimeZoneDisplacement,
   };
 }

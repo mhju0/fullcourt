@@ -29,6 +29,7 @@ import type { ExploreResult } from "@/lib/explore-games-machine"
 import { apiFetcher, errMsg } from "@/lib/fetcher"
 import { Button } from "@/components/ui/button"
 import { NBA_SEASONS } from "@/lib/nba-season"
+import { getTeamBranding } from "@/lib/team-history"
 import { MIN_GAMES_FOR_INFERENCE } from "@/lib/season-report"
 import {
   BEYOND_CLAUSE,
@@ -60,6 +61,11 @@ const exploreSelectStyle = termSelectStyle
 const EXPLORE_SELECT_CLASS = termSelectClass
 
 // ─── Section divider ──────────────────────────────────────────────
+
+/** The abbreviation the team played under that season: a 1995 Sonics game reads SEA, not OKC. */
+function seasonAbbr(currentAbbreviation: string, season: string): string {
+  return getTeamBranding(currentAbbreviation, season).abbreviation
+}
 
 function SectionDivider({ label, descriptor }: { label: string; descriptor?: string }) {
   return (
@@ -799,7 +805,7 @@ function ExploreGames({
           },
           style: { background: i % 2 === 1 ? "var(--term-bg)" : "var(--term-surface)", cursor: "pointer" },
           className: "hover:bg-[var(--term-surface-2)] focus-visible:bg-[var(--term-surface-2)]",
-          "aria-label": `Open details: ${g.awayTeamAbbreviation} at ${g.homeTeamAbbreviation}, ${g.date}`,
+          "aria-label": `Open details: ${seasonAbbr(g.awayTeamAbbreviation, g.season)} at ${seasonAbbr(g.homeTeamAbbreviation, g.season)}, ${g.date}`,
         })}
         columns={[
           {
@@ -812,9 +818,9 @@ function ExploreGames({
             style: { color: "var(--term-text)", fontWeight: 600 },
             cell: (g) => (
               <>
-                {g.awayTeamAbbreviation}
+                {seasonAbbr(g.awayTeamAbbreviation, g.season)}
                 <span style={{ margin: "0 4px", color: "var(--term-hairline)" }}>@</span>
-                {g.homeTeamAbbreviation}
+                {seasonAbbr(g.homeTeamAbbreviation, g.season)}
               </>
             ),
           },
@@ -853,7 +859,7 @@ function ExploreGames({
                   letterSpacing: TRACK.sub,
                 }}
               >
-                {g.advantageTeam === "home" ? g.homeTeamAbbreviation : g.awayTeamAbbreviation} +
+                {seasonAbbr(g.advantageTeam === "home" ? g.homeTeamAbbreviation : g.awayTeamAbbreviation, g.season)} +
                 {formatRestAdvantageValue(g.restAdvantageDifferential)}
               </span>
             ),
