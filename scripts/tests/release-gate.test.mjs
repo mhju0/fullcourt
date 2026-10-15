@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import test from "node:test";
 
@@ -30,10 +30,20 @@ test("aggregate shell refuses failed, cancelled, skipped and missing results", (
 });
 
 
-test("Node-only maintenance monitor does not require a package manager cache", () => {
-  const maintenance = readFileSync(new URL("../../.github/workflows/maintenance-health.yml", import.meta.url), "utf8");
-  const monitor = maintenance.split("\n  monitor:\n")[1]?.split("\n  dependencies:\n")[0];
-  assert.ok(monitor, "monitor job exists");
-  assert.match(monitor, /package-manager-cache: false/, "setup-node defaults to auto-caching the declared pnpm manager, which is not installed in this Node-only job");
-  assert.doesNotMatch(monitor, /cache: pnpm|pnpm\/action-setup|pnpm install/);
+test("Node-only workflow jobs do not require an uninstalled package manager cache", () => {
+  const directory = new URL("../../.github/workflows/", import.meta.url);
+  let nodeOnlyJobs = 0;
+  for (const filename of readdirSync(directory).filter(name => /\.ya?ml$/.test(name))) {
+    const text = readFileSync(new URL(filename, directory), "utf8");
+    const jobs = text.slice(text.indexOf("\njobs:\n") + 7).split(/(?=^  [A-Za-z][\w-]*:\s*$)/m);
+    for (const job of jobs) {
+      const setup = job.indexOf("actions/setup-node@");
+      if (setup < 0 || job.slice(0, setup).includes("pnpm/action-setup@")) continue;
+      nodeOnlyJobs += 1;
+      const name = job.match(/^  ([\w-]+):/)?.[1];
+      assert.match(job, /package-manager-cache: false/, `${filename}/${name}: setup-node auto-cache must not require absent pnpm`);
+      assert.doesNotMatch(job, /^\s+cache:\s*["']?(?:pnpm|npm|yarn)/m);
+    }
+  }
+  assert.ok(nodeOnlyJobs >= 2, "scan covers monitor and provider probe jobs");
 });
