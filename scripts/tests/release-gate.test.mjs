@@ -28,3 +28,12 @@ test("aggregate shell refuses failed, cancelled, skipped and missing results", (
       JSON.stringify({ checks, browser, postgres, output: result.stdout, error: result.stderr }));
   }
 });
+
+
+test("Node-only maintenance monitor does not require a package manager cache", () => {
+  const maintenance = readFileSync(new URL("../../.github/workflows/maintenance-health.yml", import.meta.url), "utf8");
+  const monitor = maintenance.split("\n  monitor:\n")[1]?.split("\n  dependencies:\n")[0];
+  assert.ok(monitor, "monitor job exists");
+  assert.match(monitor, /package-manager-cache: false/, "setup-node defaults to auto-caching the declared pnpm manager, which is not installed in this Node-only job");
+  assert.doesNotMatch(monitor, /cache: pnpm|pnpm\/action-setup|pnpm install/);
+});
