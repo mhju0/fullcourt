@@ -147,4 +147,4 @@ transport/parsing failures fail the workflow. The production audit remains requi
 counts retain scope, commit and pnpm version. Do not blanket-override all transitive findings.
 All these workflows require integration into main before scheduled behavior can be observed.
 
-The Node-only maintenance monitor disables setup-node package-manager auto-caching. It does not install pnpm; the pinned action otherwise detects the root packageManager and fails before the monitor starts. The dependencies job retains its pnpm setup/cache. This boundary is covered by the release-gate contract tests.
+The Node-only maintenance monitor and provider probe disable setup-node package-manager auto-caching. Neither installs pnpm; the pinned action otherwise detects the root packageManager and fails before the monitor starts. The dependencies job retains its pnpm setup/cache. The release-gate contracts scan all workflow jobs for this boundary, preserving cache use only where pnpm is installed first.
