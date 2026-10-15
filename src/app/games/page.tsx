@@ -224,7 +224,7 @@ function DateChip({
         // so a minimum let the wider chips grow and the row came out at three
         // different widths. 15 is the most games a 30-team league can play in a day,
         // and that longest line measures 55px, so 60px fits every case with room.
-        "mono flex shrink-0 w-[3.75rem] flex-col items-center border border-[var(--term-border)] px-2 py-2 transition-[transform,background-color,border-color] active:scale-[0.97]",
+        "fc-control-button mono flex shrink-0 w-[3.75rem] flex-col items-center border border-[var(--term-border)] px-2 py-2",
         // Selected = a solid ink block (the 08-front-office mock's .dchip.on), not the
         // rested-pole teal: teal is a data color, and a chip is chrome.
         selected
@@ -569,7 +569,7 @@ export default function GamesPage() {
             onClick={() => slate.send({ type: "WEEK_SHIFTED", delta: -1 })}
             disabled={!slate.selectedDate}
             aria-label="Previous week"
-            className="bg-[var(--term-surface)] active:scale-95 sm:hidden"
+            className="fc-control-button bg-[var(--term-surface)] sm:hidden"
             style={{ border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }}
           >
             <ChevronLeft />
@@ -580,7 +580,7 @@ export default function GamesPage() {
             onClick={() => slate.send({ type: "DAY_SHIFTED", delta: -1 })}
             disabled={!slate.selectedDate}
             aria-label="Previous day"
-            className="hidden bg-[var(--term-surface)] active:scale-95 sm:inline-flex"
+            className="fc-control-button hidden bg-[var(--term-surface)] sm:inline-flex"
             style={{ border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }}
           >
             <ChevronLeft />
@@ -599,7 +599,7 @@ export default function GamesPage() {
             onClick={() => slate.send({ type: "WEEK_SHIFTED", delta: 1 })}
             disabled={!slate.selectedDate}
             aria-label="Next week"
-            className="bg-[var(--term-surface)] active:scale-95 sm:hidden"
+            className="fc-control-button bg-[var(--term-surface)] sm:hidden"
             style={{ border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }}
           >
             <ChevronRight />
@@ -610,7 +610,7 @@ export default function GamesPage() {
             onClick={() => slate.send({ type: "DAY_SHIFTED", delta: 1 })}
             disabled={!slate.selectedDate}
             aria-label="Next day"
-            className="hidden bg-[var(--term-surface)] active:scale-95 sm:inline-flex"
+            className="fc-control-button hidden bg-[var(--term-surface)] sm:inline-flex"
             style={{ border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }}
           >
             <ChevronRight />

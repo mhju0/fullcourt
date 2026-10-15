@@ -1,22 +1,7 @@
-# One-off reachability probe for the NBA data sources, run from a US GitHub runner.
-#
-# Why this exists: it ANSWERED the question it was built for, on 2026-07-27 — `stats.nba.com`
-# times out from GitHub Actions too (25s, 0 bytes, runner in San Jose), so the block is a
-# datacenter block rather than a geo block and there is **no clean `002…`-ID path**. That result
-# is recorded in docs/SEASON_ROLLOVER.md §2 and drives the §3 seeding decision.
-#
-# It is kept as a RE-CONFIRMATION probe, not an open question: Akamai policy can change, and §3
-# explicitly asks for a re-run before anyone relies on that table to seed a season.
-#
-# Reads nothing and writes nothing: no database, no secrets, no repository changes. Safe to run
-# at any time. Record the result in docs/SEASON_ROLLOVER.md §2 with the date.
-#
-# Run it: GitHub repo → Actions → "Probe NBA data sources" → Run workflow.
-
 name: Probe NBA data sources
 
-# No checkout, no API calls against GitHub: the GITHUB_TOKEN gets no permissions at all.
-permissions: {}
+permissions:
+  contents: read
 
 on:
   workflow_dispatch:
@@ -24,76 +9,26 @@ on:
 jobs:
   probe:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      PROBE_SUMMARY_PATH: provider-summary.json
     steps:
-      - name: Report runner egress region
-        run: |
-          echo "Runner public IP / geo (Akamai blocks are region- and datacenter-sensitive):"
-          curl -sS -m 20 https://ipinfo.io/json || echo "  (ipinfo unreachable — not fatal)"
+      - name: Checkout repository
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
 
-      - name: Probe each source
-        run: |
-          UA='Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36'
+      - name: Set up Node.js
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+        with:
+          node-version: "22"
 
-          probe() {
-            local label="$1" url="$2"
-            # -m 25 bounds the stats.nba.com case, which times out rather than refusing.
-            local out
-            out=$(curl -sS -o /dev/null -m 25 -A "$UA" \
-                  -w '%{http_code} %{size_download}b %{time_total}s' "$url" 2>&1) \
-              || out="FAILED ($out)"
-            printf '%-34s %s\n' "$label" "$out"
-          }
+      - name: Probe sources and classify diagnostics
+        run: node scripts/probe-data-sources.mjs
 
-          echo "=== NBA data-source reachability from a GitHub Actions runner ==="
-          echo "date: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
-          echo
-
-          # THE question this workflow exists to answer.
-          probe "stats.nba.com scheduleleaguev2" \
-            "https://stats.nba.com/stats/scheduleleaguev2?LeagueID=00&Season=2025-26"
-          probe "stats.nba.com leaguegamefinder" \
-            "https://stats.nba.com/stats/leaguegamefinder?PlayerOrTeam=T&LeagueID=00&Season=2024-25&SeasonType=Regular+Season"
-
-          # Known 403 from both Seoul and Actions — re-confirm, since Akamai policy changes.
-          probe "cdn.nba.com staticData schedule" \
-            "https://cdn.nba.com/static/json/staticData/scheduleLeagueV2.json"
-
-          # Known-good fallbacks, for contrast.
-          #
-          # ESPN is probed THREE ways on purpose. Akamai fingerprints the whole header set,
-          # not the User-Agent alone: `curl -A '<Chrome UA>'` is a browser UA with none of a
-          # browser's other headers, and that combination is exactly what ESPN rejects. This
-          # probe reported ESPN as 403 for weeks on that basis while the pipeline was reading
-          # it successfully. `scripts/fetch_game_context.ts` and `scripts/sync_scores_espn.ts`
-          # both call it through Node's `fetch`, so the Node row is the one that speaks for
-          # the pipeline; the two curl rows are kept to show the fingerprint effect.
-          probe "ESPN scoreboard (curl, Chrome UA)" \
-            "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20250315"
-
-          echo -n "ESPN scoreboard (curl, default UA)  "
-          curl -sS -o /dev/null -m 25 \
-            -w '%{http_code} %{size_download}b %{time_total}s\n' \
-            "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20250315" \
-            || echo "FAILED"
-
-          echo -n "ESPN scoreboard (node fetch)        "
-          node -e '
-            const url = "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20250315";
-            fetch(url, { headers: { "User-Agent": "Mozilla/5.0" } })
-              .then(async (r) => {
-                const body = await r.text();
-                console.log(`${r.status} ${body.length}b events=${(JSON.parse(body).events ?? []).length}`);
-              })
-              .catch((e) => console.log(`FAILED (${e.message})`));
-          '
-
-          probe "basketball-reference month page" \
-            "https://www.basketball-reference.com/leagues/NBA_2025_games-march.html"
-
-          echo
-          echo "Reading the result:"
-          echo "  200  → the clean path works from CI; fetch_schedule.py can seed the new season."
-          echo "  NOTE: compare the three ESPN rows — a 403 on the Chrome-UA row next to a 200"
-          echo "        on the node-fetch row is the header-fingerprint effect, not an outage."
-          echo "  403  → blocked by region/datacenter policy, as cdn.nba.com already is."
-          echo "  FAILED/000 → timed out, which is how stats.nba.com behaves from Seoul."
+      - name: Retain safe provider summary
+        if: ${{ always() }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: provider-diagnostics
+          path: ${{ env.PROBE_SUMMARY_PATH }}
+          if-no-files-found: ignore
+          retention-days: 14

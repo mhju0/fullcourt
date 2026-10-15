@@ -132,7 +132,7 @@ function ColumnGuide({ countedGames, scheduledGames }: { countedGames: number; s
       >
         WHAT THESE COLUMNS MEAN
         <ChevronDown
-          className="size-4 text-[var(--term-text-muted)] transition-transform duration-200 group-open:rotate-180"
+          className="size-4 text-[var(--term-text-muted)] transition-transform duration-200 group-open:rotate-180 motion-reduce:transition-none"
           aria-hidden
         />
       </summary>

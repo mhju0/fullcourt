@@ -1,7 +1,7 @@
 "use client"
 
 import dynamic from "next/dynamic"
-import { useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { PALETTE_OPEN_EVENT } from "@/lib/primary-navigation"
 
 /**
@@ -37,6 +37,38 @@ export function CommandPaletteMount() {
   const [open, setOpen] = useState(false)
   const [loaded, setLoaded] = useState(false)
   const loadedRef = useRef(false)
+  const openRef = useRef(false)
+  const openerRef = useRef<{ element: HTMLElement; pathname: string } | null>(null)
+
+  const changeOpen = useCallback((next: boolean) => {
+    if (next && !openRef.current) {
+      const element = document.activeElement
+      const reopening = openerRef.current?.element.isConnected
+        && openerRef.current.pathname === window.location.pathname
+        && (element === document.body || element?.closest("[cmdk-root]"))
+      if (!reopening) {
+        openerRef.current = element instanceof HTMLElement
+          ? { element, pathname: window.location.pathname }
+          : null
+      }
+    }
+    openRef.current = next
+    setOpen(next)
+  }, [])
+
+  useEffect(() => {
+    if (open || !openerRef.current) return
+    const opener = openerRef.current
+    // cmdk does not expose Radix's close-autofocus hook; wait until its focus trap closes.
+    const frame = requestAnimationFrame(() => {
+      if (!openRef.current && openerRef.current === opener && opener.element.isConnected
+        && window.location.pathname === opener.pathname) {
+        opener.element.focus({ preventScroll: true })
+        openerRef.current = null
+      }
+    })
+    return () => cancelAnimationFrame(frame)
+  }, [open])
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -45,17 +77,17 @@ export function CommandPaletteMount() {
         if (!loadedRef.current) {
           loadedRef.current = true
           setLoaded(true)
-          setOpen(true)
+          changeOpen(true)
           return
         }
-        setOpen((prev) => !prev)
+        changeOpen(!openRef.current)
       }
     }
     // The footer button uses the same listener as the keyboard shortcut.
     const onSummon = () => {
       loadedRef.current = true
       setLoaded(true)
-      setOpen(true)
+      changeOpen(true)
     }
     window.addEventListener("keydown", onKey)
     window.addEventListener(PALETTE_OPEN_EVENT, onSummon)
@@ -63,8 +95,8 @@ export function CommandPaletteMount() {
       window.removeEventListener("keydown", onKey)
       window.removeEventListener(PALETTE_OPEN_EVENT, onSummon)
     }
-  }, [])
+  }, [changeOpen])
 
   if (!loaded) return null
-  return <CommandPalette open={open} onOpenChange={setOpen} />
+  return <CommandPalette open={open} onOpenChange={changeOpen} onNavigate={() => { openerRef.current = null }} />
 }

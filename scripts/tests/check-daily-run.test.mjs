@@ -1,0 +1,12 @@
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import { checkDailyRun } from '../check-daily-run.mjs';
+const now = '2026-10-15T07:43:00Z';
+const good = {event:'schedule',head_branch:'main',created_at:'2026-10-14T23:17:00Z',run_started_at:'2026-10-14T23:18:00Z',status:'completed',conclusion:'success',id:1};
+const jobs = [{completed_at:'2026-10-14T23:22:00Z',conclusion:'success'}];
+test('the due scheduled run completes within the deadline',()=>{assert.equal(checkDailyRun({workflow_runs:[good]},jobs,now).status,'success')});
+test('a manual run cannot hide a missing schedule',()=>{assert.equal(checkDailyRun({workflow_runs:[{...good,event:'workflow_dispatch'}]},jobs,now).status,'missing')});
+test('an older green run cannot hide a missing due slot',()=>{assert.equal(checkDailyRun({workflow_runs:[{...good,created_at:'2026-10-13T23:17:00Z'}]},jobs,now).status,'missing')});
+test('failed and still-running executions are not green',()=>{for(const r of [{...good,conclusion:'failure'},{...good,status:'in_progress',conclusion:null}]) assert.notEqual(checkDailyRun({workflow_runs:[r]},jobs,now).status,'success')});
+test('late completion is distinct from a failed pipeline',()=>{assert.equal(checkDailyRun({workflow_runs:[good]},[{...jobs[0],completed_at:'2026-10-15T04:00:00Z'}],now).status,'late')});
+test('missing completion evidence and malformed API data are errors',()=>{assert.throws(()=>checkDailyRun({workflow_runs:[good]},[],now));assert.throws(()=>checkDailyRun({},jobs,now))});

@@ -129,7 +129,10 @@ Repeated controls and record expansions are immediate. Keyboard navigation and s
 navigation bypass the route cross-fade. Reduced motion suppresses movement while retaining
 static feedback. The homepage has one 450ms CSS hero entrance and one 500ms draw on the two
 finding bars; the remaining content is visible without scroll reveals. Figures never count up.
-No GSAP runtime or animation library is used.
+No GSAP runtime or animation library is used. Analysis chart tooltips and fatigue fills update
+immediately. Threshold drills scroll smoothly in normal mode and instantly under reduced
+motion. Games date chips and day/week arrows reuse the shared button feedback below; the
+Schedule column-guide chevron retains its 200ms rotation only in normal mode.
 
 Hover and press feedback is separate from motion moments. `.fc-control-button` shows an inset
 ring on hover and scales to 0.97 while pressed; `.fc-sort` headers and `.fc-text-link` underline;

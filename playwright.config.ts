@@ -9,7 +9,7 @@ const BASE_URL = EXTERNAL_BASE_URL || `http://localhost:${PORT}`;
 
 export default defineConfig({
   testDir: "./e2e",
-  testIgnore: ["**/alignment-audit.spec.ts"],
+  testIgnore: ["**/alignment-audit.spec.ts", "**/release-smoke.spec.ts"],
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,

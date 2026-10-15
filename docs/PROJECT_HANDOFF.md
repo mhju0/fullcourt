@@ -1,50 +1,39 @@
 # Project handoff
-
 Reconciled 2026-09-11. Source/tests and Git take precedence. This is a current-state summary;
 update these sections in place. Rationale belongs in [Decisions](DECISIONS.md).
-
 ## Product and release
-
 FullCourt studies NBA rest, travel, schedule density, and outcomes. The homepage leads with
 rest and schedule findings; Games, Season Report, Schedule Edge, and Explore are the primary
 navigation. Explore contains the other basketball studies. There are no accounts or persisted
 personal preferences; exploration state is shareable through URLs and browser history.
-
 The rest-focused redesign shipped in PR #84 (`776683e`). Its first verified Officiating refresh
 and release record shipped in PR #85 (`34b8961`). Production: https://fullcourt.fyi.
 The [dated release review](design/redesign-release-review.md) records verification; use GitHub
 and Vercel for subsequent deployment status.
-
 Games now exposes Season → Month → Date controls, with shared season selectors across studies.
 Games has one layout at every width, in tip-off order (D-79). Playoff Rest explains between-round recovery directly.
 Officiating covers 12 regular seasons and 4,546 reports, including the partial 2014–15 season;
 [archive evidence](research/2026-09-09-l2m-archive.md) records source checks and historical limits.
-
 The homepage hero now contains only the headline, original description and primary action.
 The one-game example and its supporting reads were removed under D-67. Next.js and its ESLint
 config are pinned to 16.3.8 (raised from 16.3.4 on 2026-10-03 for GHSA-vcvr-r3jv-pc5j); the
 lockfile resolves Sharp 0.35.5 (pinned on 2026-10-07 for GHSA-wq5f-xc86-pv6w), clearing the production dependency audit. See [verification](design/home-hero-release-review.md).
-
 Shared filters now use 44px targets and 16px text. Analysis uses equal-width filter columns;
 Season Report uses bordered sections with a separate interpretation surface. The
 [control and section audit](design/control-and-section-audit.md) records route coverage and rationale.
-
 D-69 makes Playoff Rest and Expected Shot Value default to their latest usable publication.
 Their selected views are shareable through URLs and copy actions. `/data-status` separates
 coverage, refresh evidence and database connectivity; the homepage historical date comes from
 the analysis population. Games moves offseason context beside mobile date controls, names
 matchup controls distinctly, and restores selected-chip visibility after resizing. See the
 [seven-fix review](design/seven-polish-fixes-review.md) for verification and release evidence.
-
 D-70 adds `/home-court`, reached through Explore, for annual home and rested-home win-rate
 history with an expandable count table. Season Report exposes the selected home baseline
 alongside the rested-home result and gap. Both retain the 100-game rested-home display gate;
 ongoing seasons are labeled explicitly and excluded from completed-history summaries.
 The [research record](research/2026-09-11-home-advantage-trend.md) retains data, sources, and
 owner decisions. See the [release review](design/home-court-study-review.md) and Git for verification and deployment status.
-
 ## Architecture and safeguards
-
 - Next.js serves pages and API routes. Database reads use Drizzle/postgres-js against Supabase
   PostgreSQL. Offline Python analyses also publish committed artifacts.
 - `src/lib/fatigue.ts` computes scores on the write path. The coefficients are ratified;
@@ -101,18 +90,9 @@ Still open from those entries:
 
 Condensed on 2026-10-10 from two entries; DECISIONS.md D-74 to D-77 hold the detail.
 
-- **Site.** Footer non-affiliation notice, `/privacy` and the `Report an error` mail link.
-  Production is `https://fullcourt.fyi`; `www.fullcourt.fyi`, `fullcourt-nba.vercel.app` and
-  `nba-rest-advantage.vercel.app` answer 308 to it. `src/lib/site-url.ts` holds the origin.
-- **Monitoring.** Sentry project `javascript-nextjs` (org `michael-ju-46`) reads its DSN from
-  `NEXT_PUBLIC_SENTRY_DSN`, set in Vercel; IP storage is off. UptimeRobot checks `/` and
-  `/api/health` every five minutes.
-- **Outside the repo.** A Vercel firewall rule limits `/api/` to 100 requests per 60 seconds
-  per IP (Hobby allows one rule). A weekly backup runs on the owner's Mac
-  (`~/Backups/fullcourt/backup.sh`, Sundays 11:00, newest eight kept); it needs `pg_dump` 18,
-  and one test restore matched row counts.
-- **Phone test inside Instagram.** Two fixes: the Schedule breakdown zero rule no longer paints
-  over the pinned column, and the error-report subject is `FullCourt error or suggestion`.
+Condensed 2026-10-14: D-74–D-77 shipped the footer non-affiliation notice, `/privacy`, and report mail link. `src/lib/site-url.ts` holds `https://fullcourt.fyi`; the www/fullcourt-nba/nba-rest-advantage domains redirect with 308.
+Sentry `javascript-nextjs` / `michael-ju-46` uses Vercel `NEXT_PUBLIC_SENTRY_DSN` with IP storage off; UptimeRobot checks `/` and `/api/health` every five minutes. Vercel's one Hobby firewall rule limits `/api/` to 100 requests per 60 seconds per IP.
+The owner's Mac runs `~/Backups/fullcourt/backup.sh` Sundays 11:00, retaining eight backups; it needs pg_dump 18 and one restore matched counts. Instagram review fixed the Schedule pinned-column zero rule and report subject `FullCourt error or suggestion`.
 
 Still open from those entries: Sentry source-map upload; the footer notice size (12px); the
 GitHub social preview and outside links may still name the old address; the quota plan
@@ -202,3 +182,23 @@ Artifact merge follow-up, 2026-10-11: owner approved PR #125; merged3445fcd at11
 Generator safeguards, 2026-10-12 (D-85): owner approved observed referee coverage, exact4-game corrected-date crosswalk and monotonic Officiating publication. [Verified] both pure boundary and actual CLI cached runs match13,209 events, collect12,636 whistle/11,952 style,573 missing,0 errors; analytical fields identical to publication. Authentic older snapshot refused before any write;4,555 published JSON remain byte-identical.
 [Record](research/2026-10-12-generator-publication-guards.md); [HTML before/after](reports/2026-10-11-remediation/index.html#generator-guards). [Verified] Node22 gates/1148 unit/Python7+42, independent edd31eb review, CI and exact-SHA connected preview pass. PR #126 awaits owner merge yes; no production writer or merge.
 Open: latest Officiating snapshot/full upstream Legends unavailable, item24 stays partial. Oct12 nightly unavailable; all owner/future checks and unresolved prior issues preserved. Next: owner-approved PR merge only after preview/review; opening-night runbook remains separate.
+
+Selected motion fixes, 2026-10-14: [plans and verification](../plans/README.md) record the five owner-selected fixes: immediate Analysis tooltips/fatigue fills, shared Games controls, reduced-motion drill scrolling and Schedule guide rotation. [Verified locally] corrected baseline reproduces all five defects; built Chromium passes 98 checks, including 20 selected-fix cases at 390/1440px in normal/reduced motion; lint/typecheck/build, 1,148 unit tests, production dependency audit and doc links pass.
+No model/schema/data/dependency changes. Existing homepage, route and record motion is preserved. Early invalid reduced-motion harness results were rejected and replaced with asserted viewport/media evidence.
+Open/next: independent root review; deployment remains pending the owner's credential rotation and explicit merge yes. No push, PR, merge or production write; physical-device and opening-night checks and all prior unresolved issues remain open.
+
+Ordered accessibility/usability audit, 2026-10-14: [HTML report](reports/2026-10-14-accessibility-usability.html) and [numbered findings](../anti-slop/audit-002-2026-10-14.md). [Verified] unchanged motion candidate3058478 passes98 accessibility/navigation checks,50 baseline geometry samples and18 text-size stress samples; open-dialog semantics, palette focus return, pending-data explanations and narrow/enlarged-text layout need fixes. Nine recommendations remain unimplemented; mobile/desktop newcomer paths and local SQL/API/UI flow were exercised.
+Owner approved merging3058478, but credential rotation is still unconfirmed. [Verified] latest nightly38488787184 writes112fatigue/19picks with0failures; main remains2d458df. Vercel deployment read is403 for mhju0s-projects; exact production commit/preview/source maps remain unverified. Next: select new fixes, finish credential updates and restore Vercel read access; no push/merge/deploy/data writes. Physical-device, native zoom, spoken accessibility, opening-night checks and every prior unresolved issue remain open.
+Closeout: independent report review approved HTML SHA256 d93b936ae708037d272cf32c66c2f16e79c42d321b4b8c5539185d86e60d97ce after endpoint/backup-consumer corrections. Static artifact/doc checks pass; local app and initially-stopped PostgreSQL services were stopped again. Audit documents remain local and uncommitted.
+
+Release preparation, 2026-10-14: the owner requested main integration of reviewed motion3058478 and the three audit documents. The release branch prepares that exact scope; recommendations F1–F9 remain unimplemented. Owner merge approval is recorded, while the credential-rotation gate awaits their response; no push, PR, merge or deployment has occurred in this preparation step. [Verified] Node22 lint/typecheck/build,1,148 unit tests and doc/diff checks pass for the prepared scope.
+
+CI/CD hardening,2026-10-15: owner approved F1–F7. [Verified] local secret-free browser/real-PG gates feed required verify; dependency SDK/proxy pins,21:17 schedule, safe stage/freshness estimates, blocked manual sources and maintenance monitoring implemented. Main strict/admin enforcement and Vercel blocking GitHub verify applied/read back; no production data writes.
+[Report](reports/2026-10-15-ci-cd-implementation.html) retains all28 launch statuses and owner instructions. Node22 gates/1157unit,15automation,24+42Python,12rendered,25PG pass; independent exact-candidate code review accepted4247072. No push/preview/merge/deploy: credential rotation unconfirmed. Next: owner confirms all credential locations, then exact-SHA preview and authorized release; scheduled/Dependabot/failed-promotion evidence follows. Broad UI suggestions and physical/opening-night checks remain open; D-80 freeze still applies. JOBKOREA queued separately.
+Prelaunch cron follow-up,2026-10-15: [Verified] all12 Vercel cron entries enabled and recent2XX observed in the prior read-only audit. Opening-night finals/rescore remain unobserved; no production writer was manually called.
+
+Release hold,2026-10-15: owner requested push/merge, then explicitly answered “Not yet — keep release pending” for credential rotation. [Verified] main remains2d458df, no PR exists for fix/ci-cd-hardening, and code candidate7d0c054 is unchanged. No push/preview/merge/deploy performed. Next: owner rotates/updates all recorded credential consumers, then resume exact-SHA CI/preview and approved merge.
+
+Credential recovery preparation,2026-10-15: owner requested agent-managed rotation and confirmed submitting Supabase reset. [Verified] old credential fails28P01; live health503. New credential propagation/redeploy remains pending owner hidden local input. Local gitignored updater has15 passing mocktests; original env/backup format, CLI identities and pre-reset CA-verified readonly connection checked. Backup reads original.env, no separate edit. Dashboard confirmsFree plan(item10); current quota usage unknown. Next: reviewed updater local prompt → saved consumers → current production credential-refresh deployment/health → authorized CI/preview/merge. No reset, saved-credential mutation, push or deployment performed by agent. All other unresolved checks persist.
+
+Credential recovery verified,2026-10-15: owner completed hidden prompt. [Verified] new saved credential passes CA-verified readonlySELECT1; local.env0600/backup extraction match; all consumer commands succeeded and GitHub timestamp updated. Existing accepted production redeploy5vzGqHuDr7gtF5pGo5EoErahvHiK isREADY; home/health200(dbup), Chrome Games rendersOct20slate. Local lint/typecheck/1157unit/build pass using exactpnpm11.8; oldCorepackkey error and localhelperlint interference resolved without app exceptions. Helper/receipt archived ~/.local/share/fullcourt-credential-rotation. Next: hosted exact-SHA CI/preview, independent frozen-candidate reconciliation and authorized merge/deployed verification; remaining launch checks preserved.

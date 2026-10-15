@@ -1136,3 +1136,43 @@ or production data writes. A separate owner yes remains required for this PR's m
 
 [Verification record](research/2026-10-12-generator-publication-guards.md) distinguishes local
 regeneration, regression tests, independent review and any later deployment.
+
+## Selected motion audit fixes — 2026-10-14
+
+The owner selected all five corrective findings: immediate Analysis tooltips, shared Games
+control feedback, reduced-motion-safe threshold drill scrolling, immediate fatigue fills,
+and reduced-motion-safe Schedule guide rotation. These align repeated reading and
+accessibility with the existing Motion contract; no new motion moment or dependency is added.
+Homepage entrances, bar drawing, route crossfades, record expansion, analytics and model
+semantics remain unchanged. The numbered [plans](../plans/README.md) record baseline and
+verification. Local completion does not authorize deployment: credential rotation is pending,
+and each main merge still requires explicit owner yes.
+
+## CI/CD hardening — 2026-10-15
+
+The owner approved F1–F7 in the CI/CD audit. Keep the existing required `verify` name but make
+it an always-run aggregate of correctness/build, deterministic rendered browser and disposable
+PostgreSQL contracts; reject any non-success prerequisite. PR jobs stay secret-free and use
+reviewed Action commit pins. Full dependency findings are monitored separately from the
+required production audit. Use the mature shadcn parent release with a compatible patched MCP
+SDK and a narrow proxy-addr security pin; do not relax package release-age policy.
+
+Daily work uses 21:17 UTC, non-cancelling GitHub concurrency, a bounded job deadline and safe
+per-stage summaries. Partial optional context is degraded; critical failures propagate after
+useful downstream work. Known blocked manual sources fail before secret access. Provider
+probes explicitly distinguish expected blocks from actionable failures. A six-hour due-run
+monitor detects execution problems but is not independent of GitHub or database-freshness proof.
+Scoped fatigue ages are estimates because stored timestamps lack timezone metadata.
+
+Main base freshness and administrator enforcement are enabled, preserving `verify` and bans
+on force-push/deletion. Vercel imports GitHub `verify` as a blocking Production promotion check;
+no new token or privilege is granted. It gates domain assignment, not builds or owner approval.
+CodeQL stays active and reviewed separately; a second human approval is not required for the
+solo owner. Exact-SHA preview and owner-approved main merge remain necessary after credential
+rotation is confirmed. Actual failed-promotion behavior and subsequent schedules cannot be
+claimed from local tests or saved settings.
+
+The new browser gate reproduced Escape and rapid-reopen focus loss in the existing command
+palette. A narrow focus-restoration correction preserves navigation and avoids focus theft
+from a reopened dialog. Broad UI audit suggestions remain separate. No fatigue coefficient,
+published analytical figure, application schema or production data is changed.

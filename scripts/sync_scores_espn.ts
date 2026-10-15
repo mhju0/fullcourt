@@ -54,6 +54,7 @@ config({ path: ".env.local" });
 
 import { existsSync, mkdirSync, writeFileSync } from "node:fs";
 import postgres from "postgres";
+import { writeStageSummary } from "./pipeline-stage-summary";
 
 import {
   parseScoreboard,
@@ -140,6 +141,7 @@ async function syncScores(sql: ReturnType<typeof postgres>, from: string, to: st
     order by g.date, g.id`;
 
   if (rows.length === 0) {
+    writeStageSummary("scores", { rows_written: 0, stored_games: 0 });
     console.log(`[sync-scores] no games stored in ${from}..${to}; nothing to do.`);
     return;
   }
@@ -207,6 +209,7 @@ async function syncScores(sql: ReturnType<typeof postgres>, from: string, to: st
   }
 
   if (dryRun) {
+    writeStageSummary("scores", { rows_written: 0, stored_games: rows.length, date_errors: dateErrors, unmatched: unmatchedStored });
     console.log("[sync-scores] --dry-run: no rows written");
     if (dateErrors > 0) process.exitCode = 2;
     return;
@@ -238,6 +241,7 @@ async function syncScores(sql: ReturnType<typeof postgres>, from: string, to: st
     writeTimeRefusedDowngrades += chunk.filter(update => update.status !== "final" && !writtenIds.has(update.gameId)).length;
   }
 
+  writeStageSummary("scores", { rows_written: written, stored_games: rows.length, date_errors: dateErrors, unmatched: unmatchedStored });
   console.log(`[sync-scores] done — ${written} row(s) updated`);
   console.log(`[sync-scores] write-time final downgrades refused: ${writeTimeRefusedDowngrades}`);
   if (dateErrors > 0) process.exitCode = 2;

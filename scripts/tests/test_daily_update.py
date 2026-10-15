@@ -1,6 +1,8 @@
 """The score writer's degraded status must survive successful downstream work."""
 
 import sys
+import os
+import tempfile
 import unittest
 from pathlib import Path
 from types import SimpleNamespace
@@ -12,7 +14,9 @@ import daily_update
 
 class DailyUpdateStatusTests(unittest.TestCase):
     def run_pipeline(self, codes):
-        with patch.object(daily_update, "is_in_season", return_value=True), \
+        with tempfile.TemporaryDirectory() as directory, \
+             patch.dict(os.environ, {"DAILY_SUMMARY_PATH": str(Path(directory) / "summary.json")}), \
+             patch.object(daily_update, "is_in_season", return_value=True), \
              patch.object(daily_update, "resolve_database_url", return_value="test-only"), \
              patch.object(daily_update.subprocess, "run", side_effect=[
                  SimpleNamespace(returncode=code) for code in codes
@@ -35,8 +39,8 @@ class DailyUpdateStatusTests(unittest.TestCase):
     def test_later_fatal_failure_is_not_hidden_by_degraded_score_sync(self):
         self.assertEqual(self.run_pipeline([2, 0, 0, 1]), (1, 4))
 
-    def test_nonfatal_context_and_projection_failures_do_not_clear_degraded_status(self):
-        self.assertEqual(self.run_pipeline([2, 1, 1, 0]), (2, 4))
+    def test_fatal_context_overrides_degraded_scores_without_losing_downstream(self):
+        self.assertEqual(self.run_pipeline([2, 1, 1, 0]), (1, 4))
 
 
 if __name__ == "__main__":

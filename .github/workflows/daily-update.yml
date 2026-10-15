@@ -1,33 +1,18 @@
-# Daily sync: finalize recent scores, refresh fatigue + predictions, load upcoming slate.
-#
-# Runs daily year-round. scripts/daily_update.py self-gates on the NBA season:
-# during the offseason it logs a skip and exits 0 (no DB or API work), so there is
-# no cron cadence to switch between offseason and regular season.
-#
-# Vercel `/api/cron/update` is configured separately in vercel.json.
-#
-# Secrets (required for the in-season path; the offseason skip needs none):
-#   DATABASE_URL — Supabase Postgres connection string (postgresql://...)
-#   Configure at: GitHub repo → Settings → Secrets and variables → Actions → New repository secret
-
 name: Daily NBA update
 
-# The GITHUB_TOKEN is only ever used to check out the repo, so pin it to read-only.
 permissions:
   contents: read
+  actions: read
 
 on:
   schedule:
-    - cron: "0 21 * * *"
+    - cron: "17 21 * * *"
   workflow_dispatch:
     inputs:
       task:
         description: >-
-          daily = normal pipeline (season-gated). resync-schedule = re-run the CDN
-          schedule fetch only (NOT season-gated) — repairs games.date rows via the
-          self-healing upsert; use for date-convention fixes or schedule shifts.
-          seed-season = ingest one historical season named in `season`; runs here
-          because stats.nba.com is unreachable from outside the US.
+          daily = season-gated pipeline. resync-schedule and seed-season are
+          blocked pending a validated provider and the manual-source runbook.
         type: choice
         default: daily
         options:
@@ -35,81 +20,75 @@ on:
           - resync-schedule
           - seed-season
       season:
-        description: >-
-          Season label for seed-season, e.g. "2019-20". Ignored by the other tasks.
-          Safe to re-run: the upsert is keyed on external_id.
+        description: Season label retained for the blocked seed-season task.
         type: string
         required: false
+
+concurrency:
+  group: fullcourt-daily-writer
+  cancel-in-progress: false
 
 jobs:
   update:
     runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      DAILY_SUMMARY_PATH: daily-summary.json
     steps:
+      - name: Reject blocked manual source tasks
+        if: ${{ github.event.inputs.task != '' && github.event.inputs.task != 'daily' }}
+        run: |
+          echo '::error::This manual source is blocked from Actions. No dependencies or database credentials have been loaded. Follow docs/research/2026-10-15-pipeline-operations.md before preparing a replacement source and rehearsing a local restore.'
+          exit 1
+
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: "3.11"
+
+      - name: Initialize safe pipeline telemetry
+        id: telemetry
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if ! WORKFLOW_TIMING="$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" --jq '{created_at, run_started_at}')"; then
+            WORKFLOW_TIMING='{}'
+            echo '::warning::Actions timing unavailable; daily data work will continue with unknown schedule lateness.'
+          fi
+          export WORKFLOW_TIMING
+          python scripts/pipeline_summary.py initialize
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v5
+        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5
 
       - name: Set up Node.js
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
         with:
           node-version: "22"
           cache: "pnpm"
 
-      - name: Set up Python 3.11
-        uses: actions/setup-python@v6
-        with:
-          python-version: "3.11"
-
       - name: Install Node dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Install Python dependencies
-        run: pip install -r scripts/requirements.txt
-
-      # Normal path: cron runs (inputs.task is empty) and manual "daily" dispatches.
-      # Only the normal path. Testing "not resync-schedule" meant every future task ran the
-      # daily pipeline first as well — seed-season did, and in-season that would have been a
-      # real double-run rather than the harmless offseason no-op it was.
       - name: Run daily update
-        if: ${{ github.event.inputs.task == '' || github.event.inputs.task == 'daily' }}
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: python scripts/daily_update.py
 
-      # Manual repair path: re-run the CDN schedule fetch only. Bypasses the season
-      # gate (fetch_nba_schedule_cdn.main has none) so games.date rows can be
-      # repaired in the offseason via the self-healing upsert.
-      - name: Resync schedule dates (manual)
-        if: ${{ github.event.inputs.task == 'resync-schedule' }}
+      - name: Publish safe pipeline summary
+        if: ${{ always() && steps.telemetry.outcome == 'success' }}
         env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-        run: python scripts/fetch_nba_schedule_cdn.py
+          WORKFLOW_JOB_STATUS: ${{ job.status }}
+        run: python scripts/pipeline_summary.py finalize
 
-      # Seed one historical season via nba_api / stats.nba.com.
-      #
-      # WARNING: this path is currently BROKEN and kept only because it costs nothing to keep.
-      # The comment here used to claim "GitHub's runners are US-based, so the fetch works here".
-      # That was disproved by probe-data-sources.yml on 2026-07-27 and re-confirmed 2026-08-18:
-      # stats.nba.com times out from Actions too (25s, 0 bytes, runners in San Jose and Des
-      # Moines). The block is a datacenter block, not a geo block, so being US-based does not
-      # help. An upcoming season is seeded with scripts/seed_upcoming_season_espn.ts instead.
-      #
-      # Idempotent: fetch_schedule.py upserts on external_id, so re-running a season repairs
-      # rows rather than duplicating them. NBA_SEED_SKIP_OT is set because overtime now comes
-      # from ESPN via fetch_game_context.ts, and the BoxScore calls this would otherwise make
-      # are both slow and unreachable.
-      - name: Seed one season (manual)
-        if: ${{ github.event.inputs.task == 'seed-season' }}
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          NBA_SEED_SKIP_OT: "1"
-          # Passed via env, not template-interpolated into the script, so the shell only
-          # ever sees a quoted variable — the standard workflow-injection guard.
-          SEASON: ${{ github.event.inputs.season }}
-        run: |
-          test -n "$SEASON" || {
-            echo "::error::seed-season requires the 'season' input, e.g. 2019-20"; exit 1;
-          }
-          python scripts/fetch_schedule.py "$SEASON"
+      - name: Retain pipeline summary
+        if: ${{ always() }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: daily-pipeline-summary
+          path: ${{ env.DAILY_SUMMARY_PATH }}
+          if-no-files-found: ignore
+          retention-days: 14

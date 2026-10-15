@@ -1,8 +1,9 @@
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
-import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { CI_INTEGRITY_URL, integrityTestUrl } from "./integrity-test-url";
 import postgres from "postgres";
 import { and, eq, isNull } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/postgres-js";
@@ -10,11 +11,10 @@ import * as schema from "../../src/lib/db/schema";
 import { createDailyRefreshPort, selectRecoveryGameIds, adjacentEasternDateKey } from "../../src/lib/daily-refresh-port";
 import { refreshDailyGames, refreshProspectiveGames, type DailyRefreshWrite, type DailyRefreshPort } from "../../src/lib/daily-refresh";
 import { fetchRecentGamesForTeam } from "../../src/lib/fatigue-recent-games";
-import { formatEasternDateKey } from "../../src/lib/nba-season";
+import { formatEasternDateKey, seasonLabelForDateKey } from "../../src/lib/nba-season";
 
-// This harness never loads .env.local. Only the disposable restore on the specified port is allowed.
-const url = process.env.FULLCOURT_TEST_DATABASE_URL;
-assert.equal(url, "postgresql://michaelju@127.0.0.1:55432/fullcourt_remediation", "explicit isolated PostgreSQL URL required");
+// This harness never loads .env.local. CI uses a fixed disposable service, never DATABASE_URL.
+const url = integrityTestUrl();
 const testSchema = "fullcourt_integrity_test";
 const admin = postgres(url!, { max: 1, prepare: false });
 const makeClient = (name: string) => postgres(url!, { max: 1, prepare: false, connection: { application_name: name, search_path: testSchema } });
@@ -88,6 +88,9 @@ async function runCli(script: string, argument: string | string[], marker: strin
 
 async function main() {
 try {
+  if (url === CI_INTEGRITY_URL) {
+    await admin.unsafe(readFileSync(join(process.cwd(), "scripts/tests/ci-integrity-bootstrap.sql"), "utf8"));
+  }
   await admin.unsafe(`create schema ${testSchema}`);
   for (const table of ["teams", "games", "fatigue_scores", "predictions"]) await admin.unsafe(`create table ${testSchema}.${table} (like public.${table} including all)`);
   const sourceForeignKeys = await admin`
@@ -96,7 +99,7 @@ try {
     where n.nspname='public' and t.relname in ('teams','games','fatigue_scores','predictions') and c.contype='f'
     order by t.relname,c.conname
   `;
-  assert.equal(sourceForeignKeys.length,7,"restored source must carry all seven expected foreign keys");
+  assert.equal(sourceForeignKeys.length,7,"test source must carry all seven expected foreign keys");
   for (const fk of sourceForeignKeys) {
     assert.match(fk.table_name,/^[a-z_]+$/);
     assert.match(fk.constraint_name,/^[a-z_]+$/);
@@ -122,10 +125,10 @@ try {
     first`insert into predictions(game_id,predicted_advantage_team_id,rest_advantage_differential) values(-99999,1,1)`,
     (error: unknown) => typeof error === "object" && error !== null && "code" in error && error.code === "23503",
   );
-  pass("all seven authentic foreign keys copied to isolated schema; orphan prediction rejected");
+  pass("all seven expected foreign keys copied to isolated schema; orphan prediction rejected");
   const today = formatEasternDateKey();
   const yesterday = adjacentEasternDateKey(today, -1);
-  const season = "2026-27";
+  const season = seasonLabelForDateKey(today);
   await first`insert into games(id,external_id,date,season,home_team_id,away_team_id,status,tip_off_utc,home_score,away_score,overtime_periods) values
     (-1,'integrity-prior',${yesterday},${season},3,2,'final',clock_timestamp()-interval '1 day',110,108,0),
     (-2,'integrity-target',${today},${season},1,2,'scheduled',clock_timestamp()+interval '1 hour',null,null,0)`;

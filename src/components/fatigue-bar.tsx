@@ -38,7 +38,7 @@ export function FatigueBar({ score, tone = "neutral", className }: FatigueBarPro
       aria-hidden
     >
       <div
-        className="h-full transition-[width] duration-500 ease-out"
+        className="h-full"
         style={{ width: `${fillPct}%`, background: toneColor(tone) }}
       />
     </div>
