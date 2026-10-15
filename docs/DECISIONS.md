@@ -1292,3 +1292,11 @@ backtest was crediting a home court the model said was absent. Owner decision: e
   5,985 at 59.06% (+0.35 → +0.36 pp). No verdict on the site changes.
 - The 9 graded neutral rows in `predictions` are deleted with the owner's approval at merge, so
   `verify_predictions` stays clean.
+
+## D-93 — The /home-court gap is the difference of the two rates printed beside it (2026-10-16)
+
+`restedHomeGap()` computed the gap from raw counts, so in 9 of 41 seasons it read 0.1 away from
+the subtraction a reader can do on the row. Twice that put a +0.1 gap beside two identical
+rates (1987-88 at 67.9 / 67.9, 1997-98 at 59.5 / 59.5). Owner decision: print the difference of
+the printed rates via `liftOverBaseline()`, as `/behind-the-data/rest-advantage` already does.
+The value can sit up to 0.1 from the exact figure, which is the precision the rates carry.
