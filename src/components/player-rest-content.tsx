@@ -186,7 +186,12 @@ function playerColumns(
       )),
     },
     {
-      label: "2–29 days off",
+      label: (
+        <>
+          <span className={styles.longLabel}>2–29 days off</span>
+          <span className={styles.shortLabel}>2–29 off</span>
+        </>
+      ),
       unit: "eFG% and attempts",
       sortKey: "restedEfg",
       numeric: true,

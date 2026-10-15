@@ -575,7 +575,7 @@ direction    = ${K.eastwardMultiplier} eastward, ${K.westwardMultiplier} westwar
           {ABLATIONS[0].found.toLocaleString()}{" "}
           of the model&rsquo;s calls, far more than any other term (the next is{" "}
           {Math.max(...ABLATIONS.slice(1).map((a) => a.found)).toLocaleString()}). Those games won at{" "}
-          {ABLATIONS[0].foundWinPct}%.
+          {ABLATIONS[0].foundWinPct.toFixed(1)}%.
         </Prose>
         <DataTable
           rows={ABLATIONS}
@@ -603,7 +603,7 @@ direction    = ${K.eastwardMultiplier} eastward, ${K.westwardMultiplier} westwar
               label: "THOSE GAMES",
               unit: "WIN RATE",
               numeric: true,
-              cell: (a) => `${a.foundWinPct}%`,
+              cell: (a) => `${a.foundWinPct.toFixed(1)}%`,
             },
             {
               label: "HEADLINE IF REMOVED",
