@@ -162,7 +162,7 @@ def load_birthdays() -> dict[str, date]:
 #: It matters more here than anywhere else on the site. Rest is counted from the games a
 #: player actually played, so his first game back in the bubble sits about 141 days after his
 #: last one before the suspension. Without this filter that single game would enter the
-#: "3+ days rest" arm of every player who appeared in it -- one of the cleanest-looking
+#: "2+ days off" arm of every player who appeared in it -- one of the cleanest-looking
 #: rested samples imaginable, produced by a global pause rather than by rest.
 ABNORMAL_STRETCHES = [
     ("2019-20", "2020-07-30", "2020-10-11"),  # Orlando bubble
@@ -417,7 +417,7 @@ def main() -> int:
 
     # ---- 1. fatigue ---------------------------------------------------------
     fat = summarize(paired(rows, b2b, rested, args.min_fga))
-    emit("## 1. Fatigue — his own back-to-back vs 3+ days off")
+    emit("## 1. Fatigue — his own back-to-back vs 2+ days off")
     emit()
     if fat["n"]:
         emit(f"**{fat['delta']:+.3f} pp** [{fat['lo']:+.3f}, {fat['hi']:+.3f}] "

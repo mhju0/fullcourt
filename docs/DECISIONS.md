@@ -1186,5 +1186,7 @@ keeps `daysSinceLastGame` because its ratified terms are written against that co
 score, rest advantage or published rate moves. The storyline names each team by the
 nickname it played under that season (`getTeamBranding`), and every clause carries its own
 verb ("playing a 4th game in 6 nights") so a nickname reads as a sentence. Owner chose
-"76ers" over "Sixers". Still on the days-since count with a "days rest" label: the
-player-rest "3+ days" bucket and Schedule Edge's rest-day cap — open, not changed here.
+"76ers" over "Sixers". The player-shooting rested bucket (days since >= 3) is relabelled
+"2+ days off" rather than moved: a 3+ days off cut halves the effect and splits the age
+bands, most likely injury returns. Schedule Edge's rest-day cap still says "days off" over
+a days-since count — left for the owner's site-wide audit.

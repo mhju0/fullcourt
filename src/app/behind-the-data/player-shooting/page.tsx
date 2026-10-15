@@ -21,7 +21,7 @@ export default function PlayerShootingMethodPage() {
       topic="player-shooting"
       eyebrow="BEHIND THE DATA · PLAYER SHOOTING BY REST"
       title="Player Shooting by Rest"
-      description="Player shooting on no rest compared with three or more days of rest, with attempt counts and uncertainty shown for each split."
+      description="Player shooting on no rest compared with two or more days off, with attempt counts and uncertainty shown for each split."
     >
       <Section label="THE SPLIT" title="The two rest groups">
         <Prose>
@@ -29,9 +29,9 @@ export default function PlayerShootingMethodPage() {
           several days away can be rested even when the team played the night before.
         </Prose>
         <Formula>
-          {`no rest      played again the very next day
-3+ days rest  three or more days since his last appearance
-rest effect   eFG% on 3+ days − eFG% on no rest`}
+          {`no rest       played again the very next day
+2+ days off   two or more full days between appearances
+rest effect   eFG% on 2+ days off − eFG% on no rest`}
         </Formula>
         <Note>
           Games with one or two days of rest are excluded from this comparison. The two
@@ -65,7 +65,7 @@ rest effect   eFG% on 3+ days − eFG% on no rest`}
         <ValueGrid
           values={[
             { label: "Default attempt floor", value: "300+", sub: "field goal attempts" },
-            { label: "Rest states compared", value: "0 vs 3+", sub: "days since he played" },
+            { label: "Rest states compared", value: "0 vs 2+", sub: "days off between appearances" },
             { label: "Metric", value: "eFG%", sub: "threes weighted 1.5×" },
           ]}
         />

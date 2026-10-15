@@ -66,7 +66,7 @@ export function HomeContent({ findings }: { findings: HomeFindings }) {
         <article>
           <p className={styles.eyebrow}>The players · shooting by rest</p>
           <h2>Does a fresh player shoot better?</h2>
-          <p>Compare no-rest shooting with three or more days off, with attempts beside every rate. A large single-season gap can still be uncertain.</p>
+          <p>Compare no-rest shooting with two or more days off, with attempts beside every rate. A large single-season gap can still be uncertain.</p>
           <p>{shootingCoverage ? `Regular-season player coverage: ${shootingCoverage}. ` : "Player coverage is unavailable. "}Career estimates pool attempts and shrink uncertain differences.</p>
           <TransitionLink href="/shooting" className={styles.textLink}>Look up a player <span aria-hidden="true">→</span></TransitionLink>
         </article>

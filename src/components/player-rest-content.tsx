@@ -186,7 +186,7 @@ function playerColumns(
       )),
     },
     {
-      label: "3+ days",
+      label: "2+ days off",
       unit: "eFG% and attempts",
       sortKey: "restedEfg",
       numeric: true,
@@ -560,7 +560,7 @@ export function PlayerRestContent() {
       <p className={styles.readingKey}>Shooting rate (eFG%) gives extra credit for threes. + means higher with more rest; − means lower. pp = percentage points. These comparisons do not isolate the effect of rest.</p>
       <details className="fc-disclosure">
         <summary>Rest definitions and uncertainty</summary>
-        <p>No rest means played yesterday. 3+ days means at least three days since the player&apos;s last appearance, including games the player sat out. The difference is 3+ days minus no rest, in percentage points.</p>
+        <p>No rest means played yesterday. 2+ days off means at least two full days between the player&apos;s appearances, including games the player sat out. The difference is 2+ days off minus no rest, in percentage points.</p>
         <div className={styles.legend} id="pr-color-note">
           <span style={{ color: "#991b1b" }}>− Lower with rest</span>
           <span style={{ color: "#166534" }}>+ Higher with rest</span>
@@ -800,8 +800,8 @@ function PlayerExpansion({
               color: "var(--term-text-muted)",
             }}
           >
-            No career estimate: fewer than 150 shots on no rest or on three or
-            more days rest, so only his seasons are shown.
+            No career estimate: fewer than 150 shots on no rest or on two or
+            more days off, so only his seasons are shown.
           </td>
         </tr>
       )}
