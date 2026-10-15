@@ -22,6 +22,7 @@ next-env.d.ts
 /coverage/
 /playwright-report/
 /playwright-smoke-report/
+/.playwright-mcp/
 /test-results/
 /daily-summary.json
 /provider-summary.json
