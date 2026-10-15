@@ -669,11 +669,19 @@ async function main(): Promise<void> {
     games: rows.length,
     homeWinPct: Math.round((rows.filter((g) => g.homeWon).length / rows.length) * 1000) / 10,
   });
+  const meanEdge = (rows: PopulationGame[]) =>
+    Math.round(mean(rows.map((g) => g.differential)) * 1000) / 1000;
   const facts = {
     population: population.length,
     bothTravelledIn: cut(bothTravelled),
     homeFlewFarther: cut(homeFurtherThanVisitor),
     homeTravelledInOnBackToBack: cut(homeTravelledB2b),
+    // Mean signed rest-advantage differential (away − home): how far the edge shrinks once the
+    // home side has travelled too. The method page prints the fall as a percentage.
+    meanRestEdge: {
+      allGames: meanEdge(population),
+      bothTravelledIn: meanEdge(bothTravelled),
+    },
   };
   await writeFile(FACTS_PATH, JSON.stringify(facts, null, 2) + "\n", "utf8");
   console.log(`[measure] wrote ${FACTS_PATH}`);

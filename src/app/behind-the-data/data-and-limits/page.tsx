@@ -33,8 +33,8 @@ const COVERAGE = [
   {
     field: "Schedules, scores, results",
     from: "1985-86",
-    source: "NBA feeds",
-    note: "Complete across every covered season.",
+    source: "NBA feeds; ESPN",
+    note: "Completed seasons from NBA feeds. The current season's schedule and nightly scores come from ESPN.",
   },
   {
     field: "Overtime periods",
@@ -57,7 +57,7 @@ const COVERAGE = [
   {
     field: "Shot locations",
     from: "1996-97",
-    source: "hoopR / play-by-play",
+    source: "NBA shot charts (nba_api)",
     note: "Expected Shot Value only. These records do not include defender or tracking fields.",
   },
 ] as const;
@@ -180,7 +180,7 @@ export default function DataAndLimitsPage() {
         <LimitList
           items={[
             "Pre-2002 overtime is unknown rather than zero. Basketball-Reference carries it and could close this gap; it has not been done.",
-            "Neutral-site games before 2013 are unmarked, so Mexico City games from 1997 and the 2011-12 London games are geolocated at the listed host's arena. Basketball-Reference marks them.",
+            "Neutral-site games before 2013 are unmarked, so Mexico City games from 1997 and the 2010-11 London games are geolocated at the listed host's arena. Basketball-Reference marks them.",
             "Arena coordinates are era-correct for relocations, but neutral-site venues rely on a small hand-maintained list of cities.",
           ]}
         />

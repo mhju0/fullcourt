@@ -358,14 +358,22 @@ restEdge   = awayScore − homeScore     (positive ⇒ the home side is fresher)
           has travelled by definition, so the fresher side is the home side in{" "}
           {RESTED_AT_HOME.games.toLocaleString()} of the{" "}
           {REST_SPLIT_SAMPLE.decided.toLocaleString()} games with a measurable gap. Two of the
-          eight terms, body clock and visiting altitude, are tied to playing away from home, and
+          eight terms, road segment (which carries the body-clock charge) and visiting altitude,
+          are tied to playing away from home, and
           the schedule pushes the same way on its own: the visiting side is playing a second
           night in a row roughly twice as often as the home side, and nothing in that term knows
           which team is at home.
         </Prose>
         <Prose>
           In about half the schedule the home team had travelled in too. In those games,
-          the average rest edge falls by three quarters, while the home team still won{" "}
+          the average rest edge falls by{" "}
+          {Math.round(
+            (1 -
+              HOME_REST_CONFOUND.meanRestEdge.bothTravelledIn /
+                HOME_REST_CONFOUND.meanRestEdge.allGames) *
+              100
+          )}
+          %, while the home team still won{" "}
           {HOME_REST_CONFOUND.bothTravelledIn.homeWinPct.toFixed(1)}% of those games,{" "}
           {HOME_REST_CONFOUND.homeFlewFarther.homeWinPct.toFixed(1)}% of the ones where it had
           flown farther than its opponent, and{" "}
@@ -449,8 +457,8 @@ restEdge   = awayScore − homeScore     (positive ⇒ the home side is fresher)
       <Section label="THE TERMS" title="Full formula and constants" disclosure>
         <DataTable rows={[
           { term: "Recent workload", meaning: "Previous games, weighted by recency and final margin." },
-          { term: "Travel", meaning: "Distance between venues and estimated body-clock displacement." },
-          { term: "Road segment", meaning: "Consecutive road games beyond the initial allowance." },
+          { term: "Travel", meaning: "Great-circle distance between venues." },
+          { term: "Road segment", meaning: "Consecutive road games beyond the initial allowance, plus body-clock displacement on the road." },
           { term: "Back-to-back", meaning: "A load multiplier based on time between tip-offs." },
           { term: "Altitude", meaning: "Visiting altitude and next-night carryover." },
           { term: "Schedule density", meaning: "Games across five windows compared with a normal pace." },
@@ -533,8 +541,9 @@ direction    = ${K.eastwardMultiplier} eastward, ${K.westwardMultiplier} westwar
                   cannot structurally exceed ~1.33 and tops out at 1.307 on real schedules.
                   Printing 1.42 told readers density could multiply fatigue by half again as
                   much as it can. Verified 2026-08-03. */}{" "}
-              against a normal pace. Extended rest earns a discount that begins at{" "}
-              {K.freshnessPlateauDays} days and approaches{" "}
+              against a normal pace. Extended rest earns a discount that starts accruing after{" "}
+              {K.freshnessPlateauDays} days since the last game (first credited at{" "}
+              {K.freshnessPlateauDays} full days off) and approaches{" "}
               {/* A true minus sign, and one decimal, so these read as the quantities the
                   model uses rather than as bare integers. */}
               {signedNumber(K.freshnessMaxBonus, 1)}. A prior game that went to
@@ -564,7 +573,8 @@ direction    = ${K.eastwardMultiplier} eastward, ${K.westwardMultiplier} westwar
           Games selected by back-to-back and recent-workload terms but lost when each is
           removed have win rates above 63%. Removing travel drops{" "}
           {ABLATIONS[0].found.toLocaleString()}{" "}
-          of the model&rsquo;s calls, more than twice any other term. Those games won at{" "}
+          of the model&rsquo;s calls, far more than any other term (the next is{" "}
+          {Math.max(...ABLATIONS.slice(1).map((a) => a.found)).toLocaleString()}). Those games won at{" "}
           {ABLATIONS[0].foundWinPct}%.
         </Prose>
         <DataTable
@@ -638,8 +648,9 @@ direction    = ${K.eastwardMultiplier} eastward, ${K.westwardMultiplier} westwar
 
       <Section label="WHERE THE DATA COMES FROM" title="Data sources and revisions" disclosure>
         <Prose>
-          Schedules, scores and results come from the NBA&rsquo;s own feeds. Overtime periods,
-          tip-off times and neutral-site venues come from ESPN. The missing overtime input was
+          Schedules, scores and results for completed seasons come from the NBA&rsquo;s own
+          feeds; the current season&rsquo;s schedule and nightly scores come from ESPN. Overtime
+          periods, tip-off times and neutral-site venues come from ESPN. The missing overtime input was
           restored on {MEASURED_ON}; earlier model runs had treated it as zero throughout.
         </Prose>
         <Prose>

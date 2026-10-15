@@ -11,5 +11,9 @@
   "homeTravelledInOnBackToBack": {
     "games": 5948,
     "homeWinPct": 58
+  },
+  "meanRestEdge": {
+    "allGames": 1.186,
+    "bothTravelledIn": 0.443
   }
 }

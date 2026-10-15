@@ -278,7 +278,7 @@ function SeasonWinRateTooltip({ active, payload }: TooltipContentProps) {
 // ─── RA threshold toggle options ──────────────────────────────────
 
 const RA_THRESHOLD_OPTIONS = [
-  { label: "All Games", value: 0 },
+  { label: "Any gap", value: 0 },
   { label: "RA ≥ 2", value: 2 },
   { label: "RA ≥ 3", value: 3 },
   { label: "RA ≥ 5", value: 5 },
@@ -701,7 +701,8 @@ function ExploreGames({
       />
       <SectionDivider label="EXPLORE GAMES" descriptor={`${total.toLocaleString()} TOTAL`} />
       <p className="mono mt-1" style={{ fontSize: 11, color: "var(--term-text-muted)", letterSpacing: TRACK.sub }}>
-          FILTER AND BROWSE INDIVIDUAL MATCHUPS · CLICK A ROW FOR DETAILS.
+          FILTER AND BROWSE INDIVIDUAL MATCHUPS · CLICK A ROW FOR DETAILS. BOTH VENUES: THE
+          ROWS INCLUDE RESTED VISITORS, WHICH THE RATES ABOVE LEAVE OUT.
       </p>
 
       {/* Filters */}

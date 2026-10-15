@@ -112,7 +112,7 @@ export default function PlayoffPredictionsMethodPage() {
             },
             {
               label: "WEIGHT",
-              unit: "LOG-ODDS PER UNIT",
+              unit: "LOG-ODDS PER SD",
               // Left, not right: the weights are read against each other as a list, and the
               // column sits between two prose columns rather than among numbers.
               align: "left",
@@ -190,9 +190,10 @@ export default function PlayoffPredictionsMethodPage() {
             },
             {
               label: "YOUR RECORD EDGE",
-              unit: "MEAN WIN% DIFF",
+              unit: "MEAN WIN% DIFF, PP",
               className: "tabular-nums",
-              cell: (r) => r.meanWinPctDiff.toFixed(3),
+              // Stored as a 0–1 fraction; printed in percentage points to match the WIN% unit.
+              cell: (r) => (r.meanWinPctDiff * 100).toFixed(1),
             },
           ]}
         />
@@ -236,14 +237,15 @@ export default function PlayoffPredictionsMethodPage() {
           }
           columns={[
             {
-              label: "REST INTO GAME 1",
+              label: "REST EDGE INTO GAME 1",
+              unit: "HOME-COURT TEAM VS OPPONENT",
               className: "whitespace-nowrap",
               style: { fontWeight: 700 },
               cell: (b) => b.label,
             },
             { label: "SERIES", className: "tabular-nums", cell: (b) => b.n },
             {
-              label: "WON THE SERIES",
+              label: "HOME-COURT TEAM WON",
               unit: "%",
               className: "tabular-nums",
               cell: (b) => b.winPct.toFixed(1),
@@ -259,8 +261,8 @@ export default function PlayoffPredictionsMethodPage() {
           <br />
           <br />
           &ldquo;Closed it early&rdquo; means a team won its previous round within one game of a
-          sweep; &ldquo;went the distance&rdquo; means it needed the last game or the one before
-          it. Grind is counted as games beyond a sweep rather than as raw games played because{" "}
+          sweep; &ldquo;went the distance&rdquo; means it needed two or more games beyond a
+          sweep: game 6 or 7 of a best-of-seven, game 5 of a best-of-five. Grind is counted as games beyond a sweep rather than as raw games played because{" "}
           {PLAYOFF_BEST_OF_FIVE.round1BestOfFive} of {PLAYOFF_BEST_OF_FIVE.round1Total} first
           rounds in this record were best-of-five, where five games means a team went the full
           distance rather than closing early.

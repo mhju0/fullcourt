@@ -65,7 +65,7 @@ function columnsFor(data: RefereeFoulStyle): DataColumn<RefereeStyleRow, SortKey
     },
     {
       label: "As chief",
-      unit: "games",
+      unit: `games since ${data.crewChiefFirstSeason}`,
       sortKey: "chiefGames",
       numeric: true,
       width: "84px",
@@ -191,8 +191,9 @@ export function RefereeStyleContent({ data }: { data: RefereeFoulStyle }) {
 
       <p className="mono" style={{ fontSize: 11, color: "var(--term-text-muted)", letterSpacing: TRACK.sub }}>
         EVERY MEASURED CELL = THE OFFICIAL&rsquo;S LAST 200 GAMES, THE SAME SAMPLE FOR EVERY ROW ·
-        BOLD = BEYOND TWO STANDARD ERRORS · MUTED = INSIDE NOISE · CC = WORKS AS CREW CHIEF ·{" "}
-        {chiefCount} OF {publishable(data.officials).length} DO · SINCE = FIRST SEASON IN THIS
+        BOLD = BEYOND TWO STANDARD ERRORS · MUTED = INSIDE NOISE · CC = CREW CHIEF IN{" "}
+        {data.crewChiefFirstSeason} OR LATER · {chiefCount} OF{" "}
+        {publishable(data.officials).length} · SINCE = FIRST SEASON IN THIS
         DATA ({data.firstSeason} AT THE EARLIEST), NOT A HIRE DATE
       </p>
     </div>

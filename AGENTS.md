@@ -95,7 +95,8 @@ while touching branding.
   never a side effect of a docs change — if a stale doc says otherwise, the doc is wrong. Its
   guarantees are enforced by `referee-legends.test.ts` and `referee-timing.test.ts`. Quote a
   per-official figure only beside the count chance produces at the same bar, and keep the caveat
-  that three officials work every game, so each figure is about a third of the effect it names.
+  that three officials work every game and the data credits all three, so a per-official figure
+  cannot isolate one official's effect.
 - **Never rename rest-advantage identifiers.** See above.
 - **Never run `drizzle-kit push` or `drizzle-kit generate`.** `schema.ts` intentionally lags the
   live DB — `shot_grid` and `shot_value_surface` are read via raw SQL and are absent from it on
