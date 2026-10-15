@@ -1303,3 +1303,13 @@ the subtraction a reader can do on the row. Twice that put a +0.1 gap beside two
 rates (1987-88 at 67.9 / 67.9, 1997-98 at 59.5 / 59.5). Owner decision: print the difference of
 the printed rates via `liftOverBaseline()`, as `/behind-the-data/rest-advantage` already does.
 The value can sit up to 0.1 from the exact figure, which is the precision the rates carry.
+
+## D-94 — The officiating splits credit the working crew, as the foul tables already do (2026-10-16)
+
+`scripts/analyze_officials_splits.ts` credited every name in ESPN's officials array, so a name
+listed twice or a standby at order 4 was counted as a game worked. `fetch_officials.ts` has used
+the working-crew rule (sorted by `order`, deduplicated, first three) since 2026-08-24; the
+splits script now uses the same rule. This is a correction to how games are attributed, not a
+new axis under ADR 0007. `src/data/referee-timing.json` was regenerated after the unchanged
+script reproduced it: 12,403 games and every headline count unchanged; four published rows lose
+one to four games (Tyler Ford 611 → 607, shift −1.45 → −1.46), and no row crosses the bar.
