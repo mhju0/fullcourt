@@ -12,7 +12,7 @@ import {
 export const metadata: Metadata = {
   title: "Player Shooting by Rest · Behind the Data",
   description:
-    "How the no-rest against two-or-more-days-off shooting split is built: the rest definition, effective field goal percentage, the attempt floor, and how much of any split is noise.",
+    "How the no-rest against two-to-29-days-off shooting split is built: the rest definition, effective field goal percentage, the attempt floor, and how much of any split is noise.",
 };
 
 export default function PlayerShootingMethodPage() {
@@ -21,7 +21,7 @@ export default function PlayerShootingMethodPage() {
       topic="player-shooting"
       eyebrow="BEHIND THE DATA · PLAYER SHOOTING BY REST"
       title="Player Shooting by Rest"
-      description="Player shooting on no rest compared with two or more days off, with attempt counts and uncertainty shown for each split."
+      description="Player shooting on no rest compared with two to 29 days off, with attempt counts and uncertainty shown for each split."
     >
       <Section label="THE SPLIT" title="The two rest groups">
         <Prose>
@@ -30,12 +30,13 @@ export default function PlayerShootingMethodPage() {
         </Prose>
         <Formula>
           {`no rest       played again the very next day
-2+ days off   two or more full days between appearances
-rest effect   eFG% on 2+ days off − eFG% on no rest`}
+2–29 days off two to 29 full days between appearances
+rest effect   eFG% on 2–29 days off − eFG% on no rest`}
         </Formula>
         <Note>
-          Games after exactly one day off are excluded from this comparison. The two
-          buckets isolate the shortest and longest rest categories used on the page.
+          Games after exactly one day off are excluded from this comparison, and so are gaps
+          of 30 days or more: every season opener and every return from a long absence. Those
+          are not rest between games, and they were over a tenth of the rested attempts.
         </Note>
       </Section>
 
@@ -65,7 +66,7 @@ rest effect   eFG% on 2+ days off − eFG% on no rest`}
         <ValueGrid
           values={[
             { label: "Default attempt floor", value: "300+", sub: "field goal attempts" },
-            { label: "Rest states compared", value: "0 vs 2+", sub: "days off between appearances" },
+            { label: "Rest states compared", value: "0 vs 2–29", sub: "days off between appearances" },
             { label: "Metric", value: "eFG%", sub: "threes weighted 1.5×" },
           ]}
         />

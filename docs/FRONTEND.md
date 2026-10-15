@@ -14,7 +14,7 @@ Dependency versions live in `package.json` and `pnpm-lock.yaml`. The shared visu
 | `/schedule` | Relative schedule ranking and worth; breakdown (with its column guide inside) and travel/workload in disclosures; league fatigue by week for completed games |
 | `/explore` | Directory for the secondary basketball studies |
 | `/analysis` | Historical model evaluation: The answer and The explorer |
-| `/shooting` | Player Shooting by Rest: dense player comparisons with no-rest/2+ days off eFG%, attempt counts, uncertainty, and expandable seasons; zero-rest workload disclosure |
+| `/shooting` | Player Shooting by Rest: dense player comparisons with no-rest/2–29 days off eFG%, attempt counts, uncertainty, and expandable seasons; zero-rest workload disclosure |
 | `/shot-quality` | Expected shot value by location; one mobile court with Compare models, two desktop courts |
 | `/availability` | Missing-player associations, trends, and expandable coefficient comparison |
 | `/playoffs` | Previous-round workload and the separate series model |

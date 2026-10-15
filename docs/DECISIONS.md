@@ -1216,3 +1216,14 @@ games of that season: the published definition applied literally. Best player ou
 term still moves under 8% when absence is controlled. "Similar in size to home court" still
 holds (0.12 points apart, inside either standard error). The page now says a long absence
 counts for its first four games only, and that the rotation average is per appearance.
+
+## D-89 — The shooting rested arm is 2–29 days off (2026-10-15)
+
+The /shooting rested arm (days since ≥ 3) also held every season opener and every return
+from a long absence: 5.4% and 6.3% of its attempts. Neither is rest between games. The arm
+is now 3–30 days since the player's previous game, written "2–29 days off"; 29 is the widest
+ceiling that removes every opener, and the tighter ceilings measured beside it (≤ 14, ≤ 7)
+were not taken, since choosing among them by the effect they leave is choosing by the result.
+Rested attempts 1,551,764 → 1,453,771; the pooled league difference +0.57 → +0.69 points and
+the career mean +0.26 → +0.36. No career estimate flips beyond its own standard error. The
+site prints no league figure, so the change reaches readers through every player row.
