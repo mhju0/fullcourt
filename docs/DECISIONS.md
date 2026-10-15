@@ -272,7 +272,9 @@ explicit *"do not silently reopen this row"*.
 of a docs change** — if a stale doc says otherwise, the doc is wrong.
 **The caveat that made publication possible, and which must travel with every figure:** quote a
 per-official number only beside the count chance produces at the same bar, and keep the note that
-**three officials work every game**, so each figure is about a third of the effect it names.
+**three officials work every game** and the data credits all three, so a per-official figure cannot
+isolate one official's effect. (Amended 2026-10-15, D-91: the earlier "about a third of the effect"
+had no derivation anywhere in the repo.)
 Enforced by `referee-legends.test.ts` and `referee-timing.test.ts`.
 *Evidence:* PR #49.
 
@@ -1240,3 +1242,29 @@ still zero in every fold, so the null holds under both. `ml/timezone_test.py` no
 figure the page printed as "86.4% are ALSO back-to-backs" measured the model's
 back-to-back difference term; every short-rest visitor is on a back-to-back, and the page now
 shows both.
+
+## D-91 — Labels follow the computation; the 2026-10-15 audit's copy decisions (2026-10-15)
+
+The label-and-data audit (`docs/audit/2026-10-15-labels-and-data/`, local) found the data clean
+and about ten labels that said something the code does not. Owner decisions, each measured first:
+
+- **Schedule Edge 2026-27 is labelled PROJECTED**, not restricted to played games. Projection vs
+  the final ranking back-tested at Spearman 0.956 / 0.978; restricting would empty the page on
+  opening night. The API carries `league.projectedGames`.
+- **The rest-day cap is relabelled, not moved**: `REST_DAYS_CAP = 5` is days since, four days
+  off. The stated reason ("rest stops helping after three days") was false, since the model's
+  freshness credit starts after day 3 and keeps growing; the All-Star break is the real reason
+  and is now the one given.
+- **Edges Ahead stays home-only** (called games), headed RESTED TEAM AT HOME, with PROJECTED marked
+  per row rather than over the whole strip. Rested visitors win 42.4%, so listing them would read
+  as a pick the site declines.
+- **Referee copy keeps "credits all three, cannot isolate one"**; the "about a third" rule is
+  struck from AGENTS.md, `referee-legends.ts` and D-33.
+- **Games board**: a neutral-site host reads NEUTRAL, not HOME, and keeps its road streak (the
+  model scores it as a road team); TIME ZONES shows for either team; the board city is the
+  brand's place name; historical abbreviations are used in the explorer and recent results; AVG
+  REST GAP counts exact-zero games; flag chips fit the strip by width.
+
+Altitude carryover (code applies it to the next game at any gap; every written source says the
+next night) is not decided here: it changes a ratified term and needs a production recompute, so
+it goes through its own ADR after the D-80 freeze.
