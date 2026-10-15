@@ -12,7 +12,7 @@ import {
 export const metadata: Metadata = {
   title: "Player Shooting by Rest · Behind the Data",
   description:
-    "How the no-rest against three-days-rest shooting split is built: the rest definition, effective field goal percentage, the attempt floor, and how much of any split is noise.",
+    "How the no-rest against two-or-more-days-off shooting split is built: the rest definition, effective field goal percentage, the attempt floor, and how much of any split is noise.",
 };
 
 export default function PlayerShootingMethodPage() {
@@ -34,7 +34,7 @@ export default function PlayerShootingMethodPage() {
 rest effect   eFG% on 2+ days off − eFG% on no rest`}
         </Formula>
         <Note>
-          Games with one or two days of rest are excluded from this comparison. The two
+          Games after exactly one day off are excluded from this comparison. The two
           buckets isolate the shortest and longest rest categories used on the page.
         </Note>
       </Section>
