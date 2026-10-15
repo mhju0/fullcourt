@@ -40,13 +40,13 @@ FullCourt studies NBA schedule conditions and historical results. Use these term
 
 **Expected Shot Value**: Expected effective field-goal percentage for a court location. Defender position, shot clock, and shooter skill are absent from the location model. Avoid presenting it as a complete measure of shot quality.
 
-**Net rest edge**: A season total of `own rest days − opponent rest days`, capped at five days per side, excluding games without previous-game context for both sides. Positive favours the team. It is measured in days, unlike rest advantage.
+**Net rest edge**: A season total of `own days off − opponent days off`, capped at four days off per side (`REST_DAYS_CAP = 5` counts days since the last game, where a back-to-back is 1), excluding games without previous-game context for both sides. The cap exists for the All-Star break. Positive favours the team. It is measured in days, unlike rest advantage.
 
 **Net fatigue edge**: The corresponding fatigue-score difference, reported per game. It includes travel and density as well as rest. A sum can obscure the size of typical matchup gaps.
 
 **Net edge games**: Favourable games minus unfavourable games, using the shared `0.5` fatigue-gap threshold. “Big edge” uses `1.5`. Both counts exclude games without previous-game context for both teams. Source: `schedule-disparity.ts`.
 
-**Schedule value / Worth**: A win-equivalent conversion of historical rest-state rates relative to venue baselines, summed over scored games including openers. `schedule-value.ts` supplies both Schedule Edge's table and Season Report's extremes. The displayed team's results do not enter the calculation. This is not actual wins added or a causal estimate. Show the per-game scale alongside season totals.
+**Schedule value / Worth**: A win-equivalent conversion of historical rest-state rates relative to venue baselines, summed over scored games including openers. `schedule-value.ts` supplies Schedule Edge's Worth column; `/api/season-report` also returns it per team, but the Season Report page does not render it. The displayed team's results do not enter the calculation. This is not actual wins added or a causal estimate. Show the per-game scale alongside season totals.
 
 **Swing**: On Season Report, a team's win rate as the fresher side minus its rate as the tireder side. The counted fresher arm is at home and the tireder arm is on the road. Compare each row with `SeasonReport.swingBaseline`, not zero. Small groups and venue differences prevent interpreting the table as a ranking of rest-management skill.
 

@@ -143,8 +143,8 @@ function ScheduleTax({
             ),
           },
           {
-            label: "TIME-ZONE SHIFT",
-            unit: "GAMES",
+            label: "JET-LAGGED",
+            unit: "ROAD GAMES · 2+ ZONES",
             numeric: true,
             cell: (t) => t.jetLagGames,
           },
@@ -170,7 +170,7 @@ function FatigueCalendar({ weeks }: { weeks: SeasonReportWeek[] }) {
   const heading = (
     <SectionDivider
       label="League fatigue by week"
-      descriptor="Completed games · every team · 0 to 10"
+      descriptor="Completed games · every team · mean fatigue score"
     />
   );
   if (weeks.length === 0) {

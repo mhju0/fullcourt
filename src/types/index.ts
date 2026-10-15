@@ -448,6 +448,11 @@ export interface ScheduleDisparityLeague {
    * `countedGames` exactly when it matters: an unplayed season has 1,184 counted and 0 measured.
    */
   measuredGames: number;
+  /**
+   * Of `measuredGames`, the ones compared on projected fatigue: an earlier game in the season
+   * is still unplayed, so the score comes from the published schedule (`isProjectedFatigue`).
+   */
+  projectedGames: number;
 }
 
 export interface ScheduleDisparityResponse {

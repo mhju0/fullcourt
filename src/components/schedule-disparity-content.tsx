@@ -164,7 +164,7 @@ function ColumnGuide({ countedGames, scheduledGames }: { countedGames: number; s
         <p>
           {term("Worth")}: rest states converted to win equivalents using historical rates
           relative to venue baselines. Favorable and unfavorable games partly offset each
-          other. Season Report uses the same conversion.
+          other.
         </p>
         <p>
           {term("Fav / Unfav")}: the two counts behind the net: games with the edge, and games
@@ -176,8 +176,9 @@ function ColumnGuide({ countedGames, scheduledGames }: { countedGames: number; s
           {term("Big edge")}: the same net, counting only fatigue gaps of 1.5 or more.
         </p>
         <p>
-          {term("Rest days")}: days off for the team minus its opponent, capped at five per
-          side before differencing to limit long breaks. This uses published dates, as do
+          {term("Rest days")}: days off for the team minus its opponent, capped at four days off
+          per side before differencing so the All-Star break does not swamp the total. This uses
+          published dates, as do
           B2B and 3-in-4 counts. Totals can change when games are added or rescheduled.
           Unmeasured fatigue columns show a dash.
         </p>
@@ -185,19 +186,17 @@ function ColumnGuide({ countedGames, scheduledGames }: { countedGames: number; s
           {term("B2B edge")} and {term("3-in-4 edge")}: back-to-backs, and third-nights-in-four,
           avoided relative to opponents. Positive means the team arrived rested more often than the
           teams across from it. These are comparisons, not counts: how many back-to-backs each team
-          actually played is a different fact, and it lives on the{" "}
-          <a href="/season" style={{ color: "var(--term-blue-text)", fontWeight: 600 }}>
-            Season Report&rsquo;s schedule tax →
-          </a>
+          actually played is a different fact, under <em>Show travel and workload</em> below.
         </p>
         <p>
-          Every team plays a full schedule. Every column except <em>Worth</em> compares the{" "}
+          Every column except <em>Worth</em> compares the{" "}
           {countedGames.toLocaleString()} of {scheduledGames.toLocaleString()} games where{" "}
           <em>both</em> sides had a previous game to rest from. A season opener has no rest days
           to measure. <em>Worth</em> deliberately counts the openers too: a fatigue score exists for
-          them, so the rest gap is measured even where the day count is not, and leaving them out
-          put this page a tenth of a win away from the Season Report on the same team. Edge games
-          are counted from played games, so a season in progress lags until its games are scored.
+          them, so the rest gap is measured even where the day count is not. Edge games use the
+          same fatigue scores as the Games page. A game is projected while an earlier game in the
+          season is still unplayed: its score comes from the published schedule, so it can move
+          once those games are played.
         </p>
       </div>
     </details>
@@ -243,6 +242,9 @@ export function ScheduleDisparityContent() {
             {data.provisional ? "PROVISIONAL" : "FINAL"} ·{" "}
             {data.league.measuredGames.toLocaleString()} OF{" "}
             {data.scheduledGames.toLocaleString()} GAMES COMPARED
+            {data.league.projectedGames > 0
+              ? ` · ${data.league.projectedGames.toLocaleString()} PROJECTED`
+              : ""}
             {/* The season's own data date, and on every season rather than only a provisional
                 one: a finished season's stamp is the more useful of the two, because it is the
                 one a reader checks months later. Nothing renders before the first final game —
@@ -260,12 +262,23 @@ export function ScheduleDisparityContent() {
             This season&rsquo;s schedule is not finished. The NBA announces only 80 of each
             team&rsquo;s 82 games before opening night and fills the rest once NBA Cup group play
             resolves in December, so these figures will revise.
+            {data.league.projectedGames > 0 ? (
+              <>
+                {" "}
+                {data.league.projectedGames === data.league.measuredGames
+                  ? `All ${data.league.measuredGames.toLocaleString()}`
+                  : `${data.league.projectedGames.toLocaleString()} of the ${data.league.measuredGames.toLocaleString()}`}{" "}
+                compared games are projected: an earlier game is still unplayed, so their fatigue
+                comes from the published schedule.
+                The ranking is a preview and will move as games are played.
+              </>
+            ) : null}
             {data.league.measuredGames === 0 ? (
               <>
                 {" "}
-                None of it has been played yet, so the fatigue columns show a dash rather than
-                zero: rest advantage is scored from games already played. Rest days, back-to-backs
-                and three-in-fours use the currently published calendar.
+                No game has a fatigue score yet, so the fatigue columns show a dash rather than
+                zero. Rest days, back-to-backs and three-in-fours use the currently published
+                calendar.
               </>
             ) : null}
           </p>
@@ -296,7 +309,7 @@ export function ScheduleDisparityContent() {
             value={data.league.gamesWithAnyEdge?.toLocaleString() ?? UNMEASURED}
             sub={
               data.league.gamesWithLargeEdge === null
-                ? "not measured until the season is played"
+                ? "not measured until fatigue is scored"
                 : `${data.league.gamesWithLargeEdge.toLocaleString()} of them big (1.5+)`
             }
           />
@@ -321,7 +334,7 @@ export function ScheduleDisparityContent() {
         >
           {rankedByFatigue
             ? "Net edge games: favorable games minus unfavorable games"
-            : "Net rest edge: this team's days off minus its opponents'"}
+            : "Net rest edge: this team's days off minus its opponents', capped at four a side"}
         </p>
 
         {rankedByFatigue && ranking.rows.some((row) => row.rank === null) ? (
@@ -464,8 +477,7 @@ export function ScheduleDisparityContent() {
                     ]
                   : []),
                 {
-                  // The same figure the Season Report publishes, from the same conversion
-                  // and the same population — the two must never disagree for a team.
+                  // Rest states priced in wins by schedule-value.ts.
                   label: "Worth",
                   unit: "wins",
                   numeric: true,
@@ -530,7 +542,7 @@ export function ScheduleDisparityContent() {
 
             <p style={{ marginTop: SPACE.md, fontSize: TYPE.body, color: "var(--term-text-muted)", lineHeight: LEAD.body }}>
               Positive is favorable in every column. Edge games are counted from the same fatigue
-              scores as the Games page, so a season in progress lags until its games are played.
+              scores as the Games page, projected where an earlier game is still unplayed.
             </p>
             {/* Inside the breakdown: the guide explains columns that only exist once it is open. */}
             <div style={{ marginTop: SPACE.md }}>

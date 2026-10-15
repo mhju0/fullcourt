@@ -33,7 +33,7 @@ export function HomeContent({ findings }: { findings: HomeFindings }) {
             <p className={`${styles.big} ${historical.edgePp < 0 ? styles.tired : styles.rested}`} data-testid="home-rest-edge">
               {signedNumber(historical.edgePp, 1)}<span> pp</span>
             </p>
-            <p>Percentage-point difference from the home baseline in {historical.games.toLocaleString()} games with the widest rest gaps (model score ≥ 7).</p>
+            <p>Percentage-point difference from the home baseline in {historical.games.toLocaleString()} games with the widest rest gaps (a rest-advantage gap of 7 or more).</p>
             {historical.latestEvidenceDate ? <p className={styles.metadata}>Rest evidence through {historical.latestEvidenceDate}</p> : null}
           </> : <p>The historical comparison is unavailable. Model Results has the underlying evidence and data status.</p>}
         </div>
@@ -58,7 +58,7 @@ export function HomeContent({ findings }: { findings: HomeFindings }) {
                 <dd className={row.value < 0 ? styles.tired : styles.rested}>{signedNumber(row.value, 0)} <span>net edge games</span></dd>
               </div>)}
             </dl>}
-            <p>Favorable minus unfavorable games. {schedule.measuredGames.toLocaleString()} of {schedule.scheduledGames.toLocaleString()} games compared. This is a schedule comparison, not a prediction of wins.</p>
+            <p>Favorable minus unfavorable games. {schedule.measuredGames.toLocaleString()} of {schedule.scheduledGames.toLocaleString()} games compared{schedule.projectedGames > 0 ? `, ${schedule.projectedGames === schedule.measuredGames ? "all" : schedule.projectedGames.toLocaleString()} on projected fatigue from the published schedule` : ""}. This is a schedule comparison, not a prediction of wins.</p>
             {schedule.latestFinalDate && <p className={styles.metadata}>Results through {schedule.latestFinalDate}{schedule.provisional ? " · Season in progress" : " · Regular season complete"}</p>}
           </> : <p>{schedule ? "No measured fatigue comparisons yet for this season. Published rest days remain available in Schedule Edge." : "The schedule comparison is unavailable. Open Schedule Edge to check a season."}</p>}
           <TransitionLink href="/schedule" className={styles.textLink}>Compare team schedules <span aria-hidden="true">→</span></TransitionLink>
