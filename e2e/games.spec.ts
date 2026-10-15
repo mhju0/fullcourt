@@ -91,7 +91,7 @@ test.describe("Games page", () => {
   // columns; the width decides how much shows, not a mode.
   test("the slate shows every column on a desktop and offers no view toggle", async ({ page }) => {
     await page.goto("/games?season=2024-25&date=2024-12-25&view=skim");
-    await expect(page.getByText("FATIGUE (0–10)")).toBeVisible();
+    await expect(page.getByText("FATIGUE SCORE", { exact: true })).toBeVisible();
     await expect(page.getByText("REST (DAYS)")).toBeVisible();
     await expect(page.getByText("GAP SIZE", { exact: true })).toBeVisible();
     await expect(page.getByRole("button", { name: /^(SKIM|DEEP DIVE)$/ })).toHaveCount(0);

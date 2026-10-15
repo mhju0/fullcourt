@@ -8,10 +8,12 @@ export interface TeamInfo {
 export interface FatigueInfo {
   score: number;
   isBackToBack: boolean;
+  /** Tonight is the team's 3rd game across tonight and the prior 3 nights. */
   is3In4: boolean;
   /**
-   * Sum of modeled flight legs in the travel window (7 calendar days before this game,
-   * not counting game day), per `calculateFatigue` — not “days traveling.”
+   * Great-circle arena-to-arena miles for the trip into each game in the 7 days before tonight,
+   * including the trip to tonight's venue and the inbound leg to the first game in that window
+   * (which can have been flown earlier), per `calculateFatigue` — not “days traveling.”
    */
   travelDistanceMiles: number;
   altitudePenalty: boolean;
@@ -23,7 +25,7 @@ export interface FatigueInfo {
   gamesInLast7Days: number;
   /** Games in the 30 calendar days before this game (not counting this game). */
   gamesInLast30Days: number;
-  /** Fourth game within a rolling 6-calendar-day span in that window. */
+  /** Tonight is the team's 4th game across tonight and the prior 5 nights. */
   is4In6: boolean;
   /** Prior game went to overtime (extra fatigue in the model). */
   isOvertimePenalty: boolean;
@@ -32,7 +34,11 @@ export interface FatigueInfo {
    * or with no road streak into this game.
    */
   roadTripConsecutiveAway: number;
-  /** Tonight's game is on the road ≥2 time zones (≥26° longitude) from home. */
+  /**
+   * Tonight is away from the home arena (a neutral site counts for both teams), at least 2 hours
+   * of clock shift from it (real UTC offsets, DST-aware), and the team has not yet re-entrained,
+   * at about one night per zone.
+   */
   hasTimeZoneDisplacement: boolean;
 }
 
@@ -210,6 +216,7 @@ export interface TeamRecentResultGame {
 /** Full game card payload plus recent results for both teams. */
 export interface GameDetailResponse {
   game: GameResponse;
+  /** Each team's last 5 final games, whenever they were played. Not a calendar week. */
   homeRecentWeek: TeamRecentResultGame[];
   awayRecentWeek: TeamRecentResultGame[];
 }

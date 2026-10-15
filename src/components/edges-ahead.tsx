@@ -12,8 +12,12 @@ import { TRACK, TYPE, termCardStyle } from "@/lib/terminal-styles"
 import type { UpcomingGameWithRA } from "@/types"
 
 /**
- * EDGES AHEAD (2026-08-28 redesign, Q16): the three biggest upcoming rest edges, one
- * line each. This is what survived the UPCOMING view's retirement — the one job a date
+ * EDGES AHEAD (2026-08-28 redesign, Q16): the three biggest upcoming rest edges where the
+ * rested team is at home, one line each. Rested visitors are left out on purpose: the rows come
+ * from open predictions, which exist only for called games (`isCalledSide`), and a visitor chip
+ * in the rested-pole blue would read as a pick the site declines to make. Whether a row is
+ * projected is said per row (PROJ), not in the header — a game on the next unplayed date is
+ * measured. This is what survived the UPCOMING view's retirement — the one job a date
  * picker cannot do is cut ACROSS dates, and three rows do that job where a whole second
  * table shape used to. Clicking a game jumps the board to its date.
  *
@@ -67,7 +71,7 @@ export function EdgesAhead({
         className="mono uppercase"
         style={{ fontSize: 10, letterSpacing: TRACK.label, fontWeight: 700, color: "var(--term-text-muted)" }}
       >
-        EDGES AHEAD · UPCOMING {season} · PROJECTED REST GAPS
+        EDGES AHEAD · UPCOMING {season} · RESTED TEAM AT HOME
       </span>
       <div className="flex flex-wrap gap-2">
         {top.map((g) => {

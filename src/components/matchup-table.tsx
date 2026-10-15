@@ -793,7 +793,7 @@ export function MatchupTable({ games }: MatchupTableProps) {
             <span>GAME</span>
             <span>MATCHUP (AWAY / HOME)</span>
             <span className="text-right">REST (DAYS)</span>
-            <span>FATIGUE (0–10)</span>
+            <span>FATIGUE SCORE</span>
             <span>REST ADVANTAGE</span>
             {/* Ends over the badge, not over the chevron beside it (16px icon, 8px gap). */}
             <span className="pr-6 text-right">GAP SIZE</span>
