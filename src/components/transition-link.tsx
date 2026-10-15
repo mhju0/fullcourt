@@ -15,20 +15,19 @@ import { navigateWithViewTransition } from "@/lib/route-transition";
  * Link, per the motion law's budget — the cross-fade is one moment, not a default.
  */
 export function TransitionLink({
-  href,
+  href: baseHref,
   onClick,
   ...rest
 }: ComponentProps<typeof Link>) {
   const router = useRouter();
   const search = useLocationSearch();
   const selectedSeason = new URLSearchParams(search).get("season");
-  if (
-    typeof href === "string" &&
-    ["/games", "/season", "/schedule"].includes(href) &&
+  const href =
+    typeof baseHref === "string" &&
+    ["/games", "/season", "/schedule"].includes(baseHref) &&
     selectedSeason
-  ) {
-    href = `${href}?season=${encodeURIComponent(selectedSeason)}`;
-  }
+      ? `${baseHref}?season=${encodeURIComponent(selectedSeason)}`
+      : baseHref;
 
   const handleClick = (e: MouseEvent<HTMLAnchorElement>) => {
     onClick?.(e);
