@@ -36,7 +36,7 @@ rest effect   eFG% on 2–29 days off − eFG% on no rest`}
         <Note>
           Games after exactly one day off are excluded from this comparison, and so are gaps
           of 30 days or more: every season opener and every return from a long absence. Those
-          are not rest between games, and they were over a tenth of the rested attempts.
+          are not rest between games.
         </Note>
       </Section>
 
