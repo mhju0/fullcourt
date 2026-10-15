@@ -16,7 +16,7 @@ Officiating covers 12 regular seasons and 4,546 reports, including the partial 2
 [archive evidence](research/2026-09-09-l2m-archive.md) records source checks and historical limits.
 The homepage hero now contains only the headline, original description and primary action.
 The one-game example and its supporting reads were removed under D-67. Next.js and its ESLint
-config are pinned to 16.3.8 (raised from 16.3.4 on 2026-10-03 for GHSA-vcvr-r3jv-pc5j); the
+config are pinned to 16.4.0 (16.3.4 → 16.3.8 on 2026-10-03 for GHSA-vcvr-r3jv-pc5j; 16.4.0 on 2026-10-15, moved together); the
 lockfile resolves Sharp 0.35.5 (pinned on 2026-10-07 for GHSA-wq5f-xc86-pv6w), clearing the production dependency audit. See [verification](design/home-hero-release-review.md).
 Shared filters now use 44px targets and 16px text. Analysis uses equal-width filter columns;
 Season Report uses bordered sections with a separate interpretation surface. The
