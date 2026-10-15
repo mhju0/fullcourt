@@ -29,7 +29,7 @@ import type { ExploreResult } from "@/lib/explore-games-machine"
 import { apiFetcher, errMsg } from "@/lib/fetcher"
 import { Button } from "@/components/ui/button"
 import { NBA_SEASONS } from "@/lib/nba-season"
-import { getTeamBranding } from "@/lib/team-history"
+import { formerAbbreviations, getTeamBranding } from "@/lib/team-history"
 import { MIN_GAMES_FOR_INFERENCE } from "@/lib/season-report"
 import {
   BEYOND_CLAUSE,
@@ -746,7 +746,11 @@ function ExploreGames({
             aria-label="Team filter"
           >
             <option value="">All Teams</option>
-            {NBA_TEAMS.map((t) => <option key={t} value={t}>{t}</option>)}
+            {NBA_TEAMS.map((t) => {
+              // The rows print the code a team played under that season, so the option names them.
+              const former = formerAbbreviations(t)
+              return <option key={t} value={t}>{former.length ? `${t} (incl. ${former.join(", ")})` : t}</option>
+            })}
           </select>
         </label>
 
