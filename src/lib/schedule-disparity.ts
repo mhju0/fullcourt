@@ -164,8 +164,8 @@ export interface DisparityTeamRow {
    * Counted games with a fatigue advantage ≥ the app's 0.5 call threshold.
    *
    * **Null when no counted game carried a fatigue pair**, like `netFatigueEdge` above and for
-   * the same reason. Fatigue is scored from games already played, so a season whose schedule is
-   * published but unplayed has none — and reporting 0 there says "measured, and the schedule
+   * the same reason. A season whose fatigue rows are not written yet has none — unplayed games
+   * are scored from the published schedule once they are — and reporting 0 there says "measured, and the schedule
    * favoured this team in zero games", which is a different claim from "not measured yet".
    */
   favorableGames: number | null;
@@ -219,7 +219,8 @@ export interface DisparityLeagueRow {
    * Counted games that actually carried a fatigue pair, and so were genuinely compared.
    *
    * Separate from `countedGames` because the two diverge exactly when it matters: an unplayed
-   * season has 1,184 counted games and 0 measured ones, and the page used to print the first
+   * season with no fatigue rows yet has every game counted and none measured, and the page
+   * used to print the first
    * number under the word "COMPARED".
    */
   measuredGames: number;
@@ -603,8 +604,8 @@ export function computeScheduleDisparity(
       threeInFourEdge,
       fourInSixEdge,
       // The gated fatigue figures answer "not measured" together: `fatiguePairs` is 0 exactly
-      // when no counted game had both fatigue scores, which is the whole of a
-      // published-but-unplayed season.
+      // when no counted game had both fatigue scores, which is the whole of a season whose
+      // fatigue rows are not written yet.
       favorableGames: fatiguePairs > 0 ? favorableGames : null,
       unfavorableGames: fatiguePairs > 0 ? unfavorableGames : null,
       netEdgeGames: fatiguePairs > 0 ? favorableGames - unfavorableGames : null,

@@ -148,6 +148,8 @@ describe("the time-zone null", () => {
     // candidates worth almost nothing. Either failing would make that sentence false.
     expect(data.sensitivity.primaryFoldsNonZero).toBe(0);
     expect(Math.abs(data.sensitivity.candidatesWorth)).toBeLessThan(0.0001);
+    // "The verdict does not change" also rests on the margin staying tiny beside the four terms.
+    expect(Math.abs(data.sensitivity.candidatesWorth)).toBeLessThan(data.logLoss.baselineWorth / 10);
     expect(data.sensitivity.eastShortGames).toBeGreaterThan(termRow(data, "d_east3_short").games);
   });
 });

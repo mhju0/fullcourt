@@ -159,8 +159,8 @@ strength only                    ${logLoss.strengthOnly.toFixed(5)}
         <ValueGrid
           values={[
             { label: "Candidates worth", value: signedNumber(logLoss.candidatesWorth, 5), sub: "held-out log loss" },
-            { label: "Every fatigue term", value: signedNumber(logLoss.everyFatigueFactorCombined, 5), sub: "for comparison" },
-            { label: "Strength alone", value: signedNumber(logLoss.strengthAlone, 3), sub: `≈ ${Math.round(strengthVsFatigueRatio(data))}× the whole fatigue model` },
+            { label: "Every fatigue term", value: signedNumber(logLoss.everyFatigueFactorCombined, 5), sub: "ADR 0006, not this run" },
+            { label: "Strength alone", value: signedNumber(logLoss.strengthAlone, 3), sub: `ADR 0006, ≈ ${Math.round(strengthVsFatigueRatio(data))}× every fatigue term` },
           ]}
         />
       </Section>
@@ -174,8 +174,10 @@ strength only                    ${logLoss.strengthOnly.toFixed(5)}
           {data.sensitivity.westShortGames.toLocaleString()} westward games.
         </Prose>
         <Prose>
-          The result does not change. The four candidates are worth{" "}
-          <strong>{signedNumber(data.sensitivity.candidatesWorth, 5)}</strong>, and{" "}
+          The verdict does not change, though the margin {Math.sign(data.sensitivity.candidatesWorth) === Math.sign(logLoss.candidatesWorth) ? "moves" : "changes sign"}. The four
+          candidates are worth{" "}
+          <strong>{signedNumber(data.sensitivity.candidatesWorth, 5)}</strong>, against{" "}
+          {signedNumber(logLoss.baselineWorth, 5)} for the four fatigue terms they would join, and{" "}
           <code>{data.primaryTerm}</code> is non-zero in {data.sensitivity.primaryFoldsNonZero} of{" "}
           {protocol.folds} folds. This check is shown beside the pre-registered result, not in
           place of it: changing the definition after seeing the outcome would be choosing the

@@ -43,7 +43,7 @@ export default function ScheduleEdgeMethodPage() {
     >
       <Section label="THE HEADLINE" title="Counting favorable and unfavorable games">
         <Prose>
-          For every game a team played, the fatigue gap against that night&rsquo;s opponent is
+          For every game on a team&rsquo;s schedule, played or projected, the fatigue gap against that night&rsquo;s opponent is
           the same rest advantage the rest of the site uses. A game counts
           as <strong>favorable</strong> when the opponent was the more tired side by at least{" "}
           {NEUTRAL_REST_ADVANTAGE_THRESHOLD}, and <strong>unfavorable</strong> when the team
