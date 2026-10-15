@@ -135,11 +135,12 @@ function ExploreGameDetailBody({
         style={{ fontSize: TYPE.emph, fontWeight: 700, color: "var(--term-text)", letterSpacing: TRACK.sub }}
       >
         {awayBrand.abbreviation}
-        <span className="mx-2" style={{ fontWeight: 400, color: "var(--term-hairline)" }}>@</span>
+        <span className="mx-2" style={{ fontWeight: 400, color: "var(--term-hairline)" }}>{game.neutralCity ? "vs" : "@"}</span>
         {homeBrand.abbreviation}
       </p>
       <p className="mono text-center uppercase" style={{ fontSize: 11, color: "var(--term-text-muted)", letterSpacing: TRACK.sub }}>
         {format(parseISO(game.date), "EEEE, MMMM d, yyyy")} · {game.season}
+        {game.neutralCity ? ` · ${game.neutralCity}` : ""}
       </p>
 
       <div className="flex justify-center py-1">
@@ -188,7 +189,7 @@ function ExploreGameDetailBody({
             onGameClick={onGameClick}
           />
           <RecentResultsList
-            label={`Home · ${homeBrand.abbreviation}`}
+            label={`${game.neutralCity ? "Host" : "Home"} · ${homeBrand.abbreviation}`}
             items={detail.homeRecentWeek}
             onGameClick={onGameClick}
           />

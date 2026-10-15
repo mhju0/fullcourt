@@ -17,7 +17,10 @@ export interface FatigueInfo {
    */
   travelDistanceMiles: number;
   altitudePenalty: boolean;
-  /** When altitude applies (away at DEN/UTA), human-readable arena context. */
+  /**
+   * Set when tonight's venue is at altitude for this team: a visitor at Denver or Utah, or either
+   * team at a neutral site at elevation (Mexico City). Null for the night-after carryover.
+   */
   altitudeArenaLabel: string | null;
   /** Full days off before this game (a back-to-back is 0); null = season opener / no prior game. */
   daysRest: number | null;
@@ -406,18 +409,18 @@ export interface ScheduleDisparityTeam {
    * Season sum of the capped own-minus-opponent rest-days differential. Positive is favorable,
    * like every figure here.
    *
-   * Derived from game dates alone, so unlike every fatigue figure below it is defined for a
-   * season whose schedule is published but unplayed — which is why it is shipped: it is what
-   * lets the page rank 2026-27 in August instead of showing thirty blank rows. Capped at 5 days
-   * per side before differencing, justified by the model's own `FRESHNESS_PLATEAU_DAYS = 3`;
-   * uncapped, the All-Star break swamps the season total.
+   * Derived from game dates alone, so unlike every fatigue figure below it is defined as soon
+   * as a schedule is published, before any fatigue row is written. Capped at 5 days since the
+   * last game (four days off) per side before differencing, because uncapped, the All-Star
+   * break swamps the season total.
    */
   netRestEdge: number;
   /**
    * Counted games with a fatigue advantage ≥ the app's 0.5 call threshold.
    *
-   * **Null means not measured, not zero.** Fatigue is scored from games already played, so
-   * every fatigue figure on this row is null together for an unplayed season.
+   * **Null means not measured, not zero.** Every fatigue figure on this row is null together
+   * for a season with no fatigue rows yet. Unplayed games are scored from the published
+   * schedule (`isProjectedFatigue`), so a season counts as measured once those are written.
    */
   favorableGames: number | null;
   /** Counted games facing a fatigue disadvantage ≥ 0.5. Null when unmeasured. */
@@ -458,7 +461,8 @@ export interface ScheduleDisparityLeague {
    * Counted games that carried a fatigue pair, and so were genuinely compared.
    *
    * The denominator the page should quote beside the word "COMPARED". It diverges from
-   * `countedGames` exactly when it matters: an unplayed season has 1,184 counted and 0 measured.
+   * `countedGames` exactly when it matters: a season whose fatigue rows are not written yet
+   * has every game counted and none measured.
    */
   measuredGames: number;
   /**

@@ -116,6 +116,8 @@ describe("getTeamBranding", () => {
     expect(getTeamBranding("GSW", "1995-96", { name: "Warriors", city: "San Francisco" }).city).toBe("Golden State");
     expect(getTeamBranding("UTA", "2024-25", { name: "Jazz", city: "Salt Lake City" }).city).toBe("Utah");
     expect(getTeamBranding("XYZ", "2024-25", { name: "Test", city: "Somewhere" }).city).toBe("Somewhere");
+    // Both Los Angeles teams read the same place, in every season.
+    expect(getTeamBranding("LAC", "1990-91", { name: "Clippers", city: "Los Angeles" }).city).toBe("Los Angeles");
   });
 
   it("uses ESPN's own slug where it is not the abbreviation we store", () => {

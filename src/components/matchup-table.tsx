@@ -176,8 +176,11 @@ function TeamLine({
   city: string;
   season: string;
   fallback: { name: string; city: string };
-  /** HOME on the host's line; NEUTRAL there instead when the game is away from its arena. */
-  venueTag: "HOME" | "NEUTRAL" | null;
+  /**
+   * HOME on the host's line, or the city when the game is away from its arena. Not "NEUTRAL":
+   * the GAP SIZE badge already uses that word for a gap under 0.5.
+   */
+  venueTag: string | null;
 }) {
   const colors = getTeamColors(abbreviation);
   return (
@@ -656,7 +659,7 @@ function GameRow({
             city={homeBrand.city ?? game.homeTeam.city}
             season={game.season}
             fallback={homeFallback}
-            venueTag={game.neutralCity ? "NEUTRAL" : "HOME"}
+            venueTag={game.neutralCity ? game.neutralCity.toUpperCase() : "HOME"}
           />
         </div>
 

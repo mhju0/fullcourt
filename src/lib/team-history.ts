@@ -51,7 +51,7 @@ const CURRENT_TEAM_DEFAULTS: Record<string, { name: string; city: string }> = {
   GSW: { name: "Warriors", city: "Golden State" },
   HOU: { name: "Rockets", city: "Houston" },
   IND: { name: "Pacers", city: "Indiana" },
-  LAC: { name: "Clippers", city: "LA" },
+  LAC: { name: "Clippers", city: "Los Angeles" },
   LAL: { name: "Lakers", city: "Los Angeles" },
   MEM: { name: "Grizzlies", city: "Memphis" },
   MIA: { name: "Heat", city: "Miami" },
