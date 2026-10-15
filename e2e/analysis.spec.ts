@@ -20,7 +20,7 @@ test.describe("Analysis page", () => {
     await expect(page.locator("main").getByText(/^RESTED TEAM AT HOME WON/)).toHaveCount(2);
 
     // The excluded half, which must never leave the page: without it the headline sits alone
-    // with no sign that 11,548 games were set aside to produce it. It is a sentence rather
+    // with no sign that every rested-visitor game was set aside to produce it. It is a sentence rather
     // than a fourth tile — a tile row is a row of results and this is the rule they are
     // produced under, which no 30-character label ever carried.
     await expect(page.getByText("NOT COUNTED", { exact: true })).toBeVisible();

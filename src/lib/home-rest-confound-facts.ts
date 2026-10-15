@@ -8,9 +8,9 @@
  * stored-score correction with nothing to notice.
  */
 export const HOME_REST_CONFOUND = Object.freeze({
-  population: 47143,
-  bothTravelledIn: Object.freeze({ games: 23076, homeWinPct: 59.7 }),
-  homeFlewFarther: Object.freeze({ games: 12492, homeWinPct: 59.9 }),
+  population: 47112,
+  bothTravelledIn: Object.freeze({ games: 23049, homeWinPct: 59.7 }),
+  homeFlewFarther: Object.freeze({ games: 12473, homeWinPct: 60 }),
   homeTravelledInOnBackToBack: Object.freeze({ games: 5948, homeWinPct: 58 }),
-  meanRestEdge: Object.freeze({ allGames: 1.186, bothTravelledIn: 0.443 }),
+  meanRestEdge: Object.freeze({ allGames: 1.186, bothTravelledIn: 0.444 }),
 });

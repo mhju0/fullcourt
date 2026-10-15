@@ -1269,3 +1269,26 @@ and about ten labels that said something the code does not. Owner decisions, eac
 Altitude carryover (code applies it to the next game at any gap; every written source says the
 next night) is not decided here: it changes a ratified term and needs a production recompute, so
 it goes through its own ADR after the D-80 freeze.
+
+## D-92 — A neutral-site game has no home court, so it is never called and never sets a venue baseline (2026-10-15)
+
+`isCalledSide()` used to call the listed host of a neutral-site game (London, Paris, Mexico City,
+the NBA Cup final) as though it were at home, and every venue baseline counted the host's result
+as a home win or loss. The fatigue model already scores that host as a road team (D-91), so the
+backtest was crediting a home court the model said was absent. Owner decision: exclude.
+
+- `isCalledSide(advantageTeam, neutralSite)` takes the venue as a required argument, so the
+  compiler finds every caller. A neutral game is never called: not in the headline, the
+  thresholds, the home/away breakdown, the venue baseline (overall and per season), the Season
+  Report home rate, or the daily writer's predictions. It still advances `latestEvidenceDate`.
+- Producers re-run after reproducing their committed baselines byte for byte:
+  `scripts/measure_uncalled_half.ts` (`ml/rest_split_facts.json`),
+  `scripts/measure_home_rest_confound.ts` (`ml/home_rest_confound_facts.json`) and
+  `ml/ablate_fatigue_terms.py`. Research scripts with dated outputs were made to compile with the
+  same rule and were not re-run.
+- Measured impact (31 neutral scored games): headline 27,409 → 27,400 games, still 61.2%; venue
+  baseline 47,143 → 47,112, still 59.9 / 40.1; rested visitors 42.4% of 11,548 → 42.3% of 11,537
+  (lift over the road baseline 2.3 → 2.2 pp); the travel ablation row 5,986 at 59.07% →
+  5,985 at 59.06% (+0.35 → +0.36 pp). No verdict on the site changes.
+- The 9 graded neutral rows in `predictions` are deleted with the owner's approval at merge, so
+  `verify_predictions` stays clean.

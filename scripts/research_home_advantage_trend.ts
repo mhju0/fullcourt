@@ -287,7 +287,7 @@ async function main(): Promise<void> {
       date: row.date,
       homeWon: row.homeScore > row.awayScore,
       homeMargin: row.homeScore - row.awayScore,
-      homeRested: isCalledSide(restAdvantage.advantageTeam),
+      homeRested: isCalledSide(restAdvantage.advantageTeam, row.neutralSite),
     };
   });
 
