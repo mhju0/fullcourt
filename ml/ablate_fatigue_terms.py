@@ -80,8 +80,12 @@ def assemble(df: pd.DataFrame, drop: str | None = None, neutral: float = 0.0) ->
 
 
 def calls(home: pd.DataFrame, away: pd.DataFrame, col: str):
-    """Apply the shipped rule: call only when the home side is the fresher one."""
-    return (away[col].to_numpy() - home[col].to_numpy()) >= NEUTRAL_THRESHOLD
+    """Apply the shipped rule: call only when the home side is the fresher one.
+
+    The gap is rounded to the scores' two decimals before the comparison, as
+    restAdvantageDifferential() does (D-87), so a stored 0.50 gap is a call.
+    """
+    return (away[col].to_numpy() - home[col].to_numpy()).round(2) >= NEUTRAL_THRESHOLD
 
 
 def rate(mask, won) -> tuple[int, float]:

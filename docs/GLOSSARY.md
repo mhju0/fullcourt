@@ -12,7 +12,7 @@ FullCourt studies NBA schedule conditions and historical results. Use these term
 
 **Rest advantage**: `away fatigue score − home fatigue score`. Positive favours the home team; negative favours the visitor. Avoid “fatigue advantage” and “rest score.”
 
-**Neutral/no-call band**: An absolute rest advantage below `0.5`. The code compares the unrounded floating-point difference, so a displayed `0.50` can fall just below the boundary. Do not promise that every displayed gap of exactly 0.50 receives a call. This band is unrelated to a neutral-site venue.
+**Neutral/no-call band**: An absolute rest advantage below `0.5`. The gap is compared at the fatigue scores' two decimals (`restAdvantageDifferential`, D-87), so a gap of 0.50 is a call and 0.49 is not. This band is unrelated to a neutral-site venue.
 
 **Decidable**: A gap outside the neutral band, identifying a more-rested side. This is separate from whether the game is called or publishable.
 

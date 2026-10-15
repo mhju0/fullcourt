@@ -5,6 +5,7 @@ import Image from "next/image"
 import { TRAVEL_LOOKBACK_DAYS } from "@/lib/fatigue"
 import { readableTextOn } from "@/lib/nba-team-colors"
 import { NEUTRAL_REST_ADVANTAGE_THRESHOLD } from "@/lib/rest-advantage-evidence"
+import { formatRestAdvantageValue } from "@/lib/rest-advantage-display"
 import { formatDaysOff } from "@/lib/days-off"
 import { getTeamBranding, teamLogoUrl } from "@/lib/team-history"
 import { TRACK, TYPE } from "@/lib/terminal-styles"
@@ -363,7 +364,7 @@ export function RaBadge({
   }
   const isHomeAdv = restAdvantage.advantageTeam === "home"
   const abbr = isHomeAdv ? homeAbbr : awayAbbr
-  const diff = Math.abs(restAdvantage.differential).toFixed(1)
+  const diff = formatRestAdvantageValue(restAdvantage.differential)
   return (
     <span
       className="mono inline-flex items-center"

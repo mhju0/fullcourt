@@ -47,8 +47,20 @@ export type RestAdvantageDisplay =
       text: string;
     };
 
+/**
+ * The gap as stored: two decimals, the precision of the fatigue scores themselves.
+ *
+ * One decimal used to round 0.46 up to "0.5" beside a NEUTRAL badge, and 1.95 up to "2.0"
+ * outside GAPS OF 2+. Every threshold reads the same two-decimal value, so the printed figure
+ * now always sits on the same side of a tier line as the badge beside it.
+ */
 export function formatRestAdvantageValue(value: number): string {
-  return Math.abs(value).toFixed(1);
+  return Math.abs(value).toFixed(2);
+}
+
+/** A fatigue score at its stored precision, so two printed scores difference to the printed gap. */
+export function formatFatigueScore(score: number): string {
+  return score.toFixed(2);
 }
 
 export function formatRestAdvantageDisplay(

@@ -27,7 +27,11 @@
 import { rankScheduleTeams } from "@/lib/schedule-ranking";
 import { NBA_SEASONS } from "@/lib/nba-season";
 import { differenceInCalendarDays, parseISO } from "date-fns";
-import { classifyRestAdvantage, NEUTRAL_REST_ADVANTAGE_THRESHOLD } from "./rest-advantage-evidence";
+import {
+  classifyRestAdvantage,
+  NEUTRAL_REST_ADVANTAGE_THRESHOLD,
+  restAdvantageDifferential,
+} from "./rest-advantage-evidence";
 import { restStatePair, scheduleValueWins, type RestStateCounts } from "./schedule-value";
 
 /**
@@ -472,7 +476,9 @@ export function computeScheduleDisparity(
     countedGames++;
     const fatigueGap =
       toFatigue(g.homeFatigueScore) !== null && toFatigue(g.awayFatigueScore) !== null
-        ? Math.abs(toFatigue(g.awayFatigueScore)! - toFatigue(g.homeFatigueScore)!)
+        ? Math.abs(
+            restAdvantageDifferential(toFatigue(g.homeFatigueScore)!, toFatigue(g.awayFatigueScore)!)
+          )
         : null;
     if (fatigueGap !== null) measuredGames++;
     if (fatigueGap !== null && fatigueGap >= NEUTRAL_REST_ADVANTAGE_THRESHOLD) gamesWithAnyEdge++;
@@ -543,7 +549,7 @@ export function computeScheduleDisparity(
       if (capped >= LARGE_EDGE_DAYS) gamesWithLargeEdge++;
 
       if (s.fatigue !== null && s.oppFatigue !== null) {
-        const d = s.oppFatigue - s.fatigue;
+        const d = restAdvantageDifferential(s.fatigue, s.oppFatigue);
         fatigueSum += d;
         fatiguePairs++;
         if (d >= NEUTRAL_REST_ADVANTAGE_THRESHOLD) {

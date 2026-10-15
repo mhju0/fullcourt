@@ -11,17 +11,32 @@ import type {
 export const NEUTRAL_REST_ADVANTAGE_THRESHOLD = 0.5;
 
 /**
+ * The rest gap between two fatigue scores, `away − home`, at the scores' own precision.
+ *
+ * Fatigue scores are stored to two decimals, so every true gap is a multiple of 0.01. A bare
+ * float subtraction is not: `4.35 − 3.85` computes to 0.49999999999999956, which put a 0.50 gap
+ * on the neutral side and a 2.00 gap outside RA ≥ 2 while the board printed "0.5" and "2.0".
+ * Rounding here gives every threshold and every display the same number (D-87, reversing D-13).
+ * Every comparison against a rest-advantage threshold goes through this function.
+ */
+export function restAdvantageDifferential(
+  homeFatigueScore: number,
+  awayFatigueScore: number
+): number {
+  return Math.round((awayFatigueScore - homeFatigueScore) * 100) / 100;
+}
+
+/**
  * Canonical rest-advantage classification. `|differential| >= 0.5` is a call, below it neutral.
  *
- * Read as "about 0.5", never "exactly 0.5": `differential` is a float subtraction, so a gap that
- * reads as 0.50 can compute just under the threshold and land neutral — `4.35 − 3.85` does.
- * Pinned in `rest-advantage-evidence.test.ts` and explained in `docs/GLOSSARY.md`.
+ * `differential` is the stored two-decimal gap (`restAdvantageDifferential`), so a gap of 0.50
+ * is a call and 0.49 is not. Pinned in `rest-advantage-evidence.test.ts`.
  */
 export function classifyRestAdvantage(
   homeFatigueScore: number,
   awayFatigueScore: number
 ): RestAdvantage {
-  const differential = awayFatigueScore - homeFatigueScore;
+  const differential = restAdvantageDifferential(homeFatigueScore, awayFatigueScore);
   const advantageTeam: RestAdvantage["advantageTeam"] =
     Math.abs(differential) < NEUTRAL_REST_ADVANTAGE_THRESHOLD
       ? "neutral"
@@ -42,7 +57,7 @@ export function classifyRestAdvantage(
  *
  * The evidence, over every decidable game the site publishes (1985-86 on, re-measured
  * 2026-10-04 by `scripts/measure_uncalled_half.ts`): backing the more rested team when that
- * team is the visitor won 42.4% of 11,546 games. Home teams win 59.9% of everything and road
+ * team is the visitor won 42.4% of 11,548 games. Home teams win 59.9% of everything and road
  * teams 40.1%, so that row does gain against its own baseline — but a gain over a baseline is
  * a measurement, and a pick has to clear 50%.
  *
@@ -301,8 +316,7 @@ export function buildHistoricalGameSearch(
       awayScore: row.awayScore,
       homeFatigueScore,
       awayFatigueScore,
-      restAdvantageDifferential:
-        Math.round(Math.abs(restAdvantage.differential) * 100) / 100,
+      restAdvantageDifferential: Math.abs(restAdvantage.differential),
       advantageTeam: restAdvantage.advantageTeam,
       restedTeamWon:
         restAdvantage.advantageTeam === "home" ? homeWon : !homeWon,

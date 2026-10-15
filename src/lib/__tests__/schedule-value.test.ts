@@ -175,7 +175,7 @@ describe("scheduleValueWins", () => {
     };
 
     expect(netEdgeGames(phoenix)).toBe(-5);
-    expect(scheduleValueWins(phoenix)).toBeCloseTo(-0.074, 3);
+    expect(scheduleValueWins(phoenix)).toBeCloseTo(-0.0745, 4);
     expect(Math.round(scheduleValueWins(phoenix) * 10) / 10).toBe(-0.1);
   });
 

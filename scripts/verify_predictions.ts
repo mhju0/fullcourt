@@ -50,19 +50,13 @@ async function main(): Promise<void> {
       (SELECT count(*)::int FROM scored WHERE ra >= ${NEUTRAL_REST_ADVANTAGE_THRESHOLD}) AS should_be_called,
       (SELECT count(*)::int FROM predictions)                                        AS prediction_rows,
       (SELECT count(DISTINCT game_id)::int FROM predictions)                         AS distinct_games,
-      -- Split because Postgres and JavaScript disagree at the threshold itself. Numeric
-      -- subtraction is exact decimal, so 4.27 - 3.77 is 0.50 here; in the application it is
-      -- 0.4999999999999996 and the game is neutral. Those are correct declines, not gaps, and
-      -- the site-wide consequence is documented. Anything strictly above the threshold that is
-      -- still missing is a real gap.
+      -- Numeric subtraction is exact decimal, and the application rounds the gap to the
+      -- scores' two decimals before comparing (restAdvantageDifferential, D-87), so the two
+      -- agree at the threshold itself: a 0.50 gap is a call on both sides.
       (SELECT count(*)::int
          FROM scored s
          LEFT JOIN predictions p ON p.game_id = s.id
-        WHERE s.ra > ${NEUTRAL_REST_ADVANTAGE_THRESHOLD} AND p.id IS NULL)           AS called_but_missing,
-      (SELECT count(*)::int
-         FROM scored s
-         LEFT JOIN predictions p ON p.game_id = s.id
-        WHERE s.ra = ${NEUTRAL_REST_ADVANTAGE_THRESHOLD} AND p.id IS NULL)           AS declined_at_float_boundary,
+        WHERE s.ra >= ${NEUTRAL_REST_ADVANTAGE_THRESHOLD} AND p.id IS NULL)          AS called_but_missing,
       (SELECT count(*)::int
          FROM scored s
          JOIN predictions p ON p.game_id = s.id

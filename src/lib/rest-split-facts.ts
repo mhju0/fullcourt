@@ -11,7 +11,7 @@
  * **This file exists because the alternative failed.** The page hand-typed
  * "44.4% across 7,224 games" for the rested-road row. That figure was never wrong — it
  * described the `ml/` harness slice, which floors at 2002-03 — but the site publishes from
- * 1985-86, where the same measurement is 42.4% across 11,546. Nothing tied the sentence to a
+ * 1985-86, where the same measurement is 42.4% across 11,548. Nothing tied the sentence to a
  * population, so nothing caught it. Two neighbouring claims went stale the same way.
  *
  * The live `/analysis` figures are NOT here: they come from `AnalysisResponse` and are
@@ -39,8 +39,8 @@ export interface RestRow {
 export const REST_SPLIT_SAMPLE = Object.freeze({
   scoredGames: 47143,
   /** |RA| < 0.5 — no side is the rested one. About one game in six. */
-  neutral: 8193,
-  decided: 38950,
+  neutral: 8186,
+  decided: 38957,
   firstSeason: "1985-86",
   lastSeason: "2025-26",
   seasons: 41,
@@ -62,14 +62,14 @@ export const REST_SPLIT_BASELINE = Object.freeze({
 
 /** The published row: the more-rested team was also at home. */
 export const RESTED_AT_HOME: RestRow = Object.freeze({
-  games: 27404,
-  wins: 16765,
+  games: 27409,
+  wins: 16768,
   winPct: 61.2,
   ladder: Object.freeze([
-    Object.freeze({ gap: 2, games: 16073, wins: 9945, winPct: 61.9 }),
-    Object.freeze({ gap: 3, games: 10526, wins: 6640, winPct: 63.1 }),
-    Object.freeze({ gap: 4, games: 6389, wins: 4078, winPct: 63.8 }),
-    Object.freeze({ gap: 5, games: 3781, wins: 2469, winPct: 65.3 }),
+    Object.freeze({ gap: 2, games: 16090, wins: 9950, winPct: 61.8 }),
+    Object.freeze({ gap: 3, games: 10532, wins: 6644, winPct: 63.1 }),
+    Object.freeze({ gap: 4, games: 6395, wins: 4082, winPct: 63.8 }),
+    Object.freeze({ gap: 5, games: 3783, wins: 2471, winPct: 65.3 }),
     Object.freeze({ gap: 6, games: 2151, wins: 1403, winPct: 65.2 }),
     Object.freeze({ gap: 7, games: 1105, wins: 728, winPct: 65.9 }),
   ]),
@@ -83,13 +83,13 @@ export const RESTED_AT_HOME: RestRow = Object.freeze({
  * Any copy quoting them has to say so.
  */
 export const RESTED_ON_ROAD: RestRow = Object.freeze({
-  games: 11546,
-  wins: 4892,
+  games: 11548,
+  wins: 4893,
   winPct: 42.4,
   ladder: Object.freeze([
     Object.freeze({ gap: 2, games: 4354, wins: 1891, winPct: 43.4 }),
-    Object.freeze({ gap: 3, games: 2056, wins: 899, winPct: 43.7 }),
-    Object.freeze({ gap: 4, games: 952, wins: 447, winPct: 47 }),
+    Object.freeze({ gap: 3, games: 2061, wins: 902, winPct: 43.8 }),
+    Object.freeze({ gap: 4, games: 953, wins: 447, winPct: 46.9 }),
     Object.freeze({ gap: 5, games: 341, wins: 157, winPct: 46 }),
     Object.freeze({ gap: 6, games: 108, wins: 54, winPct: 50 }),
     Object.freeze({ gap: 7, games: 26, wins: 16, winPct: 61.5 }),
@@ -128,15 +128,15 @@ export const RESTED_ON_ROAD_BY_ERA: readonly RestEraRow[] = Object.freeze([
   Object.freeze({
     label: "All seasons",
     seasons: 41,
-    games: 11546,
-    wins: 4892,
+    games: 11548,
+    wins: 4893,
     winPct: 42.4,
     roadBaselinePct: 40.1,
     liftPp: 2.3,
     ladder: Object.freeze([
       Object.freeze({ gap: 2, games: 4354, wins: 1891, winPct: 43.4 }),
-      Object.freeze({ gap: 3, games: 2056, wins: 899, winPct: 43.7 }),
-      Object.freeze({ gap: 4, games: 952, wins: 447, winPct: 47 }),
+      Object.freeze({ gap: 3, games: 2061, wins: 902, winPct: 43.8 }),
+      Object.freeze({ gap: 4, games: 953, wins: 447, winPct: 46.9 }),
       Object.freeze({ gap: 5, games: 341, wins: 157, winPct: 46 }),
     ]),
   }),
@@ -150,7 +150,7 @@ export const RESTED_ON_ROAD_BY_ERA: readonly RestEraRow[] = Object.freeze([
     liftPp: 3.8,
     ladder: Object.freeze([
       Object.freeze({ gap: 2, games: 1134, wins: 566, winPct: 49.9 }),
-      Object.freeze({ gap: 3, games: 522, wins: 260, winPct: 49.8 }),
+      Object.freeze({ gap: 3, games: 524, wins: 261, winPct: 49.8 }),
       Object.freeze({ gap: 4, games: 231, wins: 121, winPct: 52.4 }),
       Object.freeze({ gap: 5, games: 67, wins: 33, winPct: 49.3 }),
     ]),
@@ -165,7 +165,7 @@ export const RESTED_ON_ROAD_BY_ERA: readonly RestEraRow[] = Object.freeze([
     liftPp: 4.6,
     ladder: Object.freeze([
       Object.freeze({ gap: 2, games: 602, wins: 314, winPct: 52.2 }),
-      Object.freeze({ gap: 3, games: 274, wins: 145, winPct: 52.9 }),
+      Object.freeze({ gap: 3, games: 275, wins: 146, winPct: 53.1 }),
       Object.freeze({ gap: 4, games: 117, wins: 68, winPct: 58.1 }),
       Object.freeze({ gap: 5, games: 36, wins: 21, winPct: 58.3 }),
     ]),
@@ -194,9 +194,9 @@ export const THIN_SAMPLE_GAMES = 200;
 export const HOME_BAR_COUNTERFACTUAL = Object.freeze({
   /** Points of home court added to every rest edge before the call is made. */
   homeBar: 3,
-  calls: 45508,
+  calls: 45514,
   coveragePct: 96.5,
-  correct: 27179,
+  correct: 27182,
   accuracyPct: 59.7,
   roadCalls: 1386,
   roadLosses: 752,

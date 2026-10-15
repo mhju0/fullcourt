@@ -41,6 +41,7 @@ import { LEAD, MONO_FONT_STACK, SPACE, termSelectClass, termSelectStyle, termCar
 import { DataTable } from "@/components/ui/data-table"
 import type { AnalysisResponse } from "@/types"
 import { signedNumber } from "@/lib/signed-number"
+import { formatFatigueScore, formatRestAdvantageValue } from "@/lib/rest-advantage-display"
 import { MessageCard } from "@/components/ui/message-card"
 import { StatTile } from "@/components/ui/stat-tile"
 
@@ -822,7 +823,7 @@ function ExploreGames({
             numeric: true,
             className: "hidden sm:table-cell",
             style: { color: "var(--term-text)" },
-            cell: (g) => g.homeFatigueScore.toFixed(1),
+            cell: (g) => formatFatigueScore(g.homeFatigueScore),
           },
           {
             label: "Away Fat.",
@@ -830,7 +831,7 @@ function ExploreGames({
             numeric: true,
             className: "hidden sm:table-cell",
             style: { color: "var(--term-text)" },
-            cell: (g) => g.awayFatigueScore.toFixed(1),
+            cell: (g) => formatFatigueScore(g.awayFatigueScore),
           },
           {
             label: "RA",
@@ -852,7 +853,7 @@ function ExploreGames({
                 }}
               >
                 {g.advantageTeam === "home" ? g.homeTeamAbbreviation : g.awayTeamAbbreviation} +
-                {g.restAdvantageDifferential.toFixed(1)}
+                {formatRestAdvantageValue(g.restAdvantageDifferential)}
               </span>
             ),
           },

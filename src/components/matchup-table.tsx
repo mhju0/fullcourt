@@ -21,7 +21,11 @@ import {
 import { gamePhase, spokenGameState, type GamePhase } from "@/lib/game-phase";
 import { buildGameStoryline } from "@/lib/game-storyline";
 import { getTeamColors } from "@/lib/nba-team-colors";
-import { formatRestAdvantageDisplay } from "@/lib/rest-advantage-display";
+import {
+  formatFatigueScore,
+  formatRestAdvantageDisplay,
+  formatRestAdvantageValue,
+} from "@/lib/rest-advantage-display";
 import { getTeamBranding } from "@/lib/team-history";
 import { LEAD, SPACE, SPACE_CARD, TRACK, TYPE } from "@/lib/terminal-styles";
 import { cn } from "@/lib/utils";
@@ -289,14 +293,14 @@ function FatigueLine({
       <span
         className="mono shrink-0 tabular-nums"
         style={{
-          width: 30,
+          width: 36,
           fontSize: TYPE.data,
           fontWeight: 700,
           color: "var(--term-text)",
           textAlign: "right",
         }}
       >
-        {score !== null ? score.toFixed(1) : "—"}
+        {score !== null ? formatFatigueScore(score) : "—"}
       </span>
       {/* Fixed-width so the two lines' chips align with each other and with the rows above and
           below, whether a team carries two flags, one, or none. Chips start from the strip's
@@ -375,7 +379,7 @@ function RestAdvCell({
   const advantageTeam = restAdvantage?.advantageTeam ?? "neutral";
   const isHomeAdv = advantageTeam === "home";
   const isAwayAdv = advantageTeam === "away";
-  const value = Math.abs(restAdvantage?.differential ?? 0).toFixed(1);
+  const value = formatRestAdvantageValue(restAdvantage?.differential ?? 0);
   const fillPercent =
     Math.min(Math.abs(restAdvantage?.differential ?? 0) / 5, 1) * 50;
   // Not measured is not a dead heat, and this cell used to print them the same way: a game

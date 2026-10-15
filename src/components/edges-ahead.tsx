@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef } from "react"
 import useSWR from "swr"
 import { format } from "date-fns"
 import { useNow } from "@/hooks/useNow"
+import { formatRestAdvantageValue } from "@/lib/rest-advantage-display"
 import { hasNotTipped } from "@/lib/game-phase"
 import { apiFetcher } from "@/lib/fetcher"
 import { defaultNbaSeason } from "@/lib/nba-season"
@@ -71,7 +72,7 @@ export function EdgesAhead({
       <div className="flex flex-wrap gap-2">
         {top.map((g) => {
           const dateLabel = format(new Date(g.date + "T00:00:00"), "MMM d, yyyy")
-          const value = Math.abs(g.restAdvantageDifferential).toFixed(1)
+          const value = formatRestAdvantageValue(g.restAdvantageDifferential)
           return (
             <button
               key={g.gameId}
