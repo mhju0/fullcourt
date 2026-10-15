@@ -1176,3 +1176,15 @@ The new browser gate reproduced Escape and rapid-reopen focus loss in the existi
 palette. A narrow focus-restoration correction preserves navigation and avoids focus theft
 from a reopened dialog. Broad UI audit suggestions remain separate. No fatigue coefficient,
 published analytical figure, application schema or production data is changed.
+
+## D-86 — `daysRest` means full days off; the storyline names teams (2026-10-15)
+
+The Games board printed the fatigue model's `daysSinceLastGame` as days rest, so a
+back-to-back read 1D. `FatigueInfo.daysRest` is now full days off (`daysOffBeforeGame`,
+`src/lib/days-off.ts`): a back-to-back is 0, written "0 days" in the expansion. The model
+keeps `daysSinceLastGame` because its ratified terms are written against that count; no
+score, rest advantage or published rate moves. The storyline names each team by the
+nickname it played under that season (`getTeamBranding`), and every clause carries its own
+verb ("playing a 4th game in 6 nights") so a nickname reads as a sentence. Owner chose
+"76ers" over "Sixers". Still on the days-since count with a "days rest" label: the
+player-rest "3+ days" bucket and Schedule Edge's rest-day cap — open, not changed here.

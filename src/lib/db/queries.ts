@@ -37,6 +37,7 @@ import type { DisparityGameRow } from "@/lib/schedule-disparity";
 import type { SeasonReportRow } from "@/lib/season-report";
 import { seasonTravelLegs, travelLegKey } from "@/lib/season-travel";
 import { ABNORMAL_STRETCHES } from "@/lib/season-regime";
+import { daysOffBeforeGame } from "@/lib/days-off";
 import {
   formatEasternDateKey,
   formatEasternTipTime,
@@ -874,7 +875,7 @@ function buildFatigueInfo(
     travelDistanceMiles: fatigue.travelDistanceMiles,
     altitudePenalty,
     altitudeArenaLabel,
-    daysRest: daysSinceLastGame,
+    daysRest: daysOffBeforeGame(daysSinceLastGame),
     gamesInLast7Days: g7,
     gamesInLast30Days: extras.gamesInLast30Days,
     is4In6: extras.is4In6,

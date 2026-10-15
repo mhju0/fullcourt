@@ -17,7 +17,7 @@ export interface FatigueInfo {
   altitudePenalty: boolean;
   /** When altitude applies (away at DEN/UTA), human-readable arena context. */
   altitudeArenaLabel: string | null;
-  /** Days since this team's previous game; null = season opener / no prior game. */
+  /** Full days off before this game (a back-to-back is 0); null = season opener / no prior game. */
   daysRest: number | null;
   /** Games in the 7 calendar days before this game (not counting this game). */
   gamesInLast7Days: number;

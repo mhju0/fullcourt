@@ -5,6 +5,7 @@ import Image from "next/image"
 import { TRAVEL_LOOKBACK_DAYS } from "@/lib/fatigue"
 import { readableTextOn } from "@/lib/nba-team-colors"
 import { NEUTRAL_REST_ADVANTAGE_THRESHOLD } from "@/lib/rest-advantage-evidence"
+import { formatDaysOff } from "@/lib/days-off"
 import { getTeamBranding, teamLogoUrl } from "@/lib/team-history"
 import { TRACK, TYPE } from "@/lib/terminal-styles"
 import type { FatigueInfo, GameResponse } from "@/types"
@@ -321,7 +322,7 @@ export function FatigueDetailColumn({
         v={Math.round(fatigue.travelDistanceMiles).toLocaleString()}
         highlight={travelHigh}
       />
-      <FatigueDetailRow k="DAYS REST" v={fatigue.daysRest === null ? "—" : `${fatigue.daysRest}D`} />
+      <FatigueDetailRow k="DAYS REST" v={formatDaysOff(fatigue.daysRest)} />
     </div>
   )
 }

@@ -2,9 +2,9 @@ import { describe, expect, it } from "vitest";
 import { buildGameStoryline } from "@/lib/game-storyline";
 import type { FatigueInfo, TeamInfo } from "@/types";
 
-const team = (abbreviation: string): TeamInfo => ({
+const team = (abbreviation: string, name: string): TeamInfo => ({
   id: 1,
-  name: abbreviation,
+  name,
   abbreviation,
   city: abbreviation,
 });
@@ -16,7 +16,7 @@ const restedFatigue = (overrides: Partial<FatigueInfo> = {}): FatigueInfo => ({
   travelDistanceMiles: 0,
   altitudePenalty: false,
   altitudeArenaLabel: null,
-  daysRest: 2,
+  daysRest: 1,
   gamesInLast7Days: 2,
   gamesInLast30Days: 12,
   is4In6: false,
@@ -27,8 +27,9 @@ const restedFatigue = (overrides: Partial<FatigueInfo> = {}): FatigueInfo => ({
 });
 
 const game = (away: FatigueInfo | null, home: FatigueInfo | null) => ({
-  awayTeam: team("DEN"),
-  homeTeam: team("LAL"),
+  season: "2026-27",
+  awayTeam: team("DEN", "Nuggets"),
+  homeTeam: team("LAL", "Lakers"),
   awayFatigue: away,
   homeFatigue: home,
 });
@@ -44,7 +45,7 @@ describe("buildGameStoryline", () => {
 
   it("names one team's single story plainly", () => {
     expect(buildGameStoryline(game(restedFatigue({ isBackToBack: true }), restedFatigue()))).toBe(
-      "DEN on a back-to-back."
+      "Nuggets on a back-to-back."
     );
   });
 
@@ -55,14 +56,14 @@ describe("buildGameStoryline", () => {
         restedFatigue({ is4In6: true })
       )
     );
-    expect(s).toBe("DEN on a back-to-back and after an altitude trip; LAL 4th game in 6 nights.");
+    expect(s).toBe("Nuggets on a back-to-back and after an altitude trip; Lakers playing a 4th game in 6 nights.");
   });
 
   it("never says 3-in-4 and 4-in-6 together — the same nights would be counted twice", () => {
     const s = buildGameStoryline(
       game(restedFatigue({ is3In4: true, is4In6: true }), restedFatigue())
     );
-    expect(s).toBe("DEN 4th game in 6 nights.");
+    expect(s).toBe("Nuggets playing a 4th game in 6 nights.");
   });
 
   it("caps a stacked team at three clauses, in priority order", () => {
@@ -79,14 +80,24 @@ describe("buildGameStoryline", () => {
         restedFatigue()
       )
     );
-    expect(s).toBe("DEN on a back-to-back, 4th game in 6 nights and after an altitude trip.");
+    expect(s).toBe("Nuggets on a back-to-back, playing a 4th game in 6 nights and after an altitude trip.");
   });
 
   it("says a long road trip with a real ordinal", () => {
     const s = buildGameStoryline(
       game(restedFatigue({ roadTripConsecutiveAway: 5 }), restedFatigue())
     );
-    expect(s).toBe("DEN 5th straight road game.");
+    expect(s).toBe("Nuggets playing a 5th straight road game.");
+  });
+
+  it("names the team by its nickname for that season, not today's", () => {
+    const s = buildGameStoryline({
+      ...game(restedFatigue({ isBackToBack: true }), restedFatigue({ is3In4: true })),
+      season: "2005-06",
+      awayTeam: team("NOP", "Pelicans"),
+      homeTeam: team("OKC", "Thunder"),
+    });
+    expect(s).toBe("Hornets on a back-to-back; SuperSonics playing a 3rd game in 4 nights.");
   });
 
   it("ignores road trips shorter than four games — two away games is not a story", () => {
@@ -97,5 +108,5 @@ describe("buildGameStoryline", () => {
 });
 
 it("distinguishes tonight's altitude venue from carryover", () => {
-  expect(buildGameStoryline(game(restedFatigue({ altitudePenalty: true, altitudeArenaLabel: "Denver (altitude)" }), restedFatigue()))).toBe("DEN playing at altitude.");
+  expect(buildGameStoryline(game(restedFatigue({ altitudePenalty: true, altitudeArenaLabel: "Denver (altitude)" }), restedFatigue()))).toBe("Nuggets playing at altitude.");
 });
