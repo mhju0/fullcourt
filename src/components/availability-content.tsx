@@ -108,11 +108,11 @@ function ScaleSection() {
   const e = AVAILABILITY_EFFECTS
   return (
     <section className="flex flex-col gap-3">
-      <SectionHeading>Missing a top player</SectionHeading>
+      <SectionHeading>Missing the best player</SectionHeading>
       <div style={termCardStyle}>
         <StatFigure
           value={`${e.bestPlayerOut.points.toFixed(2)} points`}
-          caption="LOWER FINAL MARGIN WITH A TOP PLAYER ABSENT · ASSOCIATION"
+          caption="LOWER FINAL MARGIN WITH THE BEST PLAYER ABSENT · ASSOCIATION"
         />
 
         <div className="mt-6 flex flex-col gap-4">
@@ -174,11 +174,11 @@ function TrendSection() {
 
   return (
     <section className="flex flex-col gap-3">
-      <SectionHeading>Top-player absences over time</SectionHeading>
+      <SectionHeading>Best-player absences over time</SectionHeading>
       <div style={termCardStyle}>
         <p style={BODY}>
           <span style={LEAD_IN}>
-            Top-player absences are more than three times as common as in{" "}
+            Best-player absences are more than three times as common as in{" "}
             {first.season}.
           </span>{" "}
           That is context for every figure above: the same absence was a rare event across most of
@@ -318,7 +318,10 @@ function LimitsSection() {
         </p>
         <p className="mt-3" style={BODY}>
           Absence is inferred from the rotation a team had actually been using, because a
-          long-term injury can keep a player off the sheet entirely. Coverage starts in{" "}
+          long-term injury can keep a player off the sheet entirely. A player who misses four
+          straight games leaves that rotation, so a long absence counts for its first four
+          games only. Each team is measured from its sixth game of a season, once the rotation
+          comes from that season&apos;s games. Coverage starts in{" "}
           {AVAILABILITY_SAMPLE.firstSeason}, where the box scores this rests on begin.
         </p>
       </div>

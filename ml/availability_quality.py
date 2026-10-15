@@ -106,15 +106,15 @@ def main() -> None:
 
     sides = pd.read_csv(
         FEATURES,
-        usecols=["game_id", "external_id", "date", "team_id", "is_home", "status", "game_type"],
+        usecols=["game_id", "external_id", "date", "season", "team_id", "is_home", "status", "game_type"],
         low_memory=False,
     )
     sides = sides[(sides["status"] == "final") & (sides["game_type"] == "regular")].copy()
     sides["external_id"] = sides["external_id"].astype(str).str.zfill(10)
     sides["side"] = np.where(sides["is_home"] == 1, "home", "away")
 
-    play = box.drop(columns=["team_id", "game_id"]).merge(
-        sides[["game_id", "external_id", "date", "team_id", "side"]],
+    play = box.drop(columns=["team_id", "game_id", "season"], errors="ignore").merge(
+        sides[["game_id", "external_id", "date", "season", "team_id", "side"]],
         on=["external_id", "side"],
         how="inner",
     )
@@ -133,10 +133,12 @@ def main() -> None:
     )
     play = play.sort_values(["team_id", "date", "person_id"])
 
-    history: dict[int, deque] = defaultdict(lambda: deque(maxlen=WINDOW))
+    # One window per team-season. A window carried across the summer counted players who had
+    # left as missing in the opener; a team is measured once it has WINDOW games this season.
+    history: dict[tuple[int, str], deque] = defaultdict(lambda: deque(maxlen=WINDOW))
     records = []
     for (team_id, game_id), grp in play.groupby(["team_id", "game_id"], sort=False):
-        window = history[team_id]
+        window = history[(team_id, grp["season"].iloc[0])]
         played_now = dict(zip(grp["person_id"], grp["min"]))
 
         mins: dict[int, list] = defaultdict(list)
