@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { getTeamBranding } from "@/lib/team-history";
+import { formerAbbreviations, getTeamBranding } from "@/lib/team-history";
 
 describe("getTeamBranding", () => {
   it("OKC in Seattle era → SuperSonics", () => {
@@ -138,5 +138,18 @@ describe("getTeamBranding", () => {
     });
     expect(b.name).toBe("SuperSonics");
     expect(b.city).toBe("Seattle");
+  });
+});
+
+describe("formerAbbreviations", () => {
+  it("lists every other code a franchise played under in the seasons with data", () => {
+    expect(formerAbbreviations("OKC")).toEqual(["SEA"]);
+    expect(formerAbbreviations("NOP")).toEqual(["NOH", "NOK"]);
+    expect(formerAbbreviations("WAS")).toEqual(["WSB"]);
+  });
+
+  it("is empty when the code never changed, including a rebrand that kept it", () => {
+    expect(formerAbbreviations("BOS")).toEqual([]);
+    expect(formerAbbreviations("CHA")).toEqual([]);
   });
 });

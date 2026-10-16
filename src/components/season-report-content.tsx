@@ -14,6 +14,7 @@ import {
   MIN_GAMES_FOR_INFERENCE,
   type SeasonReportResponse,
 } from "@/lib/season-report";
+import { KeepTogether } from "@/components/ui/keep-together";
 import { signedNumber } from "@/lib/signed-number";
 import { WIDTH } from "@/lib/terminal-styles";
 
@@ -87,7 +88,7 @@ export function SeasonReportContent() {
       {fallbackNote ? <p role="status">{fallbackNote}</p> : null}
       {awaitingLatest ? (
         <p role="status" className={muted} data-testid="season-default-note">
-          {LATEST_SEASON} has no completed games yet. Showing {PRIOR_SEASON}.{" "}
+          <KeepTogether>{LATEST_SEASON} has no completed games yet. Showing {PRIOR_SEASON}.</KeepTogether>{" "}
           <a className="fc-text-link" href={`/schedule?season=${LATEST_SEASON}`}>
             View the {LATEST_SEASON} schedule →
           </a>
@@ -168,19 +169,19 @@ export function SeasonReportContent() {
                   <p className="mono mt-2 text-2xl font-semibold tabular-nums">
                     {data.homeRate.games > 0 ? `${data.homeRate.winPct.toFixed(1)}%` : "Awaiting results"}
                   </p>
-                  <p className={`mt-1 text-xs ${muted}`}>{data.homeRate.homeWins.toLocaleString()} wins / {data.homeRate.games.toLocaleString()} eligible games</p>
+                  <p className={`mt-1 text-xs ${muted}`}>{data.homeRate.homeWins.toLocaleString()} wins{"\u00a0/\u00a0"}{data.homeRate.games.toLocaleString()} eligible games</p>
                 </div>
                 <div className="border-t border-[var(--term-hairline)] py-4 sm:border-l sm:border-t-0 sm:px-4">
                   <p className="fc-control-label sm:min-h-10">Rested-at-home win rate</p>
                   <p data-testid="season-rest-win-rate" className="mono mt-2 text-2xl font-semibold tabular-nums text-[var(--term-blue-text)]">
                     {enough ? `${data.overall.winPct.toFixed(1)}%` : "Too early"}
                   </p>
-                  <p className={`mt-1 text-xs ${muted}`}>{data.overall.restedTeamWins.toLocaleString()} wins / {data.overall.games.toLocaleString()} eligible games</p>
+                  <p className={`mt-1 text-xs ${muted}`}>{data.overall.restedTeamWins.toLocaleString()} wins{"\u00a0/\u00a0"}{data.overall.games.toLocaleString()} eligible games</p>
                 </div>
                 <div className="border-t border-[var(--term-hairline)] py-4 sm:border-l sm:border-t-0 sm:pl-4">
                   <p className="fc-control-label sm:min-h-10">Gap from home rate</p>
                   <p className="mono mt-2 text-2xl font-semibold tabular-nums">
-                    {delta === null ? "Too early" : `${signedNumber(delta, 1)} pp`}
+                    {delta === null ? "Too early" : `${signedNumber(delta, 1)}\u00a0pp`}
                   </p>
                   <p className={`mt-1 text-xs ${muted}`}>Rested at home versus all designated-home games</p>
                 </div>
@@ -283,7 +284,7 @@ export function SeasonReportContent() {
                   {home ?? "—"}
                 </strong>
                 <span className="mono text-[15px] tabular-nums">
-                  {call.awayScore}–{call.homeScore} · RA{" "}
+                  {call.awayScore}–{call.homeScore} · RA{"\u00a0"}
                   {call.restAdvantage.toFixed(2)}
                 </span>
                 <span className="whitespace-nowrap text-right text-[15px]">
@@ -329,12 +330,14 @@ function TeamRecords({ teams, season }: { teams: SeasonReportResponse["teams"]; 
               Team
             </th>
             <th className="px-2 text-right" scope="col">
-              Rested home
-              <br />W / G · win %
+              <span className="whitespace-nowrap">Rested home</span>
+              <br />
+              <span className="whitespace-nowrap">W / G · win %</span>
             </th>
             <th className="px-2 text-right" scope="col">
-              Tired road
-              <br />W / G · win %
+              <span className="whitespace-nowrap">Tired road</span>
+              <br />
+              <span className="whitespace-nowrap">W / G · win %</span>
             </th>
             <th className="px-2 text-right" scope="col">
               Difference

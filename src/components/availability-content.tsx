@@ -224,7 +224,7 @@ function TrendSection() {
         </figure>
 
         <p className="mt-4" style={BODY}>
-          The climb is not steady. It dips in 2023-24, the season the league first required 65
+          The climb is not steady. It dips in <span className="whitespace-nowrap">2023-24</span>, the season the league first required 65
           games for awards eligibility, and returns above the old line the year after.
         </p>
       </div>

@@ -3,7 +3,7 @@
  * DB `teams` rows use current abbreviations; this maps (abbrev, season) → labels + logos.
  */
 
-import { parseSeasonStartYear } from "@/lib/nba-season";
+import { NBA_SEASONS, parseSeasonStartYear } from "@/lib/nba-season";
 
 export interface TeamBranding {
   abbreviation: string;
@@ -183,4 +183,12 @@ export function getTeamBranding(
   }
 
   return currentBranding(abbr, fallback);
+}
+
+/** The other codes a franchise played under in the seasons with data: OKC → SEA. */
+export function formerAbbreviations(currentAbbreviation: string): string[] {
+  const current = currentAbbreviation.trim().toUpperCase();
+  const codes = new Set(NBA_SEASONS.map((season) => getTeamBranding(current, season).abbreviation));
+  codes.delete(current);
+  return [...codes].sort();
 }
