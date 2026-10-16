@@ -10,6 +10,7 @@ import {
   type RefereeFoulStyle,
   type RefereeStyleRow,
 } from "@/lib/referee-foul-style"
+import { KeepTogether } from "@/components/ui/keep-together"
 import { SPACE, termCardStyle, TRACK, TYPE } from "@/lib/terminal-styles"
 import { signedNumber } from "@/lib/signed-number"
 import { DataTable, type DataColumn } from "@/components/ui/data-table"
@@ -189,13 +190,13 @@ export function RefereeStyleContent({ data }: { data: RefereeFoulStyle }) {
         />
       </div>
 
-      <p className="mono" style={{ fontSize: 11, color: "var(--term-text-muted)", letterSpacing: TRACK.sub }}>
+      <p className="mono" style={{ fontSize: 11, color: "var(--term-text-muted)", letterSpacing: TRACK.sub }}><KeepTogether>
         EVERY MEASURED CELL = THE OFFICIAL&rsquo;S LAST 200 GAMES, THE SAME SAMPLE FOR EVERY ROW ·
         BOLD = BEYOND TWO STANDARD ERRORS · MUTED = INSIDE NOISE · CC = CREW CHIEF IN{" "}
         {data.crewChiefFirstSeason} OR LATER · {chiefCount} OF{" "}
         {publishable(data.officials).length} · SINCE = FIRST SEASON IN THIS
         DATA ({data.firstSeason} AT THE EARLIEST), NOT A HIRE DATE
-      </p>
+      </KeepTogether></p>
     </div>
   )
 }

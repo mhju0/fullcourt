@@ -1,5 +1,6 @@
 import { Fragment } from "react"
 import type { CSSProperties, HTMLAttributes, ReactNode } from "react"
+import { keepTogether } from "@/components/ui/keep-together"
 import { ScrollCue } from "@/components/ui/scroll-cue"
 import {
   termTdStyle,
@@ -203,9 +204,9 @@ export function DataTable<Row, K extends string = string>({
 
     const content = (
       <>
-        {col.label}
+        {keepTogether(col.label)}
         {active ? (sort?.dir === -1 ? " ↓" : " ↑") : ""}
-        {col.unit && <span style={termThUnitStyle}>{col.unit}</span>}
+        {col.unit && <span style={termThUnitStyle}>{keepTogether(col.unit)}</span>}
       </>
     )
 
@@ -368,7 +369,7 @@ export function DataTable<Row, K extends string = string>({
                       .join(" ")}
                     style={{ ...termTdStyle, textAlign: alignOf(col), ...col.style }}
                   >
-                    {col.cell(row, i)}
+                    {keepTogether(col.cell(row, i))}
                   </td>
                 ))}
               </tr>
