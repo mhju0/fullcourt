@@ -43,24 +43,26 @@ export default function AvailabilityMethodPage() {
         <Prose>
           A missing player belongs to the team&rsquo;s recent rotation but records no minutes
           in the game. Rotation membership comes from <strong>prior participation</strong>,
-          because a box score may omit players who did not play. A player eventually drops out
-          of this measure after a long absence as their appearances leave the rotation window.
+          because a box score may omit players who did not play. A player who misses four
+          straight games no longer has two appearances in the window, so a long absence counts
+          for its first four games only.
         </Prose>
         <Formula>
-          {`rotation   averaged ${D.rotationMinutes}+ minutes across the team's previous
-           ${D.rotationWindowGames} games, in at least ${D.minAppearances} of them
+          {`rotation   appeared in at least ${D.minAppearances} of the team's previous ${D.rotationWindowGames}
+           games this season, averaging ${D.rotationMinutes}+ minutes in those appearances
 missing    a rotation member who recorded no minutes tonight`}
         </Formula>
         <ValueGrid
           values={[
-            { label: "Rotation window", value: `${D.rotationWindowGames} games`, sub: "the team's own previous games" },
-            { label: "Rotation threshold", value: `${D.rotationMinutes} min`, sub: "average across that window" },
+            { label: "Rotation window", value: `${D.rotationWindowGames} games`, sub: "the team's previous games this season" },
+            { label: "Rotation threshold", value: `${D.rotationMinutes} min`, sub: "average per appearance" },
             { label: "Typical rotation", value: `${AVAILABILITY_FREQUENCY.meanRotationSize.toFixed(1)}`, sub: "players, measured" },
           ]}
         />
         <Note>
-          The short window lets the rotation change with trades, coaching decisions, and
-          injuries. Its thresholds reduce the influence of a single appearance but can miss
+          The window starts fresh each season, so a team is measured from its sixth game, and
+          players who left in the off-season are never counted as missing. The short window lets
+          the rotation change with trades, coaching decisions, and injuries. Its thresholds reduce the influence of a single appearance but can miss
           players whose minutes have already fallen during an injury.
         </Note>
       </Section>
@@ -159,7 +161,7 @@ value = max(0, player's GmSc − the team's own rotation median)`}
             "Game Score captures limited defensive information and may miss part of a defensive player's contribution.",
             `Final margins have a standard deviation of ${AVAILABILITY_NOISE.marginStdDev.toFixed(1)} points. The model's error remains ${AVAILABILITY_NOISE.rmseWithAbsence.toFixed(1)} points after including team records, schedule, and absences, leaving much of the variation unexplained.`,
             `Player box-score coverage starts in ${AVAILABILITY_SAMPLE.firstSeason}. Earlier games can receive schedule scores but not availability estimates.`,
-            "The effects are averages across three decades. The rate of playing without a best player tripled over that span, so a single figure describes an era that changed underneath it.",
+            `The effects are averages over every season since ${AVAILABILITY_SAMPLE.firstSeason}. The rate of playing without a best player more than tripled over that span, so a single figure describes an era that changed underneath it.`,
           ]}
         />
       </Section>

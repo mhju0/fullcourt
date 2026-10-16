@@ -3,8 +3,8 @@
  * completed regular-season games that have fatigue scores.
  *
  * Prediction rule: the more rested team is predicted to win, but only when that team is
- * also the home side. A rested visitor is not picked — that row measures 42.4% across 11,546
- * games, and folding home court into the score instead lands below simply backing the home
+ * also the home side. A rested visitor is not picked — that row (`RESTED_ON_ROAD` in
+ * src/lib/rest-split-facts.ts) wins well under half its games, and folding home court into the score instead lands below simply backing the home
  * team every time (96.5% coverage at 59.7%, against 59.9%). `isCalledSide` holds the rule and
  * the evidence; see ADR 0006 and its 2026-08-06 addendum.
  *
@@ -57,6 +57,7 @@ async function main(): Promise<void> {
       awayScore: games.awayScore,
       homeFatigueScore: homeFatigue.score,
       awayFatigueScore: awayFatigue.score,
+      neutralSite: games.neutralSite,
     })
     .from(games)
     .innerJoin(
@@ -109,7 +110,7 @@ async function main(): Promise<void> {
       // Neutral is "no edge"; not-called is "an edge pointing at the visitor", where rest has
       // never been enough to outweigh home court. Both are skipped, and `isCalledSide` is the
       // single place that knows the difference.
-      if (!isCalledSide(restAdvantage.advantageTeam)) {
+      if (!isCalledSide(restAdvantage.advantageTeam, game.neutralSite)) {
         skippedNoCall++;
         continue;
       }

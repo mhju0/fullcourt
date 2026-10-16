@@ -40,7 +40,7 @@ export const metadata: Metadata = {
 const MEASURED_ON = "2026-07-30";
 
 /**
- * Single-term ablations, re-measured 2026-08-02 by `ml/ablate_fatigue_terms.py`.
+ * Single-term ablations, re-measured by `ml/ablate_fatigue_terms.py` on `ABLATIONS_MEASURED_ON`.
  *
  * These replace a table measured on 2026-07-30 that asked a question the model can no
  * longer be asked. That version held the set of games fixed and reported how much
@@ -55,24 +55,24 @@ const MEASURED_ON = "2026-07-30";
  * `found` / `foundWinPct` are the load-bearing columns, and `delta` is the trap. A term
  * that finds extra winners at a rate below the model's own 61.18% average *lowers* the
  * headline while *raising* the number of games won. Travel is exactly that: it is the
- * single largest contributor of correct calls (+398 above a coin flip, more than any other
- * term) and it still moves the headline +0.34pp when removed, because its 5,992 games win
- * at 59.10% rather than 61.18%. Reading `delta` alone says delete it. Deleting it would
+ * single largest contributor of correct calls (+394 above a coin flip, more than any other
+ * term) and it still moves the headline +0.36pp when removed, because its 5,985 games win
+ * at 59.06% rather than 61.18%. Reading `delta` alone says delete it. Deleting it would
  * give up more winning predictions than any other change available.
  *
  * Ordered by wins-above-a-coin-flip surrendered, not by delta.
  */
-const ABLATIONS_MEASURED_ON = "2026-10-04";
-const ABLATION_BASELINE = { winPct: 61.18, called: 27404, edge: 3063 };
+const ABLATIONS_MEASURED_ON = "2026-10-15";
+const ABLATION_BASELINE = { winPct: 61.18, called: 27400, edge: 3064 };
 const ABLATIONS = [
-  { term: "Travel", delta: 0.34, found: 5992, foundWinPct: 59.1, edgeLost: 398 },
-  { term: "Recent workload (decay)", delta: -0.68, found: 3434, foundWinPct: 63.34, edgeLost: 334 },
-  { term: "Back-to-back", delta: -0.32, found: 1742, foundWinPct: 63.61, edgeLost: 212 },
-  { term: "Road segment", delta: 0.24, found: 2785, foundWinPct: 58.92, edgeLost: 208 },
-  { term: "Altitude", delta: -0.04, found: 617, foundWinPct: 62.4, edgeLost: 72 },
-  { term: "Schedule density", delta: -0.07, found: 709, foundWinPct: 60.37, edgeLost: 39 },
-  { term: "Overtime", delta: -0.08, found: 154, foundWinPct: 64.29, edgeLost: 21 },
-  { term: "Freshness", delta: 0.01, found: 148, foundWinPct: 60.14, edgeLost: -10 },
+  { term: "Travel", delta: 0.36, found: 5985, foundWinPct: 59.06, edgeLost: 394 },
+  { term: "Recent workload (decay)", delta: -0.67, found: 3428, foundWinPct: 63.36, edgeLost: 332 },
+  { term: "Back-to-back", delta: -0.31, found: 1741, foundWinPct: 63.58, edgeLost: 212 },
+  { term: "Road segment", delta: 0.24, found: 2782, foundWinPct: 58.91, edgeLost: 208 },
+  { term: "Altitude", delta: -0.03, found: 617, foundWinPct: 62.40, edgeLost: 72 },
+  { term: "Schedule density", delta: -0.05, found: 708, foundWinPct: 60.17, edgeLost: 34 },
+  { term: "Overtime", delta: -0.07, found: 154, foundWinPct: 64.29, edgeLost: 21 },
+  { term: "Freshness", delta: 0.01, found: 143, foundWinPct: 61.54, edgeLost: -9 },
 ] as const;
 
 
@@ -108,6 +108,7 @@ function RestRowTable() {
     <DataTable
       rows={rows}
       rowKey={(r) => r.label}
+      minWidth={520}
       columns={[
         {
           label: "RESTED TEAM",
@@ -225,6 +226,7 @@ function RoadLadderTable() {
     <DataTable
       rows={rungs}
       rowKey={(r) => r.label}
+      minWidth={520}
       columns={[
         { label: "REST GAP", unit: "AT LEAST", cell: (r) => r.label },
         {
@@ -238,6 +240,8 @@ function RoadLadderTable() {
           unit: "WIN RATE",
           numeric: true,
           style: { fontWeight: 700 },
+          // Room for "RESTED ROAD" on one line plus the cell padding, so the heading holds to two.
+          headStyle: { minWidth: 112 },
           cell: (r) => <span style={{ color: thin(r) }}>{r.winPct}%</span>,
         },
         {
@@ -268,6 +272,7 @@ function RoadEraTable() {
     <DataTable
       rows={RESTED_ON_ROAD_BY_ERA}
       rowKey={(era) => era.label}
+      minWidth={520}
       columns={[
         {
           label: "ERA",
@@ -290,6 +295,8 @@ function RoadEraTable() {
           unit: "WIN RATE",
           numeric: true,
           style: { fontWeight: 700 },
+          // Room for "RESTED ROAD" on one line plus the cell padding, so the heading holds to two.
+          headStyle: { minWidth: 112 },
           cell: (era) => `${era.winPct}%`,
         },
         {
@@ -310,7 +317,7 @@ function RoadEraTable() {
           label: "BEST RUNG",
           unit: "GAP · WIN RATE",
           numeric: true,
-          style: { color: "var(--term-text-muted)" },
+          style: { color: "var(--term-text-muted)", whiteSpace: "nowrap" },
           cell: (era) => {
             // The strongest rung whose sample is worth printing. Picking the highest win rate
             // regardless of n would put a 36-game bucket in the most prominent column here.
@@ -358,14 +365,22 @@ restEdge   = awayScore − homeScore     (positive ⇒ the home side is fresher)
           has travelled by definition, so the fresher side is the home side in{" "}
           {RESTED_AT_HOME.games.toLocaleString()} of the{" "}
           {REST_SPLIT_SAMPLE.decided.toLocaleString()} games with a measurable gap. Two of the
-          eight terms, body clock and visiting altitude, are tied to playing away from home, and
+          eight terms, road segment (which carries the body-clock charge) and visiting altitude,
+          are tied to playing away from home, and
           the schedule pushes the same way on its own: the visiting side is playing a second
           night in a row roughly twice as often as the home side, and nothing in that term knows
           which team is at home.
         </Prose>
         <Prose>
           In about half the schedule the home team had travelled in too. In those games,
-          the average rest edge falls by three quarters, while the home team still won{" "}
+          the average rest edge falls by{" "}
+          {Math.round(
+            (1 -
+              HOME_REST_CONFOUND.meanRestEdge.bothTravelledIn /
+                HOME_REST_CONFOUND.meanRestEdge.allGames) *
+              100
+          )}
+          %, while the home team still won{" "}
           {HOME_REST_CONFOUND.bothTravelledIn.homeWinPct.toFixed(1)}% of those games,{" "}
           {HOME_REST_CONFOUND.homeFlewFarther.homeWinPct.toFixed(1)}% of the ones where it had
           flown farther than its opponent, and{" "}
@@ -449,8 +464,8 @@ restEdge   = awayScore − homeScore     (positive ⇒ the home side is fresher)
       <Section label="THE TERMS" title="Full formula and constants" disclosure>
         <DataTable rows={[
           { term: "Recent workload", meaning: "Previous games, weighted by recency and final margin." },
-          { term: "Travel", meaning: "Distance between venues and estimated body-clock displacement." },
-          { term: "Road segment", meaning: "Consecutive road games beyond the initial allowance." },
+          { term: "Travel", meaning: "Great-circle distance between venues." },
+          { term: "Road segment", meaning: "Consecutive road games beyond the initial allowance, plus body-clock displacement on the road." },
           { term: "Back-to-back", meaning: "A load multiplier based on time between tip-offs." },
           { term: "Altitude", meaning: "Visiting altitude and next-night carryover." },
           { term: "Schedule density", meaning: "Games across five windows compared with a normal pace." },
@@ -525,7 +540,7 @@ direction    = ${K.eastwardMultiplier} eastward, ${K.westwardMultiplier} westwar
             <Prose>
               <strong>Road segments, altitude, density, extended rest and overtime.</strong> Consecutive road games add{" "}
               {K.roadStreakPerGame} each after the first {K.roadStreakFree} are free. Visiting
-              altitude (Denver, Utah, and Mexico City at 7,350 ft) multiplies by{" "}
+              altitude (Denver, Utah, and Mexico City at 7,350{"\u00a0"}ft) multiplies by{" "}
               {K.altitudeMultiplier}, and the following night at normal elevation by{" "}
               {K.altitudeCarryover}. Schedule density compares games played across five windows
               {/* No cap is quoted here on purpose. SCHEDULE_STRESS_MAX_MULT is 1.42, but each
@@ -533,8 +548,9 @@ direction    = ${K.eastwardMultiplier} eastward, ${K.westwardMultiplier} westwar
                   cannot structurally exceed ~1.33 and tops out at 1.307 on real schedules.
                   Printing 1.42 told readers density could multiply fatigue by half again as
                   much as it can. Verified 2026-08-03. */}{" "}
-              against a normal pace. Extended rest earns a discount that begins at{" "}
-              {K.freshnessPlateauDays} days and approaches{" "}
+              against a normal pace. Extended rest earns a discount that starts accruing after{" "}
+              {K.freshnessPlateauDays} days since the last game (first credited at{" "}
+              {K.freshnessPlateauDays} full days off) and approaches{" "}
               {/* A true minus sign, and one decimal, so these read as the quantities the
                   model uses rather than as bare integers. */}
               {signedNumber(K.freshnessMaxBonus, 1)}. A prior game that went to
@@ -564,12 +580,14 @@ direction    = ${K.eastwardMultiplier} eastward, ${K.westwardMultiplier} westwar
           Games selected by back-to-back and recent-workload terms but lost when each is
           removed have win rates above 63%. Removing travel drops{" "}
           {ABLATIONS[0].found.toLocaleString()}{" "}
-          of the model&rsquo;s calls, more than twice any other term. Those games won at{" "}
-          {ABLATIONS[0].foundWinPct}%.
+          of the model&rsquo;s calls, far more than any other term (the next is{" "}
+          {Math.max(...ABLATIONS.slice(1).map((a) => a.found)).toLocaleString()}). Those games won at{" "}
+          {ABLATIONS[0].foundWinPct.toFixed(1)}%.
         </Prose>
         <DataTable
           rows={ABLATIONS}
           rowKey={(a) => a.term}
+          minWidth={520}
           columns={[
             { label: "TERM", cell: (a) => a.term },
             {
@@ -593,7 +611,7 @@ direction    = ${K.eastwardMultiplier} eastward, ${K.westwardMultiplier} westwar
               label: "THOSE GAMES",
               unit: "WIN RATE",
               numeric: true,
-              cell: (a) => `${a.foundWinPct}%`,
+              cell: (a) => `${a.foundWinPct.toFixed(1)}%`,
             },
             {
               label: "HEADLINE IF REMOVED",
@@ -615,7 +633,8 @@ direction    = ${K.eastwardMultiplier} eastward, ${K.westwardMultiplier} westwar
         <Note>
           The whole model sits at {ABLATION_BASELINE.edge.toLocaleString()} correct calls above a
           coin flip across {ABLATION_BASELINE.called.toLocaleString()} games. Freshness is the
-          only term whose removal improves this net count, by ten calls. The ratified terms
+          only term whose removal improves this net count, by{" "}
+          {-ABLATIONS[ABLATIONS.length - 1].edgeLost} calls. The ratified terms
           remain in place under the evaluation protocol in ADR 0006.
           Terms interact multiplicatively, so these figures do not sum to the total.
         </Note>
@@ -638,8 +657,9 @@ direction    = ${K.eastwardMultiplier} eastward, ${K.westwardMultiplier} westwar
 
       <Section label="WHERE THE DATA COMES FROM" title="Data sources and revisions" disclosure>
         <Prose>
-          Schedules, scores and results come from the NBA&rsquo;s own feeds. Overtime periods,
-          tip-off times and neutral-site venues come from ESPN. The missing overtime input was
+          Schedules, scores and results for completed seasons come from the NBA&rsquo;s own
+          feeds; the current season&rsquo;s schedule and nightly scores come from ESPN. Overtime
+          periods, tip-off times and neutral-site venues come from ESPN. The missing overtime input was
           restored on {MEASURED_ON}; earlier model runs had treated it as zero throughout.
         </Prose>
         <Prose>

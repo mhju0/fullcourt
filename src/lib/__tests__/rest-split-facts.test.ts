@@ -202,7 +202,7 @@ describe("the claims that had to be retired", () => {
 describe("liftOverBaseline", () => {
   it("signs the distance from the side's own baseline", () => {
     expect(liftOverBaseline(RESTED_AT_HOME.winPct, REST_SPLIT_BASELINE.homeWinPct)).toBe(1.3);
-    expect(liftOverBaseline(RESTED_ON_ROAD.winPct, REST_SPLIT_BASELINE.roadWinPct)).toBe(2.3);
+    expect(liftOverBaseline(RESTED_ON_ROAD.winPct, REST_SPLIT_BASELINE.roadWinPct)).toBe(2.2);
   });
 
   it("keeps one decimal rather than leaking float error", () => {

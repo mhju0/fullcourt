@@ -47,8 +47,20 @@ export type RestAdvantageDisplay =
       text: string;
     };
 
+/**
+ * The gap as stored: two decimals, the precision of the fatigue scores themselves.
+ *
+ * One decimal used to round 0.46 up to "0.5" beside a NEUTRAL badge, and 1.95 up to "2.0"
+ * outside GAPS OF 2+. Every threshold reads the same two-decimal value, so the printed figure
+ * now always sits on the same side of a tier line as the badge beside it.
+ */
 export function formatRestAdvantageValue(value: number): string {
-  return Math.abs(value).toFixed(1);
+  return Math.abs(value).toFixed(2);
+}
+
+/** A fatigue score at its stored precision, so two printed scores difference to the printed gap. */
+export function formatFatigueScore(score: number): string {
+  return score.toFixed(2);
 }
 
 export function formatRestAdvantageDisplay(
@@ -114,8 +126,8 @@ export type RestAdvantageEvidence = {
    * team, the road baseline for a rested road team.
    *
    * Inseparable from `winPct` by construction: `sentence` always states both, so a truncated
-   * render cannot show one without the other. A 42.4% standing alone beside a coloured rest
-   * badge reads as an endorsement of a losing side; 42.4% against 40.1% does not.
+   * render cannot show one without the other. A 42.3% standing alone beside a coloured rest
+   * badge reads as an endorsement of a losing side; 42.3% against 40.1% does not.
    */
   baselinePct: number;
   /** `winPct − baselinePct`, signed. A historical difference, not a causal estimate. */
@@ -189,7 +201,7 @@ export function toEvidenceSource(
  * magnitude alone does not identify a class: `thresholds` and `overallWinRate` are built from
  * called games only (`isCalledSide`, i.e. the rested team was also at home), so keying off
  * `Math.abs(differential)` printed a home-rested win rate onto rested-visitor cards — the very
- * games this model declines, and which `/analysis` publishes as losing at 42.4%. Passing the
+ * games this model declines, and which `/analysis` publishes as losing at 42.3%. Passing the
  * pair together makes that mismatch unrepresentable.
  *
  * `thresholds` are CUMULATIVE (`|differential| >= threshold`), not disjoint bins, so a

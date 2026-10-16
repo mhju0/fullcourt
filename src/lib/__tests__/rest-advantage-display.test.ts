@@ -19,8 +19,8 @@ describe("formatRestAdvantageDisplay", () => {
     ).toMatchObject({
       kind: "team",
       teamAbbreviation: "LAL",
-      value: "3.2",
-      text: "LAL 3.2",
+      value: "3.20",
+      text: "LAL 3.20",
     });
   });
 
@@ -34,21 +34,21 @@ describe("formatRestAdvantageDisplay", () => {
     ).toMatchObject({
       kind: "team",
       teamAbbreviation: "BOS",
-      value: "3.2",
-      text: "BOS 3.2",
+      value: "3.20",
+      text: "BOS 3.20",
     });
   });
 
-  it("keeps one decimal for small non-zero values", () => {
+  it("prints the gap at its stored two decimals, so it never rounds across a tier line", () => {
     expect(
       formatRestAdvantageDisplay(
-        { differential: 0.3, advantageTeam: "away" },
+        { differential: 1.96, advantageTeam: "away" },
         "BOS",
         "LAL"
       )
     ).toMatchObject({
-      value: "0.3",
-      text: "LAL 0.3",
+      value: "1.96",
+      text: "LAL 1.96",
     });
   });
 
@@ -436,7 +436,7 @@ describe("formatRestAdvantageDisplay — projected provenance", () => {
     // Same reading, annotated — not a different reading.
     expect(projected.text).toBe(measured.text);
     expect(projected.kind === "team" && projected.teamAbbreviation).toBe("BOS");
-    expect(projected.kind === "team" && projected.value).toBe("3.2");
+    expect(projected.kind === "team" && projected.value).toBe("3.20");
   });
 
   it("labels a projected neutral too, because that is a different claim from a measured one", () => {

@@ -161,12 +161,26 @@ def load_birthdays() -> dict[str, date]:
 #:
 #: It matters more here than anywhere else on the site. Rest is counted from the games a
 #: player actually played, so his first game back in the bubble sits about 141 days after his
-#: last one before the suspension. Without this filter that single game would enter the
-#: "3+ days rest" arm of every player who appeared in it -- one of the cleanest-looking
-#: rested samples imaginable, produced by a global pause rather than by rest.
+#: last one before the suspension. The 30-day ceiling below now keeps that game out of the
+#: rested arm too; the filter still removes the bubble's own games, whose rest pattern came
+#: from a global pause rather than from a schedule.
 ABNORMAL_STRETCHES = [
     ("2019-20", "2020-07-30", "2020-10-11"),  # Orlando bubble
 ]
+
+
+#: The "2–29 days off" arm: 2 to 29 full days off, which is 3 to 30 days since the player's
+#: previous played game. The ceiling keeps out every season opener (a gap of months) and the
+#: first game back from a long absence: neither is the rest between games the page asks about,
+#: and together they were 6.3% of the arm's attempts. 29 also removes every absence of a month
+#: or more; tighter ceilings were measured and not taken, because choosing among them by
+#: the size of the effect they leave would be choosing by the result (D-89).
+RESTED_MIN_DAYS_SINCE = 3
+RESTED_MAX_DAYS_SINCE = 30
+
+
+def is_rested(r: dict) -> bool:
+    return r["rest"] is not None and RESTED_MIN_DAYS_SINCE <= r["rest"] <= RESTED_MAX_DAYS_SINCE
 
 
 def load_game_dates(conn) -> dict[str, date]:
@@ -294,7 +308,7 @@ def export_players(rows, name_of, birth, gdate, grand_rest: float, root: Path) -
         by_pid[r["pid"]].append(r)
 
     b2b = lambda r: r["rest"] == 1
-    rested = lambda r: r["rest"] is not None and r["rest"] >= 3
+    rested = is_rested
     busy = lambda r: r["load7"] >= 3
     cold = lambda r: r["load7"] <= 1
 
@@ -399,7 +413,7 @@ def main() -> int:
         lines.append(s)
 
     b2b = lambda r: r["rest"] == 1
-    rested = lambda r: r["rest"] is not None and r["rest"] >= 3
+    rested = is_rested
     busy = lambda r: r["load7"] >= 3
     cold = lambda r: r["load7"] <= 1
 
@@ -417,7 +431,7 @@ def main() -> int:
 
     # ---- 1. fatigue ---------------------------------------------------------
     fat = summarize(paired(rows, b2b, rested, args.min_fga))
-    emit("## 1. Fatigue — his own back-to-back vs 3+ days off")
+    emit("## 1. Fatigue — his own back-to-back vs 2–29 days off")
     emit()
     if fat["n"]:
         emit(f"**{fat['delta']:+.3f} pp** [{fat['lo']:+.3f}, {fat['hi']:+.3f}] "

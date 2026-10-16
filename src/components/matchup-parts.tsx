@@ -5,6 +5,8 @@ import Image from "next/image"
 import { TRAVEL_LOOKBACK_DAYS } from "@/lib/fatigue"
 import { readableTextOn } from "@/lib/nba-team-colors"
 import { NEUTRAL_REST_ADVANTAGE_THRESHOLD } from "@/lib/rest-advantage-evidence"
+import { formatRestAdvantageValue } from "@/lib/rest-advantage-display"
+import { formatDaysOff } from "@/lib/days-off"
 import { getTeamBranding, teamLogoUrl } from "@/lib/team-history"
 import { TRACK, TYPE } from "@/lib/terminal-styles"
 import type { FatigueInfo, GameResponse } from "@/types"
@@ -210,9 +212,10 @@ export function GameStatusRow({
  * sit beside this and produce the prefixed single strip the retired card drew; it went with the
  * card on 2026-08-11, along with the strip itself.
  *
- * Altitude and jet lag are away-only by construction: they are what the *visiting* team carries
- * into the building. Overtime is scoped per team rather than pooled as one game-level flag — a
- * team that played an OT game yesterday is the one paying for it, and pooling could not say so.
+ * Every flag is scoped per team, home included. A host can carry altitude (the night after
+ * visiting Denver or Utah, or a neutral site at elevation) and time zones (a neutral site abroad),
+ * so neither is away-only. Overtime is per team rather than one game-level flag: the team that
+ * played an OT game yesterday is the one paying for it.
  */
 export function teamGameFlags(game: GameResponse): { away: string[]; home: string[] } {
   const away: string[] = []
@@ -227,6 +230,7 @@ export function teamGameFlags(game: GameResponse): { away: string[]; home: strin
   if (game.homeFatigue?.is3In4) home.push("3IN4")
   if (game.homeFatigue?.is4In6) home.push("4IN6")
   if (game.homeFatigue?.altitudePenalty) home.push(game.homeFatigue.altitudeArenaLabel ? "ALT" : "ALT TRIP")
+  if (game.homeFatigue?.hasTimeZoneDisplacement) home.push("TIME ZONES")
   if (game.homeFatigue?.isOvertimePenalty) home.push("OT")
   return { away, home }
 }
@@ -268,6 +272,42 @@ function FatigueDetailRow({
       </span>
     </div>
   )
+}
+
+/**
+ * Rendered width of one flag chip at TYPE.micro mono: measured 2026-10-15 in Chrome at
+ * 10.0px + 6.6px per character ("B2B" 29.8, "TIME ZONES" 76.0, "+1" 23.2), with a 4px gap.
+ */
+const FLAG_CHIP_BASE_W = 10
+const FLAG_CHIP_CHAR_W = 6.6
+const FLAG_CHIP_GAP = 4
+
+function flagChipWidth(label: string): number {
+  return FLAG_CHIP_BASE_W + FLAG_CHIP_CHAR_W * label.length
+}
+
+/**
+ * The flags a line can show inline in a strip `stripWidth` wide, at most `maxInline`, keeping
+ * room for the `+N` chip that counts the rest. A fixed count overflowed: "ALT TRIP" beside
+ * "TIME ZONES" plus "+1" needs about 170px in a 104px strip.
+ */
+export function inlineFlags(
+  flags: string[],
+  stripWidth: number,
+  maxInline: number
+): { shown: string[]; hidden: number } {
+  const shown: string[] = []
+  let used = 0
+  for (const flag of flags) {
+    if (shown.length === maxInline) break
+    const next = used + (shown.length > 0 ? FLAG_CHIP_GAP : 0) + flagChipWidth(flag)
+    const remaining = flags.length - shown.length - 1
+    const overflow = remaining > 0 ? FLAG_CHIP_GAP + flagChipWidth(`+${remaining}`) : 0
+    if (next + overflow > stripWidth) break
+    shown.push(flag)
+    used = next
+  }
+  return { shown, hidden: flags.length - shown.length }
 }
 
 export function FatigueDetailColumn({
@@ -321,7 +361,7 @@ export function FatigueDetailColumn({
         v={Math.round(fatigue.travelDistanceMiles).toLocaleString()}
         highlight={travelHigh}
       />
-      <FatigueDetailRow k="DAYS REST" v={fatigue.daysRest === null ? "—" : `${fatigue.daysRest}D`} />
+      <FatigueDetailRow k="DAYS REST" v={formatDaysOff(fatigue.daysRest)} />
     </div>
   )
 }
@@ -362,7 +402,7 @@ export function RaBadge({
   }
   const isHomeAdv = restAdvantage.advantageTeam === "home"
   const abbr = isHomeAdv ? homeAbbr : awayAbbr
-  const diff = Math.abs(restAdvantage.differential).toFixed(1)
+  const diff = formatRestAdvantageValue(restAdvantage.differential)
   return (
     <span
       className="mono inline-flex items-center"

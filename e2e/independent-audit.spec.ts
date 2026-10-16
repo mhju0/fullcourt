@@ -26,8 +26,8 @@ test("schedule facts distinguish four nights and altitude carryover", async ({ r
   expect(oklahoma.homeFatigue.altitudePenalty).toBe(true);
   expect(oklahoma.homeFatigue.altitudeArenaLabel).toBeNull();
   await page.goto("/games?season=2025-26&date=2026-04-12");
-  await expect(page.getByText(/OKC.*after an altitude trip/)).toBeVisible();
-  await expect(page.getByText(/DET 3rd game in 4 nights/)).toHaveCount(0);
+  await expect(page.getByText(/Thunder.*after an altitude trip/)).toBeVisible();
+  await expect(page.getByText(/Pistons playing a 3rd game in 4 nights/)).toHaveCount(0);
 });
 
 test("mobile games keep season, month and date visible", async ({ page }) => {

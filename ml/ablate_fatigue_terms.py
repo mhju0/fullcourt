@@ -80,8 +80,12 @@ def assemble(df: pd.DataFrame, drop: str | None = None, neutral: float = 0.0) ->
 
 
 def calls(home: pd.DataFrame, away: pd.DataFrame, col: str):
-    """Apply the shipped rule: call only when the home side is the fresher one."""
-    return (away[col].to_numpy() - home[col].to_numpy()) >= NEUTRAL_THRESHOLD
+    """Apply the shipped rule: call only when the home side is the fresher one.
+
+    The gap is rounded to the scores' two decimals before the comparison, as
+    restAdvantageDifferential() does (D-87), so a stored 0.50 gap is a call.
+    """
+    return (away[col].to_numpy() - home[col].to_numpy()).round(2) >= NEUTRAL_THRESHOLD
 
 
 def rate(mask, won) -> tuple[int, float]:
@@ -104,7 +108,7 @@ def above_coin_flip(mask, won) -> int:
 def main() -> None:
     usecols = [
         "game_id", "date", "season", "game_type", "status",
-        "is_home", "won", "score", *COMPONENTS,
+        "is_home", "won", "score", "neutral_site", *COMPONENTS,
     ]
     df = pd.read_csv(CSV, usecols=usecols)
     log.info("rows read: %d", len(df))
@@ -116,6 +120,8 @@ def main() -> None:
     df = df[df["won"].notna()]
     season, lo, hi = BUBBLE
     df = df[~((df["season"] == season) & (df["date"] >= lo) & (df["date"] <= hi))]
+    # No home court at a neutral site, so the host is never called there (D-92).
+    df = df[~df["neutral_site"].astype(str).str.lower().isin({"1", "true"})]
 
     # Fidelity gate: the reconstruction must reproduce the exported score exactly, or the
     # ablations below are measuring an assembly that is not the shipped one.

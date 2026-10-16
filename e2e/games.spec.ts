@@ -91,7 +91,7 @@ test.describe("Games page", () => {
   // columns; the width decides how much shows, not a mode.
   test("the slate shows every column on a desktop and offers no view toggle", async ({ page }) => {
     await page.goto("/games?season=2024-25&date=2024-12-25&view=skim");
-    await expect(page.getByText("FATIGUE (0–10)")).toBeVisible();
+    await expect(page.getByText("FATIGUE SCORE", { exact: true })).toBeVisible();
     await expect(page.getByText("REST (DAYS)")).toBeVisible();
     await expect(page.getByText("GAP SIZE", { exact: true })).toBeVisible();
     await expect(page.getByRole("button", { name: /^(SKIM|DEEP DIVE)$/ })).toHaveCount(0);
@@ -125,7 +125,7 @@ test.describe("Games page", () => {
   });
 
   // Owner review, 2026-10-07: every game row is the same height. The schedule sentence
-  // ("BKN on a back-to-back.") added a line to some rows and PROJECTED added one to others;
+  // ("Nets on a back-to-back.") added a line to some rows and PROJECTED added one to others;
   // the sentence now lives in the expansion and PROJECTED shares the figure's line. An
   // upcoming game shows its tip time without an UPCOMING label.
   for (const date of ["2027-01-14", "2026-01-17"]) {

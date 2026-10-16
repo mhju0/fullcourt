@@ -313,6 +313,8 @@ async function main(): Promise<void> {
     if (!isNormallyPlayed(g.season, g.date)) continue;
     if (g.status !== "final") continue;
     if (g.homeScore === null || g.awayScore === null) continue;
+    // No home court at a neutral site, so no home or away side to compare (D-92).
+    if (g.neutralSite) continue;
 
     const home = stored.get(`${g.id}:${g.homeTeamId}`);
     const away = stored.get(`${g.id}:${g.awayTeamId}`);
@@ -385,11 +387,12 @@ async function main(): Promise<void> {
 
   // ── Self-check against the shipped query and reducer ────────────
   console.log("[measure] cross-checking against getCompletedGamesWithFatigue()...");
-  const shippedRows = await getCompletedGamesWithFatigue();
+  // The backtest drops neutral-site rows itself; the population never admits them.
+  const shippedRows = (await getCompletedGamesWithFatigue()).filter((r) => !r.neutralSite);
   const shipped = buildHistoricalBacktest(shippedRows);
 
   const decidable = population.filter((g) => g.restedSide !== "neutral");
-  const called = decidable.filter((g) => isCalledSide(g.restedSide));
+  const called = decidable.filter((g) => isCalledSide(g.restedSide, false));
   const uncalled = decidable.filter((g) => g.restedSide === "away");
   const neutral = population.filter((g) => g.restedSide === "neutral");
 
@@ -669,11 +672,19 @@ async function main(): Promise<void> {
     games: rows.length,
     homeWinPct: Math.round((rows.filter((g) => g.homeWon).length / rows.length) * 1000) / 10,
   });
+  const meanEdge = (rows: PopulationGame[]) =>
+    Math.round(mean(rows.map((g) => g.differential)) * 1000) / 1000;
   const facts = {
     population: population.length,
     bothTravelledIn: cut(bothTravelled),
     homeFlewFarther: cut(homeFurtherThanVisitor),
     homeTravelledInOnBackToBack: cut(homeTravelledB2b),
+    // Mean signed rest-advantage differential (away − home): how far the edge shrinks once the
+    // home side has travelled too. The method page prints the fall as a percentage.
+    meanRestEdge: {
+      allGames: meanEdge(population),
+      bothTravelledIn: meanEdge(bothTravelled),
+    },
   };
   await writeFile(FACTS_PATH, JSON.stringify(facts, null, 2) + "\n", "utf8");
   console.log(`[measure] wrote ${FACTS_PATH}`);

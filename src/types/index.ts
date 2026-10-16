@@ -8,31 +8,40 @@ export interface TeamInfo {
 export interface FatigueInfo {
   score: number;
   isBackToBack: boolean;
+  /** Tonight is the team's 3rd game across tonight and the prior 3 nights. */
   is3In4: boolean;
   /**
-   * Sum of modeled flight legs in the travel window (7 calendar days before this game,
-   * not counting game day), per `calculateFatigue` — not “days traveling.”
+   * Great-circle arena-to-arena miles for the trip into each game in the 7 days before tonight,
+   * including the trip to tonight's venue and the inbound leg to the first game in that window
+   * (which can have been flown earlier), per `calculateFatigue` — not “days traveling.”
    */
   travelDistanceMiles: number;
   altitudePenalty: boolean;
-  /** When altitude applies (away at DEN/UTA), human-readable arena context. */
+  /**
+   * Set when tonight's venue is at altitude for this team: a visitor at Denver or Utah, or either
+   * team at a neutral site at elevation (Mexico City). Null for the night-after carryover.
+   */
   altitudeArenaLabel: string | null;
-  /** Days since this team's previous game; null = season opener / no prior game. */
+  /** Full days off before this game (a back-to-back is 0); null = season opener / no prior game. */
   daysRest: number | null;
   /** Games in the 7 calendar days before this game (not counting this game). */
   gamesInLast7Days: number;
   /** Games in the 30 calendar days before this game (not counting this game). */
   gamesInLast30Days: number;
-  /** Fourth game within a rolling 6-calendar-day span in that window. */
+  /** Tonight is the team's 4th game across tonight and the prior 5 nights. */
   is4In6: boolean;
   /** Prior game went to overtime (extra fatigue in the model). */
   isOvertimePenalty: boolean;
   /**
-   * Consecutive away games including tonight when this team is away; 0 when playing at home
-   * or with no road streak into this game.
+   * Consecutive away games including tonight when this team is away (a neutral site is away for
+   * both teams); 0 when playing in its own arena or with no road streak into this game.
    */
   roadTripConsecutiveAway: number;
-  /** Tonight's game is on the road ≥2 time zones (≥26° longitude) from home. */
+  /**
+   * Tonight is away from the home arena (a neutral site counts for both teams), at least 2 hours
+   * of clock shift from it (real UTC offsets, DST-aware), and the team has not yet re-entrained,
+   * at about one night per zone.
+   */
   hasTimeZoneDisplacement: boolean;
 }
 
@@ -79,6 +88,12 @@ export interface GameResponse {
   projectedFatigue: boolean;
   /** First regular-season schedule game for each side, independent of fatigue availability. */
   seasonOpeners?: { home: boolean; away: boolean };
+  /**
+   * The city of a neutral-site game (London, Paris, Mexico City, Las Vegas, …), or null for a
+   * game in the home team's own arena. At a neutral site the model scores the nominal host as a
+   * road team (`currentGameIsHome: !neutral`, `fatigue.ts`), so the board must not label it HOME.
+   */
+  neutralCity: string | null;
 }
 
 /**
@@ -210,6 +225,7 @@ export interface TeamRecentResultGame {
 /** Full game card payload plus recent results for both teams. */
 export interface GameDetailResponse {
   game: GameResponse;
+  /** Each team's last 5 final games, whenever they were played. Not a calendar week. */
   homeRecentWeek: TeamRecentResultGame[];
   awayRecentWeek: TeamRecentResultGame[];
 }
@@ -393,18 +409,18 @@ export interface ScheduleDisparityTeam {
    * Season sum of the capped own-minus-opponent rest-days differential. Positive is favorable,
    * like every figure here.
    *
-   * Derived from game dates alone, so unlike every fatigue figure below it is defined for a
-   * season whose schedule is published but unplayed — which is why it is shipped: it is what
-   * lets the page rank 2026-27 in August instead of showing thirty blank rows. Capped at 5 days
-   * per side before differencing, justified by the model's own `FRESHNESS_PLATEAU_DAYS = 3`;
-   * uncapped, the All-Star break swamps the season total.
+   * Derived from game dates alone, so unlike every fatigue figure below it is defined as soon
+   * as a schedule is published, before any fatigue row is written. Capped at 5 days since the
+   * last game (four days off) per side before differencing, because uncapped, the All-Star
+   * break swamps the season total.
    */
   netRestEdge: number;
   /**
    * Counted games with a fatigue advantage ≥ the app's 0.5 call threshold.
    *
-   * **Null means not measured, not zero.** Fatigue is scored from games already played, so
-   * every fatigue figure on this row is null together for an unplayed season.
+   * **Null means not measured, not zero.** Every fatigue figure on this row is null together
+   * for a season with no fatigue rows yet. Unplayed games are scored from the published
+   * schedule (`isProjectedFatigue`), so a season counts as measured once those are written.
    */
   favorableGames: number | null;
   /** Counted games facing a fatigue disadvantage ≥ 0.5. Null when unmeasured. */
@@ -445,9 +461,15 @@ export interface ScheduleDisparityLeague {
    * Counted games that carried a fatigue pair, and so were genuinely compared.
    *
    * The denominator the page should quote beside the word "COMPARED". It diverges from
-   * `countedGames` exactly when it matters: an unplayed season has 1,184 counted and 0 measured.
+   * `countedGames` exactly when it matters: a season whose fatigue rows are not written yet
+   * has every game counted and none measured.
    */
   measuredGames: number;
+  /**
+   * Of `measuredGames`, the ones compared on projected fatigue: an earlier game in the season
+   * is still unplayed, so the score comes from the published schedule (`isProjectedFatigue`).
+   */
+  projectedGames: number;
 }
 
 export interface ScheduleDisparityResponse {

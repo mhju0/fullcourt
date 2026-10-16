@@ -29,6 +29,7 @@ function game(overrides: Partial<SeasonReportRow> & { gameId: number }): SeasonR
     awayTeamId: 2,
     homeScore: 100,
     awayScore: 90,
+    neutralSite: false,
     home: side(1),
     away: side(4),
     ...overrides,
@@ -53,6 +54,16 @@ describe("buildSeasonReport — the sign rule", () => {
 
     expect(report.overall.games).toBe(1);
     expect(report.overall.restedTeamWins).toBe(1);
+  });
+
+  it("keeps a neutral-site game out of the rested rate and the home rate (D-92)", () => {
+    const report = buildSeasonReport("2025-26", [
+      game({ gameId: 1 }),
+      game({ gameId: 2, date: "2025-10-22", neutralSite: true }),
+    ]);
+
+    expect(report.overall.games).toBe(1);
+    expect(report.homeRate.games).toBe(1);
   });
 
   it("counts a rested loss as a loss", () => {
@@ -191,6 +202,7 @@ function toEvidenceRow(row: SeasonReportRow, season: string): HistoricalGameEvid
     // Only called for rows both reducers accept, so the sides are present.
     homeFatigueScore: row.home!.fatigueScore,
     awayFatigueScore: row.away!.fatigueScore,
+    neutralSite: row.neutralSite,
   };
 }
 

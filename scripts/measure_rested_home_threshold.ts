@@ -9,7 +9,7 @@ async function main() {
   const perSeason = [...new Set(rows.map(row => row.season))].sort().map(season => {
     const all = rows.filter(row => row.season === season).sort((a, b) => a.date.localeCompare(b.date));
     const rested = all.filter(row => isCalledSide(classifyRestAdvantage(
-      Number(row.homeFatigueScore), Number(row.awayFatigueScore)).advantageTeam));
+      Number(row.homeFatigueScore), Number(row.awayFatigueScore)).advantageTeam, row.neutralSite));
     const thresholdDate = rested[99]?.date ?? null;
     return { season, firstEligibleGame: all[0].date, thresholdDate,
       elapsedDays: thresholdDate === null ? null :

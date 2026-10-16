@@ -1,9 +1,10 @@
-import type { FatigueInfo, GameResponse } from "@/types";
+import { getTeamBranding } from "@/lib/team-history";
+import type { FatigueInfo, GameResponse, TeamInfo } from "@/types";
 
 /**
  * The storyline line (2026-08-28 redesign, C4): one plain-English line naming what the
- * schedule did to this specific game — "DEN on a back-to-back and at altitude; LAL 4th
- * game in 6 nights." It renders in both slate densities, and ONLY when a team actually
+ * schedule did to this specific game — "Nuggets on a back-to-back and playing at altitude;
+ * Lakers playing a 4th game in 6 nights." It renders in both slate densities, and ONLY when a team actually
  * carries a story: silence on an ordinary game is what makes the line mean something,
  * and a line under all twelve games every night would be wallpaper.
  *
@@ -23,11 +24,11 @@ function teamClauses(fatigue: FatigueInfo | null): string[] {
 
   if (fatigue.isBackToBack) clauses.push("on a back-to-back");
   // 4-in-6 subsumes 3-in-4 — saying both counts the same nights twice.
-  if (fatigue.is4In6) clauses.push("4th game in 6 nights");
-  else if (fatigue.is3In4) clauses.push("3rd game in 4 nights");
+  if (fatigue.is4In6) clauses.push("playing a 4th game in 6 nights");
+  else if (fatigue.is3In4) clauses.push("playing a 3rd game in 4 nights");
   if (fatigue.altitudePenalty) clauses.push(fatigue.altitudeArenaLabel ? "playing at altitude" : "after an altitude trip");
   if (fatigue.roadTripConsecutiveAway >= 4)
-    clauses.push(`${ordinal(fatigue.roadTripConsecutiveAway)} straight road game`);
+    clauses.push(`playing a ${ordinal(fatigue.roadTripConsecutiveAway)} straight road game`);
   if (fatigue.isOvertimePenalty) clauses.push("coming off overtime");
   if (fatigue.hasTimeZoneDisplacement) clauses.push("2+ time zones from home");
 
@@ -48,23 +49,33 @@ function joinClauses(clauses: string[]): string {
   return `${clauses.slice(0, -1).join(", ")} and ${clauses[clauses.length - 1]}`;
 }
 
+/**
+ * The nickname the team played under that season ("Bucks", "SuperSonics"). The headline
+ * grammar has no verb, so a plural nickname reads where the city abbreviation did not.
+ */
+function teamName(team: TeamInfo, season: string): string {
+  return getTeamBranding(team.abbreviation, season, { name: team.name, city: team.city }).name;
+}
+
 export function buildGameStoryline(
-  game: Pick<GameResponse, "homeTeam" | "awayTeam" | "homeFatigue" | "awayFatigue" | "seasonOpeners">
+  game: Pick<GameResponse, "season" | "homeTeam" | "awayTeam" | "homeFatigue" | "awayFatigue" | "seasonOpeners">
 ): string | null {
   const away = teamClauses(game.awayFatigue);
   const home = teamClauses(game.homeFatigue);
+  const awayName = teamName(game.awayTeam, game.season);
+  const homeName = teamName(game.homeTeam, game.season);
 
   const parts: string[] = [];
   if (game.seasonOpeners?.away && game.seasonOpeners?.home) {
     parts.push("Season opener for both teams. No earlier regular-season game this season; preseason is not included");
   } else if (game.seasonOpeners?.away || game.seasonOpeners?.home) {
-    const team = game.seasonOpeners.away ? game.awayTeam : game.homeTeam;
-    parts.push(`${team.abbreviation} season opener. No earlier regular-season game this season; preseason is not included`);
+    const team = game.seasonOpeners.away ? awayName : homeName;
+    parts.push(`Season opener for the ${team}. No earlier regular-season game this season; preseason is not included`);
   }
-  if (game.seasonOpeners?.away && !game.awayFatigue) parts.push(`${game.awayTeam.abbreviation} fatigue data is unavailable`);
-  if (game.seasonOpeners?.home && !game.homeFatigue) parts.push(`${game.homeTeam.abbreviation} fatigue data is unavailable`);
-  if (away.length > 0) parts.push(`${game.awayTeam.abbreviation} ${joinClauses(away)}`);
-  if (home.length > 0) parts.push(`${game.homeTeam.abbreviation} ${joinClauses(home)}`);
+  if (game.seasonOpeners?.away && !game.awayFatigue) parts.push(`No fatigue data for the ${awayName}`);
+  if (game.seasonOpeners?.home && !game.homeFatigue) parts.push(`No fatigue data for the ${homeName}`);
+  if (away.length > 0) parts.push(`${awayName} ${joinClauses(away)}`);
+  if (home.length > 0) parts.push(`${homeName} ${joinClauses(home)}`);
 
   if (parts.length === 0) return null;
   return `${parts.join("; ")}.`;

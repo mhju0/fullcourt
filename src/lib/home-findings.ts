@@ -30,6 +30,7 @@ export function scheduleHomeFinding(data: ScheduleDisparityResponse) {
   return {
     season: data.season,
     measuredGames: data.league.measuredGames,
+    projectedGames: data.league.projectedGames,
     scheduledGames: data.scheduledGames,
     latestFinalDate: data.latestFinalDate,
     provisional: data.provisional,

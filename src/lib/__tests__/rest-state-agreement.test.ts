@@ -63,6 +63,7 @@ const seasonRows: SeasonReportRow[] = GAMES.map((g, i) => ({
   awayTeamId: g.awayTeamId,
   homeScore: 100,
   awayScore: 90,
+  neutralSite: false,
   home: g.homeFatigue === null ? null : side(g.homeFatigue),
   away: g.awayFatigue === null ? null : side(g.awayFatigue),
 }));

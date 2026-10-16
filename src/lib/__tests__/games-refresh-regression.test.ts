@@ -62,7 +62,7 @@ describe("Edges Ahead clock filtering", () => {
 });
 
 describe("schedule-backed opener explanation", () => {
-  const base = { awayTeam: { abbreviation: "BOS" }, homeTeam: { abbreviation: "DET" }, awayFatigue: null, homeFatigue: null };
+  const base = { season: "2026-27", awayTeam: { abbreviation: "BOS", name: "Celtics", city: "Boston" }, homeTeam: { abbreviation: "DET", name: "Pistons", city: "Detroit" }, awayFatigue: null, homeFatigue: null };
   it("explains both openers from metadata even when fatigue is missing", () => {
     expect(buildGameStoryline({ ...base, seasonOpeners: { away: true, home: true } } as unknown as GameResponse)).toContain("Season opener for both teams");
   });
@@ -71,9 +71,9 @@ describe("schedule-backed opener explanation", () => {
   });
   it("names only the side opening its season", () => {
     const storyline = buildGameStoryline({ ...base, seasonOpeners: { away: true, home: false } } as unknown as GameResponse);
-    expect(storyline).toContain("BOS season opener");
-    expect(storyline).toContain("BOS fatigue data is unavailable");
-    expect(storyline).not.toContain("DET season opener");
+    expect(storyline).toContain("Season opener for the Celtics");
+    expect(storyline).toContain("No fatigue data for the Celtics");
+    expect(storyline).not.toContain("Pistons");
   });
 });
 

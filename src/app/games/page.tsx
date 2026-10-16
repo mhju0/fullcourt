@@ -370,25 +370,22 @@ export default function GamesPage() {
   // the Realtime score overlay, none of which change the answer.
   const { avgRestAdv, highConfGames } = useMemo(() => {
     let sum = 0
-    let counted = 0
     let highConf = 0
     let measured = 0
     for (const g of slate.games) {
       if (g.restAdvantage === null) continue
       measured += 1
       const diff = Math.abs(g.restAdvantage.differential)
-      if (diff > 0) {
-        sum += diff
-        counted += 1
-      }
+      // An exact-zero game is a measured gap of 0, so it stays in the average.
+      sum += diff
       if (diff >= LARGE_GAP_THRESHOLD) highConf += 1
     }
     // An em dash, not "0.0" and not "0". A slate whose games carry no fatigue pair — every date
     // of a released-but-unplayed season — has no average to report, and printing zero states a
-    // measurement that was never taken. `counted === 0` with `measured > 0` is different and
-    // still prints 0.0: that is a real slate on which every game came out exactly even.
+    // measurement that was never taken. A slate on which every game came out exactly even is
+    // different and prints 0.0.
     return {
-      avgRestAdv: measured === 0 ? "—" : counted === 0 ? "0.0" : (sum / counted).toFixed(1),
+      avgRestAdv: measured === 0 ? "—" : (sum / measured).toFixed(1),
       highConfGames: measured === 0 ? "—" : String(highConf),
     }
   }, [slate.games])

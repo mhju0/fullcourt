@@ -29,6 +29,7 @@ import type { ExploreResult } from "@/lib/explore-games-machine"
 import { apiFetcher, errMsg } from "@/lib/fetcher"
 import { Button } from "@/components/ui/button"
 import { NBA_SEASONS } from "@/lib/nba-season"
+import { formerAbbreviations, getTeamBranding } from "@/lib/team-history"
 import { MIN_GAMES_FOR_INFERENCE } from "@/lib/season-report"
 import {
   BEYOND_CLAUSE,
@@ -41,6 +42,7 @@ import { LEAD, MONO_FONT_STACK, SPACE, termSelectClass, termSelectStyle, termCar
 import { DataTable } from "@/components/ui/data-table"
 import type { AnalysisResponse } from "@/types"
 import { signedNumber } from "@/lib/signed-number"
+import { formatFatigueScore, formatRestAdvantageValue } from "@/lib/rest-advantage-display"
 import { MessageCard } from "@/components/ui/message-card"
 import { StatTile } from "@/components/ui/stat-tile"
 
@@ -59,6 +61,11 @@ const exploreSelectStyle = termSelectStyle
 const EXPLORE_SELECT_CLASS = termSelectClass
 
 // ─── Section divider ──────────────────────────────────────────────
+
+/** The abbreviation the team played under that season: a 1995 Sonics game reads SEA, not OKC. */
+function seasonAbbr(currentAbbreviation: string, season: string): string {
+  return getTeamBranding(currentAbbreviation, season).abbreviation
+}
 
 function SectionDivider({ label, descriptor }: { label: string; descriptor?: string }) {
   return (
@@ -265,7 +272,7 @@ function SeasonWinRateTooltip({ active, payload }: TooltipContentProps) {
       </p>
       <p style={{ color: "var(--term-text-muted)", marginTop: SPACE.xs }}>WIN RATE: {d.winPct}%</p>
       <p style={{ color: "var(--term-text-muted)", marginTop: SPACE.xs }}>
-        {d.restedTeamWins.toLocaleString()} / {d.games.toLocaleString()} (RESTED TEAM WON)
+        {d.restedTeamWins.toLocaleString()}{"\u00a0/\u00a0"}{d.games.toLocaleString()} (RESTED TEAM WON)
       </p>
       <p style={{ color: "var(--term-text-muted)", marginTop: SPACE.xs }}>
         HOME TEAMS WON {d.baselinePct}% THAT SEASON
@@ -277,7 +284,7 @@ function SeasonWinRateTooltip({ active, payload }: TooltipContentProps) {
 // ─── RA threshold toggle options ──────────────────────────────────
 
 const RA_THRESHOLD_OPTIONS = [
-  { label: "All Games", value: 0 },
+  { label: "Any gap", value: 0 },
   { label: "RA ≥ 2", value: 2 },
   { label: "RA ≥ 3", value: 3 },
   { label: "RA ≥ 5", value: 5 },
@@ -700,7 +707,8 @@ function ExploreGames({
       />
       <SectionDivider label="EXPLORE GAMES" descriptor={`${total.toLocaleString()} TOTAL`} />
       <p className="mono mt-1" style={{ fontSize: 11, color: "var(--term-text-muted)", letterSpacing: TRACK.sub }}>
-          FILTER AND BROWSE INDIVIDUAL MATCHUPS · CLICK A ROW FOR DETAILS.
+          FILTER AND BROWSE INDIVIDUAL MATCHUPS · CLICK A ROW FOR DETAILS. BOTH VENUES: THE
+          ROWS INCLUDE RESTED VISITORS, WHICH THE RATES ABOVE LEAVE OUT.
       </p>
 
       {/* Filters */}
@@ -738,7 +746,11 @@ function ExploreGames({
             aria-label="Team filter"
           >
             <option value="">All Teams</option>
-            {NBA_TEAMS.map((t) => <option key={t} value={t}>{t}</option>)}
+            {NBA_TEAMS.map((t) => {
+              // The rows print the code a team played under that season, so the option names them.
+              const former = formerAbbreviations(t)
+              return <option key={t} value={t}>{former.length ? `${t} (incl. ${former.join(", ")})` : t}</option>
+            })}
           </select>
         </label>
 
@@ -797,12 +809,12 @@ function ExploreGames({
           },
           style: { background: i % 2 === 1 ? "var(--term-bg)" : "var(--term-surface)", cursor: "pointer" },
           className: "hover:bg-[var(--term-surface-2)] focus-visible:bg-[var(--term-surface-2)]",
-          "aria-label": `Open details: ${g.awayTeamAbbreviation} at ${g.homeTeamAbbreviation}, ${g.date}`,
+          "aria-label": `Open details: ${seasonAbbr(g.awayTeamAbbreviation, g.season)} at ${seasonAbbr(g.homeTeamAbbreviation, g.season)}, ${g.date}`,
         })}
         columns={[
           {
             label: "Date",
-            style: { color: "var(--term-text-muted)" },
+            style: { color: "var(--term-text-muted)", whiteSpace: "nowrap" },
             cell: (g) => format(new Date(g.date + "T00:00:00"), "yyyy-MM-dd"),
           },
           {
@@ -810,9 +822,9 @@ function ExploreGames({
             style: { color: "var(--term-text)", fontWeight: 600 },
             cell: (g) => (
               <>
-                {g.awayTeamAbbreviation}
+                {seasonAbbr(g.awayTeamAbbreviation, g.season)}
                 <span style={{ margin: "0 4px", color: "var(--term-hairline)" }}>@</span>
-                {g.homeTeamAbbreviation}
+                {seasonAbbr(g.homeTeamAbbreviation, g.season)}
               </>
             ),
           },
@@ -822,7 +834,7 @@ function ExploreGames({
             numeric: true,
             className: "hidden sm:table-cell",
             style: { color: "var(--term-text)" },
-            cell: (g) => g.homeFatigueScore.toFixed(1),
+            cell: (g) => formatFatigueScore(g.homeFatigueScore),
           },
           {
             label: "Away Fat.",
@@ -830,7 +842,7 @@ function ExploreGames({
             numeric: true,
             className: "hidden sm:table-cell",
             style: { color: "var(--term-text)" },
-            cell: (g) => g.awayFatigueScore.toFixed(1),
+            cell: (g) => formatFatigueScore(g.awayFatigueScore),
           },
           {
             label: "RA",
@@ -851,8 +863,8 @@ function ExploreGames({
                   letterSpacing: TRACK.sub,
                 }}
               >
-                {g.advantageTeam === "home" ? g.homeTeamAbbreviation : g.awayTeamAbbreviation} +
-                {g.restAdvantageDifferential.toFixed(1)}
+                {seasonAbbr(g.advantageTeam === "home" ? g.homeTeamAbbreviation : g.awayTeamAbbreviation, g.season)} +
+                {formatRestAdvantageValue(g.restAdvantageDifferential)}
               </span>
             ),
           },
@@ -920,7 +932,7 @@ function ExploreGames({
           <p data-testid="explore-range">
             {loading
               ? "LOADING…"
-              : `SHOWING ${start.toLocaleString()}–${end.toLocaleString()} OF ${total.toLocaleString()}`}
+              : <>SHOWING <span className="whitespace-nowrap">{start.toLocaleString()}–{end.toLocaleString()}</span> OF {total.toLocaleString()}</>}
           </p>
           <div className="flex items-center gap-1">
             <button
@@ -932,7 +944,7 @@ function ExploreGames({
             >
               <ChevronLeft className="size-4" />
             </button>
-            <span className="mono px-2 tabular-nums" style={{ fontSize: 12, color: "var(--term-text)", fontWeight: 600 }}>
+            <span className="mono whitespace-nowrap px-2 tabular-nums" style={{ fontSize: 12, color: "var(--term-text)", fontWeight: 600 }}>
               {page} / {totalPages || 1}
             </span>
             <button
@@ -1196,7 +1208,7 @@ export function AnalysisContent({ asOf }: { asOf?: DataAsOf | null }) {
             </span>{" "}
             percentage points above that baseline. This is an association, not a causal estimate.{" "}
             {WIDER_GAP_CLAUSE[claims.reading.ra5.relationToAnyGap]} at{" "}
-            <span className="font-semibold text-[var(--term-text)]">
+            <span className="whitespace-nowrap font-semibold text-[var(--term-text)]">
               RA ≥ {claims.reading.ra5.threshold}
             </span>{" "}
             the rested team wins{" "}
@@ -1208,8 +1220,8 @@ export function AnalysisContent({ asOf }: { asOf?: DataAsOf | null }) {
             <span className="mono tabular-nums">{claims.reading.ra5.games.toLocaleString()}</span> games.
             {claims.reading.beyond && (
               <>
-                {" "}{BEYOND_CLAUSE[claims.reading.beyond.relation].lead} RA ≥{" "}
-                {claims.reading.beyond.threshold} sits at{" "}
+                {" "}{BEYOND_CLAUSE[claims.reading.beyond.relation].lead}{" "}
+                <span className="whitespace-nowrap">RA ≥ {claims.reading.beyond.threshold}</span> sits at{" "}
                 <span className="mono tabular-nums">{claims.reading.beyond.winPct}%</span> on{" "}
                 <span className="mono tabular-nums">{claims.reading.beyond.games.toLocaleString()}</span> games,
                 {" "}{BEYOND_CLAUSE[claims.reading.beyond.relation].tail}
