@@ -207,7 +207,7 @@ export function teamGameFlags(game: GameResponse): { away: string[]; home: strin
   return { away, home }
 }
 
-/** What each flag chip means, in the words the hover card prints beside it. */
+/** What each flag chip means, in the words the board guide prints beside it. */
 export const FLAG_MEANINGS: Readonly<Record<string, string>> = Object.freeze({
   B2B: "Played the night before",
   "3IN4": "Third game in four nights",

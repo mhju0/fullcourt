@@ -5,17 +5,14 @@ import {
   useEffect,
   useMemo,
   useRef,
-  useState,
   type KeyboardEvent,
 } from "react";
-import { createPortal } from "react-dom";
 import { useNow } from "@/hooks/useNow";
 import { usePageQuery } from "@/hooks/useSeasonUrl";
 import { ChevronDown } from "lucide-react";
 import { FatigueBar, type FatigueBarTone } from "@/components/fatigue-bar";
 import {
   BigRestEdgeBadge,
-  FLAG_MEANINGS,
   FatigueDetailColumn,
   TeamLogo,
   inlineFlags,
@@ -271,88 +268,22 @@ export function FlagChip({
   );
 }
 
-/**
- * Every flag a line carries, spelled out, for a pointer resting on that line. Pointer only: the
- * row is one button whose expansion already lists the schedule terms, and a phone row has no
- * fatigue column to hover. Fixed to the viewport through a portal, because the table's scroll
- * region would clip anything positioned inside it.
- */
-function FlagCard({ team, flags, at }: { team: string; flags: string[]; at: DOMRect }) {
-  return createPortal(
-    <div
-      aria-hidden
-      className="mono pointer-events-none"
-      style={{
-        position: "fixed",
-        top: at.bottom + 6,
-        left: at.left,
-        zIndex: 50,
-        background: "var(--term-surface)",
-        border: "1px solid var(--term-border)",
-        borderRadius: "var(--term-radius)",
-        boxShadow: "0 4px 12px rgb(0 0 0 / 0.08)",
-        padding: `${SPACE.sm}px ${SPACE.md}px`,
-        fontSize: 12,
-        color: "var(--term-text)",
-      }}
-    >
-      <p
-        style={{
-          fontSize: TYPE.micro,
-          fontWeight: 700,
-          letterSpacing: TRACK.label,
-          color: "var(--term-text-muted)",
-          marginBottom: SPACE.sm,
-        }}
-      >
-        {team.toUpperCase()}
-      </p>
-      <dl className="grid gap-x-3 gap-y-1" style={{ gridTemplateColumns: "auto auto" }}>
-        {flags.map((flag) => (
-          <div key={flag} className="contents">
-            <dt>
-              <FlagChip label={flag} />
-            </dt>
-            <dd className="whitespace-nowrap">{FLAG_MEANINGS[flag] ?? flag}</dd>
-          </div>
-        ))}
-      </dl>
-    </div>,
-    document.body,
-  );
-}
-
 function FatigueLine({
-  team,
   score,
   tone,
   flags,
 }: {
-  team: string;
   score: number | null;
   tone: FatigueBarTone;
   flags: string[];
 }) {
   const { shown, hidden } = inlineFlags(flags, FLAG_STRIP_W, MAX_INLINE_FLAGS);
-  const [hoverAt, setHoverAt] = useState<DOMRect | null>(null);
-  // The card is fixed to the viewport, so a scroll would leave it behind the line it names.
-  useEffect(() => {
-    if (!hoverAt) return;
-    const close = () => setHoverAt(null);
-    window.addEventListener("scroll", close, { capture: true, passive: true });
-    return () => window.removeEventListener("scroll", close, { capture: true });
-  }, [hoverAt]);
 
   return (
     <div
       className="flex items-center gap-2"
       style={{ height: TEAM_LINE_H }}
-      onPointerEnter={(e) => {
-        if (e.pointerType === "mouse" && flags.length > 0) setHoverAt(e.currentTarget.getBoundingClientRect());
-      }}
-      onPointerLeave={() => setHoverAt(null)}
     >
-      {hoverAt && <FlagCard team={team} flags={flags} at={hoverAt} />}
       {/* The score leads, so it starts on the FATIGUE SCORE label's rail; the bar after it is
           the score drawn, not a second figure. */}
       <span
@@ -701,13 +632,11 @@ function GameRow({
 
         <div className="fc-game-extra flex flex-col gap-1">
             <FatigueLine
-              team={awayBrand.name}
               score={game.awayFatigue?.score ?? null}
               tone={tones.away}
               flags={flags.away}
             />
             <FatigueLine
-              team={homeBrand.name}
               score={game.homeFatigue?.score ?? null}
               tone={tones.home}
               flags={flags.home}
