@@ -48,19 +48,34 @@ export type RestAdvantageDisplay =
     };
 
 /**
- * The gap as stored: two decimals, the precision of the fatigue scores themselves.
+ * One decimal, cut rather than rounded: 2.96 prints 2.9, 3.09 prints 3.0 (D-98). Display only;
+ * every comparison still reads the two-decimal value.
  *
- * One decimal used to round 0.46 up to "0.5" beside a NEUTRAL badge, and 1.95 up to "2.0"
- * outside GAPS OF 2+. Every threshold reads the same two-decimal value, so the printed figure
- * now always sits on the same side of a tier line as the badge beside it.
+ * Cutting is what keeps a printed figure on the same side of every line as its label. Each line
+ * (EVEN under 0.5, BIG REST EDGE at 3) sits on a tenth, and a value is at or above a tenth exactly
+ * when its cut is. Rounding put 0.46 beside EVEN as "0.5" and 2.96 beside no badge as "3.0", 983
+ * games in all, which is why D-87 printed two decimals until the owner chose this.
+ *
+ * The epsilon absorbs float error in an exact tenth (`0.3 * 10` is fine, but a computed 2.9 can
+ * land a hair under), without lifting any real hundredth.
  */
-export function formatRestAdvantageValue(value: number): string {
-  return Math.abs(value).toFixed(2);
+export function cutToTenths(value: number): string {
+  const tenths = Math.floor(Math.abs(value) * 10 + 1e-9) / 10;
+  return `${value < 0 && tenths > 0 ? "-" : ""}${tenths.toFixed(1)}`;
 }
 
-/** A fatigue score at its stored precision, so two printed scores difference to the printed gap. */
+/** The gap without its sign; the team name beside it carries the direction. */
+export function formatRestAdvantageValue(value: number): string {
+  return cutToTenths(Math.abs(value));
+}
+
+/**
+ * A fatigue score, cut to one decimal like the gap. The two printed scores can differ from the
+ * printed gap by 0.1, because each is cut separately (measured 2026-10-16: 20,889 of 48,431
+ * games); the owner accepted that to keep every label in agreement with its figure.
+ */
 export function formatFatigueScore(score: number): string {
-  return score.toFixed(2);
+  return cutToTenths(score);
 }
 
 export function formatRestAdvantageDisplay(

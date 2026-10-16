@@ -3,6 +3,7 @@
 import { useMemo, useRef, useState } from "react"
 import useSWR from "swr"
 import { apiFetcher } from "@/lib/fetcher"
+import { formatRestAdvantageValue } from "@/lib/rest-advantage-display"
 import type { GameDateCount } from "@/types"
 import { CalendarDays, ChevronLeft, ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -385,7 +386,7 @@ export default function GamesPage() {
     // measurement that was never taken. A slate on which every game came out exactly even is
     // different and prints 0.0.
     return {
-      avgRestAdv: measured === 0 ? "—" : (sum / measured).toFixed(1),
+      avgRestAdv: measured === 0 ? "—" : formatRestAdvantageValue(sum / measured),
       bigEdgeGames: measured === 0 ? "—" : String(bigEdges),
     }
   }, [slate.games])

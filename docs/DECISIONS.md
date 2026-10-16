@@ -1193,7 +1193,7 @@ verb ("playing a 4th game in 6 nights") so a nickname reads as a sentence. Owner
 bands, most likely injury returns. Schedule Edge's rest-day cap still says "days off" over
 a days-since count — left for the owner's site-wide audit.
 
-## D-87 — The rest gap is compared and shown at two decimals (2026-10-15)
+## D-87 — The rest gap is compared and shown at two decimals (2026-10-15; display revised by D-98)
 
 Reverses D-13. Fatigue scores are stored to two decimals, but the gap was a bare float
 subtraction, so 69 games whose stored gap sat exactly on a threshold computed just below it
@@ -1355,3 +1355,23 @@ and during opening week, and a freeze would hold all of it. `main` takes changes
 through the `verify` check and the owner's approval of each merge. The live-season checklist in
 `LAUNCH_DAY.md` still applies to the first completed slate; it is a verification, no longer the
 end of a freeze. Dependabot #131 and #128, held for the freeze, can be merged on their own checks.
+
+## D-98 — Fatigue scores and rest gaps print at one decimal, cut rather than rounded (2026-10-16)
+
+Revises the display half of D-87; the comparison half stands. The owner wanted a smaller, cleaner
+figure ("X.Y, not X.YZ") with the calculation left alone. Nothing in the calculation changes: the
+model rounds each score to two decimals when it computes it (`src/lib/fatigue.ts`), the gap is
+rounded to two decimals only to remove float error (D-87), and every threshold, badge, backtest
+bucket and published rate reads those values. Only the printed figure changes, through
+`cutToTenths()` in `src/lib/rest-advantage-display.ts`, on every page that prints a fatigue score
+or a rest gap.
+
+Cut, not rounded, because each line the site draws (EVEN under 0.5, BIG REST EDGE at 3) is a tenth,
+and a value is at or above a tenth exactly when its cut is. Measured on 2026-10-16 over 48,431
+regular-season games: cutting puts no figure on the wrong side of a label; rounding puts 983 there
+(749 "EVEN 0.5" rows and 234 rested-home rows printing 3.0 with no BIG REST EDGE), the D-87 problem
+again. The cost the owner accepted: because the two scores and the gap are cut separately, the
+printed scores differ from the printed gap by 0.1 in 20,889 of those games (rounding: 11,647), and
+a cut figure reads up to 0.09 low. The slate's AVG REST GAP tile, which was rounded, is cut too, so
+the board has one rule. Other statistics (correlations, expected wins, percentages) keep their own
+precision.

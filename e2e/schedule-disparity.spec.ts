@@ -150,12 +150,12 @@ test.describe("Schedule Disparity page", () => {
 
 test("schedule owns workload and offers exact weekly values", async ({ page }) => {
   await page.goto("/schedule?season=2024-25");
-  await page.getByText("Show travel and workload", { exact: true }).click();
+  await page.locator("summary", { hasText: "Show travel and workload" }).click();
   await expect(page.getByTestId("schedule-tax-row")).toHaveCount(30);
   await expect(page.getByTestId("fatigue-calendar")).toBeVisible();
   // The readout opens on the season's peak week and the step buttons walk from there.
   const readout = page.getByTestId("fatigue-week-readout");
-  await expect(readout).toHaveText(/^Week of [A-Z][a-z]{2} \d+, \d{4} · \d\.\d{2} · \d+ games$/);
+  await expect(readout).toHaveText(/^Week of [A-Z][a-z]{2} \d+, \d{4} · \d+\.\d · \d+ games$/);
   const before = await readout.textContent();
   await page.getByRole("button", { name: "Previous week" }).click();
   await expect(readout).not.toHaveText(before ?? "");
