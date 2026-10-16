@@ -971,7 +971,7 @@ five open choices after seeing each one before and after.
 Not covered: the band and table treatment also reach Home Court, which uses the same section
 class and was checked only by screenshot. None of this has been seen on a physical phone.
 
-### D-80 · Change freeze from 2026-10-17 until the first slate is verified — ACTIVE
+### D-80 · Change freeze from 2026-10-17 until the first slate is verified — WITHDRAWN 2026-10-16 (D-97)
 
 The owner asked on 2026-10-10 for a freeze date before the first game of 2026-27. The first
 game is BOS at DET on 2026-10-20 at 3:00 PM ET; the stored schedule and ESPN agree.
@@ -1347,3 +1347,11 @@ every published rate against the venue baseline, scoped to this legend.
 The refresh link became the owner's mock C: "Updated" with the receipt time beside a 32px outline
 icon button in the heading row, which also absorbed the "View fetched at … (your time)" line under
 the table.
+
+## D-97 — The launch change freeze is withdrawn (2026-10-16)
+
+The owner withdrew D-80 the day before it would have started: there is still work to ship before
+and during opening week, and a freeze would hold all of it. `main` takes changes as before,
+through the `verify` check and the owner's approval of each merge. The live-season checklist in
+`LAUNCH_DAY.md` still applies to the first completed slate; it is a verification, no longer the
+end of a freeze. Dependabot #131 and #128, held for the freeze, can be merged on their own checks.

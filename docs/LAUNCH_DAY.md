@@ -3,8 +3,8 @@
 Use when completed games resume. The calendar and available feed data determine the date;
 do not treat an old seeded schedule snapshot as a current announcement.
 
-A change freeze covers this period: from 2026-10-17 until the first completed slate passes the
-checklist below ([D-80](DECISIONS.md)).
+There is no change freeze around the first slate: D-80 set one and the owner withdrew it on
+2026-10-16 ([D-97](DECISIONS.md)). Run the checklist below on the first completed slate.
 
 ## What must be demonstrated
 
