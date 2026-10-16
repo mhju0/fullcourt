@@ -62,6 +62,7 @@ import type {
   ShotQualityCell,
   ShotQualityModelValues,
   TeamRecentResultGame,
+  TeamScheduleGame,
   UpcomingGameWithRA,
 } from "@/types";
 
@@ -373,6 +374,57 @@ async function toGameResponses(rows: GameFatigueJoinRow[]): Promise<GameResponse
 export async function getGamesByDate(date: string): Promise<GameResponse[]> {
   const rows = await selectGamesWithFatigue(publishableGames(eq(games.date, date)));
   return toGameResponses(rows);
+}
+
+/**
+ * One team's regular season, every game the board would publish, in slate order.
+ *
+ * The board's own reader filtered to one team, so a game shows the same rest advantage on both
+ * pages. Only the two scores are read from each fatigue row: the schedule shows the gap, not the
+ * flags, and the density flags would cost a lookup per date.
+ */
+export async function getTeamSeasonSchedule(
+  season: string,
+  abbreviation: string
+): Promise<TeamScheduleGame[]> {
+  const [team] = await db
+    .select({ id: teams.id })
+    .from(teams)
+    .where(eq(teams.abbreviation, abbreviation));
+  if (!team) return [];
+
+  const [rows, firstUnplayed] = await Promise.all([
+    selectGamesWithFatigue(
+      publishableGames(
+        eq(games.season, season),
+        or(eq(games.homeTeamId, team.id), eq(games.awayTeamId, team.id))
+      )
+    ),
+    getFirstUnplayedDate(season),
+  ]);
+
+  return rows.map((row) => {
+    const isHome = row.homeTeamId === team.id;
+    const home = readFatigueSide(row, "home").score;
+    const away = readFatigueSide(row, "away").score;
+    const date = String(row.date);
+    return {
+      id: row.id,
+      date,
+      tipOffEt: formatEasternTipTime(row.tipOffUtc),
+      tipOffUtc: row.tipOffUtc ? new Date(row.tipOffUtc).toISOString() : null,
+      status: row.status,
+      isHome,
+      neutralCity: row.neutralSite ? row.neutralVenueCity : null,
+      opponent: isHome
+        ? { id: row.awayTeamId, name: row.awayTeamName, abbreviation: row.awayTeamAbbreviation, city: row.awayTeamCity }
+        : { id: row.homeTeamId, name: row.homeTeamName, abbreviation: row.homeTeamAbbreviation, city: row.homeTeamCity },
+      teamScore: isHome ? row.homeScore : row.awayScore,
+      opponentScore: isHome ? row.awayScore : row.homeScore,
+      restAdvantage: home === null || away === null ? null : classifyRestAdvantage(home, away),
+      projectedFatigue: isProjectedFatigue(date, firstUnplayed),
+    };
+  });
 }
 
 /**

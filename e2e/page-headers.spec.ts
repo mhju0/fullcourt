@@ -19,6 +19,7 @@ const ROUTES = [
   "/how-it-was-built",
   "/explore",
   "/games",
+  "/games/team",
   "/data-status",
   "/privacy",
   "/season",

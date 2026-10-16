@@ -50,6 +50,27 @@ export interface RestAdvantage {
   advantageTeam: "home" | "away" | "neutral";
 }
 
+/**
+ * One game in a team's season (API: GET /api/games/team), seen from that team's side.
+ * `restAdvantage` stays home-relative, exactly as on the board, so the BIG REST EDGE rule reads
+ * it unchanged; the page turns it to the team's side for display.
+ */
+export interface TeamScheduleGame {
+  id: number;
+  date: string;
+  tipOffEt: string | null;
+  /** ISO instant, so the page can mark a game LIVE or PENDING on the board's clock. */
+  tipOffUtc: string | null;
+  status: string;
+  isHome: boolean;
+  neutralCity: string | null;
+  opponent: TeamInfo;
+  teamScore: number | null;
+  opponentScore: number | null;
+  restAdvantage: RestAdvantage | null;
+  projectedFatigue: boolean;
+}
+
 /** One calendar day in a season with regular-season game count (API: GET /api/games/dates). */
 export interface GameDateCount {
   date: string;
