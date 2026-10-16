@@ -304,7 +304,10 @@ export interface FatigueResult {
   isThreeInFour: boolean;
   /** This game is the team's 4th across tonight and the prior 5 nights. */
   isFourInSix: boolean;
-  /** Tonight's game is on the road ≥2 hours of clock shift from the home arena. */
+  /**
+   * Tonight is away from the home arena (a neutral site counts for both teams), at least 2 hours
+   * of clock shift from it, and the team has not yet re-entrained (`displaced: remaining > 0`).
+   */
   hasTimeZoneDisplacement: boolean;
   /** What the score was measured from, before the ratified constants weighted it. */
   features: FatigueFeatures;

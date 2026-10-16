@@ -93,6 +93,15 @@ negative, bounded at ±10 percentage points; uncertain estimates stay muted. Off
 blue for missed calls and gray for incorrect whistles, with direct text labels. Color never
 replaces the number, sign, category, or uncertainty text.
 
+Line breaks (2026-10-16 audit). `globals.css` sets `text-wrap: pretty` on running text (`p`,
+`li`, `dd`, `td`, `figcaption`) and `balance` on headings, `th` and `summary`, so a last line
+does not hold one word or a lone arrow. Chrome breaks after a hyphen that precedes a digit, so a
+season, an ISO date or a "3-in-4" needs `nowrap`; an operator needs a no-break space to the
+operand after it. `keepTogether()` (`src/components/ui/keep-together.tsx`) does both for string
+children; `Prose`, `Note`, `LimitList`, `DataTable` headers and the Data Status values already
+apply it. Elsewhere, write a number and its unit with U+00A0 (`61.2 pp`), keep a season
+column `nowrap`, and keep a table header to two lines on a phone.
+
 Games exposes Season → Month → Date selection, and none of it scrolls sideways (D-78). From `sm`
 the month buttons and date chips wrap, so a whole month shows at once. Below `sm` the page shows
 one Sunday-to-Saturday week of seven 44px cells, with days that have no games at a count of 0;
