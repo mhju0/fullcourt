@@ -461,6 +461,21 @@
     text-wrap: balance;
   }
 
+  /* Running text keeps its last line from holding one word or a lone arrow; headers and
+     disclosure titles even their lines, so a two-line label reads as one label. */
+  p,
+  li,
+  dd,
+  td,
+  figcaption {
+    text-wrap: pretty;
+  }
+
+  th,
+  summary {
+    text-wrap: balance;
+  }
+
   html, body {
     background: var(--term-bg);
   }

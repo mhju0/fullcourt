@@ -495,7 +495,7 @@ export function ShotQualityContent() {
   }, [cells])
 
   const fmtEfg = (v: number): string => `${(v * 100).toFixed(1)}% eFG`
-  const fmtDiff = (v: number): string => `${signedNumber(v * 100, 1)} pp`
+  const fmtDiff = (v: number): string => `${signedNumber(v * 100, 1)}\u00a0pp`
 
   const seqValue = (which: "baseline" | "gbm") => (c: ShotQualityCell): number | null =>
     c[which]?.expectedEfg ?? null

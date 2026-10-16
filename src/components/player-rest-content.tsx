@@ -5,6 +5,7 @@ import { Fragment, useCallback, useMemo } from "react";
 import { usePageQuery } from "@/hooks/useSeasonUrl";
 import { ZeroRestWorkload } from "@/components/zero-rest-workload";
 import useSWR from "swr";
+import { KeepTogether } from "@/components/ui/keep-together";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   buildRows,
@@ -562,7 +563,7 @@ export function PlayerRestContent() {
         </div>
       </div>
 
-      <p className={styles.readingKey}>Shooting rate (eFG%) gives extra credit for threes. + means higher with more rest; − means lower. pp = percentage points. These comparisons do not isolate the effect of rest.</p>
+      <p className={styles.readingKey}><KeepTogether>Shooting rate (eFG%) gives extra credit for threes. + means higher with more rest; − means lower. pp = percentage points. These comparisons do not isolate the effect of rest.</KeepTogether></p>
       <details className="fc-disclosure">
         <summary>Rest definitions and uncertainty</summary>
         <p>No rest means played yesterday. 2–29 days off means two to 29 full days between the player&apos;s appearances, including games the player sat out; season openers and returns from longer absences are left out. The difference is 2–29 days off minus no rest, in percentage points.</p>
