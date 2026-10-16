@@ -214,7 +214,7 @@ export const FLAG_MEANINGS: Readonly<Record<string, string>> = Object.freeze({
   "4IN6": "Fourth game in six nights",
   ALT: "Tonight's arena is at altitude",
   "ALT TRIP": "The night after a game at altitude",
-  "TIME ZONES": "Two or more time zones from home, not yet adjusted",
+  "TIME ZONES": "Traveled 2+ time zones from home; body clock not yet adjusted",
   OT: "Last game went to overtime",
 })
 
