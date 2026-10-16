@@ -31,7 +31,7 @@ export function HomeContent({ findings }: { findings: HomeFindings }) {
           <h2 id="rest-finding">Widest rest gaps<span className="sr-only"> · </span><br />historical home teams</h2>
           {historical ? <>
             <p className={`${styles.big} ${historical.edgePp < 0 ? styles.tired : styles.rested}`} data-testid="home-rest-edge">
-              {signedNumber(historical.edgePp, 1)}<span> pp</span>
+              {signedNumber(historical.edgePp, 1)}<span>{"\u00a0"}pp</span>
             </p>
             <p>Percentage-point difference from the home baseline in {historical.games.toLocaleString()} games with the widest rest gaps (a rest-advantage gap of 7 or more).</p>
             {historical.latestEvidenceDate ? <p className={styles.metadata}>Rest evidence through {historical.latestEvidenceDate}</p> : null}
@@ -67,7 +67,7 @@ export function HomeContent({ findings }: { findings: HomeFindings }) {
           <p className={styles.eyebrow}>The players · shooting by rest</p>
           <h2>Does a fresh player shoot better?</h2>
           <p>Compare no-rest shooting with two to 29 days off, with attempts beside every rate. A large single-season gap can still be uncertain.</p>
-          <p>{shootingCoverage ? `Regular-season player coverage: ${shootingCoverage}. ` : "Player coverage is unavailable. "}Career estimates pool attempts and shrink uncertain differences.</p>
+          <p>{shootingCoverage ? <>Regular-season player coverage: <span className="whitespace-nowrap">{shootingCoverage}</span>. </> : "Player coverage is unavailable. "}Career estimates pool attempts and shrink uncertain differences.</p>
           <TransitionLink href="/shooting" className={styles.textLink}>Look up a player <span aria-hidden="true">→</span></TransitionLink>
         </article>
       </section>
