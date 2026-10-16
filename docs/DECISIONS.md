@@ -1395,3 +1395,12 @@ the weekday's length changed. They now sit at the right of the DATE label's line
 rule, and the long date moved into the Matchups heading. The phone keeps its week strip and
 week arrows.
 
+Amended the same day. Mid-season, a final shows its result where the time was ("W 116–89"),
+as ESPN does, and a game that has tipped reads LIVE then PENDING on the board's clock. A phone,
+which has no TIME column, puts the result under the date. The league released 80 games per team
+for 2026-27 and leaves two open until the NBA Cup group stage ends, with no dates announced
+(only the gap between the Dec 4–5 quarterfinals and the Dec 11 final). Those show as two rows
+reading NBA CUP GAME · TBD, dated "Early Dec", with no opponent, time or gap, placed after the
+team's last game on or before the quarterfinals and counted in the game numbers. They disappear
+once ingest adds the real games.
+

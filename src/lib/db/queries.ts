@@ -412,6 +412,7 @@ export async function getTeamSeasonSchedule(
       id: row.id,
       date,
       tipOffEt: formatEasternTipTime(row.tipOffUtc),
+      tipOffUtc: row.tipOffUtc ? new Date(row.tipOffUtc).toISOString() : null,
       status: row.status,
       isHome,
       neutralCity: row.neutralSite ? row.neutralVenueCity : null,

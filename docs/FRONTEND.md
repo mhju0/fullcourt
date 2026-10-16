@@ -10,7 +10,7 @@ Dependency versions live in `package.json` and `pnpm-lock.yaml`. The shared visu
 | --- | --- |
 | `/` | Rest and schedule findings, derived from existing data sources; dark front door, Games primary action |
 | `/games` | Matchup rest/schedule conditions in tip-off order; controls, a one-line slate summary, the matchups, then Edges Ahead, in the same order at every width |
-| `/games/team` | One team's season (BY TEAM, D-99): season and team selects, four counts (team more rested, opponent more rested, even, big rest edges), then G · DATE · TIME · OPPONENT · REST ADVANTAGE with the gap signed from the team's side; the next game is tinted and marked NEXT; a phone shows date, opponent and gap |
+| `/games/team` | One team's season (BY TEAM, D-99): season and team selects, four counts (team more rested, opponent more rested, even, big rest edges), then G · DATE · TIME · OPPONENT · REST ADVANTAGE with the gap signed from the team's side; the next game is tinted and marked NEXT; TIME holds the result once final, or LIVE / PENDING by `gamePhase`; a phone shows date, opponent and gap, with the result under the date; a season still short of its NBA Cup games shows them as "NBA CUP GAME · TBD" rows (`cupPlaceholders`, `src/lib/nba-cup.ts`) numbered into the season |
 | `/season` | Completed results against the season's venue baseline, six initial team records with remaining teams expandable, five largest completed rest gaps including losses |
 | `/schedule` | Relative schedule ranking and worth; breakdown (with its column guide inside) and travel/workload in disclosures; league fatigue by week for completed games |
 | `/explore` | Directory for the secondary basketball studies |

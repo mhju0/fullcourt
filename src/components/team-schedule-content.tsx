@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo } from "react"
+import { useMemo, type ReactNode } from "react"
 import useSWR from "swr"
 
 import { isBigRestEdge, TeamLogo } from "@/components/matchup-parts"
@@ -9,12 +9,15 @@ import { SummaryLine } from "@/components/summary-line"
 import { Bar } from "@/components/lazy-content"
 import { DataTable, type DataColumn } from "@/components/ui/data-table"
 import { MessageCard } from "@/components/ui/message-card"
+import { useNow } from "@/hooks/useNow"
 import { usePageQuery, useSeasonUrl } from "@/hooks/useSeasonUrl"
 import { apiFetcher, errMsg } from "@/lib/fetcher"
+import { gamePhase } from "@/lib/game-phase"
+import { cupPlaceholders } from "@/lib/nba-cup"
 import { browsableSeasons, formatEasternDateKey } from "@/lib/nba-season"
 import { formatRestAdvantageValue } from "@/lib/rest-advantage-display"
 import { CURRENT_TEAM_ABBREVIATIONS, getTeamBranding } from "@/lib/team-history"
-import { MONO_FONT_STACK, SPACE_CARD, termCardStyle, termSelectClass, termSelectStyle, TRACK, TYPE } from "@/lib/terminal-styles"
+import { MONO_FONT_STACK, SPACE_CARD, termCardStyle, termSelectClass, termSelectStyle, termTdStyle, TRACK, TYPE } from "@/lib/terminal-styles"
 import type { TeamScheduleGame } from "@/types"
 
 const SEASONS = browsableSeasons()
@@ -90,8 +93,13 @@ function RestCell({ game }: { game: TeamScheduleGame }) {
   )
 }
 
-function TimeOrResult({ game }: { game: TeamScheduleGame }) {
-  if (game.status === "final" && game.teamScore !== null && game.opponentScore !== null) {
+/**
+ * What a game has to report besides its date: the result once final, LIVE or PENDING once it has
+ * tipped (the board's `gamePhase`, on the same clock), or nothing before it starts.
+ */
+function gameState(game: TeamScheduleGame, now: number): ReactNode {
+  const phase = gamePhase(game.status, game.tipOffUtc, now)
+  if (phase === "final" && game.teamScore !== null && game.opponentScore !== null) {
     const won = game.teamScore > game.opponentScore
     return (
       <span>
@@ -100,7 +108,9 @@ function TimeOrResult({ game }: { game: TeamScheduleGame }) {
       </span>
     )
   }
-  return <span>{game.tipOffEt ? game.tipOffEt.replace(/ ET$/, "") : "TBD"}</span>
+  if (phase === "live") return <span style={{ fontWeight: 700, color: "var(--term-amber)" }}>LIVE</span>
+  if (phase === "awaitingFinal") return <span style={{ fontWeight: 700, color: "var(--term-text-muted)" }}>PENDING</span>
+  return null
 }
 
 function TableSkeleton() {
@@ -137,6 +147,10 @@ export function TeamScheduleContent() {
   const today = formatEasternDateKey()
   const nextGameId = games.find((g) => g.status !== "final" && g.date >= today)?.id ?? null
   const anyProjected = games.some((g) => g.projectedFatigue)
+  const now = useNow()
+  const cup = useMemo(() => cupPlaceholders(season, games.map((g) => g.date)), [season, games])
+  // Game numbers count the Cup rows too, so the season still ends at game 82.
+  const gameNumber = (i: number) => i + 1 + (cup && i > cup.afterIndex ? cup.count : 0)
 
   const counts = useMemo(() => {
     const tally = { team: 0, opponent: 0, even: 0, big: 0, measured: 0 }
@@ -156,17 +170,21 @@ export function TeamScheduleContent() {
       numeric: true,
       className: "hidden sm:table-cell",
       style: FIT,
-      cell: (_, i) => i + 1,
+      cell: (_, i) => gameNumber(i),
     },
     {
       label: "DATE",
       style: FIT,
-      // NEXT drops under the date on a phone, where the row has no width to spare.
+      // A phone has no TIME column, so the result (or LIVE, PENDING) goes under the date, and
+      // so does NEXT.
       cell: (g) => (
         <span className="inline-flex flex-col items-start sm:flex-row sm:items-center sm:gap-2">
           <span className="sm:hidden">{shortDate(g.date)}</span>
           <span className="hidden sm:inline">
             {weekday(g.date)} {shortDate(g.date)}
+          </span>
+          <span className="sm:hidden" data-testid="phone-game-state">
+            {gameState(g, now)}
           </span>
           {g.id === nextGameId && (
             <span style={{ fontSize: TYPE.micro, letterSpacing: TRACK.data, fontWeight: 700, color: "var(--term-accent)" }}>
@@ -178,10 +196,10 @@ export function TeamScheduleContent() {
     },
     {
       label: "TIME",
-      unit: "ET",
+      unit: "ET · RESULT",
       className: "hidden sm:table-cell",
       style: FIT,
-      cell: (g) => <TimeOrResult game={g} />,
+      cell: (g) => gameState(g, now) ?? <span>{g.tipOffEt ? g.tipOffEt.replace(/ ET$/, "") : "TBD"}</span>,
     },
     {
       label: "OPPONENT",
@@ -206,6 +224,27 @@ export function TeamScheduleContent() {
   ]
 
   const teamAbbr = team ? getTeamBranding(team, season).abbreviation : null
+
+  // The games the league has not scheduled yet. One cell spans the row after the date, so there
+  // is no opponent, time or gap to misread; the phone variant spans one column fewer because it
+  // has no TIME column.
+  const cupRows = cup
+    ? Array.from({ length: cup.count }, (_, k) => {
+        const label = (
+          <span style={{ fontWeight: 700, letterSpacing: TRACK.data, color: "var(--term-text-muted)" }}>NBA CUP GAME · TBD</span>
+        )
+        return (
+          <tr key={`cup-${k}`} data-testid="cup-placeholder-row">
+            <td className="hidden tabular-nums sm:table-cell" style={{ ...termTdStyle, ...FIT, textAlign: "right" }}>
+              {cup.afterIndex + 2 + k}
+            </td>
+            <td style={{ ...termTdStyle, ...FIT, color: "var(--term-text-muted)" }}>{cup.window}</td>
+            <td colSpan={3} className="hidden sm:table-cell" style={termTdStyle}>{label}</td>
+            <td colSpan={2} className="sm:hidden" style={termTdStyle}>{label}</td>
+          </tr>
+        )
+      })
+    : null
 
   return (
     <div className="flex flex-col gap-2 sm:gap-6">
@@ -272,7 +311,7 @@ export function TeamScheduleContent() {
           />
           <section aria-label={`${teamAbbr} schedule`} className="flex flex-col gap-2">
             <p className="m-0" style={{ fontSize: TYPE.body, color: "var(--term-text-muted)" }}>
-              {games.length} games. A plus means {teamAbbr} is the more rested side; EVEN is a gap under 0.5.
+              {games.length} games{cup ? `, and ${cup.count} NBA Cup ${cup.count === 1 ? "game" : "games"} the league has not scheduled yet` : ""}. A plus means {teamAbbr} is the more rested side; EVEN is a gap under 0.5.
               {anyProjected && " Games not yet played show a projected gap, from the schedule as it stands."}
             </p>
             <DataTable
@@ -287,7 +326,10 @@ export function TeamScheduleContent() {
                     ? { background: "color-mix(in srgb, var(--term-accent) 6%, var(--term-surface))" }
                     : undefined,
               })}
-            />
+              rowExtras={(_, i) => (cup && i === cup.afterIndex ? cupRows : null)}
+            >
+              {cup && cup.afterIndex === -1 ? cupRows : null}
+            </DataTable>
           </section>
         </>
       )}

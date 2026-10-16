@@ -59,6 +59,8 @@ export interface TeamScheduleGame {
   id: number;
   date: string;
   tipOffEt: string | null;
+  /** ISO instant, so the page can mark a game LIVE or PENDING on the board's clock. */
+  tipOffUtc: string | null;
   status: string;
   isHome: boolean;
   neutralCity: string | null;

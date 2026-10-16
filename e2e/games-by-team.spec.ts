@@ -50,9 +50,22 @@ test.describe("Games by team", () => {
     await expect(first.locator("td").nth(0)).toBeHidden();
     await expect(first.locator("td").nth(2)).toBeHidden();
     await expect(first.locator("td").nth(1)).toHaveText(/^Oct \d+/);
+    // The phone has no TIME column, so a final's result sits under its date.
+    await expect(first.getByTestId("phone-game-state")).toHaveText(/^[WL] \d+–\d+$/);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
     const table = await page.locator("table.fc-table").evaluate((t) => t.scrollWidth <= t.parentElement!.clientWidth);
     expect(table).toBe(true);
+  });
+
+  test("a season still short of its two NBA Cup games shows them as TBD rows numbered into the season", async ({ page }) => {
+    await page.goto("/games/team?season=2026-27&team=HOU");
+    await expect(page.getByTestId("team-game-row")).toHaveCount(80, { timeout: 60_000 });
+    const cup = page.getByTestId("cup-placeholder-row");
+    await expect(cup).toHaveCount(2);
+    await expect(cup.first()).toContainText("NBA CUP GAME · TBD");
+    await expect(cup.first()).toContainText("Early Dec");
+    // The last real game is game 82, not 80.
+    await expect(page.getByTestId("team-game-row").last().locator("td").first()).toHaveText("82");
   });
 });
 
