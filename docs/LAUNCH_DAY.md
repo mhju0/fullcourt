@@ -75,4 +75,4 @@ that snapshot, so a later run supplies convergence. Known-null tips are excluded
 refresh. Review skipped IDs/reasons in nightly/projection logs rather than accepting write
 counts alone. The hourly cron ends at 08:00 UTC and resumes at 21:00 UTC; this gap can leave
 a failed refresh unrecovered before an early tip. Check the next-game rows and logs, and scope
-any manual repair explicitly with the owner. Client “View fetched at” is not pipeline evidence.
+any manual repair explicitly with the owner. The board's “Updated” time is when the viewer's browser received the view, not pipeline evidence.

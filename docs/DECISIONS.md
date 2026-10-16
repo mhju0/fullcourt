@@ -1323,3 +1323,27 @@ each game's expansion. Its width went to the flag strip, which now shows up to f
 more flags and 0.4% carry five or more, so the old limit of two put a `+N` on about one line in six; the
 new one leaves it on the 0.4%. The columns were rebalanced so the space between matchup,
 fatigue score, rest advantage and gap size is even (about 94 / 112 / 101px at desktop width).
+
+## D-96 — The Games board marks only a big rest edge, and its guide quotes the rate without the baseline (2026-10-16)
+
+The gap-size column's four badges (NEUTRAL under 0.5, SMALL to 1, MEDIUM to 2, LARGE at 2+)
+implied a ladder the results do not show. Measured ad hoc on 2026-10-16 over the called games
+(rested team at home), the rested home team won 60.7% at 0.5–1, 60.0% at 1–2 and 59.5% at 2–3,
+which is home court, then 61.8% at 3–5 and 65.3% at 5+. A rested visitor won 42.1% at 0.5–3 and
+43.8% at 3+, so a LARGE badge on a rested visitor marked a team that usually loses. The 1.0 line
+was left over from an older card. The owner chose one mark: a purple BIG REST EDGE badge, and the
+row's accent edge, only when the rested team is at home, off a neutral site, by 3 or more. That is
+exactly the backtest's 3+ bucket (`isBigRestEdge`, and a test pins 3 to `BACKTEST_THRESHOLDS`), so
+the board marks the games the published rate is about. Every other row is blank, the column
+is headed EDGE, and the slate summary's GAPS OF 2+ tile became BIG EDGES, counting the same games. 5+ was considered and refused as too rare: 49 such games in the 2026-27 schedule
+against 192 at 3+.
+
+A closed "How to read the board" toggle explains the three columns. Its BIG REST EDGE line reads
+the 3+ rate and game count from `/api/analysis`, never typed. The owner decided it leaves out the
+home-team baseline ("home teams win about 60% anyway"): the line is a reading key, not a claim, and
+the venue comparison stays where the backtest itself is published. This is a deliberate exception to reading
+every published rate against the venue baseline, scoped to this legend.
+
+The refresh link became the owner's mock C: "Updated" with the receipt time beside a 32px outline
+icon button in the heading row, which also absorbed the "View fetched at … (your time)" line under
+the table.

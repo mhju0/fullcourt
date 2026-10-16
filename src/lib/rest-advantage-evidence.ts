@@ -113,7 +113,7 @@ type ProcessedHistoricalGame = {
   restedTeamWon: boolean;
 };
 
-const BACKTEST_THRESHOLDS = [2, 3, 5, 7] as const;
+export const BACKTEST_THRESHOLDS = [2, 3, 5, 7] as const;
 
 /** Win percentage to one decimal. Shared so two surfaces cannot round one statistic differently. */
 export function winPct(wins: number, total: number): number {

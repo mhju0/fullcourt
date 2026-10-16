@@ -14,13 +14,13 @@ import { usePageQuery } from "@/hooks/useSeasonUrl";
 import { ChevronDown } from "lucide-react";
 import { FatigueBar, type FatigueBarTone } from "@/components/fatigue-bar";
 import {
-  ConfidenceBadge,
+  BigRestEdgeBadge,
   FLAG_MEANINGS,
   FatigueDetailColumn,
   TeamLogo,
   inlineFlags,
   teamGameFlags,
-  getConfidence,
+  isBigRestEdge,
 } from "@/components/matchup-parts";
 import { gamePhase, spokenGameState, type GamePhase } from "@/lib/game-phase";
 import { buildGameStoryline } from "@/lib/game-storyline";
@@ -59,8 +59,8 @@ import type { GameResponse } from "@/types";
 // dropped on 2026-10-16 (D-95); days rest stays in the expansion.
 const GRID_COLS =
   "minmax(96px,120px) minmax(210px,0.8fr) minmax(320px,1fr) minmax(200px,240px) minmax(120px,0.6fr)";
-// Sum of the column minimums plus the 16px gaps, rounded up with room.
-const GRID_MIN_WIDTH = 1020;
+// Column minimums (946) + four 16px gaps + 16px row padding on each side + the 3px accent edge = 1045.
+const GRID_MIN_WIDTH = 1048;
 
 /**
  * Width reserved for a line's flag chips, so the strip is identical on every line and the
@@ -181,8 +181,8 @@ function TeamLine({
   season: string;
   fallback: { name: string; city: string };
   /**
-   * HOME on the host's line, or the city when the game is away from its arena. Not "NEUTRAL":
-   * the GAP SIZE badge already uses that word for a gap under 0.5.
+   * HOME on the host's line, or the city when the game is away from its arena. Not "NEUTRAL",
+   * which reads as a verdict on the rest gap rather than a place.
    */
   venueTag: string | null;
 }) {
@@ -245,7 +245,7 @@ function TeamLine({
 const MAX_INLINE_FLAGS = 4;
 
 /** The schedule flag chip — the fatigue score's reason, sitting next to the score. */
-function FlagChip({
+export function FlagChip({
   label,
   muted = false,
 }: {
@@ -622,7 +622,7 @@ function GameRow({
     awayFallback,
   );
 
-  const confidence = getConfidence(game.restAdvantage?.differential ?? null);
+  const bigEdge = isBigRestEdge(game.restAdvantage, game.neutralCity);
   const flags = teamGameFlags(game);
   const tones = fatigueTones(
     game.awayFatigue?.score ?? null,
@@ -651,10 +651,10 @@ function GameRow({
       className="fc-game-row scroll-mt-20"
       style={{
         borderTop: index === 0 ? undefined : "1px solid var(--term-border)",
-        // One accent at a time (Front Office): only HIGH CONF earns the indigo edge.
+        // One accent at a time (Front Office): only a big rest edge earns the indigo edge.
         // A live row is not tinted, since most of an evening slate is live at once.
         borderLeft:
-          confidence === "high"
+          bigEdge
             ? "3px solid var(--term-accent)"
             : "3px solid transparent",
       }}
@@ -723,7 +723,7 @@ function GameRow({
         </div>
 
         <div className="fc-game-chevron flex items-center justify-end gap-2">
-          <span className="hidden sm:contents"><ConfidenceBadge confidence={confidence} /></span>
+          {bigEdge && <span className="hidden sm:contents"><BigRestEdgeBadge /></span>}
           <ChevronDown
             className={cn(
               "size-4 shrink-0 text-[var(--term-text-muted)]",
@@ -830,7 +830,7 @@ export function MatchupTable({ games }: MatchupTableProps) {
             <span>FATIGUE SCORE</span>
             <span>REST ADVANTAGE</span>
             {/* Ends over the badge, not over the chevron beside it (16px icon, 8px gap). */}
-            <span className="pr-6 text-right">GAP SIZE</span>
+            <span className="pr-6 text-right">EDGE</span>
           </div>
 
           {games.map((game, i) => (

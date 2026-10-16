@@ -4,34 +4,37 @@ import { useState } from "react"
 import Image from "next/image"
 import { TRAVEL_LOOKBACK_DAYS } from "@/lib/fatigue"
 import { readableTextOn } from "@/lib/nba-team-colors"
-import { NEUTRAL_REST_ADVANTAGE_THRESHOLD } from "@/lib/rest-advantage-evidence"
+import { isCalledSide } from "@/lib/rest-advantage-evidence"
 import { formatRestAdvantageValue } from "@/lib/rest-advantage-display"
 import { formatDaysOff } from "@/lib/days-off"
 import { getTeamBranding, teamLogoUrl } from "@/lib/team-history"
 import { TRACK, TYPE } from "@/lib/terminal-styles"
 import type { FatigueInfo, GameResponse } from "@/types"
 
-// ─── Constants ───────────────────────────────────────────────────
-
-const HIGH_CONF_THRESHOLD = 2.0
-const MED_CONF_THRESHOLD = 1.0
-
-export type Confidence = "high" | "med" | "low" | "neutral" | "none"
+// ─── Big rest edge ───────────────────────────────────────────────
 
 /**
- * Confidence tiers sit ABOVE the canonical call threshold, never straddling it.
- * `classifyRestAdvantage` calls a game for a team at |differential| >= 0.5, so a
- * gap of e.g. 0.7 makes the rest-advantage cell print "BOS 0.7"; tiering that as
- * "neutral" made one row name a team and call the matchup neutral at once. Anything
- * the classifier calls is at least "low" — see the invariant test in __tests__.
+ * Where the rested home team's record steps up. Over every called game since 1985-86 it won about
+ * 60% at any gap from 0.5 to 3, flat, and 63.1% at 3 or more (D-96). The four-tier GAP SIZE
+ * ladder this replaced drew lines at 1 and 2 where the record does not move. One of the
+ * backtest's own thresholds, so the rate the board quotes for it is already published.
  */
-export function getConfidence(diff: number | null | undefined): Confidence {
-  if (diff === null || diff === undefined) return "none"
-  const abs = Math.abs(diff)
-  if (abs >= HIGH_CONF_THRESHOLD) return "high"
-  if (abs >= MED_CONF_THRESHOLD) return "med"
-  if (abs >= NEUTRAL_REST_ADVANTAGE_THRESHOLD) return "low"
-  return "neutral"
+export const BIG_REST_EDGE_THRESHOLD = 3
+
+/**
+ * A game the board marks: the home team is the fresher side by at least the threshold. Only the
+ * called side counts (`isCalledSide`): a rested visitor still loses most often, so marking one
+ * would put the loudest badge on the row beside a team that usually loses.
+ */
+export function isBigRestEdge(
+  restAdvantage: GameResponse["restAdvantage"],
+  neutralCity: string | null
+): boolean {
+  return (
+    restAdvantage !== null &&
+    isCalledSide(restAdvantage.advantageTeam, neutralCity !== null) &&
+    Math.abs(restAdvantage.differential) >= BIG_REST_EDGE_THRESHOLD
+  )
 }
 
 // ─── Team logo ───────────────────────────────────────────────────
@@ -90,54 +93,23 @@ export function TeamLogo({
   )
 }
 
-// ─── Confidence badge ────────────────────────────────────────────
+// ─── Big rest edge badge ─────────────────────────────────────────
 
-export function ConfidenceBadge({ confidence }: { confidence: Confidence }) {
-  if (confidence === "none") return null
-
-  const label =
-    confidence === "high"
-      ? "LARGE GAP"
-      : confidence === "med"
-        ? "MEDIUM GAP"
-        : confidence === "low"
-          ? "SMALL GAP"
-          : "NEUTRAL"
-
-  const baseStyle: React.CSSProperties = {
-    fontSize: "11px",
-    letterSpacing: TRACK.data,
-    padding: "4px 8px",
-    borderRadius: "var(--term-radius-sm)",
-    fontWeight: 700,
-  }
-
-  // The confidence ladder is loudness, not hue (Front Office): filled accent, then an
-  // ink outline, then a hairline outline. The data poles never appear here — a rose
-  // HIGH CONF badge beside a rose fatigue bar read as "fatigued wins", which is backwards.
-  if (confidence === "high") {
-    return (
-      <span className="mono inline-flex items-center" style={{ ...baseStyle, background: "var(--term-accent)", color: "var(--term-surface)" }}>
-        {label}
-      </span>
-    )
-  }
-  if (confidence === "med") {
-    return (
-      <span
-        className="mono inline-flex items-center"
-        style={{ ...baseStyle, background: "transparent", border: "1px solid var(--term-text-dim)", color: "var(--term-text-dim)" }}
-      >
-        {label}
-      </span>
-    )
-  }
+export function BigRestEdgeBadge() {
   return (
     <span
-      className="mono inline-flex items-center"
-      style={{ ...baseStyle, background: "transparent", border: "1px solid var(--term-neutral)", color: "var(--term-text-muted)" }}
+      className="mono inline-flex items-center whitespace-nowrap"
+      style={{
+        fontSize: "11px",
+        letterSpacing: TRACK.data,
+        padding: "4px 8px",
+        borderRadius: "var(--term-radius-sm)",
+        fontWeight: 700,
+        background: "var(--term-accent)",
+        color: "var(--term-surface)",
+      }}
     >
-      {label}
+      BIG REST EDGE
     </span>
   )
 }

@@ -93,15 +93,16 @@ test.describe("Games page", () => {
     await page.goto("/games?season=2024-25&date=2024-12-25&view=skim");
     await expect(page.getByText("FATIGUE SCORE", { exact: true })).toBeVisible();
     await expect(page.getByText("REST (DAYS)")).toHaveCount(0);
-    await expect(page.getByText("GAP SIZE", { exact: true })).toBeVisible();
+    await expect(page.getByText("EDGE", { exact: true })).toBeVisible();
     await expect(page.getByRole("button", { name: /^(SKIM|DEEP DIVE)$/ })).toHaveCount(0);
   });
 
   // Owner review, 2026-10-07: the header sat 3px left of the first four columns, because a
-  // row reserves a 3px accent edge the header did not, and GAP SIZE ended over the chevron
-  // rather than the badge it names. Each header now starts or ends where its cells do.
+  // row reserves a 3px accent edge the header did not, and the last header ended over the chevron
+  // rather than the badge it names. Each header now starts or ends where its cells do. The date
+  // has BIG REST EDGE rows (D-96), since most rows carry no badge to measure.
   test("each column header lines up with the cells under it", async ({ page }) => {
-    await page.goto("/games?season=2024-25&date=2024-12-25");
+    await page.goto("/games?season=2025-26&date=2026-01-17");
     await expect(page.getByText("FATIGUE SCORE", { exact: true })).toBeVisible();
     const edges = await page.evaluate(() => {
       const ink = (el: Element) => {
@@ -112,7 +113,7 @@ test.describe("Games page", () => {
       const heads = [...document.querySelectorAll(".fc-game-header > span")].map(ink);
       const row = document.querySelector(".fc-game-grid")!;
       const cells = [...row.children].map((c) => c.getBoundingClientRect());
-      const badge = row.querySelector(".fc-game-chevron > span > *")!.getBoundingClientRect();
+      const badge = document.querySelector(".fc-game-chevron > span > *")!.getBoundingClientRect();
       return {
         left: [0, 1, 2, 3].map((i) => heads[i].left - cells[i].left),
         gapRight: heads[4].right - badge.right,
@@ -272,14 +273,14 @@ test.describe("Games page", () => {
 });
 
 // D-78, D-79: the three slate measures are one line above the matchups; Edges Ahead stays
-// after the list; a phone gets the compact row with no view toggle and no gap-size badge.
+// after the list; a phone gets the compact row with no view toggle and no BIG REST EDGE badge.
 test("mobile reads the slate summary before the matchups and has no view toggle", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto("/games?season=2024-25&date=2024-12-25&view=deep");
+  await page.goto("/games?season=2025-26&date=2026-01-17&view=deep");
   const line = page.getByTestId("slate-summary-line");
   await expect(line).toContainText("GAMES");
   const lineBox = await line.boundingBox();
-  const heading = await page.getByText("MATCHUPS", { exact: true }).boundingBox();
+  const heading = await page.getByRole("heading", { name: "Matchups" }).boundingBox();
   expect(lineBox!.y + lineBox!.height).toBeLessThanOrEqual(heading!.y);
   const main = await page.getByTestId("games-main").boundingBox();
   const summary = await page.getByRole("complementary", { name: "Upcoming edges" }).boundingBox();
@@ -287,7 +288,7 @@ test("mobile reads the slate summary before the matchups and has no view toggle"
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await expect(page.getByRole("button", { name: /^(SKIM|DEEP DIVE)$/ })).toHaveCount(0);
   await expect(page.locator(".fc-game-extra").first()).toBeHidden();
-  await expect(page.locator(".fc-game-chevron").first().getByText(/GAP|NEUTRAL/)).toBeHidden();
+  await expect(page.getByText("BIG REST EDGE", { exact: true }).filter({ visible: true })).toHaveCount(0);
 });
 
 for (const available of [false, true]) {
@@ -303,7 +304,7 @@ for (const available of [false, true]) {
     const seasonNotice = page.getByText("2025-26 complete · final games", { exact: true }).filter({ visible: true });
     await expect(seasonNotice).toBeVisible();
     const noticeBox = await seasonNotice.boundingBox();
-    const matchupsBox = await page.getByText("MATCHUPS", { exact: true }).boundingBox();
+    const matchupsBox = await page.getByRole("heading", { name: "Matchups" }).boundingBox();
     expect(noticeBox!.y).toBeLessThan(matchupsBox!.y);
     const upcoming = page.getByRole("button", { name: "View 2026-27 →" });
     if (available) {
