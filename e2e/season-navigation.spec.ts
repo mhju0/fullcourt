@@ -49,6 +49,14 @@ test("from the sm breakpoint every month and date shows at once, with no sideway
   }
   await expect(dates.getByRole("button").last()).toBeInViewport();
   await expect(page.getByRole("group", { name: "Week", exact: true })).toBeHidden();
+  // Each month sits exactly over a date chip: same box, same gap, same left edge.
+  const boxes = (group: typeof month) => group.getByRole("button").evaluateAll(els => els.map(el => {
+    const r = el.getBoundingClientRect();
+    return [r.x, r.width, r.height];
+  }));
+  const months = await boxes(month);
+  const days = (await boxes(dates)).slice(0, months.length);
+  expect(months).toEqual(days);
   const season = page.getByLabel("SEASON", { exact: true });
   await season.focus();
   await page.keyboard.press("Tab");

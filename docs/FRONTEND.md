@@ -106,7 +106,8 @@ apply it. Elsewhere, write a number and its unit with U+00A0 (`61.2 pp`), keep 
 column `nowrap`, and keep a table header to two lines on a phone.
 
 Games exposes Season → Month → Date selection, and none of it scrolls sideways (D-78). From `sm`
-the month buttons and date chips wrap, so a whole month shows at once. Below `sm` the page shows
+the month buttons and date chips wrap, so a whole month shows at once. Both are the same 60×48 box
+(`PICKER_BOX`), so each month sits exactly over a date chip. Below `sm` the page shows
 one Sunday-to-Saturday week of seven 44px cells, with days that have no games at a count of 0;
 the Calendar button opens the month buttons and a month grid, and a pick there closes the panel
 and returns focus to the button. The three slate measures are one line above the matchups

@@ -30,6 +30,11 @@ const termBtn =
   "fc-control-button mono inline-flex items-center gap-2 bg-[var(--term-surface)] px-3 py-2 text-data uppercase tracking-data text-[var(--term-text-dim)] transition-[background-color,border-color,transform] hover:bg-[var(--term-surface-2)]"
 const termBtnStyle: React.CSSProperties = { border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }
 
+// One box for the month and date rows, so their columns line up: OCT sits over the 1st
+// chip, APR over the 7th. The date chip sets the size. 15 GMS, its longest count line, is
+// 55px wide, so the width is 60px.
+const PICKER_BOX = "h-12 w-[3.75rem] shrink-0 justify-center"
+
 /* The site's headline figure used to sit here, between the header and the day's controls. It
    moved out on 2026-08-12 with the front door: `/` now carries the argument, and its evidence
    section states the same finding as a lift against the baseline rather than as a raw rate,
@@ -223,9 +228,9 @@ function DateChip({
       className={cn(
         // Fixed width, not min-width: the count line varies from "1 GM" to "15 GMS",
         // so a minimum let the wider chips grow and the row came out at three
-        // different widths. 15 is the most games a 30-team league can play in a day,
-        // and that longest line measures 55px, so 60px fits every case with room.
-        "fc-control-button mono flex shrink-0 w-[3.75rem] flex-col items-center border border-[var(--term-border)] px-2 py-2",
+        // different widths. The month buttons share the box (PICKER_BOX).
+        "fc-control-button mono flex flex-col items-center border border-[var(--term-border)] px-0",
+        PICKER_BOX,
         // Selected = a solid ink block (the 08-front-office mock's .dchip.on), not the
         // rested-pole teal: teal is a data color, and a chip is chrome.
         selected
@@ -465,7 +470,8 @@ export default function GamesPage() {
                   disabled={dayCount === 0}
                   className={cn(
                     termBtn,
-                    "shrink-0 active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-40 disabled:active:scale-100",
+                    PICKER_BOX,
+                    "px-0 active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-40 disabled:active:scale-100",
                     isSelected
                       ? "bg-[var(--term-text)] text-[var(--term-surface)] hover:bg-[var(--term-text)]"
                       : "text-[var(--term-text)]"
