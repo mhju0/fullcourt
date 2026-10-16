@@ -10,6 +10,7 @@ Dependency versions live in `package.json` and `pnpm-lock.yaml`. The shared visu
 | --- | --- |
 | `/` | Rest and schedule findings, derived from existing data sources; dark front door, Games primary action |
 | `/games` | Matchup rest/schedule conditions in tip-off order; controls, a one-line slate summary, the matchups, then Edges Ahead, in the same order at every width |
+| `/games/team` | One team's season (BY TEAM, D-99): season and team selects, four counts (team more rested, opponent more rested, even, big rest edges), then G · DATE · TIME · OPPONENT · REST ADVANTAGE with the gap signed from the team's side; the next game is tinted and marked NEXT; a phone shows date, opponent and gap |
 | `/season` | Completed results against the season's venue baseline, six initial team records with remaining teams expandable, five largest completed rest gaps including losses |
 | `/schedule` | Relative schedule ranking and worth; breakdown (with its column guide inside) and travel/workload in disclosures; league fatigue by week for completed games |
 | `/explore` | Directory for the secondary basketball studies |
@@ -107,7 +108,10 @@ column `nowrap`, and keep a table header to two lines on a phone.
 
 Games exposes Season → Month → Date selection, and none of it scrolls sideways (D-78). From `sm`
 the month buttons and date chips wrap, so a whole month shows at once. Both are the same 60×48 box
-(`PICKER_BOX`), so each month sits exactly over a date chip. Below `sm` the page shows
+(`PICKER_BOX`), so each month sits exactly over a date chip. From `sm` the previous/next day arrows sit at the
+right of the DATE label's line, clear of its rule, so they never move; the selected date's long
+form is in the Matchups heading (D-99). BY DATE / BY TEAM tabs (`GamesViewTabs`) sit under the
+header on both Games views and carry the season across. Below `sm` the page shows
 one Sunday-to-Saturday week of seven 44px cells, with days that have no games at a count of 0;
 the Calendar button opens the month buttons and a month grid, and a pick there closes the panel
 and returns focus to the button. The three slate measures are one line above the matchups

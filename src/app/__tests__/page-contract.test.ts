@@ -104,6 +104,7 @@ const NO_NAV_TAB = new Map([
   ["/behind-the-data", "the reference section, reached by its own right-aligned link"],
   ["/data-status", "coverage reference reached from the footer on every page"],
   ["/privacy", "privacy notice reached from the footer on every page"],
+  ["/games/team", "the Games page's BY TEAM view; the GAMES tab stays lit and the view tabs reach it"],
 ]);
 
 describe("every page states what it is", () => {
@@ -122,8 +123,8 @@ describe("every page states what it is", () => {
     // `gap-12` (SPACE.chapter) between chapters — heading, controls, results. A uniform gap-4
     // gave a heading the same separation as two halves of one control panel.
     // Method articles use the approved compact 32px reading rhythm (D-64).
-    // Games and Shooting keep a compact mobile entry and a 24px desktop gap (D-66).
-    const column = ["/shooting", "/games"].includes(route) ? /flex flex-col gap-[23] sm:gap-6/
+    // Games (both views) and Shooting keep a compact mobile entry and a 24px desktop gap (D-66).
+    const column = ["/shooting", "/games", "/games/team"].includes(route) ? /flex flex-col gap-[23] sm:gap-6/
       : route.startsWith("/behind-the-data/") ? /flex flex-col gap-(8|12)/ : /flex flex-col gap-12/;
     expect(renders(file, column), `${route} has no page column`).toBe(true);
   });

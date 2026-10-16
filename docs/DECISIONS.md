@@ -1375,3 +1375,23 @@ printed scores differ from the printed gap by 0.1 in 20,889 of those games (roun
 a cut figure reads up to 0.09 low. The slate's AVG REST GAP tile, which was rounded, is cut too, so
 the board has one rule. Other statistics (correlations, expected wins, percentages) keep their own
 precision.
+
+## D-99 — Games gets a BY TEAM view, and the day arrows move onto the DATE label's line (2026-10-17)
+
+The owner asked for one team's season with a simple rest advantage, after looking at a team
+schedule page that listed date, opponent and time. Games now has two views behind BY DATE / BY
+TEAM tabs (`GamesViewTabs`): the slate, and `/games/team?team=HOU&season=…`, read through
+`GET /api/games/team`. The route is static with query parameters because the page-contract test
+walks literal routes. The table is G · DATE · TIME (ET, or the result once final) · OPPONENT (full
+branded name) · REST ADVANTAGE. The gap is turned to the selected team's side: +X.Y in the
+rested color when the team is fresher, −X.Y in the fatigued color when the opponent is, EVEN under
+0.5, and BIG when the board's own rule (`isBigRestEdge`) marks the game, whichever side it
+favors. No flags, by owner choice. A phone drops G, the weekday and the time. The reader is the
+board's own (`publishableGames()` plus the same fatigue pair), so a game shows the same gap on
+both views; an e2e test compares the sign against `/api/games/[date]`.
+
+On the board, the desktop day arrows sat at the ends of the date-text row, so they moved as
+the weekday's length changed. They now sit at the right of the DATE label's line, clear of its
+rule, and the long date moved into the Matchups heading. The phone keeps its week strip and
+week arrows.
+

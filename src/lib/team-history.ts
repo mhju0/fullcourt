@@ -71,6 +71,9 @@ const CURRENT_TEAM_DEFAULTS: Record<string, { name: string; city: string }> = {
   WAS: { name: "Wizards", city: "Washington" },
 };
 
+/** The thirty current franchises, by the abbreviation every season's games are stored under. */
+export const CURRENT_TEAM_ABBREVIATIONS: readonly string[] = Object.freeze(Object.keys(CURRENT_TEAM_DEFAULTS));
+
 function currentBranding(
   abbrev: string,
   fallback?: { name: string; city: string }

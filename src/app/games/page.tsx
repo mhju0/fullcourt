@@ -13,14 +13,16 @@ import { GameSlateRefreshNotice, GameSlateRefreshWarning } from "@/components/ga
 import { MatchupTable } from "@/components/matchup-table"
 import { BoardGuide } from "@/components/board-guide"
 import { isBigRestEdge } from "@/components/matchup-parts"
+import { GamesViewTabs } from "@/components/games-view-tabs"
 import { PageHeader } from "@/components/page-header"
 import { SeasonSelector } from "@/components/season-selector"
+import { SummaryLine } from "@/components/summary-line"
 import { useGameSlate, type GameSlate } from "@/hooks/useGameSlate"
 import { browsableSeasons, currentDisplaySeason, isNbaOffSeason, nextSeasonLabel } from "@/lib/nba-season"
 import { MessageCard } from "@/components/ui/message-card"
 import { MethodLink } from "@/components/method-link"
 import type { SlateDay } from "@/lib/game-slate-machine"
-import { LEAD, SPACE_CARD, termCardStyle, TRACK, TYPE } from "@/lib/terminal-styles"
+import { LEAD, SPACE, SPACE_CARD, termCardStyle, TRACK, TYPE } from "@/lib/terminal-styles"
 import { cn } from "@/lib/utils"
 
 // ─── Helpers ─────────────────────────────────────────────────────
@@ -56,49 +58,41 @@ function SlateSummaryLine({
   bigEdgeGames: string
   className?: string
 }) {
-  const items = [
-    { label: "GAMES", value: gamesToday === null ? "—" : String(gamesToday) },
-    { label: "AVG REST GAP", value: avgRestAdv },
-    { label: "BIG EDGES", value: bigEdgeGames },
-  ]
   return (
-    <dl
-      aria-label="Slate summary"
-      data-testid="slate-summary-line"
-      className={cn("mono grid-cols-3", className)}
-      style={{ ...termCardStyle, padding: 0 }}
-    >
-      {items.map(({ label, value }) => (
-        <div key={label} className="flex min-w-0 flex-col gap-1 border-l border-[var(--term-border)] px-3 py-2 first:border-l-0 sm:px-4 sm:py-3">
-          <dt style={{ fontSize: TYPE.micro, letterSpacing: TRACK.label, fontWeight: 600, color: "var(--term-text-muted)" }}>
-            {label}
-          </dt>
-          <dd className="tabular-nums" style={{ fontSize: TYPE.emph, fontWeight: 700, lineHeight: LEAD.figure, color: "var(--term-text)" }}>
-            {value}
-          </dd>
-        </div>
-      ))}
-    </dl>
+    <SummaryLine
+      label="Slate summary"
+      testId="slate-summary-line"
+      className={cn("grid-cols-3", className)}
+      items={[
+        { label: "GAMES", value: gamesToday === null ? "—" : String(gamesToday) },
+        { label: "AVG REST GAP", value: avgRestAdv },
+        { label: "BIG EDGES", value: bigEdgeGames },
+      ]}
+    />
   )
 }
 
 // ─── Control-panel group label ───────────────────────────────────
 
-/** Names one group of controls inside the filter panel. 10px is the micro-label slot. */
-function GroupLabel({ children }: { children: React.ReactNode }) {
+/**
+ * Names one group of controls inside the filter panel. 10px is the micro-label slot. `action`
+ * sits at the right end of the label's line, with the same gap above the rule as the label.
+ */
+function GroupLabel({ children, action }: { children: React.ReactNode; action?: React.ReactNode }) {
   return (
     <div
-      className="mono uppercase"
+      className="mono flex items-center justify-between gap-2 uppercase"
       style={{
         fontSize: 10,
         letterSpacing: TRACK.label,
         fontWeight: 600,
         color: "var(--term-text-muted)",
-        paddingBottom: 4,
+        paddingBottom: action ? SPACE.sm : 4,
         borderBottom: "1px solid var(--term-surface-2)",
       }}
     >
       {children}
+      {action}
     </div>
   )
 }
@@ -109,13 +103,16 @@ function GroupLabel({ children }: { children: React.ReactNode }) {
 function SectionDivider({
   label,
   count,
+  detail,
 }: {
   label: string
   count: number | null
+  detail?: React.ReactNode
 }) {
   return (
-    <div className="flex items-baseline gap-3">
+    <div className="flex min-w-0 items-baseline gap-3">
       <h2 className="m-0" style={{ fontSize: TYPE.emph, fontWeight: 600, color: "var(--term-text)" }}>{label}</h2>
+      {detail}
       <span className="mono whitespace-nowrap" style={{ fontSize: TYPE.data, letterSpacing: TRACK.label, fontWeight: 600, color: "var(--term-text-muted)" }}>
         {count === null ? "—" : count} {count === 1 ? "GAME" : "GAMES"}
       </span>
@@ -419,6 +416,7 @@ export default function GamesPage() {
         />
         <MethodLink surfaceHref="/games" />
       </div>
+      <GamesViewTabs current="/games" />
       <div className="grid items-start gap-8">
       <div className="flex min-w-0 flex-col gap-2 sm:gap-6" data-testid="games-main">
       <section aria-label="Choose a game date" className="flex flex-col gap-2" style={{ ...termCardStyle, padding: SPACE_CARD }}>
@@ -512,7 +510,39 @@ export default function GamesPage() {
           </div>
         ) : null}
         <div className="hidden sm:block">
-          <GroupLabel>Date</GroupLabel>
+          {/* The arrows sit on the label's line, not beside the chips: a full month wraps to as
+              many as four rows, and arrows at the row ends were left beside the first one. With no
+              date text between them they never move; the date names the Matchups heading instead. */}
+          <GroupLabel
+            action={
+              <span className="flex gap-2">
+                <Button
+                  variant="outline"
+                  size="icon-sm"
+                  onClick={() => slate.send({ type: "DAY_SHIFTED", delta: -1 })}
+                  disabled={!slate.selectedDate}
+                  aria-label="Previous day"
+                  className="fc-control-button bg-[var(--term-surface)]"
+                  style={{ border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }}
+                >
+                  <ChevronLeft />
+                </Button>
+                <Button
+                  variant="outline"
+                  size="icon-sm"
+                  onClick={() => slate.send({ type: "DAY_SHIFTED", delta: 1 })}
+                  disabled={!slate.selectedDate}
+                  aria-label="Next day"
+                  className="fc-control-button bg-[var(--term-surface)]"
+                  style={{ border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }}
+                >
+                  <ChevronRight />
+                </Button>
+              </span>
+            }
+          >
+            Date
+          </GroupLabel>
         {slate.calendar.kind === "loading" ? (
           <Skeleton className="mt-2 h-16 w-full max-w-md bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)" }} />
         ) : slate.calendar.kind === "error" ? (
@@ -565,37 +595,25 @@ export default function GamesPage() {
             </div>
           )}
         </div>
-        <div className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2 sm:flex sm:flex-wrap">
-          {/* A phone steps by week, since its strip is a week; wider screens step by day. */}
+        <div className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2 sm:hidden">
+          {/* A phone steps by week, since its strip is a week; wider screens step by day from the
+              DATE label above. */}
           <Button
             variant="outline"
             size="icon-sm"
             onClick={() => slate.send({ type: "WEEK_SHIFTED", delta: -1 })}
             disabled={!slate.selectedDate}
             aria-label="Previous week"
-            className="fc-control-button bg-[var(--term-surface)] sm:hidden"
-            style={{ border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }}
-          >
-            <ChevronLeft />
-          </Button>
-          <Button
-            variant="outline"
-            size="icon-sm"
-            onClick={() => slate.send({ type: "DAY_SHIFTED", delta: -1 })}
-            disabled={!slate.selectedDate}
-            aria-label="Previous day"
-            className="fc-control-button hidden bg-[var(--term-surface)] sm:inline-flex"
+            className="fc-control-button bg-[var(--term-surface)]"
             style={{ border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }}
           >
             <ChevronLeft />
           </Button>
           <p
-            className="mono min-w-0 text-center sm:min-w-[12rem] sm:text-left"
+            className="mono min-w-0 text-center"
             style={{ fontSize: 12, letterSpacing: TRACK.sub, color: "var(--term-text)", fontWeight: 600 }}
-            data-testid="selected-date-display"
           >
-            <span className="sm:hidden">{slate.selectedLabel ? `DATE · ${slate.selectedLabel.short.toUpperCase()}` : "PICK A DATE"}</span>
-            <span className="hidden sm:inline">{slate.selectedLabel?.long.toUpperCase() ?? "PICK A DATE"}</span>
+            {slate.selectedLabel ? `DATE · ${slate.selectedLabel.short.toUpperCase()}` : "PICK A DATE"}
           </p>
           <Button
             variant="outline"
@@ -603,18 +621,7 @@ export default function GamesPage() {
             onClick={() => slate.send({ type: "WEEK_SHIFTED", delta: 1 })}
             disabled={!slate.selectedDate}
             aria-label="Next week"
-            className="fc-control-button bg-[var(--term-surface)] sm:hidden"
-            style={{ border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }}
-          >
-            <ChevronRight />
-          </Button>
-          <Button
-            variant="outline"
-            size="icon-sm"
-            onClick={() => slate.send({ type: "DAY_SHIFTED", delta: 1 })}
-            disabled={!slate.selectedDate}
-            aria-label="Next day"
-            className="fc-control-button hidden bg-[var(--term-surface)] sm:inline-flex"
+            className="fc-control-button bg-[var(--term-surface)]"
             style={{ border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }}
           >
             <ChevronRight />
@@ -642,6 +649,17 @@ export default function GamesPage() {
           <SectionDivider
             label="Matchups"
             count={slate.status === "slateReady" || slate.status === "slateEmpty" ? slate.games.length : null}
+            detail={
+              // Hidden on a phone, whose week row above already names the day; tests read it at
+              // every width, so it is one node either way.
+              <span
+                className="mono hidden truncate sm:inline"
+                style={{ fontSize: TYPE.data, letterSpacing: TRACK.label, fontWeight: 600, color: "var(--term-text)" }}
+                data-testid="selected-date-display"
+              >
+                {slate.selectedLabel?.long.toUpperCase() ?? "PICK A DATE"}
+              </span>
+            }
           />
           <GameSlateRefreshNotice slate={slate} />
         </div>
