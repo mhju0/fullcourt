@@ -7,6 +7,7 @@ import { useBacktest } from "@/hooks/useBacktest";
 import { useSeasonUrl } from "@/hooks/useSeasonUrl";
 import { apiFetcher } from "@/lib/fetcher";
 import { formatDataAsOf } from "@/lib/data-as-of";
+import { formatRestAdvantageValue } from "@/lib/rest-advantage-display";
 import { browsableSeasons, NBA_SEASONS } from "@/lib/nba-season";
 import {
   ABNORMAL_SEASON_NOTES,
@@ -285,7 +286,7 @@ export function SeasonReportContent() {
                 </strong>
                 <span className="mono text-[15px] tabular-nums">
                   {call.awayScore}–{call.homeScore} · RA{"\u00a0"}
-                  {call.restAdvantage.toFixed(2)}
+                  {formatRestAdvantageValue(call.restAdvantage)}
                 </span>
                 <span className="whitespace-nowrap text-right text-[15px]">
                   <span className="fc-outcome mono" data-won={call.restedTeamWon ? "" : undefined}>

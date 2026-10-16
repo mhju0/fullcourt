@@ -3,13 +3,16 @@
 import { useMemo, useRef, useState } from "react"
 import useSWR from "swr"
 import { apiFetcher } from "@/lib/fetcher"
+import { formatRestAdvantageValue } from "@/lib/rest-advantage-display"
 import type { GameDateCount } from "@/types"
 import { CalendarDays, ChevronLeft, ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import { EdgesAhead } from "@/components/edges-ahead"
-import { GameSlateFetchTime, GameSlateRefreshNotice, GameSlateRefreshWarning } from "@/components/game-slate-refresh-notice"
+import { GameSlateRefreshNotice, GameSlateRefreshWarning } from "@/components/game-slate-refresh-notice"
 import { MatchupTable } from "@/components/matchup-table"
+import { BoardGuide } from "@/components/board-guide"
+import { isBigRestEdge } from "@/components/matchup-parts"
 import { PageHeader } from "@/components/page-header"
 import { SeasonSelector } from "@/components/season-selector"
 import { useGameSlate, type GameSlate } from "@/hooks/useGameSlate"
@@ -22,12 +25,15 @@ import { cn } from "@/lib/utils"
 
 // ─── Helpers ─────────────────────────────────────────────────────
 
-const LARGE_GAP_THRESHOLD = 2.0
-
 // Terminal-style flat button: white bg, 1px border, mono uppercase, 4px corners.
 const termBtn =
   "fc-control-button mono inline-flex items-center gap-2 bg-[var(--term-surface)] px-3 py-2 text-data uppercase tracking-data text-[var(--term-text-dim)] transition-[background-color,border-color,transform] hover:bg-[var(--term-surface-2)]"
 const termBtnStyle: React.CSSProperties = { border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }
+
+// One box for the month and date rows, so their columns line up: OCT sits over the 1st
+// chip, APR over the 7th. The date chip sets the size. 15 GMS, its longest count line, is
+// 55px wide, so the width is 60px.
+const PICKER_BOX = "h-12 w-[3.75rem] shrink-0 justify-center"
 
 /* The site's headline figure used to sit here, between the header and the day's controls. It
    moved out on 2026-08-12 with the front door: `/` now carries the argument, and its evidence
@@ -42,18 +48,18 @@ const termBtnStyle: React.CSSProperties = { border: "1px solid var(--term-border
 function SlateSummaryLine({
   gamesToday,
   avgRestAdv,
-  highConfGames,
+  bigEdgeGames,
   className,
 }: {
   gamesToday: number | null
   avgRestAdv: string
-  highConfGames: string
+  bigEdgeGames: string
   className?: string
 }) {
   const items = [
     { label: "GAMES", value: gamesToday === null ? "—" : String(gamesToday) },
     { label: "AVG REST GAP", value: avgRestAdv },
-    { label: "GAPS OF 2+", value: highConfGames },
+    { label: "BIG EDGES", value: bigEdgeGames },
   ]
   return (
     <dl
@@ -99,6 +105,7 @@ function GroupLabel({ children }: { children: React.ReactNode }) {
 
 // ─── Section divider ─────────────────────────────────────────────
 
+/** The matchups heading leads its row: the refresh control beside it is smaller (2026-10-16). */
 function SectionDivider({
   label,
   count,
@@ -107,10 +114,9 @@ function SectionDivider({
   count: number | null
 }) {
   return (
-    <div className="mono flex items-center gap-3 py-2" style={{ fontSize: 11, letterSpacing: TRACK.label, color: "var(--term-text-muted)" }}>
-      <span style={{ fontWeight: 700 }}>{label}</span>
-      <span style={{ flex: 1, height: 1, background: "var(--term-border)" }} />
-      <span style={{ fontWeight: 600 }}>
+    <div className="flex items-baseline gap-3">
+      <h2 className="m-0" style={{ fontSize: TYPE.emph, fontWeight: 600, color: "var(--term-text)" }}>{label}</h2>
+      <span className="mono whitespace-nowrap" style={{ fontSize: TYPE.data, letterSpacing: TRACK.label, fontWeight: 600, color: "var(--term-text-muted)" }}>
         {count === null ? "—" : count} {count === 1 ? "GAME" : "GAMES"}
       </span>
     </div>
@@ -222,9 +228,9 @@ function DateChip({
       className={cn(
         // Fixed width, not min-width: the count line varies from "1 GM" to "15 GMS",
         // so a minimum let the wider chips grow and the row came out at three
-        // different widths. 15 is the most games a 30-team league can play in a day,
-        // and that longest line measures 55px, so 60px fits every case with room.
-        "fc-control-button mono flex shrink-0 w-[3.75rem] flex-col items-center border border-[var(--term-border)] px-2 py-2",
+        // different widths. The month buttons share the box (PICKER_BOX).
+        "fc-control-button mono flex flex-col items-center border border-[var(--term-border)] px-0",
+        PICKER_BOX,
         // Selected = a solid ink block (the 08-front-office mock's .dchip.on), not the
         // rested-pole teal: teal is a data color, and a chip is chrome.
         selected
@@ -368,9 +374,9 @@ export default function GamesPage() {
   // One pass, memoized on the slate: this used to run map + filter + reduce + a second
   // filter on every render — including renders driven by the season selector and
   // the Realtime score overlay, none of which change the answer.
-  const { avgRestAdv, highConfGames } = useMemo(() => {
+  const { avgRestAdv, bigEdgeGames } = useMemo(() => {
     let sum = 0
-    let highConf = 0
+    let bigEdges = 0
     let measured = 0
     for (const g of slate.games) {
       if (g.restAdvantage === null) continue
@@ -378,15 +384,15 @@ export default function GamesPage() {
       const diff = Math.abs(g.restAdvantage.differential)
       // An exact-zero game is a measured gap of 0, so it stays in the average.
       sum += diff
-      if (diff >= LARGE_GAP_THRESHOLD) highConf += 1
+      if (isBigRestEdge(g.restAdvantage, g.neutralCity)) bigEdges += 1
     }
     // An em dash, not "0.0" and not "0". A slate whose games carry no fatigue pair — every date
     // of a released-but-unplayed season — has no average to report, and printing zero states a
     // measurement that was never taken. A slate on which every game came out exactly even is
     // different and prints 0.0.
     return {
-      avgRestAdv: measured === 0 ? "—" : (sum / measured).toFixed(1),
-      highConfGames: measured === 0 ? "—" : String(highConf),
+      avgRestAdv: measured === 0 ? "—" : formatRestAdvantageValue(sum / measured),
+      bigEdgeGames: measured === 0 ? "—" : String(bigEdges),
     }
   }, [slate.games])
 
@@ -464,7 +470,8 @@ export default function GamesPage() {
                   disabled={dayCount === 0}
                   className={cn(
                     termBtn,
-                    "shrink-0 active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-40 disabled:active:scale-100",
+                    PICKER_BOX,
+                    "px-0 active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-40 disabled:active:scale-100",
                     isSelected
                       ? "bg-[var(--term-text)] text-[var(--term-surface)] hover:bg-[var(--term-text)]"
                       : "text-[var(--term-text)]"
@@ -625,22 +632,23 @@ export default function GamesPage() {
       <SlateSummaryLine
         gamesToday={slate.status === "slateReady" || slate.status === "slateEmpty" ? slate.games.length : null}
         avgRestAdv={avgRestAdv}
-        highConfGames={highConfGames}
+        bigEdgeGames={bigEdgeGames}
         className="grid"
       />
 
       {/* Matchups section */}
       <div className="flex flex-col gap-2">
-        <div data-testid="matchups-heading-controls" className="flex min-h-11 items-center justify-between gap-3">
+        <div data-testid="matchups-heading-controls" className="flex min-h-11 items-center justify-between gap-3 border-b border-[var(--term-border)]">
           <SectionDivider
-            label="MATCHUPS"
+            label="Matchups"
             count={slate.status === "slateReady" || slate.status === "slateEmpty" ? slate.games.length : null}
           />
           <GameSlateRefreshNotice slate={slate} />
         </div>
         <GameSlateRefreshWarning message={slate.refreshMessage} />
+        {/* After the list on a phone, so the first game stays above the fold. */}
+        <BoardGuide className="max-sm:order-last" />
         <Matchups slate={slate} />
-        <GameSlateFetchTime checkedAt={slate.checkedAt} />
       </div>
       </div>
       <aside aria-label="Upcoming edges" className="flex min-w-0 flex-col gap-6">

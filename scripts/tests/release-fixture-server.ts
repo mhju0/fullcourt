@@ -19,6 +19,8 @@ const server = createServer((req, res) => {
     let data: unknown;
     if (url.pathname === "/api/games/dates") data = releaseDates(url.searchParams.get("season") ?? "2024-25");
     else if (url.pathname === "/api/games/upcoming") data = [];
+    // The board guide reads the 3+ bucket's rate from here; with no bucket it omits the sentence.
+    else if (url.pathname === "/api/analysis") data = { thresholds: [] };
     else if (/^\/api\/games\/\d{4}-\d{2}-\d{2}$/.test(url.pathname)) {
       data = [releaseGame(url.pathname.split("/").at(-1)!)];
     } else {

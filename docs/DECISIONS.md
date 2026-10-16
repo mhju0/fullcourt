@@ -971,7 +971,7 @@ five open choices after seeing each one before and after.
 Not covered: the band and table treatment also reach Home Court, which uses the same section
 class and was checked only by screenshot. None of this has been seen on a physical phone.
 
-### D-80 · Change freeze from 2026-10-17 until the first slate is verified — ACTIVE
+### D-80 · Change freeze from 2026-10-17 until the first slate is verified — WITHDRAWN 2026-10-16 (D-97)
 
 The owner asked on 2026-10-10 for a freeze date before the first game of 2026-27. The first
 game is BOS at DET on 2026-10-20 at 3:00 PM ET; the stored schedule and ESPN agree.
@@ -1193,7 +1193,7 @@ verb ("playing a 4th game in 6 nights") so a nickname reads as a sentence. Owner
 bands, most likely injury returns. Schedule Edge's rest-day cap still says "days off" over
 a days-since count — left for the owner's site-wide audit.
 
-## D-87 — The rest gap is compared and shown at two decimals (2026-10-15)
+## D-87 — The rest gap is compared and shown at two decimals (2026-10-15; display revised by D-98)
 
 Reverses D-13. Fatigue scores are stored to two decimals, but the gap was a bare float
 subtraction, so 69 games whose stored gap sat exactly on a threshold computed just below it
@@ -1313,3 +1313,65 @@ splits script now uses the same rule. This is a correction to how games are attr
 new axis under ADR 0007. `src/data/referee-timing.json` was regenerated after the unchanged
 script reproduced it: 12,403 games and every headline count unchanged; four published rows lose
 one to four games (Tyler Ford 611 → 607, shift −1.45 → −1.46), and no row crosses the bar.
+
+## D-95 — The Games table drops its days-rest column and shows up to four flags per line (2026-10-16)
+
+The owner judged the REST (DAYS) column not worth its width: the fatigue score already carries
+rest, and the column left a gap between the matchup and the fatigue score. Days rest stays in
+each game's expansion. Its width went to the flag strip, which now shows up to four chips
+(200px) instead of two. Over every regular-season team-game since 1985-86, 3.6% carry four or
+more flags and 0.4% carry five or more, so the old limit of two put a `+N` on about one line in six; the
+new one leaves it on the 0.4%. The columns were rebalanced so the space between matchup,
+fatigue score, rest advantage and gap size is even (about 94 / 112 / 101px at desktop width).
+
+## D-96 — The Games board marks only a big rest edge, and its guide quotes the rate without the baseline (2026-10-16)
+
+The gap-size column's four badges (NEUTRAL under 0.5, SMALL to 1, MEDIUM to 2, LARGE at 2+)
+implied a ladder the results do not show. Measured ad hoc on 2026-10-16 over the called games
+(rested team at home), the rested home team won 60.7% at 0.5–1, 60.0% at 1–2 and 59.5% at 2–3,
+which is home court, then 61.8% at 3–5 and 65.3% at 5+. A rested visitor won 42.1% at 0.5–3 and
+43.8% at 3+, so a LARGE badge on a rested visitor marked a team that usually loses. The 1.0 line
+was left over from an older card. The owner chose one mark: a purple BIG REST EDGE badge, and the
+row's accent edge, only when the rested team is at home, off a neutral site, by 3 or more. That is
+exactly the backtest's 3+ bucket (`isBigRestEdge`, and a test pins 3 to `BACKTEST_THRESHOLDS`), so
+the board marks the games the published rate is about. Every other row is blank, the column
+is headed EDGE, and the slate summary's GAPS OF 2+ tile became BIG EDGES, counting the same games. 5+ was considered and refused as too rare: 49 such games in the 2026-27 schedule
+against 192 at 3+.
+
+A closed "How to read the board" toggle explains the three columns. Its BIG REST EDGE line reads
+the 3+ rate and game count from `/api/analysis`, never typed. The owner decided it leaves out the
+home-team baseline ("home teams win about 60% anyway"): the line is a reading key, not a claim, and
+the venue comparison stays where the backtest itself is published. This is a deliberate exception to reading
+every published rate against the venue baseline, scoped to this legend.
+
+The refresh link became the owner's mock C: "Updated" with the receipt time beside a 32px outline
+icon button in the heading row, which also absorbed the "View fetched at … (your time)" line under
+the table.
+
+## D-97 — The launch change freeze is withdrawn (2026-10-16)
+
+The owner withdrew D-80 the day before it would have started: there is still work to ship before
+and during opening week, and a freeze would hold all of it. `main` takes changes as before,
+through the `verify` check and the owner's approval of each merge. The live-season checklist in
+`LAUNCH_DAY.md` still applies to the first completed slate; it is a verification, no longer the
+end of a freeze. Dependabot #131 and #128, held for the freeze, can be merged on their own checks.
+
+## D-98 — Fatigue scores and rest gaps print at one decimal, cut rather than rounded (2026-10-16)
+
+Revises the display half of D-87; the comparison half stands. The owner wanted a smaller, cleaner
+figure ("X.Y, not X.YZ") with the calculation left alone. Nothing in the calculation changes: the
+model rounds each score to two decimals when it computes it (`src/lib/fatigue.ts`), the gap is
+rounded to two decimals only to remove float error (D-87), and every threshold, badge, backtest
+bucket and published rate reads those values. Only the printed figure changes, through
+`cutToTenths()` in `src/lib/rest-advantage-display.ts`, on every page that prints a fatigue score
+or a rest gap.
+
+Cut, not rounded, because each line the site draws (EVEN under 0.5, BIG REST EDGE at 3) is a tenth,
+and a value is at or above a tenth exactly when its cut is. Measured on 2026-10-16 over 48,431
+regular-season games: cutting puts no figure on the wrong side of a label; rounding puts 983 there
+(749 "EVEN 0.5" rows and 234 rested-home rows printing 3.0 with no BIG REST EDGE), the D-87 problem
+again. The cost the owner accepted: because the two scores and the gap are cut separately, the
+printed scores differ from the printed gap by 0.1 in 20,889 of those games (rounding: 11,647), and
+a cut figure reads up to 0.09 low. The slate's AVG REST GAP tile, which was rounded, is cut too, so
+the board has one rule. Other statistics (correlations, expected wins, percentages) keep their own
+precision.

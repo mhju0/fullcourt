@@ -9,6 +9,7 @@ import { DataTable } from "@/components/ui/data-table";
 import { RankBadge } from "@/components/ui/rank-badge";
 import { competitionRanks } from "@/lib/rank";
 import { apiFetcher } from "@/lib/fetcher";
+import { formatFatigueScore } from "@/lib/rest-advantage-display";
 import { LEAD, TYPE, WIDTH, termCardStyle } from "@/lib/terminal-styles";
 import type {
   SeasonReportResponse,
@@ -220,7 +221,7 @@ function FatigueCalendar({ weeks }: { weeks: SeasonReportWeek[] }) {
         style={{ fontSize: 11, color: "var(--term-text-muted)" }}
       >
         PEAK: WEEK OF {weekDate(peak.startDate, "MMM d, yyyy").toUpperCase()} ·{" "}
-        {peak.avgFatigue.toFixed(2)}
+        {formatFatigueScore(peak.avgFatigue)}
       </p>
       <div className="flex items-center gap-2">
         <button
@@ -238,7 +239,7 @@ function FatigueCalendar({ weeks }: { weeks: SeasonReportWeek[] }) {
           data-testid="fatigue-week-readout"
         >
           Week of {weekDate(selected.startDate, "MMM d, yyyy")} ·{" "}
-          {selected.avgFatigue.toFixed(2)} · {selected.games} games
+          {formatFatigueScore(selected.avgFatigue)} · {selected.games} games
         </p>
         <button
           type="button"

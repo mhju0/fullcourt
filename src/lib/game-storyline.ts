@@ -30,7 +30,7 @@ function teamClauses(fatigue: FatigueInfo | null): string[] {
   if (fatigue.roadTripConsecutiveAway >= 4)
     clauses.push(`playing a ${ordinal(fatigue.roadTripConsecutiveAway)} straight road game`);
   if (fatigue.isOvertimePenalty) clauses.push("coming off overtime");
-  if (fatigue.hasTimeZoneDisplacement) clauses.push("2+ time zones from home");
+  if (fatigue.hasTimeZoneDisplacement) clauses.push("still adjusting after traveling 2+ time zones");
 
   return clauses.slice(0, MAX_CLAUSES_PER_TEAM);
 }

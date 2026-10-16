@@ -1,11 +1,16 @@
 import { describe, expect, it } from "vitest";
 import {
   buildRestAdvantageEvidence,
+  cutToTenths,
+  formatFatigueScore,
   formatRestAdvantageDisplay,
+  formatRestAdvantageValue,
   homeWinRateWhenVisitorRested,
   toEvidenceSource,
   type RestAdvantageEvidenceSource,
 } from "@/lib/rest-advantage-display";
+import { NEUTRAL_REST_ADVANTAGE_THRESHOLD } from "@/lib/rest-advantage-evidence";
+import { BIG_REST_EDGE_THRESHOLD } from "@/components/matchup-parts";
 import type { AnalysisResponse, RestAdvantage } from "@/types";
 
 describe("formatRestAdvantageDisplay", () => {
@@ -19,8 +24,8 @@ describe("formatRestAdvantageDisplay", () => {
     ).toMatchObject({
       kind: "team",
       teamAbbreviation: "LAL",
-      value: "3.20",
-      text: "LAL 3.20",
+      value: "3.2",
+      text: "LAL 3.2",
     });
   });
 
@@ -34,22 +39,39 @@ describe("formatRestAdvantageDisplay", () => {
     ).toMatchObject({
       kind: "team",
       teamAbbreviation: "BOS",
-      value: "3.20",
-      text: "BOS 3.20",
+      value: "3.2",
+      text: "BOS 3.2",
     });
   });
 
-  it("prints the gap at its stored two decimals, so it never rounds across a tier line", () => {
+  it("cuts the gap to one decimal, so it never rounds across a line", () => {
     expect(
       formatRestAdvantageDisplay(
-        { differential: 1.96, advantageTeam: "away" },
+        { differential: 2.96, advantageTeam: "away" },
         "BOS",
         "LAL"
       )
     ).toMatchObject({
-      value: "1.96",
-      text: "LAL 1.96",
+      value: "2.9",
+      text: "LAL 2.9",
     });
+  });
+
+  // Every line is a tenth, so the cut figure sits on the same side of it as the raw value.
+  // Rounding fails this at 0.46 ("0.5" beside EVEN) and 2.96 ("3.0" with no BIG REST EDGE).
+  it("prints a figure at or above each line exactly when the value is", () => {
+    const hundredths = Array.from({ length: 1001 }, (_, i) => i / 100);
+    for (const line of [NEUTRAL_REST_ADVANTAGE_THRESHOLD, BIG_REST_EDGE_THRESHOLD]) {
+      const disagree = hundredths.filter((v) => (Number(formatRestAdvantageValue(v)) >= line) !== (v >= line));
+      expect(disagree).toEqual([]);
+    }
+  });
+
+  it("drops the hundredths without rounding and keeps exact tenths", () => {
+    expect([3.11, 3.09, 3.0, 0.49, 0.5, 9.99, 0.3, 2.9, 0].map(formatRestAdvantageValue))
+      .toEqual(["3.1", "3.0", "3.0", "0.4", "0.5", "9.9", "0.3", "2.9", "0.0"]);
+    expect(formatFatigueScore(5.36)).toBe("5.3");
+    expect(cutToTenths(-1.25)).toBe("-1.2");
   });
 
   it("separates a game it never measured from one it called level", () => {
@@ -436,7 +458,7 @@ describe("formatRestAdvantageDisplay — projected provenance", () => {
     // Same reading, annotated — not a different reading.
     expect(projected.text).toBe(measured.text);
     expect(projected.kind === "team" && projected.teamAbbreviation).toBe("BOS");
-    expect(projected.kind === "team" && projected.value).toBe("3.20");
+    expect(projected.kind === "team" && projected.value).toBe("3.2");
   });
 
   it("labels a projected neutral too, because that is a different claim from a measured one", () => {

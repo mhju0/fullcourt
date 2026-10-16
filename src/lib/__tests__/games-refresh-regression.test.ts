@@ -3,7 +3,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { createElement } from "react";
 import { initSlate, slateReducer } from "@/lib/game-slate-machine";
 import { buildGameStoryline } from "@/lib/game-storyline";
-import { GameSlateFetchTime, GameSlateRefreshNotice, GameSlateRefreshWarning } from "@/components/game-slate-refresh-notice";
+import { GameSlateRefreshNotice, GameSlateRefreshWarning, RefreshButton } from "@/components/game-slate-refresh-notice";
 import { EdgesAhead } from "@/components/edges-ahead";
 import type { GameResponse, UpcomingGameWithRA } from "@/types";
 
@@ -80,10 +80,10 @@ describe("schedule-backed opener explanation", () => {
 
 describe("quiet Games refresh notice", () => {
   const notice = { checkedAt: Date.UTC(2026, 9, 20, 20), refreshStatus: "idle" as const, refreshMessage: null, retryRefresh: () => {} };
-  it("labels response receipt as view fetch time without announcing every success", () => {
-    const html = renderToStaticMarkup(createElement(GameSlateFetchTime, { checkedAt: notice.checkedAt }));
-    expect(html).toContain("View fetched at");
-    expect(html).toContain("(your time)");
+  it("labels response receipt as an update time in the heading without announcing every success", () => {
+    const html = renderToStaticMarkup(createElement(GameSlateRefreshNotice, { slate: notice }));
+    expect(html).toMatch(/Updated <\/span><time dateTime="2026-10-20T20:00:00.000Z"/);
+    expect(html).toContain('aria-label="Refresh view"');
     expect(html).not.toContain('role="status"');
   });
   it("keeps the manual refresh button focusable while ignoring repeated activation", () => {
@@ -92,19 +92,19 @@ describe("quiet Games refresh notice", () => {
     const html = renderToStaticMarkup(createElement(GameSlateRefreshNotice, { slate: props }));
     expect(html).not.toMatch(/<button\b[^>]*\sdisabled(?:=|[ >])/);
     expect(html).toContain('aria-disabled="true"');
-    const element = GameSlateRefreshNotice({ slate: props });
-    element?.props.onClick();
+    const button = GameSlateRefreshNotice({ slate: props })?.props.children[1];
+    expect(button.type).toBe(RefreshButton);
+    button.props.onActivate();
     expect(retry).not.toHaveBeenCalled();
   });
-  it("announces failure quietly with a retry while preserving the receipt label", () => {
+  it("announces failure quietly with a retry while preserving the update time", () => {
     const html = renderToStaticMarkup(createElement("div", {},
       createElement(GameSlateRefreshNotice, { slate: { ...notice, refreshStatus: "error", refreshMessage: "offline" } }),
-      createElement(GameSlateRefreshWarning, { message: "offline" }),
-      createElement(GameSlateFetchTime, { checkedAt: notice.checkedAt })
+      createElement(GameSlateRefreshWarning, { message: "offline" })
     ));
     expect(html).toContain('role="status"');
     expect(html).toContain("Showing the last fetched games");
-    expect(html).toContain("Try again");
-    expect(html).toContain("View fetched at");
+    expect(html).toContain('aria-label="Try again"');
+    expect(html).toMatch(/Updated <\/span><time dateTime="2026-10-20T20:00:00.000Z"/);
   });
 });
