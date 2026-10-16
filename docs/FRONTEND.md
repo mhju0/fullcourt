@@ -68,7 +68,10 @@ Games / Season Report / Schedule Edge preserve valid season context across navig
 visible fallback on unsupported seasons. Shooting shares year, search, team, position, attempt
 floor, uncertainty, sort, and player expansion. Officiating shares season, team, category, and game.
 Reload and Back/Forward restore the view. Query controls read committed router search parameters
-(`useSeasonUrl.ts`); synchronous competing URL snapshots caused a production history race.
+(`useSeasonUrl.ts`); synchronous competing URL snapshots caused a production history race. The
+one exception is the hook's own write: Next commits a `pushState` in a later transition, so the
+URL a control just wrote is shown until the route moves or the address bar leaves it. Without it
+a changed select snapped back for a few hundred milliseconds (`shooting.spec.ts`, "same tick").
 
 No account, localStorage preference, or first-visit tracking is required. Cache refresh errors keep
 usable data visible with an error label. Loading, unavailable data, zero, and empty filters remain
