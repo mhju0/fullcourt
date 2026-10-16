@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  buildPrediction,
   refreshDailyGames,
   type DailyRefreshPort,
   type DailyRefreshWrite,
@@ -50,6 +51,7 @@ describe("refreshDailyGames", () => {
           homeTeamId: 1,
           awayTeamId: 2,
           status: "scheduled",
+          neutralSite: false,
         },
         {
           id: 11,
@@ -57,6 +59,7 @@ describe("refreshDailyGames", () => {
           homeTeamId: 1,
           awayTeamId: 2,
           status: "scheduled",
+          neutralSite: false,
         },
       ],
       teams,
@@ -92,6 +95,7 @@ describe("refreshDailyGames", () => {
           homeTeamId: 1,
           awayTeamId: 2,
           status: "scheduled",
+          neutralSite: false,
         },
       ],
       teams,
@@ -140,9 +144,8 @@ describe("refreshDailyGames", () => {
             homeTeamId: 1,
             awayTeamId: 2,
             status: "final",
-            ...(neutral
-              ? { neutralSite: true, neutralVenueCity: "Paris" }
-              : {}),
+            neutralSite: neutral,
+            ...(neutral ? { neutralVenueCity: "Paris" } : {}),
           },
         ],
         teams,
@@ -171,4 +174,10 @@ it("counts a deadline reached inside the transaction as deferred, rather than a 
   });
   expect(summary.deferredGames).toEqual([10, 11]);
   expect(summary.skippedGames).toEqual([]);
+});
+
+it("writes no open prediction for a rested host at a neutral site (D-92)", () => {
+  const game = { id: 20, date: "2026-11-07", homeTeamId: 1, awayTeamId: 2, status: "scheduled" };
+  expect(buildPrediction({ ...game, neutralSite: false }, 2, 6)).not.toBeNull();
+  expect(buildPrediction({ ...game, neutralSite: true }, 2, 6)).toBeNull();
 });

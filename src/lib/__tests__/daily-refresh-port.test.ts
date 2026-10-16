@@ -11,6 +11,7 @@ function game(id: number, date: string, home: number, away: number, tip: string 
     awayTeamId: away,
     status,
     tipOffUtc: tip === null ? null : new Date(tip),
+    neutralSite: false,
   };
 }
 

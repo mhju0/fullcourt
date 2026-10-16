@@ -108,7 +108,7 @@ def above_coin_flip(mask, won) -> int:
 def main() -> None:
     usecols = [
         "game_id", "date", "season", "game_type", "status",
-        "is_home", "won", "score", *COMPONENTS,
+        "is_home", "won", "score", "neutral_site", *COMPONENTS,
     ]
     df = pd.read_csv(CSV, usecols=usecols)
     log.info("rows read: %d", len(df))
@@ -120,6 +120,8 @@ def main() -> None:
     df = df[df["won"].notna()]
     season, lo, hi = BUBBLE
     df = df[~((df["season"] == season) & (df["date"] >= lo) & (df["date"] <= hi))]
+    # No home court at a neutral site, so the host is never called there (D-92).
+    df = df[~df["neutral_site"].astype(str).str.lower().isin({"1", "true"})]
 
     # Fidelity gate: the reconstruction must reproduce the exported score exactly, or the
     # ablations below are measuring an assembly that is not the shipped one.

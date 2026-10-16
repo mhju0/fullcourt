@@ -212,6 +212,8 @@ async function main(): Promise<void> {
 
   for (const row of rows) {
     if (row.homeScore === null || row.awayScore === null) continue;
+    // No home court at a neutral site: outside every venue figure, as in the backtest (D-92).
+    if (row.neutralSite) continue;
 
     const ra = classifyRestAdvantage(
       Number.parseFloat(row.homeFatigueScore),
@@ -223,7 +225,7 @@ async function main(): Promise<void> {
       seasonStart: Number.parseInt(row.season.slice(0, 4), 10),
       differential: ra.differential,
       restedTeamSide: ra.advantageTeam,
-      restedTeamWon: isCalledSide(ra.advantageTeam) ? homeWon : !homeWon,
+      restedTeamWon: isCalledSide(ra.advantageTeam, false) ? homeWon : !homeWon,
       homeWon,
     });
   }

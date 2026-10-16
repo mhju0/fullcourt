@@ -674,6 +674,7 @@ export async function getCompletedGamesWithFatigue(): Promise<HistoricalGameEvid
       awayScore: games.awayScore,
       homeFatigueScore: homeFatigue.score,
       awayFatigueScore: awayFatigue.score,
+      neutralSite: games.neutralSite,
     })
     .from(games)
     .innerJoin(
@@ -772,6 +773,7 @@ export async function searchRegularSeasonGames(
       awayScore: games.awayScore,
       homeFatigueScore: homeFatigue.score,
       awayFatigueScore: awayFatigue.score,
+      neutralSite: games.neutralSite,
     })
     .from(games)
     .innerJoin(homeTeam, eq(games.homeTeamId, homeTeam.id))
@@ -1429,6 +1431,7 @@ export async function getRegularSeasonScheduleForDisparity(
       awayTeamId: games.awayTeamId,
       homeFatigueScore: homeFatigue.score,
       awayFatigueScore: awayFatigue.score,
+      neutralSite: games.neutralSite,
     })
     .from(games)
     .leftJoin(
@@ -1591,6 +1594,7 @@ export async function getSeasonReportRows(season: string): Promise<SeasonReportR
     awayTeamId: Number(r.awayTeamId),
     homeScore: r.homeScore === null ? null : Number(r.homeScore),
     awayScore: r.awayScore === null ? null : Number(r.awayScore),
+    neutralSite: Boolean(r.neutralSite),
     home:
       r.homeFatigueScore === null
         ? null

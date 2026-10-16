@@ -56,9 +56,9 @@ export function classifyRestAdvantage(
  * on that", and the answer for a rested visitor is no.
  *
  * The evidence, over every decidable game the site publishes (1985-86 on, re-measured
- * 2026-10-04 by `scripts/measure_uncalled_half.ts`): backing the more rested team when that
- * team is the visitor won 42.4% of 11,548 games. Home teams win 59.9% of everything and road
- * teams 40.1%, so that row does gain against its own baseline — but a gain over a baseline is
+ * 2026-10-15 by `scripts/measure_uncalled_half.ts`, pinned as `RESTED_ON_ROAD`): backing the
+ * more rested team when that team is the visitor won 42.3% of 11,537 games. Home teams win
+ * 59.9% of everything and road teams 40.1%, so that row does gain against its own baseline — but a gain over a baseline is
  * a measurement, and a pick has to clear 50%.
  *
  * The figures this docblock carried until 2026-08-06 — 44.39% of 7,224, and a ladder said to
@@ -86,9 +86,12 @@ export function classifyRestAdvantage(
  * — which is the point.
  */
 export function isCalledSide(
-  advantageTeam: RestAdvantage["advantageTeam"]
+  advantageTeam: RestAdvantage["advantageTeam"],
+  neutralSite: boolean
 ): advantageTeam is "home" {
-  return advantageTeam === "home";
+  // A neutral-site game has a listed host but no home court, so "rested and at home" cannot
+  // hold there (D-92).
+  return advantageTeam === "home" && !neutralSite;
 }
 
 export type HistoricalGameEvidenceRow = {
@@ -98,6 +101,8 @@ export type HistoricalGameEvidenceRow = {
   awayScore: number | null;
   homeFatigueScore: string;
   awayFatigueScore: string;
+  /** Played away from both arenas: no home court, so outside every venue figure (D-92). */
+  neutralSite: boolean;
 };
 
 type ProcessedHistoricalGame = {
@@ -123,8 +128,8 @@ export function buildHistoricalBacktest(
 ): AnalysisResponse {
   const decidable: ProcessedHistoricalGame[] = [];
 
-  // The venue baseline is tallied over every scored game, before any rest filter — including
-  // the neutral ones `decidable` drops. It has to be the wider set: it answers "what does this
+  // The venue baseline is tallied over every scored game with a home court, before any rest
+  // filter — including the no-edge ones `decidable` drops. It has to be the wider set: it answers "what does this
   // side win anyway", and a version computed only on games with a rest gap would already carry
   // the effect it exists to subtract.
   let baselineGames = 0;
@@ -138,6 +143,8 @@ export function buildHistoricalBacktest(
   for (const row of rows) {
     if (row.homeScore === null || row.awayScore === null) continue;
     if (latestEvidenceDate === null || row.date > latestEvidenceDate) latestEvidenceDate = row.date;
+    // No home court to measure: kept out of the baseline, the home/away breakdown and the calls.
+    if (row.neutralSite) continue;
 
     const homeWon = row.homeScore > row.awayScore;
 
@@ -172,7 +179,7 @@ export function buildHistoricalBacktest(
   // Every headline figure counts only the games the site actually calls. `decidable` stays the
   // wider set — it is what the home/away breakdown below is built from, and that breakdown is
   // the evidence for declining the other half rather than a second headline.
-  const called = decidable.filter((row) => isCalledSide(row.restedTeamSide));
+  const called = decidable.filter((row) => isCalledSide(row.restedTeamSide, false));
 
   const overallWins = called.filter((row) => row.restedTeamWon).length;
   const thresholds: ThresholdBucket[] = BACKTEST_THRESHOLDS.map((threshold) => {

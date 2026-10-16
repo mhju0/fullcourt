@@ -146,7 +146,7 @@ try {
   const ready = new Promise<void>(resolve=>{legacyReady=resolve;});
   const [legacyTarget] = await first`select tip_off_utc from games where id=-2`;
   const legacyRun = refreshDailyGames({
-    games:[{id:-2,date:today,homeTeamId:1,awayTeamId:2,status:"scheduled",tipOffUtc:new Date(legacyTarget.tip_off_utc)}],
+    games:[{id:-2,date:today,homeTeamId:1,awayTeamId:2,status:"scheduled",tipOffUtc:new Date(legacyTarget.tip_off_utc),neutralSite:false}],
     teams:await dbA.select().from(schema.teams),
     port:{...legacy,replaceGameRefresh:async write=>{legacyReady();await pause;await legacy.replaceGameRefresh(write);}},
   });
@@ -175,7 +175,7 @@ try {
   let expected: DailyRefreshWrite | undefined;
   const [target] = await first`select tip_off_utc from games where id=-2`;
   const replay = await refreshDailyGames({
-    games: [{ id: -2, date: today, homeTeamId: 1, awayTeamId: 2, status: "scheduled", tipOffUtc: new Date(target.tip_off_utc) }],
+    games: [{ id: -2, date: today, homeTeamId: 1, awayTeamId: 2, status: "scheduled", tipOffUtc: new Date(target.tip_off_utc), neutralSite: false }],
     teams: await dbA.select().from(schema.teams),
     port: { loadRecentGames: (id,date) => fetchRecentGamesForTeam(dbA,id,date,"scheduled"), replaceGameRefresh: async write => { expected=write; } },
   });

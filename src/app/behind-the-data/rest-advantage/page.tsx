@@ -40,7 +40,7 @@ export const metadata: Metadata = {
 const MEASURED_ON = "2026-07-30";
 
 /**
- * Single-term ablations, re-measured 2026-08-02 by `ml/ablate_fatigue_terms.py`.
+ * Single-term ablations, re-measured by `ml/ablate_fatigue_terms.py` on `ABLATIONS_MEASURED_ON`.
  *
  * These replace a table measured on 2026-07-30 that asked a question the model can no
  * longer be asked. That version held the set of games fixed and reported how much
@@ -56,23 +56,23 @@ const MEASURED_ON = "2026-07-30";
  * that finds extra winners at a rate below the model's own 61.18% average *lowers* the
  * headline while *raising* the number of games won. Travel is exactly that: it is the
  * single largest contributor of correct calls (+394 above a coin flip, more than any other
- * term) and it still moves the headline +0.35pp when removed, because its 5,986 games win
- * at 59.07% rather than 61.18%. Reading `delta` alone says delete it. Deleting it would
+ * term) and it still moves the headline +0.36pp when removed, because its 5,985 games win
+ * at 59.06% rather than 61.18%. Reading `delta` alone says delete it. Deleting it would
  * give up more winning predictions than any other change available.
  *
  * Ordered by wins-above-a-coin-flip surrendered, not by delta.
  */
 const ABLATIONS_MEASURED_ON = "2026-10-15";
-const ABLATION_BASELINE = { winPct: 61.18, called: 27409, edge: 3064 };
+const ABLATION_BASELINE = { winPct: 61.18, called: 27400, edge: 3064 };
 const ABLATIONS = [
-  { term: "Travel", delta: 0.35, found: 5986, foundWinPct: 59.07, edgeLost: 394 },
-  { term: "Recent workload (decay)", delta: -0.67, found: 3430, foundWinPct: 63.32, edgeLost: 331 },
-  { term: "Back-to-back", delta: -0.32, found: 1741, foundWinPct: 63.58, edgeLost: 212 },
-  { term: "Road segment", delta: 0.24, found: 2783, foundWinPct: 58.89, edgeLost: 208 },
-  { term: "Altitude", delta: -0.04, found: 618, foundWinPct: 62.46, edgeLost: 72 },
-  { term: "Schedule density", delta: -0.06, found: 709, foundWinPct: 60.23, edgeLost: 34 },
-  { term: "Overtime", delta: -0.08, found: 154, foundWinPct: 64.29, edgeLost: 21 },
-  { term: "Freshness", delta: 0.01, found: 148, foundWinPct: 60.14, edgeLost: -10 },
+  { term: "Travel", delta: 0.36, found: 5985, foundWinPct: 59.06, edgeLost: 394 },
+  { term: "Recent workload (decay)", delta: -0.67, found: 3428, foundWinPct: 63.36, edgeLost: 332 },
+  { term: "Back-to-back", delta: -0.31, found: 1741, foundWinPct: 63.58, edgeLost: 212 },
+  { term: "Road segment", delta: 0.24, found: 2782, foundWinPct: 58.91, edgeLost: 208 },
+  { term: "Altitude", delta: -0.03, found: 617, foundWinPct: 62.40, edgeLost: 72 },
+  { term: "Schedule density", delta: -0.05, found: 708, foundWinPct: 60.17, edgeLost: 34 },
+  { term: "Overtime", delta: -0.07, found: 154, foundWinPct: 64.29, edgeLost: 21 },
+  { term: "Freshness", delta: 0.01, found: 143, foundWinPct: 61.54, edgeLost: -9 },
 ] as const;
 
 
@@ -108,6 +108,7 @@ function RestRowTable() {
     <DataTable
       rows={rows}
       rowKey={(r) => r.label}
+      minWidth={520}
       columns={[
         {
           label: "RESTED TEAM",
@@ -225,6 +226,7 @@ function RoadLadderTable() {
     <DataTable
       rows={rungs}
       rowKey={(r) => r.label}
+      minWidth={520}
       columns={[
         { label: "REST GAP", unit: "AT LEAST", cell: (r) => r.label },
         {
@@ -238,6 +240,8 @@ function RoadLadderTable() {
           unit: "WIN RATE",
           numeric: true,
           style: { fontWeight: 700 },
+          // Room for "RESTED ROAD" on one line plus the cell padding, so the heading holds to two.
+          headStyle: { minWidth: 112 },
           cell: (r) => <span style={{ color: thin(r) }}>{r.winPct}%</span>,
         },
         {
@@ -268,6 +272,7 @@ function RoadEraTable() {
     <DataTable
       rows={RESTED_ON_ROAD_BY_ERA}
       rowKey={(era) => era.label}
+      minWidth={520}
       columns={[
         {
           label: "ERA",
@@ -290,6 +295,8 @@ function RoadEraTable() {
           unit: "WIN RATE",
           numeric: true,
           style: { fontWeight: 700 },
+          // Room for "RESTED ROAD" on one line plus the cell padding, so the heading holds to two.
+          headStyle: { minWidth: 112 },
           cell: (era) => `${era.winPct}%`,
         },
         {
@@ -310,7 +317,7 @@ function RoadEraTable() {
           label: "BEST RUNG",
           unit: "GAP · WIN RATE",
           numeric: true,
-          style: { color: "var(--term-text-muted)" },
+          style: { color: "var(--term-text-muted)", whiteSpace: "nowrap" },
           cell: (era) => {
             // The strongest rung whose sample is worth printing. Picking the highest win rate
             // regardless of n would put a 36-game bucket in the most prominent column here.
@@ -533,7 +540,7 @@ direction    = ${K.eastwardMultiplier} eastward, ${K.westwardMultiplier} westwar
             <Prose>
               <strong>Road segments, altitude, density, extended rest and overtime.</strong> Consecutive road games add{" "}
               {K.roadStreakPerGame} each after the first {K.roadStreakFree} are free. Visiting
-              altitude (Denver, Utah, and Mexico City at 7,350 ft) multiplies by{" "}
+              altitude (Denver, Utah, and Mexico City at 7,350{"\u00a0"}ft) multiplies by{" "}
               {K.altitudeMultiplier}, and the following night at normal elevation by{" "}
               {K.altitudeCarryover}. Schedule density compares games played across five windows
               {/* No cap is quoted here on purpose. SCHEDULE_STRESS_MAX_MULT is 1.42, but each
@@ -580,6 +587,7 @@ direction    = ${K.eastwardMultiplier} eastward, ${K.westwardMultiplier} westwar
         <DataTable
           rows={ABLATIONS}
           rowKey={(a) => a.term}
+          minWidth={520}
           columns={[
             { label: "TERM", cell: (a) => a.term },
             {
@@ -625,7 +633,8 @@ direction    = ${K.eastwardMultiplier} eastward, ${K.westwardMultiplier} westwar
         <Note>
           The whole model sits at {ABLATION_BASELINE.edge.toLocaleString()} correct calls above a
           coin flip across {ABLATION_BASELINE.called.toLocaleString()} games. Freshness is the
-          only term whose removal improves this net count, by ten calls. The ratified terms
+          only term whose removal improves this net count, by{" "}
+          {-ABLATIONS[ABLATIONS.length - 1].edgeLost} calls. The ratified terms
           remain in place under the evaluation protocol in ADR 0006.
           Terms interact multiplicatively, so these figures do not sum to the total.
         </Note>

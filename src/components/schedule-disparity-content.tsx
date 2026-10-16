@@ -179,7 +179,7 @@ function ColumnGuide({ countedGames, scheduledGames }: { countedGames: number; s
           {term("Rest days")}: days off for the team minus its opponent, capped at four days off
           per side before differencing so the All-Star break does not swamp the total. This uses
           published dates, as do
-          B2B and 3-in-4 counts. Totals can change when games are added or rescheduled.
+          B2B and <span className="whitespace-nowrap">3-in-4</span> counts. Totals can change when games are added or rescheduled.
           Unmeasured fatigue columns show a dash.
         </p>
         <p>

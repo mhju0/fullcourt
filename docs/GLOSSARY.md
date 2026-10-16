@@ -16,7 +16,7 @@ FullCourt studies NBA schedule conditions and historical results. Use these term
 
 **Decidable**: A gap outside the neutral band, identifying a more-rested side. This is separate from whether the game is called or publishable.
 
-**Called**: A decidable game in which the more-rested team is at home, selected by `isCalledSide()` in `src/lib/rest-advantage-evidence.ts`. The headline backtest rate uses this group. In explanatory copy, prefer “rested team at home.”
+**Called**: A decidable game in which the more-rested team is at home and the venue is not a neutral site (D-92), selected by `isCalledSide()` in `src/lib/rest-advantage-evidence.ts`. The headline backtest rate uses this group. In explanatory copy, prefer “rested team at home.”
 
 **Publishable**: An admissible regular-season game outside an excluded abnormal stretch. `publishableGames()` in `src/lib/db/queries.ts` owns this filter. Publication eligibility is separate from the rest-gap classification.
 
@@ -56,7 +56,7 @@ FullCourt studies NBA schedule conditions and historical results. Use these term
 
 ## Schedule scope
 
-**Neutral site**: A venue outside either team's usual home arena. `neutral-venues.ts` supplies its coordinates and altitude flag. Do not confuse this with the neutral rest-gap band.
+**Neutral site**: A venue outside either team's usual home arena. `neutral-venues.ts` supplies its coordinates and altitude flag. A neutral-site game has no home court, so it is never called and is left out of every venue baseline and home/away split (D-92); it still counts as played evidence. Do not confuse this with the neutral rest-gap band.
 
 **Provisional season**: A season with games that are not final. Figures can change as games are played, added, corrected, or rescheduled.
 

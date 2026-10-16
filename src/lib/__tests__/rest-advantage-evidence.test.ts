@@ -3,7 +3,36 @@ import {
   buildHistoricalGameSearch,
   buildHistoricalBacktest,
   classifyRestAdvantage,
+  isCalledSide,
 } from "@/lib/rest-advantage-evidence";
+
+describe("neutral-site games (D-92)", () => {
+  const game = (date: string, neutralSite: boolean) => ({
+    date,
+    season: "2024-25",
+    homeScore: 110,
+    awayScore: 100,
+    homeFatigueScore: "2",
+    awayFatigueScore: "6",
+    neutralSite,
+  });
+
+  it("never calls the listed host at a neutral site", () => {
+    expect(isCalledSide("home", false)).toBe(true);
+    expect(isCalledSide("home", true)).toBe(false);
+  });
+
+  it("keeps a neutral-site game out of the calls, the breakdown and the venue baseline", () => {
+    const result = buildHistoricalBacktest([game("2025-01-02", false), game("2025-01-03", true)]);
+
+    expect(result.totalGames).toBe(1);
+    expect(result.homeAwayBreakdown.homeTeamMoreRested.games).toBe(1);
+    expect(result.venueBaseline.games).toBe(1);
+    expect(result.seasonWinRates[0]?.homeGames).toBe(1);
+    // Still the newest evidence: the game was played, it just has no home court.
+    expect(result.latestEvidenceDate).toBe("2025-01-03");
+  });
+});
 
 describe("classifyRestAdvantage", () => {
   it.each([
@@ -44,10 +73,10 @@ describe("classifyRestAdvantage", () => {
 describe("buildHistoricalBacktest — venue baseline", () => {
   /** home rested + home won · home rested + home lost · NEUTRAL + home won · away rested + away won */
   const MIXED = [
-    { date: "2024-01-02", season: "2023-24", homeScore: 110, awayScore: 100, homeFatigueScore: "5", awayFatigueScore: "7" },
-    { date: "2024-01-03", season: "2023-24", homeScore: 100, awayScore: 110, homeFatigueScore: "5", awayFatigueScore: "7" },
-    { date: "2024-01-04", season: "2023-24", homeScore: 100, awayScore: 90, homeFatigueScore: "5", awayFatigueScore: "5.2" },
-    { date: "2024-01-05", season: "2023-24", homeScore: 90, awayScore: 100, homeFatigueScore: "7", awayFatigueScore: "5" },
+    { date: "2024-01-02", season: "2023-24", homeScore: 110, awayScore: 100, homeFatigueScore: "5", awayFatigueScore: "7", neutralSite: false },
+    { date: "2024-01-03", season: "2023-24", homeScore: 100, awayScore: 110, homeFatigueScore: "5", awayFatigueScore: "7", neutralSite: false },
+    { date: "2024-01-04", season: "2023-24", homeScore: 100, awayScore: 90, homeFatigueScore: "5", awayFatigueScore: "5.2", neutralSite: false },
+    { date: "2024-01-05", season: "2023-24", homeScore: 90, awayScore: 100, homeFatigueScore: "7", awayFatigueScore: "5", neutralSite: false },
   ] as const;
 
   it("counts every scored game, including the neutral ones the headline drops", () => {
@@ -86,11 +115,11 @@ describe("buildHistoricalBacktest — venue baseline", () => {
   it("gives each season its own baseline, because home court is not stable across eras", () => {
     const result = buildHistoricalBacktest([
       // 1987-88: home wins both.
-      { date: "1988-01-02", season: "1987-88", homeScore: 110, awayScore: 100, homeFatigueScore: "5", awayFatigueScore: "7" },
-      { date: "1988-01-03", season: "1987-88", homeScore: 110, awayScore: 100, homeFatigueScore: "5", awayFatigueScore: "5.2" },
+      { date: "1988-01-02", season: "1987-88", homeScore: 110, awayScore: 100, homeFatigueScore: "5", awayFatigueScore: "7", neutralSite: false },
+      { date: "1988-01-03", season: "1987-88", homeScore: 110, awayScore: 100, homeFatigueScore: "5", awayFatigueScore: "5.2", neutralSite: false },
       // 2023-24: home splits.
-      { date: "2024-01-02", season: "2023-24", homeScore: 110, awayScore: 100, homeFatigueScore: "5", awayFatigueScore: "7" },
-      { date: "2024-01-03", season: "2023-24", homeScore: 100, awayScore: 110, homeFatigueScore: "5", awayFatigueScore: "5.2" },
+      { date: "2024-01-02", season: "2023-24", homeScore: 110, awayScore: 100, homeFatigueScore: "5", awayFatigueScore: "7", neutralSite: false },
+      { date: "2024-01-03", season: "2023-24", homeScore: 100, awayScore: 110, homeFatigueScore: "5", awayFatigueScore: "5.2", neutralSite: false },
     ]);
 
     const byName = new Map(result.seasonWinRates.map((s) => [s.season, s]));
@@ -100,7 +129,7 @@ describe("buildHistoricalBacktest — venue baseline", () => {
 
   it("keeps a home-rate season even before a rested-home game qualifies", () => {
     const result = buildHistoricalBacktest([
-      { date: "2026-10-20", season: "2026-27", homeScore: 110, awayScore: 100, homeFatigueScore: "5", awayFatigueScore: "5.2" },
+      { date: "2026-10-20", season: "2026-27", homeScore: 110, awayScore: 100, homeFatigueScore: "5", awayFatigueScore: "5.2", neutralSite: false },
     ], 0, new Set(["2026-27"]));
 
     expect(result.seasonWinRates).toEqual([{
@@ -119,9 +148,9 @@ describe("buildHistoricalBacktest — venue baseline", () => {
   it("keeps each season's baseline on all its games, not only its published ones", () => {
     const result = buildHistoricalBacktest([
       // Published: home rested, home won.
-      { date: "2024-01-02", season: "2023-24", homeScore: 110, awayScore: 100, homeFatigueScore: "5", awayFatigueScore: "7" },
+      { date: "2024-01-02", season: "2023-24", homeScore: 110, awayScore: 100, homeFatigueScore: "5", awayFatigueScore: "7", neutralSite: false },
       // Not published (neutral), and the home team lost it.
-      { date: "2024-01-03", season: "2023-24", homeScore: 100, awayScore: 110, homeFatigueScore: "5", awayFatigueScore: "5.2" },
+      { date: "2024-01-03", season: "2023-24", homeScore: 100, awayScore: 110, homeFatigueScore: "5", awayFatigueScore: "5.2", neutralSite: false },
     ]);
 
     const season = result.seasonWinRates[0];
@@ -153,6 +182,7 @@ describe("buildHistoricalBacktest", () => {
         awayScore: 100,
         homeFatigueScore: "5",
         awayFatigueScore: "5.5",
+        neutralSite: false,
       },
       {
         date: "2024-01-03",
@@ -161,6 +191,7 @@ describe("buildHistoricalBacktest", () => {
         awayScore: 110,
         homeFatigueScore: "5.5",
         awayFatigueScore: "5",
+        neutralSite: false,
       },
       {
         date: "2024-01-04",
@@ -169,6 +200,7 @@ describe("buildHistoricalBacktest", () => {
         awayScore: 90,
         homeFatigueScore: "5",
         awayFatigueScore: "5.49",
+        neutralSite: false,
       },
       {
         date: "2024-02-01",
@@ -177,6 +209,7 @@ describe("buildHistoricalBacktest", () => {
         awayScore: 105,
         homeFatigueScore: "4",
         awayFatigueScore: "6",
+        neutralSite: false,
       },
     ]);
 
@@ -221,6 +254,7 @@ describe("buildHistoricalGameSearch", () => {
         awayScore: 100,
         homeFatigueScore: "5",
         awayFatigueScore: "5.5",
+        neutralSite: false,
       },
       {
         id: 9,
@@ -232,6 +266,7 @@ describe("buildHistoricalGameSearch", () => {
         awayScore: 110,
         homeFatigueScore: "5.5",
         awayFatigueScore: "5",
+        neutralSite: false,
       },
       {
         id: 8,
@@ -243,6 +278,7 @@ describe("buildHistoricalGameSearch", () => {
         awayScore: 100,
         homeFatigueScore: "5",
         awayFatigueScore: "5.49",
+        neutralSite: false,
       },
     ];
 
