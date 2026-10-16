@@ -76,4 +76,11 @@ test.describe("Analysis page", () => {
     await expect(clear).toBeHidden();
     await expect(page.getByLabel("Team filter")).toHaveValue("");
   });
+
+  test("a relocated franchise's option names the code its old rows print", async ({ page }) => {
+    await page.goto("/analysis");
+    const filter = page.getByLabel("Team filter");
+    await expect(filter.locator("option[value=OKC]")).toHaveText("OKC (incl. SEA)");
+    await expect(filter.locator("option[value=BOS]")).toHaveText("BOS");
+  });
 });

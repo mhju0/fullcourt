@@ -1,13 +1,13 @@
+import { liftOverBaseline } from "@/lib/rest-split-facts";
 import { MIN_GAMES_FOR_INFERENCE } from "@/lib/season-report";
 import type { AnalysisResponse } from "@/types";
 
 export type HomeCourtSeason = AnalysisResponse["seasonWinRates"][number];
 
+/** The difference of the two rates as printed beside it, so the row's arithmetic holds (D-93). */
 export function restedHomeGap(row: HomeCourtSeason): number | null {
   if (row.games < MIN_GAMES_FOR_INFERENCE) return null;
-  const restRate = row.restedTeamWins / row.games;
-  const homeRate = row.homeWins / row.homeGames;
-  return Math.round((restRate - homeRate) * 1000) / 10;
+  return liftOverBaseline(row.winPct, row.homeBaselinePct);
 }
 
 export function homeCourtTickIndices(length: number, maximum = 6): number[] {

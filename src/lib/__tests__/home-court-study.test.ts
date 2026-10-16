@@ -29,13 +29,21 @@ function season(
 }
 
 describe("restedHomeGap", () => {
-  it("uses source counts instead of subtracting already-rounded rates", () => {
-    const row = season("2024-25", 2, 3, 2, 3);
-    row.homeBaselinePct = 66.7;
-    row.winPct = 66.6;
-    row.games = 100;
-    row.restedTeamWins = 67;
-    expect(restedHomeGap(row)).toBe(0.3);
+  /**
+   * The gap sits beside the two rates it compares, so it is their difference as printed.
+   * Computed from counts it read +0.1 in 1987-88 and 1997-98 beside two identical rates.
+   */
+  it("is the difference of the two printed rates, so equal rates read zero", () => {
+    // 1987-88: rested at home 67.9%, home 67.9%; from counts the gap was +0.1.
+    const row = season("1987-88", 640, 943, 373, 549);
+    expect(row.winPct).toBe(row.homeBaselinePct);
+    expect(restedHomeGap(row)).toBe(0);
+  });
+
+  it("matches the printed rates where counts disagree by a tenth", () => {
+    // 2024-25: 56.3% against 54.4%; from counts the gap was 1.8.
+    const row = season("2024-25", 667, 1225, 358, 636);
+    expect(restedHomeGap(row)).toBe(1.9);
   });
 
   it("withholds the rest comparison below 100 games", () => {
