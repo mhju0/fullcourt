@@ -52,7 +52,8 @@ export default function TimeZonesMethodPage() {
           <em>main effect across every game</em> and found no added predictive value.
           This test asks a narrower question: a long{" "}
           <strong>eastward</strong> shift arriving on <strong>short rest</strong>, where the body
-          clock may have less time to adjust before tip-off.
+          clock may have less time to adjust before tip-off. Short rest means the visitor played
+          the previous night.
         </Prose>
         <Prose>
           The protocol specified four candidate terms before the analysis ran, including one
@@ -146,7 +147,7 @@ strength only                    ${logLoss.strengthOnly.toFixed(5)}
         </Formula>
         <Prose>
           Adding all four candidates changes held-out log loss by{" "}
-          <strong>{signedNumber(logLoss.candidatesWorth, 5)}</strong>, a small deterioration.
+          <strong>{signedNumber(logLoss.candidatesWorth, 5)}</strong>, a {logLoss.candidatesWorth < 0 ? "small deterioration" : "negligible change"}.
           The
           sign-clamped fit pinned <code>{data.primaryTerm}</code> at zero in{" "}
           <strong>
@@ -158,10 +159,30 @@ strength only                    ${logLoss.strengthOnly.toFixed(5)}
         <ValueGrid
           values={[
             { label: "Candidates worth", value: signedNumber(logLoss.candidatesWorth, 5), sub: "held-out log loss" },
-            { label: "Every fatigue term", value: signedNumber(logLoss.everyFatigueFactorCombined, 5), sub: "for comparison" },
-            { label: "Strength alone", value: signedNumber(logLoss.strengthAlone, 3), sub: `≈ ${Math.round(strengthVsFatigueRatio(data))}× the whole fatigue model` },
+            { label: "Every fatigue term", value: signedNumber(logLoss.everyFatigueFactorCombined, 5), sub: "ADR 0006, not this run" },
+            { label: "Strength alone", value: signedNumber(logLoss.strengthAlone, 3), sub: `ADR 0006, ≈ ${Math.round(strengthVsFatigueRatio(data))}× every fatigue term` },
           ]}
         />
+      </Section>
+
+      <Section label="SENSITIVITY" title="A wider reading of short rest" disclosure>
+        <Prose>
+          The protocol defined short rest as &ldquo;at most one day of rest&rdquo;. The test
+          reads that as the visitor playing the previous night. Read as at most one day off,
+          which also admits a visitor with one night between games, the short-rest cells grow to{" "}
+          {data.sensitivity.eastShortGames.toLocaleString()} eastward and{" "}
+          {data.sensitivity.westShortGames.toLocaleString()} westward games.
+        </Prose>
+        <Prose>
+          The verdict does not change, though the margin {Math.sign(data.sensitivity.candidatesWorth) === Math.sign(logLoss.candidatesWorth) ? "moves" : "changes sign"}. The four
+          candidates are worth{" "}
+          <strong>{signedNumber(data.sensitivity.candidatesWorth, 5)}</strong>, against{" "}
+          {signedNumber(logLoss.baselineWorth, 5)} for the four fatigue terms they would join, and{" "}
+          <code>{data.primaryTerm}</code> is non-zero in {data.sensitivity.primaryFoldsNonZero} of{" "}
+          {protocol.folds} folds. This check is shown beside the pre-registered result, not in
+          place of it: changing the definition after seeing the outcome would be choosing the
+          test by its answer.
+        </Prose>
       </Section>
 
       <Section label="OVERLAP WITH EXISTING TERMS" title="Overlap with existing schedule factors" disclosure>
@@ -177,11 +198,14 @@ strength only                    ${logLoss.strengthOnly.toFixed(5)}
         </Prose>
         <Formula>
           {`${westShortTerm.term}     ${westShortTerm.games} games
-                    ${westShortTerm.alsoBackToBackPct.toFixed(1)}% are ALSO back-to-backs
+                    ${westShortTerm.visitorBackToBackPct.toFixed(1)}% visitor on a back-to-back
+                    ${westShortTerm.backToBackTermPct.toFixed(1)}% already carry the back-to-back term
                     ${westShortTerm.alsoAltitudePct.toFixed(1)}% are also visiting altitude`}
         </Formula>
         <Prose>
-          Most of these games are already covered by the back-to-back term. A stable coefficient
+          Every one of these visitors played the night before, and most of the games already
+          carry the model&rsquo;s back-to-back term. That term compares the two teams, so it is
+          zero on the nights both played the evening before. A stable coefficient
           does not establish an independent contribution. The single-term comparison measures
           what the candidate adds beyond the existing baseline, as required by ADR 0006.
         </Prose>
@@ -218,7 +242,7 @@ this test found: no added predictive value from direction`}
           items={[
             `Direction remains tied to geography. The analysis controls for team strength but does not match otherwise identical trips: a ${protocol.thresholdHours}-hour eastward trip usually involves a Western team.`,
             `It cannot see rest and direction as anything but a schedule fact. Nothing here observes a flight, a departure time, a hotel, or a minute of anyone's sleep. "Short rest" is a gap between dates on a calendar.`,
-            "It cannot rule out smaller effects. The test found no predictive improvement across 16 held-out seasons; that does not establish that the biological effect is zero.",
+            `It cannot rule out smaller effects. The test found no predictive improvement across ${protocol.folds} held-out seasons; that does not establish that the biological effect is zero.`,
             "It cannot speak to the playoffs. The protocol is regular-season walk-forward, and a postseason series has travel patterns and rest gaps this population does not contain.",
             `It cannot test the joint effect of altitude and these long shifts. The ${protocol.thresholdHours}-hour threshold excludes Denver and Utah, and overlap with the altitude term is ${primary.alsoAltitudePct.toFixed(1)}%.`,
             "Testing additional ideas on the same corpus increases the risk of selecting a chance result. New questions need a declared evaluation protocol.",

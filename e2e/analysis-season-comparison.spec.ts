@@ -92,7 +92,7 @@ test("threshold views use unfiltered maturity and each season's own venue baseli
   }
 });
 
-test("a successful empty threshold view is quiet and All Games recovers from a failed view", async ({ page }) => {
+test("a successful empty threshold view is quiet and Any gap recovers from a failed view", async ({ page }) => {
   const comparison = await openComparison(page, (route) => {
     if (new URL(route.request().url()).searchParams.get("seasonMinRA") === "7") {
       return fulfill(route, { ...backtest, seasonWinRates: [] });
@@ -104,7 +104,7 @@ test("a successful empty threshold view is quiet and All Games recovers from a f
   await expect(comparison.getByRole("alert")).toHaveCount(0);
   await comparison.getByRole("button", { name: "RA ≥ 5", exact: true }).click();
   await expect(comparison.getByRole("alert")).toBeVisible();
-  await comparison.getByRole("button", { name: "ALL GAMES", exact: true }).click();
+  await comparison.getByRole("button", { name: "ANY GAP", exact: true }).click();
   await expect(comparison.getByRole("alert")).toHaveCount(0);
   await expect(comparison.getByText(/THE WIDEST GAP OF THE 2 SEASONS SHOWN/)).toBeVisible();
 });

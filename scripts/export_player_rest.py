@@ -52,6 +52,7 @@ from analyze_player_shooting import (  # noqa: E402
     annotate,
     efg,
     efg_se,
+    is_rested,
     load_birthdays,
     load_game_dates,
     load_player_games,
@@ -66,7 +67,7 @@ DEST = ROOT / "public" / "data" / "player-rest.json"
 CAREER_MIN_ARM = 150
 
 b2b = lambda r: r["rest"] == 1                                        # noqa: E731
-rested = lambda r: r["rest"] is not None and r["rest"] >= 3           # noqa: E731
+rested = is_rested
 
 
 def arm(games: list[dict]) -> tuple[int, int, int]:

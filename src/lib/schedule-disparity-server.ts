@@ -98,6 +98,7 @@ async function buildScheduleDisparity(
       gamesWithLargeEdge: result.league.gamesWithLargeEdge,
       countedGames: result.league.countedGames,
       measuredGames: result.league.measuredGames,
+      projectedGames: result.league.projectedGames,
     },
   };
 }

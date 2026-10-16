@@ -28,7 +28,7 @@ export function releaseGame(date: string): GameResponse {
     homeTeam: { id: 1, name: "Celtics", abbreviation: "BOS", city: "Boston" },
     awayTeam: { id: 2, name: "Nets", abbreviation: "BKN", city: "Brooklyn" },
     homeScore: 110, awayScore: 100, homeFatigue, awayFatigue,
-    restAdvantage: { differential: 3, advantageTeam: "home" }, projectedFatigue: false,
+    restAdvantage: { differential: 3, advantageTeam: "home" }, projectedFatigue: false, neutralCity: null,
     seasonOpeners: { home: false, away: false },
   };
 }

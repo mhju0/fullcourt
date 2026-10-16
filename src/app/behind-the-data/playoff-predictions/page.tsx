@@ -64,7 +64,7 @@ const FEATURES = [
   {
     name: "prior_grind_diff",
     weight: PLAYOFF_MODEL_COEFFICIENTS.prior_grind_diff,
-    what: "The opponent's prior-round grind minus the home-court team's own, where grind is games played beyond a sweep (games_played − 4 for a best-of-7, − 3 otherwise).",
+    what: "The opponent's prior-round grind minus the home-court team's own, where grind is games played beyond a sweep (games_played −\u00a04 for a best-of-7, −\u00a03 otherwise).",
     why: "The subtraction order is deliberately inverted versus the other three features so a positive coefficient still favors the home-court team. Always 0 in Round 1, since there is no prior round to have been ground down by.",
   },
   {
@@ -112,7 +112,7 @@ export default function PlayoffPredictionsMethodPage() {
             },
             {
               label: "WEIGHT",
-              unit: "LOG-ODDS PER UNIT",
+              unit: "LOG-ODDS PER SD",
               // Left, not right: the weights are read against each other as a list, and the
               // column sits between two prose columns rather than among numbers.
               align: "left",
@@ -155,6 +155,7 @@ export default function PlayoffPredictionsMethodPage() {
           does not randomly assign opponents or eliminate differences in team quality.
         </Prose>
         <DataTable
+          minWidth={520}
           rows={[
             { label: "They closed it early", ...PLAYOFF_GRIND_EXOGENOUS.oppClosedEarly },
             // The row the section exists to show, so its rate is the one that carries colour.
@@ -190,9 +191,10 @@ export default function PlayoffPredictionsMethodPage() {
             },
             {
               label: "YOUR RECORD EDGE",
-              unit: "MEAN WIN% DIFF",
+              unit: "MEAN WIN% DIFF, PP",
               className: "tabular-nums",
-              cell: (r) => r.meanWinPctDiff.toFixed(3),
+              // Stored as a 0–1 fraction; printed in percentage points to match the WIN% unit.
+              cell: (r) => (r.meanWinPctDiff * 100).toFixed(1),
             },
           ]}
         />
@@ -229,6 +231,7 @@ export default function PlayoffPredictionsMethodPage() {
           previous round&rsquo;s length, for rounds 2+:
         </Prose>
         <DataTable
+          minWidth={520}
           rows={PLAYOFF_ENTRY_REST_BUCKETS}
           rowKey={(b) => b.label}
           rowAttrs={(_b, i) =>
@@ -236,14 +239,15 @@ export default function PlayoffPredictionsMethodPage() {
           }
           columns={[
             {
-              label: "REST INTO GAME 1",
+              label: "REST EDGE INTO GAME 1",
+              unit: "HOME-COURT TEAM VS OPPONENT",
               className: "whitespace-nowrap",
               style: { fontWeight: 700 },
               cell: (b) => b.label,
             },
             { label: "SERIES", className: "tabular-nums", cell: (b) => b.n },
             {
-              label: "WON THE SERIES",
+              label: "HOME-COURT TEAM WON",
               unit: "%",
               className: "tabular-nums",
               cell: (b) => b.winPct.toFixed(1),
@@ -259,8 +263,8 @@ export default function PlayoffPredictionsMethodPage() {
           <br />
           <br />
           &ldquo;Closed it early&rdquo; means a team won its previous round within one game of a
-          sweep; &ldquo;went the distance&rdquo; means it needed the last game or the one before
-          it. Grind is counted as games beyond a sweep rather than as raw games played because{" "}
+          sweep; &ldquo;went the distance&rdquo; means it needed two or more games beyond a
+          sweep: game 6 or 7 of a best-of-seven, game 5 of a best-of-five. Grind is counted as games beyond a sweep rather than as raw games played because{" "}
           {PLAYOFF_BEST_OF_FIVE.round1BestOfFive} of {PLAYOFF_BEST_OF_FIVE.round1Total} first
           rounds in this record were best-of-five, where five games means a team went the full
           distance rather than closing early.
@@ -275,6 +279,7 @@ export default function PlayoffPredictionsMethodPage() {
           lower probability-error scores than a constant historical home-court win rate.
         </Prose>
         <DataTable
+          minWidth={520}
           rows={PLAYOFF_MODEL_CALIBRATION}
           rowKey={(m) => m.key}
           columns={[
@@ -346,6 +351,7 @@ export default function PlayoffPredictionsMethodPage() {
           observed accuracy is higher. This split alone does not isolate the grind term&rsquo;s contribution.
         </Prose>
         <DataTable
+          minWidth={520}
           // Each row emphasises whichever of the two accuracy columns actually won it — blue
           // for the model, plain bold for the always-home-court rule. Naming the winner is
           // what makes the split legible: the model wins from round two, and loses round one.
@@ -403,7 +409,7 @@ export default function PlayoffPredictionsMethodPage() {
               label: "LOG LOSS",
               unit: "MODEL VS BASELINE",
               className: "tabular-nums",
-              cell: (r) => `${r.logLoss.toFixed(4)} vs ${r.baselineLogLoss.toFixed(4)}`,
+              cell: (r) => `${r.logLoss.toFixed(4)} vs\u00a0${r.baselineLogLoss.toFixed(4)}`,
             },
           ]}
         />

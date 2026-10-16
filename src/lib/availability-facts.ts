@@ -30,8 +30,8 @@ export interface BestOutSeason {
 
 /** What the measurement was computed over. */
 export const AVAILABILITY_SAMPLE = Object.freeze({
-  games: 35458,
-  teamGames: 70932,
+  games: 33166,
+  teamGames: 66622,
   firstSeason: "1996-97",
   lastSeason: "2025-26",
 });
@@ -51,8 +51,9 @@ export const AVAILABILITY_DEFINITION = Object.freeze({
 /**
  * The headline: everything this site measures, in one unit.
  *
- * `bestPlayerOut` and `homeCourt` landing within 0.04 points of each other is the finding —
- * losing your best player costs about what playing at home is worth. Each effect comes from
+ * `bestPlayerOut` and `homeCourt` landing about a tenth of a point apart, well inside either
+ * estimate's standard error, is the finding — losing your best player costs about what playing
+ * at home is worth. Each effect comes from
  * its own specification, because the absence measures are collinear with one another and split
  * unstably when entered together.
  *
@@ -60,20 +61,20 @@ export const AVAILABILITY_DEFINITION = Object.freeze({
  * of margin per point of game score above the team's own replacement level.
  */
 export const AVAILABILITY_EFFECTS = Object.freeze({
-  bestPlayerOut: Object.freeze({ points: 2.863, t: 17.9 }) as AvailabilityEffect,
-  homeCourt: Object.freeze({ points: 2.824, t: 42.3 }) as AvailabilityEffect,
-  backToBack: Object.freeze({ points: 1.761, t: 13.4 }) as AvailabilityEffect,
-  visitingAltitude: Object.freeze({ points: 1.358, t: 5.1 }) as AvailabilityEffect,
-  priorOvertime: Object.freeze({ points: 0.577, t: 3.2 }) as AvailabilityEffect,
-  missValuePerPoint: Object.freeze({ points: 0.26, t: 21.9 }) as AvailabilityEffect,
+  bestPlayerOut: Object.freeze({ points: 2.969, t: 17.8 }) as AvailabilityEffect,
+  homeCourt: Object.freeze({ points: 2.845, t: 41.4 }) as AvailabilityEffect,
+  backToBack: Object.freeze({ points: 1.764, t: 13.1 }) as AvailabilityEffect,
+  visitingAltitude: Object.freeze({ points: 1.371, t: 5.0 }) as AvailabilityEffect,
+  priorOvertime: Object.freeze({ points: 0.498, t: 2.7 }) as AvailabilityEffect,
+  missValuePerPoint: Object.freeze({ points: 0.275, t: 22.0 }) as AvailabilityEffect,
 });
 
 /** How often it happens at all. */
 export const AVAILABILITY_FREQUENCY = Object.freeze({
-  teamGamesMissingBestPlayer: 0.0991,
-  teamGamesMissingNobody: 0.4455,
-  gamesEitherSideMissingBest: 0.1714,
-  meanRotationSize: 8.62,
+  teamGamesMissingBestPlayer: 0.0958,
+  teamGamesMissingNobody: 0.4669,
+  gamesEitherSideMissingBest: 0.1666,
+  meanRotationSize: 8.52,
 });
 
 /**
@@ -85,10 +86,10 @@ export const AVAILABILITY_FREQUENCY = Object.freeze({
  * what a back-to-back costs.
  */
 export const AVAILABILITY_SCHEDULE_HOLDS_UP = Object.freeze({
-  backToBack: Object.freeze({ scheduleOnly: 1.761, absenceControlled: 1.642, shiftPct: 6.7 }),
-  visitingAltitude: Object.freeze({ scheduleOnly: 1.358, absenceControlled: 1.282, shiftPct: 5.6 }),
-  priorOvertime: Object.freeze({ scheduleOnly: 0.577, absenceControlled: 0.534, shiftPct: 7.4 }),
-  scheduleDensity: Object.freeze({ scheduleOnly: 0.275, absenceControlled: 0.265, shiftPct: 3.8 }),
+  backToBack: Object.freeze({ scheduleOnly: 1.764, absenceControlled: 1.638, shiftPct: 7.2 }),
+  visitingAltitude: Object.freeze({ scheduleOnly: 1.371, absenceControlled: 1.303, shiftPct: 5.0 }),
+  priorOvertime: Object.freeze({ scheduleOnly: 0.498, absenceControlled: 0.458, shiftPct: 7.9 }),
+  scheduleDensity: Object.freeze({ scheduleOnly: 0.279, absenceControlled: 0.264, shiftPct: 5.3 }),
 });
 
 /**
@@ -99,9 +100,9 @@ export const AVAILABILITY_SCHEDULE_HOLDS_UP = Object.freeze({
  * game. The effects are real and precisely estimated; they are not a prediction.
  */
 export const AVAILABILITY_NOISE = Object.freeze({
-  marginStdDev: 13.64,
-  rmseScheduleOnly: 12.52,
-  rmseWithAbsence: 12.436,
+  marginStdDev: 13.65,
+  rmseScheduleOnly: 12.462,
+  rmseWithAbsence: 12.372,
 });
 
 /**
@@ -111,33 +112,33 @@ export const AVAILABILITY_NOISE = Object.freeze({
  */
 export const AVAILABILITY_BEST_OUT_BY_SEASON: readonly BestOutSeason[] = Object.freeze([
   Object.freeze({ season: "1996-97", rate: 0.0596, teamGames: 2233 }),
-  Object.freeze({ season: "1997-98", rate: 0.0648, teamGames: 2378 }),
-  Object.freeze({ season: "1998-99", rate: 0.0641, teamGames: 1450 }),
-  Object.freeze({ season: "1999-00", rate: 0.0509, teamGames: 2378 }),
-  Object.freeze({ season: "2000-01", rate: 0.0673, teamGames: 2378 }),
-  Object.freeze({ season: "2001-02", rate: 0.0656, teamGames: 2378 }),
-  Object.freeze({ season: "2002-03", rate: 0.0459, teamGames: 2373 }),
-  Object.freeze({ season: "2003-04", rate: 0.077, teamGames: 2378 }),
-  Object.freeze({ season: "2004-05", rate: 0.0772, teamGames: 2460 }),
-  Object.freeze({ season: "2005-06", rate: 0.0675, teamGames: 2460 }),
-  Object.freeze({ season: "2006-07", rate: 0.0809, teamGames: 2460 }),
-  Object.freeze({ season: "2007-08", rate: 0.0707, teamGames: 2460 }),
-  Object.freeze({ season: "2008-09", rate: 0.0829, teamGames: 2460 }),
-  Object.freeze({ season: "2009-10", rate: 0.078, teamGames: 2460 }),
-  Object.freeze({ season: "2010-11", rate: 0.0789, teamGames: 2460 }),
-  Object.freeze({ season: "2011-12", rate: 0.1136, teamGames: 1980 }),
-  Object.freeze({ season: "2012-13", rate: 0.0964, teamGames: 2458 }),
-  Object.freeze({ season: "2013-14", rate: 0.0935, teamGames: 2460 }),
-  Object.freeze({ season: "2014-15", rate: 0.1016, teamGames: 2460 }),
-  Object.freeze({ season: "2015-16", rate: 0.0829, teamGames: 2460 }),
-  Object.freeze({ season: "2016-17", rate: 0.0817, teamGames: 2460 }),
-  Object.freeze({ season: "2017-18", rate: 0.115, teamGames: 2460 }),
-  Object.freeze({ season: "2018-19", rate: 0.1106, teamGames: 2460 }),
-  Object.freeze({ season: "2019-20", rate: 0.1308, teamGames: 2118 }),
-  Object.freeze({ season: "2020-21", rate: 0.1417, teamGames: 2160 }),
-  Object.freeze({ season: "2021-22", rate: 0.1671, teamGames: 2460 }),
-  Object.freeze({ season: "2022-23", rate: 0.1772, teamGames: 2460 }),
-  Object.freeze({ season: "2023-24", rate: 0.1293, teamGames: 2460 }),
-  Object.freeze({ season: "2024-25", rate: 0.1918, teamGames: 2450 }),
-  Object.freeze({ season: "2025-26", rate: 0.1947, teamGames: 2460 }),
+  Object.freeze({ season: "1997-98", rate: 0.0605, teamGames: 2233 }),
+  Object.freeze({ season: "1998-99", rate: 0.0552, teamGames: 1305 }),
+  Object.freeze({ season: "1999-00", rate: 0.0506, teamGames: 2233 }),
+  Object.freeze({ season: "2000-01", rate: 0.0564, teamGames: 2233 }),
+  Object.freeze({ season: "2001-02", rate: 0.0591, teamGames: 2233 }),
+  Object.freeze({ season: "2002-03", rate: 0.0399, teamGames: 2233 }),
+  Object.freeze({ season: "2003-04", rate: 0.0631, teamGames: 2233 }),
+  Object.freeze({ season: "2004-05", rate: 0.074, teamGames: 2310 }),
+  Object.freeze({ season: "2005-06", rate: 0.0649, teamGames: 2310 }),
+  Object.freeze({ season: "2006-07", rate: 0.0797, teamGames: 2310 }),
+  Object.freeze({ season: "2007-08", rate: 0.0662, teamGames: 2310 }),
+  Object.freeze({ season: "2008-09", rate: 0.0797, teamGames: 2310 }),
+  Object.freeze({ season: "2009-10", rate: 0.071, teamGames: 2310 }),
+  Object.freeze({ season: "2010-11", rate: 0.0749, teamGames: 2310 }),
+  Object.freeze({ season: "2011-12", rate: 0.1148, teamGames: 1830 }),
+  Object.freeze({ season: "2012-13", rate: 0.0906, teamGames: 2308 }),
+  Object.freeze({ season: "2013-14", rate: 0.0909, teamGames: 2310 }),
+  Object.freeze({ season: "2014-15", rate: 0.0961, teamGames: 2310 }),
+  Object.freeze({ season: "2015-16", rate: 0.0857, teamGames: 2310 }),
+  Object.freeze({ season: "2016-17", rate: 0.0788, teamGames: 2310 }),
+  Object.freeze({ season: "2017-18", rate: 0.1039, teamGames: 2310 }),
+  Object.freeze({ season: "2018-19", rate: 0.1048, teamGames: 2310 }),
+  Object.freeze({ season: "2019-20", rate: 0.1214, teamGames: 1968 }),
+  Object.freeze({ season: "2020-21", rate: 0.1433, teamGames: 2010 }),
+  Object.freeze({ season: "2021-22", rate: 0.1697, teamGames: 2310 }),
+  Object.freeze({ season: "2022-23", rate: 0.1801, teamGames: 2310 }),
+  Object.freeze({ season: "2023-24", rate: 0.1338, teamGames: 2310 }),
+  Object.freeze({ season: "2024-25", rate: 0.1939, teamGames: 2300 }),
+  Object.freeze({ season: "2025-26", rate: 0.1991, teamGames: 2310 }),
 ]);

@@ -31,9 +31,9 @@ export function HomeContent({ findings }: { findings: HomeFindings }) {
           <h2 id="rest-finding">Widest rest gaps<span className="sr-only"> · </span><br />historical home teams</h2>
           {historical ? <>
             <p className={`${styles.big} ${historical.edgePp < 0 ? styles.tired : styles.rested}`} data-testid="home-rest-edge">
-              {signedNumber(historical.edgePp, 1)}<span> pp</span>
+              {signedNumber(historical.edgePp, 1)}<span>{"\u00a0"}pp</span>
             </p>
-            <p>Percentage-point difference from the home baseline in {historical.games.toLocaleString()} games with the widest rest gaps (model score ≥ 7).</p>
+            <p>Percentage-point difference from the home baseline in {historical.games.toLocaleString()} games with the widest rest gaps (a rest-advantage gap of 7 or more).</p>
             {historical.latestEvidenceDate ? <p className={styles.metadata}>Rest evidence through {historical.latestEvidenceDate}</p> : null}
           </> : <p>The historical comparison is unavailable. Model Results has the underlying evidence and data status.</p>}
         </div>
@@ -58,7 +58,7 @@ export function HomeContent({ findings }: { findings: HomeFindings }) {
                 <dd className={row.value < 0 ? styles.tired : styles.rested}>{signedNumber(row.value, 0)} <span>net edge games</span></dd>
               </div>)}
             </dl>}
-            <p>Favorable minus unfavorable games. {schedule.measuredGames.toLocaleString()} of {schedule.scheduledGames.toLocaleString()} games compared. This is a schedule comparison, not a prediction of wins.</p>
+            <p>Favorable minus unfavorable games. {schedule.measuredGames.toLocaleString()} of {schedule.scheduledGames.toLocaleString()} games compared{schedule.projectedGames > 0 ? `, ${schedule.projectedGames === schedule.measuredGames ? "all" : schedule.projectedGames.toLocaleString()} on projected fatigue from the published schedule` : ""}. This is a schedule comparison, not a prediction of wins.</p>
             {schedule.latestFinalDate && <p className={styles.metadata}>Results through {schedule.latestFinalDate}{schedule.provisional ? " · Season in progress" : " · Regular season complete"}</p>}
           </> : <p>{schedule ? "No measured fatigue comparisons yet for this season. Published rest days remain available in Schedule Edge." : "The schedule comparison is unavailable. Open Schedule Edge to check a season."}</p>}
           <TransitionLink href="/schedule" className={styles.textLink}>Compare team schedules <span aria-hidden="true">→</span></TransitionLink>
@@ -66,8 +66,8 @@ export function HomeContent({ findings }: { findings: HomeFindings }) {
         <article>
           <p className={styles.eyebrow}>The players · shooting by rest</p>
           <h2>Does a fresh player shoot better?</h2>
-          <p>Compare no-rest shooting with two or more days off, with attempts beside every rate. A large single-season gap can still be uncertain.</p>
-          <p>{shootingCoverage ? `Regular-season player coverage: ${shootingCoverage}. ` : "Player coverage is unavailable. "}Career estimates pool attempts and shrink uncertain differences.</p>
+          <p>Compare no-rest shooting with two to 29 days off, with attempts beside every rate. A large single-season gap can still be uncertain.</p>
+          <p>{shootingCoverage ? <>Regular-season player coverage: <span className="whitespace-nowrap">{shootingCoverage}</span>. </> : "Player coverage is unavailable. "}Career estimates pool attempts and shrink uncertain differences.</p>
           <TransitionLink href="/shooting" className={styles.textLink}>Look up a player <span aria-hidden="true">→</span></TransitionLink>
         </article>
       </section>

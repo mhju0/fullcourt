@@ -149,7 +149,7 @@ type Pooled = {
 
 function pooled(era: EraBaselines): Pooled {
   const decided = era.rows.filter((r) => r.restedSide !== "neutral");
-  const home = decided.filter((r) => isCalledSide(r.restedSide));
+  const home = decided.filter((r) => isCalledSide(r.restedSide, false));
   const road = decided.filter((r) => r.restedSide === "away");
   const homeRestedWins = home.filter((r) => r.restedTeamWon).length;
   const roadRestedWins = road.filter((r) => r.restedTeamWon).length;
@@ -198,6 +198,8 @@ async function main(): Promise<void> {
   const all: Scored[] = [];
   for (const row of rows) {
     if (row.homeScore === null || row.awayScore === null) continue;
+    // No home court at a neutral site (D-92).
+    if (row.neutralSite) continue;
     const ra = classifyRestAdvantage(
       Number.parseFloat(row.homeFatigueScore),
       Number.parseFloat(row.awayFatigueScore)
@@ -207,7 +209,7 @@ async function main(): Promise<void> {
       season: row.season,
       differential: ra.differential,
       restedSide: ra.advantageTeam,
-      restedTeamWon: isCalledSide(ra.advantageTeam) ? homeWon : !homeWon,
+      restedTeamWon: isCalledSide(ra.advantageTeam, false) ? homeWon : !homeWon,
       homeWon,
     });
   }
@@ -228,7 +230,7 @@ async function main(): Promise<void> {
   // ── Self-check against the shipped reducer ──────────────────────────────
   const shipped = buildHistoricalBacktest(rows);
   const decidedAll = all.filter((r) => r.restedSide !== "neutral");
-  const homeAll = decidedAll.filter((r) => isCalledSide(r.restedSide));
+  const homeAll = decidedAll.filter((r) => isCalledSide(r.restedSide, false));
   const roadAll = decidedAll.filter((r) => r.restedSide === "away");
 
   const out: string[] = [
@@ -359,7 +361,7 @@ async function main(): Promise<void> {
     section("Q3 — HOME ROW (the published half), by era, against that era's HOME baseline")
   );
   for (const era of eras) {
-    const home = era.rows.filter((r) => isCalledSide(r.restedSide));
+    const home = era.rows.filter((r) => isCalledSide(r.restedSide, false));
     out.push(
       "",
       `${era.label}  (${era.seasons[0]} .. ${era.seasons[era.seasons.length - 1]})`,
@@ -381,7 +383,7 @@ async function main(): Promise<void> {
   for (const bar of LADDER) {
     const cell = (era: EraBaselines) => {
       const b = era.rows.filter(
-        (r) => isCalledSide(r.restedSide) && Math.abs(r.differential) >= bar
+        (r) => isCalledSide(r.restedSide, false) && Math.abs(r.differential) >= bar
       );
       const r = rate(b.filter((x) => x.restedTeamWon).length, b.length);
       return { raw: r, lift: r - era.homeBaseline };

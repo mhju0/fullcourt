@@ -10,6 +10,7 @@
 }
 
 .seasonCell {
+  white-space: nowrap;
   position: sticky;
   left: 0;
   z-index: 1;

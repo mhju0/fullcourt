@@ -38,6 +38,7 @@ function row(
     season: "2023-24",
     homeFatigueScore: String(homeFatigue),
     awayFatigueScore: String(awayFatigue),
+    neutralSite: false,
     homeScore,
     awayScore,
   };

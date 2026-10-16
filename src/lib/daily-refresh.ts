@@ -13,7 +13,7 @@ export type DailyRefreshGame = {
   awayTeamId: number;
   status: string;
   tipOffUtc?: Date | null;
-  neutralSite?: boolean;
+  neutralSite: boolean;
   neutralVenueCity?: string | null;
 };
 
@@ -183,7 +183,7 @@ export function buildPrediction(
     awayFatigueScore
   );
   // Open predictions use the ratified rested-home call policy.
-  if (!isCalledSide(restAdvantage.advantageTeam)) return null;
+  if (!isCalledSide(restAdvantage.advantageTeam, game.neutralSite)) return null;
 
   return {
     predictedAdvantageTeamId: game.homeTeamId,

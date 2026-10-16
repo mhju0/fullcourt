@@ -94,7 +94,10 @@ describe("the time-zone null", () => {
     const westShort = termRow(data, "d_west3_short");
 
     expect(westShort.foldsNonZero).toBe(data.protocol.folds);
-    expect(westShort.alsoBackToBackPct).toBeGreaterThan(75);
+    expect(westShort.backToBackTermPct).toBeGreaterThan(75);
+    // Short rest is the visitor's own back-to-back, so every short-rest game is one.
+    expect(westShort.visitorBackToBackPct).toBe(100);
+    expect(termRow(data, "d_east3_short").visitorBackToBackPct).toBe(100);
     expect(Math.abs(westShort.aloneVsBaseline)).toBeLessThan(0.0001);
   });
 
@@ -138,5 +141,15 @@ describe("the time-zone null", () => {
     }
     expect(() => tripRow(data, "nope")).toThrow();
     expect(() => termRow(data, "nope")).toThrow();
+  });
+
+  it("keeps the null under the wider reading of short rest", () => {
+    // The page says the sensitivity check leaves the primary term at zero in every fold and the
+    // candidates worth almost nothing. Either failing would make that sentence false.
+    expect(data.sensitivity.primaryFoldsNonZero).toBe(0);
+    expect(Math.abs(data.sensitivity.candidatesWorth)).toBeLessThan(0.0001);
+    // "The verdict does not change" also rests on the margin staying tiny beside the four terms.
+    expect(Math.abs(data.sensitivity.candidatesWorth)).toBeLessThan(data.logLoss.baselineWorth / 10);
+    expect(data.sensitivity.eastShortGames).toBeGreaterThan(termRow(data, "d_east3_short").games);
   });
 });

@@ -34,6 +34,7 @@ const ROWS: HistoricalGameEvidenceRow[] = [
     awayScore: 100,
     homeFatigueScore: "2.0",
     awayFatigueScore: "9.0",
+    neutralSite: false,
   },
 ];
 

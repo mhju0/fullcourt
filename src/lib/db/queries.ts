@@ -448,6 +448,7 @@ function mapJoinedRowToGameResponse(
     homeFatigue: homeFatigueData,
     awayFatigue: awayFatigueData,
     restAdvantage,
+    neutralCity: row.neutralSite ? row.neutralVenueCity : null,
   };
 }
 
@@ -673,6 +674,7 @@ export async function getCompletedGamesWithFatigue(): Promise<HistoricalGameEvid
       awayScore: games.awayScore,
       homeFatigueScore: homeFatigue.score,
       awayFatigueScore: awayFatigue.score,
+      neutralSite: games.neutralSite,
     })
     .from(games)
     .innerJoin(
@@ -771,6 +773,7 @@ export async function searchRegularSeasonGames(
       awayScore: games.awayScore,
       homeFatigueScore: homeFatigue.score,
       awayFatigueScore: awayFatigue.score,
+      neutralSite: games.neutralSite,
     })
     .from(games)
     .innerJoin(homeTeam, eq(games.homeTeamId, homeTeam.id))
@@ -880,9 +883,10 @@ function buildFatigueInfo(
     gamesInLast30Days: extras.gamesInLast30Days,
     is4In6: extras.is4In6,
     isOvertimePenalty: isOvertimePenalty ?? false,
-    // Road-trip streak is only shown for the visiting team (type contract).
+    // Zero only for a host in its own arena. At a neutral site the host is on the road too,
+    // and the model counts tonight in its streak.
     roadTripConsecutiveAway:
-      ctx.side === "home" ? 0 : extras.roadTripConsecutiveAway,
+      ctx.side === "home" && ctx.neutralCity === null ? 0 : extras.roadTripConsecutiveAway,
     hasTimeZoneDisplacement: extras.hasTimeZoneDisplacement,
   };
 }
@@ -1427,6 +1431,7 @@ export async function getRegularSeasonScheduleForDisparity(
       awayTeamId: games.awayTeamId,
       homeFatigueScore: homeFatigue.score,
       awayFatigueScore: awayFatigue.score,
+      neutralSite: games.neutralSite,
     })
     .from(games)
     .leftJoin(
@@ -1589,6 +1594,7 @@ export async function getSeasonReportRows(season: string): Promise<SeasonReportR
     awayTeamId: Number(r.awayTeamId),
     homeScore: r.homeScore === null ? null : Number(r.homeScore),
     awayScore: r.awayScore === null ? null : Number(r.awayScore),
+    neutralSite: Boolean(r.neutralSite),
     home:
       r.homeFatigueScore === null
         ? null

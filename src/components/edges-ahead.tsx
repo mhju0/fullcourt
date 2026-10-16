@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef } from "react"
 import useSWR from "swr"
 import { format } from "date-fns"
 import { useNow } from "@/hooks/useNow"
+import { formatRestAdvantageValue } from "@/lib/rest-advantage-display"
 import { hasNotTipped } from "@/lib/game-phase"
 import { apiFetcher } from "@/lib/fetcher"
 import { defaultNbaSeason } from "@/lib/nba-season"
@@ -11,8 +12,12 @@ import { TRACK, TYPE, termCardStyle } from "@/lib/terminal-styles"
 import type { UpcomingGameWithRA } from "@/types"
 
 /**
- * EDGES AHEAD (2026-08-28 redesign, Q16): the three biggest upcoming rest edges, one
- * line each. This is what survived the UPCOMING view's retirement — the one job a date
+ * EDGES AHEAD (2026-08-28 redesign, Q16): the three biggest upcoming rest edges where the
+ * rested team is at home, one line each. Rested visitors are left out on purpose: the rows come
+ * from open predictions, which exist only for called games (`isCalledSide`), and a visitor chip
+ * in the rested-pole blue would read as a pick the site declines to make. Whether a row is
+ * projected is said per row (PROJ), not in the header — a game on the next unplayed date is
+ * measured. This is what survived the UPCOMING view's retirement — the one job a date
  * picker cannot do is cut ACROSS dates, and three rows do that job where a whole second
  * table shape used to. Clicking a game jumps the board to its date.
  *
@@ -66,19 +71,19 @@ export function EdgesAhead({
         className="mono uppercase"
         style={{ fontSize: 10, letterSpacing: TRACK.label, fontWeight: 700, color: "var(--term-text-muted)" }}
       >
-        EDGES AHEAD · UPCOMING {season} · PROJECTED REST GAPS
+        EDGES AHEAD · UPCOMING {season} · RESTED TEAM AT HOME
       </span>
       <div className="flex flex-wrap gap-2">
         {top.map((g) => {
           const dateLabel = format(new Date(g.date + "T00:00:00"), "MMM d, yyyy")
-          const value = Math.abs(g.restAdvantageDifferential).toFixed(1)
+          const value = formatRestAdvantageValue(g.restAdvantageDifferential)
           return (
             <button
               key={g.gameId}
               type="button"
               onClick={() => onJump(g.season, g.date)}
               aria-label={`Jump to ${dateLabel}: ${g.awayTeam.abbreviation} at ${g.homeTeam.abbreviation}, rest edge ${g.predictedAdvantageAbbreviation} ${value}`}
-              className="fc-control-button mono flex items-center gap-3 bg-[var(--term-surface)] px-3 py-2 transition-[background-color,border-color,transform] hover:bg-[var(--term-surface-2)] active:scale-[0.97]"
+              className="fc-control-button mono flex flex-wrap items-center gap-x-3 gap-y-1 bg-[var(--term-surface)] px-3 py-2 transition-[background-color,border-color,transform] hover:bg-[var(--term-surface-2)] active:scale-[0.97]"
               style={{ border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }}
             >
               <span
@@ -87,13 +92,13 @@ export function EdgesAhead({
               >
                 {dateLabel.toUpperCase()}
               </span>
-              <span style={{ fontSize: 12, letterSpacing: TRACK.data, fontWeight: 600, color: "var(--term-text)" }}>
+              <span className="whitespace-nowrap" style={{ fontSize: 12, letterSpacing: TRACK.data, fontWeight: 600, color: "var(--term-text)" }}>
                 {g.awayTeam.abbreviation} @ {g.homeTeam.abbreviation}
               </span>
               {/* Always the rested pole at text grade — the named side is the more-rested
                   side, same law as the RA cell and the old Edge chip. */}
               <span
-                className="tabular-nums"
+                className="whitespace-nowrap tabular-nums"
                 style={{
                   background: "var(--term-blue-text)",
                   color: "var(--term-surface)",

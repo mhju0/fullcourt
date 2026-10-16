@@ -15,13 +15,18 @@ import {
   ConfidenceBadge,
   FatigueDetailColumn,
   TeamLogo,
+  inlineFlags,
   teamGameFlags,
   getConfidence,
 } from "@/components/matchup-parts";
 import { gamePhase, spokenGameState, type GamePhase } from "@/lib/game-phase";
 import { buildGameStoryline } from "@/lib/game-storyline";
 import { getTeamColors } from "@/lib/nba-team-colors";
-import { formatRestAdvantageDisplay } from "@/lib/rest-advantage-display";
+import {
+  formatFatigueScore,
+  formatRestAdvantageDisplay,
+  formatRestAdvantageValue,
+} from "@/lib/rest-advantage-display";
 import { getTeamBranding } from "@/lib/team-history";
 import { LEAD, SPACE, SPACE_CARD, TRACK, TYPE } from "@/lib/terminal-styles";
 import { cn } from "@/lib/utils";
@@ -57,9 +62,8 @@ const GRID_MIN_WIDTH = 1000;
  * Width reserved for a line's flag chips, so the strip is identical on every line and the
  * fatigue numbers stay in one column however many flags a team carries.
  *
- * Sized for the widest thing it can hold: two four-character chips plus a `+N` overflow chip
- * and their gaps (~98px). A single "JET LAG" is wider than one 4-char chip but never shares
- * the strip — it sorts fifth, so it only ever appears alone or beside "ALT".
+ * Sized for two four-character chips plus a `+N` overflow chip and their gaps (~98px). Longer
+ * chips ("ALT TRIP", "TIME ZONES") show fewer inline: `inlineFlags` fits the strip by width.
  */
 const FLAG_STRIP_W = 104;
 
@@ -165,14 +169,18 @@ function TeamLine({
   city,
   season,
   fallback,
-  isHome,
+  venueTag,
 }: {
   abbreviation: string;
   name: string;
   city: string;
   season: string;
   fallback: { name: string; city: string };
-  isHome: boolean;
+  /**
+   * HOME on the host's line, or the city when the game is away from its arena. Not "NEUTRAL":
+   * the GAP SIZE badge already uses that word for a gap under 0.5.
+   */
+  venueTag: string | null;
 }) {
   const colors = getTeamColors(abbreviation);
   return (
@@ -203,7 +211,7 @@ function TeamLine({
       >
         {city}
       </span>
-      {isHome && (
+      {venueTag && (
         <span
           className="mono shrink-0"
           style={{
@@ -217,7 +225,7 @@ function TeamLine({
             lineHeight: "14px",
           }}
         >
-          HOME
+          {venueTag}
         </span>
       )}
     </div>
@@ -227,7 +235,7 @@ function TeamLine({
 /**
  * How many flags a line shows before collapsing the rest into a count. Measured over 79 games
  * across ten dates: 84% of team-lines carry two or fewer, but a visiting team can stack five
- * (B2B + 3IN4 + 4IN6 + ALT + JET LAG). Rendering all of them would either blow the column or
+ * (B2B + 3IN4 + 4IN6 + ALT + TIME ZONES). Rendering all of them would either blow the column or
  * wrap the row to a second line, and a row whose height depends on its flag count is the
  * problem this replaced.
  */
@@ -269,8 +277,7 @@ function FatigueLine({
   tone: FatigueBarTone;
   flags: string[];
 }) {
-  const shown = flags.slice(0, MAX_INLINE_FLAGS);
-  const hidden = flags.length - shown.length;
+  const { shown, hidden } = inlineFlags(flags, FLAG_STRIP_W, MAX_INLINE_FLAGS);
 
   return (
     <div className="flex items-center gap-2" style={{ height: TEAM_LINE_H }}>
@@ -289,14 +296,14 @@ function FatigueLine({
       <span
         className="mono shrink-0 tabular-nums"
         style={{
-          width: 30,
+          width: 36,
           fontSize: TYPE.data,
           fontWeight: 700,
           color: "var(--term-text)",
           textAlign: "right",
         }}
       >
-        {score !== null ? score.toFixed(1) : "—"}
+        {score !== null ? formatFatigueScore(score) : "—"}
       </span>
       {/* Fixed-width so the two lines' chips align with each other and with the rows above and
           below, whether a team carries two flags, one, or none. Chips start from the strip's
@@ -375,7 +382,7 @@ function RestAdvCell({
   const advantageTeam = restAdvantage?.advantageTeam ?? "neutral";
   const isHomeAdv = advantageTeam === "home";
   const isAwayAdv = advantageTeam === "away";
-  const value = Math.abs(restAdvantage?.differential ?? 0).toFixed(1);
+  const value = formatRestAdvantageValue(restAdvantage?.differential ?? 0);
   const fillPercent =
     Math.min(Math.abs(restAdvantage?.differential ?? 0) / 5, 1) * 50;
   // Not measured is not a dead heat, and this cell used to print them the same way: a game
@@ -620,7 +627,7 @@ function GameRow({
         role="button"
         tabIndex={0}
         aria-expanded={expanded}
-        aria-label={`${expanded ? "Collapse" : "Expand"} ${awayBrand.name} at ${homeBrand.name}${spokenGameState(phase, game.awayScore, game.homeScore)} on ${game.date} game details`}
+        aria-label={`${expanded ? "Collapse" : "Expand"} ${awayBrand.name} ${game.neutralCity ? `versus ${homeBrand.name} in ${game.neutralCity}` : `at ${homeBrand.name}`}${spokenGameState(phase, game.awayScore, game.homeScore)} on ${game.date} game details`}
         onClick={toggle}
         onKeyDown={onKeyDown}
         className="fc-game-grid grid cursor-pointer items-center gap-x-4 transition-colors hover:bg-[var(--term-surface-2)] focus-visible:ring-2 focus-visible:ring-[var(--term-accent)]/40"
@@ -644,7 +651,7 @@ function GameRow({
             city={awayBrand.city ?? game.awayTeam.city}
             season={game.season}
             fallback={awayFallback}
-            isHome={false}
+            venueTag={null}
           />
           <TeamLine
             abbreviation={homeBrand.abbreviation}
@@ -652,7 +659,7 @@ function GameRow({
             city={homeBrand.city ?? game.homeTeam.city}
             season={game.season}
             fallback={homeFallback}
-            isHome
+            venueTag={game.neutralCity ? game.neutralCity.toUpperCase() : "HOME"}
           />
         </div>
 
@@ -735,7 +742,7 @@ function GameRow({
                 fatigue={game.awayFatigue}
               />
               <FatigueDetailColumn
-                label={`HOME · ${homeBrand.abbreviation}`}
+                label={`${game.neutralCity ? `HOST · ${game.neutralCity.toUpperCase()}` : "HOME"} · ${homeBrand.abbreviation}`}
                 fatigue={game.homeFatigue}
               />
             </div>
@@ -789,7 +796,7 @@ export function MatchupTable({ games }: MatchupTableProps) {
             <span>GAME</span>
             <span>MATCHUP (AWAY / HOME)</span>
             <span className="text-right">REST (DAYS)</span>
-            <span>FATIGUE (0–10)</span>
+            <span>FATIGUE SCORE</span>
             <span>REST ADVANTAGE</span>
             {/* Ends over the badge, not over the chevron beside it (16px icon, 8px gap). */}
             <span className="pr-6 text-right">GAP SIZE</span>

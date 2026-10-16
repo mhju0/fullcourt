@@ -14,7 +14,7 @@ Dependency versions live in `package.json` and `pnpm-lock.yaml`. The shared visu
 | `/schedule` | Relative schedule ranking and worth; breakdown (with its column guide inside) and travel/workload in disclosures; league fatigue by week for completed games |
 | `/explore` | Directory for the secondary basketball studies |
 | `/analysis` | Historical model evaluation: The answer and The explorer |
-| `/shooting` | Player Shooting by Rest: dense player comparisons with no-rest/2+ days off eFG%, attempt counts, uncertainty, and expandable seasons; zero-rest workload disclosure |
+| `/shooting` | Player Shooting by Rest: dense player comparisons with no-rest/2–29 days off eFG%, attempt counts, uncertainty, and expandable seasons; zero-rest workload disclosure |
 | `/shot-quality` | Expected shot value by location; one mobile court with Compare models, two desktop courts |
 | `/availability` | Missing-player associations, trends, and expandable coefficient comparison |
 | `/playoffs` | Previous-round workload and the separate series model |
@@ -93,6 +93,15 @@ negative, bounded at ±10 percentage points; uncertain estimates stay muted. Off
 blue for missed calls and gray for incorrect whistles, with direct text labels. Color never
 replaces the number, sign, category, or uncertainty text.
 
+Line breaks (2026-10-16 audit). `globals.css` sets `text-wrap: pretty` on running text (`p`,
+`li`, `dd`, `td`, `figcaption`) and `balance` on headings, `th` and `summary`, so a last line
+does not hold one word or a lone arrow. Chrome breaks after a hyphen that precedes a digit, so a
+season, an ISO date or a "3-in-4" needs `nowrap`; an operator needs a no-break space to the
+operand after it. `keepTogether()` (`src/components/ui/keep-together.tsx`) does both for string
+children; `Prose`, `Note`, `LimitList`, `DataTable` headers and the Data Status values already
+apply it. Elsewhere, write a number and its unit with U+00A0 (`61.2 pp`), keep a season
+column `nowrap`, and keep a table header to two lines on a phone.
+
 Games exposes Season → Month → Date selection, and none of it scrolls sideways (D-78). From `sm`
 the month buttons and date chips wrap, so a whole month shows at once. Below `sm` the page shows
 one Sunday-to-Saturday week of seven 44px cells, with days that have no games at a count of 0;
@@ -101,7 +110,7 @@ and returns focus to the button. The three slate measures are one line above the
 at every width, and Edges Ahead follows the list. There is no Skim/Deep Dive toggle and no
 side rail (D-79): from `sm` the matchup table always carries the rest-days, fatigue and
 gap-size columns at the full content width, and narrower desktop/tablet tables scroll in a
-keyboard-focusable region. The header row reserves the same 3px accent edge as a row, so each label starts or ends where its cells do; a unit goes in parentheses, as in REST (DAYS) and FATIGUE (0–10). Every game row is one height: the schedule sentence sits in the expansion, PROJECTED shares the figure line, and an upcoming game shows its tip time with no status label. No in-game score is shown: once the tip time passes a row reads LIVE over its tip time for three hours, then PENDING until the score is stored and FINAL sits over it (`gamePhase`, D-81), all on the table's one clock (`useNow`). The top line of the cell is always the state and the bottom line the data. LIVE is a label with a still dot and no row tint, so the accent edge stays the one accent, and the row button's name carries the state and score (`spokenGameState`) because a button's name replaces its contents for a screen reader. The board opens on the game day until 6 AM ET (`slateDateKey`). Matchups are ordered by tip-off time, then by the source event id
+keyboard-focusable region. The header row reserves the same 3px accent edge as a row, so each label starts or ends where its cells do; a unit goes in parentheses, as in REST (DAYS). FATIGUE SCORE takes no range: the score has a floor of 0 and no ceiling, and the bar is full at 10. Scores and the gap print at two decimals, the precision every threshold compares (D-87). The host line carries HOME, or the city at a neutral site (not NEUTRAL, which the gap badge uses), where the model scores the host as a road team; its expansion reads HOST · city. Flag chips are scoped per team, host included, and a line shows as many as fit its fixed strip (`inlineFlags`, at most two) before a +N count. Every game row is one height: the schedule sentence sits in the expansion, PROJECTED shares the figure line, and an upcoming game shows its tip time with no status label. No in-game score is shown: once the tip time passes a row reads LIVE over its tip time for three hours, then PENDING until the score is stored and FINAL sits over it (`gamePhase`, D-81), all on the table's one clock (`useNow`). The top line of the cell is always the state and the bottom line the data. LIVE is a label with a still dot and no row tint, so the accent edge stays the one accent, and the row button's name carries the state and score (`spokenGameState`) because a button's name replaces its contents for a screen reader. The board opens on the game day until 6 AM ET (`slateDateKey`). Matchups are ordered by tip-off time, then by the source event id
 (`slateOrder()` in `src/lib/db/slate-order.ts`). Season selectors share one labeled component across studies.
 Mobile Games shows teams, status, and rest advantage without sideways scrolling; the other
 columns are under each row's expansion. Shooting keeps

@@ -122,10 +122,12 @@ def build_team_games() -> pd.DataFrame:
         appeared[["game_id", "person_id", "q_gs"]], on=["game_id", "person_id"], how="left"
     ).sort_values(["team_id", "date", "person_id"])
 
-    history: dict[int, deque] = defaultdict(lambda: deque(maxlen=WINDOW))
+    # One window per team-season. A window carried across the summer counted players who had
+    # left as missing in the opener; a team is measured once it has WINDOW games this season.
+    history: dict[tuple[int, str], deque] = defaultdict(lambda: deque(maxlen=WINDOW))
     rows = []
     for (team_id, game_id), grp in play.groupby(["team_id", "game_id"], sort=False):
-        window = history[team_id]
+        window = history[(team_id, grp["season"].iloc[0])]
         played_now = dict(zip(grp["person_id"], grp["min"]))
 
         mins: dict[int, list] = defaultdict(list)
