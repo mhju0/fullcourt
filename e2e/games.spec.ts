@@ -117,17 +117,20 @@ test.describe("Games page", () => {
         left: [0, 1, 3, 4].map((i) => heads[i].left - cells[i].left),
         restRight: heads[2].right - cells[2].right,
         gapRight: heads[5].right - badge.right,
+        // The cell box lined up while the score inside it sat past the bar (2026-10-16), so
+        // the figure itself is measured too.
+        scoreLeft: heads[3].left - ink(row.querySelector(".fc-fatigue-score")!).left,
       };
     });
-    for (const delta of [...edges.left, edges.restRight, edges.gapRight]) {
+    for (const delta of [...edges.left, edges.restRight, edges.gapRight, edges.scoreLeft]) {
       expect(Math.abs(delta)).toBeLessThanOrEqual(1);
     }
   });
 
   // Owner review, 2026-10-07: every game row is the same height. The schedule sentence
   // ("Nets on a back-to-back.") added a line to some rows and PROJECTED added one to others;
-  // the sentence now lives in the expansion and PROJECTED shares the figure's line. An
-  // upcoming game shows its tip time without an UPCOMING label.
+  // the sentence now lives in the expansion and a projected gap is noted once above the
+  // table (2026-10-16). An upcoming game shows its tip time without an UPCOMING label.
   for (const date of ["2027-01-14", "2026-01-17"]) {
     for (const width of [1280, 390]) {
       test(`every game row is the same height on ${date} at ${width}px`, async ({ page }) => {

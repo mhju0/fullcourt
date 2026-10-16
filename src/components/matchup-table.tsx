@@ -281,6 +281,20 @@ function FatigueLine({
 
   return (
     <div className="flex items-center gap-2" style={{ height: TEAM_LINE_H }}>
+      {/* The score leads, so it starts on the FATIGUE SCORE label's rail; the bar after it is
+          the score drawn, not a second figure. */}
+      <span
+        className="fc-fatigue-score mono shrink-0 tabular-nums"
+        style={{
+          width: 36,
+          fontSize: TYPE.data,
+          fontWeight: 700,
+          color: "var(--term-text)",
+          textAlign: "left",
+        }}
+      >
+        {score !== null ? formatFatigueScore(score) : "—"}
+      </span>
       {score !== null ? (
         <FatigueBar score={score} tone={tone} className="min-w-[36px] flex-1" />
       ) : (
@@ -293,18 +307,6 @@ function FatigueLine({
           }}
         />
       )}
-      <span
-        className="mono shrink-0 tabular-nums"
-        style={{
-          width: 36,
-          fontSize: TYPE.data,
-          fontWeight: 700,
-          color: "var(--term-text)",
-          textAlign: "right",
-        }}
-      >
-        {score !== null ? formatFatigueScore(score) : "—"}
-      </span>
       {/* Fixed-width so the two lines' chips align with each other and with the rows above and
           below, whether a team carries two flags, one, or none. Chips start from the strip's
           left edge rather than filling from its right: a list that grows rightward keeps its
@@ -366,19 +368,12 @@ function RestAdvCell({
   restAdvantage,
   homeAbbr,
   awayAbbr,
-  projectedFatigue,
 }: {
   restAdvantage: GameResponse["restAdvantage"];
   homeAbbr: string;
   awayAbbr: string;
-  projectedFatigue: boolean;
 }) {
-  const display = formatRestAdvantageDisplay(
-    restAdvantage,
-    homeAbbr,
-    awayAbbr,
-    projectedFatigue,
-  );
+  const display = formatRestAdvantageDisplay(restAdvantage, homeAbbr, awayAbbr);
   const advantageTeam = restAdvantage?.advantageTeam ?? "neutral";
   const isHomeAdv = advantageTeam === "home";
   const isAwayAdv = advantageTeam === "away";
@@ -430,6 +425,16 @@ function RestAdvCell({
             >
               {display.value}
             </span>
+            <span
+              style={{
+                fontSize: TYPE.micro,
+                fontWeight: 600,
+                letterSpacing: TRACK.sub,
+                color: "var(--term-text-muted)",
+              }}
+            >
+              ADVANTAGE
+            </span>
           </>
         ) : (
           <>
@@ -454,22 +459,6 @@ function RestAdvCell({
               {value}
             </span>
           </>
-        )}
-        {/* Where the number came from, stated only when it is not the ordinary case. A projected
-            differential is read off the published schedule: every input is already fixed except
-            the previous game's overtime and margin, so it moves only where one of those lands.
-            It shares the figure's line, so a projected row is no taller than a measured one. */}
-        {display.kind !== "unmeasured" && display.projected && (
-          <span
-            style={{
-              fontSize: TYPE.micro,
-              fontWeight: 600,
-              letterSpacing: TRACK.sub,
-              color: "var(--term-text-muted)",
-            }}
-          >
-            PROJECTED
-          </span>
         )}
       </div>
 
@@ -686,7 +675,6 @@ function GameRow({
             restAdvantage={game.restAdvantage}
             homeAbbr={homeBrand.abbreviation}
             awayAbbr={awayBrand.abbreviation}
-            projectedFatigue={game.projectedFatigue}
           />
         </div>
 
@@ -762,7 +750,16 @@ export interface MatchupTableProps {
 export function MatchupTable({ games }: MatchupTableProps) {
   // One clock for the table: every row's LIVE and PENDING label is read against it.
   const now = useNow();
+  // Where a gap came from is stated once for the board, not on every row: a future date is
+  // projected end to end, so a per-row tag repeated the same word down the whole column.
+  const anyProjected = games.some((g) => g.projectedFatigue && g.restAdvantage);
   return (
+    <>
+    {anyProjected && (
+      <p className="m-0" style={{ fontSize: TYPE.body, color: "var(--term-text-muted)" }}>
+        Projected from the schedule: a previous game has not been played yet.
+      </p>
+    )}
     <div
       style={{
         background: "var(--term-surface)",
@@ -814,5 +811,6 @@ export function MatchupTable({ games }: MatchupTableProps) {
         </div>
       </ScrollCue>
     </div>
+    </>
   );
 }
