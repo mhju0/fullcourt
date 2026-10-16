@@ -794,16 +794,7 @@ export interface MatchupTableProps {
 export function MatchupTable({ games }: MatchupTableProps) {
   // One clock for the table: every row's LIVE and PENDING label is read against it.
   const now = useNow();
-  // Where a gap came from is stated once for the board, not on every row: a future date is
-  // projected end to end, so a per-row tag repeated the same word down the whole column.
-  const anyProjected = games.some((g) => g.projectedFatigue && g.restAdvantage);
   return (
-    <>
-    {anyProjected && (
-      <p className="m-0" style={{ fontSize: TYPE.body, color: "var(--term-text-muted)" }}>
-        Projected from the schedule: a previous game has not been played yet.
-      </p>
-    )}
     <div
       style={{
         background: "var(--term-surface)",
@@ -854,6 +845,5 @@ export function MatchupTable({ games }: MatchupTableProps) {
         </div>
       </ScrollCue>
     </div>
-    </>
   );
 }

@@ -128,8 +128,8 @@ test.describe("Games page", () => {
 
   // Owner review, 2026-10-07: every game row is the same height. The schedule sentence
   // ("Nets on a back-to-back.") added a line to some rows and PROJECTED added one to others;
-  // the sentence now lives in the expansion and a projected gap is noted once above the
-  // table (2026-10-16). An upcoming game shows its tip time without an UPCOMING label.
+  // the sentence now lives in the expansion and a projected gap carries no mark on the
+  // board (2026-10-16). An upcoming game shows its tip time without an UPCOMING label.
   for (const date of ["2027-01-14", "2026-01-17"]) {
     for (const width of [1280, 390]) {
       test(`every game row is the same height on ${date} at ${width}px`, async ({ page }) => {
