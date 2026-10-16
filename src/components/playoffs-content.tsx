@@ -4,6 +4,7 @@ import { useCallback, useState, type KeyboardEvent } from "react"
 import useSWR from "swr"
 import { ChevronDown } from "lucide-react"
 import { SeasonSelector } from "@/components/season-selector"
+import { KeepTogether } from "@/components/ui/keep-together"
 import { Skeleton } from "@/components/ui/skeleton"
 import { cn } from "@/lib/utils"
 import { apiFetcher, errMsg } from "@/lib/fetcher"
@@ -159,11 +160,11 @@ function SeriesFeatureGrid({ series }: { series: PlayoffSeriesWithPredictions })
         <FeatureCell k="ENTRY REST DIFF" v={formatFeature(series.entryRestDiff)} />
         <FeatureCell k="H2H DIFF" v={formatFeature(series.h2hDiff)} />
       </div>
-      <p className="mono mt-1" style={{ fontSize: 10, color: "var(--term-text-muted)", letterSpacing: TRACK.sub, lineHeight: LEAD.label }}>
+      <p className="mono mt-1" style={{ fontSize: 10, color: "var(--term-text-muted)", letterSpacing: TRACK.sub, lineHeight: LEAD.label }}><KeepTogether>
         SIGN CONVENTION: POSITIVE FAVORS HOME-COURT ({series.homeCourtTeam.abbreviation}). ALL ROWS ARE
         (HOME-COURT − OPPONENT) EXCEPT PRIOR GRIND DIFF, WHICH IS (OPPONENT − HOME-COURT) SO THAT
         POSITIVE STILL MEANS THE SAME THING.
-      </p>
+      </KeepTogether></p>
     </div>
   )
 }

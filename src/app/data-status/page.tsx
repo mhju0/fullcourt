@@ -3,6 +3,7 @@ import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { sql } from "drizzle-orm";
 import { PageHeader } from "@/components/page-header";
+import { keepTogether } from "@/components/ui/keep-together";
 import data from "@/data/officiating.json";
 import { db } from "@/lib/db";
 import {
@@ -77,7 +78,7 @@ function StatusCard({
         ].map(([term, value]) => (
           <div key={term} className="contents">
             <dt className="mono" style={{ fontSize: 11, letterSpacing: TRACK.label, color: "var(--term-text-muted)", fontWeight: 700 }}>{term.toUpperCase()}</dt>
-            <dd style={{ color: "var(--term-text-dim)" }}>{value}</dd>
+            <dd style={{ color: "var(--term-text-dim)" }}>{keepTogether(value)}</dd>
           </div>
         ))}
       </dl>

@@ -83,7 +83,7 @@ export function EdgesAhead({
               type="button"
               onClick={() => onJump(g.season, g.date)}
               aria-label={`Jump to ${dateLabel}: ${g.awayTeam.abbreviation} at ${g.homeTeam.abbreviation}, rest edge ${g.predictedAdvantageAbbreviation} ${value}`}
-              className="fc-control-button mono flex items-center gap-3 bg-[var(--term-surface)] px-3 py-2 transition-[background-color,border-color,transform] hover:bg-[var(--term-surface-2)] active:scale-[0.97]"
+              className="fc-control-button mono flex flex-wrap items-center gap-x-3 gap-y-1 bg-[var(--term-surface)] px-3 py-2 transition-[background-color,border-color,transform] hover:bg-[var(--term-surface-2)] active:scale-[0.97]"
               style={{ border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }}
             >
               <span
@@ -92,13 +92,13 @@ export function EdgesAhead({
               >
                 {dateLabel.toUpperCase()}
               </span>
-              <span style={{ fontSize: 12, letterSpacing: TRACK.data, fontWeight: 600, color: "var(--term-text)" }}>
+              <span className="whitespace-nowrap" style={{ fontSize: 12, letterSpacing: TRACK.data, fontWeight: 600, color: "var(--term-text)" }}>
                 {g.awayTeam.abbreviation} @ {g.homeTeam.abbreviation}
               </span>
               {/* Always the rested pole at text grade — the named side is the more-rested
                   side, same law as the RA cell and the old Edge chip. */}
               <span
-                className="tabular-nums"
+                className="whitespace-nowrap tabular-nums"
                 style={{
                   background: "var(--term-blue-text)",
                   color: "var(--term-surface)",

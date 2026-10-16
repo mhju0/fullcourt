@@ -1,6 +1,6 @@
 {
   "source": "sportsoddshistory.com archive (hosted at covers.com)",
-  "generated": "2026-10-04",
+  "generated": "2026-10-15",
   "firstSeason": "1993-94",
   "lastSeason": "2025-26",
   "seasonsCovered": 31,
@@ -11,7 +11,7 @@
     "n": 881
   },
   "correlation": {
-    "r": -0.015,
+    "r": -0.0149,
     "n": 884
   },
   "buckets": [

@@ -108,6 +108,7 @@ function RestRowTable() {
     <DataTable
       rows={rows}
       rowKey={(r) => r.label}
+      minWidth={520}
       columns={[
         {
           label: "RESTED TEAM",
@@ -225,6 +226,7 @@ function RoadLadderTable() {
     <DataTable
       rows={rungs}
       rowKey={(r) => r.label}
+      minWidth={520}
       columns={[
         { label: "REST GAP", unit: "AT LEAST", cell: (r) => r.label },
         {
@@ -238,6 +240,8 @@ function RoadLadderTable() {
           unit: "WIN RATE",
           numeric: true,
           style: { fontWeight: 700 },
+          // Room for "RESTED ROAD" on one line plus the cell padding, so the heading holds to two.
+          headStyle: { minWidth: 112 },
           cell: (r) => <span style={{ color: thin(r) }}>{r.winPct}%</span>,
         },
         {
@@ -268,6 +272,7 @@ function RoadEraTable() {
     <DataTable
       rows={RESTED_ON_ROAD_BY_ERA}
       rowKey={(era) => era.label}
+      minWidth={520}
       columns={[
         {
           label: "ERA",
@@ -290,6 +295,8 @@ function RoadEraTable() {
           unit: "WIN RATE",
           numeric: true,
           style: { fontWeight: 700 },
+          // Room for "RESTED ROAD" on one line plus the cell padding, so the heading holds to two.
+          headStyle: { minWidth: 112 },
           cell: (era) => `${era.winPct}%`,
         },
         {
@@ -310,7 +317,7 @@ function RoadEraTable() {
           label: "BEST RUNG",
           unit: "GAP · WIN RATE",
           numeric: true,
-          style: { color: "var(--term-text-muted)" },
+          style: { color: "var(--term-text-muted)", whiteSpace: "nowrap" },
           cell: (era) => {
             // The strongest rung whose sample is worth printing. Picking the highest win rate
             // regardless of n would put a 36-game bucket in the most prominent column here.
@@ -533,7 +540,7 @@ direction    = ${K.eastwardMultiplier} eastward, ${K.westwardMultiplier} westwar
             <Prose>
               <strong>Road segments, altitude, density, extended rest and overtime.</strong> Consecutive road games add{" "}
               {K.roadStreakPerGame} each after the first {K.roadStreakFree} are free. Visiting
-              altitude (Denver, Utah, and Mexico City at 7,350 ft) multiplies by{" "}
+              altitude (Denver, Utah, and Mexico City at 7,350{"\u00a0"}ft) multiplies by{" "}
               {K.altitudeMultiplier}, and the following night at normal elevation by{" "}
               {K.altitudeCarryover}. Schedule density compares games played across five windows
               {/* No cap is quoted here on purpose. SCHEDULE_STRESS_MAX_MULT is 1.42, but each
@@ -580,6 +587,7 @@ direction    = ${K.eastwardMultiplier} eastward, ${K.westwardMultiplier} westwar
         <DataTable
           rows={ABLATIONS}
           rowKey={(a) => a.term}
+          minWidth={520}
           columns={[
             { label: "TERM", cell: (a) => a.term },
             {
