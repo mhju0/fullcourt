@@ -43,6 +43,7 @@ async function main(): Promise<void> {
         AND g.game_type = 'regular'
         AND g.home_score IS NOT NULL
         AND g.away_score IS NOT NULL
+        AND NOT g.neutral_site
         AND ${normallyPlayed}
     )
     SELECT
@@ -65,6 +66,12 @@ async function main(): Promise<void> {
          FROM predictions p
          JOIN games g ON g.id = p.game_id
         WHERE p.predicted_advantage_team_id = g.away_team_id)                        AS away_team_picks,
+      -- A neutral game has no home team to call (D-92), so it is outside scored and must
+      -- hold no prediction at all.
+      (SELECT count(*)::int
+         FROM predictions p
+         JOIN games g ON g.id = p.game_id
+        WHERE g.neutral_site)                                                        AS neutral_predictions,
       (SELECT count(*)::int FROM predictions WHERE actual_winner_id IS NULL)          AS ungraded
   `)) as unknown as Record<string, number>[];
 
@@ -74,6 +81,7 @@ async function main(): Promise<void> {
     r.called_but_missing === 0 &&
     r.predicted_but_should_not_be === 0 &&
     r.away_team_picks === 0 &&
+    r.neutral_predictions === 0 &&
     r.prediction_rows === r.distinct_games;
   lines.push("", ok ? "VERDICT: consistent with the rule" : "VERDICT: MISMATCH — see above");
 
