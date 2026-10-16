@@ -43,6 +43,28 @@ test.describe("Player Shooting by Rest", () => {
     await expect(page.getByText("PLAYERS · eFG% BY REST")).toBeVisible();
   });
 
+  /**
+   * The filters are controlled by the URL. When they read only Next's search params, which
+   * catch up with a pushState in a later transition, a changed select snapped back to its old
+   * value for a few hundred milliseconds and the table kept the old rows. Read in the same
+   * tick as the change, so a lagging re-render cannot pass by being waited for.
+   */
+  test("a changed filter shows its new value and rows in the same tick", async ({ page }) => {
+    await page.goto("/shooting");
+    await page.getByTestId("player-row").first().waitFor(READY);
+
+    const result = await page.evaluate(() => {
+      const rows = () => document.querySelectorAll("[data-testid=player-row]").length;
+      const select = document.querySelector<HTMLSelectElement>("#pr-volume")!;
+      const before = rows();
+      Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, "value")!.set!.call(select, "0");
+      select.dispatchEvent(new Event("change", { bubbles: true }));
+      return { value: select.value, before, after: rows() };
+    });
+    expect(result.value).toBe("0");
+    expect(result.after).toBeGreaterThan(result.before);
+  });
+
   test("opens on the newest season with a volume floor already applied", async ({ page }) => {
     await page.goto("/shooting");
     await page.getByTestId("player-row").first().waitFor(READY);
