@@ -1313,3 +1313,13 @@ splits script now uses the same rule. This is a correction to how games are attr
 new axis under ADR 0007. `src/data/referee-timing.json` was regenerated after the unchanged
 script reproduced it: 12,403 games and every headline count unchanged; four published rows lose
 one to four games (Tyler Ford 611 → 607, shift −1.45 → −1.46), and no row crosses the bar.
+
+## D-95 — The Games table drops its days-rest column and shows up to four flags per line (2026-10-16)
+
+The owner judged the REST (DAYS) column not worth its width: the fatigue score already carries
+rest, and the column left a gap between the matchup and the fatigue score. Days rest stays in
+each game's expansion. Its width went to the flag strip, which now shows up to four chips
+(200px) instead of two. Over every regular-season team-game since 1985-86, 3.6% carry four or
+more flags and 0.4% carry five or more, so the old limit of two put a `+N` on about one line in six; the
+new one leaves it on the 0.4%. The columns were rebalanced so the space between matchup,
+fatigue score, rest advantage and gap size is even (about 94 / 112 / 101px at desktop width).

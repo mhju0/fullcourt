@@ -5,14 +5,17 @@ import {
   useEffect,
   useMemo,
   useRef,
+  useState,
   type KeyboardEvent,
 } from "react";
+import { createPortal } from "react-dom";
 import { useNow } from "@/hooks/useNow";
 import { usePageQuery } from "@/hooks/useSeasonUrl";
 import { ChevronDown } from "lucide-react";
 import { FatigueBar, type FatigueBarTone } from "@/components/fatigue-bar";
 import {
   ConfidenceBadge,
+  FLAG_MEANINGS,
   FatigueDetailColumn,
   TeamLogo,
   inlineFlags,
@@ -52,20 +55,21 @@ import type { GameResponse } from "@/types";
 
 // One column template shared by the header row and every game row, so the header can never
 // drift out of line with the cells beneath it. Below 640px `globals.css` swaps it for the
-// two-column phone row, which drops the rest-days and fatigue columns (D-79).
+// two-column phone row, which drops the fatigue column (D-79). The days-rest column was
+// dropped on 2026-10-16 (D-95); days rest stays in the expansion.
 const GRID_COLS =
-  "minmax(96px,120px) minmax(210px,1.3fr) minmax(64px,80px) minmax(232px,1.1fr) minmax(190px,220px) minmax(96px,116px)";
+  "minmax(96px,120px) minmax(210px,0.8fr) minmax(320px,1fr) minmax(200px,240px) minmax(120px,0.6fr)";
 // Sum of the column minimums plus the 16px gaps, rounded up with room.
-const GRID_MIN_WIDTH = 1000;
+const GRID_MIN_WIDTH = 1020;
 
 /**
  * Width reserved for a line's flag chips, so the strip is identical on every line and the
  * fatigue numbers stay in one column however many flags a team carries.
  *
- * Sized for two four-character chips plus a `+N` overflow chip and their gaps (~98px). Longer
- * chips ("ALT TRIP", "TIME ZONES") show fewer inline: `inlineFlags` fits the strip by width.
+ * Sized for four chips, the widest common four being B2B + 3IN4 + 4IN6 + TIME ZONES (~191px).
+ * A longer set still shows fewer inline: `inlineFlags` fits the strip by width.
  */
-const FLAG_STRIP_W = 104;
+const FLAG_STRIP_W = 200;
 
 // ─── Status cell ─────────────────────────────────────────────────
 
@@ -233,13 +237,12 @@ function TeamLine({
 }
 
 /**
- * How many flags a line shows before collapsing the rest into a count. Measured over 79 games
- * across ten dates: 84% of team-lines carry two or fewer, but a visiting team can stack five
- * (B2B + 3IN4 + 4IN6 + ALT + TIME ZONES). Rendering all of them would either blow the column or
- * wrap the row to a second line, and a row whose height depends on its flag count is the
- * problem this replaced.
+ * How many flags a line shows before collapsing the rest into a count. Over every regular-season
+ * team-game since 1985-86, 99.6% carry four or fewer (measured 2026-10-16); two, the old limit,
+ * hid something on about one line in six. Rendering every flag would wrap the row on the rare
+ * five-flag line, and a row whose height depends on its flag count is the problem this replaced.
  */
-const MAX_INLINE_FLAGS = 2;
+const MAX_INLINE_FLAGS = 4;
 
 /** The schedule flag chip — the fatigue score's reason, sitting next to the score. */
 function FlagChip({
@@ -268,19 +271,88 @@ function FlagChip({
   );
 }
 
+/**
+ * Every flag a line carries, spelled out, for a pointer resting on that line. Pointer only: the
+ * row is one button whose expansion already lists the schedule terms, and a phone row has no
+ * fatigue column to hover. Fixed to the viewport through a portal, because the table's scroll
+ * region would clip anything positioned inside it.
+ */
+function FlagCard({ team, flags, at }: { team: string; flags: string[]; at: DOMRect }) {
+  return createPortal(
+    <div
+      aria-hidden
+      className="mono pointer-events-none"
+      style={{
+        position: "fixed",
+        top: at.bottom + 6,
+        left: at.left,
+        zIndex: 50,
+        background: "var(--term-surface)",
+        border: "1px solid var(--term-border)",
+        borderRadius: "var(--term-radius)",
+        boxShadow: "0 4px 12px rgb(0 0 0 / 0.08)",
+        padding: `${SPACE.sm}px ${SPACE.md}px`,
+        fontSize: 12,
+        color: "var(--term-text)",
+      }}
+    >
+      <p
+        style={{
+          fontSize: TYPE.micro,
+          fontWeight: 700,
+          letterSpacing: TRACK.label,
+          color: "var(--term-text-muted)",
+          marginBottom: SPACE.sm,
+        }}
+      >
+        {team.toUpperCase()}
+      </p>
+      <dl className="grid gap-x-3 gap-y-1" style={{ gridTemplateColumns: "auto auto" }}>
+        {flags.map((flag) => (
+          <div key={flag} className="contents">
+            <dt>
+              <FlagChip label={flag} />
+            </dt>
+            <dd className="whitespace-nowrap">{FLAG_MEANINGS[flag] ?? flag}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>,
+    document.body,
+  );
+}
+
 function FatigueLine({
+  team,
   score,
   tone,
   flags,
 }: {
+  team: string;
   score: number | null;
   tone: FatigueBarTone;
   flags: string[];
 }) {
   const { shown, hidden } = inlineFlags(flags, FLAG_STRIP_W, MAX_INLINE_FLAGS);
+  const [hoverAt, setHoverAt] = useState<DOMRect | null>(null);
+  // The card is fixed to the viewport, so a scroll would leave it behind the line it names.
+  useEffect(() => {
+    if (!hoverAt) return;
+    const close = () => setHoverAt(null);
+    window.addEventListener("scroll", close, { capture: true, passive: true });
+    return () => window.removeEventListener("scroll", close, { capture: true });
+  }, [hoverAt]);
 
   return (
-    <div className="flex items-center gap-2" style={{ height: TEAM_LINE_H }}>
+    <div
+      className="flex items-center gap-2"
+      style={{ height: TEAM_LINE_H }}
+      onPointerEnter={(e) => {
+        if (e.pointerType === "mouse" && flags.length > 0) setHoverAt(e.currentTarget.getBoundingClientRect());
+      }}
+      onPointerLeave={() => setHoverAt(null)}
+    >
+      {hoverAt && <FlagCard team={team} flags={flags} at={hoverAt} />}
       {/* The score leads, so it starts on the FATIGUE SCORE label's rail; the bar after it is
           the score drawn, not a second figure. */}
       <span
@@ -320,31 +392,6 @@ function FatigueLine({
           <FlagChip key={flag} label={flag} />
         ))}
         {hidden > 0 && <FlagChip label={`+${hidden}`} muted />}
-      </span>
-    </div>
-  );
-}
-
-/**
- * Per-team days rest, promoted from the expansion (2026-08-28): two aligned lines that
- * answer "which rest is whose" in the same read order as the team names beside them.
- * A null is a season opener — printed as the em dash every unmeasured cell uses.
- */
-function RestDaysLine({ daysRest }: { daysRest: number | null | undefined }) {
-  return (
-    <div
-      className="flex items-center justify-end"
-      style={{ height: TEAM_LINE_H }}
-    >
-      <span
-        className="mono tabular-nums"
-        style={{
-          fontSize: TYPE.data,
-          fontWeight: 700,
-          color: "var(--term-text)",
-        }}
-      >
-        {daysRest ?? "—"}
       </span>
     </div>
   );
@@ -653,17 +700,14 @@ function GameRow({
         </div>
 
         <div className="fc-game-extra flex flex-col gap-1">
-            <RestDaysLine daysRest={game.awayFatigue?.daysRest} />
-            <RestDaysLine daysRest={game.homeFatigue?.daysRest} />
-        </div>
-
-        <div className="fc-game-extra flex flex-col gap-1">
             <FatigueLine
+              team={awayBrand.name}
               score={game.awayFatigue?.score ?? null}
               tone={tones.away}
               flags={flags.away}
             />
             <FatigueLine
+              team={homeBrand.name}
               score={game.homeFatigue?.score ?? null}
               tone={tones.home}
               flags={flags.home}
@@ -792,7 +836,6 @@ export function MatchupTable({ games }: MatchupTableProps) {
           >
             <span>GAME</span>
             <span>MATCHUP (AWAY / HOME)</span>
-            <span className="text-right">REST (DAYS)</span>
             <span>FATIGUE SCORE</span>
             <span>REST ADVANTAGE</span>
             {/* Ends over the badge, not over the chevron beside it (16px icon, 8px gap). */}

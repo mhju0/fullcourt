@@ -87,12 +87,12 @@ test.describe("Games page", () => {
     await expect(page.getByRole("group", { name: "Games view" })).toHaveCount(0);
   });
 
-  // D-79: there is no density dial. A desktop always carries the rest-days and fatigue
-  // columns; the width decides how much shows, not a mode.
+  // D-79: there is no density dial. A desktop always carries the fatigue column; the width
+  // decides how much shows, not a mode. The days-rest column was dropped by D-95.
   test("the slate shows every column on a desktop and offers no view toggle", async ({ page }) => {
     await page.goto("/games?season=2024-25&date=2024-12-25&view=skim");
     await expect(page.getByText("FATIGUE SCORE", { exact: true })).toBeVisible();
-    await expect(page.getByText("REST (DAYS)")).toBeVisible();
+    await expect(page.getByText("REST (DAYS)")).toHaveCount(0);
     await expect(page.getByText("GAP SIZE", { exact: true })).toBeVisible();
     await expect(page.getByRole("button", { name: /^(SKIM|DEEP DIVE)$/ })).toHaveCount(0);
   });
@@ -102,7 +102,7 @@ test.describe("Games page", () => {
   // rather than the badge it names. Each header now starts or ends where its cells do.
   test("each column header lines up with the cells under it", async ({ page }) => {
     await page.goto("/games?season=2024-25&date=2024-12-25");
-    await expect(page.getByText("REST (DAYS)")).toBeVisible();
+    await expect(page.getByText("FATIGUE SCORE", { exact: true })).toBeVisible();
     const edges = await page.evaluate(() => {
       const ink = (el: Element) => {
         const range = document.createRange();
@@ -114,15 +114,14 @@ test.describe("Games page", () => {
       const cells = [...row.children].map((c) => c.getBoundingClientRect());
       const badge = row.querySelector(".fc-game-chevron > span > *")!.getBoundingClientRect();
       return {
-        left: [0, 1, 3, 4].map((i) => heads[i].left - cells[i].left),
-        restRight: heads[2].right - cells[2].right,
-        gapRight: heads[5].right - badge.right,
+        left: [0, 1, 2, 3].map((i) => heads[i].left - cells[i].left),
+        gapRight: heads[4].right - badge.right,
         // The cell box lined up while the score inside it sat past the bar (2026-10-16), so
         // the figure itself is measured too.
-        scoreLeft: heads[3].left - ink(row.querySelector(".fc-fatigue-score")!).left,
+        scoreLeft: heads[2].left - ink(row.querySelector(".fc-fatigue-score")!).left,
       };
     });
-    for (const delta of [...edges.left, edges.restRight, edges.gapRight, edges.scoreLeft]) {
+    for (const delta of [...edges.left, edges.gapRight, edges.scoreLeft]) {
       expect(Math.abs(delta)).toBeLessThanOrEqual(1);
     }
   });

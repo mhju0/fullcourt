@@ -235,6 +235,17 @@ export function teamGameFlags(game: GameResponse): { away: string[]; home: strin
   return { away, home }
 }
 
+/** What each flag chip means, in the words the hover card prints beside it. */
+export const FLAG_MEANINGS: Readonly<Record<string, string>> = Object.freeze({
+  B2B: "Played the night before",
+  "3IN4": "Third game in four nights",
+  "4IN6": "Fourth game in six nights",
+  ALT: "Tonight's arena is at altitude",
+  "ALT TRIP": "The night after a game at altitude",
+  "TIME ZONES": "Two or more time zones from home, not yet adjusted",
+  OT: "Last game went to overtime",
+})
+
 
 // ─── Expanded detail (kept, restyled) ────────────────────────────
 
