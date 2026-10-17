@@ -8,6 +8,7 @@ import {
   hasActiveFilters,
   initExplore,
   pageWindow,
+  type ExploreDrill,
   type ExploreIntent,
   type ExploreState,
   type PageWindow,
@@ -17,7 +18,7 @@ import type { GameSearchResponse, GameSearchResult } from "@/types"
 
 export const EXPLORE_PAGE_SIZE = 20
 
-export type DrillSignal = { threshold: number; token: number } | null
+export type DrillSignal = ExploreDrill | null
 
 export interface ExploreGames {
   state: ExploreState
@@ -46,7 +47,7 @@ export function useExploreGames(drillSignal: DrillSignal): ExploreGames {
   if (drillSignal && drillSignal.token !== state.appliedDrillToken) {
     dispatch({
       type: "DRILL_APPLIED",
-      threshold: drillSignal.threshold,
+      gap: drillSignal.gap,
       token: drillSignal.token,
     })
   }

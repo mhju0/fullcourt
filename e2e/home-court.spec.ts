@@ -28,6 +28,8 @@ function evidence(rows: Season[]): AnalysisResponse {
       awayTeamMoreRested: { games: 0, restedTeamWins: 0, winPct: 0 },
     },
     venueBaseline: { games: 10000, homeWins: 6250, homeWinPct: 62.5, roadWinPct: 37.5 },
+    gapRanges: [],
+    eras: [],
     seasonWinRates: rows,
   };
 }

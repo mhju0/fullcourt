@@ -23,16 +23,16 @@ function run(state: ExploreState, ...events: ExploreIntent[]): ExploreState {
 }
 
 describe("initExplore", () => {
-  it("starts unfiltered on page 1", () => {
+  it("opens on the games the page's rates count, home team rested, every gap, page 1", () => {
     const s = initExplore(null);
-    expect(s).toMatchObject({ minRA: 0, team: "", season: "", result: "all", page: 1 });
+    expect(s).toMatchObject({ gap: "", side: "home", team: "", season: "", result: "all", page: 1 });
     expect(hasActiveFilters(s)).toBe(false);
   });
 
-  it("seeds from a drill signal so the first render already shows the clicked threshold", () => {
-    const s = initExplore({ threshold: 5, token: 3 });
-    expect(s.minRA).toBe(5);
-    expect(exploreReducer(s, { type: "DRILL_APPLIED", threshold: 5, token: 3 })).toBe(s);
+  it("seeds from a drill signal so the first render already shows the clicked range", () => {
+    const s = initExplore({ gap: "large", token: 3 });
+    expect(s).toMatchObject({ gap: "large", side: "home" });
+    expect(exploreReducer(s, { type: "DRILL_APPLIED", gap: "large", token: 3 })).toBe(s);
   });
 });
 
@@ -41,7 +41,8 @@ describe("filters", () => {
     { type: "PAGE_SHIFTED", delta: 1, totalPages: 9 }, { type: "PAGE_SHIFTED", delta: 1, totalPages: 9 });
 
   it.each<[string, ExploreIntent]>([
-    ["rest advantage", { type: "MIN_RA_SELECTED", minRA: 5 }],
+    ["gap", { type: "GAP_SELECTED", gap: "medium" }],
+    ["side", { type: "SIDE_SELECTED", side: "away" }],
     ["team", { type: "TEAM_SELECTED", team: "BOS" }],
     ["season", { type: "SEASON_SELECTED", season: "2023-24" }],
     ["result", { type: "RESULT_SELECTED", result: "correct" }],
@@ -53,7 +54,8 @@ describe("filters", () => {
 
   it("clears every filter at once", () => {
     const filtered = run(initExplore(null),
-      { type: "MIN_RA_SELECTED", minRA: 7 },
+      { type: "GAP_SELECTED", gap: "large" },
+      { type: "SIDE_SELECTED", side: "either" },
       { type: "TEAM_SELECTED", team: "LAL" },
       { type: "SEASON_SELECTED", season: "2019-20" },
       { type: "RESULT_SELECTED", result: "incorrect" }
@@ -62,7 +64,11 @@ describe("filters", () => {
 
     const cleared = exploreReducer(filtered, { type: "FILTERS_CLEARED" });
     expect(hasActiveFilters(cleared)).toBe(false);
-    expect(cleared).toMatchObject({ minRA: 0, team: "", season: "", result: "all", page: 1 });
+    expect(cleared).toMatchObject({ gap: "", side: "home", team: "", season: "", result: "all", page: 1 });
+  });
+
+  it("counts a side other than home as a filter, since home is where the explorer opens", () => {
+    expect(hasActiveFilters(exploreReducer(initExplore(null), { type: "SIDE_SELECTED", side: "away" }))).toBe(true);
   });
 });
 
@@ -70,22 +76,28 @@ describe("drill-down", () => {
   it("applies once per token, so a stale signal cannot fight a later change", () => {
     const drilled = exploreReducer(initExplore(null), {
       type: "DRILL_APPLIED",
-      threshold: 5,
+      gap: "medium",
       token: 1,
     });
-    expect(drilled.minRA).toBe(5);
+    expect(drilled.gap).toBe("medium");
 
     const cleared = exploreReducer(drilled, { type: "FILTERS_CLEARED" });
     // The same signal is still being passed down on every render.
-    expect(exploreReducer(cleared, { type: "DRILL_APPLIED", threshold: 5, token: 1 })).toBe(cleared);
-    expect(cleared.minRA).toBe(0);
+    expect(exploreReducer(cleared, { type: "DRILL_APPLIED", gap: "medium", token: 1 })).toBe(cleared);
+    expect(cleared.gap).toBe("");
   });
 
   it("re-applies when the same bar is clicked again, because the token moved", () => {
-    const first = exploreReducer(initExplore(null), { type: "DRILL_APPLIED", threshold: 5, token: 1 });
+    const first = exploreReducer(initExplore(null), { type: "DRILL_APPLIED", gap: "large", token: 1 });
     const cleared = exploreReducer(first, { type: "FILTERS_CLEARED" });
-    const second = exploreReducer(cleared, { type: "DRILL_APPLIED", threshold: 5, token: 2 });
-    expect(second.minRA).toBe(5);
+    const second = exploreReducer(cleared, { type: "DRILL_APPLIED", gap: "large", token: 2 });
+    expect(second.gap).toBe("large");
+  });
+
+  it("sets the home side as well as the range, so the rows are exactly the bar's games", () => {
+    const visitors = exploreReducer(initExplore(null), { type: "SIDE_SELECTED", side: "away" });
+    const drilled = exploreReducer(visitors, { type: "DRILL_APPLIED", gap: "small", token: 1 });
+    expect(drilled).toMatchObject({ gap: "small", side: "home" });
   });
 });
 
@@ -127,22 +139,23 @@ describe("pageWindow", () => {
 });
 
 describe("exploreSearchKey", () => {
-  it("omits inactive filters so the URL stays the cache key", () => {
+  it("omits inactive filters so the URL stays the cache key, and always names the side", () => {
     expect(exploreSearchKey(initExplore(null), PAGE_SIZE)).toBe(
-      "/api/games/search?page=1&limit=20"
+      "/api/games/search?side=home&page=1&limit=20"
     );
   });
 
   it("carries every active filter", () => {
     const s = run(initExplore(null),
-      { type: "MIN_RA_SELECTED", minRA: 5 },
+      { type: "GAP_SELECTED", gap: "medium" },
+      { type: "SIDE_SELECTED", side: "away" },
       { type: "TEAM_SELECTED", team: "BOS" },
       { type: "SEASON_SELECTED", season: "2023-24" },
       { type: "RESULT_SELECTED", result: "correct" },
       { type: "PAGE_SHIFTED", delta: 1, totalPages: 4 }
     );
     expect(exploreSearchKey(s, PAGE_SIZE)).toBe(
-      "/api/games/search?minRA=5&team=BOS&season=2023-24&result=correct&page=2&limit=20"
+      "/api/games/search?gap=medium&side=away&team=BOS&season=2023-24&result=correct&page=2&limit=20"
     );
   });
 });

@@ -137,6 +137,36 @@ export interface ThresholdBucket {
   winPct: number;
 }
 
+/**
+ * One gap size (`GAP_RANGES` in `rest-advantage-evidence.ts`): called games whose gap falls in
+ * `[min, max)`. Disjoint, unlike {@link ThresholdBucket}: each game is in exactly one range.
+ */
+export interface GapRangeBucket {
+  key: "small" | "medium" | "large";
+  min: number;
+  /** Exclusive upper bound; `null` for the open top range. */
+  max: number | null;
+  games: number;
+  restedTeamWins: number;
+  /** Win percentage (0–100, 1 decimal). */
+  winPct: number;
+}
+
+/**
+ * A run of complete seasons read together, so a range's rate is measured on several seasons of
+ * games instead of one season's noise. Each range is read against the era's own home win rate.
+ */
+export interface EraRates {
+  firstSeason: string;
+  lastSeason: string;
+  seasonCount: number;
+  homeGames: number;
+  homeWins: number;
+  /** The era's own home win rate, over every scored game in it (0–100, 1 decimal). */
+  homeWinPct: number;
+  ranges: GapRangeBucket[];
+}
+
 export interface HomeAwayBreakdown {
   homeTeamMoreRested: {
     games: number;
@@ -185,6 +215,10 @@ export interface AnalysisResponse {
    */
   overallWinRate: number;
   thresholds: ThresholdBucket[];
+  /** The same called games split by gap size, each game in one range. */
+  gapRanges: GapRangeBucket[];
+  /** Complete seasons in eras of five, oldest first; the season in progress is left out. */
+  eras: EraRates[];
   homeAwayBreakdown: HomeAwayBreakdown;
   venueBaseline: VenueBaseline;
   /**

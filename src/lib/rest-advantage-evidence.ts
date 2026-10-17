@@ -1,7 +1,9 @@
 import type {
   AnalysisResponse,
+  EraRates,
   GameSearchResponse,
   GameSearchResult,
+  GapRangeBucket,
   HomeAwayBreakdown,
   RestAdvantage,
   ThresholdBucket,
@@ -115,6 +117,61 @@ type ProcessedHistoricalGame = {
 
 export const BACKTEST_THRESHOLDS = [2, 3, 5, 7] as const;
 
+/**
+ * The three gap sizes /analysis reports, each game counted in exactly one (D-102).
+ *
+ * The cumulative thresholds above count a 6-point gap in every bucket from RA ≥ 2 to RA ≥ 5,
+ * so the small-gap bars borrowed the lift of the large gaps riding inside them. Split apart,
+ * 0.5 to 3 wins at the home baseline and the effect appears only above it. 0.5 is the call line,
+ * and 3 and 5 are the board's MEDIUM and LARGE REST EDGE lines (`restEdgeSize`, D-101), which a
+ * test holds equal, so every tab names the same games the same way. `max` is exclusive and
+ * `null` means no ceiling.
+ */
+export const GAP_RANGES = [
+  { key: "small", label: "Small", min: NEUTRAL_REST_ADVANTAGE_THRESHOLD, max: 3 },
+  { key: "medium", label: "Medium", min: 3, max: 5 },
+  { key: "large", label: "Large", min: 5, max: null },
+] as const satisfies readonly { key: string; label: string; min: number; max: number | null }[];
+
+export type GapRange = (typeof GAP_RANGES)[number];
+export type GapRangeKey = GapRange["key"];
+
+/** Whether a gap (already rounded by `restAdvantageDifferential`) falls inside a range. */
+export function inGapRange(differential: number, range: GapRange): boolean {
+  const gap = Math.abs(differential);
+  return gap >= range.min && (range.max === null || gap < range.max);
+}
+
+/** "0.5–3", "3–5", "5+": the span as every label on the site prints it. */
+export function gapRangeSpan(range: GapRange): string {
+  return range.max === null ? `${range.min}+` : `${range.min}–${range.max}`;
+}
+
+export function gapRangeByKey(key: GapRangeKey): GapRange {
+  return GAP_RANGES.find((range) => range.key === key) ?? GAP_RANGES[0];
+}
+
+/** Seasons per era on the era chart. The oldest era absorbs the remainder (D-102). */
+export const ERA_LENGTH = 5;
+
+/**
+ * Groups complete seasons into eras of `ERA_LENGTH`, counted back from the newest so the most
+ * recent era is always a full one. A short remainder joins the oldest era instead of standing
+ * alone, because a one-season era is exactly the noisy single-season bar this chart replaced.
+ */
+export function groupSeasonsIntoEras(seasons: readonly string[]): string[][] {
+  const sorted = [...seasons].sort((left, right) => left.localeCompare(right));
+  const eras: string[][] = [];
+  for (let end = sorted.length; end > 0; end -= ERA_LENGTH) {
+    eras.unshift(sorted.slice(Math.max(0, end - ERA_LENGTH), end));
+  }
+  if (eras.length > 1 && eras[0].length < ERA_LENGTH) {
+    const [remainder, oldest] = eras.splice(0, 2);
+    eras.unshift([...remainder, ...oldest]);
+  }
+  return eras;
+}
+
 /** Win percentage to one decimal. Shared so two surfaces cannot round one statistic differently. */
 export function winPct(wins: number, total: number): number {
   return total > 0 ? Math.round((wins / total) * 1000) / 10 : 0;
@@ -195,6 +252,46 @@ export function buildHistoricalBacktest(
     };
   });
 
+  const countRanges = (rows: readonly ProcessedHistoricalGame[]): GapRangeBucket[] =>
+    GAP_RANGES.map((range) => {
+      const bucket = rows.filter((row) => inGapRange(row.differential, range));
+      const wins = bucket.filter((row) => row.restedTeamWon).length;
+      return {
+        key: range.key,
+        min: range.min,
+        max: range.max,
+        games: bucket.length,
+        restedTeamWins: wins,
+        winPct: winPct(wins, bucket.length),
+      };
+    });
+  const gapRanges = countRanges(called);
+
+  // Eras read the unfiltered called games of complete seasons only: a season still being played
+  // would make the newest era shift every night.
+  const completeSeasons = [...baselineBySeason.keys()].filter(
+    (season) => !incompleteSeasons.has(season)
+  );
+  const eras: EraRates[] = groupSeasonsIntoEras(completeSeasons).map((seasons) => {
+    const inEra = new Set(seasons);
+    let homeGames = 0;
+    let homeWins = 0;
+    for (const season of seasons) {
+      const baseline = baselineBySeason.get(season);
+      homeGames += baseline?.games ?? 0;
+      homeWins += baseline?.homeWins ?? 0;
+    }
+    return {
+      firstSeason: seasons[0],
+      lastSeason: seasons[seasons.length - 1],
+      seasonCount: seasons.length,
+      homeGames,
+      homeWins,
+      homeWinPct: winPct(homeWins, homeGames),
+      ranges: countRanges(called.filter((row) => inEra.has(row.season))),
+    };
+  });
+
   const homeRested = decidable.filter((row) => row.restedTeamSide === "home");
   const awayRested = decidable.filter((row) => row.restedTeamSide === "away");
   const homeRestedWins = homeRested.filter((row) => row.restedTeamWon).length;
@@ -259,6 +356,8 @@ export function buildHistoricalBacktest(
     overallWins,
     overallWinRate: winPct(overallWins, called.length),
     thresholds,
+    gapRanges,
+    eras,
     homeAwayBreakdown,
     venueBaseline,
     seasonWinRates,
@@ -287,11 +386,22 @@ export type HistoricalGameSearchFilters = {
   season?: string;
 };
 
-/** What shapes the page, applied after the rows are in hand. */
+/** Which side was the more-rested one. Every choice leaves neutral sites out (D-92). */
+export type ExploreSide = "home" | "away" | "either";
+
+/**
+ * What shapes the page, applied after the rows are in hand.
+ *
+ * `gap` and `side` run here rather than in SQL so they read the same rounded gap and the same
+ * `isCalledSide` the backtest does: a bar's count and the rows it opens then cannot disagree,
+ * which an unrounded SQL bound could at a range edge. The query still applies the range floor.
+ */
 export type HistoricalGameSearchOptions = {
   result: "all" | "correct" | "incorrect";
   page: number;
   limit: number;
+  gap?: GapRangeKey;
+  side?: ExploreSide;
 };
 
 /** Builds the user-facing game explorer result from already-filtered regular-season rows. */
@@ -311,6 +421,10 @@ export function buildHistoricalGameSearch(
       awayFatigueScore
     );
     if (restAdvantage.advantageTeam === "neutral") continue;
+    if (options.side !== undefined && row.neutralSite) continue;
+    if (options.side === "home" && !isCalledSide(restAdvantage.advantageTeam, row.neutralSite)) continue;
+    if (options.side === "away" && restAdvantage.advantageTeam !== "away") continue;
+    if (options.gap !== undefined && !inGapRange(restAdvantage.differential, gapRangeByKey(options.gap))) continue;
 
     const homeWon = row.homeScore > row.awayScore;
     decisive.push({
