@@ -52,8 +52,8 @@ export type RestAdvantageDisplay =
  * every comparison still reads the two-decimal value.
  *
  * Cutting is what keeps a printed figure on the same side of every line as its label. Each line
- * (EVEN under 0.5, BIG REST EDGE at 3) sits on a tenth, and a value is at or above a tenth exactly
- * when its cut is. Rounding put 0.46 beside EVEN as "0.5" and 2.96 beside no badge as "3.0", 983
+ * (EVEN under 0.5, MEDIUM REST EDGE at 3, LARGE at 5) sits on a tenth, and a value is at or above
+ * a tenth exactly when its cut is. Rounding put 0.46 beside EVEN as "0.5" and 2.96 beside no badge as "3.0", 983
  * games in all, which is why D-87 printed two decimals until the owner chose this.
  *
  * The epsilon absorbs float error in an exact tenth (`0.3 * 10` is fine, but a computed 2.9 can

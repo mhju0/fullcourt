@@ -52,7 +52,7 @@ export interface RestAdvantage {
 
 /**
  * One game in a team's season (API: GET /api/games/team), seen from that team's side.
- * `restAdvantage` stays home-relative, exactly as on the board, so the BIG REST EDGE rule reads
+ * `restAdvantage` stays home-relative, exactly as on the board, so the board's rest-edge sizes read
  * it unchanged; the page turns it to the team's side for display.
  */
 export interface TeamScheduleGame {

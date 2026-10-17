@@ -113,7 +113,7 @@ for (const width of [1440, 1280, 1024, 768, 390]) {
       await edgeInsideRegion();
     }
     if (width >= 640) {
-      // Every row, not the first: only a BIG REST EDGE row carries the widest last cell.
+      // Every row, not the first: only a rest-edge row carries the widest last cell.
       const clipped = await page.locator('.fc-game-grid').evaluateAll(rows => rows.some(el => {
         const edge = el.getBoundingClientRect().right;
         return [...el.querySelectorAll('*')].some(child => child.getBoundingClientRect().right > edge + 1);

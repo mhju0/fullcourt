@@ -14,6 +14,8 @@ FullCourt studies NBA schedule conditions and historical results. Use these term
 
 **Neutral/no-call band**: An absolute rest advantage below `0.5`. The gap is compared at the fatigue scores' two decimals (`restAdvantageDifferential`, D-87), so a gap of 0.50 is a call and 0.49 is not. The site prints both cut to one decimal (0.5 and 0.4, D-98), which keeps the printed figure on the same side of 0.5. This band is unrelated to a neutral-site venue.
 
+**Rest edge size**: The size of an absolute rest advantage outside the neutral band: small from `0.5` to under `3`, medium from `3` to under `5`, large at `5` or more (D-101). A combined count of medium and large reads “3+ edges.” The Games board marks medium and large only when the rested team is at home off a neutral site (`restEdgeSize`). Avoid “big edge”; /schedule still uses it for `1.5` until its own change lands.
+
 **Decidable**: A gap outside the neutral band, identifying a more-rested side. This is separate from whether the game is called or publishable.
 
 **Called**: A decidable game in which the more-rested team is at home and the venue is not a neutral site (D-92), selected by `isCalledSide()` in `src/lib/rest-advantage-evidence.ts`. The headline backtest rate uses this group. In explanatory copy, prefer “rested team at home.”

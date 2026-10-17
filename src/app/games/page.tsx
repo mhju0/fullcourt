@@ -12,7 +12,7 @@ import { EdgesAhead } from "@/components/edges-ahead"
 import { GameSlateRefreshNotice, GameSlateRefreshWarning } from "@/components/game-slate-refresh-notice"
 import { MatchupTable } from "@/components/matchup-table"
 import { BoardGuide } from "@/components/board-guide"
-import { isBigRestEdge } from "@/components/matchup-parts"
+import { restEdgeSize } from "@/components/matchup-parts"
 import { GamesViewTabs } from "@/components/games-view-tabs"
 import { PageHeader } from "@/components/page-header"
 import { SeasonSelector } from "@/components/season-selector"
@@ -50,12 +50,12 @@ const PICKER_BOX = "h-12 w-[3.75rem] shrink-0 justify-center"
 function SlateSummaryLine({
   gamesToday,
   avgRestAdv,
-  bigEdgeGames,
+  markedEdgeGames,
   className,
 }: {
   gamesToday: number | null
   avgRestAdv: string
-  bigEdgeGames: string
+  markedEdgeGames: string
   className?: string
 }) {
   return (
@@ -66,7 +66,7 @@ function SlateSummaryLine({
       items={[
         { label: "GAMES", value: gamesToday === null ? "—" : String(gamesToday) },
         { label: "AVG REST GAP", value: avgRestAdv },
-        { label: "BIG EDGES", value: bigEdgeGames },
+        { label: "3+ EDGES", value: markedEdgeGames },
       ]}
     />
   )
@@ -371,9 +371,9 @@ export default function GamesPage() {
   // One pass, memoized on the slate: this used to run map + filter + reduce + a second
   // filter on every render — including renders driven by the season selector and
   // the Realtime score overlay, none of which change the answer.
-  const { avgRestAdv, bigEdgeGames } = useMemo(() => {
+  const { avgRestAdv, markedEdgeGames } = useMemo(() => {
     let sum = 0
-    let bigEdges = 0
+    let markedEdges = 0
     let measured = 0
     for (const g of slate.games) {
       if (g.restAdvantage === null) continue
@@ -381,7 +381,7 @@ export default function GamesPage() {
       const diff = Math.abs(g.restAdvantage.differential)
       // An exact-zero game is a measured gap of 0, so it stays in the average.
       sum += diff
-      if (isBigRestEdge(g.restAdvantage, g.neutralCity)) bigEdges += 1
+      if (restEdgeSize(g.restAdvantage, g.neutralCity)) markedEdges += 1
     }
     // An em dash, not "0.0" and not "0". A slate whose games carry no fatigue pair — every date
     // of a released-but-unplayed season — has no average to report, and printing zero states a
@@ -389,7 +389,7 @@ export default function GamesPage() {
     // different and prints 0.0.
     return {
       avgRestAdv: measured === 0 ? "—" : formatRestAdvantageValue(sum / measured),
-      bigEdgeGames: measured === 0 ? "—" : String(bigEdges),
+      markedEdgeGames: measured === 0 ? "—" : String(markedEdges),
     }
   }, [slate.games])
 
@@ -642,7 +642,7 @@ export default function GamesPage() {
       <SlateSummaryLine
         gamesToday={slate.status === "slateReady" || slate.status === "slateEmpty" ? slate.games.length : null}
         avgRestAdv={avgRestAdv}
-        bigEdgeGames={bigEdgeGames}
+        markedEdgeGames={markedEdgeGames}
         className="grid"
       />
 

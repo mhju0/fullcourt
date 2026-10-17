@@ -4,37 +4,57 @@ import { useState } from "react"
 import Image from "next/image"
 import { TRAVEL_LOOKBACK_DAYS } from "@/lib/fatigue"
 import { readableTextOn } from "@/lib/nba-team-colors"
-import { isCalledSide } from "@/lib/rest-advantage-evidence"
+import { isCalledSide, winPct } from "@/lib/rest-advantage-evidence"
 import { formatRestAdvantageValue } from "@/lib/rest-advantage-display"
 import { formatDaysOff } from "@/lib/days-off"
 import { getTeamBranding, teamLogoUrl } from "@/lib/team-history"
 import { TRACK, TYPE } from "@/lib/terminal-styles"
-import type { FatigueInfo, GameResponse } from "@/types"
+import type { FatigueInfo, GameResponse, ThresholdBucket } from "@/types"
 
-// ─── Big rest edge ───────────────────────────────────────────────
+// ─── Rest edge size ──────────────────────────────────────────────
 
 /**
  * Where the rested home team's record steps up. Over every called game since 1985-86 it won about
- * 60% at any gap from 0.5 to 3, flat, and 63.1% at 3 or more (D-96). The four-tier GAP SIZE
- * ladder this replaced drew lines at 1 and 2 where the record does not move. One of the
- * backtest's own thresholds, so the rate the board quotes for it is already published.
+ * 60% at any gap from 0.5 to 3, which is home court and nothing more, then about 62% from 3 to 5
+ * and about 65% at 5 or more (D-96, D-101). A small gap earns no mark for that reason. Both lines
+ * are thresholds the backtest already counts, so the rates the board quotes are published ones.
  */
-export const BIG_REST_EDGE_THRESHOLD = 3
+export const MEDIUM_REST_EDGE_THRESHOLD = 3
+export const LARGE_REST_EDGE_THRESHOLD = 5
+
+export type RestEdgeSize = "medium" | "large"
 
 /**
- * A game the board marks: the home team is the fresher side by at least the threshold. Only the
- * called side counts (`isCalledSide`): a rested visitor still loses most often, so marking one
- * would put the loudest badge on the row beside a team that usually loses.
+ * The size of edge the board marks, or null for none. Only the called side counts
+ * (`isCalledSide`): a rested visitor still loses most often at every size, so marking one would
+ * put the loudest badge on the row beside a team that usually loses.
  */
-export function isBigRestEdge(
+export function restEdgeSize(
   restAdvantage: GameResponse["restAdvantage"],
   neutralCity: string | null
-): boolean {
-  return (
-    restAdvantage !== null &&
-    isCalledSide(restAdvantage.advantageTeam, neutralCity !== null) &&
-    Math.abs(restAdvantage.differential) >= BIG_REST_EDGE_THRESHOLD
-  )
+): RestEdgeSize | null {
+  if (restAdvantage === null || !isCalledSide(restAdvantage.advantageTeam, neutralCity !== null)) return null
+  const gap = Math.abs(restAdvantage.differential)
+  if (gap >= LARGE_REST_EDGE_THRESHOLD) return "large"
+  if (gap >= MEDIUM_REST_EDGE_THRESHOLD) return "medium"
+  return null
+}
+
+/**
+ * Each size's record, from the backtest's cumulative buckets: large is the 5+ bucket as shipped,
+ * medium is the 3+ bucket less the 5+ one. Null for a size whose buckets are missing or empty.
+ */
+export function restEdgeRates(
+  thresholds: readonly ThresholdBucket[]
+): Record<RestEdgeSize, { games: number; winPct: number } | null> {
+  const at = (threshold: number) => thresholds.find((t) => t.threshold === threshold)
+  const medium = at(MEDIUM_REST_EDGE_THRESHOLD)
+  const large = at(LARGE_REST_EDGE_THRESHOLD)
+  const rate = (games: number, wins: number) => (games > 0 ? { games, winPct: winPct(wins, games) } : null)
+  return {
+    medium: medium && large ? rate(medium.games - large.games, medium.restedTeamWins - large.restedTeamWins) : null,
+    large: large ? rate(large.games, large.restedTeamWins) : null,
+  }
 }
 
 // ─── Team logo ───────────────────────────────────────────────────
@@ -93,9 +113,16 @@ export function TeamLogo({
   )
 }
 
-// ─── Big rest edge badge ─────────────────────────────────────────
+// ─── Rest edge badge ─────────────────────────────────────────────
 
-export function BigRestEdgeBadge() {
+export const REST_EDGE_LABEL: Record<RestEdgeSize, string> = {
+  medium: "MEDIUM REST EDGE",
+  large: "LARGE REST EDGE",
+}
+
+/** Large is filled and medium is outlined, so the bigger edge reads louder in the same accent. */
+export function RestEdgeBadge({ size }: { size: RestEdgeSize }) {
+  const large = size === "large"
   return (
     <span
       className="mono inline-flex items-center whitespace-nowrap"
@@ -103,13 +130,15 @@ export function BigRestEdgeBadge() {
         fontSize: "11px",
         letterSpacing: TRACK.data,
         padding: "4px 8px",
+        // Inset, so the outline adds no width and both sizes share one box.
+        boxShadow: "inset 0 0 0 1px var(--term-accent)",
         borderRadius: "var(--term-radius-sm)",
         fontWeight: 700,
-        background: "var(--term-accent)",
-        color: "var(--term-surface)",
+        background: large ? "var(--term-accent)" : "transparent",
+        color: large ? "var(--term-surface)" : "var(--term-accent)",
       }}
     >
-      BIG REST EDGE
+      {REST_EDGE_LABEL[size]}
     </span>
   )
 }

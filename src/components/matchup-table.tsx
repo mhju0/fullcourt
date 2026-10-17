@@ -12,12 +12,12 @@ import { usePageQuery } from "@/hooks/useSeasonUrl";
 import { ChevronDown } from "lucide-react";
 import { FatigueBar, type FatigueBarTone } from "@/components/fatigue-bar";
 import {
-  BigRestEdgeBadge,
+  RestEdgeBadge,
   FatigueDetailColumn,
   TeamLogo,
   inlineFlags,
   teamGameFlags,
-  isBigRestEdge,
+  restEdgeSize,
 } from "@/components/matchup-parts";
 import { gamePhase, spokenGameState, type GamePhase } from "@/lib/game-phase";
 import { buildGameStoryline } from "@/lib/game-storyline";
@@ -55,9 +55,10 @@ import type { GameResponse } from "@/types";
 // two-column phone row, which drops the fatigue column (D-79). The days-rest column was
 // dropped on 2026-10-16 (D-95); days rest stays in the expansion.
 const GRID_COLS =
-  "minmax(96px,120px) minmax(210px,0.8fr) minmax(320px,1fr) minmax(200px,240px) minmax(120px,0.6fr)";
-// Column minimums (946) + four 16px gaps + 16px row padding on each side + the 3px accent edge = 1045.
-const GRID_MIN_WIDTH = 1048;
+  "minmax(96px,120px) minmax(210px,0.8fr) minmax(320px,1fr) minmax(200px,240px) minmax(160px,0.6fr)";
+// Column minimums (986) + four 16px gaps + 16px row padding on each side + the 3px accent edge = 1085.
+// The last minimum holds the widest badge, MEDIUM REST EDGE (132px), beside the chevron.
+const GRID_MIN_WIDTH = 1088;
 
 /**
  * Width reserved for a line's flag chips, so the strip is identical on every line and the
@@ -553,7 +554,7 @@ function GameRow({
     awayFallback,
   );
 
-  const bigEdge = isBigRestEdge(game.restAdvantage, game.neutralCity);
+  const edgeSize = restEdgeSize(game.restAdvantage, game.neutralCity);
   const flags = teamGameFlags(game);
   const tones = fatigueTones(
     game.awayFatigue?.score ?? null,
@@ -582,10 +583,10 @@ function GameRow({
       className="fc-game-row scroll-mt-20"
       style={{
         borderTop: index === 0 ? undefined : "1px solid var(--term-border)",
-        // One accent at a time (Front Office): only a big rest edge earns the indigo edge.
+        // One accent at a time (Front Office): only a medium or large rest edge earns the indigo edge.
         // A live row is not tinted, since most of an evening slate is live at once.
         borderLeft:
-          bigEdge
+          edgeSize
             ? "3px solid var(--term-accent)"
             : "3px solid transparent",
       }}
@@ -652,7 +653,7 @@ function GameRow({
         </div>
 
         <div className="fc-game-chevron flex items-center justify-end gap-2">
-          {bigEdge && <span className="hidden sm:contents"><BigRestEdgeBadge /></span>}
+          {edgeSize && <span className="hidden sm:contents"><RestEdgeBadge size={edgeSize} /></span>}
           <ChevronDown
             className={cn(
               "size-4 shrink-0 text-[var(--term-text-muted)]",
