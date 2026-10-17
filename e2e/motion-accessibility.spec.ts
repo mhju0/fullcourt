@@ -35,7 +35,9 @@ for (const width of [390, 1440]) {
       test("Analysis tooltips follow bars immediately with mouse and keyboard", async ({ page }) => {
         await page.goto("/analysis");
         await expect(page.getByRole("heading", { name: "Model Results" })).toBeVisible({ timeout: 60_000 });
-        const charts = page.locator(".recharts-wrapper");
+        // Gap size, eras, and home court by season; only the two bar charts have bars to hover.
+        await expect(page.locator(".recharts-wrapper")).toHaveCount(3);
+        const charts = page.locator(".recharts-wrapper").filter({ has: page.locator(".recharts-bar-rectangle") });
         await expect(charts).toHaveCount(2);
         for (const chart of await charts.all()) {
           const bars = chart.locator(".recharts-bar-rectangle path");

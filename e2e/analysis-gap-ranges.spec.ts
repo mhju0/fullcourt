@@ -78,6 +78,9 @@ test("each gap-size bar opens exactly its own games, with the home team as the r
   const rangeChart = page.locator(".recharts-wrapper").first();
   await expect(rangeChart.getByText("LARGE 5+", { exact: true })).toBeVisible();
   await expect(rangeChart.getByText("n=3,756", { exact: true })).toBeVisible();
+  // The Small bar is a sliver with its whisker drawn across it; a click there still opens it.
+  await rangeChart.locator(".recharts-bar-rectangle path").first().click();
+  await expect(page.getByLabel("Rest gap filter")).toHaveValue("small");
   await rangeChart.locator(".recharts-bar-rectangle path").nth(2).click();
   await expect(page.getByLabel("Rest gap filter")).toHaveValue("large");
   await expect.poll(() => searches.at(-1)?.get("gap")).toBe("large");
