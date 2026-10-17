@@ -15,10 +15,6 @@ rationale in [Decisions](DECISIONS.md), not another running implementation log.
   and homepage motion. Browser automation does not close this item.
 - Re-key ESPN-seeded games to canonical hoopR IDs once played-game data is available. Review a dry
   run before applying; see [season rollover](SEASON_ROLLOVER.md). This enables shooting-data joins.
-- Finish moving every tab to the gap sizes of D-101 and D-102 (small 0.5–3, medium 3–5,
-  large 5+), one change each: the Behind the Data ladders remain, after the Supabase egress
-  cycle resets on 2026-10-30. Schedule Edge moved in D-103, the home page in D-104 and Season
-  Report in D-105.
 
 ## First-use validation
 

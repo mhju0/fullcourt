@@ -19,8 +19,9 @@ import {
   REST_SPLIT_BASELINE,
   REST_SPLIT_SAMPLE,
   THIN_SAMPLE_GAMES,
-  type RestGapRung,
+  type RestGapRange,
 } from "@/lib/rest-split-facts";
+import { gapRangeByKey, gapRangeSpan } from "@/lib/rest-advantage-evidence";
 import { termTdStyle } from "@/lib/terminal-styles";
 import { DataTable } from "@/components/ui/data-table";
 import { signedNumber } from "@/lib/signed-number";
@@ -197,38 +198,42 @@ function RestRowTable() {
   );
 }
 
+/** "Medium 3–5": a gap size as every table on the site names it. */
+function gapSizeLabel(range: RestGapRange): string {
+  const span = gapRangeByKey(range.key);
+  return `${span.label} ${gapRangeSpan(span)}`;
+}
+
 /**
- * The road row by rest gap.
+ * The road row by gap size, each game in one size (D-106).
  *
- * This replaces a sentence claiming "no threshold rescues it", which the full ladder refutes:
- * the row reaches even at a gap of 6 and clears it at 7. Both of those rungs are tiny, and the
- * caption says so — the honest reading is the schedule running out of examples, not a signal
- * switching on. The old sentence was written from a ladder that stopped at 5.
+ * This replaces a sentence claiming "no threshold rescues it". Pooled over every season, no
+ * size reaches even; inside the last five seasons the medium size does (`RoadEraTable`), so
+ * the absolute claim stays retired.
  */
-function RoadLadderTable() {
-  // The unfiltered row is the ladder's own first rung — every rested road game, no gap floor —
-  // so it is a row rather than a hand-written one above the loop.
-  const rungs = [
-    { label: "any", games: RESTED_ON_ROAD.games, winPct: RESTED_ON_ROAD.winPct },
-    ...RESTED_ON_ROAD.ladder.map((r) => ({
-      label: `≥ ${r.gap}`,
+function RoadGapSizeTable() {
+  // The unfiltered row is every rested road game, so the sizes below it add up to it.
+  const rows = [
+    { label: "Any gap", games: RESTED_ON_ROAD.games, winPct: RESTED_ON_ROAD.winPct },
+    ...RESTED_ON_ROAD.ranges.map((r) => ({
+      label: gapSizeLabel(r),
       games: r.games,
       winPct: r.winPct,
     })),
   ];
 
-  // The thin rungs are muted rather than omitted: dropping them is how the claim they refute
-  // survived, and printing them boldly would oversell 26 games.
-  const thin = (r: (typeof rungs)[number]) =>
+  // Thin sizes are muted rather than omitted: dropping them hides the evidence, and printing
+  // them boldly would oversell a few hundred games.
+  const thin = (r: (typeof rows)[number]) =>
     r.games < THIN_SAMPLE_GAMES ? "var(--term-text-muted)" : undefined;
 
   return (
     <DataTable
-      rows={rungs}
+      rows={rows}
       rowKey={(r) => r.label}
       minWidth={520}
       columns={[
-        { label: "REST GAP", unit: "AT LEAST", cell: (r) => r.label },
+        { label: "REST GAP", unit: "SIZE", cell: (r) => r.label },
         {
           label: "GAMES",
           unit: "COUNT",
@@ -258,6 +263,26 @@ function RoadLadderTable() {
     />
   );
 }
+
+/**
+ * The best-performing gap size worth quoting: the highest road win rate among the sizes with
+ * at least `THIN_SAMPLE_GAMES` games. Picking the highest rate regardless of n would put a
+ * 36-game size in the most prominent column.
+ */
+function bestSolidRange(ranges: readonly RestGapRange[]): RestGapRange | null {
+  return ranges
+    .filter((r) => r.games >= THIN_SAMPLE_GAMES)
+    .reduce<RestGapRange | null>((top, r) => (top === null || r.winPct > top.winPct ? r : top), null);
+}
+
+/** The era and gap size where rested visitors won more than half, on a sample worth quoting. */
+const ROAD_ABOVE_EVEN = RESTED_ON_ROAD_BY_ERA.flatMap((era) =>
+  era.ranges
+    .filter((r) => r.games >= THIN_SAMPLE_GAMES && r.winPct > 50)
+    .map((range) => ({ era, range }))
+).at(-1);
+
+const LARGE_ROAD = RESTED_ON_ROAD.ranges.find((r) => r.key === "large")!;
 
 /**
  * The road row inside recent eras, each against its own road baseline.
@@ -314,19 +339,13 @@ function RoadEraTable() {
           cell: (era) => signedNumber(era.liftPp),
         },
         {
-          label: "BEST RUNG",
-          unit: "GAP · WIN RATE",
+          label: "BEST GAP SIZE",
+          unit: "SIZE · WIN RATE",
           numeric: true,
           style: { color: "var(--term-text-muted)", whiteSpace: "nowrap" },
           cell: (era) => {
-            // The strongest rung whose sample is worth printing. Picking the highest win rate
-            // regardless of n would put a 36-game bucket in the most prominent column here.
-            const solid = era.ladder.filter((r) => r.games >= THIN_SAMPLE_GAMES);
-            const best = solid.reduce<RestGapRung | null>(
-              (top, r) => (top === null || r.winPct > top.winPct ? r : top),
-              null
-            );
-            return best ? `≥ ${best.gap} · ${best.winPct}%` : "—";
+            const best = bestSolidRange(era.ranges);
+            return best ? `${gapSizeLabel(best)} · ${best.winPct}%` : "—";
           },
         },
       ]}
@@ -404,10 +423,10 @@ restEdge   = awayScore − homeScore     (positive ⇒ the home side is fresher)
 
         <Prose>
           Model Results shows historical win rates, not the chance of winning a particular
-          game. A rest advantage of 7+ means all games with a score gap of at least
-          seven, not seven days of rest. Home teams are grouped by this minimum gap; road
-          teams are pooled across all rest gaps. These rates use the current backtest;
-          its group counts and threshold results are available in{" "}
+          game. A large rest advantage ({gapRangeSpan(gapRangeByKey("large"))}) means a fatigue-score gap of at
+          least {gapRangeByKey("large").min}, not {gapRangeByKey("large").min} days of rest. Games are grouped into
+          three gap sizes, small, medium and large, and each game counts in one. These rates use
+          the current backtest; its counts by gap size are available in{" "}
           <Link href="/analysis" className="underline underline-offset-4">Model Results</Link>.
           The tables on this reference page retain their dated analysis samples.
         </Prose>
@@ -417,15 +436,14 @@ restEdge   = awayScore − homeScore     (positive ⇒ the home side is fresher)
           their pooled win rate is {RESTED_ON_ROAD.winPct}%, below 50% despite exceeding the
           road baseline. The headline therefore includes home-court advantage as well as rest.
         </Note>
-        <RoadLadderTable />
+        <RoadGapSizeTable />
         <Note>
-          The last two rungs are {RESTED_ON_ROAD.ladder[4].games} and{" "}
-          {RESTED_ON_ROAD.ladder[5].games} games in {REST_SPLIT_SAMPLE.seasons} seasons. Read
-          those rates with caution because very large gaps have few examples.
+          A large road edge is rare: {LARGE_ROAD.games.toLocaleString()} games in{" "}
+          {REST_SPLIT_SAMPLE.seasons} seasons. Read that rate with caution.
         </Note>
 
         <Prose>
-          The pooled ladder spans changes in home-court advantage. The era table compares
+          The pooled rates span changes in home-court advantage. The era table compares
           rested visitors with the road baseline from the same period.
         </Prose>
 
@@ -441,13 +459,17 @@ restEdge   = awayScore − homeScore     (positive ⇒ the home side is fresher)
           {signedNumber(RESTED_ON_ROAD_BY_ERA[0].liftPp)} to{" "}
           {signedNumber(RESTED_ON_ROAD_BY_ERA[2].liftPp)} points.
         </Note>
-        <Note>
-          In the last ten seasons, rested visitors with a gap of 4 or more won{" "}
-          {RESTED_ON_ROAD_BY_ERA[1].ladder[2].winPct}% across{" "}
-          {RESTED_ON_ROAD_BY_ERA[1].ladder[2].games} games. That subgroup exceeds 50%, so the
-          pooled road rate cannot support a claim that rested visitors always lose more often.
-          This retrospective threshold comparison has not established a new prediction rule.
-        </Note>
+        {ROAD_ABOVE_EVEN ? (
+          <Note>
+            In the {ROAD_ABOVE_EVEN.era.label.toLowerCase()}, rested visitors with a{" "}
+            {gapRangeByKey(ROAD_ABOVE_EVEN.range.key).label.toLowerCase()} gap (
+            {gapRangeSpan(gapRangeByKey(ROAD_ABOVE_EVEN.range.key))}) won{" "}
+            {ROAD_ABOVE_EVEN.range.winPct}% across {ROAD_ABOVE_EVEN.range.games} games. That
+            group exceeds 50%, so the pooled road rate cannot support a claim that rested
+            visitors always lose more often. This retrospective comparison has not established a
+            new prediction rule.
+          </Note>
+        ) : null}
 
         <Note>
           Folding home court into the score itself and letting the combined number pick was
