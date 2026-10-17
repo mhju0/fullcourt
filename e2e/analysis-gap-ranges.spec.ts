@@ -98,6 +98,9 @@ test("the era chart counts the eras large gaps beat, against each era's own home
   await expect(page.getByText("DOES THE LARGE-GAP EDGE HOLD IN EVERY ERA?")).toBeVisible({ timeout: 60_000 });
   await expect(page.getByText(/LARGE GAPS BEAT THEIR ERA'S HOME RATE IN 7 OF 8 ERAS\./)).toBeVisible();
   await expect(page.getByText("1986", { exact: true })).toBeVisible();
+  await expect(page.getByText("5 SEASONS PER GROUP", { exact: true })).toBeVisible();
+  await expect(page.getByText(/small gaps \(0\.5–3\)/)).toBeVisible();
+  await expect(page.getByText(/win 60\.0% on 16,957 games, \+0\.1 points, within the noise/)).toBeVisible();
   await expect(page.getByText(/COIN FLIP/)).toHaveCount(0);
 
   await page.getByText("THE ANSWER", { exact: false }).first().scrollIntoViewIfNeeded();

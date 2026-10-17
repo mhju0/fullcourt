@@ -36,7 +36,7 @@ import {
   toDeviation,
   type EraSummary,
 } from "@/lib/analysis-claims"
-import { GAP_RANGES, gapRangeByKey, gapRangeSpan, type ExploreSide, type GapRangeKey } from "@/lib/rest-advantage-evidence"
+import { ERA_LENGTH, GAP_RANGES, gapRangeByKey, gapRangeSpan, type ExploreSide, type GapRangeKey } from "@/lib/rest-advantage-evidence"
 import type { DataAsOf } from "@/lib/data-as-of"
 import { LEAD, MONO_FONT_STACK, SPACE, termSelectClass, termSelectStyle, termCardStyle, termDashedEmptyStyle, termInsetStyle, termTdStyle, TRACK, TYPE } from "@/lib/terminal-styles"
 import { DataTable } from "@/components/ui/data-table"
@@ -252,6 +252,13 @@ function TwoLineTick({
       <tspan x={x} dy={14}>{second}</tspan>
     </text>
   )
+}
+
+/** "5 SEASONS PER GROUP", naming the oldest era's count when the remainder made it longer. */
+function eraDescriptor(eras: readonly EraRates[]): string {
+  const oldest = eras[0]?.seasonCount
+  const base = `${ERA_LENGTH} SEASONS PER GROUP`
+  return oldest !== undefined && oldest !== ERA_LENGTH ? `${base}, THE OLDEST ${oldest}` : base
 }
 
 /** Fill strength by size, so the three bars of an era read small to large in one hue. */
@@ -1183,7 +1190,7 @@ export function AnalysisContent({ asOf }: { asOf?: DataAsOf | null }) {
       <div style={termCardStyle}>
         <SectionDivider
           label="DOES THE LARGE-GAP EDGE HOLD IN EVERY ERA?"
-          descriptor="FIVE SEASONS PER BAR GROUP"
+          descriptor={eraDescriptor(data.eras)}
         />
         <EraChart eras={data.eras} summary={claims.eraSummary} zeroLabel={claims.eraZeroLabel} />
       </div>
@@ -1235,9 +1242,9 @@ export function AnalysisContent({ asOf }: { asOf?: DataAsOf | null }) {
                 <span className="whitespace-nowrap font-semibold text-[var(--term-text)]">
                   {r.name} gaps ({r.span})
                 </span>{" "}
-                win <span className="mono font-bold" style={{ color: "var(--term-blue-text)" }}>{r.winPct}%</span> on{" "}
+                win <span className="mono font-bold" style={{ color: "var(--term-blue-text)" }}>{r.winPct.toFixed(1)}%</span> on{" "}
                 <span className="mono tabular-nums">{r.games.toLocaleString()}</span> games,{" "}
-                <span className="mono font-bold" style={{ color: "var(--term-blue-text)" }}>{signedNumber(r.lift)}</span>
+                <span className="mono font-bold" style={{ color: "var(--term-blue-text)" }}>{signedNumber(r.lift, 1)}</span>
                 {r.withinNoise ? " points, within the noise" : " points"}
               </span>
             ))}
