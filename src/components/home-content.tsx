@@ -28,19 +28,19 @@ export function HomeContent({ findings }: { findings: HomeFindings }) {
           <p className={styles.eyebrow}>{historical?.coverage ? `Regular season · ${historical.coverage}` : "Historical rest comparison"}</p>
           {/* Two lines on purpose. The column is never wide enough for one, and a wrapped
               separator left "·" hanging at the end of the first. */}
-          <h2 id="rest-finding">Widest rest gaps<span className="sr-only"> · </span><br />historical home teams</h2>
+          <h2 id="rest-finding">Large rest gaps<span className="sr-only"> · </span><br />historical home teams</h2>
           {historical ? <>
             <p className={`${styles.big} ${historical.edgePp < 0 ? styles.tired : styles.rested}`} data-testid="home-rest-edge">
               {signedNumber(historical.edgePp, 1)}<span>{"\u00a0"}pp</span>
             </p>
-            <p>Percentage-point difference from the home baseline in {historical.games.toLocaleString()} games with the widest rest gaps (a rest-advantage gap of 7 or more).</p>
+            <p>Percentage-point difference from the home baseline in {historical.games.toLocaleString()} games with a large rest gap (a rest-advantage gap of {historical.minGap} or more).</p>
             {historical.latestEvidenceDate ? <p className={styles.metadata}>Rest evidence through {historical.latestEvidenceDate}</p> : null}
           </> : <p>The historical comparison is unavailable. Model Results has the underlying evidence and data status.</p>}
         </div>
         <div>
           {historical && <>
             <RateBar label="Home teams overall" value={historical.baselinePct} />
-            <RateBar label="Rested home team · widest gap" value={historical.winPct} rested />
+            <RateBar label="Rested home team · large gap" value={historical.winPct} rested />
             <p>Bars run from 0–100%. Baseline: {historical.baselineGames.toLocaleString()} games. These historical groups differ in more than rest; this is an association, not a causal estimate.</p>
           </>}
           <TransitionLink href="/analysis" className={styles.textLink}>Read the model results <span aria-hidden="true">→</span></TransitionLink>

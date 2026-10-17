@@ -1477,6 +1477,17 @@ reads the constant instead of typing 1.5. The 0.5 call line, net edge games and 
 are unchanged; only the big-edge counts shrink. The constant lives in `schedule-disparity.ts`, not
 `fatigue.ts`, so it is not a ratified coefficient.
 
+## D-104 — The home page's widest-gap finding reads the large gap size, 5+ (2026-10-17)
+
+Follows D-101 and D-102. The home page's rest finding compared the venue baseline with the
+rested home team at a gap of 7 or more, a cutoff no other tab used. The owner approved the gap
+sizes on 2026-10-17, and the finding now reads the large range's floor from `GAP_RANGES`
+(`historicalHomeFinding`, `src/lib/home-findings.ts`), so it counts the same 5+ games that
+/analysis calls large. `/api/analysis` already ships a cumulative 5+ bucket, so no query or
+artifact changes. The copy names the size instead of the superlative: "Large rest gaps", "a large
+rest gap (a rest-advantage gap of 5 or more)", with the number read from the same constant, and
+the bar reads "Rested home team · large gap".
+
 ## D-105 — Season Report's per-season tier reads the medium gap size, 3+ (2026-10-17)
 
 Follows D-101, D-102 and D-103. `/api/season-report` returned one gap tier beside the overall
