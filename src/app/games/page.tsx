@@ -414,7 +414,10 @@ export default function GamesPage() {
           title="Games"
           description="Compare each team’s schedule. Rest gap is a model-score difference, not a win probability."
         />
-        <MethodLink surfaceHref="/games" />
+        {/* A span, not a div: `.page-intro > div` would stretch it. Phones get it in the tabs row. */}
+        <span className="hidden sm:block">
+          <MethodLink surfaceHref="/games" />
+        </span>
       </div>
       <GamesViewTabs current="/games" />
       <div className="grid items-start gap-8">
