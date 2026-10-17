@@ -111,7 +111,8 @@ the month buttons and date chips wrap, so a whole month shows at once. Both are 
 (`PICKER_BOX`), so each month sits exactly over a date chip. From `sm` the previous/next day arrows sit at the
 right of the DATE label's line, clear of its rule, so they never move; the selected date's long
 form is in the Matchups heading (D-99). BY DATE / BY TEAM tabs (`GamesViewTabs`) sit under the
-header on both Games views and carry the season across. Below `sm` the page shows
+header on both Games views and carry the season across; below `sm` the method link moves to the
+right of that row, so the first matchup clears the phone dock at 390×844. Below `sm` the page shows
 one Sunday-to-Saturday week of seven 44px cells, with days that have no games at a count of 0;
 the Calendar button opens the month buttons and a month grid, and a pick there closes the panel
 and returns focus to the button. The three slate measures are one line above the matchups
