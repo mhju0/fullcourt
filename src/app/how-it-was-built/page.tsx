@@ -58,7 +58,7 @@ const checks = [
 
 const findings = [
   { found: "A schedule-density approximation", detail: "It was presented as an exact game count. The label now distinguishes the underlying facts." },
-  { found: "Altitude carryover", detail: "It was described as a current location. The label now distinguishes the underlying facts." },
+  { found: "Altitude carryover", detail: "The code charged it at any gap after a visit to altitude, where the methodology said the next night. It measured no effect, so it was removed." },
   { found: "Mobile month controls", detail: "The controls worked, but the selected month was outside the visible area." },
 ];
 

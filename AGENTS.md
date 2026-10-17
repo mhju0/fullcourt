@@ -119,7 +119,8 @@ One coefficient has moved, and it is the precedent rather than a loophole: `ALTI
 was raised 1.15 → 1.29 on 2026-08-02 — the first ratified constant changed on measured evidence,
 approved by Michael, reasoned in the constant's own docblock (`src/lib/fatigue.ts`) and in ADR
 0006. It was fitted against **final margin**, not against the win rates the site publishes, which
-is what keeps it non-circular. `ALTITUDE_CARRYOVER_MULTIPLIER` was deliberately *not* moved with it.
+is what keeps it non-circular. `ALTITUDE_CARRYOVER_MULTIPLIER` was deliberately *not* moved with it, and
+was removed on 2026-10-17 (ADR 0006 amendment, D-100) after measuring no effect.
 
 The ban was suspended once, deliberately, to find out whether fitted weights would beat the
 ratified ones. They do not, by enough to matter — and most of the model's terms turn out to

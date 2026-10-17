@@ -39,8 +39,8 @@ export interface RestRow {
 export const REST_SPLIT_SAMPLE = Object.freeze({
   scoredGames: 47112,
   /** |RA| < 0.5 — no side is the rested one. About one game in six. */
-  neutral: 8175,
-  decided: 38937,
+  neutral: 8198,
+  decided: 38914,
   firstSeason: "1985-86",
   lastSeason: "2025-26",
   seasons: 41,
@@ -63,16 +63,16 @@ export const REST_SPLIT_BASELINE = Object.freeze({
 
 /** The published row: the more-rested team was also at home. */
 export const RESTED_AT_HOME: RestRow = Object.freeze({
-  games: 27400,
-  wins: 16764,
+  games: 27420,
+  wins: 16778,
   winPct: 61.2,
   ladder: Object.freeze([
-    Object.freeze({ gap: 2, games: 16090, wins: 9950, winPct: 61.8 }),
-    Object.freeze({ gap: 3, games: 10532, wins: 6644, winPct: 63.1 }),
-    Object.freeze({ gap: 4, games: 6395, wins: 4082, winPct: 63.8 }),
-    Object.freeze({ gap: 5, games: 3783, wins: 2471, winPct: 65.3 }),
-    Object.freeze({ gap: 6, games: 2151, wins: 1403, winPct: 65.2 }),
-    Object.freeze({ gap: 7, games: 1105, wins: 728, winPct: 65.9 }),
+    Object.freeze({ gap: 2, games: 16068, wins: 9936, winPct: 61.8 }),
+    Object.freeze({ gap: 3, games: 10463, wins: 6603, winPct: 63.1 }),
+    Object.freeze({ gap: 4, games: 6353, wins: 4058, winPct: 63.9 }),
+    Object.freeze({ gap: 5, games: 3756, wins: 2452, winPct: 65.3 }),
+    Object.freeze({ gap: 6, games: 2128, wins: 1385, winPct: 65.1 }),
+    Object.freeze({ gap: 7, games: 1080, wins: 712, winPct: 65.9 }),
   ]),
 });
 
@@ -84,16 +84,16 @@ export const RESTED_AT_HOME: RestRow = Object.freeze({
  * Any copy quoting them has to say so.
  */
 export const RESTED_ON_ROAD: RestRow = Object.freeze({
-  games: 11537,
-  wins: 4884,
+  games: 11494,
+  wins: 4867,
   winPct: 42.3,
   ladder: Object.freeze([
-    Object.freeze({ gap: 2, games: 4351, wins: 1889, winPct: 43.4 }),
-    Object.freeze({ gap: 3, games: 2061, wins: 902, winPct: 43.8 }),
-    Object.freeze({ gap: 4, games: 953, wins: 447, winPct: 46.9 }),
-    Object.freeze({ gap: 5, games: 341, wins: 157, winPct: 46 }),
-    Object.freeze({ gap: 6, games: 108, wins: 54, winPct: 50 }),
-    Object.freeze({ gap: 7, games: 26, wins: 16, winPct: 61.5 }),
+    Object.freeze({ gap: 2, games: 4310, wins: 1875, winPct: 43.5 }),
+    Object.freeze({ gap: 3, games: 2035, wins: 894, winPct: 43.9 }),
+    Object.freeze({ gap: 4, games: 930, wins: 437, winPct: 47 }),
+    Object.freeze({ gap: 5, games: 331, wins: 148, winPct: 44.7 }),
+    Object.freeze({ gap: 6, games: 101, wins: 51, winPct: 50.5 }),
+    Object.freeze({ gap: 7, games: 24, wins: 15, winPct: 62.5 }),
   ]),
 });
 
@@ -118,7 +118,7 @@ export interface RestEraRow {
  * advantage was far larger than it is now, and two claims the site used to publish leaned on
  * the pooled rate as though it were timeless. Both are retired; this is what replaced them.
  *
- * The raw rate has moved a long way — 42.3% to 49.2% — and it would be easy to read that as
+ * The raw rate has moved a long way — 42.3% to 49.4% — and it would be easy to read that as
  * rest mattering more. Most of it is not: the road baseline moved with it, 40.1% to 44.7%.
  * What is left after subtracting that is the lift, and the lift is where the real question is.
  *
@@ -129,45 +129,45 @@ export const RESTED_ON_ROAD_BY_ERA: readonly RestEraRow[] = Object.freeze([
   Object.freeze({
     label: "All seasons",
     seasons: 41,
-    games: 11537,
-    wins: 4884,
+    games: 11494,
+    wins: 4867,
     winPct: 42.3,
     roadBaselinePct: 40.1,
     liftPp: 2.2,
     ladder: Object.freeze([
-      Object.freeze({ gap: 2, games: 4351, wins: 1889, winPct: 43.4 }),
-      Object.freeze({ gap: 3, games: 2061, wins: 902, winPct: 43.8 }),
-      Object.freeze({ gap: 4, games: 953, wins: 447, winPct: 46.9 }),
-      Object.freeze({ gap: 5, games: 341, wins: 157, winPct: 46 }),
+      Object.freeze({ gap: 2, games: 4310, wins: 1875, winPct: 43.5 }),
+      Object.freeze({ gap: 3, games: 2035, wins: 894, winPct: 43.9 }),
+      Object.freeze({ gap: 4, games: 930, wins: 437, winPct: 47 }),
+      Object.freeze({ gap: 5, games: 331, wins: 148, winPct: 44.7 }),
     ]),
   }),
   Object.freeze({
     label: "Last 10 seasons",
     seasons: 10,
-    games: 3076,
-    wins: 1463,
+    games: 3064,
+    wins: 1457,
     winPct: 47.6,
     roadBaselinePct: 43.8,
     liftPp: 3.8,
     ladder: Object.freeze([
-      Object.freeze({ gap: 2, games: 1132, wins: 565, winPct: 49.9 }),
-      Object.freeze({ gap: 3, games: 524, wins: 261, winPct: 49.8 }),
-      Object.freeze({ gap: 4, games: 231, wins: 121, winPct: 52.4 }),
-      Object.freeze({ gap: 5, games: 67, wins: 33, winPct: 49.3 }),
+      Object.freeze({ gap: 2, games: 1123, wins: 559, winPct: 49.8 }),
+      Object.freeze({ gap: 3, games: 519, wins: 258, winPct: 49.7 }),
+      Object.freeze({ gap: 4, games: 229, wins: 120, winPct: 52.4 }),
+      Object.freeze({ gap: 5, games: 67, wins: 32, winPct: 47.8 }),
     ]),
   }),
   Object.freeze({
     label: "Last 5 seasons",
     seasons: 5,
-    games: 1634,
-    wins: 804,
-    winPct: 49.2,
+    games: 1625,
+    wins: 802,
+    winPct: 49.4,
     roadBaselinePct: 44.7,
-    liftPp: 4.5,
+    liftPp: 4.7,
     ladder: Object.freeze([
-      Object.freeze({ gap: 2, games: 601, wins: 314, winPct: 52.2 }),
-      Object.freeze({ gap: 3, games: 275, wins: 146, winPct: 53.1 }),
-      Object.freeze({ gap: 4, games: 117, wins: 68, winPct: 58.1 }),
+      Object.freeze({ gap: 2, games: 599, wins: 312, winPct: 52.1 }),
+      Object.freeze({ gap: 3, games: 276, wins: 146, winPct: 52.9 }),
+      Object.freeze({ gap: 4, games: 117, wins: 67, winPct: 57.3 }),
       Object.freeze({ gap: 5, games: 36, wins: 21, winPct: 58.3 }),
     ]),
   }),
@@ -195,12 +195,12 @@ export const THIN_SAMPLE_GAMES = 200;
 export const HOME_BAR_COUNTERFACTUAL = Object.freeze({
   /** Points of home court added to every rest edge before the call is made. */
   homeBar: 3,
-  calls: 45484,
-  coveragePct: 96.5,
-  correct: 27170,
+  calls: 45491,
+  coveragePct: 96.6,
+  correct: 27179,
   accuracyPct: 59.7,
-  roadCalls: 1386,
-  roadLosses: 752,
+  roadCalls: 1357,
+  roadLosses: 733,
   /** Picking the home team in every scored game — the bar this has to clear, and does not. */
   alwaysHomePct: 59.9,
 });
