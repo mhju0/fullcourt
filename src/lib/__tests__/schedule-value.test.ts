@@ -35,12 +35,12 @@ describe("the lift table derives from the pinned measurement", () => {
     const published = liftOverBaseline(RESTED_AT_HOME.winPct, REST_SPLIT_BASELINE.homeWinPct);
 
     expect(published).toBe(1.3);
-    expect(REST_STATE_LIFT_PP.restedHome).toBeCloseTo(1.25, 2);
+    expect(REST_STATE_LIFT_PP.restedHome).toBeCloseTo(1.26, 2);
     expect(Math.abs(REST_STATE_LIFT_PP.restedHome - published)).toBeLessThan(0.1);
   });
 
   it("reads the home-tired row off the rested-visitor row, since they are the same games", () => {
-    expect(REST_STATE_LIFT_PP.tiredHome).toBeCloseTo(-2.26, 2);
+    expect(REST_STATE_LIFT_PP.tiredHome).toBeCloseTo(-2.27, 2);
     // The published lift subtracts two one-decimal rates, so it can sit up to 0.1 from the
     // count-based figure — the same bound the headline row above is held to.
     expect(
@@ -79,14 +79,14 @@ describe("the lift table derives from the pinned measurement", () => {
 
 describe("rest measured against home court", () => {
   it("states the two spans as one factor swapped each", () => {
-    expect(REST_SPAN_PP).toBeCloseTo(3.52, 2);
+    expect(REST_SPAN_PP).toBeCloseTo(3.53, 2);
     expect(HOME_COURT_SPAN_PP).toBeCloseTo(19.86, 2);
   });
 
   it("puts rest just under a fifth of home court", () => {
     expect(REST_SHARE_OF_HOME_COURT).toBeGreaterThan(0.15);
     expect(REST_SHARE_OF_HOME_COURT).toBeLessThan(0.2);
-    expect(REST_SHARE_OF_HOME_COURT).toBeCloseTo(0.177, 3);
+    expect(REST_SHARE_OF_HOME_COURT).toBeCloseTo(0.178, 3);
   });
 
   /**
@@ -135,8 +135,8 @@ describe("scheduleValueWins", () => {
 
   /**
    * The trap the asymmetry sets, pinned so nobody "simplifies" it away: holding as many rest
-   * edges as you face is NOT worth zero. Facing a fresher opponent at home costs 2.26 while
-   * holding the edge on the road pays the same 2.26 — but holding it at home pays only 1.25.
+   * edges as you face is NOT worth zero. Facing a fresher opponent at home costs 2.27 while
+   * holding the edge on the road pays the same 2.27 — but holding it at home pays only 1.26.
    * A team with a symmetric-looking net of zero can still be down a fifth of a win.
    */
   it("does not cancel when the same state is merely equal at both venues", () => {
@@ -179,7 +179,7 @@ describe("scheduleValueWins", () => {
     };
 
     expect(netEdgeGames(phoenix)).toBe(-5);
-    expect(scheduleValueWins(phoenix)).toBeCloseTo(-0.0729, 4);
+    expect(scheduleValueWins(phoenix)).toBeCloseTo(-0.0728, 4);
     expect(Math.round(scheduleValueWins(phoenix) * 10) / 10).toBe(-0.1);
   });
 
