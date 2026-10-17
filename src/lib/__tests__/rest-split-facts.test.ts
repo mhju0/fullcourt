@@ -1,6 +1,7 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
+import { GAP_RANGES } from "@/lib/rest-advantage-evidence";
 import {
   HOME_BAR_COUNTERFACTUAL,
   liftOverBaseline,
@@ -33,11 +34,11 @@ describe("rest split facts mirror the generated measurement", () => {
     expect(REST_SPLIT_BASELINE).toEqual(facts.baseline);
   });
 
-  it("the rested-at-home row matches, ladder included", () => {
+  it("the rested-at-home row matches, gap sizes included", () => {
     expect(RESTED_AT_HOME).toEqual(facts.restedAtHome);
   });
 
-  it("the rested-on-road row matches, ladder included", () => {
+  it("the rested-on-road row matches, gap sizes included", () => {
     expect(RESTED_ON_ROAD).toEqual(facts.restedOnRoad);
   });
 
@@ -45,7 +46,7 @@ describe("rest split facts mirror the generated measurement", () => {
     expect(HOME_BAR_COUNTERFACTUAL).toEqual(facts.counterfactual);
   });
 
-  it("the era rows match, ladders included", () => {
+  it("the era rows match, gap sizes included", () => {
     expect(RESTED_ON_ROAD_BY_ERA).toEqual(facts.restedOnRoadByEra);
   });
 });
@@ -95,19 +96,19 @@ describe("the road row by era", () => {
   });
 
   /**
-   * The specific rung that refuted "no threshold rescues it" in the modern game, and the one
-   * that is thin enough that the page must mute it. Both pinned so neither can drift silently.
+   * The gap size that refutes "no threshold rescues it" in the modern game, and the ones thin
+   * enough that the page must mute them. Pinned so neither can drift silently.
    */
-  it("carries a modern rung above even on a sample worth printing", () => {
-    const rung = last10.ladder.find((r) => r.gap === 4)!;
+  it("carries a modern gap size above even on a sample worth printing", () => {
+    const medium = last5.ranges.find((r) => r.key === "medium")!;
 
-    expect(rung.winPct).toBeGreaterThan(50);
-    expect(rung.games).toBeGreaterThanOrEqual(THIN_SAMPLE_GAMES);
+    expect(medium.winPct).toBeGreaterThan(50);
+    expect(medium.games).toBeGreaterThanOrEqual(THIN_SAMPLE_GAMES);
   });
 
-  it("marks the last-five rungs at gaps of 4 and 5 as too thin to quote", () => {
-    for (const gap of [4, 5]) {
-      expect(last5.ladder.find((r) => r.gap === gap)!.games).toBeLessThan(THIN_SAMPLE_GAMES);
+  it("marks the large size of the last ten and last five seasons as too thin to quote", () => {
+    for (const era of [last10, last5]) {
+      expect(era.ranges.find((r) => r.key === "large")!.games).toBeLessThan(THIN_SAMPLE_GAMES);
     }
   });
 });
@@ -160,19 +161,19 @@ describe("rest split facts are internally consistent", () => {
     expect(roadWinPct).toBe(Math.round(((games - homeWins) / games) * 1000) / 10);
   });
 
-  it("keeps each ladder cumulative, so a wider gap is never a larger sample", () => {
-    for (const row of [RESTED_AT_HOME, RESTED_ON_ROAD]) {
-      for (let i = 1; i < row.ladder.length; i++) {
-        expect(row.ladder[i].games).toBeLessThanOrEqual(row.ladder[i - 1].games);
-      }
-      expect(row.ladder[0].games).toBeLessThanOrEqual(row.games);
+  it("splits every row into the site's three gap sizes, each game in exactly one", () => {
+    for (const row of [RESTED_AT_HOME, RESTED_ON_ROAD, ...RESTED_ON_ROAD_BY_ERA]) {
+      expect(row.ranges.map((r) => r.key)).toEqual(GAP_RANGES.map((range) => range.key));
+      expect(row.ranges.reduce((sum, r) => sum + r.games, 0)).toBe(row.games);
+      expect(row.ranges.reduce((sum, r) => sum + r.wins, 0)).toBe(row.wins);
     }
   });
 
-  it("keeps every rung's win count inside its own sample", () => {
-    for (const row of [RESTED_AT_HOME, RESTED_ON_ROAD]) {
-      for (const rung of row.ladder) {
-        expect(rung.wins).toBeLessThanOrEqual(rung.games);
+  it("states each gap size's rate from its own counts", () => {
+    for (const row of [RESTED_AT_HOME, RESTED_ON_ROAD, ...RESTED_ON_ROAD_BY_ERA]) {
+      for (const r of row.ranges) {
+        expect(r.wins).toBeLessThanOrEqual(r.games);
+        expect(r.winPct).toBe(Math.round((r.wins / r.games) * 1000) / 10);
       }
     }
   });
@@ -184,18 +185,15 @@ describe("rest split facts are internally consistent", () => {
  */
 describe("the claims that had to be retired", () => {
   it("a rest gap DOES lift the road row past even, so 'no threshold rescues it' is false", () => {
-    const rescued = RESTED_ON_ROAD.ladder.filter((r) => r.winPct >= 50);
+    const rescued = RESTED_ON_ROAD_BY_ERA.flatMap((era) =>
+      era.ranges.filter((r) => r.winPct > 50 && r.games >= THIN_SAMPLE_GAMES)
+    );
 
     expect(rescued.length).toBeGreaterThan(0);
-    expect(rescued.map((r) => r.gap)).toEqual([6, 7]);
   });
 
-  it("the home row's gain stops growing, so it does not 'compound at the extremes'", () => {
-    const byGap = new Map(RESTED_AT_HOME.ladder.map((r) => [r.gap, r.winPct]));
-
-    // 65.3 → 65.2 → 65.9 across gaps 5, 6, 7: flat, and non-monotonic.
-    expect(byGap.get(6)!).toBeLessThan(byGap.get(5)!);
-    expect(Math.abs(byGap.get(7)! - byGap.get(5)!)).toBeLessThan(1);
+  it("no pooled road gap size reaches even, so the rescue is a recent-era finding only", () => {
+    for (const r of RESTED_ON_ROAD.ranges) expect(r.winPct).toBeLessThan(50);
   });
 });
 

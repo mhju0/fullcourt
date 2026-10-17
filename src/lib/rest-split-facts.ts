@@ -1,3 +1,5 @@
+import type { GapRangeKey } from "@/lib/rest-advantage-evidence";
+
 /**
  * Every figure `/behind-the-data/rest-advantage` publishes about the two rest rows.
  *
@@ -7,6 +9,9 @@
  * re-run. `src/lib/__tests__/rest-split-facts.test.ts` pins this file against
  * `ml/rest_split_facts.json`, so a number edited here and nowhere else fails the suite.
  * Same arrangement as `availability-facts.ts` and `playoff-rest-facts.ts`.
+ *
+ * The rows split by the site's three gap sizes (`GAP_RANGES`), not by cumulative "at least"
+ * rungs: a rung at ≥ 2 repeated every game of the rungs above it (D-106).
  *
  * **This file exists because the alternative failed.** The page hand-typed
  * "44.4% across 7,224 games" for the rested-road row. That figure was never wrong — it
@@ -18,9 +23,9 @@
  * computed per request. These are only for the surfaces that cannot read the database.
  */
 
-/** One rung of a rest-gap ladder: every game at or above `gap`, so the rungs are cumulative. */
-export interface RestGapRung {
-  gap: number;
+/** One gap size (D-101, D-102): the games whose gap falls in that range, each game in one. */
+export interface RestGapRange {
+  key: GapRangeKey;
   games: number;
   wins: number;
   /** The rested team's win rate in that bucket (0–100, 1 decimal). */
@@ -32,7 +37,7 @@ export interface RestRow {
   games: number;
   wins: number;
   winPct: number;
-  ladder: readonly RestGapRung[];
+  ranges: readonly RestGapRange[];
 }
 
 /** What the measurement ran over. */
@@ -66,34 +71,28 @@ export const RESTED_AT_HOME: RestRow = Object.freeze({
   games: 27420,
   wins: 16778,
   winPct: 61.2,
-  ladder: Object.freeze([
-    Object.freeze({ gap: 2, games: 16068, wins: 9936, winPct: 61.8 }),
-    Object.freeze({ gap: 3, games: 10463, wins: 6603, winPct: 63.1 }),
-    Object.freeze({ gap: 4, games: 6353, wins: 4058, winPct: 63.9 }),
-    Object.freeze({ gap: 5, games: 3756, wins: 2452, winPct: 65.3 }),
-    Object.freeze({ gap: 6, games: 2128, wins: 1385, winPct: 65.1 }),
-    Object.freeze({ gap: 7, games: 1080, wins: 712, winPct: 65.9 }),
+  ranges: Object.freeze([
+    Object.freeze({ key: "small", games: 16957, wins: 10175, winPct: 60 }),
+    Object.freeze({ key: "medium", games: 6707, wins: 4151, winPct: 61.9 }),
+    Object.freeze({ key: "large", games: 3756, wins: 2452, winPct: 65.3 }),
   ]),
 });
 
 /**
  * The row counted separately: the more-rested team was the visitor.
  *
- * Published in full rather than dropped. Note the top two rungs — 108 and 26 games across
- * forty-one seasons — are the schedule running out of examples, not a signal switching on.
- * Any copy quoting them has to say so.
+ * Published in full rather than dropped. A large road edge is rare: 331 games across
+ * forty-one seasons, and the large range inside a recent era is thinner still. Any copy
+ * quoting a thin range has to say so.
  */
 export const RESTED_ON_ROAD: RestRow = Object.freeze({
   games: 11494,
   wins: 4867,
   winPct: 42.3,
-  ladder: Object.freeze([
-    Object.freeze({ gap: 2, games: 4310, wins: 1875, winPct: 43.5 }),
-    Object.freeze({ gap: 3, games: 2035, wins: 894, winPct: 43.9 }),
-    Object.freeze({ gap: 4, games: 930, wins: 437, winPct: 47 }),
-    Object.freeze({ gap: 5, games: 331, wins: 148, winPct: 44.7 }),
-    Object.freeze({ gap: 6, games: 101, wins: 51, winPct: 50.5 }),
-    Object.freeze({ gap: 7, games: 24, wins: 15, winPct: 62.5 }),
+  ranges: Object.freeze([
+    Object.freeze({ key: "small", games: 9459, wins: 3973, winPct: 42 }),
+    Object.freeze({ key: "medium", games: 1704, wins: 746, winPct: 43.8 }),
+    Object.freeze({ key: "large", games: 331, wins: 148, winPct: 44.7 }),
   ]),
 });
 
@@ -108,7 +107,7 @@ export interface RestEraRow {
   roadBaselinePct: number;
   /** `winPct − roadBaselinePct`. The comparison that survives the drift. */
   liftPp: number;
-  ladder: readonly RestGapRung[];
+  ranges: readonly RestGapRange[];
 }
 
 /**
@@ -134,11 +133,10 @@ export const RESTED_ON_ROAD_BY_ERA: readonly RestEraRow[] = Object.freeze([
     winPct: 42.3,
     roadBaselinePct: 40.1,
     liftPp: 2.2,
-    ladder: Object.freeze([
-      Object.freeze({ gap: 2, games: 4310, wins: 1875, winPct: 43.5 }),
-      Object.freeze({ gap: 3, games: 2035, wins: 894, winPct: 43.9 }),
-      Object.freeze({ gap: 4, games: 930, wins: 437, winPct: 47 }),
-      Object.freeze({ gap: 5, games: 331, wins: 148, winPct: 44.7 }),
+    ranges: Object.freeze([
+      Object.freeze({ key: "small", games: 9459, wins: 3973, winPct: 42 }),
+      Object.freeze({ key: "medium", games: 1704, wins: 746, winPct: 43.8 }),
+      Object.freeze({ key: "large", games: 331, wins: 148, winPct: 44.7 }),
     ]),
   }),
   Object.freeze({
@@ -149,11 +147,10 @@ export const RESTED_ON_ROAD_BY_ERA: readonly RestEraRow[] = Object.freeze([
     winPct: 47.6,
     roadBaselinePct: 43.8,
     liftPp: 3.8,
-    ladder: Object.freeze([
-      Object.freeze({ gap: 2, games: 1123, wins: 559, winPct: 49.8 }),
-      Object.freeze({ gap: 3, games: 519, wins: 258, winPct: 49.7 }),
-      Object.freeze({ gap: 4, games: 229, wins: 120, winPct: 52.4 }),
-      Object.freeze({ gap: 5, games: 67, wins: 32, winPct: 47.8 }),
+    ranges: Object.freeze([
+      Object.freeze({ key: "small", games: 2545, wins: 1199, winPct: 47.1 }),
+      Object.freeze({ key: "medium", games: 452, wins: 226, winPct: 50 }),
+      Object.freeze({ key: "large", games: 67, wins: 32, winPct: 47.8 }),
     ]),
   }),
   Object.freeze({
@@ -164,23 +161,22 @@ export const RESTED_ON_ROAD_BY_ERA: readonly RestEraRow[] = Object.freeze([
     winPct: 49.4,
     roadBaselinePct: 44.7,
     liftPp: 4.7,
-    ladder: Object.freeze([
-      Object.freeze({ gap: 2, games: 599, wins: 312, winPct: 52.1 }),
-      Object.freeze({ gap: 3, games: 276, wins: 146, winPct: 52.9 }),
-      Object.freeze({ gap: 4, games: 117, wins: 67, winPct: 57.3 }),
-      Object.freeze({ gap: 5, games: 36, wins: 21, winPct: 58.3 }),
+    ranges: Object.freeze([
+      Object.freeze({ key: "small", games: 1349, wins: 656, winPct: 48.6 }),
+      Object.freeze({ key: "medium", games: 240, wins: 125, winPct: 52.1 }),
+      Object.freeze({ key: "large", games: 36, wins: 21, winPct: 58.3 }),
     ]),
   }),
 ]);
 
 /**
- * Below this, a rung is printed muted and never quoted in prose.
+ * Below this, a gap size is printed muted and never quoted in prose.
  *
- * Set at 200 rather than higher on purpose. The last-ten rung at a gap of 4 is 231 games and
- * sits above even — it is the single observation that refutes "no threshold rescues it" in the
+ * Set at 200 rather than higher on purpose. The last five seasons' medium road range is 240
+ * games and sits above even — the observation that refutes "no threshold rescues it" in the
  * modern game, so a cut that hid it would be the same omission that let the claim stand. The
- * last-five rungs at gaps of 4 and 5 are 117 and 36 games: they read as the most dramatic
- * numbers in the table and are the least trustworthy in it.
+ * large ranges of the last ten and last five seasons are 67 and 36 games: they read as the most
+ * dramatic numbers in the table and are the least trustworthy in it.
  */
 export const THIN_SAMPLE_GAMES = 200;
 

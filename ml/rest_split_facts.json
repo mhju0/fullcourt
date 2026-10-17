@@ -27,42 +27,24 @@
     "games": 27420,
     "wins": 16778,
     "winPct": 61.2,
-    "ladder": [
+    "ranges": [
       {
-        "gap": 2,
-        "games": 16068,
-        "wins": 9936,
-        "winPct": 61.8
+        "key": "small",
+        "games": 16957,
+        "wins": 10175,
+        "winPct": 60
       },
       {
-        "gap": 3,
-        "games": 10463,
-        "wins": 6603,
-        "winPct": 63.1
+        "key": "medium",
+        "games": 6707,
+        "wins": 4151,
+        "winPct": 61.9
       },
       {
-        "gap": 4,
-        "games": 6353,
-        "wins": 4058,
-        "winPct": 63.9
-      },
-      {
-        "gap": 5,
+        "key": "large",
         "games": 3756,
         "wins": 2452,
         "winPct": 65.3
-      },
-      {
-        "gap": 6,
-        "games": 2128,
-        "wins": 1385,
-        "winPct": 65.1
-      },
-      {
-        "gap": 7,
-        "games": 1080,
-        "wins": 712,
-        "winPct": 65.9
       }
     ]
   },
@@ -70,42 +52,24 @@
     "games": 11494,
     "wins": 4867,
     "winPct": 42.3,
-    "ladder": [
+    "ranges": [
       {
-        "gap": 2,
-        "games": 4310,
-        "wins": 1875,
-        "winPct": 43.5
+        "key": "small",
+        "games": 9459,
+        "wins": 3973,
+        "winPct": 42
       },
       {
-        "gap": 3,
-        "games": 2035,
-        "wins": 894,
-        "winPct": 43.9
+        "key": "medium",
+        "games": 1704,
+        "wins": 746,
+        "winPct": 43.8
       },
       {
-        "gap": 4,
-        "games": 930,
-        "wins": 437,
-        "winPct": 47
-      },
-      {
-        "gap": 5,
+        "key": "large",
         "games": 331,
         "wins": 148,
         "winPct": 44.7
-      },
-      {
-        "gap": 6,
-        "games": 101,
-        "wins": 51,
-        "winPct": 50.5
-      },
-      {
-        "gap": 7,
-        "games": 24,
-        "wins": 15,
-        "winPct": 62.5
       }
     ]
   },
@@ -118,27 +82,21 @@
       "winPct": 42.3,
       "roadBaselinePct": 40.1,
       "liftPp": 2.2,
-      "ladder": [
+      "ranges": [
         {
-          "gap": 2,
-          "games": 4310,
-          "wins": 1875,
-          "winPct": 43.5
+          "key": "small",
+          "games": 9459,
+          "wins": 3973,
+          "winPct": 42
         },
         {
-          "gap": 3,
-          "games": 2035,
-          "wins": 894,
-          "winPct": 43.9
+          "key": "medium",
+          "games": 1704,
+          "wins": 746,
+          "winPct": 43.8
         },
         {
-          "gap": 4,
-          "games": 930,
-          "wins": 437,
-          "winPct": 47
-        },
-        {
-          "gap": 5,
+          "key": "large",
           "games": 331,
           "wins": 148,
           "winPct": 44.7
@@ -153,27 +111,21 @@
       "winPct": 47.6,
       "roadBaselinePct": 43.8,
       "liftPp": 3.8,
-      "ladder": [
+      "ranges": [
         {
-          "gap": 2,
-          "games": 1123,
-          "wins": 559,
-          "winPct": 49.8
+          "key": "small",
+          "games": 2545,
+          "wins": 1199,
+          "winPct": 47.1
         },
         {
-          "gap": 3,
-          "games": 519,
-          "wins": 258,
-          "winPct": 49.7
+          "key": "medium",
+          "games": 452,
+          "wins": 226,
+          "winPct": 50
         },
         {
-          "gap": 4,
-          "games": 229,
-          "wins": 120,
-          "winPct": 52.4
-        },
-        {
-          "gap": 5,
+          "key": "large",
           "games": 67,
           "wins": 32,
           "winPct": 47.8
@@ -188,27 +140,21 @@
       "winPct": 49.4,
       "roadBaselinePct": 44.7,
       "liftPp": 4.7,
-      "ladder": [
+      "ranges": [
         {
-          "gap": 2,
-          "games": 599,
-          "wins": 312,
+          "key": "small",
+          "games": 1349,
+          "wins": 656,
+          "winPct": 48.6
+        },
+        {
+          "key": "medium",
+          "games": 240,
+          "wins": 125,
           "winPct": 52.1
         },
         {
-          "gap": 3,
-          "games": 276,
-          "wins": 146,
-          "winPct": 52.9
-        },
-        {
-          "gap": 4,
-          "games": 117,
-          "wins": 67,
-          "winPct": 57.3
-        },
-        {
-          "gap": 5,
+          "key": "large",
           "games": 36,
           "wins": 21,
           "winPct": 58.3

@@ -31,6 +31,8 @@ import path from "node:path";
 import { loadEnvLocal } from "@/lib/load-env-local";
 import {
   classifyRestAdvantage,
+  GAP_RANGES,
+  inGapRange,
   isCalledSide,
   NEUTRAL_REST_ADVANTAGE_THRESHOLD,
   type HistoricalGameEvidenceRow,
@@ -314,11 +316,13 @@ function buildFacts(all: readonly Scored[]) {
   const rate = (wins: number, n: number) =>
     n > 0 ? Math.round((wins / n) * 1000) / 10 : 0;
 
-  const ladder = (rows: readonly Decided[], gaps: readonly number[]) =>
-    gaps.map((gap) => {
-      const bucket = rows.filter((r) => Math.abs(r.differential) >= gap);
+  // The site's three gap sizes (D-101, D-102), each game in exactly one. These replaced
+  // cumulative "at least" rungs, where every rung repeated the games of the ones above it.
+  const ranges = (rows: readonly Decided[]) =>
+    GAP_RANGES.map((range) => {
+      const bucket = rows.filter((r) => inGapRange(r.differential, range));
       const wins = bucket.filter((r) => r.restedTeamWon).length;
-      return { gap, games: bucket.length, wins, winPct: rate(wins, bucket.length) };
+      return { key: range.key, games: bucket.length, wins, winPct: rate(wins, bucket.length) };
     });
 
   const homeWins = all.filter((r) => r.homeWon).length;
@@ -350,7 +354,7 @@ function buildFacts(all: readonly Scored[]) {
       winPct: rate(wins, road.length),
       roadBaselinePct: roadBaseline,
       liftPp: Math.round((rate(wins, road.length) - roadBaseline) * 10) / 10,
-      ladder: ladder(road, [2, 3, 4, 5]),
+      ranges: ranges(road),
     };
   };
 
@@ -411,15 +415,13 @@ function buildFacts(all: readonly Scored[]) {
       games: homeRested.length,
       wins: homeRested.filter((r) => r.restedTeamWon).length,
       winPct: rate(homeRested.filter((r) => r.restedTeamWon).length, homeRested.length),
-      // Every rung, not the four the first pass printed. The truncated ladder is what made
-      // "no threshold rescues it" look true when it is not.
-      ladder: ladder(homeRested, [2, 3, 4, 5, 6, 7]),
+      ranges: ranges(homeRested),
     },
     restedOnRoad: {
       games: awayRested.length,
       wins: awayRested.filter((r) => r.restedTeamWon).length,
       winPct: rate(awayRested.filter((r) => r.restedTeamWon).length, awayRested.length),
-      ladder: ladder(awayRested, [2, 3, 4, 5, 6, 7]),
+      ranges: ranges(awayRested),
     },
     restedOnRoadByEra: eras,
   };
