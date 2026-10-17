@@ -1,21 +1,21 @@
 version: 2
+# Monthly and grouped, so routine bumps arrive as at most two PRs a month (one for actions,
+# one for npm). Security fixes do not wait for this schedule: Dependabot security updates
+# open their own PRs as soon as an advisory lands, and CI's `pnpm audit --prod` fails on one.
 updates:
   - package-ecosystem: github-actions
     directory: /
     schedule:
-      interval: weekly
-      day: monday
-    open-pull-requests-limit: 3
+      interval: monthly
+    open-pull-requests-limit: 2
     groups:
       actions:
         patterns: ["*"]
   - package-ecosystem: npm
     directory: /
     schedule:
-      interval: weekly
-      day: monday
-    open-pull-requests-limit: 3
+      interval: monthly
+    open-pull-requests-limit: 2
     groups:
-      development-tooling:
-        dependency-type: development
+      npm-minor-and-patch:
         update-types: [minor, patch]

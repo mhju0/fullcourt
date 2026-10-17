@@ -117,7 +117,7 @@ loopback port 55433 and `fullcourt_ci_disposable`. Test-only SQL initializes an 
 it is never a production schema migration. The legacy restore replay URL guard is preserved.
 `verify` rejects failed, cancelled, skipped and missing prerequisites. No PR job receives
 production secrets; checkout credentials are not persisted. Third-party Actions use reviewed
-commit pins, maintained by weekly Dependabot updates. Keep the Next build cache disabled.
+commit pins, maintained by monthly grouped Dependabot updates (security updates arrive as soon as an advisory lands). Keep the Next build cache disabled.
 
 Main requires up-to-date `verify` results and enforces the check for administrators. A second
 human review is not made impossible for the solo owner; independent agent review, exact-SHA
