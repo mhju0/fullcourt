@@ -1476,3 +1476,15 @@ from `GAP_RANGES`, so a big edge is a medium or large rest edge on every tab, an
 reads the constant instead of typing 1.5. The 0.5 call line, net edge games and the Worth column
 are unchanged; only the big-edge counts shrink. The constant lives in `schedule-disparity.ts`, not
 `fatigue.ts`, so it is not a ratified coefficient.
+
+## D-105 — Season Report's per-season tier reads the medium gap size, 3+ (2026-10-17)
+
+Follows D-101, D-102 and D-103. `/api/season-report` returned one gap tier beside the overall
+rested-home rate, the called games at a gap of 2 or more (`atLeastTwo`). The page never rendered
+it, so no copy changes, but 2 is not a line in the site's vocabulary and the field was the last
+tier on the season path that disagreed with it. `THREE_PLUS_THRESHOLD` in `season-report.ts` now
+reads the medium range's floor from `GAP_RANGES`, and the field is renamed `threePlus`: the called
+games at a gap of 3 or more, the same "3+ edges" the Games board and Schedule Edge count. The
+comparison runs on the two-decimal gap (D-87), so 2.99 is out and 3.00 is in. The overall rate,
+team records, widest-gap list and weekly curve do not read the tier and are unchanged. A separate
+large (5+) tier is not added: one season holds too few large-gap games to read.
