@@ -43,7 +43,9 @@ for (const width of [390, 1440]) {
           const bars = chart.locator(".recharts-bar-rectangle path");
           await expect(bars.first()).toBeAttached();
           for (const bar of [bars.first(), bars.nth(1)]) {
-            await bar.hover();
+            // A lift near zero draws a bar about 1px tall, which Playwright calls covered by the grid or
+            // zero line. The tooltip is triggered by the bar's column, so the pointer only has to get there.
+            await bar.hover({ force: true });
             const tooltip = chart.locator(".recharts-tooltip-wrapper");
             await expect(tooltip).toBeVisible();
             expect(await tooltip.evaluate((el) => getComputedStyle(el).transitionDuration)).toBe("0s");
