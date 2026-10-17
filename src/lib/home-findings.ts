@@ -1,12 +1,16 @@
 import type { AnalysisResponse, ScheduleDisparityResponse } from "@/types";
 import { rankScheduleTeams } from "@/lib/schedule-ranking";
 import { S, seasonLabel, type PlayerRestPayload } from "@/lib/player-rest";
+import { gapRangeByKey } from "@/lib/rest-advantage-evidence";
 
 export function historicalHomeFinding(data: AnalysisResponse) {
-  const widest = data.thresholds.find((row) => row.threshold === 7);
+  // The large gap size (D-102); /api/analysis ships its floor as a cumulative bucket (D-104).
+  const minGap = gapRangeByKey("large").min;
+  const widest = data.thresholds.find((row) => row.threshold === minGap);
   if (!widest?.games || !data.venueBaseline.games) return null;
   const seasons = data.seasonWinRates.filter((row) => row.games > 0).map((row) => row.season).sort();
   return {
+    minGap,
     games: widest.games,
     winPct: widest.winPct,
     baselinePct: data.venueBaseline.homeWinPct,
