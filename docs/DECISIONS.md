@@ -1466,3 +1466,13 @@ team (home, visitor, either), defaults to the rested team at home so its rows ma
 above, and leaves out neutral-site games. `/api/games/search` takes `gap` and `side`; `minRA` stays
 for other callers. `/api/analysis` keeps `thresholds` (the Games board reads them, D-101) and its
 `seasonMinRA` parameter, which no page sends now.
+
+## D-103 — Schedule Edge's big edge starts at 3, the medium gap size (2026-10-17)
+
+Follows D-101 and D-102. Schedule Edge counted a fatigue gap of 1.5 or more as a big edge, so a
+1.5 gap was big on /schedule and small on Games and Model Results. The owner approved, on
+2026-10-17, moving the line to 3: `BIG_EDGE_FATIGUE_THRESHOLD` now reads the medium range's floor
+from `GAP_RANGES`, so a big edge is a medium or large rest edge on every tab, and the page copy
+reads the constant instead of typing 1.5. The 0.5 call line, net edge games and the Worth column
+are unchanged; only the big-edge counts shrink. The constant lives in `schedule-disparity.ts`, not
+`fatigue.ts`, so it is not a ratified coefficient.

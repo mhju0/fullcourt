@@ -4,7 +4,7 @@
  * Which teams a season's schedule favored, headlined as **net edge games** (ratified
  * 2026-07-29): games where the team held a fatigue advantage of at least the app-wide
  * 0.5 call threshold, minus games where it faced one. Counts of discrete, nameable games
- * — not a season-summed average — with a 1.5 tier for big edges. Rest-days sums remain
+ * — not a season-summed average — with a 3+ tier for big edges. Rest-days sums remain
  * computed internally (the cap behavior is pinned by tests and an ADR) but no longer
  * headline the page.
  *
@@ -30,17 +30,18 @@ import { differenceInCalendarDays, parseISO } from "date-fns";
 import { isProjectedFatigue } from "./fatigue-provenance";
 import {
   classifyRestAdvantage,
+  gapRangeByKey,
   NEUTRAL_REST_ADVANTAGE_THRESHOLD,
   restAdvantageDifferential,
 } from "./rest-advantage-evidence";
 import { restStatePair, scheduleValueWins, type RestStateCounts } from "./schedule-value";
 
 /**
- * A game is a "big edge" at this fatigue gap or more. One tier above the app-wide call
- * threshold ({@link NEUTRAL_REST_ADVANTAGE_THRESHOLD}); flagged for calibration review
- * alongside the displacement bonus.
+ * A game is a "big edge" at this fatigue gap or more: the medium gap size's floor (D-103), so a
+ * big edge here is a medium or large rest edge on every other tab. It was 1.5 before the site
+ * settled on one set of gap sizes, which made a 1.5 gap big here and small everywhere else.
  */
-export const BIG_EDGE_FATIGUE_THRESHOLD = 1.5;
+export const BIG_EDGE_FATIGUE_THRESHOLD = gapRangeByKey("medium").min;
 
 /**
  * Rest is capped per side before differencing, at five days since the last game: four full days
@@ -194,7 +195,7 @@ export interface DisparityTeamRow {
   scheduleValueWins: number | null;
   /** The ≥ {@link BIG_EDGE_FATIGUE_THRESHOLD} tier of favorableGames. Null when unmeasured. */
   bigFavorableGames: number | null;
-  /** The ≥ 1.5 tier of unfavorableGames. Null when unmeasured. */
+  /** The ≥ {@link BIG_EDGE_FATIGUE_THRESHOLD} tier of unfavorableGames. Null when unmeasured. */
   bigUnfavorableGames: number | null;
   /** Counted games where the team had more rest than its opponent. */
   gamesWithEdge: number;
@@ -210,7 +211,7 @@ export interface DisparityLeagueRow {
   largestEdge: number | null;
   largestDisadvantage: number | null;
   delta: number | null;
-  /** Counted games where either side's fatigue edge reached 0.5 / the 1.5 big tier. */
+  /** Counted games where either side's fatigue edge reached 0.5 / the big tier. */
   gamesWithAnyEdge: number | null;
   gamesWithLargeEdge: number | null;
   /** Counted games — excludes each side's opener. A population, not a comparison. */

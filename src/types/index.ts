@@ -491,7 +491,7 @@ export interface ScheduleDisparityTeam {
    * reader takes the size of the number for the size of the effect.
    */
   scheduleValueWins: number | null;
-  /** The ≥ 1.5 "big edge" tier of each count. Null when unmeasured. */
+  /** The ≥ 3 "big edge" tier of each count (`BIG_EDGE_FATIGUE_THRESHOLD`). Null when unmeasured. */
   bigFavorableGames: number | null;
   bigUnfavorableGames: number | null;
   /** Back-to-backs avoided relative to opponents. Positive is favorable, like every figure here. */
@@ -507,7 +507,7 @@ export interface ScheduleDisparityTeam {
 export interface ScheduleDisparityLeague {
   /** Spread in net edge games between the most and least favored team. Null when unmeasured. */
   delta: number | null;
-  /** Counted games where one side's fatigue edge reached 0.5, and the ≥1.5 big tier. */
+  /** Counted games where one side's fatigue edge reached 0.5, and the ≥ 3 big tier. */
   gamesWithAnyEdge: number | null;
   gamesWithLargeEdge: number | null;
   /** Counted games — excludes each side's opener. A population, not a comparison. */
