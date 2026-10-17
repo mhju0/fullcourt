@@ -18,7 +18,12 @@
 
 import { addDays, differenceInCalendarDays, format, parseISO } from "date-fns";
 
-import { classifyRestAdvantage, isCalledSide, winPct } from "@/lib/rest-advantage-evidence";
+import {
+  classifyRestAdvantage,
+  gapRangeByKey,
+  isCalledSide,
+  winPct,
+} from "@/lib/rest-advantage-evidence";
 import {
   netEdgeGames,
   restStatePair,
@@ -273,7 +278,8 @@ export interface SeasonReport {
   /** Home win rate before the rest-advantage filter, available from the first eligible final. */
   homeRate: SeasonHomeRate;
   overall: SeasonReportRate;
-  atLeastTwo: SeasonReportRate;
+  /** The called games at a gap of `THREE_PLUS_THRESHOLD` or more: medium and large rest edges. */
+  threePlus: SeasonReportRate;
   /**
    * The swing a team with no rest-conversion skill would still post this season, in percentage
    * points — the zero line for {@link SeasonReportTeam.swing}.
@@ -313,8 +319,13 @@ function rate(wins: number, games: number): SeasonReportRate {
   };
 }
 
-/** The RA tier published per season alongside the overall rate. RA≥5 and ≥7 are not. */
-const SECOND_TIER_THRESHOLD = 2;
+/**
+ * The one gap tier published per season beside the overall rate: the medium gap size's floor
+ * (D-105), so it counts the same "3+ edges" as the Games board and Schedule Edge. It was 2
+ * before the site settled on one set of gap sizes. Large (5+) is not split out on its own: one
+ * season holds too few of those games to read.
+ */
+export const THREE_PLUS_THRESHOLD = gapRangeByKey("medium").min;
 
 /** How many games the loudest-calls table holds. */
 const LOUDEST_CALL_COUNT = 10;
@@ -475,7 +486,7 @@ export function buildSeasonReport(
 
     overallGames++;
     if (restedTeamWon) overallWins++;
-    if (Math.abs(differential) >= SECOND_TIER_THRESHOLD) {
+    if (Math.abs(differential) >= THREE_PLUS_THRESHOLD) {
       tierGames++;
       if (restedTeamWon) tierWins++;
     }
@@ -572,7 +583,7 @@ export function buildSeasonReport(
       winPct: winPct(homeWins, homeGames),
     },
     overall: rate(overallWins, overallGames),
-    atLeastTwo: rate(tierWins, tierGames),
+    threePlus: rate(tierWins, tierGames),
     swingBaseline:
       overallGames === 0
         ? null

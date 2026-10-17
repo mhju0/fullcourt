@@ -2,11 +2,13 @@ import { describe, expect, it } from "vitest";
 import {
   buildSeasonReport,
   MIN_GAMES_FOR_INFERENCE,
+  THREE_PLUS_THRESHOLD,
   winRateBand,
   type SeasonReportRate,
   type SeasonReportRow,
   type SeasonReportSide,
 } from "@/lib/season-report";
+import { gapRangeByKey } from "@/lib/rest-advantage-evidence";
 
 /** A fatigue side with everything neutral except the score, so a test states only what it means. */
 function side(score: number, extra: Partial<SeasonReportSide> = {}): SeasonReportSide {
@@ -163,14 +165,24 @@ describe("buildSeasonReport — what counts", () => {
     expect(report.weeks[0].games).toBe(1);
   });
 
-  it("splits the RA >= 2 tier out of the overall rate", () => {
+  it("splits the 3+ tier (medium and large gaps) out of the overall rate", () => {
     const report = buildSeasonReport("2025-26", [
-      game({ gameId: 1, home: side(1), away: side(4) }), // 3.0 → both tiers
-      game({ gameId: 2, home: side(1), away: side(2) }), // 1.0 → overall only
+      game({ gameId: 1, home: side(1), away: side(4) }), // 3.00 → both tiers
+      game({ gameId: 2, home: side(1), away: side(2) }), // 1.00 → overall only
+      game({ gameId: 3, home: side(1), away: side(3) }), // 2.00 → overall only (the old tier's floor)
+      game({ gameId: 4, home: side(1), away: side(3.99) }), // 2.99 → overall only
+      // 4.1 − 1.1 is 2.9999999999999996 as a float; the gap is rounded first (D-87), so it is 3.00.
+      game({ gameId: 5, home: side(1.1), away: side(4.1) }),
+      game({ gameId: 6, home: side(1), away: side(7) }), // 6.00 → both tiers
     ]);
 
-    expect(report.overall.games).toBe(2);
-    expect(report.atLeastTwo.games).toBe(1);
+    expect(report.overall.games).toBe(6);
+    expect(report.threePlus.games).toBe(3);
+  });
+
+  it("reads the tier's floor from the medium gap size, the board's MEDIUM REST EDGE line", () => {
+    expect(THREE_PLUS_THRESHOLD).toBe(3);
+    expect(THREE_PLUS_THRESHOLD).toBe(gapRangeByKey("medium").min);
   });
 
   it("renders an empty season without throwing", () => {
@@ -228,22 +240,23 @@ describe("buildSeasonReport vs buildHistoricalBacktest", () => {
     expect(report.overall.winPct).toBe(season!.winPct);
   });
 
-  it("matches the backtest's own RA >= 2 bucket", () => {
+  it("matches the backtest's own RA >= 3 bucket", () => {
     const rows: SeasonReportRow[] = [
       game({ gameId: 1, home: side(1), away: side(5) }),
       game({ gameId: 2, home: side(2), away: side(3) }),
       game({ gameId: 3, home: side(1), away: side(9), homeScore: 90, awayScore: 100 }),
+      game({ gameId: 4, home: side(1), away: side(3.5) }),
     ];
 
     const report = buildSeasonReport("2024-25", rows);
     const bucket = buildHistoricalBacktest(
       rows.map((r) => toEvidenceRow(r, "2024-25"))
-    ).thresholds.find((t) => t.threshold === 2);
+    ).thresholds.find((t) => t.threshold === THREE_PLUS_THRESHOLD);
 
     expect(bucket).toBeDefined();
-    expect(report.atLeastTwo.games).toBe(bucket!.games);
-    expect(report.atLeastTwo.restedTeamWins).toBe(bucket!.restedTeamWins);
-    expect(report.atLeastTwo.winPct).toBe(bucket!.winPct);
+    expect(report.threePlus.games).toBe(bucket!.games);
+    expect(report.threePlus.restedTeamWins).toBe(bucket!.restedTeamWins);
+    expect(report.threePlus.winPct).toBe(bucket!.winPct);
   });
 });
 
@@ -672,7 +685,7 @@ describe("buildSeasonReport — the schedule basis", () => {
 
     expect(report.overall.games).toBe(0);
     expect(report.overall.restedTeamWins).toBe(0);
-    expect(report.atLeastTwo.games).toBe(0);
+    expect(report.threePlus.games).toBe(0);
     expect(report.swingBaseline).toBeNull();
     expect(report.loudestCalls).toEqual([]);
     // A projected tail on the weekly axis would read as measurement.
