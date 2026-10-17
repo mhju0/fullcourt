@@ -1,11 +1,13 @@
 "use client"
 
-import { useMemo, type ReactNode } from "react"
+import { useMemo, type MouseEvent, type ReactNode } from "react"
+import { ChevronRight } from "lucide-react"
 import useSWR from "swr"
 
 import { restEdgeSize, TeamLogo } from "@/components/matchup-parts"
 import { SeasonSelector } from "@/components/season-selector"
 import { SummaryLine } from "@/components/summary-line"
+import { TransitionLink } from "@/components/transition-link"
 import { Bar } from "@/components/lazy-content"
 import { DataTable, type DataColumn } from "@/components/ui/data-table"
 import { MessageCard } from "@/components/ui/message-card"
@@ -53,12 +55,59 @@ function sideOf(game: TeamScheduleGame): Side {
   return ra.advantageTeam === (game.isHome ? "home" : "away") ? "team" : "opponent"
 }
 
-// Shrinks a column to its content, so DATE and TIME sit together and OPPONENT takes the rest.
-const FIT = { width: "1%", whiteSpace: "nowrap" } as const
+// Column shares from the small breakpoint up, so the gaps between columns come out even instead
+// of OPPONENT taking every spare pixel. A phone shrinks the columns to their content (`w-px`),
+// because it has no room to spare and drops G and TIME anyway.
+// The classes reach the heading too; NOWRAP is body-only, so a heading such as REST ADVANTAGE
+// can still wrap to two lines on a phone.
+const COL = {
+  game: "hidden sm:table-cell sm:w-[6%]",
+  date: "w-px sm:w-[18%]",
+  time: "hidden sm:table-cell sm:w-[18%]",
+  rest: "w-px sm:w-[20%]",
+} as const
+const NOWRAP = { whiteSpace: "nowrap" } as const
+
+/** The board on this game's date with its row already open (`?game=` expands, `#game-` scrolls). */
+function boardHref(game: TeamScheduleGame, season: string): string {
+  return `/games?season=${encodeURIComponent(season)}&date=${game.date}&game=${game.id}#game-${game.id}`
+}
+
+/**
+ * A click anywhere on a row follows the link in its OPPONENT cell, so the row behaves as one
+ * target while the link stays the real, focusable element. A click on the link itself, or one
+ * that selected text, is left alone.
+ */
+function followRowLink(event: MouseEvent<HTMLTableRowElement>) {
+  if ((event.target as HTMLElement).closest("a")) return
+  if (window.getSelection()?.toString()) return
+  event.currentTarget.querySelector<HTMLAnchorElement>("a[data-row-link]")?.click()
+}
+
+/**
+ * Says the row goes somewhere: it opens this game on the board. Hidden on a phone, where the gap
+ * column has no room for it and the whole row is still the tap target.
+ */
+function RowArrow() {
+  return (
+    <ChevronRight
+      size={16}
+      aria-hidden
+      className="hidden shrink-0 sm:block"
+      style={{ color: "var(--term-text-muted)" }}
+    />
+  )
+}
 
 function RestCell({ game }: { game: TeamScheduleGame }) {
   const side = sideOf(game)
-  if (side === "unmeasured") return <span style={{ color: "var(--term-text-muted)" }}>—</span>
+  if (side === "unmeasured")
+    return (
+      <span className="inline-flex items-center justify-end gap-2">
+        <span style={{ color: "var(--term-text-muted)" }}>—</span>
+        <RowArrow />
+      </span>
+    )
   const size = restEdgeSize(game.restAdvantage, game.neutralCity)
   const value = formatRestAdvantageValue(game.restAdvantage?.differential ?? 0)
   return (
@@ -94,6 +143,7 @@ function RestCell({ game }: { game: TeamScheduleGame }) {
           {value}
         </span>
       )}
+      <RowArrow />
     </span>
   )
 }
@@ -173,13 +223,14 @@ export function TeamScheduleContent() {
     {
       label: "G",
       numeric: true,
-      className: "hidden sm:table-cell",
-      style: FIT,
+      className: COL.game,
+      style: NOWRAP,
       cell: (_, i) => gameNumber(i),
     },
     {
       label: "DATE",
-      style: FIT,
+      className: COL.date,
+      style: NOWRAP,
       // A phone has no TIME column, so the result (or LIVE, PENDING) goes under the date, and
       // so does NEXT.
       cell: (g) => (
@@ -202,8 +253,8 @@ export function TeamScheduleContent() {
     {
       label: "TIME",
       unit: "ET · RESULT",
-      className: "hidden sm:table-cell",
-      style: FIT,
+      className: COL.time,
+      style: NOWRAP,
       cell: (g) => gameState(g, now) ?? <span>{g.tipOffEt ? g.tipOffEt.replace(/ ET$/, "") : "TBD"}</span>,
     },
     {
@@ -214,16 +265,24 @@ export function TeamScheduleContent() {
             {g.neutralCity ? "N" : g.isHome ? "vs" : "@"}
           </span>
           <TeamLogo abbreviation={g.opponent.abbreviation} season={season} fallback={g.opponent} size={20} />
-          <span className="min-w-0" style={{ fontFamily: "inherit" }}>
+          <TransitionLink
+            href={boardHref(g, season)}
+            data-row-link=""
+            data-testid="team-game-link"
+            className="min-w-0 hover:underline"
+            style={{ fontFamily: "inherit", color: "inherit" }}
+            aria-label={`${fullName(g.opponent.abbreviation, season, g.opponent)}, ${weekday(g.date)} ${shortDate(g.date)}: open this game on the board`}
+          >
             {fullName(g.opponent.abbreviation, season, g.opponent)}
-          </span>
+          </TransitionLink>
         </span>
       ),
     },
     {
       label: "REST ADVANTAGE",
       numeric: true,
-      style: FIT,
+      className: COL.rest,
+      style: NOWRAP,
       cell: (g) => <RestCell game={g} />,
     },
   ]
@@ -240,10 +299,10 @@ export function TeamScheduleContent() {
         )
         return (
           <tr key={`cup-${k}`} data-testid="cup-placeholder-row">
-            <td className="hidden tabular-nums sm:table-cell" style={{ ...termTdStyle, ...FIT, textAlign: "right" }}>
+            <td className={`${COL.game} tabular-nums`} style={{ ...termTdStyle, ...NOWRAP, textAlign: "right" }}>
               {cup.afterIndex + 2 + k}
             </td>
-            <td style={{ ...termTdStyle, ...FIT, color: "var(--term-text-muted)" }}>{cup.window}</td>
+            <td className={COL.date} style={{ ...termTdStyle, ...NOWRAP, color: "var(--term-text-muted)" }}>{cup.window}</td>
             <td colSpan={3} className="hidden sm:table-cell" style={termTdStyle}>{label}</td>
             <td colSpan={2} className="sm:hidden" style={termTdStyle}>{label}</td>
           </tr>
@@ -325,6 +384,8 @@ export function TeamScheduleContent() {
               rowKey={(g) => g.id}
               rowAttrs={(g) => ({
                 "data-testid": "team-game-row",
+                onClick: followRowLink,
+                className: "cursor-pointer",
                 "data-next": g.id === nextGameId ? "" : undefined,
                 style:
                   g.id === nextGameId

@@ -1499,3 +1499,17 @@ games at a gap of 3 or more, the same "3+ edges" the Games board and Schedule Ed
 comparison runs on the two-decimal gap (D-87), so 2.99 is out and 3.00 is in. The overall rate,
 team records, widest-gap list and weekly curve do not read the tier and are unchanged. A separate
 large (5+) tier is not added: one season holds too few large-gap games to read.
+
+## D-107 — BY TEAM rows open their game on the board, and the columns share the width (2026-10-18)
+
+Amends D-99. The owner found the team schedule's columns uneven: G, DATE, TIME and REST
+ADVANTAGE shrank to their content, so OPPONENT took 892 of 1,232px at 1440px and the gap sat
+stranded at the far right. From the small breakpoint up the columns now take shares (6%, 18%,
+18%, the rest, 20%); a phone keeps them sized to content. The owner also asked for a way from a
+row to that game's detail, and chose the board over an inline expansion: each row links to
+`/games?season=…&date=…&game=<id>#game-<id>`, which the board already opens and scrolls to, the
+pattern Season Report's loudest calls use. An inline expansion would have duplicated the board's
+detail panel and needed the fatigue breakdown in `/api/games/team`. The OPPONENT name is the real
+link; a click elsewhere on the row follows it, and a chevron marks the row except on a phone,
+where the gap column has no room. The link is a client navigation and the board replaces rather
+than pushes its first URL, so Back returns to the team's season at the same scroll position.

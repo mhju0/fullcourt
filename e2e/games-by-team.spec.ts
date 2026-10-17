@@ -57,6 +57,37 @@ test.describe("Games by team", () => {
     expect(table).toBe(true);
   });
 
+  test("a row opens its game on the board, expanded, and Back returns to the team's season", async ({ page }) => {
+    await page.goto("/games/team?season=2024-25&team=HOU");
+    const rows = page.getByTestId("team-game-row");
+    await expect(rows).toHaveCount(82, { timeout: 60_000 });
+    const row = rows.nth(20);
+    const href = await row.getByTestId("team-game-link").getAttribute("href");
+    const [, date, id] = href!.match(/date=(\d{4}-\d{2}-\d{2})&game=(\d+)#game-\2$/)!;
+    // A click on the date, away from the link, still follows it: the whole row is the target.
+    await row.locator("td").nth(1).click();
+    await expect(page).toHaveURL(new RegExp(`/games\\?season=2024-25&date=${date}&game=${id}#game-${id}$`));
+    const open = page.locator('[aria-expanded="true"]');
+    await expect(open).toHaveCount(1, { timeout: 60_000 });
+    await expect(open).toBeInViewport();
+    await page.goBack();
+    await expect(page).toHaveURL(/\/games\/team\?/);
+    expect(new URL(page.url()).searchParams.get("team")).toBe("HOU");
+    await expect(rows).toHaveCount(82);
+  });
+
+  test("the columns share the width instead of OPPONENT taking it all", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto("/games/team?season=2024-25&team=HOU");
+    const first = page.getByTestId("team-game-row").first();
+    await expect(first).toBeVisible({ timeout: 60_000 });
+    const widths = await first.locator("td").evaluateAll((tds) => tds.map((td) => td.getBoundingClientRect().width));
+    const total = widths.reduce((sum, w) => sum + w, 0);
+    // OPPONENT took 892 of 1232px when every other column shrank to its content.
+    expect(widths[3] / total).toBeLessThan(0.45);
+    for (const w of [widths[1], widths[2], widths[4]]) expect(w / total).toBeGreaterThan(0.12);
+  });
+
   test("a season still short of its two NBA Cup games shows them as TBD rows numbered into the season", async ({ page }) => {
     await page.goto("/games/team?season=2026-27&team=HOU");
     await expect(page.getByTestId("team-game-row")).toHaveCount(80, { timeout: 60_000 });
