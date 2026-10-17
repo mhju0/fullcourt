@@ -1499,3 +1499,18 @@ games at a gap of 3 or more, the same "3+ edges" the Games board and Schedule Ed
 comparison runs on the two-decimal gap (D-87), so 2.99 is out and 3.00 is in. The overall rate,
 team records, widest-gap list and weekly curve do not read the tier and are unchanged. A separate
 large (5+) tier is not added: one season holds too few large-gap games to read.
+
+## D-106 — Behind the Data's rest-advantage tables read the three gap sizes (2026-10-18)
+
+Follows D-101 and D-102 and finishes the move. `/behind-the-data/rest-advantage` printed the
+rested road team by cumulative rungs (≥ 2 … ≥ 7) and named each era's best rung, so every rung
+repeated the games of the ones above it, as on /analysis before D-102. `scripts/measure_uncalled_half.ts`
+now writes `ranges` (small 0.5–3, medium 3–5, large 5+, from `GAP_RANGES`, each game in one) in
+place of `ladder` for both venue rows and every era, and the page's tables and notes read them.
+It was re-run against the database on 2026-10-18 after the owner moved Supabase to Pro: every
+total matched the previous run, and each range equals the old rungs subtracted. The note that
+quoted the last ten seasons' ≥ 4 rung (52.4%, 229 games) now quotes the last five seasons'
+medium size (52.1%, 240 games), the group above even on a sample of 200 or more, so "no threshold
+rescues it" stays retired. Pooled over every season, no road size reaches even. The test that
+pinned the home row flattening between gaps 5 and 7 is removed, because the large size no longer
+splits above 5.
