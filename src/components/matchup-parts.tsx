@@ -184,9 +184,8 @@ export function GameStatusRow({
  * sit beside this and produce the prefixed single strip the retired card drew; it went with the
  * card on 2026-08-11, along with the strip itself.
  *
- * Every flag is scoped per team, home included. A host can carry altitude (the night after
- * visiting Denver or Utah, or a neutral site at elevation) and time zones (a neutral site abroad),
- * so neither is away-only. Overtime is per team rather than one game-level flag: the team that
+ * Every flag is scoped per team, home included. A listed host can carry altitude (a neutral
+ * site at elevation) and time zones (a neutral site abroad), so neither is away-only. Overtime is per team rather than one game-level flag: the team that
  * played an OT game yesterday is the one paying for it.
  */
 export function teamGameFlags(game: GameResponse): { away: string[]; home: string[] } {
@@ -195,13 +194,13 @@ export function teamGameFlags(game: GameResponse): { away: string[]; home: strin
   if (game.awayFatigue?.isBackToBack) away.push("B2B")
   if (game.awayFatigue?.is3In4) away.push("3IN4")
   if (game.awayFatigue?.is4In6) away.push("4IN6")
-  if (game.awayFatigue?.altitudePenalty) away.push(game.awayFatigue.altitudeArenaLabel ? "ALT" : "ALT TRIP")
+  if (game.awayFatigue?.altitudePenalty) away.push("ALT")
   if (game.awayFatigue?.hasTimeZoneDisplacement) away.push("TIME ZONES")
   if (game.awayFatigue?.isOvertimePenalty) away.push("OT")
   if (game.homeFatigue?.isBackToBack) home.push("B2B")
   if (game.homeFatigue?.is3In4) home.push("3IN4")
   if (game.homeFatigue?.is4In6) home.push("4IN6")
-  if (game.homeFatigue?.altitudePenalty) home.push(game.homeFatigue.altitudeArenaLabel ? "ALT" : "ALT TRIP")
+  if (game.homeFatigue?.altitudePenalty) home.push("ALT")
   if (game.homeFatigue?.hasTimeZoneDisplacement) home.push("TIME ZONES")
   if (game.homeFatigue?.isOvertimePenalty) home.push("OT")
   return { away, home }
@@ -213,7 +212,6 @@ export const FLAG_MEANINGS: Readonly<Record<string, string>> = Object.freeze({
   "3IN4": "Third game in four nights",
   "4IN6": "Fourth game in six nights",
   ALT: "Tonight's arena is at altitude",
-  "ALT TRIP": "The night after a game at altitude",
   "TIME ZONES": "Traveled 2+ time zones from home; body clock not yet adjusted",
   OT: "Last game went to overtime",
 })
@@ -271,8 +269,8 @@ function flagChipWidth(label: string): number {
 
 /**
  * The flags a line can show inline in a strip `stripWidth` wide, at most `maxInline`, keeping
- * room for the `+N` chip that counts the rest. A fixed count overflowed: "ALT TRIP" beside
- * "TIME ZONES" plus "+1" needs about 170px in a 104px strip.
+ * room for the `+N` chip that counts the rest. A fixed count overflowed: two long labels plus
+ * "+1" needed about 170px in a 104px strip.
  */
 export function inlineFlags(
   flags: string[],

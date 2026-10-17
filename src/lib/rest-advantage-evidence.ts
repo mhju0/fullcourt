@@ -56,8 +56,8 @@ export function classifyRestAdvantage(
  * on that", and the answer for a rested visitor is no.
  *
  * The evidence, over every decidable game the site publishes (1985-86 on, re-measured
- * 2026-10-15 by `scripts/measure_uncalled_half.ts`, pinned as `RESTED_ON_ROAD`): backing the
- * more rested team when that team is the visitor won 42.3% of 11,537 games. Home teams win
+ * 2026-10-17 by `scripts/measure_uncalled_half.ts`, pinned as `RESTED_ON_ROAD`): backing the
+ * more rested team when that team is the visitor won 42.3% of 11,494 games. Home teams win
  * 59.9% of everything and road teams 40.1%, so that row does gain against its own baseline — but a gain over a baseline is
  * a measurement, and a pick has to clear 50%.
  *
@@ -72,7 +72,7 @@ export function classifyRestAdvantage(
  * the last five seasons. Neither sentence is published any more.
  *
  * What does hold, and is why this function exists: folding home court into the score and
- * letting the combined number pick covers 96.5% of games at 59.7%, *below* the 59.9% you get by
+ * letting the combined number pick covers 96.6% of games at 59.7%, *below* the 59.9% you get by
  * backing the home team in every game — adding a constant to both sides creates no information.
  * See ADR 0006 and its 2026-08-06 addendum.
  *

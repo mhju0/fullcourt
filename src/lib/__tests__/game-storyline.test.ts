@@ -56,7 +56,7 @@ describe("buildGameStoryline", () => {
         restedFatigue({ is4In6: true })
       )
     );
-    expect(s).toBe("Nuggets on a back-to-back and after an altitude trip; Lakers playing a 4th game in 6 nights.");
+    expect(s).toBe("Nuggets on a back-to-back and playing at altitude; Lakers playing a 4th game in 6 nights.");
   });
 
   it("never says 3-in-4 and 4-in-6 together — the same nights would be counted twice", () => {
@@ -80,7 +80,7 @@ describe("buildGameStoryline", () => {
         restedFatigue()
       )
     );
-    expect(s).toBe("Nuggets on a back-to-back, playing a 4th game in 6 nights and after an altitude trip.");
+    expect(s).toBe("Nuggets on a back-to-back, playing a 4th game in 6 nights and playing at altitude.");
   });
 
   it("says a long road trip with a real ordinal", () => {
@@ -107,6 +107,6 @@ describe("buildGameStoryline", () => {
   });
 });
 
-it("distinguishes tonight's altitude venue from carryover", () => {
+it("says playing at altitude for tonight's venue", () => {
   expect(buildGameStoryline(game(restedFatigue({ altitudePenalty: true, altitudeArenaLabel: "Denver (altitude)" }), restedFatigue()))).toBe("Nuggets playing at altitude.");
 });

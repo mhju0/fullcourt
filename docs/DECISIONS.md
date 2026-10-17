@@ -1404,3 +1404,18 @@ reading NBA CUP GAME · TBD, dated "Early Dec", with no opponent, time or gap, p
 team's last game on or before the quarterfinals and counted in the game numbers. They disappear
 once ingest adds the real games.
 
+## D-100 — The altitude carryover (ALT TRIP) is removed from the model (2026-10-17)
+
+Settles the question D-91 left open. The owner chose removal over fixing the gap rule or hiding
+the flag. The term charged 1.06 on the game after a road game at altitude, at any gap, while the
+copy said the next night; ADR 0006 had measured it at 0.003 points. Removing it moves no published
+rate at one decimal (headline 61.2%, baseline 59.9%, 3+ bucket 63.1%); the figures and the reasoning
+are in the ADR 0006 amendment of the same date. A term that kept moving scores with its flag
+hidden would be harder to explain than either keeping or removing it.
+
+Changed with it: `fatigue.ts` charges altitude only for tonight's venue; the board shows ALT only
+for a visitor at altitude (or either team at an elevated neutral site), and the matchup line no
+longer says "after an altitude trip". The altitude flag now also requires tonight's venue to be at
+altitude, so a row stored with the old 1.06 cannot raise it. The stored final and projected rows
+that carried the term are recomputed, and `ml/rest_split_facts.json` is regenerated from them.
+
