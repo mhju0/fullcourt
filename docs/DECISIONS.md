@@ -1514,3 +1514,17 @@ medium size (52.1%, 240 games), the group above even on a sample of 200 or more,
 rescues it" stays retired. Pooled over every season, no road size reaches even. The test that
 pinned the home row flattening between gaps 5 and 7 is removed, because the large size no longer
 splits above 5.
+
+## D-107 — BY TEAM rows open their game on the board, and the columns share the width (2026-10-18)
+
+Amends D-99. The owner found the team schedule's columns uneven: G, DATE, TIME and REST
+ADVANTAGE shrank to their content, so OPPONENT took 892 of 1,232px at 1440px and the gap sat
+stranded at the far right. From the small breakpoint up the columns now take shares (6%, 18%,
+18%, the rest, 20%); a phone keeps them sized to content. The owner also asked for a way from a
+row to that game's detail, and chose the board over an inline expansion: each row links to
+`/games?season=…&date=…&game=<id>#game-<id>`, which the board already opens and scrolls to, the
+pattern Season Report's loudest calls use. An inline expansion would have duplicated the board's
+detail panel and needed the fatigue breakdown in `/api/games/team`. The OPPONENT name is the real
+link; a click elsewhere on the row follows it, and a chevron marks the row except on a phone,
+where the gap column has no room. The link is a client navigation and the board replaces rather
+than pushes its first URL, so Back returns to the team's season at the same scroll position.
