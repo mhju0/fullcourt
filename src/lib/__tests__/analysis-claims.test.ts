@@ -1,62 +1,69 @@
 import { describe, expect, it } from "vitest";
 import {
-  BEYOND_CLAUSE,
-  WIDER_GAP_CLAUSE,
+  RANGE_RELATION_CLAUSE,
   buildAnalysisClaims,
-  sameGainTolerancePp,
+  eraLift,
+  rangeGapTolerancePp,
+  rangeStandardErrorPp,
   toDeviation,
 } from "@/lib/analysis-claims";
-import type { AnalysisResponse, ThresholdBucket } from "@/types";
+import type { AnalysisResponse, EraRates, GapRangeBucket } from "@/types";
 
-/** Binomial standard error in percentage points — the module's own, restated for comparison. */
+/** Binomial standard error in percentage points, the module's own, restated for comparison. */
 const sePp = ({ games, wins }: { games: number; wins: number }) =>
   100 * Math.sqrt(((wins / games) * (1 - wins / games)) / games);
 
-/**
- * Cumulative buckets, as the API ships them: each counts every game at or above its threshold.
- * The RA ≥ 5 and RA ≥ 7 lifts sit 0.4 points apart, which is the live shape — the rate is flat
- * from RA ≥ 5 upward rather than climbing.
- */
-const THRESHOLDS: ThresholdBucket[] = [
-  { threshold: 2, games: 16078, restedTeamWins: 9947, winPct: 61.9 },
-  { threshold: 3, games: 10524, restedTeamWins: 6639, winPct: 63.1 },
-  { threshold: 5, games: 3782, restedTeamWins: 2382, winPct: 63.0 },
-  { threshold: 7, games: 1108, restedTeamWins: 702, winPct: 63.4 },
+/** The live shape on 2026-10-17: small sits at the baseline, large well above it. */
+const RANGES: GapRangeBucket[] = [
+  { key: "small", min: 0.5, max: 3, games: 16957, restedTeamWins: 10174, winPct: 60.0 },
+  { key: "medium", min: 3, max: 5, games: 6707, restedTeamWins: 4152, winPct: 61.9 },
+  { key: "large", min: 5, max: null, games: 3756, restedTeamWins: 2452, winPct: 65.3 },
 ];
+
+const era = (first: string, last: string, homeWinPct: number, small: number, large: number): EraRates => ({
+  firstSeason: first,
+  lastSeason: last,
+  seasonCount: 5,
+  homeGames: 5000,
+  homeWins: Math.round(homeWinPct * 50),
+  homeWinPct,
+  ranges: [
+    { ...RANGES[0], games: 2000, winPct: small },
+    { ...RANGES[1], games: 800, winPct: 62 },
+    { ...RANGES[2], games: 400, winPct: large },
+  ],
+});
 
 function response(overrides: Partial<AnalysisResponse> = {}): AnalysisResponse {
   return {
-    totalGames: 39412,
-    overallWins: 24120,
+    totalGames: 27420,
+    overallWins: 16778,
     overallWinRate: 61.2,
-    thresholds: THRESHOLDS,
+    thresholds: [],
+    gapRanges: RANGES,
+    eras: [era("2015-16", "2019-20", 59, 58.5, 64), era("2020-21", "2024-25", 56, 57.2, 60.1)],
     homeAwayBreakdown: {
-      homeTeamMoreRested: { games: 39412, restedTeamWins: 24120, winPct: 61.2 },
-      awayTeamMoreRested: { games: 11548, restedTeamWins: 4894, winPct: 42.4 },
+      homeTeamMoreRested: { games: 27420, restedTeamWins: 16778, winPct: 61.2 },
+      awayTeamMoreRested: { games: 11494, restedTeamWins: 4862, winPct: 42.3 },
     },
-    venueBaseline: { games: 47143, homeWins: 28239, homeWinPct: 59.9, roadWinPct: 40.1 },
+    venueBaseline: { games: 47112, homeWins: 28220, homeWinPct: 59.9, roadWinPct: 40.1 },
     seasonWinRates: [],
     ...overrides,
   } as AnalysisResponse;
 }
 
-/** Replaces one cumulative bucket, leaving the rest of the ladder alone. */
-function withBucket(threshold: number, patch: Partial<ThresholdBucket> | null): AnalysisResponse {
-  const thresholds = patch === null
-    ? THRESHOLDS.filter((t) => t.threshold !== threshold)
-    : THRESHOLDS.map((t) => (t.threshold === threshold ? { ...t, ...patch } : t));
-  return response({ thresholds });
+function withRange(key: GapRangeBucket["key"], patch: Partial<GapRangeBucket> | null): AnalysisResponse {
+  const gapRanges = patch === null
+    ? RANGES.filter((r) => r.key !== key)
+    : RANGES.map((r) => (r.key === key ? { ...r, ...patch } : r));
+  return response({ gapRanges });
 }
 
 describe("buildAnalysisClaims", () => {
   it("refuses to claim anything without a baseline to state the rates against", () => {
-    const claims = buildAnalysisClaims(
-      response({
-        venueBaseline: { games: 0, homeWins: 0, homeWinPct: 0, roadWinPct: 0 },
-      })
-    );
-
-    expect(claims).toBeNull();
+    expect(buildAnalysisClaims(response({
+      venueBaseline: { games: 0, homeWins: 0, homeWinPct: 0, roadWinPct: 0 },
+    }))).toBeNull();
   });
 
   it("refuses to claim anything before the backtest arrives", () => {
@@ -70,19 +77,23 @@ describe("buildAnalysisClaims", () => {
 });
 
 describe("the hero tiles", () => {
-  it("never publishes a third cut", () => {
-    const claims = buildAnalysisClaims(response());
-
-    expect(claims?.tiles.length).toBeLessThanOrEqual(2);
+  it("never publishes a third tile", () => {
+    expect(buildAnalysisClaims(response())?.tiles.length).toBeLessThanOrEqual(2);
   });
 
-  it("names who won and over which slice, and never says 'overall'", () => {
-    const claims = buildAnalysisClaims(response());
-
-    for (const tile of claims?.tiles ?? []) {
-      expect(tile.label).toMatch(/^RESTED TEAM AT HOME WON · /);
-      expect(tile.label).not.toMatch(/overall/i);
+  it("names the home team as the rested side, and never says 'any gap' or 'overall'", () => {
+    for (const tile of buildAnalysisClaims(response())?.tiles ?? []) {
+      expect(tile.label).toMatch(/^HOME TEAM MORE RESTED/);
+      expect(tile.label).not.toMatch(/any gap|overall/i);
     }
+  });
+
+  it("states the gap floor in numbers beside the denominator", () => {
+    const [all, large] = buildAnalysisClaims(response())?.tiles ?? [];
+
+    expect(all.detail).toBe("GAP 0.5 OR MORE · 27,420 GAMES");
+    expect(large.detail).toBe("GAP 5 OR MORE · 3,756 GAMES");
+    expect(large.range).toBe("large");
   });
 
   it("carries a denominator and a baseline read on every tile, never a bare rate", () => {
@@ -92,69 +103,31 @@ describe("the hero tiles", () => {
     for (const tile of claims?.tiles ?? []) {
       expect(tile.games).toBeGreaterThan(0);
       expect(Number.isFinite(tile.lift)).toBe(true);
-      // Since ADR 0010 the lift travels structurally (lift + baselineLabel feed the tile's E1
-      // slot) and the detail line carries the count alone — but the invariant is unchanged:
-      // both halves must exist on every tile, and neither may read against a coin flip.
-      expect(tile.detail).toMatch(/^[\d,]+ GAMES$/);
+      expect(tile.detail).toMatch(/· [\d,]+ GAMES$/);
       expect(tile.baselineLabel).toMatch(/BASELINE$/);
-      expect(tile.detail).not.toMatch(/coin.?flip/i);
       expect(tile.baselineLabel).not.toMatch(/coin.?flip|50/i);
     }
   });
 
-  it("carries a negative lift as a signed value the tile can render", () => {
-    const claims = buildAnalysisClaims(
-      response({ overallWinRate: 57.4, thresholds: THRESHOLDS.filter((t) => t.threshold !== 5) })
-    );
-
-    // 57.4 − 59.9 = −2.5. The U+2212 rendering itself now happens in StatTile through
-    // `signedNumber`, which owns that rule for the whole app — this asserts the value the
-    // slot receives, since a lift folded into prose is what this module exists to prevent.
-    expect(claims?.tiles[0].lift).toBe(-2.5);
-    expect(claims?.tiles[0].detail).not.toContain("2.5");
+  it("states the lift against the baseline, not against a coin flip, and keeps its sign", () => {
+    expect(buildAnalysisClaims(response())?.tiles.map((t) => t.lift)).toEqual([1.3, 5.4]);
+    expect(buildAnalysisClaims(response({ overallWinRate: 57.4 }))?.tiles[0].lift).toBe(-2.5);
   });
 
-  it("renders the denominator with thousands separators", () => {
-    const claims = buildAnalysisClaims(response());
+  it("drops the large tile when that range is empty, rather than publishing a rate off no games", () => {
+    const claims = buildAnalysisClaims(withRange("large", { games: 0, restedTeamWins: 0, winPct: 0 }));
 
-    expect(claims?.tiles[0].detail).toContain("39,412 GAMES");
-  });
-
-  it("states the lift against the baseline, not against a coin flip", () => {
-    const claims = buildAnalysisClaims(response());
-
-    // 61.2 − 59.9 = 1.3, the one point rest accounts for. Against 50 it would read 11.2.
-    expect(claims?.tiles[0].lift).toBe(1.3);
-  });
-
-  it("drops the wider tile when its bucket is empty, rather than publishing a rate off no games", () => {
-    const claims = buildAnalysisClaims(withBucket(5, { games: 0, restedTeamWins: 0 }));
-
-    expect(claims?.tiles.map((t) => t.threshold)).toEqual([null]);
+    expect(claims?.tiles.map((t) => t.range)).toEqual([null]);
   });
 });
 
 describe("the declined half", () => {
-  it("is always stated, because the headline is unreadable without it", () => {
+  it("reports the home team's win rate over those games, against the same baseline", () => {
     const claims = buildAnalysisClaims(response());
 
-    expect(claims?.declinedHalf.games).toBe(11548);
-  });
-
-  it("reports the home team's win rate over those games, not the rested visitor's", () => {
-    const claims = buildAnalysisClaims(response());
-
-    // The visitor won 42.4% of them, so the home side won 57.6% — stated as the win it is.
-    expect(claims?.declinedHalf.homeWinPct).toBeCloseTo(57.6, 1);
-  });
-
-  it("reads that rate against the same baseline as the tiles", () => {
-    const claims = buildAnalysisClaims(response());
-
-    expect(claims?.declinedHalf.lift).toBeCloseTo(
-      toDeviation(claims?.declinedHalf.homeWinPct ?? 0, 59.9),
-      5
-    );
+    expect(claims?.declinedHalf.games).toBe(11494);
+    expect(claims?.declinedHalf.homeWinPct).toBeCloseTo(57.7, 1);
+    expect(claims?.declinedHalf.lift).toBeCloseTo(toDeviation(claims?.declinedHalf.homeWinPct ?? 0, 59.9), 5);
   });
 });
 
@@ -162,188 +135,104 @@ describe("the chart zero labels", () => {
   it("names what zero is on both charts, and never a coin flip", () => {
     const claims = buildAnalysisClaims(response());
 
-    expect(claims?.thresholdZeroLabel).toContain("59.9%");
-    expect(claims?.thresholdZeroLabel).toMatch(/HOME TEAM WINS ANYWAY/);
-    expect(claims?.seasonZeroLabel).toMatch(/THAT SEASON'S OWN HOME WIN RATE/);
-    for (const label of [claims?.thresholdZeroLabel, claims?.seasonZeroLabel]) {
+    expect(claims?.rangeZeroLabel).toContain("59.9%");
+    expect(claims?.rangeZeroLabel).toMatch(/HOME TEAM WINS ANYWAY/);
+    expect(claims?.eraZeroLabel).toMatch(/THAT ERA'S OWN HOME WIN RATE/);
+    for (const label of [claims?.rangeZeroLabel, claims?.eraZeroLabel]) {
       expect(label).not.toMatch(/coin.?flip/i);
     }
   });
 });
 
-describe("the reading-these-numbers claim", () => {
-  it("calls a wider gap the same gain when its lift sits inside the noise on that bucket", () => {
-    const claims = buildAnalysisClaims(response());
+describe("the reading claim", () => {
+  it("states every range with its span, rate, count and lift", () => {
+    const ranges = buildAnalysisClaims(response())?.reading?.ranges ?? [];
 
-    // 63.4 − 59.9 = 3.5 against 63.0 − 59.9 = 3.1. Four tenths apart, against a tolerance of
-    // about 1.7 derived from these counts: flat.
-    expect(claims?.reading?.beyond?.relation).toBe("flat");
+    expect(ranges.map((r) => [r.name, r.span, r.winPct, r.games, r.lift])).toEqual([
+      ["small", "0.5–3", 60, 16957, 0.1],
+      ["medium", "3–5", 61.9, 6707, 2],
+      ["large", "5+", 65.3, 3756, 5.4],
+    ]);
   });
 
-  /**
-   * The regression this module was built for. The page asserted "the same gain, not a larger
-   * one" as fixed prose over two live figures, so a genuine climb would have rendered true
-   * numbers under a false sentence and nothing would have caught it. This case is what "nothing"
-   * used to mean.
-   */
-  it("calls it higher when the wider gap genuinely climbs", () => {
-    const claims = buildAnalysisClaims(withBucket(7, { winPct: 70.4, restedTeamWins: 780 }));
+  it("calls a small-gap lift noise when the range cannot separate it from the baseline", () => {
+    const ranges = buildAnalysisClaims(response())?.reading?.ranges ?? [];
 
-    // 70.4 − 59.9 = 10.5 against 3.1. Seven points of climb is not the same gain.
-    expect(claims?.reading?.beyond?.relation).toBe("higher");
+    // +0.1 on 16,957 games, where two standard errors are about 0.7 points.
+    expect(ranges.map((r) => r.withinNoise)).toEqual([true, false, false]);
   });
 
-  it("calls it lower when the wider gap falls back", () => {
-    const claims = buildAnalysisClaims(withBucket(7, { winPct: 55.0, restedTeamWins: 609 }));
-
-    expect(claims?.reading?.beyond?.relation).toBe("lower");
+  it("says the gain sits in the bigger gaps only when large clears small by more than the noise", () => {
+    expect(buildAnalysisClaims(response())?.reading?.largeVsSmall).toBe("higher");
+    expect(buildAnalysisClaims(withRange("large", { winPct: 60.4 }))?.reading?.largeVsSmall).toBe("flat");
+    expect(buildAnalysisClaims(withRange("large", { winPct: 56 }))?.reading?.largeVsSmall).toBe("lower");
   });
 
-  it("says nothing about the wider gap when that bucket is missing", () => {
-    const claims = buildAnalysisClaims(withBucket(7, null));
-
-    expect(claims?.reading?.beyond).toBeNull();
-    expect(claims?.reading?.ra5.winPct).toBe(63.0);
+  it("makes no size comparison when either end is missing", () => {
+    expect(buildAnalysisClaims(withRange("small", null))?.reading?.largeVsSmall).toBeNull();
+    expect(buildAnalysisClaims(withRange("large", { games: 0, restedTeamWins: 0 }))?.reading?.largeVsSmall).toBeNull();
   });
 
-  it("says nothing at all when there is no RA >= 5 bucket to read from", () => {
-    const claims = buildAnalysisClaims(withBucket(5, null));
+  it("leaves an empty range out of the sentence", () => {
+    const ranges = buildAnalysisClaims(withRange("medium", { games: 0, restedTeamWins: 0, winPct: 0 }))?.reading?.ranges;
 
-    expect(claims?.reading).toBeNull();
-  });
-
-  it("carries the denominator for every rate it states", () => {
-    const claims = buildAnalysisClaims(response());
-
-    expect(claims?.reading?.ra5.games).toBe(3782);
-    expect(claims?.reading?.beyond?.games).toBe(1108);
-  });
-});
-
-/**
- * The bar a difference has to clear is derived from the counts behind it, not chosen. This is
- * what that buys, and none of it is reachable with a fixed threshold: the SAME difference in
- * lift is a trend on a thick bucket and silence on a thin one.
- *
- * `SAME_GAIN_TOLERANCE_PP = 1` stood here until 2026-08-13 (issue #30). It failed its own stated
- * rule — the page must not narrate a trend smaller than the noise, and on the live RA ≥ 7 bucket
- * the noise is about 1.7 points, so a 1.1-point blip would have been published as a real climb.
- */
-describe("the tolerance the comparison is measured against", () => {
-  /** Same shape, same lifts, 10× the games. */
-  const thick = response({
-    totalGames: 200_000,
-    overallWins: 122_400,
-    thresholds: [
-      { threshold: 5, games: 37_820, restedTeamWins: 23_827, winPct: 63.0 },
-      { threshold: 7, games: 11_080, restedTeamWins: 7_147, winPct: 64.5 },
-    ],
-  });
-
-  const thin = response({
-    thresholds: [
-      { threshold: 5, games: 3_782, restedTeamWins: 2_382, winPct: 63.0 },
-      { threshold: 7, games: 200, restedTeamWins: 129, winPct: 64.5 },
-    ],
-  });
-
-  it("reads one and the same climb as real on a thick bucket and as noise on a thin one", () => {
-    // Both are a lift of 4.6 against 3.1 — identical to one decimal, which is all the page shows.
-    for (const data of [thick, thin]) {
-      const r = buildAnalysisClaims(data)!.reading!;
-      expect(r.beyond!.lift - r.ra5.lift).toBeCloseTo(1.5, 5);
-    }
-
-    // 11,080 games behind it: the difference clears the noise and the page may say so.
-    expect(buildAnalysisClaims(thick)?.reading?.beyond?.relation).toBe("higher");
-    // 200 games behind it: the same difference is indistinguishable from nothing.
-    expect(buildAnalysisClaims(thin)?.reading?.beyond?.relation).toBe("flat");
-  });
-
-  it("widens as the narrow bucket thins", () => {
-    const wide = { games: 37_820, wins: 23_827 };
-    expect(sameGainTolerancePp({ games: 11_080, wins: 7_147 }, wide)).toBeLessThan(
-      sameGainTolerancePp({ games: 200, wins: 129 }, wide)
-    );
-  });
-
-  it("corrects for the buckets being nested rather than side by side", () => {
-    // The API ships CUMULATIVE buckets, so the narrow one's games are also in the wide one.
-    // Treating them as two independent samples understates the noise, because they share most
-    // of their observations — the honest contrast is against the remainder, which is smaller
-    // than the superset and therefore noisier.
-    const narrow = { games: 1_108, wins: 702 };
-    const wide = { games: 3_782, wins: 2_382 };
-    const naive = Math.hypot(sePp(narrow), sePp(wide));
-
-    expect(sameGainTolerancePp(narrow, wide)).toBeGreaterThan(naive);
-  });
-
-  it("claims nothing when the two buckets are the same population", () => {
-    // No remainder means no independent contrast, so no difference could be real. The page has
-    // to fall silent rather than compare a set with itself.
-    const same = { games: 1_108, wins: 702 };
-    expect(sameGainTolerancePp(same, same)).toBe(Infinity);
-
-    const identical = response({
-      thresholds: [
-        { threshold: 5, games: 3_782, restedTeamWins: 2_382, winPct: 63.0 },
-        { threshold: 7, games: 3_782, restedTeamWins: 2_382, winPct: 63.0 },
-      ],
-    });
-    expect(buildAnalysisClaims(identical)?.reading?.beyond?.relation).toBe("flat");
-  });
-
-  it("never drops below the one decimal the page prints", () => {
-    // A rate of exactly 100% collapses the binomial standard error to zero. Without a floor the
-    // tolerance would too, and a difference of a rounding step would start a sentence.
-    expect(sameGainTolerancePp({ games: 50, wins: 50 }, { games: 100, wins: 100 })).toBe(0.1);
+    expect(ranges?.map((r) => r.key)).toEqual(["small", "large"]);
   });
 });
 
 describe("the wording each relation renders", () => {
-  /**
-   * A relation is only half the fix: the sentence still has to agree with it. These pin the
-   * mapping so pointing "higher" at "the same gain" fails here rather than shipping.
-   */
-  it("never calls a climb the same gain, nor a flat run a climb", () => {
-    expect(BEYOND_CLAUSE.flat.tail).toMatch(/same gain/);
-    expect(BEYOND_CLAUSE.higher.tail).not.toMatch(/same gain/);
-    expect(BEYOND_CLAUSE.lower.tail).not.toMatch(/same gain/);
-
-    expect(BEYOND_CLAUSE.flat.lead).toMatch(/does not keep climbing/);
-    expect(BEYOND_CLAUSE.higher.lead).not.toMatch(/does not keep climbing/);
-  });
-
-  it("only promises a bigger gap is worth more when it measurably is", () => {
-    expect(WIDER_GAP_CLAUSE.higher).toMatch(/worth more/);
-    expect(WIDER_GAP_CLAUSE.flat).not.toMatch(/worth more/);
-    expect(WIDER_GAP_CLAUSE.lower).not.toMatch(/worth more/);
-  });
-
-  it("has wording for every relation the builder can produce", () => {
-    for (const relation of ["flat", "higher", "lower"] as const) {
-      expect(WIDER_GAP_CLAUSE[relation]).toBeTruthy();
-      expect(BEYOND_CLAUSE[relation].lead).toBeTruthy();
-      expect(BEYOND_CLAUSE[relation].tail).toBeTruthy();
-    }
+  it("never calls a flat run a climb, and only promises more when it is measured", () => {
+    expect(RANGE_RELATION_CLAUSE.flat).not.toMatch(/sits in the bigger|worth more/);
+    expect(RANGE_RELATION_CLAUSE.lower).not.toMatch(/sits in the bigger/);
+    expect(RANGE_RELATION_CLAUSE.higher).toMatch(/bigger gaps/);
   });
 });
 
-describe("the reading claim's relation to the any-gap tile", () => {
-  it("reads RA >= 5 as the bigger gain when it clears the any-gap lift", () => {
-    const claims = buildAnalysisClaims(response());
+describe("the tolerance the size comparison is measured against", () => {
+  const small = { games: 16957, wins: 10174 };
+  const large = { games: 3756, wins: 2452 };
 
-    // 3.1 against 1.3 — 1.8 points apart, so the page may say a bigger gap is worth more.
-    expect(claims?.reading?.ra5.relationToAnyGap).toBe("higher");
+  it("is the combined standard error of two independent rates", () => {
+    expect(rangeGapTolerancePp(large, small)).toBeCloseTo(Math.hypot(sePp(large), sePp(small)), 10);
   });
 
-  it("refuses that sentence when RA >= 5 lands level with the any-gap rate", () => {
-    const claims = buildAnalysisClaims(withBucket(5, { winPct: 61.5 }));
+  it("widens as a range thins", () => {
+    expect(rangeGapTolerancePp({ games: 400, wins: 260 }, small)).toBeGreaterThan(rangeGapTolerancePp(large, small));
+  });
 
-    // 1.6 against 1.3 — three tenths apart, which is not a bigger gain.
-    expect(claims?.reading?.ra5.relationToAnyGap).toBe("flat");
-    expect(WIDER_GAP_CLAUSE[claims!.reading!.ra5.relationToAnyGap]).not.toMatch(/worth more/);
+  it("claims nothing off an empty range, and never drops below the one decimal printed", () => {
+    expect(rangeGapTolerancePp({ games: 0, wins: 0 }, small)).toBe(Infinity);
+    expect(rangeGapTolerancePp({ games: 10, wins: 10 }, { games: 10, wins: 0 })).toBe(0.1);
+  });
+
+  it("gives the chart the same standard error the sentence reads", () => {
+    expect(rangeStandardErrorPp({ games: 3756, restedTeamWins: 2452 })).toBeCloseTo(sePp(large), 10);
+    expect(rangeStandardErrorPp({ games: 0, restedTeamWins: 0 })).toBe(0);
+  });
+});
+
+describe("the era summary", () => {
+  it("reads each era's ranges against that era's own home rate", () => {
+    const [first] = response().eras;
+
+    expect(eraLift(first, "large")).toBe(5);
+    expect(eraLift(first, "small")).toBe(-0.5);
+  });
+
+  it("counts the eras where large gaps beat home court and spans the small-gap lifts", () => {
+    expect(buildAnalysisClaims(response())?.eraSummary).toEqual({
+      eraCount: 2,
+      largeAboveCount: 2,
+      smallLiftMin: -0.5,
+      smallLiftMax: 1.2,
+    });
+  });
+
+  it("says nothing when an era is missing a range, rather than counting around the gap", () => {
+    const eras = response().eras.map((e, i) => (i === 0 ? { ...e, ranges: e.ranges.filter((r) => r.key !== "large") } : e));
+
+    expect(buildAnalysisClaims(response({ eras }))?.eraSummary).toBeNull();
+    expect(buildAnalysisClaims(response({ eras: [] }))?.eraSummary).toBeNull();
   });
 });
 

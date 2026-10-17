@@ -1442,3 +1442,27 @@ to 160px so MEDIUM REST EDGE fits beside the chevron at the table's minimum widt
 of a 5+ mark as too rare is reversed: it now marks the larger of two sizes rather than standing
 alone. The other tabs (/analysis, home page, /schedule, Behind the Data, /season) move to the same
 vocabulary in their own changes.
+
+## D-102 — /analysis reads the rested-home rate by three disjoint gap sizes and by era (2026-10-17)
+
+Follows D-101. The page charted cumulative thresholds (RA ≥ 2 … ≥ 7), where every bucket repeated
+the games of the ones above it, so a click on RA ≥ 2 opened the 5+ games as well and "is a bigger
+gap worth more" compared mostly the same games. Its season chart split 41 seasons, about 90
+large-gap games in an average season (3,756 over 41), with whiskers too wide to read one season.
+
+The owner approved, on 2026-10-17: the ranges small 0.5–3, medium 3–5 and large 5+, each game in
+one (`GAP_RANGES`, `src/lib/rest-advantage-evidence.ts`; a test pins the bounds to the board's
+MEDIUM and LARGE lines). The "ANY GAP" tile becomes HOME TEAM MORE RESTED with "GAP 0.5 OR MORE"
+on its detail line, because "any gap" read as every game. The gap-size chart plots each range
+against the venue baseline with a 95% whisker, and a bar click opens that range's games. The
+season chart is replaced by five-season eras (`groupSeasonsIntoEras`, complete seasons only), each
+range read against the era's own home rate, beside a line of home court by season so the drift in
+the baseline is visible on its own. The reading paragraph names all three ranges, calls a lift
+inside 1.96 standard errors "within the noise", and says the gain sits in the bigger gaps only when
+large clears small by more than their combined standard error (`buildAnalysisClaims`).
+
+The explorer replaces its minimum-gap filter with Rest gap (all, small, medium, large) and Rested
+team (home, visitor, either), defaults to the rested team at home so its rows match the rates
+above, and leaves out neutral-site games. `/api/games/search` takes `gap` and `side`; `minRA` stays
+for other callers. `/api/analysis` keeps `thresholds` (the Games board reads them, D-101) and its
+`seasonMinRA` parameter, which no page sends now.

@@ -74,13 +74,13 @@ for (const width of [390, 1440]) {
         await expect(page.getByTestId("selected-date-display")).not.toHaveText(before!);
       });
 
-      test("Analysis drill preserves threshold and uses the requested scroll behavior", async ({ page }) => {
+      test("Analysis drill preserves the gap range and uses the requested scroll behavior", async ({ page }) => {
         await page.goto("/analysis");
-        await expect(page.getByLabel("Rest advantage filter")).toBeVisible({ timeout: 60_000 });
+        await expect(page.getByLabel("Rest gap filter")).toBeVisible({ timeout: 60_000 });
         await page.evaluate(() => {
           const original = Element.prototype.scrollIntoView;
           Element.prototype.scrollIntoView = function (options) {
-            if (this.querySelector('[aria-label="Rest advantage filter"]')) {
+            if (this.querySelector('[aria-label="Rest gap filter"]')) {
               this.setAttribute("data-scroll-behavior", typeof options === "object" ? options.behavior ?? "auto" : "auto");
               this.setAttribute("data-scroll-block", typeof options === "object" ? options.block ?? "start" : "start");
             }
@@ -88,10 +88,11 @@ for (const width of [390, 1440]) {
           };
         });
         await page.locator(".recharts-wrapper").first().locator(".recharts-bar-rectangle path").first().click();
-        await expect(page.getByLabel("Rest advantage filter")).toHaveValue("2");
+        await expect(page.getByLabel("Rest gap filter")).toHaveValue("small");
+        await expect(page.getByLabel("Rested team filter")).toHaveValue("home");
         await expect(page.locator("[data-scroll-behavior]")).toHaveAttribute("data-scroll-behavior", reduced ? "instant" : "smooth");
         await expect(page.locator("[data-scroll-behavior]")).toHaveAttribute("data-scroll-block", "start");
-        await expect(page.getByLabel("Rest advantage filter")).toBeInViewport();
+        await expect(page.getByLabel("Rest gap filter")).toBeInViewport();
       });
 
       test("Games fatigue fills have no width transition", async ({ page }) => {

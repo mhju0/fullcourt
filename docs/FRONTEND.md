@@ -14,7 +14,7 @@ Dependency versions live in `package.json` and `pnpm-lock.yaml`. The shared visu
 | `/season` | Completed results against the season's venue baseline, six initial team records with remaining teams expandable, five largest completed rest gaps including losses |
 | `/schedule` | Relative schedule ranking and worth; breakdown (with its column guide inside) and travel/workload in disclosures; league fatigue by week for completed games |
 | `/explore` | Directory for the secondary basketball studies |
-| `/analysis` | Historical model evaluation: The answer and The explorer |
+| `/analysis` | Historical model evaluation: The answer and The explorer. Two tiles (HOME TEAM MORE RESTED, and its LARGE GAP slice) with the gap floor in numbers; a gap-size chart of small/medium/large against the venue baseline with 95% whiskers, where a bar opens exactly its games; an era chart reading each five-season era against its own home rate; and home court by season. The explorer defaults to the rested team at home and filters by rest gap and rested team (D-102) |
 | `/shooting` | Player Shooting by Rest: dense player comparisons with no-rest/2–29 days off eFG%, attempt counts, uncertainty, and expandable seasons; zero-rest workload disclosure |
 | `/shot-quality` | Expected shot value by location; one mobile court with Compare models, two desktop courts |
 | `/availability` | Missing-player associations, trends, and expandable coefficient comparison |

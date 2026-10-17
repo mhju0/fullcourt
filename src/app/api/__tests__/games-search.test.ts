@@ -43,6 +43,8 @@ describe("GET /api/games/search", () => {
     "?result=maybe",
     "?season=2099-00",
     "?team=Boston",
+    "?gap=huge",
+    "?side=neutral",
   ])("returns 400 without querying for invalid parameters: %s", async (search) => {
     const res = await GET(req(search));
 
@@ -69,6 +71,15 @@ describe("GET /api/games/search", () => {
     });
     const body = (await res.json()) as { data: { page: number; limit: number } };
     expect(body.data).toMatchObject({ page: 2, limit: 50 });
+  });
+
+  it("accepts a gap range and a side, and narrows the query to the range's floor", async () => {
+    mockSearchGames.mockResolvedValueOnce([]);
+
+    const res = await GET(req("?gap=large&side=home"));
+
+    expect(res.status).toBe(200);
+    expect(mockSearchGames).toHaveBeenCalledWith({ minRA: 4.99, team: undefined, season: undefined });
   });
 
   // `jsonRoute`'s own tests prove the header mechanism; nothing proved this route asks for it,

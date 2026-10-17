@@ -8,6 +8,7 @@ import {
 import {
   buildHistoricalBacktest,
   buildHistoricalGameSearch,
+  gapRangeByKey,
   type HistoricalGameSearchFilters,
   type HistoricalGameSearchOptions,
 } from "@/lib/rest-advantage-evidence";
@@ -70,8 +71,14 @@ export const getHistoricalBacktest = createStampedCache<number, AnalysisResponse
 export async function searchHistoricalGameEvidence(
   request: HistoricalGameSearchRequest
 ): Promise<GameSearchResponse> {
+  // A gap range narrows the query to just under its floor: the SQL compares the unrounded
+  // scores, and a gap of 2.996 rounds to 3.00 (D-87), so it must still arrive. The exact bounds
+  // and the side are applied to the rounded gap in `buildHistoricalGameSearch`, as the backtest
+  // counts them.
+  const gapFloor = request.gap ? gapRangeByKey(request.gap).min - 0.01 : 0
+  const floor = Math.max(request.minRA ?? 0, gapFloor)
   const rows = await searchRegularSeasonGames({
-    minRA: request.minRA !== undefined && request.minRA > 0 ? request.minRA : undefined,
+    minRA: floor > 0 ? floor : undefined,
     team: request.team,
     season: request.season,
   });

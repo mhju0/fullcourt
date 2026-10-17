@@ -181,6 +181,15 @@ describe("searchHistoricalGameEvidence", () => {
     });
   });
 
+  it("narrows the query to just under a gap range's floor, leaving the exact bounds to the rows", async () => {
+    // The SQL compares unrounded scores, and 2.996 rounds to 3.00 (D-87), so it must arrive.
+    const { searchHistoricalGameEvidence } = await loadModule();
+
+    await searchHistoricalGameEvidence({ ...REQUEST, gap: "medium", side: "home" });
+
+    expect(mockSearch).toHaveBeenCalledWith({ minRA: 2.99, team: undefined, season: undefined });
+  });
+
   it("carries the paging half into the response", async () => {
     const { searchHistoricalGameEvidence } = await loadModule();
 

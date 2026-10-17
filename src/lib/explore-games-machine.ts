@@ -20,11 +20,24 @@
  * the URL already determines.
  */
 
+import type { ExploreSide, GapRangeKey } from "@/lib/rest-advantage-evidence";
+
 export type ExploreResult = "all" | "correct" | "incorrect";
 
+/**
+ * Where the explorer opens: the games the page's rates count, the rested team at home. A reader
+ * who lands on 38,000 mixed rows under a rate measured on 27,000 has no way to tell the two
+ * populations apart, which is how the bar click came to open different games from the bar.
+ */
+export const DEFAULT_SIDE: ExploreSide = "home";
+
+/** A chart-bar click: the range it covers, and a token so a repeat click still applies. */
+export type ExploreDrill = { gap: GapRangeKey; token: number };
+
 export interface ExploreState {
-  /** Minimum absolute rest advantage; 0 means no floor. */
-  minRA: number;
+  /** One gap range, or "" for every gap of 0.5 or more. */
+  gap: GapRangeKey | "";
+  side: ExploreSide;
   /** Team abbreviation, or "" for all. */
   team: string;
   /** Season label, or "" for all. */
@@ -33,7 +46,7 @@ export interface ExploreState {
   page: number;
   /**
    * The chart-bar click already applied. Keyed on the token rather than the
-   * threshold so a repeat click on the same bar still applies, and so a stale
+   * range so a repeat click on the same bar still applies, and so a stale
    * signal never re-fires against a later dropdown change or CLEAR FILTERS.
    */
   appliedDrillToken: number;
@@ -43,20 +56,23 @@ export interface ExploreState {
 
 /** What a user can do. This is the only surface the UI is given. */
 export type ExploreIntent =
-  | { type: "MIN_RA_SELECTED"; minRA: number }
+  | { type: "GAP_SELECTED"; gap: GapRangeKey | "" }
+  | { type: "SIDE_SELECTED"; side: ExploreSide }
   | { type: "TEAM_SELECTED"; team: string }
   | { type: "SEASON_SELECTED"; season: string }
   | { type: "RESULT_SELECTED"; result: ExploreResult }
   | { type: "FILTERS_CLEARED" }
   /** `totalPages` comes from the fetch, so the clamp stays out of the JSX. */
   | { type: "PAGE_SHIFTED"; delta: -1 | 1; totalPages: number }
-  | { type: "DRILL_APPLIED"; threshold: number; token: number }
+  /** A bar is a range of home-rested games, so a click sets both, exactly the bar's games. */
+  | { type: "DRILL_APPLIED"; gap: GapRangeKey; token: number }
   | { type: "DETAIL_OPENED"; gameId: number }
   | { type: "DETAIL_CLOSED" };
 
-export function initExplore(drill: { threshold: number; token: number } | null): ExploreState {
+export function initExplore(drill: ExploreDrill | null): ExploreState {
   return {
-    minRA: drill?.threshold ?? 0,
+    gap: drill?.gap ?? "",
+    side: DEFAULT_SIDE,
     team: "",
     season: "",
     result: "all",
@@ -78,8 +94,10 @@ function filtered(state: ExploreState, change: Partial<ExploreState>): ExploreSt
  */
 export function exploreReducer(state: ExploreState, event: ExploreIntent): ExploreState {
   switch (event.type) {
-    case "MIN_RA_SELECTED":
-      return filtered(state, { minRA: event.minRA });
+    case "GAP_SELECTED":
+      return filtered(state, { gap: event.gap });
+    case "SIDE_SELECTED":
+      return filtered(state, { side: event.side });
     case "TEAM_SELECTED":
       return filtered(state, { team: event.team });
     case "SEASON_SELECTED":
@@ -87,10 +105,10 @@ export function exploreReducer(state: ExploreState, event: ExploreIntent): Explo
     case "RESULT_SELECTED":
       return filtered(state, { result: event.result });
     case "FILTERS_CLEARED":
-      return filtered(state, { minRA: 0, team: "", season: "", result: "all" });
+      return filtered(state, { gap: "", side: DEFAULT_SIDE, team: "", season: "", result: "all" });
     case "DRILL_APPLIED":
       if (event.token === state.appliedDrillToken) return state;
-      return filtered(state, { minRA: event.threshold, appliedDrillToken: event.token });
+      return filtered(state, { gap: event.gap, side: "home", appliedDrillToken: event.token });
     case "PAGE_SHIFTED": {
       const last = Math.max(1, event.totalPages);
       const next = Math.min(last, Math.max(1, state.page + event.delta));
@@ -110,7 +128,8 @@ export function exploreReducer(state: ExploreState, event: ExploreIntent): Explo
 /** The `/api/games/search` key. Absent filters are omitted, so the URL stays the cache key. */
 export function exploreSearchKey(state: ExploreState, pageSize: number): string {
   const params = new URLSearchParams();
-  if (state.minRA > 0) params.set("minRA", String(state.minRA));
+  if (state.gap) params.set("gap", state.gap);
+  params.set("side", state.side);
   if (state.team) params.set("team", state.team);
   if (state.season) params.set("season", state.season);
   if (state.result !== "all") params.set("result", state.result);
@@ -136,5 +155,5 @@ export function pageWindow(state: ExploreState, total: number, pageSize: number)
 }
 
 export function hasActiveFilters(state: ExploreState): boolean {
-  return state.minRA > 0 || state.team !== "" || state.season !== "" || state.result !== "all";
+  return state.gap !== "" || state.side !== DEFAULT_SIDE || state.team !== "" || state.season !== "" || state.result !== "all";
 }

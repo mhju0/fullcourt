@@ -29,6 +29,10 @@ export const GET = jsonRoute(
   "api/games/search",
   z.object({
     minRA: minRAParam,
+    /** One gap range (D-102). Its ceiling is exclusive, unlike `minRA`, which has none. */
+    gap: z.enum(["small", "medium", "large"]).optional(),
+    /** Which side was more rested. Given, it also drops neutral sites (D-92); absent, nothing is dropped. */
+    side: z.enum(["home", "away", "either"]).optional(),
     team: z.string().regex(/^[A-Z]{2,3}$/, "Team must be a 2-3 letter abbreviation").optional(),
     season: seasonParam.optional(),
     result: z.enum(["all", "correct", "incorrect"]).default("all"),

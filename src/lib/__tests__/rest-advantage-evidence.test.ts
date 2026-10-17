@@ -303,3 +303,46 @@ describe("buildHistoricalGameSearch", () => {
     });
   });
 });
+
+describe("the explorer's gap and side filters (D-102)", () => {
+  // classify(home, away): the home team is fresher when its score is lower.
+  const row = (id: number, home: string, away: string, homeWon: boolean, neutralSite = false) => ({
+    id,
+    date: "2024-02-01",
+    season: "2023-24",
+    homeTeamAbbr: "BOS",
+    awayTeamAbbr: "NYK",
+    homeScore: homeWon ? 110 : 100,
+    awayScore: homeWon ? 100 : 110,
+    homeFatigueScore: home,
+    awayFatigueScore: away,
+    neutralSite,
+  });
+  const ROWS = [
+    row(1, "0", "1", true),            // home rested, small
+    row(2, "0", "2.996", true),        // home rested, rounds to 3.00: medium, not small
+    row(3, "0", "4.99", false),        // home rested, medium
+    row(4, "0", "5", true),            // home rested, large
+    row(5, "6", "0", false),           // visitor rested, large
+    row(6, "0", "6", true, true),      // home rested at a neutral site: never counted
+  ];
+  const ids = (options: Partial<Parameters<typeof buildHistoricalGameSearch>[1]>) =>
+    buildHistoricalGameSearch(ROWS, { result: "all", page: 1, limit: 50, ...options }).games.map((g) => g.gameId).sort();
+
+  it("returns exactly the games a range counts, with the rounded gap deciding the edge", () => {
+    expect(ids({ gap: "small", side: "home" })).toEqual([1]);
+    expect(ids({ gap: "medium", side: "home" })).toEqual([2, 3]);
+    expect(ids({ gap: "large", side: "home" })).toEqual([4]);
+  });
+
+  it("reads the side the backtest does, and leaves neutral sites out once a side is chosen", () => {
+    expect(ids({ side: "home" })).toEqual([1, 2, 3, 4]);
+    expect(ids({ side: "away" })).toEqual([5]);
+    expect(ids({ side: "either" })).toEqual([1, 2, 3, 4, 5]);
+    expect(ids({ gap: "large", side: "either" })).toEqual([4, 5]);
+  });
+
+  it("keeps the old behaviour when neither is given", () => {
+    expect(ids({})).toEqual([1, 2, 3, 4, 5, 6]);
+  });
+});

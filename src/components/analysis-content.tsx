@@ -6,17 +6,17 @@ import {
   BarChart,
   Bar,
   Cell,
+  ErrorBar,
+  Line,
+  LineChart,
   XAxis,
   YAxis,
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-  ReferenceDot,
   ReferenceLine,
-  LabelList,
 } from "recharts"
 import type { TooltipContentProps } from "recharts"
-import useSWR from "swr"
 import { format } from "date-fns"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { ExploreGameDetailModal } from "@/components/explore-game-detail-modal"
@@ -26,21 +26,21 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { useBacktest } from "@/hooks/useBacktest"
 import { useExploreGames, type DrillSignal } from "@/hooks/useExploreGames"
 import type { ExploreResult } from "@/lib/explore-games-machine"
-import { apiFetcher, errMsg } from "@/lib/fetcher"
-import { Button } from "@/components/ui/button"
 import { NBA_SEASONS } from "@/lib/nba-season"
 import { formerAbbreviations, getTeamBranding } from "@/lib/team-history"
-import { MIN_GAMES_FOR_INFERENCE } from "@/lib/season-report"
 import {
-  BEYOND_CLAUSE,
-  WIDER_GAP_CLAUSE,
+  RANGE_RELATION_CLAUSE,
   buildAnalysisClaims,
+  eraLift,
+  rangeStandardErrorPp,
   toDeviation,
+  type EraSummary,
 } from "@/lib/analysis-claims"
+import { GAP_RANGES, gapRangeByKey, gapRangeSpan, type ExploreSide, type GapRangeKey } from "@/lib/rest-advantage-evidence"
 import type { DataAsOf } from "@/lib/data-as-of"
 import { LEAD, MONO_FONT_STACK, SPACE, termSelectClass, termSelectStyle, termCardStyle, termDashedEmptyStyle, termInsetStyle, termTdStyle, TRACK, TYPE } from "@/lib/terminal-styles"
 import { DataTable } from "@/components/ui/data-table"
-import type { AnalysisResponse } from "@/types"
+import type { AnalysisResponse, EraRates } from "@/types"
 import { signedNumber } from "@/lib/signed-number"
 import { formatFatigueScore, formatRestAdvantageValue } from "@/lib/rest-advantage-display"
 import { MessageCard } from "@/components/ui/message-card"
@@ -167,39 +167,6 @@ const MAX_TICK_INTERVALS = 6
  * an orphan 70), and a hardcoded ceiling silently clips — the RA ≥ 7 season
  * series runs −11.0 to +25.0 pp.
  */
-/**
- * Which seasons the by-season chart is allowed to plot.
- *
- * The chart shares one y-axis across every season, and `deviationScale` derives that axis
- * from the data, so a season whose sample is a fraction of its peers' does not merely draw a
- * noisy bar — it rescales all the others. Measured over 200 simulated openings at a 59% home
- * rate: four days into a season the young bar sits a median 17.1pp off its own baseline
- * (p90 35.7), which widens the axis from 6pp to a median 25pp and compresses every historical
- * bar to a quarter of its height. 153 of 200 trials at least doubled the span. By the time the
- * season reaches ~100 called games — mid-November — it is 17 of 200.
- *
- * The gate is `MIN_GAMES_FOR_INFERENCE`, the same figure /season already uses to decide when a
- * season's rate stops being "too early". Reused rather than invented, and the measurement lands
- * on it independently.
- *
- * **Counted on the unfiltered population, not on the row being plotted.** The threshold views
- * re-count each season over a rare subset — at RA >= 7 a *complete* season yields 9 to 46 games
- * — so gating on a row's own count would hide every season in that view and 22 of 41 at RA >= 5.
- * `MIN_GAMES_FOR_INFERENCE` is calibrated against the whole-season population (~688 called games
- * a season, fewest 382), where all 41 seasons clear it and only a season still being played does
- * not. So maturity is decided once, on the unfiltered counts, and applied to whichever view is
- * showing.
- */
-export function plottableSeasonRates<T extends { season: string }>(
-  displayed: readonly T[],
-  unfiltered: readonly { season: string; games: number }[]
-): T[] {
-  const mature = new Set(
-    unfiltered.filter((s) => s.games >= MIN_GAMES_FOR_INFERENCE).map((s) => s.season)
-  )
-  return displayed.filter((s) => mature.has(s.season))
-}
-
 export function deviationScale(values: readonly number[]): { domain: [number, number]; ticks: number[] } {
   const peak = values.length > 0 ? Math.max(...values, 0) : 0
   const trough = values.length > 0 ? Math.min(...values, 0) : 0
@@ -217,9 +184,13 @@ export function deviationScale(values: readonly number[]): { domain: [number, nu
 
 type WinRateDatum = {
   label: string
+  /** "0.5–3", printed under the label. */
+  span: string
   winPct: number
   games: number
-  threshold?: number
+  range: GapRangeKey
+  /** Half-width of the 95% interval on the rate, in points. Drawn as the whisker. */
+  error: number
   /** winPct − the venue baseline, in percentage points. Negative below it. */
   deviation: number
   /** The baseline this bar is measured against, so the tooltip can name it. */
@@ -233,8 +204,8 @@ function WinRateTooltip({ active, payload }: TooltipContentProps) {
   const d = payload[0].payload as WinRateDatum
   return (
     <div style={termTooltip}>
-      <p style={{ color: "var(--term-text)", fontWeight: 700, letterSpacing: TRACK.sub }}>{d.label.toUpperCase()}</p>
-      <p style={{ color: "var(--term-text-muted)", marginTop: SPACE.xs }}>RESTED TEAM AT HOME</p>
+      <p style={{ color: "var(--term-text)", fontWeight: 700, letterSpacing: TRACK.sub }}>{d.label.toUpperCase()} GAP · {d.span}</p>
+      <p style={{ color: "var(--term-text-muted)", marginTop: SPACE.xs }}>HOME TEAM MORE RESTED</p>
       {/* The bar plots the deviation, so the tooltip leads with it and carries the
           absolute win rate underneath — the axis no longer shows it anywhere. The
           baseline is named on the same line so the two can never be read apart. */}
@@ -242,54 +213,265 @@ function WinRateTooltip({ active, payload }: TooltipContentProps) {
         <span style={{ fontWeight: 700 }}>{signedNumber(d.deviation)} PP</span> VS {d.baselinePct}% BASELINE
       </p>
       <p style={{ color: "var(--term-text-muted)", marginTop: SPACE.xs }}>WIN RATE: {d.winPct}%</p>
+      <p style={{ color: "var(--term-text-muted)", marginTop: SPACE.xs }}>±{d.error.toFixed(1)} PP, 95% RANGE</p>
       <p style={{ color: "var(--term-text-muted)", marginTop: SPACE.xs }}>{d.games.toLocaleString()} GAMES</p>
-      {d.threshold !== undefined && (
-        <p style={{ marginTop: SPACE.sm, fontSize: TYPE.label, color: "var(--term-accent)" }}>CLICK TO EXPLORE ↓</p>
+      <p style={{ marginTop: SPACE.sm, fontSize: TYPE.label, color: "var(--term-accent)" }}>CLICK TO SEE THESE GAMES ↓</p>
+    </div>
+  )
+}
+
+/** 95% half-width, in points: the whisker on every gap-size bar. */
+function interval95(range: { games: number; restedTeamWins: number }): number {
+  return Math.round(1.96 * rangeStandardErrorPp(range) * 10) / 10
+}
+
+/** "1986–91": the seasons an era spans, by the year each ended, short enough for an axis. */
+function eraLabel(era: EraRates): string {
+  return `${Number(era.firstSeason.slice(0, 4)) + 1}\u2013${era.lastSeason.slice(5)}`
+}
+
+/**
+ * An axis tick on two lines. One line of "LARGE 5+ · n=3,756" or "1986–90" per category ran
+ * into its neighbour at phone width; stacked, each fits its own column.
+ */
+function TwoLineTick({
+  x,
+  y,
+  payload,
+  lines,
+}: {
+  x?: number
+  y?: number
+  payload?: { value: string }
+  lines: (value: string) => [string, string]
+}) {
+  const [first, second] = lines(payload?.value ?? "")
+  return (
+    <text x={x} y={y} textAnchor="middle" fontSize={11} fill="var(--term-text-muted)" fontFamily={MONO_FONT_STACK}>
+      <tspan x={x} dy={12}>{first}</tspan>
+      <tspan x={x} dy={14}>{second}</tspan>
+    </text>
+  )
+}
+
+/** Fill strength by size, so the three bars of an era read small to large in one hue. */
+const RANGE_OPACITY: Record<GapRangeKey, number> = { small: 0.35, medium: 0.65, large: 1 }
+
+type EraDatum = {
+  label: string
+  era: EraRates
+} & Partial<Record<GapRangeKey | `${GapRangeKey}Error`, number>>
+
+function EraTooltip({ active, payload }: TooltipContentProps) {
+  if (!active || !payload?.length) return null
+  const d = payload[0].payload as EraDatum
+  return (
+    <div style={termTooltip}>
+      <p style={{ color: "var(--term-text)", fontWeight: 700, letterSpacing: TRACK.sub }}>
+        {d.era.firstSeason} TO {d.era.lastSeason} · {d.era.seasonCount} SEASONS
+      </p>
+      <p style={{ color: "var(--term-text-muted)", marginTop: SPACE.xs }}>HOME TEAMS WON {d.era.homeWinPct}%</p>
+      {GAP_RANGES.map((range) => {
+        const value = d[range.key]
+        const bucket = d.era.ranges.find((r) => r.key === range.key)
+        if (value === undefined || !bucket) return null
+        return (
+          <p key={range.key} style={{ marginTop: SPACE.xs, color: deviationText(value) }}>
+            <span style={{ fontWeight: 700 }}>{range.label.toUpperCase()} {signedNumber(value)} PP</span>{" "}
+            <span style={{ color: "var(--term-text-muted)" }}>· {bucket.winPct}% OF {bucket.games.toLocaleString()}</span>
+          </p>
+        )
+      })}
+    </div>
+  )
+}
+
+/**
+ * Gap size by five-season era, each against that era's own home win rate (D-102). It replaced a
+ * 41-bar season chart whose seasons average about 90 large-gap games, too few to read: the
+ * question it answers is whether the large-gap edge holds in every era, not in every season.
+ */
+function EraChart({
+  eras,
+  summary,
+  zeroLabel,
+}: {
+  eras: readonly EraRates[]
+  summary: EraSummary | null
+  zeroLabel: string
+}) {
+  const chartData: EraDatum[] = eras.map((era) => {
+    const datum: EraDatum = { label: eraLabel(era), era }
+    for (const range of GAP_RANGES) {
+      const lift = eraLift(era, range.key)
+      const bucket = era.ranges.find((r) => r.key === range.key)
+      if (lift === null || !bucket) continue
+      datum[range.key] = lift
+      datum[`${range.key}Error`] = interval95(bucket)
+    }
+    return datum
+  })
+  const values = chartData.flatMap((d) =>
+    GAP_RANGES.flatMap((range) => {
+      const v = d[range.key]
+      const e = d[`${range.key}Error`] ?? 0
+      return v === undefined ? [] : [v - e, v + e]
+    })
+  )
+  const { domain, ticks } = deviationScale(values)
+
+  return (
+    <div className="mt-4 min-w-0">
+      <div className="h-72 min-w-0">
+        {chartData.length === 0 ? (
+          <div className="mono flex h-full items-center justify-center" style={termDashedEmptyStyle}>
+            NO COMPLETE ERA YET: AN ERA NEEDS FIVE FINISHED SEASONS
+          </div>
+        ) : (
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={chartData} margin={{ top: 12, right: 12, left: 0, bottom: 8 }} barGap={2}>
+              <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="var(--term-border)" />
+              <XAxis
+                dataKey="label"
+                tick={<TwoLineTick lines={(label) => [label.slice(0, 4), `\u2013${label.slice(-2)}`]} />}
+                tickLine={false}
+                axisLine={false}
+                interval={0}
+                height={36}
+              />
+              <YAxis
+                domain={domain}
+                ticks={ticks}
+                tickFormatter={(v: number) => signedNumber(v)}
+                tick={{ fontSize: 12, fill: "var(--term-text-muted)", fontFamily: MONO_FONT_STACK }}
+                tickLine={false}
+                axisLine={false}
+                width={40}
+              />
+              <Tooltip
+                isAnimationActive={false}
+                cursor={{ fill: "rgba(23,64,139,0.06)" }}
+                content={(props: TooltipContentProps) => <EraTooltip {...props} />}
+              />
+              {GAP_RANGES.map((range) => (
+                <Bar key={range.key} dataKey={range.key} maxBarSize={20} minPointSize={minBarSize} isAnimationActive={false}>
+                  {chartData.map((d) => (
+                    <Cell
+                      key={d.label}
+                      fill={deviationFill(d[range.key] ?? 0)}
+                      fillOpacity={RANGE_OPACITY[range.key]}
+                    />
+                  ))}
+                  <ErrorBar dataKey={`${range.key}Error`} isAnimationActive={false} width={3} stroke="var(--term-text)" strokeWidth={1} />
+                </Bar>
+              ))}
+              <ReferenceLine y={0} stroke="var(--term-text)" strokeWidth={1.5} />
+            </BarChart>
+          </ResponsiveContainer>
+        )}
+      </div>
+      <RangeKey />
+      <BaselineLegend zeroLabel={zeroLabel} />
+      {summary && (
+        <p className="mono m-0" style={{ fontSize: 11, letterSpacing: TRACK.sub, color: "var(--term-text-muted)", marginTop: SPACE.sm }}>
+          LARGE GAPS BEAT THEIR ERA&apos;S HOME RATE IN{" "}
+          <span style={{ fontWeight: 700, color: "var(--term-text)" }}>{summary.largeAboveCount} OF {summary.eraCount}</span> ERAS.
+          SMALL GAPS STAYED BETWEEN {signedNumber(summary.smallLiftMin)} AND {signedNumber(summary.smallLiftMax)} PP OF IT.
+          ONE ERA ALONE IS TOO FEW GAMES TO SETTLE IT, AS THE WHISKERS SHOW; THE REPEAT ACROSS ERAS IS THE READING.
+        </p>
       )}
     </div>
   )
 }
 
-type SeasonWinRateDatum = {
-  label: string
-  winPct: number
-  games: number
-  restedTeamWins: number
-  /** winPct − that season's own home baseline, in percentage points. */
-  deviation: number
-  /** That season's home win rate. Not a constant — see `toDeviation`. */
-  baselinePct: number
-}
-
-function SeasonWinRateTooltip({ active, payload }: TooltipContentProps) {
-  if (!active || !payload?.length) return null
-  const d = payload[0].payload as SeasonWinRateDatum
+/** Names the three fill strengths the era chart uses for size. */
+function RangeKey() {
   return (
-    <div style={termTooltip}>
-      <p style={{ color: "var(--term-text)", fontWeight: 700, letterSpacing: TRACK.sub }}>{d.label}</p>
-      <p style={{ marginTop: SPACE.xs, color: deviationText(d.deviation) }}>
-        <span style={{ fontWeight: 700 }}>{signedNumber(d.deviation)} PP</span> VS {d.baselinePct}% BASELINE
-      </p>
-      <p style={{ color: "var(--term-text-muted)", marginTop: SPACE.xs }}>WIN RATE: {d.winPct}%</p>
-      <p style={{ color: "var(--term-text-muted)", marginTop: SPACE.xs }}>
-        {d.restedTeamWins.toLocaleString()}{"\u00a0/\u00a0"}{d.games.toLocaleString()} (RESTED TEAM WON)
-      </p>
-      <p style={{ color: "var(--term-text-muted)", marginTop: SPACE.xs }}>
-        HOME TEAMS WON {d.baselinePct}% THAT SEASON
-      </p>
+    <div
+      className="mono mt-3 flex flex-wrap items-center gap-x-6 gap-y-2"
+      style={{ fontSize: 11, color: "var(--term-text-muted)", letterSpacing: TRACK.sub }}
+    >
+      {GAP_RANGES.map((range) => (
+        <span key={range.key} className="inline-flex items-center gap-2">
+          <span style={{ width: 12, height: 12, borderRadius: 2, background: "var(--term-blue)", opacity: RANGE_OPACITY[range.key] }} />
+          {range.label.toUpperCase()} {gapRangeSpan(range)}
+        </span>
+      ))}
+      <span>WHISKERS: 95% RANGE</span>
     </div>
   )
 }
 
-// ─── RA threshold toggle options ──────────────────────────────────
+/**
+ * The baseline itself, season by season. Every era bar above is measured against a home rate
+ * that ran from about 68% to about 54%; this shows that drift on its own, so a reader can see it
+ * is home court moving and not rest.
+ */
+function HomeCourtBySeasonChart({
+  seasonWinRates,
+  overallPct,
+}: {
+  seasonWinRates: AnalysisResponse["seasonWinRates"]
+  overallPct: number
+}) {
+  const chartData = seasonWinRates
+    .filter((s) => s.isComplete)
+    .map((s) => ({ label: s.season, homeWinPct: s.homeBaselinePct }))
+  const values = chartData.map((d) => d.homeWinPct)
+  const min = values.length ? Math.floor(Math.min(...values, overallPct) / 5) * 5 : 50
+  const max = values.length ? Math.ceil(Math.max(...values, overallPct) / 5) * 5 : 70
+  const ticks: number[] = []
+  for (let v = min; v <= max; v += 5) ticks.push(v)
 
-const RA_THRESHOLD_OPTIONS = [
-  { label: "Any gap", value: 0 },
-  { label: "RA ≥ 2", value: 2 },
-  { label: "RA ≥ 3", value: 3 },
-  { label: "RA ≥ 5", value: 5 },
-  { label: "RA ≥ 7", value: 7 },
-]
+  return (
+    <div className="mt-4 h-72 min-w-0">
+      {chartData.length === 0 ? (
+        <div className="mono flex h-full items-center justify-center" style={termDashedEmptyStyle}>
+          NO COMPLETE SEASON YET
+        </div>
+      ) : (
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart data={chartData} margin={{ top: 12, right: 12, left: 0, bottom: 8 }}>
+            <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="var(--term-border)" />
+            <XAxis
+              dataKey="label"
+              tick={{ fontSize: 11, fill: "var(--term-text-muted)", fontFamily: MONO_FONT_STACK }}
+              tickLine={false}
+              axisLine={false}
+              ticks={chartData.filter((_, i) => i % Math.max(1, Math.ceil((chartData.length - 1) / 4)) === 0 || i === chartData.length - 1).map((row) => row.label)}
+              minTickGap={16}
+              height={32}
+            />
+            <YAxis
+              domain={[min, max]}
+              ticks={ticks}
+              tickFormatter={(v: number) => `${v}%`}
+              tick={{ fontSize: 12, fill: "var(--term-text-muted)", fontFamily: MONO_FONT_STACK }}
+              tickLine={false}
+              axisLine={false}
+              width={44}
+            />
+            <Tooltip
+              isAnimationActive={false}
+              content={({ active, payload }: TooltipContentProps) => {
+                if (!active || !payload?.length) return null
+                const d = payload[0].payload as { label: string; homeWinPct: number }
+                return (
+                  <div style={termTooltip}>
+                    <p style={{ color: "var(--term-text)", fontWeight: 700, letterSpacing: TRACK.sub }}>{d.label}</p>
+                    <p style={{ color: "var(--term-text-muted)", marginTop: SPACE.xs }}>HOME TEAMS WON {d.homeWinPct}%</p>
+                  </div>
+                )
+              }}
+            />
+            <ReferenceLine y={overallPct} stroke="var(--term-hairline)" strokeDasharray="4 4" />
+            <Line dataKey="homeWinPct" stroke="var(--term-text)" strokeWidth={1.5} dot={false} isAnimationActive={false} />
+          </LineChart>
+        </ResponsiveContainer>
+      )}
+    </div>
+  )
+}
 
 /**
  * F2 (2026-08-29, ADR 0010 — build-to-decide): the headline pair as a dot plot instead of
@@ -441,201 +623,6 @@ function HeadlineDotPlot({
   )
 }
 
-function SeasonWinRateBySeasonChart({
-  seasonWinRates,
-}: {
-  seasonWinRates: AnalysisResponse["seasonWinRates"]
-}) {
-  // Each season against its OWN home baseline. A single zero line across 41 seasons would
-  // be wrong at both ends: home teams won 67.9% in 1987-88 and 54.3% in 2023-24, so a fixed
-  // line renders the 1980s as a huge rest effect and the 2020s as a collapse, when neither
-  // is about rest at all.
-  const chartData: SeasonWinRateDatum[] = seasonWinRates.map((s) => ({
-    label: s.season,
-    winPct: s.winPct,
-    games: s.games,
-    restedTeamWins: s.restedTeamWins,
-    deviation: toDeviation(s.winPct, s.homeBaselinePct),
-    baselinePct: s.homeBaselinePct,
-  }))
-  const { domain, ticks } = deviationScale(chartData.map((d) => d.deviation))
-
-  // F4 (2026-08-29, ADR 0010 — build-to-decide): the chart points at its own headline.
-  // One ringed season — the widest gap against its era's home court — and one derived
-  // caption; forty-one bars otherwise leave the reader to find the story alone. Derived
-  // from the data on every render, never typed, so it can never age.
-  const highlight = chartData.reduce<SeasonWinRateDatum | null>(
-    (top, d) => (top === null || Math.abs(d.deviation) > Math.abs(top.deviation) ? d : top),
-    null
-  )
-
-  return (
-    <div className="mt-4 min-w-0">
-      <div className="h-72 min-w-0">
-      {chartData.length === 0 ? (
-        <div
-          className="mono flex h-full items-center justify-center"
-          style={termDashedEmptyStyle}
-        >
-          NO SEASON-LEVEL DATA YET
-        </div>
-      ) : (
-        <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={chartData} margin={{ top: 12, right: 12, left: 0, bottom: 8 }}>
-            <CartesianGrid
-              vertical={false}
-              strokeDasharray="3 3"
-              stroke="var(--term-border)"
-            />
-            <XAxis
-              dataKey="label"
-              tick={{ fontSize: 11, fill: "var(--term-text-muted)", fontFamily: MONO_FONT_STACK }}
-              tickLine={false}
-              axisLine={false}
-              ticks={chartData.filter((_, i) => i % Math.max(1, Math.ceil((chartData.length - 1) / 5)) === 0 || i === chartData.length - 1).map((row) => row.label)}
-              minTickGap={16}
-              height={32}
-            />
-            <YAxis
-              domain={domain}
-              ticks={ticks}
-              tickFormatter={(v: number) => signedNumber(v)}
-              tick={{ fontSize: 12, fill: "var(--term-text-muted)", fontFamily: MONO_FONT_STACK }}
-              tickLine={false}
-              axisLine={false}
-              width={40}
-            />
-            <Tooltip
-              isAnimationActive={false}
-              cursor={{ fill: "rgba(23,64,139,0.06)" }}
-              content={(props: TooltipContentProps) => <SeasonWinRateTooltip {...props} />}
-            />
-            {/* No per-bar value label here, unlike the four-bar threshold chart: at ~40
-                seasons each bar is roughly 44px wide and the labels overlap into a smear.
-                Sample size and win rate stay available on hover. */}
-            <Bar dataKey="deviation" maxBarSize={48} minPointSize={minBarSize} isAnimationActive={false}>
-              {chartData.map((d) => (
-                <Cell key={d.label} fill={deviationFill(d.deviation)} />
-              ))}
-            </Bar>
-            {/* Declared after the bars so it draws on top. This is the zero axis, not a
-                decoration, so it is solid ink at full weight — the one rule on the chart
-                that is allowed to be assertive. */}
-            <ReferenceLine y={0} stroke="var(--term-text)" strokeWidth={1.5} />
-            {/* The one highlight (F4): a quiet ring, with its caption below the chart —
-                on-chart text among 41 bars would collide with its neighbours. */}
-            {highlight && (
-              <ReferenceDot
-                x={highlight.label}
-                y={highlight.deviation}
-                r={5}
-                fill="none"
-                stroke="var(--term-text)"
-                strokeWidth={1.5}
-              />
-            )}
-          </BarChart>
-        </ResponsiveContainer>
-      )}
-      </div>
-      {highlight && (
-        <p
-          className="mono m-0"
-          style={{
-            fontSize: 11,
-            letterSpacing: TRACK.sub,
-            color: "var(--term-text-muted)",
-            marginTop: SPACE.sm,
-          }}
-        >
-          ○ {highlight.label}: <span style={{ fontWeight: 700, color: deviationText(highlight.deviation) }}>{signedNumber(highlight.deviation)} PP</span>{" "}
-          VS ITS OWN {highlight.baselinePct}% HOME COURT · THE WIDEST GAP OF THE{" "}
-          {chartData.length} SEASONS SHOWN.
-        </p>
-      )}
-    </div>
-  )
-}
-
-/**
- * Own the season comparison from its threshold controls through the displayed claim.
- * The page supplies its canonical backtest; callers never prepare admitted rows or
- * combine request flags. Maturity always comes from that unfiltered population.
- *
- * A failed threshold read is not an empty measurement. Keep the failure local and let
- * the reader retry or select another threshold, without replacing the rest of the page.
- */
-function SeasonComparison({ backtest, zeroLabel }: { backtest: AnalysisResponse; zeroLabel: string }) {
-  const [seasonRaFilter, setSeasonRaFilter] = useState(0)
-  const { data: seasonData, error: seasonError, isLoading: seasonRateLoading, isValidating, mutate: retry } =
-    useSWR<AnalysisResponse>(
-      seasonRaFilter > 0 ? `/api/analysis?seasonMinRA=${seasonRaFilter}` : null,
-      apiFetcher,
-      { revalidateOnFocus: false, shouldRetryOnError: false }
-    )
-
-  const displayedSeasonRates = plottableSeasonRates(
-    seasonRaFilter > 0 ? (seasonData?.seasonWinRates ?? []) : backtest.seasonWinRates,
-    backtest.seasonWinRates
-  )
-
-  // Screenshot tooling measures this section through data-shot-anchor.
-  return (
-    <section aria-label="Win rate by season" style={termCardStyle} data-shot-anchor="win-rate-by-season">
-      <SectionDivider
-        label="WIN RATE BY SEASON"
-        descriptor="VS THAT SEASON'S HOME BASELINE"
-      />
-      <div className="mt-2 flex flex-wrap gap-2">
-        {RA_THRESHOLD_OPTIONS.map((opt) => {
-          const active = seasonRaFilter === opt.value
-          return (
-            <button
-              key={opt.value}
-              type="button"
-              aria-pressed={active}
-              onClick={() => setSeasonRaFilter(opt.value)}
-              className="fc-control-button mono"
-              style={{
-                // Solid ink when active, never the rested-pole teal: the pill selects a
-                // view of the chart, and only the marks inside it may wear a data pole.
-                background: active ? "var(--term-text)" : "var(--term-surface)",
-                color: active ? "var(--term-surface)" : "var(--term-text)",
-                border: `1px solid ${active ? "var(--term-text)" : "var(--term-border)"}`,
-                borderRadius: "var(--term-radius)",
-                padding: "4px 12px",
-                fontSize: 12,
-                letterSpacing: TRACK.sub,
-                fontWeight: 600,
-                cursor: "pointer",
-              }}
-            >
-              {opt.label.toUpperCase()}
-            </button>
-          )
-        })}
-      </div>
-
-      {seasonRateLoading || (seasonError && isValidating) ? (
-        <div className="mt-4 h-72" role="status">
-          <span className="sr-only">Loading season comparison</span>
-          <Skeleton className="h-full w-full bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)" }} />
-        </div>
-      ) : seasonError ? (
-        <div className="mt-4">
-          <MessageCard tone="error" title="FAILED TO LOAD SEASON COMPARISON" body={errMsg(seasonError)} />
-          <Button className="mt-3" variant="outline" size="sm" onClick={() => void retry().catch(() => undefined)}>
-            Retry season comparison
-          </Button>
-        </div>
-      ) : (
-        <SeasonWinRateBySeasonChart seasonWinRates={displayedSeasonRates} />
-      )}
-      <BaselineLegend zeroLabel={zeroLabel} />
-    </section>
-  )
-}
-
 // ─── Skeleton ─────────────────────────────────────────────────────
 
 function AnalysisSkeleton() {
@@ -663,12 +650,15 @@ function AnalysisSkeleton() {
 
 // ─── Explore Games constants ───────────────────────────────────────
 
-const RA_OPTIONS = [
-  { label: "All", value: 0 },
-  { label: "RA ≥ 2", value: 2 },
-  { label: "RA ≥ 3", value: 3 },
-  { label: "RA ≥ 5", value: 5 },
-  { label: "RA ≥ 7", value: 7 },
+const GAP_OPTIONS: { label: string; value: GapRangeKey | "" }[] = [
+  { label: `All gaps (${GAP_RANGES[0].min}+)`, value: "" },
+  ...GAP_RANGES.map((range) => ({ label: `${range.label} (${gapRangeSpan(range)})`, value: range.key })),
+]
+
+const SIDE_OPTIONS: { label: string; value: ExploreSide }[] = [
+  { label: "Home team", value: "home" },
+  { label: "Visitor", value: "away" },
+  { label: "Either team", value: "either" },
 ]
 
 const EXPLORE_SEASON_OPTIONS = [...NBA_SEASONS].reverse()
@@ -691,7 +681,7 @@ function ExploreGames({
 }) {
   const { state, send, results, total, loading, error, window: pages, hasFilters } =
     useExploreGames(drillSignal)
-  const { minRA: raFilter, team: teamFilter, season: seasonFilter, result: resultFilter, page } = state
+  const { gap: gapFilter, side: sideFilter, team: teamFilter, season: seasonFilter, result: resultFilter, page } = state
   const { totalPages, start, end } = pages
 
   const openDetail = useCallback((gameId: number) => send({ type: "DETAIL_OPENED", gameId }), [send])
@@ -707,8 +697,8 @@ function ExploreGames({
       />
       <SectionDivider label="EXPLORE GAMES" descriptor={`${total.toLocaleString()} TOTAL`} />
       <p className="mono mt-1" style={{ fontSize: 11, color: "var(--term-text-muted)", letterSpacing: TRACK.sub }}>
-          FILTER AND BROWSE INDIVIDUAL MATCHUPS · CLICK A ROW FOR DETAILS. BOTH VENUES: THE
-          ROWS INCLUDE RESTED VISITORS, WHICH THE RATES ABOVE LEAVE OUT.
+          FILTER AND BROWSE INDIVIDUAL MATCHUPS · CLICK A ROW FOR DETAILS. NEUTRAL-SITE GAMES ARE
+          LEFT OUT; SET RESTED TEAM TO VISITOR FOR THE GAMES THE RATES ABOVE DO NOT COUNT.
       </p>
 
       {/* Filters */}
@@ -720,17 +710,32 @@ function ExploreGames({
           onSeasonChange={(season) => send({ type: "SEASON_SELECTED", season })}
           options={[{ value: "", label: "All Seasons" }, ...EXPLORE_SEASON_OPTIONS.map(s => ({ value: s, label: s }))]}
         />
-        <label className="fc-filter-field" htmlFor="analysis-rest-filter">
-          <span className="fc-control-label">Rest advantage</span>
+        <label className="fc-filter-field" htmlFor="analysis-gap-filter">
+          <span className="fc-control-label">Rest gap</span>
           <select
-            id="analysis-rest-filter"
-            value={raFilter}
-            onChange={(e) => send({ type: "MIN_RA_SELECTED", minRA: Number(e.target.value) })}
+            id="analysis-gap-filter"
+            value={gapFilter}
+            onChange={(e) => send({ type: "GAP_SELECTED", gap: e.target.value as GapRangeKey | "" })}
             className={EXPLORE_SELECT_CLASS}
             style={exploreSelectStyle}
-            aria-label="Rest advantage filter"
+            aria-label="Rest gap filter"
           >
-            {RA_OPTIONS.map((o) => (
+            {GAP_OPTIONS.map((o) => (
+              <option key={o.value} value={o.value}>{o.label}</option>
+            ))}
+          </select>
+        </label>
+        <label className="fc-filter-field" htmlFor="analysis-side-filter">
+          <span className="fc-control-label">Rested team</span>
+          <select
+            id="analysis-side-filter"
+            value={sideFilter}
+            onChange={(e) => send({ type: "SIDE_SELECTED", side: e.target.value as ExploreSide })}
+            className={EXPLORE_SELECT_CLASS}
+            style={exploreSelectStyle}
+            aria-label="Rested team filter"
+          >
+            {SIDE_OPTIONS.map((o) => (
               <option key={o.value} value={o.value}>{o.label}</option>
             ))}
           </select>
@@ -978,9 +983,8 @@ export function AnalysisContent({ asOf }: { asOf?: DataAsOf | null }) {
   const handleBarClick = useCallback(
     (datum: unknown) => {
       const d = datum as WinRateDatum
-      const threshold = d.threshold ?? 0
       drillTokenRef.current += 1
-      setDrillSignal({ threshold, token: drillTokenRef.current })
+      setDrillSignal({ gap: d.range, token: drillTokenRef.current })
       setTimeout(() => {
         exploreRef.current?.scrollIntoView({
           behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth",
@@ -1005,15 +1009,22 @@ export function AnalysisContent({ asOf }: { asOf?: DataAsOf | null }) {
   }
 
   const homeBaseline = data.venueBaseline.homeWinPct
-  const barData: WinRateDatum[] = data.thresholds.map((t) => ({
-    label: `RA ≥ ${t.threshold}`,
-    winPct: t.winPct,
-    games: t.games,
-    threshold: t.threshold,
-    deviation: toDeviation(t.winPct, homeBaseline),
-    baselinePct: homeBaseline,
-  }))
-  const thresholdScale = deviationScale(barData.map((d) => d.deviation))
+  const barData: WinRateDatum[] = data.gapRanges
+    .filter((r) => r.games > 0)
+    .map((r) => {
+      const range = gapRangeByKey(r.key)
+      return {
+        label: range.label,
+        span: gapRangeSpan(range),
+        winPct: r.winPct,
+        games: r.games,
+        range: r.key,
+        error: interval95(r),
+        deviation: toDeviation(r.winPct, homeBaseline),
+        baselinePct: homeBaseline,
+      }
+    })
+  const rangeScale = deviationScale(barData.flatMap((d) => [d.deviation - d.error, d.deviation + d.error]))
 
   const winRateTooltipRenderer = (props: TooltipContentProps) => (
     <WinRateTooltip {...props} />
@@ -1064,7 +1075,7 @@ export function AnalysisContent({ asOf }: { asOf?: DataAsOf | null }) {
         <SectionDivider label="THE HEADLINE, AS DISTANCE FROM HOME COURT" />
         <div className="mt-4">
           <HeadlineDotPlot
-            calledLabel="RESTED TEAM AT HOME · WON"
+            calledLabel="HOME TEAM MORE RESTED · WON"
             calledPct={claims.tiles[0].winPct}
             declinedPct={claims.declinedHalf.homeWinPct}
             baselinePct={homeBaseline}
@@ -1103,11 +1114,12 @@ export function AnalysisContent({ asOf }: { asOf?: DataAsOf | null }) {
         </p>
       </div>
 
-      {/* Bar chart — win rate by threshold */}
+      {/* Win rate by gap size. Three disjoint ranges, so each bar is its own games and a click
+          opens exactly those (D-102); the whiskers say how far each rate could move by chance. */}
       <div style={termCardStyle}>
         <SectionDivider
-          label="WIN RATE BY RA THRESHOLD · RESTED TEAM AT HOME"
-          descriptor="CLICK A BAR TO EXPLORE"
+          label="DOES A BIGGER GAP WIN MORE? · HOME TEAM MORE RESTED"
+          descriptor="CLICK A BAR TO SEE ITS GAMES"
         />
         <div className="mt-2 h-72">
           <ResponsiveContainer width="100%" height="100%">
@@ -1119,13 +1131,22 @@ export function AnalysisContent({ asOf }: { asOf?: DataAsOf | null }) {
               />
               <XAxis
                 dataKey="label"
-                tick={{ fontSize: 12, fill: "var(--term-text-muted)", fontFamily: MONO_FONT_STACK }}
+                tick={
+                  <TwoLineTick
+                    lines={(label) => {
+                      const d = barData.find((row) => row.label === label)
+                      return d ? [`${label.toUpperCase()} ${d.span}`, `n=${d.games.toLocaleString()}`] : [label, ""]
+                    }}
+                  />
+                }
                 tickLine={false}
                 axisLine={false}
+                interval={0}
+                height={36}
               />
               <YAxis
-                domain={thresholdScale.domain}
-                ticks={thresholdScale.ticks}
+                domain={rangeScale.domain}
+                ticks={rangeScale.ticks}
                 tickFormatter={(v: number) => signedNumber(v)}
                 tick={{ fontSize: 12, fill: "var(--term-text-muted)", fontFamily: MONO_FONT_STACK }}
                 tickLine={false}
@@ -1137,9 +1158,6 @@ export function AnalysisContent({ asOf }: { asOf?: DataAsOf | null }) {
                 cursor={{ fill: "rgba(23,64,139,0.06)" }}
                 content={winRateTooltipRenderer}
               />
-              {/* Deviation columns from zero = the venue baseline. `position="top"` puts the
-                  label above the cap for a positive bar and below the foot for a
-                  negative one, so it never lands inside the mark. */}
               <Bar
                 dataKey="deviation"
                 maxBarSize={72}
@@ -1151,14 +1169,7 @@ export function AnalysisContent({ asOf }: { asOf?: DataAsOf | null }) {
                 {barData.map((d) => (
                   <Cell key={d.label} fill={deviationFill(d.deviation)} />
                 ))}
-                <LabelList
-                  dataKey="games"
-                  position="top"
-                  formatter={(v: string | number | boolean | null | undefined) =>
-                    typeof v === "number" ? `n=${v.toLocaleString()}` : ""
-                  }
-                  style={{ fontSize: "11px", fill: "var(--term-text-muted)", fontFamily: MONO_FONT_STACK }}
-                />
+                <ErrorBar dataKey="error" isAnimationActive={false} width={8} stroke="var(--term-text)" strokeWidth={1.5} />
               </Bar>
               {/* Declared after the bars so it draws on top. Solid ink at full weight:
                   this is the zero axis, not an annotation laid over the plot. */}
@@ -1166,20 +1177,30 @@ export function AnalysisContent({ asOf }: { asOf?: DataAsOf | null }) {
             </BarChart>
           </ResponsiveContainer>
         </div>
-        <BaselineLegend zeroLabel={claims.thresholdZeroLabel} />
+        <BaselineLegend zeroLabel={claims.rangeZeroLabel} />
       </div>
 
-      {/* The card that argued this rule in full used to sit here. Every clause of it was
-          already in `/behind-the-data/rest-advantage`, near-verbatim, alongside a
-          counterfactual this page never carried — so it was thirty lines of duplication
-          arguing a caveat on the page whose subject is the result. The figure it published
-          is still live, in the stat tile above; the argument is one click away under the
-          method link. */}
+      <div style={termCardStyle}>
+        <SectionDivider
+          label="DOES THE LARGE-GAP EDGE HOLD IN EVERY ERA?"
+          descriptor="FIVE SEASONS PER BAR GROUP"
+        />
+        <EraChart eras={data.eras} summary={claims.eraSummary} zeroLabel={claims.eraZeroLabel} />
+      </div>
 
-      <SeasonComparison backtest={data} zeroLabel={claims.seasonZeroLabel} />
+      <div style={termCardStyle}>
+        <SectionDivider
+          label="HOW MUCH DID HOME COURT ITSELF MOVE?"
+          descriptor="HOME WIN RATE BY SEASON, ALL GAMES"
+        />
+        <HomeCourtBySeasonChart seasonWinRates={data.seasonWinRates} overallPct={homeBaseline} />
+        <p className="mono m-0 mt-3" style={{ fontSize: 11, letterSpacing: TRACK.sub, color: "var(--term-text-muted)" }}>
+          DASHED LINE: {homeBaseline}% ACROSS EVERY SEASON. EACH ERA ABOVE IS READ AGAINST ITS OWN RATE, NOT THIS ONE.
+        </p>
+      </div>
 
       {/* Key insight callout. Both comparisons in this paragraph — whether a bigger gap is
-          worth more, and whether the gain keeps climbing past RA ≥ 5 — are read off
+          worth more, and whether each range clears the noise — are read off
           `claims.reading`, never written as fixed prose over live figures. That is what this
           paragraph got wrong twice; see `ReadingClaim` in `@/lib/analysis-claims`. */}
       {claims.reading && (
@@ -1207,26 +1228,20 @@ export function AnalysisContent({ asOf }: { asOf?: DataAsOf | null }) {
               {signedNumber(claims.reading.overallLift)}
             </span>{" "}
             percentage points above that baseline. This is an association, not a causal estimate.{" "}
-            {WIDER_GAP_CLAUSE[claims.reading.ra5.relationToAnyGap]} at{" "}
-            <span className="whitespace-nowrap font-semibold text-[var(--term-text)]">
-              RA ≥ {claims.reading.ra5.threshold}
-            </span>{" "}
-            the rested team wins{" "}
-            <span className="mono font-bold" style={{ color: "var(--term-blue-text)" }}>{claims.reading.ra5.winPct}%</span>,{" "}
-            <span className="mono font-bold" style={{ color: "var(--term-blue-text)" }}>
-              {signedNumber(claims.reading.ra5.lift)}
-            </span>{" "}
-            over baseline across{" "}
-            <span className="mono tabular-nums">{claims.reading.ra5.games.toLocaleString()}</span> games.
-            {claims.reading.beyond && (
-              <>
-                {" "}{BEYOND_CLAUSE[claims.reading.beyond.relation].lead}{" "}
-                <span className="whitespace-nowrap">RA ≥ {claims.reading.beyond.threshold}</span> sits at{" "}
-                <span className="mono tabular-nums">{claims.reading.beyond.winPct}%</span> on{" "}
-                <span className="mono tabular-nums">{claims.reading.beyond.games.toLocaleString()}</span> games,
-                {" "}{BEYOND_CLAUSE[claims.reading.beyond.relation].tail}
-              </>
-            )}
+            By gap size,{" "}
+            {claims.reading.ranges.map((r, index) => (
+              <span key={r.key}>
+                {index > 0 && (index === claims.reading!.ranges.length - 1 ? ", and " : ", ")}
+                <span className="whitespace-nowrap font-semibold text-[var(--term-text)]">
+                  {r.name} gaps ({r.span})
+                </span>{" "}
+                win <span className="mono font-bold" style={{ color: "var(--term-blue-text)" }}>{r.winPct}%</span> on{" "}
+                <span className="mono tabular-nums">{r.games.toLocaleString()}</span> games,{" "}
+                <span className="mono font-bold" style={{ color: "var(--term-blue-text)" }}>{signedNumber(r.lift)}</span>
+                {r.withinNoise ? " points, within the noise" : " points"}
+              </span>
+            ))}
+            .{claims.reading.largeVsSmall && <> {RANGE_RELATION_CLAUSE[claims.reading.largeVsSmall]}</>}
           </p>
         </div>
       )}
