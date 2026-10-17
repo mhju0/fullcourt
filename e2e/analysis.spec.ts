@@ -19,7 +19,7 @@ test.describe("Analysis page", () => {
     await expect(page.getByText(/^GAP 0\.5 OR MORE · [\d,]+ GAMES$/)).toBeVisible();
     await expect(page.getByText(/ANY GAP/)).toHaveCount(0);
     // Two tiles, not three: the gap-size chart below carries the other ranges.
-    await expect(page.locator("main").getByText(/^HOME TEAM MORE RESTED/)).toHaveCount(2);
+    await expect(page.locator("main").getByText(/^HOME TEAM MORE RESTED( · LARGE GAP)?$/)).toHaveCount(2);
 
     // The excluded half, which must never leave the page: without it the headline sits alone
     // with no sign that every rested-visitor game was set aside to produce it. It is a sentence rather
@@ -65,7 +65,7 @@ test.describe("Analysis page", () => {
     await expect(range).toContainText("SHOWING 21–40", { timeout: 15_000 });
 
     // Any filter change returns to page 1 — the old page indexes a different set.
-    await page.getByLabel("Team filter").selectOption("BOS");
+    await page.getByLabel("Team filter", { exact: true }).selectOption("BOS");
     await expect(range).toContainText("SHOWING 1–20", { timeout: 15_000 });
     await expect(page.getByRole("button", { name: /Open details:/ }).first()).toHaveAttribute(
       "aria-label",
@@ -77,12 +77,12 @@ test.describe("Analysis page", () => {
     await expect(clear).toBeVisible();
     await clear.click();
     await expect(clear).toBeHidden();
-    await expect(page.getByLabel("Team filter")).toHaveValue("");
+    await expect(page.getByLabel("Team filter", { exact: true })).toHaveValue("");
   });
 
   test("a relocated franchise's option names the code its old rows print", async ({ page }) => {
     await page.goto("/analysis");
-    const filter = page.getByLabel("Team filter");
+    const filter = page.getByLabel("Team filter", { exact: true });
     await expect(filter.locator("option[value=OKC]")).toHaveText("OKC (incl. SEA)");
     await expect(filter.locator("option[value=BOS]")).toHaveText("BOS");
   });

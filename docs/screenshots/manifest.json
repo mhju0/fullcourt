@@ -1,26 +1,23 @@
 {
   "games": {
-    "source": "local production build",
-    "commit": "866c586b9ff9f06a47663ffb9242959a911c2f04",
-    "route": "/games?season=2025-26&date=2026-04-12&view=deep",
-    "width": 1440,
-    "height": 900,
-    "capturedAt": "2026-09-08T16:41:37.247099+00:00"
+    "source": "https://fullcourt.fyi",
+    "route": "/games?season=2024-25&date=2024-12-02",
+    "width": 1280,
+    "height": 1205,
+    "capturedAt": "2026-10-17T06:38:44.427Z"
   },
   "shooting": {
-    "source": "local production build",
-    "commit": "866c586b9ff9f06a47663ffb9242959a911c2f04",
+    "source": "https://fullcourt.fyi",
     "route": "/shooting",
-    "width": 1440,
-    "height": 900,
-    "capturedAt": "2026-09-08T16:41:38.912079+00:00"
+    "width": 1280,
+    "height": 1447,
+    "capturedAt": "2026-10-17T06:38:16.134Z"
   },
   "officiating": {
-    "source": "local production build",
-    "commit": "866c586b9ff9f06a47663ffb9242959a911c2f04",
+    "source": "https://fullcourt.fyi",
     "route": "/officiating",
-    "width": 1440,
-    "height": 900,
-    "capturedAt": "2026-09-08T16:41:37.708158+00:00"
+    "width": 1280,
+    "height": 1427,
+    "capturedAt": "2026-10-17T06:38:17.435Z"
   }
 }

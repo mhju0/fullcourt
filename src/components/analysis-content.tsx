@@ -369,7 +369,7 @@ function EraChart({
                       fillOpacity={RANGE_OPACITY[range.key]}
                     />
                   ))}
-                  <ErrorBar dataKey={`${range.key}Error`} isAnimationActive={false} width={3} stroke="var(--term-text)" strokeWidth={1} />
+                  <ErrorBar dataKey={`${range.key}Error`} isAnimationActive={false} pointerEvents="none" width={3} stroke="var(--term-text)" strokeWidth={1} />
                 </Bar>
               ))}
               <ReferenceLine y={0} stroke="var(--term-text)" strokeWidth={1.5} />
@@ -1176,7 +1176,8 @@ export function AnalysisContent({ asOf }: { asOf?: DataAsOf | null }) {
                 {barData.map((d) => (
                   <Cell key={d.label} fill={deviationFill(d.deviation)} />
                 ))}
-                <ErrorBar dataKey="error" isAnimationActive={false} width={8} stroke="var(--term-text)" strokeWidth={1.5} />
+                {/* The whisker sits over the bar's middle; a click on it still has to open the bar's games. */}
+                <ErrorBar dataKey="error" isAnimationActive={false} pointerEvents="none" width={8} stroke="var(--term-text)" strokeWidth={1.5} />
               </Bar>
               {/* Declared after the bars so it draws on top. Solid ink at full weight:
                   this is the zero axis, not an annotation laid over the plot. */}

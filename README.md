@@ -52,10 +52,10 @@ published results and preserve selected views in shareable links.
 
 ## Screenshots
 
-Captured from a production build; [capture provenance](docs/screenshots/manifest.json).
+Captured from [fullcourt.fyi](https://fullcourt.fyi) on 2026-10-17; [capture provenance](docs/screenshots/manifest.json).
 Live pages carry the latest data.
 
-<img src="docs/screenshots/games.png" alt="Games board with season and date controls above the matchup table." width="900" />
+<img src="docs/screenshots/games.png" alt="Games board for December 2, 2024: season and date controls above four matchups, two marked MEDIUM REST EDGE and one LARGE REST EDGE." width="900" />
 
 <img src="docs/screenshots/shooting.png" alt="Compact player shooting table with both rest splits, attempt counts, and signed difference cells." width="900" />
 
