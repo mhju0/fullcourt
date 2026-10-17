@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 const base = process.env.SCREENSHOT_BASE_URL ?? "http://localhost:3000";
 const out = fileURLToPath(new URL("../docs/screenshots/", import.meta.url));
 const pages = [
-  { file: "games", route: "/games?season=2024-25&date=2024-12-25", anchor: '.fc-game-row >> nth=1' },
+  { file: "games", route: "/games?season=2024-25&date=2024-12-02", anchor: '.fc-game-row >> nth=3' },
   { file: "shooting", route: "/shooting", anchor: '[data-testid="player-row"] >> nth=14' },
   { file: "officiating", route: "/officiating", anchor: 'section[aria-labelledby="review-title"] summary >> nth=2' },
 ];
