@@ -169,12 +169,12 @@ describe("computeScheduleDisparity — league figures", () => {
     expect(result.league.delta).toBe(2);
   });
 
-  it("counts games with a fatigue edge at the app's 0.5 call threshold, and big edges at 1.5", () => {
+  it("counts games with a fatigue edge at the app's 0.5 call threshold, and big edges at 3", () => {
     const { result } = teamsById();
 
-    // G3's gap is 3.0 and G4's is 2.0 — both are calls, both are big.
+    // G3's gap is 3.0 and G4's is 2.0: both are calls, only G3 is big.
     expect(result.league.gamesWithAnyEdge).toBe(2);
-    expect(result.league.gamesWithLargeEdge).toBe(2);
+    expect(result.league.gamesWithLargeEdge).toBe(1);
   });
 
   it("reports games scheduled per team, including uneven schedules", () => {
@@ -247,27 +247,28 @@ describe("computeScheduleDisparity — edge games (ratified 2026-07-29)", () => 
     expect(byId.get(3)!.netEdgeGames).toBe(-1);
   });
 
-  it("tiers big edges at 1.5 in both directions", () => {
+  it("tiers big edges at 3 in both directions", () => {
     const { byId } = teamsById();
 
     expect(byId.get(2)!.bigFavorableGames).toBe(1); // G3, +3.0
-    expect(byId.get(2)!.bigUnfavorableGames).toBe(1); // G4, −2.0
-    expect(byId.get(1)!.bigFavorableGames).toBe(1); // G4, +2.0
+    expect(byId.get(2)!.bigUnfavorableGames).toBe(0); // G4, −2.0 is a call, not big
+    expect(byId.get(1)!.bigFavorableGames).toBe(0); // G4, +2.0
     expect(byId.get(3)!.bigUnfavorableGames).toBe(1); // G3, −3.0
   });
 
-  it("treats exactly ±0.5 as a call and exactly ±1.5 as big, matching classifyRestAdvantage", () => {
+  it("treats exactly ±0.5 as a call and exactly ±3 as big, matching classifyRestAdvantage", () => {
     const games = [
       game("2024-01-01", 1, 2), // openers, uncounted
       game("2024-01-03", 1, 2, { homeFatigueScore: "1.0", awayFatigueScore: "1.5" }), // +0.5 home
-      game("2024-01-05", 2, 1, { homeFatigueScore: "3.0", awayFatigueScore: "1.5" }), // +1.5 away
+      game("2024-01-05", 2, 1, { homeFatigueScore: "4.5", awayFatigueScore: "1.5" }), // +3.0 away
+      game("2024-01-07", 2, 1, { homeFatigueScore: "4.49", awayFatigueScore: "1.5" }), // +2.99 away
     ];
     const { teams } = computeScheduleDisparity("2023-24", games);
     const t1 = teams.find((t) => t.teamId === 1)!;
 
-    expect(t1.favorableGames).toBe(2); // both games are calls for T1
-    expect(t1.bigFavorableGames).toBe(1); // only the second is big
-    expect(t1.netEdgeGames).toBe(2);
+    expect(t1.favorableGames).toBe(3); // every game is a call for T1
+    expect(t1.bigFavorableGames).toBe(1); // only the exact 3.0 is big; 2.99 is still a small gap
+    expect(t1.netEdgeGames).toBe(3);
   });
 
   it("reports nothing measured as null, not as a schedule that favoured nobody", () => {

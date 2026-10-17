@@ -14,7 +14,7 @@ FullCourt studies NBA schedule conditions and historical results. Use these term
 
 **Neutral/no-call band**: An absolute rest advantage below `0.5`. The gap is compared at the fatigue scores' two decimals (`restAdvantageDifferential`, D-87), so a gap of 0.50 is a call and 0.49 is not. The site prints both cut to one decimal (0.5 and 0.4, D-98), which keeps the printed figure on the same side of 0.5. This band is unrelated to a neutral-site venue.
 
-**Rest edge size**: The size of an absolute rest advantage outside the neutral band: small from `0.5` to under `3`, medium from `3` to under `5`, large at `5` or more (D-101). A combined count of medium and large reads “3+ edges.” The Games board marks medium and large only when the rested team is at home off a neutral site (`restEdgeSize`). Avoid “big edge”; /schedule still uses it for `1.5` until its own change lands. /analysis charts the three sizes and filters its explorer by them (D-102).
+**Rest edge size**: The size of an absolute rest advantage outside the neutral band: small from `0.5` to under `3`, medium from `3` to under `5`, large at `5` or more (D-101). A combined count of medium and large reads “3+ edges.” The Games board marks medium and large only when the rested team is at home off a neutral site (`restEdgeSize`). Avoid “big edge” outside /schedule, where it names the same 3+ games (D-103). /analysis charts the three sizes and filters its explorer by them (D-102).
 
 **Decidable**: A gap outside the neutral band, identifying a more-rested side. This is separate from whether the game is called or publishable.
 
@@ -46,7 +46,7 @@ FullCourt studies NBA schedule conditions and historical results. Use these term
 
 **Net fatigue edge**: The corresponding fatigue-score difference, reported per game. It includes travel and density as well as rest. A sum can obscure the size of typical matchup gaps.
 
-**Net edge games**: Favourable games minus unfavourable games, using the shared `0.5` fatigue-gap threshold. “Big edge” uses `1.5`. Both counts exclude games without previous-game context for both teams. Source: `schedule-disparity.ts`.
+**Net edge games**: Favourable games minus unfavourable games, using the shared `0.5` fatigue-gap threshold. “Big edge” uses `3`, the medium rest edge's floor, so it counts medium and large gaps (D-103). Both counts exclude games without previous-game context for both teams. Source: `schedule-disparity.ts`.
 
 **Schedule value / Worth**: A win-equivalent conversion of historical rest-state rates relative to venue baselines, summed over scored games including openers. `schedule-value.ts` supplies Schedule Edge's Worth column; `/api/season-report` also returns it per team, but the Season Report page does not render it. The displayed team's results do not enter the calculation. This is not actual wins added or a causal estimate. Show the per-game scale alongside season totals.
 

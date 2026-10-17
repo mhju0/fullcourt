@@ -11,7 +11,7 @@ import { formatDataAsOf } from "@/lib/data-as-of"
 import { apiFetcher } from "@/lib/fetcher"
 import { NEUTRAL_REST_ADVANTAGE_THRESHOLD } from "@/lib/rest-advantage-evidence"
 import { browsableSeasons } from "@/lib/nba-season"
-import { defaultRankableSeason, rankableSeasons } from "@/lib/schedule-disparity"
+import { BIG_EDGE_FATIGUE_THRESHOLD, defaultRankableSeason, rankableSeasons } from "@/lib/schedule-disparity"
 import {
   HOME_COURT_SPAN_PP,
   REST_SHARE_OF_HOME_COURT,
@@ -173,7 +173,7 @@ function ColumnGuide({ countedGames, scheduledGames }: { countedGames: number; s
           team has had more rest days.
         </p>
         <p>
-          {term("Big edge")}: the same net, counting only fatigue gaps of 1.5 or more.
+          {term("Big edge")}: the same net, counting only fatigue gaps of {BIG_EDGE_FATIGUE_THRESHOLD} or more, the medium and large rest edges.
         </p>
         <p>
           {term("Rest days")}: days off for the team minus its opponent, capped at four days off
@@ -310,7 +310,7 @@ export function ScheduleDisparityContent() {
             sub={
               data.league.gamesWithLargeEdge === null
                 ? "not measured until fatigue is scored"
-                : `${data.league.gamesWithLargeEdge.toLocaleString()} of them big (1.5+)`
+                : `${data.league.gamesWithLargeEdge.toLocaleString()} of them big (${BIG_EDGE_FATIGUE_THRESHOLD}+)`
             }
           />
         </div>

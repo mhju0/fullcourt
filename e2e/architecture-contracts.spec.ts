@@ -46,6 +46,13 @@ test("an entirely unmeasured season keeps net-rest-days ranking and units", asyn
   await expect(page.getByText("Teams without a fatigue measurement appear below the ranking with a dash.")).toHaveCount(0);
 });
 
+test("a big edge starts at the medium gap size, 3, as on every other tab", async ({ page }) => {
+  await openSchedule(page);
+  await page.getByText("Show full breakdown", { exact: true }).click();
+  await expect(page.getByText("2 of them big (3+)", { exact: true })).toBeVisible();
+  await expect(page.getByText(/counting only fatigue gaps of 3 or more, the medium and large rest edges/)).toBeAttached();
+});
+
 // Observe the real browser transition; the controller's focused tests own timing edge cases.
 async function observeTransitions(page: Page) {
   await page.addInitScript(() => {

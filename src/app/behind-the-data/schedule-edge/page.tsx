@@ -168,7 +168,7 @@ big edge      the ≥ ${BIG_EDGE_FATIGUE_THRESHOLD} subset of either side`}
             {
               label: "Counts as a big edge",
               value: `${BIG_EDGE_FATIGUE_THRESHOLD}`,
-              sub: "one tier above",
+              sub: "medium and large rest edges",
             },
             {
               label: "Days off capped at",
