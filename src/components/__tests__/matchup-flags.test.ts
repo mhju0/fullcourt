@@ -12,8 +12,7 @@ describe("inlineFlags", () => {
   });
 
   it("drops a second long chip that would push the strip past its width", () => {
-    // Measured 170px in a 104px strip before this rule.
-    expect(inlineFlags(["ALT TRIP", "TIME ZONES", "OT"], STRIP, MAX)).toEqual({ shown: ["ALT TRIP"], hidden: 2 });
+    expect(inlineFlags(["TIME ZONES", "4IN6", "OT"], STRIP, MAX)).toEqual({ shown: ["TIME ZONES"], hidden: 2 });
     expect(inlineFlags(["B2B", "TIME ZONES"], STRIP, MAX)).toEqual({ shown: ["B2B"], hidden: 1 });
   });
 

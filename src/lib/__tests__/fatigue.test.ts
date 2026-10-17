@@ -606,20 +606,19 @@ describe("freshness is continuous at the plateau", () => {
   });
 });
 
-describe("altitude carryover", () => {
+describe("altitude is tonight's venue only", () => {
   const denverVisit = {
     ...baseRecent({ date: "2025-01-09", isHome: false }),
     opponentLat: DEN_LAT,
     opponentLon: DEN_LON,
-    venueAltitude: true,
   };
 
-  it("charges a residual the night after visiting altitude", () => {
+  it("charges nothing the night after visiting altitude — the carryover was removed", () => {
     const result = fatigueHomeTeam("2025-01-10", [denverVisit]);
-    expect(result.altitudeMultiplier).toBe(1.06);
+    expect(result.altitudeMultiplier).toBe(1.0);
   });
 
-  it("does not stack: being at altitude tonight still charges the full 1.29", () => {
+  it("charges the full 1.29 when tonight's venue is at altitude", () => {
     const result = calculateFatigue({
       gameDate: "2025-01-10",
       recentGames: [denverVisit],
@@ -631,17 +630,6 @@ describe("altitude carryover", () => {
       currentGameIsHome: false,
     });
     expect(result.altitudeMultiplier).toBe(1.29);
-  });
-
-  it("gives Denver nothing for leaving home — descending is the easy direction", () => {
-    const denverHomeGame = {
-      ...baseRecent({ date: "2025-01-09", isHome: true }),
-      teamLat: DEN_LAT,
-      teamLon: DEN_LON,
-      venueAltitude: true,
-    };
-    const result = fatigueHomeTeam("2025-01-10", [denverHomeGame]);
-    expect(result.altitudeMultiplier).toBe(1.0);
   });
 });
 

@@ -467,7 +467,7 @@ restEdge   = awayScore − homeScore     (positive ⇒ the home side is fresher)
           { term: "Travel", meaning: "Great-circle distance between venues." },
           { term: "Road segment", meaning: "Consecutive road games beyond the initial allowance, plus body-clock displacement on the road." },
           { term: "Back-to-back", meaning: "A load multiplier based on time between tip-offs." },
-          { term: "Altitude", meaning: "Visiting altitude and next-night carryover." },
+          { term: "Altitude", meaning: "A visitor playing at altitude tonight." },
           { term: "Schedule density", meaning: "Games across five windows compared with a normal pace." },
           { term: "Freshness", meaning: "A discount for extended rest." },
           { term: "Overtime", meaning: "Additional load from overtime in the previous game." },
@@ -541,8 +541,7 @@ direction    = ${K.eastwardMultiplier} eastward, ${K.westwardMultiplier} westwar
               <strong>Road segments, altitude, density, extended rest and overtime.</strong> Consecutive road games add{" "}
               {K.roadStreakPerGame} each after the first {K.roadStreakFree} are free. Visiting
               altitude (Denver, Utah, and Mexico City at 7,350{"\u00a0"}ft) multiplies by{" "}
-              {K.altitudeMultiplier}, and the following night at normal elevation by{" "}
-              {K.altitudeCarryover}. Schedule density compares games played across five windows
+              {K.altitudeMultiplier}. Schedule density compares games played across five windows
               {/* No cap is quoted here on purpose. SCHEDULE_STRESS_MAX_MULT is 1.42, but each
                   of the five windows is clamped before the curve is applied, so the multiplier
                   cannot structurally exceed ~1.33 and tops out at 1.307 on real schedules.

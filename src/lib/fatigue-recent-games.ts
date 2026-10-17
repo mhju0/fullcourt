@@ -172,9 +172,6 @@ export function rowToRecentGame(row: PriorGameRow, teamId: number): RecentGame {
       row.homeScore != null && row.awayScore != null
         ? Math.abs(row.homeScore - row.awayScore)
         : null,
-    // The venue's altitude, not the opponent's: for a neutral game that is the neutral
-    // city (Mexico City sits above Denver), otherwise the host arena.
-    venueAltitude: neutral ? neutral.altitude : row.homeAltitude,
     ...venue,
   };
 }

@@ -161,8 +161,8 @@ a different complaint.
 
 Two things were deliberately not done alongside it. The multiplier *shape* is still wrong — thin
 air costs a busy team more than a rested one, where the effect measures flat — and fixing that
-means the additive rewrite this ADR declined. And `ALTITUDE_CARRYOVER_MULTIPLIER` stays at 1.06
-even though it was derived as half the old excess, because it measures at 0.003 points and the
+means the additive rewrite this ADR declined. And `ALTITUDE_CARRYOVER_MULTIPLIER` stays at 1.06 (removed
+2026-10-17, see the amendment below) even though it was derived as half the old excess, because it measures at 0.003 points and the
 unconstrained fit wanted it negative. Symmetry with how it was originally derived is not
 evidence.
 
@@ -382,6 +382,38 @@ What would change the answer is not a better cut of this data. It is knowing who
 travelled and how — arrival times, chartered legs, whether the team flew in the night before —
 none of which is in any source this project can reach. The ceiling this ADR describes still
 stands: **new information, not new mathematics.**
+
+## Amendment — 2026-10-17: the altitude carryover was removed
+
+`ALTITUDE_CARRYOVER_MULTIPLIER` (1.06, charged on the game after a road game at altitude) is
+gone, by owner decision. Three things made the case:
+
+- **It carried no signal.** The out-of-sample fit above put it at 0.003 points, and the
+  unconstrained fit wanted it negative.
+- **It did not do what it said.** Every written description said "the night after", but the
+  code charged the next game at any gap, so a team three days removed from Denver still paid it.
+- **Its flag confused readers.** The board printed ALT TRIP for it, a label for a term with no
+  measured effect.
+
+Removal was measured before it was decided, with the real `scoreGameFatigue` over the stored
+rows (all 100,990 reproduced exactly first). Nothing the site publishes moves at one decimal:
+
+| | with carryover | without |
+|---|---|---|
+| Headline (rested home team) | 27,400 games, 61.2% | 27,420 games, 61.2% |
+| Venue baseline | 59.9% | 59.9% |
+| Big rest edge (3+) | 10,532 games, 63.1% | 10,463 games, 63.1% |
+| Rested visitor | 42.3% | 42.3% |
+
+205 games change classification, and the largest single-season move is 2016-17, 59.1% → 59.5%.
+About 3,180 final rows and 73 projected 2026-27 rows carried the term and are recomputed;
+because the model reads prior games and never prior scores, no other row changes.
+
+This is not a refit. It deletes a term the evaluation already measured at zero, the same
+direction as the evidence and in no way tuned against the published rates. The visiting-altitude
+multiplier (1.29) stays: it does carry signal, and it never depended on the carryover. The
+harness drops `alt_carry`, since after the recompute it would be a column of zeros. Recorded as
+D-100.
 
 ## Related
 

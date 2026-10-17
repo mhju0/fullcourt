@@ -203,7 +203,6 @@ def main() -> None:
     )
     df["rest_recovery"] = df["rest_recovery"].fillna(0.0)
     df["alt_visit"] = (df["alt_mult"] > 1.10).astype(float)
-    df["alt_carry"] = ((df["alt_mult"] > 1.0) & (df["alt_mult"] <= 1.10)).astype(float)
     # Only meaningful on a back-to-back, and only where both tips are known; elsewhere the
     # deficit is zero, which is exactly the flat-1.38 fallback the model already uses.
     df["b2b_deficit"] = np.where(
@@ -228,7 +227,6 @@ def main() -> None:
         "b2b_deficit",
         "rest_recovery",
         "alt_visit",
-        "alt_carry",
         "prior_ot",
         "density_points",
         "is_3in4",

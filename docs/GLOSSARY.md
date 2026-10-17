@@ -8,7 +8,7 @@ FullCourt studies NBA schedule conditions and historical results. Use these term
 
 **Back-to-back**: A game on the calendar day after the team's previous game. When tip-off times are available, the model adjusts its multiplier using the hours between them. That interval includes the previous game itself; it is not a direct measurement of recovery time. Use the full term in explanatory prose; compact tables may use B2B.
 
-**Altitude**: The visiting-altitude multiplier for Denver, Utah, and Mexico City, plus a separate carryover multiplier the following night. Venue flags come from team or neutral-site records. The altitude multiplier changed from 1.15 to 1.29 on 2026-08-02 using final-margin evidence. The carryover multiplier did not change. A different fitting target does not make the shared historical sample independent. See [ADR 0006](adr/0006-fatigue-weights-were-fitted-and-the-model-was-not-changed.md).
+**Altitude**: The visiting-altitude multiplier for Denver, Utah, and Mexico City, charged only when tonight's venue is at altitude. Venue flags come from team or neutral-site records. The multiplier changed from 1.15 to 1.29 on 2026-08-02 using final-margin evidence. A smaller carryover for the game after a visit (ALT TRIP on the board) was removed on 2026-10-17 because it measured no effect. A different fitting target does not make the shared historical sample independent. See [ADR 0006](adr/0006-fatigue-weights-were-fitted-and-the-model-was-not-changed.md).
 
 **Rest advantage**: `away fatigue score − home fatigue score`. Positive favours the home team; negative favours the visitor. Avoid “fatigue advantage” and “rest score.”
 

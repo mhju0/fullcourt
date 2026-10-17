@@ -59,7 +59,6 @@ ALL_FATIGUE = [
     "d_b2b_deficit",
     "d_rest_recovery",
     "d_alt_visit",
-    "d_alt_carry",
     "d_prior_ot",
     "d_density_points",
     "d_is_3in4",

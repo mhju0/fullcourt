@@ -58,7 +58,7 @@ exceptions. See [Adding a surface](ADDING_A_SURFACE.md) and its source tests bef
 Games keeps previous/next-day stepping visible from the `sm` breakpoint; a phone steps by week
 (`WEEK_SHIFTED`), landing on the same weekday when it has games and otherwise on the week's
 first slate. Exact four-night and six-night counts use
-prior games, played or still scheduled, plus the selected game (D-82). Altitude venue and carryover labels are separate.
+prior games, played or still scheduled, plus the selected game (D-82). ALT means tonight's arena is at altitude; the ALT TRIP carryover flag was removed with its term (D-100).
 
 Games shares `season`, `date`, and expanded `game`; an old `view` parameter is ignored. Explicit historical selection wins
 over offseason defaults. Invalid dates fall back; valid no-game dates remain selected. A date

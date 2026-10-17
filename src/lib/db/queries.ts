@@ -916,10 +916,12 @@ function buildFatigueInfo(
 
   const g7 = gamesInLast7Days ?? 0;
 
-  const altitudePenalty = fatigue.altitudeMultiplier > 1.0;
+  // Tonight's venue only. The venue test also keeps rows stored before the carryover was
+  // removed (multiplier 1.06 the game after a visit) from raising the flag.
   const neutral = neutralVenueCoordinates(ctx.neutralCity);
   const atAltitude = neutral ? neutral.altitude : ctx.side === "away" && ctx.homeAltitudeFlag;
-  const altitudeArenaLabel = altitudePenalty && atAltitude
+  const altitudePenalty = fatigue.altitudeMultiplier > 1.0 && atAltitude;
+  const altitudeArenaLabel = altitudePenalty
     ? `${ctx.neutralCity ?? ctx.homeTeamCity} (altitude)`
     : null;
 

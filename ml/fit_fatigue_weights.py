@@ -58,7 +58,6 @@ FATIGUE_TERMS = [
     "d_rest_recovery",
     "d_home_stand_over2",
     "d_alt_visit",
-    "d_alt_carry",
     "d_prior_ot",
     "d_density_points",
     "d_body_clock_off",
