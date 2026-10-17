@@ -10,7 +10,7 @@ import {
   type RestAdvantageEvidenceSource,
 } from "@/lib/rest-advantage-display";
 import { NEUTRAL_REST_ADVANTAGE_THRESHOLD } from "@/lib/rest-advantage-evidence";
-import { BIG_REST_EDGE_THRESHOLD } from "@/components/matchup-parts";
+import { LARGE_REST_EDGE_THRESHOLD, MEDIUM_REST_EDGE_THRESHOLD } from "@/components/matchup-parts";
 import type { AnalysisResponse, RestAdvantage } from "@/types";
 
 describe("formatRestAdvantageDisplay", () => {
@@ -58,10 +58,10 @@ describe("formatRestAdvantageDisplay", () => {
   });
 
   // Every line is a tenth, so the cut figure sits on the same side of it as the raw value.
-  // Rounding fails this at 0.46 ("0.5" beside EVEN) and 2.96 ("3.0" with no BIG REST EDGE).
+  // Rounding fails this at 0.46 ("0.5" beside EVEN) and 2.96 ("3.0" with no MEDIUM REST EDGE).
   it("prints a figure at or above each line exactly when the value is", () => {
     const hundredths = Array.from({ length: 1001 }, (_, i) => i / 100);
-    for (const line of [NEUTRAL_REST_ADVANTAGE_THRESHOLD, BIG_REST_EDGE_THRESHOLD]) {
+    for (const line of [NEUTRAL_REST_ADVANTAGE_THRESHOLD, MEDIUM_REST_EDGE_THRESHOLD, LARGE_REST_EDGE_THRESHOLD]) {
       const disagree = hundredths.filter((v) => (Number(formatRestAdvantageValue(v)) >= line) !== (v >= line));
       expect(disagree).toEqual([]);
     }

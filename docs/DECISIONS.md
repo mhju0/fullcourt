@@ -1419,3 +1419,26 @@ longer says "after an altitude trip". The altitude flag now also requires tonigh
 altitude, so a row stored with the old 1.06 cannot raise it. The stored final and projected rows
 that carried the term are recomputed, and `ml/rest_split_facts.json` is regenerated from them.
 
+
+## D-101 — The Games board marks two sizes of rest edge, medium and large, and "big" leaves the board (2026-10-17)
+
+Amends D-96. The site used "big" for three different gaps: 3 on the Games board, 1.5 on
+/schedule and 7 on the home page. Measured on 2026-10-17 from the local feature export over the
+called games, the rested home team won 60.0% at 0.5–3 (home court, 59.9%), 61.9% at 3–5 (6,707
+games) and 65.3% at 5+ (3,756 games). A rested visitor won 42.0%, 43.8% and 44.7% over the same
+sizes, below an even game at every size. The owner chose one vocabulary for every tab: EVEN under
+0.5, small 0.5–3, medium 3–5, large 5+, with "3+ edges" for a combined count.
+
+On the Games tabs the BIG REST EDGE badge becomes MEDIUM REST EDGE (outlined) or LARGE REST EDGE
+(filled), still only for the rested team at home off a neutral site (`restEdgeSize`,
+`src/components/matchup-parts.tsx`; a test pins 3 and 5 to `BACKTEST_THRESHOLDS`). A small gap
+earns no mark, because it is home court and nothing more. The row's accent edge marks both sizes.
+The slate summary's BIG EDGES tile becomes 3+ EDGES and BY TEAM's BIG REST EDGES count becomes
+3+ REST EDGES, counting the same games as before; BY TEAM's row marker reads MEDIUM or LARGE. The
+board guide quotes each size's rate and game count, large from the 3+ … 5+ cumulative buckets
+`/api/analysis` already ships and medium as the 3+ bucket less the 5+ one (`restEdgeRates`), still
+without the venue baseline under D-96's exception. The board's last column minimum grew from 120
+to 160px so MEDIUM REST EDGE fits beside the chevron at the table's minimum width. D-96's refusal
+of a 5+ mark as too rare is reversed: it now marks the larger of two sizes rather than standing
+alone. The other tabs (/analysis, home page, /schedule, Behind the Data, /season) move to the same
+vocabulary in their own changes.

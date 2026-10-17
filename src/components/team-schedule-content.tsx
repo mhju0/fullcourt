@@ -3,7 +3,7 @@
 import { useMemo, type ReactNode } from "react"
 import useSWR from "swr"
 
-import { isBigRestEdge, TeamLogo } from "@/components/matchup-parts"
+import { restEdgeSize, TeamLogo } from "@/components/matchup-parts"
 import { SeasonSelector } from "@/components/season-selector"
 import { SummaryLine } from "@/components/summary-line"
 import { Bar } from "@/components/lazy-content"
@@ -59,23 +59,28 @@ const FIT = { width: "1%", whiteSpace: "nowrap" } as const
 function RestCell({ game }: { game: TeamScheduleGame }) {
   const side = sideOf(game)
   if (side === "unmeasured") return <span style={{ color: "var(--term-text-muted)" }}>—</span>
-  const big = isBigRestEdge(game.restAdvantage, game.neutralCity)
+  const size = restEdgeSize(game.restAdvantage, game.neutralCity)
   const value = formatRestAdvantageValue(game.restAdvantage?.differential ?? 0)
   return (
     <span className="inline-flex items-center justify-end gap-2">
-      {big && (
+      {/* The board's two sizes, filled for large and outlined for medium. Hidden on a phone,
+          as on the board, where the gap column has no room for it. */}
+      {size && (
         <span
+          className="hidden sm:inline"
           style={{
             fontSize: TYPE.micro,
             letterSpacing: TRACK.data,
             fontWeight: 700,
             padding: "2px 8px",
+            // Inset, so the outline adds no width and both sizes share one box.
+            boxShadow: "inset 0 0 0 1px var(--term-accent)",
             borderRadius: "var(--term-radius-sm)",
-            background: "var(--term-accent)",
-            color: "var(--term-surface)",
+            background: size === "large" ? "var(--term-accent)" : "transparent",
+            color: size === "large" ? "var(--term-surface)" : "var(--term-accent)",
           }}
         >
-          BIG
+          {size === "large" ? "LARGE" : "MEDIUM"}
         </span>
       )}
       {side === "even" ? (
@@ -153,13 +158,13 @@ export function TeamScheduleContent() {
   const gameNumber = (i: number) => i + 1 + (cup && i > cup.afterIndex ? cup.count : 0)
 
   const counts = useMemo(() => {
-    const tally = { team: 0, opponent: 0, even: 0, big: 0, measured: 0 }
+    const tally = { team: 0, opponent: 0, even: 0, marked: 0, measured: 0 }
     for (const g of games) {
       const side = sideOf(g)
       if (side === "unmeasured") continue
       tally.measured += 1
       tally[side] += 1
-      if (isBigRestEdge(g.restAdvantage, g.neutralCity)) tally.big += 1
+      if (restEdgeSize(g.restAdvantage, g.neutralCity)) tally.marked += 1
     }
     return tally
   }, [games])
@@ -306,7 +311,7 @@ export function TeamScheduleContent() {
               { label: `${teamAbbr} MORE RESTED`, value: counts.measured ? String(counts.team) : "—", tone: "var(--term-blue-text)" },
               { label: "OPPONENT MORE RESTED", value: counts.measured ? String(counts.opponent) : "—", tone: "var(--term-red-text)" },
               { label: "EVEN", value: counts.measured ? String(counts.even) : "—" },
-              { label: "BIG REST EDGES", value: counts.measured ? String(counts.big) : "—" },
+              { label: "3+ REST EDGES", value: counts.measured ? String(counts.marked) : "—" },
             ]}
           />
           <section aria-label={`${teamAbbr} schedule`} className="flex flex-col gap-2">

@@ -2,7 +2,7 @@
 
 import { ChevronDown } from "lucide-react";
 import { useBacktest } from "@/hooks/useBacktest";
-import { BIG_REST_EDGE_THRESHOLD, BigRestEdgeBadge, FLAG_MEANINGS } from "@/components/matchup-parts";
+import { FLAG_MEANINGS, LARGE_REST_EDGE_THRESHOLD, MEDIUM_REST_EDGE_THRESHOLD, RestEdgeBadge, restEdgeRates } from "@/components/matchup-parts";
 import { FlagChip } from "@/components/matchup-table";
 import { SPACE, TRACK, TYPE } from "@/lib/terminal-styles";
 
@@ -10,7 +10,7 @@ import { SPACE, TRACK, TYPE } from "@/lib/terminal-styles";
 export function BoardGuide({ className }: { className?: string }) {
   const { data } = useBacktest();
   // Read from the backtest, never typed here; while it loads or fails the sentence ends early.
-  const bucket = data?.thresholds.find((t) => t.threshold === BIG_REST_EDGE_THRESHOLD);
+  const rates = data ? restEdgeRates(data.thresholds) : null;
   return (
     <details className={className} style={{ fontSize: TYPE.body, color: "var(--term-text-muted)" }}>
       <summary className="fc-text-link inline-flex min-h-11 cursor-pointer list-none items-center underline [&::-webkit-details-marker]:hidden" style={{ gap: SPACE.xs }}>
@@ -32,9 +32,13 @@ export function BoardGuide({ className }: { className?: string }) {
         <GuideRow term="REST ADVANTAGE">
           The gap between the two scores, named for the fresher team. A gap under 0.5 reads EVEN.
         </GuideRow>
-        <GuideRow term={<BigRestEdgeBadge />}>
-          The home team is {BIG_REST_EDGE_THRESHOLD}+ points fresher.
-          {bucket && <> Home teams in that spot won {bucket.winPct.toFixed(1)}% of {bucket.games.toLocaleString("en-US")} games.</>}
+        <GuideRow term={<RestEdgeBadge size="medium" />}>
+          The home team is {MEDIUM_REST_EDGE_THRESHOLD} to {LARGE_REST_EDGE_THRESHOLD} points fresher.
+          {rates?.medium && <> Home teams in that spot won {rates.medium.winPct.toFixed(1)}% of {rates.medium.games.toLocaleString("en-US")} games.</>}
+        </GuideRow>
+        <GuideRow term={<RestEdgeBadge size="large" />}>
+          The home team is {LARGE_REST_EDGE_THRESHOLD}+ points fresher.
+          {rates?.large && <> Home teams in that spot won {rates.large.winPct.toFixed(1)}% of {rates.large.games.toLocaleString("en-US")} games.</>}
         </GuideRow>
       </dl>
     </details>
