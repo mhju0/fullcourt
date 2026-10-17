@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react"
 import useSWR from "swr"
 import { Skeleton } from "@/components/ui/skeleton"
 import { parseSeasonStartYear } from "@/lib/nba-season"
-import { zeroRestWorkload, type PlayerRestPayload } from "@/lib/player-rest"
+import { S, seasonLabel, zeroRestWorkload, type PlayerRestPayload } from "@/lib/player-rest"
 import { LEAD, termCardStyle, TYPE, WIDTH } from "@/lib/terminal-styles"
 import { DataTable } from "@/components/ui/data-table"
 
@@ -108,7 +108,11 @@ export function ZeroRestWorkload({ season }: { season: string }) {
           />
           {/* Stated, not hidden: this file is a hand-run export and will lag a live season. */}
           <p className="mono" style={{ fontSize: 11, color: "var(--term-text-muted)" }}>
-            PLAYER DATA THROUGH {stampLabel(data.generated)} · UPDATED SEPARATELY FROM THE FIGURES ABOVE
+            {/* `generated` is the export date, not the data's end: the data ends with the
+                latest season in the file. */}
+            EXPORTED {stampLabel(data.generated)} · PLAYER DATA THROUGH{" "}
+            {seasonLabel(Math.max(...data.seasons.map((row) => row[S.YEAR])))} · UPDATED
+            SEPARATELY FROM THE FIGURES ABOVE
           </p>
         </>
       )}

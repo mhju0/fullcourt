@@ -17,7 +17,7 @@ test.describe("Availability Cost page", () => {
     await expect(
       page.getByText(`${AVAILABILITY_EFFECTS.bestPlayerOut.points.toFixed(2)} points`)
     ).toBeVisible();
-    await expect(page.getByText("Missing a top player")).toBeVisible();
+    await expect(page.getByText("Missing the best player")).toBeVisible();
   });
 
   test("keeps the two disclaimers the numbers depend on", async ({ page }) => {

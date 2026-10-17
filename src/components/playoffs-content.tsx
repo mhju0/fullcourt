@@ -4,6 +4,7 @@ import { useCallback, useState, type KeyboardEvent } from "react"
 import useSWR from "swr"
 import { ChevronDown } from "lucide-react"
 import { SeasonSelector } from "@/components/season-selector"
+import { KeepTogether } from "@/components/ui/keep-together"
 import { Skeleton } from "@/components/ui/skeleton"
 import { cn } from "@/lib/utils"
 import { apiFetcher, errMsg } from "@/lib/fetcher"
@@ -132,8 +133,9 @@ function FeatureCell({ k, v }: { k: string; v: string }) {
   )
 }
 
-function formatFeature(v: number | null): string {
-  return v === null ? "—" : signedNumber(v, 2)
+/** Every feature but WIN% DIFF is a whole count; WIN% DIFF is stored 0–1 and shown in points. */
+function formatFeature(v: number | null, decimals = 0): string {
+  return v === null ? "—" : signedNumber(v, decimals)
 }
 
 function SeriesFeatureGrid({ series }: { series: PlayoffSeriesWithPredictions }) {
@@ -153,16 +155,16 @@ function SeriesFeatureGrid({ series }: { series: PlayoffSeriesWithPredictions })
           and its number. */}
       <div className="grid grid-cols-2 gap-x-6 gap-y-4 pt-1 sm:grid-cols-3 lg:grid-cols-5">
         <FeatureCell k="SEED DIFF" v={formatFeature(series.seedDiff)} />
-        <FeatureCell k="WIN% DIFF" v={formatFeature(series.winPctDiff)} />
+        <FeatureCell k="WIN% DIFF, PP" v={formatFeature(series.winPctDiff === null ? null : series.winPctDiff * 100, 1)} />
         <FeatureCell k="PRIOR GRIND DIFF" v={formatFeature(series.priorGrindDiff)} />
         <FeatureCell k="ENTRY REST DIFF" v={formatFeature(series.entryRestDiff)} />
         <FeatureCell k="H2H DIFF" v={formatFeature(series.h2hDiff)} />
       </div>
-      <p className="mono mt-1" style={{ fontSize: 10, color: "var(--term-text-muted)", letterSpacing: TRACK.sub, lineHeight: LEAD.label }}>
+      <p className="mono mt-1" style={{ fontSize: 10, color: "var(--term-text-muted)", letterSpacing: TRACK.sub, lineHeight: LEAD.label }}><KeepTogether>
         SIGN CONVENTION: POSITIVE FAVORS HOME-COURT ({series.homeCourtTeam.abbreviation}). ALL ROWS ARE
         (HOME-COURT − OPPONENT) EXCEPT PRIOR GRIND DIFF, WHICH IS (OPPONENT − HOME-COURT) SO THAT
         POSITIVE STILL MEANS THE SAME THING.
-      </p>
+      </KeepTogether></p>
     </div>
   )
 }

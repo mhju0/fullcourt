@@ -4,32 +4,37 @@ import { useState } from "react"
 import Image from "next/image"
 import { TRAVEL_LOOKBACK_DAYS } from "@/lib/fatigue"
 import { readableTextOn } from "@/lib/nba-team-colors"
-import { NEUTRAL_REST_ADVANTAGE_THRESHOLD } from "@/lib/rest-advantage-evidence"
+import { isCalledSide } from "@/lib/rest-advantage-evidence"
+import { formatRestAdvantageValue } from "@/lib/rest-advantage-display"
+import { formatDaysOff } from "@/lib/days-off"
 import { getTeamBranding, teamLogoUrl } from "@/lib/team-history"
 import { TRACK, TYPE } from "@/lib/terminal-styles"
 import type { FatigueInfo, GameResponse } from "@/types"
 
-// ─── Constants ───────────────────────────────────────────────────
-
-const HIGH_CONF_THRESHOLD = 2.0
-const MED_CONF_THRESHOLD = 1.0
-
-export type Confidence = "high" | "med" | "low" | "neutral" | "none"
+// ─── Big rest edge ───────────────────────────────────────────────
 
 /**
- * Confidence tiers sit ABOVE the canonical call threshold, never straddling it.
- * `classifyRestAdvantage` calls a game for a team at |differential| >= 0.5, so a
- * gap of e.g. 0.7 makes the rest-advantage cell print "BOS 0.7"; tiering that as
- * "neutral" made one row name a team and call the matchup neutral at once. Anything
- * the classifier calls is at least "low" — see the invariant test in __tests__.
+ * Where the rested home team's record steps up. Over every called game since 1985-86 it won about
+ * 60% at any gap from 0.5 to 3, flat, and 63.1% at 3 or more (D-96). The four-tier GAP SIZE
+ * ladder this replaced drew lines at 1 and 2 where the record does not move. One of the
+ * backtest's own thresholds, so the rate the board quotes for it is already published.
  */
-export function getConfidence(diff: number | null | undefined): Confidence {
-  if (diff === null || diff === undefined) return "none"
-  const abs = Math.abs(diff)
-  if (abs >= HIGH_CONF_THRESHOLD) return "high"
-  if (abs >= MED_CONF_THRESHOLD) return "med"
-  if (abs >= NEUTRAL_REST_ADVANTAGE_THRESHOLD) return "low"
-  return "neutral"
+export const BIG_REST_EDGE_THRESHOLD = 3
+
+/**
+ * A game the board marks: the home team is the fresher side by at least the threshold. Only the
+ * called side counts (`isCalledSide`): a rested visitor still loses most often, so marking one
+ * would put the loudest badge on the row beside a team that usually loses.
+ */
+export function isBigRestEdge(
+  restAdvantage: GameResponse["restAdvantage"],
+  neutralCity: string | null
+): boolean {
+  return (
+    restAdvantage !== null &&
+    isCalledSide(restAdvantage.advantageTeam, neutralCity !== null) &&
+    Math.abs(restAdvantage.differential) >= BIG_REST_EDGE_THRESHOLD
+  )
 }
 
 // ─── Team logo ───────────────────────────────────────────────────
@@ -88,54 +93,23 @@ export function TeamLogo({
   )
 }
 
-// ─── Confidence badge ────────────────────────────────────────────
+// ─── Big rest edge badge ─────────────────────────────────────────
 
-export function ConfidenceBadge({ confidence }: { confidence: Confidence }) {
-  if (confidence === "none") return null
-
-  const label =
-    confidence === "high"
-      ? "LARGE GAP"
-      : confidence === "med"
-        ? "MEDIUM GAP"
-        : confidence === "low"
-          ? "SMALL GAP"
-          : "NEUTRAL"
-
-  const baseStyle: React.CSSProperties = {
-    fontSize: "11px",
-    letterSpacing: TRACK.data,
-    padding: "4px 8px",
-    borderRadius: "var(--term-radius-sm)",
-    fontWeight: 700,
-  }
-
-  // The confidence ladder is loudness, not hue (Front Office): filled accent, then an
-  // ink outline, then a hairline outline. The data poles never appear here — a rose
-  // HIGH CONF badge beside a rose fatigue bar read as "fatigued wins", which is backwards.
-  if (confidence === "high") {
-    return (
-      <span className="mono inline-flex items-center" style={{ ...baseStyle, background: "var(--term-accent)", color: "var(--term-surface)" }}>
-        {label}
-      </span>
-    )
-  }
-  if (confidence === "med") {
-    return (
-      <span
-        className="mono inline-flex items-center"
-        style={{ ...baseStyle, background: "transparent", border: "1px solid var(--term-text-dim)", color: "var(--term-text-dim)" }}
-      >
-        {label}
-      </span>
-    )
-  }
+export function BigRestEdgeBadge() {
   return (
     <span
-      className="mono inline-flex items-center"
-      style={{ ...baseStyle, background: "transparent", border: "1px solid var(--term-neutral)", color: "var(--term-text-muted)" }}
+      className="mono inline-flex items-center whitespace-nowrap"
+      style={{
+        fontSize: "11px",
+        letterSpacing: TRACK.data,
+        padding: "4px 8px",
+        borderRadius: "var(--term-radius-sm)",
+        fontWeight: 700,
+        background: "var(--term-accent)",
+        color: "var(--term-surface)",
+      }}
     >
-      {label}
+      BIG REST EDGE
     </span>
   )
 }
@@ -210,9 +184,9 @@ export function GameStatusRow({
  * sit beside this and produce the prefixed single strip the retired card drew; it went with the
  * card on 2026-08-11, along with the strip itself.
  *
- * Altitude and jet lag are away-only by construction: they are what the *visiting* team carries
- * into the building. Overtime is scoped per team rather than pooled as one game-level flag — a
- * team that played an OT game yesterday is the one paying for it, and pooling could not say so.
+ * Every flag is scoped per team, home included. A listed host can carry altitude (a neutral
+ * site at elevation) and time zones (a neutral site abroad), so neither is away-only. Overtime is per team rather than one game-level flag: the team that
+ * played an OT game yesterday is the one paying for it.
  */
 export function teamGameFlags(game: GameResponse): { away: string[]; home: string[] } {
   const away: string[] = []
@@ -220,16 +194,27 @@ export function teamGameFlags(game: GameResponse): { away: string[]; home: strin
   if (game.awayFatigue?.isBackToBack) away.push("B2B")
   if (game.awayFatigue?.is3In4) away.push("3IN4")
   if (game.awayFatigue?.is4In6) away.push("4IN6")
-  if (game.awayFatigue?.altitudePenalty) away.push(game.awayFatigue.altitudeArenaLabel ? "ALT" : "ALT TRIP")
+  if (game.awayFatigue?.altitudePenalty) away.push("ALT")
   if (game.awayFatigue?.hasTimeZoneDisplacement) away.push("TIME ZONES")
   if (game.awayFatigue?.isOvertimePenalty) away.push("OT")
   if (game.homeFatigue?.isBackToBack) home.push("B2B")
   if (game.homeFatigue?.is3In4) home.push("3IN4")
   if (game.homeFatigue?.is4In6) home.push("4IN6")
-  if (game.homeFatigue?.altitudePenalty) home.push(game.homeFatigue.altitudeArenaLabel ? "ALT" : "ALT TRIP")
+  if (game.homeFatigue?.altitudePenalty) home.push("ALT")
+  if (game.homeFatigue?.hasTimeZoneDisplacement) home.push("TIME ZONES")
   if (game.homeFatigue?.isOvertimePenalty) home.push("OT")
   return { away, home }
 }
+
+/** What each flag chip means, in the words the board guide prints beside it. */
+export const FLAG_MEANINGS: Readonly<Record<string, string>> = Object.freeze({
+  B2B: "Played the night before",
+  "3IN4": "Third game in four nights",
+  "4IN6": "Fourth game in six nights",
+  ALT: "Tonight's arena is at altitude",
+  "TIME ZONES": "Traveled 2+ time zones from home; body clock not yet adjusted",
+  OT: "Last game went to overtime",
+})
 
 
 // ─── Expanded detail (kept, restyled) ────────────────────────────
@@ -268,6 +253,42 @@ function FatigueDetailRow({
       </span>
     </div>
   )
+}
+
+/**
+ * Rendered width of one flag chip at TYPE.micro mono: measured 2026-10-15 in Chrome at
+ * 10.0px + 6.6px per character ("B2B" 29.8, "TIME ZONES" 76.0, "+1" 23.2), with a 4px gap.
+ */
+const FLAG_CHIP_BASE_W = 10
+const FLAG_CHIP_CHAR_W = 6.6
+const FLAG_CHIP_GAP = 4
+
+function flagChipWidth(label: string): number {
+  return FLAG_CHIP_BASE_W + FLAG_CHIP_CHAR_W * label.length
+}
+
+/**
+ * The flags a line can show inline in a strip `stripWidth` wide, at most `maxInline`, keeping
+ * room for the `+N` chip that counts the rest. A fixed count overflowed: two long labels plus
+ * "+1" needed about 170px in a 104px strip.
+ */
+export function inlineFlags(
+  flags: string[],
+  stripWidth: number,
+  maxInline: number
+): { shown: string[]; hidden: number } {
+  const shown: string[] = []
+  let used = 0
+  for (const flag of flags) {
+    if (shown.length === maxInline) break
+    const next = used + (shown.length > 0 ? FLAG_CHIP_GAP : 0) + flagChipWidth(flag)
+    const remaining = flags.length - shown.length - 1
+    const overflow = remaining > 0 ? FLAG_CHIP_GAP + flagChipWidth(`+${remaining}`) : 0
+    if (next + overflow > stripWidth) break
+    shown.push(flag)
+    used = next
+  }
+  return { shown, hidden: flags.length - shown.length }
 }
 
 export function FatigueDetailColumn({
@@ -321,7 +342,7 @@ export function FatigueDetailColumn({
         v={Math.round(fatigue.travelDistanceMiles).toLocaleString()}
         highlight={travelHigh}
       />
-      <FatigueDetailRow k="DAYS REST" v={fatigue.daysRest === null ? "—" : `${fatigue.daysRest}D`} />
+      <FatigueDetailRow k="DAYS REST" v={formatDaysOff(fatigue.daysRest)} />
     </div>
   )
 }
@@ -362,7 +383,7 @@ export function RaBadge({
   }
   const isHomeAdv = restAdvantage.advantageTeam === "home"
   const abbr = isHomeAdv ? homeAbbr : awayAbbr
-  const diff = Math.abs(restAdvantage.differential).toFixed(1)
+  const diff = formatRestAdvantageValue(restAdvantage.differential)
   return (
     <span
       className="mono inline-flex items-center"

@@ -120,39 +120,14 @@ Open:
   no first-party frame. Not reproduced.
 - The footer notice size (12px) is not ruled on. A second backup copy off the Mac is not set up.
 
-Later on 2026-10-07: every page was measured at 360 and 390px on a production build. No page
-scrolls sideways and every table sits in a scroller. Four gaps were closed: the Home Court season
-table and Officiating's season strip and call-type row now use `ScrollCue`, the Schedule
-`WHAT THESE COLUMNS MEAN` disclosure is 44px tall, and the team label under a player on Shooting
-is 10px, not 9.6px. The two stale `behind-the-data.spec.ts` assertions follow the page. Two e2e
-tests (`games.spec.ts:294`, `navigation.spec.ts:54`) failed once in a full run and passed six of
-six alone; treat them as load-sensitive. Season Report, Analysis and Playoff Rest needed no change.
-
-Phone review round, 2026-10-07 (D-79): the Skim/Deep Dive toggle and the Games side rail are
-gone, matchups are in tip-off order (`slateOrder()`), the two line tokens are darker, Season
-Report and Officiating plays use bordered blocks with title bands, the fatigue chart is League
-fatigue by week, the column guide sits inside the breakdown, and Shooting by Rest is Player
-Shooting by Rest. Open: the ESPN tie-break is inferred from one day; Home Court inherits the
-section band and was checked by screenshot only; nothing here has been seen on a physical phone.
-
-Launch preparation, 2026-10-10 (D-80): the change freeze starts 2026-10-17 at 00:00 ET, three
-days before the first game (BOS at DET, 2026-10-20, 3:00 PM ET). A mixed slate was rehearsed on
-production with a mocked response (one final, one live, one upcoming): rows stayed one height
-on desktop and iPhone WebKit, with no page errors. Seventeen pages were loaded in iPhone WebKit:
-all 200, none scrolls sideways, no console errors.
-
-Game status, 2026-10-10 (D-81): the stale-LIVE risk above was larger than first written. GitHub
-starts the daily job two and a half to five hours late, so it lands mid-evening and would have
-frozen a score on about half the season's games. Resolved by storing finals only: a row reads
-LIVE from its tip time, then PENDING, then FINAL over the score. LIVE is a label with a still dot and no row tint, and the row's accessible name carries the state and score. `vercel.json` now holds
-twelve hourly cron entries (21:00 to 08:00 UTC) so finals land the same night, the Games board
-holds a game day until 6 AM ET, and EDGES AHEAD drops a game once it tips.
-
-Open: twelve cron entries on one path have not been deployed before; check the Vercel cron list
-after the first deploy and on opening night. A postponed game reads LIVE for three hours;
-recording postponements needs a new stored status. The daily job's lateness is unaddressed and
-only delays the fatigue refresh. Every state was tested with a mocked clock, none against a
-real slate.
+Condensed 2026-10-15 (entries of 2026-10-07 to 2026-10-10): every page measured at 360/390px
+with no sideways scroll; D-79 removed Skim/Deep Dive and the side rail and ordered matchups by
+tip-off; D-80 set the change freeze from 2026-10-17 00:00 ET; D-81 stores finals only, so a row
+reads LIVE, then PENDING, then FINAL, with twelve hourly cron entries (all twelve seen enabled
+on 2026-10-15). Still open: `games.spec.ts:294` and `navigation.spec.ts:54` are load-sensitive;
+the ESPN tie-break is inferred from one day; nothing has been seen on a physical phone; a
+postponed game reads LIVE for three hours (needs a stored status); the daily job's lateness is
+unaddressed; game status has been tested with a mocked clock, never a real slate.
 
 Season audit, 2026-10-11 (D-82): all 1,200 games of 2026-27 match ESPN and basketball-reference.
 Three faults fixed in code: the nightly job dropped unplayed prior games (upcoming fatigue read
@@ -193,16 +168,18 @@ Closeout: independent report review approved HTML SHA256 d93b936ae708037d272cf32
 
 Release preparation, 2026-10-14: the owner requested main integration of reviewed motion3058478 and the three audit documents. The release branch prepares that exact scope; recommendations F1–F9 remain unimplemented. Owner merge approval is recorded, while the credential-rotation gate awaits their response; no push, PR, merge or deployment has occurred in this preparation step. [Verified] Node22 lint/typecheck/build,1,148 unit tests and doc/diff checks pass for the prepared scope.
 
-CI/CD hardening,2026-10-15: owner approved F1–F7. [Verified] local secret-free browser/real-PG gates feed required verify; dependency SDK/proxy pins,21:17 schedule, safe stage/freshness estimates, blocked manual sources and maintenance monitoring implemented. Main strict/admin enforcement and Vercel blocking GitHub verify applied/read back; no production data writes.
-[Report](reports/2026-10-15-ci-cd-implementation.html) retains all28 launch statuses and owner instructions. Node22 gates/1157unit,15automation,24+42Python,12rendered,25PG pass; independent exact-candidate code review accepted4247072. No push/preview/merge/deploy: credential rotation unconfirmed. Next: owner confirms all credential locations, then exact-SHA preview and authorized release; scheduled/Dependabot/failed-promotion evidence follows. Broad UI suggestions and physical/opening-night checks remain open; D-80 freeze still applies. JOBKOREA queued separately.
-Prelaunch cron follow-up,2026-10-15: [Verified] all12 Vercel cron entries enabled and recent2XX observed in the prior read-only audit. Opening-night finals/rescore remain unobserved; no production writer was manually called.
+CI/CD and credential recovery, 2026-10-15 (condensed 2026-10-16): F1–F7 hardening shipped (secret-free browser and real-PG gates feed the required `verify`; strict admin enforcement on `main`). The owner rotated the database credential through a local hidden prompt; every consumer and production redeploy verified. PRs #127, #129 and #133 merged; the last two disable setup-node's implicit pnpm cache in the monitor and the provider probe. No production data writer was dispatched.
 
-Release hold,2026-10-15: owner requested push/merge, then explicitly answered “Not yet — keep release pending” for credential rotation. [Verified] main remains2d458df, no PR exists for fix/ci-cd-hardening, and code candidate7d0c054 is unchanged. No push/preview/merge/deploy performed. Next: owner rotates/updates all recorded credential consumers, then resume exact-SHA CI/preview and approved merge.
+Next 16.4.0, 2026-10-15: PR #134 (`0fbcb62`) moved `next` and `eslint-config-next` to 16.4.0 together with the dev-tooling group, superseding Dependabot #130/#132 (Dependabot ships them in separate PRs; either alone left lint red or the versions apart). `TransitionLink` now derives its season href instead of reassigning the prop (new `react-hooks/immutability` rule). [Verified] Node 22 gate, 1157 unit, 12 smoke, preview and production READY. Open: first scheduled run of the rewritten nightly at 21:17 UTC tonight is unobserved; this file is past ~200 lines and due for condensing.
 
-Credential recovery preparation,2026-10-15: owner requested agent-managed rotation and confirmed submitting Supabase reset. [Verified] old credential fails28P01; live health503. New credential propagation/redeploy remains pending owner hidden local input. Local gitignored updater has15 passing mocktests; original env/backup format, CLI identities and pre-reset CA-verified readonly connection checked. Backup reads original.env, no separate edit. Dashboard confirmsFree plan(item10); current quota usage unknown. Next: reviewed updater local prompt → saved consumers → current production credential-refresh deployment/health → authorized CI/preview/merge. No reset, saved-credential mutation, push or deployment performed by agent. All other unresolved checks persist.
+Days off + storyline names, 2026-10-15: PR #136 (D-86). `daysRest` is now full days off (b2b = 0, "0 days") via `src/lib/days-off.ts`; the model keeps `daysSinceLastGame`. The storyline uses season-correct nicknames with a verb on every clause; the player-shooting rested bucket is relabelled "2+ days off" (threshold unchanged; a true 3+ cut halves the effect and splits the age bands). [Verified] unit/typecheck/lint/build, smoke 12, games+audit e2e 32. Open: Schedule Edge "days off" label over a days-since count (owner's site-wide audit); `shooting.spec.ts` 4 local failures pre-date this PR; merge before the 10-17 freeze.
 
-Credential recovery verified,2026-10-15: owner completed hidden prompt. [Verified] new saved credential passes CA-verified readonlySELECT1; local.env0600/backup extraction match; all consumer commands succeeded and GitHub timestamp updated. Existing accepted production redeploy5vzGqHuDr7gtF5pGo5EoErahvHiK isREADY; home/health200(dbup), Chrome Games rendersOct20slate. Local lint/typecheck/1157unit/build pass using exactpnpm11.8; oldCorepackkey error and localhelperlint interference resolved without app exceptions. Helper/receipt archived ~/.local/share/fullcourt-credential-rotation. Next: hosted exact-SHA CI/preview, independent frozen-candidate reconciliation and authorized merge/deployed verification; remaining launch checks preserved.
+Labels, data and line breaks, 2026-10-15 to 10-16 (condensed): D-87 to D-94 shipped (gaps compare at two decimals, neutral hosts never called, the /home-court gap read from printed rates, former team codes named, officiating credits the working crew) with `keepTogether()` and `e2e/line-breaks.spec.ts`; all merged on merge day below. Still open: altitude carryover applies to the next game at any gap while every written source says the next night (needs an ADR, a ~2,349-row production recompute and owner approval); `scripts/backfill_predictions.ts` for 5 called games with no prediction row; `shooting.spec.ts` filter race (a filter picked right after load sometimes does not stick, on `main` too).
 
-Post-merge verification,2026-10-15: PR127 mergedde81a8f; PR CI/CodeQL/realPG/browser12 and exactb012 preview desktop/mobile pass. Manual read-only maintenance dependency audit passes(70dev/all advisories,0critical), but monitor38668004619 fails insetup-node: implicit package-manager cache requests absentpnpm. Bounded repair disables only monitor auto-cache; regression contract red reproduced before fix. Follow-up branchfix/maintenance-monitor-node-cache awaits gates, exact hosted monitor rehearsal and separate owner merge yes. Main production/CI verification continues; no productiondatawriter dispatched.
+Merge day, 2026-10-16: owner delegated the open PRs. #138 squashed (`5795929`); the stack #137–#145 folded into #136 and merged as one commit (`66e9415`, individual commits kept); production READY, health 200, `/api/analysis` venue baseline 47,112. The 9 neutral-site prediction rows were deleted (owner-approved for after #139; backup kept locally, transaction asserted 9). `verify_predictions.ts` still called the neutral host, so it read MISMATCH; #147 (`f1155a7`) fixed it and it now reads consistent (47,112 in scope, 27,400 calls, 0 neutral predictions). Portfolio mhju0/mhju0.github.io#6 merged and live. [Verified] combined tree: CI, local gate, e2e 484 + 3 load-failures passing on rerun, preview, then `line-breaks`/home-court/analysis specs 56/56 against production. Open: Dependabot #131 (recharts) and #128 (actions) are held until the freeze lifts (comments on each); `*-server.test.ts` cache tests (rest-advantage-evidence, schedule-disparity, season-report) time out at 5s on a loaded machine, on `main` too (3 of 5 runs). They import the module inside the test; CI has been green.
 
-Node-only workflow follow-up,2026-10-15: PR129 owner-approved/mergedc3b2be7; exact-main read-only monitor38668903373 passes. Final breadth check found the same implicit cache defect in manual provider probe; all other setup-node jobs install pnpm first. Generalized workflow guard fails on probe before fix, replacing the narrower monitor-only guard. Branchfix/probe-node-cache disables probe auto-cache only; no source/DBwriter logic changed. Gates/hosted source-probe rehearsal and separate merge yes pending; production remains healthy.
+Games board round, 2026-10-16 (PR #150, merged 2026-10-17 as `edfa767`): days-rest column dropped and four flags per line (D-95); gap tiers replaced by one BIG REST EDGE badge for a rested home team 3+ fresher, the backtest's 3+ bucket (D-96); "How to read the board" guide reads the 3+ rate live and omits the venue baseline by owner decision; refresh control is "Updated <time>" plus an icon button; flag hover card removed; fatigue scores and rest gaps print at one decimal, cut not rounded (D-98, display only). The owner withdrew the D-80 launch freeze (D-97), so Dependabot #131 and #128 are no longer held. [Verified] lint, typecheck, build, 1,184 unit; full e2e 485 passed, 2 failed then fixed or passing on rerun (a schedule test pinned two decimals and clicked an ambiguous label; the 1440px reach test times out under load). The `shooting.spec.ts` race was fixed by #138 (126 runs clean on 2026-10-17).
+
+Games by team, 2026-10-17 (PR #151, merged 2026-10-17 as `fafb574`; results mid-season and NBA Cup TBD rows added before merge): BY DATE / BY TEAM tabs; `/games/team` lists one team's season with the gap signed from its side, via `GET /api/games/team` (D-99); desktop day arrows moved onto the DATE label's line and the long date into the Matchups heading. Workflow: the owner found audits and scans too slow and heavy on the Mac, so AGENTS.md now carries a verification budget, and Vitest is capped at half the cores (full run 20s, server cache tests no longer time out under load). [Verified] lint, typecheck, 1,191 unit, build, the affected e2e specs plus the new `e2e/games-by-team.spec.ts`. ALT TRIP was decided the same day (next entry).
+
+ALT TRIP removed, 2026-10-17 (branch `feat/remove-altitude-carryover`): the owner chose to delete the altitude carryover rather than fix or hide it (ADR 0006 amendment, D-100). Measured first: no published rate moves at one decimal, 205 games change class. `fatigue.ts` charges altitude for tonight's venue only; ALT TRIP is gone from the board and the matchup line; the flag also requires tonight's venue at altitude so old rows cannot raise it; the harness drops `alt_carry`. Production recomputed the same day with owner approval: 3,138 final games (6,276 rows, deleted then `backfill_fatigue.ts`, backup in the session scratchpad), all 1,200 projected 2026-27 games (`project_fatigue.ts --force`), the 27,400 graded predictions rebuilt to 27,420 (16,778 correct, 61.2%; `verify_predictions.ts` consistent, 634 open), `ml/rest_split_facts.json` regenerated with its mirror and the schedule-value pins, and the rest-advantage ablation table re-measured. Fidelity export: 100,990 stored rows, 0 mismatches. The 5 missing predictions from the labels audit are covered by the rebuild.

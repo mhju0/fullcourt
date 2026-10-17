@@ -70,19 +70,12 @@ const B2B_MULTIPLIER_MAX = 1.46;
  */
 const ALTITUDE_MULTIPLIER = 1.29;
 
-/**
- * Thin air does not clear the moment the plane lands. Applied the night AFTER visiting
- * altitude, when tonight's venue is at normal elevation, since the acute effect is weaker
- * than being there. Never applies to Denver or Utah leaving home: descending is not the hard
- * direction. Ratified 2026-07-30.
- *
- * Deliberately NOT raised alongside `ALTITUDE_MULTIPLIER` on 2026-08-02, though it was set as
- * half of that excess and is now roughly a fifth of it. The carryover was measured at 0.003
- * points and the unconstrained fit wanted it negative, so there is no evidence to spend on
- * making it bigger — only the symmetry of how it was originally derived, which is not
- * evidence. It stays where it is until something measures it.
+/*
+ * There used to be a smaller altitude charge for the game after a visit, the carryover, at
+ * 1.06. It was removed on 2026-10-17: ADR 0006 measured it at 0.003 points, the code applied it
+ * at any gap where every description said "the night after", and removing it left every
+ * published rate unchanged. Only tonight's venue counts now. See ADR 0006, amendment 2026-10-17.
  */
-const ALTITUDE_CARRYOVER_MULTIPLIER = 1.06;
 
 /**
  * A 30-point blowout rests the starters; a two-point thriller does not. Overtime was
@@ -185,7 +178,6 @@ export const FATIGUE_CONSTANTS = Object.freeze({
   b2bMin: B2B_MULTIPLIER_MIN,
   b2bMax: B2B_MULTIPLIER_MAX,
   altitudeMultiplier: ALTITUDE_MULTIPLIER,
-  altitudeCarryover: ALTITUDE_CARRYOVER_MULTIPLIER,
   blowoutFloor: BLOWOUT_MARGIN_FLOOR,
   blowoutRange: BLOWOUT_MARGIN_RANGE,
   blowoutMaxDiscount: BLOWOUT_MAX_DISCOUNT,
@@ -217,8 +209,6 @@ export interface RecentGame {
   tipOffUtc?: Date | null;
   /** Absolute final margin; drives the blowout discount. Null when scores are absent. */
   pointMargin?: number | null;
-  /** Whether the venue this game was played at sits at altitude. */
-  venueAltitude?: boolean;
   /**
    * Where the game was actually played, when that is neither team's arena. Set only
    * for neutral-site games (Paris, Mexico City, …), which are treated as away games
@@ -304,7 +294,10 @@ export interface FatigueResult {
   isThreeInFour: boolean;
   /** This game is the team's 4th across tonight and the prior 5 nights. */
   isFourInSix: boolean;
-  /** Tonight's game is on the road ≥2 hours of clock shift from the home arena. */
+  /**
+   * Tonight is away from the home arena (a neutral site counts for both teams), at least 2 hours
+   * of clock shift from it, and the team has not yet re-entrained (`displaced: remaining > 0`).
+   */
   hasTimeZoneDisplacement: boolean;
   /** What the score was measured from, before the ratified constants weighted it. */
   features: FatigueFeatures;
@@ -781,7 +774,7 @@ function computeTotalTravelMiles(
  * `recentGames` must be ordered oldest → newest and cover exactly the
  * `FATIGUE_RECENT_LOOKBACK_DAYS` window before `gameDate`, final games only, from this team's
  * perspective. `fetchRecentGamesForTeam` is what guarantees that; a hand-built array must match
- * it. The last element anchors rest, back-to-back, altitude carryover and overtime, so an
+ * it. The last element anchors rest, back-to-back and overtime, so an
  * unsorted array produces a wrong score with no error.
  *
  * Most callers want `scoreGameFatigue` instead, which resolves the geometry for both sides.
@@ -952,15 +945,7 @@ export function calculateFatigue(input: FatigueInput): FatigueResult {
     ? backToBackMultiplier(lastGame.tipOffUtc, currentTipOffUtc)
     : 1.0;
 
-  // Visiting altitude tonight dominates; otherwise the night after a visit carries a
-  // smaller residual. `!lastGame.isHome` matters: Denver and Utah leaving home are
-  // descending, which is the easy direction and earns nothing.
-  const priorVisitToAltitude = !lastGame.isHome && lastGame.venueAltitude === true;
-  const altMultiplier = isVisitingAltitude
-    ? ALTITUDE_MULTIPLIER
-    : priorVisitToAltitude
-      ? ALTITUDE_CARRYOVER_MULTIPLIER
-      : 1.0;
+  const altMultiplier = isVisitingAltitude ? ALTITUDE_MULTIPLIER : 1.0;
 
   // Anchored so the curve starts at exactly 0 on the plateau day. Previously the gate
   // dropped a continuous function in at full strength, so crossing from two days' rest

@@ -1,3 +1,4 @@
+import { keepTogether } from "@/components/ui/keep-together";
 import { LEAD, TRACK, TYPE, WIDTH } from "@/lib/terminal-styles";
 
 const RED_TINT = "rgba(220, 38, 38, 0.04)";
@@ -32,7 +33,7 @@ export function sectionId(label: string) {
 export function Prose({ children }: { children: React.ReactNode }) {
   return (
     <p style={{ maxWidth: WIDTH.prose, fontSize: TYPE.body, color: "var(--term-text)", lineHeight: LEAD.body }}>
-      {children}
+      {keepTogether(children)}
     </p>
   );
 }
@@ -52,7 +53,7 @@ export function Note({ children }: { children: React.ReactNode }) {
         padding: 12,
       }}
     >
-      {children}
+      {keepTogether(children)}
     </p>
   );
 }
@@ -104,7 +105,7 @@ export function LimitList({ items }: { items: readonly string[] }) {
           <span className="mono" style={{ color: "var(--term-red-text)", flexShrink: 0 }}>
             —
           </span>
-          <span>{item}</span>
+          <span>{keepTogether(item)}</span>
         </li>
       ))}
     </ul>

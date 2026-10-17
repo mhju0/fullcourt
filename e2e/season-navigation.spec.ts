@@ -49,6 +49,14 @@ test("from the sm breakpoint every month and date shows at once, with no sideway
   }
   await expect(dates.getByRole("button").last()).toBeInViewport();
   await expect(page.getByRole("group", { name: "Week", exact: true })).toBeHidden();
+  // Each month sits exactly over a date chip: same box, same gap, same left edge.
+  const boxes = (group: typeof month) => group.getByRole("button").evaluateAll(els => els.map(el => {
+    const r = el.getBoundingClientRect();
+    return [r.x, r.width, r.height];
+  }));
+  const months = await boxes(month);
+  const days = (await boxes(dates)).slice(0, months.length);
+  expect(months).toEqual(days);
   const season = page.getByLabel("SEASON", { exact: true });
   await season.focus();
   await page.keyboard.press("Tab");
@@ -93,18 +101,26 @@ for (const width of [1440, 1280, 1024, 768, 390]) {
     await expect(page.getByRole("button", { name: /^Expand .* game details$/ }).first()).toBeVisible();
     const region = page.getByRole("region", { name: "Matchups table; scroll horizontally for all columns" });
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    // Horizontal reach only: the board guide can push the header below a short viewport.
+    const edgeInsideRegion = async () => {
+      const regionBox = (await region.boundingBox())!;
+      const edgeBox = (await page.getByText("EDGE", { exact: true }).boundingBox())!;
+      expect(edgeBox.x).toBeGreaterThanOrEqual(regionBox.x);
+      expect(edgeBox.x + edgeBox.width).toBeLessThanOrEqual(regionBox.x + regionBox.width + 1);
+    };
     if (width >= 1280) {
       expect(await region.evaluate(el => el.scrollWidth <= el.clientWidth + 1)).toBe(true);
-      await expect(page.getByText("GAP SIZE", { exact: true })).toBeInViewport();
+      await edgeInsideRegion();
     }
     if (width >= 640) {
-      const clipped = await page.locator('.fc-game-grid').first().evaluate(el => {
+      // Every row, not the first: only a BIG REST EDGE row carries the widest last cell.
+      const clipped = await page.locator('.fc-game-grid').evaluateAll(rows => rows.some(el => {
         const edge = el.getBoundingClientRect().right;
-        return [...el.children].some(child => child.getBoundingClientRect().right > edge + 1);
-      });
+        return [...el.querySelectorAll('*')].some(child => child.getBoundingClientRect().right > edge + 1);
+      }));
       expect(clipped).toBe(false);
       await region.evaluate(el => { el.scrollLeft = el.scrollWidth; });
-      await expect(page.getByText("GAP SIZE", { exact: true })).toBeInViewport();
+      await edgeInsideRegion();
     }
     await page.getByRole("button", { name: /^Expand .* game details$/ }).first().click();
     await expect(page.getByRole("button", { name: /^Collapse .* game details$/ })).toBeVisible();

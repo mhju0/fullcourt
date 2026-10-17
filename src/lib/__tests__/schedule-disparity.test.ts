@@ -313,6 +313,27 @@ describe("computeScheduleDisparity — edge games (ratified 2026-07-29)", () => 
     expect(league.measuredGames).toBe(1);
     expect(league.countedGames).toBe(2);
   });
+
+  it("counts a compared game as projected only when an earlier game is still unplayed", () => {
+    // First unplayed date is 01-03: that night is measured (every input is already a fact),
+    // and 01-05 rests on the unplayed 01-03, so its fatigue is projected.
+    const scored = { homeFatigueScore: "1.0", awayFatigueScore: "3.0" };
+    const games = [
+      game("2024-01-01", 1, 2, scored),
+      game("2024-01-03", 1, 2, { ...scored, status: "scheduled" }),
+      game("2024-01-05", 1, 2, { ...scored, status: "scheduled" }),
+    ];
+    const { league } = computeScheduleDisparity("2023-24", games);
+
+    expect(league.measuredGames).toBe(2);
+    expect(league.projectedGames).toBe(1);
+
+    const played = computeScheduleDisparity(
+      "2023-24",
+      games.map((g) => ({ ...g, status: "final" }))
+    );
+    expect(played.league.projectedGames).toBe(0);
+  });
 });
 
 describe("computeScheduleDisparity — fatigue edge", () => {

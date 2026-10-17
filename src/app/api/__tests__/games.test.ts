@@ -54,7 +54,7 @@ const sampleGame: GameResponse = {
     travelDistanceMiles: 2100,
     altitudePenalty: true,
     altitudeArenaLabel: "Boston (altitude)",
-    daysRest: 1,
+    daysRest: 0,
     gamesInLast7Days: 4,
     gamesInLast30Days: 14,
     is4In6: true,
@@ -67,6 +67,7 @@ const sampleGame: GameResponse = {
     advantageTeam: "home",
   },
   projectedFatigue: false,
+  neutralCity: null,
 };
 
 /** The route reads only its dynamic segment, but `jsonRoute` still merges search params. */

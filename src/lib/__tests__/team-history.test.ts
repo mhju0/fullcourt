@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { getTeamBranding } from "@/lib/team-history";
+import { formerAbbreviations, getTeamBranding } from "@/lib/team-history";
 
 describe("getTeamBranding", () => {
   it("OKC in Seattle era → SuperSonics", () => {
@@ -102,14 +102,22 @@ describe("getTeamBranding", () => {
     );
   });
 
-  it("optional fallback overrides current-era name and city only", () => {
+  it("optional fallback overrides the current-era name, not the brand's place name", () => {
     const b = getTeamBranding("LAL", "2024-25", {
       name: "Lakers Custom",
       city: "LA",
     });
     expect(b.name).toBe("Lakers Custom");
-    expect(b.city).toBe("LA");
+    expect(b.city).toBe("Los Angeles");
     expect(b.logoUrl).toContain("/lal.png");
+  });
+
+  it("names the brand's place, not the coordinate city stored in teams.city", () => {
+    expect(getTeamBranding("GSW", "1995-96", { name: "Warriors", city: "San Francisco" }).city).toBe("Golden State");
+    expect(getTeamBranding("UTA", "2024-25", { name: "Jazz", city: "Salt Lake City" }).city).toBe("Utah");
+    expect(getTeamBranding("XYZ", "2024-25", { name: "Test", city: "Somewhere" }).city).toBe("Somewhere");
+    // Both Los Angeles teams read the same place, in every season.
+    expect(getTeamBranding("LAC", "1990-91", { name: "Clippers", city: "Los Angeles" }).city).toBe("Los Angeles");
   });
 
   it("uses ESPN's own slug where it is not the abbreviation we store", () => {
@@ -130,5 +138,18 @@ describe("getTeamBranding", () => {
     });
     expect(b.name).toBe("SuperSonics");
     expect(b.city).toBe("Seattle");
+  });
+});
+
+describe("formerAbbreviations", () => {
+  it("lists every other code a franchise played under in the seasons with data", () => {
+    expect(formerAbbreviations("OKC")).toEqual(["SEA"]);
+    expect(formerAbbreviations("NOP")).toEqual(["NOH", "NOK"]);
+    expect(formerAbbreviations("WAS")).toEqual(["WSB"]);
+  });
+
+  it("is empty when the code never changed, including a rebrand that kept it", () => {
+    expect(formerAbbreviations("BOS")).toEqual([]);
+    expect(formerAbbreviations("CHA")).toEqual([]);
   });
 });

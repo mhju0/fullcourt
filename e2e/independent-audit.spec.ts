@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-test("schedule facts distinguish four nights and altitude carryover", async ({ request, page }) => {
+test("schedule facts distinguish four nights, and altitude is tonight's venue only", async ({ request, page }) => {
   const response = await request.get("/api/games/2026-04-12");
   expect(response.ok()).toBeTruthy();
   const { data } = await response.json();
@@ -23,11 +23,12 @@ test("schedule facts distinguish four nights and altitude carryover", async ({ r
   }
   expect(denseTeams).toBeGreaterThan(0);
   const oklahoma = data.find((game: { homeTeam: { abbreviation: string } }) => game.homeTeam.abbreviation === "OKC");
-  expect(oklahoma.homeFatigue.altitudePenalty).toBe(true);
+  // The Thunder came home from altitude: no carryover charge, so no altitude flag.
+  expect(oklahoma.homeFatigue.altitudePenalty).toBe(false);
   expect(oklahoma.homeFatigue.altitudeArenaLabel).toBeNull();
   await page.goto("/games?season=2025-26&date=2026-04-12");
-  await expect(page.getByText(/OKC.*after an altitude trip/)).toBeVisible();
-  await expect(page.getByText(/DET 3rd game in 4 nights/)).toHaveCount(0);
+  await expect(page.getByText(/after an altitude trip/)).toHaveCount(0);
+  await expect(page.getByText(/Pistons playing a 3rd game in 4 nights/)).toHaveCount(0);
 });
 
 test("mobile games keep season, month and date visible", async ({ page }) => {

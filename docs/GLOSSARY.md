@@ -8,15 +8,15 @@ FullCourt studies NBA schedule conditions and historical results. Use these term
 
 **Back-to-back**: A game on the calendar day after the team's previous game. When tip-off times are available, the model adjusts its multiplier using the hours between them. That interval includes the previous game itself; it is not a direct measurement of recovery time. Use the full term in explanatory prose; compact tables may use B2B.
 
-**Altitude**: The visiting-altitude multiplier for Denver, Utah, and Mexico City, plus a separate carryover multiplier the following night. Venue flags come from team or neutral-site records. The altitude multiplier changed from 1.15 to 1.29 on 2026-08-02 using final-margin evidence. The carryover multiplier did not change. A different fitting target does not make the shared historical sample independent. See [ADR 0006](adr/0006-fatigue-weights-were-fitted-and-the-model-was-not-changed.md).
+**Altitude**: The visiting-altitude multiplier for Denver, Utah, and Mexico City, charged only when tonight's venue is at altitude. Venue flags come from team or neutral-site records. The multiplier changed from 1.15 to 1.29 on 2026-08-02 using final-margin evidence. A smaller carryover for the game after a visit (ALT TRIP on the board) was removed on 2026-10-17 because it measured no effect. A different fitting target does not make the shared historical sample independent. See [ADR 0006](adr/0006-fatigue-weights-were-fitted-and-the-model-was-not-changed.md).
 
 **Rest advantage**: `away fatigue score − home fatigue score`. Positive favours the home team; negative favours the visitor. Avoid “fatigue advantage” and “rest score.”
 
-**Neutral/no-call band**: An absolute rest advantage below `0.5`. The code compares the unrounded floating-point difference, so a displayed `0.50` can fall just below the boundary. Do not promise that every displayed gap of exactly 0.50 receives a call. This band is unrelated to a neutral-site venue.
+**Neutral/no-call band**: An absolute rest advantage below `0.5`. The gap is compared at the fatigue scores' two decimals (`restAdvantageDifferential`, D-87), so a gap of 0.50 is a call and 0.49 is not. The site prints both cut to one decimal (0.5 and 0.4, D-98), which keeps the printed figure on the same side of 0.5. This band is unrelated to a neutral-site venue.
 
 **Decidable**: A gap outside the neutral band, identifying a more-rested side. This is separate from whether the game is called or publishable.
 
-**Called**: A decidable game in which the more-rested team is at home, selected by `isCalledSide()` in `src/lib/rest-advantage-evidence.ts`. The headline backtest rate uses this group. In explanatory copy, prefer “rested team at home.”
+**Called**: A decidable game in which the more-rested team is at home and the venue is not a neutral site (D-92), selected by `isCalledSide()` in `src/lib/rest-advantage-evidence.ts`. The headline backtest rate uses this group. In explanatory copy, prefer “rested team at home.”
 
 **Publishable**: An admissible regular-season game outside an excluded abnormal stretch. `publishableGames()` in `src/lib/db/queries.ts` owns this filter. Publication eligibility is separate from the rest-gap classification.
 
@@ -40,13 +40,13 @@ FullCourt studies NBA schedule conditions and historical results. Use these term
 
 **Expected Shot Value**: Expected effective field-goal percentage for a court location. Defender position, shot clock, and shooter skill are absent from the location model. Avoid presenting it as a complete measure of shot quality.
 
-**Net rest edge**: A season total of `own rest days − opponent rest days`, capped at five days per side, excluding games without previous-game context for both sides. Positive favours the team. It is measured in days, unlike rest advantage.
+**Net rest edge**: A season total of `own days off − opponent days off`, capped at four days off per side (`REST_DAYS_CAP = 5` counts days since the last game, where a back-to-back is 1), excluding games without previous-game context for both sides. The cap exists for the All-Star break. Positive favours the team. It is measured in days, unlike rest advantage.
 
 **Net fatigue edge**: The corresponding fatigue-score difference, reported per game. It includes travel and density as well as rest. A sum can obscure the size of typical matchup gaps.
 
 **Net edge games**: Favourable games minus unfavourable games, using the shared `0.5` fatigue-gap threshold. “Big edge” uses `1.5`. Both counts exclude games without previous-game context for both teams. Source: `schedule-disparity.ts`.
 
-**Schedule value / Worth**: A win-equivalent conversion of historical rest-state rates relative to venue baselines, summed over scored games including openers. `schedule-value.ts` supplies both Schedule Edge's table and Season Report's extremes. The displayed team's results do not enter the calculation. This is not actual wins added or a causal estimate. Show the per-game scale alongside season totals.
+**Schedule value / Worth**: A win-equivalent conversion of historical rest-state rates relative to venue baselines, summed over scored games including openers. `schedule-value.ts` supplies Schedule Edge's Worth column; `/api/season-report` also returns it per team, but the Season Report page does not render it. The displayed team's results do not enter the calculation. This is not actual wins added or a causal estimate. Show the per-game scale alongside season totals.
 
 **Swing**: On Season Report, a team's win rate as the fresher side minus its rate as the tireder side. The counted fresher arm is at home and the tireder arm is on the road. Compare each row with `SeasonReport.swingBaseline`, not zero. Small groups and venue differences prevent interpreting the table as a ranking of rest-management skill.
 
@@ -56,7 +56,7 @@ FullCourt studies NBA schedule conditions and historical results. Use these term
 
 ## Schedule scope
 
-**Neutral site**: A venue outside either team's usual home arena. `neutral-venues.ts` supplies its coordinates and altitude flag. Do not confuse this with the neutral rest-gap band.
+**Neutral site**: A venue outside either team's usual home arena. `neutral-venues.ts` supplies its coordinates and altitude flag. A neutral-site game has no home court, so it is never called and is left out of every venue baseline and home/away split (D-92); it still counts as played evidence. Do not confuse this with the neutral rest-gap band.
 
 **Provisional season**: A season with games that are not final. Figures can change as games are played, added, corrected, or rescheduled.
 

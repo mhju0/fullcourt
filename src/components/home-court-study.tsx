@@ -12,6 +12,7 @@ import {
   type HomeCourtSeason,
 } from "@/lib/home-court-study";
 import { MIN_GAMES_FOR_INFERENCE } from "@/lib/season-report";
+import { KeepTogether } from "@/components/ui/keep-together";
 import { signedNumber } from "@/lib/signed-number";
 import { WIDTH } from "@/lib/terminal-styles";
 
@@ -101,10 +102,10 @@ export function HomeCourtStudy() {
                 ? "Home teams win less often than they used to"
                 : "Home win rate has changed across the historical record"}
             </h2>
-            <p className="mt-3">
+            <p className="mt-3"><KeepTogether>
               Home teams won {formatRate(summary.first.winPct)} across {summary.first.games.toLocaleString()} games from {summary.first.from} through {summary.first.to},
               compared with {formatRate(summary.latest.winPct)} across {summary.latest.games.toLocaleString()} games from {summary.latest.from} through {summary.latest.to}.
-            </p>
+            </KeepTogether></p>
           </div>
           <div className="fc-report-interpretation flex flex-col gap-3">
             <h3 className="text-lg font-semibold">Use each season’s home rate as the baseline</h3>
@@ -141,9 +142,9 @@ export function HomeCourtStudy() {
             <thead className="bg-[var(--term-surface-2)] text-[var(--term-text-muted)]">
               <tr>
                 <th scope="col" className={styles.seasonCell}>Season</th>
-                <th scope="col" className="text-right">Home wins / games</th>
+                <th scope="col" className="text-right">Home wins{"\u00a0/\u00a0"}games</th>
                 <th scope="col" className="text-right">Home win rate</th>
-                <th scope="col" className="text-right">Rested-home wins / games</th>
+                <th scope="col" className="text-right">Rested-home wins{"\u00a0/\u00a0"}games</th>
                 <th scope="col" className="text-right">Rested-home win rate</th>
                 <th scope="col" className="text-right">Gap</th>
               </tr>
@@ -161,7 +162,7 @@ export function HomeCourtStudy() {
                     <td className="mono text-right tabular-nums">{formatRate(row.homeBaselinePct)}</td>
                     <td className="mono text-right tabular-nums">{row.restedTeamWins.toLocaleString()} / {row.games.toLocaleString()}</td>
                     <td className="mono text-right tabular-nums">{gap === null ? "Too early" : formatRate(row.winPct)}</td>
-                    <td className="mono text-right tabular-nums">{gap === null ? "Too early" : `${signedNumber(gap, 1)} pp`}</td>
+                    <td className="mono text-right tabular-nums">{gap === null ? "Too early" : `${signedNumber(gap, 1)}\u00a0pp`}</td>
                   </tr>
                 );
               })}
@@ -179,7 +180,7 @@ export function HomeCourtStudy() {
         <ul className="flex list-disc flex-col gap-2 pl-6">
           <li><a className="fc-text-link" href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0220630">Harris and Roebber, 2019</a>: NBA home advantage and changes in shooting patterns.</li>
           <li><a className="fc-text-link" href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0152440">Ribeiro et al., 2016</a>: home win rate and scoring margin over 2001–2014.</li>
-          <li><a className="fc-text-link" href="https://www.nature.com/articles/s41598-021-93533-w">Scientific Reports, 2021</a>: home advantage across four North American leagues around COVID-19.</li>
+          <li><a className="fc-text-link" href="https://www.nature.com/articles/s41598-021-93533-w">Scientific Reports, 2021</a>: home advantage across four North American leagues around <span className="whitespace-nowrap">COVID-19</span>.</li>
         </ul>
         <p className={muted}>
           FullCourt’s rates are unadjusted records. Team strength, neutral venues, attendance, travel, and other conditions can differ across seasons and between the two lines.
@@ -288,7 +289,7 @@ function SeasonInspection({ row, rows, onSelect }: { row: HomeCourtSeason; rows:
         <div><p className="fc-control-label">Season</p><p className="mono mt-1 font-semibold">{row.season}</p>{!row.isComplete ? <p className={`text-xs ${muted}`}>Season to date · through {row.latestEvidenceDate}</p> : null}</div>
         <div><p className="fc-control-label">Home</p><p className="mono mt-1 font-semibold tabular-nums">{formatRate(row.homeBaselinePct)}</p><p className={`text-xs ${muted}`}>{row.homeWins.toLocaleString()} / {row.homeGames.toLocaleString()} games</p></div>
         <div><p className="fc-control-label">Rested at home</p><p className="mono mt-1 font-semibold tabular-nums">{gap === null ? "Too early" : formatRate(row.winPct)}</p><p className={`text-xs ${muted}`}>{row.restedTeamWins.toLocaleString()} / {row.games.toLocaleString()} games</p></div>
-        <div><p className="fc-control-label">Gap</p><p className="mono mt-1 font-semibold tabular-nums">{gap === null ? "Too early" : `${signedNumber(gap, 1)} pp`}</p><p className={`text-xs ${muted}`}>versus that season’s home rate</p></div>
+        <div><p className="fc-control-label">Gap</p><p className="mono mt-1 font-semibold tabular-nums">{gap === null ? "Too early" : `${signedNumber(gap, 1)}\u00a0pp`}</p><p className={`text-xs ${muted}`}>versus that season’s home rate</p></div>
       </div>
     </div>
   );

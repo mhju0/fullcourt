@@ -3,8 +3,8 @@
 Use when completed games resume. The calendar and available feed data determine the date;
 do not treat an old seeded schedule snapshot as a current announcement.
 
-A change freeze covers this period: from 2026-10-17 until the first completed slate passes the
-checklist below ([D-80](DECISIONS.md)).
+There is no change freeze around the first slate: D-80 set one and the owner withdrew it on
+2026-10-16 ([D-97](DECISIONS.md)). Run the checklist below on the first completed slate.
 
 ## What must be demonstrated
 
@@ -75,4 +75,4 @@ that snapshot, so a later run supplies convergence. Known-null tips are excluded
 refresh. Review skipped IDs/reasons in nightly/projection logs rather than accepting write
 counts alone. The hourly cron ends at 08:00 UTC and resumes at 21:00 UTC; this gap can leave
 a failed refresh unrecovered before an early tip. Check the next-game rows and logs, and scope
-any manual repair explicitly with the owner. Client “View fetched at” is not pipeline evidence.
+any manual repair explicitly with the owner. The board's “Updated” time is when the viewer's browser received the view, not pipeline evidence.

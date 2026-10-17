@@ -22,5 +22,7 @@ describe("home-rest confound facts mirror the generated measurement", () => {
     expect(page).toContain("HOME_REST_CONFOUND.homeFlewFarther.homeWinPct");
     expect(page).toContain("HOME_REST_CONFOUND.homeTravelledInOnBackToBack.homeWinPct");
     expect(page).not.toMatch(/still won \d/);
+    expect(page).toContain("HOME_REST_CONFOUND.meanRestEdge.bothTravelledIn");
+    expect(page).not.toMatch(/falls by (three quarters|\d)/);
   });
 });

@@ -3,7 +3,7 @@
  * DB `teams` rows use current abbreviations; this maps (abbrev, season) → labels + logos.
  */
 
-import { parseSeasonStartYear } from "@/lib/nba-season";
+import { NBA_SEASONS, parseSeasonStartYear } from "@/lib/nba-season";
 
 export interface TeamBranding {
   abbreviation: string;
@@ -51,7 +51,7 @@ const CURRENT_TEAM_DEFAULTS: Record<string, { name: string; city: string }> = {
   GSW: { name: "Warriors", city: "Golden State" },
   HOU: { name: "Rockets", city: "Houston" },
   IND: { name: "Pacers", city: "Indiana" },
-  LAC: { name: "Clippers", city: "LA" },
+  LAC: { name: "Clippers", city: "Los Angeles" },
   LAL: { name: "Lakers", city: "Los Angeles" },
   MEM: { name: "Grizzlies", city: "Memphis" },
   MIA: { name: "Heat", city: "Miami" },
@@ -71,13 +71,18 @@ const CURRENT_TEAM_DEFAULTS: Record<string, { name: string; city: string }> = {
   WAS: { name: "Wizards", city: "Washington" },
 };
 
+/** The thirty current franchises, by the abbreviation every season's games are stored under. */
+export const CURRENT_TEAM_ABBREVIATIONS: readonly string[] = Object.freeze(Object.keys(CURRENT_TEAM_DEFAULTS));
+
 function currentBranding(
   abbrev: string,
   fallback?: { name: string; city: string }
 ): TeamBranding {
   const defaults = CURRENT_TEAM_DEFAULTS[abbrev];
   const name = fallback?.name ?? defaults?.name ?? abbrev;
-  const city = fallback?.city ?? defaults?.city ?? "";
+  // The brand's place name wins over `teams.city`, which is a coordinate anchor: it reads
+  // "San Francisco" for Golden State and "Salt Lake City" for Utah.
+  const city = defaults?.city ?? fallback?.city ?? "";
   return {
     abbreviation: abbrev,
     name,
@@ -89,7 +94,8 @@ function currentBranding(
 /**
  * Returns display abbreviation, name, city, and logo for `currentAbbreviation` in `season`
  * (e.g. `"2005-06"`). Uses historical labels where the franchise rebranded or relocated;
- * otherwise current branding. Optional `fallback` overrides name/city for the current-era path only.
+ * otherwise current branding. Optional `fallback` overrides the name on the current-era path, and
+ * supplies the city only for an abbreviation with no brand entry.
  *
  * Every logo is an ESPN PNG (see `espnLogo`).
  */
@@ -180,4 +186,12 @@ export function getTeamBranding(
   }
 
   return currentBranding(abbr, fallback);
+}
+
+/** The other codes a franchise played under in the seasons with data: OKC → SEA. */
+export function formerAbbreviations(currentAbbreviation: string): string[] {
+  const current = currentAbbreviation.trim().toUpperCase();
+  const codes = new Set(NBA_SEASONS.map((season) => getTeamBranding(current, season).abbreviation));
+  codes.delete(current);
+  return [...codes].sort();
 }

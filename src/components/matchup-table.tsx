@@ -12,16 +12,21 @@ import { usePageQuery } from "@/hooks/useSeasonUrl";
 import { ChevronDown } from "lucide-react";
 import { FatigueBar, type FatigueBarTone } from "@/components/fatigue-bar";
 import {
-  ConfidenceBadge,
+  BigRestEdgeBadge,
   FatigueDetailColumn,
   TeamLogo,
+  inlineFlags,
   teamGameFlags,
-  getConfidence,
+  isBigRestEdge,
 } from "@/components/matchup-parts";
 import { gamePhase, spokenGameState, type GamePhase } from "@/lib/game-phase";
 import { buildGameStoryline } from "@/lib/game-storyline";
 import { getTeamColors } from "@/lib/nba-team-colors";
-import { formatRestAdvantageDisplay } from "@/lib/rest-advantage-display";
+import {
+  formatFatigueScore,
+  formatRestAdvantageDisplay,
+  formatRestAdvantageValue,
+} from "@/lib/rest-advantage-display";
 import { getTeamBranding } from "@/lib/team-history";
 import { LEAD, SPACE, SPACE_CARD, TRACK, TYPE } from "@/lib/terminal-styles";
 import { cn } from "@/lib/utils";
@@ -47,21 +52,21 @@ import type { GameResponse } from "@/types";
 
 // One column template shared by the header row and every game row, so the header can never
 // drift out of line with the cells beneath it. Below 640px `globals.css` swaps it for the
-// two-column phone row, which drops the rest-days and fatigue columns (D-79).
+// two-column phone row, which drops the fatigue column (D-79). The days-rest column was
+// dropped on 2026-10-16 (D-95); days rest stays in the expansion.
 const GRID_COLS =
-  "minmax(96px,120px) minmax(210px,1.3fr) minmax(64px,80px) minmax(232px,1.1fr) minmax(190px,220px) minmax(96px,116px)";
-// Sum of the column minimums plus the 16px gaps, rounded up with room.
-const GRID_MIN_WIDTH = 1000;
+  "minmax(96px,120px) minmax(210px,0.8fr) minmax(320px,1fr) minmax(200px,240px) minmax(120px,0.6fr)";
+// Column minimums (946) + four 16px gaps + 16px row padding on each side + the 3px accent edge = 1045.
+const GRID_MIN_WIDTH = 1048;
 
 /**
  * Width reserved for a line's flag chips, so the strip is identical on every line and the
  * fatigue numbers stay in one column however many flags a team carries.
  *
- * Sized for the widest thing it can hold: two four-character chips plus a `+N` overflow chip
- * and their gaps (~98px). A single "JET LAG" is wider than one 4-char chip but never shares
- * the strip — it sorts fifth, so it only ever appears alone or beside "ALT".
+ * Sized for four chips, the widest common four being B2B + 3IN4 + 4IN6 + TIME ZONES (~191px).
+ * A longer set still shows fewer inline: `inlineFlags` fits the strip by width.
  */
-const FLAG_STRIP_W = 104;
+const FLAG_STRIP_W = 200;
 
 // ─── Status cell ─────────────────────────────────────────────────
 
@@ -165,14 +170,18 @@ function TeamLine({
   city,
   season,
   fallback,
-  isHome,
+  venueTag,
 }: {
   abbreviation: string;
   name: string;
   city: string;
   season: string;
   fallback: { name: string; city: string };
-  isHome: boolean;
+  /**
+   * HOME on the host's line, or the city when the game is away from its arena. Not "NEUTRAL",
+   * which reads as a verdict on the rest gap rather than a place.
+   */
+  venueTag: string | null;
 }) {
   const colors = getTeamColors(abbreviation);
   return (
@@ -203,7 +212,7 @@ function TeamLine({
       >
         {city}
       </span>
-      {isHome && (
+      {venueTag && (
         <span
           className="mono shrink-0"
           style={{
@@ -217,7 +226,7 @@ function TeamLine({
             lineHeight: "14px",
           }}
         >
-          HOME
+          {venueTag}
         </span>
       )}
     </div>
@@ -225,16 +234,15 @@ function TeamLine({
 }
 
 /**
- * How many flags a line shows before collapsing the rest into a count. Measured over 79 games
- * across ten dates: 84% of team-lines carry two or fewer, but a visiting team can stack five
- * (B2B + 3IN4 + 4IN6 + ALT + JET LAG). Rendering all of them would either blow the column or
- * wrap the row to a second line, and a row whose height depends on its flag count is the
- * problem this replaced.
+ * How many flags a line shows before collapsing the rest into a count. Over every regular-season
+ * team-game since 1985-86, 99.6% carry four or fewer (measured 2026-10-16); two, the old limit,
+ * hid something on about one line in six. Rendering every flag would wrap the row on the rare
+ * five-flag line, and a row whose height depends on its flag count is the problem this replaced.
  */
-const MAX_INLINE_FLAGS = 2;
+const MAX_INLINE_FLAGS = 4;
 
 /** The schedule flag chip — the fatigue score's reason, sitting next to the score. */
-function FlagChip({
+export function FlagChip({
   label,
   muted = false,
 }: {
@@ -269,11 +277,27 @@ function FatigueLine({
   tone: FatigueBarTone;
   flags: string[];
 }) {
-  const shown = flags.slice(0, MAX_INLINE_FLAGS);
-  const hidden = flags.length - shown.length;
+  const { shown, hidden } = inlineFlags(flags, FLAG_STRIP_W, MAX_INLINE_FLAGS);
 
   return (
-    <div className="flex items-center gap-2" style={{ height: TEAM_LINE_H }}>
+    <div
+      className="flex items-center gap-2"
+      style={{ height: TEAM_LINE_H }}
+    >
+      {/* The score leads, so it starts on the FATIGUE SCORE label's rail; the bar after it is
+          the score drawn, not a second figure. */}
+      <span
+        className="fc-fatigue-score mono shrink-0 tabular-nums"
+        style={{
+          width: 36,
+          fontSize: TYPE.data,
+          fontWeight: 700,
+          color: "var(--term-text)",
+          textAlign: "left",
+        }}
+      >
+        {score !== null ? formatFatigueScore(score) : "—"}
+      </span>
       {score !== null ? (
         <FatigueBar score={score} tone={tone} className="min-w-[36px] flex-1" />
       ) : (
@@ -286,18 +310,6 @@ function FatigueLine({
           }}
         />
       )}
-      <span
-        className="mono shrink-0 tabular-nums"
-        style={{
-          width: 30,
-          fontSize: TYPE.data,
-          fontWeight: 700,
-          color: "var(--term-text)",
-          textAlign: "right",
-        }}
-      >
-        {score !== null ? score.toFixed(1) : "—"}
-      </span>
       {/* Fixed-width so the two lines' chips align with each other and with the rows above and
           below, whether a team carries two flags, one, or none. Chips start from the strip's
           left edge rather than filling from its right: a list that grows rightward keeps its
@@ -311,31 +323,6 @@ function FatigueLine({
           <FlagChip key={flag} label={flag} />
         ))}
         {hidden > 0 && <FlagChip label={`+${hidden}`} muted />}
-      </span>
-    </div>
-  );
-}
-
-/**
- * Per-team days rest, promoted from the expansion (2026-08-28): two aligned lines that
- * answer "which rest is whose" in the same read order as the team names beside them.
- * A null is a season opener — printed as the em dash every unmeasured cell uses.
- */
-function RestDaysLine({ daysRest }: { daysRest: number | null | undefined }) {
-  return (
-    <div
-      className="flex items-center justify-end"
-      style={{ height: TEAM_LINE_H }}
-    >
-      <span
-        className="mono tabular-nums"
-        style={{
-          fontSize: TYPE.data,
-          fontWeight: 700,
-          color: "var(--term-text)",
-        }}
-      >
-        {daysRest ?? "—"}
       </span>
     </div>
   );
@@ -359,23 +346,16 @@ function RestAdvCell({
   restAdvantage,
   homeAbbr,
   awayAbbr,
-  projectedFatigue,
 }: {
   restAdvantage: GameResponse["restAdvantage"];
   homeAbbr: string;
   awayAbbr: string;
-  projectedFatigue: boolean;
 }) {
-  const display = formatRestAdvantageDisplay(
-    restAdvantage,
-    homeAbbr,
-    awayAbbr,
-    projectedFatigue,
-  );
+  const display = formatRestAdvantageDisplay(restAdvantage, homeAbbr, awayAbbr);
   const advantageTeam = restAdvantage?.advantageTeam ?? "neutral";
   const isHomeAdv = advantageTeam === "home";
   const isAwayAdv = advantageTeam === "away";
-  const value = Math.abs(restAdvantage?.differential ?? 0).toFixed(1);
+  const value = formatRestAdvantageValue(restAdvantage?.differential ?? 0);
   const fillPercent =
     Math.min(Math.abs(restAdvantage?.differential ?? 0) / 5, 1) * 50;
   // Not measured is not a dead heat, and this cell used to print them the same way: a game
@@ -423,6 +403,16 @@ function RestAdvCell({
             >
               {display.value}
             </span>
+            <span
+              style={{
+                fontSize: TYPE.micro,
+                fontWeight: 600,
+                letterSpacing: TRACK.sub,
+                color: "var(--term-text-muted)",
+              }}
+            >
+              ADVANTAGE
+            </span>
           </>
         ) : (
           <>
@@ -447,22 +437,6 @@ function RestAdvCell({
               {value}
             </span>
           </>
-        )}
-        {/* Where the number came from, stated only when it is not the ordinary case. A projected
-            differential is read off the published schedule: every input is already fixed except
-            the previous game's overtime and margin, so it moves only where one of those lands.
-            It shares the figure's line, so a projected row is no taller than a measured one. */}
-        {display.kind !== "unmeasured" && display.projected && (
-          <span
-            style={{
-              fontSize: TYPE.micro,
-              fontWeight: 600,
-              letterSpacing: TRACK.sub,
-              color: "var(--term-text-muted)",
-            }}
-          >
-            PROJECTED
-          </span>
         )}
       </div>
 
@@ -579,7 +553,7 @@ function GameRow({
     awayFallback,
   );
 
-  const confidence = getConfidence(game.restAdvantage?.differential ?? null);
+  const bigEdge = isBigRestEdge(game.restAdvantage, game.neutralCity);
   const flags = teamGameFlags(game);
   const tones = fatigueTones(
     game.awayFatigue?.score ?? null,
@@ -608,10 +582,10 @@ function GameRow({
       className="fc-game-row scroll-mt-20"
       style={{
         borderTop: index === 0 ? undefined : "1px solid var(--term-border)",
-        // One accent at a time (Front Office): only HIGH CONF earns the indigo edge.
+        // One accent at a time (Front Office): only a big rest edge earns the indigo edge.
         // A live row is not tinted, since most of an evening slate is live at once.
         borderLeft:
-          confidence === "high"
+          bigEdge
             ? "3px solid var(--term-accent)"
             : "3px solid transparent",
       }}
@@ -620,7 +594,7 @@ function GameRow({
         role="button"
         tabIndex={0}
         aria-expanded={expanded}
-        aria-label={`${expanded ? "Collapse" : "Expand"} ${awayBrand.name} at ${homeBrand.name}${spokenGameState(phase, game.awayScore, game.homeScore)} on ${game.date} game details`}
+        aria-label={`${expanded ? "Collapse" : "Expand"} ${awayBrand.name} ${game.neutralCity ? `versus ${homeBrand.name} in ${game.neutralCity}` : `at ${homeBrand.name}`}${spokenGameState(phase, game.awayScore, game.homeScore)} on ${game.date} game details`}
         onClick={toggle}
         onKeyDown={onKeyDown}
         className="fc-game-grid grid cursor-pointer items-center gap-x-4 transition-colors hover:bg-[var(--term-surface-2)] focus-visible:ring-2 focus-visible:ring-[var(--term-accent)]/40"
@@ -644,7 +618,7 @@ function GameRow({
             city={awayBrand.city ?? game.awayTeam.city}
             season={game.season}
             fallback={awayFallback}
-            isHome={false}
+            venueTag={null}
           />
           <TeamLine
             abbreviation={homeBrand.abbreviation}
@@ -652,13 +626,8 @@ function GameRow({
             city={homeBrand.city ?? game.homeTeam.city}
             season={game.season}
             fallback={homeFallback}
-            isHome
+            venueTag={game.neutralCity ? game.neutralCity.toUpperCase() : "HOME"}
           />
-        </div>
-
-        <div className="fc-game-extra flex flex-col gap-1">
-            <RestDaysLine daysRest={game.awayFatigue?.daysRest} />
-            <RestDaysLine daysRest={game.homeFatigue?.daysRest} />
         </div>
 
         <div className="fc-game-extra flex flex-col gap-1">
@@ -679,12 +648,11 @@ function GameRow({
             restAdvantage={game.restAdvantage}
             homeAbbr={homeBrand.abbreviation}
             awayAbbr={awayBrand.abbreviation}
-            projectedFatigue={game.projectedFatigue}
           />
         </div>
 
         <div className="fc-game-chevron flex items-center justify-end gap-2">
-          <span className="hidden sm:contents"><ConfidenceBadge confidence={confidence} /></span>
+          {bigEdge && <span className="hidden sm:contents"><BigRestEdgeBadge /></span>}
           <ChevronDown
             className={cn(
               "size-4 shrink-0 text-[var(--term-text-muted)]",
@@ -735,7 +703,7 @@ function GameRow({
                 fatigue={game.awayFatigue}
               />
               <FatigueDetailColumn
-                label={`HOME · ${homeBrand.abbreviation}`}
+                label={`${game.neutralCity ? `HOST · ${game.neutralCity.toUpperCase()}` : "HOME"} · ${homeBrand.abbreviation}`}
                 fatigue={game.homeFatigue}
               />
             </div>
@@ -788,11 +756,10 @@ export function MatchupTable({ games }: MatchupTableProps) {
           >
             <span>GAME</span>
             <span>MATCHUP (AWAY / HOME)</span>
-            <span className="text-right">REST (DAYS)</span>
-            <span>FATIGUE (0–10)</span>
+            <span>FATIGUE SCORE</span>
             <span>REST ADVANTAGE</span>
             {/* Ends over the badge, not over the chevron beside it (16px icon, 8px gap). */}
-            <span className="pr-6 text-right">GAP SIZE</span>
+            <span className="pr-6 text-right">EDGE</span>
           </div>
 
           {games.map((game, i) => (

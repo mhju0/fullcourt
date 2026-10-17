@@ -104,9 +104,17 @@ function parseSplit(summary: any): GameSplit | null {
   const year = Number(season?.year);
   if (!Number.isFinite(year)) return null;
 
-  const officials: string[] = (summary?.gameInfo?.officials ?? []).map((o: any) =>
-    String(o.displayName)
-  );
+  // The working crew, by the rule in `scripts/fetch_officials.ts`: sorted by `order`,
+  // deduplicated, first three. ESPN repeats a name in some payloads and lists a standby at
+  // order 4 in others; crediting either double-counts games nobody worked twice.
+  const officials: string[] = [
+    ...new Set(
+      ((summary?.gameInfo?.officials ?? []) as any[])
+        .slice()
+        .sort((a: any, b: any) => (Number(a?.order) || 99) - (Number(b?.order) || 99))
+        .map((o: any) => String(o.displayName))
+    ),
+  ].slice(0, 3);
   if (officials.length === 0) return null;
 
   const competitors: any[] = summary?.header?.competitions?.[0]?.competitors ?? [];

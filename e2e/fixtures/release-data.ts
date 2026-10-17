@@ -2,12 +2,12 @@ import type { FatigueInfo, GameDateCount, GameResponse } from "../../src/types";
 
 const homeFatigue: FatigueInfo = {
   score: 1, isBackToBack: false, is3In4: false, travelDistanceMiles: 0,
-  altitudePenalty: false, altitudeArenaLabel: null, daysRest: 3, gamesInLast7Days: 2,
+  altitudePenalty: false, altitudeArenaLabel: null, daysRest: 2, gamesInLast7Days: 2,
   gamesInLast30Days: 10, is4In6: false, isOvertimePenalty: false,
   roadTripConsecutiveAway: 0, hasTimeZoneDisplacement: false,
 };
 const awayFatigue: FatigueInfo = {
-  ...homeFatigue, score: 4, isBackToBack: true, daysRest: 1, gamesInLast7Days: 3,
+  ...homeFatigue, score: 4, isBackToBack: true, daysRest: 0, gamesInLast7Days: 3,
   travelDistanceMiles: 200, roadTripConsecutiveAway: 2,
 };
 
@@ -28,7 +28,7 @@ export function releaseGame(date: string): GameResponse {
     homeTeam: { id: 1, name: "Celtics", abbreviation: "BOS", city: "Boston" },
     awayTeam: { id: 2, name: "Nets", abbreviation: "BKN", city: "Brooklyn" },
     homeScore: 110, awayScore: 100, homeFatigue, awayFatigue,
-    restAdvantage: { differential: 3, advantageTeam: "home" }, projectedFatigue: false,
+    restAdvantage: { differential: 3, advantageTeam: "home" }, projectedFatigue: false, neutralCity: null,
     seasonOpeners: { home: false, away: false },
   };
 }

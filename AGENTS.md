@@ -4,6 +4,7 @@ Evidence order: source/tests → Git → docs/DECISIONS.md → docs/ROADMAP.md �
 
 - From the repository root: `pnpm install --frozen-lockfile`, `pnpm dev`, `pnpm build`, `pnpm start`. CI uses Node 22 and Python 3.11; pnpm is pinned in package.json. Root dependency additions require `pnpm add -w`.
 - Checks: `pnpm lint`, `pnpm typecheck`, `pnpm test:run`, `pnpm build`, `pnpm audit --prod`. CI also runs Python contracts in scripts/tests and ml/tests; commands and dependencies are in docs/TESTING_AND_CICD.md.
+- Verification budget, to keep a task to minutes on the owner's Mac: while working, run `pnpm typecheck`, ESLint on changed files, and the Vitest files that cover the change; run the full `pnpm test:run` (about 20s, capped at half the cores) once before committing. For e2e, run only the specs that cover the changed route or copy, against one `pnpm build && pnpm start` server reused across runs; rebuild only after code changes. Rerun failures alone before investigating them. The full e2e suite, `audit:alignment`, multi-width sweeps and other site-wide scans run only when the owner asks or before a release. Search inside the repository, never the whole disk. Stop the server you started when the task ends.
 - `pnpm test:e2e` starts its own server and needs a populated database. Set PLAYWRIGHT_PORT for another port, or PLAYWRIGHT_BASE_URL to test an existing server. It is not run in CI.
 - Merging to `main` deploys directly to Vercel production; verify the PR preview before merging.
 - Environment: .env.example. Database pages need DATABASE_URL and populated data. Python requirements: requirements.txt for local pipelines, scripts/requirements.txt for the daily workflow, ml/requirements.txt for modeling.
@@ -95,7 +96,8 @@ while touching branding.
   never a side effect of a docs change — if a stale doc says otherwise, the doc is wrong. Its
   guarantees are enforced by `referee-legends.test.ts` and `referee-timing.test.ts`. Quote a
   per-official figure only beside the count chance produces at the same bar, and keep the caveat
-  that three officials work every game, so each figure is about a third of the effect it names.
+  that three officials work every game and the data credits all three, so a per-official figure
+  cannot isolate one official's effect.
 - **Never rename rest-advantage identifiers.** See above.
 - **Never run `drizzle-kit push` or `drizzle-kit generate`.** `schema.ts` intentionally lags the
   live DB — `shot_grid` and `shot_value_surface` are read via raw SQL and are absent from it on
@@ -117,7 +119,8 @@ One coefficient has moved, and it is the precedent rather than a loophole: `ALTI
 was raised 1.15 → 1.29 on 2026-08-02 — the first ratified constant changed on measured evidence,
 approved by Michael, reasoned in the constant's own docblock (`src/lib/fatigue.ts`) and in ADR
 0006. It was fitted against **final margin**, not against the win rates the site publishes, which
-is what keeps it non-circular. `ALTITUDE_CARRYOVER_MULTIPLIER` was deliberately *not* moved with it.
+is what keeps it non-circular. `ALTITUDE_CARRYOVER_MULTIPLIER` was deliberately *not* moved with it, and
+was removed on 2026-10-17 (ADR 0006 amendment, D-100) after measuring no effect.
 
 The ban was suspended once, deliberately, to find out whether fitted weights would beat the
 ratified ones. They do not, by enough to matter — and most of the model's terms turn out to
@@ -236,7 +239,7 @@ End every task with this, in Korean:
 
 <!-- BEGIN:nextjs-agent-rules -->
 
-# This is NOT the Next.js you know
+## This is NOT the Next.js you know
 
 This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
 

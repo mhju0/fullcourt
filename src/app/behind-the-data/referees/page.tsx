@@ -13,7 +13,15 @@ import driftData from "@/data/referee-career-drift.json";
 import legendsData from "@/data/referee-legends.json";
 import styleData from "@/data/referee-foul-style.json";
 import timingData from "@/data/referee-timing.json";
-import { MIN_GAMES, NOTABLE_Z, type RefereeFoulStyle } from "@/lib/referee-foul-style";
+import {
+  FOUL_COLUMNS,
+  isNotable,
+  MIN_GAMES,
+  NOTABLE_Z,
+  publishable,
+  type FoulStyleColumns,
+  type RefereeFoulStyle,
+} from "@/lib/referee-foul-style";
 import type { RefereeLegends } from "@/lib/referee-legends";
 import type { RefereeTiming } from "@/lib/referee-timing";
 
@@ -24,6 +32,20 @@ export const metadata: Metadata = {
 };
 
 const style = styleData as RefereeFoulStyle;
+
+/**
+ * Type cells the published table bolds, counted the way the table bolds them: on the
+ * one-decimal z the artifact stores. The drift script's own counts use unrounded z, so a cell
+ * at 1.96 counted there as below the bar while the table printed it bold at 2.0.
+ */
+function boldTypeCells(pick: (row: RefereeFoulStyle["officials"][number]) => FoulStyleColumns): number {
+  return publishable(style.officials).reduce(
+    (n, row) => n + FOUL_COLUMNS.filter(({ key }) => isNotable(pick(row)[`${key}Z`])).length,
+    0
+  );
+}
+const WINDOW_BOLD_CELLS = boldTypeCells((row) => row);
+const CAREER_BOLD_CELLS = boldTypeCells((row) => row.career);
 const timing = timingData as RefereeTiming;
 const legends = legendsData as RefereeLegends;
 const floor = legends.noiseFloor;
@@ -120,8 +142,8 @@ published only for officials with ≥ ${MIN_GAMES} games`}
           <strong>most recent {driftData.windowGames} games</strong>, the publication bar, so
           every published row is a full window, the same n and the same bolding bar on every
           line. At n = {driftData.windowGames} the bar is harder to clear, so
-          the table bolds {driftData.drift.windowBoldCells} type cells where the career basis
-          bolded {driftData.drift.careerBoldCells}. The full-span figures ship alongside in
+          the table bolds {WINDOW_BOLD_CELLS} type cells where the career basis
+          bolded {CAREER_BOLD_CELLS}. The full-span figures ship alongside in
           the same artifact for anyone comparing.
         </Prose>
         <Note>
@@ -202,7 +224,8 @@ cleared p < 0.05                    ${floor.clearedPoint05}   (chance predicts $
         <Prose>
           Two consequences are visible on the surface. The Q4 &ldquo;clutch&rdquo; question was{" "}
           <em>gated</em> behind a coarser per-quarter test, so the narrow window was only allowed
-          to proceed if the broad test passed. It did not, and that result is published.
+          to proceed if the broad test passed. It passed; the narrow window then ran and came
+          back null, and that result is published.
           And the five famous claims were named in writing before the postseason was even fetched,
           reducing the risk of choosing claims after seeing their results.
         </Prose>

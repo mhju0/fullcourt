@@ -25,7 +25,7 @@ import {
 export const metadata: Metadata = {
   title: "Schedule Edge · Behind the Data",
   description:
-    "How a season's schedule is scored for and against each team: net edge games, what one edge is worth in wins, the two thresholds, why the count is games rather than days of rest, and the market check that came back null.",
+    "How a season's schedule is scored for and against each team: net edge games, what one edge is worth in wins, the two thresholds, the rest-day cap, and the market check that came back null.",
 };
 
 /** Percent with one decimal from an over count — 47.9% styling, tabular in the table. */
@@ -43,7 +43,7 @@ export default function ScheduleEdgeMethodPage() {
     >
       <Section label="THE HEADLINE" title="Counting favorable and unfavorable games">
         <Prose>
-          For every game a team played, the fatigue gap against that night&rsquo;s opponent is
+          For every game on a team&rsquo;s schedule, played or projected, the fatigue gap against that night&rsquo;s opponent is
           the same rest advantage the rest of the site uses. A game counts
           as <strong>favorable</strong> when the opponent was the more tired side by at least{" "}
           {NEUTRAL_REST_ADVANTAGE_THRESHOLD}, and <strong>unfavorable</strong> when the team
@@ -171,9 +171,9 @@ big edge      the ≥ ${BIG_EDGE_FATIGUE_THRESHOLD} subset of either side`}
               sub: "one tier above",
             },
             {
-              label: "Rest days capped at",
-              value: `${REST_DAYS_CAP}`,
-              sub: "per side, before differencing",
+              label: "Days off capped at",
+              value: `${REST_DAYS_CAP - 1}`,
+              sub: `per side, before differencing (${REST_DAYS_CAP} days since the last game)`,
             },
           ]}
         />
@@ -184,19 +184,20 @@ big edge      the ≥ ${BIG_EDGE_FATIGUE_THRESHOLD} subset of either side`}
           page called it too close to matter.
         </Prose>
         <Prose>
-          The rest-days cap exists because of the All-Star break. The fatigue model already
-          holds that rest stops helping after three days, and without a cap those few
+          The rest-days cap exists because of the All-Star break. Without it those few
           post-break games would swamp the other eighty: both teams get about a week off,
           rarely the exact same number of days, and the raw difference is enormous. Capping at{" "}
-          {REST_DAYS_CAP} per side before differencing keeps the season total describing
-          schedule disparity rather than calendar arithmetic.
+          {REST_DAYS_CAP - 1} days off per side before differencing keeps the season total
+          describing schedule disparity rather than calendar arithmetic. The cap is not where
+          the fatigue model stops crediting rest: its freshness credit starts after three days
+          since the last game and keeps growing from there.
         </Prose>
       </Section>
 
       <Section label="WHAT ELSE IS COUNTED" title="Back-to-backs and dense stretches" disclosure>
         <Prose>
           Alongside the headline, each team&rsquo;s season carries the raw structural burdens:
-          back-to-backs played, games that were the third in four nights, and the fourth in six.
+          back-to-backs played and games that were the third in four nights.
           These counts follow the dates on the schedule and do not use fatigue-score thresholds.
         </Prose>
         <Note>
@@ -210,6 +211,7 @@ big edge      the ≥ ${BIG_EDGE_FATIGUE_THRESHOLD} subset of either side`}
           items={[
             "2019-20 is excluded from this ranking because teams stopped with 63 to 67 games played. Unequal schedule lengths give teams different numbers of opportunities to accumulate an edge.",
             "Rankings compare teams within a season. Schedule length, travel patterns, and back-to-back frequency change across eras.",
+            "Until a season is played, a game whose earlier games are still unplayed is compared on projected fatigue from the published schedule, and the page says how many games that covers. Projected ranks can move once those games are played.",
             "The NBA publishes only 80 of each team's 82 games before the season. The last two are added in December once NBA Cup group play resolves, so a forward-looking total is provisionally two games short.",
             "It inherits every limit of the fatigue model it is built on, including no injuries, no rotations and no knowledge of team quality.",
             "A favorable schedule is not a prediction. It says the calendar handed a team more rested nights than tired ones, not that they were good.",

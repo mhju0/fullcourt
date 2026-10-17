@@ -37,6 +37,7 @@ import type { DisparityGameRow } from "@/lib/schedule-disparity";
 import type { SeasonReportRow } from "@/lib/season-report";
 import { seasonTravelLegs, travelLegKey } from "@/lib/season-travel";
 import { ABNORMAL_STRETCHES } from "@/lib/season-regime";
+import { daysOffBeforeGame } from "@/lib/days-off";
 import {
   formatEasternDateKey,
   formatEasternTipTime,
@@ -61,6 +62,7 @@ import type {
   ShotQualityCell,
   ShotQualityModelValues,
   TeamRecentResultGame,
+  TeamScheduleGame,
   UpcomingGameWithRA,
 } from "@/types";
 
@@ -375,6 +377,57 @@ export async function getGamesByDate(date: string): Promise<GameResponse[]> {
 }
 
 /**
+ * One team's regular season, every game the board would publish, in slate order.
+ *
+ * The board's own reader filtered to one team, so a game shows the same rest advantage on both
+ * pages. Only the two scores are read from each fatigue row: the schedule shows the gap, not the
+ * flags, and the density flags would cost a lookup per date.
+ */
+export async function getTeamSeasonSchedule(
+  season: string,
+  abbreviation: string
+): Promise<TeamScheduleGame[]> {
+  const [team] = await db
+    .select({ id: teams.id })
+    .from(teams)
+    .where(eq(teams.abbreviation, abbreviation));
+  if (!team) return [];
+
+  const [rows, firstUnplayed] = await Promise.all([
+    selectGamesWithFatigue(
+      publishableGames(
+        eq(games.season, season),
+        or(eq(games.homeTeamId, team.id), eq(games.awayTeamId, team.id))
+      )
+    ),
+    getFirstUnplayedDate(season),
+  ]);
+
+  return rows.map((row) => {
+    const isHome = row.homeTeamId === team.id;
+    const home = readFatigueSide(row, "home").score;
+    const away = readFatigueSide(row, "away").score;
+    const date = String(row.date);
+    return {
+      id: row.id,
+      date,
+      tipOffEt: formatEasternTipTime(row.tipOffUtc),
+      tipOffUtc: row.tipOffUtc ? new Date(row.tipOffUtc).toISOString() : null,
+      status: row.status,
+      isHome,
+      neutralCity: row.neutralSite ? row.neutralVenueCity : null,
+      opponent: isHome
+        ? { id: row.awayTeamId, name: row.awayTeamName, abbreviation: row.awayTeamAbbreviation, city: row.awayTeamCity }
+        : { id: row.homeTeamId, name: row.homeTeamName, abbreviation: row.homeTeamAbbreviation, city: row.homeTeamCity },
+      teamScore: isHome ? row.homeScore : row.awayScore,
+      opponentScore: isHome ? row.awayScore : row.homeScore,
+      restAdvantage: home === null || away === null ? null : classifyRestAdvantage(home, away),
+      projectedFatigue: isProjectedFatigue(date, firstUnplayed),
+    };
+  });
+}
+
+/**
  * Everything about one game except its fatigue provenance, which is a property of the season's
  * progress rather than of the row — `toGameResponses` adds it, and the `Omit` is what stops a
  * future caller assembling a `GameResponse` without deciding the question.
@@ -447,6 +500,7 @@ function mapJoinedRowToGameResponse(
     homeFatigue: homeFatigueData,
     awayFatigue: awayFatigueData,
     restAdvantage,
+    neutralCity: row.neutralSite ? row.neutralVenueCity : null,
   };
 }
 
@@ -672,6 +726,7 @@ export async function getCompletedGamesWithFatigue(): Promise<HistoricalGameEvid
       awayScore: games.awayScore,
       homeFatigueScore: homeFatigue.score,
       awayFatigueScore: awayFatigue.score,
+      neutralSite: games.neutralSite,
     })
     .from(games)
     .innerJoin(
@@ -770,6 +825,7 @@ export async function searchRegularSeasonGames(
       awayScore: games.awayScore,
       homeFatigueScore: homeFatigue.score,
       awayFatigueScore: awayFatigue.score,
+      neutralSite: games.neutralSite,
     })
     .from(games)
     .innerJoin(homeTeam, eq(games.homeTeamId, homeTeam.id))
@@ -860,10 +916,12 @@ function buildFatigueInfo(
 
   const g7 = gamesInLast7Days ?? 0;
 
-  const altitudePenalty = fatigue.altitudeMultiplier > 1.0;
+  // Tonight's venue only. The venue test also keeps rows stored before the carryover was
+  // removed (multiplier 1.06 the game after a visit) from raising the flag.
   const neutral = neutralVenueCoordinates(ctx.neutralCity);
   const atAltitude = neutral ? neutral.altitude : ctx.side === "away" && ctx.homeAltitudeFlag;
-  const altitudeArenaLabel = altitudePenalty && atAltitude
+  const altitudePenalty = fatigue.altitudeMultiplier > 1.0 && atAltitude;
+  const altitudeArenaLabel = altitudePenalty
     ? `${ctx.neutralCity ?? ctx.homeTeamCity} (altitude)`
     : null;
 
@@ -874,14 +932,15 @@ function buildFatigueInfo(
     travelDistanceMiles: fatigue.travelDistanceMiles,
     altitudePenalty,
     altitudeArenaLabel,
-    daysRest: daysSinceLastGame,
+    daysRest: daysOffBeforeGame(daysSinceLastGame),
     gamesInLast7Days: g7,
     gamesInLast30Days: extras.gamesInLast30Days,
     is4In6: extras.is4In6,
     isOvertimePenalty: isOvertimePenalty ?? false,
-    // Road-trip streak is only shown for the visiting team (type contract).
+    // Zero only for a host in its own arena. At a neutral site the host is on the road too,
+    // and the model counts tonight in its streak.
     roadTripConsecutiveAway:
-      ctx.side === "home" ? 0 : extras.roadTripConsecutiveAway,
+      ctx.side === "home" && ctx.neutralCity === null ? 0 : extras.roadTripConsecutiveAway,
     hasTimeZoneDisplacement: extras.hasTimeZoneDisplacement,
   };
 }
@@ -1426,6 +1485,7 @@ export async function getRegularSeasonScheduleForDisparity(
       awayTeamId: games.awayTeamId,
       homeFatigueScore: homeFatigue.score,
       awayFatigueScore: awayFatigue.score,
+      neutralSite: games.neutralSite,
     })
     .from(games)
     .leftJoin(
@@ -1588,6 +1648,7 @@ export async function getSeasonReportRows(season: string): Promise<SeasonReportR
     awayTeamId: Number(r.awayTeamId),
     homeScore: r.homeScore === null ? null : Number(r.homeScore),
     awayScore: r.awayScore === null ? null : Number(r.awayScore),
+    neutralSite: Boolean(r.neutralSite),
     home:
       r.homeFatigueScore === null
         ? null

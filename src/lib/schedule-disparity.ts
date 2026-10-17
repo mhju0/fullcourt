@@ -27,7 +27,12 @@
 import { rankScheduleTeams } from "@/lib/schedule-ranking";
 import { NBA_SEASONS } from "@/lib/nba-season";
 import { differenceInCalendarDays, parseISO } from "date-fns";
-import { classifyRestAdvantage, NEUTRAL_REST_ADVANTAGE_THRESHOLD } from "./rest-advantage-evidence";
+import { isProjectedFatigue } from "./fatigue-provenance";
+import {
+  classifyRestAdvantage,
+  NEUTRAL_REST_ADVANTAGE_THRESHOLD,
+  restAdvantageDifferential,
+} from "./rest-advantage-evidence";
 import { restStatePair, scheduleValueWins, type RestStateCounts } from "./schedule-value";
 
 /**
@@ -38,10 +43,14 @@ import { restStatePair, scheduleValueWins, type RestStateCounts } from "./schedu
 export const BIG_EDGE_FATIGUE_THRESHOLD = 1.5;
 
 /**
- * Rest is capped per side before differencing. The fatigue model already holds that rest stops
- * helping after three days (`FRESHNESS_PLATEAU_DAYS`, ./fatigue.ts); without a cap the All-Star
- * break dominates a season total with something that is not disparity — both teams get about a
- * week off, rarely the same number of days, and those few games swamp the other eighty.
+ * Rest is capped per side before differencing, at five days since the last game: four full days
+ * off. Without a cap the All-Star break dominates a season total with something that is not
+ * disparity — both teams get about a week off, rarely the same number of days, and those few
+ * games swamp the other eighty.
+ *
+ * The cap is about the break, not about where rest stops helping. The fatigue model's freshness
+ * credit *starts* at three days since the last game (`FRESHNESS_PLATEAU_DAYS`, ./fatigue.ts) and
+ * keeps growing after it, so the model gives no reason to stop at any particular day.
  */
 export const REST_DAYS_CAP = 5;
 
@@ -155,8 +164,8 @@ export interface DisparityTeamRow {
    * Counted games with a fatigue advantage ≥ the app's 0.5 call threshold.
    *
    * **Null when no counted game carried a fatigue pair**, like `netFatigueEdge` above and for
-   * the same reason. Fatigue is scored from games already played, so a season whose schedule is
-   * published but unplayed has none — and reporting 0 there says "measured, and the schedule
+   * the same reason. A season whose fatigue rows are not written yet has none — unplayed games
+   * are scored from the published schedule once they are — and reporting 0 there says "measured, and the schedule
    * favoured this team in zero games", which is a different claim from "not measured yet".
    */
   favorableGames: number | null;
@@ -166,8 +175,8 @@ export interface DisparityTeamRow {
   netEdgeGames: number | null;
   /**
    * Every scored game split by venue as well as by side, which is what pricing them requires: a
-   * rest edge held at home is worth 1.26 points of win probability and the same edge held on
-   * the road is worth 2.29.
+   * rest edge held at home is worth about 1.25 points of win probability and the same edge
+   * held on the road is worth about 2.27 (`REST_STATE_LIFT_PP`).
    *
    * Counted over a **wider population than every other figure on this row** — see the
    * `restStates` helper for why, and do not "fix" the inconsistency by moving it behind the
@@ -210,10 +219,17 @@ export interface DisparityLeagueRow {
    * Counted games that actually carried a fatigue pair, and so were genuinely compared.
    *
    * Separate from `countedGames` because the two diverge exactly when it matters: an unplayed
-   * season has 1,184 counted games and 0 measured ones, and the page used to print the first
+   * season with no fatigue rows yet has every game counted and none measured, and the page
+   * used to print the first
    * number under the word "COMPARED".
    */
   measuredGames: number;
+  /**
+   * Of `measuredGames`, the ones compared on **projected** fatigue: a prior game in the season
+   * is still unplayed, so the score rests on the published schedule rather than on results
+   * (`isProjectedFatigue`). Before opening night that is every game after the first night.
+   */
+  projectedGames: number;
 }
 
 export interface ScheduleDisparityResult {
@@ -319,11 +335,10 @@ function isBackToBack(restDays: number): boolean {
  * Whether this game closes a window of `needed` games within `spanDays` calendar days, counting
  * the game itself — "this game is the third in four nights".
  *
- * Deliberately NOT the same predicate as `fatigue_scores.is_three_in_four`. That flag asks
- * whether a 3-in-4 occurred anywhere in the team's 30-day lookback
- * (`maxGamesInRollingCalendarSpan`, ./fatigue.ts), which stays true for many games afterwards
- * and so cannot be summed into a meaningful season count. Here each game is classified on its
- * own, so the season total counts actual short-rest games.
+ * The same window `fatigue_scores.is_three_in_four` now uses (anchored on tonight, ./fatigue.ts),
+ * computed here from the published dates rather than read from the stored flag, for the reason
+ * in docs/adr/0001-derive-rest-days-from-games.md: a game inserted into the schedule leaves its
+ * neighbours' stored rows stale.
  */
 function closesDenseWindow(
   teamGames: DisparityGameRow[],
@@ -458,8 +473,16 @@ export function computeScheduleDisparity(
   const sides = new Map<number, CountedSide[]>();
   for (const teamId of byTeam.keys()) sides.set(teamId, []);
 
+  // Games are played in date order, so the earliest non-final date splits measured fatigue
+  // from projected fatigue for the whole season (./fatigue-provenance.ts).
+  const firstUnplayedDate = games.reduce<string | null>(
+    (first, g) => (g.status !== "final" && (first === null || g.date < first) ? g.date : first),
+    null
+  );
+
   let countedGames = 0;
   let measuredGames = 0;
+  let projectedGames = 0;
   let gamesWithAnyEdge = 0;
   let leagueGamesWithLargeEdge = 0;
 
@@ -472,9 +495,12 @@ export function computeScheduleDisparity(
     countedGames++;
     const fatigueGap =
       toFatigue(g.homeFatigueScore) !== null && toFatigue(g.awayFatigueScore) !== null
-        ? Math.abs(toFatigue(g.awayFatigueScore)! - toFatigue(g.homeFatigueScore)!)
+        ? Math.abs(
+            restAdvantageDifferential(toFatigue(g.homeFatigueScore)!, toFatigue(g.awayFatigueScore)!)
+          )
         : null;
     if (fatigueGap !== null) measuredGames++;
+    if (fatigueGap !== null && isProjectedFatigue(g.date, firstUnplayedDate)) projectedGames++;
     if (fatigueGap !== null && fatigueGap >= NEUTRAL_REST_ADVANTAGE_THRESHOLD) gamesWithAnyEdge++;
     if (fatigueGap !== null && fatigueGap >= BIG_EDGE_FATIGUE_THRESHOLD) leagueGamesWithLargeEdge++;
 
@@ -543,7 +569,7 @@ export function computeScheduleDisparity(
       if (capped >= LARGE_EDGE_DAYS) gamesWithLargeEdge++;
 
       if (s.fatigue !== null && s.oppFatigue !== null) {
-        const d = s.oppFatigue - s.fatigue;
+        const d = restAdvantageDifferential(s.fatigue, s.oppFatigue);
         fatigueSum += d;
         fatiguePairs++;
         if (d >= NEUTRAL_REST_ADVANTAGE_THRESHOLD) {
@@ -578,8 +604,8 @@ export function computeScheduleDisparity(
       threeInFourEdge,
       fourInSixEdge,
       // The gated fatigue figures answer "not measured" together: `fatiguePairs` is 0 exactly
-      // when no counted game had both fatigue scores, which is the whole of a
-      // published-but-unplayed season.
+      // when no counted game had both fatigue scores, which is the whole of a season whose
+      // fatigue rows are not written yet.
       favorableGames: fatiguePairs > 0 ? favorableGames : null,
       unfavorableGames: fatiguePairs > 0 ? unfavorableGames : null,
       netEdgeGames: fatiguePairs > 0 ? favorableGames - unfavorableGames : null,
@@ -639,6 +665,7 @@ export function computeScheduleDisparity(
       gamesWithLargeEdge: measuredGames > 0 ? leagueGamesWithLargeEdge : null,
       countedGames,
       measuredGames,
+      projectedGames,
     },
   };
 }

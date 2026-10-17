@@ -87,8 +87,8 @@ def main() -> None:
     # hoopR carries its own `team_id` and `game_id` (the NBA's), which would collide with ours
     # and silently become _x / _y. The join key is (external_id, side); theirs are not needed,
     # and `external_id` was derived from hoopR's `game_id` above.
-    play = box.drop(columns=["team_id", "game_id"]).merge(
-        sides[["game_id", "external_id", "date", "team_id", "side"]],
+    play = box.drop(columns=["team_id", "game_id", "season"], errors="ignore").merge(
+        sides[["game_id", "external_id", "date", "season", "team_id", "side"]],
         on=["external_id", "side"],
         how="inner",
     )
@@ -97,10 +97,12 @@ def main() -> None:
     play = play.sort_values(["team_id", "date", "person_id"])
 
     # ── walk each team's games in order, carrying a window of recent rosters ───
-    history: dict[int, deque] = defaultdict(lambda: deque(maxlen=WINDOW))
+    # One window per team-season. A window carried across the summer counted players who had
+    # left as missing in the opener; a team is measured once it has WINDOW games this season.
+    history: dict[tuple[int, str], deque] = defaultdict(lambda: deque(maxlen=WINDOW))
     records = []
     for (team_id, game_id), grp in play.groupby(["team_id", "game_id"], sort=False):
-        window = history[team_id]
+        window = history[(team_id, grp["season"].iloc[0])]
         played_now = dict(zip(grp["person_id"], grp["min"]))
 
         totals: dict[int, float] = defaultdict(float)

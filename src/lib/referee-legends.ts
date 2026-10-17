@@ -11,8 +11,8 @@
  * {@link readNoiseFloor} exists so the page states the comparison in one voice rather than three.
  *
  * Nothing here is a fairness claim. Three officials work every game and the play-by-play never
- * records which one blew the whistle, so every figure is roughly a third of the effect it names
- * and none of it distinguishes a correct call from an incorrect one.
+ * records which one blew the whistle, so every figure credits all three and cannot isolate one
+ * official's effect, and none of it distinguishes a correct call from an incorrect one.
  */
 
 /** A record against what the same player's other games in the same postseasons would predict. */

@@ -112,6 +112,9 @@ No secondary indexes beyond the PK and the unique `abbreviation`.
 **Indexes:** `games_date_idx (date)`, `games_status_idx (status)`,
 `games_home_team_idx (home_team_id)`, `games_away_team_idx (away_team_id)`.
 
+**Verified counts (2026-10-15, read-only `SELECT`):** 51,695 rows — the 2026-07-30 snapshot below
+plus the 1,200 `scheduled` 2026-27 regular games (`espn-` ids), across **42** seasons.
+
 **Verified counts (2026-07-30, read-only `SELECT`):** 50,495 rows — **`regular` 47,231**
 (`002`, incl. 5 `bref-` backfill), `playoffs` 2,910 + `finals` 318 (`004`), `play_in` 36
 (`005`), across **41** distinct seasons. The +1,142 vs. the 2026-07-12 snapshot is the 2019-20
@@ -179,6 +182,9 @@ Two rows per game (one per team). Latest-by-`computed_at` wins in reads
 > rebuild, which on a live site is an hour-long outage of every page. The repair took 17
 > seconds and needed no downtime. The script was removed once it had run — recover it from
 > git history if the same shape of repair is ever needed again.
+
+**Verified coverage (2026-10-15, read-only `SELECT`):** **103,390** rows, exactly two per game across
+all 51,695 games, the projected 2026-27 schedule included.
 
 **Verified coverage (2026-07-30, read-only `SELECT`):** **100,990** rows — exactly two per
 game across all 50,495 games, with **0** games holding any other count. Playoff and bubble games
@@ -253,7 +259,8 @@ feature pass (`ml/compute_series_features.py`, the four `*_diff` columns below),
 > regular season joining the dataset on 2026-07-30); 599 have a resolved `series_winner_team_id` (1
 > unresolved: 1986-87 LAL–OKC 3–1, one missing historical `004` game); **all 600 rows have all four
 > feature columns non-NULL**. The trainable set for modeling is **599** (label present AND all 4
-> features present) [Verified `ml/PHASE3_REPORT.md:39-42`].
+> features present) [Verified `ml/PHASE3_REPORT.md:39-42`]. **Re-checked 2026-10-15:** all 600 rows now
+> have a resolved `series_winner_team_id`; the trainable count above is the 2026-07-30 model run's.
 
 ## Table: `playoff_series_predictions` (Playoff Predictor)
 

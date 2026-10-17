@@ -107,6 +107,8 @@ export interface SeasonReportRow {
   awayTeamId: number;
   homeScore: number | null;
   awayScore: number | null;
+  /** No home court: outside the venue baseline and the rest calls (D-92). */
+  neutralSite: boolean;
   home: SeasonReportSide | null;
   away: SeasonReportSide | null;
 }
@@ -428,7 +430,7 @@ export function buildSeasonReport(
 
     // The venue baseline is wider than the rested-home subset below. Keep it before the neutral
     // and called-side filters so it remains available even when no rest row qualifies.
-    if (scores !== null) {
+    if (scores !== null && !row.neutralSite) {
       homeGames++;
       if (scores.home > scores.away) homeWins++;
     }
@@ -463,7 +465,7 @@ export function buildSeasonReport(
     // belong in any total here. The schedule-tax accumulation above is deliberately outside
     // this check: that measures the burden a schedule imposed, which is true whether or not
     // the model made a call on the game.
-    if (!isCalledSide(advantageTeam)) continue;
+    if (!isCalledSide(advantageTeam, row.neutralSite)) continue;
     // Past this point every line reads a score. On the schedule basis there is none, and a
     // rest call has no record until it has been played.
     if (scores === null) continue;

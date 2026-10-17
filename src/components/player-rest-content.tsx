@@ -5,6 +5,7 @@ import { Fragment, useCallback, useMemo } from "react";
 import { usePageQuery } from "@/hooks/useSeasonUrl";
 import { ZeroRestWorkload } from "@/components/zero-rest-workload";
 import useSWR from "swr";
+import { KeepTogether } from "@/components/ui/keep-together";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   buildRows,
@@ -186,7 +187,12 @@ function playerColumns(
       )),
     },
     {
-      label: "3+ days",
+      label: (
+        <>
+          <span className={styles.longLabel}>2–29 days off</span>
+          <span className={styles.shortLabel}>2–29 off</span>
+        </>
+      ),
       unit: "eFG% and attempts",
       sortKey: "restedEfg",
       numeric: true,
@@ -557,10 +563,10 @@ export function PlayerRestContent() {
         </div>
       </div>
 
-      <p className={styles.readingKey}>Shooting rate (eFG%) gives extra credit for threes. + means higher with more rest; − means lower. pp = percentage points. These comparisons do not isolate the effect of rest.</p>
+      <p className={styles.readingKey}><KeepTogether>Shooting rate (eFG%) gives extra credit for threes. + means higher with more rest; − means lower. pp = percentage points. These comparisons do not isolate the effect of rest.</KeepTogether></p>
       <details className="fc-disclosure">
         <summary>Rest definitions and uncertainty</summary>
-        <p>No rest means played yesterday. 3+ days means at least three days since the player&apos;s last appearance, including games the player sat out. The difference is 3+ days minus no rest, in percentage points.</p>
+        <p>No rest means played yesterday. 2–29 days off means two to 29 full days between the player&apos;s appearances, including games the player sat out; season openers and returns from longer absences are left out. The difference is 2–29 days off minus no rest, in percentage points.</p>
         <div className={styles.legend} id="pr-color-note">
           <span style={{ color: "#991b1b" }}>− Lower with rest</span>
           <span style={{ color: "#166534" }}>+ Higher with rest</span>
@@ -800,8 +806,8 @@ function PlayerExpansion({
               color: "var(--term-text-muted)",
             }}
           >
-            No career estimate: fewer than 150 shots on no rest or on three or
-            more days rest, so only his seasons are shown.
+            No career estimate: fewer than 150 shots on no rest or on two to
+            29 days off, so only his seasons are shown.
           </td>
         </tr>
       )}

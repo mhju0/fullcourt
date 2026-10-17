@@ -43,6 +43,7 @@ async function main(): Promise<void> {
         AND g.game_type = 'regular'
         AND g.home_score IS NOT NULL
         AND g.away_score IS NOT NULL
+        AND NOT g.neutral_site
         AND ${normallyPlayed}
     )
     SELECT
@@ -50,19 +51,13 @@ async function main(): Promise<void> {
       (SELECT count(*)::int FROM scored WHERE ra >= ${NEUTRAL_REST_ADVANTAGE_THRESHOLD}) AS should_be_called,
       (SELECT count(*)::int FROM predictions)                                        AS prediction_rows,
       (SELECT count(DISTINCT game_id)::int FROM predictions)                         AS distinct_games,
-      -- Split because Postgres and JavaScript disagree at the threshold itself. Numeric
-      -- subtraction is exact decimal, so 4.27 - 3.77 is 0.50 here; in the application it is
-      -- 0.4999999999999996 and the game is neutral. Those are correct declines, not gaps, and
-      -- the site-wide consequence is documented. Anything strictly above the threshold that is
-      -- still missing is a real gap.
+      -- Numeric subtraction is exact decimal, and the application rounds the gap to the
+      -- scores' two decimals before comparing (restAdvantageDifferential, D-87), so the two
+      -- agree at the threshold itself: a 0.50 gap is a call on both sides.
       (SELECT count(*)::int
          FROM scored s
          LEFT JOIN predictions p ON p.game_id = s.id
-        WHERE s.ra > ${NEUTRAL_REST_ADVANTAGE_THRESHOLD} AND p.id IS NULL)           AS called_but_missing,
-      (SELECT count(*)::int
-         FROM scored s
-         LEFT JOIN predictions p ON p.game_id = s.id
-        WHERE s.ra = ${NEUTRAL_REST_ADVANTAGE_THRESHOLD} AND p.id IS NULL)           AS declined_at_float_boundary,
+        WHERE s.ra >= ${NEUTRAL_REST_ADVANTAGE_THRESHOLD} AND p.id IS NULL)          AS called_but_missing,
       (SELECT count(*)::int
          FROM scored s
          JOIN predictions p ON p.game_id = s.id
@@ -71,6 +66,12 @@ async function main(): Promise<void> {
          FROM predictions p
          JOIN games g ON g.id = p.game_id
         WHERE p.predicted_advantage_team_id = g.away_team_id)                        AS away_team_picks,
+      -- A neutral game has no home team to call (D-92), so it is outside scored and must
+      -- hold no prediction at all.
+      (SELECT count(*)::int
+         FROM predictions p
+         JOIN games g ON g.id = p.game_id
+        WHERE g.neutral_site)                                                        AS neutral_predictions,
       (SELECT count(*)::int FROM predictions WHERE actual_winner_id IS NULL)          AS ungraded
   `)) as unknown as Record<string, number>[];
 
@@ -80,6 +81,7 @@ async function main(): Promise<void> {
     r.called_but_missing === 0 &&
     r.predicted_but_should_not_be === 0 &&
     r.away_team_picks === 0 &&
+    r.neutral_predictions === 0 &&
     r.prediction_rows === r.distinct_games;
   lines.push("", ok ? "VERDICT: consistent with the rule" : "VERDICT: MISMATCH — see above");
 

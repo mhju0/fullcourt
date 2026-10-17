@@ -11,7 +11,8 @@
  *   below travel-model materiality.
  * - Old Charlotte Hornets (CHH, 1988–2002): ingest maps CHH to the modern CHA row,
  *   whose coordinates are already Charlotte.
- * - Per-game neutral sites: the schema has no venue column; a known, documented limit.
+ * - Per-game neutral sites: `games.neutral_venue_city` (migration 0011) carries them, and
+ *   `src/lib/neutral-venues.ts` resolves the coordinates.
  */
 interface Era {
   abbreviation: string;

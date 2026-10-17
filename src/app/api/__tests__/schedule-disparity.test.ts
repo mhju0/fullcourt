@@ -54,6 +54,7 @@ function payload(overrides: Partial<ScheduleDisparityResponse> = {}): ScheduleDi
       gamesWithLargeEdge: 60,
       countedGames: 1200,
       measuredGames: 1200,
+      projectedGames: 0,
     },
     ...overrides,
   };

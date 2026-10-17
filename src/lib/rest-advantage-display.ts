@@ -47,8 +47,35 @@ export type RestAdvantageDisplay =
       text: string;
     };
 
+/**
+ * One decimal, cut rather than rounded: 2.96 prints 2.9, 3.09 prints 3.0 (D-98). Display only;
+ * every comparison still reads the two-decimal value.
+ *
+ * Cutting is what keeps a printed figure on the same side of every line as its label. Each line
+ * (EVEN under 0.5, BIG REST EDGE at 3) sits on a tenth, and a value is at or above a tenth exactly
+ * when its cut is. Rounding put 0.46 beside EVEN as "0.5" and 2.96 beside no badge as "3.0", 983
+ * games in all, which is why D-87 printed two decimals until the owner chose this.
+ *
+ * The epsilon absorbs float error in an exact tenth (`0.3 * 10` is fine, but a computed 2.9 can
+ * land a hair under), without lifting any real hundredth.
+ */
+export function cutToTenths(value: number): string {
+  const tenths = Math.floor(Math.abs(value) * 10 + 1e-9) / 10;
+  return `${value < 0 && tenths > 0 ? "-" : ""}${tenths.toFixed(1)}`;
+}
+
+/** The gap without its sign; the team name beside it carries the direction. */
 export function formatRestAdvantageValue(value: number): string {
-  return Math.abs(value).toFixed(1);
+  return cutToTenths(Math.abs(value));
+}
+
+/**
+ * A fatigue score, cut to one decimal like the gap. The two printed scores can differ from the
+ * printed gap by 0.1, because each is cut separately (measured 2026-10-16: 20,889 of 48,431
+ * games); the owner accepted that to keep every label in agreement with its figure.
+ */
+export function formatFatigueScore(score: number): string {
+  return cutToTenths(score);
 }
 
 export function formatRestAdvantageDisplay(
@@ -114,8 +141,8 @@ export type RestAdvantageEvidence = {
    * team, the road baseline for a rested road team.
    *
    * Inseparable from `winPct` by construction: `sentence` always states both, so a truncated
-   * render cannot show one without the other. A 42.4% standing alone beside a coloured rest
-   * badge reads as an endorsement of a losing side; 42.4% against 40.1% does not.
+   * render cannot show one without the other. A 42.3% standing alone beside a coloured rest
+   * badge reads as an endorsement of a losing side; 42.3% against 40.1% does not.
    */
   baselinePct: number;
   /** `winPct − baselinePct`, signed. A historical difference, not a causal estimate. */
@@ -189,7 +216,7 @@ export function toEvidenceSource(
  * magnitude alone does not identify a class: `thresholds` and `overallWinRate` are built from
  * called games only (`isCalledSide`, i.e. the rested team was also at home), so keying off
  * `Math.abs(differential)` printed a home-rested win rate onto rested-visitor cards — the very
- * games this model declines, and which `/analysis` publishes as losing at 42.4%. Passing the
+ * games this model declines, and which `/analysis` publishes as losing at 42.3%. Passing the
  * pair together makes that mismatch unrepresentable.
  *
  * `thresholds` are CUMULATIVE (`|differential| >= threshold`), not disjoint bins, so a

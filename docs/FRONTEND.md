@@ -10,11 +10,12 @@ Dependency versions live in `package.json` and `pnpm-lock.yaml`. The shared visu
 | --- | --- |
 | `/` | Rest and schedule findings, derived from existing data sources; dark front door, Games primary action |
 | `/games` | Matchup rest/schedule conditions in tip-off order; controls, a one-line slate summary, the matchups, then Edges Ahead, in the same order at every width |
+| `/games/team` | One team's season (BY TEAM, D-99): season and team selects, four counts (team more rested, opponent more rested, even, big rest edges), then G · DATE · TIME · OPPONENT · REST ADVANTAGE with the gap signed from the team's side; the next game is tinted and marked NEXT; TIME holds the result once final, or LIVE / PENDING by `gamePhase`; a phone shows date, opponent and gap, with the result under the date; a season still short of its NBA Cup games shows them as "NBA CUP GAME · TBD" rows (`cupPlaceholders`, `src/lib/nba-cup.ts`) numbered into the season |
 | `/season` | Completed results against the season's venue baseline, six initial team records with remaining teams expandable, five largest completed rest gaps including losses |
 | `/schedule` | Relative schedule ranking and worth; breakdown (with its column guide inside) and travel/workload in disclosures; league fatigue by week for completed games |
 | `/explore` | Directory for the secondary basketball studies |
 | `/analysis` | Historical model evaluation: The answer and The explorer |
-| `/shooting` | Player Shooting by Rest: dense player comparisons with no-rest/3+ days eFG%, attempt counts, uncertainty, and expandable seasons; zero-rest workload disclosure |
+| `/shooting` | Player Shooting by Rest: dense player comparisons with no-rest/2–29 days off eFG%, attempt counts, uncertainty, and expandable seasons; zero-rest workload disclosure |
 | `/shot-quality` | Expected shot value by location; one mobile court with Compare models, two desktop courts |
 | `/availability` | Missing-player associations, trends, and expandable coefficient comparison |
 | `/playoffs` | Previous-round workload and the separate series model |
@@ -57,7 +58,7 @@ exceptions. See [Adding a surface](ADDING_A_SURFACE.md) and its source tests bef
 Games keeps previous/next-day stepping visible from the `sm` breakpoint; a phone steps by week
 (`WEEK_SHIFTED`), landing on the same weekday when it has games and otherwise on the week's
 first slate. Exact four-night and six-night counts use
-prior games, played or still scheduled, plus the selected game (D-82). Altitude venue and carryover labels are separate.
+prior games, played or still scheduled, plus the selected game (D-82). ALT means tonight's arena is at altitude; the ALT TRIP carryover flag was removed with its term (D-100).
 
 Games shares `season`, `date`, and expanded `game`; an old `view` parameter is ignored. Explicit historical selection wins
 over offseason defaults. Invalid dates fall back; valid no-game dates remain selected. A date
@@ -68,7 +69,10 @@ Games / Season Report / Schedule Edge preserve valid season context across navig
 visible fallback on unsupported seasons. Shooting shares year, search, team, position, attempt
 floor, uncertainty, sort, and player expansion. Officiating shares season, team, category, and game.
 Reload and Back/Forward restore the view. Query controls read committed router search parameters
-(`useSeasonUrl.ts`); synchronous competing URL snapshots caused a production history race.
+(`useSeasonUrl.ts`); synchronous competing URL snapshots caused a production history race. The
+one exception is the hook's own write: Next commits a `pushState` in a later transition, so the
+URL a control just wrote is shown until the route moves or the address bar leaves it. Without it
+a changed select snapped back for a few hundred milliseconds (`shooting.spec.ts`, "same tick").
 
 No account, localStorage preference, or first-visit tracking is required. Cache refresh errors keep
 usable data visible with an error label. Loading, unavailable data, zero, and empty filters remain
@@ -93,15 +97,29 @@ negative, bounded at ±10 percentage points; uncertain estimates stay muted. Off
 blue for missed calls and gray for incorrect whistles, with direct text labels. Color never
 replaces the number, sign, category, or uncertainty text.
 
+Line breaks (2026-10-16 audit). `globals.css` sets `text-wrap: pretty` on running text (`p`,
+`li`, `dd`, `td`, `figcaption`) and `balance` on headings, `th` and `summary`, so a last line
+does not hold one word or a lone arrow. Chrome breaks after a hyphen that precedes a digit, so a
+season, an ISO date or a "3-in-4" needs `nowrap`; an operator needs a no-break space to the
+operand after it. `keepTogether()` (`src/components/ui/keep-together.tsx`) does both for string
+children; `Prose`, `Note`, `LimitList`, `DataTable` headers and the Data Status values already
+apply it. Elsewhere, write a number and its unit with U+00A0 (`61.2 pp`), keep a season
+column `nowrap`, and keep a table header to two lines on a phone.
+
 Games exposes Season → Month → Date selection, and none of it scrolls sideways (D-78). From `sm`
-the month buttons and date chips wrap, so a whole month shows at once. Below `sm` the page shows
+the month buttons and date chips wrap, so a whole month shows at once. Both are the same 60×48 box
+(`PICKER_BOX`), so each month sits exactly over a date chip. From `sm` the previous/next day arrows sit at the
+right of the DATE label's line, clear of its rule, so they never move; the selected date's long
+form is in the Matchups heading (D-99). BY DATE / BY TEAM tabs (`GamesViewTabs`) sit under the
+header on both Games views and carry the season across; below `sm` the method link moves to the
+right of that row, so the first matchup clears the phone dock at 390×844. Below `sm` the page shows
 one Sunday-to-Saturday week of seven 44px cells, with days that have no games at a count of 0;
 the Calendar button opens the month buttons and a month grid, and a pick there closes the panel
 and returns focus to the button. The three slate measures are one line above the matchups
 at every width, and Edges Ahead follows the list. There is no Skim/Deep Dive toggle and no
-side rail (D-79): from `sm` the matchup table always carries the rest-days, fatigue and
+side rail (D-79): from `sm` the matchup table always carries the fatigue and
 gap-size columns at the full content width, and narrower desktop/tablet tables scroll in a
-keyboard-focusable region. The header row reserves the same 3px accent edge as a row, so each label starts or ends where its cells do; a unit goes in parentheses, as in REST (DAYS) and FATIGUE (0–10). Every game row is one height: the schedule sentence sits in the expansion, PROJECTED shares the figure line, and an upcoming game shows its tip time with no status label. No in-game score is shown: once the tip time passes a row reads LIVE over its tip time for three hours, then PENDING until the score is stored and FINAL sits over it (`gamePhase`, D-81), all on the table's one clock (`useNow`). The top line of the cell is always the state and the bottom line the data. LIVE is a label with a still dot and no row tint, so the accent edge stays the one accent, and the row button's name carries the state and score (`spokenGameState`) because a button's name replaces its contents for a screen reader. The board opens on the game day until 6 AM ET (`slateDateKey`). Matchups are ordered by tip-off time, then by the source event id
+keyboard-focusable region. The header row reserves the same 3px accent edge as a row, so each label starts or ends where its cells do; a unit goes in parentheses. There is no days-rest column (D-95); days rest is in the expansion. FATIGUE SCORE takes no range: the score has a floor of 0 and no ceiling, and the bar is full at 10. The score leads its cell, on the label's left rail, with the bar after it. The rest advantage figure reads team, gap, ADVANTAGE ("PHI 4.0 ADVANTAGE"); an even game reads EVEN and its gap. Every fatigue score and rest gap on the site prints at one decimal, cut rather than rounded (`cutToTenths`, D-98): 2.96 prints 2.9, so a figure is never on the other side of a line from its label. Comparisons still read the two-decimal value (D-87). The host line carries HOME, or the city at a neutral site, where the model scores the host as a road team; its expansion reads HOST · city. The last column, EDGE, is blank except for one purple BIG REST EDGE badge and accent edge on a game the backtest's 3+ bucket would count: the rested team at home, off a neutral site, by 3 or more (`isBigRestEdge`, D-96); the slate summary's BIG EDGES tile counts them. There are no gap-size tiers. The heading row reads Matchups, the game count, and "Updated" with the time the view arrived in the viewer's clock, beside a 32px outline refresh button in a 44px target (named Refresh view, or Try again after a failure; `aria-disabled` while refreshing). Under the heading, a closed "How to read the board" toggle (`BoardGuide`) explains the fatigue score and its flags, the rest advantage, and BIG REST EDGE with the 3+ rate read live from `/api/analysis`; on a phone it sits after the list so the first game stays above the fold. Its rate is quoted without the venue baseline by owner decision (D-96). Flag chips are scoped per team, host included, and a line shows as many as fit its fixed strip (`inlineFlags`, at most four) before a +N count. Every game row is one height: the schedule sentence sits in the expansion, a projected gap carries no mark on the board (the owner judged the note clutter, 2026-10-16), and an upcoming game shows its tip time with no status label. No in-game score is shown: once the tip time passes a row reads LIVE over its tip time for three hours, then PENDING until the score is stored and FINAL sits over it (`gamePhase`, D-81), all on the table's one clock (`useNow`). The top line of the cell is always the state and the bottom line the data. LIVE is a label with a still dot and no row tint, so the accent edge stays the one accent, and the row button's name carries the state and score (`spokenGameState`) because a button's name replaces its contents for a screen reader. The board opens on the game day until 6 AM ET (`slateDateKey`). Matchups are ordered by tip-off time, then by the source event id
 (`slateOrder()` in `src/lib/db/slate-order.ts`). Season selectors share one labeled component across studies.
 Mobile Games shows teams, status, and rest advantage without sideways scrolling; the other
 columns are under each row's expansion. Shooting keeps
