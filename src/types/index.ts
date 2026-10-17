@@ -19,7 +19,7 @@ export interface FatigueInfo {
   altitudePenalty: boolean;
   /**
    * Set when tonight's venue is at altitude for this team: a visitor at Denver or Utah, or either
-   * team at a neutral site at elevation (Mexico City). Null for the night-after carryover.
+   * team at a neutral site at elevation (Mexico City). Set exactly when `altitudePenalty` is.
    */
   altitudeArenaLabel: string | null;
   /** Full days off before this game (a back-to-back is 0); null = season opener / no prior game. */

@@ -79,10 +79,8 @@ describe("a projected prior game, read as the model reads it", () => {
     expect(projected.overtimePeriods).toBe(0);
     expect(projected.pointMargin).toBeNull();
 
-    // The away team's own coordinates, the opponent's, and the venue's altitude all survive —
-    // these are the inputs the travel and altitude terms run on.
+    // The away team's own coordinates and the opponent's survive — the travel term runs on them.
     expect(projected.isHome).toBe(false);
-    expect(projected.venueAltitude).toBe(true);
     expect(projected.teamLat).toBeCloseTo(42.3662, 4);
     expect(projected.opponentLat).toBeCloseTo(39.7487, 4);
   });

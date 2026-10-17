@@ -176,7 +176,7 @@ export interface DisparityTeamRow {
   /**
    * Every scored game split by venue as well as by side, which is what pricing them requires: a
    * rest edge held at home is worth about 1.25 points of win probability and the same edge
-   * held on the road is worth about 2.26 (`REST_STATE_LIFT_PP`).
+   * held on the road is worth about 2.27 (`REST_STATE_LIFT_PP`).
    *
    * Counted over a **wider population than every other figure on this row** — see the
    * `restStates` helper for why, and do not "fix" the inconsistency by moving it behind the
