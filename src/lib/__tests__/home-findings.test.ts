@@ -1,12 +1,17 @@
 import { describe, expect, it } from "vitest";
 import { historicalHomeFinding, scheduleHomeFinding, shootingHomeCoverage } from "@/lib/home-findings";
+import { gapRangeByKey } from "@/lib/rest-advantage-evidence";
 import type { AnalysisResponse, ScheduleDisparityResponse, ScheduleDisparityTeam } from "@/types";
 
 const historical: AnalysisResponse = {
   latestEvidenceDate: "2025-04-13",
   totalGames: 60, overallWins: 39, overallWinRate: 65,
   homeAwayBreakdown: { homeTeamMoreRested: { games: 60, restedTeamWins: 39, winPct: 65 }, awayTeamMoreRested: { games: 10, restedTeamWins: 4, winPct: 40 } },
-  thresholds: [{ threshold: 7, games: 20, restedTeamWins: 13, winPct: 65 }],
+  thresholds: [
+    { threshold: 3, games: 50, restedTeamWins: 31, winPct: 62 },
+    { threshold: 5, games: 20, restedTeamWins: 13, winPct: 65 },
+    { threshold: 7, games: 8, restedTeamWins: 6, winPct: 75 },
+  ],
   venueBaseline: { games: 100, homeWins: 65, homeWinPct: 65, roadWinPct: 35 },
   gapRanges: [],
   eras: [],
@@ -26,6 +31,10 @@ function schedule(teams: ScheduleDisparityTeam[]): ScheduleDisparityResponse {
 describe("homepage evidence boundaries", () => {
   it("keeps a measured zero and uses the home baseline rather than 50 percent", () => {
     expect(historicalHomeFinding(historical)).toMatchObject({ edgePp: 0, baselinePct: 65, coverage: "2023-24 to 2024-25", latestEvidenceDate: "2025-04-13" });
+  });
+  it("reads the large gap size, 5 or more, not the old 7+ bucket (D-104)", () => {
+    expect(gapRangeByKey("large").min).toBe(5);
+    expect(historicalHomeFinding(historical)).toMatchObject({ minGap: 5, games: 20, winPct: 65 });
   });
   it("withholds missing or empty headline populations rather than inventing zero", () => {
     expect(historicalHomeFinding({ ...historical, thresholds: [] })).toBeNull();

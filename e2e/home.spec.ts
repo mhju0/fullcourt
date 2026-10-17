@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { gapRangeByKey } from "../src/lib/rest-advantage-evidence";
 
 test.use({ launchOptions: { ignoreDefaultArgs: ["--hide-scrollbars"] } });
 
@@ -20,7 +21,7 @@ test.describe("Rest-focused front door", () => {
     const response = await request.get("/api/analysis");
     expect(response.ok()).toBe(true);
     const { data } = await response.json();
-    const widest = data.thresholds.find((row: { threshold: number }) => row.threshold === 7);
+    const widest = data.thresholds.find((row: { threshold: number }) => row.threshold === gapRangeByKey("large").min);
     await page.goto("/");
     const home = page.getByTestId("home-findings");
     await expect(home).toContainText(`${widest.games.toLocaleString()} games`);
