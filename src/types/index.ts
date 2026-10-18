@@ -529,6 +529,8 @@ export interface ScheduleDisparityLeague {
 
 export interface ScheduleDisparityResponse {
   season: string;
+  /** Missing published fixtures in confirmed NBA Cup calendars; null for other seasons. */
+  missingFixtureGames: number | null;
   /** True when any game in the season is not final, so figures may still revise. */
   provisional: boolean;
   /**

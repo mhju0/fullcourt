@@ -14,7 +14,7 @@ async function openSchedule(page: Page, teams = mixed) {
   await page.route("**/api/schedule-disparity?*", (route) => {
     const data: ScheduleDisparityResponse = {
       season: new URL(route.request().url()).searchParams.get("season")!,
-      provisional: true, latestFinalDate: "2025-10-24", scheduledGames: 10, teams,
+      provisional: true, missingFixtureGames: null, latestFinalDate: "2025-10-24", scheduledGames: 10, teams,
       league: { delta: 5, gamesWithAnyEdge: 5, gamesWithThreePlusEdge: 2, countedGames: 8, measuredGames: 4, projectedGames: 0 },
     };
     return route.fulfill({ json: { data, error: null } });

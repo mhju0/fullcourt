@@ -1587,3 +1587,22 @@ The owner requested explicit postponed/cancelled support. Read-only live catalog
 found games.status is unconstrained varchar with no CHECK; no migration is required.
 Implementation and independent persistence review must precede release. Source status, future
 derived-score invalidation and recovery must be verified together; a label alone does not close it.
+
+## D-111 — Independent audit recommendations and sky-tinted neutrals (2026-10-18)
+
+After reading the October 18 independent HTML audit, the owner approved all nine findings,
+the Schedule team-name shortcut, the explicit homepage gap unit, and the applicable Studio
+Illicit recommendations. The scope is clearer data meaning, native interaction semantics,
+conditional-state recovery, and deliberate neutral colors. Calculations, coefficients,
+publication filters, the scheduler and previously deferred features keep their existing scope.
+
+The owner requested a very subtle sky-blue tint in the whites. Page, panel and secondary
+surfaces use `#F3F8FC`, `#FBFDFF` and `#EAF2F8`; rules use `#C8D5E0` and `#BDCDD9`.
+The dark homepage's off-white becomes `#F2F8FD`. Indigo remains the interface accent;
+rose/teal retain data semantics. Browser/PWA theme colors follow the page ground.
+
+Studio Illicit's advice is applied through visible action feedback, local recovery controls,
+clearer hierarchy and consistent surfaces. Repeated data exploration and keyboard actions
+remain immediate; the existing brief Home entrance and bars retain reduced-motion guards.
+No new motion library, decorative loops, animated numbers or scroll-revealed research is needed.
+Design dials: ENERGY 1, RHYTHM 2, MOTION 1, within the existing Front Office direction.

@@ -1,17 +1,14 @@
 "use client";
 
 import { ChevronDown } from "lucide-react";
-import { useBacktest } from "@/hooks/useBacktest";
-import { FLAG_MEANINGS, LARGE_REST_EDGE_THRESHOLD, MEDIUM_REST_EDGE_THRESHOLD, RestEdgeBadge, restEdgeRates } from "@/components/matchup-parts";
+import Link from "next/link";
+import { FLAG_MEANINGS, LARGE_REST_EDGE_THRESHOLD, MEDIUM_REST_EDGE_THRESHOLD, RestEdgeBadge } from "@/components/matchup-parts";
 import { FlagChip } from "@/components/matchup-table";
 import { NEUTRAL_REST_ADVANTAGE_THRESHOLD } from "@/lib/rest-advantage-evidence";
 import { SPACE, TRACK, TYPE } from "@/lib/terminal-styles";
 
 /** The board's three columns in plain words, closed until asked for. */
 export function BoardGuide({ className }: { className?: string }) {
-  const { data } = useBacktest();
-  // Read from the backtest, never typed here; while it loads or fails the sentence ends early.
-  const rates = data ? restEdgeRates(data.thresholds) : null;
   return (
     <details className={className} style={{ fontSize: TYPE.body, color: "var(--term-text-muted)" }}>
       <summary className="fc-text-link inline-flex min-h-11 cursor-pointer list-none items-center underline [&::-webkit-details-marker]:hidden" style={{ gap: SPACE.xs }}>
@@ -20,7 +17,7 @@ export function BoardGuide({ className }: { className?: string }) {
       </summary>
       <dl className="m-0 grid gap-y-3" style={{ paddingBlock: SPACE.sm }}>
         <GuideRow term="FATIGUE">
-          Each team&apos;s fatigue score. Higher means more tired. The tags beside it are the reasons:
+          Each team&apos;s fatigue score. Higher means more estimated schedule load. The tags beside it show the schedule factors:
           <span className="mt-2 grid gap-x-3 gap-y-1" style={{ gridTemplateColumns: "auto 1fr" }}>
             {Object.entries(FLAG_MEANINGS).map(([flag, meaning]) => (
               <span key={flag} className="contents">
@@ -31,17 +28,16 @@ export function BoardGuide({ className }: { className?: string }) {
           </span>
         </GuideRow>
         <GuideRow term="REST ADVANTAGE">
-          The gap between the two scores, named for the fresher team. A gap under {NEUTRAL_REST_ADVANTAGE_THRESHOLD} reads EVEN.
+          The gap between the two scores, named for the team with less estimated schedule load. A gap under {NEUTRAL_REST_ADVANTAGE_THRESHOLD} reads EVEN.
         </GuideRow>
         <GuideRow term={<RestEdgeBadge size="medium" />}>
-          The home team is {MEDIUM_REST_EDGE_THRESHOLD} to {LARGE_REST_EDGE_THRESHOLD} points fresher.
-          {rates?.medium && <> Home teams in that spot won {rates.medium.winPct.toFixed(1)}% of {rates.medium.games.toLocaleString("en-US")} games.</>}
+          The home team&apos;s fatigue score is at least {MEDIUM_REST_EDGE_THRESHOLD} but less than {LARGE_REST_EDGE_THRESHOLD} points lower.
         </GuideRow>
         <GuideRow term={<RestEdgeBadge size="large" />}>
-          The home team is {LARGE_REST_EDGE_THRESHOLD}+ points fresher.
-          {rates?.large && <> Home teams in that spot won {rates.large.winPct.toFixed(1)}% of {rates.large.games.toLocaleString("en-US")} games.</>}
+          The home team&apos;s fatigue score is {LARGE_REST_EDGE_THRESHOLD}+ points lower.
         </GuideRow>
       </dl>
+      <p>Compare historical outcomes with the home-court baseline in <Link href="/analysis" className="fc-text-link inline-flex min-h-11 items-center underline">Model Results</Link>.</p>
     </details>
   );
 }

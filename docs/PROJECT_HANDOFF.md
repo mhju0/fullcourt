@@ -16,8 +16,7 @@ Officiating covers 12 regular seasons and 4,546 reports, including the partial 2
 [archive evidence](research/2026-09-09-l2m-archive.md) records source checks and historical limits.
 The homepage hero now contains only the headline, original description and primary action.
 The one-game example and its supporting reads were removed under D-67. Next.js and its ESLint
-config move together: 16.4.0 shipped on 2026-10-15, and 16.4.1 is prepared in the
-2026-10-18 closeout candidate (not deployed at this checkpoint); the
+config move together: 16.4.1 shipped in PR #174 on 2026-10-18 (`460a3fe`); the
 lockfile resolves Sharp 0.35.5 (pinned on 2026-10-07 for GHSA-wq5f-xc86-pv6w), clearing the production dependency audit. See [verification](design/home-hero-release-review.md).
 Shared filters now use 44px targets and 16px text. Analysis uses equal-width filter columns;
 Season Report uses bordered sections with a separate interpretation surface. The
@@ -195,3 +194,12 @@ ADR 0006 preserves the original snapshot and adds current evidence.
 Remaining: finish candidate verification/review and obtain its merge approval; then verify
 the deployed candidate. Human checks, first played-slate validation, December fixture ingest,
 ESPN re-key after played data, November 5 plan review and server-error observation stay separate.
+
+## Independent audit implementation — 2026-10-18
+
+PR #174 merged as `460a3fe` and production was verified. The owner then approved all nine
+independent-audit findings, Schedule team links, explicit Home gap units, and Studio Illicit's
+applicable design guidance. D-111 records the subtly sky-tinted palette and preserved semantics.
+Implementation is isolated on `codex/audit-recommendations`; release acceptance is in
+[the review record](design/2026-10-18-audit-recommendations-review.md). No new production release
+is claimed until that record confirms it. Physical-device and first-played-slate checks remain open.

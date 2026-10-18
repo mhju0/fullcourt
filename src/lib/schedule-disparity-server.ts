@@ -84,6 +84,7 @@ async function buildScheduleDisparity(
   return {
     season: result.season,
     provisional: result.provisional,
+    missingFixtureGames: result.missingFixtureGames,
     // The season's own data date, read off the same games every figure above came from — not
     // the date this response was built, which is what used to sit here under the same `AS OF`
     // label the /analysis data stamp wears. Nothing about freshness is lost by the change:

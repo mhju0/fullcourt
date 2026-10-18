@@ -371,7 +371,7 @@ function ShotCourt({
         width="100%"
         role="img"
         aria-label={`${title}: half-court expected-shot-value map, ${cells.length} cells`}
-        style={{ display: "block", background: "#FFFFFF", border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }}
+        style={{ display: "block", background: "var(--term-surface)", border: "1px solid var(--term-border)", borderRadius: "var(--term-radius)" }}
       >
         <g>
           {markers.map((m) => {

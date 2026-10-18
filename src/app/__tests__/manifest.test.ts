@@ -22,10 +22,10 @@ describe("web app manifest", () => {
 
   it("stays on the committed light theme", () => {
     // Both colors are --term-bg, and both must match viewport.themeColor in layout.tsx
-    // (#F6F7F9). The app is light-only ("Broadcast") — a manifest declaring anything else
+    // (#F3F8FC). The app is light-only ("Broadcast") — a manifest declaring anything else
     // would flash the wrong chrome on launch.
-    expect(m.theme_color).toBe("#F6F7F9");
-    expect(m.background_color).toBe("#F6F7F9");
+    expect(m.theme_color).toBe("#F3F8FC");
+    expect(m.background_color).toBe("#F3F8FC");
   });
 
   it("ships both icon forms — SVG for Chromium, PNG for everything else", () => {

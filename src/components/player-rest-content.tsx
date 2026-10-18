@@ -2,6 +2,7 @@
 
 import { SeasonSelector } from "@/components/season-selector";
 import { Fragment, useCallback, useMemo } from "react";
+import { ChevronDown, ChevronRight } from "lucide-react";
 import { usePageQuery } from "@/hooks/useSeasonUrl";
 import { ZeroRestWorkload } from "@/components/zero-rest-workload";
 import useSWR from "swr";
@@ -107,12 +108,20 @@ function playerColumns(
           type="button"
           className={styles.player}
           aria-expanded={isOpen(row)}
+          aria-label={`${isOpen(row) ? "Collapse" : "Expand"} ${row.name} shooting details`}
           onClick={(event) => {
             event.stopPropagation();
             toggle(row.player);
           }}
         >
-          <span>{row.name}</span>
+          <span className="inline-flex items-start gap-1">
+            {isOpen(row) ? (
+              <ChevronDown aria-hidden="true" size={14} className="mt-0.5 shrink-0" />
+            ) : (
+              <ChevronRight aria-hidden="true" size={14} className="mt-0.5 shrink-0" />
+            )}
+            <span>{row.name}</span>
+          </span>
           <small>{row.context}</small>
         </button>
       ),

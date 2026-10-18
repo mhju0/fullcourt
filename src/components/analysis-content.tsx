@@ -677,7 +677,7 @@ function ExploreGames({
       />
       <SectionDivider label="EXPLORE GAMES" descriptor={`${total.toLocaleString()} TOTAL`} />
       <p className="mono mt-1" style={{ fontSize: 11, color: "var(--term-text-muted)", letterSpacing: TRACK.sub }}>
-          FILTER AND BROWSE INDIVIDUAL MATCHUPS · CLICK A ROW FOR DETAILS. NEUTRAL-SITE GAMES ARE
+          FILTER AND BROWSE INDIVIDUAL MATCHUPS · OPEN GAME DETAILS IN EACH MATCHUP. NEUTRAL-SITE GAMES ARE
           LEFT OUT; SET RESTED TEAM TO VISITOR FOR THE GAMES THE RATES ABOVE DO NOT COUNT.
       </p>
 
@@ -783,18 +783,12 @@ function ExploreGames({
         rows={loading || error || results.length === 0 ? [] : results}
         rowKey={(g) => g.gameId}
         rowAttrs={(g, i) => ({
-          role: "button",
-          tabIndex: 0,
-          onClick: () => openDetail(g.gameId),
-          onKeyDown: (e) => {
-            if (e.key === "Enter" || e.key === " ") {
-              e.preventDefault()
-              openDetail(g.gameId)
-            }
+          onClick: (event) => {
+            event.currentTarget.querySelector<HTMLButtonElement>("button")?.focus()
+            openDetail(g.gameId)
           },
           style: { background: i % 2 === 1 ? "var(--term-bg)" : "var(--term-surface)", cursor: "pointer" },
-          className: "hover:bg-[var(--term-surface-2)] focus-visible:bg-[var(--term-surface-2)]",
-          "aria-label": `Open details: ${seasonAbbr(g.awayTeamAbbreviation, g.season)} at ${seasonAbbr(g.homeTeamAbbreviation, g.season)}, ${g.date}`,
+          className: "hover:bg-[var(--term-surface-2)] focus-within:bg-[var(--term-surface-2)]",
         })}
         columns={[
           {
@@ -806,11 +800,26 @@ function ExploreGames({
             label: "Matchup",
             style: { color: "var(--term-text)", fontWeight: 600 },
             cell: (g) => (
-              <>
-                {seasonAbbr(g.awayTeamAbbreviation, g.season)}
-                <span style={{ margin: "0 4px", color: "var(--term-hairline)" }}>@</span>
-                {seasonAbbr(g.homeTeamAbbreviation, g.season)}
-              </>
+              <button
+                type="button"
+                className="inline-flex min-h-11 cursor-pointer flex-col items-start justify-center text-left hover:underline"
+                aria-label={`Open details: ${seasonAbbr(g.awayTeamAbbreviation, g.season)} at ${seasonAbbr(g.homeTeamAbbreviation, g.season)}, ${g.date}`}
+                aria-haspopup="dialog"
+                onClick={(event) => {
+                  event.stopPropagation()
+                  event.currentTarget.focus()
+                  openDetail(g.gameId)
+                }}
+              >
+                <span className="whitespace-nowrap">
+                  {seasonAbbr(g.awayTeamAbbreviation, g.season)}
+                  <span style={{ margin: "0 4px", color: "var(--term-text-muted)" }}>@</span>
+                  {seasonAbbr(g.homeTeamAbbreviation, g.season)}
+                </span>
+                <span className="inline-flex items-center gap-1 whitespace-nowrap text-[11px] font-normal" style={{ color: "var(--term-text-muted)" }}>
+                  Details <ChevronRight aria-hidden="true" size={12} />
+                </span>
+              </button>
             ),
           },
           {

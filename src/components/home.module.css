@@ -2,7 +2,7 @@
 
 .home {
   --home-ink: #0b0d10;
-  --home-text: #f5f1e8;
+  --home-text: #f2f8fd;
   --home-muted: #a1a6ae;
   --home-rule: #34373c;
   margin-inline: calc(50% - 50cqw);

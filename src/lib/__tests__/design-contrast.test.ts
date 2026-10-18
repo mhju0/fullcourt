@@ -42,6 +42,7 @@ const OBSERVED_WASH = "#eee9ec";
 
 describe("design contrast — the pinned bars", () => {
   const grounds = {
+    "--term-bg": token("--term-bg"),
     "--term-surface": token("--term-surface"),
     "--term-surface-2": token("--term-surface-2"),
     "observed row wash": OBSERVED_WASH,
@@ -56,10 +57,17 @@ describe("design contrast — the pinned bars", () => {
     }
   });
 
-  it("keeps the graphics poles at the 3:1 graphics bar on white", () => {
+  it("keeps the graphics poles at the 3:1 graphics bar on the panel surface", () => {
     // Fills, bars, borders and >=24px figures read these; they were never asked to pass 4.5.
     for (const name of ["--term-red", "--term-blue"]) {
       expect(contrast(token(name), token("--term-surface")), name).toBeGreaterThanOrEqual(3);
+    }
+  });
+
+  it("keeps accent text and focus indicators legible on every neutral surface", () => {
+    for (const name of ["--term-bg", "--term-surface", "--term-surface-2"]) {
+      expect(contrast(token("--term-accent"), token(name)), name).toBeGreaterThanOrEqual(4.5);
+      expect(contrast(token("--term-control-border"), token(name)), name).toBeGreaterThanOrEqual(3);
     }
   });
 

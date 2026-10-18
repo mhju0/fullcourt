@@ -15,7 +15,7 @@ export function GameSlateRefreshNotice({ slate }: { slate: RefreshNotice }) {
     <div className="flex shrink-0 items-center" style={{ gap: SPACE.xs }}>
       <span className="whitespace-nowrap" style={{ fontSize: TYPE.data, color: "var(--term-text-muted)" }}>
         {/* Below 360px the heading row cannot hold the word; the time alone stays. */}
-        <span className="max-[359px]:sr-only">Updated </span><time dateTime={time.toISOString()}>{time.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" })}</time>
+        <span className="max-[359px]:sr-only">Checked </span><time dateTime={time.toISOString()}>{time.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" })}</time>
       </span>
       <RefreshButton refreshing={refreshing} label={slate.refreshMessage ? "Try again" : "Refresh view"}
         onActivate={() => { if (!refreshing) slate.retryRefresh(); }} />

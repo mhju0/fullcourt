@@ -47,7 +47,7 @@ const SITE_DESC =
 // The app is committed light-only (globals.css sets color-scheme: light), so pin the
 // mobile browser chrome to --term-bg instead of letting Safari/Chrome pick a default.
 export const viewport: Viewport = {
-  themeColor: "#F6F7F9",
+  themeColor: "#F3F8FC",
 };
 
 export const metadata: Metadata = {

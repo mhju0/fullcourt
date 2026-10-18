@@ -30,6 +30,7 @@ function payload(overrides: Partial<ScheduleDisparityResponse> = {}): ScheduleDi
   return {
     season: LATEST_SEASON,
     provisional: false,
+    missingFixtureGames: 0,
     latestFinalDate: "2026-04-12",
     scheduledGames: 1230,
     teams: [

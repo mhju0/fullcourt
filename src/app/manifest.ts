@@ -26,8 +26,8 @@ export default function manifest(): MetadataRoute.Manifest {
       "NBA analytics for rest, travel, and schedule density, checked against games since 1985-86.",
     start_url: "/games",
     display: "standalone",
-    background_color: "#F6F7F9",
-    theme_color: "#F6F7F9",
+    background_color: "#F3F8FC",
+    theme_color: "#F3F8FC",
     icons: [
       // The committed brand mark, served by app/icon.svg. Chromium accepts SVG manifest
       // icons; the PNG below is the raster fallback and the iOS home-screen icon.

@@ -33,7 +33,7 @@ export default function BehindTheDataPage() {
       <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2">{METHODS.map((item) => <li key={item.href}><StudyLink {...item} compact /></li>)}</ul>
     </nav>
     <section id="how-to-read-any-number-here" className="flex flex-col gap-4">
-      <p className="reference-limit">Read percentages with their sample sizes and comparison baseline. Muted differences have not cleared the stated uncertainty threshold. Each method explains its evaluation and limitations.</p>
+      <p className="reference-limit">Read percentages with their sample sizes and comparison baseline. Where a study uses uncertainty styling, its legend explains the threshold. Each method explains its evaluation and limitations.</p>
       <Link className="reference-button justify-between" href="/behind-the-data/data-and-limits">Data sources and season coverage <span aria-hidden="true">→</span></Link>
     </section>
     <section id="tests-without-a-confirmed-effect" className="flex flex-col gap-4">

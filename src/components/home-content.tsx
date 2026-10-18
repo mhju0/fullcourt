@@ -33,7 +33,7 @@ export function HomeContent({ findings }: { findings: HomeFindings }) {
             <p className={`${styles.big} ${historical.edgePp < 0 ? styles.tired : styles.rested}`} data-testid="home-rest-edge">
               {signedNumber(historical.edgePp, 1)}<span>{"\u00a0"}pp</span>
             </p>
-            <p>Percentage-point difference from the home baseline in {historical.games.toLocaleString()} games with a large rest gap (a rest-advantage gap of {historical.minGap} or more).</p>
+            <p>Percentage-point difference from the home baseline in {historical.games.toLocaleString()} games with a large rest gap ({historical.minGap}+ fatigue-score points).</p>
             {historical.latestEvidenceDate ? <p className={styles.metadata}>Rest evidence through {historical.latestEvidenceDate}</p> : null}
           </> : <p>The historical comparison is unavailable. Model Results has the underlying evidence and data status.</p>}
         </div>

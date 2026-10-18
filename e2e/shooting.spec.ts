@@ -183,9 +183,15 @@ test.describe("Player Shooting by Rest", () => {
   }
   for (const column of [8, 9]) await expect(row.locator(`td:nth-child(${column})`)).toContainText("att.");
   const control = row.getByRole("button");
+  await expect(control).toHaveAccessibleName(/^Expand .+ shooting details$/);
+  await expect(control.locator("svg")).toBeVisible();
+  const target = (await control.boundingBox())!;
+  expect(target.height).toBeGreaterThanOrEqual(44);
+  expect(target.width).toBeGreaterThanOrEqual(44);
   await control.focus();
   await page.keyboard.press("Enter");
   await expect(control).toHaveAttribute("aria-expanded", "true");
+  await expect(control).toHaveAccessibleName(/^Collapse .+ shooting details$/);
   await expect(page.getByTestId("season-row").first()).toBeVisible();
   await page.keyboard.press("Space");
   await expect(control).toHaveAttribute("aria-expanded", "false");

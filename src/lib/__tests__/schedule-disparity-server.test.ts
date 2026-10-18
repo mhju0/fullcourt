@@ -133,6 +133,15 @@ describe("getScheduleDisparity — refusing an unrankable season", () => {
 
     expect(result.season).toBe("2026-27");
     expect(result.teams).toEqual([]);
+    expect(result.missingFixtureGames).toBe(1230);
+  });
+
+  it("forwards fixture coverage independently of provisional results", async () => {
+    mockGames.mockResolvedValueOnce(RANKABLE);
+    const { getScheduleDisparity } = await loadModule();
+    const result = await getScheduleDisparity("2024-25");
+    expect(result.provisional).toBe(false);
+    expect(result.missingFixtureGames).toBe(1228);
   });
 
   it("does not refuse a season whose teams played equally", async () => {
