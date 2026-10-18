@@ -21,11 +21,8 @@ import type { GameDateCount, GameResponse } from "@/types";
  *    memory a month click resolves synchronously, so there is no race to arbitrate
  *    and the monthless fetch stops being a special case: it is the only case.
  *
- * Status is a single tagged value rather than four independent booleans. The
- * previous shape allowed `loadingDates && !loadingGames && errorDates && !errorGames`,
- * a real combination that rendered nothing under its own MATCHUPS header and had to
- * be patched with `errorGames ?? errorDates`. Here that state has no name, so it
- * cannot be reached.
+ * Calendar requests and selected-slate requests have separate lifecycles: an
+ * explicit URL date can finish loading before its season's calendar does.
  */
 
 // ─── Value types ─────────────────────────────────────────────────
@@ -72,6 +69,10 @@ export interface SlateState {
   season: string;
   /** Every day with games in `season`, all months, ascending. */
   days: readonly GameDateCount[];
+  daysStatus: "loading" | "ready" | "error";
+  daysMessage: string | null;
+  /** Changes only when the calendar request is replaced, including A → B → A. */
+  daysGeneration: number;
   /** The only stored position. `slateMonth` derives the month tab from it. */
   selectedDate: string | null;
   games: readonly GameResponse[];
@@ -84,7 +85,7 @@ export interface SlateState {
   readonly fallbackMonth: number;
   /** "Today" in the NBA's Eastern calendar, frozen at init. */
   readonly todayKey: string;
-  /** Counts retries. The fetch effects depend on it, so the same season or date can be asked for again. */
+  /** Retries the selected slate without restarting its season calendar request. */
   attempt: number;
   generation: number;
   refreshStatus: "idle" | "refreshing" | "error";
@@ -108,8 +109,8 @@ export type SlateIntent =
  * fabricate one — only the fetch effects dispatch these.
  */
 export type SlateResolution =
-  | { type: "DAYS_RESOLVED"; days: readonly GameDateCount[] }
-  | { type: "DAYS_REJECTED"; message: string }
+  | { type: "DAYS_RESOLVED"; season: string; generation: number; days: readonly GameDateCount[] }
+  | { type: "DAYS_REJECTED"; season: string; generation: number; message: string }
   | { type: "SLATE_RESOLVED"; date: string; games: readonly GameResponse[]; generation?: number; checkedAt?: number }
   | { type: "SLATE_REJECTED"; date: string; message: string; generation?: number; background?: boolean };
 
@@ -128,6 +129,9 @@ export function initSlate(args: {
     status: "loadingDays",
     season: args.season,
     days: [],
+    daysStatus: "loading",
+    daysMessage: null,
+    daysGeneration: 0,
     selectedDate: null,
     games: [],
     message: null,
@@ -166,12 +170,30 @@ function shiftDateKey(dateKey: string, delta: number): string {
 export function slateReducer(state: SlateState, event: SlateEvent): SlateState {
   switch (event.type) {
     case "LOCATION_RESTORED": {
-      const next = { ...initSlate({ ...state, season: event.season }), generation: state.generation + 1 };
-      const restored = event.date ? selectDate(next, event.date) : next;
-      if (event.season !== state.season) return restored;
-      const resolved = state.days.length > 0 || state.status === "noDays"
-        ? slateReducer(restored, { type: "DAYS_RESOLVED", days: state.days }) : restored;
-      return resolved.selectedDate === state.selectedDate ? state : resolved;
+      if (event.season !== state.season) {
+        const next = {
+          ...initSlate({ ...state, season: event.season }),
+          generation: state.generation + 1,
+          daysGeneration: state.daysGeneration + 1,
+        };
+        return event.date ? selectDate(next, event.date) : next;
+      }
+      if (event.date === state.selectedDate) return state;
+      if (event.date) return selectDate(state, event.date);
+      const next: SlateState = {
+        ...state,
+        status: state.daysStatus === "error" ? "daysError" : "loadingDays",
+        selectedDate: null,
+        games: [],
+        message: state.daysMessage,
+        generation: state.generation + 1,
+        refreshStatus: "idle",
+        refreshMessage: null,
+        checkedAt: null,
+      };
+      return state.daysStatus === "ready"
+        ? slateReducer(next, { type: "DAYS_RESOLVED", season: state.season, generation: state.daysGeneration, days: state.days })
+        : next;
     }
 
     case "SEASON_SELECTED": {
@@ -186,6 +208,9 @@ export function slateReducer(state: SlateState, event: SlateEvent): SlateState {
         refreshMessage: null,
         checkedAt: null,
         days: [],
+        daysStatus: "loading",
+        daysMessage: null,
+        daysGeneration: state.daysGeneration + 1,
         selectedDate: null,
         games: [],
         message: null,
@@ -225,37 +250,44 @@ export function slateReducer(state: SlateState, event: SlateEvent): SlateState {
     }
 
     case "RETRY_REQUESTED": {
-      if (state.status === "daysError") {
-        return { ...state, status: "loadingDays", message: null, attempt: state.attempt + 1, generation: state.generation + 1 };
-      }
-      if (state.status === "slateError") {
-        return { ...state, status: "loadingSlate", message: null, attempt: state.attempt + 1, generation: state.generation + 1 };
-      }
-      return state;
+      const daysFailed = state.daysStatus === "error";
+      const slateFailed = state.status === "slateError";
+      if (!daysFailed && !slateFailed) return state;
+      return {
+        ...state,
+        daysStatus: daysFailed ? "loading" : state.daysStatus,
+        daysMessage: daysFailed ? null : state.daysMessage,
+        daysGeneration: state.daysGeneration + Number(daysFailed),
+        status: slateFailed ? "loadingSlate" : !state.selectedDate ? "loadingDays" : state.status,
+        message: null,
+        attempt: state.attempt + Number(slateFailed),
+        generation: state.generation + Number(slateFailed),
+      };
     }
 
     case "DAYS_RESOLVED": {
+      if (event.season !== state.season || event.generation !== state.daysGeneration) return state;
+      const nextState: SlateState = { ...state, daysStatus: "ready", daysMessage: null, days: event.days };
       // Explicit selections include no-game days and survive late calendar responses.
-      if (state.selectedDate) return { ...state, days: event.days };
-      if (event.days.length === 0) {
-        return { ...state, status: "noDays", days: [], selectedDate: null, games: [], message: null };
-      }
+      if (state.selectedDate) return nextState;
       const next = pickDefaultGamesDate(state.todayKey, event.days);
       if (!next) {
-        return { ...state, status: "noDays", days: event.days, selectedDate: null, games: [], message: null };
+        return { ...nextState, status: "noDays", selectedDate: null, games: [], message: null };
       }
-      return { ...selectDate(state, next), days: event.days };
+      return selectDate(nextState, next);
     }
 
-    case "DAYS_REJECTED":
+    case "DAYS_REJECTED": {
+      if (event.season !== state.season || event.generation !== state.daysGeneration) return state;
       return {
         ...state,
-        status: "daysError",
+        daysStatus: "error",
+        daysMessage: event.message,
         days: [],
-        selectedDate: null,
-        games: [],
-        message: event.message,
+        status: state.selectedDate ? state.status : "daysError",
+        message: state.selectedDate ? state.message : event.message,
       };
+    }
 
     case "SLATE_REFRESH_STARTED": {
       if (event.date !== state.selectedDate || event.generation !== state.generation) return state;
@@ -315,7 +347,7 @@ function withCounts(state: SlateState, dates: readonly string[]): GameDateCount[
  * week with holes in it cannot be read as a week.
  */
 export function weekDays(state: SlateState): readonly GameDateCount[] {
-  return state.selectedDate ? withCounts(state, weekDateKeys(state.selectedDate)) : [];
+  return state.daysStatus === "ready" && state.selectedDate ? withCounts(state, weekDateKeys(state.selectedDate)) : [];
 }
 
 /**
@@ -323,7 +355,7 @@ export function weekDays(state: SlateState): readonly GameDateCount[] {
  * is how many cells precede the 1st in a Sunday-first grid.
  */
 export function monthCalendar(state: SlateState): { leadingBlanks: number; days: readonly GameDateCount[] } {
-  if (!state.selectedDate) return { leadingBlanks: 0, days: [] };
+  if (state.daysStatus !== "ready" || !state.selectedDate) return { leadingBlanks: 0, days: [] };
   const prefix = state.selectedDate.slice(0, 8);
   const first = `${prefix}01`;
   const dates: string[] = [];
@@ -362,11 +394,6 @@ const MONTH_LABELS = [
   "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
 ] as const;
 
-/**
- * The chip region has four renderings, not seven. Keeping this mapping here —
- * where it is total over `SlateStatus` — is what stops the caller writing the
- * exhaustive switch twice.
- */
 export type CalendarView =
   | { kind: "loading" }
   | { kind: "error"; message: string }
@@ -374,15 +401,12 @@ export type CalendarView =
   | { kind: "days" };
 
 export function calendarView(state: SlateState): CalendarView {
-  switch (state.status) {
-    case "loadingDays":
+  switch (state.daysStatus) {
+    case "loading":
       return { kind: "loading" };
-    case "daysError":
-      return { kind: "error", message: state.message ?? "Failed to load dates" };
-    case "noDays":
-      return { kind: "empty" };
-    default:
-      // Days are loaded; the month may still legitimately hold none of them.
+    case "error":
+      return { kind: "error", message: state.daysMessage ?? "Failed to load dates" };
+    case "ready":
       return daysInMonth(state).length > 0 ? { kind: "days" } : { kind: "empty" };
   }
 }

@@ -176,3 +176,46 @@ test("existing palette Escape restoration survives closeout changes", async ({ p
   await expect(palette).toBeVisible();
   await page.keyboard.press("Escape"); await expect(palette).toHaveCount(0); await expect(opener).toBeFocused();
 });
+
+
+for (const width of [390, 1440]) {
+  test(`Games calendar retry preserves its loaded slate at ${width}px`, async ({ page }) => {
+    await fixtures(page); await page.setViewportSize({ width, height: 900 });
+    let dateRequests = 0;
+    let slateRequests = 0;
+    let release!: () => void;
+    const gate = new Promise<void>(resolve => { release = resolve; });
+    page.on("request", request => {
+      if (new URL(request.url()).pathname === "/api/games/2024-12-25") slateRequests++;
+    });
+    await page.route("**/api/games/dates?season=2024-25", async route => {
+      dateRequests++;
+      if (dateRequests <= 2) {
+        await route.fulfill({ status: 503, json: { data: null, error: "Dates unavailable" } });
+      } else {
+        await gate;
+        await route.fulfill({ json: { data: releaseDates("2024-25"), error: null } });
+      }
+    });
+    await page.goto("/games?season=2024-25&date=2024-12-25");
+    const games = page.getByRole("button", { name: /^Expand .* game details$/ });
+    await expect(games).toHaveCount(10);
+    if (width < 640) await page.getByRole("button", { name: "Calendar", exact: true }).click();
+    const error = page.getByRole("alert").filter({ hasText: "FAILED TO LOAD DATES" });
+    await expect(error).toBeVisible();
+    await expect(page.getByRole("alert").filter({ visible: true })).toHaveCount(1);
+    expect(slateRequests).toBe(1);
+    try {
+      await error.getByRole("button", { name: "RETRY DATES", exact: true }).click();
+      await expect(error).toHaveCount(0);
+      await expect(games).toHaveCount(10);
+      await expect(page.getByRole("group", { name: "Date", exact: true })).toHaveCount(0);
+      await expect(page.getByText(/NO GAMES (IN THIS|ON THIS)/)).toHaveCount(0);
+      expect(slateRequests).toBe(1);
+    } finally { release(); }
+    await expect(page.getByRole("group", { name: "Date", exact: true })).toBeVisible();
+    await expect(games).toHaveCount(10);
+    expect(dateRequests).toBe(3);
+    expect(slateRequests).toBe(1);
+  });
+}

@@ -488,7 +488,9 @@ export default function GamesPage() {
               })}
           </div>
         </div>
-        {slate.monthGrid.days.length > 0 ? (
+        {slate.calendar.kind === "loading" ? (
+          <Skeleton className="h-48 w-full bg-[var(--term-surface-2)] sm:hidden" style={{ borderRadius: "var(--term-radius)" }} />
+        ) : slate.monthGrid.days.length > 0 ? (
           <div className="sm:hidden">
             <GroupLabel>Date · games per day</GroupLabel>
             <div aria-hidden="true" className="mono -mx-2 grid grid-cols-7 pt-2 text-center" style={{ fontSize: TYPE.micro, color: "var(--term-text-muted)" }}>
@@ -549,10 +551,11 @@ export default function GamesPage() {
         {slate.calendar.kind === "loading" ? (
           <Skeleton className="mt-2 h-16 w-full max-w-md bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)" }} />
         ) : slate.calendar.kind === "error" ? (
-          // Quiet on purpose: the MATCHUPS card below carries the alert and the retry.
-          <p className="mono pt-2" style={{ fontSize: 12, color: "var(--term-text-muted)" }}>
-            DATES DID NOT LOAD.
-          </p>
+          slate.selectedDate ? null : (
+            <p className="mono pt-2" style={{ fontSize: 12, color: "var(--term-text-muted)" }}>
+              DATES DID NOT LOAD.
+            </p>
+          )
         ) : slate.calendar.kind === "empty" ? (
           <p className="mono pt-2" style={{ fontSize: 12, color: "var(--term-text-muted)" }}>
             NO GAMES IN THIS MONTH.
@@ -576,6 +579,23 @@ export default function GamesPage() {
 
         </div>
         </div>
+        {slate.calendar.kind === "error" && slate.selectedDate ? (
+          <MessageCard
+            tone="error"
+            title="FAILED TO LOAD DATES"
+            body={slate.calendar.message}
+            action={
+              <button
+                type="button"
+                onClick={() => slate.send({ type: "RETRY_REQUESTED" })}
+                className={cn(termBtn, "active:scale-[0.97]")}
+                style={termBtnStyle}
+              >
+                RETRY DATES
+              </button>
+            }
+          />
+        ) : null}
         {/* The phone's date control: one week, every day a full-size target, no sideways scroll.
             The open calendar already shows this week inside its month, so the strip steps aside. */}
         <div className={cn("sm:hidden", calendarOpen && "hidden")}>
@@ -583,9 +603,11 @@ export default function GamesPage() {
           {slate.calendar.kind === "loading" ? (
             <Skeleton className="mt-2 h-12 w-full bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)" }} />
           ) : slate.calendar.kind === "error" ? (
-            <p className="mono pt-2" style={{ fontSize: 12, color: "var(--term-text-muted)" }}>
-              DATES DID NOT LOAD.
-            </p>
+            slate.selectedDate ? null : (
+              <p className="mono pt-2" style={{ fontSize: 12, color: "var(--term-text-muted)" }}>
+                DATES DID NOT LOAD.
+              </p>
+            )
           ) : slate.week.length === 0 ? (
             <p className="mono pt-2" style={{ fontSize: 12, color: "var(--term-text-muted)" }}>
               NO GAMES IN THIS SEASON.
