@@ -18,7 +18,7 @@ FullCourt studies NBA schedule conditions and historical results. Use these term
 
 **Decidable**: A gap outside the neutral band, identifying a more-rested side. This is separate from whether the game is called or publishable.
 
-**Called**: A decidable game in which the more-rested team is at home and the venue is not a neutral site (D-92), selected by `isCalledSide()` in `src/lib/rest-advantage-evidence.ts`. The headline backtest rate uses this group. In explanatory copy, prefer “rested team at home.”
+**Called**: A decidable game in which the more-rested team is at home and the venue is not a neutral site (D-92), selected by `isCalledSide()` in `src/lib/rest-advantage-evidence.ts`. The headline backtest rate uses this group. Every surface names this group “rested team at home” in prose, tiles, headings and chart labels, and “Rested at home” in a narrow table column (D-109). Avoid “home team more rested”, “rested home team” and “rested-home”.
 
 **Publishable**: An admissible regular-season game outside an excluded abnormal stretch. `publishableGames()` in `src/lib/db/queries.ts` owns this filter. Publication eligibility is separate from the rest-gap classification.
 
@@ -26,13 +26,13 @@ FullCourt studies NBA schedule conditions and historical results. Use these term
 
 **Rested team on the road**: The more-rested team is the visitor. Its results appear separately against a road baseline and are not pooled into the headline. “Rested visitor” is also clear in explanatory prose.
 
-**Baseline**: The win rate for a venue side regardless of rest. Compare rested home teams with the home rate and rested visitors with the road rate. Season charts use that season's own baseline. The home-road difference is distinct from either baseline itself. Read current values from data rather than copying them into prose.
+**Baseline**: The win rate for a venue side regardless of rest. Compare the rested team at home with the home rate and rested visitors with the road rate. Season charts use that season's own baseline. The home-road difference is distinct from either baseline itself. Read current values from data rather than copying them into prose.
 
 **Home win rate**: The percentage of eligible games won by the designated home team, regardless of rest. This is the canonical label for the percentage; avoid describing a 55% home win rate as a “55% advantage.”
 
 **Home-court advantage**: The broader topic of how playing at home relates to results. Home win rate describes observed outcomes; it does not isolate the causal effect of the venue.
 
-**Rested-home gap**: The rested-at-home win rate minus the home win rate for the same season or stated period, expressed in percentage points. This is a descriptive comparison, not an isolated causal effect of rest.
+**Rested team at home vs home rate**: The rested team at home’s win rate minus the home win rate for the same season or stated period, expressed in percentage points. This is a descriptive comparison, not an isolated causal effect of rest.
 
 **Claim**: A statement about a result or comparison. State the population, denominator, reference, and material limitations. Derive comparisons over live figures using `rest-advantage-display.ts` or `analysis-claims.ts`. A rate above baseline is an association; it does not by itself measure a causal rest effect.
 

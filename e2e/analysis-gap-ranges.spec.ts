@@ -67,7 +67,7 @@ test("each gap-size bar opens exactly its own games, with the home team as the r
   });
   await page.goto("/analysis");
 
-  await expect(page.getByText("HOME TEAM MORE RESTED", { exact: true })).toBeVisible({ timeout: 60_000 });
+  await expect(page.getByText("RESTED TEAM AT HOME", { exact: true })).toBeVisible({ timeout: 60_000 });
   await expect(page.getByText("GAP 0.5 OR MORE · 27,420 GAMES")).toBeVisible();
   await expect(page.getByText("GAP 5 OR MORE · 3,756 GAMES")).toBeVisible();
 
