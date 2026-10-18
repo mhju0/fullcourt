@@ -3,6 +3,75 @@
   padding-block: 12px 4px;
 }
 
+.chartHeader {
+  padding-top: 16px;
+}
+
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  width: fit-content;
+  max-width: 100%;
+  cursor: pointer;
+}
+
+.toggle input {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  accent-color: var(--term-accent);
+}
+
+.toggle input:focus-visible {
+  outline: 2px solid var(--term-accent);
+  outline-offset: 4px;
+}
+
+.chartControls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 24px;
+}
+
+.picker {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.picker select {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.swatch {
+  position: relative;
+  width: 24px;
+  border-top: 2px solid currentColor;
+}
+
+.swatch::after {
+  content: "";
+  position: absolute;
+  top: -4px;
+  left: 8px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.homeSwatch { color: var(--term-text-dim); }
+.restSwatch { color: var(--term-blue); border-top-style: dashed; }
+.largeSwatch { color: var(--term-accent); }
+
 .chart {
   display: block;
   width: 100%;
@@ -27,37 +96,107 @@ thead .seasonCell {
   outline: none;
 }
 
-.point:focus-visible circle:first-of-type {
+.point:focus-visible .focusTarget {
   stroke: var(--term-accent);
-  stroke-width: 3;
+  stroke-width: 2;
 }
 
 .inspection {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: 36% minmax(0, 1fr);
+  border: 1px solid var(--term-hairline);
+  border-top: 0;
+}
+
+.homeRegion {
+  padding: 16px 12px;
+  border-right: 1px solid var(--term-hairline);
+  min-width: 0;
+}
+
+.season {
+  margin: 4px 0 24px;
+  font-size: 18px;
+  line-height: 1.4;
+}
+
+.homeRate {
+  margin: 4px 0;
+  font-size: 24px;
+  line-height: 1.4;
+}
+
+.count {
+  color: var(--term-text-muted);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 12px;
+  line-height: 1.55;
+  font-variant-numeric: tabular-nums;
+}
+
+.comparisonRegion {
+  min-width: 0;
+}
+
+.comparisonRow {
+  padding: 16px 12px;
+  min-width: 0;
+}
+
+.comparisonRow + .comparisonRow {
   border-top: 1px solid var(--term-hairline);
 }
 
-.inspection > div {
-  min-width: 0;
-  padding: 12px 0;
+.comparisonLabel {
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 8px;
 }
 
-.inspection > div:nth-child(even) {
-  padding-left: 12px;
-  border-left: 1px solid var(--term-hairline);
+.restComparison :is(.comparisonLabel, .rate) { color: var(--term-blue-text); }
+.largeComparison :is(.comparisonLabel, .rate) { color: var(--term-accent); }
+
+.comparisonMetrics {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 4px 8px;
+  align-items: end;
+}
+
+.rate {
+  font-size: 18px;
+  line-height: 1.4;
+}
+
+.gap { text-align: right; }
+.gapLabel { font-size: 12px; color: var(--term-text-muted); }
+.gapValue { font-size: 15px; line-height: 1.4; white-space: nowrap; }
+.rate.unavailableRate, .gapValue.unavailableRate { font-size: 12px; white-space: normal; }
+
+.comparisonMetrics > .count {
+  grid-column: 1 / -1;
 }
 
 @media (min-width: 640px) {
   .inspection {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: 40% minmax(0, 1fr);
   }
 
-  .inspection > div {
-    padding-inline: 16px;
-  }
+  .homeRegion { padding: 24px; }
+  .comparisonRow { padding: 16px 24px; }
+  .comparisonLabel { font-size: 15px; }
+  .season { font-size: 24px; }
+  .homeRate { font-size: 32px; }
+  .rate { font-size: 24px; }
+  .gapValue { font-size: 18px; }
+  .comparisonMetrics { column-gap: 16px; }
+  .rate.unavailableRate, .gapValue.unavailableRate { font-size: 15px; }
+}
 
-  .inspection > div:first-child {
-    padding-left: 0;
-  }
+@media (max-width: 359px) {
+  .homeRegion, .comparisonRow { padding-inline: 8px; }
+  .season { font-size: 15px; }
+  .homeRate { font-size: 18px; }
+  .comparisonMetrics { grid-template-columns: minmax(0, 1fr); }
+  .gap { text-align: left; }
 }

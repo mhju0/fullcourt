@@ -6,33 +6,20 @@ FullCourt studies NBA rest, travel, schedule density, and outcomes. The homepage
 rest and schedule findings; Games, Season Report, Schedule Edge, and Explore are the primary
 navigation. Explore contains the other basketball studies. There are no accounts or persisted
 personal preferences; exploration state is shareable through URLs and browser history.
-The rest-focused redesign shipped in PR #84 (`776683e`). Its first verified Officiating refresh
-and release record shipped in PR #85 (`34b8961`). Production: https://fullcourt.fyi.
-The [dated release review](design/redesign-release-review.md) records verification; use GitHub
-and Vercel for subsequent deployment status.
-Games now exposes Season → Month → Date controls, with shared season selectors across studies.
-Games has one layout at every width, in tip-off order (D-79). Playoff Rest explains between-round recovery directly.
-Officiating covers 12 regular seasons and 4,546 reports, including the partial 2014–15 season;
-[archive evidence](research/2026-09-09-l2m-archive.md) records source checks and historical limits.
-The homepage hero now contains only the headline, original description and primary action.
-The one-game example and its supporting reads were removed under D-67. Next.js and its ESLint
-config move together: 16.4.1 shipped in PR #174 on 2026-10-18 (`460a3fe`); the
-lockfile resolves Sharp 0.35.5 (pinned on 2026-10-07 for GHSA-wq5f-xc86-pv6w), clearing the production dependency audit. See [verification](design/home-hero-release-review.md).
-Shared filters now use 44px targets and 16px text. Analysis uses equal-width filter columns;
-Season Report uses bordered sections with a separate interpretation surface. The
-[control and section audit](design/control-and-section-audit.md) records route coverage and rationale.
-D-69 makes Playoff Rest and Expected Shot Value default to their latest usable publication.
-Their selected views are shareable through URLs and copy actions. `/data-status` separates
-coverage, refresh evidence and database connectivity; the homepage historical date comes from
-the analysis population. Games moves offseason context beside mobile date controls, names
-matchup controls distinctly, and restores selected-chip visibility after resizing. See the
-[seven-fix review](design/seven-polish-fixes-review.md) for verification and release evidence.
-D-70 adds `/home-court`, reached through Explore, for annual home and rested-home win-rate
-history with an expandable count table. Season Report exposes the selected home baseline
-alongside the rested-home result and gap. Both retain the 100-game rested-home display gate;
-ongoing seasons are labeled explicitly and excluded from completed-history summaries.
-The [research record](research/2026-09-11-home-advantage-trend.md) retains data, sources, and
-owner decisions. See the [release review](design/home-court-study-review.md) and Git for verification and deployment status.
+Production: https://fullcourt.fyi. Condensed release context, 2026-10-19:
+- Redesign PR #84 (`776683e`) and Officiating PR #85 (`34b8961`) established the current product;
+  [release review](design/redesign-release-review.md), Git and Vercel retain delivery evidence.
+- Next.js/ESLint 16.4.1 shipped in PR #174; Sharp 0.35.5 addresses the dependency advisory.
+  The homepage hero keeps its headline, description and primary action (D-67).
+- Games uses Season → Month → Date and tip-off ordering (D-79). Shared filters use 44px targets
+  and 16px text; report sections separate measured results and interpretation.
+  [Control audit](design/control-and-section-audit.md) and [polish review](design/seven-polish-fixes-review.md) retain detail.
+- D-69 defaults Playoff Rest/Expected Shot Value to their latest usable publication; selected
+  views remain shareable. Data Status separates coverage, refresh evidence and connectivity.
+- D-70 adds annual Home-court history and Season Report's selected-season baseline. Ordinary
+  rested-home rates retain the 100-game display gate; ongoing seasons have explicit labels.
+  [Research](research/2026-09-11-home-advantage-trend.md) and [review](design/home-court-study-review.md) retain the original evidence.
+- [Officiating archive evidence](research/2026-09-09-l2m-archive.md) records the publication's limits.
 ## Architecture and safeguards
 - Next.js serves pages and API routes. Database reads use Drizzle/postgres-js against Supabase
   PostgreSQL. Offline Python analyses also publish committed artifacts.
@@ -72,10 +59,9 @@ refit, database migration, accounts, or new analytics are implied by repository 
 
 Condensed again on 2026-10-11; DECISIONS.md and dated review records retain detail.
 
-- **Methodology/usability (D-64, D-65).** Behind the Data audit shipped on 2026-09-09; see FRONTEND.md and [review](design/usability-audit-review.md).
-- **Release checks, 2026-10-03 (D-71, D-72).** Games avoids URL writes during navigation (`route-transition.ts`). Turbopack build cache is off; after globals.css changes verify production CSS. e2e is outside CI and needed to discover stale specs.
-- **Reading pages, 2026-10-04 (D-73).** About/How it was built use `reading.module.css`.
-- **Data audit, 2026-10-04.** SQL recompute matched production; all 50,495 finals were compared with basketball-reference/nba.com. Owner corrected four 2019-20 dates, nine scores, one OT count, 75 missing OT games and playoff series 18; fatigue/predictions rebuilt (PR #104). After score/date fixes run `scripts/export_fatigue_features.ts` fidelity check for stale rows.
+- D-64/D-65: Behind the Data shipped; see FRONTEND.md and [review](design/usability-audit-review.md). D-73 reading pages use `reading.module.css`.
+- D-71/D-72: Games avoids URL writes during navigation; build cache is off. Verify production CSS after global-style changes. Database-backed e2e stays outside CI.
+- PR #104 corrected audited dates, scores and overtime; the recompute matched production. After score/date fixes run `scripts/export_fatigue_features.ts` to check fidelity.
 
 Still open from those entries:
 
@@ -123,36 +109,23 @@ Open:
 
 ## Summary of the entries from 2026-10-07 to 2026-10-18
 
-Condensed on 2026-10-18 from 22 entries; DECISIONS.md D-78 to D-109, the dated research and
-report records, and Git hold the detail.
+Condensed again on 2026-10-19; DECISIONS.md D-78 to D-109, dated reports and Git retain detail.
 
-- **Live slate and pipeline (D-79 to D-83).** Finals only, so a row reads LIVE, then PENDING, then
-  FINAL, with twelve hourly cron entries. The 2026-27 schedule matches ESPN and
-  basketball-reference (D-82); three nightly faults were fixed and all 103,390 fatigue rows
-  recomputed with no difference ([recompute audit](research/2026-10-11-fatigue-recompute-audit.md)).
-  The score route rescores each finalized team's next game (D-83). LAUNCH_DAY.md says how to check it.
-- **Launch remediation (D-84, D-85; PRs #124 to #126).** Writers share lock-before-read
-  transactions, and the generator guards keep Officiating publication monotonic. The
-  [remediation report](reports/2026-10-11-remediation/index.html) keeps all 28 launch statuses.
-- **Motion and accessibility audit (PR #127).** The five selected motion fixes shipped with
-  [plans](../plans/README.md); the [audit report](reports/2026-10-14-accessibility-usability.html)
-  and [findings](../anti-slop/audit-002-2026-10-14.md) are committed. CI/CD hardening F1 to F7
-  shipped the same day, and the owner rotated the database credential.
-- **Labels and data (D-86 to D-94, PRs #136 to #148).** Full days off, gaps compared at two
-  decimals, neutral hosts never called, former team codes named; the 9 neutral-site prediction
-  rows were deleted with owner approval.
-- **Games board and model (D-95 to D-100, PRs #150 to #152).** Four flags per line, BY DATE / BY
-  TEAM, the freeze withdrawn (D-97), and the altitude carryover removed with a production
-  recompute: 27,420 graded calls, 61.2%.
-- **Gap sizes (D-101 to D-107, PRs #157 to #166).** EVEN under 0.5, small 0.5 to 3, medium 3 to 5,
-  large 5+, on every tab. The owner moved Supabase to Pro for one month through launch.
-- **Full-service audit (D-108, D-109, PRs #167 to #169).** Data agreed on every surface; "3+ rest
-  edge" with the venue beside it, "Vs home rate" / "Vs baseline", and "rested team at home"
-  everywhere ("Rested at home" in narrow columns). Merged 2026-10-18 as `ab3aa8d`; merged
-  branches and all seven old worktrees were removed the same day.
-- **Cleanup, 2026-10-18 (this PR).** The Officiating season strip opens on whole columns at every
-  width (it cut 2017-18's 89.9% to "9.9%" at 1280px). Dependabot ignores `@types/node` above the
-  Node 22 runtime; #156 closed.
+- D-79–D-83: finals-only LIVE/PENDING/FINAL, twelve hourly crons, verified schedule,
+  next-game rescoring and the unchanged 103,390-row [recompute](research/2026-10-11-fatigue-recompute-audit.md).
+  LAUNCH_DAY.md retains the live validation procedure.
+- D-84/D-85: lock-before-read writers and monotonic Officiating publication; the
+  [remediation report](reports/2026-10-11-remediation/index.html) retains all 28 launch statuses.
+- PR #127 shipped the selected motion/accessibility fixes and CI/CD hardening F1–F7;
+  [plans](../plans/README.md), [audit](reports/2026-10-14-accessibility-usability.html) and
+  [findings](../anti-slop/audit-002-2026-10-14.md) retain the evidence. Database credentials rotated.
+- D-86–D-100: full days off, two-decimal gap comparison, neutral-host exclusion, historical
+  team names, owner-approved deletion of nine neutral calls, BY DATE/BY TEAM, and ratified
+  altitude-carryover removal (27,420 calls, 61.2% at that snapshot).
+- D-101–D-109: small 0.5–3, medium 3–5, large 5+; venue-labelled rest edges and consistent
+  rested-team-at-home copy. PRs #167–#169 merged as `ab3aa8d` on October 18.
+- October 18 cleanup fixed Officiating season-strip clipping and pinned Node types below23;
+  #156 closed. Supabase Pro was selected for launch; its review remains listed below.
 
 Still open from those entries:
 
@@ -203,3 +176,33 @@ applicable design guidance. D-111 records the subtly sky-tinted palette and pres
 Implementation is isolated on `codex/audit-recommendations`; release acceptance is in
 [the review record](design/2026-10-18-audit-recommendations-review.md). No new production release
 is claimed until that record confirms it. Physical-device and first-played-slate checks remain open.
+
+## Recent comparison and design options — 2026-10-18
+
+PR #175 is deployed as `958306e`; production and post-merge CI were verified. The owner then
+approved the homepage's latest-ten-completed-season comparison and one-line team schedule
+headers: Game covers times/results, ET moves to a note, and phone RA has an explicit key (D-112/D-113).
+Implementation is prepared on `codex/recent-home-schedule`; its verification is in
+[the review](design/2026-10-18-recent-home-schedule-review.md). It is not yet deployed.
+The large-gap chart series and broader table layouts remain visual options on
+`prototype/chart-schedule-options`. The existing 100-game display rule remains unchanged.
+
+## Selected chart and schedule options — 2026-10-19
+
+The owner selected table A and an optional raw 5+ annual line (D-114). Work continues on
+PR #176: Game stays visible on phones, and the chart starts with two series until its toggle
+is enabled. Small-sample counts/warnings remain visible; ordinary 0.5+ gating is preserved.
+The new `/api/home-court` prepares both annual groups from one source snapshot. Chart title
+padding also addresses the nested-heading issue shown by the owner. Verification and release
+state are recorded in [the review](design/2026-10-19-chart-toggle-table-a-review.md).
+Merge approval and deployed verification remain separate; production is still PR #175.
+
+## Approved stacked comparison and release — 2026-10-19
+
+The owner approved mock `0358ade` and authorized PR #176's merge and deployment. The D-114
+amendment replaces open/closed markers with filled circles and one general sample-size note.
+Season/Home stay left; 0.5+ and optional 5+ records each have a same-season comparison on
+the right. Counts, ordinary gating, missing-data handling and the model remain unchanged.
+The [review](design/2026-10-19-chart-toggle-table-a-review.md), PR #176 and its matching Vercel
+deployment are the release evidence; check Git/Vercel for the final merge SHA and readiness.
+Physical-device, human screen-reader and first-played-slate checks remain open.

@@ -25,7 +25,7 @@ export function HomeContent({ findings }: { findings: HomeFindings }) {
 
       <section className={styles.finding} aria-labelledby="rest-finding">
         <div>
-          <p className={styles.eyebrow}>{historical?.coverage ? `Regular season · ${historical.coverage}` : "Historical rest comparison"}</p>
+          <p className={styles.eyebrow}>{historical?.coverage ? `Latest ${historical.seasonCount} completed regular ${historical.seasonCount === 1 ? "season" : "seasons"} · ${historical.coverage}` : "Historical rest comparison"}</p>
           {/* Two lines on purpose. The column is never wide enough for one, and a wrapped
               separator left "·" hanging at the end of the first. */}
           <h2 id="rest-finding">Large rest gaps<span className="sr-only"> · </span><br />for the rested team at home</h2>
@@ -41,7 +41,7 @@ export function HomeContent({ findings }: { findings: HomeFindings }) {
           {historical && <>
             <RateBar label="Home teams overall" value={historical.baselinePct} />
             <RateBar label="Rested team at home · large gap" value={historical.winPct} rested />
-            <p>Bars run from 0–100%. Baseline: {historical.baselineGames.toLocaleString()} games. These historical groups differ in more than rest; this is an association, not a causal estimate.</p>
+            <p>Bars run from 0–100%. Baseline: {historical.baselineGames.toLocaleString()} games. Both rates cover the same completed seasons. The difference uses unrounded rates. These historical groups differ in more than rest; this is an association, not a causal estimate.</p>
           </>}
           <TransitionLink href="/analysis" className={styles.textLink}>Read the model results <span aria-hidden="true">→</span></TransitionLink>
         </div>

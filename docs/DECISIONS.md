@@ -1606,3 +1606,72 @@ clearer hierarchy and consistent surfaces. Repeated data exploration and keyboar
 remain immediate; the existing brief Home entrance and bars retain reduced-motion guards.
 No new motion library, decorative loops, animated numbers or scroll-revealed research is needed.
 Design dials: ENERGY 1, RHYTHM 2, MOTION 1, within the existing Front Office direction.
+
+## D-112 — Homepage compares the latest ten completed seasons (2026-10-18)
+
+The owner approved replacing the homepage's whole-history comparison with the latest ten
+completed regular seasons. Both the all-home baseline and the large-rest-gap group use the
+same season list, chosen from the baseline's completion metadata. The large-gap definition
+remains 5+ fatigue-score points; neutral sites and existing publication exclusions remain unchanged.
+
+Sum wins and game counts before calculating rates and their percentage-point difference.
+Do not average rounded annual rates or subtract the two rounded display percentages. State the
+period, actual season count, sample sizes and rounding basis beside the finding. A season with
+zero large-gap games still contributes its home baseline; an ongoing season contributes to neither
+group. Fewer than ten available completed seasons receive an honest count. The evidence date
+comes from the selected window. The reason is relevance to the recent NBA, not a larger result.
+
+A homepage-specific stamped cache reads the eligible game population once, then the completion
+set, and uses the canonical backtest builder for both series. It reuses existing stamp readers and
+maximum age. The shared Analysis API and Home-court study keep their historical populations.
+
+## D-113 — Team schedule headers and review-only visual options (2026-10-18)
+
+The owner requested Game for the column that shows either a tip-off time or a completed result.
+Eastern Time (ET) moves to a table note; all column headings stay on one line. The number heading
+uses #, and the narrow rest-advantage heading uses RA with an explicit key. Under the existing
+phone layout, result/state remains below the date. Alternative column structures are prototypes
+for owner review, not approved production layout changes.
+
+The owner also requested a visual preview of a third Home-court series for large rest gaps.
+That exploration stays on a throwaway prototype branch. It does not change the published
+100-game display policy or add a live chart series before a product decision.
+
+## D-114 — Optional large-gap history and team schedule A (2026-10-19)
+
+The owner selected table A: number, date, opponent, Game, rest gap. Phones hide the number
+but retain Game, so tip-off times and completed results have their own column. Eastern Time
+and the rest-advantage unit remain in a nearby key; headers remain on one line. Existing
+selected-team signs, game links, lifecycle states and Cup placeholder numbering are preserved.
+
+The Home-court chart keeps its original two series initially. An accessible toggle adds the
+raw annual record for the rested home team with a rest gap of 5+ fatigue-score points. This
+explicit exploration mode may show fewer than 100 games; wins, sample counts and a visible
+small-sample warning accompany those observations. It does not relax the existing 100-game
+gate for the ordinary rested-home series (0.5+), change the homepage window, or alter the model.
+Missing/zero-game seasons interrupt the optional line instead of becoming 0% observations.
+The chart scale includes enabled observations, including legitimate 0% and 100% outcomes.
+
+A dedicated home-court response derives both annual groups from the same canonical eligible
+game rows and completion metadata. It avoids joining differently refreshed responses and
+keeps the toggle a local view change. Existing annual displayed-rate subtraction (D-93) and
+homepage raw pooled-rate subtraction (D-112) remain separate rules. Chart headings receive
+space above the title as well as beside it; the nested title in this chart previously missed
+the padding applied to direct report headings.
+
+### D-114 amendment — Filled markers and paired seasonal comparisons (2026-10-19)
+
+After reviewing the stacked-inspection mock (`0358ade` on the prototype branch), the owner
+approved filled circles for all three chart series and one general sample-size statement.
+Remove open/closed sample-size encodings and individual below-100 warnings. Keep the actual
+wins and denominators, ordinary 0.5+ presentation gate, raw 5+ observations and missing-data
+semantics. A general statement explains that seasonal sample sizes vary, these are observed
+records rather than precise estimates, and the overlapping groups do not establish causation.
+
+Season and Home remain together on the left of the inspection panel. The right stacks the
+0.5+ and optional 5+ records, each with its own difference from that season's home rate.
+Both use displayed-rate subtraction (D-93); a missing record has no percentage-point value.
+Use threshold labels, since 0.5+ includes the 5+ group. The toggle starts off, preserves the
+selected season and reveals the second comparison row when enabled. A guide and filled
+selected points replace the hollow selection ring. The owner also authorized PR merge and
+ordinary application deployment after verification.

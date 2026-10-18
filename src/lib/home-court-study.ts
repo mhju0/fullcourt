@@ -1,8 +1,46 @@
 import { liftOverBaseline } from "@/lib/rest-split-facts";
 import { MIN_GAMES_FOR_INFERENCE } from "@/lib/season-report";
 import type { AnalysisResponse } from "@/types";
+import { buildHistoricalBacktest, gapRangeByKey, type HistoricalGameEvidenceRow } from "@/lib/rest-advantage-evidence";
 
 export type HomeCourtSeason = AnalysisResponse["seasonWinRates"][number];
+
+export type HomeCourtStudySeason = HomeCourtSeason & {
+  largeRestGap: { games: number; restedTeamWins: number; winPct: number | null };
+};
+export type HomeCourtStudyData = { seasonWinRates: HomeCourtStudySeason[] };
+
+export function buildHomeCourtStudy(
+  games: readonly HistoricalGameEvidenceRow[],
+  incompleteSeasons: ReadonlySet<string> = new Set()
+): HomeCourtStudyData {
+  const base = buildHistoricalBacktest(games, 0, incompleteSeasons);
+  const large = new Map(buildHistoricalBacktest(games, gapRangeByKey("large").min, incompleteSeasons).seasonWinRates
+    .map((row) => [row.season, row]));
+  return {
+    seasonWinRates: base.seasonWinRates.map((row) => {
+      const largeRow = large.get(row.season);
+      const count = largeRow?.games ?? 0;
+      const wins = largeRow?.restedTeamWins ?? 0;
+      return { ...row, largeRestGap: {
+        games: count, restedTeamWins: wins, winPct: count > 0 ? (wins / count) * 100 : null,
+      } };
+    }),
+  };
+}
+
+export function homeCourtChartSegments(values: readonly (number | null)[]): { index: number; rate: number }[][] {
+  const segments: { index: number; rate: number }[][] = [];
+  let points: { index: number; rate: number }[] = [];
+  values.forEach((rate, index) => {
+    if (rate === null) {
+      if (points.length > 1) segments.push(points);
+      points = [];
+    } else points.push({ index, rate });
+  });
+  if (points.length > 1) segments.push(points);
+  return segments;
+}
 
 /** The difference of the two rates as printed beside it, so the row's arithmetic holds (D-93). */
 export function restedHomeGap(row: HomeCourtSeason): number | null {

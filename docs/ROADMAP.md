@@ -36,6 +36,9 @@ No accounts or persisted personal preferences. Games owns matchups, Season Repor
 outcomes, Schedule Edge owns demands and advantages, and Model Results owns historical evaluation.
 The Home-court advantage study provides venue-baseline history through Explore; Season Report
 shows the selected season's corresponding comparison. See [D-70](DECISIONS.md).
+The approved Home-court refinement adds an optional raw 5+ line and paired seasonal
+comparisons, with actual counts and one general sample-size note (D-114 amendment).
+The homepage uses the same latest ten completed seasons for both compared groups (D-112).
 Officiating stays focused; prior referee studies remain in the research archive.
 
 Fatigue coefficients require an explicit owner decision under ADR 0006. Schema changes require
