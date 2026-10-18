@@ -204,7 +204,7 @@ function WinRateTooltip({ active, payload }: TooltipContentProps) {
   return (
     <div style={termTooltip}>
       <p style={{ color: "var(--term-text)", fontWeight: 700, letterSpacing: TRACK.sub }}>{d.label.toUpperCase()} GAP · {d.span}</p>
-      <p style={{ color: "var(--term-text-muted)", marginTop: SPACE.xs }}>HOME TEAM MORE RESTED</p>
+      <p style={{ color: "var(--term-text-muted)", marginTop: SPACE.xs }}>RESTED TEAM AT HOME</p>
       {/* The bar plots the deviation, so the tooltip leads with it and carries the
           absolute win rate underneath — the axis no longer shows it anywhere. The
           baseline is named on the same line so the two can never be read apart. */}
@@ -1081,7 +1081,7 @@ export function AnalysisContent({ asOf }: { asOf?: DataAsOf | null }) {
         <SectionDivider label="THE HEADLINE, AS DISTANCE FROM HOME COURT" />
         <div className="mt-4">
           <HeadlineDotPlot
-            calledLabel="HOME TEAM MORE RESTED · WON"
+            calledLabel="RESTED TEAM AT HOME · WON"
             calledPct={claims.tiles[0].winPct}
             declinedPct={claims.declinedHalf.homeWinPct}
             baselinePct={homeBaseline}
@@ -1124,7 +1124,7 @@ export function AnalysisContent({ asOf }: { asOf?: DataAsOf | null }) {
           opens exactly those (D-102); the whiskers say how far each rate could move by chance. */}
       <div style={termCardStyle}>
         <SectionDivider
-          label="DOES A BIGGER GAP WIN MORE? · HOME TEAM MORE RESTED"
+          label="DOES A BIGGER GAP WIN MORE? · RESTED TEAM AT HOME"
           descriptor="CLICK A BAR TO SEE ITS GAMES"
         />
         <div className="mt-2 h-72">

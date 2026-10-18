@@ -14,12 +14,12 @@ test.describe("Analysis page", () => {
     // one, and "overall" is the single word this page cannot honestly use about its own rate.
     // "ANY GAP" was retired on 2026-10-17 (D-102): it read as every game, when it meant every
     // gap of 0.5 or more, so the floor is now stated in numbers on the detail line.
-    await expect(page.getByText("HOME TEAM MORE RESTED", { exact: true })).toBeVisible();
-    await expect(page.getByText("HOME TEAM MORE RESTED · LARGE GAP", { exact: true })).toBeVisible();
+    await expect(page.getByText("RESTED TEAM AT HOME", { exact: true })).toBeVisible();
+    await expect(page.getByText("RESTED TEAM AT HOME · LARGE GAP", { exact: true })).toBeVisible();
     await expect(page.getByText(/^GAP 0\.5 OR MORE · [\d,]+ GAMES$/)).toBeVisible();
     await expect(page.getByText(/ANY GAP/)).toHaveCount(0);
     // Two tiles, not three: the gap-size chart below carries the other ranges.
-    await expect(page.locator("main").getByText(/^HOME TEAM MORE RESTED( · LARGE GAP)?$/)).toHaveCount(2);
+    await expect(page.locator("main").getByText(/^RESTED TEAM AT HOME( · LARGE GAP)?$/)).toHaveCount(2);
 
     // The excluded half, which must never leave the page: without it the headline sits alone
     // with no sign that every rested-visitor game was set aside to produce it. It is a sentence rather

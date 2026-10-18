@@ -222,7 +222,7 @@ export function buildAnalysisClaims(
   const smallFloor = gapRangeByKey("small").min
   const tiles: ClaimTile[] = [
     {
-      label: "HOME TEAM MORE RESTED",
+      label: "RESTED TEAM AT HOME",
       value: `${data.overallWinRate}%`,
       detail: `GAP ${smallFloor} OR MORE · ${data.totalGames.toLocaleString()} GAMES`,
       winPct: data.overallWinRate,
@@ -237,7 +237,7 @@ export function buildAnalysisClaims(
   const large = data.gapRanges.find((r) => r.key === "large")
   if (large && large.games > 0) {
     tiles.push({
-      label: "HOME TEAM MORE RESTED · LARGE GAP",
+      label: "RESTED TEAM AT HOME · LARGE GAP",
       value: `${large.winPct}%`,
       detail: `GAP ${large.min} OR MORE · ${large.games.toLocaleString()} GAMES`,
       winPct: large.winPct,

@@ -1555,3 +1555,14 @@ leaves out, so four teams in 2024-25 differed by one; the per-team rest-days edg
 `toEvidenceSource`, which had no caller. The Games badge thresholds now read the gap sizes'
 floors. `src/data/win-total-benchmark.json` was regenerated after D-100: r −0.0149 → −0.0114 on
 the same 884 team-seasons, still no relationship, displayed as −0.01 as before.
+
+## D-109 — One name for the called group: "rested team at home" (2026-10-18)
+
+From the 2026-10-18 audit. The same games, the more-rested team playing at home off a neutral
+site (`isCalledSide`), were named five ways: HOME TEAM MORE RESTED on /analysis, "Rested home
+team" on the home page, "Rested-at-home" on /season, "Rested-home" on /home-court and "Rested
+team at home" on Behind the Data. The owner chose "rested team at home" for prose, tiles,
+headings and chart labels, the glossary's existing preference and the pair of "rested team on
+the road", and "Rested at home" for a narrow table column or tile. The home page heading now
+reads "Large rest gaps / for the rested team at home". Identifiers and the rest-advantage metric
+names are unchanged.
