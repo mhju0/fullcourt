@@ -75,6 +75,30 @@ The normal CI build has no database credentials. Local builds may have `.env.loc
 build is a necessary independent gate; do not rename credential files around an unguarded shell
 command. Schema changes are manual SQL and require a separate owner application step.
 
+### Sentry source maps
+
+Vercel's shipping Production and Preview builds require `SENTRY_AUTH_TOKEN`, stored as a
+Vercel Secret (previously Sensitive) in both environments. It is a build-only organization
+upload token for `michael-ju-46` / `javascript-nextjs`; it is distinct from the public DSN.
+Never expose it through `NEXT_PUBLIC_`, Next's `env` config, logs, or Git.
+
+`next.config.ts` wraps production compilation with the installed Sentry SDK. The shipping
+Turbopack build emits Debug IDs and uploads its client and server maps before deployment.
+Missing deployment tokens, absent client/server maps, upload failures, or public maps left
+after upload fail the build. Successful upload deletes maps and mapping comments under
+`.next/static`; private `.next/server` maps remain for runtime error reporting.
+The source-map change creates no Sentry release, commit link or deploy record (events carry the
+commit SHA as their release name) and does not enable tracing, replay, cron monitors, a tunnel route, or
+additional automatic runtime instrumentation. Existing DSN/error/privacy settings remain.
+
+Local and ordinary GitHub CI builds without a token explicitly skip upload and do not enable
+public browser maps. `next dev` and `next start` never require the upload token.
+After an authorized token-backed preview/deploy, inspect the actual build upload log and
+artifact bundle, check that a real client map URL returns 404, then verify source file/line
+and context on a **new first-party bundled event** from that build. Verify client and server
+coverage separately; errors created only in browser developer tools do not establish it.
+An old event cannot prove the new upload. [Local evidence and remaining gates](research/2026-10-12-sentry-source-maps.md).
+
 ## Documentation captures
 
 ```sh

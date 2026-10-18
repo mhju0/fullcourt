@@ -108,8 +108,8 @@ The duplicated local history was reconciled with origin; the backup branch was r
 Open:
 
 - Done by the owner: `DATABASE_URL` is Sensitive in Vercel and rotated everywhere (2026-10-15),
-  and `SENTRY_AUTH_TOKEN` is in Vercel (2026-10-12). The build-side source-map change waits on the
-  local branch `codex/sentry-source-maps` for an owner decision.
+  and `SENTRY_AUTH_TOKEN` is in Vercel (2026-10-12). The build-side source-map upload shipped on
+  2026-10-18 with the owner's approval; a new first-party event still has to show source lines.
 - A reader-picked number column for the Schedule breakdown (the survey's C1) is unbuilt.
 - The new phone controls have not been used on a physical phone.
 - DECISIONS.md and ADR 0006 quote the travel ablation as 5,994 calls, 59.14% and +0.32pp; the
