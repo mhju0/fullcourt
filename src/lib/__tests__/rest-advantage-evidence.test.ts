@@ -225,10 +225,8 @@ describe("buildHistoricalBacktest", () => {
       overallWins: 1,
       overallWinRate: 50,
       thresholds: [
-        { threshold: 2, games: 1, restedTeamWins: 0, winPct: 0 },
         { threshold: 3, games: 0, restedTeamWins: 0, winPct: 0 },
         { threshold: 5, games: 0, restedTeamWins: 0, winPct: 0 },
-        { threshold: 7, games: 0, restedTeamWins: 0, winPct: 0 },
       ],
       // Unchanged, and deliberately so: the breakdown is the evidence for declining the road
       // half, so it has to keep reporting that half. The away row is the argument, not a

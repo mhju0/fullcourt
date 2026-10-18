@@ -63,8 +63,8 @@ function chartPath(
 function seasonAriaLabel(row: HomeCourtSeason) {
   const gap = restedHomeGap(row);
   const rest = gap === null
-    ? `Rested-at-home rate is too early, with ${row.games} of ${MIN_GAMES_FOR_INFERENCE} games.`
-    : `Rested-at-home teams won ${row.restedTeamWins} of ${row.games}, ${formatRate(row.winPct)}, ${signedNumber(gap, 1)} percentage points versus the home rate.`;
+    ? `The rate for the rested team at home is too early, with ${row.games} of ${MIN_GAMES_FOR_INFERENCE} games.`
+    : `The rested team at home won ${row.restedTeamWins} of ${row.games}, ${formatRate(row.winPct)}, ${signedNumber(gap, 1)} percentage points versus the home rate.`;
   return `${row.season}${row.isComplete ? "" : ", season to date"}. Home teams won ${row.homeWins} of ${row.homeGames}, ${formatRate(row.homeBaselinePct)}. ${rest}`;
 }
 
@@ -125,13 +125,13 @@ export function HomeCourtStudy() {
         </div>
         <div className="flex flex-wrap gap-x-6 gap-y-2" aria-label="Chart legend">
           <span className="inline-flex items-center gap-2"><span className="h-0.5 w-6 bg-[var(--term-text-dim)]" aria-hidden="true" />Home win rate</span>
-          <span className="inline-flex items-center gap-2"><span className="w-6 border-t-2 border-dashed border-[var(--term-blue)]" aria-hidden="true" /><span className="inline-block h-2 w-2 rotate-45 bg-[var(--term-blue)]" aria-hidden="true" />Rested-at-home win rate</span>
+          <span className="inline-flex items-center gap-2"><span className="w-6 border-t-2 border-dashed border-[var(--term-blue)]" aria-hidden="true" /><span className="inline-block h-2 w-2 rotate-45 bg-[var(--term-blue)]" aria-hidden="true" />Rested team at home, win rate</span>
           {rows.some((row) => !row.isComplete) ? <span className={muted}>○ Season to date</span> : null}
         </div>
         <HomeCourtChart rows={rows} selected={selected} onSelect={setSelectedSeason} />
         {selected ? <SeasonInspection row={selected} onSelect={setSelectedSeason} rows={rows} /> : null}
         <p className={muted}>
-          The rested-at-home rate appears after {MIN_GAMES_FOR_INFERENCE} eligible games. Straight segments connect annual observations; no smoothing or fitted trend is applied.
+          The rate for the rested team at home appears after {MIN_GAMES_FOR_INFERENCE} eligible games. Straight segments connect annual observations; no smoothing or fitted trend is applied.
         </p>
       </section>
 
@@ -144,9 +144,9 @@ export function HomeCourtStudy() {
                 <th scope="col" className={styles.seasonCell}>Season</th>
                 <th scope="col" className="text-right">Home wins{"\u00a0/\u00a0"}games</th>
                 <th scope="col" className="text-right">Home win rate</th>
-                <th scope="col" className="text-right">Rested-home wins{"\u00a0/\u00a0"}games</th>
-                <th scope="col" className="text-right">Rested-home win rate</th>
-                <th scope="col" className="text-right">Gap</th>
+                <th scope="col" className="text-right">Rested at home wins{"\u00a0/\u00a0"}games</th>
+                <th scope="col" className="text-right">Rested at home win rate</th>
+                <th scope="col" className="text-right">Vs baseline</th>
               </tr>
             </thead>
             <tbody>
@@ -223,7 +223,7 @@ function HomeCourtChart({ rows, selected, onSelect }: { rows: readonly HomeCourt
   return (
     <div className={styles.chartFrame} ref={frameRef}>
       <p id="home-court-chart-help" className="sr-only">Use the chart button’s left and right arrow keys to inspect adjacent seasons. Use Home or End to jump to the first or latest season.</p>
-      <svg data-testid="home-court-chart" className={styles.chart} viewBox={`0 0 ${width} ${VIEW.height}`} role="group" aria-label="Home and rested-at-home win rates by NBA season" onPointerMove={inspectPointer} onClick={inspectPointer}>
+      <svg data-testid="home-court-chart" className={styles.chart} viewBox={`0 0 ${width} ${VIEW.height}`} role="group" aria-label="Home win rate and the rested team at home's win rate by NBA season" onPointerMove={inspectPointer} onClick={inspectPointer}>
         {ticks.map((tick) => (
           <g key={tick} aria-hidden="true">
             <line x1={VIEW.left} x2={width - VIEW.right} y1={y(tick)} y2={y(tick)} stroke="var(--term-border)" strokeDasharray="3 4" />
@@ -289,7 +289,7 @@ function SeasonInspection({ row, rows, onSelect }: { row: HomeCourtSeason; rows:
         <div><p className="fc-control-label">Season</p><p className="mono mt-1 font-semibold">{row.season}</p>{!row.isComplete ? <p className={`text-xs ${muted}`}>Season to date · through {row.latestEvidenceDate}</p> : null}</div>
         <div><p className="fc-control-label">Home</p><p className="mono mt-1 font-semibold tabular-nums">{formatRate(row.homeBaselinePct)}</p><p className={`text-xs ${muted}`}>{row.homeWins.toLocaleString()} / {row.homeGames.toLocaleString()} games</p></div>
         <div><p className="fc-control-label">Rested at home</p><p className="mono mt-1 font-semibold tabular-nums">{gap === null ? "Too early" : formatRate(row.winPct)}</p><p className={`text-xs ${muted}`}>{row.restedTeamWins.toLocaleString()} / {row.games.toLocaleString()} games</p></div>
-        <div><p className="fc-control-label">Gap</p><p className="mono mt-1 font-semibold tabular-nums">{gap === null ? "Too early" : `${signedNumber(gap, 1)}\u00a0pp`}</p><p className={`text-xs ${muted}`}>versus that season’s home rate</p></div>
+        <div><p className="fc-control-label">Vs baseline</p><p className="mono mt-1 font-semibold tabular-nums">{gap === null ? "Too early" : `${signedNumber(gap, 1)}\u00a0pp`}</p><p className={`text-xs ${muted}`}>versus that season’s home rate</p></div>
       </div>
     </div>
   );

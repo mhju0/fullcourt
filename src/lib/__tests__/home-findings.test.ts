@@ -10,7 +10,6 @@ const historical: AnalysisResponse = {
   thresholds: [
     { threshold: 3, games: 50, restedTeamWins: 31, winPct: 62 },
     { threshold: 5, games: 20, restedTeamWins: 13, winPct: 65 },
-    { threshold: 7, games: 8, restedTeamWins: 6, winPct: 75 },
   ],
   venueBaseline: { games: 100, homeWins: 65, homeWinPct: 65, roadWinPct: 35 },
   gapRanges: [],

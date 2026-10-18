@@ -604,7 +604,6 @@ describe("buildSeasonReport — rest states and schedule value", () => {
     const report = buildSeasonReport("2025-26", rows);
     const home = report.teams.find((t) => t.teamId === 1)!;
 
-    expect(home.netEdgeGames).toBe(12 - 4);
     expect(home.scheduleValueWins).toBeGreaterThan(0);
     expect(Math.abs(home.scheduleValueWins)).toBeLessThan(0.5);
   });
@@ -675,7 +674,6 @@ describe("buildSeasonReport — the schedule basis", () => {
     expect(report.teams.length).toBeGreaterThan(0);
     const home = report.teams.find((t) => t.teamId === 1)!;
     expect(Object.values(home.restStates).reduce((a, b) => a + b, 0)).toBe(2);
-    expect(home.netEdgeGames).toBe(2);
   });
 
   it("still refuses to invent a record, because that half is a result", () => {

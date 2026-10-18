@@ -44,10 +44,8 @@ describe("rest edge size", () => {
 
 describe("restEdgeRates", () => {
   const thresholds = [
-    { threshold: 2, games: 20000, restedTeamWins: 12100, winPct: 60.5 },
     { threshold: 3, games: 10463, restedTeamWins: 6604, winPct: 63.1 },
     { threshold: 5, games: 3756, restedTeamWins: 2452, winPct: 65.3 },
-    { threshold: 7, games: 1080, restedTeamWins: 712, winPct: 65.9 },
   ];
 
   it("reads medium as the 3+ bucket less the 5+ one, so the two sizes never share a game", () => {

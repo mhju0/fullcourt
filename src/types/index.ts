@@ -509,7 +509,7 @@ export interface ScheduleDisparityLeague {
   delta: number | null;
   /** Counted games where one side's fatigue edge reached 0.5, and the ≥ 3 big tier. */
   gamesWithAnyEdge: number | null;
-  gamesWithLargeEdge: number | null;
+  gamesWithThreePlusEdge: number | null;
   /** Counted games — excludes each side's opener. A population, not a comparison. */
   countedGames: number;
   /**

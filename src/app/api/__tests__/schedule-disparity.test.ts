@@ -51,7 +51,7 @@ function payload(overrides: Partial<ScheduleDisparityResponse> = {}): ScheduleDi
     league: {
       delta: 26,
       gamesWithAnyEdge: 500,
-      gamesWithLargeEdge: 60,
+      gamesWithThreePlusEdge: 60,
       countedGames: 1200,
       measuredGames: 1200,
       projectedGames: 0,

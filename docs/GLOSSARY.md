@@ -14,11 +14,11 @@ FullCourt studies NBA schedule conditions and historical results. Use these term
 
 **Neutral/no-call band**: An absolute rest advantage below `0.5`. The gap is compared at the fatigue scores' two decimals (`restAdvantageDifferential`, D-87), so a gap of 0.50 is a call and 0.49 is not. The site prints both cut to one decimal (0.5 and 0.4, D-98), which keeps the printed figure on the same side of 0.5. This band is unrelated to a neutral-site venue.
 
-**Rest edge size**: The size of an absolute rest advantage outside the neutral band: small from `0.5` to under `3`, medium from `3` to under `5`, large at `5` or more (D-101). A combined count of medium and large reads “3+ edges.” The Games board marks medium and large only when the rested team is at home off a neutral site (`restEdgeSize`). Avoid “big edge” outside /schedule, where it names the same 3+ games (D-103). /analysis charts the three sizes and filters its explorer by them (D-102).
+**Rest edge size**: The size of an absolute rest advantage outside the neutral band: small from `0.5` to under `3`, medium from `3` to under `5`, large at `5` or more (D-101). A combined count of medium and large reads “3+ rest edges” on every tab (D-108). The label names the gap only; which games are counted is said beside it. The Games board and BY TEAM mark and count medium and large only when the rested team is at home off a neutral site (`restEdgeSize`), so their tiles say so beside the figure (“at home”, “rested team at home”). Schedule Edge counts them whichever team is at home and says so. “Big edge” is retired (D-108). /analysis charts the three sizes and filters its explorer by them (D-102).
 
 **Decidable**: A gap outside the neutral band, identifying a more-rested side. This is separate from whether the game is called or publishable.
 
-**Called**: A decidable game in which the more-rested team is at home and the venue is not a neutral site (D-92), selected by `isCalledSide()` in `src/lib/rest-advantage-evidence.ts`. The headline backtest rate uses this group. In explanatory copy, prefer “rested team at home.”
+**Called**: A decidable game in which the more-rested team is at home and the venue is not a neutral site (D-92), selected by `isCalledSide()` in `src/lib/rest-advantage-evidence.ts`. The headline backtest rate uses this group. Every surface names this group “rested team at home” in prose, tiles, headings and chart labels, and “Rested at home” in a narrow table column (D-109). Avoid “home team more rested”, “rested home team” and “rested-home”.
 
 **Publishable**: An admissible regular-season game outside an excluded abnormal stretch. `publishableGames()` in `src/lib/db/queries.ts` owns this filter. Publication eligibility is separate from the rest-gap classification.
 
@@ -26,13 +26,13 @@ FullCourt studies NBA schedule conditions and historical results. Use these term
 
 **Rested team on the road**: The more-rested team is the visitor. Its results appear separately against a road baseline and are not pooled into the headline. “Rested visitor” is also clear in explanatory prose.
 
-**Baseline**: The win rate for a venue side regardless of rest. Compare rested home teams with the home rate and rested visitors with the road rate. Season charts use that season's own baseline. The home-road difference is distinct from either baseline itself. Read current values from data rather than copying them into prose.
+**Baseline**: The win rate for a venue side regardless of rest. Compare the rested team at home with the home rate and rested visitors with the road rate. Season charts use that season's own baseline. The home-road difference is distinct from either baseline itself. Read current values from data rather than copying them into prose.
 
 **Home win rate**: The percentage of eligible games won by the designated home team, regardless of rest. This is the canonical label for the percentage; avoid describing a 55% home win rate as a “55% advantage.”
 
 **Home-court advantage**: The broader topic of how playing at home relates to results. Home win rate describes observed outcomes; it does not isolate the causal effect of the venue.
 
-**Rested-home gap**: The rested-at-home win rate minus the home win rate for the same season or stated period, expressed in percentage points. This is a descriptive comparison, not an isolated causal effect of rest.
+**Rested team at home vs home rate**: The rested team at home’s win rate minus the home win rate for the same season or stated period, expressed in percentage points. This is a descriptive comparison, not an isolated causal effect of rest.
 
 **Claim**: A statement about a result or comparison. State the population, denominator, reference, and material limitations. Derive comparisons over live figures using `rest-advantage-display.ts` or `analysis-claims.ts`. A rate above baseline is an association; it does not by itself measure a causal rest effect.
 
@@ -46,11 +46,13 @@ FullCourt studies NBA schedule conditions and historical results. Use these term
 
 **Net fatigue edge**: The corresponding fatigue-score difference, reported per game. It includes travel and density as well as rest. A sum can obscure the size of typical matchup gaps.
 
-**Net edge games**: Favourable games minus unfavourable games, using the shared `0.5` fatigue-gap threshold. “Big edge” uses `3`, the medium rest edge's floor, so it counts medium and large gaps (D-103). Both counts exclude games without previous-game context for both teams. Source: `schedule-disparity.ts`.
+**Net edge games**: Favourable games minus unfavourable games, using the shared `0.5` fatigue-gap threshold. The “3+ rest edge” column uses `3`, the medium rest edge's floor, so it counts medium and large gaps at either venue (D-103, D-108). Both counts exclude games without previous-game context for both teams. Source: `schedule-disparity.ts`.
 
 **Schedule value / Worth**: A win-equivalent conversion of historical rest-state rates relative to venue baselines, summed over scored games including openers. `schedule-value.ts` supplies Schedule Edge's Worth column; `/api/season-report` also returns it per team, but the Season Report page does not render it. The displayed team's results do not enter the calculation. This is not actual wins added or a causal estimate. Show the per-game scale alongside season totals.
 
-**Swing**: On Season Report, a team's win rate as the fresher side minus its rate as the tireder side. The counted fresher arm is at home and the tireder arm is on the road. Compare each row with `SeasonReport.swingBaseline`, not zero. Small groups and venue differences prevent interpreting the table as a ranking of rest-management skill.
+**Swing**: On Season Report, a team's win rate as the fresher side minus its rate as the tireder side. The counted fresher arm is at home and the tireder arm is on the road. The page labels the column “Difference / pp”. Compare each row with `SeasonReport.swingBaseline`, not zero. Small groups and venue differences prevent interpreting the table as a ranking of rest-management skill.
+
+**Vs home rate / Vs baseline**: A rate's distance in percentage points from the home baseline it is read against: “Vs home rate” on Season Report, “Vs baseline” on Home-Court Advantage. Not called “gap”, which since D-101 means the fatigue-score difference (D-108).
 
 **Availability cost**: The retrospective association between missing rotation players and final margin. Rotation membership uses prior appearances and minute thresholds; missing players record no minutes in the target game. Long absences eventually leave the rolling rotation window. Game Score above the rotation median is a replacement-production proxy, not the actual substitute's contribution. Sources: `availability-facts.ts`, `ml/availability_facts.json`. Avoid “injury report” or wording that forecasts tonight's lineup.
 

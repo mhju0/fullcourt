@@ -83,7 +83,7 @@ describe("the hero tiles", () => {
 
   it("names the home team as the rested side, and never says 'any gap' or 'overall'", () => {
     for (const tile of buildAnalysisClaims(response())?.tiles ?? []) {
-      expect(tile.label).toMatch(/^HOME TEAM MORE RESTED/);
+      expect(tile.label).toMatch(/^RESTED TEAM AT HOME/);
       expect(tile.label).not.toMatch(/any gap|overall/i);
     }
   });

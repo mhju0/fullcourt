@@ -132,18 +132,6 @@ export function restStatePair(advantageTeam: RestAdvantage["advantageTeam"]): {
 }
 
 /**
- * Games where this team held a rest edge, minus games where it faced one, across both venues.
- *
- * Schedule Disparity headlines this same quantity under the name `netEdgeGames`. It is stated
- * here as well so that both pages derive it from their own counts through one definition rather
- * than two — the counts differ between the pages by design (see {@link scheduleValueWins}), the
- * arithmetic must not.
- */
-export function netEdgeGames(counts: RestStateCounts): number {
-  return counts.restedHome + counts.restedRoad - counts.tiredHome - counts.tiredRoad;
-}
-
-/**
  * What the rest edges in these games were worth, in wins.
  *
  * Each game contributes its state's league-wide lift; the sum is how many more games a team of

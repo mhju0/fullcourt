@@ -173,22 +173,22 @@ export function SeasonReportContent() {
                   <p className={`mt-1 text-xs ${muted}`}>{data.homeRate.homeWins.toLocaleString()} wins{"\u00a0/\u00a0"}{data.homeRate.games.toLocaleString()} eligible games</p>
                 </div>
                 <div className="border-t border-[var(--term-hairline)] py-4 sm:border-l sm:border-t-0 sm:px-4">
-                  <p className="fc-control-label sm:min-h-10">Rested-at-home win rate</p>
+                  <p className="fc-control-label sm:min-h-10">Rested at home win rate</p>
                   <p data-testid="season-rest-win-rate" className="mono mt-2 text-2xl font-semibold tabular-nums text-[var(--term-blue-text)]">
                     {enough ? `${data.overall.winPct.toFixed(1)}%` : "Too early"}
                   </p>
                   <p className={`mt-1 text-xs ${muted}`}>{data.overall.restedTeamWins.toLocaleString()} wins{"\u00a0/\u00a0"}{data.overall.games.toLocaleString()} eligible games</p>
                 </div>
                 <div className="border-t border-[var(--term-hairline)] py-4 sm:border-l sm:border-t-0 sm:pl-4">
-                  <p className="fc-control-label sm:min-h-10">Gap from home rate</p>
+                  <p className="fc-control-label sm:min-h-10">Vs home rate</p>
                   <p className="mono mt-2 text-2xl font-semibold tabular-nums">
                     {delta === null ? "Too early" : `${signedNumber(delta, 1)}\u00a0pp`}
                   </p>
-                  <p className={`mt-1 text-xs ${muted}`}>Rested at home versus all designated-home games</p>
+                  <p className={`mt-1 text-xs ${muted}`}>Rested team at home versus all designated-home games</p>
                 </div>
               </div>
               {!enough ? (
-                <p className="mt-4">The rested-at-home comparison appears after {MIN_GAMES_FOR_INFERENCE} eligible games. {data.overall.games} recorded so far.</p>
+                <p className="mt-4">The comparison for the rested team at home appears after {MIN_GAMES_FOR_INFERENCE} eligible games. {data.overall.games} recorded so far.</p>
               ) : null}
               <p className={`mt-4 ${muted}`}>
                 {data.completedGames.toLocaleString()} / {data.scheduledGames.toLocaleString()} published regular-season games completed with scored fatigue pairs.
@@ -203,7 +203,7 @@ export function SeasonReportContent() {
                   ? "The home baseline is available before the rest comparison."
                   : Math.abs(delta) <= (data.overall.band ?? 0)
                   ? "The result is close to home court alone."
-                  : "The rested-at-home record differs from the home baseline."}
+                  : "The record of the rested team at home differs from the home baseline."}
               </h3>
               <p className={muted}>
                 This is a record of completed games. Team strength, venue, and
@@ -213,14 +213,14 @@ export function SeasonReportContent() {
               <p data-testid="season-vs-history-heading">{season} vs history</p>
               <p className={muted}>
                 {norm !== null
-                  ? `The rested-at-home rate across other seasons is ${norm.toFixed(1)}%. The displayed season is excluded.`
+                  ? `The rate for the rested team at home across other seasons is ${norm.toFixed(1)}%. The displayed season is excluded.`
                   : normLoading
                     ? "Loading historical comparison…"
                     : "Historical comparison unavailable."}
               </p>
               {enough && data.overall.band !== null ? (
                 <p className={muted}>
-                  Rested-at-home uncertainty: ±{data.overall.band.toFixed(1)} percentage points (95% interval).
+                  Uncertainty for the rested team at home: ±{data.overall.band.toFixed(1)} percentage points (95% interval).
                 </p>
               ) : null}
               <a
@@ -239,7 +239,7 @@ export function SeasonReportContent() {
               Team results under different rest conditions
             </h2>
             <p className={muted}>
-              Rested-at-home and tired-on-the-road records. These are records,
+              Records for the rested team at home and the tired team on the road. These are records,
               not a ranking of fatigue management.
             </p>
             <p data-testid="swing-baseline-note" className={`fc-report-note ${muted}`}>
@@ -331,7 +331,8 @@ function TeamRecords({ teams, season }: { teams: SeasonReportResponse["teams"]; 
               Team
             </th>
             <th className="px-2 text-right" scope="col">
-              <span className="whitespace-nowrap">Rested home</span>
+              {/* Wraps on a phone, where one line runs into the next column. */}
+              <span>Rested at home</span>
               <br />
               <span className="whitespace-nowrap">W / G · win %</span>
             </th>

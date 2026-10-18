@@ -715,7 +715,9 @@ select.fc-control { padding-right: 32px; }
 .fc-filter-field { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
 .fc-filter-grid select { width: 100%; min-width: 0; }
 @media (min-width: 640px) { .fc-filter-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-@media (min-width: 1024px) { .fc-filter-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+/* Five filters: 3 + 2 on a laptop, one row from 1280px, so none sits alone on a row. */
+@media (min-width: 1024px) { .fc-filter-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (min-width: 1280px) { .fc-filter-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
 @media (hover: hover) and (pointer: fine) {
   .fc-control:not(:disabled):hover { background-color: var(--term-surface-2); border-color: var(--term-text-muted); }
 }

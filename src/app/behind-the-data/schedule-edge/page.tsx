@@ -53,9 +53,9 @@ export default function ScheduleEdgeMethodPage() {
         <Formula>
           {`netEdgeGames = favorableGames − unfavorableGames
 
-favorable    fatigue gap ≥ +${NEUTRAL_REST_ADVANTAGE_THRESHOLD} in the team's favor
-unfavorable  fatigue gap ≥ ${NEUTRAL_REST_ADVANTAGE_THRESHOLD} against
-big edge      the ≥ ${BIG_EDGE_FATIGUE_THRESHOLD} subset of either side`}
+favorable     fatigue gap ≥ +${NEUTRAL_REST_ADVANTAGE_THRESHOLD} in the team's favor
+unfavorable   fatigue gap ≥ ${NEUTRAL_REST_ADVANTAGE_THRESHOLD} against
+${BIG_EDGE_FATIGUE_THRESHOLD}+ rest edge  the ≥ ${BIG_EDGE_FATIGUE_THRESHOLD} subset of either side`}
         </Formula>
         <Note>
           Because every game is counted once from each side, the league&rsquo;s net edge games
@@ -167,7 +167,7 @@ big edge      the ≥ ${BIG_EDGE_FATIGUE_THRESHOLD} subset of either side`}
               sub: "shared with every page",
             },
             {
-              label: "Counts as a big edge",
+              label: `Counts as a ${BIG_EDGE_FATIGUE_THRESHOLD}+ rest edge`,
               value: `${BIG_EDGE_FATIGUE_THRESHOLD}`,
               sub: "medium and large rest edges",
             },

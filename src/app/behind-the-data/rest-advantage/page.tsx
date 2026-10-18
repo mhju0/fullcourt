@@ -432,7 +432,7 @@ restEdge   = awayScore − homeScore     (positive ⇒ the home side is fresher)
         </Prose>
 
         <Note>
-          The headline counts the rested home team. Rested visitors are reported separately:
+          The headline counts the rested team at home. Rested visitors are reported separately:
           their pooled win rate is {RESTED_ON_ROAD.winPct}%, below 50% despite exceeding the
           road baseline. The headline therefore includes home-court advantage as well as rest.
         </Note>
@@ -589,7 +589,7 @@ direction    = ${K.eastwardMultiplier} eastward, ${K.westwardMultiplier} westwar
         disclosure
       >
         <Prose>
-          The model always selects the home side when it identifies a rested-home game.
+          The model always selects the home side when it identifies a game where the rested team is at home.
           Removing a term changes which games meet that threshold. Each term was neutralized
           in turn and the win rate recalculated against a baseline of{" "}
           <strong>
@@ -664,7 +664,7 @@ direction    = ${K.eastwardMultiplier} eastward, ${K.westwardMultiplier} westwar
           {REST_SPLIT_BASELINE.homeWinPct}% home baseline used everywhere else on the site. That
           measures accuracy and coverage together, but it gives credit for home-court
           advantage too. It does not measure the model&rsquo;s improvement over home court;
-          the rested home group sits{" "}
+          the rested team at home sits{" "}
           {signedNumber(liftOverBaseline(RESTED_AT_HOME.winPct, REST_SPLIT_BASELINE.homeWinPct))}{" "}
           points above that baseline, as shown on Model Results.
         </Note>

@@ -9,10 +9,8 @@ import { gapRangeByKey, gapRangeSpan, type GapRangeKey } from "@/lib/rest-advant
  * `e2e/analysis.spec.ts` — a suite `CLAUDE.md` deliberately keeps out of the commit gate and
  * out of CI, so it ran nowhere automatic. This module exists so those rules run in `test:run`.
  *
- * Shaped after {@link import("@/lib/rest-advantage-display").buildRestAdvantageEvidence}, which
- * solved the same problem one level down for a single matchup: build the claim, or return
- * nothing. That module's tests assert editorial house rules rather than arithmetic, and so do
- * this one's. It is deliberately NOT shaped after the `*-facts.ts` modules — those are frozen
+ * Each claim is built or returns nothing, and the tests assert editorial house rules rather
+ * than arithmetic. It is deliberately NOT shaped after the `*-facts.ts` modules — those are frozen
  * constants pinned to `ml/*.json`, and everything here derives from live data.
  *
  * The boundary: this module owns anything that **asserts something about the data**. It owns no
@@ -224,7 +222,7 @@ export function buildAnalysisClaims(
   const smallFloor = gapRangeByKey("small").min
   const tiles: ClaimTile[] = [
     {
-      label: "HOME TEAM MORE RESTED",
+      label: "RESTED TEAM AT HOME",
       value: `${data.overallWinRate}%`,
       detail: `GAP ${smallFloor} OR MORE · ${data.totalGames.toLocaleString()} GAMES`,
       winPct: data.overallWinRate,
@@ -239,7 +237,7 @@ export function buildAnalysisClaims(
   const large = data.gapRanges.find((r) => r.key === "large")
   if (large && large.games > 0) {
     tiles.push({
-      label: "HOME TEAM MORE RESTED · LARGE GAP",
+      label: "RESTED TEAM AT HOME · LARGE GAP",
       value: `${large.winPct}%`,
       detail: `GAP ${large.min} OR MORE · ${large.games.toLocaleString()} GAMES`,
       winPct: large.winPct,

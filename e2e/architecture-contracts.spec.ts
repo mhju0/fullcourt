@@ -15,7 +15,7 @@ async function openSchedule(page: Page, teams = mixed) {
     const data: ScheduleDisparityResponse = {
       season: new URL(route.request().url()).searchParams.get("season")!,
       provisional: true, latestFinalDate: "2025-10-24", scheduledGames: 10, teams,
-      league: { delta: 5, gamesWithAnyEdge: 5, gamesWithLargeEdge: 2, countedGames: 8, measuredGames: 4, projectedGames: 0 },
+      league: { delta: 5, gamesWithAnyEdge: 5, gamesWithThreePlusEdge: 2, countedGames: 8, measuredGames: 4, projectedGames: 0 },
     };
     return route.fulfill({ json: { data, error: null } });
   });
@@ -46,10 +46,10 @@ test("an entirely unmeasured season keeps net-rest-days ranking and units", asyn
   await expect(page.getByText("Teams without a fatigue measurement appear below the ranking with a dash.")).toHaveCount(0);
 });
 
-test("a big edge starts at the medium gap size, 3, as on every other tab", async ({ page }) => {
+test("a 3+ rest edge starts at the medium gap size, 3, as on every other tab", async ({ page }) => {
   await openSchedule(page);
   await page.getByText("Show full breakdown", { exact: true }).click();
-  await expect(page.getByText("2 of them big (3+)", { exact: true })).toBeVisible();
+  await expect(page.getByText("2 of them 3+ rest edges", { exact: true })).toBeVisible();
   await expect(page.getByText(/counting only fatigue gaps of 3 or more, the medium and large rest edges/)).toBeAttached();
 });
 

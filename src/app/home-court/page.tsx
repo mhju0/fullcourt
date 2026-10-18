@@ -6,7 +6,7 @@ import { PageHeader } from "@/components/page-header";
 
 export const metadata: Metadata = {
   title: "Home-court advantage",
-  description: "NBA home win rate and rested-at-home win rate by season in FullCourt's eligible-game population.",
+  description: "NBA home win rate by season, beside the win rate of the rested team at home, in FullCourt's eligible-game population.",
 };
 
 export default function HomeCourtPage() {
@@ -16,7 +16,7 @@ export default function HomeCourtPage() {
         <PageHeader
           eyebrow="HOME-COURT ADVANTAGE"
           title="Are home teams winning less often?"
-          description="Compare each season’s home win rate with the record of teams that were also more rested at home."
+          description="Compare each season’s home win rate with the record of the rested team at home."
         />
         <MethodLink surfaceHref="/home-court" />
       </header>
