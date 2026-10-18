@@ -423,7 +423,7 @@ export default function GamesPage() {
       <div className="grid items-start gap-8">
       <div className="flex min-w-0 flex-col gap-2 sm:gap-6" data-testid="games-main">
       <section aria-label="Choose a game date" className="flex flex-col gap-2" style={{ ...termCardStyle, padding: SPACE_CARD }}>
-        <div className="flex items-end justify-between gap-2">
+        <div className="flex flex-wrap items-end justify-between gap-2">
               <SeasonSelector
                 id="nba-season"
                 season={slate.urlReady ? slate.season : ""}
@@ -440,7 +440,7 @@ export default function GamesPage() {
             aria-controls="games-calendar"
             className={cn(
               termBtn,
-              "sm:hidden",
+              "shrink-0 sm:hidden",
               calendarOpen
                 ? "border-[var(--term-text)] bg-[var(--term-text)] text-[var(--term-surface)] hover:bg-[var(--term-text)]"
                 : "border-[var(--term-border)] text-[var(--term-text)]"

@@ -38,13 +38,13 @@
 .track > span { display: block; height: 100%; background: var(--home-muted); }
 .track > .restedFill { background: #2cb6d9; }
 .textLink { display: inline-flex; gap: 12px; align-items: center; min-height: 44px; margin-top: 16px; font-size: 15px; }
-.support { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; padding: 48px 0; border-top: 1px solid var(--home-rule); }
+.support { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 64px; padding: 48px 0; border-top: 1px solid var(--home-rule); }
 .support h2 { font-size: 24px; margin-bottom: 24px; }
 .support p + p { margin-top: 16px; }
 .teams { margin-bottom: 24px; }
-.teams > div { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--home-rule); font-size: 15px; }
+.teams > div { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--home-rule); font-size: 15px; }
 .teams dt small { display: block; color: var(--home-muted); font-size: 12px; }
-.teams dd { text-align: right; font-family: var(--font-geist-mono), monospace; white-space: nowrap; }
+.teams dd { margin-left: auto; text-align: right; font-family: var(--font-geist-mono), monospace; white-space: normal; }
 .teams dd span { font-size: 12px; }
 .home .metadata { font-size: 12px; }
 .discover { display: flex; justify-content: space-between; gap: 24px; align-items: center; padding: 32px 0; border-top: 1px solid var(--home-rule); }
@@ -66,7 +66,7 @@
   .container { padding: 0 16px; }
   .hero { padding: 48px 0; }
   .hero > div > p:not(.eyebrow) { font-size: 20px; }
-  .finding, .support { grid-template-columns: 1fr; gap: 32px; padding: 32px 0; }
+  .finding, .support { grid-template-columns: minmax(0, 1fr); gap: 32px; padding: 32px 0; }
   .home h2 { font-size: 24px; }
   .support article + article { border-top: 1px solid var(--home-rule); padding-top: 32px; }
   .discover { align-items: flex-start; flex-direction: column; gap: 8px; }
