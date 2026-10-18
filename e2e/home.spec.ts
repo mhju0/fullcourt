@@ -1,4 +1,6 @@
 import { expect, test } from "@playwright/test";
+import type { AnalysisResponse } from "../src/types";
+import { signedNumber } from "../src/lib/signed-number";
 import { gapRangeByKey } from "../src/lib/rest-advantage-evidence";
 
 test.use({ launchOptions: { ignoreDefaultArgs: ["--hide-scrollbars"] } });
@@ -17,17 +19,35 @@ test.describe("Rest-focused front door", () => {
     await expect(home.getByRole("link", { name: "Officiating", exact: true })).toHaveCount(0);
   });
 
-  test("headline rates and samples agree with Model Results", async ({ page, request }) => {
-    const response = await request.get("/api/analysis");
-    expect(response.ok()).toBe(true);
-    const { data } = await response.json();
-    const widest = data.thresholds.find((row: { threshold: number }) => row.threshold === gapRangeByKey("large").min);
+  test("headline rates and samples use the same latest ten completed seasons", async ({ page, request }) => {
+    const baselineResponse = await request.get("/api/analysis");
+    expect(baselineResponse.ok()).toBe(true);
+    const { data: baseline }: { data: AnalysisResponse } = await baselineResponse.json();
+    const minGap = gapRangeByKey("large").min;
+    const largeGapResponse = await request.get(`/api/analysis?seasonMinRA=${minGap}`);
+    expect(largeGapResponse.ok()).toBe(true);
+    const { data: large }: { data: AnalysisResponse } = await largeGapResponse.json();
+    const seasons = baseline.seasonWinRates.filter((row) => row.isComplete && row.homeGames > 0)
+      .sort((a, b) => a.season.localeCompare(b.season)).slice(-10);
+    const selected = new Set(seasons.map((row) => row.season));
+    const largeSeasons = large.seasonWinRates.filter((row) => selected.has(row.season));
+    const games = largeSeasons.reduce((sum, row) => sum + row.games, 0);
+    const wins = largeSeasons.reduce((sum, row) => sum + row.restedTeamWins, 0);
+    const homeGames = seasons.reduce((sum, row) => sum + row.homeGames, 0);
+    const homeWins = seasons.reduce((sum, row) => sum + row.homeWins, 0);
+    const winPct = wins / games * 100;
+    const baselinePct = homeWins / homeGames * 100;
+    const latestDate = seasons.map((row) => row.latestEvidenceDate).sort().at(-1);
     await page.goto("/");
     const home = page.getByTestId("home-findings");
-    await expect(home).toContainText(`${widest.games.toLocaleString()} games`);
-    await expect(home).toContainText(`${widest.winPct.toFixed(1)}%`);
-    await expect(home).toContainText(`${data.venueBaseline.homeWinPct.toFixed(1)}%`);
-    await expect(home).toContainText(`Baseline: ${data.venueBaseline.games.toLocaleString()} games`);
+    await expect(home).toContainText(`Latest ${seasons.length} completed regular seasons · ${seasons[0].season} to ${seasons.at(-1)!.season}`);
+    await expect(home).toContainText(`${games.toLocaleString()} games with a large rest gap (${minGap}+ fatigue-score points)`);
+    await expect(home).toContainText(`${winPct.toFixed(1)}%`);
+    await expect(home).toContainText(`${baselinePct.toFixed(1)}%`);
+    await expect(home).toContainText(`Baseline: ${homeGames.toLocaleString()} games`);
+    await expect(home.getByTestId("home-rest-edge")).toHaveText(`${signedNumber(winPct - baselinePct, 1)}\u00a0pp`);
+    await expect(home).toContainText(`Rest evidence through ${latestDate}`);
+    await expect(home).toContainText("The difference uses unrounded rates");
   });
 
   test("the hero entrance stays brief and lower content needs no scroll trigger", async ({ page }) => {

@@ -1,15 +1,39 @@
 import { PublicApiError } from "@/lib/api-errors";
-import { getHistoricalBacktest } from "@/lib/rest-advantage-evidence-server";
+import {
+  getCompletedGamesStamp,
+  getCompletedGamesWithFatigue,
+  getIncompleteRegularSeasonSeasons,
+  getIncompleteRegularSeasonSeasonsStamp,
+} from "@/lib/db/queries";
+import { buildHistoricalBacktest, gapRangeByKey } from "@/lib/rest-advantage-evidence";
+import { createStampedCache, ORIGIN_CACHE_MAX_AGE } from "@/lib/stamped-cache";
+import type { HomepageHistoricalEvidence } from "@/lib/home-findings";
 import { defaultRankableSeason } from "@/lib/schedule-disparity";
 import { getScheduleDisparity } from "@/lib/schedule-disparity-server";
 
-/**
- * Loads the two database-backed homepage findings without competing for the hosted pool's
- * single connection. An unequal schedule is an expected withheld ranking, so it leaves the
- * historical finding intact; every other failure still reaches the page error boundary.
- */
+const getHomepageHistory = createStampedCache<string, HomepageHistoricalEvidence>({
+  readStamp: async () => {
+    const completed = await getCompletedGamesStamp();
+    const incomplete = await getIncompleteRegularSeasonSeasonsStamp();
+    return `${completed}|pending=${incomplete}`;
+  },
+  maxAgeMs: ORIGIN_CACHE_MAX_AGE.inSeason,
+  load: async () => {
+    const rows = await getCompletedGamesWithFatigue();
+    const incompleteSeasons = await getIncompleteRegularSeasonSeasons();
+    const minGap = gapRangeByKey("large").min;
+    // Both season series use one retrieved row set and the existing backtest classification.
+    return {
+      baselineSeasons: buildHistoricalBacktest(rows, 0, incompleteSeasons).seasonWinRates,
+      largeGapSeasons: buildHistoricalBacktest(rows, minGap, incompleteSeasons).seasonWinRates,
+      minGap,
+    };
+  },
+});
+
+/** Keep hosted-pool reads sequential; a withheld schedule does not hide the rest finding. */
 export async function loadHomepageDatabaseEvidence() {
-  const history = await getHistoricalBacktest(0);
+  const history = await getHomepageHistory("home");
   try {
     return {
       history,

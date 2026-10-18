@@ -72,10 +72,9 @@ refit, database migration, accounts, or new analytics are implied by repository 
 
 Condensed again on 2026-10-11; DECISIONS.md and dated review records retain detail.
 
-- **Methodology/usability (D-64, D-65).** Behind the Data audit shipped on 2026-09-09; see FRONTEND.md and [review](design/usability-audit-review.md).
-- **Release checks, 2026-10-03 (D-71, D-72).** Games avoids URL writes during navigation (`route-transition.ts`). Turbopack build cache is off; after globals.css changes verify production CSS. e2e is outside CI and needed to discover stale specs.
-- **Reading pages, 2026-10-04 (D-73).** About/How it was built use `reading.module.css`.
-- **Data audit, 2026-10-04.** SQL recompute matched production; all 50,495 finals were compared with basketball-reference/nba.com. Owner corrected four 2019-20 dates, nine scores, one OT count, 75 missing OT games and playoff series 18; fatigue/predictions rebuilt (PR #104). After score/date fixes run `scripts/export_fatigue_features.ts` fidelity check for stale rows.
+- D-64/D-65: Behind the Data shipped; see FRONTEND.md and [review](design/usability-audit-review.md). D-73 reading pages use `reading.module.css`.
+- D-71/D-72: Games avoids URL writes during navigation; build cache is off. Verify production CSS after global-style changes. Database-backed e2e stays outside CI.
+- PR #104 corrected audited dates, scores and overtime; the recompute matched production. After score/date fixes run `scripts/export_fatigue_features.ts` to check fidelity.
 
 Still open from those entries:
 
@@ -203,3 +202,13 @@ applicable design guidance. D-111 records the subtly sky-tinted palette and pres
 Implementation is isolated on `codex/audit-recommendations`; release acceptance is in
 [the review record](design/2026-10-18-audit-recommendations-review.md). No new production release
 is claimed until that record confirms it. Physical-device and first-played-slate checks remain open.
+
+## Recent comparison and design options — 2026-10-18
+
+PR #175 is deployed as `958306e`; production and post-merge CI were verified. The owner then
+approved the homepage's latest-ten-completed-season comparison and one-line team schedule
+headers: Game covers times/results, ET moves to a note, and phone RA has an explicit key (D-112/D-113).
+Implementation is prepared on `codex/recent-home-schedule`; its verification is in
+[the review](design/2026-10-18-recent-home-schedule-review.md). It is not yet deployed.
+The large-gap chart series and broader table layouts remain visual options on
+`prototype/chart-schedule-options`. The existing 100-game display rule remains unchanged.

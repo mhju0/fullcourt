@@ -58,9 +58,8 @@ function sideOf(game: TeamScheduleGame): Side {
 
 // Column shares from the small breakpoint up, so the gaps between columns come out even instead
 // of OPPONENT taking every spare pixel. A phone shrinks the columns to their content (`w-px`),
-// because it has no room to spare and drops G and TIME anyway.
-// The classes reach the heading too; NOWRAP is body-only, so a heading such as REST ADVANTAGE
-// can still wrap to two lines on a phone.
+// because it has no room to spare and drops the number and Game columns.
+// A phone uses RA in the header; its meaning is printed beside the table.
 const COL = {
   game: "hidden sm:table-cell sm:w-[6%]",
   date: "w-px sm:w-[18%]",
@@ -223,17 +222,19 @@ export function TeamScheduleContent() {
 
   const columns: DataColumn<TeamScheduleGame>[] = [
     {
-      label: "G",
+      label: <span aria-label="Game number">#</span>,
       numeric: true,
       className: COL.game,
+      headStyle: NOWRAP,
       style: NOWRAP,
       cell: (_, i) => gameNumber(i),
     },
     {
       label: "DATE",
       className: COL.date,
+      headStyle: NOWRAP,
       style: NOWRAP,
-      // A phone has no TIME column, so the result (or LIVE, PENDING) goes under the date, and
+      // A phone has no Game column, so the result (or LIVE, PENDING) goes under the date, and
       // so does NEXT.
       cell: (g) => (
         <span className="inline-flex flex-col items-start sm:flex-row sm:items-center sm:gap-2">
@@ -253,14 +254,15 @@ export function TeamScheduleContent() {
       ),
     },
     {
-      label: "TIME",
-      unit: "ET · RESULT",
+      label: "GAME",
       className: COL.time,
+      headStyle: NOWRAP,
       style: NOWRAP,
       cell: (g) => gameState(g, now) ?? <span>{g.tipOffEt ? g.tipOffEt.replace(/ ET$/, "") : "TBD"}</span>,
     },
     {
       label: "OPPONENT",
+      headStyle: NOWRAP,
       cell: (g) => (
         <span className="flex min-w-0 items-center gap-2">
           <span className="w-5 shrink-0" style={{ color: "var(--term-text-muted)" }}>
@@ -281,9 +283,10 @@ export function TeamScheduleContent() {
       ),
     },
     {
-      label: "REST ADVANTAGE",
+      label: <><span className="hidden sm:inline">REST ADVANTAGE</span><abbr className="no-underline sm:hidden" title="Rest advantage" aria-label="Rest advantage">RA</abbr></>,
       numeric: true,
       className: COL.rest,
+      headStyle: NOWRAP,
       style: NOWRAP,
       cell: (g) => <RestCell game={g} />,
     },
@@ -293,7 +296,7 @@ export function TeamScheduleContent() {
 
   // The games the league has not scheduled yet. One cell spans the row after the date, so there
   // is no opponent, time or gap to misread; the phone variant spans one column fewer because it
-  // has no TIME column.
+  // has no Game column.
   const cupRows = cup
     ? Array.from({ length: cup.count }, (_, k) => {
         const label = (
@@ -379,6 +382,9 @@ export function TeamScheduleContent() {
             <p className="m-0" style={{ fontSize: TYPE.body, color: "var(--term-text-muted)" }}>
               {games.length} games{cup ? `, and ${cup.count} NBA Cup ${cup.count === 1 ? "game" : "games"} the league has not scheduled yet` : ""}. A plus means {teamAbbr} is the more rested side; EVEN is a gap under {NEUTRAL_REST_ADVANTAGE_THRESHOLD}.
               {anyProjected && " Games not yet played show a projected gap, from the schedule as it stands."}
+            </p>
+            <p className="m-0" style={{ fontSize: TYPE.data, color: "var(--term-text-muted)" }}>
+              Tip-off times are Eastern Time (ET). RA = rest advantage, in fatigue-score points.
             </p>
             <DataTable
               columns={columns}

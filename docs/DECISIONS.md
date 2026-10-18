@@ -1606,3 +1606,33 @@ clearer hierarchy and consistent surfaces. Repeated data exploration and keyboar
 remain immediate; the existing brief Home entrance and bars retain reduced-motion guards.
 No new motion library, decorative loops, animated numbers or scroll-revealed research is needed.
 Design dials: ENERGY 1, RHYTHM 2, MOTION 1, within the existing Front Office direction.
+
+## D-112 — Homepage compares the latest ten completed seasons (2026-10-18)
+
+The owner approved replacing the homepage's whole-history comparison with the latest ten
+completed regular seasons. Both the all-home baseline and the large-rest-gap group use the
+same season list, chosen from the baseline's completion metadata. The large-gap definition
+remains 5+ fatigue-score points; neutral sites and existing publication exclusions remain unchanged.
+
+Sum wins and game counts before calculating rates and their percentage-point difference.
+Do not average rounded annual rates or subtract the two rounded display percentages. State the
+period, actual season count, sample sizes and rounding basis beside the finding. A season with
+zero large-gap games still contributes its home baseline; an ongoing season contributes to neither
+group. Fewer than ten available completed seasons receive an honest count. The evidence date
+comes from the selected window. The reason is relevance to the recent NBA, not a larger result.
+
+A homepage-specific stamped cache reads the eligible game population once, then the completion
+set, and uses the canonical backtest builder for both series. It reuses existing stamp readers and
+maximum age. The shared Analysis API and Home-court study keep their historical populations.
+
+## D-113 — Team schedule headers and review-only visual options (2026-10-18)
+
+The owner requested Game for the column that shows either a tip-off time or a completed result.
+Eastern Time (ET) moves to a table note; all column headings stay on one line. The number heading
+uses #, and the narrow rest-advantage heading uses RA with an explicit key. Under the existing
+phone layout, result/state remains below the date. Alternative column structures are prototypes
+for owner review, not approved production layout changes.
+
+The owner also requested a visual preview of a third Home-court series for large rest gaps.
+That exploration stays on a throwaway prototype branch. It does not change the published
+100-game display policy or add a live chart series before a product decision.

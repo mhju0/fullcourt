@@ -3,21 +3,41 @@ import { rankScheduleTeams } from "@/lib/schedule-ranking";
 import { S, seasonLabel, type PlayerRestPayload } from "@/lib/player-rest";
 import { gapRangeByKey } from "@/lib/rest-advantage-evidence";
 
-export function historicalHomeFinding(data: AnalysisResponse) {
-  // The large gap size (D-102); /api/analysis ships its floor as a cumulative bucket (D-104).
+type HistoricalSeason = AnalysisResponse["seasonWinRates"][number];
+
+export interface HomepageHistoricalEvidence {
+  baselineSeasons: HistoricalSeason[];
+  largeGapSeasons: HistoricalSeason[];
+  minGap: number;
+}
+
+export function historicalHomeFinding(data: HomepageHistoricalEvidence) {
   const minGap = gapRangeByKey("large").min;
-  const widest = data.thresholds.find((row) => row.threshold === minGap);
-  if (!widest?.games || !data.venueBaseline.games) return null;
-  const seasons = data.seasonWinRates.filter((row) => row.games > 0).map((row) => row.season).sort();
+  if (data.minGap !== minGap) return null;
+  // The baseline owns the window: a season with no large gaps still belongs in it.
+  const seasons = data.baselineSeasons
+    .filter((row) => row.isComplete && row.homeGames > 0)
+    .sort((left, right) => left.season.localeCompare(right.season))
+    .slice(-10);
+  const selected = new Set(seasons.map((row) => row.season));
+  const largeGaps = data.largeGapSeasons.filter((row) => selected.has(row.season));
+  const games = largeGaps.reduce((sum, row) => sum + row.games, 0);
+  const wins = largeGaps.reduce((sum, row) => sum + row.restedTeamWins, 0);
+  const baselineGames = seasons.reduce((sum, row) => sum + row.homeGames, 0);
+  const baselineWins = seasons.reduce((sum, row) => sum + row.homeWins, 0);
+  if (!games || !baselineGames) return null;
+  const winPct = wins / games * 100;
+  const baselinePct = baselineWins / baselineGames * 100;
   return {
     minGap,
-    games: widest.games,
-    winPct: widest.winPct,
-    baselinePct: data.venueBaseline.homeWinPct,
-    baselineGames: data.venueBaseline.games,
-    edgePp: Math.round((widest.winPct - data.venueBaseline.homeWinPct) * 10) / 10,
-    coverage: seasons.length ? `${seasons[0]} to ${seasons.at(-1)}` : null,
-    latestEvidenceDate: data.latestEvidenceDate,
+    games,
+    winPct,
+    baselinePct,
+    baselineGames,
+    edgePp: winPct - baselinePct,
+    seasonCount: seasons.length,
+    coverage: `${seasons[0].season} to ${seasons.at(-1)!.season}`,
+    latestEvidenceDate: seasons.reduce((latest, row) => row.latestEvidenceDate > latest ? row.latestEvidenceDate : latest, "") || null,
   };
 }
 

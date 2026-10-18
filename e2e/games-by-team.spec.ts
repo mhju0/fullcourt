@@ -22,7 +22,9 @@ test.describe("Games by team", () => {
     const rows = page.getByTestId("team-game-row");
     await expect(rows).toHaveCount(82, { timeout: 60_000 });
     const headers = await page.locator("table.fc-table th").allInnerTexts();
-    expect(headers.map((h) => h.split("\n")[0].trim())).toEqual(["G", "DATE", "TIME", "OPPONENT", "REST ADVANTAGE"]);
+    expect(headers.map((h) => h.split("\n")[0].trim())).toEqual(["#", "DATE", "GAME", "OPPONENT", "REST ADVANTAGE"]);
+    await expect(page.getByText("Tip-off times are Eastern Time (ET). RA = rest advantage, in fatigue-score points.")).toBeVisible();
+    expect(await page.locator("table.fc-table thead th").evaluateAll(nodes => nodes.every(node => getComputedStyle(node).whiteSpace === "nowrap"))).toBe(true);
     await expect(rows.first()).toContainText("Charlotte Hornets");
 
     // Take the first game with a real gap and read the same game off the board's API.
