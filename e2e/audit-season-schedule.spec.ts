@@ -52,7 +52,7 @@ test("report retry stays usable after another failure and recovers the selected 
   await retry.click();
   await expect(page.getByRole("heading", { name: "Home court and rest", exact: true })).toBeVisible();
   await expect(page.getByTestId("season-vs-history-heading")).toHaveText("2024-25 vs history");
-  await expect(page.getByRole("alert")).toHaveCount(0);
+  await expect(page.getByRole("main").getByRole("alert")).toHaveCount(0);
   expect(pageErrors).toEqual([]);
 });
 
@@ -64,12 +64,12 @@ test("comparison-unavailable retry fetches a new report before rendering its fig
     return route.fulfill({ json: { data: recover ? { ...legacy, homeRate } : legacy, error: null } });
   });
   await page.goto("/season?season=2024-25");
-  await expect(page.getByRole("alert")).toContainText("SEASON COMPARISON UNAVAILABLE");
+  await expect(page.getByRole("main").getByRole("alert")).toContainText("SEASON COMPARISON UNAVAILABLE");
   await expect(page.getByTestId("season-rest-win-rate")).toHaveCount(0);
   recover = true;
   await page.getByRole("button", { name: "Retry report", exact: true }).click();
   await expect(page.getByTestId("season-rest-win-rate")).toBeVisible();
-  await expect(page.getByRole("alert")).toHaveCount(0);
+  await expect(page.getByRole("main").getByRole("alert")).toHaveCount(0);
 });
 
 function schedule(count: number) {

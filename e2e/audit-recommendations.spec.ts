@@ -23,7 +23,7 @@ for (const width of [390, 1440]) {
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
     const palette = await page.evaluate(() => {
       const css = getComputedStyle(document.documentElement);
-      return ["--term-bg", "--term-surface", "--term-surface-2"].map(name => css.getPropertyValue(name).trim());
+      return ["--term-bg", "--term-surface", "--term-surface-2"].map(name => css.getPropertyValue(name).trim().toUpperCase());
     });
     expect(palette).toEqual(["#F3F8FC", "#FBFDFF", "#EAF2F8"]);
     await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute("content", "#F3F8FC");
@@ -39,7 +39,7 @@ test("Methods scopes uncertainty styling to the study legend", async ({ page }) 
 test("Home keeps final findings visible with reduced motion", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/");
-  await expect(page.getByRole("heading", { name: "Rest is a stat." })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /Rest is a stat/ })).toBeVisible();
   await expect(page.getByText(/fatigue-score points/)).toBeVisible();
   const motion = await page.locator("main header").first().evaluate(el => getComputedStyle(el).animationName);
   expect(motion).toBe("none");

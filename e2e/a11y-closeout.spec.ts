@@ -68,7 +68,7 @@ for (const width of [390, 1440]) {
     await expect(row).not.toHaveAttribute("role", "button");
     await expect(row.getByRole("cell")).not.toHaveCount(0);
     await expect(table.getByRole("columnheader", { name: "Matchup", exact: true })).toBeVisible();
-    await expect(opener).toContainText("Game details");
+    await expect(opener).toContainText("Details");
     expect((await opener.boundingBox())!.height).toBeGreaterThanOrEqual(44);
     await opener.focus(); await page.keyboard.press("Enter");
     const dialog = page.getByRole("dialog", { name: "Game details" });

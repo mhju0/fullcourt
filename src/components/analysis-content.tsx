@@ -816,8 +816,8 @@ function ExploreGames({
                   <span style={{ margin: "0 4px", color: "var(--term-text-muted)" }}>@</span>
                   {seasonAbbr(g.homeTeamAbbreviation, g.season)}
                 </span>
-                <span className="inline-flex items-center gap-1 text-[11px] font-normal" style={{ color: "var(--term-text-muted)" }}>
-                  Game details <ChevronRight aria-hidden="true" size={12} />
+                <span className="inline-flex items-center gap-1 whitespace-nowrap text-[11px] font-normal" style={{ color: "var(--term-text-muted)" }}>
+                  Details <ChevronRight aria-hidden="true" size={12} />
                 </span>
               </button>
             ),
