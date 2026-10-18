@@ -98,6 +98,9 @@ Other decisions and limits:
 - **Historical incident:** the October 3 API 500 is still unidentified and distinct from Sentry's
   October 7 timeout. No reproducible current fault has been established; retain incident history
   and monitor recurrence rather than invent a fix.
+- **Previously load-sensitive tests:** the two offseason Games cases and the retracting-header
+  navigation case passed against the built candidate. No blind timeout or skipped-test change
+  was made; these bounded passes do not establish behavior under every load.
 - **Ordering:** equal-tip games use a deterministic external-ID tie-break. ESPN's universal
   tie-break is not a dependency or a verified provider contract.
 - **Access:** authenticated Chrome can inspect Vercel deployments and previews, including

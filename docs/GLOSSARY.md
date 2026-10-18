@@ -4,6 +4,11 @@ FullCourt studies NBA schedule conditions and historical results. Use these term
 
 ## Measures and populations
 
+**Held fixture**: A game explicitly reported as `postponed` or `cancelled`. It has no published
+score or clock-based LIVE/PENDING phase and contributes no workload or upcoming pick. A cancelled
+fixture is terminal for season completeness; a postponed one is unresolved. Reopening or moving
+a fixture requires a reviewed identity/tip-time operation. See [game lifecycle](GAME_STATUS_LIFECYCLE.md).
+
 **Fatigue score**: A schedule-based estimate for one team before a game. Higher values represent greater estimated fatigue. The score does not observe sleep, injuries, or individual minutes. Source: `src/lib/fatigue.ts`.
 
 **Back-to-back**: A game on the calendar day after the team's previous game. When tip-off times are available, the model adjusts its multiplier using the hours between them. That interval includes the previous game itself; it is not a direct measurement of recovery time. Use the full term in explanatory prose; compact tables may use B2B.

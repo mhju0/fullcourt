@@ -189,3 +189,22 @@ keyboard-focusable region on narrow screens. The overview retains four qualified
 and compact archive links; technical tables and generated analytics retain their existing data.
 
 [Verified] The homepage full-bleed width uses `50cqw` from a query container scoped to `#main:has(.home)` in `src/components/home.module.css`. It measures available content width with classic scrollbars; other routes retain normal containment. `e2e/home.spec.ts` covers auto/stable gutters at 390/1440px.
+
+
+## Closeout interaction safeguards (2026-10-18)
+
+Calendar dates and the selected Games slate have independent request generations and loading
+states. A valid explicit date can show its slate while calendar counts remain pending; no empty
+month or zero-count calendar is inferred from that pending request. A calendar failure has one
+application error card and a dates-only retry that preserves the loaded slate.
+
+Model Results retains one shared page heading and one live loading status during both lazy
+chunk and API loading. Decorative skeletons are hidden from announcements. Its recent-game
+modal uses native list items containing buttons and 44px control targets. Calendar controls
+wrap at narrow widths; Home's definition-list figures wrap with enlarged text. Computed-font
+stress simulation does not establish native zoom or real-device behavior.
+
+Explicit postponed/cancelled game states override the clock on board/team/detail labels and
+accessible names. They show neither a score nor a workload/storyline claim. Future fatigue
+may temporarily be unavailable during transactional invalidation and recovery; it remains
+missing rather than becoming a fabricated zero. [Lifecycle contract](GAME_STATUS_LIFECYCLE.md).

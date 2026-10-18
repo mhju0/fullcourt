@@ -31,7 +31,10 @@ schedule resync and historical-season seeding; inspect the chosen input before d
 
 The separate Vercel cron runs `/api/cron/update` once in each hour from 21:00 to 08:00 UTC, from
 `vercel.json`. It stores final scores for yesterday and today (ET) and does not replace the full
-fatigue pipeline. Neither writer stores a game in progress ([D-81](DECISIONS.md)). Supabase Realtime can deliver
+fatigue pipeline. Both writers share the [lifecycle transaction](GAME_STATUS_LIFECYCLE.md):
+explicit postponed/cancelled states carry no scores, preserve final-result monotonicity and
+invalidate affected future derived forecasts before bounded recovery. Neither writer stores
+a game in progress ([D-81](DECISIONS.md)). Supabase Realtime can deliver
 changed game rows to browsers. Verify completed-game writes with the [live-season checklist](LAUNCH_DAY.md).
 
 ## Schedule and historical data

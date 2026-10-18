@@ -159,9 +159,11 @@ Still open from those entries:
 
 - Never seen in production: a real slate's game status (only a mocked clock), the D-83 rescore,
   physical iPhone and VoiceOver use, native zoom, capacity, and real Supabase delivery.
-- A postponed game reads LIVE for three hours (needs a stored status); the ESPN tie-break is
-  inferred from one day; the daily job's lateness is unaddressed.
-- `games.spec.ts:294` and `navigation.spec.ts:54` are load-sensitive.
+- Explicit postponed/cancelled lifecycle support is prepared in the closeout candidate.
+  Equal-tip ordering is deterministic; ESPN equivalence remains an inference, not a contract.
+  The owner kept the scheduler/monitor with variable lateness documented (D-110).
+- The two previously load-sensitive offseason Games cases and the retracting-header navigation
+  case passed targeted checks on the built candidate; no speculative timing changes were made.
 - Officiating item 24: see the current source/reproduction checkpoint in ROADMAP.md.
   Odds-feed item 18 is closed: the owner excluded feeds from scope (Oct 14 report, row 18).
 - The nine-item accessibility audit is historical. The owner selected defect fixes and deferred
