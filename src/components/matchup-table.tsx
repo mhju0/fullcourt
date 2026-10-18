@@ -122,7 +122,7 @@ function StatusCell({
           />
           LIVE
         </span>
-      ) : phase === "final" || phase === "awaitingFinal" ? (
+      ) : phase === "final" || phase === "awaitingFinal" || phase === "postponed" || phase === "cancelled" ? (
         <span
           style={{
             fontSize: 10,
@@ -132,7 +132,7 @@ function StatusCell({
           }}
         >
           {/* PENDING: over by the clock, and the score writer has not run yet. */}
-          {phase === "final" ? "FINAL" : "PENDING"}
+          {phase === "awaitingFinal" ? "PENDING" : phase.toUpperCase()}
         </span>
       ) : null}
       {hasScore ? (
@@ -155,7 +155,7 @@ function StatusCell({
           className="tabular-nums"
           style={{ fontSize: 11, color: "var(--term-text-muted)" }}
         >
-          {tipOffEt ?? date}
+          {phase === "postponed" || phase === "cancelled" ? date : tipOffEt ?? date}
         </span>
       )}
     </div>

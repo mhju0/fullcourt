@@ -1,3 +1,4 @@
+import { WORKLOAD_STATUSES } from "@/lib/game-status";
 import { format, parseISO, subDays } from "date-fns";
 import { and, asc, eq, gte, inArray, lt, or } from "drizzle-orm";
 import type { PostgresJsDatabase } from "drizzle-orm/postgres-js";
@@ -103,7 +104,7 @@ export async function fetchRecentGamesForTeam(
         or(eq(games.homeTeamId, teamId), eq(games.awayTeamId, teamId)),
         basis === "played"
           ? eq(games.status, "final")
-          : inArray(games.status, ["final", "scheduled", "live"]),
+          : inArray(games.status, [...WORKLOAD_STATUSES]),
         gte(games.date, windowStart),
         lt(games.date, gameDateStr)
       )

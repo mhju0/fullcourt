@@ -1,3 +1,6 @@
+import * as schema from "@/lib/db/schema";
+import { drizzle } from "drizzle-orm/postgres-js";
+import { writeGameStatus } from "@/lib/game-status-write";
 /**
  * Nightly score + status sync, from ESPN, matched on **(date, away, home)**.
  *
@@ -174,7 +177,7 @@ async function syncScores(sql: ReturnType<typeof postgres>, from: string, to: st
       return;
     }
 
-    const result = reconcileScores(byDate.get(dateKey)!, events);
+    const result = reconcileScores(byDate.get(dateKey)!, events, dateKey);
     updates.push(...result.updates);
     unmatchedStored += result.unmatchedStored.length;
     refusedDowngrades += result.refusedDowngrades.length;
@@ -215,30 +218,13 @@ async function syncScores(sql: ReturnType<typeof postgres>, from: string, to: st
     return;
   }
 
-  // Chunked UPDATE ... FROM (values …). overtime_periods coalesces so a live or unfinished
-  // game leaves the stored value alone rather than zeroing it.
-  const CHUNK = 500;
   let written = 0;
   let writeTimeRefusedDowngrades = 0;
-  for (let i = 0; i < updates.length; i += CHUNK) {
-    const chunk = updates.slice(i, i + CHUNK);
-    const res = await sql`
-      update games g set
-        status = v.status::varchar,
-        home_score = v.home_score::int,
-        away_score = v.away_score::int,
-        overtime_periods = coalesce(v.ot::int, g.overtime_periods)
-      from (values ${sql(
-        chunk.map(
-          (u) => [u.gameId, u.status, u.homeScore, u.awayScore, u.overtimePeriods] as const
-        )
-      )}) as v(id, status, home_score, away_score, ot)
-      where g.id = v.id::int
-        and (v.status::varchar = 'final' or g.status <> 'final')
-      returning g.id`;
-    written += res.length;
-    const writtenIds = new Set(res.map(row => Number(row.id)));
-    writeTimeRefusedDowngrades += chunk.filter(update => update.status !== "final" && !writtenIds.has(update.gameId)).length;
+  const appDb = drizzle(sql, { schema });
+  for (const update of updates) {
+    const result = await writeGameStatus(appDb, update);
+    written += Number(result.written);
+    if (!result.written) writeTimeRefusedDowngrades++;
   }
 
   writeStageSummary("scores", { rows_written: written, stored_games: rows.length, date_errors: dateErrors, unmatched: unmatchedStored });

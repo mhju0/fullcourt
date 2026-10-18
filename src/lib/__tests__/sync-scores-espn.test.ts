@@ -19,14 +19,21 @@ vi.mock("postgres", () => ({ default: () => {
   return sql;
 } }));
 
+vi.mock("drizzle-orm/postgres-js", () => ({ drizzle: () => ({}) }));
+vi.mock("@/lib/game-status-write", () => ({ writeGameStatus: async (_db: unknown, update: object) => {
+  if (mock.writeError) throw new Error("write failed");
+  mock.writes.push(update);
+  return {written: !mock.refused, invalidated: 0};
+} }));
+
 const originalArgv = process.argv;
 const originalExitCode = process.exitCode;
 const row = (id: number, date: string) => ({
   id, date, homeAbbr: "BOS", awayAbbr: "NYK", status: "scheduled",
   homeScore: null, awayScore: null, overtimePeriods: 0,
 });
-const final = { events: [{ id: "1", competitions: [{
-  status: { type: { state: "post", completed: true } },
+const final = { events: [{ id: "1", date: "2026-10-20T23:00:00Z", competitions: [{
+  status: { type: { name: "STATUS_FINAL", state: "post", completed: true } },
   competitors: [
     { homeAway: "home", team: { abbreviation: "BOS" }, score: "100" },
     { homeAway: "away", team: { abbreviation: "NYK" }, score: "90" },
@@ -74,7 +81,7 @@ describe("score sync process status", () => {
     mock.rows=[{...row(1,"2026-10-20"),status:"live",homeScore:80,awayScore:79}];
     mock.refused=true;
     const pre={events:[{...final.events[0],competitions:[{
-      ...final.events[0].competitions[0],status:{type:{state:"pre",completed:false}},
+      ...final.events[0].competitions[0],status:{type:{name:"STATUS_SCHEDULED",state:"pre",completed:false}},
     }]}]};
     vi.stubGlobal("fetch",vi.fn().mockResolvedValue(new Response(JSON.stringify(pre))));
     await run();

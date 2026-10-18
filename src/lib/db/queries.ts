@@ -1,3 +1,4 @@
+import { isHeldGame, WORKLOAD_STATUSES } from "@/lib/game-status";
 import { format, parseISO, subDays } from "date-fns";
 import {
   and,
@@ -13,7 +14,6 @@ import {
   lte,
   max,
   min,
-  ne,
   or,
   sql,
   type SQL,
@@ -176,6 +176,7 @@ async function getTeamGameCountsInDaysBefore(
     .where(
       and(
         or(inArray(games.homeTeamId, unique), inArray(games.awayTeamId, unique)),
+        inArray(games.status, [...WORKLOAD_STATUSES]),
         gte(games.date, start),
         lt(games.date, gameDateYmd)
       )
@@ -220,6 +221,7 @@ async function computeScheduleDensityMap(
     .where(
       and(
         or(inArray(games.homeTeamId, unique), inArray(games.awayTeamId, unique)),
+        inArray(games.status, [...WORKLOAD_STATUSES]),
         gte(games.date, start),
         lte(games.date, gameDate)
       )
@@ -337,7 +339,7 @@ export async function getFirstUnplayedDate(season: string): Promise<string | nul
   const [row] = await db
     .select({ first: min(games.date) })
     .from(games)
-    .where(publishableGames(and(eq(games.season, season), ne(games.status, "final"))));
+    .where(publishableGames(and(eq(games.season, season), inArray(games.status, ["scheduled", "live"]))));
 
   return row?.first ? String(row.first) : null;
 }
@@ -421,7 +423,7 @@ export async function getTeamSeasonSchedule(
         : { id: row.homeTeamId, name: row.homeTeamName, abbreviation: row.homeTeamAbbreviation, city: row.homeTeamCity },
       teamScore: isHome ? row.homeScore : row.awayScore,
       opponentScore: isHome ? row.awayScore : row.homeScore,
-      restAdvantage: home === null || away === null ? null : classifyRestAdvantage(home, away),
+      restAdvantage: isHeldGame(row.status) || home === null || away === null ? null : classifyRestAdvantage(home, away),
       projectedFatigue: isProjectedFatigue(date, firstUnplayed),
     };
   });
@@ -472,7 +474,8 @@ function mapJoinedRowToGameResponse(
     }
   );
 
-  const restAdvantage = buildRestAdvantage(homeFatigueData, awayFatigueData);
+  const held = isHeldGame(row.status);
+  const restAdvantage = held ? null : buildRestAdvantage(homeFatigueData, awayFatigueData);
 
   return {
     id: row.id,
@@ -495,10 +498,10 @@ function mapJoinedRowToGameResponse(
       abbreviation: row.awayTeamAbbreviation,
       city: row.awayTeamCity,
     },
-    homeScore: row.homeScore,
-    awayScore: row.awayScore,
-    homeFatigue: homeFatigueData,
-    awayFatigue: awayFatigueData,
+    homeScore: row.status === "final" ? row.homeScore : null,
+    awayScore: row.status === "final" ? row.awayScore : null,
+    homeFatigue: held ? null : homeFatigueData,
+    awayFatigue: held ? null : awayFatigueData,
     restAdvantage,
     neutralCity: row.neutralSite ? row.neutralVenueCity : null,
   };
@@ -757,7 +760,7 @@ export async function getIncompleteRegularSeasonSeasons(): Promise<Set<string>> 
   const rows = await db
     .selectDistinct({ season: games.season })
     .from(games)
-    .where(publishableGames(ne(games.status, "final")));
+    .where(publishableGames(inArray(games.status, ["scheduled", "live", "postponed"])));
 
   return new Set(rows.map((row) => String(row.season)));
 }
@@ -1039,7 +1042,7 @@ export async function getUpcomingGamesWithRA(
   // A game stays `scheduled` until its final is written, so the status alone would list a
   // game that is being played as still ahead.
   const now = Date.now();
-  const candidates = rows.filter((r) => hasNotTipped(r.tipOffUtc, now));
+  const candidates = rows.filter((r) => r.homeFatigueScore !== null && r.awayFatigueScore !== null && hasNotTipped(r.tipOffUtc, now));
   const selected = limit === undefined ? candidates : candidates.sort((a, b) =>
     Math.abs(Number(b.differential)) - Math.abs(Number(a.differential)) ||
     String(a.date).localeCompare(String(b.date)) || a.gameId - b.gameId
@@ -1620,7 +1623,7 @@ export async function getSeasonReportRows(season: string): Promise<SeasonReportR
   // The stored travel figure is a rolling 7-day window, so it cannot be summed across a season
   // without counting each flight several times. The report adds up single legs instead.
   const legs = seasonTravelLegs(
-    rows.map((r) => ({
+    rows.filter(row => !isHeldGame(row.status)).map((r) => ({
       gameId: Number(r.gameId),
       date: String(r.date),
       homeTeamId: Number(r.homeTeamId),

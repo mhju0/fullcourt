@@ -1,3 +1,5 @@
+import postponedFixture from "./fixtures/espn-status_postponed.json";
+import cancelledFixture from "./fixtures/espn-status_canceled.json";
 import { describe, expect, it } from "vitest";
 import {
   mapEspnStatus,
@@ -61,7 +63,7 @@ function event(over: {
     id,
     competitions: [
       {
-        status: { type: { state, completed } },
+        status: { type: { state, completed, name: state === "post" && completed ? "STATUS_FINAL" : state === "in" ? "STATUS_IN_PROGRESS" : "STATUS_SCHEDULED" } },
         competitors: [
           { homeAway: "home", score: homeScore, team: { abbreviation: homeAbbr }, linescores },
           { homeAway: "away", score: awayScore, team: { abbreviation: awayAbbr }, linescores },
@@ -75,14 +77,14 @@ describe("mapEspnStatus", () => {
   it("reads state rather than completed, so a postponed game is not final", () => {
     // ESPN ships a postponement as state "post" with completed false. Trusting `post` alone
     // would publish it as a finished 0-0 game.
-    expect(mapEspnStatus("post", false)).toBe("scheduled");
-    expect(mapEspnStatus("post", true)).toBe("final");
+    expect(mapEspnStatus("post", false)).toBe("unknown");
+    expect(mapEspnStatus("post", true, "STATUS_FINAL")).toBe("final");
   });
 
   it("maps in-progress and pre-game states", () => {
-    expect(mapEspnStatus("in", false)).toBe("live");
-    expect(mapEspnStatus("pre", false)).toBe("scheduled");
-    expect(mapEspnStatus(undefined, undefined)).toBe("scheduled");
+    expect(mapEspnStatus("in", false, "STATUS_IN_PROGRESS")).toBe("live");
+    expect(mapEspnStatus("pre", false, "STATUS_SCHEDULED")).toBe("scheduled");
+    expect(mapEspnStatus(undefined, undefined)).toBe("unknown");
   });
 });
 
@@ -216,4 +218,36 @@ describe("reconcileScores", () => {
     const result = reconcileScores([row({ id: 42 })], [espn()]);
     expect(result.updates.map((u) => u.gameId)).toEqual([42]);
   });
+});
+
+describe("authoritative holds", () => {
+  it.each([["STATUS_POSTPONED", "postponed"], ["STATUS_CANCELED", "cancelled"]] as const)("maps authentic ESPN %s", (name, status) => {
+    const ev = event({state: "post", completed: false, homeScore: "0", awayScore: "0"});
+    Object.assign(ev.competitions[0].status.type, {name});
+    const [parsed] = parseScoreboard({events:[ev]});
+    expect(parsed.status).toBe(status);
+    expect(parsed.homeScore).toBeNull();
+    expect(parsed.awayScore).toBeNull();
+  });
+  it.each(["postponed", "cancelled"] as const)("does not clear %s from missing, unknown or pregame evidence", status => {
+    const stored = row({status});
+    expect(reconcileScores([stored], []).updates).toEqual([]);
+    expect(reconcileScores([stored], [espn({status:"scheduled",homeScore:null,awayScore:null})]).updates).toEqual([]);
+    expect(reconcileScores([stored], [espn({status:"final"})]).updates[0]?.status).toBe("final");
+  });
+});
+
+it.each([[postponedFixture, "postponed"], [cancelledFixture, "cancelled"]] as const)("parses retained authentic provider evidence", (fixture, status) => {
+  const [parsed] = parseScoreboard(fixture);
+  expect(parsed.status).toBe(status);
+  expect(parsed.homeScore).toBeNull();
+  expect(parsed.awayScore).toBeNull();
+});
+it("does not apply a moved ESPN fixture to its original date pairing", () => {
+  expect(reconcileScores([row()], [espn({date:"2026-10-22"})], "2026-10-20").updates).toEqual([]);
+});
+it("does not convert unknown provider labels into a scheduled update", () => {
+  const ev = event({state:"pre",completed:false});
+  Object.assign(ev.competitions[0].status.type,{name:"STATUS_NEW_PROVIDER_LABEL"});
+  expect(reconcileScores([row({status:"postponed"})],parseScoreboard({events:[ev]})).updates).toEqual([]);
 });

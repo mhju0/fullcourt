@@ -770,3 +770,14 @@ describe("buildSeasonReport — the as-of stamp", () => {
     expect(report.latestFinalDate).toBeNull();
   });
 });
+
+it("treats cancellation as settled while a postponement stays unresolved, excluding both from schedule model totals", () => {
+  const cancelled = buildSeasonReport("2026-27", [game({gameId:1,status:"cancelled",homeScore:null,awayScore:null})]);
+  const postponed = buildSeasonReport("2026-27", [game({gameId:1,status:"postponed",homeScore:null,awayScore:null})]);
+  expect(cancelled.seasonComplete).toBe(true);
+  expect(postponed.seasonComplete).toBe(false);
+  expect(cancelled.completedGames).toBe(0);
+  expect(postponed.completedGames).toBe(0);
+  expect(cancelled.teams).toEqual([]);
+  expect(postponed.teams).toEqual([]);
+});

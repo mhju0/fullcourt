@@ -8,7 +8,7 @@ export function shouldRefreshSlate(args: {
   online: boolean;
 }): boolean {
   return args.visible && args.online &&
-    (args.selectedDate >= args.today || args.games.some((game) => game.status !== "final"));
+    (args.selectedDate >= args.today || args.games.some((game) => game.status === "scheduled" || game.status === "live" || game.status === "postponed"));
 }
 
 /** One selected slate owns its requests; disposing it also rejects responses after A → B → A. */

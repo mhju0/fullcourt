@@ -1,3 +1,6 @@
+import { formatEasternDateKey } from "@/lib/nba-season";
+import { isHeldGame, type GameStatus } from "@/lib/game-status";
+
 /**
  * ESPN scoreboard → stored-game reconciliation, matched on **(date, away, home)**.
  *
@@ -19,12 +22,13 @@
  * `scripts/sync_scores_espn.ts`.
  */
 
-/** The three states `games.status` takes. */
-export type EspnGameStatus = "scheduled" | "live" | "final";
+export type EspnGameStatus = GameStatus | "unknown";
 
 export type EspnScoreboardGame = {
   /** ESPN event id. Carried for reporting only — never matched on. */
   eventId: string;
+  /** Provider fixture date, when supplied; never use a moved event for the original date. */
+  date?: string;
   awayAbbr: string;
   homeAbbr: string;
   status: EspnGameStatus;
@@ -48,8 +52,9 @@ export type StoredGameRow = {
 };
 
 export type ScoreUpdate = {
+  expectedIdentity?: { date: string; homeAbbr: string; awayAbbr: string };
   gameId: number;
-  status: EspnGameStatus;
+  status: GameStatus;
   homeScore: number | null;
   awayScore: number | null;
   /**
@@ -115,17 +120,20 @@ export const gameKey = (awayAbbr: string, homeAbbr: string): string =>
 /**
  * ESPN's `status.type` → our vocabulary.
  *
- * `state` is the field to read, not `completed`: a postponed game is `state: "post"` with
- * `completed: false`, and treating it as final would publish a 0–0 result. Anything that is
- * not a completed "post" and not an in-progress "in" is scheduled.
+ * Names distinguish postponed/cancelled from finals: all three use state "post".
+ * Unknown or contradictory labels preserve stored data.
  */
 export function mapEspnStatus(
   state: string | undefined,
-  completed: boolean | undefined
+  completed: boolean | undefined,
+  name?: string
 ): EspnGameStatus {
-  if (state === "post" && completed === true) return "final";
-  if (state === "in") return "live";
-  return "scheduled";
+  if (name === "STATUS_POSTPONED" && state === "post" && completed === false) return "postponed";
+  if (name === "STATUS_CANCELED" && state === "post" && completed === false) return "cancelled";
+  if (name === "STATUS_FINAL" && state === "post" && completed === true) return "final";
+  if (name === "STATUS_IN_PROGRESS" && state === "in" && completed === false) return "live";
+  if (name === "STATUS_SCHEDULED" && state === "pre" && completed === false) return "scheduled";
+  return "unknown";
 }
 
 /* eslint-disable @typescript-eslint/no-explicit-any -- ESPN's payload is untyped upstream */
@@ -151,7 +159,7 @@ function parseEvent(ev: any): EspnScoreboardGame | null {
   // A Cup knockout placeholder before its participants are known. Never a real fixture.
   if (homeAbbr === "TBD" || awayAbbr === "TBD") return null;
 
-  const status = mapEspnStatus(comp?.status?.type?.state, comp?.status?.type?.completed);
+  const status = mapEspnStatus(comp?.status?.type?.state, comp?.status?.type?.completed, comp?.status?.type?.name);
 
   // Both sides list every period played; take the longer in case one is truncated.
   const periods = Math.max(
@@ -159,7 +167,9 @@ function parseEvent(ev: any): EspnScoreboardGame | null {
     (away.linescores ?? []).length
   );
 
+  const instant = new Date(comp?.date ?? ev?.date);
   return {
+    ...(Number.isFinite(instant.getTime()) ? {date: formatEasternDateKey(instant)} : {}),
     eventId: String(ev?.id ?? ""),
     awayAbbr,
     homeAbbr,
@@ -178,7 +188,8 @@ function parseEvent(ev: any): EspnScoreboardGame | null {
  * codebase draws between "not measured" and "measured as zero".
  */
 function parseScore(raw: unknown, status: EspnGameStatus): number | null {
-  if (status === "scheduled") return null;
+  if (status !== "final") return null;
+  if (raw === null || raw === undefined || raw === "") return null;
   const n = Number(raw);
   return Number.isFinite(n) ? n : null;
 }
@@ -192,9 +203,10 @@ function parseScore(raw: unknown, status: EspnGameStatus): number | null {
  */
 export function reconcileScores(
   stored: readonly StoredGameRow[],
-  espnGames: readonly EspnScoreboardGame[]
+  espnGames: readonly EspnScoreboardGame[],
+  dateKey?: string
 ): ScoreReconciliation {
-  const byKey = new Map(espnGames.map((g) => [gameKey(g.awayAbbr, g.homeAbbr), g]));
+  const byKey = new Map(espnGames.filter(g => !dateKey || g.date === dateKey).map((g) => [gameKey(g.awayAbbr, g.homeAbbr), g]));
   const matchedKeys = new Set<string>();
 
   const updates: ScoreUpdate[] = [];
@@ -211,6 +223,10 @@ export function reconcileScores(
     }
     matchedKeys.add(key);
 
+    if (espn.status === "unknown") continue;
+    // Reopening needs a reviewed date/tip identity operation; a cached pregame feed is not it.
+    if (isHeldGame(row.status) && (espn.status === "scheduled" || espn.status === "live")) continue;
+    if (row.status === "cancelled" && espn.status === "postponed") continue;
     if (row.status === "final" && espn.status !== "final") {
       refusedDowngrades.push(row.id);
       continue;
@@ -236,6 +252,7 @@ export function reconcileScores(
 
     if (changed) {
       updates.push({
+        ...(dateKey ? {expectedIdentity:{date:dateKey,homeAbbr:row.homeAbbr,awayAbbr:row.awayAbbr}} : {}),
         gameId: row.id,
         status: espn.status,
         homeScore: espn.homeScore,

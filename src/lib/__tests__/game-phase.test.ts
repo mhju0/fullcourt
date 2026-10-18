@@ -72,3 +72,10 @@ describe("spokenGameState", () => {
     expect(spokenGameState("final", null, 104)).toBe(", final,");
   });
 });
+
+ it.each(["postponed", "cancelled"])("keeps %s independent of the clock", status => {
+   for (const hours of [-1, 0, 3, 12, 48]) {
+     expect(gamePhase(status, TIP, at(hours))).toBe(status);
+     expect(spokenGameState(status as "postponed" | "cancelled", 0, 0)).toBe(`, ${status},`);
+   }
+ });

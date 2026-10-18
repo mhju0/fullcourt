@@ -167,15 +167,14 @@ export function GameStatusRow({
   homeScore: number | null
   awayScore: number | null
 }) {
+  if (status === "postponed" || status === "cancelled") {
+    return <span className="mono" style={{ fontSize: "11px", letterSpacing: TRACK.label, color: "var(--term-text-muted)" }}>{status.toUpperCase()}</span>
+  }
   if (status === "live") {
     return (
       <div className="mono flex items-center gap-3" style={{ fontSize: "12px" }}>
         <LiveIndicator />
-        {homeScore !== null && awayScore !== null && (
-          <span className="tabular-nums" style={{ fontSize: TYPE.stat, letterSpacing: TRACK.figure, color: "var(--term-text)", fontWeight: 800 }}>
-            {awayScore} – {homeScore}
-          </span>
-        )}
+
       </div>
     )
   }
