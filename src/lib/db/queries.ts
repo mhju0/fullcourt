@@ -264,12 +264,14 @@ function selectGamesWithFatigue(where: SQL | undefined) {
       homeSeasonOpener: sql<boolean>`not exists (
         select 1 from games opener_schedule
         where opener_schedule.season = ${games.season} and opener_schedule.game_type = 'regular'
+          and opener_schedule.status in (${sql.join(WORKLOAD_STATUSES.map(status => sql`${status}`), sql`, `)})
           and (opener_schedule.home_team_id = ${games.homeTeamId} or opener_schedule.away_team_id = ${games.homeTeamId})
           and (opener_schedule.date < ${games.date} or (opener_schedule.date = ${games.date} and opener_schedule.id < ${games.id}))
       )`,
       awaySeasonOpener: sql<boolean>`not exists (
         select 1 from games opener_schedule
         where opener_schedule.season = ${games.season} and opener_schedule.game_type = 'regular'
+          and opener_schedule.status in (${sql.join(WORKLOAD_STATUSES.map(status => sql`${status}`), sql`, `)})
           and (opener_schedule.home_team_id = ${games.awayTeamId} or opener_schedule.away_team_id = ${games.awayTeamId})
           and (opener_schedule.date < ${games.date} or (opener_schedule.date = ${games.date} and opener_schedule.id < ${games.id}))
       )`,
@@ -1538,14 +1540,12 @@ export async function getTeamDirectory(): Promise<
  * roughly three weeks later, nothing is final, so a freshly-seeded schedule never moved it
  * and `/season` served `0 / 0` off a cache that could not invalidate.
  *
- * Four components, because four different things change the report. The row count moves when a
- * season is seeded, the final count as it is played, the latest date when a game is rescheduled,
- * and the checksum when a score is corrected on a game that was already final — which moves none
- * of the other three. See `getCompletedGamesStamp` for why that last one is not hypothetical.
- *
- * A game going *live* deliberately moves nothing. `buildSeasonReport` and
- * `computeScheduleDisparity` both treat a live game as incomplete even when it already carries
- * both scores, so the held value is still the right answer and rebuilding it would be waste.
+ * The counts/date/score components retain the historical correction guards. The ordered
+ * lifecycle digest also catches holds without a new final, and the derived digest catches
+ * deleted/recovered fatigue pairs and content-only corrections. Each game's fatigue rows are
+ * aggregated before the season aggregate, so joins cannot multiply the fixture counts.
+ * All stored fatigue revisions are included: removing an older/non-maximum row still moves
+ * the stamp, and superseded-row changes may safely cause an extra rebuild.
  *
  * Same population as `getSeasonReportRows` below — a stamp that keys a different set of rows
  * than the query it stands in for is the bug this replaces.
@@ -1557,13 +1557,22 @@ export async function getSeasonGamesStamp(season: string): Promise<string> {
       finals: sql<number>`count(*) filter (where ${games.status} = 'final')`,
       latest: max(games.date),
       checksum: sql<string>`coalesce(sum(${games.homeScore}::bigint * 1000 + ${games.awayScore}), 0)::text`,
+      lifecycle: sql<string>`md5(coalesce(string_agg(concat_ws('|',
+        ${games.id}, ${games.status}, ${games.date}, ${games.tipOffUtc}, ${games.homeTeamId}, ${games.awayTeamId},
+        ${games.neutralSite}, ${games.neutralVenueCity}), ';' order by ${games.id}), 'none'))`,
+      // Keep the outer qualifier literal: Drizzle strips Column qualifiers in single-table selects.
+      derived: sql<string>`md5(coalesce(string_agg(concat_ws('|', ${games.id},
+        (select md5(coalesce(string_agg(to_jsonb(f)::text, ';' order by f.id), 'missing'))
+          from fatigue_scores f where f.game_id = games.id)
+      ), ';' order by ${games.id}), 'none'))`,
     })
     .from(games)
     .where(publishableGames(eq(games.season, season)));
 
   return (
     `${row?.scheduled ?? 0}/${Number(row?.finals ?? 0)}` +
-    `@${row?.latest ?? "none"}#${row?.checksum ?? "0"}`
+    `@${row?.latest ?? "none"}#${row?.checksum ?? "0"}` +
+    `~${row?.lifecycle ?? "none"}/${row?.derived ?? "none"}`
   );
 }
 
