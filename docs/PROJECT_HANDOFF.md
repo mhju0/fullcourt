@@ -1,5 +1,5 @@
 # Project handoff
-Reconciled 2026-09-11. Source/tests and Git take precedence. This is a current-state summary;
+Reconciled 2026-10-18. Source/tests and Git take precedence. This is a current-state summary;
 update these sections in place. Rationale belongs in [Decisions](DECISIONS.md).
 ## Product and release
 FullCourt studies NBA rest, travel, schedule density, and outcomes. The homepage leads with
@@ -16,7 +16,8 @@ Officiating covers 12 regular seasons and 4,546 reports, including the partial 2
 [archive evidence](research/2026-09-09-l2m-archive.md) records source checks and historical limits.
 The homepage hero now contains only the headline, original description and primary action.
 The one-game example and its supporting reads were removed under D-67. Next.js and its ESLint
-config are pinned to 16.4.0 (16.3.4 → 16.3.8 on 2026-10-03 for GHSA-vcvr-r3jv-pc5j; 16.4.0 on 2026-10-15, moved together); the
+config move together: 16.4.0 shipped on 2026-10-15, and 16.4.1 is prepared in the
+2026-10-18 closeout candidate (not deployed at this checkpoint); the
 lockfile resolves Sharp 0.35.5 (pinned on 2026-10-07 for GHSA-wq5f-xc86-pv6w), clearing the production dependency audit. See [verification](design/home-hero-release-review.md).
 Shared filters now use 44px targets and 16px text. Analysis uses equal-width filter columns;
 Season Report uses bordered sections with a separate interpretation surface. The
@@ -80,8 +81,8 @@ Condensed again on 2026-10-11; DECISIONS.md and dated review records retain deta
 Still open from those entries:
 
 - The cause of one production API 500 seen during the 2026-10-03 audit is unknown.
-- Stat-tile unification and table column widths are deferred.
-- Whether `Find a page` leaves the footer; removing it leaves the page finder keyboard-only.
+- Shared stat tiles are implemented. Further table-width redesign is deferred; no specific current defect is established.
+- Keep `Find a page` in the footer: it is the visible entry to the page finder.
 - Overtime before 2002-03 is not stored. Three NBA Cup finals and the 2020 play-in game are
   absent by design.
 - Owner actions: tag `v1.0.0` at launch, and announce only after a verified live pipeline run.
@@ -94,8 +95,9 @@ Condensed 2026-10-14: D-74–D-77 shipped the footer non-affiliation notice, `/p
 Sentry `javascript-nextjs` / `michael-ju-46` uses Vercel `NEXT_PUBLIC_SENTRY_DSN` with IP storage off; UptimeRobot checks `/` and `/api/health` every five minutes. Vercel's one Hobby firewall rule limits `/api/` to 100 requests per 60 seconds per IP.
 The owner's Mac runs `~/Backups/fullcourt/backup.sh` Sundays 11:00, retaining eight backups; it needs pg_dump 18 and one restore matched counts. Instagram review fixed the Schedule pinned-column zero rule and report subject `FullCourt error or suggestion`.
 
-Still open from those entries: Sentry source-map upload; the footer notice size (12px); the
-quota plan from the ten-item list was not recorded as done. The social preview was uploaded on
+Source-map upload shipped in PR #171; client symbolication was verified on 2026-10-18. The owner
+chose to keep the footer notice at 12px on 2026-10-17 and upgraded Supabase to Pro for launch.
+The social preview was uploaded on
 2026-08-30, and the profile, portfolio and repo homepage moved to fullcourt.fyi on 2026-10-17.
 
 ## Phone and tablet layout (2026-10-07)
@@ -109,15 +111,16 @@ Open:
 
 - Done by the owner: `DATABASE_URL` is Sensitive in Vercel and rotated everywhere (2026-10-15),
   and `SENTRY_AUTH_TOKEN` is in Vercel (2026-10-12). The build-side source-map upload shipped on
-  2026-10-18 with the owner's approval; a new first-party event still has to show source lines.
-- A reader-picked number column for the Schedule breakdown (the survey's C1) is unbuilt.
+  2026-10-18 with the owner's approval; the controlled client event shows source lines/context.
+  Server-event symbolication remains unobserved; see TESTING_AND_CICD.md.
+- A reader-picked Schedule column (C1) is unbuilt and explicitly deferred on 2026-10-18.
 - The new phone controls have not been used on a physical phone.
-- DECISIONS.md and ADR 0006 quote the travel ablation as 5,994 calls, 59.14% and +0.32pp; the
-  page has read 5,992, 59.1% and +0.34pp since the 2026-10-04 corrections. Whether those two
-  records get a dated amendment is the owner's call.
-- Sentry issue `JAVASCRIPT-NEXTJS-3`: a blocked `eval` on `/playoffs` from one iOS 15 client, with
-  no first-party frame. Not reproduced.
-- The footer notice size (12px) is not ruled on. A second backup copy off the Mac is not set up.
+- ADR 0006 retains the original travel-ablation snapshot; its 2026-10-18 addendum records the
+  current 2026-10-17 export and the offline fidelity repair without changing coefficients.
+- Sentry `JAVASCRIPT-NEXTJS-3` is resolved (live read 2026-10-18); the one Oct 7 timeout
+  `JAVASCRIPT-NEXTJS-4` has no recurrence and remains monitored, not claimed fixed.
+- Footer notice remains 12px by owner choice. Off-Mac backup and UptimeRobot phone push
+  were declined; neither is an active action item.
 
 ## Summary of the entries from 2026-10-07 to 2026-10-18
 
@@ -159,11 +162,34 @@ Still open from those entries:
 - A postponed game reads LIVE for three hours (needs a stored status); the ESPN tie-break is
   inferred from one day; the daily job's lateness is unaddressed.
 - `games.spec.ts:294` and `navigation.spec.ts:54` are load-sensitive.
-- Officiating item 24 stays partial: the latest snapshot and full upstream Legends were
-  unavailable. Launch item 18 is blocked on the odds-feed intent.
-- The nine accessibility/usability findings in `anti-slop/audit-002-2026-10-14.md` await the
-  owner's selection (for example, `role="button"` on list items in the game dialog).
-- Whether the Schedule Edge "days off" label over a days-since count was settled is unrecorded.
-- The Vercel deployment read returns 403 for the project scope.
+- Officiating item 24: see the current source/reproduction checkpoint in ROADMAP.md.
+  Odds-feed item 18 is closed: the owner excluded feeds from scope (Oct 14 report, row 18).
+- The nine-item accessibility audit is historical. The owner selected defect fixes and deferred
+  optional chart actions and filter sharing on 2026-10-18; current acceptance is in ROADMAP.md.
+- Schedule Edge's capped net days-off wording is equivalent to its days-since arithmetic:
+  subtracting one from both capped sides cancels. Preserve the current calculation.
+- Vercel connector access remains limited; authenticated Chrome dashboard access works.
+  Production 69b5e02 was Ready on 2026-10-18. Both Dependabot PRs have Ready previews.
 - Re-key the ESPN-seeded 2026-27 games to hoopR IDs once played games exist (SEASON_ROLLOVER.md).
 - Supabase: the owner will revisit the Pro plan around 2026-11-05, after seeing in-season egress.
+
+
+## Closeout continuation — 2026-10-18
+
+Reconciled Claude sessions, retained launch reports and current source/Git. The current
+28-item disposition is in ROADMAP.md; dated reports remain historical evidence. The owner
+selected antislop throughout, defect fixes, proper postponed/cancelled lifecycle support and
+the existing scheduler/monitor; optional URL filters, chart actions and C1 column are deferred.
+The dependency/UI/lifecycle changes are prepared on codex/unresolved-closeout and are not
+deployed until the release record says so. Independent persistence review is required.
+
+Client Sentry symbolication is verified on deployed 69b5e02: deliberate event d2332a30
+resolved to original source and context; its test issue was then resolved. Server-event
+symbolication remains unobserved. A fresh NBA source snapshot and full retained-cache
+Legends rebuild close the reproduction gaps; source figures are unchanged. The offline
+ablation harness now follows JavaScript rounding and refuses mismatched reconstructions;
+ADR 0006 preserves the original snapshot and adds current evidence.
+
+Remaining: finish candidate verification/review and obtain its merge approval; then verify
+the deployed candidate. Human checks, first played-slate validation, December fixture ingest,
+ESPN re-key after played data, November 5 plan review and server-error observation stay separate.

@@ -73,3 +73,23 @@ candidate. Owner token/account approval and the separate credential-rotation han
 outside this code change. Item9 stays incomplete until the shipping build upload and a new
 first-party bundled event are checked. Do not reinterpret the offline stub's SDK success log
 as a real Sentry upload.
+
+
+## Shipping verification — 2026-10-18
+
+PR #171 shipped the token-backed upload; authenticated Vercel dashboard inspection confirmed
+production commit `69b5e026456f1d90c1308cbe81d02018657c819b` Ready. The original local
+"Unverified gates" section above is a historical candidate record, superseded as follows.
+
+After the owner's specific approval, a clean isolated browser intercepted only its own Analysis
+API response and supplied deliberately malformed synthetic data. Existing first-party bundled
+code threw and the deployed error boundary captured it. One clearly tagged event was sent:
+`d2332a304dab43edbf15ef15bcdb025a`, Sentry `JAVASCRIPT-NEXTJS-9`, release `69b5e02`.
+Sentry returned original source `src/lib/analysis-claims.ts:216:42`, the statement reading
+`data.venueBaseline.homeWinPct`, and surrounding source context. Both bundled Debug IDs were
+present. The probe changed neither the public application nor database state.
+
+The deliberate test issue was resolved after checking the event. This closes new-event client
+symbolication for that build. A first-party **server** event has not been induced or observed;
+server artifact upload/build coverage is separate evidence and does not close that runtime gate.
+The unrelated October 7 timeout remains open and was not marked fixed by this test.

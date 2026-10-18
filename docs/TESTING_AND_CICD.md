@@ -99,6 +99,13 @@ and context on a **new first-party bundled event** from that build. Verify clien
 coverage separately; errors created only in browser developer tools do not establish it.
 An old event cannot prove the new upload. [Local evidence and remaining gates](research/2026-10-12-sentry-source-maps.md).
 
+On 2026-10-18 the owner-authorized isolated-browser test on production `69b5e02` produced
+Sentry event `d2332a304dab43edbf15ef15bcdb025a` (JAVASCRIPT-NEXTJS-9). A local-only
+malformed Analysis response triggered the existing bundled error boundary; Sentry resolved it
+to `src/lib/analysis-claims.ts:216:42` with source context. The deliberate test issue was resolved
+after readback. This verifies client symbolication for that deployed build, not server-event
+symbolication or later releases. No site code or database was changed by the probe.
+
 ## Documentation captures
 
 ```sh

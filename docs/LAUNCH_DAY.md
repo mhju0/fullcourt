@@ -16,13 +16,13 @@ historical games does not establish this. Preserve the relevant run ID and write
 
 | Writer | Configured UTC schedule | Responsibility |
 | --- | --- | --- |
-| Daily NBA update | `0 21 * * *` | Recent final score/status/overtime sync, game context, projection gaps, fatigue and predictions |
+| Daily NBA update | `17 21 * * *` | Recent final score/status/overtime sync, game context, projection gaps, fatigue and predictions |
 | Vercel `/api/cron/update` | Twelve entries, one per hour from 21:00 to 08:00 UTC | Final scores for yesterday and today (ET), then independent prospective fatigue/prediction reconciliation for current next games today/tomorrow ET with recent stored finals ([D-84](DECISIONS.md)); separate from the full modeling pipeline |
 
 Both store finished games only ([D-81](DECISIONS.md)). A game in progress is left as
 `scheduled` and reported as "in progress (left alone)"; the Games page marks it LIVE from its
-tip time. Two timing facts: GitHub has been starting the daily job two and a half to five hours
-late, and Vercel fires each cron entry at some point inside its hour, so a final appears between
+tip time. Two timing facts: GitHub Actions has variable scheduling delay (the Oct 17 run began
+1h49m12s after its 21:17 UTC schedule; earlier observations reached five hours), and Vercel fires each cron entry at some point inside its hour, so a final appears between
 a few minutes and about two hours after the game ends.
 
 See `.github/workflows/daily-update.yml`, `scripts/daily_update.py`, `scripts/run-daily.ts`,

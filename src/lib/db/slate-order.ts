@@ -3,8 +3,8 @@ import { games } from "./schema";
 
 /**
  * The order of one date's games: earliest tip-off first, and games that start at the same
- * minute in the source's own game-number order, which is how ESPN's scoreboard lists them
- * (D-79). Postgres sorts NULL last on an ascending key, so a game with no stored tip-off
+ * minute in deterministic source game-number order (D-79). ESPN agreement was observed on
+ * one date, not established as a provider contract. Postgres sorts NULL last, so no tip-off
  * (before about 2002) falls back to its game number.
  */
 export const slateOrder = () => [asc(games.tipOffUtc), asc(games.externalId)];

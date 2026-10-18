@@ -7,7 +7,7 @@ Dependencies differ by workflow: root `requirements.txt`, `scripts/requirements.
 
 ## Scheduled updates
 
-`.github/workflows/daily-update.yml` runs `scripts/daily_update.py` daily at 21:00 UTC. Its
+`.github/workflows/daily-update.yml` runs `scripts/daily_update.py` daily at 21:17 UTC. Its
 America/New_York season gate runs before credentials or ingest dependencies are needed. An
 offseason success means a skip, not a tested ingestion path.
 

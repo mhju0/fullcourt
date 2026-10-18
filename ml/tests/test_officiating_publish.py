@@ -1,4 +1,5 @@
 import hashlib
+from datetime import datetime, timedelta
 import json
 from pathlib import Path
 import sys
@@ -248,7 +249,9 @@ class PublisherTests(unittest.TestCase):
             self.assertEqual(
                 {p.relative_to(output): p.read_bytes() for p in output.rglob("*") if p.is_file()}, before,
             )
-            manifest["finished_at"] = "2026-10-12T12:00:00+00:00"
+            manifest["finished_at"] = (
+                datetime.fromisoformat(manifest["finished_at"]) + timedelta(days=1)
+            ).isoformat()
             (snapshot / "manifest.json").write_text(json.dumps(manifest))
             refresh = self.run_publisher(output, snapshot)
             self.assertEqual(refresh.returncode, 0, refresh.stderr)

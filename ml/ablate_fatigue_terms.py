@@ -30,6 +30,8 @@ from pathlib import Path
 
 import pandas as pd
 
+from fatigue_rounding import require_score_fidelity, round_score
+
 logging.basicConfig(level=logging.INFO, format="%(message)s")
 log = logging.getLogger(__name__)
 
@@ -76,7 +78,7 @@ def assemble(df: pd.DataFrame, drop: str | None = None, neutral: float = 0.0) ->
     base = part["decay_load"] + part["travel_load"] + part["road_load"]
     multiplied = base * part["b2b_mult"] * part["alt_mult"] * part["density_mult"]
     total = multiplied + part["freshness_bonus"] + part["ot_bonus"]
-    return (total.clip(lower=0) * 100).round() / 100
+    return total.clip(lower=0).map(round_score)
 
 
 def calls(home: pd.DataFrame, away: pd.DataFrame, col: str):
@@ -126,7 +128,7 @@ def main() -> None:
     # Fidelity gate: the reconstruction must reproduce the exported score exactly, or the
     # ablations below are measuring an assembly that is not the shipped one.
     rebuilt = assemble(df)
-    bad = int((rebuilt - df["score"]).abs().gt(0.005).sum())
+    require_score_fidelity(rebuilt, df["score"])
 
     # is_home arrives as 0/1 or true/false depending on the CSV writer; normalise.
     is_home = df["is_home"].astype(str).str.lower().isin({"1", "true"})
@@ -145,7 +147,7 @@ def main() -> None:
     lines = [
         "# Single-term fatigue ablations, re-measured",
         "",
-        f"score reconstruction mismatches   {bad}",
+        "score reconstruction mismatches   0",
         f"games after publishable filter    {len(paired)}",
         f"full model — called               {base_n}",
         f"full model — win rate             {base_rate}",
