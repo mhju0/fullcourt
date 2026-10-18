@@ -26,8 +26,9 @@ of each finalized team is rescored if it is today or tomorrow (ET) and has not t
 that night's overtime and margin are in the row before the game (D-83).
 
 Failure in required steps fails the workflow. Database credentials come from the process
-environment or local environment files; never print their values. The workflow also offers manual
-schedule resync and historical-season seeding; inspect the chosen input before dispatching it.
+environment or local environment files; never print their values. The workflow retains manual
+schedule resync/seed input names but rejects those tasks before dependencies or credentials are
+loaded. Follow the manual-source runbook before preparing any replacement operation.
 
 The separate Vercel cron runs `/api/cron/update` once in each hour from 21:00 to 08:00 UTC, from
 `vercel.json`. It stores final scores for yesterday and today (ET) and does not replace the full
