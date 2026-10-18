@@ -4,6 +4,7 @@ import { ChevronDown } from "lucide-react";
 import { useBacktest } from "@/hooks/useBacktest";
 import { FLAG_MEANINGS, LARGE_REST_EDGE_THRESHOLD, MEDIUM_REST_EDGE_THRESHOLD, RestEdgeBadge, restEdgeRates } from "@/components/matchup-parts";
 import { FlagChip } from "@/components/matchup-table";
+import { NEUTRAL_REST_ADVANTAGE_THRESHOLD } from "@/lib/rest-advantage-evidence";
 import { SPACE, TRACK, TYPE } from "@/lib/terminal-styles";
 
 /** The board's three columns in plain words, closed until asked for. */
@@ -30,7 +31,7 @@ export function BoardGuide({ className }: { className?: string }) {
           </span>
         </GuideRow>
         <GuideRow term="REST ADVANTAGE">
-          The gap between the two scores, named for the fresher team. A gap under 0.5 reads EVEN.
+          The gap between the two scores, named for the fresher team. A gap under {NEUTRAL_REST_ADVANTAGE_THRESHOLD} reads EVEN.
         </GuideRow>
         <GuideRow term={<RestEdgeBadge size="medium" />}>
           The home team is {MEDIUM_REST_EDGE_THRESHOLD} to {LARGE_REST_EDGE_THRESHOLD} points fresher.

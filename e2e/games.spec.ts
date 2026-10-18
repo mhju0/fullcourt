@@ -443,3 +443,11 @@ test("a finished game's row says its score to a screen reader", async ({ page })
   await expect(page.locator(".fc-game-grid").first())
     .toHaveAccessibleName(/^Expand .* at .*, final \d+ to \d+, on 2024-12-25 game details$/);
 });
+
+test("a row with a rest edge names it to a screen reader", async ({ page }) => {
+  // 2024-12-02: LAL at MIN is a large edge, BKN at CHI a medium one, MIA at BOS has none.
+  await page.goto("/games?season=2024-25&date=2024-12-02");
+  await expect(page.getByRole("button", { name: /^Expand .* at [^,]*Timberwolves, large rest edge, final / })).toBeVisible();
+  await expect(page.getByRole("button", { name: /^Expand .* at [^,]*Bulls, medium rest edge, final / })).toBeVisible();
+  await expect(page.getByRole("button", { name: /^Expand .* at [^,]*Celtics, final / })).toBeVisible();
+});
