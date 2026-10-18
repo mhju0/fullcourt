@@ -1,5 +1,6 @@
 import { LEAD, SPACE, termCardStyle, TRACK, TYPE, WIDTH } from "@/lib/terminal-styles";
 import benchmark from "@/data/win-total-benchmark.json";
+import { signedNumber } from "@/lib/signed-number";
 
 /**
  * The market check's sentry on /schedule. The full evidence — the bucket table and the
@@ -23,7 +24,7 @@ export function WinTotalGuardrail() {
         Across {benchmark.seasonsCovered}{" "}
         seasons of archived lines, the correlation between net edge games and
         a team&rsquo;s finish against the line is r&nbsp;=&nbsp;
-        {benchmark.correlation.r.toFixed(2)} across {benchmark.correlation.n}{" "}
+        {signedNumber(benchmark.correlation.r, 2)} across {benchmark.correlation.n}{" "}
         team-seasons. This archive does not show a consistent relationship between net edge
         and beating the line. It does not establish a betting advantage from this ranking.
       </p>

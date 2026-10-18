@@ -119,9 +119,6 @@ export function defaultRankableSeason(
   return rankable[rankable.length - 1]!;
 }
 
-/** A game counts toward the 3+ day bucket at this rest-days edge or greater. */
-const LARGE_EDGE_DAYS = 3;
-
 export interface DisparityGameRow {
   date: string; // "YYYY-MM-DD"
   status: string;
@@ -197,10 +194,6 @@ export interface DisparityTeamRow {
   bigFavorableGames: number | null;
   /** The ≥ {@link BIG_EDGE_FATIGUE_THRESHOLD} tier of unfavorableGames. Null when unmeasured. */
   bigUnfavorableGames: number | null;
-  /** Counted games where the team had more rest than its opponent. */
-  gamesWithEdge: number;
-  /** Counted games where that edge was LARGE_EDGE_DAYS or more. */
-  gamesWithLargeEdge: number;
 }
 
 export interface DisparityLeagueRow {
@@ -213,7 +206,7 @@ export interface DisparityLeagueRow {
   delta: number | null;
   /** Counted games where either side's fatigue edge reached 0.5 / the big tier. */
   gamesWithAnyEdge: number | null;
-  gamesWithLargeEdge: number | null;
+  gamesWithThreePlusEdge: number | null;
   /** Counted games — excludes each side's opener. A population, not a comparison. */
   countedGames: number;
   /**
@@ -485,7 +478,7 @@ export function computeScheduleDisparity(
   let measuredGames = 0;
   let projectedGames = 0;
   let gamesWithAnyEdge = 0;
-  let leagueGamesWithLargeEdge = 0;
+  let leagueGamesWithThreePlusEdge = 0;
 
   for (const g of games) {
     const homeRest = restByTeam.get(g.homeTeamId)?.get(g);
@@ -503,7 +496,7 @@ export function computeScheduleDisparity(
     if (fatigueGap !== null) measuredGames++;
     if (fatigueGap !== null && isProjectedFatigue(g.date, firstUnplayedDate)) projectedGames++;
     if (fatigueGap !== null && fatigueGap >= NEUTRAL_REST_ADVANTAGE_THRESHOLD) gamesWithAnyEdge++;
-    if (fatigueGap !== null && fatigueGap >= BIG_EDGE_FATIGUE_THRESHOLD) leagueGamesWithLargeEdge++;
+    if (fatigueGap !== null && fatigueGap >= BIG_EDGE_FATIGUE_THRESHOLD) leagueGamesWithThreePlusEdge++;
 
     const homeDense = denseByTeam.get(g.homeTeamId)!.get(g)!;
     const awayDense = denseByTeam.get(g.awayTeamId)!.get(g)!;
@@ -555,8 +548,6 @@ export function computeScheduleDisparity(
     let backToBackEdge = 0;
     let threeInFourEdge = 0;
     let fourInSixEdge = 0;
-    let gamesWithEdge = 0;
-    let gamesWithLargeEdge = 0;
     let favorableGames = 0;
     let unfavorableGames = 0;
     let bigFavorableGames = 0;
@@ -566,8 +557,6 @@ export function computeScheduleDisparity(
       const capped = cap(s.restDays) - cap(s.oppRestDays);
       netRestEdge += capped;
       netRestEdgeUncapped += s.restDays - s.oppRestDays;
-      if (capped > 0) gamesWithEdge++;
-      if (capped >= LARGE_EDGE_DAYS) gamesWithLargeEdge++;
 
       if (s.fatigue !== null && s.oppFatigue !== null) {
         const d = restAdvantageDifferential(s.fatigue, s.oppFatigue);
@@ -623,8 +612,6 @@ export function computeScheduleDisparity(
           : null,
       bigFavorableGames: fatiguePairs > 0 ? bigFavorableGames : null,
       bigUnfavorableGames: fatiguePairs > 0 ? bigUnfavorableGames : null,
-      gamesWithEdge,
-      gamesWithLargeEdge,
     });
   }
 
@@ -663,7 +650,7 @@ export function computeScheduleDisparity(
           ? largestEdge - largestDisadvantage
           : null,
       gamesWithAnyEdge: measuredGames > 0 ? gamesWithAnyEdge : null,
-      gamesWithLargeEdge: measuredGames > 0 ? leagueGamesWithLargeEdge : null,
+      gamesWithThreePlusEdge: measuredGames > 0 ? leagueGamesWithThreePlusEdge : null,
       countedGames,
       measuredGames,
       projectedGames,

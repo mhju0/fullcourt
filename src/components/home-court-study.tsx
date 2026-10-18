@@ -146,7 +146,7 @@ export function HomeCourtStudy() {
                 <th scope="col" className="text-right">Home win rate</th>
                 <th scope="col" className="text-right">Rested-home wins{"\u00a0/\u00a0"}games</th>
                 <th scope="col" className="text-right">Rested-home win rate</th>
-                <th scope="col" className="text-right">Gap</th>
+                <th scope="col" className="text-right">Vs baseline</th>
               </tr>
             </thead>
             <tbody>
@@ -289,7 +289,7 @@ function SeasonInspection({ row, rows, onSelect }: { row: HomeCourtSeason; rows:
         <div><p className="fc-control-label">Season</p><p className="mono mt-1 font-semibold">{row.season}</p>{!row.isComplete ? <p className={`text-xs ${muted}`}>Season to date · through {row.latestEvidenceDate}</p> : null}</div>
         <div><p className="fc-control-label">Home</p><p className="mono mt-1 font-semibold tabular-nums">{formatRate(row.homeBaselinePct)}</p><p className={`text-xs ${muted}`}>{row.homeWins.toLocaleString()} / {row.homeGames.toLocaleString()} games</p></div>
         <div><p className="fc-control-label">Rested at home</p><p className="mono mt-1 font-semibold tabular-nums">{gap === null ? "Too early" : formatRate(row.winPct)}</p><p className={`text-xs ${muted}`}>{row.restedTeamWins.toLocaleString()} / {row.games.toLocaleString()} games</p></div>
-        <div><p className="fc-control-label">Gap</p><p className="mono mt-1 font-semibold tabular-nums">{gap === null ? "Too early" : `${signedNumber(gap, 1)}\u00a0pp`}</p><p className={`text-xs ${muted}`}>versus that season’s home rate</p></div>
+        <div><p className="fc-control-label">Vs baseline</p><p className="mono mt-1 font-semibold tabular-nums">{gap === null ? "Too early" : `${signedNumber(gap, 1)}\u00a0pp`}</p><p className={`text-xs ${muted}`}>versus that season’s home rate</p></div>
       </div>
     </div>
   );

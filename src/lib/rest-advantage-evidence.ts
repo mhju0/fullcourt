@@ -115,7 +115,8 @@ type ProcessedHistoricalGame = {
   restedTeamWon: boolean;
 };
 
-export const BACKTEST_THRESHOLDS = [2, 3, 5, 7] as const;
+/** Cumulative buckets the Games board guide (3+, 5+) and the home page (5+) read. */
+export const BACKTEST_THRESHOLDS = [3, 5] as const;
 
 /**
  * The three gap sizes /analysis reports, each game counted in exactly one (D-102).

@@ -43,10 +43,8 @@ const OUT_PATH = path.join(process.cwd(), "ml", "data", "uncalled_half_report.tx
 const FACTS_PATH = path.join(process.cwd(), "ml", "rest_split_facts.json");
 
 /**
- * The thresholds the site's own backtest buckets by (2, 3, 5, 7), plus the neutral cutoff and
- * the odd integers between them. The intermediate ones are here because the published claim is
- * that *no* threshold rescues a rested visitor, and 2/3/5/7 alone leaves gaps that claim has to
- * span.
+ * Cumulative thresholds for the local text report: the neutral cutoff and every integer to 7.
+ * The published facts use the gap sizes instead (`ranges`, D-106).
  */
 const THRESHOLDS = [NEUTRAL_REST_ADVANTAGE_THRESHOLD, 1, 2, 3, 4, 5, 6, 7] as const;
 

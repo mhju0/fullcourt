@@ -174,7 +174,7 @@ describe("computeScheduleDisparity — league figures", () => {
 
     // G3's gap is 3.0 and G4's is 2.0: both are calls, only G3 is big.
     expect(result.league.gamesWithAnyEdge).toBe(2);
-    expect(result.league.gamesWithLargeEdge).toBe(1);
+    expect(result.league.gamesWithThreePlusEdge).toBe(1);
   });
 
   it("reports games scheduled per team, including uneven schedules", () => {

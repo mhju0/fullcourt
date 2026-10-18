@@ -8,7 +8,6 @@ import {
 } from "@/lib/rest-split-facts";
 import {
   HOME_COURT_SPAN_PP,
-  netEdgeGames,
   REST_SHARE_OF_HOME_COURT,
   REST_SPAN_PP,
   REST_STATE_LIFT_PP,
@@ -149,7 +148,6 @@ describe("scheduleValueWins", () => {
       tiredRoad: 18,
     };
 
-    expect(netEdgeGames(evenLooking)).toBe(-8);
     expect(scheduleValueWins(evenLooking)).toBeLessThan(-0.1);
   });
 
@@ -178,7 +176,6 @@ describe("scheduleValueWins", () => {
       tiredRoad: 19,
     };
 
-    expect(netEdgeGames(phoenix)).toBe(-5);
     expect(scheduleValueWins(phoenix)).toBeCloseTo(-0.0728, 4);
     expect(Math.round(scheduleValueWins(phoenix) * 10) / 10).toBe(-0.1);
   });
@@ -200,24 +197,5 @@ describe("scheduleValueWins", () => {
 
     expect(scheduleValueWins(mostLopsided)).toBeLessThan(1.5);
     expect(scheduleValueWins({ ...empty, restedHome: 31, neutralHome: 10, restedRoad: 21, neutralRoad: 20 })).toBeLessThan(1);
-  });
-});
-
-describe("netEdgeGames", () => {
-  it("counts edges held minus edges faced, across both venues", () => {
-    expect(
-      netEdgeGames({
-        restedHome: 12,
-        neutralHome: 10,
-        tiredHome: 19,
-        restedRoad: 9,
-        neutralRoad: 12,
-        tiredRoad: 20,
-      })
-    ).toBe(12 + 9 - 19 - 20);
-  });
-
-  it("ignores neutral games entirely", () => {
-    expect(netEdgeGames({ ...empty, neutralHome: 41, neutralRoad: 41 })).toBe(0);
   });
 });

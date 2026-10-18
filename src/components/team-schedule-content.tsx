@@ -371,7 +371,7 @@ export function TeamScheduleContent() {
               { label: `${teamAbbr} MORE RESTED`, value: counts.measured ? String(counts.team) : "—", tone: "var(--term-blue-text)" },
               { label: "OPPONENT MORE RESTED", value: counts.measured ? String(counts.opponent) : "—", tone: "var(--term-red-text)" },
               { label: "EVEN", value: counts.measured ? String(counts.even) : "—" },
-              { label: "3+ REST EDGES", value: counts.measured ? String(counts.marked) : "—" },
+              { label: "3+ REST EDGES", value: counts.measured ? String(counts.marked) : "—", note: "RESTED TEAM AT HOME" },
             ]}
           />
           <section aria-label={`${teamAbbr} schedule`} className="flex flex-col gap-2">

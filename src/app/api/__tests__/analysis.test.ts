@@ -136,7 +136,7 @@ describe("GET /api/analysis", () => {
     }
   });
 
-  it("orders thresholds 2, 3, 5, 7 and keeps bucket game counts descending", async () => {
+  it("orders thresholds 3, 5 and keeps bucket game counts descending", async () => {
     mockGetCompleted.mockResolvedValueOnce([
       row("2024-03-01", 1, 8, 105, 98),
       row("2024-03-02", 2, 9, 110, 102),
@@ -153,7 +153,7 @@ describe("GET /api/analysis", () => {
     expect(body.error).toBeNull();
 
     const thresholds = body.data.thresholds.map((t) => t.threshold);
-    expect(thresholds).toEqual([2, 3, 5, 7]);
+    expect(thresholds).toEqual([3, 5]);
 
     const counts = body.data.thresholds.map((t) => t.games);
     for (let i = 1; i < counts.length; i++) {
@@ -169,11 +169,11 @@ describe("GET /api/analysis", () => {
       { ...row("2017-01-02", 10, 2, 100, 108), season: "2016-17" },
       // visitor rested by 8 and lost → also not called. Neither outcome is scored.
       { ...row("2017-01-03", 10, 2, 108, 100), season: "2016-17" },
-      // home rested by 6.9 → called, but under the 7 threshold.
-      { ...row("2017-01-04", 4, 10.9, 100, 90), season: "2016-17" },
+      // home rested by 4.9 → called, but under the 5 threshold.
+      { ...row("2017-01-04", 4, 8.9, 100, 90), season: "2016-17" },
     ]);
 
-    const res = await GET(makeReq("?seasonMinRA=7"));
+    const res = await GET(makeReq("?seasonMinRA=5"));
     const body = (await res.json()) as { data: AnalysisResponse; error: string | null };
 
     expect(body.error).toBeNull();
@@ -181,7 +181,7 @@ describe("GET /api/analysis", () => {
     // Only the first game is both called and over the threshold. The two rested-visitor games
     // are dropped whichever way they went, which is the whole point: a rule that declined
     // those picks cannot bank the one that happened to win.
-    expect(body.data.thresholds.find((t) => t.threshold === 7)).toMatchObject({
+    expect(body.data.thresholds.find((t) => t.threshold === 5)).toMatchObject({
       games: 1,
       restedTeamWins: 1,
     });

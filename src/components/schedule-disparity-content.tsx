@@ -173,7 +173,7 @@ function ColumnGuide({ countedGames, scheduledGames }: { countedGames: number; s
           team has had more rest days.
         </p>
         <p>
-          {term("Big edge")}: the same net, counting only fatigue gaps of {BIG_EDGE_FATIGUE_THRESHOLD} or more, the medium and large rest edges.
+          {term(`${BIG_EDGE_FATIGUE_THRESHOLD}+ rest edge`)}: the same net, counting only fatigue gaps of {BIG_EDGE_FATIGUE_THRESHOLD} or more, the medium and large rest edges. Unlike the Games board, it counts them whichever team is at home.
         </p>
         <p>
           {term("Rest days")}: days off for the team minus its opponent, capped at four days off
@@ -308,9 +308,9 @@ export function ScheduleDisparityContent() {
             label="Games with an edge"
             value={data.league.gamesWithAnyEdge?.toLocaleString() ?? UNMEASURED}
             sub={
-              data.league.gamesWithLargeEdge === null
+              data.league.gamesWithThreePlusEdge === null
                 ? "not measured until fatigue is scored"
-                : `${data.league.gamesWithLargeEdge.toLocaleString()} of them big (${BIG_EDGE_FATIGUE_THRESHOLD}+)`
+                : `${data.league.gamesWithThreePlusEdge.toLocaleString()} of them ${BIG_EDGE_FATIGUE_THRESHOLD}+ rest edges`
             }
           />
         </div>
@@ -506,7 +506,7 @@ export function ScheduleDisparityContent() {
                       : `${t.favorableGames} / ${t.unfavorableGames}`,
                 },
                 {
-                  label: "Big edge",
+                  label: `${BIG_EDGE_FATIGUE_THRESHOLD}+ rest edge`,
                   unit: "games",
                   numeric: true,
                   cell: (t) => {

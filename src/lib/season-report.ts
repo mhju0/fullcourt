@@ -25,7 +25,6 @@ import {
   winPct,
 } from "@/lib/rest-advantage-evidence";
 import {
-  netEdgeGames,
   restStatePair,
   scheduleValueWins,
   type RestStateCounts,
@@ -174,8 +173,6 @@ export interface SeasonReportTeam {
    * happened. It is what {@link SeasonReportTeam.scheduleValueWins} is computed from.
    */
   restStates: RestStateCounts;
-  /** Games where this team held a rest edge, minus games where it faced one, at either venue. */
-  netEdgeGames: number;
   /**
    * What those edges were worth, in wins. Schedule luck, not a result — no score is read, so a
    * 64-win team and a 17-win team handed the same schedule get the same number.
@@ -339,7 +336,7 @@ const CALENDAR_BUCKET_DAYS = 7;
  */
 type TeamAccumulator = Omit<
   SeasonReportTeam,
-  "restedWinPct" | "tiredWinPct" | "swing" | "netEdgeGames" | "scheduleValueWins"
+  "restedWinPct" | "tiredWinPct" | "swing" | "scheduleValueWins"
 >;
 
 function teamEntry(teams: Map<number, TeamAccumulator>, teamId: number): TeamAccumulator {
@@ -530,7 +527,6 @@ export function buildSeasonReport(
         restedWinPct === null || tiredWinPct === null
           ? null
           : Math.round((restedWinPct - tiredWinPct) * 10) / 10,
-      netEdgeGames: netEdgeGames(t.restStates),
       // Two decimals held in the payload, one shown: the figure lives inside ±0.5 for every
       // team, so rounding it here would collapse a third of the league onto one value before
       // the UI got a chance to decide how to say so.

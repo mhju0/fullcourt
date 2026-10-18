@@ -4,7 +4,7 @@ import { useState } from "react"
 import Image from "next/image"
 import { TRAVEL_LOOKBACK_DAYS } from "@/lib/fatigue"
 import { readableTextOn } from "@/lib/nba-team-colors"
-import { isCalledSide, winPct } from "@/lib/rest-advantage-evidence"
+import { gapRangeByKey, isCalledSide, winPct } from "@/lib/rest-advantage-evidence"
 import { formatRestAdvantageValue } from "@/lib/rest-advantage-display"
 import { formatDaysOff } from "@/lib/days-off"
 import { getTeamBranding, teamLogoUrl } from "@/lib/team-history"
@@ -18,9 +18,10 @@ import type { FatigueInfo, GameResponse, ThresholdBucket } from "@/types"
  * 60% at any gap from 0.5 to 3, which is home court and nothing more, then about 62% from 3 to 5
  * and about 65% at 5 or more (D-96, D-101). A small gap earns no mark for that reason. Both lines
  * are thresholds the backtest already counts, so the rates the board quotes are published ones.
+ * Both read the gap sizes' floors, so the board and every other tab share one definition.
  */
-export const MEDIUM_REST_EDGE_THRESHOLD = 3
-export const LARGE_REST_EDGE_THRESHOLD = 5
+export const MEDIUM_REST_EDGE_THRESHOLD = gapRangeByKey("medium").min
+export const LARGE_REST_EDGE_THRESHOLD = gapRangeByKey("large").min
 
 export type RestEdgeSize = "medium" | "large"
 

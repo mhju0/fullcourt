@@ -1528,3 +1528,30 @@ detail panel and needed the fatigue breakdown in `/api/games/team`. The OPPONENT
 link; a click elsewhere on the row follows it, and a chevron marks the row except on a phone,
 where the gap column has no room. The link is a client navigation and the board replaces rather
 than pushes its first URL, so Back returns to the team's season at the same scroll position.
+
+## D-108 — "3+ rest edge" on every tab, the venue said beside it, and "gap" kept for the fatigue gap (2026-10-18)
+
+From the 2026-10-18 full-service audit, on the owner's direction. Three labels counted the same
+medium-plus-large gaps under different names: the Games slate's "3+ EDGES", BY TEAM's "3+ REST
+EDGES" and Schedule Edge's "big edge" / "big (3+)". They now all read "3+ rest edge(s)"; "big edge"
+is retired from the UI (the `BIG_EDGE_FATIGUE_THRESHOLD` constant keeps its name). The label
+names the gap only, and which games are counted is said beside it: the Games and BY TEAM tiles
+count only games where the rested team is at home (`restEdgeSize`) and say so beside the figure
+(`SummaryItem.note`): AT HOME on the Games slate, where a longer note would push the first game
+under the phone dock, and RESTED TEAM AT HOME on BY TEAM, where "at home" alone could read as that
+team's home games. Schedule Edge counts either venue and its column definition says so.
+The league field `gamesWithLargeEdge` is renamed `gamesWithThreePlusEdge`, since "large" means 5+
+since D-101.
+
+"Gap" means the fatigue-score difference everywhere since D-101, but Season Report's "Gap from
+home rate" and Home-Court Advantage's "Gap" column were percentage points from the home baseline.
+They now read "Vs home rate" and "Vs baseline", as /analysis and Behind the Data already did.
+
+Removed as unused in the same pass: the cumulative 2+ and 7+ backtest buckets (`BACKTEST_THRESHOLDS`
+is now 3 and 5, the two the board guide and home page read); Season Report's `netEdgeGames`, which
+no page rendered and which counted opener games that Schedule Edge's field of the same name
+leaves out, so four teams in 2024-25 differed by one; the per-team rest-days edge counters in
+`schedule-disparity.ts`, which never left the module; and `buildRestAdvantageEvidence` /
+`toEvidenceSource`, which had no caller. The Games badge thresholds now read the gap sizes'
+floors. `src/data/win-total-benchmark.json` was regenerated after D-100: r −0.0149 → −0.0114 on
+the same 884 team-seasons, still no relationship, displayed as −0.01 as before.

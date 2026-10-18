@@ -66,7 +66,7 @@ function SlateSummaryLine({
       items={[
         { label: "GAMES", value: gamesToday === null ? "—" : String(gamesToday) },
         { label: "AVG REST GAP", value: avgRestAdv },
-        { label: "3+ EDGES", value: markedEdgeGames },
+        { label: "3+ REST EDGES", value: markedEdgeGames, note: "AT HOME" },
       ]}
     />
   )

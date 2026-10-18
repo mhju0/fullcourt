@@ -95,7 +95,7 @@ async function buildScheduleDisparity(
     league: {
       delta: result.league.delta,
       gamesWithAnyEdge: result.league.gamesWithAnyEdge,
-      gamesWithLargeEdge: result.league.gamesWithLargeEdge,
+      gamesWithThreePlusEdge: result.league.gamesWithThreePlusEdge,
       countedGames: result.league.countedGames,
       measuredGames: result.league.measuredGames,
       projectedGames: result.league.projectedGames,

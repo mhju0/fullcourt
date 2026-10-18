@@ -180,7 +180,7 @@ export function SeasonReportContent() {
                   <p className={`mt-1 text-xs ${muted}`}>{data.overall.restedTeamWins.toLocaleString()} wins{"\u00a0/\u00a0"}{data.overall.games.toLocaleString()} eligible games</p>
                 </div>
                 <div className="border-t border-[var(--term-hairline)] py-4 sm:border-l sm:border-t-0 sm:pl-4">
-                  <p className="fc-control-label sm:min-h-10">Gap from home rate</p>
+                  <p className="fc-control-label sm:min-h-10">Vs home rate</p>
                   <p className="mono mt-2 text-2xl font-semibold tabular-nums">
                     {delta === null ? "Too early" : `${signedNumber(delta, 1)}\u00a0pp`}
                   </p>
