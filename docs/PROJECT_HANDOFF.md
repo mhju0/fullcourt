@@ -6,33 +6,20 @@ FullCourt studies NBA rest, travel, schedule density, and outcomes. The homepage
 rest and schedule findings; Games, Season Report, Schedule Edge, and Explore are the primary
 navigation. Explore contains the other basketball studies. There are no accounts or persisted
 personal preferences; exploration state is shareable through URLs and browser history.
-The rest-focused redesign shipped in PR #84 (`776683e`). Its first verified Officiating refresh
-and release record shipped in PR #85 (`34b8961`). Production: https://fullcourt.fyi.
-The [dated release review](design/redesign-release-review.md) records verification; use GitHub
-and Vercel for subsequent deployment status.
-Games now exposes Season → Month → Date controls, with shared season selectors across studies.
-Games has one layout at every width, in tip-off order (D-79). Playoff Rest explains between-round recovery directly.
-Officiating covers 12 regular seasons and 4,546 reports, including the partial 2014–15 season;
-[archive evidence](research/2026-09-09-l2m-archive.md) records source checks and historical limits.
-The homepage hero now contains only the headline, original description and primary action.
-The one-game example and its supporting reads were removed under D-67. Next.js and its ESLint
-config move together: 16.4.1 shipped in PR #174 on 2026-10-18 (`460a3fe`); the
-lockfile resolves Sharp 0.35.5 (pinned on 2026-10-07 for GHSA-wq5f-xc86-pv6w), clearing the production dependency audit. See [verification](design/home-hero-release-review.md).
-Shared filters now use 44px targets and 16px text. Analysis uses equal-width filter columns;
-Season Report uses bordered sections with a separate interpretation surface. The
-[control and section audit](design/control-and-section-audit.md) records route coverage and rationale.
-D-69 makes Playoff Rest and Expected Shot Value default to their latest usable publication.
-Their selected views are shareable through URLs and copy actions. `/data-status` separates
-coverage, refresh evidence and database connectivity; the homepage historical date comes from
-the analysis population. Games moves offseason context beside mobile date controls, names
-matchup controls distinctly, and restores selected-chip visibility after resizing. See the
-[seven-fix review](design/seven-polish-fixes-review.md) for verification and release evidence.
-D-70 adds `/home-court`, reached through Explore, for annual home and rested-home win-rate
-history with an expandable count table. Season Report exposes the selected home baseline
-alongside the rested-home result and gap. Both retain the 100-game rested-home display gate;
-ongoing seasons are labeled explicitly and excluded from completed-history summaries.
-The [research record](research/2026-09-11-home-advantage-trend.md) retains data, sources, and
-owner decisions. See the [release review](design/home-court-study-review.md) and Git for verification and deployment status.
+Production: https://fullcourt.fyi. Condensed release context, 2026-10-19:
+- Redesign PR #84 (`776683e`) and Officiating PR #85 (`34b8961`) established the current product;
+  [release review](design/redesign-release-review.md), Git and Vercel retain delivery evidence.
+- Next.js/ESLint 16.4.1 shipped in PR #174; Sharp 0.35.5 addresses the dependency advisory.
+  The homepage hero keeps its headline, description and primary action (D-67).
+- Games uses Season → Month → Date and tip-off ordering (D-79). Shared filters use 44px targets
+  and 16px text; report sections separate measured results and interpretation.
+  [Control audit](design/control-and-section-audit.md) and [polish review](design/seven-polish-fixes-review.md) retain detail.
+- D-69 defaults Playoff Rest/Expected Shot Value to their latest usable publication; selected
+  views remain shareable. Data Status separates coverage, refresh evidence and connectivity.
+- D-70 adds annual Home-court history and Season Report's selected-season baseline. Ordinary
+  rested-home rates retain the 100-game display gate; ongoing seasons have explicit labels.
+  [Research](research/2026-09-11-home-advantage-trend.md) and [review](design/home-court-study-review.md) retain the original evidence.
+- [Officiating archive evidence](research/2026-09-09-l2m-archive.md) records the publication's limits.
 ## Architecture and safeguards
 - Next.js serves pages and API routes. Database reads use Drizzle/postgres-js against Supabase
   PostgreSQL. Offline Python analyses also publish committed artifacts.
@@ -209,3 +196,13 @@ The new `/api/home-court` prepares both annual groups from one source snapshot. 
 padding also addresses the nested-heading issue shown by the owner. Verification and release
 state are recorded in [the review](design/2026-10-19-chart-toggle-table-a-review.md).
 Merge approval and deployed verification remain separate; production is still PR #175.
+
+## Approved stacked comparison and release — 2026-10-19
+
+The owner approved mock `0358ade` and authorized PR #176's merge and deployment. The D-114
+amendment replaces open/closed markers with filled circles and one general sample-size note.
+Season/Home stay left; 0.5+ and optional 5+ records each have a same-season comparison on
+the right. Counts, ordinary gating, missing-data handling and the model remain unchanged.
+The [review](design/2026-10-19-chart-toggle-table-a-review.md), PR #176 and its matching Vercel
+deployment are the release evidence; check Git/Vercel for the final merge SHA and readiness.
+Physical-device, human screen-reader and first-played-slate checks remain open.

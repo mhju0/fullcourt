@@ -137,7 +137,7 @@ test('mobile chart and expanded table stay within the page and support keyboard 
   await page.screenshot({ path: info.outputPath('home-court-mobile.png'), fullPage: true });
 });
 
-test('large gaps are opt-in, preserve selection, and expose raw counts and small samples', async ({ page }) => {
+test('large gaps are opt-in, preserve selection, and expose filled markers with observed counts', async ({ page }) => {
   await mockStudy(page);
   const toggle = page.getByRole('checkbox', { name: 'Show large rest gaps (5+)' });
   const select = page.getByRole('combobox', { name: 'Inspect season' });
@@ -152,10 +152,13 @@ test('large gaps are opt-in, preserve selection, and expose raw counts and small
   await expect(select).toHaveValue('2024-25');
   const inspection = page.locator('[aria-live="polite"]');
   await expect(inspection).toContainText('52.4%');
-  await expect(inspection).toContainText('22 wins / 42 games · raw observed rate');
-  await expect(inspection).toContainText('Small sample · fewer than 100 games');
-  await expect(chart.locator('circle[data-small-sample="true"]')).toHaveCount(11);
-  await expect(chart.getByRole('button')).toHaveAccessibleName(/5\+ gap: 22 wins of 42, 52.4%, raw observed rate, small sample/);
+  await expect(inspection).toContainText('22 wins / 42 games');
+  await expect(inspection).not.toContainText('Small sample');
+  await expect(chart.locator('circle[data-series="large-rest-gap"]')).toHaveCount(11);
+  await expect(chart.locator('circle[fill="none"], circle[fill="transparent"], circle[fill="var(--term-surface)"]')).toHaveCount(0);
+  await expect(chart.locator('g[aria-hidden="true"] > rect')).toHaveCount(0);
+  await expect(chart.getByRole('button')).toHaveAccessibleName(/5\+ gap: 22 wins of 42, 52.4%, −2.6 percentage points versus the home rate/);
+  await expect(page.getByText('Seasonal sample sizes vary; these are observed records, not precise estimates. Groups overlap, and the records do not establish that rest caused the difference.', { exact: true })).toBeVisible();
   await page.getByText('View season data', { exact: true }).click();
   await expect(page.getByRole('columnheader', { name: '5+ raw win rate' })).toBeVisible();
   await toggle.uncheck();
@@ -173,8 +176,7 @@ test('large gaps keep zero-sample seasons empty and show isolated zero and 100 p
   const chart = page.getByTestId('home-court-chart');
   await expect(chart.locator('polyline[data-series="large-rest-gap"]')).toHaveCount(0);
   await expect(chart.locator('circle[data-series="large-rest-gap"]')).toHaveCount(2);
-  await expect(chart.locator('circle[data-small-sample="true"]')).toHaveCount(1);
-  await expect(chart.locator('circle[data-small-sample="false"]')).toHaveCount(1);
+  await expect(chart.locator('circle[data-series="large-rest-gap"][fill="var(--term-accent)"]')).toHaveCount(2);
   const points = await chart.locator('circle[data-series="large-rest-gap"]').evaluateAll(elements => elements.map(el => Number(el.getAttribute('cy'))));
   expect(points.every(point => point >= 22 && point <= 288)).toBe(true);
   await page.getByRole('combobox', { name: 'Inspect season' }).selectOption(rows[1].season);
@@ -182,6 +184,40 @@ test('large gaps keep zero-sample seasons empty and show isolated zero and 100 p
   await expect(inspection).toContainText('No eligible games');
   await expect(inspection).toContainText('0 wins / 0 games');
   await expect(inspection.getByText('0.0%', { exact: true })).toHaveCount(0);
+  await expect(page.getByTestId('home-court-large-inspection')).toContainText('Unavailable');
+});
+
+test('stacked comparisons keep the home baseline fixed and subtract the displayed annual rates', async ({ page }) => {
+  await mockStudyData(page, { seasonWinRates: [{ ...completed[0], season: '2025-26', homeGames: 1225, homeWins: 679,
+    homeBaselinePct: 55.4, games: 603, restedTeamWins: 334, winPct: 55.4,
+    largeRestGap: { games: 42, restedTeamWins: 22, winPct: 22 / 42 * 100 } }] });
+  const home = page.getByTestId('home-court-home-inspection');
+  const ordinary = page.getByTestId('home-court-rest-inspection');
+  await expect(home).toContainText('2025-26');
+  await expect(home).toContainText('55.4%');
+  await expect(home).toContainText('679 wins / 1,225 games');
+  await expect(ordinary).toContainText('334 wins / 603 games');
+  await expect(ordinary).toContainText('0.0 pp');
+  const before = await home.boundingBox();
+  await page.getByRole('checkbox', { name: 'Show large rest gaps (5+)' }).check();
+  const large = page.getByTestId('home-court-large-inspection');
+  await expect(large).toContainText('52.4%');
+  await expect(large).toContainText('22 wins / 42 games');
+  await expect(large).toContainText('−3.0 pp');
+  await expect(ordinary.getByText('Vs home rate', { exact: true })).toBeVisible();
+  await expect(large.getByText('Vs home rate', { exact: true })).toBeVisible();
+  const after = await home.boundingBox();
+  expect(after!.x).toBe(before!.x);
+  expect(after!.width).toBe(before!.width);
+  const largeBox = await large.boundingBox();
+  const ordinaryBox = await ordinary.boundingBox();
+  expect(largeBox!.x).toBe(ordinaryBox!.x);
+  expect(largeBox!.y).toBeGreaterThan(ordinaryBox!.y);
+  expect(largeBox!.x).toBeGreaterThan(after!.x);
+  const chart = page.getByTestId('home-court-chart');
+  await expect(chart.locator('[data-selected-series]')).toHaveCount(3);
+  await expect(chart.locator('circle[fill="none"], circle[fill="transparent"], circle[fill="var(--term-surface)"]')).toHaveCount(0);
+  await expect(page.getByRole('region', { name: 'Home win rate by season' })).not.toContainText(/small sample|open circles|fewer than 100/i);
 });
 
 test('empty and failed study responses remain explicit', async ({ page }) => {

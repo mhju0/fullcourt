@@ -1658,3 +1658,20 @@ keeps the toggle a local view change. Existing annual displayed-rate subtraction
 homepage raw pooled-rate subtraction (D-112) remain separate rules. Chart headings receive
 space above the title as well as beside it; the nested title in this chart previously missed
 the padding applied to direct report headings.
+
+### D-114 amendment — Filled markers and paired seasonal comparisons (2026-10-19)
+
+After reviewing the stacked-inspection mock (`0358ade` on the prototype branch), the owner
+approved filled circles for all three chart series and one general sample-size statement.
+Remove open/closed sample-size encodings and individual below-100 warnings. Keep the actual
+wins and denominators, ordinary 0.5+ presentation gate, raw 5+ observations and missing-data
+semantics. A general statement explains that seasonal sample sizes vary, these are observed
+records rather than precise estimates, and the overlapping groups do not establish causation.
+
+Season and Home remain together on the left of the inspection panel. The right stacks the
+0.5+ and optional 5+ records, each with its own difference from that season's home rate.
+Both use displayed-rate subtraction (D-93); a missing record has no percentage-point value.
+Use threshold labels, since 0.5+ includes the 5+ group. The toggle starts off, preserves the
+selected season and reveals the second comparison row when enabled. A guide and filled
+selected points replace the hollow selection ring. The owner also authorized PR merge and
+ordinary application deployment after verification.
