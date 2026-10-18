@@ -105,8 +105,9 @@ export default function config(phase: string): NextConfig {
       autoInstrumentAppDirectory: false,
       automaticVercelMonitors: false,
     },
-    errorHandler() {
-      throw new Error("Sentry source-map upload failed; refusing to ship this build.");
+    // The cause is Sentry's own message (an HTTP status or CLI error), never the token.
+    errorHandler(error) {
+      throw new Error(`Sentry source-map upload failed; refusing to ship this build. ${error.message}`, { cause: error });
     },
   });
   const upload = sentryConfig.compiler?.runAfterProductionCompile;
