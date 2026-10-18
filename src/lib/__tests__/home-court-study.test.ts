@@ -2,10 +2,13 @@ import { describe, expect, it } from "vitest";
 
 import {
   homeCourtEraSummary,
+  buildHomeCourtStudy,
+  homeCourtChartSegments,
   homeCourtTickIndices,
   restedHomeGap,
   type HomeCourtSeason,
 } from "@/lib/home-court-study";
+import type { HistoricalGameEvidenceRow } from "@/lib/rest-advantage-evidence";
 
 function season(
   label: string,
@@ -68,5 +71,46 @@ describe("homeCourtEraSummary", () => {
     const summary = homeCourtEraSummary(rows, 2)!;
     expect(summary.first).toMatchObject({ from: "2000-01", to: "2001-02", wins: 119, games: 200 });
     expect(summary.latest).toMatchObject({ from: "2008-09", to: "2009-10", wins: 103, games: 200 });
+  });
+});
+
+describe("buildHomeCourtStudy", () => {
+  const game = (overrides: Partial<HistoricalGameEvidenceRow> = {}): HistoricalGameEvidenceRow => ({
+    season: "2024-25", date: "2025-04-13", homeScore: 110, awayScore: 100,
+    homeFatigueScore: "0", awayFatigueScore: "5", neutralSite: false, ...overrides,
+  });
+
+  it("uses canonical gap and venue rules, raw wins/counts and one annual population", () => {
+    const { seasonWinRates: rows } = buildHomeCourtStudy([
+      game({ season: "2023-24", date: "2024-04-13", awayFatigueScore: "1" }),
+      game(), game({ homeScore: 90 }),
+      game({ homeFatigueScore: "1.10", awayFatigueScore: "6.10", homeScore: 90 }),
+      game({ awayFatigueScore: "4.99" }),
+      game({ homeFatigueScore: "5", awayFatigueScore: "0" }),
+      game({ neutralSite: true }), game({ homeScore: null }),
+    ], new Set(["2024-25"]));
+    expect(rows).toHaveLength(2);
+    expect(rows[0]).toMatchObject({ season: "2023-24", games: 1, largeRestGap: { games: 0, restedTeamWins: 0, winPct: null } });
+    expect(rows[1]).toMatchObject({ season: "2024-25", homeGames: 5, homeWins: 3, games: 4,
+      isComplete: false, largeRestGap: { games: 3, restedTeamWins: 1 } });
+    expect(rows[1].largeRestGap.winPct).toBe((1 / 3) * 100);
+  });
+
+  it("preserves genuine zero and 100 percent observations while an absent sample stays null", () => {
+    const { seasonWinRates: rows } = buildHomeCourtStudy([
+      game({ season: "2022-23", homeScore: 90 }),
+      game({ season: "2023-24", awayFatigueScore: "1" }), game(),
+    ]);
+    expect(rows.map((row) => row.largeRestGap.winPct)).toEqual([0, null, 100]);
+  });
+});
+
+describe("homeCourtChartSegments", () => {
+  it("breaks paths at missing observations without losing legitimate zero values", () => {
+    expect(homeCourtChartSegments([0, 50, null, 100, null, 25, 75])).toEqual([
+      [{ index: 0, rate: 0 }, { index: 1, rate: 50 }],
+      [{ index: 5, rate: 25 }, { index: 6, rate: 75 }],
+    ]);
+    expect(homeCourtChartSegments([null, 100, null])).toEqual([]);
   });
 });

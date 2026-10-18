@@ -22,6 +22,7 @@ import { NEUTRAL_REST_ADVANTAGE_THRESHOLD } from "@/lib/rest-advantage-evidence"
 import { CURRENT_TEAM_ABBREVIATIONS, getTeamBranding } from "@/lib/team-history"
 import { MONO_FONT_STACK, SPACE_CARD, termCardStyle, termSelectClass, termSelectStyle, termTdStyle, TRACK, TYPE } from "@/lib/terminal-styles"
 import type { TeamScheduleGame } from "@/types"
+import styles from "./team-schedule-content.module.css"
 
 const SEASONS = browsableSeasons()
 const LATEST_SEASON = SEASONS[SEASONS.length - 1]
@@ -56,14 +57,11 @@ function sideOf(game: TeamScheduleGame): Side {
   return ra.advantageTeam === (game.isHome ? "home" : "away") ? "team" : "opponent"
 }
 
-// Column shares from the small breakpoint up, so the gaps between columns come out even instead
-// of OPPONENT taking every spare pixel. A phone shrinks the columns to their content (`w-px`),
-// because it has no room to spare and drops the number and Game columns.
-// A phone uses RA in the header; its meaning is printed beside the table.
+// Only the sequence number disappears on a phone; Game keeps its own time/result column.
 const COL = {
-  game: "hidden sm:table-cell sm:w-[6%]",
+  number: "hidden sm:table-cell sm:w-[6%]",
   date: "w-px sm:w-[18%]",
-  time: "hidden sm:table-cell sm:w-[18%]",
+  game: "w-px sm:w-[18%]",
   rest: "w-px sm:w-[20%]",
 } as const
 const NOWRAP = { whiteSpace: "nowrap" } as const
@@ -224,7 +222,7 @@ export function TeamScheduleContent() {
     {
       label: <span aria-label="Game number">#</span>,
       numeric: true,
-      className: COL.game,
+      className: COL.number,
       headStyle: NOWRAP,
       style: NOWRAP,
       cell: (_, i) => gameNumber(i),
@@ -234,16 +232,11 @@ export function TeamScheduleContent() {
       className: COL.date,
       headStyle: NOWRAP,
       style: NOWRAP,
-      // A phone has no Game column, so the result (or LIVE, PENDING) goes under the date, and
-      // so does NEXT.
       cell: (g) => (
         <span className="inline-flex flex-col items-start sm:flex-row sm:items-center sm:gap-2">
           <span className="sm:hidden">{shortDate(g.date)}</span>
           <span className="hidden sm:inline">
             {weekday(g.date)} {shortDate(g.date)}
-          </span>
-          <span className="sm:hidden" data-testid="phone-game-state">
-            {gameState(g, now)}
           </span>
           {g.id === nextGameId && (
             <span style={{ fontSize: TYPE.micro, letterSpacing: TRACK.data, fontWeight: 700, color: "var(--term-accent)" }}>
@@ -254,21 +247,14 @@ export function TeamScheduleContent() {
       ),
     },
     {
-      label: "GAME",
-      className: COL.time,
-      headStyle: NOWRAP,
-      style: NOWRAP,
-      cell: (g) => gameState(g, now) ?? <span>{g.tipOffEt ? g.tipOffEt.replace(/ ET$/, "") : "TBD"}</span>,
-    },
-    {
       label: "OPPONENT",
       headStyle: NOWRAP,
       cell: (g) => (
-        <span className="flex min-w-0 items-center gap-2">
+        <span className="flex min-w-0 items-center gap-1 sm:gap-2">
           <span className="w-5 shrink-0" style={{ color: "var(--term-text-muted)" }}>
             {g.neutralCity ? "N" : g.isHome ? "vs" : "@"}
           </span>
-          <TeamLogo abbreviation={g.opponent.abbreviation} season={season} fallback={g.opponent} size={20} />
+          <span className="hidden shrink-0 sm:inline-flex"><TeamLogo abbreviation={g.opponent.abbreviation} season={season} fallback={g.opponent} size={20} /></span>
           <TransitionLink
             href={boardHref(g, season)}
             data-row-link=""
@@ -277,13 +263,21 @@ export function TeamScheduleContent() {
             style={{ fontFamily: "inherit", color: "inherit" }}
             aria-label={`${fullName(g.opponent.abbreviation, season, g.opponent)}, ${weekday(g.date)} ${shortDate(g.date)}: open this game on the board`}
           >
-            {fullName(g.opponent.abbreviation, season, g.opponent)}
+            <span className="hidden sm:inline">{fullName(g.opponent.abbreviation, season, g.opponent)}</span>
+            <span className="whitespace-nowrap sm:hidden">{getTeamBranding(g.opponent.abbreviation, season, g.opponent).abbreviation}</span>
           </TransitionLink>
         </span>
       ),
     },
     {
-      label: <><span className="hidden sm:inline">REST ADVANTAGE</span><abbr className="no-underline sm:hidden" title="Rest advantage" aria-label="Rest advantage">RA</abbr></>,
+      label: "GAME",
+      className: COL.game,
+      headStyle: NOWRAP,
+      style: NOWRAP,
+      cell: (g) => gameState(g, now) ?? <span>{g.tipOffEt ? g.tipOffEt.replace(/ ET$/, "") : "TBD"}</span>,
+    },
+    {
+      label: <><span className="hidden sm:inline">REST GAP</span><abbr className="no-underline sm:hidden" title="Rest advantage" aria-label="Rest advantage">RA</abbr></>,
       numeric: true,
       className: COL.rest,
       headStyle: NOWRAP,
@@ -294,9 +288,7 @@ export function TeamScheduleContent() {
 
   const teamAbbr = team ? getTeamBranding(team, season).abbreviation : null
 
-  // The games the league has not scheduled yet. One cell spans the row after the date, so there
-  // is no opponent, time or gap to misread; the phone variant spans one column fewer because it
-  // has no Game column.
+  // Unscheduled Cup games span Opponent, Game and Rest gap at every width.
   const cupRows = cup
     ? Array.from({ length: cup.count }, (_, k) => {
         const label = (
@@ -304,12 +296,11 @@ export function TeamScheduleContent() {
         )
         return (
           <tr key={`cup-${k}`} data-testid="cup-placeholder-row">
-            <td className={`${COL.game} tabular-nums`} style={{ ...termTdStyle, ...NOWRAP, textAlign: "right" }}>
+            <td className={`${COL.number} tabular-nums`} style={{ ...termTdStyle, ...NOWRAP, textAlign: "right" }}>
               {cup.afterIndex + 2 + k}
             </td>
-            <td className={COL.date} style={{ ...termTdStyle, ...NOWRAP, color: "var(--term-text-muted)" }}>{cup.window}</td>
-            <td colSpan={3} className="hidden sm:table-cell" style={termTdStyle}>{label}</td>
-            <td colSpan={2} className="sm:hidden" style={termTdStyle}>{label}</td>
+            <td className={COL.date} style={{ ...termTdStyle, color: "var(--term-text-muted)" }}>{cup.window}</td>
+            <td colSpan={3} style={{ ...termTdStyle }}>{label}</td>
           </tr>
         )
       })
@@ -387,13 +378,14 @@ export function TeamScheduleContent() {
               Tip-off times are Eastern Time (ET). RA = rest advantage, in fatigue-score points.
             </p>
             <DataTable
+              className={styles.table}
               columns={columns}
               rows={games}
               rowKey={(g) => g.id}
               rowAttrs={(g) => ({
                 "data-testid": "team-game-row",
                 onClick: followRowLink,
-                className: "cursor-pointer",
+                className: "h-11 cursor-pointer sm:h-auto",
                 "data-next": g.id === nextGameId ? "" : undefined,
                 style:
                   g.id === nextGameId

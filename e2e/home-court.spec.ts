@@ -2,6 +2,7 @@ import { expect, test, type Page } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 import type { AnalysisResponse } from '../src/types';
 import { buildSeasonReport } from '../src/lib/season-report';
+import type { HomeCourtStudyData } from '../src/lib/home-court-study';
 
 type Season = AnalysisResponse['seasonWinRates'][number];
 const completed: Season[] = Array.from({ length: 10 }, (_, index) => ({
@@ -34,7 +35,10 @@ function evidence(rows: Season[]): AnalysisResponse {
   };
 }
 async function mockStudy(page: Page, rows = [...completed, partial()]) {
-  await page.route('**/api/analysis*', route => route.fulfill({ json: { data: evidence(rows), error: null } }));
+  await mockStudyData(page, { seasonWinRates: rows.map(row => ({ ...row, largeRestGap: { games: 42, restedTeamWins: 22, winPct: 22 / 42 * 100 } })) });
+}
+async function mockStudyData(page: Page, data: HomeCourtStudyData) {
+  await page.route('**/api/home-court', route => route.fulfill({ json: { data, error: null } }));
   await page.goto('/home-court');
   await expect(page.getByRole('heading', { name: 'Home win rate by season', exact: true })).toBeVisible();
 }
@@ -93,7 +97,7 @@ test('season report shows its home baseline without historical API or rested-hom
 test('study handles stale response shape without rendering a false zero', async ({ page }) => {
   const old = evidence(completed);
   const legacy = { ...old, seasonWinRates: old.seasonWinRates.map(({ season, games, restedTeamWins, winPct, homeBaselinePct }) => ({ season, games, restedTeamWins, winPct, homeBaselinePct })) };
-  await page.route('**/api/analysis*', route => route.fulfill({ json: { data: legacy, error: null } }));
+  await page.route('**/api/home-court', route => route.fulfill({ json: { data: legacy, error: null } }));
   await page.goto('/home-court');
   await expect(page.getByRole('status')).toContainText('unavailable');
   await expect(page.locator('body')).not.toContainText('NaN');
@@ -102,6 +106,7 @@ test('study handles stale response shape without rendering a false zero', async 
 test('mobile chart and expanded table stay within the page and support keyboard inspection', async ({ page }, info) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await mockStudy(page);
+  await page.getByRole('checkbox', { name: 'Show large rest gaps (5+)' }).check();
   const select = page.getByRole('combobox', { name: 'Inspect season' });
   const chart = page.getByTestId('home-court-chart');
   await chart.scrollIntoViewIfNeeded();
@@ -130,6 +135,64 @@ test('mobile chart and expanded table stay within the page and support keyboard 
   const accessibility = await new AxeBuilder({ page }).analyze();
   expect(accessibility.violations).toEqual([]);
   await page.screenshot({ path: info.outputPath('home-court-mobile.png'), fullPage: true });
+});
+
+test('large gaps are opt-in, preserve selection, and expose raw counts and small samples', async ({ page }) => {
+  await mockStudy(page);
+  const toggle = page.getByRole('checkbox', { name: 'Show large rest gaps (5+)' });
+  const select = page.getByRole('combobox', { name: 'Inspect season' });
+  const chart = page.getByTestId('home-court-chart');
+  await expect(toggle).not.toBeChecked();
+  await expect(chart.locator('[data-series="large-rest-gap"]')).toHaveCount(0);
+  await select.selectOption('2024-25');
+  await toggle.focus();
+  await page.keyboard.press('Space');
+  await expect(toggle).toBeChecked();
+  await expect(toggle).toBeFocused();
+  await expect(select).toHaveValue('2024-25');
+  const inspection = page.locator('[aria-live="polite"]');
+  await expect(inspection).toContainText('52.4%');
+  await expect(inspection).toContainText('22 wins / 42 games · raw observed rate');
+  await expect(inspection).toContainText('Small sample · fewer than 100 games');
+  await expect(chart.locator('circle[data-small-sample="true"]')).toHaveCount(11);
+  await expect(chart.getByRole('button')).toHaveAccessibleName(/5\+ gap: 22 wins of 42, 52.4%, raw observed rate, small sample/);
+  await page.getByText('View season data', { exact: true }).click();
+  await expect(page.getByRole('columnheader', { name: '5+ raw win rate' })).toBeVisible();
+  await toggle.uncheck();
+  await expect(select).toHaveValue('2024-25');
+  await expect(chart.locator('[data-series="large-rest-gap"]')).toHaveCount(0);
+  await expect(page.getByRole('columnheader', { name: '5+ raw win rate' })).toHaveCount(0);
+});
+
+test('large gaps keep zero-sample seasons empty and show isolated zero and 100 percent points', async ({ page }) => {
+  const rows = completed.slice(0, 3).map((row, index) => ({ ...row, largeRestGap: index === 1
+    ? { games: 0, restedTeamWins: 0, winPct: null }
+    : { games: index === 0 ? 1 : 100, restedTeamWins: index === 0 ? 0 : 100, winPct: index === 0 ? 0 : 100 } }));
+  await mockStudyData(page, { seasonWinRates: rows });
+  await page.getByRole('checkbox', { name: 'Show large rest gaps (5+)' }).check();
+  const chart = page.getByTestId('home-court-chart');
+  await expect(chart.locator('polyline[data-series="large-rest-gap"]')).toHaveCount(0);
+  await expect(chart.locator('circle[data-series="large-rest-gap"]')).toHaveCount(2);
+  await expect(chart.locator('circle[data-small-sample="true"]')).toHaveCount(1);
+  await expect(chart.locator('circle[data-small-sample="false"]')).toHaveCount(1);
+  const points = await chart.locator('circle[data-series="large-rest-gap"]').evaluateAll(elements => elements.map(el => Number(el.getAttribute('cy'))));
+  expect(points.every(point => point >= 22 && point <= 288)).toBe(true);
+  await page.getByRole('combobox', { name: 'Inspect season' }).selectOption(rows[1].season);
+  const inspection = page.locator('[aria-live="polite"]');
+  await expect(inspection).toContainText('No eligible games');
+  await expect(inspection).toContainText('0 wins / 0 games');
+  await expect(inspection.getByText('0.0%', { exact: true })).toHaveCount(0);
+});
+
+test('empty and failed study responses remain explicit', async ({ page }) => {
+  await page.route('**/api/home-court', route => route.fulfill({ json: { data: { seasonWinRates: [] }, error: null } }));
+  await page.goto('/home-court');
+  await expect(page.getByRole('status')).toContainText('No eligible home-court season data');
+  await page.unroute('**/api/home-court');
+  await page.route('**/api/home-court', route => route.fulfill({ status: 503, json: { data: null, error: 'Unavailable' } }));
+  await page.reload();
+  await expect(page.getByRole('status')).toContainText('unavailable');
+  await expect(page.getByRole('checkbox', { name: 'Show large rest gaps (5+)' })).toHaveCount(0);
 });
 
 // The season table is 760px wide with its season column pinned, so a phone shows that more

@@ -22,7 +22,7 @@ test.describe("Games by team", () => {
     const rows = page.getByTestId("team-game-row");
     await expect(rows).toHaveCount(82, { timeout: 60_000 });
     const headers = await page.locator("table.fc-table th").allInnerTexts();
-    expect(headers.map((h) => h.split("\n")[0].trim())).toEqual(["#", "DATE", "GAME", "OPPONENT", "REST ADVANTAGE"]);
+    expect(headers.map((h) => h.split("\n")[0].trim())).toEqual(["#", "DATE", "OPPONENT", "GAME", "REST GAP"]);
     await expect(page.getByText("Tip-off times are Eastern Time (ET). RA = rest advantage, in fatigue-score points.")).toBeVisible();
     expect(await page.locator("table.fc-table thead th").evaluateAll(nodes => nodes.every(node => getComputedStyle(node).whiteSpace === "nowrap"))).toBe(true);
     await expect(rows.first()).toContainText("Charlotte Hornets");
@@ -44,16 +44,18 @@ test.describe("Games by team", () => {
     await expect(cell).toContainText(houRested ? /^\+\d/ : /^−\d/);
   });
 
-  test("a phone shows date, opponent and gap, with no weekday, time or game number", async ({ page }) => {
+  test("a phone keeps the Game column beside date, opponent and gap", async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto("/games/team?season=2024-25&team=HOU");
     const first = page.getByTestId("team-game-row").first();
     await expect(first).toBeVisible({ timeout: 60_000 });
     await expect(first.locator("td").nth(0)).toBeHidden();
-    await expect(first.locator("td").nth(2)).toBeHidden();
-    await expect(first.locator("td").nth(1)).toHaveText(/^Oct \d+/);
-    // The phone has no TIME column, so a final's result sits under its date.
-    await expect(first.getByTestId("phone-game-state")).toHaveText(/^[WL] \d+–\d+$/);
+    await expect(first.locator("td").nth(1)).toHaveText(/^Oct \d+$/, { useInnerText: true });
+    await expect(first.locator("td").nth(2)).toBeVisible();
+    await expect(first.locator("td").nth(3)).toBeVisible();
+    await expect(first.locator("td").nth(3)).toHaveText(/^[WL] \d+–\d+$/);
+    await expect(first.getByTestId("team-game-link")).toHaveAccessibleName(/Charlotte Hornets/);
+    await expect(first.getByTestId("team-game-link")).toHaveText("CHA", { useInnerText: true });
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
     const table = await page.locator("table.fc-table").evaluate((t) => t.scrollWidth <= t.parentElement!.clientWidth);
     expect(table).toBe(true);
@@ -86,8 +88,8 @@ test.describe("Games by team", () => {
     const widths = await first.locator("td").evaluateAll((tds) => tds.map((td) => td.getBoundingClientRect().width));
     const total = widths.reduce((sum, w) => sum + w, 0);
     // OPPONENT took 892 of 1232px when every other column shrank to its content.
-    expect(widths[3] / total).toBeLessThan(0.45);
-    for (const w of [widths[1], widths[2], widths[4]]) expect(w / total).toBeGreaterThan(0.12);
+    expect(widths[2] / total).toBeLessThan(0.45);
+    for (const w of [widths[1], widths[3], widths[4]]) expect(w / total).toBeGreaterThan(0.12);
   });
 
   test("a season still short of its two NBA Cup games shows them as TBD rows numbered into the season", async ({ page }) => {

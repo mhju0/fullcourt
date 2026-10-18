@@ -1636,3 +1636,25 @@ for owner review, not approved production layout changes.
 The owner also requested a visual preview of a third Home-court series for large rest gaps.
 That exploration stays on a throwaway prototype branch. It does not change the published
 100-game display policy or add a live chart series before a product decision.
+
+## D-114 — Optional large-gap history and team schedule A (2026-10-19)
+
+The owner selected table A: number, date, opponent, Game, rest gap. Phones hide the number
+but retain Game, so tip-off times and completed results have their own column. Eastern Time
+and the rest-advantage unit remain in a nearby key; headers remain on one line. Existing
+selected-team signs, game links, lifecycle states and Cup placeholder numbering are preserved.
+
+The Home-court chart keeps its original two series initially. An accessible toggle adds the
+raw annual record for the rested home team with a rest gap of 5+ fatigue-score points. This
+explicit exploration mode may show fewer than 100 games; wins, sample counts and a visible
+small-sample warning accompany those observations. It does not relax the existing 100-game
+gate for the ordinary rested-home series (0.5+), change the homepage window, or alter the model.
+Missing/zero-game seasons interrupt the optional line instead of becoming 0% observations.
+The chart scale includes enabled observations, including legitimate 0% and 100% outcomes.
+
+A dedicated home-court response derives both annual groups from the same canonical eligible
+game rows and completion metadata. It avoids joining differently refreshed responses and
+keeps the toggle a local view change. Existing annual displayed-rate subtraction (D-93) and
+homepage raw pooled-rate subtraction (D-112) remain separate rules. Chart headings receive
+space above the title as well as beside it; the nested title in this chart previously missed
+the padding applied to direct report headings.

@@ -3,6 +3,32 @@
   padding-block: 12px 4px;
 }
 
+.chartHeader {
+  padding-top: 16px;
+}
+
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  width: fit-content;
+  max-width: 100%;
+  cursor: pointer;
+}
+
+.toggle input {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  accent-color: var(--term-accent);
+}
+
+.toggle input:focus-visible {
+  outline: 2px solid var(--term-accent);
+  outline-offset: 4px;
+}
+
 .chart {
   display: block;
   width: 100%;
@@ -46,6 +72,12 @@ thead .seasonCell {
 .inspection > div:nth-child(even) {
   padding-left: 12px;
   border-left: 1px solid var(--term-hairline);
+}
+
+.inspection > .largeInspection {
+  grid-column: 1 / -1;
+  border-top: 1px solid var(--term-hairline);
+  padding-left: 0;
 }
 
 @media (min-width: 640px) {

@@ -122,36 +122,23 @@ Open:
 
 ## Summary of the entries from 2026-10-07 to 2026-10-18
 
-Condensed on 2026-10-18 from 22 entries; DECISIONS.md D-78 to D-109, the dated research and
-report records, and Git hold the detail.
+Condensed again on 2026-10-19; DECISIONS.md D-78 to D-109, dated reports and Git retain detail.
 
-- **Live slate and pipeline (D-79 to D-83).** Finals only, so a row reads LIVE, then PENDING, then
-  FINAL, with twelve hourly cron entries. The 2026-27 schedule matches ESPN and
-  basketball-reference (D-82); three nightly faults were fixed and all 103,390 fatigue rows
-  recomputed with no difference ([recompute audit](research/2026-10-11-fatigue-recompute-audit.md)).
-  The score route rescores each finalized team's next game (D-83). LAUNCH_DAY.md says how to check it.
-- **Launch remediation (D-84, D-85; PRs #124 to #126).** Writers share lock-before-read
-  transactions, and the generator guards keep Officiating publication monotonic. The
-  [remediation report](reports/2026-10-11-remediation/index.html) keeps all 28 launch statuses.
-- **Motion and accessibility audit (PR #127).** The five selected motion fixes shipped with
-  [plans](../plans/README.md); the [audit report](reports/2026-10-14-accessibility-usability.html)
-  and [findings](../anti-slop/audit-002-2026-10-14.md) are committed. CI/CD hardening F1 to F7
-  shipped the same day, and the owner rotated the database credential.
-- **Labels and data (D-86 to D-94, PRs #136 to #148).** Full days off, gaps compared at two
-  decimals, neutral hosts never called, former team codes named; the 9 neutral-site prediction
-  rows were deleted with owner approval.
-- **Games board and model (D-95 to D-100, PRs #150 to #152).** Four flags per line, BY DATE / BY
-  TEAM, the freeze withdrawn (D-97), and the altitude carryover removed with a production
-  recompute: 27,420 graded calls, 61.2%.
-- **Gap sizes (D-101 to D-107, PRs #157 to #166).** EVEN under 0.5, small 0.5 to 3, medium 3 to 5,
-  large 5+, on every tab. The owner moved Supabase to Pro for one month through launch.
-- **Full-service audit (D-108, D-109, PRs #167 to #169).** Data agreed on every surface; "3+ rest
-  edge" with the venue beside it, "Vs home rate" / "Vs baseline", and "rested team at home"
-  everywhere ("Rested at home" in narrow columns). Merged 2026-10-18 as `ab3aa8d`; merged
-  branches and all seven old worktrees were removed the same day.
-- **Cleanup, 2026-10-18 (this PR).** The Officiating season strip opens on whole columns at every
-  width (it cut 2017-18's 89.9% to "9.9%" at 1280px). Dependabot ignores `@types/node` above the
-  Node 22 runtime; #156 closed.
+- D-79–D-83: finals-only LIVE/PENDING/FINAL, twelve hourly crons, verified schedule,
+  next-game rescoring and the unchanged 103,390-row [recompute](research/2026-10-11-fatigue-recompute-audit.md).
+  LAUNCH_DAY.md retains the live validation procedure.
+- D-84/D-85: lock-before-read writers and monotonic Officiating publication; the
+  [remediation report](reports/2026-10-11-remediation/index.html) retains all 28 launch statuses.
+- PR #127 shipped the selected motion/accessibility fixes and CI/CD hardening F1–F7;
+  [plans](../plans/README.md), [audit](reports/2026-10-14-accessibility-usability.html) and
+  [findings](../anti-slop/audit-002-2026-10-14.md) retain the evidence. Database credentials rotated.
+- D-86–D-100: full days off, two-decimal gap comparison, neutral-host exclusion, historical
+  team names, owner-approved deletion of nine neutral calls, BY DATE/BY TEAM, and ratified
+  altitude-carryover removal (27,420 calls, 61.2% at that snapshot).
+- D-101–D-109: small 0.5–3, medium 3–5, large 5+; venue-labelled rest edges and consistent
+  rested-team-at-home copy. PRs #167–#169 merged as `ab3aa8d` on October 18.
+- October 18 cleanup fixed Officiating season-strip clipping and pinned Node types below23;
+  #156 closed. Supabase Pro was selected for launch; its review remains listed below.
 
 Still open from those entries:
 
@@ -212,3 +199,13 @@ Implementation is prepared on `codex/recent-home-schedule`; its verification is 
 [the review](design/2026-10-18-recent-home-schedule-review.md). It is not yet deployed.
 The large-gap chart series and broader table layouts remain visual options on
 `prototype/chart-schedule-options`. The existing 100-game display rule remains unchanged.
+
+## Selected chart and schedule options — 2026-10-19
+
+The owner selected table A and an optional raw 5+ annual line (D-114). Work continues on
+PR #176: Game stays visible on phones, and the chart starts with two series until its toggle
+is enabled. Small-sample counts/warnings remain visible; ordinary 0.5+ gating is preserved.
+The new `/api/home-court` prepares both annual groups from one source snapshot. Chart title
+padding also addresses the nested-heading issue shown by the owner. Verification and release
+state are recorded in [the review](design/2026-10-19-chart-toggle-table-a-review.md).
+Merge approval and deployed verification remain separate; production is still PR #175.

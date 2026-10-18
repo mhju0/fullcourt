@@ -1,0 +1,18 @@
+.table > thead > tr > th,
+.table > tbody > tr > td {
+  padding-inline: 4px;
+}
+
+@media (min-width: 640px) {
+  .table > thead > tr > th,
+  .table > tbody > tr > td {
+    padding-inline: 8px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .table > thead > tr > th,
+  .table > tbody > tr > td {
+    padding-inline: 12px;
+  }
+}
