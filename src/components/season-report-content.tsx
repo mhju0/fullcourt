@@ -16,6 +16,7 @@ import {
   type SeasonReportResponse,
 } from "@/lib/season-report";
 import { KeepTogether } from "@/components/ui/keep-together";
+import { MessageCard } from "@/components/ui/message-card";
 import { signedNumber } from "@/lib/signed-number";
 import { WIDTH } from "@/lib/terminal-styles";
 
@@ -39,7 +40,7 @@ export function SeasonReportContent() {
   );
   const awaitingLatest = !explicit && latest?.completedGames === 0;
   const season = awaitingLatest ? PRIOR_SEASON : urlSeason;
-  const { data, error, isLoading } = useSWR<SeasonReportResponse>(
+  const { data, error, isLoading, isValidating, mutate } = useSWR<SeasonReportResponse>(
     reportKey(season),
     apiFetcher,
     { revalidateOnFocus: false },
@@ -58,6 +59,7 @@ export function SeasonReportContent() {
     data.overall.games >= MIN_GAMES_FOR_INFERENCE &&
     data.overall.band !== null;
   const homeRate = data?.homeRate;
+  const comparisonUnavailable = data && !homeRate;
   const delta =
     enough && homeRate && homeRate.games > 0
       ? Math.round(
@@ -89,7 +91,7 @@ export function SeasonReportContent() {
       {fallbackNote ? <p role="status">{fallbackNote}</p> : null}
       {awaitingLatest ? (
         <p role="status" className={muted} data-testid="season-default-note">
-          <KeepTogether>{LATEST_SEASON} has no completed games yet. Showing {PRIOR_SEASON}.</KeepTogether>{" "}
+          <KeepTogether>No completed games with the required rest data are available for {LATEST_SEASON}. Showing {PRIOR_SEASON}.</KeepTogether>{" "}
           <a className="fc-text-link" href={`/schedule?season=${LATEST_SEASON}`}>
             View the {LATEST_SEASON} schedule →
           </a>
@@ -104,12 +106,27 @@ export function SeasonReportContent() {
           <p>{note.note}</p>
         </aside>
       ) : null}
-      {error ? (
-        <p role="status">
-          {data
-            ? "Refresh unavailable. Showing the last loaded report."
-            : "Failed to load the season report. Please try again."}
-        </p>
+      {error || comparisonUnavailable ? (
+        <MessageCard
+          tone="error"
+          title={comparisonUnavailable ? "SEASON COMPARISON UNAVAILABLE" : data ? "REPORT REFRESH UNAVAILABLE" : "COULD NOT LOAD SEASON REPORT"}
+          body={comparisonUnavailable
+            ? "The updated season comparison is unavailable right now."
+            : data ? "Showing the last loaded report." : "The season report request failed."}
+          action={(
+            <button
+              type="button"
+              className="fc-text-link min-h-11 aria-disabled:cursor-default aria-disabled:opacity-60"
+              aria-label="Retry report"
+              aria-disabled={isValidating}
+              onClick={() => {
+                if (!isValidating) void mutate().catch(() => undefined);
+              }}
+            >
+              {isValidating ? "Retrying report…" : "Retry report"}
+            </button>
+          )}
+        />
       ) : null}
       {isLoading ? (
         <div
@@ -117,9 +134,7 @@ export function SeasonReportContent() {
           aria-label="Loading season results"
         />
       ) : null}
-      {data && !homeRate ? (
-        <p role="status">The updated season comparison is unavailable right now. Please try again.</p>
-      ) : data && data.completedGames === 0 ? (
+      {comparisonUnavailable ? null : data && data.completedGames === 0 ? (
         <section
           className="flex flex-col gap-3 border-y border-[var(--term-border)] py-8"
           data-testid="season-awaiting-results"
@@ -129,7 +144,7 @@ export function SeasonReportContent() {
           </h2>
           <p className={muted}>
             No completed games with scored fatigue pairs are available yet.
-            Records will appear as games are played.
+            {" "}This report needs final scores and fatigue records for both teams.
           </p>
           <div className="flex flex-wrap gap-x-6 gap-y-2">
             {previous ? (

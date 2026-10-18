@@ -17,6 +17,11 @@ sections. The homepage is the deliberately dark exception. Geist carries text; G
 carries numerals and short labels. Exact tokens and layout mechanics belong in
 [Frontend](../FRONTEND.md) and `src/lib/terminal-styles.ts`.
 
+The light neutrals have a subtle sky-blue tint: page `#F3F8FC`, near-white panels `#FBFDFF`,
+and secondary surfaces `#EAF2F8`. They distinguish reading levels without introducing another
+data encoding. The dark homepage uses a cool off-white `#F2F8FD` for text and its primary action.
+Indigo and the existing semantic data colors retain their roles. D-111 records owner approval.
+
 ## Color and evidence
 
 Indigo is the interface accent. Fatigue/rest values retain rose/teal semantics. Shooting has an

@@ -229,6 +229,8 @@ export interface DisparityLeagueRow {
 
 export interface ScheduleDisparityResult {
   season: string;
+  /** Missing published regular-season fixtures; null outside the confirmed NBA Cup calendars. */
+  missingFixtureGames: number | null;
   /**
    * True when any game in the season is not final, so figures may still revise. Read from game
    * status rather than a game count: a hardcoded 82 would wrongly mark the lockout seasons
@@ -451,6 +453,15 @@ export function computeScheduleDisparity(
   games: DisparityGameRow[]
 ): ScheduleDisparityResult {
   const provisional = games.some(g => !isSettledGame(g.status));
+  // These Cup-era calendars each contain 30 × 82 / 2 regular-season fixtures. Earlier
+  // seasons include shortened/excluded stretches; future formats have not been confirmed.
+  // Count before removing held games: a postponed or cancelled fixture was still published.
+  const expectedFixtures = ["2023-24", "2024-25", "2025-26", "2026-27"].includes(season)
+    ? 1230
+    : null;
+  const missingFixtureGames = expectedFixtures === null
+    ? null
+    : Math.max(0, expectedFixtures - games.length);
   games = games.filter(g => !isHeldGame(g.status));
   const byTeam = gamesByTeam(games);
   const restByTeam = new Map<number, Map<DisparityGameRow, number>>();
@@ -641,6 +652,7 @@ export function computeScheduleDisparity(
   return {
     season,
     provisional,
+    missingFixtureGames,
     latestFinalDate,
     scheduledGames: games.length,
     gamesPerTeamMin: scheduledPerTeam.length ? Math.min(...scheduledPerTeam) : 0,

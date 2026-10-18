@@ -80,9 +80,9 @@ describe("schedule-backed opener explanation", () => {
 
 describe("quiet Games refresh notice", () => {
   const notice = { checkedAt: Date.UTC(2026, 9, 20, 20), refreshStatus: "idle" as const, refreshMessage: null, retryRefresh: () => {} };
-  it("labels response receipt as an update time in the heading without announcing every success", () => {
+  it("labels response receipt as a view check without announcing every success", () => {
     const html = renderToStaticMarkup(createElement(GameSlateRefreshNotice, { slate: notice }));
-    expect(html).toMatch(/Updated <\/span><time dateTime="2026-10-20T20:00:00.000Z"/);
+    expect(html).toMatch(/Checked <\/span><time dateTime="2026-10-20T20:00:00.000Z"/);
     expect(html).toContain('aria-label="Refresh view"');
     expect(html).not.toContain('role="status"');
   });
@@ -97,7 +97,7 @@ describe("quiet Games refresh notice", () => {
     button.props.onActivate();
     expect(retry).not.toHaveBeenCalled();
   });
-  it("announces failure quietly with a retry while preserving the update time", () => {
+  it("announces failure quietly with a retry while preserving the check time", () => {
     const html = renderToStaticMarkup(createElement("div", {},
       createElement(GameSlateRefreshNotice, { slate: { ...notice, refreshStatus: "error", refreshMessage: "offline" } }),
       createElement(GameSlateRefreshWarning, { message: "offline" })
@@ -105,6 +105,6 @@ describe("quiet Games refresh notice", () => {
     expect(html).toContain('role="status"');
     expect(html).toContain("Showing the last fetched games");
     expect(html).toContain('aria-label="Try again"');
-    expect(html).toMatch(/Updated <\/span><time dateTime="2026-10-20T20:00:00.000Z"/);
+    expect(html).toMatch(/Checked <\/span><time dateTime="2026-10-20T20:00:00.000Z"/);
   });
 });

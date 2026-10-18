@@ -60,6 +60,16 @@ for (const width of [390, 1440]) {
     await page.setViewportSize({ width, height: 900 }); await fixtures(page);
     await page.goto("/analysis");
     const opener = page.getByRole("button", { name: /^Open details:/ }).first();
+    await expect(opener).toHaveJSProperty("tagName", "BUTTON");
+    await expect(opener).toHaveAttribute("aria-haspopup", "dialog");
+    const table = page.getByRole("table").filter({ has: opener });
+    const row = table.getByRole("row").filter({ has: opener });
+    await expect(row).toHaveCount(1);
+    await expect(row).not.toHaveAttribute("role", "button");
+    await expect(row.getByRole("cell")).not.toHaveCount(0);
+    await expect(table.getByRole("columnheader", { name: "Matchup", exact: true })).toBeVisible();
+    await expect(opener).toContainText("Game details");
+    expect((await opener.boundingBox())!.height).toBeGreaterThanOrEqual(44);
     await opener.focus(); await page.keyboard.press("Enter");
     const dialog = page.getByRole("dialog", { name: "Game details" });
     const recent = dialog.getByRole("button", { name: /^View game details:/ });
@@ -84,6 +94,11 @@ for (const width of [390, 1440]) {
     await close.focus(); await page.keyboard.press("Shift+Tab"); await expect(recent.last()).toBeFocused();
     await page.keyboard.press("Tab"); await expect(close).toBeFocused();
     await page.keyboard.press("Escape"); await expect(dialog).toHaveCount(0); await expect(opener).toBeFocused();
+    await page.keyboard.press("Space"); await expect(dialog).toBeVisible();
+    await page.keyboard.press("Escape"); await expect(opener).toBeFocused();
+    await row.getByRole("cell").first().click();
+    await expect(dialog).toBeVisible();
+    await page.keyboard.press("Escape"); await expect(opener).toBeFocused();
   });
 }
 

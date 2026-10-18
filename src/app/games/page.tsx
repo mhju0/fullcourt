@@ -689,6 +689,9 @@ export default function GamesPage() {
           <GameSlateRefreshNotice slate={slate} />
         </div>
         <GameSlateRefreshWarning message={slate.refreshMessage} />
+        <p className="m-0" style={{ fontSize: TYPE.data, color: "var(--term-text-muted)" }}>
+          Scores are final-only. LIVE is estimated from scheduled tip-off. Checked is when this view was fetched, not when the source last changed.
+        </p>
         {/* After the list on a phone, so the first game stays above the fold. */}
         <BoardGuide className="max-sm:order-last" />
         <Matchups slate={slate} />

@@ -186,6 +186,40 @@ describe("computeScheduleDisparity — league figures", () => {
 });
 
 describe("computeScheduleDisparity — provisional seasons", () => {
+  const cupSchedule = (count: number) => Array.from({ length: 82 }, (_, round) => {
+    const date = new Date(Date.UTC(2026, 9, 20 + round * 2)).toISOString().slice(0, 10);
+    return Array.from({ length: 15 }, (_, pair) =>
+      game(date, (pair * 2 + round) % 30 + 1, (pair * 2 + round + 1) % 30 + 1, { status: "scheduled" })
+    );
+  }).flat().slice(0, count);
+
+  it("keeps a complete published fixture list provisional while results are unsettled", () => {
+    const result = computeScheduleDisparity("2026-27", cupSchedule(1230));
+    expect(result.provisional).toBe(true);
+    expect(result.missingFixtureGames).toBe(0);
+  });
+
+  it("reports fixture gaps independently of whether the existing games are final", () => {
+    const scheduled = cupSchedule(1200);
+    expect(computeScheduleDisparity("2026-27", scheduled).missingFixtureGames).toBe(30);
+    const final = scheduled.map(g => ({ ...g, status: "final" }));
+    const result = computeScheduleDisparity("2026-27", final);
+    expect(result.provisional).toBe(false);
+    expect(result.missingFixtureGames).toBe(30);
+  });
+
+  it.each(["postponed", "cancelled"])("counts a published %s fixture toward coverage", status => {
+    const published = cupSchedule(1230);
+    published[0] = { ...published[0], status };
+    const result = computeScheduleDisparity("2026-27", published);
+    expect(result.missingFixtureGames).toBe(0);
+    expect(result.scheduledGames).toBe(1229);
+  });
+
+  it.each(["1998-99", "2011-12", "2019-20", "2020-21", "2027-28"])("does not impose the Cup-era calendar on %s", season => {
+    expect(computeScheduleDisparity(season, FIXTURE).missingFixtureGames).toBeNull();
+  });
+
   it("is provisional when any game is not final", () => {
     const withScheduled = [...FIXTURE.slice(0, 3), game("2024-01-10", 1, 2, { status: "scheduled" })];
     expect(computeScheduleDisparity("2023-24", withScheduled).provisional).toBe(true);

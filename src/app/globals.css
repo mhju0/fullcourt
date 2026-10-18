@@ -81,7 +81,7 @@
 /* FullCourt "Front Office" light theme.
    Single light theme, always-on. The daylight pro instrument
    (docs/design/mocks/08-front-office.html, selected 2026-08-09):
-   cool porcelain ground, white panels on hairline borders, near-black
+   subtly sky-tinted ground and near-white panels on hairline borders, near-black
    ink, and one indigo accent spent a moment at a time. The data
    semantics keep their two poles but move hue — rose = more fatigued,
    teal = more rested (validated pair: worst-adjacent CVD ΔE 16.4,
@@ -93,23 +93,23 @@
   /* Commit the whole app to light; ignores OS dark preference. */
   color-scheme: light;
 
-  --background: #F6F7F9;
+  --background: #F3F8FC;
   --foreground: #16181D;
 
-  --card: #FFFFFF;
+  --card: #FBFDFF;
   --card-foreground: #16181D;
 
-  --popover: #FFFFFF;
+  --popover: #FBFDFF;
   --popover-foreground: #16181D;
 
   /* Indigo as primary — the Front Office accent, not a data pole */
   --primary: #4F46E5;
   --primary-foreground: #FFFFFF;
 
-  --secondary: #EFF1F4;
+  --secondary: #EAF2F8;
   --secondary-foreground: #16181D;
 
-  --muted: #EFF1F4;
+  --muted: #EAF2F8;
   --muted-foreground: #5D6470;
 
   --accent: #4F46E5;
@@ -134,7 +134,7 @@
 
   --radius: 0.625rem;
 
-  --sidebar: #FFFFFF;
+  --sidebar: #FBFDFF;
   --sidebar-foreground: #16181D;
   --sidebar-primary: #4F46E5;
   --sidebar-primary-foreground: #FFFFFF;
@@ -149,13 +149,13 @@
      holds the fatigued pole, --term-blue the rested pole, --term-amber
      the accent — whatever hue each currently is. */
   /* surfaces & text */
-  --term-bg: #F6F7F9;
-  --term-surface: #FFFFFF;
-  --term-surface-2: #EFF1F4;
+  --term-bg: #F3F8FC;
+  --term-surface: #FBFDFF;
+  --term-surface-2: #EAF2F8;
   /* Both lines were a step lighter until 2026-10-07 and read as no line at all on the
      page ground, on a phone most of all (D-79). */
-  --term-border: #CED3DB;
-  --term-hairline: #C4CAD3;
+  --term-border: #C8D5E0;
+  --term-hairline: #BDCDD9;
   --term-text: #16181D;
   --term-text-muted: #5D6470;
   --term-text-dim: #333845;
@@ -312,9 +312,9 @@
 .fc-chrome-front {
   --term-surface: #12151A;
   --term-surface-2: #0F1116;
-  --term-border: rgba(245, 241, 232, 0.14);
-  --term-hairline: rgba(245, 241, 232, 0.22);
-  --term-text: #F2F4F7;
+  --term-border: rgba(242, 248, 253, 0.14);
+  --term-hairline: rgba(242, 248, 253, 0.22);
+  --term-text: #F2F8FD;
   --term-text-muted: #8A8F98;
   --term-accent: #818CF8;
   /* The alias resolves at :root, so overriding --term-accent alone would leave

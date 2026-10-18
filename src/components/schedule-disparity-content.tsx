@@ -257,11 +257,15 @@ export function ScheduleDisparityContent() {
             &nbsp;
           </p>
         ) : null}
+        {data && data.missingFixtureGames !== null && data.missingFixtureGames > 0 ? (
+          <p data-testid="schedule-missing-fixtures" style={{ marginTop: SPACE.sm, fontSize: TYPE.body, color: "var(--term-text-muted)", lineHeight: LEAD.body }}>
+            The published schedule is missing {data.missingFixtureGames.toLocaleString()} regular-season fixtures.
+            {" "}Totals can change as fixtures are added or rescheduled.
+          </p>
+        ) : null}
         {data?.provisional ? (
           <p style={{ marginTop: SPACE.sm, fontSize: TYPE.body, color: "var(--term-text-muted)", lineHeight: LEAD.body }}>
-            This season&rsquo;s schedule is not finished. The NBA announces only 80 of each
-            team&rsquo;s 82 games before opening night and fills the rest once NBA Cup group play
-            resolves in December, so these figures will revise.
+            This season has unsettled games, so these figures may revise.
             {data.league.projectedGames > 0 ? (
               <>
                 {" "}
@@ -373,9 +377,14 @@ export function ScheduleDisparityContent() {
                 >
                   {t.rank ?? UNMEASURED}
                 </span>
-                <span className="mono" style={{ fontSize: 12, fontWeight: 700, color: "var(--term-text)" }}>
+                <a
+                  className="fc-text-link mono inline-flex min-h-11 items-center"
+                  href={`/games/team?season=${season}&team=${t.abbreviation}`}
+                  aria-label={`View ${t.name} games in ${season}`}
+                  style={{ fontSize: 12, fontWeight: 700 }}
+                >
                   {t.abbreviation}
-                </span>
+                </a>
                 <EdgeBar value={t.rankValue} bound={bound} height={15} />
                 <span
                   className="mono text-right"
@@ -434,10 +443,14 @@ export function ScheduleDisparityContent() {
                   label: "Team",
                   className: "whitespace-nowrap",
                   cell: (t) => (
-                    <>
+                    <a
+                      className="fc-text-link inline-flex min-h-11 items-center gap-1"
+                      href={`/games/team?season=${season}&team=${t.abbreviation}`}
+                      aria-label={`View ${t.name} games in ${season}`}
+                    >
                       <span style={{ fontWeight: 700 }}>{t.abbreviation}</span>{" "}
                       <span className="hidden sm:inline" style={{ color: "var(--term-text-muted)" }}>{t.name}</span>
-                    </>
+                    </a>
                   ),
                 },
                 {
