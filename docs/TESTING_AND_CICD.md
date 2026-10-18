@@ -87,7 +87,8 @@ Turbopack build emits Debug IDs and uploads its client and server maps before de
 Missing deployment tokens, absent client/server maps, upload failures, or public maps left
 after upload fail the build. Successful upload deletes maps and mapping comments under
 `.next/static`; private `.next/server` maps remain for runtime error reporting.
-The source-map change does not enable tracing, replay, cron monitors, a tunnel route, or
+The source-map change creates no Sentry release, commit link or deploy record (events carry the
+commit SHA as their release name) and does not enable tracing, replay, cron monitors, a tunnel route, or
 additional automatic runtime instrumentation. Existing DSN/error/privacy settings remain.
 
 Local and ordinary GitHub CI builds without a token explicitly skip upload and do not enable

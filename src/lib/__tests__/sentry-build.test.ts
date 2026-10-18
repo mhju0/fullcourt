@@ -96,6 +96,22 @@ describe("shipping-build Sentry source maps", () => {
     expect(readFileSync(files.client, "utf8")).not.toContain("sourceMappingURL");
   });
 
+  it("on Vercel, uploads maps without recording a deploy or commits for a release it never creates", async () => {
+    vi.stubEnv("NODE_ENV", "production");
+    vi.stubEnv("SENTRY_AUTH_TOKEN", "build-token-test-sentinel");
+    vi.stubEnv("VERCEL", "1");
+    vi.stubEnv("VERCEL_ENV", "preview");
+    vi.stubEnv("VERCEL_GIT_COMMIT_SHA", "0123456789abcdef0123456789abcdef01234567");
+    const files = artifacts();
+    vi.spyOn(SentryCliAdapter.prototype, "uploadSourcemaps").mockResolvedValue(undefined);
+    const deploy = vi.spyOn(SentryCliAdapter.prototype, "newDeploy").mockResolvedValue(undefined);
+    const commits = vi.spyOn(SentryCliAdapter.prototype, "setCommits").mockResolvedValue(undefined);
+    const result = config(PHASE_PRODUCTION_BUILD);
+    await result.compiler?.runAfterProductionCompile?.({ distDir: files.distDir, projectDir: process.cwd() });
+    expect(deploy).not.toHaveBeenCalled();
+    expect(commits).not.toHaveBeenCalled();
+  });
+
   it("fails the build on upload failure and preserves artifacts for diagnosis", async () => {
     vi.stubEnv("NODE_ENV", "production");
     vi.stubEnv("SENTRY_AUTH_TOKEN", "build-token-test-sentinel");

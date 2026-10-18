@@ -98,7 +98,16 @@ export default function config(phase: string): NextConfig {
     // Existing instrumentation owns error capture; this change only adds build artifacts.
     buildTimeInstrumentation: false,
     routeManifestInjection: false,
-    release: { create: false, finalize: false },
+    // No release, commit link or deploy record. The name is not optional: without one the SDK
+    // drops every other release option, the plugin names the release from Vercel's commit anyway,
+    // and records a deploy against a release this build never creates (Sentry answers 404).
+    release: {
+      name: process.env.VERCEL_GIT_COMMIT_SHA,
+      create: false,
+      finalize: false,
+      setCommits: false,
+      deploy: false,
+    },
     webpack: {
       autoInstrumentServerFunctions: false,
       autoInstrumentMiddleware: false,
