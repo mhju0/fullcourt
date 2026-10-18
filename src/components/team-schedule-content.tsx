@@ -18,6 +18,7 @@ import { gamePhase } from "@/lib/game-phase"
 import { cupPlaceholders } from "@/lib/nba-cup"
 import { browsableSeasons, formatEasternDateKey } from "@/lib/nba-season"
 import { formatRestAdvantageValue } from "@/lib/rest-advantage-display"
+import { NEUTRAL_REST_ADVANTAGE_THRESHOLD } from "@/lib/rest-advantage-evidence"
 import { CURRENT_TEAM_ABBREVIATIONS, getTeamBranding } from "@/lib/team-history"
 import { MONO_FONT_STACK, SPACE_CARD, termCardStyle, termSelectClass, termSelectStyle, termTdStyle, TRACK, TYPE } from "@/lib/terminal-styles"
 import type { TeamScheduleGame } from "@/types"
@@ -375,7 +376,7 @@ export function TeamScheduleContent() {
           />
           <section aria-label={`${teamAbbr} schedule`} className="flex flex-col gap-2">
             <p className="m-0" style={{ fontSize: TYPE.body, color: "var(--term-text-muted)" }}>
-              {games.length} games{cup ? `, and ${cup.count} NBA Cup ${cup.count === 1 ? "game" : "games"} the league has not scheduled yet` : ""}. A plus means {teamAbbr} is the more rested side; EVEN is a gap under 0.5.
+              {games.length} games{cup ? `, and ${cup.count} NBA Cup ${cup.count === 1 ? "game" : "games"} the league has not scheduled yet` : ""}. A plus means {teamAbbr} is the more rested side; EVEN is a gap under {NEUTRAL_REST_ADVANTAGE_THRESHOLD}.
               {anyProjected && " Games not yet played show a projected gap, from the schedule as it stands."}
             </p>
             <DataTable

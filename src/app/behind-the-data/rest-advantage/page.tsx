@@ -21,7 +21,7 @@ import {
   THIN_SAMPLE_GAMES,
   type RestGapRange,
 } from "@/lib/rest-split-facts";
-import { gapRangeByKey, gapRangeSpan } from "@/lib/rest-advantage-evidence";
+import { GAP_RANGES, NEUTRAL_REST_ADVANTAGE_THRESHOLD, gapRangeByKey, gapRangeSpan } from "@/lib/rest-advantage-evidence";
 import { termTdStyle } from "@/lib/terminal-styles";
 import { DataTable } from "@/components/ui/data-table";
 import { signedNumber } from "@/lib/signed-number";
@@ -155,7 +155,7 @@ function RestRowTable() {
       <tr>
             <td style={termTdStyle}>
               No measurable gap{" "}
-              <span style={{ color: "var(--term-text-muted)" }}>· |RA| &lt; 0.5</span>
+              <span style={{ color: "var(--term-text-muted)" }}>· |RA| &lt; {NEUTRAL_REST_ADVANTAGE_THRESHOLD}</span>
             </td>
             <td style={{ ...termTdStyle, textAlign: "right" }}>{NEUTRAL_GAMES}</td>
             <td style={{ ...termTdStyle, textAlign: "right", color: "var(--term-text-muted)" }}>
@@ -214,7 +214,7 @@ function gapSizeLabel(range: RestGapRange): string {
 function RoadGapSizeTable() {
   // The unfiltered row is every rested road game, so the sizes below it add up to it.
   const rows = [
-    { label: "Any gap", games: RESTED_ON_ROAD.games, winPct: RESTED_ON_ROAD.winPct },
+    { label: `All gaps (${GAP_RANGES[0].min}+)`, games: RESTED_ON_ROAD.games, winPct: RESTED_ON_ROAD.winPct },
     ...RESTED_ON_ROAD.ranges.map((r) => ({
       label: gapSizeLabel(r),
       games: r.games,
@@ -373,7 +373,7 @@ score      = max(0, baseLoad × backToBack × altitude × density + freshness + 
 restEdge   = awayScore − homeScore     (positive ⇒ the home side is fresher)`}
         </Formula>
         <Note>
-          A difference under 0.5 is treated as neutral: {NEUTRAL_GAMES} games, about one
+          A difference under {NEUTRAL_REST_ADVANTAGE_THRESHOLD} is treated as neutral: {NEUTRAL_GAMES} games, about one
           in six, that carry no rest claim in either direction.
         </Note>
       </Section>

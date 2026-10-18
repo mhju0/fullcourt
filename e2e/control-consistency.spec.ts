@@ -5,7 +5,7 @@ for (const width of [1280, 768, 390]) {
     await page.setViewportSize({ width, height: 900 });
     await page.goto("/analysis");
     const filters = page.locator(".fc-filter-grid select");
-    await expect(filters).toHaveCount(4, { timeout: 60_000 });
+    await expect(filters).toHaveCount(5, { timeout: 60_000 });
     const boxes = await filters.evaluateAll((elements) => elements.map((element) => {
       const rect = element.getBoundingClientRect();
       return { width: rect.width, height: rect.height };

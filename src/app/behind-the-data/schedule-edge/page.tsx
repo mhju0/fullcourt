@@ -15,6 +15,7 @@ import {
   REST_DAYS_CAP,
 } from "@/lib/schedule-disparity";
 import { NEUTRAL_REST_ADVANTAGE_THRESHOLD } from "@/lib/rest-advantage-evidence";
+import { signedNumber } from "@/lib/signed-number";
 import {
   HOME_COURT_SPAN_PP,
   REST_SHARE_OF_HOME_COURT,
@@ -74,12 +75,12 @@ big edge      the ≥ ${BIG_EDGE_FATIGUE_THRESHOLD} subset of either side`}
           values={[
             {
               label: "Fresher side, at home",
-              value: `${REST_STATE_LIFT_PP.restedHome > 0 ? "+" : ""}${REST_STATE_LIFT_PP.restedHome.toFixed(2)}`,
+              value: signedNumber(REST_STATE_LIFT_PP.restedHome, 2),
               sub: "points of win probability",
             },
             {
               label: "Tireder side, at home",
-              value: `${REST_STATE_LIFT_PP.tiredHome.toFixed(2)}`,
+              value: signedNumber(REST_STATE_LIFT_PP.tiredHome, 2),
               sub: "facing a fresher visitor",
             },
             {
@@ -140,7 +141,7 @@ big edge      the ≥ ${BIG_EDGE_FATIGUE_THRESHOLD} subset of either side`}
         <Prose>
           The correlation between a team&rsquo;s net edge
           games and its finish against the line is r&nbsp;=&nbsp;
-          {benchmark.correlation.r.toFixed(2)} across {benchmark.correlation.n}{" "}
+          {signedNumber(benchmark.correlation.r, 2)} across {benchmark.correlation.n}{" "}
           team-seasons. The archive does not show
           a consistent relationship between net edge and beating the line. It does not prove
           that markets fully price the schedule or rule out every possible betting strategy.

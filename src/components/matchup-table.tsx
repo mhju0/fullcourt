@@ -13,6 +13,7 @@ import { ChevronDown } from "lucide-react";
 import { FatigueBar, type FatigueBarTone } from "@/components/fatigue-bar";
 import {
   RestEdgeBadge,
+  REST_EDGE_LABEL,
   FatigueDetailColumn,
   TeamLogo,
   inlineFlags,
@@ -595,7 +596,8 @@ function GameRow({
         role="button"
         tabIndex={0}
         aria-expanded={expanded}
-        aria-label={`${expanded ? "Collapse" : "Expand"} ${awayBrand.name} ${game.neutralCity ? `versus ${homeBrand.name} in ${game.neutralCity}` : `at ${homeBrand.name}`}${spokenGameState(phase, game.awayScore, game.homeScore)} on ${game.date} game details`}
+        // The label replaces the row's contents for a screen reader, so the edge badge is named here.
+        aria-label={`${expanded ? "Collapse" : "Expand"} ${awayBrand.name} ${game.neutralCity ? `versus ${homeBrand.name} in ${game.neutralCity}` : `at ${homeBrand.name}`}${edgeSize ? `, ${REST_EDGE_LABEL[edgeSize].toLowerCase()}` : ""}${spokenGameState(phase, game.awayScore, game.homeScore)} on ${game.date} game details`}
         onClick={toggle}
         onKeyDown={onKeyDown}
         className="fc-game-grid grid cursor-pointer items-center gap-x-4 transition-colors hover:bg-[var(--term-surface-2)] focus-visible:ring-2 focus-visible:ring-[var(--term-accent)]/40"

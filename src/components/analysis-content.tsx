@@ -126,8 +126,8 @@ function BaselineLegend({ zeroLabel }: { zeroLabel: string }) {
  * The baseline is a parameter, and it is **not 50**. Every game on this page is one where
  * the rested team was also at home, and home teams win ~59.9% of everything regardless of
  * rest — so a coin-flip zero credited the model with nine points of home court it did not
- * earn. Callers pass the venue baseline the API now ships; the season chart passes that
- * season's own, because home court ran from 67.9% in 1987-88 to 54.3% in 2023-24.
+ * earn. Callers pass the venue baseline the API now ships; the era chart passes each era's
+ * own, because home court ran from 67.9% in 1987-88 to 54.3% in 2023-24.
  *
  * `toDeviation` itself lives in `@/lib/analysis-claims`: the lift is claim vocabulary before
  * it is a plotted value, since every tile and sentence on the page states a rate through it.
@@ -136,7 +136,7 @@ function BaselineLegend({ zeroLabel }: { zeroLabel: string }) {
 
 /**
  * Blue above the baseline, red below — the two poles of a diverging scale, with
- * a neutral midpoint. Dead-even is real: RA ≥ 7 in 2011-12 went 17/34.
+ * a neutral midpoint. A rate exactly at the baseline is a real result, not missing data.
  */
 export function deviationFill(deviation: number): string {
   if (deviation === 0) return "var(--term-neutral)"
@@ -151,7 +151,7 @@ export function deviationText(deviation: number): string {
 
 /**
  * A dead-even slice has zero length, so without this it draws nothing at all and
- * reads as missing data rather than as "exactly a coin flip". Give it a 2px stub;
+ * reads as missing data rather than as "exactly at the baseline". Give it a 2px stub;
  * every other bar keeps its true length.
  */
 export function minBarSize(value: number | undefined | null): number {
@@ -164,8 +164,7 @@ const MAX_TICK_INTERVALS = 6
 /**
  * A signed domain with evenly spaced ticks that always includes zero. Recharts
  * left to improvise emits odd intervals (a `[0, 70]` domain gave 0/20/40/60 plus
- * an orphan 70), and a hardcoded ceiling silently clips — the RA ≥ 7 season
- * series runs −11.0 to +25.0 pp.
+ * an orphan 70), and a hardcoded ceiling silently clips a wide era whisker.
  */
 export function deviationScale(values: readonly number[]): { domain: [number, number]; ticks: number[] } {
   const peak = values.length > 0 ? Math.max(...values, 0) : 0
@@ -1232,7 +1231,7 @@ export function AnalysisContent({ asOf }: { asOf?: DataAsOf | null }) {
             <span className="mono font-bold" style={{ color: "var(--term-text)" }}>{claims.reading.baselinePct}%</span>{" "}
             of all games regardless of rest. So the rate to read is not{" "}
             <span className="mono tabular-nums">{claims.reading.overallWinPct}%</span> but the{" "}
-            <span className="mono font-bold" style={{ color: "var(--term-blue-text)" }}>
+            <span className="mono font-bold" style={{ color: deviationText(claims.reading.overallLift) }}>
               {signedNumber(claims.reading.overallLift)}
             </span>{" "}
             percentage points above that baseline. This is an association, not a causal estimate.{" "}
@@ -1243,9 +1242,9 @@ export function AnalysisContent({ asOf }: { asOf?: DataAsOf | null }) {
                 <span className="whitespace-nowrap font-semibold text-[var(--term-text)]">
                   {r.name} gaps ({r.span})
                 </span>{" "}
-                win <span className="mono font-bold" style={{ color: "var(--term-blue-text)" }}>{r.winPct.toFixed(1)}%</span> on{" "}
+                win <span className="mono font-bold" style={{ color: deviationText(r.lift) }}>{r.winPct.toFixed(1)}%</span> on{" "}
                 <span className="mono tabular-nums">{r.games.toLocaleString()}</span> games,{" "}
-                <span className="mono font-bold" style={{ color: "var(--term-blue-text)" }}>{signedNumber(r.lift, 1)}</span>
+                <span className="mono font-bold" style={{ color: deviationText(r.lift) }}>{signedNumber(r.lift, 1)}</span>
                 {r.withinNoise ? " points, within the noise" : " points"}
               </span>
             ))}
