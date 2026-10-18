@@ -179,7 +179,7 @@ test("existing palette Escape restoration survives closeout changes", async ({ p
 
 
 for (const width of [390, 1440]) {
-  test(`Games calendar retry preserves its loaded slate at ${width}px`, async ({ page }) => {
+  test(`Games calendar retry preserves its loaded slate at ${width}px`, async ({ page }, info) => {
     await fixtures(page); await page.setViewportSize({ width, height: 900 });
     let dateRequests = 0;
     let slateRequests = 0;
@@ -203,7 +203,9 @@ for (const width of [390, 1440]) {
     if (width < 640) await page.getByRole("button", { name: "Calendar", exact: true }).click();
     const error = page.getByRole("alert").filter({ hasText: "FAILED TO LOAD DATES" });
     await expect(error).toBeVisible();
-    await expect(page.getByRole("alert").filter({ visible: true })).toHaveCount(1);
+    await recordGeometry(info, "calendar-alerts", await page.getByRole("alert").evaluateAll(alerts =>
+      alerts.map(el => ({ html: el.outerHTML, parent: el.parentElement?.tagName, inMain: !!el.closest("main") }))));
+    await expect(page.getByRole("main").getByRole("alert").filter({ visible: true })).toHaveCount(1);
     expect(slateRequests).toBe(1);
     try {
       await error.getByRole("button", { name: "RETRY DATES", exact: true }).click();
