@@ -152,3 +152,20 @@ test("the season strip and call-type row show that they scroll on a phone", asyn
   }
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
 });
+
+for (const width of [390, 1024, 1280]) {
+  test(`the season strip opens on whole columns at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto("/officiating");
+    const strip = page.getByLabel(/Season comparison/);
+    await expect(strip).toHaveAttribute("data-more-start", "");
+    const cut = await strip.evaluate((el) => {
+      const box = el.getBoundingClientRect();
+      return [...el.children]
+        .map((column) => column.getBoundingClientRect())
+        .filter((r) => r.right > box.left && r.left < box.right)
+        .filter((r) => r.left < box.left - 1 || r.right > box.right + 1).length;
+    });
+    expect(cut).toBe(0);
+  });
+}

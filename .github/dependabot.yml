@@ -19,3 +19,8 @@ updates:
     groups:
       npm-minor-and-patch:
         update-types: [minor, patch]
+    # The runtime is Node 22 (CI and Vercel), so types newer than 22 would describe APIs the
+    # deployed server does not have. Raise this ceiling with the runtime.
+    ignore:
+      - dependency-name: "@types/node"
+        versions: [">=23"]

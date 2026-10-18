@@ -31,8 +31,28 @@ export function OfficiatingContent({ seasons }: { seasons: ReviewSeason[] }) {
   const stripRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const strip = stripRef.current;
-    const active = strip?.querySelector<HTMLElement>('[data-active="true"]');
-    if (strip && active) strip.scrollLeft += active.getBoundingClientRect().left - strip.getBoundingClientRect().left;
+    if (!strip) return;
+    // The strip opens scrolled to the end, and a width that is not a whole number of columns
+    // cut the first visible one in half: 89.9% read as "9.9%". Columns stretch so the visible
+    // ones fill the width exactly, and every scroll stop lands on a column edge.
+    const fit = () => {
+      const style = getComputedStyle(strip);
+      const gap = parseFloat(style.columnGap);
+      const width = strip.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight);
+      const first = strip.firstElementChild;
+      const minColumn = first ? parseFloat(getComputedStyle(first).minWidth) : 0;
+      const shown = Math.max(1, Math.floor((width + gap) / (minColumn + gap)));
+      strip.style.setProperty(
+        "--season-column",
+        shown < strip.children.length ? `${(width - gap * (shown - 1)) / shown}px` : null,
+      );
+      const active = strip.querySelector<HTMLElement>('[data-active="true"]');
+      if (active) strip.scrollLeft += active.getBoundingClientRect().left - strip.getBoundingClientRect().left - parseFloat(style.paddingLeft);
+    };
+    fit();
+    const observer = new ResizeObserver(fit);
+    observer.observe(strip);
+    return () => observer.disconnect();
   }, [season.season]);
   const team = params.get("team") ?? "";
   const category = params.get("type") ?? "";

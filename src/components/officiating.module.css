@@ -153,7 +153,7 @@
   padding: 4px;
 }
 .seasonColumn {
-  flex: 1;
+  flex: 1 0 var(--season-column, 0);
   min-width: 88px;
   text-align: center;
   font-size: var(--text-label);

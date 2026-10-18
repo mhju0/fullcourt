@@ -135,7 +135,9 @@ weeks well below the median. Wide detail tables retain sticky identity columns. 
 table while it is wider than its box, and touch screens get no scrollbar. A new sideways
 scroller uses `ScrollCue` rather than a bare `overflow-x-auto`, with `data-pinned` when its
 first column is sticky so the start edge never fades over it. The Home Court season table and
-Officiating's season strip and call-type row use it too. Schedule Edge's full breakdown
+Officiating's season strip and call-type row use it too; the season strip stretches its
+columns so a whole number fills the width, since it opens scrolled to the newest season and a
+half-cut column misread its figure (89.9% as "9.9%"). Schedule Edge's full breakdown
 drops its rank and bar columns below `lg` and the team name below `sm`, since the chart above
 it already draws them; it fits a tablet without scrolling. Officiating
 chips scroll horizontally; expanded reports fill the row width. All interactive targets and
