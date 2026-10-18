@@ -687,3 +687,11 @@ describe("computeScheduleDisparity — mixed measurement ranking", () => {
     expect(league.delta).toBe(2);
   });
 });
+
+it.each(["postponed", "cancelled"])("excludes %s from workload and previous-game rest", status => {
+  const baseline = computeScheduleDisparity("2023-24", FIXTURE);
+  const held = computeScheduleDisparity("2023-24", [...FIXTURE, game("2024-01-09",1,2,{status})]);
+  expect(held.teams).toEqual(baseline.teams);
+  expect(held.league).toEqual(baseline.league);
+  expect(held.provisional).toBe(status === "postponed");
+});

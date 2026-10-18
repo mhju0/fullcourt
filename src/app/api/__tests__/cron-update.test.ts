@@ -36,7 +36,7 @@ vi.mock("@/lib/nba-season", async (importOriginal) => {
   const actual = await importOriginal<typeof import("@/lib/nba-season")>();
   return {
     ...actual,
-    formatEasternDateKey: (date?: Date) => (date ? YESTERDAY : TODAY),
+    formatEasternDateKey: (date?: Date) => (date ? actual.formatEasternDateKey(date) : TODAY),
   };
 });
 
@@ -57,6 +57,15 @@ vi.mock("@/lib/daily-refresh-port", async importOriginal => {
     createDailyRefreshPort: () => ({ refreshGame }),
   };
 });
+
+vi.mock("@/lib/game-status-write", () => ({
+  writeGameStatus: async (_db: unknown, update: { expectedIdentity?: unknown; gameId: number; status: string; homeScore: number | null; awayScore: number | null; overtimePeriods: number | null }) => {
+    const {gameId: _id, overtimePeriods, expectedIdentity: _identity, ...values} = update;
+    updateSet({...values, ...(overtimePeriods !== null ? {overtimePeriods} : {})});
+    const rows = await updateReturning();
+    return {written: rows.length > 0, invalidated: 0};
+  },
+}));
 
 const { GET } = await import("../cron/update/route");
 
@@ -84,7 +93,7 @@ function event(over: {
     id: "401800001",
     competitions: [
       {
-        status: { type: { state, completed } },
+        status: { type: { state, completed, name: state === "post" && completed ? "STATUS_FINAL" : state === "in" ? "STATUS_IN_PROGRESS" : "STATUS_SCHEDULED" } },
         competitors: [
           { homeAway: "home", score: homeScore, team: { abbreviation: homeAbbr }, linescores },
           { homeAway: "away", score: awayScore, team: { abbreviation: awayAbbr }, linescores },
@@ -114,10 +123,14 @@ function req(auth?: string): Request {
   });
 }
 
+function datedEvents(events: unknown[], compact: string): unknown[] {
+  const date = `${compact.slice(0,4)}-${compact.slice(4,6)}-${compact.slice(6,8)}T23:00:00Z`;
+  return events.map(ev => ({...ev as object,date}));
+}
 function espnResponds(events: unknown[]) {
   vi.stubGlobal(
     "fetch",
-    vi.fn().mockResolvedValue({ ok: true, json: async () => ({ events }) })
+    vi.fn().mockImplementation(async (url: string) => ({ok:true,json:async()=>({events:datedEvents(events,new URL(url).searchParams.get("dates")!)})}))
   );
 }
 
@@ -127,7 +140,7 @@ function espnRespondsByDate(byDate: Record<string, unknown[]>) {
     "fetch",
     vi.fn().mockImplementation(async (url: string) => {
       const dateKey = new URL(url).searchParams.get("dates") ?? "";
-      const events = byDate[dateKey] ?? [];
+      const events = datedEvents(byDate[dateKey] ?? [], dateKey);
       return { ok: true, json: async () => ({ events }) };
     })
   );
@@ -191,7 +204,7 @@ describe("GET /api/cron/update", () => {
   it("keeps good date finals when the other date feed fails", async () => {
     selectWhere.mockResolvedValue([storedRow({ id: 1, date: YESTERDAY }), storedRow({ id: 2 })]);
     vi.stubGlobal("fetch", vi.fn().mockImplementation(async (url: string) => url.includes("20261019")
-      ? { ok: true, json: async () => ({ events: [event()] }) }
+      ? { ok: true, json: async () => ({ events: datedEvents([event()], "20261019") }) }
       : { ok: false, status: 403 }));
     const res = await GET(req("Bearer test-secret"));
     expect(res.status).toBe(502);

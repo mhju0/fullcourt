@@ -13,12 +13,17 @@ flowchart TD
   model --> db
   db --> routes[Next.js API routes]
   routes --> pages[React pages and SWR]
-  db -. Live scores .-> pages
+  db -. Game-change invalidation .-> pages
   feeds --> research[Offline Python analyses]
   db --> research
   research --> artifacts[Versioned JSON artifacts]
   artifacts --> pages
 ```
+
+The dashed edge is the configured Supabase change subscription: it invalidates a complete
+Games API response rather than streaming partial scores. Actual live database-event delivery
+remains part of first-slate validation. Score writers share the [game lifecycle](GAME_STATUS_LIFECYCLE.md)
+transaction for holds and future derived-cache invalidation.
 
 ## Ownership
 

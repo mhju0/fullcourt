@@ -20,8 +20,7 @@ import type { TooltipContentProps } from "recharts"
 import { format } from "date-fns"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { ExploreGameDetailModal } from "@/components/explore-game-detail-modal"
-import { MethodLink } from "@/components/method-link"
-import { PageHeader } from "@/components/page-header"
+import { AnalysisHeader, AnalysisLoading } from "@/components/analysis-loading"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useBacktest } from "@/hooks/useBacktest"
 import { useExploreGames, type DrillSignal } from "@/hooks/useExploreGames"
@@ -629,31 +628,6 @@ function HeadlineDotPlot({
   )
 }
 
-// ─── Skeleton ─────────────────────────────────────────────────────
-
-function AnalysisSkeleton() {
-  return (
-    <div className="flex flex-col gap-12">
-      <div style={termCardStyle}>
-        <Skeleton className="h-12 w-32 bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)" }} />
-        <Skeleton className="mt-2 h-3 w-52 bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)" }} />
-      </div>
-      <div style={termCardStyle}>
-        <Skeleton className="mb-1 h-3 w-48 bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)" }} />
-        <Skeleton className="h-64 w-full bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)" }} />
-      </div>
-      <div style={termCardStyle}>
-        <Skeleton className="mb-2 h-3 w-40 bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)" }} />
-        <Skeleton className="h-10 w-24 bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)" }} />
-      </div>
-      <div style={termCardStyle}>
-        <Skeleton className="mb-1 h-3 w-48 bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)" }} />
-        <Skeleton className="h-64 w-full bg-[var(--term-surface-2)]" style={{ borderRadius: "var(--term-radius)" }} />
-      </div>
-    </div>
-  )
-}
-
 // ─── Explore Games constants ───────────────────────────────────────
 
 const GAP_OPTIONS: { label: string; value: GapRangeKey | "" }[] = [
@@ -1001,7 +975,7 @@ export function AnalysisContent({ asOf }: { asOf?: DataAsOf | null }) {
     []
   )
 
-  if (loading) return <AnalysisSkeleton />
+  if (loading) return <AnalysisLoading asOf={asOf} />
 
   // Every claim this page makes, decided in one place and tested there. A null means the
   // payload arrived without a baseline or without a counted game, which is not a thinner
@@ -1010,7 +984,10 @@ export function AnalysisContent({ asOf }: { asOf?: DataAsOf | null }) {
 
   if (error || !data || !claims) {
     return (
-      <MessageCard tone="error" title="FAILED TO LOAD ANALYSIS" body={error ?? "UNKNOWN ERROR"} />
+      <div className="flex flex-col gap-12">
+        <AnalysisHeader asOf={asOf} />
+        <MessageCard tone="error" title="FAILED TO LOAD ANALYSIS" body={error ?? "UNKNOWN ERROR"} />
+      </div>
     )
   }
 
@@ -1038,16 +1015,7 @@ export function AnalysisContent({ asOf }: { asOf?: DataAsOf | null }) {
 
   return (
     <div className="flex flex-col gap-12">
-      {/* Inside the loaded branch, so the heading arrives with the data it describes. */}
-      <header className="page-intro"><PageHeader
-        eyebrow="HISTORICAL BACKTEST · WIN RATE"
-        title="Model Results"
-        description={claims.headerDescription}
-        // Read on the server, not from the backtest response: the same query that keys the
-        // held backtest, so the date shown and the population measured cannot diverge.
-        asOf={asOf}
-      />
-      <MethodLink surfaceHref="/analysis" /></header>
+      <AnalysisHeader description={claims.headerDescription} asOf={asOf} />
       <div className="flex flex-col gap-2">
         <p className="text-[15px] text-[var(--term-text-muted)]">On this page</p>
         <nav aria-label="Model Results sections" className="flex flex-wrap gap-x-6 gap-y-2 text-[15px]">

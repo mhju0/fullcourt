@@ -1,3 +1,4 @@
+import { isHeldGame, isSettledGame } from "@/lib/game-status";
 /**
  * Season Report — one season, reduced from its own games.
  *
@@ -416,6 +417,7 @@ export function buildSeasonReport(
   let latestFinalDate: string | null = null;
 
   for (const row of rows) {
+    if (isHeldGame(row.status)) continue;
     // The stamp, before every filter below it. A max rather than "the last row wins": the
     // query orders by date, but a stamp that silently depends on caller ordering is a stamp
     // that goes wrong the day someone reorders the read. ISO dates compare lexically.
@@ -571,7 +573,7 @@ export function buildSeasonReport(
     basis,
     scheduledGames: rows.length,
     latestFinalDate,
-    seasonComplete: rows.length > 0 && rows.every((row) => row.status === "final"),
+    seasonComplete: rows.length > 0 && rows.every((row) => isSettledGame(row.status)),
     completedGames,
     homeRate: {
       games: homeGames,

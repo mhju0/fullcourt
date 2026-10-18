@@ -33,9 +33,13 @@ because the calendar changed. A valid explicit season remains authoritative, inc
 empty result; a failed publication lookup remains an error. See [season rollover](SEASON_ROLLOVER.md).
 
 Games and upcoming-game endpoints are read fresh instead of from a long-lived edge snapshot, so an
-authoritative fetch can show a stored final score. No in-game score is stored; a game's `status` is
-`scheduled` until it is `final`. Heavy domain reads also use the stamped server cache, including coalesced
-in-flight requests and absolute loader-start maximum ages. The default upcoming response
+authoritative fetch can show a stored final score. No in-game score is stored. A game normally
+moves from `scheduled` to `final`; explicit `postponed` and `cancelled` values suppress clock-based
+LIVE/PENDING and scores. Legacy `live` remains readable. Unknown feed states do not reopen holds.
+Upcoming picks require scheduled pre-tip games and a complete fatigue pair. Heavy domain reads also use the stamped server cache, including coalesced
+in-flight requests and absolute loader-start maximum ages. Season stamps include fixture lifecycle
+and derived-fatigue content so holds, missing pairs and recovery cannot reuse the old origin cache.
+The default upcoming response
 retains its date ordering; `limit` selects strongest absolute rest gaps after tip filtering,
 with date and game ID ties. Each candidate includes nullable `tipOffUtc` for client clock filtering.
 Current/upcoming origin max age is 300 seconds, historical 3,600 seconds. CDN policies add

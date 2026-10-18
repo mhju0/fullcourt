@@ -67,21 +67,14 @@ function RecentResultsList({
             // The opponent as it was branded on that date, matching the modal header.
             const opponent = getTeamBranding(g.opponentAbbreviation, seasonLabelForDateKey(g.date)).abbreviation
             return (
-            <li
-              key={g.gameId}
-              role="button"
-              tabIndex={0}
+            <li key={g.gameId}>
+              <button
+              type="button"
               onClick={() => onGameClick(g.gameId)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") {
-                  e.preventDefault()
-                  onGameClick(g.gameId)
-                }
-              }}
               // Bg tint alone read as "highlighted" rather than "clickable". The 2px inset
               // accent bar is the same left-accent language SeriesCard uses for state, and
               // `inset` avoids the layout shift a border-left would cause on hover.
-              className="mono flex cursor-pointer flex-wrap items-center justify-between gap-x-2 px-2 py-1 transition-[box-shadow,transform,background-color] duration-200 hover:translate-x-0.5 hover:bg-[var(--term-surface-2)] hover:shadow-[inset_2px_0_0_var(--term-blue)] focus-visible:bg-[var(--term-surface-2)] focus-visible:shadow-[inset_2px_0_0_var(--term-blue)] motion-reduce:transition-none motion-reduce:hover:translate-x-0"
+              className="mono flex min-h-11 w-full cursor-pointer flex-wrap items-center justify-between gap-x-2 px-2 py-1 transition-[box-shadow,transform,background-color] duration-200 hover:translate-x-0.5 hover:bg-[var(--term-surface-2)] hover:shadow-[inset_2px_0_0_var(--term-blue)] focus-visible:bg-[var(--term-surface-2)] focus-visible:shadow-[inset_2px_0_0_var(--term-blue)] motion-reduce:transition-none motion-reduce:hover:translate-x-0"
               style={{ fontSize: 12, color: "var(--term-text)", borderRadius: "var(--term-radius-sm)" }}
               aria-label={`View game details: ${format(parseISO(g.date), "MMM d")} vs ${opponent}`}
             >
@@ -96,6 +89,7 @@ function RecentResultsList({
                 </span>{" "}
                 {g.teamScore}–{g.opponentScore}
               </span>
+              </button>
             </li>
             )
           })}
@@ -350,7 +344,7 @@ function ExploreGameDetailModalContent({
                 type="button"
                 variant="ghost"
                 size="sm"
-                className="h-7 gap-1 rounded-full px-2 text-xs text-[var(--term-text-muted)] hover:text-[var(--term-text)]"
+                className="min-h-11 gap-1 rounded-full px-2 text-xs text-[var(--term-text-muted)] hover:text-[var(--term-text)]"
                 onClick={goBack}
                 aria-label="Back to previous game"
               >
@@ -370,7 +364,7 @@ function ExploreGameDetailModalContent({
             type="button"
             variant="ghost"
             size="icon"
-            className="size-8 shrink-0 rounded-full"
+            className="size-11 shrink-0 rounded-full"
             onClick={() => onOpenChange(false)}
             aria-label="Close dialog"
           >

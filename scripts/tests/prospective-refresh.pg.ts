@@ -254,11 +254,11 @@ try {
   await first`update games set tip_off_utc=clock_timestamp()+interval '1 hour' where id=-2`;
   await first`insert into games(id,external_id,date,season,home_team_id,away_team_id,status,tip_off_utc) values
     (-3,'integrity-later',${adjacentEasternDateKey(today,1)},${season},1,2,'scheduled',clock_timestamp()+interval '25 hours')`;
-  assert.deepEqual(await selectRecoveryGameIds(dbA,today,season),[-2]);
+  assert.deepEqual(await selectRecoveryGameIds(dbA,today,season),[-3,-2]);
   await first`update games set status='scheduled' where id=-1`;
-  assert.deepEqual(await selectRecoveryGameIds(dbA,today,season),[]);
+  assert.deepEqual(await selectRecoveryGameIds(dbA,today,season),[-3]);
   await first`update games set status='final',date=${adjacentEasternDateKey(today,-31)} where id=-1`;
-  assert.deepEqual(await selectRecoveryGameIds(dbA,today,season),[]);
+  assert.deepEqual(await selectRecoveryGameIds(dbA,today,season),[-3]);
   pass("independent recovery chooses current next game, requires stored FINAL within model window");
 
   await first.begin(async tx => {
@@ -295,8 +295,8 @@ try {
   pass("actual run-daily CLI uses prospective writer and reports unknown-tip skips");
 
   const scoreFeed = (state: "pre" | "post", homeScore = "120", awayScore = "117") => ({events:[{
-    id:"integrity-event",competitions:[{
-      status:{type:{state,completed:state==="post"}},
+    id:"integrity-event",date:`${today}T18:00:00-04:00`,competitions:[{
+      status:{type:{name:state === "post" ? "STATUS_FINAL" : "STATUS_SCHEDULED",state,completed:state==="post"}},
       competitors:[
         {homeAway:"home",score:homeScore,team:{abbreviation:"BOS"},linescores:Array.from({length:5},()=>({value:20}))},
         {homeAway:"away",score:awayScore,team:{abbreviation:"BKN"},linescores:Array.from({length:5},()=>({value:20}))},

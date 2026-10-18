@@ -1,3 +1,4 @@
+import { isHeldGame, isSettledGame } from "@/lib/game-status";
 /**
  * FullCourt — Schedule Disparity
  *
@@ -426,6 +427,7 @@ export function seasonRankability(games: readonly DisparityGameRow[]): {
 } {
   const played = new Map<number, number>();
   for (const game of games) {
+    if (isHeldGame(game.status)) continue;
     played.set(game.homeTeamId, (played.get(game.homeTeamId) ?? 0) + 1);
     played.set(game.awayTeamId, (played.get(game.awayTeamId) ?? 0) + 1);
   }
@@ -448,6 +450,8 @@ export function computeScheduleDisparity(
   season: string,
   games: DisparityGameRow[]
 ): ScheduleDisparityResult {
+  const provisional = games.some(g => !isSettledGame(g.status));
+  games = games.filter(g => !isHeldGame(g.status));
   const byTeam = gamesByTeam(games);
   const restByTeam = new Map<number, Map<DisparityGameRow, number>>();
   const denseByTeam = new Map<number, Map<DisparityGameRow, { threeInFour: boolean; fourInSix: boolean }>>();
@@ -636,7 +640,7 @@ export function computeScheduleDisparity(
 
   return {
     season,
-    provisional: games.some((g) => g.status !== "final"),
+    provisional,
     latestFinalDate,
     scheduledGames: games.length,
     gamesPerTeamMin: scheduledPerTeam.length ? Math.min(...scheduledPerTeam) : 0,

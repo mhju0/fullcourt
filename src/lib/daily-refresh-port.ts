@@ -164,10 +164,12 @@ export async function selectRecoveryGameIds(appDb: AppDb, today: string, season:
       where g.season = ${season} and g.status = 'scheduled' and g.tip_off_utc > clock_timestamp()
     ), candidates as (
       select distinct n.id, n.tip_off_utc from next_games n
-      where n.position = 1 and n.date in (${today}::date, ${tomorrow}::date)
+      where (not exists(select 1 from fatigue_scores f where f.game_id = n.id and f.team_id = n.home_team_id)
+        or not exists(select 1 from fatigue_scores f where f.game_id = n.id and f.team_id = n.away_team_id))
+        or (n.position = 1 and n.date in (${today}::date, ${tomorrow}::date)
       and exists(select 1 from games p where p.status = 'final' and p.date < n.date
         and p.date >= n.date - ${FATIGUE_RECENT_LOOKBACK_DAYS}::int
-        and (p.home_team_id = n.team_id or p.away_team_id = n.team_id))
+        and (p.home_team_id = n.team_id or p.away_team_id = n.team_id)))
     )
     select c.id from candidates c left join fatigue_scores f on f.game_id = c.id
     group by c.id, c.tip_off_utc order by min(f.computed_at) nulls first, c.tip_off_utc, c.id

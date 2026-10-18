@@ -157,6 +157,7 @@ jobs:
         run: |
           pnpm exec tsx scripts/tests/prospective-refresh.pg.ts
           pnpm exec tsx scripts/tests/daily-freshness.pg.ts
+          pnpm exec tsx scripts/tests/game-status.pg.ts
 
   verify:
     needs: [checks, browser, postgres]

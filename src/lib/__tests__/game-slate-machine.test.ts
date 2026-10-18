@@ -39,6 +39,7 @@ function ready(overrides: Partial<SlateState> = {}): SlateState {
   return base({
     status: "slateReady",
     days: DAYS,
+    daysStatus: "ready",
     selectedDate: "2024-12-25",
     games: [game(1)],
     ...overrides,
@@ -140,7 +141,7 @@ describe("SLATE_RESOLVED / SLATE_REJECTED — stale responses are dropped", () =
 
 describe("DAYS_RESOLVED / DAYS_REJECTED", () => {
   it("picks today when today has games", () => {
-    const next = slateReducer(base(), { type: "DAYS_RESOLVED", days: DAYS });
+    const next = slateReducer(base(), { type: "DAYS_RESOLVED", season: "2024-25", generation: 0, days: DAYS });
     expect(next.selectedDate).toBe("2024-12-25");
     expect(next.status).toBe("loadingSlate");
     expect(slateMonth(next)).toBe(12);
@@ -148,14 +149,14 @@ describe("DAYS_RESOLVED / DAYS_REJECTED", () => {
 
   it("picks the nearest day when today has none", () => {
     const next = slateReducer(base({ todayKey: "2024-12-28" }), {
-      type: "DAYS_RESOLVED",
+      type: "DAYS_RESOLVED", season: "2024-25", generation: 0,
       days: DAYS,
     });
     expect(next.selectedDate).toBe("2024-12-31");
   });
 
   it("reports a season with no games rather than selecting nothing silently", () => {
-    const next = slateReducer(base(), { type: "DAYS_RESOLVED", days: [] });
+    const next = slateReducer(base(), { type: "DAYS_RESOLVED", season: "2024-25", generation: 0, days: [] });
     expect(next.status).toBe("noDays");
     expect(next.selectedDate).toBeNull();
   });
@@ -164,7 +165,7 @@ describe("DAYS_RESOLVED / DAYS_REJECTED", () => {
     // The EDGES AHEAD strip's deep jump: DATE_SELECTED lands before the season's day
     // list resolves. The day list must not steamroll the user's position.
     const state = base({ status: "loadingSlate", selectedDate: "2024-12-31" });
-    const next = slateReducer(state, { type: "DAYS_RESOLVED", days: DAYS });
+    const next = slateReducer(state, { type: "DAYS_RESOLVED", season: "2024-25", generation: 0, days: DAYS });
     expect(next.selectedDate).toBe("2024-12-31");
     expect(next.status).toBe("loadingSlate");
     expect(next.days).toBe(DAYS);
@@ -172,13 +173,13 @@ describe("DAYS_RESOLVED / DAYS_REJECTED", () => {
 
   it("preserves an explicitly selected no-game day", () => {
     const state = base({ status: "loadingSlate", selectedDate: "2024-12-24" });
-    const next = slateReducer(state, { type: "DAYS_RESOLVED", days: DAYS });
+    const next = slateReducer(state, { type: "DAYS_RESOLVED", season: "2024-25", generation: 0, days: DAYS });
     expect(next.selectedDate).toBe("2024-12-24");
   });
 
   it("surfaces the failure message and clears the day list", () => {
     const next = slateReducer(base({ days: DAYS }), {
-      type: "DAYS_REJECTED",
+      type: "DAYS_REJECTED", season: "2024-25", generation: 0,
       message: "Failed to load dates",
     });
     expect(next.status).toBe("daysError");
@@ -273,15 +274,17 @@ describe("calendarView is total — the region can never render nothing", () => 
   // errorGames null and selectedDateKey null, so every branch was false and the
   // section rendered an empty body under its own header. It needed an
   // `errorGames ?? errorDates` patch. Here, every status maps to a rendering.
-  it("maps every status to a kind", () => {
+  it("uses the calendar lifecycle independently of every matchup status", () => {
     for (const status of ALL) {
-      const view = calendarView(ready({ status, message: "x" }));
-      expect(["loading", "error", "empty", "days"]).toContain(view.kind);
+      expect(calendarView(ready({ status }))).toEqual({ kind: "days" });
+      expect(calendarView(ready({ status, daysStatus: "loading" }))).toEqual({ kind: "loading" });
+      expect(calendarView(ready({ status, daysStatus: "error", daysMessage: "Dates unavailable" })))
+        .toEqual({ kind: "error", message: "Dates unavailable" });
     }
   });
 
   it("always carries a message when it reports an error", () => {
-    const view = calendarView(base({ status: "daysError", message: null }));
+    const view = calendarView(base({ status: "daysError", daysStatus: "error", daysMessage: null }));
     expect(view.kind).toBe("error");
     if (view.kind === "error") expect(view.message.length).toBeGreaterThan(0);
   });
@@ -301,7 +304,7 @@ describe("LOCATION_RESTORED", () => {
 
   it("restores another season and preserves an empty date through its calendar response", () => {
     const state = slateReducer(ready(), { type: "LOCATION_RESTORED", season: "2023-24", date: "2023-12-24" });
-    const next = slateReducer(state, { type: "DAYS_RESOLVED", days: [] });
+    const next = slateReducer(state, { type: "DAYS_RESOLVED", season: state.season, generation: state.daysGeneration, days: [] });
     expect(next.season).toBe("2023-24");
     expect(next.selectedDate).toBe("2023-12-24");
     expect(next.status).toBe("loadingSlate");
@@ -310,11 +313,12 @@ describe("LOCATION_RESTORED", () => {
 
 describe("RETRY_REQUESTED — a failed load can be asked for again", () => {
   it("returns a failed day list to loading and asks for a new fetch", () => {
-    const failed = base({ status: "daysError", message: "boom" });
+    const failed = base({ status: "daysError", daysStatus: "error", daysMessage: "boom", message: "boom" });
     const next = slateReducer(failed, { type: "RETRY_REQUESTED" });
     expect(next.status).toBe("loadingDays");
     expect(next.message).toBeNull();
-    expect(next.attempt).toBe(failed.attempt + 1);
+    expect(next.daysGeneration).toBe(failed.daysGeneration + 1);
+    expect(next.attempt).toBe(failed.attempt);
   });
 
   it("returns a failed slate to loading on the same date", () => {
@@ -394,5 +398,152 @@ describe("the phone week strip and month grid", () => {
   it("a week step does nothing before a date exists", () => {
     const state = base();
     expect(slateReducer(state, { type: "WEEK_SHIFTED", delta: 1 })).toBe(state);
+  });
+});
+
+
+describe("calendar readiness during an explicit URL load", () => {
+  it("keeps dates loading when the selected slate resolves first", () => {
+    const restored = slateReducer(base(), {
+      type: "LOCATION_RESTORED", season: "2024-25", date: "2024-12-25",
+    });
+    const loaded = slateReducer(restored, {
+      type: "SLATE_RESOLVED", date: "2024-12-25", games: [game(1)], generation: restored.generation,
+    });
+    expect(loaded.status).toBe("slateReady");
+    expect(calendarView(loaded)).toEqual({ kind: "loading" });
+    expect(weekDays(loaded)).toEqual([]);
+    expect(monthCalendar(loaded).days).toEqual([]);
+  });
+
+  it("keeps dates loading when the explicitly selected day has no games", () => {
+    const restored = slateReducer(base(), {
+      type: "LOCATION_RESTORED", season: "2024-25", date: "2024-12-24",
+    });
+    const loaded = slateReducer(restored, {
+      type: "SLATE_RESOLVED", date: "2024-12-24", games: [], generation: restored.generation,
+    });
+    expect(loaded.status).toBe("slateEmpty");
+    expect(calendarView(loaded)).toEqual({ kind: "loading" });
+  });
+});
+
+
+describe("independent calendar request lifecycle", () => {
+  const restore = (state: SlateState, season = "2024-25", date: string | null = "2024-12-25") =>
+    slateReducer(state, { type: "LOCATION_RESTORED", season, date });
+  const dates = (state: SlateState, values = DAYS) => slateReducer(state, {
+    type: "DAYS_RESOLVED", season: state.season, generation: state.daysGeneration, days: values,
+  });
+  const failDates = (state: SlateState) => slateReducer(state, {
+    type: "DAYS_REJECTED", season: state.season, generation: state.daysGeneration, message: "Dates unavailable",
+  });
+  const loadedSlate = (state: SlateState, games = [game(1)]) => slateReducer(state, {
+    type: "SLATE_RESOLVED", date: state.selectedDate!, generation: state.generation, games, checkedAt: 100,
+  });
+
+  it("accepts late dates without changing the loaded slate or its refresh identity", () => {
+    const loaded = loadedSlate(restore(base()));
+    const next = dates(loaded);
+    expect(calendarView(next).kind).toBe("days");
+    expect(next.selectedDate).toBe(loaded.selectedDate);
+    expect(next.games).toBe(loaded.games);
+    expect(next.generation).toBe(loaded.generation);
+    expect(next.checkedAt).toBe(100);
+    expect(weekDays(next).find(day => day.date === "2024-12-25")?.gameCount).toBe(11);
+  });
+
+  it("keeps a same-season pending calendar through Back/Forward date changes", () => {
+    const first = restore(base());
+    const next = restore(first, first.season, "2024-12-24");
+    expect(next.daysGeneration).toBe(first.daysGeneration);
+    expect(calendarView(next).kind).toBe("loading");
+    expect(dates(next).selectedDate).toBe("2024-12-24");
+    expect(dates(next).daysStatus).toBe("ready");
+  });
+
+  it("preserves a resolved empty calendar when restoring another no-game date", () => {
+    const empty = dates(loadedSlate(restore(base()), []), []);
+    const restored = restore(empty, empty.season, "2024-12-24");
+    expect(restored.daysStatus).toBe("ready");
+    expect(calendarView(restored).kind).toBe("empty");
+    expect(weekDays(restored)).toHaveLength(7);
+    expect(weekDays(restored).every(day => day.gameCount === 0)).toBe(true);
+  });
+
+  it("restores the season default using its resolved calendar without a new dates request", () => {
+    const selected = ready({ selectedDate: "2025-01-15", generation: 3 });
+    const restored = restore(selected, selected.season, null);
+    expect(restored.selectedDate).toBe("2024-12-25");
+    expect(restored.daysGeneration).toBe(selected.daysGeneration);
+    expect(restored.daysStatus).toBe("ready");
+    expect(restored.status).toBe("loadingSlate");
+  });
+
+  it("preserves games and date when calendar fails, then retries only the dates", () => {
+    const loaded = loadedSlate(restore(base()));
+    const failed = failDates(loaded);
+    expect(failed.status).toBe("slateReady");
+    expect(failed.selectedDate).toBe(loaded.selectedDate);
+    expect(failed.games).toBe(loaded.games);
+    expect(calendarView(failed)).toEqual({ kind: "error", message: "Dates unavailable" });
+    expect(weekDays(failed)).toEqual([]);
+    const retry = slateReducer(failed, { type: "RETRY_REQUESTED" });
+    expect(calendarView(retry).kind).toBe("loading");
+    expect(retry.daysGeneration).toBe(failed.daysGeneration + 1);
+    expect(retry.generation).toBe(failed.generation);
+    expect(retry.attempt).toBe(failed.attempt);
+    expect(retry.games).toBe(loaded.games);
+    expect(retry.checkedAt).toBe(100);
+    expect(dates(retry).status).toBe("slateReady");
+  });
+
+  it("does not hide calendar failure when the slate or a background refresh resolves later", () => {
+    const failed = failDates(restore(base()));
+    const loaded = loadedSlate(failed);
+    const refreshing = slateReducer(loaded, { type: "SLATE_REFRESH_STARTED", date: loaded.selectedDate!, generation: loaded.generation });
+    expect(refreshing.refreshStatus).toBe("refreshing");
+    const refreshed = loadedSlate(refreshing);
+    expect(refreshed.status).toBe("slateReady");
+    expect(calendarView(refreshed).kind).toBe("error");
+  });
+
+  it("retries a failed slate without refetching or hiding a ready calendar", () => {
+    const failed = slateReducer(ready(), { type: "SLATE_REJECTED", date: "2024-12-25", generation: 0, message: "Slate unavailable" });
+    const retry = slateReducer(failed, { type: "RETRY_REQUESTED" });
+    expect(retry.status).toBe("loadingSlate");
+    expect(retry.generation).toBe(failed.generation + 1);
+    expect(retry.daysGeneration).toBe(failed.daysGeneration);
+    expect(calendarView(retry).kind).toBe("days");
+  });
+
+  it("ignores late calendar success and failure after switching seasons A → B → A", () => {
+    const first = restore(base());
+    const other = restore(first, "2023-24", "2023-12-25");
+    const current = restore(other);
+    expect(current.daysGeneration).toBeGreaterThan(first.daysGeneration);
+    for (const old of [first, other]) {
+      expect(slateReducer(current, { type: "DAYS_RESOLVED", season: old.season, generation: old.daysGeneration, days: DAYS })).toBe(current);
+      expect(slateReducer(current, { type: "DAYS_REJECTED", season: old.season, generation: old.daysGeneration, message: "Old failure" })).toBe(current);
+    }
+    expect(calendarView(current).kind).toBe("loading");
+    expect(calendarView(dates(current)).kind).toBe("days");
+  });
+
+  it("ignores the previous dates attempt after retry, even in the same season", () => {
+    const first = restore(base());
+    const retry = slateReducer(failDates(first), { type: "RETRY_REQUESTED" });
+    expect(slateReducer(retry, { type: "DAYS_RESOLVED", season: first.season, generation: first.daysGeneration, days: [] })).toBe(retry);
+    expect(slateReducer(retry, { type: "DAYS_REJECTED", season: first.season, generation: first.daysGeneration, message: "Old failure" })).toBe(retry);
+  });
+
+  it("retries both failed resources without conflating their identities", () => {
+    const failed = slateReducer(failDates(restore(base())), { type: "SLATE_REJECTED", date: "2024-12-25", message: "Slate unavailable" });
+    const retry = slateReducer(failed, { type: "RETRY_REQUESTED" });
+    expect(retry.status).toBe("loadingSlate");
+    expect(retry.daysStatus).toBe("loading");
+    expect(retry.generation).toBe(failed.generation + 1);
+    expect(retry.daysGeneration).toBe(failed.daysGeneration + 1);
+    expect(calendarView(dates(loadedSlate(retry))).kind).toBe("days");
   });
 });

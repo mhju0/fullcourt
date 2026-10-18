@@ -420,3 +420,31 @@ D-100.
 - `docs/adr/0003-fatigue-inputs-limited-to-espn-era.md` — why the fit floor is 2002.
 - `docs/adr/0004-season-exclusions-belong-to-modules-not-ingest.md` — the per-module season rule.
 - `docs/audit/travel-model-accuracy.md` — §4's open ablation question, now answered.
+
+
+## Addendum — 2026-10-18: current ablation snapshot and reconstruction fidelity
+
+The original table above records the August measurement. Subsequent score/date corrections,
+neutral-site exclusion and the owner-approved altitude-carryover removal changed the population
+and score assembly. It is historical evidence, not the current published snapshot.
+
+An offline recheck of the 2026-10-17 feature export (SHA-256
+`bd37be242c715d2b3f822b7566e441ebbac5ad23a0ad1f6ebd560cb642241e89`) agrees with
+the method page: 47,112 eligible games, 27,420 calls and 16,778 wins (61.19%). Travel
+finds 5,990 calls that are absent when it is neutralised; those include 3,542 wins (59.13%).
+Removing travel also adds 1,723 different calls with 1,016 wins: the resulting 23,153 calls
+win 61.56%, a 0.37 percentage-point increase. These are descriptions of different selected
+samples, not independent evidence of predictive skill or causal effect.
+
+The original phrase "5,994 winning predictions" meant calls selected, not that every call won.
+The current exact loss in wins above a coin flip is 392.5; the existing producer's integer
+format prints 392 using ties-to-even. That display is retained rather than silently changing
+the published table. Venue-baseline interpretation and the evaluation protocol remain unchanged.
+
+The check also found pandas ties-to-even rounding in the reconstruction, unlike JavaScript
+Math.round. It differed by one cent on 77 of 94,224 eligible team rows. JavaScript-equivalent
+rounding reconstructs every exported score exactly; an independent Node calculation agrees.
+Every original and corrected call mask and every published ablation table row are identical.
+The offline script now rejects any score mismatch before writing a report, instead of merely
+recording the mismatch count. A deliberately stale score was rejected with the previous report
+preserved. No database recompute, coefficient change or published figure edit was performed.

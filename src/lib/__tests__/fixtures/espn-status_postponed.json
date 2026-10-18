@@ -1,0 +1,42 @@
+{
+  "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20250111",
+  "retrieved": "2026-10-18",
+  "events": [
+    {
+      "id": "401705098",
+      "date": "2025-01-11T20:00Z",
+      "competitions": [
+        {
+          "date": "2025-01-11T20:00Z",
+          "status": {
+            "type": {
+              "id": "6",
+              "name": "STATUS_POSTPONED",
+              "state": "post",
+              "completed": false,
+              "description": "Postponed",
+              "detail": "Postponed",
+              "shortDetail": "Postponed"
+            }
+          },
+          "competitors": [
+            {
+              "homeAway": "home",
+              "team": {
+                "abbreviation": "ATL"
+              },
+              "score": "0"
+            },
+            {
+              "homeAway": "away",
+              "team": {
+                "abbreviation": "HOU"
+              },
+              "score": "0"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

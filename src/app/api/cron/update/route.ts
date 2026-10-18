@@ -1,6 +1,7 @@
+import { writeGameStatus } from "@/lib/game-status-write";
 import { timingSafeEqual } from "node:crypto";
 import { NextResponse } from "next/server";
-import { eq, ne, and, inArray } from "drizzle-orm";
+import { eq, and, inArray, or, lte } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
 import { db } from "@/lib/db";
 import { games, teams } from "@/lib/db/schema";
@@ -43,11 +44,14 @@ export async function GET(request: Request) {
       homeAbbr: home.abbreviation, awayAbbr: away.abbreviation, status: games.status,
       homeScore: games.homeScore, awayScore: games.awayScore, overtimePeriods: games.overtimePeriods,
     }).from(games).innerJoin(home, eq(games.homeTeamId, home.id)).innerJoin(away, eq(games.awayTeamId, away.id))
-      .where(and(inArray(games.date, dateKeys), inArray(games.status, ["scheduled", "live"]))));
+      .where(or(
+        and(inArray(games.date, dateKeys), inArray(games.status, ["scheduled", "live", "postponed", "cancelled"])),
+        and(eq(games.season, defaultNbaSeason()), inArray(games.status, ["postponed", "cancelled"]), lte(games.date, today)),
+      )));
     checkedGames = pendingGames.length;
     const pending = new Map<string, typeof pendingGames>();
     for (const game of pendingGames) pending.set(game.date, [...(pending.get(game.date) ?? []), game]);
-    checkedDates = dateKeys.filter(date => pending.has(date));
+    checkedDates = [...pending.keys()].sort();
     const fetched = await Promise.allSettled(checkedDates.map(async date => {
       const remaining = deadlineMs - Date.now();
       if (remaining <= 0) throw new Error("score budget exhausted");
@@ -69,19 +73,15 @@ export async function GET(request: Request) {
         continue;
       }
       espnGamesAvailable += result.value.length;
-      const reconciled = reconcileScores(pending.get(date)!, result.value);
+      const reconciled = reconcileScores(pending.get(date)!, result.value, date);
       refusedDowngrades += reconciled.refusedDowngrades.length;
       for (const update of reconciled.updates) {
         if (Date.now() >= deadlineMs) { scoreDeferred++; continue; }
         try {
-          const written = await withCronDbDeadline(db, deadlineMs, tx => tx.update(games).set({ status: update.status, homeScore: update.homeScore, awayScore: update.awayScore,
-            ...(update.overtimePeriods !== null ? { overtimePeriods: update.overtimePeriods } : {}),
-          }).where(and(
-            eq(games.id, update.gameId),
-            update.status === "final" ? undefined : ne(games.status, "final"),
-          )).returning({ id: games.id }));
-          gamesUpdated += written.length;
-          if (update.status !== "final" && written.length === 0) refusedDowngrades++;
+          const result = await writeGameStatus(db, update, deadlineMs);
+          gamesUpdated += Number(result.written);
+          if (!result.written) refusedDowngrades++;
+
         } catch (error) {
           scoreFailures++;
           console.error("[cron/update] final write failed", update.gameId, error);

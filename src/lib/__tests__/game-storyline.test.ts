@@ -27,6 +27,7 @@ const restedFatigue = (overrides: Partial<FatigueInfo> = {}): FatigueInfo => ({
 });
 
 const game = (away: FatigueInfo | null, home: FatigueInfo | null) => ({
+  status: "scheduled",
   season: "2026-27",
   awayTeam: team("DEN", "Nuggets"),
   homeTeam: team("LAL", "Lakers"),
@@ -109,4 +110,9 @@ describe("buildGameStoryline", () => {
 
 it("says playing at altitude for tonight's venue", () => {
   expect(buildGameStoryline(game(restedFatigue({ altitudePenalty: true, altitudeArenaLabel: "Denver (altitude)" }), restedFatigue()))).toBe("Nuggets playing at altitude.");
+});
+
+it.each(["postponed", "cancelled"])("does not narrate opener or fatigue claims for %s", status => {
+  expect(buildGameStoryline({...game(null,null),status,seasonOpeners:{home:true,away:true}})).toBeNull();
+  expect(buildGameStoryline({...game(restedFatigue({isBackToBack:true}),restedFatigue()),status,seasonOpeners:{home:true,away:false}})).toBeNull();
 });

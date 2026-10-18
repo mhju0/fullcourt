@@ -98,7 +98,7 @@ export function useGameSlate(): GameSlate {
   }));
 
   const [state, dispatch] = useReducer(slateReducer, seed, initSlate);
-  const { season, selectedDate, attempt, generation } = state;
+  const { season, selectedDate, attempt, generation, daysGeneration } = state;
   const refreshRef = useRef<(() => void) | null>(null);
   const latestState = useRef(state);
   useEffect(() => { latestState.current = state; }, [state]);
@@ -148,17 +148,19 @@ export function useGameSlate(): GameSlate {
       controller.signal
     )
       .then((days) => {
-        if (!controller.signal.aborted) dispatch({ type: "DAYS_RESOLVED", days });
+        if (!controller.signal.aborted) dispatch({ type: "DAYS_RESOLVED", season, generation: daysGeneration, days });
       })
       .catch((err: unknown) => {
         if (controller.signal.aborted || isAbort(err)) return;
         dispatch({
           type: "DAYS_REJECTED",
+          season,
+          generation: daysGeneration,
           message: errMsg(err),
         });
       });
     return () => controller.abort();
-  }, [season, urlReady, attempt]);
+  }, [season, urlReady, daysGeneration]);
 
   useEffect(() => {
     if (!selectedDate) return;

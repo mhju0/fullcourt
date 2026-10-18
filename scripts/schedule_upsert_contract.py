@@ -17,7 +17,7 @@ class ScheduleUpsertPolicy:
 
 
 CDN_SCHEDULE_UPSERT_POLICY = ScheduleUpsertPolicy(
-    update_date=True,
+    update_date=False,
     preserve_final_status=True,
     preserve_existing_scores_when_missing=True,
     update_overtime_periods=False,
@@ -26,7 +26,7 @@ CDN_SCHEDULE_UPSERT_POLICY = ScheduleUpsertPolicy(
 
 STATS_SCHEDULE_UPSERT_POLICY = ScheduleUpsertPolicy(
     update_date=False,
-    preserve_final_status=False,
+    preserve_final_status=True,
     preserve_existing_scores_when_missing=False,
     update_overtime_periods=True,
     update_game_type=True,
@@ -37,33 +37,17 @@ def build_schedule_upsert_sql(policy: ScheduleUpsertPolicy) -> str:
     """Render the shared game insert with source-specific conflict assignments."""
     assignments: list[str] = []
     if policy.update_date:
-        assignments.append("date = EXCLUDED.date")
+        assignments.append("date = games.date")
 
-    if policy.preserve_existing_scores_when_missing:
-        assignments.extend(
-            [
-                "home_score = COALESCE(EXCLUDED.home_score, games.home_score)",
-                "away_score = COALESCE(EXCLUDED.away_score, games.away_score)",
-            ]
-        )
-    else:
-        assignments.extend(
-            [
-                "home_score = EXCLUDED.home_score",
-                "away_score = EXCLUDED.away_score",
-            ]
-        )
-
-    if policy.preserve_final_status:
-        assignments.append(
-            "status = CASE WHEN games.status = 'final' "
-            "THEN games.status ELSE EXCLUDED.status END"
-        )
-    else:
-        assignments.append("status = EXCLUDED.status")
+    final_guard = "(games.status = 'final' AND EXCLUDED.status <> 'final')" if policy.preserve_final_status else "FALSE"
+    protect = f"{final_guard} OR games.status IN ('postponed', 'cancelled')"
+    for column in ("home_score", "away_score"):
+        incoming = f"COALESCE(EXCLUDED.{column}, games.{column})" if policy.preserve_existing_scores_when_missing else f"EXCLUDED.{column}"
+        assignments.append(f"{column} = CASE WHEN {protect} THEN games.{column} ELSE {incoming} END")
+    assignments.append(f"status = CASE WHEN {protect} THEN games.status ELSE EXCLUDED.status END")
 
     if policy.update_overtime_periods:
-        assignments.append("overtime_periods = EXCLUDED.overtime_periods")
+        assignments.append(f"overtime_periods = CASE WHEN {protect} THEN games.overtime_periods ELSE EXCLUDED.overtime_periods END")
     if policy.update_game_type:
         assignments.append("game_type = EXCLUDED.game_type")
 
@@ -77,5 +61,6 @@ INSERT INTO games (
 )
 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
 ON CONFLICT (external_id) DO UPDATE SET
-    {conflict_updates};
+    {conflict_updates}
+WHERE games.date = EXCLUDED.date AND games.home_team_id = EXCLUDED.home_team_id AND games.away_team_id = EXCLUDED.away_team_id;
 """

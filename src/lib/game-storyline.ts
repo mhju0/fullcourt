@@ -1,3 +1,4 @@
+import { isHeldGame } from "@/lib/game-status";
 import { getTeamBranding } from "@/lib/team-history";
 import type { FatigueInfo, GameResponse, TeamInfo } from "@/types";
 
@@ -58,8 +59,9 @@ function teamName(team: TeamInfo, season: string): string {
 }
 
 export function buildGameStoryline(
-  game: Pick<GameResponse, "season" | "homeTeam" | "awayTeam" | "homeFatigue" | "awayFatigue" | "seasonOpeners">
+  game: Pick<GameResponse, "status" | "season" | "homeTeam" | "awayTeam" | "homeFatigue" | "awayFatigue" | "seasonOpeners">
 ): string | null {
+  if (isHeldGame(game.status)) return null;
   const away = teamClauses(game.awayFatigue);
   const home = teamClauses(game.homeFatigue);
   const awayName = teamName(game.awayTeam, game.season);

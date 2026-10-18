@@ -1,0 +1,3331 @@
+{
+  "season": "2025-26",
+  "started_at": "20261018T065424522741Z",
+  "index_url": "https://official.nba.com/2025-26-nba-officiating-last-two-minute-reports/",
+  "index_sha256": "b5594f1c7f9177da7d38e21107920b194c8fb1a7c76a607aaf056804557032aa",
+  "indexed_reports": 415,
+  "reports": [
+    {
+      "game_id": "0022500001",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500001",
+      "data_url": "https://official.nba.com/l2m/json/0022500001.json",
+      "sha256": "3250118c3451676a97618e4063015506b302faf1c1c237bcdea809f2c58f2b3d",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:25.153373+00:00"
+    },
+    {
+      "game_id": "0022500005",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500005",
+      "data_url": "https://official.nba.com/l2m/json/0022500005.json",
+      "sha256": "9bc7e31c35684a7f9bdca4938818abaaf60842343a22f4812fa354d74b19b196",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:25.395346+00:00"
+    },
+    {
+      "game_id": "0022500006",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500006",
+      "data_url": "https://official.nba.com/l2m/json/0022500006.json",
+      "sha256": "1e6281beecd1a8b68ff806ca5a05e5a224d05485b4b811e3756c3557702d2b66",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:25.398587+00:00"
+    },
+    {
+      "game_id": "0022500009",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500009",
+      "data_url": "https://official.nba.com/l2m/json/0022500009.json",
+      "sha256": "f3a8741b6d4b2fa7c2658ae735925cd2c26cf35e8e65758b9246b8d1ce5c4ced",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:25.466772+00:00"
+    },
+    {
+      "game_id": "0022500013",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500013",
+      "data_url": "https://official.nba.com/l2m/json/0022500013.json",
+      "sha256": "c8559ea180e803c899decf6876285213a4ffef38dc7134e30ccbe24298a8f64a",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:25.718063+00:00"
+    },
+    {
+      "game_id": "0022500014",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500014",
+      "data_url": "https://official.nba.com/l2m/json/0022500014.json",
+      "sha256": "5bea2e5013f18d452f3f10c7d8e1ee5da1b076026ff73c4d573119a7d984a01a",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:25.828207+00:00"
+    },
+    {
+      "game_id": "0022500017",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500017",
+      "data_url": "https://official.nba.com/l2m/json/0022500017.json",
+      "sha256": "6c0c6b8b8c000b93104003e299a575057d51cbbde84feac8553c1a320f84f225",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:25.912552+00:00"
+    },
+    {
+      "game_id": "0022500021",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500021",
+      "data_url": "https://official.nba.com/l2m/json/0022500021.json",
+      "sha256": "0abd8495ab16a2f0c1588b72a1f35756f74741474cbfb6f7f73c66dd003e0a47",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:25.809153+00:00"
+    },
+    {
+      "game_id": "0022500026",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500026",
+      "data_url": "https://official.nba.com/l2m/json/0022500026.json",
+      "sha256": "5086ed1e5b92829eb161f98a64be6ccfb03bf02bfc67f93ac67839daa52397ea",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:26.184664+00:00"
+    },
+    {
+      "game_id": "0022500027",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500027",
+      "data_url": "https://official.nba.com/l2m/json/0022500027.json",
+      "sha256": "9ad55598a9f49e2da8aa8df49f4f3306df732eac6a41f3f75fae062207468dcb",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:26.173392+00:00"
+    },
+    {
+      "game_id": "0022500040",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500040",
+      "data_url": "https://official.nba.com/l2m/json/0022500040.json",
+      "sha256": "cf58434824481c3229cd78b9ec7290e5265b859e133b43db290d349a08ffb4b2",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:26.160950+00:00"
+    },
+    {
+      "game_id": "0022500043",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500043",
+      "data_url": "https://official.nba.com/l2m/json/0022500043.json",
+      "sha256": "8fe71a3ae401cc7cc21471bd3f1c413d7dc3ea0432e506d7a504c9578d817698",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:26.243252+00:00"
+    },
+    {
+      "game_id": "0022500046",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500046",
+      "data_url": "https://official.nba.com/l2m/json/0022500046.json",
+      "sha256": "e262314cc5eb0fd1c5571c9c3c11dfd45691467e9de41c9b7b5c39787d1ff0a9",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:26.783094+00:00"
+    },
+    {
+      "game_id": "0022500047",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500047",
+      "data_url": "https://official.nba.com/l2m/json/0022500047.json",
+      "sha256": "80dc801bb54df2fb03e6d98ea521aeca728b09ba9b72014aef8f4181b007fe58",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:26.482445+00:00"
+    },
+    {
+      "game_id": "0022500052",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500052",
+      "data_url": "https://official.nba.com/l2m/json/0022500052.json",
+      "sha256": "2e29f158e2d5768d1833d29d5ce77891b3a170f613dfae6541185bd3c3196757",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:26.656962+00:00"
+    },
+    {
+      "game_id": "0022500053",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500053",
+      "data_url": "https://official.nba.com/l2m/json/0022500053.json",
+      "sha256": "e2e650bd32bf9c98fe86720306c2be0481a5383cc6122f0d54f90bc2bce431fd",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:26.546657+00:00"
+    },
+    {
+      "game_id": "0022500054",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500054",
+      "data_url": "https://official.nba.com/l2m/json/0022500054.json",
+      "sha256": "aeddc2b0928cb336d18c0d7a959a8692c2af8dfd420787bd6ca6fa0ae2108a8c",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:26.875085+00:00"
+    },
+    {
+      "game_id": "0022500056",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500056",
+      "data_url": "https://official.nba.com/l2m/json/0022500056.json",
+      "sha256": "fb5d48d4e5b4cee7c18dc34545cc53014d0d6d944afa8761530ea75220e25d62",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:26.880939+00:00"
+    },
+    {
+      "game_id": "0022500060",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500060",
+      "data_url": "https://official.nba.com/l2m/json/0022500060.json",
+      "sha256": "093a34d80c589417c0eb45c7e73850f6c0ebdce10a6f2d0813afc4e1d3910cff",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:27.078520+00:00"
+    },
+    {
+      "game_id": "0022500062",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500062",
+      "data_url": "https://official.nba.com/l2m/json/0022500062.json",
+      "sha256": "adecd7b388f8fc83b78cb92a2ac2557284ff3b047ff9b3974b93a2c9620b9cfd",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:27.159326+00:00"
+    },
+    {
+      "game_id": "0022500063",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500063",
+      "data_url": "https://official.nba.com/l2m/json/0022500063.json",
+      "sha256": "d1c67e55dd943e3d82caed888d480afae9eac39c37646de9f6115a57924f097a",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:27.263312+00:00"
+    },
+    {
+      "game_id": "0022500064",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500064",
+      "data_url": "https://official.nba.com/l2m/json/0022500064.json",
+      "sha256": "a25ef120f306a518e5cc5b27b77bf006d323940fb620c4a6f8c5b34ff15e7741",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:27.244837+00:00"
+    },
+    {
+      "game_id": "0022500065",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500065",
+      "data_url": "https://official.nba.com/l2m/json/0022500065.json",
+      "sha256": "b99aa22a36276e12732a7f6c7c5b3d4e3f6fa197da79e329458acbcd0d6488da",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:27.524795+00:00"
+    },
+    {
+      "game_id": "0022500066",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500066",
+      "data_url": "https://official.nba.com/l2m/json/0022500066.json",
+      "sha256": "76de23264a8beb55c7d48fc893bb443f2aa611a26040ec19f5b756e1ef3ed952",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:27.465234+00:00"
+    },
+    {
+      "game_id": "0022500069",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500069",
+      "data_url": "https://official.nba.com/l2m/json/0022500069.json",
+      "sha256": "198d3a4a52eeb92bcbe8a163734e4b8dfef83d6c1276ced896a8a2d3967465a9",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:27.552299+00:00"
+    },
+    {
+      "game_id": "0022500072",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500072",
+      "data_url": "https://official.nba.com/l2m/json/0022500072.json",
+      "sha256": "05a2e38621f9051202f18acb293ee5f197badead7ae807595bb7c7f4fa41f447",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:27.649016+00:00"
+    },
+    {
+      "game_id": "0022500075",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500075",
+      "data_url": "https://official.nba.com/l2m/json/0022500075.json",
+      "sha256": "8d02bc3ff5435ad799a0bca2ef21e9848113c9087a3ec3d67a6cfb8df8eb5905",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:27.782480+00:00"
+    },
+    {
+      "game_id": "0022500076",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500076",
+      "data_url": "https://official.nba.com/l2m/json/0022500076.json",
+      "sha256": "f45dfa9e9a0bb9f32ea5c8107104e30da8321f9051e177432bc86dd5a6f599b2",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:27.861032+00:00"
+    },
+    {
+      "game_id": "0022500079",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500079",
+      "data_url": "https://official.nba.com/l2m/json/0022500079.json",
+      "sha256": "35580fc624df4b5b23140a8af5740b4759797773174209d89c2cc84b3b2274ae",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:27.898193+00:00"
+    },
+    {
+      "game_id": "0022500081",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500081",
+      "data_url": "https://official.nba.com/l2m/json/0022500081.json",
+      "sha256": "26a7bdc3623520635ff7d6333cfdedc725eb61e1bef5549841c436eb339009aa",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:28.018572+00:00"
+    },
+    {
+      "game_id": "0022500083",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500083",
+      "data_url": "https://official.nba.com/l2m/json/0022500083.json",
+      "sha256": "aa15e578ceab31eff7077b6c809d5a9cab0edcf05aebf92282805a5f19312baa",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:28.151306+00:00"
+    },
+    {
+      "game_id": "0022500084",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500084",
+      "data_url": "https://official.nba.com/l2m/json/0022500084.json",
+      "sha256": "777a6d09583e1848d2bf0eafe4702158de5eb9276824e5410f1aa6747f8d8738",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:28.208181+00:00"
+    },
+    {
+      "game_id": "0022500085",
+      "report_url": "http://official.nba.com/l2m/L2MReport.html?gameId=0022500085",
+      "data_url": "https://official.nba.com/l2m/json/0022500085.json",
+      "sha256": "0a11d21075b50c948b1851e03c31193b9c5c99c90440d259c3790cc6ac9c15c7",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:28.231246+00:00"
+    },
+    {
+      "game_id": "0022500088",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500088",
+      "data_url": "https://official.nba.com/l2m/json/0022500088.json",
+      "sha256": "dcfebd92fc1372385699f22ab506ab77160fed9945b7321e1791903d5c049ff3",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:28.386984+00:00"
+    },
+    {
+      "game_id": "0022500089",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500089",
+      "data_url": "https://official.nba.com/l2m/json/0022500089.json",
+      "sha256": "269bb85169a516d84c3713cbe7e605c4c35dbf4579f900c78fec0dac171ec654",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:28.485693+00:00"
+    },
+    {
+      "game_id": "0022500090",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500090",
+      "data_url": "https://official.nba.com/l2m/json/0022500090.json",
+      "sha256": "bac1786f078559d06a8e9ebe2040a12ed49c76f8d6c08ac2cb7a53eaee48d913",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:28.729814+00:00"
+    },
+    {
+      "game_id": "0022500093",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500093",
+      "data_url": "https://official.nba.com/l2m/json/0022500093.json",
+      "sha256": "70484eafba9c0396c36185799c8fa66311ac739dd8b6c5161ddb5ec0343a583f",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:28.552130+00:00"
+    },
+    {
+      "game_id": "0022500095",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500095",
+      "data_url": "https://official.nba.com/l2m/json/0022500095.json",
+      "sha256": "2eb7893f7428594afc691eea234cb9dafcf3fe38f1037b540c7c1def5bffdd43",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:28.750298+00:00"
+    },
+    {
+      "game_id": "0022500098",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500098",
+      "data_url": "https://official.nba.com/l2m/json/0022500098.json",
+      "sha256": "c1b49c121385c383567b7c7795655591cae8ce0613edff12ce3d75952f0e0166",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:28.792553+00:00"
+    },
+    {
+      "game_id": "0022500102",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500102",
+      "data_url": "https://official.nba.com/l2m/json/0022500102.json",
+      "sha256": "ca5970910e2be23878e481aed4f1256a349c7763ab01c06dc6e49eca94d823c1",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:28.890743+00:00"
+    },
+    {
+      "game_id": "0022500105",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500105",
+      "data_url": "https://official.nba.com/l2m/json/0022500105.json",
+      "sha256": "daa4fa404980093fc784eb397b2262d1f813511ffcb6f051293a84345bbb3303",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:29.044564+00:00"
+    },
+    {
+      "game_id": "0022500107",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500107",
+      "data_url": "https://official.nba.com/l2m/json/0022500107.json",
+      "sha256": "57ccf42f1dc9111b5866134c05eb5b4bf0cd1ce89a0d52eebe46298d99c3bfca",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:29.181898+00:00"
+    },
+    {
+      "game_id": "0022500110",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500110",
+      "data_url": "https://official.nba.com/l2m/json/0022500110.json",
+      "sha256": "56e65cf0f4cd040ff645bc55c346dcde5e6f2a8e974784293f8954968d7a1e7f",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:29.186055+00:00"
+    },
+    {
+      "game_id": "0022500113",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500113",
+      "data_url": "https://official.nba.com/l2m/json/0022500113.json",
+      "sha256": "80cc23c617df8669017d3abe91ab9f3f1711c557b42c469b00d5a90dbd5ee48e",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:29.339827+00:00"
+    },
+    {
+      "game_id": "0022500115",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500115",
+      "data_url": "https://official.nba.com/l2m/json/0022500115.json",
+      "sha256": "7b3d9bc6618d0b3321dfcc095c597fa956b42abbfb4d0faf99216f9bd01d52d9",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:29.395936+00:00"
+    },
+    {
+      "game_id": "0022500119",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500119",
+      "data_url": "https://official.nba.com/l2m/json/0022500119.json",
+      "sha256": "bea65a1c717da7520ef62a2b81060f0e90a27f0d1848ec6b2a61f7422568cafa",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:29.541819+00:00"
+    },
+    {
+      "game_id": "0022500120",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500120",
+      "data_url": "https://official.nba.com/l2m/json/0022500120.json",
+      "sha256": "4b51173e525a4319645d5f2331f54cca1f07c298932341bb270ccca880981c94",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:29.530395+00:00"
+    },
+    {
+      "game_id": "0022500123",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500123",
+      "data_url": "https://official.nba.com/l2m/json/0022500123.json",
+      "sha256": "ef9661b81a5a4fb033fb3e785c7778faf6a480ebf41b3230079e9f4d2188cf06",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:29.685364+00:00"
+    },
+    {
+      "game_id": "0022500126",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500126",
+      "data_url": "https://official.nba.com/l2m/json/0022500126.json",
+      "sha256": "c44975ad60d9dbf26244d747482ae678b2e9511b02cd38429fe62e4728f79c97",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:29.727504+00:00"
+    },
+    {
+      "game_id": "0022500130",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500130",
+      "data_url": "https://official.nba.com/l2m/json/0022500130.json",
+      "sha256": "37d185aaa5734817fe195a97eeea3bae029c450c4f727fdb6e86031bc2a1557d",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:29.962726+00:00"
+    },
+    {
+      "game_id": "0022500133",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500133",
+      "data_url": "https://official.nba.com/l2m/json/0022500133.json",
+      "sha256": "74b1bfac8de2a2be37a3cb6f04ae614182a254592f8a9dda88f1320a794d562c",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:29.966746+00:00"
+    },
+    {
+      "game_id": "0022500135",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500135",
+      "data_url": "https://official.nba.com/l2m/json/0022500135.json",
+      "sha256": "4b43d49cf8d5056fa02b80a05c20257e23571e0edd808fb95ceb90569c42512e",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:30.027355+00:00"
+    },
+    {
+      "game_id": "0022500136",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500136",
+      "data_url": "https://official.nba.com/l2m/json/0022500136.json",
+      "sha256": "9962d835f74307540633518e902cfed4badbe5c0c2706a2dbee37f72d3d058c8",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:30.074434+00:00"
+    },
+    {
+      "game_id": "0022500137",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500137",
+      "data_url": "https://official.nba.com/l2m/json/0022500137.json",
+      "sha256": "5aa448f84cea97f8089c77970a3ecff6b6f06089accdf4f1bb7f689e85d687c7",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:30.486491+00:00"
+    },
+    {
+      "game_id": "0022500142",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500142",
+      "data_url": "https://official.nba.com/l2m/json/0022500142.json",
+      "sha256": "efe80b4110d9a5d255ae67da754736b7fd7de6f71adfee1a0f41fb8c131032c3",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:30.388895+00:00"
+    },
+    {
+      "game_id": "0022500144",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500144",
+      "data_url": "https://official.nba.com/l2m/json/0022500144.json",
+      "sha256": "78aacfa2704344eb80e62f71c9a9c3707ad2fdd241fa39d0cda05b14ca7bc326",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:30.404839+00:00"
+    },
+    {
+      "game_id": "0022500157",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500157",
+      "data_url": "https://official.nba.com/l2m/json/0022500157.json",
+      "sha256": "e4321ec0688dcb8f740bbbcec524500f78edbb5045c5cc1397e4925e25a6d0d8",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:30.410708+00:00"
+    },
+    {
+      "game_id": "0022500158",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500158",
+      "data_url": "https://official.nba.com/l2m/json/0022500158.json",
+      "sha256": "51d31e494c1578b48ba883336728d1c628953a92f61271f0033f9367c923e583",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:30.767424+00:00"
+    },
+    {
+      "game_id": "0022500160",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500160",
+      "data_url": "https://official.nba.com/l2m/json/0022500160.json",
+      "sha256": "06cac2499c258b83ff70eb5487dd080fed1620abde4fca5d197620f81743ce33",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:30.777257+00:00"
+    },
+    {
+      "game_id": "0022500164",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500164",
+      "data_url": "https://official.nba.com/l2m/json/0022500164.json",
+      "sha256": "72fe76aa7b412a08ef7af0430d1dbd44fe5c25c889b37c4f6efe4307bf4ab8bf",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:30.790328+00:00"
+    },
+    {
+      "game_id": "0022500167",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500167",
+      "data_url": "https://official.nba.com/l2m/json/0022500167.json",
+      "sha256": "33d24f0fffd91b2a7585cc984cdda79eb9b478b29b3f83d9e68ab9af1b75ea7a",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:30.849782+00:00"
+    },
+    {
+      "game_id": "0022500168",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500168",
+      "data_url": "https://official.nba.com/l2m/json/0022500168.json",
+      "sha256": "920784b3da7d54af702b24718a6e326e12f23655b090591ca1d890d711350176",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:31.181825+00:00"
+    },
+    {
+      "game_id": "0022500177",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500177",
+      "data_url": "https://official.nba.com/l2m/json/0022500177.json",
+      "sha256": "6166376667ccb6af4a96b51179378b5221e819a5fb11a3cda74520bc438f5f5d",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:31.170917+00:00"
+    },
+    {
+      "game_id": "0022500179",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500179",
+      "data_url": "https://official.nba.com/l2m/json/0022500179.json",
+      "sha256": "3bf473432cd6bc8c01b85645850d3c8b53a411b3f235a00b34524c206cb1b03a",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:31.178227+00:00"
+    },
+    {
+      "game_id": "0022500180",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500180",
+      "data_url": "https://official.nba.com/l2m/json/0022500180.json",
+      "sha256": "ec2c05745797454584f6c124f32a58643c61dee30371c007aebea98af29f66db",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:31.426839+00:00"
+    },
+    {
+      "game_id": "0022500181",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500181",
+      "data_url": "https://official.nba.com/l2m/json/0022500181.json",
+      "sha256": "3298fa18880f6cc1a0c8adfe046498d30eb8537667c39976c2e76f784315d127",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:31.548898+00:00"
+    },
+    {
+      "game_id": "0022500183",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500183",
+      "data_url": "https://official.nba.com/l2m/json/0022500183.json",
+      "sha256": "ae2c1df49e8f8b753511f1c921f3f9581714cde925047bc5f2fd663f2e397c97",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:31.533457+00:00"
+    },
+    {
+      "game_id": "0022500186",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500186",
+      "data_url": "https://official.nba.com/l2m/json/0022500186.json",
+      "sha256": "e096af59ebc93e025c8b2dd443e2aae5a494547b3a48e20d83e262fab201e889",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:31.604156+00:00"
+    },
+    {
+      "game_id": "0022500187",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500187",
+      "data_url": "https://official.nba.com/l2m/json/0022500187.json",
+      "sha256": "3f9dd2479fce3c222c26ad1cefffb81835b2d4f52566c006a76bf050aec11631",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:31.893371+00:00"
+    },
+    {
+      "game_id": "0022500188",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500188",
+      "data_url": "https://official.nba.com/l2m/json/0022500188.json",
+      "sha256": "c33517def97594406077d8be2a5fcbb1a95417b5caffd926a4818d372528ac7a",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:31.887981+00:00"
+    },
+    {
+      "game_id": "0022500191",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500191",
+      "data_url": "https://official.nba.com/l2m/json/0022500191.json",
+      "sha256": "0a0d2f72bfde1ac8360f82e5f733029e6e18962b955937fbcbcc01c58117189f",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:31.858212+00:00"
+    },
+    {
+      "game_id": "0022500193",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500193",
+      "data_url": "https://official.nba.com/l2m/json/0022500193.json",
+      "sha256": "54850f3c3a1ef512f0300f259d351097274ccca2c1723f23ac6b90fa60d6b39f",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:31.965014+00:00"
+    },
+    {
+      "game_id": "0022500195",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500195",
+      "data_url": "https://official.nba.com/l2m/json/0022500195.json",
+      "sha256": "d557f812a2d00374f9a3db605771ffab4108f7637667b262e1fd559128276c4b",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:32.247406+00:00"
+    },
+    {
+      "game_id": "0022500199",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500199",
+      "data_url": "https://official.nba.com/l2m/json/0022500199.json",
+      "sha256": "187976fcc423f0efbd50c6e506343cfd3490fc964d8496026d9f907291a261da",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:32.274338+00:00"
+    },
+    {
+      "game_id": "0022500200",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500200",
+      "data_url": "https://official.nba.com/l2m/json/0022500200.json",
+      "sha256": "be06cf5f1028a197e8775df336274d1bd32ece4a3aefff8acac20139b3e57751",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:32.194714+00:00"
+    },
+    {
+      "game_id": "0022500201",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500201",
+      "data_url": "https://official.nba.com/l2m/json/0022500201.json",
+      "sha256": "e20e9564382dfdc3c0f7bf312dcd16aad6f760d60536fa5d79fb6e35b9a97c2d",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:32.412518+00:00"
+    },
+    {
+      "game_id": "0022500202",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500202",
+      "data_url": "https://official.nba.com/l2m/json/0022500202.json",
+      "sha256": "bb682d05876a38181ca8a83fef7ddfb135ca1e74cd8241441961a654ed76e3ac",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:32.612102+00:00"
+    },
+    {
+      "game_id": "0022500203",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500203",
+      "data_url": "https://official.nba.com/l2m/json/0022500203.json",
+      "sha256": "087d8d633d152f967dd870fa4a54bc6763fff8c60aabf0c0a4460cc23753c45d",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:32.556062+00:00"
+    },
+    {
+      "game_id": "0022500206",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500206",
+      "data_url": "https://official.nba.com/l2m/json/0022500206.json",
+      "sha256": "32c4a61b05bc1f4077679c4d0efb16238347a8019872e209e331b4bdeb5ec8ed",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:32.689206+00:00"
+    },
+    {
+      "game_id": "0022500209",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500209",
+      "data_url": "https://official.nba.com/l2m/json/0022500209.json",
+      "sha256": "b4325bbc431326a2148838f87321472241a56f54f60350e899bc0c893d7f66b6",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:32.798687+00:00"
+    },
+    {
+      "game_id": "0022500221",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500221",
+      "data_url": "https://official.nba.com/l2m/json/0022500221.json",
+      "sha256": "85852cf5fc178ae849116d2f6e0cc77eee0703df40b17aa192cd721358a16986",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:32.944873+00:00"
+    },
+    {
+      "game_id": "0022500233",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500233",
+      "data_url": "https://official.nba.com/l2m/json/0022500233.json",
+      "sha256": "cd0d92ea32513db5faa770c1fdd67a10483850af77e2cf224710cb61f740df74",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:33.035219+00:00"
+    },
+    {
+      "game_id": "0022500236",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500236",
+      "data_url": "https://official.nba.com/l2m/json/0022500236.json",
+      "sha256": "9c6b834f943c2d7354aab65bde2d40ecc0599b8aee520e057af55a7bcb2320da",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:33.051362+00:00"
+    },
+    {
+      "game_id": "0022500238",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500238",
+      "data_url": "https://official.nba.com/l2m/json/0022500238.json",
+      "sha256": "b9e0d55f520302fbdec5dc3e788ac24c85c673a7cdcbec41bb7ea03c402fd640",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:33.153074+00:00"
+    },
+    {
+      "game_id": "0022500239",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500239",
+      "data_url": "https://official.nba.com/l2m/json/0022500239.json",
+      "sha256": "e1d81d32ff86791053fd7d0e423bf0546ca585649a375624345a079888f542d8",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:33.330787+00:00"
+    },
+    {
+      "game_id": "0022500240",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500240",
+      "data_url": "https://official.nba.com/l2m/json/0022500240.json",
+      "sha256": "79248874186dbcb490386e7f42971e265a020294f2649df644fbe38aae9830c6",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:33.445536+00:00"
+    },
+    {
+      "game_id": "0022500243",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500243",
+      "data_url": "https://official.nba.com/l2m/json/0022500243.json",
+      "sha256": "bf9d2c7bff38a9d9de961b0c4ec1a0e9fc4bece47cef6cf9ad824a72c7de31ca",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:33.379663+00:00"
+    },
+    {
+      "game_id": "0022500244",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500244",
+      "data_url": "https://official.nba.com/l2m/json/0022500244.json",
+      "sha256": "bbc3a2dacb86283c8755acf1970b2b4010819ef67dedc574fb552b244583c079",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:33.480420+00:00"
+    },
+    {
+      "game_id": "0022500245",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500245",
+      "data_url": "https://official.nba.com/l2m/json/0022500245.json",
+      "sha256": "dece7f9657ac68656456e7ce381266666c2fc7afbf5452efea31078b37275850",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:33.768815+00:00"
+    },
+    {
+      "game_id": "0022500248",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500248",
+      "data_url": "https://official.nba.com/l2m/json/0022500248.json",
+      "sha256": "0eaa1a255870ff95f3386a90aff5b3fa51ecc922b2e9f06ae67cd0f6e2538dad",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:33.713337+00:00"
+    },
+    {
+      "game_id": "0022500251",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500251",
+      "data_url": "https://official.nba.com/l2m/json/0022500251.json",
+      "sha256": "69ac3e3507b342d6c0edd70eb62cc88a1e772b050713e88f12f11f1964cdf34b",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:33.780110+00:00"
+    },
+    {
+      "game_id": "0022500252",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500252",
+      "data_url": "https://official.nba.com/l2m/json/0022500252.json",
+      "sha256": "7cb0ab5d88453714fb37c21950bceb50d8f03bac01180a0ec3b46c037c5dae5a",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:33.853358+00:00"
+    },
+    {
+      "game_id": "0022500262",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500262",
+      "data_url": "https://official.nba.com/l2m/json/0022500262.json",
+      "sha256": "53fc1c1bb16faacc8f0b2eea98139107aad2b72a87307969caaa8318dbceb7cd",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:34.020855+00:00"
+    },
+    {
+      "game_id": "0022500263",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500263",
+      "data_url": "https://official.nba.com/l2m/json/0022500263.json",
+      "sha256": "4070d567bd7769a9e3ea75e43fc4e6d628de6751ae06b92f6bfe4a8711175186",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:34.096718+00:00"
+    },
+    {
+      "game_id": "0022500266",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500266",
+      "data_url": "https://official.nba.com/l2m/json/0022500266.json",
+      "sha256": "bd2ab8e7976e391037885b08afeed5f0fc6325414913720b12fdf913a1e49769",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:34.196766+00:00"
+    },
+    {
+      "game_id": "0022500271",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500271",
+      "data_url": "https://official.nba.com/l2m/json/0022500271.json",
+      "sha256": "cee0008249e334eef89e76fef353800947890332bd58d6197356b9083139a44f",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:34.236159+00:00"
+    },
+    {
+      "game_id": "0022500273",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500273",
+      "data_url": "https://official.nba.com/l2m/json/0022500273.json",
+      "sha256": "783afa74a196949bcbdac6dafa6f5e71053727318c48d03bf5009bf08ddc0dfd",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:34.315543+00:00"
+    },
+    {
+      "game_id": "0022500274",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500274",
+      "data_url": "https://official.nba.com/l2m/json/0022500274.json",
+      "sha256": "228d8082d203e37192e0a94b6e6ddf9357711620e95d531cd0e818cea3a3e138",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:34.487581+00:00"
+    },
+    {
+      "game_id": "0022500276",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500276",
+      "data_url": "https://official.nba.com/l2m/json/0022500276.json",
+      "sha256": "e27f9b442f9e0d6da9d0ade22f472095a77df652e5639f15f669eca6613c0be7",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:34.578340+00:00"
+    },
+    {
+      "game_id": "0022500282",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500282",
+      "data_url": "https://official.nba.com/l2m/json/0022500282.json",
+      "sha256": "0fce718e569144fca6a3603057b15af66afbb5fae7d0c039bb932e35aeb15348",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:34.749040+00:00"
+    },
+    {
+      "game_id": "0022500283",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500283",
+      "data_url": "https://official.nba.com/l2m/json/0022500283.json",
+      "sha256": "46d5d91ec11b720a4874839c39dbb35702b57b5818e3106b5170161a5a4dd27a",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:34.668924+00:00"
+    },
+    {
+      "game_id": "0022500286",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500286",
+      "data_url": "https://official.nba.com/l2m/json/0022500286.json",
+      "sha256": "b785b4ff870ee5a071de60497a8625303a9225ce2d3d38ed95052360917eb9f1",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:34.874769+00:00"
+    },
+    {
+      "game_id": "0022500292",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500292",
+      "data_url": "https://official.nba.com/l2m/json/0022500292.json",
+      "sha256": "4602e042c8a1350b531be22167c29ff05e3464de573ba5c7bb5199b313c74c74",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:35.020819+00:00"
+    },
+    {
+      "game_id": "0022500293",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500293",
+      "data_url": "https://official.nba.com/l2m/json/0022500293.json",
+      "sha256": "16c2b49e7f48d4d9a2ce0f70f8daf6f7c7ccd9504ba5c44664ad59905bb11489",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:34.972850+00:00"
+    },
+    {
+      "game_id": "0022500294",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500294",
+      "data_url": "https://official.nba.com/l2m/json/0022500294.json",
+      "sha256": "71f49b13480f8a98371697cb4778915e57afd07af6252676ae99e46efdcc4ebb",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:35.176458+00:00"
+    },
+    {
+      "game_id": "0022500295",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500295",
+      "data_url": "https://official.nba.com/l2m/json/0022500295.json",
+      "sha256": "11409ad3016479c40a6d2b8827151229d352917e1bfccb01ae5471eee0aa7f2f",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:35.212688+00:00"
+    },
+    {
+      "game_id": "0022500296",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500296",
+      "data_url": "https://official.nba.com/l2m/json/0022500296.json",
+      "sha256": "858e24006e0035303d1f867ed668a1c5ef9749f12aa5ca1a61aa759f6164ede7",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:35.583796+00:00"
+    },
+    {
+      "game_id": "0022500300",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500300",
+      "data_url": "https://official.nba.com/l2m/json/0022500300.json",
+      "sha256": "17dbbe418608ee5b8c9feb3b167cebdfd0e3def1044c140a0dff151330128bae",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:35.349060+00:00"
+    },
+    {
+      "game_id": "0022500302",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500302",
+      "data_url": "https://official.nba.com/l2m/json/0022500302.json",
+      "sha256": "17b381b5995d0a6af5d213826de2ee590a8f7ed687438b31adadbcde326f912f",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:35.521361+00:00"
+    },
+    {
+      "game_id": "0022500304",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500304",
+      "data_url": "https://official.nba.com/l2m/json/0022500304.json",
+      "sha256": "139bcfd7edb6e61060b16db1c46928d62b074df9acaa5b6e1409706e879030b5",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:35.597233+00:00"
+    },
+    {
+      "game_id": "0022500309",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500309",
+      "data_url": "https://official.nba.com/l2m/json/0022500309.json",
+      "sha256": "010596dc22f5c953dffe8536dd55a5cdfefe58c51251063228f4cd9f6669f692",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:35.701482+00:00"
+    },
+    {
+      "game_id": "0022500311",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500311",
+      "data_url": "https://official.nba.com/l2m/json/0022500311.json",
+      "sha256": "1b801a4732a89a405cd8072d8ec0b2938f92276dc07cc3d3a5ff1e794c6aedde",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:36.176586+00:00"
+    },
+    {
+      "game_id": "0022500314",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500314",
+      "data_url": "https://official.nba.com/l2m/json/0022500314.json",
+      "sha256": "bd6e3272e1613bb73f278213b84bcbcaa38e7a2ddc4cd91f8e32ef9f695b994c",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:35.943686+00:00"
+    },
+    {
+      "game_id": "0022500316",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500316",
+      "data_url": "https://official.nba.com/l2m/json/0022500316.json",
+      "sha256": "4a4591f14a8375274b6e3475c7c3d7bb6954304bda62adb901da610da0bd5ae3",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:35.997616+00:00"
+    },
+    {
+      "game_id": "0022500319",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500319",
+      "data_url": "https://official.nba.com/l2m/json/0022500319.json",
+      "sha256": "524fc60c0b57e7229e9a0a4263e0134a5e20e94895710588c498ed7886220350",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:36.027289+00:00"
+    },
+    {
+      "game_id": "0022500321",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500321",
+      "data_url": "https://official.nba.com/l2m/json/0022500321.json",
+      "sha256": "f91106a3de3fc09e02aec40c87f8ce34b0c542e8d384308c7ec78237aad7eed0",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:36.293139+00:00"
+    },
+    {
+      "game_id": "0022500322",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500322",
+      "data_url": "https://official.nba.com/l2m/json/0022500322.json",
+      "sha256": "fba7f368502122c6f7bb8ad0e55de9560f032fb2dbe5cb1f37997afbe4798d6d",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:36.643726+00:00"
+    },
+    {
+      "game_id": "0022500326",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500326",
+      "data_url": "https://official.nba.com/l2m/json/0022500326.json",
+      "sha256": "b94dbef16010c66a2783cbc7d661bc9089c98a319691fd790e42a9f50c4cb318",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:36.505638+00:00"
+    },
+    {
+      "game_id": "0022500331",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500331",
+      "data_url": "https://official.nba.com/l2m/json/0022500331.json",
+      "sha256": "eb3436183603d6200c6d44498acc78d2fc348cccf2a89034e1b24d30f8622121",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:36.537581+00:00"
+    },
+    {
+      "game_id": "0022500333",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500333",
+      "data_url": "https://official.nba.com/l2m/json/0022500333.json",
+      "sha256": "b4151968bec4a5be27ca21ca7710b2a73a272864d762a07105dd4d86fc86030c",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:36.637600+00:00"
+    },
+    {
+      "game_id": "0022500336",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500336",
+      "data_url": "https://official.nba.com/l2m/json/0022500336.json",
+      "sha256": "56785ab013b9aca85066e0439d782f5d5aee1225fcb6ec1b4c77db995bf3a27b",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:36.973320+00:00"
+    },
+    {
+      "game_id": "0022500339",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500339",
+      "data_url": "https://official.nba.com/l2m/json/0022500339.json",
+      "sha256": "05a64c4c4c70edf5d5c7675acb89f4bd09ad9eb203b72c4cc96ade613f087771",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:37.152337+00:00"
+    },
+    {
+      "game_id": "0022500340",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500340",
+      "data_url": "https://official.nba.com/l2m/json/0022500340.json",
+      "sha256": "2732f51356be12822542078c9114729a151ff4945d2666bf571c7368d2692e22",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:37.007847+00:00"
+    },
+    {
+      "game_id": "0022500342",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500342",
+      "data_url": "https://official.nba.com/l2m/json/0022500342.json",
+      "sha256": "efd9c2ac10a67666e5f1ce30f5ee8d97dcf77deae69fb62db0207ff3718411a8",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:37.068992+00:00"
+    },
+    {
+      "game_id": "0022500352",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500352",
+      "data_url": "https://official.nba.com/l2m/json/0022500352.json",
+      "sha256": "fa34d747f5495c6f47e153d8b3d84a8b8178938047ba379892f2727ab09cf0f7",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:37.288032+00:00"
+    },
+    {
+      "game_id": "0022500355",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500355",
+      "data_url": "https://official.nba.com/l2m/json/0022500355.json",
+      "sha256": "eadb51005dd67cdb8bb78825014278fc95a012e9b9a446433a0778d0ddb4af7f",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:37.320629+00:00"
+    },
+    {
+      "game_id": "0022500362",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500362",
+      "data_url": "https://official.nba.com/l2m/json/0022500362.json",
+      "sha256": "aeddc2a28f5df8ba13f65040638e71664d8b6062fe316ed2a6876fb42ec5abcf",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:37.502645+00:00"
+    },
+    {
+      "game_id": "0022500365",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500365",
+      "data_url": "https://official.nba.com/l2m/json/0022500365.json",
+      "sha256": "e653a16917166a4008187fc63d3cb565380d8f2fe85130cbd82269f55ac1761a",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:37.487004+00:00"
+    },
+    {
+      "game_id": "0022500366",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500366",
+      "data_url": "https://official.nba.com/l2m/json/0022500366.json",
+      "sha256": "ea722ca82ac5628261a0936fab8d34cfead5db77ad0ae3a6e92642aa340cfb2d",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:37.672382+00:00"
+    },
+    {
+      "game_id": "0022500368",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500368",
+      "data_url": "https://official.nba.com/l2m/json/0022500368.json",
+      "sha256": "01959805191b249bd88d161fd590beb32d07204d65961c604debd666fe424214",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:37.716452+00:00"
+    },
+    {
+      "game_id": "0022500371",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500371",
+      "data_url": "https://official.nba.com/l2m/json/0022500371.json",
+      "sha256": "ca3cfcde1a77e9c2b81862897dc0507efa5ef6ff30d717657d268b3aea443880",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:37.894437+00:00"
+    },
+    {
+      "game_id": "0022500372",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500372",
+      "data_url": "https://official.nba.com/l2m/json/0022500372.json",
+      "sha256": "2c2d00f5842e437ef7fdd762c90f504a4379b11b52e159308af92905df6dd420",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:37.831026+00:00"
+    },
+    {
+      "game_id": "0022500375",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500375",
+      "data_url": "https://official.nba.com/l2m/json/0022500375.json",
+      "sha256": "e1927cfb489033384c986f7cba9fcd6c6ea8d48260a99264b10146e0d6b99b16",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:38.227595+00:00"
+    },
+    {
+      "game_id": "0022500376",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500376",
+      "data_url": "https://official.nba.com/l2m/json/0022500376.json",
+      "sha256": "186943eb8a6f5d1a89dd2f6dc87e64d3a080075624fbc43ebbb152dd7011bf4c",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:38.062604+00:00"
+    },
+    {
+      "game_id": "0022500378",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500378",
+      "data_url": "https://official.nba.com/l2m/json/0022500378.json",
+      "sha256": "f868902f96c8589772dc38306c56dc10f559d521017824b6a533515d2e905fe3",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:38.371590+00:00"
+    },
+    {
+      "game_id": "0022500380",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500380",
+      "data_url": "https://official.nba.com/l2m/json/0022500380.json",
+      "sha256": "032fddb455c5d55a88acc7348ebbfafda3f828fd3d1d035261e7bb82517f0ebb",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:38.204927+00:00"
+    },
+    {
+      "game_id": "0022500385",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500385",
+      "data_url": "https://official.nba.com/l2m/json/0022500385.json",
+      "sha256": "64c23b003e10a1af52cecf7aae28731d63b7112b00ac972d06b2fba2cfeca8dc",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:38.456093+00:00"
+    },
+    {
+      "game_id": "0022500391",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500391",
+      "data_url": "https://official.nba.com/l2m/json/0022500391.json",
+      "sha256": "f6e10e3d7119bc91a1745aa48fca6fa8c852900600fda92b38f8362ac30aa3df",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:38.703197+00:00"
+    },
+    {
+      "game_id": "0022500392",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500392",
+      "data_url": "https://official.nba.com/l2m/json/0022500392.json",
+      "sha256": "8a2e4ab7ae921f49d444a1044e86e6f1e30df7b191305bb41d6a7d2f876f2638",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:38.602884+00:00"
+    },
+    {
+      "game_id": "0022500393",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500393",
+      "data_url": "https://official.nba.com/l2m/json/0022500393.json",
+      "sha256": "b0f82959a11a3c5cb460b8e84120485f0494ced3cab1f9aa280e501c31b01609",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:38.849061+00:00"
+    },
+    {
+      "game_id": "0022500394",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500394",
+      "data_url": "https://official.nba.com/l2m/json/0022500394.json",
+      "sha256": "721289d0773bb8fcea064cc097773b96f81a5363021299cb4eeb33aecbcb924c",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:38.799231+00:00"
+    },
+    {
+      "game_id": "0022500396",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500396",
+      "data_url": "https://official.nba.com/l2m/json/0022500396.json",
+      "sha256": "24d9c3f30f8f2886de91acc2795e647848060630d9fdbe5d9c7e5d6001ae1423",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:38.997619+00:00"
+    },
+    {
+      "game_id": "0022500400",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500400",
+      "data_url": "https://official.nba.com/l2m/json/0022500400.json",
+      "sha256": "985b8347c45a83dac7b511d164d12449a749e22c75918f6fd94bb1d00f71fa3c",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:39.048340+00:00"
+    },
+    {
+      "game_id": "0022500401",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500401",
+      "data_url": "https://official.nba.com/l2m/json/0022500401.json",
+      "sha256": "6031018a3c7b9f9244e993e7db0089b82fdc5a3ed0e40cd4a55deb624b6a18a2",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:39.133471+00:00"
+    },
+    {
+      "game_id": "0022500411",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500411",
+      "data_url": "https://official.nba.com/l2m/json/0022500411.json",
+      "sha256": "13c022ae167373d02084498fe595ee885266a56c4591aecdc1953150f54a0126",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:39.175836+00:00"
+    },
+    {
+      "game_id": "0022500415",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500415",
+      "data_url": "https://official.nba.com/l2m/json/0022500415.json",
+      "sha256": "e72d68d026ef6c11bad0dd813e2c645fa16912c1323aeb88b62cc4c121b3771e",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:39.466230+00:00"
+    },
+    {
+      "game_id": "0022500420",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500420",
+      "data_url": "https://official.nba.com/l2m/json/0022500420.json",
+      "sha256": "d083b04a747739bf00e136054c7c30f252a435eae60f3850cb283954f27d718c",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:39.390961+00:00"
+    },
+    {
+      "game_id": "0022500427",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500427",
+      "data_url": "https://official.nba.com/l2m/json/0022500427.json",
+      "sha256": "92611b7b245ef033f0bee0f765fcf72b87332280cbd6438d158294d8b2d0247f",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:39.540527+00:00"
+    },
+    {
+      "game_id": "0022500429",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500429",
+      "data_url": "https://official.nba.com/l2m/json/0022500429.json",
+      "sha256": "0d194fadabb8cda440ac8350202377afde75c7ed77d9fbdd363438900f480853",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:39.631309+00:00"
+    },
+    {
+      "game_id": "0022500430",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500430",
+      "data_url": "https://official.nba.com/l2m/json/0022500430.json",
+      "sha256": "c2da7d3edbeac25bcfa529198685607bf790689874932a8f3084fb496c755f2a",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:39.795760+00:00"
+    },
+    {
+      "game_id": "0022500433",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500433",
+      "data_url": "https://official.nba.com/l2m/json/0022500433.json",
+      "sha256": "b7de0579f26d9d09adb8bfcda53bff5d263cfcd2cb6b5b229387ef7f9a3bda37",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:39.795967+00:00"
+    },
+    {
+      "game_id": "0022500435",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500435",
+      "data_url": "https://official.nba.com/l2m/json/0022500435.json",
+      "sha256": "d0eee13b1407ecc2d66f0e9769b5c0f4b411f7ebaaac3f9ca1c5ed34b123a443",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:39.870861+00:00"
+    },
+    {
+      "game_id": "0022500437",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500437",
+      "data_url": "https://official.nba.com/l2m/json/0022500437.json",
+      "sha256": "2d80570f3795a4878a8ef6224c3f713baa4bde2487a92ecc11da775835797dd5",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:40.063525+00:00"
+    },
+    {
+      "game_id": "0022500441",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500441",
+      "data_url": "https://official.nba.com/l2m/json/0022500441.json",
+      "sha256": "9511c58ae70496d4e2ee45bcd5b6b182c8f4f269a66079fa40b661cea8569d17",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:40.119112+00:00"
+    },
+    {
+      "game_id": "0022500443",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500443",
+      "data_url": "https://official.nba.com/l2m/json/0022500443.json",
+      "sha256": "09c7631e63dce487b20c7764c00b0d309ca6295d8fd67af8d0c4d16575e53a7b",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:40.168598+00:00"
+    },
+    {
+      "game_id": "0022500444",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500444",
+      "data_url": "https://official.nba.com/l2m/json/0022500444.json",
+      "sha256": "62b1718874fbb7c14a54bd6cfbb4ea8b4436d2c673499930a7742c4e6150adc2",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:40.199027+00:00"
+    },
+    {
+      "game_id": "0022500451",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500451",
+      "data_url": "https://official.nba.com/l2m/json/0022500451.json",
+      "sha256": "060bee18044c36ad24faa322fc8fa35c13333c22513fc1dc7839dd5fea553c05",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:40.397761+00:00"
+    },
+    {
+      "game_id": "0022500454",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500454",
+      "data_url": "https://official.nba.com/l2m/json/0022500454.json",
+      "sha256": "8a27665aea0185e053e8a027446db932914ecc655c2d115818eb36ccb9e07d01",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:40.461137+00:00"
+    },
+    {
+      "game_id": "0022500457",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500457",
+      "data_url": "https://official.nba.com/l2m/json/0022500457.json",
+      "sha256": "5b4ed9f1dba33e4a398eace4551304dbdf534f1ff29f624c96742f7e4d0a8a8a",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:40.525446+00:00"
+    },
+    {
+      "game_id": "0022500458",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500458",
+      "data_url": "https://official.nba.com/l2m/json/0022500458.json",
+      "sha256": "0c793e0992d8a80f63df54ddb923148f07804898468f6c0faa74b64b06ec7493",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:40.576604+00:00"
+    },
+    {
+      "game_id": "0022500464",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500464",
+      "data_url": "https://official.nba.com/l2m/json/0022500464.json",
+      "sha256": "ef34af8ebe6884cdbf25d06d17acd7e64e80c24fc45dc8ae11800790be75af50",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:40.761368+00:00"
+    },
+    {
+      "game_id": "0022500467",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500467",
+      "data_url": "https://official.nba.com/l2m/json/0022500467.json",
+      "sha256": "58c0eaed6bc958d74082d99f1e5d4e903270b76254c17f89ca9a6a2b5a214c95",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:40.807425+00:00"
+    },
+    {
+      "game_id": "0022500468",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500468",
+      "data_url": "https://official.nba.com/l2m/json/0022500468.json",
+      "sha256": "0c836119ee2ab350447f011a7918c957d241923a8de814cc1db358301b164fc2",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:40.879818+00:00"
+    },
+    {
+      "game_id": "0022500469",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500469",
+      "data_url": "https://official.nba.com/l2m/json/0022500469.json",
+      "sha256": "1aa0086ca0ae7fef4f2a3cde2f850404db8c0ff110066caf3e2b79e3eac6c80e",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:40.947844+00:00"
+    },
+    {
+      "game_id": "0022500472",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500472",
+      "data_url": "https://official.nba.com/l2m/json/0022500472.json",
+      "sha256": "db365a22112547477af3290f8fca6fb99ec388329e848de24c42ca7bb69054f7",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:41.192990+00:00"
+    },
+    {
+      "game_id": "0022500478",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500478",
+      "data_url": "https://official.nba.com/l2m/json/0022500478.json",
+      "sha256": "3b01d77ef43567423abd9e9a7189506d684f8e3939b8a35c77be616b327164c1",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:41.196509+00:00"
+    },
+    {
+      "game_id": "0022500480",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500480",
+      "data_url": "https://official.nba.com/l2m/json/0022500480.json",
+      "sha256": "a39680c21ffbccee28d8f858be5d171887400d9ad83617febb6b3abbad510aa4",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:41.212456+00:00"
+    },
+    {
+      "game_id": "0022500481",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500481",
+      "data_url": "https://official.nba.com/l2m/json/0022500481.json",
+      "sha256": "d3f853b2d26faec7d120bd2614c5d8d8408c471f3d4de75ad0c8d783e151f1ab",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:41.275443+00:00"
+    },
+    {
+      "game_id": "0022500490",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500490",
+      "data_url": "https://official.nba.com/l2m/json/0022500490.json",
+      "sha256": "6a347d398e9924be7bef2f63c3d8bc8276cf9156ccce0fc3e4ffdcc8c9312d7b",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:41.542118+00:00"
+    },
+    {
+      "game_id": "0022500494",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500494",
+      "data_url": "https://official.nba.com/l2m/json/0022500494.json",
+      "sha256": "f882f5875e64e586abd4917e2e60f0e61f7458a98de57767c8367e66088a52f3",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:41.550898+00:00"
+    },
+    {
+      "game_id": "0022500495",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500495",
+      "data_url": "https://official.nba.com/l2m/json/0022500495.json",
+      "sha256": "0889fdb827bc131017cc494e65883c70cc598daca04e721cb65dd031ba32b132",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:41.561409+00:00"
+    },
+    {
+      "game_id": "0022500499",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500499",
+      "data_url": "https://official.nba.com/l2m/json/0022500499.json",
+      "sha256": "81bd3699c9d18553b8114fd8b302493937966c4287427a5eb73611d61389d275",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:41.659777+00:00"
+    },
+    {
+      "game_id": "0022500505",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500505",
+      "data_url": "https://official.nba.com/l2m/json/0022500505.json",
+      "sha256": "66a1c1b1b7fd406e78af58dba532c882546e80ed3391ae781f2c66502ce70fb1",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:41.919220+00:00"
+    },
+    {
+      "game_id": "0022500507",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500507",
+      "data_url": "https://official.nba.com/l2m/json/0022500507.json",
+      "sha256": "31594e111e203042e7008bbac3de2c2ada3d33febb03b46280a478410e6c4b21",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:41.884816+00:00"
+    },
+    {
+      "game_id": "0022500508",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500508",
+      "data_url": "https://official.nba.com/l2m/json/0022500508.json",
+      "sha256": "bb37d0ab9158b340fe3ca351408b416a869f8ca7e6727061b3f0bc081a427f9f",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:41.897380+00:00"
+    },
+    {
+      "game_id": "0022500510",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500510",
+      "data_url": "https://official.nba.com/l2m/json/0022500510.json",
+      "sha256": "c98d479fa7ed6e366d49ffdf608fd770fe0ed4b32f85f3bdf34aed30f635f515",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:42.047945+00:00"
+    },
+    {
+      "game_id": "0022500512",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500512",
+      "data_url": "https://official.nba.com/l2m/json/0022500512.json",
+      "sha256": "1ac022809e5d6f615ba2aefdb1f402d8d05eb0eb94aebd3c1b300e42dc2da6c0",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:42.288090+00:00"
+    },
+    {
+      "game_id": "0022500515",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500515",
+      "data_url": "https://official.nba.com/l2m/json/0022500515.json",
+      "sha256": "854a45fff32b3267c4e28d39be62d1f4f93041a909dada3bd5dab5e94d74a990",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:42.213802+00:00"
+    },
+    {
+      "game_id": "0022500516",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500516",
+      "data_url": "https://official.nba.com/l2m/json/0022500516.json",
+      "sha256": "4710b51dab4f22fd93cc2e5d66bd095681c3fa16cf1038b9761f49a05f5ccec2",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:42.249202+00:00"
+    },
+    {
+      "game_id": "0022500520",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500520",
+      "data_url": "https://official.nba.com/l2m/json/0022500520.json",
+      "sha256": "1f9ae8d3faed676b94259e3972cc62bb4e744c1f5dae44ba35822365b3a46129",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:42.422043+00:00"
+    },
+    {
+      "game_id": "0022500521",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500521",
+      "data_url": "https://official.nba.com/l2m/json/0022500521.json",
+      "sha256": "a4df2c5fa92cf90d1ad26a09bfbc9a6c020c3f6b075adeeecc16297526ab225f",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:42.578538+00:00"
+    },
+    {
+      "game_id": "0022500525",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500525",
+      "data_url": "https://official.nba.com/l2m/json/0022500525.json",
+      "sha256": "79c285cbbb07714f3b78a0b56b36ac45d97f98d5fb67ec53aeec46a0bafdf886",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:42.665384+00:00"
+    },
+    {
+      "game_id": "0022500527",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500527",
+      "data_url": "https://official.nba.com/l2m/json/0022500527.json",
+      "sha256": "709339220c37103a523f9d3a6b5c0b9fbf1b5ac967b7f908f7c997a89714763a",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:42.804755+00:00"
+    },
+    {
+      "game_id": "0022500528",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500528",
+      "data_url": "https://official.nba.com/l2m/json/0022500528.json",
+      "sha256": "cfceb32dd12d9b253648c92dd1f938da873f622445c5f4834babf85385f50efa",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:42.739305+00:00"
+    },
+    {
+      "game_id": "0022500529",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500529",
+      "data_url": "https://official.nba.com/l2m/json/0022500529.json",
+      "sha256": "1354017e00868bcd3870e9744e15073a1b792c0c1682aed7db5bcae109d9b5b2",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:42.921394+00:00"
+    },
+    {
+      "game_id": "0022500531",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500531",
+      "data_url": "https://official.nba.com/l2m/json/0022500531.json",
+      "sha256": "0359f60f0d26c1fd2e1f1286253cd23f7995c2fa331b6c2ac0b934328ac6e080",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:43.092048+00:00"
+    },
+    {
+      "game_id": "0022500536",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500536",
+      "data_url": "https://official.nba.com/l2m/json/0022500536.json",
+      "sha256": "e0de2f466a57f88a0ce82bd9bd9510f2e2a1790a8840d63ac0c95e683304c2b2",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:43.067809+00:00"
+    },
+    {
+      "game_id": "0022500538",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500538",
+      "data_url": "https://official.nba.com/l2m/json/0022500538.json",
+      "sha256": "79bccf7e55eebea972fd17208892304b9be37aa205fa03a281681444e036d56c",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:43.193511+00:00"
+    },
+    {
+      "game_id": "0022500540",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500540",
+      "data_url": "https://official.nba.com/l2m/json/0022500540.json",
+      "sha256": "361d04508034eae9ec698b9a3b8c0cce4e091ee2be4c50e92f904e1ddce21433",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:43.304960+00:00"
+    },
+    {
+      "game_id": "0022500541",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500541",
+      "data_url": "https://official.nba.com/l2m/json/0022500541.json",
+      "sha256": "d7a7f65af14a2bd598b0c9fe5053bf63ca73ee811ee1c116413a2323676e8e79",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:43.436672+00:00"
+    },
+    {
+      "game_id": "0022500544",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500544",
+      "data_url": "https://official.nba.com/l2m/json/0022500544.json",
+      "sha256": "92de74f298acbda338292dbf7e3ec15ea795e70b9855c5314be294f42ff93136",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:43.420745+00:00"
+    },
+    {
+      "game_id": "0022500545",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500545",
+      "data_url": "https://official.nba.com/l2m/json/0022500545.json",
+      "sha256": "f17caf972c49733d37386864f451ea944bd0796086b0c1a3865ed1846c906bd5",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:43.544726+00:00"
+    },
+    {
+      "game_id": "0022500548",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500548",
+      "data_url": "https://official.nba.com/l2m/json/0022500548.json",
+      "sha256": "f1e79a78f8e80dfbbadf0828e6d51de0b3e0c9eb53a01c1f35a9d046016ad8f6",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:43.650399+00:00"
+    },
+    {
+      "game_id": "0022500549",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500549",
+      "data_url": "https://official.nba.com/l2m/json/0022500549.json",
+      "sha256": "2e1c9d378b25e14fa4598984cdd7f87d8fc3891af7a7b78bcd537e48c8c0cd7e",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:43.833441+00:00"
+    },
+    {
+      "game_id": "0022500550",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500550",
+      "data_url": "https://official.nba.com/l2m/json/0022500550.json",
+      "sha256": "0008e4d59a7d3cf838b5d38c0712bc2570cc8939eb609a1d6286c032eb4d4b37",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:43.755965+00:00"
+    },
+    {
+      "game_id": "0022500552",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500552",
+      "data_url": "https://official.nba.com/l2m/json/0022500552.json",
+      "sha256": "e456ad84b0cf4d5002fbba11f6d6158d56dfa1a20840374359979c8f7bda6182",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:43.867993+00:00"
+    },
+    {
+      "game_id": "0022500554",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500554",
+      "data_url": "https://official.nba.com/l2m/json/0022500554.json",
+      "sha256": "1ab3086d5e242801f6456a155b3a3ab4e758acf04dd798451b649c6bfe00cc66",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:43.997324+00:00"
+    },
+    {
+      "game_id": "0022500559",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500559",
+      "data_url": "https://official.nba.com/l2m/json/0022500559.json",
+      "sha256": "67f56fbaef7339f07745e25d081e15ad20e38fe42671c6ff619ec08280385f8c",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:44.195765+00:00"
+    },
+    {
+      "game_id": "0022500564",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500564",
+      "data_url": "https://official.nba.com/l2m/json/0022500564.json",
+      "sha256": "fd569dcb6a6f2b546ab6c316033f71d4e9b11fefdd40adb7e6cfe083e170263c",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:44.129917+00:00"
+    },
+    {
+      "game_id": "0022500565",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500565",
+      "data_url": "https://official.nba.com/l2m/json/0022500565.json",
+      "sha256": "6a9ea3a53655d7baa09fbfb0559ba38d695e57724e6ba2a496b7dbec151cbb54",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:44.198835+00:00"
+    },
+    {
+      "game_id": "0022500567",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500567",
+      "data_url": "https://official.nba.com/l2m/json/0022500567.json",
+      "sha256": "2391c6748b088efedd7ea03cb02c0b6c8133d5282c3ad1cdfd1f16e82d40e1ba",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:44.328270+00:00"
+    },
+    {
+      "game_id": "0022500573",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500573",
+      "data_url": "https://official.nba.com/l2m/json/0022500573.json",
+      "sha256": "8f51f11d25e150157b1cf5f3529df6ed31b472698429082480132bd1205c4e64",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:44.460772+00:00"
+    },
+    {
+      "game_id": "0022500574",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500574",
+      "data_url": "https://official.nba.com/l2m/json/0022500574.json",
+      "sha256": "781179bc1abe92ff52377c0f9a3bab44e4630ad9a7245bfadda22e4571b5a8ac",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:44.536979+00:00"
+    },
+    {
+      "game_id": "0022500578",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500578",
+      "data_url": "https://official.nba.com/l2m/json/0022500578.json",
+      "sha256": "34483d4628ddba783819b6a8441fa96bf66b2b96ed9aab8066a6ee4e30a5dc41",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:44.557767+00:00"
+    },
+    {
+      "game_id": "0022500579",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500579",
+      "data_url": "https://official.nba.com/l2m/json/0022500579.json",
+      "sha256": "d4d6d9ac51dd520cdf9d1dd855075b09313064d9a9d6647f71e3ecd1a2b96e64",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:44.718245+00:00"
+    },
+    {
+      "game_id": "0022500580",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500580",
+      "data_url": "https://official.nba.com/l2m/json/0022500580.json",
+      "sha256": "9c7f79b79a4a1ee26a3778943930d7dfb7313553b923fdd0b5f2257c49ccae7f",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:44.788166+00:00"
+    },
+    {
+      "game_id": "0022500587",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500587",
+      "data_url": "https://official.nba.com/l2m/json/0022500587.json",
+      "sha256": "fc895432c95a5cb8ce82c8ab4b52d6439ffc20c31669d1f5b92c286a30415b95",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:44.853132+00:00"
+    },
+    {
+      "game_id": "0022500589",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500589",
+      "data_url": "https://official.nba.com/l2m/json/0022500589.json",
+      "sha256": "198aa355fe3f16fef1d80eba790aeabd80493cbc4d3a55ebd6caa2ae30bb34e2",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:44.959718+00:00"
+    },
+    {
+      "game_id": "0022500590",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500590",
+      "data_url": "https://official.nba.com/l2m/json/0022500590.json",
+      "sha256": "f9be8f656081228db1dadb14acb1d8e8b5dee202d1d8a4b225f6d2535dff1d31",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:45.090724+00:00"
+    },
+    {
+      "game_id": "0022500591",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500591",
+      "data_url": "https://official.nba.com/l2m/json/0022500591.json",
+      "sha256": "1f875b77dbd5d01e649220dc77f1ad786fba72836418fdde7cdf1bc6fe3ef587",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:45.158132+00:00"
+    },
+    {
+      "game_id": "0022500597",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500597",
+      "data_url": "https://official.nba.com/l2m/json/0022500597.json",
+      "sha256": "13efe133675744ad8c0aa53b7f88e762776c89219204105d0f51d5da065cd85a",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:45.187595+00:00"
+    },
+    {
+      "game_id": "0022500598",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500598",
+      "data_url": "https://official.nba.com/l2m/json/0022500598.json",
+      "sha256": "d67c7b37da20b0b25a6bb671ca85d63992577392fe2f0ecb84e6af673f087f56",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:45.304118+00:00"
+    },
+    {
+      "game_id": "0022500600",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500600",
+      "data_url": "https://official.nba.com/l2m/json/0022500600.json",
+      "sha256": "4f44f932c1e904004fd8db8d458d3d84f5e712bd8d1b9a5d1932f378408d12ad",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:45.516869+00:00"
+    },
+    {
+      "game_id": "0022500608",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500608",
+      "data_url": "https://official.nba.com/l2m/json/0022500608.json",
+      "sha256": "b1cfd82f0336d5de75f0e183a0e86c5871190893b4076979ecc58f72d9c5b71c",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:45.727546+00:00"
+    },
+    {
+      "game_id": "0022500615",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500615",
+      "data_url": "https://official.nba.com/l2m/json/0022500615.json",
+      "sha256": "640a577578aa04d4dc547b28fa5359d6941ea0a034a2ca0279ad74f0374a60a9",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:45.569639+00:00"
+    },
+    {
+      "game_id": "0022500616",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500616",
+      "data_url": "https://official.nba.com/l2m/json/0022500616.json",
+      "sha256": "f863afc77692066992040aba6441f0418645e81df868ea473e922fed7e49d6cb",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:45.865987+00:00"
+    },
+    {
+      "game_id": "0022500623",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500623",
+      "data_url": "https://official.nba.com/l2m/json/0022500623.json",
+      "sha256": "c4c3eedbe33ee15112cd7072448d037f80ef57f4a879383e3d0401e7cb32b6c4",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:45.860745+00:00"
+    },
+    {
+      "game_id": "0022500628",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500628",
+      "data_url": "https://official.nba.com/l2m/json/0022500628.json",
+      "sha256": "3e21b6e8b5ff9492744e1fa65ca448a47839bf2bd8b9803c704e178243d2e117",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:45.903679+00:00"
+    },
+    {
+      "game_id": "0022500631",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500631",
+      "data_url": "https://official.nba.com/l2m/json/0022500631.json",
+      "sha256": "3fd96664f4f51bd6f055fe894b85c5f3470a845001f2b1918fbad7822a4372b9",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:46.076147+00:00"
+    },
+    {
+      "game_id": "0022500633",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500633",
+      "data_url": "https://official.nba.com/l2m/json/0022500633.json",
+      "sha256": "07be2baa325e29f3ba206da822ec66bae71a0f82d329630c161db05f66b5ef4b",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:46.268832+00:00"
+    },
+    {
+      "game_id": "0022500637",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500637",
+      "data_url": "https://official.nba.com/l2m/json/0022500637.json",
+      "sha256": "3c4c27bc076d6915263ed6abff01fc60dc82508e228b89bed2dfb03895573698",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:46.209360+00:00"
+    },
+    {
+      "game_id": "0022500638",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500638",
+      "data_url": "https://official.nba.com/l2m/json/0022500638.json",
+      "sha256": "fd2adb5c120e608204c845075a54489791edd8050e9996821e4cf4bd9da1b957",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:46.251339+00:00"
+    },
+    {
+      "game_id": "0022500639",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500639",
+      "data_url": "https://official.nba.com/l2m/json/0022500639.json",
+      "sha256": "3aca2875dc0f053fb3a666d79d17767d199ba26af0a10fce956c94330c3adf2a",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:46.429795+00:00"
+    },
+    {
+      "game_id": "0022500640",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500640",
+      "data_url": "https://official.nba.com/l2m/json/0022500640.json",
+      "sha256": "120c1a8caf74218419e9b403d75de412ab25794cbc5005bb84205dd62c8ddda0",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:46.724503+00:00"
+    },
+    {
+      "game_id": "0022500641",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500641",
+      "data_url": "https://official.nba.com/l2m/json/0022500641.json",
+      "sha256": "914389afd7ca81315263950bb7fc9c9e20c718d889ff4ca208254e8fd4081005",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:46.673623+00:00"
+    },
+    {
+      "game_id": "0022500643",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500643",
+      "data_url": "https://official.nba.com/l2m/json/0022500643.json",
+      "sha256": "dc8a323535f96c4202d04abd29a08b8b40132b10212f285509c75889d6aceb4c",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:46.962623+00:00"
+    },
+    {
+      "game_id": "0022500645",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500645",
+      "data_url": "https://official.nba.com/l2m/json/0022500645.json",
+      "sha256": "c7e67bbe1c2ed94eb462d071bcd7c674b1d11b3993d901ef77adfdf44a2f5f42",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:46.824904+00:00"
+    },
+    {
+      "game_id": "0022500647",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500647",
+      "data_url": "https://official.nba.com/l2m/json/0022500647.json",
+      "sha256": "9f3fc6a6f16623139c66ef7c5aa6eca36d9fbafbcb6d9b46b08ce5be140f7837",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:47.038809+00:00"
+    },
+    {
+      "game_id": "0022500648",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500648",
+      "data_url": "https://official.nba.com/l2m/json/0022500648.json",
+      "sha256": "8f18369be48b12b95a8a56112692a613d08cdfc4779b1cfa93f488513c615b2c",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:47.106911+00:00"
+    },
+    {
+      "game_id": "0022500653",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500653",
+      "data_url": "https://official.nba.com/l2m/json/0022500653.json",
+      "sha256": "ac693cc88db81db70527617b412ef0709e421979800547351a8888c7850a3e8d",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:47.244162+00:00"
+    },
+    {
+      "game_id": "0022500664",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500664",
+      "data_url": "https://official.nba.com/l2m/json/0022500664.json",
+      "sha256": "4cc7984320faeb2ef5381239175504b82f93758523e033762b8f54981f656eba",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:47.341933+00:00"
+    },
+    {
+      "game_id": "0022500668",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500668",
+      "data_url": "https://official.nba.com/l2m/json/0022500668.json",
+      "sha256": "db6ab9af58b0cbac9bdc9e0841ed828629203f29d920b170c1dcfc4fa69c8615",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:47.362927+00:00"
+    },
+    {
+      "game_id": "0022500669",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500669",
+      "data_url": "https://official.nba.com/l2m/json/0022500669.json",
+      "sha256": "235ab049ad947239e9a4c3fd4895c1d3a6fc632df1befa24f919455c5e1070e1",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:47.573419+00:00"
+    },
+    {
+      "game_id": "0022500672",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500672",
+      "data_url": "https://official.nba.com/l2m/json/0022500672.json",
+      "sha256": "a1ff370463555d2a0ccf4513a5c1fc424292e7c21e7afb619fdc3dc0f53e6e00",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:47.652613+00:00"
+    },
+    {
+      "game_id": "0022500680",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500680",
+      "data_url": "https://official.nba.com/l2m/json/0022500680.json",
+      "sha256": "b42fa3662ec5bdc116b5f68124e6f68b2d3d51ed168f31dbc30358473d2bbd96",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:47.789364+00:00"
+    },
+    {
+      "game_id": "0022500681",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500681",
+      "data_url": "https://official.nba.com/l2m/json/0022500681.json",
+      "sha256": "e66212dbe60dbceb7f0d158cfd7e3d42f2c55f689511a73ddcbabdbc2499f9cf",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:47.683041+00:00"
+    },
+    {
+      "game_id": "0022500683",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500683",
+      "data_url": "https://official.nba.com/l2m/json/0022500683.json",
+      "sha256": "3e6d1029e62fdb9207c5d61dd2f3029f9387bdcab911ef53ba9cbe72e5a204b0",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:47.918251+00:00"
+    },
+    {
+      "game_id": "0022500684",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500684",
+      "data_url": "https://official.nba.com/l2m/json/0022500684.json",
+      "sha256": "b6781ffef94bdc731ca93e1f816d1795cfcd0542cbc197ac2f8d27a4f5129adb",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:48.087914+00:00"
+    },
+    {
+      "game_id": "0022500692",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500692",
+      "data_url": "https://official.nba.com/l2m/json/0022500692.json",
+      "sha256": "667720a1199129a45f97e3529f23a650441e7a3ca20db646aec7843c6e378e94",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:48.059903+00:00"
+    },
+    {
+      "game_id": "0022500697",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500697",
+      "data_url": "https://official.nba.com/l2m/json/0022500697.json",
+      "sha256": "c3f7782cbb06b4a4a55292915ad3c49abbf864846ba8e92afd366d6b7ce019cb",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:48.100379+00:00"
+    },
+    {
+      "game_id": "0022500698",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500698",
+      "data_url": "https://official.nba.com/l2m/json/0022500698.json",
+      "sha256": "1a198024b4ba6e1670cc720ef235cb9045088cd0686c6765908f064b99c96cd6",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:48.393416+00:00"
+    },
+    {
+      "game_id": "0022500699",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500699",
+      "data_url": "https://official.nba.com/l2m/json/0022500699.json",
+      "sha256": "aa9a2784753dd760198d1b90358e344314ad83920136b060568da48cc51524a0",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:48.380680+00:00"
+    },
+    {
+      "game_id": "0022500701",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500701",
+      "data_url": "https://official.nba.com/l2m/json/0022500701.json",
+      "sha256": "8318cf06e3755b302708d00b9b99837ca683ea45e009ff30c6da04768b26fedb",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:48.550083+00:00"
+    },
+    {
+      "game_id": "0022500707",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500707",
+      "data_url": "https://official.nba.com/l2m/json/0022500707.json",
+      "sha256": "c10f0e73c1f06d004834220d394173a8ed33205f79ee731217a96bb9c920a7ab",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:48.468166+00:00"
+    },
+    {
+      "game_id": "0022500713",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500713",
+      "data_url": "https://official.nba.com/l2m/json/0022500713.json",
+      "sha256": "fd2bc0e5b1c5fb5ef05c08231046e1ac97ff5822858f44cfbab506938c0b5eef",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:48.720376+00:00"
+    },
+    {
+      "game_id": "0022500716",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500716",
+      "data_url": "https://official.nba.com/l2m/json/0022500716.json",
+      "sha256": "059cce1aa1d2445c66328530504928bb392bd9e5b7432ef21fb736a07e314607",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:48.743286+00:00"
+    },
+    {
+      "game_id": "0022500726",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500726",
+      "data_url": "https://official.nba.com/l2m/json/0022500726.json",
+      "sha256": "421ee5da6a265f8edfe90d7263d0dc34b663a6ccde3136d4c3a4423fb7e0cbe5",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:48.898571+00:00"
+    },
+    {
+      "game_id": "0022500727",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500727",
+      "data_url": "https://official.nba.com/l2m/json/0022500727.json",
+      "sha256": "e9836f8316da6603d00eb4f534eefb4ad7f703762212ffe35b2c7470d8204233",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:48.874192+00:00"
+    },
+    {
+      "game_id": "0022500729",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500729",
+      "data_url": "https://official.nba.com/l2m/json/0022500729.json",
+      "sha256": "56fd235df5e470435163af3201446b7dee6b3d8645ba10a42e90c8c570f8ae2c",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:49.165612+00:00"
+    },
+    {
+      "game_id": "0022500731",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500731",
+      "data_url": "https://official.nba.com/l2m/json/0022500731.json",
+      "sha256": "55b00fa00042725d92b157b3f6340d6415108691f9545c0669c7044c031e3424",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:49.159996+00:00"
+    },
+    {
+      "game_id": "0022500735",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500735",
+      "data_url": "https://official.nba.com/l2m/json/0022500735.json",
+      "sha256": "b1d21f9e40735b2aa73363cb30a7511104931894b65957d3dec8686965f7b5e9",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:49.286592+00:00"
+    },
+    {
+      "game_id": "0022500739",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500739",
+      "data_url": "https://official.nba.com/l2m/json/0022500739.json",
+      "sha256": "93cb0ca2ad0dce70d298348c673f8e147ba3d60f3b1278b4a7e1e0b7a8276d40",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:49.258235+00:00"
+    },
+    {
+      "game_id": "0022500740",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500740",
+      "data_url": "https://official.nba.com/l2m/json/0022500740.json",
+      "sha256": "7493262cbe5e978591be14f822b0b1b226e252e5cec9f163773ff10d54d308ba",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:49.520748+00:00"
+    },
+    {
+      "game_id": "0022500741",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500741",
+      "data_url": "https://official.nba.com/l2m/json/0022500741.json",
+      "sha256": "ecb6cd25069871d9b3fe9bcea8306f00cc9c00aa35284b152068820268c8af90",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:49.480133+00:00"
+    },
+    {
+      "game_id": "0022500744",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500744",
+      "data_url": "https://official.nba.com/l2m/json/0022500744.json",
+      "sha256": "bea79ad24c58026b7f0b86f869f9725c100bf2d15a4616632f60a91571a94351",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:49.610865+00:00"
+    },
+    {
+      "game_id": "0022500746",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500746",
+      "data_url": "https://official.nba.com/l2m/json/0022500746.json",
+      "sha256": "6b6dbc7fff87333919e8116436291235b20e9c946b607a92945f745a507042bd",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:49.717407+00:00"
+    },
+    {
+      "game_id": "0022500748",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500748",
+      "data_url": "https://official.nba.com/l2m/json/0022500748.json",
+      "sha256": "0a5241b84c4f79b593a3373e0b960b64efcc6f00568cc3f28d81ef5acee0ed15",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:49.813993+00:00"
+    },
+    {
+      "game_id": "0022500750",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500750",
+      "data_url": "https://official.nba.com/l2m/json/0022500750.json",
+      "sha256": "14cb5dd8cc49355a79b588e3f8fd5e6a65868a7d1742f838ad4410546a2bacec",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:49.908313+00:00"
+    },
+    {
+      "game_id": "0022500751",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500751",
+      "data_url": "https://official.nba.com/l2m/json/0022500751.json",
+      "sha256": "9d52a32f1fa4398c2b3c58873cb8b266c3254d8c678347e573e0c248abc07111",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:49.948861+00:00"
+    },
+    {
+      "game_id": "0022500756",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500756",
+      "data_url": "https://official.nba.com/l2m/json/0022500756.json",
+      "sha256": "1ebf1ceb7f9fc7044e7185fa838cc6b40e52a529fb4f359e5e1e36bcd2fb3664",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:50.065889+00:00"
+    },
+    {
+      "game_id": "0022500763",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500763",
+      "data_url": "https://official.nba.com/l2m/json/0022500763.json",
+      "sha256": "4384f64454172fa2b96c806957a787e4f5cf9c3fb9502d1bde5838061196e934",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:50.188392+00:00"
+    },
+    {
+      "game_id": "0022500767",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500767",
+      "data_url": "https://official.nba.com/l2m/json/0022500767.json",
+      "sha256": "09285b0f858f578ba4f90eea8db2a6588218bb79fa573df2ac42614969baa408",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:50.252792+00:00"
+    },
+    {
+      "game_id": "0022500768",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500768",
+      "data_url": "https://official.nba.com/l2m/json/0022500768.json",
+      "sha256": "c7c4e783b82e0cfb19ba3adba5993f56a9b6e431604203847aac6aa39820ef94",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:50.276728+00:00"
+    },
+    {
+      "game_id": "0022500769",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500769",
+      "data_url": "https://official.nba.com/l2m/json/0022500769.json",
+      "sha256": "4b4bf5f3d6070d82f946436dc513df8957bbab8691831c6be12aeac5f9b33be4",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:50.444036+00:00"
+    },
+    {
+      "game_id": "0022500771",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500771",
+      "data_url": "https://official.nba.com/l2m/json/0022500771.json",
+      "sha256": "48aa5aaabcc1e4d3c49d7f60acbda98fe439b1e7e13b70b81f5ad96c89c68497",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:50.519957+00:00"
+    },
+    {
+      "game_id": "0022500775",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500775",
+      "data_url": "https://official.nba.com/l2m/json/0022500775.json",
+      "sha256": "ac4e4befde958b550104415cc8f62578f5f603d25c0a6b3a981e99a4fed376f3",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:50.628887+00:00"
+    },
+    {
+      "game_id": "0022500777",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500777",
+      "data_url": "https://official.nba.com/l2m/json/0022500777.json",
+      "sha256": "b73f9d9c495538e8a6e13d43b10ce31bf5b240718c3f7c237bc5da42e819393a",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:50.619821+00:00"
+    },
+    {
+      "game_id": "0022500779",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500779",
+      "data_url": "https://official.nba.com/l2m/json/0022500779.json",
+      "sha256": "bcc552adc5b691c08a87e7c4d4343f8348eeea4aedc57490b9dd8416b9f89d48",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:50.758649+00:00"
+    },
+    {
+      "game_id": "0022500782",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500782",
+      "data_url": "https://official.nba.com/l2m/json/0022500782.json",
+      "sha256": "8bb98ee32ff4433b4923232e21e613cc63d5f1ad91fd3c0cb0b91d258acc1cd5",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:50.870613+00:00"
+    },
+    {
+      "game_id": "0022500787",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500787",
+      "data_url": "https://official.nba.com/l2m/json/0022500787.json",
+      "sha256": "e176ccef177e0694037f180591d0b7c55c1d9a5a34aa052b16a772459d0521f8",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:50.923479+00:00"
+    },
+    {
+      "game_id": "0022500792",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500792",
+      "data_url": "https://official.nba.com/l2m/json/0022500792.json",
+      "sha256": "48909faf981b08df6839ef8abd83b234d34c78c40355df5bfaead38ee2d11d76",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:51.062850+00:00"
+    },
+    {
+      "game_id": "0022500797",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500797",
+      "data_url": "https://official.nba.com/l2m/json/0022500797.json",
+      "sha256": "0b5ace0ef4a569e3fd44e9589452a895fbf4c12b1ad8287fdbc3e4645616484a",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:51.070454+00:00"
+    },
+    {
+      "game_id": "0022500801",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500801",
+      "data_url": "https://official.nba.com/l2m/json/0022500801.json",
+      "sha256": "4d9626153f5a7e670b71c0f0bef2f155a1edb70fe7fd7e7704f3a0f8072d49ae",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:51.270673+00:00"
+    },
+    {
+      "game_id": "0022500802",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500802",
+      "data_url": "https://official.nba.com/l2m/json/0022500802.json",
+      "sha256": "c7c8a6f5d9db69d7f115a790e74d613ee48a45ce9a163ab4bb356a1f69d05453",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:51.242309+00:00"
+    },
+    {
+      "game_id": "0022500809",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500809",
+      "data_url": "https://official.nba.com/l2m/json/0022500809.json",
+      "sha256": "79bf4493c4a52f817a13ec3f77f7b08547b2f7df09bb1be9c41a1b9149301b51",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:51.442614+00:00"
+    },
+    {
+      "game_id": "0022500811",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500811",
+      "data_url": "https://official.nba.com/l2m/json/0022500811.json",
+      "sha256": "3c7e3aaea75b14729943f47d2cbb472320f5ad534cfbd8f491d9f7d090ec893f",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:51.458902+00:00"
+    },
+    {
+      "game_id": "0022500816",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500816",
+      "data_url": "https://official.nba.com/l2m/json/0022500816.json",
+      "sha256": "341fca3ff0b4caa303f98d217932c77b6837f57074a8e90cd542998af17f3179",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:51.636709+00:00"
+    },
+    {
+      "game_id": "0022500818",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500818",
+      "data_url": "https://official.nba.com/l2m/json/0022500818.json",
+      "sha256": "472ced81bb3a17677ebb959a32dfcaa488d372f7fb79e871f315c1f289e92bef",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:51.650764+00:00"
+    },
+    {
+      "game_id": "0022500825",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500825",
+      "data_url": "https://official.nba.com/l2m/json/0022500825.json",
+      "sha256": "be663f12662668217548cf23eeb176fb61b19df561c8f43979215b1d7aadbe80",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:51.817931+00:00"
+    },
+    {
+      "game_id": "0022500827",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500827",
+      "data_url": "https://official.nba.com/l2m/json/0022500827.json",
+      "sha256": "11a1aa3a631d6a3a28b923583ad3ab03517e33de4460f0d1973e6e8683abf463",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:51.812401+00:00"
+    },
+    {
+      "game_id": "0022500838",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500838",
+      "data_url": "https://official.nba.com/l2m/json/0022500838.json",
+      "sha256": "daecaa62c8b624be12f97e3407adda4b10f9f830b862a37982e6064e83e31e24",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:51.998629+00:00"
+    },
+    {
+      "game_id": "0022500840",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500840",
+      "data_url": "https://official.nba.com/l2m/json/0022500840.json",
+      "sha256": "a5f73fb6b5c5974a326704142c4c818c1a07bbb305eb569816b7d95115c929f6",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:51.979553+00:00"
+    },
+    {
+      "game_id": "0022500841",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500841",
+      "data_url": "https://official.nba.com/l2m/json/0022500841.json",
+      "sha256": "7aa9cc7878ee4d7af8ba03bf7643d618bce91f3c1b977229c2d7bd34a0b059c2",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:52.150068+00:00"
+    },
+    {
+      "game_id": "0022500843",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500843",
+      "data_url": "https://official.nba.com/l2m/json/0022500843.json",
+      "sha256": "652a7cfbfac45c28fe4e55df1be1e8b28d696fe9b5863470ecf6e875aa796614",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:52.240033+00:00"
+    },
+    {
+      "game_id": "0022500846",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500846",
+      "data_url": "https://official.nba.com/l2m/json/0022500846.json",
+      "sha256": "95f115ee2ce54280990af3e71477d6fd26d785c0d9643d66debad52b12209f2a",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:52.301650+00:00"
+    },
+    {
+      "game_id": "0022500849",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500849",
+      "data_url": "https://official.nba.com/l2m/json/0022500849.json",
+      "sha256": "faa04a57f8205c844f77dcc02b3fbc5871a4f44920edc889dae660af1241d720",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:52.338969+00:00"
+    },
+    {
+      "game_id": "0022500852",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500852",
+      "data_url": "https://official.nba.com/l2m/json/0022500852.json",
+      "sha256": "f8caaab405075fb8bc27730414bc23daca9342212442c18c6203005c569cb24c",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:52.542238+00:00"
+    },
+    {
+      "game_id": "0022500853",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500853",
+      "data_url": "https://official.nba.com/l2m/json/0022500853.json",
+      "sha256": "8a8486b6552067d9acbada654289e113cab4bf28b146a84700ad0e25ad267d95",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:52.561602+00:00"
+    },
+    {
+      "game_id": "0022500854",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500854",
+      "data_url": "https://official.nba.com/l2m/json/0022500854.json",
+      "sha256": "0cb4b2272db4f6c22c6fcf88c54ccdf9a0323688bbda7a1557cfbee4b86ecd55",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:52.635967+00:00"
+    },
+    {
+      "game_id": "0022500855",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500855",
+      "data_url": "https://official.nba.com/l2m/json/0022500855.json",
+      "sha256": "f20fbf0ec0d17df5bb50916d50c81b196c0637484b71c48b140bdf7263fd76c7",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:52.647326+00:00"
+    },
+    {
+      "game_id": "0022500857",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500857",
+      "data_url": "https://official.nba.com/l2m/json/0022500857.json",
+      "sha256": "7a0fec417f3e3834d78698c51f12999c921a46675f44c21b54fbcc65fa43f004",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:52.849046+00:00"
+    },
+    {
+      "game_id": "0022500858",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500858",
+      "data_url": "https://official.nba.com/l2m/json/0022500858.json",
+      "sha256": "98b662fa6ab99bac2804a3f8451c3a431a84fca60f5669863ae2b8db3ac35fa8",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:52.897758+00:00"
+    },
+    {
+      "game_id": "0022500862",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500862",
+      "data_url": "https://official.nba.com/l2m/json/0022500862.json",
+      "sha256": "bf53bff8101540de3ef44e291822a70d359085ff229f4aa9f284bcd599ae9011",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:53.002348+00:00"
+    },
+    {
+      "game_id": "0022500869",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500869",
+      "data_url": "https://official.nba.com/l2m/json/0022500869.json",
+      "sha256": "b13ce039cb878e67e21c4300425509bea17a2038f1c28e78a85ab25617351195",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:52.998383+00:00"
+    },
+    {
+      "game_id": "0022500881",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500881",
+      "data_url": "https://official.nba.com/l2m/json/0022500881.json",
+      "sha256": "aa0bd9ffdfa3d0f6f79bd791f2a3d4e18c653c5fbce69ffd0c3f463396d0db1d",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:53.154242+00:00"
+    },
+    {
+      "game_id": "0022500884",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500884",
+      "data_url": "https://official.nba.com/l2m/json/0022500884.json",
+      "sha256": "f78faeecc2ee68a034366ae92a3f9e0d28db388e33c18f644ccdb04685152958",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:53.223338+00:00"
+    },
+    {
+      "game_id": "0022500893",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500893",
+      "data_url": "https://official.nba.com/l2m/json/0022500893.json",
+      "sha256": "85d9fb15fda31996217aeb97d9bc3fc5183d5cca2145621e250f80cce5b58d95",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:53.337036+00:00"
+    },
+    {
+      "game_id": "0022500895",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500895",
+      "data_url": "https://official.nba.com/l2m/json/0022500895.json",
+      "sha256": "68cf587da11f62bf067741ff840a1a0ee39b917e24e8967cb52b9c51258a82a4",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:53.410679+00:00"
+    },
+    {
+      "game_id": "0022500899",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500899",
+      "data_url": "https://official.nba.com/l2m/json/0022500899.json",
+      "sha256": "6ffd8a087a621865b4b391e6d59daf7ce1f01347548ea0f9442d4ed352bd6710",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:53.528251+00:00"
+    },
+    {
+      "game_id": "0022500902",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500902",
+      "data_url": "https://official.nba.com/l2m/json/0022500902.json",
+      "sha256": "ffded46bed72a2dd50839bee798ba0d4569291859eee201c55d79d0126530796",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:53.612315+00:00"
+    },
+    {
+      "game_id": "0022500905",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500905",
+      "data_url": "https://official.nba.com/l2m/json/0022500905.json",
+      "sha256": "e2fe6c985512fcc241004c84dd4828d276267a8425f0e9da928b8a5d5d7faaf2",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:53.709441+00:00"
+    },
+    {
+      "game_id": "0022500906",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500906",
+      "data_url": "https://official.nba.com/l2m/json/0022500906.json",
+      "sha256": "e0ea58f258eb73f00eae65268e025eb353707848953b32af05ce144a4270f947",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:53.758271+00:00"
+    },
+    {
+      "game_id": "0022500912",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500912",
+      "data_url": "https://official.nba.com/l2m/json/0022500912.json",
+      "sha256": "f9c3eb18a2707f59a6dcd66b3df47e420e1aa9d7f6427a80cc0d4655c86a5be9",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:54.011968+00:00"
+    },
+    {
+      "game_id": "0022500913",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500913",
+      "data_url": "https://official.nba.com/l2m/json/0022500913.json",
+      "sha256": "e3d306c84f4cc5066a06ffb6108cbce4c1823045a98958bde43c6fc68ee032f7",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:53.942123+00:00"
+    },
+    {
+      "game_id": "0022500916",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500916",
+      "data_url": "https://official.nba.com/l2m/json/0022500916.json",
+      "sha256": "4d27e3a700ede7b4290f77e26a899d54b6563764998357f6f71a5b50bbe9e9ee",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:54.036814+00:00"
+    },
+    {
+      "game_id": "0022500918",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500918",
+      "data_url": "https://official.nba.com/l2m/json/0022500918.json",
+      "sha256": "bf84cdba3a082a2f3825dfc533e56c80ced6539d6ec837a1b229acc5f18e6431",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:54.058149+00:00"
+    },
+    {
+      "game_id": "0022500920",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500920",
+      "data_url": "https://official.nba.com/l2m/json/0022500920.json",
+      "sha256": "b117a6ce5905e8705f565c7711f84c09573b990f15dcd6eb980c8cb338bba645",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:54.305711+00:00"
+    },
+    {
+      "game_id": "0022500933",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500933",
+      "data_url": "https://official.nba.com/l2m/json/0022500933.json",
+      "sha256": "737ae341dd17b7b066523937bbeaec9420839522b5c8fe5d947a415dbe6ca08d",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:54.347308+00:00"
+    },
+    {
+      "game_id": "0022500934",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500934",
+      "data_url": "https://official.nba.com/l2m/json/0022500934.json",
+      "sha256": "b413189d11f083d15134123845b7e180afe81dc56ebddf7977cb4f06e11e352c",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:54.571367+00:00"
+    },
+    {
+      "game_id": "0022500943",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500943",
+      "data_url": "https://official.nba.com/l2m/json/0022500943.json",
+      "sha256": "ee485105eab037ab579944ed872c254d91f7a6ed5112945a31d73ca953ae3854",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:54.587552+00:00"
+    },
+    {
+      "game_id": "0022500944",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500944",
+      "data_url": "https://official.nba.com/l2m/json/0022500944.json",
+      "sha256": "a79b141aaee9425555e7dfa194940acdc6ede1bdf813e37511568df396a0c0b4",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:54.659578+00:00"
+    },
+    {
+      "game_id": "0022500945",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500945",
+      "data_url": "https://official.nba.com/l2m/json/0022500945.json",
+      "sha256": "0f24c41c259d38f0d793bac6e9387584c11e2ef72b62472618ebc30daf91cf6e",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:54.669462+00:00"
+    },
+    {
+      "game_id": "0022500947",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500947",
+      "data_url": "https://official.nba.com/l2m/json/0022500947.json",
+      "sha256": "cb682b336a94b4c56887c97dbbe283abc64a999cd1adeb74f7fd01f7b531c2da",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:54.925391+00:00"
+    },
+    {
+      "game_id": "0022500955",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500955",
+      "data_url": "https://official.nba.com/l2m/json/0022500955.json",
+      "sha256": "96a5a62fa71218241ce7ab40eb2d70b74e842ca6a2798f0e60b64b5d9e7cf699",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:54.943764+00:00"
+    },
+    {
+      "game_id": "0022500957",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500957",
+      "data_url": "https://official.nba.com/l2m/json/0022500957.json",
+      "sha256": "09c88c8892b019a0b0341564d1825f854c99ffeeb2e3f0ba9b6209050556cae6",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:55.176729+00:00"
+    },
+    {
+      "game_id": "0022500958",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500958",
+      "data_url": "https://official.nba.com/l2m/json/0022500958.json",
+      "sha256": "bc081882405027e4e47af4e8c3f0833bb2aba8e0a893377d34cd659a379efb65",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:55.080779+00:00"
+    },
+    {
+      "game_id": "0022500959",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500959",
+      "data_url": "https://official.nba.com/l2m/json/0022500959.json",
+      "sha256": "3bdcc55c072f9c3d7d88daf3f2607a8ac515edc3a76ef82e67e9644180811e30",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:55.284621+00:00"
+    },
+    {
+      "game_id": "0022500963",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500963",
+      "data_url": "https://official.nba.com/l2m/json/0022500963.json",
+      "sha256": "ea6da97040d0bd9cd47c93090e7bf1ebf8d45526fb1942eabbed665ffc82ee9b",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:55.321311+00:00"
+    },
+    {
+      "game_id": "0022500964",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500964",
+      "data_url": "https://official.nba.com/l2m/json/0022500964.json",
+      "sha256": "f4215d57be21d1ca17c254d68bb2e20a43dad6131d36f7865c975e1f8ddb6460",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:55.415505+00:00"
+    },
+    {
+      "game_id": "0022500969",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500969",
+      "data_url": "https://official.nba.com/l2m/json/0022500969.json",
+      "sha256": "2e307ebc08d7cfe5b213b7725f5efb1e9a221ae5e8814d7eb0759e2a9eeff0e2",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:55.500997+00:00"
+    },
+    {
+      "game_id": "0022500972",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500972",
+      "data_url": "https://official.nba.com/l2m/json/0022500972.json",
+      "sha256": "15a23a18effe9baea98b5bdb2e822f52d5a22e3b830a7dafe939e00950cac837",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:55.679417+00:00"
+    },
+    {
+      "game_id": "0022500974",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500974",
+      "data_url": "https://official.nba.com/l2m/json/0022500974.json",
+      "sha256": "94bfb2529c98f896602b1b576faed9fdaa8ef0a8bb4423bff854d763f360f7f1",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:55.807908+00:00"
+    },
+    {
+      "game_id": "0022500981",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500981",
+      "data_url": "https://official.nba.com/l2m/json/0022500981.json",
+      "sha256": "764c6dee1539d0beec3e3265667d4700d06699f8d6cace182997e7f9d74b9313",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:55.830641+00:00"
+    },
+    {
+      "game_id": "0022500982",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500982",
+      "data_url": "https://official.nba.com/l2m/json/0022500982.json",
+      "sha256": "2a36d7b50122e43f0d3c3f62c195d241dc6f0c0af4f10015d1f172f8a683ca5a",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:55.839121+00:00"
+    },
+    {
+      "game_id": "0022500986",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022500986",
+      "data_url": "https://official.nba.com/l2m/json/0022500986.json",
+      "sha256": "0ebeba26b1e4dba0fed19ebf44e38c7721f76d407aa94512abb676386fb67017",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:56.027625+00:00"
+    },
+    {
+      "game_id": "0022501001",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022501001",
+      "data_url": "https://official.nba.com/l2m/json/0022501001.json",
+      "sha256": "61f62b4caeb58e15a6ca552c727b47d97eeec05c0e6ea5d2a21b7dd88512faa4",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:56.326933+00:00"
+    },
+    {
+      "game_id": "0022501011",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022501011",
+      "data_url": "https://official.nba.com/l2m/json/0022501011.json",
+      "sha256": "67d84ee2c558d18e420781665e9286a6d148428b8964cc5e69561d83b7ba0d55",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:56.347594+00:00"
+    },
+    {
+      "game_id": "0022501013",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022501013",
+      "data_url": "https://official.nba.com/l2m/json/0022501013.json",
+      "sha256": "3a9344a104077f68a9d3effa68b3b49402564be322fac2e80e5bfb9d0f122d38",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:56.186376+00:00"
+    },
+    {
+      "game_id": "0022501016",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022501016",
+      "data_url": "https://official.nba.com/l2m/json/0022501016.json",
+      "sha256": "89c33d79a852b585ed65ef533cbee3815d49f34938d26963f1e67d4ac4ba9534",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:56.453041+00:00"
+    },
+    {
+      "game_id": "0022501020",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022501020",
+      "data_url": "https://official.nba.com/l2m/json/0022501020.json",
+      "sha256": "4c5832ab0bf8658866eec12ffd025dd1a57332ddbef6813b125035368415f5a5",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:56.584846+00:00"
+    },
+    {
+      "game_id": "0022501021",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022501021",
+      "data_url": "https://official.nba.com/l2m/json/0022501021.json",
+      "sha256": "21fb4b908d2beb8018f563482405014f5f9a18517c7be6d603f000ce5b72d13d",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:56.673474+00:00"
+    },
+    {
+      "game_id": "0022501024",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022501024",
+      "data_url": "https://official.nba.com/l2m/json/0022501024.json",
+      "sha256": "3d1df546d6605069ec82ea37c08de3a42b3b3cdbca3d3a268d0396b02939a630",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:56.879518+00:00"
+    },
+    {
+      "game_id": "0022501025",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022501025",
+      "data_url": "https://official.nba.com/l2m/json/0022501025.json",
+      "sha256": "3d4f696951cfd6d1b999695626db0161e68ee473ddb418e66cef5c435212c25b",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:56.834480+00:00"
+    },
+    {
+      "game_id": "0022501027",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022501027",
+      "data_url": "https://official.nba.com/l2m/json/0022501027.json",
+      "sha256": "9cdb2c9cab760d039231acf643ea21f8fe5ec13edc461d926affff75cc0a0bbe",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:56.933961+00:00"
+    },
+    {
+      "game_id": "0022501029",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022501029",
+      "data_url": "https://official.nba.com/l2m/json/0022501029.json",
+      "sha256": "7374664dd23dc3bb70eb2fcc537db9c85b65a540ff2fa696f10dd186043e4f71",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:56.986644+00:00"
+    },
+    {
+      "game_id": "0022501031",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022501031",
+      "data_url": "https://official.nba.com/l2m/json/0022501031.json",
+      "sha256": "8d8a772d98d7bac86735b3d60b23c620f7735aebdc383fb02f97b9d2139f48f0",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:57.160367+00:00"
+    },
+    {
+      "game_id": "0022501033",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022501033",
+      "data_url": "https://official.nba.com/l2m/json/0022501033.json",
+      "sha256": "2c1db16206cafd95ad17d4107d51cc67f8940b165b7b66d04e2ecc4a85d2928a",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:57.225365+00:00"
+    },
+    {
+      "game_id": "0022501038",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022501038",
+      "data_url": "https://official.nba.com/l2m/json/0022501038.json",
+      "sha256": "494024e5a988d4f659baef6082a6bec99fdbdeda92a5bddd62c97963f08a09c8",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:57.393055+00:00"
+    },
+    {
+      "game_id": "0022501039",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022501039",
+      "data_url": "https://official.nba.com/l2m/json/0022501039.json",
+      "sha256": "1a5e859036e8bfbef6ee756a475c224e2b85ef0ae5d9fbd6a16620c4e86b5518",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:57.362704+00:00"
+    },
+    {
+      "game_id": "0022501042",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022501042",
+      "data_url": "https://official.nba.com/l2m/json/0022501042.json",
+      "sha256": "2e94b6aed40dda1f0afc7eb0a68d14aa00780b3e34f753f9039dcecbd6d702e2",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:57.612929+00:00"
+    },
+    {
+      "game_id": "0022501044",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022501044",
+      "data_url": "https://official.nba.com/l2m/json/0022501044.json",
+      "sha256": "8d1e8fd81da4e4c38ae9d8922ff0ca756ed68fb7e11008b80cba7e9d66c46c5f",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:57.586856+00:00"
+    },
+    {
+      "game_id": "0022501048",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022501048",
+      "data_url": "https://official.nba.com/l2m/json/0022501048.json",
+      "sha256": "4d15f54f74dc513b5db3c09259e16bbf8508f4b8afc49a19106fab3118053754",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:57.723577+00:00"
+    },
+    {
+      "game_id": "0022501049",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022501049",
+      "data_url": "https://official.nba.com/l2m/json/0022501049.json",
+      "sha256": "9a251661c996ec00e455c81a320c17d85a495adf4d343fa2353d744c1d2bad0a",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:57.771606+00:00"
+    },
+    {
+      "game_id": "0022501050",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022501050",
+      "data_url": "https://official.nba.com/l2m/json/0022501050.json",
+      "sha256": "7964762209612f38dd79f78d749609f85b4ea9944b961c67916c80fcbc51e08b",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:57.981543+00:00"
+    },
+    {
+      "game_id": "0022501051",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022501051",
+      "data_url": "https://official.nba.com/l2m/json/0022501051.json",
+      "sha256": "e60c8f9342642d0b0f7b485c9f83b7936f1e9a97a1d4817455faf27e4408cc70",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:57.954036+00:00"
+    },
+    {
+      "game_id": "0022501058",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022501058",
+      "data_url": "https://official.nba.com/l2m/json/0022501058.json",
+      "sha256": "d17323c9a6f41275d0cc512b1bccf5121bbfd3b151575f0dfb40240ddcca57f0",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:58.071632+00:00"
+    },
+    {
+      "game_id": "0022501060",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022501060",
+      "data_url": "https://official.nba.com/l2m/json/0022501060.json",
+      "sha256": "b585435313ac5433851c249535d6435a33196cbe6e565792874e7a932beecc8d",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:58.144564+00:00"
+    },
+    {
+      "game_id": "0022501065",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022501065",
+      "data_url": "https://official.nba.com/l2m/json/0022501065.json",
+      "sha256": "f002d465c4daf9956bb0d3a86c417425764983e0a75dbf3084a695129aa17b50",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:58.311568+00:00"
+    },
+    {
+      "game_id": "0022501066",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022501066",
+      "data_url": "https://official.nba.com/l2m/json/0022501066.json",
+      "sha256": "7311ab1e1902f1c51d24ab6b35911f81bc77651c91803c04906ebd609e6b56ba",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:58.459307+00:00"
+    },
+    {
+      "game_id": "0022501072",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022501072",
+      "data_url": "https://official.nba.com/l2m/json/0022501072.json",
+      "sha256": "3a92e9d7312c02d2c9dfb879bb5eeb755d00937f85e9fbb135254fb6e5007243",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:58.390350+00:00"
+    },
+    {
+      "game_id": "0022501073",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022501073",
+      "data_url": "https://official.nba.com/l2m/json/0022501073.json",
+      "sha256": "d080dd17c7ad66bc899454d52490431ba160d731dcd3274168d914a07c732db8",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:58.621837+00:00"
+    },
+    {
+      "game_id": "0022501074",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022501074",
+      "data_url": "https://official.nba.com/l2m/json/0022501074.json",
+      "sha256": "34ce0810de9161a233ac83f951afb5263767690735e7673c5da204ce060fa7e1",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:58.625169+00:00"
+    },
+    {
+      "game_id": "0022501077",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022501077",
+      "data_url": "https://official.nba.com/l2m/json/0022501077.json",
+      "sha256": "933eb46ce7c24a19d7c99568b5013401587501326992ab0b10392730155c3119",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:58.708341+00:00"
+    },
+    {
+      "game_id": "0022501079",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022501079",
+      "data_url": "https://official.nba.com/l2m/json/0022501079.json",
+      "sha256": "fa4dbe5c9104d3d44a8d21f4409a745cd2360f492d18e5b00ac28092a9d600ea",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:58.857851+00:00"
+    },
+    {
+      "game_id": "0022501097",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022501097",
+      "data_url": "https://official.nba.com/l2m/json/0022501097.json",
+      "sha256": "878c1757d4c90f4eadd680ef10ad50675fd5107fe8ddb6ce382b22155d5be2b9",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:58.945535+00:00"
+    },
+    {
+      "game_id": "0022501099",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022501099",
+      "data_url": "https://official.nba.com/l2m/json/0022501099.json",
+      "sha256": "15a278377f70818b1207262d40a23370d99d282a571d1ec87184b7317fd8ef56",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:58.939656+00:00"
+    },
+    {
+      "game_id": "0022501108",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022501108",
+      "data_url": "https://official.nba.com/l2m/json/0022501108.json",
+      "sha256": "9411b527a2ddaa272298e2d61743e9b3f7b8ca01b0104fab629e38fc2d402998",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:59.018083+00:00"
+    },
+    {
+      "game_id": "0022501115",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022501115",
+      "data_url": "https://official.nba.com/l2m/json/0022501115.json",
+      "sha256": "8dddcb80e2a03b2beeb841a3000d84dcecc8fc99f50157b96171a6e29ecf10b6",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:59.223187+00:00"
+    },
+    {
+      "game_id": "0022501117",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022501117",
+      "data_url": "https://official.nba.com/l2m/json/0022501117.json",
+      "sha256": "91708dd912ceb1fb390187d8b32b2f271a7ad0e48537fcd2a8b7e70ebfc1f96c",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:59.298889+00:00"
+    },
+    {
+      "game_id": "0022501128",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022501128",
+      "data_url": "https://official.nba.com/l2m/json/0022501128.json",
+      "sha256": "fd9d349d08fc9f0b815f3cf36507b7f6be10b49a1fc022bd63246abc2c69768b",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:59.261371+00:00"
+    },
+    {
+      "game_id": "0022501130",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022501130",
+      "data_url": "https://official.nba.com/l2m/json/0022501130.json",
+      "sha256": "b79f20a1fbe92d35f513a01c2dc77820bd084e4641b869c2e0b8890e1a1b233d",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:59.409539+00:00"
+    },
+    {
+      "game_id": "0022501133",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022501133",
+      "data_url": "https://official.nba.com/l2m/json/0022501133.json",
+      "sha256": "191e807e3bd32f898fede35467602171ec75269f86bd195885e32a5fea4891f5",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:59.705471+00:00"
+    },
+    {
+      "game_id": "0022501138",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022501138",
+      "data_url": "https://official.nba.com/l2m/json/0022501138.json",
+      "sha256": "86ec654e143871f3b4e74bccc66efe425547226973a6bcd00c028a192550c353",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:59.666685+00:00"
+    },
+    {
+      "game_id": "0022501142",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022501142",
+      "data_url": "https://official.nba.com/l2m/json/0022501142.json",
+      "sha256": "9827736456a1e40006e92f5c25678321b01c59bf18eefe678eef680fda5f0e08",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:59.644320+00:00"
+    },
+    {
+      "game_id": "0022501143",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022501143",
+      "data_url": "https://official.nba.com/l2m/json/0022501143.json",
+      "sha256": "a9b210fb5d82781a50482efe55552818e8013c3f7d391118b69bb1a9e53e03c1",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:59.708708+00:00"
+    },
+    {
+      "game_id": "0022501147",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022501147",
+      "data_url": "https://official.nba.com/l2m/json/0022501147.json",
+      "sha256": "02cf2af8a5d6d745bd8c8ddb8aaa547cc4401205374b60abcc702cc8d5dfaaf7",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:54:59.984647+00:00"
+    },
+    {
+      "game_id": "0022501150",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022501150",
+      "data_url": "https://official.nba.com/l2m/json/0022501150.json",
+      "sha256": "eea1deeb9cbae2e8ccb684420bd6fd23ab33b37afe205163c64ac74862594984",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:55:00.031334+00:00"
+    },
+    {
+      "game_id": "0022501154",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022501154",
+      "data_url": "https://official.nba.com/l2m/json/0022501154.json",
+      "sha256": "a357eaceaada6f0f1da58e18921f012e03a7762c34757391776fe009f2762ec4",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:55:00.020618+00:00"
+    },
+    {
+      "game_id": "0022501158",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022501158",
+      "data_url": "https://official.nba.com/l2m/json/0022501158.json",
+      "sha256": "b1abf8eba8143b6525f7ee928101b6737e0964d3839c1ed12349c0cb82c27c63",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:55:00.096752+00:00"
+    },
+    {
+      "game_id": "0022501164",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022501164",
+      "data_url": "https://official.nba.com/l2m/json/0022501164.json",
+      "sha256": "d894ec41e1ada06d13fbf358ef48e4283f362e4b5032853ed10bcdafaa23b595",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:55:00.295878+00:00"
+    },
+    {
+      "game_id": "0022501168",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022501168",
+      "data_url": "https://official.nba.com/l2m/json/0022501168.json",
+      "sha256": "f7c4c6da478238f6cdd3c47d0964b88fdf24dee8a6139ee5dcf33908ffe9976b",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:55:00.385286+00:00"
+    },
+    {
+      "game_id": "0022501184",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022501184",
+      "data_url": "https://official.nba.com/l2m/json/0022501184.json",
+      "sha256": "7ed08bcf2c42a8a3a7d5ac3027b43bfc52802bfbbad22acd9d9b7e95a22d0011",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:55:00.567145+00:00"
+    },
+    {
+      "game_id": "0022501186",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022501186",
+      "data_url": "https://official.nba.com/l2m/json/0022501186.json",
+      "sha256": "c7e9457de69d887423f25f8af523a6ab005433e1e1881f36bd081ba8aae04b9b",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:55:00.520585+00:00"
+    },
+    {
+      "game_id": "0022501205",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022501205",
+      "data_url": "https://official.nba.com/l2m/json/0022501205.json",
+      "sha256": "23d0a78a461daf47b33fceac262311475a22ee1766191055e8daa7ef35549e75",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:55:00.611072+00:00"
+    },
+    {
+      "game_id": "0022501209",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022501209",
+      "data_url": "https://official.nba.com/l2m/json/0022501209.json",
+      "sha256": "5f1356bca7275f1c6ab33de470d79efaed1accfa391f242ba957ee52b7843a95",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:55:01.069915+00:00"
+    },
+    {
+      "game_id": "0022501212",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022501212",
+      "data_url": "https://official.nba.com/l2m/json/0022501212.json",
+      "sha256": "b0bf7bc329d70f28d27fd410a83535e1393a7539c84c8c08c10e9df3afd2820e",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:55:00.995657+00:00"
+    },
+    {
+      "game_id": "0022501213",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022501213",
+      "data_url": "https://official.nba.com/l2m/json/0022501213.json",
+      "sha256": "4749c5dcfd9cbdedbc8e43206b9cba74d748d1a5b71fcffff48a00446ebf8e6e",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:55:00.916154+00:00"
+    },
+    {
+      "game_id": "0022501215",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022501215",
+      "data_url": "https://official.nba.com/l2m/json/0022501215.json",
+      "sha256": "ee1d212c11e65f669bcbac4d2b7196eb0a30564d98d6824beed6092a9766d9a1",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:55:00.963494+00:00"
+    },
+    {
+      "game_id": "0022501217",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022501217",
+      "data_url": "https://official.nba.com/l2m/json/0022501217.json",
+      "sha256": "a54e61a67673e0f95bcef80a4993ce197b9b30bc14170f31b44add562bade24f",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:55:01.252412+00:00"
+    },
+    {
+      "game_id": "0022501218",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022501218",
+      "data_url": "https://official.nba.com/l2m/json/0022501218.json",
+      "sha256": "c3faa677e81c03cea7bc2d4d1603e6b6b05ab7dc370ee5d4075cc0a70b334438",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:55:01.291298+00:00"
+    },
+    {
+      "game_id": "0022501221",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022501221",
+      "data_url": "https://official.nba.com/l2m/json/0022501221.json",
+      "sha256": "cc70eece857966995ac629f708f93d1b2097c6276670322a500acfc884ce015c",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:55:01.354124+00:00"
+    },
+    {
+      "game_id": "0022501222",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022501222",
+      "data_url": "https://official.nba.com/l2m/json/0022501222.json",
+      "sha256": "adacc46ed3a3603a2da4765c271f9539bc8d4dd7828aca4d8018c83bd90d8b9b",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:55:01.439071+00:00"
+    },
+    {
+      "game_id": "0022501224",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022501224",
+      "data_url": "https://official.nba.com/l2m/json/0022501224.json",
+      "sha256": "7e7e2ad5c5dd0b70f1e6bf59d90bf61970a4f674ad7aa550e34b8e3c412ac5d2",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:55:01.677281+00:00"
+    },
+    {
+      "game_id": "0022501225",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022501225",
+      "data_url": "https://official.nba.com/l2m/json/0022501225.json",
+      "sha256": "6cfcc361164ad876eb9f6697ba0b37fa8c859a098c1e40aad12831382ec17777",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:55:01.742044+00:00"
+    },
+    {
+      "game_id": "0022501228",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022501228",
+      "data_url": "https://official.nba.com/l2m/json/0022501228.json",
+      "sha256": "d41bff9cedcbc105bf988ec5a3fd6af1c8833e3d32311242dfe36eef1aae025d",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:55:01.895714+00:00"
+    },
+    {
+      "game_id": "0022501230",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0022501230",
+      "data_url": "https://official.nba.com/l2m/json/0022501230.json",
+      "sha256": "e30cf8c0d27f5635bf9bae22b51cb025cf8406704105a3bae08a5d9b4cde20aa",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:55:01.815858+00:00"
+    },
+    {
+      "game_id": "0042500103",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0042500103",
+      "data_url": "https://official.nba.com/l2m/json/0042500103.json",
+      "sha256": "ae1ca4bfa7815dda85823c98d2cd8a2a9b23e46e3b8750a3e4f20e67c50a0525",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:55:02.030365+00:00"
+    },
+    {
+      "game_id": "0042500104",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0042500104",
+      "data_url": "https://official.nba.com/l2m/json/0042500104.json",
+      "sha256": "325c7a898ce7f07f7879994732ccf38fb0a2a9343e70483e3eaa4dbf31f6df6f",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:55:02.223745+00:00"
+    },
+    {
+      "game_id": "0042500105",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0042500105",
+      "data_url": "https://official.nba.com/l2m/json/0042500105.json",
+      "sha256": "2a99244f4502567a45aa3e8b9126a2253d294001ddba7ef625c47c3d65752bd8",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:55:02.181863+00:00"
+    },
+    {
+      "game_id": "0042500113",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0042500113",
+      "data_url": "https://official.nba.com/l2m/json/0042500113.json",
+      "sha256": "acad418720b0601dd53c85e08c379952248d989df248cc58fe9a3c81e9648c42",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:55:02.241739+00:00"
+    },
+    {
+      "game_id": "0042500117",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0042500117",
+      "data_url": "https://official.nba.com/l2m/json/0042500117.json",
+      "sha256": "9d17ddbeb1bc9515168d74ec82e855c750fc34800585f2e7e5fa7ab3cbf48954",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:55:02.344369+00:00"
+    },
+    {
+      "game_id": "0042500122",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0042500122",
+      "data_url": "https://official.nba.com/l2m/json/0042500122.json",
+      "sha256": "f52ef2e2ff14e996085c3bf02924808c65a17ebe29c7a81012692958346eea4b",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:55:02.552307+00:00"
+    },
+    {
+      "game_id": "0042500123",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0042500123",
+      "data_url": "https://official.nba.com/l2m/json/0042500123.json",
+      "sha256": "24f74a38a3f223f938ee69279c7084cb1ce111f77759b6e594fa0ba09ccc5091",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:55:02.676472+00:00"
+    },
+    {
+      "game_id": "0042500134",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0042500134",
+      "data_url": "https://official.nba.com/l2m/json/0042500134.json",
+      "sha256": "a1f1360808cb2b126ed01066d686b447633a464d994f046abe3096d63c38ec6d",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:55:02.708372+00:00"
+    },
+    {
+      "game_id": "0042500136",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0042500136",
+      "data_url": "https://official.nba.com/l2m/json/0042500136.json",
+      "sha256": "fff9b27d403e1f36dc1b04d2fc8c9f73d1f7ba4f9a253a1f2572f5b6b83e597a",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:55:02.715583+00:00"
+    },
+    {
+      "game_id": "0042500152",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0042500152",
+      "data_url": "https://official.nba.com/l2m/json/0042500152.json",
+      "sha256": "5b3e8847ce1164c4dce14f02a8a7ad050483bbb3fb439390964eb0f96c233ebb",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:55:03.155780+00:00"
+    },
+    {
+      "game_id": "0042500162",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0042500162",
+      "data_url": "https://official.nba.com/l2m/json/0042500162.json",
+      "sha256": "a2cc3598f3db8c135f70b6819f326c1ef47cc38d427a06b5d146a38daf0e37d2",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:55:03.100955+00:00"
+    },
+    {
+      "game_id": "0042500166",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0042500166",
+      "data_url": "https://official.nba.com/l2m/json/0042500166.json",
+      "sha256": "afc2b6a157beef474d6a2a9aa6e6afe48defbb0cd9df8b18b88d552d1a7edaa5",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:55:03.141135+00:00"
+    },
+    {
+      "game_id": "0042500173",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0042500173",
+      "data_url": "https://official.nba.com/l2m/json/0042500173.json",
+      "sha256": "e2ec7bfeb28280fdb52dcbb1e65450fe4fc56a9741a09cd80113f4a45c04e5d9",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:55:03.160355+00:00"
+    },
+    {
+      "game_id": "0042500175",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0042500175",
+      "data_url": "https://official.nba.com/l2m/json/0042500175.json",
+      "sha256": "25bc3c0f440fa104957f8e7af940babcdc9bf264a79a8b004fd5d9ad5bb69c6f",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:55:03.518457+00:00"
+    },
+    {
+      "game_id": "0042500203",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0042500203",
+      "data_url": "https://official.nba.com/l2m/json/0042500203.json",
+      "sha256": "9854535e2308d04905541830f0ef93a010d4338e8dda9e293f129c94dc41bc75",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:55:03.729698+00:00"
+    },
+    {
+      "game_id": "0042500205",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0042500205",
+      "data_url": "https://official.nba.com/l2m/json/0042500205.json",
+      "sha256": "a3ad426e69864434374a00f408306bc8981fd0d3bfd6e69531e75c5417774618",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:55:03.569537+00:00"
+    },
+    {
+      "game_id": "0042500224",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0042500224",
+      "data_url": "https://official.nba.com/l2m/json/0042500224.json",
+      "sha256": "f9a696f914b504eddfa14b0a490f7182eeae61fc628bf88bfd108269329558e6",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:55:03.572457+00:00"
+    },
+    {
+      "game_id": "0042500231",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0042500231",
+      "data_url": "https://official.nba.com/l2m/json/0042500231.json",
+      "sha256": "5ad5e2f31a7fd8623ba8d174de1515ce611094356a9878fa52a92bc035feaf36",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:55:03.947729+00:00"
+    },
+    {
+      "game_id": "0042500234",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0042500234",
+      "data_url": "https://official.nba.com/l2m/json/0042500234.json",
+      "sha256": "3d0377c7f6303bf456b9cc68b5f6fffa3f834e0c7cd63008819201c1e12509db",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:55:04.054055+00:00"
+    },
+    {
+      "game_id": "0042500301",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0042500301",
+      "data_url": "https://official.nba.com/l2m/json/0042500301.json",
+      "sha256": "ee0f66e61d7e8a6a5581e4add655d4727b359a0bac3566e72f1b551a87fb59f7",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:55:03.992011+00:00"
+    },
+    {
+      "game_id": "0042500311",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0042500311",
+      "data_url": "https://official.nba.com/l2m/json/0042500311.json",
+      "sha256": "79045b6f0d33df0eb42a2ee75282d9f169f9a7fa326e4688afeeddeb383e3cf3",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:55:04.033470+00:00"
+    },
+    {
+      "game_id": "0042500401",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0042500401",
+      "data_url": "https://official.nba.com/l2m/json/0042500401.json",
+      "sha256": "7d0381f7ff11166bea4b983c2eb91c879fdab7ace97d9fa42b72e5e857685c9c",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:55:04.544400+00:00"
+    },
+    {
+      "game_id": "0042500402",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0042500402",
+      "data_url": "https://official.nba.com/l2m/json/0042500402.json",
+      "sha256": "f42036906c9cb87dc01783e006119079e7a45b7bf6958dc164cffb0632df1bbe",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:55:04.292679+00:00"
+    },
+    {
+      "game_id": "0042500403",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0042500403",
+      "data_url": "https://official.nba.com/l2m/json/0042500403.json",
+      "sha256": "121d8f9da2a6f0d61165ae48e460b2a78825b34f686a74b8340f53dac509d1fb",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:55:04.428658+00:00"
+    },
+    {
+      "game_id": "0042500404",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0042500404",
+      "data_url": "https://official.nba.com/l2m/json/0042500404.json",
+      "sha256": "c74b0010506aa5ad80bbcbfa0bbb5b9e232bd864a2aaaf6764d9ced7c0a0af64",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:55:04.516514+00:00"
+    },
+    {
+      "game_id": "0042500405",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0042500405",
+      "data_url": "https://official.nba.com/l2m/json/0042500405.json",
+      "sha256": "4d4b600c0c547e50395485f99d41471976521a9569d46f693ba5423925be80a1",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:55:04.684745+00:00"
+    },
+    {
+      "game_id": "0052500111",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0052500111",
+      "data_url": "https://official.nba.com/l2m/json/0052500111.json",
+      "sha256": "11d0122ec78ed58ee017ed16e8be2fadd3f1dbcda8ce2c695d46219362918799",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:55:04.772324+00:00"
+    },
+    {
+      "game_id": "0052500121",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0052500121",
+      "data_url": "https://official.nba.com/l2m/json/0052500121.json",
+      "sha256": "eb3c9e523d738a345e225b7d68e10f187a121d8323b5268874e5a7b8ab856efc",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:55:04.877213+00:00"
+    },
+    {
+      "game_id": "0052500131",
+      "report_url": "https://official.nba.com/l2m/L2MReport.html?gameId=0052500131",
+      "data_url": "https://official.nba.com/l2m/json/0052500131.json",
+      "sha256": "a2fa376294b5e01684efb06e4710d1d25bb1689db89b2235491318def860586a",
+      "status": "ok",
+      "retrieved_at": "2026-10-18T06:55:04.894515+00:00"
+    }
+  ],
+  "finished_at": "2026-10-18T06:55:04.894875+00:00",
+  "failed_reports": 0
+}

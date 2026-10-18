@@ -1,3 +1,4 @@
+import { mapEspnStatus } from "@/lib/espn-scoreboard";
 /**
  * Seed an upcoming season's regular-season schedule into `games` from ESPN.
  *
@@ -80,6 +81,7 @@ const toOurAbbr = (espn: string) => ESPN_ABBR[espn] ?? espn;
 
 type SeedGame = {
   externalId: string;
+  status: "scheduled" | "postponed" | "cancelled";
   date: string;
   home: string;
   away: string;
@@ -156,9 +158,13 @@ function parseEvent(ev: any, seasonEndYear: number): SeedGame | null {
   // resolves. They carry no teams, so there is nothing to seed.
   if (homeAbbr === "TBD" || awayAbbr === "TBD") return null;
 
+  const providerStatus = mapEspnStatus(comp.status?.type?.state, comp.status?.type?.completed, comp.status?.type?.name);
+  if (providerStatus === "unknown") return null;
+  const status = providerStatus === "postponed" || providerStatus === "cancelled" ? providerStatus : "scheduled";
   const tipOffUtc = String(comp.date);
   return {
     externalId: `espn-${ev.id}`,
+    status,
     date: ET_DATE.format(new Date(tipOffUtc)),
     home: homeAbbr,
     away: awayAbbr,
@@ -284,12 +290,16 @@ async function main() {
 
     // A row for the same fixture under a different external_id would become a duplicate the
     // unique index cannot catch — `external_id` is the only uniqueness guard on `games`.
-    const existing = await sql<{ external_id: string; date: string; home: string; away: string }[]>`
-      select g.external_id, g.date::text as date, ht.abbreviation home, at.abbreviation away
+    const existing = await sql<{ external_id: string; date: string; home: string; away: string; status: string }[]>`
+      select g.external_id, g.date::text as date, ht.abbreviation home, at.abbreviation away, g.status
       from games g
       join teams ht on ht.id = g.home_team_id
       join teams at on at.id = g.away_team_id
       where g.season = ${season}`;
+    const holds = existing.filter(e => {const incoming=byId.get(e.external_id);return incoming && incoming.status !== "scheduled" && incoming.status !== e.status && e.status !== "final";});
+    if (holds.length) throw new Error("REFUSING TO WRITE — lifecycle changes require sync_scores_espn.ts and its transactional projection invalidation");
+    const moved = existing.filter(e => { const incoming = byId.get(e.external_id); return incoming && (incoming.date !== e.date || incoming.home !== e.home || incoming.away !== e.away); });
+    if (moved.length) throw new Error(`REFUSING TO WRITE — ${moved.length} existing fixtures changed date or pairing; review reschedule identity and fatigue invalidation first`);
     const collisions = existing.filter((e) => {
       const incoming = byId.get(e.external_id);
       return !incoming && slate.some((g) => g.date === e.date && g.home === e.home && g.away === e.away);
@@ -324,7 +334,7 @@ async function main() {
             away_team_id: teamId.get(g.away)!,
             home_score: null,
             away_score: null,
-            status: "scheduled",
+            status: g.status,
             overtime_periods: 0,
             game_type: "regular",
             tip_off_utc: g.tipOffUtc,
@@ -333,13 +343,13 @@ async function main() {
           }))
         )}
         on conflict (external_id) do update set
-          date = excluded.date,
+          date = games.date,
           season = excluded.season,
           home_team_id = excluded.home_team_id,
           away_team_id = excluded.away_team_id,
-          status = case when games.status = 'final' then games.status else excluded.status end,
+          status = case when games.status in ('final', 'postponed', 'cancelled') then games.status else excluded.status end,
           game_type = excluded.game_type,
-          tip_off_utc = excluded.tip_off_utc,
+          tip_off_utc = case when games.status in ('postponed', 'cancelled') then games.tip_off_utc else excluded.tip_off_utc end,
           neutral_site = excluded.neutral_site,
           neutral_venue_city = excluded.neutral_venue_city`;
       written += chunk.length;

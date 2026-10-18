@@ -1,3 +1,4 @@
+import { isHeldGame } from "@/lib/game-status";
 /**
  * Exports the raw fatigue features for every game-side to a single CSV, for the fitting
  * harness in `ml/`.
@@ -314,6 +315,7 @@ async function main(): Promise<void> {
   let skippedUnplayed = 0;
 
   for (const g of gameRows) {
+    if (isHeldGame(g.status)) continue;
     const home = teamById.get(g.homeTeamId);
     const away = teamById.get(g.awayTeamId);
     if (!home || !away) {

@@ -1,0 +1,42 @@
+{
+  "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20130416",
+  "retrieved": "2026-10-18",
+  "events": [
+    {
+      "id": "400278934",
+      "date": "2013-04-17T00:00Z",
+      "competitions": [
+        {
+          "date": "2013-04-17T00:00Z",
+          "status": {
+            "type": {
+              "id": "5",
+              "name": "STATUS_CANCELED",
+              "state": "post",
+              "completed": false,
+              "description": "Canceled",
+              "detail": "Canceled",
+              "shortDetail": "Canceled"
+            }
+          },
+          "competitors": [
+            {
+              "homeAway": "home",
+              "team": {
+                "abbreviation": "BOS"
+              },
+              "score": "0"
+            },
+            {
+              "homeAway": "away",
+              "team": {
+                "abbreviation": "IND"
+              },
+              "score": "0"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

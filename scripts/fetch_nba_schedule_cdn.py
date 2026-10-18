@@ -287,7 +287,7 @@ def report_date_mismatches(
         dates = sorted(m[1] for m in mismatches)
         print(
             f"  DATE REPAIR: {len(mismatches)} stored rows differ from the CDN ET date "
-            f"(stored dates span {dates[0]}..{dates[-1]}); the upsert will correct them."
+            f"(stored dates span {dates[0]}..{dates[-1]}); identity changes require manual review; the upsert skips them."
         )
         for ext_id, db_date, et_date in mismatches[:10]:
             print(f"    {ext_id}: {db_date} -> {et_date}")

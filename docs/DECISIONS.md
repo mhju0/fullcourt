@@ -880,8 +880,9 @@ production build with `NEXT_PUBLIC_SENTRY_DSN` set, so CI and an unconfigured cl
 - Server errors: `src/instrumentation.ts`. API routes catch their own failures and log them with
   `console.error` before answering 500, so the server reports `console.error` lines; a thrown
   render error arrives through `onRequestError`.
-- `next.config.ts` is not wrapped with `withSentryConfig`. Source maps are not uploaded, so browser
-  stack traces are minified. Uploading them needs a Sentry auth token in the build.
+- At setup, source maps were not uploaded. **2026-10-18 amendment:** PR #171 wraps shipping
+  builds with `withSentryConfig`, uploads private maps and deletes public browser maps. A new
+  bundled-event symbolication check is a separate acceptance gate; see TESTING_AND_CICD.md.
 - The CSP `connect-src` names `https://*.ingest.us.sentry.io`. `/privacy` lists Sentry as a fourth
   outside service, which supersedes the count of three in D-74.
 - Installing the SDK brought `brace-expansion` 5.0.5 through its build plugin; an override pins 5.0.12.
@@ -1566,3 +1567,23 @@ headings and chart labels, the glossary's existing preference and the pair of "r
 the road", and "Rested at home" for a narrow table column or tile. The home page heading now
 reads "Large rest gaps / for the rested team at home". Identifiers and the rest-advantage metric
 names are unchanged.
+
+
+## D-110 — Closeout scope and timing (2026-10-18)
+
+The owner selected antislop throughout implementation and the confirmed accessibility, loading
+and layout defects from audit-002. Shareable Model Results filters, extra chart keyboard actions
+and the configurable Schedule column remain deferred; existing native filters remain available.
+The footer notice stays 12px by the owner's Oct 17 choice, and Find a page keeps its visible
+footer entry. The earlier off-Mac backup and phone-push refusals and odds-feed scope exclusion
+remain settled decisions, not renewed requests.
+
+The owner kept GitHub Actions plus the existing maintenance monitor. The daily schedule is
+21:17 UTC, not 21:00; the Oct 17 run 39077701963 began at 23:06:12 UTC, 1h49m12s late.
+Hourly Vercel score/recovery runs remain separate. This records the accepted timing limitation,
+not a guarantee of punctual daily execution or completed-game verification.
+
+The owner requested explicit postponed/cancelled support. Read-only live catalog inspection
+found games.status is unconstrained varchar with no CHECK; no migration is required.
+Implementation and independent persistence review must precede release. Source status, future
+derived-score invalidation and recovery must be verified together; a label alone does not close it.

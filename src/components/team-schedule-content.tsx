@@ -164,6 +164,7 @@ function gameState(game: TeamScheduleGame, now: number): ReactNode {
       </span>
     )
   }
+  if (phase === "postponed" || phase === "cancelled") return <span style={{ fontWeight: 700, color: "var(--term-text-muted)" }}>{phase.toUpperCase()}</span>
   if (phase === "live") return <span style={{ fontWeight: 700, color: "var(--term-amber)" }}>LIVE</span>
   if (phase === "awaitingFinal") return <span style={{ fontWeight: 700, color: "var(--term-text-muted)" }}>PENDING</span>
   return null
@@ -201,7 +202,7 @@ export function TeamScheduleContent() {
 
   const games = useMemo(() => data ?? [], [data])
   const today = formatEasternDateKey()
-  const nextGameId = games.find((g) => g.status !== "final" && g.date >= today)?.id ?? null
+  const nextGameId = games.find((g) => (g.status === "scheduled" || g.status === "live") && g.date >= today)?.id ?? null
   const anyProjected = games.some((g) => g.projectedFatigue)
   const now = useNow()
   const cup = useMemo(() => cupPlaceholders(season, games.map((g) => g.date)), [season, games])
