@@ -31,6 +31,15 @@ It describes fixture coverage in FullCourt's database, not a guarantee about pro
 - Initial targeted browser run: 9 pass; five new assertion failures were CSS hex case, heading punctuation, and Next's global route announcer. Corrected the assertions; the five affected cases pass. No product fix was needed for those failures.
 - Manual 390px inspection shortened the new table action from Game details to Details to avoid needless wrapping. The accessible matchup action name remains explicit.
 
-Pending at this checkpoint: rebuilt narrow label change, final targeted browser acceptance, site-wide rendered accessibility sweep, preview and release decision. No production deployment claimed.
+## Final local acceptance
+
+- Candidate `c20e5c4bfc9cf65a4ed3fb74bf777c7a786f5cd4` rebuilt successfully. Independent Astra reviewed its narrow delta and accepted it without additional findings.
+- All 14 targeted browser scenarios pass across the initial run and affected-case rerun. After the compact Details change, both 390px/1440px Analysis dialog, native table, keyboard, nested drill/back, axe and focus-return cases pass again.
+- Five additional 320px checks pass for Games, Season, Schedule, Analysis and Shooting: no document-level horizontal overflow. Games and Home also pass doubled-computed-text simulations; these are not native zoom checks.
+- All 52 rendered axe cases pass: 26 routes at 390px and 1440px, including composited color checks. This covers the new neutral surfaces without claiming a human accessibility session.
+- `pnpm audit --prod`: no known vulnerabilities. `pnpm docs:check`: all local documentation targets resolve.
+- Antislop Hard Gate PASS for the changed scope: built app, real/manual and controlled-fixture interactions, contrast checks, keyboard semantics, explicit failure/recovery, and narrow-screen geometry. Purpose Gate PASS: chevrons identify details; surface tints distinguish reading levels. Liveliness PASS: ENERGY 1 / RHYTHM 2 / MOTION 1, existing court/data identity, indigo focal actions. Craftsmanship PASS: native controls, truthful data labels, stable immediate exploration, no new dependencies or fabricated product figures.
+
+PR [#175](https://github.com/mhju0/fullcourt/pull/175) holds the implementation. Preview verification and the production release decision remain separate. No production deployment claimed.
 
 Physical iPhone, human screen-reader use, native zoom and opening-night provider/writer validation remain distinct from browser simulation and controlled API fixtures.
