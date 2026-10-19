@@ -25,7 +25,7 @@ async function openSeries(page: import("@playwright/test").Page, item = series()
     rounds: [{ round: 2, roundLabel: "Conference Semifinals", series: [item] }],
     summary: { fullInsample: summary, walkForwardOos: summary },
   };
-  await page.route("**/api/playoffs**", route => route.fulfill({ json: response }));
+  await page.route("**/api/playoffs**", route => route.fulfill({ json: { data: response, error: null } }));
   await page.goto("/playoffs?season=2024-25");
   await expect(page.getByText("Model pick", { exact: true })).toBeVisible();
 }
@@ -43,12 +43,14 @@ test("names the selected team, complements visitor probability and separates kno
   await expect(page.getByText("Estimated chance BOS wins the series", { exact: true })).toBeVisible();
   await expect(page.getByText(/cannot demonstrate predictive performance/)).toBeVisible();
   await expect(page.getByRole("button", { name: /Expand series details: BOS vs NYK/ })).toHaveAttribute("aria-expanded", "false");
+  await expect(page.locator("#playoff-series-features-1")).toHaveAttribute("aria-hidden", "true");
   await page.getByRole("button", { name: /Expand series details: BOS vs NYK/ }).focus();
   await page.keyboard.press("Enter");
   await expect(page.getByRole("button", { name: /Collapse series details: BOS vs NYK/ })).toHaveAttribute("aria-expanded", "true");
   const toggle = page.getByRole("button", { name: /Collapse series details: BOS vs NYK/ });
   await expect(toggle).toHaveAttribute("aria-controls", "playoff-series-features-1");
   await expect(page.locator("#playoff-series-features-1")).toBeVisible();
+  await expect(page.locator("#playoff-series-features-1")).toHaveAttribute("aria-hidden", "false");
   await expect(page.locator("button details, button summary")).toHaveCount(0);
 });
 

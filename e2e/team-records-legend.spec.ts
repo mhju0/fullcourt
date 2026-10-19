@@ -45,6 +45,7 @@ for (const width of [1280, 390]) {
     await expect(rows.nth(5)).toBeVisible();
     await expect(rows.nth(6)).not.toBeVisible();
     await expect(gaps.nth(0)).toContainText("Larger home/rest gap than league");
+    if (width === 390) await expect(gaps.nth(0).getByText("Larger gap", { exact: true })).toBeVisible();
     await expect(gaps.nth(1)).toContainText("Smaller home/rest gap than league");
     await expect(gaps.nth(2)).toContainText("At the league home/rest gap");
     await expect(gaps.nth(3)).toContainText("−24.1");

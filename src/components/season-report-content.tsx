@@ -20,7 +20,7 @@ import { SeasonDataGuide } from "@/components/season-data-guide";
 import { useSeasonReadiness } from "@/hooks/useSeasonReadiness";
 import { MessageCard } from "@/components/ui/message-card";
 import { signedNumber } from "@/lib/signed-number";
-import { WIDTH } from "@/lib/terminal-styles";
+import { TYPE, WIDTH } from "@/lib/terminal-styles";
 
 const LATEST_SEASON = defaultNbaSeason();
 const PRIOR_SEASON = browsableSeasons().filter((season) => season < LATEST_SEASON).at(-1) ?? NBA_SEASONS[0];
@@ -336,8 +336,8 @@ export function SeasonReportContent() {
 }
 
 function gapComparison(swing: number | null, baseline: number | null) {
-  if (swing === null) return { label: "Gap unavailable", backgroundColor: undefined };
-  if (baseline === null) return { label: "League comparison unavailable", backgroundColor: undefined };
+  if (swing === null) return { label: "Gap unavailable", shortLabel: "Unavailable", backgroundColor: undefined };
+  if (baseline === null) return { label: "League comparison unavailable", shortLabel: "No league gap", backgroundColor: undefined };
   const difference = Math.round((swing - baseline) * 10) / 10;
   const neutral = [237, 241, 243];
   const endpoint = difference < 0 ? [230, 211, 182] : [190, 224, 230];
@@ -345,6 +345,7 @@ function gapComparison(swing: number | null, baseline: number | null) {
   return {
     label: difference === 0 ? "At the league home/rest gap"
       : `${difference > 0 ? "Larger" : "Smaller"} home/rest gap than league`,
+    shortLabel: difference === 0 ? "League gap" : `${difference > 0 ? "Larger" : "Smaller"} gap`,
     backgroundColor: `rgb(${neutral.map((channel, index) => Math.round(channel + (endpoint[index] - channel) * intensity)).join(", ")})`,
   };
 }
@@ -425,8 +426,8 @@ function TeamRecords({ teams, season, baseline }: {
               </td>
               <td className="px-2 py-3 text-right" data-testid="team-home-rest-gap"
                 style={{ backgroundColor: comparison.backgroundColor }}>
-                <span className="mono tabular-nums">{swing === null ? "—" : signedNumber(swing, 1)}</span>
-                <span className="mt-1 block text-xs leading-snug">{comparison.label}</span>
+                <span className="mono tabular-nums" style={{ fontSize: TYPE.body }}>{swing === null ? "—" : signedNumber(swing, 1)}</span>
+                <span className="mt-1 block text-xs leading-snug"><span className="sm:hidden">{comparison.shortLabel}</span><span className="hidden sm:inline">{comparison.label}</span></span>
                 {team.restedGames < 10 || team.tiredGames < 10 ? (
                   <span className="block text-xs">Small sample</span>
                 ) : null}

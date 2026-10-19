@@ -273,6 +273,7 @@ function SeriesCard({ series }: { series: PlayoffSeriesWithPredictions }) {
 
       <div
         id={featuresId}
+        aria-hidden={!expanded}
         className={cn(
           "grid",
           expanded ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
