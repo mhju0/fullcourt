@@ -40,6 +40,7 @@ import type { DataAsOf } from "@/lib/data-as-of"
 import { LEAD, MONO_FONT_STACK, SPACE, termSelectClass, termSelectStyle, termCardStyle, termDashedEmptyStyle, termInsetStyle, termTdStyle, TRACK, TYPE } from "@/lib/terminal-styles"
 import { DataTable } from "@/components/ui/data-table"
 import type { AnalysisResponse, EraRates } from "@/types"
+import { buildHomeWinTrend, type HomeWinTrendPoint } from "@/lib/home-win-trend"
 import { signedNumber } from "@/lib/signed-number"
 import { formatFatigueScore, formatRestAdvantageValue } from "@/lib/rest-advantage-display"
 import { MessageCard } from "@/components/ui/message-card"
@@ -407,30 +408,21 @@ function RangeKey() {
   )
 }
 
-/**
- * The baseline itself, season by season. Every era bar above is measured against a home rate
- * that ran from about 68% to about 54%; this shows that drift on its own, so a reader can see it
- * is home court moving and not rest.
- */
 function HomeCourtBySeasonChart({
   seasonWinRates,
-  overallPct,
 }: {
   seasonWinRates: AnalysisResponse["seasonWinRates"]
-  overallPct: number
 }) {
-  const chartData = seasonWinRates
-    .filter((s) => s.isComplete)
-    .map((s) => ({ label: s.season, homeWinPct: s.homeBaselinePct }))
-  const values = chartData.map((d) => d.homeWinPct)
-  const min = values.length ? Math.floor(Math.min(...values, overallPct) / 5) * 5 : 50
-  const max = values.length ? Math.ceil(Math.max(...values, overallPct) / 5) * 5 : 70
+  const chartData = buildHomeWinTrend(seasonWinRates)
+  const values = chartData.flatMap((row) => [row.homeWinPct, row.rollingHomeWinPct].filter((value): value is number => value !== null))
+  const min = values.length ? Math.floor(Math.min(...values) / 5) * 5 : 50
+  const max = values.length ? Math.ceil(Math.max(...values) / 5) * 5 : 70
   const ticks: number[] = []
   for (let v = min; v <= max; v += 5) ticks.push(v)
 
   return (
-    <div className="mt-4 h-72 min-w-0">
-      {chartData.length === 0 ? (
+    <div className="mt-4 h-72 min-w-0" data-testid="home-win-trend">
+      {values.length === 0 ? (
         <div className="mono flex h-full items-center justify-center" style={termDashedEmptyStyle}>
           NO COMPLETE SEASON YET
         </div>
@@ -439,11 +431,11 @@ function HomeCourtBySeasonChart({
           <LineChart data={chartData} margin={{ top: 12, right: 12, left: 0, bottom: 8 }}>
             <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="var(--term-border)" />
             <XAxis
-              dataKey="label"
+              dataKey="season"
               tick={{ fontSize: 11, fill: "var(--term-text-muted)", fontFamily: MONO_FONT_STACK }}
               tickLine={false}
               axisLine={false}
-              ticks={chartData.filter((_, i) => i % Math.max(1, Math.ceil((chartData.length - 1) / 4)) === 0 || i === chartData.length - 1).map((row) => row.label)}
+              ticks={chartData.filter((_, i) => i % Math.max(1, Math.ceil((chartData.length - 1) / 4)) === 0 || i === chartData.length - 1).map((row) => row.season)}
               minTickGap={16}
               height={32}
             />
@@ -460,17 +452,19 @@ function HomeCourtBySeasonChart({
               isAnimationActive={false}
               content={({ active, payload }: TooltipContentProps) => {
                 if (!active || !payload?.length) return null
-                const d = payload[0].payload as { label: string; homeWinPct: number }
+                const d = payload[0].payload as HomeWinTrendPoint
                 return (
                   <div style={termTooltip}>
-                    <p style={{ color: "var(--term-text)", fontWeight: 700, letterSpacing: TRACK.sub }}>{d.label}</p>
-                    <p style={{ color: "var(--term-text-muted)", marginTop: SPACE.xs }}>HOME TEAMS WON {d.homeWinPct}%</p>
+                    <p style={{ color: "var(--term-text)", fontWeight: 700, letterSpacing: TRACK.sub }}>{d.season}</p>
+                    <p style={{ color: "var(--term-text-muted)", marginTop: SPACE.xs }}>Home teams won {d.homeWinPct?.toFixed(1)}%</p>
+                    <p style={{ color: "var(--term-text-muted)", marginTop: SPACE.xs }}>{d.homeWins.toLocaleString()} wins / {d.homeGames.toLocaleString()} games</p>
+                    {d.rollingHomeWinPct !== null && <p style={{ marginTop: SPACE.xs }}>Trailing five seasons: {d.rollingHomeWinPct.toFixed(1)}%</p>}
                   </div>
                 )
               }}
             />
-            <ReferenceLine y={overallPct} stroke="var(--term-hairline)" strokeDasharray="4 4" />
-            <Line dataKey="homeWinPct" stroke="var(--term-text)" strokeWidth={1.5} dot={false} isAnimationActive={false} />
+            <Line name="Annual home win rate" dataKey="homeWinPct" stroke="var(--term-text)" strokeWidth={1.5} dot={false} connectNulls={false} isAnimationActive={false} />
+            <Line name="Trailing five-season rate" dataKey="rollingHomeWinPct" stroke="var(--term-accent)" strokeWidth={2} strokeDasharray="6 4" dot={false} connectNulls={false} isAnimationActive={false} />
           </LineChart>
         </ResponsiveContainer>
       )}
@@ -1173,13 +1167,17 @@ export function AnalysisContent({ asOf }: { asOf?: DataAsOf | null }) {
       </div>
 
       <div style={termCardStyle}>
-        <SectionDivider
-          label="HOW MUCH DID HOME COURT ITSELF MOVE?"
-          descriptor="HOME WIN RATE BY SEASON, ALL GAMES"
-        />
-        <HomeCourtBySeasonChart seasonWinRates={data.seasonWinRates} overallPct={homeBaseline} />
-        <p className="mono m-0 mt-3" style={{ fontSize: 11, letterSpacing: TRACK.sub, color: "var(--term-text-muted)" }}>
-          DASHED LINE: {homeBaseline}% ACROSS EVERY SEASON. EACH ERA ABOVE IS READ AGAINST ITS OWN RATE, NOT THIS ONE.
+        <h2 className="text-xl font-semibold">Home teams’ win rate over time</h2>
+        <p className="mt-2 text-sm text-[var(--term-text-muted)]">Completed seasons · Eligible regular-season games · Orlando bubble excluded</p>
+        <HomeCourtBySeasonChart seasonWinRates={data.seasonWinRates} />
+        <div className="mt-3 flex flex-wrap gap-x-6 gap-y-2 text-sm" aria-label="Home win rate chart legend">
+          <span className="inline-flex items-center gap-2"><span aria-hidden="true" className="w-6 border-t-2 border-[var(--term-text)]" />Annual home win rate</span>
+          <span className="inline-flex items-center gap-2"><span aria-hidden="true" className="w-6 border-t-2 border-dashed border-[var(--term-accent)]" />Trailing five-season rate</span>
+        </div>
+        <p className="mt-3 text-sm leading-relaxed text-[var(--term-text-muted)]">
+          Each dashed point pools home wins and games from that season and its four preceding completed consecutive seasons.
+          The first four seasons have no rolling value; missing or incomplete seasons break the window.
+          Annual results rise and fall. This historical pattern does not guarantee a constant decline or explain its cause.
         </p>
       </div>
 
