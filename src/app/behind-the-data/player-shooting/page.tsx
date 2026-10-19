@@ -25,8 +25,13 @@ export default function PlayerShootingMethodPage() {
     >
       <Section label="THE SPLIT" title="The two rest groups">
         <Prose>
-          Rest is measured from the player&rsquo;s own appearances. A player returning after
-          several days away can be rested even when the team played the night before.
+          Rest is measured from the player&rsquo;s own recorded appearances in competitive NBA
+          games. A player returning after several days away can be rested even when the team
+          played the night before.
+        </Prose>
+        <Prose>
+          A confirmed appearance counts even without a shot attempt. NBA Cup games can also
+          contribute to the rest history; the shooting percentages use regular-season shots.
         </Prose>
         <Formula>
           {`no rest       played again the very next day
@@ -90,6 +95,7 @@ rest effect   eFG% on 2–29 days off − eFG% on no rest`}
           items={[
             "Shot difficulty. A rested player taking harder shots against a set defence can shoot worse while playing better.",
             "Why a player missed games. An injury and planned rest can produce the same gap between appearances without providing the same recovery.",
+            "Preseason and exhibition games are outside the appearance history. If unresolved participation could change a rest group, the affected shots are excluded from both groups.",
             "Opponent quality and defensive scheme.",
             "Minutes and fatigue within a game. This is about rest before tip-off, not late-game legs.",
             "A single season can contain too few attempts to distinguish a rest association from sampling variation. Compare the uncertainty and season-by-season results before interpreting a split.",

@@ -21,6 +21,8 @@ value is carried forward from the last game they did play.
 from __future__ import annotations
 
 import logging
+
+from availability_inputs import load_regular_inputs, roster_records, rotation_window_uncertain, available_now, attach_prior_quality, write_coverage
 from collections import defaultdict, deque
 from pathlib import Path
 
@@ -72,14 +74,9 @@ def ols(x: np.ndarray, y: np.ndarray, names: list[str]) -> tuple[pd.DataFrame, f
 
 def main() -> None:
     log.info("loading player box scores")
-    box = pd.concat(
-        [pd.read_csv(p, low_memory=False) for p in sorted(SHOOTING.glob("player_boxscores_*.csv"))],
-        ignore_index=True,
-    )
-    box["min"] = box["minutes"].map(parse_minutes)
-    box["external_id"] = box["game_id"].astype("int64").astype(str).str.zfill(10)
+    play, sides, coverage = load_regular_inputs(SHOOTING, FEATURES)
+    box = play
 
-    # Hollinger's Game Score, from the components hoopR provides.
     b = box.fillna(
         {
             c: 0
@@ -104,33 +101,7 @@ def main() -> None:
         - b["turnovers"]
     )
 
-    sides = pd.read_csv(
-        FEATURES,
-        usecols=["game_id", "external_id", "date", "season", "team_id", "is_home", "status", "game_type"],
-        low_memory=False,
-    )
-    sides = sides[(sides["status"] == "final") & (sides["game_type"] == "regular")].copy()
-    sides["external_id"] = sides["external_id"].astype(str).str.zfill(10)
-    sides["side"] = np.where(sides["is_home"] == 1, "home", "away")
-
-    play = box.drop(columns=["team_id", "game_id", "season"], errors="ignore").merge(
-        sides[["game_id", "external_id", "date", "season", "team_id", "side"]],
-        on=["external_id", "side"],
-        how="inner",
-    )
-    log.info("player-games joined: %d", len(play))
-
-    # Prior-only rolling quality, per player, over their own last QUALITY_GAMES appearances.
-    played = play[play["min"] > 0].sort_values(["person_id", "date"]).copy()
-    for col, out in [("game_score", "q_gs"), ("points", "q_pts"), ("min", "q_min")]:
-        played[out] = played.groupby("person_id")[col].transform(
-            lambda s: s.shift(1).rolling(QUALITY_GAMES, min_periods=QUALITY_MIN_GAMES).mean()
-        )
-    play = play.merge(
-        played[["game_id", "person_id", "q_gs", "q_pts", "q_min"]],
-        on=["game_id", "person_id"],
-        how="left",
-    )
+    play = attach_prior_quality(play, {"game_score": "q_gs", "points": "q_pts", "min": "q_min"}, QUALITY_GAMES, QUALITY_MIN_GAMES)
     play = play.sort_values(["team_id", "date", "person_id"])
 
     # One window per team-season. A window carried across the summer counted players who had
@@ -139,13 +110,19 @@ def main() -> None:
     records = []
     for (team_id, game_id), grp in play.groupby(["team_id", "game_id"], sort=False):
         window = history[(team_id, grp["season"].iloc[0])]
-        played_now = dict(zip(grp["person_id"], grp["min"]))
+        played_now = roster_records(grp, ["q_gs", "q_pts", "q_uncertain"])
+        if len(window) == WINDOW and rotation_window_uncertain(window, MIN_APPEARANCES, ROTATION_MINUTES):
+            coverage["rotationWindowHoldouts"] += 1
+            window.append(played_now)
+            continue
 
         mins: dict[int, list] = defaultdict(list)
         qual: dict[int, dict] = {}
+        quality_uncertain = {}
         for past in window:
             for pid, rec in past.items():
-                if rec["min"] > 0:
+                if rec["participation"] == "played" and pd.notna(rec["min"]) and rec["min"] > 0:
+                    quality_uncertain[pid] = rec["q_uncertain"]
                     mins[pid].append(rec["min"])
                     # Most recent known quality wins; the walk is chronological.
                     if not np.isnan(rec["q_gs"]):
@@ -157,7 +134,12 @@ def main() -> None:
             if len(v) >= MIN_APPEARANCES and float(np.mean(v)) >= ROTATION_MINUTES
         }
 
+        current_uncertain = any(available_now(played_now, pid) is None for pid in rotation)
+        prior_quality_uncertain = any(quality_uncertain.get(pid, False) for pid in rotation)
         if len(window) == WINDOW and rotation:
+            coverage["currentRotationHoldouts"] += int(current_uncertain)
+            coverage["qualityWindowHoldouts"] += int(prior_quality_uncertain and not current_uncertain)
+        if len(window) == WINDOW and rotation and not current_uncertain and not prior_quality_uncertain:
             gs_of = {pid: (qual[pid]["q_gs"] if pid in qual else np.nan) for pid in rotation}
             known = [v for v in gs_of.values() if not np.isnan(v)]
             replacement = float(np.median(known)) if known else 0.0
@@ -173,7 +155,7 @@ def main() -> None:
                 "best_out": 0,
             }
             for pid, avg_min in rotation.items():
-                if played_now.get(pid, 0.0) > 0.0:
+                if available_now(played_now, pid) is not False:
                     continue
                 gs = gs_of[pid]
                 rec["miss_min"] += avg_min
@@ -184,14 +166,7 @@ def main() -> None:
                     rec["best_out"] = 1
             records.append(rec)
 
-        window.append(
-            {
-                pid: {"min": m, "q_gs": q_gs, "q_pts": q_pts}
-                for pid, m, q_gs, q_pts in zip(
-                    grp["person_id"], grp["min"], grp["q_gs"], grp["q_pts"]
-                )
-            }
-        )
+        window.append(played_now)
 
     av = pd.DataFrame(records)
     log.info("team-games measured: %d", len(av))
@@ -221,12 +196,17 @@ def main() -> None:
 
     base, rmse_base = ols(df[CONTROLS + SCHEDULE].to_numpy(float), y, CONTROLS + SCHEDULE)
 
+    public_coverage = write_coverage(DATA / "availability_quality_coverage.json", coverage, Path(__file__).resolve(), TABLE, len(av), df.index)
+    log.info("source coverage: %s", public_coverage)
+
     lines: list[str] = []
     a = lines.append
     a("# Weighting an absence by quality instead of minutes")
     a("")
     a(f"games analysed   {len(df)}")
     a(f"seasons          {df['season'].min()} .. {df['season'].max()}")
+    a("")
+    a(f"  Source-uncertain team rows withheld: rotation={coverage['rotationWindowHoldouts']}, current={coverage['currentRotationHoldouts']}, quality={coverage['qualityWindowHoldouts']}")
     a("")
     a(f"  schedule-only baseline RMSE   {rmse_base:.5f} points")
     a("")

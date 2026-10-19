@@ -41,36 +41,44 @@ export default function AvailabilityMethodPage() {
     >
       <Section label="WHAT COUNTS AS MISSING" title="Who counts as a missing player">
         <Prose>
-          A missing player belongs to the team&rsquo;s recent rotation but records no minutes
+          A missing player belongs to the team&rsquo;s recent rotation but did not play
           in the game. Rotation membership comes from <strong>prior participation</strong>,
           because a box score may omit players who did not play. A player who misses four
           straight games no longer has two appearances in the window, so a long absence counts
           for its first four games only.
         </Prose>
         <Formula>
-          {`rotation   appeared in at least ${D.minAppearances} of the team's previous ${D.rotationWindowGames}
-           games this season, averaging ${D.rotationMinutes}+ minutes in those appearances
-missing    a rotation member who recorded no minutes tonight`}
+          {`rotation   at least ${D.minAppearances} appearances with positive recorded minutes
+           in the team's previous ${D.rotationWindowGames} regular-season games
+           this season, averaging ${D.rotationMinutes}+ minutes per appearance
+missing    a rotation member who did not play tonight`}
         </Formula>
         <ValueGrid
           values={[
-            { label: "Rotation window", value: `${D.rotationWindowGames} games`, sub: "the team's previous games this season" },
+            { label: "Rotation window", value: `${D.rotationWindowGames} games`, sub: "previous regular-season games this season" },
             { label: "Rotation threshold", value: `${D.rotationMinutes} min`, sub: "average per appearance" },
             { label: "Typical rotation", value: `${AVAILABILITY_FREQUENCY.meanRotationSize.toFixed(1)}`, sub: "players, measured" },
           ]}
         />
         <Note>
-          The window starts fresh each season, so a team is measured from its sixth game, and
+          The window starts fresh each season, so a team can be measured from its sixth regular-season game, and
           players who left in the off-season are never counted as missing. The short window lets
           the rotation change with trades, coaching decisions, and injuries. Its thresholds reduce the influence of a single appearance but can miss
           players whose minutes have already fallen during an injury.
+        </Note>
+        <Note>
+          A confirmed appearance counts as present even if its duration is unclear.
+          Games with unresolved participation or minutes that could change the comparison are
+          left out. This reduces the available sample, especially in older seasons. An unclear
+          box score is not treated as proof that a player was absent.
         </Note>
       </Section>
 
       <Section label="WHAT AN ABSENCE IS WORTH" title="Estimating a player's missing contribution" disclosure>
         <Prose>
           Each absence is weighted by <strong>Game Score</strong>, a summary of box-score
-          production measured over a longer history than rotation membership.
+          production measured over the player&rsquo;s previous {D.qualityGames} regular-season appearances
+          with positive recorded minutes.
         </Prose>
         <Formula>
           {`GmSc = PTS + 0.4·FGM − 0.7·FGA − 0.4·(FTA − FTM)
@@ -160,8 +168,8 @@ value = max(0, player's GmSc − the team's own rotation median)`}
             `It does not know who replaced him. Replacement level is the team's own rotation median, which is a reasonable stand-in and not the actual substitute.`,
             "Game Score captures limited defensive information and may miss part of a defensive player's contribution.",
             `Final margins have a standard deviation of ${AVAILABILITY_NOISE.marginStdDev.toFixed(1)} points. The model's error remains ${AVAILABILITY_NOISE.rmseWithAbsence.toFixed(1)} points after including team records, schedule, and absences, leaving much of the variation unexplained.`,
-            `Player box-score coverage starts in ${AVAILABILITY_SAMPLE.firstSeason}. Earlier games can receive schedule scores but not availability estimates.`,
-            `The effects are averages over every season since ${AVAILABILITY_SAMPLE.firstSeason}. The rate of playing without a best player more than tripled over that span, so a single figure describes an era that changed underneath it.`,
+            `The margin comparison includes source-supported games from ${AVAILABILITY_SAMPLE.firstSeason} through ${AVAILABILITY_SAMPLE.lastSeason}. Both teams need usable histories for a game to enter that comparison.`,
+            "Coverage varies by season, and some early annual samples are sparse or unavailable. Annual rates describe the included team-games and do not establish a league-wide trend.",
           ]}
         />
       </Section>

@@ -1,0 +1,235 @@
+{
+  "date": "2026-10-20",
+  "release": "1.0.4",
+  "baselineCommit": "0f30d345",
+  "shooting": {
+    "outcomes": 696961,
+    "outcomeIdentitySha256": "3d3487a964a9ac16477bfa4ce80f99eaa53fa591a5fb5da261d0d7b281e938c1",
+    "totals": {
+      "fga": 5917676,
+      "fgm": 2698967,
+      "fg3m": 574759
+    },
+    "wholePlayerSeasonsPreserved": 14493,
+    "restArmAssignmentsChanged": 15343,
+    "fieldChanges": {
+      "rest": 32920,
+      "load7": 50329,
+      "min7": 50324
+    },
+    "eligibility": {
+      "pairedPlayerSeason": {
+        "minimumArmFga": 30,
+        "before": 9354,
+        "after": 9450,
+        "added": 182,
+        "removed": 86
+      },
+      "careerExport": {
+        "minimumArmFga": 150,
+        "before": 1296,
+        "after": 1309,
+        "added": 16,
+        "removed": 3
+      },
+      "careerLeaderboard": {
+        "minimumArmFga": 250,
+        "before": 1081,
+        "after": 1098,
+        "added": 18,
+        "removed": 1
+      }
+    },
+    "unknownHistoryCoverage": {
+      "rest": {
+        "rows": 127,
+        "fga": 889
+      },
+      "load7": {
+        "rows": 636,
+        "fga": 5073
+      },
+      "min7": {
+        "rows": 668,
+        "fga": 5190
+      }
+    },
+    "empiricalBayes": {
+      "before": {
+        "eligiblePlayers": 1296,
+        "mean": 0.36200103637088477,
+        "tau": 1.6313964874886644,
+        "minimumArmFga": 150
+      },
+      "after": {
+        "eligiblePlayers": 1309,
+        "mean": 0.41363268584905727,
+        "tau": 1.6702496495229588,
+        "minimumArmFga": 150
+      }
+    },
+    "artifacts": {
+      "public/data/player-rest.json": "f0d6e53a9974a1caf7d67a90988d42372aa3ee37efaad41ee7fbc0b64fa93a5e",
+      "src/data/player-appearance-context.json": "b4515f7b387e66c278d3caf800aadaeb9c76b0ac563cc53a9779ea2196abe98b",
+      "ml/data/shooting/player_shooting.json": "f0a8339a0d3db1c81cbd398adfc3b6d276276ca439a8f201ee0c175f72f6c760"
+    },
+    "exactNumeratorRowsVerifiedAgainstRaw": 14493,
+    "precisionRepairOriginalColumnsAndEstimatesUnchanged": true
+  },
+  "availability": {
+    "baseline": {
+      "games": 33166,
+      "teamGames": 66622,
+      "firstSeason": "1996-97",
+      "lastSeason": "2025-26"
+    },
+    "aliasOnly": {
+      "games": 33172,
+      "teamGames": 66632,
+      "firstSeason": "1996-97",
+      "lastSeason": "2025-26"
+    },
+    "final": {
+      "games": 25435,
+      "teamGames": 51662,
+      "firstSeason": "1997-98",
+      "lastSeason": "2025-26"
+    },
+    "canonicalCoverage": {
+      "canonicalRegularSides": 71092,
+      "matchedCanonicalRegularSides": 71092,
+      "missingCanonicalSides": 0,
+      "firstCacheSeason": "1996-97",
+      "lastCacheSeason": "2025-26"
+    },
+    "sourceAwareFinal": {
+      "teamIdentityOverrides": 1,
+      "conclusiveResolutions": 43,
+      "playedUnknownMinutes": 17,
+      "playerParticipation": {
+        "played": 736323,
+        "unknown": 90807,
+        "did_not_play": 145724
+      },
+      "holdouts": {
+        "rotationWindowHoldouts": 14385,
+        "currentRotationHoldouts": 29,
+        "qualityWindowHoldouts": 556
+      },
+      "gamesHeldVersusAliasOnly": 7737,
+      "newGamesVersusAliasOnly": [],
+      "qualifyingRule": "recorded positive minutes; confirmed participation is separate"
+    },
+    "publishedEffectsDelta": {
+      "bestPlayerOut": {
+        "before": {
+          "points": 2.968,
+          "t": 17.8
+        },
+        "aliasOnly": {
+          "points": 2.966,
+          "t": 17.7
+        },
+        "final": {
+          "points": 3.027,
+          "t": 16.4
+        },
+        "pointsDelta": 0.059
+      },
+      "homeCourt": {
+        "before": {
+          "points": 2.845,
+          "t": 41.4
+        },
+        "aliasOnly": {
+          "points": 2.843,
+          "t": 41.4
+        },
+        "final": {
+          "points": 2.697,
+          "t": 33.7
+        },
+        "pointsDelta": -0.148
+      },
+      "backToBack": {
+        "before": {
+          "points": 1.763,
+          "t": 13.1
+        },
+        "aliasOnly": {
+          "points": 1.764,
+          "t": 13.1
+        },
+        "final": {
+          "points": 1.856,
+          "t": 11.7
+        },
+        "pointsDelta": 0.093
+      },
+      "visitingAltitude": {
+        "before": {
+          "points": 1.412,
+          "t": 5.2
+        },
+        "aliasOnly": {
+          "points": 1.414,
+          "t": 5.2
+        },
+        "final": {
+          "points": 1.734,
+          "t": 5.4
+        },
+        "pointsDelta": 0.322
+      },
+      "priorOvertime": {
+        "before": {
+          "points": 0.552,
+          "t": 3.3
+        },
+        "aliasOnly": {
+          "points": 0.549,
+          "t": 3.3
+        },
+        "final": {
+          "points": 0.538,
+          "t": 2.8
+        },
+        "pointsDelta": -0.014
+      },
+      "missValuePerPoint": {
+        "before": {
+          "points": 0.275,
+          "t": 22.0
+        },
+        "aliasOnly": {
+          "points": 0.275,
+          "t": 22.0
+        },
+        "final": {
+          "points": 0.277,
+          "t": 20.6
+        },
+        "pointsDelta": 0.002
+      }
+    },
+    "outputHashes": {
+      "ml/availability_facts.json": "23e6569dc02dbde06fc006f8a04f58e2cc11d76075afea5b5d0ce3d44d086a8f",
+      "ml/data/availability_report.txt": "395250241cfdcd40a42e5c8017127c0f85061330595aa5387606d55c30a0a2d7",
+      "ml/data/availability_quality_report.txt": "b20d45845bf20f0d7da8f96727e0d85ffbf811da23f5de176524621e1f859015",
+      "ml/data/availability_by_game.csv": "677d6c4c41841564c56a7b1a66776461339adffcf1e269628bfcb644924e6050",
+      "ml/data/availability_cost_coverage.json": "f5730f80ef7d3f6679812e35edbdc9a2be6400ee4fbd48e5990db16be74536be",
+      "ml/data/availability_quality_coverage.json": "9d28962b761a8a4d26f718e52b5269a96b6f3a6f6072cf58265ca1c9a675b235",
+      "ml/data/availability_facts_coverage.json": "d619e1df6fb5c64f173caddd6cd169c76bcf8f8f3b3b20b4aee792cfdfab5e98"
+    },
+    "finalSourceHashes": {
+      "ml/availability_inputs.py": "d3adcc1a97bcbe1aebee38feec5d61e4873f4928ddb3b3175692d658f353985a",
+      "ml/availability_cost.py": "37eb447ec20edafff248acbf764e4e996414a4af9993626927d20748c04f757a",
+      "ml/availability_quality.py": "afe24187a0fb5cabf2dbc805900a8038f113e8923a3fa08aaeea79c1f63c1cd7",
+      "ml/availability_facts.py": "780cdb3c0efed4a2631956f6820857542e32c03198395d93f9eb2378fb370bf1",
+      "ml/tests/test_availability_inputs.py": "40a29ebff3518a1f468c6a66e18736d4ba48d653f6964c9ae3d7d7eb94c0ea4c",
+      "scripts/player_appearance_history.py": "d30225b1c3cc49c0a61a419e411fd950653b6ec78b97ef5f742657e69bc48d24",
+      "src/data/player-appearance-context.json": "b4515f7b387e66c278d3caf800aadaeb9c76b0ac563cc53a9779ea2196abe98b",
+      "ml/requirements.txt": "277da29f98344e555ffa8c876c32c79ad5eade7065ae45887df571efa52ccb2a"
+    }
+  }
+}

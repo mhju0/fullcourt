@@ -841,7 +841,7 @@ function PlayerExpansion({
                 one — a raw career gap off ~250 attempts per side carries a standard error near
                 4 points, so the extremes of a raw ranking are mostly noise — but it now says
                 why in words rather than naming the method. */}
-            Raw career gap: {signed(estimate.delta)} percentage points, give or
+            Raw career gap: {signed(totals?.exactNumerators ? totals.effect : estimate.delta)} percentage points, give or
             take {estimate.se.toFixed(2)} as one standard error. The estimate
             shrunk toward the player-pool mean is {signed(estimate.shrunk)},
             which reduces the influence of uncertain extremes.

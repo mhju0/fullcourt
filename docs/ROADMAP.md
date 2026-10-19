@@ -18,6 +18,19 @@ confirmed overtime source coverage, actual airports/itineraries/home stops, and 
 Cup-dependent regular fixtures. Recheck the Cup assignments when published. Opening-night
 and physical-device observation remain future/human checks, not completed by this release.
 
+## Player-source correction — v1.0.4
+
+D-123 / ADR 0013 separate confirmed appearances from Shooting's unchanged raw outcome
+cohort. D-124 / ADR 0014 restore Availability's historical joins and guard complete
+regular-season fixture sequences before windowing. Both studies share confirmed source
+adjudications and conservative, field-specific uncertainty handling; their comparison
+protocols remain unchanged. A contemporary primary box score also corrects one player
+team assignment, without changing shots or the stored game score. The
+[correction record](research/2026-10-20-player-appearance-rest-correction.md) pins measured
+cohort changes. Exact review, preview and deployed acceptance live in the
+[v1.0.4 release](https://github.com/mhju0/fullcourt/releases/tag/v1.0.4) and its PR.
+Source-dependent holdouts remain visible limits; no production DB mutation is implied.
+
 ## Maintenance
 
 - Track the intermittent upstream [Next.js Google Fonts build issue](https://github.com/vercel/next.js/issues/99114). The release passed on retry; a licensed local-font alternative was researched without changing typography.
@@ -42,8 +55,8 @@ and physical-device observation remain future/human checks, not completed by thi
 
 ## Approved season guidance
 
-Implement the quiet season-data guide and internal current-season availability rule (D-115),
-with publication-specific notices and previous-season navigation. Keep Schedule Edge useful
+PRs #177–#178 delivered the quiet season-data guide and internal current-season availability
+rule (D-115), with publication-specific notices and previous-season navigation. Keep Schedule Edge useful
 before results arrive. The Games strip selects upcoming large rested-home gaps chronologically
 (D-116); the homepage period follows its finding description. Wider recent-ten-season window
 changes are deferred. Source collection/publication for new shooting and shot-location data,
@@ -102,7 +115,7 @@ released until its PR, independent review and deployment checks are complete.
 | 11–16 | Real finals, state sequence, rescore, evening cron, nightly writes, launch checklist | Opening-night validation, excluded. |
 | 17 | Concurrency | Bounded structural investigation completed; no production capacity guarantee or load test claimed. |
 | 18 | Odds feed | Owner excluded feeds from scope; closed. |
-| 19 | Postponement | Owner selected explicit postponed/cancelled support; implementation and persistence review required before release. |
+| 19 | Postponement | Explicit postponed/cancelled support shipped in PR #174; source mapping, transactional persistence and display contracts are tested. A real provider postponement remains future operational observation. |
 | 20 | Hosting limits | Read-only investigation completed; actual launch usage remains future evidence. |
 | 21 | TLS | Fresh verified TLS 1.3 connection; certificate expires January 4, 2027. Future renewal is not yet observed. |
 | 22 | December schedule additions | Wait for published fixtures; later ingest is a separate reviewed production operation. |

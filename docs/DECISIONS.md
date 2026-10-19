@@ -1836,3 +1836,40 @@ Keep existing v1/v2 prediction rows unchanged, select the new revision explicitl
 retain the same model features and evaluation protocol. Extend the atomic correction,
 backup/CAS and conditional rollback to both playoff tables. This is preparation; the
 production mass-update approval boundary still applies.
+
+## D-123 — Count played zero-shot games in personal rest history (2026-10-20)
+
+The final cross-module audit confirmed that filtering to shooting attempts before deriving
+personal rest omits real appearances. Follow confirmed competitive NBA appearances first,
+then keep the existing regular-season shooting outcome cohort and comparison thresholds
+(ADR 0013). Add source-evidenced Cup participation, resolve or withhold relevant ambiguous
+appearance histories, and regenerate player/career estimates with the existing protocol.
+This is a separate v1.0.4 data correction; v1.0.3 game-level geometry, coefficients and
+production transaction remain unchanged. The owner's approved all-data correctness scope
+includes this confirmed defect; no new optional feature or production schema change is added.
+
+## D-124 — Restore Availability's regular-season history joins (2026-10-20)
+
+The same five source-evidenced alternate IDs disappear before Availability's rolling
+windows. Apply validated aliases and a coverage guard to all three producers, preserve
+the regular-season five-game rotation/twenty-appearance quality protocol, and share only
+confirmed participation/minute corrections (ADR 0014). Rebuild and report cohort and
+estimate changes without tuning the model to retain old figures. Unknown history cannot
+be treated as absence or zero minutes. Include this confirmed adjacent defect in v1.0.4;
+no Cup/playoff estimator expansion, fatigue coefficient or production database change.
+
+D-124 source amendment: independent review of the contemporary AP full box score confirms
+one 1996 Marciulionis player-game belongs to Denver/away, although the current NBA archive
+and cached player data assign it to Cleveland/home. Apply an exact guarded shared source
+identity correction; preserve shot/rest math and the stored 101–86 game score. Correct
+the resulting Shooting season team label and Availability histories, retaining raw evidence.
+
+## D-125 — Display shooting gaps from exact counts (2026-10-20)
+
+Built-browser verification exposed +23.9 versus +24.0 for identical season/career arms.
+Intermediate two-decimal eFG values followed different floating-point paths. Append
+whole/no-rest/rested integer `2*FGM + 3PM` numerators to the existing columnar rows,
+retain the original eleven columns and legacy fallback, and derive display rates and
+pooled raw gaps from exact counts. Keep classification, thresholds, standard-error and
+shrinkage protocols unchanged; use the same precise raw career gap in both displays.
+Independent review accepted this bounded precision correction within v1.0.4.

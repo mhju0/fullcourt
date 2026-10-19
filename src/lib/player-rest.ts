@@ -23,13 +23,16 @@ export const S = {
   NO_REST_EFG: 8,
   RESTED_FGA: 9,
   RESTED_EFG: 10,
+  EFG_NUMERATOR: 11,
+  NO_REST_NUMERATOR: 12,
+  RESTED_NUMERATOR: 13,
 } as const
 
 export interface PlayerRestPayload {
   generated: string
   names: string[]
   teams: string[]
-  /** [player, startYear, team, age, g, fga, efg, noRestFga, noRestEfg, restedFga, restedEfg] */
+  /** Original 11 columns, optionally followed by whole/no-rest/rested integer 2*FGM+3PM numerators. */
   seasons: number[][]
   /** [player, careerDelta, careerSe, careerShrunk] — only players clearing 150 attempts per arm */
   shrunk: number[][]
@@ -85,6 +88,7 @@ export interface CareerTotals {
   restedFga: number
   restedEfg: number | null
   effect: number | null
+  exactNumerators: boolean
   ageLo: number | null
   ageHi: number | null
 }
@@ -154,22 +158,28 @@ export function indexPayload(payload: PlayerRestPayload): PlayerRestIndex {
   }
 }
 
-/**
- * Career totals summed from the seasons listed, never read from a separate
- * record: a total printed under a column has to equal that column. The export
- * ships no career counts for exactly this reason.
- */
+function hasExactNumerators(row: number[]): boolean {
+  return [S.EFG_NUMERATOR, S.NO_REST_NUMERATOR, S.RESTED_NUMERATOR]
+    .every((column) => Number.isSafeInteger(row[column]) && row[column] >= 0)
+}
+
+function seasonEfg(row: number[], attempts: number, rate: number, numerator: number): number | null {
+  if (!row[attempts]) return null
+  return hasExactNumerators(row) ? 50 * row[numerator] / row[attempts] : row[rate]
+}
+
+/** Career totals pool integer shooting numerators when present; legacy rows retain their stored rates. */
 export function careerTotals(seasons: number[][]): CareerTotals {
   let games = 0, fga = 0, made = 0
   let noRestFga = 0, noRestMade = 0, restedFga = 0, restedMade = 0
   for (const r of seasons) {
     games += r[S.GAMES]
     fga += r[S.FGA]
-    made += r[S.EFG] * r[S.FGA]
+    made += hasExactNumerators(r) ? 50 * r[S.EFG_NUMERATOR] : r[S.EFG] * r[S.FGA]
     noRestFga += r[S.NO_REST_FGA]
-    noRestMade += r[S.NO_REST_EFG] * r[S.NO_REST_FGA]
+    noRestMade += hasExactNumerators(r) ? 50 * r[S.NO_REST_NUMERATOR] : r[S.NO_REST_EFG] * r[S.NO_REST_FGA]
     restedFga += r[S.RESTED_FGA]
-    restedMade += r[S.RESTED_EFG] * r[S.RESTED_FGA]
+    restedMade += hasExactNumerators(r) ? 50 * r[S.RESTED_NUMERATOR] : r[S.RESTED_EFG] * r[S.RESTED_FGA]
   }
   const noRestEfg = noRestFga ? noRestMade / noRestFga : null
   const restedEfg = restedFga ? restedMade / restedFga : null
@@ -182,6 +192,7 @@ export function careerTotals(seasons: number[][]): CareerTotals {
     restedFga,
     restedEfg,
     effect: restEffect(noRestEfg, restedEfg),
+    exactNumerators: seasons.length > 0 && seasons.every(hasExactNumerators),
     ageLo: seasons.length ? seasons[0][S.AGE] || null : null,
     ageHi: seasons.length ? seasons[seasons.length - 1][S.AGE] || null : null,
   }
@@ -189,8 +200,8 @@ export function careerTotals(seasons: number[][]): CareerTotals {
 
 /** A season's own row, for the expansion under a player. */
 export function seasonRow(index: PlayerRestIndex, r: number[]): BrowseRow {
-  const noRestEfg = r[S.NO_REST_FGA] ? r[S.NO_REST_EFG] : null
-  const restedEfg = r[S.RESTED_FGA] ? r[S.RESTED_EFG] : null
+  const noRestEfg = seasonEfg(r, S.NO_REST_FGA, S.NO_REST_EFG, S.NO_REST_NUMERATOR)
+  const restedEfg = seasonEfg(r, S.RESTED_FGA, S.RESTED_EFG, S.RESTED_NUMERATOR)
   const effect = restEffect(noRestEfg, restedEfg)
   const se = effectSe(r[S.NO_REST_FGA], r[S.RESTED_FGA])
   return {
@@ -200,7 +211,7 @@ export function seasonRow(index: PlayerRestIndex, r: number[]): BrowseRow {
     age: r[S.AGE] ? String(r[S.AGE]) : "—",
     games: r[S.GAMES],
     fga: r[S.FGA],
-    efg: r[S.EFG],
+    efg: seasonEfg(r, S.FGA, S.EFG, S.EFG_NUMERATOR) ?? 0,
     noRestFga: r[S.NO_REST_FGA],
     noRestEfg,
     restedFga: r[S.RESTED_FGA],
@@ -279,6 +290,7 @@ export function buildRows(index: PlayerRestIndex, opts: BuildOptions): BrowseRow
       if (!est) continue // no career estimate: too thin in one arm to rank
       if (opts.team && !seasons.some((s) => matchesFranchise(index.teams[s[S.TEAM]], opts.team!))) continue
       const t = careerTotals(seasons)
+      const effect = t.exactNumerators ? t.effect : est.delta
       rows.push({
         player,
         name: index.names[player],
@@ -291,9 +303,9 @@ export function buildRows(index: PlayerRestIndex, opts: BuildOptions): BrowseRow
         noRestEfg: t.noRestEfg,
         restedFga: t.restedFga,
         restedEfg: t.restedEfg,
-        effect: est.delta,
+        effect,
         se: est.se,
-        underEvidenced: Math.abs(est.delta) < est.se,
+        underEvidenced: effect === null || Math.abs(effect) < est.se,
       })
     }
   } else {
@@ -357,7 +369,7 @@ export function zeroRestWorkload(
       name: payload.names[row[S.PLAYER]],
       team: payload.teams[row[S.TEAM]],
       noRestFga: row[S.NO_REST_FGA],
-      noRestEfg: row[S.NO_REST_EFG],
+      noRestEfg: seasonEfg(row, S.NO_REST_FGA, S.NO_REST_EFG, S.NO_REST_NUMERATOR) ?? 0,
       games: row[S.GAMES],
     }))
     .sort((a, b) => b.noRestFga - a.noRestFga || a.name.localeCompare(b.name))

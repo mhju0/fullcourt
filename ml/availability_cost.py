@@ -24,6 +24,8 @@ once that is accounted for.
 from __future__ import annotations
 
 import logging
+
+from availability_inputs import load_regular_inputs, roster_records, rotation_window_uncertain, available_now, write_coverage
 from collections import defaultdict, deque
 from pathlib import Path
 
@@ -69,29 +71,8 @@ def ols_with_t(x: np.ndarray, y: np.ndarray, names: list[str]) -> pd.DataFrame:
 
 
 def main() -> None:
-    log.info("loading player box scores")
-    frames = [pd.read_csv(p, low_memory=False) for p in sorted(SHOOTING.glob("player_boxscores_*.csv"))]
-    box = pd.concat(frames, ignore_index=True)
-    box["min"] = box["minutes"].map(parse_minutes)
-    box["external_id"] = box["game_id"].astype("int64").astype(str).str.zfill(10)
-
-    sides = pd.read_csv(
-        FEATURES,
-        usecols=["game_id", "external_id", "date", "season", "team_id", "is_home", "status", "game_type"],
-        low_memory=False,
-    )
-    sides = sides[(sides["status"] == "final") & (sides["game_type"] == "regular")].copy()
-    sides["external_id"] = sides["external_id"].astype(str).str.zfill(10)
-    sides["side"] = np.where(sides["is_home"] == 1, "home", "away")
-
-    # hoopR carries its own `team_id` and `game_id` (the NBA's), which would collide with ours
-    # and silently become _x / _y. The join key is (external_id, side); theirs are not needed,
-    # and `external_id` was derived from hoopR's `game_id` above.
-    play = box.drop(columns=["team_id", "game_id", "season"], errors="ignore").merge(
-        sides[["game_id", "external_id", "date", "season", "team_id", "side"]],
-        on=["external_id", "side"],
-        how="inner",
-    )
+    log.info("loading validated regular-season player box scores")
+    play, sides, coverage = load_regular_inputs(SHOOTING, FEATURES)
     log.info("player-games joined: %d", len(play))
 
     play = play.sort_values(["team_id", "date", "person_id"])
@@ -103,13 +84,18 @@ def main() -> None:
     records = []
     for (team_id, game_id), grp in play.groupby(["team_id", "game_id"], sort=False):
         window = history[(team_id, grp["season"].iloc[0])]
-        played_now = dict(zip(grp["person_id"], grp["min"]))
+        played_now = roster_records(grp)
+        if len(window) == WINDOW and rotation_window_uncertain(window, MIN_APPEARANCES, ROTATION_MINUTES):
+            coverage["rotationWindowHoldouts"] += 1
+            window.append(played_now)
+            continue
 
         totals: dict[int, float] = defaultdict(float)
         appearances: dict[int, int] = defaultdict(int)
         for past in window:
-            for pid, mins in past.items():
-                if mins > 0:
+            for pid, rec in past.items():
+                mins = rec["min"]
+                if rec["participation"] == "played" and pd.notna(mins) and mins > 0:
                     totals[pid] += mins
                     appearances[pid] += 1
 
@@ -117,6 +103,7 @@ def main() -> None:
         missing_count = 0
         top_missing = 0.0
         rotation_size = 0
+        current_uncertain = False
         for pid, appear in appearances.items():
             if appear < MIN_APPEARANCES:
                 continue
@@ -124,12 +111,17 @@ def main() -> None:
             if avg < ROTATION_MINUTES:
                 continue
             rotation_size += 1
-            if played_now.get(pid, 0.0) <= 0.0:
+            present = available_now(played_now, pid)
+            if present is None:
+                current_uncertain = True
+            if present is False:
                 missing_minutes += avg
                 missing_count += 1
                 top_missing = max(top_missing, avg)
 
-        if len(window) == WINDOW:
+        if len(window) == WINDOW and current_uncertain:
+            coverage["currentRotationHoldouts"] += 1
+        if len(window) == WINDOW and not current_uncertain:
             records.append(
                 {
                     "game_id": game_id,
@@ -172,6 +164,9 @@ def main() -> None:
     for c in SCHEDULE + CONTROLS:
         df[c] = df[c].fillna(0.0)
 
+    public_coverage = write_coverage(DATA / "availability_cost_coverage.json", coverage, Path(__file__).resolve(), TABLE, len(av), df.index)
+    log.info("source coverage: %s", public_coverage)
+
     lines: list[str] = []
     a = lines.append
     a("# What a missing rotation player costs")
@@ -185,6 +180,8 @@ def main() -> None:
     a("")
     a("  RETROSPECTIVE. Who sat is known only because the game was played. This measures")
     a("  what an absence costs; it is not a forecasting feature.")
+    a("")
+    a(f"  Source-uncertain team rows withheld: rotation={coverage['rotationWindowHoldouts']}, current={coverage['currentRotationHoldouts']}")
     a("")
     a("## How often does it happen")
     a("")

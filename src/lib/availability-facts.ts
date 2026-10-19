@@ -42,9 +42,9 @@ export const AVAILABILITY_DEFINITION = Object.freeze(facts.definition);
 /**
  * The headline: everything this site measures, in one unit.
  *
- * `bestPlayerOut` and `homeCourt` landing about a tenth of a point apart, well inside either
- * estimate's standard error, is the finding — losing your best player costs about what playing
- * at home is worth. Each effect comes from
+ * The best-player-out and home-court estimates have similar point scales. Their exact
+ * difference changes with source coverage; the claim check in availability-facts.test.ts keeps
+ * the published comparison within its stated tolerance. Each effect comes from
  * its own specification, because the absence measures are collinear with one another and split
  * unstably when entered together.
  *
@@ -76,8 +76,7 @@ export const AVAILABILITY_SCHEDULE_HOLDS_UP = Object.freeze(facts.scheduleHoldsU
 export const AVAILABILITY_NOISE = Object.freeze(facts.noise);
 
 /**
- * The load-management era, in one column. Teams play without their best player more than three
- * times as often as they did in 1996-97 — this is context for every other number on the page,
- * since the same absence was a far rarer event across most of the sample.
+ * Annual rates describe included team-games. Source holdouts can leave sparse seasons or
+ * missing years, so the chart preserves calendar gaps and does not claim a league-wide trend.
  */
 export const AVAILABILITY_BEST_OUT_BY_SEASON: readonly BestOutSeason[] = Object.freeze(facts.seasonBestOutRate.map((row) => Object.freeze(row)));
