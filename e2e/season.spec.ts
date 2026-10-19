@@ -9,7 +9,7 @@ test.describe("Season Report", () => {
     await expect(page.getByTestId("loudest-call-row")).toHaveCount(5);
     await expect(page.getByTestId("schedule-tax-row")).toHaveCount(0);
     await expect(page.getByTestId("fatigue-calendar")).toHaveCount(0);
-    await expect(page.getByTestId("swing-baseline-note")).toContainText("not zero");
+    await expect(page.getByTestId("swing-baseline-note")).toContainText("League gap");
     await expect(page.getByTestId("season-as-of")).toHaveText(/^AS OF 2016-0[45]-\d{2}$/);
     await page.getByLabel("SEASON", { exact: true }).selectOption("2024-25");
     await expect(page.getByTestId("season-vs-history-heading")).toHaveText("2024-25 vs history");

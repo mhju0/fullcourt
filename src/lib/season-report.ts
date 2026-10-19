@@ -140,7 +140,8 @@ export interface SeasonHomeRate {
  *
  * `swing` is the section's whole point. A raw win-rate-when-rested column ranks
  * team quality: in 2025-26 OKC won 83% of its rested games and also 70% of its
- * tired ones. Subtracting a team's own tired rate makes it its own control.
+ * tired ones. The difference describes two records with different venues and opponents;
+ * it does not isolate rest or control for team strength.
  * On ~30 games per arm that difference carries ~12pp of standard error, so it is
  * a record, not a ranking — the UI must not crown a winner on it.
  */
@@ -155,7 +156,8 @@ export interface SeasonReportTeam {
   tiredWins: number;
   tiredWinPct: number | null;
   /**
-   * restedWinPct − tiredWinPct, one decimal. Null when either arm is empty.
+   * Rested-home rate minus tired-road rate, rounded once from counts to one decimal.
+   * Null when either arm is empty.
    *
    * **Read against {@link SeasonReport.swingBaseline}, never against zero.** The rested arm is
    * every game this team played as the fresher side *at home* and the tired arm is every game
@@ -528,7 +530,7 @@ export function buildSeasonReport(
       swing:
         restedWinPct === null || tiredWinPct === null
           ? null
-          : Math.round((restedWinPct - tiredWinPct) * 10) / 10,
+          : Math.round((t.restedWins / t.restedGames - t.tiredWins / t.tiredGames) * 1000) / 10,
       // Two decimals held in the payload, one shown: the figure lives inside ±0.5 for every
       // team, so rounding it here would collapse a third of the league onto one value before
       // the UI got a chance to decide how to say so.

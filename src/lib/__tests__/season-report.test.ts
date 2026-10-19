@@ -284,6 +284,45 @@ describe("buildSeasonReport — rest edge conversion", () => {
     });
   });
 
+  it("rounds the PHI-style home/rest gap once from 12/21 and 13/16", () => {
+    const rows = [
+      ...Array.from({ length: 21 }, (_, i) => game({
+        gameId: i + 1, homeTeamId: 1, awayTeamId: 2,
+        homeScore: i < 12 ? 100 : 90, awayScore: i < 12 ? 90 : 100,
+      })),
+      ...Array.from({ length: 16 }, (_, i) => game({
+        gameId: i + 22, homeTeamId: 2, awayTeamId: 1,
+        homeScore: i < 13 ? 90 : 100, awayScore: i < 13 ? 100 : 90,
+      })),
+    ];
+    const report = buildSeasonReport("2025-26", rows);
+    expect(report.teams.find(t => t.teamId === 1)).toMatchObject({
+      restedWins: 12, restedGames: 21, restedWinPct: 57.1,
+      tiredWins: 13, tiredGames: 16, tiredWinPct: 81.3, swing: -24.1,
+    });
+    // The same 37 called games supply each league arm: home 15/37, road 22/37.
+    expect(report.overall.games).toBe(37);
+    expect(report.overall.restedTeamWins).toBe(15);
+    expect(report.swingBaseline).toBe(-18.9);
+  });
+
+  it("pools league wins and games instead of averaging team gaps or rounded rates", () => {
+    const rows = [
+      game({ gameId: 1, homeTeamId: 1, awayTeamId: 2 }),
+      ...Array.from({ length: 6 }, (_, i) => game({
+        gameId: i + 2, homeTeamId: 2, awayTeamId: 1,
+        homeScore: i < 3 ? 100 : 90, awayScore: i < 3 ? 90 : 100,
+      })),
+      game({ gameId: 8, homeTeamId: 3, awayTeamId: 4, home: side(4), away: side(1) }),
+      game({ gameId: 9, neutralSite: true }),
+    ];
+    const report = buildSeasonReport("2025-26", rows);
+    expect(report.overall).toMatchObject({ games: 7, restedTeamWins: 4, winPct: 57.1 });
+    expect(report.swingBaseline).toBe(14.3);
+    expect(report.teams.find(t => t.teamId === 1)?.swing).toBe(50);
+    expect(report.teams.find(t => t.teamId === 2)?.swing).toBe(50);
+  });
+
   it("leaves swing null when a team has no games on one side of the split", () => {
     const rows: SeasonReportRow[] = [
       game({ gameId: 1, homeTeamId: 1, awayTeamId: 2, home: side(1), away: side(4) }),
