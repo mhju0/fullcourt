@@ -1,5 +1,9 @@
 {
-  "modelVersion": "logistic_grind_v2",
+  "modelVersion": "logistic_grind_v2_r20261020",
+  "evaluation": {
+    "folds": 30,
+    "firstSeason": "1995-96"
+  },
   "features": [
     "seed_diff",
     "win_pct_diff",
@@ -10,14 +14,14 @@
     "n": 210,
     "model": 73.3,
     "baseline": 69.5,
-    "logLoss": 0.5657,
+    "logLoss": 0.5658,
     "baselineLogLoss": 0.6148
   },
   "roundOne": {
     "n": 240,
-    "model": 77.1,
+    "model": 76.7,
     "baseline": 78.8,
-    "logLoss": 0.431,
+    "logLoss": 0.4309,
     "baselineLogLoss": 0.5173
   },
   "roundsTwoPlusRecord": {
@@ -26,13 +30,13 @@
     "loss": 3
   },
   "pooledRecord": {
-    "win": 11,
-    "tie": 13,
+    "win": 10,
+    "tie": 14,
     "loss": 6
   },
   "pooled": {
     "n": 450,
-    "accuracy": 75.3,
+    "accuracy": 75.1,
     "baselineAccuracy": 74.4,
     "logLoss": 0.4939,
     "baselineLogLoss": 0.5696,
@@ -40,10 +44,10 @@
     "baselineBrier": 0.1907
   },
   "coefficients": {
-    "seed_diff": 0.4028,
-    "win_pct_diff": 0.7182,
+    "seed_diff": 0.4036,
+    "win_pct_diff": 0.7172,
     "prior_grind_diff": 0.2823,
-    "h2h_diff": 0.1232
+    "h2h_diff": 0.1229
   },
-  "intercept": 1.3775
+  "intercept": 1.3774
 }

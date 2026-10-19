@@ -38,9 +38,9 @@ const COVERAGE = [
   },
   {
     field: "Overtime periods",
-    from: "~2002",
-    source: "ESPN",
-    note: "Earlier seasons read 0 because overtime is unknown.",
+    from: "Historical coverage varies",
+    source: "ESPN; archived period scores and team minutes",
+    note: "Confirmed earlier overtime is backfilled. Unverified zeroes still mean unknown, not no overtime.",
   },
   {
     field: "Tip-off times",
@@ -50,9 +50,9 @@ const COVERAGE = [
   },
   {
     field: "Neutral-site venues",
-    from: "2013",
-    source: "ESPN",
-    note: "Earlier international games are scored at the listed host's arena.",
+    from: "Historical coverage varies",
+    source: "ESPN; NBA and venue records",
+    note: "Known earlier international games use their actual arenas. An alternate home arena is not automatically neutral.",
   },
   {
     field: "Shot locations",
@@ -94,8 +94,9 @@ export default function DataAndLimitsPage() {
           ]}
         />
         <Note>
-          Input coverage changes around 2002. The same formula uses the fields available for
-          each game, so a 1994 score and a 2024 score are not built from identical information.
+          Earlier input coverage remains uneven despite archived corrections. The same formula
+          uses the fields available for each game, so a 1994 score and a 2024 score are not
+          built from identical information.
         </Note>
       </Section>
 
@@ -147,15 +148,17 @@ export default function DataAndLimitsPage() {
 
       <Section label="ACCURACY OF THE TRAVEL FIGURE" title="How travel is estimated" disclosure>
         <Prose>
-          The game log records cities, dates, and game order. The model assumes the itinerary between them:
-          teams are modelled as
-          flying venue to venue, returning home only when the next game is at home. No public
-          itinerary data is used to verify those assumptions.
+          Mileage estimates straight-line distance between scheduled arena stops. Dated venue
+          records cover known temporary bases, alternate homes and international games. Two
+          games listed at home can still involve travel when they use different arenas.
+          The 2020 restart uses a campus-level location and remains excluded from the
+          regular-season rest findings.
         </Prose>
         <Note>
-          Distances use great-circle routes. Actual flight paths, stops at home, and recovery
-          time can differ from this estimate. The data here cannot quantify how those
-          differences affect a team&rsquo;s fatigue.
+          A season total counts each inbound leg once, starting from the team&rsquo;s modeled
+          base, and omits a final trip home. A game&rsquo;s rolling Mileage covers its stated
+          recent window. Actual flights, bus trips, intermediate stops at home and overnight
+          locations are not observed; the model does not infer them from days off.
         </Note>
       </Section>
 

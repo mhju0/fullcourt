@@ -1,0 +1,5 @@
+source,season,external_id,date,home,away,home_score,away_score,game_type,source_file
+nba_archive,2004-05,0040401000,2005-06-27,,,,,playoffs,docs/audit/2026-10-20-historical-audit/sources/nba_schedule_2005.csv.gz
+nba_archive,2004-05,0040401001,2005-06-28,,,,,playoffs,docs/audit/2026-10-20-historical-audit/sources/nba_schedule_2005.csv.gz
+nba_archive,2012-13,0021201214,2013-04-16,BOS,IND,0,0,regular,docs/audit/2026-10-20-historical-audit/sources/nba_schedule_2013.csv.gz
+nba_archive,2019-20,0051900111,2020-08-15,POR,MEM,126,122,play_in,docs/audit/2026-10-20-historical-audit/sources/nba_schedule_2020.csv.gz

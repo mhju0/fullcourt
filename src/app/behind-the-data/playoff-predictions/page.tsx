@@ -1,3 +1,4 @@
+import { PLAYOFF_MODEL_DATA_REVISION, PLAYOFF_MODEL_VERSION } from "@/lib/playoff-model-version";
 import type { Metadata } from "next";
 import { BehindTheDataShell } from "@/components/behind-the-data-shell";
 import {
@@ -93,9 +94,9 @@ export default function PlayoffPredictionsMethodPage() {
           {`P(home-court team wins the series)   →   ≥ 0.5 predicts them, otherwise the opponent`}
         </Formula>
         <Note>
-          This model has its own features and fitted coefficients. Playoff games are excluded
-          from the fatigue model itself: a fixed two-team series breaks its travel assumptions,
-          since the opponent never changes and the itinerary is known in advance.
+          This series model has its own features and fitted coefficients. Playoff games are
+          excluded from the regular-season fatigue win-rate findings. Played postseason games
+          still belong in the workload history.
         </Note>
       </Section>
 
@@ -143,7 +144,11 @@ export default function PlayoffPredictionsMethodPage() {
           <strong>logistic_grind_v2</strong> superseded <strong>logistic_unreg_v1</strong> on
           2026-07-31, when <strong>entry_rest_diff</strong> (raw days of rest) was swapped for{" "}
           <strong>prior_grind_diff</strong> above. The <strong>v1</strong> prediction rows are
-          retained rather than overwritten, so older predictions stay auditable.
+          retained. The current data revision, <strong>{PLAYOFF_MODEL_VERSION}</strong>,
+          recomputes the same model from corrected inputs as of {PLAYOFF_MODEL_DATA_REVISION}.
+          Previous v1 and v2 prediction rows remain stored for audit. Walk-forward predictions
+          still train only on earlier seasons; the full-sample fit uses all outcomes and is a
+          hindsight comparison.
         </Note>
       </Section>
 

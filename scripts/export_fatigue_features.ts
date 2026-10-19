@@ -414,6 +414,9 @@ async function main(): Promise<void> {
   await writeFile(REPORT_PATH, report, "utf8");
   console.log(`[export] report written to ${REPORT_PATH}`);
   console.log(report);
+  if (mismatches.length > 0 || failures.length > 0) {
+    throw new Error("Fatigue export fidelity failed; do not use this export for derived analytics");
+  }
 }
 
 main().catch((err) => {

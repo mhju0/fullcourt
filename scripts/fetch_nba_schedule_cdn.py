@@ -45,6 +45,7 @@ if _SCRIPTS_DIR not in sys.path:
     sys.path.insert(0, _SCRIPTS_DIR)
 
 from fetch_schedule import load_team_id_map, normalize_abbr, normalize_stats_game_id
+from game_input_corrections import apply_game_input_correction
 from schedule_upsert_contract import (
     CDN_SCHEDULE_UPSERT_POLICY,
     build_schedule_upsert_sql,
@@ -233,6 +234,8 @@ def build_cdn_records(
 
         date_str = g.game_date_et.isoformat()
 
+        accepted = apply_game_input_correction(date_str, home_tricode, away_tricode,
+            {"overtimePeriods": 0, "gameType": "regular"})
         records.append(
             (
                 g.game_id,
@@ -243,8 +246,8 @@ def build_cdn_records(
                 home_score,
                 away_score,
                 status,
-                0,
-                "regular",
+                accepted["overtimePeriods"],
+                accepted["gameType"],
             )
         )
 

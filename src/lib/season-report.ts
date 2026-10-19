@@ -79,8 +79,9 @@ export interface SeasonReportSide {
   /** Postgres `decimal`, so a string. */
   fatigueScore: string;
   /**
-   * Miles flown into this game from the team's previous one: a single leg, so a season's legs
-   * add up to its travel. Not the stored `travel_distance_miles`, which is a rolling 7-day sum.
+   * Physical legs since this team's previous published appearance, including any intervening
+   * Cup or play-in context. This internal assignment is not necessarily a single flight and
+   * differs from the stored rolling 7-day `travel_distance_miles`.
    */
   travelLegMiles: number;
   isBackToBack: boolean;
@@ -465,12 +466,13 @@ export function buildSeasonReport(
 
     const { differential, advantageTeam } = classifyRestAdvantage(homeFatigue, awayFatigue);
 
-    // Both sides' rest state, recorded before the call filter below. A game the model declines
-    // to call is still a game the schedule handed both teams, and schedule value is a statement
-    // about the calendar rather than about the model's record on it.
-    const states = restStatePair(advantageTeam);
-    teamEntry(teams, row.homeTeamId).restStates[states.home]++;
-    teamEntry(teams, row.awayTeamId).restStates[states.away]++;
+    // Price both sides before the call filter, using only fixtures with a home/road baseline.
+    // Neutral-site workload remains in schedule tax and the weekly curve above.
+    if (!row.neutralSite) {
+      const states = restStatePair(advantageTeam);
+      teamEntry(teams, row.homeTeamId).restStates[states.home]++;
+      teamEntry(teams, row.awayTeamId).restStates[states.away]++;
+    }
 
     // The same boundary /analysis uses, from the same function — this page reports how the
     // rest *call* scored, so a game the model declines is not one of its calls and does not

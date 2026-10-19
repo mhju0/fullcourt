@@ -1,0 +1,50 @@
+[
+  {
+    "name": "nba-key-dates",
+    "url": "https://www.nba.com/news/key-dates",
+    "status": 200,
+    "capturedAt": "2026-10-19T16:39:51.042Z"
+  },
+  {
+    "name": "nba-spurs-schedule",
+    "url": "https://www.nba.com/spurs/schedule",
+    "status": 200,
+    "capturedAt": "2026-10-19T16:39:52.658Z"
+  },
+  {
+    "name": "nba-bucks-time-change",
+    "url": "https://www.nba.com/news/milwaukee-bucks-move-home-opener-world-series",
+    "status": 200,
+    "capturedAt": "2026-10-19T16:39:53.039Z"
+  },
+  {
+    "name": "nba-bulls-schedule",
+    "url": "https://www.nba.com/bulls/schedule",
+    "status": 200,
+    "capturedAt": "2026-10-19T16:39:54.491Z"
+  },
+  {
+    "name": "nba-release",
+    "url": "https://pr.nba.com/2026-27-nba-regular-season-schedule/",
+    "status": 200,
+    "capturedAt": "2026-10-19T16:39:55.214Z"
+  },
+  {
+    "name": "nba-cup-faq",
+    "url": "https://www.nba.com/news/nba-cup-frequently-asked-questions",
+    "status": 200,
+    "capturedAt": "2026-10-19T16:39:55.607Z"
+  },
+  {
+    "name": "hawks-dream-joint-release",
+    "url": "https://www.statefarmarena.com/news/detail/joint-statement-from-the-atlanta-dream-and-atlanta-hawks",
+    "status": 200,
+    "capturedAt": "2026-10-19T16:42:13.683Z"
+  },
+  {
+    "name": "hawks-rockets-venue-event",
+    "url": "https://www.statefarmarena.com/events/detail/atlanta-hawks-vs-houston-rockets-tickets-atlanta-georgia-2026-10-24",
+    "status": 200,
+    "capturedAt": "2026-10-19T16:42:14.561Z"
+  }
+]

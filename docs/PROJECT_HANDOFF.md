@@ -46,7 +46,6 @@ when the season resumes; an offseason skip is not evidence that the ingest path 
 [Roadmap](ROADMAP.md) contains the remaining maintenance work and deferred ideas. No coefficient
 refit, database migration, accounts, or new analytics are implied by repository cleanup.
 
-
 ## Summary of entries before 2026-10-05
 
 Condensed 2026-10-19. DECISIONS.md and dated reviews retain delivery evidence.
@@ -72,17 +71,11 @@ Condensed 2026-10-14: D-74–D-77 shipped the footer non-affiliation notice, `/p
 Sentry `javascript-nextjs` / `michael-ju-46` uses Vercel `NEXT_PUBLIC_SENTRY_DSN` with IP storage off; UptimeRobot checks `/` and `/api/health` every five minutes. Vercel's one Hobby firewall rule limits `/api/` to 100 requests per 60 seconds per IP.
 The owner's Mac runs `~/Backups/fullcourt/backup.sh` Sundays 11:00, retaining eight backups; it needs pg_dump 18 and one restore matched counts. Instagram review fixed the Schedule pinned-column zero rule and report subject `FullCourt error or suggestion`.
 
-Source-map upload shipped in PR #171; client symbolication was verified on 2026-10-18. The owner
-chose to keep the footer notice at 12px on 2026-10-17 and upgraded Supabase to Pro for launch.
-The social preview was uploaded on
-2026-08-30, and the profile, portfolio and repo homepage moved to fullcourt.fyi on 2026-10-17.
+PR #171 shipped source-map upload; client symbolication was verified October 18. The owner kept the 12px footer notice and upgraded Supabase to Pro for launch. Social preview was uploaded August 30; profile, portfolio and repo homepage moved to fullcourt.fyi October 17.
 
 ## Phone and tablet layout (2026-10-07)
 
-Condensed 2026-10-11: PR #111 shipped D-78 phone calendar/week controls, one-line slate summary,
-scroll cues and smaller Schedule columns; D-79 removed its summary rail. The owner holds the
-private survey; row30 was amended. Stale dev CSS was checked with build/start (D-72).
-The duplicated local history was reconciled with origin; the backup branch was removed.
+Condensed 2026-10-20: PR #111 shipped D-78 phone calendar/week controls, one-line slate summary, scroll cues and smaller Schedule columns; D-79 removed its summary rail. The owner holds the amended row30 private survey. Build/start verified stale dev CSS (D-72); local history was reconciled and its backup branch removed.
 
 Open:
 
@@ -139,7 +132,6 @@ Still open from those entries:
 - Re-key the ESPN-seeded 2026-27 games to hoopR IDs once played games exist (SEASON_ROLLOVER.md).
 - Supabase: the owner will revisit the Pro plan around 2026-11-05, after seeing in-season egress.
 
-
 ## Condensed release history — 2026-10-18 to 2026-10-19
 
 PR #174 merged Next.js/dependency, accessibility and explicit postponed/cancelled support;
@@ -153,17 +145,9 @@ reproduction and the full cached Legends rebuild closed prior provenance gaps; p
 figures and ratified model coefficients did not change. Opening-night pipeline observation,
 human/device checks, December fixtures, canonical-ID re-key and the November 5 plan review
 remain open as listed above. Git/provider state takes precedence over these historical notes.
-
-## Delivery summary — 2026-10-19
-
-PR #176 delivered the approved stacked Home-court comparison: filled circles, one
-general sample note, fixed Season/Home left and paired 0.5+/optional 5+ records
-right. PR #177 delivered quiet availability guides, internal season-readiness
-checks, publication-specific prior-season links, chronological upcoming large
-rested-home edges, and homepage period placement. PR #178 corrected Officiating's
-guide heading and inline-link wrapping. Their dated reviews and exact Git/Vercel
-records retain acceptance evidence. Opening-night, physical-device, source
-publication and canonical-ID checks remain operational follow-ups.
+PR #177 added quiet publication-specific availability guides, internal readiness, prior-season
+links and chronological large rested-home edges (D-115–D-116); PR #178 fixed the Officiating
+guide heading and wrapping. Their dated reviews retain acceptance evidence.
 
 ## Official v1.0.0 release — 2026-10-19
 
@@ -174,7 +158,6 @@ releases increment the version and receive immutable tags/GitHub release records
 The product baseline is 114617d. Release designation does not mark the remaining
 opening-night, physical-device or source-publication checks complete.
 
-
 ## Shooting awaiting view — 2026-10-19
 
 D-118 records the owner’s v1.0.1 follow-up: default to the current season and show
@@ -182,7 +165,6 @@ only its Awaiting results view until usable publication, with explicit prior-sea
 navigation. Historical tables remain available by selection; no automatic older
 table beneath the notice. Readiness and career guards remain. Delivery/verification
 are recorded by the patch PR, version tag and GitHub release.
-
 
 ## Approved readability refinements — 2026-10-19
 
@@ -193,3 +175,30 @@ known-results playoff fits, and adds a league-centered team gap key. Team gap
 rounding uses original counts. Ratified coefficients, cohorts and generated data
 remain unchanged. Exact PR, review, checks and matching deployment own release
 acceptance; the prototype is retained separately as design evidence.
+
+## Opening-quarter travel audit — 2026-10-20
+
+The [audit](research/2026-10-20-opening-quarter-travel-review.md) checks all assigned Oct–Dec games and researches 30 teams’ airport candidates. Density flags pass; homecoming road-load inconsistency, Austin venue omission and stale CHI–MIL tip remain unresolved. Airport/return-home assumptions are unverified; six away gaps cross unknown Cup fixtures. No source/model/database correction was applied. Next: review the road-load rule and physical-venue representation, reconcile times, then verify a controlled correction before rescoring.
+
+## Full assigned-season travel review — 2026-10-20
+
+The [full review](research/2026-10-20-full-season-travel-review.md) extends checks to all 1,200 assigned games / 2,400 sides. Density and API fields pass; 185 homecomings have positive road load, three Austin venues are omitted, and two stale tips are confirmed. D-120 records the owner's Mileage label choice. Deeper itinerary cases confirm some home interruptions but no validated geography rule. No app/model/DB correction occurred. Next: resolve the scorer contract, separate physical venues, correct tips and dependent scores, then re-audit Cup assignments plus championship workload context.
+
+## All-season schedule/travel audit — 2026-10-20
+
+The [all-season report](research/2026-10-20-historical-audit/README.md) covers 51,695 games / 103,390 scores across 42 stored seasons. Replay and independent density/rest/Mileage arithmetic pass; longstanding homecoming semantics affect 6,125 published scores under a one-change diagnostic (61.1889%→61.1417%). External checks identify 783 missing OT inputs (including the separately frozen bulk supplement), 109 postseason sublabel defects and a qualified 167-game venue register. Early source coverage, actual airports/home stops and combined correction impact remain incomplete. No app/model/DB/generated-data correction was applied. Next: settle homecoming/physical-venue contracts, adjudicate and prepare a reversible input correction, review predictions/artifacts together, then obtain applicable production-write approval. Audit completion is not repaired production.
+
+
+## Full-history correction staging — 2026-10-20
+
+D-121 / ADR 0011 implement verified corrections, actual venue endpoints, streak resets,
+Cup/play-in workload context and bounded bubble geography without changing coefficients.
+The isolated `fix/historical-recalculation` worktree has a restored local PostgreSQL shadow;
+production remains unchanged. The [recalculation report](research/2026-10-20-historical-recalculation.md)
+pins the exact manifest and comparisons. Apply/rollback and actual server-restart checks pass;
+cache/derived publication checks and full tests pass. D-122 adds eleven verified playoff
+feature fixes and 1,050 new-revision outputs while preserving older records.
+The owner explicitly approved the exact reviewed production update and conditional rollback.
+Next: finish the exact commit review, maintenance/cutover and canonical-domain verification. Existing opening-night/device/source-publication
+follow-ups remain open. Unverified scores, early overtime coverage and actual itineraries
+remain explicit source limits rather than inferred corrections.

@@ -22,6 +22,7 @@ interface FixtureGame {
   awayTeamId: number;
   homeFatigue: string | null;
   awayFatigue: string | null;
+  neutralSite?: boolean;
 }
 
 const GAMES: FixtureGame[] = [
@@ -36,11 +37,13 @@ const GAMES: FixtureGame[] = [
   { date: "2024-01-07", homeTeamId: 1, awayTeamId: 3, homeFatigue: "6.00", awayFatigue: "4.00" },
   // Missing one fatigue score: absent from every bucket in both reducers, never "neutral".
   { date: "2024-01-09", homeTeamId: 2, awayTeamId: 1, homeFatigue: "5.00", awayFatigue: null },
+  { date: "2024-01-11", homeTeamId: 1, awayTeamId: 2, homeFatigue: "1.00", awayFatigue: "7.00", neutralSite: true },
 ];
 
 const disparityRows: DisparityGameRow[] = GAMES.map((g) => ({
   date: g.date,
   status: "final",
+  neutralSite: g.neutralSite ?? false,
   homeTeamId: g.homeTeamId,
   awayTeamId: g.awayTeamId,
   homeFatigueScore: g.homeFatigue,
@@ -63,7 +66,7 @@ const seasonRows: SeasonReportRow[] = GAMES.map((g, i) => ({
   awayTeamId: g.awayTeamId,
   homeScore: 100,
   awayScore: 90,
-  neutralSite: false,
+  neutralSite: g.neutralSite ?? false,
   home: g.homeFatigue === null ? null : side(g.homeFatigue),
   away: g.awayFatigue === null ? null : side(g.awayFatigue),
 }));
@@ -89,6 +92,18 @@ describe("Schedule Edge and the Season Report price the same games identically",
         disparityTeam.scheduleValueWins,
         `team ${reportTeam.teamId} priced differently on the two pages`
       ).toBe(reportTeam.scheduleValueWins);
+    }
+  });
+
+  it("excludes a neutral fixture from both venue-priced schedules", () => {
+    const withoutNeutralDisparity = computeScheduleDisparity("2023-24", disparityRows.filter((row) => !row.neutralSite));
+    const withoutNeutralReport = buildSeasonReport("2023-24", seasonRows.filter((row) => !row.neutralSite));
+    for (const team of report.teams) {
+      expect(team.restStates).toEqual(withoutNeutralReport.teams.find((row) => row.teamId === team.teamId)!.restStates);
+      expect(team.scheduleValueWins).toBe(withoutNeutralReport.teams.find((row) => row.teamId === team.teamId)!.scheduleValueWins);
+      const edgeTeam = disparity.teams.find((row) => row.teamId === team.teamId)!;
+      expect(edgeTeam.restStates).toEqual(withoutNeutralDisparity.teams.find((row) => row.teamId === team.teamId)!.restStates);
+      expect(edgeTeam.scheduleValueWins).toBe(withoutNeutralDisparity.teams.find((row) => row.teamId === team.teamId)!.scheduleValueWins);
     }
   });
 

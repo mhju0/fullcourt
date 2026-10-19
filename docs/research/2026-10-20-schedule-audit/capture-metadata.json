@@ -1,0 +1,13 @@
+{
+  "started": "2026-10-19T16:23:44.122Z",
+  "finished": "2026-10-19T16:23:45.443Z",
+  "transaction": "REPEATABLE READ READ ONLY",
+  "sourceCommit": "f7a20dac58a52b1f4be50d562bdc327ea5bcf4c4",
+  "counts": {
+    "teams": 30,
+    "games": 1200,
+    "context": 711,
+    "scores": 2400,
+    "duplicates": 0
+  }
+}

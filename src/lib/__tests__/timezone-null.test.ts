@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import timeZoneData from "@/data/timezone-null.json";
 import { FATIGUE_CONSTANTS } from "@/lib/fatigue";
@@ -121,7 +123,13 @@ describe("the time-zone null", () => {
   it("keeps the scale figure the page rounds honest", () => {
     // The page prints `≈ N× the whole fatigue model`. Rounding a ratio is fine; rounding one
     // that has drifted is not.
-    expect(Math.round(strengthVsFatigueRatio(data))).toBe(24);
+    const fit = JSON.parse(readFileSync(join(process.cwd(), "ml/fatigue_fit_metrics.json"), "utf8"));
+    const loss = fit.pooledLogLoss;
+    const rounded = (value: number) => Number(value.toFixed(5));
+    expect(data.logLoss.everyFatigueFactorCombined).toBe(rounded(loss.ll_controls_only - loss.ll_fitted_controls));
+    expect(data.logLoss.strengthAlone).toBe(rounded(loss.ll_base - loss.ll_controls_only));
+    expect(strengthVsFatigueRatio(data)).toBeGreaterThan(0);
+    expect(Number.isFinite(strengthVsFatigueRatio(data))).toBe(true);
   });
 
   it("resolves every row the page asks for by name", () => {

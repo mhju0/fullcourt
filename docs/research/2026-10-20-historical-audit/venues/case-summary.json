@@ -1,0 +1,19 @@
+{
+  "corroborated_case_register_games": 167,
+  "case_categories": {
+    "HARTFORD": 2,
+    "PRE2013_NEUTRAL": 15,
+    "ANAHEIM": 4,
+    "TACOMA": 43,
+    "SAN_JOSE": 41,
+    "BALTIMORE": 1,
+    "KATRINA_MINOR": 11,
+    "TAMPA": 36,
+    "MISSED_NEUTRAL": 3,
+    "AUSTIN": 11
+  },
+  "case_side_adjacent_contexts": 334,
+  "confirmed_era_individual_inferences": 1415,
+  "secondary_alternate_candidates": 9,
+  "strict_primary_confirmed_excluding_austin_partly_verified": 156
+}

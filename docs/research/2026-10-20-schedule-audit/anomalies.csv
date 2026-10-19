@@ -1,0 +1,9 @@
+id,severity,category,count,description,evidence
+A1,confirmed,stale_tip,1,Oct23 CHI@MIL stored20ET vs current16ET official change,espn-differences.csv; NUMERIC_AUDIT.md
+A2,confirmed,venue_coordinate,1,Oct23 HOU@SAS Austin Moody Center represented at SAS usual arena,raw NBA PDF note A; ESPN venue7317
+A3,semantic_review,homecoming_streak,208,Stored prior away streak persists on current home game; API displays0,stored-mismatches.csv
+A4,semantic_review,homecoming_positive_road_load,66,Positive road term on homecoming;18class changes in zero-current-home-streak diagnostic,homecoming-impact.csv
+A5,conflict,provider_tip,1,Oct24 HOU@ATL ESPN20:30ET vs NBA/PDF/DB20ET,espn-differences.csv
+A6,uncertain,away_away_gap,43,Gap>=3 calendar days;6overlap undefinedCup fixtures,travel-candidates.csv
+A7,proxy_limit,local_leg,33,Nonzero arena legs<100 miles cannot be called observed flights,travel-candidates.csv
+A8,unavailable,undefined_regular_fixtures,30,Two perteam missing as NBA release intends;not a DB fixture omission,NBA release; NBA Cup FAQ

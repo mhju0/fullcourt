@@ -45,6 +45,8 @@ from sklearn.tree import DecisionTreeClassifier
 
 import psycopg2
 
+from playoff_model_revision import MODEL_VERSION
+
 REPO_ROOT = Path(__file__).resolve().parent.parent
 
 # Column order is FIXED and load-bearing — predict_series.py imports this list and indexes
@@ -452,7 +454,8 @@ def round_split_summary(res: WalkForwardResult, baseline: WalkForwardResult) -> 
     pooled_acc, pooled_ll, pooled_brier = res.pooled()
     base_acc, base_ll, base_brier = baseline.pooled()
     return {
-        "modelVersion": "logistic_grind_v2",
+        "modelVersion": MODEL_VERSION,
+        "evaluation": {"folds": len(res.per_season), "firstSeason": res.per_season[0]["season"]},
         "features": list(FEATURES),
         "roundsTwoPlus": slice_metrics(r2_mask),
         "roundOne": slice_metrics(r1_mask),

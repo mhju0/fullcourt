@@ -65,7 +65,15 @@ a fixture requires a reviewed identity/tip-time operation. See [game lifecycle](
 
 ## Schedule scope
 
-**Neutral site**: A venue outside either team's usual home arena. `neutral-venues.ts` supplies its coordinates and altitude flag. A neutral-site game has no home court, so it is never called and is left out of every venue baseline and home/away split (D-92); it still counts as played evidence. Do not confuse this with the neutral rest-gap band.
+**Physical venue**: The arena where a game takes place, independently of which team is listed at home. An alternate home arena can still provide home court.
+
+**Modeled team base**: The team's dated reference location for estimated travel and clock displacement. It does not establish where players slept or whether they returned between games.
+
+**Scheduled away streak**: Consecutive away appearances in the modeled schedule, ending at a non-neutral designated home game. It is not an observed continuous stay on the road.
+
+**Mileage**: Estimated great-circle distance between scheduled venue stops, rather than recorded flights. A per-game rolling window and a season total describe different periods; season totals count each inbound leg once.
+
+**Neutral site**: A game assigned no home court for either team, even though one team is listed as the host. It is never called and is left out of venue baselines, home/away splits and venue-priced Worth (D-92); it still contributes physical workload and descriptive schedule edges. An alternate home such as Austin is not automatically neutral. Do not confuse this with the neutral rest-gap band.
 
 **Provisional season**: A season with games that are not final. Figures can change as games are played, added, corrected, or rescheduled.
 

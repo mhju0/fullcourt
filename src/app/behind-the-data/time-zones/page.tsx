@@ -159,8 +159,8 @@ strength only                    ${logLoss.strengthOnly.toFixed(5)}
         <ValueGrid
           values={[
             { label: "Candidates worth", value: signedNumber(logLoss.candidatesWorth, 5), sub: "held-out log loss" },
-            { label: "Every fatigue term", value: signedNumber(logLoss.everyFatigueFactorCombined, 5), sub: "ADR 0006, not this run" },
-            { label: "Strength alone", value: signedNumber(logLoss.strengthAlone, 3), sub: `ADR 0006, ≈ ${Math.round(strengthVsFatigueRatio(data))}× every fatigue term` },
+            { label: "Every fatigue term", value: signedNumber(logLoss.everyFatigueFactorCombined, 5), sub: "refreshed ADR 0006 protocol" },
+            { label: "Strength alone", value: signedNumber(logLoss.strengthAlone, 3), sub: `same refreshed fit, ≈ ${Math.round(strengthVsFatigueRatio(data))}× every fatigue term` },
           ]}
         />
       </Section>

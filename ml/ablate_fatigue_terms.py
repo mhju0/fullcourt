@@ -25,7 +25,10 @@ this environment has masked numeric digits in Bash output.
 
 from __future__ import annotations
 
+import hashlib
+import json
 import logging
+from datetime import date
 from pathlib import Path
 
 import pandas as pd
@@ -38,6 +41,7 @@ log = logging.getLogger(__name__)
 DATA = Path(__file__).resolve().parent / "data"
 CSV = DATA / "fatigue_features.csv"
 REPORT = DATA / "fatigue_ablations.txt"
+FACTS = DATA.parent / "fatigue_ablation_facts.json"
 
 # src/lib/rest-advantage-evidence.ts
 NEUTRAL_THRESHOLD = 0.5
@@ -169,6 +173,7 @@ def main() -> None:
         f"{'term':<26}{'delta_pp':>10}{'n':>8}{'uniq_n':>8}{'uniq_rate':>11}{'edge_lost':>11}",
     ]
 
+    measurements = []
     for label, col, neutral in TERMS:
         h = home.assign(abl=assemble(home, col, neutral))
         a = away.assign(abl=assemble(away, col, neutral))
@@ -176,11 +181,35 @@ def main() -> None:
         n, r = rate(abl, won)
         uniq_n, uniq_rate = rate(full & ~abl, won)
         edge_lost = base_edge - above_coin_flip(abl, won)
+        measurements.append({
+            "term": label,
+            "delta": round(r - base_rate, 2),
+            "found": uniq_n,
+            "foundWins": int(won[full & ~abl].sum()),
+            "foundWinPct": uniq_rate,
+            "added": int((~full & abl).sum()),
+            "addedWins": int(won[~full & abl].sum()),
+            "edgeLost": int(round(edge_lost)),
+            "edgeLostExact": edge_lost,
+            "calledWithout": n,
+            "winPctWithout": r,
+        })
         lines.append(
             f"{label:<26}{r - base_rate:>10.2f}{n:>8}{uniq_n:>8}"
             f"{uniq_rate:>10.2f}%{edge_lost:>+11.0f}"
         )
 
+    facts = {
+        "generatedBy": "ml/ablate_fatigue_terms.py",
+        "measuredOn": date.today().isoformat(),
+        "sourceSha256": hashlib.sha256(CSV.read_bytes()).hexdigest(),
+        "scoreReconstructionMismatches": 0,
+        "eligibleGames": len(paired),
+        "baseline": {"winPct": base_rate, "called": base_n, "wins": int(won[full].sum()), "edge": base_edge},
+        "terms": sorted(measurements, key=lambda row: row["edgeLostExact"], reverse=True),
+    }
+    FACTS.write_text(json.dumps(facts, indent=2) + "\n", encoding="utf-8")
+    log.info("facts written to %s", FACTS)
     REPORT.write_text("\n".join(lines) + "\n", encoding="utf-8")
     log.info("report written to %s", REPORT)
 

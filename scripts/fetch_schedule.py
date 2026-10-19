@@ -56,6 +56,7 @@ _SCRIPTS_DIR = str(Path(__file__).resolve().parent)
 if _SCRIPTS_DIR not in sys.path:
     sys.path.insert(0, _SCRIPTS_DIR)
 
+from game_input_corrections import apply_game_input_correction
 from nba_ot_periods import fetch_overtime_periods
 from schedule_upsert_contract import (
     STATS_SCHEDULE_UPSERT_POLICY,
@@ -182,6 +183,10 @@ def get_game_type(game_id: str, game_date) -> str:
     - Playoff games in June (month >= 6) are the Finals.
     """
     gid_str = normalize_stats_game_id(game_id)
+    if gid_str.startswith("006"):
+        return "cup_final"
+    if gid_str.startswith("005"):
+        return "play_in"
     if gid_str.startswith("004"):
         try:
             month = game_date.month
@@ -282,6 +287,8 @@ def _pair_games_dataframe(
             ot_periods = 0
         game_type = game_type_override or get_game_type(gid_str, home["GAME_DATE"])
 
+        accepted = apply_game_input_correction(home["GAME_DATE"], home_abbr, away_abbr,
+            {"overtimePeriods": ot_periods, "gameType": game_type})
         records.append((
             gid_str,
             home["GAME_DATE"],
@@ -291,8 +298,8 @@ def _pair_games_dataframe(
             home_score,
             away_score,
             status,
-            ot_periods,
-            game_type,
+            accepted["overtimePeriods"],
+            accepted["gameType"],
         ))
 
     if skipped_non_regular:

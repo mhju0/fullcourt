@@ -322,6 +322,7 @@ export interface PlayoffSeriesPredictionMethod {
   /** P(home-court team wins the series). */
   predictedHomeCourtWinProb: number;
   predictedWinnerTeam: PlayoffTeamRef;
+  /** The explicitly selected data revision; older stored predictions stay auditable. */
   modelVersion: string;
   /** null until the series has a known winner. */
   predictedWinnerCorrect: boolean | null;

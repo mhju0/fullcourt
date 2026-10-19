@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import Image from "next/image"
-import { TRAVEL_LOOKBACK_DAYS } from "@/lib/fatigue"
+import { TRAVEL_LOOKBACK_DAYS } from "@/lib/fatigue-windows"
 import { readableTextOn } from "@/lib/nba-team-colors"
 import { gapRangeByKey, isCalledSide, winPct } from "@/lib/rest-advantage-evidence"
 import { formatRestAdvantageValue } from "@/lib/rest-advantage-display"

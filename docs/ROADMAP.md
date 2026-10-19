@@ -3,6 +3,15 @@
 Current commitments, updated in place. Completed work belongs in Git/release records and
 rationale in [Decisions](DECISIONS.md), not another running implementation log.
 
+## Historical recalculation — prepared, production pending
+
+Recalculate every stored season with verified input corrections, physical venue endpoints and
+correct current road/home streaks (D-121, ADR 0011). The local shadow database has completed
+atomic apply/rollback and restart checks. Regenerate all dependent publications from the same
+frozen candidate, complete independent review, then request the required production mass-update
+approval. Keep ratified coefficients and resolved prediction history unchanged. Actual flight
+itineraries, intermediate home stops and unverified historical inputs remain limitations.
+
 ## Maintenance
 
 - Keep correctness, dependency audit, and CodeQL checks passing. Review dependency overrides
@@ -120,3 +129,23 @@ Other decisions and limits:
   Dependabot previews. The connector limitation does not block dashboard verification.
 - **Claude roadmap:** the visible artifact was stale at this read (#170 still marked open).
   Repository decisions and this table own current status; no artifact publication is claimed.
+
+## Opening-quarter schedule/travel findings (2026-10-20)
+
+The [read-only audit](research/2026-10-20-opening-quarter-travel-review.md) and [30-team airport reference](reports/2026-10-20-schedule-travel-audit.html) leave these concrete follow-ups open:
+
+- Resolve the scorer retaining prior away streaks on homecoming games; measure historical consequences before a controlled rescore. No coefficient change is implied.
+- Represent Austin’s actual venue independently from the Spurs’ home-court status.
+- Refresh the confirmed October 23 CHI–MIL tip change; reconcile October 24 HOU–ATL’s provider conflict.
+- Replace “Miles flown” with explicit estimated venue-distance wording; distinguish scheduled away streaks from actual time on the road.
+- Recheck December after Cup assignments, including subsequent rolling travel/workload. Airport preferences and intermediate home returns remain sourced research candidates rather than verified itineraries.
+
+### Full-season extension and itinerary evidence (2026-10-20)
+
+The [full assigned-season report](research/2026-10-20-full-season-travel-review.md) supersedes the opening-quarter scope. Three Austin fixtures and two stale tips are confirmed; the Houston–Atlanta conflict is resolved by the October 13 team/venue announcement, while the production correction remains open. Homecoming semantics affect 185 assigned home-game scores; the exported home-stand feature also needs review. Keep these findings open until a verified correction, rather than treating audit completion as a repaired model. D-120 keeps the visible Mileage term with details in Behind the Data. Future Cup checks must include the physically played championship in workload context independently of regular-season publication eligibility.
+
+### All-season audit extension (2026-10-20)
+
+The owner requested the same audit across every stored season. The [all-season research](research/2026-10-20-historical-audit/README.md) now covers 51,695 games and 103,390 score sides across 42 season labels. Current-engine replay matches every stored score/component; independent density/rest/Mileage arithmetic agrees under recorded venue assumptions. The shared streak semantics persist historically: 25,046 home appearances retain a prior away streak and 25,095 away appearances retain the exported home-stand feature. A single-change homecoming diagnostic changes 6,125 published home scores, while the pooled rested-team-at-home win rate moves 61.1889% to 61.1417%. This is sensitivity evidence, not a model change or repair.
+
+Keep source adjudication, confirmed historical venue corrections, early overtime gaps, the homecoming policy decision and dependent artifact regeneration as separate follow-ups. External source coverage varies by season and field; provider disagreements are not automatically database errors. Actual charter airports and intermediate home stops remain unobserved for most historical journeys. Any controlled production correction needs exact affected rows, backup/rollback, independent review and the applicable owner approval before persistent-data replacement.

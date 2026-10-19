@@ -1778,3 +1778,61 @@ effect. Missing rates or league comparison remain untinted/unavailable. Preserve
 counts, nulls and sample labels. Calculate each team's percentage-point difference
 from unrounded win fractions, then round once; the league reference already does
 this from aggregate counts. No model coefficient, schema or generated figure changes.
+
+## D-120 — Mileage label and itinerary research scope (2026-10-20)
+
+The owner chose **Mileage** as the visible term and wants the estimation method
+explained in Behind the Data rather than adding “estimated” to each label.
+Retain rolling-window or period context so a per-game seven-day value cannot be
+mistaken for a season total. This records the approved wording direction; no
+production label change is claimed by the research-only audit.
+
+The owner requested a full 2026-27 schedule audit and deeper research into
+geography-dependent returns home between consecutive away games. This does not
+approve an automatic gap-based or geography-based home-return rule, airport
+substitution, coefficient change, or rescore. Document observed itineraries and
+hypothetical detours separately. The initial October–December report remains a
+dated snapshot; the full-season report extends its scope.
+
+## D-121 — Correct historical inputs and recalculate the full evidence (2026-10-20)
+
+The owner accepted the all-season audit recommendations and requested continued
+implementation, all-season recalculation and regenerated winning percentages.
+ADR 0011 records the accepted physical-venue, homecoming and clock semantics.
+Use confirmed overtime, postseason sublabels, neutral status and revised tips;
+retain unknown results/tips, unverified venue candidates and actual itineraries
+as unknown. Later primary corroboration closes the eight completed Austin cases;
+the original audit remains an immutable earlier evidence snapshot.
+
+Keep the ratified coefficient values and the existing evaluation protocol. Apply
+actual arena endpoints to every travel leg and keep Mileage as the visible label.
+Regenerate affected live and static statistics together, preserving denominators,
+venue baselines, separate visitor results and historical resolved predictions.
+No airport replacement or automatic geography-based home stop is approved.
+
+The next patch is prepared as v1.0.3. Completion requires a restored-database
+rehearsal, independent review of the exact candidate, and observed UI/API results.
+Production replacement still requires immediate approval under the operating
+policy; this instruction authorizes preparation and local recalculation rather
+than bypassing that final data-write boundary. Use a short maintenance cutover
+and verify canonical cache freshness before resuming writers. Do not mark this
+patch released merely because local implementation or tests pass.
+
+
+D-121 implementation clarification (2026-10-20): include the three completed Cup finals and
+2020 play-in as explicit nonregular workload fixtures, preserving regular publication cohorts.
+Correct the bounded restart's known Disney-campus geography and neutral status without
+claiming exact court coordinates or validating the normal-travel model for the bubble.
+The existing bubble exclusion and all ratified scoring terms remain. Completed-analysis
+cache keys must follow the actual selected game/fatigue inputs, including deleted or restored
+score sides, rather than only final-result counts.
+
+## D-122 — Preserve playoff model history while correcting stale inputs (2026-10-20)
+
+The full rebuild confirmed eleven stale playoff feature values from primary records.
+Within the owner's all-data correction request, repair these values and regenerate both
+walk-forward and known-results outputs under `logistic_grind_v2_r20261020` (ADR 0012).
+Keep existing v1/v2 prediction rows unchanged, select the new revision explicitly, and
+retain the same model features and evaluation protocol. Extend the atomic correction,
+backup/CAS and conditional rollback to both playoff tables. This is preparation; the
+production mass-update approval boundary still applies.

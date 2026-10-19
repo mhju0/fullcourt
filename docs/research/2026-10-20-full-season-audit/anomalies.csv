@@ -1,0 +1,11 @@
+id,status,category,count,description,evidence
+F1,confirmed,stale_tips,2,CHI@MIL Oct23 20ET->16ET; HOU@ATL Oct24 20ET->20:30ET,espn-differences.csv; dated primary sources
+F2,confirmed,alternate_home_coordinates,3,SAS Moody Center Austin Oct23/Feb26/Feb28 represented at usual SanAntonio arena; keep home designation separate,current-provider-venues.csv; NBA PDF noteA
+F3,semantic_review,homecoming_streak,508,Current home side retains prior road streak in DB/model while API normalizes0,stored-mismatches.csv
+F4,semantic_review,positive_homecoming_road_load,185,Positive road term; fixed-input zero-home-streak counterfactual changes57side/neutral and66size classifications,homecoming-impact.csv
+F5,semantic_review,away_homestand_feature,507,Current away side retains prior home stand; feature doesnot enter current score,home-stand-feature-mismatches.json
+F6,research_only,geography_queue,55,All680consecutiveawaypairs exported; queue gap>=2 anddetour<=150mi arbitrary research threshold,all-consecutive-away-pairs.csv; geography-research-queue.csv
+F7,uncertain,long_away_gaps,99,Six crossundefinedCupfixturewindow; sixcrossAllStarbreak; gapisnotproofreturnhome,travel-candidates.csv
+F8,proxy_limit,local_legs,86,Nonzero arenalegs<100mi notobservedflights,travel-candidates.csv
+F9,unavailable,undefined_regular_fixtures,30,Two perteam stillunassigned forDec4-10; totalsprovisional,NBA release andCupFAQ
+F10,unavailable,cup_final_physical_workload,1,Dec11championship excludedregularstandings butphysicalworkload for2unknownteams requiresfuturecontextverification,FULL_SEASON_AUDIT.md

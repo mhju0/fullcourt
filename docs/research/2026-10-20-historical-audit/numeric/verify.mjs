@@ -1,0 +1,20 @@
+import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { gunzipSync } from 'node:zlib';
+import { createHash } from 'node:crypto';
+import { rowToRecentGame, neutralizeIfUnplayed } from '../../../../src/lib/fatigue-recent-games';
+import { scoreGameFatigue } from '../../../../src/lib/fatigue';
+const raw = new URL('../../../audit/2026-10-20-historical-audit/snapshot/',import.meta.url);
+const manifest=JSON.parse(readFileSync(new URL('./snapshot-manifest.json',import.meta.url)));
+for(const item of manifest.files){const data=readFileSync(new URL(item.file,raw));assert.equal(createHash('sha256').update(data).digest('hex'),item.sha256);assert.equal(createHash('sha256').update(gunzipSync(data)).digest('hex'),item.uncompressedSha256);assert.equal(gunzipSync(data).toString().split('\n').filter(Boolean).length,item.rows);}
+const row={date:'2026-01-01',homeTeamId:1,awayTeamId:2,homeAbbr:'BOS',awayAbbr:'NYK',homeLat:'42.366',homeLon:'-71.062',awayLat:'40.75',awayLon:'-73.99',homeAltitude:false,awayAltitude:false,overtimePeriods:2,homeScore:130,awayScore:90,status:'final',tipOffUtc:new Date('2026-01-02T00:00:00Z'),neutralSite:false,neutralVenueCity:null};
+const final=rowToRecentGame(neutralizeIfUnplayed(row),1);
+assert.equal(final.overtimePeriods,2);assert.equal(final.pointMargin,40);assert.equal(final.tipOffUtc.toISOString(),row.tipOffUtc.toISOString());
+const live=rowToRecentGame(neutralizeIfUnplayed({...row,status:'live'}),1);
+assert.equal(live.overtimePeriods,0);assert.equal(live.pointMargin,null);assert.equal(live.tipOffUtc.toISOString(),row.tipOffUtc.toISOString());
+const homeTeam={id:1,abbreviation:'BOS',latitude:row.homeLat,longitude:row.homeLon,altitudeFlag:false};const awayTeam={id:2,abbreviation:'NYK',latitude:row.awayLat,longitude:row.awayLon,altitudeFlag:false};
+const run=prior=>scoreGameFatigue({game:{date:'2026-01-02',tipOffUtc:new Date('2026-01-03T00:00:00Z')},homeTeam,awayTeam,homeRecentGames:[prior],awayRecentGames:[]}).home;
+const scored=run(final),withoutMargin=run({...final,pointMargin:null}),withoutOT=run({...final,overtimePeriods:0});
+assert.equal(scored.overtimeFatigueBonus,1);assert.equal(scored.features.turnaroundHours,24);assert.ok(scored.decayLoadScore<withoutMargin.decayLoadScore);assert.equal(scored.score-withoutOT.score,1);
+assert.ok(scored.score!==run(live).score);
+console.log('PASS: all snapshot hashes/counts; final OT/margin/tips preserved; unplayed result neutralization; actual final OT/margin materially exercise score');

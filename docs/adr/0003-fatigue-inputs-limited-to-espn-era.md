@@ -60,3 +60,19 @@ gap, this ADR should be amended rather than replaced.
 - `scripts/fetch_game_context.ts` — the ingest, and the source of the 2002 and 2013 boundaries.
 - `drizzle/0011_games_tip_off_neutral_site.sql` — the columns, with the same gaps recorded.
 - `docs/audit/travel-model-accuracy.md` — the earlier audit that first flagged neutral sites.
+
+
+## 2026-10-20 amendment — verified corrections, uneven coverage remains
+
+The all-history audit found 783 previously missing overtime inputs with period-score or
+team-minute corroboration, and 18 confirmed neutral games. The correction registry and
+physical-venue resolver in ADR 0011 make those facts durable across ingestion. The old
+blanket statement that every other feature is fully available, and the claimed conservative
+direction of missingness, are not supported. Historical arena, tip-off and overtime coverage
+remain uneven; unknown zeros are not confirmed no-overtime observations. The audit still
+identifies 5,815 final games without overtime-source confirmation. No direction of bias is
+claimed for that missingness.
+
+These are verified input corrections, not fitted coefficient changes. The source registry,
+frozen correction candidate and regenerated outputs own the current evidence; original
+figures above remain the historical decision record.

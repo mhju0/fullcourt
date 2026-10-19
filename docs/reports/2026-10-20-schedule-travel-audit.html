@@ -1,0 +1,502 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>FullCourt: October–December schedule and travel audit</title><style>html{scroll-behavior:smooth}*{box-sizing:border-box}body{margin:0;background:#f3f8fc;color:#19232d;font:17px/1.65 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}header,main{max-width:1120px;margin:auto;padding:28px 24px}header{border-bottom:1px solid #b9ccdb}header p{margin:0;color:#526372}nav{display:flex;flex-wrap:wrap;gap:24px;margin-top:16px}a{color:#3f3aad;text-underline-offset:3px}article{background:#fbfdff;border:1px solid #b9ccdb;padding:32px;margin-bottom:32px;scroll-margin-top:20px}h1{font-size:32px;line-height:1.25;margin:0 0 24px}h2{font-size:25px;line-height:1.3;margin:36px 0 16px}h3{font-size:20px;line-height:1.4;margin-top:28px}p,li{max-width:90ch}code{font-size:.88em;overflow-wrap:anywhere;background:#eaf1f6;padding:2px 4px}table{border-collapse:collapse;width:100%;font-size:15px;line-height:1.5;margin:24px 0}th,td{text-align:left;vertical-align:top;border-bottom:1px solid #b9ccdb;padding:12px}th{background:#e8f1f7}tr:nth-child(even){background:#f2f7fb}.table-wrap{overflow:auto}strong{font-weight:650}footer{max-width:1120px;margin:auto;padding:12px 24px 40px;color:#526372}@media(max-width:650px){header,main{padding:20px 12px}article{padding:22px 16px}h1{font-size:27px}h2{font-size:23px}table{min-width:700px}body{font-size:16px}}</style></head><body><header><p>FullCourt · Research review · October 20, 2026</p><nav aria-label="Report sections"><a href="#review">Findings and decisions</a><a href="#east">Eastern airports</a><a href="#west">Western airports</a></nav></header><main><article id="review"><h1>October–December 2026 schedule and travel review</h1>
+<p>Research date: October 20, 2026 (Korea). Source commit: <code>f7a20dac58a52b1f4be50d562bdc327ea5bcf4c4</code>, FullCourt v1.0.2. This is an audit and proposal, not a production correction. No database records, model coefficients or application code were changed.</p>
+<h2>Assessment</h2>
+<p>The calendar-density calculations passed the independent checks. Travel arithmetic also reproduces the published venue-based estimate. However, this audit found a homecoming road-load inconsistency, a missing Austin venue and a stale opening-week tip time. I would address these before calling the first quarter fully verified. Actual flights and time away from home remain estimates.</p>
+<h2>What was checked</h2>
+<p>The read-only database snapshot contains all 30 teams, 1,200 assigned regular-season games and 2,400 latest fatigue rows, with no duplicate score rows. The entire fixture list agrees with the NBA's August 13 release PDF. A separate live ESPN comparison detects later changes; agreement with an old release alone is insufficient.</p>
+<p>For October through December, the audit covers <strong>475 games / 950 team appearances across 62 game dates</strong>. It compares calendar dates, back-to-backs, 3-in-4, 4-in-6, days off, seven/thirty-day workload, direct travel legs, rolling travel, away streaks, composite scores and the live Games API. Month boundaries retain prior games. Counts below count team appearances satisfying each condition, so the categories overlap.</p>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Scrollable evidence table"><table>
+<thead>
+<tr>
+<th>Month</th>
+<th style="text-align: right;">Assigned games</th>
+<th style="text-align: right;">Back-to-backs</th>
+<th style="text-align: right;">3-in-4</th>
+<th style="text-align: right;">4-in-6</th>
+<th style="text-align: right;">Estimated inbound venue miles, all teams</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>October</td>
+<td style="text-align: right;">88</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">44</td>
+<td style="text-align: right;">42</td>
+<td style="text-align: right;">83,887</td>
+</tr>
+<tr>
+<td>November</td>
+<td style="text-align: right;">215</td>
+<td style="text-align: right;">72</td>
+<td style="text-align: right;">103</td>
+<td style="text-align: right;">111</td>
+<td style="text-align: right;">222,626</td>
+</tr>
+<tr>
+<td>December</td>
+<td style="text-align: right;">172</td>
+<td style="text-align: right;">61</td>
+<td style="text-align: right;">77</td>
+<td style="text-align: right;">83</td>
+<td style="text-align: right;">191,088</td>
+</tr>
+<tr>
+<td>Total</td>
+<td style="text-align: right;">475</td>
+<td style="text-align: right;">163</td>
+<td style="text-align: right;">224</td>
+<td style="text-align: right;">236</td>
+<td style="text-align: right;">497,601</td>
+</tr>
+</tbody>
+</table></div>
+<p>The independent density/rest/travel checks agree with all 950 API team appearances. Stored road streaks have the discrepancy described below. Composite score replay agrees with current code; that establishes reproducibility, not correctness of every modeling assumption. December excludes still-unassigned Cup-dependent fixtures.</p>
+<p>Source: <a href="https://ak-static.cms.nba.com/wp-content/uploads/sites/46/2026/08/2026-27-NBA-Regular-Season-Schedule-By-Date.pdf">official NBA schedule by date</a>. Local numeric evidence and reproduction instructions are in <a href="../research/2026-10-20-schedule-audit/NUMERIC_AUDIT.md">the numeric audit</a>.</p>
+<h2>Findings to fix or resolve</h2>
+<h3>1. Homecoming games can retain a road-streak penalty</h3>
+<p><code>venueStreak()</code> walks backward through prior away games even when tonight is at home. The API displays zero at home, but the scorer can still charge that retained streak. The API type contract defines this field as consecutive away games including tonight, with zero at home.</p>
+<p>The snapshot has <strong>208 homecoming field discrepancies</strong> and <strong>66 home games with a positive road-streak load</strong> in October–December. An offline diagnostic that zeroes only the home-game streak, with every coefficient unchanged, changes 18 rested-side/neutral classifications and 21 edge-size classifications. These are counterfactual results, not corrected published figures.</p>
+<p>Example: Knicks–Jazz, December 23. The Knicks' previous seven away games produce a 1.70-point road load at home. Removing that load in the diagnostic changes the Knicks score from 4.86 to 3.16 and the home-relative rest gap from −0.87 to +0.83. This illustrates why a display-only fix would be insufficient.</p>
+<p>Independent review found this behavior in older implementations too; it is a long-standing contract/model inconsistency, not a newly introduced regression. The inspected ratification does not settle whether road-streak carryover at home was intended. The same helper can retain a prior home-stand length on the first away game; that exported feature needs review, although it does not currently add to the score.</p>
+<p>Recommendation: review the intended homecoming behavior, fix the inconsistent streak rule if accepted, add a homecoming regression, and measure effects across historical and projected scores before a reviewed rescore. Preserve all ratified coefficient values. Do not silently introduce a new carryover term to justify existing behavior.</p>
+<p>Evidence: <code>src/lib/fatigue.ts</code> (<code>venueStreak</code>, <code>roadSegmentLoad</code>, <code>calculateFatigue</code>), <code>src/types/index.ts</code>, <code>homecoming-impact.csv</code> and <code>score-diagnostic.json</code> in the numeric audit.</p>
+<h3>2. Houston–San Antonio on October 23 uses the wrong physical venue</h3>
+<p>The NBA schedule places this game at Moody Center, Austin. The database has <code>neutral_site=false</code> and no alternate venue city, so the current location resolver uses the usual San Antonio arena.</p>
+<p>This affects the estimate into that game and the following leg. Correcting physical location must preserve a separately justified home-court classification: a Spurs alternate home venue is not automatically a neutral game. The current resolver couples neutral status, venue coordinates and physical away status, so simply setting <code>neutral=true</code> would change more than geography.</p>
+<p>Recommendation: represent the actual venue independently from the nominal host and neutral-home-court decision. Audit all alternate and international sites with that separation. Clippers/Warriors arena coordinates in the database already match Intuit Dome/Chase Center.</p>
+<p>Source: <a href="https://pr.nba.com/2026-27-nba-regular-season-schedule/">NBA schedule release</a>, October 23 entry and schedule PDF's Austin annotation.</p>
+<h3>3. Chicago–Milwaukee tip time is stale; Houston–Atlanta needs reconciliation</h3>
+<p>Chicago–Milwaukee on October 23 is stored at 8 p.m. ET. Current Bulls scheduling shows <strong>4 p.m. ET / 3 p.m. Central</strong>, consistent with the Bucks' announced move. Correcting the time can change the next back-to-back's turnaround multiplier even though the calendar-day flag stays the same.</p>
+<p>Source: <a href="https://www.nba.com/team/1610612741/schedule">current Bulls schedule</a>. The <a href="https://www.nba.com/news/milwaukee-bucks-move-home-opener-world-series">October 16 NBA announcement</a> confirms a four-hour move; its heading's ET wording conflicts with local-time context, so use the current team schedule's timezone.</p>
+<p>Houston–Atlanta on October 24 is 8 p.m. ET in the database, release PDF and inspected NBA/Hawks pages; live ESPN reports 8:30 p.m. ET. Treat this as a source conflict requiring a fresh first-party resolution, not permission to overwrite with whichever feed was read last.</p>
+<p>Sources: <a href="https://www.nba.com/game/0022600107">NBA game page</a>, <a href="https://www.nba.com/hawks/schedule">Hawks schedule</a>. Capture details and both differences are retained in the numeric audit.</p>
+<h3>4. “Miles flown” overstates what is measured</h3>
+<p>The application calculates great-circle distances between game venues. It does not use airports, actual flight paths, overnight stops, departure dates or transport mode. Summed season legs count each inbound trip once. The per-game seven-day field is a rolling sum and must never be added as a season total.</p>
+<p>The largest direct October–December leg is Brooklyn's New York-to-Portland move into December 29, approximately <strong>2,438 miles</strong>. The largest rolling seven-day value is 5,474 miles, for the Clippers on November 1. These sizes fit the endpoints and rolling window. More misleading examples are local arena moves: Knicks/Nets approximately <strong>4.8 miles</strong> and the two Los Angeles arenas approximately <strong>7.5 miles</strong>. Those are venue distances, not evidence of flights.</p>
+<p>Recommendation: use <strong>Estimated travel miles</strong> and a nearby explanation: “Straight-line distances between game venues. Actual routes, transport and returns home may differ.” Keep “scheduled away-game streak” distinct from days continuously on a road trip.</p>
+<h3>5. Forty-three away-game gaps need itinerary uncertainty</h3>
+<p>The audit flags <strong>43 consecutive-away pairs at least three calendar days apart</strong>, plus <strong>33 nonzero local venue legs under 100 miles</strong>. These thresholds select review candidates; they do not infer a flight, a return home or a transport mode.</p>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Scrollable evidence table"><table>
+<thead>
+<tr>
+<th>Team and interval</th>
+<th style="text-align: right;">Direct venue estimate</th>
+<th style="text-align: right;">Hypothetical extra miles via home</th>
+<th>Interpretation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Indiana: Chicago Nov 28 → Cleveland Dec 1</td>
+<td style="text-align: right;">310</td>
+<td style="text-align: right;">119</td>
+<td>A relatively small home detour; worth checking team reporting. No return confirmed.</td>
+</tr>
+<tr>
+<td>Detroit: Atlanta Dec 23 → Chicago Dec 26</td>
+<td style="text-align: right;">589</td>
+<td style="text-align: right;">247</td>
+<td>Holiday gap is a research candidate, not proof of a home visit.</td>
+</tr>
+<tr>
+<td>Miami: Golden State Nov 5 → Sacramento Nov 8</td>
+<td style="text-align: right;">74</td>
+<td style="text-align: right;">5,063</td>
+<td>An automatic three-day return rule would manufacture a large cross-country detour.</td>
+</tr>
+</tbody>
+</table></div>
+<p>Six of the 43 gaps cross the December 4–10 Cup assignment window; the other 37 do not. Those six long December gaps overlap unassigned Cup games. They cannot be treated as actual uninterrupted rest or a confirmed itinerary. Even with the final schedule, teams can split their traveling party or practice in a third location.</p>
+<p>Recommendation: retain the direct venue itinerary as the baseline; record sourced exceptions separately and show via-home comparisons as labeled sensitivity scenarios. Do not insert a home stop after a universal two/three/four-day threshold.</p>
+<h2>Airport research: all 30 teams</h2>
+<p>The <a href="#east">Eastern inventory</a> and <a href="#west">Western inventory</a> list every team, candidate airports, primary links, dates and confidence limits. A private terminal is an FBO within an airport, not automatically another airport. An airline sponsorship or nearby terminal does not establish the team's charter preference. Home-team departures and visiting-team arrivals may differ.</p>
+<p>The strongest recurring-practice finding is <strong>Sacramento / SMF</strong>, explicitly described by the airport authority. Boston / BOS and Milwaukee / MKE have official team departure examples. Other dated movement evidence includes Memphis / MEM, Oklahoma City / OKC, Portland / PDX, San Antonio / SAT and Utah / SLC. These examples have different ages and do not establish exclusive current use. Golden State OAK/SFO, Dallas DAL/DFW and Houston HOU/IAH remain unresolved alternatives.</p>
+<p>I recommend keeping the cited airport inventory as a research reference and, if useful, a separate airport-distance sensitivity view. Replacing all arena coordinates with guessed “usual airports” would add unsupported precision and change the model inputs. Correcting wrong game venues and itinerary claims has higher priority.</p>
+<h2>Recommended decisions</h2>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Scrollable evidence table"><table>
+<thead>
+<tr>
+<th>Decision</th>
+<th>Recommendation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Homecoming road-load inconsistency</td>
+<td>Correct the rule after explicit semantic review; quantify historical consequences and verify a controlled rescore.</td>
+</tr>
+<tr>
+<td>Austin physical venue</td>
+<td>Separate physical location from home-court classification before correcting affected legs.</td>
+</tr>
+<tr>
+<td>Tip-time refresh</td>
+<td>Correct the confirmed Chicago–Milwaukee change; reconcile Houston–Atlanta against a fresh primary source.</td>
+</tr>
+<tr>
+<td>Public mileage wording</td>
+<td>Say Estimated travel miles, with the straight-line venue method beside it.</td>
+</tr>
+<tr>
+<td>Airports</td>
+<td>Keep sourced candidates and confidence; do not replace all model coordinates now.</td>
+</tr>
+<tr>
+<td>Long gaps on the road</td>
+<td>Preserve schedule streaks; use confirmed exceptions and labeled sensitivity, without a universal return-home cutoff.</td>
+</tr>
+<tr>
+<td>December</td>
+<td>Re-audit once Cup assignments are published, including surrounding games whose workload and travel then change.</td>
+</tr>
+</tbody>
+</table></div>
+<h2>What this audit cannot certify</h2>
+<p>Future flights, hotels, practices, return-home decisions, diversions and transport choices are not public schedule facts. December's unassigned games are genuinely unresolved. A mathematical match to the code cannot certify a team's actual fatigue. This audit establishes the checked snapshot and identifies specific corrections; it does not declare the entire upcoming season finished.</p>
+<h2>Verification record</h2>
+<p>The independent Python oracle and source replay were rerun successfully. All 30 airport rows and 90 team-month rows reconcile; documentation links, type checking and audit-script lint/syntax checks passed. The HTML report was inspected at desktop and 390px width with contained table scrolling. A separate read-only reviewer approved the audit conclusions, independently reproduced all 66 homecoming counterfactuals, and recounted the 18 classification / 21 size changes. Actual flight records and corrective production deployment remain outside this completed audit.</p></article><article id="east"><h1>Eastern Conference team-airport evidence</h1>
+<p>Research date: <strong>2026-10-20</strong>. Scope: public historical team travel and official airport/FBO capabilities for a proposed 2026-27 travel audit. No live private-flight tracking, exact future flight plans, model changes, or source-data mutations were performed.</p>
+<h2>What the evidence permits</h2>
+<p>The public primary sources found here do <strong>not</strong> establish a current, exclusive “usual charter airport” for all 15 teams. Treat the airport column as a <strong>candidate set</strong>, not a production lookup. A named team departure proves one departure; a private terminal proves a facility exists; neither proves every game itinerary. Home-team departures and visiting-team arrivals also need separate evidence.</p>
+<p>Evidence levels:</p>
+<ul>
+<li><strong>T — team/event primary:</strong> the team or airport authority describes a specific team movement. Strong for that event; current routine remains unverified.</li>
+<li><strong>C — capability primary:</strong> the airport/FBO describes its own facilities. Supports a candidate, not a team's preference or fleet compatibility on every date.</li>
+<li><strong>D — directions primary:</strong> team media instructions name an airport. This concerns arena access, not the playing party's charter.</li>
+<li><strong>N — news lead:</strong> NBA-hosted AP/media reporting or independent reporting. Kept separate from verified primary operational evidence.</li>
+<li><strong>U — unverified:</strong> no qualifying team-specific operational statement found in this bounded search. This means not established, not disproved.</li>
+</ul>
+<p>Unless a publication date is given below, an operational page is undated and was inspected on <strong>2026-10-20</strong>. Source dates and event dates must not be conflated.</p>
+<h2>Fifteen-team matrix</h2>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Scrollable evidence table"><table>
+<thead>
+<tr>
+<th>Team</th>
+<th>Airport candidates for sensitivity research</th>
+<th>Primary evidence and support strength</th>
+<th>Return home between consecutive away games</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Atlanta Hawks</td>
+<td><strong>ATL / KATL</strong>, Hartsfield-Jackson</td>
+<td><strong>C, team preference U.</strong> <a href="https://www.signatureaviation.com/locations/ATL">Signature ATL</a>, undated, inspected 2026-10-20: private terminal and ground handling. This does not establish Hawks usage.</td>
+<td><strong>U.</strong> No team/airport primary statement found supporting a gap-based return-home rule.</td>
+</tr>
+<tr>
+<td>Boston Celtics</td>
+<td><strong>BOS / KBOS</strong>, Logan; <strong>BED / KBED</strong>, Hanscom as a separate candidate</td>
+<td><strong>T for BOS event:</strong> <a href="https://www.nba.com/celtics/news/post-ups-20180108">Celtics reporter, 2018-01-08</a>: London party departed a Logan private terminal. <strong>C for BED:</strong> <a href="https://www.signatureaviation.com/locations/BED">Signature BED</a>, undated, inspected 2026-10-20. BED routine team use is not established here.</td>
+<td><strong>U.</strong> International-event departure is not a domestic return-home policy.</td>
+</tr>
+<tr>
+<td>Brooklyn Nets</td>
+<td><strong>EWR / KEWR</strong>, Newark as an unconfirmed candidate</td>
+<td><strong>C, team preference U.</strong> <a href="https://www.signatureaviation.com/locations/EWR">Signature EWR</a>, undated, inspected 2026-10-20: private terminal, customs and ramp services. Do not infer Nets preference from airport proximity or historical New Jersey identity.</td>
+<td><strong>U.</strong> NYC local movement must be separated from flight movement.</td>
+</tr>
+<tr>
+<td>Charlotte Hornets</td>
+<td><strong>CLT / KCLT</strong>, Charlotte Douglas</td>
+<td><strong>C, team preference U.</strong> <a href="https://www.cltairport.com/news/stories/item/general-aviation-at-clt-gets-modern-ized/">CLT authority, 2025-07-25</a>: Modern Aviation took over the Executive Terminal on <strong>2025-07-01</strong>. <a href="https://www.wilsonair.com/clt-charlotte/">Historical Wilson page</a>, undated: sports-team charter terminal. Wilson is not the current operator according to the authority.</td>
+<td><strong>U.</strong> Hornets foundation activity at CLT is not charter-use evidence.</td>
+</tr>
+<tr>
+<td>Chicago Bulls</td>
+<td><strong>MDW / KMDW</strong>, Midway as an unconfirmed candidate</td>
+<td><strong>C, team preference U.</strong> <a href="https://www.atlanticaviation.com/locations/mdw">Atlantic MDW</a>, undated, inspected 2026-10-20: large-group charter handling. <a href="https://www.flychicago.com/midway/myflight/fbo/pages/default.aspx">Chicago airport authority</a> independently lists the FBOs.</td>
+<td><strong>U under the requested team/airport standard.</strong> A useful 2012 firsthand reporter lead exists below, but no official policy was found.</td>
+</tr>
+<tr>
+<td>Cleveland Cavaliers</td>
+<td><strong>BKL / KBKL</strong>, Burke Lakefront as an unconfirmed candidate</td>
+<td><strong>C, routine team use U.</strong> <a href="https://www.signatureaviation.com/locations/BKL">Signature BKL</a>, undated, inspected 2026-10-20. NBA-hosted 2022 Mitchell-arrival news is an event lead, not a seasonal charter contract.</td>
+<td><strong>U.</strong> A recruit/player introduction or championship welcome does not prove normal away-sequence behavior.</td>
+</tr>
+<tr>
+<td>Detroit Pistons</td>
+<td><strong>DTW / KDTW</strong>, Detroit Metropolitan; <strong>PTK / KPTK</strong>, Oakland County only as a historical comparison lead</td>
+<td><strong>C for DTW, team preference U.</strong> <a href="https://www.signatureaviation.com/locations/DTW">Signature DTW</a>, undated, inspected 2026-10-20: private terminal and handling. PTK has visiting-team historical evidence below, not current Pistons evidence.</td>
+<td><strong>U.</strong> Do not carry a Palace-era airport assumption into downtown Detroit without checking it.</td>
+</tr>
+<tr>
+<td>Indiana Pacers</td>
+<td><strong>IND / KIND</strong>, Indianapolis</td>
+<td><strong>C + D, charter preference U.</strong> <a href="https://www.signatureaviation.com/locations/IND">Signature IND</a>, undated, inspected 2026-10-20: private terminal. <a href="https://www.nba.com/pacers/news/parking_and_directions.html">Pacers directions, 2007-12-03</a> name Indianapolis International for arena access. Old access-time estimates are not adopted.</td>
+<td><strong>U.</strong> A 2025 diverted charter is a failure-case lead, not a return-home rule.</td>
+</tr>
+<tr>
+<td>Miami Heat</td>
+<td><strong>MIA / KMIA</strong>, Miami International as an unconfirmed candidate</td>
+<td><strong>C, team preference U.</strong> <a href="https://www.signatureaviation.com/locations/MIA">Signature MIA</a>, undated, inspected 2026-10-20. <a href="https://news.aa.com/news/news-details/2019/American-Airlines-and-Miami-HEAT-Announce-Expanded-Partnership-COMM-OTH/">American Airlines partnership, 2019-10-21</a> is marketing evidence; “official airline” does not prove the charter airport.</td>
+<td><strong>U.</strong> No qualifying primary away→home→away case found.</td>
+</tr>
+<tr>
+<td>Milwaukee Bucks</td>
+<td><strong>MKE / KMKE</strong>, Milwaukee Mitchell</td>
+<td><strong>T for 2023 departure:</strong> <a href="https://www.nba.com/bucks/news/milwaukee-bucks-to-hold-team-sendoff-rally-on-friday-april-21st-at-2-p-m-at-signature-flight-support-airport">Bucks announcement, 2023-04-20</a>: Miami sendoff at Signature. <a href="https://www.signatureaviation.com/locations/MKE">Signature MKE</a> matches its address. Current exclusive use remains U.</td>
+<td><strong>U.</strong> Milwaukee–Chicago ground movement has separate primary evidence below.</td>
+</tr>
+<tr>
+<td>New York Knicks</td>
+<td><strong>HPN / KHPN</strong>, Westchester County</td>
+<td><strong>T for an arrival, current routine U.</strong> <a href="https://www.linkedin.com/posts/westchester-county_this-week-in-westchester-county-executive-activity-7472394189310431232-TZm6">County's own video transcript</a>, undated page inspected 2026-10-20: county executive identifies Westchester County Airport as the team's championship-return arrival point. It does not specify routine itineraries.</td>
+<td><strong>U.</strong> Knicks–Nets is a local-area case, not evidence of an airport leg.</td>
+</tr>
+<tr>
+<td>Orlando Magic</td>
+<td><strong>MCO / KMCO</strong>, Orlando International</td>
+<td><strong>C + D, team preference U.</strong> <a href="https://www.atlanticaviation.com/locations/MCO">Atlantic MCO</a>, undated, inspected 2026-10-20. <a href="https://cdn.nba.com/teams/uploads/sites/1610612753/2022/11/orlando-magic-media-guide-2022-23.pdf">2022-23 team media guide</a> gives MCO arena/practice directions.</td>
+<td><strong>U.</strong> Official European game evidence below establishes non-Orlando venues, not intermediate lodging or return flights.</td>
+</tr>
+<tr>
+<td>Philadelphia 76ers</td>
+<td><strong>PHL / KPHL</strong>, Philadelphia International</td>
+<td><strong>C + D, team preference U.</strong> <a href="https://www.atlanticaviation.com/locations/PHL">Atlantic PHL</a>, undated, inspected 2026-10-20: charter handling. <a href="https://cdn.nba.com/teams/uploads/sites/1610612755/2024/01/23-24-76ers-Media-Guide-Update-compressed.pdf">2023-24 team guide</a>, p.16, names PHL for media access.</td>
+<td><strong>U.</strong> Northeast ground possibilities require event evidence; fan Amtrak promotions do not establish team transport.</td>
+</tr>
+<tr>
+<td>Toronto Raptors</td>
+<td><strong>YYZ / CYYZ</strong>, Pearson as an unconfirmed candidate</td>
+<td><strong>C, full-team routine U.</strong> <a href="https://www.signatureaviation.com/locations/YYZ">Signature YYZ</a>, undated, inspected 2026-10-20: private aviation facility. An MLSE executive-plane/free-agent trip is not a full-squad charter contract.</td>
+<td><strong>U.</strong> Border processing and return-home timing remain unverified.</td>
+</tr>
+<tr>
+<td>Washington Wizards</td>
+<td><strong>IAD / KIAD</strong>, Dulles as an unconfirmed candidate</td>
+<td><strong>C, current team preference U.</strong> <a href="https://www.signatureaviation.com/locations/IAD">Signature IAD</a>, undated, inspected 2026-10-20: transport-category aircraft handling. A <a href="https://www.nba.com/wizards/bullets-top-sonics-capture-1978-title">team-hosted 1978 title retrospective</a> mentions a Dulles welcome; its historical/narrative framing cannot establish current practice.</td>
+<td><strong>U.</strong> No qualifying primary away→home→away case found.</td>
+</tr>
+</tbody>
+</table></div>
+<p>The matrix deliberately does not assign probability weights. There is no measured airport-choice frequency behind these candidates.</p>
+<h2>Ground travel and local pairs</h2>
+<ol>
+<li><strong>Milwaukee → Chicago: one actual bus movement, primary team logistics evidence.</strong> <a href="https://www.nba.com/clippers/news/behind-scenes-five-game-trip">Clippers behind-the-scenes report, 2015-12-16</a> records a postgame bus between those cities. This proves the route is used by an NBA traveling party, not that every Bulls/Bucks movement uses a bus. Keep date, direction and visiting team with the observation.</li>
+<li><strong>Knicks ↔ Nets: shared metro, venue movement separate from aviation.</strong> <a href="https://api-hub-dev.nba.com/news/schedule-breakdown-bucks-bulls-and-lakers-have-toughest-roads-ahead">NBA staff schedule analysis, 2022</a> treats a Knicks road game in Brooklyn as local. <a href="https://www.nba.com/knicks/limited-edition-metrocards-herald-nba-all-star-nyc">Team-hosted MTA release, 2015</a> establishes ground access to both venues, not the players' exact mode. Avoid manufacturing a charter between two NYC venue coordinates.</li>
+<li><strong>Philadelphia–NYC, Philadelphia–Washington, Miami–Orlando and nearby Midwest pairs:</strong> retain as <strong>mode-uncertain candidates</strong>. No universal bus threshold or team-specific current transport commitment was established. Public intercity services and geographic closeness alone do not select a team's mode. A ground leg still has distance/time; “no flight” must not become “no travel.”</li>
+</ol>
+<h2>Return-home finding and an excluded-but-useful lead</h2>
+<p><strong>No current primary team/airport source found here establishes a rule such as “return home after N off days” for any Eastern team.</strong> No gap threshold should be calibrated from an absence of reports. Individual-player permission, trade/recruiting flights, holidays and a trip-ending home game are different cases from the whole squad returning home between consecutive away fixtures.</p>
+<p>A credible <strong>firsthand independent-reporting lead</strong>, outside the requested official-source acceptance set, is unusually specific: WBEZ Bulls beat reporter Cheryl Raye-Stout wrote on <strong>2012-11-21</strong> that the Bulls would return to Chicago after Houston for Thanksgiving, then finish the trip in Milwaukee on Saturday. Her <a href="https://www.wbez.org/culture/2012/11/14/bulls-vacate-the-united-center-to-make-way-for-circus">2012-11-14 report</a> includes team-staff interviews and the same planned home interruption; <a href="https://www.wbez.org/culture/2012/11/21/sports-never-take-a-holiday">2012-11-21 report</a> supplies the Houston→Chicago→Milwaukee sequence. This is evidence of a <strong>reported plan</strong>, not observed flight completion and not a 2026-27 policy. It warrants follow-up, not a silent production override.</p>
+<p>For sensitivity work, the defensible distinction is:</p>
+<ul>
+<li><strong>Direct venue-chain estimate:</strong> known game venues linked in schedule order; actual intermediate whereabouts unknown.</li>
+<li><strong>Return-via-home scenario:</strong> an explicitly hypothetical additional home stop, preserving the same game venues and dates.</li>
+<li><strong>Documented itinerary:</strong> event-specific route supported by a dated source. None of the evidence here supplies a complete 2026-27 itinerary.</li>
+</ul>
+<h2>Neutral and exceptional venues</h2>
+<ul>
+<li><strong>Orlando is not always the venue for a Magic-designated game.</strong> The NBA's <a href="https://pr.nba.com/grizzlies-magic-berlin-london-2026-games/">2025-07-30 official release</a> identifies Uber Arena, Berlin (<strong>2026-01-15</strong>) and The O2, London (<strong>2026-01-18</strong>); its <a href="https://pr.nba.com/nba-games-berlin-london-records/">2026-01-29 official recap</a> confirms the games occurred. Actual game venue must drive the spatial endpoint. This source does not disclose a team airport, hotel or intermediate travel mode.</li>
+<li>The same 2025 release announced <strong>Manchester and Paris for 2027</strong>, while leaving teams/dates for later announcement. That old release is <strong>not enough to map 2026-27 team rows</strong>. Check the current fixture-specific official announcement before assigning neutral endpoints.</li>
+<li>Boston's Logan→London departure is an <strong>international-event exception</strong>, which is exactly why it cannot prove a domestic BOS-only rule.</li>
+<li>Weather can change routes. NBA-hosted AP <a href="https://www.nba.com/news/severe-weather-delays-pacers-arrival-in-oklahoma-city">2025-06-03 Pacers report</a> describes an Indianapolis charter diversion through Tulsa. <strong>N</strong>, not primary operational proof; a useful reminder that an itinerary estimate is not a flown-track measurement.</li>
+</ul>
+<h2>Additional event leads kept below primary acceptance</h2>
+<p>These sources were inspected but not promoted to “usual airport” facts:</p>
+<ul>
+<li><strong>Celtics/BED:</strong> <a href="https://www.nba.com/news/boston-celtics-flight-arrives-oklahoma-after-bomb-scare">NBA-hosted AP, 2016-12-11</a> reports departure from Bedford. It does not directly name an airport.</li>
+<li><strong>Cavaliers/BKL:</strong> <a href="https://cdn-uat.nba.com/news/donovan-mitchell-excited-join-cavs">NBA-hosted AP, 2022-09-14</a> places Mitchell's introduction arrival at Burke. Single-player event, not full-team routine.</li>
+<li><strong>Raptors/YYZ:</strong> <a href="https://api-hub-dev.nba.com/news/raptors-prepare-kawhi-leonard-meeting">NBA media aggregation, 2019-07-03</a> describes an MLSE plane at Pearson. Free-agent travel, not a road-game party.</li>
+<li><strong>Detroit/PTK:</strong> <a href="https://www.nba.com/lakers/history/kobe-a-season-in-photos">Lakers team photo essay, 2015-16</a> captions Oakland County boarding. <strong>Primary for visiting Lakers in the Palace era</strong>, not current Pistons usage.</li>
+<li><strong>MKE visiting-team use:</strong> <a href="https://www.nba.com/news/miami-heat-team-plane-slides-snowy-taxiway-milwaukee">NBA news, 2017-01-12</a> names Mitchell for Heat arrival. Primary embedded team statement confirms a taxiway incident but does not itself name the airport.</li>
+</ul>
+<h2>Recommended next evidence to obtain</h2>
+<p>Keep this airport inventory as a research reference or an explicitly separate airport-based sensitivity proxy. It does not justify replacing every model input. Correct physical game venues and neutral-site fixtures before interpreting smaller differences between metro airports; that prioritization is a modeling recommendation, not a measurement made by this note.</p>
+<p>For a team-level airport table, require a recent team travel feature, team-authorized airport/FBO statement, or dated official travel-party departure/arrival naming the airport. Save event date, publication date, home/visitor role, whole-team versus individual scope, neutral venue and uncertainty alongside the airport. Check more than one season before calling a mapping routine. Do not contact teams or service providers without owner authorization.</p>
+<p>This research verifies public source content and the evidence distinctions above. It does <strong>not</strong> verify actual 2026-27 aircraft movements, home-return probabilities, flown distance, travel time, airport coordinate accuracy, current charter contracts, or any FullCourt calculation. The parent audit owns source/test reconciliation and whether a separate scenario is useful.</p></article><article id="west"><h1>Western Conference team-airport evidence — 2026-10-20</h1>
+<p>Research reference for the 2026-27 travel audit. Checked 2026-10-20 against public
+team, NBA, airport and FBO pages. No live flight tracking, flight identifiers,
+future private itineraries, model inputs, coefficients or database changes.</p>
+<h2>Interpretation</h2>
+<ul>
+<li><strong>A — recurring team practice:</strong> an official source expressly describes habitual use.</li>
+<li><strong>B — observed historical team movement:</strong> a dated team flight or arrival; proves that event, not an exclusive or current preference.</li>
+<li><strong>C — indirect team association:</strong> a team travel reference, directions or promotion that does not establish regular charter operations.</li>
+<li><strong>D — airport capability only:</strong> an airport/FBO describes private aviation services; team usage remains unverified.</li>
+<li><strong>U — unresolved:</strong> no sufficient primary team-airport evidence found in this bounded search.</li>
+</ul>
+<p>Every row has a candidate, but a candidate is not a verified usual charter airport.
+Historical practice does not establish a 2026-27 operating contract. Proximity,
+sponsorship, team ownership of an aircraft, and terminal branding are insufficient
+to select a precise airport. FBO names identify terminals/services within airports,
+not separate airports. All undated capability pages below were accessed 2026-10-20.</p>
+<h2>Fifteen-team inventory</h2>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Scrollable evidence table"><table>
+<thead>
+<tr>
+<th>Team</th>
+<th>Airport candidate(s)</th>
+<th>Strongest inspected primary evidence and date</th>
+<th>Strength and remaining uncertainty</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Dallas Mavericks</td>
+<td><strong>DAL — Dallas Love Field</strong>; DFW alternative</td>
+<td><a href="https://www.dallas-lovefield.com/Home/Components/News/News/305/90?arch=1&amp;fsiteid=1">Love Field airport announcement</a>, 2024-04-18: Mavericks-themed family lounge partnership. <a href="https://www.signatureaviation.com/locations/DAL-2">Signature DAL T2</a>, undated: private aviation terminal. <a href="https://www.dfwairport.com/explore/plan/corporateaviation/">DFW Corporate Aviation</a>, undated: private/corporate aircraft handling.</td>
+<td><strong>C/D; usual airport U.</strong> DAL is a research candidate, not established by the lounge. Do not substitute DFW merely because it is the major hub.</td>
+</tr>
+<tr>
+<td>Denver Nuggets</td>
+<td><strong>DEN — Denver International</strong>; APA unverified alternative</td>
+<td><a href="https://www.nba.com/nuggets/features/even-nba-role-father-always-trumps-role-coach">Nuggets feature</a>, 2012 (exact publication day not recovered): coach Hunt describes late DEN arrivals. <a href="https://www.signatureaviation.com/locations/DEN">Signature DEN</a>, undated: FBO capability.</td>
+<td><strong>C/D.</strong> Team-person travel context supports DEN weakly; no current recurring charter contract established. Centennial/APA was searched but not verified as Nuggets preference.</td>
+</tr>
+<tr>
+<td>Golden State Warriors</td>
+<td><strong>OAK — Oakland</strong> and <strong>SFO — San Francisco</strong>, unresolved preference</td>
+<td><a href="https://official.nba.com/warriors-practice-facility-directions/">NBA practice-facility directions</a>, 2014-03-11: directions from both airports. <a href="https://www.signatureaviation.com/locations/OAK">Signature OAK</a> and <a href="https://www.signatureaviation.com/locations/SFO">Signature SFO</a>, undated: FBO pages.</td>
+<td><strong>C/D; current preference U.</strong> Old Oakland-era directions do not resolve post-Chase Center operations. Retain OAK/SFO as alternatives, never infer an automatic switch from arena relocation.</td>
+</tr>
+<tr>
+<td>Houston Rockets</td>
+<td><strong>HOU — William P. Hobby</strong>; IAH alternative</td>
+<td><a href="https://www.nba.com/rockets/gallery/southwest-airlines-trading-places-0">Rockets promotion</a>, undated: players participate in a Hobby airport activation. <a href="https://www.signatureaviation.com/locations/HOU">Signature HOU</a> and <a href="https://www.signatureaviation.com/locations/IAH">Signature IAH</a>, undated: FBO capability.</td>
+<td><strong>C/D; usual airport U.</strong> Hobby promotion proves no team flight. Both HOU/IAH remain sensitivity candidates.</td>
+</tr>
+<tr>
+<td>LA Clippers</td>
+<td><strong>LAX — Los Angeles International</strong>; other LA airports unverified</td>
+<td><a href="https://www.nba.com/clippers/la-clippers-unveil-plans-new-arena-and-entertainment-center-inglewood">Team arena announcement</a>, 2019: arena site under LAX flight path. <a href="https://www.signatureaviation.com/locations/LAX">Signature LAX</a>, undated: FBO capability.</td>
+<td><strong>C/D; usual airport U.</strong> Arena location does not prove charter preference. Do not transfer Lakers evidence to Clippers.</td>
+</tr>
+<tr>
+<td>Los Angeles Lakers</td>
+<td><strong>LAX — Los Angeles International</strong></td>
+<td><a href="https://www.nba.com/lakers/tags/mikes-mentions">Lakers official article index</a>, historical item (index displays approximately six years old): title identifies an LAX-to-DAL flight Q&amp;A.</td>
+<td><strong>C, limited extraction.</strong> Official flight-title evidence favors LAX, but the underlying article/date and recurring current charter practice were not recovered. DAL here denotes a destination, not proof of Mavericks' home-airport preference.</td>
+</tr>
+<tr>
+<td>Memphis Grizzlies</td>
+<td><strong>MEM — Memphis International</strong></td>
+<td><a href="https://www.nba.com/grizzlies/features/petes_perspective-060117-on_the_road.html">Pete's Perspective: On the Road, Part 1</a>, published 2006-01-18, event 2006-01-17: team charter departs MEM via Wilson Air Center.</td>
+<td><strong>B, direct but old.</strong> Strong historical airport identification; carrier/aircraft details in this old article must not be treated as current.</td>
+</tr>
+<tr>
+<td>Minnesota Timberwolves</td>
+<td><strong>MSP — Minneapolis–Saint Paul International</strong></td>
+<td><a href="https://www.signatureaviation.com/locations/MSP">Signature MSP</a>, undated: transport-category ground handling at MSP.</td>
+<td><strong>D; team-specific current preference U.</strong> Signature MSP is inside MSP. Avoid interpreting a separate private terminal as a different airport; Lynx travel is not Timberwolves proof.</td>
+</tr>
+<tr>
+<td>New Orleans Pelicans</td>
+<td><strong>MSY — Louis Armstrong New Orleans International</strong>; NEW unverified alternative</td>
+<td><a href="https://www.nba.com/pelicans/news/reasons-be-excited-about-training-camp-no-12-new-practice-facility">Pelicans practice-facility feature</a>, 2013-09-20: facility near MSY. <a href="https://www.signatureaviation.com/locations/MSY">Signature MSY</a>, undated: private aviation services.</td>
+<td><strong>C/D; usual airport U.</strong> Proximity is not usage evidence. Lakefront/NEW has not been established as the team airport.</td>
+</tr>
+<tr>
+<td>Oklahoma City Thunder</td>
+<td><strong>OKC — Will Rogers</strong></td>
+<td><a href="https://www.nba.com/thunder/news/airportfans_120520.html">Throng of Fans Greets Thunder at Airport</a>, 2012-05-20: team charter arrives at Will Rogers after Lakers Game 4.</td>
+<td><strong>B, direct historical arrival.</strong> Does not establish exclusive/current airport use. A new player's solo welcome is weaker than a full-team flight.</td>
+</tr>
+<tr>
+<td>Phoenix Suns</td>
+<td><strong>PHX — Phoenix Sky Harbor</strong></td>
+<td><a href="https://www.nba.com/suns/rally-valley">Rally the Valley</a>, 2021-era retrospective, event 1990 playoffs: Suns arrive at Sky Harbor after defeating Lakers.</td>
+<td><strong>B, direct but very old event.</strong> Exact page publication date was not exposed; modern regular charter preference remains unverified.</td>
+</tr>
+<tr>
+<td>Portland Trail Blazers</td>
+<td><strong>PDX — Portland International</strong></td>
+<td><a href="https://www.nba.com/blazers/forwardcenter/trail-blazers-return-portland-after-snow-storm-delay">Team snow-storm travel account</a>, 2017-01-11: intended LAX-to-PDX return diverted to SEA.</td>
+<td><strong>B, direct historical movement.</strong> Weather alternates can invalidate a fixed airport path; SEA was an exceptional diversion, not the home-airport default.</td>
+</tr>
+<tr>
+<td>Sacramento Kings</td>
+<td><strong>SMF — Sacramento International</strong></td>
+<td><a href="https://sacramento.aero/articles/sacramento-kings-and-sacramento-international-airport-smf-announce-historic">Airport/Kings partnership announcement</a>, 2023-11-14: airport director expressly identifies SMF as departure point for road games for many years.</td>
+<td><strong>A, strongest recurring-practice evidence.</strong> Partnership covers three seasons; does not prove every leg or exclude diversions. No basis to replace SMF with SAC merely for proximity.</td>
+</tr>
+<tr>
+<td>San Antonio Spurs</td>
+<td><strong>SAT — San Antonio International</strong></td>
+<td><a href="https://www.nba.com/spurs/inframe2425">Spurs In Frame 2024-25</a>, event 2024-10-29: team flight to OKC at Signature, SAT.</td>
+<td><strong>B, recent direct team-flight caption.</strong> Strong event identification, no exclusive-airport guarantee. Home-designated Austin games require venue handling separately.</td>
+</tr>
+<tr>
+<td>Utah Jazz</td>
+<td><strong>SLC — Salt Lake City International</strong></td>
+<td><a href="https://www.nba.com/news/jazz-charter-turns-back-after-striking-birds-on-takeoff">NBA report of Jazz charter incident</a>, 2021-03-30: Memphis-bound Delta charter returns to SLC after takeoff.</td>
+<td><strong>B, direct event and team confirmation.</strong> Not a 2026-27 exclusive preference contract; abnormal return was an emergency, not a rest-day policy.</td>
+</tr>
+</tbody>
+</table></div>
+<h2>Consecutive away games and returns home</h2>
+<p>The bounded primary-source search did <strong>not</strong> establish a league-wide number of
+days off after which teams return home, nor a per-team 2026-27 policy. An absence
+of a home game does not establish continuous residence on the road. Conversely,
+an off day does not establish a homeward flight.</p>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Scrollable evidence table"><table>
+<thead>
+<tr>
+<th>Evidence</th>
+<th>Date</th>
+<th>What it supports</th>
+<th>Limit</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://www.nba.com/blazers/forwardcenter/practice-notes-attempting-spoil-another-home-streak-days-and-acs-swing">Trail Blazers practice notes</a></td>
+<td>2016-03-17</td>
+<td>Portland practiced in San Antonio during a two-day gap and spent an off day locally.</td>
+<td>Direct counterexample to automatically inserting home travel for every two-day gap. One event, no universal stay-away rule.</td>
+</tr>
+<tr>
+<td><a href="https://www.nba.com/mavs/longroadtripformavs">Mavericks road-trip account</a></td>
+<td>2024-04-03</td>
+<td>Dallas stayed in Sacramento between repeated Kings games, then traveled through Houston and San Francisco before returning home.</td>
+<td>Supports one itinerary only; dates in article prose are internally inconsistent, so do not use it to construct exact dated legs.</td>
+</tr>
+<tr>
+<td><a href="https://www.nba.com/spurs/more-just-eight-second-ride">Spurs arena/rodeo account</a></td>
+<td>2016-era article</td>
+<td>Players could attend the San Antonio rodeo during the All-Star break within the Rodeo Road Trip.</td>
+<td>Supports some players being locally present; does not prove a whole-roster charter or a normal gap threshold.</td>
+</tr>
+<tr>
+<td><a href="https://www.nba.com/news/spurs-short-handed-and-reeling-get-back-on-practice-floor">Spurs return to practice</a></td>
+<td>2021-02-23</td>
+<td>San Antonio practice occurred between road games after postponements; some players had not returned.</td>
+<td>Exceptional COVID interruption, not a normal travel policy; different players can have different paths.</td>
+</tr>
+<tr>
+<td><a href="https://cdn-uat.nba.com/news/how-rest-road-trips-and-other-factors-played-out-in-2021-22-schedule">NBA 2021-22 schedule analysis</a></td>
+<td>2021 schedule release</td>
+<td>The Spurs' eight-game Rodeo Road Trip was split 5+3 by the All-Star break.</td>
+<td>A schedule segmentation describes games; it does not itself prove airport legs or team residence.</td>
+</tr>
+</tbody>
+</table></div>
+<p>For the other Western teams, no sufficiently explicit primary evidence of
+whole-team home returns <strong>between consecutive away games</strong> was established here.
+Standard end-of-trip returns, solo player travel, home games between two trips,
+emergency turnbacks, and local marketing appearances were not counted as proof.</p>
+<h2>Audit implications and open verification</h2>
+<ol>
+<li>Keep this inventory as research provenance or a separate airport-distance
+   sensitivity analysis. Do not silently replace arena-based model inputs.</li>
+<li>Only SAC/SMF has explicit recurring-practice wording in the inspected sources.
+   MEM, OKC, PHX, PDX, SAT and SLC have event-level team movement evidence; age
+   and exceptions remain material. Other rows remain indirect/capability candidates.</li>
+<li>Resolve <strong>actual venue coordinates</strong>, including Austin/neutral/international
+   sites, before refining airports. A correct airport cannot repair a wrong arena.</li>
+<li>If modeling home returns, make itinerary uncertainty explicit: direct
+   arena-to-arena baseline versus a clearly named hypothetical via-home scenario.
+   No automatic two/three/four-day return threshold was verified.</li>
+<li>The <a href="https://www.signatureaviation.com/locations/HOU">Signature HOU page</a>
+   currently lists runway work from 2026-07-13 to 2027-01-29. This is an operational
+   caveat, not proof that Rockets flights use HOU or that they will switch to IAH.</li>
+</ol>
+<p>Verification performed: finite inventory has all 15 Western Conference teams;
+links were inspected with web search/open, and evidence types/date limitations
+were recorded. Several NBA pages exposed full search excerpts but rendered only
+an iframe in direct extraction; those limitations are especially material for
+the Lakers index and undated Suns retrospective. No flight-path ground truth,
+2026-27 dispatch logs, or team contracts were obtained. No source/runtime tests
+were needed for this documentation-only file.</p></article></main><footer>Audit snapshot only. Production data and the model remain unchanged.</footer></body></html>

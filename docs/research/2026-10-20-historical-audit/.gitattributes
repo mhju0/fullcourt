@@ -1,0 +1,2 @@
+# Preserve captured CSV bytes so committed files match the audit SHA-256 manifests.
+*.csv -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol

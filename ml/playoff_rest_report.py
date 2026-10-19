@@ -71,7 +71,7 @@ def load(conn):
                 ON p.season = g.season
                AND p.lo = least(g.home_team_id, g.away_team_id)
                AND p.hi = greatest(g.home_team_id, g.away_team_id)
-              WHERE g.game_type <> 'regular' AND g.status = 'final'
+              WHERE g.game_type IN ('playoffs', 'finals') AND g.status = 'final'
             )
             SELECT pg.season, pg.date, pg.h, pg.a,
               pg.date - (SELECT max(x.date) FROM games x

@@ -1,0 +1,1201 @@
+date,game_id,away,home,venue_id,venue_name,venue_city,provider_neutral,stored_neutral,stored_neutral_city,minority_home_venue,status
+2026-10-20,118696,BOS,DET,5404,Little Caesars Arena,Detroit,False,False,,False,STATUS_SCHEDULED
+2026-10-20,118697,PHI,NYK,1830,Madison Square Garden,New York,False,False,,False,STATUS_SCHEDULED
+2026-10-20,118698,OKC,SAS,780,Frost Bank Center,San Antonio,False,False,,False,STATUS_SCHEDULED
+2026-10-21,118699,ATL,ORL,3432,Kia Center,Orlando,False,False,,False,STATUS_SCHEDULED
+2026-10-21,118700,MIL,WAS,1823,Capital One Arena,Washington,False,False,,False,STATUS_SCHEDULED
+2026-10-21,118701,MIN,MIA,3438,Kaseya Center,Miami,False,False,,False,STATUS_SCHEDULED
+2026-10-21,118702,CHA,BKN,3559,Barclays Center,Brooklyn,False,False,,False,STATUS_SCHEDULED
+2026-10-21,118703,CHI,TOR,1838,Scotiabank Arena,Toronto,False,False,,False,STATUS_SCHEDULED
+2026-10-21,118704,UTA,MEM,1392,FedExForum,Memphis,False,False,,False,STATUS_SCHEDULED
+2026-10-21,118705,IND,NOP,985,Smoothie King Center,New Orleans,False,False,,False,STATUS_SCHEDULED
+2026-10-21,118706,DAL,HOU,1394,Toyota Center (Houston),Houston,False,False,,False,STATUS_SCHEDULED
+2026-10-21,118707,GSW,LAL,1841,crypto.com Arena,Los Angeles,False,False,,False,STATUS_SCHEDULED
+2026-10-21,118708,PHX,POR,3423,Moda Center,Portland,False,False,,False,STATUS_SCHEDULED
+2026-10-21,118709,SAC,LAC,10642,Intuit Dome,Inglewood,False,False,,False,STATUS_SCHEDULED
+2026-10-22,118710,CLE,PHI,1845,Xfinity Mobile Arena,Philadelphia,False,False,,False,STATUS_SCHEDULED
+2026-10-22,118711,DEN,OKC,2559,Paycom Center,Oklahoma City,False,False,,False,STATUS_SCHEDULED
+2026-10-23,118712,NYK,BOS,1824,TD Garden,Boston,False,False,,False,STATUS_SCHEDULED
+2026-10-23,118713,ATL,CHA,1893,Spectrum Center,Charlotte,False,False,,False,STATUS_SCHEDULED
+2026-10-23,118714,DAL,IND,2183,Gainbridge Fieldhouse,Indianapolis,False,False,,False,STATUS_SCHEDULED
+2026-10-23,118715,MIN,ORL,3432,Kia Center,Orlando,False,False,,False,STATUS_SCHEDULED
+2026-10-23,118716,TOR,WAS,1823,Capital One Arena,Washington,False,False,,False,STATUS_SCHEDULED
+2026-10-23,118717,DET,MIA,3438,Kaseya Center,Miami,False,False,,False,STATUS_SCHEDULED
+2026-10-23,118718,CHI,MIL,5777,Fiserv Forum,Milwaukee,False,False,,False,STATUS_SCHEDULED
+2026-10-23,118719,HOU,SAS,7317,Moody Center,Austin,False,False,,True,STATUS_SCHEDULED
+2026-10-23,118720,NOP,UTA,3093,Delta Center,Salt Lake City,False,False,,False,STATUS_SCHEDULED
+2026-10-23,118721,MEM,GSW,6270,Chase Center,San Francisco,False,False,,False,STATUS_SCHEDULED
+2026-10-23,118722,LAC,LAL,1841,crypto.com Arena,Los Angeles,False,False,,False,STATUS_SCHEDULED
+2026-10-23,118723,POR,SAC,5310,Golden 1 Center,Sacramento,False,False,,False,STATUS_SCHEDULED
+2026-10-24,118724,MIA,CHA,1893,Spectrum Center,Charlotte,False,False,,False,STATUS_SCHEDULED
+2026-10-24,118725,BKN,CLE,3417,Rocket Arena,Cleveland,False,False,,False,STATUS_SCHEDULED
+2026-10-24,118726,MIL,PHI,1845,Xfinity Mobile Arena,Philadelphia,False,False,,False,STATUS_SCHEDULED
+2026-10-24,118727,HOU,ATL,1827,State Farm Arena,Atlanta,False,False,,False,STATUS_SCHEDULED
+2026-10-24,118728,WAS,CHI,1847,United Center,Chicago,False,False,,False,STATUS_SCHEDULED
+2026-10-24,118729,SAS,DAL,516,American Airlines Center,Dallas,False,False,,False,STATUS_SCHEDULED
+2026-10-24,118730,NOP,DEN,892,Ball Arena,Denver,False,False,,False,STATUS_SCHEDULED
+2026-10-24,118731,GSW,PHX,1949,Mortgage Matchup Center,Phoenix,False,False,,False,STATUS_SCHEDULED
+2026-10-25,118732,LAL,UTA,3093,Delta Center,Salt Lake City,False,False,,False,STATUS_SCHEDULED
+2026-10-25,118733,IND,BKN,3559,Barclays Center,Brooklyn,False,False,,False,STATUS_SCHEDULED
+2026-10-25,118734,ORL,NYK,1830,Madison Square Garden,New York,False,False,,False,STATUS_SCHEDULED
+2026-10-25,118735,TOR,MIN,2029,Target Center,Minneapolis,False,False,,False,STATUS_SCHEDULED
+2026-10-25,118736,LAC,OKC,2559,Paycom Center,Oklahoma City,False,False,,False,STATUS_SCHEDULED
+2026-10-25,118737,DET,PHI,1845,Xfinity Mobile Arena,Philadelphia,False,False,,False,STATUS_SCHEDULED
+2026-10-25,118738,MEM,SAC,5310,Golden 1 Center,Sacramento,False,False,,False,STATUS_SCHEDULED
+2026-10-26,118739,WAS,CHA,1893,Spectrum Center,Charlotte,False,False,,False,STATUS_SCHEDULED
+2026-10-26,118740,MIN,CLE,3417,Rocket Arena,Cleveland,False,False,,False,STATUS_SCHEDULED
+2026-10-26,118741,CHI,BOS,1824,TD Garden,Boston,False,False,,False,STATUS_SCHEDULED
+2026-10-26,118742,DAL,MIA,3438,Kaseya Center,Miami,False,False,,False,STATUS_SCHEDULED
+2026-10-26,118743,IND,MIL,5777,Fiserv Forum,Milwaukee,False,False,,False,STATUS_SCHEDULED
+2026-10-26,118744,PHX,OKC,2559,Paycom Center,Oklahoma City,False,False,,False,STATUS_SCHEDULED
+2026-10-26,118745,ATL,HOU,1394,Toyota Center (Houston),Houston,False,False,,False,STATUS_SCHEDULED
+2026-10-26,118746,MEM,UTA,3093,Delta Center,Salt Lake City,False,False,,False,STATUS_SCHEDULED
+2026-10-26,118747,GSW,DEN,892,Ball Arena,Denver,False,False,,False,STATUS_SCHEDULED
+2026-10-27,118748,BKN,BOS,1824,TD Garden,Boston,False,False,,False,STATUS_SCHEDULED
+2026-10-27,118749,DET,NYK,1830,Madison Square Garden,New York,False,False,,False,STATUS_SCHEDULED
+2026-10-27,118750,SAC,SAS,780,Frost Bank Center,San Antonio,False,False,,False,STATUS_SCHEDULED
+2026-10-27,118751,POR,LAL,1841,crypto.com Arena,Los Angeles,False,False,,False,STATUS_SCHEDULED
+2026-10-28,118752,MIA,ATL,1827,State Farm Arena,Atlanta,False,False,,False,STATUS_SCHEDULED
+2026-10-28,118753,WAS,CLE,3417,Rocket Arena,Cleveland,False,False,,False,STATUS_SCHEDULED
+2026-10-28,118754,CHA,DET,5404,Little Caesars Arena,Detroit,False,False,,False,STATUS_SCHEDULED
+2026-10-28,118755,PHI,IND,2183,Gainbridge Fieldhouse,Indianapolis,False,False,,False,STATUS_SCHEDULED
+2026-10-28,118756,ORL,TOR,1838,Scotiabank Arena,Toronto,False,False,,False,STATUS_SCHEDULED
+2026-10-28,118757,NYK,CHI,1847,United Center,Chicago,False,False,,False,STATUS_SCHEDULED
+2026-10-28,118758,HOU,MIL,5777,Fiserv Forum,Milwaukee,False,False,,False,STATUS_SCHEDULED
+2026-10-28,118759,GSW,MIN,2029,Target Center,Minneapolis,False,False,,False,STATUS_SCHEDULED
+2026-10-28,118760,DEN,NOP,985,Smoothie King Center,New Orleans,False,False,,False,STATUS_SCHEDULED
+2026-10-28,118761,SAS,UTA,3093,Delta Center,Salt Lake City,False,False,,False,STATUS_SCHEDULED
+2026-10-28,118762,OKC,DAL,516,American Airlines Center,Dallas,False,False,,False,STATUS_SCHEDULED
+2026-10-28,118763,LAL,LAC,10642,Intuit Dome,Inglewood,False,False,,False,STATUS_SCHEDULED
+2026-10-29,118764,CLE,ATL,1827,State Farm Arena,Atlanta,False,False,,False,STATUS_SCHEDULED
+2026-10-29,118765,SAC,NOP,985,Smoothie King Center,New Orleans,False,False,,False,STATUS_SCHEDULED
+2026-10-29,118766,MEM,POR,3423,Moda Center,Portland,False,False,,False,STATUS_SCHEDULED
+2026-10-30,118767,CHA,WAS,1823,Capital One Arena,Washington,False,False,,False,STATUS_SCHEDULED
+2026-10-30,118768,CHI,BOS,1824,TD Garden,Boston,False,False,,False,STATUS_SCHEDULED
+2026-10-30,118769,DET,BKN,3559,Barclays Center,Brooklyn,False,False,,False,STATUS_SCHEDULED
+2026-10-30,118770,NYK,PHI,1845,Xfinity Mobile Arena,Philadelphia,False,False,,False,STATUS_SCHEDULED
+2026-10-30,118771,ORL,TOR,1838,Scotiabank Arena,Toronto,False,False,,False,STATUS_SCHEDULED
+2026-10-30,118772,IND,MIA,3438,Kaseya Center,Miami,False,False,,False,STATUS_SCHEDULED
+2026-10-30,118773,HOU,DAL,516,American Airlines Center,Dallas,False,False,,False,STATUS_SCHEDULED
+2026-10-30,118774,LAC,MIN,2029,Target Center,Minneapolis,False,False,,False,STATUS_SCHEDULED
+2026-10-30,118775,LAL,GSW,6270,Chase Center,San Francisco,False,False,,False,STATUS_SCHEDULED
+2026-10-30,118776,DEN,PHX,1949,Mortgage Matchup Center,Phoenix,False,False,,False,STATUS_SCHEDULED
+2026-10-31,118777,POR,UTA,3093,Delta Center,Salt Lake City,False,False,,False,STATUS_SCHEDULED
+2026-10-31,118778,PHI,CHA,1893,Spectrum Center,Charlotte,False,False,,False,STATUS_SCHEDULED
+2026-10-31,118779,ATL,NOP,985,Smoothie King Center,New Orleans,False,False,,False,STATUS_SCHEDULED
+2026-10-31,118780,SAC,MEM,1392,FedExForum,Memphis,False,False,,False,STATUS_SCHEDULED
+2026-10-31,118781,CLE,MIL,5777,Fiserv Forum,Milwaukee,False,False,,False,STATUS_SCHEDULED
+2026-10-31,118782,MIN,SAS,780,Frost Bank Center,San Antonio,False,False,,False,STATUS_SCHEDULED
+2026-10-31,118783,OKC,HOU,1394,Toyota Center (Houston),Houston,False,False,,False,STATUS_SCHEDULED
+2026-11-01,118784,BOS,ORL,3432,Kia Center,Orlando,False,False,,False,STATUS_SCHEDULED
+2026-11-01,118785,BKN,IND,2183,Gainbridge Fieldhouse,Indianapolis,False,False,,False,STATUS_SCHEDULED
+2026-11-01,118786,LAC,GSW,6270,Chase Center,San Francisco,False,False,,False,STATUS_SCHEDULED
+2026-11-01,118787,TOR,LAL,1841,crypto.com Arena,Los Angeles,False,False,,False,STATUS_SCHEDULED
+2026-11-02,118788,OKC,CLE,3417,Rocket Arena,Cleveland,False,False,,False,STATUS_SCHEDULED
+2026-11-02,118789,DET,CHA,1893,Spectrum Center,Charlotte,False,False,,False,STATUS_SCHEDULED
+2026-11-02,118790,ATL,IND,2183,Gainbridge Fieldhouse,Indianapolis,False,False,,False,STATUS_SCHEDULED
+2026-11-02,118791,BKN,NYK,1830,Madison Square Garden,New York,False,False,,False,STATUS_SCHEDULED
+2026-11-02,118792,WAS,ORL,3432,Kia Center,Orlando,False,False,,False,STATUS_SCHEDULED
+2026-11-02,118793,CHI,PHI,1845,Xfinity Mobile Arena,Philadelphia,False,False,,False,STATUS_SCHEDULED
+2026-11-02,118794,SAC,DAL,516,American Airlines Center,Dallas,False,False,,False,STATUS_SCHEDULED
+2026-11-02,118795,NOP,MEM,1392,FedExForum,Memphis,False,False,,False,STATUS_SCHEDULED
+2026-11-02,118796,MIL,MIN,2029,Target Center,Minneapolis,False,False,,False,STATUS_SCHEDULED
+2026-11-02,118797,BOS,HOU,1394,Toyota Center (Houston),Houston,False,False,,False,STATUS_SCHEDULED
+2026-11-02,118798,UTA,SAS,780,Frost Bank Center,San Antonio,False,False,,False,STATUS_SCHEDULED
+2026-11-02,118799,POR,DEN,892,Ball Arena,Denver,False,False,,False,STATUS_SCHEDULED
+2026-11-02,118800,PHX,GSW,6270,Chase Center,San Francisco,False,False,,False,STATUS_SCHEDULED
+2026-11-02,118801,TOR,LAC,10642,Intuit Dome,Inglewood,False,False,,False,STATUS_SCHEDULED
+2026-11-02,118802,MIA,LAL,1841,crypto.com Arena,Los Angeles,False,False,,False,STATUS_SCHEDULED
+2026-11-04,118803,PHI,DET,5404,Little Caesars Arena,Detroit,False,False,,False,STATUS_SCHEDULED
+2026-11-04,118804,ATL,WAS,1823,Capital One Arena,Washington,False,False,,False,STATUS_SCHEDULED
+2026-11-04,118805,MIL,BOS,1824,TD Garden,Boston,False,False,,False,STATUS_SCHEDULED
+2026-11-04,118806,CHA,BKN,3559,Barclays Center,Brooklyn,False,False,,False,STATUS_SCHEDULED
+2026-11-04,118807,CHI,NYK,1830,Madison Square Garden,New York,False,False,,False,STATUS_SCHEDULED
+2026-11-04,118808,IND,MEM,1392,FedExForum,Memphis,False,False,,False,STATUS_SCHEDULED
+2026-11-04,118809,UTA,NOP,985,Smoothie King Center,New Orleans,False,False,,False,STATUS_SCHEDULED
+2026-11-04,118810,CLE,OKC,2559,Paycom Center,Oklahoma City,False,False,,False,STATUS_SCHEDULED
+2026-11-04,118811,MIN,HOU,1394,Toyota Center (Houston),Houston,False,False,,False,STATUS_SCHEDULED
+2026-11-04,118812,TOR,DEN,892,Ball Arena,Denver,False,False,,False,STATUS_SCHEDULED
+2026-11-04,118813,POR,PHX,1949,Mortgage Matchup Center,Phoenix,False,False,,False,STATUS_SCHEDULED
+2026-11-04,118814,DAL,SAS,780,Frost Bank Center,San Antonio,False,False,,False,STATUS_SCHEDULED
+2026-11-04,118815,LAL,SAC,5310,Golden 1 Center,Sacramento,False,False,,False,STATUS_SCHEDULED
+2026-11-04,118816,MIA,LAC,10642,Intuit Dome,Inglewood,False,False,,False,STATUS_SCHEDULED
+2026-11-05,118817,ORL,PHX,1949,Mortgage Matchup Center,Phoenix,False,False,,False,STATUS_SCHEDULED
+2026-11-05,118818,MIA,GSW,6270,Chase Center,San Francisco,False,False,,False,STATUS_SCHEDULED
+2026-11-06,118819,WAS,ATL,1827,State Farm Arena,Atlanta,False,False,,False,STATUS_SCHEDULED
+2026-11-06,118820,BOS,CHA,1893,Spectrum Center,Charlotte,False,False,,False,STATUS_SCHEDULED
+2026-11-06,118821,PHI,CLE,3417,Rocket Arena,Cleveland,False,False,,False,STATUS_SCHEDULED
+2026-11-06,118822,UTA,DAL,516,American Airlines Center,Dallas,False,False,,False,STATUS_SCHEDULED
+2026-11-06,118823,OKC,MEM,1392,FedExForum,Memphis,False,False,,False,STATUS_SCHEDULED
+2026-11-06,118824,TOR,MIL,5777,Fiserv Forum,Milwaukee,False,False,,False,STATUS_SCHEDULED
+2026-11-06,118825,MIN,NOP,985,Smoothie King Center,New Orleans,False,False,,False,STATUS_SCHEDULED
+2026-11-06,118826,POR,LAL,1841,crypto.com Arena,Los Angeles,False,False,,False,STATUS_SCHEDULED
+2026-11-06,118827,SAS,SAC,5310,Golden 1 Center,Sacramento,False,False,,False,STATUS_SCHEDULED
+2026-11-07,118828,DEN,IND,5779,Arena CDMX,Mexico City,True,True,Mexico City,True,STATUS_SCHEDULED
+2026-11-07,118829,BKN,ATL,1827,State Farm Arena,Atlanta,False,False,,False,STATUS_SCHEDULED
+2026-11-07,118830,NYK,CLE,3417,Rocket Arena,Cleveland,False,False,,False,STATUS_SCHEDULED
+2026-11-07,118831,WAS,OKC,2559,Paycom Center,Oklahoma City,False,False,,False,STATUS_SCHEDULED
+2026-11-07,118832,ORL,GSW,6270,Chase Center,San Francisco,False,False,,False,STATUS_SCHEDULED
+2026-11-07,118833,HOU,PHX,1949,Mortgage Matchup Center,Phoenix,False,False,,False,STATUS_SCHEDULED
+2026-11-07,118834,SAS,POR,3423,Moda Center,Portland,False,False,,False,STATUS_SCHEDULED
+2026-11-08,118835,PHI,CHI,1847,United Center,Chicago,False,False,,False,STATUS_SCHEDULED
+2026-11-08,118836,LAL,DET,5404,Little Caesars Arena,Detroit,False,False,,False,STATUS_SCHEDULED
+2026-11-08,118837,UTA,MIN,2029,Target Center,Minneapolis,False,False,,False,STATUS_SCHEDULED
+2026-11-08,118838,BKN,DAL,516,American Airlines Center,Dallas,False,False,,False,STATUS_SCHEDULED
+2026-11-08,118839,BOS,MIL,5777,Fiserv Forum,Milwaukee,False,False,,False,STATUS_SCHEDULED
+2026-11-08,118840,NOP,LAC,10642,Intuit Dome,Inglewood,False,False,,False,STATUS_SCHEDULED
+2026-11-08,118841,MIA,SAC,5310,Golden 1 Center,Sacramento,False,False,,False,STATUS_SCHEDULED
+2026-11-09,118842,LAL,ATL,1827,State Farm Arena,Atlanta,False,False,,False,STATUS_SCHEDULED
+2026-11-09,118843,CLE,CHA,1893,Spectrum Center,Charlotte,False,False,,False,STATUS_SCHEDULED
+2026-11-09,118844,WAS,DET,5404,Little Caesars Arena,Detroit,False,False,,False,STATUS_SCHEDULED
+2026-11-09,118845,MEM,TOR,1838,Scotiabank Arena,Toronto,False,False,,False,STATUS_SCHEDULED
+2026-11-09,118846,IND,DAL,516,American Airlines Center,Dallas,False,False,,False,STATUS_SCHEDULED
+2026-11-09,118847,DEN,HOU,1394,Toyota Center (Houston),Houston,False,False,,False,STATUS_SCHEDULED
+2026-11-09,118848,SAS,PHX,1949,Mortgage Matchup Center,Phoenix,False,False,,False,STATUS_SCHEDULED
+2026-11-09,118849,NOP,GSW,6270,Chase Center,San Francisco,False,False,,False,STATUS_SCHEDULED
+2026-11-10,118850,MIL,NYK,1830,Madison Square Garden,New York,False,False,,False,STATUS_SCHEDULED
+2026-11-10,118851,BOS,PHI,1845,Xfinity Mobile Arena,Philadelphia,False,False,,False,STATUS_SCHEDULED
+2026-11-10,118852,LAC,PHX,1949,Mortgage Matchup Center,Phoenix,False,False,,False,STATUS_SCHEDULED
+2026-11-10,118853,MIA,UTA,3093,Delta Center,Salt Lake City,False,False,,False,STATUS_SCHEDULED
+2026-11-10,118854,ORL,SAC,5310,Golden 1 Center,Sacramento,False,False,,False,STATUS_SCHEDULED
+2026-11-10,118855,OKC,POR,3423,Moda Center,Portland,False,False,,False,STATUS_SCHEDULED
+2026-11-11,118856,WAS,IND,2183,Gainbridge Fieldhouse,Indianapolis,False,False,,False,STATUS_SCHEDULED
+2026-11-11,118857,CLE,NYK,1830,Madison Square Garden,New York,False,False,,False,STATUS_SCHEDULED
+2026-11-11,118858,BOS,TOR,1838,Scotiabank Arena,Toronto,False,False,,False,STATUS_SCHEDULED
+2026-11-11,118859,SAS,CHI,1847,United Center,Chicago,False,False,,False,STATUS_SCHEDULED
+2026-11-11,118860,DEN,MEM,1392,FedExForum,Memphis,False,False,,False,STATUS_SCHEDULED
+2026-11-11,118861,LAL,MIL,5777,Fiserv Forum,Milwaukee,False,False,,False,STATUS_SCHEDULED
+2026-11-11,118862,BKN,NOP,985,Smoothie King Center,New Orleans,False,False,,False,STATUS_SCHEDULED
+2026-11-11,118863,ORL,UTA,3093,Delta Center,Salt Lake City,False,False,,False,STATUS_SCHEDULED
+2026-11-11,118864,GSW,HOU,1394,Toyota Center (Houston),Houston,False,False,,False,STATUS_SCHEDULED
+2026-11-11,118865,OKC,POR,3423,Moda Center,Portland,False,False,,False,STATUS_SCHEDULED
+2026-11-12,118866,TOR,PHI,1845,Xfinity Mobile Arena,Philadelphia,False,False,,False,STATUS_SCHEDULED
+2026-11-12,118867,DET,WAS,1823,Capital One Arena,Washington,False,False,,False,STATUS_SCHEDULED
+2026-11-12,118868,DAL,MIN,2029,Target Center,Minneapolis,False,False,,False,STATUS_SCHEDULED
+2026-11-12,118869,CHA,PHX,1949,Mortgage Matchup Center,Phoenix,False,False,,False,STATUS_SCHEDULED
+2026-11-13,118870,NYK,IND,2183,Gainbridge Fieldhouse,Indianapolis,False,False,,False,STATUS_SCHEDULED
+2026-11-13,118871,MIL,ORL,3432,Kia Center,Orlando,False,False,,False,STATUS_SCHEDULED
+2026-11-13,118872,CLE,MIA,3438,Kaseya Center,Miami,False,False,,False,STATUS_SCHEDULED
+2026-11-13,118873,ATL,CHI,1847,United Center,Chicago,False,False,,False,STATUS_SCHEDULED
+2026-11-13,118874,MEM,NOP,985,Smoothie King Center,New Orleans,False,False,,False,STATUS_SCHEDULED
+2026-11-13,118875,UTA,HOU,1394,Toyota Center (Houston),Houston,False,False,,False,STATUS_SCHEDULED
+2026-11-13,118876,GSW,SAS,780,Frost Bank Center,San Antonio,False,False,,False,STATUS_SCHEDULED
+2026-11-13,118877,POR,SAC,5310,Golden 1 Center,Sacramento,False,False,,False,STATUS_SCHEDULED
+2026-11-13,118878,OKC,LAC,10642,Intuit Dome,Inglewood,False,False,,False,STATUS_SCHEDULED
+2026-11-14,118879,DEN,NOP,985,Smoothie King Center,New Orleans,False,False,,False,STATUS_SCHEDULED
+2026-11-14,118880,DAL,CLE,3417,Rocket Arena,Cleveland,False,False,,False,STATUS_SCHEDULED
+2026-11-14,118881,DET,MIA,3438,Kaseya Center,Miami,False,False,,False,STATUS_SCHEDULED
+2026-11-14,118882,BKN,MEM,1392,FedExForum,Memphis,False,False,,False,STATUS_SCHEDULED
+2026-11-14,118883,CHI,MIN,2029,Target Center,Minneapolis,False,False,,False,STATUS_SCHEDULED
+2026-11-15,118884,IND,PHI,1845,Xfinity Mobile Arena,Philadelphia,False,False,,False,STATUS_SCHEDULED
+2026-11-15,118885,LAL,PHX,1949,Mortgage Matchup Center,Phoenix,False,False,,False,STATUS_SCHEDULED
+2026-11-15,118886,CHA,LAC,10642,Intuit Dome,Inglewood,False,False,,False,STATUS_SCHEDULED
+2026-11-15,118887,SAS,UTA,3093,Delta Center,Salt Lake City,False,False,,False,STATUS_SCHEDULED
+2026-11-15,118888,DAL,BOS,1824,TD Garden,Boston,False,False,,False,STATUS_SCHEDULED
+2026-11-15,118889,NYK,TOR,1838,Scotiabank Arena,Toronto,False,False,,False,STATUS_SCHEDULED
+2026-11-15,118890,HOU,WAS,1823,Capital One Arena,Washington,False,False,,False,STATUS_SCHEDULED
+2026-11-15,118891,ATL,MIL,5777,Fiserv Forum,Milwaukee,False,False,,False,STATUS_SCHEDULED
+2026-11-15,118892,OKC,SAC,5310,Golden 1 Center,Sacramento,False,False,,False,STATUS_SCHEDULED
+2026-11-16,118893,ORL,BOS,1824,TD Garden,Boston,False,False,,False,STATUS_SCHEDULED
+2026-11-16,118894,CHI,CLE,3417,Rocket Arena,Cleveland,False,False,,False,STATUS_SCHEDULED
+2026-11-16,118895,MEM,WAS,1823,Capital One Arena,Washington,False,False,,False,STATUS_SCHEDULED
+2026-11-16,118896,PHI,BKN,3559,Barclays Center,Brooklyn,False,False,,False,STATUS_SCHEDULED
+2026-11-16,118897,HOU,MIA,3438,Kaseya Center,Miami,False,False,,False,STATUS_SCHEDULED
+2026-11-16,118898,POR,MIN,2029,Target Center,Minneapolis,False,False,,False,STATUS_SCHEDULED
+2026-11-16,118899,GSW,NOP,985,Smoothie King Center,New Orleans,False,False,,False,STATUS_SCHEDULED
+2026-11-16,118900,PHX,DEN,892,Ball Arena,Denver,False,False,,False,STATUS_SCHEDULED
+2026-11-17,118901,NYK,TOR,1838,Scotiabank Arena,Toronto,False,False,,False,STATUS_SCHEDULED
+2026-11-17,118902,POR,MIN,2029,Target Center,Minneapolis,False,False,,False,STATUS_SCHEDULED
+2026-11-17,118903,DET,SAS,780,Frost Bank Center,San Antonio,False,False,,False,STATUS_SCHEDULED
+2026-11-17,118904,CHA,LAL,1841,crypto.com Arena,Los Angeles,False,False,,False,STATUS_SCHEDULED
+2026-11-17,118905,UTA,LAC,10642,Intuit Dome,Inglewood,False,False,,False,STATUS_SCHEDULED
+2026-11-18,118906,MEM,CLE,3417,Rocket Arena,Cleveland,False,False,,False,STATUS_SCHEDULED
+2026-11-18,118907,HOU,IND,2183,Gainbridge Fieldhouse,Indianapolis,False,False,,False,STATUS_SCHEDULED
+2026-11-18,118908,MIL,MIA,3438,Kaseya Center,Miami,False,False,,False,STATUS_SCHEDULED
+2026-11-18,118909,PHI,ORL,3432,Kia Center,Orlando,False,False,,False,STATUS_SCHEDULED
+2026-11-18,118910,CHI,BKN,3559,Barclays Center,Brooklyn,False,False,,False,STATUS_SCHEDULED
+2026-11-18,118911,WAS,TOR,1838,Scotiabank Arena,Toronto,False,False,,False,STATUS_SCHEDULED
+2026-11-18,118912,DET,NOP,985,Smoothie King Center,New Orleans,False,False,,False,STATUS_SCHEDULED
+2026-11-18,118913,ATL,OKC,2559,Paycom Center,Oklahoma City,False,False,,False,STATUS_SCHEDULED
+2026-11-18,118914,BOS,DEN,892,Ball Arena,Denver,False,False,,False,STATUS_SCHEDULED
+2026-11-18,118915,GSW,DAL,516,American Airlines Center,Dallas,False,False,,False,STATUS_SCHEDULED
+2026-11-18,118916,UTA,LAL,1841,crypto.com Arena,Los Angeles,False,False,,False,STATUS_SCHEDULED
+2026-11-18,118917,PHX,SAC,5310,Golden 1 Center,Sacramento,False,False,,False,STATUS_SCHEDULED
+2026-11-19,118918,GSW,MEM,1392,FedExForum,Memphis,False,False,,False,STATUS_SCHEDULED
+2026-11-19,118919,POR,MIL,5777,Fiserv Forum,Milwaukee,False,False,,False,STATUS_SCHEDULED
+2026-11-19,118920,NYK,MIN,2029,Target Center,Minneapolis,False,False,,False,STATUS_SCHEDULED
+2026-11-19,118921,LAC,SAS,780,Frost Bank Center,San Antonio,False,False,,False,STATUS_SCHEDULED
+2026-11-20,118922,CHA,ATL,1827,State Farm Arena,Atlanta,False,False,,False,STATUS_SCHEDULED
+2026-11-20,118923,ORL,BKN,3559,Barclays Center,Brooklyn,False,False,,False,STATUS_SCHEDULED
+2026-11-20,118924,IND,CLE,3417,Rocket Arena,Cleveland,False,False,,False,STATUS_SCHEDULED
+2026-11-20,118925,TOR,DET,5404,Little Caesars Arena,Detroit,False,False,,False,STATUS_SCHEDULED
+2026-11-20,118926,WAS,CHI,1847,United Center,Chicago,False,False,,False,STATUS_SCHEDULED
+2026-11-20,118927,NOP,OKC,2559,Paycom Center,Oklahoma City,False,False,,False,STATUS_SCHEDULED
+2026-11-20,118928,PHX,UTA,3093,Delta Center,Salt Lake City,False,False,,False,STATUS_SCHEDULED
+2026-11-20,118929,HOU,DEN,892,Ball Arena,Denver,False,False,,False,STATUS_SCHEDULED
+2026-11-20,118930,SAC,LAL,1841,crypto.com Arena,Los Angeles,False,False,,False,STATUS_SCHEDULED
+2026-11-21,118931,MIL,PHI,1845,Xfinity Mobile Arena,Philadelphia,False,False,,False,STATUS_SCHEDULED
+2026-11-21,118932,POR,NYK,1830,Madison Square Garden,New York,False,False,,False,STATUS_SCHEDULED
+2026-11-21,118933,LAC,DAL,516,American Airlines Center,Dallas,False,False,,False,STATUS_SCHEDULED
+2026-11-21,118934,MEM,MIN,2029,Target Center,Minneapolis,False,False,,False,STATUS_SCHEDULED
+2026-11-21,118935,NOP,SAS,780,Frost Bank Center,San Antonio,False,False,,False,STATUS_SCHEDULED
+2026-11-21,118936,BOS,SAC,5310,Golden 1 Center,Sacramento,False,False,,False,STATUS_SCHEDULED
+2026-11-22,118937,DET,ATL,1827,State Farm Arena,Atlanta,False,False,,False,STATUS_SCHEDULED
+2026-11-22,118938,OKC,MIA,3438,Kaseya Center,Miami,False,False,,False,STATUS_SCHEDULED
+2026-11-22,118939,ORL,WAS,1823,Capital One Arena,Washington,False,False,,False,STATUS_SCHEDULED
+2026-11-22,118940,DEN,CHI,1847,United Center,Chicago,False,False,,False,STATUS_SCHEDULED
+2026-11-22,118941,DAL,UTA,3093,Delta Center,Salt Lake City,False,False,,False,STATUS_SCHEDULED
+2026-11-22,118942,IND,NYK,1830,Madison Square Garden,New York,False,False,,False,STATUS_SCHEDULED
+2026-11-22,118943,BOS,GSW,6270,Chase Center,San Francisco,False,False,,False,STATUS_SCHEDULED
+2026-11-23,118944,MEM,CHA,1893,Spectrum Center,Charlotte,False,False,,False,STATUS_SCHEDULED
+2026-11-23,118945,POR,PHI,1845,Xfinity Mobile Arena,Philadelphia,False,False,,False,STATUS_SCHEDULED
+2026-11-23,118946,OKC,IND,2183,Gainbridge Fieldhouse,Indianapolis,False,False,,False,STATUS_SCHEDULED
+2026-11-23,118947,MIL,TOR,1838,Scotiabank Arena,Toronto,False,False,,False,STATUS_SCHEDULED
+2026-11-23,118948,BKN,MIN,2029,Target Center,Minneapolis,False,False,,False,STATUS_SCHEDULED
+2026-11-23,118949,CLE,CHI,1847,United Center,Chicago,False,False,,False,STATUS_SCHEDULED
+2026-11-23,118950,PHX,NOP,985,Smoothie King Center,New Orleans,False,False,,False,STATUS_SCHEDULED
+2026-11-23,118951,LAC,HOU,1394,Toyota Center (Houston),Houston,False,False,,False,STATUS_SCHEDULED
+2026-11-23,118952,UTA,LAL,1841,crypto.com Arena,Los Angeles,False,False,,False,STATUS_SCHEDULED
+2026-11-23,118953,SAS,SAC,5310,Golden 1 Center,Sacramento,False,False,,False,STATUS_SCHEDULED
+2026-11-24,118954,DET,ORL,3432,Kia Center,Orlando,False,False,,False,STATUS_SCHEDULED
+2026-11-24,118955,BOS,WAS,1823,Capital One Arena,Washington,False,False,,False,STATUS_SCHEDULED
+2026-11-24,118956,DAL,DEN,892,Ball Arena,Denver,False,False,,False,STATUS_SCHEDULED
+2026-11-25,118957,MIA,PHI,1845,Xfinity Mobile Arena,Philadelphia,False,False,,False,STATUS_SCHEDULED
+2026-11-25,118958,CHI,CHA,1893,Spectrum Center,Charlotte,False,False,,False,STATUS_SCHEDULED
+2026-11-25,118959,CLE,NYK,1830,Madison Square Garden,New York,False,False,,False,STATUS_SCHEDULED
+2026-11-25,118960,MIN,OKC,2559,Paycom Center,Oklahoma City,False,False,,False,STATUS_SCHEDULED
+2026-11-25,118961,LAC,MEM,1392,FedExForum,Memphis,False,False,,False,STATUS_SCHEDULED
+2026-11-25,118962,BKN,MIL,5777,Fiserv Forum,Milwaukee,False,False,,False,STATUS_SCHEDULED
+2026-11-25,118963,PHX,HOU,1394,Toyota Center (Houston),Houston,False,False,,False,STATUS_SCHEDULED
+2026-11-25,118964,SAC,GSW,6270,Chase Center,San Francisco,False,False,,False,STATUS_SCHEDULED
+2026-11-25,118965,SAS,POR,3423,Moda Center,Portland,False,False,,False,STATUS_SCHEDULED
+2026-11-27,118966,MIA,NYK,1830,Madison Square Garden,New York,False,False,,False,STATUS_SCHEDULED
+2026-11-27,118967,MIL,DET,5404,Little Caesars Arena,Detroit,False,False,,False,STATUS_SCHEDULED
+2026-11-27,118968,PHI,IND,2183,Gainbridge Fieldhouse,Indianapolis,False,False,,False,STATUS_SCHEDULED
+2026-11-27,118969,BKN,TOR,1838,Scotiabank Arena,Toronto,False,False,,False,STATUS_SCHEDULED
+2026-11-27,118970,ATL,BOS,1824,TD Garden,Boston,False,False,,False,STATUS_SCHEDULED
+2026-11-27,118971,MEM,MIN,2029,Target Center,Minneapolis,False,False,,False,STATUS_SCHEDULED
+2026-11-27,118972,DAL,PHX,1949,Mortgage Matchup Center,Phoenix,False,False,,False,STATUS_SCHEDULED
+2026-11-27,118973,LAL,SAS,780,Frost Bank Center,San Antonio,False,False,,False,STATUS_SCHEDULED
+2026-11-27,118974,DEN,UTA,3093,Delta Center,Salt Lake City,False,False,,False,STATUS_SCHEDULED
+2026-11-27,118975,NOP,LAC,10642,Intuit Dome,Inglewood,False,False,,False,STATUS_SCHEDULED
+2026-11-27,118976,GSW,POR,3423,Moda Center,Portland,False,False,,False,STATUS_SCHEDULED
+2026-11-28,118977,ORL,WAS,1823,Capital One Arena,Washington,False,False,,False,STATUS_SCHEDULED
+2026-11-28,118978,BKN,CHA,1893,Spectrum Center,Charlotte,False,False,,False,STATUS_SCHEDULED
+2026-11-28,118979,IND,CHI,1847,United Center,Chicago,False,False,,False,STATUS_SCHEDULED
+2026-11-28,118980,OKC,MIL,5777,Fiserv Forum,Milwaukee,False,False,,False,STATUS_SCHEDULED
+2026-11-28,118981,PHI,HOU,1394,Toyota Center (Houston),Houston,False,False,,False,STATUS_SCHEDULED
+2026-11-29,118982,LAL,MEM,1392,FedExForum,Memphis,False,False,,False,STATUS_SCHEDULED
+2026-11-29,118983,BOS,SAS,780,Frost Bank Center,San Antonio,False,False,,False,STATUS_SCHEDULED
+2026-11-29,118984,PHX,UTA,3093,Delta Center,Salt Lake City,False,False,,False,STATUS_SCHEDULED
+2026-11-29,118985,MIA,CLE,3417,Rocket Arena,Cleveland,False,False,,False,STATUS_SCHEDULED
+2026-11-29,118986,ORL,DET,5404,Little Caesars Arena,Detroit,False,False,,False,STATUS_SCHEDULED
+2026-11-29,118987,ATL,NYK,1830,Madison Square Garden,New York,False,False,,False,STATUS_SCHEDULED
+2026-11-29,118988,DEN,TOR,1838,Scotiabank Arena,Toronto,False,False,,False,STATUS_SCHEDULED
+2026-11-29,118989,NOP,POR,3423,Moda Center,Portland,False,False,,False,STATUS_SCHEDULED
+2026-11-29,118990,LAC,GSW,6270,Chase Center,San Francisco,False,False,,False,STATUS_SCHEDULED
+2026-11-29,118991,MIN,SAC,5310,Golden 1 Center,Sacramento,False,False,,False,STATUS_SCHEDULED
+2026-11-30,118992,WAS,CHA,1893,Spectrum Center,Charlotte,False,False,,False,STATUS_SCHEDULED
+2026-11-30,118993,DEN,DET,5404,Little Caesars Arena,Detroit,False,False,,False,STATUS_SCHEDULED
+2026-11-30,118994,OKC,BKN,3559,Barclays Center,Brooklyn,False,False,,False,STATUS_SCHEDULED
+2026-11-30,118995,LAL,HOU,1394,Toyota Center (Houston),Houston,False,False,,False,STATUS_SCHEDULED
+2026-11-30,118996,BOS,DAL,516,American Airlines Center,Dallas,False,False,,False,STATUS_SCHEDULED
+2026-11-30,118997,SAS,MIL,5777,Fiserv Forum,Milwaukee,False,False,,False,STATUS_SCHEDULED
+2026-11-30,118998,NOP,SAC,5310,Golden 1 Center,Sacramento,False,False,,False,STATUS_SCHEDULED
+2026-12-01,118999,IND,CLE,3417,Rocket Arena,Cleveland,False,False,,False,STATUS_SCHEDULED
+2026-12-01,119000,MEM,PHI,1845,Xfinity Mobile Arena,Philadelphia,False,False,,False,STATUS_SCHEDULED
+2026-12-01,119001,ATL,MIA,3438,Kaseya Center,Miami,False,False,,False,STATUS_SCHEDULED
+2026-12-01,119002,NYK,CHI,1847,United Center,Chicago,False,False,,False,STATUS_SCHEDULED
+2026-12-01,119003,TOR,HOU,1394,Toyota Center (Houston),Houston,False,False,,False,STATUS_SCHEDULED
+2026-12-01,119004,LAC,PHX,1949,Mortgage Matchup Center,Phoenix,False,False,,False,STATUS_SCHEDULED
+2026-12-01,119005,MIN,POR,3423,Moda Center,Portland,False,False,,False,STATUS_SCHEDULED
+2026-12-01,119006,UTA,GSW,6270,Chase Center,San Francisco,False,False,,False,STATUS_SCHEDULED
+2026-12-02,119007,MEM,DET,5404,Little Caesars Arena,Detroit,False,False,,False,STATUS_SCHEDULED
+2026-12-02,119008,DEN,PHI,1845,Xfinity Mobile Arena,Philadelphia,False,False,,False,STATUS_SCHEDULED
+2026-12-02,119009,CHA,BOS,1824,TD Garden,Boston,False,False,,False,STATUS_SCHEDULED
+2026-12-02,119010,ORL,DAL,516,American Airlines Center,Dallas,False,False,,False,STATUS_SCHEDULED
+2026-12-02,119011,NYK,MIL,5777,Fiserv Forum,Milwaukee,False,False,,False,STATUS_SCHEDULED
+2026-12-02,119012,LAL,NOP,985,Smoothie King Center,New Orleans,False,False,,False,STATUS_SCHEDULED
+2026-12-02,119013,BKN,OKC,2559,Paycom Center,Oklahoma City,False,False,,False,STATUS_SCHEDULED
+2026-12-02,119014,SAC,PHX,1949,Mortgage Matchup Center,Phoenix,False,False,,False,STATUS_SCHEDULED
+2026-12-02,119015,MIN,LAC,10642,Intuit Dome,Inglewood,False,False,,False,STATUS_SCHEDULED
+2026-12-03,119016,IND,ATL,1827,State Farm Arena,Atlanta,False,False,,False,STATUS_SCHEDULED
+2026-12-03,119017,WAS,MIA,3438,Kaseya Center,Miami,False,False,,False,STATUS_SCHEDULED
+2026-12-03,119018,CLE,CHI,1847,United Center,Chicago,False,False,,False,STATUS_SCHEDULED
+2026-12-03,119019,TOR,SAS,780,Frost Bank Center,San Antonio,False,False,,False,STATUS_SCHEDULED
+2026-12-03,119020,UTA,POR,3423,Moda Center,Portland,False,False,,False,STATUS_SCHEDULED
+2026-12-12,119021,MIL,MEM,1392,FedExForum,Memphis,False,False,,False,STATUS_SCHEDULED
+2026-12-12,119022,CHA,WAS,1823,Capital One Arena,Washington,False,False,,False,STATUS_SCHEDULED
+2026-12-12,119023,ORL,PHI,1845,Xfinity Mobile Arena,Philadelphia,False,False,,False,STATUS_SCHEDULED
+2026-12-12,119024,GSW,CLE,3417,Rocket Arena,Cleveland,False,False,,False,STATUS_SCHEDULED
+2026-12-12,119025,NYK,MIA,3438,Kaseya Center,Miami,False,False,,False,STATUS_SCHEDULED
+2026-12-12,119026,MIN,PHX,1949,Mortgage Matchup Center,Phoenix,False,False,,False,STATUS_SCHEDULED
+2026-12-12,119027,DEN,UTA,3093,Delta Center,Salt Lake City,False,False,,False,STATUS_SCHEDULED
+2026-12-12,119028,ATL,POR,3423,Moda Center,Portland,False,False,,False,STATUS_SCHEDULED
+2026-12-13,119029,BOS,BKN,3559,Barclays Center,Brooklyn,False,False,,False,STATUS_SCHEDULED
+2026-12-13,119030,TOR,OKC,2559,Paycom Center,Oklahoma City,False,False,,False,STATUS_SCHEDULED
+2026-12-13,119031,DET,IND,2183,Gainbridge Fieldhouse,Indianapolis,False,False,,False,STATUS_SCHEDULED
+2026-12-13,119032,HOU,CHI,1847,United Center,Chicago,False,False,,False,STATUS_SCHEDULED
+2026-12-13,119033,LAC,SAS,780,Frost Bank Center,San Antonio,False,False,,False,STATUS_SCHEDULED
+2026-12-13,119034,NOP,SAC,5310,Golden 1 Center,Sacramento,False,False,,False,STATUS_SCHEDULED
+2026-12-14,119035,TOR,CHA,1893,Spectrum Center,Charlotte,False,False,,False,STATUS_SCHEDULED
+2026-12-14,119036,BKN,DET,5404,Little Caesars Arena,Detroit,False,False,,False,STATUS_SCHEDULED
+2026-12-14,119037,PHI,ORL,3432,Kia Center,Orlando,False,False,,False,STATUS_SCHEDULED
+2026-12-14,119038,WAS,BOS,1824,TD Garden,Boston,False,False,,False,STATUS_SCHEDULED
+2026-12-14,119039,MIA,CHI,1847,United Center,Chicago,False,False,,False,STATUS_SCHEDULED
+2026-12-14,119040,MIL,DAL,516,American Airlines Center,Dallas,False,False,,False,STATUS_SCHEDULED
+2026-12-14,119041,GSW,MEM,1392,FedExForum,Memphis,False,False,,False,STATUS_SCHEDULED
+2026-12-14,119042,NYK,HOU,1394,Toyota Center (Houston),Houston,False,False,,False,STATUS_SCHEDULED
+2026-12-14,119043,ATL,PHX,1949,Mortgage Matchup Center,Phoenix,False,False,,False,STATUS_SCHEDULED
+2026-12-14,119044,MIN,UTA,3093,Delta Center,Salt Lake City,False,False,,False,STATUS_SCHEDULED
+2026-12-14,119045,NOP,LAL,1841,crypto.com Arena,Los Angeles,False,False,,False,STATUS_SCHEDULED
+2026-12-15,119046,SAS,CLE,3417,Rocket Arena,Cleveland,False,False,,False,STATUS_SCHEDULED
+2026-12-15,119047,DEN,POR,3423,Moda Center,Portland,False,False,,False,STATUS_SCHEDULED
+2026-12-16,119048,WAS,BOS,1824,TD Garden,Boston,False,False,,False,STATUS_SCHEDULED
+2026-12-16,119049,LAC,CHA,1893,Spectrum Center,Charlotte,False,False,,False,STATUS_SCHEDULED
+2026-12-16,119050,PHX,DET,5404,Little Caesars Arena,Detroit,False,False,,False,STATUS_SCHEDULED
+2026-12-16,119051,GSW,IND,2183,Gainbridge Fieldhouse,Indianapolis,False,False,,False,STATUS_SCHEDULED
+2026-12-16,119052,CLE,ORL,3432,Kia Center,Orlando,False,False,,False,STATUS_SCHEDULED
+2026-12-16,119053,DAL,BKN,3559,Barclays Center,Brooklyn,False,False,,False,STATUS_SCHEDULED
+2026-12-16,119054,SAS,TOR,1838,Scotiabank Arena,Toronto,False,False,,False,STATUS_SCHEDULED
+2026-12-16,119055,UTA,CHI,1847,United Center,Chicago,False,False,,False,STATUS_SCHEDULED
+2026-12-16,119056,MIA,MEM,1392,FedExForum,Memphis,False,False,,False,STATUS_SCHEDULED
+2026-12-16,119057,NYK,NOP,985,Smoothie King Center,New Orleans,False,False,,False,STATUS_SCHEDULED
+2026-12-16,119058,SAC,OKC,2559,Paycom Center,Oklahoma City,False,False,,False,STATUS_SCHEDULED
+2026-12-16,119059,MIL,HOU,1394,Toyota Center (Houston),Houston,False,False,,False,STATUS_SCHEDULED
+2026-12-16,119060,LAL,MIN,2029,Target Center,Minneapolis,False,False,,False,STATUS_SCHEDULED
+2026-12-17,119061,POR,IND,2183,Gainbridge Fieldhouse,Indianapolis,False,False,,False,STATUS_SCHEDULED
+2026-12-17,119062,DAL,PHI,1845,Xfinity Mobile Arena,Philadelphia,False,False,,False,STATUS_SCHEDULED
+2026-12-17,119063,ATL,DEN,892,Ball Arena,Denver,False,False,,False,STATUS_SCHEDULED
+2026-12-18,119064,OKC,CHA,1893,Spectrum Center,Charlotte,False,False,,False,STATUS_SCHEDULED
+2026-12-18,119065,LAC,MIA,3438,Kaseya Center,Miami,False,False,,False,STATUS_SCHEDULED
+2026-12-18,119066,NYK,WAS,1823,Capital One Arena,Washington,False,False,,False,STATUS_SCHEDULED
+2026-12-18,119067,UTA,BOS,1824,TD Garden,Boston,False,False,,False,STATUS_SCHEDULED
+2026-12-18,119068,ORL,BKN,3559,Barclays Center,Brooklyn,False,False,,False,STATUS_SCHEDULED
+2026-12-18,119069,CLE,DET,5404,Little Caesars Arena,Detroit,False,False,,False,STATUS_SCHEDULED
+2026-12-18,119070,GSW,TOR,1838,Scotiabank Arena,Toronto,False,False,,False,STATUS_SCHEDULED
+2026-12-18,119071,HOU,MEM,1392,FedExForum,Memphis,False,False,,False,STATUS_SCHEDULED
+2026-12-18,119072,PHX,MIL,5777,Fiserv Forum,Milwaukee,False,False,,False,STATUS_SCHEDULED
+2026-12-18,119073,LAL,MIN,2029,Target Center,Minneapolis,False,False,,False,STATUS_SCHEDULED
+2026-12-18,119074,SAC,NOP,985,Smoothie King Center,New Orleans,False,False,,False,STATUS_SCHEDULED
+2026-12-18,119075,CHI,SAS,780,Frost Bank Center,San Antonio,False,False,,False,STATUS_SCHEDULED
+2026-12-19,119076,POR,CHA,1893,Spectrum Center,Charlotte,False,False,,False,STATUS_SCHEDULED
+2026-12-19,119077,ORL,ATL,1827,State Farm Arena,Atlanta,False,False,,False,STATUS_SCHEDULED
+2026-12-19,119078,CHI,DAL,516,American Airlines Center,Dallas,False,False,,False,STATUS_SCHEDULED
+2026-12-19,119079,LAL,DEN,892,Ball Arena,Denver,False,False,,False,STATUS_SCHEDULED
+2026-12-20,119080,WAS,BKN,3559,Barclays Center,Brooklyn,False,False,,False,STATUS_SCHEDULED
+2026-12-20,119081,HOU,TOR,1838,Scotiabank Arena,Toronto,False,False,,False,STATUS_SCHEDULED
+2026-12-20,119082,PHX,MEM,1392,FedExForum,Memphis,False,False,,False,STATUS_SCHEDULED
+2026-12-20,119083,UTA,CLE,3417,Rocket Arena,Cleveland,False,False,,False,STATUS_SCHEDULED
+2026-12-20,119084,SAC,MIA,3438,Kaseya Center,Miami,False,False,,False,STATUS_SCHEDULED
+2026-12-20,119085,OKC,ATL,1827,State Farm Arena,Atlanta,False,False,,False,STATUS_SCHEDULED
+2026-12-20,119086,SAS,NOP,985,Smoothie King Center,New Orleans,False,False,,False,STATUS_SCHEDULED
+2026-12-20,119087,DET,BOS,1824,TD Garden,Boston,False,False,,False,STATUS_SCHEDULED
+2026-12-20,119088,GSW,MIL,5777,Fiserv Forum,Milwaukee,False,False,,False,STATUS_SCHEDULED
+2026-12-20,119089,IND,LAC,10642,Intuit Dome,Inglewood,False,False,,False,STATUS_SCHEDULED
+2026-12-21,119090,PHI,CHA,1893,Spectrum Center,Charlotte,False,False,,False,STATUS_SCHEDULED
+2026-12-21,119091,NYK,CLE,3417,Rocket Arena,Cleveland,False,False,,False,STATUS_SCHEDULED
+2026-12-21,119092,SAC,ORL,3432,Kia Center,Orlando,False,False,,False,STATUS_SCHEDULED
+2026-12-21,119093,POR,BKN,3559,Barclays Center,Brooklyn,False,False,,False,STATUS_SCHEDULED
+2026-12-21,119094,CHI,MIA,3438,Kaseya Center,Miami,False,False,,False,STATUS_SCHEDULED
+2026-12-21,119095,PHX,MIN,2029,Target Center,Minneapolis,False,False,,False,STATUS_SCHEDULED
+2026-12-21,119096,MEM,NOP,985,Smoothie King Center,New Orleans,False,False,,False,STATUS_SCHEDULED
+2026-12-21,119097,MIL,SAS,780,Frost Bank Center,San Antonio,False,False,,False,STATUS_SCHEDULED
+2026-12-21,119098,IND,LAL,1841,crypto.com Arena,Los Angeles,False,False,,False,STATUS_SCHEDULED
+2026-12-21,119099,DEN,LAC,10642,Intuit Dome,Inglewood,False,False,,False,STATUS_SCHEDULED
+2026-12-22,119100,TOR,WAS,1823,Capital One Arena,Washington,False,False,,False,STATUS_SCHEDULED
+2026-12-22,119101,DET,OKC,2559,Paycom Center,Oklahoma City,False,False,,False,STATUS_SCHEDULED
+2026-12-22,119102,DAL,GSW,6270,Chase Center,San Francisco,False,False,,False,STATUS_SCHEDULED
+2026-12-23,119103,DET,ATL,1827,State Farm Arena,Atlanta,False,False,,False,STATUS_SCHEDULED
+2026-12-23,119104,CHA,ORL,3432,Kia Center,Orlando,False,False,,False,STATUS_SCHEDULED
+2026-12-23,119105,CLE,WAS,1823,Capital One Arena,Washington,False,False,,False,STATUS_SCHEDULED
+2026-12-23,119106,POR,BOS,1824,TD Garden,Boston,False,False,,False,STATUS_SCHEDULED
+2026-12-23,119107,SAS,BKN,3559,Barclays Center,Brooklyn,False,False,,False,STATUS_SCHEDULED
+2026-12-23,119108,CHI,MIA,3438,Kaseya Center,Miami,False,False,,False,STATUS_SCHEDULED
+2026-12-23,119109,UTA,NYK,1830,Madison Square Garden,New York,False,False,,False,STATUS_SCHEDULED
+2026-12-23,119110,HOU,PHI,1845,Xfinity Mobile Arena,Philadelphia,False,False,,False,STATUS_SCHEDULED
+2026-12-23,119111,TOR,MEM,1392,FedExForum,Memphis,False,False,,False,STATUS_SCHEDULED
+2026-12-23,119112,MIN,MIL,5777,Fiserv Forum,Milwaukee,False,False,,False,STATUS_SCHEDULED
+2026-12-23,119113,OKC,NOP,985,Smoothie King Center,New Orleans,False,False,,False,STATUS_SCHEDULED
+2026-12-23,119114,IND,PHX,1949,Mortgage Matchup Center,Phoenix,False,False,,False,STATUS_SCHEDULED
+2026-12-23,119115,DEN,LAL,1841,crypto.com Arena,Los Angeles,False,False,,False,STATUS_SCHEDULED
+2026-12-23,119116,DAL,SAC,5310,Golden 1 Center,Sacramento,False,False,,False,STATUS_SCHEDULED
+2026-12-23,119117,GSW,LAC,10642,Intuit Dome,Inglewood,False,False,,False,STATUS_SCHEDULED
+2026-12-25,119118,SAS,NYK,1830,Madison Square Garden,New York,False,False,,False,STATUS_SCHEDULED
+2026-12-25,119119,MIA,BOS,1824,TD Garden,Boston,False,False,,False,STATUS_SCHEDULED
+2026-12-25,119120,PHI,LAL,1841,crypto.com Arena,Los Angeles,False,False,,False,STATUS_SCHEDULED
+2026-12-25,119121,OKC,MIN,2029,Target Center,Minneapolis,False,False,,False,STATUS_SCHEDULED
+2026-12-25,119122,DEN,GSW,6270,Chase Center,San Francisco,False,False,,False,STATUS_SCHEDULED
+2026-12-26,119123,POR,WAS,1823,Capital One Arena,Washington,False,False,,False,STATUS_SCHEDULED
+2026-12-26,119124,CHA,ATL,1827,State Farm Arena,Atlanta,False,False,,False,STATUS_SCHEDULED
+2026-12-26,119125,IND,UTA,3093,Delta Center,Salt Lake City,False,False,,False,STATUS_SCHEDULED
+2026-12-26,119126,NOP,BKN,3559,Barclays Center,Brooklyn,False,False,,False,STATUS_SCHEDULED
+2026-12-26,119127,TOR,ORL,3432,Kia Center,Orlando,False,False,,False,STATUS_SCHEDULED
+2026-12-26,119128,DET,CHI,1847,United Center,Chicago,False,False,,False,STATUS_SCHEDULED
+2026-12-26,119129,PHX,DAL,516,American Airlines Center,Dallas,False,False,,False,STATUS_SCHEDULED
+2026-12-26,119130,MEM,LAC,10642,Intuit Dome,Inglewood,False,False,,False,STATUS_SCHEDULED
+2026-12-27,119131,OKC,HOU,1394,Toyota Center (Houston),Houston,False,False,,False,STATUS_SCHEDULED
+2026-12-27,119132,WAS,CLE,3417,Rocket Arena,Cleveland,False,False,,False,STATUS_SCHEDULED
+2026-12-27,119133,CHA,MIA,3438,Kaseya Center,Miami,False,False,,False,STATUS_SCHEDULED
+2026-12-27,119134,BKN,NYK,1830,Madison Square Garden,New York,False,False,,False,STATUS_SCHEDULED
+2026-12-27,119135,MIL,ORL,3432,Kia Center,Orlando,False,False,,False,STATUS_SCHEDULED
+2026-12-27,119136,UTA,SAC,5310,Golden 1 Center,Sacramento,False,False,,False,STATUS_SCHEDULED
+2026-12-27,119137,POR,DET,5404,Little Caesars Arena,Detroit,False,False,,False,STATUS_SCHEDULED
+2026-12-27,119138,ATL,SAS,780,Frost Bank Center,San Antonio,False,False,,False,STATUS_SCHEDULED
+2026-12-27,119139,IND,DEN,892,Ball Arena,Denver,False,False,,False,STATUS_SCHEDULED
+2026-12-27,119140,MIN,GSW,6270,Chase Center,San Francisco,False,False,,False,STATUS_SCHEDULED
+2026-12-27,119141,PHI,LAC,10642,Intuit Dome,Inglewood,False,False,,False,STATUS_SCHEDULED
+2026-12-27,119142,MEM,LAL,1841,crypto.com Arena,Los Angeles,False,False,,False,STATUS_SCHEDULED
+2026-12-28,119143,NOP,TOR,1838,Scotiabank Arena,Toronto,False,False,,False,STATUS_SCHEDULED
+2026-12-28,119144,CLE,BOS,1824,TD Garden,Boston,False,False,,False,STATUS_SCHEDULED
+2026-12-28,119145,GSW,PHX,1949,Mortgage Matchup Center,Phoenix,False,False,,False,STATUS_SCHEDULED
+2026-12-28,119146,MIN,DEN,892,Ball Arena,Denver,False,False,,False,STATUS_SCHEDULED
+2026-12-29,119147,CHI,ATL,1827,State Farm Arena,Atlanta,False,False,,False,STATUS_SCHEDULED
+2026-12-29,119148,ORL,CHA,1893,Spectrum Center,Charlotte,False,False,,False,STATUS_SCHEDULED
+2026-12-29,119149,LAC,IND,2183,Gainbridge Fieldhouse,Indianapolis,False,False,,False,STATUS_SCHEDULED
+2026-12-29,119150,MIA,DAL,516,American Airlines Center,Dallas,False,False,,False,STATUS_SCHEDULED
+2026-12-29,119151,SAS,MEM,1392,FedExForum,Memphis,False,False,,False,STATUS_SCHEDULED
+2026-12-29,119152,MIL,OKC,2559,Paycom Center,Oklahoma City,False,False,,False,STATUS_SCHEDULED
+2026-12-29,119153,BKN,POR,3423,Moda Center,Portland,False,False,,False,STATUS_SCHEDULED
+2026-12-29,119154,PHI,SAC,5310,Golden 1 Center,Sacramento,False,False,,False,STATUS_SCHEDULED
+2026-12-29,119155,HOU,LAL,1841,crypto.com Arena,Los Angeles,False,False,,False,STATUS_SCHEDULED
+2026-12-30,119156,NOP,DET,5404,Little Caesars Arena,Detroit,False,False,,False,STATUS_SCHEDULED
+2026-12-30,119157,WAS,TOR,1838,Scotiabank Arena,Toronto,False,False,,False,STATUS_SCHEDULED
+2026-12-30,119158,BOS,CHI,1847,United Center,Chicago,False,False,,False,STATUS_SCHEDULED
+2026-12-30,119159,PHI,PHX,1949,Mortgage Matchup Center,Phoenix,False,False,,False,STATUS_SCHEDULED
+2026-12-30,119160,NYK,UTA,3093,Delta Center,Salt Lake City,False,False,,False,STATUS_SCHEDULED
+2026-12-30,119161,HOU,GSW,6270,Chase Center,San Francisco,False,False,,False,STATUS_SCHEDULED
+2026-12-31,119162,SAS,CHA,1893,Spectrum Center,Charlotte,False,False,,False,STATUS_SCHEDULED
+2026-12-31,119163,MIL,ATL,1827,State Farm Arena,Atlanta,False,False,,False,STATUS_SCHEDULED
+2026-12-31,119164,LAC,CLE,3417,Rocket Arena,Cleveland,False,False,,False,STATUS_SCHEDULED
+2026-12-31,119165,ORL,IND,2183,Gainbridge Fieldhouse,Indianapolis,False,False,,False,STATUS_SCHEDULED
+2026-12-31,119166,DEN,MIN,2029,Target Center,Minneapolis,False,False,,False,STATUS_SCHEDULED
+2026-12-31,119167,BKN,SAC,5310,Golden 1 Center,Sacramento,False,False,,False,STATUS_SCHEDULED
+2026-12-31,119168,LAL,NOP,985,Smoothie King Center,New Orleans,False,False,,False,STATUS_SCHEDULED
+2026-12-31,119169,MIA,OKC,2559,Paycom Center,Oklahoma City,False,False,,False,STATUS_SCHEDULED
+2026-12-31,119170,NYK,PHX,1949,Mortgage Matchup Center,Phoenix,False,False,,False,STATUS_SCHEDULED
+2027-01-01,119171,SAS,WAS,1823,Capital One Arena,Washington,False,False,,False,STATUS_SCHEDULED
+2027-01-01,119172,ORL,DET,5404,Little Caesars Arena,Detroit,False,False,,False,STATUS_SCHEDULED
+2027-01-01,119173,LAC,TOR,1838,Scotiabank Arena,Toronto,False,False,,False,STATUS_SCHEDULED
+2027-01-01,119174,PHI,MIL,5777,Fiserv Forum,Milwaukee,False,False,,False,STATUS_SCHEDULED
+2027-01-01,119175,DAL,HOU,1394,Toyota Center (Houston),Houston,False,False,,False,STATUS_SCHEDULED
+2027-01-01,119176,BOS,UTA,3093,Delta Center,Salt Lake City,False,False,,False,STATUS_SCHEDULED
+2027-01-02,119177,CLE,CHA,1893,Spectrum Center,Charlotte,False,False,,False,STATUS_SCHEDULED
+2027-01-02,119178,NYK,DEN,892,Ball Arena,Denver,False,False,,False,STATUS_SCHEDULED
+2027-01-02,119179,MIN,IND,2183,Gainbridge Fieldhouse,Indianapolis,False,False,,False,STATUS_SCHEDULED
+2027-01-02,119180,MIA,NOP,985,Smoothie King Center,New Orleans,False,False,,False,STATUS_SCHEDULED
+2027-01-02,119181,DAL,ATL,1827,State Farm Arena,Atlanta,False,False,,False,STATUS_SCHEDULED
+2027-01-02,119182,LAL,CHI,1847,United Center,Chicago,False,False,,False,STATUS_SCHEDULED
+2027-01-02,119183,UTA,OKC,2559,Paycom Center,Oklahoma City,False,False,,False,STATUS_SCHEDULED
+2027-01-02,119184,BKN,GSW,6270,Chase Center,San Francisco,False,False,,False,STATUS_SCHEDULED
+2027-01-02,119185,SAC,PHX,1949,Mortgage Matchup Center,Phoenix,False,False,,False,STATUS_SCHEDULED
+2027-01-02,119186,BOS,POR,3423,Moda Center,Portland,False,False,,False,STATUS_SCHEDULED
+2027-01-03,119187,DET,DEN,892,Ball Arena,Denver,False,False,,False,STATUS_SCHEDULED
+2027-01-03,119188,CHA,MIL,5777,Fiserv Forum,Milwaukee,False,False,,False,STATUS_SCHEDULED
+2027-01-03,119189,MEM,ORL,3432,Kia Center,Orlando,False,False,,False,STATUS_SCHEDULED
+2027-01-03,119190,LAL,TOR,1838,Scotiabank Arena,Toronto,False,False,,False,STATUS_SCHEDULED
+2027-01-03,119191,LAC,WAS,1823,Capital One Arena,Washington,False,False,,False,STATUS_SCHEDULED
+2027-01-03,119192,CLE,HOU,1394,Toyota Center (Houston),Houston,False,False,,False,STATUS_SCHEDULED
+2027-01-03,119193,SAS,MIN,2029,Target Center,Minneapolis,False,False,,False,STATUS_SCHEDULED
+2027-01-03,119194,SAC,OKC,2559,Paycom Center,Oklahoma City,False,False,,False,STATUS_SCHEDULED
+2027-01-04,119195,CHI,IND,2183,Gainbridge Fieldhouse,Indianapolis,False,False,,False,STATUS_SCHEDULED
+2027-01-04,119196,ATL,PHI,1845,Xfinity Mobile Arena,Philadelphia,False,False,,False,STATUS_SCHEDULED
+2027-01-04,119197,DAL,NOP,985,Smoothie King Center,New Orleans,False,False,,False,STATUS_SCHEDULED
+2027-01-04,119198,BOS,PHX,1949,Mortgage Matchup Center,Phoenix,False,False,,False,STATUS_SCHEDULED
+2027-01-04,119199,BKN,UTA,3093,Delta Center,Salt Lake City,False,False,,False,STATUS_SCHEDULED
+2027-01-04,119200,NYK,POR,3423,Moda Center,Portland,False,False,,False,STATUS_SCHEDULED
+2027-01-05,119201,ATL,CHA,1893,Spectrum Center,Charlotte,False,False,,False,STATUS_SCHEDULED
+2027-01-05,119202,TOR,CLE,3417,Rocket Arena,Cleveland,False,False,,False,STATUS_SCHEDULED
+2027-01-05,119203,LAC,ORL,3432,Kia Center,Orlando,False,False,,False,STATUS_SCHEDULED
+2027-01-05,119204,LAL,WAS,1823,Capital One Arena,Washington,False,False,,False,STATUS_SCHEDULED
+2027-01-05,119205,MEM,MIA,3438,Kaseya Center,Miami,False,False,,False,STATUS_SCHEDULED
+2027-01-05,119206,MIL,CHI,1847,United Center,Chicago,False,False,,False,STATUS_SCHEDULED
+2027-01-05,119207,MIN,HOU,1394,Toyota Center (Houston),Houston,False,False,,False,STATUS_SCHEDULED
+2027-01-05,119208,PHX,DEN,892,Ball Arena,Denver,False,False,,False,STATUS_SCHEDULED
+2027-01-05,119209,DET,SAC,5310,Golden 1 Center,Sacramento,False,False,,False,STATUS_SCHEDULED
+2027-01-06,119210,UTA,BKN,3559,Barclays Center,Brooklyn,False,False,,False,STATUS_SCHEDULED
+2027-01-06,119211,OKC,PHI,1845,Xfinity Mobile Arena,Philadelphia,False,False,,False,STATUS_SCHEDULED
+2027-01-06,119212,POR,NOP,985,Smoothie King Center,New Orleans,False,False,,False,STATUS_SCHEDULED
+2027-01-06,119213,IND,SAS,780,Frost Bank Center,San Antonio,False,False,,False,STATUS_SCHEDULED
+2027-01-06,119214,NYK,GSW,6270,Chase Center,San Francisco,False,False,,False,STATUS_SCHEDULED
+2027-01-07,119215,IND,ATL,1827,State Farm Arena,Atlanta,False,False,,False,STATUS_SCHEDULED
+2027-01-07,119216,DEN,CHA,1893,Spectrum Center,Charlotte,False,False,,False,STATUS_SCHEDULED
+2027-01-07,119217,CLE,ORL,3432,Kia Center,Orlando,False,False,,False,STATUS_SCHEDULED
+2027-01-07,119218,OKC,WAS,1823,Capital One Arena,Washington,False,False,,False,STATUS_SCHEDULED
+2027-01-07,119219,MIA,BKN,3559,Barclays Center,Brooklyn,False,False,,False,STATUS_SCHEDULED
+2027-01-07,119220,MIN,TOR,1838,Scotiabank Arena,Toronto,False,False,,False,STATUS_SCHEDULED
+2027-01-07,119221,POR,DAL,516,American Airlines Center,Dallas,False,False,,False,STATUS_SCHEDULED
+2027-01-07,119222,LAC,MIL,5777,Fiserv Forum,Milwaukee,False,False,,False,STATUS_SCHEDULED
+2027-01-07,119223,MEM,HOU,1394,Toyota Center (Houston),Houston,False,False,,False,STATUS_SCHEDULED
+2027-01-07,119224,DET,GSW,6270,Chase Center,San Francisco,False,False,,False,STATUS_SCHEDULED
+2027-01-07,119225,BOS,LAL,1841,crypto.com Arena,Los Angeles,False,False,,False,STATUS_SCHEDULED
+2027-01-07,119226,CHI,SAC,5310,Golden 1 Center,Sacramento,False,False,,False,STATUS_SCHEDULED
+2027-01-08,119227,MIA,PHI,1845,Xfinity Mobile Arena,Philadelphia,False,False,,False,STATUS_SCHEDULED
+2027-01-08,119228,MIN,WAS,1823,Capital One Arena,Washington,False,False,,False,STATUS_SCHEDULED
+2027-01-08,119229,UTA,TOR,1838,Scotiabank Arena,Toronto,False,False,,False,STATUS_SCHEDULED
+2027-01-08,119230,ORL,NOP,985,Smoothie King Center,New Orleans,False,False,,False,STATUS_SCHEDULED
+2027-01-08,119231,MEM,SAS,780,Frost Bank Center,San Antonio,False,False,,False,STATUS_SCHEDULED
+2027-01-08,119232,PHX,DAL,516,American Airlines Center,Dallas,False,False,,False,STATUS_SCHEDULED
+2027-01-08,119233,DET,LAL,1841,crypto.com Arena,Los Angeles,False,False,,False,STATUS_SCHEDULED
+2027-01-08,119234,NYK,SAC,5310,Golden 1 Center,Sacramento,False,False,,False,STATUS_SCHEDULED
+2027-01-09,119235,DEN,CLE,3417,Rocket Arena,Cleveland,False,False,,False,STATUS_SCHEDULED
+2027-01-09,119236,HOU,BKN,3559,Barclays Center,Brooklyn,False,False,,False,STATUS_SCHEDULED
+2027-01-09,119237,MIL,IND,2183,Gainbridge Fieldhouse,Indianapolis,False,False,,False,STATUS_SCHEDULED
+2027-01-09,119238,CHI,GSW,6270,Chase Center,San Francisco,False,False,,False,STATUS_SCHEDULED
+2027-01-09,119239,CHA,POR,3423,Moda Center,Portland,False,False,,False,STATUS_SCHEDULED
+2027-01-09,119240,BOS,LAC,10642,Intuit Dome,Inglewood,False,False,,False,STATUS_SCHEDULED
+2027-01-10,119241,SAS,ATL,1827,State Farm Arena,Atlanta,False,False,,False,STATUS_SCHEDULED
+2027-01-10,119242,UTA,DET,5404,Little Caesars Arena,Detroit,False,False,,False,STATUS_SCHEDULED
+2027-01-10,119243,NOP,MIA,3438,Kaseya Center,Miami,False,False,,False,STATUS_SCHEDULED
+2027-01-10,119244,OKC,ORL,3432,Kia Center,Orlando,False,False,,False,STATUS_SCHEDULED
+2027-01-10,119245,PHI,TOR,1838,Scotiabank Arena,Toronto,False,False,,False,STATUS_SCHEDULED
+2027-01-10,119246,DAL,MEM,1392,FedExForum,Memphis,False,False,,False,STATUS_SCHEDULED
+2027-01-10,119247,CHI,PHX,1949,Mortgage Matchup Center,Phoenix,False,False,,False,STATUS_SCHEDULED
+2027-01-10,119248,CHA,SAC,5310,Golden 1 Center,Sacramento,False,False,,False,STATUS_SCHEDULED
+2027-01-11,119249,BKN,IND,2183,Gainbridge Fieldhouse,Indianapolis,False,False,,False,STATUS_SCHEDULED
+2027-01-11,119250,ATL,WAS,1823,Capital One Arena,Washington,False,False,,False,STATUS_SCHEDULED
+2027-01-11,119251,HOU,BOS,1824,TD Garden,Boston,False,False,,False,STATUS_SCHEDULED
+2027-01-11,119252,DEN,NYK,1830,Madison Square Garden,New York,False,False,,False,STATUS_SCHEDULED
+2027-01-11,119253,CLE,MIN,2029,Target Center,Minneapolis,False,False,,False,STATUS_SCHEDULED
+2027-01-11,119254,LAL,LAC,10642,Intuit Dome,Inglewood,False,False,,False,STATUS_SCHEDULED
+2027-01-12,119255,BKN,MIA,3438,Kaseya Center,Miami,False,False,,False,STATUS_SCHEDULED
+2027-01-12,119256,DET,TOR,1838,Scotiabank Arena,Toronto,False,False,,False,STATUS_SCHEDULED
+2027-01-12,119257,WAS,PHI,1845,Xfinity Mobile Arena,Philadelphia,False,False,,False,STATUS_SCHEDULED
+2027-01-12,119258,DAL,MEM,1392,FedExForum,Memphis,False,False,,False,STATUS_SCHEDULED
+2027-01-12,119259,DEN,MIL,5777,Fiserv Forum,Milwaukee,False,False,,False,STATUS_SCHEDULED
+2027-01-12,119260,CHI,UTA,3093,Delta Center,Salt Lake City,False,False,,False,STATUS_SCHEDULED
+2027-01-12,119261,ORL,POR,3423,Moda Center,Portland,False,False,,False,STATUS_SCHEDULED
+2027-01-12,119262,SAC,GSW,6270,Chase Center,San Francisco,False,False,,False,STATUS_SCHEDULED
+2027-01-13,119263,CLE,ATL,1827,State Farm Arena,Atlanta,False,False,,False,STATUS_SCHEDULED
+2027-01-13,119264,NYK,BOS,1824,TD Garden,Boston,False,False,,False,STATUS_SCHEDULED
+2027-01-13,119265,MIL,IND,2183,Gainbridge Fieldhouse,Indianapolis,False,False,,False,STATUS_SCHEDULED
+2027-01-13,119266,PHX,TOR,1838,Scotiabank Arena,Toronto,False,False,,False,STATUS_SCHEDULED
+2027-01-13,119267,HOU,OKC,2559,Paycom Center,Oklahoma City,False,False,,False,STATUS_SCHEDULED
+2027-01-13,119268,CHA,GSW,6270,Chase Center,San Francisco,False,False,,False,STATUS_SCHEDULED
+2027-01-13,119269,LAL,POR,3423,Moda Center,Portland,False,False,,False,STATUS_SCHEDULED
+2027-01-14,119270,NOP,SAS,10660,Accor Arena,Paris,True,True,Paris,True,STATUS_SCHEDULED
+2027-01-14,119271,DAL,DET,5404,Little Caesars Arena,Detroit,False,False,,False,STATUS_SCHEDULED
+2027-01-14,119272,BKN,PHI,1845,Xfinity Mobile Arena,Philadelphia,False,False,,False,STATUS_SCHEDULED
+2027-01-14,119273,MIA,NYK,1830,Madison Square Garden,New York,False,False,,False,STATUS_SCHEDULED
+2027-01-14,119274,MIN,CHI,1847,United Center,Chicago,False,False,,False,STATUS_SCHEDULED
+2027-01-14,119275,MEM,DEN,892,Ball Arena,Denver,False,False,,False,STATUS_SCHEDULED
+2027-01-14,119276,CHA,UTA,3093,Delta Center,Salt Lake City,False,False,,False,STATUS_SCHEDULED
+2027-01-14,119277,ORL,LAL,1841,crypto.com Arena,Los Angeles,False,False,,False,STATUS_SCHEDULED
+2027-01-14,119278,LAC,SAC,5310,Golden 1 Center,Sacramento,False,False,,False,STATUS_SCHEDULED
+2027-01-15,119279,GSW,ATL,1827,State Farm Arena,Atlanta,False,False,,False,STATUS_SCHEDULED
+2027-01-15,119280,PHX,IND,2183,Gainbridge Fieldhouse,Indianapolis,False,False,,False,STATUS_SCHEDULED
+2027-01-15,119281,MIA,TOR,1838,Scotiabank Arena,Toronto,False,False,,False,STATUS_SCHEDULED
+2027-01-15,119282,CLE,MIL,5777,Fiserv Forum,Milwaukee,False,False,,False,STATUS_SCHEDULED
+2027-01-15,119283,UTA,OKC,2559,Paycom Center,Oklahoma City,False,False,,False,STATUS_SCHEDULED
+2027-01-15,119284,WAS,HOU,1394,Toyota Center (Houston),Houston,False,False,,False,STATUS_SCHEDULED
+2027-01-15,119285,SAC,POR,3423,Moda Center,Portland,False,False,,False,STATUS_SCHEDULED
+2027-01-15,119286,ORL,LAC,10642,Intuit Dome,Inglewood,False,False,,False,STATUS_SCHEDULED
+2027-01-16,119287,MIN,PHI,1845,Xfinity Mobile Arena,Philadelphia,False,False,,False,STATUS_SCHEDULED
+2027-01-16,119288,BKN,BOS,1824,TD Garden,Boston,False,False,,False,STATUS_SCHEDULED
+2027-01-16,119289,DAL,NYK,1830,Madison Square Garden,New York,False,False,,False,STATUS_SCHEDULED
+2027-01-16,119290,CLE,MEM,1392,FedExForum,Memphis,False,False,,False,STATUS_SCHEDULED
+2027-01-16,119291,DET,HOU,1394,Toyota Center (Houston),Houston,False,False,,False,STATUS_SCHEDULED
+2027-01-16,119292,CHA,DEN,892,Ball Arena,Denver,False,False,,False,STATUS_SCHEDULED
+2027-01-17,119293,SAS,NOP,9050,Co-op Live,Manchester,True,True,Manchester,True,STATUS_SCHEDULED
+2027-01-17,119294,IND,WAS,1823,Capital One Arena,Washington,False,False,,False,STATUS_SCHEDULED
+2027-01-17,119295,TOR,CHI,1847,United Center,Chicago,False,False,,False,STATUS_SCHEDULED
+2027-01-17,119296,POR,OKC,2559,Paycom Center,Oklahoma City,False,False,,False,STATUS_SCHEDULED
+2027-01-17,119297,SAC,UTA,3093,Delta Center,Salt Lake City,False,False,,False,STATUS_SCHEDULED
+2027-01-17,119298,GSW,MIA,3438,Kaseya Center,Miami,False,False,,False,STATUS_SCHEDULED
+2027-01-17,119299,ORL,DEN,892,Ball Arena,Denver,False,False,,False,STATUS_SCHEDULED
+2027-01-17,119300,MIL,LAL,1841,crypto.com Arena,Los Angeles,False,False,,False,STATUS_SCHEDULED
+2027-01-18,119301,DET,CLE,3417,Rocket Arena,Cleveland,False,False,,False,STATUS_SCHEDULED
+2027-01-18,119302,PHI,ATL,1827,State Farm Arena,Atlanta,False,False,,False,STATUS_SCHEDULED
+2027-01-18,119303,BOS,WAS,1823,Capital One Arena,Washington,False,False,,False,STATUS_SCHEDULED
+2027-01-18,119304,MIN,NYK,1830,Madison Square Garden,New York,False,False,,False,STATUS_SCHEDULED
+2027-01-18,119305,HOU,MEM,1392,FedExForum,Memphis,False,False,,False,STATUS_SCHEDULED
+2027-01-18,119306,OKC,DAL,516,American Airlines Center,Dallas,False,False,,False,STATUS_SCHEDULED
+2027-01-18,119307,PHX,LAC,10642,Intuit Dome,Inglewood,False,False,,False,STATUS_SCHEDULED
+2027-01-19,119308,GSW,ORL,3432,Kia Center,Orlando,False,False,,False,STATUS_SCHEDULED
+2027-01-19,119309,IND,PHI,1845,Xfinity Mobile Arena,Philadelphia,False,False,,False,STATUS_SCHEDULED
+2027-01-19,119310,CHI,TOR,1838,Scotiabank Arena,Toronto,False,False,,False,STATUS_SCHEDULED
+2027-01-19,119311,POR,MIA,3438,Kaseya Center,Miami,False,False,,False,STATUS_SCHEDULED
+2027-01-19,119312,CHA,DAL,516,American Airlines Center,Dallas,False,False,,False,STATUS_SCHEDULED
+2027-01-19,119313,UTA,DEN,892,Ball Arena,Denver,False,False,,False,STATUS_SCHEDULED
+2027-01-19,119314,LAL,SAC,5310,Golden 1 Center,Sacramento,False,False,,False,STATUS_SCHEDULED
+2027-01-20,119315,POR,ATL,1827,State Farm Arena,Atlanta,False,False,,False,STATUS_SCHEDULED
+2027-01-20,119316,CHI,BKN,3559,Barclays Center,Brooklyn,False,False,,False,STATUS_SCHEDULED
+2027-01-20,119317,IND,BOS,1824,TD Garden,Boston,False,False,,False,STATUS_SCHEDULED
+2027-01-20,119318,TOR,NYK,1830,Madison Square Garden,New York,False,False,,False,STATUS_SCHEDULED
+2027-01-20,119319,HOU,MIN,2029,Target Center,Minneapolis,False,False,,False,STATUS_SCHEDULED
+2027-01-20,119320,OKC,NOP,985,Smoothie King Center,New Orleans,False,False,,False,STATUS_SCHEDULED
+2027-01-20,119321,MEM,PHX,1949,Mortgage Matchup Center,Phoenix,False,False,,False,STATUS_SCHEDULED
+2027-01-20,119322,LAC,UTA,3093,Delta Center,Salt Lake City,False,False,,False,STATUS_SCHEDULED
+2027-01-20,119323,MIA,SAS,780,Frost Bank Center,San Antonio,False,False,,False,STATUS_SCHEDULED
+2027-01-20,119324,MIL,SAC,5310,Golden 1 Center,Sacramento,False,False,,False,STATUS_SCHEDULED
+2027-01-21,119325,PHI,BOS,1824,TD Garden,Boston,False,False,,False,STATUS_SCHEDULED
+2027-01-21,119326,CLE,BKN,3559,Barclays Center,Brooklyn,False,False,,False,STATUS_SCHEDULED
+2027-01-21,119327,WAS,DEN,892,Ball Arena,Denver,False,False,,False,STATUS_SCHEDULED
+2027-01-21,119328,LAL,GSW,6270,Chase Center,San Francisco,False,False,,False,STATUS_SCHEDULED
+2027-01-22,119329,NYK,ATL,1827,State Farm Arena,Atlanta,False,False,,False,STATUS_SCHEDULED
+2027-01-22,119330,HOU,CHA,1893,Spectrum Center,Charlotte,False,False,,False,STATUS_SCHEDULED
+2027-01-22,119331,POR,ORL,3432,Kia Center,Orlando,False,False,,False,STATUS_SCHEDULED
+2027-01-22,119332,IND,DET,5404,Little Caesars Arena,Detroit,False,False,,False,STATUS_SCHEDULED
+2027-01-22,119333,DAL,NOP,985,Smoothie King Center,New Orleans,False,False,,False,STATUS_SCHEDULED
+2027-01-22,119334,MEM,OKC,2559,Paycom Center,Oklahoma City,False,False,,False,STATUS_SCHEDULED
+2027-01-22,119335,UTA,PHX,1949,Mortgage Matchup Center,Phoenix,False,False,,False,STATUS_SCHEDULED
+2027-01-22,119336,MIN,SAS,780,Frost Bank Center,San Antonio,False,False,,False,STATUS_SCHEDULED
+2027-01-22,119337,MIL,GSW,6270,Chase Center,San Francisco,False,False,,False,STATUS_SCHEDULED
+2027-01-22,119338,SAC,LAL,1841,crypto.com Arena,Los Angeles,False,False,,False,STATUS_SCHEDULED
+2027-01-22,119339,WAS,LAC,10642,Intuit Dome,Inglewood,False,False,,False,STATUS_SCHEDULED
+2027-01-23,119340,PHI,CHI,1847,United Center,Chicago,False,False,,False,STATUS_SCHEDULED
+2027-01-23,119341,TOR,BKN,3559,Barclays Center,Brooklyn,False,False,,False,STATUS_SCHEDULED
+2027-01-23,119342,CHA,BOS,1824,TD Garden,Boston,False,False,,False,STATUS_SCHEDULED
+2027-01-23,119343,ATL,MIA,3438,Kaseya Center,Miami,False,False,,False,STATUS_SCHEDULED
+2027-01-23,119344,CLE,DAL,516,American Airlines Center,Dallas,False,False,,False,STATUS_SCHEDULED
+2027-01-23,119345,MIL,DEN,892,Ball Arena,Denver,False,False,,False,STATUS_SCHEDULED
+2027-01-24,119346,POR,SAS,780,Frost Bank Center,San Antonio,False,False,,False,STATUS_SCHEDULED
+2027-01-24,119347,UTA,PHX,1949,Mortgage Matchup Center,Phoenix,False,False,,False,STATUS_SCHEDULED
+2027-01-24,119348,WAS,LAL,1841,crypto.com Arena,Los Angeles,False,False,,False,STATUS_SCHEDULED
+2027-01-24,119349,MIN,DET,5404,Little Caesars Arena,Detroit,False,False,,False,STATUS_SCHEDULED
+2027-01-24,119350,HOU,ORL,3432,Kia Center,Orlando,False,False,,False,STATUS_SCHEDULED
+2027-01-24,119351,LAC,NYK,1830,Madison Square Garden,New York,False,False,,False,STATUS_SCHEDULED
+2027-01-24,119352,OKC,GSW,6270,Chase Center,San Francisco,False,False,,False,STATUS_SCHEDULED
+2027-01-25,119353,TOR,BOS,1824,TD Garden,Boston,False,False,,False,STATUS_SCHEDULED
+2027-01-25,119354,ORL,CHA,1893,Spectrum Center,Charlotte,False,False,,False,STATUS_SCHEDULED
+2027-01-25,119355,LAC,PHI,1845,Xfinity Mobile Arena,Philadelphia,False,False,,False,STATUS_SCHEDULED
+2027-01-25,119356,MIA,BKN,3559,Barclays Center,Brooklyn,False,False,,False,STATUS_SCHEDULED
+2027-01-25,119357,DAL,CHI,1847,United Center,Chicago,False,False,,False,STATUS_SCHEDULED
+2027-01-25,119358,MIN,MEM,1392,FedExForum,Memphis,False,False,,False,STATUS_SCHEDULED
+2027-01-25,119359,CLE,NOP,985,Smoothie King Center,New Orleans,False,False,,False,STATUS_SCHEDULED
+2027-01-25,119360,SAC,DEN,892,Ball Arena,Denver,False,False,,False,STATUS_SCHEDULED
+2027-01-26,119361,ATL,DET,5404,Little Caesars Arena,Detroit,False,False,,False,STATUS_SCHEDULED
+2027-01-26,119362,CHI,IND,2183,Gainbridge Fieldhouse,Indianapolis,False,False,,False,STATUS_SCHEDULED
+2027-01-26,119363,PHX,NYK,1830,Madison Square Garden,New York,False,False,,False,STATUS_SCHEDULED
+2027-01-26,119364,HOU,SAS,780,Frost Bank Center,San Antonio,False,False,,False,STATUS_SCHEDULED
+2027-01-26,119365,MIL,UTA,3093,Delta Center,Salt Lake City,False,False,,False,STATUS_SCHEDULED
+2027-01-26,119366,WAS,POR,3423,Moda Center,Portland,False,False,,False,STATUS_SCHEDULED
+2027-01-26,119367,OKC,LAL,1841,crypto.com Arena,Los Angeles,False,False,,False,STATUS_SCHEDULED
+2027-01-27,119368,DET,CLE,3417,Rocket Arena,Cleveland,False,False,,False,STATUS_SCHEDULED
+2027-01-27,119369,SAC,PHI,1845,Xfinity Mobile Arena,Philadelphia,False,False,,False,STATUS_SCHEDULED
+2027-01-27,119370,LAC,BOS,1824,TD Garden,Boston,False,False,,False,STATUS_SCHEDULED
+2027-01-27,119371,PHX,BKN,3559,Barclays Center,Brooklyn,False,False,,False,STATUS_SCHEDULED
+2027-01-27,119372,DAL,TOR,1838,Scotiabank Arena,Toronto,False,False,,False,STATUS_SCHEDULED
+2027-01-27,119373,CHA,SAS,780,Frost Bank Center,San Antonio,False,False,,False,STATUS_SCHEDULED
+2027-01-27,119374,NOP,HOU,1394,Toyota Center (Houston),Houston,False,False,,False,STATUS_SCHEDULED
+2027-01-27,119375,DEN,MIN,2029,Target Center,Minneapolis,False,False,,False,STATUS_SCHEDULED
+2027-01-27,119376,GSW,POR,3423,Moda Center,Portland,False,False,,False,STATUS_SCHEDULED
+2027-01-28,119377,LAL,IND,2183,Gainbridge Fieldhouse,Indianapolis,False,False,,False,STATUS_SCHEDULED
+2027-01-28,119378,ATL,NYK,1830,Madison Square Garden,New York,False,False,,False,STATUS_SCHEDULED
+2027-01-28,119379,CHI,ORL,3432,Kia Center,Orlando,False,False,,False,STATUS_SCHEDULED
+2027-01-28,119380,SAC,WAS,1823,Capital One Arena,Washington,False,False,,False,STATUS_SCHEDULED
+2027-01-28,119381,PHI,NOP,985,Smoothie King Center,New Orleans,False,False,,False,STATUS_SCHEDULED
+2027-01-28,119382,MEM,OKC,2559,Paycom Center,Oklahoma City,False,False,,False,STATUS_SCHEDULED
+2027-01-28,119383,GSW,UTA,3093,Delta Center,Salt Lake City,False,False,,False,STATUS_SCHEDULED
+2027-01-28,119384,MIA,MIL,5777,Fiserv Forum,Milwaukee,False,False,,False,STATUS_SCHEDULED
+2027-01-29,119385,CLE,TOR,1838,Scotiabank Arena,Toronto,False,False,,False,STATUS_SCHEDULED
+2027-01-29,119386,PHX,BOS,1824,TD Garden,Boston,False,False,,False,STATUS_SCHEDULED
+2027-01-29,119387,LAC,BKN,3559,Barclays Center,Brooklyn,False,False,,False,STATUS_SCHEDULED
+2027-01-29,119388,DET,DAL,516,American Airlines Center,Dallas,False,False,,False,STATUS_SCHEDULED
+2027-01-29,119389,ORL,HOU,1394,Toyota Center (Houston),Houston,False,False,,False,STATUS_SCHEDULED
+2027-01-29,119390,CHA,MIN,2029,Target Center,Minneapolis,False,False,,False,STATUS_SCHEDULED
+2027-01-30,119391,PHI,MIA,3438,Kaseya Center,Miami,False,False,,False,STATUS_SCHEDULED
+2027-01-30,119392,DEN,OKC,2559,Paycom Center,Oklahoma City,False,False,,False,STATUS_SCHEDULED
+2027-01-30,119393,SAS,GSW,6270,Chase Center,San Francisco,False,False,,False,STATUS_SCHEDULED
+2027-01-30,119394,WAS,IND,2183,Gainbridge Fieldhouse,Indianapolis,False,False,,False,STATUS_SCHEDULED
+2027-01-30,119395,NOP,CLE,3417,Rocket Arena,Cleveland,False,False,,False,STATUS_SCHEDULED
+2027-01-30,119396,ATL,MIL,5777,Fiserv Forum,Milwaukee,False,False,,False,STATUS_SCHEDULED
+2027-01-30,119397,LAL,NYK,1830,Madison Square Garden,New York,False,False,,False,STATUS_SCHEDULED
+2027-01-30,119398,MEM,UTA,3093,Delta Center,Salt Lake City,False,False,,False,STATUS_SCHEDULED
+2027-01-31,119399,SAC,DET,5404,Little Caesars Arena,Detroit,False,False,,False,STATUS_SCHEDULED
+2027-01-31,119400,BKN,ORL,3432,Kia Center,Orlando,False,False,,False,STATUS_SCHEDULED
+2027-01-31,119401,BOS,TOR,1838,Scotiabank Arena,Toronto,False,False,,False,STATUS_SCHEDULED
+2027-01-31,119402,PHX,MIN,2029,Target Center,Minneapolis,False,False,,False,STATUS_SCHEDULED
+2027-01-31,119403,CHI,OKC,2559,Paycom Center,Oklahoma City,False,False,,False,STATUS_SCHEDULED
+2027-01-31,119404,LAL,CHA,1893,Spectrum Center,Charlotte,False,False,,False,STATUS_SCHEDULED
+2027-01-31,119405,POR,DEN,892,Ball Arena,Denver,False,False,,False,STATUS_SCHEDULED
+2027-01-31,119406,HOU,DAL,516,American Airlines Center,Dallas,False,False,,False,STATUS_SCHEDULED
+2027-02-01,119407,WAS,ATL,1827,State Farm Arena,Atlanta,False,False,,False,STATUS_SCHEDULED
+2027-02-01,119408,NOP,PHI,1845,Xfinity Mobile Arena,Philadelphia,False,False,,False,STATUS_SCHEDULED
+2027-02-01,119409,NYK,BKN,3559,Barclays Center,Brooklyn,False,False,,False,STATUS_SCHEDULED
+2027-02-01,119410,MIA,IND,2183,Gainbridge Fieldhouse,Indianapolis,False,False,,False,STATUS_SCHEDULED
+2027-02-01,119411,MEM,MIL,5777,Fiserv Forum,Milwaukee,False,False,,False,STATUS_SCHEDULED
+2027-02-01,119412,CLE,UTA,3093,Delta Center,Salt Lake City,False,False,,False,STATUS_SCHEDULED
+2027-02-01,119413,SAS,GSW,6270,Chase Center,San Francisco,False,False,,False,STATUS_SCHEDULED
+2027-02-02,119414,CHI,DET,5404,Little Caesars Arena,Detroit,False,False,,False,STATUS_SCHEDULED
+2027-02-02,119415,NOP,ORL,3432,Kia Center,Orlando,False,False,,False,STATUS_SCHEDULED
+2027-02-02,119416,CHA,MIA,3438,Kaseya Center,Miami,False,False,,False,STATUS_SCHEDULED
+2027-02-02,119417,LAL,BOS,1824,TD Garden,Boston,False,False,,False,STATUS_SCHEDULED
+2027-02-02,119418,TOR,DAL,516,American Airlines Center,Dallas,False,False,,False,STATUS_SCHEDULED
+2027-02-02,119419,OKC,DEN,892,Ball Arena,Denver,False,False,,False,STATUS_SCHEDULED
+2027-02-02,119420,SAS,LAC,10642,Intuit Dome,Inglewood,False,False,,False,STATUS_SCHEDULED
+2027-02-02,119421,MIN,POR,3423,Moda Center,Portland,False,False,,False,STATUS_SCHEDULED
+2027-02-03,119422,NYK,DET,5404,Little Caesars Arena,Detroit,False,False,,False,STATUS_SCHEDULED
+2027-02-03,119423,ATL,IND,2183,Gainbridge Fieldhouse,Indianapolis,False,False,,False,STATUS_SCHEDULED
+2027-02-03,119424,PHI,MEM,1392,FedExForum,Memphis,False,False,,False,STATUS_SCHEDULED
+2027-02-03,119425,CLE,PHX,1949,Mortgage Matchup Center,Phoenix,False,False,,False,STATUS_SCHEDULED
+2027-02-03,119426,UTA,HOU,1394,Toyota Center (Houston),Houston,False,False,,False,STATUS_SCHEDULED
+2027-02-03,119427,GSW,LAC,10642,Intuit Dome,Inglewood,False,False,,False,STATUS_SCHEDULED
+2027-02-04,119428,NOP,WAS,1823,Capital One Arena,Washington,False,False,,False,STATUS_SCHEDULED
+2027-02-04,119429,LAL,BKN,3559,Barclays Center,Brooklyn,False,False,,False,STATUS_SCHEDULED
+2027-02-04,119430,BOS,CHA,1893,Spectrum Center,Charlotte,False,False,,False,STATUS_SCHEDULED
+2027-02-04,119431,MIL,MIA,3438,Kaseya Center,Miami,False,False,,False,STATUS_SCHEDULED
+2027-02-04,119432,TOR,NYK,1830,Madison Square Garden,New York,False,False,,False,STATUS_SCHEDULED
+2027-02-04,119433,OKC,CHI,1847,United Center,Chicago,False,False,,False,STATUS_SCHEDULED
+2027-02-04,119434,ORL,SAS,780,Frost Bank Center,San Antonio,False,False,,False,STATUS_SCHEDULED
+2027-02-04,119435,DAL,DEN,892,Ball Arena,Denver,False,False,,False,STATUS_SCHEDULED
+2027-02-04,119436,CLE,POR,3423,Moda Center,Portland,False,False,,False,STATUS_SCHEDULED
+2027-02-04,119437,MIN,SAC,5310,Golden 1 Center,Sacramento,False,False,,False,STATUS_SCHEDULED
+2027-02-05,119438,BOS,ATL,1827,State Farm Arena,Atlanta,False,False,,False,STATUS_SCHEDULED
+2027-02-05,119439,GSW,CHA,1893,Spectrum Center,Charlotte,False,False,,False,STATUS_SCHEDULED
+2027-02-05,119440,DET,PHI,1845,Xfinity Mobile Arena,Philadelphia,False,False,,False,STATUS_SCHEDULED
+2027-02-05,119441,LAC,DEN,892,Ball Arena,Denver,False,False,,False,STATUS_SCHEDULED
+2027-02-05,119442,HOU,PHX,1949,Mortgage Matchup Center,Phoenix,False,False,,False,STATUS_SCHEDULED
+2027-02-05,119443,IND,OKC,2559,Paycom Center,Oklahoma City,False,False,,False,STATUS_SCHEDULED
+2027-02-06,119444,UTA,DAL,516,American Airlines Center,Dallas,False,False,,False,STATUS_SCHEDULED
+2027-02-06,119445,MIA,MIN,2029,Target Center,Minneapolis,False,False,,False,STATUS_SCHEDULED
+2027-02-06,119446,POR,MEM,1392,FedExForum,Memphis,False,False,,False,STATUS_SCHEDULED
+2027-02-06,119447,WAS,BKN,3559,Barclays Center,Brooklyn,False,False,,False,STATUS_SCHEDULED
+2027-02-06,119448,ORL,CLE,3417,Rocket Arena,Cleveland,False,False,,False,STATUS_SCHEDULED
+2027-02-06,119449,MIL,TOR,1838,Scotiabank Arena,Toronto,False,False,,False,STATUS_SCHEDULED
+2027-02-06,119450,NOP,CHI,1847,United Center,Chicago,False,False,,False,STATUS_SCHEDULED
+2027-02-06,119451,LAL,SAS,780,Frost Bank Center,San Antonio,False,False,,False,STATUS_SCHEDULED
+2027-02-06,119452,PHX,SAC,5310,Golden 1 Center,Sacramento,False,False,,False,STATUS_SCHEDULED
+2027-02-07,119453,DEN,ATL,1827,State Farm Arena,Atlanta,False,False,,False,STATUS_SCHEDULED
+2027-02-07,119454,GSW,DET,5404,Little Caesars Arena,Detroit,False,False,,False,STATUS_SCHEDULED
+2027-02-07,119455,UTA,MIN,2029,Target Center,Minneapolis,False,False,,False,STATUS_SCHEDULED
+2027-02-07,119456,LAC,DAL,516,American Airlines Center,Dallas,False,False,,False,STATUS_SCHEDULED
+2027-02-07,119457,CHA,TOR,1838,Scotiabank Arena,Toronto,False,False,,False,STATUS_SCHEDULED
+2027-02-07,119458,BOS,PHI,1845,Xfinity Mobile Arena,Philadelphia,False,False,,False,STATUS_SCHEDULED
+2027-02-07,119459,NYK,OKC,2559,Paycom Center,Oklahoma City,False,False,,False,STATUS_SCHEDULED
+2027-02-07,119460,HOU,SAC,5310,Golden 1 Center,Sacramento,False,False,,False,STATUS_SCHEDULED
+2027-02-08,119461,MIA,ATL,1827,State Farm Arena,Atlanta,False,False,,False,STATUS_SCHEDULED
+2027-02-08,119462,NOP,IND,2183,Gainbridge Fieldhouse,Indianapolis,False,False,,False,STATUS_SCHEDULED
+2027-02-08,119463,BKN,PHI,1845,Xfinity Mobile Arena,Philadelphia,False,False,,False,STATUS_SCHEDULED
+2027-02-08,119464,CHI,WAS,1823,Capital One Arena,Washington,False,False,,False,STATUS_SCHEDULED
+2027-02-08,119465,POR,MEM,1392,FedExForum,Memphis,False,False,,False,STATUS_SCHEDULED
+2027-02-08,119466,ORL,MIL,5777,Fiserv Forum,Milwaukee,False,False,,False,STATUS_SCHEDULED
+2027-02-08,119467,LAL,PHX,1949,Mortgage Matchup Center,Phoenix,False,False,,False,STATUS_SCHEDULED
+2027-02-09,119468,TOR,CLE,3417,Rocket Arena,Cleveland,False,False,,False,STATUS_SCHEDULED
+2027-02-09,119469,DEN,BOS,1824,TD Garden,Boston,False,False,,False,STATUS_SCHEDULED
+2027-02-09,119470,MIN,BKN,3559,Barclays Center,Brooklyn,False,False,,False,STATUS_SCHEDULED
+2027-02-09,119471,CHA,NYK,1830,Madison Square Garden,New York,False,False,,False,STATUS_SCHEDULED
+2027-02-09,119472,GSW,CHI,1847,United Center,Chicago,False,False,,False,STATUS_SCHEDULED
+2027-02-09,119473,SAS,DAL,516,American Airlines Center,Dallas,False,False,,False,STATUS_SCHEDULED
+2027-02-09,119474,SAC,MIL,5777,Fiserv Forum,Milwaukee,False,False,,False,STATUS_SCHEDULED
+2027-02-09,119475,POR,OKC,2559,Paycom Center,Oklahoma City,False,False,,False,STATUS_SCHEDULED
+2027-02-09,119476,HOU,UTA,3093,Delta Center,Salt Lake City,False,False,,False,STATUS_SCHEDULED
+2027-02-09,119477,DET,LAC,10642,Intuit Dome,Inglewood,False,False,,False,STATUS_SCHEDULED
+2027-02-10,119478,NOP,ATL,1827,State Farm Arena,Atlanta,False,False,,False,STATUS_SCHEDULED
+2027-02-10,119479,CLE,IND,2183,Gainbridge Fieldhouse,Indianapolis,False,False,,False,STATUS_SCHEDULED
+2027-02-10,119480,MIA,WAS,1823,Capital One Arena,Washington,False,False,,False,STATUS_SCHEDULED
+2027-02-10,119481,GSW,BOS,1824,TD Garden,Boston,False,False,,False,STATUS_SCHEDULED
+2027-02-10,119482,ORL,MEM,1392,FedExForum,Memphis,False,False,,False,STATUS_SCHEDULED
+2027-02-10,119483,DET,PHX,1949,Mortgage Matchup Center,Phoenix,False,False,,False,STATUS_SCHEDULED
+2027-02-10,119484,LAC,LAL,1841,crypto.com Arena,Los Angeles,False,False,,False,STATUS_SCHEDULED
+2027-02-11,119485,MIL,CHA,1893,Spectrum Center,Charlotte,False,False,,False,STATUS_SCHEDULED
+2027-02-11,119486,UTA,IND,2183,Gainbridge Fieldhouse,Indianapolis,False,False,,False,STATUS_SCHEDULED
+2027-02-11,119487,NYK,PHI,1845,Xfinity Mobile Arena,Philadelphia,False,False,,False,STATUS_SCHEDULED
+2027-02-11,119488,POR,DAL,516,American Airlines Center,Dallas,False,False,,False,STATUS_SCHEDULED
+2027-02-11,119489,SAC,HOU,1394,Toyota Center (Houston),Houston,False,False,,False,STATUS_SCHEDULED
+2027-02-11,119490,CHI,DEN,892,Ball Arena,Denver,False,False,,False,STATUS_SCHEDULED
+2027-02-11,119491,SAS,OKC,2559,Paycom Center,Oklahoma City,False,False,,False,STATUS_SCHEDULED
+2027-02-12,119492,PHX,ATL,1827,State Farm Arena,Atlanta,False,False,,False,STATUS_SCHEDULED
+2027-02-12,119493,MIA,ORL,3432,Kia Center,Orlando,False,False,,False,STATUS_SCHEDULED
+2027-02-12,119494,BKN,WAS,1823,Capital One Arena,Washington,False,False,,False,STATUS_SCHEDULED
+2027-02-12,119495,CLE,TOR,1838,Scotiabank Arena,Toronto,False,False,,False,STATUS_SCHEDULED
+2027-02-12,119496,MIN,BOS,1824,TD Garden,Boston,False,False,,False,STATUS_SCHEDULED
+2027-02-12,119497,LAC,MEM,1392,FedExForum,Memphis,False,False,,False,STATUS_SCHEDULED
+2027-02-12,119498,HOU,NOP,985,Smoothie King Center,New Orleans,False,False,,False,STATUS_SCHEDULED
+2027-02-12,119499,DEN,LAL,1841,crypto.com Arena,Los Angeles,False,False,,False,STATUS_SCHEDULED
+2027-02-13,119500,SAC,IND,2183,Gainbridge Fieldhouse,Indianapolis,False,False,,False,STATUS_SCHEDULED
+2027-02-13,119501,DAL,CHA,1893,Spectrum Center,Charlotte,False,False,,False,STATUS_SCHEDULED
+2027-02-13,119502,DET,POR,3423,Moda Center,Portland,False,False,,False,STATUS_SCHEDULED
+2027-02-13,119503,PHI,OKC,2559,Paycom Center,Oklahoma City,False,False,,False,STATUS_SCHEDULED
+2027-02-13,119504,SAS,ORL,3432,Kia Center,Orlando,False,False,,False,STATUS_SCHEDULED
+2027-02-13,119505,MIL,WAS,1823,Capital One Arena,Washington,False,False,,False,STATUS_SCHEDULED
+2027-02-13,119506,GSW,NYK,1830,Madison Square Garden,New York,False,False,,False,STATUS_SCHEDULED
+2027-02-14,119507,SAC,ATL,1827,State Farm Arena,Atlanta,False,False,,False,STATUS_SCHEDULED
+2027-02-14,119508,TOR,BOS,1824,TD Garden,Boston,False,False,,False,STATUS_SCHEDULED
+2027-02-14,119509,PHX,CLE,3417,Rocket Arena,Cleveland,False,False,,False,STATUS_SCHEDULED
+2027-02-14,119510,BKN,MIA,3438,Kaseya Center,Miami,False,False,,False,STATUS_SCHEDULED
+2027-02-14,119511,DEN,HOU,1394,Toyota Center (Houston),Houston,False,False,,False,STATUS_SCHEDULED
+2027-02-14,119512,LAC,NOP,985,Smoothie King Center,New Orleans,False,False,,False,STATUS_SCHEDULED
+2027-02-14,119513,CHI,POR,3423,Moda Center,Portland,False,False,,False,STATUS_SCHEDULED
+2027-02-15,119514,MIN,CHA,1893,Spectrum Center,Charlotte,False,False,,False,STATUS_SCHEDULED
+2027-02-15,119515,PHI,DAL,516,American Airlines Center,Dallas,False,False,,False,STATUS_SCHEDULED
+2027-02-15,119516,SAS,MIA,3438,Kaseya Center,Miami,False,False,,False,STATUS_SCHEDULED
+2027-02-15,119517,PHX,WAS,1823,Capital One Arena,Washington,False,False,,False,STATUS_SCHEDULED
+2027-02-15,119518,IND,GSW,6270,Chase Center,San Francisco,False,False,,False,STATUS_SCHEDULED
+2027-02-15,119519,NYK,MEM,1392,FedExForum,Memphis,False,False,,False,STATUS_SCHEDULED
+2027-02-15,119520,ORL,OKC,2559,Paycom Center,Oklahoma City,False,False,,False,STATUS_SCHEDULED
+2027-02-15,119521,DET,UTA,3093,Delta Center,Salt Lake City,False,False,,False,STATUS_SCHEDULED
+2027-02-16,119522,MIL,CLE,3417,Rocket Arena,Cleveland,False,False,,False,STATUS_SCHEDULED
+2027-02-16,119523,TOR,ATL,1827,State Farm Arena,Atlanta,False,False,,False,STATUS_SCHEDULED
+2027-02-16,119524,CHI,LAL,1841,crypto.com Arena,Los Angeles,False,False,,False,STATUS_SCHEDULED
+2027-02-16,119525,NOP,POR,3423,Moda Center,Portland,False,False,,False,STATUS_SCHEDULED
+2027-02-16,119526,HOU,LAC,10642,Intuit Dome,Inglewood,False,False,,False,STATUS_SCHEDULED
+2027-02-17,119527,TOR,CHA,1893,Spectrum Center,Charlotte,False,False,,False,STATUS_SCHEDULED
+2027-02-17,119528,MIL,CLE,3417,Rocket Arena,Cleveland,False,False,,False,STATUS_SCHEDULED
+2027-02-17,119529,NYK,DET,5404,Little Caesars Arena,Detroit,False,False,,False,STATUS_SCHEDULED
+2027-02-17,119530,DAL,ORL,3432,Kia Center,Orlando,False,False,,False,STATUS_SCHEDULED
+2027-02-17,119531,PHX,PHI,1845,Xfinity Mobile Arena,Philadelphia,False,False,,False,STATUS_SCHEDULED
+2027-02-17,119532,MIA,WAS,1823,Capital One Arena,Washington,False,False,,False,STATUS_SCHEDULED
+2027-02-17,119533,ATL,BKN,3559,Barclays Center,Brooklyn,False,False,,False,STATUS_SCHEDULED
+2027-02-17,119534,SAS,MEM,1392,FedExForum,Memphis,False,False,,False,STATUS_SCHEDULED
+2027-02-17,119535,UTA,DEN,892,Ball Arena,Denver,False,False,,False,STATUS_SCHEDULED
+2027-02-17,119536,BOS,OKC,2559,Paycom Center,Oklahoma City,False,False,,False,STATUS_SCHEDULED
+2027-02-17,119537,NOP,GSW,6270,Chase Center,San Francisco,False,False,,False,STATUS_SCHEDULED
+2027-02-17,119538,IND,SAC,5310,Golden 1 Center,Sacramento,False,False,,False,STATUS_SCHEDULED
+2027-02-17,119539,CHI,LAC,10642,Intuit Dome,Inglewood,False,False,,False,STATUS_SCHEDULED
+2027-02-18,119540,SAS,MIN,2029,Target Center,Minneapolis,False,False,,False,STATUS_SCHEDULED
+2027-02-18,119541,BOS,MEM,1392,FedExForum,Memphis,False,False,,False,STATUS_SCHEDULED
+2027-02-18,119542,HOU,LAL,1841,crypto.com Arena,Los Angeles,False,False,,False,STATUS_SCHEDULED
+2027-02-18,119543,IND,POR,3423,Moda Center,Portland,False,False,,False,STATUS_SCHEDULED
+2027-02-25,119544,SAC,CLE,3417,Rocket Arena,Cleveland,False,False,,False,STATUS_SCHEDULED
+2027-02-25,119545,MIA,DET,5404,Little Caesars Arena,Detroit,False,False,,False,STATUS_SCHEDULED
+2027-02-25,119546,CHA,ORL,3432,Kia Center,Orlando,False,False,,False,STATUS_SCHEDULED
+2027-02-25,119547,PHI,BKN,3559,Barclays Center,Brooklyn,False,False,,False,STATUS_SCHEDULED
+2027-02-25,119548,OKC,NYK,1830,Madison Square Garden,New York,False,False,,False,STATUS_SCHEDULED
+2027-02-25,119549,ATL,CHI,1847,United Center,Chicago,False,False,,False,STATUS_SCHEDULED
+2027-02-25,119550,WAS,MIL,5777,Fiserv Forum,Milwaukee,False,False,,False,STATUS_SCHEDULED
+2027-02-25,119551,PHX,NOP,985,Smoothie King Center,New Orleans,False,False,,False,STATUS_SCHEDULED
+2027-02-25,119552,DAL,GSW,6270,Chase Center,San Francisco,False,False,,False,STATUS_SCHEDULED
+2027-02-25,119553,UTA,LAC,10642,Intuit Dome,Inglewood,False,False,,False,STATUS_SCHEDULED
+2027-02-26,119554,CLE,BOS,1824,TD Garden,Boston,False,False,,False,STATUS_SCHEDULED
+2027-02-26,119555,ATL,TOR,1838,Scotiabank Arena,Toronto,False,False,,False,STATUS_SCHEDULED
+2027-02-26,119556,IND,MIN,2029,Target Center,Minneapolis,False,False,,False,STATUS_SCHEDULED
+2027-02-26,119557,MEM,SAS,7317,Moody Center,Austin,False,False,,True,STATUS_SCHEDULED
+2027-02-26,119558,CHA,HOU,1394,Toyota Center (Houston),Houston,False,False,,False,STATUS_SCHEDULED
+2027-02-26,119559,LAL,DEN,892,Ball Arena,Denver,False,False,,False,STATUS_SCHEDULED
+2027-02-26,119560,DAL,POR,3423,Moda Center,Portland,False,False,,False,STATUS_SCHEDULED
+2027-02-27,119561,WAS,UTA,3093,Delta Center,Salt Lake City,False,False,,False,STATUS_SCHEDULED
+2027-02-27,119562,OKC,DET,5404,Little Caesars Arena,Detroit,False,False,,False,STATUS_SCHEDULED
+2027-02-27,119563,BKN,CHI,1847,United Center,Chicago,False,False,,False,STATUS_SCHEDULED
+2027-02-27,119564,SAC,MEM,1392,FedExForum,Memphis,False,False,,False,STATUS_SCHEDULED
+2027-02-27,119565,PHI,NYK,1830,Madison Square Garden,New York,False,False,,False,STATUS_SCHEDULED
+2027-02-27,119566,NOP,PHX,1949,Mortgage Matchup Center,Phoenix,False,False,,False,STATUS_SCHEDULED
+2027-02-28,119567,DEN,SAS,7317,Moody Center,Austin,False,False,,True,STATUS_SCHEDULED
+2027-02-28,119568,LAL,DAL,516,American Airlines Center,Dallas,False,False,,False,STATUS_SCHEDULED
+2027-02-28,119569,TOR,IND,2183,Gainbridge Fieldhouse,Indianapolis,False,False,,False,STATUS_SCHEDULED
+2027-02-28,119570,ATL,ORL,3432,Kia Center,Orlando,False,False,,False,STATUS_SCHEDULED
+2027-02-28,119571,SAC,CHA,1893,Spectrum Center,Charlotte,False,False,,False,STATUS_SCHEDULED
+2027-02-28,119572,BOS,MIN,2029,Target Center,Minneapolis,False,False,,False,STATUS_SCHEDULED
+2027-02-28,119573,MIL,NYK,1830,Madison Square Garden,New York,False,False,,False,STATUS_SCHEDULED
+2027-02-28,119574,MIA,HOU,1394,Toyota Center (Houston),Houston,False,False,,False,STATUS_SCHEDULED
+2027-02-28,119575,POR,LAC,10642,Intuit Dome,Inglewood,False,False,,False,STATUS_SCHEDULED
+2027-03-01,119576,PHI,CLE,3417,Rocket Arena,Cleveland,False,False,,False,STATUS_SCHEDULED
+2027-03-01,119577,CHI,DET,5404,Little Caesars Arena,Detroit,False,False,,False,STATUS_SCHEDULED
+2027-03-01,119578,UTA,NOP,985,Smoothie King Center,New Orleans,False,False,,False,STATUS_SCHEDULED
+2027-03-01,119579,GSW,HOU,1394,Toyota Center (Houston),Houston,False,False,,False,STATUS_SCHEDULED
+2027-03-01,119580,BKN,DEN,892,Ball Arena,Denver,False,False,,False,STATUS_SCHEDULED
+2027-03-01,119581,WAS,PHX,1949,Mortgage Matchup Center,Phoenix,False,False,,False,STATUS_SCHEDULED
+2027-03-02,119582,BOS,IND,2183,Gainbridge Fieldhouse,Indianapolis,False,False,,False,STATUS_SCHEDULED
+2027-03-02,119583,LAL,ORL,3432,Kia Center,Orlando,False,False,,False,STATUS_SCHEDULED
+2027-03-02,119584,TOR,MIA,3438,Kaseya Center,Miami,False,False,,False,STATUS_SCHEDULED
+2027-03-02,119585,MEM,NYK,1830,Madison Square Garden,New York,False,False,,False,STATUS_SCHEDULED
+2027-03-02,119586,GSW,DAL,516,American Airlines Center,Dallas,False,False,,False,STATUS_SCHEDULED
+2027-03-02,119587,DET,MIL,5777,Fiserv Forum,Milwaukee,False,False,,False,STATUS_SCHEDULED
+2027-03-02,119588,MIN,OKC,2559,Paycom Center,Oklahoma City,False,False,,False,STATUS_SCHEDULED
+2027-03-02,119589,WAS,SAC,5310,Golden 1 Center,Sacramento,False,False,,False,STATUS_SCHEDULED
+2027-03-02,119590,LAC,POR,3423,Moda Center,Portland,False,False,,False,STATUS_SCHEDULED
+2027-03-03,119591,CHI,ATL,1827,State Farm Arena,Atlanta,False,False,,False,STATUS_SCHEDULED
+2027-03-03,119592,CHA,PHI,1845,Xfinity Mobile Arena,Philadelphia,False,False,,False,STATUS_SCHEDULED
+2027-03-03,119593,TOR,MIA,3438,Kaseya Center,Miami,False,False,,False,STATUS_SCHEDULED
+2027-03-03,119594,UTA,MIL,5777,Fiserv Forum,Milwaukee,False,False,,False,STATUS_SCHEDULED
+2027-03-03,119595,NOP,HOU,1394,Toyota Center (Houston),Houston,False,False,,False,STATUS_SCHEDULED
+2027-03-03,119596,BKN,PHX,1949,Mortgage Matchup Center,Phoenix,False,False,,False,STATUS_SCHEDULED
+2027-03-03,119597,SAS,DEN,892,Ball Arena,Denver,False,False,,False,STATUS_SCHEDULED
+2027-03-04,119598,POR,CLE,3417,Rocket Arena,Cleveland,False,False,,False,STATUS_SCHEDULED
+2027-03-04,119599,IND,ORL,3432,Kia Center,Orlando,False,False,,False,STATUS_SCHEDULED
+2027-03-04,119600,LAL,PHI,1845,Xfinity Mobile Arena,Philadelphia,False,False,,False,STATUS_SCHEDULED
+2027-03-04,119601,MEM,ATL,1827,State Farm Arena,Atlanta,False,False,,False,STATUS_SCHEDULED
+2027-03-04,119602,NYK,DAL,516,American Airlines Center,Dallas,False,False,,False,STATUS_SCHEDULED
+2027-03-04,119603,WAS,GSW,6270,Chase Center,San Francisco,False,False,,False,STATUS_SCHEDULED
+2027-03-04,119604,OKC,SAC,5310,Golden 1 Center,Sacramento,False,False,,False,STATUS_SCHEDULED
+2027-03-04,119605,BKN,LAC,10642,Intuit Dome,Inglewood,False,False,,False,STATUS_SCHEDULED
+2027-03-05,119606,BOS,DET,5404,Little Caesars Arena,Detroit,False,False,,False,STATUS_SCHEDULED
+2027-03-05,119607,UTA,ORL,3432,Kia Center,Orlando,False,False,,False,STATUS_SCHEDULED
+2027-03-05,119608,POR,TOR,1838,Scotiabank Arena,Toronto,False,False,,False,STATUS_SCHEDULED
+2027-03-05,119609,MIL,NOP,985,Smoothie King Center,New Orleans,False,False,,False,STATUS_SCHEDULED
+2027-03-05,119610,MIN,PHX,1949,Mortgage Matchup Center,Phoenix,False,False,,False,STATUS_SCHEDULED
+2027-03-05,119611,SAS,HOU,1394,Toyota Center (Houston),Houston,False,False,,False,STATUS_SCHEDULED
+2027-03-06,119612,IND,MIA,3438,Kaseya Center,Miami,False,False,,False,STATUS_SCHEDULED
+2027-03-06,119613,CHA,CHI,1847,United Center,Chicago,False,False,,False,STATUS_SCHEDULED
+2027-03-06,119614,ATL,CLE,3417,Rocket Arena,Cleveland,False,False,,False,STATUS_SCHEDULED
+2027-03-06,119615,UTA,WAS,1823,Capital One Arena,Washington,False,False,,False,STATUS_SCHEDULED
+2027-03-06,119616,NOP,MEM,1392,FedExForum,Memphis,False,False,,False,STATUS_SCHEDULED
+2027-03-06,119617,OKC,LAL,1841,crypto.com Arena,Los Angeles,False,False,,False,STATUS_SCHEDULED
+2027-03-06,119618,LAC,SAC,5310,Golden 1 Center,Sacramento,False,False,,False,STATUS_SCHEDULED
+2027-03-07,119619,PHI,BOS,1824,TD Garden,Boston,False,False,,False,STATUS_SCHEDULED
+2027-03-07,119620,MIN,DEN,892,Ball Arena,Denver,False,False,,False,STATUS_SCHEDULED
+2027-03-07,119621,POR,CHI,1847,United Center,Chicago,False,False,,False,STATUS_SCHEDULED
+2027-03-07,119622,NYK,SAS,780,Frost Bank Center,San Antonio,False,False,,False,STATUS_SCHEDULED
+2027-03-07,119623,HOU,GSW,6270,Chase Center,San Francisco,False,False,,False,STATUS_SCHEDULED
+2027-03-07,119624,BKN,LAL,1841,crypto.com Arena,Los Angeles,False,False,,False,STATUS_SCHEDULED
+2027-03-08,119625,CHA,IND,2183,Gainbridge Fieldhouse,Indianapolis,False,False,,False,STATUS_SCHEDULED
+2027-03-08,119626,UTA,PHI,1845,Xfinity Mobile Arena,Philadelphia,False,False,,False,STATUS_SCHEDULED
+2027-03-08,119627,PHX,MIA,3438,Kaseya Center,Miami,False,False,,False,STATUS_SCHEDULED
+2027-03-08,119628,ATL,MEM,1392,FedExForum,Memphis,False,False,,False,STATUS_SCHEDULED
+2027-03-08,119629,NOP,MIN,2029,Target Center,Minneapolis,False,False,,False,STATUS_SCHEDULED
+2027-03-08,119630,DAL,OKC,2559,Paycom Center,Oklahoma City,False,False,,False,STATUS_SCHEDULED
+2027-03-08,119631,DEN,SAC,5310,Golden 1 Center,Sacramento,False,False,,False,STATUS_SCHEDULED
+2027-03-08,119632,HOU,LAC,10642,Intuit Dome,Inglewood,False,False,,False,STATUS_SCHEDULED
+2027-03-09,119633,PHX,ORL,3432,Kia Center,Orlando,False,False,,False,STATUS_SCHEDULED
+2027-03-09,119634,MIL,BKN,3559,Barclays Center,Brooklyn,False,False,,False,STATUS_SCHEDULED
+2027-03-09,119635,CLE,DET,5404,Little Caesars Arena,Detroit,False,False,,False,STATUS_SCHEDULED
+2027-03-09,119636,BOS,CHI,1847,United Center,Chicago,False,False,,False,STATUS_SCHEDULED
+2027-03-09,119637,MEM,DAL,516,American Airlines Center,Dallas,False,False,,False,STATUS_SCHEDULED
+2027-03-09,119638,WAS,SAS,780,Frost Bank Center,San Antonio,False,False,,False,STATUS_SCHEDULED
+2027-03-09,119639,POR,GSW,6270,Chase Center,San Francisco,False,False,,False,STATUS_SCHEDULED
+2027-03-10,119640,NOP,CHA,1893,Spectrum Center,Charlotte,False,False,,False,STATUS_SCHEDULED
+2027-03-10,119641,ORL,MIA,3438,Kaseya Center,Miami,False,False,,False,STATUS_SCHEDULED
+2027-03-10,119642,OKC,TOR,1838,Scotiabank Arena,Toronto,False,False,,False,STATUS_SCHEDULED
+2027-03-10,119643,HOU,UTA,3093,Delta Center,Salt Lake City,False,False,,False,STATUS_SCHEDULED
+2027-03-10,119644,ATL,MIN,2029,Target Center,Minneapolis,False,False,,False,STATUS_SCHEDULED
+2027-03-10,119645,DEN,POR,3423,Moda Center,Portland,False,False,,False,STATUS_SCHEDULED
+2027-03-10,119646,GSW,SAC,5310,Golden 1 Center,Sacramento,False,False,,False,STATUS_SCHEDULED
+2027-03-10,119647,NYK,LAC,10642,Intuit Dome,Inglewood,False,False,,False,STATUS_SCHEDULED
+2027-03-11,119648,IND,CHA,1893,Spectrum Center,Charlotte,False,False,,False,STATUS_SCHEDULED
+2027-03-11,119649,MIL,DET,5404,Little Caesars Arena,Detroit,False,False,,False,STATUS_SCHEDULED
+2027-03-11,119650,MEM,BOS,1824,TD Garden,Boston,False,False,,False,STATUS_SCHEDULED
+2027-03-11,119651,PHI,SAS,780,Frost Bank Center,San Antonio,False,False,,False,STATUS_SCHEDULED
+2027-03-11,119652,BKN,ATL,1827,State Farm Arena,Atlanta,False,False,,False,STATUS_SCHEDULED
+2027-03-11,119653,PHX,CHI,1847,United Center,Chicago,False,False,,False,STATUS_SCHEDULED
+2027-03-11,119654,WAS,DAL,516,American Airlines Center,Dallas,False,False,,False,STATUS_SCHEDULED
+2027-03-11,119655,NYK,LAL,1841,crypto.com Arena,Los Angeles,False,False,,False,STATUS_SCHEDULED
+2027-03-11,119656,CLE,LAC,10642,Intuit Dome,Inglewood,False,False,,False,STATUS_SCHEDULED
+2027-03-12,119657,OKC,BOS,1824,TD Garden,Boston,False,False,,False,STATUS_SCHEDULED
+2027-03-12,119658,MIA,MIL,5777,Fiserv Forum,Milwaukee,False,False,,False,STATUS_SCHEDULED
+2027-03-12,119659,TOR,NOP,985,Smoothie King Center,New Orleans,False,False,,False,STATUS_SCHEDULED
+2027-03-12,119660,SAC,UTA,3093,Delta Center,Salt Lake City,False,False,,False,STATUS_SCHEDULED
+2027-03-12,119661,GSW,DEN,892,Ball Arena,Denver,False,False,,False,STATUS_SCHEDULED
+2027-03-12,119662,CLE,LAL,1841,crypto.com Arena,Los Angeles,False,False,,False,STATUS_SCHEDULED
+2027-03-13,119663,ORL,ATL,1827,State Farm Arena,Atlanta,False,False,,False,STATUS_SCHEDULED
+2027-03-13,119664,BKN,DET,5404,Little Caesars Arena,Detroit,False,False,,False,STATUS_SCHEDULED
+2027-03-13,119665,IND,HOU,1394,Toyota Center (Houston),Houston,False,False,,False,STATUS_SCHEDULED
+2027-03-13,119666,PHX,CHA,1893,Spectrum Center,Charlotte,False,False,,False,STATUS_SCHEDULED
+2027-03-13,119667,MEM,CHI,1847,United Center,Chicago,False,False,,False,STATUS_SCHEDULED
+2027-03-13,119668,NOP,DAL,516,American Airlines Center,Dallas,False,False,,False,STATUS_SCHEDULED
+2027-03-13,119669,PHI,MIN,2029,Target Center,Minneapolis,False,False,,False,STATUS_SCHEDULED
+2027-03-13,119670,LAC,POR,3423,Moda Center,Portland,False,False,,False,STATUS_SCHEDULED
+2027-03-14,119671,BOS,NYK,1830,Madison Square Garden,New York,False,False,,False,STATUS_SCHEDULED
+2027-03-14,119672,SAS,OKC,2559,Paycom Center,Oklahoma City,False,False,,False,STATUS_SCHEDULED
+2027-03-14,119673,DET,TOR,1838,Scotiabank Arena,Toronto,False,False,,False,STATUS_SCHEDULED
+2027-03-14,119674,CLE,SAC,5310,Golden 1 Center,Sacramento,False,False,,False,STATUS_SCHEDULED
+2027-03-14,119675,MIA,DEN,892,Ball Arena,Denver,False,False,,False,STATUS_SCHEDULED
+2027-03-14,119676,WAS,MIN,2029,Target Center,Minneapolis,False,False,,False,STATUS_SCHEDULED
+2027-03-14,119677,GSW,LAL,1841,crypto.com Arena,Los Angeles,False,False,,False,STATUS_SCHEDULED
+2027-03-15,119678,TOR,PHI,1845,Xfinity Mobile Arena,Philadelphia,False,False,,False,STATUS_SCHEDULED
+2027-03-15,119679,IND,BKN,3559,Barclays Center,Brooklyn,False,False,,False,STATUS_SCHEDULED
+2027-03-15,119680,ORL,CHI,1847,United Center,Chicago,False,False,,False,STATUS_SCHEDULED
+2027-03-15,119681,PHX,MEM,1392,FedExForum,Memphis,False,False,,False,STATUS_SCHEDULED
+2027-03-15,119682,ATL,DAL,516,American Airlines Center,Dallas,False,False,,False,STATUS_SCHEDULED
+2027-03-16,119683,NYK,WAS,1823,Capital One Arena,Washington,False,False,,False,STATUS_SCHEDULED
+2027-03-16,119684,SAC,BOS,1824,TD Garden,Boston,False,False,,False,STATUS_SCHEDULED
+2027-03-16,119685,DET,IND,2183,Gainbridge Fieldhouse,Indianapolis,False,False,,False,STATUS_SCHEDULED
+2027-03-16,119686,ORL,MIL,5777,Fiserv Forum,Milwaukee,False,False,,False,STATUS_SCHEDULED
+2027-03-16,119687,MIN,NOP,985,Smoothie King Center,New Orleans,False,False,,False,STATUS_SCHEDULED
+2027-03-16,119688,CHA,OKC,2559,Paycom Center,Oklahoma City,False,False,,False,STATUS_SCHEDULED
+2027-03-16,119689,SAS,HOU,1394,Toyota Center (Houston),Houston,False,False,,False,STATUS_SCHEDULED
+2027-03-16,119690,CLE,GSW,6270,Chase Center,San Francisco,False,False,,False,STATUS_SCHEDULED
+2027-03-16,119691,LAL,POR,3423,Moda Center,Portland,False,False,,False,STATUS_SCHEDULED
+2027-03-16,119692,DEN,LAC,10642,Intuit Dome,Inglewood,False,False,,False,STATUS_SCHEDULED
+2027-03-17,119693,CHI,PHI,1845,Xfinity Mobile Arena,Philadelphia,False,False,,False,STATUS_SCHEDULED
+2027-03-17,119694,SAC,NYK,1830,Madison Square Garden,New York,False,False,,False,STATUS_SCHEDULED
+2027-03-17,119695,DAL,OKC,2559,Paycom Center,Oklahoma City,False,False,,False,STATUS_SCHEDULED
+2027-03-17,119696,BKN,HOU,1394,Toyota Center (Houston),Houston,False,False,,False,STATUS_SCHEDULED
+2027-03-17,119697,ATL,UTA,3093,Delta Center,Salt Lake City,False,False,,False,STATUS_SCHEDULED
+2027-03-17,119698,MEM,GSW,6270,Chase Center,San Francisco,False,False,,False,STATUS_SCHEDULED
+2027-03-17,119699,PHX,LAL,1841,crypto.com Arena,Los Angeles,False,False,,False,STATUS_SCHEDULED
+2027-03-17,119700,MIA,POR,3423,Moda Center,Portland,False,False,,False,STATUS_SCHEDULED
+2027-03-18,119701,TOR,IND,2183,Gainbridge Fieldhouse,Indianapolis,False,False,,False,STATUS_SCHEDULED
+2027-03-18,119702,PHI,WAS,1823,Capital One Arena,Washington,False,False,,False,STATUS_SCHEDULED
+2027-03-18,119703,ORL,BOS,1824,TD Garden,Boston,False,False,,False,STATUS_SCHEDULED
+2027-03-18,119704,DET,MIL,5777,Fiserv Forum,Milwaukee,False,False,,False,STATUS_SCHEDULED
+2027-03-18,119705,CHA,NOP,985,Smoothie King Center,New Orleans,False,False,,False,STATUS_SCHEDULED
+2027-03-18,119706,BKN,SAS,780,Frost Bank Center,San Antonio,False,False,,False,STATUS_SCHEDULED
+2027-03-18,119707,CLE,DEN,892,Ball Arena,Denver,False,False,,False,STATUS_SCHEDULED
+2027-03-18,119708,MIN,UTA,3093,Delta Center,Salt Lake City,False,False,,False,STATUS_SCHEDULED
+2027-03-18,119709,MEM,LAC,10642,Intuit Dome,Inglewood,False,False,,False,STATUS_SCHEDULED
+2027-03-19,119710,SAC,TOR,1838,Scotiabank Arena,Toronto,False,False,,False,STATUS_SCHEDULED
+2027-03-19,119711,HOU,NOP,985,Smoothie King Center,New Orleans,False,False,,False,STATUS_SCHEDULED
+2027-03-19,119712,DAL,SAS,780,Frost Bank Center,San Antonio,False,False,,False,STATUS_SCHEDULED
+2027-03-19,119713,POR,GSW,6270,Chase Center,San Francisco,False,False,,False,STATUS_SCHEDULED
+2027-03-19,119714,ATL,LAL,1841,crypto.com Arena,Los Angeles,False,False,,False,STATUS_SCHEDULED
+2027-03-19,119715,MIA,PHX,1949,Mortgage Matchup Center,Phoenix,False,False,,False,STATUS_SCHEDULED
+2027-03-20,119716,WAS,NYK,1830,Madison Square Garden,New York,False,False,,False,STATUS_SCHEDULED
+2027-03-20,119717,DEN,ORL,3432,Kia Center,Orlando,False,False,,False,STATUS_SCHEDULED
+2027-03-20,119718,CHI,CLE,3417,Rocket Arena,Cleveland,False,False,,False,STATUS_SCHEDULED
+2027-03-20,119719,CHA,DET,5404,Little Caesars Arena,Detroit,False,False,,False,STATUS_SCHEDULED
+2027-03-20,119720,OKC,MEM,1392,FedExForum,Memphis,False,False,,False,STATUS_SCHEDULED
+2027-03-20,119721,IND,MIL,5777,Fiserv Forum,Milwaukee,False,False,,False,STATUS_SCHEDULED
+2027-03-20,119722,ATL,LAC,10642,Intuit Dome,Inglewood,False,False,,False,STATUS_SCHEDULED
+2027-03-21,119723,NOP,BOS,1824,TD Garden,Boston,False,False,,False,STATUS_SCHEDULED
+2027-03-21,119724,SAC,BKN,3559,Barclays Center,Brooklyn,False,False,,False,STATUS_SCHEDULED
+2027-03-21,119725,TOR,UTA,3093,Delta Center,Salt Lake City,False,False,,False,STATUS_SCHEDULED
+2027-03-21,119726,POR,PHX,1949,Mortgage Matchup Center,Phoenix,False,False,,False,STATUS_SCHEDULED
+2027-03-21,119727,DEN,MIA,3438,Kaseya Center,Miami,False,False,,False,STATUS_SCHEDULED
+2027-03-21,119728,SAS,PHI,1845,Xfinity Mobile Arena,Philadelphia,False,False,,False,STATUS_SCHEDULED
+2027-03-21,119729,DAL,LAL,1841,crypto.com Arena,Los Angeles,False,False,,False,STATUS_SCHEDULED
+2027-03-22,119730,HOU,CLE,3417,Rocket Arena,Cleveland,False,False,,False,STATUS_SCHEDULED
+2027-03-22,119731,IND,ORL,3432,Kia Center,Orlando,False,False,,False,STATUS_SCHEDULED
+2027-03-22,119732,SAC,CHI,1847,United Center,Chicago,False,False,,False,STATUS_SCHEDULED
+2027-03-22,119733,CHA,MEM,1392,FedExForum,Memphis,False,False,,False,STATUS_SCHEDULED
+2027-03-22,119734,WAS,MIL,5777,Fiserv Forum,Milwaukee,False,False,,False,STATUS_SCHEDULED
+2027-03-22,119735,DET,MIN,2029,Target Center,Minneapolis,False,False,,False,STATUS_SCHEDULED
+2027-03-22,119736,ATL,GSW,6270,Chase Center,San Francisco,False,False,,False,STATUS_SCHEDULED
+2027-03-22,119737,DAL,LAC,10642,Intuit Dome,Inglewood,False,False,,False,STATUS_SCHEDULED
+2027-03-23,119738,BOS,BKN,3559,Barclays Center,Brooklyn,False,False,,False,STATUS_SCHEDULED
+2027-03-23,119739,NOP,NYK,1830,Madison Square Garden,New York,False,False,,False,STATUS_SCHEDULED
+2027-03-23,119740,LAL,MIA,3438,Kaseya Center,Miami,False,False,,False,STATUS_SCHEDULED
+2027-03-23,119741,PHI,UTA,3093,Delta Center,Salt Lake City,False,False,,False,STATUS_SCHEDULED
+2027-03-23,119742,TOR,POR,3423,Moda Center,Portland,False,False,,False,STATUS_SCHEDULED
+2027-03-23,119743,OKC,PHX,1949,Mortgage Matchup Center,Phoenix,False,False,,False,STATUS_SCHEDULED
+2027-03-24,119744,DET,CHA,1893,Spectrum Center,Charlotte,False,False,,False,STATUS_SCHEDULED
+2027-03-24,119745,MEM,IND,2183,Gainbridge Fieldhouse,Indianapolis,False,False,,False,STATUS_SCHEDULED
+2027-03-24,119746,DEN,WAS,1823,Capital One Arena,Washington,False,False,,False,STATUS_SCHEDULED
+2027-03-24,119747,SAS,BOS,1824,TD Garden,Boston,False,False,,False,STATUS_SCHEDULED
+2027-03-24,119748,HOU,NYK,1830,Madison Square Garden,New York,False,False,,False,STATUS_SCHEDULED
+2027-03-24,119749,ORL,CHI,1847,United Center,Chicago,False,False,,False,STATUS_SCHEDULED
+2027-03-24,119750,DAL,MIN,2029,Target Center,Minneapolis,False,False,,False,STATUS_SCHEDULED
+2027-03-24,119751,PHI,GSW,6270,Chase Center,San Francisco,False,False,,False,STATUS_SCHEDULED
+2027-03-24,119752,OKC,PHX,1949,Mortgage Matchup Center,Phoenix,False,False,,False,STATUS_SCHEDULED
+2027-03-24,119753,ATL,SAC,5310,Golden 1 Center,Sacramento,False,False,,False,STATUS_SCHEDULED
+2027-03-24,119754,MIL,LAC,10642,Intuit Dome,Inglewood,False,False,,False,STATUS_SCHEDULED
+2027-03-25,119755,LAL,CLE,3417,Rocket Arena,Cleveland,False,False,,False,STATUS_SCHEDULED
+2027-03-25,119756,HOU,DET,5404,Little Caesars Arena,Detroit,False,False,,False,STATUS_SCHEDULED
+2027-03-25,119757,SAS,IND,2183,Gainbridge Fieldhouse,Indianapolis,False,False,,False,STATUS_SCHEDULED
+2027-03-25,119758,DEN,BKN,3559,Barclays Center,Brooklyn,False,False,,False,STATUS_SCHEDULED
+2027-03-25,119759,UTA,MIA,3438,Kaseya Center,Miami,False,False,,False,STATUS_SCHEDULED
+2027-03-25,119760,CHI,MEM,1392,FedExForum,Memphis,False,False,,False,STATUS_SCHEDULED
+2027-03-25,119761,TOR,GSW,6270,Chase Center,San Francisco,False,False,,False,STATUS_SCHEDULED
+2027-03-26,119762,NYK,CHA,1893,Spectrum Center,Charlotte,False,False,,False,STATUS_SCHEDULED
+2027-03-26,119763,NOP,DAL,516,American Airlines Center,Dallas,False,False,,False,STATUS_SCHEDULED
+2027-03-26,119764,ORL,MIN,2029,Target Center,Minneapolis,False,False,,False,STATUS_SCHEDULED
+2027-03-26,119765,LAC,OKC,2559,Paycom Center,Oklahoma City,False,False,,False,STATUS_SCHEDULED
+2027-03-26,119766,MIL,PHX,1949,Mortgage Matchup Center,Phoenix,False,False,,False,STATUS_SCHEDULED
+2027-03-26,119767,PHI,POR,3423,Moda Center,Portland,False,False,,False,STATUS_SCHEDULED
+2027-03-27,119768,SAS,DET,5404,Little Caesars Arena,Detroit,False,False,,False,STATUS_SCHEDULED
+2027-03-27,119769,UTA,ATL,1827,State Farm Arena,Atlanta,False,False,,False,STATUS_SCHEDULED
+2027-03-27,119770,GSW,WAS,1823,Capital One Arena,Washington,False,False,,False,STATUS_SCHEDULED
+2027-03-27,119771,BOS,MIA,3438,Kaseya Center,Miami,False,False,,False,STATUS_SCHEDULED
+2027-03-27,119772,LAC,CHI,1847,United Center,Chicago,False,False,,False,STATUS_SCHEDULED
+2027-03-27,119773,MIL,POR,3423,Moda Center,Portland,False,False,,False,STATUS_SCHEDULED
+2027-03-27,119774,TOR,SAC,5310,Golden 1 Center,Sacramento,False,False,,False,STATUS_SCHEDULED
+2027-03-28,119775,NYK,ORL,3432,Kia Center,Orlando,False,False,,False,STATUS_SCHEDULED
+2027-03-28,119776,MEM,BKN,3559,Barclays Center,Brooklyn,False,False,,False,STATUS_SCHEDULED
+2027-03-28,119777,LAL,HOU,1394,Toyota Center (Houston),Houston,False,False,,False,STATUS_SCHEDULED
+2027-03-28,119778,UTA,CHA,1893,Spectrum Center,Charlotte,False,False,,False,STATUS_SCHEDULED
+2027-03-28,119779,DAL,WAS,1823,Capital One Arena,Washington,False,False,,False,STATUS_SCHEDULED
+2027-03-28,119780,BOS,NOP,985,Smoothie King Center,New Orleans,False,False,,False,STATUS_SCHEDULED
+2027-03-28,119781,OKC,MIN,2029,Target Center,Minneapolis,False,False,,False,STATUS_SCHEDULED
+2027-03-28,119782,TOR,PHX,1949,Mortgage Matchup Center,Phoenix,False,False,,False,STATUS_SCHEDULED
+2027-03-28,119783,PHI,DEN,892,Ball Arena,Denver,False,False,,False,STATUS_SCHEDULED
+2027-03-29,119784,MIN,ATL,1827,State Farm Arena,Atlanta,False,False,,False,STATUS_SCHEDULED
+2027-03-29,119785,MIA,CLE,3417,Rocket Arena,Cleveland,False,False,,False,STATUS_SCHEDULED
+2027-03-29,119786,LAC,DET,5404,Little Caesars Arena,Detroit,False,False,,False,STATUS_SCHEDULED
+2027-03-29,119787,GSW,BKN,3559,Barclays Center,Brooklyn,False,False,,False,STATUS_SCHEDULED
+2027-03-29,119788,IND,CHI,1847,United Center,Chicago,False,False,,False,STATUS_SCHEDULED
+2027-03-29,119789,DAL,MIL,5777,Fiserv Forum,Milwaukee,False,False,,False,STATUS_SCHEDULED
+2027-03-29,119790,PHX,SAS,780,Frost Bank Center,San Antonio,False,False,,False,STATUS_SCHEDULED
+2027-03-29,119791,DEN,SAC,5310,Golden 1 Center,Sacramento,False,False,,False,STATUS_SCHEDULED
+2027-03-30,119792,MIA,CHA,1893,Spectrum Center,Charlotte,False,False,,False,STATUS_SCHEDULED
+2027-03-30,119793,BOS,IND,2183,Gainbridge Fieldhouse,Indianapolis,False,False,,False,STATUS_SCHEDULED
+2027-03-30,119794,NYK,ORL,3432,Kia Center,Orlando,False,False,,False,STATUS_SCHEDULED
+2027-03-30,119795,LAL,MEM,1392,FedExForum,Memphis,False,False,,False,STATUS_SCHEDULED
+2027-03-30,119796,OKC,UTA,3093,Delta Center,Salt Lake City,False,False,,False,STATUS_SCHEDULED
+2027-03-30,119797,HOU,POR,3423,Moda Center,Portland,False,False,,False,STATUS_SCHEDULED
+2027-03-31,119798,LAC,ATL,1827,State Farm Arena,Atlanta,False,False,,False,STATUS_SCHEDULED
+2027-03-31,119799,TOR,DET,5404,Little Caesars Arena,Detroit,False,False,,False,STATUS_SCHEDULED
+2027-03-31,119800,GSW,PHI,1845,Xfinity Mobile Arena,Philadelphia,False,False,,False,STATUS_SCHEDULED
+2027-03-31,119801,CHI,WAS,1823,Capital One Arena,Washington,False,False,,False,STATUS_SCHEDULED
+2027-03-31,119802,CLE,BKN,3559,Barclays Center,Brooklyn,False,False,,False,STATUS_SCHEDULED
+2027-03-31,119803,NOP,MIL,5777,Fiserv Forum,Milwaukee,False,False,,False,STATUS_SCHEDULED
+2027-03-31,119804,SAC,MIN,2029,Target Center,Minneapolis,False,False,,False,STATUS_SCHEDULED
+2027-03-31,119805,PHX,SAS,780,Frost Bank Center,San Antonio,False,False,,False,STATUS_SCHEDULED
+2027-03-31,119806,DEN,DAL,516,American Airlines Center,Dallas,False,False,,False,STATUS_SCHEDULED
+2027-03-31,119807,HOU,POR,3423,Moda Center,Portland,False,False,,False,STATUS_SCHEDULED
+2027-04-01,119808,BOS,CLE,3417,Rocket Arena,Cleveland,False,False,,False,STATUS_SCHEDULED
+2027-04-01,119809,ORL,IND,2183,Gainbridge Fieldhouse,Indianapolis,False,False,,False,STATUS_SCHEDULED
+2027-04-01,119810,CHA,NYK,1830,Madison Square Garden,New York,False,False,,False,STATUS_SCHEDULED
+2027-04-01,119811,LAL,OKC,2559,Paycom Center,Oklahoma City,False,False,,False,STATUS_SCHEDULED
+2027-04-02,119812,PHI,WAS,1823,Capital One Arena,Washington,False,False,,False,STATUS_SCHEDULED
+2027-04-02,119813,MIA,BOS,1824,TD Garden,Boston,False,False,,False,STATUS_SCHEDULED
+2027-04-02,119814,NYK,BKN,3559,Barclays Center,Brooklyn,False,False,,False,STATUS_SCHEDULED
+2027-04-02,119815,GSW,MIN,2029,Target Center,Minneapolis,False,False,,False,STATUS_SCHEDULED
+2027-04-02,119816,DET,CHI,1847,United Center,Chicago,False,False,,False,STATUS_SCHEDULED
+2027-04-02,119817,SAC,DAL,516,American Airlines Center,Dallas,False,False,,False,STATUS_SCHEDULED
+2027-04-02,119818,CHA,MIL,5777,Fiserv Forum,Milwaukee,False,False,,False,STATUS_SCHEDULED
+2027-04-02,119819,ATL,TOR,1838,Scotiabank Arena,Toronto,False,False,,False,STATUS_SCHEDULED
+2027-04-02,119820,MEM,HOU,1394,Toyota Center (Houston),Houston,False,False,,False,STATUS_SCHEDULED
+2027-04-02,119821,DEN,PHX,1949,Mortgage Matchup Center,Phoenix,False,False,,False,STATUS_SCHEDULED
+2027-04-02,119822,UTA,POR,3423,Moda Center,Portland,False,False,,False,STATUS_SCHEDULED
+2027-04-02,119823,SAS,LAC,10642,Intuit Dome,Inglewood,False,False,,False,STATUS_SCHEDULED
+2027-04-03,119824,NOP,OKC,2559,Paycom Center,Oklahoma City,False,False,,False,STATUS_SCHEDULED
+2027-04-03,119825,WAS,ORL,3432,Kia Center,Orlando,False,False,,False,STATUS_SCHEDULED
+2027-04-04,119826,ATL,PHI,1845,Xfinity Mobile Arena,Philadelphia,False,False,,False,STATUS_SCHEDULED
+2027-04-04,119827,BKN,MIL,5777,Fiserv Forum,Milwaukee,False,False,,False,STATUS_SCHEDULED
+2027-04-04,119828,CHA,CLE,3417,Rocket Arena,Cleveland,False,False,,False,STATUS_SCHEDULED
+2027-04-04,119829,MIA,DET,5404,Little Caesars Arena,Detroit,False,False,,False,STATUS_SCHEDULED
+2027-04-04,119830,MIN,DAL,516,American Airlines Center,Dallas,False,False,,False,STATUS_SCHEDULED
+2027-04-04,119831,IND,TOR,1838,Scotiabank Arena,Toronto,False,False,,False,STATUS_SCHEDULED
+2027-04-04,119832,CHI,HOU,1394,Toyota Center (Houston),Houston,False,False,,False,STATUS_SCHEDULED
+2027-04-04,119833,PHX,LAC,10642,Intuit Dome,Inglewood,False,False,,False,STATUS_SCHEDULED
+2027-04-04,119834,MEM,DEN,892,Ball Arena,Denver,False,False,,False,STATUS_SCHEDULED
+2027-04-04,119835,POR,UTA,3093,Delta Center,Salt Lake City,False,False,,False,STATUS_SCHEDULED
+2027-04-04,119836,GSW,SAC,5310,Golden 1 Center,Sacramento,False,False,,False,STATUS_SCHEDULED
+2027-04-04,119837,BOS,NYK,1830,Madison Square Garden,New York,False,False,,False,STATUS_SCHEDULED
+2027-04-04,119838,SAS,LAL,1841,crypto.com Arena,Los Angeles,False,False,,False,STATUS_SCHEDULED
+2027-04-05,119839,BKN,CLE,3417,Rocket Arena,Cleveland,False,False,,False,STATUS_SCHEDULED
+2027-04-05,119840,MIA,ORL,3432,Kia Center,Orlando,False,False,,False,STATUS_SCHEDULED
+2027-04-05,119841,WAS,NOP,985,Smoothie King Center,New Orleans,False,False,,False,STATUS_SCHEDULED
+2027-04-06,119842,IND,CHA,1893,Spectrum Center,Charlotte,False,False,,False,STATUS_SCHEDULED
+2027-04-06,119843,PHI,TOR,1838,Scotiabank Arena,Toronto,False,False,,False,STATUS_SCHEDULED
+2027-04-06,119844,NYK,ATL,1827,State Farm Arena,Atlanta,False,False,,False,STATUS_SCHEDULED
+2027-04-06,119845,DET,MEM,1392,FedExForum,Memphis,False,False,,False,STATUS_SCHEDULED
+2027-04-06,119846,CHI,MIL,5777,Fiserv Forum,Milwaukee,False,False,,False,STATUS_SCHEDULED
+2027-04-06,119847,SAC,SAS,780,Frost Bank Center,San Antonio,False,False,,False,STATUS_SCHEDULED
+2027-04-06,119848,NOP,DEN,892,Ball Arena,Denver,False,False,,False,STATUS_SCHEDULED
+2027-04-06,119849,OKC,UTA,3093,Delta Center,Salt Lake City,False,False,,False,STATUS_SCHEDULED
+2027-04-06,119850,DAL,LAL,1841,crypto.com Arena,Los Angeles,False,False,,False,STATUS_SCHEDULED
+2027-04-06,119851,MIN,LAC,10642,Intuit Dome,Inglewood,False,False,,False,STATUS_SCHEDULED
+2027-04-06,119852,PHX,GSW,6270,Chase Center,San Francisco,False,False,,False,STATUS_SCHEDULED
+2027-04-07,119853,IND,DET,5404,Little Caesars Arena,Detroit,False,False,,False,STATUS_SCHEDULED
+2027-04-07,119854,BOS,ORL,3432,Kia Center,Orlando,False,False,,False,STATUS_SCHEDULED
+2027-04-07,119855,BKN,TOR,1838,Scotiabank Arena,Toronto,False,False,,False,STATUS_SCHEDULED
+2027-04-07,119856,CLE,SAS,780,Frost Bank Center,San Antonio,False,False,,False,STATUS_SCHEDULED
+2027-04-07,119857,CHA,CHI,1847,United Center,Chicago,False,False,,False,STATUS_SCHEDULED
+2027-04-07,119858,WAS,MEM,1392,FedExForum,Memphis,False,False,,False,STATUS_SCHEDULED
+2027-04-07,119859,SAC,HOU,1394,Toyota Center (Houston),Houston,False,False,,False,STATUS_SCHEDULED
+2027-04-07,119860,MIN,LAL,1841,crypto.com Arena,Los Angeles,False,False,,False,STATUS_SCHEDULED
+2027-04-07,119861,DAL,POR,3423,Moda Center,Portland,False,False,,False,STATUS_SCHEDULED
+2027-04-08,119862,PHI,MIA,3438,Kaseya Center,Miami,False,False,,False,STATUS_SCHEDULED
+2027-04-08,119863,NYK,MIL,5777,Fiserv Forum,Milwaukee,False,False,,False,STATUS_SCHEDULED
+2027-04-08,119864,LAC,DEN,892,Ball Arena,Denver,False,False,,False,STATUS_SCHEDULED
+2027-04-08,119865,NOP,UTA,3093,Delta Center,Salt Lake City,False,False,,False,STATUS_SCHEDULED
+2027-04-08,119866,GSW,OKC,2559,Paycom Center,Oklahoma City,False,False,,False,STATUS_SCHEDULED
+2027-04-09,119867,BOS,ATL,1827,State Farm Arena,Atlanta,False,False,,False,STATUS_SCHEDULED
+2027-04-09,119868,BKN,CHA,1893,Spectrum Center,Charlotte,False,False,,False,STATUS_SCHEDULED
+2027-04-09,119869,CLE,IND,2183,Gainbridge Fieldhouse,Indianapolis,False,False,,False,STATUS_SCHEDULED
+2027-04-09,119870,DET,NYK,1830,Madison Square Garden,New York,False,False,,False,STATUS_SCHEDULED
+2027-04-09,119871,TOR,ORL,3432,Kia Center,Orlando,False,False,,False,STATUS_SCHEDULED
+2027-04-09,119872,WAS,MIA,3438,Kaseya Center,Miami,False,False,,False,STATUS_SCHEDULED
+2027-04-09,119873,MIL,CHI,1847,United Center,Chicago,False,False,,False,STATUS_SCHEDULED
+2027-04-09,119874,GSW,OKC,2559,Paycom Center,Oklahoma City,False,False,,False,STATUS_SCHEDULED
+2027-04-09,119875,POR,HOU,1394,Toyota Center (Houston),Houston,False,False,,False,STATUS_SCHEDULED
+2027-04-09,119876,DEN,SAS,780,Frost Bank Center,San Antonio,False,False,,False,STATUS_SCHEDULED
+2027-04-09,119877,LAC,UTA,3093,Delta Center,Salt Lake City,False,False,,False,STATUS_SCHEDULED
+2027-04-09,119878,MIN,LAL,1841,crypto.com Arena,Los Angeles,False,False,,False,STATUS_SCHEDULED
+2027-04-09,119879,MEM,PHX,1949,Mortgage Matchup Center,Phoenix,False,False,,False,STATUS_SCHEDULED
+2027-04-09,119880,DAL,SAC,5310,Golden 1 Center,Sacramento,False,False,,False,STATUS_SCHEDULED
+2027-04-11,119881,MIL,BOS,1824,TD Garden,Boston,False,False,,False,STATUS_SCHEDULED
+2027-04-11,119882,TOR,BKN,3559,Barclays Center,Brooklyn,False,False,,False,STATUS_SCHEDULED
+2027-04-11,119883,ATL,CLE,3417,Rocket Arena,Cleveland,False,False,,False,STATUS_SCHEDULED
+2027-04-11,119884,ORL,MIA,3438,Kaseya Center,Miami,False,False,,False,STATUS_SCHEDULED
+2027-04-11,119885,IND,NYK,1830,Madison Square Garden,New York,False,False,,False,STATUS_SCHEDULED
+2027-04-11,119886,CHA,PHI,1845,Xfinity Mobile Arena,Philadelphia,False,False,,False,STATUS_SCHEDULED
+2027-04-11,119887,DET,WAS,1823,Capital One Arena,Washington,False,False,,False,STATUS_SCHEDULED
+2027-04-11,119888,CHI,NOP,985,Smoothie King Center,New Orleans,False,False,,False,STATUS_SCHEDULED
+2027-04-11,119889,MEM,DAL,516,American Airlines Center,Dallas,False,False,,False,STATUS_SCHEDULED
+2027-04-11,119890,HOU,MIN,2029,Target Center,Minneapolis,False,False,,False,STATUS_SCHEDULED
+2027-04-11,119891,POR,SAS,780,Frost Bank Center,San Antonio,False,False,,False,STATUS_SCHEDULED
+2027-04-11,119892,OKC,DEN,892,Ball Arena,Denver,False,False,,False,STATUS_SCHEDULED
+2027-04-11,119893,UTA,GSW,6270,Chase Center,San Francisco,False,False,,False,STATUS_SCHEDULED
+2027-04-11,119894,SAC,LAC,10642,Intuit Dome,Inglewood,False,False,,False,STATUS_SCHEDULED
+2027-04-11,119895,PHX,LAL,1841,crypto.com Arena,Los Angeles,False,False,,False,STATUS_SCHEDULED

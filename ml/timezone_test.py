@@ -22,6 +22,7 @@ Usage:
 
 from __future__ import annotations
 
+import hashlib
 import json
 import logging
 from datetime import date
@@ -38,6 +39,7 @@ ROOT = Path(__file__).resolve().parent.parent
 DATA = ROOT / "ml" / "data"
 FEATURES_CSV = DATA / "fatigue_features.csv"
 TABLE_CSV = DATA / "fatigue_model_table.csv"
+FIT_METRICS_JSON = ROOT / "ml" / "fatigue_fit_metrics.json"
 REPORT = DATA / "timezone_report.txt"
 #: The committed snapshot the method page reads. Written here, never by hand.
 PUBLISHED_JSON = ROOT / "src" / "data" / "timezone-null.json"
@@ -65,9 +67,17 @@ SHORT_REST_DAYS = 1.0
 #: check and published beside the result; it does not replace the pre-registered definition.
 SENSITIVITY_SHORT_REST_DAYS = 2.0
 
-# For scale, from ADR 0006 — not measured here.
-EVERY_FATIGUE_FACTOR_COMBINED = 0.00245
-STRENGTH_ALONE = 0.06
+
+def fitted_comparison() -> dict[str, float]:
+    metrics = json.loads(FIT_METRICS_JSON.read_text())
+    digest = hashlib.sha256(TABLE_CSV.read_bytes()).hexdigest()
+    if metrics["modelTableSha256"] != digest:
+        raise ValueError("Fatigue fit metrics are stale; run export → prepare → fit first")
+    loss = metrics["pooledLogLoss"]
+    return {
+        "everyFatigueFactorCombined": round(loss["ll_controls_only"] - loss["ll_fitted_controls"], 5),
+        "strengthAlone": round(loss["ll_base"] - loss["ll_controls_only"], 5),
+    }
 
 
 def fit_clamped(x: np.ndarray, y: np.ndarray, clamp: list[bool]) -> tuple[np.ndarray, float]:
@@ -431,7 +441,8 @@ def published(m: dict, sens: dict) -> dict:
     return {
         "generatedBy": "ml/timezone_test.py",
         "preRegistration": "ml/timezone_preregistration.md",
-        "report": "ml/TIMEZONE_REPORT.md",
+        "report": str(REPORT.relative_to(ROOT)),
+        "historicalReport": "ml/TIMEZONE_REPORT.md",
         "adr": "docs/adr/0006-fatigue-weights-were-fitted-and-the-model-was-not-changed.md",
         "measuredOn": date.today().isoformat(),
         "protocol": {
@@ -449,8 +460,7 @@ def published(m: dict, sens: dict) -> dict:
             "withCandidates": round(full, 5),
             "baselineWorth": round(strength - base, 5),
             "candidatesWorth": round(base - full, 5),
-            "everyFatigueFactorCombined": EVERY_FATIGUE_FACTOR_COMBINED,
-            "strengthAlone": STRENGTH_ALONE,
+            **fitted_comparison(),
         },
         "terms": [term_row(t) for t in CANDIDATES],
         "primaryTerm": "d_east3_short",
@@ -465,6 +475,7 @@ def published(m: dict, sens: dict) -> dict:
 
 
 def main() -> None:
+    fitted_comparison()
     primary = measure(SHORT_REST_DAYS)
     sens = measure(SENSITIVITY_SHORT_REST_DAYS)
 

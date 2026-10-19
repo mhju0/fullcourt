@@ -12,16 +12,11 @@
 
 import { differenceInCalendarDays, parseISO, subDays } from "date-fns";
 import { haversineDistance } from "./haversine";
-import { neutralVenueCoordinates } from "./neutral-venues";
-import { eraCoordinates } from "./team-era-coordinates";
+import { resolvePhysicalVenue } from "./physical-venue";
+import { TRAVEL_LOOKBACK_DAYS } from "./fatigue-windows";
+export { FATIGUE_RECENT_LOOKBACK_DAYS, TRAVEL_LOOKBACK_DAYS } from "./fatigue-windows";
 
 // ─── Configuration ──────────────────────────────────────────────
-
-/** Must match `fetchRecentGamesForTeam` window. */
-export const FATIGUE_RECENT_LOOKBACK_DAYS = 30;
-
-/** Calendar-day window for summing travel legs (still uses full `recentGames` for decay, stress, etc.). */
-export const TRAVEL_LOOKBACK_DAYS = 7;
 
 /** Decay includes games played on these calendar days before the target game. */
 const DECAY_LOOKBACK_DAYS = 30;
@@ -198,7 +193,7 @@ export const FATIGUE_CONSTANTS = Object.freeze({
 
 export interface RecentGame {
   date: string; // "YYYY-MM-DD"
-  /** False at a neutral site even for the nominal host — neither side slept at home. */
+  /** Effective home-court classification; false for both sides at a neutral fixture. */
   isHome: boolean;
   teamLat: number;
   teamLon: number;
@@ -209,11 +204,7 @@ export interface RecentGame {
   tipOffUtc?: Date | null;
   /** Absolute final margin; drives the blowout discount. Null when scores are absent. */
   pointMargin?: number | null;
-  /**
-   * Where the game was actually played, when that is neither team's arena. Set only
-   * for neutral-site games (Paris, Mexico City, …), which are treated as away games
-   * for BOTH teams — physically neither side slept at home.
-   */
+  /** Actual fixture venue, including alternate home arenas; independent of `isHome`. */
   venueLat?: number;
   venueLon?: number;
 }
@@ -248,10 +239,11 @@ export interface FatigueFeatures {
   homeStandLength: number;
   /** Circadian load before the 0.88 scale: direction × how much re-entrainment is left. */
   jetLagUnits: number;
-  /** Hours of clock shift between the home arena and tonight's venue. */
+  /** Magnitude of the shortest civil-clock adjustment, at most 12 hours. */
   zonesCrossed: number;
   /**
-   * The same shift, **signed**: positive travelling east, negative travelling west.
+   * The same shortest civil-clock shift, signed: positive advance, negative delay.
+   * Date-line crossings wrap into [-12, +12]; this does not assert an actual flight route.
    *
    * Reported rather than scored — no term reads it, and adding it leaves every score identical.
    * It exists because neither existing column can separate direction: `zonesCrossed` is the
@@ -379,8 +371,8 @@ function scheduleStress(
 }
 
 /**
- * Consecutive games on one side of the ledger, walking back from the most recent, plus
- * tonight when it matches.
+ * Current consecutive games on one side of the ledger, including tonight.
+ * Switching sides resets the other streak rather than carrying the completed stand forward.
  *
  * Road and home stands are the same walk in opposite directions: the road streak is what
  * the model charges for, the home stand is what a recovery term would credit.
@@ -390,6 +382,7 @@ function venueStreak(
   wantHome: boolean,
   currentGameIsHome: boolean
 ): number {
+  if (currentGameIsHome !== wantHome) return 0;
   const sorted = [...recentGames].sort((a, b) => a.date.localeCompare(b.date));
   let streak = 0;
   for (let i = sorted.length - 1; i >= 0; i--) {
@@ -413,7 +406,12 @@ function venueStreak(
  * sits in the empty gap between the two nearest arenas on either side, so all 30 current
  * arenas plus every era coordinate classify correctly — verified 2026-07-30.
  */
-function standardUtcOffsetHours(lon: number): number {
+function isJapanVenue(lat: number, lon: number): boolean {
+  return lat >= 24 && lat <= 46 && lon >= 122 && lon <= 146;
+}
+
+function standardUtcOffsetHours(lat: number, lon: number): number {
+  if (isJapanVenue(lat, lon)) return 9;
   // Across the Atlantic — only reachable via neutral-site games (London, Paris, Berlin).
   // Same technique: the 1.5° boundary sits in the gap between London (0.003°, UTC+0)
   // and Paris (2.378°, UTC+1). No NBA venue lies between them.
@@ -436,44 +434,44 @@ function lastSunday(year: number, month: number): Date {
   return new Date(year, month, last.getDate() - last.getDay());
 }
 
-/**
- * US daylight saving in effect on `date`.
- *
- * Only Arizona ignores DST, so this changes no offset *difference* except for games
- * involving Phoenix — everyone else shifts together. Two rule eras are modeled: since
- * 2007, 2nd Sunday of March → 1st Sunday of November; 1987–2006, 1st Sunday of April →
- * last Sunday of October.
- *
- * ponytail: the 1976–1986 rule (DST began the *last* Sunday of April) is not modeled —
- * it would only change Phoenix games in April 1986/87. Add the third branch if a
- * Suns-vs-Central April game from those two seasons ever matters.
- */
+/** US calendar-day DST rules over the stored history, which begins in 1985. */
 function isDaylightSaving(date: Date): boolean {
   const y = date.getFullYear();
-  const start = y >= 2007 ? nthSunday(y, 2, 2) : nthSunday(y, 3, 1);
+  const start = y >= 2007
+    ? nthSunday(y, 2, 2)
+    : y >= 1987 ? nthSunday(y, 3, 1) : lastSunday(y, 3);
   const end = y >= 2007 ? nthSunday(y, 10, 1) : lastSunday(y, 9);
   return date >= start && date < end;
 }
 
 /**
- * Phoenix is the lone NBA *arena* that never observes DST; UTA sits 0.17° away but 7°
- * north, so a latitude bound separates them. Mexico City is excluded too: it has been
- * UTC−6 year-round since Mexico dropped DST in 2022, and before that its DST window
- * (April–October) never overlapped the November–December dates the NBA plays there.
- *
- * European neutral venues are evaluated with US DST dates, which is harmless because
- * those games are played in January and February — standard time on both continents.
+ * Known venue exceptions to US DST dates. Indianapolis used standard time through 2005;
+ * Japan and Phoenix do not observe DST during the stored history. Mexico City's historical
+ * NBA games were outside its former DST season. European dates retain the existing US-rule
+ * approximation; the stored European fixtures are in January, February and March 4–5.
  */
-function observesDaylightSaving(lat: number, lon: number): boolean {
+function observesDaylightSaving(lat: number, lon: number, date: Date): boolean {
   const isPhoenix = lat < 36 && lon <= -111.6 && lon >= -112.6;
   const isMexicoCity = lat < 25;
-  return !isPhoenix && !isMexicoCity;
+  const isHistoricalIndianapolis = date.getFullYear() < 2006
+    && lat >= 39 && lat <= 40.5 && lon >= -87 && lon <= -85;
+  return !isPhoenix && !isMexicoCity && !isHistoricalIndianapolis && !isJapanVenue(lat, lon);
 }
 
-/** Actual UTC offset (hours) of a venue on a given date, DST included. */
+/** Venue UTC offset on the supplied calendar day; transition hours are not modeled. */
 export function venueUtcOffsetHours(lat: number, lon: number, date: Date): number {
-  const base = standardUtcOffsetHours(lon);
-  return isDaylightSaving(date) && observesDaylightSaving(lat, lon) ? base + 1 : base;
+  const base = standardUtcOffsetHours(lat, lon);
+  return isDaylightSaving(date) && observesDaylightSaving(lat, lon, date) ? base + 1 : base;
+}
+
+/**
+ * Shortest signed civil-clock adjustment, not an observed flight direction. At the ±12-hour
+ * tie, preserve the raw offset difference's sign. USA → Japan therefore wraps westward.
+ */
+export function signedClockShiftHours(homeOffset: number, venueOffset: number): number {
+  const difference = venueOffset - homeOffset;
+  const wrapped = ((difference + 12) % 24 + 24) % 24 - 12;
+  return wrapped === -12 && difference > 0 ? 12 : wrapped;
 }
 
 /**
@@ -527,8 +525,7 @@ function timeZoneDisplacement(
 
   const homeOffset = venueUtcOffsetHours(teamHomeLat, teamHomeLon, tip);
   const venueOffset = venueUtcOffsetHours(currentVenueLat, currentVenueLon, tip);
-  // Offsets grow more negative westward, so a positive shift means travelling east.
-  const shift = venueOffset - homeOffset;
+  const shift = signedClockShiftHours(homeOffset, venueOffset);
   const zonesCrossed = Math.abs(shift);
   if (zonesCrossed < TIME_ZONE_DISPLACEMENT_MIN_HOURS) {
     return { load: 0, displaced: false, units: 0, zonesCrossed, zoneShiftHours: shift };
@@ -620,58 +617,21 @@ function isSameArena(lat1: number, lon1: number, lat2: number, lon2: number): bo
 }
 
 /**
- * One leg between consecutive games (great-circle / haversine, not road routing).
- *
- * Contract (no phantom “fly home” between two road games — only fly home when the next
- * game is actually at home):
- *
- * | Previous | Current | Miles |
- * |----------|---------|--------|
- * | Home | Away | Home arena → current opponent arena |
- * | Away | Away (other city) | Previous road arena → current opponent arena |
- * | Away | Home | Previous road arena → home arena |
- * | Home | Home | 0 (same stand / no travel between games) |
- *
- * Same coordinates → 0 (covers back-to-back same building).
- *
- * **`previousGame === null`:** no prior game in this chain — away tonight counts as
- * home → tonight’s arena; home tonight → 0.
+ * Actual venue-to-venue distance, without inferred intermediate home stops. With no prior
+ * game in the model's 30-day history, the dated team base is the assumed origin.
  */
 function travelMilesBetweenGames(
   previousGame: RecentGame | null,
-  currentGameIsHome: boolean,
   currentArenaLat: number,
   currentArenaLon: number,
   teamHomeLat: number,
   teamHomeLon: number
 ): number {
-  if (previousGame === null) {
-    if (currentGameIsHome) {
-      return 0;
-    }
-    return haversineDistance(teamHomeLat, teamHomeLon, currentArenaLat, currentArenaLon);
-  }
-
-  const prevWasHome = previousGame.isHome;
-  const { lat: prevArenaLat, lon: prevArenaLon } = arenaOf(previousGame);
-
-  if (isSameArena(prevArenaLat, prevArenaLon, currentArenaLat, currentArenaLon)) {
-    return 0;
-  }
-
-  if (prevWasHome && currentGameIsHome) {
-    return 0;
-  }
-
-  if (prevWasHome && !currentGameIsHome) {
-    return haversineDistance(teamHomeLat, teamHomeLon, currentArenaLat, currentArenaLon);
-  }
-
-  if (!prevWasHome && currentGameIsHome) {
-    return haversineDistance(prevArenaLat, prevArenaLon, teamHomeLat, teamHomeLon);
-  }
-
-  return haversineDistance(prevArenaLat, prevArenaLon, currentArenaLat, currentArenaLon);
+  const origin = previousGame === null
+    ? { lat: teamHomeLat, lon: teamHomeLon }
+    : arenaOf(previousGame);
+  if (isSameArena(origin.lat, origin.lon, currentArenaLat, currentArenaLon)) return 0;
+  return haversineDistance(origin.lat, origin.lon, currentArenaLat, currentArenaLon);
 }
 
 /**
@@ -680,10 +640,8 @@ function travelMilesBetweenGames(
  * inside the window, and the leg from the most recent prior game to tonight.
  */
 function computeTotalTravelMiles(
-  gameDate: string,
   tip: Date,
   recentGames: RecentGame[],
-  currentGameIsHome: boolean,
   currentVenueLat: number,
   currentVenueLon: number,
   teamHomeLat: number,
@@ -693,7 +651,6 @@ function computeTotalTravelMiles(
   if (recentGames.length === 0) {
     return travelMilesBetweenGames(
       null,
-      currentGameIsHome,
       currentVenueLat,
       currentVenueLon,
       teamHomeLat,
@@ -713,7 +670,6 @@ function computeTotalTravelMiles(
     const lastGame = recentGames[recentGames.length - 1];
     return travelMilesBetweenGames(
       lastGame,
-      currentGameIsHome,
       currentVenueLat,
       currentVenueLon,
       teamHomeLat,
@@ -728,11 +684,10 @@ function computeTotalTravelMiles(
 
   total += travelMilesBetweenGames(
     prevBeforeChain,
-    chainStart.isHome,
     chainStartLat,
     chainStartLon,
-    teamHomeLat,
-    teamHomeLon
+    chainStart.teamLat,
+    chainStart.teamLon
   );
 
   for (let i = firstIdxInWindow; i < recentGames.length - 1; i++) {
@@ -741,7 +696,6 @@ function computeTotalTravelMiles(
     const { lat: curArenaLat, lon: curArenaLon } = arenaOf(cur);
     total += travelMilesBetweenGames(
       prev,
-      cur.isHome,
       curArenaLat,
       curArenaLon,
       teamHomeLat,
@@ -752,7 +706,6 @@ function computeTotalTravelMiles(
   const lastGame = recentGames[recentGames.length - 1]!;
   total += travelMilesBetweenGames(
     lastGame,
-    currentGameIsHome,
     currentVenueLat,
     currentVenueLon,
     teamHomeLat,
@@ -840,13 +793,11 @@ export function calculateFatigue(input: FatigueInput): FatigueResult {
   const roadLoad = roadSegmentLoad(roadStreak, displacementLoad);
 
   if (recentGames.length === 0) {
-    // Ratified rule #1 (2026-07-29): a team's first game of the season scores 0.00 —
-    // a full offseason leaves nothing accumulated to charge for. The flight to an away
-    // opener is still real, so its miles are computed and displayed, never zeroed, and
-    // the displacement flag stays factual. Both feed the NEXT game's 7-day window.
-    const openerMiles = currentGameIsHome
-      ? 0
-      : haversineDistance(teamHomeLat, teamHomeLon, currentVenueLat, currentVenueLon);
+    // Ratified reset: no game in the 30-day prior history means score 0.00. Mileage still
+    // starts at the dated base, including a designated home opener at an alternate arena.
+    const openerMiles = travelMilesBetweenGames(
+      null, currentVenueLat, currentVenueLon, teamHomeLat, teamHomeLon
+    );
 
     return {
       score: 0,
@@ -869,9 +820,7 @@ export function calculateFatigue(input: FatigueInput): FatigueResult {
       isFourInSix: false,
       hasTimeZoneDisplacement: displaced,
       features: {
-        // Nothing has been played, so every accumulated quantity is genuinely zero rather
-        // than unknown. The flight to a road opener is real and is reported at all three
-        // windows — it is the same single leg in each.
+        // The same base-to-venue leg is reported at all three windows after a history reset.
         decayUnits: DECAY_RATE_GRID.map(() => 0),
         travelMiles14: openerMiles,
         travelMiles30: openerMiles,
@@ -904,10 +853,8 @@ export function calculateFatigue(input: FatigueInput): FatigueResult {
   decayLoadScore = Math.round(decayLoadScore * 100) / 100;
 
   const totalTravelMiles = computeTotalTravelMiles(
-    gameDate,
     tip,
     recentGames,
-    currentGameIsHome,
     currentVenueLat,
     currentVenueLon,
     teamHomeLat,
@@ -919,10 +866,8 @@ export function calculateFatigue(input: FatigueInput): FatigueResult {
   // Both are free: `recentGames` already spans 30 days, so no extra rows are read.
   const travelWindowMiles = ([14, 30] as const).map((days) =>
     computeTotalTravelMiles(
-      gameDate,
       tip,
       recentGames,
-      currentGameIsHome,
       currentVenueLat,
       currentVenueLon,
       teamHomeLat,
@@ -1039,22 +984,7 @@ export interface FatigueGame {
   neutralVenueCity?: string | null;
 }
 
-/**
- * Both sides of one game, with the geometry resolved here rather than by each caller.
- *
- * The two production callers — `scripts/backfill_fatigue.ts` and `src/lib/daily-refresh.ts` —
- * each assembled these coordinates themselves, and had diverged: backfill ran both teams through
- * `eraCoordinates`, so a 1995 Sonics home game geolocates in Seattle, and daily-refresh read
- * `team.latitude` raw. It was invisible only because the daily path never looks further back
- * than a fortnight. Nothing asserted the two agreed, and nothing would have.
- *
- * Prior games were never affected: `rowToRecentGame` applies `eraCoordinates` on both paths.
- * The fork was tonight's game alone.
- *
- * Coordinates are parsed strictly. Backfill previously used bare `parseFloat`, so a malformed
- * row would have produced a NaN score rather than a failure; both callers already catch per
- * game, so throwing is the safe unification.
- */
+/** Both sides share the same physical-venue and dated-base resolution as prior games. */
 export function scoreGameFatigue(input: {
   game: FatigueGame;
   homeTeam: FatigueTeam;
@@ -1065,44 +995,44 @@ export function scoreGameFatigue(input: {
   const { game, homeTeam, awayTeam } = input;
   const date = String(game.date);
 
-  const homeArena = eraCoordinates(
-    homeTeam.abbreviation,
+  const resolved = resolvePhysicalVenue({
     date,
-    parseCoordinate(homeTeam.latitude, homeTeam.id, "latitude"),
-    parseCoordinate(homeTeam.longitude, homeTeam.id, "longitude")
-  );
-  const awayArena = eraCoordinates(
-    awayTeam.abbreviation,
-    date,
-    parseCoordinate(awayTeam.latitude, awayTeam.id, "latitude"),
-    parseCoordinate(awayTeam.longitude, awayTeam.id, "longitude")
-  );
-
-  // Neutral site → both teams are away, at a venue that is neither arena. An unknown city
-  // resolves to null and falls back to the listed home team's arena.
-  const neutral = game.neutralSite
-    ? neutralVenueCoordinates(game.neutralVenueCity)
-    : null;
-  const venueLat = neutral ? neutral.latitude : homeArena.latitude;
-  const venueLon = neutral ? neutral.longitude : homeArena.longitude;
+    homeTeam: {
+      abbreviation: homeTeam.abbreviation,
+      latitude: parseCoordinate(homeTeam.latitude, homeTeam.id, "latitude"),
+      longitude: parseCoordinate(homeTeam.longitude, homeTeam.id, "longitude"),
+      altitude: homeTeam.altitudeFlag,
+    },
+    awayTeam: {
+      abbreviation: awayTeam.abbreviation,
+      latitude: parseCoordinate(awayTeam.latitude, awayTeam.id, "latitude"),
+      longitude: parseCoordinate(awayTeam.longitude, awayTeam.id, "longitude"),
+      altitude: awayTeam.altitudeFlag,
+    },
+    neutralSite: game.neutralSite,
+    neutralVenueCity: game.neutralVenueCity,
+  });
+  const homeArena = resolved.homeBase;
+  const awayArena = resolved.awayBase;
+  const venueLat = resolved.venue.latitude;
+  const venueLon = resolved.venue.longitude;
 
   return {
     home: calculateFatigue({
       gameDate: date,
       recentGames: input.homeRecentGames,
-      // At home, a team is not *visiting* altitude — unless the neutral city has it.
-      isVisitingAltitude: neutral?.altitude ?? false,
+      isVisitingAltitude: resolved.neutralSite && resolved.venue.altitude,
       teamHomeLat: homeArena.latitude,
       teamHomeLon: homeArena.longitude,
       currentVenueLat: venueLat,
       currentVenueLon: venueLon,
-      currentGameIsHome: !neutral,
+      currentGameIsHome: resolved.homeCourt,
       currentTipOffUtc: game.tipOffUtc,
     }),
     away: calculateFatigue({
       gameDate: date,
       recentGames: input.awayRecentGames,
-      isVisitingAltitude: neutral?.altitude ?? homeTeam.altitudeFlag === true,
+      isVisitingAltitude: resolved.venue.altitude,
       teamHomeLat: awayArena.latitude,
       teamHomeLon: awayArena.longitude,
       currentVenueLat: venueLat,

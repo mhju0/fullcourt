@@ -1,0 +1,12 @@
+{
+  "games": 51695,
+  "seasons": 42,
+  "provider_city_candidates": 3049,
+  "arena_groups": 150,
+  "espn_matched": 40123,
+  "espn_nonempty_city": 36548,
+  "bref_nonempty_arena": 3048,
+  "request_season_anomalies": 257,
+  "consecutive_away_pairs": 26054,
+  "away_gaps_ge3_research_only": 4081
+}

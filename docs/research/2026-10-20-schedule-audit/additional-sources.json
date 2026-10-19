@@ -1,0 +1,26 @@
+[
+  {
+    "name": "nba-bucks-time-change",
+    "url": "https://www.nba.com/news/milwaukee-bucks-move-home-opener-world-series",
+    "status": 200,
+    "capturedAt": "2026-10-19T16:27:59.780Z"
+  },
+  {
+    "name": "nba-bulls-schedule",
+    "url": "https://www.nba.com/bulls/schedule",
+    "status": 200,
+    "capturedAt": "2026-10-19T16:28:01.556Z"
+  },
+  {
+    "name": "nba-spurs-schedule",
+    "url": "https://www.nba.com/spurs/schedule",
+    "status": 200,
+    "capturedAt": "2026-10-19T16:28:02.985Z"
+  },
+  {
+    "name": "intuit-home",
+    "url": "https://www.intuitdome.com/",
+    "status": 200,
+    "capturedAt": "2026-10-19T16:28:03.599Z"
+  }
+]

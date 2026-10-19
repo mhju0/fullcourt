@@ -6,8 +6,7 @@ import { alias } from "drizzle-orm/pg-core";
 import type * as Schema from "./db/schema";
 import { games, teams } from "./db/schema";
 import type { RecentGame } from "./fatigue";
-import { neutralVenueCoordinates } from "./neutral-venues";
-import { eraCoordinates } from "./team-era-coordinates";
+import { resolvePhysicalVenue } from "./physical-venue";
 
 type AppDb = PostgresJsDatabase<typeof Schema>;
 
@@ -131,38 +130,23 @@ export function neutralizeIfUnplayed<T extends PriorGameRow & { status: string }
 
 export function rowToRecentGame(row: PriorGameRow, teamId: number): RecentGame {
   const date = String(row.date);
-  const home = eraCoordinates(
-    row.homeAbbr,
+  const resolved = resolvePhysicalVenue({
     date,
-    parseFloat(row.homeLat),
-    parseFloat(row.homeLon)
-  );
-  const away = eraCoordinates(
-    row.awayAbbr,
-    date,
-    parseFloat(row.awayLat),
-    parseFloat(row.awayLon)
-  );
-  // A neutral-site game is an away game for BOTH teams: neither slept at home, and
-  // the travel leg has to depart from and arrive at the real venue, not an arena
-  // nobody visited. Unknown city → null → today's behaviour (home team's arena).
-  const neutral = row.neutralSite
-    ? neutralVenueCoordinates(row.neutralVenueCity)
-    : null;
-  const venue = neutral
-    ? { venueLat: neutral.latitude, venueLon: neutral.longitude }
-    : {};
+    homeTeam: { abbreviation: row.homeAbbr, latitude: Number(row.homeLat), longitude: Number(row.homeLon), altitude: row.homeAltitude },
+    awayTeam: { abbreviation: row.awayAbbr, latitude: Number(row.awayLat), longitude: Number(row.awayLon), altitude: row.awayAltitude },
+    neutralSite: row.neutralSite,
+    neutralVenueCity: row.neutralVenueCity,
+  });
+  const home = resolved.homeBase;
+  const away = resolved.awayBase;
 
-  // Which side the subject team is on is a fact about the fixture; whether that counts
-  // as "home" is a separate question the neutral flag can override. Keeping them apart
-  // is what lets the nominal home team of a Paris game be scored as a road team.
   const isHomeSide = row.homeTeamId === teamId;
   const self = isHomeSide ? home : away;
   const opponent = isHomeSide ? away : home;
 
   return {
     date,
-    isHome: isHomeSide && !neutral,
+    isHome: isHomeSide && resolved.homeCourt,
     teamLat: self.latitude,
     teamLon: self.longitude,
     opponentLat: opponent.latitude,
@@ -173,6 +157,7 @@ export function rowToRecentGame(row: PriorGameRow, teamId: number): RecentGame {
       row.homeScore != null && row.awayScore != null
         ? Math.abs(row.homeScore - row.awayScore)
         : null,
-    ...venue,
+    venueLat: resolved.venue.latitude,
+    venueLon: resolved.venue.longitude,
   };
 }

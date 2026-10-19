@@ -17,9 +17,9 @@ import type { ScheduleDisparityResponse, ScheduleDisparityTeam } from "@/types";
  *
  * Held until the stamp moves or max age expires, like the Season Report: this reads
  * every game in a season with no LIMIT and reduces them in JS. `getSeasonGamesStamp` is the
- * right stamp without a new query — it counts `publishableGames(eq(games.season, season))`,
- * which is exactly the population `getRegularSeasonScheduleForDisparity` reads. It also has to
- * be the per-season stamp rather than the backtest's: this module reads scheduled games, not
+ * right stamp: it tracks published regular coverage and an all-season physical-context digest.
+ * A changed Cup fixture therefore invalidates derived rest/density without becoming a ranked
+ * regular-season target. The stamp is season-scoped rather than the backtest's: this module reads scheduled games, not
  * only final ones, and reporting on a schedule before it is played is the whole point.
  *
  * Unbounded because the key set is closed — the route validates against
@@ -49,7 +49,7 @@ async function buildScheduleDisparity(
   // by the generic message in production, which silently unwrote the reason above. 422 rather
   // than 400: the request was understood and the season is valid, and there is no ranking to give.
   const rankability = seasonRankability(games);
-  if (!rankability.rankable && games.length > 0) {
+  if (!rankability.rankable && games.some(game => !game.contextOnly)) {
     throw new PublicApiError(
       `${season} cannot be ranked: teams played between ${rankability.fewestGames} and ` +
         `${rankability.mostGames} games. Schedule edge compares teams within a season, so an ` +

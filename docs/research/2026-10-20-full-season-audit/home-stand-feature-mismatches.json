@@ -1,0 +1,4058 @@
+[
+  {
+    "game_id": 118712,
+    "date": "2026-10-23",
+    "team": "NYK",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 118716,
+    "date": "2026-10-23",
+    "team": "TOR",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 118717,
+    "date": "2026-10-23",
+    "team": "DET",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 118719,
+    "date": "2026-10-23",
+    "team": "HOU",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 118720,
+    "date": "2026-10-23",
+    "team": "NOP",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 118721,
+    "date": "2026-10-23",
+    "team": "MEM",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 118722,
+    "date": "2026-10-23",
+    "team": "LAC",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 118723,
+    "date": "2026-10-23",
+    "team": "POR",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 118724,
+    "date": "2026-10-24",
+    "team": "MIA",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 118725,
+    "date": "2026-10-24",
+    "team": "BKN",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 118726,
+    "date": "2026-10-24",
+    "team": "MIL",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 118728,
+    "date": "2026-10-24",
+    "team": "WAS",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 118729,
+    "date": "2026-10-24",
+    "team": "SAS",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 118731,
+    "date": "2026-10-24",
+    "team": "GSW",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 118732,
+    "date": "2026-10-25",
+    "team": "LAL",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 118733,
+    "date": "2026-10-25",
+    "team": "IND",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 118734,
+    "date": "2026-10-25",
+    "team": "ORL",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 118740,
+    "date": "2026-10-26",
+    "team": "MIN",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 118741,
+    "date": "2026-10-26",
+    "team": "CHI",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 118742,
+    "date": "2026-10-26",
+    "team": "DAL",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 118744,
+    "date": "2026-10-26",
+    "team": "PHX",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 118745,
+    "date": "2026-10-26",
+    "team": "ATL",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 118748,
+    "date": "2026-10-27",
+    "team": "BKN",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 118750,
+    "date": "2026-10-27",
+    "team": "SAC",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 118752,
+    "date": "2026-10-28",
+    "team": "MIA",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 118754,
+    "date": "2026-10-28",
+    "team": "CHA",
+    "expected": 0,
+    "actual": 3,
+    "current_home": false
+  },
+  {
+    "game_id": 118755,
+    "date": "2026-10-28",
+    "team": "PHI",
+    "expected": 0,
+    "actual": 3,
+    "current_home": false
+  },
+  {
+    "game_id": 118757,
+    "date": "2026-10-28",
+    "team": "NYK",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 118758,
+    "date": "2026-10-28",
+    "team": "HOU",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 118760,
+    "date": "2026-10-28",
+    "team": "DEN",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 118761,
+    "date": "2026-10-28",
+    "team": "SAS",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 118762,
+    "date": "2026-10-28",
+    "team": "OKC",
+    "expected": 0,
+    "actual": 3,
+    "current_home": false
+  },
+  {
+    "game_id": 118763,
+    "date": "2026-10-28",
+    "team": "LAL",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 118764,
+    "date": "2026-10-29",
+    "team": "CLE",
+    "expected": 0,
+    "actual": 3,
+    "current_home": false
+  },
+  {
+    "game_id": 118768,
+    "date": "2026-10-30",
+    "team": "CHI",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 118769,
+    "date": "2026-10-30",
+    "team": "DET",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 118772,
+    "date": "2026-10-30",
+    "team": "IND",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 118774,
+    "date": "2026-10-30",
+    "team": "LAC",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 118777,
+    "date": "2026-10-31",
+    "team": "POR",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 118778,
+    "date": "2026-10-31",
+    "team": "PHI",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 118779,
+    "date": "2026-10-31",
+    "team": "ATL",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 118782,
+    "date": "2026-10-31",
+    "team": "MIN",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 118784,
+    "date": "2026-11-01",
+    "team": "BOS",
+    "expected": 0,
+    "actual": 4,
+    "current_home": false
+  },
+  {
+    "game_id": 118785,
+    "date": "2026-11-01",
+    "team": "BKN",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 118787,
+    "date": "2026-11-01",
+    "team": "TOR",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 118792,
+    "date": "2026-11-02",
+    "team": "WAS",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 118795,
+    "date": "2026-11-02",
+    "team": "NOP",
+    "expected": 0,
+    "actual": 3,
+    "current_home": false
+  },
+  {
+    "game_id": 118796,
+    "date": "2026-11-02",
+    "team": "MIL",
+    "expected": 0,
+    "actual": 3,
+    "current_home": false
+  },
+  {
+    "game_id": 118798,
+    "date": "2026-11-02",
+    "team": "UTA",
+    "expected": 0,
+    "actual": 5,
+    "current_home": false
+  },
+  {
+    "game_id": 118800,
+    "date": "2026-11-02",
+    "team": "PHX",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 118802,
+    "date": "2026-11-02",
+    "team": "MIA",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 118803,
+    "date": "2026-11-04",
+    "team": "PHI",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 118806,
+    "date": "2026-11-04",
+    "team": "CHA",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 118808,
+    "date": "2026-11-04",
+    "team": "IND",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 118810,
+    "date": "2026-11-04",
+    "team": "CLE",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 118811,
+    "date": "2026-11-04",
+    "team": "MIN",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 118814,
+    "date": "2026-11-04",
+    "team": "DAL",
+    "expected": 0,
+    "actual": 3,
+    "current_home": false
+  },
+  {
+    "game_id": 118815,
+    "date": "2026-11-04",
+    "team": "LAL",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 118817,
+    "date": "2026-11-05",
+    "team": "ORL",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 118819,
+    "date": "2026-11-06",
+    "team": "WAS",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 118820,
+    "date": "2026-11-06",
+    "team": "BOS",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 118823,
+    "date": "2026-11-06",
+    "team": "OKC",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 118827,
+    "date": "2026-11-06",
+    "team": "SAS",
+    "expected": 0,
+    "actual": 3,
+    "current_home": false
+  },
+  {
+    "game_id": 118828,
+    "date": "2026-11-07",
+    "team": "DEN",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 118829,
+    "date": "2026-11-07",
+    "team": "BKN",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 118830,
+    "date": "2026-11-07",
+    "team": "NYK",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 118833,
+    "date": "2026-11-07",
+    "team": "HOU",
+    "expected": 0,
+    "actual": 3,
+    "current_home": false
+  },
+  {
+    "game_id": 118836,
+    "date": "2026-11-08",
+    "team": "LAL",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 118840,
+    "date": "2026-11-08",
+    "team": "NOP",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 118843,
+    "date": "2026-11-09",
+    "team": "CLE",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 118845,
+    "date": "2026-11-09",
+    "team": "MEM",
+    "expected": 0,
+    "actual": 4,
+    "current_home": false
+  },
+  {
+    "game_id": 118850,
+    "date": "2026-11-10",
+    "team": "MIL",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 118852,
+    "date": "2026-11-10",
+    "team": "LAC",
+    "expected": 0,
+    "actual": 3,
+    "current_home": false
+  },
+  {
+    "game_id": 118855,
+    "date": "2026-11-10",
+    "team": "OKC",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 118864,
+    "date": "2026-11-11",
+    "team": "GSW",
+    "expected": 0,
+    "actual": 6,
+    "current_home": false
+  },
+  {
+    "game_id": 118866,
+    "date": "2026-11-12",
+    "team": "TOR",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 118867,
+    "date": "2026-11-12",
+    "team": "DET",
+    "expected": 0,
+    "actual": 3,
+    "current_home": false
+  },
+  {
+    "game_id": 118868,
+    "date": "2026-11-12",
+    "team": "DAL",
+    "expected": 0,
+    "actual": 3,
+    "current_home": false
+  },
+  {
+    "game_id": 118869,
+    "date": "2026-11-12",
+    "team": "CHA",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 118870,
+    "date": "2026-11-13",
+    "team": "NYK",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 118871,
+    "date": "2026-11-13",
+    "team": "MIL",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 118873,
+    "date": "2026-11-13",
+    "team": "ATL",
+    "expected": 0,
+    "actual": 3,
+    "current_home": false
+  },
+  {
+    "game_id": 118874,
+    "date": "2026-11-13",
+    "team": "MEM",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 118875,
+    "date": "2026-11-13",
+    "team": "UTA",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 118877,
+    "date": "2026-11-13",
+    "team": "POR",
+    "expected": 0,
+    "actual": 3,
+    "current_home": false
+  },
+  {
+    "game_id": 118883,
+    "date": "2026-11-14",
+    "team": "CHI",
+    "expected": 0,
+    "actual": 3,
+    "current_home": false
+  },
+  {
+    "game_id": 118884,
+    "date": "2026-11-15",
+    "team": "IND",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 118887,
+    "date": "2026-11-15",
+    "team": "SAS",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 118890,
+    "date": "2026-11-15",
+    "team": "HOU",
+    "expected": 0,
+    "actual": 3,
+    "current_home": false
+  },
+  {
+    "game_id": 118893,
+    "date": "2026-11-16",
+    "team": "ORL",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 118895,
+    "date": "2026-11-16",
+    "team": "MEM",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 118896,
+    "date": "2026-11-16",
+    "team": "PHI",
+    "expected": 0,
+    "actual": 3,
+    "current_home": false
+  },
+  {
+    "game_id": 118900,
+    "date": "2026-11-16",
+    "team": "PHX",
+    "expected": 0,
+    "actual": 7,
+    "current_home": false
+  },
+  {
+    "game_id": 118905,
+    "date": "2026-11-17",
+    "team": "UTA",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 118908,
+    "date": "2026-11-18",
+    "team": "MIL",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 118911,
+    "date": "2026-11-18",
+    "team": "WAS",
+    "expected": 0,
+    "actual": 3,
+    "current_home": false
+  },
+  {
+    "game_id": 118914,
+    "date": "2026-11-18",
+    "team": "BOS",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 118921,
+    "date": "2026-11-19",
+    "team": "LAC",
+    "expected": 0,
+    "actual": 3,
+    "current_home": false
+  },
+  {
+    "game_id": 118923,
+    "date": "2026-11-20",
+    "team": "ORL",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 118924,
+    "date": "2026-11-20",
+    "team": "IND",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 118925,
+    "date": "2026-11-20",
+    "team": "TOR",
+    "expected": 0,
+    "actual": 3,
+    "current_home": false
+  },
+  {
+    "game_id": 118927,
+    "date": "2026-11-20",
+    "team": "NOP",
+    "expected": 0,
+    "actual": 5,
+    "current_home": false
+  },
+  {
+    "game_id": 118930,
+    "date": "2026-11-20",
+    "team": "SAC",
+    "expected": 0,
+    "actual": 7,
+    "current_home": false
+  },
+  {
+    "game_id": 118931,
+    "date": "2026-11-21",
+    "team": "MIL",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 118934,
+    "date": "2026-11-21",
+    "team": "MEM",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 118937,
+    "date": "2026-11-22",
+    "team": "DET",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 118938,
+    "date": "2026-11-22",
+    "team": "OKC",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 118940,
+    "date": "2026-11-22",
+    "team": "DEN",
+    "expected": 0,
+    "actual": 3,
+    "current_home": false
+  },
+  {
+    "game_id": 118941,
+    "date": "2026-11-22",
+    "team": "DAL",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 118948,
+    "date": "2026-11-23",
+    "team": "BKN",
+    "expected": 0,
+    "actual": 3,
+    "current_home": false
+  },
+  {
+    "game_id": 118949,
+    "date": "2026-11-23",
+    "team": "CLE",
+    "expected": 0,
+    "actual": 4,
+    "current_home": false
+  },
+  {
+    "game_id": 118952,
+    "date": "2026-11-23",
+    "team": "UTA",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 118953,
+    "date": "2026-11-23",
+    "team": "SAS",
+    "expected": 0,
+    "actual": 3,
+    "current_home": false
+  },
+  {
+    "game_id": 118957,
+    "date": "2026-11-25",
+    "team": "MIA",
+    "expected": 0,
+    "actual": 5,
+    "current_home": false
+  },
+  {
+    "game_id": 118958,
+    "date": "2026-11-25",
+    "team": "CHI",
+    "expected": 0,
+    "actual": 3,
+    "current_home": false
+  },
+  {
+    "game_id": 118960,
+    "date": "2026-11-25",
+    "team": "MIN",
+    "expected": 0,
+    "actual": 8,
+    "current_home": false
+  },
+  {
+    "game_id": 118964,
+    "date": "2026-11-25",
+    "team": "SAC",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 118967,
+    "date": "2026-11-27",
+    "team": "MIL",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 118968,
+    "date": "2026-11-27",
+    "team": "PHI",
+    "expected": 0,
+    "actual": 3,
+    "current_home": false
+  },
+  {
+    "game_id": 118970,
+    "date": "2026-11-27",
+    "team": "ATL",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 118971,
+    "date": "2026-11-27",
+    "team": "MEM",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 118973,
+    "date": "2026-11-27",
+    "team": "LAL",
+    "expected": 0,
+    "actual": 4,
+    "current_home": false
+  },
+  {
+    "game_id": 118974,
+    "date": "2026-11-27",
+    "team": "DEN",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 118975,
+    "date": "2026-11-27",
+    "team": "NOP",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 118976,
+    "date": "2026-11-27",
+    "team": "GSW",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 118977,
+    "date": "2026-11-28",
+    "team": "ORL",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 118979,
+    "date": "2026-11-28",
+    "team": "IND",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 118980,
+    "date": "2026-11-28",
+    "team": "OKC",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 118983,
+    "date": "2026-11-29",
+    "team": "BOS",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 118984,
+    "date": "2026-11-29",
+    "team": "PHX",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 118990,
+    "date": "2026-11-29",
+    "team": "LAC",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 118991,
+    "date": "2026-11-29",
+    "team": "MIN",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 118992,
+    "date": "2026-11-30",
+    "team": "WAS",
+    "expected": 0,
+    "actual": 3,
+    "current_home": false
+  },
+  {
+    "game_id": 118997,
+    "date": "2026-11-30",
+    "team": "SAS",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119000,
+    "date": "2026-12-01",
+    "team": "MEM",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119002,
+    "date": "2026-12-01",
+    "team": "NYK",
+    "expected": 0,
+    "actual": 5,
+    "current_home": false
+  },
+  {
+    "game_id": 119003,
+    "date": "2026-12-01",
+    "team": "TOR",
+    "expected": 0,
+    "actual": 3,
+    "current_home": false
+  },
+  {
+    "game_id": 119006,
+    "date": "2026-12-01",
+    "team": "UTA",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119009,
+    "date": "2026-12-02",
+    "team": "CHA",
+    "expected": 0,
+    "actual": 4,
+    "current_home": false
+  },
+  {
+    "game_id": 119013,
+    "date": "2026-12-02",
+    "team": "BKN",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119014,
+    "date": "2026-12-02",
+    "team": "SAC",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119018,
+    "date": "2026-12-03",
+    "team": "CLE",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119021,
+    "date": "2026-12-12",
+    "team": "MIL",
+    "expected": 0,
+    "actual": 3,
+    "current_home": false
+  },
+  {
+    "game_id": 119024,
+    "date": "2026-12-12",
+    "team": "GSW",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119028,
+    "date": "2026-12-12",
+    "team": "ATL",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119029,
+    "date": "2026-12-13",
+    "team": "BOS",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119031,
+    "date": "2026-12-13",
+    "team": "DET",
+    "expected": 0,
+    "actual": 4,
+    "current_home": false
+  },
+  {
+    "game_id": 119032,
+    "date": "2026-12-13",
+    "team": "HOU",
+    "expected": 0,
+    "actual": 5,
+    "current_home": false
+  },
+  {
+    "game_id": 119033,
+    "date": "2026-12-13",
+    "team": "LAC",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119034,
+    "date": "2026-12-13",
+    "team": "NOP",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119036,
+    "date": "2026-12-14",
+    "team": "BKN",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119037,
+    "date": "2026-12-14",
+    "team": "PHI",
+    "expected": 0,
+    "actual": 3,
+    "current_home": false
+  },
+  {
+    "game_id": 119038,
+    "date": "2026-12-14",
+    "team": "WAS",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119039,
+    "date": "2026-12-14",
+    "team": "MIA",
+    "expected": 0,
+    "actual": 3,
+    "current_home": false
+  },
+  {
+    "game_id": 119046,
+    "date": "2026-12-15",
+    "team": "SAS",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119050,
+    "date": "2026-12-16",
+    "team": "PHX",
+    "expected": 0,
+    "actual": 4,
+    "current_home": false
+  },
+  {
+    "game_id": 119052,
+    "date": "2026-12-16",
+    "team": "CLE",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119053,
+    "date": "2026-12-16",
+    "team": "DAL",
+    "expected": 0,
+    "actual": 3,
+    "current_home": false
+  },
+  {
+    "game_id": 119055,
+    "date": "2026-12-16",
+    "team": "UTA",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119058,
+    "date": "2026-12-16",
+    "team": "SAC",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119060,
+    "date": "2026-12-16",
+    "team": "LAL",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119061,
+    "date": "2026-12-17",
+    "team": "POR",
+    "expected": 0,
+    "actual": 7,
+    "current_home": false
+  },
+  {
+    "game_id": 119064,
+    "date": "2026-12-18",
+    "team": "OKC",
+    "expected": 0,
+    "actual": 3,
+    "current_home": false
+  },
+  {
+    "game_id": 119068,
+    "date": "2026-12-18",
+    "team": "ORL",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119071,
+    "date": "2026-12-18",
+    "team": "HOU",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119075,
+    "date": "2026-12-18",
+    "team": "CHI",
+    "expected": 0,
+    "actual": 6,
+    "current_home": false
+  },
+  {
+    "game_id": 119080,
+    "date": "2026-12-20",
+    "team": "WAS",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119086,
+    "date": "2026-12-20",
+    "team": "SAS",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119087,
+    "date": "2026-12-20",
+    "team": "DET",
+    "expected": 0,
+    "actual": 3,
+    "current_home": false
+  },
+  {
+    "game_id": 119089,
+    "date": "2026-12-20",
+    "team": "IND",
+    "expected": 0,
+    "actual": 3,
+    "current_home": false
+  },
+  {
+    "game_id": 119090,
+    "date": "2026-12-21",
+    "team": "PHI",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119096,
+    "date": "2026-12-21",
+    "team": "MEM",
+    "expected": 0,
+    "actual": 5,
+    "current_home": false
+  },
+  {
+    "game_id": 119097,
+    "date": "2026-12-21",
+    "team": "MIL",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119099,
+    "date": "2026-12-21",
+    "team": "DEN",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119100,
+    "date": "2026-12-22",
+    "team": "TOR",
+    "expected": 0,
+    "actual": 3,
+    "current_home": false
+  },
+  {
+    "game_id": 119102,
+    "date": "2026-12-22",
+    "team": "DAL",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119104,
+    "date": "2026-12-23",
+    "team": "CHA",
+    "expected": 0,
+    "actual": 5,
+    "current_home": false
+  },
+  {
+    "game_id": 119105,
+    "date": "2026-12-23",
+    "team": "CLE",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119107,
+    "date": "2026-12-23",
+    "team": "SAS",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119112,
+    "date": "2026-12-23",
+    "team": "MIN",
+    "expected": 0,
+    "actual": 3,
+    "current_home": false
+  },
+  {
+    "game_id": 119113,
+    "date": "2026-12-23",
+    "team": "OKC",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119117,
+    "date": "2026-12-23",
+    "team": "GSW",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119119,
+    "date": "2026-12-25",
+    "team": "MIA",
+    "expected": 0,
+    "actual": 4,
+    "current_home": false
+  },
+  {
+    "game_id": 119120,
+    "date": "2026-12-25",
+    "team": "PHI",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119126,
+    "date": "2026-12-26",
+    "team": "NOP",
+    "expected": 0,
+    "actual": 5,
+    "current_home": false
+  },
+  {
+    "game_id": 119129,
+    "date": "2026-12-26",
+    "team": "PHX",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119130,
+    "date": "2026-12-26",
+    "team": "MEM",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119132,
+    "date": "2026-12-27",
+    "team": "WAS",
+    "expected": 0,
+    "actual": 3,
+    "current_home": false
+  },
+  {
+    "game_id": 119134,
+    "date": "2026-12-27",
+    "team": "BKN",
+    "expected": 0,
+    "actual": 6,
+    "current_home": false
+  },
+  {
+    "game_id": 119135,
+    "date": "2026-12-27",
+    "team": "MIL",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119136,
+    "date": "2026-12-27",
+    "team": "UTA",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119138,
+    "date": "2026-12-27",
+    "team": "ATL",
+    "expected": 0,
+    "actual": 4,
+    "current_home": false
+  },
+  {
+    "game_id": 119140,
+    "date": "2026-12-27",
+    "team": "MIN",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119144,
+    "date": "2026-12-28",
+    "team": "CLE",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119145,
+    "date": "2026-12-28",
+    "team": "GSW",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119147,
+    "date": "2026-12-29",
+    "team": "CHI",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119148,
+    "date": "2026-12-29",
+    "team": "ORL",
+    "expected": 0,
+    "actual": 4,
+    "current_home": false
+  },
+  {
+    "game_id": 119149,
+    "date": "2026-12-29",
+    "team": "LAC",
+    "expected": 0,
+    "actual": 5,
+    "current_home": false
+  },
+  {
+    "game_id": 119150,
+    "date": "2026-12-29",
+    "team": "MIA",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119151,
+    "date": "2026-12-29",
+    "team": "SAS",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119155,
+    "date": "2026-12-29",
+    "team": "HOU",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119158,
+    "date": "2026-12-30",
+    "team": "BOS",
+    "expected": 0,
+    "actual": 7,
+    "current_home": false
+  },
+  {
+    "game_id": 119160,
+    "date": "2026-12-30",
+    "team": "NYK",
+    "expected": 0,
+    "actual": 3,
+    "current_home": false
+  },
+  {
+    "game_id": 119166,
+    "date": "2026-12-31",
+    "team": "DEN",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119168,
+    "date": "2026-12-31",
+    "team": "LAL",
+    "expected": 0,
+    "actual": 5,
+    "current_home": false
+  },
+  {
+    "game_id": 119175,
+    "date": "2027-01-01",
+    "team": "DAL",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119177,
+    "date": "2027-01-02",
+    "team": "CLE",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119179,
+    "date": "2027-01-02",
+    "team": "MIN",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119183,
+    "date": "2027-01-02",
+    "team": "UTA",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119185,
+    "date": "2027-01-02",
+    "team": "SAC",
+    "expected": 0,
+    "actual": 4,
+    "current_home": false
+  },
+  {
+    "game_id": 119187,
+    "date": "2027-01-03",
+    "team": "DET",
+    "expected": 0,
+    "actual": 3,
+    "current_home": false
+  },
+  {
+    "game_id": 119188,
+    "date": "2027-01-03",
+    "team": "CHA",
+    "expected": 0,
+    "actual": 3,
+    "current_home": false
+  },
+  {
+    "game_id": 119189,
+    "date": "2027-01-03",
+    "team": "MEM",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119195,
+    "date": "2027-01-04",
+    "team": "CHI",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119196,
+    "date": "2027-01-04",
+    "team": "ATL",
+    "expected": 0,
+    "actual": 3,
+    "current_home": false
+  },
+  {
+    "game_id": 119202,
+    "date": "2027-01-05",
+    "team": "TOR",
+    "expected": 0,
+    "actual": 4,
+    "current_home": false
+  },
+  {
+    "game_id": 119206,
+    "date": "2027-01-05",
+    "team": "MIL",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119207,
+    "date": "2027-01-05",
+    "team": "MIN",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119208,
+    "date": "2027-01-05",
+    "team": "PHX",
+    "expected": 0,
+    "actual": 5,
+    "current_home": false
+  },
+  {
+    "game_id": 119210,
+    "date": "2027-01-06",
+    "team": "UTA",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119211,
+    "date": "2027-01-06",
+    "team": "OKC",
+    "expected": 0,
+    "actual": 4,
+    "current_home": false
+  },
+  {
+    "game_id": 119212,
+    "date": "2027-01-06",
+    "team": "POR",
+    "expected": 0,
+    "actual": 3,
+    "current_home": false
+  },
+  {
+    "game_id": 119213,
+    "date": "2027-01-06",
+    "team": "IND",
+    "expected": 0,
+    "actual": 4,
+    "current_home": false
+  },
+  {
+    "game_id": 119216,
+    "date": "2027-01-07",
+    "team": "DEN",
+    "expected": 0,
+    "actual": 3,
+    "current_home": false
+  },
+  {
+    "game_id": 119217,
+    "date": "2027-01-07",
+    "team": "CLE",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119219,
+    "date": "2027-01-07",
+    "team": "MIA",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119226,
+    "date": "2027-01-07",
+    "team": "CHI",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119230,
+    "date": "2027-01-08",
+    "team": "ORL",
+    "expected": 0,
+    "actual": 3,
+    "current_home": false
+  },
+  {
+    "game_id": 119236,
+    "date": "2027-01-09",
+    "team": "HOU",
+    "expected": 0,
+    "actual": 4,
+    "current_home": false
+  },
+  {
+    "game_id": 119237,
+    "date": "2027-01-09",
+    "team": "MIL",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119239,
+    "date": "2027-01-09",
+    "team": "CHA",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119241,
+    "date": "2027-01-10",
+    "team": "SAS",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119243,
+    "date": "2027-01-10",
+    "team": "NOP",
+    "expected": 0,
+    "actual": 5,
+    "current_home": false
+  },
+  {
+    "game_id": 119245,
+    "date": "2027-01-10",
+    "team": "PHI",
+    "expected": 0,
+    "actual": 3,
+    "current_home": false
+  },
+  {
+    "game_id": 119246,
+    "date": "2027-01-10",
+    "team": "DAL",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119249,
+    "date": "2027-01-11",
+    "team": "BKN",
+    "expected": 0,
+    "actual": 3,
+    "current_home": false
+  },
+  {
+    "game_id": 119250,
+    "date": "2027-01-11",
+    "team": "ATL",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119253,
+    "date": "2027-01-11",
+    "team": "CLE",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119254,
+    "date": "2027-01-11",
+    "team": "LAL",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119256,
+    "date": "2027-01-12",
+    "team": "DET",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119257,
+    "date": "2027-01-12",
+    "team": "WAS",
+    "expected": 0,
+    "actual": 6,
+    "current_home": false
+  },
+  {
+    "game_id": 119261,
+    "date": "2027-01-12",
+    "team": "ORL",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119262,
+    "date": "2027-01-12",
+    "team": "SAC",
+    "expected": 0,
+    "actual": 4,
+    "current_home": false
+  },
+  {
+    "game_id": 119264,
+    "date": "2027-01-13",
+    "team": "NYK",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119265,
+    "date": "2027-01-13",
+    "team": "MIL",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119266,
+    "date": "2027-01-13",
+    "team": "PHX",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119273,
+    "date": "2027-01-14",
+    "team": "MIA",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119274,
+    "date": "2027-01-14",
+    "team": "MIN",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119275,
+    "date": "2027-01-14",
+    "team": "MEM",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119278,
+    "date": "2027-01-14",
+    "team": "LAC",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119279,
+    "date": "2027-01-15",
+    "team": "GSW",
+    "expected": 0,
+    "actual": 7,
+    "current_home": false
+  },
+  {
+    "game_id": 119283,
+    "date": "2027-01-15",
+    "team": "UTA",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119285,
+    "date": "2027-01-15",
+    "team": "SAC",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119291,
+    "date": "2027-01-16",
+    "team": "DET",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119294,
+    "date": "2027-01-17",
+    "team": "IND",
+    "expected": 0,
+    "actual": 4,
+    "current_home": false
+  },
+  {
+    "game_id": 119295,
+    "date": "2027-01-17",
+    "team": "TOR",
+    "expected": 0,
+    "actual": 6,
+    "current_home": false
+  },
+  {
+    "game_id": 119296,
+    "date": "2027-01-17",
+    "team": "POR",
+    "expected": 0,
+    "actual": 4,
+    "current_home": false
+  },
+  {
+    "game_id": 119300,
+    "date": "2027-01-17",
+    "team": "MIL",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119302,
+    "date": "2027-01-18",
+    "team": "PHI",
+    "expected": 0,
+    "actual": 3,
+    "current_home": false
+  },
+  {
+    "game_id": 119303,
+    "date": "2027-01-18",
+    "team": "BOS",
+    "expected": 0,
+    "actual": 3,
+    "current_home": false
+  },
+  {
+    "game_id": 119305,
+    "date": "2027-01-18",
+    "team": "HOU",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119306,
+    "date": "2027-01-18",
+    "team": "OKC",
+    "expected": 0,
+    "actual": 3,
+    "current_home": false
+  },
+  {
+    "game_id": 119310,
+    "date": "2027-01-19",
+    "team": "CHI",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119313,
+    "date": "2027-01-19",
+    "team": "UTA",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119314,
+    "date": "2027-01-19",
+    "team": "LAL",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119318,
+    "date": "2027-01-20",
+    "team": "TOR",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119321,
+    "date": "2027-01-20",
+    "team": "MEM",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119322,
+    "date": "2027-01-20",
+    "team": "LAC",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119323,
+    "date": "2027-01-20",
+    "team": "MIA",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119325,
+    "date": "2027-01-21",
+    "team": "PHI",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119326,
+    "date": "2027-01-21",
+    "team": "CLE",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119327,
+    "date": "2027-01-21",
+    "team": "WAS",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119329,
+    "date": "2027-01-22",
+    "team": "NYK",
+    "expected": 0,
+    "actual": 4,
+    "current_home": false
+  },
+  {
+    "game_id": 119333,
+    "date": "2027-01-22",
+    "team": "DAL",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119335,
+    "date": "2027-01-22",
+    "team": "UTA",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119336,
+    "date": "2027-01-22",
+    "team": "MIN",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119338,
+    "date": "2027-01-22",
+    "team": "SAC",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119342,
+    "date": "2027-01-23",
+    "team": "CHA",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119343,
+    "date": "2027-01-23",
+    "team": "ATL",
+    "expected": 0,
+    "actual": 5,
+    "current_home": false
+  },
+  {
+    "game_id": 119351,
+    "date": "2027-01-24",
+    "team": "LAC",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119352,
+    "date": "2027-01-24",
+    "team": "OKC",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119354,
+    "date": "2027-01-25",
+    "team": "ORL",
+    "expected": 0,
+    "actual": 3,
+    "current_home": false
+  },
+  {
+    "game_id": 119356,
+    "date": "2027-01-25",
+    "team": "MIA",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119357,
+    "date": "2027-01-25",
+    "team": "DAL",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119362,
+    "date": "2027-01-26",
+    "team": "CHI",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119363,
+    "date": "2027-01-26",
+    "team": "PHX",
+    "expected": 0,
+    "actual": 3,
+    "current_home": false
+  },
+  {
+    "game_id": 119368,
+    "date": "2027-01-27",
+    "team": "DET",
+    "expected": 0,
+    "actual": 3,
+    "current_home": false
+  },
+  {
+    "game_id": 119373,
+    "date": "2027-01-27",
+    "team": "CHA",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119374,
+    "date": "2027-01-27",
+    "team": "NOP",
+    "expected": 0,
+    "actual": 3,
+    "current_home": false
+  },
+  {
+    "game_id": 119375,
+    "date": "2027-01-27",
+    "team": "DEN",
+    "expected": 0,
+    "actual": 7,
+    "current_home": false
+  },
+  {
+    "game_id": 119376,
+    "date": "2027-01-27",
+    "team": "GSW",
+    "expected": 0,
+    "actual": 3,
+    "current_home": false
+  },
+  {
+    "game_id": 119377,
+    "date": "2027-01-28",
+    "team": "LAL",
+    "expected": 0,
+    "actual": 3,
+    "current_home": false
+  },
+  {
+    "game_id": 119381,
+    "date": "2027-01-28",
+    "team": "PHI",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119382,
+    "date": "2027-01-28",
+    "team": "MEM",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119385,
+    "date": "2027-01-29",
+    "team": "CLE",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119389,
+    "date": "2027-01-29",
+    "team": "ORL",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119393,
+    "date": "2027-01-30",
+    "team": "SAS",
+    "expected": 0,
+    "actual": 5,
+    "current_home": false
+  },
+  {
+    "game_id": 119394,
+    "date": "2027-01-30",
+    "team": "WAS",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119395,
+    "date": "2027-01-30",
+    "team": "NOP",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119400,
+    "date": "2027-01-31",
+    "team": "BKN",
+    "expected": 0,
+    "actual": 6,
+    "current_home": false
+  },
+  {
+    "game_id": 119401,
+    "date": "2027-01-31",
+    "team": "BOS",
+    "expected": 0,
+    "actual": 6,
+    "current_home": false
+  },
+  {
+    "game_id": 119405,
+    "date": "2027-01-31",
+    "team": "POR",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119406,
+    "date": "2027-01-31",
+    "team": "HOU",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119409,
+    "date": "2027-02-01",
+    "team": "NYK",
+    "expected": 0,
+    "actual": 4,
+    "current_home": false
+  },
+  {
+    "game_id": 119410,
+    "date": "2027-02-01",
+    "team": "MIA",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119412,
+    "date": "2027-02-01",
+    "team": "CLE",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119416,
+    "date": "2027-02-02",
+    "team": "CHA",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119418,
+    "date": "2027-02-02",
+    "team": "TOR",
+    "expected": 0,
+    "actual": 3,
+    "current_home": false
+  },
+  {
+    "game_id": 119419,
+    "date": "2027-02-02",
+    "team": "OKC",
+    "expected": 0,
+    "actual": 3,
+    "current_home": false
+  },
+  {
+    "game_id": 119421,
+    "date": "2027-02-02",
+    "team": "MIN",
+    "expected": 0,
+    "actual": 3,
+    "current_home": false
+  },
+  {
+    "game_id": 119423,
+    "date": "2027-02-03",
+    "team": "ATL",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119424,
+    "date": "2027-02-03",
+    "team": "PHI",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119426,
+    "date": "2027-02-03",
+    "team": "UTA",
+    "expected": 0,
+    "actual": 4,
+    "current_home": false
+  },
+  {
+    "game_id": 119427,
+    "date": "2027-02-03",
+    "team": "GSW",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119430,
+    "date": "2027-02-04",
+    "team": "BOS",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119431,
+    "date": "2027-02-04",
+    "team": "MIL",
+    "expected": 0,
+    "actual": 3,
+    "current_home": false
+  },
+  {
+    "game_id": 119434,
+    "date": "2027-02-04",
+    "team": "ORL",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119435,
+    "date": "2027-02-04",
+    "team": "DAL",
+    "expected": 0,
+    "actual": 3,
+    "current_home": false
+  },
+  {
+    "game_id": 119440,
+    "date": "2027-02-05",
+    "team": "DET",
+    "expected": 0,
+    "actual": 3,
+    "current_home": false
+  },
+  {
+    "game_id": 119441,
+    "date": "2027-02-05",
+    "team": "LAC",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119442,
+    "date": "2027-02-05",
+    "team": "HOU",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119443,
+    "date": "2027-02-05",
+    "team": "IND",
+    "expected": 0,
+    "actual": 5,
+    "current_home": false
+  },
+  {
+    "game_id": 119445,
+    "date": "2027-02-06",
+    "team": "MIA",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119446,
+    "date": "2027-02-06",
+    "team": "POR",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119447,
+    "date": "2027-02-06",
+    "team": "WAS",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119452,
+    "date": "2027-02-06",
+    "team": "PHX",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119453,
+    "date": "2027-02-07",
+    "team": "DEN",
+    "expected": 0,
+    "actual": 4,
+    "current_home": false
+  },
+  {
+    "game_id": 119457,
+    "date": "2027-02-07",
+    "team": "CHA",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119459,
+    "date": "2027-02-07",
+    "team": "NYK",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119463,
+    "date": "2027-02-08",
+    "team": "BKN",
+    "expected": 0,
+    "actual": 3,
+    "current_home": false
+  },
+  {
+    "game_id": 119464,
+    "date": "2027-02-08",
+    "team": "CHI",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119468,
+    "date": "2027-02-09",
+    "team": "TOR",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119470,
+    "date": "2027-02-09",
+    "team": "MIN",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119473,
+    "date": "2027-02-09",
+    "team": "SAS",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119474,
+    "date": "2027-02-09",
+    "team": "SAC",
+    "expected": 0,
+    "actual": 3,
+    "current_home": false
+  },
+  {
+    "game_id": 119477,
+    "date": "2027-02-09",
+    "team": "DET",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119479,
+    "date": "2027-02-10",
+    "team": "CLE",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119484,
+    "date": "2027-02-10",
+    "team": "LAC",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119485,
+    "date": "2027-02-11",
+    "team": "MIL",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119486,
+    "date": "2027-02-11",
+    "team": "UTA",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119487,
+    "date": "2027-02-11",
+    "team": "NYK",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119490,
+    "date": "2027-02-11",
+    "team": "CHI",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119492,
+    "date": "2027-02-12",
+    "team": "PHX",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119494,
+    "date": "2027-02-12",
+    "team": "BKN",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119498,
+    "date": "2027-02-12",
+    "team": "HOU",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119499,
+    "date": "2027-02-12",
+    "team": "DEN",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119501,
+    "date": "2027-02-13",
+    "team": "DAL",
+    "expected": 0,
+    "actual": 4,
+    "current_home": false
+  },
+  {
+    "game_id": 119503,
+    "date": "2027-02-13",
+    "team": "PHI",
+    "expected": 0,
+    "actual": 4,
+    "current_home": false
+  },
+  {
+    "game_id": 119508,
+    "date": "2027-02-14",
+    "team": "TOR",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119518,
+    "date": "2027-02-15",
+    "team": "IND",
+    "expected": 0,
+    "actual": 4,
+    "current_home": false
+  },
+  {
+    "game_id": 119519,
+    "date": "2027-02-15",
+    "team": "NYK",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119520,
+    "date": "2027-02-15",
+    "team": "ORL",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119525,
+    "date": "2027-02-16",
+    "team": "NOP",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119526,
+    "date": "2027-02-16",
+    "team": "HOU",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119530,
+    "date": "2027-02-17",
+    "team": "DAL",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119532,
+    "date": "2027-02-17",
+    "team": "MIA",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119533,
+    "date": "2027-02-17",
+    "team": "ATL",
+    "expected": 0,
+    "actual": 7,
+    "current_home": false
+  },
+  {
+    "game_id": 119535,
+    "date": "2027-02-17",
+    "team": "UTA",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119536,
+    "date": "2027-02-17",
+    "team": "BOS",
+    "expected": 0,
+    "actual": 4,
+    "current_home": false
+  },
+  {
+    "game_id": 119544,
+    "date": "2027-02-25",
+    "team": "SAC",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119546,
+    "date": "2027-02-25",
+    "team": "CHA",
+    "expected": 0,
+    "actual": 4,
+    "current_home": false
+  },
+  {
+    "game_id": 119547,
+    "date": "2027-02-25",
+    "team": "PHI",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119548,
+    "date": "2027-02-25",
+    "team": "OKC",
+    "expected": 0,
+    "actual": 7,
+    "current_home": false
+  },
+  {
+    "game_id": 119550,
+    "date": "2027-02-25",
+    "team": "WAS",
+    "expected": 0,
+    "actual": 6,
+    "current_home": false
+  },
+  {
+    "game_id": 119554,
+    "date": "2027-02-26",
+    "team": "CLE",
+    "expected": 0,
+    "actual": 4,
+    "current_home": false
+  },
+  {
+    "game_id": 119557,
+    "date": "2027-02-26",
+    "team": "MEM",
+    "expected": 0,
+    "actual": 8,
+    "current_home": false
+  },
+  {
+    "game_id": 119559,
+    "date": "2027-02-26",
+    "team": "LAL",
+    "expected": 0,
+    "actual": 4,
+    "current_home": false
+  },
+  {
+    "game_id": 119563,
+    "date": "2027-02-27",
+    "team": "BKN",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119566,
+    "date": "2027-02-27",
+    "team": "NOP",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119567,
+    "date": "2027-02-28",
+    "team": "DEN",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119569,
+    "date": "2027-02-28",
+    "team": "TOR",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119572,
+    "date": "2027-02-28",
+    "team": "BOS",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119573,
+    "date": "2027-02-28",
+    "team": "MIL",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119575,
+    "date": "2027-02-28",
+    "team": "POR",
+    "expected": 0,
+    "actual": 5,
+    "current_home": false
+  },
+  {
+    "game_id": 119577,
+    "date": "2027-03-01",
+    "team": "CHI",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119578,
+    "date": "2027-03-01",
+    "team": "UTA",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119579,
+    "date": "2027-03-01",
+    "team": "GSW",
+    "expected": 0,
+    "actual": 3,
+    "current_home": false
+  },
+  {
+    "game_id": 119585,
+    "date": "2027-03-02",
+    "team": "MEM",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119587,
+    "date": "2027-03-02",
+    "team": "DET",
+    "expected": 0,
+    "actual": 4,
+    "current_home": false
+  },
+  {
+    "game_id": 119588,
+    "date": "2027-03-02",
+    "team": "MIN",
+    "expected": 0,
+    "actual": 3,
+    "current_home": false
+  },
+  {
+    "game_id": 119590,
+    "date": "2027-03-02",
+    "team": "LAC",
+    "expected": 0,
+    "actual": 4,
+    "current_home": false
+  },
+  {
+    "game_id": 119592,
+    "date": "2027-03-03",
+    "team": "CHA",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119595,
+    "date": "2027-03-03",
+    "team": "NOP",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119597,
+    "date": "2027-03-03",
+    "team": "SAS",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119598,
+    "date": "2027-03-04",
+    "team": "POR",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119599,
+    "date": "2027-03-04",
+    "team": "IND",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119602,
+    "date": "2027-03-04",
+    "team": "NYK",
+    "expected": 0,
+    "actual": 4,
+    "current_home": false
+  },
+  {
+    "game_id": 119604,
+    "date": "2027-03-04",
+    "team": "OKC",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119609,
+    "date": "2027-03-05",
+    "team": "MIL",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119614,
+    "date": "2027-03-06",
+    "team": "ATL",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119616,
+    "date": "2027-03-06",
+    "team": "NOP",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119618,
+    "date": "2027-03-06",
+    "team": "LAC",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119619,
+    "date": "2027-03-07",
+    "team": "PHI",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119623,
+    "date": "2027-03-07",
+    "team": "HOU",
+    "expected": 0,
+    "actual": 5,
+    "current_home": false
+  },
+  {
+    "game_id": 119627,
+    "date": "2027-03-08",
+    "team": "PHX",
+    "expected": 0,
+    "actual": 4,
+    "current_home": false
+  },
+  {
+    "game_id": 119630,
+    "date": "2027-03-08",
+    "team": "DAL",
+    "expected": 0,
+    "actual": 3,
+    "current_home": false
+  },
+  {
+    "game_id": 119631,
+    "date": "2027-03-08",
+    "team": "DEN",
+    "expected": 0,
+    "actual": 3,
+    "current_home": false
+  },
+  {
+    "game_id": 119635,
+    "date": "2027-03-09",
+    "team": "CLE",
+    "expected": 0,
+    "actual": 3,
+    "current_home": false
+  },
+  {
+    "game_id": 119636,
+    "date": "2027-03-09",
+    "team": "BOS",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119637,
+    "date": "2027-03-09",
+    "team": "MEM",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119638,
+    "date": "2027-03-09",
+    "team": "WAS",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119641,
+    "date": "2027-03-10",
+    "team": "ORL",
+    "expected": 0,
+    "actual": 7,
+    "current_home": false
+  },
+  {
+    "game_id": 119642,
+    "date": "2027-03-10",
+    "team": "OKC",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119646,
+    "date": "2027-03-10",
+    "team": "GSW",
+    "expected": 0,
+    "actual": 3,
+    "current_home": false
+  },
+  {
+    "game_id": 119648,
+    "date": "2027-03-11",
+    "team": "IND",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119651,
+    "date": "2027-03-11",
+    "team": "PHI",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119652,
+    "date": "2027-03-11",
+    "team": "BKN",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119658,
+    "date": "2027-03-12",
+    "team": "MIA",
+    "expected": 0,
+    "actual": 5,
+    "current_home": false
+  },
+  {
+    "game_id": 119659,
+    "date": "2027-03-12",
+    "team": "TOR",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119660,
+    "date": "2027-03-12",
+    "team": "SAC",
+    "expected": 0,
+    "actual": 5,
+    "current_home": false
+  },
+  {
+    "game_id": 119668,
+    "date": "2027-03-13",
+    "team": "NOP",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119670,
+    "date": "2027-03-13",
+    "team": "LAC",
+    "expected": 0,
+    "actual": 3,
+    "current_home": false
+  },
+  {
+    "game_id": 119671,
+    "date": "2027-03-14",
+    "team": "BOS",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119672,
+    "date": "2027-03-14",
+    "team": "SAS",
+    "expected": 0,
+    "actual": 3,
+    "current_home": false
+  },
+  {
+    "game_id": 119673,
+    "date": "2027-03-14",
+    "team": "DET",
+    "expected": 0,
+    "actual": 4,
+    "current_home": false
+  },
+  {
+    "game_id": 119678,
+    "date": "2027-03-15",
+    "team": "TOR",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119682,
+    "date": "2027-03-15",
+    "team": "ATL",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119683,
+    "date": "2027-03-16",
+    "team": "NYK",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119684,
+    "date": "2027-03-16",
+    "team": "SAC",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119687,
+    "date": "2027-03-16",
+    "team": "MIN",
+    "expected": 0,
+    "actual": 4,
+    "current_home": false
+  },
+  {
+    "game_id": 119688,
+    "date": "2027-03-16",
+    "team": "CHA",
+    "expected": 0,
+    "actual": 3,
+    "current_home": false
+  },
+  {
+    "game_id": 119691,
+    "date": "2027-03-16",
+    "team": "LAL",
+    "expected": 0,
+    "actual": 5,
+    "current_home": false
+  },
+  {
+    "game_id": 119692,
+    "date": "2027-03-16",
+    "team": "DEN",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119693,
+    "date": "2027-03-17",
+    "team": "CHI",
+    "expected": 0,
+    "actual": 6,
+    "current_home": false
+  },
+  {
+    "game_id": 119695,
+    "date": "2027-03-17",
+    "team": "DAL",
+    "expected": 0,
+    "actual": 4,
+    "current_home": false
+  },
+  {
+    "game_id": 119696,
+    "date": "2027-03-17",
+    "team": "BKN",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119698,
+    "date": "2027-03-17",
+    "team": "MEM",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119702,
+    "date": "2027-03-18",
+    "team": "PHI",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119711,
+    "date": "2027-03-19",
+    "team": "HOU",
+    "expected": 0,
+    "actual": 3,
+    "current_home": false
+  },
+  {
+    "game_id": 119713,
+    "date": "2027-03-19",
+    "team": "POR",
+    "expected": 0,
+    "actual": 4,
+    "current_home": false
+  },
+  {
+    "game_id": 119716,
+    "date": "2027-03-20",
+    "team": "WAS",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119717,
+    "date": "2027-03-20",
+    "team": "DEN",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119720,
+    "date": "2027-03-20",
+    "team": "OKC",
+    "expected": 0,
+    "actual": 3,
+    "current_home": false
+  },
+  {
+    "game_id": 119721,
+    "date": "2027-03-20",
+    "team": "IND",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119723,
+    "date": "2027-03-21",
+    "team": "NOP",
+    "expected": 0,
+    "actual": 3,
+    "current_home": false
+  },
+  {
+    "game_id": 119725,
+    "date": "2027-03-21",
+    "team": "TOR",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119728,
+    "date": "2027-03-21",
+    "team": "SAS",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119735,
+    "date": "2027-03-22",
+    "team": "DET",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119738,
+    "date": "2027-03-23",
+    "team": "BOS",
+    "expected": 0,
+    "actual": 3,
+    "current_home": false
+  },
+  {
+    "game_id": 119740,
+    "date": "2027-03-23",
+    "team": "LAL",
+    "expected": 0,
+    "actual": 3,
+    "current_home": false
+  },
+  {
+    "game_id": 119741,
+    "date": "2027-03-23",
+    "team": "PHI",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119745,
+    "date": "2027-03-24",
+    "team": "MEM",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119749,
+    "date": "2027-03-24",
+    "team": "ORL",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119754,
+    "date": "2027-03-24",
+    "team": "MIL",
+    "expected": 0,
+    "actual": 5,
+    "current_home": false
+  },
+  {
+    "game_id": 119759,
+    "date": "2027-03-25",
+    "team": "UTA",
+    "expected": 0,
+    "actual": 6,
+    "current_home": false
+  },
+  {
+    "game_id": 119760,
+    "date": "2027-03-25",
+    "team": "CHI",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119762,
+    "date": "2027-03-26",
+    "team": "NYK",
+    "expected": 0,
+    "actual": 4,
+    "current_home": false
+  },
+  {
+    "game_id": 119765,
+    "date": "2027-03-26",
+    "team": "LAC",
+    "expected": 0,
+    "actual": 5,
+    "current_home": false
+  },
+  {
+    "game_id": 119770,
+    "date": "2027-03-27",
+    "team": "GSW",
+    "expected": 0,
+    "actual": 6,
+    "current_home": false
+  },
+  {
+    "game_id": 119771,
+    "date": "2027-03-27",
+    "team": "BOS",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119776,
+    "date": "2027-03-28",
+    "team": "MEM",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119779,
+    "date": "2027-03-28",
+    "team": "DAL",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119781,
+    "date": "2027-03-28",
+    "team": "OKC",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119784,
+    "date": "2027-03-29",
+    "team": "MIN",
+    "expected": 0,
+    "actual": 4,
+    "current_home": false
+  },
+  {
+    "game_id": 119785,
+    "date": "2027-03-29",
+    "team": "MIA",
+    "expected": 0,
+    "actual": 4,
+    "current_home": false
+  },
+  {
+    "game_id": 119788,
+    "date": "2027-03-29",
+    "team": "IND",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119790,
+    "date": "2027-03-29",
+    "team": "PHX",
+    "expected": 0,
+    "actual": 6,
+    "current_home": false
+  },
+  {
+    "game_id": 119791,
+    "date": "2027-03-29",
+    "team": "DEN",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119797,
+    "date": "2027-03-30",
+    "team": "HOU",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119801,
+    "date": "2027-03-31",
+    "team": "CHI",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119802,
+    "date": "2027-03-31",
+    "team": "CLE",
+    "expected": 0,
+    "actual": 4,
+    "current_home": false
+  },
+  {
+    "game_id": 119803,
+    "date": "2027-03-31",
+    "team": "NOP",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119804,
+    "date": "2027-03-31",
+    "team": "SAC",
+    "expected": 0,
+    "actual": 3,
+    "current_home": false
+  },
+  {
+    "game_id": 119809,
+    "date": "2027-04-01",
+    "team": "ORL",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119810,
+    "date": "2027-04-01",
+    "team": "CHA",
+    "expected": 0,
+    "actual": 4,
+    "current_home": false
+  },
+  {
+    "game_id": 119812,
+    "date": "2027-04-02",
+    "team": "PHI",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119814,
+    "date": "2027-04-02",
+    "team": "NYK",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119816,
+    "date": "2027-04-02",
+    "team": "DET",
+    "expected": 0,
+    "actual": 4,
+    "current_home": false
+  },
+  {
+    "game_id": 119819,
+    "date": "2027-04-02",
+    "team": "ATL",
+    "expected": 0,
+    "actual": 3,
+    "current_home": false
+  },
+  {
+    "game_id": 119820,
+    "date": "2027-04-02",
+    "team": "MEM",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119822,
+    "date": "2027-04-02",
+    "team": "UTA",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119823,
+    "date": "2027-04-02",
+    "team": "SAS",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119825,
+    "date": "2027-04-03",
+    "team": "WAS",
+    "expected": 0,
+    "actual": 5,
+    "current_home": false
+  },
+  {
+    "game_id": 119827,
+    "date": "2027-04-04",
+    "team": "BKN",
+    "expected": 0,
+    "actual": 7,
+    "current_home": false
+  },
+  {
+    "game_id": 119830,
+    "date": "2027-04-04",
+    "team": "MIN",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119831,
+    "date": "2027-04-04",
+    "team": "IND",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119832,
+    "date": "2027-04-04",
+    "team": "CHI",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119833,
+    "date": "2027-04-04",
+    "team": "PHX",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119835,
+    "date": "2027-04-04",
+    "team": "POR",
+    "expected": 0,
+    "actual": 6,
+    "current_home": false
+  },
+  {
+    "game_id": 119837,
+    "date": "2027-04-04",
+    "team": "BOS",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119843,
+    "date": "2027-04-06",
+    "team": "PHI",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119844,
+    "date": "2027-04-06",
+    "team": "NYK",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119845,
+    "date": "2027-04-06",
+    "team": "DET",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119847,
+    "date": "2027-04-06",
+    "team": "SAC",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119848,
+    "date": "2027-04-06",
+    "team": "NOP",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119849,
+    "date": "2027-04-06",
+    "team": "OKC",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119850,
+    "date": "2027-04-06",
+    "team": "DAL",
+    "expected": 0,
+    "actual": 3,
+    "current_home": false
+  },
+  {
+    "game_id": 119856,
+    "date": "2027-04-07",
+    "team": "CLE",
+    "expected": 0,
+    "actual": 3,
+    "current_home": false
+  },
+  {
+    "game_id": 119857,
+    "date": "2027-04-07",
+    "team": "CHA",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119864,
+    "date": "2027-04-08",
+    "team": "LAC",
+    "expected": 0,
+    "actual": 3,
+    "current_home": false
+  },
+  {
+    "game_id": 119866,
+    "date": "2027-04-08",
+    "team": "GSW",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119870,
+    "date": "2027-04-09",
+    "team": "DET",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119871,
+    "date": "2027-04-09",
+    "team": "TOR",
+    "expected": 0,
+    "actual": 4,
+    "current_home": false
+  },
+  {
+    "game_id": 119873,
+    "date": "2027-04-09",
+    "team": "MIL",
+    "expected": 0,
+    "actual": 6,
+    "current_home": false
+  },
+  {
+    "game_id": 119875,
+    "date": "2027-04-09",
+    "team": "POR",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119876,
+    "date": "2027-04-09",
+    "team": "DEN",
+    "expected": 0,
+    "actual": 3,
+    "current_home": false
+  },
+  {
+    "game_id": 119879,
+    "date": "2027-04-09",
+    "team": "MEM",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119883,
+    "date": "2027-04-11",
+    "team": "ATL",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119884,
+    "date": "2027-04-11",
+    "team": "ORL",
+    "expected": 0,
+    "actual": 4,
+    "current_home": false
+  },
+  {
+    "game_id": 119885,
+    "date": "2027-04-11",
+    "team": "IND",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119886,
+    "date": "2027-04-11",
+    "team": "CHA",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119888,
+    "date": "2027-04-11",
+    "team": "CHI",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119890,
+    "date": "2027-04-11",
+    "team": "HOU",
+    "expected": 0,
+    "actual": 4,
+    "current_home": false
+  },
+  {
+    "game_id": 119892,
+    "date": "2027-04-11",
+    "team": "OKC",
+    "expected": 0,
+    "actual": 2,
+    "current_home": false
+  },
+  {
+    "game_id": 119893,
+    "date": "2027-04-11",
+    "team": "UTA",
+    "expected": 0,
+    "actual": 4,
+    "current_home": false
+  },
+  {
+    "game_id": 119894,
+    "date": "2027-04-11",
+    "team": "SAC",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  },
+  {
+    "game_id": 119895,
+    "date": "2027-04-11",
+    "team": "PHX",
+    "expected": 0,
+    "actual": 1,
+    "current_home": false
+  }
+]

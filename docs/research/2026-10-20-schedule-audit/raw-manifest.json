@@ -1,0 +1,1409 @@
+{
+  "captured_utc": "2026-10-19T16:23:45.443Z",
+  "files": [
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/api/2026-10-20.json",
+      "bytes": 3310,
+      "sha256": "8a017b70dadf507c675ab0bd3a951f25bcdb0367ff519f09f9047cfc62537eab",
+      "source": "https://fullcourt.fyi/api/games/2026-10-20"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/api/2026-10-21.json",
+      "bytes": 12085,
+      "sha256": "8e8ac0afc73d076aee415a5afe63b1786585b611ff6f5138ee534561454544f5",
+      "source": "https://fullcourt.fyi/api/games/2026-10-21"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/api/2026-10-22.json",
+      "bytes": 2227,
+      "sha256": "a7c0cc98471cfdd3d58142d80735b77f1653b3b852467257b72adebc06b0b959",
+      "source": "https://fullcourt.fyi/api/games/2026-10-22"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/api/2026-10-23.json",
+      "bytes": 13265,
+      "sha256": "9d27a630457bbbb23209249e5ab0045eb8f12aa827125838884c6ba97c9abe9c",
+      "source": "https://fullcourt.fyi/api/games/2026-10-23"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/api/2026-10-24.json",
+      "bytes": 8815,
+      "sha256": "6e1be082d4eb143938edf69f400914f2a4a137749b6e71bdbd967685c1c87a4a",
+      "source": "https://fullcourt.fyi/api/games/2026-10-24"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/api/2026-10-25.json",
+      "bytes": 7755,
+      "sha256": "fd24dd38622fa29f55f694e2f4c9d7a70d30a4e4bdc973a1f6f2603f1078b21c",
+      "source": "https://fullcourt.fyi/api/games/2026-10-25"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/api/2026-10-26.json",
+      "bytes": 9946,
+      "sha256": "4a4bdd9498f7e94bd3caa2b78db9d4812cb6e4bc99ee42164a6412a6ddda25a6",
+      "source": "https://fullcourt.fyi/api/games/2026-10-26"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/api/2026-10-27.json",
+      "bytes": 4421,
+      "sha256": "4d1f0583fecf947dad81d69f1f57a468ee5a85120bf9b1679317fc5ffc4136e3",
+      "source": "https://fullcourt.fyi/api/games/2026-10-27"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/api/2026-10-28.json",
+      "bytes": 13253,
+      "sha256": "678ed59bd5dc48fe648978cefcb843b63cced66fab81190fac4d46e67bd8af5c",
+      "source": "https://fullcourt.fyi/api/games/2026-10-28"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/api/2026-10-29.json",
+      "bytes": 3329,
+      "sha256": "855002d9c4fb5167eb898115287accbbabc8b5d51ec5e0066a33c2ee140eacb1",
+      "source": "https://fullcourt.fyi/api/games/2026-10-29"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/api/2026-10-30.json",
+      "bytes": 11030,
+      "sha256": "13e5a6157a84bc48573deeec54af9746aaa03326318660035ef9cb43f8022575",
+      "source": "https://fullcourt.fyi/api/games/2026-10-30"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/api/2026-10-31.json",
+      "bytes": 7763,
+      "sha256": "12d4258776802cb72c96a6c50b36aee200b5aa8ec7f08f12438fbfddcc4bd9c4",
+      "source": "https://fullcourt.fyi/api/games/2026-10-31"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/api/2026-11-01.json",
+      "bytes": 4427,
+      "sha256": "93d22f03a3ab1f9d0f61a07a5454b225ad5625fa505914907526a0a32c583bd2",
+      "source": "https://fullcourt.fyi/api/games/2026-11-01"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/api/2026-11-02.json",
+      "bytes": 16542,
+      "sha256": "3d874f08546e17a26548be1d0676e86f9b7806202b61018686d4d529df110c14",
+      "source": "https://fullcourt.fyi/api/games/2026-11-02"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/api/2026-11-04.json",
+      "bytes": 15456,
+      "sha256": "8fa63306e4bac7885269d3bc5a53ec734168b799173dbe3317aaca589f9b4b78",
+      "source": "https://fullcourt.fyi/api/games/2026-11-04"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/api/2026-11-05.json",
+      "bytes": 2214,
+      "sha256": "06b1e0e8aa7725cca40070f02588932067cefa75e7ac45dba432eb300f60e60a",
+      "source": "https://fullcourt.fyi/api/games/2026-11-05"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/api/2026-11-06.json",
+      "bytes": 9964,
+      "sha256": "792259db0de1d98d7b80ad3f5aef99f5514641a61ec4662638fbe637863c7570",
+      "source": "https://fullcourt.fyi/api/games/2026-11-06"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/api/2026-11-07.json",
+      "bytes": 7764,
+      "sha256": "7d715a609a8d1b5ba94c0766d086b0ae1ed9669235d07b687a0f47cbc64ee1e4",
+      "source": "https://fullcourt.fyi/api/games/2026-11-07"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/api/2026-11-08.json",
+      "bytes": 7732,
+      "sha256": "981b457c95ec9d1832f129560aa5fa3fb3c9cae8ec6a7821f09b031399dc7096",
+      "source": "https://fullcourt.fyi/api/games/2026-11-08"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/api/2026-11-09.json",
+      "bytes": 8828,
+      "sha256": "196a07b11677e730e4ae0d43f93df95b1461c22b6a0552039f508c76895166e6",
+      "source": "https://fullcourt.fyi/api/games/2026-11-09"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/api/2026-11-10.json",
+      "bytes": 6649,
+      "sha256": "8991effdef936ae31b7df51f17b9c7c19231a934f2ed6726574de3e67e5e46ba",
+      "source": "https://fullcourt.fyi/api/games/2026-11-10"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/api/2026-11-11.json",
+      "bytes": 11062,
+      "sha256": "c2ee46795224f5ed289e9b92c3994f06626ce41e9e73fe5301e451d01b862bf5",
+      "source": "https://fullcourt.fyi/api/games/2026-11-11"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/api/2026-11-12.json",
+      "bytes": 4427,
+      "sha256": "883404709e19efcafa6baef7090f52f386915d053b8ade9b2c8f539c2e0084c3",
+      "source": "https://fullcourt.fyi/api/games/2026-11-12"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/api/2026-11-13.json",
+      "bytes": 9955,
+      "sha256": "613bea45332a4d63bd6f01abe288c298e094f79ddd28f351b49b2d257867b38c",
+      "source": "https://fullcourt.fyi/api/games/2026-11-13"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/api/2026-11-14.json",
+      "bytes": 5526,
+      "sha256": "e150a89a23496556431032b0f3ded6044e7e43e06096d8934158c8ed41f010d7",
+      "source": "https://fullcourt.fyi/api/games/2026-11-14"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/api/2026-11-15.json",
+      "bytes": 9960,
+      "sha256": "91f5dfa193d4c7f5b3e15a864144c674cf9fc2df8e40ec9216d533e3228e335b",
+      "source": "https://fullcourt.fyi/api/games/2026-11-15"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/api/2026-11-16.json",
+      "bytes": 8840,
+      "sha256": "22978431b1243d17875297574fba022604b211ff86374d46bbefc3ec8eaba690",
+      "source": "https://fullcourt.fyi/api/games/2026-11-16"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/api/2026-11-17.json",
+      "bytes": 5551,
+      "sha256": "259daf0afc02e6656344d7da11f3f2cdf64698d76cc281b75e107e0a536b91b6",
+      "source": "https://fullcourt.fyi/api/games/2026-11-17"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/api/2026-11-18.json",
+      "bytes": 13256,
+      "sha256": "d809998341c9b79d7a7ed52f0c043162578b0de3376f5e260a76540416a619c5",
+      "source": "https://fullcourt.fyi/api/games/2026-11-18"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/api/2026-11-19.json",
+      "bytes": 4452,
+      "sha256": "628b65742b21ade6d74805df72f5490c58f9323465335e2e1ece05543915a986",
+      "source": "https://fullcourt.fyi/api/games/2026-11-19"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/api/2026-11-20.json",
+      "bytes": 9982,
+      "sha256": "a7989f1f09a74a46266ddc738a546cd69704139c2b40e9fba64be94c7a6287a3",
+      "source": "https://fullcourt.fyi/api/games/2026-11-20"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/api/2026-11-21.json",
+      "bytes": 6648,
+      "sha256": "4fcdcb369f532e7066be79e84d001200c9bef434923778aeed813891f6797ae1",
+      "source": "https://fullcourt.fyi/api/games/2026-11-21"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/api/2026-11-22.json",
+      "bytes": 7747,
+      "sha256": "1296e95159f27ba017514d65a1bfe520624e99b47af8092439ae7ab9c2c8e3f7",
+      "source": "https://fullcourt.fyi/api/games/2026-11-22"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/api/2026-11-23.json",
+      "bytes": 11056,
+      "sha256": "ef9023d5ce06c7604c5dd1ae4dc6aaf242152dbf4d1a5243f4a75b753852a086",
+      "source": "https://fullcourt.fyi/api/games/2026-11-23"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/api/2026-11-24.json",
+      "bytes": 3336,
+      "sha256": "0edd0f157394f71102ee9941f86f561f2a1d64faf4da4880fcd69c89694e2aa2",
+      "source": "https://fullcourt.fyi/api/games/2026-11-24"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/api/2026-11-25.json",
+      "bytes": 9968,
+      "sha256": "b1e4b823fc5d0888ece76371e46a7b393e45a314a18263a404af69783485028b",
+      "source": "https://fullcourt.fyi/api/games/2026-11-25"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/api/2026-11-27.json",
+      "bytes": 12193,
+      "sha256": "76a6d171d75b582f1e6374b6fc33ccbf75051c359340f240f9c911b0f78da503",
+      "source": "https://fullcourt.fyi/api/games/2026-11-27"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/api/2026-11-28.json",
+      "bytes": 5524,
+      "sha256": "39d4821f8aeba5ccbe42d1eb15046abd0162da4cebb075a1c2bf10fd48ae160d",
+      "source": "https://fullcourt.fyi/api/games/2026-11-28"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/api/2026-11-29.json",
+      "bytes": 11081,
+      "sha256": "1af680cb96007399f6591786011d7e7310906ed3112e66ba87ee2d73cb065aa3",
+      "source": "https://fullcourt.fyi/api/games/2026-11-29"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/api/2026-11-30.json",
+      "bytes": 7726,
+      "sha256": "1cf56d9c0e3d40de52f7101ff9fa64bf33e8d6a76f74c6eee4286ace9319210e",
+      "source": "https://fullcourt.fyi/api/games/2026-11-30"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/api/2026-12-01.json",
+      "bytes": 8870,
+      "sha256": "26b0c9617dbcfdaa1ecf1eb694c988c001f501351f20377a4460a8f1dfd0592a",
+      "source": "https://fullcourt.fyi/api/games/2026-12-01"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/api/2026-12-02.json",
+      "bytes": 9926,
+      "sha256": "365a1f8559376534bb21a7eb4f3b98438d1cf4978605600bcb21ad37f8dfc379",
+      "source": "https://fullcourt.fyi/api/games/2026-12-02"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/api/2026-12-03.json",
+      "bytes": 5539,
+      "sha256": "638403bde9a3313dbf0eb1acba61d58417de94ae62f2f4d4f24d38375a43a2d4",
+      "source": "https://fullcourt.fyi/api/games/2026-12-03"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/api/2026-12-12.json",
+      "bytes": 8822,
+      "sha256": "eb49115e81006fef74c449da7f3ead572b413cb0f7943f67ffc78b69f36244e0",
+      "source": "https://fullcourt.fyi/api/games/2026-12-12"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/api/2026-12-13.json",
+      "bytes": 6601,
+      "sha256": "d3c7077d3411c0abeb32b9a7ba01c7fcdeeb05cee5546eb6cc09194c7c80906d",
+      "source": "https://fullcourt.fyi/api/games/2026-12-13"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/api/2026-12-14.json",
+      "bytes": 12146,
+      "sha256": "428f9828b2fe9567b73553f9410eb11b94b77daf6db8133b042e7c43e25d1017",
+      "source": "https://fullcourt.fyi/api/games/2026-12-14"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/api/2026-12-15.json",
+      "bytes": 2232,
+      "sha256": "e077b3dfaa820b25804e31a230ada791ce220f71fc59ec95141d890a0152ca80",
+      "source": "https://fullcourt.fyi/api/games/2026-12-15"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/api/2026-12-16.json",
+      "bytes": 14347,
+      "sha256": "1e67226db009405bcac6cc9ca2ab3577929c043b87c68b506a4c3e660e6050bd",
+      "source": "https://fullcourt.fyi/api/games/2026-12-16"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/api/2026-12-17.json",
+      "bytes": 3344,
+      "sha256": "b49d52385ce9667078ee24999cd9e0c82bcdfc8d20016adef73cee2605613772",
+      "source": "https://fullcourt.fyi/api/games/2026-12-17"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/api/2026-12-18.json",
+      "bytes": 13250,
+      "sha256": "6dff55f59f77820146fec8ac9814b897f298f99532ed952b6938678883531363",
+      "source": "https://fullcourt.fyi/api/games/2026-12-18"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/api/2026-12-19.json",
+      "bytes": 4425,
+      "sha256": "1aa220a6a2db0c2dc4b26186e5dd76b87b1e8260e2988a026d517fdced73185b",
+      "source": "https://fullcourt.fyi/api/games/2026-12-19"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/api/2026-12-20.json",
+      "bytes": 11046,
+      "sha256": "a4141c8651b7f79170fbd0354e37bae33ae0b8604f084cf6a7745df55d49f5d4",
+      "source": "https://fullcourt.fyi/api/games/2026-12-20"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/api/2026-12-21.json",
+      "bytes": 11024,
+      "sha256": "ca6dabca789dcc07d5455471d463ba94604a74890445a2db5a0e461845a20fce",
+      "source": "https://fullcourt.fyi/api/games/2026-12-21"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/api/2026-12-22.json",
+      "bytes": 3348,
+      "sha256": "bdef79ce7406aa4a32c16e9863ce08b7d955bba70e5361a5cd2d83aa7037ad70",
+      "source": "https://fullcourt.fyi/api/games/2026-12-22"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/api/2026-12-23.json",
+      "bytes": 16532,
+      "sha256": "fe1c4f5080f043c325aeb281716613a8a1ff19f486a0231a39a6bd5b9b7bc17b",
+      "source": "https://fullcourt.fyi/api/games/2026-12-23"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/api/2026-12-25.json",
+      "bytes": 5540,
+      "sha256": "3269e64e12af5248707113dc0419864650402da836fc75ca76c6c1eaacb365fe",
+      "source": "https://fullcourt.fyi/api/games/2026-12-25"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/api/2026-12-26.json",
+      "bytes": 8871,
+      "sha256": "822a8afa95db03dd1a7afcca9d169e98fdd767c790b2f2e11d53c3a4492840f5",
+      "source": "https://fullcourt.fyi/api/games/2026-12-26"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/api/2026-12-27.json",
+      "bytes": 13269,
+      "sha256": "9f1604a0dbe5552c87f738ee955ed06190c432193fb3083b49a73e4311a97c29",
+      "source": "https://fullcourt.fyi/api/games/2026-12-27"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/api/2026-12-28.json",
+      "bytes": 4446,
+      "sha256": "70ee107bd9c49222036545362c0a4abce09ce1229965de904ac4e9c118f85a65",
+      "source": "https://fullcourt.fyi/api/games/2026-12-28"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/api/2026-12-29.json",
+      "bytes": 9947,
+      "sha256": "af705c496fd7b2196ae219dc32e5f57397371d4eb9d5953449aefc2ba3eac50f",
+      "source": "https://fullcourt.fyi/api/games/2026-12-29"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/api/2026-12-30.json",
+      "bytes": 6650,
+      "sha256": "356a7ba55febc2be4a68c8838c7b7594460e3d67d0e653482a62e766840be548",
+      "source": "https://fullcourt.fyi/api/games/2026-12-30"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/api/2026-12-31.json",
+      "bytes": 9938,
+      "sha256": "cc5abb0546984097622637f0ce21614f555f53efa438c1781767f0903e884df8",
+      "source": "https://fullcourt.fyi/api/games/2026-12-31"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/context.json",
+      "bytes": 127556,
+      "sha256": "ed19ecf41c5b03d90d8f69bc2609252809adb9813a0bec912fc020df6a40e7ce",
+      "source": "database READ ONLY snapshot"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/duplicates.json",
+      "bytes": 3,
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "source": "database READ ONLY snapshot"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-09-01.json",
+      "bytes": 5489,
+      "sha256": "3d83d1eea005c51609fd40628246cd1577da15216a8d9c33089fdbe01c1916c5",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20260901"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-09-02.json",
+      "bytes": 5489,
+      "sha256": "3d83d1eea005c51609fd40628246cd1577da15216a8d9c33089fdbe01c1916c5",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20260902"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-09-03.json",
+      "bytes": 5489,
+      "sha256": "3d83d1eea005c51609fd40628246cd1577da15216a8d9c33089fdbe01c1916c5",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20260903"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-09-04.json",
+      "bytes": 5489,
+      "sha256": "3d83d1eea005c51609fd40628246cd1577da15216a8d9c33089fdbe01c1916c5",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20260904"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-09-05.json",
+      "bytes": 5489,
+      "sha256": "3d83d1eea005c51609fd40628246cd1577da15216a8d9c33089fdbe01c1916c5",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20260905"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-09-06.json",
+      "bytes": 5489,
+      "sha256": "3d83d1eea005c51609fd40628246cd1577da15216a8d9c33089fdbe01c1916c5",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20260906"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-09-07.json",
+      "bytes": 5489,
+      "sha256": "3d83d1eea005c51609fd40628246cd1577da15216a8d9c33089fdbe01c1916c5",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20260907"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-09-08.json",
+      "bytes": 5489,
+      "sha256": "3d83d1eea005c51609fd40628246cd1577da15216a8d9c33089fdbe01c1916c5",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20260908"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-09-09.json",
+      "bytes": 5489,
+      "sha256": "3d83d1eea005c51609fd40628246cd1577da15216a8d9c33089fdbe01c1916c5",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20260909"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-09-10.json",
+      "bytes": 5489,
+      "sha256": "3d83d1eea005c51609fd40628246cd1577da15216a8d9c33089fdbe01c1916c5",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20260910"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-09-11.json",
+      "bytes": 5489,
+      "sha256": "3d83d1eea005c51609fd40628246cd1577da15216a8d9c33089fdbe01c1916c5",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20260911"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-09-12.json",
+      "bytes": 5489,
+      "sha256": "3d83d1eea005c51609fd40628246cd1577da15216a8d9c33089fdbe01c1916c5",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20260912"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-09-13.json",
+      "bytes": 5489,
+      "sha256": "3d83d1eea005c51609fd40628246cd1577da15216a8d9c33089fdbe01c1916c5",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20260913"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-09-14.json",
+      "bytes": 5489,
+      "sha256": "3d83d1eea005c51609fd40628246cd1577da15216a8d9c33089fdbe01c1916c5",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20260914"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-09-15.json",
+      "bytes": 5489,
+      "sha256": "3d83d1eea005c51609fd40628246cd1577da15216a8d9c33089fdbe01c1916c5",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20260915"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-09-16.json",
+      "bytes": 5489,
+      "sha256": "3d83d1eea005c51609fd40628246cd1577da15216a8d9c33089fdbe01c1916c5",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20260916"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-09-17.json",
+      "bytes": 5489,
+      "sha256": "3d83d1eea005c51609fd40628246cd1577da15216a8d9c33089fdbe01c1916c5",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20260917"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-09-18.json",
+      "bytes": 5489,
+      "sha256": "3d83d1eea005c51609fd40628246cd1577da15216a8d9c33089fdbe01c1916c5",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20260918"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-09-19.json",
+      "bytes": 5489,
+      "sha256": "3d83d1eea005c51609fd40628246cd1577da15216a8d9c33089fdbe01c1916c5",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20260919"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-09-20.json",
+      "bytes": 5489,
+      "sha256": "3d83d1eea005c51609fd40628246cd1577da15216a8d9c33089fdbe01c1916c5",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20260920"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-09-21.json",
+      "bytes": 5489,
+      "sha256": "3d83d1eea005c51609fd40628246cd1577da15216a8d9c33089fdbe01c1916c5",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20260921"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-09-22.json",
+      "bytes": 5489,
+      "sha256": "3d83d1eea005c51609fd40628246cd1577da15216a8d9c33089fdbe01c1916c5",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20260922"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-09-23.json",
+      "bytes": 5489,
+      "sha256": "3d83d1eea005c51609fd40628246cd1577da15216a8d9c33089fdbe01c1916c5",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20260923"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-09-24.json",
+      "bytes": 5489,
+      "sha256": "3d83d1eea005c51609fd40628246cd1577da15216a8d9c33089fdbe01c1916c5",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20260924"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-09-25.json",
+      "bytes": 5489,
+      "sha256": "3d83d1eea005c51609fd40628246cd1577da15216a8d9c33089fdbe01c1916c5",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20260925"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-09-26.json",
+      "bytes": 5489,
+      "sha256": "3d83d1eea005c51609fd40628246cd1577da15216a8d9c33089fdbe01c1916c5",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20260926"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-09-27.json",
+      "bytes": 5489,
+      "sha256": "3d83d1eea005c51609fd40628246cd1577da15216a8d9c33089fdbe01c1916c5",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20260927"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-09-28.json",
+      "bytes": 5489,
+      "sha256": "3d83d1eea005c51609fd40628246cd1577da15216a8d9c33089fdbe01c1916c5",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20260928"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-09-29.json",
+      "bytes": 5489,
+      "sha256": "3d83d1eea005c51609fd40628246cd1577da15216a8d9c33089fdbe01c1916c5",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20260929"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-09-30.json",
+      "bytes": 4384,
+      "sha256": "930a12f9dec7d60ef7407148e8efabea2e19fab4436a6f341805b56bcd2e6735",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20260930"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-10-01.json",
+      "bytes": 4384,
+      "sha256": "930a12f9dec7d60ef7407148e8efabea2e19fab4436a6f341805b56bcd2e6735",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261001"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-10-02.json",
+      "bytes": 4384,
+      "sha256": "930a12f9dec7d60ef7407148e8efabea2e19fab4436a6f341805b56bcd2e6735",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261002"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-10-03.json",
+      "bytes": 17310,
+      "sha256": "87818b69ce46a97ac39bf91a350569ba4dce7d5e1ca48937241473440f7e8cbe",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261003"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-10-04.json",
+      "bytes": 40017,
+      "sha256": "fb0896a23561301c7c300f2ecdeae69fdd7c44edfbad1920e4efc261568a159a",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261004"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-10-05.json",
+      "bytes": 93572,
+      "sha256": "0440a927732837752dc2dc800706813094dda5ca7205c43b05f09b6834157c98",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261005"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-10-06.json",
+      "bytes": 75896,
+      "sha256": "f1ef8db97649e7f67a4c9e61811e4593658fd63013f4b6dc8aad8e87b51aa2a0",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261006"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-10-07.json",
+      "bytes": 93564,
+      "sha256": "b5e6168189617b72b0236fefc3ded5b027ab016f07a69e8615d2469ab0ba244c",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261007"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-10-08.json",
+      "bytes": 111610,
+      "sha256": "9da1aa8f505d43da329c1762f4cea170961c6772767270ad39d527e5b944bb84",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261008"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-10-09.json",
+      "bytes": 40212,
+      "sha256": "5cdd39feaf8f9afde7a2223fc5318a605bd01447ddbdea340ec12e0b4b28bc9d",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261009"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-10-10.json",
+      "bytes": 114252,
+      "sha256": "d2cc4ffcae24c613b2ec79613b041b649c71da6bc45c867d4144b3645baba41e",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261010"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-10-11.json",
+      "bytes": 76052,
+      "sha256": "b04cca81d38cdee823c4d1163a5645f893cc34e016492bf5a5412a6bc7126cc2",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261011"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-10-12.json",
+      "bytes": 93139,
+      "sha256": "6324de7dce0b3b3827aeb7955810f49d725a252f3925bbb7e074272fe34cb643",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261012"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-10-13.json",
+      "bytes": 94071,
+      "sha256": "1dd10ffdd77db38a6ffb17ff544efd7adc629c458cd9e3316ef04503913c461b",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261013"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-10-14.json",
+      "bytes": 129220,
+      "sha256": "a7006a8073f5927c449b9ce89c20d14ba4268011f4d1143525e43d1cce73efec",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261014"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-10-15.json",
+      "bytes": 40240,
+      "sha256": "875e31342d12f41bb66241d20a907a2ded93ece102930ca2cbc06b048e8eb520",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261015"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-10-16.json",
+      "bytes": 213269,
+      "sha256": "2a91513d8ae3c12ebc0e876bceecea0e558e19d020be5a35041f4382ea369c65",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261016"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-10-17.json",
+      "bytes": 4384,
+      "sha256": "930a12f9dec7d60ef7407148e8efabea2e19fab4436a6f341805b56bcd2e6735",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261017"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-10-18.json",
+      "bytes": 4384,
+      "sha256": "930a12f9dec7d60ef7407148e8efabea2e19fab4436a6f341805b56bcd2e6735",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261018"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-10-19.json",
+      "bytes": 4384,
+      "sha256": "930a12f9dec7d60ef7407148e8efabea2e19fab4436a6f341805b56bcd2e6735",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261019"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-10-20.json",
+      "bytes": 40496,
+      "sha256": "8f5fc39bff40bce09d673004020fdb4eb43c90d2969d185580dd2632c4e70621",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261020"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-10-21.json",
+      "bytes": 134240,
+      "sha256": "a16293579f4bc6c68a3c149d4b1b1557e4f658270a231e1bcc790e1c584bc004",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261021"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-10-22.json",
+      "bytes": 28710,
+      "sha256": "9a4f6c8adff35121e87b30f3665ff02bdc7dfcf48e50173d8b2baa97eccc82bc",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261022"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-10-23.json",
+      "bytes": 83591,
+      "sha256": "789277940083f74be6658dfab97df5763623c9817af3562f775bddc441492f56",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261023"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-10-24.json",
+      "bytes": 48889,
+      "sha256": "976e84425a0c34107d03afe4c6c703cbdc4f6cc218ddbd54c354c89f91244bc3",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261024"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-10-25.json",
+      "bytes": 43111,
+      "sha256": "940f690b5b3e7cff3e983a67d4799eea3183af3dab544b9e1f5b83a9d0bd33b1",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261025"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-10-26.json",
+      "bytes": 54331,
+      "sha256": "98acd2dd79491c919f3a3646353b4b4e601e496e5b406fdb353bf689ee62b8c5",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261026"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-10-27.json",
+      "bytes": 26737,
+      "sha256": "556350fb1faae53f9079b4868d0073f54af2ddc4cb4263880f06cce6ed745278",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261027"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-10-28.json",
+      "bytes": 71149,
+      "sha256": "4821f6da3d248e8bbc12d56e84d0e1b541ce3b650bbcda03c76e1f95f8c14481",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261028"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-10-29.json",
+      "bytes": 21158,
+      "sha256": "88357175d40780b22845c0b550a3bc4ce3d4dab47c4922a51b4c0a46d6688dbc",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261029"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-10-30.json",
+      "bytes": 123051,
+      "sha256": "d4b600e7408abaa82f6f8f37612d93093dda5b3f97fa85ab30e03a738f9db3cb",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261030"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-10-31.json",
+      "bytes": 43396,
+      "sha256": "890f366fc8f5544fd0a10e2ddd34f0070879f4aad8c79f25ef5f96724ec3aab6",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261031"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-11-01.json",
+      "bytes": 26334,
+      "sha256": "5a0bfc6f30ffbf4729233bbbe4e1d5e44aeaa4ffc3df3631cde94acbbb7307e0",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261101"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-11-02.json",
+      "bytes": 87234,
+      "sha256": "46bd2c4e32574da5b8fbe90813ee564b1179e49e8a16b1c0df212a5fe9b3f742",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261102"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-11-03.json",
+      "bytes": 4384,
+      "sha256": "930a12f9dec7d60ef7407148e8efabea2e19fab4436a6f341805b56bcd2e6735",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261103"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-11-04.json",
+      "bytes": 82071,
+      "sha256": "752791596cd5c502df72c28685312714ef97b42f48ac0d387fdeb5209b93a1ca",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261104"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-11-05.json",
+      "bytes": 15513,
+      "sha256": "9d9b566e3f9883041515f4aad6fa188c4aa4fa8eb5a777c6d61fc39295dcf4f4",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261105"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-11-06.json",
+      "bytes": 67959,
+      "sha256": "aee38c1e28d96001df7e1df3909adce420061efd988885f4b0e8d557c46b38fb",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261106"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-11-07.json",
+      "bytes": 43171,
+      "sha256": "8b8a96a02ac421984e5f1f8ab2ae7dfbdcd0f55ead1a6c16537146e302b56b56",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261107"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-11-08.json",
+      "bytes": 42990,
+      "sha256": "5f84245b2eea36e4124ea30742878fa7441c0aa32470a528335ffca0f1c7f24a",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261108"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-11-09.json",
+      "bytes": 48813,
+      "sha256": "e7ae76e9a7a19871b38dce83028de676c7252bc07543a8a10e26af280741dace",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261109"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-11-10.json",
+      "bytes": 37720,
+      "sha256": "d3b0264d5974f2b2dc20312e62118730fe280e7d44cbdf6df0adbaac5cc610af",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261110"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-11-11.json",
+      "bytes": 60185,
+      "sha256": "3984a6e72decc25c6ec88e318189c92ac7c4b61751b084406c72e2e410ff94bf",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261111"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-11-12.json",
+      "bytes": 26828,
+      "sha256": "502b17a5998b87c8cff9c9a4a13c7d67b893630ce2ccc80292e65785dcaa968d",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261112"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-11-13.json",
+      "bytes": 67573,
+      "sha256": "355f77937284d845bf48a6fd28322d56b064e45aa8f6b0c21da9eb425741acf1",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261113"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-11-14.json",
+      "bytes": 32065,
+      "sha256": "272fd74c35df678e8ba0fd01b32379006e8899c910a6e6a8f88049ac3722bb0e",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261114"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-11-15.json",
+      "bytes": 54003,
+      "sha256": "029773ec0837a72828709d06d024303708b5be07d6d0eae51810046443b8f808",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261115"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-11-16.json",
+      "bytes": 48762,
+      "sha256": "6b3c0ea70d7f4675937bed40fe7e42a32d6cdedc0aa460b06153fbb8adaa28f9",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261116"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-11-17.json",
+      "bytes": 32280,
+      "sha256": "7f48df6dad96a72fb6d156c30718bc967b67d893d8116fd17bfd60a9ba8e90bb",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261117"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-11-18.json",
+      "bytes": 71077,
+      "sha256": "fbbfa95fd6a49ba5522126d89862a315af8cc82dd6aa7035971ee2ce3d717598",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261118"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-11-19.json",
+      "bytes": 26650,
+      "sha256": "a9549f98e75d5038d7d3b814271557ce1875b432ec832ff5844a36c668177a88",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261119"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-11-20.json",
+      "bytes": 67691,
+      "sha256": "7d978f7d8ca735ab7b9ff29fe3d66a42229f1bb031971eb47d997222c96b9ca0",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261120"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-11-21.json",
+      "bytes": 37924,
+      "sha256": "d388c32b084975504fce9bba5655780645cbf0cbde28a2b1a841f095c35c6b3c",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261121"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-11-22.json",
+      "bytes": 42935,
+      "sha256": "72596471b505cb2947dc26e89ed67280ba9634aaab80cd37f83c3c0a8280faa1",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261122"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-11-23.json",
+      "bytes": 59919,
+      "sha256": "d2895cb1a4b1dc712c524bb30bce4e4c60320ae80da01142e141bb807aa7a784",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261123"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-11-24.json",
+      "bytes": 34030,
+      "sha256": "38458d31a0b6ad8da39d631426c0f85e048468ad445b3ac2c8e7976f1301e92f",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261124"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-11-25.json",
+      "bytes": 74377,
+      "sha256": "3d5128398f9afee76d4b9be334db037fd861e3adac54a30fae270970c0c0e76a",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261125"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-11-26.json",
+      "bytes": 4384,
+      "sha256": "930a12f9dec7d60ef7407148e8efabea2e19fab4436a6f341805b56bcd2e6735",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261126"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-11-27.json",
+      "bytes": 78714,
+      "sha256": "3ce20716b34f45f26865dfd4185d2f5e4c8dfa7bc933889fce09b31f527dde66",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261127"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-11-28.json",
+      "bytes": 32235,
+      "sha256": "c66ce89808aea20887a8b1aeebbfa6b8b6c95d5372c56df6d3674eb4d6d53c30",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261128"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-11-29.json",
+      "bytes": 59585,
+      "sha256": "a6c749a3a9c95a9b51c23af75996200edea115636057ae24599aba997e6ae335",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261129"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-11-30.json",
+      "bytes": 43315,
+      "sha256": "392c7f76c85ee20f0a407220ace94c3b8e5063c16fcf4ddd0553786f31648c95",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261130"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-12-01.json",
+      "bytes": 48701,
+      "sha256": "6c4fcadd67e4a3392e7163aefbcfdc950694171c4bc08fe144081c4eb538d565",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261201"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-12-02.json",
+      "bytes": 54291,
+      "sha256": "73f80f4458cdf1f1032d032c62eaee760280ef31aab9e0959197f2186e6ae512",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261202"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-12-03.json",
+      "bytes": 32130,
+      "sha256": "338ce21cd1f78c87ffea2b63d59f5ba9bfaaca385acf2b60386ca6280626015d",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261203"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-12-04.json",
+      "bytes": 8459,
+      "sha256": "d63f8996b8ac4046618c3eb6e1856774cfdbf7b1cc12038dca929c8b59decdb4",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261204"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-12-05.json",
+      "bytes": 8459,
+      "sha256": "17c8735ddc858a09614928d28b9c614f399129da85e2e5bc53bb62613dd434e1",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261205"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-12-06.json",
+      "bytes": 4384,
+      "sha256": "930a12f9dec7d60ef7407148e8efabea2e19fab4436a6f341805b56bcd2e6735",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261206"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-12-07.json",
+      "bytes": 4384,
+      "sha256": "930a12f9dec7d60ef7407148e8efabea2e19fab4436a6f341805b56bcd2e6735",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261207"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-12-08.json",
+      "bytes": 6219,
+      "sha256": "d36971ab397b6ecc76f57a28ef2c8d3ecbd322d3a15dd990429ebbf3bb72ea80",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261208"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-12-09.json",
+      "bytes": 4384,
+      "sha256": "930a12f9dec7d60ef7407148e8efabea2e19fab4436a6f341805b56bcd2e6735",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261209"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-12-10.json",
+      "bytes": 4384,
+      "sha256": "930a12f9dec7d60ef7407148e8efabea2e19fab4436a6f341805b56bcd2e6735",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261210"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-12-11.json",
+      "bytes": 6535,
+      "sha256": "80124b64b61480608c7e881791eedb5a99f8155223299bed96430b9de0d7c8ca",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261211"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-12-12.json",
+      "bytes": 49141,
+      "sha256": "f7315472d012df98bf8431141c00ba59f1185da6899c40a6e66f8f1a9e97d4da",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261212"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-12-13.json",
+      "bytes": 37361,
+      "sha256": "99b63dfcbd8f02ae011d8a8932cbba14edfe4c7cf1896cc2e0d516a3ed914192",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261213"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-12-14.json",
+      "bytes": 65366,
+      "sha256": "02bff1c0564654f187a107f9826393a2bb1b04aa940f14515af2f4be483fd246",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261214"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-12-15.json",
+      "bytes": 15785,
+      "sha256": "9807d90c17997c520363c0c8590263a77dcf25e63b59a712e1bbb40d633420d8",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261215"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-12-16.json",
+      "bytes": 76601,
+      "sha256": "11d5380ace308bf1e2d9d4b44bb44933c6a571c28ab88ad9e27570223514e368",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261216"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-12-17.json",
+      "bytes": 21106,
+      "sha256": "32c9f545a0f281e27b1ba6475a306e0d5e99816be898a11ee2d87ddd51503179",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261217"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-12-18.json",
+      "bytes": 70730,
+      "sha256": "26cadf1ccacda326c81a26234c7643592ee83c986c6768db142e365a6854f419",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261218"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-12-19.json",
+      "bytes": 26581,
+      "sha256": "05a7fb6a9ea808fa5260d8d179fceb961f71dec10571ba92d881647a76114e84",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261219"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-12-20.json",
+      "bytes": 59273,
+      "sha256": "de3a2c84be228a593d43c0b305422f8b0f77545b8871d39bd22ae66751637967",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261220"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-12-21.json",
+      "bytes": 59753,
+      "sha256": "1439a32a5f996eaccfaa3da429286e47506fe80cff949d9e16898265d8e8b5c1",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261221"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-12-22.json",
+      "bytes": 21312,
+      "sha256": "19b7cf91bd7fc2200a3a255ac30d5aae9b346c69f9ec97afe33bb5892fd33aab",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261222"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-12-23.json",
+      "bytes": 87309,
+      "sha256": "e33822ab8c23e12fb7c9fa9cb653bcb0f4744fce430595390e2e8eae850afb9d",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261223"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-12-24.json",
+      "bytes": 4384,
+      "sha256": "930a12f9dec7d60ef7407148e8efabea2e19fab4436a6f341805b56bcd2e6735",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261224"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-12-25.json",
+      "bytes": 66418,
+      "sha256": "265f316454b68e32080d9ba4361f1de66be5342f806916649f397edb31b21756",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261225"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-12-26.json",
+      "bytes": 48681,
+      "sha256": "61fe53be9c992f97c70663e36819b5b1a9c5f73281f78453dac1d35795049e9e",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261226"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-12-27.json",
+      "bytes": 70444,
+      "sha256": "01773c6d74bde44c3bf65a23d0d37e5560a5376f474950e462df98c3b30858c6",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261227"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-12-28.json",
+      "bytes": 26751,
+      "sha256": "4460ad57edc55fac19d8fba784da770731db0f1b9e9dacb57f8d459ceed511e2",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261228"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-12-29.json",
+      "bytes": 54277,
+      "sha256": "65f638b7d8b436eb3e45bfc1a0487f0451a646bedba44a5298c354cd1d76bc4b",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261229"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-12-30.json",
+      "bytes": 37717,
+      "sha256": "7cf887e0cd642ca6fa641836c9fc77b252df6682d0a75354531fdf4446afc9ff",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261230"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2026-12-31.json",
+      "bytes": 54485,
+      "sha256": "ec980d5882e200cfece3968b22ebfa824ad5b25becde5af742fe38e0f6fa7c9e",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20261231"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2027-01-01.json",
+      "bytes": 37639,
+      "sha256": "d46576dd302ee832f07f7dc2ac45baec53f969a1b45640631e8d35a1b0686c00",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20270101"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2027-01-02.json",
+      "bytes": 59872,
+      "sha256": "0209979a6f12238223f834855a5469147031b776a90747f99a24462cdf7086a4",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20270102"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2027-01-03.json",
+      "bytes": 48571,
+      "sha256": "bf2229922db1fd06294fda8db7ccd6da5391994370fbf47b3b6ac79679adb4ba",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20270103"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2027-01-04.json",
+      "bytes": 37500,
+      "sha256": "cd2b25a2eafc6ee58c47fa0df9d4165d857d86a2e727dbdf4fa143fc3c8fd0ef",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20270104"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2027-01-05.json",
+      "bytes": 54070,
+      "sha256": "c493f0365f55fe5dd3c0b9ff84af8f046a1276941e0624e88c79183775c60e4c",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20270105"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2027-01-06.json",
+      "bytes": 32505,
+      "sha256": "55f858f18fa259793c2b211dce1427d091fdae5f4d13c5e5cb25e4ababeaf08f",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20270106"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2027-01-07.json",
+      "bytes": 70773,
+      "sha256": "4729cdfef29a471bad84260d1ea891c0e8f93bb534b8195a3f79d8dfddb84f96",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20270107"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2027-01-08.json",
+      "bytes": 48964,
+      "sha256": "45bb41a310dcf3de3eb9fdc118c93b1ce087acf2dd84647fa120d8bd40933794",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20270108"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2027-01-09.json",
+      "bytes": 37346,
+      "sha256": "3de283818a4b4fb3742e9ad811d72dafd142260eccfc84945b14a3da33923706",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20270109"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2027-01-10.json",
+      "bytes": 48250,
+      "sha256": "2a6ac3c502a24905674dce8d10d600f3628d7567d1f30be01923665a70b1a052",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20270110"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2027-01-11.json",
+      "bytes": 37717,
+      "sha256": "674bbddc300b226514ce3afd7912205c75d7f295efb18a45a97135df8ab0a369",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20270111"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2027-01-12.json",
+      "bytes": 48636,
+      "sha256": "7ade3e0e390cd5c396cb7539ac3a081ae46764692e7e822893758b4a24df0a0a",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20270112"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2027-01-13.json",
+      "bytes": 43484,
+      "sha256": "d9861b0251d151ebb9f906cc5f5af5b953b6abcc9651d818861e8995fea69e58",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20270113"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2027-01-14.json",
+      "bytes": 54117,
+      "sha256": "470ffb5c1a1c4bb7b0653cef2c5563e794077b39221876394a4c46f4298f37f5",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20270114"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2027-01-15.json",
+      "bytes": 48695,
+      "sha256": "972abf4976bec71784f6d3f9afdff65389e7fb3b09d341c15735034c5cc01a37",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20270115"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2027-01-16.json",
+      "bytes": 37581,
+      "sha256": "79f74fe17f7cbb78d45289fb8ac58e5e17d952ea131446f117104b44ba4b60fa",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20270116"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2027-01-17.json",
+      "bytes": 48592,
+      "sha256": "5a390a84c8e32d22590adb35195f0e5937d10027796d1faa0d1a6a9fcdc6c08d",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20270117"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2027-01-18.json",
+      "bytes": 44061,
+      "sha256": "7d2adc858f8223af3791e8930fb2082e03e95e0cd03b24d89c93d515b8f2ace3",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20270118"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2027-01-19.json",
+      "bytes": 43181,
+      "sha256": "6bdb9d4c9d0a98b25f48963b0e877acdd963fc11d74f17b29d7ba60d8e8c24bf",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20270119"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2027-01-20.json",
+      "bytes": 59878,
+      "sha256": "953e04897f4682cf278c7505c7ab06c9a50f9c17dc9f9b5a5802300e543f8f13",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20270120"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2027-01-21.json",
+      "bytes": 26770,
+      "sha256": "b8641f85b0f6c80d71dfef400bbfe83724d20cfa8306f17ff49696c7917b42cf",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20270121"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2027-01-22.json",
+      "bytes": 65675,
+      "sha256": "9e6aeb5e80780a96200a5664c5f048b0b062fd0e024e5fb558ec0e9f9b315ce8",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20270122"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2027-01-23.json",
+      "bytes": 37404,
+      "sha256": "35ead48b8d97c88b490feeb25094ee16049f2435843cfffcd322e58d69f5a48f",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20270123"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2027-01-24.json",
+      "bytes": 43134,
+      "sha256": "0c0e4764086b5354998b27ecdb98f235b9c35e33c5772bd0ca9e84e62cf5d043",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20270124"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2027-01-25.json",
+      "bytes": 48658,
+      "sha256": "36368c3dcb6943c6ecaf76e601dc17e08571f39b523ceadf899e0b996ec0f736",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20270125"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2027-01-26.json",
+      "bytes": 43233,
+      "sha256": "5091b3f9ce3018f02052bf4e4a75a528271812dae4d0cb3f8f61463f3792c1f7",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20270126"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2027-01-27.json",
+      "bytes": 54502,
+      "sha256": "fe9acbfb1c584cd2d2867b6a31e0f0875cbe7608249d5327d620ba4faf069cde",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20270127"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2027-01-28.json",
+      "bytes": 48776,
+      "sha256": "a89e224120ac2d394402bf7e1b50c50c1f8fbe522af0323ceee8c4da5fceb610",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20270128"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2027-01-29.json",
+      "bytes": 37909,
+      "sha256": "c82c6b85b596cf300d2470ea4c7e87559da1340834410295c8ae046bcfc9a41c",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20270129"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2027-01-30.json",
+      "bytes": 49837,
+      "sha256": "1a8fab67bde705a3c5c8f1fbb157bfd88ce8e8919a1b564f04ef8bf35f5d14bd",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20270130"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn/2027-01-31.json",
+      "bytes": 48587,
+      "sha256": "df620e3f351683c31f55c5e39be5157844eed4bfe4648265dc155a59e3175c21",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20270131"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn-normalized.json",
+      "bytes": 507832,
+      "sha256": "e7353a17bd109b50aedfbed7a8486f0b6b6839db4a83d3aa53901bb255c2dff9",
+      "source": "derived from captured snapshots"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/espn-range.json",
+      "bytes": 55,
+      "sha256": "5ca0ff4c797098c7b38245f4603588b1eb556ce62656fa22ce7bca02f30f3cc7",
+      "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20260901-20270131&limit=1000"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/games.json",
+      "bytes": 568100,
+      "sha256": "41ed74b9fb1eefb445ee01108de77aa43c781cdfb533283e95683ba34c90b44d",
+      "source": "database READ ONLY snapshot"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/intuit-home.html",
+      "bytes": 75099,
+      "sha256": "60a27c018b545564f6cf90708c9182aebdb66bb579c07596f920f7b3ec66741c",
+      "source": "https://www.intuitdome.com/"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/nba-bucks-time-change.html",
+      "bytes": 302029,
+      "sha256": "a5a05f80f55b7fb1d295a099df9b63c695dfab528785df765efcc818e8db4107",
+      "source": "https://www.nba.com/news/milwaukee-bucks-move-home-opener-world-series"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/nba-bulls-schedule.html",
+      "bytes": 934613,
+      "sha256": "da2355b2e81966d514b7907a4a2682c7a99e8cadd6412adf6384df84d4010fcf",
+      "source": "https://www.nba.com/bulls/schedule"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/nba-by-date.pdf",
+      "bytes": 541060,
+      "sha256": "5e82e37ef1b19e226dee57be69958b95b5694516280d3034aa7c1d64292b3570",
+      "source": "https://ak-static.cms.nba.com/wp-content/uploads/sites/46/2026/08/2026-27-NBA-Regular-Season-Schedule-By-Date.pdf"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/nba-by-date.txt",
+      "bytes": 112876,
+      "sha256": "0278d60cb87708e0401dd86b3a5afe480e5ec59b5cdb212179d33fb352e23c45",
+      "source": "pdftotext -layout nba-by-date.pdf"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/nba-cdn.txt",
+      "bytes": 425,
+      "sha256": "538fc7ae78b4c20bab29a5fc4b1148e8d5dec8e0171f49640a589686fb1cfd6f",
+      "source": "https://cdn.nba.com/static/json/staticData/scheduleLeagueV2.json"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/nba-cup-faq.txt",
+      "bytes": 328877,
+      "sha256": "24e1ecac364f05221931d91e43038f289831599411b39c30b2f51abd23af1c07",
+      "source": "https://www.nba.com/news/nba-cup-frequently-asked-questions"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/nba-pdf-fixtures.json",
+      "bytes": 184277,
+      "sha256": "06060ba04f378e9c2e4ed726970950287643ad662b8c369985a244b66ac3b2d2",
+      "source": "derived from captured snapshots"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/nba-pdf-unparsed.json",
+      "bytes": 3,
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "source": "derived from captured snapshots"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/nba-release.txt",
+      "bytes": 128982,
+      "sha256": "3253ffb051592465705c2d57881e58fca0a63749c5f5deb7917cac69f7662e38",
+      "source": "https://pr.nba.com/2026-27-nba-regular-season-schedule/"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/nba-spurs-schedule.html",
+      "bytes": 895698,
+      "sha256": "4093691d2633c4d0a91818e399f21dffde439251f610f9ccc135663fbc505826",
+      "source": "https://www.nba.com/spurs/schedule"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/numeric-run.log",
+      "bytes": 2915,
+      "sha256": "51cef4d5b32d57eaa625792816708352d9f9a6274c5d561483676264fc48ce0c",
+      "source": "derived from captured snapshots"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/scores.json",
+      "bytes": 1571624,
+      "sha256": "adb58ff784ddd70e54b1141f5e826b84eb1f8ad9b6aef15e3ae36dfa788a67fa",
+      "source": "database READ ONLY snapshot"
+    },
+    {
+      "file": "docs/audit/2026-10-20-schedule-audit/supabase-changelog.txt",
+      "bytes": 102319,
+      "sha256": "15b3d0d1a7dc3b3f2c0af4788e49acfdf2d2edbd2613f22de0705fa43b1cf58b",
+      "source": "derived from captured snapshots"
+    }
+  ]
+}

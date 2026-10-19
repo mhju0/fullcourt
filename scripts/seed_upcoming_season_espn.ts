@@ -1,3 +1,4 @@
+import { applyGameInputCorrection, espnScheduleGameType } from "@/lib/game-input-corrections";
 import { mapEspnStatus } from "@/lib/espn-scoreboard";
 /**
  * Seed an upcoming season's regular-season schedule into `games` from ESPN.
@@ -88,6 +89,7 @@ type SeedGame = {
   tipOffUtc: string;
   neutralSite: boolean;
   neutralVenueCity: string | null;
+  gameType: string;
 };
 
 async function pool<T>(items: T[], limit: number, fn: (item: T) => Promise<void>): Promise<void> {
@@ -160,9 +162,10 @@ function parseEvent(ev: any, seasonEndYear: number): SeedGame | null {
 
   const providerStatus = mapEspnStatus(comp.status?.type?.state, comp.status?.type?.completed, comp.status?.type?.name);
   if (providerStatus === "unknown") return null;
-  const status = providerStatus === "postponed" || providerStatus === "cancelled" ? providerStatus : "scheduled";
+  const status: SeedGame["status"] = providerStatus === "postponed" || providerStatus === "cancelled" ? providerStatus : "scheduled";
   const tipOffUtc = String(comp.date);
-  return {
+  return applyGameInputCorrection<SeedGame & {homeAbbr:string;awayAbbr:string}>({
+    homeAbbr, awayAbbr, gameType: espnScheduleGameType(comp.notes),
     externalId: `espn-${ev.id}`,
     status,
     date: ET_DATE.format(new Date(tipOffUtc)),
@@ -172,7 +175,7 @@ function parseEvent(ev: any, seasonEndYear: number): SeedGame | null {
     neutralSite: Boolean(comp.neutralSite),
     neutralVenueCity:
       comp.neutralSite && comp.venue?.address?.city ? String(comp.venue.address.city) : null,
-  };
+  });
 }
 /* eslint-enable @typescript-eslint/no-explicit-any */
 
@@ -182,7 +185,7 @@ function validate(games: readonly SeedGame[]): string[] {
   const total = new Map<string, number>();
   const bump = (m: Map<string, number>, k: string) => m.set(k, (m.get(k) ?? 0) + 1);
 
-  for (const g of games) {
+  for (const g of games.filter(g=>g.gameType === "regular")) {
     bump(total, g.home);
     bump(total, g.away);
   }
@@ -197,6 +200,8 @@ function validate(games: readonly SeedGame[]): string[] {
     problems.push(`teams do not share a game count (${counts.join(", ")}): ${odd.join(" ")}`);
   }
 
+  const championships=games.filter(g=>g.gameType === "cup_final");
+  if(championships.length>1 || championships.some(g=>!g.neutralSite))problems.push("Cup championship must be a single identified neutral fixture");
   const perDay = new Map<string, Map<string, number>>();
   for (const g of games) {
     if (!perDay.has(g.date)) perDay.set(g.date, new Map());
@@ -336,7 +341,7 @@ async function main() {
             away_score: null,
             status: g.status,
             overtime_periods: 0,
-            game_type: "regular",
+            game_type: g.gameType,
             tip_off_utc: g.tipOffUtc,
             neutral_site: g.neutralSite,
             neutral_venue_city: g.neutralVenueCity,

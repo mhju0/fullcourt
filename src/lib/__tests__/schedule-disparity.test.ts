@@ -16,13 +16,14 @@ function game(
   date: string,
   homeTeamId: number,
   awayTeamId: number,
-  opts: Partial<Pick<DisparityGameRow, "status" | "homeFatigueScore" | "awayFatigueScore">> = {}
+  opts: Partial<Pick<DisparityGameRow, "status" | "homeFatigueScore" | "awayFatigueScore" | "neutralSite">> = {}
 ): DisparityGameRow {
   return {
     date,
     homeTeamId,
     awayTeamId,
     status: opts.status ?? "final",
+    neutralSite: opts.neutralSite ?? false,
     homeFatigueScore: opts.homeFatigueScore ?? null,
     awayFatigueScore: opts.awayFatigueScore ?? null,
   };
@@ -658,6 +659,39 @@ describe("defaultRankableSeason", () => {
 });
 
 describe("schedule value in wins", () => {
+  it("retains a neutral fixture's raw edge and calendar workload while leaving Worth unpriced", () => {
+    const calendar = [
+      game("2024-01-01", 1, 2),
+      game("2024-01-01", 3, 4),
+      game("2024-01-02", 1, 3, {
+        homeFatigueScore: "1", awayFatigueScore: "4", neutralSite: true,
+      }),
+      game("2024-01-03", 1, 2),
+    ];
+    const result = computeScheduleDisparity("2023-24", calendar);
+    const team = result.teams.find((row) => row.teamId === 1)!;
+    expect(team.games).toBe(2);
+    expect(team.favorableGames).toBe(1);
+    expect(team.netEdgeGames).toBe(1);
+    expect(team.netFatigueEdge).toBe(3);
+    expect(result.league.measuredGames).toBe(1);
+    expect(team.netRestEdge).toBe(-1);
+    expect(team.backToBackEdge).toBe(-1);
+    expect(Object.values(team.restStates).every((count) => count === 0)).toBe(true);
+    expect(team.scheduleValueWins).toBeNull();
+
+    const homeCourt = computeScheduleDisparity("2023-24", calendar.map((row) => ({
+      ...row, neutralSite: false,
+    })));
+    for (const row of result.teams) {
+      const counterpart = homeCourt.teams.find((other) => other.teamId === row.teamId)!;
+      expect({ ...row, restStates: null, scheduleValueWins: null }).toEqual({
+        ...counterpart, restStates: null, scheduleValueWins: null,
+      });
+    }
+    expect(homeCourt.teams.find((row) => row.teamId === 1)!.scheduleValueWins).not.toBeNull();
+  });
+
   /**
    * The regression this exists to stop. Rest states were first accumulated behind the same
    * opener gate every other figure here uses, which dropped one game per team and put this

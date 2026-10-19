@@ -14,7 +14,7 @@
   },
   "effectsInPoints": {
     "bestPlayerOut": {
-      "points": 2.969,
+      "points": 2.968,
       "t": 17.8
     },
     "homeCourt": {
@@ -22,16 +22,16 @@
       "t": 41.4
     },
     "backToBack": {
-      "points": 1.764,
+      "points": 1.763,
       "t": 13.1
     },
     "visitingAltitude": {
-      "points": 1.371,
-      "t": 5.0
+      "points": 1.412,
+      "t": 5.2
     },
     "priorOvertime": {
-      "points": 0.498,
-      "t": 2.7
+      "points": 0.552,
+      "t": 3.3
     },
     "missValuePerPoint": {
       "points": 0.275,
@@ -46,30 +46,30 @@
   },
   "scheduleHoldsUp": {
     "backToBack": {
-      "scheduleOnly": 1.764,
-      "absenceControlled": 1.638,
+      "scheduleOnly": 1.763,
+      "absenceControlled": 1.636,
       "shiftPct": 7.2
     },
     "visitingAltitude": {
-      "scheduleOnly": 1.371,
-      "absenceControlled": 1.303,
-      "shiftPct": 5.0
+      "scheduleOnly": 1.412,
+      "absenceControlled": 1.343,
+      "shiftPct": 4.9
     },
     "priorOvertime": {
-      "scheduleOnly": 0.498,
-      "absenceControlled": 0.458,
-      "shiftPct": 7.9
+      "scheduleOnly": 0.552,
+      "absenceControlled": 0.521,
+      "shiftPct": 5.6
     },
     "scheduleDensity": {
       "scheduleOnly": 0.279,
       "absenceControlled": 0.264,
-      "shiftPct": 5.3
+      "shiftPct": 5.4
     }
   },
   "noise": {
     "marginStdDev": 13.65,
-    "rmseScheduleOnly": 12.462,
-    "rmseWithAbsence": 12.372
+    "rmseScheduleOnly": 12.461,
+    "rmseWithAbsence": 12.371
   },
   "seasonBestOutRate": [
     {

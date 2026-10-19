@@ -1,0 +1,183 @@
+{
+  "snapshot": {
+    "started": "2026-10-19T16:38:11.044Z",
+    "finished": "2026-10-19T16:38:12.880Z",
+    "transaction": "REPEATABLE READ READ ONLY",
+    "sourceCommit": "6cb7ce8e86ff9e5aebd7974c4e8c71e5d6f9ffb9",
+    "counts": {
+      "teams": 30,
+      "games": 1200,
+      "context": 1200,
+      "scores": 2400,
+      "duplicates": 0
+    }
+  },
+  "scope": {
+    "all_season_games": 1200,
+    "assigned_season_games": 1200,
+    "assigned_season_team_games": 2400,
+    "assigned_season_dates": 156,
+    "held": 0,
+    "neutral": 3,
+    "statuses": {
+      "scheduled": 1200
+    },
+    "external_id_duplicate_count": 0,
+    "team_date_double_bookings": 0,
+    "team_game_count_distribution": {
+      "80": 30
+    },
+    "context_game_types": {
+      "regular": 1200
+    },
+    "context_date_min": "2026-10-20"
+  },
+  "pdf": {
+    "parsed": 1200,
+    "unparsed": [],
+    "fixture_differences": 0,
+    "tip_differences": 0,
+    "tip_differences_assigned_season": 0
+  },
+  "calendar_stored": {
+    "field_comparisons": 19200,
+    "differences": 508,
+    "by_field": {
+      "road_trip_consecutive_away": 508
+    }
+  },
+  "totals": {
+    "is_back_to_back": 426,
+    "is_three_in_four": 628,
+    "is_four_in_six": 716,
+    "leg_miles": 1287113.904985996
+  },
+  "month": {
+    "2026-10": {
+      "games": 88,
+      "b2b": 30,
+      "three_in_four": 44,
+      "four_in_six": 42,
+      "leg_miles": 83886.90648
+    },
+    "2026-11": {
+      "games": 215,
+      "b2b": 72,
+      "three_in_four": 103,
+      "four_in_six": 111,
+      "leg_miles": 222625.714474
+    },
+    "2026-12": {
+      "games": 172,
+      "b2b": 61,
+      "three_in_four": 77,
+      "four_in_six": 83,
+      "leg_miles": 191088.025276
+    },
+    "2027-01": {
+      "games": 236,
+      "b2b": 91,
+      "three_in_four": 144,
+      "four_in_six": 174,
+      "leg_miles": 257303.385167
+    },
+    "2027-02": {
+      "games": 169,
+      "b2b": 56,
+      "three_in_four": 84,
+      "four_in_six": 101,
+      "leg_miles": 191488.227324
+    },
+    "2027-03": {
+      "games": 232,
+      "b2b": 88,
+      "three_in_four": 121,
+      "four_in_six": 135,
+      "leg_miles": 249049.719911
+    },
+    "2027-04": {
+      "games": 88,
+      "b2b": 28,
+      "three_in_four": 55,
+      "four_in_six": 70,
+      "leg_miles": 91671.926354
+    }
+  },
+  "legs": {
+    "count": 2400,
+    "all_consecutive_away_pairs": 680,
+    "geography_research_queue_gap_ge2_detour_le150": 55,
+    "long_team_gaps_ge3": 424,
+    "long_away_gaps_all_star_overlap": 6,
+    "max_target": {
+      "game_id": 119323,
+      "date": "2027-01-20",
+      "team": "SAS",
+      "opponent": "MIA",
+      "nominal_home": true,
+      "neutral": false,
+      "neutral_city": null,
+      "prior_date": "2027-01-17",
+      "origin": "Manchester",
+      "destination": "SAS",
+      "origin_lat": 53.4839,
+      "origin_lon": -2.1953,
+      "destination_lat": 29.4269,
+      "destination_lon": -98.4375,
+      "leg_miles": 4851.364924,
+      "gap_days": 3,
+      "is_target": true
+    },
+    "target_zero": 708,
+    "away_gap_candidates": 99,
+    "local_candidates": 86,
+    "away_gap_candidates_cup_tbd_overlap": 6
+  },
+  "api": {
+    "team_games_compared": 2400,
+    "by_team": {
+      "DET": 80,
+      "BOS": 80,
+      "NYK": 80,
+      "PHI": 80,
+      "SAS": 80,
+      "OKC": 80,
+      "ORL": 80,
+      "ATL": 80,
+      "WAS": 80,
+      "MIL": 80,
+      "MIA": 80,
+      "MIN": 80,
+      "BKN": 80,
+      "CHA": 80,
+      "TOR": 80,
+      "CHI": 80,
+      "MEM": 80,
+      "UTA": 80,
+      "NOP": 80,
+      "IND": 80,
+      "HOU": 80,
+      "DAL": 80,
+      "LAL": 80,
+      "GSW": 80,
+      "POR": 80,
+      "PHX": 80,
+      "LAC": 80,
+      "SAC": 80,
+      "CLE": 80,
+      "DEN": 80
+    },
+    "differences": 0,
+    "errors": []
+  },
+  "espn": {
+    "regular_fixtures_in_context": 1200,
+    "placeholders": 4,
+    "missing_dates": [],
+    "differences": 2,
+    "venue_rows": 1200,
+    "venue_missing": 0,
+    "distinct_venue_ids": 34,
+    "minority_home_venue_rows": 6
+  }
+}

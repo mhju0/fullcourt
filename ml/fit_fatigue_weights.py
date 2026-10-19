@@ -19,6 +19,8 @@ Protocol, decided before any of this was run:
 
 from __future__ import annotations
 
+import hashlib
+import json
 import logging
 from pathlib import Path
 
@@ -310,10 +312,10 @@ def main() -> None:
     a(f"  + fitted fatigue factors     {pooled('ll_fitted'):.5f}   ({pooled('ll_base') - pooled('ll_fitted'):+.5f})")
     a("")
     a(f"  controls only (no fatigue)   {pooled('ll_controls_only'):.5f}")
-    a(f"  controls + fatigue (13)      {pooled('ll_fitted_controls'):.5f}   ({pooled('ll_controls_only') - pooled('ll_fitted_controls'):+.5f})")
+    a(f"  controls + fatigue ({len(FATIGUE_TERMS)})      {pooled('ll_fitted_controls'):.5f}   ({pooled('ll_controls_only') - pooled('ll_fitted_controls'):+.5f})")
     a(f"  controls + fatigue (4 only)  {pooled('ll_parsimonious'):.5f}   ({pooled('ll_controls_only') - pooled('ll_parsimonious'):+.5f})")
     a("")
-    a(f"  the 9 dropped terms are worth {pooled('ll_parsimonious') - pooled('ll_fitted_controls'):+.5f} log loss between them")
+    a(f"  the {len(FATIGUE_TERMS) - len(SURVIVING_TERMS)} dropped terms are worth {pooled('ll_parsimonious') - pooled('ll_fitted_controls'):+.5f} log loss between them")
     a("")
     a(f"  FITTED vs SHIPPED            {pooled('ll_incumbent') - pooled('ll_fitted'):+.5f} log loss")
     a(f"  modern only (2016+)          {np.average(modern['ll_incumbent'], weights=modern['n_test']) - np.average(modern['ll_fitted'], weights=modern['n_test']):+.5f}")
@@ -373,6 +375,23 @@ def main() -> None:
             f"{r['inc_ok'] / max(1, r['inc_n']):.4f}    {int(r['fit_n']):>6}  "
             f"{r['fit_ok'] / max(1, r['fit_n']):.4f}"
         )
+
+    metrics = {
+        "generatedBy": "ml/fit_fatigue_weights.py",
+        "modelTableSha256": hashlib.sha256(TABLE.read_bytes()).hexdigest(),
+        "trainFloor": TRAIN_FLOOR,
+        "firstTestSeason": FIRST_TEST_SEASON,
+        "heldOutGames": int(res["n_test"].sum()),
+        "folds": len(res),
+        "pooledLogLoss": {
+            column: pooled(column)
+            for column in ["ll_base", "ll_incumbent", "ll_fitted", "ll_controls_only",
+                           "ll_fitted_controls", "ll_parsimonious"]
+        },
+    }
+    metrics_path = ROOT / "ml" / "fatigue_fit_metrics.json"
+    metrics_path.write_text(json.dumps(metrics, indent=2) + "\n")
+    log.info("wrote %s", metrics_path)
 
     REPORT.write_text("\n".join(lines) + "\n")
     log.info("wrote %s", REPORT)
