@@ -3394,5 +3394,37 @@
       "rawMinutes": "9:56",
       "rawComment": "DNP - Coach's Decision"
     }
+  ],
+  "teamIdentityOverrides": [
+    {
+      "personId": "36",
+      "gameId": "0029600070",
+      "date": "1996-11-10",
+      "before": {
+        "team_id": "1610612739",
+        "team_tricode": "CLE",
+        "side": "home"
+      },
+      "after": {
+        "team_id": "1610612743",
+        "team_tricode": "DEN",
+        "side": "away"
+      },
+      "expectedStats": {
+        "minutes": "29:38",
+        "points": "7",
+        "field_goals_made": "3",
+        "field_goals_attempted": "9",
+        "three_pointers_made": "1",
+        "three_pointers_attempted": "3",
+        "free_throws_made": "0",
+        "free_throws_attempted": "0"
+      },
+      "sourceUrl": "https://newspapers.swco.ttu.edu/server/api/core/bitstreams/85f6d376-0ea9-4115-a879-16835eaff7e6/content",
+      "sourceSha256": "91abd46ea8cfd83912ed077c64e72045fad718729617328bbf8abf0278c9a007",
+      "pdfPage": 17,
+      "cropSha256": "ef4d3c762b630a05216a60cf3e6b1f1e1c96a8104c4cc3e6f3dc80a009cbfaf9",
+      "note": "Page17 box headline reads Nuggets84; Denver(86) body,total86,andquarterline23+15+24+24=86 agree with page16 AP101\u201386. Do not silently normalize this printed discrepancy."
+    }
   ]
 }

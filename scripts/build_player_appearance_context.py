@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import csv
 import hashlib
 import json
 import logging
@@ -52,6 +53,8 @@ def main() -> None:
     parser.add_argument("--source-dir", type=Path, default=Path("docs/audit/player-appearance-sources"))
     parser.add_argument("--output", type=Path, default=CONTEXT_PATH)
     parser.add_argument("--request-dir", type=Path, default=Path("docs/audit/player-rest-appearance"))
+    parser.add_argument("--identity-proof", type=Path, default=Path("docs/audit/score-conflicts-primary/1996-den-cle-adjudication.json"))
+    parser.add_argument("--cache-dir", type=Path, default=Path("ml/data/shooting"))
     args = parser.parse_args()
     games, sources = [], []
     for path in sorted(args.source_dir.glob("006*-official-next-data.json")):
@@ -96,9 +99,33 @@ def main() -> None:
             raw = by_pair[(row["pid"], row["gid"])]
             resolutions.append({**row, "state": "did_not_play" if row["state"] == "not_played" else row["state"],
                                 "rawMinutes": raw["rawMinutes"], "rawComment": raw["rawComment"]})
+    proof = json.loads(args.identity_proof.read_text())
+    with (args.cache_dir / "player_boxscores_1996.csv").open(newline="", encoding="utf-8") as stream:
+        raw_rows = [row for row in csv.DictReader(stream) if row["game_id"] == "0029600070" and row["person_id"] == "36"]
+    if len(raw_rows) != 1:
+        raise ValueError("Expected one reviewed Marciulionis cache row")
+    raw = raw_rows[0]
+    primary = proof["primaryPlayerTeamProof"]
+    if (proof["gameId"], proof["date"], primary["teamAssignment"], primary["fieldGoals"], primary["freeThrows"], primary["points"]) != (
+        "0029600070", "1996-11-10", "DEN", [3, 9], [0, 0], 7
+    ) or not primary["visualVerified"]:
+        raise ValueError("Reviewed primary player/team evidence changed")
+    before = {key: raw[key] for key in ("team_id", "team_tricode", "side")}
+    if before != {"team_id": "1610612739", "team_tricode": "CLE", "side": "home"}:
+        raise ValueError("Reviewed team identity cache input changed")
+    expected_stats = {key: raw[key] for key in ("minutes", "points", "field_goals_made", "field_goals_attempted",
+                                               "three_pointers_made", "three_pointers_attempted", "free_throws_made", "free_throws_attempted")}
+    if [expected_stats[key] for key in ("points", "field_goals_made", "field_goals_attempted", "three_pointers_made", "three_pointers_attempted", "free_throws_made", "free_throws_attempted")] != ["7", "3", "9", "1", "3", "0", "0"]:
+        raise ValueError("Primary-confirmed shooting counts differ from cache")
+    identity_override = {"personId": "36", "gameId": proof["gameId"], "date": proof["date"], "before": before,
+                         "after": {"team_id": "1610612743", "team_tricode": "DEN", "side": "away"},
+                         "expectedStats": expected_stats, "sourceUrl": proof["contemporaneousPrimary"]["source"]["url"],
+                         "sourceSha256": proof["contemporaneousPrimary"]["source"]["sha256"], "pdfPage": primary["pdfPage"],
+                         "cropSha256": primary["images"]["1996-11-11-midland-box-crop.png"], "note": primary["printTypo"]}
     payload = {"dataVersion": "1.0.4", "generatedBy": "scripts/build_player_appearance_context.py",
                "minutesAuthority": "Official NBA embedded boxscore displayed minutes; scorer PDF corroborates participant/FGA sets, with up to two seconds of display variance.",
-               "games": games, "sources": sources, "historyAliases": aliases, "resolutions": resolutions}
+               "games": games, "sources": sources, "historyAliases": aliases, "resolutions": resolutions,
+               "teamIdentityOverrides": [identity_override]}
     args.output.write_text(json.dumps(payload, indent=2) + "\n")
     log.info("wrote %d supplemental games to %s", len(games), args.output)
 

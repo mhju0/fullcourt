@@ -9,7 +9,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from build_player_appearance_context import normalize_game
-from player_appearance_history import annotate_outcomes, load_history, minutes_value, participation, prove_history_windows
+from player_appearance_history import (annotate_outcomes, correct_team_identity, load_history, minutes_value,
+                                       participation, prove_history_windows, team_identity_overrides)
 
 
 def event(gid, day, state="played", minutes=10, pid="1629731"):
@@ -21,6 +22,27 @@ def outcome(gid, day, pid="1629731"):
 
 
 class AppearanceTests(unittest.TestCase):
+    def test_primary_team_override_preserves_all_other_observations(self):
+        raw = {"person_id": "36", "game_id": "0029600070", "team_id": "1610612739", "team_tricode": "CLE",
+               "side": "home", "field_goals_attempted": "9", "minutes": "29:38"}
+        override = {"personId": "36", "gameId": "0029600070", "before": {k: raw[k] for k in ("team_id", "team_tricode", "side")},
+                    "after": {"team_id": "1610612743", "team_tricode": "DEN", "side": "away"},
+                    "expectedStats": {"field_goals_attempted": "9", "minutes": "29:38"}}
+        corrected = correct_team_identity(raw, override)
+        self.assertEqual(corrected, {**raw, **override["after"]})
+        self.assertEqual(raw["team_tricode"], "CLE")
+        with self.assertRaisesRegex(ValueError, "cache input"):
+            correct_team_identity({**raw, "field_goals_attempted": "10"}, override)
+        with tempfile.TemporaryDirectory() as temporary:
+            path = Path(temporary) / "context.json"
+            path.write_text(json.dumps({"teamIdentityOverrides": [override, override]}))
+            with self.assertRaisesRegex(ValueError, "Duplicate"):
+                team_identity_overrides(path)
+            override["after"]["minutes"] = "30:00"
+            path.write_text(json.dumps({"teamIdentityOverrides": [override]}))
+            with self.assertRaisesRegex(ValueError, "only replace team identity"):
+                team_identity_overrides(path)
+
     def test_zero_attempt_wade_appearance_changes_the_next_shooting_game(self):
         history = [event("0022300820", "2024-02-25", minutes=7 + 53 / 60),
                    event("0022300832", "2024-02-27", minutes=9.25)]

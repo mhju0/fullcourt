@@ -17,6 +17,24 @@ COMPETITIVE_PREFIXES = {"002", "004", "005", "006"}
 NOT_PLAYED = re.compile(r"^(?:DNP|DND|NWT|INACTIVE|DID NOT PLAY|DID NOT DRESS|NOT WITH TEAM)\b", re.I)
 
 
+def team_identity_overrides(context_path: Path = CONTEXT_PATH) -> dict[tuple[str, str], dict]:
+    rows = json.loads(context_path.read_text()).get("teamIdentityOverrides", [])
+    overrides = {(row["personId"], row["gameId"]): row for row in rows}
+    if len(overrides) != len(rows):
+        raise ValueError("Duplicate player/game team identity override")
+    if any(set(row[side]) != {"team_id", "team_tricode", "side"} for row in rows for side in ("before", "after")):
+        raise ValueError("Team identity override may only replace team identity fields")
+    return overrides
+
+
+def correct_team_identity(raw: dict, override: dict) -> dict:
+    expected = {"person_id": override["personId"], "game_id": override["gameId"],
+                **override["before"], **override["expectedStats"]}
+    if any(str(raw.get(key)) != value for key, value in expected.items()):
+        raise ValueError("Player team identity override cache input changed")
+    return {**raw, **override["after"]}
+
+
 def minutes_value(raw: str) -> float | None:
     text = "" if raw is None else str(raw).strip()
     if not text:

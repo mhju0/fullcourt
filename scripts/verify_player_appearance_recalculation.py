@@ -65,8 +65,12 @@ def main():
     new = {identity(row): row for row in after}
     assert len(old) == len(before) and len(new) == len(after)
     assert old.keys() == new.keys(), "Shooting outcome identity set changed"
+    team_changes = []
     for key, row in new.items():
-        assert all(row[field] == old[key][field] for field in ("date", "fgm", "fga", "fg3m", "fg3a", "ftm", "fta", "pts", "season", "team")), key
+        assert all(row[field] == old[key][field] for field in ("date", "fgm", "fga", "fg3m", "fg3a", "ftm", "fta", "pts", "season")), key
+        if row["team"] != old[key]["team"]:
+            team_changes.append({"pid": key[0], "gid": key[1], "before": old[key]["team"], "after": row["team"]})
+    assert team_changes == [{"pid": "36", "gid": "0029600070", "before": "CLE", "after": "DEN"}]
     assignments = Counter()
     per_season = defaultdict(Counter)
     field_changes = Counter()
@@ -88,10 +92,23 @@ def main():
     before_eb, after_eb = eb_summary(before, 150), eb_summary(after, 150)
     public = json.loads((ROOT / "public/data/player-rest.json").read_text())
     old_public = json.loads(subprocess.check_output(["git", "show", "0f30d345:public/data/player-rest.json"], text=True))
-    assert public["names"] == old_public["names"] and public["teams"] == old_public["teams"]
-    assert [row[:7] for row in public["seasons"]] == [row[:7] for row in old_public["seasons"]], "Whole season counts/FGA/eFG changed"
+    assert public["names"] == old_public["names"]
+    assert [row[:2] + row[3:7] for row in public["seasons"]] == [row[:2] + row[3:7] for row in old_public["seasons"]], "Whole season counts/FGA/eFG changed"
+    label_changes = []
+    for row, previous in zip(public["seasons"], old_public["seasons"]):
+        label, old_label = public["teams"][row[2]], old_public["teams"][previous[2]]
+        if label != old_label:
+            label_changes.append({"player": public["names"][row[0]], "season": row[1], "before": old_label, "after": label})
+    assert label_changes == [{"player": "Sarunas Marciulionis", "season": 1996, "before": "DEN/CLE", "after": "DEN"}]
     assert public["empiricalBayes"] == after_eb
     assert public["appearanceCoverage"] == coverage
+    prior_identity_path = ROOT / "docs/audit/player-rest-appearance/before-team-identity-player-rest.json"
+    identity_math_preserved = None
+    if prior_identity_path.exists():
+        prior_identity = json.loads(prior_identity_path.read_text())
+        assert all(public[key] == prior_identity[key] for key in public if key not in {"teams", "seasons"})
+        assert [row[:2] + row[3:] for row in public["seasons"]] == [row[:2] + row[3:] for row in prior_identity["seasons"]]
+        identity_math_preserved = True
     wade = ("1629731", "0022300846")
     assert old[wade]["rest"] == 3 and new[wade]["rest"] == 1
     keys = sorted(new)
@@ -109,6 +126,8 @@ def main():
                "rawOutcomesAndShotTotalsPreserved": True, "totals": totals, "wholePlayerSeasonsPreserved": len(public["seasons"]),
                "restAssignmentMatrix": dict(assignments), "restArmAssignmentsChanged": sum(v for k, v in assignments.items() if k.split("->")[0] != k.split("->")[1]),
                "fieldChanges": dict(field_changes), "changesBySeason": {key: dict(value) for key, value in sorted(per_season.items())},
+               "teamMetadataOverrides": team_changes, "publishedTeamLabelChanges": label_changes,
+               "teamOverrideNumericalOutputsUnchanged": identity_math_preserved,
                "eligibility": cohorts, "coverage": coverage, "unknownHistoryCoverage": unknown_coverage,
                "empiricalBayes": {"before": before_eb, "after": after_eb},
                "wadeWitness": {"pid": wade[0], "gid": wade[1], "beforeDaysSince": old[wade]["rest"], "afterDaysSince": new[wade]["rest"]},

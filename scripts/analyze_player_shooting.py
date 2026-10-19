@@ -38,7 +38,8 @@ from pathlib import Path
 
 import psycopg2
 
-from player_appearance_history import annotate_outcomes, load_game_context, load_history, prove_history_windows
+from player_appearance_history import (annotate_outcomes, correct_team_identity, load_game_context,
+                                       load_history, prove_history_windows, team_identity_overrides)
 
 ROOT = Path(__file__).resolve().parent.parent
 CACHE = ROOT / "ml" / "data" / "shooting"
@@ -114,9 +115,15 @@ def parse_birth(s: str) -> date | None:
 
 def load_player_games() -> list[dict]:
     rows = []
+    overrides = team_identity_overrides()
+    matched = defaultdict(int)
     for path in sorted(CACHE.glob("player_boxscores_*.csv")):
         with path.open(newline="", encoding="utf-8") as fh:
             for r in csv.DictReader(fh):
+                key = (r["person_id"], r["game_id"])
+                if key in overrides:
+                    r = correct_team_identity(r, overrides[key])
+                    matched[key] += 1
                 gid = r["game_id"]
                 if not gid.startswith(REGULAR_PREFIX):
                     continue
@@ -142,6 +149,8 @@ def load_player_games() -> list[dict]:
                     "ftm": int(r["free_throws_made"] or 0),
                     "pts": int(r["points"] or 0),
                 })
+    if any(matched[key] != 1 for key in overrides):
+        raise ValueError("Each player team identity override must match exactly one cache row")
     return rows
 
 
