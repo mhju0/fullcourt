@@ -52,7 +52,7 @@ describe("Edges Ahead clock filtering", () => {
   it("keeps unknown tip times and removes invalid or elapsed instants", () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date("2026-10-20T20:00:00Z"));
-    const template = { gameId: 9, date: "2026-10-20", season: "2026-27", homeTeam: { id: 1, abbreviation: "H", name: "Home", city: "City" }, awayTeam: { id: 2, abbreviation: "A", name: "Away", city: "City" }, homeFatigueScore: 0, awayFatigueScore: 1, restAdvantageDifferential: 1, predictedAdvantageAbbreviation: "H", projectedFatigue: true };
+    const template = { gameId: 9, date: "2026-10-20", season: "2026-27", homeTeam: { id: 1, abbreviation: "H", name: "Home", city: "City" }, awayTeam: { id: 2, abbreviation: "A", name: "Away", city: "City" }, homeFatigueScore: 0, awayFatigueScore: 5, restAdvantageDifferential: 5, predictedAdvantageAbbreviation: "H", projectedFatigue: true };
     upcoming.splice(0, upcoming.length, { ...template, tipOffUtc: null });
     expect(renderToStaticMarkup(createElement(EdgesAhead, { onJump: () => {} }))).toContain("A @ H");
     upcoming.splice(0, upcoming.length, { ...template, tipOffUtc: "invalid" }, { ...template, gameId: 10, tipOffUtc: "2026-10-20T19:59:59Z" });

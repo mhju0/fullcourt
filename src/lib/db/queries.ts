@@ -21,6 +21,7 @@ import {
 import { alias } from "drizzle-orm/pg-core";
 import { db } from "./index";
 import { slateOrder } from "./slate-order";
+import { compareUpcomingTipOff } from "@/lib/upcoming-rest-edges";
 import { hasNotTipped } from "@/lib/game-phase";
 import {
   fatigueScores,
@@ -964,12 +965,14 @@ function buildRestAdvantage(
 /**
  * Scheduled regular-season games for the given season with open predictions,
  * optionally filtered to |RA differential| >= minRA. Returns upcoming games only
- * (on or after today's date), sorted by date ascending.
+ * (on or after today's date). A bounded result defaults to strongest first;
+ * `soonest` orders the full qualifying set by tip-off before applying the limit.
  */
 export async function getUpcomingGamesWithRA(
   season: string,
   minRA: number,
-  limit?: number
+  limit?: number,
+  order: "strongest" | "soonest" = "strongest"
 ): Promise<UpcomingGameWithRA[]> {
   const homeTeam = alias(teams, "ht");
   const awayTeam = alias(teams, "at");
@@ -995,6 +998,8 @@ export async function getUpcomingGamesWithRA(
     publishableGames(),
     eq(games.season, season),
     eq(games.status, "scheduled"),
+    eq(latestOpen.predictedAdvantageTeamId, games.homeTeamId),
+    eq(games.neutralSite, false),
     gte(games.date, todayStr),
   ];
 
@@ -1045,10 +1050,13 @@ export async function getUpcomingGamesWithRA(
   // game that is being played as still ahead.
   const now = Date.now();
   const candidates = rows.filter((r) => r.homeFatigueScore !== null && r.awayFatigueScore !== null && hasNotTipped(r.tipOffUtc, now));
-  const selected = limit === undefined ? candidates : candidates.sort((a, b) =>
-    Math.abs(Number(b.differential)) - Math.abs(Number(a.differential)) ||
-    String(a.date).localeCompare(String(b.date)) || a.gameId - b.gameId
-  ).slice(0, limit);
+  const ordered = order === "soonest"
+    ? candidates.sort(compareUpcomingTipOff)
+    : limit === undefined ? candidates : candidates.sort((a, b) =>
+      Math.abs(Number(b.differential)) - Math.abs(Number(a.differential)) ||
+      String(a.date).localeCompare(String(b.date)) || a.gameId - b.gameId
+    );
+  const selected = limit === undefined ? ordered : ordered.slice(0, limit);
   return selected.map((r) => ({
     gameId: r.gameId,
     date: String(r.date),
@@ -1437,11 +1445,12 @@ export async function getShotQualityGrid(season: string): Promise<ShotQualityCel
  * Newest season with a league grid and both surfaces needed by the comparison view.
  * `shot_grid` and `shot_value_surface` deliberately remain raw SQL tables in this app.
  */
-export async function getLatestPublishedShotQualitySeason(): Promise<string | null> {
+export async function getLatestPublishedShotQualitySeason(beforeSeason?: string): Promise<string | null> {
   const rows = (await db.execute(sql`
     SELECT max(g.season) AS latest
     FROM shot_grid g
     WHERE g.team_id IS NULL
+      AND ${beforeSeason ? sql`g.season < ${beforeSeason}` : sql`true`}
       AND EXISTS (
         SELECT 1 FROM shot_value_surface s
         WHERE s.season = g.season

@@ -2,10 +2,14 @@
 
 import { useMemo, useState } from "react"
 import useSWR from "swr"
+import { StudySeasonGuide } from "@/components/study-season-guide"
+import { SeasonDataGuide } from "@/components/season-data-guide"
+import { SeasonReadinessNotice } from "@/components/season-readiness-notice"
+import { useSeasonReadiness } from "@/hooks/useSeasonReadiness"
 import { SeasonSelector } from "@/components/season-selector"
 import { Skeleton } from "@/components/ui/skeleton"
 import { apiFetcher, errMsg } from "@/lib/fetcher"
-import { NBA_SEASONS } from "@/lib/nba-season"
+import { defaultNbaSeason, NBA_SEASONS } from "@/lib/nba-season"
 import { LEAD, termCardStyle, termInsetStyle, TRACK, TYPE } from "@/lib/terminal-styles"
 import type { ShotQualityCell, ShotQualityResponse } from "@/types"
 import { signedNumber } from "@/lib/signed-number"
@@ -442,14 +446,28 @@ export function ShotQualityContent() {
   const mode: ColorMode = requestedMode === "diff" ? "diff" : "value"
   const compareModels = mode === "value" && params.get("compare") === "1"
 
-  const { data, error: swrError, isLoading } = useSWR<ShotQualityResponse>(
+  const { data: publication, error: swrError, isLoading } = useSWR<ShotQualityResponse>(
     validRequestedSeason ? `/api/shot-quality?season=${validRequestedSeason}` : "/api/shot-quality",
     apiFetcher,
     { revalidateOnFocus: false, keepPreviousData: true }
   )
-  const error = swrError ? errMsg(swrError) : null
-  const season = validRequestedSeason ?? data?.season ?? NBA_SEASONS.at(-1)!
-  const dataMatchesSelection = Boolean(data && data.season === season)
+  const currentSeason = defaultNbaSeason()
+  const hasCurrentPublication = publication?.latestPublishedSeason === currentSeason
+  const readiness = useSeasonReadiness(currentSeason, hasCurrentPublication)
+  const previousSeason = publication?.previousPublishedSeason && publication.previousPublishedSeason < currentSeason
+    ? publication.previousPublishedSeason
+    : null
+  const usePrevious = !validRequestedSeason && hasCurrentPublication && !readiness.ready
+  const previous = useSWR<ShotQualityResponse>(
+    usePrevious && previousSeason ? `/api/shot-quality?season=${previousSeason}` : null,
+    apiFetcher, { revalidateOnFocus: false },
+  )
+  const data = usePrevious ? previous.data : publication
+  const failure = swrError ?? (usePrevious ? previous.error : undefined)
+  const error = failure ? errMsg(failure) : null
+  const season = validRequestedSeason ?? data?.season ?? currentSeason
+  const heldCurrent = hasCurrentPublication && season === currentSeason && !readiness.ready
+  const dataMatchesSelection = Boolean(data && data.season === season && !heldCurrent)
   const setSeason = (value: string) => update({ season: value })
   const setMode = (value: ColorMode) => update({
     mode: value === "diff" ? "diff" : null,
@@ -529,6 +547,14 @@ export function ShotQualityContent() {
     )
   }
 
+  if (heldCurrent) return <div className="flex flex-col gap-12">
+    {controls}
+    <SeasonReadinessNotice readiness={readiness} season={currentSeason}
+      body={previousSeason ? "New-season shot-value results are not available yet. Earlier published surfaces remain available." : "New-season shot-value results are not available yet."}
+      previousHref={previousSeason ? `/shot-quality?season=${previousSeason}` : undefined}
+      previousLabel={previousSeason ? `View published results · ${previousSeason}` : undefined} />
+  </div>
+
   if ((isLoading && !data) || !data || !dataMatchesSelection) {
     return (
       <div className="flex flex-col gap-12">
@@ -545,7 +571,17 @@ export function ShotQualityContent() {
       {controls}
       {fallbackNotes.map((note) => <p key={note} role="status" className="mono text-xs text-[var(--term-text-muted)]">{note}</p>)}
 
-      {isEmpty ? (
+      {usePrevious ? <SeasonReadinessNotice readiness={readiness} season={currentSeason}
+        body="New-season shot-value results are not available yet. Showing the previous published surface."
+        previousHref={`/shot-quality?season=${season}`} previousLabel={`View published results · ${season}`} /> :
+        !isEmpty && (!validRequestedSeason || validRequestedSeason === currentSeason) ? <StudySeasonGuide latestPublishedSeason={data.latestPublishedSeason}
+          body={`Expected Shot Value is published through ${data.latestPublishedSeason}. New-season maps will appear after updated shot-location data is available.`}
+          previousHref={`/shot-quality?season=${data.latestPublishedSeason}`} /> : null}
+
+      {isEmpty && season >= currentSeason ? <SeasonDataGuide season={season}
+        body="The expected shot value surface for this season has not been published. New maps depend on updated shot-location data."
+        previousHref={`/shot-quality?season=${data.latestPublishedSeason}`}
+        previousLabel={`View published results · ${data.latestPublishedSeason}`} /> : isEmpty ? (
         <div className="flex flex-col gap-3">
           <MessageCard
             tone="muted"

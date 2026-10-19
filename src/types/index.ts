@@ -435,6 +435,8 @@ export interface ShotQualityResponse {
   season: string;
   /** Newest season with league cells and both published model surfaces. */
   latestPublishedSeason: string;
+  /** Newest usable publication strictly before the latest; absent in older cached responses. */
+  previousPublishedSeason?: string | null;
   /** The requested `model` (default "gbm-v1"); a display hint — both surfaces are always returned. */
   activeModel: ShotQualityModelVersion;
   cells: ShotQualityCell[];

@@ -25,7 +25,6 @@ export function HomeContent({ findings }: { findings: HomeFindings }) {
 
       <section className={styles.finding} aria-labelledby="rest-finding">
         <div>
-          <p className={styles.eyebrow}>{historical?.coverage ? `Latest ${historical.seasonCount} completed regular ${historical.seasonCount === 1 ? "season" : "seasons"} · ${historical.coverage}` : "Historical rest comparison"}</p>
           {/* Two lines on purpose. The column is never wide enough for one, and a wrapped
               separator left "·" hanging at the end of the first. */}
           <h2 id="rest-finding">Large rest gaps<span className="sr-only"> · </span><br />for the rested team at home</h2>
@@ -34,6 +33,7 @@ export function HomeContent({ findings }: { findings: HomeFindings }) {
               {signedNumber(historical.edgePp, 1)}<span>{"\u00a0"}pp</span>
             </p>
             <p>Percentage-point difference from the home baseline in {historical.games.toLocaleString()} games with a large rest gap ({historical.minGap}+ fatigue-score points).</p>
+            <p className={styles.metadata} data-testid="home-evidence-period">Latest {historical.seasonCount} completed regular {historical.seasonCount === 1 ? "season" : "seasons"} · {historical.coverage}</p>
             {historical.latestEvidenceDate ? <p className={styles.metadata}>Rest evidence through {historical.latestEvidenceDate}</p> : null}
           </> : <p>The historical comparison is unavailable. Model Results has the underlying evidence and data status.</p>}
         </div>

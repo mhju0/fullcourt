@@ -35,7 +35,14 @@ describe("GET /api/games/upcoming", () => {
     expect(mockGetUpcoming).toHaveBeenCalledWith("2025-26", 0, 6);
   });
 
-  it.each(["?season=2099-00", "?season=2025-26&minRA=-1", "?season=2025-26&minRA=all", "?limit=0", "?limit=2", "?limit=31", "?limit=3.5", "?limit=no"])(
+  it("requests chronological selection before limiting the large-gap reserve", async () => {
+    mockGetUpcoming.mockResolvedValueOnce([]);
+    const res = await GET(req("?season=2026-27&minRA=5&order=soonest&limit=6"));
+    expect(res.status).toBe(200);
+    expect(mockGetUpcoming).toHaveBeenCalledWith("2026-27", 5, 6, "soonest");
+  });
+
+  it.each(["?season=2099-00", "?season=2025-26&minRA=-1", "?season=2025-26&minRA=all", "?limit=0", "?limit=2", "?limit=31", "?limit=3.5", "?limit=no", "?order=random"])(
     "returns 400 without querying for invalid parameters: %s",
     async (search) => {
       const res = await GET(req(search));

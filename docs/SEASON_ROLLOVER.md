@@ -59,3 +59,16 @@ IDs, so this is a data-join requirement rather than a cosmetic rename.
 
 No rollover authorizes coefficient changes, schema reconciliation, or a dependency upgrade.
 Keep secrets out of logs and Git; verify a preview before merging publications to main.
+
+## Shooting publication preparation
+
+Use `python3 scripts/fetch_shooting_data.py --season-year 2026 --force` to request the
+2026–27 provider cache explicitly once it exists. The default historical range remains
+unchanged; this command does not write the database or publish the site. Retain the canonical
+ID reconciliation above before expecting seeded ESPN fixtures to join NBA-stat boxscores.
+
+`export_player_rest.py` checks current/upcoming-season inputs before writing its artifact.
+The read-only guard requires the internal season-availability condition for all expected
+franchises and blocks early career pooling as well as early season rows. A blocked export
+leaves the existing published file intact. No provider source, generated artifact, automatic
+refresh cadence or successful in-season collection is implied by this preparation.

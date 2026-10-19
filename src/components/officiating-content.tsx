@@ -1,6 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import { defaultNbaSeason } from "@/lib/nba-season";
+import { StudySeasonGuide } from "@/components/study-season-guide";
+import { SeasonReadinessNotice } from "@/components/season-readiness-notice";
+import { useSeasonReadiness } from "@/hooks/useSeasonReadiness";
 import { useState, useRef, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { PageHeader } from "@/components/page-header";
@@ -26,8 +30,15 @@ function displayDate(date: string) {
 export function OfficiatingContent({ seasons }: { seasons: ReviewSeason[] }) {
   const params = useSearchParams();
   const requested = params.get("season");
-  const season =
-    seasons.find((s) => s.season === requested) ?? seasons[seasons.length - 1];
+  const currentSeason = defaultNbaSeason();
+  const latest = seasons[seasons.length - 1];
+  const hasCurrentPublication = latest.season === currentSeason;
+  const readiness = useSeasonReadiness(currentSeason, hasCurrentPublication);
+  const previous = seasons.filter((s) => s.season < currentSeason).at(-1);
+  const season = seasons.find((s) => s.season === requested) ??
+    (hasCurrentPublication && !readiness.ready && previous ? previous : latest);
+  const heldCurrent = season.season === currentSeason && !readiness.ready;
+  const visibleSeasons = seasons.filter((value) => value.season !== currentSeason || readiness.ready);
   const stripRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const strip = stripRef.current;
@@ -72,7 +83,7 @@ export function OfficiatingContent({ seasons }: { seasons: ReviewSeason[] }) {
     pageSize,
     games.findIndex((g) => g.id === gameId) + 1,
   );
-  const recent = seasons.slice(-3);
+  const recent = visibleSeasons.slice(-3);
   const rates = recent.map((s) => (s.missed + s.wrong) / s.games.length);
   const monotonic =
     rates.length === 3 &&
@@ -95,6 +106,15 @@ export function OfficiatingContent({ seasons }: { seasons: ReviewSeason[] }) {
       ),
     );
   }
+  if (heldCurrent) return <div className={`flex flex-col gap-12 ${styles.page}`}>
+    <PageHeader eyebrow="NBA L2M · REGULAR SEASON" title="Officiating"
+      description="What the NBA’s Last Two Minute reports found in close games." />
+    <SeasonReadinessNotice readiness={readiness} season={currentSeason}
+      body="New-season officiating results are not available yet. Earlier published Last Two Minute reports remain available."
+      previousHref={previous ? `/officiating?season=${previous.season}` : undefined}
+      previousLabel={previous ? `View published results · ${previous.season}` : undefined} />
+  </div>;
+
   return (
     <div className={`flex flex-col gap-12 ${styles.page}`}>
       <div className={styles.heading}>
@@ -127,6 +147,17 @@ export function OfficiatingContent({ seasons }: { seasons: ReviewSeason[] }) {
           </p>
         </div>
       </div>
+      {requested && requested !== season.season ? <p role="status" className="text-body text-[var(--term-text-muted)]">
+        {requested} is not available here. Showing published reports for {season.season}.
+      </p> : null}
+      {hasCurrentPublication && !readiness.ready ? (
+        <SeasonReadinessNotice readiness={readiness} season={currentSeason}
+          body="New-season officiating results are not available yet. Showing earlier published reports."
+          previousHref={previous ? `/officiating?season=${previous.season}` : undefined}
+          previousLabel={previous ? `View published results · ${previous.season}` : undefined} />
+      ) : !requested || requested === currentSeason ? <StudySeasonGuide latestPublishedSeason={latest.season}
+        body={`Last Two Minute reports are published through ${displayDate(latest.through)} (${latest.season}). New-season coverage depends on qualifying close games, NBA reports and an update to this page.`}
+        previousHref={`/officiating?season=${latest.season}`} /> : null}
       <div>
         <p className="mb-4 text-body text-[var(--term-text-muted)]">
           {season.season === "2014-15" ? "Partial season: reports begin with March 1, 2015 games. " : ""}
@@ -183,7 +214,7 @@ export function OfficiatingContent({ seasons }: { seasons: ReviewSeason[] }) {
                   role="region"
                   aria-label="Season comparison; scroll for more seasons"
                 >
-                  {seasons.map((s) => {
+                  {visibleSeasons.map((s) => {
                     const share =
                       s.missed + s.wrong
                         ? (s.missed / (s.missed + s.wrong)) * 100

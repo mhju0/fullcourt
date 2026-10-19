@@ -153,12 +153,12 @@ test.describe("Games page", () => {
   test("an edge in the strip jumps the board to its date", async ({ page, request }) => {
     // No season param: the route defaults to `defaultNbaSeason()` — the same query the
     // strip itself makes — so this probe matches it by construction and cannot age.
-    const res = await request.get("/api/games/upcoming");
+    const res = await request.get("/api/games/upcoming?minRA=5&order=soonest&limit=6");
     const body = (await res.json()) as { data: { date: string }[] | null };
     test.skip(!body.data || body.data.length === 0, "no upcoming games in this database");
 
     await page.goto("/games");
-    const strip = page.getByText("EDGES AHEAD", { exact: false });
+    const strip = page.getByRole("heading", { name: "Upcoming large rest edges", exact: true });
     await expect(strip).toBeVisible({ timeout: 60_000 });
 
     const display = page.getByTestId("selected-date-display");

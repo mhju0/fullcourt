@@ -11,8 +11,10 @@ export const GET = jsonRoute(
   // `browsableSeasonParam`, not `seasonParam`: a released-but-unplayed season is exactly the
   // one whose games are upcoming, and `seasonParam` validates against NBA_SEASONS, which by
   // design excludes it until October. Evaluated per request — see api-route.ts.
-  z.object({ minRA: minRAParam, season: browsableSeasonParam.optional(), limit: z.coerce.number().int().min(3).max(30).optional() }),
-  ({ minRA, season, limit }) => limit === undefined
+  z.object({ minRA: minRAParam, season: browsableSeasonParam.optional(), limit: z.coerce.number().int().min(3).max(30).optional(), order: z.enum(["strongest", "soonest"]).optional() }),
+  ({ minRA, season, limit, order }) => order !== undefined
+    ? getUpcomingGamesWithRA(season ?? defaultNbaSeason(), minRA, limit, order)
+    : limit === undefined
     ? getUpcomingGamesWithRA(season ?? defaultNbaSeason(), minRA)
     : getUpcomingGamesWithRA(season ?? defaultNbaSeason(), minRA, limit)
 );

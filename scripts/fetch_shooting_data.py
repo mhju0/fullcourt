@@ -21,6 +21,7 @@ Usage:
     python scripts/fetch_shooting_data.py                 # everything, skip cached
     python scripts/fetch_shooting_data.py --force
     python scripts/fetch_shooting_data.py --only players
+    python scripts/fetch_shooting_data.py --season-year 2026 --force
 """
 
 from __future__ import annotations
@@ -83,14 +84,19 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--force", action="store_true", help="re-download cached files")
     ap.add_argument("--only", choices=sorted(DATASETS), help="fetch one dataset only")
+    ap.add_argument("--season-year", type=int,
+                    help="fetch one season start year, including a newly published season")
     args = ap.parse_args()
+    if args.season_year is not None and args.season_year < FIRST_SEASON_YEAR:
+        ap.error(f"--season-year must be {FIRST_SEASON_YEAR} or later")
+    years = [args.season_year] if args.season_year is not None else range(FIRST_SEASON_YEAR, LAST_SEASON_YEAR + 1)
 
     kinds = [args.only] if args.only else list(DATASETS)
     failures: list[tuple[str, int]] = []
 
     for kind in kinds:
         total = fresh = 0
-        for year in range(FIRST_SEASON_YEAR, LAST_SEASON_YEAR + 1):
+        for year in years:
             try:
                 n, got = download(kind, year, args.force)
             except (urllib.error.HTTPError, urllib.error.URLError, TimeoutError) as exc:
@@ -100,7 +106,7 @@ def main() -> int:
             total += n
             fresh += got
         print(f"{kind:>8}: {total:>7,} rows across "
-              f"{LAST_SEASON_YEAR - FIRST_SEASON_YEAR + 1} seasons ({fresh} newly downloaded)")
+              f"{len(years)} seasons ({fresh} newly downloaded)")
 
     if failures:
         print(f"FAILED: {failures}", file=sys.stderr)

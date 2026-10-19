@@ -12,12 +12,13 @@ are authoritative for individual fields, optional values, and units.
 | `/api/games/[date]` | Path date in `YYYY-MM-DD` form, interpreted as Eastern calendar date | Regular-season, regime-filtered (`publishableGames()`) games for that date: teams, scores, stored fatigue scores plus schedule-density flags (`is3In4`, `is4In6`, `gamesInLast30Days`) computed live from the schedule, and `projectedFatigue`; each game carries `tipOffEt` (clock string), `tipOffUtc` (ISO instant), per-team `seasonOpeners` from the regular-season schedule, and `neutralCity` (null unless the game is at a neutral site, where the host is scored as a road team) | No explicit edge-cache policy |
 | `/api/games/dates` | Required browsable `season`; optional integer `month` 1–12 | Date/count index for Games | `inSeason` |
 | `/api/games/team` | Required browsable `season`; required `team`, one of the thirty current abbreviations (case-insensitive) | One team's regular-season games (`publishableGames()`), in slate order, from that team's side: opponent, home/away/neutral, the team's and opponent's scores, `tipOffEt`, `tipOffUtc`, `projectedFatigue`, and the home-relative `restAdvantage` the board shows (D-99) | `seasonCachePolicy(season)` |
-| `/api/games/upcoming` | Optional browsable `season`, nonnegative `minRA`, integer `limit` 3–30 | Called games only (rested team at home, `isCalledSide`) that have an open prediction, are not final and have not tipped off. Rested visitors never appear | No explicit edge-cache policy |
+| `/api/games/upcoming` | Optional browsable `season`, nonnegative `minRA`, integer `limit` 3–30, `order=strongest|soonest` | Called games only (rested team at home, `isCalledSide`) that have an open prediction, are not final and have not tipped off. Rested visitors never appear | No explicit edge-cache policy |
 | `/api/game/[id]` | Positive integer database ID | Game and contextual detail; 404 if absent | No explicit edge-cache policy |
 | `/api/analysis` | Optional nonnegative `seasonMinRA` (no published page sends it since D-102) | Historical backtest, per-season home counts, venue baselines, evidence dates and completion state. `gapRanges` splits the called games into small 0.5–3, medium 3–5 and large 5+, each game in one range; `eras` groups complete seasons in fives, each with its own home win rate and the same three ranges (D-102). `thresholds` retains cumulative 3+ and 5+ rates. `seasonMinRA` narrows the rested-home annual rows only; top-level baselines and threshold buckets keep their full historical population. The homepage separately pools the canonical annual counts over its latest ten completed seasons (D-112). The Games guide links to Model Results for historical comparisons | `inSeason` (the population includes current finals) |
 | `/api/home-court` | None | Annual home-court study evidence. Each `seasonWinRates` row retains the ordinary home/rested-home fields and adds `largeRestGap: { games, restedTeamWins, winPct }` for the rested home team at 5+. Both groups derive from one eligible-game snapshot and completion set. Zero large-gap games means zero counts and `winPct: null`, not 0%. Large-gap percentages use raw wins/counts; the optional chart view retains the actual counts and a general sample-size note (D-114 amendment) | `inSeason`, with stamped origin cache |
 | `/api/games/search` | Optional `season`, 2–3 letter uppercase `team`, nonnegative `minRA`, `gap` (`small`, `medium`, `large`), `side` (`home`, `away`, `either`), `result` (`all`, `correct`, `incorrect`), `page`, `limit` | Paginated historical game evidence. Without `side` both venues are returned, rested visitors included, although the model does not call those games; any `side` drops neutral-site games, and `home` is exactly the called games. `gap` keeps one disjoint range on the rounded gap (D-102). `correct` / `incorrect` mean the rested team won / lost, not that a call was right; page defaults to 1, limit to 20 and caps at 100 | `inSeason` |
 | `/api/season-report` | Optional browsable `season` | Completed results, team records, notable games, and schedule/workload data with source-basis labels | `inSeason` |
+| `/api/season-readiness` | Required browsable `season` | `{ season, ready, expectedAfterDate }`; operational current-season availability, independent of fatigue evidence and publication coverage | `inSeason` |
 | `/api/schedule-disparity` | Optional rankable `season` | Relative team schedule measures and pricing; separate fixture coverage and unsettled-result status | Current/upcoming: `inSeason`; historical: `historical` |
 | `/api/playoffs` | Optional `season` | Bracket, series, prediction records, and latest published season | `inSeason` |
 | `/api/shot-quality` | Optional `season`; optional `model` (`gbm-v1`, `baseline-zone-v1`) | Grid cells, display-model hint, and latest published season | `historical` |
@@ -92,3 +93,22 @@ the configured cron secret and updates recent scores/status from ESPN. Never use
 read-only health probe. Its implementation owns authorization, time windows, timeout, and
 stored-final reconciliation rules. See [Data pipeline](DATA_PIPELINE.md) and
 [live-season verification](LAUNCH_DAY.md).
+
+### Quiet season availability
+
+`/api/season-readiness` counts physical score-bearing final regular-season appearances
+for every expected current franchise. The internal release condition is separate from
+analytical cohorts and is not a public progress counter. The optional expected-after date
+is derived from each team's usable fixture schedule; missing coverage has no estimate.
+Clients suppress an expired estimate and keep request failures distinct from awaiting data.
+The result does not certify Shooting, L2M, shot-location or playoff publication. The shared
+Season Report API remains available to Schedule Edge's projected workload view.
+
+The Games strip requests `/api/games/upcoming?minRA=5&order=soonest&limit=6` and displays
+the earliest three unstarted fixtures. `soonest` sorts the full qualifying set before limit.
+Known tip-offs sort before unknown times on the same ET date; game IDs break equal tips.
+The default bounded API result retains strongest-first behavior for existing callers.
+
+Shot Value responses also include `previousPublishedSeason`, the latest usable publication
+strictly below `latestPublishedSeason`, or null. The field is optional for older cached
+responses. Clients never guess an earlier edition or link back to held current results.

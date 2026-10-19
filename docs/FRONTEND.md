@@ -208,3 +208,19 @@ Explicit postponed/cancelled game states override the clock on board/team/detail
 accessible names. They show neither a score nor a workload/storyline claim. Future fatigue
 may temporarily be unavailable during transactional invalidation and recovery; it remains
 missing rather than becoming a fabricated zero. [Lifecycle contract](GAME_STATUS_LIFECYCLE.md).
+
+## Season-data guides
+
+`SeasonDataGuide` uses the shared card border, radius and spacing, 15px body type and
+44px link targets. Its heading is “Awaiting season data”; previous publication and current
+schedule links provide the next actions. The current-season release rule remains internal:
+no team-game progress counter, milestone explanation or statistical-significance claim.
+A schedule-derived expected-after date is shown only for a supported result availability
+estimate, never as a universal study-publication promise. Current selections fail closed
+while readiness is unknown, and a failed request has a retryable error state.
+
+Static/pipeline-driven studies retain their latest published coverage. Schedule Edge is
+available as a provisional outlook before results. Availability Cost remains a retrospective.
+The homepage's period follows the finding explanation. Games keeps its compact wrapping
+strip under “Upcoming large rest edges,” with readable title/body tokens and rested-home
+5+ chronological selection (D-115/D-116).

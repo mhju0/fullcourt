@@ -24,6 +24,16 @@ rationale in [Decisions](DECISIONS.md), not another running implementation log.
 - Confirm personal ownership and collaboration wording with the owner before expanding the
   engineering walkthrough beyond repository-verifiable behavior.
 
+## Approved season guidance
+
+Implement the quiet season-data guide and internal current-season availability rule (D-115),
+with publication-specific notices and previous-season navigation. Keep Schedule Edge useful
+before results arrive. The Games strip selects upcoming large rested-home gaps chronologically
+(D-116); the homepage period follows its finding description. Wider recent-ten-season window
+changes are deferred. Source collection/publication for new shooting and shot-location data,
+opening-night provider verification, and the canonical-ID re-key remain separate operational
+work; a guide or calendar date does not complete them.
+
 ## Deferred ideas
 
 Exportable graphics, universal search, new analytical findings, and additional season reports

@@ -1675,3 +1675,46 @@ Use threshold labels, since 0.5+ includes the 5+ group. The toggle starts off, p
 selected season and reveals the second comparison row when enabled. A guide and filled
 selected points replace the hollow selection ring. The owner also authorized PR merge and
 ordinary application deployment after verification.
+
+## D-115 — Quiet season availability guidance (2026-10-19)
+
+The owner chose a simple inline “Awaiting season data” guide, with the previous usable
+publication and the current schedule as the useful next actions. The all-teams-ten-final-games
+condition is an internal availability rule for current-season result views, not a public
+milestone, progress counter, statistical-significance claim, or reason to withhold schedules.
+Historical research windows and the existing ordinary 100-eligible-game win-rate rule remain
+unchanged. Games continues to publish individual results as they arrive.
+
+Readiness counts score-bearing final regular-season appearances for all expected franchises,
+including neutral fixtures and teams with zero recorded games. It is deliberately independent
+of fatigue availability and the analytical abnormal-stretch exclusions. This operational
+population is an explicit exception to the published-game-row filter: it publishes availability
+metadata, not analytical game rows. Readiness never blanks the shared Season Report workload
+API consumed by Schedule Edge.
+
+A date is a schedule-derived estimate: use the latest tenth usable fixture date across all
+expected teams, only when each team has enough scheduled coverage. Say “Expected after the
+November 11 games (ET)” when that is what the schedule supports, not “available by” before
+those games finish. Remove an expired estimate while data remains unavailable. Missing
+readiness is unknown/error, not zero games. Explicit season selection and browser history
+remain authoritative while responses resolve.
+
+Publication coverage remains a separate requirement. Shooting, Officiating, Expected Shot
+Value and Playoff Rest must not promise publication on a regular-season checkpoint. Their
+latest published season stays available, and each missing edition has an honest guide.
+Availability Cost remains a historical study. The Shooting exporter checks the same internal
+availability rule before replacing its artifact when current/upcoming-season input exists;
+this also prevents early results entering pooled career estimates and expanded histories.
+The Python/TypeScript franchise sets are pinned together by a contract test. Broader recent-ten-season comparison changes
+are deferred. The homepage's existing recent-ten-season period moves below its finding
+explanation; values, cohorts and baseline remain unchanged.
+
+## D-116 — Upcoming large rest edges (2026-10-19)
+
+The owner selected “Upcoming large rest edges.” Keep the compact wrapping strip on Games,
+rested-team-at-home scope, the 5+ fatigue-score-point floor, projected labels and date-jump
+behavior. Select the earliest three qualifying games across the full upcoming population,
+not the strongest three across the season or a re-sort of a strongest-only reserve.
+Filter before limiting; order by Eastern game date, actual tip-off within a date, then stable
+game ID. Unknown tip times follow known times on the same date. A small chronological reserve
+allows the strip to replace games after tip-off without showing already-started games.
