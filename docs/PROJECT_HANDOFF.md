@@ -49,11 +49,10 @@ refit, database migration, accounts, or new analytics are implied by repository 
 
 ## Summary of entries before 2026-10-05
 
-Condensed again on 2026-10-11; DECISIONS.md and dated review records retain detail.
-
-- D-64/D-65: Behind the Data shipped; see FRONTEND.md and [review](design/usability-audit-review.md). D-73 reading pages use `reading.module.css`.
-- D-71/D-72: Games avoids URL writes during navigation; build cache is off. Verify production CSS after global-style changes. Database-backed e2e stays outside CI.
-- PR #104 corrected audited dates, scores and overtime; the recompute matched production. After score/date fixes run `scripts/export_fatigue_features.ts` to check fidelity.
+Condensed 2026-10-19. DECISIONS.md and dated reviews retain delivery evidence.
+D-64/D-65 added Behind the Data; D-73 standardized reading pages. D-71/D-72 require
+production CSS verification and keep database-backed e2e separate from CI. PR #104
+repaired historical scores/dates/overtime; use the fatigue feature export for fidelity.
 
 Still open from those entries:
 
@@ -202,3 +201,12 @@ release history now start at 1.0.0 in package.json and CHANGELOG.md; future prod
 releases increment the version and receive immutable tags/GitHub release records.
 The product baseline is 114617d. Release designation does not mark the remaining
 opening-night, physical-device or source-publication checks complete.
+
+
+## Shooting awaiting view — 2026-10-19
+
+D-118 records the owner’s v1.0.1 follow-up: default to the current season and show
+only its Awaiting results view until usable publication, with explicit prior-season
+navigation. Historical tables remain available by selection; no automatic older
+table beneath the notice. Readiness and career guards remain. Delivery/verification
+are recorded by the patch PR, version tag and GitHub release.

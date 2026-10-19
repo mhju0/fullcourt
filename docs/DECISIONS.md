@@ -1732,3 +1732,14 @@ record subsequent versions. Increment the version for each production release;
 patch for fixes, minor for compatible features, major for breaking changes.
 The shipped production baseline is `114617dc91927382c804a40aff0a54d81461476a`;
 the release tag includes its version/documentation record without product changes.
+
+
+## D-118 — Shooting current-season awaiting view (2026-10-19)
+
+The owner requested the same clear separation as Season Report: the current season
+shows “Awaiting results” without an automatically substituted previous-season table.
+Default Shooting to the current season, including when absent from the export; keep
+the selector and a link to the actual prior publication. Explicit historical views
+remain usable and do not show a current-season notice. Preserve publication and
+readiness as separate requirements, career-pooling safeguards, URL/Back behavior,
+and recoverable errors. This is the v1.0.1 patch following the v1.0.0 baseline.
