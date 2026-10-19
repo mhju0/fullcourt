@@ -1,0 +1,666 @@
+[
+  {
+    "source": "espn",
+    "date": "2027-01-13",
+    "url": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20270113",
+    "status": 200,
+    "bytes": 43484,
+    "capturedAt": "2026-10-19T16:23:54.845Z"
+  },
+  {
+    "source": "espn",
+    "date": "2027-01-14",
+    "url": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20270114",
+    "status": 200,
+    "bytes": 54117,
+    "capturedAt": "2026-10-19T16:23:54.845Z"
+  },
+  {
+    "source": "espn",
+    "date": "2027-01-10",
+    "url": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20270110",
+    "status": 200,
+    "bytes": 48250,
+    "capturedAt": "2026-10-19T16:23:54.845Z"
+  },
+  {
+    "source": "espn",
+    "date": "2027-01-12",
+    "url": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20270112",
+    "status": 200,
+    "bytes": 48636,
+    "capturedAt": "2026-10-19T16:23:54.851Z"
+  },
+  {
+    "source": "espn",
+    "date": "2027-01-17",
+    "url": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20270117",
+    "status": 200,
+    "bytes": 48592,
+    "capturedAt": "2026-10-19T16:23:55.014Z"
+  },
+  {
+    "source": "espn",
+    "date": "2027-01-15",
+    "url": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20270115",
+    "status": 200,
+    "bytes": 48695,
+    "capturedAt": "2026-10-19T16:23:55.014Z"
+  },
+  {
+    "source": "espn",
+    "date": "2027-01-19",
+    "url": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20270119",
+    "status": 200,
+    "bytes": 43181,
+    "capturedAt": "2026-10-19T16:23:55.225Z"
+  },
+  {
+    "source": "espn",
+    "date": "2027-01-16",
+    "url": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20270116",
+    "status": 200,
+    "bytes": 37581,
+    "capturedAt": "2026-10-19T16:23:55.225Z"
+  },
+  {
+    "source": "espn",
+    "date": "2027-01-18",
+    "url": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20270118",
+    "status": 200,
+    "bytes": 44061,
+    "capturedAt": "2026-10-19T16:23:55.522Z"
+  },
+  {
+    "source": "espn",
+    "date": "2027-01-20",
+    "url": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20270120",
+    "status": 200,
+    "bytes": 59878,
+    "capturedAt": "2026-10-19T16:23:55.855Z"
+  },
+  {
+    "source": "espn",
+    "date": "2027-01-21",
+    "url": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20270121",
+    "status": 200,
+    "bytes": 26770,
+    "capturedAt": "2026-10-19T16:23:55.855Z"
+  },
+  {
+    "source": "espn",
+    "date": "2027-01-22",
+    "url": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20270122",
+    "status": 200,
+    "bytes": 65675,
+    "capturedAt": "2026-10-19T16:23:56.032Z"
+  },
+  {
+    "source": "espn",
+    "date": "2027-01-25",
+    "url": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20270125",
+    "status": 200,
+    "bytes": 48658,
+    "capturedAt": "2026-10-19T16:23:56.032Z"
+  },
+  {
+    "source": "espn",
+    "date": "2027-01-23",
+    "url": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20270123",
+    "status": 200,
+    "bytes": 37404,
+    "capturedAt": "2026-10-19T16:23:56.209Z"
+  },
+  {
+    "source": "espn",
+    "date": "2027-01-27",
+    "url": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20270127",
+    "status": 200,
+    "bytes": 54502,
+    "capturedAt": "2026-10-19T16:23:56.209Z"
+  },
+  {
+    "source": "espn",
+    "date": "2027-01-26",
+    "url": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20270126",
+    "status": 200,
+    "bytes": 43233,
+    "capturedAt": "2026-10-19T16:23:56.384Z"
+  },
+  {
+    "source": "espn",
+    "date": "2027-01-24",
+    "url": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20270124",
+    "status": 200,
+    "bytes": 43134,
+    "capturedAt": "2026-10-19T16:23:56.562Z"
+  },
+  {
+    "source": "espn",
+    "date": "2027-01-28",
+    "url": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20270128",
+    "status": 200,
+    "bytes": 48776,
+    "capturedAt": "2026-10-19T16:23:56.573Z"
+  },
+  {
+    "source": "espn",
+    "date": "2027-01-29",
+    "url": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20270129",
+    "status": 200,
+    "bytes": 37909,
+    "capturedAt": "2026-10-19T16:23:56.738Z"
+  },
+  {
+    "source": "espn",
+    "date": "2027-01-30",
+    "url": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20270130",
+    "status": 200,
+    "bytes": 49837,
+    "capturedAt": "2026-10-19T16:23:56.753Z"
+  },
+  {
+    "source": "api",
+    "date": "2026-10-20",
+    "url": "https://fullcourt.fyi/api/games/2026-10-20",
+    "status": 200,
+    "bytes": 3310,
+    "capturedAt": "2026-10-19T16:23:57.093Z"
+  },
+  {
+    "source": "espn",
+    "date": "2027-01-31",
+    "url": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20270131",
+    "status": 200,
+    "bytes": 48587,
+    "capturedAt": "2026-10-19T16:23:57.093Z"
+  },
+  {
+    "source": "api",
+    "date": "2026-10-22",
+    "url": "https://fullcourt.fyi/api/games/2026-10-22",
+    "status": 200,
+    "bytes": 2227,
+    "capturedAt": "2026-10-19T16:23:57.270Z"
+  },
+  {
+    "source": "api",
+    "date": "2026-10-23",
+    "url": "https://fullcourt.fyi/api/games/2026-10-23",
+    "status": 200,
+    "bytes": 13265,
+    "capturedAt": "2026-10-19T16:23:57.270Z"
+  },
+  {
+    "source": "api",
+    "date": "2026-10-21",
+    "url": "https://fullcourt.fyi/api/games/2026-10-21",
+    "status": 200,
+    "bytes": 12085,
+    "capturedAt": "2026-10-19T16:23:57.271Z"
+  },
+  {
+    "source": "api",
+    "date": "2026-10-24",
+    "url": "https://fullcourt.fyi/api/games/2026-10-24",
+    "status": 200,
+    "bytes": 8815,
+    "capturedAt": "2026-10-19T16:23:59.055Z"
+  },
+  {
+    "source": "api",
+    "date": "2026-10-26",
+    "url": "https://fullcourt.fyi/api/games/2026-10-26",
+    "status": 200,
+    "bytes": 9946,
+    "capturedAt": "2026-10-19T16:23:59.232Z"
+  },
+  {
+    "source": "api",
+    "date": "2026-10-25",
+    "url": "https://fullcourt.fyi/api/games/2026-10-25",
+    "status": 200,
+    "bytes": 7755,
+    "capturedAt": "2026-10-19T16:23:59.232Z"
+  },
+  {
+    "source": "api",
+    "date": "2026-10-27",
+    "url": "https://fullcourt.fyi/api/games/2026-10-27",
+    "status": 200,
+    "bytes": 4421,
+    "capturedAt": "2026-10-19T16:23:59.247Z"
+  },
+  {
+    "source": "api",
+    "date": "2026-10-29",
+    "url": "https://fullcourt.fyi/api/games/2026-10-29",
+    "status": 200,
+    "bytes": 3329,
+    "capturedAt": "2026-10-19T16:24:01.186Z"
+  },
+  {
+    "source": "api",
+    "date": "2026-10-28",
+    "url": "https://fullcourt.fyi/api/games/2026-10-28",
+    "status": 200,
+    "bytes": 13253,
+    "capturedAt": "2026-10-19T16:24:01.277Z"
+  },
+  {
+    "source": "api",
+    "date": "2026-10-30",
+    "url": "https://fullcourt.fyi/api/games/2026-10-30",
+    "status": 200,
+    "bytes": 11030,
+    "capturedAt": "2026-10-19T16:24:01.313Z"
+  },
+  {
+    "source": "api",
+    "date": "2026-10-31",
+    "url": "https://fullcourt.fyi/api/games/2026-10-31",
+    "status": 200,
+    "bytes": 7763,
+    "capturedAt": "2026-10-19T16:24:01.340Z"
+  },
+  {
+    "source": "api",
+    "date": "2026-11-01",
+    "url": "https://fullcourt.fyi/api/games/2026-11-01",
+    "status": 200,
+    "bytes": 4427,
+    "capturedAt": "2026-10-19T16:24:03.119Z"
+  },
+  {
+    "source": "api",
+    "date": "2026-11-02",
+    "url": "https://fullcourt.fyi/api/games/2026-11-02",
+    "status": 200,
+    "bytes": 16542,
+    "capturedAt": "2026-10-19T16:24:03.270Z"
+  },
+  {
+    "source": "api",
+    "date": "2026-11-04",
+    "url": "https://fullcourt.fyi/api/games/2026-11-04",
+    "status": 200,
+    "bytes": 15456,
+    "capturedAt": "2026-10-19T16:24:03.318Z"
+  },
+  {
+    "source": "api",
+    "date": "2026-11-05",
+    "url": "https://fullcourt.fyi/api/games/2026-11-05",
+    "status": 200,
+    "bytes": 2214,
+    "capturedAt": "2026-10-19T16:24:03.358Z"
+  },
+  {
+    "source": "api",
+    "date": "2026-11-06",
+    "url": "https://fullcourt.fyi/api/games/2026-11-06",
+    "status": 200,
+    "bytes": 9964,
+    "capturedAt": "2026-10-19T16:24:05.061Z"
+  },
+  {
+    "source": "api",
+    "date": "2026-11-07",
+    "url": "https://fullcourt.fyi/api/games/2026-11-07",
+    "status": 200,
+    "bytes": 7764,
+    "capturedAt": "2026-10-19T16:24:05.207Z"
+  },
+  {
+    "source": "api",
+    "date": "2026-11-08",
+    "url": "https://fullcourt.fyi/api/games/2026-11-08",
+    "status": 200,
+    "bytes": 7732,
+    "capturedAt": "2026-10-19T16:24:05.301Z"
+  },
+  {
+    "source": "api",
+    "date": "2026-11-09",
+    "url": "https://fullcourt.fyi/api/games/2026-11-09",
+    "status": 200,
+    "bytes": 8828,
+    "capturedAt": "2026-10-19T16:24:05.334Z"
+  },
+  {
+    "source": "api",
+    "date": "2026-11-10",
+    "url": "https://fullcourt.fyi/api/games/2026-11-10",
+    "status": 200,
+    "bytes": 6649,
+    "capturedAt": "2026-10-19T16:24:06.998Z"
+  },
+  {
+    "source": "api",
+    "date": "2026-11-11",
+    "url": "https://fullcourt.fyi/api/games/2026-11-11",
+    "status": 200,
+    "bytes": 11062,
+    "capturedAt": "2026-10-19T16:24:07.159Z"
+  },
+  {
+    "source": "api",
+    "date": "2026-11-12",
+    "url": "https://fullcourt.fyi/api/games/2026-11-12",
+    "status": 200,
+    "bytes": 4427,
+    "capturedAt": "2026-10-19T16:24:07.233Z"
+  },
+  {
+    "source": "api",
+    "date": "2026-11-13",
+    "url": "https://fullcourt.fyi/api/games/2026-11-13",
+    "status": 200,
+    "bytes": 9955,
+    "capturedAt": "2026-10-19T16:24:07.293Z"
+  },
+  {
+    "source": "api",
+    "date": "2026-11-14",
+    "url": "https://fullcourt.fyi/api/games/2026-11-14",
+    "status": 200,
+    "bytes": 5526,
+    "capturedAt": "2026-10-19T16:24:08.934Z"
+  },
+  {
+    "source": "api",
+    "date": "2026-11-15",
+    "url": "https://fullcourt.fyi/api/games/2026-11-15",
+    "status": 200,
+    "bytes": 9960,
+    "capturedAt": "2026-10-19T16:24:09.131Z"
+  },
+  {
+    "source": "api",
+    "date": "2026-11-16",
+    "url": "https://fullcourt.fyi/api/games/2026-11-16",
+    "status": 200,
+    "bytes": 8840,
+    "capturedAt": "2026-10-19T16:24:09.213Z"
+  },
+  {
+    "source": "api",
+    "date": "2026-11-17",
+    "url": "https://fullcourt.fyi/api/games/2026-11-17",
+    "status": 200,
+    "bytes": 5551,
+    "capturedAt": "2026-10-19T16:24:09.256Z"
+  },
+  {
+    "source": "api",
+    "date": "2026-11-18",
+    "url": "https://fullcourt.fyi/api/games/2026-11-18",
+    "status": 200,
+    "bytes": 13256,
+    "capturedAt": "2026-10-19T16:24:10.911Z"
+  },
+  {
+    "source": "api",
+    "date": "2026-11-19",
+    "url": "https://fullcourt.fyi/api/games/2026-11-19",
+    "status": 200,
+    "bytes": 4452,
+    "capturedAt": "2026-10-19T16:24:11.086Z"
+  },
+  {
+    "source": "api",
+    "date": "2026-11-21",
+    "url": "https://fullcourt.fyi/api/games/2026-11-21",
+    "status": 200,
+    "bytes": 6648,
+    "capturedAt": "2026-10-19T16:24:11.262Z"
+  },
+  {
+    "source": "api",
+    "date": "2026-11-20",
+    "url": "https://fullcourt.fyi/api/games/2026-11-20",
+    "status": 200,
+    "bytes": 9982,
+    "capturedAt": "2026-10-19T16:24:11.262Z"
+  },
+  {
+    "source": "api",
+    "date": "2026-11-22",
+    "url": "https://fullcourt.fyi/api/games/2026-11-22",
+    "status": 200,
+    "bytes": 7747,
+    "capturedAt": "2026-10-19T16:24:12.875Z"
+  },
+  {
+    "source": "api",
+    "date": "2026-11-23",
+    "url": "https://fullcourt.fyi/api/games/2026-11-23",
+    "status": 200,
+    "bytes": 11056,
+    "capturedAt": "2026-10-19T16:24:13.098Z"
+  },
+  {
+    "source": "api",
+    "date": "2026-11-24",
+    "url": "https://fullcourt.fyi/api/games/2026-11-24",
+    "status": 200,
+    "bytes": 3336,
+    "capturedAt": "2026-10-19T16:24:13.237Z"
+  },
+  {
+    "source": "api",
+    "date": "2026-11-25",
+    "url": "https://fullcourt.fyi/api/games/2026-11-25",
+    "status": 200,
+    "bytes": 9968,
+    "capturedAt": "2026-10-19T16:24:13.250Z"
+  },
+  {
+    "source": "api",
+    "date": "2026-11-27",
+    "url": "https://fullcourt.fyi/api/games/2026-11-27",
+    "status": 200,
+    "bytes": 12193,
+    "capturedAt": "2026-10-19T16:24:14.938Z"
+  },
+  {
+    "source": "api",
+    "date": "2026-11-28",
+    "url": "https://fullcourt.fyi/api/games/2026-11-28",
+    "status": 200,
+    "bytes": 5524,
+    "capturedAt": "2026-10-19T16:24:15.106Z"
+  },
+  {
+    "source": "api",
+    "date": "2026-11-30",
+    "url": "https://fullcourt.fyi/api/games/2026-11-30",
+    "status": 200,
+    "bytes": 7726,
+    "capturedAt": "2026-10-19T16:24:15.280Z"
+  },
+  {
+    "source": "api",
+    "date": "2026-11-29",
+    "url": "https://fullcourt.fyi/api/games/2026-11-29",
+    "status": 200,
+    "bytes": 11081,
+    "capturedAt": "2026-10-19T16:24:15.280Z"
+  },
+  {
+    "source": "api",
+    "date": "2026-12-01",
+    "url": "https://fullcourt.fyi/api/games/2026-12-01",
+    "status": 200,
+    "bytes": 8870,
+    "capturedAt": "2026-10-19T16:24:16.876Z"
+  },
+  {
+    "source": "api",
+    "date": "2026-12-02",
+    "url": "https://fullcourt.fyi/api/games/2026-12-02",
+    "status": 200,
+    "bytes": 9926,
+    "capturedAt": "2026-10-19T16:24:17.044Z"
+  },
+  {
+    "source": "api",
+    "date": "2026-12-03",
+    "url": "https://fullcourt.fyi/api/games/2026-12-03",
+    "status": 200,
+    "bytes": 5539,
+    "capturedAt": "2026-10-19T16:24:17.213Z"
+  },
+  {
+    "source": "api",
+    "date": "2026-12-12",
+    "url": "https://fullcourt.fyi/api/games/2026-12-12",
+    "status": 200,
+    "bytes": 8822,
+    "capturedAt": "2026-10-19T16:24:17.254Z"
+  },
+  {
+    "source": "api",
+    "date": "2026-12-13",
+    "url": "https://fullcourt.fyi/api/games/2026-12-13",
+    "status": 200,
+    "bytes": 6601,
+    "capturedAt": "2026-10-19T16:24:18.831Z"
+  },
+  {
+    "source": "api",
+    "date": "2026-12-14",
+    "url": "https://fullcourt.fyi/api/games/2026-12-14",
+    "status": 200,
+    "bytes": 12146,
+    "capturedAt": "2026-10-19T16:24:19.006Z"
+  },
+  {
+    "source": "api",
+    "date": "2026-12-15",
+    "url": "https://fullcourt.fyi/api/games/2026-12-15",
+    "status": 200,
+    "bytes": 2232,
+    "capturedAt": "2026-10-19T16:24:19.169Z"
+  },
+  {
+    "source": "api",
+    "date": "2026-12-16",
+    "url": "https://fullcourt.fyi/api/games/2026-12-16",
+    "status": 200,
+    "bytes": 14347,
+    "capturedAt": "2026-10-19T16:24:19.252Z"
+  },
+  {
+    "source": "api",
+    "date": "2026-12-17",
+    "url": "https://fullcourt.fyi/api/games/2026-12-17",
+    "status": 200,
+    "bytes": 3344,
+    "capturedAt": "2026-10-19T16:24:20.787Z"
+  },
+  {
+    "source": "api",
+    "date": "2026-12-18",
+    "url": "https://fullcourt.fyi/api/games/2026-12-18",
+    "status": 200,
+    "bytes": 13250,
+    "capturedAt": "2026-10-19T16:24:20.974Z"
+  },
+  {
+    "source": "api",
+    "date": "2026-12-19",
+    "url": "https://fullcourt.fyi/api/games/2026-12-19",
+    "status": 200,
+    "bytes": 4425,
+    "capturedAt": "2026-10-19T16:24:21.122Z"
+  },
+  {
+    "source": "api",
+    "date": "2026-12-20",
+    "url": "https://fullcourt.fyi/api/games/2026-12-20",
+    "status": 200,
+    "bytes": 11046,
+    "capturedAt": "2026-10-19T16:24:21.205Z"
+  },
+  {
+    "source": "api",
+    "date": "2026-12-21",
+    "url": "https://fullcourt.fyi/api/games/2026-12-21",
+    "status": 200,
+    "bytes": 11024,
+    "capturedAt": "2026-10-19T16:24:22.748Z"
+  },
+  {
+    "source": "api",
+    "date": "2026-12-22",
+    "url": "https://fullcourt.fyi/api/games/2026-12-22",
+    "status": 200,
+    "bytes": 3348,
+    "capturedAt": "2026-10-19T16:24:22.910Z"
+  },
+  {
+    "source": "api",
+    "date": "2026-12-23",
+    "url": "https://fullcourt.fyi/api/games/2026-12-23",
+    "status": 200,
+    "bytes": 16532,
+    "capturedAt": "2026-10-19T16:24:23.092Z"
+  },
+  {
+    "source": "api",
+    "date": "2026-12-25",
+    "url": "https://fullcourt.fyi/api/games/2026-12-25",
+    "status": 200,
+    "bytes": 5540,
+    "capturedAt": "2026-10-19T16:24:23.162Z"
+  },
+  {
+    "source": "api",
+    "date": "2026-12-26",
+    "url": "https://fullcourt.fyi/api/games/2026-12-26",
+    "status": 200,
+    "bytes": 8871,
+    "capturedAt": "2026-10-19T16:24:24.715Z"
+  },
+  {
+    "source": "api",
+    "date": "2026-12-27",
+    "url": "https://fullcourt.fyi/api/games/2026-12-27",
+    "status": 200,
+    "bytes": 13269,
+    "capturedAt": "2026-10-19T16:24:24.906Z"
+  },
+  {
+    "source": "api",
+    "date": "2026-12-28",
+    "url": "https://fullcourt.fyi/api/games/2026-12-28",
+    "status": 200,
+    "bytes": 4446,
+    "capturedAt": "2026-10-19T16:24:25.042Z"
+  },
+  {
+    "source": "api",
+    "date": "2026-12-29",
+    "url": "https://fullcourt.fyi/api/games/2026-12-29",
+    "status": 200,
+    "bytes": 9947,
+    "capturedAt": "2026-10-19T16:24:25.119Z"
+  },
+  {
+    "source": "api",
+    "date": "2026-12-30",
+    "url": "https://fullcourt.fyi/api/games/2026-12-30",
+    "status": 200,
+    "bytes": 6650,
+    "capturedAt": "2026-10-19T16:24:26.673Z"
+  },
+  {
+    "source": "api",
+    "date": "2026-12-31",
+    "url": "https://fullcourt.fyi/api/games/2026-12-31",
+    "status": 200,
+    "bytes": 9938,
+    "capturedAt": "2026-10-19T16:24:26.948Z"
+  }
+]

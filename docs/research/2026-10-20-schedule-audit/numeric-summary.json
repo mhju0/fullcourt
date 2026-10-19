@@ -1,0 +1,139 @@
+{
+  "snapshot": {
+    "started": "2026-10-19T16:23:44.122Z",
+    "finished": "2026-10-19T16:23:45.443Z",
+    "transaction": "REPEATABLE READ READ ONLY",
+    "sourceCommit": "f7a20dac58a52b1f4be50d562bdc327ea5bcf4c4",
+    "counts": {
+      "teams": 30,
+      "games": 1200,
+      "context": 711,
+      "scores": 2400,
+      "duplicates": 0
+    }
+  },
+  "scope": {
+    "all_season_games": 1200,
+    "oct_dec_games": 475,
+    "oct_dec_team_games": 950,
+    "oct_dec_dates": 62,
+    "held": 0,
+    "neutral": 3,
+    "context_game_types": {
+      "regular": 711
+    },
+    "context_date_min": "2026-10-20"
+  },
+  "pdf": {
+    "parsed": 1200,
+    "unparsed": [],
+    "fixture_differences": 0,
+    "tip_differences": 0,
+    "tip_differences_oct_dec": 0
+  },
+  "calendar_stored": {
+    "field_comparisons": 7600,
+    "differences": 208,
+    "by_field": {
+      "road_trip_consecutive_away": 208
+    }
+  },
+  "totals": {
+    "is_back_to_back": 163,
+    "is_three_in_four": 224,
+    "is_four_in_six": 236,
+    "leg_miles": 497600.6462300003
+  },
+  "month": {
+    "2026-10": {
+      "games": 88,
+      "b2b": 30,
+      "three_in_four": 44,
+      "four_in_six": 42,
+      "leg_miles": 83886.90599999999
+    },
+    "2026-11": {
+      "games": 215,
+      "b2b": 72,
+      "three_in_four": 103,
+      "four_in_six": 111,
+      "leg_miles": 222625.71399999995
+    },
+    "2026-12": {
+      "games": 172,
+      "b2b": 61,
+      "three_in_four": 77,
+      "four_in_six": 83,
+      "leg_miles": 191088.02400000003
+    }
+  },
+  "legs": {
+    "count": 2400,
+    "max_target": {
+      "game_id": 119153,
+      "date": "2026-12-29",
+      "team": "BKN",
+      "opponent": "POR",
+      "nominal_home": false,
+      "neutral": false,
+      "neutral_city": null,
+      "prior_date": "2026-12-27",
+      "origin": "NYK",
+      "destination": "POR",
+      "origin_lat": 40.7505,
+      "origin_lon": -73.9934,
+      "destination_lat": 45.5316,
+      "destination_lon": -122.6668,
+      "leg_miles": 2438.084215,
+      "gap_days": 2,
+      "is_target": true
+    },
+    "target_zero": 273,
+    "away_gap_candidates": 43,
+    "local_candidates": 33,
+    "away_gap_candidates_cup_tbd_overlap": 6
+  },
+  "api": {
+    "team_games_compared": 950,
+    "by_team": {
+      "DET": 31,
+      "BOS": 31,
+      "NYK": 32,
+      "PHI": 32,
+      "SAS": 34,
+      "OKC": 32,
+      "ORL": 31,
+      "ATL": 31,
+      "WAS": 32,
+      "MIL": 33,
+      "MIA": 32,
+      "MIN": 33,
+      "BKN": 32,
+      "CHA": 31,
+      "TOR": 31,
+      "CHI": 31,
+      "MEM": 33,
+      "UTA": 32,
+      "NOP": 34,
+      "IND": 32,
+      "HOU": 31,
+      "DAL": 29,
+      "LAL": 32,
+      "GSW": 32,
+      "POR": 31,
+      "PHX": 32,
+      "LAC": 31,
+      "SAC": 30,
+      "CLE": 32,
+      "DEN": 30
+    },
+    "differences": 0,
+    "errors": []
+  },
+  "espn": {
+    "regular_fixtures_in_context": 711,
+    "placeholders": 4,
+    "missing_dates": [],
+    "differences": 2
+  }
+}

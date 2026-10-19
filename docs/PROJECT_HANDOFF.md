@@ -193,3 +193,7 @@ known-results playoff fits, and adds a league-centered team gap key. Team gap
 rounding uses original counts. Ratified coefficients, cohorts and generated data
 remain unchanged. Exact PR, review, checks and matching deployment own release
 acceptance; the prototype is retained separately as design evidence.
+
+## Opening-quarter travel audit — 2026-10-20
+
+The [audit](research/2026-10-20-opening-quarter-travel-review.md) checks all assigned Oct–Dec games and researches 30 teams’ airport candidates. Density flags pass; homecoming road-load inconsistency, Austin venue omission and stale CHI–MIL tip remain unresolved. Airport/return-home assumptions are unverified; six away gaps cross unknown Cup fixtures. No source/model/database correction was applied. Next: review the road-load rule and physical-venue representation, reconcile times, then verify a controlled correction before rescoring.

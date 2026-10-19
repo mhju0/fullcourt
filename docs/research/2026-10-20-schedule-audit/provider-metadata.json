@@ -1,0 +1,42 @@
+[
+  {
+    "name": "nba-cdn",
+    "url": "https://cdn.nba.com/static/json/staticData/scheduleLeagueV2.json",
+    "status": 403,
+    "capturedAt": "2026-10-19T16:22:59.290Z",
+    "bytes": 425,
+    "contentType": "text/html"
+  },
+  {
+    "name": "espn-range",
+    "url": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20260901-20270131&limit=1000",
+    "status": 400,
+    "capturedAt": "2026-10-19T16:23:00.338Z",
+    "bytes": 55,
+    "contentType": "application/json;charset=UTF-8"
+  },
+  {
+    "name": "nba-release",
+    "url": "https://pr.nba.com/2026-27-nba-regular-season-schedule/",
+    "status": 200,
+    "capturedAt": "2026-10-19T16:23:01.543Z",
+    "bytes": 128853,
+    "contentType": "text/html; charset=UTF-8"
+  },
+  {
+    "name": "nba-cup-faq",
+    "url": "https://www.nba.com/news/nba-cup-frequently-asked-questions",
+    "status": 200,
+    "capturedAt": "2026-10-19T16:23:02.082Z",
+    "bytes": 328634,
+    "contentType": "text/html; charset=utf-8"
+  },
+  {
+    "name": "supabase-changelog",
+    "url": "https://supabase.com/changelog.md",
+    "status": 200,
+    "capturedAt": "2026-10-19T16:23:02.296Z",
+    "bytes": 101614,
+    "contentType": "text/markdown; charset=utf-8"
+  }
+]

@@ -120,3 +120,13 @@ Other decisions and limits:
   Dependabot previews. The connector limitation does not block dashboard verification.
 - **Claude roadmap:** the visible artifact was stale at this read (#170 still marked open).
   Repository decisions and this table own current status; no artifact publication is claimed.
+
+## Opening-quarter schedule/travel findings (2026-10-20)
+
+The [read-only audit](research/2026-10-20-opening-quarter-travel-review.md) and [30-team airport reference](reports/2026-10-20-schedule-travel-audit.html) leave these concrete follow-ups open:
+
+- Resolve the scorer retaining prior away streaks on homecoming games; measure historical consequences before a controlled rescore. No coefficient change is implied.
+- Represent Austin’s actual venue independently from the Spurs’ home-court status.
+- Refresh the confirmed October 23 CHI–MIL tip change; reconcile October 24 HOU–ATL’s provider conflict.
+- Replace “Miles flown” with explicit estimated venue-distance wording; distinguish scheduled away streaks from actual time on the road.
+- Recheck December after Cup assignments, including subsequent rolling travel/workload. Airport preferences and intermediate home returns remain sourced research candidates rather than verified itineraries.
