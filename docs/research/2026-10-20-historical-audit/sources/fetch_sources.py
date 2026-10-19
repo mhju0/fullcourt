@@ -6,6 +6,7 @@ import json
 import pathlib
 import time
 import urllib.request
+from urllib.parse import urlsplit
 import urllib.error
 from bs4 import BeautifulSoup
 
@@ -18,7 +19,7 @@ def get(url, name):
     p = RAW / name
     cached = p.exists()
     if not cached:
-        if 'basketball-reference.com' in url:
+        if urlsplit(url).hostname in {'basketball-reference.com', 'www.basketball-reference.com'}:
             time.sleep(2.2)
         req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
         with urllib.request.urlopen(req, timeout=30) as r:
