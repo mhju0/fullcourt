@@ -1,0 +1,1128 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>FullCourt: all-season schedule and travel audit</title><style>html{scroll-behavior:smooth}*{box-sizing:border-box}body{margin:0;background:#f3f8fc;color:#19232d;font:17px/1.65 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}header,main{max-width:1120px;margin:auto;padding:28px 24px}header{border-bottom:1px solid #b9ccdb}header p{margin:0;color:#526372}nav{display:flex;flex-wrap:wrap;gap:24px;margin-top:16px}a{color:#3f3aad;text-underline-offset:3px}article{background:#fbfdff;border:1px solid #b9ccdb;padding:32px;margin-bottom:32px;scroll-margin-top:20px}h1{font-size:32px;line-height:1.25;margin:0 0 24px}h2{font-size:25px;line-height:1.3;margin:36px 0 16px}h3{font-size:20px;line-height:1.4;margin-top:28px}p,li{max-width:90ch}code{font-size:.88em;overflow-wrap:anywhere;background:#eaf1f6;padding:2px 4px}table{border-collapse:collapse;width:100%;font-size:15px;line-height:1.5;margin:24px 0}th,td{text-align:left;vertical-align:top;border-bottom:1px solid #b9ccdb;padding:12px}th{background:#e8f1f7}tr:nth-child(even){background:#f2f7fb}.table-wrap{overflow:auto}strong{font-weight:650}footer{max-width:1120px;margin:auto;padding:12px 24px 40px;color:#526372}@media(max-width:650px){header,main{padding:20px 12px}article{padding:22px 16px}h1{font-size:27px}h2{font-size:23px}table{min-width:700px}body{font-size:16px}}pre{white-space:pre-wrap;overflow-wrap:anywhere}caption{text-align:left;font-weight:650;margin-bottom:16px}summary{cursor:pointer;font-weight:650;padding:12px 0}details{margin:24px 0}a:focus-visible,summary:focus-visible,[tabindex]:focus-visible{outline:3px solid #5145ee;outline-offset:4px}td:not(:first-child){font-variant-numeric:tabular-nums}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}</style></head><body><header><p>FullCourt · October 20, 2026 · Read-only historical audit</p><nav aria-label="Report sections"><a href="#findings">Findings and recommendations</a><a href="#coverage">All-season inventory</a><a href="#sources">Core schedule sources</a><a href="#supplement">Additional early archive</a><a href="#venues">Venues and itineraries</a></nav></header><main><article id="findings"><h1>All-season schedule and travel audit</h1>
+<p>Audit date: October 20, 2026. Scope: every game currently stored, 1985-86 through the assigned 2026-27 schedule. This is a read-only research audit. Production data, coefficients, generated analytics and application behavior are unchanged.</p>
+<p>The calendar and recorded-distance arithmetic passes across the entire stored history. The important work now is correcting or qualifying the inputs and the homecoming rule. The pooled rest finding survives the homecoming-only diagnostic with a small rate change; that does not settle the separate effects of missing overtime or inaccurate historical venues.</p>
+<h2>Evidence and scope</h2>
+<p>The frozen PostgreSQL snapshot contains 51,695 games, 103,390 latest team scores and 30 franchise identities across 42 season labels. Of those games, 50,495 are final and 1,200 are scheduled. The snapshot was captured in one <code>REPEATABLE READ READ ONLY</code> transaction. There are no duplicate game identities, duplicate score-side rows or tied latest-score timestamps in this snapshot. See <a href="../research/2026-10-20-historical-audit/./numeric/snapshot-manifest.json">snapshot manifest</a> for capture time and hashes.</p>
+<p>The application source under audit is <code>f7a20dac58a52b1f4be50d562bdc327ea5bcf4c4</code>; the research snapshot was taken from research HEAD <code>08ade6c385670c9d33eef5cd15ff14995b392cfd</code>, whose later changes are documentation only.</p>
+<p>Three checks answer different questions:</p>
+<ol>
+<li>Current-engine replay asks whether stored scores reproduce the code. It retains actual historical overtime, final margins, tip times and physical prior games across season and game-type boundaries.</li>
+<li>An independent calendar/geography implementation checks arithmetic and the stated meaning of streak fields. Its geometry follows the recorded model assumptions; that does not validate those assumptions against real journeys.</li>
+<li>External schedule and venue comparisons inspect the underlying facts. Coverage varies by season and field. A missing value, provider error or blocked source remains unverified.</li>
+</ol>
+<p>Actual flights, transport mode, hotels and intermediate home returns cannot be established for every historical game from public schedules. Arena-to-arena distance remains an estimate. The owner's visible label remains <strong>Mileage</strong>, with its method explained in Behind the Data (D-120).</p>
+<h2>Confirmed calculation findings</h2>
+<p>All 103,390 stored team scores reproduce the current engine, with zero mismatches across the score and 16 stored components/flags. The independent oracle agrees on density flags, rest dates, recent workload and rolling Mileage. <a href="../research/2026-10-20-historical-audit/./numeric/replay-summary.json">Replay summary</a>, <a href="../research/2026-10-20-historical-audit/./numeric/oracle-summary.json">oracle summary</a>, and <a href="../research/2026-10-20-historical-audit/./numeric/season-counts.csv">season counts</a> retain the exact scope and results.</p>
+<p>The shared streak helper carries the previous venue streak into a game at the opposite venue:</p>
+<ul>
+<li>25,046 true home appearances retain a preceding away streak rather than zero.</li>
+<li>25,095 away appearances retain the preceding home-stand feature. This exported feature is not itself a current scoring term.</li>
+</ul>
+<p>The homecoming behavior is longstanding and reproduces the stored model. It conflicts with the current-away-streak field contract, but the scoring intent still requires a deliberate decision: whether a completed trip should contribute road-load fatigue after the team has returned home. No coefficient change is implied by resolving that question.</p>
+<h2>Homecoming sensitivity, one change at a time</h2>
+<p>This diagnostic zeros only the carried-over away-streak load on true home games. It preserves all other terms, multipliers, final clamping, JavaScript rounding and currently recorded venue inputs. It does not apply new venue, overtime or schedule corrections.</p>
+<p>The published comparison includes final, eligible regular-season games outside the bubble and excludes neutral venues. Prior physical workload remains broader than this publication population. It reproduces the existing 47,112-game baseline exactly.</p>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Scrollable evidence table"><table>
+<thead>
+<tr>
+<th>Measure</th>
+<th style="text-align: right;">Current model</th>
+<th style="text-align: right;">Homecoming diagnostic</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Rested team at home, wins / games</td>
+<td style="text-align: right;">16,778 / 27,420</td>
+<td style="text-align: right;">17,212 / 28,151</td>
+</tr>
+<tr>
+<td>Rested team at home, win rate</td>
+<td style="text-align: right;">61.1889%</td>
+<td style="text-align: right;">61.1417%</td>
+</tr>
+<tr>
+<td>Home venue baseline</td>
+<td style="text-align: right;">59.9295%</td>
+<td style="text-align: right;">59.9295%</td>
+</tr>
+<tr>
+<td>Rested team on the road, wins / games</td>
+<td style="text-align: right;">4,867 / 11,494</td>
+<td style="text-align: right;">4,522 / 10,648</td>
+</tr>
+<tr>
+<td>Rested team on the road, win rate</td>
+<td style="text-align: right;">42.3438%</td>
+<td style="text-align: right;">42.4681%</td>
+</tr>
+<tr>
+<td>Road venue baseline</td>
+<td style="text-align: right;">40.0705%</td>
+<td style="text-align: right;">40.0705%</td>
+</tr>
+</tbody>
+</table></div>
+<p>The diagnostic reduces 6,125 published home-side scores. It changes the more-rested-side/no-call classification in 1,484 games and the size category in 2,201 games; these groups overlap. The pooled home rate moves only 0.0472 percentage points downward, while individual games and season-level samples can move more. A changed selected sample does not establish improved prediction or a causal rest effect. Scheduled games contribute no outcome evidence.</p>
+<p>See <a href="../research/2026-10-20-historical-audit/./numeric/season-outcomes.csv">all season/scenario outcomes</a> for denominators, wins, each season's venue baseline, small/medium/large bins and cumulative 3+/5+ thresholds.</p>
+<p>For large gaps of 5+, the all-history home sample moves from 2,452 wins in 3,756 games (65.2822%) to 2,537 in 3,887 (65.2688%). For the latest ten completed seasons, 2016-17 through 2025-26, the headline moves from 3,720 / 6,386 (58.2524%) to 3,840 / 6,605 (58.1378%), against the unchanged 56.2195% home baseline. The recent-ten-season 5+ comparison moves from 340 / 555 (61.2613%) to 356 / 582 (61.1684%).</p>
+<p>All existing home calls remain selected in this diagnostic, with 731 added across history and 219 added in the latest ten completed seasons. The largest individual season's headline change is 1992-93: 62.6154% to 61.9403%, a decrease of 0.6751 percentage points. <a href="../research/2026-10-20-historical-audit/./numeric/period-outcomes.csv">Period outcomes</a> and <a href="../research/2026-10-20-historical-audit/./numeric/selection-transitions.csv">selection transitions</a> retain the exact counts.</p>
+<h2>External schedule findings and remaining coverage</h2>
+<p>External observations cover date/identity comparisons for 46,131 of 51,695 stored games and score comparisons for 44,931 of 50,495 final games. Earlier seasons have substantial gaps. A source-field comparison does not itself certify the provider's value: the audit found erroneous dates, scores and arenas in provider records too.</p>
+<p>The source audit identifies 783 completed games with observed overtime but a stored zero: 157 from 1985-86 through 1987-88, 194 from the added 1993-94 through 1995-96 archive, and 432 from 1996-97 through 2001-02. These are concrete backfill candidates. Another 5,815 completed games remain unverified for overtime; scheduled games have no overtime outcome yet. No assumption that missing overtime cancels out is warranted.</p>
+<p>All 3,228 stored postseason rows were checked against the official NBA finalist pairs and series lengths for the 41 completed seasons. There are 109 incorrect sublabels: 98 ordinary playoff games labeled Finals and 11 Finals games labeled ordinary playoffs. The playoff-model builder already pools both labels and derives rounds independently, so this defect does not establish incorrect published playoff rounds.</p>
+<p>Seventeen games have unresolved provider score disagreements. No database result correction is established by those disagreements. Historical ESPN timestamps also expose 7,544 potential fills where the stored tip is null; these are research candidates, not confirmed tip times to ingest automatically. Provider neutral-site false values, particularly before 2013, cannot verify the actual arena.</p>
+<p>The <a href="../research/2026-10-20-historical-audit/./sources/README.md">core external source review</a> preserves the initial pass and its 589 overtime cases. The <a href="../research/2026-10-20-historical-audit/./sources/supplement/README.md">bulk-archive supplement</a> adds 194 cases and contains the combined 42-season, per-field coverage matrix used above. Original files remain frozen so the two passes can be reproduced independently. <a href="https://www.nba.com/news/history-nba-champions">Finals authority: NBA history</a>.</p>
+<h2>Historical venue findings</h2>
+<p>The bounded venue register identifies 167 stored games whose modeled city differs from the documented physical location. Of these, 156 have primary event/history or whole-season support; the remaining 11 Austin fixtures have provider support with only partial primary checking by date. Whole-season histories establish an era, rather than individually confirming every gamebook.</p>
+<p>The register includes Toronto's 36 Tampa homes, Golden State's 41 San Jose homes, Seattle's 43 Tacoma homes, 11 minority Katrina-era venues, 15 early international games, three recently missed genuine neutral games, 11 Austin fixtures and seven corroborated Anaheim/Hartford/Baltimore games. Another 1,415 Detroit home fixtures are separately marked as historical-arena inferences requiring alternate-site reconciliation; they are not added to the 167.</p>
+<p>The three recently missed genuine neutral games are MIA at SAS in Mexico City on December 17, 2022, and IND at MIL plus NOP at LAL in Las Vegas on December 7, 2023. Their stored neutral flag is false. These can affect baseline eligibility as well as travel. The later 2024 and 2025 semifinals already have recognized neutral records. <a href="https://pr.nba.com/nba-mexico-city-game-to-return-with-regular-season-matchup-featuring-san-antonio-spurs-and-miami-heat-on-dec-17/">Official Mexico announcement</a>, <a href="https://statsdmz.nba.com/pdfs/20231207/20231207_INDMIL_book.pdf">IND–MIL gamebook</a>, <a href="https://statsdmz.nba.com/pdfs/20231207/20231207_NOPLAL_book.pdf">NOP–LAL gamebook</a>.</p>
+<p>The wider 3,049 provider/model city disagreements are an unverified candidate queue, not an error count. They include metro approximations, correctly located modern venues, bubble games and provider mistakes. The <a href="../research/2026-10-20-historical-audit/./venues/README.md">venue review</a> retains exact IDs, sources, confidence, adjacent-game contexts and every-season coverage. No combined venue-corrected outcome or Mileage total has been calculated in this audit.</p>
+<h2>Recommended decisions</h2>
+<p>I recommend making current-away streak zero at true home games, while preserving the existing inbound-distance, recent-workload and overtime terms. If post-trip fatigue is to persist separately, it needs its own explicit definition and evaluation; an ambiguous current-streak field should not silently supply it.</p>
+<p>I also recommend a dated physical-venue representation that can describe temporary team bases and alternate home arenas without pretending every such game is neutral. Backfill the confirmed overtime and venue facts in a controlled candidate, and evaluate their combined impact before replacing published history. Keep <strong>Mileage</strong> as the label and explain venue-distance assumptions behind it. Do not introduce a geography-based intermediate-home-stop classifier or team airport substitution from the present evidence.</p>
+<h2>Correction sequence and affected outputs</h2>
+<p>The audit does not authorize a historical rescore. A controlled correction should proceed in this order:</p>
+<ol>
+<li>Decide the homecoming rule and physical-venue representation. Keep nominal home-court status separate from the actual venue location; Austin cannot be corrected by casually marking it neutral.</li>
+<li>Adjudicate source disagreements and identify exactly which date, tip, result, overtime and venue fields are confirmed. Preserve unknown fields as unknown rather than treating defaults as observations.</li>
+<li>Prepare a reversible correction with a frozen backup, explicit affected rows and dependent-game windows. Any destructive production mass replacement requires immediate owner approval before execution.</li>
+<li>Replay the corrected candidate and regenerate dependent artifacts together. Include predictions, caches and generated outputs in the consistency plan; decide how to preserve resolved historical prediction records rather than blindly rewriting them. Review and verify an exact frozen candidate before production writes.</li>
+</ol>
+<p>Live Games, Model Results, Home-court Advantage, Season Report and Schedule Edge consume scored games and can change after a rescore. Static rest findings are separately pinned: <code>scripts/measure_uncalled_half.ts</code> produces <code>ml/rest_split_facts.json</code>, with <code>src/lib/rest-split-facts.ts</code> and its tests maintaining alignment. <code>src/lib/schedule-value.ts</code> derives Schedule Edge's Worth scale from those counts; updating live scores alone would leave its calibration stale.</p>
+<p>The fatigue fitting pipeline must preserve its three-step export → prepare → fit protocol (ADR 0006). The home-stand feature issue can affect research exports even though it does not directly alter current scores. Player Shooting derives a player's own rest from appearances and game dates; a scorer-only change does not automatically change that study. Officiating's cached foul analysis and the separate playoff model also require their own input-dependency review rather than an indiscriminate rebuild.</p>
+<h2>Limits that remain</h2>
+<p>Pre-2002 stored overtime zeroes and null tips are known missing-input defaults. Earlier neutral-site flags are incomplete. Historical arena names can be retroactively renamed by providers, and some provider venue records are wrong. Airport preference evidence is usually dated and does not establish a team's airport for every journey.</p>
+<p>ADR 0003's historical assertion that missing inputs can only dilute the measured effect is not established by this audit. Neither missingness nor score reproducibility determines the error's direction. Its assertion of complete availability for all other terms also exceeds the verified historical venue coverage. Retain that ADR as a historical decision record; do not reuse those assertions as validated findings.</p>
+<p>The model's 30-day prior-history reset and a once-counted season Mileage itinerary are different contracts. A distance difference caused by that distinction is not automatically an arithmetic defect. Historical civil-time accuracy also has limits: the geographic time-zone helper approximates pre-1987 US daylight saving and uses US transition dates for European locations. Replaying the same helper cannot independently validate those civil times.</p>
+<p>The upcoming-season findings from the <a href="../research/2026-10-20-historical-audit/./../2026-10-20-full-season-audit/FULL_SEASON_AUDIT.md">full assigned-season audit</a> remain open: three Austin locations, two confirmed stale tips, future Cup assignments and championship workload context. Completion of this audit does not close those production follow-ups.</p>
+<h2>Reproduction and review</h2>
+<p>The numeric, source and venue subdirectories contain their own commands, scope notes and SHA-256 manifests. Raw database/provider captures remain local under <code>docs/audit/2026-10-20-historical-audit/</code>; a fresh checkout has the tracked findings and scripts but not that raw corpus. Do not recapture over this snapshot when reproducing it.</p>
+<p><code>python3 docs/research/2026-10-20-historical-audit/build_report.py</code> rebuilds the <a href="../research/2026-10-20-historical-audit/./../../reports/2026-10-20-historical-schedule-travel-audit.html">HTML report</a> from the notes and season inventory. The local report builder uses the Python Markdown package; it adds no application dependency. The HTML reuses the existing report's typography and sky-blue surfaces.</p>
+<p>The full application test suite passed: 108 files, 1,279 tests. Numeric-script ESLint and the full TypeScript check passed. Read-only independent review separately reproduced all score and homecoming calculations from the frozen raw evidence. No deployment is part of this research delivery.</p></article><article id="sources"><h1>Historical schedule and source audit — 2026-10-20</h1><p><strong>Initial frozen source pass.</strong> This section preserves the original coverage and 589 overtime cases. The additional archive section below expands the combined total to 783; the main findings and combined coverage matrix use both passes.</p>
+<p>This is an external-source comparison of the immutable 51,695-game database snapshot across all 42 stored seasons (1985–86 through 2026–27). It makes no application, database, model, or coefficient changes. A source check means a field was compared with a provider observation; it does not automatically establish historical truth.</p>
+<h2>Confirmed findings</h2>
+<ul>
+<li>
+<p><strong>589 completed games store zero overtime despite observed overtime.</strong> Fresh Basketball Reference schedules identify 157 in 1985–86 through 1987–88. Retained NBA-derived team box scores identify 432 in 1996–97 through 2001–02: both teams have the same minutes, and <code>(team_minutes − 240) / 25</code> is a nonnegative integer. These are missing inputs, not proof that their effects cancel or are conservative. See <a href="../research/2026-10-20-historical-audit/sources/known-overtime-defaults.csv">all affected games</a>.</p>
+</li>
+<li>
+<p><strong>109 postseason labels disagree with actual Finals membership:</strong> 98 ordinary playoff games are labeled <code>finals</code>, and 11 Finals games are labeled <code>playoffs</code>. The <a href="https://www.nba.com/news/history-nba-champions">official NBA champion/finalist history</a> supplies the finalist pair and series length for every one of the 41 completed seasons. Every stored Finals pair has exactly the official series game count; all 3,228 stored postseason rows were classified. The largest cases are 47 non-Finals games in 2020–21 and six 2019–20 Finals games. This is a metadata defect caused by the ingest month heuristic; it does <strong>not</strong> establish wrong Playoff model rounds: <code>ml/build_series_dataset.py</code> pools both types and derives rounds independently. No published outcome impact is established. See <a href="../research/2026-10-20-historical-audit/sources/finals-type-mismatches.csv">mismatches</a> and <a href="../research/2026-10-20-historical-audit/sources/finals-type-coverage.csv">complete round coverage</a>.</p>
+</li>
+<li>
+<p>The freshly fetched NBA schedule archive agrees with stored dates, sides and broad regular/playoff/play-in category for <strong>all 38,022 matched games</strong> from 1996–97 through 2025–26. Its <code>playoffs</code> category includes Finals, so that coarseness is not counted as a discrepancy. No swapped home/away side was found among any matched external observations.</p>
+</li>
+</ul>
+<h2>Source disagreements, not confirmed database errors</h2>
+<ul>
+<li>
+<p><strong>1996-11-10 DEN at CLE:</strong> database, fresh ESPN team schedules and <a href="https://www.basketball-reference.com/boxscores/199611100CLE.html">Basketball Reference</a> give CLE 101–86. The NBA-derived archived schedule and NBA team box score both give 108–79. Those two files share an upstream source and are not independent corroboration. This audit supports retaining the stored result pending investigation of the upstream NBA anomaly.</p>
+</li>
+<li>
+<p><strong>16 distinct games have provider score disagreements.</strong> Seven are early 2002–03 ESPN scoreboard differences, six additional games are 2001–02 team-schedule differences, two 1999–00 ESPN games report a completed 0–0, and the remaining game is the DEN–CLE NBA anomaly above. Provider disagreement is retained in the CSV; a majority of files does not settle it.</p>
+</li>
+<li>
+<p>Five ESPN date disagreements remain: one in 1986–87 and four in February 2020. BRef supports the stored 1986 date; NBA archived schedules support all four stored 2020 dates. The four ESPN 2020 timestamps are about ten hours later than the stored values. They are not evidence to move database game dates. Matching a different regular/playoff game only because it shares an identical score is explicitly disallowed.</p>
+</li>
+<li>
+<p>ESPN team schedules expose <strong>7,544 non-midnight historical timestamps where the database is null</strong> and six contradictions with non-null stored tips (four February 2020 provider anomalies and two upcoming 2026–27 fixtures). The cached scoreboard repeats the same four 2020 contradictions. Missing timestamps are fill candidates, not confirmed real tip-off times or confirmed errors. Zero-hour UTC timestamps are excluded from tip checks as potential placeholders. In particular, these historical timestamps are not used to claim complete rest-hour validation.</p>
+</li>
+<li>
+<p>The current ESPN team schedule has <strong>CHI at MIL on Oct 23 at 16:00 ET</strong> (<code>2026-10-23T20:00Z</code>) versus stored <strong>20:00 ET</strong> (<code>2026-10-24T00:00Z</code>), and <strong>HOU at ATL on Oct 24 at 20:30 ET</strong> (<code>2026-10-25T00:30Z</code>) versus stored <strong>20:00 ET</strong> (<code>2026-10-25T00:00Z</code>). The earlier full-season report retains primary release evidence; this team feed alone does not adjudicate revised tip times.</p>
+</li>
+</ul>
+<h2>Valid exclusions and archive artifacts</h2>
+<p>The NBA archive has four rows absent from storage: two 2005 playoff placeholders with no teams or scores; the canceled IND–BOS game on 2013-04-16 (0–0 in the archive); and the 2020 Memphis–Portland play-in, an already documented intentional omission. These are not newly discovered missing completed regular-season fixtures. The archive also separates preseason, All-Star and NBA Cup championship rows from the regular/playoff/play-in comparison; Cup semifinals remain regular season. The three completed Cup championships are deliberately absent from storage. The bubble remains stored context while the publication regime excludes it; 1998–99 and 2011–12 lockout calendars are not rejected for their dates.</p>
+<h2>Coverage and limits</h2>
+<p>The union of external observations checks identities and dates for <strong>45,913 / 51,695 rows</strong>, completed scores for <strong>44,713 / 50,495 final rows</strong>, OT for <strong>41,070 / 50,495 final rows</strong>, and non-placeholder timestamp fields for <strong>31,740 rows</strong>. Missingness is concentrated in early eras. <strong>9,425 completed games remain unverified for OT</strong>, plus 1,200 future games for which OT is not yet an outcome. This does not mean the unverified games had no OT.</p>
+<p>Fresh Basketball Reference capture completed all monthly pages for 1985–86, 1986–87 and 1987–88 (3,048 games), then encountered HTTP 429. No remaining early-season pages are claimed verified. Fresh ESPN team requests cover mainly regular-season schedules and often return a different season, empty results or partial early seasons; event season/date is validated rather than trusting the requested year. The retained ESPN daily cache supplies later postseason coverage.</p>
+<p>The <code>neutral_site</code> column in the table below counts only <strong>provider fields compared</strong>. In particular, ESPN <code>false</code> before 2013 is often an unreliable default and does not confirm an ordinary home venue. There is <strong>no all-season neutral/arena truth verification</strong> here; the companion venues audit owns physical-location evidence. Current franchise normalization is used only for identity matching and never proves a historical city. Actual flights, hotel stays and intermediate returns home are not observed.</p>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Scrollable evidence table"><table>
+<thead>
+<tr>
+<th>Season</th>
+<th style="text-align: right;">Stored</th>
+<th style="text-align: right;">Date / identity checked</th>
+<th style="text-align: right;">Score checked</th>
+<th style="text-align: right;">OT checked</th>
+<th style="text-align: right;">Non-placeholder tip field checked</th>
+<th style="text-align: right;">Neutral field compared</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1985-86</td>
+<td style="text-align: right;">1011</td>
+<td style="text-align: right;">1011</td>
+<td style="text-align: right;">1011</td>
+<td style="text-align: right;">1011</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>1986-87</td>
+<td style="text-align: right;">1014</td>
+<td style="text-align: right;">1014</td>
+<td style="text-align: right;">1014</td>
+<td style="text-align: right;">1014</td>
+<td style="text-align: right;">78</td>
+<td style="text-align: right;">78</td>
+</tr>
+<tr>
+<td>1987-88</td>
+<td style="text-align: right;">1023</td>
+<td style="text-align: right;">1023</td>
+<td style="text-align: right;">1023</td>
+<td style="text-align: right;">1023</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>1988-89</td>
+<td style="text-align: right;">1087</td>
+<td style="text-align: right;">80</td>
+<td style="text-align: right;">80</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">80</td>
+<td style="text-align: right;">80</td>
+</tr>
+<tr>
+<td>1989-90</td>
+<td style="text-align: right;">1179</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>1990-91</td>
+<td style="text-align: right;">1175</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>1991-92</td>
+<td style="text-align: right;">1180</td>
+<td style="text-align: right;">82</td>
+<td style="text-align: right;">82</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">82</td>
+<td style="text-align: right;">82</td>
+</tr>
+<tr>
+<td>1992-93</td>
+<td style="text-align: right;">1183</td>
+<td style="text-align: right;">78</td>
+<td style="text-align: right;">78</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">78</td>
+<td style="text-align: right;">78</td>
+</tr>
+<tr>
+<td>1993-94</td>
+<td style="text-align: right;">1184</td>
+<td style="text-align: right;">1107</td>
+<td style="text-align: right;">1107</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">904</td>
+<td style="text-align: right;">1107</td>
+</tr>
+<tr>
+<td>1994-95</td>
+<td style="text-align: right;">1180</td>
+<td style="text-align: right;">1107</td>
+<td style="text-align: right;">1107</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">898</td>
+<td style="text-align: right;">1107</td>
+</tr>
+<tr>
+<td>1995-96</td>
+<td style="text-align: right;">1257</td>
+<td style="text-align: right;">1189</td>
+<td style="text-align: right;">1189</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">910</td>
+<td style="text-align: right;">1189</td>
+</tr>
+<tr>
+<td>1996-97</td>
+<td style="text-align: right;">1261</td>
+<td style="text-align: right;">1261</td>
+<td style="text-align: right;">1261</td>
+<td style="text-align: right;">1261</td>
+<td style="text-align: right;">870</td>
+<td style="text-align: right;">1189</td>
+</tr>
+<tr>
+<td>1997-98</td>
+<td style="text-align: right;">1260</td>
+<td style="text-align: right;">1260</td>
+<td style="text-align: right;">1260</td>
+<td style="text-align: right;">1260</td>
+<td style="text-align: right;">842</td>
+<td style="text-align: right;">1189</td>
+</tr>
+<tr>
+<td>1998-99</td>
+<td style="text-align: right;">791</td>
+<td style="text-align: right;">791</td>
+<td style="text-align: right;">791</td>
+<td style="text-align: right;">791</td>
+<td style="text-align: right;">556</td>
+<td style="text-align: right;">725</td>
+</tr>
+<tr>
+<td>1999-00</td>
+<td style="text-align: right;">1264</td>
+<td style="text-align: right;">1264</td>
+<td style="text-align: right;">1264</td>
+<td style="text-align: right;">1264</td>
+<td style="text-align: right;">709</td>
+<td style="text-align: right;">1094</td>
+</tr>
+<tr>
+<td>2000-01</td>
+<td style="text-align: right;">1260</td>
+<td style="text-align: right;">1260</td>
+<td style="text-align: right;">1260</td>
+<td style="text-align: right;">1260</td>
+<td style="text-align: right;">795</td>
+<td style="text-align: right;">1188</td>
+</tr>
+<tr>
+<td>2001-02</td>
+<td style="text-align: right;">1260</td>
+<td style="text-align: right;">1260</td>
+<td style="text-align: right;">1260</td>
+<td style="text-align: right;">1260</td>
+<td style="text-align: right;">742</td>
+<td style="text-align: right;">1188</td>
+</tr>
+<tr>
+<td>2002-03</td>
+<td style="text-align: right;">1277</td>
+<td style="text-align: right;">1277</td>
+<td style="text-align: right;">1277</td>
+<td style="text-align: right;">1277</td>
+<td style="text-align: right;">781</td>
+<td style="text-align: right;">1276</td>
+</tr>
+<tr>
+<td>2003-04</td>
+<td style="text-align: right;">1271</td>
+<td style="text-align: right;">1271</td>
+<td style="text-align: right;">1271</td>
+<td style="text-align: right;">1271</td>
+<td style="text-align: right;">768</td>
+<td style="text-align: right;">1271</td>
+</tr>
+<tr>
+<td>2004-05</td>
+<td style="text-align: right;">1314</td>
+<td style="text-align: right;">1314</td>
+<td style="text-align: right;">1314</td>
+<td style="text-align: right;">1314</td>
+<td style="text-align: right;">804</td>
+<td style="text-align: right;">1314</td>
+</tr>
+<tr>
+<td>2005-06</td>
+<td style="text-align: right;">1319</td>
+<td style="text-align: right;">1319</td>
+<td style="text-align: right;">1319</td>
+<td style="text-align: right;">1319</td>
+<td style="text-align: right;">833</td>
+<td style="text-align: right;">1319</td>
+</tr>
+<tr>
+<td>2006-07</td>
+<td style="text-align: right;">1309</td>
+<td style="text-align: right;">1309</td>
+<td style="text-align: right;">1309</td>
+<td style="text-align: right;">1309</td>
+<td style="text-align: right;">817</td>
+<td style="text-align: right;">1309</td>
+</tr>
+<tr>
+<td>2007-08</td>
+<td style="text-align: right;">1316</td>
+<td style="text-align: right;">1316</td>
+<td style="text-align: right;">1316</td>
+<td style="text-align: right;">1316</td>
+<td style="text-align: right;">851</td>
+<td style="text-align: right;">1316</td>
+</tr>
+<tr>
+<td>2008-09</td>
+<td style="text-align: right;">1315</td>
+<td style="text-align: right;">1315</td>
+<td style="text-align: right;">1315</td>
+<td style="text-align: right;">1315</td>
+<td style="text-align: right;">1052</td>
+<td style="text-align: right;">1315</td>
+</tr>
+<tr>
+<td>2009-10</td>
+<td style="text-align: right;">1312</td>
+<td style="text-align: right;">1312</td>
+<td style="text-align: right;">1312</td>
+<td style="text-align: right;">1312</td>
+<td style="text-align: right;">1023</td>
+<td style="text-align: right;">1312</td>
+</tr>
+<tr>
+<td>2010-11</td>
+<td style="text-align: right;">1311</td>
+<td style="text-align: right;">1311</td>
+<td style="text-align: right;">1311</td>
+<td style="text-align: right;">1311</td>
+<td style="text-align: right;">993</td>
+<td style="text-align: right;">1311</td>
+</tr>
+<tr>
+<td>2011-12</td>
+<td style="text-align: right;">1074</td>
+<td style="text-align: right;">1074</td>
+<td style="text-align: right;">1074</td>
+<td style="text-align: right;">1074</td>
+<td style="text-align: right;">841</td>
+<td style="text-align: right;">1074</td>
+</tr>
+<tr>
+<td>2012-13</td>
+<td style="text-align: right;">1314</td>
+<td style="text-align: right;">1314</td>
+<td style="text-align: right;">1314</td>
+<td style="text-align: right;">1314</td>
+<td style="text-align: right;">1030</td>
+<td style="text-align: right;">1314</td>
+</tr>
+<tr>
+<td>2013-14</td>
+<td style="text-align: right;">1319</td>
+<td style="text-align: right;">1319</td>
+<td style="text-align: right;">1319</td>
+<td style="text-align: right;">1319</td>
+<td style="text-align: right;">1036</td>
+<td style="text-align: right;">1319</td>
+</tr>
+<tr>
+<td>2014-15</td>
+<td style="text-align: right;">1311</td>
+<td style="text-align: right;">1311</td>
+<td style="text-align: right;">1311</td>
+<td style="text-align: right;">1311</td>
+<td style="text-align: right;">1054</td>
+<td style="text-align: right;">1311</td>
+</tr>
+<tr>
+<td>2015-16</td>
+<td style="text-align: right;">1316</td>
+<td style="text-align: right;">1316</td>
+<td style="text-align: right;">1316</td>
+<td style="text-align: right;">1316</td>
+<td style="text-align: right;">1046</td>
+<td style="text-align: right;">1316</td>
+</tr>
+<tr>
+<td>2016-17</td>
+<td style="text-align: right;">1309</td>
+<td style="text-align: right;">1309</td>
+<td style="text-align: right;">1309</td>
+<td style="text-align: right;">1309</td>
+<td style="text-align: right;">1050</td>
+<td style="text-align: right;">1309</td>
+</tr>
+<tr>
+<td>2017-18</td>
+<td style="text-align: right;">1312</td>
+<td style="text-align: right;">1312</td>
+<td style="text-align: right;">1312</td>
+<td style="text-align: right;">1312</td>
+<td style="text-align: right;">1028</td>
+<td style="text-align: right;">1312</td>
+</tr>
+<tr>
+<td>2018-19</td>
+<td style="text-align: right;">1312</td>
+<td style="text-align: right;">1312</td>
+<td style="text-align: right;">1312</td>
+<td style="text-align: right;">1312</td>
+<td style="text-align: right;">1028</td>
+<td style="text-align: right;">1312</td>
+</tr>
+<tr>
+<td>2019-20</td>
+<td style="text-align: right;">1142</td>
+<td style="text-align: right;">1142</td>
+<td style="text-align: right;">1142</td>
+<td style="text-align: right;">1142</td>
+<td style="text-align: right;">937</td>
+<td style="text-align: right;">1142</td>
+</tr>
+<tr>
+<td>2020-21</td>
+<td style="text-align: right;">1171</td>
+<td style="text-align: right;">1171</td>
+<td style="text-align: right;">1171</td>
+<td style="text-align: right;">1171</td>
+<td style="text-align: right;">932</td>
+<td style="text-align: right;">1171</td>
+</tr>
+<tr>
+<td>2021-22</td>
+<td style="text-align: right;">1323</td>
+<td style="text-align: right;">1323</td>
+<td style="text-align: right;">1323</td>
+<td style="text-align: right;">1323</td>
+<td style="text-align: right;">1075</td>
+<td style="text-align: right;">1323</td>
+</tr>
+<tr>
+<td>2022-23</td>
+<td style="text-align: right;">1320</td>
+<td style="text-align: right;">1320</td>
+<td style="text-align: right;">1320</td>
+<td style="text-align: right;">1320</td>
+<td style="text-align: right;">1077</td>
+<td style="text-align: right;">1320</td>
+</tr>
+<tr>
+<td>2023-24</td>
+<td style="text-align: right;">1318</td>
+<td style="text-align: right;">1318</td>
+<td style="text-align: right;">1318</td>
+<td style="text-align: right;">1318</td>
+<td style="text-align: right;">1059</td>
+<td style="text-align: right;">1318</td>
+</tr>
+<tr>
+<td>2024-25</td>
+<td style="text-align: right;">1320</td>
+<td style="text-align: right;">1320</td>
+<td style="text-align: right;">1320</td>
+<td style="text-align: right;">1320</td>
+<td style="text-align: right;">1066</td>
+<td style="text-align: right;">1320</td>
+</tr>
+<tr>
+<td>2025-26</td>
+<td style="text-align: right;">1321</td>
+<td style="text-align: right;">1321</td>
+<td style="text-align: right;">1321</td>
+<td style="text-align: right;">1321</td>
+<td style="text-align: right;">1070</td>
+<td style="text-align: right;">1321</td>
+</tr>
+<tr>
+<td>2026-27</td>
+<td style="text-align: right;">1200</td>
+<td style="text-align: right;">1200</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">945</td>
+<td style="text-align: right;">1200</td>
+</tr>
+</tbody>
+</table></div>
+<p>Full per-provider, per-field counts and difference counts are in <a href="../research/2026-10-20-historical-audit/sources/coverage.csv">coverage.csv</a>; deduplicated season counts are in <a href="../research/2026-10-20-historical-audit/sources/season-field-coverage.csv">season-field-coverage.csv</a>. Gaps in this table are unverified, not passes. For the 1,200 assigned upcoming fixtures, 945 non-placeholder tip fields were compared; 255 source timestamps were excluded as potential placeholders.</p>
+<h2>Reproduction and retained evidence</h2>
+<p>Run from the repository root:</p>
+<pre><code class="language-sh">python3 docs/research/2026-10-20-historical-audit/sources/compare.py
+python3 docs/research/2026-10-20-historical-audit/sources/finals_round.py
+</code></pre>
+<p><code>compare.py</code> reads the immutable snapshot, retained ESPN/NBA caches, fresh NBA schedule archives, fresh BRef pages, and the sibling venue worker’s fresh ESPN team schedules. It performs no HTTP or database access. <code>finals_round.py</code> reads the retained NBA history page. Both were executed successfully on the frozen snapshot; Python compilation also passed. No application tests were needed for these research-only changes.</p>
+<p><code>fetch_sources.py</code> is the separate bounded HTTP capture utility. It captures the 30 NBA season archives and attempts early BRef pages, preserves successful captures, and stops on a rate limit. Do not rerun it merely to make the table look complete. Raw files and hash manifests remain ignored under <code>docs/audit/2026-10-20-historical-audit/sources/</code>:</p>
+<ul>
+<li><code>fetch-manifest.json</code>: fresh source URLs, byte counts, hashes and HTTP failures.</li>
+<li><code>cache-manifest.json</code>: every reused/fresh source file hash (6,768 files), with origin and retention caveats. The sibling <code>venues/espn-manifest.json</code> records exact team request URLs.</li>
+<li><code>normalized-sources.jsonl.gz</code>: 152,025 normalized provider observations across five source collections.</li>
+<li><code>nba-champions.html</code> and the hash in <a href="../research/2026-10-20-historical-audit/sources/finals-summary.json">finals-summary.json</a>: official Finals authority.</li>
+</ul>
+<p>NBA archive provenance is documented by the <a href="https://github.com/sportsdataverse/hoopR-nba-stats-data">SportsDataverse NBA Stats ingestion repository</a>: NBA Stats raw data → reshape → <a href="https://github.com/sportsdataverse/sportsdataverse-data/releases/tag/nba_stats_schedules">season archive release</a>. This is a separately captured provider archive, not a database export and not an independent source from the NBA box-score archive. Retained ESPN cache provenance is grounded in <code>scripts/fetch_game_context.ts</code>; an original per-file capture manifest was not retained, so this run hashes the existing bytes without inventing original fetch timestamps.</p>
+<p>No corrections, production writes, schema changes or re-scoring were performed. Remaining source disagreements and early-era missingness require explicit adjudication before any repair.</p></article><article id="supplement"><h1>Additive ESPN bulk supplement — 2026-10-20</h1>
+<p>The original source audit remains frozen. This supplement exercises a subsequently identified, documented archive without retrying Basketball Reference or making individual game requests. Only three CSV assets were captured from the <a href="https://github.com/sportsdataverse/sportsdataverse-data/releases/tag/espn_nba_schedules">SportsDataverse ESPN NBA schedules release</a>: <code>nba_schedule_1994.csv</code>, <code>nba_schedule_1995.csv</code>, and <code>nba_schedule_1996.csv</code>. File years are season ending years. These are archived ESPN observations, not database exports and not a second independent source from the prior ESPN team schedules.</p>
+<p>All <strong>3,621 stored games</strong> in 1993–94, 1994–95 and 1995–96 match the archive by Eastern date and normalized home/away identity. This adds <strong>218 previously unchecked date/identity and score rows</strong>, completing those three seasons' coverage. No source date or side contradiction is asserted among these matched games.</p>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Scrollable evidence table"><table>
+<thead>
+<tr>
+<th>Season</th>
+<th style="text-align: right;">Stored / matched</th>
+<th style="text-align: right;">Newly checked date / identity</th>
+<th style="text-align: right;">OT verified</th>
+<th style="text-align: right;">OT still unknown</th>
+<th style="text-align: right;">Additional known OT defaults</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1993–94</td>
+<td style="text-align: right;">1,184</td>
+<td style="text-align: right;">77</td>
+<td style="text-align: right;">1,179</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">50</td>
+</tr>
+<tr>
+<td>1994–95</td>
+<td style="text-align: right;">1,180</td>
+<td style="text-align: right;">73</td>
+<td style="text-align: right;">1,179</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">77</td>
+</tr>
+<tr>
+<td>1995–96</td>
+<td style="text-align: right;">1,257</td>
+<td style="text-align: right;">68</td>
+<td style="text-align: right;">1,252</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">67</td>
+</tr>
+<tr>
+<td>Total</td>
+<td style="text-align: right;">3,621</td>
+<td style="text-align: right;">218</td>
+<td style="text-align: right;">3,610</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">194</td>
+</tr>
+</tbody>
+</table></div>
+<p>The authentic CSV has <code>home_linescores</code> and <code>away_linescores</code> containing serialized period dictionaries, plus final scores, completion status and period labels. The parser uses <code>ast.literal_eval</code> on individual dictionary literals, never executable evaluation. OT is accepted only when:</p>
+<ol>
+<li>Both teams have a complete consecutive numbered period sequence starting at 1, with at least four periods and equal sequence lengths.</li>
+<li>Both period sums equal that team's reported final score.</li>
+<li>For games with extra periods, scores are tied after regulation and each non-final overtime period.</li>
+<li>The game is reported complete and the final score is not tied.</li>
+</ol>
+<p>All <strong>3,610 accepted rows pass every condition</strong>, including all 194 positive-OT rows. The 11 excluded rows have missing or placeholder period labels; one is the 1995 Finals Game 4 with four zero-valued, unnumbered line entries. Their default <code>0</code> is not verified. No non-tied-regulation or non-tied-intermediate-OT candidate was admitted. The provider's <code>status_period</code> alone is not used to infer OT.</p>
+<p>There is one additional unresolved score disagreement: <strong>ATL at IND, 1994-05-19</strong>, stored Indiana 98 versus ESPN 97. It is retained as a provider disagreement, not a confirmed database correction.</p>
+<p>Two source-only rows are archive anomalies, not established missing games: a duplicate Dallas–Denver observation on 1993-12-05 with a spurious <code>DEV</code> team abbreviation/ID, alongside the normal <code>DEN</code> row with the same score; and an Orlando–Miami postseason observation on 1995-06-11 alongside the genuine Houston–Orlando Finals game. Neither is inserted or used to infer a missing fixture.</p>
+<h2>Final combined coverage</h2>
+<p><a href="../research/2026-10-20-historical-audit/sources/supplement/combined-season-field-coverage.csv">combined-season-field-coverage.csv</a> is the additive <strong>final combined</strong> 42-season matrix. The parent <a href="../research/2026-10-20-historical-audit/sources/supplement/../season-field-coverage.csv">season-field-coverage.csv</a> remains the original frozen core matrix. For these three seasons, the prior sources had zero OT coverage; the 3,610 newly validated OT rows therefore have no overlap. The 218 additional date/identity/score rows are calculated by game-ID set difference, not by adding all 3,621 rows a second time. Other fields, including tip and neutral-site comparison, remain unchanged because this supplement makes no new truth claims for them.</p>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Scrollable evidence table"><table>
+<thead>
+<tr>
+<th>Measure</th>
+<th style="text-align: right;">Original core</th>
+<th style="text-align: right;">Final combined</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Date / identity source-checked</td>
+<td style="text-align: right;">45,913</td>
+<td style="text-align: right;">46,131</td>
+</tr>
+<tr>
+<td>Completed score source-checked</td>
+<td style="text-align: right;">44,713</td>
+<td style="text-align: right;">44,931</td>
+</tr>
+<tr>
+<td>Completed OT source-checked</td>
+<td style="text-align: right;">41,070</td>
+<td style="text-align: right;">44,680</td>
+</tr>
+<tr>
+<td>Completed OT still unknown</td>
+<td style="text-align: right;">9,425</td>
+<td style="text-align: right;">5,815</td>
+</tr>
+<tr>
+<td>Distinct known stored zero-OT defaults</td>
+<td style="text-align: right;">589</td>
+<td style="text-align: right;">783</td>
+</tr>
+<tr>
+<td>Distinct games with score disagreements</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">17</td>
+</tr>
+</tbody>
+</table></div>
+<p>The total final-game denominator remains 50,495, with 1,200 additional scheduled games. Future OT is not an observed outcome. Early 1988–89 through 1992–93 gaps remain; no archive covering them was discovered in the bounded inventory check. These source comparisons do not establish that missingness is unbiased or conservative, nor that repairing an input improves predictive accuracy.</p>
+<h2>Reproduction and evidence</h2>
+<p>Run <code>python3 docs/research/2026-10-20-historical-audit/sources/supplement/compare_bulk.py</code> from the repository root. It only reads local immutable captures and writes this supplement. The script was executed successfully after the complete period/tie checks were added. Counts and original artifact hashes were independently asserted. No application, model, database or parent frozen artifact was changed.</p>
+<p><a href="../research/2026-10-20-historical-audit/sources/supplement/manifest.json">manifest.json</a> pins the supplement's raw capture manifest, three original CSVs and research artifacts, and records the verified original core manifest hash. Raw CSVs and the URL/timestamp/hash capture manifest remain ignored under <code>docs/audit/2026-10-20-historical-audit/sources/supplement/</code>.</p></article><article id="venues"><h1>Historical venue and itinerary audit — 2026-10-20</h1>
+<p>The <strong>51,695 stored games in all 42 seasons</strong> have a row-level venue inventory. This is <strong>not a complete validation of every historical arena or actual journey</strong>. The bounded case register identifies <strong>167 omitted physical venues</strong>: 156 supported by primary event/history or whole-season statements, plus 11 Austin cases whose venue is supported by the schedule feed and partially checked against primary dated announcements. A whole-season statement establishes an era; it is not an individual gamebook for every date.</p>
+<p>No application, model, coefficient, database, or published figure changed. The immutable database snapshot comes from <a href="../research/2026-10-20-historical-audit/venues/../numeric/snapshot-manifest.json">the numeric capture manifest</a>. These files are research, not an approved correction or rescore.</p>
+<h2>Results and confidence</h2>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Scrollable evidence table"><table>
+<thead>
+<tr>
+<th>Class</th>
+<th style="text-align: right;">Games</th>
+<th>What the count establishes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Toronto temporary base, 2020–21</td>
+<td style="text-align: right;">36</td>
+<td>Physical home city was Tampa; source still uses Toronto. <a href="https://www.nba.com/news/raptors-to-finish-2020-21-season-in-tampa">League announcement</a>.</td>
+</tr>
+<tr>
+<td>Golden State, 1996–97</td>
+<td style="text-align: right;">41</td>
+<td>San Jose temporary season; source uses San Francisco. <a href="https://sfocii.org/sites/default/files/inline-files/Vol%201_GSW_MB_DSEIR.pdf">City environmental report</a>.</td>
+</tr>
+<tr>
+<td>Seattle, 1994–95</td>
+<td style="text-align: right;">43</td>
+<td>Tacoma temporary season, including two playoff homes; source uses Seattle. <a href="https://seattle.gov/documents/departments/council/committees/centralstaff/key-arena-report-june-2015.pdf">Seattle council arena report</a>. Individual fixtures are inferred from the season statement.</td>
+</tr>
+<tr>
+<td>Katrina minority homes</td>
+<td style="text-align: right;">11</td>
+<td>Nine New Orleans homes, one Baton Rouge, one Norman, all mapped to Oklahoma City. <a href="https://www.nba.com/pelicans/news/the_hornets__hurricane_katr_2010_08_26.html">Team history</a>, <a href="https://www.nba.com/game/phx-vs-nok-0020500329/box-score">Baton Rouge game</a>, <a href="https://www.nba.com/game/sac-vs-nok-0020500518">Norman game</a>.</td>
+</tr>
+<tr>
+<td>Pre-2013 international neutral games</td>
+<td style="text-align: right;">15</td>
+<td>Twelve Japan, one Mexico, two London fixtures retain false neutral flags. Sources below; these do not exhaust domestic alternate homes.</td>
+</tr>
+<tr>
+<td>Recent omitted genuine neutral games</td>
+<td style="text-align: right;">3</td>
+<td>Mexico City 2022-12-17 and both Las Vegas semifinals 2023-12-07. Details below.</td>
+</tr>
+<tr>
+<td>Austin homes</td>
+<td style="text-align: right;">11</td>
+<td>Two per season 2022–23 through 2025–26, plus three assigned 2026–27. Per-date primary checking is partial. <a href="https://www.nba.com/spurs/news/san-antonio-spurs-announce-spurs-week-and-spurs-fan-fest-in-conjunction-with-i-35-series-in-austin">2023 team announcement</a>, <a href="https://pr.nba.com/2024-25-nba-regular-season-schedule/">2025 league schedule</a>, <a href="https://www.nba.com/spurs/schedule">current team schedule</a>.</td>
+</tr>
+<tr>
+<td>Anaheim corroborated subset</td>
+<td style="text-align: right;">4</td>
+<td>1992 playoff plus Lakers visits in 1997–99. <a href="https://www.nba.com/lakers/news/161021-lakers-history-orange-county">Lakers history</a>. The wider 1994–99 split schedule is not individually validated.</td>
+</tr>
+<tr>
+<td>Hartford corroborated subset</td>
+<td style="text-align: right;">2</td>
+<td>1986-12-02 and 1995-02-23; broader alternate-home history remains incomplete. <a href="https://www.nba.com/news/history-this-date-in-nba-dec">League history</a>, <a href="https://www.nba.com/game/orl-vs-bos-0029400699">official game</a>.</td>
+</tr>
+<tr>
+<td>Baltimore corroborated subset</td>
+<td style="text-align: right;">1</td>
+<td>1997-02-14; broader Bullets split schedule remains incomplete. <a href="https://www.nba.com/game/njn-vs-was-0029600707/box-score">Official game</a>.</td>
+</tr>
+</tbody>
+</table></div>
+<p><a href="../research/2026-10-20-historical-audit/venues/corroborated-venue-cases.csv">corroborated-venue-cases.csv</a> lists exact stored game IDs, dates, sides, modeled/actual city, source and confidence. <strong>Every one of its 167 rows has a wrong modeled city; this count does not include correctly represented games.</strong> <a href="../research/2026-10-20-historical-audit/venues/affected-adjacent-team-legs.csv">affected-adjacent-team-legs.csv</a> lists <strong>334 team contexts</strong>, with previous fixture and immediate next fixture. These are exposed inbound/outbound contexts, <strong>not 334 proven nonzero mileage errors</strong>. Same-building and home-to-home branches can suppress a change; rolling windows can expose later games too. No numerical rescore was executed.</p>
+<p>Separately, <a href="../research/2026-10-20-historical-audit/venues/confirmed-era-individual-venue-inferences.csv">confirmed-era-individual-venue-inferences.csv</a> holds <strong>1,415 Detroit home fixtures</strong> across Silverdome/Palace eras. The historical arena omission is established by <a href="https://www.nba.com/news/pistons-former-arena-palace-torn-down">league history</a>; individual actual venues remain inferred, so these are <strong>not added to the 167</strong>. They require alternate-site reconciliation. This is a material suburban displacement, not a sub-mile arena adjustment.</p>
+<h2>Genuine neutral sites and publication exposure</h2>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Scrollable evidence table"><table>
+<thead>
+<tr>
+<th>Stored game ID</th>
+<th>ET date</th>
+<th>Fixture</th>
+<th>Actual venue</th>
+<th>Stored state</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>11144</td>
+<td>2022-12-17</td>
+<td>MIA at SAS</td>
+<td>Arena CDMX, Mexico City</td>
+<td>neutral=false; modeled San Antonio</td>
+</tr>
+<tr>
+<td>923</td>
+<td>2023-12-07</td>
+<td>IND at MIL</td>
+<td>T-Mobile Arena, Las Vegas</td>
+<td>neutral=false; modeled Milwaukee</td>
+</tr>
+<tr>
+<td>924</td>
+<td>2023-12-07</td>
+<td>NOP at LAL</td>
+<td>T-Mobile Arena, Las Vegas</td>
+<td>neutral=false; modeled Los Angeles</td>
+</tr>
+</tbody>
+</table></div>
+<p>The <a href="https://pr.nba.com/nba-mexico-city-game-to-return-with-regular-season-matchup-featuring-san-antonio-spurs-and-miami-heat-on-dec-17/">league Mexico announcement</a> and official <a href="https://statsdmz.nba.com/pdfs/20231207/20231207_INDMIL_book.pdf">IND–MIL</a>/<a href="https://statsdmz.nba.com/pdfs/20231207/20231207_NOPLAL_book.pdf">NOP–LAL gamebooks</a> corroborate these locations. The two 2024 semifinals and two 2025 semifinals already have recognized Las Vegas neutral records. The three Cup championships remain absent by design; excluding standings totals does not remove their physical workload. This audit does not add them.</p>
+<p>A neutral omission affects more than Mileage: nominal-home road status, circadian displacement, Mexico altitude and rested-at-home eligibility may also be wrong. <strong>Austin, Hartford, Anaheim, Tacoma and temporary team bases must not automatically become neutral simply to supply coordinates.</strong> Physical venue, designated side and local-home status need separate decisions. All <strong>34 stored true-neutral rows</strong> resolve to one of the six source cities; there are <strong>zero currently stored unknown-city neutral rows</strong>. Unknown future cities still fall back to a home arena and home classification because resolution returns null.</p>
+<p>The 15 early international fixtures are Japan 1990/1992/1994/1996/1999/2003 pairs, Mexico 1997 and London March 2011. <a href="https://www.nba.com/news/history-this-date-in-nba-nov">League November history</a>, <a href="https://www.nba.com/magic/news/orlando-magic-utah-jazz-postgame-story-recap-20211107">Magic history</a>, <a href="https://www.nba.com/game/lac-vs-sea-0020300015">2003 official game</a>, <a href="https://www.nba.com/news/history-this-date-in-nba-june">Mexico announcement history</a>, <a href="https://www.nba.com/news/nba-london-game-2026-everything-to-know">London history</a>. Stored ET dates for Japan can precede the local event date; the CSV preserves stored ET dates. ADR 0003's example saying “2011–12 London” should be reconciled with the March 2011 events. Mexico's 1997 arena also differs from today's Arena CDMX; adding its city alone would still approximate an older arena.</p>
+<p>The 2019–20 bubble has <strong>88 regular-season rows</strong>. Their cities remain nominal in stored metadata but publication excludes the abnormal stretch. This is an excluded geometry limitation, distinct from active-season omissions. The all-game inventory also retains bubble playoff rows. No preseason or All-Star event is silently added to team workload.</p>
+<h2>Provider coverage is not actual-venue verification</h2>
+<p>The capture issued <strong>1,260 team/season requests</strong>. <strong>257 responses did not identify the requested season</strong> and are rejected. The remaining responses match <strong>40,123 stored fixtures</strong>, of which <strong>36,548 have a nonempty venue city</strong>. The secondary Basketball-Reference archive supplies <strong>3,048 additional early-season arena observations</strong>, including nine Hartford candidates; these are not all primary-verified. Coverage is tabulated for <strong>every season below and in <a href="../research/2026-10-20-historical-audit/venues/season-venue-coverage.csv">season-venue-coverage.csv</a></strong>.</p>
+<p>The <strong>3,049 provider/model city mismatches</strong> in <a href="../research/2026-10-20-historical-audit/venues/provider-city-candidates.csv">provider-city-candidates.csv</a> are candidates, <strong>not 3,049 defects</strong>. They include deliberate metro-level approximations (Oakland/San Francisco, New Jersey/Brooklyn), correctly located modern Clippers games whose team city label says Los Angeles but whose coordinates are in Inglewood, bubble rows, real omissions and provider mistakes. <a href="../research/2026-10-20-historical-audit/venues/provider-arena-era-inventory.csv">provider-arena-era-inventory.csv</a> inventories 150 observed franchise/arena/city groups across all 30 franchises, with observed date ranges. Those ranges are coverage boundaries, <strong>not authoritative arena occupancy dates</strong>.</p>
+<p>A concrete provider error: ESPN assigns <strong>2010-11-17 WAS at BOS to Orlando's current arena name</strong>, while the <a href="https://www.nba.com/game/was-vs-bos-0021000160/play-by-play">NBA record identifies TD Garden, Boston</a>. ESPN also assigns 1996–97 Warriors homes to Oakland despite the primary San Jose season statement. Names such as today's Tampa arena sponsor are retroactive. Neither name agreement nor a nonempty city is sufficient acceptance evidence.</p>
+<p>Still unclosed: full Hartford/Baltimore/Anaheim dates; historical Cleveland/Richfield, Detroit suburbs, Nets' successive New Jersey homes, Oakland/San Francisco, Clippers' LA/Inglewood arenas, Sacramento's ARCO sites, Atlanta's 1997–99 split venues, and the smaller intra-city moves of the other franchises. Current team coordinates cannot be represented as exact arena geography for every past season. Sub-mile coordinate/name changes should be prioritized below wrong-city and cross-city cases, but no arbitrary distance threshold proves correctness.</p>
+<h2>Itinerary and airport limits</h2>
+<p><a href="../research/2026-10-20-historical-audit/venues/../../../audit/2026-10-20-historical-audit/venues/all-consecutive-away-pairs.csv">all-consecutive-away-pairs.csv</a> (local raw) inventories <strong>26,054 pairs</strong> across all stored seasons; <strong>4,081 have a calendar gap of at least three days</strong>. Those are research descriptors only. No gap, geographic detour, apparent nearby home city or All-Star interval establishes a team home visit. The underlying chain includes regular season and playoffs; the inventory identifies that scope explicitly.</p>
+<p><a href="../research/2026-10-20-historical-audit/venues/season-allgame-endpoints.csv">season-allgame-endpoints.csv</a> preserves first/last fixture assumptions for each team/season. Current Season Report charges an away opener from the era home arena, counts no return after its last included regular fixture, and does not include pre-season camp travel. A postseason chain answers another scope. All-Star participants can travel separately from their team; Cup finalists play an extra physical game; actual intermediate home stops and overnight locations are generally unknown.</p>
+<p>Nearby pairs (New York/Brooklyn/Philadelphia, LA/LA, Chicago/Milwaukee, Cleveland/Detroit, Golden State/Sacramento) are geographic legs, not verified flights. Existing <a href="../research/2026-10-20-historical-audit/venues/../../2026-10-20-team-airports-east.md">East</a>/<a href="../research/2026-10-20-historical-audit/venues/../../2026-10-20-team-airports-west.md">West airport research</a> is mostly dated candidate or capability evidence, not a historical airport table. Arena relocations do not prove airport changes; FBO identity does not identify a different airport. Historic charters, ground transport, actual departure/arrival, diversions and intermediate stops remain unmeasured. Existing <a href="../research/2026-10-20-historical-audit/venues/../../2026-10-20-itinerary-research-east.md">East</a>/<a href="../research/2026-10-20-historical-audit/venues/../../2026-10-20-itinerary-research-west.md">West itinerary cases</a> demonstrate exceptions without validating a universal return-home classifier.</p>
+<p>D-120's approved interface label is <strong>Mileage</strong>. Behind the Data should retain scheduled venue-to-venue straight-line assumptions and the rolling/once-counted distinction. This audit approves no airport substitution, automatic home-stop rule or coefficient change.</p>
+<h2>Reproduction and artifacts</h2>
+<p>Run from the repository root:</p>
+<pre><code class="language-sh">python3 docs/research/2026-10-20-historical-audit/venues/capture_espn.py
+python3 docs/research/2026-10-20-historical-audit/venues/inventory.py
+python3 docs/research/2026-10-20-historical-audit/venues/classify.py
+</code></pre>
+<p>Python needs BeautifulSoup and lxml for the secondary archived HTML parser; network capture uses stdlib urllib. No database connection is used by these scripts. The first command reuses cached response bodies. DB snapshot capture is owned by the numeric audit. Raw captures, the complete 51,695-row inventory and complete away-pair inventory are local under <code>docs/audit/2026-10-20-historical-audit/venues/</code>; <a href="../research/2026-10-20-historical-audit/venues/raw-artifact-manifest.json">raw-artifact-manifest.json</a> pins their SHA-256 hashes. <a href="../research/2026-10-20-historical-audit/venues/espn-manifest.json">espn-manifest.json</a> pins every response; <a href="../research/2026-10-20-historical-audit/venues/primary-source-manifest.json">primary-source-manifest.json</a> distinguishes successful raw archives from HTTP 403s. Primary NBA pages were readable through web retrieval, but most raw urllib requests were blocked; an unarchived body is not claimed hashed evidence. City-report PDFs were archived.</p>
+<p>Implemented: reproducible coverage/case/context inventories. Exercised: frozen all-row matching and public-provider capture. Verified: bounded primary venue omissions and the source fallback contract. Unverified: complete historical venue correctness, actual routing/airports, score impact and corrected production behavior. No app test/build, rendered UI, deployment or rescore is claimed by this research-only slice.</p>
+<h2>Every-season coverage</h2>
+<p><code>ESPN city</code> means a matched response contains a city, not independently verified geography. <code>BRef arena</code> is secondary evidence. <code>Cases</code> includes the explicitly qualified Austin register.</p>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Scrollable evidence table"><table>
+<thead>
+<tr>
+<th>Season</th>
+<th style="text-align: right;">Stored games</th>
+<th style="text-align: right;">ESPN fixture</th>
+<th style="text-align: right;">ESPN city</th>
+<th style="text-align: right;">BRef arena</th>
+<th style="text-align: right;">Cases</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1985-86</td>
+<td style="text-align: right;">1011</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1011</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>1986-87</td>
+<td style="text-align: right;">1014</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1014</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr>
+<td>1987-88</td>
+<td style="text-align: right;">1023</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1023</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>1988-89</td>
+<td style="text-align: right;">1087</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>1989-90</td>
+<td style="text-align: right;">1179</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>1990-91</td>
+<td style="text-align: right;">1175</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr>
+<td>1991-92</td>
+<td style="text-align: right;">1180</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr>
+<td>1992-93</td>
+<td style="text-align: right;">1183</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr>
+<td>1993-94</td>
+<td style="text-align: right;">1184</td>
+<td style="text-align: right;">1107</td>
+<td style="text-align: right;">451</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>1994-95</td>
+<td style="text-align: right;">1180</td>
+<td style="text-align: right;">1107</td>
+<td style="text-align: right;">533</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">46</td>
+</tr>
+<tr>
+<td>1995-96</td>
+<td style="text-align: right;">1257</td>
+<td style="text-align: right;">1189</td>
+<td style="text-align: right;">656</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>1996-97</td>
+<td style="text-align: right;">1261</td>
+<td style="text-align: right;">1189</td>
+<td style="text-align: right;">660</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">45</td>
+</tr>
+<tr>
+<td>1997-98</td>
+<td style="text-align: right;">1260</td>
+<td style="text-align: right;">1189</td>
+<td style="text-align: right;">742</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr>
+<td>1998-99</td>
+<td style="text-align: right;">791</td>
+<td style="text-align: right;">724</td>
+<td style="text-align: right;">484</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr>
+<td>1999-00</td>
+<td style="text-align: right;">1264</td>
+<td style="text-align: right;">1168</td>
+<td style="text-align: right;">990</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr>
+<td>2000-01</td>
+<td style="text-align: right;">1260</td>
+<td style="text-align: right;">1189</td>
+<td style="text-align: right;">1025</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>2001-02</td>
+<td style="text-align: right;">1260</td>
+<td style="text-align: right;">1189</td>
+<td style="text-align: right;">1066</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>2002-03</td>
+<td style="text-align: right;">1277</td>
+<td style="text-align: right;">1189</td>
+<td style="text-align: right;">1107</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>2003-04</td>
+<td style="text-align: right;">1271</td>
+<td style="text-align: right;">1189</td>
+<td style="text-align: right;">1146</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr>
+<td>2004-05</td>
+<td style="text-align: right;">1314</td>
+<td style="text-align: right;">1230</td>
+<td style="text-align: right;">1230</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>2005-06</td>
+<td style="text-align: right;">1319</td>
+<td style="text-align: right;">1230</td>
+<td style="text-align: right;">1228</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">5</td>
+</tr>
+<tr>
+<td>2006-07</td>
+<td style="text-align: right;">1309</td>
+<td style="text-align: right;">1230</td>
+<td style="text-align: right;">1230</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">6</td>
+</tr>
+<tr>
+<td>2007-08</td>
+<td style="text-align: right;">1316</td>
+<td style="text-align: right;">1230</td>
+<td style="text-align: right;">1230</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>2008-09</td>
+<td style="text-align: right;">1315</td>
+<td style="text-align: right;">1230</td>
+<td style="text-align: right;">1229</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>2009-10</td>
+<td style="text-align: right;">1312</td>
+<td style="text-align: right;">1230</td>
+<td style="text-align: right;">1230</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>2010-11</td>
+<td style="text-align: right;">1311</td>
+<td style="text-align: right;">1230</td>
+<td style="text-align: right;">1227</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr>
+<td>2011-12</td>
+<td style="text-align: right;">1074</td>
+<td style="text-align: right;">990</td>
+<td style="text-align: right;">990</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>2012-13</td>
+<td style="text-align: right;">1314</td>
+<td style="text-align: right;">1229</td>
+<td style="text-align: right;">1229</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>2013-14</td>
+<td style="text-align: right;">1319</td>
+<td style="text-align: right;">1230</td>
+<td style="text-align: right;">1230</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>2014-15</td>
+<td style="text-align: right;">1311</td>
+<td style="text-align: right;">1230</td>
+<td style="text-align: right;">1230</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>2015-16</td>
+<td style="text-align: right;">1316</td>
+<td style="text-align: right;">1230</td>
+<td style="text-align: right;">1230</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>2016-17</td>
+<td style="text-align: right;">1309</td>
+<td style="text-align: right;">1230</td>
+<td style="text-align: right;">1230</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>2017-18</td>
+<td style="text-align: right;">1312</td>
+<td style="text-align: right;">1230</td>
+<td style="text-align: right;">1230</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>2018-19</td>
+<td style="text-align: right;">1312</td>
+<td style="text-align: right;">1230</td>
+<td style="text-align: right;">1230</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>2019-20</td>
+<td style="text-align: right;">1142</td>
+<td style="text-align: right;">1055</td>
+<td style="text-align: right;">1055</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>2020-21</td>
+<td style="text-align: right;">1171</td>
+<td style="text-align: right;">1080</td>
+<td style="text-align: right;">1080</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">36</td>
+</tr>
+<tr>
+<td>2021-22</td>
+<td style="text-align: right;">1323</td>
+<td style="text-align: right;">1230</td>
+<td style="text-align: right;">1230</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>2022-23</td>
+<td style="text-align: right;">1320</td>
+<td style="text-align: right;">1230</td>
+<td style="text-align: right;">1230</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">3</td>
+</tr>
+<tr>
+<td>2023-24</td>
+<td style="text-align: right;">1318</td>
+<td style="text-align: right;">1230</td>
+<td style="text-align: right;">1230</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">4</td>
+</tr>
+<tr>
+<td>2024-25</td>
+<td style="text-align: right;">1320</td>
+<td style="text-align: right;">1230</td>
+<td style="text-align: right;">1230</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr>
+<td>2025-26</td>
+<td style="text-align: right;">1321</td>
+<td style="text-align: right;">1230</td>
+<td style="text-align: right;">1230</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr>
+<td>2026-27</td>
+<td style="text-align: right;">1200</td>
+<td style="text-align: right;">1200</td>
+<td style="text-align: right;">1200</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">3</td>
+</tr>
+</tbody>
+</table></div></article><article id="coverage"><h2>All-season inventory</h2><p>Zero outcome rows for 2026-27 means those games have not been played. Home streak mismatches include games where the retained streak is too short to add scoring load. Side and size changes overlap.</p><div class="table-wrap" tabindex="0" role="region" aria-label="Scrollable evidence table"><table><caption>Coverage and homecoming sensitivity for every stored season</caption><thead><tr><th scope="col">Season</th><th scope="col">Stored games</th><th scope="col">Eligible final outcomes</th><th scope="col">Home streak mismatches</th><th scope="col">Diagnostic side/no-call changes</th><th scope="col">Diagnostic size changes</th></tr></thead><tbody><tr><td>1985-86</td><td>1011</td><td>943</td><td>485</td><td>33</td><td>46</td></tr><tr><td>1986-87</td><td>1014</td><td>943</td><td>511</td><td>24</td><td>44</td></tr><tr><td>1987-88</td><td>1023</td><td>943</td><td>515</td><td>28</td><td>47</td></tr><tr><td>1988-89</td><td>1087</td><td>1025</td><td>527</td><td>31</td><td>49</td></tr><tr><td>1989-90</td><td>1179</td><td>1107</td><td>576</td><td>37</td><td>54</td></tr><tr><td>1990-91</td><td>1175</td><td>1107</td><td>576</td><td>29</td><td>56</td></tr><tr><td>1991-92</td><td>1180</td><td>1107</td><td>597</td><td>33</td><td>48</td></tr><tr><td>1992-93</td><td>1183</td><td>1107</td><td>590</td><td>27</td><td>48</td></tr><tr><td>1993-94</td><td>1184</td><td>1107</td><td>587</td><td>40</td><td>49</td></tr><tr><td>1994-95</td><td>1180</td><td>1107</td><td>593</td><td>36</td><td>47</td></tr><tr><td>1995-96</td><td>1257</td><td>1189</td><td>635</td><td>35</td><td>48</td></tr><tr><td>1996-97</td><td>1261</td><td>1189</td><td>625</td><td>29</td><td>45</td></tr><tr><td>1997-98</td><td>1260</td><td>1189</td><td>606</td><td>34</td><td>53</td></tr><tr><td>1998-99</td><td>791</td><td>725</td><td>403</td><td>9</td><td>25</td></tr><tr><td>1999-00</td><td>1264</td><td>1189</td><td>627</td><td>39</td><td>53</td></tr><tr><td>2000-01</td><td>1260</td><td>1189</td><td>613</td><td>36</td><td>54</td></tr><tr><td>2001-02</td><td>1260</td><td>1189</td><td>626</td><td>28</td><td>58</td></tr><tr><td>2002-03</td><td>1277</td><td>1189</td><td>645</td><td>42</td><td>57</td></tr><tr><td>2003-04</td><td>1271</td><td>1189</td><td>659</td><td>31</td><td>52</td></tr><tr><td>2004-05</td><td>1314</td><td>1230</td><td>676</td><td>37</td><td>58</td></tr><tr><td>2005-06</td><td>1319</td><td>1230</td><td>655</td><td>36</td><td>54</td></tr><tr><td>2006-07</td><td>1309</td><td>1230</td><td>673</td><td>35</td><td>55</td></tr><tr><td>2007-08</td><td>1316</td><td>1230</td><td>660</td><td>40</td><td>56</td></tr><tr><td>2008-09</td><td>1315</td><td>1230</td><td>678</td><td>36</td><td>52</td></tr><tr><td>2009-10</td><td>1312</td><td>1230</td><td>657</td><td>37</td><td>58</td></tr><tr><td>2010-11</td><td>1311</td><td>1230</td><td>651</td><td>34</td><td>55</td></tr><tr><td>2011-12</td><td>1074</td><td>990</td><td>524</td><td>26</td><td>46</td></tr><tr><td>2012-13</td><td>1314</td><td>1228</td><td>646</td><td>22</td><td>53</td></tr><tr><td>2013-14</td><td>1319</td><td>1229</td><td>667</td><td>34</td><td>57</td></tr><tr><td>2014-15</td><td>1311</td><td>1228</td><td>654</td><td>42</td><td>61</td></tr><tr><td>2015-16</td><td>1316</td><td>1228</td><td>639</td><td>41</td><td>51</td></tr><tr><td>2016-17</td><td>1309</td><td>1227</td><td>628</td><td>47</td><td>64</td></tr><tr><td>2017-18</td><td>1312</td><td>1227</td><td>607</td><td>37</td><td>52</td></tr><tr><td>2018-19</td><td>1312</td><td>1227</td><td>615</td><td>52</td><td>60</td></tr><tr><td>2019-20</td><td>1142</td><td>968</td><td>568</td><td>36</td><td>47</td></tr><tr><td>2020-21</td><td>1171</td><td>1080</td><td>477</td><td>45</td><td>75</td></tr><tr><td>2021-22</td><td>1323</td><td>1230</td><td>576</td><td>46</td><td>56</td></tr><tr><td>2022-23</td><td>1320</td><td>1229</td><td>557</td><td>45</td><td>61</td></tr><tr><td>2023-24</td><td>1318</td><td>1228</td><td>548</td><td>43</td><td>60</td></tr><tr><td>2024-25</td><td>1320</td><td>1225</td><td>591</td><td>50</td><td>65</td></tr><tr><td>2025-26</td><td>1321</td><td>1225</td><td>595</td><td>62</td><td>72</td></tr><tr><td>2026-27</td><td>1200</td><td>0</td><td>508</td><td>0</td><td>0</td></tr></tbody></table></div></article></main><footer>Production scores, model coefficients and generated analytics are unchanged. Raw captures remain local; manifests and reproducible research outputs accompany this report.</footer></body></html>

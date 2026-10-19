@@ -1,0 +1,113 @@
+[
+  {
+    "name": "raptors-team-tampa",
+    "url": "https://www.nba.com/raptors/toronto-raptors-to-play-2020-21-season-in-tampa",
+    "support": "TOR2020-21temporarybase; URL may redirect/block",
+    "error": "HTTP Error 403: Forbidden",
+    "web_tool_read": "See VENUE_AUDIT.md citations; failed raw fetch does not claim archived body"
+  },
+  {
+    "name": "raptors-full-season",
+    "url": "https://www.nba.com/news/raptors-to-finish-2020-21-season-in-tampa",
+    "support": "TORall2020-21homegamesTampa",
+    "error": "HTTP Error 403: Forbidden",
+    "web_tool_read": "See VENUE_AUDIT.md citations; failed raw fetch does not claim archived body"
+  },
+  {
+    "name": "katrina-team",
+    "url": "https://www.nba.com/pelicans/news/the_hornets__hurricane_katr_2010_08_26.html",
+    "support": "3NewOrleans2005-06,6NewOrleans2006-07",
+    "error": "HTTP Error 403: Forbidden",
+    "web_tool_read": "See VENUE_AUDIT.md citations; failed raw fetch does not claim archived body"
+  },
+  {
+    "name": "norman-2006",
+    "url": "https://www.nba.com/game/sac-vs-nok-0020500518",
+    "support": "2006-01-13Norman",
+    "error": "HTTP Error 403: Forbidden",
+    "web_tool_read": "See VENUE_AUDIT.md citations; failed raw fetch does not claim archived body"
+  },
+  {
+    "name": "hartford-1995",
+    "url": "https://www.nba.com/game/orl-vs-bos-0029400699",
+    "support": "1995-02-23Hartford",
+    "error": "HTTP Error 403: Forbidden",
+    "web_tool_read": "See VENUE_AUDIT.md citations; failed raw fetch does not claim archived body"
+  },
+  {
+    "name": "hartford-1986",
+    "url": "https://www.nba.com/news/history-this-date-in-nba-dec",
+    "support": "1986-12-02Hartford",
+    "error": "HTTP Error 403: Forbidden",
+    "web_tool_read": "See VENUE_AUDIT.md citations; failed raw fetch does not claim archived body"
+  },
+  {
+    "name": "baltimore-1997",
+    "url": "https://www.nba.com/game/njn-vs-was-0029600707/box-score",
+    "support": "1997-02-14Baltimore",
+    "error": "HTTP Error 403: Forbidden",
+    "web_tool_read": "See VENUE_AUDIT.md citations; failed raw fetch does not claim archived body"
+  },
+  {
+    "name": "global-japan",
+    "url": "https://www.nba.com/news/history-this-date-in-nba-nov",
+    "support": "1990Tokyo1992Yokohama1994Yokohama1999Tokyo",
+    "error": "HTTP Error 403: Forbidden",
+    "web_tool_read": "See VENUE_AUDIT.md citations; failed raw fetch does not claim archived body"
+  },
+  {
+    "name": "london-list",
+    "url": "https://www.nba.com/news/nba-london-game-2026-everything-to-know",
+    "support": "2011andlaterLondonhistory",
+    "error": "HTTP Error 403: Forbidden",
+    "web_tool_read": "See VENUE_AUDIT.md citations; failed raw fetch does not claim archived body"
+  },
+  {
+    "name": "mexico-history",
+    "url": "https://www.nba.com/news/looking-back-at-the-history-of-nba-mexico-games",
+    "support": "1997MexicoCityregularseason",
+    "error": "HTTP Error 403: Forbidden",
+    "web_tool_read": "See VENUE_AUDIT.md citations; failed raw fetch does not claim archived body"
+  },
+  {
+    "name": "spurs-2025",
+    "url": "https://pr.nba.com/2024-25-nba-regular-season-schedule/",
+    "support": "2025-02-20MoodyCenterAustin",
+    "error": "HTTP Error 403: Forbidden",
+    "web_tool_read": "See VENUE_AUDIT.md citations; failed raw fetch does not claim archived body"
+  },
+  {
+    "name": "provider-error-boston",
+    "url": "https://www.nba.com/game/was-vs-bos-0021000160/play-by-play",
+    "support": "TDGardenBostoncontradictsESPNOrlando",
+    "error": "HTTP Error 403: Forbidden",
+    "web_tool_read": "See VENUE_AUDIT.md citations; failed raw fetch does not claim archived body"
+  },
+  {
+    "name": "sf-city-report",
+    "url": "https://sfocii.org/sites/default/files/inline-files/Vol%201_GSW_MB_DSEIR.pdf",
+    "final_url": "https://sfocii.org/sites/default/files/inline-files/Vol%201_GSW_MB_DSEIR.pdf",
+    "support": "Officialcityenvironmentalreport1996-97SanJose",
+    "file": "source-sf-city-report.gz",
+    "bytes": 69368931,
+    "sha256": "daedcfd53766aa1a4dba7ec0a1e441c49e255fc177aecce9929f0dd6a761c72b",
+    "uncompressed_sha256": "cf92c907e3e94f70ea73015b5034b5fe4d47a26a2044fa4c2c7899430ee44d40",
+    "captured_at_utc": "2026-10-19T16:59:43.789994+00:00"
+  },
+  {
+    "name": "tacoma-nba-game",
+    "url": "https://www.nba.com/game/lal-vs-sea-0049400021",
+    "support": "1995-04-27TacomaDome",
+    "error": "HTTP Error 403: Forbidden",
+    "web_tool_read": "See VENUE_AUDIT.md citations; failed raw fetch does not claim archived body"
+  },
+  {
+    "name": "seattle-city-report",
+    "url": "https://seattle.gov/documents/departments/council/committees/centralstaff/key-arena-report-june-2015.pdf",
+    "file": "source-seattle-city-report.pdf",
+    "bytes": 11273831,
+    "sha256": "25e9ed67217a3ea5f863001f064f650703b144aa2084ae292bf0c470f3cc95c3",
+    "support": "1994-95temporaryTacomaDome",
+    "captured_at_utc": "2026-10-19T17:04:34.741749+00:00"
+  }
+]

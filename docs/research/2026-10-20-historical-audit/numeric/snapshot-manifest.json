@@ -1,0 +1,73 @@
+{
+  "started": "2026-10-19T16:54:12.962Z",
+  "finished": "2026-10-19T16:54:20.457Z",
+  "sourceCommit": "08ade6c385670c9d33eef5cd15ff14995b392cfd",
+  "transaction": "REPEATABLE READ READ ONLY",
+  "latestSelection": "computed_at DESC, id DESC; latestTies separately records application tie ambiguity",
+  "files": [
+    {
+      "file": "teams.jsonl.gz",
+      "rows": 30,
+      "bytes": 1083,
+      "sha256": "5a32dfb24aebd010950acb01e124d8ff5adec3cf9fb2256d5c2ed71bb53dac34",
+      "uncompressedSha256": "72c40d62a78d2d384eaca81a1292ee917a478a51c55b5017771b2c5c13c924f4"
+    },
+    {
+      "file": "games.jsonl.gz",
+      "rows": 51695,
+      "bytes": 1107006,
+      "sha256": "12f908697b1a4944bd6104ac2f544f37a6c71f6fd1cb6d20dbe50dab83717fb6",
+      "uncompressedSha256": "b477c43735541d6f26fa2159b827ae946f99e09f781e3907b079cb5bfbbaaab5"
+    },
+    {
+      "file": "scores.jsonl.gz",
+      "rows": 103390,
+      "bytes": 3402040,
+      "sha256": "6452181280677e3ef74df450722f1fb875b8104135c34c8b2f569ae329d5853f",
+      "uncompressedSha256": "a69c9651687d7af91671c55dc9babe135803e825c3d954c922cf632d669a188f"
+    },
+    {
+      "file": "duplicates.jsonl.gz",
+      "rows": 0,
+      "bytes": 21,
+      "sha256": "744257bab081bf2a026c9cd31883aee4c654845552b10a025504a63388a18ade",
+      "uncompressedSha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    {
+      "file": "latestTies.jsonl.gz",
+      "rows": 0,
+      "bytes": 21,
+      "sha256": "744257bab081bf2a026c9cd31883aee4c654845552b10a025504a63388a18ade",
+      "uncompressedSha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    {
+      "file": "metadata.jsonl.gz",
+      "rows": 1,
+      "bytes": 196,
+      "sha256": "65e467ceff9a80446c81158c1987328be11646ac9cb60ad32ead355daca1a4f9",
+      "uncompressedSha256": "ef95631eb53a49f913e445f14935c093f8dc0cea089596e77349d5e7714c8d49"
+    },
+    {
+      "file": "totals.jsonl.gz",
+      "rows": 1,
+      "bytes": 71,
+      "sha256": "5ac040989e103b46a56fbe38c046574c77e433b7ba65629dc48472c3e43878ff",
+      "uncompressedSha256": "712d9869e9dafc6d8e3356805c290651ef05673ac691767564e1aedc536e7085"
+    }
+  ],
+  "metadata": [
+    {
+      "transaction_timestamp": "2026-10-19 16:54:13.557498+00",
+      "isolation": "repeatable read",
+      "read_only": "on",
+      "postgres_version": "PostgreSQL 17.6 on aarch64-unknown-linux-gnu, compiled by gcc (GCC) 15.2.0, 64-bit"
+    }
+  ],
+  "totals": [
+    {
+      "all_score_rows": 103390,
+      "all_games": 51695,
+      "all_teams": 30
+    }
+  ]
+}

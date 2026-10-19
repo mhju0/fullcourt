@@ -1,0 +1,35 @@
+{
+  "stored_games": 51695,
+  "seasons": 42,
+  "source_rows": {
+    "nba_archive": 38026,
+    "bref_archive": 3048,
+    "nba_team_box": 37986,
+    "espn_cache": 32352,
+    "espn_team": 40613
+  },
+  "differences_by_source_field": {
+    "nba_archive:home_score": 1,
+    "nba_archive:away_score": 1,
+    "bref_archive:overtime_periods": 157,
+    "nba_team_box:overtime_periods": 432,
+    "nba_team_box:home_score": 1,
+    "nba_team_box:away_score": 1,
+    "espn_cache:home_score": 5,
+    "espn_cache:away_score": 2,
+    "espn_cache:overtime_periods": 1,
+    "espn_cache:date": 4,
+    "espn_cache:tip_off_utc": 4,
+    "espn_team:tip_off_utc": 7550,
+    "espn_team:date": 5,
+    "espn_team:home_score": 11,
+    "espn_team:away_score": 8
+  },
+  "source_only_by_source_season": {
+    "nba_archive:2004-05": 2,
+    "nba_archive:2012-13": 1,
+    "nba_archive:2019-20": 1
+  },
+  "known_ot_default_distinct_games": 589,
+  "raw_manifest_files": 6768
+}

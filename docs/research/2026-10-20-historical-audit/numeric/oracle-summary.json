@@ -1,0 +1,15 @@
+{
+  "games": 51695,
+  "team_games": 103390,
+  "seasons": 42,
+  "stored_field_checks": 827120,
+  "engine_field_checks": 930510,
+  "anomaly_fields": 75187,
+  "by_comparison_and_field": {
+    "engine_vs_oracle:home_stand_length": 25095,
+    "stored_vs_oracle:road_trip_consecutive_away": 25046,
+    "engine_vs_oracle:road_trip_consecutive_away": 25046
+  },
+  "oracle_scope": "30-day physical prior window across all game types/seasons; final priors for finals, workload priors for projections; held replay diagnostic; geometry same recorded model assumptions independently implemented; no flight itinerary claim",
+  "selfcheck": "PASS: distance, inclusive calendar boundary, home reset, away home-stand zero, neutral resolution, opener unknown rest"
+}

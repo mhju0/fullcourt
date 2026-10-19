@@ -1,0 +1,54 @@
+{
+  "source": "https://github.com/sportsdataverse/sportsdataverse-data/releases/tag/espn_nba_schedules",
+  "coverage": [
+    {
+      "season": "1993-94",
+      "source_rows": 1185,
+      "stored_rows": 1184,
+      "matched_rows": 1184,
+      "newly_date_identity_checked_rows": 77,
+      "ot_verified_rows": 1179,
+      "score_field_differences": 1,
+      "ot_differences": 50,
+      "ot_unverified_rows": 5,
+      "unmatched_stored_rows": 0
+    },
+    {
+      "season": "1994-95",
+      "source_rows": 1181,
+      "stored_rows": 1180,
+      "matched_rows": 1180,
+      "newly_date_identity_checked_rows": 73,
+      "ot_unverified_rows": 1,
+      "ot_verified_rows": 1179,
+      "ot_differences": 77,
+      "unmatched_stored_rows": 0
+    },
+    {
+      "season": "1995-96",
+      "source_rows": 1257,
+      "stored_rows": 1257,
+      "matched_rows": 1257,
+      "newly_date_identity_checked_rows": 68,
+      "ot_verified_rows": 1252,
+      "ot_differences": 67,
+      "ot_unverified_rows": 5,
+      "unmatched_stored_rows": 0
+    }
+  ],
+  "matched_rows": 3621,
+  "new_date_identity_rows": 218,
+  "new_ot_verified_rows": 3610,
+  "additional_known_ot_defaults": 194,
+  "source_only_rows": 2,
+  "score_disagreement_games": 1,
+  "original_frozen_artifacts_modified": false,
+  "combined": {
+    "date_identity_source_checked_rows": 46131,
+    "score_source_checked_rows": 44931,
+    "ot_verified_rows": 44680,
+    "completed_ot_unverified_rows": 5815,
+    "known_ot_default_distinct_games": 783,
+    "score_disagreement_distinct_games": 17
+  }
+}

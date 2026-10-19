@@ -1,0 +1,36 @@
+{
+  "authority": "https://www.nba.com/news/history-nba-champions",
+  "authority_sha256": "b05cb8fd89ae24163df571c022e2604866c12c837f4fbe5ae81bf9cd1bf2be3d",
+  "parsed_finalist_pairs": 60,
+  "all_stored_postseason_rows": 3228,
+  "mismatches": 109,
+  "by_season": {
+    "1985-86": 2,
+    "1987-88": 4,
+    "1988-89": 1,
+    "1989-90": 2,
+    "1992-93": 5,
+    "1993-94": 3,
+    "1994-95": 3,
+    "1995-96": 1,
+    "1998-99": 7,
+    "1999-00": 3,
+    "2000-01": 2,
+    "2001-02": 1,
+    "2003-04": 1,
+    "2004-05": 4,
+    "2005-06": 3,
+    "2006-07": 1,
+    "2010-11": 1,
+    "2011-12": 8,
+    "2012-13": 2,
+    "2017-18": 1,
+    "2018-19": 1,
+    "2019-20": 6,
+    "2020-21": 47
+  },
+  "coverage_statuses": {
+    "complete": 41,
+    "No completed Finals expected": 1
+  }
+}

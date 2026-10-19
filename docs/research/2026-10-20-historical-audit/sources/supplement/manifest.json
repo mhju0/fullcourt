@@ -1,0 +1,73 @@
+{
+  "original_core_manifest_sha256": "d9baa1de819cafac5e5c9188d8bac3aa9c7c7fa8ba4cc1de040de4691909d409",
+  "original_core_artifact_hashes_reverified": true,
+  "raw": [
+    {
+      "path": "docs/audit/2026-10-20-historical-audit/sources/supplement/fetch-manifest.json",
+      "bytes": 1230,
+      "sha256": "70ed990324844a9c1a120e8540a43719ac636882a73b1b9d1abb53bdeb8eb63d"
+    },
+    {
+      "path": "docs/audit/2026-10-20-historical-audit/sources/supplement/nba_schedule_1994.csv",
+      "bytes": 2074978,
+      "sha256": "19248b5e5fc18de98e8c3b2fc3b5ff90c980ff91dd0d9e5e6860d467a59f9d8f"
+    },
+    {
+      "path": "docs/audit/2026-10-20-historical-audit/sources/supplement/nba_schedule_1995.csv",
+      "bytes": 2075885,
+      "sha256": "b69ab2192e8718b888a74d713dd5f418b88a5a114ef5777e36ca8e7c7655e3d6"
+    },
+    {
+      "path": "docs/audit/2026-10-20-historical-audit/sources/supplement/nba_schedule_1996.csv",
+      "bytes": 2213803,
+      "sha256": "1b2461752acb553d8e31a6a922da9cf12aa4b866ccc50b6d3b9cbbba1e5e8ac1"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "docs/research/2026-10-20-historical-audit/sources/supplement/README.md",
+      "bytes": 5132,
+      "sha256": "b8a164105692e64d301d66033dbda33d36b05bb01adf5fe46464ac8b1da14b1b"
+    },
+    {
+      "path": "docs/research/2026-10-20-historical-audit/sources/supplement/combined-season-field-coverage.csv",
+      "bytes": 2481,
+      "sha256": "01af56dbda890fe97a0da9b04f0c09b1384772bbc1b7b401407ee2330f56369f"
+    },
+    {
+      "path": "docs/research/2026-10-20-historical-audit/sources/supplement/compare_bulk.py",
+      "bytes": 6620,
+      "sha256": "5b8c62f41f2266ec60672c3be74ec3c103736790e265179d0cd06ffc32d4587a"
+    },
+    {
+      "path": "docs/research/2026-10-20-historical-audit/sources/supplement/coverage.csv",
+      "bytes": 296,
+      "sha256": "921a6b07fe6b1ecc49347d19d260fc50f9d14d857e5f268cd6ccecaac1ddd901"
+    },
+    {
+      "path": "docs/research/2026-10-20-historical-audit/sources/supplement/field-differences.csv",
+      "bytes": 10797,
+      "sha256": "fd8c187cca05f408d7d99c0710dea03652e36ae98f6b35808fcf7b3574fa0f28"
+    },
+    {
+      "path": "docs/research/2026-10-20-historical-audit/sources/supplement/known-overtime-defaults.csv",
+      "bytes": 43511,
+      "sha256": "85898db2d1f786201a293ea4677784e226c6492aef0eb74c00d4fc246bf20fb2"
+    },
+    {
+      "path": "docs/research/2026-10-20-historical-audit/sources/supplement/matched-games.csv",
+      "bytes": 807236,
+      "sha256": "77fff8cc756f10961c542d6aa27fbfc517e3f566d81e3cef628385fb72398d1e"
+    },
+    {
+      "path": "docs/research/2026-10-20-historical-audit/sources/supplement/source-only-games.csv",
+      "bytes": 145,
+      "sha256": "96ff667567557d2d1d59eb5e252bed2483ae74e7cd8cdd9f2e684da865a0feef"
+    },
+    {
+      "path": "docs/research/2026-10-20-historical-audit/sources/supplement/summary.json",
+      "bytes": 1541,
+      "sha256": "75afe6ffe134da4776e2770bffbbd3355e5ad90e84e1547aba6671ab7872c4b5"
+    }
+  ]
+}

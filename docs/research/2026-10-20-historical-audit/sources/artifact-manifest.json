@@ -1,0 +1,97 @@
+{
+  "snapshot_reference": "../numeric/snapshot-manifest.json",
+  "raw_manifests": [
+    {
+      "path": "docs/audit/2026-10-20-historical-audit/sources/fetch-manifest.json",
+      "bytes": 25116,
+      "sha256": "cefaf883e34b3d6f80df556e8edebb93eaedc11227133c447e636f9d6e65f0b1"
+    },
+    {
+      "path": "docs/audit/2026-10-20-historical-audit/sources/cache-manifest.json",
+      "bytes": 2442305,
+      "sha256": "74ec48c568601def4c7f7fc3d8c97f86ea3d5cf5e4fc8ae252cd43616971674c"
+    },
+    {
+      "path": "docs/audit/2026-10-20-historical-audit/sources/normalized-sources.jsonl.gz",
+      "bytes": 2482613,
+      "sha256": "2b3da5b6773103fc847d00516996084344b0bc1ea897ce297669147bb6168b4f"
+    },
+    {
+      "path": "docs/audit/2026-10-20-historical-audit/sources/nba-champions.html",
+      "bytes": 334677,
+      "sha256": "b05cb8fd89ae24163df571c022e2604866c12c837f4fbe5ae81bf9cd1bf2be3d"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "docs/research/2026-10-20-historical-audit/sources/README.md",
+      "bytes": 11618,
+      "sha256": "0770406d4df558a8b0bce049f886bed6ca0e3d7a33f7f80d4bb6f46847085ba6"
+    },
+    {
+      "path": "docs/research/2026-10-20-historical-audit/sources/compare.py",
+      "bytes": 11844,
+      "sha256": "bbd7e67c15f0c0f3f2ee3a00a54d3111792ca0bdc60c0557a80042f2dbcb57d6"
+    },
+    {
+      "path": "docs/research/2026-10-20-historical-audit/sources/coverage.csv",
+      "bytes": 15673,
+      "sha256": "b9cc9660b8f9e7bbbbd126b7721ad950bf0925930da9863c5de5a7c0b8f2e7d8"
+    },
+    {
+      "path": "docs/research/2026-10-20-historical-audit/sources/fetch_sources.py",
+      "bytes": 2800,
+      "sha256": "61eef1e268c8a716d7ecea24849241bdf74a37635a70729d0db26888039493d1"
+    },
+    {
+      "path": "docs/research/2026-10-20-historical-audit/sources/field-differences.csv",
+      "bytes": 1306054,
+      "sha256": "15189dc3dc10be6331ff0344753d58b1e376388fc104f3b29dcaf65a8abc8bba"
+    },
+    {
+      "path": "docs/research/2026-10-20-historical-audit/sources/finals-summary.json",
+      "bytes": 771,
+      "sha256": "37ca4dd9148543363d97b86c6aed70e14e03490f30636b8f7bc02d5578a53d27"
+    },
+    {
+      "path": "docs/research/2026-10-20-historical-audit/sources/finals-type-coverage.csv",
+      "bytes": 1247,
+      "sha256": "4113b5813b728f1bd7569e603b9f967558660b145f7766a0c7cd7fbd292ad9c9"
+    },
+    {
+      "path": "docs/research/2026-10-20-historical-audit/sources/finals-type-mismatches.csv",
+      "bytes": 11862,
+      "sha256": "43fc6ae34bb41cc15898f3474a7736905ef1de0c7961359342edd611c1355ba2"
+    },
+    {
+      "path": "docs/research/2026-10-20-historical-audit/sources/finals_round.py",
+      "bytes": 3079,
+      "sha256": "938180d8349a6fb7bbeff1ffac44b6000c4baf48bbafd60dedd1ced6faccb48f"
+    },
+    {
+      "path": "docs/research/2026-10-20-historical-audit/sources/known-overtime-defaults.csv",
+      "bytes": 30129,
+      "sha256": "070562490461e2dc15c35734fb95e6e796d2ae5841f8cb89572d247a3d29d9ed"
+    },
+    {
+      "path": "docs/research/2026-10-20-historical-audit/sources/season-field-coverage.csv",
+      "bytes": 2481,
+      "sha256": "c317f06e7c17ca76ec1e0e3082355000dbc10d9be6a512a005ef251dab90bb16"
+    },
+    {
+      "path": "docs/research/2026-10-20-historical-audit/sources/source-only-games.csv",
+      "bytes": 616,
+      "sha256": "51946e07bd75e0888f41d941ca2a89a730296038cd2f86481108a5494ad5b374"
+    },
+    {
+      "path": "docs/research/2026-10-20-historical-audit/sources/summary.json",
+      "bytes": 938,
+      "sha256": "abb4c4d54756cb5f604a03309d3a1255d9a124a08284a36f5822ac0b6e05ac21"
+    },
+    {
+      "path": "docs/research/2026-10-20-historical-audit/sources/unmatched-stored.csv",
+      "bytes": 357794,
+      "sha256": "8855c105b822961871179763f762c1f85d6a6c6621546d7b2bbbcbdb38d3c06e"
+    }
+  ]
+}

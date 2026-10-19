@@ -71,17 +71,11 @@ Condensed 2026-10-14: D-74–D-77 shipped the footer non-affiliation notice, `/p
 Sentry `javascript-nextjs` / `michael-ju-46` uses Vercel `NEXT_PUBLIC_SENTRY_DSN` with IP storage off; UptimeRobot checks `/` and `/api/health` every five minutes. Vercel's one Hobby firewall rule limits `/api/` to 100 requests per 60 seconds per IP.
 The owner's Mac runs `~/Backups/fullcourt/backup.sh` Sundays 11:00, retaining eight backups; it needs pg_dump 18 and one restore matched counts. Instagram review fixed the Schedule pinned-column zero rule and report subject `FullCourt error or suggestion`.
 
-Source-map upload shipped in PR #171; client symbolication was verified on 2026-10-18. The owner
-chose to keep the footer notice at 12px on 2026-10-17 and upgraded Supabase to Pro for launch.
-The social preview was uploaded on
-2026-08-30, and the profile, portfolio and repo homepage moved to fullcourt.fyi on 2026-10-17.
+PR #171 shipped source-map upload; client symbolication was verified October 18. The owner kept the 12px footer notice and upgraded Supabase to Pro for launch. Social preview was uploaded August 30; profile, portfolio and repo homepage moved to fullcourt.fyi October 17.
 
 ## Phone and tablet layout (2026-10-07)
 
-Condensed 2026-10-11: PR #111 shipped D-78 phone calendar/week controls, one-line slate summary,
-scroll cues and smaller Schedule columns; D-79 removed its summary rail. The owner holds the
-private survey; row30 was amended. Stale dev CSS was checked with build/start (D-72).
-The duplicated local history was reconciled with origin; the backup branch was removed.
+Condensed 2026-10-20: PR #111 shipped D-78 phone calendar/week controls, one-line slate summary, scroll cues and smaller Schedule columns; D-79 removed its summary rail. The owner holds the amended row30 private survey. Build/start verified stale dev CSS (D-72); local history was reconciled and its backup branch removed.
 
 Open:
 
@@ -197,3 +191,7 @@ The [audit](research/2026-10-20-opening-quarter-travel-review.md) checks all ass
 ## Full assigned-season travel review — 2026-10-20
 
 The [full review](research/2026-10-20-full-season-travel-review.md) extends checks to all 1,200 assigned games / 2,400 sides. Density and API fields pass; 185 homecomings have positive road load, three Austin venues are omitted, and two stale tips are confirmed. D-120 records the owner's Mileage label choice. Deeper itinerary cases confirm some home interruptions but no validated geography rule. No app/model/DB correction occurred. Next: resolve the scorer contract, separate physical venues, correct tips and dependent scores, then re-audit Cup assignments plus championship workload context.
+
+## All-season schedule/travel audit — 2026-10-20
+
+The [all-season report](research/2026-10-20-historical-audit/README.md) covers 51,695 games / 103,390 scores across 42 stored seasons. Replay and independent density/rest/Mileage arithmetic pass; longstanding homecoming semantics affect 6,125 published scores under a one-change diagnostic (61.1889%→61.1417%). External checks identify 783 missing OT inputs (including the separately frozen bulk supplement), 109 postseason sublabel defects and a qualified 167-game venue register. Early source coverage, actual airports/home stops and combined correction impact remain incomplete. No app/model/DB/generated-data correction was applied. Next: settle homecoming/physical-venue contracts, adjudicate and prepare a reversible input correction, review predictions/artifacts together, then obtain applicable production-write approval. Audit completion is not repaired production.

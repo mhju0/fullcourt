@@ -1,0 +1,104 @@
+{
+  "rawFiles": [
+    {
+      "file": "docs/audit/2026-10-20-historical-audit/snapshot/diagnostic-impacts.jsonl.gz",
+      "bytes": 176809,
+      "sha256": "1217649e9abeb5ab4ed0877209f8ae13945a546792c7206f5718ee0c9159b3f3"
+    },
+    {
+      "file": "docs/audit/2026-10-20-historical-audit/snapshot/duplicates.jsonl.gz",
+      "bytes": 21,
+      "sha256": "744257bab081bf2a026c9cd31883aee4c654845552b10a025504a63388a18ade"
+    },
+    {
+      "file": "docs/audit/2026-10-20-historical-audit/snapshot/games.jsonl.gz",
+      "bytes": 1107006,
+      "sha256": "12f908697b1a4944bd6104ac2f544f37a6c71f6fd1cb6d20dbe50dab83717fb6"
+    },
+    {
+      "file": "docs/audit/2026-10-20-historical-audit/snapshot/latestTies.jsonl.gz",
+      "bytes": 21,
+      "sha256": "744257bab081bf2a026c9cd31883aee4c654845552b10a025504a63388a18ade"
+    },
+    {
+      "file": "docs/audit/2026-10-20-historical-audit/snapshot/metadata.jsonl.gz",
+      "bytes": 196,
+      "sha256": "65e467ceff9a80446c81158c1987328be11646ac9cb60ad32ead355daca1a4f9"
+    },
+    {
+      "file": "docs/audit/2026-10-20-historical-audit/snapshot/oracle-anomalies.jsonl.gz",
+      "bytes": 490809,
+      "sha256": "99a6c9f37097649bed27b658886278e1743629f1f8fa02dec8390620e2499af9"
+    },
+    {
+      "file": "docs/audit/2026-10-20-historical-audit/snapshot/oracle-sides.jsonl.gz",
+      "bytes": 1874020,
+      "sha256": "532b1f8f687309571006356c335bac4d634b2f2652598bfc7cd3eec8fe7f5515"
+    },
+    {
+      "file": "docs/audit/2026-10-20-historical-audit/snapshot/replay-anomalies.jsonl.gz",
+      "bytes": 21,
+      "sha256": "744257bab081bf2a026c9cd31883aee4c654845552b10a025504a63388a18ade"
+    },
+    {
+      "file": "docs/audit/2026-10-20-historical-audit/snapshot/replay-failures.jsonl.gz",
+      "bytes": 21,
+      "sha256": "744257bab081bf2a026c9cd31883aee4c654845552b10a025504a63388a18ade"
+    },
+    {
+      "file": "docs/audit/2026-10-20-historical-audit/snapshot/replay-games.jsonl.gz",
+      "bytes": 1219250,
+      "sha256": "a5116b3f2509ae9c896c1e795e2faa3035921f5b6382e68fa8ef5de8c20f3e14"
+    },
+    {
+      "file": "docs/audit/2026-10-20-historical-audit/snapshot/replay-sides.jsonl.gz",
+      "bytes": 15071140,
+      "sha256": "e66aab86f85c5296100f5f7013e7695c8cd592b1df4ee320f895670c18be801e"
+    },
+    {
+      "file": "docs/audit/2026-10-20-historical-audit/snapshot/scores.jsonl.gz",
+      "bytes": 3402040,
+      "sha256": "6452181280677e3ef74df450722f1fb875b8104135c34c8b2f569ae329d5853f"
+    },
+    {
+      "file": "docs/audit/2026-10-20-historical-audit/snapshot/teams.jsonl.gz",
+      "bytes": 1083,
+      "sha256": "5a32dfb24aebd010950acb01e124d8ff5adec3cf9fb2256d5c2ed71bb53dac34"
+    },
+    {
+      "file": "docs/audit/2026-10-20-historical-audit/snapshot/totals.jsonl.gz",
+      "bytes": 71,
+      "sha256": "5ac040989e103b46a56fbe38c046574c77e433b7ba65629dc48472c3e43878ff"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "file": "src/lib/fatigue.ts",
+      "sha256": "f7d3d1305144d40e594416dbc6839d034a70837da77f00eef2d62e4dbbcaef0e"
+    },
+    {
+      "file": "src/lib/fatigue-recent-games.ts",
+      "sha256": "1ac7977f0d33b7aff8770e580695bb18a6986d52e8c638a6c628c5a38ff49f42"
+    },
+    {
+      "file": "src/lib/db/queries.ts",
+      "sha256": "500c350c394f72cfbf095d84bc90e91cb7bfccc92f7f7d66f5a44b6090a9918b"
+    },
+    {
+      "file": "src/lib/team-era-coordinates.ts",
+      "sha256": "cf64c8fe80bc2d7d4341ae211a4c62a4cd855a4c232e8f6945e7a36951fad785"
+    },
+    {
+      "file": "src/lib/neutral-venues.ts",
+      "sha256": "306856f354cad2e8f554a3bbea3bbe50e43bdcfa49620d3e6e83748cf0e98725"
+    },
+    {
+      "file": "src/lib/season-regime.ts",
+      "sha256": "88f2c5bb85b0e4dfc13920b1f584d88ad25f6b35bf1a73bdb45e080f85fff5ef"
+    },
+    {
+      "file": "src/lib/rest-advantage-evidence.ts",
+      "sha256": "4462c5101181d5d43d89904993eac508216eeafbfe6af6b36c78b5a8789b03e1"
+    }
+  ]
+}

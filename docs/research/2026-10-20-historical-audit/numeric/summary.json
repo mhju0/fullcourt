@@ -1,0 +1,113 @@
+{
+  "seasons": 42,
+  "season_min": "1985-86",
+  "season_max": "2026-27",
+  "all_games": 51695,
+  "all_team_games": 103390,
+  "published_outcome_games": 47112,
+  "home_venue_baseline_pct": 59.92952963151639,
+  "road_venue_baseline_pct": 40.07047036848361,
+  "current_engine": {
+    "home": {
+      "games": 27420,
+      "wins": 16778,
+      "win_rate_pct": 61.18891320204231
+    },
+    "away": {
+      "games": 11494,
+      "wins": 4867,
+      "win_rate_pct": 42.34383156429441
+    }
+  },
+  "diagnostic_home_streak_zero": {
+    "home": {
+      "games": 28151,
+      "wins": 17212,
+      "win_rate_pct": 61.141700117224964
+    },
+    "away": {
+      "games": 10648,
+      "wins": 4522,
+      "win_rate_pct": 42.46806912096168
+    }
+  },
+  "all_games_positive_home_score_reductions": 6612,
+  "published_positive_home_score_reductions": 6125,
+  "published_side_changes": 1484,
+  "published_size_changes": 2201,
+  "published_threshold3_changes": 597,
+  "published_threshold5_changes": 219,
+  "max_diagnostic_home_score_reduction": {
+    "game_id": 20792,
+    "season": "2010-11",
+    "date": "2011-02-26",
+    "status": "final",
+    "game_type": "regular",
+    "neutral_site": false,
+    "publishable": true,
+    "decidable": true,
+    "home_won": false,
+    "stored_gap": -6.04,
+    "replay_gap": -6.04,
+    "zero_home_streak_gap": -1.63,
+    "home_score": 11.4,
+    "home_streak": 11,
+    "home_road_load": 3.06,
+    "diagnostic_home_score": 6.99,
+    "diagnostic_score_change": 4.41,
+    "stored_side": "away",
+    "replay_side": "away",
+    "diagnostic_side": "away",
+    "replay_size": "large",
+    "diagnostic_size": "small"
+  },
+  "oracle_anomaly_fingerprint_sha256": "1c25e3f8049463357a5020242273fc1314ac4cf79a537338388b694c1f44d124",
+  "oracle_anomaly_counts": {
+    "engine_vs_oracle:home_stand_length": 25095,
+    "stored_vs_oracle:road_trip_consecutive_away": 25046,
+    "engine_vs_oracle:road_trip_consecutive_away": 25046
+  },
+  "recent10_seasons": [
+    "2016-17",
+    "2017-18",
+    "2018-19",
+    "2019-20",
+    "2020-21",
+    "2021-22",
+    "2022-23",
+    "2023-24",
+    "2024-25",
+    "2025-26"
+  ],
+  "headline_selection_transitions": [
+    {
+      "period": "all_history",
+      "rested_side": "home",
+      "bucket": "all_calls",
+      "before": 27420,
+      "after": 28151,
+      "retained": 27420,
+      "added": 731,
+      "lost": 0,
+      "net": 731
+    },
+    {
+      "period": "recent10",
+      "rested_side": "home",
+      "bucket": "all_calls",
+      "before": 6386,
+      "after": 6605,
+      "retained": 6386,
+      "added": 219,
+      "lost": 0,
+      "net": 219
+    }
+  ],
+  "canonical_generated_facts_reconciliation": {
+    "eligible_games": true,
+    "called_games": true,
+    "called_wins": true,
+    "large_games": true,
+    "large_wins": true
+  }
+}
