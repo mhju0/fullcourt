@@ -11,13 +11,11 @@ The live surfaces read `games`, `fatigue_scores` and `predictions` because those
 move daily. Nothing here does, so a CDN-cacheable asset is both simpler and
 faster than a round trip to Postgres for numbers that cannot have changed.
 
-Rest is the player's own, counted from the games he actually played, so a night
-off for load management is never credited to him as rest. That is also why the
-Orlando bubble has to be filtered out here rather than left to the caller: a
-player's first bubble game sits about 141 days after his last one before the
-suspension, and counting that as rest would put the cleanest-looking rested
-sample in the file into an arm that a global pause produced. See
-ABNORMAL_STRETCHES in scripts/analyze_player_shooting.py.
+Rest uses covered competitive NBA appearances, including zero-attempt games.
+A player who sat out can have a longer personal gap than his team; the data does
+not establish why he sat or how much he recovered. Uncertain participation is
+excluded from affected rest arms. Bubble games can supply history but never
+shooting outcomes; the unchanged 30-day ceiling excludes long interruptions.
 
 Shape (columnar arrays; ~4x smaller than a list of objects):
 
@@ -50,13 +48,11 @@ import psycopg2
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from analyze_player_shooting import (  # noqa: E402
-    annotate,
     efg,
     efg_se,
     is_rested,
     load_birthdays,
-    load_game_dates,
-    load_player_games,
+    load_annotated_player_games,
 )
 
 from season_publication import require_player_season_publication, SeasonPublicationHeld  # noqa: E402
@@ -91,13 +87,11 @@ def main() -> int:
         print("DATABASE_URL not set", file=sys.stderr)
         return 1
 
-    rows = load_player_games()
     birth = load_birthdays()
     conn = psycopg2.connect(dsn)
     conn.set_session(readonly=True, autocommit=True)
     try:
-        gdate = load_game_dates(conn)
-        rows = annotate(rows, gdate, birth)
+        rows, coverage = load_annotated_player_games(conn, birth)
         require_player_season_publication(conn, (r["season"] for r in rows))
     except SeasonPublicationHeld as error:
         logging.error("%s", error)
@@ -194,6 +188,10 @@ def main() -> int:
     shrunk.sort()
 
     payload = {
+        "version": "1.0.4",
+        "appearanceCoverage": coverage,
+        "empiricalBayes": {"mean": mean, "tau": math.sqrt(tau2), "eligiblePlayers": len(raw),
+                           "minimumArmFga": CAREER_MIN_ARM},
         "generated": date.today().isoformat(),
         "names": names,
         "teams": teams,

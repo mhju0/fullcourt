@@ -28,15 +28,17 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import logging
 import math
 import os
 import sys
-from bisect import bisect_left
 from collections import defaultdict
 from datetime import date, datetime
 from pathlib import Path
 
 import psycopg2
+
+from player_appearance_history import annotate_outcomes, load_game_context, load_history, prove_history_windows
 
 ROOT = Path(__file__).resolve().parent.parent
 CACHE = ROOT / "ml" / "data" / "shooting"
@@ -199,37 +201,29 @@ def load_game_dates(conn) -> dict[str, date]:
 
 # ── deriving the player's own situation ──────────────────────────────────────
 
-def annotate(rows: list[dict], gdate: dict[str, date], birth: dict[str, date]) -> list[dict]:
-    """Attach each row's personal rest, personal 7-day load, and age at tip-off.
-
-    Personal, not team: the player's previous PLAYED game is what his legs know about.
-    """
-    for r in rows:
-        r["date"] = gdate.get(r["gid"])
-    rows = [r for r in rows if r["date"] is not None]
-
-    by_player: dict[str, list[dict]] = defaultdict(list)
-    for r in rows:
-        by_player[r["pid"]].append(r)
-
-    out = []
-    for pid, games in by_player.items():
-        games.sort(key=lambda r: r["date"])
-        days = [g["date"].toordinal() for g in games]
-        bd = birth.get(pid)
-        for i, g in enumerate(games):
-            g["rest"] = None if i == 0 else days[i] - days[i - 1]
-            # games the player himself played in the 7 days before this one
-            lo = bisect_left(days, days[i] - 7, 0, i)
-            g["load7"] = i - lo
-            g["min7"] = sum(games[j]["min"] for j in range(lo, i))
-            if bd:
-                a = g["date"].year - bd.year - ((g["date"].month, g["date"].day) < (bd.month, bd.day))
-                g["age"] = a
-            else:
-                g["age"] = None
-            out.append(g)
-    return out
+def load_annotated_player_games(conn, birth: dict[str, date]) -> tuple[list[dict], dict]:
+    target_dates = load_game_dates(conn)
+    outcomes = [dict(row, date=target_dates[row["gid"]]) for row in load_player_games()
+                if row["gid"] in target_dates]
+    by_player = defaultdict(list)
+    for row in outcomes:
+        by_player[row["pid"]].append(row)
+    # Preserve existing columnar player/team indices while replacing only the history.
+    outcomes = [row for games in by_player.values() for row in sorted(games, key=lambda item: item["date"])]
+    history_dates = load_game_context(conn)
+    history, sources = load_history(CACHE, history_dates)
+    window_proof = prove_history_windows(outcomes, history_dates, set(sources["coveredGameIds"]))
+    rows, audit = annotate_outcomes(outcomes, history, birth)
+    audit["sourceCoverage"] = sources
+    audit["missingHistoryWindowProof"] = window_proof
+    audit["counts"]["restUncertainFga"] = sum(row["fga"] for row in rows if row["restUncertain"])
+    audit_dir = ROOT / "docs/audit/player-rest-appearance"
+    audit_dir.mkdir(parents=True, exist_ok=True)
+    (audit_dir / "annotation-audit.json").write_text(json.dumps(audit, indent=2) + "\n")
+    coverage = {"dataVersion": "1.0.4", "history": "covered competitive NBA appearances; preseason/exhibition excluded",
+                "contextManifest": "src/data/player-appearance-context.json", **audit["counts"]}
+    logging.info("appearance coverage: %s", coverage)
+    return rows, coverage
 
 
 # ── contrasts ────────────────────────────────────────────────────────────────
@@ -301,7 +295,7 @@ def _arm(rows) -> tuple[int, int, int]:
     return fgm, fga, fg3m
 
 
-def export_players(rows, name_of, birth, gdate, grand_rest: float, root: Path) -> None:
+def export_players(rows, name_of, grand_rest: float, root: Path) -> None:
     """Write one JSON row per player for the browsable database."""
     by_pid: dict[str, list[dict]] = defaultdict(list)
     for r in rows:
@@ -309,8 +303,8 @@ def export_players(rows, name_of, birth, gdate, grand_rest: float, root: Path) -
 
     b2b = lambda r: r["rest"] == 1
     rested = is_rested
-    busy = lambda r: r["load7"] >= 3
-    cold = lambda r: r["load7"] <= 1
+    busy = lambda r: r["load7"] is not None and r["load7"] >= 3
+    cold = lambda r: r["load7"] is not None and r["load7"] <= 1
 
     raw: list[dict] = []
     for pid, gs in by_pid.items():
@@ -388,9 +382,6 @@ def main() -> int:
         return 1
 
     print("loading player box scores...")
-    rows = load_player_games()
-    print(f"  {len(rows):,} player-games with at least one attempt")
-
     print("loading birthdays...")
     birth = load_birthdays()
     print(f"  {len(birth):,} players with a birth date")
@@ -398,12 +389,9 @@ def main() -> int:
     conn = psycopg2.connect(dsn)
     conn.set_session(readonly=True, autocommit=True)
     try:
-        gdate = load_game_dates(conn)
+        rows, coverage = load_annotated_player_games(conn, birth)
     finally:
         conn.close()
-    print(f"  {len(gdate):,} game dates from the database")
-
-    rows = annotate(rows, gdate, birth)
     print(f"  {len(rows):,} annotated with personal rest, 7-day load and age")
 
     lines: list[str] = []
@@ -414,8 +402,8 @@ def main() -> int:
 
     b2b = lambda r: r["rest"] == 1
     rested = is_rested
-    busy = lambda r: r["load7"] >= 3
-    cold = lambda r: r["load7"] <= 1
+    busy = lambda r: r["load7"] is not None and r["load7"] >= 3
+    cold = lambda r: r["load7"] is not None and r["load7"] <= 1
 
     emit("# Shooting by Rest — player level")
     emit()
@@ -424,7 +412,9 @@ def main() -> int:
     emit()
     emit(f"- **{len(rows):,}** player-games, 1996-97 → 2025-26, regular season, "
          f"at least one field-goal attempt")
-    emit(f"- Rest and load are the **player's own**, counted from the games he actually played")
+    emit("- Rest and load use confirmed competitive NBA appearances, including zero-attempt games and Cup finals; preseason/exhibition excluded")
+    emit(f"- Uncertain history: {coverage['restUncertain']:,} outcome rows excluded from rest arms; "
+         f"{coverage['load7Uncertain']:,} excluded from load groups. Shooting outcome rows and totals are retained.")
     emit(f"- Every contrast is within a player-season, then pooled inverse-variance")
     emit(f"- A player-season needs ≥{args.min_fga} attempts in **both** arms to contribute")
     emit()
@@ -537,14 +527,14 @@ def main() -> int:
     # Powers the browsable player database. Deliberately a LOOKUP, not a ranking:
     # once nothing is being claimed league-wide, the multiple-comparisons problem
     # that makes a leaderboard dishonest simply does not arise.
-    export_players(rows, name_of, birth, gdate, grand, ROOT)
+    export_players(rows, name_of, grand, ROOT)
 
     emit("## What this does and does not remove")
     emit()
-    emit("Comparing a player to himself removes roster quality, load management and trades: "
-         "if he did not play, he contributes nothing to either arm. It does **not** remove "
-         "opponent strength, venue, or the possibility that a coach shortens a tired star's "
-         "minutes in ways that change his shot mix.")
+    emit("Comparing a player to himself reduces differences between player identities. "
+         "It does not remove injuries, selection into playing, load-management decisions, "
+         "trades, opponent strength, venue, or changes in minutes and shot difficulty. "
+         "Games with no attempts can supply history without contributing shooting outcomes.")
     emit()
 
     REPORT.mkdir(parents=True, exist_ok=True)
