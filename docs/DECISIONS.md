@@ -1718,3 +1718,17 @@ not the strongest three across the season or a re-sort of a strongest-only reser
 Filter before limiting; order by Eastern game date, actual tip-off within a date, then stable
 game ID. Unknown tip times follow known times on the same date. A small chronological reserve
 allows the strip to replace games after tip-off without showing already-started games.
+
+
+## D-117 — Official v1.0.0 release and version baseline (2026-10-19)
+
+The owner designated October 19, 2026 as FullCourt's official release date and the
+current website as v1.0.0. This supersedes the earlier requirement to delay the
+announcement and v1.0.0 tag until a verified completed slate. That operational
+verification remains outstanding; it is no longer a release-designation gate.
+
+`package.json`, the root CHANGELOG.md, immutable version tags, and GitHub releases
+record subsequent versions. Increment the version for each production release;
+patch for fixes, minor for compatible features, major for breaking changes.
+The shipped production baseline is `114617dc91927382c804a40aff0a54d81461476a`;
+the release tag includes its version/documentation record without product changes.

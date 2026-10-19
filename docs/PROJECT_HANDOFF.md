@@ -6,20 +6,12 @@ FullCourt studies NBA rest, travel, schedule density, and outcomes. The homepage
 rest and schedule findings; Games, Season Report, Schedule Edge, and Explore are the primary
 navigation. Explore contains the other basketball studies. There are no accounts or persisted
 personal preferences; exploration state is shareable through URLs and browser history.
-Production: https://fullcourt.fyi. Condensed release context, 2026-10-19:
-- Redesign PR #84 (`776683e`) and Officiating PR #85 (`34b8961`) established the current product;
-  [release review](design/redesign-release-review.md), Git and Vercel retain delivery evidence.
-- Next.js/ESLint 16.4.1 shipped in PR #174; Sharp 0.35.5 addresses the dependency advisory.
-  The homepage hero keeps its headline, description and primary action (D-67).
-- Games uses Season → Month → Date and tip-off ordering (D-79). Shared filters use 44px targets
-  and 16px text; report sections separate measured results and interpretation.
-  [Control audit](design/control-and-section-audit.md) and [polish review](design/seven-polish-fixes-review.md) retain detail.
-- D-69 defaults Playoff Rest/Expected Shot Value to their latest usable publication; selected
-  views remain shareable. Data Status separates coverage, refresh evidence and connectivity.
-- D-70 adds annual Home-court history and Season Report's selected-season baseline. Ordinary
-  rested-home rates retain the 100-game display gate; ongoing seasons have explicit labels.
-  [Research](research/2026-09-11-home-advantage-trend.md) and [review](design/home-court-study-review.md) retain the original evidence.
-- [Officiating archive evidence](research/2026-09-09-l2m-archive.md) records the publication's limits.
+Production: https://fullcourt.fyi. Release history through 2026-10-19 is condensed here;
+Git, CHANGELOG.md and dated reviews hold exact delivery evidence. PRs #84/#85 established
+the current redesign; #174 shipped Next.js/ESLint 16.4.1 and Sharp 0.35.5. D-69/D-70
+established publication-aware defaults and venue-baseline history. Games navigation follows
+D-79; shared filters use 44px targets and 16px text. The hero follows D-67. Ordinary
+rested-home rates retain the 100-game gate; Officiating's archive limits remain documented.
 ## Architecture and safeguards
 - Next.js serves pages and API routes. Database reads use Drizzle/postgres-js against Supabase
   PostgreSQL. Offline Python analyses also publish committed artifacts.
@@ -70,7 +62,8 @@ Still open from those entries:
 - Keep `Find a page` in the footer: it is the visible entry to the page finder.
 - Overtime before 2002-03 is not stored. Three NBA Cup finals and the 2020 play-in game are
   absent by design.
-- Owner actions: tag `v1.0.0` at launch, and announce only after a verified live pipeline run.
+- Historical launch prerequisite superseded by D-117: October 19, 2026 is the official
+  v1.0.0 release date; completed-slate verification remains operational follow-up.
 
 ## Summary of the launch-readiness entries, 2026-10-05 and 2026-10-06
 
@@ -199,3 +192,13 @@ shared guide to 24px versus 18px elsewhere, and its flex links split inline seas
 The bounded follow-up fixes the shared heading token explicitly and makes each link's
 text one wrapping flex item. No readiness or publication logic changes. Delivery is
 tracked by the follow-up PR and matching deployment; opening-night/source checks remain.
+
+
+## Official v1.0.0 release — 2026-10-19
+
+The owner declared October 19, 2026 the official release date and the current site
+v1.0.0 (D-117), superseding the previous completed-slate prerequisite. Version and
+release history now start at 1.0.0 in package.json and CHANGELOG.md; future production
+releases increment the version and receive immutable tags/GitHub release records.
+The product baseline is 114617d. Release designation does not mark the remaining
+opening-night, physical-device or source-publication checks complete.

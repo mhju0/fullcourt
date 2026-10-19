@@ -14,6 +14,13 @@ Evidence order: source/tests → Git → docs/DECISIONS.md → docs/ROADMAP.md �
 - FullCourt is the product; rest advantage is the metric. Preserve rest-advantage identifiers when changing branding.
 - Generated analytics artifacts in src/data/, public/data/, and the model-facts files must stay aligned with their producing scripts and pinning tests; do not hand-edit published figures. shadcn is a build dependency: globals.css imports shadcn/tailwind.css.
 
+## Release versioning
+
+FullCourt v1.0.0 officially released on October 19, 2026 (D-117). For each subsequent
+production release, bump package.json, add a dated CHANGELOG.md entry, and create a
+matching immutable version tag and GitHub release after verification. See CHANGELOG.md
+for patch/minor/major conventions. Do not move published release tags.
+
 ## Agent handoff
 
 - At session start, read `docs/PROJECT_HANDOFF.md`.
