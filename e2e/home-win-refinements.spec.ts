@@ -43,6 +43,20 @@ test("Model Results shows annual and game-weighted five-season history without a
   }
   await expect(chart.getByText("Five-season average: 52.9%", { exact: true })).toBeVisible();
   await expect(chart.getByText("500 wins / 1,000 games", { exact: true })).toBeVisible();
-  await page.setViewportSize({ width: 390, height: 844 });
-  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  for (const width of [390, 1280]) {
+    await page.setViewportSize({ width, height: 844 });
+    await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    await expect(chart.getByRole("application")).toBeFocused();
+    await chart.getByRole("application").press("ArrowRight");
+    await expect(chart.locator(".recharts-tooltip-wrapper").getByText("2018-19", { exact: true })).toBeVisible();
+  }
+  const otherControl = page.getByText("How the line is calculated", { exact: true });
+  for (const width of [390, 1280]) {
+    await chart.getByRole("application").hover({ position: { x: 140, y: 100 } });
+    await otherControl.focus();
+    await expect(otherControl).toBeFocused();
+    await page.setViewportSize({ width, height: 844 });
+    await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    await expect(otherControl).toBeFocused();
+  }
 });

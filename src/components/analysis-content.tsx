@@ -1,7 +1,7 @@
 "use client"
 
 import { SeasonSelector } from "@/components/season-selector";
-import { useCallback, useRef, useState } from "react"
+import { useCallback, useLayoutEffect, useRef, useState } from "react"
 import {
   BarChart,
   Bar,
@@ -413,6 +413,32 @@ function HomeCourtBySeasonChart({
 }: {
   seasonWinRates: AnalysisResponse["seasonWinRates"]
 }) {
+  const chartRef = useRef<HTMLDivElement>(null)
+  const lastSize = useRef({ width: 0, height: 0 })
+  const restoreFocus = useRef(false)
+  const [plotSize, setPlotSize] = useState({ width: 0, height: 0 })
+  const resizePlot = useCallback((width: number, height: number) => {
+    const next = { width: Math.round(width), height: Math.round(height) }
+    if (next.width <= 0 || next.height <= 0 ||
+      (next.width === lastSize.current.width && next.height === lastSize.current.height)) return
+    restoreFocus.current = chartRef.current?.contains(document.activeElement) ?? false
+    lastSize.current = next
+    setPlotSize(next)
+  }, [])
+  const restoreChartFocus = useCallback((node: SVGSVGElement | null) => {
+    if (!node || !restoreFocus.current) return
+    restoreFocus.current = false
+    const active = document.activeElement
+    if (active && active !== document.body && !chartRef.current?.contains(active)) return
+    node.focus({ preventScroll: true })
+  }, [])
+  useLayoutEffect(() => {
+    const cancelFocusRestore = (event: FocusEvent) => {
+      if (!chartRef.current?.contains(event.target as Node)) restoreFocus.current = false
+    }
+    document.addEventListener("focusin", cancelFocusRestore)
+    return () => document.removeEventListener("focusin", cancelFocusRestore)
+  }, [])
   const chartData = buildHomeWinTrend(seasonWinRates)
   const values = chartData.flatMap((row) => [row.homeWinPct, row.rollingHomeWinPct].filter((value): value is number => value !== null))
   const min = values.length ? Math.floor(Math.min(...values) / 5) * 5 : 50
@@ -421,14 +447,15 @@ function HomeCourtBySeasonChart({
   for (let v = min; v <= max; v += 5) ticks.push(v)
 
   return (
-    <div className="mt-4 h-72 min-w-0" data-testid="home-win-trend">
+    <div ref={chartRef} className="mt-4 h-72 min-w-0" data-testid="home-win-trend">
       {values.length === 0 ? (
         <div className="mono flex h-full items-center justify-center" style={termDashedEmptyStyle}>
           NO COMPLETE SEASON YET
         </div>
       ) : (
-        <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={chartData} margin={{ top: 12, right: 12, left: 0, bottom: 8 }}>
+        <ResponsiveContainer width="100%" height="100%" onResize={resizePlot}>
+          {/* Recharts retains keyboard coordinates across resize; reset only the transient chart inspection. */}
+          <LineChart key={`${plotSize.width}:${plotSize.height}`} ref={restoreChartFocus} data={chartData} margin={{ top: 12, right: 12, left: 0, bottom: 8 }}>
             <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="var(--term-border)" />
             <XAxis
               dataKey="season"
