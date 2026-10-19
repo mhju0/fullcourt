@@ -154,44 +154,16 @@ figures and ratified model coefficients did not change. Opening-night pipeline o
 human/device checks, December fixtures, canonical-ID re-key and the November 5 plan review
 remain open as listed above. Git/provider state takes precedence over these historical notes.
 
-## Approved stacked comparison and release — 2026-10-19
+## Delivery summary — 2026-10-19
 
-The owner approved mock `0358ade` and authorized PR #176's merge and deployment. The D-114
-amendment replaces open/closed markers with filled circles and one general sample-size note.
-Season/Home stay left; 0.5+ and optional 5+ records each have a same-season comparison on
-the right. Counts, ordinary gating, missing-data handling and the model remain unchanged.
-The [review](design/2026-10-19-chart-toggle-table-a-review.md), PR #176 and its matching Vercel
-deployment are the release evidence; check Git/Vercel for the final merge SHA and readiness.
-Physical-device, human screen-reader and first-played-slate checks remain open.
-
-## Quiet season guidance implementation — 2026-10-19
-
-Owner approved the simplified mock and asked for consistent spacing, borders and readable
-type. D-115 keeps the all-teams-ten-finals rule internal, with a common awaiting guide,
-previous-publication links and qualified schedule-derived dates. New read-only metadata does
-not gate the shared workload API. Per-study coverage remains independent; the Shooting
-producer refuses early current-season pooling before replacing its artifact. Explicit new
-season collection is supported, but no new provider data was fetched or published.
-D-116 selects the earliest three large rested-home gaps and preserves the compact Games strip.
-Homepage period metadata moves below the finding explanation. Wider history-window work is
-deferred. Implementation is isolated on `codex/season-guidance`; the dated review records
-checks and release state. Production is unchanged until an explicit release record says so.
-Delivery is tracked by [PR #177](https://github.com/mhju0/fullcourt/pull/177) and the
-matching Vercel deployment. Code head `763bfe4` received independent approval; full 1,270
-unit tests and the final 12 selected built-route cases passed. Provider CI/preview/production
-state is checked against the delivered SHA, not inferred from this pre-merge entry. Next
-operational work is opening-night validation, source publication and canonical-ID re-key.
-
-## Live consistency correction — 2026-10-19
-
-PR #177 merged as `83c2cfd`; required PR/post-merge CI and Vercel production passed.
-Public guides, homepage period placement and Nov 5/9/11 chronological edge cards were
-verified. A final live check measured Officiating's unlayered `.page h2` overriding the
-shared guide to 24px versus 18px elsewhere, and its flex links split inline season spans.
-The bounded follow-up fixes the shared heading token explicitly and makes each link's
-text one wrapping flex item. No readiness or publication logic changes. Delivery is
-tracked by the follow-up PR and matching deployment; opening-night/source checks remain.
-
+PR #176 delivered the approved stacked Home-court comparison: filled circles, one
+general sample note, fixed Season/Home left and paired 0.5+/optional 5+ records
+right. PR #177 delivered quiet availability guides, internal season-readiness
+checks, publication-specific prior-season links, chronological upcoming large
+rested-home edges, and homepage period placement. PR #178 corrected Officiating's
+guide heading and inline-link wrapping. Their dated reviews and exact Git/Vercel
+records retain acceptance evidence. Opening-night, physical-device, source
+publication and canonical-ID checks remain operational follow-ups.
 
 ## Official v1.0.0 release — 2026-10-19
 
@@ -210,3 +182,14 @@ only its Awaiting results view until usable publication, with explicit prior-sea
 navigation. Historical tables remain available by selection; no automatic older
 table beneath the notice. Readiness and career guards remain. Delivery/verification
 are recorded by the patch PR, version tag and GitHub release.
+
+
+## Approved readability refinements — 2026-10-19
+
+D-119 records owner approval of mock controls B, trend A, playoffs A and team
+records A from prototype 0719987. v1.0.2 removes the duplicate chart dropdown, adds
+a pooled five-completed-season home-rate average, separates historical picks from
+known-results playoff fits, and adds a league-centered team gap key. Team gap
+rounding uses original counts. Ratified coefficients, cohorts and generated data
+remain unchanged. Exact PR, review, checks and matching deployment own release
+acceptance; the prototype is retained separately as design evidence.

@@ -30,8 +30,9 @@ test("Model Results shows annual and game-weighted five-season history without a
   await expect(chart.locator(".recharts-line")).toHaveCount(2);
   await expect(chart.locator('path.recharts-line-curve[stroke-dasharray="6 4"]')).toHaveCount(1);
   await expect(chart.locator(".recharts-reference-line")).toHaveCount(0);
-  await expect(page.getByLabel("Home win rate chart legend")).toContainText("Annual home win rate");
-  await expect(page.getByLabel("Home win rate chart legend")).toContainText("Trailing five-season rate");
+  await expect(page.getByLabel("Home win rate chart legend")).toContainText("Each season");
+  await expect(page.getByLabel("Home win rate chart legend")).toContainText("Five-season average");
+  await page.getByText("How the line is calculated", { exact: true }).click();
   await expect(page.getByText(/The first four seasons have no rolling value/)).toBeVisible();
   await expect(page.getByText(/DASHED LINE: .*ACROSS EVERY SEASON/)).toHaveCount(0);
   await chart.getByRole("application").focus();
@@ -40,7 +41,7 @@ test("Model Results shows annual and game-weighted five-season history without a
     await page.keyboard.press("ArrowRight");
     await expect(chart.locator(".recharts-tooltip-wrapper").getByText(season.season, { exact: true })).toBeVisible();
   }
-  await expect(chart.getByText("Trailing five seasons: 52.9%", { exact: true })).toBeVisible();
+  await expect(chart.getByText("Five-season average: 52.9%", { exact: true })).toBeVisible();
   await expect(chart.getByText("500 wins / 1,000 games", { exact: true })).toBeVisible();
   await page.setViewportSize({ width: 390, height: 844 });
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);

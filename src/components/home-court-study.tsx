@@ -236,7 +236,7 @@ function HomeCourtChart({ rows, selected, onSelect, showLarge }: { rows: readonl
 
   return (
     <div className={styles.chartFrame} ref={frameRef}>
-      <p id="home-court-chart-help" className={`mb-3 text-sm ${muted}`}>Hover or tap to inspect a season. With the chart focused, use ← / → for adjacent seasons, or Home / End for the first / latest season.</p>
+      <p id="home-court-chart-help" className={`mb-3 text-[15px] ${muted}`}>Hover or tap to inspect a season. With the chart focused, use ← / → for adjacent seasons, or Home / End for the first / latest season.</p>
       <svg data-testid="home-court-chart" className={styles.chart} viewBox={`0 0 ${width} ${VIEW.height}`} role="group" aria-label={`Home win rate and the rested team at home's win rate by NBA season${showLarge ? ", including raw 5+ rest gaps" : ""}`} onPointerMove={inspectPointer} onClick={inspectPointer}>
         {ticks.map((tick) => (
           <g key={tick} aria-hidden="true">

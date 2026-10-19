@@ -1,5 +1,16 @@
 # Release history
 
+## 1.0.2 — 2026-10-19
+
+- Home-court history uses direct hover, tap and keyboard season inspection, with the
+  large-gap toggle retained and the duplicate season dropdown removed.
+- Model Results adds a game-weighted five-season home win-rate average beside annual
+  results, replacing the flat historical-average line and its confusing caption.
+- Playoff series lead with the historical model pick; the fit using known results is
+  available inside details with its retrospective limits explained.
+- Season Report adds a league-centered color key and plain labels to team home/rest
+  gaps. Team differences are calculated from wins and games before rounding.
+
 ## 1.0.1 — 2026-10-19
 
 Player Shooting now opens the current season and shows “Awaiting results” when

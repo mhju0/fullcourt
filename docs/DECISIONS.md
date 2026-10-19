@@ -1743,3 +1743,38 @@ the selector and a link to the actual prior publication. Explicit historical vie
 remain usable and do not show a current-season notice. Preserve publication and
 readiness as separate requirements, career-pooling safeguards, URL/Back behavior,
 and recoverable errors. This is the v1.0.1 patch following the v1.0.0 baseline.
+
+
+## D-119 — Clear chart, playoff and team-record comparisons (2026-10-19)
+
+The owner approved the recommendations from prototype `0719987` on the local
+`prototype/team-records-legend` branch: chart controls B, trend A, playoff labels A,
+and team records A. This is the v1.0.2 release scope.
+
+Home-court history removes the duplicate season selector while keeping hover, tap,
+and keyboard inspection, the optional 5+ series, filled markers, paired baseline
+readouts and the general sample-size caveat. The ordinary inference gate remains.
+
+Model Results replaces the flat all-history home rate with a dashed five-season
+average beside annual observations. Pool home wins and games over exactly five
+completed consecutive seasons; leave missing windows empty rather than bridge gaps
+or include ongoing seasons. Existing eligible pre-bubble 2019–20 data remains. Use
+the existing unfiltered analytical response; no coefficient fit, forecast, new
+request or publication-population change is implied. Explain the calculation in
+plain terms with additional method detail available separately.
+
+Playoffs leads with the named team's series win chance from the model trained only
+on earlier seasons. This is a historical replay, not proof of a forecast published
+before the series, an accuracy percentage or rest's isolated effect. Keep the
+full-sample fit in “Fit using known results” details and explain that it includes
+known results. If no earlier-history pick exists, the primary summary stays
+unavailable; do not use the full-sample fit for its correctness badge or card color.
+
+Team records retain the table and compare rested-at-home with tired-on-road
+records. A subtle amber/neutral/teal key and explicit labels use the selected
+season's league home/rest gap as midpoint, never zero or a fatigue-management
+ranking. Color describes the gap, not causality, confidence or a zero-days-rest
+effect. Missing rates or league comparison remain untinted/unavailable. Preserve
+counts, nulls and sample labels. Calculate each team's percentage-point difference
+from unrounded win fractions, then round once; the league reference already does
+this from aggregate counts. No model coefficient, schema or generated figure changes.

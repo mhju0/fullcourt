@@ -241,7 +241,7 @@ export function SeasonReportContent() {
             <p className={muted}>
               Compare each team’s win rate when rested at home with its rate when tired on the road.
             </p>
-            <div data-testid="swing-baseline-note" className={`text-sm ${muted}`}>
+            <div data-testid="swing-baseline-note" className={`text-[15px] ${muted}`}>
               {data.swingBaseline === null ? (
                 <p>No league comparison is available yet. Cell colors appear when the league gap is available.</p>
               ) : (
@@ -249,7 +249,7 @@ export function SeasonReportContent() {
                   <p className="font-medium text-[var(--term-text)]">How this home/rest gap compares with the league</p>
                   <div className="my-2 h-2 rounded-sm" aria-hidden="true"
                     style={{ background: "linear-gradient(90deg, #E6D3B6 0%, #EDF1F3 50%, #BEE0E6 100%)" }} />
-                  <div className="grid grid-cols-3 gap-3 text-xs sm:text-sm">
+                  <div className="grid grid-cols-3 gap-3 text-xs sm:text-[15px]">
                     <span>Smaller home/rest gap</span>
                     <span className="text-center">League gap<br /><strong className="mono text-[var(--term-text)]">{signedNumber(data.swingBaseline, 1)} pp</strong></span>
                     <span className="text-right">Larger home/rest gap</span>
@@ -264,14 +264,14 @@ export function SeasonReportContent() {
                 <TeamRecords teams={data.teams.slice(6)} season={season} baseline={data.swingBaseline} />
               </details>
             ) : null}
-            <p className={`text-sm ${muted}`}>
+            <p className={`text-[15px] ${muted}`}>
               Color describes the gap, not fatigue management or statistical significance. These records
               compare different venues and opponents, with differences in team strength and sample size;
               they do not measure the effect of rest alone.
             </p>
             <details className="fc-disclosure">
               <summary>How to read these records</summary>
-              <p className={`text-sm ${muted}`}>
+              <p className={`text-[15px] ${muted}`}>
                 Rested at home means the home team’s fatigue score was at least 0.5 model points lower
                 than its opponent’s. Tired road is the visiting team in those games; it does not mean
                 zero days off. The home/rest gap subtracts the tired-road win rate from the rested-home

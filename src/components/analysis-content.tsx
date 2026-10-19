@@ -458,13 +458,13 @@ function HomeCourtBySeasonChart({
                     <p style={{ color: "var(--term-text)", fontWeight: 700, letterSpacing: TRACK.sub }}>{d.season}</p>
                     <p style={{ color: "var(--term-text-muted)", marginTop: SPACE.xs }}>Home teams won {d.homeWinPct?.toFixed(1)}%</p>
                     <p style={{ color: "var(--term-text-muted)", marginTop: SPACE.xs }}>{d.homeWins.toLocaleString()} wins / {d.homeGames.toLocaleString()} games</p>
-                    {d.rollingHomeWinPct !== null && <p style={{ marginTop: SPACE.xs }}>Trailing five seasons: {d.rollingHomeWinPct.toFixed(1)}%</p>}
+                    {d.rollingHomeWinPct !== null && <p style={{ marginTop: SPACE.xs }}>Five-season average: {d.rollingHomeWinPct.toFixed(1)}%</p>}
                   </div>
                 )
               }}
             />
-            <Line name="Annual home win rate" dataKey="homeWinPct" stroke="var(--term-text)" strokeWidth={1.5} dot={false} connectNulls={false} isAnimationActive={false} />
-            <Line name="Trailing five-season rate" dataKey="rollingHomeWinPct" stroke="var(--term-accent)" strokeWidth={2} strokeDasharray="6 4" dot={false} connectNulls={false} isAnimationActive={false} />
+            <Line name="Each season" dataKey="homeWinPct" stroke="var(--term-text)" strokeWidth={1.5} dot={false} connectNulls={false} isAnimationActive={false} />
+            <Line name="Five-season average" dataKey="rollingHomeWinPct" stroke="var(--term-accent)" strokeWidth={2} strokeDasharray="6 4" dot={false} connectNulls={false} isAnimationActive={false} />
           </LineChart>
         </ResponsiveContainer>
       )}
@@ -1167,16 +1167,24 @@ export function AnalysisContent({ asOf }: { asOf?: DataAsOf | null }) {
       </div>
 
       <div style={termCardStyle}>
-        <h2 className="text-xl font-semibold">Home teams’ win rate over time</h2>
-        <p className="mt-2 text-sm text-[var(--term-text-muted)]">Completed seasons · Eligible regular-season games · Orlando bubble excluded</p>
+        <h2 className="text-2xl font-semibold">Home teams’ win rate over time</h2>
+        <p className="mt-2 text-[var(--term-text-muted)]" style={{ fontSize: TYPE.body, lineHeight: LEAD.body }}>Completed seasons · Eligible regular-season games · Orlando bubble excluded</p>
         <HomeCourtBySeasonChart seasonWinRates={data.seasonWinRates} />
-        <div className="mt-3 flex flex-wrap gap-x-6 gap-y-2 text-sm" aria-label="Home win rate chart legend">
-          <span className="inline-flex items-center gap-2"><span aria-hidden="true" className="w-6 border-t-2 border-[var(--term-text)]" />Annual home win rate</span>
-          <span className="inline-flex items-center gap-2"><span aria-hidden="true" className="w-6 border-t-2 border-dashed border-[var(--term-accent)]" />Trailing five-season rate</span>
+        <div className="mt-3 flex flex-wrap gap-x-6 gap-y-2" style={{ fontSize: TYPE.body }} aria-label="Home win rate chart legend">
+          <span className="inline-flex items-center gap-2"><span aria-hidden="true" className="w-6 border-t-2 border-[var(--term-text)]" />Each season</span>
+          <span className="inline-flex items-center gap-2"><span aria-hidden="true" className="w-6 border-t-2 border-dashed border-[var(--term-accent)]" />Five-season average</span>
         </div>
-        <p className="mt-3 text-sm leading-relaxed text-[var(--term-text-muted)]">
-          Each dashed point pools home wins and games from that season and its four preceding completed consecutive seasons.
-          The first four seasons have no rolling value; missing or incomplete seasons break the window.
+        <p className="mt-3 text-[var(--term-text-muted)]" style={{ fontSize: TYPE.body, lineHeight: LEAD.body }}>
+          The dashed line combines games from each five-season window.
+        </p>
+        <details className="mt-2">
+          <summary className="min-h-11 cursor-pointer content-center font-semibold focus-visible:outline-2 focus-visible:outline-[var(--term-accent)]">How the line is calculated</summary>
+          <p className="mt-2 text-[var(--term-text-muted)]" style={{ fontSize: TYPE.body, lineHeight: LEAD.body }}>
+            Each dashed point pools home wins and games from that season and its four preceding completed consecutive seasons.
+            The first four seasons have no rolling value; missing or incomplete seasons break the window.
+          </p>
+        </details>
+        <p className="mt-3 text-[var(--term-text-muted)]" style={{ fontSize: TYPE.body, lineHeight: LEAD.body }}>
           Annual results rise and fall. This historical pattern does not guarantee a constant decline or explain its cause.
         </p>
       </div>
