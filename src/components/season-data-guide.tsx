@@ -24,10 +24,10 @@ export function SeasonDataGuide({
       {timing ? <p className="text-[var(--term-text-muted)]"><KeepTogether>{timing}</KeepTogether></p> : null}
       <div className="flex flex-wrap gap-x-6 gap-y-2">
         {previousHref && previousLabel ? (
-          <a className="fc-text-link min-h-11 content-center" href={previousHref}><KeepTogether>{previousLabel}</KeepTogether> →</a>
+          <a className="fc-text-link min-h-11 content-center" href={previousHref}><KeepTogether>{previousLabel}</KeepTogether>{"\u00a0"}→</a>
         ) : null}
         <a className="fc-text-link min-h-11 content-center" href={`/schedule?season=${season}`}>
-          View <KeepTogether>{season}</KeepTogether> schedule →
+          View <KeepTogether>{season}</KeepTogether> schedule{"\u00a0"}→
         </a>
       </div>
     </aside>
