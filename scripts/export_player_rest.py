@@ -21,9 +21,11 @@ Shape (columnar arrays; ~4x smaller than a list of objects):
 
     names    ["LeBron James", ...]                 index = player id used below
     teams    ["ATL", "ATL/BOS", ...]               index = team label used below
-    seasons  [[p, startYear, t, age, g, fga, efg, b2bFga, b2bEfg, restFga, restEfg], ...]
+    seasons  [[p, startYear, t, age, g, fga, efg, b2bFga, b2bEfg, restFga, restEfg,
+               wholeNumerator, b2bNumerator, restNumerator], ...]
     shrunk   [[p, restDelta, restSe, restShrunk], ...]   career only, see below
 
+The three numerator columns store exact integers 2*FGM+3PM; eFG% is 50*n/FGA.
 Every count and rate in a career row reconciles exactly with the seasons listed
 under it, so the page sums its own totals and this file ships only the three
 career numbers that cannot be re-derived: the empirical-Bayes shrunk delta needs
@@ -140,6 +142,7 @@ def main() -> int:
             p, int(season), team_idx(label), max(ages) if ages else 0,
             len(games), whole[1], pct(whole) or 0,
             t[1], pct(t) or 0, c[1], pct(c) or 0,
+            2 * whole[0] + whole[2], 2 * t[0] + t[2], 2 * c[0] + c[2],
         ])
     seasons.sort(key=lambda r: (r[0], r[1]))
 

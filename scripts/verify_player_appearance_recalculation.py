@@ -107,8 +107,26 @@ def main():
     if prior_identity_path.exists():
         prior_identity = json.loads(prior_identity_path.read_text())
         assert all(public[key] == prior_identity[key] for key in public if key not in {"teams", "seasons"})
-        assert [row[:2] + row[3:] for row in public["seasons"]] == [row[:2] + row[3:] for row in prior_identity["seasons"]]
+        assert [row[:2] + row[3:11] for row in public["seasons"]] == [row[:2] + row[3:11] for row in prior_identity["seasons"]]
         identity_math_preserved = True
+    by_player_season = defaultdict(list)
+    player_ids = list(dict.fromkeys(row["pid"] for row in after))
+    for row in after:
+        by_player_season[(row["pid"], int(row["season"]))].append(row)
+    for row in public["seasons"]:
+        games = by_player_season[(player_ids[row[0]], row[1])]
+        numerator = lambda group: sum(2 * game["fgm"] + game["fg3m"] for game in group)
+        expected = [numerator(games), numerator(game for game in games if game["rest"] == 1),
+                    numerator(game for game in games if current.is_rested(game))]
+        assert len(row) == 14 and row[11:14] == expected, (player_ids[row[0]], row[1])
+        assert all(isinstance(value, int) and value >= 0 for value in row[11:14])
+    precision_path = ROOT / "docs/audit/player-rest-appearance/before-precision-player-rest.json"
+    precision_preserved = None
+    if precision_path.exists():
+        precision_before = json.loads(precision_path.read_text())
+        assert all(public[key] == precision_before[key] for key in public if key != "seasons")
+        assert [row[:11] for row in public["seasons"]] == precision_before["seasons"]
+        precision_preserved = True
     wade = ("1629731", "0022300846")
     assert old[wade]["rest"] == 3 and new[wade]["rest"] == 1
     keys = sorted(new)
@@ -128,6 +146,8 @@ def main():
                "fieldChanges": dict(field_changes), "changesBySeason": {key: dict(value) for key, value in sorted(per_season.items())},
                "teamMetadataOverrides": team_changes, "publishedTeamLabelChanges": label_changes,
                "teamOverrideNumericalOutputsUnchanged": identity_math_preserved,
+               "exactNumeratorRowsVerifiedAgainstRaw": len(public["seasons"]),
+               "precisionRepairOriginalColumnsAndEstimatesUnchanged": precision_preserved,
                "eligibility": cohorts, "coverage": coverage, "unknownHistoryCoverage": unknown_coverage,
                "empiricalBayes": {"before": before_eb, "after": after_eb},
                "wadeWitness": {"pid": wade[0], "gid": wade[1], "beforeDaysSince": old[wade]["rest"], "afterDaysSince": new[wade]["rest"]},

@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
+import { signedNumber } from "../signed-number";
 import {
   buildRows,
   careerTotals,
@@ -115,6 +116,72 @@ describe("careerTotals", () => {
     const t = careerTotals(index.seasonsByPlayer.get(2)!);
     expect(t.restedEfg).toBeNull();
     expect(t.effect).toBeNull();
+  });
+});
+
+describe("exact shooting numerators", () => {
+  const sarunas = [0, 1996, 0, 32, 17, 101, 43.07, 16, 34.38, 6, 58.33, 87, 11, 7];
+  const payload = { ...PAYLOAD, names: ["Sarunas Marciulionis"], seasons: [sarunas], shrunk: [] };
+
+  it("uses the same exact ratios for a season and its one-season career", () => {
+    const row = seasonRow(indexPayload(payload), sarunas);
+    const total = careerTotals([sarunas]);
+    expect(row.noRestEfg).toBe(50 * 11 / 16);
+    expect(row.restedEfg).toBe(50 * 7 / 6);
+    expect(row.efg).toBe(50 * 87 / 101);
+    expect(total.efg).toBe(row.efg);
+    expect(total.effect).toBe(row.effect);
+    expect(signedNumber(row.effect!, 1)).toBe("+24.0");
+    expect(signedNumber(total.effect!, 1)).toBe("+24.0");
+  });
+
+  it("keeps the shipped Marciulionis season and covered career display consistent", () => {
+    const shipped = JSON.parse(readFileSync(join(process.cwd(), "public/data/player-rest.json"), "utf8")) as PlayerRestPayload;
+    const index = indexPayload(shipped);
+    const player = shipped.names.indexOf("Sarunas Marciulionis");
+    const seasons = index.seasonsByPlayer.get(player)!;
+    expect(seasons).toHaveLength(1);
+    expect(seasons[0].slice(11)).toEqual([87, 11, 7]);
+    expect(signedNumber(seasonRow(index, seasons[0]).effect!, 1)).toBe("+24.0");
+    expect(signedNumber(careerTotals(seasons).effect!, 1)).toBe("+24.0");
+    expect(index.career.has(player)).toBe(false);
+  });
+
+  it("pools integer numerators across seasons before division", () => {
+    const second = [0, 1997, 0, 33, 20, 103, 44.17, 18, 41.67, 8, 62.5, 91, 15, 10];
+    const total = careerTotals([sarunas, second]);
+    expect(total.exactNumerators).toBe(true);
+    expect(total.efg).toBe(50 * 178 / 204);
+    expect(total.noRestEfg).toBe(50 * 26 / 34);
+    expect(total.restedEfg).toBe(50 * 17 / 14);
+    expect(total.effect).toBe(50 * 17 / 14 - 50 * 26 / 34);
+  });
+
+  it("keeps empty arms unavailable even when their numerator is zero", () => {
+    const empty = [0, 1996, 0, 32, 17, 101, 43.07, 0, 0, 6, 58.33, 87, 0, 7];
+    expect(seasonRow(indexPayload(payload), empty).noRestEfg).toBeNull();
+    expect(seasonRow(indexPayload(payload), empty).effect).toBeNull();
+    expect(careerTotals([empty]).effect).toBeNull();
+  });
+
+  it("retains the stored-rate fallback for legacy eleven-column rows", () => {
+    const legacy = sarunas.slice(0, 11);
+    const row = seasonRow(indexPayload(payload), legacy);
+    expect(row.noRestEfg).toBe(34.38);
+    expect(row.restedEfg).toBe(58.33);
+    expect(careerTotals([legacy]).exactNumerators).toBe(false);
+  });
+
+  it("uses exact raw career differences while retaining the shipped error and shrinkage estimates", () => {
+    const qualified = [0, 2024, 0, 30, 60, 560, 44.64, 320, 34.38, 240, 58.33, 500, 220, 280];
+    const exactPayload = { ...payload, seasons: [qualified], shrunk: [[0, 23.96, 23.959, 1.25]] };
+    const index = indexPayload(exactPayload);
+    const [row] = buildRows(index, { year: "career", minFga: 0, query: "", sort: "fga", dir: -1 });
+    expect(row.effect).toBe(careerTotals([qualified]).effect);
+    expect(row.effect).not.toBe(23.96);
+    expect(row.se).toBe(23.959);
+    expect(row.underEvidenced).toBe(true);
+    expect(index.career.get(0)?.shrunk).toBe(1.25);
   });
 });
 
