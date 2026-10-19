@@ -51,7 +51,7 @@ Still unclosed: full Hartford/Baltimore/Anaheim dates; historical Cleveland/Rich
 
 ## Itinerary and airport limits
 
-[all-consecutive-away-pairs.csv](../../../audit/2026-10-20-historical-audit/venues/all-consecutive-away-pairs.csv) (local raw) inventories **26,054 pairs** across all stored seasons; **4,081 have a calendar gap of at least three days**. Those are research descriptors only. No gap, geographic detour, apparent nearby home city or All-Star interval establishes a team home visit. The underlying chain includes regular season and playoffs; the inventory identifies that scope explicitly.
+`docs/audit/2026-10-20-historical-audit/venues/all-consecutive-away-pairs.csv` (local raw, not committed) inventories **26,054 pairs** across all stored seasons; **4,081 have a calendar gap of at least three days**. Those are research descriptors only. No gap, geographic detour, apparent nearby home city or All-Star interval establishes a team home visit. The underlying chain includes regular season and playoffs; the inventory identifies that scope explicitly.
 
 [season-allgame-endpoints.csv](season-allgame-endpoints.csv) preserves first/last fixture assumptions for each team/season. Current Season Report charges an away opener from the era home arena, counts no return after its last included regular fixture, and does not include pre-season camp travel. A postseason chain answers another scope. All-Star participants can travel separately from their team; Cup finalists play an extra physical game; actual intermediate home stops and overnight locations are generally unknown.
 
