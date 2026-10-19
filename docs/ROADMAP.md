@@ -3,6 +3,15 @@
 Current commitments, updated in place. Completed work belongs in Git/release records and
 rationale in [Decisions](DECISIONS.md), not another running implementation log.
 
+## Historical recalculation — prepared, production pending
+
+Recalculate every stored season with verified input corrections, physical venue endpoints and
+correct current road/home streaks (D-121, ADR 0011). The local shadow database has completed
+atomic apply/rollback and restart checks. Regenerate all dependent publications from the same
+frozen candidate, complete independent review, then request the required production mass-update
+approval. Keep ratified coefficients and resolved prediction history unchanged. Actual flight
+itineraries, intermediate home stops and unverified historical inputs remain limitations.
+
 ## Maintenance
 
 - Keep correctness, dependency audit, and CodeQL checks passing. Review dependency overrides

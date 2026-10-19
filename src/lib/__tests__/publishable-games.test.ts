@@ -33,6 +33,7 @@ const PUBLISHING_READERS = [
   "getTeamRecentFinalResults",
   "getRegularSeasonGameDatesWithCounts",
   "readFinalGamesFacts",
+  "getCompletedGamesStamp",
   "getCompletedGamesWithFatigue",
   "searchRegularSeasonGames",
   "getUpcomingGamesWithRA",
@@ -67,32 +68,45 @@ describe("publishableGames", () => {
     }
   });
 
-  it("keeps the stamp and the published figure on one read", () => {
-    // The stamp stopped issuing its own query on 2026-08-18, when the same count/max became
-    // a published "as of" value. Delegation is what keeps the key and the displayed figure
-    // describing one population — re-inlining a query in either would re-open the chance of
-    // dropping the regime filter from one of the two.
-    //
-    // The shared read moved into `readFinalGamesFacts` on 2026-08-27, when the stamp gained a
-    // score checksum the page must never print. Both callers still take their fields from one
-    // row, so the invariant is unchanged; only where the two readings diverge moved.
-    for (const caller of ["getCompletedGamesStamp", "getDataAsOf"]) {
-      expect(bodyOf(caller)).toContain("readFinalGamesFacts()");
-      expect(bodyOf(caller)).not.toContain("db\n    .select");
-    }
+  it("keeps the public date/count cheap and separate from the cache digest", () => {
+    expect(bodyOf("getDataAsOf")).toContain("readFinalGamesFacts()");
+    expect(bodyOf("readFinalGamesFacts")).not.toContain("fatigueScores");
+    expect(bodyOf("readFinalGamesFacts")).not.toContain("checksum");
+    expect(bodyOf("getCompletedGamesStamp")).toContain("readGameInputDigest(publishableGames(");
+    expect(bodyOf("getSeasonGamesStamp")).toContain("readGameInputDigest(eq(games.season, season), true)");
   });
 
-  it("keeps a score correction from surviving in a held cache", () => {
-    // A corrected score on an already-final game moves neither the count nor the max date, and
-    // `diffScoreboard` writes exactly that — it refuses only a status downgrade. Both stamps
-    // carry a checksum so the correction cannot hide behind an unchanged pair.
-    for (const stamp of ["readFinalGamesFacts", "getSeasonGamesStamp"]) {
-      expect(bodyOf(stamp)).toContain("games.homeScore");
-      expect(bodyOf(stamp)).toContain("games.awayScore");
+  it("fingerprints tagged completed inputs with counts and conservative revision coverage", () => {
+    const fingerprint = bodyOf("readCompletedInputFingerprint");
+    for (const column of ["games.id", "games.date", "games.season", "games.homeTeamId", "games.awayTeamId",
+      "games.status", "games.homeScore", "games.awayScore", "games.neutralSite", "fatigueScores.gameId",
+      "fatigueScores.teamId", "fatigueScores.id", "fatigueScores.computedAt", "fatigueScores.score"]) {
+      expect(fingerprint).toContain(column);
     }
-    // Weighted, so that a correction which swaps the two scores still moves the term.
-    expect(bodyOf("readFinalGamesFacts")).toContain("* 1000 +");
-    expect(bodyOf("getSeasonGamesStamp")).toContain("* 1000 +");
+    expect(fingerprint).toContain("row('game'::text");
+    expect(fingerprint).toContain("row('fatigue'::text");
+    expect(fingerprint).toContain("gameInputs.unionAll(fatigueInputs)");
+    expect(fingerprint).toContain("count(*) filter");
+    expect(fingerprint).toContain("hashtextextended(${inputs.input}, 0)");
+    expect(fingerprint).toContain("hashtextextended(${inputs.input}, 1)");
+    expect(fingerprint).not.toContain("selectDistinctOn");
+  });
+
+  it("uses ordered input digests rather than a cancelling score sum", () => {
+    const digest = bodyOf("readGameInputDigest");
+    for (const column of ["games.id", "games.date", "games.season", "games.homeTeamId", "games.awayTeamId",
+      "games.status", "games.homeScore", "games.awayScore", "games.neutralSite", "latest.score", "latest.revisionId", "latest.computedAt"]) {
+      expect(digest).toContain(column);
+    }
+    expect(digest).toContain("::text, 'missing')");
+    expect(digest).toContain("order by ${paired.gameId}");
+    expect(digest).not.toContain("to_jsonb(f)");
+    expect(bodyOf("latestFatigueSubquery")).toContain("desc(fatigueScores.id)");
+    expect(bodyOf("latestFatigueLateral")).toContain("desc(fatigueScores.id)");
+  });
+
+  it("selects the explicit playoff data revision without falling back to older versions", () => {
+    expect(bodyOf("latestPlayoffPredictionSubquery")).toContain("eq(playoffSeriesPredictions.modelVersion, PLAYOFF_MODEL_VERSION)");
   });
 
   it("is the only place the predicates are written", () => {

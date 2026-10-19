@@ -1,3 +1,4 @@
+import { applyGameInputCorrection, lookupGameInputCorrection, canonicalGameType, lookupAcceptedAddedFixture } from "@/lib/game-input-corrections";
 /**
  * Seed one season into `games` from the cached hoopR box scores, dated via ESPN.
  *
@@ -40,13 +41,6 @@ const ESPN_ABBR: Record<string, string> = {
   SEA: "OKC", NJ: "BKN", NJN: "BKN", NOH: "NOP", NOK: "NOP", CHH: "CHA", CHO: "CHA", VAN: "MEM",
 };
 const toOurAbbr = (a: string) => ESPN_ABBR[a] ?? a;
-
-/** Game-id prefix → the `game_type` the row gets. */
-const TYPE_BY_PREFIX: Record<string, string> = {
-  "002": "regular",
-  "004": "playoffs",
-  "005": "play_in",
-};
 
 async function pool<T>(items: T[], limit: number, fn: (item: T) => Promise<void>) {
   let next = 0;
@@ -111,7 +105,7 @@ function loadHoopr(startYear: number): HooprGame[] {
 
   const out: HooprGame[] = [];
   for (const [gameId, s] of sides) {
-    const gameType = TYPE_BY_PREFIX[gameId.slice(0, 3)];
+    const gameType = canonicalGameType(gameId);
     if (!gameType || !s.home || !s.away) continue;
     out.push({ gameId, gameType, home: s.home[0], away: s.away[0], homePts: s.home[1], awayPts: s.away[1] });
   }
@@ -162,10 +156,11 @@ async function main() {
       unmatched.push(`${g.gameId} ${g.away} ${g.awayPts} @ ${g.home} ${g.homePts}`);
       continue;
     }
-    rows.push({
+    rows.push(applyGameInputCorrection({
+      homeAbbr: g.home, awayAbbr: g.away,
       externalId: g.gameId, date, season, gameType: g.gameType,
       home: g.home, away: g.away, homeScore: g.homePts, awayScore: g.awayPts,
-    });
+    }));
   }
 
   console.log(`matched ${rows.length} / ${hoopr.length}`);
@@ -208,6 +203,10 @@ async function main() {
           away_score: r.awayScore,
           status: "final",
           game_type: r.gameType,
+          overtime_periods: lookupGameInputCorrection({date:r.date,homeAbbr:r.home,awayAbbr:r.away})?.fields.overtimePeriods?.after ?? lookupAcceptedAddedFixture({date:r.date,homeAbbr:r.home,awayAbbr:r.away})?.overtimePeriods ?? 0,
+          neutral_site: lookupGameInputCorrection({date:r.date,homeAbbr:r.home,awayAbbr:r.away})?.fields.neutralSite?.after ?? lookupAcceptedAddedFixture({date:r.date,homeAbbr:r.home,awayAbbr:r.away})?.neutralSite ?? false,
+          neutral_venue_city: lookupGameInputCorrection({date:r.date,homeAbbr:r.home,awayAbbr:r.away})?.fields.neutralVenueCity?.after ?? lookupAcceptedAddedFixture({date:r.date,homeAbbr:r.home,awayAbbr:r.away})?.neutralVenueCity ?? null,
+          tip_off_utc: lookupGameInputCorrection({date:r.date,homeAbbr:r.home,awayAbbr:r.away})?.fields.tipOffUtc?.after ?? lookupAcceptedAddedFixture({date:r.date,homeAbbr:r.home,awayAbbr:r.away})?.tipOffUtc ?? null,
         }))
       )}
       on conflict (external_id) do update set

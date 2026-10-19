@@ -1,3 +1,4 @@
+import { applyGameInputCorrection } from "@/lib/game-input-corrections";
 import { formatEasternDateKey } from "@/lib/nba-season";
 import { isHeldGame, type GameStatus } from "@/lib/game-status";
 
@@ -239,10 +240,14 @@ export function reconcileScores(
 
     // Only from a line score, and only from a finished game: anything else would report the
     // periods played so far.
-    const overtimePeriods =
+    const providerOvertimePeriods =
       espn.status === "final" && espn.periods !== null && espn.periods >= 4
         ? espn.periods - 4
         : null;
+
+    const overtimePeriods = dateKey
+      ? applyGameInputCorrection({ date: dateKey, homeAbbr: row.homeAbbr, awayAbbr: row.awayAbbr, overtimePeriods: providerOvertimePeriods }).overtimePeriods
+      : providerOvertimePeriods;
 
     const changed =
       espn.status !== row.status ||

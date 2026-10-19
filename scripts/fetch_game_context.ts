@@ -1,3 +1,4 @@
+import { applyGameInputCorrection } from "@/lib/game-input-corrections";
 /**
  * Game context ingest — overtime periods, tip-off time, neutral-site flag.
  *
@@ -168,7 +169,10 @@ async function main() {
         }
         for (const g of byDate.get(date)!) {
           const ctx = events.get(`${g.away}@${g.home}`);
-          if (ctx) updates.push({ id: g.id, ...ctx });
+          if (ctx) {
+            const accepted = applyGameInputCorrection({ date, homeAbbr: g.home, awayAbbr: g.away, ...ctx });
+            updates.push({ id: g.id, ...accepted });
+          }
           else unmatched++;
         }
       } catch (e) {

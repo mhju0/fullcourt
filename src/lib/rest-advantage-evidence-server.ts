@@ -37,7 +37,7 @@ async function getHistoricalBacktestStamp(): Promise<string> {
  * no LIMIT — and reduces them in JS. Its interface hid that, so callers treated
  * it as a getter and asked for it once per surface.
  *
- * Finals move the stamp; max age bounds fatigue/correction changes it misses.
+ * The content/revision fingerprint detects corrections; max age also bounds cache lifetime.
  * `getCompletedGamesStamp` ignores the
  * key because the population does not depend on it — one stamp covers every
  * threshold. Entries are per `seasonMinRA` because that is the only input, and the

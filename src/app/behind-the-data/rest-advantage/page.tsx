@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import ablationFacts from "../../../../ml/fatigue_ablation_facts.json";
 import Link from "next/link";
 import { BehindTheDataShell } from "@/components/behind-the-data-shell";
 import {
@@ -40,41 +41,10 @@ export const metadata: Metadata = {
  */
 const MEASURED_ON = "2026-07-30";
 
-/**
- * Single-term ablations, re-measured by `ml/ablate_fatigue_terms.py` on `ABLATIONS_MEASURED_ON`.
- *
- * These replace a table measured on 2026-07-30 that asked a question the model can no
- * longer be asked. That version held the set of games fixed and reported how much
- * *accuracy* each term was worth, which only had an answer while the rule could pick
- * either side: drop a term, the pick flips home to away, accuracy moves. Since
- * 2026-08-02 a called game is always a pick of the home team, so on a fixed sample every
- * ablated model makes the identical pick and every term would score exactly zero.
- *
- * What the terms do now is *select* — they decide which games get called at all. Each row
- * neutralises one term and re-derives the call under the shipped rule.
- *
- * `found` / `foundWinPct` are the load-bearing columns, and `delta` is the trap. A term
- * that finds extra winners at a rate below the model's own 61.19% average *lowers* the
- * headline while *raising* the number of games won. Travel is exactly that: it is the
- * single largest contributor of correct calls (+392 above a coin flip, more than any other
- * term) and it still moves the headline +0.37pp when removed, because its 5,990 games win
- * at 59.13% rather than 61.19%. Reading `delta` alone says delete it. Deleting it would
- * give up more winning predictions than any other change available.
- *
- * Ordered by wins-above-a-coin-flip surrendered, not by delta.
- */
-const ABLATIONS_MEASURED_ON = "2026-10-17";
-const ABLATION_BASELINE = { winPct: 61.19, called: 27420, edge: 3068 };
-const ABLATIONS = [
-  { term: "Travel", delta: 0.37, found: 5990, foundWinPct: 59.13, edgeLost: 392 },
-  { term: "Recent workload (decay)", delta: -0.68, found: 3443, foundWinPct: 63.23, edgeLost: 334 },
-  { term: "Back-to-back", delta: -0.30, found: 1750, foundWinPct: 63.37, edgeLost: 208 },
-  { term: "Road segment", delta: 0.27, found: 2792, foundWinPct: 58.70, edgeLost: 204 },
-  { term: "Altitude", delta: -0.04, found: 571, foundWinPct: 63.22, edgeLost: 76 },
-  { term: "Schedule density", delta: -0.06, found: 711, foundWinPct: 59.49, edgeLost: 34 },
-  { term: "Overtime", delta: -0.07, found: 160, foundWinPct: 63.75, edgeLost: 20 },
-  { term: "Freshness", delta: 0.01, found: 145, foundWinPct: 60.69, edgeLost: -10 },
-] as const;
+/** Rebuilt offline with score-fidelity checks before the producer replaces this snapshot. */
+const ABLATIONS_MEASURED_ON = ablationFacts.measuredOn;
+const ABLATION_BASELINE = ablationFacts.baseline;
+const ABLATIONS = ablationFacts.terms;
 
 
 /** The 0.5 cutoff's cost, stated once and interpolated rather than described as "a fifth". */
@@ -679,22 +649,23 @@ direction    = ${K.eastwardMultiplier} eastward, ${K.westwardMultiplier} westwar
       <Section label="WHERE THE DATA COMES FROM" title="Data sources and revisions" disclosure>
         <Prose>
           Schedules, scores and results for completed seasons come from the NBA&rsquo;s own
-          feeds; the current season&rsquo;s schedule and nightly scores come from ESPN. Overtime
-          periods, tip-off times and neutral-site venues come from ESPN. The missing overtime input was
-          restored on {MEASURED_ON}; earlier model runs had treated it as zero throughout.
+          feeds; the current season&rsquo;s schedule and nightly scores come from ESPN. Archived
+          period scores and team minutes backfill confirmed historical overtime. NBA and venue
+          records supply accepted arena corrections; unverified tips and results are not guessed.
         </Prose>
         <Prose>
-          Arena coordinates are era-correct: Sonics games resolve to Seattle, not Oklahoma City,
-          and the 2005-06 Hornets to their Katrina-season home. Distances are great-circle, not
-          routed.
+          Actual arenas, modeled team bases and home-court status are separate. Known temporary
+          venues use dated records, including the Raptors&rsquo; Tampa season and the Hornets&rsquo;
+          different Katrina-era hosts. An alternate home such as Austin stays a designated home
+          game while its actual travel endpoints are used. Played Cup finals and play-in games
+          remain workload context without becoming regular-season outcome targets. Distances
+          remain great-circle estimates.
         </Prose>
         <Note>
-          ESPN coverage begins around 2002, and its neutral-site flag only from 2013. Earlier
-          seasons are scored by the same formula with those three inputs absent, which means a
-          pre-2002 overtime count of zero denotes <em>unknown</em>, not &ldquo;no overtime&rdquo;.
-          The trade was taken deliberately rather than restricting the model to a shorter span,
-          and the cost is that a 1994 score and a 2024 score are not built from quite the same
-          information.
+          Historical coverage is still uneven. Confirmed archived inputs improve earlier games,
+          but an unverified overtime zero remains <em>unknown</em>, not &ldquo;no overtime&rdquo;.
+          Missing tips use the existing fallback. A 1994 score and a 2024 score therefore are
+          not built from identical information.
         </Note>
       </Section>
 
@@ -706,10 +677,10 @@ direction    = ${K.eastwardMultiplier} eastward, ${K.westwardMultiplier} westwar
           items={[
             "No injuries, rotations or minutes played. A rested team missing two starters scores the same as a healthy one.",
             "No team quality. The historical groups can differ in strength as well as rest, so their win rates do not isolate a causal rest effect.",
-            "No actual itineraries. Teams are assumed to fly venue to venue and only home when the next game is home. No public source records what they really did.",
+            "No actual itineraries. Mileage follows scheduled arena stops; flights, ground travel and intermediate returns home are not reconstructed.",
             "No load management. A star sitting a back-to-back is exactly the effect this model would want to capture, and it is invisible here.",
-            "Playoffs are excluded entirely. A fixed two-team series breaks the travel assumptions.",
-            "The 2019-20 Orlando bubble is excluded because it had one site, no travel, and no crowd. Pre-suspension games remain included. The condensed 72-game 2020-21 season is included, with greater density than the model's normal-pace anchors.",
+            "Playoff games are excluded from regular-season win-rate findings. Played games still belong in the workload history.",
+            "The 2019-20 Orlando bubble is excluded from these findings. Its campus geography is represented, but the normal-travel model is not validated for bubble life. Pre-suspension games and the condensed 2020-21 season remain included.",
           ]}
         />
       </Section>
@@ -724,6 +695,12 @@ direction    = ${K.eastwardMultiplier} eastward, ${K.westwardMultiplier} westwar
           is a different target from the win rates on this page, and the change is recorded in
           ADR 0006. Using a different target does not make the shared historical games an
           independent test set.
+        </Prose>
+        <Prose>
+          Refreshed research fits keep their original completed regular-season cohort,
+          including neutral and bubble games. Published win-rate findings apply their own
+          venue and abnormal-stretch exclusions, so the two sets of results have different
+          denominators.
         </Prose>
         <Note>
           In the overhaul recorded on {MEASURED_ON}, nine fixes landed together and the published

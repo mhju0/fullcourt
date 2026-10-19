@@ -1,0 +1,16 @@
+{
+  "generatedBy": "ml/fit_fatigue_weights.py",
+  "modelTableSha256": "0a3c945e2eefb190fb2bcb137805b5549885f2682aae6f52266f5bb42819a684",
+  "trainFloor": 2002,
+  "firstTestSeason": 2010,
+  "heldOutGames": 19118,
+  "folds": 16,
+  "pooledLogLoss": {
+    "ll_base": 0.6833296265018026,
+    "ll_incumbent": 0.6821804598528001,
+    "ll_fitted": 0.6809653879860954,
+    "ll_controls_only": 0.6232814520353731,
+    "ll_fitted_controls": 0.6207424081085068,
+    "ll_parsimonious": 0.6205918112105694
+  }
+}

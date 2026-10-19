@@ -53,6 +53,25 @@ Historical backfills are manual tools, not routine daily work. `nba_ot_periods.p
 imported legacy helper in historical ingestion. Preserve game IDs and dates; do not infer canonical
 IDs from chronological position or use local-time dates in place of Eastern dates.
 
+## Controlled historical corrections
+
+Accepted overtime, game-type, neutral-site and tip-off corrections are overlaid after provider
+normalization using `src/data/game-input-corrections.json` in TypeScript and Python ingestion.
+Explicit nonregular Cup-final/play-in rows remain workload context, with recognized `006`/`005`
+provider types kept separate from regular targets. The physical-venue registry is separate from
+home-court classification and modeled team bases;
+see [ADR 0011](adr/0011-physical-venues-and-historical-correction.md).
+
+`scripts/history-correction/` prepares a full before/after candidate from a database snapshot.
+Its local PostgreSQL rehearsal exercises atomic apply, retry, drift refusal, writer locking
+and exact rollback. Production application requires an explicit reviewed target and owner
+approval immediately before the mass update. It is not a daily pipeline or schema migration.
+The correction also repairs verified stale playoff features and appends a new explicit model
+data revision while preserving older outputs; see [ADR 0012](adr/0012-playoff-data-revisions-preserve-model-history.md).
+Preserve resolved prediction history; regenerate eligible future predictions and dependent
+publications together. The documented maintenance gate prevents mixed old/new results during
+the production cutover.
+
 ## Fatigue and predictions
 
 `src/lib/fatigue.ts` combines ratified workload, travel, recovery, density, altitude, road-trip,

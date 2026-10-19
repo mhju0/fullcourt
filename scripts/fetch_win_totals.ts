@@ -23,7 +23,9 @@
 import { config } from "dotenv";
 config({ path: ".env.local" });
 
-import { writeFileSync } from "node:fs";
+import { createHash } from "node:crypto";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import path from "node:path";
 
 const FIRST_SEASON_WITH_LINES = "1993-94";
 const SOURCE_URL = (start: number) =>
@@ -91,7 +93,7 @@ function stripTags(cell: string): string {
     .trim();
 }
 
-function parseSeasonPage(html: string, season: string): LineRow[] {
+export function parseSeasonPage(html: string, season: string): LineRow[] {
   const table = html.match(/<table[^>]*>[\s\S]*?<\/table>/);
   if (!table) return [];
   const rows = [...table[0].matchAll(/<tr[^>]*>([\s\S]*?)<\/tr>/g)].map((m) =>
@@ -109,9 +111,50 @@ function parseSeasonPage(html: string, season: string): LineRow[] {
     if (!abbr) throw new Error(`${season}: unmapped team name "${team}"`);
     if (result !== "Over" && result !== "Under" && result !== "Push")
       throw new Error(`${season} ${team}: unexpected result "${result}"`);
+    if (!Number.isFinite(Number(line)) || !Number.isFinite(Number(actual))) {
+      throw new Error(`${season} ${team}: invalid market line or actual wins`);
+    }
     out.push({ season, abbr, line: Number(line), actual: Number(actual), result });
   }
   return out;
+}
+
+export async function loadSourcePage(
+  startYear: number,
+  cacheDirectory: string,
+  offline: boolean,
+  fetchPage: typeof fetch = fetch,
+): Promise<{ html: string; url: string; sha256: string }> {
+  const url = SOURCE_URL(startYear);
+  const htmlPath = path.join(cacheDirectory, `${startYear}.html`);
+  const metadataPath = path.join(cacheDirectory, `${startYear}.json`);
+  if (existsSync(htmlPath) || existsSync(metadataPath)) {
+    if (!existsSync(htmlPath) || !existsSync(metadataPath)) {
+      throw new Error(`Incomplete frozen market source for ${startYear}`);
+    }
+    const html = readFileSync(htmlPath, "utf8");
+    const metadata = JSON.parse(readFileSync(metadataPath, "utf8"));
+    const sha256 = createHash("sha256").update(html).digest("hex");
+    if (metadata.url !== url || metadata.sha256 !== sha256) {
+      throw new Error(`Frozen market source hash mismatch for ${startYear}`);
+    }
+    return { html, url, sha256 };
+  }
+  if (offline) throw new Error(`Missing frozen market source for ${startYear}`);
+  const response = await fetchPage(url, {
+    headers: { "User-Agent": "Mozilla/5.0" },
+    redirect: "follow",
+  });
+  if (!response.ok) throw new Error(`${startYear}: HTTP ${response.status}`);
+  const html = await response.text();
+  if (!/<table[\s>]/i.test(html) && startYear !== 1998) {
+    throw new Error(`${startYear}: market source has no table`);
+  }
+  const sha256 = createHash("sha256").update(html).digest("hex");
+  mkdirSync(cacheDirectory, { recursive: true });
+  writeFileSync(htmlPath, html);
+  writeFileSync(metadataPath, JSON.stringify({ url, sha256, fetchedAt: new Date().toISOString() }, null, 2) + "\n");
+  return { html, url, sha256 };
 }
 
 async function main() {
@@ -124,19 +167,28 @@ async function main() {
   const teamRows = await db.select({ id: teams.id, abbr: teams.abbreviation }).from(teams);
   const abbrById = new Map(teamRows.map((t) => [t.id, t.abbr]));
 
-  const seasons = NBA_SEASONS.filter((s) => s >= FIRST_SEASON_WITH_LINES);
+  const cacheFlag = process.argv.indexOf("--source-cache");
+  const cacheDirectory = cacheFlag >= 0 ? process.argv[cacheFlag + 1] : "ml/data/win-total-source";
+  if (!cacheDirectory || cacheDirectory.startsWith("--")) throw new Error("--source-cache requires a directory");
+  const sourcePages: Array<{ season: string; url: string; sha256: string }> = [];
+  const throughFlag = process.argv.indexOf("--through-season");
+  const throughSeason = throughFlag >= 0 ? process.argv[throughFlag + 1] : undefined;
+  if (throughFlag >= 0 && !/^\d{4}-\d{2}$/.test(throughSeason ?? "")) {
+    throw new Error("--through-season requires YYYY-YY");
+  }
+  const seasons = NBA_SEASONS.filter((s) => s >= FIRST_SEASON_WITH_LINES && (!throughSeason || s <= throughSeason));
   const joined: Array<LineRow & { netEdgeGames: number }> = [];
   const seasonsWithLines: string[] = [];
 
   for (const season of seasons) {
     const startYear = Number(season.slice(0, 4));
-    const res = await fetch(SOURCE_URL(startYear), {
-      headers: { "User-Agent": "Mozilla/5.0" },
-      redirect: "follow",
-    });
-    if (!res.ok) throw new Error(`${season}: HTTP ${res.status}`);
-    const lines = parseSeasonPage(await res.text(), season);
+    const source = await loadSourcePage(startYear, cacheDirectory, process.argv.includes("--offline"));
+    sourcePages.push({ season, url: source.url, sha256: source.sha256 });
+    const lines = parseSeasonPage(source.html, season);
     if (lines.length === 0) {
+      if (throughSeason && season !== "1998-99" && season !== "2019-20") {
+        throw new Error(`${season}: expected settled historical market lines`);
+      }
       console.log(`${season}: no lines published, skipping`);
       continue;
     }
@@ -181,7 +233,7 @@ async function main() {
       joined.push({ ...row, netEdgeGames: net });
     }
     console.log(`${season}: ${lines.length} lines joined`);
-    await new Promise((r) => setTimeout(r, 1000));
+    if (!process.argv.includes("--offline")) await new Promise((r) => setTimeout(r, 1000));
   }
 
   const decided = joined.filter((r) => r.result !== "Push");
@@ -215,6 +267,7 @@ async function main() {
   const benchmark = {
     source: "sportsoddshistory.com archive (hosted at covers.com)",
     generated: new Date().toISOString().slice(0, 10),
+    sourcePages,
     firstSeason: seasonsWithLines[0],
     lastSeason: seasonsWithLines[seasonsWithLines.length - 1],
     seasonsCovered: seasonsWithLines.length,
@@ -231,7 +284,7 @@ async function main() {
   process.exit(0);
 }
 
-main().catch((e) => {
+if (process.argv[1]?.endsWith("fetch_win_totals.ts")) main().catch((e) => {
   console.error(e);
   process.exit(1);
 });

@@ -47,6 +47,7 @@ export type TimeZoneNull = {
   generatedBy: string;
   preRegistration: string;
   report: string;
+  historicalReport: string;
   adr: string;
   measuredOn: string;
   protocol: {

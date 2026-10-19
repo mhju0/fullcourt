@@ -28,12 +28,12 @@
     "oppClosedEarly": {
       "winPct": 68.9,
       "n": 74,
-      "meanWinPctDiff": 0.0891
+      "meanWinPctDiff": 0.0892
     },
     "oppWentLong": {
       "winPct": 85.6,
       "n": 90,
-      "meanWinPctDiff": 0.1102
+      "meanWinPctDiff": 0.1103
     },
     "closeMatchupOppClosedEarly": {
       "winPct": 53.2,

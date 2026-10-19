@@ -1,6 +1,173 @@
 {
   "source": "sportsoddshistory.com archive (hosted at covers.com)",
-  "generated": "2026-10-18",
+  "generated": "2026-10-19",
+  "sourcePages": [
+    {
+      "season": "1993-94",
+      "url": "https://www.sportsoddshistory.com/nba-win/?y=1993-1994&sa=nba&t=win&o=t",
+      "sha256": "56d9fe973527d2ab175edd0c58082479f3b4709afde60dce876682aca94dd610"
+    },
+    {
+      "season": "1994-95",
+      "url": "https://www.sportsoddshistory.com/nba-win/?y=1994-1995&sa=nba&t=win&o=t",
+      "sha256": "a093e36643c9d2ae316519a488f97927d61dd8de05e500a9039f5f919ad9a7ce"
+    },
+    {
+      "season": "1995-96",
+      "url": "https://www.sportsoddshistory.com/nba-win/?y=1995-1996&sa=nba&t=win&o=t",
+      "sha256": "b73c4e6c2bd26942d2f319979f76d2ed0b844169db14645454900f4c78f789d3"
+    },
+    {
+      "season": "1996-97",
+      "url": "https://www.sportsoddshistory.com/nba-win/?y=1996-1997&sa=nba&t=win&o=t",
+      "sha256": "e9ca3a0bb1444f8e5481dc0fa2123864fed3a29def007aaa34587ed8f0198cd6"
+    },
+    {
+      "season": "1997-98",
+      "url": "https://www.sportsoddshistory.com/nba-win/?y=1997-1998&sa=nba&t=win&o=t",
+      "sha256": "08911ddf7e44e61561cd483150b67d1ca6bf23376b575fcfc6bd5e50e04c9011"
+    },
+    {
+      "season": "1998-99",
+      "url": "https://www.sportsoddshistory.com/nba-win/?y=1998-1999&sa=nba&t=win&o=t",
+      "sha256": "db66547fc8df0f2a1ec948501be8d6b2b494582862e46b30c0853f17a91504d0"
+    },
+    {
+      "season": "1999-00",
+      "url": "https://www.sportsoddshistory.com/nba-win/?y=1999-2000&sa=nba&t=win&o=t",
+      "sha256": "776b6fd51a4fd458b67ae78a2cb1756f727f26709d36de94813a890463f764ac"
+    },
+    {
+      "season": "2000-01",
+      "url": "https://www.sportsoddshistory.com/nba-win/?y=2000-2001&sa=nba&t=win&o=t",
+      "sha256": "5fad32927136ea1e19921c544a84763470bf99ab1e30a1ea01a3b7f0d19b7c4d"
+    },
+    {
+      "season": "2001-02",
+      "url": "https://www.sportsoddshistory.com/nba-win/?y=2001-2002&sa=nba&t=win&o=t",
+      "sha256": "fe729aa4a607139c1dd13280b1247e330dec0716563f5c7bc9023e6c1773743c"
+    },
+    {
+      "season": "2002-03",
+      "url": "https://www.sportsoddshistory.com/nba-win/?y=2002-2003&sa=nba&t=win&o=t",
+      "sha256": "57e6211e4ec50aac9a28e27898c70d226ff98a4b53266a914b6bb1a69201867d"
+    },
+    {
+      "season": "2003-04",
+      "url": "https://www.sportsoddshistory.com/nba-win/?y=2003-2004&sa=nba&t=win&o=t",
+      "sha256": "49c071ee4a8886274bc07be0c903f2c4776ac7dfc9a87e62f52c214a6dbb2f2c"
+    },
+    {
+      "season": "2004-05",
+      "url": "https://www.sportsoddshistory.com/nba-win/?y=2004-2005&sa=nba&t=win&o=t",
+      "sha256": "63577fe67ed910bc4a46981abfc5519bae7e3090f6b3e629dc2f0938e5519e35"
+    },
+    {
+      "season": "2005-06",
+      "url": "https://www.sportsoddshistory.com/nba-win/?y=2005-2006&sa=nba&t=win&o=t",
+      "sha256": "3b33128d86016ef1e2b3e06140aa5c7e8986935de0e105d4db5a29afc8e3c0ae"
+    },
+    {
+      "season": "2006-07",
+      "url": "https://www.sportsoddshistory.com/nba-win/?y=2006-2007&sa=nba&t=win&o=t",
+      "sha256": "cc6590479f1ee315ecfd7ebb6b602e60bfd407428cb738d6c1a9872d414226a8"
+    },
+    {
+      "season": "2007-08",
+      "url": "https://www.sportsoddshistory.com/nba-win/?y=2007-2008&sa=nba&t=win&o=t",
+      "sha256": "fd268a171a9f41cb67abb2460d30999e3876cfbfcf245e3ae79a7c1bdbeb28ba"
+    },
+    {
+      "season": "2008-09",
+      "url": "https://www.sportsoddshistory.com/nba-win/?y=2008-2009&sa=nba&t=win&o=t",
+      "sha256": "cbbba7eeb2fe09541d54cc619ac7d04f27fb0468d9f00ee90fd996d924e2d413"
+    },
+    {
+      "season": "2009-10",
+      "url": "https://www.sportsoddshistory.com/nba-win/?y=2009-2010&sa=nba&t=win&o=t",
+      "sha256": "fefbf8ab9be15e7ce0382ceb89a205a87406315fb43da8fbe7af0cb10de6619c"
+    },
+    {
+      "season": "2010-11",
+      "url": "https://www.sportsoddshistory.com/nba-win/?y=2010-2011&sa=nba&t=win&o=t",
+      "sha256": "acbbdaade0be1db34531f02f6884d4f4c4b3d32855c3331b3ded169c420c3a71"
+    },
+    {
+      "season": "2011-12",
+      "url": "https://www.sportsoddshistory.com/nba-win/?y=2011-2012&sa=nba&t=win&o=t",
+      "sha256": "afa068bea9b331889bad32f377d182692f90b41b945c47de5b0928609df5595d"
+    },
+    {
+      "season": "2012-13",
+      "url": "https://www.sportsoddshistory.com/nba-win/?y=2012-2013&sa=nba&t=win&o=t",
+      "sha256": "9352f47ade8d58f65f2cb4f92c8cebe65d032c8359bdc8330481ad54e99d8856"
+    },
+    {
+      "season": "2013-14",
+      "url": "https://www.sportsoddshistory.com/nba-win/?y=2013-2014&sa=nba&t=win&o=t",
+      "sha256": "6fed007a492a4d5e64e0207e8b601191d2c4c5b292927e9250cdc0a4154ef08c"
+    },
+    {
+      "season": "2014-15",
+      "url": "https://www.sportsoddshistory.com/nba-win/?y=2014-2015&sa=nba&t=win&o=t",
+      "sha256": "44a6f6725d87636079f6c3078188b84a3e341bcc7747038c9da9ec2f08f98c84"
+    },
+    {
+      "season": "2015-16",
+      "url": "https://www.sportsoddshistory.com/nba-win/?y=2015-2016&sa=nba&t=win&o=t",
+      "sha256": "12e7e3383dd2163c7b94d0edb2d5d4e15652a5f00f493ba22667f6b3a88944a7"
+    },
+    {
+      "season": "2016-17",
+      "url": "https://www.sportsoddshistory.com/nba-win/?y=2016-2017&sa=nba&t=win&o=t",
+      "sha256": "5de141d5c5f97015c0efbe56bf5e301465ae10ed506c2c9800b24e6d2e951514"
+    },
+    {
+      "season": "2017-18",
+      "url": "https://www.sportsoddshistory.com/nba-win/?y=2017-2018&sa=nba&t=win&o=t",
+      "sha256": "b70fb76796e9d99baee686820dd3e867295ff61f9310d6cd4bb5360f269f4455"
+    },
+    {
+      "season": "2018-19",
+      "url": "https://www.sportsoddshistory.com/nba-win/?y=2018-2019&sa=nba&t=win&o=t",
+      "sha256": "2a7f15beec913054e6d7a482ed191b9ccd71a6a1103174611323194804d80caf"
+    },
+    {
+      "season": "2019-20",
+      "url": "https://www.sportsoddshistory.com/nba-win/?y=2019-2020&sa=nba&t=win&o=t",
+      "sha256": "6a07cc1945ef6a9e911c2e9429c37ad557db471a214ea85ca39468738d0bfc70"
+    },
+    {
+      "season": "2020-21",
+      "url": "https://www.sportsoddshistory.com/nba-win/?y=2020-2021&sa=nba&t=win&o=t",
+      "sha256": "e5835e126c946af69523d76d96b38155d53781080ae49d9c3c9b38e0ac89337f"
+    },
+    {
+      "season": "2021-22",
+      "url": "https://www.sportsoddshistory.com/nba-win/?y=2021-2022&sa=nba&t=win&o=t",
+      "sha256": "e6dc2b41a389e0b01fd3a693f38d5eafc73274c66d4e4c19c5c98304074cc268"
+    },
+    {
+      "season": "2022-23",
+      "url": "https://www.sportsoddshistory.com/nba-win/?y=2022-2023&sa=nba&t=win&o=t",
+      "sha256": "8f6c983edf93d99a7254bb155101dc889c5f3310e744d744a2cbcb736159885a"
+    },
+    {
+      "season": "2023-24",
+      "url": "https://www.sportsoddshistory.com/nba-win/?y=2023-2024&sa=nba&t=win&o=t",
+      "sha256": "558cba2541aca255acac0ad6288f22a8624e878c815a11c7aa5608c9f870daf6"
+    },
+    {
+      "season": "2024-25",
+      "url": "https://www.sportsoddshistory.com/nba-win/?y=2024-2025&sa=nba&t=win&o=t",
+      "sha256": "0f77b28f109828a8ebe074dfa22a4d874bbaade85ca28b7f09fee361042d8824"
+    },
+    {
+      "season": "2025-26",
+      "url": "https://www.sportsoddshistory.com/nba-win/?y=2025-2026&sa=nba&t=win&o=t",
+      "sha256": "3032fe76ebdab03a0a1c2a68fcec0609a6654aed923829c8bd322d78ae615b0f"
+    }
+  ],
   "firstSeason": "1993-94",
   "lastSeason": "2025-26",
   "seasonsCovered": 31,
@@ -11,34 +178,34 @@
     "n": 881
   },
   "correlation": {
-    "r": -0.0114,
+    "r": 0.0049,
     "n": 884
   },
   "buckets": [
     {
       "label": "+10 or better",
-      "overs": 56,
-      "n": 108
+      "overs": 55,
+      "n": 111
     },
     {
       "label": "+5 to +9",
-      "overs": 62,
+      "overs": 65,
       "n": 143
     },
     {
       "label": "−4 to +4",
-      "overs": 183,
-      "n": 374
+      "overs": 186,
+      "n": 373
     },
     {
       "label": "−9 to −5",
-      "overs": 74,
-      "n": 154
+      "overs": 73,
+      "n": 162
     },
     {
       "label": "−10 or worse",
-      "overs": 47,
-      "n": 102
+      "overs": 43,
+      "n": 92
     }
   ]
 }

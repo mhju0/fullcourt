@@ -23,18 +23,15 @@ import {
   type HistoricalGameEvidenceRow,
 } from "@/lib/rest-advantage-evidence";
 
-const JSON_PATH = path.join(
-  process.cwd(),
-  "docs",
-  "research",
-  "2026-09-11-home-advantage-trend.json"
-);
-const CSV_PATH = path.join(
-  process.cwd(),
-  "docs",
-  "research",
-  "2026-09-11-home-advantage-trend.csv"
-);
+const outputArg = process.argv.indexOf("--output-prefix");
+const outputPrefix = outputArg >= 0
+  ? process.argv[outputArg + 1]
+  : "docs/research/2026-09-11-home-advantage-trend";
+if (!outputPrefix || outputPrefix.startsWith("--")) {
+  throw new Error("--output-prefix requires a file prefix");
+}
+const JSON_PATH = path.resolve(`${outputPrefix}.json`);
+const CSV_PATH = path.resolve(`${outputPrefix}.csv`);
 const PREVIOUS_REPORT_PATH = path.join(
   process.cwd(),
   "ml",
@@ -270,7 +267,7 @@ async function main(): Promise<void> {
   const shipped = buildHistoricalBacktest(rawRows);
   const previousReport = await previousReportValidation();
 
-  const games: Game[] = rawRows.map((row) => {
+  const games: Game[] = rawRows.filter((row) => !row.neutralSite).map((row) => {
     if (row.homeScore === null || row.awayScore === null) {
       throw new Error(`Missing score after completed-game query: ${row.date}`);
     }
@@ -414,12 +411,12 @@ async function main(): Promise<void> {
     generatedAt: new Date().toISOString(),
     script: "scripts/research_home_advantage_trend.ts",
     outputs: [
-      "docs/research/2026-09-11-home-advantage-trend.json",
-      "docs/research/2026-09-11-home-advantage-trend.csv",
+      path.relative(process.cwd(), JSON_PATH),
+      path.relative(process.cwd(), CSV_PATH),
     ],
     population: {
       label:
-        "Published regular-season final games with both scores and both fatigue records",
+        "Published regular-season final games with both scores, both fatigue records, and home court",
       firstSeason: perSeason[0]!.season,
       lastSeason: perSeason[perSeason.length - 1]!.season,
       firstGameDate: [...games].sort((a, b) => a.date.localeCompare(b.date))[0]!
@@ -433,19 +430,20 @@ async function main(): Promise<void> {
       homeRestedWins,
       classification: `Home-rested means classifyRestAdvantage() returns home at |RA| >= ${NEUTRAL_REST_ADVANTAGE_THRESHOLD}, then isCalledSide() admits it.`,
       inclusions: [
-        "Regular-season games in the local database from 1985-86 through 2025-26.",
+        `Regular-season games from ${perSeason[0]!.season} through ${perSeason[perSeason.length - 1]!.season}.`,
         "Shortened and shifted seasons remain included.",
-        "The 971 pre-suspension games in 2019-20 remain included.",
+        "Pre-suspension 2019-20 games remain included when otherwise eligible.",
       ],
       exclusions: [
         "Play-in and postseason games.",
+        "Neutral-site games (no home-court venue baseline).",
         "The 2019-20 Orlando bubble abnormal stretch.",
         "Games that are not final or lack either score.",
         "Games lacking a latest fatigue record for either team because the source query uses inner joins.",
       ],
       caveats: [
         "This is not every league game; coverage is conditional on both fatigue records being present.",
-        "Home means the designated home team. ESPN neutral_site coverage begins only in 2013, so earlier international or neutral-court games can remain labeled home and are not separately removed here.",
+        "Home means the designated home team outside identified neutral sites. Historical neutral-site coverage remains limited to the provider fields and adjudicated corrections.",
         "The local source does not establish whether a trend generalizes to other U.S. sports.",
         "Season-level correlation and OLS are descriptive. They do not adjust for team strength, opponent mix, arena, rules, travel, or other concurrent changes and do not establish causation.",
       ],

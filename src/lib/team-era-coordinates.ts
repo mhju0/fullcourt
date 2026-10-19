@@ -1,3 +1,5 @@
+import { BUBBLE_CAMPUS, hasBubbleBase } from "./bubble-venue";
+
 /**
  * Era-correct arena coordinates for relocated franchises (ratified 2026-07-29).
  *
@@ -11,8 +13,8 @@
  *   below travel-model materiality.
  * - Old Charlotte Hornets (CHH, 1988–2002): ingest maps CHH to the modern CHA row,
  *   whose coordinates are already Charlotte.
- * - Per-game neutral sites: `games.neutral_venue_city` (migration 0011) carries them, and
- *   `src/lib/neutral-venues.ts` resolves the coordinates.
+ * - Per-fixture alternate/neutral venues: `physical-venue.ts` resolves those separately.
+ *   A temporary arena alone does not establish a relocated team base.
  */
 interface Era {
   abbreviation: string;
@@ -25,13 +27,13 @@ interface Era {
 }
 
 const ERAS: readonly Era[] = [
+  // Toronto relocated its team operations to Tampa for the 2020-21 season.
+  { abbreviation: "TOR", from: "2020-12-01", before: "2021-07-01", latitude: 27.9427, longitude: -82.4518 },
   // Seattle SuperSonics through 2007-08 (KeyArena); the franchise became OKC in 2008-09.
   { abbreviation: "OKC", before: "2008-07-01", latitude: 47.6221, longitude: -122.354 },
   // Vancouver Grizzlies 1995–2001 (General Motors Place); moved to Memphis in 2001-02.
   { abbreviation: "MEM", before: "2001-07-01", latitude: 49.2778, longitude: -123.1089 },
-  // Katrina years: the Hornets played most home games at the Ford Center in Oklahoma
-  // City. A minority were in New Orleans/Baton Rouge; per-game venues are not in the
-  // data, so the era's majority venue stands (documented limitation).
+  // Oklahoma City remained the Katrina-era base; fixture overrides locate minority homes.
   {
     abbreviation: "NOP",
     from: "2005-07-01",
@@ -48,6 +50,9 @@ export function eraCoordinates(
   currentLat: number,
   currentLon: number
 ): { latitude: number; longitude: number } {
+  if (hasBubbleBase(abbreviation, gameDate)) {
+    return { latitude: BUBBLE_CAMPUS.latitude, longitude: BUBBLE_CAMPUS.longitude };
+  }
   for (const era of ERAS) {
     if (era.abbreviation !== abbreviation) continue;
     if (gameDate >= era.before) continue;

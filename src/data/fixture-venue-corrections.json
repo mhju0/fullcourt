@@ -1,0 +1,3094 @@
+{
+  "version": 1,
+  "fixtures": [
+    {
+      "date": "1986-12-02",
+      "homeAbbr": "BOS",
+      "awayAbbr": "WAS",
+      "auditGameId": 28054,
+      "arena": "Hartford Civic Center",
+      "city": "Hartford",
+      "latitude": 41.76843,
+      "longitude": -72.67676,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://www.nba.com/news/history-this-date-in-nba-dec",
+        "https://uconnhuskies.com/documents/download/2018/10/17/2018_2019_Women_s_Basketball_XL_Visiting_Team_Guide.pdf",
+        "https://mapcarta.com/22017282"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1990-11-02",
+      "homeAbbr": "UTA",
+      "awayAbbr": "PHX",
+      "auditGameId": 32411,
+      "arena": "Tokyo Metropolitan Gymnasium",
+      "city": "Tokyo",
+      "latitude": 35.67977,
+      "longitude": 139.71252,
+      "altitude": false,
+      "neutral": true,
+      "sourceUrls": [
+        "https://www.nba.com/news/history-this-date-in-nba-nov",
+        "https://www.tef.or.jp/tmg/access.html",
+        "https://mapcarta.com/W153182207"
+      ],
+      "coverage": "primary dated event; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1990-11-03",
+      "homeAbbr": "PHX",
+      "awayAbbr": "UTA",
+      "auditGameId": 32399,
+      "arena": "Tokyo Metropolitan Gymnasium",
+      "city": "Tokyo",
+      "latitude": 35.67977,
+      "longitude": 139.71252,
+      "altitude": false,
+      "neutral": true,
+      "sourceUrls": [
+        "https://www.nba.com/news/history-this-date-in-nba-nov",
+        "https://www.tef.or.jp/tmg/access.html",
+        "https://mapcarta.com/W153182207"
+      ],
+      "coverage": "primary dated event; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1992-05-03",
+      "homeAbbr": "LAC",
+      "awayAbbr": "UTA",
+      "auditGameId": 114868,
+      "arena": "Anaheim Convention Center",
+      "city": "Anaheim",
+      "latitude": 33.80057,
+      "longitude": -117.92072,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://www.nba.com/lakers/news/161021-lakers-history-orange-county",
+        "https://mapcarta.com/22993306"
+      ],
+      "coverage": "primary team history plus frozen game/opponent identity; 1992 playoff and Lakers 1997-99 subset; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1992-11-06",
+      "homeAbbr": "HOU",
+      "awayAbbr": "OKC",
+      "auditGameId": 34620,
+      "arena": "Yokohama Arena",
+      "city": "Yokohama",
+      "latitude": 35.51227,
+      "longitude": 139.62019,
+      "altitude": false,
+      "neutral": true,
+      "sourceUrls": [
+        "https://www.nba.com/news/history-this-date-in-nba-nov",
+        "https://www.yokohama-arena.co.jp/en/access/",
+        "https://mapcarta.com/W123630243"
+      ],
+      "coverage": "primary dated event; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1992-11-07",
+      "homeAbbr": "OKC",
+      "awayAbbr": "HOU",
+      "auditGameId": 34607,
+      "arena": "Yokohama Arena",
+      "city": "Yokohama",
+      "latitude": 35.51227,
+      "longitude": 139.62019,
+      "altitude": false,
+      "neutral": true,
+      "sourceUrls": [
+        "https://www.nba.com/news/history-this-date-in-nba-nov",
+        "https://www.yokohama-arena.co.jp/en/access/",
+        "https://mapcarta.com/W123630243"
+      ],
+      "coverage": "primary dated event; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1994-11-04",
+      "homeAbbr": "LAC",
+      "awayAbbr": "POR",
+      "auditGameId": 36834,
+      "arena": "Yokohama Arena",
+      "city": "Yokohama",
+      "latitude": 35.51227,
+      "longitude": 139.62019,
+      "altitude": false,
+      "neutral": true,
+      "sourceUrls": [
+        "https://www.nba.com/news/history-this-date-in-nba-nov",
+        "https://www.yokohama-arena.co.jp/en/access/",
+        "https://mapcarta.com/W123630243"
+      ],
+      "coverage": "primary dated event; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1994-11-05",
+      "homeAbbr": "OKC",
+      "awayAbbr": "UTA",
+      "auditGameId": 36824,
+      "arena": "Tacoma Dome",
+      "city": "Tacoma",
+      "latitude": 47.2369,
+      "longitude": -122.42695,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://seattle.gov/documents/departments/council/committees/centralstaff/key-arena-report-june-2015.pdf",
+        "https://www.tacomadome.org/plan-your-visit/directions-parking",
+        "https://mapcarta.com/W32660308"
+      ],
+      "coverage": "primary city report confirms temporary season venue; individual fixture inferred from whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1994-11-05",
+      "homeAbbr": "POR",
+      "awayAbbr": "LAC",
+      "auditGameId": 36827,
+      "arena": "Yokohama Arena",
+      "city": "Yokohama",
+      "latitude": 35.51227,
+      "longitude": 139.62019,
+      "altitude": false,
+      "neutral": true,
+      "sourceUrls": [
+        "https://www.nba.com/news/history-this-date-in-nba-nov",
+        "https://www.yokohama-arena.co.jp/en/access/",
+        "https://mapcarta.com/W123630243"
+      ],
+      "coverage": "primary dated event; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1994-11-09",
+      "homeAbbr": "OKC",
+      "awayAbbr": "SAC",
+      "auditGameId": 36807,
+      "arena": "Tacoma Dome",
+      "city": "Tacoma",
+      "latitude": 47.2369,
+      "longitude": -122.42695,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://seattle.gov/documents/departments/council/committees/centralstaff/key-arena-report-june-2015.pdf",
+        "https://www.tacomadome.org/plan-your-visit/directions-parking",
+        "https://mapcarta.com/W32660308"
+      ],
+      "coverage": "primary city report confirms temporary season venue; individual fixture inferred from whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1994-11-11",
+      "homeAbbr": "OKC",
+      "awayAbbr": "PHX",
+      "auditGameId": 36797,
+      "arena": "Tacoma Dome",
+      "city": "Tacoma",
+      "latitude": 47.2369,
+      "longitude": -122.42695,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://seattle.gov/documents/departments/council/committees/centralstaff/key-arena-report-june-2015.pdf",
+        "https://www.tacomadome.org/plan-your-visit/directions-parking",
+        "https://mapcarta.com/W32660308"
+      ],
+      "coverage": "primary city report confirms temporary season venue; individual fixture inferred from whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1994-11-13",
+      "homeAbbr": "OKC",
+      "awayAbbr": "LAC",
+      "auditGameId": 36777,
+      "arena": "Tacoma Dome",
+      "city": "Tacoma",
+      "latitude": 47.2369,
+      "longitude": -122.42695,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://seattle.gov/documents/departments/council/committees/centralstaff/key-arena-report-june-2015.pdf",
+        "https://www.tacomadome.org/plan-your-visit/directions-parking",
+        "https://mapcarta.com/W32660308"
+      ],
+      "coverage": "primary city report confirms temporary season venue; individual fixture inferred from whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1994-11-22",
+      "homeAbbr": "OKC",
+      "awayAbbr": "BKN",
+      "auditGameId": 36723,
+      "arena": "Tacoma Dome",
+      "city": "Tacoma",
+      "latitude": 47.2369,
+      "longitude": -122.42695,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://seattle.gov/documents/departments/council/committees/centralstaff/key-arena-report-june-2015.pdf",
+        "https://www.tacomadome.org/plan-your-visit/directions-parking",
+        "https://mapcarta.com/W32660308"
+      ],
+      "coverage": "primary city report confirms temporary season venue; individual fixture inferred from whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1994-11-28",
+      "homeAbbr": "OKC",
+      "awayAbbr": "IND",
+      "auditGameId": 36687,
+      "arena": "Tacoma Dome",
+      "city": "Tacoma",
+      "latitude": 47.2369,
+      "longitude": -122.42695,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://seattle.gov/documents/departments/council/committees/centralstaff/key-arena-report-june-2015.pdf",
+        "https://www.tacomadome.org/plan-your-visit/directions-parking",
+        "https://mapcarta.com/W32660308"
+      ],
+      "coverage": "primary city report confirms temporary season venue; individual fixture inferred from whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1994-11-30",
+      "homeAbbr": "OKC",
+      "awayAbbr": "SAS",
+      "auditGameId": 36672,
+      "arena": "Tacoma Dome",
+      "city": "Tacoma",
+      "latitude": 47.2369,
+      "longitude": -122.42695,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://seattle.gov/documents/departments/council/committees/centralstaff/key-arena-report-june-2015.pdf",
+        "https://www.tacomadome.org/plan-your-visit/directions-parking",
+        "https://mapcarta.com/W32660308"
+      ],
+      "coverage": "primary city report confirms temporary season venue; individual fixture inferred from whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1994-12-03",
+      "homeAbbr": "OKC",
+      "awayAbbr": "MIL",
+      "auditGameId": 36650,
+      "arena": "Tacoma Dome",
+      "city": "Tacoma",
+      "latitude": 47.2369,
+      "longitude": -122.42695,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://seattle.gov/documents/departments/council/committees/centralstaff/key-arena-report-june-2015.pdf",
+        "https://www.tacomadome.org/plan-your-visit/directions-parking",
+        "https://mapcarta.com/W32660308"
+      ],
+      "coverage": "primary city report confirms temporary season venue; individual fixture inferred from whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1994-12-06",
+      "homeAbbr": "OKC",
+      "awayAbbr": "HOU",
+      "auditGameId": 36640,
+      "arena": "Tacoma Dome",
+      "city": "Tacoma",
+      "latitude": 47.2369,
+      "longitude": -122.42695,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://seattle.gov/documents/departments/council/committees/centralstaff/key-arena-report-june-2015.pdf",
+        "https://www.tacomadome.org/plan-your-visit/directions-parking",
+        "https://mapcarta.com/W32660308"
+      ],
+      "coverage": "primary city report confirms temporary season venue; individual fixture inferred from whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1994-12-15",
+      "homeAbbr": "OKC",
+      "awayAbbr": "POR",
+      "auditGameId": 36579,
+      "arena": "Tacoma Dome",
+      "city": "Tacoma",
+      "latitude": 47.2369,
+      "longitude": -122.42695,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://seattle.gov/documents/departments/council/committees/centralstaff/key-arena-report-june-2015.pdf",
+        "https://www.tacomadome.org/plan-your-visit/directions-parking",
+        "https://mapcarta.com/W32660308"
+      ],
+      "coverage": "primary city report confirms temporary season venue; individual fixture inferred from whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1994-12-17",
+      "homeAbbr": "OKC",
+      "awayAbbr": "ORL",
+      "auditGameId": 36565,
+      "arena": "Tacoma Dome",
+      "city": "Tacoma",
+      "latitude": 47.2369,
+      "longitude": -122.42695,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://seattle.gov/documents/departments/council/committees/centralstaff/key-arena-report-june-2015.pdf",
+        "https://www.tacomadome.org/plan-your-visit/directions-parking",
+        "https://mapcarta.com/W32660308"
+      ],
+      "coverage": "primary city report confirms temporary season venue; individual fixture inferred from whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1994-12-20",
+      "homeAbbr": "OKC",
+      "awayAbbr": "LAC",
+      "auditGameId": 36543,
+      "arena": "Tacoma Dome",
+      "city": "Tacoma",
+      "latitude": 47.2369,
+      "longitude": -122.42695,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://seattle.gov/documents/departments/council/committees/centralstaff/key-arena-report-june-2015.pdf",
+        "https://www.tacomadome.org/plan-your-visit/directions-parking",
+        "https://mapcarta.com/W32660308"
+      ],
+      "coverage": "primary city report confirms temporary season venue; individual fixture inferred from whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1994-12-22",
+      "homeAbbr": "OKC",
+      "awayAbbr": "DAL",
+      "auditGameId": 36531,
+      "arena": "Tacoma Dome",
+      "city": "Tacoma",
+      "latitude": 47.2369,
+      "longitude": -122.42695,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://seattle.gov/documents/departments/council/committees/centralstaff/key-arena-report-june-2015.pdf",
+        "https://www.tacomadome.org/plan-your-visit/directions-parking",
+        "https://mapcarta.com/W32660308"
+      ],
+      "coverage": "primary city report confirms temporary season venue; individual fixture inferred from whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1994-12-26",
+      "homeAbbr": "OKC",
+      "awayAbbr": "SAC",
+      "auditGameId": 36516,
+      "arena": "Tacoma Dome",
+      "city": "Tacoma",
+      "latitude": 47.2369,
+      "longitude": -122.42695,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://seattle.gov/documents/departments/council/committees/centralstaff/key-arena-report-june-2015.pdf",
+        "https://www.tacomadome.org/plan-your-visit/directions-parking",
+        "https://mapcarta.com/W32660308"
+      ],
+      "coverage": "primary city report confirms temporary season venue; individual fixture inferred from whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1994-12-28",
+      "homeAbbr": "OKC",
+      "awayAbbr": "PHI",
+      "auditGameId": 36497,
+      "arena": "Tacoma Dome",
+      "city": "Tacoma",
+      "latitude": 47.2369,
+      "longitude": -122.42695,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://seattle.gov/documents/departments/council/committees/centralstaff/key-arena-report-june-2015.pdf",
+        "https://www.tacomadome.org/plan-your-visit/directions-parking",
+        "https://mapcarta.com/W32660308"
+      ],
+      "coverage": "primary city report confirms temporary season venue; individual fixture inferred from whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1995-01-13",
+      "homeAbbr": "OKC",
+      "awayAbbr": "LAC",
+      "auditGameId": 36396,
+      "arena": "Tacoma Dome",
+      "city": "Tacoma",
+      "latitude": 47.2369,
+      "longitude": -122.42695,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://seattle.gov/documents/departments/council/committees/centralstaff/key-arena-report-june-2015.pdf",
+        "https://www.tacomadome.org/plan-your-visit/directions-parking",
+        "https://mapcarta.com/W32660308"
+      ],
+      "coverage": "primary city report confirms temporary season venue; individual fixture inferred from whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1995-01-15",
+      "homeAbbr": "OKC",
+      "awayAbbr": "POR",
+      "auditGameId": 36385,
+      "arena": "Tacoma Dome",
+      "city": "Tacoma",
+      "latitude": 47.2369,
+      "longitude": -122.42695,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://seattle.gov/documents/departments/council/committees/centralstaff/key-arena-report-june-2015.pdf",
+        "https://www.tacomadome.org/plan-your-visit/directions-parking",
+        "https://mapcarta.com/W32660308"
+      ],
+      "coverage": "primary city report confirms temporary season venue; individual fixture inferred from whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1995-01-17",
+      "homeAbbr": "OKC",
+      "awayAbbr": "CLE",
+      "auditGameId": 36372,
+      "arena": "Tacoma Dome",
+      "city": "Tacoma",
+      "latitude": 47.2369,
+      "longitude": -122.42695,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://seattle.gov/documents/departments/council/committees/centralstaff/key-arena-report-june-2015.pdf",
+        "https://www.tacomadome.org/plan-your-visit/directions-parking",
+        "https://mapcarta.com/W32660308"
+      ],
+      "coverage": "primary city report confirms temporary season venue; individual fixture inferred from whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1995-01-24",
+      "homeAbbr": "OKC",
+      "awayAbbr": "DEN",
+      "auditGameId": 36321,
+      "arena": "Tacoma Dome",
+      "city": "Tacoma",
+      "latitude": 47.2369,
+      "longitude": -122.42695,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://seattle.gov/documents/departments/council/committees/centralstaff/key-arena-report-june-2015.pdf",
+        "https://www.tacomadome.org/plan-your-visit/directions-parking",
+        "https://mapcarta.com/W32660308"
+      ],
+      "coverage": "primary city report confirms temporary season venue; individual fixture inferred from whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1995-01-26",
+      "homeAbbr": "OKC",
+      "awayAbbr": "UTA",
+      "auditGameId": 36309,
+      "arena": "Tacoma Dome",
+      "city": "Tacoma",
+      "latitude": 47.2369,
+      "longitude": -122.42695,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://seattle.gov/documents/departments/council/committees/centralstaff/key-arena-report-june-2015.pdf",
+        "https://www.tacomadome.org/plan-your-visit/directions-parking",
+        "https://mapcarta.com/W32660308"
+      ],
+      "coverage": "primary city report confirms temporary season venue; individual fixture inferred from whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1995-01-28",
+      "homeAbbr": "OKC",
+      "awayAbbr": "LAL",
+      "auditGameId": 36296,
+      "arena": "Tacoma Dome",
+      "city": "Tacoma",
+      "latitude": 47.2369,
+      "longitude": -122.42695,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://seattle.gov/documents/departments/council/committees/centralstaff/key-arena-report-june-2015.pdf",
+        "https://www.tacomadome.org/plan-your-visit/directions-parking",
+        "https://mapcarta.com/W32660308"
+      ],
+      "coverage": "primary city report confirms temporary season venue; individual fixture inferred from whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1995-02-07",
+      "homeAbbr": "OKC",
+      "awayAbbr": "SAS",
+      "auditGameId": 36234,
+      "arena": "Tacoma Dome",
+      "city": "Tacoma",
+      "latitude": 47.2369,
+      "longitude": -122.42695,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://seattle.gov/documents/departments/council/committees/centralstaff/key-arena-report-june-2015.pdf",
+        "https://www.tacomadome.org/plan-your-visit/directions-parking",
+        "https://mapcarta.com/W32660308"
+      ],
+      "coverage": "primary city report confirms temporary season venue; individual fixture inferred from whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1995-02-09",
+      "homeAbbr": "OKC",
+      "awayAbbr": "CHI",
+      "auditGameId": 36215,
+      "arena": "Tacoma Dome",
+      "city": "Tacoma",
+      "latitude": 47.2369,
+      "longitude": -122.42695,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://seattle.gov/documents/departments/council/committees/centralstaff/key-arena-report-june-2015.pdf",
+        "https://www.tacomadome.org/plan-your-visit/directions-parking",
+        "https://mapcarta.com/W32660308"
+      ],
+      "coverage": "primary city report confirms temporary season venue; individual fixture inferred from whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1995-02-14",
+      "homeAbbr": "OKC",
+      "awayAbbr": "GSW",
+      "auditGameId": 36211,
+      "arena": "Tacoma Dome",
+      "city": "Tacoma",
+      "latitude": 47.2369,
+      "longitude": -122.42695,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://seattle.gov/documents/departments/council/committees/centralstaff/key-arena-report-june-2015.pdf",
+        "https://www.tacomadome.org/plan-your-visit/directions-parking",
+        "https://mapcarta.com/W32660308"
+      ],
+      "coverage": "primary city report confirms temporary season venue; individual fixture inferred from whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1995-02-20",
+      "homeAbbr": "OKC",
+      "awayAbbr": "LAL",
+      "auditGameId": 36164,
+      "arena": "Tacoma Dome",
+      "city": "Tacoma",
+      "latitude": 47.2369,
+      "longitude": -122.42695,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://seattle.gov/documents/departments/council/committees/centralstaff/key-arena-report-june-2015.pdf",
+        "https://www.tacomadome.org/plan-your-visit/directions-parking",
+        "https://mapcarta.com/W32660308"
+      ],
+      "coverage": "primary city report confirms temporary season venue; individual fixture inferred from whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1995-02-22",
+      "homeAbbr": "OKC",
+      "awayAbbr": "MIN",
+      "auditGameId": 36153,
+      "arena": "Tacoma Dome",
+      "city": "Tacoma",
+      "latitude": 47.2369,
+      "longitude": -122.42695,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://seattle.gov/documents/departments/council/committees/centralstaff/key-arena-report-june-2015.pdf",
+        "https://www.tacomadome.org/plan-your-visit/directions-parking",
+        "https://mapcarta.com/W32660308"
+      ],
+      "coverage": "primary city report confirms temporary season venue; individual fixture inferred from whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1995-02-23",
+      "homeAbbr": "BOS",
+      "awayAbbr": "ORL",
+      "auditGameId": 36142,
+      "arena": "Hartford Civic Center",
+      "city": "Hartford",
+      "latitude": 41.76843,
+      "longitude": -72.67676,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://www.nba.com/game/orl-vs-bos-0029400699",
+        "https://uconnhuskies.com/documents/download/2018/10/17/2018_2019_Women_s_Basketball_XL_Visiting_Team_Guide.pdf",
+        "https://mapcarta.com/22017282"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1995-02-24",
+      "homeAbbr": "OKC",
+      "awayAbbr": "DEN",
+      "auditGameId": 36140,
+      "arena": "Tacoma Dome",
+      "city": "Tacoma",
+      "latitude": 47.2369,
+      "longitude": -122.42695,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://seattle.gov/documents/departments/council/committees/centralstaff/key-arena-report-june-2015.pdf",
+        "https://www.tacomadome.org/plan-your-visit/directions-parking",
+        "https://mapcarta.com/W32660308"
+      ],
+      "coverage": "primary city report confirms temporary season venue; individual fixture inferred from whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1995-02-27",
+      "homeAbbr": "OKC",
+      "awayAbbr": "CHA",
+      "auditGameId": 36113,
+      "arena": "Tacoma Dome",
+      "city": "Tacoma",
+      "latitude": 47.2369,
+      "longitude": -122.42695,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://seattle.gov/documents/departments/council/committees/centralstaff/key-arena-report-june-2015.pdf",
+        "https://www.tacomadome.org/plan-your-visit/directions-parking",
+        "https://mapcarta.com/W32660308"
+      ],
+      "coverage": "primary city report confirms temporary season venue; individual fixture inferred from whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1995-03-06",
+      "homeAbbr": "OKC",
+      "awayAbbr": "GSW",
+      "auditGameId": 36068,
+      "arena": "Tacoma Dome",
+      "city": "Tacoma",
+      "latitude": 47.2369,
+      "longitude": -122.42695,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://seattle.gov/documents/departments/council/committees/centralstaff/key-arena-report-june-2015.pdf",
+        "https://www.tacomadome.org/plan-your-visit/directions-parking",
+        "https://mapcarta.com/W32660308"
+      ],
+      "coverage": "primary city report confirms temporary season venue; individual fixture inferred from whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1995-03-14",
+      "homeAbbr": "OKC",
+      "awayAbbr": "BOS",
+      "auditGameId": 36014,
+      "arena": "Tacoma Dome",
+      "city": "Tacoma",
+      "latitude": 47.2369,
+      "longitude": -122.42695,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://seattle.gov/documents/departments/council/committees/centralstaff/key-arena-report-june-2015.pdf",
+        "https://www.tacomadome.org/plan-your-visit/directions-parking",
+        "https://mapcarta.com/W32660308"
+      ],
+      "coverage": "primary city report confirms temporary season venue; individual fixture inferred from whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1995-03-16",
+      "homeAbbr": "OKC",
+      "awayAbbr": "MIA",
+      "auditGameId": 35998,
+      "arena": "Tacoma Dome",
+      "city": "Tacoma",
+      "latitude": 47.2369,
+      "longitude": -122.42695,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://seattle.gov/documents/departments/council/committees/centralstaff/key-arena-report-june-2015.pdf",
+        "https://www.tacomadome.org/plan-your-visit/directions-parking",
+        "https://mapcarta.com/W32660308"
+      ],
+      "coverage": "primary city report confirms temporary season venue; individual fixture inferred from whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1995-03-18",
+      "homeAbbr": "OKC",
+      "awayAbbr": "DET",
+      "auditGameId": 35986,
+      "arena": "Tacoma Dome",
+      "city": "Tacoma",
+      "latitude": 47.2369,
+      "longitude": -122.42695,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://seattle.gov/documents/departments/council/committees/centralstaff/key-arena-report-june-2015.pdf",
+        "https://www.tacomadome.org/plan-your-visit/directions-parking",
+        "https://mapcarta.com/W32660308"
+      ],
+      "coverage": "primary city report confirms temporary season venue; individual fixture inferred from whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1995-03-23",
+      "homeAbbr": "OKC",
+      "awayAbbr": "WAS",
+      "auditGameId": 35947,
+      "arena": "Tacoma Dome",
+      "city": "Tacoma",
+      "latitude": 47.2369,
+      "longitude": -122.42695,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://seattle.gov/documents/departments/council/committees/centralstaff/key-arena-report-june-2015.pdf",
+        "https://www.tacomadome.org/plan-your-visit/directions-parking",
+        "https://mapcarta.com/W32660308"
+      ],
+      "coverage": "primary city report confirms temporary season venue; individual fixture inferred from whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1995-03-26",
+      "homeAbbr": "OKC",
+      "awayAbbr": "NYK",
+      "auditGameId": 35925,
+      "arena": "Tacoma Dome",
+      "city": "Tacoma",
+      "latitude": 47.2369,
+      "longitude": -122.42695,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://seattle.gov/documents/departments/council/committees/centralstaff/key-arena-report-june-2015.pdf",
+        "https://www.tacomadome.org/plan-your-visit/directions-parking",
+        "https://mapcarta.com/W32660308"
+      ],
+      "coverage": "primary city report confirms temporary season venue; individual fixture inferred from whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1995-03-29",
+      "homeAbbr": "OKC",
+      "awayAbbr": "MIN",
+      "auditGameId": 35912,
+      "arena": "Tacoma Dome",
+      "city": "Tacoma",
+      "latitude": 47.2369,
+      "longitude": -122.42695,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://seattle.gov/documents/departments/council/committees/centralstaff/key-arena-report-june-2015.pdf",
+        "https://www.tacomadome.org/plan-your-visit/directions-parking",
+        "https://mapcarta.com/W32660308"
+      ],
+      "coverage": "primary city report confirms temporary season venue; individual fixture inferred from whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1995-03-31",
+      "homeAbbr": "OKC",
+      "awayAbbr": "SAC",
+      "auditGameId": 35891,
+      "arena": "Tacoma Dome",
+      "city": "Tacoma",
+      "latitude": 47.2369,
+      "longitude": -122.42695,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://seattle.gov/documents/departments/council/committees/centralstaff/key-arena-report-june-2015.pdf",
+        "https://www.tacomadome.org/plan-your-visit/directions-parking",
+        "https://mapcarta.com/W32660308"
+      ],
+      "coverage": "primary city report confirms temporary season venue; individual fixture inferred from whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1995-04-02",
+      "homeAbbr": "OKC",
+      "awayAbbr": "ATL",
+      "auditGameId": 35885,
+      "arena": "Tacoma Dome",
+      "city": "Tacoma",
+      "latitude": 47.2369,
+      "longitude": -122.42695,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://seattle.gov/documents/departments/council/committees/centralstaff/key-arena-report-june-2015.pdf",
+        "https://www.tacomadome.org/plan-your-visit/directions-parking",
+        "https://mapcarta.com/W32660308"
+      ],
+      "coverage": "primary city report confirms temporary season venue; individual fixture inferred from whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1995-04-11",
+      "homeAbbr": "OKC",
+      "awayAbbr": "PHX",
+      "auditGameId": 35827,
+      "arena": "Tacoma Dome",
+      "city": "Tacoma",
+      "latitude": 47.2369,
+      "longitude": -122.42695,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://seattle.gov/documents/departments/council/committees/centralstaff/key-arena-report-june-2015.pdf",
+        "https://www.tacomadome.org/plan-your-visit/directions-parking",
+        "https://mapcarta.com/W32660308"
+      ],
+      "coverage": "primary city report confirms temporary season venue; individual fixture inferred from whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1995-04-13",
+      "homeAbbr": "OKC",
+      "awayAbbr": "DAL",
+      "auditGameId": 35815,
+      "arena": "Tacoma Dome",
+      "city": "Tacoma",
+      "latitude": 47.2369,
+      "longitude": -122.42695,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://seattle.gov/documents/departments/council/committees/centralstaff/key-arena-report-june-2015.pdf",
+        "https://www.tacomadome.org/plan-your-visit/directions-parking",
+        "https://mapcarta.com/W32660308"
+      ],
+      "coverage": "primary city report confirms temporary season venue; individual fixture inferred from whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1995-04-17",
+      "homeAbbr": "OKC",
+      "awayAbbr": "POR",
+      "auditGameId": 35785,
+      "arena": "Tacoma Dome",
+      "city": "Tacoma",
+      "latitude": 47.2369,
+      "longitude": -122.42695,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://seattle.gov/documents/departments/council/committees/centralstaff/key-arena-report-june-2015.pdf",
+        "https://www.tacomadome.org/plan-your-visit/directions-parking",
+        "https://mapcarta.com/W32660308"
+      ],
+      "coverage": "primary city report confirms temporary season venue; individual fixture inferred from whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1995-04-20",
+      "homeAbbr": "OKC",
+      "awayAbbr": "HOU",
+      "auditGameId": 35764,
+      "arena": "Tacoma Dome",
+      "city": "Tacoma",
+      "latitude": 47.2369,
+      "longitude": -122.42695,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://seattle.gov/documents/departments/council/committees/centralstaff/key-arena-report-june-2015.pdf",
+        "https://www.tacomadome.org/plan-your-visit/directions-parking",
+        "https://mapcarta.com/W32660308"
+      ],
+      "coverage": "primary city report confirms temporary season venue; individual fixture inferred from whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1995-04-27",
+      "homeAbbr": "OKC",
+      "awayAbbr": "LAL",
+      "auditGameId": 115120,
+      "arena": "Tacoma Dome",
+      "city": "Tacoma",
+      "latitude": 47.2369,
+      "longitude": -122.42695,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://seattle.gov/documents/departments/council/committees/centralstaff/key-arena-report-june-2015.pdf",
+        "https://www.tacomadome.org/plan-your-visit/directions-parking",
+        "https://mapcarta.com/W32660308"
+      ],
+      "coverage": "primary city report confirms temporary season venue; individual fixture inferred from whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1995-04-29",
+      "homeAbbr": "OKC",
+      "awayAbbr": "LAL",
+      "auditGameId": 115113,
+      "arena": "Tacoma Dome",
+      "city": "Tacoma",
+      "latitude": 47.2369,
+      "longitude": -122.42695,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://seattle.gov/documents/departments/council/committees/centralstaff/key-arena-report-june-2015.pdf",
+        "https://www.tacomadome.org/plan-your-visit/directions-parking",
+        "https://mapcarta.com/W32660308"
+      ],
+      "coverage": "primary city report confirms temporary season venue; individual fixture inferred from whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1996-11-01",
+      "homeAbbr": "GSW",
+      "awayAbbr": "LAC",
+      "auditGameId": 39212,
+      "arena": "San Jose Arena",
+      "city": "San Jose",
+      "latitude": 37.33286,
+      "longitude": -121.90132,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://sfocii.org/sites/default/files/inline-files/Vol%201_GSW_MB_DSEIR.pdf",
+        "https://www.sapcenter.com/plan-your-visit/directions-parking",
+        "https://mapcarta.com/26611640"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1996-11-05",
+      "homeAbbr": "GSW",
+      "awayAbbr": "POR",
+      "auditGameId": 39186,
+      "arena": "San Jose Arena",
+      "city": "San Jose",
+      "latitude": 37.33286,
+      "longitude": -121.90132,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://sfocii.org/sites/default/files/inline-files/Vol%201_GSW_MB_DSEIR.pdf",
+        "https://www.sapcenter.com/plan-your-visit/directions-parking",
+        "https://mapcarta.com/26611640"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1996-11-07",
+      "homeAbbr": "GSW",
+      "awayAbbr": "NYK",
+      "auditGameId": 39172,
+      "arena": "San Jose Arena",
+      "city": "San Jose",
+      "latitude": 37.33286,
+      "longitude": -121.90132,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://sfocii.org/sites/default/files/inline-files/Vol%201_GSW_MB_DSEIR.pdf",
+        "https://www.sapcenter.com/plan-your-visit/directions-parking",
+        "https://mapcarta.com/26611640"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1996-11-07",
+      "homeAbbr": "BKN",
+      "awayAbbr": "ORL",
+      "auditGameId": 39173,
+      "arena": "Tokyo Dome",
+      "city": "Tokyo",
+      "latitude": 35.70551,
+      "longitude": 139.75197,
+      "altitude": false,
+      "neutral": true,
+      "sourceUrls": [
+        "https://cdn.nba.com/teams/uploads/sites/1610612753/2022/11/orlando-magic-media-guide-2022-23.pdf",
+        "https://www.nba.com/magic/news/orlando-magic-utah-jazz-postgame-story-recap-20211107",
+        "https://www.tokyo-dome.co.jp/en/dome/access/?lang=en",
+        "https://mapcarta.com/29355332"
+      ],
+      "coverage": "primary dated event; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1996-11-08",
+      "homeAbbr": "ORL",
+      "awayAbbr": "BKN",
+      "auditGameId": 39159,
+      "arena": "Tokyo Dome",
+      "city": "Tokyo",
+      "latitude": 35.70551,
+      "longitude": 139.75197,
+      "altitude": false,
+      "neutral": true,
+      "sourceUrls": [
+        "https://cdn.nba.com/teams/uploads/sites/1610612753/2022/11/orlando-magic-media-guide-2022-23.pdf",
+        "https://www.nba.com/magic/news/orlando-magic-utah-jazz-postgame-story-recap-20211107",
+        "https://www.tokyo-dome.co.jp/en/dome/access/?lang=en",
+        "https://mapcarta.com/29355332"
+      ],
+      "coverage": "primary dated event; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1996-11-14",
+      "homeAbbr": "GSW",
+      "awayAbbr": "MIL",
+      "auditGameId": 39125,
+      "arena": "San Jose Arena",
+      "city": "San Jose",
+      "latitude": 37.33286,
+      "longitude": -121.90132,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://sfocii.org/sites/default/files/inline-files/Vol%201_GSW_MB_DSEIR.pdf",
+        "https://www.sapcenter.com/plan-your-visit/directions-parking",
+        "https://mapcarta.com/26611640"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1996-11-19",
+      "homeAbbr": "GSW",
+      "awayAbbr": "LAL",
+      "auditGameId": 39090,
+      "arena": "San Jose Arena",
+      "city": "San Jose",
+      "latitude": 37.33286,
+      "longitude": -121.90132,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://sfocii.org/sites/default/files/inline-files/Vol%201_GSW_MB_DSEIR.pdf",
+        "https://www.sapcenter.com/plan-your-visit/directions-parking",
+        "https://mapcarta.com/26611640"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1996-11-23",
+      "homeAbbr": "GSW",
+      "awayAbbr": "HOU",
+      "auditGameId": 39061,
+      "arena": "San Jose Arena",
+      "city": "San Jose",
+      "latitude": 37.33286,
+      "longitude": -121.90132,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://sfocii.org/sites/default/files/inline-files/Vol%201_GSW_MB_DSEIR.pdf",
+        "https://www.sapcenter.com/plan-your-visit/directions-parking",
+        "https://mapcarta.com/26611640"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1996-11-26",
+      "homeAbbr": "GSW",
+      "awayAbbr": "MIA",
+      "auditGameId": 39037,
+      "arena": "San Jose Arena",
+      "city": "San Jose",
+      "latitude": 37.33286,
+      "longitude": -121.90132,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://sfocii.org/sites/default/files/inline-files/Vol%201_GSW_MB_DSEIR.pdf",
+        "https://www.sapcenter.com/plan-your-visit/directions-parking",
+        "https://mapcarta.com/26611640"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1996-11-28",
+      "homeAbbr": "GSW",
+      "awayAbbr": "BKN",
+      "auditGameId": 39024,
+      "arena": "San Jose Arena",
+      "city": "San Jose",
+      "latitude": 37.33286,
+      "longitude": -121.90132,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://sfocii.org/sites/default/files/inline-files/Vol%201_GSW_MB_DSEIR.pdf",
+        "https://www.sapcenter.com/plan-your-visit/directions-parking",
+        "https://mapcarta.com/26611640"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1996-12-01",
+      "homeAbbr": "GSW",
+      "awayAbbr": "POR",
+      "auditGameId": 39003,
+      "arena": "San Jose Arena",
+      "city": "San Jose",
+      "latitude": 37.33286,
+      "longitude": -121.90132,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://sfocii.org/sites/default/files/inline-files/Vol%201_GSW_MB_DSEIR.pdf",
+        "https://www.sapcenter.com/plan-your-visit/directions-parking",
+        "https://mapcarta.com/26611640"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1996-12-03",
+      "homeAbbr": "GSW",
+      "awayAbbr": "DEN",
+      "auditGameId": 38990,
+      "arena": "San Jose Arena",
+      "city": "San Jose",
+      "latitude": 37.33286,
+      "longitude": -121.90132,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://sfocii.org/sites/default/files/inline-files/Vol%201_GSW_MB_DSEIR.pdf",
+        "https://www.sapcenter.com/plan-your-visit/directions-parking",
+        "https://mapcarta.com/26611640"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1996-12-06",
+      "homeAbbr": "GSW",
+      "awayAbbr": "IND",
+      "auditGameId": 38971,
+      "arena": "San Jose Arena",
+      "city": "San Jose",
+      "latitude": 37.33286,
+      "longitude": -121.90132,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://sfocii.org/sites/default/files/inline-files/Vol%201_GSW_MB_DSEIR.pdf",
+        "https://www.sapcenter.com/plan-your-visit/directions-parking",
+        "https://mapcarta.com/26611640"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1996-12-08",
+      "homeAbbr": "GSW",
+      "awayAbbr": "SAS",
+      "auditGameId": 38954,
+      "arena": "San Jose Arena",
+      "city": "San Jose",
+      "latitude": 37.33286,
+      "longitude": -121.90132,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://sfocii.org/sites/default/files/inline-files/Vol%201_GSW_MB_DSEIR.pdf",
+        "https://www.sapcenter.com/plan-your-visit/directions-parking",
+        "https://mapcarta.com/26611640"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1996-12-15",
+      "homeAbbr": "GSW",
+      "awayAbbr": "WAS",
+      "auditGameId": 38902,
+      "arena": "San Jose Arena",
+      "city": "San Jose",
+      "latitude": 37.33286,
+      "longitude": -121.90132,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://sfocii.org/sites/default/files/inline-files/Vol%201_GSW_MB_DSEIR.pdf",
+        "https://www.sapcenter.com/plan-your-visit/directions-parking",
+        "https://mapcarta.com/26611640"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1996-12-18",
+      "homeAbbr": "GSW",
+      "awayAbbr": "MIN",
+      "auditGameId": 38881,
+      "arena": "San Jose Arena",
+      "city": "San Jose",
+      "latitude": 37.33286,
+      "longitude": -121.90132,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://sfocii.org/sites/default/files/inline-files/Vol%201_GSW_MB_DSEIR.pdf",
+        "https://www.sapcenter.com/plan-your-visit/directions-parking",
+        "https://mapcarta.com/26611640"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1996-12-22",
+      "homeAbbr": "GSW",
+      "awayAbbr": "LAC",
+      "auditGameId": 38852,
+      "arena": "San Jose Arena",
+      "city": "San Jose",
+      "latitude": 37.33286,
+      "longitude": -121.90132,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://sfocii.org/sites/default/files/inline-files/Vol%201_GSW_MB_DSEIR.pdf",
+        "https://www.sapcenter.com/plan-your-visit/directions-parking",
+        "https://mapcarta.com/26611640"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1997-01-03",
+      "homeAbbr": "GSW",
+      "awayAbbr": "PHI",
+      "auditGameId": 38785,
+      "arena": "San Jose Arena",
+      "city": "San Jose",
+      "latitude": 37.33286,
+      "longitude": -121.90132,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://sfocii.org/sites/default/files/inline-files/Vol%201_GSW_MB_DSEIR.pdf",
+        "https://www.sapcenter.com/plan-your-visit/directions-parking",
+        "https://mapcarta.com/26611640"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1997-01-06",
+      "homeAbbr": "GSW",
+      "awayAbbr": "CHA",
+      "auditGameId": 38765,
+      "arena": "San Jose Arena",
+      "city": "San Jose",
+      "latitude": 37.33286,
+      "longitude": -121.90132,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://sfocii.org/sites/default/files/inline-files/Vol%201_GSW_MB_DSEIR.pdf",
+        "https://www.sapcenter.com/plan-your-visit/directions-parking",
+        "https://mapcarta.com/26611640"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1997-01-08",
+      "homeAbbr": "GSW",
+      "awayAbbr": "MEM",
+      "auditGameId": 38747,
+      "arena": "San Jose Arena",
+      "city": "San Jose",
+      "latitude": 37.33286,
+      "longitude": -121.90132,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://sfocii.org/sites/default/files/inline-files/Vol%201_GSW_MB_DSEIR.pdf",
+        "https://www.sapcenter.com/plan-your-visit/directions-parking",
+        "https://mapcarta.com/26611640"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1997-01-21",
+      "homeAbbr": "GSW",
+      "awayAbbr": "DAL",
+      "auditGameId": 38660,
+      "arena": "San Jose Arena",
+      "city": "San Jose",
+      "latitude": 37.33286,
+      "longitude": -121.90132,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://sfocii.org/sites/default/files/inline-files/Vol%201_GSW_MB_DSEIR.pdf",
+        "https://www.sapcenter.com/plan-your-visit/directions-parking",
+        "https://mapcarta.com/26611640"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1997-01-23",
+      "homeAbbr": "GSW",
+      "awayAbbr": "DET",
+      "auditGameId": 38644,
+      "arena": "San Jose Arena",
+      "city": "San Jose",
+      "latitude": 37.33286,
+      "longitude": -121.90132,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://sfocii.org/sites/default/files/inline-files/Vol%201_GSW_MB_DSEIR.pdf",
+        "https://www.sapcenter.com/plan-your-visit/directions-parking",
+        "https://mapcarta.com/26611640"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1997-01-27",
+      "homeAbbr": "GSW",
+      "awayAbbr": "MEM",
+      "auditGameId": 38618,
+      "arena": "San Jose Arena",
+      "city": "San Jose",
+      "latitude": 37.33286,
+      "longitude": -121.90132,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://sfocii.org/sites/default/files/inline-files/Vol%201_GSW_MB_DSEIR.pdf",
+        "https://www.sapcenter.com/plan-your-visit/directions-parking",
+        "https://mapcarta.com/26611640"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1997-01-29",
+      "homeAbbr": "GSW",
+      "awayAbbr": "OKC",
+      "auditGameId": 38599,
+      "arena": "San Jose Arena",
+      "city": "San Jose",
+      "latitude": 37.33286,
+      "longitude": -121.90132,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://sfocii.org/sites/default/files/inline-files/Vol%201_GSW_MB_DSEIR.pdf",
+        "https://www.sapcenter.com/plan-your-visit/directions-parking",
+        "https://mapcarta.com/26611640"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1997-01-31",
+      "homeAbbr": "GSW",
+      "awayAbbr": "CHI",
+      "auditGameId": 38590,
+      "arena": "San Jose Arena",
+      "city": "San Jose",
+      "latitude": 37.33286,
+      "longitude": -121.90132,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://sfocii.org/sites/default/files/inline-files/Vol%201_GSW_MB_DSEIR.pdf",
+        "https://www.sapcenter.com/plan-your-visit/directions-parking",
+        "https://mapcarta.com/26611640"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1997-02-04",
+      "homeAbbr": "LAC",
+      "awayAbbr": "LAL",
+      "auditGameId": 38557,
+      "arena": "Arrowhead Pond of Anaheim",
+      "city": "Anaheim",
+      "latitude": 33.80778,
+      "longitude": -117.87654,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://www.nba.com/lakers/news/161021-lakers-history-orange-county",
+        "https://mapcarta.com/26611642"
+      ],
+      "coverage": "primary team history plus frozen game/opponent identity; 1992 playoff and Lakers 1997-99 subset; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1997-02-04",
+      "homeAbbr": "GSW",
+      "awayAbbr": "ATL",
+      "auditGameId": 38559,
+      "arena": "San Jose Arena",
+      "city": "San Jose",
+      "latitude": 37.33286,
+      "longitude": -121.90132,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://sfocii.org/sites/default/files/inline-files/Vol%201_GSW_MB_DSEIR.pdf",
+        "https://www.sapcenter.com/plan-your-visit/directions-parking",
+        "https://mapcarta.com/26611640"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1997-02-14",
+      "homeAbbr": "WAS",
+      "awayAbbr": "BKN",
+      "auditGameId": 38514,
+      "arena": "Baltimore Arena",
+      "city": "Baltimore",
+      "latitude": 39.28848,
+      "longitude": -76.6187,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://www.nba.com/game/njn-vs-was-0029600707/box-score",
+        "https://www.cfgbankarena.com/plan-your-visit/",
+        "https://mapcarta.com/W337906758"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1997-02-19",
+      "homeAbbr": "GSW",
+      "awayAbbr": "BOS",
+      "auditGameId": 38474,
+      "arena": "San Jose Arena",
+      "city": "San Jose",
+      "latitude": 37.33286,
+      "longitude": -121.90132,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://sfocii.org/sites/default/files/inline-files/Vol%201_GSW_MB_DSEIR.pdf",
+        "https://www.sapcenter.com/plan-your-visit/directions-parking",
+        "https://mapcarta.com/26611640"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1997-03-03",
+      "homeAbbr": "GSW",
+      "awayAbbr": "UTA",
+      "auditGameId": 38386,
+      "arena": "San Jose Arena",
+      "city": "San Jose",
+      "latitude": 37.33286,
+      "longitude": -121.90132,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://sfocii.org/sites/default/files/inline-files/Vol%201_GSW_MB_DSEIR.pdf",
+        "https://www.sapcenter.com/plan-your-visit/directions-parking",
+        "https://mapcarta.com/26611640"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1997-03-05",
+      "homeAbbr": "GSW",
+      "awayAbbr": "HOU",
+      "auditGameId": 38368,
+      "arena": "San Jose Arena",
+      "city": "San Jose",
+      "latitude": 37.33286,
+      "longitude": -121.90132,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://sfocii.org/sites/default/files/inline-files/Vol%201_GSW_MB_DSEIR.pdf",
+        "https://www.sapcenter.com/plan-your-visit/directions-parking",
+        "https://mapcarta.com/26611640"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1997-03-07",
+      "homeAbbr": "GSW",
+      "awayAbbr": "ORL",
+      "auditGameId": 38359,
+      "arena": "San Jose Arena",
+      "city": "San Jose",
+      "latitude": 37.33286,
+      "longitude": -121.90132,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://sfocii.org/sites/default/files/inline-files/Vol%201_GSW_MB_DSEIR.pdf",
+        "https://www.sapcenter.com/plan-your-visit/directions-parking",
+        "https://mapcarta.com/26611640"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1997-03-09",
+      "homeAbbr": "GSW",
+      "awayAbbr": "SAC",
+      "auditGameId": 38341,
+      "arena": "San Jose Arena",
+      "city": "San Jose",
+      "latitude": 37.33286,
+      "longitude": -121.90132,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://sfocii.org/sites/default/files/inline-files/Vol%201_GSW_MB_DSEIR.pdf",
+        "https://www.sapcenter.com/plan-your-visit/directions-parking",
+        "https://mapcarta.com/26611640"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1997-03-13",
+      "homeAbbr": "GSW",
+      "awayAbbr": "CLE",
+      "auditGameId": 38312,
+      "arena": "San Jose Arena",
+      "city": "San Jose",
+      "latitude": 37.33286,
+      "longitude": -121.90132,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://sfocii.org/sites/default/files/inline-files/Vol%201_GSW_MB_DSEIR.pdf",
+        "https://www.sapcenter.com/plan-your-visit/directions-parking",
+        "https://mapcarta.com/26611640"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1997-03-15",
+      "homeAbbr": "GSW",
+      "awayAbbr": "TOR",
+      "auditGameId": 38296,
+      "arena": "San Jose Arena",
+      "city": "San Jose",
+      "latitude": 37.33286,
+      "longitude": -121.90132,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://sfocii.org/sites/default/files/inline-files/Vol%201_GSW_MB_DSEIR.pdf",
+        "https://www.sapcenter.com/plan-your-visit/directions-parking",
+        "https://mapcarta.com/26611640"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1997-03-17",
+      "homeAbbr": "GSW",
+      "awayAbbr": "PHX",
+      "auditGameId": 38280,
+      "arena": "San Jose Arena",
+      "city": "San Jose",
+      "latitude": 37.33286,
+      "longitude": -121.90132,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://sfocii.org/sites/default/files/inline-files/Vol%201_GSW_MB_DSEIR.pdf",
+        "https://www.sapcenter.com/plan-your-visit/directions-parking",
+        "https://mapcarta.com/26611640"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1997-03-25",
+      "homeAbbr": "GSW",
+      "awayAbbr": "OKC",
+      "auditGameId": 38230,
+      "arena": "San Jose Arena",
+      "city": "San Jose",
+      "latitude": 37.33286,
+      "longitude": -121.90132,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://sfocii.org/sites/default/files/inline-files/Vol%201_GSW_MB_DSEIR.pdf",
+        "https://www.sapcenter.com/plan-your-visit/directions-parking",
+        "https://mapcarta.com/26611640"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1997-03-30",
+      "homeAbbr": "GSW",
+      "awayAbbr": "MIN",
+      "auditGameId": 38185,
+      "arena": "San Jose Arena",
+      "city": "San Jose",
+      "latitude": 37.33286,
+      "longitude": -121.90132,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://sfocii.org/sites/default/files/inline-files/Vol%201_GSW_MB_DSEIR.pdf",
+        "https://www.sapcenter.com/plan-your-visit/directions-parking",
+        "https://mapcarta.com/26611640"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1997-04-03",
+      "homeAbbr": "GSW",
+      "awayAbbr": "DAL",
+      "auditGameId": 38163,
+      "arena": "San Jose Arena",
+      "city": "San Jose",
+      "latitude": 37.33286,
+      "longitude": -121.90132,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://sfocii.org/sites/default/files/inline-files/Vol%201_GSW_MB_DSEIR.pdf",
+        "https://www.sapcenter.com/plan-your-visit/directions-parking",
+        "https://mapcarta.com/26611640"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1997-04-05",
+      "homeAbbr": "GSW",
+      "awayAbbr": "SAS",
+      "auditGameId": 38148,
+      "arena": "San Jose Arena",
+      "city": "San Jose",
+      "latitude": 37.33286,
+      "longitude": -121.90132,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://sfocii.org/sites/default/files/inline-files/Vol%201_GSW_MB_DSEIR.pdf",
+        "https://www.sapcenter.com/plan-your-visit/directions-parking",
+        "https://mapcarta.com/26611640"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1997-04-06",
+      "homeAbbr": "GSW",
+      "awayAbbr": "UTA",
+      "auditGameId": 38136,
+      "arena": "San Jose Arena",
+      "city": "San Jose",
+      "latitude": 37.33286,
+      "longitude": -121.90132,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://sfocii.org/sites/default/files/inline-files/Vol%201_GSW_MB_DSEIR.pdf",
+        "https://www.sapcenter.com/plan-your-visit/directions-parking",
+        "https://mapcarta.com/26611640"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1997-04-08",
+      "homeAbbr": "GSW",
+      "awayAbbr": "LAL",
+      "auditGameId": 38122,
+      "arena": "San Jose Arena",
+      "city": "San Jose",
+      "latitude": 37.33286,
+      "longitude": -121.90132,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://sfocii.org/sites/default/files/inline-files/Vol%201_GSW_MB_DSEIR.pdf",
+        "https://www.sapcenter.com/plan-your-visit/directions-parking",
+        "https://mapcarta.com/26611640"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1997-04-10",
+      "homeAbbr": "GSW",
+      "awayAbbr": "DEN",
+      "auditGameId": 38111,
+      "arena": "San Jose Arena",
+      "city": "San Jose",
+      "latitude": 37.33286,
+      "longitude": -121.90132,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://sfocii.org/sites/default/files/inline-files/Vol%201_GSW_MB_DSEIR.pdf",
+        "https://www.sapcenter.com/plan-your-visit/directions-parking",
+        "https://mapcarta.com/26611640"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1997-04-13",
+      "homeAbbr": "GSW",
+      "awayAbbr": "PHX",
+      "auditGameId": 38089,
+      "arena": "San Jose Arena",
+      "city": "San Jose",
+      "latitude": 37.33286,
+      "longitude": -121.90132,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://sfocii.org/sites/default/files/inline-files/Vol%201_GSW_MB_DSEIR.pdf",
+        "https://www.sapcenter.com/plan-your-visit/directions-parking",
+        "https://mapcarta.com/26611640"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1997-04-19",
+      "homeAbbr": "GSW",
+      "awayAbbr": "SAC",
+      "auditGameId": 38046,
+      "arena": "San Jose Arena",
+      "city": "San Jose",
+      "latitude": 37.33286,
+      "longitude": -121.90132,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://sfocii.org/sites/default/files/inline-files/Vol%201_GSW_MB_DSEIR.pdf",
+        "https://www.sapcenter.com/plan-your-visit/directions-parking",
+        "https://mapcarta.com/26611640"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1997-12-06",
+      "homeAbbr": "DAL",
+      "awayAbbr": "HOU",
+      "auditGameId": 40155,
+      "arena": "Palacio de los Deportes",
+      "city": "Mexico City",
+      "latitude": 19.40493,
+      "longitude": -99.09951,
+      "altitude": true,
+      "neutral": true,
+      "sourceUrls": [
+        "https://www.nba.com/news/history-this-date-in-nba-june",
+        "https://www.palaciodelosdeportes.mx/como-llegar",
+        "https://mapcarta.com/35467796"
+      ],
+      "coverage": "primary dated event; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1998-03-12",
+      "homeAbbr": "LAC",
+      "awayAbbr": "LAL",
+      "auditGameId": 39507,
+      "arena": "Arrowhead Pond of Anaheim",
+      "city": "Anaheim",
+      "latitude": 33.80778,
+      "longitude": -117.87654,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://www.nba.com/lakers/news/161021-lakers-history-orange-county",
+        "https://mapcarta.com/26611642"
+      ],
+      "coverage": "primary team history plus frozen game/opponent identity; 1992 playoff and Lakers 1997-99 subset; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1999-02-25",
+      "homeAbbr": "LAC",
+      "awayAbbr": "LAL",
+      "auditGameId": 40980,
+      "arena": "Arrowhead Pond of Anaheim",
+      "city": "Anaheim",
+      "latitude": 33.80778,
+      "longitude": -117.87654,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://www.nba.com/lakers/news/161021-lakers-history-orange-county",
+        "https://mapcarta.com/26611642"
+      ],
+      "coverage": "primary team history plus frozen game/opponent identity; 1992 playoff and Lakers 1997-99 subset; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1999-11-05",
+      "homeAbbr": "SAC",
+      "awayAbbr": "MIN",
+      "auditGameId": 42296,
+      "arena": "Tokyo Dome",
+      "city": "Tokyo",
+      "latitude": 35.70551,
+      "longitude": 139.75197,
+      "altitude": false,
+      "neutral": true,
+      "sourceUrls": [
+        "https://www.nba.com/game/min-vs-sac-0029900034",
+        "https://www.nba.com/news/history-this-date-in-nba-nov",
+        "https://www.tokyo-dome.co.jp/en/dome/access/?lang=en",
+        "https://mapcarta.com/29355332"
+      ],
+      "coverage": "primary dated event; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "1999-11-06",
+      "homeAbbr": "MIN",
+      "awayAbbr": "SAC",
+      "auditGameId": 42284,
+      "arena": "Tokyo Dome",
+      "city": "Tokyo",
+      "latitude": 35.70551,
+      "longitude": 139.75197,
+      "altitude": false,
+      "neutral": true,
+      "sourceUrls": [
+        "https://www.nba.com/game/min-vs-sac-0029900034",
+        "https://www.nba.com/news/history-this-date-in-nba-nov",
+        "https://www.tokyo-dome.co.jp/en/dome/access/?lang=en",
+        "https://mapcarta.com/29355332"
+      ],
+      "coverage": "primary dated event; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "2003-10-30",
+      "homeAbbr": "OKC",
+      "awayAbbr": "LAC",
+      "auditGameId": 47065,
+      "arena": "Saitama Super Arena",
+      "city": "Saitama",
+      "latitude": 35.89495,
+      "longitude": 139.63097,
+      "altitude": false,
+      "neutral": true,
+      "sourceUrls": [
+        "https://www.nba.com/game/lac-vs-sea-0020300015",
+        "https://www.saitama-arena.co.jp/e/access/car.html",
+        "https://mapcarta.com/34400924"
+      ],
+      "coverage": "primary dated event; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "2003-10-31",
+      "homeAbbr": "LAC",
+      "awayAbbr": "OKC",
+      "auditGameId": 47061,
+      "arena": "Saitama Super Arena",
+      "city": "Saitama",
+      "latitude": 35.89495,
+      "longitude": 139.63097,
+      "altitude": false,
+      "neutral": true,
+      "sourceUrls": [
+        "https://www.nba.com/game/lac-vs-sea-0020300015",
+        "https://www.saitama-arena.co.jp/e/access/car.html",
+        "https://mapcarta.com/34400924"
+      ],
+      "coverage": "primary dated event; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "2005-12-16",
+      "homeAbbr": "NOP",
+      "awayAbbr": "PHX",
+      "auditGameId": 15188,
+      "arena": "Pete Maravich Assembly Center",
+      "city": "Baton Rouge",
+      "latitude": 30.41448,
+      "longitude": -91.18449,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://www.nba.com/game/phx-vs-nok-0020500329/box-score",
+        "https://ak-static-int.nba.com/wp-content/uploads/sites/3/2016/10/2016-17-Media-Guide-Pelicans.pdf",
+        "https://mapcarta.com/21010772"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "2006-01-13",
+      "homeAbbr": "NOP",
+      "awayAbbr": "SAC",
+      "auditGameId": 15002,
+      "arena": "Lloyd Noble Center",
+      "city": "Norman",
+      "latitude": 35.18703,
+      "longitude": -97.44427,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://www.nba.com/game/sac-vs-nok-0020500518",
+        "https://ak-static-int.nba.com/wp-content/uploads/sites/3/2016/10/2016-17-Media-Guide-Pelicans.pdf",
+        "https://mapcarta.com/W162153700"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "2006-03-08",
+      "homeAbbr": "NOP",
+      "awayAbbr": "LAL",
+      "auditGameId": 14621,
+      "arena": "New Orleans Arena",
+      "city": "New Orleans",
+      "latitude": 29.94906,
+      "longitude": -90.08217,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://www.nba.com/pelicans/news/the_hornets__hurricane_katr_2010_08_26.html",
+        "https://ak-static-int.nba.com/wp-content/uploads/sites/3/2016/10/2016-17-Media-Guide-Pelicans.pdf",
+        "https://mapcarta.com/W328774581"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "2006-03-18",
+      "homeAbbr": "NOP",
+      "awayAbbr": "DEN",
+      "auditGameId": 14543,
+      "arena": "New Orleans Arena",
+      "city": "New Orleans",
+      "latitude": 29.94906,
+      "longitude": -90.08217,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://www.nba.com/pelicans/news/the_hornets__hurricane_katr_2010_08_26.html",
+        "https://ak-static-int.nba.com/wp-content/uploads/sites/3/2016/10/2016-17-Media-Guide-Pelicans.pdf",
+        "https://mapcarta.com/W328774581"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "2006-03-21",
+      "homeAbbr": "NOP",
+      "awayAbbr": "LAC",
+      "auditGameId": 14523,
+      "arena": "New Orleans Arena",
+      "city": "New Orleans",
+      "latitude": 29.94906,
+      "longitude": -90.08217,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://www.nba.com/pelicans/news/the_hornets__hurricane_katr_2010_08_26.html",
+        "https://ak-static-int.nba.com/wp-content/uploads/sites/3/2016/10/2016-17-Media-Guide-Pelicans.pdf",
+        "https://mapcarta.com/W328774581"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "2006-11-05",
+      "homeAbbr": "NOP",
+      "awayAbbr": "HOU",
+      "auditGameId": 16708,
+      "arena": "New Orleans Arena",
+      "city": "New Orleans",
+      "latitude": 29.94906,
+      "longitude": -90.08217,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://www.nba.com/pelicans/news/the_hornets__hurricane_katr_2010_08_26.html",
+        "https://ak-static-int.nba.com/wp-content/uploads/sites/3/2016/10/2016-17-Media-Guide-Pelicans.pdf",
+        "https://mapcarta.com/W328774581"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "2006-12-14",
+      "homeAbbr": "NOP",
+      "awayAbbr": "SAS",
+      "auditGameId": 16421,
+      "arena": "New Orleans Arena",
+      "city": "New Orleans",
+      "latitude": 29.94906,
+      "longitude": -90.08217,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://www.nba.com/pelicans/news/the_hornets__hurricane_katr_2010_08_26.html",
+        "https://ak-static-int.nba.com/wp-content/uploads/sites/3/2016/10/2016-17-Media-Guide-Pelicans.pdf",
+        "https://mapcarta.com/W328774581"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "2006-12-16",
+      "homeAbbr": "NOP",
+      "awayAbbr": "DAL",
+      "auditGameId": 16400,
+      "arena": "New Orleans Arena",
+      "city": "New Orleans",
+      "latitude": 29.94906,
+      "longitude": -90.08217,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://www.nba.com/pelicans/news/the_hornets__hurricane_katr_2010_08_26.html",
+        "https://ak-static-int.nba.com/wp-content/uploads/sites/3/2016/10/2016-17-Media-Guide-Pelicans.pdf",
+        "https://mapcarta.com/W328774581"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "2007-01-26",
+      "homeAbbr": "NOP",
+      "awayAbbr": "SAC",
+      "auditGameId": 16110,
+      "arena": "New Orleans Arena",
+      "city": "New Orleans",
+      "latitude": 29.94906,
+      "longitude": -90.08217,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://www.nba.com/pelicans/news/the_hornets__hurricane_katr_2010_08_26.html",
+        "https://ak-static-int.nba.com/wp-content/uploads/sites/3/2016/10/2016-17-Media-Guide-Pelicans.pdf",
+        "https://mapcarta.com/W328774581"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "2007-02-23",
+      "homeAbbr": "NOP",
+      "awayAbbr": "OKC",
+      "auditGameId": 15926,
+      "arena": "New Orleans Arena",
+      "city": "New Orleans",
+      "latitude": 29.94906,
+      "longitude": -90.08217,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://www.nba.com/pelicans/news/the_hornets__hurricane_katr_2010_08_26.html",
+        "https://ak-static-int.nba.com/wp-content/uploads/sites/3/2016/10/2016-17-Media-Guide-Pelicans.pdf",
+        "https://mapcarta.com/W328774581"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "2007-03-23",
+      "homeAbbr": "NOP",
+      "awayAbbr": "LAL",
+      "auditGameId": 15718,
+      "arena": "New Orleans Arena",
+      "city": "New Orleans",
+      "latitude": 29.94906,
+      "longitude": -90.08217,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://www.nba.com/pelicans/news/the_hornets__hurricane_katr_2010_08_26.html",
+        "https://ak-static-int.nba.com/wp-content/uploads/sites/3/2016/10/2016-17-Media-Guide-Pelicans.pdf",
+        "https://mapcarta.com/W328774581"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "2011-03-04",
+      "homeAbbr": "BKN",
+      "awayAbbr": "TOR",
+      "auditGameId": 20751,
+      "arena": "The O2 Arena",
+      "city": "London",
+      "latitude": 51.50293,
+      "longitude": 0.00318,
+      "altitude": false,
+      "neutral": true,
+      "sourceUrls": [
+        "https://www.nba.com/news/nba-london-game-2026-everything-to-know",
+        "https://www.theo2.co.uk/m/visit-us/maps",
+        "https://mapcarta.com/de/W161559801"
+      ],
+      "coverage": "primary dated event; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "2011-03-05",
+      "homeAbbr": "BKN",
+      "awayAbbr": "TOR",
+      "auditGameId": 20741,
+      "arena": "The O2 Arena",
+      "city": "London",
+      "latitude": 51.50293,
+      "longitude": 0.00318,
+      "altitude": false,
+      "neutral": true,
+      "sourceUrls": [
+        "https://www.nba.com/news/nba-london-game-2026-everything-to-know",
+        "https://www.theo2.co.uk/m/visit-us/maps",
+        "https://mapcarta.com/de/W161559801"
+      ],
+      "coverage": "primary dated event; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "2020-12-23",
+      "homeAbbr": "TOR",
+      "awayAbbr": "NOP",
+      "auditGameId": 8943,
+      "arena": "Amalie Arena",
+      "city": "Tampa",
+      "latitude": 27.9427,
+      "longitude": -82.45189,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://www.nba.com/news/raptors-to-finish-2020-21-season-in-tampa",
+        "https://www.nba.com/raptors/raptors-announce-2020-21-first-half-schedule",
+        "https://mapy.com/en/?id=1088281291&source=osm"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "2020-12-31",
+      "homeAbbr": "TOR",
+      "awayAbbr": "NYK",
+      "auditGameId": 8887,
+      "arena": "Amalie Arena",
+      "city": "Tampa",
+      "latitude": 27.9427,
+      "longitude": -82.45189,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://www.nba.com/news/raptors-to-finish-2020-21-season-in-tampa",
+        "https://www.nba.com/raptors/raptors-announce-2020-21-first-half-schedule",
+        "https://mapy.com/en/?id=1088281291&source=osm"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "2021-01-04",
+      "homeAbbr": "TOR",
+      "awayAbbr": "BOS",
+      "auditGameId": 8853,
+      "arena": "Amalie Arena",
+      "city": "Tampa",
+      "latitude": 27.9427,
+      "longitude": -82.45189,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://www.nba.com/news/raptors-to-finish-2020-21-season-in-tampa",
+        "https://www.nba.com/raptors/raptors-announce-2020-21-first-half-schedule",
+        "https://mapy.com/en/?id=1088281291&source=osm"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "2021-01-14",
+      "homeAbbr": "TOR",
+      "awayAbbr": "CHA",
+      "auditGameId": 8780,
+      "arena": "Amalie Arena",
+      "city": "Tampa",
+      "latitude": 27.9427,
+      "longitude": -82.45189,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://www.nba.com/news/raptors-to-finish-2020-21-season-in-tampa",
+        "https://www.nba.com/raptors/raptors-announce-2020-21-first-half-schedule",
+        "https://mapy.com/en/?id=1088281291&source=osm"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "2021-01-16",
+      "homeAbbr": "TOR",
+      "awayAbbr": "CHA",
+      "auditGameId": 8772,
+      "arena": "Amalie Arena",
+      "city": "Tampa",
+      "latitude": 27.9427,
+      "longitude": -82.45189,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://www.nba.com/news/raptors-to-finish-2020-21-season-in-tampa",
+        "https://www.nba.com/raptors/raptors-announce-2020-21-first-half-schedule",
+        "https://mapy.com/en/?id=1088281291&source=osm"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "2021-01-18",
+      "homeAbbr": "TOR",
+      "awayAbbr": "DAL",
+      "auditGameId": 8760,
+      "arena": "Amalie Arena",
+      "city": "Tampa",
+      "latitude": 27.9427,
+      "longitude": -82.45189,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://www.nba.com/news/raptors-to-finish-2020-21-season-in-tampa",
+        "https://www.nba.com/raptors/raptors-announce-2020-21-first-half-schedule",
+        "https://mapy.com/en/?id=1088281291&source=osm"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "2021-01-20",
+      "homeAbbr": "TOR",
+      "awayAbbr": "MIA",
+      "auditGameId": 8745,
+      "arena": "Amalie Arena",
+      "city": "Tampa",
+      "latitude": 27.9427,
+      "longitude": -82.45189,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://www.nba.com/news/raptors-to-finish-2020-21-season-in-tampa",
+        "https://www.nba.com/raptors/raptors-announce-2020-21-first-half-schedule",
+        "https://mapy.com/en/?id=1088281291&source=osm"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "2021-01-22",
+      "homeAbbr": "TOR",
+      "awayAbbr": "MIA",
+      "auditGameId": 8733,
+      "arena": "Amalie Arena",
+      "city": "Tampa",
+      "latitude": 27.9427,
+      "longitude": -82.45189,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://www.nba.com/news/raptors-to-finish-2020-21-season-in-tampa",
+        "https://www.nba.com/raptors/raptors-announce-2020-21-first-half-schedule",
+        "https://mapy.com/en/?id=1088281291&source=osm"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "2021-01-27",
+      "homeAbbr": "TOR",
+      "awayAbbr": "MIL",
+      "auditGameId": 8697,
+      "arena": "Amalie Arena",
+      "city": "Tampa",
+      "latitude": 27.9427,
+      "longitude": -82.45189,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://www.nba.com/news/raptors-to-finish-2020-21-season-in-tampa",
+        "https://www.nba.com/raptors/raptors-announce-2020-21-first-half-schedule",
+        "https://mapy.com/en/?id=1088281291&source=osm"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "2021-01-29",
+      "homeAbbr": "TOR",
+      "awayAbbr": "SAC",
+      "auditGameId": 8677,
+      "arena": "Amalie Arena",
+      "city": "Tampa",
+      "latitude": 27.9427,
+      "longitude": -82.45189,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://www.nba.com/news/raptors-to-finish-2020-21-season-in-tampa",
+        "https://www.nba.com/raptors/raptors-announce-2020-21-first-half-schedule",
+        "https://mapy.com/en/?id=1088281291&source=osm"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "2021-01-31",
+      "homeAbbr": "TOR",
+      "awayAbbr": "ORL",
+      "auditGameId": 8663,
+      "arena": "Amalie Arena",
+      "city": "Tampa",
+      "latitude": 27.9427,
+      "longitude": -82.45189,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://www.nba.com/news/raptors-to-finish-2020-21-season-in-tampa",
+        "https://www.nba.com/raptors/raptors-announce-2020-21-first-half-schedule",
+        "https://mapy.com/en/?id=1088281291&source=osm"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "2021-02-14",
+      "homeAbbr": "TOR",
+      "awayAbbr": "MIN",
+      "auditGameId": 8555,
+      "arena": "Amalie Arena",
+      "city": "Tampa",
+      "latitude": 27.9427,
+      "longitude": -82.45189,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://www.nba.com/news/raptors-to-finish-2020-21-season-in-tampa",
+        "https://www.nba.com/raptors/raptors-announce-2020-21-first-half-schedule",
+        "https://mapy.com/en/?id=1088281291&source=osm"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "2021-02-21",
+      "homeAbbr": "TOR",
+      "awayAbbr": "PHI",
+      "auditGameId": 8506,
+      "arena": "Amalie Arena",
+      "city": "Tampa",
+      "latitude": 27.9427,
+      "longitude": -82.45189,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://www.nba.com/news/raptors-to-finish-2020-21-season-in-tampa",
+        "https://www.nba.com/raptors/raptors-announce-2020-21-first-half-schedule",
+        "https://mapy.com/en/?id=1088281291&source=osm"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "2021-02-23",
+      "homeAbbr": "TOR",
+      "awayAbbr": "PHI",
+      "auditGameId": 8493,
+      "arena": "Amalie Arena",
+      "city": "Tampa",
+      "latitude": 27.9427,
+      "longitude": -82.45189,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://www.nba.com/news/raptors-to-finish-2020-21-season-in-tampa",
+        "https://www.nba.com/raptors/raptors-announce-2020-21-first-half-schedule",
+        "https://mapy.com/en/?id=1088281291&source=osm"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "2021-02-26",
+      "homeAbbr": "TOR",
+      "awayAbbr": "HOU",
+      "auditGameId": 8472,
+      "arena": "Amalie Arena",
+      "city": "Tampa",
+      "latitude": 27.9427,
+      "longitude": -82.45189,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://www.nba.com/news/raptors-to-finish-2020-21-season-in-tampa",
+        "https://www.nba.com/raptors/raptors-announce-2020-21-first-half-schedule",
+        "https://mapy.com/en/?id=1088281291&source=osm"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "2021-03-03",
+      "homeAbbr": "TOR",
+      "awayAbbr": "DET",
+      "auditGameId": 8434,
+      "arena": "Amalie Arena",
+      "city": "Tampa",
+      "latitude": 27.9427,
+      "longitude": -82.45189,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://www.nba.com/news/raptors-to-finish-2020-21-season-in-tampa",
+        "https://www.nba.com/raptors/raptors-announce-2020-21-first-half-schedule",
+        "https://mapy.com/en/?id=1088281291&source=osm"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "2021-03-11",
+      "homeAbbr": "TOR",
+      "awayAbbr": "ATL",
+      "auditGameId": 8405,
+      "arena": "Amalie Arena",
+      "city": "Tampa",
+      "latitude": 27.9427,
+      "longitude": -82.45189,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://www.nba.com/news/raptors-to-finish-2020-21-season-in-tampa",
+        "https://www.nba.com/raptors/raptors-announce-2020-21-first-half-schedule",
+        "https://mapy.com/en/?id=1088281291&source=osm"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "2021-03-19",
+      "homeAbbr": "TOR",
+      "awayAbbr": "UTA",
+      "auditGameId": 8343,
+      "arena": "Amalie Arena",
+      "city": "Tampa",
+      "latitude": 27.9427,
+      "longitude": -82.45189,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://www.nba.com/news/raptors-to-finish-2020-21-season-in-tampa",
+        "https://www.nba.com/raptors/raptors-announce-2020-21-first-half-schedule",
+        "https://mapy.com/en/?id=1088281291&source=osm"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "2021-03-24",
+      "homeAbbr": "TOR",
+      "awayAbbr": "DEN",
+      "auditGameId": 8310,
+      "arena": "Amalie Arena",
+      "city": "Tampa",
+      "latitude": 27.9427,
+      "longitude": -82.45189,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://www.nba.com/news/raptors-to-finish-2020-21-season-in-tampa",
+        "https://www.nba.com/raptors/raptors-announce-2020-21-first-half-schedule",
+        "https://mapy.com/en/?id=1088281291&source=osm"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "2021-03-26",
+      "homeAbbr": "TOR",
+      "awayAbbr": "PHX",
+      "auditGameId": 8288,
+      "arena": "Amalie Arena",
+      "city": "Tampa",
+      "latitude": 27.9427,
+      "longitude": -82.45189,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://www.nba.com/news/raptors-to-finish-2020-21-season-in-tampa",
+        "https://www.nba.com/raptors/raptors-announce-2020-21-first-half-schedule",
+        "https://mapy.com/en/?id=1088281291&source=osm"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "2021-03-28",
+      "homeAbbr": "TOR",
+      "awayAbbr": "POR",
+      "auditGameId": 8272,
+      "arena": "Amalie Arena",
+      "city": "Tampa",
+      "latitude": 27.9427,
+      "longitude": -82.45189,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://www.nba.com/news/raptors-to-finish-2020-21-season-in-tampa",
+        "https://www.nba.com/raptors/raptors-announce-2020-21-first-half-schedule",
+        "https://mapy.com/en/?id=1088281291&source=osm"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "2021-04-02",
+      "homeAbbr": "TOR",
+      "awayAbbr": "GSW",
+      "auditGameId": 8235,
+      "arena": "Amalie Arena",
+      "city": "Tampa",
+      "latitude": 27.9427,
+      "longitude": -82.45189,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://www.nba.com/news/raptors-to-finish-2020-21-season-in-tampa",
+        "https://www.nba.com/raptors/raptors-announce-2020-21-first-half-schedule",
+        "https://mapy.com/en/?id=1088281291&source=osm"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "2021-04-05",
+      "homeAbbr": "TOR",
+      "awayAbbr": "WAS",
+      "auditGameId": 8209,
+      "arena": "Amalie Arena",
+      "city": "Tampa",
+      "latitude": 27.9427,
+      "longitude": -82.45189,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://www.nba.com/news/raptors-to-finish-2020-21-season-in-tampa",
+        "https://www.nba.com/raptors/raptors-announce-2020-21-first-half-schedule",
+        "https://mapy.com/en/?id=1088281291&source=osm"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "2021-04-06",
+      "homeAbbr": "TOR",
+      "awayAbbr": "LAL",
+      "auditGameId": 8204,
+      "arena": "Amalie Arena",
+      "city": "Tampa",
+      "latitude": 27.9427,
+      "longitude": -82.45189,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://www.nba.com/news/raptors-to-finish-2020-21-season-in-tampa",
+        "https://www.nba.com/raptors/raptors-announce-2020-21-first-half-schedule",
+        "https://mapy.com/en/?id=1088281291&source=osm"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "2021-04-08",
+      "homeAbbr": "TOR",
+      "awayAbbr": "CHI",
+      "auditGameId": 8183,
+      "arena": "Amalie Arena",
+      "city": "Tampa",
+      "latitude": 27.9427,
+      "longitude": -82.45189,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://www.nba.com/news/raptors-to-finish-2020-21-season-in-tampa",
+        "https://www.nba.com/raptors/raptors-announce-2020-21-first-half-schedule",
+        "https://mapy.com/en/?id=1088281291&source=osm"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "2021-04-13",
+      "homeAbbr": "TOR",
+      "awayAbbr": "ATL",
+      "auditGameId": 8143,
+      "arena": "Amalie Arena",
+      "city": "Tampa",
+      "latitude": 27.9427,
+      "longitude": -82.45189,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://www.nba.com/news/raptors-to-finish-2020-21-season-in-tampa",
+        "https://www.nba.com/raptors/raptors-announce-2020-21-first-half-schedule",
+        "https://mapy.com/en/?id=1088281291&source=osm"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "2021-04-14",
+      "homeAbbr": "TOR",
+      "awayAbbr": "SAS",
+      "auditGameId": 8135,
+      "arena": "Amalie Arena",
+      "city": "Tampa",
+      "latitude": 27.9427,
+      "longitude": -82.45189,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://www.nba.com/news/raptors-to-finish-2020-21-season-in-tampa",
+        "https://www.nba.com/raptors/raptors-announce-2020-21-first-half-schedule",
+        "https://mapy.com/en/?id=1088281291&source=osm"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "2021-04-16",
+      "homeAbbr": "TOR",
+      "awayAbbr": "ORL",
+      "auditGameId": 8118,
+      "arena": "Amalie Arena",
+      "city": "Tampa",
+      "latitude": 27.9427,
+      "longitude": -82.45189,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://www.nba.com/news/raptors-to-finish-2020-21-season-in-tampa",
+        "https://www.nba.com/raptors/raptors-announce-2020-21-first-half-schedule",
+        "https://mapy.com/en/?id=1088281291&source=osm"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "2021-04-18",
+      "homeAbbr": "TOR",
+      "awayAbbr": "OKC",
+      "auditGameId": 8107,
+      "arena": "Amalie Arena",
+      "city": "Tampa",
+      "latitude": 27.9427,
+      "longitude": -82.45189,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://www.nba.com/news/raptors-to-finish-2020-21-season-in-tampa",
+        "https://www.nba.com/raptors/raptors-announce-2020-21-first-half-schedule",
+        "https://mapy.com/en/?id=1088281291&source=osm"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "2021-04-21",
+      "homeAbbr": "TOR",
+      "awayAbbr": "BKN",
+      "auditGameId": 8083,
+      "arena": "Amalie Arena",
+      "city": "Tampa",
+      "latitude": 27.9427,
+      "longitude": -82.45189,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://www.nba.com/news/raptors-to-finish-2020-21-season-in-tampa",
+        "https://www.nba.com/raptors/raptors-announce-2020-21-first-half-schedule",
+        "https://mapy.com/en/?id=1088281291&source=osm"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "2021-04-26",
+      "homeAbbr": "TOR",
+      "awayAbbr": "CLE",
+      "auditGameId": 8041,
+      "arena": "Amalie Arena",
+      "city": "Tampa",
+      "latitude": 27.9427,
+      "longitude": -82.45189,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://www.nba.com/news/raptors-to-finish-2020-21-season-in-tampa",
+        "https://www.nba.com/raptors/raptors-announce-2020-21-first-half-schedule",
+        "https://mapy.com/en/?id=1088281291&source=osm"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "2021-04-27",
+      "homeAbbr": "TOR",
+      "awayAbbr": "BKN",
+      "auditGameId": 8032,
+      "arena": "Amalie Arena",
+      "city": "Tampa",
+      "latitude": 27.9427,
+      "longitude": -82.45189,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://www.nba.com/news/raptors-to-finish-2020-21-season-in-tampa",
+        "https://www.nba.com/raptors/raptors-announce-2020-21-first-half-schedule",
+        "https://mapy.com/en/?id=1088281291&source=osm"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "2021-05-06",
+      "homeAbbr": "TOR",
+      "awayAbbr": "WAS",
+      "auditGameId": 7962,
+      "arena": "Amalie Arena",
+      "city": "Tampa",
+      "latitude": 27.9427,
+      "longitude": -82.45189,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://www.nba.com/news/raptors-to-finish-2020-21-season-in-tampa",
+        "https://www.nba.com/raptors/raptors-announce-2020-21-first-half-schedule",
+        "https://mapy.com/en/?id=1088281291&source=osm"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "2021-05-08",
+      "homeAbbr": "TOR",
+      "awayAbbr": "MEM",
+      "auditGameId": 7942,
+      "arena": "Amalie Arena",
+      "city": "Tampa",
+      "latitude": 27.9427,
+      "longitude": -82.45189,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://www.nba.com/news/raptors-to-finish-2020-21-season-in-tampa",
+        "https://www.nba.com/raptors/raptors-announce-2020-21-first-half-schedule",
+        "https://mapy.com/en/?id=1088281291&source=osm"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "2021-05-11",
+      "homeAbbr": "TOR",
+      "awayAbbr": "LAC",
+      "auditGameId": 7922,
+      "arena": "Amalie Arena",
+      "city": "Tampa",
+      "latitude": 27.9427,
+      "longitude": -82.45189,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://www.nba.com/news/raptors-to-finish-2020-21-season-in-tampa",
+        "https://www.nba.com/raptors/raptors-announce-2020-21-first-half-schedule",
+        "https://mapy.com/en/?id=1088281291&source=osm"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "2021-05-16",
+      "homeAbbr": "TOR",
+      "awayAbbr": "IND",
+      "auditGameId": 7880,
+      "arena": "Amalie Arena",
+      "city": "Tampa",
+      "latitude": 27.9427,
+      "longitude": -82.45189,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://www.nba.com/news/raptors-to-finish-2020-21-season-in-tampa",
+        "https://www.nba.com/raptors/raptors-announce-2020-21-first-half-schedule",
+        "https://mapy.com/en/?id=1088281291&source=osm"
+      ],
+      "coverage": "primary actual venue / official whole-season statement; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "2022-12-17",
+      "homeAbbr": "SAS",
+      "awayAbbr": "MIA",
+      "auditGameId": 11144,
+      "arena": "Arena Ciudad de Mexico",
+      "city": "Mexico City",
+      "latitude": 19.49765,
+      "longitude": -99.1752,
+      "altitude": true,
+      "neutral": true,
+      "sourceUrls": [
+        "https://pr.nba.com/nba-mexico-city-game-to-return-with-regular-season-matchup-featuring-san-antonio-spurs-and-miami-heat-on-dec-17/",
+        "https://mapcarta.com/es/W284698840"
+      ],
+      "coverage": "primary dated event; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "2023-04-06",
+      "homeAbbr": "SAS",
+      "awayAbbr": "POR",
+      "auditGameId": 10386,
+      "arena": "Moody Center",
+      "city": "Austin",
+      "latitude": 30.28098,
+      "longitude": -97.73065,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://statsdmz.nba.com/pdfs/20230406/20230406_PORSAS_book.pdf",
+        "https://www.nba.com/spurs/schedule",
+        "https://moodycenteratx.com/plan-your-trip/",
+        "https://mapcarta.com/W953200132"
+      ],
+      "coverage": "primary dated event; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "2023-04-08",
+      "homeAbbr": "SAS",
+      "awayAbbr": "MIN",
+      "auditGameId": 10370,
+      "arena": "Moody Center",
+      "city": "Austin",
+      "latitude": 30.28098,
+      "longitude": -97.73065,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://www.nba.com/game/min-vs-sas-0022201214",
+        "https://www.nba.com/spurs/schedule",
+        "https://moodycenteratx.com/plan-your-trip/",
+        "https://mapcarta.com/W953200132"
+      ],
+      "coverage": "primary dated event; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "2023-12-07",
+      "homeAbbr": "MIL",
+      "awayAbbr": "IND",
+      "auditGameId": 923,
+      "arena": "T-Mobile Arena",
+      "city": "Las Vegas",
+      "latitude": 36.1028,
+      "longitude": -115.1783,
+      "altitude": false,
+      "neutral": true,
+      "sourceUrls": [
+        "https://statsdmz.nba.com/pdfs/20231207/20231207_INDMIL_book.pdf",
+        "https://www.t-mobilearena.com/plan-your-visit/directions-parking"
+      ],
+      "coverage": "primary dated event; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "2023-12-07",
+      "homeAbbr": "LAL",
+      "awayAbbr": "NOP",
+      "auditGameId": 924,
+      "arena": "T-Mobile Arena",
+      "city": "Las Vegas",
+      "latitude": 36.1028,
+      "longitude": -115.1783,
+      "altitude": false,
+      "neutral": true,
+      "sourceUrls": [
+        "https://statsdmz.nba.com/pdfs/20231207/20231207_NOPLAL_book.pdf",
+        "https://statsdmz.nba.com/pdfs/20231207/20231207_INDMIL_book.pdf",
+        "https://www.t-mobilearena.com/plan-your-visit/directions-parking"
+      ],
+      "coverage": "primary dated event; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "2024-03-15",
+      "homeAbbr": "SAS",
+      "awayAbbr": "DEN",
+      "auditGameId": 241,
+      "arena": "Moody Center",
+      "city": "Austin",
+      "latitude": 30.28098,
+      "longitude": -97.73065,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://www.nba.com/news/spurs-victor-wembanyama-austin-community",
+        "https://www.nba.com/spurs/schedule",
+        "https://moodycenteratx.com/plan-your-trip/",
+        "https://mapcarta.com/W953200132"
+      ],
+      "coverage": "primary dated event; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "2024-03-17",
+      "homeAbbr": "SAS",
+      "awayAbbr": "BKN",
+      "auditGameId": 221,
+      "arena": "Moody Center",
+      "city": "Austin",
+      "latitude": 30.28098,
+      "longitude": -97.73065,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://www.nba.com/game/bkn-vs-sas-0022300981/box-score",
+        "https://www.nba.com/spurs/schedule",
+        "https://moodycenteratx.com/plan-your-trip/",
+        "https://mapcarta.com/W953200132"
+      ],
+      "coverage": "primary dated event; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "2025-02-20",
+      "homeAbbr": "SAS",
+      "awayAbbr": "PHX",
+      "auditGameId": 1720,
+      "arena": "Moody Center",
+      "city": "Austin",
+      "latitude": 30.28098,
+      "longitude": -97.73065,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://statsdmz.nba.com/pdfs/20250220/20250220_PHXSAS_book.pdf",
+        "https://www.nba.com/spurs/schedule",
+        "https://moodycenteratx.com/plan-your-trip/",
+        "https://mapcarta.com/W953200132"
+      ],
+      "coverage": "primary dated event; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "2025-02-21",
+      "homeAbbr": "SAS",
+      "awayAbbr": "DET",
+      "auditGameId": 1718,
+      "arena": "Moody Center",
+      "city": "Austin",
+      "latitude": 30.28098,
+      "longitude": -97.73065,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://statsdmz.nba.com/pdfs/20250221/20250221_DETSAS_book.pdf",
+        "https://www.nba.com/spurs/schedule",
+        "https://moodycenteratx.com/plan-your-trip/",
+        "https://mapcarta.com/W953200132"
+      ],
+      "coverage": "primary dated event; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "2026-02-19",
+      "homeAbbr": "SAS",
+      "awayAbbr": "PHX",
+      "auditGameId": 71595,
+      "arena": "Moody Center",
+      "city": "Austin",
+      "latitude": 30.28098,
+      "longitude": -97.73065,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://statsdmz.nba.com/pdfs/20260219/20260219_PHXSAS_book.pdf",
+        "https://www.nba.com/spurs/schedule",
+        "https://moodycenteratx.com/plan-your-trip/",
+        "https://mapcarta.com/W953200132"
+      ],
+      "coverage": "primary dated event; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "2026-02-21",
+      "homeAbbr": "SAS",
+      "awayAbbr": "SAC",
+      "auditGameId": 71576,
+      "arena": "Moody Center",
+      "city": "Austin",
+      "latitude": 30.28098,
+      "longitude": -97.73065,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://statsdmz.nba.com/pdfs/20260221/20260221_SACSAS_book.pdf",
+        "https://www.nba.com/spurs/schedule",
+        "https://moodycenteratx.com/plan-your-trip/",
+        "https://mapcarta.com/W953200132"
+      ],
+      "coverage": "primary dated event; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "2026-10-23",
+      "homeAbbr": "SAS",
+      "awayAbbr": "HOU",
+      "auditGameId": 118719,
+      "arena": "Moody Center",
+      "city": "Austin",
+      "latitude": 30.28098,
+      "longitude": -97.73065,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://www.nba.com/spurs/schedule",
+        "https://moodycenteratx.com/plan-your-trip/",
+        "https://mapcarta.com/W953200132"
+      ],
+      "coverage": "primary dated event; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "2027-02-26",
+      "homeAbbr": "SAS",
+      "awayAbbr": "MEM",
+      "auditGameId": 119557,
+      "arena": "Moody Center",
+      "city": "Austin",
+      "latitude": 30.28098,
+      "longitude": -97.73065,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://www.nba.com/spurs/schedule",
+        "https://moodycenteratx.com/plan-your-trip/",
+        "https://mapcarta.com/W953200132"
+      ],
+      "coverage": "primary dated event; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "2027-02-28",
+      "homeAbbr": "SAS",
+      "awayAbbr": "DEN",
+      "auditGameId": 119567,
+      "arena": "Moody Center",
+      "city": "Austin",
+      "latitude": 30.28098,
+      "longitude": -97.73065,
+      "altitude": false,
+      "neutral": false,
+      "sourceUrls": [
+        "https://www.nba.com/spurs/schedule",
+        "https://moodycenteratx.com/plan-your-trip/",
+        "https://mapcarta.com/W953200132"
+      ],
+      "coverage": "primary dated event; coordinate is mapped arena feature estimate, not surveyed precision"
+    },
+    {
+      "date": "2020-08-15",
+      "homeAbbr": "POR",
+      "awayAbbr": "MEM",
+      "arena": "The Field House",
+      "latitude": 28.33724,
+      "longitude": -81.55725,
+      "altitude": false,
+      "city": "Orlando",
+      "neutral": true,
+      "sourceUrls": [
+        "https://www.nba.com/game/mem-vs-por-0051900111",
+        "https://statsdmz.nba.com/pdfs/20200815/20200815_MEMPOR_book.pdf",
+        "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20200815",
+        "docs/audit/2026-10-20-historical-audit/sources/nba_schedule_2020.csv.gz",
+        "https://mapcarta.com/W1450994107",
+        "https://cdn2.parksmedia.wdprapps.disney.com/media/espnwwos/pdf/ESPN_0425_Wayfinder.pdf"
+      ],
+      "coverage": "reviewed omitted physical fixture; approximate mapped arena feature"
+    },
+    {
+      "date": "2023-12-09",
+      "homeAbbr": "LAL",
+      "awayAbbr": "IND",
+      "arena": "T-Mobile Arena",
+      "latitude": 36.1028,
+      "longitude": -115.1783,
+      "altitude": false,
+      "city": "Las Vegas",
+      "neutral": true,
+      "sourceUrls": [
+        "https://www.nba.com/game/ind-vs-lal-0062300001",
+        "https://statsdmz.nba.com/pdfs/20231209/20231209_INDLAL_book.pdf",
+        "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20231209",
+        "docs/audit/2026-10-20-historical-audit/sources/nba_schedule_2024.csv.gz",
+        "https://www.t-mobilearena.com/plan-your-visit/directions-parking"
+      ],
+      "coverage": "reviewed omitted physical fixture; approximate mapped arena feature"
+    },
+    {
+      "date": "2024-12-17",
+      "homeAbbr": "OKC",
+      "awayAbbr": "MIL",
+      "arena": "T-Mobile Arena",
+      "latitude": 36.1028,
+      "longitude": -115.1783,
+      "altitude": false,
+      "city": "Las Vegas",
+      "neutral": true,
+      "sourceUrls": [
+        "https://www.nba.com/game/mil-vs-okc-0062400001",
+        "https://statsdmz.nba.com/pdfs/20241217/20241217_MILOKC_book.pdf",
+        "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20241217",
+        "docs/audit/2026-10-20-historical-audit/sources/nba_schedule_2025.csv.gz",
+        "https://www.t-mobilearena.com/plan-your-visit/directions-parking"
+      ],
+      "coverage": "reviewed omitted physical fixture; approximate mapped arena feature"
+    },
+    {
+      "date": "2025-12-16",
+      "homeAbbr": "NYK",
+      "awayAbbr": "SAS",
+      "arena": "T-Mobile Arena",
+      "latitude": 36.1028,
+      "longitude": -115.1783,
+      "altitude": false,
+      "city": "Las Vegas",
+      "neutral": true,
+      "sourceUrls": [
+        "https://www.nba.com/game/sas-vs-nyk-0062500001",
+        "https://statsdmz.nba.com/pdfs/20251216/20251216_SASNYK_book.pdf",
+        "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard?dates=20251216",
+        "docs/audit/2026-10-20-historical-audit/sources/nba_schedule_2026.csv.gz",
+        "https://www.t-mobilearena.com/plan-your-visit/directions-parking"
+      ],
+      "coverage": "reviewed omitted physical fixture; approximate mapped arena feature"
+    }
+  ]
+}

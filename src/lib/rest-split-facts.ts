@@ -1,4 +1,5 @@
-import type { GapRangeKey } from "@/lib/rest-advantage-evidence";
+import facts from "../../ml/rest_split_facts.json";
+import { GAP_RANGES, type GapRangeKey } from "@/lib/rest-advantage-evidence";
 
 /**
  * Every figure `/behind-the-data/rest-advantage` publishes about the two rest rows.
@@ -6,8 +7,8 @@ import type { GapRangeKey } from "@/lib/rest-advantage-evidence";
  * Constants because they describe a finished full-table measurement, not a query: a static
  * reference page cannot read the database, and re-running the backtest per page view to print
  * one sentence would be absurd. They change only when `scripts/measure_uncalled_half.ts` is
- * re-run. `src/lib/__tests__/rest-split-facts.test.ts` pins this file against
- * `ml/rest_split_facts.json`, so a number edited here and nowhere else fails the suite.
+ * re-run. These exports read its generated JSON directly. The pinning tests check
+ * the exported measurements and their internal consistency.
  * Same arrangement as `availability-facts.ts` and `playoff-rest-facts.ts`.
  *
  * The rows split by the site's three gap sizes (`GAP_RANGES`), not by cumulative "at least"
@@ -40,16 +41,19 @@ export interface RestRow {
   ranges: readonly RestGapRange[];
 }
 
+function freezeRestRow(row: typeof facts.restedAtHome): RestRow {
+  return Object.freeze({
+    ...row,
+    ranges: Object.freeze(row.ranges.map((range) => {
+      const key = GAP_RANGES.find((candidate) => candidate.key === range.key)?.key;
+      if (!key) throw new Error(`Unknown generated rest gap: ${range.key}`);
+      return Object.freeze({ ...range, key });
+    })),
+  });
+}
+
 /** What the measurement ran over. */
-export const REST_SPLIT_SAMPLE = Object.freeze({
-  scoredGames: 47112,
-  /** |RA| < 0.5 — no side is the rested one. About one game in six. */
-  neutral: 8198,
-  decided: 38914,
-  firstSeason: "1985-86",
-  lastSeason: "2025-26",
-  seasons: 41,
-});
+export const REST_SPLIT_SAMPLE = Object.freeze(facts.sample);
 
 /**
  * How often each side wins regardless of rest.
@@ -59,42 +63,19 @@ export const REST_SPLIT_SAMPLE = Object.freeze({
  * rest gap, for the same reason `AnalysisResponse.venueBaseline` is: a baseline drawn only
  * from games with a rest gap would already carry the effect it exists to subtract.
  */
-export const REST_SPLIT_BASELINE = Object.freeze({
-  games: 47112,
-  homeWins: 28234,
-  homeWinPct: 59.9,
-  roadWinPct: 40.1,
-});
+export const REST_SPLIT_BASELINE = Object.freeze(facts.baseline);
 
 /** The published row: the more-rested team was also at home. */
-export const RESTED_AT_HOME: RestRow = Object.freeze({
-  games: 27420,
-  wins: 16778,
-  winPct: 61.2,
-  ranges: Object.freeze([
-    Object.freeze({ key: "small", games: 16957, wins: 10175, winPct: 60 }),
-    Object.freeze({ key: "medium", games: 6707, wins: 4151, winPct: 61.9 }),
-    Object.freeze({ key: "large", games: 3756, wins: 2452, winPct: 65.3 }),
-  ]),
-});
+export const RESTED_AT_HOME: RestRow = freezeRestRow(facts.restedAtHome);
 
 /**
  * The row counted separately: the more-rested team was the visitor.
  *
- * Published in full rather than dropped. A large road edge is rare: 331 games across
- * forty-one seasons, and the large range inside a recent era is thinner still. Any copy
+ * Published in full rather than dropped. A large road edge is rare, and the large range
+ * inside a recent era is thinner still. Any copy
  * quoting a thin range has to say so.
  */
-export const RESTED_ON_ROAD: RestRow = Object.freeze({
-  games: 11494,
-  wins: 4867,
-  winPct: 42.3,
-  ranges: Object.freeze([
-    Object.freeze({ key: "small", games: 9459, wins: 3973, winPct: 42 }),
-    Object.freeze({ key: "medium", games: 1704, wins: 746, winPct: 43.8 }),
-    Object.freeze({ key: "large", games: 331, wins: 148, winPct: 44.7 }),
-  ]),
-});
+export const RESTED_ON_ROAD: RestRow = freezeRestRow(facts.restedOnRoad);
 
 /** One era's road row, against that era's own road baseline. */
 export interface RestEraRow {
@@ -117,66 +98,24 @@ export interface RestEraRow {
  * advantage was far larger than it is now, and two claims the site used to publish leaned on
  * the pooled rate as though it were timeless. Both are retired; this is what replaced them.
  *
- * The raw rate has moved a long way — 42.3% to 49.4% — and it would be easy to read that as
- * rest mattering more. Most of it is not: the road baseline moved with it, 40.1% to 44.7%.
+ * The raw rate has moved over time, and it would be easy to read that as rest mattering
+ * more. The road baseline moved with it.
  * What is left after subtracting that is the lift, and the lift is where the real question is.
  *
  * Every era carries its own baseline for the same reason the season chart does. Comparing a
  * 2024 rate to a 1987 baseline measures the league, not the schedule.
  */
-export const RESTED_ON_ROAD_BY_ERA: readonly RestEraRow[] = Object.freeze([
-  Object.freeze({
-    label: "All seasons",
-    seasons: 41,
-    games: 11494,
-    wins: 4867,
-    winPct: 42.3,
-    roadBaselinePct: 40.1,
-    liftPp: 2.2,
-    ranges: Object.freeze([
-      Object.freeze({ key: "small", games: 9459, wins: 3973, winPct: 42 }),
-      Object.freeze({ key: "medium", games: 1704, wins: 746, winPct: 43.8 }),
-      Object.freeze({ key: "large", games: 331, wins: 148, winPct: 44.7 }),
-    ]),
-  }),
-  Object.freeze({
-    label: "Last 10 seasons",
-    seasons: 10,
-    games: 3064,
-    wins: 1457,
-    winPct: 47.6,
-    roadBaselinePct: 43.8,
-    liftPp: 3.8,
-    ranges: Object.freeze([
-      Object.freeze({ key: "small", games: 2545, wins: 1199, winPct: 47.1 }),
-      Object.freeze({ key: "medium", games: 452, wins: 226, winPct: 50 }),
-      Object.freeze({ key: "large", games: 67, wins: 32, winPct: 47.8 }),
-    ]),
-  }),
-  Object.freeze({
-    label: "Last 5 seasons",
-    seasons: 5,
-    games: 1625,
-    wins: 802,
-    winPct: 49.4,
-    roadBaselinePct: 44.7,
-    liftPp: 4.7,
-    ranges: Object.freeze([
-      Object.freeze({ key: "small", games: 1349, wins: 656, winPct: 48.6 }),
-      Object.freeze({ key: "medium", games: 240, wins: 125, winPct: 52.1 }),
-      Object.freeze({ key: "large", games: 36, wins: 21, winPct: 58.3 }),
-    ]),
-  }),
-]);
+export const RESTED_ON_ROAD_BY_ERA: readonly RestEraRow[] = Object.freeze(
+  facts.restedOnRoadByEra.map((era) => Object.freeze({
+    ...era,
+    ranges: freezeRestRow(era).ranges,
+  }))
+);
 
 /**
  * Below this, a gap size is printed muted and never quoted in prose.
  *
- * Set at 200 rather than higher on purpose. The last five seasons' medium road range is 240
- * games and sits above even — the observation that refutes "no threshold rescues it" in the
- * modern game, so a cut that hid it would be the same omission that let the claim stand. The
- * large ranges of the last ten and last five seasons are 67 and 36 games: they read as the most
- * dramatic numbers in the table and are the least trustworthy in it.
+ * Set at 200 to keep usable recent-era comparisons visible while marking sparse ranges.
  */
 export const THIN_SAMPLE_GAMES = 200;
 
@@ -188,18 +127,7 @@ export const THIN_SAMPLE_GAMES = 200;
  * team every time — adding a constant to both sides does not create information. Run over every
  * scored game with a home court, rest gap or not, which is where the high coverage comes from.
  */
-export const HOME_BAR_COUNTERFACTUAL = Object.freeze({
-  /** Points of home court added to every rest edge before the call is made. */
-  homeBar: 3,
-  calls: 45491,
-  coveragePct: 96.6,
-  correct: 27179,
-  accuracyPct: 59.7,
-  roadCalls: 1357,
-  roadLosses: 733,
-  /** Picking the home team in every scored game — the bar this has to clear, and does not. */
-  alwaysHomePct: 59.9,
-});
+export const HOME_BAR_COUNTERFACTUAL = Object.freeze(facts.counterfactual);
 
 /** Percentage points above the side's own baseline. Signed; render through `signedNumber()`. */
 export function liftOverBaseline(winPct: number, baselinePct: number): number {

@@ -10,7 +10,7 @@ import { haversineDistance } from "./haversine";
  * 2026-10-11. This module charges each flight once, to the game it arrives at.
  *
  * The leg rule is the fatigue model's own (`travelMilesBetweenGames` in fatigue.ts): no flight
- * home between two road games, none between two home games, and none between two games in the
+ * home between two games; every leg joins their physical venues, with no leg within the
  * same building. `season-travel.test.ts` checks the two against each other.
  */
 
@@ -23,7 +23,7 @@ export function travelLegKey(gameId: number, teamId: number): string {
   return `${gameId}:${teamId}`;
 }
 
-type Stop = { isHome: boolean; lat: number; lon: number };
+type Stop = { lat: number; lon: number };
 
 function stopOf(row: TravelGameRow, teamId: number): Stop & { homeLat: number; homeLon: number } {
   const game = rowToRecentGame(row, teamId);
@@ -33,7 +33,7 @@ function stopOf(row: TravelGameRow, teamId: number): Stop & { homeLat: number; h
       : game.isHome
         ? { lat: game.teamLat, lon: game.teamLon }
         : { lat: game.opponentLat, lon: game.opponentLon };
-  return { isHome: game.isHome, ...atVenue, homeLat: game.teamLat, homeLon: game.teamLon };
+  return { ...atVenue, homeLat: game.teamLat, homeLon: game.teamLon };
 }
 
 /**
@@ -58,24 +58,12 @@ export function seasonTravelLegs(rows: readonly TravelGameRow[]): Map<string, nu
 
     for (const row of ordered) {
       const stop = stopOf(row, teamId);
-      let miles: number;
-      if (previous === null) {
-        miles = stop.isHome ? 0 : haversineDistance(stop.homeLat, stop.homeLon, stop.lat, stop.lon);
-      } else if (
-        haversineDistance(previous.lat, previous.lon, stop.lat, stop.lon) < SAME_ARENA_MILES ||
-        (previous.isHome && stop.isHome)
-      ) {
-        miles = 0;
-      } else if (previous.isHome) {
-        miles = haversineDistance(stop.homeLat, stop.homeLon, stop.lat, stop.lon);
-      } else if (stop.isHome) {
-        miles = haversineDistance(previous.lat, previous.lon, stop.homeLat, stop.homeLon);
-      } else {
-        miles = haversineDistance(previous.lat, previous.lon, stop.lat, stop.lon);
-      }
+      const origin = previous ?? { lat: stop.homeLat, lon: stop.homeLon };
+      const distance = haversineDistance(origin.lat, origin.lon, stop.lat, stop.lon);
+      const miles = distance < SAME_ARENA_MILES ? 0 : distance;
 
       legs.set(travelLegKey(row.gameId, teamId), miles);
-      previous = { isHome: stop.isHome, lat: stop.lat, lon: stop.lon };
+      previous = { lat: stop.lat, lon: stop.lon };
     }
   }
 

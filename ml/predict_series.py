@@ -31,6 +31,9 @@ DATABASE_URL resolution + read-only session pattern mirror ml/train_series_model
 from __future__ import annotations
 
 import argparse
+import hashlib
+import json
+import logging
 import sys
 from dataclasses import dataclass
 from pathlib import Path
@@ -55,7 +58,9 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 # Bumped from logistic_unreg_v1 (2026-07-31) when entry_rest_diff was replaced by
 # prior_grind_diff. The UNIQUE is (series_id, prediction_method, model_version), so the v1
 # rows coexist untouched and stay auditable — this is a new version, not an overwrite.
-MODEL_VERSION = "logistic_grind_v2"
+from playoff_model_revision import MODEL_VERSION
+
+log = logging.getLogger(__name__)
 METHOD_INSAMPLE = "full_insample"
 METHOD_OOS = "walk_forward_oos"
 
@@ -293,6 +298,36 @@ def build_dryrun_report(data: Loaded, insample: np.ndarray, oos: np.ndarray) -> 
     return "\n".join(L) + "\n"
 
 
+def prediction_payload(data: Loaded, insample: np.ndarray, oos: np.ndarray) -> dict:
+    rows = []
+    for method, probabilities in ((METHOD_INSAMPLE, insample), (METHOD_OOS, oos)):
+        for row, probability in zip(data.rows, probabilities):
+            if np.isnan(probability):
+                continue
+            if not np.isfinite(probability) or not 0 <= probability <= 1:
+                raise ValueError("Invalid playoff probability")
+            rows.append({
+                "series_id": row.series_id,
+                "external_series_key": row.key,
+                "predicted_home_court_win_prob": float(probability),
+                "predicted_winner_team_id": predicted_winner_id(row, float(probability)),
+                "prediction_method": method,
+                "model_version": MODEL_VERSION,
+            })
+    inputs = {"keys": [row.key for row in data.rows], "seasons": data.seasons.tolist(),
+              "features": FEATURES, "X": data.X.tolist(), "y": data.y.tolist()}
+    return {
+        "generatedBy": "ml/predict_series.py",
+        "modelVersion": MODEL_VERSION,
+        "features": FEATURES,
+        "minimumTrainSeasons": MIN_TRAIN_SEASONS,
+        "modelInputSha256": hashlib.sha256(json.dumps(inputs, sort_keys=True, separators=(",", ":")).encode()).hexdigest(),
+        "counts": {method: sum(row["prediction_method"] == method for row in rows)
+                   for method in (METHOD_INSAMPLE, METHOD_OOS)},
+        "rows": rows,
+    }
+
+
 # ─── Gated DB write (NOT run in the T4 session) ──────────────────────────────────────────
 
 
@@ -369,7 +404,10 @@ def main() -> None:
         default=str(REPO_ROOT / "ml" / "predict_series_dryrun.txt"),
         help="Path for the dry-run report (ignored when --write is set).",
     )
+    ap.add_argument("--output-json", help="Write exact dry-run prediction rows for a reviewed replay.")
     args = ap.parse_args()
+    if args.write and args.output_json:
+        ap.error("--output-json is a read-only replay preparation option")
 
     conn = psycopg2.connect(resolve_database_url())
     try:
@@ -383,6 +421,9 @@ def main() -> None:
         if args.write:
             write_predictions(conn, data, insample, oos)
         else:
+            if args.output_json:
+                Path(args.output_json).write_text(json.dumps(prediction_payload(data, insample, oos), indent=2) + "\n")
+                log.info("wrote exact prediction replay rows to %s", args.output_json)
             report = build_dryrun_report(data, insample, oos)
             out = Path(args.report_file)
             out.write_text(report)

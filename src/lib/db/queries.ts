@@ -1,3 +1,4 @@
+import { PLAYOFF_MODEL_VERSION } from "@/lib/playoff-model-version";
 import { isHeldGame, WORKLOAD_STATUSES } from "@/lib/game-status";
 import { format, parseISO, subDays } from "date-fns";
 import {
@@ -36,7 +37,8 @@ import { neutralVenueCoordinates } from "@/lib/neutral-venues";
 import { isProjectedFatigue } from "@/lib/fatigue-provenance";
 import type { DisparityGameRow } from "@/lib/schedule-disparity";
 import type { SeasonReportRow } from "@/lib/season-report";
-import { seasonTravelLegs, travelLegKey } from "@/lib/season-travel";
+import { travelLegKey } from "@/lib/season-travel";
+import { publishedSeasonTravelLegs } from "@/lib/season-report-travel";
 import { ABNORMAL_STRETCHES } from "@/lib/season-regime";
 import { daysOffBeforeGame } from "@/lib/days-off";
 import {
@@ -92,14 +94,14 @@ function latestFatigueSubquery(alias: string) {
   return db
     .selectDistinctOn([fatigueScores.gameId, fatigueScores.teamId], FATIGUE_COLUMNS)
     .from(fatigueScores)
-    .orderBy(fatigueScores.gameId, fatigueScores.teamId, desc(fatigueScores.computedAt))
+    .orderBy(fatigueScores.gameId, fatigueScores.teamId, desc(fatigueScores.computedAt), desc(fatigueScores.id))
     .as(alias);
 }
 
 /**
  * Same rows as `latestFatigueSubquery`, one index seek per game/side instead of
- * deduplicating the whole `fatigue_scores` table. `computed_at DESC` is the only
- * tie-break — do not add a secondary sort key, or the two stop agreeing.
+ * deduplicating the whole `fatigue_scores` table. Both helpers use id DESC to
+ * choose deterministically when two revisions share computed_at.
  */
 function latestFatigueLateral(
   teamIdColumn: typeof games.homeTeamId | typeof games.awayTeamId,
@@ -109,7 +111,7 @@ function latestFatigueLateral(
     .select(FATIGUE_COLUMNS)
     .from(fatigueScores)
     .where(and(eq(fatigueScores.gameId, games.id), eq(fatigueScores.teamId, teamIdColumn)))
-    .orderBy(desc(fatigueScores.computedAt))
+    .orderBy(desc(fatigueScores.computedAt), desc(fatigueScores.id))
     .limit(1)
     .as(subqueryAlias);
 }
@@ -149,6 +151,8 @@ const gameIsNormallyPlayed =
  * - `getTeamGameCountsInDaysBefore` and `computeScheduleDensityMap` — they count physical schedule load,
  *   not publishable rows, and must stay consistent with `fatigue-recent-games.ts`, which is also
  *   unfiltered. Filtering one side would put two contradictory density figures on the same card.
+ * - `getFirstUnplayedDate` — projection provenance follows unplayed physical workload, including
+ *   Cup/play-in context that is not a published regular-season target.
  * - `getShotQualityGrid` — reads `shot_grid`, never joins `games`. Shot Value keeps the bubble on
  *   purpose (docs/SHOT_QUALITY_DESIGN.md): court geometry does not care that nobody flew there.
  */
@@ -334,6 +338,7 @@ type GameFatigueJoinRow = Awaited<ReturnType<typeof selectGamesWithFatigue>>[num
 /**
  * The ET date of a season's earliest game that has not been played, or null when none remain.
  *
+ * All physical game types count: an unplayed Cup final can project the next regular fixture.
  * One scalar answers "is this game's fatigue projected?" for every game in the season — see
  * `src/lib/fatigue-provenance.ts` for why that reduction is sound. Cheap: `games_date_idx` and
  * `games_status_idx` both exist, and it reads one row.
@@ -342,7 +347,7 @@ export async function getFirstUnplayedDate(season: string): Promise<string | nul
   const [row] = await db
     .select({ first: min(games.date) })
     .from(games)
-    .where(publishableGames(and(eq(games.season, season), inArray(games.status, ["scheduled", "live"]))));
+    .where(and(eq(games.season, season), inArray(games.status, ["scheduled", "live"])));
 
   return row?.first ? String(row.first) : null;
 }
@@ -627,75 +632,107 @@ export async function getRegularSeasonGameDatesWithCounts(
 
 // ─── Analysis query ─────────────────────────────────────────────
 
-/**
- * A cheap stand-in for "has the backtest input changed?".
- *
- * The backtest reads every final regular-season game, so its answer can only move when one
- * more game goes final or a score is corrected. Reading this costs one aggregate over an
- * index scan rather than ~46k joined rows.
- *
- * **The third term is the score correction, and it was missing until 2026-08-27.** The stamp
- * was `count@maxDate`, and its docblock claimed both causes "show up in this pair" — they do
- * not. A corrected score on a game that is already final moves neither term, and
- * `diffScoreboard` writes exactly that: it refuses a status *downgrade*
- * (`src/lib/espn-scoreboard.ts`) and writes everything else, corrections included. In season
- * the next night's games move the count and mask it; a correction to a season's last games
- * has nothing behind it, so the held backtest survived until October. Found by rehearsing the
- * 2026-27 boundary rather than by anything going wrong.
- *
- * `home * 1000 + away` rather than a plain sum, so that a correction which swaps the two
- * scores still moves the term. It is a checksum and not a hash: two corrections that offset
- * exactly would hide each other. That is a far narrower hole than the one it closes, and
- * closing it completely needs an `updated_at` column, which is a schema change.
- *
- * Filtered by the same rule as the query it stands in for. It counted 88 bubble games the
- * backtest never reads, which did not make the stamp wrong — only a description of a different
- * population than the one it keys.
- */
-export async function getCompletedGamesStamp(): Promise<string> {
-  const { finalGames, latestFinalDate, scoreChecksum } = await readFinalGamesFacts();
-
-  return `${finalGames}@${latestFinalDate ?? "none"}#${scoreChecksum}`;
+/** A bounded-lived freshness fingerprint; superseded revisions may conservatively evict it. */
+async function readCompletedInputFingerprint(scope: SQL | undefined): Promise<string> {
+  const gameInputs = db.select({
+    input: sql<string>`row('game'::text,
+      ${games.id}, ${games.date}, ${games.season}, ${games.homeTeamId}, ${games.awayTeamId},
+      ${games.status}, ${games.homeScore}, ${games.awayScore}, ${games.neutralSite}
+    )::text`.as("input"),
+    kind: sql<string>`'game'`.as("kind"),
+  }).from(games).where(scope);
+  const fatigueInputs = db.select({
+    input: sql<string>`row('fatigue'::text,
+      ${fatigueScores.gameId}, ${fatigueScores.teamId}, ${fatigueScores.id},
+      ${fatigueScores.computedAt}, ${fatigueScores.score}
+    )::text`.as("input"),
+    kind: sql<string>`'fatigue'`.as("kind"),
+  }).from(games)
+    .innerJoin(fatigueScores, and(eq(fatigueScores.gameId, games.id),
+      or(eq(fatigueScores.teamId, games.homeTeamId), eq(fatigueScores.teamId, games.awayTeamId))))
+    .where(scope);
+  const inputs = gameInputs.unionAll(fatigueInputs).as("completed_stamp_inputs");
+  const [row] = await db.select({
+    games: sql<string>`(count(*) filter (where ${inputs.kind} = 'game'))::text`,
+    fatigue: sql<string>`(count(*) filter (where ${inputs.kind} = 'fatigue'))::text`,
+    first: sql<string>`coalesce(bit_xor(hashtextextended(${inputs.input}, 0)), 0)::text`,
+    second: sql<string>`coalesce(bit_xor(hashtextextended(${inputs.input}, 1)), 0)::text`,
+  }).from(inputs);
+  return row ? `${row.games}:${row.fatigue}:${row.first}:${row.second}` : "0:0:0:0";
 }
 
-/**
- * The one read behind both the stamp above and the published figure below.
- *
- * Kept as a single function rather than two queries for the reason the delegation always
- * existed: the key and the figure must describe one population, and two queries can drift.
- * The stamp needs a term the page must never print, so the split is here — at what each
- * caller takes from the row — instead of at the database.
- */
-async function readFinalGamesFacts(): Promise<DataAsOf & { scoreChecksum: string }> {
-  const [row] = await db
-    .select({
-      finals: count(),
-      latest: max(games.date),
-      checksum: sql<string>`coalesce(sum(${games.homeScore}::bigint * 1000 + ${games.awayScore}), 0)::text`,
+/** Ordered loader inputs, including explicit missing sides and deterministic latest revisions. */
+async function readGameInputDigest(scope: SQL | undefined, physicalContext = false): Promise<string> {
+  if (!physicalContext) return readCompletedInputFingerprint(scope);
+  const latest = db
+    .selectDistinctOn([fatigueScores.gameId, fatigueScores.teamId], {
+      gameId: fatigueScores.gameId,
+      teamId: fatigueScores.teamId,
+      score: fatigueScores.score,
+      revisionId: fatigueScores.id,
+      computedAt: fatigueScores.computedAt,
+      contextFields: (physicalContext ? sql`row(${fatigueScores}.*)::text` : sql`null`).as("context_fields"),
     })
+    .from(fatigueScores)
+    .where(physicalContext ? inArray(fatigueScores.gameId, db.select({ id: games.id }).from(games).where(scope)) : undefined)
+    .orderBy(fatigueScores.gameId, fatigueScores.teamId, desc(fatigueScores.computedAt), desc(fatigueScores.id))
+    .as("input_stamp_latest");
+  const homeTeam = alias(teams, "input_stamp_home_team");
+  const awayTeam = alias(teams, "input_stamp_away_team");
+  const home = sql`${latest.teamId} = ${games.homeTeamId}`;
+  const away = sql`${latest.teamId} = ${games.awayTeamId}`;
+  const context = physicalContext ? sql`row(
+    ${games.gameType}, ${games.tipOffUtc}, ${games.overtimePeriods}, ${games.neutralVenueCity},
+    ${homeTeam.abbreviation}, ${homeTeam.latitude}, ${homeTeam.longitude}, ${homeTeam.altitudeFlag},
+    ${awayTeam.abbreviation}, ${awayTeam.latitude}, ${awayTeam.longitude}, ${awayTeam.altitudeFlag},
+    max(${sql.identifier("input_stamp_latest")}.${sql.identifier("context_fields")}) filter (where ${home}),
+    max(${sql.identifier("input_stamp_latest")}.${sql.identifier("context_fields")}) filter (where ${away})
+  )::text` : sql`null`;
+  const paired = db
+    .select({ gameId: games.id, input: sql<string>`row(
+      ${games.id}, ${games.date}, ${games.season}, ${games.homeTeamId}, ${games.awayTeamId},
+      ${games.status}, ${games.homeScore}, ${games.awayScore}, ${games.neutralSite},
+      coalesce((max(${latest.revisionId}) filter (where ${home}))::text, 'missing'),
+      max(${latest.computedAt}) filter (where ${home}), max(${latest.score}) filter (where ${home}),
+      coalesce((max(${latest.revisionId}) filter (where ${away}))::text, 'missing'),
+      max(${latest.computedAt}) filter (where ${away}), max(${latest.score}) filter (where ${away}),
+      ${context}
+    )::text`.as("input") })
+    .from(games)
+    .leftJoin(latest, and(eq(latest.gameId, games.id), or(eq(latest.teamId, games.homeTeamId), eq(latest.teamId, games.awayTeamId))))
+    .leftJoin(homeTeam, eq(homeTeam.id, games.homeTeamId))
+    .leftJoin(awayTeam, eq(awayTeam.id, games.awayTeamId))
+    .where(scope)
+    .groupBy(games.id, ...(physicalContext ? [homeTeam.id, awayTeam.id] : []))
+    .as("input_stamp_paired");
+  const [row] = await db
+    .select({ digest: sql<string>`md5(coalesce(string_agg(${paired.input}, E'\\n' order by ${paired.gameId}), ''))` })
+    .from(paired);
+  return row?.digest ?? "empty";
+}
+
+/** The completed loader's cache key includes content corrections and lost/recovered fatigue. */
+export async function getCompletedGamesStamp(): Promise<string> {
+  return `completed-v3:${await readGameInputDigest(publishableGames(
+    eq(games.status, "final"), isNotNull(games.homeScore), isNotNull(games.awayScore)
+  ))}`;
+}
+
+/** The public date/count remain a cheap game aggregate, independent of cache revision hashing. */
+async function readFinalGamesFacts(): Promise<DataAsOf> {
+  const [row] = await db
+    .select({ finals: count(), latest: max(games.date) })
     .from(games)
     .where(publishableGames(eq(games.status, "final")));
-
   return {
     finalGames: Number(row?.finals ?? 0),
     latestFinalDate: row?.latest ? String(row.latest) : null,
-    scoreChecksum: String(row?.checksum ?? "0"),
   };
 }
 
-/**
- * The same read as the stamp above, as a value a page can publish.
- *
- * Split out on 2026-08-18 for the "as of" surface stamp (docs/UIUX_CHECKLIST.md §5). The
- * stamp string is a cache key — `"46201@2026-04-13"` — and parsing a cache key back into a
- * date to print it would make the display depend on a format nothing promises to keep. One
- * query, two readers: the key is built from this, so the figure a page shows and the key
- * that held it can never describe different populations.
- */
+/** Latest final ET date and game count for the published AS OF line. */
 export async function getDataAsOf(): Promise<DataAsOf> {
-  const { finalGames, latestFinalDate } = await readFinalGamesFacts();
-
-  return { finalGames, latestFinalDate };
+  return readFinalGamesFacts();
 }
 
 /** Published regular-season schedule coverage, independent of game completion. */
@@ -1086,7 +1123,7 @@ export async function getUpcomingGamesWithRA(
 
 type PlayoffPredictionMethodKey = "full_insample" | "walk_forward_oos";
 
-/** Latest prediction row per series for a given method (future-proofs against multiple model versions). */
+/** The selected data revision only; historical versions remain stored for audit. */
 function latestPlayoffPredictionSubquery(subqueryAlias: string, method: PlayoffPredictionMethodKey) {
   return db
     .selectDistinctOn([playoffSeriesPredictions.seriesId], {
@@ -1096,7 +1133,7 @@ function latestPlayoffPredictionSubquery(subqueryAlias: string, method: PlayoffP
       modelVersion: playoffSeriesPredictions.modelVersion,
     })
     .from(playoffSeriesPredictions)
-    .where(eq(playoffSeriesPredictions.predictionMethod, method))
+    .where(and(eq(playoffSeriesPredictions.predictionMethod, method), eq(playoffSeriesPredictions.modelVersion, PLAYOFF_MODEL_VERSION)))
     .orderBy(playoffSeriesPredictions.seriesId, desc(playoffSeriesPredictions.createdAt))
     .as(subqueryAlias);
 }
@@ -1473,17 +1510,16 @@ export async function getLatestPublishedShotQualitySeason(beforeSeason?: string)
 // ─── Schedule Disparity query ───────────────────────────────────
 
 /**
- * One season's regular-season games with both sides' latest fatigue score, for Schedule
- * Disparity. Rest days are NOT selected here: the module derives them from the game dates
+ * One season's published regular-season targets and physical workload context, with latest
+ * fatigue scores for Schedule Disparity. Rest days are NOT selected here: the module derives them from the game dates
  * themselves, because `fatigue_scores.days_since_last_game` goes stale when games are inserted
  * into a published schedule. See docs/adr/0001-derive-rest-days-from-games.md.
  *
  * Unplayed games are included on purpose — the module reports on schedules before they are
  * played — so both fatigue scores are nullable.
  *
- * `publishableGames` is a no-op here in practice: 2019-20 is the only abnormal stretch and
- * Schedule Edge already withholds that season as truncated. It applies anyway, so the module
- * does not depend on a second rule staying in place to get the first one right.
+ * `publishableGames` marks the target population; every other season row is workload context.
+ * Schedule Edge still withholds 2019-20 as truncated, independently of its physical history.
  */
 export async function getRegularSeasonScheduleForDisparity(
   season: string
@@ -1494,6 +1530,7 @@ export async function getRegularSeasonScheduleForDisparity(
   const rows = await db
     .select({
       date: games.date,
+      published: sql<boolean>`${publishableGames(eq(games.season, season))}`,
       status: games.status,
       homeTeamId: games.homeTeamId,
       awayTeamId: games.awayTeamId,
@@ -1510,12 +1547,14 @@ export async function getRegularSeasonScheduleForDisparity(
       awayFatigue,
       and(eq(awayFatigue.gameId, games.id), eq(awayFatigue.teamId, games.awayTeamId))
     )
-    .where(publishableGames(eq(games.season, season)))
+    .where(eq(games.season, season))
     .orderBy(asc(games.date), asc(games.id));
 
   return rows.map((r) => ({
     date: String(r.date),
+    contextOnly: !r.published,
     status: String(r.status),
+    neutralSite: Boolean(r.neutralSite),
     homeTeamId: Number(r.homeTeamId),
     awayTeamId: Number(r.awayTeamId),
     homeFatigueScore: r.homeFatigueScore === null ? null : String(r.homeFatigueScore),
@@ -1540,25 +1579,7 @@ export async function getTeamDirectory(): Promise<
 
 // ─── Season Report query ─────────────────────────────────────────
 
-/**
- * A cheap stand-in for "has this season's report changed?".
- *
- * Deliberately not `getCompletedGamesStamp`, which counts only final games. That stamp is
- * exact for the backtest, whose inputs are only final games, and wrong for a reader that
- * also reads scheduled ones: from the 1 October season-list rollover until opening night
- * roughly three weeks later, nothing is final, so a freshly-seeded schedule never moved it
- * and `/season` served `0 / 0` off a cache that could not invalidate.
- *
- * The counts/date/score components retain the historical correction guards. The ordered
- * lifecycle digest also catches holds without a new final, and the derived digest catches
- * deleted/recovered fatigue pairs and content-only corrections. Each game's fatigue rows are
- * aggregated before the season aggregate, so joins cannot multiply the fixture counts.
- * All stored fatigue revisions are included: removing an older/non-maximum row still moves
- * the stamp, and superseded-row changes may safely cause an extra rebuild.
- *
- * Same population as `getSeasonReportRows` below — a stamp that keys a different set of rows
- * than the query it stands in for is the bug this replaces.
- */
+/** Published coverage plus all-season physical context consumed by calendar and Mileage readers. */
 export async function getSeasonGamesStamp(season: string): Promise<string> {
   const [row] = await db
     .select({
@@ -1566,35 +1587,24 @@ export async function getSeasonGamesStamp(season: string): Promise<string> {
       finals: sql<number>`count(*) filter (where ${games.status} = 'final')`,
       latest: max(games.date),
       checksum: sql<string>`coalesce(sum(${games.homeScore}::bigint * 1000 + ${games.awayScore}), 0)::text`,
-      lifecycle: sql<string>`md5(coalesce(string_agg(concat_ws('|',
-        ${games.id}, ${games.status}, ${games.date}, ${games.tipOffUtc}, ${games.homeTeamId}, ${games.awayTeamId},
-        ${games.neutralSite}, ${games.neutralVenueCity}), ';' order by ${games.id}), 'none'))`,
-      // Keep the outer qualifier literal: Drizzle strips Column qualifiers in single-table selects.
-      derived: sql<string>`md5(coalesce(string_agg(concat_ws('|', ${games.id},
-        (select md5(coalesce(string_agg(to_jsonb(f)::text, ';' order by f.id), 'missing'))
-          from fatigue_scores f where f.game_id = games.id)
-      ), ';' order by ${games.id}), 'none'))`,
     })
     .from(games)
     .where(publishableGames(eq(games.season, season)));
-
-  return (
-    `${row?.scheduled ?? 0}/${Number(row?.finals ?? 0)}` +
-    `@${row?.latest ?? "none"}#${row?.checksum ?? "0"}` +
-    `~${row?.lifecycle ?? "none"}/${row?.derived ?? "none"}`
-  );
+  const context = await readGameInputDigest(eq(games.season, season), true);
+  return `${row?.scheduled ?? 0}/${Number(row?.finals ?? 0)}` +
+    `@${row?.latest ?? "none"}#${row?.checksum ?? "0"}~context-v2:${context}`;
 }
 
 /**
- * Every regular-season game in one season with both sides' latest fatigue row.
+ * Every published regular-season target with fatigue and travel through all physical context.
  *
  * LEFT joins and no status filter, unlike `getCompletedGamesWithFatigue`: the progress
  * tile needs a count of the season's scheduled games, so this reads every one of them.
  * `status` is still selected below — completion is decided once, in the reducer
  * (`buildSeasonReport`), so the same rule that says a game without a score or without
  * both fatigue sides contributes to no aggregate also says a `live` game does not, even
- * with both scores already populated. `publishableGames` still applies — the 2019-20
- * bubble is not games anyone travelled to.
+ * with both scores already populated. `publishableGames` marks the returned targets while
+ * all season rows remain available to locate intervening physical travel.
  */
 export async function getSeasonReportRows(season: string): Promise<SeasonReportRow[]> {
   const homeFatigue = latestFatigueLateral(games.homeTeamId, "home_fatigue_season_report");
@@ -1605,6 +1615,7 @@ export async function getSeasonReportRows(season: string): Promise<SeasonReportR
   const rows = await db
     .select({
       gameId: games.id,
+      published: sql<boolean>`${publishableGames(eq(games.season, season))}`,
       date: games.date,
       status: games.status,
       homeTeamId: games.homeTeamId,
@@ -1633,14 +1644,15 @@ export async function getSeasonReportRows(season: string): Promise<SeasonReportR
     .innerJoin(awayTeam, eq(games.awayTeamId, awayTeam.id))
     .leftJoinLateral(homeFatigue, sql`true`)
     .leftJoinLateral(awayFatigue, sql`true`)
-    .where(publishableGames(eq(games.season, season)))
+    .where(eq(games.season, season))
     // Date-ascending is a contract, not a convenience: the reducer dates its fatigue
     // calendar from the first row it accepts.
     .orderBy(asc(games.date), asc(games.id));
 
-  // The stored travel figure is a rolling 7-day window, so it cannot be summed across a season
-  // without counting each flight several times. The report adds up single legs instead.
-  const legs = seasonTravelLegs(
+  // Physical context supplies Cup/play-in waypoints without becoming report targets. A target's
+  // assigned mileage may include several legs since its previous published appearance.
+  const publishedRows = rows.filter(row => row.published);
+  const legs = publishedSeasonTravelLegs(
     rows.filter(row => !isHeldGame(row.status)).map((r) => ({
       gameId: Number(r.gameId),
       date: String(r.date),
@@ -1657,11 +1669,12 @@ export async function getSeasonReportRows(season: string): Promise<SeasonReportR
       overtimePeriods: 0,
       neutralSite: r.neutralSite,
       neutralVenueCity: r.neutralVenueCity,
-    }))
+    })),
+    new Set(publishedRows.map(row => Number(row.gameId)))
   );
   const legMiles = (gameId: number, teamId: number) => legs.get(travelLegKey(gameId, teamId)) ?? 0;
 
-  return rows.map((r) => ({
+  return publishedRows.map((r) => ({
     gameId: Number(r.gameId),
     date: String(r.date),
     status: String(r.status),

@@ -41,7 +41,7 @@ import {
 import { rowToRecentGame, type PriorGameRow } from "@/lib/fatigue-recent-games";
 import { haversineDistance } from "@/lib/haversine";
 import { loadEnvLocal } from "@/lib/load-env-local";
-import { neutralVenueCoordinates } from "@/lib/neutral-venues";
+import { resolvePhysicalVenue } from "@/lib/physical-venue";
 import {
   buildHistoricalBacktest,
   classifyRestAdvantage,
@@ -49,7 +49,6 @@ import {
   winPct,
 } from "@/lib/rest-advantage-evidence";
 import { isNormallyPlayed } from "@/lib/season-regime";
-import { eraCoordinates } from "@/lib/team-era-coordinates";
 
 type AppDb = PostgresJsDatabase<typeof Schema>;
 
@@ -326,16 +325,27 @@ async function main(): Promise<void> {
 
     const restAdvantage = classifyRestAdvantage(home.score, away.score);
 
-    const homeArena = eraCoordinates(
-      homeTeam.abbreviation,
-      g.date,
-      Number.parseFloat(homeTeam.latitude),
-      Number.parseFloat(homeTeam.longitude)
-    );
-    const neutral = g.neutralSite ? neutralVenueCoordinates(g.neutralVenueCity) : null;
-    const venue: Venue = neutral
-      ? { lat: neutral.latitude, lon: neutral.longitude }
-      : { lat: homeArena.latitude, lon: homeArena.longitude };
+    const resolved = resolvePhysicalVenue({
+      date: g.date,
+      homeTeam: {
+        abbreviation: homeTeam.abbreviation,
+        latitude: Number(homeTeam.latitude),
+        longitude: Number(homeTeam.longitude),
+        altitude: homeTeam.altitudeFlag,
+      },
+      awayTeam: {
+        abbreviation: awayTeam.abbreviation,
+        latitude: Number(awayTeam.latitude),
+        longitude: Number(awayTeam.longitude),
+        altitude: awayTeam.altitudeFlag,
+      },
+      neutralSite: g.neutralSite,
+      neutralVenueCity: g.neutralVenueCity,
+    });
+    const venue: Venue = {
+      lat: resolved.venue.latitude,
+      lon: resolved.venue.longitude,
+    };
 
     const homePrev = previousArena(g.homeTeamId, g.date);
     const awayPrev = previousArena(g.awayTeamId, g.date);
@@ -655,7 +665,7 @@ async function main(): Promise<void> {
     "# Home court vs rest — is the rest advantage really a venue statement?",
     `# generated ${new Date().toISOString()} by scripts/measure_home_rest_confound.ts`,
     "",
-    "## Self-check (aborts nothing; read these first)",
+    "## Self-check (facts publication requires every check to pass)",
     ...checks.map((c) => `  ${c}`),
     "",
     ...q1,
@@ -667,6 +677,16 @@ async function main(): Promise<void> {
   await mkdir(path.dirname(OUT_PATH), { recursive: true });
   await writeFile(OUT_PATH, report, "utf8");
   console.log(`[measure] report written to ${OUT_PATH}`);
+
+  if (
+    population.length !== shippedRows.length ||
+    called.length !== shipped.totalGames ||
+    called.filter((game) => game.homeWon).length !== shipped.overallWins ||
+    uncalled.length !== shipped.homeAwayBreakdown.awayTeamMoreRested.games ||
+    scoreMismatches > 0 || recomputeFailures > 0
+  ) {
+    throw new Error("Home-rest confound fidelity failed; facts were not replaced");
+  }
 
   const cut = (rows: PopulationGame[]) => ({
     games: rows.length,

@@ -1,5 +1,23 @@
 # Release history
 
+## 1.0.3 — Prepared; not yet released
+
+- Correct current home/away streak resets and use actual arena endpoints for
+  alternate homes, temporary venues and accepted historical exceptions.
+- Backfill confirmed overtime, neutral-site and postseason metadata corrections,
+  plus revised upcoming tip times, through a controlled all-season recalculation.
+- Restore missing Cup-final/play-in workload context and the bounded 2020 restart’s
+  campus geography while preserving regular-season publication rules.
+- Refresh analysis caches when underlying fatigue or venue inputs change.
+- Correct known Japan, date-line and historical daylight-saving inputs while
+  retaining ratified fatigue coefficients.
+- Regenerate affected win-rate evidence and dependent analytics together; keep
+  resolved historical prediction records intact.
+- Correct stale playoff inputs under a new data revision, preserving previous model outputs.
+- Prepare a maintenance cutover, full-domain change checks and conditional rollback.
+
+Production data application, deployment and live verification remain pending.
+
 ## 1.0.2 — 2026-10-19
 
 - Home-court history uses direct hover, tap and keyboard season inspection, with the

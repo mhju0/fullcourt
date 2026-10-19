@@ -121,6 +121,10 @@ export function defaultRankableSeason(
 }
 
 export interface DisparityGameRow {
+  /** Physical workload only; excluded from displayed game counts, rankings and Worth. */
+  contextOnly?: boolean;
+  /** Omitted legacy fixtures retain designated home court. Database reads always set this. */
+  neutralSite?: boolean;
   date: string; // "YYYY-MM-DD"
   status: string;
   homeTeamId: number;
@@ -173,9 +177,8 @@ export interface DisparityTeamRow {
   /** favorableGames − unfavorableGames: the page's headline ranking. Null when unmeasured. */
   netEdgeGames: number | null;
   /**
-   * Every scored game split by venue as well as by side, which is what pricing them requires: a
-   * rest edge held at home is worth about 1.25 points of win probability and the same edge
-   * held on the road is worth about 2.27 (`REST_STATE_LIFT_PP`).
+   * Every scored game with home court, split by venue and rest side for the empirical
+   * `REST_STATE_LIFT_PP` calibration. Neutral-site workload stays in the descriptive counts.
    *
    * Counted over a **wider population than every other figure on this row** — see the
    * `restStates` helper for why, and do not "fix" the inconsistency by moving it behind the
@@ -359,7 +362,7 @@ function toFatigue(raw: string | null): number | null {
 }
 
 /**
- * Each team's rest state in every scored game, at the venue it played.
+ * Each team's rest state in every scored game with home court, at the venue it played.
  *
  * **Deliberately outside the opener gate that every other figure in this module sits behind.**
  * That gate exists because a season opener has no previous game and so no defined *rest-days*
@@ -393,6 +396,8 @@ function restStates(games: readonly DisparityGameRow[]): Map<number, RestStateCo
   };
 
   for (const g of games) {
+    // Neutral fixtures have workload but no home/road baseline with which to price Worth.
+    if (g.neutralSite) continue;
     const home = toFatigue(g.homeFatigueScore);
     const away = toFatigue(g.awayFatigueScore);
     if (home === null || away === null) continue;
@@ -411,7 +416,8 @@ function restStates(games: readonly DisparityGameRow[]): Map<number, RestStateCo
 /**
  * Compute a season's schedule disparity from its regular-season games.
  *
- * Callers must pass exactly one season's games, already filtered to `game_type = 'regular'`.
+ * Callers pass one season's published regular games plus rows marked `contextOnly` for physical
+ * workload. Context affects rest/density and never enters the ranked target population.
  * A game counts for a team only when BOTH sides have a previous game in the season, so neither
  * team's opener is counted for either side.
  */
@@ -429,7 +435,7 @@ export function seasonRankability(games: readonly DisparityGameRow[]): {
 } {
   const played = new Map<number, number>();
   for (const game of games) {
-    if (isHeldGame(game.status)) continue;
+    if (game.contextOnly || isHeldGame(game.status)) continue;
     played.set(game.homeTeamId, (played.get(game.homeTeamId) ?? 0) + 1);
     played.set(game.awayTeamId, (played.get(game.awayTeamId) ?? 0) + 1);
   }
@@ -452,6 +458,8 @@ export function computeScheduleDisparity(
   season: string,
   games: DisparityGameRow[]
 ): ScheduleDisparityResult {
+  const physicalGames = games.filter(g => !isHeldGame(g.status));
+  games = games.filter(g => !g.contextOnly);
   const provisional = games.some(g => !isSettledGame(g.status));
   // These Cup-era calendars each contain 30 × 82 / 2 regular-season fixtures. Earlier
   // seasons include shortened/excluded stretches; future formats have not been confirmed.
@@ -463,7 +471,8 @@ export function computeScheduleDisparity(
     ? null
     : Math.max(0, expectedFixtures - games.length);
   games = games.filter(g => !isHeldGame(g.status));
-  const byTeam = gamesByTeam(games);
+  const publishedByTeam = gamesByTeam(games);
+  const byTeam = gamesByTeam(physicalGames);
   const restByTeam = new Map<number, Map<DisparityGameRow, number>>();
   const denseByTeam = new Map<number, Map<DisparityGameRow, { threeInFour: boolean; fourInSix: boolean }>>();
 
@@ -480,11 +489,11 @@ export function computeScheduleDisparity(
   }
 
   const sides = new Map<number, CountedSide[]>();
-  for (const teamId of byTeam.keys()) sides.set(teamId, []);
+  for (const teamId of publishedByTeam.keys()) sides.set(teamId, []);
 
   // Games are played in date order, so the earliest non-final date splits measured fatigue
   // from projected fatigue for the whole season (./fatigue-provenance.ts).
-  const firstUnplayedDate = games.reduce<string | null>(
+  const firstUnplayedDate = physicalGames.reduce<string | null>(
     (first, g) => (g.status !== "final" && (first === null || g.date < first) ? g.date : first),
     null
   );
@@ -638,7 +647,7 @@ export function computeScheduleDisparity(
   const largestEdge = edges.length ? Math.max(...edges) : null;
   const largestDisadvantage = edges.length ? Math.min(...edges) : null;
 
-  const scheduledPerTeam = [...byTeam.values()].map((list) => list.length);
+  const scheduledPerTeam = [...publishedByTeam.values()].map((list) => list.length);
 
   // A max rather than the last row: this module never promises its input is date-ordered, and
   // a stamp that quietly depends on caller ordering goes wrong the day someone reorders the
