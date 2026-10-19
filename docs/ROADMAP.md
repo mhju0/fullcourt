@@ -94,7 +94,7 @@ released until its PR, independent review and deployment checks are complete.
 | 24 | Generated figures/source provenance | Fresh 415-report NBA snapshot validated; 386 regular-season reports reproduce published content exactly. Full cached-corpus Legends rebuild is byte-identical. See [source reproduction](research/2026-10-18-source-reproduction.md). |
 | 25 | Independent historical scores/dates/OT | Prior comparison retained. No new played games since it; first new-slate comparison belongs to opening-night validation. Pre-2002 OT and deliberately excluded fixtures remain documented coverage limits. |
 | 26 | Branch/worktree cleanup | Earlier merged branches/worktrees removed; archived leftovers preserved. New closeout worktrees are active work, not leftovers to discard. |
-| 27 | v1.0.0 tag | After the first verified completed slate, by owner decision. |
+| 27 | v1.0.0 release | Official date October 19, 2026; owner superseded the completed-slate prerequisite (D-117). Release/tag evidence lives in GitHub and CHANGELOG.md. |
 | 28 | Historical timeout watch | Sentry #4 remains open, one Oct 7 event and no recurrence at this read. Do not claim root cause fixed. |
 
 Other decisions and limits:
