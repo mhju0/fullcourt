@@ -72,3 +72,14 @@ are included in the acceptance-record commit.
 New-season provider publications, first actual played-slate ingestion, canonical ESPN/hoopR
 ID reconciliation, manual artifact publication and physical-device/human checks remain separate.
 The guide and expected date do not establish that those operations have completed.
+
+## Post-release style check
+
+PR #177 merged as `83c2cfd`; PR CI run 39189798505 and post-merge CI 39190244648 passed.
+Vercel production `fullcourt-8rukova7b-mhju0s-projects.vercel.app` was Ready for the full
+merge SHA. The public domain returned the new readiness metadata and Nov 5/9/11 cards,
+and all five publication guides were observed. A further computed-style check found
+Officiating's unlayered page CSS made its guide h2 24px instead of the shared 18px and
+blockified each link's inline text fragments. The follow-up applies the heading token
+inline and wraps each link text in one child so page-level flex styling preserves
+word spaces and natural line wrapping. This changes presentation only.
