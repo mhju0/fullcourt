@@ -42,10 +42,13 @@ test("names the selected team, complements visitor probability and separates kno
   await expect(page.getByText("80.0%", { exact: true })).toBeVisible();
   await expect(page.getByText("Estimated chance BOS wins the series", { exact: true })).toBeVisible();
   await expect(page.getByText(/cannot demonstrate predictive performance/)).toBeVisible();
-  await expect(page.getByRole("button", { name: "Expand series details" })).toHaveAttribute("aria-expanded", "false");
-  await page.getByRole("button", { name: "Expand series details" }).focus();
+  await expect(page.getByRole("button", { name: /Expand series details: BOS vs NYK/ })).toHaveAttribute("aria-expanded", "false");
+  await page.getByRole("button", { name: /Expand series details: BOS vs NYK/ }).focus();
   await page.keyboard.press("Enter");
-  await expect(page.getByRole("button", { name: "Collapse series details" })).toHaveAttribute("aria-expanded", "true");
+  await expect(page.getByRole("button", { name: /Collapse series details: BOS vs NYK/ })).toHaveAttribute("aria-expanded", "true");
+  const toggle = page.getByRole("button", { name: /Collapse series details: BOS vs NYK/ });
+  await expect(toggle).toHaveAttribute("aria-controls", "playoff-series-features-1");
+  await expect(page.locator("#playoff-series-features-1")).toBeVisible();
   await expect(page.locator("button details, button summary")).toHaveCount(0);
 });
 

@@ -185,6 +185,7 @@ function SeriesCard({ series }: { series: PlayoffSeriesWithPredictions }) {
   const { status } = seriesCorrectness(series)
   const accent = correctnessAccent(status)
 
+  const featuresId = `playoff-series-features-${series.seriesId}`
   const toggle = useCallback(() => setExpanded((e) => !e), [])
   const homeWins = series.homeCourtWins ?? "—"
   const oppWins = series.opponentWins ?? "—"
@@ -198,7 +199,8 @@ function SeriesCard({ series }: { series: PlayoffSeriesWithPredictions }) {
       <button
         type="button"
         aria-expanded={expanded}
-        aria-label={expanded ? "Collapse series details" : "Expand series details"}
+        aria-label={`${expanded ? "Collapse" : "Expand"} series details: ${series.homeCourtTeam.abbreviation} vs ${series.opponentTeam.abbreviation}`}
+        aria-controls={featuresId}
         onClick={toggle}
         className="w-full text-left cursor-pointer transition-colors hover:bg-[var(--term-bg)] focus-visible:ring-2 focus-visible:ring-[var(--term-blue)]/40"
         style={{ padding: "12px 16px" }}
@@ -270,6 +272,7 @@ function SeriesCard({ series }: { series: PlayoffSeriesWithPredictions }) {
       </div>
 
       <div
+        id={featuresId}
         className={cn(
           "grid",
           expanded ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
