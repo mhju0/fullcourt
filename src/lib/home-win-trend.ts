@@ -1,4 +1,5 @@
 import type { AnalysisResponse } from "@/types";
+import { parseSeasonStartYear, seasonLabelForDateKey } from "@/lib/nba-season";
 
 type SeasonRate = AnalysisResponse["seasonWinRates"][number];
 
@@ -13,7 +14,7 @@ export type HomeWinTrendPoint = {
 /** Missing calendar seasons occupy a slot so neither line bridges an evidence gap. */
 export function buildHomeWinTrend(rows: readonly SeasonRate[]): HomeWinTrendPoint[] {
   if (rows.length === 0) return [];
-  const byYear = new Map(rows.map((row) => [Number(row.season.slice(0, 4)), row]));
+  const byYear = new Map(rows.map((row) => [parseSeasonStartYear(row.season), row]));
   const years = [...byYear.keys()].filter(Number.isFinite);
   if (years.length === 0) return [];
   const first = Math.min(...years);
@@ -26,7 +27,7 @@ export function buildHomeWinTrend(rows: readonly SeasonRate[]): HomeWinTrendPoin
     const window = Array.from({ length: 5 }, (_, offset) => byYear.get(year - 4 + offset));
     const fullWindow = window.every(complete);
     return {
-      season: row?.season ?? `${year}-${String(year + 1).slice(-2)}`,
+      season: row?.season ?? seasonLabelForDateKey(`${year}-10-01`),
       homeWinPct: complete(row) ? row.homeBaselinePct : null,
       rollingHomeWinPct: fullWindow
         ? window.reduce((sum, season) => sum + season.homeWins, 0) /
