@@ -1,6 +1,6 @@
 {
   "name": "fullcourt",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "private": true,
   "license": "UNLICENSED",
   "packageManager": "pnpm@11.8.0",
@@ -29,6 +29,7 @@
     "drizzle-orm": "^0.45.4",
     "lucide-react": "^1.57.0",
     "next": "16.4.1",
+    "pg": "8.23.1",
     "postgres": "^3.4.9",
     "react": "19.3.1",
     "react-dom": "19.3.1",
@@ -42,6 +43,7 @@
     "@playwright/test": "^1.64.1",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
+    "@types/pg": "8.23.1",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "dotenv": "^18.0.8",

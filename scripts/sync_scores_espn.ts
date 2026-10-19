@@ -1,5 +1,4 @@
-import * as schema from "@/lib/db/schema";
-import { drizzle } from "drizzle-orm/postgres-js";
+import { createDatabase, createDbPool, dbPoolConfig } from "@/lib/db/pool";
 import { writeGameStatus } from "@/lib/game-status-write";
 /**
  * Nightly score + status sync, from ESPN, matched on **(date, away, home)**.
@@ -56,7 +55,7 @@ import { config } from "dotenv";
 config({ path: ".env.local" });
 
 import { existsSync, mkdirSync, writeFileSync } from "node:fs";
-import postgres from "postgres";
+import type { Pool } from "pg";
 import { writeStageSummary } from "./pipeline-stage-summary";
 
 import {
@@ -115,7 +114,7 @@ async function main() {
     process.exit(1);
   }
 
-  const sql = postgres(process.env.DATABASE_URL!, { max: 4 });
+  const sql = createDbPool({ ...dbPoolConfig(process.env.DATABASE_URL!), max: 4 });
   try {
     await syncScores(sql, from, to, dryRun);
   } finally {
@@ -123,12 +122,8 @@ async function main() {
   }
 }
 
-async function syncScores(sql: ReturnType<typeof postgres>, from: string, to: string, dryRun: boolean) {
-  // ::text is load-bearing: postgres.js hydrates date columns as JS Date objects, so
-  // String(row.date) would yield "Sun Dec 21 2014 09:00:00 GMT+0900", not "2014-12-21".
-  const rows = await sql<
-    (StoredGameRow & { date: string })[]
-  >`
+async function syncScores(sql: Pool, from: string, to: string, dryRun: boolean) {
+  const { rows } = await sql.query<StoredGameRow & { date: string }>(`
     select g.id,
            g.date::text            as date,
            ht.abbreviation         as "homeAbbr",
@@ -140,8 +135,8 @@ async function syncScores(sql: ReturnType<typeof postgres>, from: string, to: st
     from games g
     join teams ht on ht.id = g.home_team_id
     join teams at on at.id = g.away_team_id
-    where g.date >= ${from} and g.date <= ${to}
-    order by g.date, g.id`;
+    where g.date >= $1 and g.date <= $2
+    order by g.date, g.id`, [from, to]);
 
   if (rows.length === 0) {
     writeStageSummary("scores", { rows_written: 0, stored_games: 0 });
@@ -220,7 +215,7 @@ async function syncScores(sql: ReturnType<typeof postgres>, from: string, to: st
 
   let written = 0;
   let writeTimeRefusedDowngrades = 0;
-  const appDb = drizzle(sql, { schema });
+  const appDb = createDatabase(sql);
   for (const update of updates) {
     const result = await writeGameStatus(appDb, update);
     written += Number(result.written);

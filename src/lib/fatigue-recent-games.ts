@@ -1,14 +1,14 @@
 import { WORKLOAD_STATUSES } from "@/lib/game-status";
 import { format, parseISO, subDays } from "date-fns";
 import { and, asc, eq, gte, inArray, lt, or } from "drizzle-orm";
-import type { PostgresJsDatabase } from "drizzle-orm/postgres-js";
+import type { NodePgDatabase } from "drizzle-orm/node-postgres";
 import { alias } from "drizzle-orm/pg-core";
 import type * as Schema from "./db/schema";
 import { games, teams } from "./db/schema";
 import type { RecentGame } from "./fatigue";
 import { resolvePhysicalVenue } from "./physical-venue";
 
-type AppDb = PostgresJsDatabase<typeof Schema>;
+type AppDb = NodePgDatabase<typeof Schema>;
 
 export interface PriorGameRow {
   date: string;

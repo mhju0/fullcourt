@@ -5,21 +5,17 @@ const mock = vi.hoisted(() => ({
 }));
 vi.mock("dotenv", () => ({ config: vi.fn() }));
 vi.mock("node:fs", () => ({ existsSync: () => true, mkdirSync: vi.fn(), writeFileSync: vi.fn() }));
-vi.mock("postgres", () => ({ default: () => {
-  const sql = Object.assign(vi.fn((strings: TemplateStringsArray | unknown[]) => {
-    if (!Array.isArray(strings) || !('raw' in strings)) return strings;
-    if (mock.databaseError) return Promise.reject(new Error("database unavailable"));
-    if (typeof strings[0] === "string" && strings[0].includes("select g.id")) {
-      return Promise.resolve(mock.rows);
-    }
-    if (mock.writeError) return Promise.reject(new Error("write failed"));
-    mock.writes.push(strings);
-    return Promise.resolve(mock.refused ? [] : [{ id: 1 }]);
-  }), { end: mock.end });
-  return sql;
-} }));
-
-vi.mock("drizzle-orm/postgres-js", () => ({ drizzle: () => ({}) }));
+vi.mock("@/lib/db/pool", () => ({
+  dbPoolConfig: () => ({}),
+  createDatabase: () => ({}),
+  createDbPool: () => ({
+    query: async () => {
+      if (mock.databaseError) throw new Error("database unavailable");
+      return { rows: mock.rows };
+    },
+    end: mock.end,
+  }),
+}));
 vi.mock("@/lib/game-status-write", () => ({ writeGameStatus: async (_db: unknown, update: object) => {
   if (mock.writeError) throw new Error("write failed");
   mock.writes.push(update);

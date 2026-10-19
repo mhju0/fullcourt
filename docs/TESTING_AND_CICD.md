@@ -133,6 +133,14 @@ The named local database must be disposable. The harness creates/drops only its 
 It verifies parent-lock ordering, atomic rollback, resolved-pick protection, missing-side repair
 and actual-clock eligibility. It is not a production load test or an opening-night verification.
 
+The application writer fixtures use the actual node-postgres pool/Drizzle adapter. For a fresh
+disposable `fullcourt_pool_test` database owned by `correction_owner` on port 55434, the guard
+also accepts `postgresql://correction_owner@127.0.0.1:55434/fullcourt_pool_test`; the prospective
+harness first installs the CI bootstrap there. Never point these checks at the corrected archive.
+`scripts/tests/serverless-pool.pg.ts` uses the same explicit URL guard and verifies concurrent
+read identity, temporary-table commit/rollback, transaction-local timeouts, acquisition timeout
+recovery and reconnection after an interrupted transaction. It makes no persistent table writes.
+
 ## Bounded CI gates and operational summaries
 
 `pnpm exec playwright test --config playwright.smoke.config.ts` exercises a built application

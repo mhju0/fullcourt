@@ -207,3 +207,14 @@ full-cache arithmetic/outcome checks and producer replays pass; the
 PR/tag/release and provider evidence own review, preview and canonical acceptance.
 Next operational work: actual opening-night writes, future Cup assignments and retained
 source/device limits. Raw backups and audit evidence remain in the isolated worktrees.
+
+## Serverless transaction-pool candidate — 2026-10-20
+
+D-126 prepares v1.0.5 after concurrent production reads exhausted the shared-session pool.
+The shared app/score writer uses unpipelined node-postgres, guarded transaction checkout,
+bounded connection waits and optional CA-verified TLS; raw execution consumers preserve
+their row arrays through `.rows`. No production data/schema/model change is included.
+Disposable PostgreSQL contracts pass: 20 prospective, 12 lifecycle, five freshness and six
+pool recovery cases. Independent Supabase transaction-endpoint/TLS probes pass. Next:
+complete exact-candidate review/full checks and preview/API parity, switch Vercel's URL/CA,
+then verify canonical production before declaring the patch released.

@@ -1,13 +1,10 @@
-import { drizzle } from "drizzle-orm/postgres-js";
-import postgres from "postgres";
-import { dbReconnectDelaySeconds } from "./reconnect";
-import * as schema from "./schema";
+import type { Pool } from "pg";
+import { createDatabase, createDbPool, dbPoolConfig } from "./pool";
 
-type DbInstance = ReturnType<typeof drizzle<typeof schema>>;
-type SqlClient = ReturnType<typeof postgres>;
+export type DbInstance = ReturnType<typeof createDatabase>;
 
 type DbGlobal = {
-  sqlClient?: SqlClient;
+  sqlClient?: Pool;
   dbInstance?: DbInstance;
 };
 
@@ -20,15 +17,6 @@ function getDbGlobal(): DbGlobal {
   return dbGlobal.__nbaRestAdvantageDb;
 }
 
-function dbPoolMax(): number {
-  const raw = process.env.DB_POOL_MAX;
-  if (raw) {
-    const parsed = Number.parseInt(raw, 10);
-    if (Number.isFinite(parsed) && parsed > 0) return parsed;
-  }
-  return process.env.VERCEL ? 1 : 5;
-}
-
 function getOrCreateDb(): DbInstance {
   const url = process.env.DATABASE_URL;
   if (!url) {
@@ -36,18 +24,8 @@ function getOrCreateDb(): DbInstance {
   }
   const state = getDbGlobal();
   if (!state.dbInstance) {
-    state.sqlClient = postgres(url, {
-      prepare: false,
-      max: dbPoolMax(),
-      idle_timeout: 20,
-      // Fast-fail: on Vercel the pool is a single slot (max=1), so a dead DB
-      // would otherwise hold that slot for the full timeout and serialize every
-      // request behind it. 5s leaves headroom for pooler cold-starts while
-      // halving how long a down DB is waited on.
-      connect_timeout: 5,
-      backoff: dbReconnectDelaySeconds,
-    });
-    state.dbInstance = drizzle(state.sqlClient, { schema });
+    state.sqlClient = createDbPool(dbPoolConfig(url));
+    state.dbInstance = createDatabase(state.sqlClient);
   }
   return state.dbInstance;
 }

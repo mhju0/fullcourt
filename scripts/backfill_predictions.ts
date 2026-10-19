@@ -20,14 +20,14 @@
 
 import { and, eq, isNotNull } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
-import type { PostgresJsDatabase } from "drizzle-orm/postgres-js";
+import type { NodePgDatabase } from "drizzle-orm/node-postgres";
 import type * as Schema from "@/lib/db/schema";
 import { fatigueScores, games, predictions } from "@/lib/db/schema";
 import { loadEnvLocal } from "@/lib/load-env-local";
 import { classifyRestAdvantage, isCalledSide } from "@/lib/rest-advantage-evidence";
 import { isNormallyPlayed } from "@/lib/season-regime";
 
-type AppDb = PostgresJsDatabase<typeof Schema>;
+type AppDb = NodePgDatabase<typeof Schema>;
 
 async function main(): Promise<void> {
   loadEnvLocal();

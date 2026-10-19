@@ -18,11 +18,11 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { sql } from "drizzle-orm";
-import type { PostgresJsDatabase } from "drizzle-orm/postgres-js";
+import type { NodePgDatabase } from "drizzle-orm/node-postgres";
 import type * as Schema from "@/lib/db/schema";
 import { loadEnvLocal } from "@/lib/load-env-local";
 
-type AppDb = PostgresJsDatabase<typeof Schema>;
+type AppDb = NodePgDatabase<typeof Schema>;
 
 const BACKUP_PATH = path.join(process.cwd(), "ml", "data", "predictions_backup.json");
 
@@ -39,7 +39,7 @@ async function main(): Promise<void> {
       count(*) FILTER (WHERE actual_winner_id IS NOT NULL)::int AS graded,
       count(*) FILTER (WHERE actual_winner_id IS NULL)::int     AS open
     FROM predictions
-  `)) as unknown as Record<string, number>[];
+  `)).rows as unknown as Record<string, number>[];
 
   console.log(`[predictions] total  : ${counts[0]?.total ?? 0}`);
   console.log(`[predictions] graded : ${counts[0]?.graded ?? 0}`);
@@ -52,7 +52,7 @@ async function main(): Promise<void> {
 
   const rows = (await appDb.execute(
     sql`SELECT * FROM predictions`
-  )) as unknown as Record<string, unknown>[];
+  )).rows as unknown as Record<string, unknown>[];
   await mkdir(path.dirname(BACKUP_PATH), { recursive: true });
   await writeFile(BACKUP_PATH, JSON.stringify(rows, null, 2), "utf8");
   console.log(`[predictions] backed up ${rows.length} rows to ${BACKUP_PATH}`);

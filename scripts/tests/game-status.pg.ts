@@ -1,8 +1,8 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import postgres from "postgres";
-import { drizzle } from "drizzle-orm/postgres-js";
-import * as schema from "../../src/lib/db/schema";
+import type { Pool } from "pg";
+import { createDatabase, createDbPool, dbPoolConfig } from "../../src/lib/db/pool";
 import { writeGameStatus } from "../../src/lib/game-status-write";
 import { createDailyRefreshPort, selectRecoveryGameIds } from "../../src/lib/daily-refresh-port";
 import { createStampedCache } from "../../src/lib/stamped-cache";
@@ -16,10 +16,12 @@ const name = "fullcourt_status_test";
 const admin = postgres(url, {max:1});
 const a = postgres(url, {max:1,connection:{search_path:name,application_name:"status-A"}});
 const b = postgres(url, {max:1,connection:{search_path:name,application_name:"status-B"}});
-const dbA = drizzle(a,{schema});
-const dbB = drizzle(b,{schema});
+const poolA = createDbPool({ ...dbPoolConfig(url), max: 1, options: `-c search_path=${name}`, application_name: "status-A" });
+const poolB = createDbPool({ ...dbPoolConfig(url), max: 1, options: `-c search_path=${name}`, application_name: "status-B" });
+const dbA = createDatabase(poolA);
+const dbB = createDatabase(poolB);
 let sourceDate = "";
-let queryClient: ReturnType<typeof postgres> | undefined;
+let queryClient: Pool | undefined;
 const previousDatabaseUrl = process.env.DATABASE_URL;
 let passed = 0;
 const pass = (label:string) => {passed++;console.log(`PASS ${label}`);};
@@ -42,7 +44,7 @@ try {
   sourceDate=String((await a`select date::text from games where id=90`)[0].date);
   await seedFatigue();
   await a`insert into predictions(game_id,predicted_advantage_team_id,rest_advantage_differential,actual_winner_id) values(10,1,4,null),(10,1,4,1),(14,1,4,1)`;
-  process.env.DATABASE_URL = `${url}?search_path=${name}&application_name=status-cache`;
+  process.env.DATABASE_URL = `${url}?options=-c%20search_path%3D${name}&application_name=status-cache`;
   const {getSeasonGamesStamp,getSeasonReportRows,getGameById} = await import("../../src/lib/db/queries");
   queryClient = (await import("../../src/lib/db")).db.$client;
   const {getSeasonReport} = await import("../../src/lib/season-report-server");
@@ -166,7 +168,7 @@ try {
   await queryClient?.end();
   if (previousDatabaseUrl === undefined) delete process.env.DATABASE_URL;
   else process.env.DATABASE_URL = previousDatabaseUrl;
-  await a.end();await b.end();
+  await a.end();await b.end();await poolA.end();await poolB.end();
   await admin.unsafe(`drop schema if exists ${name} cascade`);await admin.end();
 }
 

@@ -9,7 +9,7 @@ const dialect = new PgDialect();
 beforeEach(() => { execute.mockReset(); });
 describe("shot-value publication discovery", () => {
   it("bounds the same usable-publication population strictly before the supplied season", async () => {
-    execute.mockResolvedValue([{ latest: "2024-25" }]);
+    execute.mockResolvedValue({ rows: [{ latest: "2024-25" }] });
     expect(await getLatestPublishedShotQualitySeason("2026-27")).toBe("2024-25");
     const query = dialect.sqlToQuery(execute.mock.calls[0][0]);
     expect(query.sql).toContain("max(g.season)");
@@ -19,7 +19,7 @@ describe("shot-value publication discovery", () => {
   });
 
   it("leaves bare latest discovery unbounded and reports empty prior coverage as null", async () => {
-    execute.mockResolvedValue([{ latest: null }]);
+    execute.mockResolvedValue({ rows: [{ latest: null }] });
     expect(await getLatestPublishedShotQualitySeason()).toBeNull();
     const query = dialect.sqlToQuery(execute.mock.calls[0][0]);
     expect(query.sql).not.toContain("g.season <");

@@ -1873,3 +1873,31 @@ retain the original eleven columns and legacy fallback, and derive display rates
 pooled raw gaps from exact counts. Keep classification, thresholds, standard-error and
 shrinkage protocols unchanged; use the same precise raw career gap in both displays.
 Independent review accepted this bounded precision correction within v1.0.4.
+
+## D-126 — Use transaction pooling without driver pipelining (2026-10-20)
+
+Concurrent production API reads hit Supabase's shared-session client limit
+(`EMAXCONNSESSION`, 15 clients) despite a one-connection Vercel pool per worker. Use the
+shared transaction endpoint on port 6543 for Vercel and preserve the local/session URL
+choice for persistent tools. Pool size alone cannot bound connections across workers.
+
+Supabase's [connection guide](https://supabase.com/docs/guides/database/connecting-to-postgres)
+and [Postgres.js warning](https://supabase.com/docs/guides/database/postgres-js) rule out
+query pipelining. Installed postgres-js 3.4.9 writes the next query before its
+`max_pipeline` check: one still permits overlap, while zero prevents BEGIN's reservation
+hook. Replace the shared application driver with pinned node-postgres 8.23.1, explicitly
+disable pipelining, and use unnamed statements. Standalone raw analytics retain postgres-js.
+Adapt raw execution consumers to `result.rows` without changing SQL cohorts or arithmetic.
+
+Keep one connection per Vercel worker, 20-second idle retirement and a five-second
+connection/acquisition deadline. pg creates a fresh client on demand after failure, with
+no automatic query retry. Own transaction checkout/release because Drizzle 0.45.4 issues
+BEGIN outside its pool-release guard; destroy failed transactions and handle idle as well
+as checked-out client errors. Preserve locks, rollback and transaction-local writer settings.
+
+Use `DATABASE_SSL_CA` with the dashboard PEM to verify TLS/server identity. Reject URL
+SSL overrides when it is supplied; retain local PostgreSQL without TLS when unset.
+This v1.0.5 candidate changes no schema, stored figures, coefficients or predictions.
+Disposable PostgreSQL writer/lifecycle/freshness contracts and connection-failure probes
+pass; authenticated read-only transaction-pool/TLS probes pass independently. Preview,
+canonical API parity, exact-candidate review and production deployment remain release gates.

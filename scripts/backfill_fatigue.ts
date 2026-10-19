@@ -24,14 +24,14 @@
 
 import { and, asc, between, eq, isNull, sql } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
-import type { PostgresJsDatabase } from "drizzle-orm/postgres-js";
+import type { NodePgDatabase } from "drizzle-orm/node-postgres";
 import type * as Schema from "@/lib/db/schema";
 import { fatigueScores, games, teams } from "@/lib/db/schema";
 import { scoreGameFatigue } from "@/lib/fatigue";
 import { fetchRecentGamesForTeam } from "@/lib/fatigue-recent-games";
 import { loadEnvLocal } from "@/lib/load-env-local";
 
-type AppDb = PostgresJsDatabase<typeof Schema>;
+type AppDb = NodePgDatabase<typeof Schema>;
 
 const REQUIRED_FATIGUE_COLUMNS = [
   "games_in_last_30_days",
@@ -53,7 +53,7 @@ async function assertFatigueScoresSchema(appDb: AppDb): Promise<void> {
        AND column_name IN (${REQUIRED_FATIGUE_COLUMNS.map((c) => `'${c}'`).join(", ")})`
     )
   );
-  const rows = result as unknown as { column_name: string }[];
+  const rows = result.rows as unknown as { column_name: string }[];
   const found = new Set(rows.map((r) => r.column_name));
   const missing = REQUIRED_FATIGUE_COLUMNS.filter((c) => !found.has(c));
   if (missing.length > 0) {

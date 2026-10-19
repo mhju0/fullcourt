@@ -38,9 +38,12 @@ transaction for holds and future derived-cache invalidation.
 | Offline analysis | `ml/` and analysis scripts | Evaluation, pre-registered studies, publication generation |
 | Published artifacts | `src/data/`, `public/data/` | Versioned analytics consumed without recalculation in the browser |
 
-The database client initializes lazily, so builds do not need a live connection. postgres-js uses
-`prepare: false`; `DB_POOL_MAX` overrides the default pool size (one on Vercel, five locally).
-See `src/lib/db/index.ts`. Credentials are server-side; public Supabase settings support live
+The database client initializes lazily, so builds do not need a live connection. The application
+uses node-postgres without query pipelining or named prepared statements. `DB_POOL_MAX` overrides
+the default pool size (one on Vercel, five locally); idle clients expire after 20 seconds and
+connection/acquisition waits stop after five seconds. Vercel uses Supabase's transaction pooler
+and `DATABASE_SSL_CA` for verified TLS. The transaction wrapper owns checkout/release even when
+BEGIN fails. See `src/lib/db/{index,pool}.ts`. Credentials are server-side; public Supabase settings support live
 score updates and do not replace `DATABASE_URL`.
 
 ## Read paths

@@ -1,5 +1,14 @@
 # Release history
 
+## 1.0.5 — 2026-10-20
+
+- Use an unpipelined node-postgres application pool for Supabase transaction pooling,
+  avoiding the session-client limit across concurrent Vercel workers.
+- Preserve atomic refresh/status writes, transaction-local timeouts and API row shapes;
+  recover the pool after failed transaction starts and interrupted connections.
+- Support CA-verified database TLS through `DATABASE_SSL_CA` and document the required
+  serverless transaction-pool connection settings.
+
 ## 1.0.4 — 2026-10-20
 
 - Calculate Player Shooting rest and workload from confirmed competitive appearances

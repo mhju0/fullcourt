@@ -1,12 +1,12 @@
 import { and, eq, isNull, sql } from "drizzle-orm";
-import type { PostgresJsDatabase } from "drizzle-orm/postgres-js";
+import type { NodePgDatabase } from "drizzle-orm/node-postgres";
 import type * as Schema from "./db/schema";
 import { fatigueScores, predictions } from "./db/schema";
 import { buildPrediction, toFatigueScoreWrite, type DailyRefreshGame, type ProspectiveRefreshPort, type ProspectiveRefreshResult } from "./daily-refresh";
 import { FATIGUE_RECENT_LOOKBACK_DAYS, scoreGameFatigue, type FatigueTeam } from "./fatigue";
 import { neutralizeIfUnplayed, rowToRecentGame, type PriorGameRow } from "./fatigue-recent-games";
 
-type AppDb = PostgresJsDatabase<typeof Schema>;
+type AppDb = NodePgDatabase<typeof Schema>;
 type AppTx = Parameters<Parameters<AppDb["transaction"]>[0]>[0];
 type Raw = Record<string, unknown>;
 type Snapshot = {
@@ -77,9 +77,9 @@ export function createDailyRefreshPort(appDb: AppDb): ProspectiveRefreshPort {
           if (remaining <= 0) throw new RefreshSkipped("budget exhausted");
           await tx.execute(sql`select set_config('lock_timeout', ${String(Math.min(1_500, remaining)) + 'ms'}, true), set_config('statement_timeout', ${String(Math.min(1_500, remaining)) + 'ms'}, true)`);
           // A statement begun before a lock wait retains its old snapshot. Finish the lock first.
-          const locked = await tx.execute(sql`select id from games where id = ${gameId} for update`);
+          const { rows: locked } = await tx.execute(sql`select id from games where id = ${gameId} for update`);
           if (locked.length === 0) throw new RefreshSkipped("missing game");
-          const rows = await tx.execute(sql`
+          const { rows } = await tx.execute(sql`
             select to_jsonb(g) as game, to_jsonb(h) as home, to_jsonb(a) as away,
               g.status = 'scheduled' and g.tip_off_utc > clock_timestamp() as pre_tip,
               exists(select 1 from fatigue_scores f where f.game_id = g.id and f.team_id = g.home_team_id)
@@ -117,7 +117,7 @@ export function createDailyRefreshPort(appDb: AppDb): ProspectiveRefreshPort {
           ];
           const prediction = buildPrediction(game, Number(pair[0].score), Number(pair[1].score));
           const checkClock = async () => {
-            const [check] = await tx.execute(sql`select tip_off_utc > clock_timestamp() as pre_tip, extract(epoch from clock_timestamp()) * 1000 as clock_ms from games where id = ${gameId}`);
+            const { rows: [check] } = await tx.execute(sql`select tip_off_utc > clock_timestamp() as pre_tip, extract(epoch from clock_timestamp()) * 1000 as clock_ms from games where id = ${gameId}`);
             if (!check?.pre_tip) throw new RefreshSkipped("tip crossed during refresh");
             if (Number(check.clock_ms) >= deadlineMs) throw new RefreshSkipped("budget exhausted");
           };
@@ -129,7 +129,7 @@ export function createDailyRefreshPort(appDb: AppDb): ProspectiveRefreshPort {
           await checkClock();
           let predictionRowsWritten = 0;
           if (prediction) {
-            const inserted = await tx.execute(sql`insert into predictions (game_id, predicted_advantage_team_id, rest_advantage_differential, actual_winner_id)
+            const { rows: inserted } = await tx.execute(sql`insert into predictions (game_id, predicted_advantage_team_id, rest_advantage_differential, actual_winner_id)
               select ${gameId}, ${prediction.predictedAdvantageTeamId}, ${prediction.restAdvantageDifferential}, null
               where not exists(select 1 from predictions where game_id = ${gameId} and actual_winner_id is not null) returning id`);
             predictionRowsWritten = inserted.length;
@@ -157,7 +157,7 @@ export function adjacentEasternDateKey(dateKey: string, days: number): string {
 /** Recovery is selected from stored finals, independently of what this invocation fetched. */
 export async function selectRecoveryGameIds(appDb: AppDb, today: string, season: string, deadlineMs = Date.now() + 4_000): Promise<number[]> {
   const tomorrow = adjacentEasternDateKey(today, 1);
-  const rows = await withCronDbDeadline(appDb, deadlineMs, tx => tx.execute(sql`
+  const { rows } = await withCronDbDeadline(appDb, deadlineMs, tx => tx.execute(sql`
     with next_games as (
       select g.*, side.team_id, row_number() over(partition by side.team_id order by g.tip_off_utc, g.id) as position
       from games g cross join lateral (values(g.home_team_id), (g.away_team_id)) side(team_id)
