@@ -55,8 +55,17 @@ reading order puts the period after the finding explanation. Schedule Edge still
 1,184/1,200 projected comparisons and no awaiting-data guide. Shared muted body and link
 colors on the panel pass AA at 5.85:1 and 5.63:1. All guides use existing design tokens.
 
-PR #177 is open. The initial preview was Ready for `962a1da`; final preview and release
-remain unclaimed until checked below.
+[PR #177](https://github.com/mhju0/fullcourt/pull/177) owns delivery status. The initial
+preview was Ready for `962a1da`; the final code head is `763bfe4`. Independent review approved
+that exact code head, including the 320px link-arrow wrap fix. The final built-route run
+passed all 12 selected cases (Season Report, homepage and upcoming-edge jump); targeted
+publication holds also pass. The final UI uses season-token wrapping throughout the guide.
+
+Final CI, preview and production readiness must match the delivered SHA in GitHub/Vercel.
+This pre-merge record deliberately does not predeclare those later provider outcomes; the
+PR merge record, matching immutable deployment and delivery readback are authoritative.
+Only this record/handoff change follows the approved code head; no application code changes
+are included in the acceptance-record commit.
 
 ## Operational limits
 

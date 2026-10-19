@@ -184,5 +184,8 @@ D-116 selects the earliest three large rested-home gaps and preserves the compac
 Homepage period metadata moves below the finding explanation. Wider history-window work is
 deferred. Implementation is isolated on `codex/season-guidance`; the dated review records
 checks and release state. Production is unchanged until an explicit release record says so.
-Next: finish candidate/browser/preview review and deliver the PR. Opening-night validation,
-manual source publication and the canonical-ID re-key remain separate.
+Delivery is tracked by [PR #177](https://github.com/mhju0/fullcourt/pull/177) and the
+matching Vercel deployment. Code head `763bfe4` received independent approval; full 1,270
+unit tests and the final 12 selected built-route cases passed. Provider CI/preview/production
+state is checked against the delivered SHA, not inferred from this pre-merge entry. Next
+operational work is opening-night validation, source publication and canonical-ID re-key.
