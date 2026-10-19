@@ -56,7 +56,7 @@
 
 import { and, asc, eq, or, isNull, sql } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
-import type { PostgresJsDatabase } from "drizzle-orm/postgres-js";
+import type { NodePgDatabase } from "drizzle-orm/node-postgres";
 import type * as Schema from "@/lib/db/schema";
 import { fatigueScores, games } from "@/lib/db/schema";
 import { refreshProspectiveGames } from "@/lib/daily-refresh";
@@ -64,7 +64,7 @@ import { createDailyRefreshPort } from "@/lib/daily-refresh-port";
 import { loadEnvLocal } from "@/lib/load-env-local";
 import { defaultNbaSeason } from "@/lib/nba-season";
 
-type AppDb = PostgresJsDatabase<typeof Schema>;
+type AppDb = NodePgDatabase<typeof Schema>;
 
 async function main(): Promise<void> {
   loadEnvLocal();

@@ -3,10 +3,10 @@ import { spawn } from "node:child_process";
 import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { CI_INTEGRITY_URL, integrityTestUrl } from "./integrity-test-url";
+import { CI_INTEGRITY_URL, POOL_TEST_URL, integrityTestUrl } from "./integrity-test-url";
 import postgres from "postgres";
 import { and, eq, isNull } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/postgres-js";
+import { createDatabase, createDbPool, dbPoolConfig } from "../../src/lib/db/pool";
 import * as schema from "../../src/lib/db/schema";
 import { createDailyRefreshPort, selectRecoveryGameIds, adjacentEasternDateKey } from "../../src/lib/daily-refresh-port";
 import { refreshDailyGames, refreshProspectiveGames, type DailyRefreshWrite, type DailyRefreshPort } from "../../src/lib/daily-refresh";
@@ -20,8 +20,10 @@ const admin = postgres(url!, { max: 1, prepare: false });
 const makeClient = (name: string) => postgres(url!, { max: 1, prepare: false, connection: { application_name: name, search_path: testSchema } });
 const first = makeClient("integrity-A");
 const second = makeClient("integrity-B");
-const dbA = drizzle(first, { schema });
-const dbB = drizzle(second, { schema });
+const poolA = createDbPool({ ...dbPoolConfig(url), max: 1, options: `-c search_path=${testSchema}`, application_name: "integrity-A" });
+const poolB = createDbPool({ ...dbPoolConfig(url), max: 1, options: `-c search_path=${testSchema}`, application_name: "integrity-B" });
+const dbA = createDatabase(poolA);
+const dbB = createDatabase(poolB);
 const portA = createDailyRefreshPort(dbA);
 const portB = createDailyRefreshPort(dbB);
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
@@ -66,7 +68,7 @@ async function runCli(script: string, argument: string | string[], marker: strin
       }
       const child = spawn(process.execPath,[...preloadArgs,join(root,"node_modules/tsx/dist/cli.mjs"),"--tsconfig",join(root,"tsconfig.json"),join(root,script),...(Array.isArray(argument)?argument:[argument])],{
         cwd,
-        env:{...process.env,NODE_OPTIONS:[process.env.NODE_OPTIONS,preloadOption].filter(Boolean).join(" "),DATABASE_URL:`${url}?search_path=${testSchema}&application_name=integrity-cli`},
+        env:{...process.env,NODE_OPTIONS:[process.env.NODE_OPTIONS,preloadOption].filter(Boolean).join(" "),DATABASE_URL:`${url}?options=-c%20search_path%3D${testSchema}&application_name=integrity-cli`},
       });
       let output="";
       let complete=false;
@@ -88,7 +90,7 @@ async function runCli(script: string, argument: string | string[], marker: strin
 
 async function main() {
 try {
-  if (url === CI_INTEGRITY_URL) {
+  if (url === CI_INTEGRITY_URL || url === POOL_TEST_URL) {
     await admin.unsafe(readFileSync(join(process.cwd(), "scripts/tests/ci-integrity-bootstrap.sql"), "utf8"));
   }
   await admin.unsafe(`create schema ${testSchema}`);
@@ -307,7 +309,7 @@ try {
   const originalDatabaseUrl=process.env.DATABASE_URL;
   const originalSecret=process.env.CRON_SECRET;
   const originalPoolMax=process.env.DB_POOL_MAX;
-  process.env.DATABASE_URL=`${url}?search_path=${testSchema}&application_name=integrity-cron`;
+  process.env.DATABASE_URL=`${url}?options=-c%20search_path%3D${testSchema}&application_name=integrity-cron`;
   process.env.CRON_SECRET="integrity-test";
   process.env.DB_POOL_MAX="1";
   const {GET}=await import("../../src/app/api/cron/update/route");
@@ -379,7 +381,7 @@ try {
   pass("budget exhaustion reports every deferred ID");
   console.log(`${passed} real PostgreSQL contracts passed`);
 } finally {
-  await Promise.all([first.end(),second.end()]);
+  await Promise.all([first.end(),second.end(),poolA.end(),poolB.end()]);
   await admin.unsafe(`drop schema if exists ${testSchema} cascade`);
   await admin.end();
 }

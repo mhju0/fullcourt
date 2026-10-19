@@ -1,11 +1,11 @@
 import { sql } from "drizzle-orm";
-import type { PostgresJsDatabase } from "drizzle-orm/postgres-js";
+import type { NodePgDatabase } from "drizzle-orm/node-postgres";
 import type * as Schema from "@/lib/db/schema";
 import { withCronDbDeadline } from "@/lib/daily-refresh-port";
 import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
-type AppDb = PostgresJsDatabase<typeof Schema>;
+type AppDb = NodePgDatabase<typeof Schema>;
 type FreshnessRow = {
   observed_at: string; session_timezone: string; eligible_games: number | string;
   present_rows: number | string; missing_rows: number | string;
@@ -42,7 +42,7 @@ export function freshnessFromRow(row: FreshnessRow, from: string, to: string) {
 }
 
 export async function readDailyFreshness(appDb: AppDb, from: string, to: string) {
-  const rows = await withCronDbDeadline(appDb, Date.now() + 2_000, tx => tx.execute(sql`
+  const { rows } = await withCronDbDeadline(appDb, Date.now() + 2_000, tx => tx.execute(sql`
     with observation as materialized (select clock_timestamp() as observed_at),
     eligible as (
       select g.id, g.home_team_id, g.away_team_id from games g cross join observation o

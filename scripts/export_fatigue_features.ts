@@ -25,7 +25,7 @@ import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { format, parseISO, subDays } from "date-fns";
 import { asc } from "drizzle-orm";
-import type { PostgresJsDatabase } from "drizzle-orm/postgres-js";
+import type { NodePgDatabase } from "drizzle-orm/node-postgres";
 import type * as Schema from "@/lib/db/schema";
 import { fatigueScores, games, teams } from "@/lib/db/schema";
 import {
@@ -38,7 +38,7 @@ import {
 import { rowToRecentGame, type PriorGameRow } from "@/lib/fatigue-recent-games";
 import { loadEnvLocal } from "@/lib/load-env-local";
 
-type AppDb = PostgresJsDatabase<typeof Schema>;
+type AppDb = NodePgDatabase<typeof Schema>;
 
 const OUT_DIR = path.join(process.cwd(), "ml", "data");
 const CSV_PATH = path.join(OUT_DIR, "fatigue_features.csv");

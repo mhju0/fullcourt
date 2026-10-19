@@ -12,14 +12,14 @@ import { reportDailyFreshness } from "./daily-freshness";
 import { writeStageSummary } from "./pipeline-stage-summary";
 import { and, asc, gte, lte } from "drizzle-orm";
 import { addDays, format, parseISO } from "date-fns";
-import type { PostgresJsDatabase } from "drizzle-orm/postgres-js";
+import type { NodePgDatabase } from "drizzle-orm/node-postgres";
 import type * as Schema from "@/lib/db/schema";
 import { games } from "@/lib/db/schema";
 import { refreshProspectiveGames } from "@/lib/daily-refresh";
 import { createDailyRefreshPort } from "@/lib/daily-refresh-port";
 import { loadEnvLocal } from "@/lib/load-env-local";
 
-type AppDb = PostgresJsDatabase<typeof Schema>;
+type AppDb = NodePgDatabase<typeof Schema>;
 
 async function main(): Promise<void> {
   loadEnvLocal();

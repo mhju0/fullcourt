@@ -9,7 +9,7 @@
  */
 import { writeFile } from "node:fs/promises";
 import { sql } from "drizzle-orm";
-import type { PostgresJsDatabase } from "drizzle-orm/postgres-js";
+import type { NodePgDatabase } from "drizzle-orm/node-postgres";
 import type * as Schema from "@/lib/db/schema";
 import { loadEnvLocal } from "@/lib/load-env-local";
 import { NEUTRAL_REST_ADVANTAGE_THRESHOLD } from "@/lib/rest-advantage-evidence";
@@ -18,7 +18,7 @@ import { ABNORMAL_STRETCHES } from "@/lib/season-regime";
 async function main(): Promise<void> {
   loadEnvLocal();
   const { db } = await import("@/lib/db");
-  const appDb = db as PostgresJsDatabase<typeof Schema>;
+  const appDb = db as NodePgDatabase<typeof Schema>;
 
   // The regime filter, from the single list that defines it, so this cannot drift from the
   // predicate every reader uses.
@@ -73,7 +73,7 @@ async function main(): Promise<void> {
          JOIN games g ON g.id = p.game_id
         WHERE g.neutral_site)                                                        AS neutral_predictions,
       (SELECT count(*)::int FROM predictions WHERE actual_winner_id IS NULL)          AS ungraded
-  `)) as unknown as Record<string, number>[];
+  `)).rows as unknown as Record<string, number>[];
 
   const r = rows[0] ?? {};
   const lines = Object.entries(r).map(([k, v]) => `${k.padEnd(30)} ${v}`);

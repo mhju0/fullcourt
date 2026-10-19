@@ -13,12 +13,18 @@ PostgreSQL column** (with the Drizzle field name in parentheses where they diffe
 ## Conventions
 
 - Engine: **Supabase PostgreSQL**, accessed two ways:
-  - server/pipeline via **postgres-js + Drizzle** using the server credentials in `DATABASE_URL`;
+  - server/shared pipeline helpers via **node-postgres + Drizzle** using the server credentials
+    in `DATABASE_URL`; standalone raw analysis clients retain postgres-js;
   - browser via **supabase-js** Realtime using the anon key.
 - The four original base tables use a `serial` integer **primary key** named `id`.
 - `date` columns are SQL `date` (stored/queried as `YYYY-MM-DD` strings).
-- `decimal` columns come back from postgres-js as **strings** and are `parseFloat`-ed in
+- `decimal` columns come back from the drivers as **strings** and are `parseFloat`-ed in
   `queries.ts` (e.g. `score`, `latitude`, multipliers).
+- Vercel uses the shared Supabase **transaction** endpoint on port 6543, with one application
+  connection per worker and pipelining disabled. `DATABASE_SSL_CA` supplies the dashboard PEM
+  certificate and enables server verification; omit URL SSL query parameters when supplying it.
+  Local PostgreSQL can remain unencrypted with that variable unset. Session state is not shared
+  across transactions; writer deadlines use `set_config(..., true)` within the transaction.
 - The original base tables (`teams`, `games`, `fatigue_scores`, `predictions`) predate the
   committed migration history. Do **not** run `drizzle-kit push` or `generate` against an
   existing FullCourt database: `schema.ts` intentionally lags the live schema. Incremental

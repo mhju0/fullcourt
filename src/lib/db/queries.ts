@@ -1380,7 +1380,7 @@ export async function getLatestPublishedPlayoffSeason(): Promise<string | null> 
 //
 // Reads the league-grain shot_grid cells (team_id IS NULL) joined to the two
 // shot_value_surface model versions (SQ-5). These tables are intentionally NOT in
-// schema.ts (it lags the live schema), so this reads via raw SQL through postgres-js.
+// schema.ts (it lags the live schema), so this reads via raw SQL through the app driver.
 // SELECT-only; never mutates either table.
 
 /** Model versions written to shot_value_surface (must match scripts/sq5_write_surface.py). */
@@ -1473,7 +1473,7 @@ export async function getShotQualityGrid(season: string): Promise<ShotQualityCel
       AND base.model_version = ${SHOT_MODEL_BASELINE}
     WHERE g.team_id IS NULL AND g.season = ${season}
     ORDER BY g.cell_x, g.cell_y
-  `)) as unknown as ShotQualityGridRow[];
+  `)).rows as unknown as ShotQualityGridRow[];
 
   return rows.map(mapShotQualityRow);
 }
@@ -1502,7 +1502,7 @@ export async function getLatestPublishedShotQualitySeason(beforeSeason?: string)
           AND s.cell_y = g.cell_y
           AND s.model_version = ${SHOT_MODEL_BASELINE}
       )
-  `)) as unknown as { latest: string | null }[];
+  `)).rows as unknown as { latest: string | null }[];
 
   return rows[0]?.latest ? String(rows[0].latest) : null;
 }

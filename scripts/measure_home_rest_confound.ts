@@ -30,7 +30,7 @@ import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { format, parseISO, subDays } from "date-fns";
 import { asc } from "drizzle-orm";
-import type { PostgresJsDatabase } from "drizzle-orm/postgres-js";
+import type { NodePgDatabase } from "drizzle-orm/node-postgres";
 import type * as Schema from "@/lib/db/schema";
 import { fatigueScores, games, teams } from "@/lib/db/schema";
 import {
@@ -50,7 +50,7 @@ import {
 } from "@/lib/rest-advantage-evidence";
 import { isNormallyPlayed } from "@/lib/season-regime";
 
-type AppDb = PostgresJsDatabase<typeof Schema>;
+type AppDb = NodePgDatabase<typeof Schema>;
 
 const OUT_PATH = path.join(process.cwd(), "docs", "audit", "home-rest-confound.txt");
 /** The three rates the method page prints, committed so `home-rest-confound-facts.test.ts` can pin them. */
