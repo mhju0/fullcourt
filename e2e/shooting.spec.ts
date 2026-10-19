@@ -4,7 +4,7 @@ import { expect, test } from "@playwright/test";
 const READY = { timeout: 45_000 };
 
 async function open(page: import("@playwright/test").Page, name: string) {
-  await page.goto("/shooting");
+  await page.goto("/shooting?year=2025");
   await page.getByTestId("player-row").first().waitFor(READY);
   await page.getByRole("searchbox", { name: "Search player" }).fill(name);
   await page.getByTestId("player-row").first().click();
@@ -26,7 +26,7 @@ test.describe("Player Shooting by Rest", () => {
       page.locator(sel).first().evaluate((el) => getComputedStyle(el).fontSize);
 
     await page.setViewportSize({ width: 390, height: 700 });
-    await page.goto("/shooting");
+    await page.goto("/shooting?year=2025");
     await expect(page.getByLabel("Search player")).toBeVisible({ timeout: 30_000 });
     expect(await fontOf("select")).toBe("16px");
     expect(await fontOf("input[type=search]")).toBe("16px");
@@ -38,7 +38,7 @@ test.describe("Player Shooting by Rest", () => {
   });
 
   test("renders the heading and eyebrow", async ({ page }) => {
-    await page.goto("/shooting");
+    await page.goto("/shooting?year=2025");
     await expect(page.getByRole("heading", { name: "Player Shooting by Rest" })).toBeVisible();
     await expect(page.getByText("PLAYERS · eFG% BY REST")).toBeVisible();
   });
@@ -50,7 +50,7 @@ test.describe("Player Shooting by Rest", () => {
    * tick as the change, so a lagging re-render cannot pass by being waited for.
    */
   test("a changed filter shows its new value and rows in the same tick", async ({ page }) => {
-    await page.goto("/shooting");
+    await page.goto("/shooting?year=2025");
     await page.getByTestId("player-row").first().waitFor(READY);
 
     const result = await page.evaluate(() => {
@@ -65,8 +65,8 @@ test.describe("Player Shooting by Rest", () => {
     expect(result.after).toBeGreaterThan(result.before);
   });
 
-  test("opens on the newest season with a volume floor already applied", async ({ page }) => {
-    await page.goto("/shooting");
+  test("an explicitly selected published season has a volume floor already applied", async ({ page }) => {
+    await page.goto("/shooting?year=2025");
     await page.getByTestId("player-row").first().waitFor(READY);
 
     await expect(page.locator("#pr-volume")).toHaveValue("300");
@@ -109,14 +109,14 @@ test.describe("Player Shooting by Rest", () => {
   });
 
   test("finds accented names typed without their accents", async ({ page }) => {
-    await page.goto("/shooting");
+    await page.goto("/shooting?year=2025");
     await page.getByTestId("player-row").first().waitFor(READY);
     await page.getByRole("searchbox", { name: "Search player" }).fill("jokic");
     await expect(page.getByTestId("player-row").first()).toContainText("Jokić");
   });
 
   test("sorts by rest effect in both directions", async ({ page }) => {
-    await page.goto("/shooting");
+    await page.goto("/shooting?year=2025");
     await page.getByTestId("player-row").first().waitFor(READY);
 
     const header = page.getByRole("columnheader", { name: /Difference/ });
@@ -130,7 +130,7 @@ test.describe("Player Shooting by Rest", () => {
   });
 
   test("career view ranks only players with a career estimate", async ({ page }) => {
-    await page.goto("/shooting");
+    await page.goto("/shooting?year=2025");
     await page.getByTestId("player-row").first().waitFor(READY);
 
     await page.selectOption("#pr-season", "career");
@@ -146,7 +146,7 @@ test.describe("Player Shooting by Rest", () => {
   });
 
   test("a ?player= link opens that player directly", async ({ page }) => {
-    await page.goto("/shooting?player=" + encodeURIComponent("Nikola Jokić"));
+    await page.goto("/shooting?year=2025&player=" + encodeURIComponent("Nikola Jokić"));
     await page.getByTestId("career-row").waitFor(READY);
     await expect(page.getByTestId("player-row").first()).toContainText("Jokić");
     await expect(page.getByTestId("season-row").first()).toBeVisible();
@@ -158,7 +158,7 @@ test.describe("Player Shooting by Rest", () => {
   });
 
   test("the team filter narrows the table to one franchise's players", async ({ page }) => {
-    await page.goto("/shooting");
+    await page.goto("/shooting?year=2025");
     await page.getByTestId("player-row").first().waitFor(READY);
 
     const all = await page.getByTestId("player-row").count();
@@ -175,7 +175,7 @@ test.describe("Player Shooting by Rest", () => {
 
  test("compact mobile rows preserve samples and keyboard expansion", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto("/shooting");
+  await page.goto("/shooting?year=2025");
   const row = page.getByTestId("player-row").first();
   await row.waitFor(READY);
   for (const column of [2, 8, 9, 10]) {
