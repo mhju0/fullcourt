@@ -20,7 +20,7 @@ import { SeasonDataGuide } from "@/components/season-data-guide";
 import { useSeasonReadiness } from "@/hooks/useSeasonReadiness";
 import { MessageCard } from "@/components/ui/message-card";
 import { signedNumber } from "@/lib/signed-number";
-import { WIDTH } from "@/lib/terminal-styles";
+import { TYPE, WIDTH } from "@/lib/terminal-styles";
 
 const LATEST_SEASON = defaultNbaSeason();
 const PRIOR_SEASON = browsableSeasons().filter((season) => season < LATEST_SEASON).at(-1) ?? NBA_SEASONS[0];
@@ -239,21 +239,46 @@ export function SeasonReportContent() {
               Team results under different rest conditions
             </h2>
             <p className={muted}>
-              Records for the rested team at home and the tired team on the road. These are records,
-              not a ranking of fatigue management.
+              Compare each team’s win rate when rested at home with its rate when tired on the road.
             </p>
-            <p data-testid="swing-baseline-note" className={`fc-report-note ${muted}`}>
-              {data.swingBaseline === null
-                ? "No league comparison is available yet."
-                : `Read each difference against the league’s ${signedNumber(data.swingBaseline, 1)}-point comparison, not zero. Venue differs between the two groups.`}
-            </p>
-            <TeamRecords teams={data.teams.slice(0, 6)} season={season} />
+            <div data-testid="swing-baseline-note" className={`text-[15px] ${muted}`}>
+              {data.swingBaseline === null ? (
+                <p>No league comparison is available yet. Cell colors appear when the league gap is available.</p>
+              ) : (
+                <>
+                  <p className="font-medium text-[var(--term-text)]">How this home/rest gap compares with the league</p>
+                  <div className="my-2 h-2 rounded-sm" aria-hidden="true"
+                    style={{ background: "linear-gradient(90deg, #E6D3B6 0%, #EDF1F3 50%, #BEE0E6 100%)" }} />
+                  <div className="grid grid-cols-3 gap-3 text-xs sm:text-[15px]">
+                    <span>Smaller home/rest gap</span>
+                    <span className="text-center">League gap<br /><strong className="mono text-[var(--term-text)]">{signedNumber(data.swingBaseline, 1)} pp</strong></span>
+                    <span className="text-right">Larger home/rest gap</span>
+                  </div>
+                </>
+              )}
+            </div>
+            <TeamRecords teams={data.teams.slice(0, 6)} season={season} baseline={data.swingBaseline} />
             {data.teams.length > 6 ? (
               <details className="fc-disclosure">
                 <summary>Show the other {data.teams.length - 6} teams</summary>
-                <TeamRecords teams={data.teams.slice(6)} season={season} />
+                <TeamRecords teams={data.teams.slice(6)} season={season} baseline={data.swingBaseline} />
               </details>
             ) : null}
+            <p className={`text-[15px] ${muted}`}>
+              Color describes the gap, not fatigue management or statistical significance. These records
+              compare different venues and opponents, with differences in team strength and sample size;
+              they do not measure the effect of rest alone.
+            </p>
+            <details className="fc-disclosure">
+              <summary>How to read these records</summary>
+              <p className={`text-[15px] ${muted}`}>
+                Rested at home means the home team’s fatigue score was at least 0.5 model points lower
+                than its opponent’s. Tired road is the visiting team in those games; it does not mean
+                zero days off. The home/rest gap subtracts the tired-road win rate from the rested-home
+                win rate, in percentage points. Each gap is calculated from wins and games before
+                rounding, so it can differ slightly from subtracting the displayed percentages.
+              </p>
+            </details>
           </section>
           <section
             className="fc-report-section flex flex-col gap-3"
@@ -310,7 +335,24 @@ export function SeasonReportContent() {
   );
 }
 
-function TeamRecords({ teams, season }: { teams: SeasonReportResponse["teams"]; season: string }) {
+function gapComparison(swing: number | null, baseline: number | null) {
+  if (swing === null) return { label: "Gap unavailable", shortLabel: "Unavailable", backgroundColor: undefined };
+  if (baseline === null) return { label: "League comparison unavailable", shortLabel: "No league gap", backgroundColor: undefined };
+  const difference = Math.round((swing - baseline) * 10) / 10;
+  const neutral = [237, 241, 243];
+  const endpoint = difference < 0 ? [230, 211, 182] : [190, 224, 230];
+  const intensity = Math.min(Math.abs(difference) / 40, 1);
+  return {
+    label: difference === 0 ? "At the league home/rest gap"
+      : `${difference > 0 ? "Larger" : "Smaller"} home/rest gap than league`,
+    shortLabel: difference === 0 ? "League gap" : `${difference > 0 ? "Larger" : "Smaller"} gap`,
+    backgroundColor: `rgb(${neutral.map((channel, index) => Math.round(channel + (endpoint[index] - channel) * intensity)).join(", ")})`,
+  };
+}
+
+function TeamRecords({ teams, season, baseline }: {
+  teams: SeasonReportResponse["teams"]; season: string; baseline: number | null;
+}) {
   return (
     <div
       className="overflow-x-auto"
@@ -342,14 +384,17 @@ function TeamRecords({ teams, season }: { teams: SeasonReportResponse["teams"]; 
               <span className="whitespace-nowrap">W / G · win %</span>
             </th>
             <th className="px-2 text-right" scope="col">
-              Difference
+              Home/rest gap
               <br />
               pp
             </th>
           </tr>
         </thead>
         <tbody>
-          {teams.map((team) => (
+          {teams.map((team) => {
+            const swing = team.restedWinPct === null || team.tiredWinPct === null ? null : team.swing;
+            const comparison = gapComparison(swing, baseline);
+            return (
             <tr
               key={team.teamId}
               data-testid="edge-conversion-row"
@@ -379,14 +424,17 @@ function TeamRecords({ teams, season }: { teams: SeasonReportResponse["teams"]; 
                     : `${team.tiredWinPct.toFixed(1)}%`}
                 </span>
               </td>
-              <td className={`mono px-2 text-right tabular-nums ${muted}`}>
-                {team.swing === null ? "—" : signedNumber(team.swing, 1)}
+              <td className="px-2 py-3 text-right" data-testid="team-home-rest-gap"
+                style={{ backgroundColor: comparison.backgroundColor }}>
+                <span className="mono tabular-nums" style={{ fontSize: TYPE.body }}>{swing === null ? "—" : signedNumber(swing, 1)}</span>
+                <span className="mt-1 block text-xs leading-snug"><span className="sm:hidden">{comparison.shortLabel}</span><span className="hidden sm:inline">{comparison.label}</span></span>
                 {team.restedGames < 10 || team.tiredGames < 10 ? (
                   <span className="block text-xs">Small sample</span>
                 ) : null}
               </td>
             </tr>
-          ))}
+            );
+          })}
         </tbody>
       </table>
     </div>

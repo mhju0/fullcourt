@@ -50,7 +50,11 @@ test('study excludes an ongoing season from endpoint summaries and exposes exact
   await expect(finding).toContainText('55.0%');
   await expect(finding).toContainText('2024-25');
   await expect(finding).not.toContainText('2025-26');
-  await expect(page.getByRole('combobox', { name: 'Inspect season' })).toHaveValue('2025-26');
+  await expect(page.getByRole('combobox', { name: 'Inspect season' })).toHaveCount(0);
+  const chartButton = page.getByTestId('home-court-chart').getByRole('button');
+  await expect(chartButton).toHaveAccessibleName(/^2024-25/);
+  await chartButton.focus();
+  await page.keyboard.press('End');
   const inspection = page.locator('[aria-live="polite"]');
   await expect(inspection).toContainText('Season to date');
   await expect(inspection).toContainText('50.0%');
@@ -67,6 +71,8 @@ test('study excludes an ongoing season from endpoint summaries and exposes exact
 for (const games of [99, 100]) {
   test(`rested-home display gate at ${games} games`, async ({ page }) => {
     await mockStudy(page, [...completed, partial(games)]);
+    await page.getByTestId('home-court-chart').getByRole('button').focus();
+    await page.keyboard.press('End');
     const inspection = page.locator('[aria-live="polite"]');
     if (games === 99) {
       await expect(inspection.getByText('Too early', { exact: true })).toHaveCount(2);
@@ -107,23 +113,22 @@ test('mobile chart and expanded table stay within the page and support keyboard 
   await page.setViewportSize({ width: 390, height: 844 });
   await mockStudy(page);
   await page.getByRole('checkbox', { name: 'Show large rest gaps (5+)' }).check();
-  const select = page.getByRole('combobox', { name: 'Inspect season' });
+  const inspectionSeason = page.getByTestId('home-court-home-inspection');
   const chart = page.getByTestId('home-court-chart');
   await chart.scrollIntoViewIfNeeded();
   const firstPoint = await chart.locator('g[aria-hidden="true"] > circle').first().boundingBox();
   expect(firstPoint).not.toBeNull();
   await page.mouse.click(firstPoint!.x + firstPoint!.width / 2, firstPoint!.y + firstPoint!.height / 2);
-  await expect(select).toHaveValue('2015-16');
+  await expect(inspectionSeason).toContainText('2015-16');
   const chartButton = chart.getByRole('button');
   await chartButton.focus();
   await page.keyboard.press('End');
-  await expect(select).toHaveValue('2025-26');
+  await expect(inspectionSeason).toContainText('2025-26');
   await page.keyboard.press('ArrowLeft');
-  await expect(select).toHaveValue('2024-25');
-  await select.selectOption('2015-16');
+  await expect(inspectionSeason).toContainText('2024-25');
+  await chartButton.press('Home');
   await expect(page.locator('[aria-live="polite"]')).toContainText('70.0%');
-  await select.focus();
-  await expect(select).toBeFocused();
+  await expect(chartButton).toBeFocused();
   await page.locator('summary').filter({ hasText: 'View season data' }).focus();
   await page.keyboard.press('Enter');
   const table = page.getByRole('region', { name: 'Home-court season data' });
@@ -140,16 +145,18 @@ test('mobile chart and expanded table stay within the page and support keyboard 
 test('large gaps are opt-in, preserve selection, and expose filled markers with observed counts', async ({ page }) => {
   await mockStudy(page);
   const toggle = page.getByRole('checkbox', { name: 'Show large rest gaps (5+)' });
-  const select = page.getByRole('combobox', { name: 'Inspect season' });
+  const inspectionSeason = page.getByTestId('home-court-home-inspection');
   const chart = page.getByTestId('home-court-chart');
   await expect(toggle).not.toBeChecked();
   await expect(chart.locator('[data-series="large-rest-gap"]')).toHaveCount(0);
-  await select.selectOption('2024-25');
+  await chart.getByRole('button').focus();
+  await page.keyboard.press('End');
+  await page.keyboard.press('ArrowLeft');
   await toggle.focus();
   await page.keyboard.press('Space');
   await expect(toggle).toBeChecked();
   await expect(toggle).toBeFocused();
-  await expect(select).toHaveValue('2024-25');
+  await expect(inspectionSeason).toContainText('2024-25');
   const inspection = page.locator('[aria-live="polite"]');
   await expect(inspection).toContainText('52.4%');
   await expect(inspection).toContainText('22 wins / 42 games');
@@ -162,7 +169,7 @@ test('large gaps are opt-in, preserve selection, and expose filled markers with 
   await page.getByText('View season data', { exact: true }).click();
   await expect(page.getByRole('columnheader', { name: '5+ raw win rate' })).toBeVisible();
   await toggle.uncheck();
-  await expect(select).toHaveValue('2024-25');
+  await expect(inspectionSeason).toContainText('2024-25');
   await expect(chart.locator('[data-series="large-rest-gap"]')).toHaveCount(0);
   await expect(page.getByRole('columnheader', { name: '5+ raw win rate' })).toHaveCount(0);
 });
@@ -179,7 +186,9 @@ test('large gaps keep zero-sample seasons empty and show isolated zero and 100 p
   await expect(chart.locator('circle[data-series="large-rest-gap"][fill="var(--term-accent)"]')).toHaveCount(2);
   const points = await chart.locator('circle[data-series="large-rest-gap"]').evaluateAll(elements => elements.map(el => Number(el.getAttribute('cy'))));
   expect(points.every(point => point >= 22 && point <= 288)).toBe(true);
-  await page.getByRole('combobox', { name: 'Inspect season' }).selectOption(rows[1].season);
+  await chart.getByRole('button').focus();
+  await page.keyboard.press('Home');
+  await page.keyboard.press('ArrowRight');
   const inspection = page.locator('[aria-live="polite"]');
   await expect(inspection).toContainText('No eligible games');
   await expect(inspection).toContainText('0 wins / 0 games');

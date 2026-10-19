@@ -1,7 +1,7 @@
 "use client"
 
 import { SeasonSelector } from "@/components/season-selector";
-import { useCallback, useRef, useState } from "react"
+import { useCallback, useLayoutEffect, useRef, useState } from "react"
 import {
   BarChart,
   Bar,
@@ -40,6 +40,7 @@ import type { DataAsOf } from "@/lib/data-as-of"
 import { LEAD, MONO_FONT_STACK, SPACE, termSelectClass, termSelectStyle, termCardStyle, termDashedEmptyStyle, termInsetStyle, termTdStyle, TRACK, TYPE } from "@/lib/terminal-styles"
 import { DataTable } from "@/components/ui/data-table"
 import type { AnalysisResponse, EraRates } from "@/types"
+import { buildHomeWinTrend, type HomeWinTrendPoint } from "@/lib/home-win-trend"
 import { signedNumber } from "@/lib/signed-number"
 import { formatFatigueScore, formatRestAdvantageValue } from "@/lib/rest-advantage-display"
 import { MessageCard } from "@/components/ui/message-card"
@@ -407,43 +408,61 @@ function RangeKey() {
   )
 }
 
-/**
- * The baseline itself, season by season. Every era bar above is measured against a home rate
- * that ran from about 68% to about 54%; this shows that drift on its own, so a reader can see it
- * is home court moving and not rest.
- */
 function HomeCourtBySeasonChart({
   seasonWinRates,
-  overallPct,
 }: {
   seasonWinRates: AnalysisResponse["seasonWinRates"]
-  overallPct: number
 }) {
-  const chartData = seasonWinRates
-    .filter((s) => s.isComplete)
-    .map((s) => ({ label: s.season, homeWinPct: s.homeBaselinePct }))
-  const values = chartData.map((d) => d.homeWinPct)
-  const min = values.length ? Math.floor(Math.min(...values, overallPct) / 5) * 5 : 50
-  const max = values.length ? Math.ceil(Math.max(...values, overallPct) / 5) * 5 : 70
+  const chartRef = useRef<HTMLDivElement>(null)
+  const lastSize = useRef({ width: 0, height: 0 })
+  const restoreFocus = useRef(false)
+  const [plotSize, setPlotSize] = useState({ width: 0, height: 0 })
+  const resizePlot = useCallback((width: number, height: number) => {
+    const next = { width: Math.round(width), height: Math.round(height) }
+    if (next.width <= 0 || next.height <= 0 ||
+      (next.width === lastSize.current.width && next.height === lastSize.current.height)) return
+    restoreFocus.current = chartRef.current?.contains(document.activeElement) ?? false
+    lastSize.current = next
+    setPlotSize(next)
+  }, [])
+  const restoreChartFocus = useCallback((node: SVGSVGElement | null) => {
+    if (!node || !restoreFocus.current) return
+    restoreFocus.current = false
+    const active = document.activeElement
+    if (active && active !== document.body && !chartRef.current?.contains(active)) return
+    node.focus({ preventScroll: true })
+  }, [])
+  useLayoutEffect(() => {
+    const cancelFocusRestore = (event: FocusEvent) => {
+      if (!chartRef.current?.contains(event.target as Node)) restoreFocus.current = false
+    }
+    document.addEventListener("focusin", cancelFocusRestore)
+    return () => document.removeEventListener("focusin", cancelFocusRestore)
+  }, [])
+  const chartData = buildHomeWinTrend(seasonWinRates)
+  const values = chartData.flatMap((row) => [row.homeWinPct, row.rollingHomeWinPct].filter((value): value is number => value !== null))
+  const min = values.length ? Math.floor(Math.min(...values) / 5) * 5 : 50
+  const max = values.length ? Math.ceil(Math.max(...values) / 5) * 5 : 70
   const ticks: number[] = []
   for (let v = min; v <= max; v += 5) ticks.push(v)
 
   return (
-    <div className="mt-4 h-72 min-w-0">
-      {chartData.length === 0 ? (
+    <div ref={chartRef} className="mt-4 h-72 min-w-0" data-testid="home-win-trend">
+      {values.length === 0 ? (
         <div className="mono flex h-full items-center justify-center" style={termDashedEmptyStyle}>
           NO COMPLETE SEASON YET
         </div>
       ) : (
-        <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={chartData} margin={{ top: 12, right: 12, left: 0, bottom: 8 }}>
+        <ResponsiveContainer width="100%" height="100%" onResize={resizePlot}>
+          {/* Recharts retains keyboard coordinates across resize; reset only the transient chart inspection. */}
+          <LineChart key={`${plotSize.width}:${plotSize.height}`} ref={restoreChartFocus} data={chartData} margin={{ top: 12, right: 12, left: 0, bottom: 8 }}>
             <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="var(--term-border)" />
             <XAxis
-              dataKey="label"
+              dataKey="season"
               tick={{ fontSize: 11, fill: "var(--term-text-muted)", fontFamily: MONO_FONT_STACK }}
               tickLine={false}
               axisLine={false}
-              ticks={chartData.filter((_, i) => i % Math.max(1, Math.ceil((chartData.length - 1) / 4)) === 0 || i === chartData.length - 1).map((row) => row.label)}
+              ticks={chartData.filter((_, i) => i % Math.max(1, Math.ceil((chartData.length - 1) / 4)) === 0 || i === chartData.length - 1).map((row) => row.season)}
               minTickGap={16}
               height={32}
             />
@@ -460,17 +479,19 @@ function HomeCourtBySeasonChart({
               isAnimationActive={false}
               content={({ active, payload }: TooltipContentProps) => {
                 if (!active || !payload?.length) return null
-                const d = payload[0].payload as { label: string; homeWinPct: number }
+                const d = payload[0].payload as HomeWinTrendPoint
                 return (
                   <div style={termTooltip}>
-                    <p style={{ color: "var(--term-text)", fontWeight: 700, letterSpacing: TRACK.sub }}>{d.label}</p>
-                    <p style={{ color: "var(--term-text-muted)", marginTop: SPACE.xs }}>HOME TEAMS WON {d.homeWinPct}%</p>
+                    <p style={{ color: "var(--term-text)", fontWeight: 700, letterSpacing: TRACK.sub }}>{d.season}</p>
+                    <p style={{ color: "var(--term-text-muted)", marginTop: SPACE.xs }}>Home teams won {d.homeWinPct?.toFixed(1)}%</p>
+                    <p style={{ color: "var(--term-text-muted)", marginTop: SPACE.xs }}>{d.homeWins.toLocaleString()} wins / {d.homeGames.toLocaleString()} games</p>
+                    {d.rollingHomeWinPct !== null && <p style={{ marginTop: SPACE.xs }}>Five-season average: {d.rollingHomeWinPct.toFixed(1)}%</p>}
                   </div>
                 )
               }}
             />
-            <ReferenceLine y={overallPct} stroke="var(--term-hairline)" strokeDasharray="4 4" />
-            <Line dataKey="homeWinPct" stroke="var(--term-text)" strokeWidth={1.5} dot={false} isAnimationActive={false} />
+            <Line name="Each season" dataKey="homeWinPct" stroke="var(--term-text)" strokeWidth={1.5} dot={false} connectNulls={false} isAnimationActive={false} />
+            <Line name="Five-season average" dataKey="rollingHomeWinPct" stroke="var(--term-accent)" strokeWidth={2} strokeDasharray="6 4" dot={false} connectNulls={false} isAnimationActive={false} />
           </LineChart>
         </ResponsiveContainer>
       )}
@@ -1173,13 +1194,25 @@ export function AnalysisContent({ asOf }: { asOf?: DataAsOf | null }) {
       </div>
 
       <div style={termCardStyle}>
-        <SectionDivider
-          label="HOW MUCH DID HOME COURT ITSELF MOVE?"
-          descriptor="HOME WIN RATE BY SEASON, ALL GAMES"
-        />
-        <HomeCourtBySeasonChart seasonWinRates={data.seasonWinRates} overallPct={homeBaseline} />
-        <p className="mono m-0 mt-3" style={{ fontSize: 11, letterSpacing: TRACK.sub, color: "var(--term-text-muted)" }}>
-          DASHED LINE: {homeBaseline}% ACROSS EVERY SEASON. EACH ERA ABOVE IS READ AGAINST ITS OWN RATE, NOT THIS ONE.
+        <h2 className="text-2xl font-semibold">Home teams’ win rate over time</h2>
+        <p className="mt-2 text-[var(--term-text-muted)]" style={{ fontSize: TYPE.body, lineHeight: LEAD.body }}>Completed seasons · Eligible regular-season games · Orlando bubble excluded</p>
+        <HomeCourtBySeasonChart seasonWinRates={data.seasonWinRates} />
+        <div className="mt-3 flex flex-wrap gap-x-6 gap-y-2" style={{ fontSize: TYPE.body }} aria-label="Home win rate chart legend">
+          <span className="inline-flex items-center gap-2"><span aria-hidden="true" className="w-6 border-t-2 border-[var(--term-text)]" />Each season</span>
+          <span className="inline-flex items-center gap-2"><span aria-hidden="true" className="w-6 border-t-2 border-dashed border-[var(--term-accent)]" />Five-season average</span>
+        </div>
+        <p className="mt-3 text-[var(--term-text-muted)]" style={{ fontSize: TYPE.body, lineHeight: LEAD.body }}>
+          The dashed line combines games from each five-season window.
+        </p>
+        <details className="mt-2">
+          <summary className="min-h-11 cursor-pointer content-center font-semibold focus-visible:outline-2 focus-visible:outline-[var(--term-accent)]">How the line is calculated</summary>
+          <p className="mt-2 text-[var(--term-text-muted)]" style={{ fontSize: TYPE.body, lineHeight: LEAD.body }}>
+            Each dashed point pools home wins and games from that season and its four preceding completed consecutive seasons.
+            The first four seasons have no rolling value; missing or incomplete seasons break the window.
+          </p>
+        </details>
+        <p className="mt-3 text-[var(--term-text-muted)]" style={{ fontSize: TYPE.body, lineHeight: LEAD.body }}>
+          Annual results rise and fall. This historical pattern does not guarantee a constant decline or explain its cause.
         </p>
       </div>
 

@@ -224,3 +224,16 @@ available as a provisional outlook before results. Availability Cost remains a r
 The homepage's period follows the finding explanation. Games keeps its compact wrapping
 strip under “Upcoming large rest edges,” with readable title/body tokens and rested-home
 5+ chronological selection (D-115/D-116).
+
+
+### Readable comparisons (D-119, v1.0.2)
+
+Home-court history inspects seasons directly through hover, tap or keyboard; there
+is no duplicate season dropdown. The optional large-gap series and stacked
+same-season readout stay. Model Results plots annual home rates beside a dashed,
+game-weighted five-completed-consecutive-season average. Its short caption links
+to a native calculation disclosure; missing and incomplete windows are not joined.
+Playoffs shows the earlier-history Model pick first, with the known-results fit in
+separate native details; primary verdicts never fall back to that retrospective fit.
+Season Report retains its four-column team table and adds a league-centered color
+key, direct comparison labels and a rest/venue caveat. Gaps round once from counts.

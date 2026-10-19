@@ -33,7 +33,7 @@ test.describe("Analysis page", () => {
     // Terminal section dividers (current markup — no text-7xl hero).
     await expect(page.getByText(/DOES A BIGGER GAP WIN MORE\?/)).toBeVisible();
     await expect(page.getByText("DOES THE LARGE-GAP EDGE HOLD IN EVERY ERA?")).toBeVisible();
-    await expect(page.getByText("HOW MUCH DID HOME COURT ITSELF MOVE?")).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Home teams’ win rate over time", exact: true })).toBeVisible();
 
     // The frame itself. Every rate on this page is measured against how often the home team
     // wins anyway, not against a coin flip — if this line regresses to 50%, the page is

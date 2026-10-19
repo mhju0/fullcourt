@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useState, type KeyboardEvent } from "react"
+import { useCallback, useState } from "react"
 import useSWR from "swr"
 import { ChevronDown } from "lucide-react"
 import { StudySeasonGuide } from "@/components/study-season-guide"
@@ -28,7 +28,7 @@ import { usePageQuery } from "@/hooks/useSeasonUrl"
 // ─── Series correctness ─────────────────────────────────────────────
 
 type CorrectnessStatus = "correct" | "incorrect" | "pending"
-type CorrectnessSource = "oos" | "insample" | "none"
+type CorrectnessSource = "oos" | "none"
 
 function seriesCorrectness(
   series: PlayoffSeriesWithPredictions
@@ -36,10 +36,6 @@ function seriesCorrectness(
   const oos = series.predictions.walkForwardOos
   if (oos && oos.predictedWinnerCorrect !== null) {
     return { status: oos.predictedWinnerCorrect ? "correct" : "incorrect", source: "oos" }
-  }
-  const inSample = series.predictions.fullInsample
-  if (inSample && inSample.predictedWinnerCorrect !== null) {
-    return { status: inSample.predictedWinnerCorrect ? "correct" : "incorrect", source: "insample" }
   }
   return { status: "pending", source: "none" }
 }
@@ -59,7 +55,7 @@ function correctnessTextAccent(status: CorrectnessStatus): string {
   return TERM_ACCENT.neutral
 }
 
-function CorrectnessBadge({ status, source }: { status: CorrectnessStatus; source: CorrectnessSource }) {
+function CorrectnessBadge({ status }: { status: CorrectnessStatus }) {
   const accent = correctnessTextAccent(status)
   const label = status === "correct" ? "✓ CORRECT" : status === "incorrect" ? "✗ UPSET" : "—"
   return (
@@ -68,48 +64,34 @@ function CorrectnessBadge({ status, source }: { status: CorrectnessStatus; sourc
       style={{ fontSize: 11, fontWeight: 700, letterSpacing: TRACK.sub, color: accent }}
     >
       {label}
-      {source === "insample" && (
-        <span style={{ fontSize: 10, color: "var(--term-text-muted)", fontWeight: 600 }}>(HINDSIGHT)</span>
-      )}
     </span>
   )
 }
 
-// ─── Method inline (PICK / HINDSIGHT row) ───────────────────────────
-
-/** Probability shown is for the predicted winner, which may be either side of the series. */
+/** Probabilities are stored for the home-court team, irrespective of the model's pick. */
 function methodDisplayProb(
   method: PlayoffSeriesPredictionMethod,
   series: PlayoffSeriesWithPredictions
 ): number {
-  const isHomeCourtPick = method.predictedWinnerTeam.id === series.homeCourtTeam.id
-  return isHomeCourtPick ? method.predictedHomeCourtWinProb : 1 - method.predictedHomeCourtWinProb
+  return method.predictedWinnerTeam.id === series.homeCourtTeam.id
+    ? method.predictedHomeCourtWinProb
+    : 1 - method.predictedHomeCourtWinProb
 }
 
-function MethodInline({
-  label,
-  method,
-  series,
-}: {
-  label: "PICK" | "HINDSIGHT"
+function SeriesEstimate({ method, series, knownResults = false }: {
   method: PlayoffSeriesPredictionMethod | null
   series: PlayoffSeriesWithPredictions
+  knownResults?: boolean
 }) {
-  if (!method) {
-    return (
-      <span className="mono inline-flex items-center gap-1" style={{ fontSize: 11, color: "var(--term-text-muted)", letterSpacing: TRACK.sub }}>
-        <span style={{ fontWeight: 700, color: "var(--term-text)" }}>{label}</span>
-        N/A
-        <span style={{ fontSize: 10 }}>(insufficient history)</span>
-      </span>
-    )
-  }
-  const prob = methodDisplayProb(method, series)
+  if (!method) return <p>{knownResults ? "Known-results estimate unavailable." : "Estimate unavailable: insufficient earlier history."}</p>
   return (
-    <span className="mono inline-flex items-center gap-1 tabular-nums" style={{ fontSize: 11, color: "var(--term-text)", letterSpacing: TRACK.sub }}>
-      <span style={{ fontWeight: 700, color: "var(--term-text-muted)" }}>{label}</span>
-      {(prob * 100).toFixed(1)}% {method.predictedWinnerTeam.abbreviation}
-    </span>
+    <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+      <span style={{ color: "var(--term-text)", fontWeight: 600 }}>{method.predictedWinnerTeam.name}</span>
+      <span className="mono tabular-nums" style={{ fontSize: TYPE.stat, fontWeight: 700, color: "var(--term-text)" }}>
+        {(methodDisplayProb(method, series) * 100).toFixed(1)}%
+      </span>
+      <span>Estimated chance {method.predictedWinnerTeam.abbreviation} wins the series</span>
+    </div>
   )
 }
 
@@ -200,22 +182,13 @@ function GrindLine({
 
 function SeriesCard({ series }: { series: PlayoffSeriesWithPredictions }) {
   const [expanded, setExpanded] = useState(false)
-  const { status, source } = seriesCorrectness(series)
+  const { status } = seriesCorrectness(series)
   const accent = correctnessAccent(status)
 
+  const featuresId = `playoff-series-features-${series.seriesId}`
   const toggle = useCallback(() => setExpanded((e) => !e), [])
-  const onKeyDown = useCallback(
-    (ev: KeyboardEvent<HTMLDivElement>) => {
-      if (ev.key === "Enter" || ev.key === " ") {
-        ev.preventDefault()
-        toggle()
-      }
-    },
-    [toggle]
-  )
-
-  const homeWins = series.homeCourtWins ?? 0
-  const oppWins = series.opponentWins ?? 0
+  const homeWins = series.homeCourtWins ?? "—"
+  const oppWins = series.opponentWins ?? "—"
   const grindLabels = grindLineLabels(series)
 
   return (
@@ -223,14 +196,13 @@ function SeriesCard({ series }: { series: PlayoffSeriesWithPredictions }) {
       className="flex flex-col"
       style={{ background: "var(--term-surface)", border: "1px solid var(--term-border)", borderLeft: `2px solid ${accent}`, borderRadius: "var(--term-radius)", overflow: "hidden" }}
     >
-      <div
-        role="button"
-        tabIndex={0}
+      <button
+        type="button"
         aria-expanded={expanded}
-        aria-label={expanded ? "Collapse series details" : "Expand series details"}
+        aria-label={`${expanded ? "Collapse" : "Expand"} series details: ${series.homeCourtTeam.abbreviation} vs ${series.opponentTeam.abbreviation}`}
+        aria-controls={featuresId}
         onClick={toggle}
-        onKeyDown={onKeyDown}
-        className="cursor-pointer transition-colors hover:bg-[var(--term-bg)] focus-visible:ring-2 focus-visible:ring-[var(--term-blue)]/40"
+        className="w-full text-left cursor-pointer transition-colors hover:bg-[var(--term-bg)] focus-visible:ring-2 focus-visible:ring-[var(--term-blue)]/40"
         style={{ padding: "12px 16px" }}
       >
         <div className="flex items-center justify-between gap-3">
@@ -277,19 +249,31 @@ function SeriesCard({ series }: { series: PlayoffSeriesWithPredictions }) {
               {homeWins}-{oppWins}
             </span>
             <span style={{ color: "var(--term-text-muted)", letterSpacing: TRACK.sub }}>
-              {series.seriesWinnerTeam ? `${series.seriesWinnerTeam.abbreviation} WON` : "PENDING"}
+              {series.seriesWinnerTeam ? `Actual result: ${series.seriesWinnerTeam.abbreviation} won` : "Actual result: pending"}
             </span>
           </div>
 
-          <div className="flex flex-wrap items-center gap-3">
-            <MethodInline label="PICK" method={series.predictions.walkForwardOos} series={series} />
-            <MethodInline label="HINDSIGHT" method={series.predictions.fullInsample} series={series} />
-            <CorrectnessBadge status={status} source={source} />
-          </div>
+          {status !== "pending" && <CorrectnessBadge status={status} />}
         </div>
+      </button>
+
+      <div className="flex flex-col gap-3 px-4 pb-4" style={{ fontSize: TYPE.body, lineHeight: LEAD.body, color: "var(--term-text-muted)" }}>
+        <div className="flex flex-col gap-1">
+          <p style={{ fontWeight: 700, color: "var(--term-text)" }}>Model pick</p>
+          <SeriesEstimate method={series.predictions.walkForwardOos} series={series} />
+        </div>
+        <details style={{ borderTop: "1px solid var(--term-border)" }}>
+          <summary className="min-h-11 cursor-pointer content-center font-semibold text-[var(--term-text)] focus-visible:outline-2 focus-visible:outline-[var(--term-accent)]">Fit using known results</summary>
+          <div className="flex flex-col gap-3 pb-1">
+            <p>This fit includes the target season’s known results and can include later observations. It shows how a model fits results it has seen; it cannot demonstrate predictive performance.</p>
+            <SeriesEstimate method={series.predictions.fullInsample} series={series} knownResults />
+          </div>
+        </details>
       </div>
 
       <div
+        id={featuresId}
+        aria-hidden={!expanded}
         className={cn(
           "grid",
           expanded ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
@@ -379,7 +363,7 @@ export function PlayoffsContent() {
       {dataMatchesSelection ? (
         <CopyFindingButton
           key={season}
-          text={`${season} NBA Playoff Rest. Pick values are model probabilities, not guarantees.`}
+          text={`${season} NBA Playoff Rest. Model picks are estimated series win chances in a historical replay, not guarantees.`}
           query={{ season }}
         />
       ) : null}
@@ -404,11 +388,6 @@ export function PlayoffsContent() {
   }
 
   return (
-    // Capped as one column rather than per-section. A series row carries its matchup on the
-    // left and its pick, hindsight and verdict on the right, so at full container width it
-    // left a third of the screen empty between the two halves. Narrowing only those rows was
-    // worse — it gave the page two different right edges — so the whole column comes in
-    // together and everything stays aligned.
     <div className="flex flex-col gap-12" style={{ maxWidth: WIDTH.wide }}>
       {controls}
       {fallbackNote ? <p role="status" className="mono text-xs text-[var(--term-text-muted)]">{fallbackNote}</p> : null}
@@ -439,8 +418,15 @@ export function PlayoffsContent() {
       ) : (
         <>
           <div className="flex flex-col gap-2" style={{ fontSize: TYPE.body, lineHeight: LEAD.body, color: "var(--term-text-muted)", maxWidth: WIDTH.prose }}>
-            <p><strong>Pick:</strong> trained only on earlier seasons. <strong>Hindsight:</strong> fitted with the target season included; it is not evidence of predictive performance.</p>
-            <p>Probabilities are for the named team. Picks remain N/A when earlier history is insufficient.</p>
+            <p><strong>Model pick:</strong> estimated series win chance, trained only on seasons before {season}. This is a historical replay; this page does not establish that the estimate was published before the series.</p>
+            <p>Each chance refers to the named team winning the whole series. It is not a model accuracy score, a guarantee, or the effect of rest alone. Estimates remain unavailable when earlier history is insufficient.</p>
+            <details>
+              <summary className="min-h-11 cursor-pointer content-center font-semibold text-[var(--term-text)] focus-visible:outline-2 focus-visible:outline-[var(--term-accent)]">Why two numbers?</summary>
+              <div className="flex flex-col gap-3 pt-2">
+                <p>Think of a practice test. The earlier-season model studies old tests, then answers this one. The known-results fit studies this test’s answers too, and may also study tests that came later. Seeing those answers can change its estimate; it cannot show how well the model would do on an unseen test.</p>
+                <p>The percentage expresses uncertainty about one series. Model accuracy instead counts how often a model’s selected team wins across many series.</p>
+              </div>
+            </details>
           </div>
           {data.rounds.map((group) => <RoundSection key={group.round} group={group} />)}
         </>
