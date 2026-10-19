@@ -550,7 +550,7 @@ export function ShotQualityContent() {
   if (heldCurrent) return <div className="flex flex-col gap-12">
     {controls}
     <SeasonReadinessNotice readiness={readiness} season={currentSeason}
-      body="New-season shot-value results are not available yet. Earlier published surfaces remain available."
+      body={previousSeason ? "New-season shot-value results are not available yet. Earlier published surfaces remain available." : "New-season shot-value results are not available yet."}
       previousHref={previousSeason ? `/shot-quality?season=${previousSeason}` : undefined}
       previousLabel={previousSeason ? `View published results · ${previousSeason}` : undefined} />
   </div>

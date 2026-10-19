@@ -108,3 +108,7 @@ The Games strip requests `/api/games/upcoming?minRA=5&order=soonest&limit=6` and
 the earliest three unstarted fixtures. `soonest` sorts the full qualifying set before limit.
 Known tip-offs sort before unknown times on the same ET date; game IDs break equal tips.
 The default bounded API result retains strongest-first behavior for existing callers.
+
+Shot Value responses also include `previousPublishedSeason`, the latest usable publication
+strictly below `latestPublishedSeason`, or null. The field is optional for older cached
+responses. Clients never guess an earlier edition or link back to held current results.

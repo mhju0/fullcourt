@@ -125,6 +125,7 @@ describe("actual prior shot-value publications", () => {
     expect(state.reads.filter((key) => key.includes("?season="))).toEqual([]);
     expect(html).toContain("Awaiting season data");
     expect(html).not.toContain("View published results");
+    expect(html).not.toContain("Earlier published surfaces remain available");
     expect(html).not.toContain('href="/shot-quality?season=2026-27"');
     expect(html).not.toContain("NO SHOT DATA FOR THIS SEASON");
   });

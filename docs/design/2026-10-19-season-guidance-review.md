@@ -35,8 +35,28 @@ No schema, coefficient, generated analytics or production data changes.
 
 ## Remaining candidate checks
 
-Root browser/route verification, exact-candidate independent review, CI and preview verification
-are pending in this record. No merge or production deployment is claimed.
+Independent review of `962a1da` found two P2 cases: Shooting career/expanded history could
+consume held current data, and Shot Value guessed a calendar-prior edition. Both are fixed
+in `53bafa5`, which the independent reviewer approved after 49 focused tests. Historical
+player rows remain available; held current expansion rows and all affected pooled estimates
+are omitted without refitting. Shot Value uses an actual earlier publication or an honest
+no-prior guide. A final copy refinement removes an unavailable-prior claim when none exists.
+
+Final full unit run: 107 files, 1,270 tests passed. Normal production build/typecheck pass;
+Python six contracts pass. The first built-route run passed nine cases; its one failure was
+a test selector matching Next's route announcer as well as the actual alert. Scoped the
+assertion to main and reran that case successfully. Homepage route/data checks passed two
+cases. Final candidate route/browser/CI/preview verification is recorded below before release.
+
+Root inspected shared guide geometry (1px existing border, 16px padding, 18px heading, 15px
+body) and current guide coverage across Season Report, Shooting, Officiating, Playoffs and
+Shot Value. At 390px the strip showed Nov 5/9/11 and clicked through to Nov 5. Homepage DOM
+reading order puts the period after the finding explanation. Schedule Edge still shows
+1,184/1,200 projected comparisons and no awaiting-data guide. Shared muted body and link
+colors on the panel pass AA at 5.85:1 and 5.63:1. All guides use existing design tokens.
+
+PR #177 is open. The initial preview was Ready for `962a1da`; final preview and release
+remain unclaimed until checked below.
 
 ## Operational limits
 
