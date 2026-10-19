@@ -17,6 +17,8 @@ from __future__ import annotations
 
 import json
 import logging
+
+from availability_inputs import load_regular_inputs, roster_records, rotation_window_uncertain, available_now, attach_prior_quality, write_coverage
 from collections import defaultdict, deque
 from pathlib import Path
 
@@ -66,12 +68,8 @@ def ols(x: np.ndarray, y: np.ndarray, names: list[str]) -> tuple[pd.DataFrame, f
 
 
 def build_team_games() -> pd.DataFrame:
-    box = pd.concat(
-        [pd.read_csv(p, low_memory=False) for p in sorted(SHOOTING.glob("player_boxscores_*.csv"))],
-        ignore_index=True,
-    )
-    box["min"] = box["minutes"].map(parse_minutes)
-    box["external_id"] = box["game_id"].astype("int64").astype(str).str.zfill(10)
+    play, sides, coverage = load_regular_inputs(SHOOTING, FEATURES)
+    box = play
 
     z = box.fillna(
         {
@@ -97,30 +95,8 @@ def build_team_games() -> pd.DataFrame:
         - z["turnovers"]
     )
 
-    sides = pd.read_csv(
-        FEATURES,
-        usecols=["game_id", "external_id", "date", "season", "team_id", "is_home", "status", "game_type"],
-        low_memory=False,
-    )
-    sides = sides[(sides["status"] == "final") & (sides["game_type"] == "regular")].copy()
-    sides["external_id"] = sides["external_id"].astype(str).str.zfill(10)
-    sides["side"] = np.where(sides["is_home"] == 1, "home", "away")
-
-    # hoopR carries its own team_id, game_id and season, all of which collide with ours and
-    # would silently become _x / _y. The join key is (external_id, side); none are needed.
-    play = box.drop(columns=["team_id", "game_id", "season"]).merge(
-        sides[["game_id", "external_id", "date", "season", "team_id", "side"]],
-        on=["external_id", "side"],
-        how="inner",
-    )
-
-    appeared = play[play["min"] > 0].sort_values(["person_id", "date"]).copy()
-    appeared["q_gs"] = appeared.groupby("person_id")["game_score"].transform(
-        lambda s: s.shift(1).rolling(QUALITY_GAMES, min_periods=QUALITY_MIN_GAMES).mean()
-    )
-    play = play.merge(
-        appeared[["game_id", "person_id", "q_gs"]], on=["game_id", "person_id"], how="left"
-    ).sort_values(["team_id", "date", "person_id"])
+    play = attach_prior_quality(play, {"game_score": "q_gs"}, QUALITY_GAMES, QUALITY_MIN_GAMES)
+    play = play.sort_values(["team_id", "date", "person_id"])
 
     # One window per team-season. A window carried across the summer counted players who had
     # left as missing in the opener; a team is measured once it has WINDOW games this season.
@@ -128,13 +104,19 @@ def build_team_games() -> pd.DataFrame:
     rows = []
     for (team_id, game_id), grp in play.groupby(["team_id", "game_id"], sort=False):
         window = history[(team_id, grp["season"].iloc[0])]
-        played_now = dict(zip(grp["person_id"], grp["min"]))
+        played_now = roster_records(grp, ["q_gs", "q_uncertain"])
+        if len(window) == WINDOW and rotation_window_uncertain(window, MIN_APPEARANCES, ROTATION_MINUTES):
+            coverage["rotationWindowHoldouts"] += 1
+            window.append(played_now)
+            continue
 
         mins: dict[int, list] = defaultdict(list)
         qual: dict[int, float] = {}
+        quality_uncertain = {}
         for past in window:
             for pid, rec in past.items():
-                if rec["min"] > 0:
+                if rec["participation"] == "played" and pd.notna(rec["min"]) and rec["min"] > 0:
+                    quality_uncertain[pid] = rec["q_uncertain"]
                     mins[pid].append(rec["min"])
                     if not np.isnan(rec["q_gs"]):
                         qual[pid] = rec["q_gs"]
@@ -145,7 +127,12 @@ def build_team_games() -> pd.DataFrame:
             if len(v) >= MIN_APPEARANCES and float(np.mean(v)) >= ROTATION_MINUTES
         }
 
+        current_uncertain = any(available_now(played_now, pid) is None for pid in rotation)
+        prior_quality_uncertain = any(quality_uncertain.get(pid, False) for pid in rotation)
         if len(window) == WINDOW and rotation:
+            coverage["currentRotationHoldouts"] += int(current_uncertain)
+            coverage["qualityWindowHoldouts"] += int(prior_quality_uncertain and not current_uncertain)
+        if len(window) == WINDOW and rotation and not current_uncertain and not prior_quality_uncertain:
             known = [qual[p] for p in rotation if p in qual]
             replacement = float(np.median(known)) if known else 0.0
             best = max(rotation, key=lambda p: qual.get(p, -np.inf)) if known else None
@@ -154,7 +141,7 @@ def build_team_games() -> pd.DataFrame:
             miss_count = 0
             best_out = 0
             for pid, _avg in rotation.items():
-                if played_now.get(pid, 0.0) > 0.0:
+                if available_now(played_now, pid) is not False:
                     continue
                 miss_count += 1
                 if pid in qual:
@@ -173,14 +160,11 @@ def build_team_games() -> pd.DataFrame:
                 }
             )
 
-        window.append(
-            {
-                pid: {"min": m, "q_gs": q}
-                for pid, m, q in zip(grp["person_id"], grp["min"], grp["q_gs"])
-            }
-        )
+        window.append(played_now)
 
-    return pd.DataFrame(rows)
+    result = pd.DataFrame(rows)
+    result.attrs["inputCoverage"] = coverage
+    return result
 
 
 def main() -> None:
@@ -225,7 +209,9 @@ def main() -> None:
             "t": round(float(frame.loc[key, "t"]), 1),
         }
 
+    coverage = write_coverage(DATA / "availability_facts_coverage.json", av.attrs["inputCoverage"], Path(__file__).resolve(), TABLE, len(av), df.index)
     facts = {
+        "coverage": coverage,
         "generatedFrom": "hoopR player box scores + games (final regular season only)",
         "sample": {
             "games": int(len(df)),
