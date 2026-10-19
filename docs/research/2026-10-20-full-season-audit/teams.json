@@ -1,0 +1,272 @@
+[
+  {
+    "id": 11,
+    "abbreviation": "ATL",
+    "name": "Hawks",
+    "city": "Atlanta",
+    "latitude": "33.7573",
+    "longitude": "-84.3963",
+    "altitude_flag": false
+  },
+  {
+    "id": 2,
+    "abbreviation": "BKN",
+    "name": "Nets",
+    "city": "Brooklyn",
+    "latitude": "40.6826",
+    "longitude": "-73.9754",
+    "altitude_flag": false
+  },
+  {
+    "id": 1,
+    "abbreviation": "BOS",
+    "name": "Celtics",
+    "city": "Boston",
+    "latitude": "42.3662",
+    "longitude": "-71.0621",
+    "altitude_flag": false
+  },
+  {
+    "id": 12,
+    "abbreviation": "CHA",
+    "name": "Hornets",
+    "city": "Charlotte",
+    "latitude": "35.2251",
+    "longitude": "-80.8392",
+    "altitude_flag": false
+  },
+  {
+    "id": 6,
+    "abbreviation": "CHI",
+    "name": "Bulls",
+    "city": "Chicago",
+    "latitude": "41.8807",
+    "longitude": "-87.6742",
+    "altitude_flag": false
+  },
+  {
+    "id": 7,
+    "abbreviation": "CLE",
+    "name": "Cavaliers",
+    "city": "Cleveland",
+    "latitude": "41.4965",
+    "longitude": "-81.6882",
+    "altitude_flag": false
+  },
+  {
+    "id": 26,
+    "abbreviation": "DAL",
+    "name": "Mavericks",
+    "city": "Dallas",
+    "latitude": "32.7905",
+    "longitude": "-96.8103",
+    "altitude_flag": false
+  },
+  {
+    "id": 16,
+    "abbreviation": "DEN",
+    "name": "Nuggets",
+    "city": "Denver",
+    "latitude": "39.7487",
+    "longitude": "-105.0077",
+    "altitude_flag": true
+  },
+  {
+    "id": 8,
+    "abbreviation": "DET",
+    "name": "Pistons",
+    "city": "Detroit",
+    "latitude": "42.341",
+    "longitude": "-83.0553",
+    "altitude_flag": false
+  },
+  {
+    "id": 21,
+    "abbreviation": "GSW",
+    "name": "Warriors",
+    "city": "San Francisco",
+    "latitude": "37.768",
+    "longitude": "-122.3877",
+    "altitude_flag": false
+  },
+  {
+    "id": 27,
+    "abbreviation": "HOU",
+    "name": "Rockets",
+    "city": "Houston",
+    "latitude": "29.7508",
+    "longitude": "-95.3621",
+    "altitude_flag": false
+  },
+  {
+    "id": 9,
+    "abbreviation": "IND",
+    "name": "Pacers",
+    "city": "Indianapolis",
+    "latitude": "39.764",
+    "longitude": "-86.1555",
+    "altitude_flag": false
+  },
+  {
+    "id": 22,
+    "abbreviation": "LAC",
+    "name": "Clippers",
+    "city": "Los Angeles",
+    "latitude": "33.9534",
+    "longitude": "-118.3417",
+    "altitude_flag": false
+  },
+  {
+    "id": 23,
+    "abbreviation": "LAL",
+    "name": "Lakers",
+    "city": "Los Angeles",
+    "latitude": "34.043",
+    "longitude": "-118.2673",
+    "altitude_flag": false
+  },
+  {
+    "id": 28,
+    "abbreviation": "MEM",
+    "name": "Grizzlies",
+    "city": "Memphis",
+    "latitude": "35.1383",
+    "longitude": "-90.0505",
+    "altitude_flag": false
+  },
+  {
+    "id": 13,
+    "abbreviation": "MIA",
+    "name": "Heat",
+    "city": "Miami",
+    "latitude": "25.7814",
+    "longitude": "-80.187",
+    "altitude_flag": false
+  },
+  {
+    "id": 10,
+    "abbreviation": "MIL",
+    "name": "Bucks",
+    "city": "Milwaukee",
+    "latitude": "43.045",
+    "longitude": "-87.917",
+    "altitude_flag": false
+  },
+  {
+    "id": 17,
+    "abbreviation": "MIN",
+    "name": "Timberwolves",
+    "city": "Minneapolis",
+    "latitude": "44.9795",
+    "longitude": "-93.2762",
+    "altitude_flag": false
+  },
+  {
+    "id": 29,
+    "abbreviation": "NOP",
+    "name": "Pelicans",
+    "city": "New Orleans",
+    "latitude": "29.949",
+    "longitude": "-90.0821",
+    "altitude_flag": false
+  },
+  {
+    "id": 3,
+    "abbreviation": "NYK",
+    "name": "Knicks",
+    "city": "New York",
+    "latitude": "40.7505",
+    "longitude": "-73.9934",
+    "altitude_flag": false
+  },
+  {
+    "id": 18,
+    "abbreviation": "OKC",
+    "name": "Thunder",
+    "city": "Oklahoma City",
+    "latitude": "35.4634",
+    "longitude": "-97.5151",
+    "altitude_flag": false
+  },
+  {
+    "id": 14,
+    "abbreviation": "ORL",
+    "name": "Magic",
+    "city": "Orlando",
+    "latitude": "28.5392",
+    "longitude": "-81.3836",
+    "altitude_flag": false
+  },
+  {
+    "id": 4,
+    "abbreviation": "PHI",
+    "name": "76ers",
+    "city": "Philadelphia",
+    "latitude": "39.9012",
+    "longitude": "-75.172",
+    "altitude_flag": false
+  },
+  {
+    "id": 24,
+    "abbreviation": "PHX",
+    "name": "Suns",
+    "city": "Phoenix",
+    "latitude": "33.4457",
+    "longitude": "-112.0712",
+    "altitude_flag": false
+  },
+  {
+    "id": 19,
+    "abbreviation": "POR",
+    "name": "Trail Blazers",
+    "city": "Portland",
+    "latitude": "45.5316",
+    "longitude": "-122.6668",
+    "altitude_flag": false
+  },
+  {
+    "id": 25,
+    "abbreviation": "SAC",
+    "name": "Kings",
+    "city": "Sacramento",
+    "latitude": "38.5802",
+    "longitude": "-121.4997",
+    "altitude_flag": false
+  },
+  {
+    "id": 30,
+    "abbreviation": "SAS",
+    "name": "Spurs",
+    "city": "San Antonio",
+    "latitude": "29.4269",
+    "longitude": "-98.4375",
+    "altitude_flag": false
+  },
+  {
+    "id": 5,
+    "abbreviation": "TOR",
+    "name": "Raptors",
+    "city": "Toronto",
+    "latitude": "43.6435",
+    "longitude": "-79.3791",
+    "altitude_flag": false
+  },
+  {
+    "id": 20,
+    "abbreviation": "UTA",
+    "name": "Jazz",
+    "city": "Salt Lake City",
+    "latitude": "40.7683",
+    "longitude": "-111.9011",
+    "altitude_flag": true
+  },
+  {
+    "id": 15,
+    "abbreviation": "WAS",
+    "name": "Wizards",
+    "city": "Washington",
+    "latitude": "38.8981",
+    "longitude": "-77.0209",
+    "altitude_flag": false
+  }
+]

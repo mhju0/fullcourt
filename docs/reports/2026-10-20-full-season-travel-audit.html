@@ -1,0 +1,710 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>FullCourt: full 2026–27 schedule and Mileage audit</title><style>html{scroll-behavior:smooth}*{box-sizing:border-box}body{margin:0;background:#f3f8fc;color:#19232d;font:17px/1.65 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}header,main{max-width:1120px;margin:auto;padding:28px 24px}header{border-bottom:1px solid #b9ccdb}header p{margin:0;color:#526372}nav{display:flex;flex-wrap:wrap;gap:24px;margin-top:16px}a{color:#3f3aad;text-underline-offset:3px}article{background:#fbfdff;border:1px solid #b9ccdb;padding:32px;margin-bottom:32px;scroll-margin-top:20px}h1{font-size:32px;line-height:1.25;margin:0 0 24px}h2{font-size:25px;line-height:1.3;margin:36px 0 16px}h3{font-size:20px;line-height:1.4;margin-top:28px}p,li{max-width:90ch}code{font-size:.88em;overflow-wrap:anywhere;background:#eaf1f6;padding:2px 4px}table{border-collapse:collapse;width:100%;font-size:15px;line-height:1.5;margin:24px 0}th,td{text-align:left;vertical-align:top;border-bottom:1px solid #b9ccdb;padding:12px}th{background:#e8f1f7}tr:nth-child(even){background:#f2f7fb}.table-wrap{overflow:auto}strong{font-weight:650}footer{max-width:1120px;margin:auto;padding:12px 24px 40px;color:#526372}@media(max-width:650px){header,main{padding:20px 12px}article{padding:22px 16px}h1{font-size:27px}h2{font-size:23px}table{min-width:700px}body{font-size:16px}}</style></head><body><header><p>FullCourt · Entire assigned 2026–27 season · October 20, 2026</p><nav aria-label="Report sections"><a href="#review">Audit results</a><a href="#policy">Mileage method and geography</a><a href="#east">Eastern itineraries</a><a href="#west">Western itineraries</a></nav></header><main><article id="review"><h1>Full 2026–27 schedule, Mileage and itinerary review</h1>
+<p>Researched October 20, 2026. This extends the earlier October–December review through the final assigned regular-season date, April 11, 2027. All findings below concern the current assigned schedule. This is a research deliverable, not a production correction.</p>
+<h2>Your Mileage decision</h2>
+<p>Keep <strong>Mileage</strong> as the visible label. Explain the estimate in Behind the Data, while retaining enough period context to distinguish a seven-day value from a season total. D-120 records this owner decision. The current audit changes no live UI or calculation.</p>
+<h2>What passed across the entire assigned season</h2>
+<p>The fresh read-only snapshot covers <strong>30 teams, 1,200 assigned games, 2,400 team appearances and 156 game dates</strong>. Every team has 80 assigned games. There are no duplicate external IDs, duplicate fatigue-side rows or same-team double bookings.</p>
+<p>The independent date/geography oracle agrees with all stored back-to-back, 3-in-4, 4-in-6, rest-day, seven/thirty-day workload and rolling Mileage fields. All 2,400 public Games API side records agree with that oracle, including displayed current-away streaks. All 2,400 composite scores reproduce the current code. Reproducibility does not resolve the homecoming rule inconsistency below.</p>
+<p>All 1,200 fixtures agree with the NBA's August 13 release PDF. Current ESPN coverage was checked for every September–April date: all 1,200 assigned fixtures match, with two later tip changes identified. Every ESPN fixture has a venue ID; 34 distinct venues expose six nonstandard home endpoints, including three Austin games.</p>
+<p>The assigned-schedule totals are <strong>426 back-to-backs, 628 3-in-4 flags and 716 4-in-6 flags</strong>, counting team appearances satisfying each condition. Categories overlap; these are not counts of unique difficult trips. The remaining 30 Cup-dependent regular-season games are not yet assigned, so final totals will change.</p>
+<p>Source: <a href="https://pr.nba.com/2026-27-nba-regular-season-schedule/">NBA schedule release</a>. Reproduction, capture dates and exact source fingerprints: <a href="../research/2026-10-20-full-season-audit/FULL_SEASON_AUDIT.md">full numeric audit</a>.</p>
+<h2>Monthly checks</h2>
+<p>Mileage here follows the current venue-based itinerary assumptions. It is shown to reconcile the website, not certify actual flights. Its method and limits are explained below.</p>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Scrollable evidence table"><table>
+<thead>
+<tr>
+<th>Month</th>
+<th style="text-align: right;">Assigned games</th>
+<th style="text-align: right;">B2B team appearances</th>
+<th style="text-align: right;">3-in-4</th>
+<th style="text-align: right;">4-in-6</th>
+<th style="text-align: right;">Mileage, both teams combined</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2026-10</td>
+<td style="text-align: right;">88</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">44</td>
+<td style="text-align: right;">42</td>
+<td style="text-align: right;">83,887</td>
+</tr>
+<tr>
+<td>2026-11</td>
+<td style="text-align: right;">215</td>
+<td style="text-align: right;">72</td>
+<td style="text-align: right;">103</td>
+<td style="text-align: right;">111</td>
+<td style="text-align: right;">222,626</td>
+</tr>
+<tr>
+<td>2026-12</td>
+<td style="text-align: right;">172</td>
+<td style="text-align: right;">61</td>
+<td style="text-align: right;">77</td>
+<td style="text-align: right;">83</td>
+<td style="text-align: right;">191,088</td>
+</tr>
+<tr>
+<td>2027-01</td>
+<td style="text-align: right;">236</td>
+<td style="text-align: right;">91</td>
+<td style="text-align: right;">144</td>
+<td style="text-align: right;">174</td>
+<td style="text-align: right;">257,303</td>
+</tr>
+<tr>
+<td>2027-02</td>
+<td style="text-align: right;">169</td>
+<td style="text-align: right;">56</td>
+<td style="text-align: right;">84</td>
+<td style="text-align: right;">101</td>
+<td style="text-align: right;">191,488</td>
+</tr>
+<tr>
+<td>2027-03</td>
+<td style="text-align: right;">232</td>
+<td style="text-align: right;">88</td>
+<td style="text-align: right;">121</td>
+<td style="text-align: right;">135</td>
+<td style="text-align: right;">249,050</td>
+</tr>
+<tr>
+<td>2027-04</td>
+<td style="text-align: right;">88</td>
+<td style="text-align: right;">28</td>
+<td style="text-align: right;">55</td>
+<td style="text-align: right;">70</td>
+<td style="text-align: right;">91,672</td>
+</tr>
+</tbody>
+</table></div>
+<h2>Findings requiring a correction or decision</h2>
+<h3>Homecoming road load: larger full-season impact</h3>
+<p>The scorer retains the preceding away streak on <strong>508 homecoming team records</strong>, while the public type contract and API treat the current-away streak as zero at home. <strong>185 home games</strong> receive a positive road-streak component.</p>
+<p>A diagnostic removing only that home-game component, while preserving all ratified coefficients and other inputs, changes <strong>57 rested-side/neutral classifications and 66 edge-size classifications</strong>. These are counterfactual changes, not corrected forecasts or observed results. The behavior predates the current release; prior review found no explicit decision establishing whether this homecoming carryover was intended.</p>
+<p>Largest score effect: <strong>Lakers–Clippers, February 10</strong>. The Lakers' score changes diagnostically from <strong>6.12 to 4.25</strong>, with the rest gap moving from <strong>+1.16 to +3.03</strong>. That changes the edge size from small to medium without changing which side is more rested.</p>
+<p>The shared helper also leaves a previous home-stand length on <strong>507 away-game feature records</strong>. That feature is exported for analysis but is not currently a score term. Inspect both sides of the helper when resolving the rule. Correcting only the visible road-streak label would leave the scoring inconsistency intact.</p>
+<p>Recommendation: explicitly settle whether a road-streak term should apply on the first home game, then implement the accepted contract with regression coverage and a measured, reviewed rescore. Do not change coefficient values or silently reinterpret this as an approved carryover term.</p>
+<h3>Austin: three physical venue omissions</h3>
+<p>The current assigned schedule contains these Spurs-designated home games at <strong>Moody Center, Austin</strong>:</p>
+<ul>
+<li>October 23: Houston at San Antonio.</li>
+<li>February 26: Memphis at San Antonio.</li>
+<li>February 28: Denver at San Antonio.</li>
+</ul>
+<p>The database provides no separate physical-venue override, so the scorer resolves the usual San Antonio arena. The first game can therefore receive a zero inbound distance despite a different city. Audit the inbound leg, following leg and rolling windows around every affected game.</p>
+<p>Recommendation: separate actual venue location from nominal home team and home-court eligibility. Do not repair Austin by automatically marking every game neutral. The Spurs' alternate home designation and physical travel are different facts. Mexico City, Paris and Manchester resolve through the existing neutral-venue map; the current LAC/GSW coordinates use Intuit Dome/Chase Center.</p>
+<p>Sources: <a href="https://www.nba.com/spurs/schedule">Spurs schedule</a>, <a href="https://ak-static.cms.nba.com/wp-content/uploads/sites/46/2026/08/2026-27-NBA-Regular-Season-Schedule-By-Date.pdf">NBA dated schedule PDF</a>, captured current provider venue IDs.</p>
+<h3>Two stale tip times are now corroborated</h3>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Scrollable evidence table"><table>
+<thead>
+<tr>
+<th>Game</th>
+<th>Stored ET</th>
+<th>Current supported ET</th>
+<th>Current authority</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>October 23, Chicago at Milwaukee</td>
+<td>8:00 p.m.</td>
+<td>4:00 p.m.</td>
+<td>Current Bulls schedule and Bucks' October 16 change announcement.</td>
+</tr>
+<tr>
+<td>October 24, Houston at Atlanta</td>
+<td>8:00 p.m.</td>
+<td>8:30 p.m.</td>
+<td>Hawks/Dream October 13 joint statement and current arena event listing.</td>
+</tr>
+</tbody>
+</table></div>
+<p>The earlier report left Houston–Atlanta as a provider conflict. The expanded research found a dated first-party announcement resolving it to 8:30 p.m.; some NBA game/team pages still display 8 p.m. Historical release PDFs must not override subsequent dated announcements.</p>
+<p>Sources: <a href="https://www.nba.com/team/1610612741/schedule">Bulls schedule</a>, <a href="https://www.nba.com/news/milwaukee-bucks-move-home-opener-world-series">Bucks announcement</a>, <a href="https://www.statefarmarena.com/news/detail/joint-statement-from-the-atlanta-dream-and-atlanta-hawks">Hawks/Dream joint statement</a>, <a href="https://www.statefarmarena.com/events/detail/atlanta-hawks-vs-houston-rockets-tickets-atlanta-georgia-2026-10-24">arena game listing</a>.</p>
+<p>These changes preserve calendar-day B2B flags but can affect clock-based turnaround multipliers for surrounding games. A correction should refresh both teams' dependent scores, not only print the new tip time.</p>
+<h2>Actual home interruptions: your geography intuition has support</h2>
+<p>Teams sometimes return to their home area between two away games, without playing a home game. The deeper research found contemporary reporting on these cases:</p>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Scrollable evidence table"><table>
+<thead>
+<tr>
+<th>Team and event</th>
+<th>Reported route</th>
+<th>Evidence boundary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Sixers, December 2024</td>
+<td>Boston Dec 25 → Philadelphia respite → Utah Dec 28</td>
+<td>Close analogue to a nearby Northeast game followed by a Western destination. Christmas context matters.</td>
+</tr>
+<tr>
+<td>Bulls, November 2012</td>
+<td>Houston Nov 21 → Chicago-area practice Nov 23 → Milwaukee Nov 24</td>
+<td>Reported home practice and bus departure; the arena road-trip label concealed a home interruption.</td>
+</tr>
+<tr>
+<td>Nets, March 2016</td>
+<td>Minnesota Mar 5 → Brooklyn respite → Toronto Mar 8</td>
+<td>Contemporary coach/report evidence; no intervening game.</td>
+</tr>
+</tbody>
+</table></div>
+<p>Sources and calendar checks: <a href="#east">Eastern itinerary cases</a>. Additional Spurs and Western stay-away cases are in <a href="#west">Western itinerary research</a>.</p>
+<p>The exact <strong>Knicks Boston → New York → Los Angeles</strong> itinerary was not verified. Our arena-distance illustration is nevertheless informative: via New York adds approximately <strong>44 miles</strong> to Boston→LA. A Knicks Chicago→New York→Milwaukee itinerary adds approximately <strong>1,365 miles</strong> over the direct regional leg. These are hypothetical distances, not observed movements or return probabilities.</p>
+<p>Geography helps prioritize the search. It does not settle nights at home, practice access, airport/ground transfers, holiday plans, acclimation or which players stayed together. Teams also stay away through off dates. A roster can split over All-Star break, so a single team itinerary may itself be an approximation. The <a href="https://nbpa.com/cba">NBPA's current agreement</a>, Article XX section 9, permits qualifying Days Off outside the home city.</p>
+<h3>Cup championship: workload and standings are separate</h3>
+<p>The December 11 Cup championship does not count toward regular-season standings, but the two participating teams still play and travel. The current snapshot contains only regular-season fixtures. When participants and surrounding games are known, check that this physical game enters workload/travel context separately from publication eligibility. Thirty unassigned regular-season fixtures plus the non-standings championship are distinct follow-ups; excluding the final from the standings must not imply no fatigue effect. This is an unresolved future-context check, not an observed finalized score error.</p>
+<h2>Full-season itinerary review queue</h2>
+<p>The audit calculates geography for <strong>680 consecutive-away pairs</strong>, including short intervals rather than assuming only long gaps can contain home stops:</p>
+<ul>
+<li><strong>99 away-to-away gaps</strong> are at least three calendar days apart.</li>
+<li><strong>6</strong> of those overlap unassigned December Cup fixtures; those gaps may acquire intervening games.</li>
+<li><strong>6</strong> overlap the All-Star break; participation and personal travel remain unknown.</li>
+<li><strong>86 nonzero venue legs</strong> are under 100 miles, including local/nearby arenas. They do not establish a flight.</li>
+<li><strong>55 pairs</strong> have at least one game-free calendar day and a hypothetical home detour of at most 150 miles. This arbitrary threshold creates a research queue only; it is not a prediction rule or approval to insert a stop.</li>
+</ul>
+<p>The <a href="../research/2026-10-20-full-season-audit/all-consecutive-away-pairs.csv">all-pairs CSV</a> preserves direct distance, via-home distance, detour and route-proximity information. A nearby home city and a low detour can make a home stop plausible even when a game-count road streak continues. A distant detour can still happen for a holiday or other reason. No representative frequency dataset or validated behavioral probability was found.</p>
+<p>Recommendation: keep documented observations, inferred baseline routes and hypothetical alternatives distinct. For future unsourced intervals, preserve the direct-venue baseline while prioritizing low-detour, holiday and long-gap cases for dated reporting. Add confirmed exceptions only through a provenance-aware mechanism after deciding how they affect the model. Do not turn a research threshold into an automatic geography-based home-return rule.</p>
+<h2>All 30 teams: assigned-schedule reconciliation</h2>
+<p>The table counts each incoming venue leg once. It excludes final post-season home returns and assumes a home departure before a team's first assigned game. It includes current Austin omissions and unknown itinerary choices. Every figure is provisional until the missing Cup fixtures and later schedule changes are incorporated.</p>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Scrollable evidence table"><table>
+<thead>
+<tr>
+<th>Team</th>
+<th style="text-align: right;">Games</th>
+<th style="text-align: right;">B2B</th>
+<th style="text-align: right;">3-in-4</th>
+<th style="text-align: right;">4-in-6</th>
+<th style="text-align: right;">Mileage</th>
+<th style="text-align: right;">Home games with positive road load</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ATL</td>
+<td style="text-align: right;">80</td>
+<td style="text-align: right;">14</td>
+<td style="text-align: right;">21</td>
+<td style="text-align: right;">23</td>
+<td style="text-align: right;">36,537</td>
+<td style="text-align: right;">8</td>
+</tr>
+<tr>
+<td>BKN</td>
+<td style="text-align: right;">80</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">21</td>
+<td style="text-align: right;">23</td>
+<td style="text-align: right;">37,595</td>
+<td style="text-align: right;">6</td>
+</tr>
+<tr>
+<td>BOS</td>
+<td style="text-align: right;">80</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">22</td>
+<td style="text-align: right;">23</td>
+<td style="text-align: right;">41,282</td>
+<td style="text-align: right;">7</td>
+</tr>
+<tr>
+<td>CHA</td>
+<td style="text-align: right;">80</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">21</td>
+<td style="text-align: right;">26</td>
+<td style="text-align: right;">36,521</td>
+<td style="text-align: right;">6</td>
+</tr>
+<tr>
+<td>CHI</td>
+<td style="text-align: right;">80</td>
+<td style="text-align: right;">15</td>
+<td style="text-align: right;">24</td>
+<td style="text-align: right;">25</td>
+<td style="text-align: right;">35,394</td>
+<td style="text-align: right;">6</td>
+</tr>
+<tr>
+<td>CLE</td>
+<td style="text-align: right;">80</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">23</td>
+<td style="text-align: right;">27</td>
+<td style="text-align: right;">39,350</td>
+<td style="text-align: right;">5</td>
+</tr>
+<tr>
+<td>DAL</td>
+<td style="text-align: right;">80</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">21</td>
+<td style="text-align: right;">22</td>
+<td style="text-align: right;">44,775</td>
+<td style="text-align: right;">7</td>
+</tr>
+<tr>
+<td>DEN</td>
+<td style="text-align: right;">80</td>
+<td style="text-align: right;">14</td>
+<td style="text-align: right;">21</td>
+<td style="text-align: right;">24</td>
+<td style="text-align: right;">47,986</td>
+<td style="text-align: right;">6</td>
+</tr>
+<tr>
+<td>DET</td>
+<td style="text-align: right;">80</td>
+<td style="text-align: right;">15</td>
+<td style="text-align: right;">21</td>
+<td style="text-align: right;">27</td>
+<td style="text-align: right;">35,984</td>
+<td style="text-align: right;">6</td>
+</tr>
+<tr>
+<td>GSW</td>
+<td style="text-align: right;">80</td>
+<td style="text-align: right;">15</td>
+<td style="text-align: right;">23</td>
+<td style="text-align: right;">21</td>
+<td style="text-align: right;">45,657</td>
+<td style="text-align: right;">7</td>
+</tr>
+<tr>
+<td>HOU</td>
+<td style="text-align: right;">80</td>
+<td style="text-align: right;">14</td>
+<td style="text-align: right;">24</td>
+<td style="text-align: right;">26</td>
+<td style="text-align: right;">45,437</td>
+<td style="text-align: right;">7</td>
+</tr>
+<tr>
+<td>IND</td>
+<td style="text-align: right;">80</td>
+<td style="text-align: right;">15</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">22</td>
+<td style="text-align: right;">36,601</td>
+<td style="text-align: right;">7</td>
+</tr>
+<tr>
+<td>LAC</td>
+<td style="text-align: right;">80</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">24</td>
+<td style="text-align: right;">47,441</td>
+<td style="text-align: right;">6</td>
+</tr>
+<tr>
+<td>LAL</td>
+<td style="text-align: right;">80</td>
+<td style="text-align: right;">15</td>
+<td style="text-align: right;">26</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">43,716</td>
+<td style="text-align: right;">7</td>
+</tr>
+<tr>
+<td>MEM</td>
+<td style="text-align: right;">80</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">19</td>
+<td style="text-align: right;">23</td>
+<td style="text-align: right;">45,816</td>
+<td style="text-align: right;">4</td>
+</tr>
+<tr>
+<td>MIA</td>
+<td style="text-align: right;">80</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">19</td>
+<td style="text-align: right;">19</td>
+<td style="text-align: right;">47,887</td>
+<td style="text-align: right;">7</td>
+</tr>
+<tr>
+<td>MIL</td>
+<td style="text-align: right;">80</td>
+<td style="text-align: right;">14</td>
+<td style="text-align: right;">22</td>
+<td style="text-align: right;">24</td>
+<td style="text-align: right;">41,492</td>
+<td style="text-align: right;">6</td>
+</tr>
+<tr>
+<td>MIN</td>
+<td style="text-align: right;">80</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">22</td>
+<td style="text-align: right;">27</td>
+<td style="text-align: right;">47,309</td>
+<td style="text-align: right;">7</td>
+</tr>
+<tr>
+<td>NOP</td>
+<td style="text-align: right;">80</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">27</td>
+<td style="text-align: right;">29</td>
+<td style="text-align: right;">55,529</td>
+<td style="text-align: right;">6</td>
+</tr>
+<tr>
+<td>NYK</td>
+<td style="text-align: right;">80</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">17</td>
+<td style="text-align: right;">17</td>
+<td style="text-align: right;">35,134</td>
+<td style="text-align: right;">5</td>
+</tr>
+<tr>
+<td>OKC</td>
+<td style="text-align: right;">80</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">18</td>
+<td style="text-align: right;">22</td>
+<td style="text-align: right;">44,283</td>
+<td style="text-align: right;">5</td>
+</tr>
+<tr>
+<td>ORL</td>
+<td style="text-align: right;">80</td>
+<td style="text-align: right;">14</td>
+<td style="text-align: right;">18</td>
+<td style="text-align: right;">22</td>
+<td style="text-align: right;">43,327</td>
+<td style="text-align: right;">7</td>
+</tr>
+<tr>
+<td>PHI</td>
+<td style="text-align: right;">80</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">19</td>
+<td style="text-align: right;">41,319</td>
+<td style="text-align: right;">4</td>
+</tr>
+<tr>
+<td>PHX</td>
+<td style="text-align: right;">80</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">22</td>
+<td style="text-align: right;">26</td>
+<td style="text-align: right;">44,281</td>
+<td style="text-align: right;">6</td>
+</tr>
+<tr>
+<td>POR</td>
+<td style="text-align: right;">80</td>
+<td style="text-align: right;">15</td>
+<td style="text-align: right;">19</td>
+<td style="text-align: right;">23</td>
+<td style="text-align: right;">44,606</td>
+<td style="text-align: right;">6</td>
+</tr>
+<tr>
+<td>SAC</td>
+<td style="text-align: right;">80</td>
+<td style="text-align: right;">14</td>
+<td style="text-align: right;">25</td>
+<td style="text-align: right;">28</td>
+<td style="text-align: right;">48,270</td>
+<td style="text-align: right;">6</td>
+</tr>
+<tr>
+<td>SAS</td>
+<td style="text-align: right;">80</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">18</td>
+<td style="text-align: right;">22</td>
+<td style="text-align: right;">54,043</td>
+<td style="text-align: right;">6</td>
+</tr>
+<tr>
+<td>TOR</td>
+<td style="text-align: right;">80</td>
+<td style="text-align: right;">15</td>
+<td style="text-align: right;">22</td>
+<td style="text-align: right;">25</td>
+<td style="text-align: right;">35,110</td>
+<td style="text-align: right;">7</td>
+</tr>
+<tr>
+<td>UTA</td>
+<td style="text-align: right;">80</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">25</td>
+<td style="text-align: right;">48,690</td>
+<td style="text-align: right;">6</td>
+</tr>
+<tr>
+<td>WAS</td>
+<td style="text-align: right;">80</td>
+<td style="text-align: right;">14</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">22</td>
+<td style="text-align: right;">35,743</td>
+<td style="text-align: right;">6</td>
+</tr>
+</tbody>
+</table></div>
+<h2>Behind the Data: what Mileage measures</h2>
+<p>The current model uses great-circle distances between scheduled game venues. It does not observe airports, flight paths, departure/arrival times, hotels, practices, intermediate home stops or transport mode. Adding rolling seven-day values across games would double-count travel; season totals instead use one inbound leg per game.</p>
+<p>The largest assigned inbound leg is Manchester→San Antonio, approximately <strong>4,851 miles</strong>, into the Spurs' January 20 game after Europe. The highest venue-based total is New Orleans at approximately <strong>55,529 miles</strong>; Toronto is lowest at approximately <strong>35,110 miles</strong>. European fixtures explain substantial additional distance for the Pelicans/Spurs. These scales are plausible under the current endpoint assumptions, rather than evidence of actual aircraft mileage.</p>
+<p>The <a href="../reports/2026-10-20-schedule-travel-audit.html#east">30-team airport reference</a> remains dated research, with verified events separated from unverified candidates. This audit has not established airport choices for each season leg; a candidate is not a current exclusive team preference. Replacing arena coordinates with guessed airports would not resolve home interruptions or wrong physical venues.</p>
+<p>Proposed Behind the Data copy: “Mileage uses straight-line distances between scheduled game venues. Actual airports, routes, ground travel and intermediate stops can differ.” Retain the simple <strong>Mileage</strong> label in the product. A future sourced-exception mechanism needs its own explanation once it exists.</p>
+<h2>Completion and remaining limits</h2>
+<p>Completed: full assigned-calendar audit, stored-score/source replay, public API comparison, current schedule/venue-feed comparison, 30-team reconciliation, deeper documented itinerary research and a geography-based review queue. No production records, coefficients or UI were changed.</p>
+<p>Still open: the homecoming rule decision and corrective implementation/rescore; physical venue support for Austin; the two confirmed tip corrections and dependent rescoring; actual future travel; the remaining Cup assignments and championship workload context; and any later reschedule. A corrected dataset must be re-audited after those writes. This report does not certify the eventual 82-game schedule or claim that a future trip has already been observed.</p>
+<h2>Verification record</h2>
+<p>The full numeric artifact checks and 2,400-side source replay passed again. All 30 team totals reconcile with monthly/oracle data. Type checking, targeted audit-script lint, Python/JavaScript syntax and documentation-link checks passed. A separate read-only reviewer independently recounted calendar flags, unique API sides, all 185 score counterfactuals and all 680 route comparisons, and checked selected primary itinerary sources. The report was rendered at desktop and 390px width with contained table scrolling. The reviewer did not reverify every historical link, and neither reviewer nor audit observed future flights or approved a production correction.</p></article><article id="policy"><h1>Mileage and itinerary policy notes</h1>
+<p>Owner preference, October 20, 2026: keep the visible term <strong>Mileage</strong>. Put the estimation method and uncertainty in Behind the Data. This records the requested direction; it does not claim a production label change.</p>
+<h2>Geography changes the plausibility of a home stop</h2>
+<p>Using the 30 arena coordinates captured in the opening-quarter audit and its independent haversine formula:</p>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Scrollable evidence table"><table>
+<thead>
+<tr>
+<th>Team / hypothetical consecutive away venues</th>
+<th style="text-align: right;">Direct venue miles</th>
+<th style="text-align: right;">Miles via the team's home arena</th>
+<th style="text-align: right;">Extra miles</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Knicks: Boston → LA Lakers</td>
+<td style="text-align: right;">2,592.2</td>
+<td style="text-align: right;">2,635.8</td>
+<td style="text-align: right;">43.6</td>
+</tr>
+<tr>
+<td>Knicks: Boston → LA Clippers</td>
+<td style="text-align: right;">2,598.8</td>
+<td style="text-align: right;">2,642.2</td>
+<td style="text-align: right;">43.4</td>
+</tr>
+<tr>
+<td>Knicks: Chicago → Milwaukee</td>
+<td style="text-align: right;">81.4</td>
+<td style="text-align: right;">1,446.0</td>
+<td style="text-align: right;">1,364.6</td>
+</tr>
+<tr>
+<td>Sixers: Boston → Utah</td>
+<td style="text-align: right;">2,093.7</td>
+<td style="text-align: right;">2,194.5</td>
+<td style="text-align: right;">100.9</td>
+</tr>
+</tbody>
+</table></div>
+<p>These are hypothetical arena-distance comparisons, not observed flights or probabilities. They use the same venue proxy as the website, so airport/ground routes may differ. The first three rows illustrate the owner's examples; they do not assert those exact sequences are in the 2026-27 Knicks schedule.</p>
+<p>A home stop near the route can add little distance while changing nights at home, practice access, departure timing and rest assumptions. Conversely, a large detour makes return less economical but cannot exclude it. The traveling team's home city matters: a Bulls Chicago–Milwaukee sequence and a Knicks sequence involving those same cities have different home-stop implications.</p>
+<h2>What the schedule alone cannot tell us</h2>
+<p>There is no established return-home probability or universally observed geography-plus-days rule in this audit. Off dates can involve practice, media work, travel, or a genuine day off. An All-Star break may split the roster across multiple destinations. A road streak counts consecutive scheduled away games, not nights spent continuously in hotels.</p>
+<p>The <a href="https://nbpa.com/cba">current CBA linked by the NBPA</a>, Article XX section 9, explicitly permits qualifying Days Off outside a team's home city. Thus a game-free date does not establish a home return. The agreement does not provide a team-specific itinerary predictor.</p>
+<h2>Proposed method for a follow-up implementation</h2>
+<ol>
+<li>Keep the reproducible direct-venue itinerary as the default while actual routing is unknown. Retain once-counted inbound Mileage separately from seven-day rolling Mileage.</li>
+<li>Store confirmed exceptions with the team, from/to game IDs, actual stop, event date, source, publication date, verification date, and whether the report covers the whole traveling party. Preserve the original assumption for comparison.</li>
+<li>For unresolved pairs, calculate direct distance, via-home distance, absolute and relative detour, gap calendar days, tip-to-tip hours, local/same-metro status, and Cup/All-Star/holiday context. Use these fields to prioritize research, not automatically insert a home stop.</li>
+<li>Show a clearly named scenario comparison in research artifacts. Neither an arbitrary distance cutoff nor a newly invented probability should feed the fatigue score without an explicit owner decision and validation.</li>
+<li>Separate physical venue location from home-court designation. Austin's Spurs games illustrate why a home-designated fixture can still require travel.</li>
+</ol>
+<p>Suggested Behind the Data wording: “Mileage uses straight-line distances between scheduled game venues. We assume direct travel between consecutive games unless a documented itinerary says otherwise. Actual airports, routes, ground travel and intermediate stops can differ.” The exception sentence describes a proposed future policy; current v1.0.2 does not yet apply documented itinerary overrides.</p></article><article id="east"><h1>Eastern-team itinerary evidence: home interruptions versus staying away</h1>
+<p>Researched <strong>2026-10-20</strong>. This deepens the <a href="../research/2026-10-20-team-airports-east.md">airport inventory</a>; it makes no application, database or model changes. “Home interruption” means a team returns to its home area <strong>between two away games without an intervening home game</strong>. An individual player's injury, family visit or trade itinerary is a separate observation.</p>
+<h2>Findings</h2>
+<p>There are documented whole-team home interruptions. The strongest Eastern examples found are <strong>Bulls, November 2012; Nets, March 2016; Sixers, December 2024</strong>. They support researching geography, practice and holidays together. They do not provide frequency data, a universal time threshold, or proof of the particular Knicks Boston→New York→Los Angeles hypothesis.</p>
+<p>The opposite behavior is also documented: teams practice or stay in an away city before the next away game. A three-calendar-day game gap can accommodate either behavior. Evidence should choose an event's route when available; otherwise both routes remain estimates.</p>
+<h2>Evidence tiers</h2>
+<ul>
+<li><strong>T:</strong> official team report with actual team logistics or firsthand travel-coordinator testimony.</li>
+<li><strong>J:</strong> named beat/agency reporter's contemporary firsthand reporting, especially observed practice/departure or a coach's account. Journalism is primary evidence for reported events, not an official permanent team policy.</li>
+<li><strong>P:</strong> a reported future plan. Keep separate from observed completion.</li>
+<li><strong>L:</strong> secondary aggregation or search-index excerpt whose original body was not fully available; follow-up lead, not a fully accepted case.</li>
+<li><strong>H:</strong> research hypothesis. No observed itinerary is claimed.</li>
+</ul>
+<p>Sources were inspected on 2026-10-20 through original pages and search-index excerpts. Basketball-Reference direct opens returned HTTP403; indexed game-log content supplied calendar corroboration where stated. Dates below distinguish the event from publication.</p>
+<h2>Accepted home-interruption cases</h2>
+<h3>CHI-2012-11: Houston → Chicago area → Milwaukee</h3>
+<p><strong>Events:</strong> at Houston <strong>2012-11-21</strong>; Chicago-area practice <strong>2012-11-23</strong>; at Milwaukee <strong>2012-11-24</strong>. <strong>Whole team</strong>, with normal limitations that a practice report is not an attendance census for every roster member.</p>
+<p><strong>J, actual corroboration:</strong> Mike McGraw's <a href="https://www.dailyherald.com/20121123/pro-sports/bulls-look-for-right-mix-at-point-guard/">Daily Herald report, published 2012-11-23, 12:19 p.m.</a> places the Friday activity at the <strong>Berto Center</strong>, with Hinrich and Thibodeau interviews, following Wednesday's Houston loss and before Saturday's Milwaukee game. His <a href="https://www.dailyherald.com/20121123/pro-sports/bulls-butler-has-done-a-good-job/">companion report, published 2012-11-23, 12:20 p.m.</a> reports the team boarding a <strong>coach bus to Milwaukee after practice</strong>.</p>
+<p><strong>P, reason/context corroboration:</strong> Cheryl Raye-Stout's <a href="https://www.wbez.org/culture/2012/11/21/sports-never-take-a-holiday">WBEZ report, published 2012-11-21</a> describes the planned Thanksgiving return after Houston, before Milwaukee. Her <a href="https://www.wbez.org/culture/2012/11/14/bulls-vacate-the-united-center-to-make-way-for-circus">2012-11-14 report</a> includes team-staff interviews and the same planned interruption of the circus trip.</p>
+<p><strong>Home-game exclusion:</strong> the <a href="https://www.basketball-reference.com/teams/CHI/2013.html">season game log</a> lists Houston Nov21 and Milwaukee Nov24 consecutively; the next home game was Milwaukee <strong>Nov26</strong>, after this case. Official NBA event endpoints: <a href="https://www.nba.com/rockets/game/0021200165-bulls-vs-rockets-houston-tx-11-21-2012">Houston Nov21</a> and <a href="https://www.nba.com/game/chi-vs-mil-0021200188">Milwaukee Nov24</a>.</p>
+<p><strong>Proved:</strong> home-area team practice and subsequent ground departure during consecutive away fixtures. <strong>Not proved:</strong> exact Houston→Chicago landing time, every player's Thanksgiving whereabouts, or a standing Bulls policy. This case directly contradicts assuming that an arena's circus occupation prevents a team returning to its home area or using a separate practice facility.</p>
+<h3>BKN-2016-03: Minnesota → Brooklyn home respite → Toronto</h3>
+<p><strong>J, reported completed event:</strong> <strong>2016-03-05 Minnesota → Brooklyn respite → 2016-03-08 Toronto; coach Tony Brown confirmed sleeping home; no intervening game.</strong> <a href="https://www.nbcsports.com/nba/news/derozan-leads-raptors-past-nets-104-99">AP report, NBC publication 2016-03-08</a>.</p>
+<p>The report concerns the team's road swing, rather than an individual injury exception. Exact arrival/departure dates and a complete roster manifest are absent. The home stop is meaningful evidence against reconstructing every consecutive away fixture as a direct city-to-city transfer.</p>
+<p><strong>Calendar exclusion:</strong> the AP report explicitly excludes games in between. The <a href="https://www.espn.com/nba/game/_/gameId/400828831/nets-raptors">ESPN event page</a> independently labels Brooklyn as the visitor on March8. Do not infer that the first seven games of a nominal nine-game road trip imply nine uninterrupted nights away.</p>
+<h3>PHI-2024-12: Boston → Philadelphia → Salt Lake City</h3>
+<p><strong>J, retrospective actual itinerary:</strong> Keith Pompey's <a href="https://www.inquirer.com/sixers/sixers-finish-4-2-on-road-trip-20250105.html">Inquirer report, published 2025-01-05, 9:17 a.m. ET</a> states the Sixers returned home after the <strong>2024-12-25 Boston game</strong>, had <strong>Dec26 off</strong>, and traveled to <strong>Salt Lake City Dec27</strong>. This is a whole-team trip account, without a per-player manifest.</p>
+<p><strong>Home-game exclusion:</strong> the <a href="https://www.basketball-reference.com/teams/PHI/2025_games.html">2024-25 game log</a> lists Boston <strong>Dec25</strong> followed by Utah <strong>Dec28</strong>. The <a href="https://www.nba.com/game/phi-vs-bos-0022400407">NBA Boston event recap</a> calls Utah the second game of the same road trip. There was no intervening home fixture.</p>
+<p><strong>Proved:</strong> a Northeast home interruption before a Western destination, on a two-full-off-day interval. <strong>Not proved:</strong> a home practice, a causal preference for a particular airport, or what the team would have done without Christmas. This is a close structural analogue to the proposed Knicks Boston→NYC→LA route, not proof of that Knicks route.</p>
+<h2>Staying-away counterexamples</h2>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Scrollable evidence table"><table>
+<thead>
+<tr>
+<th>Case and event dates</th>
+<th>Report/publication</th>
+<th>What is supported</th>
+<th>Home-game and scope check</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>PHI-2008-12:</strong> at Denver <strong>Dec26</strong> → Denver practice stay → at Utah <strong>Dec29</strong></td>
+<td>Kate Fagan, <a href="https://www.inquirer.com/philly/blogs/deep-sixer/Game_2_West_Coast.html">Inquirer, 2008-12-29, 3:22 p.m. ET</a></td>
+<td>The indexed original excerpt says the Sixers stayed in Denver two days to practice before Utah. <strong>J-content / L-access:</strong> publication/byline verified on original; body was gated in the opened page, so excerpt provenance is explicitly limited.</td>
+<td>Whole-team narrative. <a href="https://www.basketball-reference.com/boxscores/200812260DEN.html">Denver box score</a>, <a href="https://www.basketball-reference.com/boxscores/200812290UTA.html">Utah box score</a>. No home fixture asserted. Full original body or archival corroboration is still needed before promoting this to the strongest acceptance tier.</td>
+</tr>
+<tr>
+<td><strong>Regional road continuation, visiting Clippers, 2015-12-09 to 12-11</strong></td>
+<td>Rowan Kavner, <a href="https://www.nba.com/clippers/news/behind-scenes-five-game-trip">team logistics feature, 2015-12-16</a></td>
+<td><strong>T:</strong> Milwaukee→Chicago bus; overnight Dec10, NYC flight Dec11.</td>
+<td>Whole traveling-party account linked to the equipment manager. Western team used here to establish actual handling of an Eastern local pair, not Bulls/Bucks custom. No home-game interruption in the described five-game road trip.</td>
+</tr>
+</tbody>
+</table></div>
+<p>The Sixers cases are useful controls: <strong>Dec25→Dec28 in 2024 returned home; Dec26→Dec29 in 2008 reportedly stayed away.</strong> The game-date gap is the same. Geography, holiday context, practice and era differ. Neither case alone identifies the cause; together they undermine a deterministic off-day-only rule.</p>
+<h2>Knicks Boston → New York → Los Angeles hypothesis</h2>
+<p><strong>H — not established as an observed Knicks itinerary in this bounded search.</strong> Searches covered combinations of Knicks/Boston/Los Angeles/West Coast/Greenburgh with return-home, flew-home and practice wording, alongside team reports and named beat reporting. Results frequently referred to an intervening MSG game, an individual player's medical/personal travel, or the end of a trip. Those are not accepted substitutes.</p>
+<p>The 2024 Sixers case shows that a Northeast team can return home after Boston before heading West. It raises the hypothesis's plausibility, but the Knicks may choose earlier Western arrival, acclimation or team practice elsewhere. Minimal extra map distance also does not imply a cost-free home stop: another departure, ground transfers and reduced recovery time may matter.</p>
+<p><strong>Best estimate for an unsourced future occurrence:</strong> keep the chosen route labeled <em>inferred</em>. If timing allows meaningful home recovery and the home area lies near the onward path, prioritize the home-stop scenario for manual research. Without a dated team/beat source, preserve a direct-route alternative and disclose its effect on the estimate. Do not call the inference verified or assign a numerical probability from these few examples.</p>
+<p><strong>Chicago → Milwaukee:</strong> proximity does not identify where the team sleeps. The 2012 case proves home practice plus a bus, while the Clippers case proves an away-party ground continuation. For Bulls, home-to-Milwaukee is also different from a visiting club's Chicago-to-Milwaukee sequence. Research home-area return, hotel stay and travel mode separately.</p>
+<h2>Exclusions that prevent false positives</h2>
+<ul>
+<li><strong>OG Anunoby, March2024:</strong> an <a href="https://www.nbcsports.com/nba/news/knicks-og-anunoby-likely-out-for-rest-of-road-trip-maybe-longer-with-elbow-flare-up">NBC report, 2024-03-19</a> describes his medical return while teammates continued West. Individual exception; exclude from team itinerary.</li>
+<li><strong>Stephon Marbury, November2007:</strong> <a href="https://www.espn.in/nba/news/story?id=3165844">ESPN, 2007-12-22</a> concerns leaving/rejoining the team. Individual disciplinary/personal itinerary; exclude.</li>
+<li>“Returned home to face…” and “home between road trips” often contain a real home game. Verify full fixture sequence before accepting an A→home→B example.</li>
+<li>A nominal “five-game road trip” can contain a home interruption; the label does not establish lodging continuity.</li>
+<li>Stadium occupation, home practice access and players' residences are different facts. Check a separate practice facility before treating arena occupation as a return-home prohibition.</li>
+</ul>
+<h2>Proposed research policy for a full-season best estimate</h2>
+<p>This is a proposed audit procedure, not an implemented algorithm or fitted behavioral model.</p>
+<ol>
+<li><strong>Start with authentic fixtures and physical venues.</strong> Confirm ET game dates, actual tip times, neutral/alternate venues and reschedules. Home/away designation is not a coordinate.</li>
+<li><strong>Enumerate consecutive-away gaps.</strong> Retain all intervals; use available hours and plausible recovery/practice windows, not a universal N-day trigger. Back-to-backs, early tips and long border transfers can constrain possibilities.</li>
+<li><strong>Compare geography explicitly.</strong> For previous venue A, home base H, next venue B, calculate direct and via-home distance/time scenarios and the extra leg. Home along an onward path, a distant detour, and two games within one metro are different research priorities.</li>
+<li><strong>Seek a dated movement or practice observation.</strong> Search team communications and named beat reporting around the gap. Prefer actual home/away practice, overnight location, departure or a coordinator's retrospective over schedule-preview language. Keep planned and completed distinct.</li>
+<li><strong>Add context without making it deterministic.</strong> Holiday/family opportunity, home practice availability, arena occupation, road-practice access, cross-border formalities, weather, Cup progression and timezone acclimation are candidate explanations. A coach's stated rationale outranks an inferred one.</li>
+<li><strong>Record each decision's provenance.</strong> Team-season, surrounding fixtures, intervening-home-game check, event/publication dates, whole-team versus subset, source tier, observed/planned/inferred state, home-stop window and unresolved alternatives.</li>
+<li><strong>Choose an estimate with its alternatives visible.</strong> Apply documented routes case by case. For unknowns, publish the selected inferred scenario and sensitivity to the alternative. Do not backfill confidence from a green calculation or conceal an uncertain leg behind an exact mile total.</li>
+</ol>
+<h3>Priority order for 2026-27 investigation</h3>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Scrollable evidence table"><table>
+<thead>
+<tr>
+<th>Priority</th>
+<th>Candidate slice</th>
+<th>Why it can change an itinerary inference</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Incorrect physical/neutral venue and rescheduled fixtures</td>
+<td>Changes the known endpoint before any home-return inference.</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Northeast teams finishing a nearby stop before a Western trip, especially holiday/off-day windows</td>
+<td>Sixers2024 is an observed analogue; Knicks Boston→LA belongs here as a hypothesis.</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Consecutive-away intervals that pass close to home or end near home: Bulls/Milwaukee, Nets/Knicks, other regional pairs</td>
+<td>Ground travel, sleeping at home and arena labels can diverge.</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Holiday and Cup interruptions, long nominal road trips crossing back near home</td>
+<td>Bulls2012 and Nets2016 show that the road-trip label can hide a home visit.</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Long-distance away pairs with time for an away practice</td>
+<td>A practice stay can explain continuation despite multiple off days; require contemporary corroboration.</td>
+</tr>
+</tbody>
+</table></div>
+<p>These cases are examples selected by search, <strong>not a representative sample</strong>. No team-level “usually,” return-home percentage, validated classifier, or complete 2026-27 itinerary is established. The file supplies accepted observations, a qualified counterexample and a concrete research procedure; the root audit owns calculation and product decisions.</p></article><article id="west"><h1>Western-team itinerary evidence: returns home between away games</h1>
+<p>Researched 2026-10-20. Scope: public historical team itineraries, with no intervening home game. This is a bounded case study, not an estimate of how often NBA teams return home. No live aircraft tracking was used. No application, database, airport mapping, or fatigue coefficient was changed.</p>
+<h2>Finding</h2>
+<p>The away/home flag in a game schedule does not establish where a team spent the interval. San Antonio supplies a reported non-All-Star home stop and a separate retrospective account of a home practice stop around All-Star. Portland and the Lakers supply road-stay counterexamples despite two non-game dates. Geography is useful for prioritizing investigation, but these cases do not establish a distance or rest-day rule.</p>
+<p>Evidence grades below describe the itinerary claim, separately from game-calendar verification:</p>
+<ul>
+<li><strong>A — retrospective team account:</strong> a participant explicitly describes a completed team return, reported by a named beat reporter. This does not prove every player used the same flight.</li>
+<li><strong>B — contemporary reported team itinerary:</strong> an official team report or firsthand beat report explicitly states the team routing, stay, or practice location. Future routing remains a reported plan until corroborated retrospectively.</li>
+<li><strong>C — calendar/candidate only:</strong> games or practice participation establish a possible interval, without establishing the team's intervening location. Do not count this as a return.</li>
+</ul>
+<h2>Bounded case matrix</h2>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Scrollable evidence table"><table>
+<thead>
+<tr>
+<th>Team and event interval</th>
+<th>What is established</th>
+<th>Publication and source</th>
+<th>Calendar and scope check</th>
+<th>Strength / limit</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>SAS, 2012-02-15 Toronto → San Antonio → 2012-02-18 Clippers</strong></td>
+<td>Contemporary reports specify a home stop between eastern and western legs.</td>
+<td>Jeff McDonald, <em>Express-News</em>, updated <strong>2012-02-05 23:35</strong>: <a href="https://www.expressnews.com/sports/spurs/article/Spurs-face-road-demons-as-rodeo-trip-rears-head-3059212.php">reported one full day in San Antonio</a>. The club's <a href="https://www.nba.com/spurs/gameday/120215">AP game report</a>, <strong>2012-02-15 21:58 CST</strong>, also reports home time before the Clippers.</td>
+<td>Official games: <a href="https://www.nba.com/game/sas-vs-tor-0021100429">Toronto, Feb 15</a> → <a href="https://www.nba.com/game/sas-vs-lac-0021100456">Clippers, Feb 18</a>. The AP report identifies the Clippers as the next game. McDonald's trip ends Feb 23, before All-Star; next home game Feb 29.</td>
+<td><strong>B, reported plan</strong>, including a game-night report; not independently observed arrival. This interval is not the All-Star break. It is an East/Canada → Texas → California routing example; neither road city is San Antonio.</td>
+</tr>
+<tr>
+<td><strong>SAS, 2024-02-14 Dallas → home practice → 2024-02-22 Sacramento</strong></td>
+<td>Zach Collins retrospectively describes returning home for practice after All-Star.</td>
+<td>Hector Ledesma, <strong>2024-02-28 14:55 ET</strong>, <a href="https://clutchpoints.com/nba/san-antonio-spurs/spurs-biggest-regret-after-brutal-rodeo-road-trip">participant interview</a>. Collins: “We got to go home for a couple of days after All-Star Break for practice”.</td>
+<td>Official games: <a href="https://www.nba.com/game/sas-vs-dal-0022300785">Dallas, Feb 14</a> → <a href="https://www.nba.com/game/0022300803">Sacramento, Feb 22</a>. NBA <a href="https://api-hub-uat.nba.com/news/2023-24-schedule-analysis-1-note-all-30-teams">schedule analysis</a> identifies nine away games split by All-Star, with Dallas last before the break. A <a href="https://www.cbssports.com/nba/gametracker/playbyplay/NBA_20240214_SA%40DAL/">contemporary AP recap</a> explicitly names Sacramento as next.</td>
+<td><strong>A, completed collective return/practice</strong>, but <strong>All-Star exception</strong>. Exact arrival/departure dates and individual break itineraries remain unknown. The quote does not establish that all players spent the entire break at home.</td>
+</tr>
+<tr>
+<td><strong>POR, 2016-03-14 Oklahoma City → San Antonio stay/practice → 2016-03-17 Spurs</strong></td>
+<td>Portland rested Tuesday and practiced Wednesday at Trinity University in San Antonio.</td>
+<td>Casey Holdahl, team reporter, <strong>2016-03-17 00:20 PDT</strong>, <a href="https://www.nba.com/blazers/forwardcenter/practice-notes-attempting-spoil-another-home-streak-days-and-acs-swing">practice report</a>.</td>
+<td>Official <a href="https://www.nba.com/thunder/recap_blazers_160314">OKC recap, Mar 14</a>; <a href="https://www.nba.com/game/por-vs-sas-0021501018">Spurs game, Mar 17</a>.</td>
+<td><strong>B, observed road stay/practice.</strong> No frequency estimate or causal decision rule established.</td>
+</tr>
+<tr>
+<td><strong>LAL, 2016-12-17 Cleveland → Charlotte stay → 2016-12-20 Hornets</strong></td>
+<td>Team stayed in Charlotte; Randle separately returned to Los Angeles for family reasons, then rejoined.</td>
+<td>Tania Ganguli, <strong>2016-12-23 18:15 PT</strong>, <a href="https://www.latimes.com/sports/lakers/la-sp-lakers-report-20161223-story.html">Lakers beat report</a>.</td>
+<td>Official games: <a href="https://www.nba.com/game/lal-vs-cle-0021600402">Cleveland, Dec 17</a> → <a href="https://www.nba.com/game/lal-vs-cha-0021600419">Charlotte, Dec 20</a>.</td>
+<td><strong>B, explicit team stay plus individual split.</strong> A personal return does not establish a whole-team return.</td>
+</tr>
+</tbody>
+</table></div>
+<p>Calendar links establish games and venues, not flights. Event dates above follow the NBA game-heading date, rather than a UTC timestamp in the page's game-info section. The 2024 Dallas/Sacramento adjacency is corroborated by the contemporary AP “up next” field; the 2012 Toronto/Clippers adjacency is explicit in the team-hosted AP report. Road-stay intervals are independently described by the itinerary reports, so an undiscovered home game is not being inferred away merely from two endpoint pages.</p>
+<h2>Additional corroboration and exclusions</h2>
+<ul>
+<li><strong>Dallas at Sacramento, 2024-03-26 and 2024-03-29:</strong> <a href="https://www.nba.com/mavs/longroadtripformavs">Dwain Price's team report</a>, published <strong>2024-04-03 20:16 CDT</strong>, describes staying in Sacramento. Its opening dates conflict with the official calendar. Use <a href="https://www.nba.com/game/dal-vs-sac-0022301047">Mar 26</a> and <a href="https://www.nba.com/game/dal-vs-sac-0022301073">Mar 29</a>, not the article's opening chronology. The first game's official recap identifies the second as next. This is corroborating road-stay evidence, not a home-return case.</li>
+<li><strong>Golden State, January 2017:</strong> an <a href="https://www.si.com/nba/2017/01/20/ap-bkn-yoga-warriors">AP report published Jan 20</a> describes one Sacramento overnight reached by bus during an otherwise home-heavy stretch. It contains intervening home games, so it is <strong>excluded</strong> from the away → home → away count. It does show why a nearby road game need not mean an immediate same-night return or an aircraft leg.</li>
+<li><strong>Lakers, April 2002 Portland playoff series:</strong> <a href="https://www.latimes.com/archives/la-xpm-2002-apr-23-sp-lakernote23-story.html">Tim Brown's Apr 23 report</a> describes a conditional home return before a possible Game 4. A conditional next game is not an exercised itinerary; exclude it from completed-case counts.</li>
+<li><strong>Golden State, Jan 5–8, 2016:</strong> practice participation was reported between Lakers and Portland away games, but the retrieved reports did not establish the practice location. This remains <strong>C</strong>, not evidence of returning to Oakland.</li>
+<li><strong>Sacramento and LA Clippers:</strong> this bounded search did not establish a completed whole-team home stop between consecutive away games. Airport proximity, general charter capability, a player's personal “home,” and the schedule alone do not close this gap.</li>
+<li><strong>Portland actual home reset:</strong> not established here. The documented Portland case proves a road stay. Do not mistake absence of a found reset for evidence that the team never makes one.</li>
+<li>The separately assigned Eastern-team research owns the <strong>Philadelphia 2024 Christmas Boston → Philadelphia → Utah</strong> case. It is not duplicated or used to inflate the Western-case count here.</li>
+</ul>
+<h2>Implications for FullCourt</h2>
+<ol>
+<li>Preserve a distinction between <strong>scheduled venue sequence</strong>, <strong>reported team itinerary</strong>, <strong>individual travel</strong>, and <strong>unknown location</strong>. A normal model feature derived from consecutive game venues is a venue-to-venue proxy; these reports cannot silently turn it into actual charter miles.</li>
+<li>Use geography to flag cases for evidence collection. Useful descriptors include distance from the previous venue to home, home to the next venue, direct venue-to-venue distance, and the extra distance of routing through home: <code>d(previous, home) + d(home, next) - d(previous, next)</code>. These describe candidate routes; none proves the chosen route or assigns a probability.</li>
+<li>Review nearby-away departures, East-to-West transitions passing near home, same-metro away labels, repeated road venues, holidays, All-Star, and known home-practice reports. Apply time feasibility to candidate review, without an automatic number-of-days threshold. A plausible low-detour return can remain unknown, and a higher-detour return can be chosen for practice or family time.</li>
+<li>Keep <strong>All-Star reset</strong>, <strong>ordinary road-trip home stop</strong>, <strong>road practice</strong>, <strong>individual split</strong>, and <strong>conditional plan</strong> as distinct evidence types. The SAS 2024 quote supports the first; it does not calibrate ordinary two-day gaps.</li>
+<li>For future model work, retain a direct-route baseline and compare explicitly labeled alternative itineraries in sensitivity analysis. Do not change ratified coefficients, production history, or team defaults from this small convenience sample.</li>
+</ol>
+<h2>Verification and remaining limits</h2>
+<p>Four principal cases were checked against public team/NBA game pages and contemporary or retrospective itinerary reporting; Dallas is supplemental. The table distinguishes reported future routing from completed participant testimony. No population denominator, representative sampling, route-frequency estimate, exact takeoff time, airport, or causal decision rule was established. Weather diversions, personal emergencies, and actual private aircraft movements were not investigated.</p>
+<p>This file is research-only. Its acceptance evidence is the linked public reporting, explicit game adjacency checks, source dates, and bounded uncertainty statements; no application tests are applicable.</p></article></main><footer>Research snapshot only. Production v1.0.2, database records and model coefficients remain unchanged.</footer></body></html>

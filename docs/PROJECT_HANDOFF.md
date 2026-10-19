@@ -46,7 +46,6 @@ when the season resumes; an offseason skip is not evidence that the ingest path 
 [Roadmap](ROADMAP.md) contains the remaining maintenance work and deferred ideas. No coefficient
 refit, database migration, accounts, or new analytics are implied by repository cleanup.
 
-
 ## Summary of entries before 2026-10-05
 
 Condensed 2026-10-19. DECISIONS.md and dated reviews retain delivery evidence.
@@ -139,7 +138,6 @@ Still open from those entries:
 - Re-key the ESPN-seeded 2026-27 games to hoopR IDs once played games exist (SEASON_ROLLOVER.md).
 - Supabase: the owner will revisit the Pro plan around 2026-11-05, after seeing in-season egress.
 
-
 ## Condensed release history — 2026-10-18 to 2026-10-19
 
 PR #174 merged Next.js/dependency, accessibility and explicit postponed/cancelled support;
@@ -174,7 +172,6 @@ releases increment the version and receive immutable tags/GitHub release records
 The product baseline is 114617d. Release designation does not mark the remaining
 opening-night, physical-device or source-publication checks complete.
 
-
 ## Shooting awaiting view — 2026-10-19
 
 D-118 records the owner’s v1.0.1 follow-up: default to the current season and show
@@ -182,7 +179,6 @@ only its Awaiting results view until usable publication, with explicit prior-sea
 navigation. Historical tables remain available by selection; no automatic older
 table beneath the notice. Readiness and career guards remain. Delivery/verification
 are recorded by the patch PR, version tag and GitHub release.
-
 
 ## Approved readability refinements — 2026-10-19
 
@@ -197,3 +193,7 @@ acceptance; the prototype is retained separately as design evidence.
 ## Opening-quarter travel audit — 2026-10-20
 
 The [audit](research/2026-10-20-opening-quarter-travel-review.md) checks all assigned Oct–Dec games and researches 30 teams’ airport candidates. Density flags pass; homecoming road-load inconsistency, Austin venue omission and stale CHI–MIL tip remain unresolved. Airport/return-home assumptions are unverified; six away gaps cross unknown Cup fixtures. No source/model/database correction was applied. Next: review the road-load rule and physical-venue representation, reconcile times, then verify a controlled correction before rescoring.
+
+## Full assigned-season travel review — 2026-10-20
+
+The [full review](research/2026-10-20-full-season-travel-review.md) extends checks to all 1,200 assigned games / 2,400 sides. Density and API fields pass; 185 homecomings have positive road load, three Austin venues are omitted, and two stale tips are confirmed. D-120 records the owner's Mileage label choice. Deeper itinerary cases confirm some home interruptions but no validated geography rule. No app/model/DB correction occurred. Next: resolve the scorer contract, separate physical venues, correct tips and dependent scores, then re-audit Cup assignments plus championship workload context.

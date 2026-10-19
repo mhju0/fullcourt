@@ -130,3 +130,7 @@ The [read-only audit](research/2026-10-20-opening-quarter-travel-review.md) and 
 - Refresh the confirmed October 23 CHI–MIL tip change; reconcile October 24 HOU–ATL’s provider conflict.
 - Replace “Miles flown” with explicit estimated venue-distance wording; distinguish scheduled away streaks from actual time on the road.
 - Recheck December after Cup assignments, including subsequent rolling travel/workload. Airport preferences and intermediate home returns remain sourced research candidates rather than verified itineraries.
+
+### Full-season extension and itinerary evidence (2026-10-20)
+
+The [full assigned-season report](research/2026-10-20-full-season-travel-review.md) supersedes the opening-quarter scope. Three Austin fixtures and two stale tips are confirmed; the Houston–Atlanta conflict is resolved by the October 13 team/venue announcement, while the production correction remains open. Homecoming semantics affect 185 assigned home-game scores; the exported home-stand feature also needs review. Keep these findings open until a verified correction, rather than treating audit completion as a repaired model. D-120 keeps the visible Mileage term with details in Behind the Data. Future Cup checks must include the physically played championship in workload context independently of regular-season publication eligibility.

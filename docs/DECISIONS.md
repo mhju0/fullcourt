@@ -1778,3 +1778,18 @@ effect. Missing rates or league comparison remain untinted/unavailable. Preserve
 counts, nulls and sample labels. Calculate each team's percentage-point difference
 from unrounded win fractions, then round once; the league reference already does
 this from aggregate counts. No model coefficient, schema or generated figure changes.
+
+## D-120 — Mileage label and itinerary research scope (2026-10-20)
+
+The owner chose **Mileage** as the visible term and wants the estimation method
+explained in Behind the Data rather than adding “estimated” to each label.
+Retain rolling-window or period context so a per-game seven-day value cannot be
+mistaken for a season total. This records the approved wording direction; no
+production label change is claimed by the research-only audit.
+
+The owner requested a full 2026-27 schedule audit and deeper research into
+geography-dependent returns home between consecutive away games. This does not
+approve an automatic gap-based or geography-based home-return rule, airport
+substitution, coefficient change, or rescore. Document observed itineraries and
+hypothetical detours separately. The initial October–December report remains a
+dated snapshot; the full-season report extends its scope.
