@@ -189,3 +189,13 @@ matching Vercel deployment. Code head `763bfe4` received independent approval; f
 unit tests and the final 12 selected built-route cases passed. Provider CI/preview/production
 state is checked against the delivered SHA, not inferred from this pre-merge entry. Next
 operational work is opening-night validation, source publication and canonical-ID re-key.
+
+## Live consistency correction — 2026-10-19
+
+PR #177 merged as `83c2cfd`; required PR/post-merge CI and Vercel production passed.
+Public guides, homepage period placement and Nov 5/9/11 chronological edge cards were
+verified. A final live check measured Officiating's unlayered `.page h2` overriding the
+shared guide to 24px versus 18px elsewhere, and its flex links split inline season spans.
+The bounded follow-up fixes the shared heading token explicitly and makes each link's
+text one wrapping flex item. No readiness or publication logic changes. Delivery is
+tracked by the follow-up PR and matching deployment; opening-night/source checks remain.

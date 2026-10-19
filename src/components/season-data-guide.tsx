@@ -19,15 +19,15 @@ export function SeasonDataGuide({
       style={{ ...termCardStyle, fontSize: TYPE.body, lineHeight: LEAD.body }}
       aria-label={`${season} season data`}
     >
-      <h2 className="text-lg font-semibold">Awaiting season data · <KeepTogether>{season}</KeepTogether></h2>
+      <h2 className="font-semibold" style={{ fontSize: TYPE.emph }}>Awaiting season data · <KeepTogether>{season}</KeepTogether></h2>
       <p className="text-[var(--term-text-muted)]"><KeepTogether>{body}</KeepTogether></p>
       {timing ? <p className="text-[var(--term-text-muted)]"><KeepTogether>{timing}</KeepTogether></p> : null}
       <div className="flex flex-wrap gap-x-6 gap-y-2">
         {previousHref && previousLabel ? (
-          <a className="fc-text-link min-h-11 content-center" href={previousHref}><KeepTogether>{previousLabel}</KeepTogether>{"\u00a0"}→</a>
+          <a className="fc-text-link inline-flex min-h-11 items-center" href={previousHref}><span><KeepTogether>{previousLabel}</KeepTogether>{"\u00a0"}→</span></a>
         ) : null}
-        <a className="fc-text-link min-h-11 content-center" href={`/schedule?season=${season}`}>
-          View <KeepTogether>{season}</KeepTogether> schedule{"\u00a0"}→
+        <a className="fc-text-link inline-flex min-h-11 items-center" href={`/schedule?season=${season}`}>
+          <span>View <KeepTogether>{season}</KeepTogether> schedule{"\u00a0"}→</span>
         </a>
       </div>
     </aside>
