@@ -40,6 +40,21 @@ describe("GET /api/shot-quality", () => {
     expect(body.data).toMatchObject({ season: "2024-25", latestPublishedSeason: "2025-26", cells: [] });
   });
 
+  it("discovers the genuinely previous publication rather than subtracting a calendar year", async () => {
+    latest.mockResolvedValueOnce("2026-27").mockResolvedValueOnce("2024-25");
+    const res = await GET(request());
+    const body = await res.json();
+    expect(latest).toHaveBeenNthCalledWith(2, "2026-27");
+    expect(body.data.previousPublishedSeason).toBe("2024-25");
+    expect(grid).toHaveBeenCalledWith("2026-27");
+  });
+
+  it("reports no previous publication without inventing a fallback", async () => {
+    latest.mockResolvedValueOnce("2026-27").mockResolvedValueOnce(null);
+    const res = await GET(request());
+    expect((await res.json()).data.previousPublishedSeason).toBeNull();
+  });
+
   it("returns a safe unavailable response when publication discovery is empty", async () => {
     latest.mockResolvedValueOnce(null);
 

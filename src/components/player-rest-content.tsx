@@ -342,7 +342,8 @@ export function PlayerRestContent() {
       : rawYear && index?.years.includes(Number(rawYear))
         ? Number(rawYear)
         : defaultYear;
-  const heldCurrent = activeYear === currentYear && !readiness.ready;
+  const heldPublication = hasCurrentPublication && !readiness.ready;
+  const heldCurrent = heldPublication && (activeYear === currentYear || activeYear === "career" || activeYear === null);
   const volume = params.has("volume") ? Number(params.get("volume")) : 300;
   const minFga = VOLUME_OPTIONS.some((option) => option.value === volume)
     ? volume
@@ -402,7 +403,7 @@ export function PlayerRestContent() {
     });
 
   const rows = useMemo(() => {
-    if (!index || activeYear === null) return [];
+    if (!index || activeYear === null || (activeYear === "career" && heldPublication)) return [];
     return buildRows(index, {
       year: activeYear,
       minFga,
@@ -423,6 +424,7 @@ export function PlayerRestContent() {
     team,
     pos,
     evidencedOnly,
+    heldPublication,
   ]);
 
   // Recomputed with every filter change, because the rank is a claim about the current view.
@@ -441,6 +443,15 @@ export function PlayerRestContent() {
       />
     );
   }
+  if (index && heldCurrent) return (
+    <div className="flex flex-col gap-4">
+      <SeasonReadinessNotice readiness={readiness} season={currentSeason}
+        body="New-season shooting results are not available yet. Published player splits remain available for earlier seasons."
+        previousHref={defaultYear ? `/shooting?year=${defaultYear}` : undefined}
+        previousLabel={defaultYear ? `View published results · ${seasonLabel(defaultYear)}` : undefined} />
+    </div>
+  );
+
   if (isLoading || !index || activeYear === null) {
     return (
       <div style={termCardStyle}>
@@ -455,15 +466,6 @@ export function PlayerRestContent() {
       </div>
     );
   }
-
-  if (heldCurrent) return (
-    <div className="flex flex-col gap-4">
-      <SeasonReadinessNotice readiness={readiness} season={currentSeason}
-        body="New-season shooting results are not available yet. Published player splits remain available for earlier seasons."
-        previousHref={defaultYear ? `/shooting?year=${defaultYear}` : undefined}
-        previousLabel={defaultYear ? `View published results · ${seasonLabel(defaultYear)}` : undefined} />
-    </div>
-  );
 
   return (
     <div className={`flex flex-col gap-3 sm:gap-4 ${styles.page}`}>
@@ -648,6 +650,7 @@ export function PlayerRestContent() {
                 row={row}
                 index={index}
                 browsedYear={activeYear}
+                heldFromYear={heldPublication ? currentYear : undefined}
               />
             ) : null
           }
@@ -704,14 +707,17 @@ function PlayerExpansion({
   row,
   index,
   browsedYear,
+  heldFromYear,
 }: {
   row: BrowseRow;
   index: PlayerRestIndex;
   browsedYear: number | "career";
+  heldFromYear?: number;
 }) {
-  const seasons = [...(index.seasonsByPlayer.get(row.player) ?? [])].reverse();
-  const totals = careerTotals(index.seasonsByPlayer.get(row.player) ?? []);
-  const estimate = index.career.get(row.player);
+  const allSeasons = index.seasonsByPlayer.get(row.player) ?? [];
+  const seasons = [...allSeasons].filter((season) => heldFromYear === undefined || season[S.YEAR] < heldFromYear).reverse();
+  const totals = heldFromYear === undefined ? careerTotals(allSeasons) : null;
+  const estimate = heldFromYear === undefined ? index.career.get(row.player) : undefined;
 
   return (
     <>
@@ -831,7 +837,14 @@ function PlayerExpansion({
           </td>
         </tr>
       )}
-      {!estimate && (
+      {heldFromYear !== undefined ? (
+        <tr className="fc-sub fc-groupend" data-testid="career-data-held">
+          <td style={termTdStyle} />
+          <td colSpan={9} style={{ ...termTdStyle, whiteSpace: "normal", fontSize: 15, color: "var(--term-text-muted)" }}>
+            Career totals and estimates are unavailable while current-season data awaits release. Earlier season results remain available.
+          </td>
+        </tr>
+      ) : !estimate && (
         <tr className="fc-sub fc-groupend">
           <td style={termTdStyle} />
           <td

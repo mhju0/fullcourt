@@ -110,13 +110,13 @@ test.describe("Season Report", () => {
       },
     }));
     await page.goto("/season?season=2026-27");
-    await expect(page.getByRole("alert")).toContainText("COULD NOT CHECK SEASON DATA");
+    await expect(page.locator("main").getByRole("alert")).toContainText("COULD NOT CHECK SEASON DATA");
     await expect(page.getByTestId("season-data-guide")).toHaveCount(0);
     await expect(page.getByTestId("season-rest-win-rate")).toHaveCount(0);
     fail = false;
     await page.getByRole("button", { name: "Retry data status" }).click();
     await expect(page.getByTestId("season-data-guide")).toBeVisible();
-    await expect(page.getByRole("alert")).toHaveCount(0);
+    await expect(page.locator("main").getByRole("alert")).toHaveCount(0);
   });
 
   test("an overdue estimate does not promise a future release", async ({ page }) => {

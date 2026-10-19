@@ -31,11 +31,15 @@ export const GET = jsonRoute(
       throw new PublicApiError("Expected shot value data is not available yet.", 503);
     }
     const selectedSeason = season ?? latestPublishedSeason;
-    const cells = await getShotQualityGrid(selectedSeason);
+    const [cells, previousPublishedSeason] = await Promise.all([
+      getShotQualityGrid(selectedSeason),
+      getLatestPublishedShotQualitySeason(latestPublishedSeason),
+    ]);
 
     return {
       season: selectedSeason,
       latestPublishedSeason,
+      previousPublishedSeason,
       activeModel: model,
       cells,
       meta: {

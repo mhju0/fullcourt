@@ -414,10 +414,10 @@ export function PlayoffsContent() {
       {fallbackNote ? <p role="status" className="mono text-xs text-[var(--term-text-muted)]">{fallbackNote}</p> : null}
 
       {data.rounds.length > 0 && (!requestedSeason || requestedSeason === defaultNbaSeason()) ? <StudySeasonGuide latestPublishedSeason={data.latestPublishedSeason}
-        body={`The series explorer is published through ${data.latestPublishedSeason}. The current season’s bracket and series results need playoff games and a new model publication; regular-season results do not unlock them.`}
+        body={`The series explorer is published through ${data.latestPublishedSeason}. New-season coverage will follow the playoffs and updated series data.`}
         previousHref={`/playoffs?season=${data.latestPublishedSeason}`} /> : null}
       {data.rounds.length === 0 && season >= defaultNbaSeason() ? <SeasonDataGuide season={season}
-        body="This season’s playoff bracket and series results have not been published. Coverage follows the playoffs and a new model publication."
+        body="This season’s playoff bracket and series results have not been published. Coverage follows the playoffs and updated series data."
         previousHref={`/playoffs?season=${data.latestPublishedSeason}`}
         previousLabel={`View published results · ${data.latestPublishedSeason}`} /> : data.rounds.length === 0 ? (
         <div className="flex flex-col gap-3">

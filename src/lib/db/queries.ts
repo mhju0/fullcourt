@@ -1445,11 +1445,12 @@ export async function getShotQualityGrid(season: string): Promise<ShotQualityCel
  * Newest season with a league grid and both surfaces needed by the comparison view.
  * `shot_grid` and `shot_value_surface` deliberately remain raw SQL tables in this app.
  */
-export async function getLatestPublishedShotQualitySeason(): Promise<string | null> {
+export async function getLatestPublishedShotQualitySeason(beforeSeason?: string): Promise<string | null> {
   const rows = (await db.execute(sql`
     SELECT max(g.season) AS latest
     FROM shot_grid g
     WHERE g.team_id IS NULL
+      AND ${beforeSeason ? sql`g.season < ${beforeSeason}` : sql`true`}
       AND EXISTS (
         SELECT 1 FROM shot_value_surface s
         WHERE s.season = g.season

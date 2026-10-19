@@ -454,16 +454,18 @@ export function ShotQualityContent() {
   const currentSeason = defaultNbaSeason()
   const hasCurrentPublication = publication?.latestPublishedSeason === currentSeason
   const readiness = useSeasonReadiness(currentSeason, hasCurrentPublication)
-  const previousSeason = NBA_SEASONS.filter((value) => value < currentSeason).at(-1)!
+  const previousSeason = publication?.previousPublishedSeason && publication.previousPublishedSeason < currentSeason
+    ? publication.previousPublishedSeason
+    : null
   const usePrevious = !validRequestedSeason && hasCurrentPublication && !readiness.ready
   const previous = useSWR<ShotQualityResponse>(
-    usePrevious ? `/api/shot-quality?season=${previousSeason}` : null,
+    usePrevious && previousSeason ? `/api/shot-quality?season=${previousSeason}` : null,
     apiFetcher, { revalidateOnFocus: false },
   )
   const data = usePrevious ? previous.data : publication
   const failure = swrError ?? (usePrevious ? previous.error : undefined)
   const error = failure ? errMsg(failure) : null
-  const season = validRequestedSeason ?? data?.season ?? NBA_SEASONS.at(-1)!
+  const season = validRequestedSeason ?? data?.season ?? currentSeason
   const heldCurrent = hasCurrentPublication && season === currentSeason && !readiness.ready
   const dataMatchesSelection = Boolean(data && data.season === season && !heldCurrent)
   const setSeason = (value: string) => update({ season: value })
@@ -549,7 +551,8 @@ export function ShotQualityContent() {
     {controls}
     <SeasonReadinessNotice readiness={readiness} season={currentSeason}
       body="New-season shot-value results are not available yet. Earlier published surfaces remain available."
-      previousHref={`/shot-quality?season=${previousSeason}`} previousLabel={`View published results · ${previousSeason}`} />
+      previousHref={previousSeason ? `/shot-quality?season=${previousSeason}` : undefined}
+      previousLabel={previousSeason ? `View published results · ${previousSeason}` : undefined} />
   </div>
 
   if ((isLoading && !data) || !data || !dataMatchesSelection) {

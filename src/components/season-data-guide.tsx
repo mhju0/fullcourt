@@ -1,3 +1,4 @@
+import { KeepTogether } from "@/components/ui/keep-together";
 import { seasonExpectedTiming } from "@/lib/season-readiness";
 import { LEAD, termCardStyle, TYPE } from "@/lib/terminal-styles";
 
@@ -19,8 +20,8 @@ export function SeasonDataGuide({
       aria-label={`${season} season data`}
     >
       <h2 className="text-lg font-semibold">Awaiting season data · {season}</h2>
-      <p className="text-[var(--term-text-muted)]">{body}</p>
-      {timing ? <p className="text-[var(--term-text-muted)]">{timing}</p> : null}
+      <p className="text-[var(--term-text-muted)]"><KeepTogether>{body}</KeepTogether></p>
+      {timing ? <p className="text-[var(--term-text-muted)]"><KeepTogether>{timing}</KeepTogether></p> : null}
       <div className="flex flex-wrap gap-x-6 gap-y-2">
         {previousHref && previousLabel ? (
           <a className="fc-text-link min-h-11 content-center" href={previousHref}>{previousLabel} →</a>
