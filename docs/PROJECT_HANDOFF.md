@@ -46,51 +46,30 @@ when the season resumes; an offseason skip is not evidence that the ingest path 
 [Roadmap](ROADMAP.md) contains the remaining maintenance work and deferred ideas. No coefficient
 refit, database migration, accounts, or new analytics are implied by repository cleanup.
 
-## Summary of entries before 2026-10-05
+## Condensed pre-2026-10-07 history — 2026-10-20
 
-Condensed 2026-10-19. DECISIONS.md and dated reviews retain delivery evidence.
-D-64/D-65 added Behind the Data; D-73 standardized reading pages. D-71/D-72 require
-production CSS verification and keep database-backed e2e separate from CI. PR #104
-repaired historical scores/dates/overtime; use the fatigue feature export for fidelity.
+D-64–D-78, Git and dated reviews retain the Behind the Data, reading-page, launch and
+phone-layout deliveries. Build/start CSS verification remains required (D-72); full
+DB-backed e2e stays separate from CI. Shared tiles, footer page finder, privacy/non-affiliation,
+report mail and canonical-domain redirects shipped. PR #104 corrected historical facts;
+v1.0.3 later restored four workload fixtures and confirmed overtime. D-117 supersedes
+old launch gating: v1.0.0 is officially October 19; actual completed-slate checks remain open.
 
-Still open from those entries:
+Sentry IP storage is off; UptimeRobot checks home/health every five minutes. The owner's
+Mac retains eight weekly backups (`~/Backups/fullcourt/backup.sh`, Sundays 11:00,
+pg_dump 18); one restore matched counts. API rate limiting was configured at the edge.
+Credentials were rotated and Vercel DATABASE_URL made Sensitive. PR #171 shipped source
+maps; client symbolication verified October 18. Supabase Pro review remains November 5.
 
-- The cause of one production API 500 seen during the 2026-10-03 audit is unknown.
-- Shared stat tiles are implemented. Further table-width redesign is deferred; no specific current defect is established.
-- Keep `Find a page` in the footer: it is the visible entry to the page finder.
-- Closed by v1.0.3: the four missing Cup/play-in fixtures and confirmed overtime inputs
-  are restored; unconfirmed early overtime coverage remains a source limitation.
-- Historical launch prerequisite superseded by D-117: October 19, 2026 is the official
-  v1.0.0 release date; completed-slate verification remains operational follow-up.
+Unresolved/standing dispositions retained from these entries:
 
-## Summary of the launch-readiness entries, 2026-10-05 and 2026-10-06
-
-Condensed on 2026-10-10 from two entries; DECISIONS.md D-74 to D-77 hold the detail.
-
-Condensed 2026-10-14: D-74–D-77 shipped the footer non-affiliation notice, `/privacy`, and report mail link. `src/lib/site-url.ts` holds `https://fullcourt.fyi`; the www/fullcourt-nba/nba-rest-advantage domains redirect with 308.
-Sentry `javascript-nextjs` / `michael-ju-46` uses Vercel `NEXT_PUBLIC_SENTRY_DSN` with IP storage off; UptimeRobot checks `/` and `/api/health` every five minutes. Vercel's one Hobby firewall rule limits `/api/` to 100 requests per 60 seconds per IP.
-The owner's Mac runs `~/Backups/fullcourt/backup.sh` Sundays 11:00, retaining eight backups; it needs pg_dump 18 and one restore matched counts. Instagram review fixed the Schedule pinned-column zero rule and report subject `FullCourt error or suggestion`.
-
-PR #171 shipped source-map upload; client symbolication was verified October 18. The owner kept the 12px footer notice and upgraded Supabase to Pro for launch. Social preview was uploaded August 30; profile, portfolio and repo homepage moved to fullcourt.fyi October 17.
-
-## Phone and tablet layout (2026-10-07)
-
-Condensed 2026-10-20: PR #111 shipped D-78 phone calendar/week controls, one-line slate summary, scroll cues and smaller Schedule columns; D-79 removed its summary rail. The owner holds the amended row30 private survey. Build/start verified stale dev CSS (D-72); local history was reconciled and its backup branch removed.
-
-Open:
-
-- Done by the owner: `DATABASE_URL` is Sensitive in Vercel and rotated everywhere (2026-10-15),
-  and `SENTRY_AUTH_TOKEN` is in Vercel (2026-10-12). The build-side source-map upload shipped on
-  2026-10-18 with the owner's approval; the controlled client event shows source lines/context.
-  Server-event symbolication remains unobserved; see TESTING_AND_CICD.md.
-- A reader-picked Schedule column (C1) is unbuilt and explicitly deferred on 2026-10-18.
-- The new phone controls have not been used on a physical phone.
-- ADR 0006 retains the original travel-ablation snapshot; its 2026-10-18 addendum records the
-  current 2026-10-17 export and the offline fidelity repair without changing coefficients.
-- Sentry `JAVASCRIPT-NEXTJS-3` is resolved (live read 2026-10-18); the one Oct 7 timeout
-  `JAVASCRIPT-NEXTJS-4` has no recurrence and remains monitored, not claimed fixed.
-- Footer notice remains 12px by owner choice. Off-Mac backup and UptimeRobot phone push
-  were declined; neither is an active action item.
+- The October 3 production API 500 has no established cause. October 7 Sentry timeout
+  JAVASCRIPT-NEXTJS-4 remains monitored; issue 3 resolved. Server symbolication unobserved.
+- Phone/calendar controls, native zoom and screen-reader behavior need physical-device use.
+- Reader-picked Schedule column and broader table-width redesign remain deferred.
+- Footer notice stays 12px by owner choice; off-Mac backup and phone push were declined.
+- ADR 0006 keeps original ablation evidence plus the October 18 offline-fidelity amendment;
+  no fatigue coefficients changed. Unconfirmed early overtime coverage remains a source limit.
 
 ## Summary of the entries from 2026-10-07 to 2026-10-18
 
@@ -116,8 +95,8 @@ Still open from those entries:
 
 - Never seen in production: a real slate's game status (only a mocked clock), the D-83 rescore,
   physical iPhone and VoiceOver use, native zoom, capacity, and real Supabase delivery.
-- Explicit postponed/cancelled lifecycle support is prepared in the closeout candidate.
-  Equal-tip ordering is deterministic; ESPN equivalence remains an inference, not a contract.
+- Explicit postponed/cancelled lifecycle support shipped in PR #174; an actual provider
+  event remains future observation. Equal-tip ordering is deterministic; ESPN equivalence remains an inference, not a contract.
   The owner kept the scheduler/monitor with variable lateness documented (D-110).
 - The two previously load-sensitive offseason Games cases and the retracting-header navigation
   case passed targeted checks on the built candidate; no speculative timing changes were made.
@@ -214,3 +193,17 @@ The [delivery report](research/2026-10-20-historical-recalculation.md) records e
 Next: observe actual opening-night writes; recheck future Cup assignments and retain all
 source/device limits above. Intermittent upstream Google Fonts build failure passed on retry;
 licensed local-font replacement was researched but not applied.
+
+## Player-source correction — 2026-10-20
+
+v1.0.4 implements D-123 / ADR 0013 (confirmed appearance history before Shooting's
+unchanged raw outcomes) and D-124 / ADR 0014 (Availability identity/coverage guards and
+source-aware windows). Both producers and career estimates are regenerated; unknowns
+remain distinct from absence/zero minutes. One primary-confirmed player team assignment
+is corrected; D-125 carries exact integer shooting numerators to prevent inconsistent
+season/career rounding. No DB score, fatigue coefficient or resolved prediction changes. Independent
+full-cache arithmetic/outcome checks and producer replays pass; the
+[record](research/2026-10-20-player-appearance-rest-correction.md) pins exact evidence.
+PR/tag/release and provider evidence own review, preview and canonical acceptance.
+Next operational work: actual opening-night writes, future Cup assignments and retained
+source/device limits. Raw backups and audit evidence remain in the isolated worktrees.

@@ -1,5 +1,24 @@
 # Release history
 
+## 1.0.4 — 2026-10-20
+
+- Calculate Player Shooting rest and workload from confirmed competitive appearances
+  before selecting regular-season shooting results, including played zero-shot games.
+- Add source-evidenced Cup appearances and historical game-ID aliases; keep the raw
+  shooting outcome cohort, comparison thresholds and career estimation protocol.
+- Restore five omitted regular fixtures to Availability's source joins and guard
+  against silently shortened team/player history windows.
+- Distinguish unknown participation from absence and unknown minutes from zero;
+  withhold only affected comparisons and publish source-coverage metadata.
+- Carry exact integer shooting numerators into season/career displays to prevent
+  intermediate-rounding disagreements, retaining legacy payload compatibility.
+- Correct one primary-confirmed historical player team assignment without changing
+  shot totals or the stored game score.
+- Regenerate the player/career and Availability studies together, with clearer
+  methodology describing their different history scopes. Annual absence rates retain
+  missing-season gaps and sample counts, without an unsupported league-wide trend claim.
+
+
 ## 1.0.3 — 2026-10-20
 
 - Correct current home/away streak resets and use actual arena endpoints for

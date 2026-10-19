@@ -114,3 +114,11 @@ The [cutover runbook](../../scripts/history-correction/README.md) covers writer 
 fresh backup and drift checks, maintenance responses, coherent application/artifact activation,
 cache verification and rollback. The owner supplied the required immediate approval before the production
 mass update under AGENTS.md.
+
+## Subsequent cross-module finding
+
+After v1.0.3 deployment, a separate source-history audit confirmed that Player Shooting
+filtered out played zero-shot games before calculating personal rest, and five alternate
+game IDs were absent from Availability's rolling histories. These are being repaired and
+measured separately in v1.0.4; the team-fatigue and database verification above remains
+valid. See the [player-source follow-up](2026-10-20-player-appearance-rest-correction.md).

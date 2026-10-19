@@ -9,6 +9,7 @@ import {
 import { LEAD, termCardStyle, TRACK, TYPE, WIDTH } from "@/lib/terminal-styles"
 import { DataTable } from "@/components/ui/data-table"
 import { StatFigure } from "@/components/ui/stat-tile"
+import { parseSeasonStartYear } from "@/lib/nba-season"
 
 const BODY: React.CSSProperties = {
   fontSize: TYPE.body,
@@ -157,20 +158,14 @@ function FrequencySection() {
   )
 }
 
-/**
- * Section C — the trend.
- *
- * One series, so no legend and one hue. Columns rather than a line because the seasons are
- * discrete buckets, and the track runs from zero: a truncated axis would turn a real threefold
- * rise into a dramatic one. Only the endpoints are labelled — a number on all thirty columns is
- * a table pretending to be a chart. Each column carries its own `title`, so a reader can get any
- * season's figure without the page shipping a scrap of JavaScript.
- */
+/** Missing-source seasons keep their calendar slots; observed rates are not a league census. */
 function TrendSection() {
   const seasons = AVAILABILITY_BEST_OUT_BY_SEASON
   const first = seasons[0]!
   const last = seasons.at(-1)!
-  const max = Math.max(...seasons.map((s) => s.rate))
+  const max = Math.max(...seasons.map((s) => s.rate), 0.01)
+  const firstYear = parseSeasonStartYear(first.season)
+  const yearCount = parseSeasonStartYear(last.season) - firstYear + 1
 
   return (
     <section className="flex flex-col gap-3">
@@ -178,26 +173,25 @@ function TrendSection() {
       <div style={termCardStyle}>
         <p style={BODY}>
           <span style={LEAD_IN}>
-            Best-player absences are more than three times as common as in{" "}
-            {first.season}.
+            Best-player absences in the included games.
           </span>{" "}
-          That is context for every figure above: the same absence was a rare event across most of
-          this sample and is an ordinary one now.
+          Source coverage varies by season, so these rates do not establish a league-wide trend.
+          Blank spaces mark seasons without an eligible sample.
         </p>
 
         <figure className="mt-6 flex flex-col gap-2">
           <div
-            className="flex items-end gap-[2px]"
-            style={{ height: 96 }}
+            className="grid items-end gap-[2px]"
+            style={{ height: 96, gridTemplateColumns: `repeat(${yearCount}, minmax(0, 1fr))`, gridTemplateRows: "1fr" }}
             role="img"
-            aria-label={`Share of team-games played without the team's best player, by season. ${first.season}: ${(first.rate * 100).toFixed(1)} percent. ${last.season}: ${(last.rate * 100).toFixed(1)} percent.`}
+            aria-label={`Best-player absence rate in included team-games. ${first.season}: ${(first.rate * 100).toFixed(1)} percent across ${first.teamGames} team-games. ${last.season}: ${(last.rate * 100).toFixed(1)} percent across ${last.teamGames} team-games. Source coverage varies; seasons without eligible data are blank.`}
           >
             {seasons.map((s) => (
               <div
                 key={s.season}
                 title={`${s.season} — ${(s.rate * 100).toFixed(1)}% of ${s.teamGames.toLocaleString()} team-games`}
                 style={{
-                  flex: 1,
+                  gridColumn: parseSeasonStartYear(s.season) - firstYear + 1,
                   height: `${(s.rate / max) * 100}%`,
                   background:
                     s.season === last.season ? "var(--term-blue)" : "var(--term-neutral)",
@@ -207,25 +201,25 @@ function TrendSection() {
               />
             ))}
           </div>
-          <figcaption className="flex items-baseline justify-between">
+          <figcaption className="flex flex-wrap items-baseline justify-between gap-2">
             <span
               className="mono tabular-nums"
-              style={{ fontSize: 11, letterSpacing: TRACK.sub, color: "var(--term-text-muted)" }}
+              style={{ fontSize: TYPE.data, letterSpacing: TRACK.sub, color: "var(--term-text-muted)" }}
             >
-              {first.season} · {(first.rate * 100).toFixed(1)}%
+              {first.season} · {(first.rate * 100).toFixed(1)}% · {first.teamGames.toLocaleString()} team-games
             </span>
             <span
               className="mono tabular-nums"
-              style={{ fontSize: 11, letterSpacing: TRACK.sub, color: "var(--term-blue-text)", fontWeight: 700 }}
+              style={{ fontSize: TYPE.data, letterSpacing: TRACK.sub, color: "var(--term-blue-text)", fontWeight: 700 }}
             >
-              {last.season} · {(last.rate * 100).toFixed(1)}%
+              {last.season} · {(last.rate * 100).toFixed(1)}% · {last.teamGames.toLocaleString()} team-games
             </span>
           </figcaption>
         </figure>
 
         <p className="mt-4" style={BODY}>
-          The climb is not steady. It dips in <span className="whitespace-nowrap">2023-24</span>, the season the league first required 65
-          games for awards eligibility, and returns above the old line the year after.
+          Each rate uses the source-supported team-games available for that season. Small or
+          incomplete samples can differ from the league as a whole.
         </p>
       </div>
     </section>
@@ -320,9 +314,10 @@ function LimitsSection() {
           Absence is inferred from the rotation a team had actually been using, because a
           long-term injury can keep a player off the sheet entirely. A player who misses four
           straight games leaves that rotation, so a long absence counts for its first four
-          games only. Each team is measured from its sixth game of a season, once the rotation
-          comes from that season&apos;s games. Coverage starts in{" "}
-          {AVAILABILITY_SAMPLE.firstSeason}, where the box scores this rests on begin.
+          games only. Each team can be measured from its sixth regular-season game, once the rotation
+          comes from that season&apos;s regular-season games. Both teams need usable histories
+          for a game to enter the margin comparison, which covers{" "}
+          {AVAILABILITY_SAMPLE.firstSeason} through {AVAILABILITY_SAMPLE.lastSeason} after source checks.
         </p>
       </div>
     </section>
