@@ -1,5 +1,13 @@
 # Release history
 
+## 1.0.1 — 2026-10-19
+
+Player Shooting now opens the current season and shows “Awaiting results” when
+that edition is unavailable. It no longer automatically displays the previous
+season’s player table beneath a current-season notice. Earlier publications remain
+available through the season selector and previous-results link. Current-season
+readiness and pooled-career safeguards remain in place.
+
 ## 1.0.0 — 2026-10-19
 
 FullCourt officially released on October 19, 2026, by owner decision. This is the

@@ -62,6 +62,26 @@ beforeEach(() => {
 afterEach(() => vi.useRealTimers());
 
 describe("current player publication holds", () => {
+  it.each(["", "year=2026"])("keeps an unpublished current selection on one guide without earlier results (%s)", (search) => {
+    state.search = search;
+    state.data["/data/player-rest.json"] = { ...playerPayload, seasons: playerPayload.seasons.slice(0, 1) };
+    const html = renderPlayer();
+    expect(html).toContain("Awaiting results");
+    expect(html.match(/data-testid="season-data-guide"/g)).toHaveLength(1);
+    expect(html).toContain('value="2026" selected=""');
+    expect(html).toContain('href="/shooting?year=2025"');
+    expect(html).not.toContain('data-testid="player-row"');
+    expect(html).not.toContain('id="pr-team"');
+    expect(html).not.toContain("Show zero-rest player workload");
+  });
+
+  it("keeps current results awaiting even when GP readiness passes but the player publication is absent", () => {
+    state.ready = true;
+    state.data["/data/player-rest.json"] = { ...playerPayload, seasons: playerPayload.seasons.slice(0, 1) };
+    expect(renderPlayer()).toContain("Awaiting results");
+    expect(renderPlayer()).not.toContain('data-testid="player-row"');
+  });
+
   it.each([false, true])("holds Career when current data is held or its readiness check fails (error=%s)", (failure) => {
     state.search = "year=career";
     state.failure = failure;
@@ -69,7 +89,7 @@ describe("current player publication holds", () => {
     expect(html).not.toContain('data-testid="player-row"');
     expect(html).not.toContain("99.99");
     expect(html).not.toContain("88.88");
-    expect(html).toContain(failure ? "COULD NOT CHECK SEASON DATA" : "Awaiting season data");
+    expect(html).toContain(failure ? "COULD NOT CHECK SEASON DATA" : "Awaiting results");
   });
 
   it.each([false, true])("preserves prior results and removes current expansion rows and pooled career data (error=%s)", (failure) => {
@@ -77,6 +97,8 @@ describe("current player publication holds", () => {
     state.failure = failure;
     const html = renderPlayer();
     expect(html).toContain('data-testid="player-row"');
+    expect(html).not.toContain('data-testid="season-data-guide"');
+    expect(html).not.toContain("COULD NOT CHECK SEASON DATA");
     expect(html.match(/data-testid="season-row"/g)).toHaveLength(1);
     expect(html).toContain('data-testid="career-data-held"');
     expect(html).not.toContain('data-testid="career-row"');

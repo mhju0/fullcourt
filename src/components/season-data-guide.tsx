@@ -3,9 +3,10 @@ import { seasonExpectedTiming } from "@/lib/season-readiness";
 import { LEAD, termCardStyle, TYPE } from "@/lib/terminal-styles";
 
 export function SeasonDataGuide({
-  season, body, previousHref, previousLabel, expectedAfterDate = null,
+  season, body, previousHref, previousLabel, expectedAfterDate = null, title = "Awaiting season data",
 }: {
   season: string;
+  title?: string;
   body: string;
   previousHref?: string;
   previousLabel?: string;
@@ -19,7 +20,7 @@ export function SeasonDataGuide({
       style={{ ...termCardStyle, fontSize: TYPE.body, lineHeight: LEAD.body }}
       aria-label={`${season} season data`}
     >
-      <h2 className="font-semibold" style={{ fontSize: TYPE.emph }}>Awaiting season data · <KeepTogether>{season}</KeepTogether></h2>
+      <h2 className="font-semibold" style={{ fontSize: TYPE.emph }}>{title} · <KeepTogether>{season}</KeepTogether></h2>
       <p className="text-[var(--term-text-muted)]"><KeepTogether>{body}</KeepTogether></p>
       {timing ? <p className="text-[var(--term-text-muted)]"><KeepTogether>{timing}</KeepTogether></p> : null}
       <div className="flex flex-wrap gap-x-6 gap-y-2">
