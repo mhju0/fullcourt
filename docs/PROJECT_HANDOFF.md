@@ -58,8 +58,8 @@ Still open from those entries:
 - The cause of one production API 500 seen during the 2026-10-03 audit is unknown.
 - Shared stat tiles are implemented. Further table-width redesign is deferred; no specific current defect is established.
 - Keep `Find a page` in the footer: it is the visible entry to the page finder.
-- Overtime before 2002-03 is not stored. Three NBA Cup finals and the 2020 play-in game are
-  absent by design.
+- Closed by v1.0.3: the four missing Cup/play-in fixtures and confirmed overtime inputs
+  are restored; unconfirmed early overtime coverage remains a source limitation.
 - Historical launch prerequisite superseded by D-117: October 19, 2026 is the official
   v1.0.0 release date; completed-slate verification remains operational follow-up.
 
@@ -202,3 +202,15 @@ The owner explicitly approved the exact reviewed production update and condition
 Next: finish the exact commit review, maintenance/cutover and canonical-domain verification. Existing opening-night/device/source-publication
 follow-ups remain open. Unverified scores, early overtime coverage and actual itineraries
 remain explicit source limits rather than inferred corrections.
+
+## v1.0.3 production closeout — 2026-10-20
+
+Owner-approved manifest `9e8c6ebd…9911490` applied; fresh-backup restore and independent
+production after-state `5b5b1bad…683278` match. PR #182 / merge `0f30d345` is live in
+`dpl_AB8Fc1sBfoHNptroC9Z8jDW6kM8c`; canonical alias, 12 APIs (ten exact local matches),
+14 routes, browser figures and cache refresh pass. CI/CodeQL/browser/PostgreSQL gates pass;
+GitHub/Vercel scheduled writers restored. Existing predictions and coefficients preserved.
+The [delivery report](research/2026-10-20-historical-recalculation.md) records exact evidence.
+Next: observe actual opening-night writes; recheck future Cup assignments and retain all
+source/device limits above. Intermittent upstream Google Fonts build failure passed on retry;
+licensed local-font replacement was researched but not applied.

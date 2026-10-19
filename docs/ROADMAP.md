@@ -3,17 +3,24 @@
 Current commitments, updated in place. Completed work belongs in Git/release records and
 rationale in [Decisions](DECISIONS.md), not another running implementation log.
 
-## Historical recalculation — prepared, production pending
+## Historical recalculation — released in v1.0.3
 
-Recalculate every stored season with verified input corrections, physical venue endpoints and
-correct current road/home streaks (D-121, ADR 0011). The local shadow database has completed
-atomic apply/rollback and restart checks. Regenerate all dependent publications from the same
-frozen candidate, complete independent review, then request the required production mass-update
-approval. Keep ratified coefficients and resolved prediction history unchanged. Actual flight
-itineraries, intermediate home stops and unverified historical inputs remain limitations.
+PR #182 corrects every stored season under D-121 / ADR 0011 and D-122 / ADR 0012.
+The owner-approved production transaction matches the reviewed six-table after-state;
+the exact merged deployment and canonical API payloads are verified. Ratified fatigue
+coefficients, resolved predictions and prior playoff revisions are preserved. The
+[delivery report](research/2026-10-20-historical-recalculation.md) closes the confirmed
+streak, venue, overtime, type, tip, workload-context and dependent-publication repairs
+listed in the dated audit snapshots below.
+
+Open source limits: 17 unresolved historical score discrepancies, 5,815 games without
+confirmed overtime source coverage, actual airports/itineraries/home stops, and 30 future
+Cup-dependent regular fixtures. Recheck the Cup assignments when published. Opening-night
+and physical-device observation remain future/human checks, not completed by this release.
 
 ## Maintenance
 
+- Track the intermittent upstream [Next.js Google Fonts build issue](https://github.com/vercel/next.js/issues/99114). The release passed on retry; a licensed local-font alternative was researched without changing typography.
 - Keep correctness, dependency audit, and CodeQL checks passing. Review dependency overrides
   when upstream fixes become available; the current overrides live in `pnpm-workspace.yaml`.
 - Review Officiating refresh branches and their source evidence before publication. The workflow
@@ -130,7 +137,12 @@ Other decisions and limits:
 - **Claude roadmap:** the visible artifact was stale at this read (#170 still marked open).
   Repository decisions and this table own current status; no artifact publication is claimed.
 
-## Opening-quarter schedule/travel findings (2026-10-20)
+## Dated audit snapshots — confirmed repairs closed by v1.0.3
+
+The sections below retain the findings as recorded before correction. The release status
+above supersedes their repair-pending language; source and future-observation limits remain open.
+
+### Opening-quarter schedule/travel findings (2026-10-20)
 
 The [read-only audit](research/2026-10-20-opening-quarter-travel-review.md) and [30-team airport reference](reports/2026-10-20-schedule-travel-audit.html) leave these concrete follow-ups open:
 

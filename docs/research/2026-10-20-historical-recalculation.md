@@ -1,6 +1,7 @@
 # Historical recalculation — 2026-10-20
 
-Status: local candidate; production application and deployment are pending. This is a
+Status: delivered in v1.0.3 on October 20, 2026 (KST). Production application and the
+canonical deployment are verified. This is a
 correction of verified inputs and workload geometry, not a fitted operational model.
 The original audit remains an immutable diagnostic record; its one-change impact is not
 the combined result below. [ADR 0011](../adr/0011-physical-venues-and-historical-correction.md)
@@ -87,11 +88,29 @@ pass and the analysis endpoint matches 28,117 calls / 17,190 wins. The unnecessa
 registry is absent from the final browser bundles. Cache mutation checks pass; its measured
 51ms fingerprint is below the 150ms full loader.
 
-The independent Class 3 data/tool review found no blocker. Exact frozen-commit recheck,
-production application and canonical live verification remain pending; local success is
-not a production claim.
+The independent Class 3 review accepted exact head `31fc96f3e5ae848209c53ab7f3cc4b90aafeb50f`;
+all 31 frozen source blobs match the approved manifest. PR #182 merged it at
+`0f30d34594e7abb50e9881fff25315ab6208f1a2` with an identical file tree.
+
+The owner approved production apply and conditional rollback. A fresh 17,478,028-byte
+public-schema backup (SHA-256 `d6bf44ff7f5145f0135861a29fe98a0bfd439e900a5138238894b2db5721e189`)
+was restored to a separate PostgreSQL database and matched the complete reviewed baseline.
+Apply completed, then an independent read-only production capture matched the exact
+six-table after-state. No schema migration or coefficient change occurred.
+
+Vercel deployment `dpl_AB8Fc1sBfoHNptroC9Z8jDW6kM8c` was built after apply from the exact
+merge SHA, checked while protected, then promoted to fullcourt.fyi. The canonical alias
+was read back against that deployment. CDN/data caches were purged. Twelve public API
+requests pass; all ten core data payloads equal the corrected local payloads exactly.
+Fourteen public routes return 200, and live browser checks confirm the updated homepage
+and Model Results. Desktop and 390-pixel schedule/playoff checks show no page overflow.
+Scheduled GitHub and Vercel writers were restored after verification.
+
+CI correctness, Python producer contracts, PostgreSQL, CodeQL and rendered browser gates
+pass. One upstream Google Fonts/Turbopack build failure passed on retry; this is a
+build-reliability follow-up, not a claimed runtime data defect.
 
 The [cutover runbook](../../scripts/history-correction/README.md) covers writer suspension,
 fresh backup and drift checks, maintenance responses, coherent application/artifact activation,
-cache verification and rollback. Owner approval is required immediately before the production
+cache verification and rollback. The owner supplied the required immediate approval before the production
 mass update under AGENTS.md.

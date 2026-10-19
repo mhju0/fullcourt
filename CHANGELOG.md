@@ -1,6 +1,6 @@
 # Release history
 
-## 1.0.3 — Prepared; not yet released
+## 1.0.3 — 2026-10-20
 
 - Correct current home/away streak resets and use actual arena endpoints for
   alternate homes, temporary venues and accepted historical exceptions.
@@ -14,9 +14,11 @@
 - Regenerate affected win-rate evidence and dependent analytics together; keep
   resolved historical prediction records intact.
 - Correct stale playoff inputs under a new data revision, preserving previous model outputs.
-- Prepare a maintenance cutover, full-domain change checks and conditional rollback.
+- Deliver a guarded maintenance cutover, full-domain change checks and tested conditional rollback.
 
-Production data application, deployment and live verification remain pending.
+Released in PR #182 at `0f30d34594e7abb50e9881fff25315ab6208f1a2`. The exact
+Vercel deployment `dpl_AB8Fc1sBfoHNptroC9Z8jDW6kM8c` is verified on fullcourt.fyi;
+12 API checks match the corrected local data, and scheduled writers are restored.
 
 ## 1.0.2 — 2026-10-19
 
