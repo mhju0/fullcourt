@@ -39,6 +39,7 @@ from __future__ import annotations
 
 import json
 import math
+import logging
 import os
 import sys
 from collections import Counter, defaultdict
@@ -57,6 +58,8 @@ from analyze_player_shooting import (  # noqa: E402
     load_game_dates,
     load_player_games,
 )
+
+from season_publication import require_player_season_publication, SeasonPublicationHeld  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 DEST = ROOT / "public" / "data" / "player-rest.json"
@@ -94,9 +97,13 @@ def main() -> int:
     conn.set_session(readonly=True, autocommit=True)
     try:
         gdate = load_game_dates(conn)
+        rows = annotate(rows, gdate, birth)
+        require_player_season_publication(conn, (r["season"] for r in rows))
+    except SeasonPublicationHeld as error:
+        logging.error("%s", error)
+        return 1
     finally:
         conn.close()
-    rows = annotate(rows, gdate, birth)
     print(f"{len(rows):,} player-games with personal rest and age")
 
     names: list[str] = []

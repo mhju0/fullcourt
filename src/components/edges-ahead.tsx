@@ -5,26 +5,14 @@ import useSWR from "swr"
 import { format } from "date-fns"
 import { useNow } from "@/hooks/useNow"
 import { formatRestAdvantageValue } from "@/lib/rest-advantage-display"
+import { compareUpcomingTipOff } from "@/lib/upcoming-rest-edges"
 import { hasNotTipped } from "@/lib/game-phase"
 import { apiFetcher } from "@/lib/fetcher"
 import { defaultNbaSeason } from "@/lib/nba-season"
 import { TRACK, TYPE, termCardStyle } from "@/lib/terminal-styles"
 import type { UpcomingGameWithRA } from "@/types"
 
-/**
- * EDGES AHEAD (2026-08-28 redesign, Q16): the three biggest upcoming rest edges where the
- * rested team is at home, one line each. Rested visitors are left out on purpose: the rows come
- * from open predictions, which exist only for called games (`isCalledSide`), and a visitor chip
- * in the rested-pole blue would read as a pick the site declines to make. Whether a row is
- * projected is said per row (PROJ), not in the header — a game on the next unplayed date is
- * measured. This is what survived the UPCOMING view's retirement — the one job a date
- * picker cannot do is cut ACROSS dates, and three rows do that job where a whole second
- * table shape used to. Clicking a game jumps the board to its date.
- *
- * Silent by design in every state that is not "here are edges": while loading, on error,
- * and when nothing lies ahead (off-season, schedule not yet published) the strip simply
- * does not exist. A failure to rank future games must never take the schedule down.
- */
+/** The nearest large rested-home gaps, across dates; clicking keeps the board's date jump. */
 
 const STRIP_SIZE = 3
 const RESERVE_SIZE = 6
@@ -38,20 +26,15 @@ export function EdgesAhead({
   const now = useNow()
   const refilled = useRef<string | null>(null)
   const { data: games, mutate } = useSWR<UpcomingGameWithRA[]>(
-    `/api/games/upcoming?${new URLSearchParams({ season, limit: String(RESERVE_SIZE) })}`,
+    `/api/games/upcoming?${new URLSearchParams({ season, minRA: "5", order: "soonest", limit: String(RESERVE_SIZE) })}`,
     apiFetcher,
     { refreshInterval: 60_000, revalidateOnFocus: true, revalidateOnReconnect: true, refreshWhenHidden: false, refreshWhenOffline: false }
   )
 
   const top = useMemo(() => {
     if (!games || games.length === 0) return []
-    return games.filter((game) => hasNotTipped(game.tipOffUtc, now))
-      .sort(
-        (a, b) =>
-          Math.abs(b.restAdvantageDifferential) - Math.abs(a.restAdvantageDifferential) ||
-          a.date.localeCompare(b.date) ||
-          a.gameId - b.gameId
-      )
+    return games.filter((game) => hasNotTipped(game.tipOffUtc, now) && Math.abs(game.restAdvantageDifferential) >= 5)
+      .sort(compareUpcomingTipOff)
       .slice(0, STRIP_SIZE)
   }, [games, now])
 
@@ -67,12 +50,14 @@ export function EdgesAhead({
 
   return (
     <div className="flex flex-col gap-3" style={termCardStyle}>
-      <span
-        className="mono uppercase"
-        style={{ fontSize: 10, letterSpacing: TRACK.label, fontWeight: 700, color: "var(--term-text-muted)" }}
-      >
-        EDGES AHEAD · UPCOMING {season} · RESTED TEAM AT HOME
-      </span>
+      <div className="flex flex-col gap-2">
+        <h2 style={{ fontSize: TYPE.emph, fontWeight: 600, color: "var(--term-text)" }}>
+          Upcoming large rest edges
+        </h2>
+        <p style={{ fontSize: TYPE.body, color: "var(--term-text-muted)" }}>
+          Rested team at home · gap 5+ · {season}
+        </p>
+      </div>
       <div className="flex flex-wrap gap-2">
         {top.map((g) => {
           const dateLabel = format(new Date(g.date + "T00:00:00"), "MMM d, yyyy")

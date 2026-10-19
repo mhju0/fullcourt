@@ -148,54 +148,19 @@ Still open from those entries:
 - Supabase: the owner will revisit the Pro plan around 2026-11-05, after seeing in-season egress.
 
 
-## Closeout continuation — 2026-10-18
+## Condensed release history — 2026-10-18 to 2026-10-19
 
-Reconciled Claude sessions, retained launch reports and current source/Git. The current
-28-item disposition is in ROADMAP.md; dated reports remain historical evidence. The owner
-selected antislop throughout, defect fixes, proper postponed/cancelled lifecycle support and
-the existing scheduler/monitor; optional URL filters, chart actions and C1 column are deferred.
-The dependency/UI/lifecycle changes are prepared on codex/unresolved-closeout and are not
-deployed until the release record says so. Independent persistence review is required.
-
-Client Sentry symbolication is verified on deployed 69b5e02: deliberate event d2332a30
-resolved to original source and context; its test issue was then resolved. Server-event
-symbolication remains unobserved. A fresh NBA source snapshot and full retained-cache
-Legends rebuild close the reproduction gaps; source figures are unchanged. The offline
-ablation harness now follows JavaScript rounding and refuses mismatched reconstructions;
-ADR 0006 preserves the original snapshot and adds current evidence.
-
-Remaining: finish candidate verification/review and obtain its merge approval; then verify
-the deployed candidate. Human checks, first played-slate validation, December fixture ingest,
-ESPN re-key after played data, November 5 plan review and server-error observation stay separate.
-
-## Independent audit implementation — 2026-10-18
-
-PR #174 merged as `460a3fe` and production was verified. The owner then approved all nine
-independent-audit findings, Schedule team links, explicit Home gap units, and Studio Illicit's
-applicable design guidance. D-111 records the subtly sky-tinted palette and preserved semantics.
-Implementation is isolated on `codex/audit-recommendations`; release acceptance is in
-[the review record](design/2026-10-18-audit-recommendations-review.md). No new production release
-is claimed until that record confirms it. Physical-device and first-played-slate checks remain open.
-
-## Recent comparison and design options — 2026-10-18
-
-PR #175 is deployed as `958306e`; production and post-merge CI were verified. The owner then
-approved the homepage's latest-ten-completed-season comparison and one-line team schedule
-headers: Game covers times/results, ET moves to a note, and phone RA has an explicit key (D-112/D-113).
-Implementation is prepared on `codex/recent-home-schedule`; its verification is in
-[the review](design/2026-10-18-recent-home-schedule-review.md). It is not yet deployed.
-The large-gap chart series and broader table layouts remain visual options on
-`prototype/chart-schedule-options`. The existing 100-game display rule remains unchanged.
-
-## Selected chart and schedule options — 2026-10-19
-
-The owner selected table A and an optional raw 5+ annual line (D-114). Work continues on
-PR #176: Game stays visible on phones, and the chart starts with two series until its toggle
-is enabled. Small-sample counts/warnings remain visible; ordinary 0.5+ gating is preserved.
-The new `/api/home-court` prepares both annual groups from one source snapshot. Chart title
-padding also addresses the nested-heading issue shown by the owner. Verification and release
-state are recorded in [the review](design/2026-10-19-chart-toggle-table-a-review.md).
-Merge approval and deployed verification remain separate; production is still PR #175.
+PR #174 merged Next.js/dependency, accessibility and explicit postponed/cancelled support;
+PR #175 delivered the independent audit and sky-tinted neutrals (D-111). PR #176 delivered
+the recent-ten-season homepage comparison, table A and optional raw 5+ Home-court history
+(D-112–D-114), merged as `6ac5c27`. Their dated reviews retain verification evidence.
+The owner selected antislop throughout and kept the existing scheduler/monitor. Optional URL
+filters, extra chart actions and configurable columns remain deferred. Client Sentry
+symbolication was verified; server-event symbolication remains unobserved. Fresh NBA source
+reproduction and the full cached Legends rebuild closed prior provenance gaps; published
+figures and ratified model coefficients did not change. Opening-night pipeline observation,
+human/device checks, December fixtures, canonical-ID re-key and the November 5 plan review
+remain open as listed above. Git/provider state takes precedence over these historical notes.
 
 ## Approved stacked comparison and release — 2026-10-19
 
@@ -206,3 +171,18 @@ the right. Counts, ordinary gating, missing-data handling and the model remain u
 The [review](design/2026-10-19-chart-toggle-table-a-review.md), PR #176 and its matching Vercel
 deployment are the release evidence; check Git/Vercel for the final merge SHA and readiness.
 Physical-device, human screen-reader and first-played-slate checks remain open.
+
+## Quiet season guidance implementation — 2026-10-19
+
+Owner approved the simplified mock and asked for consistent spacing, borders and readable
+type. D-115 keeps the all-teams-ten-finals rule internal, with a common awaiting guide,
+previous-publication links and qualified schedule-derived dates. New read-only metadata does
+not gate the shared workload API. Per-study coverage remains independent; the Shooting
+producer refuses early current-season pooling before replacing its artifact. Explicit new
+season collection is supported, but no new provider data was fetched or published.
+D-116 selects the earliest three large rested-home gaps and preserves the compact Games strip.
+Homepage period metadata moves below the finding explanation. Wider history-window work is
+deferred. Implementation is isolated on `codex/season-guidance`; the dated review records
+checks and release state. Production is unchanged until an explicit release record says so.
+Next: finish candidate/browser/preview review and deliver the PR. Opening-night validation,
+manual source publication and the canonical-ID re-key remain separate.

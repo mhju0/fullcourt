@@ -1,5 +1,9 @@
 "use client";
 
+import { defaultNbaSeason, parseSeasonStartYear } from "@/lib/nba-season";
+import { StudySeasonGuide } from "@/components/study-season-guide";
+import { SeasonReadinessNotice } from "@/components/season-readiness-notice";
+import { useSeasonReadiness } from "@/hooks/useSeasonReadiness";
 import { SeasonSelector } from "@/components/season-selector";
 import { Fragment, useCallback, useMemo } from "react";
 import { ChevronDown, ChevronRight } from "lucide-react";
@@ -327,12 +331,18 @@ export function PlayerRestContent() {
   const { params, update } = usePageQuery();
   const linkedName = params.get("player") ?? "";
   const rawYear = params.get("year");
+  const currentSeason = defaultNbaSeason();
+  const currentYear = parseSeasonStartYear(currentSeason);
+  const hasCurrentPublication = index?.years.includes(currentYear) ?? false;
+  const readiness = useSeasonReadiness(currentSeason, hasCurrentPublication);
+  const defaultYear = index?.years.find((year) => year < currentYear || readiness.ready) ?? null;
   const activeYear =
     rawYear === "career"
       ? "career"
       : rawYear && index?.years.includes(Number(rawYear))
         ? Number(rawYear)
-        : (index?.years[0] ?? null);
+        : defaultYear;
+  const heldCurrent = activeYear === currentYear && !readiness.ready;
   const volume = params.has("volume") ? Number(params.get("volume")) : 300;
   const minFga = VOLUME_OPTIONS.some((option) => option.value === volume)
     ? volume
@@ -446,8 +456,26 @@ export function PlayerRestContent() {
     );
   }
 
+  if (heldCurrent) return (
+    <div className="flex flex-col gap-4">
+      <SeasonReadinessNotice readiness={readiness} season={currentSeason}
+        body="New-season shooting results are not available yet. Published player splits remain available for earlier seasons."
+        previousHref={defaultYear ? `/shooting?year=${defaultYear}` : undefined}
+        previousLabel={defaultYear ? `View published results · ${seasonLabel(defaultYear)}` : undefined} />
+    </div>
+  );
+
   return (
     <div className={`flex flex-col gap-3 sm:gap-4 ${styles.page}`}>
+      {hasCurrentPublication && !readiness.ready ? (
+        <SeasonReadinessNotice readiness={readiness} season={currentSeason}
+          body="New-season shooting results are not available yet. Showing the previous published season."
+          previousHref={`/shooting?year=${defaultYear}`} previousLabel={`View published results · ${seasonLabel(defaultYear ?? index.years[0])}`} />
+      ) : !rawYear || Number(rawYear) === currentYear ? (
+        <StudySeasonGuide latestPublishedSeason={seasonLabel(index.years[0])}
+          body={`Player shooting is published through ${seasonLabel(index.years[0])}. New-season results will appear after the updated shooting data is available.`}
+          previousHref={`/shooting?year=${index.years[0]}`} />
+      ) : null}
       {error ? (
         <p role="status">
           Refresh unavailable. Showing the last loaded player export.

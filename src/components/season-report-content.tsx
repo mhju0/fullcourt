@@ -8,20 +8,22 @@ import { useSeasonUrl } from "@/hooks/useSeasonUrl";
 import { apiFetcher } from "@/lib/fetcher";
 import { formatDataAsOf } from "@/lib/data-as-of";
 import { formatRestAdvantageValue } from "@/lib/rest-advantage-display";
-import { browsableSeasons, NBA_SEASONS } from "@/lib/nba-season";
+import { browsableSeasons, defaultNbaSeason, NBA_SEASONS } from "@/lib/nba-season";
 import {
   ABNORMAL_SEASON_NOTES,
   allSeasonNormExcluding,
   MIN_GAMES_FOR_INFERENCE,
   type SeasonReportResponse,
 } from "@/lib/season-report";
-import { KeepTogether } from "@/components/ui/keep-together";
+import { SeasonReadinessNotice } from "@/components/season-readiness-notice";
+import { SeasonDataGuide } from "@/components/season-data-guide";
+import { useSeasonReadiness } from "@/hooks/useSeasonReadiness";
 import { MessageCard } from "@/components/ui/message-card";
 import { signedNumber } from "@/lib/signed-number";
 import { WIDTH } from "@/lib/terminal-styles";
 
-const LATEST_SEASON = NBA_SEASONS[NBA_SEASONS.length - 1];
-const PRIOR_SEASON = NBA_SEASONS[NBA_SEASONS.length - 2];
+const LATEST_SEASON = defaultNbaSeason();
+const PRIOR_SEASON = browsableSeasons().filter((season) => season < LATEST_SEASON).at(-1) ?? NBA_SEASONS[0];
 const reportKey = (season: string) => `/api/season-report?season=${season}&schema=home-court-v1`;
 const muted = "text-[var(--term-text-muted)]";
 
@@ -30,21 +32,17 @@ export function SeasonReportContent() {
     LATEST_SEASON,
     browsableSeasons(),
   );
-  // With no season chosen, open on the latest season that has results. Decided from the newest
-  // season's own report rather than the calendar, so it flips on the first final, not on a date.
-  // A chosen season is never replaced: ?season=2026-27 still reaches the awaiting state.
-  const { data: latest } = useSWR<SeasonReportResponse>(
-    explicit ? null : reportKey(LATEST_SEASON),
-    apiFetcher,
-    { revalidateOnFocus: false },
-  );
-  const awaitingLatest = !explicit && latest?.completedGames === 0;
+  const needsReadiness = !explicit || urlSeason === LATEST_SEASON;
+  const readiness = useSeasonReadiness(LATEST_SEASON, needsReadiness);
+  const awaitingLatest = !explicit && !readiness.ready;
   const season = awaitingLatest ? PRIOR_SEASON : urlSeason;
-  const { data, error, isLoading, isValidating, mutate } = useSWR<SeasonReportResponse>(
-    reportKey(season),
+  const heldSelection = season === LATEST_SEASON && !readiness.ready;
+  const { data: loaded, error, isLoading, isValidating, mutate } = useSWR<SeasonReportResponse>(
+    heldSelection ? null : reportKey(season),
     apiFetcher,
     { revalidateOnFocus: false },
   );
+  const data = loaded?.season === season && !heldSelection ? loaded : undefined;
   const { data: analysis, loading: normLoading } = useBacktest();
   const norm = analysis
     ? allSeasonNormExcluding(analysis.seasonWinRates, season)
@@ -91,11 +89,19 @@ export function SeasonReportContent() {
       {fallbackNote ? <p role="status">{fallbackNote}</p> : null}
       {awaitingLatest ? (
         <p role="status" className={muted} data-testid="season-default-note">
-          <KeepTogether>No completed games with the required rest data are available for {LATEST_SEASON}. Showing {PRIOR_SEASON}.</KeepTogether>{" "}
-          <a className="fc-text-link" href={`/schedule?season=${LATEST_SEASON}`}>
-            View the {LATEST_SEASON} schedule →
-          </a>
+          {readiness.error
+            ? `Showing the ${PRIOR_SEASON} report. Availability of ${LATEST_SEASON} results could not be checked.`
+            : !readiness.data
+              ? `Showing the ${PRIOR_SEASON} report while checking ${LATEST_SEASON} season data.`
+              : `Showing the ${PRIOR_SEASON} report while ${LATEST_SEASON} season results are unavailable.`}
         </p>
+      ) : null}
+      {needsReadiness ? (
+        <div data-testid={heldSelection && readiness.awaiting ? "season-awaiting-results" : undefined}>
+          <SeasonReadinessNotice readiness={readiness} season={LATEST_SEASON} showExpectedTiming
+            body="The new season’s results are not available yet. Explore the previous report or follow the current schedule."
+            previousHref={`/season?season=${PRIOR_SEASON}`} previousLabel={`View ${PRIOR_SEASON} report`} />
+        </div>
       ) : null}
       {note ? (
         <aside
@@ -135,34 +141,13 @@ export function SeasonReportContent() {
         />
       ) : null}
       {comparisonUnavailable ? null : data && data.completedGames === 0 ? (
-        <section
-          className="flex flex-col gap-3 border-y border-[var(--term-border)] py-8"
-          data-testid="season-awaiting-results"
-        >
-          <h2 className="text-2xl font-semibold">
-            Awaiting results for {season}
-          </h2>
-          <p className={muted}>
-            No completed games with scored fatigue pairs are available yet.
-            {" "}This report needs final scores and fatigue records for both teams.
-          </p>
-          <div className="flex flex-wrap gap-x-6 gap-y-2">
-            {previous ? (
-              <a
-                className="fc-text-link min-h-11 content-center"
-                href={`/season?season=${previous}`}
-              >
-                View {previous} report →
-              </a>
-            ) : null}
-            <a
-              className="fc-text-link min-h-11 content-center"
-              href={`/schedule?season=${season}`}
-            >
-              View this season’s schedule →
-            </a>
-          </div>
-        </section>
+        <div data-testid="season-awaiting-results">
+          <SeasonDataGuide season={season}
+            body="Final scores and the rest data needed for this report have not been published yet."
+            previousHref={previous ? `/season?season=${previous}` : undefined}
+            previousLabel={previous ? `View ${previous} report` : undefined}
+          />
+        </div>
       ) : data ? (
         <>
           <section
