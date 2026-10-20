@@ -1,0 +1,58 @@
+{
+  "url": "https://utility.arcgisonline.com/ArcGIS/rest/services/Geometry/GeometryServer/findTransformations?inSR=4326&outSR=4267&extentOfInterest=%7B%22xmin%22%3A+-105.03%2C+%22ymin%22%3A+39.73%2C+%22xmax%22%3A+-105.01%2C+%22ymax%22%3A+39.75%2C+%22spatialReference%22%3A+%7B%22wkid%22%3A+4326%7D%7D&numOfResults=3&f=json",
+  "bodySha256": "9a7c4f809683825d26831905121bf78df52c2d0b4437e65b565627eb315f0c6a",
+  "response": {
+    "transformations": [
+      {
+        "geoTransforms": [
+          {
+            "wkid": 108190,
+            "latestWkid": 108190,
+            "transformForward": true,
+            "name": "WGS_1984_(ITRF00)_To_NAD_1983"
+          },
+          {
+            "wkid": 8555,
+            "latestWkid": 8555,
+            "transformForward": false,
+            "name": "NAD_1927_To_NAD_1983_7"
+          }
+        ]
+      },
+      {
+        "geoTransforms": [
+          {
+            "wkid": 1515,
+            "latestWkid": 1515,
+            "transformForward": false,
+            "name": "NAD_1983_To_WGS_1984_5"
+          },
+          {
+            "wkid": 8555,
+            "latestWkid": 8555,
+            "transformForward": false,
+            "name": "NAD_1927_To_NAD_1983_7"
+          }
+        ]
+      },
+      {
+        "geoTransforms": [
+          {
+            "wkid": 1712,
+            "latestWkid": 1712,
+            "transformForward": false,
+            "name": "NAD_1983_To_WGS_1984_Colorado_16"
+          },
+          {
+            "wkid": 8555,
+            "latestWkid": 8555,
+            "transformForward": false,
+            "name": "NAD_1927_To_NAD_1983_7"
+          }
+        ]
+      }
+    ]
+  },
+  "rawPath": "raw/den-projection-transformations-9a7c4f809683.json.gz",
+  "retainedSha256": "04fd863965e2fbe0c212c7ccbf188c77bb2960d50ec5a412a6da032da4c3d288"
+}

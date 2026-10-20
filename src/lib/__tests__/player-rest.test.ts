@@ -185,6 +185,22 @@ describe("exact shooting numerators", () => {
   });
 });
 
+describe("regular-season fixture aliases in the published Shooting data", () => {
+  const shipped = JSON.parse(readFileSync(join(process.cwd(), "public/data/player-rest.json"), "utf8")) as PlayerRestPayload;
+
+  it.each([
+    ["Shai Gilgeous-Alexander", 76, 1656, 1883],
+    ["Victor Wembanyama", 46, 857, 958],
+    ["Tyrese Haliburton", 73, 1006, 1170],
+  ])("includes the Cup/Paris outcomes in %s's 2024-25 totals", (name, games, fga, numerator) => {
+    const player = shipped.names.indexOf(String(name));
+    const row = shipped.seasons.find((season) => season[S.PLAYER] === player && season[S.YEAR] === 2024)!;
+    expect(row[S.GAMES]).toBe(games);
+    expect(row[S.FGA]).toBe(fga);
+    expect(row[11]).toBe(numerator);
+  });
+});
+
 describe("buildRows — season view", () => {
   const index = indexPayload(PAYLOAD);
   const base = { year: 2025 as const, minFga: 0, query: "", sort: "fga" as const, dir: -1 as const };

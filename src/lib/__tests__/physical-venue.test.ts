@@ -30,9 +30,11 @@ const oneSide = (history: RecentGame[], isHome: boolean, lat = BOS.latitude, lon
 });
 
 describe("shared physical venue resolution", () => {
-  it("preserves ordinary home coordinates and classification", () => {
+  it("uses the sourced ordinary home arena and preserves classification", () => {
     const venue = resolvePhysicalVenue({ date: "2026-11-01", homeTeam: BOS, awayTeam: UTA });
-    expect(venue.venue).toEqual({ latitude: BOS.latitude, longitude: BOS.longitude, altitude: false });
+    expect(venue.venue.latitude).toBeCloseTo(BOS.latitude, 3);
+    expect(venue.venue.longitude).toBeCloseTo(BOS.longitude, 3);
+    expect(venue.venue.altitude).toBe(false);
     expect(venue.homeCourt).toBe(true);
     expect(venue.neutralSite).toBe(false);
   });
@@ -120,11 +122,11 @@ describe("shared physical venue resolution", () => {
 
   it("resolves Toronto's modeled base window without changing its pre-bubble base", () => {
     const at = (date: string) => resolvePhysicalVenue({ date, homeTeam: TOR, awayTeam: BOS }).homeBase;
-    expect(at("2020-11-30").latitude).toBe(TOR.latitude);
+    expect(at("2020-11-30").latitude).toBeCloseTo(TOR.latitude, 3);
     expect(at("2020-12-01").latitude).toBeCloseTo(27.9427, 4);
     expect(at("2021-06-30").latitude).toBeCloseTo(27.9427, 4);
-    expect(at("2021-07-01").latitude).toBe(TOR.latitude);
-    expect(at("2020-07-29").latitude).toBe(TOR.latitude);
+    expect(at("2021-07-01").latitude).toBeCloseTo(TOR.latitude, 3);
+    expect(at("2020-07-29").latitude).toBeCloseTo(TOR.latitude, 3);
   });
 });
 

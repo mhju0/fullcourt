@@ -1,0 +1,1234 @@
+[
+  {
+    "id": "dal-aac",
+    "url": "https://www.americanairlinescenter.com/",
+    "capturedAt": "2026-10-20T06:41:56.674552+00:00",
+    "status": 200,
+    "finalUrl": "https://www.americanairlinescenter.com/",
+    "contentType": "text/html; charset=UTF-8",
+    "bodySha256": "ca13578c139f8102b38d623859dd35fc0601758c681b0fd6db9ac31f0ea80e60",
+    "bytes": 9369,
+    "rawPath": "raw/dal-aac-ca13578c139f.html.gz",
+    "retainedSha256": "89b9668cf98815c1dc55638896ba5b9d179d3e6757e77cd7a2ef1b3dbbd405a7"
+  },
+  {
+    "id": "den-ball",
+    "url": "https://www.ballarena.com/",
+    "capturedAt": "2026-10-20T06:41:56.675092+00:00",
+    "status": 200,
+    "finalUrl": "https://www.ballarena.com/",
+    "contentType": "text/html; charset=utf-8",
+    "bodySha256": "c8bf33e9e085db06b43923c739968595fb97a677e9f7322f8bde389599cbbc26",
+    "bytes": 41158,
+    "rawPath": "raw/den-ball-c8bf33e9e085.html.gz",
+    "retainedSha256": "08e07b4ba027546fb8bbf41e06676c55bcd7b271e248312cd0a17673574c3843"
+  },
+  {
+    "id": "gsw-chase",
+    "url": "https://chasecenter.com/",
+    "capturedAt": "2026-10-20T06:41:56.675289+00:00",
+    "status": 200,
+    "finalUrl": "https://chasecenter.com/",
+    "contentType": "text/html; charset=utf-8",
+    "bodySha256": "e9857593d245fc3bf62d8eb36e87779fe05ccadf09cbe2c6e114f1690d0100cc",
+    "bytes": 84877,
+    "rawPath": "raw/gsw-chase-e9857593d245.html.gz",
+    "retainedSha256": "1306aa57ee242ab7bfdd592d7ebf18e8b7971cfb9ed140506d7ca38c94ad5022"
+  },
+  {
+    "id": "hou-toyota",
+    "url": "https://www.toyotacenter.com/",
+    "capturedAt": "2026-10-20T06:41:57.106508+00:00",
+    "status": 200,
+    "finalUrl": "https://www.toyotacenter.com/",
+    "contentType": "text/html; charset=UTF-8",
+    "bodySha256": "a616d7c44b4a6f3aa189b5ec90d4407546e5937baa9ac6e980a1904aba763338",
+    "bytes": 10825,
+    "rawPath": "raw/hou-toyota-a616d7c44b4a.html.gz",
+    "retainedSha256": "ba08e819c622530db2539fcd2270f60a7b9a1fafe8ab57db8dc9110f93545145"
+  },
+  {
+    "id": "lac-intuit",
+    "url": "https://intuitdome.com/",
+    "capturedAt": "2026-10-20T06:41:57.403620+00:00",
+    "status": 200,
+    "finalUrl": "https://intuitdome.com/",
+    "contentType": "text/html; charset=utf-8",
+    "bodySha256": "6ce561ba9bd27f0297bd86a38dbe6aaa01472d7851519a7bfd7f16ee27b4d2bb",
+    "bytes": 75466,
+    "rawPath": "raw/lac-intuit-6ce561ba9bd2.html.gz",
+    "retainedSha256": "ceba8d992032e40bb3f9f3def7014723936c5ace98ac98b29f073d32c0a7f609"
+  },
+  {
+    "id": "lal-crypto",
+    "url": "https://www.cryptoarena.com/",
+    "capturedAt": "2026-10-20T06:41:57.415516+00:00",
+    "status": 200,
+    "finalUrl": "https://www.cryptoarena.com/",
+    "contentType": "text/html; charset=UTF-8",
+    "bodySha256": "872f3a9420a2250df4a84ef8dc99145e80b9c7f134befe883469cddcc2280338",
+    "bytes": 13245,
+    "rawPath": "raw/lal-crypto-872f3a9420a2.html.gz",
+    "retainedSha256": "dc0be4ff47233d854620080c0228db1280d04a0f4e56e8ab7d202e00fa352f67"
+  },
+  {
+    "id": "mem-fedex",
+    "url": "https://fedexforum.com/",
+    "capturedAt": "2026-10-20T06:41:57.449486+00:00",
+    "status": 200,
+    "finalUrl": "https://www.fedexforum.com/",
+    "contentType": "text/html; charset=UTF-8",
+    "bodySha256": "1b65285cd56f68d9836d3c882695de6bb8d370fa7aa403c2d004f20ba2b39f57",
+    "bytes": 15164,
+    "rawPath": "raw/mem-fedex-1b65285cd56f.html.gz",
+    "retainedSha256": "9f1cae32e347e6a730285a25175575ebe08a1be71d1c01831693697e4b946372"
+  },
+  {
+    "id": "min-target",
+    "url": "https://www.targetcenter.com/",
+    "capturedAt": "2026-10-20T06:41:57.673124+00:00",
+    "status": 200,
+    "finalUrl": "https://www.targetcenter.com/",
+    "contentType": "text/html; charset=UTF-8",
+    "bodySha256": "752d4d37bb78c7b019a69cee4231eecc2306aebd96d00a9b728f438a208f01f6",
+    "bytes": 23068,
+    "rawPath": "raw/min-target-752d4d37bb78.html.gz",
+    "retainedSha256": "d0ad4d619e17479415e8fd43c9731132b36bd877641992d7fc01fd7df6f7678c"
+  },
+  {
+    "id": "nop-smoothie",
+    "url": "https://www.smoothiekingcenter.com/",
+    "capturedAt": "2026-10-20T06:41:58.206394+00:00",
+    "status": 200,
+    "finalUrl": "https://www.smoothiekingcenter.com/",
+    "contentType": "text/html; charset=UTF-8",
+    "bodySha256": "9efbf5c557f3cd1072f92c149869395a2aa885276fb372f34b65fb98a1546501",
+    "bytes": 13121,
+    "rawPath": "raw/nop-smoothie-9efbf5c557f3.html.gz",
+    "retainedSha256": "eb552d911bbf726ceb82e01b039e4e19ab87c69fd2f1e2f14c66e0fe56782c80"
+  },
+  {
+    "id": "okc-paycom",
+    "url": "https://www.paycomcenter.com/",
+    "capturedAt": "2026-10-20T06:41:58.422549+00:00",
+    "status": 200,
+    "finalUrl": "https://www.paycomcenter.com/",
+    "contentType": "text/html; charset=UTF-8",
+    "bodySha256": "6b012a9b899570e800d1a782b4926f61c345ac9b1f318b9523db9cc9dd431f8e",
+    "bytes": 38594,
+    "rawPath": "raw/okc-paycom-6b012a9b8995.html.gz",
+    "retainedSha256": "d683d6f34b6ddb5cc1d1cef355e0fe3e38e0101446fd7df880db12f836b6a45e"
+  },
+  {
+    "id": "phx-footprint",
+    "url": "https://www.footprintcenter.com/",
+    "capturedAt": "2026-10-20T06:41:58.476988+00:00",
+    "status": 200,
+    "finalUrl": "https://mortgagematchupcenter.com/",
+    "contentType": "text/html; charset=utf-8",
+    "bodySha256": "9513f492b84860c4ea40156ff21ca32db4ca52cf1570ffeff712c084bf92235e",
+    "bytes": 445220,
+    "rawPath": "raw/phx-footprint-9513f492b848.html.gz",
+    "retainedSha256": "6185d5ae79548ce23b506b79d212f0568c9da6c213618d85839671d232ec3ab6"
+  },
+  {
+    "id": "por-rosequarter",
+    "url": "https://www.rosequarter.com/",
+    "capturedAt": "2026-10-20T06:41:58.698531+00:00",
+    "status": 200,
+    "finalUrl": "https://www.rosequarter.com/",
+    "contentType": "text/html; charset=utf-8",
+    "bodySha256": "7353c5c26aacbd795994b849002f02295522e1ebdb3635b6e50a3ba5a67d54de",
+    "bytes": 104364,
+    "rawPath": "raw/por-rosequarter-7353c5c26aac.html.gz",
+    "retainedSha256": "004403c2090b36c3a34005b1ee428fd35f057b6672c4e1b75c6ed57b07040280"
+  },
+  {
+    "id": "sac-golden1",
+    "url": "https://www.golden1center.com/",
+    "capturedAt": "2026-10-20T06:41:58.758497+00:00",
+    "status": 200,
+    "finalUrl": "https://www.golden1center.com/",
+    "contentType": "text/html; charset=UTF-8",
+    "bodySha256": "6eeab2366a3c1f9d0c1d62c0bc71ea751ec42ee7ea15e680fd5be464dd627400",
+    "bytes": 231539,
+    "rawPath": "raw/sac-golden1-6eeab2366a3c.html.gz",
+    "retainedSha256": "10ea9437ccf1a4f41f976587633c446b11529ee2695b8c32720621fe105d20a0"
+  },
+  {
+    "id": "sas-frost",
+    "url": "https://www.frostbankcenter.com/",
+    "capturedAt": "2026-10-20T06:41:59.083866+00:00",
+    "status": 200,
+    "finalUrl": "https://www.frostbankcenter.com/",
+    "contentType": "text/html; charset=UTF-8",
+    "bodySha256": "4177147b71e44b53be140020173c66a0ce9a30db305a0412bba91050a1c98c02",
+    "bytes": 24948,
+    "rawPath": "raw/sas-frost-4177147b71e4.html.gz",
+    "retainedSha256": "4c66d8a68d006916cdd266149e88aef0350c7c68fa0d93d954fef75bff2baa98"
+  },
+  {
+    "id": "uta-delta",
+    "url": "https://www.deltacenter.com/",
+    "capturedAt": "2026-10-20T06:41:59.234844+00:00",
+    "status": 200,
+    "finalUrl": "https://www.deltacenter.com/",
+    "contentType": "text/html; charset=UTF-8",
+    "bodySha256": "21f3e43876f6a5fb87bea04dc5214022cd74b5049c9a4c1996c23dc07240bcec",
+    "bytes": 406624,
+    "rawPath": "raw/uta-delta-21f3e43876f6.html.gz",
+    "retainedSha256": "73dab5a25da4d76587627d91808d05bde91e64bf6936fc6a4a206be86ef2d7fd"
+  },
+  {
+    "id": "lal-seasoncapsule",
+    "url": "https://www.nba.com/lakers/history/season-capsule",
+    "capturedAt": "2026-10-20T06:41:59.713483+00:00",
+    "status": 200,
+    "finalUrl": "https://www.nba.com/lakers/history/season-capsule",
+    "contentType": "text/html",
+    "bodySha256": "612f2ea293a81a9245e9f77ebbdb66a14fd0a0606bed7373669d0853f9218562",
+    "bytes": 627056,
+    "rawPath": "raw/lal-seasoncapsule-612f2ea293a8.html.gz",
+    "retainedSha256": "fa8e44276efe9e0c69373d4baa3aaf0fdb2499973424d44ce23b429d31da1471"
+  },
+  {
+    "id": "gsw-guide",
+    "url": "https://cdn.nba.com/teams/uploads/sites/1610612744/2023/12/2324-gsw-media-guide.pdf",
+    "capturedAt": "2026-10-20T06:41:59.961086+00:00",
+    "status": 200,
+    "finalUrl": "https://cdn.nba.com/teams/uploads/sites/1610612744/2023/12/2324-gsw-media-guide.pdf",
+    "contentType": "application/pdf",
+    "bodySha256": "1f229c48c478e78079a7c47ba1b9e0baa69f7867a1cfa8ff9c8185bca12dfd45",
+    "bytes": 12500914,
+    "rawPath": "raw/gsw-guide-1f229c48c478.pdf",
+    "retainedSha256": "1f229c48c478e78079a7c47ba1b9e0baa69f7867a1cfa8ff9c8185bca12dfd45"
+  },
+  {
+    "id": "min-guide",
+    "url": "https://cdn.wolveslynx.com/timberwolves/communications/guides/2020-21_Wolves-MediaGuide.pdf",
+    "capturedAt": "2026-10-20T06:42:00.821550+00:00",
+    "status": 200,
+    "finalUrl": "https://cdn.wolveslynx.com/timberwolves/communications/guides/2020-21_Wolves-MediaGuide.pdf",
+    "contentType": "application/pdf",
+    "bodySha256": "ac89b1241bf211c9ebed75c56a60f19a0e12c3aca516e827d960a596bf64568f",
+    "bytes": 9909531,
+    "rawPath": "raw/min-guide-ac89b1241bf2.pdf",
+    "retainedSha256": "ac89b1241bf211c9ebed75c56a60f19a0e12c3aca516e827d960a596bf64568f"
+  },
+  {
+    "id": "sac-guide",
+    "url": "https://cdn.nba.com/teams/uploads/sites/1610612758/2023/10/2023-24SacramentoKingsMediaGuide.pdf",
+    "capturedAt": "2026-10-20T06:42:01.330490+00:00",
+    "status": 200,
+    "finalUrl": "https://cdn.nba.com/teams/uploads/sites/1610612758/2023/10/2023-24SacramentoKingsMediaGuide.pdf",
+    "contentType": "application/pdf",
+    "bodySha256": "9836235767fcda4652e8c402eba8982b6fa84c1e4b189e8fec5a148a7e8c1f34",
+    "bytes": 13318163,
+    "rawPath": "raw/sac-guide-9836235767fc.pdf",
+    "retainedSha256": "9836235767fcda4652e8c402eba8982b6fa84c1e4b189e8fec5a148a7e8c1f34"
+  },
+  {
+    "id": "lac-guide",
+    "url": "https://library.sfo2.cdn.digitaloceanspaces.com/publications/basketball/yearbooks/KLACLMG-2016.pdf",
+    "capturedAt": "2026-10-20T06:42:01.356835+00:00",
+    "status": 200,
+    "finalUrl": "https://library.sfo2.cdn.digitaloceanspaces.com/publications/basketball/yearbooks/KLACLMG-2016.pdf",
+    "contentType": "application/pdf",
+    "bodySha256": "6daca07d5a9f4e0acbb00e2ba331f0efbad54d5a75e1b8ccac2c4f67e92c72ae",
+    "bytes": 22640683,
+    "rawPath": "raw/lac-guide-6daca07d5a9f.pdf",
+    "retainedSha256": "6daca07d5a9f4e0acbb00e2ba331f0efbad54d5a75e1b8ccac2c4f67e92c72ae"
+  },
+  {
+    "id": "sea-cityreport",
+    "url": "https://seattle.gov/documents/departments/council/committees/centralstaff/key-arena-report-june-2015.pdf",
+    "capturedAt": "2026-10-20T06:42:01.892637+00:00",
+    "status": 200,
+    "finalUrl": "https://seattle.gov/documents/departments/council/committees/centralstaff/key-arena-report-june-2015.pdf",
+    "contentType": "application/pdf",
+    "bodySha256": "25e9ed67217a3ea5f863001f064f650703b144aa2084ae292bf0c470f3cc95c3",
+    "bytes": 11273831,
+    "rawPath": "raw/sea-cityreport-25e9ed67217a.pdf",
+    "retainedSha256": "25e9ed67217a3ea5f863001f064f650703b144aa2084ae292bf0c470f3cc95c3"
+  },
+  {
+    "id": "gsw-cityreport",
+    "url": "https://sfocii.org/sites/default/files/inline-files/Vol%201_GSW_MB_DSEIR.pdf",
+    "capturedAt": "2026-10-20T06:42:02.471828+00:00",
+    "status": 200,
+    "finalUrl": "https://sfocii.org/sites/default/files/inline-files/Vol%201_GSW_MB_DSEIR.pdf",
+    "contentType": "application/pdf",
+    "bodySha256": "cf92c907e3e94f70ea73015b5034b5fe4d47a26a2044fa4c2c7899430ee44d40",
+    "bytes": 69368931,
+    "rawPath": "raw/gsw-cityreport-cf92c907e3e9.pdf",
+    "retainedSha256": "cf92c907e3e94f70ea73015b5034b5fe4d47a26a2044fa4c2c7899430ee44d40"
+  },
+  {
+    "id": "nop-katrina",
+    "url": "https://www.nba.com/pelicans/news/the_hornets__hurricane_katr_2010_08_26.html",
+    "capturedAt": "2026-10-20T06:42:04.312293+00:00",
+    "status": 200,
+    "finalUrl": "https://www.nba.com/pelicans/news/the_hornets__hurricane_katr_2010_08_26.html",
+    "contentType": "text/html; charset=utf-8",
+    "bodySha256": "23a41f79c6bd11c9dd8dbf00bea5bf84a3c99eedb5be966e65982efaf70d89a9",
+    "bytes": 158739,
+    "rawPath": "raw/nop-katrina-23a41f79c6bd.html.gz",
+    "retainedSha256": "06a0f215a3df41890442932d9f9a8971d8676d0cc3cd9964bbe7162cdae0707a"
+  },
+  {
+    "id": "den-directions",
+    "url": "https://www.ballarena.com/plan-your-visit/parking-directions/",
+    "capturedAt": "2026-10-20T06:45:44.476863+00:00",
+    "status": 200,
+    "finalUrl": "https://www.ballarena.com/plan-your-visit/parking-directions/",
+    "contentType": "text/html; charset=utf-8",
+    "bodySha256": "47af21838261d52858b9a2918d8a19e51f2d6b646540e358c385a3f4fdf536f4",
+    "rawPath": "raw/den-directions-47af21838261.html.gz",
+    "retainedSha256": "2c99c9fa95b222e25a820cb2cca3f1ee93d917dfdbaf24cd4e684bbcb8ca47f5",
+    "bytes": 37860,
+    "numericMapMatches": [],
+    "mapLinks": [
+      "https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d6135.182927363296!2d-105.01236056491918!3d39.748826857207206!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x7bec273737d47786!2sPepsi+Center!5e0!3m2!1sen!2sus!4v1538535508408"
+    ]
+  },
+  {
+    "id": "den-maplink",
+    "url": "https://goo.gl/maps/v1ZVTEkyTCG9WTyF6",
+    "capturedAt": "2026-10-20T06:45:44.477356+00:00",
+    "status": 200,
+    "finalUrl": "https://www.google.com/maps/place/1000+Chopper+Cir,+Denver,+CO+80204/@39.1335379,-106.0187864,9z/data=!4m6!3m5!1s0x876c78c76d414c11:0x503bd6b8b081b1f6!8m2!3d39.7485498!4d-105.0077106!16s%2Fg%2F11bw3g5vc5?entry=tts&shorturl=1",
+    "contentType": "text/html; charset=UTF-8",
+    "bodySha256": "cf2092d6720049d8a581fe44f7f01f0fd049119fb2c2c3e5ad6219b1128a1c38",
+    "rawPath": "raw/den-maplink-cf2092d67200.html.gz",
+    "retainedSha256": "ff1b6c6f29a462d8fabad1ec2cb9dccf8d26815455e728f3da58ddf81db86c48",
+    "bytes": 224363,
+    "numericMapMatches": [
+      "?center=39.1335379%2C-106.0187864",
+      "!3d39.7485498!4d-105.0077106",
+      "@39.1335379,-106.0187864"
+    ],
+    "mapLinks": [
+      "https://support.google.com/maps/?hl=ko&authuser=0&p=no_javascript"
+    ]
+  },
+  {
+    "id": "lac-parking",
+    "url": "https://intuitdome.com/plan-your-visit/parking-information",
+    "capturedAt": "2026-10-20T06:45:44.477578+00:00",
+    "status": 200,
+    "finalUrl": "https://intuitdome.com/plan-your-visit/parking-information",
+    "contentType": "text/html; charset=utf-8",
+    "bodySha256": "6b18133137c19aed94e40a7cc0bf8a6f7eb13087897d618b38f38a08656c20b5",
+    "rawPath": "raw/lac-parking-6b18133137c1.html.gz",
+    "retainedSha256": "bb0fba8a4b16b4684c629fa88707325b8d2f54802cd2f47ff195641ea3ccc690",
+    "bytes": 58590,
+    "numericMapMatches": [],
+    "mapLinks": [
+      "https://waze.com/ul/h9q5c5523x",
+      "https://waze.com/ul/h9q5c55m2k",
+      "https://waze.com/ul/h9q5c55701"
+    ]
+  },
+  {
+    "id": "lal-directions",
+    "url": "https://www.cryptoarena.com/plan-your-visit/getting-here/directions",
+    "capturedAt": "2026-10-20T06:45:45.242134+00:00",
+    "status": 200,
+    "finalUrl": "https://www.cryptoarena.com/plan-your-visit/getting-here/directions",
+    "contentType": "text/html; charset=UTF-8",
+    "bodySha256": "f80affcb03294c62ad619a773693ea5db6a3c59e8c0b306edbf94511b75991b9",
+    "rawPath": "raw/lal-directions-f80affcb0329.html.gz",
+    "retainedSha256": "df1bb146be7d6e723b0101d1c8b3313571f225bde2b172876d4b4f1d28006f1b",
+    "bytes": 57518,
+    "numericMapMatches": [
+      "!3d34.0452801!4d-118.267787",
+      "@34.0440728,-118.271001",
+      "@34.0449688,-118.2698954",
+      "!3d34.0445689!4d-118.2706408",
+      "!3d34.044909!4d-118.2691872",
+      "@34.0479175,-118.2656383",
+      "!3d34.0449688!4d-118.2686053",
+      "@34.0452801,-118.2690771",
+      "@34.0461673,-118.2690442",
+      "!3d34.0461673!4d-118.2664693",
+      "!3d34.0479175!4d-118.263058",
+      "@34.044909,-118.2704773"
+    ],
+    "mapLinks": [
+      "https://www.waze.com/",
+      "https://www.waze.com/live-map/directions?navigate=yes&to=ll.34.04414325%2C-118.26847672",
+      "https://www.google.com/maps/place/Parking+lot,+900+Chick+Hearn+Ct,+Los+Angeles,+CA+90015/@34.0440728,-118.271001,17z/data=!3m1!4b1!4m6!3m5!1s0x80c2c7b91e974237:0xb16d012a344c754a!8m2!3d34.0440728!4d-118.2684261!16s%2Fg%2F11ksnwrl0w!5m1!1e1?entry=ttu&g_ep=EgoyMDI1MDcxMy4wIKXMDSoASAFQAw%3D%3D",
+      "https://www.waze.com/live-map/directions?navigate=yes&to=ll.34.04414325%2C-118.26847672",
+      "https://www.google.com/maps/place/Parking+lot,+900+Chick+Hearn+Ct,+Los+Angeles,+CA+90015/@34.0440728,-118.271001,17z/data=!3m1!4b1!4m6!3m5!1s0x80c2c7b91e974237:0xb16d012a344c754a!8m2!3d34.0440728!4d-118.2684261!16s%2Fg%2F11ksnwrl0w!5m1!1e1?entry=ttu&g_ep=EgoyMDI1MDcxMy4wIKXMDSoASAFQAw%3D%3D",
+      "https://www.waze.com/live-map/directions?navigate=yes&to=ll.34.04489%2C-118.26860547",
+      "https://www.google.com/maps/place/1005+Chick+Hearn+Ct,+Los+Angeles,+CA+90015/@34.0449688,-118.2698954,18z/data=!3m1!4b1!4m6!3m5!1s0x80c2c7b915100ae9:0xac6f3aec8a2f03f9!8m2!3d34.0449688!4d-118.2686053!16s%2Fg%2F11s01xf4jc!5m1!1e1?entry=ttu&g_ep=EgoyMDI1MDcxMy4wIKXMDSoASAFQAw%3D%3D",
+      "https://www.waze.com/live-map/directions?navigate=yes&to=ll.34.04513003%2C-118.26918483",
+      "https://www.google.com/maps/place/1015+Chick+Hearn+Ct,+Los+Angeles,+CA+90015/@34.044909,-118.2704773,18z/data=!3m1!4b1!4m6!3m5!1s0x80c2c7b938a3b1d3:0x91635e239fc72e76!8m2!3d34.044909!4d-118.2691872!16s%2Fg%2F11s02b0lx9!5m1!1e1?entry=ttu&g_ep=EgoyMDI1MDcxMy4wIKXMDSoASAFQAw%3D%3D",
+      "https://www.waze.com/live-map/directions?navigate=yes&to=ll.34.04544117%2C-118.26773643",
+      "https://www.google.com/maps/place/1015+Georgia+St,+Los+Angeles,+CA+90015/@34.0452801,-118.2690771,18z/data=!3m1!4b1!4m6!3m5!1s0x80c2c7b90cd28c2f:0x1f5f611def2fe197!8m2!3d34.0452801!4d-118.267787!16s%2Fg%2F11rp1xyhxg!5m1!1e1?entry=ttu&g_ep=EgoyMDI1MDcxMy4wIKXMDSoASAFQAw%3D%3D",
+      "https://www.waze.com/live-map/directions?navigate=yes&to=ll.34.04537005%2C-118.26503277"
+    ]
+  },
+  {
+    "id": "por-directions",
+    "url": "https://www.rosequarter.com/plan-your-visit/directions-transportation",
+    "capturedAt": "2026-10-20T06:45:45.262621+00:00",
+    "status": 200,
+    "finalUrl": "https://www.rosequarter.com/plan-your-visit/directions-transportation",
+    "contentType": "text/html; charset=utf-8",
+    "bodySha256": "5c14b7165d80939d086070d959ba0b95e41905880ac8078b3290de9b77157275",
+    "rawPath": "raw/por-directions-5c14b7165d80.html.gz",
+    "retainedSha256": "468586324bc3e76523a99a9beaf22b85108601ffd3e3ab00fdf270b299535ca5",
+    "bytes": 86192,
+    "numericMapMatches": [],
+    "mapLinks": [
+      "https://maps.google.com/?q=One Center Court Portland, OR 97227",
+      "https://maps.google.com/?q=One Center Court Portland, OR 97227",
+      "https://maps.google.com/?q=One Center Court Portland, OR 97227",
+      "https://www.google.com/maps/embed?pb=!1m16!1m12!1m3!1d2794.9284667950496!2d-122.66866013444034!3d45.53164502910177!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!2m1!1sOne%20Center%20Court%20Portland%2C%20OR%2097227!5e0!3m2!1sen!2sus!4v1657575297082!5m2!1sen!2sus"
+    ]
+  },
+  {
+    "id": "sac-directions",
+    "url": "https://www.golden1center.com/visit/directions-and-parking/",
+    "capturedAt": "2026-10-20T06:45:45.459458+00:00",
+    "error": "HTTP Error 403: Forbidden"
+  },
+  {
+    "id": "uta-maps",
+    "url": "https://www.deltacenter.com/maps/",
+    "capturedAt": "2026-10-20T06:45:45.505516+00:00",
+    "error": "HTTP Error 403: Forbidden"
+  },
+  {
+    "id": "phx-directions",
+    "url": "https://www.footprintcenter.com/plan-your-visit/transportation-parking/",
+    "capturedAt": "2026-10-20T06:45:45.611997+00:00",
+    "status": 200,
+    "finalUrl": "https://mortgagematchupcenter.com/plan-your-visit/transportation-parking/",
+    "contentType": "text/html; charset=utf-8",
+    "bodySha256": "6ef23e34ec6ba1e1dd4bf9d7871e1ae925442be904555ffc119b62a4e26e0368",
+    "rawPath": "raw/phx-directions-6ef23e34ec6b.html.gz",
+    "retainedSha256": "2a2dcfa50c64e7c1ba2ab52eafbf7831ad25c580cf8f4135b765ffd548560ef7",
+    "bytes": 154553,
+    "numericMapMatches": [],
+    "mapLinks": []
+  },
+  {
+    "id": "dal-directions",
+    "url": "https://www.americanairlinescenter.com/plan-your-visit/directions",
+    "capturedAt": "2026-10-20T06:45:45.668962+00:00",
+    "status": 200,
+    "finalUrl": "https://www.americanairlinescenter.com/plan-your-visit/directions",
+    "contentType": "text/html; charset=UTF-8",
+    "bodySha256": "c52894dfed7388cdf03c856bdb239dda63a01e9956b05e39e4c07bf4417c73f7",
+    "rawPath": "raw/dal-directions-c52894dfed73.html.gz",
+    "retainedSha256": "584da73fb94c92efa7a52103f489b459f9340306ea7e0d822020f83bafa33619",
+    "bytes": 36272,
+    "numericMapMatches": [],
+    "mapLinks": [
+      "https://embed.waze.com/iframe?zoom=14&lat=32.790442&lon=-96.810159&pin=1"
+    ]
+  },
+  {
+    "id": "lal-forum",
+    "url": "https://thekiaforum.com/",
+    "capturedAt": "2026-10-20T06:45:45.786056+00:00",
+    "error": "HTTP Error 403: Forbidden"
+  },
+  {
+    "id": "gsw-oakland",
+    "url": "https://www.theoaklandarena.com/plan-your-visit/directions-parking",
+    "capturedAt": "2026-10-20T06:45:46.074385+00:00",
+    "error": "HTTP Error 404: Not Found"
+  },
+  {
+    "id": "gsw-sap",
+    "url": "https://www.sapcenter.com/plan-your-visit/directions-parking",
+    "capturedAt": "2026-10-20T06:45:46.343669+00:00",
+    "status": 200,
+    "finalUrl": "https://www.sapcenter.com/plan-your-visit/directions-parking",
+    "contentType": "text/html; charset=UTF-8",
+    "bodySha256": "ff0f61907167a43516f25ea97a10a9c25517ee9832623b804c17c48f2239aa12",
+    "rawPath": "raw/gsw-sap-ff0f61907167.html.gz",
+    "retainedSha256": "841b9190f381f5e730ab13b814d119c98aa68037549de4f66a421f6b5f344bbf",
+    "bytes": 40014,
+    "numericMapMatches": [],
+    "mapLinks": []
+  },
+  {
+    "id": "mem-rogers",
+    "url": "https://rogersarena.com/getting-here/",
+    "capturedAt": "2026-10-20T06:45:46.692414+00:00",
+    "error": "HTTP Error 403: Forbidden"
+  },
+  {
+    "id": "sea-tacoma",
+    "url": "https://www.tacomadome.org/plan-your-visit/directions-parking",
+    "capturedAt": "2026-10-20T06:45:46.849256+00:00",
+    "error": "HTTP Error 404: Not Found"
+  },
+  {
+    "id": "nps-forum",
+    "url": "https://npgallery.nps.gov/GetAsset/8c45d952-7e8c-42b5-8bf4-0cf55cb35bab",
+    "capturedAt": "2026-10-20T06:46:53.048594+00:00",
+    "status": 200,
+    "finalUrl": "https://npgallery.nps.gov/GetAsset/8c45d952-7e8c-42b5-8bf4-0cf55cb35bab",
+    "bodySha256": "d80b263c50db83eb02b2df8c7f132992baa77ca29147e8bb762dd54134cfae36",
+    "retainedSha256": "d80b263c50db83eb02b2df8c7f132992baa77ca29147e8bb762dd54134cfae36",
+    "rawPath": "raw/nps-forum-d80b263c50db.pdf",
+    "bytes": 13367006
+  },
+  {
+    "id": "nps-por-coliseum",
+    "url": "https://npgallery.nps.gov/GetAsset/c8b612b2-d3fa-41e3-9ba8-6ff7c62cfbe8",
+    "capturedAt": "2026-10-20T06:46:56.845340+00:00",
+    "status": 200,
+    "finalUrl": "https://npgallery.nps.gov/GetAsset/c8b612b2-d3fa-41e3-9ba8-6ff7c62cfbe8",
+    "bodySha256": "1df158361d6c2c84095774deafe589909f4c8c6f79e721adb5691cb357a5674d",
+    "retainedSha256": "1df158361d6c2c84095774deafe589909f4c8c6f79e721adb5691cb357a5674d",
+    "rawPath": "raw/nps-por-coliseum-1df158361d6c.pdf",
+    "bytes": 10066363
+  },
+  {
+    "id": "hou-directions",
+    "url": "https://www.toyotacenter.com/plan-your-visit/directions-parking",
+    "capturedAt": "2026-10-20T06:49:45.127029+00:00",
+    "status": 200,
+    "finalUrl": "https://www.toyotacenter.com/plan-your-visit/directions-parking",
+    "contentType": "text/html; charset=UTF-8",
+    "bodySha256": "0892c1162b22e41cc2eb6784ffecc6428e2a7c68e51e52f9e8a056e283a31549",
+    "rawPath": "raw/hou-directions-0892c1162b22.html.gz",
+    "retainedSha256": "7850ca0a5ddc22cb913aa99814570271923d9206ef0551a552e117e57ba71f26",
+    "bytes": 46713,
+    "numericMapMatches": [],
+    "mapLinks": [
+      "https://www.google.com/maps/d/embed?mid=1zzzqh8gMwgkvUH0j_fdS_lSim2U0m2E&ehbc=2E312F"
+    ]
+  },
+  {
+    "id": "nop-directions",
+    "url": "https://www.smoothiekingcenter.com/plan-your-visit/directions-parking",
+    "capturedAt": "2026-10-20T06:49:45.127502+00:00",
+    "status": 200,
+    "finalUrl": "https://www.smoothiekingcenter.com/plan-your-visit/directions-parking",
+    "contentType": "text/html; charset=UTF-8",
+    "bodySha256": "fef0416464ba08c43e8ead3cfaaeecec3b5cc4bd97eeda5bb298ca3398d4f875",
+    "rawPath": "raw/nop-directions-fef0416464ba.html.gz",
+    "retainedSha256": "3d6fcd92ac1e931d39287b44f77c9ce307fb61b8986ef9ab0ac4a367df821054",
+    "bytes": 38668,
+    "numericMapMatches": [],
+    "mapLinks": [
+      "https://www.google.com/maps/embed/v1/place?key=[REDACTED_PUBLIC_EMBED_KEY]&q=1501%20Dave%20Dixon%20Drive%20%20New%20Orleans%2070113"
+    ]
+  },
+  {
+    "id": "min-directions",
+    "url": "https://www.targetcenter.com/plan_your_visit/directions",
+    "capturedAt": "2026-10-20T06:49:45.127653+00:00",
+    "error": "HTTP Error 404: Not Found"
+  },
+  {
+    "id": "mem-directions",
+    "url": "https://fedexforum.com/plan-your-visit/directions-parking",
+    "capturedAt": "2026-10-20T06:49:45.560593+00:00",
+    "error": "HTTP Error 404: Not Found"
+  },
+  {
+    "id": "sas-directions",
+    "url": "https://www.frostbankcenter.com/plan-your-visit/directions-parking",
+    "capturedAt": "2026-10-20T06:49:45.658381+00:00",
+    "error": "HTTP Error 404: Not Found"
+  },
+  {
+    "id": "okc-directions",
+    "url": "https://www.paycomcenter.com/plan-your-visit/directions-parking",
+    "capturedAt": "2026-10-20T06:49:45.975288+00:00",
+    "error": "HTTP Error 404: Not Found"
+  },
+  {
+    "id": "uta-parking",
+    "url": "https://www.deltacenter.com/parking/",
+    "capturedAt": "2026-10-20T06:49:46.081488+00:00",
+    "error": "HTTP Error 403: Forbidden"
+  },
+  {
+    "id": "sac-maps",
+    "url": "https://www.golden1center.com/visit/maps/",
+    "capturedAt": "2026-10-20T06:49:46.233064+00:00",
+    "error": "HTTP Error 403: Forbidden"
+  },
+  {
+    "id": "gsw-gettinghere",
+    "url": "https://chasecenter.com/plan-your-visit/transportation/",
+    "capturedAt": "2026-10-20T06:49:46.398891+00:00",
+    "status": 200,
+    "finalUrl": "https://chasecenter.com/plan-your-visit/transportation/",
+    "contentType": "text/html; charset=utf-8",
+    "bodySha256": "7e71f064fdd04c8c095169ad98f061325e8b2081b1ec9270a51925e035f117fb",
+    "rawPath": "raw/gsw-gettinghere-7e71f064fdd0.html.gz",
+    "retainedSha256": "8cf4f20a1ec5ea50829b4aae41df7cf7f8f0a75fad071e05473332e84c1d4815",
+    "bytes": 80620,
+    "numericMapMatches": [],
+    "mapLinks": []
+  },
+  {
+    "id": "oakland-home",
+    "url": "https://www.theoaklandarena.com/",
+    "capturedAt": "2026-10-20T06:49:46.511374+00:00",
+    "status": 200,
+    "finalUrl": "https://www.theoaklandarena.com/",
+    "contentType": "text/html; charset=UTF-8",
+    "bodySha256": "e666efcd35a72f3a2059be107c7600895a963b83440b12d4f8981553552b026c",
+    "rawPath": "raw/oakland-home-e666efcd35a7.html.gz",
+    "retainedSha256": "c8d9ce18a562b702fa79185a207e4751d7e1dd43049c14a5cfb96631687cfc7e",
+    "bytes": 20862,
+    "numericMapMatches": [],
+    "mapLinks": []
+  },
+  {
+    "id": "tacoma-home",
+    "url": "https://www.tacomadome.org/",
+    "capturedAt": "2026-10-20T06:49:46.609569+00:00",
+    "status": 200,
+    "finalUrl": "https://www.tacomadome.org/",
+    "contentType": "text/html; charset=UTF-8",
+    "bodySha256": "5f1ce4d2c44f9f3cd718620c40281397a447685151f7c52f0f15614efbe3d2bf",
+    "rawPath": "raw/tacoma-home-5f1ce4d2c44f.html.gz",
+    "retainedSha256": "ded0dd3a6c76a7304b0c9c1db88926758772a06a4cd5225ac890ec44879ea073",
+    "bytes": 10777,
+    "numericMapMatches": [],
+    "mapLinks": []
+  },
+  {
+    "id": "lac-newbrand",
+    "url": "https://www.nba.com/clippers/news/la-clippers-unveil-new-uniforms-logo-and-brand-look",
+    "capturedAt": "2026-10-20T06:49:46.740217+00:00",
+    "status": 200,
+    "finalUrl": "https://www.nba.com/clippers/news/la-clippers-unveil-new-uniforms-logo-and-brand-look",
+    "contentType": "text/html; charset=utf-8",
+    "bodySha256": "0ec79d126930724c64800d56f83d48e5e7003e945ca95db06023485bcf6eb828",
+    "rawPath": "raw/lac-newbrand-0ec79d126930.html.gz",
+    "retainedSha256": "65d14db5cd3a35ea1acf86ad293d198f321cba89be6222d62e0fdd8d0ecbcd37",
+    "bytes": 105131,
+    "numericMapMatches": [],
+    "mapLinks": []
+  },
+  {
+    "id": "sac-arco-bound",
+    "url": "https://www.nba.com/kings/blog/preview-kings-thunder-40916",
+    "capturedAt": "2026-10-20T06:49:46.874636+00:00",
+    "status": 200,
+    "finalUrl": "https://www.nba.com/kings/blog/preview-kings-thunder-40916",
+    "contentType": "text/html; charset=utf-8",
+    "bodySha256": "1bbc67681446859762692956ac0d73ff668cae8e130548a1955b446088954411",
+    "rawPath": "raw/sac-arco-bound-1bbc67681446.html.gz",
+    "retainedSha256": "d84e78dfae112130586a5faf6bb3e76fb16a7dda827533dd00ae8d47898228b5",
+    "bytes": 118891,
+    "numericMapMatches": [],
+    "mapLinks": []
+  },
+  {
+    "id": "sas-guide",
+    "url": "https://library.sfo2.cdn.digitaloceanspaces.com/publications/basketball/yearbooks/KSASPMG-2013.pdf",
+    "capturedAt": "2026-10-20T06:49:47.082066+00:00",
+    "status": 200,
+    "finalUrl": "https://library.sfo2.cdn.digitaloceanspaces.com/publications/basketball/yearbooks/KSASPMG-2013.pdf",
+    "contentType": "application/pdf",
+    "bodySha256": "e5e69fbf21c03b03bf1057efcc4493be58cb5394474772ab0df48f8106f3ca2b",
+    "rawPath": "raw/sas-guide-e5e69fbf21c0.pdf",
+    "retainedSha256": "e5e69fbf21c03b03bf1057efcc4493be58cb5394474772ab0df48f8106f3ca2b",
+    "bytes": 7473257,
+    "numericMapMatches": [],
+    "mapLinks": []
+  },
+  {
+    "id": "maps-crypto",
+    "url": "https://www.google.com/maps/place/Crypto.com%20Arena%2C%201111%20S%20Figueroa%20St%2C%20Los%20Angeles/",
+    "finalUrl": "https://www.google.com/maps/place/Crypto.com%20Arena%2C%201111%20S%20Figueroa%20St%2C%20Los%20Angeles/",
+    "status": 200,
+    "bodySha256": "3aa4e7e582f2341bc44d28133e438a97d20a14ea284858016129b8ac8155836b",
+    "rawPath": "raw/maps-crypto-3aa4e7e582f2.html.gz",
+    "retainedSha256": "187a95981b1194de9f91aef550151492ac3766719fbf5bb02016990199cfd973",
+    "bytes": 226200,
+    "capturedAt": "2026-10-20T06:53:12.479953+00:00"
+  },
+  {
+    "id": "maps-crypto-qualified",
+    "url": "https://www.google.com/maps?q=Crypto.com+Arena+Los+Angeles",
+    "finalUrl": "https://www.google.com/maps?q=Crypto.com+Arena+Los+Angeles",
+    "status": 200,
+    "bodySha256": "8f69738ec9957b9b4539f87f9239e023457e75a40c637a33fd00346bb1af36f0",
+    "rawPath": "raw/maps-crypto-qualified-8f69738ec995.html.gz",
+    "retainedSha256": "a55546ec0ebe2868453c761f187ebb6cd1e32fc1cbdc29211d3d2cf7305d7993",
+    "bytes": 228490,
+    "capturedAt": "2026-10-20T06:53:44.380884+00:00"
+  },
+  {
+    "id": "uta-guide",
+    "url": "https://ak-static-int.nba.com/wp-content/uploads/sites/3/2016/10/2016-17-Media-Guide-Jazz.pdf",
+    "capturedAt": "2026-10-20T06:55:21.215741+00:00",
+    "status": 200,
+    "finalUrl": "https://ak-static-int.nba.com/wp-content/uploads/sites/3/2016/10/2016-17-Media-Guide-Jazz.pdf",
+    "bodySha256": "841e7de5a0249f1194d5b21601d32072682603e9e318bb9805948c82d942d5fe",
+    "rawPath": "raw/uta-guide-841e7de5a024.pdf",
+    "retainedSha256": "841e7de5a0249f1194d5b21601d32072682603e9e318bb9805948c82d942d5fe",
+    "bytes": 19298505
+  },
+  {
+    "id": "dal-guide",
+    "url": "https://cdn.nba.com/teams/legacy/www.mavs.com/wp-content/uploads/2025/02/2024-25-Dallas-Mavericks-Media-Guide-2.pdf",
+    "capturedAt": "2026-10-20T06:55:21.216295+00:00",
+    "status": 200,
+    "finalUrl": "https://cdn.nba.com/teams/legacy/www.mavs.com/wp-content/uploads/2025/02/2024-25-Dallas-Mavericks-Media-Guide-2.pdf",
+    "bodySha256": "8d3f446e0692edd97a0127c5aff8e28d4c6d78c2a9c3526700dba7988dcb31d5",
+    "rawPath": "raw/dal-guide-8d3f446e0692.pdf",
+    "retainedSha256": "8d3f446e0692edd97a0127c5aff8e28d4c6d78c2a9c3526700dba7988dcb31d5",
+    "bytes": 26650597
+  },
+  {
+    "id": "nop-guide",
+    "url": "https://ak-static-int.nba.com/wp-content/uploads/sites/3/2016/10/2016-17-Media-Guide-Pelicans.pdf",
+    "capturedAt": "2026-10-20T06:55:22.021398+00:00",
+    "status": 200,
+    "finalUrl": "https://ak-static-int.nba.com/wp-content/uploads/sites/3/2016/10/2016-17-Media-Guide-Pelicans.pdf",
+    "bodySha256": "eecce8fef42ef5a43f4a99c4c4d18b2d5a9a25260e13ff3938548557132fa2ae",
+    "rawPath": "raw/nop-guide-eecce8fef42e.pdf",
+    "retainedSha256": "eecce8fef42ef5a43f4a99c4c4d18b2d5a9a25260e13ff3938548557132fa2ae",
+    "bytes": 7857922
+  },
+  {
+    "id": "uta-history",
+    "url": "https://www.nba.com/jazz/news/jazz-basketball-decade-series-1990s",
+    "capturedAt": "2026-10-20T06:55:23.485243+00:00",
+    "status": 200,
+    "finalUrl": "https://www.nba.com/jazz/news/jazz-basketball-decade-series-1990s",
+    "bodySha256": "01b1988c41476d38f209a0a537edcd74b2cd384305fcaa0f615d2c0413f1f4b8",
+    "rawPath": "raw/uta-history-01b1988c4147.html.gz",
+    "retainedSha256": "b75b062cc0c33524ee658ee8f533371a0de080b6d4900a3212c8543c7c2e455f",
+    "bytes": 218351
+  },
+  {
+    "id": "gsw-opening",
+    "url": "https://www.nba.com/warriors/news-blogs/warriors-opening-night-20191025",
+    "capturedAt": "2026-10-20T06:55:25.243472+00:00",
+    "status": 200,
+    "finalUrl": "https://www.nba.com/warriors/news-blogs/warriors-opening-night-20191025",
+    "bodySha256": "4ece03f94e6462880bbdd17d504cf13c3db452dcc69d5cb128b63eca15b41116",
+    "rawPath": "raw/gsw-opening-4ece03f94e64.html.gz",
+    "retainedSha256": "9c6fdd2d3a279fb3c51a45bb718a6d9f65f2fd851f7e2f7280dd3cb41bdf2003",
+    "bytes": 105295
+  },
+  {
+    "id": "por-city",
+    "url": "https://www.portland.gov/venues/veterans-memorial-coliseum",
+    "capturedAt": "2026-10-20T06:55:26.656260+00:00",
+    "status": 200,
+    "finalUrl": "https://www.portland.gov/venues/veterans-memorial-coliseum",
+    "bodySha256": "689f2e8effce01ca115503b1742cb6508da302e4409d2f922e4da93024884ebd",
+    "rawPath": "raw/por-city-689f2e8effce.html.gz",
+    "retainedSha256": "2ccea21b17be85945c1e201bae5764aab37a9b01e252548b99a62731e3c6ef9e",
+    "bytes": 59934
+  },
+  {
+    "id": "den-guide",
+    "url": "https://cdn.nba.com/teams/uploads/sites/1610612743/2025/10/2025-26-Denver-Nuggets-Media-Guide.pdf",
+    "capturedAt": "2026-10-20T06:57:52.738984+00:00",
+    "status": 200,
+    "finalUrl": "https://cdn.nba.com/teams/uploads/sites/1610612743/2025/10/2025-26-Denver-Nuggets-Media-Guide.pdf",
+    "bodySha256": "59f5e565ae57f46f3b76ec5749d9e6a9959cded6024c7d0409da19403782b00a",
+    "rawPath": "raw/den-guide-59f5e565ae57.pdf",
+    "retainedSha256": "59f5e565ae57f46f3b76ec5749d9e6a9959cded6024c7d0409da19403782b00a",
+    "bytes": 16769865
+  },
+  {
+    "id": "hou-guide",
+    "url": "https://ak-static-int.nba.com/wp-content/uploads/sites/3/2016/10/2016-17-Media-Guide-Rockets.pdf",
+    "capturedAt": "2026-10-20T06:57:52.739513+00:00",
+    "status": 200,
+    "finalUrl": "https://ak-static-int.nba.com/wp-content/uploads/sites/3/2016/10/2016-17-Media-Guide-Rockets.pdf",
+    "bodySha256": "45fcc34b80bb6a7b753113861fade1fe51c092f4f4315026a84e787ae5bfc7b6",
+    "rawPath": "raw/hou-guide-45fcc34b80bb.pdf",
+    "retainedSha256": "45fcc34b80bb6a7b753113861fade1fe51c092f4f4315026a84e787ae5bfc7b6",
+    "bytes": 9528748
+  },
+  {
+    "id": "phx-guide",
+    "url": "https://library.sfo2.cdn.digitaloceanspaces.com/publications/basketball/yearbooks/KPHXSMG-2013.pdf",
+    "capturedAt": "2026-10-20T06:57:53.363107+00:00",
+    "status": 200,
+    "finalUrl": "https://library.sfo2.cdn.digitaloceanspaces.com/publications/basketball/yearbooks/KPHXSMG-2013.pdf",
+    "bodySha256": "bee550ed892ffba853b119419aebfd4f7df0d5af67030dc506b27041cd91a1e8",
+    "rawPath": "raw/phx-guide-bee550ed892f.pdf",
+    "retainedSha256": "bee550ed892ffba853b119419aebfd4f7df0d5af67030dc506b27041cd91a1e8",
+    "bytes": 24993280
+  },
+  {
+    "id": "mem-relocation",
+    "url": "https://www.nba.com/grizzlies/news/news-120611-grizzlies-sale",
+    "capturedAt": "2026-10-20T06:57:55.881406+00:00",
+    "status": 200,
+    "finalUrl": "https://www.nba.com/grizzlies/news/news-120611-grizzlies-sale",
+    "bodySha256": "0ef8a69a9b6f7ac8f6eabf2e12bf77f9236bb7ebee4f5b622ccdd36d1257515a",
+    "rawPath": "raw/mem-relocation-0ef8a69a9b6f.html.gz",
+    "retainedSha256": "2b04a62a13744ad35fd2963113d8d80e32fb13446214dc151059a98730dab064",
+    "bytes": 97924
+  },
+  {
+    "id": "phx-first",
+    "url": "https://www.nba.com/news/history-this-date-in-nba-nov",
+    "capturedAt": "2026-10-20T06:57:57.876930+00:00",
+    "status": 200,
+    "finalUrl": "https://www.nba.com/news/history-this-date-in-nba-nov",
+    "bodySha256": "b99105a1d7b1fe82e8ba3cbc02273755ee712f6fe7e6509c2c2718c8fd2e40f4",
+    "rawPath": "raw/phx-first-b99105a1d7b1.html.gz",
+    "retainedSha256": "33e33b337765a48b911a8a49f756ab5e8cc5ba8ca40d2b2405f569557ba5c480",
+    "bytes": 552523
+  },
+  {
+    "id": "lac-intuit-address",
+    "url": "https://intuitdome.com/plan-your-visit/getting-here",
+    "capturedAt": "2026-10-20T06:57:57.998141+00:00",
+    "status": 200,
+    "finalUrl": "https://intuitdome.com/plan-your-visit/getting-here",
+    "bodySha256": "6df2e156dc24c7b042cc7feb3637fd8609e9e67efc820bbe2d129a89e01109a6",
+    "rawPath": "raw/lac-intuit-address-6df2e156dc24.html.gz",
+    "retainedSha256": "ed348562d6a999dcb7d88493f366c43d90a4c590f4c5ad48b4d76b865155b7ac",
+    "bytes": 32048
+  },
+  {
+    "id": "por-city-history",
+    "url": "https://www.portland.gov/veteransmemorial/memorialhistory",
+    "capturedAt": "2026-10-20T06:57:58.633051+00:00",
+    "status": 200,
+    "finalUrl": "https://www.portland.gov/veteransmemorial/memorialhistory",
+    "bodySha256": "4796776470c289e1519725026cd78e65ab3a13efbd57d7ae518116419eec8812",
+    "rawPath": "raw/por-city-history-4796776470c2.html.gz",
+    "retainedSha256": "03769c49ea0265e41bd4d6179f7078445117a6ff968f87074fc16c58f9b06cfb",
+    "bytes": 59914
+  },
+  {
+    "id": "nop-record-allocation",
+    "url": "https://www.nba.com/pelicans/news/countdown-pelicans-training-camp-18-days",
+    "capturedAt": "2026-10-20T07:00:37.117913+00:00",
+    "status": 200,
+    "finalUrl": "https://www.nba.com/pelicans/news/countdown-pelicans-training-camp-18-days",
+    "bodySha256": "017da3016f93ea30e87fd45f7375791e0625cc72865071751476008806b14111",
+    "rawPath": "raw/nop-record-allocation-017da3016f93.html.gz",
+    "retainedSha256": "58f1806307996b5773d971169e2c35249bbe138d16f89be83a8dcd67423f917f",
+    "bytes": 98998
+  },
+  {
+    "id": "mem-vancouver-city",
+    "url": "https://council.vancouver.ca/20130312/documents/a4.pdf",
+    "capturedAt": "2026-10-20T07:00:37.118385+00:00",
+    "error": "HTTP Error 403: Forbidden"
+  },
+  {
+    "id": "phx-veterans-address",
+    "url": "https://azstatefair.com/concerts/",
+    "capturedAt": "2026-10-20T07:00:37.545112+00:00",
+    "error": "HTTP Error 403: Forbidden"
+  },
+  {
+    "id": "sea-tacoma-address",
+    "url": "https://www.tacomadome.org/dome-info/promoter/arena-information",
+    "capturedAt": "2026-10-20T07:00:37.606822+00:00",
+    "status": 200,
+    "finalUrl": "https://www.tacomadome.org/dome-info/promoter/arena-information",
+    "bodySha256": "b8ea3657bac24c60d55c03943ae3fe98311d351e73175daba8e8728298801212",
+    "rawPath": "raw/sea-tacoma-address-b8ea3657bac2.html.gz",
+    "retainedSha256": "5b2cccfc196ad0ef45571796b8e7875b296af8a3b4c020845a21c01a21e07610",
+    "bytes": 41374
+  },
+  {
+    "id": "mem-pyramid-conversion",
+    "url": "https://about.basspro.com/newsroom/press-center/bass-pro-shops-at-the-pyramid/",
+    "capturedAt": "2026-10-20T07:00:38.049063+00:00",
+    "error": "HTTP Error 403: Forbidden"
+  },
+  {
+    "id": "lac-intuit-first",
+    "url": "https://www.nba.com/news/starting-5-espn-doubleheader-oct-23",
+    "capturedAt": "2026-10-20T07:00:38.222935+00:00",
+    "status": 200,
+    "finalUrl": "https://www.nba.com/news/starting-5-espn-doubleheader-oct-23",
+    "bodySha256": "82004379475905607d1c861f9ca751ba11e23ddacae1b97ea72fa94e0f20c19f",
+    "rawPath": "raw/lac-intuit-first-820043794759.html.gz",
+    "retainedSha256": "0a733e93413f5ddaf7dc3e58c6467fdfb59b120545a147e4fafbf1d574fb7bbb",
+    "bytes": 302934
+  },
+  {
+    "id": "gsw-oakland-address",
+    "url": "https://www.theoaklandarena.com/about-oakland",
+    "capturedAt": "2026-10-20T07:03:44.165765+00:00",
+    "status": 200,
+    "finalUrl": "https://www.theoaklandarena.com/about-oakland",
+    "bodySha256": "792e840079edff4e7b40963ee67bdb53506c1f50a09d944fea8572b5e7c5736c",
+    "rawPath": "raw/gsw-oakland-address-792e840079ed.html.gz",
+    "retainedSha256": "9eb1483a2f9994194405f3e2fba6a3f789f78ccc223997db2160137c91c31524",
+    "bytes": 66118
+  },
+  {
+    "id": "sas-frost-address",
+    "url": "https://www.frostbankcenter.com/sitemap",
+    "capturedAt": "2026-10-20T07:03:44.166217+00:00",
+    "status": 200,
+    "finalUrl": "https://www.frostbankcenter.com/sitemap",
+    "bodySha256": "c6c06db112c542613b4adaea9f4cc06a07ff037eb3e1eae53b02bf9ec6e6ab08",
+    "rawPath": "raw/sas-frost-address-c6c06db112c5.html.gz",
+    "retainedSha256": "51e3b7dad2fa99197dddf785270ec2d221ccc7120e76d5629eadefee2fcf22bd",
+    "bytes": 67697
+  },
+  {
+    "id": "okc-ford-address",
+    "url": "https://www.paycomcenter.com/plan-your-visit/directions-visitor-info",
+    "capturedAt": "2026-10-20T07:03:44.653041+00:00",
+    "status": 200,
+    "finalUrl": "https://www.paycomcenter.com/plan-your-visit/directions-visitor-info",
+    "bodySha256": "575689131d190bb0f9275d6958db0b64d22fa888b4838bc29fa9c1a66f08ac4a",
+    "rawPath": "raw/okc-ford-address-575689131d19.html.gz",
+    "retainedSha256": "846c8f2cafbaecf242abfccb369c2e5fd9449c2fb4858e732c826279366d71ba",
+    "bytes": 109447
+  },
+  {
+    "id": "por-memorial-address",
+    "url": "https://www.portland.gov/bds/landmarks/events/2024/5/13/5-13-24-historic-landmarks-commission-hearing-agenda",
+    "capturedAt": "2026-10-20T07:03:44.800405+00:00",
+    "status": 200,
+    "finalUrl": "https://www.portland.gov/bds/landmarks/events/2024/5/13/5-13-24-historic-landmarks-commission-hearing-agenda",
+    "bodySha256": "5081f3da7da4b2e4926620f1f013e146ce84c5074101c3a53148fdd9dc5a5338",
+    "rawPath": "raw/por-memorial-address-5081f3da7da4.html.gz",
+    "retainedSha256": "135c6e3f66269cc0a27bd3220c692cc8c68b98e7819edcbfebd342f6bc6ae243",
+    "bytes": 59401
+  },
+  {
+    "id": "hou-summit-city",
+    "url": "https://www.houstontx.gov/council/committees/bfacommittee/3.29.10/lakewoodlewisappraisal.pdf",
+    "capturedAt": "2026-10-20T07:03:45.103267+00:00",
+    "error": "<urlopen error timed out>"
+  },
+  {
+    "id": "geonames-reunion",
+    "url": "https://www.geonames.org/4684933/reunion-arena.html",
+    "capturedAt": "2026-10-20T07:06:33.687513+00:00",
+    "status": 200,
+    "finalUrl": "https://www.geonames.org/4684933/reunion-arena.html",
+    "bodySha256": "9161defcb54159dbe6c5bc66af71393f72e1546252fd45ad918d650211fe3d22",
+    "rawPath": "raw/geonames-reunion-9161defcb541.html.gz",
+    "retainedSha256": "e19d1a091313a3263e780a9e04337e7f2f9092f5661aad3195c1edb9d5a1964f",
+    "bytes": 180279,
+    "nativeRecordLinks": [
+      [
+        "/6255149/north-america.html",
+        "North America"
+      ],
+      [
+        "/6252001/united-states.html",
+        "United States"
+      ],
+      [
+        "/4736286/texas.html",
+        "Texas"
+      ],
+      [
+        "/4684904/dallas.html",
+        "Dallas"
+      ],
+      [
+        "/4684933/dallas-reunion-arena.html",
+        "https://www.geonames.org/4684933/dallas-reunion-arena.html"
+      ],
+      [
+        "/6252001/united-states.html",
+        "United States"
+      ],
+      [
+        "/4736286/texas.html",
+        "Texas"
+      ],
+      [
+        "/4684904/dallas.html",
+        "Dallas"
+      ]
+    ],
+    "wikipediaFallback": false
+  },
+  {
+    "id": "geonames-la-sports",
+    "url": "https://www.geonames.org/5368434/los-angeles-sports-arena.html",
+    "capturedAt": "2026-10-20T07:06:33.687970+00:00",
+    "status": 200,
+    "finalUrl": "https://www.geonames.org/5368434/los-angeles-sports-arena.html",
+    "bodySha256": "630064d7551f59e33a7257929e2f42f3f5f82471e73ff3e27d1884d1165fc7ac",
+    "rawPath": "raw/geonames-la-sports-630064d7551f.html.gz",
+    "retainedSha256": "7f153f42c4ac4fd7b5cf8f66877f78bda6594c0d01f5f561cf93fbb5101aec64",
+    "bytes": 179289,
+    "nativeRecordLinks": [
+      [
+        "/6255149/north-america.html",
+        "North America"
+      ],
+      [
+        "/6252001/united-states.html",
+        "United States"
+      ],
+      [
+        "/5332921/california.html",
+        "California"
+      ],
+      [
+        "/5368381/los-angeles.html",
+        "Los Angeles"
+      ],
+      [
+        "/5368434/los-angeles-sports-arena.html",
+        "https://www.geonames.org/5368434/los-angeles-sports-arena.html"
+      ],
+      [
+        "/6252001/united-states.html",
+        "United States"
+      ],
+      [
+        "/5332921/california.html",
+        "California"
+      ],
+      [
+        "/5368381/los-angeles.html",
+        "Los Angeles"
+      ]
+    ],
+    "wikipediaFallback": false
+  },
+  {
+    "id": "geonames-search-mcnichols",
+    "url": "https://www.geonames.org/search.html?q=McNichols+Sports+Arena&country=US",
+    "capturedAt": "2026-10-20T07:06:35.195278+00:00",
+    "status": 200,
+    "finalUrl": "https://www.geonames.org/search.html?q=McNichols+Sports+Arena&country=US",
+    "bodySha256": "df5e21254d3104a54aaf3bb26b292320e63647f344849f42a19d39e416d4632b",
+    "rawPath": "raw/geonames-search-mcnichols-df5e21254d31.html.gz",
+    "retainedSha256": "b4e39effa598f06717c7749a1abbd1e89e3dd3d5f530beb792989303dadc4ff5",
+    "bytes": 13601,
+    "nativeRecordLinks": [
+      [
+        "/6341439/mcnichols-sports-arena-historical.html",
+        "McNichols Sports Arena (historical)"
+      ]
+    ],
+    "wikipediaFallback": false
+  },
+  {
+    "id": "geonames-search-metrodome",
+    "url": "https://www.geonames.org/search.html?q=Metrodome&country=US",
+    "capturedAt": "2026-10-20T07:06:35.243690+00:00",
+    "status": 200,
+    "finalUrl": "https://www.geonames.org/search.html?q=Metrodome&country=US",
+    "bodySha256": "c6b558fd1cf9041a7418cb6a1cb877fd7aef906b7afba24d9dfa02c2838d1a9c",
+    "rawPath": "raw/geonames-search-metrodome-c6b558fd1cf9.html.gz",
+    "retainedSha256": "9b203147b97b79c1e6b00df57fcfabe1ccecef2c0e135b459744b376e341fd28",
+    "bytes": 14262,
+    "nativeRecordLinks": [
+      [
+        "/5030872/hubert-h-humphrey-metrodome.html",
+        "Hubert H Humphrey Metrodome"
+      ],
+      [
+        "/9850869/holiday-inn-metrodome.html",
+        "Holiday Inn Metrodome"
+      ]
+    ],
+    "wikipediaFallback": false
+  },
+  {
+    "id": "geonames-search-arco",
+    "url": "https://www.geonames.org/search.html?q=ARCO+Arena&country=US",
+    "capturedAt": "2026-10-20T07:06:36.291051+00:00",
+    "status": 200,
+    "finalUrl": "https://www.geonames.org/search.html?q=ARCO+Arena&country=US",
+    "bodySha256": "8bb7dc153bbd219408e6cabbb602abafe8b7668fd43c7d6411139c7dd538570f",
+    "rawPath": "raw/geonames-search-arco-8bb7dc153bbd.html.gz",
+    "retainedSha256": "9eb76aeed0d63e74ab3597ca6bd1adbe85e67e8ca5c8577871637b7be41a5d73",
+    "bytes": 13481,
+    "nativeRecordLinks": [
+      [
+        "/5324523/arco-arena.html",
+        "Arco Arena"
+      ]
+    ],
+    "wikipediaFallback": false
+  },
+  {
+    "id": "geonames-search-saltpalace",
+    "url": "https://www.geonames.org/search.html?q=Salt+Palace&country=US",
+    "capturedAt": "2026-10-20T07:06:36.321700+00:00",
+    "status": 200,
+    "finalUrl": "https://www.geonames.org/search.html?q=Salt+Palace&country=US",
+    "bodySha256": "41915c46def0710e1d02d4e3e7a7a2653f5e0403da9262d90653d74ca124ee94",
+    "rawPath": "raw/geonames-search-saltpalace-41915c46def0.html.gz",
+    "retainedSha256": "a7a76ae3ddfd80206a816f6ba5b4bc0c7157385b55e16fa1483e7ec5556810c1",
+    "bytes": 13525,
+    "nativeRecordLinks": [
+      [
+        "/7185088/salt-palace-convention-center.html",
+        "Salt Palace Convention Center"
+      ]
+    ],
+    "wikipediaFallback": false
+  },
+  {
+    "id": "geonames-mcnichols",
+    "url": "https://www.geonames.org/6341439/mcnichols-sports-arena-historical.html",
+    "capturedAt": "2026-10-20T07:07:36.534017+00:00",
+    "status": 200,
+    "finalUrl": "https://www.geonames.org/6341439/mcnichols-sports-arena-historical.html",
+    "bodySha256": "eab2e1be64ab058ce44b00b1916d71b4a403c0305c70e2f9b2c66908c69c3675",
+    "rawPath": "raw/geonames-mcnichols-eab2e1be64ab.html.gz",
+    "retainedSha256": "c9d8bac756b383716dc969c34f33b97b77fafa93d0099fb2757b7642f1795220",
+    "bytes": 182416,
+    "jsonld": [
+      {
+        "@context": "https://schema.org",
+        "@type": "Place",
+        "name": "McNichols Sports Arena (historical)",
+        "description": "McNichols Sports Arena (historical) (Building(s)). Located in North America, United States, Colorado, Denver, McNichols Sports Arena (historical). Coordinates 39.7428, -105.0228.",
+        "geo": {
+          "@type": "GeoCoordinates",
+          "latitude": 39.74278,
+          "longitude": -105.02278
+        }
+      }
+    ]
+  },
+  {
+    "id": "geonames-metrodome",
+    "url": "https://www.geonames.org/5030872/hubert-h-humphrey-metrodome.html",
+    "capturedAt": "2026-10-20T07:07:36.534465+00:00",
+    "status": 200,
+    "finalUrl": "https://www.geonames.org/5030872/hubert-h-humphrey-metrodome.html",
+    "bodySha256": "f7f693083b8863b42835a8bfd31667a08b6b5bd57469770daedb962fcf5823b6",
+    "rawPath": "raw/geonames-metrodome-f7f693083b88.html.gz",
+    "retainedSha256": "4e6c89a60d0c09e201e25ab0a0980a88f92c675b1d973e7e95808467bb9dff49",
+    "bytes": 199797,
+    "jsonld": [
+      {
+        "@context": "https://schema.org",
+        "@type": "Place",
+        "name": "Hubert H Humphrey Metrodome",
+        "description": "Hubert H Humphrey Metrodome (Stadium). Located in North America, United States, Minnesota, Hennepin, City of Minneapolis, Hubert H Humphrey Metrodome. Coordinates 44.9738, -93.2580.",
+        "geo": {
+          "@type": "GeoCoordinates",
+          "latitude": 44.97385,
+          "longitude": -93.258
+        }
+      }
+    ]
+  },
+  {
+    "id": "geonames-arco",
+    "url": "https://www.geonames.org/5324523/arco-arena.html",
+    "capturedAt": "2026-10-20T07:07:38.131635+00:00",
+    "status": 200,
+    "finalUrl": "https://www.geonames.org/5324523/arco-arena.html",
+    "bodySha256": "0610f2efefb0937a20ab84979eb2d03e356c207dfd829d02dc9929f1b5cd5bdb",
+    "rawPath": "raw/geonames-arco-0610f2efefb0.html.gz",
+    "retainedSha256": "10fb9faa006cdb6302eddde2a3bbd0a75090c3bd5e0783ece118317c2774f8c3",
+    "bytes": 181100,
+    "jsonld": [
+      {
+        "@context": "https://schema.org",
+        "@type": "Place",
+        "name": "Arco Arena",
+        "description": "Arco Arena (Building(s)). Located in North America, United States, California, Sacramento, Arco Arena. Coordinates 38.6491, -121.5233.",
+        "geo": {
+          "@type": "GeoCoordinates",
+          "latitude": 38.64907,
+          "longitude": -121.52329
+        }
+      }
+    ]
+  },
+  {
+    "id": "la-sports-city",
+    "url": "https://cityclerk.lacity.org/onlinedocs/2015/15-1541_misc_12-22-15.pdf",
+    "capturedAt": "2026-10-20T07:07:38.140596+00:00",
+    "status": 200,
+    "finalUrl": "https://cityclerk.lacity.org/onlinedocs/2015/15-1541_misc_12-22-15.pdf",
+    "bodySha256": "82800c8326f527512677a5b6db28394bcd5fd141d6d6fe0e49c8f0e7a5258f66",
+    "rawPath": "raw/la-sports-city-82800c8326f5.pdf",
+    "retainedSha256": "82800c8326f527512677a5b6db28394bcd5fd141d6d6fe0e49c8f0e7a5258f66",
+    "bytes": 859823
+  },
+  {
+    "id": "min-metrodome-state-map",
+    "url": "https://www.lrl.mn.gov/docs/2012/other/121240.pdf",
+    "capturedAt": "2026-10-20T07:07:39.572264+00:00",
+    "status": 200,
+    "finalUrl": "https://www.lrl.mn.gov/docs/2012/other/121240.pdf",
+    "bodySha256": "2c501f300f0d526caa73d6f658a23b49bcb4adb876b2f527ec54f359c644d9f0",
+    "rawPath": "raw/min-metrodome-state-map-2c501f300f0d.pdf",
+    "retainedSha256": "2c501f300f0d526caa73d6f658a23b49bcb4adb876b2f527ec54f359c644d9f0",
+    "bytes": 26201448
+  },
+  {
+    "id": "dal-reunion-city-address",
+    "url": "https://citysecretary2.dallascityhall.com/pdf/CC2009/ag081209.pdf",
+    "capturedAt": "2026-10-20T07:12:46.426846+00:00",
+    "status": 200,
+    "finalUrl": "https://citysecretary2.dallascityhall.com/pdf/CC2009/ag081209.pdf",
+    "bodySha256": "6f2f29c4c4c0ad4613448e91cf47f10c6f02884c217caa8ed7faa45757068ce3",
+    "rawPath": "raw/dal-reunion-city-address-6f2f29c4c4c0.pdf",
+    "retainedSha256": "6f2f29c4c4c0ad4613448e91cf47f10c6f02884c217caa8ed7faa45757068ce3",
+    "bytes": 342076
+  },
+  {
+    "id": "dal-reunion-city-history",
+    "url": "https://dallascityhall.com/government/citysecretary/archives/Pages/Archives_2014-001.aspx",
+    "capturedAt": "2026-10-20T07:12:46.427314+00:00",
+    "status": 200,
+    "finalUrl": "https://dallascityhall.com/government/citysecretary/archives/Pages/Archives_2014-001.aspx",
+    "bodySha256": "672c58b9157e8082f35cb458b77f381b0daa61f17ef94094e462770ff988d868",
+    "rawPath": "raw/dal-reunion-city-history-672c58b9157e.html.gz",
+    "retainedSha256": "452b129462ee85883cf87f82c382a5bb8c8422ab6aa979319a88c29efb85ef15",
+    "bytes": 96292
+  },
+  {
+    "id": "den-mcnichols-city-plan",
+    "url": "https://www.denvergov.org/content/dam/denvergov/Portals/646/documents/planning/Plans/West_Colfax_Neighborhood_Plan.pdf",
+    "capturedAt": "2026-10-20T07:17:20.478073+00:00",
+    "status": 200,
+    "finalUrl": "https://www.denvergov.org/content/dam/denvergov/Portals/646/documents/planning/Plans/West_Colfax_Neighborhood_Plan.pdf",
+    "bodySha256": "1013f2a3b9744228866f1a396f6e80f5c33cec5f753d3e80f070b9fbdfba38a5",
+    "rawPath": "raw/den-mcnichols-city-plan-1013f2a3b974.html.gz",
+    "retainedSha256": "8a11db414fe9664077d645b4363aaed49430c08090e1b1b83e8b4c7085a160b8",
+    "bytes": 537
+  },
+  {
+    "id": "sac-arco1-dca-history",
+    "url": "https://thedcapage.blog/2017/04/28/dca-daughters-and-sons-discover-the-working-world/",
+    "capturedAt": "2026-10-20T07:17:20.478538+00:00",
+    "status": 200,
+    "finalUrl": "https://thedcapage.blog/2017/04/28/dca-daughters-and-sons-discover-the-working-world/",
+    "bodySha256": "a7b5c09af358d68cdbcc1c22782c01fffde0892282fc6f5788c7af479df86ada",
+    "rawPath": "raw/sac-arco1-dca-history-a7b5c09af358.html.gz",
+    "retainedSha256": "91340c28c2bc5cf0d70fe149f08ae28bf4f3fd0f0295591aed37fd3ac5da65f4",
+    "bytes": 221579
+  },
+  {
+    "id": "sac-arco1-dca-address",
+    "url": "https://solid.dca.ca.gov/about_us/directions.html",
+    "capturedAt": "2026-10-20T07:17:21.177478+00:00",
+    "status": 200,
+    "finalUrl": "https://www.dca.ca.gov/",
+    "bodySha256": "a0cb96aa566d2cab5f9a5d061892e1b9239b86ebc9f57b73bb451a8a6cee20d4",
+    "rawPath": "raw/sac-arco1-dca-address-a0cb96aa566d.html.gz",
+    "retainedSha256": "26ab851f252313759d662e1e3dee021bc3e52db4286a6b84eb18279c25e9660b",
+    "bytes": 27178
+  },
+  {
+    "id": "sac-arco2-city-contract",
+    "url": "https://records.cityofsacramento.org/BasicSearch.aspx?SearchText=Kings+Arena",
+    "capturedAt": "2026-10-20T07:17:21.928217+00:00",
+    "error": "<urlopen error timed out>"
+  }
+]

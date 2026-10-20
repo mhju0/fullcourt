@@ -1,0 +1,139 @@
+[
+  {
+    "arenaId": "dal-reunion",
+    "status": "accepted mapped historical facility estimate",
+    "provider": "GeoNames native named feature record",
+    "name": "Dallas Reunion Arena",
+    "latitude": 32.77263,
+    "longitude": -96.80833,
+    "url": "https://www.geonames.org/4684933/reunion-arena.html",
+    "bodySha256": "9161defcb54159dbe6c5bc66af71393f72e1546252fd45ad918d650211fe3d22",
+    "rawPath": "raw/geonames-reunion-9161defcb541.html.gz",
+    "primaryBridges": [
+      {
+        "id": "dal-reunion-city-address",
+        "url": "https://citysecretary2.dallascityhall.com/pdf/CC2009/ag081209.pdf",
+        "rawPath": "raw/dal-reunion-city-address-6f2f29c4c4c0.pdf",
+        "bodySha256": "6f2f29c4c4c0ad4613448e91cf47f10c6f02884c217caa8ed7faa45757068ce3",
+        "error": null
+      },
+      {
+        "id": "dal-reunion-city-history",
+        "url": "https://dallascityhall.com/government/citysecretary/archives/Pages/Archives_2014-001.aspx",
+        "rawPath": "raw/dal-reunion-city-history-672c58b9157e.html.gz",
+        "bodySha256": "672c58b9157e8082f35cb458b77f381b0daa61f17ef94094e462770ff988d868",
+        "error": null
+      }
+    ],
+    "pointType": "original historical facility point published by geospatial provider; not surveyed basketball-court centroid",
+    "precisionNote": "Exact published coordinate digits retained; provider authoring accuracy not independently established."
+  },
+  {
+    "arenaId": "lac-sports",
+    "status": "accepted mapped historical facility estimate",
+    "provider": "GeoNames native named feature record",
+    "name": "Los Angeles Sports Arena",
+    "latitude": 34.01279,
+    "longitude": -118.2848,
+    "url": "https://www.geonames.org/5368434/los-angeles-sports-arena.html",
+    "bodySha256": "630064d7551f59e33a7257929e2f42f3f5f82471e73ff3e27d1884d1165fc7ac",
+    "rawPath": "raw/geonames-la-sports-630064d7551f.html.gz",
+    "primaryBridges": [
+      {
+        "id": "la-sports-city",
+        "url": "https://cityclerk.lacity.org/onlinedocs/2015/15-1541_misc_12-22-15.pdf",
+        "rawPath": "raw/la-sports-city-82800c8326f5.pdf",
+        "bodySha256": "82800c8326f527512677a5b6db28394bcd5fd141d6d6fe0e49c8f0e7a5258f66",
+        "error": null
+      }
+    ],
+    "pointType": "original historical facility point published by geospatial provider; not surveyed basketball-court centroid",
+    "precisionNote": "Exact published coordinate digits retained; provider authoring accuracy not independently established."
+  },
+  {
+    "arenaId": "min-metrodome",
+    "status": "accepted mapped historical facility estimate",
+    "provider": "GeoNames native named feature record",
+    "name": "Hubert H Humphrey Metrodome",
+    "latitude": 44.97385,
+    "longitude": -93.258,
+    "url": "https://www.geonames.org/5030872/hubert-h-humphrey-metrodome.html",
+    "bodySha256": "f7f693083b8863b42835a8bfd31667a08b6b5bd57469770daedb962fcf5823b6",
+    "rawPath": "raw/geonames-metrodome-f7f693083b88.html.gz",
+    "primaryBridges": [
+      {
+        "id": "min-metrodome-state-map",
+        "url": "https://www.lrl.mn.gov/docs/2012/other/121240.pdf",
+        "rawPath": "raw/min-metrodome-state-map-2c501f300f0d.pdf",
+        "bodySha256": "2c501f300f0d526caa73d6f658a23b49bcb4adb876b2f527ec54f359c644d9f0",
+        "error": null
+      },
+      {
+        "id": "min-guide",
+        "url": "https://cdn.wolveslynx.com/timberwolves/communications/guides/2020-21_Wolves-MediaGuide.pdf",
+        "rawPath": "raw/min-guide-ac89b1241bf2.pdf",
+        "bodySha256": "ac89b1241bf211c9ebed75c56a60f19a0e12c3aca516e827d960a596bf64568f",
+        "error": null
+      }
+    ],
+    "pointType": "original historical facility point published by geospatial provider; not surveyed basketball-court centroid",
+    "precisionNote": "Exact published coordinate digits retained; provider authoring accuracy not independently established."
+  },
+  {
+    "arenaId": "den-mcnichols",
+    "status": "accepted mapped historical facility estimate",
+    "provider": "GeoNames native named feature record",
+    "name": "McNichols Sports Arena (historical)",
+    "latitude": 39.74278,
+    "longitude": -105.02278,
+    "url": "https://www.geonames.org/6341439/mcnichols-sports-arena-historical.html",
+    "bodySha256": "eab2e1be64ab058ce44b00b1916d71b4a403c0305c70e2f9b2c66908c69c3675",
+    "rawPath": "raw/geonames-mcnichols-eab2e1be64ab.html.gz",
+    "primaryBridges": [
+      {
+        "id": "den-guide",
+        "url": "https://cdn.nba.com/teams/uploads/sites/1610612743/2025/10/2025-26-Denver-Nuggets-Media-Guide.pdf",
+        "rawPath": "raw/den-guide-59f5e565ae57.pdf",
+        "bodySha256": "59f5e565ae57f46f3b76ec5749d9e6a9959cded6024c7d0409da19403782b00a",
+        "error": null
+      },
+      {
+        "id": "usgs-denver-west-1983",
+        "url": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Maps/HistoricalTopo/PDF/CO/100000/CO_Denver%20West_403028_1983_100000_geo.pdf",
+        "rawPath": "raw/tnm-den-1983-a850c76e6941.pdf",
+        "bodySha256": "a850c76e694157f793dc1656b2962817544b5cb1b350bf0be922151ae81bd3ec",
+        "evidence": "den-1983-geonames-comparison.json + raw/den-1983-comparison-overlay.png; explicitdatum/projectiontransform and4cornercontrols; GeoNamespointonhistoricovalfootprint."
+      }
+    ],
+    "pointType": "original historical facility point published by geospatial provider; not surveyed basketball-court centroid",
+    "precisionNote": "Exact published coordinate digits retained; provider authoring accuracy not independently established."
+  },
+  {
+    "arenaId": "sac-arco2",
+    "status": "rejected \u2014 point about450mwest of originalGoogle/HIFLD arena location",
+    "provider": "GeoNames native named feature record",
+    "name": "Arco Arena",
+    "latitude": 38.64907,
+    "longitude": -121.52329,
+    "url": "https://www.geonames.org/5324523/arco-arena.html",
+    "bodySha256": "0610f2efefb0937a20ab84979eb2d03e356c207dfd829d02dc9929f1b5cd5bdb",
+    "rawPath": "raw/geonames-arco-0610f2efefb0.html.gz",
+    "primaryBridges": [],
+    "pointType": "original historical facility point published by geospatial provider; not surveyed basketball-court centroid",
+    "precisionNote": "Exact published coordinate digits retained; provider authoring accuracy not independently established."
+  },
+  {
+    "arenaId": "sac-arco1",
+    "status": "rejected \u2014 same-name record is not original MarketStreet arena proof",
+    "provider": "GeoNames native named feature record",
+    "name": "Arco Arena",
+    "latitude": 38.64907,
+    "longitude": -121.52329,
+    "url": "https://www.geonames.org/5324523/arco-arena.html",
+    "bodySha256": "0610f2efefb0937a20ab84979eb2d03e356c207dfd829d02dc9929f1b5cd5bdb",
+    "rawPath": "raw/geonames-arco-0610f2efefb0.html.gz",
+    "primaryBridges": [],
+    "pointType": "original historical facility point published by geospatial provider; not surveyed basketball-court centroid",
+    "precisionNote": "Exact published coordinate digits retained; provider authoring accuracy not independently established."
+  }
+]

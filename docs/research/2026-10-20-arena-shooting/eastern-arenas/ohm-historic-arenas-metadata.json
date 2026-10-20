@@ -1,0 +1,6 @@
+{
+  "url": "https://overpass-api.openhistoricalmap.org/api/interpreter?data=%5Bout%3Ajson%5D%5Btimeout%3A40%5D%3Bnwr%5B%22name%22~%22Omni%7CCharlotte+Coliseum%7CChicago+Stadium%7CRichfield%7CSilverdome%7CPalace+of+Auburn%7CMarket+Square+Arena%7CMiami+Arena%7CBradley+Center%7CAmway+Arena%7CCoreStates+Spectrum%7CCapital+Centre%7CGeorgia+Dome%22%5D%3Bout+geom%3B",
+  "query": "[out:json][timeout:40];nwr[\"name\"~\"Omni|Charlotte Coliseum|Chicago Stadium|Richfield|Silverdome|Palace of Auburn|Market Square Arena|Miami Arena|Bradley Center|Amway Arena|CoreStates Spectrum|Capital Centre|Georgia Dome\"];out geom;",
+  "httpStatus": 200,
+  "bodySha256": "f5097cf26fa3b17e19d09fe80032e48f856f2fc6349b2e69848447acf2982ae6"
+}

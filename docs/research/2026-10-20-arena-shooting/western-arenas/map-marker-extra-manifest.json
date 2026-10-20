@@ -1,0 +1,186 @@
+[
+  {
+    "key": "gsw-oakland-short",
+    "query": "Oakland Arena",
+    "url": "https://www.google.com/maps?q=Oakland+Arena&output=embed&hl=en",
+    "capturedAt": "2026-10-20T06:57:36.192352+00:00",
+    "status": "unreviewed-mapping-provider-response",
+    "httpStatus": 200,
+    "finalUrl": "https://www.google.com/maps/embed?origin=mfe&pb=!1m2!2m1!1sOakland+Arena!3m1!1sen!5m1!1sen",
+    "bodySha256": "a66fdb9bd2b718e8fa39e8b5df7323f92ea153088c87ecabd3a9ecf430b4aad0",
+    "rawPath": "raw/marker-gsw-oakland-short-a66fdb9bd2b718e8fa39e8b5df7323f92ea153088c87ecabd3a9ecf430b4aad0.html.gz",
+    "namedPlaceMarkers": [
+      {
+        "providerPlaceId": "0x808f85c378abe8b1:0x6497349cedd00de4",
+        "nameAddress": "Oakland Arena, 7000 S Coliseum Wy, Oakland, CA 94621, United States",
+        "latitude": 37.750338,
+        "longitude": -122.203049,
+        "providerCid": "7248319973885480420"
+      }
+    ]
+  },
+  {
+    "key": "mem-pyramid-current",
+    "query": "Bass Pro Shops at the Pyramid Memphis",
+    "url": "https://www.google.com/maps?q=Bass+Pro+Shops+at+the+Pyramid+Memphis&output=embed&hl=en",
+    "capturedAt": "2026-10-20T06:57:36.697605+00:00",
+    "status": "unreviewed-mapping-provider-response",
+    "httpStatus": 200,
+    "finalUrl": "https://www.google.com/maps/embed?origin=mfe&pb=!1m2!2m1!1sBass+Pro+Shops+at+the+Pyramid+Memphis!3m1!1sen!5m1!1sen",
+    "bodySha256": "3197ffdb930c0d10d297a6f3eb619c09f110f16b218bd4b98cd3a3ce535f436f",
+    "rawPath": "raw/marker-mem-pyramid-current-3197ffdb930c0d10d297a6f3eb619c09f110f16b218bd4b98cd3a3ce535f436f.html.gz",
+    "namedPlaceMarkers": [
+      {
+        "providerPlaceId": "0x87d57fb0a736a201:0xd12514b55e244afc",
+        "nameAddress": "Bass Pro Shops at the Pyramid, 1 Bass Pro Dr, Memphis, TN 38105, United States",
+        "latitude": 35.155113,
+        "longitude": -90.052262,
+        "providerCid": "15070474497266305788"
+      }
+    ]
+  },
+  {
+    "key": "nop-neworleans-short",
+    "query": "Smoothie King Center New Orleans",
+    "url": "https://www.google.com/maps?q=Smoothie+King+Center+New+Orleans&output=embed&hl=en",
+    "capturedAt": "2026-10-20T06:57:37.193293+00:00",
+    "status": "unreviewed-mapping-provider-response",
+    "httpStatus": 200,
+    "finalUrl": "https://www.google.com/maps/embed?origin=mfe&pb=!1m2!2m1!1sSmoothie+King+Center+New+Orleans!3m1!1sen!5m1!1sen",
+    "bodySha256": "628c8b431fce31506209b2d5fbb3b5ef68c22de2020e4c62bf90acdca98ba0e2",
+    "rawPath": "raw/marker-nop-neworleans-short-628c8b431fce31506209b2d5fbb3b5ef68c22de2020e4c62bf90acdca98ba0e2.html.gz",
+    "namedPlaceMarkers": [
+      {
+        "providerPlaceId": "0x8620a5dddbc5a271:0x5572ede5e0a7ea6f",
+        "nameAddress": "Smoothie King Center, 1501 Dave Dixon Dr Spc 101-102, New Orleans, LA 70113, United States",
+        "latitude": 29.9490351,
+        "longitude": -90.08205679999999,
+        "providerCid": "6157245212141283951"
+      }
+    ]
+  },
+  {
+    "key": "por-rose-short",
+    "query": "Moda Center Portland",
+    "url": "https://www.google.com/maps?q=Moda+Center+Portland&output=embed&hl=en",
+    "capturedAt": "2026-10-20T06:57:37.692736+00:00",
+    "status": "unreviewed-mapping-provider-response",
+    "httpStatus": 200,
+    "finalUrl": "https://www.google.com/maps/embed?origin=mfe&pb=!1m2!2m1!1sModa+Center+Portland!3m1!1sen!5m1!1sen",
+    "bodySha256": "73944c8ebae6b5f99e8487666820138eee2c56587ac0eb51c72c57431ae406e4",
+    "rawPath": "raw/marker-por-rose-short-73944c8ebae6b5f99e8487666820138eee2c56587ac0eb51c72c57431ae406e4.html.gz",
+    "namedPlaceMarkers": [
+      {
+        "providerPlaceId": "0x5495a752d90af2bd:0xac4da428b0c0c9a7",
+        "nameAddress": "Moda Center, 1 N Center Ct St, Portland, OR 97227, United States",
+        "latitude": 45.53156509999999,
+        "longitude": -122.6668423,
+        "providerCid": "12415760242401397159"
+      }
+    ]
+  },
+  {
+    "key": "sac-golden1-short",
+    "query": "Golden 1 Center Sacramento",
+    "url": "https://www.google.com/maps?q=Golden+1+Center+Sacramento&output=embed&hl=en",
+    "capturedAt": "2026-10-20T06:57:38.197409+00:00",
+    "status": "unreviewed-mapping-provider-response",
+    "httpStatus": 200,
+    "finalUrl": "https://www.google.com/maps/embed?origin=mfe&pb=!1m2!2m1!1sGolden+1+Center+Sacramento!3m1!1sen!5m1!1sen",
+    "bodySha256": "e10f6e72f098d4d2884e897aeb7e36fbe99c3527101f9a1c356d720ffaec149e",
+    "rawPath": "raw/marker-sac-golden1-short-e10f6e72f098d4d2884e897aeb7e36fbe99c3527101f9a1c356d720ffaec149e.html.gz",
+    "namedPlaceMarkers": []
+  },
+  {
+    "key": "dal-reunion-short",
+    "query": "Reunion Arena Dallas demolished",
+    "url": "https://www.google.com/maps?q=Reunion+Arena+Dallas+demolished&output=embed&hl=en",
+    "capturedAt": "2026-10-20T06:57:38.696219+00:00",
+    "status": "unreviewed-mapping-provider-response",
+    "httpStatus": 200,
+    "finalUrl": "https://www.google.com/maps/embed?origin=mfe&pb=!1m2!2m1!1sReunion+Arena+Dallas+demolished!3m1!1sen!5m1!1sen",
+    "bodySha256": "a69488771353359aca479ade17eeab2b7a33e85a4f61ae8ee2cdfb8580ace5ba",
+    "rawPath": "raw/marker-dal-reunion-short-a69488771353359aca479ade17eeab2b7a33e85a4f61ae8ee2cdfb8580ace5ba.html.gz",
+    "namedPlaceMarkers": [
+      {
+        "providerPlaceId": "0x864e99116b2c3859:0x728e41ea14ec0c4d",
+        "nameAddress": "Reunion Arena H-Lot, 525 S Houston St, Dallas, TX 75202, United States",
+        "latitude": 32.7743086,
+        "longitude": -96.8069831,
+        "providerCid": "8254607640645864525"
+      }
+    ]
+  },
+  {
+    "key": "lac-sports-historic",
+    "query": "Los Angeles Memorial Sports Arena demolished",
+    "url": "https://www.google.com/maps?q=Los+Angeles+Memorial+Sports+Arena+demolished&output=embed&hl=en",
+    "capturedAt": "2026-10-20T06:57:39.198670+00:00",
+    "status": "unreviewed-mapping-provider-response",
+    "httpStatus": 200,
+    "finalUrl": "https://www.google.com/maps/embed?origin=mfe&pb=!1m2!2m1!1sLos+Angeles+Memorial+Sports+Arena+demolished!3m1!1sen!5m1!1sen",
+    "bodySha256": "12b7c68972a2a25e49fdbcc0d95e1245ff5bd78c432bede2a677373469fe2070",
+    "rawPath": "raw/marker-lac-sports-historic-12b7c68972a2a25e49fdbcc0d95e1245ff5bd78c432bede2a677373469fe2070.html.gz",
+    "namedPlaceMarkers": [
+      {
+        "providerPlaceId": "0x80c2c807d74e67fb:0x54cf0a70d5943d36",
+        "nameAddress": "LA Memorial Coliseum, 3911 S Figueroa St, Los Angeles, CA 90037, United States",
+        "latitude": 34.0136647,
+        "longitude": -118.2878355,
+        "providerCid": "6111114699100929334"
+      }
+    ]
+  },
+  {
+    "key": "min-metrodome-historic",
+    "query": "Hubert H Humphrey Metrodome Minneapolis demolished",
+    "url": "https://www.google.com/maps?q=Hubert+H+Humphrey+Metrodome+Minneapolis+demolished&output=embed&hl=en",
+    "capturedAt": "2026-10-20T06:57:39.697417+00:00",
+    "status": "unreviewed-mapping-provider-response",
+    "httpStatus": 200,
+    "finalUrl": "https://www.google.com/maps/embed?origin=mfe&pb=!1m2!2m1!1sHubert+H+Humphrey+Metrodome+Minneapolis+demolished!3m1!1sen!5m1!1sen",
+    "bodySha256": "2b1f861bd3921beb9371efdb9c1dfb531adf4bd5e194812c580686e4d1009c32",
+    "rawPath": "raw/marker-min-metrodome-historic-2b1f861bd3921beb9371efdb9c1dfb531adf4bd5e194812c580686e4d1009c32.html.gz",
+    "namedPlaceMarkers": []
+  },
+  {
+    "key": "sac-arco1-historic",
+    "query": "Original Arco Arena 1625 North Market Sacramento",
+    "url": "https://www.google.com/maps?q=Original+Arco+Arena+1625+North+Market+Sacramento&output=embed&hl=en",
+    "capturedAt": "2026-10-20T06:57:40.195764+00:00",
+    "status": "unreviewed-mapping-provider-response",
+    "httpStatus": 200,
+    "finalUrl": "https://www.google.com/maps/embed?origin=mfe&pb=!1m2!2m1!1sOriginal+Arco+Arena+1625+North+Market+Sacramento!3m1!1sen!5m1!1sen",
+    "bodySha256": "ec37bfea4f49bf7b2b8c70cc33475c335e908a4abc95a123e6841267a15af64a",
+    "rawPath": "raw/marker-sac-arco1-historic-ec37bfea4f49bf7b2b8c70cc33475c335e908a4abc95a123e6841267a15af64a.html.gz",
+    "namedPlaceMarkers": [
+      {
+        "providerPlaceId": "0x809ad7001c9d68f5:0xc377e8c5e8941863",
+        "nameAddress": "ARCO Arena, 1 Sports Pkwy, Sacramento, CA 95834, United States",
+        "latitude": 38.6490987,
+        "longitude": -121.5181319,
+        "providerCid": "14084982296332736611"
+      }
+    ]
+  },
+  {
+    "key": "uta-saltpalace-historic",
+    "query": "Salt Palace Arena demolished Salt Lake City",
+    "url": "https://www.google.com/maps?q=Salt+Palace+Arena+demolished+Salt+Lake+City&output=embed&hl=en",
+    "capturedAt": "2026-10-20T06:57:40.697401+00:00",
+    "status": "unreviewed-mapping-provider-response",
+    "httpStatus": 200,
+    "finalUrl": "https://www.google.com/maps/embed?origin=mfe&pb=!1m2!2m1!1sSalt+Palace+Arena+demolished+Salt+Lake+City!3m1!1sen!5m1!1sen",
+    "bodySha256": "ae7478a628716a0950cc794dfe2cdbc013d556a509a5512591ee945903503ef2",
+    "rawPath": "raw/marker-uta-saltpalace-historic-ae7478a628716a0950cc794dfe2cdbc013d556a509a5512591ee945903503ef2.html.gz",
+    "namedPlaceMarkers": [
+      {
+        "providerPlaceId": "0x8752f50674b2cb45:0x8825a80f25bb4f38",
+        "nameAddress": "Salt Palace Convention Center, 100 S W Temple St, Salt Lake City, UT 84101, United States",
+        "latitude": 40.7678827,
+        "longitude": -111.8961461,
+        "providerCid": "9810432146307501880"
+      }
+    ]
+  }
+]

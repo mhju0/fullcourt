@@ -1,0 +1,5 @@
+{
+  "url": "https://overpass-api.de/api/interpreter?data=%5Bout%3Ajson%5D%5Btimeout%3A25%5D%5Bdate%3A%222007-12-01T00%3A00%3A00Z%22%5D%3Bnwr%5B%22name%22~%22Arena%7CMiami%22%5D%2825.777%2C-80.198%2C25.788%2C-80.190%29%3Bout+geom%3B",
+  "query": "[out:json][timeout:25][date:\"2007-12-01T00:00:00Z\"];nwr[\"name\"~\"Arena|Miami\"](25.777,-80.198,25.788,-80.190);out geom;",
+  "error": "HTTP Error 502: Bad Gateway"
+}

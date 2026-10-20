@@ -1,0 +1,238 @@
+{
+  "schemaVersion": 1,
+  "researchedAt": "2026-10-20",
+  "scope": "Research supplement only; root owns acceptance, coordinates and canonical fixture register. No database writes.",
+  "coordinateClaims": false,
+  "sources": [
+    {
+      "id": "las-vegas-match",
+      "url": "https://www.latimes.com/archives/la-xpm-1992-05-04-sp-907-story.html",
+      "kind": "contemporary_staff_match_report",
+      "retainedPath": "docs/audit/arena-shooting-correction/alternate-venues/supplemental/lat-lakers-thomas-mack-19920504.raw.gz",
+      "sha256DecodedBytes": "abb97ed0fa24b913c0d064b8601c46d714071da160c472cf6ce6d2a38d0dffee",
+      "quote": "Nevada Las Vegas’ Thomas & Mack Center."
+    },
+    {
+      "id": "november-tacoma-city",
+      "url": "https://www.latimes.com/archives/la-xpm-1990-11-11-sp-6134-story.html",
+      "kind": "contemporary_staff_match_report",
+      "retainedPath": "docs/audit/arena-shooting-correction/alternate-venues/supplemental/lat-warriors-tacoma-19901111.raw.gz",
+      "sha256DecodedBytes": "9f8cd0763f084fc72e8aa8ac23e011d701bee4904a0e00f3e2117561917e7a91",
+      "quote": "playing a home game at Tacoma"
+    },
+    {
+      "id": "march-tacoma-dome",
+      "url": "https://newspapers.swco.ttu.edu/bitstreams/841e9688-25b5-4014-b129-1cc03f9a0be7/download",
+      "kind": "contemporary_ap_match_report",
+      "retainedPath": "docs/audit/arena-shooting-correction/alternate-venues/supplemental/ap-big-spring-blazers-19910328.pdf",
+      "sha256DecodedBytes": "4b69328c2f36de0e8e34dec48c63d40931abb872325b89820a7ce3e5293604d8",
+      "quote": "playing the second of three games at the Tacoma Dome",
+      "locator": "PDF page 12 / printed 2-B"
+    },
+    {
+      "id": "april-tacoma-dome",
+      "url": "https://www.latimes.com/archives/la-xpm-1991-04-11-sp-38-story.html",
+      "kind": "contemporary_ap_match_report",
+      "retainedPath": "docs/audit/arena-shooting-correction/alternate-venues/supplemental/ap-clippers-tacoma-19910411.raw.gz",
+      "sha256DecodedBytes": "bb67e6a25cf43b453aa33327bbd72eaa8fb008d79b4bfcdce996ca452a022891",
+      "quote": "Wednesday night at the Tacoma Dome."
+    },
+    {
+      "id": "wizards-guide",
+      "url": "https://library.sfo2.cdn.digitaloceanspaces.com/publications/basketball/yearbooks/KWASBMG-2015.pdf",
+      "kind": "team_authored_media_guide_library_mirror",
+      "retainedPath": "docs/audit/arena-shooting-correction/alternate-venues/supplemental/wizards-2015-media-guide.pdf",
+      "sha256DecodedBytes": "2ac53f772394df20ec04e903afe2b03b47fec95fddf95445fa7e186e671b25a3",
+      "quote": "Dec.26 Detroit (B) 97-99",
+      "locator": "PDF page 165 / printed 176",
+      "legendQuote": "(B) Baltimore Arena"
+    },
+    {
+      "id": "baltimore-conflicting-photo",
+      "url": "https://www.gettyimages.co.nz/detail/news-photo/dennis-rodman-of-the-detroit-pistons-dribbles-up-court-news-photo/1291717294",
+      "kind": "contemporary_photographer_metadata",
+      "retainedPath": "docs/audit/arena-shooting-correction/alternate-venues/supplemental/getty-bullets-conflict-19921226.raw.gz",
+      "sha256DecodedBytes": "1f4eb00ccda8bde0cff78839150437e2bc086cb3183a9cf52a2882a28e0743f0"
+    },
+    {
+      "id": "clippers-guide",
+      "url": "https://library.sfo2.cdn.digitaloceanspaces.com/publications/basketball/yearbooks/KLACLMG-2016.pdf",
+      "kind": "team_authored_media_guide_library_mirror",
+      "retainedPath": "docs/audit/arena-shooting-correction/alternate-venues/supplemental/clippers-2016-media-guide.pdf",
+      "sha256DecodedBytes": "6daca07d5a9f4e0acbb00e2ba331f0efbad54d5a75e1b8ccac2c4f67e92c72ae",
+      "locator": "PDF page 138; January 27, 1994 timeline entry and preceding arena naming entry"
+    },
+    {
+      "id": "hamilton-afp-photo",
+      "url": "https://www.gettyimages.com.mx/detail/fotograf%C3%ADa-de-noticias/toronto-raptor-marcus-camby-tries-to-block-new-fotograf%C3%ADa-de-noticias/52011579",
+      "kind": "contemporary_afp_photographer_metadata",
+      "retainedPath": "docs/audit/arena-shooting-correction/alternate-venues/supplemental/afp-raptors-copps-19961226.raw.gz",
+      "sha256DecodedBytes": "f541fc4eec8f68c828c076873d148104ea786da439f22ab8cb764431f069062b",
+      "quote": "at Copps Coliseum in Hamilton",
+      "locator": "Editorial 52011579; object SAPA961227081560; creation date 1996-12-26"
+    },
+    {
+      "id": "hamilton-ap-match",
+      "url": "https://www.spokesman.com/stories/1996/dec/27/kidd-a-goat-in-dallas-sent-to-suns/",
+      "kind": "contemporary_ap_match_report",
+      "retainedPath": "docs/audit/arena-shooting-correction/alternate-venues/supplemental/ap-raptors-hamilton-19961227.raw.gz",
+      "sha256DecodedBytes": "5ca8f269b8cb4808df54d77aa63739211f9c9761236a0194b3ea86f20980d6f1"
+    },
+    {
+      "id": "march29-seattle-staff",
+      "url": "https://www.latimes.com/archives/la-xpm-1991-03-30-sp-939-story.html",
+      "kind": "contemporary_staff_match_report",
+      "retainedPath": "docs/audit/arena-shooting-correction/alternate-venues/supplemental/lat-minnesota-seattle-19910330.raw.gz",
+      "sha256DecodedBytes": "29fe31cc01962bca4872e599c74e27f0a6eeffcc868ca9625313a56f7dd98533",
+      "quote": "at Seattle",
+      "locator": "SEA 117, MIN 107 paragraph"
+    },
+    {
+      "id": "march29-seattle-newspaper",
+      "url": "https://newspapers.swco.ttu.edu/server/api/core/bitstreams/d8113179-0bd1-4808-800e-2dc5b44f8844/content",
+      "kind": "contemporary_ap_match_report",
+      "retainedPath": "docs/audit/arena-shooting-correction/alternate-venues/supplemental/midland-19910330.pdf",
+      "sha256DecodedBytes": "ee010251bd9e9c8cfd7eee71371663afebcc640132ce3d39ff1043a303a1feb2",
+      "quote": "SEATTLE",
+      "locator": "PDF page 12 / printed 2B; SuperSonics 117, Timberwolves 107",
+      "visualVerification": "Rendered PDF page 12: Associated Press byline above entire NBA roundup; SEATTLE dateline under exact fixture subheading."
+    }
+  ],
+  "fixtures": [
+    {
+      "gameId": "0049100030",
+      "easternDate": "1992-05-03",
+      "historicalAwayAbbreviation": "POR",
+      "historicalHomeAbbreviation": "LAL",
+      "arena": "Thomas & Mack Center",
+      "city": "Las Vegas",
+      "sourceIds": [
+        "las-vegas-match"
+      ],
+      "evidenceStatus": "direct_primary",
+      "limitations": []
+    },
+    {
+      "gameId": "0029000062",
+      "easternDate": "1990-11-10",
+      "historicalAwayAbbreviation": "GSW",
+      "historicalHomeAbbreviation": "SEA",
+      "arena": "Tacoma Dome",
+      "city": "Tacoma",
+      "sourceIds": [
+        "november-tacoma-city",
+        "march-tacoma-dome",
+        "april-tacoma-dome"
+      ],
+      "evidenceStatus": "triangulated_primary",
+      "limitations": [
+        "The November report directly establishes Tacoma city, not the building.",
+        "March 27 AP identifies that fixture as the second of three Tacoma Dome games; April 10 AP independently names the Dome. The November home game in Tacoma is the first candidate, with the secondary game log corroborating that placement.",
+        "High-confidence derived building placement; no direct November building assertion was found. Do not describe it as direct primary confirmation or claim an exhaustive inventory."
+      ],
+      "confidence": "high_derived"
+    },
+    {
+      "gameId": "0029000930",
+      "easternDate": "1991-03-27",
+      "historicalAwayAbbreviation": "POR",
+      "historicalHomeAbbreviation": "SEA",
+      "arena": "Tacoma Dome",
+      "city": "Tacoma",
+      "sourceIds": [
+        "march-tacoma-dome"
+      ],
+      "evidenceStatus": "direct_primary",
+      "limitations": []
+    },
+    {
+      "gameId": "0029001023",
+      "easternDate": "1991-04-10",
+      "historicalAwayAbbreviation": "LAC",
+      "historicalHomeAbbreviation": "SEA",
+      "arena": "Tacoma Dome",
+      "city": "Tacoma",
+      "sourceIds": [
+        "april-tacoma-dome"
+      ],
+      "evidenceStatus": "direct_primary",
+      "limitations": []
+    },
+    {
+      "gameId": "0029200320",
+      "easternDate": "1992-12-26",
+      "historicalAwayAbbreviation": "DET",
+      "historicalHomeAbbreviation": "WAS",
+      "arena": "Baltimore Arena",
+      "city": "Baltimore",
+      "sourceIds": [
+        "wizards-guide"
+      ],
+      "evidenceStatus": "direct_primary_with_conflict",
+      "limitations": [
+        "Fixture-specific team log establishes Baltimore; Getty photo caption instead says Capital Centre, Landover. Retain the conflict and do not silently discard it.",
+        "Guide has unrelated omissions/date errors documented in README; only the exact target row is used."
+      ]
+    },
+    {
+      "gameId": "0029300536",
+      "easternDate": "1994-01-27",
+      "historicalAwayAbbreviation": "NYK",
+      "historicalHomeAbbreviation": "LAC",
+      "arena": "Arrowhead Pond of Anaheim",
+      "city": "Anaheim",
+      "sourceIds": [
+        "clippers-guide"
+      ],
+      "evidenceStatus": "direct_primary",
+      "limitations": [
+        "Team history prints an erroneous 101-103 score; preserve canonical 102-103 score. Its date/opponent/relocation/arena assertion remains independent of that typo."
+      ]
+    },
+    {
+      "gameId": "0029600385",
+      "easternDate": "1996-12-26",
+      "historicalAwayAbbreviation": "NJN",
+      "historicalHomeAbbreviation": "TOR",
+      "arena": "Copps Coliseum",
+      "city": "Hamilton",
+      "sourceIds": [
+        "hamilton-afp-photo",
+        "hamilton-ap-match"
+      ],
+      "evidenceStatus": "direct_primary",
+      "limitations": []
+    }
+  ],
+  "additionalConflicts": [
+    {
+      "gameId": "0029000948",
+      "easternDate": "1991-03-29",
+      "historicalAwayAbbreviation": "MIN",
+      "historicalHomeAbbreviation": "SEA",
+      "disposition": "reject_tacoma_correction_from_conflicting_upi_alone",
+      "sourceIds": [
+        "march29-seattle-staff",
+        "march29-seattle-newspaper"
+      ],
+      "conflictingSource": {
+        "url": "https://www.upi.com/Archives/1991/03/30/NBA-Roundup/9058670309200/",
+        "kind": "contemporary_upi_match_report",
+        "claim": "Tacoma",
+        "quote": "At Tacoma, Wash.",
+        "retainedRawPath": null,
+        "rawCaptureLimitation": "Search provider readable; direct request HTTP 403; no invented raw hash."
+      },
+      "rationale": "Contemporary LA Times report says Seattle and independent AP match report printed in Midland Reporter-Telegram carries SEATTLE dateline for exact 117-107 fixture. UPI city is contradicted. Preserve existing Seattle location; carry UPI conflict rather than add a Tacoma fixture.",
+      "uncertainty": "No direct building name found for this extra fixture; this adjudication rejects the proposed city correction, not an assertion that all alternate fixtures are enumerated."
+    }
+  ],
+  "widerInventory": {
+    "wizardsExplicitBaltimoreMarkers": 34,
+    "earliestMarker": "1989-01-06",
+    "latestMarker": "1997-03-29",
+    "pre1988NewFixturesFound": 0,
+    "exhaustive": false,
+    "privateLiteralInventory": "docs/audit/arena-shooting-correction/alternate-venues/supplemental/wizards-baltimore-inventory.json"
+  }
+}

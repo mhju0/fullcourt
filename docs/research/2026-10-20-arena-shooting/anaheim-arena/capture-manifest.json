@@ -1,0 +1,20 @@
+[
+  {
+    "url": "https://api.openstreetmap.org/api/0.6/map?bbox=-117.923,33.798,-117.917,33.805",
+    "path": "osm-small-area.xml",
+    "httpStatus": 200,
+    "bodySha256": "01058723250fedc3fd6d02468b8d29fdd6e8728d80fe9de890dfbd6a145e5fef"
+  },
+  {
+    "url": "https://www.anaheim.net/DocumentCenter/View/35651/Arena-Specifications",
+    "error": "HTTP Error 403: Forbidden"
+  },
+  {
+    "url": "https://www.anaheim.net/DocumentCenter/View/35656/Facility-Guide",
+    "error": "HTTP Error 403: Forbidden"
+  },
+  {
+    "url": "https://local.anaheim.net/docs_agend/questys_pub/16771/16801/16804/18854/18860/2.%20Exhibit%20A18860.pdf",
+    "error": "<urlopen error timed out>"
+  }
+]

@@ -1,0 +1,30 @@
+{
+  "snapshotCanonicalSha256": "ef953faeb133a329a636653ed017091da17c27639adbb44bf2d8bd4eedf8159b",
+  "seriesCompared": 600,
+  "metadataDelta": [
+    {
+      "id": 265,
+      "external_series_key": "2002-03_NOP-PHI",
+      "column": "conference",
+      "before": null,
+      "after": "East"
+    },
+    {
+      "id": 278,
+      "external_series_key": "2003-04_MIA-NOP",
+      "column": "conference",
+      "before": null,
+      "after": "East"
+    }
+  ],
+  "preservedFields": [
+    "round",
+    "is_best_of_7",
+    "series_winner_team_id",
+    "home_court_team_id",
+    "opponent_team_id",
+    "home_court_wins",
+    "opponent_wins"
+  ],
+  "modelFeaturesAndPredictions": "not written; conference is not a model input"
+}

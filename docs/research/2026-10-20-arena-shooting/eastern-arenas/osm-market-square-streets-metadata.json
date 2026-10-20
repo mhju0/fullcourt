@@ -1,0 +1,6 @@
+{
+  "url": "https://api.openstreetmap.org/api/0.6/map?bbox=-86.1535,39.7675,-86.1505,39.7693",
+  "httpStatus": 200,
+  "rawPath": "osm-market-square-streets.xml",
+  "bodySha256": "e863af99bfb999421978e21f6877e93fa11593c0d2d871c5e337cba177bef86a"
+}

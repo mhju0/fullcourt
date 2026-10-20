@@ -1,0 +1,292 @@
+[
+  {
+    "key": "geonames-search-atl-omni",
+    "url": "https://www.geonames.org/search.html?q=Omni+Coliseum&country=US",
+    "category": "original-geonames-gazetteer-search",
+    "capturedAt": "2026-10-20T07:07:51.472801+00:00",
+    "httpStatus": 200,
+    "finalUrl": "https://www.geonames.org/search.html?q=Omni+Coliseum&country=US",
+    "headers": {
+      "Date": "Tue, 20 Oct 2026 07:07:52 GMT",
+      "Server": "Apache/2.4.57 (AlmaLinux) mod_jk/1.2.49 OpenSSL/3.0.7",
+      "X-Frame-Options": "sameorigin",
+      "Cache-Control": "no-cache",
+      "Set-Cookie": "JSESSIONID=A439036394108BB100EA2AC68EBB11CC; Path=/; Secure; HttpOnly",
+      "Connection": "close",
+      "Transfer-Encoding": "chunked",
+      "Content-Type": "text/html;charset=UTF-8"
+    },
+    "bodySha256": "28568ced6c827998d65f1294a4365d417aeb857dc64e9ab6d1f20215628fc0f5",
+    "rawPath": "raw/geonames-search-atl-omni-28568ced6c827998d65f1294a4365d417aeb857dc64e9ab6d1f20215628fc0f5.html.gz",
+    "coordinateSnippets": [
+      "<tr><th></th><th>Name</th><th>Country</th><th>Feature class</th><th>Latitude</th><th>Longitude</th></tr>",
+      "alt=\"wikipedia article\"></a><br><small></small><span class=\"geo\" style=\"display:none;\"><span class=\"latitude\">33.7575</span><span class=\"longitude\">-84.3966667</span></span></td><td><a href=\"/countries/US/united-states.html\">United States"
+    ]
+  },
+  {
+    "key": "geonames-search-bos-garden",
+    "url": "https://www.geonames.org/search.html?q=Boston+Garden&country=US",
+    "category": "original-geonames-gazetteer-search",
+    "capturedAt": "2026-10-20T07:07:51.117676+00:00",
+    "httpStatus": 200,
+    "finalUrl": "https://www.geonames.org/search.html?q=Boston+Garden&country=US",
+    "headers": {
+      "Date": "Tue, 20 Oct 2026 07:07:51 GMT",
+      "Server": "Apache/2.4.57 (AlmaLinux) mod_jk/1.2.49 OpenSSL/3.0.7",
+      "X-Frame-Options": "sameorigin",
+      "Cache-Control": "no-cache",
+      "Set-Cookie": "JSESSIONID=1FB97BC3C939C95FD324429311D79BA5; Path=/; Secure; HttpOnly",
+      "Connection": "close",
+      "Transfer-Encoding": "chunked",
+      "Content-Type": "text/html;charset=UTF-8"
+    },
+    "bodySha256": "64283cf097eb348a5268513ba85497cc81b2dfc595972b7645c791ea5d9979b4",
+    "rawPath": "raw/geonames-search-bos-garden-64283cf097eb348a5268513ba85497cc81b2dfc595972b7645c791ea5d9979b4.html.gz",
+    "coordinateSnippets": [
+      "<tr><th></th><th>Name</th><th>Country</th><th>Feature class</th><th>Latitude</th><th>Longitude</th></tr>",
+      "l>Boston-garden,\u0411\u043e\u0441\u0442\u043e\u043d-\u0433\u0430\u0440\u0434\u0435\u043d,\u30dc\u30b9\u30c8\u30f3\u30fb\u30ac\u30fc\u30c7\u30f3</small><span class=\"geo\" style=\"display:none;\"><span class=\"latitude\">42.3659306</span><span class=\"longitude\">-71.0628289</span></span></td><td><a href=\"/countries/US/united-states.html\">United Sta",
+      "rden.html\">Public Garden</a><br><small></small><span class=\"geo\" style=\"display:none;\"><span class=\"latitude\">42.353953</span><span class=\"longitude\">-71.069876</span></span></td><td><a href=\"/countries/US/united-states.html\">United State",
+      "html\">Boston Road Garden</a><br><small></small><span class=\"geo\" style=\"display:none;\"><span class=\"latitude\">40.8658333</span><span class=\"longitude\">-73.8616667</span></span></td><td><a href=\"/countries/US/united-states.html\">United Sta",
+      "Rose Kennedy Rose Garden</a><br><small></small><span class=\"geo\" style=\"display:none;\"><span class=\"latitude\">42.3609308</span><span class=\"longitude\">-71.051162</span></span></td><td><a href=\"/countries/US/united-states.html\">United Stat",
+      "arden.html\">Peace Garden</a><br><small></small><span class=\"geo\" style=\"display:none;\"><span class=\"latitude\">42.3634307</span><span class=\"longitude\">-71.0539397</span></span></td><td><a href=\"/countries/US/united-states.html\">United Sta",
+      "rden.html\">Prouty Garden</a><br><small></small><span class=\"geo\" style=\"display:none;\"><span class=\"latitude\">42.3367643</span><span class=\"longitude\">-71.105052</span></span></td><td><a href=\"/countries/US/united-states.html\">United Stat",
+      "n.html\">Community Garden</a><br><small></small><span class=\"geo\" style=\"display:none;\"><span class=\"latitude\">42.3723192</span><span class=\"longitude\">-71.1039411</span></span></td><td><a href=\"/countries/US/united-states.html\">United Sta",
+      "den.html\">Emerson Garden</a><br><small></small><span class=\"geo\" style=\"display:none;\"><span class=\"latitude\">42.3325975</span><span class=\"longitude\">-71.1222747</span></span></td><td><a href=\"/countries/US/united-states.html\">United Sta",
+      "ner Creek,Chase-garden River,Chases ...</small><span class=\"geo\" style=\"display:none;\"><span class=\"latitude\">41.7251094</span><span class=\"longitude\">-70.2383539</span></span></td><td><a href=\"/countries/US/united-states.html\">United Sta",
+      "h.html\">Old Garden Beach</a><br><small></small><span class=\"geo\" style=\"display:none;\"><span class=\"latitude\">42.6584285</span><span class=\"longitude\">-70.6050435</span></span></td><td><a href=\"/countries/US/united-states.html\">United Sta",
+      "ston Garden (historical)</a><br><small></small><span class=\"geo\" style=\"display:none;\"><span class=\"latitude\">42.3659306</span><span class=\"longitude\">-71.06144</span></span></td><td><a href=\"/countries/US/united-states.html\">United State",
+      "s & Suites Boston Garden</a><br><small></small><span class=\"geo\" style=\"display:none;\"><span class=\"latitude\">42.364865</span><span class=\"longitude\">-71.061726</span></span></td><td><a href=\"/countries/US/united-states.html\">United State",
+      "en Inn Boston/Burlington</a><br><small></small><span class=\"geo\" style=\"display:none;\"><span class=\"latitude\">42.4759</span><span class=\"longitude\">-71.2123</span></span></td><td><a href=\"/countries/US/united-states.html\">United States</a",
+      "arden Inn Boston Waltham</a><br><small></small><span class=\"geo\" style=\"display:none;\"><span class=\"latitude\">42.39745</span><span class=\"longitude\">-71.25363</span></span></td><td><a href=\"/countries/US/united-states.html\">United States<",
+      " Garden Inn Boston-Burli</a><br><small></small><span class=\"geo\" style=\"display:none;\"><span class=\"latitude\">42.4762</span><span class=\"longitude\">-71.2119</span></span></td><td><a href=\"/countries/US/united-states.html\">United States</a",
+      " Garden Inn Boston-Walth</a><br><small></small><span class=\"geo\" style=\"display:none;\"><span class=\"latitude\">42.397386</span><span class=\"longitude\">-71.254242</span></span></td><td><a href=\"/countries/US/united-states.html\">United State",
+      "ml\">Kelleher Rose Garden</a><br><small></small><span class=\"geo\" style=\"display:none;\"><span class=\"latitude\">42.34195</span><span class=\"longitude\">-71.09489</span></span></td><td><a href=\"/countries/US/united-states.html\">United States<",
+      ">Durell Community Garden</a><br><small></small><span class=\"geo\" style=\"display:none;\"><span class=\"latitude\">42.38174</span><span class=\"longitude\">-71.11037</span></span></td><td><a href=\"/countries/US/united-states.html\">United States<",
+      "Ropes Mansion and Garden</a><br><small></small><span class=\"geo\" style=\"display:none;\"><span class=\"latitude\">42.5217623</span><span class=\"longitude\">-70.8931043</span></span></td><td><a href=\"/countries/US/united-states.html\">United Sta",
+      "ry.html\">Garden Cemetery</a><br><small></small><span class=\"geo\" style=\"display:none;\"><span class=\"latitude\">42.3906527</span><span class=\"longitude\">-71.0325507</span></span></td><td><a href=\"/countries/US/united-states.html\">United Sta",
+      "lton Garden Inn Plymouth</a><br><small></small><span class=\"geo\" style=\"display:none;\"><span class=\"latitude\">41.8246</span><span class=\"longitude\">-70.5984</span></span></td><td><a href=\"/countries/US/united-states.html\">United States</a",
+      "untry Garden Inn   Motel</a><br><small></small><span class=\"geo\" style=\"display:none;\"><span class=\"latitude\">42.7127</span><span class=\"longitude\">-70.8818</span></span></td><td><a href=\"/countries/US/united-states.html\">United States</a",
+      "nt Garden Street Station</a><br><small></small><span class=\"geo\" style=\"display:none;\"><span class=\"latitude\">42.8101377</span><span class=\"longitude\">-70.9451744</span></span></td><td><a href=\"/countries/US/united-states.html\">United Sta",
+      " Garden Inn Bostonwaltha</a><br><small></small><span class=\"geo\" style=\"display:none;\"><span class=\"latitude\">42.397446</span><span class=\"longitude\">-71.253629</span></span></td><td><a href=\"/countries/US/united-states.html\">United State",
+      "Langdon House and Garden</a><br><small></small><span class=\"geo\" style=\"display:none;\"><span class=\"latitude\">43.0739774</span><span class=\"longitude\">-70.7578309</span></span></td><td><a href=\"/countries/US/united-states.html\">United Sta",
+      "on Garden Inn Portsmouth</a><br><small></small><span class=\"geo\" style=\"display:none;\"><span class=\"latitude\">43.0784</span><span class=\"longitude\">-70.7593</span></span></td><td><a href=\"/countries/US/united-states.html\">United States</a",
+      " Inn Portsmouth Downtown</a><br><small></small><span class=\"geo\" style=\"display:none;\"><span class=\"latitude\">43.07835</span><span class=\"longitude\">-70.75937</span></span></td><td><a href=\"/countries/US/united-states.html\">United States<",
+      " Garden Inn Portsmouth D</a><br><small></small><span class=\"geo\" style=\"display:none;\"><span class=\"latitude\">43.078362</span><span class=\"longitude\">-70.759254</span></span></td><td><a href=\"/countries/US/united-states.html\">United State",
+      "tml\">Powder House Square</a><br><small></small><span class=\"geo\" style=\"display:none;\"><span class=\"latitude\">42.40116</span><span class=\"longitude\">-71.11678</span></span></td><td><a href=\"/countries/US/united-states.html\">United States<"
+    ]
+  },
+  {
+    "key": "geonames-search-chi-stadium",
+    "url": "https://www.geonames.org/search.html?q=Chicago+Stadium&country=US",
+    "category": "original-geonames-gazetteer-search",
+    "capturedAt": "2026-10-20T07:07:52.214105+00:00",
+    "httpStatus": 200,
+    "finalUrl": "https://www.geonames.org/search.html?q=Chicago+Stadium&country=US",
+    "headers": {
+      "Date": "Tue, 20 Oct 2026 07:07:52 GMT",
+      "Server": "Apache/2.4.57 (AlmaLinux) mod_jk/1.2.49 OpenSSL/3.0.7",
+      "X-Frame-Options": "sameorigin",
+      "Cache-Control": "no-cache",
+      "Set-Cookie": "JSESSIONID=DCAD19FD9CDE0B4D9320AB1AEE42633D; Path=/; Secure; HttpOnly",
+      "Connection": "close",
+      "Transfer-Encoding": "chunked",
+      "Content-Type": "text/html;charset=UTF-8"
+    },
+    "bodySha256": "0d36404d4700176f40e53d9b4c20fbe1e1d0c3fff6a6896a135cb36dab5667b0",
+    "rawPath": "raw/geonames-search-chi-stadium-0d36404d4700176f40e53d9b4c20fbe1e1d0c3fff6a6896a135cb36dab5667b0.html.gz",
+    "coordinateSnippets": [
+      "<tr><th></th><th>Name</th><th>Country</th><th>Feature class</th><th>Latitude</th><th>Longitude</th></tr>",
+      "alt=\"wikipedia article\"></a><br><small></small><span class=\"geo\" style=\"display:none;\"><span class=\"latitude\">41.8816993</span><span class=\"longitude\">-87.6728318</span></span></td><td><a href=\"/countries/US/united-states.html\">United Sta",
+      "tml\">Gately Stadium Park</a><br><small></small><span class=\"geo\" style=\"display:none;\"><span class=\"latitude\">41.7083678</span><span class=\"longitude\">-87.6033804</span></span></td><td><a href=\"/countries/US/united-states.html\">United Sta",
+      " article\"></a><br><small>Huskie Stadium</small><span class=\"geo\" style=\"display:none;\"><span class=\"latitude\">41.9341958</span><span class=\"longitude\">-88.7778658</span></span></td><td><a href=\"/countries/US/united-states.html\">United Sta",
+      "ld,Stadion Soldzer fild,jun ren qiu ...</small><span class=\"geo\" style=\"display:none;\"><span class=\"latitude\">41.8625332</span><span class=\"longitude\">-87.6167182</span></span></td><td><a href=\"/countries/US/united-states.html\">United Sta",
+      "Trung t\u00e2m United,United Center,lian ...</small><span class=\"geo\" style=\"display:none;\"><span class=\"latitude\">41.88062252826673</span><span class=\"longitude\">-87.67450332641602</span></span></td><td><a href=\"/countries/US/united-states.ht",
+      "alt=\"wikipedia article\"></a><br><small></small><span class=\"geo\" style=\"display:none;\"><span class=\"latitude\">41.8800282</span><span class=\"longitude\">-88.2828517</span></span></td><td><a href=\"/countries/US/united-states.html\">United Sta",
+      ",rigali filda,rigali philda,rui ge l...</small><span class=\"geo\" style=\"display:none;\"><span class=\"latitude\">41.9480878</span><span class=\"longitude\">-87.655333</span></span></td><td><a href=\"/countries/US/united-states.html\">United Stat",
+      "alt=\"wikipedia article\"></a><br><small></small><span class=\"geo\" style=\"display:none;\"><span class=\"latitude\">41.7788889</span><span class=\"longitude\">-88.0991667</span></span></td><td><a href=\"/countries/US/united-states.html\">United Sta",
+      ".html\">Eckersall Stadium</a><br><small></small><span class=\"geo\" style=\"display:none;\"><span class=\"latitude\">41.7458681</span><span class=\"longitude\">-87.5647687</span></span></td><td><a href=\"/countries/US/united-states.html\">United Sta",
+      ">Leonard Douglas Stadium</a><br><small></small><span class=\"geo\" style=\"display:none;\"><span class=\"latitude\">41.5775363</span><span class=\"longitude\">-87.3450379</span></span></td><td><a href=\"/countries/US/united-states.html\">United Sta",
+      "ium.html\">Gilroy Stadium</a><br><small></small><span class=\"geo\" style=\"display:none;\"><span class=\"latitude\">41.5605919</span><span class=\"longitude\">-87.3469821</span></span></td><td><a href=\"/countries/US/united-states.html\">United Sta",
+      "Joliet Municipal Stadium</a><br><small></small><span class=\"geo\" style=\"display:none;\"><span class=\"latitude\">41.5203085</span><span class=\"longitude\">-88.1525608</span></span></td><td><a href=\"/countries/US/united-states.html\">United Sta",
+      "dium.html\">Dyche Stadium</a><br><small></small><span class=\"geo\" style=\"display:none;\"><span class=\"latitude\">42.0653073</span><span class=\"longitude\">-87.6925593</span></span></td><td><a href=\"/countries/US/united-states.html\">United Sta",
+      "m.html\">Memorial Stadium</a><br><small></small><span class=\"geo\" style=\"display:none;\"><span class=\"latitude\">42.0300267</span><span class=\"longitude\">-88.2459106</span></span></td><td><a href=\"/countries/US/united-states.html\">United Sta"
+    ]
+  },
+  {
+    "key": "geonames-search-ind-market",
+    "url": "https://www.geonames.org/search.html?q=Market+Square+Arena&country=US",
+    "category": "original-geonames-gazetteer-search",
+    "capturedAt": "2026-10-20T07:07:52.569127+00:00",
+    "httpStatus": 200,
+    "finalUrl": "https://www.geonames.org/search.html?q=Market+Square+Arena&country=US",
+    "headers": {
+      "Date": "Tue, 20 Oct 2026 07:07:53 GMT",
+      "Server": "Apache/2.4.57 (AlmaLinux) mod_jk/1.2.49 OpenSSL/3.0.7",
+      "X-Frame-Options": "sameorigin",
+      "Cache-Control": "no-cache",
+      "Set-Cookie": "JSESSIONID=139EDC88F17946A88118419440960D61; Path=/; Secure; HttpOnly",
+      "Connection": "close",
+      "Transfer-Encoding": "chunked",
+      "Content-Type": "text/html;charset=UTF-8"
+    },
+    "bodySha256": "cd3ed555bba896dc5a4e3f4b144a5d981d2b1b3825169e6b131d4f4e2a6a3443",
+    "rawPath": "raw/geonames-search-ind-market-cd3ed555bba896dc5a4e3f4b144a5d981d2b1b3825169e6b131d4f4e2a6a3443.html.gz",
+    "coordinateSnippets": []
+  },
+  {
+    "key": "geonames-search-mia-old",
+    "url": "https://www.geonames.org/search.html?q=Miami+Arena&country=US",
+    "category": "original-geonames-gazetteer-search",
+    "capturedAt": "2026-10-20T07:07:53.297263+00:00",
+    "httpStatus": 200,
+    "finalUrl": "https://www.geonames.org/search.html?q=Miami+Arena&country=US",
+    "headers": {
+      "Date": "Tue, 20 Oct 2026 07:07:53 GMT",
+      "Server": "Apache/2.4.57 (AlmaLinux) mod_jk/1.2.49 OpenSSL/3.0.7",
+      "X-Frame-Options": "sameorigin",
+      "Cache-Control": "no-cache",
+      "Set-Cookie": "JSESSIONID=55664F697E2DB77DB9A08E4E85789EBC; Path=/; Secure; HttpOnly",
+      "Connection": "close",
+      "Transfer-Encoding": "chunked",
+      "Content-Type": "text/html;charset=UTF-8"
+    },
+    "bodySha256": "4cbb3ba49fce9626d95a1450b6fd51fd7b62677c50419792266d60abe7aa919c",
+    "rawPath": "raw/geonames-search-mia-old-4cbb3ba49fce9626d95a1450b6fd51fd7b62677c50419792266d60abe7aa919c.html.gz",
+    "coordinateSnippets": [
+      "<tr><th></th><th>Name</th><th>Country</th><th>Feature class</th><th>Latitude</th><th>Longitude</th></tr>",
+      "s Arena,Amerikan-Erlajns-arena,ameli...</small><span class=\"geo\" style=\"display:none;\"><span class=\"latitude\">25.7808333</span><span class=\"longitude\">-80.1872222</span></span></td><td><a href=\"/countries/US/united-states.html\">United Sta",
+      "mall>Hobart Arena,hobateu alena,\ud638\ubc14\ud2b8 \uc544\ub808\ub098</small><span class=\"geo\" style=\"display:none;\"><span class=\"latitude\">40.0456092</span><span class=\"longitude\">-84.2054991</span></span></td><td><a href=\"/countries/US/united-states.html\">United Sta",
+      "/a><br><small>Majami-arena,\u041c\u0430\u0439\u0430\u043c\u0438-\u0430\u0440\u0435\u043d\u0430</small><span class=\"geo\" style=\"display:none;\"><span class=\"latitude\">25.7812099</span><span class=\"longitude\">-80.19477</span></span></td><td><a href=\"/countries/US/united-states.html\">United State",
+      "\">AmericanAirlines Arena</a><br><small></small><span class=\"geo\" style=\"display:none;\"><span class=\"latitude\">25.781326</span><span class=\"longitude\">-80.187915</span></span></td><td><a href=\"/countries/US/united-states.html\">United State",
+      "l Overtown Arena Station</a><br><small></small><span class=\"geo\" style=\"display:none;\"><span class=\"latitude\">25.78095</span><span class=\"longitude\">-80.19627</span></span></td><td><a href=\"/countries/US/united-states.html\">United States<",
+      "Plaza Metromover Station</a><br><small></small><span class=\"geo\" style=\"display:none;\"><span class=\"latitude\">25.77881</span><span class=\"longitude\">-80.19534</span></span></td><td><a href=\"/countries/US/united-states.html\">United States<",
+      "nty Civic Arena Heliport</a><br><small></small><span class=\"geo\" style=\"display:none;\"><span class=\"latitude\">26.159709</span><span class=\"longitude\">-80.325903</span></span></td><td><a href=\"/countries/US/united-states.html\">United State",
+      "lacierice and Snow Arena</a><br><small></small><span class=\"geo\" style=\"display:none;\"><span class=\"latitude\">26.28769</span><span class=\"longitude\">-80.096745</span></span></td><td><a href=\"/countries/US/united-states.html\">United States",
+      " Campus The Burrow Arena</a><br><small></small><span class=\"geo\" style=\"display:none;\"><span class=\"latitude\">26.3723</span><span class=\"longitude\">-80.1093</span></span></td><td><a href=\"/countries/US/united-states.html\">United States</a"
+    ]
+  },
+  {
+    "key": "geonames-search-orl-old",
+    "url": "https://www.geonames.org/search.html?q=Amway+Arena&country=US",
+    "category": "original-geonames-gazetteer-search",
+    "capturedAt": "2026-10-20T07:07:54.527496+00:00",
+    "httpStatus": 200,
+    "finalUrl": "https://www.geonames.org/search.html?q=Amway+Arena&country=US",
+    "headers": {
+      "Date": "Tue, 20 Oct 2026 07:07:55 GMT",
+      "Server": "Apache/2.4.57 (AlmaLinux) mod_jk/1.2.49 OpenSSL/3.0.7",
+      "X-Frame-Options": "sameorigin",
+      "Cache-Control": "no-cache",
+      "Set-Cookie": "JSESSIONID=0BA46FD296860D01B4B6128343D91682; Path=/; Secure; HttpOnly",
+      "Connection": "close",
+      "Transfer-Encoding": "chunked",
+      "Content-Type": "text/html;charset=UTF-8"
+    },
+    "bodySha256": "c4a45f410e0983c7527313a8f8b26e8ab5025ab18be33ae2e5bbb05db0e3169a",
+    "rawPath": "raw/geonames-search-orl-old-c4a45f410e0983c7527313a8f8b26e8ab5025ab18be33ae2e5bbb05db0e3169a.html.gz",
+    "coordinateSnippets": [
+      "<tr><th></th><th>Name</th><th>Country</th><th>Feature class</th><th>Latitude</th><th>Longitude</th></tr>",
+      "guan,\u0415\u043c\u0432\u0435\u0439-\u0430\u0440\u0435\u043d\u0430,\u042d\u043c\u0432\u0435\u0439-\u0430\u0440\u0435\u043d\u0430,\u30a2\u30e0\u30a6\u30a7\u30a4\u30fb\u30a2...</small><span class=\"geo\" style=\"display:none;\"><span class=\"latitude\">28.548889</span><span class=\"longitude\">-81.386667</span></span></td><td><a href=\"/countries/US/united-states.html\">United State"
+    ]
+  },
+  {
+    "key": "geonames-search-phi-spectrum",
+    "url": "https://www.geonames.org/search.html?q=The+Spectrum+Philadelphia&country=US",
+    "category": "original-geonames-gazetteer-search",
+    "capturedAt": "2026-10-20T07:07:54.883169+00:00",
+    "httpStatus": 200,
+    "finalUrl": "https://www.geonames.org/search.html?q=The+Spectrum+Philadelphia&country=US",
+    "headers": {
+      "Date": "Tue, 20 Oct 2026 07:07:55 GMT",
+      "Server": "Apache/2.4.57 (AlmaLinux) mod_jk/1.2.49 OpenSSL/3.0.7",
+      "X-Frame-Options": "sameorigin",
+      "Cache-Control": "no-cache",
+      "Set-Cookie": "JSESSIONID=7E4D7C6482E47549C9FCFA14E14A2F77; Path=/; Secure; HttpOnly",
+      "Connection": "close",
+      "Transfer-Encoding": "chunked",
+      "Content-Type": "text/html;charset=UTF-8"
+    },
+    "bodySha256": "ae5dc9c247fc701f3f695404a55d0fa9c8ddc186e6a0ee8a6fea0e1da31f1a9d",
+    "rawPath": "raw/geonames-search-phi-spectrum-ae5dc9c247fc701f3f695404a55d0fa9c8ddc186e6a0ee8a6fea0e1da31f1a9d.html.gz",
+    "coordinateSnippets": [
+      "<tr><th></th><th>Name</th><th>Country</th><th>Feature class</th><th>Latitude</th><th>Longitude</th></tr>",
+      "Spectrum,Wachovia Spectrum (historical)</small><span class=\"geo\" style=\"display:none;\"><span class=\"latitude\">39.9042798</span><span class=\"longitude\">-75.1710117</span></span></td><td><a href=\"/countries/US/united-states.html\">United Sta",
+      "alt=\"wikipedia article\"></a><br><small></small><span class=\"geo\" style=\"display:none;\"><span class=\"latitude\">39.9037242</span><span class=\"longitude\">-75.1712895</span></span></td><td><a href=\"/countries/US/united-states.html\">United Sta"
+    ]
+  },
+  {
+    "key": "geonames-search-was-capitalcentre",
+    "url": "https://www.geonames.org/search.html?q=Capital+Centre&country=US",
+    "category": "original-geonames-gazetteer-search",
+    "capturedAt": "2026-10-20T07:07:55.881033+00:00",
+    "httpStatus": 200,
+    "finalUrl": "https://www.geonames.org/search.html?q=Capital+Centre&country=US",
+    "headers": {
+      "Date": "Tue, 20 Oct 2026 07:07:56 GMT",
+      "Server": "Apache/2.4.57 (AlmaLinux) mod_jk/1.2.49 OpenSSL/3.0.7",
+      "X-Frame-Options": "sameorigin",
+      "Cache-Control": "no-cache",
+      "Set-Cookie": "JSESSIONID=7453ECC65D6DADBBEA16A3E6152688BF; Path=/; Secure; HttpOnly",
+      "Connection": "close",
+      "Transfer-Encoding": "chunked",
+      "Content-Type": "text/html;charset=UTF-8"
+    },
+    "bodySha256": "56c4299f36911798d7074ad4c5d2f3543b687da403222fa5f08bda1a8acd5e04",
+    "rawPath": "raw/geonames-search-was-capitalcentre-56c4299f36911798d7074ad4c5d2f3543b687da403222fa5f08bda1a8acd5e04.html.gz",
+    "coordinateSnippets": [
+      "<tr><th></th><th>Name</th><th>Country</th><th>Feature class</th><th>Latitude</th><th>Longitude</th></tr>",
+      " Airways Arena (historical),USAir Arena</small><span class=\"geo\" style=\"display:none;\"><span class=\"latitude\">38.902612</span><span class=\"longitude\">-76.846916</span></span></td><td><a href=\"/countries/US/united-states.html\">United State",
+      "l Centre Shopping Center</a><br><small></small><span class=\"geo\" style=\"display:none;\"><span class=\"latitude\">43.0897222</span><span class=\"longitude\">-87.9055556</span></span></td><td><a href=\"/countries/US/united-states.html\">United Sta"
+    ]
+  },
+  {
+    "key": "geonames-search-atl-georgia-dome",
+    "url": "https://www.geonames.org/search.html?q=Georgia+Dome&country=US",
+    "category": "original-geonames-gazetteer-search",
+    "capturedAt": "2026-10-20T07:07:56.232657+00:00",
+    "httpStatus": 200,
+    "finalUrl": "https://www.geonames.org/search.html?q=Georgia+Dome&country=US",
+    "headers": {
+      "Date": "Tue, 20 Oct 2026 07:07:56 GMT",
+      "Server": "Apache/2.4.57 (AlmaLinux) mod_jk/1.2.49 OpenSSL/3.0.7",
+      "X-Frame-Options": "sameorigin",
+      "Cache-Control": "no-cache",
+      "Set-Cookie": "JSESSIONID=5C88A2C964555175741D781900F3E0EB; Path=/; Secure; HttpOnly",
+      "Connection": "close",
+      "Transfer-Encoding": "chunked",
+      "Content-Type": "text/html;charset=UTF-8"
+    },
+    "bodySha256": "7534c260f417ce177c5171906b5e8ae47618f291c5f44e256d2bc97c36a33711",
+    "rawPath": "raw/geonames-search-atl-georgia-dome-7534c260f417ce177c5171906b5e8ae47618f291c5f44e256d2bc97c36a33711.html.gz",
+    "coordinateSnippets": [
+      "<tr><th></th><th>Name</th><th>Country</th><th>Feature class</th><th>Latitude</th><th>Longitude</th></tr>",
+      "oma,jwrjya dwm,qiao zhi ya ju dan,\u0414\u0436...</small><span class=\"geo\" style=\"display:none;\"><span class=\"latitude\">33.7576064</span><span class=\"longitude\">-84.4007606</span></span></td><td><a href=\"/countries/US/united-states.html\">United Sta",
+      " Congress Center Station</a><br><small></small><span class=\"geo\" style=\"display:none;\"><span class=\"latitude\">33.7565</span><span class=\"longitude\">-84.4041</span></span></td><td><a href=\"/countries/US/united-states.html\">United States</a"
+    ]
+  },
+  {
+    "key": "geonames-search-cle-richfield",
+    "url": "https://www.geonames.org/search.html?q=Richfield+Coliseum&country=US",
+    "category": "original-geonames-gazetteer-search",
+    "capturedAt": "2026-10-20T07:07:56.850989+00:00",
+    "httpStatus": 200,
+    "finalUrl": "https://www.geonames.org/search.html?q=Richfield+Coliseum&country=US",
+    "headers": {
+      "Date": "Tue, 20 Oct 2026 07:07:57 GMT",
+      "Server": "Apache/2.4.57 (AlmaLinux) mod_jk/1.2.49 OpenSSL/3.0.7",
+      "X-Frame-Options": "sameorigin",
+      "Cache-Control": "no-cache",
+      "Set-Cookie": "JSESSIONID=2E5273C60B026B6CAAE6497D883B28CE; Path=/; Secure; HttpOnly",
+      "Connection": "close",
+      "Transfer-Encoding": "chunked",
+      "Content-Type": "text/html;charset=UTF-8"
+    },
+    "bodySha256": "26afbf661eb4c6adfda42299f524460a0adb81585698be0768a426b34a57f0c8",
+    "rawPath": "raw/geonames-search-cle-richfield-26afbf661eb4c6adfda42299f524460a0adb81585698be0768a426b34a57f0c8.html.gz",
+    "coordinateSnippets": [
+      "<tr><th></th><th>Name</th><th>Country</th><th>Feature class</th><th>Latitude</th><th>Longitude</th></tr>",
+      "oliseum,Richfield Coliseum (historical)</small><span class=\"geo\" style=\"display:none;\"><span class=\"latitude\">41.2486664</span><span class=\"longitude\">-81.5945646</span></span></td><td><a href=\"/countries/US/united-states.html\">United Sta",
+      "um Heliport (historical)</a><br><small></small><span class=\"geo\" style=\"display:none;\"><span class=\"latitude\">41.2500553</span><span class=\"longitude\">-81.5956757</span></span></td><td><a href=\"/countries/US/united-states.html\">United Sta"
+    ]
+  }
+]

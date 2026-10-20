@@ -1,0 +1,5 @@
+{
+  "url": "https://overpass-api.de/api/interpreter?data=%5Bout%3Ajson%5D%5Btimeout%3A25%5D%5Bdate%3A%222010-01-01T00%3A00%3A00Z%22%5D%3Bnwr%5B%22name%22~%22Arena%7CWaterhouse%7COrlando%22%5D%2828.545%2C-81.390%2C28.553%2C-81.380%29%3Bout+geom%3B",
+  "query": "[out:json][timeout:25][date:\"2010-01-01T00:00:00Z\"];nwr[\"name\"~\"Arena|Waterhouse|Orlando\"](28.545,-81.390,28.553,-81.380);out geom;",
+  "error": "The read operation timed out"
+}

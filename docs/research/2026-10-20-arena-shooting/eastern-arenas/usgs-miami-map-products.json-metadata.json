@@ -1,0 +1,5 @@
+{
+  "url": "https://tnmaccess.nationalmap.gov/api/v1/products?datasets=Historical+Topographic+Maps&bbox=-80.198%2C25.779%2C-80.191%2C25.787&max=100",
+  "path": "usgs-miami-map-products.json",
+  "bodySha256": "db27128a69400f1e2e76daed215e3e1175be501f0c6b2c5cee3790b7ee405ea5"
+}

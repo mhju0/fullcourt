@@ -45,6 +45,14 @@ CORPUS_DIR = Path("ml/data/officials")
 OUT_DIR = Path("ml/data/referee")
 EASTERN = ZoneInfo("US/Eastern")
 
+# Same four source-confirmed fixtures as scripts/referee-event-identity.ts (D-121).
+DATE_CORRECTIONS = {
+    "401161490": ("2020-02-24", "2020-02-23", "POR", "DET", 107, 104),
+    "401161528": ("2020-02-29", "2020-02-28", "LAC", "DEN", 132, 103),
+    "401161530": ("2020-03-01", "2020-02-29", "ATL", "POR", 129, 117),
+    "401161536": ("2020-03-01", "2020-02-29", "PHX", "GS", 99, 115),
+}
+
 # Logged twice by the NBA — as the foul and as the turnover it causes. See module docstring.
 DUPLICATE_OF_OFFENSIVE = "Offensive Foul Turnover"
 
@@ -159,6 +167,9 @@ def extract_game(path: Path) -> tuple[dict, list[dict], list[dict]] | None:
         return None
 
     event_id = str(header.get("id") or path.stem.replace("ev-", ""))
+    cached_event_id = path.stem.removeprefix("ev-")
+    if cached_event_id in DATE_CORRECTIONS and event_id != cached_event_id:
+        raise ValueError(f"Referee date correction identity differs: {cached_event_id}")
     season = header.get("season") or {}
     season_year = season.get("year")
     season_type = season.get("type")
@@ -179,6 +190,21 @@ def extract_game(path: Path) -> tuple[dict, list[dict], list[dict]] | None:
 
     home_score = parse_int(home.get("score"))
     away_score = parse_int(away.get("score"))
+
+    if event_id in DATE_CORRECTIONS:
+        provider_date, canonical_date, home_abbr, away_abbr, hs, aws = DATE_CORRECTIONS[event_id]
+        if (
+            header.get("id") != event_id
+            or comp.get("id") != event_id
+            or season_year != 2020
+            or season_type != 2
+            or date_et not in (provider_date, canonical_date)
+            or (home.get("team") or {}).get("abbreviation") != home_abbr
+            or (away.get("team") or {}).get("abbreviation") != away_abbr
+            or (home_score, away_score) != (hs, aws)
+        ):
+            raise ValueError(f"Referee date correction identity differs: {event_id}")
+        date_et = canonical_date
 
     plays = payload.get("plays") or []
     home_team_id = str((home.get("team") or {}).get("id") or "")

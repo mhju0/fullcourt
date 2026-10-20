@@ -1,0 +1,73 @@
+{
+  "id": "653645220afc480f930b822fc4843e2d",
+  "owner": "clibby007",
+  "ownerId": "e6f230a2218e446f9edfb66d24aed751",
+  "orgId": "HDRa0B57OVrv2E1q",
+  "created": 1614283663000,
+  "modified": 1728087599000,
+  "guid": null,
+  "name": "Major_Sport_Venues",
+  "title": "Major Sport Venues",
+  "type": "Feature Service",
+  "typeKeywords": [
+    "ArcGIS Server",
+    "Data",
+    "Feature Access",
+    "Feature Service",
+    "Metadata",
+    "Service",
+    "Singlelayer",
+    "Hosted Service"
+  ],
+  "description": "",
+  "tags": [
+    "543",
+    "Major",
+    "Sport",
+    "Public Venues",
+    "hifld"
+  ],
+  "snippet": "The Major Sport Venues dataset is composed of facilities within the United States, Canada, and Mexico that host events for the National Association for Stock Car Auto Racing (NASCAR), Indy Racing League (IRL), Major League Soccer (MLS), Major League Baseball (MLB), National Basketball Association (NBA), Women's National Basketball Association (WNBA), National Hockey League (NHL), National Football League (NFL), Professional Golfers Association (PGA) Tour, National Collegiate Athletic Association (NCAA) Division 1-Football Bowl Subdivision (FBS), National Collegiate Athletic Association (NCAA) Division 1 Basketball, Minor League Baseball (MiLB) Class Triple-A, and thoroughbred horse racing. Large numbers of people congregate at these facilities to attend major sporting events, therefore the locations of these facilities and the characteristics that describe each facility is essential for emergency preparedness, response, and evacuation. In the latest update 49 features were added, 6 features were closed, and 9 features were removed. The FORMER field was changed to FORMERNM. The YEAR field was changed to YEARCHNG. The SOURCE_DATE field has changed to SOURCEDATE. The ADDRESS2 field has been merged with the ADDRESS field and the ADDRESS2 field has been deleted.",
+  "thumbnail": "thumbnail/thumbnail.png",
+  "documentation": null,
+  "extent": [
+    [
+      -157.92996999999997,
+      17.06970000000007
+    ],
+    [
+      -65.79849542099998,
+      53.571333517000035
+    ]
+  ],
+  "categories": ["/Categories/Infrastructure"],
+  "spatialReference": "4326",
+  "accessInformation": "",
+  "classification": null,
+  "licenseInfo": "",
+  "culture": "en-us",
+  "properties": null,
+  "advancedSettings": null,
+  "url": "https://services5.arcgis.com/HDRa0B57OVrv2E1q/arcgis/rest/services/Major_Sport_Venues/FeatureServer",
+  "proxyFilter": null,
+  "access": "public",
+  "size": 712704,
+  "subInfo": 0,
+  "appCategories": [],
+  "industries": [],
+  "languages": [],
+  "largeThumbnail": null,
+  "banner": null,
+  "screenshots": [],
+  "listed": false,
+  "commentsEnabled": false,
+  "numComments": 0,
+  "numRatings": 0,
+  "avgRating": 0,
+  "numViews": 4406,
+  "scoreCompleteness": 66,
+  "groupDesignations": null,
+  "apiToken1ExpirationDate": -1,
+  "apiToken2ExpirationDate": -1,
+  "lastViewed": 1792436400000
+}

@@ -1,0 +1,16 @@
+[
+  {
+    "sourceId": "mem-vancouver-city",
+    "url": "https://council.vancouver.ca/20130312/documents/a4.pdf",
+    "observedVia": "web browsing search result from original municipal PDF, 2026-10-20",
+    "claim": "Municipal report identifies 800 Griffiths Way as Rogers Arena and the same arena previously General Motors Place.",
+    "rawRetention": "Direct request403; source-body SHA unavailable. Original browser-extracted source text was inspected, not substituted with secondary text."
+  },
+  {
+    "sourceId": "phx-veterans-address",
+    "url": "https://azstatefair.com/concerts/",
+    "observedVia": "web browsing original operator page, 2026-10-20",
+    "claim": "State Fair Coliseum Concert Series identifies Veterans Memorial Coliseum and publishes 1826 W McDowell Road, Phoenix85007.",
+    "rawRetention": "Direct request403; source-body SHA unavailable. Original browser-extracted source text was inspected, not substituted with secondary text."
+  }
+]

@@ -75,7 +75,7 @@ class FatigueArtifactTests(unittest.TestCase):
 
     def test_changed_producer_or_registry_invalidates_success(self):
         self.prepare()
-        for name in ["scripts/export_fatigue_features.ts", "src/lib/fatigue.ts", "src/data/fixture-venue-corrections.json", "ml/prepare_fatigue_dataset.py", "ml/fatigue_artifacts.py"]:
+        for name in ["scripts/export_fatigue_features.ts", "src/lib/fatigue.ts", "src/data/fixture-venue-corrections.json", "src/data/arena-history.json", "src/lib/arena-history.ts", "ml/prepare_fatigue_dataset.py", "ml/fatigue_artifacts.py"]:
             with self.subTest(source=name):
                 path = self.root / name
                 original = path.read_bytes()

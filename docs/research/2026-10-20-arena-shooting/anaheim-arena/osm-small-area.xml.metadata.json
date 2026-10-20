@@ -1,0 +1,6 @@
+{
+  "url": "https://api.openstreetmap.org/api/0.6/map?bbox=-117.923,33.798,-117.917,33.805",
+  "path": "osm-small-area.xml",
+  "httpStatus": 200,
+  "bodySha256": "01058723250fedc3fd6d02468b8d29fdd6e8728d80fe9de890dfbd6a145e5fef"
+}

@@ -1,0 +1,2975 @@
+[
+  {
+    "id": "boundary-0028500017",
+    "externalId": "0028500017",
+    "url": "https://www.nba.com/game/0028500017/box-score",
+    "capturedAt": "2026-10-20T06:44:14.877959+00:00",
+    "status": 200,
+    "finalUrl": "https://www.nba.com/game/0028500017/box-score",
+    "bodySha256": "bf3d2a68bbc21fc48a1770573f617351769442533bdc3491b86dc55ddc781dca",
+    "rawPath": "raw/boundary-0028500017-bf3d2a68bbc2.html.gz",
+    "bytes": 270933,
+    "retainedSha256": "482ef19ee7f3e8893ebde7d9fee59c402d3d890b652a1318c82e4cb32c16e023",
+    "observed": {
+      "gameId": "0028500017",
+      "gameCode": "19851026/SEADAL",
+      "gameEt": "1985-10-26T20:00:00Z",
+      "gameStatus": 3,
+      "arena": {
+        "arenaId": 49,
+        "arenaName": "Reunion Arena",
+        "arenaCity": "Dallas",
+        "arenaState": "TX",
+        "arenaCountry": "US",
+        "arenaTimezone": "Central",
+        "arenaStreetAddress": "",
+        "arenaPostalCode": ""
+      },
+      "home": {
+        "teamTricode": "DAL",
+        "teamId": 1610612742,
+        "score": 101
+      },
+      "away": {
+        "teamTricode": "SEA",
+        "teamId": 1610612760,
+        "score": 95
+      }
+    }
+  },
+  {
+    "id": "boundary-0040000058",
+    "externalId": "0040000058",
+    "url": "https://www.nba.com/game/0040000058/box-score",
+    "capturedAt": "2026-10-20T06:44:14.878187+00:00",
+    "status": 200,
+    "finalUrl": "https://www.nba.com/game/0040000058/box-score",
+    "bodySha256": "6c79787c95ee4904a7514c3910eae6af750ff7f62f64af8ccc16ebb1c0dbed26",
+    "rawPath": "raw/boundary-0040000058-6c79787c95ee.html.gz",
+    "bytes": 500770,
+    "retainedSha256": "93ee216b613b0787d1ffe0a3e644b54246fabb6f57cb5d0c01b0db7a6da54186",
+    "observed": {
+      "gameId": "0040000058",
+      "gameCode": "20010512/SASDAL",
+      "gameEt": "2001-05-12T15:30:00Z",
+      "gameStatus": 3,
+      "arena": {
+        "arenaId": 49,
+        "arenaName": "Reunion Arena",
+        "arenaCity": "Dallas",
+        "arenaState": "TX",
+        "arenaCountry": "US",
+        "arenaTimezone": "Central",
+        "arenaStreetAddress": "",
+        "arenaPostalCode": ""
+      },
+      "home": {
+        "teamTricode": "DAL",
+        "teamId": 1610612742,
+        "score": 112
+      },
+      "away": {
+        "teamTricode": "SAS",
+        "teamId": 1610612759,
+        "score": 108
+      }
+    }
+  },
+  {
+    "id": "boundary-0020100006",
+    "externalId": "0020100006",
+    "url": "https://www.nba.com/game/0020100006/box-score",
+    "capturedAt": "2026-10-20T06:44:16.031708+00:00",
+    "status": 200,
+    "finalUrl": "https://www.nba.com/game/0020100006/box-score",
+    "bodySha256": "af77cb504d9246d2b7d86454cb9c11d14b174153391600f1a0ed6972582f223c",
+    "rawPath": "raw/boundary-0020100006-af77cb504d92.html.gz",
+    "bytes": 484901,
+    "retainedSha256": "6335fd48af0431e72e9a816e0056c8db61c0a38e4c362558fc85d060222770dd",
+    "observed": {
+      "gameId": "0020100006",
+      "gameCode": "20011030/DETDAL",
+      "gameEt": "2001-10-30T20:30:00Z",
+      "gameStatus": 3,
+      "arena": {
+        "arenaId": 49,
+        "arenaName": "Reunion Arena",
+        "arenaCity": "Dallas",
+        "arenaState": "TX",
+        "arenaCountry": "US",
+        "arenaTimezone": "Central",
+        "arenaStreetAddress": "",
+        "arenaPostalCode": ""
+      },
+      "home": {
+        "teamTricode": "DAL",
+        "teamId": 1610612742,
+        "score": 94
+      },
+      "away": {
+        "teamTricode": "DET",
+        "teamId": 1610612765,
+        "score": 87
+      }
+    }
+  },
+  {
+    "id": "boundary-0022501193",
+    "externalId": "0022501193",
+    "url": "https://www.nba.com/game/0022501193/box-score",
+    "capturedAt": "2026-10-20T06:44:16.702773+00:00",
+    "status": 200,
+    "finalUrl": "https://www.nba.com/game/0022501193/box-score",
+    "bodySha256": "10d4c07b848ac470a50ceba6fb95373f07a9bfc16d76d29396fa37d6615f2ab2",
+    "rawPath": "raw/boundary-0022501193-10d4c07b848a.html.gz",
+    "bytes": 532324,
+    "retainedSha256": "ad131ce06ad464beb9f177051569d6ca45c9be16a276c27a6b05fb6061c1529a",
+    "observed": {
+      "gameId": "0022501193",
+      "gameCode": "20260412/CHIDAL",
+      "gameEt": "2026-04-12T20:30:00Z",
+      "gameStatus": 3,
+      "arena": {
+        "arenaId": 193,
+        "arenaName": "American Airlines Center",
+        "arenaCity": "Dallas",
+        "arenaState": "TX",
+        "arenaCountry": "US",
+        "arenaTimezone": "Central",
+        "arenaStreetAddress": "",
+        "arenaPostalCode": ""
+      },
+      "home": {
+        "teamTricode": "DAL",
+        "teamId": 1610612742,
+        "score": 149
+      },
+      "away": {
+        "teamTricode": "CHI",
+        "teamId": 1610612741,
+        "score": 128
+      }
+    }
+  },
+  {
+    "id": "boundary-0028500018",
+    "externalId": "0028500018",
+    "url": "https://www.nba.com/game/0028500018/box-score",
+    "capturedAt": "2026-10-20T06:44:17.308526+00:00",
+    "status": 200,
+    "finalUrl": "https://www.nba.com/game/0028500018/box-score",
+    "bodySha256": "7e2e1d96abca62cf760f68df62028349c453232c4050173e1966b648f0be56ca",
+    "rawPath": "raw/boundary-0028500018-7e2e1d96abca.html.gz",
+    "bytes": 270819,
+    "retainedSha256": "87ac0f174dafddfb7e82abb2d6ff155948e6c78dc525427722106673dc74b38e",
+    "observed": {
+      "gameId": "0028500018",
+      "gameCode": "19851026/SACDEN",
+      "gameEt": "1985-10-26T20:00:00Z",
+      "gameStatus": 3,
+      "arena": {
+        "arenaId": 36,
+        "arenaName": "McNichols Sports Arena",
+        "arenaCity": "Denver",
+        "arenaState": "CO",
+        "arenaCountry": "US",
+        "arenaTimezone": "Mountain",
+        "arenaStreetAddress": "",
+        "arenaPostalCode": ""
+      },
+      "home": {
+        "teamTricode": "DEN",
+        "teamId": 1610612743,
+        "score": 123
+      },
+      "away": {
+        "teamTricode": "SAC",
+        "teamId": 1610612758,
+        "score": 112
+      }
+    }
+  },
+  {
+    "id": "boundary-0029800720",
+    "externalId": "0029800720",
+    "url": "https://www.nba.com/game/0029800720/box-score",
+    "capturedAt": "2026-10-20T06:44:17.554578+00:00",
+    "status": 200,
+    "finalUrl": "https://www.nba.com/game/0029800720/box-score",
+    "bodySha256": "1e65ed28de10d3c3ac29b943fd7119a07f84eba2c10a49f8ac2e8061cb6b6d63",
+    "rawPath": "raw/boundary-0029800720-1e65ed28de10.html.gz",
+    "bytes": 492994,
+    "retainedSha256": "aa167deb461e2a22d96aa9ec0ee6e0238de60587aafdf8fb52b5933800fda575",
+    "observed": {
+      "gameId": "0029800720",
+      "gameCode": "19990505/HOUDEN",
+      "gameEt": "1999-05-05T21:00:00Z",
+      "gameStatus": 3,
+      "arena": {
+        "arenaId": 36,
+        "arenaName": "McNichols Sports Arena",
+        "arenaCity": "Denver",
+        "arenaState": "CO",
+        "arenaCountry": "US",
+        "arenaTimezone": "Mountain",
+        "arenaStreetAddress": "",
+        "arenaPostalCode": ""
+      },
+      "home": {
+        "teamTricode": "DEN",
+        "teamId": 1610612743,
+        "score": 88
+      },
+      "away": {
+        "teamTricode": "HOU",
+        "teamId": 1610612745,
+        "score": 95
+      }
+    }
+  },
+  {
+    "id": "boundary-0029900010",
+    "externalId": "0029900010",
+    "url": "https://www.nba.com/game/0029900010/box-score",
+    "capturedAt": "2026-10-20T06:44:19.151739+00:00",
+    "status": 200,
+    "finalUrl": "https://www.nba.com/game/0029900010/box-score",
+    "bodySha256": "980e72b12d056936c5899c96944b9399beaa4e748d147cd9ed916560c70d286b",
+    "rawPath": "raw/boundary-0029900010-980e72b12d05.html.gz",
+    "bytes": 529413,
+    "retainedSha256": "8b7db5729b7a0cb852e5c15e61935fc3fa42c7c25055793505c4d8e8586bd445",
+    "observed": {
+      "gameId": "0029900010",
+      "gameCode": "19991102/PHXDEN",
+      "gameEt": "1999-11-02T21:00:00Z",
+      "gameStatus": 3,
+      "arena": {
+        "arenaId": 139,
+        "arenaName": "Pepsi Center",
+        "arenaCity": "Denver",
+        "arenaState": "CO",
+        "arenaCountry": "US",
+        "arenaTimezone": "Mountain",
+        "arenaStreetAddress": "1000 Chopper Cir",
+        "arenaPostalCode": "80204"
+      },
+      "home": {
+        "teamTricode": "DEN",
+        "teamId": 1610612743,
+        "score": 107
+      },
+      "away": {
+        "teamTricode": "PHX",
+        "teamId": 1610612756,
+        "score": 102
+      }
+    }
+  },
+  {
+    "id": "boundary-0042500165",
+    "externalId": "0042500165",
+    "url": "https://www.nba.com/game/0042500165/box-score",
+    "capturedAt": "2026-10-20T06:44:19.643222+00:00",
+    "status": 200,
+    "finalUrl": "https://www.nba.com/game/0042500165/box-score",
+    "bodySha256": "a38b55d2f7b511395e4efb9c43e40a9afa0768f49e3f09e141aedd484bd74f3b",
+    "rawPath": "raw/boundary-0042500165-a38b55d2f7b5.html.gz",
+    "bytes": 544047,
+    "retainedSha256": "40a5cbcecc1bbb3ea313f7f8f1c6445dd137a68f5385ec0e2602bbb9b986a554",
+    "observed": {
+      "gameId": "0042500165",
+      "gameCode": "20260427/MINDEN",
+      "gameEt": "2026-04-27T22:30:00Z",
+      "gameStatus": 3,
+      "arena": {
+        "arenaId": 1000046,
+        "arenaName": "Ball Arena",
+        "arenaCity": "Denver",
+        "arenaState": "CO",
+        "arenaCountry": "US",
+        "arenaTimezone": "Mountain",
+        "arenaStreetAddress": "",
+        "arenaPostalCode": ""
+      },
+      "home": {
+        "teamTricode": "DEN",
+        "teamId": 1610612743,
+        "score": 125
+      },
+      "away": {
+        "teamTricode": "MIN",
+        "teamId": 1610612750,
+        "score": 113
+      }
+    }
+  },
+  {
+    "id": "boundary-0028500008",
+    "externalId": "0028500008",
+    "url": "https://www.nba.com/game/0028500008/box-score",
+    "capturedAt": "2026-10-20T06:44:20.872920+00:00",
+    "status": 200,
+    "finalUrl": "https://www.nba.com/game/0028500008/box-score",
+    "bodySha256": "6b628032bd5e0388bfbc7df92f9aa16deba512b92990919f6c0523a1eaa3f06b",
+    "rawPath": "raw/boundary-0028500008-6b628032bd5e.html.gz",
+    "bytes": 270972,
+    "retainedSha256": "7ca37960b3c73de4300914fe731435e420d0abd84e9a4c39f861195ab5650e37",
+    "observed": {
+      "gameId": "0028500008",
+      "gameCode": "19851025/DENGOS",
+      "gameEt": "1985-10-25T20:00:00Z",
+      "gameStatus": 3,
+      "arena": {
+        "arenaId": 53,
+        "arenaName": "San Jose Arena",
+        "arenaCity": "San Jose",
+        "arenaState": "CA",
+        "arenaCountry": "US",
+        "arenaTimezone": "Pacific",
+        "arenaStreetAddress": "",
+        "arenaPostalCode": ""
+      },
+      "home": {
+        "teamTricode": "GOS",
+        "teamId": 1610612744,
+        "score": 105
+      },
+      "away": {
+        "teamTricode": "DEN",
+        "teamId": 1610612743,
+        "score": 119
+      }
+    }
+  },
+  {
+    "id": "boundary-0029501163",
+    "externalId": "0029501163",
+    "url": "https://www.nba.com/game/0029501163/box-score",
+    "capturedAt": "2026-10-20T06:44:21.055449+00:00",
+    "status": 200,
+    "finalUrl": "https://www.nba.com/game/0029501163/box-score",
+    "bodySha256": "f0e6eceadb4ec1927dcd68b12a5deb02a7178c40519362252e50c64033e4543e",
+    "rawPath": "raw/boundary-0029501163-f0e6eceadb4e.html.gz",
+    "bytes": 268935,
+    "retainedSha256": "7be18f9c302fb570ea73069811b8c148f9ac844ebe78487468eaf6cd70412cd3",
+    "observed": {
+      "gameId": "0029501163",
+      "gameCode": "19960419/PORGOS",
+      "gameEt": "1996-04-19T20:00:00Z",
+      "gameStatus": 3,
+      "arena": {
+        "arenaId": 53,
+        "arenaName": "San Jose Arena",
+        "arenaCity": "San Jose",
+        "arenaState": "CA",
+        "arenaCountry": "US",
+        "arenaTimezone": "Pacific",
+        "arenaStreetAddress": "",
+        "arenaPostalCode": ""
+      },
+      "home": {
+        "teamTricode": "GOS",
+        "teamId": 1610612744,
+        "score": 87
+      },
+      "away": {
+        "teamTricode": "POR",
+        "teamId": 1610612757,
+        "score": 95
+      }
+    }
+  },
+  {
+    "id": "boundary-0029600013",
+    "externalId": "0029600013",
+    "url": "https://www.nba.com/game/0029600013/box-score",
+    "capturedAt": "2026-10-20T06:44:22.599689+00:00",
+    "status": 200,
+    "finalUrl": "https://www.nba.com/game/0029600013/box-score",
+    "bodySha256": "5c8cab1f2614bbfdc5e8928f8a75fcc57333dc071eb0079e716c23fe145a8d51",
+    "rawPath": "raw/boundary-0029600013-5c8cab1f2614.html.gz",
+    "bytes": 482274,
+    "retainedSha256": "c83e4b123ad410d782809112e3378e4b2bfbaaa7fcf24b5855475678a3d29a65",
+    "observed": {
+      "gameId": "0029600013",
+      "gameCode": "19961101/LACGSW",
+      "gameEt": "1996-11-01T22:30:00Z",
+      "gameStatus": 3,
+      "arena": {
+        "arenaId": 71,
+        "arenaName": "ORACLE Arena",
+        "arenaCity": "Oakland",
+        "arenaState": "CA",
+        "arenaCountry": "US",
+        "arenaTimezone": "Pacific",
+        "arenaStreetAddress": "",
+        "arenaPostalCode": ""
+      },
+      "home": {
+        "teamTricode": "GSW",
+        "teamId": 1610612744,
+        "score": 85
+      },
+      "away": {
+        "teamTricode": "LAC",
+        "teamId": 1610612746,
+        "score": 97
+      }
+    }
+  },
+  {
+    "id": "boundary-0029601180",
+    "externalId": "0029601180",
+    "url": "https://www.nba.com/game/0029601180/box-score",
+    "capturedAt": "2026-10-20T06:44:22.906259+00:00",
+    "status": 200,
+    "finalUrl": "https://www.nba.com/game/0029601180/box-score",
+    "bodySha256": "7b6e115a3c4fb05ddf3056647febf7369664d22f41e75dc7d9f3f5d0135200a8",
+    "rawPath": "raw/boundary-0029601180-7b6e115a3c4f.html.gz",
+    "bytes": 503770,
+    "retainedSha256": "26b3e83125dd40d7e015933eef2981c513c7cda4c95a56e62ad6a113e28abe21",
+    "observed": {
+      "gameId": "0029601180",
+      "gameCode": "19970419/SACGSW",
+      "gameEt": "1997-04-19T23:00:00Z",
+      "gameStatus": 3,
+      "arena": {
+        "arenaId": 71,
+        "arenaName": "ORACLE Arena",
+        "arenaCity": "Oakland",
+        "arenaState": "CA",
+        "arenaCountry": "US",
+        "arenaTimezone": "Pacific",
+        "arenaStreetAddress": "",
+        "arenaPostalCode": ""
+      },
+      "home": {
+        "teamTricode": "GSW",
+        "teamId": 1610612744,
+        "score": 120
+      },
+      "away": {
+        "teamTricode": "SAC",
+        "teamId": 1610612758,
+        "score": 122
+      }
+    }
+  },
+  {
+    "id": "boundary-0029700074",
+    "externalId": "0029700074",
+    "url": "https://www.nba.com/game/0029700074/box-score",
+    "capturedAt": "2026-10-20T06:44:23.748814+00:00",
+    "status": 200,
+    "finalUrl": "https://www.nba.com/game/0029700074/box-score",
+    "bodySha256": "bd4847fcb7ad03a20adfc0a0f895fc1f1f5f676a1bbbacaba7b82ce977e7be56",
+    "rawPath": "raw/boundary-0029700074-bd4847fcb7ad.html.gz",
+    "bytes": 505399,
+    "retainedSha256": "b8172c655abe53658e71c196e67943c561f5d15c8113c76657c9825f2174123e",
+    "observed": {
+      "gameId": "0029700074",
+      "gameCode": "19971108/MINGSW",
+      "gameEt": "1997-11-08T23:00:00Z",
+      "gameStatus": 3,
+      "arena": {
+        "arenaId": 71,
+        "arenaName": "ORACLE Arena",
+        "arenaCity": "Oakland",
+        "arenaState": "CA",
+        "arenaCountry": "US",
+        "arenaTimezone": "Pacific",
+        "arenaStreetAddress": "",
+        "arenaPostalCode": ""
+      },
+      "home": {
+        "teamTricode": "GSW",
+        "teamId": 1610612744,
+        "score": 90
+      },
+      "away": {
+        "teamTricode": "MIN",
+        "teamId": 1610612750,
+        "score": 97
+      }
+    }
+  },
+  {
+    "id": "boundary-0041800406",
+    "externalId": "0041800406",
+    "url": "https://www.nba.com/game/0041800406/box-score",
+    "capturedAt": "2026-10-20T06:44:23.961550+00:00",
+    "status": 200,
+    "finalUrl": "https://www.nba.com/game/0041800406/box-score",
+    "bodySha256": "fa38074f8ddd44ae0a8cac82b0455f52d92fde8686f7f660fdc829bebfe3f8c4",
+    "rawPath": "raw/boundary-0041800406-fa38074f8ddd.html.gz",
+    "bytes": 498302,
+    "retainedSha256": "097b2268a63158672d8c115b57c59765182675b780095daa555add39b8a59381",
+    "observed": {
+      "gameId": "0041800406",
+      "gameCode": "20190613/TORGSW",
+      "gameEt": "2019-06-13T21:00:00Z",
+      "gameStatus": 3,
+      "arena": {
+        "arenaId": 71,
+        "arenaName": "ORACLE Arena",
+        "arenaCity": "Oakland",
+        "arenaState": "CA",
+        "arenaCountry": "US",
+        "arenaTimezone": "Pacific",
+        "arenaStreetAddress": "",
+        "arenaPostalCode": ""
+      },
+      "home": {
+        "teamTricode": "GSW",
+        "teamId": 1610612744,
+        "score": 110
+      },
+      "away": {
+        "teamTricode": "TOR",
+        "teamId": 1610612761,
+        "score": 114
+      }
+    }
+  },
+  {
+    "id": "boundary-0021900016",
+    "externalId": "0021900016",
+    "url": "https://www.nba.com/game/0021900016/box-score",
+    "capturedAt": "2026-10-20T06:44:25.355109+00:00",
+    "status": 200,
+    "finalUrl": "https://www.nba.com/game/0021900016/box-score",
+    "bodySha256": "d36c2daf562bd4f3d4cccd074263504bd11e1231a6fff3383ed8be46476c1b67",
+    "rawPath": "raw/boundary-0021900016-d36c2daf562b.html.gz",
+    "bytes": 510384,
+    "retainedSha256": "a94d1a25b77a653ecced6945dc207cfbe6707105dde0e862019d075b6c463a0b",
+    "observed": {
+      "gameId": "0021900016",
+      "gameCode": "20191024/LACGSW",
+      "gameEt": "2019-10-24T22:30:00Z",
+      "gameStatus": 3,
+      "arena": {
+        "arenaId": 1000011,
+        "arenaName": "Chase Center",
+        "arenaCity": "San Francisco",
+        "arenaState": "CA",
+        "arenaCountry": "US",
+        "arenaTimezone": "Pacific",
+        "arenaStreetAddress": "",
+        "arenaPostalCode": ""
+      },
+      "home": {
+        "teamTricode": "GSW",
+        "teamId": 1610612744,
+        "score": 122
+      },
+      "away": {
+        "teamTricode": "LAC",
+        "teamId": 1610612746,
+        "score": 141
+      }
+    }
+  },
+  {
+    "id": "boundary-0022501170",
+    "externalId": "0022501170",
+    "url": "https://www.nba.com/game/0022501170/box-score",
+    "capturedAt": "2026-10-20T06:44:25.565642+00:00",
+    "status": 200,
+    "finalUrl": "https://www.nba.com/game/0022501170/box-score",
+    "bodySha256": "abbc92355c920936d26b57ec66015d6f94c8690fc0aecc2be7550cdda6dc3f10",
+    "rawPath": "raw/boundary-0022501170-abbc92355c92.html.gz",
+    "bytes": 484900,
+    "retainedSha256": "4725117ef92dcbd1a0de018338926e424becfd6301a796b7b198b46e729e02d0",
+    "observed": {
+      "gameId": "0022501170",
+      "gameCode": "20260409/LALGSW",
+      "gameEt": "2026-04-09T22:00:00Z",
+      "gameStatus": 3,
+      "arena": {
+        "arenaId": 1000011,
+        "arenaName": "Chase Center",
+        "arenaCity": "San Francisco",
+        "arenaState": "CA",
+        "arenaCountry": "US",
+        "arenaTimezone": "Pacific",
+        "arenaStreetAddress": "",
+        "arenaPostalCode": ""
+      },
+      "home": {
+        "teamTricode": "GSW",
+        "teamId": 1610612744,
+        "score": 103
+      },
+      "away": {
+        "teamTricode": "LAL",
+        "teamId": 1610612747,
+        "score": 119
+      }
+    }
+  },
+  {
+    "id": "boundary-0028500022",
+    "externalId": "0028500022",
+    "url": "https://www.nba.com/game/0028500022/box-score",
+    "capturedAt": "2026-10-20T06:44:26.255215+00:00",
+    "status": 200,
+    "finalUrl": "https://www.nba.com/game/0028500022/box-score",
+    "bodySha256": "6dec0e90d634a94a81f1eeab71c97ae964d1b99bac2870822887b0e9fb8ea124",
+    "rawPath": "raw/boundary-0028500022-6dec0e90d634.html.gz",
+    "bytes": 272600,
+    "retainedSha256": "4a0f915800e76bf3bc15a8aa15763b4ba55b75ca41d54ee9c8e06e1d3c8fd666",
+    "observed": {
+      "gameId": "0028500022",
+      "gameCode": "19851029/SEAHOU",
+      "gameEt": "1985-10-29T20:00:00Z",
+      "gameStatus": 3,
+      "arena": {
+        "arenaId": 60,
+        "arenaName": "Compaq Center",
+        "arenaCity": "Houston",
+        "arenaState": "TX",
+        "arenaCountry": "US",
+        "arenaTimezone": "Central",
+        "arenaStreetAddress": "",
+        "arenaPostalCode": ""
+      },
+      "home": {
+        "teamTricode": "HOU",
+        "teamId": 1610612745,
+        "score": 111
+      },
+      "away": {
+        "teamTricode": "SEA",
+        "teamId": 1610612760,
+        "score": 99
+      }
+    }
+  },
+  {
+    "id": "boundary-0020201174",
+    "externalId": "0020201174",
+    "url": "https://www.nba.com/game/0020201174/box-score",
+    "capturedAt": "2026-10-20T06:44:27.433150+00:00",
+    "status": 200,
+    "finalUrl": "https://www.nba.com/game/0020201174/box-score",
+    "bodySha256": "87f3e5cf6d73b8903eb12311fca4f7962d1bb38af296db26a3f690003f123e0e",
+    "rawPath": "raw/boundary-0020201174-87f3e5cf6d73.html.gz",
+    "bytes": 475323,
+    "retainedSha256": "fa4179e86eb4e2d4bbfc05c834cf3ae4da1bbf34f2faa035df94c2809b352910",
+    "observed": {
+      "gameId": "0020201174",
+      "gameCode": "20030415/MEMHOU",
+      "gameEt": "2003-04-15T20:30:00Z",
+      "gameStatus": 3,
+      "arena": {
+        "arenaId": 60,
+        "arenaName": "Compaq Center",
+        "arenaCity": "Houston",
+        "arenaState": "TX",
+        "arenaCountry": "US",
+        "arenaTimezone": "Central",
+        "arenaStreetAddress": "",
+        "arenaPostalCode": ""
+      },
+      "home": {
+        "teamTricode": "HOU",
+        "teamId": 1610612745,
+        "score": 97
+      },
+      "away": {
+        "teamTricode": "MEM",
+        "teamId": 1610612763,
+        "score": 86
+      }
+    }
+  },
+  {
+    "id": "boundary-0020300017",
+    "externalId": "0020300017",
+    "url": "https://www.nba.com/game/0020300017/box-score",
+    "capturedAt": "2026-10-20T06:44:27.837518+00:00",
+    "status": 200,
+    "finalUrl": "https://www.nba.com/game/0020300017/box-score",
+    "bodySha256": "e8be72edb5c7f7ba02eaaba01c5f8dbe18e37403be686f8b4ccc06a1fc533e75",
+    "rawPath": "raw/boundary-0020300017-e8be72edb5c7.html.gz",
+    "bytes": 507476,
+    "retainedSha256": "30767bb4ada0340150da0ea70be539efd017df04ebd84e65744d36490b1ef688",
+    "observed": {
+      "gameId": "0020300017",
+      "gameCode": "20031030/DENHOU",
+      "gameEt": "2003-10-30T20:00:00Z",
+      "gameStatus": 3,
+      "arena": {
+        "arenaId": 215,
+        "arenaName": "Toyota Center",
+        "arenaCity": "Houston",
+        "arenaState": "TX",
+        "arenaCountry": "US",
+        "arenaTimezone": "Central",
+        "arenaStreetAddress": "",
+        "arenaPostalCode": ""
+      },
+      "home": {
+        "teamTricode": "HOU",
+        "teamId": 1610612745,
+        "score": 102
+      },
+      "away": {
+        "teamTricode": "DEN",
+        "teamId": 1610612743,
+        "score": 85
+      }
+    }
+  },
+  {
+    "id": "boundary-0042500176",
+    "externalId": "0042500176",
+    "url": "https://www.nba.com/game/0042500176/box-score",
+    "capturedAt": "2026-10-20T06:44:28.936247+00:00",
+    "status": 200,
+    "finalUrl": "https://www.nba.com/game/0042500176/box-score",
+    "bodySha256": "ab7ca0908b7d0dba5e64c83d67cd87922420af2cd7443f934a3a35e242a1b845",
+    "rawPath": "raw/boundary-0042500176-ab7ca0908b7d.html.gz",
+    "bytes": 547725,
+    "retainedSha256": "89e46fb4719334711896ba9fd50ecb0459e275b28deee8d3f09d938a2f067679",
+    "observed": {
+      "gameId": "0042500176",
+      "gameCode": "20260501/LALHOU",
+      "gameEt": "2026-05-01T21:30:00Z",
+      "gameStatus": 3,
+      "arena": {
+        "arenaId": 215,
+        "arenaName": "Toyota Center",
+        "arenaCity": "Houston",
+        "arenaState": "TX",
+        "arenaCountry": "US",
+        "arenaTimezone": "Central",
+        "arenaStreetAddress": "",
+        "arenaPostalCode": ""
+      },
+      "home": {
+        "teamTricode": "HOU",
+        "teamId": 1610612745,
+        "score": 78
+      },
+      "away": {
+        "teamTricode": "LAL",
+        "teamId": 1610612747,
+        "score": 98
+      }
+    }
+  },
+  {
+    "id": "boundary-0028500015",
+    "externalId": "0028500015",
+    "url": "https://www.nba.com/game/0028500015/box-score",
+    "capturedAt": "2026-10-20T06:44:28.970061+00:00",
+    "status": 200,
+    "finalUrl": "https://www.nba.com/game/0028500015/box-score",
+    "bodySha256": "48ec8cf7909f42d4cfb01236575f974d649c63c13d4945d6f1e798b226cbe3fa",
+    "rawPath": "raw/boundary-0028500015-48ec8cf7909f.html.gz",
+    "bytes": 271635,
+    "retainedSha256": "6abef419a233120b202d5a35101c54a3bb8e765e4bc65cff5d765449a5c7e451",
+    "observed": {
+      "gameId": "0028500015",
+      "gameCode": "19851026/HOULAC",
+      "gameEt": "1985-10-26T20:00:00Z",
+      "gameStatus": 3,
+      "arena": {
+        "arenaId": 100,
+        "arenaName": "L.A. Memorial Sports Arena",
+        "arenaCity": "Los Angeles",
+        "arenaState": "CA",
+        "arenaCountry": "US",
+        "arenaTimezone": "Pacific",
+        "arenaStreetAddress": "",
+        "arenaPostalCode": ""
+      },
+      "home": {
+        "teamTricode": "LAC",
+        "teamId": 1610612746,
+        "score": 130
+      },
+      "away": {
+        "teamTricode": "HOU",
+        "teamId": 1610612745,
+        "score": 129
+      }
+    }
+  },
+  {
+    "id": "boundary-0029800722",
+    "externalId": "0029800722",
+    "url": "https://www.nba.com/game/0029800722/box-score",
+    "capturedAt": "2026-10-20T06:44:29.884070+00:00",
+    "status": 200,
+    "finalUrl": "https://www.nba.com/game/0029800722/box-score",
+    "bodySha256": "1ad0ca5aa7299b83aa5c30012c8b465499cec64e4bbc46de5299866d4aafdd39",
+    "rawPath": "raw/boundary-0029800722-1ad0ca5aa729.html.gz",
+    "bytes": 495372,
+    "retainedSha256": "c787ef008a7e4f87d937eb17c209301eaacafb8c5264a1844e52af711c6f195e",
+    "observed": {
+      "gameId": "0029800722",
+      "gameCode": "19990505/SEALAC",
+      "gameEt": "1999-05-05T22:30:00Z",
+      "gameStatus": 3,
+      "arena": {
+        "arenaId": 59,
+        "arenaName": "Sports Arena",
+        "arenaCity": "Los Angeles",
+        "arenaState": "CA",
+        "arenaCountry": "US",
+        "arenaTimezone": "Pacific",
+        "arenaStreetAddress": "",
+        "arenaPostalCode": ""
+      },
+      "home": {
+        "teamTricode": "LAC",
+        "teamId": 1610612746,
+        "score": 105
+      },
+      "away": {
+        "teamTricode": "SEA",
+        "teamId": 1610612760,
+        "score": 107
+      }
+    }
+  },
+  {
+    "id": "boundary-0029900012",
+    "externalId": "0029900012",
+    "url": "https://www.nba.com/game/0029900012/box-score",
+    "capturedAt": "2026-10-20T06:44:30.225046+00:00",
+    "status": 200,
+    "finalUrl": "https://www.nba.com/game/0029900012/box-score",
+    "bodySha256": "885ce2a1248550eb9fe73c4a047ac94b054479abd710651f27fbcaf1a3b874c5",
+    "rawPath": "raw/boundary-0029900012-885ce2a12485.html.gz",
+    "bytes": 506129,
+    "retainedSha256": "9432add3f8f754a08c861bb1c6a166846d4fce4eb0d9e8220e6d3510af8be9b9",
+    "observed": {
+      "gameId": "0029900012",
+      "gameCode": "19991102/SEALAC",
+      "gameEt": "1999-11-02T22:30:00Z",
+      "gameStatus": 3,
+      "arena": {
+        "arenaId": 137,
+        "arenaName": "STAPLES Center",
+        "arenaCity": "Los Angeles",
+        "arenaState": "CA",
+        "arenaCountry": "US",
+        "arenaTimezone": "Pacific",
+        "arenaStreetAddress": "1111 S Figueroa St",
+        "arenaPostalCode": "90015"
+      },
+      "home": {
+        "teamTricode": "LAC",
+        "teamId": 1610612746,
+        "score": 92
+      },
+      "away": {
+        "teamTricode": "SEA",
+        "teamId": 1610612760,
+        "score": 104
+      }
+    }
+  },
+  {
+    "id": "boundary-0042300175",
+    "externalId": "0042300175",
+    "url": "https://www.nba.com/game/0042300175/box-score",
+    "capturedAt": "2026-10-20T06:44:31.713666+00:00",
+    "status": 200,
+    "finalUrl": "https://www.nba.com/game/0042300175/box-score",
+    "bodySha256": "eaf363b6477fe31042b3cd704b0246e08176e3812e68585788082016160ed0f1",
+    "rawPath": "raw/boundary-0042300175-eaf363b6477f.html.gz",
+    "bytes": 530096,
+    "retainedSha256": "0116edced26b561ce547ac39538de7f1f09ec93bcacf01ad9f3c87e00c0eaac7",
+    "observed": {
+      "gameId": "0042300175",
+      "gameCode": "20240501/DALLAC",
+      "gameEt": "2024-05-01T22:00:00Z",
+      "gameStatus": 3,
+      "arena": {
+        "arenaId": 1000069,
+        "arenaName": "Crypto.com Arena",
+        "arenaCity": "Los Angeles",
+        "arenaState": "CA",
+        "arenaCountry": "US",
+        "arenaTimezone": "Pacific",
+        "arenaStreetAddress": "",
+        "arenaPostalCode": ""
+      },
+      "home": {
+        "teamTricode": "LAC",
+        "teamId": 1610612746,
+        "score": 93
+      },
+      "away": {
+        "teamTricode": "DAL",
+        "teamId": 1610612742,
+        "score": 123
+      }
+    }
+  },
+  {
+    "id": "boundary-0022400071",
+    "externalId": "0022400071",
+    "url": "https://www.nba.com/game/0022400071/box-score",
+    "capturedAt": "2026-10-20T06:44:31.998634+00:00",
+    "status": 200,
+    "finalUrl": "https://www.nba.com/game/0022400071/box-score",
+    "bodySha256": "97a20ae68009b3c3acc31528fde3cd12082e9e7484e449f7b1e476bdd6eb60ed",
+    "rawPath": "raw/boundary-0022400071-97a20ae68009.html.gz",
+    "bytes": 545924,
+    "retainedSha256": "9b2a0770e45aaa802b7bef5ef338d401dae362e5bca169ac46b4aef46f911088",
+    "observed": {
+      "gameId": "0022400071",
+      "gameCode": "20241023/PHXLAC",
+      "gameEt": "2024-10-23T22:00:00Z",
+      "gameStatus": 3,
+      "arena": {
+        "arenaId": 1000137,
+        "arenaName": "Intuit Dome",
+        "arenaCity": "Inglewood",
+        "arenaState": "CA",
+        "arenaCountry": "US",
+        "arenaTimezone": "Pacific",
+        "arenaStreetAddress": "",
+        "arenaPostalCode": ""
+      },
+      "home": {
+        "teamTricode": "LAC",
+        "teamId": 1610612746,
+        "score": 113
+      },
+      "away": {
+        "teamTricode": "PHX",
+        "teamId": 1610612756,
+        "score": 116
+      }
+    }
+  },
+  {
+    "id": "boundary-0052500131",
+    "externalId": "0052500131",
+    "url": "https://www.nba.com/game/0052500131/box-score",
+    "capturedAt": "2026-10-20T06:44:33.270338+00:00",
+    "status": 200,
+    "finalUrl": "https://www.nba.com/game/0052500131/box-score",
+    "bodySha256": "6066837568352e69364acbec680e4e12518f51cba7cb69b74cff09660acf7eb0",
+    "rawPath": "raw/boundary-0052500131-606683756835.html.gz",
+    "bytes": 517205,
+    "retainedSha256": "d7ffcbe5291a8bc3f2b453235bfef9b8bfa243b1e52270aaeb2f6852d74bd1d7",
+    "observed": {
+      "gameId": "0052500131",
+      "gameCode": "20260415/GSWLAC",
+      "gameEt": "2026-04-15T22:00:00Z",
+      "gameStatus": 3,
+      "arena": {
+        "arenaId": 1000137,
+        "arenaName": "Intuit Dome",
+        "arenaCity": "Inglewood",
+        "arenaState": "CA",
+        "arenaCountry": "US",
+        "arenaTimezone": "Pacific",
+        "arenaStreetAddress": "",
+        "arenaPostalCode": ""
+      },
+      "home": {
+        "teamTricode": "LAC",
+        "teamId": 1610612746,
+        "score": 121
+      },
+      "away": {
+        "teamTricode": "GSW",
+        "teamId": 1610612744,
+        "score": 126
+      }
+    }
+  },
+  {
+    "id": "boundary-0028500061",
+    "externalId": "0028500061",
+    "url": "https://www.nba.com/game/0028500061/box-score",
+    "capturedAt": "2026-10-20T06:44:33.293185+00:00",
+    "status": 200,
+    "finalUrl": "https://www.nba.com/game/0028500061/box-score",
+    "bodySha256": "36b0099fc7cc77d050933f56ea127078ab773f313c15c8a9953ed81b938c1f97",
+    "rawPath": "raw/boundary-0028500061-36b0099fc7cc.html.gz",
+    "bytes": 272100,
+    "retainedSha256": "c227aa46e22cf09ce0fc60a17fb21e511ff0b8ebf9524ba42c9cf048717cd8ae",
+    "observed": {
+      "gameId": "0028500061",
+      "gameCode": "19851105/CLELAL",
+      "gameEt": "1985-11-05T20:00:00Z",
+      "gameStatus": 3,
+      "arena": {
+        "arenaId": 20,
+        "arenaName": "Great Western Forum",
+        "arenaCity": "Los Angeles",
+        "arenaState": "LA",
+        "arenaCountry": "US",
+        "arenaTimezone": "Pacific",
+        "arenaStreetAddress": "",
+        "arenaPostalCode": ""
+      },
+      "home": {
+        "teamTricode": "LAL",
+        "teamId": 1610612747,
+        "score": 111
+      },
+      "away": {
+        "teamTricode": "CLE",
+        "teamId": 1610612739,
+        "score": 129
+      }
+    }
+  },
+  {
+    "id": "boundary-0049800054",
+    "externalId": "0049800054",
+    "url": "https://www.nba.com/game/0049800054/box-score",
+    "capturedAt": "2026-10-20T06:44:34.506771+00:00",
+    "status": 200,
+    "finalUrl": "https://www.nba.com/game/0049800054/box-score",
+    "bodySha256": "95fb4d106f34d6e38ab16ffb6bf48548ef1367843d3724bbe417ba84c3096517",
+    "rawPath": "raw/boundary-0049800054-95fb4d106f34.html.gz",
+    "bytes": 513953,
+    "retainedSha256": "981693371a43a5525f48a6e8d9c3f4c0ed2b9667a91a34a0431c2ba4b6bce1c3",
+    "observed": {
+      "gameId": "0049800054",
+      "gameCode": "19990523/SASLAL",
+      "gameEt": "1999-05-23T17:30:00Z",
+      "gameStatus": 3,
+      "arena": {
+        "arenaId": 20,
+        "arenaName": "Great Western Forum",
+        "arenaCity": "Los Angeles",
+        "arenaState": "LA",
+        "arenaCountry": "US",
+        "arenaTimezone": "Pacific",
+        "arenaStreetAddress": "",
+        "arenaPostalCode": ""
+      },
+      "home": {
+        "teamTricode": "LAL",
+        "teamId": 1610612747,
+        "score": 107
+      },
+      "away": {
+        "teamTricode": "SAS",
+        "teamId": 1610612759,
+        "score": 118
+      }
+    }
+  },
+  {
+    "id": "boundary-0029900018",
+    "externalId": "0029900018",
+    "url": "https://www.nba.com/game/0029900018/box-score",
+    "capturedAt": "2026-10-20T06:44:34.774345+00:00",
+    "status": 200,
+    "finalUrl": "https://www.nba.com/game/0029900018/box-score",
+    "bodySha256": "5e254bd986e00f6184111ac181da1e700a5f5e7e26deaaceaed4f1d44ed4a66d",
+    "rawPath": "raw/boundary-0029900018-5e254bd986e0.html.gz",
+    "bytes": 503245,
+    "retainedSha256": "211ac32e1471a371ad3349b4d8f03db5ce58e8c6a83960842ac35e29341e1b87",
+    "observed": {
+      "gameId": "0029900018",
+      "gameCode": "19991103/VANLAL",
+      "gameEt": "1999-11-03T22:30:00Z",
+      "gameStatus": 3,
+      "arena": {
+        "arenaId": 137,
+        "arenaName": "STAPLES Center",
+        "arenaCity": "Los Angeles",
+        "arenaState": "CA",
+        "arenaCountry": "US",
+        "arenaTimezone": "Pacific",
+        "arenaStreetAddress": "1111 S Figueroa St",
+        "arenaPostalCode": "90015"
+      },
+      "home": {
+        "teamTricode": "LAL",
+        "teamId": 1610612747,
+        "score": 103
+      },
+      "away": {
+        "teamTricode": "VAN",
+        "teamId": 1610612763,
+        "score": 88
+      }
+    }
+  },
+  {
+    "id": "boundary-0042500224",
+    "externalId": "0042500224",
+    "url": "https://www.nba.com/game/0042500224/box-score",
+    "capturedAt": "2026-10-20T06:44:36.338744+00:00",
+    "status": 200,
+    "finalUrl": "https://www.nba.com/game/0042500224/box-score",
+    "bodySha256": "f983ef9488b7c975091a3811e85f4f10739572a33b94a496c36249fa9e6938a6",
+    "rawPath": "raw/boundary-0042500224-f983ef9488b7.html.gz",
+    "bytes": 535816,
+    "retainedSha256": "639923a635494300e9d1ac1157c11cccc5cbeca750d7d480428c11e2c35ef371",
+    "observed": {
+      "gameId": "0042500224",
+      "gameCode": "20260511/OKCLAL",
+      "gameEt": "2026-05-11T22:30:00Z",
+      "gameStatus": 3,
+      "arena": {
+        "arenaId": 1000069,
+        "arenaName": "Crypto.com Arena",
+        "arenaCity": "Los Angeles",
+        "arenaState": "CA",
+        "arenaCountry": "US",
+        "arenaTimezone": "Pacific",
+        "arenaStreetAddress": "",
+        "arenaPostalCode": ""
+      },
+      "home": {
+        "teamTricode": "LAL",
+        "teamId": 1610612747,
+        "score": 110
+      },
+      "away": {
+        "teamTricode": "OKC",
+        "teamId": 1610612760,
+        "score": 115
+      }
+    }
+  },
+  {
+    "id": "boundary-0029500026",
+    "externalId": "0029500026",
+    "url": "https://www.nba.com/game/0029500026/box-score",
+    "capturedAt": "2026-10-20T06:44:36.611326+00:00",
+    "status": 200,
+    "finalUrl": "https://www.nba.com/game/0029500026/box-score",
+    "bodySha256": "dd834409565fc318008ccd7dc283c908a0a304ddd0b73afba149e88160496b7e",
+    "rawPath": "raw/boundary-0029500026-dd834409565f.html.gz",
+    "bytes": 267892,
+    "retainedSha256": "d17b7d568d7f1aa3f3e7fb6e12a662bbfa62fe8a84cc63845de0929530ec3bbb",
+    "observed": {
+      "gameId": "0029500026",
+      "gameCode": "19951105/MINVAN",
+      "gameEt": "1995-11-05T20:00:00Z",
+      "gameStatus": 3,
+      "arena": {
+        "arenaId": 19,
+        "arenaName": "GM Place",
+        "arenaCity": "Vancouver",
+        "arenaState": "BC",
+        "arenaCountry": "US",
+        "arenaTimezone": "Pacific",
+        "arenaStreetAddress": "",
+        "arenaPostalCode": ""
+      },
+      "home": {
+        "teamTricode": "VAN",
+        "teamId": 1610612763,
+        "score": 100
+      },
+      "away": {
+        "teamTricode": "MIN",
+        "teamId": 1610612750,
+        "score": 98
+      }
+    }
+  },
+  {
+    "id": "boundary-0020001153",
+    "externalId": "0020001153",
+    "url": "https://www.nba.com/game/0020001153/box-score",
+    "capturedAt": "2026-10-20T06:44:37.100194+00:00",
+    "status": 200,
+    "finalUrl": "https://www.nba.com/game/0020001153/box-score",
+    "bodySha256": "b68143e9fd2ef905140792d15b4bf0f6dd90efdb44b73ee69d28608c73ceda05",
+    "rawPath": "raw/boundary-0020001153-b68143e9fd2e.html.gz",
+    "bytes": 476396,
+    "retainedSha256": "5679ac8a3ae871bb0e9dc106fac0ee36a5c9975c5502c15d354d8680087c1521",
+    "observed": {
+      "gameId": "0020001153",
+      "gameCode": "20010414/HOUVAN",
+      "gameEt": "2001-04-14T22:00:00Z",
+      "gameStatus": 3,
+      "arena": {
+        "arenaId": 19,
+        "arenaName": "GM Place",
+        "arenaCity": "Vancouver",
+        "arenaState": "BC",
+        "arenaCountry": "US",
+        "arenaTimezone": "Pacific",
+        "arenaStreetAddress": "",
+        "arenaPostalCode": ""
+      },
+      "home": {
+        "teamTricode": "VAN",
+        "teamId": 1610612763,
+        "score": 95
+      },
+      "away": {
+        "teamTricode": "HOU",
+        "teamId": 1610612745,
+        "score": 100
+      }
+    }
+  },
+  {
+    "id": "boundary-0020100020",
+    "externalId": "0020100020",
+    "url": "https://www.nba.com/game/0020100020/box-score",
+    "capturedAt": "2026-10-20T06:44:38.225828+00:00",
+    "status": 200,
+    "finalUrl": "https://www.nba.com/game/0020100020/box-score",
+    "bodySha256": "9dce05118e3a79e52577b44cfc4005806d559e8b0dba6f1e8ebb49f59f224970",
+    "rawPath": "raw/boundary-0020100020-9dce05118e3a.html.gz",
+    "bytes": 503330,
+    "retainedSha256": "013161cb416869c5862744c2c714a78116c316e7c79842ef67ee85e6a790b642",
+    "observed": {
+      "gameId": "0020100020",
+      "gameCode": "20011101/DETMEM",
+      "gameEt": "2001-11-01T20:00:00Z",
+      "gameStatus": 3,
+      "arena": {
+        "arenaId": 48,
+        "arenaName": "Pyramid",
+        "arenaCity": "Memphis",
+        "arenaState": "TN",
+        "arenaCountry": "US",
+        "arenaTimezone": "Central",
+        "arenaStreetAddress": "",
+        "arenaPostalCode": ""
+      },
+      "home": {
+        "teamTricode": "MEM",
+        "teamId": 1610612763,
+        "score": 80
+      },
+      "away": {
+        "teamTricode": "DET",
+        "teamId": 1610612765,
+        "score": 90
+      }
+    }
+  },
+  {
+    "id": "boundary-0040300164",
+    "externalId": "0040300164",
+    "url": "https://www.nba.com/game/0040300164/box-score",
+    "capturedAt": "2026-10-20T06:44:38.844880+00:00",
+    "status": 200,
+    "finalUrl": "https://www.nba.com/game/0040300164/box-score",
+    "bodySha256": "615b6d17c4d25dbb1f6c9f1cbccef68e31b8786a3bca68fbdf25f7f06f8315bc",
+    "rawPath": "raw/boundary-0040300164-615b6d17c4d2.html.gz",
+    "bytes": 481987,
+    "retainedSha256": "677081d3c85d7dbb945ba922c64e1e06a89b2120d8bc4d40758d9c6643a55b1b",
+    "observed": {
+      "gameId": "0040300164",
+      "gameCode": "20040425/SASMEM",
+      "gameEt": "2004-04-25T21:30:00Z",
+      "gameStatus": 3,
+      "arena": {
+        "arenaId": 48,
+        "arenaName": "Pyramid",
+        "arenaCity": "Memphis",
+        "arenaState": "TN",
+        "arenaCountry": "US",
+        "arenaTimezone": "Central",
+        "arenaStreetAddress": "",
+        "arenaPostalCode": ""
+      },
+      "home": {
+        "teamTricode": "MEM",
+        "teamId": 1610612763,
+        "score": 97
+      },
+      "away": {
+        "teamTricode": "SAS",
+        "teamId": 1610612759,
+        "score": 110
+      }
+    }
+  },
+  {
+    "id": "boundary-0020400009",
+    "externalId": "0020400009",
+    "url": "https://www.nba.com/game/0020400009/box-score",
+    "capturedAt": "2026-10-20T06:44:39.112546+00:00",
+    "status": 200,
+    "finalUrl": "https://www.nba.com/game/0020400009/box-score",
+    "bodySha256": "b2ee1a39839adf489dfef45c904310f55c9e9a4f472aa20aba09f824de588660",
+    "rawPath": "raw/boundary-0020400009-b2ee1a39839a.html.gz",
+    "bytes": 511615,
+    "retainedSha256": "20d0eb03d6d02ffed740d77e54447291c196676bdc814c9bc96e9a9edfc18c3b",
+    "observed": {
+      "gameId": "0020400009",
+      "gameCode": "20041103/WASMEM",
+      "gameEt": "2004-11-03T20:00:00Z",
+      "gameStatus": 3,
+      "arena": {
+        "arenaId": 242,
+        "arenaName": "FedExForum",
+        "arenaCity": "Memphis",
+        "arenaState": "TN",
+        "arenaCountry": "US",
+        "arenaTimezone": "Central",
+        "arenaStreetAddress": "",
+        "arenaPostalCode": ""
+      },
+      "home": {
+        "teamTricode": "MEM",
+        "teamId": 1610612763,
+        "score": 91
+      },
+      "away": {
+        "teamTricode": "WAS",
+        "teamId": 1610612764,
+        "score": 103
+      }
+    }
+  },
+  {
+    "id": "boundary-0022501145",
+    "externalId": "0022501145",
+    "url": "https://www.nba.com/game/0022501145/box-score",
+    "capturedAt": "2026-10-20T06:44:40.610528+00:00",
+    "status": 200,
+    "finalUrl": "https://www.nba.com/game/0022501145/box-score",
+    "bodySha256": "2887ac2c2b53dd9c78875de5c26ba02792fba182d86b6ebbcec0cad9ca4b96ee",
+    "rawPath": "raw/boundary-0022501145-2887ac2c2b53.html.gz",
+    "bytes": 513117,
+    "retainedSha256": "7cb0bb0cd2f16f61eaad99aa32beab026878c9559193ac04dea402d83115ddba",
+    "observed": {
+      "gameId": "0022501145",
+      "gameCode": "20260406/CLEMEM",
+      "gameEt": "2026-04-06T20:00:00Z",
+      "gameStatus": 3,
+      "arena": {
+        "arenaId": 242,
+        "arenaName": "FedExForum",
+        "arenaCity": "Memphis",
+        "arenaState": "TN",
+        "arenaCountry": "US",
+        "arenaTimezone": "Central",
+        "arenaStreetAddress": "",
+        "arenaPostalCode": ""
+      },
+      "home": {
+        "teamTricode": "MEM",
+        "teamId": 1610612763,
+        "score": 126
+      },
+      "away": {
+        "teamTricode": "CLE",
+        "teamId": 1610612739,
+        "score": 142
+      }
+    }
+  },
+  {
+    "id": "boundary-0028900035",
+    "externalId": "0028900035",
+    "url": "https://www.nba.com/game/0028900035/box-score",
+    "capturedAt": "2026-10-20T06:44:40.999835+00:00",
+    "status": 200,
+    "reusedSourcePath": "/Users/michaelju/Workspace/Projects/fullcourt/docs/audit/release-numbers-20261020/official-overtime/raw/0028900035/6b21d8368ef35c44692f847571b00268be03dfd1aa8a794553ee238f03d4b4c6.html.gz",
+    "originalCapturedAt": "2026-10-20T01:49:54.747326+00:00",
+    "bodySha256": "6b21d8368ef35c44692f847571b00268be03dfd1aa8a794553ee238f03d4b4c6",
+    "rawPath": "raw/boundary-0028900035-6b21d8368ef3.html.gz",
+    "bytes": 267958,
+    "retainedSha256": "7aab3827018f4fc6e550dfc49236f83aec9c6a822ae2ec951ac1e4a7ba4b0b48",
+    "observed": {
+      "gameId": "0028900035",
+      "gameCode": "19891108/CHIMIN",
+      "gameEt": "1989-11-08T20:00:00Z",
+      "gameStatus": 3,
+      "arena": {
+        "arenaId": 112,
+        "arenaName": "Metro Dome",
+        "arenaCity": "Minneapolis",
+        "arenaState": "MN",
+        "arenaCountry": "US",
+        "arenaTimezone": "Central",
+        "arenaStreetAddress": "",
+        "arenaPostalCode": ""
+      },
+      "home": {
+        "teamTricode": "MIN",
+        "teamId": 1610612750,
+        "score": 84
+      },
+      "away": {
+        "teamTricode": "CHI",
+        "teamId": 1610612741,
+        "score": 96
+      }
+    }
+  },
+  {
+    "id": "boundary-0028901061",
+    "externalId": "0028901061",
+    "url": "https://www.nba.com/game/0028901061/box-score",
+    "capturedAt": "2026-10-20T06:44:41.009904+00:00",
+    "status": 200,
+    "reusedSourcePath": "/Users/michaelju/Workspace/Projects/fullcourt/docs/audit/release-numbers-20261020/official-overtime/raw/0028901061/640f52b1fac32b016eb0fb25c3bcbc5440c38b99fe0d6e9b805c2746183d9982.html.gz",
+    "originalCapturedAt": "2026-10-20T01:40:26.574101+00:00",
+    "bodySha256": "640f52b1fac32b016eb0fb25c3bcbc5440c38b99fe0d6e9b805c2746183d9982",
+    "rawPath": "raw/boundary-0028901061-640f52b1fac3.html.gz",
+    "bytes": 269539,
+    "retainedSha256": "9791f61581a388a521e4e275c94361f254dde93c75b3b50f4142fa80df2221d2",
+    "observed": {
+      "gameId": "0028901061",
+      "gameCode": "19900417/DENMIN",
+      "gameEt": "1990-04-17T20:00:00Z",
+      "gameStatus": 3,
+      "arena": {
+        "arenaId": 112,
+        "arenaName": "Metro Dome",
+        "arenaCity": "Minneapolis",
+        "arenaState": "MN",
+        "arenaCountry": "US",
+        "arenaTimezone": "Central",
+        "arenaStreetAddress": "",
+        "arenaPostalCode": ""
+      },
+      "home": {
+        "teamTricode": "MIN",
+        "teamId": 1610612750,
+        "score": 89
+      },
+      "away": {
+        "teamTricode": "DEN",
+        "teamId": 1610612743,
+        "score": 99
+      }
+    }
+  },
+  {
+    "id": "boundary-0029000007",
+    "externalId": "0029000007",
+    "url": "https://www.nba.com/game/0029000007/box-score",
+    "capturedAt": "2026-10-20T06:44:41.020022+00:00",
+    "status": 200,
+    "reusedSourcePath": "/Users/michaelju/Workspace/Projects/fullcourt/docs/audit/release-numbers-20261020/official-overtime/raw/0029000007/1d9d01a87cb48e6dc495216164056f2c7cd52a3c27c91f9329786584fdaffa90.html.gz",
+    "originalCapturedAt": "2026-10-20T02:00:45.149604+00:00",
+    "bodySha256": "1d9d01a87cb48e6dc495216164056f2c7cd52a3c27c91f9329786584fdaffa90",
+    "rawPath": "raw/boundary-0029000007-1d9d01a87cb4.html.gz",
+    "bytes": 271163,
+    "retainedSha256": "a775eafa0773f5207af1ee1b7fef2b63d199ecf86984c5eb8da1a716b550112f",
+    "observed": {
+      "gameId": "0029000007",
+      "gameCode": "19901102/DALMIN",
+      "gameEt": "1990-11-02T20:00:00Z",
+      "gameStatus": 3,
+      "arena": {
+        "arenaId": 61,
+        "arenaName": "Target Center",
+        "arenaCity": "Minneapolis",
+        "arenaState": "MN",
+        "arenaCountry": "US",
+        "arenaTimezone": "Central",
+        "arenaStreetAddress": "",
+        "arenaPostalCode": ""
+      },
+      "home": {
+        "teamTricode": "MIN",
+        "teamId": 1610612750,
+        "score": 98
+      },
+      "away": {
+        "teamTricode": "DAL",
+        "teamId": 1610612742,
+        "score": 85
+      }
+    }
+  },
+  {
+    "id": "boundary-0042500236",
+    "externalId": "0042500236",
+    "url": "https://www.nba.com/game/0042500236/box-score",
+    "capturedAt": "2026-10-20T06:44:41.030047+00:00",
+    "status": 200,
+    "finalUrl": "https://www.nba.com/game/0042500236/box-score",
+    "bodySha256": "df0e07fea7bf46a4954d1645219265c9b746d359fe6c4aec29a1d33fd2ec852a",
+    "rawPath": "raw/boundary-0042500236-df0e07fea7bf.html.gz",
+    "bytes": 562305,
+    "retainedSha256": "41b35446b1984f8944e4181ad3f7e48124cb15591a1d6fd91e09e6a8e3ec6267",
+    "observed": {
+      "gameId": "0042500236",
+      "gameCode": "20260515/SASMIN",
+      "gameEt": "2026-05-15T21:30:00Z",
+      "gameStatus": 3,
+      "arena": {
+        "arenaId": 61,
+        "arenaName": "Target Center",
+        "arenaCity": "Minneapolis",
+        "arenaState": "MN",
+        "arenaCountry": "US",
+        "arenaTimezone": "Central",
+        "arenaStreetAddress": "",
+        "arenaPostalCode": ""
+      },
+      "home": {
+        "teamTricode": "MIN",
+        "teamId": 1610612750,
+        "score": 109
+      },
+      "away": {
+        "teamTricode": "SAS",
+        "teamId": 1610612759,
+        "score": 139
+      }
+    }
+  },
+  {
+    "id": "boundary-0020200013",
+    "externalId": "0020200013",
+    "url": "https://www.nba.com/game/0020200013/box-score",
+    "capturedAt": "2026-10-20T06:44:41.647776+00:00",
+    "status": 200,
+    "finalUrl": "https://www.nba.com/game/0020200013/box-score",
+    "bodySha256": "a0ff32e8b9bff7b0f99b50e401acf251e161488d3218c001ce247d405a9a7e7d",
+    "rawPath": "raw/boundary-0020200013-a0ff32e8b9bf.html.gz",
+    "bytes": 493355,
+    "retainedSha256": "46d9c46438a0001b1f2ff62500ede566bb86c896d6307f83e745d3f79e7605fb",
+    "observed": {
+      "gameId": "0020200013",
+      "gameCode": "20021030/UTANOH",
+      "gameEt": "2002-10-30T20:30:00Z",
+      "gameStatus": 3,
+      "arena": {
+        "arenaId": 160,
+        "arenaName": "Smoothie King Center",
+        "arenaCity": "New Orleans",
+        "arenaState": "LA",
+        "arenaCountry": "US",
+        "arenaTimezone": "Central",
+        "arenaStreetAddress": "",
+        "arenaPostalCode": ""
+      },
+      "home": {
+        "teamTricode": "NOH",
+        "teamId": 1610612740,
+        "score": 100
+      },
+      "away": {
+        "teamTricode": "UTA",
+        "teamId": 1610612762,
+        "score": 75
+      }
+    }
+  },
+  {
+    "id": "boundary-0020401225",
+    "externalId": "0020401225",
+    "url": "https://www.nba.com/game/0020401225/box-score",
+    "capturedAt": "2026-10-20T06:44:41.919662+00:00",
+    "status": 200,
+    "finalUrl": "https://www.nba.com/game/0020401225/box-score",
+    "bodySha256": "295643462c845db9b603ba63860cc576db212ab135aa21112c48a343f5cf9e01",
+    "rawPath": "raw/boundary-0020401225-295643462c84.html.gz",
+    "bytes": 479736,
+    "retainedSha256": "aa419ee9ca271907c1ec61b788d8f335e31ed8659bcad2e857a0860fc068e2a2",
+    "observed": {
+      "gameId": "0020401225",
+      "gameCode": "20050420/LACNOH",
+      "gameEt": "2005-04-20T20:00:00Z",
+      "gameStatus": 3,
+      "arena": {
+        "arenaId": 160,
+        "arenaName": "Smoothie King Center",
+        "arenaCity": "New Orleans",
+        "arenaState": "LA",
+        "arenaCountry": "US",
+        "arenaTimezone": "Central",
+        "arenaStreetAddress": "",
+        "arenaPostalCode": ""
+      },
+      "home": {
+        "teamTricode": "NOH",
+        "teamId": 1610612740,
+        "score": 75
+      },
+      "away": {
+        "teamTricode": "LAC",
+        "teamId": 1610612746,
+        "score": 86
+      }
+    }
+  },
+  {
+    "id": "boundary-0020500025",
+    "externalId": "0020500025",
+    "url": "https://www.nba.com/game/0020500025/box-score",
+    "capturedAt": "2026-10-20T06:44:42.801747+00:00",
+    "status": 200,
+    "finalUrl": "https://www.nba.com/game/0020500025/box-score",
+    "bodySha256": "991d0e4c491764cbf92000cb0269af36acb3c0a54dbb71e811fffbd590ef1f65",
+    "rawPath": "raw/boundary-0020500025-991d0e4c4917.html.gz",
+    "bytes": 477804,
+    "retainedSha256": "457e01cfee22c044a278a42bc918562ce5ccb7f4b7d9906ddf85d8ad19fee271",
+    "observed": {
+      "gameId": "0020500025",
+      "gameCode": "20051101/SACNOK",
+      "gameEt": "2005-11-01T20:00:00Z",
+      "gameStatus": 3,
+      "arena": {
+        "arenaId": 196,
+        "arenaName": "Chesapeake Energy Arena",
+        "arenaCity": "Oklahoma City",
+        "arenaState": "OK",
+        "arenaCountry": "US",
+        "arenaTimezone": "Central",
+        "arenaStreetAddress": "100 W Reno Ave",
+        "arenaPostalCode": "73102"
+      },
+      "home": {
+        "teamTricode": "NOK",
+        "teamId": 1610612740,
+        "score": 93
+      },
+      "away": {
+        "teamTricode": "SAC",
+        "teamId": 1610612758,
+        "score": 67
+      }
+    }
+  },
+  {
+    "id": "boundary-0020601180",
+    "externalId": "0020601180",
+    "url": "https://www.nba.com/game/0020601180/box-score",
+    "capturedAt": "2026-10-20T06:44:43.246027+00:00",
+    "status": 200,
+    "finalUrl": "https://www.nba.com/game/0020601180/box-score",
+    "bodySha256": "9967153fa78d5dad7496ca8144bf738b9a4e1f5498d8b65137ce36a09700c279",
+    "rawPath": "raw/boundary-0020601180-9967153fa78d.html.gz",
+    "bytes": 471746,
+    "retainedSha256": "caac7c7720de0c755ce46e29fe08005cb6811106ca31122e3e4eeddd4ed5667f",
+    "observed": {
+      "gameId": "0020601180",
+      "gameCode": "20070413/DENNOK",
+      "gameEt": "2007-04-13T20:00:00Z",
+      "gameStatus": 3,
+      "arena": {
+        "arenaId": 196,
+        "arenaName": "Chesapeake Energy Arena",
+        "arenaCity": "Oklahoma City",
+        "arenaState": "OK",
+        "arenaCountry": "US",
+        "arenaTimezone": "Central",
+        "arenaStreetAddress": "100 W Reno Ave",
+        "arenaPostalCode": "73102"
+      },
+      "home": {
+        "teamTricode": "NOK",
+        "teamId": 1610612740,
+        "score": 105
+      },
+      "away": {
+        "teamTricode": "DEN",
+        "teamId": 1610612743,
+        "score": 107
+      }
+    }
+  },
+  {
+    "id": "boundary-0020700010",
+    "externalId": "0020700010",
+    "url": "https://www.nba.com/game/0020700010/box-score",
+    "capturedAt": "2026-10-20T06:44:45.042498+00:00",
+    "status": 200,
+    "finalUrl": "https://www.nba.com/game/0020700010/box-score",
+    "bodySha256": "c69a637f92eda96057f8e3295ea9e3b9a84ef74e683b2f94a425cc192daf5317",
+    "rawPath": "raw/boundary-0020700010-c69a637f92ed.html.gz",
+    "bytes": 476245,
+    "retainedSha256": "ccf556a7a0b0ef2edec7352d3c5a5551f2d23a944351f4b5675d349587c93e1d",
+    "observed": {
+      "gameId": "0020700010",
+      "gameCode": "20071031/SACNOH",
+      "gameEt": "2007-10-31T20:00:00Z",
+      "gameStatus": 3,
+      "arena": {
+        "arenaId": 160,
+        "arenaName": "Smoothie King Center",
+        "arenaCity": "New Orleans",
+        "arenaState": "LA",
+        "arenaCountry": "US",
+        "arenaTimezone": "Central",
+        "arenaStreetAddress": "",
+        "arenaPostalCode": ""
+      },
+      "home": {
+        "teamTricode": "NOH",
+        "teamId": 1610612740,
+        "score": 104
+      },
+      "away": {
+        "teamTricode": "SAC",
+        "teamId": 1610612758,
+        "score": 90
+      }
+    }
+  },
+  {
+    "id": "boundary-0022501153",
+    "externalId": "0022501153",
+    "url": "https://www.nba.com/game/0022501153/box-score",
+    "capturedAt": "2026-10-20T06:44:45.058462+00:00",
+    "status": 200,
+    "finalUrl": "https://www.nba.com/game/0022501153/box-score",
+    "bodySha256": "16e4798f965a5deb6f38e9df76c45c7ae850731afe3fff9a722d528222d8c8db",
+    "rawPath": "raw/boundary-0022501153-16e4798f965a.html.gz",
+    "bytes": 520634,
+    "retainedSha256": "4dbebf0611c06d8e9de3652f021042afaecb4a121281a9ccc32ea65b3cb0dccf",
+    "observed": {
+      "gameId": "0022501153",
+      "gameCode": "20260407/UTANOP",
+      "gameEt": "2026-04-07T20:00:00Z",
+      "gameStatus": 3,
+      "arena": {
+        "arenaId": 160,
+        "arenaName": "Smoothie King Center",
+        "arenaCity": "New Orleans",
+        "arenaState": "LA",
+        "arenaCountry": "US",
+        "arenaTimezone": "Central",
+        "arenaStreetAddress": "",
+        "arenaPostalCode": ""
+      },
+      "home": {
+        "teamTricode": "NOP",
+        "teamId": 1610612740,
+        "score": 156
+      },
+      "away": {
+        "teamTricode": "UTA",
+        "teamId": 1610612762,
+        "score": 137
+      }
+    }
+  },
+  {
+    "id": "boundary-0028500048",
+    "externalId": "0028500048",
+    "url": "https://www.nba.com/game/0028500048/box-score",
+    "capturedAt": "2026-10-20T06:44:46.654294+00:00",
+    "status": 200,
+    "finalUrl": "https://www.nba.com/game/0028500048/box-score",
+    "bodySha256": "6f97430fd3ab6f3b3c2e94d8615d3c576759f89d21a2a32cdf4c41922a47d282",
+    "rawPath": "raw/boundary-0028500048-6f97430fd3ab.html.gz",
+    "bytes": 271986,
+    "retainedSha256": "915b21eebda2dea211dda4e1909c4fc81b3837f56eed5f0dd82157b394522f06",
+    "observed": {
+      "gameId": "0028500048",
+      "gameCode": "19851102/CHISEA",
+      "gameEt": "1985-11-02T20:00:00Z",
+      "gameStatus": 3,
+      "arena": {
+        "arenaId": 72,
+        "arenaName": "KeyArena",
+        "arenaCity": "Seattle",
+        "arenaState": "WA",
+        "arenaCountry": "US",
+        "arenaTimezone": "Pacific",
+        "arenaStreetAddress": "",
+        "arenaPostalCode": ""
+      },
+      "home": {
+        "teamTricode": "SEA",
+        "teamId": 1610612760,
+        "score": 118
+      },
+      "away": {
+        "teamTricode": "CHI",
+        "teamId": 1610612741,
+        "score": 100
+      }
+    }
+  },
+  {
+    "id": "boundary-0049300030",
+    "externalId": "0049300030",
+    "url": "https://www.nba.com/game/0049300030/box-score",
+    "capturedAt": "2026-10-20T06:44:46.951292+00:00",
+    "status": 200,
+    "finalUrl": "https://www.nba.com/game/0049300030/box-score",
+    "bodySha256": "7a8bd8ba7f83f0a200af56ab1689f9065db17cb626f3ebdef714945862bb859f",
+    "rawPath": "raw/boundary-0049300030-7a8bd8ba7f83.html.gz",
+    "bytes": 269757,
+    "retainedSha256": "638095621325fff54b53e87baa7be30c73eee7737ef01070e96ea974c0b90e20",
+    "observed": {
+      "gameId": "0049300030",
+      "gameCode": "19940507/DENSEA",
+      "gameEt": "1994-05-07T20:00:00Z",
+      "gameStatus": 3,
+      "arena": {
+        "arenaId": 72,
+        "arenaName": "KeyArena",
+        "arenaCity": "Seattle",
+        "arenaState": "WA",
+        "arenaCountry": "US",
+        "arenaTimezone": "Pacific",
+        "arenaStreetAddress": "",
+        "arenaPostalCode": ""
+      },
+      "home": {
+        "teamTricode": "SEA",
+        "teamId": 1610612760,
+        "score": 94
+      },
+      "away": {
+        "teamTricode": "DEN",
+        "teamId": 1610612743,
+        "score": 98
+      }
+    }
+  },
+  {
+    "id": "boundary-0029400013",
+    "externalId": "0029400013",
+    "url": "https://www.nba.com/game/0029400013/box-score",
+    "capturedAt": "2026-10-20T06:44:48.431153+00:00",
+    "status": 200,
+    "finalUrl": "https://www.nba.com/game/0029400013/box-score",
+    "bodySha256": "2ec27a9bec500ded975a320e3fe6ddd87926ea4450accf43e3965ce41f3978bc",
+    "rawPath": "raw/boundary-0029400013-2ec27a9bec50.html.gz",
+    "bytes": 270231,
+    "retainedSha256": "3c07f6a9ddafc4e7ddcbac43a66d0256a86edf8a1677fcdcceb62d92d50ff404",
+    "observed": {
+      "gameId": "0029400013",
+      "gameCode": "19941105/UTHSEA",
+      "gameEt": "1994-11-05T20:00:00Z",
+      "gameStatus": 3,
+      "arena": {
+        "arenaId": 72,
+        "arenaName": "KeyArena",
+        "arenaCity": "Seattle",
+        "arenaState": "WA",
+        "arenaCountry": "US",
+        "arenaTimezone": "Pacific",
+        "arenaStreetAddress": "",
+        "arenaPostalCode": ""
+      },
+      "home": {
+        "teamTricode": "SEA",
+        "teamId": 1610612760,
+        "score": 110
+      },
+      "away": {
+        "teamTricode": "UTH",
+        "teamId": 1610612762,
+        "score": 103
+      }
+    }
+  },
+  {
+    "id": "boundary-0049400011",
+    "externalId": "0049400011",
+    "url": "https://www.nba.com/game/0049400011/box-score",
+    "capturedAt": "2026-10-20T06:44:48.542897+00:00",
+    "status": 200,
+    "finalUrl": "https://www.nba.com/game/0049400011/box-score",
+    "bodySha256": "c4a8ce73a50223f100a29e1bbec5960ca1f4a0d7b146f625afadce39ddc1039d",
+    "rawPath": "raw/boundary-0049400011-c4a8ce73a502.html.gz",
+    "bytes": 268132,
+    "retainedSha256": "d46284438f1870148436f654beb260f2e5941401375b040dc10e1a55fa24a9c4",
+    "observed": {
+      "gameId": "0049400011",
+      "gameCode": "19950429/LALSEA",
+      "gameEt": "1995-04-29T20:00:00Z",
+      "gameStatus": 3,
+      "arena": {
+        "arenaId": 72,
+        "arenaName": "KeyArena",
+        "arenaCity": "Seattle",
+        "arenaState": "WA",
+        "arenaCountry": "US",
+        "arenaTimezone": "Pacific",
+        "arenaStreetAddress": "",
+        "arenaPostalCode": ""
+      },
+      "home": {
+        "teamTricode": "SEA",
+        "teamId": 1610612760,
+        "score": 82
+      },
+      "away": {
+        "teamTricode": "LAL",
+        "teamId": 1610612747,
+        "score": 84
+      }
+    }
+  },
+  {
+    "id": "boundary-0029500016",
+    "externalId": "0029500016",
+    "url": "https://www.nba.com/game/0029500016/box-score",
+    "capturedAt": "2026-10-20T06:44:49.383385+00:00",
+    "status": 200,
+    "finalUrl": "https://www.nba.com/game/0029500016/box-score",
+    "bodySha256": "2a678135c19530b206ed2c198728d2338a1cbe585a314d42c80839f8bb23acf8",
+    "rawPath": "raw/boundary-0029500016-2a678135c195.html.gz",
+    "bytes": 272128,
+    "retainedSha256": "54c16149ca9204f606f250adc09f6483c375a07e51e154f5ffe1f0c31239406e",
+    "observed": {
+      "gameId": "0029500016",
+      "gameCode": "19951104/LALSEA",
+      "gameEt": "1995-11-04T20:00:00Z",
+      "gameStatus": 3,
+      "arena": {
+        "arenaId": 72,
+        "arenaName": "KeyArena",
+        "arenaCity": "Seattle",
+        "arenaState": "WA",
+        "arenaCountry": "US",
+        "arenaTimezone": "Pacific",
+        "arenaStreetAddress": "",
+        "arenaPostalCode": ""
+      },
+      "home": {
+        "teamTricode": "SEA",
+        "teamId": 1610612760,
+        "score": 103
+      },
+      "away": {
+        "teamTricode": "LAL",
+        "teamId": 1610612747,
+        "score": 89
+      }
+    }
+  },
+  {
+    "id": "boundary-0020701202",
+    "externalId": "0020701202",
+    "url": "https://www.nba.com/game/0020701202/box-score",
+    "capturedAt": "2026-10-20T06:44:49.815754+00:00",
+    "status": 200,
+    "finalUrl": "https://www.nba.com/game/0020701202/box-score",
+    "bodySha256": "5eab35cf04227b24c7b9071c5dd1ff74847ed82e82eb146528a55946aa977547",
+    "rawPath": "raw/boundary-0020701202-5eab35cf0422.html.gz",
+    "bytes": 490901,
+    "retainedSha256": "c098b4c7b35c0806762281f01b65a22951c456e09ef9762077bed271ffb2cc89",
+    "observed": {
+      "gameId": "0020701202",
+      "gameCode": "20080413/DALSEA",
+      "gameEt": "2008-04-13T21:00:00Z",
+      "gameStatus": 3,
+      "arena": {
+        "arenaId": 72,
+        "arenaName": "KeyArena",
+        "arenaCity": "Seattle",
+        "arenaState": "WA",
+        "arenaCountry": "US",
+        "arenaTimezone": "Pacific",
+        "arenaStreetAddress": "",
+        "arenaPostalCode": ""
+      },
+      "home": {
+        "teamTricode": "SEA",
+        "teamId": 1610612760,
+        "score": 99
+      },
+      "away": {
+        "teamTricode": "DAL",
+        "teamId": 1610612742,
+        "score": 95
+      }
+    }
+  },
+  {
+    "id": "boundary-0020800010",
+    "externalId": "0020800010",
+    "url": "https://www.nba.com/game/0020800010/box-score",
+    "capturedAt": "2026-10-20T06:44:51.457787+00:00",
+    "status": 200,
+    "finalUrl": "https://www.nba.com/game/0020800010/box-score",
+    "bodySha256": "4c40afa6fed712c65ca99473209e15c49083caf4c1b022602bbc0dfbc2d6f6e6",
+    "rawPath": "raw/boundary-0020800010-4c40afa6fed7.html.gz",
+    "bytes": 485840,
+    "retainedSha256": "3dd85694eb517e84909676e6f4be93b2745f6698992648321a44b5b867ff2aaa",
+    "observed": {
+      "gameId": "0020800010",
+      "gameCode": "20081029/MILOKC",
+      "gameEt": "2008-10-29T20:00:00Z",
+      "gameStatus": 3,
+      "arena": {
+        "arenaId": 196,
+        "arenaName": "Chesapeake Energy Arena",
+        "arenaCity": "Oklahoma City",
+        "arenaState": "OK",
+        "arenaCountry": "US",
+        "arenaTimezone": "Central",
+        "arenaStreetAddress": "100 W Reno Ave",
+        "arenaPostalCode": "73102"
+      },
+      "home": {
+        "teamTricode": "OKC",
+        "teamId": 1610612760,
+        "score": 87
+      },
+      "away": {
+        "teamTricode": "MIL",
+        "teamId": 1610612749,
+        "score": 98
+      }
+    }
+  },
+  {
+    "id": "boundary-0042500317",
+    "externalId": "0042500317",
+    "url": "https://www.nba.com/game/0042500317/box-score",
+    "capturedAt": "2026-10-20T06:44:51.802512+00:00",
+    "status": 200,
+    "finalUrl": "https://www.nba.com/game/0042500317/box-score",
+    "bodySha256": "2cdf8cc430f8639288b0fe8db61742c66a82c6fa51f491677166da65c2a81921",
+    "rawPath": "raw/boundary-0042500317-2cdf8cc430f8.html.gz",
+    "bytes": 559543,
+    "retainedSha256": "95f1453f24f3900de340f9b6beec11c5ca9174aebccd40c655a65ea56e26efa4",
+    "observed": {
+      "gameId": "0042500317",
+      "gameCode": "20260530/SASOKC",
+      "gameEt": "2026-05-30T20:00:00Z",
+      "gameStatus": 3,
+      "arena": {
+        "arenaId": 1000052,
+        "arenaName": "Paycom Center",
+        "arenaCity": "Oklahoma City",
+        "arenaState": "OK",
+        "arenaCountry": "US",
+        "arenaTimezone": "Central",
+        "arenaStreetAddress": "",
+        "arenaPostalCode": ""
+      },
+      "home": {
+        "teamTricode": "OKC",
+        "teamId": 1610612760,
+        "score": 103
+      },
+      "away": {
+        "teamTricode": "SAS",
+        "teamId": 1610612759,
+        "score": 111
+      }
+    }
+  },
+  {
+    "id": "boundary-0028500026",
+    "externalId": "0028500026",
+    "url": "https://www.nba.com/game/0028500026/box-score",
+    "capturedAt": "2026-10-20T06:44:52.581935+00:00",
+    "status": 200,
+    "finalUrl": "https://www.nba.com/game/0028500026/box-score",
+    "bodySha256": "7a9ec2cf58e51f02a532c4a632319f811dd3de30c7094f12d34e84368fd57245",
+    "rawPath": "raw/boundary-0028500026-7a9ec2cf58e5.html.gz",
+    "bytes": 272459,
+    "retainedSha256": "718ceade0c579908410aee302299c78b9de80074ff2ff5ff1d0eb8b9da182b3d",
+    "observed": {
+      "gameId": "0028500026",
+      "gameCode": "19851029/DENPHX",
+      "gameEt": "1985-10-29T20:00:00Z",
+      "gameStatus": 3,
+      "arena": {
+        "arenaId": 2,
+        "arenaName": "US Airways Center",
+        "arenaCity": "Phoenix",
+        "arenaState": "AZ",
+        "arenaCountry": "US",
+        "arenaTimezone": "Mountain",
+        "arenaStreetAddress": "",
+        "arenaPostalCode": ""
+      },
+      "home": {
+        "teamTricode": "PHX",
+        "teamId": 1610612756,
+        "score": 127
+      },
+      "away": {
+        "teamTricode": "DEN",
+        "teamId": 1610612743,
+        "score": 142
+      }
+    }
+  },
+  {
+    "id": "boundary-0049100046",
+    "externalId": "0049100046",
+    "url": "https://www.nba.com/game/0049100046/box-score",
+    "capturedAt": "2026-10-20T06:44:53.001717+00:00",
+    "status": 200,
+    "reusedSourcePath": "/Users/michaelju/Workspace/Projects/fullcourt/docs/audit/release-numbers-20261020/official-overtime/raw/0049100046/af19c7617f6c8a40acd718c0dde401f3b55103e5e088b44143ae4b9e9ba97458.html.gz",
+    "originalCapturedAt": "2026-10-20T02:20:54.423689+00:00",
+    "bodySha256": "af19c7617f6c8a40acd718c0dde401f3b55103e5e088b44143ae4b9e9ba97458",
+    "rawPath": "raw/boundary-0049100046-af19c7617f6c.html.gz",
+    "bytes": 272175,
+    "retainedSha256": "d2d46fdaa245ee6f7414f451a091e0a8a029b5c29077ec7b504be47bff334b28",
+    "observed": {
+      "gameId": "0049100046",
+      "gameCode": "19920511/PORPHX",
+      "gameEt": "1992-05-11T20:00:00Z",
+      "gameStatus": 3,
+      "arena": {
+        "arenaId": 2,
+        "arenaName": "US Airways Center",
+        "arenaCity": "Phoenix",
+        "arenaState": "AZ",
+        "arenaCountry": "US",
+        "arenaTimezone": "Mountain",
+        "arenaStreetAddress": "",
+        "arenaPostalCode": ""
+      },
+      "home": {
+        "teamTricode": "PHX",
+        "teamId": 1610612756,
+        "score": 151
+      },
+      "away": {
+        "teamTricode": "POR",
+        "teamId": 1610612757,
+        "score": 153
+      }
+    }
+  },
+  {
+    "id": "boundary-0029200020",
+    "externalId": "0029200020",
+    "url": "https://www.nba.com/game/0029200020/box-score",
+    "capturedAt": "2026-10-20T06:44:53.011951+00:00",
+    "status": 200,
+    "reusedSourcePath": "/Users/michaelju/Workspace/Projects/fullcourt/docs/audit/release-numbers-20261020/official-overtime/raw/0029200020/698cc22079c0ba0160abec2660a94b72c0f6fe7295aabf6c7c94fe2f6a4e117c.html.gz",
+    "originalCapturedAt": "2026-10-20T02:18:46.954324+00:00",
+    "bodySha256": "698cc22079c0ba0160abec2660a94b72c0f6fe7295aabf6c7c94fe2f6a4e117c",
+    "rawPath": "raw/boundary-0029200020-698cc22079c0.html.gz",
+    "bytes": 269876,
+    "retainedSha256": "4c66abbab3a361913c4661b9af6c088666cefb04b0abfd4d17083430254847b6",
+    "observed": {
+      "gameId": "0029200020",
+      "gameCode": "19921107/LACPHX",
+      "gameEt": "1992-11-07T20:00:00Z",
+      "gameStatus": 3,
+      "arena": {
+        "arenaId": 2,
+        "arenaName": "US Airways Center",
+        "arenaCity": "Phoenix",
+        "arenaState": "AZ",
+        "arenaCountry": "US",
+        "arenaTimezone": "Mountain",
+        "arenaStreetAddress": "",
+        "arenaPostalCode": ""
+      },
+      "home": {
+        "teamTricode": "PHX",
+        "teamId": 1610612756,
+        "score": 111
+      },
+      "away": {
+        "teamTricode": "LAC",
+        "teamId": 1610612746,
+        "score": 105
+      }
+    }
+  },
+  {
+    "id": "boundary-0042500144",
+    "externalId": "0042500144",
+    "url": "https://www.nba.com/game/0042500144/box-score",
+    "capturedAt": "2026-10-20T06:44:53.021657+00:00",
+    "status": 200,
+    "finalUrl": "https://www.nba.com/game/0042500144/box-score",
+    "bodySha256": "130942e590212b00acc2d65bbd69d8a8e3599f5cba03601d47b5ed3388845fc7",
+    "rawPath": "raw/boundary-0042500144-130942e59021.html.gz",
+    "bytes": 532725,
+    "retainedSha256": "adc70eb91658a6fadf13d7596da7ef04fb49020d55f1f62f6dbe463b2ee932b1",
+    "observed": {
+      "gameId": "0042500144",
+      "gameCode": "20260427/OKCPHX",
+      "gameEt": "2026-04-27T21:30:00Z",
+      "gameStatus": 3,
+      "arena": {
+        "arenaId": 1000159,
+        "arenaName": "Mortgage Matchup Center",
+        "arenaCity": "Phoenix",
+        "arenaState": "AZ",
+        "arenaCountry": "US",
+        "arenaTimezone": "Mountain",
+        "arenaStreetAddress": "",
+        "arenaPostalCode": ""
+      },
+      "home": {
+        "teamTricode": "PHX",
+        "teamId": 1610612756,
+        "score": 122
+      },
+      "away": {
+        "teamTricode": "OKC",
+        "teamId": 1610612760,
+        "score": 131
+      }
+    }
+  },
+  {
+    "id": "boundary-0028500009",
+    "externalId": "0028500009",
+    "url": "https://www.nba.com/game/0028500009/box-score",
+    "capturedAt": "2026-10-20T06:44:54.129795+00:00",
+    "status": 200,
+    "finalUrl": "https://www.nba.com/game/0028500009/box-score",
+    "bodySha256": "4862a94969fd9b28b975c3764cc07e54029fe3438e700baa21a8be947432ca60",
+    "rawPath": "raw/boundary-0028500009-4862a94969fd.html.gz",
+    "bytes": 271423,
+    "retainedSha256": "4b154ab64d226892a6aad599d30575a1a25d946c2e4063f03bb427effde55bea",
+    "observed": {
+      "gameId": "0028500009",
+      "gameCode": "19851025/PHXPOR",
+      "gameEt": "1985-10-25T20:00:00Z",
+      "gameStatus": 3,
+      "arena": {
+        "arenaId": 51,
+        "arenaName": "Moda Center",
+        "arenaCity": "Portland",
+        "arenaState": "OR",
+        "arenaCountry": "US",
+        "arenaTimezone": "Pacific",
+        "arenaStreetAddress": "",
+        "arenaPostalCode": ""
+      },
+      "home": {
+        "teamTricode": "POR",
+        "teamId": 1610612757,
+        "score": 128
+      },
+      "away": {
+        "teamTricode": "PHX",
+        "teamId": 1610612756,
+        "score": 123
+      }
+    }
+  },
+  {
+    "id": "boundary-0049400021",
+    "externalId": "0049400021",
+    "url": "https://www.nba.com/game/0049400021/box-score",
+    "capturedAt": "2026-10-20T06:44:54.152745+00:00",
+    "status": 200,
+    "finalUrl": "https://www.nba.com/game/0049400021/box-score",
+    "bodySha256": "422060026f1dfab28a70d5b1e577a7ab7371aa4801225c0c44c9123406f9f2e5",
+    "rawPath": "raw/boundary-0049400021-422060026f1d.html.gz",
+    "bytes": 272019,
+    "retainedSha256": "1ec665fa68e4a733632aa276ed60220d21d94ba17c00e8c32d33df09ecafa952",
+    "observed": {
+      "gameId": "0049400021",
+      "gameCode": "19950502/PHXPOR",
+      "gameEt": "1995-05-02T20:00:00Z",
+      "gameStatus": 3,
+      "arena": {
+        "arenaId": 51,
+        "arenaName": "Moda Center",
+        "arenaCity": "Portland",
+        "arenaState": "OR",
+        "arenaCountry": "US",
+        "arenaTimezone": "Pacific",
+        "arenaStreetAddress": "",
+        "arenaPostalCode": ""
+      },
+      "home": {
+        "teamTricode": "POR",
+        "teamId": 1610612757,
+        "score": 109
+      },
+      "away": {
+        "teamTricode": "PHX",
+        "teamId": 1610612756,
+        "score": 117
+      }
+    }
+  },
+  {
+    "id": "boundary-0029500007",
+    "externalId": "0029500007",
+    "url": "https://www.nba.com/game/0029500007/box-score",
+    "capturedAt": "2026-10-20T06:44:55.667026+00:00",
+    "status": 200,
+    "finalUrl": "https://www.nba.com/game/0029500007/box-score",
+    "bodySha256": "f6157697bdd456aad4505ef68854f48a9cab15701c931f1eaaeb89c355e01c5a",
+    "rawPath": "raw/boundary-0029500007-f6157697bdd4.html.gz",
+    "bytes": 268076,
+    "retainedSha256": "f87e4a1ae999ab641574359fe3b34f3cb4ad439612c26279536fbaf27adc20b8",
+    "observed": {
+      "gameId": "0029500007",
+      "gameCode": "19951103/VANPOR",
+      "gameEt": "1995-11-03T20:00:00Z",
+      "gameStatus": 3,
+      "arena": {
+        "arenaId": 51,
+        "arenaName": "Moda Center",
+        "arenaCity": "Portland",
+        "arenaState": "OR",
+        "arenaCountry": "US",
+        "arenaTimezone": "Pacific",
+        "arenaStreetAddress": "",
+        "arenaPostalCode": ""
+      },
+      "home": {
+        "teamTricode": "POR",
+        "teamId": 1610612757,
+        "score": 80
+      },
+      "away": {
+        "teamTricode": "VAN",
+        "teamId": 1610612763,
+        "score": 92
+      }
+    }
+  },
+  {
+    "id": "boundary-0042500154",
+    "externalId": "0042500154",
+    "url": "https://www.nba.com/game/0042500154/box-score",
+    "capturedAt": "2026-10-20T06:44:55.807173+00:00",
+    "status": 200,
+    "finalUrl": "https://www.nba.com/game/0042500154/box-score",
+    "bodySha256": "7ed335a9da9f013f4f205b94f12156571a26caf1cae665db69f6c1c94e4521a4",
+    "rawPath": "raw/boundary-0042500154-7ed335a9da9f.html.gz",
+    "bytes": 544955,
+    "retainedSha256": "1afdf9e127aefc0fccc8c2caa137228264db9f6f6969ce6ada6669a3db248e48",
+    "observed": {
+      "gameId": "0042500154",
+      "gameCode": "20260426/SASPOR",
+      "gameEt": "2026-04-26T15:30:00Z",
+      "gameStatus": 3,
+      "arena": {
+        "arenaId": 51,
+        "arenaName": "Moda Center",
+        "arenaCity": "Portland",
+        "arenaState": "OR",
+        "arenaCountry": "US",
+        "arenaTimezone": "Pacific",
+        "arenaStreetAddress": "",
+        "arenaPostalCode": ""
+      },
+      "home": {
+        "teamTricode": "POR",
+        "teamId": 1610612757,
+        "score": 93
+      },
+      "away": {
+        "teamTricode": "SAS",
+        "teamId": 1610612759,
+        "score": 114
+      }
+    }
+  },
+  {
+    "id": "boundary-0028500006",
+    "externalId": "0028500006",
+    "url": "https://www.nba.com/game/0028500006/box-score",
+    "capturedAt": "2026-10-20T06:44:56.971440+00:00",
+    "status": 200,
+    "finalUrl": "https://www.nba.com/game/0028500006/box-score",
+    "bodySha256": "5aeccd9b138fd9c8f300710650e5c3ffcd9e8a76f5e0969a778d98f19bbc81e1",
+    "rawPath": "raw/boundary-0028500006-5aeccd9b138f.html.gz",
+    "bytes": 272074,
+    "retainedSha256": "9739a7e3fba46645804cc1b50c42c194b32e5571665e6a5a98f9b3b078bbe096",
+    "observed": {
+      "gameId": "0028500006",
+      "gameCode": "19851025/LACSAC",
+      "gameEt": "1985-10-25T20:00:00Z",
+      "gameStatus": 3,
+      "arena": {
+        "arenaId": 3,
+        "arenaName": "Sleep Train Arena",
+        "arenaCity": "Sacramento",
+        "arenaState": "CA",
+        "arenaCountry": "US",
+        "arenaTimezone": "Pacific",
+        "arenaStreetAddress": "",
+        "arenaPostalCode": ""
+      },
+      "home": {
+        "teamTricode": "SAC",
+        "teamId": 1610612758,
+        "score": 104
+      },
+      "away": {
+        "teamTricode": "LAC",
+        "teamId": 1610612746,
+        "score": 108
+      }
+    }
+  },
+  {
+    "id": "boundary-0028700937",
+    "externalId": "0028700937",
+    "url": "https://www.nba.com/game/0028700937/box-score",
+    "capturedAt": "2026-10-20T06:44:57.209612+00:00",
+    "status": 200,
+    "finalUrl": "https://www.nba.com/game/0028700937/box-score",
+    "bodySha256": "5dee0218e357894db83c8c61e942ba24ce62f226e341da6bb038ee2147bb2890",
+    "rawPath": "raw/boundary-0028700937-5dee0218e357.html.gz",
+    "bytes": 269322,
+    "retainedSha256": "a9c07159c97667b89c29d2b3f3c35e3ee985cd6e2caaf92c7743f201032784be",
+    "observed": {
+      "gameId": "0028700937",
+      "gameCode": "19880423/PORSAC",
+      "gameEt": "1988-04-23T20:00:00Z",
+      "gameStatus": 3,
+      "arena": {
+        "arenaId": 3,
+        "arenaName": "Sleep Train Arena",
+        "arenaCity": "Sacramento",
+        "arenaState": "CA",
+        "arenaCountry": "US",
+        "arenaTimezone": "Pacific",
+        "arenaStreetAddress": "",
+        "arenaPostalCode": ""
+      },
+      "home": {
+        "teamTricode": "SAC",
+        "teamId": 1610612758,
+        "score": 110
+      },
+      "away": {
+        "teamTricode": "POR",
+        "teamId": 1610612757,
+        "score": 124
+      }
+    }
+  },
+  {
+    "id": "boundary-0028800026",
+    "externalId": "0028800026",
+    "url": "https://www.nba.com/game/0028800026/box-score",
+    "capturedAt": "2026-10-20T06:44:58.634500+00:00",
+    "status": 200,
+    "reusedSourcePath": "/Users/michaelju/Workspace/Projects/fullcourt/docs/audit/release-numbers-20261020/official-overtime/raw/0028800026/889e39b635f0bb41bc33c3f031f9decae4423dc7d7b425476475d552730d7a80.html.gz",
+    "originalCapturedAt": "2026-10-20T01:39:36.550494+00:00",
+    "bodySha256": "889e39b635f0bb41bc33c3f031f9decae4423dc7d7b425476475d552730d7a80",
+    "rawPath": "raw/boundary-0028800026-889e39b635f0.html.gz",
+    "bytes": 271631,
+    "retainedSha256": "c8e8f5697ae04597827d49d54736e159eb160968752459567d9a291d77df5199",
+    "observed": {
+      "gameId": "0028800026",
+      "gameCode": "19881108/SEASAC",
+      "gameEt": "1988-11-08T20:00:00Z",
+      "gameStatus": 3,
+      "arena": {
+        "arenaId": 3,
+        "arenaName": "Sleep Train Arena",
+        "arenaCity": "Sacramento",
+        "arenaState": "CA",
+        "arenaCountry": "US",
+        "arenaTimezone": "Pacific",
+        "arenaStreetAddress": "",
+        "arenaPostalCode": ""
+      },
+      "home": {
+        "teamTricode": "SAC",
+        "teamId": 1610612758,
+        "score": 75
+      },
+      "away": {
+        "teamTricode": "SEA",
+        "teamId": 1610612760,
+        "score": 97
+      }
+    }
+  },
+  {
+    "id": "boundary-0021501193",
+    "externalId": "0021501193",
+    "url": "https://www.nba.com/game/0021501193/box-score",
+    "capturedAt": "2026-10-20T06:44:58.644730+00:00",
+    "status": 200,
+    "finalUrl": "https://www.nba.com/game/0021501193/box-score",
+    "bodySha256": "269216be09f96e4863e560f5fca1aa9b34e652ca0531f736153453b0df809c22",
+    "rawPath": "raw/boundary-0021501193-269216be09f9.html.gz",
+    "bytes": 508908,
+    "retainedSha256": "2fc120c35739ace2d77ef73c9e899a740d8c879b5d735720c34d3434ec40faa1",
+    "observed": {
+      "gameId": "0021501193",
+      "gameCode": "20160409/OKCSAC",
+      "gameEt": "2016-04-09T22:30:00Z",
+      "gameStatus": 3,
+      "arena": {
+        "arenaId": 3,
+        "arenaName": "Sleep Train Arena",
+        "arenaCity": "Sacramento",
+        "arenaState": "CA",
+        "arenaCountry": "US",
+        "arenaTimezone": "Pacific",
+        "arenaStreetAddress": "",
+        "arenaPostalCode": ""
+      },
+      "home": {
+        "teamTricode": "SAC",
+        "teamId": 1610612758,
+        "score": 114
+      },
+      "away": {
+        "teamTricode": "OKC",
+        "teamId": 1610612760,
+        "score": 112
+      }
+    }
+  },
+  {
+    "id": "boundary-0021600016",
+    "externalId": "0021600016",
+    "url": "https://www.nba.com/game/0021600016/box-score",
+    "capturedAt": "2026-10-20T06:44:59.227065+00:00",
+    "status": 200,
+    "finalUrl": "https://www.nba.com/game/0021600016/box-score",
+    "bodySha256": "56a36f20e04cedeb3a28b8a50aa8456a82c8b397cc2ba85d9d14c3a8e3203183",
+    "rawPath": "raw/boundary-0021600016-56a36f20e04c.html.gz",
+    "bytes": 491260,
+    "retainedSha256": "848327dcd7347bba75f9806e7a7b555589c38736f0afe4ddaec2963324770fb6",
+    "observed": {
+      "gameId": "0021600016",
+      "gameCode": "20161027/SASSAC",
+      "gameEt": "2016-10-27T22:30:00Z",
+      "gameStatus": 3,
+      "arena": {
+        "arenaId": 609,
+        "arenaName": "Golden 1 Center",
+        "arenaCity": "Sacramento",
+        "arenaState": "CA",
+        "arenaCountry": "US",
+        "arenaTimezone": "Pacific",
+        "arenaStreetAddress": "",
+        "arenaPostalCode": ""
+      },
+      "home": {
+        "teamTricode": "SAC",
+        "teamId": 1610612758,
+        "score": 94
+      },
+      "away": {
+        "teamTricode": "SAS",
+        "teamId": 1610612759,
+        "score": 102
+      }
+    }
+  },
+  {
+    "id": "boundary-0022501184",
+    "externalId": "0022501184",
+    "url": "https://www.nba.com/game/0022501184/box-score",
+    "capturedAt": "2026-10-20T06:45:00.117739+00:00",
+    "status": 200,
+    "finalUrl": "https://www.nba.com/game/0022501184/box-score",
+    "bodySha256": "2db6c313f17ace957cb5991b199d35d7e6c7d95040f8df6797a505714084305a",
+    "rawPath": "raw/boundary-0022501184-2db6c313f17a.html.gz",
+    "bytes": 525024,
+    "retainedSha256": "2e35c6296a398e1852b0d9b5265a3ab5a7ff67d4260ea25de88aac8d3982958a",
+    "observed": {
+      "gameId": "0022501184",
+      "gameCode": "20260410/GSWSAC",
+      "gameEt": "2026-04-10T22:00:00Z",
+      "gameStatus": 3,
+      "arena": {
+        "arenaId": 609,
+        "arenaName": "Golden 1 Center",
+        "arenaCity": "Sacramento",
+        "arenaState": "CA",
+        "arenaCountry": "US",
+        "arenaTimezone": "Pacific",
+        "arenaStreetAddress": "",
+        "arenaPostalCode": ""
+      },
+      "home": {
+        "teamTricode": "SAC",
+        "teamId": 1610612758,
+        "score": 124
+      },
+      "away": {
+        "teamTricode": "GSW",
+        "teamId": 1610612744,
+        "score": 118
+      }
+    }
+  },
+  {
+    "id": "boundary-0028500019",
+    "externalId": "0028500019",
+    "url": "https://www.nba.com/game/0028500019/box-score",
+    "capturedAt": "2026-10-20T06:45:00.350718+00:00",
+    "status": 200,
+    "finalUrl": "https://www.nba.com/game/0028500019/box-score",
+    "bodySha256": "690275d507bcdd17799e7f94caaeeee66d1bba277c8f43b3d1f0e79f7e4c9544",
+    "rawPath": "raw/boundary-0028500019-690275d507bc.html.gz",
+    "bytes": 270988,
+    "retainedSha256": "8b624ea27b5f9e4b1b283c0c6fc5c9b5e3bcef3c8071bc932a6584aeac932255",
+    "observed": {
+      "gameId": "0028500019",
+      "gameCode": "19851026/LALSAN",
+      "gameEt": "1985-10-26T20:00:00Z",
+      "gameStatus": 3,
+      "arena": {
+        "arenaId": 1,
+        "arenaName": "Alamodome",
+        "arenaCity": "San Antonio",
+        "arenaState": "TX",
+        "arenaCountry": "US",
+        "arenaTimezone": "Central",
+        "arenaStreetAddress": "",
+        "arenaPostalCode": ""
+      },
+      "home": {
+        "teamTricode": "SAN",
+        "teamId": 1610612759,
+        "score": 116
+      },
+      "away": {
+        "teamTricode": "LAL",
+        "teamId": 1610612747,
+        "score": 121
+      }
+    }
+  },
+  {
+    "id": "boundary-0049200055",
+    "externalId": "0049200055",
+    "url": "https://www.nba.com/game/0049200055/box-score",
+    "capturedAt": "2026-10-20T06:45:00.992027+00:00",
+    "status": 200,
+    "reusedSourcePath": "/Users/michaelju/Workspace/Projects/fullcourt/docs/audit/release-numbers-20261020/official-overtime/raw/0049200055/edbb10fa22cdf3a0fb22c83a4bf4326a287ab2d5896e015c9818f8300860ef58.html.gz",
+    "originalCapturedAt": "2026-10-20T02:21:26.017831+00:00",
+    "bodySha256": "edbb10fa22cdf3a0fb22c83a4bf4326a287ab2d5896e015c9818f8300860ef58",
+    "rawPath": "raw/boundary-0049200055-edbb10fa22cd.html.gz",
+    "bytes": 270415,
+    "retainedSha256": "3497cbefbc44cb2affb749f03dc249f25353b618d66ba1a08dd6826ef7ad71ec",
+    "observed": {
+      "gameId": "0049200055",
+      "gameCode": "19930520/PHXSAN",
+      "gameEt": "1993-05-20T20:00:00Z",
+      "gameStatus": 3,
+      "arena": {
+        "arenaId": 2,
+        "arenaName": "US Airways Center",
+        "arenaCity": "Phoenix",
+        "arenaState": "AZ",
+        "arenaCountry": "US",
+        "arenaTimezone": "Mountain",
+        "arenaStreetAddress": "",
+        "arenaPostalCode": ""
+      },
+      "home": {
+        "teamTricode": "SAN",
+        "teamId": 1610612759,
+        "score": 100
+      },
+      "away": {
+        "teamTricode": "PHX",
+        "teamId": 1610612756,
+        "score": 102
+      }
+    }
+  },
+  {
+    "id": "boundary-0029300012",
+    "externalId": "0029300012",
+    "url": "https://www.nba.com/game/0029300012/box-score",
+    "capturedAt": "2026-10-20T06:45:01.001957+00:00",
+    "status": 200,
+    "finalUrl": "https://www.nba.com/game/0029300012/box-score",
+    "bodySha256": "6c5a5fb389ff09395a11b9be43f152104f92cffae104ccfb1d96d73a3ea5d0de",
+    "rawPath": "raw/boundary-0029300012-6c5a5fb389ff.html.gz",
+    "bytes": 270387,
+    "retainedSha256": "15b7905d750684658bdd2d1b3e4afed3a204ec76a0674036b4d6858c444f394f",
+    "observed": {
+      "gameId": "0029300012",
+      "gameCode": "19931105/GOSSAN",
+      "gameEt": "1993-11-05T20:00:00Z",
+      "gameStatus": 3,
+      "arena": {
+        "arenaId": 1,
+        "arenaName": "Alamodome",
+        "arenaCity": "San Antonio",
+        "arenaState": "TX",
+        "arenaCountry": "US",
+        "arenaTimezone": "Central",
+        "arenaStreetAddress": "",
+        "arenaPostalCode": ""
+      },
+      "home": {
+        "teamTricode": "SAN",
+        "teamId": 1610612759,
+        "score": 91
+      },
+      "away": {
+        "teamTricode": "GOS",
+        "teamId": 1610612744,
+        "score": 85
+      }
+    }
+  },
+  {
+    "id": "boundary-0040100234",
+    "externalId": "0040100234",
+    "url": "https://www.nba.com/game/0040100234/box-score",
+    "capturedAt": "2026-10-20T06:45:01.904541+00:00",
+    "status": 200,
+    "finalUrl": "https://www.nba.com/game/0040100234/box-score",
+    "bodySha256": "d2d0c6a34b6bec7f5da000a6a4accbb4fd9d34c0a55e0ec8700ab83e46bd90a4",
+    "rawPath": "raw/boundary-0040100234-d2d0c6a34b6b.html.gz",
+    "bytes": 481228,
+    "retainedSha256": "54976ada9e0c2e8029fc64f89b5baa39a58926142351c12cbff5122a07a44fa4",
+    "observed": {
+      "gameId": "0040100234",
+      "gameCode": "20020512/LALSAS",
+      "gameEt": "2002-05-12T17:30:00Z",
+      "gameStatus": 3,
+      "arena": {
+        "arenaId": 1,
+        "arenaName": "Alamodome",
+        "arenaCity": "San Antonio",
+        "arenaState": "TX",
+        "arenaCountry": "US",
+        "arenaTimezone": "Central",
+        "arenaStreetAddress": "",
+        "arenaPostalCode": ""
+      },
+      "home": {
+        "teamTricode": "SAS",
+        "teamId": 1610612759,
+        "score": 85
+      },
+      "away": {
+        "teamTricode": "LAL",
+        "teamId": 1610612747,
+        "score": 87
+      }
+    }
+  },
+  {
+    "id": "boundary-0020200026",
+    "externalId": "0020200026",
+    "url": "https://www.nba.com/game/0020200026/box-score",
+    "capturedAt": "2026-10-20T06:45:02.861577+00:00",
+    "status": 200,
+    "finalUrl": "https://www.nba.com/game/0020200026/box-score",
+    "bodySha256": "993001c4cf228eda33c64199af209edd3aa6c06b9f67db4eed6d7545b56fca37",
+    "rawPath": "raw/boundary-0020200026-993001c4cf22.html.gz",
+    "bytes": 508954,
+    "retainedSha256": "df8695b11e8186371be543a2634d87ff79586255d85bf17686b7400699ceb287",
+    "observed": {
+      "gameId": "0020200026",
+      "gameCode": "20021101/TORSAS",
+      "gameEt": "2002-11-01T20:30:00Z",
+      "gameStatus": 3,
+      "arena": {
+        "arenaId": 199,
+        "arenaName": "AT&T Center",
+        "arenaCity": "San Antonio",
+        "arenaState": "TX",
+        "arenaCountry": "US",
+        "arenaTimezone": "Central",
+        "arenaStreetAddress": "",
+        "arenaPostalCode": ""
+      },
+      "home": {
+        "teamTricode": "SAS",
+        "teamId": 1610612759,
+        "score": 91
+      },
+      "away": {
+        "teamTricode": "TOR",
+        "teamId": 1610612761,
+        "score": 72
+      }
+    }
+  },
+  {
+    "id": "boundary-0042500405",
+    "externalId": "0042500405",
+    "url": "https://www.nba.com/game/0042500405/box-score",
+    "capturedAt": "2026-10-20T06:45:04.316839+00:00",
+    "status": 200,
+    "finalUrl": "https://www.nba.com/game/0042500405/box-score",
+    "bodySha256": "ae87bf207e7c183e835dc1c19232bfc8799862b1567e64698c8edc0a6734e7ea",
+    "rawPath": "raw/boundary-0042500405-ae87bf207e7c.html.gz",
+    "bytes": 568786,
+    "retainedSha256": "10ddc9811b5cc4e934271c092c17fad3fecccb1e8e71baa85282870cdbac634c",
+    "observed": {
+      "gameId": "0042500405",
+      "gameCode": "20260613/NYKSAS",
+      "gameEt": "2026-06-13T20:30:00Z",
+      "gameStatus": 3,
+      "arena": {
+        "arenaId": 1000118,
+        "arenaName": "Frost Bank Center",
+        "arenaCity": "San Antonio",
+        "arenaState": "TX",
+        "arenaCountry": "US",
+        "arenaTimezone": "Central",
+        "arenaStreetAddress": "",
+        "arenaPostalCode": ""
+      },
+      "home": {
+        "teamTricode": "SAS",
+        "teamId": 1610612759,
+        "score": 90
+      },
+      "away": {
+        "teamTricode": "NYK",
+        "teamId": 1610612752,
+        "score": 94
+      }
+    }
+  },
+  {
+    "id": "boundary-0028500011",
+    "externalId": "0028500011",
+    "url": "https://www.nba.com/game/0028500011/box-score",
+    "capturedAt": "2026-10-20T06:45:04.662008+00:00",
+    "status": 200,
+    "finalUrl": "https://www.nba.com/game/0028500011/box-score",
+    "bodySha256": "b3cc649f11949b9f094f676785cdac024b53573b28d555ad83c97602abce8c96",
+    "rawPath": "raw/boundary-0028500011-b3cc649f1194.html.gz",
+    "bytes": 271342,
+    "retainedSha256": "511472fd9637df202e10b4c1420c9fbb58e9c8e623c3989603583bbda7594e5b",
+    "observed": {
+      "gameId": "0028500011",
+      "gameCode": "19851025/HOUUTH",
+      "gameEt": "1985-10-25T20:00:00Z",
+      "gameStatus": 3,
+      "arena": {
+        "arenaId": 15,
+        "arenaName": "EnergySolutions Arena",
+        "arenaCity": "Salt Lake City",
+        "arenaState": "UT",
+        "arenaCountry": "US",
+        "arenaTimezone": "Mountain",
+        "arenaStreetAddress": "",
+        "arenaPostalCode": ""
+      },
+      "home": {
+        "teamTricode": "UTH",
+        "teamId": 1610612762,
+        "score": 108
+      },
+      "away": {
+        "teamTricode": "HOU",
+        "teamId": 1610612745,
+        "score": 112
+      }
+    }
+  },
+  {
+    "id": "boundary-0049000045",
+    "externalId": "0049000045",
+    "url": "https://www.nba.com/game/0049000045/box-score",
+    "capturedAt": "2026-10-20T06:45:05.132525+00:00",
+    "status": 200,
+    "reusedSourcePath": "/Users/michaelju/Workspace/Projects/fullcourt/docs/audit/release-numbers-20261020/official-overtime/raw/0049000045/05dee5735720faaf6a8e6585bb37a0f74b0cff923dc156b689f51ee65c434ee1.html.gz",
+    "originalCapturedAt": "2026-10-20T02:20:21.221759+00:00",
+    "bodySha256": "05dee5735720faaf6a8e6585bb37a0f74b0cff923dc156b689f51ee65c434ee1",
+    "rawPath": "raw/boundary-0049000045-05dee5735720.html.gz",
+    "bytes": 269338,
+    "retainedSha256": "fcc500af917510e1e0727fd107678526589ec44b14b1f72a98ef0dc6286e85e0",
+    "observed": {
+      "gameId": "0049000045",
+      "gameCode": "19910512/PORUTH",
+      "gameEt": "1991-05-12T20:00:00Z",
+      "gameStatus": 3,
+      "arena": {
+        "arenaId": 15,
+        "arenaName": "EnergySolutions Arena",
+        "arenaCity": "Salt Lake City",
+        "arenaState": "UT",
+        "arenaCountry": "US",
+        "arenaTimezone": "Mountain",
+        "arenaStreetAddress": "",
+        "arenaPostalCode": ""
+      },
+      "home": {
+        "teamTricode": "UTH",
+        "teamId": 1610612762,
+        "score": 101
+      },
+      "away": {
+        "teamTricode": "POR",
+        "teamId": 1610612757,
+        "score": 104
+      }
+    }
+  },
+  {
+    "id": "boundary-0029100051",
+    "externalId": "0029100051",
+    "url": "https://www.nba.com/game/0029100051/box-score",
+    "capturedAt": "2026-10-20T06:45:05.142326+00:00",
+    "status": 200,
+    "reusedSourcePath": "/Users/michaelju/Workspace/Projects/fullcourt/docs/audit/release-numbers-20261020/official-overtime/raw/0029100051/44b884ea75b3d388266b3530a220bcdd7c288d804ada793c9f6bab64c86ffb71.html.gz",
+    "originalCapturedAt": "2026-10-20T02:09:20.087801+00:00",
+    "bodySha256": "44b884ea75b3d388266b3530a220bcdd7c288d804ada793c9f6bab64c86ffb71",
+    "rawPath": "raw/boundary-0029100051-44b884ea75b3.html.gz",
+    "bytes": 269844,
+    "retainedSha256": "2cc0cca8d92d297ba6c06821d94429dcb75ba2600a51ce7dee90c7850bd4a825",
+    "observed": {
+      "gameId": "0029100051",
+      "gameCode": "19911107/SEAUTH",
+      "gameEt": "1991-11-07T20:00:00Z",
+      "gameStatus": 3,
+      "arena": {
+        "arenaId": 15,
+        "arenaName": "EnergySolutions Arena",
+        "arenaCity": "Salt Lake City",
+        "arenaState": "UT",
+        "arenaCountry": "US",
+        "arenaTimezone": "Mountain",
+        "arenaStreetAddress": "",
+        "arenaPostalCode": ""
+      },
+      "home": {
+        "teamTricode": "UTH",
+        "teamId": 1610612762,
+        "score": 95
+      },
+      "away": {
+        "teamTricode": "SEA",
+        "teamId": 1610612760,
+        "score": 103
+      }
+    }
+  },
+  {
+    "id": "boundary-0022501181",
+    "externalId": "0022501181",
+    "url": "https://www.nba.com/game/0022501181/box-score",
+    "capturedAt": "2026-10-20T06:45:05.152161+00:00",
+    "status": 200,
+    "finalUrl": "https://www.nba.com/game/0022501181/box-score",
+    "bodySha256": "f84937911c442a0c83c3e6f25b3d5a2e2d96691a16b6a48ef8cc49a4e26ece48",
+    "rawPath": "raw/boundary-0022501181-f84937911c44.html.gz",
+    "bytes": 514153,
+    "retainedSha256": "6e7f67c0cae22eff2d85728ee6a932e6f7a0c3feb3f5c87f28d5c984cf02f1fb",
+    "observed": {
+      "gameId": "0022501181",
+      "gameCode": "20260410/MEMUTA",
+      "gameEt": "2026-04-10T21:30:00Z",
+      "gameStatus": 3,
+      "arena": {
+        "arenaId": 1000106,
+        "arenaName": "Delta Center",
+        "arenaCity": "Salt Lake City",
+        "arenaState": "UT",
+        "arenaCountry": "US",
+        "arenaTimezone": "Mountain",
+        "arenaStreetAddress": "",
+        "arenaPostalCode": ""
+      },
+      "home": {
+        "teamTricode": "UTA",
+        "teamId": 1610612762,
+        "score": 147
+      },
+      "away": {
+        "teamTricode": "MEM",
+        "teamId": 1610612763,
+        "score": 101
+      }
+    }
+  }
+]

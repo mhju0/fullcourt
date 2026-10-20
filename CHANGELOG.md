@@ -1,12 +1,23 @@
 # Release history
 
+## 1.0.9 — 2026-10-20
+
+- Reject stale or failed local research exports before dependent analyses; bind successful
+  inputs to the complete arena dependency closure and exact player/team cache inventory.
+- Preserve prior research outputs and audit receipts while validating current intermediates
+  against the accepted arena correction, without refitting or changing publications.
+
 ## 1.0.8 — 2026-10-20
 
-- Reject stale or incomplete local research exports before dependent analysis runs;
-  bind prepared tables to their source files without changing the model calculations.
-- Record v1.0.7 production acceptance and correct the roadmap’s historical homepage window.
-- Synchronize local research outputs to the verified recalculation, preserving prior copies
-  and immutable audit evidence.
+- Resolve historical arena moves and individually sourced alternate homes while preserving
+  arena-to-arena Mileage, ratified coefficients and graded prediction history.
+- Include all five canonical shooting aliases; correct Data Status coverage, referee
+  source dates, the L2M canonical link and two historical conference metadata cells.
+- Make prediction verification preservation-aware and the legacy reset command report-only.
+- Render methods-page ablation rates from generated facts and fix team-logo fallback
+  text contrast while preserving official fills.
+- Recalculate dependent publications from the reviewed local correction; production
+  application uses the owner-approved manifest and retains exact before/after evidence.
 
 ## 1.0.7 — 2026-10-20
 

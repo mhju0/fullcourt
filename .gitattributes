@@ -1,0 +1,5 @@
+# Preserve byte hashes in the dated source/recomputation evidence packet.
+docs/research/2026-10-20-arena-shooting/** -text whitespace=cr-at-eol
+# These two verbatim GIS responses also contain source-provider trailing spaces.
+docs/research/2026-10-20-arena-shooting/eastern-arenas/hifld-service.json -whitespace
+docs/research/2026-10-20-arena-shooting/eastern-arenas/hifld-official-service.json -whitespace

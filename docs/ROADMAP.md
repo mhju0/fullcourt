@@ -16,9 +16,8 @@ listed in the dated audit snapshots below.
 Follow-up source audit: all 5,815 previously unconfirmed overtime inputs have now been
 adjudicated from retained primary records, identifying 346 missing positive overtime
 counts. The separate [overtime correction](research/2026-10-20-overtime-correction/README.md)
-was released in [v1.0.7](https://github.com/mhju0/fullcourt/releases/tag/v1.0.7).
-The approved production after-state, exact merged deployment and canonical API/browser
-checks passed; scheduled writers were restored after verification.
+was released in v1.0.7 / PR #187. D-131 independently confirms the complete production
+replay and dependent artifacts; timestamps alone are not used as proof.
 The 17 earlier score discrepancies retain the existing results with primary support;
 two NBA archive conflicts remain explicitly recorded rather than silently reconciled.
 Actual airports/itineraries/home stops, 30 future Cup-dependent fixtures, opening-night
@@ -37,6 +36,22 @@ team assignment, without changing shots or the stored game score. The
 cohort changes. Exact review, preview and deployed acceptance live in the
 [v1.0.4 release](https://github.com/mhju0/fullcourt/releases/tag/v1.0.4) and its PR.
 Source-dependent holdouts remain visible limits; no production DB mutation is implied.
+
+## Post-PR-187 independent audit — candidate awaiting approval
+
+D-131 prepares the [arena and canonical-fixture correction](research/2026-10-20-arena-shooting/README.md)
+in `fix/historical-arena-shooting`: all-30 sourced venue eras, individually evidenced
+exceptions, complete Shooting identity joins, correct Data Status coverage and smaller
+metadata repairs. Local backup restore and exact apply/rollback/server-restart checks pass.
+Finish producer regeneration, independent after-export comparisons, integrated browser/check
+coverage and frozen-candidate review before requesting the owner's new production approval.
+Production is still v1.0.7; do not merge the new scorer before coordinated data cutover.
+
+Section 7 stays report-only: workload-window naming, long road gaps, bubble semantics,
+unobserved flights home, seed proxies and preserved prediction history do not change.
+The owner has deferred 2026-27 grading; opening-night observation must respect that boundary.
+Repository/script cleanup remains queued separately and must include the new arena dependency
+closure rather than reusing a stale generated dataset.
 
 ## Maintenance
 
@@ -84,8 +99,8 @@ The Home-court advantage study provides venue-baseline history through Explore; 
 shows the selected season's corresponding comparison. See [D-70](DECISIONS.md).
 The approved Home-court refinement adds an optional raw 5+ line and paired seasonal
 comparisons, with actual counts and one general sample-size note (D-114 amendment).
-The homepage uses all eligible completed regular seasons for both compared groups
-(D-127, superseding the earlier ten-season window in D-112).
+The homepage uses all eligible completed seasons for both compared groups (D-127),
+superseding D-112's recent-ten presentation.
 Officiating stays focused; prior referee studies remain in the research archive.
 
 Fatigue coefficients require an explicit owner decision under ADR 0006. Schema changes require
@@ -129,7 +144,7 @@ released until its PR, independent review and deployment checks are complete.
 | 22 | December schedule additions | Wait for published fixtures; later ingest is a separate reviewed production operation. |
 | 23 | Home-court chart | Producer redraw and pinned checks completed in the prior remediation. |
 | 24 | Generated figures/source provenance | Fresh 415-report NBA snapshot validated; 386 regular-season reports reproduce published content exactly. Full cached-corpus Legends rebuild is byte-identical. See [source reproduction](research/2026-10-18-source-reproduction.md). |
-| 25 | Independent historical scores/dates/OT | Prior comparison retained. No new played games since it; first new-slate comparison belongs to opening-night validation. Pre-2002 OT and deliberately excluded fixtures remain documented coverage limits. |
+| 25 | Independent historical scores/dates/OT | Prior comparison retained. No new played games since it; first new-slate comparison belongs to opening-night validation. v1.0.7 closes prior overtime coverage; deliberately excluded fixtures remain documented. |
 | 26 | Branch/worktree cleanup | Earlier merged branches/worktrees removed; archived leftovers preserved. New closeout worktrees are active work, not leftovers to discard. |
 | 27 | v1.0.0 release | Official date October 19, 2026; owner superseded the completed-slate prerequisite (D-117). Release/tag evidence lives in GitHub and CHANGELOG.md. |
 | 28 | Historical timeout watch | Sentry #4 remains open, one Oct 7 event and no recurrence at this read. Do not claim root cause fixed. |
@@ -182,3 +197,11 @@ The [full assigned-season report](research/2026-10-20-full-season-travel-review.
 The owner requested the same audit across every stored season. The [all-season research](research/2026-10-20-historical-audit/README.md) now covers 51,695 games and 103,390 score sides across 42 season labels. Current-engine replay matches every stored score/component; independent density/rest/Mileage arithmetic agrees under recorded venue assumptions. The shared streak semantics persist historically: 25,046 home appearances retain a prior away streak and 25,095 away appearances retain the exported home-stand feature. A single-change homecoming diagnostic changes 6,125 published home scores, while the pooled rested-team-at-home win rate moves 61.1889% to 61.1417%. This is sensitivity evidence, not a model change or repair.
 
 Keep source adjudication, confirmed historical venue corrections, early overtime gaps, the homecoming policy decision and dependent artifact regeneration as separate follow-ups. External source coverage varies by season and field; provider disagreements are not automatically database errors. Actual charter airports and intermediate home stops remain unobserved for most historical journeys. Any controlled production correction needs exact affected rows, backup/rollback, independent review and the applicable owner approval before persistent-data replacement.
+
+
+### Queued research maintenance (v1.0.9)
+
+Integrate content-bound export/prepare/consumer guards after the arena release. Include
+the shared arena registry and factory in the exporter source closure, preserve previous
+CSV/receipt evidence, and verify new intermediate bytes against the accepted AFTER state.
+This changes local research safety, without a model refit or publication regeneration.

@@ -52,7 +52,7 @@ describe("bounded Disney campus geometry", () => {
 
   it("limits the modeled base to participants and the approved inclusive date window", () => {
     for (const d of ["2020-07-30", "2020-10-11"]) expect(eraCoordinates("POR", d, 45.5, -122.6)).toEqual({ latitude: BUBBLE_CAMPUS.latitude, longitude: BUBBLE_CAMPUS.longitude });
-    for (const d of ["2020-07-29", "2020-10-12"]) expect(eraCoordinates("POR", d, 45.5, -122.6)).toEqual({ latitude: 45.5, longitude: -122.6 });
-    expect(eraCoordinates("DET", "2020-08-01", 42.3, -83.1)).toEqual({ latitude: 42.3, longitude: -83.1 });
+    for (const d of ["2020-07-29", "2020-10-12"]) expect(eraCoordinates("POR", d, 45.5, -122.6)).toEqual({ latitude: 45.53156509999999, longitude: -122.6668423 });
+    expect(eraCoordinates("DET", "2020-08-01", 42.3, -83.1)).toEqual({ latitude: 42.341796, longitude: -83.05466109999999 });
   });
 });

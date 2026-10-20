@@ -1,3 +1,5 @@
+import { renderToStaticMarkup } from "react-dom/server";
+import RestAdvantagePage from "@/app/behind-the-data/rest-advantage/page";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
@@ -36,11 +38,17 @@ describe("generated ablation facts", () => {
     for (const name of ["Travel", "Road segment"]) {
       expect(facts.terms.find((term) => term.term === name)!.delta).toBeGreaterThan(0);
     }
-    for (const name of ["Back-to-back", "Recent workload (decay)"]) {
-      expect(facts.terms.find((term) => term.term === name)!.foundWinPct).toBeGreaterThan(63);
-    }
     const page = readFileSync(join(process.cwd(), "src/app/behind-the-data/rest-advantage/page.tsx"), "utf8");
     expect(page).toContain("const ABLATIONS = ablationFacts.terms");
     expect(page).toContain("const ABLATION_BASELINE = ablationFacts.baseline");
+  });
+
+  it("renders each named removed-call rate from its generated facts", () => {
+    const html = renderToStaticMarkup(RestAdvantagePage());
+    const backToBack = facts.terms.find((term) => term.term === "Back-to-back")!;
+    const workload = facts.terms.find((term) => term.term === "Recent workload (decay)")!;
+    expect(html).toContain(`Games selected by the back-to-back term but lost when it is removed won at ${backToBack.foundWinPct.toFixed(2)}%.`);
+    expect(html).toContain(`For recent workload, that rate is ${workload.foundWinPct.toFixed(2)}%.`);
+    expect(html).not.toContain("win rates above 63%");
   });
 });

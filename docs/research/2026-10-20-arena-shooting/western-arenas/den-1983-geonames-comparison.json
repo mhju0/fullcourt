@@ -1,0 +1,168 @@
+{
+  "mapPath": "raw/tnm-den-1983-a850c76e6941.pdf",
+  "mapSha256": "a850c76e694157f793dc1656b2962817544b5cb1b350bf0be922151ae81bd3ec",
+  "mapMetadataProjection": {
+    "/CentralMeridian": "-105.5",
+    "/Datum": "NAS-E",
+    "/FalseEasting": "0",
+    "/FalseNorthing": "0",
+    "/OriginLatitude": "0",
+    "/ProjectionType": "TC",
+    "/ScaleFactor": "1",
+    "/Type": "/Projection",
+    "/Units": "M"
+  },
+  "mapCTM": [
+    "35.27777777778199",
+    "0",
+    "1.213518861219798e-015",
+    "35.27777777778217",
+    "-46164.07453411197",
+    "4370166.408344057"
+  ],
+  "inSR": 4326,
+  "outWkt": "PROJCS[\"USGS Denver West custom TM\",GEOGCS[\"GCS_North_American_1927\",DATUM[\"D_North_American_1927\",SPHEROID[\"Clarke_1866\",6378206.4,294.9786982]],PRIMEM[\"Greenwich\",0],UNIT[\"Degree\",0.0174532925199433]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"False_Easting\",0],PARAMETER[\"False_Northing\",0],PARAMETER[\"Central_Meridian\",-105.5],PARAMETER[\"Scale_Factor\",1],PARAMETER[\"Latitude_Of_Origin\",0],UNIT[\"Meter\",1]]",
+  "transformation": {
+    "geoTransforms": [
+      {
+        "wkid": 108190,
+        "latestWkid": 108190,
+        "transformForward": true,
+        "name": "WGS_1984_(ITRF00)_To_NAD_1983"
+      },
+      {
+        "wkid": 8555,
+        "latestWkid": 8555,
+        "transformForward": false,
+        "name": "NAD_1927_To_NAD_1983_7"
+      }
+    ]
+  },
+  "inputPoints": [
+    {
+      "x": -105.02278,
+      "y": 39.74278
+    },
+    {
+      "x": -105.0211549,
+      "y": 39.742026
+    }
+  ],
+  "url": "https://utility.arcgisonline.com/ArcGIS/rest/services/Geometry/GeometryServer/project?inSR=4326&outSR=%7B%22wkt%22%3A+%22PROJCS%5B%5C%22USGS+Denver+West+custom+TM%5C%22%2CGEOGCS%5B%5C%22GCS_North_American_1927%5C%22%2CDATUM%5B%5C%22D_North_American_1927%5C%22%2CSPHEROID%5B%5C%22Clarke_1866%5C%22%2C6378206.4%2C294.9786982%5D%5D%2CPRIMEM%5B%5C%22Greenwich%5C%22%2C0%5D%2CUNIT%5B%5C%22Degree%5C%22%2C0.0174532925199433%5D%5D%2CPROJECTION%5B%5C%22Transverse_Mercator%5C%22%5D%2CPARAMETER%5B%5C%22False_Easting%5C%22%2C0%5D%2CPARAMETER%5B%5C%22False_Northing%5C%22%2C0%5D%2CPARAMETER%5B%5C%22Central_Meridian%5C%22%2C-105.5%5D%2CPARAMETER%5B%5C%22Scale_Factor%5C%22%2C1%5D%2CPARAMETER%5B%5C%22Latitude_Of_Origin%5C%22%2C0%5D%2CUNIT%5B%5C%22Meter%5C%22%2C1%5D%5D%22%7D&geometries=%7B%22geometryType%22%3A+%22esriGeometryPoint%22%2C+%22geometries%22%3A+%5B%7B%22x%22%3A+-105.02278%2C+%22y%22%3A+39.74278%7D%2C+%7B%22x%22%3A+-105.0211549%2C+%22y%22%3A+39.742026%7D%5D%7D&transformation=%7B%22geoTransforms%22%3A+%5B%7B%22wkid%22%3A+108190%2C+%22latestWkid%22%3A+108190%2C+%22transformForward%22%3A+true%2C+%22name%22%3A+%22WGS_1984_%28ITRF00%29_To_NAD_1983%22%7D%2C+%7B%22wkid%22%3A+8555%2C+%22latestWkid%22%3A+8555%2C+%22transformForward%22%3A+false%2C+%22name%22%3A+%22NAD_1927_To_NAD_1983_7%22%7D%5D%7D&f=json",
+  "bodySha256": "a3a53e5242ace732a5e38d3f3ca7c59b805af4e7ad943c652494c7a65cf5a635",
+  "response": {
+    "geometries": [
+      {
+        "x": 40952.27937720579,
+        "y": 4400869.617264456
+      },
+      {
+        "x": 41092.02027740299,
+        "y": 4400786.645389806
+      }
+    ]
+  },
+  "pdfPoints": [
+    {
+      "pdfX": 2469.4399533913897,
+      "pdfY": 870.3271819954463,
+      "fitzX": 2469.4399533913897,
+      "fitzY": 881.7628180045537
+    },
+    {
+      "pdfX": 2473.4011127670574,
+      "pdfY": 867.9752233439343,
+      "fitzX": 2473.4011127670574,
+      "fitzY": 884.1147766560656
+    }
+  ],
+  "interpretation": "Native GeoNames historical facility point vs Google former-arena point projected independently to official1983USGS sheet. Projection transform explicitly selected by original ESRI findTransformations service.",
+  "cornerControl": {
+    "registrationIndices": [
+      0,
+      4,
+      6,
+      10
+    ],
+    "inputProjected": [
+      {
+        "x": 43007.93095626418,
+        "y": 4373924.369062666
+      },
+      {
+        "x": -43007.93095626307,
+        "y": 4373924.369062666
+      },
+      {
+        "x": -42698.14545619237,
+        "y": 4429438.664664967
+      },
+      {
+        "x": 42698.14545619346,
+        "y": 4429438.664664967
+      }
+    ],
+    "expectedNAD27GridCorners": [
+      [
+        -105,
+        39.5
+      ],
+      [
+        -106,
+        39.5
+      ],
+      [
+        -106,
+        40
+      ],
+      [
+        -105,
+        40
+      ]
+    ],
+    "transformation": {
+      "geoTransforms": [
+        {
+          "wkid": 8555,
+          "latestWkid": 8555,
+          "transformForward": true,
+          "name": "NAD_1927_To_NAD_1983_7"
+        },
+        {
+          "wkid": 108190,
+          "latestWkid": 108190,
+          "transformForward": false,
+          "name": "WGS_1984_(ITRF00)_To_NAD_1983"
+        }
+      ]
+    },
+    "url": "https://utility.arcgisonline.com/ArcGIS/rest/services/Geometry/GeometryServer/project?inSR=%7B%22wkt%22%3A+%22PROJCS%5B%5C%22USGS+Denver+West+custom+TM%5C%22%2CGEOGCS%5B%5C%22GCS_North_American_1927%5C%22%2CDATUM%5B%5C%22D_North_American_1927%5C%22%2CSPHEROID%5B%5C%22Clarke_1866%5C%22%2C6378206.4%2C294.9786982%5D%5D%2CPRIMEM%5B%5C%22Greenwich%5C%22%2C0%5D%2CUNIT%5B%5C%22Degree%5C%22%2C0.0174532925199433%5D%5D%2CPROJECTION%5B%5C%22Transverse_Mercator%5C%22%5D%2CPARAMETER%5B%5C%22False_Easting%5C%22%2C0%5D%2CPARAMETER%5B%5C%22False_Northing%5C%22%2C0%5D%2CPARAMETER%5B%5C%22Central_Meridian%5C%22%2C-105.5%5D%2CPARAMETER%5B%5C%22Scale_Factor%5C%22%2C1%5D%2CPARAMETER%5B%5C%22Latitude_Of_Origin%5C%22%2C0%5D%2CUNIT%5B%5C%22Meter%5C%22%2C1%5D%5D%22%7D&outSR=4326&geometries=%7B%22geometryType%22%3A+%22esriGeometryPoint%22%2C+%22geometries%22%3A+%5B%7B%22x%22%3A+43007.93095626418%2C+%22y%22%3A+4373924.369062666%7D%2C+%7B%22x%22%3A+-43007.93095626307%2C+%22y%22%3A+4373924.369062666%7D%2C+%7B%22x%22%3A+-42698.14545619237%2C+%22y%22%3A+4429438.664664967%7D%2C+%7B%22x%22%3A+42698.14545619346%2C+%22y%22%3A+4429438.664664967%7D%5D%7D&transformation=%7B%22geoTransforms%22%3A+%5B%7B%22wkid%22%3A+8555%2C+%22latestWkid%22%3A+8555%2C+%22transformForward%22%3A+true%2C+%22name%22%3A+%22NAD_1927_To_NAD_1983_7%22%7D%2C+%7B%22wkid%22%3A+108190%2C+%22latestWkid%22%3A+108190%2C+%22transformForward%22%3A+false%2C+%22name%22%3A+%22WGS_1984_%28ITRF00%29_To_NAD_1983%22%7D%5D%7D&f=json",
+    "bodySha256": "07daf3f4720f26d19f860af2407f18813432d62ab6f7d6494cfc09550a85510b",
+    "responseWGS84": {
+      "geometries": [
+        {
+          "x": -105.00054883641123,
+          "y": 39.49999503632392
+        },
+        {
+          "x": -106.000582806355,
+          "y": 39.49999342876395
+        },
+        {
+          "x": -106.00058309144859,
+          "y": 39.999992440358234
+        },
+        {
+          "x": -105.00054517473498,
+          "y": 39.99999083990507
+        }
+      ]
+    },
+    "status": "All4independentGeoPDFneatlinecontrolswithin0.002degofpublishedNAD27quadgridcorners; actualdatumshiftretained.",
+    "rawPath": "raw/den-1983-geonames-comparison-control-07daf3f4720f.json.gz",
+    "retainedSha256": "a8af356cd7ce9070fbeadaa0ca674a8cb416a287a86bbd21fb7ed6436d0fabf0"
+  },
+  "visualFinding": "Native GeoNames bluepoint lies inside the small oval south of MileHighStadium on the1983USGS map; Google former-arena redpoint is southeast and outside the mapped oval. Native point selected as arena-scale estimate.",
+  "rawPath": "raw/den-1983-geonames-comparison-a3a53e5242ac.json.gz",
+  "retainedSha256": "64a4b26e41d5bc29f8abd3e829e0ec28e8fb236e7b3dc899836a16d6c64a5edc"
+}

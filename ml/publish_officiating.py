@@ -14,6 +14,40 @@ from collect_l2m_season import validate_report
 from analyze_l2m_season import audit_duplicates
 
 
+CONTEXT_PATH = Path(__file__).resolve().parents[1] / "src/data/player-appearance-context.json"
+
+
+def canonical_external_id(meta, aliases):
+    gid = meta["GameId"]
+    alias = aliases.get(gid)
+    if alias is None:
+        return gid
+    expected = (alias["date"], alias["homeAbbr"], alias["awayAbbr"])
+    actual = (meta["GameDate"][:10], meta["Home_team_abbr"], meta["Away_team_abbr"])
+    if actual != expected:
+        raise ValueError(f"L2M canonical alias date/team identity differs: {gid}")
+    for source_field, alias_field in (("HomeTeamId", "homeTeamId"), ("AwayTeamId", "awayTeamId")):
+        if source_field in meta and meta[source_field] != alias[alias_field]:
+            raise ValueError(f"L2M canonical alias team ID differs: {gid}")
+    return alias["canonicalId"]
+
+
+def load_aliases(path=CONTEXT_PATH):
+    rows = json.loads(path.read_text())["historyAliases"]
+    aliases = {row["gameId"]: row for row in rows}
+    if len(aliases) != len(rows) or len({row["canonicalId"] for row in rows}) != len(rows):
+        raise ValueError("L2M canonical aliases must be one-to-one")
+    for row in rows:
+        if (
+            not re.fullmatch(r"002\d{7}", row["gameId"])
+            or not re.fullmatch(r"bref-\d{9}[A-Z]{3}", row["canonicalId"])
+            or row["canonicalId"] != f'bref-{row["date"].replace("-", "")}0{row["homeAbbr"]}'
+            or row["homeAbbr"] == row["awayAbbr"]
+        ):
+            raise ValueError("Invalid L2M canonical alias identity")
+    return aliases
+
+
 class TextOnly(HTMLParser):
     def __init__(self):
         super().__init__()
@@ -47,7 +81,9 @@ def publication_time(value, label):
     return parsed
 
 
-def build(snapshot, previous=None, crews=None, duplicates=None):
+def build(snapshot, previous=None, crews=None, duplicates=None, aliases=None):
+    if aliases is None:
+        aliases = load_aliases()
     manifest = json.loads((snapshot / "manifest.json").read_text())
     finished_at = publication_time(manifest.get("finished_at"), "Snapshot finished_at")
     records = manifest["reports"]
@@ -117,6 +153,7 @@ def build(snapshot, previous=None, crews=None, duplicates=None):
         )
         game = {
             "id": gid,
+            **({"canonicalExternalId": canonical_external_id(meta, aliases)} if gid in aliases else {}),
             "date": meta["GameDate"][:10],
             "home": meta["Home_team_abbr"],
             "away": meta["Away_team_abbr"],
